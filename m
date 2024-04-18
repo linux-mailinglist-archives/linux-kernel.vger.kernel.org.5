@@ -1,138 +1,182 @@
-Return-Path: <linux-kernel+bounces-150294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E9E8A9CEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:25:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CC8B8A9CED
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:25:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F4B4287932
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:25:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0FBE1F214EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:25:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DF0616D4E5;
-	Thu, 18 Apr 2024 14:20:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1AE516C865;
+	Thu, 18 Apr 2024 14:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="fvbI6H5q"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OOtcW97s"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A73616D4C8
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:20:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4ECB16D314
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:21:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713450035; cv=none; b=T1QiTOYVZtY52wcWmzFxwCjPtJN0SxrdQuxnWtJVhRKvRV0SwAIJjgYWuN4DRfGMAveXoG0/UW7PfW/QgVBa3NDtWFKaTqJ9sqP9/Bn4dS2bXbufPshQ0fxT8BJQNDlAKnT1eFGbTdV8L/zatlw58sZVwc34pzpfFnn9RpdLxMg=
+	t=1713450092; cv=none; b=ctTG/+cXSnav6G36+zxU5URmxMYYGetLX9rQEcL022wmZp8a1VIY4quKLwHYkcF+/1/Mo4dalT5Yr3xMmBRDWAMgKGV0kX6L/htyaA/z87xIW43JeT5eJAJFXxC6E4SZq4eyzzgQlw+7hHYXHtGa/h/wups1dj+obSNDNUR6NQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713450035; c=relaxed/simple;
-	bh=gAa7Kq1mYFyz8jqtnXVIe79COqi9Rf6W5LHAFGe3mjc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SqLqzQplSBvE39ZPPB4koGqNqLbmUGjx9sBJrMaAiy/cmsaTIZ+mmkfPovkg9cq+jJ0+5TLESATx9wVmhYeHBMI/jjxbhUjCLEeCjFZeNO5lXLA/VebfwDHv0on3sX0BuySBd/yM7vwlkNuRfrBB8e4KwoTOy7yw8RU4ERtHMYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=fvbI6H5q; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9581F3F8E6
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:20:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1713450030;
-	bh=6MdH0R6Fh42BcaDDw8FV00JACUmgNVaSlcHYQMVpZWk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type;
-	b=fvbI6H5qEJyOKKXg7sMdwyQPj8Pgv4iI0ilE1qO82dS3NLZ2XpSkWx54aE5Sm1wwh
-	 CB3WJHpsMQgwi0J3tejoQZBN1jjxZoKSfsNYMbr27uICGeNPvvW4JPXo9zOVf5gsYw
-	 eyRYqYhx70tqGGf8nIGsObMKkyUM7k9z7knHs3UdsLTbwlnZmqC5D9oGlB7KvJv8Lf
-	 sCcHI+U5QK8eZu17sBn0DjuB1IIuEMSY1kPKQWiu0ENJWCsesAB5hykLd4rAELmVox
-	 0YYN+xKE8werAeh+OJUR0hB6YRRq8X8wUOQi+/QzQyy4FgRDziNpwmRB2Kd0nWJtGI
-	 rNZOqDfGkKf8A==
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-416a844695dso5565025e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:20:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713450029; x=1714054829;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6MdH0R6Fh42BcaDDw8FV00JACUmgNVaSlcHYQMVpZWk=;
-        b=f3K9KdL0xsuIc9A1iqnQKAZSY8cADrL7QhfPJYqTb9tlLAJtZXYbvxdLKUC7TcfXKB
-         PQxr1GU4COSskxHUOfnwktBp/sWbDNARAi3EMWWAr8yU+G3MLZI4sCyIaJIzFR9WVlXk
-         SRtU7a4HIcRqdRs9Yd28zZgf5LVlRFwz/XECWlkpyooYGqbmaDSHXultkoyR3zTwMJJu
-         EIp3ByyVlvMeSMmtBbZ9NocgRLLVt/+hTgF2hS0dJW0OoqHJyxzYFPZkFKzTi70EOoKr
-         7vHt6HpevjEw88pQ52P4eBIZl+Q4gkeaST07wG1SXV1GpwgXOC7vJ2g9poAwD1/jWQIi
-         eZ9A==
-X-Forwarded-Encrypted: i=1; AJvYcCWVuVsxdbHt7eG3Hdqvdidiu+UYxVMQ/p7n2KNRevFyN9FSeRfcumwNMkBvziGXTLRDN86QuWNhnH0ZOiwtLR7WfXjrBNvhrqabEJSg
-X-Gm-Message-State: AOJu0Yw8C1WZf8wZAxe9sdJ+Z1lD2NTw81YUNXnNyb4LEoyFa588jEZM
-	GY7Ic0RpE47wStQ00wCksyP5ULDLP/WIMtJCY5v8qKUhZ0+Mwj2zjT/lE89h/S08mUhvyp480G5
-	8tQJwNIOt0T3HkLZvKNuk/lbO8FZ2ZcM5hYFCy0E0rYyA8eSiCLcwJFamYhE+hS0tDOmkLNzyCH
-	0ePA==
-X-Received: by 2002:a05:600c:4e87:b0:418:d077:2cbd with SMTP id f7-20020a05600c4e8700b00418d0772cbdmr2340895wmq.40.1713450029735;
-        Thu, 18 Apr 2024 07:20:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFT2UI5195uUHY+LxtGsmAza41kuNxu3PsqfU28U6vm2gIhE1ZKzhOvItctvv3fW1IYrvOjmg==
-X-Received: by 2002:a05:600c:4e87:b0:418:d077:2cbd with SMTP id f7-20020a05600c4e8700b00418d0772cbdmr2340875wmq.40.1713450029353;
-        Thu, 18 Apr 2024 07:20:29 -0700 (PDT)
-Received: from [192.168.123.126] (ip-062-143-245-032.um16.pools.vodafone-ip.de. [62.143.245.32])
-        by smtp.gmail.com with ESMTPSA id u17-20020a05600c19d100b00416b163e52bsm6658726wmq.14.2024.04.18.07.20.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 07:20:28 -0700 (PDT)
-Message-ID: <ef065a0e-1996-4ca2-b6f0-3a152edd3540@canonical.com>
-Date: Thu, 18 Apr 2024 16:20:26 +0200
+	s=arc-20240116; t=1713450092; c=relaxed/simple;
+	bh=aUM0Xf17pxFUy6Cr+9PH1jkH+tLH18RFiiZ8wiEHNyg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BzdXIrkfM3wbP/mHoT44hB6H6+XdG95xQTRqFutseVgCVGw9Z0bC7yJbQps17V+64R1Lgh+M4Ev0tf3BG/t4xt747fAAopfHGhnXMbEBElZ6/Dzh7+suDeCoOwILzPXL/eRqfMOtx8r89ocXNbvMs3drBTAmX/7ixiIDhkE0LX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OOtcW97s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BF75C113CC;
+	Thu, 18 Apr 2024 14:21:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713450092;
+	bh=aUM0Xf17pxFUy6Cr+9PH1jkH+tLH18RFiiZ8wiEHNyg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OOtcW97s6gnerm+tffJItV7ew9zy1ZhSrvMo02RgX0ZKyCqH6YI5v/LvsHbYyrfBB
+	 gHtxJJeMGexhCWow0EK+VYT+ar3LU591BkU1ndoautpWZxkuXlKYO6a6BUSZR8nLNY
+	 POIswoimSwvsP6a5nlfoLxsakWhfbzrnOwBitY9ssyuNsPEuDltVnVxtvuI/hMq76N
+	 vG/Uog8auWPLN8QpGxPIG7zFvcyW2UetfjQrfTYAWTtqll7jYLh/vxxM/BWCRXH8p3
+	 zonPVmBcl85quvEQ/cXPfaZpLHhOE3Qz1qUPbCkp1E8hTUmM/IomwlLI8XYgv/u34w
+	 RXKqNFZFD87wA==
+From: Conor Dooley <conor@kernel.org>
+To: linux-riscv@lists.infradead.org
+Cc: conor@kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Pu Lehui <pulehui@huaweicloud.com>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1] RISC-V: clarify what some RISCV_ISA* config options do
+Date: Thu, 18 Apr 2024 15:21:01 +0100
+Message-ID: <20240418-stable-railway-7cce07e1e440@spud>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v4 00/20] RISC-V: ACPI: Add external interrupt
- controller support
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
- linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
- Bjorn Helgaas <bhelgaas@google.com>, Anup Patel <anup@brainfault.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Samuel Holland <samuel.holland@sifive.com>,
- Robert Moore <robert.moore@intel.com>, Haibo1 Xu <haibo1.xu@intel.com>,
- Conor Dooley <conor.dooley@microchip.com>,
- Andrew Jones <ajones@ventanamicro.com>,
- Atish Kumar Patra <atishp@rivosinc.com>,
- Andrei Warkentin <andrei.warkentin@intel.com>, Marc Zyngier
- <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-References: <20240415170113.662318-1-sunilvl@ventanamicro.com>
- <87a5lqsrvh.fsf@all.your.base.are.belong.to.us>
- <ZiEnHtWbT04bXYmP@sunil-laptop>
-Content-Language: en-US
-From: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-In-Reply-To: <ZiEnHtWbT04bXYmP@sunil-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4357; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=mdQDYpXoXxz/xowCTUoQTmMv0Y172vMgP0KsAfRXkKE=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGmKOj7ijzraWDadNrNUnVy24Kh8zi7FjO0bDi6oktvrm 1VoIn+wo5SFQYyDQVZMkSXxdl+L1Po/Ljuce97CzGFlAhnCwMUpABN5rMrwP41vk132s/6tRlWP jm7l3xzx+OFFI/PLlVKaTpwHQ/jvHmNk+KKwUNf42umu6KN3PkjVHz4RkOm/J42Ro/B5Q/jHCXW XuQE=
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
 Content-Transfer-Encoding: 8bit
 
-On 18.04.24 15:58, Sunil V L wrote:
-> Hi Björn,
-> 
-> This is cool!. I was not aware that u-boot also supports ACPI on
-> RISC-V. Many thanks!
-> 
-> Thanks,
-> Sunil
+From: Conor Dooley <conor.dooley@microchip.com>
 
-For RISC-V and ARM we have
+During some discussion on IRC yesterday and on Pu's bpf patch [1]
+I noticed that these RISCV_ISA* Kconfig options are not really clear
+about their implications. Many of these options have no impact on what
+userspace is allowed to do, for example an application can use Zbb
+regardless of whether or not the kernel does. Change the help text to
+try and clarify whether or not an option affects just the kernel, or
+also userspace. None of these options actually control whether or not an
+extension is detected dynamically as that's done regardless of Kconfig
+options, so drop any text that implies the option is required for
+dynamic detection, rewording them as "do x when y is detected".
 
-* pass-through for QEMU ACPI tables
-* pass-through for QEMU SMBIOS tables
-* generation of SMBIOS tables
+Link: https://lore.kernel.org/linux-riscv/20240328-ferocity-repose-c554f75a676c@spud/ [1]
+Reviewed-by: Björn Töpel <bjorn@rivosinc.com>
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+---
 
-Generation of ACPI tables in U-Boot has up now only been implemented for 
-x86 but would be feasible for RISC-V boards too.
+Vector copy-paste-o fixed, correct spelling of optimisations kept.
 
-Cf. https://docs.u-boot.org/en/latest/board/emulation/acpi.html
+CC: Samuel Holland <samuel.holland@sifive.com>
+CC: Pu Lehui <pulehui@huaweicloud.com>
+CC: Björn Töpel <bjorn@kernel.org>
+CC: Paul Walmsley <paul.walmsley@sifive.com>
+CC: Palmer Dabbelt <palmer@dabbelt.com>
+CC: linux-riscv@lists.infradead.org
+CC: linux-kernel@vger.kernel.org
+---
+ arch/riscv/Kconfig | 28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
-Best regards
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 6d64888134ba..c3a7793b0a7c 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -503,8 +503,8 @@ config RISCV_ISA_SVNAPOT
+ 	depends on RISCV_ALTERNATIVE
+ 	default y
+ 	help
+-	  Allow kernel to detect the Svnapot ISA-extension dynamically at boot
+-	  time and enable its usage.
++	  Add support for the Svnapot ISA-extension when it is detected by
++	  the kernel at boot.
+ 
+ 	  The Svnapot extension is used to mark contiguous PTEs as a range
+ 	  of contiguous virtual-to-physical translations for a naturally
+@@ -522,9 +522,9 @@ config RISCV_ISA_SVPBMT
+ 	depends on RISCV_ALTERNATIVE
+ 	default y
+ 	help
+-	   Adds support to dynamically detect the presence of the Svpbmt
+-	   ISA-extension (Supervisor-mode: page-based memory types) and
+-	   enable its usage.
++	   Add support for the Svpbmt ISA-extension (Supervisor-mode:
++	   page-based memory types) when it is detected by the kernel at
++	   boot.
+ 
+ 	   The memory type for a page contains a combination of attributes
+ 	   that indicate the cacheability, idempotency, and ordering
+@@ -543,14 +543,15 @@ config TOOLCHAIN_HAS_V
+ 	depends on AS_HAS_OPTION_ARCH
+ 
+ config RISCV_ISA_V
+-	bool "VECTOR extension support"
++	bool "Vector extension support"
+ 	depends on TOOLCHAIN_HAS_V
+ 	depends on FPU
+ 	select DYNAMIC_SIGFRAME
+ 	default y
+ 	help
+ 	  Say N here if you want to disable all vector related procedure
+-	  in the kernel.
++	  in the kernel. Without this option enabled, neither the kernel nor
++	  userspace may use vector.
+ 
+ 	  If you don't know what to do here, say Y.
+ 
+@@ -608,8 +609,8 @@ config RISCV_ISA_ZBB
+ 	depends on RISCV_ALTERNATIVE
+ 	default y
+ 	help
+-	   Adds support to dynamically detect the presence of the ZBB
+-	   extension (basic bit manipulation) and enable its usage.
++	   Add support for enabling optimisations in the kernel when the
++	   Zbb extension is detected at boot.
+ 
+ 	   The Zbb extension provides instructions to accelerate a number
+ 	   of bit-specific operations (count bit population, sign extending,
+@@ -625,9 +626,9 @@ config RISCV_ISA_ZICBOM
+ 	select RISCV_DMA_NONCOHERENT
+ 	select DMA_DIRECT_REMAP
+ 	help
+-	   Adds support to dynamically detect the presence of the ZICBOM
+-	   extension (Cache Block Management Operations) and enable its
+-	   usage.
++	   Add support for the Zicbom extension (Cache Block Management
++	   Operations) and enable its use in the kernel when it is detected
++	   at boot.
+ 
+ 	   The Zicbom extension can be used to handle for example
+ 	   non-coherent DMA support on devices that need it.
+@@ -686,7 +687,8 @@ config FPU
+ 	default y
+ 	help
+ 	  Say N here if you want to disable all floating-point related procedure
+-	  in the kernel.
++	  in the kernel. Without this option enabled, neither the kernel nor
++	  userspace may use floating-point procedures.
+ 
+ 	  If you don't know what to do here, say Y.
+ 
+-- 
+2.43.0
 
-Heinrich
 
