@@ -1,194 +1,124 @@
-Return-Path: <linux-kernel+bounces-149690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CB348A9495
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:04:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E75DE8A9498
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:05:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC9E628290E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:04:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A35FF28201D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7EF762DA;
-	Thu, 18 Apr 2024 08:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="kw7fB9Wg"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3B47D07F;
+	Thu, 18 Apr 2024 08:05:15 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D87B76037
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9BF976050;
+	Thu, 18 Apr 2024 08:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713427468; cv=none; b=Lghf4ONqtaoRIQFGOrN9iwCwv+bt+A46+RMjaIIoD0+jQkhUu0hTs7wwB1M+KSd1O6qx9ki2Vd8fPjUGFkqYBhaTCtzoa9W5n+t6H54hZyGR1tYN9deyIG5GsFmk8ypIU3NGh1GT246eWo8HkD3E68Xm3XZvYyJmzUKEmZsJxHw=
+	t=1713427515; cv=none; b=m76jVjqXeT0GoO/rpxlZ17VcrQVO90wVO7FGwAWTaxNG4+sgUB53zdyEwElo3px4jGES3LC3qnivsTojt2z9CXiKV/YkhVZmigR8Gi0yft8p4ZPu2I3KuDndEF3V9IX1EsqgVJmgwU2QnL9o+F+FdYZaISV+mNyq+EdaPcFLg5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713427468; c=relaxed/simple;
-	bh=1o9rk/9Y1uvF7bt2JH2DYucjT8lV3Z4x4ZAgLxPAtgA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jsIetqeePONiKZ9MynJjGY0rc4uPi/YM8i/JMmw93aY/FkcN2581Xthu5qYyNUaNqcTI4XXbd7P5EYDIqqb1y/91K0n0+bOE+NGp4DZpmxTvH8W4JysJ7rKd/UYr5C0UTsj3JcASbMJ9nItD9bI/fdEw9nT8lzNq5EspjVw8B1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=kw7fB9Wg; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so314081a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 01:04:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1713427461; x=1714032261; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tdE+GDd+xVW4HcGRxvURM0o1zWYdLwzdL6kLxqb0OOE=;
-        b=kw7fB9WgcPTGlwH1vRZz1dhlgAi9CMf8FB/hR2BYxGpxsTI+DKXBEssm6e9prgkzr2
-         AxWDmJ6ouBhQuMiNQSATVi208veH2eS3GL5Sb1tiE3B7DrBl9DzR6p22p3rxB3EF7l/6
-         mm5Du75YtfKYGH1Je0Jv+MR7QAV/93zQ5jkSZa+gv5BTBhUy5dVOWrH7lAUFwDcBf+CC
-         ptZ2TlCwprAk/I3QhZXAwQrhB30wFth2Jd9xJzKBpZOlQGZ5vPv8yvsUK1kJ+4l5B0jd
-         Zz6W+Oz4F1ei5xdaGk7AmF1cyLIHBJbF5FkgWu6R8uuWmUxcHEkH5Uw1mg6oH0tUZsjC
-         v2Zg==
+	s=arc-20240116; t=1713427515; c=relaxed/simple;
+	bh=UOFVBPczXHCcz1zMmMSNpm25XldDzmqdDVCBSLjFSp0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lyGXgP8IXLWy1US4o1BlmZzgtGNhdwUDM0BVa4G9qqge0WJVXI8A6aJjbawLync/OTzo32LROF+VDJr6/NcR8fV8cTxNhN3iZGJUSc06Gq67CQjXps5q7MOexQL9dXG0pKC5eFOXXKVA2cZVi/j6F3EqLCW5hbnSbuoKbn1PE34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6181237230dso5496157b3.2;
+        Thu, 18 Apr 2024 01:05:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713427461; x=1714032261;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tdE+GDd+xVW4HcGRxvURM0o1zWYdLwzdL6kLxqb0OOE=;
-        b=UzvouYkLnB07wZ2OJTOBgDDpRFQO7bqGyWqj09zFTE4lgGa9mRsU5SLCn4tQBaXwUc
-         cZtxFt2n/vi78PH3Xnmz87cKDWrmw+yZtdnMGecL8Farqm1MpMBytBdn1hwbn93fq7Hp
-         pblRRxczNIIddGXSHd//n4qtwxuPqqUV7VRwkvx0B2lPW2MUngolPnn+7jWhNFHrIYfZ
-         AN67hp59Cf7SF4S+pL1jFbMAAJJ1IGF4y11cgadlgkXjwOJdPiV9n3CIU14pm6be9u13
-         Mm1bWvnP/SD9pB+L1FJkN0wpeMbfWoSqYnwp3nrFvEnn37UofJg1XoYZBQ2htJGSwlPi
-         SX/g==
-X-Forwarded-Encrypted: i=1; AJvYcCWIW6SOb3m2OBW9VAP/Cl1P2vhL8NobMLJMsOXcuziM2PWYwZl84IwiVGQUYuEp3PlIIj8bhnQceEgIJ+4ER2KZY7uDbMtQuUx3CZN6
-X-Gm-Message-State: AOJu0Yy0RP8+4/0XQEI4AD69rkUR9qEk4Ne88SzklKMDLMr7DIxUyyBE
-	rPC/xAQQPoGtoyhrnf5xrcR0G8/OtnNUW4WrEpkws9KGfP4ORmIG0v/QFXBjq0Q=
-X-Google-Smtp-Source: AGHT+IEVugnR4wQy3I7IsKSPqj56bRVcNeKJEd48cjBH9S/PJegBr7JV09EX4I1+mt3R1Ae7rPc3eQ==
-X-Received: by 2002:a17:902:7683:b0:1e2:a9f2:2abc with SMTP id m3-20020a170902768300b001e2a9f22abcmr2138579pll.23.1713427461594;
-        Thu, 18 Apr 2024 01:04:21 -0700 (PDT)
-Received: from localhost.localdomain ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id kr15-20020a170903080f00b001db3361bc1dsm905627plb.102.2024.04.18.01.04.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 01:04:21 -0700 (PDT)
-From: Haifeng Xu <haifeng.xu@shopee.com>
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	frederic@kernel.org
-Cc: acme@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH v2] perf/core: Fix missing wakeup when waiting for context reference
-Date: Thu, 18 Apr 2024 08:03:56 +0000
-Message-Id: <20240418080356.21639-1-haifeng.xu@shopee.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1713427507; x=1714032307;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bLR4mBggObO8r2nSCZJdXRmeilUQBfk6WVycNxbYaLg=;
+        b=gayppHqw+V3f6+Q/JsOoC0TuQitRMgPUsLya7iRAOU0IWgKlu8RpiIzwhwoWNq3GKI
+         hXZPzP9kWur6W7+z9gzmUa0X2EosVqcXaaYlPvevZBlQJE4qn+8sPRfodcJegJ8h8R0I
+         oJkpcInCwNEQbSzy3pDYSghW+rg5LuYatmIj7/Zrx2yjZ49DGwSXLu8GWBLVGi/wIIBE
+         OpRypDCpzv3z867KeYwjAqWCFehlHXZW2idvtJqLbg+lWmsqkV3F6/wM8HTYH71mBiD4
+         NaESoaeMqD4kIgwBjspJ1oECvY3Y7hCHe2mZ0X84POvPK9qZ/V2t8jQkdKnSaVfD4ywd
+         sxrg==
+X-Forwarded-Encrypted: i=1; AJvYcCUiAvDvP6mvxmHMA7u3IN8/CoyYIUb8liksS8bgUmfOXf5lMZv3dg6tSZLAeDUcOtv33b0Dts4KwOasSfPMfgMehf9MwtHgP2K2ED/XUPrEn9cUTjZWktEXDJeqSgWs6NYunw9OG6U=
+X-Gm-Message-State: AOJu0YxhazPAZVNW2YgueGxBbr440FxibiXgrebDfA1X9jkgHxAVEGlB
+	K+AiU4rfJWZ86QrYK2QOizU6tGNrJOjG7Ijn/sCgc48ZmpaO4Jr3QwpThyPtmvo=
+X-Google-Smtp-Source: AGHT+IEBesv3zCiqVap2Rlfgf7RH249ZOi2RworH0dUT7AJaQnUi7dvADJmE2TdxgnVInSJviZ1aWQ==
+X-Received: by 2002:a05:690c:74c6:b0:61a:db67:b84f with SMTP id jw6-20020a05690c74c600b0061adb67b84fmr2529880ywb.27.1713427507587;
+        Thu, 18 Apr 2024 01:05:07 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id l189-20020a0de2c6000000b006180137ccf6sm117566ywe.4.2024.04.18.01.05.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 01:05:06 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso435638276.1;
+        Thu, 18 Apr 2024 01:05:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWQBItiBexU8b92YNvivwIPM1acmpk1EfqqRpaS3sGWewpbg7iDvGZ4/TXmgxToD6u7rLqs1GE6Hom3TB8lgcbnosUa/XvxUxfF+pyzP2EwZLbU4B2pOasRsxOyYkWebPfHSBCPp6k=
+X-Received: by 2002:a05:6902:342:b0:dc6:b779:7887 with SMTP id
+ e2-20020a056902034200b00dc6b7797887mr2234306ybs.20.1713427506764; Thu, 18 Apr
+ 2024 01:05:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <7b3646e0-667c-48e2-8f09-e493c43c30cb@paulmck-laptop> <20240408174944.907695-12-paulmck@kernel.org>
+In-Reply-To: <20240408174944.907695-12-paulmck@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 18 Apr 2024 10:04:55 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW6zi+ZO_xC7jvi_cy5u2mydui1sCDE2pdpCoFmfBLWug@mail.gmail.com>
+Message-ID: <CAMuHMdW6zi+ZO_xC7jvi_cy5u2mydui1sCDE2pdpCoFmfBLWug@mail.gmail.com>
+Subject: Re: [PATCH cmpxchg 12/14] sh: Emulate one-byte cmpxchg
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, elver@google.com, 
+	akpm@linux-foundation.org, tglx@linutronix.de, peterz@infradead.org, 
+	dianders@chromium.org, pmladek@suse.com, torvalds@linux-foundation.org, 
+	Arnd Bergmann <arnd@arndb.de>, Andi Shyti <andi.shyti@linux.intel.com>, 
+	Palmer Dabbelt <palmer@rivosinc.com>, Masami Hiramatsu <mhiramat@kernel.org>, linux-sh@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In our production environment, we found many hung tasks which are
-blocked for more than 18 hours. Their call traces are like this:
+Hi Paul,
 
-[346278.191038] __schedule+0x2d8/0x890
-[346278.191046] schedule+0x4e/0xb0
-[346278.191049] perf_event_free_task+0x220/0x270
-[346278.191056] ? init_wait_var_entry+0x50/0x50
-[346278.191060] copy_process+0x663/0x18d0
-[346278.191068] kernel_clone+0x9d/0x3d0
-[346278.191072] __do_sys_clone+0x5d/0x80
-[346278.191076] __x64_sys_clone+0x25/0x30
-[346278.191079] do_syscall_64+0x5c/0xc0
-[346278.191083] ? syscall_exit_to_user_mode+0x27/0x50
-[346278.191086] ? do_syscall_64+0x69/0xc0
-[346278.191088] ? irqentry_exit_to_user_mode+0x9/0x20
-[346278.191092] ? irqentry_exit+0x19/0x30
-[346278.191095] ? exc_page_fault+0x89/0x160
-[346278.191097] ? asm_exc_page_fault+0x8/0x30
-[346278.191102] entry_SYSCALL_64_after_hwframe+0x44/0xae
+On Mon, Apr 8, 2024 at 7:50=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+> Use the new cmpxchg_emu_u8() to emulate one-byte cmpxchg() on sh.
+>
+> [ paulmck: Drop two-byte support per Arnd Bergmann feedback. ]
+>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-The task was waiting for the refcount become to 1, but from the vmcore,
-we found the refcount has already been 1. It seems that the task didn't
-get woken up by perf_event_release_kernel() and got stuck forever. The
-below scenario may cause the problem.
+Thanks for your patch!
 
-Thread A					Thread B
-..						...
-perf_event_free_task				perf_event_release_kernel
-						   ...
-						   acquire event->child_mutex
-						   ...
-						   get_ctx
-   ...						   release event->child_mutex
-   acquire ctx->mutex
-   ...
-   perf_free_event (acquire/release event->child_mutex)
-   ...
-   release ctx->mutex
-   wait_var_event
-						   acquire ctx->mutex
-						   acquire event->child_mutex
-						   # move existing events to free_list
-						   release event->child_mutex
-						   release ctx->mutex
-						   put_ctx
-..						...
+> --- a/arch/sh/include/asm/cmpxchg.h
+> +++ b/arch/sh/include/asm/cmpxchg.h
+> @@ -56,6 +56,8 @@ static inline unsigned long __cmpxchg(volatile void * p=
+tr, unsigned long old,
+>                 unsigned long new, int size)
+>  {
+>         switch (size) {
+> +       case 1:
+> +               return cmpxchg_emu_u8((volatile u8 *)ptr, old, new);
 
-In this case, all events of the ctx have been freed, so we couldn't
-find the ctx in free_list and Thread A will miss the wakeup. It's thus
-necessary to add a wakeup after dropping the reference.
+The cast is not needed.
 
-Fixes: 1cf8dfe8a661 ("perf/core: Fix race between close() and fork()")
-Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
-Changes since v1
-- Add the fixed tag.
-- Simplify v1's patch. (Frederic)
----
- kernel/events/core.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+>         case 4:
+>                 return __cmpxchg_u32(ptr, old, new);
+>         }
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 4f0c45ab8d7d..15c35070db6a 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -5340,6 +5340,7 @@ int perf_event_release_kernel(struct perf_event *event)
- again:
- 	mutex_lock(&event->child_mutex);
- 	list_for_each_entry(child, &event->child_list, child_list) {
-+		void *var = NULL;
- 
- 		/*
- 		 * Cannot change, child events are not migrated, see the
-@@ -5380,11 +5381,23 @@ int perf_event_release_kernel(struct perf_event *event)
- 			 * this can't be the last reference.
- 			 */
- 			put_event(event);
-+		} else {
-+			var = &ctx->refcount;
- 		}
- 
- 		mutex_unlock(&event->child_mutex);
- 		mutex_unlock(&ctx->mutex);
- 		put_ctx(ctx);
-+
-+		if (var) {
-+			/*
-+			 * If perf_event_free_task() has deleted all events from the
-+			 * ctx while the child_mutex got released above, make sure to
-+			 * notify about the preceding put_ctx().
-+			 */
-+			smp_mb(); /* pairs with wait_var_event() */
-+			wake_up_var(var);
-+		}
- 		goto again;
- 	}
- 	mutex_unlock(&event->child_mutex);
--- 
-2.25.1
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
