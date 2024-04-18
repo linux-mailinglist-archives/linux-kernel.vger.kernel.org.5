@@ -1,78 +1,135 @@
-Return-Path: <linux-kernel+bounces-150566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F2438AA0FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:23:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCDFB8AA10E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:27:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADBC9285975
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:23:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF5331C20A45
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D127172BBC;
-	Thu, 18 Apr 2024 17:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8A317333F;
+	Thu, 18 Apr 2024 17:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tm8Quevk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="kRuaGJy0"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2FE7171093;
-	Thu, 18 Apr 2024 17:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70523171085;
+	Thu, 18 Apr 2024 17:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713461005; cv=none; b=FgOXO5PskAzdkBGpkysFomPpcaB0F6gycHt+W+MoGex+hPsWvCtNt/RlyoOMSjpNnykpTFyhFmZp/506Gb+Kv49m6E1K4jioJrwp7K3n4qBhsiDqcD913FdsnW7dOWaTGGQbgaVWmONHeD8a8NU3gnNqBv01oxg+aUDuQURFYyY=
+	t=1713461239; cv=none; b=SRYx8N0uPrOR8lteKce4gRG6VdjA7PHJfCL5P3ZCuw0MCcR6g41py/Bn4uIt+nPtBQPO+o2ZAH149CAvLYWPfFvuO7XigG9NtJGgJ7q5OzFTejZnpG+Y+7hSVWWynhEv+Ay/iPY8HEeZAwFQ6+vSwB2uNbAB8UbO5bREqvjzXIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713461005; c=relaxed/simple;
-	bh=O+BlYr5B88IYB6tmQUGNTReB34mdgGymzzFo8OXKIo8=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=oPSkn7eol7zeVe8KvyJuU4h18kE5lFwmN4ud6hwCvGSv1DDBc8tOOw+VWyLtoAfKpiFQ7grU+SGWpCZeKj0hn+/9OoNj/QXKiDXSJb4cFNO6a+8FbNh6yx5LjvYvZmCuMcX6nr3ozEAmLyVnw07c1GLbxJ/JFTriRpnwFcoBRN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tm8Quevk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 855BAC116B1;
-	Thu, 18 Apr 2024 17:23:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713461005;
-	bh=O+BlYr5B88IYB6tmQUGNTReB34mdgGymzzFo8OXKIo8=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=Tm8Quevk0VMpU27oNfPP46g1u29s7k9gVG38abIxQixUgNg8nahZt5yFFuo8Gmd+A
-	 /okaAF2p/jUzc8mR4bm7imU5ysTp0mHu7TVK5h9gfHzp0oGiX3jQ+R+rUXNRP3n4It
-	 SKEehRHo4oWT+LZMTRBPxiBoCryYWlWnIVRTbzx98aC0tgpAhBlcnGZHy87997PZWd
-	 Rbm8C9h/s74WCKGFe5Gx+PQLOioLTrchevC+I9szKTtTkwRihWOBt66my4bO2wNIcO
-	 N0E/8Uh5pNWfr6dQaO7A6fll+tUzNvAltZUdEhD7Te3G2rDVrmDcbTy6KlsRJTaA8F
-	 DcGzgpXDcuIqw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 71930C43619;
-	Thu, 18 Apr 2024 17:23:25 +0000 (UTC)
-Subject: Re: [GIT PULL] platform-drivers-x86 for v6.9-3
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <pdx86-pr-20240418120332-847319520@linux.intel.com>
-References: <pdx86-pr-20240418120332-847319520@linux.intel.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <pdx86-pr-20240418120332-847319520@linux.intel.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.9-3
-X-PR-Tracked-Commit-Id: f609e7b1b49e4d15cf107d2069673ee63860c398
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c2d88559121ba4b6434493b4f8ed46657be6cc08
-Message-Id: <171346100545.11189.8214122422847991143.pr-tracker-bot@kernel.org>
-Date: Thu, 18 Apr 2024 17:23:25 +0000
-To: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>, PDx86 <platform-driver-x86@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy Shevchenko <andy@kernel.org>
+	s=arc-20240116; t=1713461239; c=relaxed/simple;
+	bh=HVXdP9+hdhPa8t0waMIBMqruj5ig5/COewl3jY0u/u0=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=f13KDrMNLT5FtIrbt4Eq40I0Dn1ZsFcuyA0OQKn8lna5jPhcwL2O3QCoX7mokDMgHaqVR/KHqrd+gEDq3NXzcGon91BlIgexl5mMiOtkGZXDT7Fx6vjU+91CLnP76pw9CtI4x/Ckn3z6Es1aZiLiWxhsRIPKoPFCB+REUdoVo90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=kRuaGJy0; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713461235;
+	bh=HVXdP9+hdhPa8t0waMIBMqruj5ig5/COewl3jY0u/u0=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=kRuaGJy0ZsiFIrzLhYIk20HwhjjEwqSqBNszu7ky4ue1t9t8soJjdiqtV2Mxwdfo3
+	 BwoWC4eps1qGzic59IBvclqfPbNmU1B32aZJAWibvncEQ378/7T+FIzEwqprvveVVz
+	 SAWW4N4ingLQTSa1/k40bzGBAZfXNmhl5FVeHNVszZhzxs3OpyFWANj5U/ycz53V+V
+	 S/R1MzbRU/QN/Bfr14rwVwhF2FPliE6MvN9NWThnXy3d6IU1RvVYqUV+hXhPZcCUB6
+	 YmPtUxZ/xNs24Bhg4m/VRaFx/oI3NURqTOHUNrJDL9J2IbWCc1sQfbqd9Z/NMPAwqe
+	 QvRtImGGjADzQ==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 981C037813E3;
+	Thu, 18 Apr 2024 17:27:10 +0000 (UTC)
+Message-ID: <bfe97309-f9d6-4ca8-8e68-da9fa584c5ef@collabora.com>
+Date: Thu, 18 Apr 2024 22:25:05 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
+ kernel@collabora.com, linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests: mm: restore settings from only parent process
+To: Joey Gouly <joey.gouly@arm.com>
+References: <20240314094045.157149-1-usama.anjum@collabora.com>
+ <20240418125250.GA2941398@e124191.cambridge.arm.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240418125250.GA2941398@e124191.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The pull request you sent on Thu, 18 Apr 2024 12:03:32 +0300:
+On 4/18/24 5:52 PM, Joey Gouly wrote:> Hi again,
+> 
+> On Thu, Mar 14, 2024 at 02:40:45PM +0500, Muhammad Usama Anjum wrote:
+>> The atexit() is called from parent process as well as forked processes.
+>> Hence the child restores the settings at exit while the parent is still
+>> executing. Fix this by checking pid of atexit() calling process and only
+>> restore THP number from parent process.
+>>
+>> Fixes: c23ea61726d5 ("selftests/mm: protection_keys: save/restore nr_hugepages settings")
+>> Tested-by: Joey Gouly <joey.gouly@arm.com>
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+>>  tools/testing/selftests/mm/protection_keys.c | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/mm/protection_keys.c b/tools/testing/selftests/mm/protection_keys.c
+>> index f822ae31af22e..374a308174d2b 100644
+>> --- a/tools/testing/selftests/mm/protection_keys.c
+>> +++ b/tools/testing/selftests/mm/protection_keys.c
+>> @@ -1745,9 +1745,12 @@ void pkey_setup_shadow(void)
+>>  	shadow_pkey_reg = __read_pkey_reg();
+>>  }
+>>  
+>> +pid_t parent_pid;
+>> +
+>>  void restore_settings_atexit(void)
+>>  {
+>> -	cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
+>> +	if (parent_pid == getpid())
+>> +		cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
+>>  }
+>>  
+>>  void save_settings(void)
+>> @@ -1773,6 +1776,7 @@ void save_settings(void)
+>>  		exit(__LINE__);
+>>  	}
+>>  
+>> +	parent_pid = getpid();
+>>  	atexit(restore_settings_atexit);
+>>  	close(fd);
+>>  }
+> 
+> After more testing, this is not actually enough. It passes sometimes, which is
+> why I gave my Tested-by, but it can still fail the same way as I originally
+> said.
+> 
+> assert() at protection_keys.c::812 test_nr: 19 iteration: 1
+> running abort_hooks()...
+> errno at assert: 12
+> 
+> I think the parent process needs to wait for all it's child processes (recursively).
+> This is due to the test_pkey_alloc_exhaust() calling become_child(), where it
+> exits, and that exit may be from the original PID.
+Thanks for reporting. I'll have a look at it.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.9-3
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c2d88559121ba4b6434493b4f8ed46657be6cc08
-
-Thank you!
+> 
+> Thanks,
+> Joey
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+BR,
+Muhammad Usama Anjum
 
