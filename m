@@ -1,119 +1,151 @@
-Return-Path: <linux-kernel+bounces-150041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 237D18A997F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:08:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3E5E8A9982
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:09:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A69641F21C32
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:08:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93497B21A16
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:09:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0770C15F330;
-	Thu, 18 Apr 2024 12:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E40515F3FC;
+	Thu, 18 Apr 2024 12:09:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RguN3ynB"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WWMm4riq"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA1015EFD8
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39C915EFD8
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713442128; cv=none; b=RupoJ4k+kOTJqba4G5Olvmm4ccxq4BdJ7njWRlg+HnPCMQsibJSprRuRhz+GXBr9CLeSVkXblUA2YB9oraeV+LE6lYnolcVqQazvjvfc97xRggqhtOmUwWDj3LCgPNnJCAJsiBI9XsdLI3KpzLexyeNzRPn7buWygJ/Jb7VKMSY=
+	t=1713442172; cv=none; b=jXl/9EK0G5bXlzu/jGHcapLekg5i9G0H7qylMKKXpvEswglc85m+K/nnNT+AaXqCJIIxa7Vi9967lgcBRCWfCZ9/XRyg5F/QWnmqX8MVhnAB1tmiMxAVyCzEklmzo4FUQpk33Rf6VXbN3Kmkz/+peaAbnaVgd4V5DInUiyglK0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713442128; c=relaxed/simple;
-	bh=EivacNFq0/5fLlwKTYEmDnsBy7Akbb2iAEHMxkjmh9U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=li1A0X55EI8tokyoV5cPb7csW1u8F/3liAwCTGs+qmPseS2Vz/X8Fj0pj1Bs6BGuZpysFk3Bx31kJfZiOT3jGhDnOR/X4Wj8MnBDKN8SLFMC862V8wJbzbHFoSQ/5uBt3Du5iHvlNOPk0zBoO33X6kyP0v3Vx47kHmuXrtt/A34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RguN3ynB; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-347c197a464so539237f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:08:46 -0700 (PDT)
+	s=arc-20240116; t=1713442172; c=relaxed/simple;
+	bh=XXCqubAze/7WPDWGsGwFlxCvznCl8HkJMlTE0+n6qdY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gxt6GzKeAxYOQ2d7+3+c+pj0NxThynFM5dF+apFI+jabryy076KnkiTE6gVFP3p/Kt8wKbwR5GS/hKhgCmY95wpIVBdRNOyz6mYLsZcg304IJy/McTyl+1LFuGYZMDgbcl7B/zXuyGHNm+a6yj/HJ1zhtHULfh1eA5qJgX9uG4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WWMm4riq; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-571ba432477so700246a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:09:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713442125; x=1714046925; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IrT+pz9h242ho6h5cpwp9QuV44kTV1V8Z+LpieCcyow=;
-        b=RguN3ynBfax/qkBvrCX1uyQho9papzclDb1b2QE6hQQR8mzuqxaCzoUl0PqME7l0w1
-         U3iGFzx0h60XvoxSkES0lx5grKalOlDr+ex04pm6Rr9ON798mfptw1eUx7x6DU9ll9KE
-         NaBkVL4Ds3abKw7zj7oud6hiouLqGVHdqKBjVcJwaY8nNU0mIiUlxJGkIUPGPZLA5pEL
-         oZg+2FCFk4Xp2IrQA7zVty36vpPsWlq5P1Ba0BIU/Tm+eEYoj2JXQvjJahPDzw2pNmls
-         VBYv9F+trIFySbzvg+QEVSBHvqxWhTfyeXwMvrRPqjxgy92RoaDRWMuV+BKS8Bmsh9TF
-         blWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713442125; x=1714046925;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713442169; x=1714046969; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IrT+pz9h242ho6h5cpwp9QuV44kTV1V8Z+LpieCcyow=;
-        b=s10ymrKMWE0U/m4CxuaLuOxLuFKlBep6B9o7MoWdYO43ohaommvjfse/t7por2K7g9
-         JKX10GEKWb3Bi3zrW58J8mpAz9URNY8aRWzpysgc1hrsSKqVSAc9KDyHB4u972/j3VFG
-         V907c7X4ehCf2IpSoJCTBzC+ZDPzGSKOE8/jid8tdgYTwwvVCrLCLve55YOZ19DRibmZ
-         luIOxpLLS6ngdfSPcJU5wJR8/ERFVN8sh1G5+2RtehHGLdPHTeCnBP0ncjXd7BxwgtWX
-         gLMsHoC499h8am2qKe29F0NVcLV8FvqLALcOSEkXMq3JMy7/jk7UVo/a5AmCBmBiqtWH
-         dnXA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhuupeBkcx7z3Vx848NjiDvnw2j5KyRSwinaHk8fK1UyOSlMIUO1Po99jowYgoFF/WphrXvdPK0W/AzZUID0eA8PjP5jFb4mkTzm4T
-X-Gm-Message-State: AOJu0YwlfDEIdnAAM918d8SDuzxCtG03X4oP5g7ckOJmqmROzZbCuBZU
-	osUbxJlMvF/rQccq4LZ0RqEyUgM5Vubi1GXnHX3cm+MHixQNvEXmTJd3/CIn9Rs=
-X-Google-Smtp-Source: AGHT+IFv9y8xJmg8vyenO4cu3YWChH5bcQzke4eNsa1YJO6Z2ciuRugVmRYh32oJHG0tFBkXehpvbQ==
-X-Received: by 2002:adf:e60d:0:b0:346:f830:8a5a with SMTP id p13-20020adfe60d000000b00346f8308a5amr1520817wrm.5.1713442124561;
-        Thu, 18 Apr 2024 05:08:44 -0700 (PDT)
-Received: from linaro.org ([62.231.100.236])
-        by smtp.gmail.com with ESMTPSA id m10-20020a5d4a0a000000b0033e45930f35sm1702163wrq.6.2024.04.18.05.08.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 05:08:44 -0700 (PDT)
-Date: Thu, 18 Apr 2024 15:08:42 +0300
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Rajendra Nayak <quic_rjendra@quicinc.com>,
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: qcom: dispcc-x1e80100: Drop the reconfiguring of
- PLL0 on probe
-Message-ID: <ZiENSp4nrLNHlAoZ@linaro.org>
-References: <20240418-x1e80100-dispcc-drop-pll0-reconfigure-v1-1-453e4e70e940@linaro.org>
- <e5c60b6f-3cab-4265-87fc-7eeab03795ec@linaro.org>
+        bh=s5K3W4xG55U9XN1pFNNqQImuxOw6l00UI+Hr/SOLhkU=;
+        b=WWMm4riqRSNezkqWp1OQoSQetxkQAqgwV8XKBSRCknta19b9BMQZYjOKwslBQRtpH3
+         IoV+NIKqf6KpWtkLJruEo2zDzMvThfFqBjkwkf6AZYHgOlZFfbjdwk+S1vKGRMuYAqCx
+         vOjkQXWRkOtuFZQWT8vjhyLbP8gLlATfkBuJVSS800kym5QbWwKLasq/S5Q38a5Qum9z
+         TI4XtUi6n3kWOFmguDits5mAkpAt4006Lt1ZPGwPztoPLwSnRWrLKEV3wb9bFElYA89l
+         wk9LNj55cmlPfWvHyhDRLufeOdIvEGi0WFcf7wsoYVfB2CYs2rXsVzdKjNe815A7T/j7
+         BVpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713442169; x=1714046969;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s5K3W4xG55U9XN1pFNNqQImuxOw6l00UI+Hr/SOLhkU=;
+        b=pMbXFZtsT8nLcR3ZiKvVpuF/mNvLrnKVSLVhiUjIP6kRiCpUfS7f2K4ziCwUIjomCe
+         2fmsewciYgrgZBQvvjojzVCMhsGzVXPE4g/ftRvtSL9n4d0TEDl0jwGdJtqCYHKZf4cd
+         qyohoAEMG36Vjo5oaeTplIrkH1A1Gzs24/tCCg+oejvBlOyRuiWCcXW+3pNaeGQXczDD
+         VfOSfJVJDQd/1PhOgSnysxrBiOP2L4MB8ood6y7hMXw3Egv0KNYM3oyzfG4Dav1yQMDK
+         nIESLxcjeZMLN/8aUc+l6DPeSU7Tm4EtdXBdPRtwi3p16GsB6G7HdD7Hh5E178VIHDol
+         kq4g==
+X-Forwarded-Encrypted: i=1; AJvYcCV6R2hL9YX7DD9zsQQ9KEBVcSI7gwAwWru8KVJnSK3qyuqgDs311YvLwuMGE6f1DBSUK6mROc0xeep+qCt9wG7lCNKBpoIrhXIhZNZj
+X-Gm-Message-State: AOJu0YytJ4V7g/RzG9hmdc5HZswUQZnB5HYBA8EdxgUoolEzCKJyTq1g
+	9wEaMvuoAs4fzDwB2dD1Beks1HsYUo2/l9PsJKXE3GjufNsxKn0NPyfvDW9OTXf9+yk3z3+8flm
+	UIc+RB5PmoC4h385COtuwqG053+c=
+X-Google-Smtp-Source: AGHT+IGViHTeCrergrz3VPH5VQOSjbayGlXq1x3tymtBxOJ652N7TE6Z9MtYTg+mOkfMnAW4LfAcpyShPf4x+ggcTN8=
+X-Received: by 2002:a50:d7cb:0:b0:56d:f00c:2b13 with SMTP id
+ m11-20020a50d7cb000000b0056df00c2b13mr1503904edj.32.1713442168920; Thu, 18
+ Apr 2024 05:09:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e5c60b6f-3cab-4265-87fc-7eeab03795ec@linaro.org>
+References: <20240418105750.98866-1-ioworker0@gmail.com> <20240418105750.98866-4-ioworker0@gmail.com>
+ <c73423cb-3288-47aa-b389-22566e883db7@redhat.com>
+In-Reply-To: <c73423cb-3288-47aa-b389-22566e883db7@redhat.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Thu, 18 Apr 2024 20:09:17 +0800
+Message-ID: <CAK1f24=ZVJ=7Yp5CFzO2kpphexkNuKryWMD-fjhTpLeXSnrETg@mail.gmail.com>
+Subject: Re: [PATCH v9 3/4] mm/memory: add any_dirty optional pointer to folio_pte_batch()
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, ryan.roberts@arm.com, 21cnbao@gmail.com, 
+	mhocko@suse.com, fengwei.yin@intel.com, zokeefe@google.com, 
+	shy828301@gmail.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com, 
+	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 24-04-18 13:33:19, Konrad Dybcio wrote:
-> On 18.04.2024 12:51 PM, Abel Vesa wrote:
-> > Currently, PLL0 is configured by the bootloader is the parent of the
-> > mdp_clk_src. Reconfiguring it on probe leaves the PLL0 in "stand-by"
-> > state (unlocked), which will trigger RCG child clocks to not update
-> > their config,
-> 
-> Sounds like this is the problem that should be fixed instead.
-> 
->  which then breaks eDP on all x1e80100 boards. So rely
-> > on the bootloader for now. Drop the config values as well. Also add
-> > a comment to explain why the PLL0 is not configured alongside PLL1.
-> > 
-> > Fixes: ee3f0739035f ("clk: qcom: Add dispcc clock driver for x1e80100")
-> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+On Thu, Apr 18, 2024 at 8:00=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 18.04.24 12:57, Lance Yang wrote:
+> > This commit adds the any_dirty pointer as an optional parameter to
+> > folio_pte_batch() function. By using both the any_young and any_dirty p=
+ointers,
+> > madvise_free can make smarter decisions about whether to clear the PTEs=
+ when
+> > marking large folios as lazyfree.
+> >
+> > Suggested-by: David Hildenbrand <david@redhat.com>
+> > Signed-off-by: Lance Yang <ioworker0@gmail.com>
 > > ---
-> 
-> This works, because you have (at least) partially configured hardware, but
-> we shouldn't assume this to be the case.
+> >   mm/internal.h | 12 ++++++++++--
+> >   mm/madvise.c  | 19 ++++++++++++++-----
+> >   mm/memory.c   |  4 ++--
+> >   3 files changed, 26 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/mm/internal.h b/mm/internal.h
+> > index c6483f73ec13..daa59cef85d7 100644
+> > --- a/mm/internal.h
+> > +++ b/mm/internal.h
+> > @@ -134,6 +134,8 @@ static inline pte_t __pte_batch_clear_ignored(pte_t=
+ pte, fpb_t flags)
+> >    *            first one is writable.
+> >    * @any_young: Optional pointer to indicate whether any entry except =
+the
+> >    *            first one is young.
+> > + * @any_dirty: Optional pointer to indicate whether any entry except t=
+he
+> > + *             first one is dirty.
+> >    *
+>
 
-OK, I think we should be safe to follow trion's approach instead then.
+Hey David,
 
-https://lore.kernel.org/all/20211123162508.153711-1-bjorn.andersson@linaro.org/
+Thanks for taking time to review!
 
-> 
-> Konrad
+> I was also wondering if we should make that function return a
+> pte+nr_pages, instead of only nr_pages, and then simply have the
+> function, based on new flags, merge data into the original PTE.
+>
+
+Nice, good idea!
+
+> But let's do that separately.
+
+Yep, let's do that separately :p
+
+>
+> Acked-by: David Hildenbrand <david@redhat.com>
+
+Thanks again for the review!
+Lance
+
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
