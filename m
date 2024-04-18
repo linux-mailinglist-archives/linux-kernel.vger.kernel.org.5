@@ -1,142 +1,142 @@
-Return-Path: <linux-kernel+bounces-149441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8EC68A912B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34CE18A9128
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:22:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64A8F281C58
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:22:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE8A7281BB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:22:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8664F896;
-	Thu, 18 Apr 2024 02:22:30 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DE84E1CA;
+	Thu, 18 Apr 2024 02:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QpscMb+6"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67EB5495CB
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:22:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982AB53AC
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713406950; cv=none; b=bcv7Rk4wZDCo0ap8Gra7wqrFIub79d7GJCXFoFRz68BmrsiQp/lIzD1vsim5DwHOIax9gRpyZRklGH5KwSl9+9AqEy1AB5KdbhaQOj6GMG7DhJAqxBEoFW0D4/YkNIk9RGZFSvLiSzgaMCGIroqK9i+3Z1NZQOL+y/trWWG56HU=
+	t=1713406933; cv=none; b=hcRnqb4goav7KwhnPPvv6han2xfl/YvWO3XGvBSDedRB01SVJ/eLLQSN2IgilQMzo01xJyO6FSsvicqBqEMKd2nH7YhcYZArfhc+r++9S6gPD8bHLGADg7hSqA4txgtbOSX35kohz9kjfq3HRBmC8dkZ3IzqDgFcWmsUd2Rpx6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713406950; c=relaxed/simple;
-	bh=G70+RZNAEMmyYjIqT9sWZ/xjR9oHRWpamG9o+KTbufk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ln/EwtqUfzZNiWwjb+UFhWesSxtzabFqvwdVwPXOd19+jsc8sN1HdPDIbuDH4+ii4N0qIT9AUaakbGWni+qsiBSsPgeIYbovRusoXi6DpG+9C0GMU/dGkGbeSoX3nONxFwiHotMJRF+3NJBJ0cajoY9dPJVUm9XoWyPGwMOIvVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VKhL10tW4zwSxx;
-	Thu, 18 Apr 2024 10:19:21 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id EB9C01800C5;
-	Thu, 18 Apr 2024 10:22:24 +0800 (CST)
-Received: from huawei.com (10.173.135.154) by canpemm500002.china.huawei.com
- (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 18 Apr
- 2024 10:22:24 +0800
-From: Miaohe Lin <linmiaohe@huawei.com>
-To: <akpm@linux-foundation.org>, <muchun.song@linux.dev>
-CC: <david@redhat.com>, <vbabka@suse.cz>, <willy@infradead.org>,
-	<linmiaohe@huawei.com>, <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] mm/hugetlb: fix unable to handle page fault for address dead000000000108
-Date: Thu, 18 Apr 2024 10:20:00 +0800
-Message-ID: <20240418022000.3524229-3-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240418022000.3524229-1-linmiaohe@huawei.com>
-References: <20240418022000.3524229-1-linmiaohe@huawei.com>
+	s=arc-20240116; t=1713406933; c=relaxed/simple;
+	bh=Qff+I+aGfGJWISm1b0a5UyILEZ6EJuYWH7ZKwAZRixI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lb5Oh9zLk6eLEqGfAIdt8tIMOunmSAsznOImuHziDzfCYj1vNSP5kAso3FkBV4o6nlFl9TOWrotO2OPKUTs0F9ke7MY/dHCqMnUuRRHBHymWtUbYkYXmC2EgY5UQun+RAUIAxtBQibFUGhJluG4EtZXF0VLEDeO7pCT1lz2Xrbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QpscMb+6; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a526d0b2349so27918266b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:22:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713406930; x=1714011730; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qff+I+aGfGJWISm1b0a5UyILEZ6EJuYWH7ZKwAZRixI=;
+        b=QpscMb+6hqAUTd5qWxcF6UIW7ngb7DEKzCUNxRUIFCcgTZAVcpt2eVTmgcnjS42vhU
+         0UU4MafQWpWsuGoNho5rKpXfC1G3RyHEOlBQOG1GBI8ywDD2a4ANzUV0rVJYVW8Sk6NK
+         M+4ru/M4YH6KMrA3pr7zSlSpRFKlW3SzXpteHwz2eH43Y7vEeBIBOrdSUldVaUTXRKC3
+         rUvoZPL6k+G25raHZymKwVq/KlmodYTfx/Cru0xz30BYpOZiTLGu2ogiwsUa4aAQzoJz
+         hgC/Jah0AdIUrL5kp4k5i4qcx7g2w4usyhnvw/skI5WPgdjn2N9TQ/PyiKfMqfxyT+yJ
+         72Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713406930; x=1714011730;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qff+I+aGfGJWISm1b0a5UyILEZ6EJuYWH7ZKwAZRixI=;
+        b=al8TqUwCPQfW51p/K3kUuy4FIZjQSI5QX4CJEJCOl7lT0XKvCURCblC34cNxjoAs7q
+         1CEgV0FmDjiMeV4SGxI6oaeOxruXojO05aXENWElfIVCy/Xr8M3dcUDJFRJscxh0H/2k
+         udcuSXAjOSjoPq9fnUPWvqK0T++YSIk5f7C+AHoKI/kRgIVl6HrZMrY9rV9qchOTofqK
+         3StOuWH2saQi25BqUb2sLHjTkULUnxYYS2nnm/GaxA7Eoy/kj/I9fXA4a5vB9UfgQfeQ
+         VyI+xhhV+gNoZ4R+vrWtUWXirPhbUBWYVo6Lgc0GsZ2dyy0nQe6hIyZBfJsgiuWyvgRU
+         jIuA==
+X-Forwarded-Encrypted: i=1; AJvYcCXU1px2ZFVHZUnINgy0s0XeZZq2eaOKef7rF7TGoYGrEc8WwLRIMmdD+ak35IZ1TiH9OQcCw0BerD3AzJRUQhzAsPkgCjpyxZabypaH
+X-Gm-Message-State: AOJu0YyCXlSsYqAP8DVGnuhB3yde3IGumRX8HpooJOL4yOXPvV/pD5N+
+	1Leue3xzE9u1cx4w7M5+oZ1PMXyfdBTTrjt+8twU92v+b6vDCP3TpU6lD67nDSWmfWpgeZbuhdh
+	zN1woZLmKL9O2t90cQIxrPUuez17nXR2N7GL+
+X-Google-Smtp-Source: AGHT+IEsn2jGrIe3C4gLKbA8+kMsvSSF1fhZfq37SxAlOsONgdio3k0OzSspWSZ5JGdHKbepDMsk16Du3X8HrZb0pAw=
+X-Received: by 2002:a17:906:38d:b0:a52:15dd:20d8 with SMTP id
+ b13-20020a170906038d00b00a5215dd20d8mr707296eja.26.1713406929803; Wed, 17 Apr
+ 2024 19:22:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500002.china.huawei.com (7.192.104.244)
+References: <171328983017.3930751.9484082608778623495.stgit@firesoul> <171328990014.3930751.10674097155895405137.stgit@firesoul>
+In-Reply-To: <171328990014.3930751.10674097155895405137.stgit@firesoul>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 17 Apr 2024 19:21:33 -0700
+Message-ID: <CAJD7tkbZAj3UQSHbu3kj1NG4QDowXWrohG4XM=7cX_a=QL-Shg@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] cgroup/rstat: introduce ratelimited rstat flushing
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com, 
+	cgroups@vger.kernel.org, longman@redhat.com, netdev@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev, 
+	kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Below panic occurs when I did memory failure test:
+On Tue, Apr 16, 2024 at 10:51=E2=80=AFAM Jesper Dangaard Brouer <hawk@kerne=
+l.org> wrote:
+>
+> This patch aims to reduce userspace-triggered pressure on the global
+> cgroup_rstat_lock by introducing a mechanism to limit how often reading
+> stat files causes cgroup rstat flushing.
+>
+> In the memory cgroup subsystem, memcg_vmstats_needs_flush() combined with
+> mem_cgroup_flush_stats_ratelimited() already limits pressure on the
+> global lock (cgroup_rstat_lock). As a result, reading memory-related stat
+> files (such as memory.stat, memory.numa_stat, zswap.current) is already
+> a less userspace-triggerable issue.
+>
+> However, other userspace users of cgroup_rstat_flush(), such as when
+> reading io.stat (blk-cgroup.c) and cpu.stat, lack a similar system to
+> limit pressure on the global lock. Furthermore, userspace can easily
+> trigger this issue by reading those stat files.
+>
+> Typically, normal userspace stats tools (e.g., cadvisor, nomad, systemd)
+> spawn threads that read io.stat, cpu.stat, and memory.stat (even from the
+> same cgroup) without realizing that on the kernel side, they share the
+> same global lock. This limitation also helps prevent malicious userspace
+> applications from harming the kernel by reading these stat files in a
+> tight loop.
+>
+> To address this, the patch introduces cgroup_rstat_flush_ratelimited(),
+> similar to memcg's mem_cgroup_flush_stats_ratelimited().
+>
+> Flushing occurs per cgroup (even though the lock remains global) a
+> variable named rstat_flush_last_time is introduced to track when a given
+> cgroup was last flushed. This variable, which contains the jiffies of the
+> flush, shares properties and a cache line with rstat_flush_next and is
+> updated simultaneously.
+>
+> For cpu.stat, we need to acquire the lock (via cgroup_rstat_flush_hold)
+> because other data is read under the lock, but we skip the expensive
+> flushing if it occurred recently.
+>
+> Regarding io.stat, there is an opportunity outside the lock to skip the
+> flush, but inside the lock, we must recheck to handle races.
+>
+> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
-BUG: unable to handle page fault for address: dead000000000108
-PGD 0 P4D 0
-Oops: Oops: 0001 [#1] PREEMPT SMP NOPTI
-CPU: 0 PID: 1073 Comm: bash Not tainted 6.9.0-rc4-next-20240417-dirty #52
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-RIP: 0010:enqueue_hugetlb_folio+0x46/0xe0
-RSP: 0018:ffff9e0207f03d10 EFLAGS: 00000046
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: dead000000000122
-RDX: ffffcbb244460008 RSI: dead000000000100 RDI: ffff976a09da6f90
-RBP: ffffcbb244460000 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000001 R11: 7a088d6100000000 R12: ffffffffbcc93160
-R13: 0000000000000246 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007fdb749b1740(0000) GS:ffff97711fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: dead000000000108 CR3: 00000001078ac000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- free_huge_folio+0x28d/0x420
- dissolve_free_hugetlb_folio+0x135/0x1d0
- __page_handle_poison+0x18/0xb0
- memory_failure+0x712/0xd30
- hard_offline_page_store+0x55/0xa0
- kernfs_fop_write_iter+0x12c/0x1d0
- vfs_write+0x380/0x540
- ksys_write+0x64/0xe0
- do_syscall_64+0xbc/0x1d0
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fdb74714887
-RSP: 002b:00007ffdfc7074e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007fdb74714887
-RDX: 000000000000000c RSI: 00005653ec7c0e10 RDI: 0000000000000001
-RBP: 00005653ec7c0e10 R08: 00007fdb747d1460 R09: 000000007fffffff
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000000c
-R13: 00007fdb7481b780 R14: 00007fdb74817600 R15: 00007fdb74816a00
- </TASK>
-Modules linked in: mce_inject hwpoison_inject
-CR2: dead000000000108
----[ end trace 0000000000000000 ]---
-RIP: 0010:enqueue_hugetlb_folio+0x46/0xe0
-RSP: 0018:ffff9e0207f03d10 EFLAGS: 00000046
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: dead000000000122
-RDX: ffffcbb244460008 RSI: dead000000000100 RDI: ffff976a09da6f90
-RBP: ffffcbb244460000 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000001 R11: 7a088d6100000000 R12: ffffffffbcc93160
-R13: 0000000000000246 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007fdb749b1740(0000) GS:ffff97711fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: dead000000000108 CR3: 00000001078ac000 CR4: 00000000000006f0
-Kernel panic - not syncing: Fatal exception
-Kernel Offset: 0x38a00000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
----[ end Kernel panic - not syncing: Fatal exception ]---
+As I mentioned in another thread, I really don't like time-based
+rate-limiting [1]. Would it be possible to generalize the
+magnitude-based rate-limiting instead? Have something like
+memcg_vmstats_needs_flush() in the core rstat code?
 
-The root cause is that list_del() is used to remove folio from list when
-dissolve_free_hugetlb_folio(). But list_move() might be used to reenqueue
-hugetlb folio when free_huge_folio() leading to above panic. Fix this
-issue by using list_del_init() to remove folio.
+Also, why do we keep the memcg time rate-limiting with this patch? Is
+it because we use a much larger window there (2s)? Having two layers
+of time-based rate-limiting is not ideal imo.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/hugetlb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 1da9a14a5513..08634732dca4 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1642,7 +1642,7 @@ static void __remove_hugetlb_folio(struct hstate *h, struct folio *folio,
- 	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
- 		return;
- 
--	list_del(&folio->lru);
-+	list_del_init(&folio->lru);
- 
- 	if (folio_test_hugetlb_freed(folio)) {
- 		h->free_huge_pages--;
--- 
-2.33.0
-
+[1]https://lore.kernel.org/lkml/CAJD7tkYnSRwJTpXxSnGgo-i3-OdD7cdT-e3_S_yf7d=
+SknPoRKw@mail.gmail.com/
 
