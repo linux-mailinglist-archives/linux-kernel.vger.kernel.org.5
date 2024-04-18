@@ -1,202 +1,178 @@
-Return-Path: <linux-kernel+bounces-149852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12AC08A96CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:55:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6717E8A96D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:58:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45D69B22E3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:55:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93E2C1C212F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C52715B548;
-	Thu, 18 Apr 2024 09:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9BD815B96D;
+	Thu, 18 Apr 2024 09:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZldljFQX"
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EfTBw90L"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D5F15AAAD;
-	Thu, 18 Apr 2024 09:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CCA115B15B
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 09:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713434121; cv=none; b=gd4sE74m3uDLMsJW+NHA+OPxmJw3Ptg7H8bMgYcaBMm3CfE3XFinL3OOhC7V4BHE4lk1VK5MlfuTvoohG8+Af8eqLVj0LWemGiCufaTval5sxkaFi3wEMjYIrWwiqQpif5kZ/JezPcd7m7KjTiWXfU3cJqoLGk42GExZZ4qODX8=
+	t=1713434267; cv=none; b=aBLt7qsB5pIX83ne8caMb1ekza3GR/4uu21RwW4onAIrWipcZ0faXMUmd0vS1T/SSt0zrhYtq53em+xiWANFIld/RNEPCXrw+HhH/iELgqZwEtZMcEfesbHi1MQCpihiwYhHC3D5NSI7p5idoSeaJpwu7clFWpPOn7+0cuASJEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713434121; c=relaxed/simple;
-	bh=3O4VXBmq13hTwbbI7YnN0BOaaWIeJbncdRXQP4KB/68=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eW6c7ABlzOiCFQns+g9tQMnmutKkTKkDCgwsCncrUNjWgK5nWnnLAIHPPT202F3aKIlJAOSfOQfzmwHdb2+ifATua0O9Opt/IKlY6Ys+i2ocGQb6dx62aOPkTVAnfwwksXDoqXaP+36Xgjh+I44k9CBzBlhX7Sv9L3cI3cK/uCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZldljFQX; arc=none smtp.client-ip=209.85.217.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-479dd0261c8so794959137.0;
-        Thu, 18 Apr 2024 02:55:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713434119; x=1714038919; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=23lIG3TvMr9vKJrzIXmok+99Y+uLlvdIb8Z9VEsm6UA=;
-        b=ZldljFQXX26Hob/f/y/waUER6JboYUBDfR2j6yXqNHrlnWlF+e+QdL3ipdOGeVTG+a
-         5UfuGBRVZ4VGkHdmt8w4KVnlt2kpW5g9MwyGd+q/GT8hnQtWP+hETtQXN0mQQyek+2oN
-         ltkMSC6bv/H5+DO5BFLlBkEvfOQzlhNRU2o1gmO8LNZDoE971zQ3YWUrNvZtrDkbVRAT
-         1cxvKh8TA7iY96I6y4d8kcRshTXkQCis7RcNzpkBqdDeyDbiPDoAKfFsDAmGneWLNnVK
-         iVVGXSUlsIfLJ2moy0EZ/13IjeyzLmLe1fxbrNW1zsDFERb1FvPxdRt/WZJGiLBqKFF1
-         gtzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713434119; x=1714038919;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=23lIG3TvMr9vKJrzIXmok+99Y+uLlvdIb8Z9VEsm6UA=;
-        b=oFshnPRAS4ye2VsN1lZBZjJOA57Qzi5kt5lakdTFGwOYW+mjDuSomY39EQ/uVGTUz9
-         HoSXsbOZfxndN+O/ucVsfL252lY2xllPi9cZm7/2B/dwYxS2wYOtXY46FeQ8KNg1YnxF
-         bLdl1a5gKajve74/sPSunP3CbnXawgu6YykohYEAvDf97awWD3I+KYYFg2aT2pnK+EaI
-         d/OiGHDSA183fXjDTt03X7nFMD5tIGmYqyhcLSW/9U9swxWR0kVVs8l34nL6ksa4LFjJ
-         7iD5jGr9tB4hKxOXM8bencylgWZpRp61K8+JM/VteNRgHrtM4Q/JtVwiwaA+t8xpYRA+
-         IUPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVmCk3yHCIcQ0c/wXGfYbvg6rXfLVwg2Y0aPPMyR+z2XjH6iC+7J4IbbYy+m0sh27FeuJs2LSdTF/dokr0vwhD2Lz7x3NhB/9GnI43Nm1jsYijfHmvZSEClYM6dT5ZNcc0BltAjTCR1fA==
-X-Gm-Message-State: AOJu0YzWlCPXwdisROzs5tpf5HXEnclf+bJrJlW8tvyD5oKlIK00aSh1
-	cYfB4UbY+x+HRoDzNUfWE8ZlyFNRqQOhmOEIJI7WLdYZh3VPy7fMVzabKGrUD0ikOkjmcAg9fj+
-	1X/GpKclqhTg0vFdjuyXO+cubVx8=
-X-Google-Smtp-Source: AGHT+IHGbdjFtzwMlZyafVRC/B4/XYa6y0rqJeTmsifzombtE+Knj8iAIOzodI0FPv9LCko1GnibHJF+bInK7wUSYo8=
-X-Received: by 2002:a05:6102:3b8a:b0:47b:beaf:b4d1 with SMTP id
- z10-20020a0561023b8a00b0047bbeafb4d1mr750162vsu.14.1713434119202; Thu, 18 Apr
- 2024 02:55:19 -0700 (PDT)
+	s=arc-20240116; t=1713434267; c=relaxed/simple;
+	bh=FnO7O/LAw4UD9EIKQqffhjBWzBF2/WXbWWY5ME5kBNo=;
+	h=Content-Type:Date:Message-Id:Subject:Cc:From:To:References:
+	 In-Reply-To; b=C8tLhp0LfjJwF6IILpkdObLU+79XWsd+UtArPoCVPi5Izgmx3lupeVX50k0zoIkaoyxWWXK17BAUi58k5m5A2e56SR2awsmQ+BsvESxK+eHpa34NofNnrkYdW3x4zk2+7qm8JHLTvEHdE2PAf3Rbunmb3gEtD7xZuQ13Lwhtos0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EfTBw90L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E80EC113CC;
+	Thu, 18 Apr 2024 09:57:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713434266;
+	bh=FnO7O/LAw4UD9EIKQqffhjBWzBF2/WXbWWY5ME5kBNo=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=EfTBw90L4vECvMjY6fgUro/CI+kPMmubR9J4aZTL+VlxjrFBHSjNeLq5nAVOEa0ys
+	 CtUi6dSbl0AK9PtokwZkqOxh+zO+z/wu0s5olR17H4MUgOXFcb+thnZSUngjFnPeiw
+	 P8wEIgmjVLS98FHbCqoGgK8CFB+fkeXNFuFwj4Y7hR7ZmG3RsLiv/IYaq4mNgCDhr/
+	 YFjebODwdUd4aaUikgkd0jPHz05PcC1a0O93ikHC0tD5aPjDUJXwCaoi8FTUbjm704
+	 T4l/M5LUEX2qPR1N/13nqkxeSqmHu1yxu4HnroeBAYq5JslItN+Muxt5zlh/CI5ikG
+	 ueLSdRJG7J42A==
+Content-Type: multipart/signed;
+ boundary=d634570c1f6a4a1796182749624c4b5d93dc5a4862d7079e44e41056bc8b;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+Date: Thu, 18 Apr 2024 11:57:27 +0200
+Message-Id: <D0N5QYQMX1X4.831Q9SEANU4S@kernel.org>
+Subject: Re: [RFC PATCH v1 6/6] mtd: spi-nor: introduce support for
+ displaying deprecation message
+Cc: "Tudor Ambarus" <tudor.ambarus@linaro.org>, "Miquel Raynal"
+ <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Pratyush Yadav" <pratyush@kernel.org>
+X-Mailer: aerc 0.16.0
+References: <20240412134405.381832-1-mwalle@kernel.org>
+ <20240412134405.381832-7-mwalle@kernel.org> <mafs0jzkw6oq1.fsf@kernel.org>
+ <D0MHEH8OOS44.2PPBZ3LFU4QG3@kernel.org> <mafs0bk686l67.fsf@kernel.org>
+In-Reply-To: <mafs0bk686l67.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240409082631.187483-1-21cnbao@gmail.com> <20240409082631.187483-5-21cnbao@gmail.com>
- <87frvn2f89.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAGsJ_4x_bOchG=bJjR8WE=vQxu3ke8fkxcDOFhqX5FS_a-0heA@mail.gmail.com>
- <8734rm2gdj.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAGsJ_4xHVN_QXu5Q8c_FcjsnffZYWsjOx4KR4G_2GNyaxfVWAw@mail.gmail.com>
-In-Reply-To: <CAGsJ_4xHVN_QXu5Q8c_FcjsnffZYWsjOx4KR4G_2GNyaxfVWAw@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Thu, 18 Apr 2024 21:55:07 +1200
-Message-ID: <CAGsJ_4yOrn3OP-jP+hZxrb__AarK+U7Pc15z0XmQ26RmT7h8xQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] mm: swap: entirely map large folios found in swapcache
-To: "Huang, Ying" <ying.huang@intel.com>, Khalid Aziz <khalid.aziz@oracle.com>, 
-	sparclinux@vger.kernel.org
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
-	baolin.wang@linux.alibaba.com, chrisl@kernel.org, david@redhat.com, 
-	hanchuanhua@oppo.com, hannes@cmpxchg.org, hughd@google.com, 
-	kasong@tencent.com, ryan.roberts@arm.com, surenb@google.com, 
-	v-songbaohua@oppo.com, willy@infradead.org, xiang@kernel.org, 
-	yosryahmed@google.com, yuzhao@google.com, ziy@nvidia.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-[snip]
+--d634570c1f6a4a1796182749624c4b5d93dc5a4862d7079e44e41056bc8b
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-> > >> >
-> > >> >       VM_BUG_ON(!folio_test_anon(folio) ||
-> > >> >                       (pte_write(pte) && !PageAnonExclusive(page)));
-> > >> > -     set_pte_at(vma->vm_mm, vmf->address, vmf->pte, pte);
-> > >> > -     arch_do_swap_page(vma->vm_mm, vma, vmf->address, pte, vmf->orig_pte);
-> > >> > +     set_ptes(vma->vm_mm, start_address, start_pte, pte, nr_pages);
-> > >> > +     vmf->orig_pte = ptep_get(vmf->pte);
-> > >> > +     arch_do_swap_page(vma->vm_mm, vma, start_address, pte, pte);
-> > >>
-> > >> Do we need to call arch_do_swap_page() for each subpage?  IIUC, the
-> > >> corresponding arch_unmap_one() will be called for each subpage.
-> > >
-> > > i actually thought about this very carefully, right now, the only one who
-> > > needs this is sparc and it doesn't support THP_SWAPOUT at all. and
-> > > there is no proof doing restoration one by one won't really break sparc.
-> > > so i'd like to defer this to when sparc really needs THP_SWAPOUT.
+Hi,
+
+On Wed Apr 17, 2024 at 5:52 PM CEST, Pratyush Yadav wrote:
+> On Wed, Apr 17 2024, Michael Walle wrote:
+> > On Wed Apr 17, 2024 at 4:36 PM CEST, Pratyush Yadav wrote:
+> >> On Fri, Apr 12 2024, Michael Walle wrote:
+> >>
+> >> > SPI-NOR will automatically detect the attached flash device most of =
+the
+> >> > time. We cannot easily find out if boards are using a given flash.
+> >> > Therefore, introduce a (temporary) flag to display a message on boot=
+ if
+> >>
+> >> Why temporary? There will always be a need to deprecate one flash or
+> >> another. Might as well keep the flag around.
 > >
-> > Let's ask SPARC developer (Cced) for this.
+> > Mh, yes I agree. That also means that this flag will not have any
+> > users (most) of the time (hopefully ;) ).
 > >
-> > IMHO, even if we cannot get help, we need to change code with our
-> > understanding instead of deferring it.
+> >> Also, this patch/series does not add any users of the deprecated flag.
+> >> If you have some flashes in mind, it would be good to add them to the
+> >> patch/series.
+> >
+> > This is just an RFC to see if whether you Tudor agree with me :) But
+> > I was about to add it to the evervision/cypress FRAMs.
+> >
+> >> I like the idea in general. Do you think we should also print a rough
+> >> date for the deprecation as well?
+> >
+> > Might make sense, any suggestions?
 >
-> ok. Thanks for Ccing sparc developers.
+> How about a simple string to flash_info?
 
-Hi Khalid & Ying (also Cced sparc maillist),
+Ahh, I was rather asking if you already had a time frame in mind.
 
-SPARC is the only platform which needs arch_do_swap_page(), right now,
-its THP_SWAPOUT is not enabled. so we will not really hit a large folio
-in swapcache. just in case you might need THP_SWAPOUT later, i am
-changing the code as below,
+Besides that, should it be a date or a (future) kernel version?
+Roughly about two/three kernel releases?
 
-@@ -4286,7 +4285,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
-        VM_BUG_ON(!folio_test_anon(folio) ||
-                        (pte_write(pte) && !PageAnonExclusive(page)));
-        set_ptes(vma->vm_mm, start_address, start_ptep, pte, nr_pages);
--       arch_do_swap_page(vma->vm_mm, vma, start_address, pte, pte);
-+       for (int i = 0; i < nr_pages; i++) {
-+               arch_do_swap_page(vma->vm_mm, vma, start_address + i *
-PAGE_SIZE,
-+                                 pte, pte);
-+               pte = pte_advance_pfn(pte, 1);
-+       }
-
-        folio_unlock(folio);
-        if (folio != swapcache && swapcache) {
-
-for sparc, nr_pages will always be 1(THP_SWAPOUT not enabled). for
-arm64/x86/riscv,
-it seems redundant to do a for loop "for (int i = 0; i < nr_pages; i++)".
-
-so another option is adding a helper as below to avoid the idle loop
-for arm64/x86/riscv etc.
-
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index e2f45e22a6d1..ea314a5f9b5e 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -1085,6 +1085,28 @@ static inline void arch_do_swap_page(struct
-mm_struct *mm,
- {
-
- }
-+
-+static inline void arch_do_swap_page_nr(struct mm_struct *mm,
-+                                    struct vm_area_struct *vma,
-+                                    unsigned long addr,
-+                                    pte_t pte, pte_t oldpte,
-+                                    int nr)
-+{
-+
-+}
-+#else
-+static inline void arch_do_swap_page_nr(struct mm_struct *mm,
-+                                    struct vm_area_struct *vma,
-+                                    unsigned long addr,
-+                                    pte_t pte, pte_t oldpte,
-+                                    int nr)
-+{
-+       for (int i = 0; i < nr; i++) {
-+               arch_do_swap_page(vma->vm_mm, vma, addr + i * PAGE_SIZE,
-+                                pte_advance_pfn(pte, i),
-+                                pte_advance_pfn(oldpte, i));
-+       }
-+}
- #endif
-
-Please tell me your preference.
-
-BTW, i found oldpte and pte are always same in do_swap_page(), is it
-something wrong? does arch_do_swap_page() really need two same
-arguments?
-
-
-vmf->orig_pte = pte;
-..
-arch_do_swap_page(vma->vm_mm, vma, vmf->address, pte, vmf->orig_pte);
-
-
+> /**
+>  * struct flash_info - SPI NOR flash_info entry.
+>  * @id:   pointer to struct spi_nor_id or NULL, which means "no ID" (most=
+ly
+>  *        older chips).
+>  * @name: (obsolete) the name of the flash. Do not set it for new additio=
+ns.
+>  * @size:           the size of the flash in bytes.
+>  * @deprecation_date: The date after which the support for this flash wil=
+l be
+>  *                    removed.
+>  * [...]
+>  */
+> struct flash_info {
+> 	char *name;
+> 	const struct spi_nor_id *id;
+> 	char *deprecation_date;
+> 	[...]
+> }
 >
-> >
-> > > on the other hand, it seems really bad we have both
-> > > arch_swap_restore  - for this, arm64 has moved to using folio
-> > > and
-> > > arch_do_swap_page
-> > >
-> > > we should somehow unify them later if sparc wants THP_SWPOUT.
+> And then in everspin.c for example,
+>
+> 	{
+> 		.name =3D "mr25h128",
+> 		.size =3D SZ_16K,
+> 		.sector_size =3D SZ_16K,
+> 		.addr_nbytes =3D 2,
+> 		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
+> 		.deprecation_date =3D "2025-01-01",
+> 	}, {
+>
+> And in spi_nor_get_flash_info() (changed some wording of the message):
+>
+> 	info =3D jinfo ?: info;
+>
+> 	if (info->deprecation_date)
+> 		pr_warn("Your board or device tree is using a SPI NOR flash (%s) with\n=
+"
+> 			"deprecated driver support. It can be removed in any kernel\n"
+> 			"version after %s. If you feel this shouldn't be the case, please cont=
+act\n"
+> 			"us at linux-mtd@lists.infradead.org\n", info->name,
+> 			info->deprecation_date);
+>
+> 	return info;
+>
+> This would also remove the need for SPI_NOR_DEPRECATED. But it would
+> make the flash_info 4 or 8 bytes larger.
+>
+> What do you think?
 
-Thanks
-Barry
+Looks good.
+
+-michael
+
+--d634570c1f6a4a1796182749624c4b5d93dc5a4862d7079e44e41056bc8b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKcEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZiDuhxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/gX8QF44ntSYBOpUzOrXjd2P5ZKnbh5928I1t36
+JOjjpnwFUrSpmcnSrtzO6TzpDxJSeYABgNW3ep68DS04VArOFpAeXNmTKp9a5w91
+TagrJH8qrhzlzkJ+eVJiDIkY8Q2Z0LNYyQ==
+=4HSX
+-----END PGP SIGNATURE-----
+
+--d634570c1f6a4a1796182749624c4b5d93dc5a4862d7079e44e41056bc8b--
 
