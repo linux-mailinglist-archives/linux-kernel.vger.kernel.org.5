@@ -1,85 +1,83 @@
-Return-Path: <linux-kernel+bounces-149710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B73E68A94DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:27:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91E548A94DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:28:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7188A28274B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:27:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 486601F20355
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A5585659;
-	Thu, 18 Apr 2024 08:27:24 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED5985659;
+	Thu, 18 Apr 2024 08:28:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="QU1WIzXg"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C3963C
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4225E63C
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713428843; cv=none; b=ma0ybskYSojbfF+1HvjeG435lh54NLXFKgLrdIdY5oSN2+hXo8aOwNLQnxuYYE8x7b/PxlIIgKidTwRLI5dWGH96g3TJR4SkgqMgmBj9n6tRQPPlgaX+e7MCBwTpd3iAQF+A0YpmtiZLpFWtxrHbK0vA2QrEOq0W6ZbfkxjY6mM=
+	t=1713428886; cv=none; b=ly4bZSSG6/G09nMw7/FjMm2BxVoO2zCNZtK/UiuBx+Zo06dsiGFGUIX/5nL6nYQe9WDireCb2mczUzYVzsab7gMCuItMrrJwAhzJ701JxlVCqtR9pxU68M9abREB1NlJQblbWz+6FIfcBUHIHNvDjhmn9BHAybHTVIgvY2e9AZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713428843; c=relaxed/simple;
-	bh=gD1LUmHfql3mtS2gBELN/uTCh/pOuCFSMFgVqLBip3k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EGIeZJbzAoJ3H5QlO2pW/ilApP3+E3PCtyeZ1oCA8NXJngQ35t/fLkLdLX5dzMxDLynPVwZ+hf0K20LWKLGdRB6BgVQUL/gLGXY5KJlTZ5U9ZRXkL9p0ZICSQfcjQdm2V8XaTb6Iyr/+u5sSwIUUbNlhi/z40LS8Cs/t2LrOsNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6E2B940E024C;
-	Thu, 18 Apr 2024 08:27:18 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id IbeOpzmjMZ4c; Thu, 18 Apr 2024 08:27:14 +0000 (UTC)
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 735A340E0177;
-	Thu, 18 Apr 2024 08:27:09 +0000 (UTC)
-Date: Thu, 18 Apr 2024 10:27:03 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Lyude Paul <lyude@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: Early boot regression from f0551af0213 ("x86/topology: Ignore
- non-present APIC IDs in a present package")
-Message-ID: <20240418082703.GCZiDZVyra7qOQbyqn@fat_crate.local>
-References: <3d77cb89857ee43a9c31249f4eab7196013bc4b4.camel@redhat.com>
+	s=arc-20240116; t=1713428886; c=relaxed/simple;
+	bh=WzoUecFexsScuw55cPZeTVCR9zBOwDkkmgdVCvlRNFc=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=A6h5ECdpDiq7IETbEjOb0ADZVN3rqjzuSea4YhDrRsYRkHqJczBZItyGI8fvI06hC+zMIdEOnKMXOi+FW8esM5bHGbNyinZP9JzAfv0RTMBsQfTcfzSk2CIkMiiBZclmQzQ3QZzJwh/0JwtKk+55ZMUhetiy5fYn+ya/rAiD5xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=QU1WIzXg; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3d77cb89857ee43a9c31249f4eab7196013bc4b4.camel@redhat.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1713428880;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MDIUutjkBtcMupJEPwPTtmltqD4/go0oHDIGSIsxcDs=;
+	b=QU1WIzXgqPF9R+a7Ua9scuvOaWdUWh7ddESfB18+wLlGZZ/7YbBvwZE202eFLCt8RNrDy3
+	XRzWT1WQPACyeDcqrbzIdXstZmBnV3qLaMlXSCXnGugugFG4fNyLuvkSFCP3pP/coDH3sC
+	Ge8unEV65QfY/5H1curNB11Vtc2ZD3s6ri/ytDat3LdVp+GCtFBBlCtuGwCIU5EC3G8VCX
+	nLjMS9Tj4D16a0spQVDjbK9hjRV9ZOgNcQCgbBjvpWGwHVDj/LgMar9DUjwdhHQ6BhDj2p
+	AT2BzxUOUjNF4zHjEyCiQC9birPQxTNtCsVFcWe0S3tsOd55DU8zdWUu8dt3MA==
+Date: Thu, 18 Apr 2024 10:28:00 +0200
+From: Dragan Simic <dsimic@manjaro.org>
+To: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc: Quentin Schulz <quentin.schulz@theobroma-systems.com>,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Heiko Stuebner <heiko.stuebner@cherry.de>
+Subject: Re: [PATCH] arm64: dts: rockchip: add PCIe3 support on rk3588-jaguar
+In-Reply-To: <5932394.MhkbZ0Pkbq@diego>
+References: <20240417141642.2243193-1-heiko@sntech.de>
+ <cb2004e3-563e-4d36-ab69-89b1d9f6221b@theobroma-systems.com>
+ <5932394.MhkbZ0Pkbq@diego>
+Message-ID: <b36c5a6fd85e36f7b9adebf76dd0fb85@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On Wed, Apr 17, 2024 at 05:21:43PM -0400, Lyude Paul wrote:
-> Hi! I just wanted to let you know that one of the desktops I use for
-> testing no longer seems to boot after this commit (just finished
-> bisecting and confirming). The machine hangs before it gets to fbcon,
-> and the error I'm seeing in the early boot console is as such:
-> 
->    Kernel panic - not syncing: timer doesn't work through Interrupt-remapped IO-APIC
->    CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.8.0-rc5Lyude-Test+ #20
->    Hardware name: MSI MS-7A39/A320M GAMING PRO (MS-7A39), BIOS 1.10 01/22/2019
+Hello Heiko,
 
-Looks like an AMD chipset. Thomas did fix some fallout from the topo
-rework on AMD, can you test the tip/master branch pls?
+On 2024-04-18 10:12, Heiko Stübner wrote:
+> Am Donnerstag, 18. April 2024, 10:07:37 CEST schrieb Quentin Schulz:
+>> On 4/17/24 16:16, Heiko Stuebner wrote:
+>> > From: Heiko Stuebner <heiko.stuebner@cherry.de>
+>> >
+>> > The Jaguar SBC provides a M.2 slot connected to the pcie3 controller.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/
+Just a minor nitpick...  s/a M.2/an M.2/
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>> > In contrast to a number of other boards the pcie-refclk is gpio-controlled,
+>> > so the necessary clock is added to the list of pcie3 clocks.
 
