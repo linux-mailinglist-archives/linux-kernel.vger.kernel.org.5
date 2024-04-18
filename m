@@ -1,114 +1,143 @@
-Return-Path: <linux-kernel+bounces-150572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32ACF8AA113
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:31:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642308AA11C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:32:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70F2F1F226BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:31:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7C3FB2230A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA8D174EFB;
-	Thu, 18 Apr 2024 17:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2919E17AD68;
+	Thu, 18 Apr 2024 17:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JaPzhGeU";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="usvJW0EI"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qYbkzIfb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFEA0171092;
-	Thu, 18 Apr 2024 17:30:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C0F5174EC0;
+	Thu, 18 Apr 2024 17:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713461458; cv=none; b=ro+279j8OIsgCrQrEhjUQLmRRGZlQes7a6wRgdXLpPwgtMDRUB/1XBu9aEZ4mSTiQTZBuvIdl1MhjSth/1vuYSV1gftNWVGRX/BBmv52cr74/2Nd/bzV07q+AEpj64f1IyZEbg7OTo+H43G4frSUGgQTN8ZJ4Oqyj0vx/3uTGgA=
+	t=1713461486; cv=none; b=LVQWipSvGMGSeqM8g5yenyT+TZMSHs4TK8zICPSBA9/lzwVdSj+N11RdUanA38DtqzYuxNaE643LY2j6NyM88A/t040zV9hGl0Gk3vO9WTsRZUOo2PZpEK9/1ivUO6KSM4MUWUCdwv+ZMS7xapHMvubriguPxkuLB2SZDaKpxzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713461458; c=relaxed/simple;
-	bh=o01ymuKifh+K0Qu307eSX0ERloFE9BsY+DcrAJ29XVM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=t7BTdSfEhCiinMaaJgSK+cQ7E63nciFz0pJf+3wY3TQBlf/xha794iT12iT+PQx3SsVpfwCZJ08U9OIsftMm7SLeTNRHuzOT61pbP+U5pkhE0IGOReduJIy8XJgM0/9jk/ORN1CZI0rnloZLJQiHAzF6Oo9TRSubIFSFL8Y1psQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JaPzhGeU; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=usvJW0EI; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713461454;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n133tZXDB6Bd91GvCflFVAWL+NU2byLCtgDyzJMIL+U=;
-	b=JaPzhGeUkDR0xJWNGEOZX6QlTvHj+laTe+Gb7LSuFrynIBfCTbrdk02GsZUHBPUa3MxyH7
-	Ja4MJ4n94Wesjd3qChowGdMXyBLVyaAMDZ3OduoZddQ/d4am634dGPFU4lNxcEAlIj98mL
-	0NbXX4yhuiMnTKA77HYiqgxXJKJ4t5IQHMSac/KT5csV6NB8Frzw++e9VD8bKNu83l8SPy
-	Ru8PhXlzhAo/MpRAM7QnQwEyYuFHP3GVdBN7o7ktbq/dH5EbjprkQMSaRfw3RDJAx0ZJG1
-	bwodGvkjdU78nLkjnjYed1D6mBhcCtlJywIJA0ljhdOK6ikUpRbkvJO85Yl7jg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713461454;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n133tZXDB6Bd91GvCflFVAWL+NU2byLCtgDyzJMIL+U=;
-	b=usvJW0EICUWJjhC/qhtiJVBvvnPiIIv+LS4QdG+QAWCzmyg+6eR2HBrklesFtjER9a/45F
-	7OSjfw5XMeZQdJCg==
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>, Sean Christopherson
- <seanjc@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Lu Baolu
- <baolu.lu@linux.intel.com>, kvm@vger.kernel.org, Dave Hansen
- <dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin"
- <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>, Ingo Molnar
- <mingo@redhat.com>, Paul Luse <paul.e.luse@intel.com>, Dan Williams
- <dan.j.williams@intel.com>, Jens
- Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>, Kevin Tian
- <kevin.tian@intel.com>, maz@kernel.org, Robin Murphy
- <robin.murphy@arm.com>, jim.harris@samsung.com, a.manzanares@samsung.com,
- Bjorn Helgaas <helgaas@kernel.org>, guang.zeng@intel.com,
- robert.hoo.linux@gmail.com, jacob.jun.pan@linux.intel.com,
- oliver.sang@intel.com
-Subject: Re: [PATCH v2 03/13] x86/irq: Remove bitfields in posted interrupt
- descriptor
-In-Reply-To: <20240417110131.4aaf1d66@jacob-builder>
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
- <20240405223110.1609888-4-jacob.jun.pan@linux.intel.com>
- <Zh8aTitLwSYYlZW5@google.com> <20240417110131.4aaf1d66@jacob-builder>
-Date: Thu, 18 Apr 2024 19:30:52 +0200
-Message-ID: <87wmouy3w3.ffs@tglx>
+	s=arc-20240116; t=1713461486; c=relaxed/simple;
+	bh=mFPrCvLrxIQNqZjqRYLBKfQaqDsb+b6XIi+X1/IuX4U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kahSpW+RwymD4Sw2jZiBF6c1x0A4i44B/YUUwtPyUKyvSiBHqnZvjypx63w4v2/q3cn5uQu906BzfNWA4Tj/wc801DzcwnajAPZNdsoI4jkUXKF6cQE886a8PKqWpIXXCIO7VnZhwXw98I7O6SM+NP2/1uZCqvvBvaWZ/K+DAJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qYbkzIfb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C45C113CC;
+	Thu, 18 Apr 2024 17:31:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713461485;
+	bh=mFPrCvLrxIQNqZjqRYLBKfQaqDsb+b6XIi+X1/IuX4U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=qYbkzIfbWVr3khBjHDqenfNvOnPfCGCwBBWvd+w5VQuHy0miIF/vJnPxf0FZAm53E
+	 FZMGUtDr4SNCyq6y8hpmKr/sEZOrfimXsaEgCRbjmll5zwC98a/9OUiOPqu3vz+1iu
+	 vgFTK0j64M6x4VlQgE4zHMZVk0h88jDuyXLenRIDgo0HFHBLQyCZA4zxpnFnYhsiAO
+	 oEQfvxcpw0Z4VEyaaGoHL0fPglvinh6cdVyxJryetbpYxS3mGm8LkSIl9SPlx1yLhP
+	 GyZ0lS5LX7EabElZMv+8a+DjUYG9c1X0DAXLBwzckfQGttyZMOR6zrQ186ofUwxoTu
+	 u6Jz03pC6PKTw==
+Message-ID: <702adf23-868b-4e0f-8565-9ca35850bb00@kernel.org>
+Date: Thu, 18 Apr 2024 19:31:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/17] arm64: dts: exynos: gs101: Add ufs, ufs-phy and ufs
+ regulator dt nodes
+To: Peter Griffin <peter.griffin@linaro.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, vkoul@kernel.org,
+ kishon@kernel.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
+ bvanassche@acm.org, s.nawrocki@samsung.com, cw00.choi@samsung.com,
+ jejb@linux.ibm.com, martin.petersen@oracle.com, chanho61.park@samsung.com,
+ ebiggers@kernel.org, linux-scsi@vger.kernel.org,
+ linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ tudor.ambarus@linaro.org, andre.draszik@linaro.org, saravanak@google.com,
+ willmcvicker@google.com
+References: <20240404122559.898930-1-peter.griffin@linaro.org>
+ <20240404122559.898930-8-peter.griffin@linaro.org>
+ <4ed72378-672e-46d6-9f29-fa118f598739@kernel.org>
+ <CADrjBPpaR86R6FMwMqos7ojVfDpGxS=ygW50UBCy1DTsoXHJgQ@mail.gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <CADrjBPpaR86R6FMwMqos7ojVfDpGxS=ygW50UBCy1DTsoXHJgQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17 2024 at 11:01, Jacob Pan wrote:
-> On Tue, 16 Apr 2024 17:39:42 -0700, Sean Christopherson <seanjc@google.com>
-> wrote:
->> > diff --git a/arch/x86/kvm/vmx/posted_intr.c
->> > b/arch/x86/kvm/vmx/posted_intr.c index af662312fd07..592dbb765675 100644
->> > --- a/arch/x86/kvm/vmx/posted_intr.c
->> > +++ b/arch/x86/kvm/vmx/posted_intr.c
->> > @@ -107,7 +107,7 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int
->> > cpu)
->> >  		 * handle task migration (@cpu != vcpu->cpu).
->> >  		 */
->> >  		new.ndst = dest;
->> > -		new.sn = 0;
->> > +		new.notif_ctrl &= ~POSTED_INTR_SN;  
->> 
->> At the risk of creating confusing, would it make sense to add
->> double-underscore, non-atomic versions of the set/clear helpers for ON
->> and SN?
->> 
->> I can't tell if that's a net positive versus open coding clear() and
->> set() here and below.
-> IMHO, we can add non-atomic helpers when we have more than one user for
-> each operation.
->
-> I do have a stupid bug here, it should be:
-> -               new.notif_ctrl &= ~POSTED_INTR_SN;
-> +               new.notif_ctrl &= ~BIT(POSTED_INTR_SN);
+On 18/04/2024 15:20, Peter Griffin wrote:
+> 
+> s_ldo8_reg: LDO8S {
+>     regulator-name = "S2MPG11_LDO8";
+>     regulator-min-microvolt = <1127800>;
+>     regulator-max-microvolt = <1278600>;
+>     regulator-always-on;
+>     regulator-initial-mode = <SEC_OPMODE_SUSPEND>;
+>     channel-mux-selection = <0x28>;
+>     schematic-name = "L8S_UFS_VCCQ";
+>     subsys-name = "UFS";
+>  };
+> 
+> So I think you're correct this is a stub pending full pmic support. I
+> propose in v2 to add a comment similar to what we have in
+> exynos850-e850-96.dts today above the regulator-fixed node like /*
+> TODO: Remove this once PMIC is implemented  */?
+> 
 
-That's a perfect reason to use a proper helper.
+Sounds good.
+
+Best regards,
+Krzysztof
+
 
