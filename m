@@ -1,99 +1,191 @@
-Return-Path: <linux-kernel+bounces-150357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 229868A9DDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1B668A9DDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:02:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 827F9B23145
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:01:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15480B255BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:02:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D9116ABEE;
-	Thu, 18 Apr 2024 15:00:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E12E16C43B;
+	Thu, 18 Apr 2024 15:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="p5Dfm7D6"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="EsK3BI3w"
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37DB9433BF;
-	Thu, 18 Apr 2024 15:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 939FA168B00
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713452456; cv=none; b=MX6gMeEMz+BeJRMSmi5h190ByPdWspZrJevSFU0wrrMAza66zHkVJKajfsLyW98oA9Ffr/oRiiP71ajracgvLlMNZiR2i9SEo210TakvbT9odvMmZzdOMkk2x+U2M+v55AAmp8VicLrDje73YHkRA9EFfCEBVp6gGyn5NaB3PxU=
+	t=1713452527; cv=none; b=YtRKbpLpn628F8Wu1C1iRl9mJsYtvU12leltqq2TEKZ8vyl01lio3KzxQkg2sro+zzQ97dCASczkue+HpDMKop4lWFupT2RRuSluB6sIXWjIu0gmM+Zrh/XEFQ7PkZ9ZTnd58OWQLY1oDC6LJBVlmcs6frtgOSU2hQVTAqU7uIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713452456; c=relaxed/simple;
-	bh=2ZW/FZ3LOYDS3w3KGCimfYqRztdugr0FidbJ2WNUZAw=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=THHy28WDfKtFpcfNOPQTMtwbjXYo9E2uhTYcwKCZia50GKCrO6TVONlqlCb2sps2jA+U7iOfjj/EmZypMw0i6Tmnxu3PDFyFRwZCFyk+bGhRxvxza3wLqpfYMI6e2Clojgj0sU5ndn4Tra+TY/SsNettwflQ1Vhad2vWfeooYag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=p5Dfm7D6; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713452436; x=1714057236; i=markus.elfring@web.de;
-	bh=2ZW/FZ3LOYDS3w3KGCimfYqRztdugr0FidbJ2WNUZAw=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=p5Dfm7D6SZwfH5wf9JB2c4KNQARwrMwTYL+iXeqAmXkLz3zphYOA7g74phSTnBV+
-	 1Wyy9Vrq8YYLEwUjicFT49xcu/XwfiP4gmZoJaaKuXmYBTqLIfdOGv9PAhQRoZyTk
-	 tf3uB9RgnIxutRVQ+yq3Torq1iux3EDbipsw/qh6FbbLxweOLKV5iqdg8AV3YjSto
-	 IWBcwlNdBJ5z4MYJUxdIf0UgW8HAB8doT/rorNDSxigPqo8Y9dp231w8vwkvGoFoe
-	 m820XYjl+IZvjj3N/z/c5yT+qTmtv9QRQ2kBn4isjizDrol5L6f4+2FROM7Ld2l8g
-	 QxvL4Kpv4iOV/cf+2g==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MPrPT-1sJnUN2vAJ-00OV5y; Thu, 18
- Apr 2024 17:00:36 +0200
-Message-ID: <b96697ff-3177-4559-a410-104ca3a1110f@web.de>
-Date: Thu, 18 Apr 2024 17:00:17 +0200
+	s=arc-20240116; t=1713452527; c=relaxed/simple;
+	bh=DQg9N9NsmAiomB3YevtTSMmyEr0U2U0LM9Xrfnum6ck=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aF/OMXSGOxyasMO41K6i+n/CTeZhqA+GZCK6UcZYqyCHoYt90ZR6eSJjlHXWK6aYvzfC0nw4oBvV/cvjoBeCAF8jr8iJNRMw0hNL6FPtrZOFr0jqImqDxj3qRyTz1UEmfq04blaiIVNcj8emIXiBrOM7sr/ZVzFY3S0P1KutroU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=EsK3BI3w; arc=none smtp.client-ip=185.125.188.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1C1953F8E7
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:02:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1713452522;
+	bh=Uwv3V9NnGMB5Wj85PeZTAIoBr809/UIjglv9mvQKrBw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=EsK3BI3w/36KL1YiurVwhkCrgd74JYbPyQcAtL/9YzbiE+NUkaCHkonopFsZOh8OI
+	 E3/esZxM6q0lBihe3VAj9NzaIEMOfv9iVyCrOpTkFmEeIdhn15GGCVHF291tFpz+8u
+	 AqWIbnRqsYKgeV1xQbLGXCPEVZF3Gtx/kNDrPGn5Xgmhdlnyy+AHpyvXWELQSZg3DH
+	 QSmFgJVvrYPsM3dlrZk3uZjtVteGIsxIMY2ZG5BX2sT3nHNLNB0lN8OStlBRKkzJQy
+	 yuMVC0g7mCiquoE3lZ3RcmNEq2NKUmaETyYZQvK0ZjEspQ0wmlbY/mBRQ6I1p0o+fg
+	 kQ3y2y5VjkZKg==
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6994084553bso12635876d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:02:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713452521; x=1714057321;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Uwv3V9NnGMB5Wj85PeZTAIoBr809/UIjglv9mvQKrBw=;
+        b=iaMPTGOWft3GksQrxclTvpTxy9RYe09OKIiZa0ytukq5IB4+WIaq4lA2dYItXzRaRa
+         U6cLxctklrYfP7RoQOCgjLQDGgkdW7rembwQg+rEenG4bvhGEh7lRjXkwWhEa2PxVJCU
+         PkMwFyLTaOAqu+QFpMpfMiF1uPTXk3//Fh8YFJuQAONletjdklLzbDTuvXJerCO7T2YS
+         0Y5lr5qcHaY1FMs9xv5v5BTZBNbkdf+sMN9Qd+45yenAzhTQHX8EuQIeXVgW85I+nn6c
+         w0Whkm91G9AztZdT39Pk7LZX7CW7m1zpOd+tzLsYnnQROalsRWJzF+642qVF1Gxu0h35
+         af7g==
+X-Forwarded-Encrypted: i=1; AJvYcCUdzVK71ZAiCSYYWeVal4YZ9wuXZjFy8X80Hy1i9ydmeZ5FLCxfYRqC1vPrmykiZinGrhL1hVPpe6iZaFDuKtvF87whoFF91z2OEChs
+X-Gm-Message-State: AOJu0Yw/xKdJY4BIB+wnSfBMFg8L8Fb+QcVytpqED7Y15f/INuWkcu4z
+	nV1GE3xC0L2AKW1Xut1XMD1EGS/OkNTFLHZ2XRhuQrpkUKsymi3QRkY+EyEY9CYw4ZApbozCVDW
+	t8fd2tFm/PeWsDcl8Y2OmYJcS8XLk2e1mqiUmLm0dluiQoHXnHVp40OYOKUrCegnCV8tt73xK9n
+	pQyzlFrj1P4nMwc4ZIzhxwdSWyGluX36wuE8KEkrePDJG6mOQUC4b00pH3iyE+1dI=
+X-Received: by 2002:ad4:414f:0:b0:69b:5961:1ff4 with SMTP id z15-20020ad4414f000000b0069b59611ff4mr2636825qvp.63.1713452520911;
+        Thu, 18 Apr 2024 08:02:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFwnD/dVrXbHRIjywyojR4601i9J6JDecCBPGXdOo9n2JxohMovJ/J3JuT2jIjVRTbNhUbSWJ19JUCG2v0M57o=
+X-Received: by 2002:ad4:414f:0:b0:69b:5961:1ff4 with SMTP id
+ z15-20020ad4414f000000b0069b59611ff4mr2636758qvp.63.1713452520029; Thu, 18
+ Apr 2024 08:02:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Wander Lairson Costa <wander@redhat.com>, kunit-dev@googlegroups.com,
- linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Brendan Higgins <brendan.higgins@linux.dev>, David Gow
- <davidgow@google.com>, Rae Moar <rmoar@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240418131754.58217-2-wander@redhat.com>
-Subject: Re: [PATCH 1/2] kunit: unregister the device on error
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240418131754.58217-2-wander@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+References: <20240418110153.102781-1-aleksandr.mikhalitsyn@canonical.com> <eb0b4b89-9a1f-0e1b-9744-6eb3396048bd@ssi.bg>
+In-Reply-To: <eb0b4b89-9a1f-0e1b-9744-6eb3396048bd@ssi.bg>
+From: Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date: Thu, 18 Apr 2024 17:01:49 +0200
+Message-ID: <CAEivzxd_Lz3o8Qmqq6wyfK_UduVL1Qm9jQ9UJaoE_O7wWPrg-Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 1/2] ipvs: add READ_ONCE barrier for ipvs->sysctl_amemthresh
+To: Julian Anastasov <ja@ssi.bg>
+Cc: horms@verge.net.au, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, 
+	Florian Westphal <fw@strlen.de>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LoYR5OOkNO1IMk0/llpub1AYS06M9QEB/iRygIyFAo8pg5Sd5HB
- cR3k/yJzI4bdUwtbFDI0041CcL+esda5DOoi53UItLnGW3Au1QPRL5R4EGUFU3Kx0bkLDk8
- F4LX6kGJI24gAnvfeDbP4/yURGmTWuTq8aYcFmHTuOc44iIii03lYr7bpKezHsgA6YPpMif
- P2+EPliUoupjZbJDcagzA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:FUEOxYAIpJ8=;aRIxn8r1lavSmvU+iyLodHt+x1Y
- me99TOMMRVlJsgPI2fqMpf5R2ss6vpa/+Zg88ZQxIrtU5ah2S9wTrDh0uvmPmpBLOTBrT66ZT
- lg1rDe6MdbyT5/dIBuwyaQUwycUm7HyIJ3MjmBMhL8kUK2GWwNYP89YaGsgT6Eoio7ZEVlXvN
- Nc6S9aSTOPXYjvMV3+H0OGHIFQIRfVfPN2TM6257Na6O60J4P4bxaCqvocETdrBzzBs/0fU4V
- HK1JK/kmDXkFh1q3GMcVCtDED0YDjxZA7z4FR0pg/0SJV1zNouRW/5EIy/KoZvkvwqb48H0Ud
- 9SXU1U1dEq1bhT3TbO9a8HIloESg/0AOYKO0nN1OAYiI6YVrq/5Yvw4TY+z9MPiLyYVpL71FH
- Ai7PgpLcusdbvgrLDmX344E/H4u+KbldP9ZHmNCMalw8xUIm3U8tssJIJRikwPERJmX52cOIL
- ccNHz2oRNAzFzly8TqU3rtOV6ftDqSVMogsnkRlTizEl6RCRSD7MyLFgjALwN7UqggmGHWv0Q
- 6U25RUUp0Twsaci3Oi3me3Wt3jI5z/Vaqc4NE898yinRkiisp3X/kH8x70vSuq+fGVZFC/VMR
- oQnApURhLsw2kwp1k3zYTostkcwZa4qe7Gi6f8fhAFmL8pzp9Kulji2uBDvlESPvhb0+77h1z
- Ktn1WwzO612MKS7RC0rv4pqImahhRNc+oo8UH0r7FmUfjor320br87rhgYSk73Pq7o2efKpUe
- wSsOFfz8OrQrkPcChhhqapxy452PauwhfRTAyd/7Wh8Iy2OgiOfMsWqQ+PUp9ePCflqjRbgTD
- 7IwBeFQro85/HnbmFXZG0zVNwQqFwiycpZGWaL0YLfDu8=
 
-> kunit_init_device() should unregister the device on bus register error.
+On Thu, Apr 18, 2024 at 3:23=E2=80=AFPM Julian Anastasov <ja@ssi.bg> wrote:
+>
+>
+>         Hello,
 
-* Would another imperative wording be desirable also for this change descr=
-iption?
+Dear Julian,
 
-* Will the tag =E2=80=9CFixes=E2=80=9D become relevant here?
+>
+> On Thu, 18 Apr 2024, Alexander Mikhalitsyn wrote:
+>
+> > Cc: Julian Anastasov <ja@ssi.bg>
+> > Cc: Simon Horman <horms@verge.net.au>
+> > Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+> > Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+> > Cc: Florian Westphal <fw@strlen.de>
+> > Suggested-by: Julian Anastasov <ja@ssi.bg>
+> > Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.c=
+om>
+> > ---
+> >  net/netfilter/ipvs/ip_vs_ctl.c | 12 +++++++-----
+> >  1 file changed, 7 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_=
+ctl.c
+> > index 143a341bbc0a..daa62b8b2dd1 100644
+> > --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> > +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+>
+> > @@ -105,7 +106,8 @@ static void update_defense_level(struct netns_ipvs =
+*ipvs)
+> >       /* si_swapinfo(&i); */
+> >       /* availmem =3D availmem - (i.totalswap - i.freeswap); */
+> >
+> > -     nomem =3D (availmem < ipvs->sysctl_amemthresh);
+> > +     amemthresh =3D max(READ_ONCE(ipvs->sysctl_amemthresh), 0);
+> > +     nomem =3D (availmem < amemthresh);
+> >
+> >       local_bh_disable();
+> >
+> > @@ -146,8 +148,8 @@ static void update_defense_level(struct netns_ipvs =
+*ipvs)
+> >       case 1:
+> >               if (nomem) {
+> >                       ipvs->drop_rate =3D ipvs->drop_counter
+> > -                             =3D ipvs->sysctl_amemthresh /
+> > -                             (ipvs->sysctl_amemthresh-availmem);
+> > +                             =3D amemthresh /
+> > +                             (amemthresh-availmem);
+>
+>         Thanks, both patches look ok except that the old styling
+> is showing warnings for this patch:
+>
+> scripts/checkpatch.pl --strict /tmp/file1.patch
+>
+>         It would be great if you silence them somehow in v3...
 
-Regards,
-Markus
+Yeah, I have fixed this in v3. Also, I had to split multiple
+assignments into different
+lines because of:
+>CHECK: multiple assignments should be avoided
+
+Now everything looks fine.
+
+>
+>         BTW, est_cpulist is masked with current->cpus_mask of the
+> sysctl writer process, if that is of any help. That is why I skipped
+> it but lets keep it read-only for now...
+
+That's a good point! Probably I'm too conservative ;-)
+
+>
+> >                       ipvs->sysctl_drop_packet =3D 2;
+> >               } else {
+> >                       ipvs->drop_rate =3D 0;
+> > @@ -156,8 +158,8 @@ static void update_defense_level(struct netns_ipvs =
+*ipvs)
+> >       case 2:
+> >               if (nomem) {
+> >                       ipvs->drop_rate =3D ipvs->drop_counter
+> > -                             =3D ipvs->sysctl_amemthresh /
+> > -                             (ipvs->sysctl_amemthresh-availmem);
+> > +                             =3D amemthresh /
+> > +                             (amemthresh-availmem);
+> >               } else {
+> >                       ipvs->drop_rate =3D 0;
+> >                       ipvs->sysctl_drop_packet =3D 1;
+>
+> Regards
+
+Kind regards,
+Alex
+
+>
+> --
+> Julian Anastasov <ja@ssi.bg>
+>
 
