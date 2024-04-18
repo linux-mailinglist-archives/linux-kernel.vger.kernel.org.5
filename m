@@ -1,97 +1,121 @@
-Return-Path: <linux-kernel+bounces-149872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25A9B8A972C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:21:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C69228A9738
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:22:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8BFDB21362
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:21:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 795ED1F235E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09FFD15B572;
-	Thu, 18 Apr 2024 10:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5128515CD71;
+	Thu, 18 Apr 2024 10:22:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GWuezpAM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="y8EGkjW2"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A91815B57F;
-	Thu, 18 Apr 2024 10:20:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F4715CD51;
+	Thu, 18 Apr 2024 10:21:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713435652; cv=none; b=lFiqHJzo/YQ0NsbPGY6T+wTcrdAOmCHBNpLCu+1kuTKX/wxo8v5l1ewwhJwR3XTI7fknRM9BPV21DXQCkj3KvcXbh2hdz5RoYb2sxlH6uTFTQbn3B1j4xXoHDVD9/dY3vLdY1x2mSqvDoPVwQII3GyAzCN2K2XZGQ8FCxLb2b8U=
+	t=1713435721; cv=none; b=F3Q/oAZbsIls9ekGw9lAEBGWdZVDKsrHPdEyrcsXW+YD6wHSnvj4zBVxcum2UgQnkVXYyRvscrmBcDeScJNRck/pK+Ig1F6q7lzdXOIg66rookYnWO7i4DfJ2/+7PzjZY2H6WlLUdnqsVipqn21JP9c5ej7N/Td2Blk5rXHBV90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713435652; c=relaxed/simple;
-	bh=3Y5JB/WtfH5WH9bHCRUJuJuoNEPscNNjUmD2/T+wdHc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gR51nVNuf9wxhK1T8dCAFuWsM3ogAdMdn7bVMNpLDQoislzyCRc9IQ2HkV4wUCZLkhtgKiPv+BLTa6N7JB3jXvsg6Fn6tixesNXPwuqlLqFTdPLZM899ta5nR3u+Sdnw3ZRMtacuUoN2vlkaLOtVg2MoaTDs0uVgTqBZIpwLEEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GWuezpAM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53522C32781;
-	Thu, 18 Apr 2024 10:20:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713435652;
-	bh=3Y5JB/WtfH5WH9bHCRUJuJuoNEPscNNjUmD2/T+wdHc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GWuezpAM/tvSVnMHw6t+mTnV7HMoCkz2/7R497QatvoCRl6upJfXlF3JX5sTzMGKr
-	 l+LRH8aD3fi1IJ3nHAHbT8VkXrUqj1AL0bAglqnMIvrWFf5stfdYy05e+8YhQsGED6
-	 LRiT88aIl6g1mm4sQUnD64X2iB2cDgHByJxUt1mdaKRjEQpmOIzqMfOw/9Dpnwgcd4
-	 1W6HAeWJx3Edaaj9EMH/+AhznhRelVOaE1QHUak77k625eSIQ5Qo4fiOusynMdfeZ7
-	 T1U9ZTRLnwF03YWxG4DQLEHk35/+u5J0b0YobKfs20Epbobh88Hn9GEH8ervAGmdDb
-	 j8zU4M3TMCNzQ==
-Date: Thu, 18 Apr 2024 11:20:46 +0100
-From: Lee Jones <lee@kernel.org>
-To: Carlos Llamas <cmllamas@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	linux-kernel@vger.kernel.org, kernel-team@android.com,
-	Alice Ryhl <aliceryhl@google.com>, stable@vger.kernel.org,
-	Todd Kjos <tkjos@google.com>
-Subject: Re: [PATCH] binder: check offset alignment in binder_get_object()
-Message-ID: <20240418102046.GA2329396@google.com>
-References: <20240330190115.1877819-1-cmllamas@google.com>
+	s=arc-20240116; t=1713435721; c=relaxed/simple;
+	bh=9hq0MbHS2MZ4Vl7dzWJ4AWW2yuB2FdAWiTYckqmPylA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mwOvXUiSW1b8NFDpIs4pvHEmCYuoMmBi++dL13X7J0zf21jImitLORmNjJpMYLT063v5q7uZcvHg74jrJxST+C2FoC7VGXovAKbeeA1iqtviu3X7ISfM9MLTaPFjr1tLlzSMJIg40VN9tIGoEG8POPiAdayHA1x8SCE40a8q7s4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=y8EGkjW2; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1713435721; x=1744971721;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9hq0MbHS2MZ4Vl7dzWJ4AWW2yuB2FdAWiTYckqmPylA=;
+  b=y8EGkjW2KwA8qorYdwbL6mJ7arNejJnt2kJFPNlQ8YXx44K99g0dqFv9
+   dwx98dEQwD0P8poSM2ea5Slh7+It4n+6TsYjdgs/lrYLCRbxUqdknAU76
+   1NZenFxt9ZTGc6/bdkCye/PPcNzrLVnY4qYyfZZk7ubxX6NfUhRTxreTj
+   +cVtdrROocaJYXApAzSRIhVIFyKsjQyvJ+Yrdmezn7OznCrumeQ4jhGte
+   f5l6XlQKG9I4FaZM4YDKB/0XkAoBbquUh51Ru1Elj+vCmuBZcwRkczQ8I
+   sYD8RJ9h7XCYsPqbEZTYqMuIW5LdYOpdGN6zBG11YTSo7WSODmZmfoAu8
+   g==;
+X-CSE-ConnectionGUID: 2BlBkMo/RkCgCTcxqrBIpg==
+X-CSE-MsgGUID: fof2w0dDS92WJg8ouQypAw==
+X-IronPort-AV: E=Sophos;i="6.07,211,1708412400"; 
+   d="asc'?scan'208";a="21586637"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Apr 2024 03:22:00 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 18 Apr 2024 03:21:37 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Thu, 18 Apr 2024 03:21:33 -0700
+Date: Thu, 18 Apr 2024 11:21:18 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Andy Chiu <andy.chiu@sifive.com>
+CC: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+	<palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Heiko Stuebner
+	<heiko@sntech.de>, Guo Ren <guoren@kernel.org>, Conor Dooley
+	<conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Jonathan Corbet <corbet@lwn.net>, Evan
+ Green <evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
+	<cleger@rivosinc.com>, Shuah Khan <shuah@kernel.org>,
+	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Palmer
+ Dabbelt <palmer@rivosinc.com>, Vincent Chen <vincent.chen@sifive.com>,
+	Greentime Hu <greentime.hu@sifive.com>, <devicetree@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH v4 5/9] dt-bindings: riscv: add Zve32[xf] Zve64[xfd] ISA
+ extension description
+Message-ID: <20240418-litigate-zippy-d05379b5ace0@wendy>
+References: <20240412-zve-detection-v4-0-e0c45bb6b253@sifive.com>
+ <20240412-zve-detection-v4-5-e0c45bb6b253@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="IKul8mjn3Ad3mqHY"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240330190115.1877819-1-cmllamas@google.com>
+In-Reply-To: <20240412-zve-detection-v4-5-e0c45bb6b253@sifive.com>
 
-On Sat, 30 Mar 2024, Carlos Llamas wrote:
+--IKul8mjn3Ad3mqHY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Commit 6d98eb95b450 ("binder: avoid potential data leakage when copying
-> txn") introduced changes to how binder objects are copied. In doing so,
-> it unintentionally removed an offset alignment check done through calls
-> to binder_alloc_copy_from_buffer() -> check_buffer().
-> 
-> These calls were replaced in binder_get_object() with copy_from_user(),
-> so now an explicit offset alignment check is needed here. This avoids
-> later complications when unwinding the objects gets harder.
-> 
-> It is worth noting this check existed prior to commit 7a67a39320df
-> ("binder: add function to copy binder object from buffer"), likely
-> removed due to redundancy at the time.
-> 
-> Fixes: 6d98eb95b450 ("binder: avoid potential data leakage when copying txn")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Carlos Llamas <cmllamas@google.com>
-> ---
->  drivers/android/binder.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+On Fri, Apr 12, 2024 at 02:49:01PM +0800, Andy Chiu wrote:
+> Add description for Zve32x Zve32f Zve64x Zve64f Zve64d ISA extensions.
+>=20
+> Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
 
-Thanks for chasing this one down Carlos.
+Technically this should be before the patch using them in the kernel,
+but=20
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Reviewed-by: Lee Jones <lee@kernel.org>
+Cheers,
+Conor.
 
--- 
-Lee Jones [李琼斯]
+--IKul8mjn3Ad3mqHY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHQEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiD0HgAKCRB4tDGHoIJi
+0n1wAPd1er7jDl4Eexl9WWN83HD+Ca2d7uVxpq71neDpZ5hxAQDgD/U89OOnw5dd
+hmkxzNHP/2AVHlS/1DyRsZjUghB3AA==
+=ofyD
+-----END PGP SIGNATURE-----
+
+--IKul8mjn3Ad3mqHY--
 
