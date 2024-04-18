@@ -1,62 +1,60 @@
-Return-Path: <linux-kernel+bounces-150333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD6338A9D87
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A728A9D8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:49:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF3F41C218E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:48:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A695B1C21BF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83124168AFE;
-	Thu, 18 Apr 2024 14:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4242E16C43B;
+	Thu, 18 Apr 2024 14:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E/8l0Pg4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iEARRixF"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5F8F6FB0;
-	Thu, 18 Apr 2024 14:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985EA16ABD8
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:49:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713451706; cv=none; b=WZFe2t0Eho7R8OrwzOfzV34hbPLhTUxvZIW8i4gJnNbjeVz0mzB39L3vj2DHg6SREdA+hqJ+YWhzcYGm8a3TgUze6mGYe8ZIHdT1VMfAcAvYCf4267oKeb0lNW++3NOylyyIAubn55H/45rDsDMxH1C453E5+h/JVcoXp3F0Ty0=
+	t=1713451755; cv=none; b=aeA3AUHw2IYSc0as2wM11pZ1E7ZjRsu88lMmBomFA5JRHuMPr2v78hOAO0ej/ARTTMdcq8L7lf/3f3gpJ9xPgj14ZW0vf3PbSPrL4d5HmN0akKqQyORWhM17BOTyQiN2pl0jejBa810gusf4RG89g8oqoKHaFTPdGNQeUCRXqok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713451706; c=relaxed/simple;
-	bh=kb6yHJn9WyABtdbe/69G40oetjea/tWLVhjJP1KXgWc=;
+	s=arc-20240116; t=1713451755; c=relaxed/simple;
+	bh=P94DH8AqKAA5lye5i75LmkzjhoEdyTbF8tps1jGtw38=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U35iVRD+lB+FxC3Q14yBLW47MKGvvPVq8aX31zRjVNPwhfaMuA8HIOExMmZVZn3C2+ZG2dqJ6Rh4hJHAqnjDvgBy3weR931SiMYMvDec5YjH5pUlGzy4Z5GoAkrZ53vE3RH1v6rJrFK6Zr4pJZlbPKJZuVh28jaB8nv5EorxFtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E/8l0Pg4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DC05C113CC;
-	Thu, 18 Apr 2024 14:48:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713451706;
-	bh=kb6yHJn9WyABtdbe/69G40oetjea/tWLVhjJP1KXgWc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E/8l0Pg4O1H2iQ5LzdhAe5Bb95rC/XAt7dGsT/DYUyq2C9lGEQdX2lPH0gnBPzWBK
-	 LhzOCrdE4mtqX8ySV6QptVR5ZPPI3W6GiB+KplyPQ9qjoeClpt0Hp9bTqv6FiEMt6y
-	 f10uVLUUJTwY9yfp/RID9uyY9q2Hpa1YH16G2SNpnjDOqmAwKuSUFeXTDOzSweGjkh
-	 t6Vy7N8a7Exj/eyuGKlI/2h3Gyw9Ktv20RodluSbQAu7+/fQhYPKhjfLxjLVwZMvIP
-	 J6cr4dGUg5hpO90TsVSo2BQf534QM0mPDfKw2WBJofsNPtAKK7or2tk2fQcrSo0IdQ
-	 O0zClbAbkHdoQ==
-Date: Thu, 18 Apr 2024 16:48:20 +0200
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v3 2/9] PCI: endpoint: Rename core_init() callback in
- 'struct pci_epc_event_ops' to epc_init()
-Message-ID: <ZiEytLn1hl-AtTo6@ryzen>
-References: <20240418-pci-epf-rework-v3-0-222a5d1ed2e5@linaro.org>
- <20240418-pci-epf-rework-v3-2-222a5d1ed2e5@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GauqQiOSKQuERCZaz633WCRZXv08xAf98WidFfySEe041C4nxgVRxWtj0CJTN32ZQUYd6BimA/lJwvvHZEXJQ/SzBuXQ8tMtEb+Dy0vEbL0wkqrikj9TfZcTxKGC8BvulSanMP9sywSNdz3N8BOlWFwx7EcLjvZQdV3u/Nv3r0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iEARRixF; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 18 Apr 2024 07:49:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713451751;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L+oZNHCiAYDQYgTy7C1ugxmdQ034rdJRx6SliQtfo3k=;
+	b=iEARRixFPb7tY694aPQ7hwwXPQqJZftXCopWiRG8K7LuZOlONNwzObwH4juZlvCU8THu3g
+	hivCPVdZKszLw3dA047mPNFgYGE0J5Y2chC7EIdAfCoyR9ryDC++O/Q+t79Fn8O5v6p52F
+	+WXAeQRqDuYsoq2y3t68OFrSNJUIJrQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Yosry Ahmed <yosryahmed@google.com>, tj@kernel.org, hannes@cmpxchg.org, 
+	lizefan.x@bytedance.com, cgroups@vger.kernel.org, longman@redhat.com, 
+	netdev@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
+Subject: Re: [PATCH v1 2/3] cgroup/rstat: convert cgroup_rstat_lock back to
+ mutex
+Message-ID: <lxzi557wfbrkrj6phdlub4nmtulzbegykbmroextadvssdyfhe@qarxog72lheh>
+References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
+ <171328989335.3930751.3091577850420501533.stgit@firesoul>
+ <CAJD7tkZFnQK9CFofp5rxa7Mv9wYH2vWF=Bb28Dchupm8LRt7Aw@mail.gmail.com>
+ <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,20 +63,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240418-pci-epf-rework-v3-2-222a5d1ed2e5@linaro.org>
+In-Reply-To: <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 18, 2024 at 05:28:30PM +0530, Manivannan Sadhasivam wrote:
-> core_init() callback is used to notify the EPC initialization event to the
-> EPF drivers. The 'core' prefix was used indicate that the controller IP
-> core has completed initialization. But it serves no purpose as the EPF
-> driver will only care about the EPC initialization as a whole and there is
-> no real benefit to distinguish the IP core part.
+On Thu, Apr 18, 2024 at 11:02:06AM +0200, Jesper Dangaard Brouer wrote:
 > 
-> So let's rename the core_init() callback in 'struct pci_epc_event_ops' to
-> epc_init() to make it more clear.
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
+> On 18/04/2024 04.19, Yosry Ahmed wrote:
+[...]
+> > 
+> > I will keep the high-level conversation about using the mutex here in
+> > the cover letter thread, but I am wondering why we are keeping the
+> > lock dropping logic here with the mutex?
+> > 
+> 
+> I agree that yielding the mutex in the loop makes less sense.
+> Especially since the raw_spin_unlock_irqrestore(cpu_lock, flags) call
+> will be a preemption point for my softirq.   But I kept it because, we
+> are running a CONFIG_PREEMPT_VOLUNTARY kernel, so I still worried that
+> there was no sched point for other userspace processes while holding the
+> mutex, but I don't fully know the sched implication when holding a mutex.
+> 
 
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
+Are the softirqs you are interested in, raised from the same cpu or
+remote cpu? What about local_softirq_pending() check in addition to
+need_resched() and spin_needbreak() checks? If softirq can only be
+raised on local cpu then convert the spin_lock to non-irq one (Please
+correct me if I am wrong but on return from hard irq and not within bh
+or irq disabled spin_lock, the kernel will run the pending softirqs,
+right?). Did you get the chance to test these two changes or something
+similar in your prod environment?
+
 
