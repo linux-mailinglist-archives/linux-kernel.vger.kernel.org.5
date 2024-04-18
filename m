@@ -1,94 +1,74 @@
-Return-Path: <linux-kernel+bounces-149859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 163178A96E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5346B8A96ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:02:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 970071F22194
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:02:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D60841F22107
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 10:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDD515B569;
-	Thu, 18 Apr 2024 10:02:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EAB415B555;
+	Thu, 18 Apr 2024 10:02:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YEE6pjJR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iAhukmSG";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YEE6pjJR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iAhukmSG"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TII5qJ5H"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C387615B555
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0413415B569
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 10:02:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713434527; cv=none; b=EbsFDN190VNEi5nVFYoG+9xArmlEQMiIWWG8rdItVQHD15m740WwiQizZW8ytn0ssitgHmRicdaQKOStPwAMu406yvs0Zp20zkkpduNJFwfI1NgGdPAr0mbuhxo+BCw6r7wfBCBLiga9gQRs1XOR6hE3oCH/1evvb2POqsx+UDk=
+	t=1713434558; cv=none; b=YLaWN4KdnyCmzG6h0aGrSJdvLYcj1E6e+GZWu9nA5kSTayUvJ0Xq1fb7JA+eSeQzfJjx4uK598RdA9+bUUV421gna1y94qqf2nzijLHOHnfDWVnTPz/fr6x5bhZ7kr6D4aBUT0WdlxaOVhnV4RpQn8ETclBk/m03kSqW/uK0KxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713434527; c=relaxed/simple;
-	bh=8COTx1i1oSrY4Hi+JbsS9g77yXZeH/Kgh/g2wsvl+pU=;
+	s=arc-20240116; t=1713434558; c=relaxed/simple;
+	bh=Lu5cwnOqsWBHHVTw2AzuWbQX0zd3RFY4XyEn0Fx2c64=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N6kxYQRoOKmYIDxDZFTv+t6rAHamj8ZZdAq2mCds2N8/O4Zat20srxTIjJk0nt4dg+pHxyNqVaTDM2KdAIak6EXHFQx9lOx3JCA+rSlofil+x8HXYYSoclYQlv7vJyByElb0RuEFWWPAOiWxarZzwQKWD55QR8qLU9p7P3aL1vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YEE6pjJR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iAhukmSG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YEE6pjJR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iAhukmSG; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 50D6634CF1;
-	Thu, 18 Apr 2024 10:01:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713434517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t9BC5x+epqyJhvENaf5Ud+TioMjKQGGUEKQ2yKbOem4=;
-	b=YEE6pjJRHnm0WNgrLCf1bV4cwh+6uXHyuqm41rLGr5jxwlOEEvGW3lUEgRqFTNobuX0LlX
-	xOdjgvLdySs8wggbr/WxDvcM5qYMR7SP6sr4QVHfvWpP/X7sIEPG7PLOb/u1RTLqoPM2Az
-	2sF8bLki4zAFFg4BvFEdFnFK/n5zBug=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713434517;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t9BC5x+epqyJhvENaf5Ud+TioMjKQGGUEKQ2yKbOem4=;
-	b=iAhukmSGHwAHBydoC1CoGwjoCozOc4F+zxg5iCQWTvWQrw/gN+nuev+Er34qqipIrSOhO+
-	osCzkFsW8N3eD/AQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713434517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t9BC5x+epqyJhvENaf5Ud+TioMjKQGGUEKQ2yKbOem4=;
-	b=YEE6pjJRHnm0WNgrLCf1bV4cwh+6uXHyuqm41rLGr5jxwlOEEvGW3lUEgRqFTNobuX0LlX
-	xOdjgvLdySs8wggbr/WxDvcM5qYMR7SP6sr4QVHfvWpP/X7sIEPG7PLOb/u1RTLqoPM2Az
-	2sF8bLki4zAFFg4BvFEdFnFK/n5zBug=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713434517;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t9BC5x+epqyJhvENaf5Ud+TioMjKQGGUEKQ2yKbOem4=;
-	b=iAhukmSGHwAHBydoC1CoGwjoCozOc4F+zxg5iCQWTvWQrw/gN+nuev+Er34qqipIrSOhO+
-	osCzkFsW8N3eD/AQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4462913687;
-	Thu, 18 Apr 2024 10:01:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id SKhfEJXvIGbMRQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 18 Apr 2024 10:01:57 +0000
-Message-ID: <9863d6b8-cb6d-4555-b35e-38d495f3afbd@suse.cz>
-Date: Thu, 18 Apr 2024 12:01:59 +0200
+	 In-Reply-To:Content-Type; b=bHM7T++MxYi4xGU/S52KPgUIV4U02lJAEDHneZDYnNbGJb8ljjRGdXvzR2uSMk9J7gf+xHqpWEQzZUmtiAB2DYk/GXWLpu2nJeUOqSR6kLPE+uqZw2Zeev+FHavkcpqU9uq1xCuTERAw8CyaAkbHLDzIH05D35tTge06oEqW+oI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TII5qJ5H; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56e6a1edecfso965282a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 03:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713434553; x=1714039353; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=FnxTEEEgXyOHv+t6SMhe1If5D3C2g5i/C1My33+brW0=;
+        b=TII5qJ5HhDwLAlceFOt1dr30GyUTe/FGM1wpQJjI41FrDFWGq3b9asxj4gkCLLQXWu
+         N+vhhMKJcV8OBB7e0yKXqIFw2hoGGHzZsuGZjVknYYBhaaLMQgm+19hCLFb2agHGNOb8
+         0Lcby6F36xcOoFFJyhDrojyhEVH5DAV9XimOeX6n3Vo7MzxPTnpycsKx6U37r3frrR4U
+         QJ4Sbsknwccd+S3sUbVlRoPHmWV6TyY3hV/03SVjrHCerpwELruC1DDfXolrsqGfh/kI
+         JeJ9F+jDNkwKrjSKLtSprfWVU7ArpBHDFhoLZ+sDRQ0XdHYzbg4WTRQbQcFsolbfxpFa
+         LK+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713434553; x=1714039353;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FnxTEEEgXyOHv+t6SMhe1If5D3C2g5i/C1My33+brW0=;
+        b=Q1VFodG0VVHqMNML//+MNOdqEnmcpyGzVnDUow0S/OVp9b+pYq82E9GZBHEtvQjkIl
+         j01tCihLJ9ysegUXiOTnYZaCwjnQYKnvEIFTonKVGzf+WsIzuA03z+tzdq69vtrSUMtS
+         kOCAHGkEPyTmVh4P+kY6vgtnbfb+dUzK0f9qjtqtnZCgB8A8MH3NkvtCpCN8/DpbE3oW
+         5yEGa3EuXfVbfF07E5g2g2gBSPl/nEfI/YSNwG+ATquYivurtw5hQm7uzhYLNiTc9zwN
+         g8csRbGzgvto9VtoANjGb0xsMlYkLtcscy/l0aKlg1XjwfeGJKoKAqZZ7ptSM6Ci87gA
+         yBcg==
+X-Forwarded-Encrypted: i=1; AJvYcCWVWH4pfmNNacnOMY5oL/e6I/zeeCnTH//7PzrbDiur+s2ZR9gye4crEvX51/zU8YmV8GJ2INyOnqVv6imu9J/+MKk2oYLfJCKOctBZ
+X-Gm-Message-State: AOJu0YwcdgMxhrkjIjlSDgpg21pWewdXtwPLD06Fi7JrFN5RGcxCO2dp
+	rNU0EyCvAnz4TSzvf/TFZKvrQ/3EAFilO/zCtcyvfmWVSI1yu68NXg8sBID8lAU=
+X-Google-Smtp-Source: AGHT+IFL8NYfQtVBhx816Vj50nQ4ww8c0vfWVZ4LsZ8eXsIFUIWQ1/25jS313ZZKpUMvHZQXnZ8Lxg==
+X-Received: by 2002:a17:906:1be2:b0:a51:bca7:3a96 with SMTP id t2-20020a1709061be200b00a51bca73a96mr1503771ejg.72.1713434553296;
+        Thu, 18 Apr 2024 03:02:33 -0700 (PDT)
+Received: from [192.168.45.55] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id w25-20020a170906131900b00a528064f438sm670072ejb.34.2024.04.18.03.02.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 03:02:32 -0700 (PDT)
+Message-ID: <eac7ffe1-7490-4dc7-9d97-637ec31e855f@linaro.org>
+Date: Thu, 18 Apr 2024 12:02:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,167 +76,70 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] slub: limit number of slabs to scan in
- count_partial()
-To: Jianfeng Wang <jianfeng.w.wang@oracle.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-Cc: akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
- rientjes@google.com, iamjoonsoo.kim@lge.com, junxiao.bi@oracle.com
-References: <20240417185938.5237-1-jianfeng.w.wang@oracle.com>
- <20240417185938.5237-2-jianfeng.w.wang@oracle.com>
-From: Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2 3/3] arm64: dts: msm8996: add fastrpc nodes
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Sibi Sankar <quic_sibis@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+References: <20240418-msm8996-remoteproc-v2-0-b9ae852bf6bc@linaro.org>
+ <20240418-msm8996-remoteproc-v2-3-b9ae852bf6bc@linaro.org>
 Content-Language: en-US
-In-Reply-To: <20240417185938.5237-2-jianfeng.w.wang@oracle.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240418-msm8996-remoteproc-v2-3-b9ae852bf6bc@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.29 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Score: -4.29
-X-Spam-Flag: NO
 
-On 4/17/24 20:59, Jianfeng Wang wrote:
-> When reading "/proc/slabinfo", the kernel needs to report the number
-> of free objects for each kmem_cache. The current implementation uses
-> count_partial() to count the number of free objects by scanning each
-
-Hi,
-
-thanks. I wanted to apply this patch but then I realized we use the same
-function besides slabinfo for sysfs and slab_out_of_memory(), and it's
-not always counting free objects. When somebody is debugging with sysfs,
-they may expect the exact counts and pay the price if needed, but we
-probably don't want to make slab_out_of_memory() slow and precise, so
-that's more like the slabinfo.
-
-So what I propose is to create a new variant of count_partial, called
-e.g. count_partial_free_approx() which has no get_count parameter but
-hardcodes what count_free() does.
-Then use this new function only for slabinfo and slab_out_of_memory(),
-leaving the other count_partial() users unchanged.
-Another benefit of that is that we remove the overhead of calling
-get_count(), which may be nontrivial with the current cpu vulnerability
-mitigations so it's good to avoid for slabinfo and oom reports.
-
-Thanks!
-
-> kmem_cache_node's list of partial slabs and summing free objects
-> from every partial slab in the list. This process must hold per
-> kmem_cache_node spinlock and disable IRQ, and may take a long time.
-> Consequently, it can block slab allocations on other CPU cores and
-> cause timeouts for network devices and so on, when the partial list
-> is long. In production, even NMI watchdog can be triggered due to this
-> matter: e.g., for "buffer_head", the number of partial slabs was
-> observed to be ~1M in one kmem_cache_node. This problem was also
-> confirmed by several others [1-3].
+On 18.04.2024 8:44 AM, Dmitry Baryshkov wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > 
-> Iterating a partial list to get the exact count of objects can cause
-> soft lockups for a long list with or without the lock (e.g., if
-> preemption is disabled), and is not very useful too: the object
-> count can change right after the lock is released. The approach of
-> maintaining free-object counters requires atomic operations on the
-> fast path [3].
+> The ADSP provides fastrpc/compute capabilities. Enable support for the
+> fastrpc on this DSP.
 > 
-> So, the fix is to limit the number of slabs to scan in count_partial().
-> Suppose the limit is N. If the list's length is not greater than N,
-> output the exact count by traversing the whole list; if its length is
-> greater than N, then output an approximated count by traversing a
-> subset of the list. The proposed method is to scan N/2 slabs from the
-> list's head and the other N/2 slabs from the tail. For a partial list
-> with ~280K slabs, benchmarks show that this approach performs better
-> than just counting from the list's head, after slabs get sorted by
-> kmem_cache_shrink(). Default the limit to 10000, as it produces an
-> approximation within 1% of the exact count for both scenarios.
-> 
-> Benchmarks: Diff = (exact - approximated) / exact
-> * Normal case (w/o kmem_cache_shrink()):
-> | MAX_TO_SCAN | Diff (count from head)| Diff (count head+tail)|
-> | 1000        |  0.43  %              |  1.09  %              |
-> | 5000        |  0.06  %              |  0.37  %              |
-> | 10000       |  0.02  %              |  0.16  %              |
-> | 20000       |  0.009 %              | -0.003 %              |
-> 
-> * Skewed case (w/ kmem_cache_shrink()):
-> | MAX_TO_SCAN | Diff (count from head)| Diff (count head+tail)|
-> | 1000        |  12.46 %              |  6.75  %              |
-> | 5000        |  5.38  %              |  1.27  %              |
-> | 10000       |  4.99  %              |  0.22  %              |
-> | 20000       |  4.86  %              | -0.06  %              |
-> 
-> [1] https://lore.kernel.org/linux-mm/
-> alpine.DEB.2.21.2003031602460.1537@www.lameter.com/T/
-> [2] https://lore.kernel.org/lkml/
-> alpine.DEB.2.22.394.2008071258020.55871@www.lameter.com/T/
-> [3] https://lore.kernel.org/lkml/
-> 1e01092b-140d-2bab-aeba-321a74a194ee@linux.com/T/
-> 
-> Signed-off-by: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
->  mm/slub.c | 28 ++++++++++++++++++++++++++--
->  1 file changed, 26 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 1bb2a93cf7b6..7e34f2f0ba85 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3213,6 +3213,8 @@ static inline bool free_debug_processing(struct kmem_cache *s,
->  #endif /* CONFIG_SLUB_DEBUG */
->  
->  #if defined(CONFIG_SLUB_DEBUG) || defined(SLAB_SUPPORTS_SYSFS)
-> +#define MAX_PARTIAL_TO_SCAN 10000
-> +
->  static unsigned long count_partial(struct kmem_cache_node *n,
->  					int (*get_count)(struct slab *))
->  {
-> @@ -3221,8 +3223,30 @@ static unsigned long count_partial(struct kmem_cache_node *n,
->  	struct slab *slab;
->  
->  	spin_lock_irqsave(&n->list_lock, flags);
-> -	list_for_each_entry(slab, &n->partial, slab_list)
-> -		x += get_count(slab);
-> +	if (n->nr_partial <= MAX_PARTIAL_TO_SCAN) {
-> +		list_for_each_entry(slab, &n->partial, slab_list)
-> +			x += get_count(slab);
-> +	} else {
-> +		/*
-> +		 * For a long list, approximate the total count of objects in
-> +		 * it to meet the limit on the number of slabs to scan.
-> +		 * Scan from both the list's head and tail for better accuracy.
-> +		 */
-> +		unsigned long scanned = 0;
-> +
-> +		list_for_each_entry(slab, &n->partial, slab_list) {
-> +			x += get_count(slab);
-> +			if (++scanned == MAX_PARTIAL_TO_SCAN / 2)
-> +				break;
-> +		}
-> +		list_for_each_entry_reverse(slab, &n->partial, slab_list) {
-> +			x += get_count(slab);
-> +			if (++scanned == MAX_PARTIAL_TO_SCAN)
-> +				break;
-> +		}
-> +		x = mult_frac(x, n->nr_partial, scanned);
-> +		x = min(x, node_nr_objs(n));
-> +	}
->  	spin_unlock_irqrestore(&n->list_lock, flags);
->  	return x;
->  }
+
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
 
