@@ -1,80 +1,62 @@
-Return-Path: <linux-kernel+bounces-149838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9208B8A968C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:45:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6F948A9691
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:45:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3BC01C21CE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:45:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5463AB2312D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5960215B56A;
-	Thu, 18 Apr 2024 09:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131BE15B15B;
+	Thu, 18 Apr 2024 09:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ljztmPpK"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OCzH687B"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 095CB15B104;
-	Thu, 18 Apr 2024 09:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45244125D6;
+	Thu, 18 Apr 2024 09:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713433473; cv=none; b=qVAJTFhJdb7P0OzvPqzf1HUyFsDAGhwOH95oqNOsyeO3sOoxbwX4hwa6LRETjUUd4JsYrkVDDWHEECtdJNba1AN0H22CoCFgHgl3kkEMYD42toxj5mJtzQLPw2kXdvNPICM8GRmwPwKNh9nUHIIr2FLapJ5ya/iMfsP3L6UuloQ=
+	t=1713433543; cv=none; b=OeSzxktGXimtOGEjZZsNjT2szUZbS4ycUodI/Q4hlL1T8yDX94G7LHrFktzKI3qLst1LKUTeaMKo6A2AfNDEnxDHfLlbk7VtQoWEVMl0ofqd+SDYE199YPsilocfk228y/tESaDxhN4q8d8qldNnWMIuPXVweHc6a3Yg/iaiTPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713433473; c=relaxed/simple;
-	bh=Almhm7EmJOze8Bt25QP+KeiGORDpSLyCg+DsR0jsOXw=;
+	s=arc-20240116; t=1713433543; c=relaxed/simple;
+	bh=flsCAe3Wcgtkzg6kErNrgWEmiLRjAq0+Pae7CbLV5is=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QJjc4YHNnLXQHN0sncMiTuYkZRIsIJIYdG0gVV+gFGJ9IQyoi+XYzpPUIKKdTRKWWkanwII1131Agzu2A3zq4/DToLt8SE8GWsmPRgm9JOgOozZ1K6s2t2fWL0hLikBQm/sChIhejEbJbgFMq2ZBvAolLiL1jrugtdLjEdzvrXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ljztmPpK; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713433472; x=1744969472;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Almhm7EmJOze8Bt25QP+KeiGORDpSLyCg+DsR0jsOXw=;
-  b=ljztmPpKPOTdGVVwGfW4HxDj50VrCe+Vn+RzPE6j8CSwVb6SHFRPpq2l
-   4olomKUNYDFYKmScXAyv1fF7ysEopwr6gdRK+98XHFmLN/d7rNCU5F3Ty
-   IVGDtyy7Flw4hD2TqGbUIxCQHL5Kti0CK/XYW0lnl++/He0faVjfYadpo
-   7Y+Vejnvb/B7/FsSwQqxJiWfHK7aoAerzQvFPEXQ6LQVxHbIJzqXpX3zC
-   0r2UzvytcQIGxglo6nmA4gnp8RrxgRZ6GjkU9aeVF1mPmaWmSWdZFFuty
-   o61izWeKoJAfrWnzrDCADV+78+sQZAJTmdQmHSnKWfVhe7c7sbSxmEJb6
-   A==;
-X-CSE-ConnectionGUID: aLFY8dS5RfK+xsDpCVD5NQ==
-X-CSE-MsgGUID: RIoTKXEyQX67NYjsSdP8eg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12754079"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="12754079"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 02:43:31 -0700
-X-CSE-ConnectionGUID: FczCJVUoTgef2Wb+gIihNw==
-X-CSE-MsgGUID: /TKLrt2sSbOsNLJb1Lqs7w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="23356524"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 02:43:29 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rxOIf-00000000HpB-2vZ4;
-	Thu, 18 Apr 2024 12:43:25 +0300
-Date: Thu, 18 Apr 2024 12:43:25 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dmaengine: dw: Add peripheral bus width verification
-Message-ID: <ZiDrPSb7YxeooHzC@smile.fi.intel.com>
-References: <20240416162908.24180-1-fancer.lancer@gmail.com>
- <20240416162908.24180-2-fancer.lancer@gmail.com>
- <Zh680h4h6hURIb82@smile.fi.intel.com>
- <ut5notgwnjdj7ex3jeo7jnbdc2vhopebdg3miepto2wfrxti4b@b2xksvotrgph>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aKRjuaZj9H+TbLuv5hWeIA0Lqc/2vco5odvRymBMLapxph8Pvit8IaYEaoAC6T1OJih/uRgPCjCQTsa6F3MMb4NG1uftPdoEvtVD+TMgkJ0ftCg8NrhuAkGOQvqiatrbTGibw97M4YUdCuVsA0HJZ1gci6gNpYtNcJYEsej4L8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OCzH687B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02867C113CC;
+	Thu, 18 Apr 2024 09:45:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713433542;
+	bh=flsCAe3Wcgtkzg6kErNrgWEmiLRjAq0+Pae7CbLV5is=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OCzH687BEIR2lOzj+dxsfZqUYFtlL0+ielMEWO9Nd8Fb9rYZvXGC06xUAAKE0xTC2
+	 ODsVKHYQpTsPo+4ErswN3F55s4JiL+Joxebuu3eAnzRr3qV0GSRYyTlLavz5OjgkFC
+	 6LL/l7TN1+Q8jKfePQg5nRlURZkuxbPb9eEwxHqvVGH25vJEM0Dtja8dxWjCNUmc1/
+	 C0Lpj5CRI6NRad/dy+GGuT/7l6ytsvLALQIuRPPMIEClIodtrQFv+F7ukJy7R+84PZ
+	 Zi5yGytX4EUlRGmrc1bwC1zGznPaBiZOOV/70+TAT645DE3/RRLWyvJol6fKW33/UQ
+	 x/nQeIDi73EXQ==
+Date: Thu, 18 Apr 2024 10:45:35 +0100
+From: Simon Horman <horms@kernel.org>
+To: Danielle Ratson <danieller@nvidia.com>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net,
+	linux@armlinux.org.uk, sdf@google.com, kory.maincent@bootlin.com,
+	maxime.chevallier@bootlin.com, vladimir.oltean@nxp.com,
+	przemyslaw.kitszel@intel.com, ahmed.zaki@intel.com,
+	richardcochran@gmail.com, shayagr@amazon.com,
+	paul.greenwalt@intel.com, jiri@resnulli.us,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mlxsw@nvidia.com, petrm@nvidia.com, idosch@nvidia.com
+Subject: Re: [PATCH net-next v3 07/10] ethtool: cmis_cdb: Add a layer for
+ supporting CDB commands
+Message-ID: <20240418094535.GB3974194@kernel.org>
+References: <20240417085347.2836385-1-danieller@nvidia.com>
+ <20240417085347.2836385-8-danieller@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,85 +65,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ut5notgwnjdj7ex3jeo7jnbdc2vhopebdg3miepto2wfrxti4b@b2xksvotrgph>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240417085347.2836385-8-danieller@nvidia.com>
 
-On Wed, Apr 17, 2024 at 10:54:42PM +0300, Serge Semin wrote:
-> On Tue, Apr 16, 2024 at 09:00:50PM +0300, Andy Shevchenko wrote:
-> > On Tue, Apr 16, 2024 at 07:28:55PM +0300, Serge Semin wrote:
+On Wed, Apr 17, 2024 at 11:53:44AM +0300, Danielle Ratson wrote:
 
 ..
 
-> > > +	if (reg_width == DMA_SLAVE_BUSWIDTH_UNDEFINED)
-> > > +		reg_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
-> > > +	else if (!is_power_of_2(reg_width) || reg_width > max_width)
-> > > +		return -EINVAL;
-> > > +	else /* bus width is valid */
-> > > +		return 0;
-> > > +
-> > > +	/* Update undefined addr width value */
-> > > +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV)
-> > > +		dwc->dma_sconfig.dst_addr_width = reg_width;
-> > > +	else /* DMA_DEV_TO_MEM */
-> > > +		dwc->dma_sconfig.src_addr_width = reg_width;
-> > 
-> 
-> > So, can't you simply call clamp() for both fields in dwc_config()?
-> 
-> Alas I can't. Because the addr-width is the non-memory peripheral
-> setting. We can't change it since the client drivers calculate it on
-> the application-specific basis (CSR widths, transfer length, etc). So
-> we must make sure that the specified value is supported.
+> +/**
+> + * struct ethtool_cmis_cdb_cmd_args - CDB commands execution arguments
+> + * @req: CDB command fields as described in the CMIS standard.
+> + * @max_duration: Maximum duration time for command completion in msec.
+> + * @read_write_len_ext: Allowable additional number of byte octets to the LPL
+> + *			in a READ or a WRITE commands.
+> + * @rpl_exp_len: Expected reply length in bytes.
+> + * @flags: Validation flags for CDB commands.
+> + */
 
-What I meant is to convert this "update" part to the clamping, so
-we will have the check as the above like
+Hi Danielle,
 
-_verify_()
-{
-	if (reg_width == DMA_SLAVE_BUSWIDTH_UNDEFINED)
-		return -E...;
-	if (!is_power_of_2(reg_width) || reg_width > max_width)
-		return -EINVAL;
+I'm fine if this gets addressed as a follow-up,
+but the Kernel doc above should include documentation
+of msleep_pre_rpl and err_msg.
 
-	/* bus width is valid */
-	return 0;
-}
+Flagged by: ./scripts/kernel-doc -Wall -none
 
-dwc_config()
-{
-	err = ...
-	if (err = ...)
-		clamp?
-	else if (err)
-		return err;
-}
-
-But it's up to you to choose the better variant. I just share the idea.
-
-> > > +	return 0;
-> > > +}
+> +struct ethtool_cmis_cdb_cmd_args {
+> +	struct ethtool_cmis_cdb_request req;
+> +	u16				max_duration;
+> +	u8				read_write_len_ext;
+> +	u8				msleep_pre_rpl;
+> +	u8                              rpl_exp_len;
+> +	u8				flags;
+> +	char				*err_msg;
+> +};
 
 ..
-
-> > > +	int err;
-> 
-> > Hmm... we have two functions one of which is using different name for this.
-> 
-> Right, the driver uses both variants (see of.c, platform.c, pci.c too).
-> 
-> > Can we have a patch to convert to err the other one?
-> 
-> To be honest I'd prefer to use the "ret" name instead. It better
-> describes the variable usage context (Although the statements like "if
-> (err) ..." look a bit more readable). So I'd rather convert the "err"
-> vars to "ret". What do you think?
-
-I'm fine with any choice, just my point is to get it consistent across
-the driver.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
 
