@@ -1,250 +1,105 @@
-Return-Path: <linux-kernel+bounces-150098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 826548A9A5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:49:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 850528A9A5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:49:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A60101C20BF9
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24C511F215F3
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 12:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0088315FA90;
-	Thu, 18 Apr 2024 12:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1FE13442C;
+	Thu, 18 Apr 2024 12:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lC2DyRWQ"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=huaqin-corp-partner-google-com.20230601.gappssmtp.com header.i=@huaqin-corp-partner-google-com.20230601.gappssmtp.com header.b="S5pKyZgY"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C29D1635CF
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FEE163A80
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713444511; cv=none; b=CbL8RZJeiRVU2GbDafX0QDg/6LHxp+TnPuru30g+2ODaD0jrIrkJy0MLAgj9YM+H6WD+15yipCrzXNUEt67zbveBOLrxttHYNKJ0X5s9eUJA4zjsE7u/zIGC1Zu0TWrzGMI5Pvik8cQ2n7ZLO3E1bUcbBq89PxJhJvlHFkuB7oE=
+	t=1713444511; cv=none; b=sQKQBw0x3OxfSxZlumOTrmAVF2sfaxsv7PPr63xT1ljqCXJhTsPgFkhq2ABoY04e9UWb/JEWPf/4xn73rFy3b/qxPVpCqCYxH7cH2R19yDzXL2N/1qLVClshbGWfreUG+R9iRpU65SIkjKw6blzG0XJmr0L4VG6OKNyIzQRz4ug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713444511; c=relaxed/simple;
-	bh=EawJzvmVFDkSjWoTQgwRh/wSc7NEkuBedTulxOyczkI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PLDT4EemdKdon/KLfIbpPZKrhznLixFE6GQUNQcAO+RI7eBjoSbFRdHeXe4nNqkqC8yjadaDDPy88Shxjgqyc+2KPfCnktslIY/Zy1/XHG3LGbSpwG+uUZ/Y1r2jAi37fr7nqigKjRMVPKRYqqCrJk44p0o3stuLwPz19u9M7io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lC2DyRWQ; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a51a80b190bso43941566b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:48:25 -0700 (PDT)
+	bh=E0hJ0cNVpzGDyCkIHhzVV48In8rsSze1Ba708GHW0DQ=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=kRkVOakAF6xXEJcUWnmYKi6nGOPIbRsTYAqd4uVJ8S8Cqa1cR44qbsXYcHALlwXFALUMlEYazoUGOssJVWBliQnsCi4JXV7nbrF4AxZCFNZy9200KcmPS+3PNPewfvlhvS7pZikXYM/wkiviJNGkLyg0noy1KGKSBKMhkSUaxhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com; dkim=pass (2048-bit key) header.d=huaqin-corp-partner-google-com.20230601.gappssmtp.com header.i=@huaqin-corp-partner-google-com.20230601.gappssmtp.com header.b=S5pKyZgY; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e51398cc4eso7314985ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 05:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713444504; x=1714049304; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=huaqin-corp-partner-google-com.20230601.gappssmtp.com; s=20230601; t=1713444505; x=1714049305; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=02DHgHC5hfvxUAH6RCZ0vfGGVyvpArmC7tKJv3DPOKA=;
-        b=lC2DyRWQjrM1GT3dP24qqP8CvUDQ6EIoNdumwskbnpOpB40nVLDhbAewH+gQA6uVip
-         zdGv1ErXIoB/LOej1ZIA1lhWFbyUBTwEhi1qPiCEJA/Bd9t9KiTigma3AAArnz1m3Wdt
-         TpFI/svNAnZxhIV5fRQR49HBoYjHHB39XuJyVv4RZvzAf0yaxkvNnXFZGj+vsvui2OuR
-         Di5POP3rLi7YK2oPELH6tn+EMfJCg+XJchE7y1l4lQlmE0k5tMrb19qVrTtQx+tm+8ia
-         aMZeFdKcmFGItTA2Hjr/tZr1Icel0xUuVNuwK1g0iedXwm6CBIINYwOGLc7M2W+3nQRs
-         hymQ==
+        bh=vBVJjQh/Nx8BXhkrFisIjtogBH13cAN8LyyArAUlFGo=;
+        b=S5pKyZgYuO+xZKmnhRrOhK5YDbE8tmtTVUp3bps8bs4wcmRgoH5AP+aVnDGdfGhCZf
+         1OBhaf3zKgFHa3jX2834JmIBHgFsSUMq8nCRTqvS2X4eRhfAxqXWLtBPlJR9K9EJT59D
+         FGCD0s5koQqObczKbAd7tsi/4fC6GPmlXx0azCZgTQQjV3i5KX1QyTKvY/IIgCS1G2eT
+         iFJNyPiX83PMPWjPpWl8DW28HJ7LJ/+KBCvt5oygDB50DHHXbYGcBBugpGS65vcMPTYp
+         y9C8BOd0zQx+I97IYF8DXJBlQGQ4GhM1knhNsNuH4KBf2tLni2vMMcBPeqmpDgiMeMRV
+         MwDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713444504; x=1714049304;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713444505; x=1714049305;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=02DHgHC5hfvxUAH6RCZ0vfGGVyvpArmC7tKJv3DPOKA=;
-        b=uO4qqyFtYC3V6QIBhsx0A691lnoHqRdVvGzuZDdYpMXonu7VM9nDpUv4igHYtd5IUa
-         22WITrg7PyUFhmewGw46lD7iO0QnFBGeFVP4/4CHK21JlMrtvB5f6FHmcDntq7NgXeqs
-         sI29XOtkj3aehGNFQ++nC+UEhOmxjFLUjcX+P/Bg/kKwRiz6OgtVwsvUpA8EUx22qUw0
-         Vsb6jvvAPCB7yHDuFwktQgqM4b+4WZ29H5OACk4XTHCinASr1/ZwYYMEJsmPosdzax09
-         a33yN5/jcOb/O++YsbBYk+5yPNG6kGg2+MkpHLJobVGQoFCJh/SnqInLP/JGwnBk1MJv
-         vl4w==
-X-Forwarded-Encrypted: i=1; AJvYcCVcJCse2z64FbJQfJ9nNHopUcHKgYMcpM7KiReJudRpQg7Tu69dxrCg7Iw5Ty5ywcxHWfPkmzlsvmcctkgWfEFvDCfx7QioenmmNXUy
-X-Gm-Message-State: AOJu0Yxa1c85C2MIMiCDqC6wMYt3CvFUjla/uTSb2rBbXvMXNgcPGJnt
-	uc40vLQ8opWyfQ6z4ovtypZtleMt7xT5kzUFbkqLD9SrLxh3bO1o5qJ1bk9v8LARr97W0u1w6lS
-	apiinIc/BE5+1dIdKGTmXRCTqx50=
-X-Google-Smtp-Source: AGHT+IHoVoQDLTTFoju5epQHkEGecXR+kc3MK/xg6dv/EKvUPfTp2gAwCrUPxZrHpUqrOoPa5KWSFyQ37OZCmN9Xs5o=
-X-Received: by 2002:a50:9faa:0:b0:570:37d:badd with SMTP id
- c39-20020a509faa000000b00570037dbaddmr2194588edf.28.1713444504271; Thu, 18
- Apr 2024 05:48:24 -0700 (PDT)
+        bh=vBVJjQh/Nx8BXhkrFisIjtogBH13cAN8LyyArAUlFGo=;
+        b=TQ8YfbGeMYj4BSdm7tJQOuNRN3tyREVKDpy7g27l7yNfV7k1xxhXssOsjw/iGvBRW8
+         iaUeq2A5IrSOGo/O7i5M6WZVw1hATWlTcA5FH/kJXsqgheFi/HzTDVbKlRwQrnaYKAgc
+         Vba1oJdAKxrpF0ZBs8dtRJilbVMVt6xGtZk2RyqwH0DLpfMZ6j1rIQv6/t9rSm6TG6vU
+         3s+tdyJd5i8IS+7JmpyOny1+5HBfvJX10gN0i8wtDlsahILkE05oR1bCxIedWWDAJ/V0
+         rvzW9xfCql95Z+Vpaj7pnzwJuQx7svWPssDTqkwbwnk3gCEgKE+RISPnjhaPMHpyc2JR
+         E2rg==
+X-Forwarded-Encrypted: i=1; AJvYcCXhAva16oFE9vVBrAIpd5YAB1OIva9o23ozasSjSGRPpO0saQVCJoEa8UBJJ9oilajMvlxiFE5Xd9ULio2mTn86ECYYjoYTlZ9Lel3d
+X-Gm-Message-State: AOJu0YyPMQwLapMgfz7iOJqCC2ylMr6rbzyBtTNnX6gsp15cI5WwKuWk
+	mBJv+SS/1xil8J8t79TITl1U7sJ4OBNpoinNJx2I7tGJ1w9g9qAqzxBX0p4nIcc=
+X-Google-Smtp-Source: AGHT+IGSiSDDmR8LYcqwjG3haTEKWA5AkubEyL3ysc5fD6DHGQT11eT1vAj07i5o5JXkET0KZpz3OA==
+X-Received: by 2002:a17:902:9a0a:b0:1e4:24cc:e025 with SMTP id v10-20020a1709029a0a00b001e424cce025mr2713328plp.59.1713444505581;
+        Thu, 18 Apr 2024 05:48:25 -0700 (PDT)
+Received: from lvzhaoxiong-KLVC-WXX9.huaqin.com ([116.66.212.162])
+        by smtp.gmail.com with ESMTPSA id ju24-20020a170903429800b001e3d8c237a2sm1423509plb.260.2024.04.18.05.48.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 05:48:25 -0700 (PDT)
+From: lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>
+To: dmitry.torokhov@gmail.com,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	jikos@kernel.org,
+	benjamin.tissoires@redhat.co,
+	dianders@google.com,
+	hsinyi@google.com
+Cc: dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>
+Subject: [PATCH v1 0/2] Add ili2900 timing
+Date: Thu, 18 Apr 2024 20:48:13 +0800
+Message-Id: <20240418124815.31897-1-lvzhaoxiong@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240418105750.98866-1-ioworker0@gmail.com> <20240418105750.98866-5-ioworker0@gmail.com>
- <2fdcee93-b8ad-4374-a8ab-7c7bed463813@redhat.com> <CAK1f24m4y0kvmdFtHoJoPZeF9aeRpw4nnr1W5BMRz_OH49dHvg@mail.gmail.com>
- <89b534ab-ce9f-4a8a-984c-8460f686980d@redhat.com>
-In-Reply-To: <89b534ab-ce9f-4a8a-984c-8460f686980d@redhat.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Thu, 18 Apr 2024 20:48:12 +0800
-Message-ID: <CAK1f24=8k9uG7yWB2R3a_xBOuNT8dg4GCRk5i=wpGGrCvLg+ow@mail.gmail.com>
-Subject: Re: [PATCH v9 4/4] mm/madvise: optimize lazyfreeing with mTHP in madvise_free
-To: David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, ryan.roberts@arm.com, 21cnbao@gmail.com, 
-	mhocko@suse.com, fengwei.yin@intel.com, zokeefe@google.com, 
-	shy828301@gmail.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com, 
-	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 8:44=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 18.04.24 14:33, Lance Yang wrote:
-> > On Thu, Apr 18, 2024 at 8:03=E2=80=AFPM David Hildenbrand <david@redhat=
-com> wrote:
-> >>
-> >> On 18.04.24 12:57, Lance Yang wrote:
-> >>> This patch optimizes lazyfreeing with PTE-mapped mTHP[1]
-> >>> (Inspired by David Hildenbrand[2]). We aim to avoid unnecessary folio
-> >>> splitting if the large folio is fully mapped within the target range.
-> >>>
-> >>> If a large folio is locked or shared, or if we fail to split it, we j=
-ust
-> >>> leave it in place and advance to the next PTE in the range. But note =
-that
-> >>> the behavior is changed; previously, any failure of this sort would c=
-ause
-> >>> the entire operation to give up. As large folios become more common,
-> >>> sticking to the old way could result in wasted opportunities.
-> >>>
-> >>> On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folio=
-s of
-> >>> the same size results in the following runtimes for madvise(MADV_FREE=
-) in
-> >>> seconds (shorter is better):
-> >>>
-> >>> Folio Size |   Old    |   New    | Change
-> >>> ------------------------------------------
-> >>>         4KiB | 0.590251 | 0.590259 |    0%
-> >>>        16KiB | 2.990447 | 0.185655 |  -94%
-> >>>        32KiB | 2.547831 | 0.104870 |  -95%
-> >>>        64KiB | 2.457796 | 0.052812 |  -97%
-> >>>       128KiB | 2.281034 | 0.032777 |  -99%
-> >>>       256KiB | 2.230387 | 0.017496 |  -99%
-> >>>       512KiB | 2.189106 | 0.010781 |  -99%
-> >>>      1024KiB | 2.183949 | 0.007753 |  -99%
-> >>>      2048KiB | 0.002799 | 0.002804 |    0%
-> >>>
-> >>> [1] https://lkml.kernel.org/r/20231207161211.2374093-5-ryan.roberts@a=
-rm.com
-> >>> [2] https://lore.kernel.org/linux-mm/20240214204435.167852-1-david@re=
-dhat.com
-> >>>
-> >>> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-> >>> Signed-off-by: Lance Yang <ioworker0@gmail.com>
-> >>> ---
-> >>>    mm/madvise.c | 85 +++++++++++++++++++++++++++---------------------=
-----
-> >>>    1 file changed, 44 insertions(+), 41 deletions(-)
-> >>>
-> >>> diff --git a/mm/madvise.c b/mm/madvise.c
-> >>> index 4597a3568e7e..375ab3234603 100644
-> >>> --- a/mm/madvise.c
-> >>> +++ b/mm/madvise.c
-> >>> @@ -643,6 +643,7 @@ static int madvise_free_pte_range(pmd_t *pmd, uns=
-igned long addr,
-> >>>                                unsigned long end, struct mm_walk *wal=
-k)
-> >>>
-> >>>    {
-> >>> +     const cydp_t cydp_flags =3D CYDP_CLEAR_YOUNG | CYDP_CLEAR_DIRTY=
-;
-> >>>        struct mmu_gather *tlb =3D walk->private;
-> >>>        struct mm_struct *mm =3D tlb->mm;
-> >>>        struct vm_area_struct *vma =3D walk->vma;
-> >>> @@ -697,44 +698,57 @@ static int madvise_free_pte_range(pmd_t *pmd, u=
-nsigned long addr,
-> >>>                        continue;
-> >>>
-> >>>                /*
-> >>> -              * If pmd isn't transhuge but the folio is large and
-> >>> -              * is owned by only this process, split it and
-> >>> -              * deactivate all pages.
-> >>> +              * If we encounter a large folio, only split it if it i=
-s not
-> >>> +              * fully mapped within the range we are operating on. O=
-therwise
-> >>> +              * leave it as is so that it can be marked as lazyfree.=
- If we
-> >>> +              * fail to split a folio, leave it in place and advance=
- to the
-> >>> +              * next pte in the range.
-> >>>                 */
-> >>>                if (folio_test_large(folio)) {
-> >>> -                     int err;
-> >>> +                     bool any_young, any_dirty;
-> >>>
-> >>> -                     if (folio_likely_mapped_shared(folio))
-> >>> -                             break;
-> >>> -                     if (!folio_trylock(folio))
-> >>> -                             break;
-> >>> -                     folio_get(folio);
-> >>> -                     arch_leave_lazy_mmu_mode();
-> >>> -                     pte_unmap_unlock(start_pte, ptl);
-> >>> -                     start_pte =3D NULL;
-> >>> -                     err =3D split_folio(folio);
-> >>> -                     folio_unlock(folio);
-> >>> -                     folio_put(folio);
-> >>> -                     if (err)
-> >>> -                             break;
-> >>> -                     start_pte =3D pte =3D
-> >>> -                             pte_offset_map_lock(mm, pmd, addr, &ptl=
-);
-> >>> -                     if (!start_pte)
-> >>> -                             break;
-> >>> -                     arch_enter_lazy_mmu_mode();
-> >>> -                     pte--;
-> >>> -                     addr -=3D PAGE_SIZE;
-> >>> -                     continue;
-> >>> +                     nr =3D madvise_folio_pte_batch(addr, end, folio=
-, pte,
-> >>> +                                                  ptent, &any_young,=
- NULL);
-> >>> +
-> >>> +                     if (nr < folio_nr_pages(folio)) {
-> >>> +                             int err;
-> >>> +
-> >>> +                             if (folio_likely_mapped_shared(folio))
-> >>> +                                     continue;
-> >>> +                             if (!folio_trylock(folio))
-> >>> +                                     continue;
-> >>> +                             folio_get(folio);
-> >>> +                             arch_leave_lazy_mmu_mode();
-> >>> +                             pte_unmap_unlock(start_pte, ptl);
-> >>> +                             start_pte =3D NULL;
-> >>> +                             err =3D split_folio(folio);
-> >>> +                             folio_unlock(folio);
-> >>> +                             folio_put(folio);
-> >>> +                             start_pte =3D pte =3D
-> >>> +                                     pte_offset_map_lock(mm, pmd, ad=
-dr, &ptl);
-> >>
-> >> I'd just put it on a single line.
-> >
-> > start_pte =3D pte =3D pte_offset_map_lock(mm, pmd, addr, &ptl);
-> >
-> > I suddenly realized that putting it on a single line would exceed the
-> > 80-char limit.
->
-> Which is fine according to Documentation/process/coding-style.rst
->
-> ... as long as it aids readability.
->
-> Alternatively, the following might do:
->
-> pte =3D pte_offset_map_lock(mm, pmd, addr, &ptl);
-> start_pte =3D pte;
+ILI2900 requires reset to pull down time greater than 10ms,
+so the configuration post_power_delay_ms is 10, and the chipset
+initial time is required to be greater than 100ms,
+so the post_gpio_reset_on_delay_ms is set to 100.
 
-Yep, I understood.
+lvzhaoxiong (2):
+  dt-bindings: input: i2c-hid: Introduce Ilitek ili2900
+  HID: i2c-hid: elan: Add ili2900 timing
 
-Thanks,
-Lance
+ .../devicetree/bindings/input/ilitek,ili9882t.yaml        | 1 +
+ drivers/hid/i2c-hid/i2c-hid-of-elan.c                     | 8 ++++++++
+ 2 files changed, 9 insertions(+)
 
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+-- 
+2.17.1
+
 
