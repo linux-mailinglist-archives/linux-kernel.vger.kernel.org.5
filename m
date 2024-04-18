@@ -1,127 +1,142 @@
-Return-Path: <linux-kernel+bounces-150681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC6BE8AA2F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:39:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 571DD8AA2F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:40:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE00B1C22677
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:39:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B24A2810E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:40:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9822817F360;
-	Thu, 18 Apr 2024 19:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2AA017F394;
+	Thu, 18 Apr 2024 19:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lZR3OOny"
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="fK4+rhQG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A56E917736;
-	Thu, 18 Apr 2024 19:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B49917736
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 19:40:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713469142; cv=none; b=citL69aR3yU5ByGZR85v7gkXBQ3JM3nU/0XFm1wpFEDRNINygrNgJ/Vwaw8908la9aZjAxHanjSchBghVevl4RDbFy6W2ghSxK0Ev5zIcGgAmpSsTz/dK75kAssWpkj05Z5JUhw96r37ktAHkBZt1VRX++Ki4l5buTR9GbVGXgs=
+	t=1713469202; cv=none; b=YGgYgPkDLl5YhLctVmWnb5o86UbsfQ8peZpqaFxKvtfL1pvvPeDqXp54l3ULLLkrdPR30BNkeRzc4QFhMHKybZtwrl+K+NSb7JxpbTPtcep3ndMx928hMNwR0O9FK28Ee/HlGvAqkFx3vzxUf0wbxA54wCBrs0m2vn7ov0cSRVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713469142; c=relaxed/simple;
-	bh=3AmLu6fuTglDHdN6HuJ7Xq3eNdZpOuUL/x2iprMEBP8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Oen0DzOfRk8TK2XmEyLz0TeSlThyRv3hFz7pK/OaJQZ/GPS9UW67BpaS0gBPPS7JObPcmlngsC/1ZmdqiNuSp+W1FkIrR68oOyRcxYXNtmoJv8BqsE09Hq9MLkM10aysFYJ1kZQzlzVwvwi4iB0+VVoyW7RV96TN84gzbwrulYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lZR3OOny; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2a4bdef3d8eso1087108a91.1;
-        Thu, 18 Apr 2024 12:39:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713469141; x=1714073941; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EgmECHn+IUJlMNN8CLsfysKsR/Z7Bc7D2FVBk+o+7qQ=;
-        b=lZR3OOnyIai1EtkYhOJIsCjXwKLTdFPf0jkztwC9WGQJAfrc7QJbaSTBwD01RQydHK
-         DANEetnKjSgBTqI6Ag03WbYjkPfOi64fEHQH9QCNh+rRYqR9XXCWxzZIa3luh1rKq6+2
-         8kD5juXY247/7ZENBNJq1KUbXrpV/fzyDIMAfMCsSQzq+F6UQPldL5386nbgSf0cgpPF
-         sH+OF8Wz4p0MUQxDVxug2nDP3fCVVbNdDQ3Aza1UXAIIxD4Gju2PnKXylcGs7bckAiDg
-         hsak8zHjeznCfguWPet1KhYX1UyMO11vxlCDcY830y3rpDp0Hc8OEQ6iuK4aYPSsyLA2
-         49Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713469141; x=1714073941;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EgmECHn+IUJlMNN8CLsfysKsR/Z7Bc7D2FVBk+o+7qQ=;
-        b=GUdpgtTeUVYUaDLTylYfPdXfIJkj4WZoCbrUiNvyVTfMd4lOGseIGV1MYjURBGHO7g
-         7t7jFuaXZ17wost2uGjbxJJNsrGa9fFsvI2ZcSUNw+H0OzKlwkCfnhdeeKb7P5yBnuMY
-         a6ZmtNW6RVuvbLVKMMFoJqM5nNFLzpdFUOV58I4zRGsW0m/fr6+hIa2pHBRT+/8H3Pg2
-         k/RvSsfRE7xPhICNKXP069ABf38IK+JoaczqF4uxCv4TzsDr+SP+c/ZHHGPZcIZmiKgn
-         3dYugyuRs0EggM2bPdi/z9d5067l3ldEjteLFtEg6GO0GlHbB4zny7ZppA97G5U9GZ+1
-         tFJg==
-X-Forwarded-Encrypted: i=1; AJvYcCVj1OI+6EzFeeWioJwqmQkarADYhu5C6Te4CivuXcFR/ioqMST22e+Baw7MJ9y+6OLSJIZYI7BqvuUtFT/M7Y5fmKEFgdN2faFVaKbG
-X-Gm-Message-State: AOJu0YyK4XwjcOMJmlMaeFXhM2kfiiSkYEZ6Z/MpEktQPp29q5R/ur54
-	l2vvIHgQ2ey7IQ0iR9ai9adajf5F0Gc2mVBOv4r+ezZtWw0yGY23
-X-Google-Smtp-Source: AGHT+IGcl83ls5csOd31qry2hdPL3nzhI3ZTNwSoEJX1jZOXPdbKQ92PAX5/q90K087n49o0YP/DnQ==
-X-Received: by 2002:a17:90a:ebd1:b0:2a3:be59:e969 with SMTP id cf17-20020a17090aebd100b002a3be59e969mr114833pjb.47.1713469140821;
-        Thu, 18 Apr 2024 12:39:00 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y3-20020a17090a390300b002a232e4f9ddsm1982272pjb.34.2024.04.18.12.38.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 12:39:00 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 18 Apr 2024 12:38:59 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	allen.lkml@gmail.com, broonie@kernel.org,
-	Phillip Pearson <philpearson@google.com>
-Subject: Re: [PATCH 5.4 000/215] 5.4.274-rc1 review
-Message-ID: <c5d0c7f7-96a0-4806-b3b6-269d9189037d@roeck-us.net>
-References: <20240411095424.875421572@linuxfoundation.org>
- <787e0ac1-cb31-47d9-8200-3f6a3b4119dd@roeck-us.net>
+	s=arc-20240116; t=1713469202; c=relaxed/simple;
+	bh=c+2Am6FmwvmgOAIMm5qyWEX2cWFI5nJZcTTExzVFlr4=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=f9BFs2Q2tUgzBFnbJGd55FMdEJo9uv7NL/Ewidgi2+NeZuOvHj4kCaNsKLhod2kYpt3BpBFkZeRC5DvqbMUuqdjV6UyJZSFt1oC3tRINYTTHUIXADBZ6WsbuAXqOFomPcsE0DKzTglY58tMiR9zewfYg4sHmVL7YSMjUpod3tCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=fK4+rhQG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15D52C113CC;
+	Thu, 18 Apr 2024 19:40:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1713469201;
+	bh=c+2Am6FmwvmgOAIMm5qyWEX2cWFI5nJZcTTExzVFlr4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fK4+rhQGDmnzaFkK6/D0dn6YdSRYFho6z8svfL2L9PlTAebnkFW27qjR3LaFGDOcd
+	 xSS3Bymo7Z4k6IWpZHM+Lkh1fNZP27YvcVyRiAXpOnRKmWDVE8bk5Rb4iRrQzO9ah4
+	 JvpvjVmqvf54AgJJyMRvxmJVSvBHG2SIaWl0zbj8=
+Date: Thu, 18 Apr 2024 12:40:00 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Peng Zhang <zhangpeng362@huawei.com>
+Cc: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+ <dennisszhou@gmail.com>, <shakeelb@google.com>, <jack@suse.cz>,
+ <surenb@google.com>, <kent.overstreet@linux.dev>, <mhocko@suse.cz>,
+ <vbabka@suse.cz>, <yuzhao@google.com>, <yu.ma@intel.com>,
+ <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+Subject: Re: [RFC PATCH v2 1/2] percpu_counter: introduce atomic mode for
+ percpu_counter
+Message-Id: <20240418124000.ce4606dad982d7f31fc0d117@linux-foundation.org>
+In-Reply-To: <20240418142008.2775308-2-zhangpeng362@huawei.com>
+References: <20240418142008.2775308-1-zhangpeng362@huawei.com>
+	<20240418142008.2775308-2-zhangpeng362@huawei.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <787e0ac1-cb31-47d9-8200-3f6a3b4119dd@roeck-us.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 18, 2024 at 12:25:21PM -0700, Guenter Roeck wrote:
-> On Thu, Apr 11, 2024 at 11:53:29AM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.4.274 release.
-> > There are 215 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
-> > Anything received after that time might be too late.
-> > 
-> [ ... ]
-> > 
-> > Sean Christopherson <seanjc@google.com>
-> >     KVM: Always flush async #PF workqueue when vCPU is being destroyed
-> > 
+On Thu, 18 Apr 2024 22:20:07 +0800 Peng Zhang <zhangpeng362@huawei.com> wrote:
+
+> From: ZhangPeng <zhangpeng362@huawei.com>
 > 
-> This backport is bad. In kvm_setup_async_pf(), it removes a call to
-> kvm_get_kvm(). However, it does not remove the call to kvm_put_kvm()
-> in its error handler. Also see upstream commit 7863e346e108 ("KVM:
-> async_pf: Cleanup kvm_setup_async_pf()") which explains that one of
-> the error paths in kvm_setup_async_pf() which is not supposed to be
-> observed can be observed after all.
+> Depending on whether counters is NULL, we can support two modes:
+> atomic mode and perpcu mode. We implement both modes by grouping
+> the s64 count and atomic64_t count_atomic in a union. At the same time,
+> we create the interface for adding and reading in atomic mode and for
+> switching atomic mode to percpu mode.
 > 
 
-Reverting the above commit from v5.4.y fixes the problem. Alternatively,
-applying commit 7863e346e108 on top of v5.4.274 fixes it as well.
+I think it would be better if we had a detailed code comment in an
+appropriate place which fully describes the tradeoffs here.  Tell
+people when they would benefit from using one mode versus the other.
 
-I added Phillip Pearson to Cc:; he did all the testing and can provide
-additional information if needed.
 
-Thanks,
-Guenter
+> --- a/lib/percpu_counter.c
+> +++ b/lib/percpu_counter.c
+> @@ -153,7 +153,7 @@ EXPORT_SYMBOL(__percpu_counter_sum);
+>  
+>  int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
+>  			       gfp_t gfp, u32 nr_counters,
+> -			       struct lock_class_key *key)
+> +			       struct lock_class_key *key, bool switch_mode)
+>  {
+>  	unsigned long flags __maybe_unused;
+>  	size_t counter_size;
+> @@ -174,7 +174,8 @@ int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount,
+>  #ifdef CONFIG_HOTPLUG_CPU
+>  		INIT_LIST_HEAD(&fbc[i].list);
+>  #endif
+> -		fbc[i].count = amount;
+> +		if (likely(!switch_mode))
+> +			fbc[i].count = amount;
+>  		fbc[i].counters = (void *)counters + (i * counter_size);
+>  
+>  		debug_percpu_counter_activate(&fbc[i]);
+> @@ -357,6 +358,32 @@ bool __percpu_counter_limited_add(struct percpu_counter *fbc,
+>  	return good;
+>  }
+>  
+> +/*
+> + * percpu_counter_switch_to_pcpu_many: Converts struct percpu_counters from
+> + * atomic mode to percpu mode.
+
+Describe what happens if that GFP_ATOMIC allocation fails.  We remain
+in atomic mode, yes?
+
+> + */
+> +int percpu_counter_switch_to_pcpu_many(struct percpu_counter *fbc,
+> +				       u32 nr_counters)
+> +{
+> +	static struct lock_class_key __key;
+> +	unsigned long flags;
+> +	bool ret = 0;
+> +
+> +	if (percpu_counter_initialized(fbc))
+> +		return 0;
+> +
+> +	preempt_disable();
+> +	local_irq_save(flags);
+
+Do we need both?  Does local_irq_save() always disable preemption? 
+This might not be the case for RT kernels, I always forget.
+
+> +	if (likely(!percpu_counter_initialized(fbc)))
+> +		ret = __percpu_counter_init_many(fbc, 0,
+> +					GFP_ATOMIC|__GFP_NOWARN|__GFP_ZERO,
+> +					nr_counters, &__key, true);
+> +	local_irq_restore(flags);
+> +	preempt_enable();
+> +
+> +	return ret;
+> +}
+> +
+
+Why is there no API for switching back to atomic mode?
+
 
