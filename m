@@ -1,62 +1,73 @@
-Return-Path: <linux-kernel+bounces-149959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D55DB8A9864
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:17:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BFFC8A9866
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:18:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A9C4284242
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:17:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D5021C209E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983E515E5CA;
-	Thu, 18 Apr 2024 11:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97FED15E5B8;
+	Thu, 18 Apr 2024 11:17:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="D9EgvZPf"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="W99gcOUK"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32B5F127B57;
-	Thu, 18 Apr 2024 11:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0871C15E5B2
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713439046; cv=none; b=IvncbntXhpPH9X9IK+YMixpbyWJZpom+iw0g/k7dHfM573Fx1ouuKTzaBgmWIiXCL75ZFmQHStk4R2kKiKTm4u6ax3l5DQF5WO3xzXfCynlNeL9S33WnPUnfbLQRd6HAzHptGT0aWECLIcEtXIBhGFt7QUJjyDOCZoII1ugpZKU=
+	t=1713439076; cv=none; b=byG6tIZcGq8zhzIpmss2ff4WZ1GWAkWY0IxYM++HUfjoXGy3/QLN2cl3osgrDnQsGCefr2EK2xnV4c1H/om9VYeBDLSjJlgmXqhtfvlrHplkgTmmnnhdcBfwHKGNzl013ioNUrawR3tvLtPf3JpmIkP+fo83RQKHH8bz356i6oQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713439046; c=relaxed/simple;
-	bh=JlnMP29BA9ckO7o/JfUh/HWvtUqb2lGygKn6TfxaAaQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=C2kDSGIiTTnGE5Nwk+4f77TjzfSqo6500SfHRLPGR+l9Qk/fiII79X84wC0sDiWDchsmkSRG76dd+E0xZE8B5HGq6sJ6URvQLTaPxPvk0jSCIuS2Gl5LWJyZMKS1gJSOsu+fSg5EmeALbbQPaAe7EMceKXzd528az09bBzykwF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=D9EgvZPf; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43I1QpJn019526;
-	Thu, 18 Apr 2024 11:17:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=9m6uuRLNE/WkTR41JGciqY2IZosPbNatEn7yCqgC8Mc=; b=D9
-	EgvZPf9D6LBghPbjKrYenfb60/43H17SiTMy3viksLulLAQrCgS1PF4QTHCIZ8rJ
-	6nQuV93lc7IIPf20HsIXL5zl/TNBm0LQHLW/kEV6PIIgvLU8aa9ikeiXXcm+KEG4
-	cxW8VGnaNT6fIoqBHwwPSnlli9uzUcXRZkgr/UJj2/i1tyddIE6mpxKOEy+1hrIj
-	J7y7V1sel1gk7IRPH1YItZHjr6NDo5dU/i4DEsDybqBkATdZtJHAmGn2mRK0auj2
-	PRjUd7JuatAXFSzeDAUXW7+cjL+mRBu9vZihbXaOoLEVTUuWIjVQelYR38KeD0bb
-	f4VajdrnblQ+tjizL5AA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjr92hk8x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 11:17:21 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43IBHKVd012485
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 11:17:20 GMT
-Received: from [10.217.216.47] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 18 Apr
- 2024 04:17:14 -0700
-Message-ID: <f8aa5b5e-b7c4-4ef4-ac45-de04c84b3fa4@quicinc.com>
-Date: Thu, 18 Apr 2024 16:47:01 +0530
+	s=arc-20240116; t=1713439076; c=relaxed/simple;
+	bh=dadbVw0ZN8KGcZgqWT52RSFUotZfDdsINMbi0GWd0pk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PLqDBsF7xLRF3EukrxZbMXUuHLLn/xyTPbRR8nmtyFu6t3Ihn+2PnNopHqjJs1T/oNDNOH35PK8YaKDby515fLSoPlNP+8e0NF+rzbhYuLWiSjnBN/vO0WPxHoikIp20VdDerehnWm59ml5MOUBH8XqHPPkttUd4uewDHGwfanE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=W99gcOUK; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so1082294a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 04:17:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713439073; x=1714043873; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dadbVw0ZN8KGcZgqWT52RSFUotZfDdsINMbi0GWd0pk=;
+        b=W99gcOUKyl2+fZdSBGJVqDttq0TutTfo/6hILA47OiK9Q5NGpLWd82kINRtwvJ0lvR
+         kyatA9B4IM0952YAX0i+2pg8VMETeswm4xNnuUz9EWIlyhq9xMakmTSZ5AwqcQ8cjJ+a
+         Jjdy1rSJ+S00Jp4QIy/vkmnAVLvtO4/Y+EsgYF9ZQ6lY/XoE7cnnQXZmm/IqsUdYlKrH
+         zGP72ch7jLJfnopA6zORpfzvDwgsEgWmUCk3W4iqYxYHimEHHsqxyh0+bN1S2ixRP5Hc
+         G7+S1tuV3fZPUQLfZKwtAnv4NswetcDsj+f/aA1Er605BpFnIxdV3Ee8DsemNttK6gi5
+         +pkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713439073; x=1714043873;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dadbVw0ZN8KGcZgqWT52RSFUotZfDdsINMbi0GWd0pk=;
+        b=thhTCObP2P0aL8li9oqdqr/J42kOc+Ft2RerK/f5p4QRpTpQ8R2Hjh2AVkxaf9beqF
+         Jsu6rsnalTcAEGXUMkq/w6YHmLXV1zhbNPHhwkqJtX0pG50cmDpwCN0NqHjPuPNJ87os
+         EG+vlRSvPxCHLv3PgAfGz9dTatckytaUwTDSh6ZovF7WRPJscWrFJnWpOxRdPaRBbF1P
+         xI8DdZwMizTHyK0F56FtRjFR63Ulgm/xk/+vF7Lmdc4GzZ6AH/eRduaYJsUWeCf8jcD7
+         +WT6wnG2kx2sQ0xE6dZkbm5RET7S8HwOKmJGf3OhOoJVMoGhILH4F13V29dFDOD4NK55
+         RY2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUz8IFKCvmI2M7gya4ZM6sFcEpnCFsPGxAubmZNjxdpn4BQqfh/Mq2Wk1BTnkck+ZJu7MHh0Coe71J2UgN2peMEHgNVHTYW657rY4Fe
+X-Gm-Message-State: AOJu0Yzlyy+BelROtQe60HD4GB6x/74qks4ZXiqlx74Ws9xp85CVQEAQ
+	ukrucpqle1tuBkpkf3NBIksyxHpyjdZuMSSmAUGyVWtaVgH4zaXE7DHOHLk0buk=
+X-Google-Smtp-Source: AGHT+IHmqSTkMUPGya8bnbl4tVCYR5pgohc+bRojwZq6H6mlk6lXfXDEJpU5L7fvxPN2Mb70UrGa9g==
+X-Received: by 2002:a17:906:1156:b0:a55:54ec:a2fe with SMTP id i22-20020a170906115600b00a5554eca2femr1963102eja.29.1713439073194;
+        Thu, 18 Apr 2024 04:17:53 -0700 (PDT)
+Received: from [192.168.1.70] ([84.102.31.74])
+        by smtp.gmail.com with ESMTPSA id j21-20020a170906431500b00a521e5856f6sm747685ejm.51.2024.04.18.04.17.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 04:17:52 -0700 (PDT)
+Message-ID: <08319f88-36a9-445a-9920-ad1fba666b6a@baylibre.com>
+Date: Thu, 18 Apr 2024 13:17:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,188 +75,61 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 RESEND 6/6] arm64: dts: qcom: sm8650: Add video and
- camera clock controllers
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Taniya Das
-	<quic_tdas@quicinc.com>,
-        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Imran Shaik
-	<quic_imrashai@quicinc.com>
-References: <20240321092529.13362-1-quic_jkona@quicinc.com>
- <20240321092529.13362-7-quic_jkona@quicinc.com>
- <CAA8EJppHGS+W-aiXvJ2cE=jCbua8Y0Q+zv_QTs+C9V5+Y1vuZg@mail.gmail.com>
- <008d574f-9c9e-48c6-b64e-89fb469cbde4@quicinc.com>
- <b3464321-0c52-4c41-9198-e9e7b16aa419@quicinc.com>
- <CAA8EJpqDwCVAjDphnC-HdfseMJ-xd8VVxb5+9UcGEcKLcn-heg@mail.gmail.com>
- <fba2474e-31a6-4fef-acf9-7069933584c8@quicinc.com>
- <CAA8EJprfaALkQe-wUrBow6B1A66ro0AoVpfnQJLXgqFmL8isNQ@mail.gmail.com>
- <8a5a3cf8-5b4f-487f-ad91-00499509f8ec@quicinc.com>
- <CAA8EJpoW8MQQ3OPfOVYRJtgsn1JgKd5Ew7vqgWx3xWE-xJ=R-g@mail.gmail.com>
- <03f8d2ee-2467-48aa-9b76-06eb13202b8c@quicinc.com>
- <CAA8EJpqL_bkyoUKkY_nr7PvbvC-1dVKr9kNQKsAU-2PPO9717g@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
+ Ethernet driver
+To: Siddharth Vadapalli <s-vadapalli@ti.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Ratheesh Kannoth <rkannoth@marvell.com>,
+ Naveen Mamindlapalli <naveenm@marvell.com>,
+ Jacob Keller <jacob.e.keller@intel.com>
+Cc: danishanwar@ti.com, yuehaibing@huawei.com, rogerq@kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
+References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
+ <260d258f-87a1-4aac-8883-aab4746b32d8@ti.com>
 Content-Language: en-US
-From: Jagadeesh Kona <quic_jkona@quicinc.com>
-In-Reply-To: <CAA8EJpqL_bkyoUKkY_nr7PvbvC-1dVKr9kNQKsAU-2PPO9717g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 7eZP1_B5DiwfOIFvaRmCvnGQJtAce5FB
-X-Proofpoint-ORIG-GUID: 7eZP1_B5DiwfOIFvaRmCvnGQJtAce5FB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-18_09,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- priorityscore=1501 lowpriorityscore=0 suspectscore=0 bulkscore=0
- phishscore=0 impostorscore=0 spamscore=0 clxscore=1011 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404180080
+From: Julien Panis <jpanis@baylibre.com>
+In-Reply-To: <260d258f-87a1-4aac-8883-aab4746b32d8@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
-
-On 4/5/2024 1:14 PM, Dmitry Baryshkov wrote:
-> On Fri, 5 Apr 2024 at 09:01, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+On 4/18/24 13:00, Siddharth Vadapalli wrote:
+> On 12-04-2024 21:08, Julien Panis wrote:
+>> This patch adds XDP support to TI AM65 CPSW Ethernet driver.
 >>
+>> The following features are implemented: NETDEV_XDP_ACT_BASIC,
+>> NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
 >>
+>> Zero-copy and non-linear XDP buffer supports are NOT implemented.
 >>
->> On 4/4/2024 9:35 PM, Dmitry Baryshkov wrote:
->>> On Thu, 4 Apr 2024 at 13:06, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->>>>
->>>>
->>>>
->>>> On 4/4/2024 11:00 AM, Dmitry Baryshkov wrote:
->>>>> On Thu, 4 Apr 2024 at 08:13, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> On 4/3/2024 9:24 PM, Dmitry Baryshkov wrote:
->>>>>>> On Wed, 3 Apr 2024 at 10:16, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>>
->>>>>>>> On 3/25/2024 11:38 AM, Jagadeesh Kona wrote:
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> On 3/21/2024 6:43 PM, Dmitry Baryshkov wrote:
->>>>>>>>>> On Thu, 21 Mar 2024 at 11:27, Jagadeesh Kona <quic_jkona@quicinc.com>
->>>>>>>>>> wrote:
->>>>>>>>>>>
->>>>>>>>>>> Add device nodes for video and camera clock controllers on Qualcomm
->>>>>>>>>>> SM8650 platform.
->>>>>>>>>>>
->>>>>>>>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
->>>>>>>>>>> ---
->>>>>>>>>>>       arch/arm64/boot/dts/qcom/sm8650.dtsi | 28 ++++++++++++++++++++++++++++
->>>>>>>>>>>       1 file changed, 28 insertions(+)
->>>>>>>>>>>
->>>>>>>>>>> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi
->>>>>>>>>>> b/arch/arm64/boot/dts/qcom/sm8650.dtsi
->>>>>>>>>>> index 32c0a7b9aded..d862aa6be824 100644
->>>>>>>>>>> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
->>>>>>>>>>> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
->>>>>>>>>>> @@ -4,6 +4,8 @@
->>>>>>>>>>>        */
->>>>>>>>>>>
->>>>>>>>>>>       #include <dt-bindings/clock/qcom,rpmh.h>
->>>>>>>>>>> +#include <dt-bindings/clock/qcom,sm8450-videocc.h>
->>>>>>>>>>> +#include <dt-bindings/clock/qcom,sm8650-camcc.h>
->>>>>>>>>>>       #include <dt-bindings/clock/qcom,sm8650-dispcc.h>
->>>>>>>>>>>       #include <dt-bindings/clock/qcom,sm8650-gcc.h>
->>>>>>>>>>>       #include <dt-bindings/clock/qcom,sm8650-gpucc.h>
->>>>>>>>>>> @@ -3110,6 +3112,32 @@ opp-202000000 {
->>>>>>>>>>>                              };
->>>>>>>>>>>                      };
->>>>>>>>>>>
->>>>>>>>>>> +               videocc: clock-controller@aaf0000 {
->>>>>>>>>>> +                       compatible = "qcom,sm8650-videocc";
->>>>>>>>>>> +                       reg = <0 0x0aaf0000 0 0x10000>;
->>>>>>>>>>> +                       clocks = <&bi_tcxo_div2>,
->>>>>>>>>>> +                                <&gcc GCC_VIDEO_AHB_CLK>;
->>>>>>>>>>> +                       power-domains = <&rpmhpd RPMHPD_MMCX>;
->>>>>>>>>>> +                       required-opps = <&rpmhpd_opp_low_svs>;
->>>>>>>>>>
->>>>>>>>>> The required-opps should no longer be necessary.
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> Sure, will check and remove this if not required.
->>>>>>>>
->>>>>>>>
->>>>>>>> I checked further on this and without required-opps, if there is no vote
->>>>>>>> on the power-domain & its peer from any other consumers, when runtime
->>>>>>>> get is called on device, it enables the power domain just at the minimum
->>>>>>>> non-zero level. But in some cases, the minimum non-zero level of
->>>>>>>> power-domain could be just retention and is not sufficient for clock
->>>>>>>> controller to operate, hence required-opps property is needed to specify
->>>>>>>> the minimum level required on power-domain for this clock controller.
->>>>>>>
->>>>>>> In which cases? If it ends up with the retention vote, it is a bug
->>>>>>> which must be fixed.
->>>>>>>
->>>>>>
->>>>>> The minimum non-zero level(configured from bootloaders) of MMCX is
->>>>>> retention on few chipsets but it can vary across the chipsets. Hence to
->>>>>> be on safer side from our end, it is good to have required-opps in DT to
->>>>>> specify the minimum level required for this clock controller.
->>>>>
->>>>> We are discussing sm8650, not some abstract chipset. Does it list
->>>>> retention or low_svs as a minimal level for MMCX?
->>>>>
->>>>
->>>> Actually, the minimum level for MMCX is external to the clock
->>>> controllers.
->>>
->>> Yes, it comes from cmd-db
->>>
->>>>    But the clock controller requires MMCX to be atleast at
->>>> lowsvs for it to be functional.
->>>
->>> Correct
->>>
->>>> Hence we need to keep required-opps to
->>>> ensure the same without relying on the actual minimum level for MMCX.
->>>
->>> And this is not correct. There is no need for the DT to be redundant.
->>> I plan to send patches removing the existing required-opps when they
->>> are not required.
->>>
+>> Besides, the page pool memory model is used to get better performance.
+>>
+>> Signed-off-by: Julien Panis <jpanis@baylibre.com>
+> Hello Julien,
+>
+> This series crashes Linux on AM62ax SoC which also uses the
+> AM65-CPSW-NUSS driver:
+> https://gist.github.com/Siddharth-Vadapalli-at-TI/5ed0e436606001c247a7da664f75edee
+>
+> Regards,
+> Siddharth.
 
-In my opinion, it is better not to remove the required-opps for the 
-existing targets atleast since it may lead to some random clock issues 
-if cmd-db minimum level is lower than the HW recommended voltage level 
-clock controller requires.
+Hello Siddharth.
 
->> I agree this is not required if cmd-db minimum level is already at
->> lowsvs. But since MMCX running at lowsvs is a mandatory requirement for
->> clock controller to operate, I believe it is good to have required-opps
->> to ensure we meet this requirement in all cases, rather than relying on
->> the cmd-db minimum level which we have no control over.
-> 
-> IIf we follow this logic, we should throw cmd-db away and hardcode all
-> those values in the RPMh drivers.
-> 
-> We have cmd-db. If it is correct, there is no need to duplicate it. If
-> it is incorrect, it is a bug that should be fixed or worked around.
-> 
+Thanks for the log. I can read:
+[    1.966094] Missing net_device from driver
 
-Sure will check and remove required-opps property for SM8650.
+Did you check that nodes exist in the device tree for the net devices ?
 
-Thanks,
-Jagadeesh
+Julien
 
 
