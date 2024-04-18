@@ -1,133 +1,202 @@
-Return-Path: <linux-kernel+bounces-149814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4A9A8A9636
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:31:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C4498A9632
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:30:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BCD91F22E37
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:31:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA7FF283FF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 09:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA7315ADB1;
-	Thu, 18 Apr 2024 09:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KYtQ8IV7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B6C15AAD9;
-	Thu, 18 Apr 2024 09:31:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3A715ADAF;
+	Thu, 18 Apr 2024 09:30:45 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC8B152E12;
+	Thu, 18 Apr 2024 09:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713432675; cv=none; b=bIxWk6Y9Ff7l/7luR4GEdK7vrxAOJWvJhw+rsnAGCet5xcQF8uC87bhu3GTuO6k2HoPZsvULNRp0P8S1eSFUYIDQhSw+HbKnbFsqnQC7e3odr3u0BX7l7ldAqWZ7hA/+zk3iUgWFgGzyXCl/6j6TYN/KyuzWQn1Ah/ylct/vMdA=
+	t=1713432645; cv=none; b=gS+Ri/iybKCpoZhQggx70+hAPVdbN6wmTjMkzGCbRuy/KorFJM3HiM41bJeWQiNbW7FUP1YnyiD9bkTBeVm4DdwUt2mX7rUh3I+q4YELOIjzhkDTCHZWCNVXYf7h1OwAOKaT3UHZUUNFOQXiLID3TEQNYeQ0Hiz1qZm5PLr+1so=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713432675; c=relaxed/simple;
-	bh=gN0fEs2IeXR2uuO3djCJi6oqh+EDHi/DMzZ/PmxG0OY=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=R4cLJgTW/7r/D+CMJhTUKZtCew4qappdXy75yIZA5BKHzmbd3GxZSgd1XbSST4LoB0Oia/4APyqSVBpCNdcc95qm7TZef6hS4RiZj1rjZ4LWSlKaXJg5mvtfrhh9KVunbFrJA7H0uL/8696a6OJ8BsUBb7zd5SJ5nieT5rWecog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KYtQ8IV7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21B6EC113CC;
-	Thu, 18 Apr 2024 09:31:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713432675;
-	bh=gN0fEs2IeXR2uuO3djCJi6oqh+EDHi/DMzZ/PmxG0OY=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-	b=KYtQ8IV73qHbXNUqGYmdNx4WMyYZ2SQUo4t+qUdIDXO09H/BsM5ayYka8bGqD5i7l
-	 R+j79Z4noQwdPahEtL/ywwiqVRdmIC2l5a9GRyT2hBkdyuhDBTAYtdPV1PXUYnDSye
-	 cpOP6uh7TOA9AMS0Qon2rUXsbNZwZSIuixDChyolENUC/YrnQOmJbjUeH9wygirF0p
-	 9gC8EWWBy0T74iq85j6hXNQhtm78LBA0/G9h9MAa9bdrELL4/6/F7CO/2ZBVm/IXY4
-	 /qfFM5vVT7viU2xW+s0j5izNZQ0zmtuVpqj28YyAu8EBP4C6YVCPgyBR7QuKjAxoM0
-	 /5mPUrrvsuqoQ==
-References: <20240320110548.2200662-1-yi.zhang@huaweicloud.com>
- <87ttk0d2ck.fsf@debian-BULLSEYE-live-builder-AMD64>
- <20240417-finster-kichern-31077915c0be@brauner>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Chandan Babu R <chandanbabu@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Zhang Yi <yi.zhang@huaweicloud.com>, linux-xfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- djwong@kernel.org, hch@infradead.org, david@fromorbit.com, tytso@mit.edu,
- jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com
-Subject: Re: [PATCH v4 0/9] xfs/iomap: fix non-atomic clone operation and
- don't update size when zeroing range post eof
-Date: Thu, 18 Apr 2024 15:00:11 +0530
-In-reply-to: <20240417-finster-kichern-31077915c0be@brauner>
-Message-ID: <87bk67t3ts.fsf@debian-BULLSEYE-live-builder-AMD64>
+	s=arc-20240116; t=1713432645; c=relaxed/simple;
+	bh=jkUdI1l7jyx9l2Q/C9KSmfjWLcjVVTRQwdO0plAvfWU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W+cTGpTL8LrjhrDW11X2HqBReHxX07RzsPJ6cxZRdlmVEe/kG3JP6omALuekp/Zac+8VyvZZUcg0kTMAxl5AAj6jReemRew9TFaKSJGO6gs0V82SZBGS3idyCa6lM5kBATKgu+hZGEN2RvUNmTjFwd+Y9kgwczUcQNAuUtcb2s4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4500339;
+	Thu, 18 Apr 2024 02:31:09 -0700 (PDT)
+Received: from [10.57.84.16] (unknown [10.57.84.16])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA4E33F64C;
+	Thu, 18 Apr 2024 02:30:39 -0700 (PDT)
+Message-ID: <785075df-4a0e-4cd3-bace-a59db7caa746@arm.com>
+Date: Thu, 18 Apr 2024 10:30:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 16/43] KVM: arm64: Support timers in realm RECs
+Content-Language: en-GB
+To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
+ kvmarm@lists.linux.dev
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
+ Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+ Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
+ <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
+ Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
+ Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+References: <20240412084056.1733704-1-steven.price@arm.com>
+ <20240412084309.1733783-1-steven.price@arm.com>
+ <20240412084309.1733783-17-steven.price@arm.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240412084309.1733783-17-steven.price@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17, 2024 at 01:40:36 PM +0200, Christian Brauner wrote:
-> On Wed, Apr 17, 2024 at 10:12:10AM +0530, Chandan Babu R wrote:
->> On Wed, Mar 20, 2024 at 07:05:39 PM +0800, Zhang Yi wrote:
->> > Changes since v3:
->> >  - Improve some git message comments and do some minor code cleanup, no
->> >    logic changes.
->> >
->> > Changes since v2:
->> >  - Merge the patch for dropping of xfs_convert_blocks() and the patch
->> >    for modifying xfs_bmapi_convert_delalloc().
->> >  - Reword the commit message of the second patch.
->> >
->> > Changes since v1:
->> >  - Make xfs_bmapi_convert_delalloc() to allocate the target offset and
->> >    drop the writeback helper xfs_convert_blocks().
->> >  - Don't use xfs_iomap_write_direct() to convert delalloc blocks for
->> >    zeroing posteof case, use xfs_bmapi_convert_delalloc() instead.
->> >  - Fix two off-by-one issues when converting delalloc blocks.
->> >  - Add a separate patch to drop the buffered write failure handle in
->> >    zeroing and unsharing.
->> >  - Add a comments do emphasize updating i_size should under folio lock.
->> >  - Make iomap_write_end() to return a boolean, and do some cleanups in
->> >    buffered write begin path.
->> >
->> > This patch series fix a problem of exposing zeroed data on xfs since the
->> > non-atomic clone operation. This problem was found while I was
->> > developing ext4 buffered IO iomap conversion (ext4 is relying on this
->> > fix [1]), the root cause of this problem and the discussion about the
->> > solution please see [2]. After fix the problem, iomap_zero_range()
->> > doesn't need to update i_size so that ext4 can use it to zero partial
->> > block, e.g. truncate eof block [3].
->> >
->> > [1] https://lore.kernel.org/linux-ext4/20240127015825.1608160-1-yi.zhang@huaweicloud.com/
->> > [2] https://lore.kernel.org/linux-ext4/9b0040ef-3d9d-6246-4bdd-82b9a8f55fa2@huaweicloud.com/
->> > [3] https://lore.kernel.org/linux-ext4/9c9f1831-a772-299b-072b-1c8116c3fb35@huaweicloud.com/
->> >
->> > Thanks,
->> > Yi.
->> >
->> > Zhang Yi (9):
->> >   xfs: match lock mode in xfs_buffered_write_iomap_begin()
->> >   xfs: make the seq argument to xfs_bmapi_convert_delalloc() optional
->> >   xfs: make xfs_bmapi_convert_delalloc() to allocate the target offset
->> >   xfs: convert delayed extents to unwritten when zeroing post eof blocks
->> >   iomap: drop the write failure handles when unsharing and zeroing
->> >   iomap: don't increase i_size if it's not a write operation
->> >   iomap: use a new variable to handle the written bytes in
->> >     iomap_write_iter()
->> >   iomap: make iomap_write_end() return a boolean
->> >   iomap: do some small logical cleanup in buffered write
->> >
->> 
->> Hi all,
->> 
->> I have picked up this patchset for inclusion into XFS' 6.10-rc1 patch
->> queue. Please let me know if there are any objections.
->
-> It'd be nice if I could take the iomap patches into the vfs.iomap tree
-> that you can then pull from if you depend on it.. There's already some
-> cleanups in there. Sounds ok?
+On 12/04/2024 09:42, Steven Price wrote:
+> The RMM keeps track of the timer while the realm REC is running, but on
+> exit to the normal world KVM is responsible for handling the timers.
+> 
 
-Yes, that works for me. I will pick only those patches that are specific to
-XFS i.e. patches numbered 1 to 4.
+minor nit: It may be worth mentioning this will be hooked in, when we
+add the Realm exit handling.
 
--- 
-Chandan
+Otherwise looks good to me.
+
+
+Suzuki
+
+
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+>   arch/arm64/kvm/arch_timer.c  | 45 ++++++++++++++++++++++++++++++++----
+>   include/kvm/arm_arch_timer.h |  2 ++
+>   2 files changed, 43 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/arch_timer.c b/arch/arm64/kvm/arch_timer.c
+> index 879982b1cc73..0b2be34a9ba3 100644
+> --- a/arch/arm64/kvm/arch_timer.c
+> +++ b/arch/arm64/kvm/arch_timer.c
+> @@ -162,6 +162,13 @@ static void timer_set_cval(struct arch_timer_context *ctxt, u64 cval)
+>   
+>   static void timer_set_offset(struct arch_timer_context *ctxt, u64 offset)
+>   {
+> +	struct kvm_vcpu *vcpu = ctxt->vcpu;
+> +
+> +	if (kvm_is_realm(vcpu->kvm)) {
+> +		WARN_ON(offset);
+> +		return;
+> +	}
+> +
+>   	if (!ctxt->offset.vm_offset) {
+>   		WARN(offset, "timer %ld\n", arch_timer_ctx_index(ctxt));
+>   		return;
+> @@ -460,6 +467,21 @@ static void kvm_timer_update_irq(struct kvm_vcpu *vcpu, bool new_level,
+>   	}
+>   }
+>   
+> +void kvm_realm_timers_update(struct kvm_vcpu *vcpu)
+> +{
+> +	struct arch_timer_cpu *arch_timer = &vcpu->arch.timer_cpu;
+> +	int i;
+> +
+> +	for (i = 0; i < NR_KVM_EL0_TIMERS; i++) {
+> +		struct arch_timer_context *timer = &arch_timer->timers[i];
+> +		bool status = timer_get_ctl(timer) & ARCH_TIMER_CTRL_IT_STAT;
+> +		bool level = kvm_timer_irq_can_fire(timer) && status;
+> +
+> +		if (level != timer->irq.level)
+> +			kvm_timer_update_irq(vcpu, level, timer);
+> +	}
+> +}
+> +
+>   /* Only called for a fully emulated timer */
+>   static void timer_emulate(struct arch_timer_context *ctx)
+>   {
+> @@ -831,6 +853,8 @@ void kvm_timer_vcpu_load(struct kvm_vcpu *vcpu)
+>   	if (unlikely(!timer->enabled))
+>   		return;
+>   
+> +	kvm_timer_unblocking(vcpu);
+> +
+>   	get_timer_map(vcpu, &map);
+>   
+>   	if (static_branch_likely(&has_gic_active_state)) {
+> @@ -844,8 +868,6 @@ void kvm_timer_vcpu_load(struct kvm_vcpu *vcpu)
+>   		kvm_timer_vcpu_load_nogic(vcpu);
+>   	}
+>   
+> -	kvm_timer_unblocking(vcpu);
+> -
+>   	timer_restore_state(map.direct_vtimer);
+>   	if (map.direct_ptimer)
+>   		timer_restore_state(map.direct_ptimer);
+> @@ -988,7 +1010,9 @@ static void timer_context_init(struct kvm_vcpu *vcpu, int timerid)
+>   
+>   	ctxt->vcpu = vcpu;
+>   
+> -	if (timerid == TIMER_VTIMER)
+> +	if (kvm_is_realm(vcpu->kvm))
+> +		ctxt->offset.vm_offset = NULL;
+> +	else if (timerid == TIMER_VTIMER)
+>   		ctxt->offset.vm_offset = &kvm->arch.timer_data.voffset;
+>   	else
+>   		ctxt->offset.vm_offset = &kvm->arch.timer_data.poffset;
+> @@ -1011,13 +1035,19 @@ static void timer_context_init(struct kvm_vcpu *vcpu, int timerid)
+>   void kvm_timer_vcpu_init(struct kvm_vcpu *vcpu)
+>   {
+>   	struct arch_timer_cpu *timer = vcpu_timer(vcpu);
+> +	u64 cntvoff;
+>   
+>   	for (int i = 0; i < NR_KVM_TIMERS; i++)
+>   		timer_context_init(vcpu, i);
+>   
+> +	if (kvm_is_realm(vcpu->kvm))
+> +		cntvoff = 0;
+> +	else
+> +		cntvoff = kvm_phys_timer_read();
+> +
+>   	/* Synchronize offsets across timers of a VM if not already provided */
+>   	if (!test_bit(KVM_ARCH_FLAG_VM_COUNTER_OFFSET, &vcpu->kvm->arch.flags)) {
+> -		timer_set_offset(vcpu_vtimer(vcpu), kvm_phys_timer_read());
+> +		timer_set_offset(vcpu_vtimer(vcpu), cntvoff);
+>   		timer_set_offset(vcpu_ptimer(vcpu), 0);
+>   	}
+>   
+> @@ -1525,6 +1555,13 @@ int kvm_timer_enable(struct kvm_vcpu *vcpu)
+>   		return -EINVAL;
+>   	}
+>   
+> +	/*
+> +	 * We don't use mapped IRQs for Realms because the RMI doesn't allow
+> +	 * us setting the LR.HW bit in the VGIC.
+> +	 */
+> +	if (vcpu_is_rec(vcpu))
+> +		return 0;
+> +
+>   	get_timer_map(vcpu, &map);
+>   
+>   	ret = kvm_vgic_map_phys_irq(vcpu,
+> diff --git a/include/kvm/arm_arch_timer.h b/include/kvm/arm_arch_timer.h
+> index c819c5d16613..d8ab297560d0 100644
+> --- a/include/kvm/arm_arch_timer.h
+> +++ b/include/kvm/arm_arch_timer.h
+> @@ -112,6 +112,8 @@ int kvm_arm_timer_set_attr(struct kvm_vcpu *vcpu, struct kvm_device_attr *attr);
+>   int kvm_arm_timer_get_attr(struct kvm_vcpu *vcpu, struct kvm_device_attr *attr);
+>   int kvm_arm_timer_has_attr(struct kvm_vcpu *vcpu, struct kvm_device_attr *attr);
+>   
+> +void kvm_realm_timers_update(struct kvm_vcpu *vcpu);
+> +
+>   u64 kvm_phys_timer_read(void);
+>   
+>   void kvm_timer_vcpu_load(struct kvm_vcpu *vcpu);
+
 
