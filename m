@@ -1,136 +1,90 @@
-Return-Path: <linux-kernel+bounces-150149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E7F68A9B03
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 920D08A9B04
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:18:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FBB61C20B50
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF8B41C20752
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:18:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6795515FD16;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 710DE15FA91;
 	Thu, 18 Apr 2024 13:18:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tFyHH5p3"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BCz1GL0A"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC96215FA6B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E01F14291B
 	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 13:18:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713446286; cv=none; b=XPSL3vGx/y6RdThUVtwwJxGa3BtrKUCeMH2FbBFGX0hDPrsOVtyhKvR8etmhnw9s404zPSeadmstA+XacGBbEPcUdab/tqDd5RK9cxZXi0GVzlcCCzn4hsF3enlm4kUCqaBJciE+ctItIpLJrpj8IUAp0ubffrXDAUvYQXevaxw=
+	t=1713446286; cv=none; b=ZvOT5GUvvranGW5Lq5fzESPeai1BQyCwRxGrj5goNr3WOFAX5PEgm6ujmS+w1cWEC9JAWkpDAWnak4CFQrvMQJR3BD31qHQNLw8GJUjxAS14hVq14K7WoLYdODjfD7zf9SbeR7jPSfQ5EoOD3NXSOsizJIdObkJ6JdEn+FQ833U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713446286; c=relaxed/simple;
-	bh=g0lDcg5sk4wjgWLkv294Wu+ievcxVOJOIGYTzRJialY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SepEtUH30itq2Cc0uU8iDJwNUbT2SsN4YDbISJEV+PGmBu7/e709bZkMtPHowT3xPuxrNPGcnqZ2rbv0fZ+OXvI7NkbvAiaYAW2o1a3yfjLnueOX7eDkxr4cuHN8WYp0Pcl8fbhGvn/AliVI+L8SiXEJ63Qs30ePhwSwuJbvWzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tFyHH5p3; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-618769020bcso9053447b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:18:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713446284; x=1714051084; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TNRbWAZ6Q5MqN+iLHn0qNU1jdPOPQHBoqFwuo6lZ8Oc=;
-        b=tFyHH5p3JQxDb9pVBlV7RW8DnMEMtJSJTzWVUaWoBUQYgmr9G8wovoubNwfsbK1od3
-         1Efg2QnShvFAC+csWW+nG7Zyq8/PfKJ5YQ4h/7GAkjF7RLdbqgc4OACUHzfOYYrw52DH
-         /ZTqmcSzosWRqRdtUha3/eu3dnfB8z/UrS47uv/wiuHZdYz8BqcaJSHxcLrhIwL56mDD
-         rH3w2zUdGC9yQLridnhBrOc1TAhUqCe2u0o9GGsdIYmVSLRW72J1wrPwcVrVLPkDIkNP
-         MJczmmgYwVeM+J8zOCnmmS4hlDEeMaTo5c5VaVfsh6jwvVirJ2a23U/2yYDLfkPRtcL1
-         bczQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713446284; x=1714051084;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TNRbWAZ6Q5MqN+iLHn0qNU1jdPOPQHBoqFwuo6lZ8Oc=;
-        b=TjcGUO8ini1EvGNBIOe41nnioQrYMVOijHCMC/PSXvGp+Z39/UYT2zX8KqLvrxmnbN
-         zrDJCyetDfebwDyDrEr+k4ZznyLzZTlF+S9XFqap+ZpUq+mV3Vnn1Wl5O4dTJVnnz80/
-         RtqNeErcDRn0DPOv0dzGD8Kk4g1vQdzjljGb6yqmIDdrKkkTabkyxJwNt2oEW0y0U2ij
-         CC8OMxq2B6zmchvx7IhqMb5YSXPP0eiKlxB11TQzipZcZ9IRnEz6mOvIFnccHC6wndx4
-         yvfEWoo4dD8LqXFBoJXIA0/LcGVYmNEmg6aHJwcWqJ8HqhAOPJgbTD+vsfDBmRUVpXtT
-         v+zg==
-X-Forwarded-Encrypted: i=1; AJvYcCXdG85MlIi1SNszc6VXKXVXK4pmKYVtX4IOcALfOx1k0feUkWvXfOrttSdmNucS5eHXGG8+kWAPUMwy1MwuR6/02Z1oTNFCGa6lncNK
-X-Gm-Message-State: AOJu0Yw65UrNme+yf31mvW6koM7BS3Up2RU5rY8mI8bVfTREjpzhvuh8
-	FmAH4tamsvIwQDocpqLtTLPNrcS0a588HukGmuLbTo0eIKvHsvbwonfcO8dP2L+h3ba2qJWi4h0
-	reaSxmL+ha2B6Wg5WlP7No6z6clhCJ+uXuyW3
-X-Google-Smtp-Source: AGHT+IE2p3Omlwm3EzGg+l2X0TwISReBp7wfKSeqHifZGecA9H/wvlgdStZ8NcRwsmoz0C14lmxeng8EglXkjwSno5E=
-X-Received: by 2002:a05:690c:6206:b0:61b:1be9:bbcb with SMTP id
- hl6-20020a05690c620600b0061b1be9bbcbmr3057153ywb.44.1713446283553; Thu, 18
- Apr 2024 06:18:03 -0700 (PDT)
+	bh=DXGn4qVv3QckU8tQRWbJr0FqwlVzB+OywFLorem+Pzw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GqCCT7IGav2jXasKG5RNk8NFK2yQ0P/CgSdRggMUJuiLIFWzv4RY2FOTJQYzAkz5OXU4lDsRAVSTk+OnFevfwNqaG7N9SetcTJySAV99cUTRz3QgiK5ASiunvj+Jwq7VDlzVc2GyFzJ8XtB6b5eBlmcj4BKoWLoMAaYRwvMZlLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BCz1GL0A; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713446283;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=flXWdtTxGnWZOnWp6rT3waOHYiUoEw2A69kXCBp6sk4=;
+	b=BCz1GL0AlzhzTQrNwq2gFQrG2ayGBmm6LcXLxJO8jkBaH0x/sRbSXMZ+JsKyhvPNiV/KW4
+	YTwXpNu4q9XR3fRarGMLQTVNk5FpRouHlsYDTO7ttDd0SzIjQD1LbaUmyIXh6i1UhaT5sy
+	lyEJ0cyCzjNWuIEqZGQ59TkArASxE/s=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-614-JogV6t9rPumfDMhvbxkkvA-1; Thu, 18 Apr 2024 09:18:00 -0400
+X-MC-Unique: JogV6t9rPumfDMhvbxkkvA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 78D99834FB3;
+	Thu, 18 Apr 2024 13:18:00 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.22.16.186])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 53BDAC26D24;
+	Thu, 18 Apr 2024 13:17:58 +0000 (UTC)
+From: Wander Lairson Costa <wander@redhat.com>
+To: Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>,
+	Rae Moar <rmoar@google.com>,
+	linux-kselftest@vger.kernel.org (open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)),
+	kunit-dev@googlegroups.com (open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)),
+	linux-kernel@vger.kernel.org (open list)
+Cc: Wander Lairson Costa <wander@redhat.com>
+Subject: [PATCH 0/2] kunit: fix minor error path mistakes
+Date: Thu, 18 Apr 2024 10:17:51 -0300
+Message-ID: <20240418131754.58217-1-wander@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
- <20240418-alice-mm-v6-3-cb8f3e5d688f@google.com> <5fd684d8-d46d-4009-bcf8-134dab342322@proton.me>
-In-Reply-To: <5fd684d8-d46d-4009-bcf8-134dab342322@proton.me>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 18 Apr 2024 15:17:51 +0200
-Message-ID: <CAH5fLgiMLxmmm0AVX_5HQF61FzzN69GCKabrr-uM_oV-rRMuHw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/4] rust: uaccess: add typed accessors for userspace pointers
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
-	Kees Cook <keescook@chromium.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, Trevor Gross <tmgross@umich.edu>, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On Thu, Apr 18, 2024 at 3:02=E2=80=AFPM Benno Lossin <benno.lossin@proton.m=
-e> wrote:
->
-> On 18.04.24 10:59, Alice Ryhl wrote:
-> > diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
-> > index 8fad61268465..9c57c6c75553 100644
-> > --- a/rust/kernel/types.rs
-> > +++ b/rust/kernel/types.rs
-> > @@ -409,3 +409,67 @@ pub enum Either<L, R> {
-> >      /// Constructs an instance of [`Either`] containing a value of typ=
-e `R`.
-> >      Right(R),
-> >  }
-> > +
-> > +/// Types for which any bit pattern is valid.
-> > +///
-> > +/// Not all types are valid for all values. For example, a `bool` must=
- be either zero or one, so
-> > +/// reading arbitrary bytes into something that contains a `bool` is n=
-ot okay.
-> > +///
-> > +/// It's okay for the type to have padding, as initializing those byte=
-s has no effect.
-> > +///
-> > +/// # Safety
-> > +///
-> > +/// All bit-patterns must be valid for this type. This type must not h=
-ave interior mutability.
->
-> What is the reason for disallowing interior mutability here? I agree
-> that it is necessary for `AsBytes`, but I don't think we need it here.
-> For example it is fine to convert `u8` to `UnsafeCell<u8>`. Niches also
-> should not be a problem, since eg `Option<UnsafeCell<NonNull<u8>>>`
-> already fails the "All bit-patterns must be valid for this type".
+Hi,
 
-If T: FromBytes allows transmuting &[u8; size_of::<T>] into &T, then
-it would be a problem as you could then use it to modify the original
-&[u8].
+These two patches fix some minor error path mistakes in the device
+module.
 
-Alice
+Wander Lairson Costa (2):
+  kunit: unregister the device on error
+  kunit: avoid memory leak on device register error
+
+ lib/kunit/device.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+-- 
+2.44.0
+
 
