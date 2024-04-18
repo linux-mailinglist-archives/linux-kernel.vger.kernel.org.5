@@ -1,131 +1,136 @@
-Return-Path: <linux-kernel+bounces-150864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69B3E8AA5DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:32:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3754D8AA5F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:41:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 238D12831D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:32:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6958E1C20DF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:41:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9815976037;
-	Thu, 18 Apr 2024 23:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D115757F7;
+	Thu, 18 Apr 2024 23:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="mr32p6JA"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UyXDSEpS"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808A64A20;
-	Thu, 18 Apr 2024 23:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880616A025
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:41:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713483149; cv=none; b=Ll5twSuwFncA8pAOOiUtMihfH5TdumhWjqz+jFKyoA7mUD0z9TFnjRmMKa7udu9Vy9yW7qRIfCKjmdxxWQ3XvTI91IkNDgEZ/2ANiLDCtdZmd5qiVGjDtYwYImzEIoGkVNVtAITdQm/gymvtqCavCpyEm1Ms/wu5omwaqg3nhTg=
+	t=1713483672; cv=none; b=kZ6flndtaq+BD78oHMzQ2Te5CYlptMmWb21zfKXhoqt4bd+Hcqi2SJdIm27XJ27sxKtCtZ9+JEmzJxzfRRnP2DHI9lOJE7YOXBYe0FT70YbXaVclexpamUjpYUK18wO48QkD2zTURdnRZkxZUeiWAtBrMfUiCjjQnH555j8YwnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713483149; c=relaxed/simple;
-	bh=EYZS2H6fzPOlRgIXVoWWJKSUl39I+Z1L0VjK4QxzVJA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=P7qYKjp8ajufHjtUgY5lY748hgxvgdSr6tJD83PvJb1xxlwoFFXIiGEOF+ZVco5sX1dhs906xyZ4xN3KqDlx4WBakEKIkwLbVDKedfSElXMxM1pdDt/8wyqYW2hmnaa897Y2TxHB6hDYOdsWkLUY8hEgSUmFjf4hO/rxQL1oge0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=mr32p6JA; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1713483144;
-	bh=R1/1szuT9hPMtMvkuBptcn8TSH/pfi2IMvhJaAia4Co=;
-	h=Date:From:To:Cc:Subject:From;
-	b=mr32p6JAyv4SxDo+9936crZYbf6KovnjXyG0Q17ypYhxbMDraLPtem01lORtrhaK/
-	 k72ummFSUpMcC3KbxHeaosI7IculQV30BCEj8VliL6fEObNUp9qIpeZaEd3P23/aBr
-	 33IoXhv3AaH7jQ1Yuxe5yapkLoZLw7tYC91Z/s1DfsF5OXaCXTmjrYr/ZUZ/uZd6bm
-	 /Uu1SJ+EgD19Vteke5FpF6pSJabPjNc76DQ0C2RVi4kUIhfNqDGjHwrGaX+ShGnzIl
-	 Dze55dlgakEoMLce6l9dBApXGw1Vr2n+J43FNKOZpDpF1z9Y7ECp7JJaPoxELB72Vr
-	 zFoYLIhDqVtcw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VLDZv0jPMz4wyq;
-	Fri, 19 Apr 2024 09:32:23 +1000 (AEST)
-Date: Fri, 19 Apr 2024 09:32:22 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andrew Morton <akpm@linux-foundation.org>, David Miller
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>
-Cc: Edward Liaw <edliaw@google.com>, Networking <netdev@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the mm-hotfixes tree with Linus' tree
-Message-ID: <20240419093222.5a901a84@canb.auug.org.au>
+	s=arc-20240116; t=1713483672; c=relaxed/simple;
+	bh=oS4EJBOFAK9U3IsQ2hlOiJf8LGZYq2pmuC4jtH1eYZQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TtZ85KqfiDsGisJUcOzWnUEa9a8iK030Sb4UXusxM3CD+apShMnE49cmLM/KfWccE4IKKUhsiLF/sUuHps+r+Ez0Xqs51oFimtOSdDr/CyNyBECicBk+PyxPmeGFGpPsYJPApIn6mPjG96jSH+O96V1Qmzm8VEp1HNZp5+jT2qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UyXDSEpS; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6f0aeee172dso447118b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713483671; x=1714088471; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KGXVJHkqXUXGowXRQlx5v2hqDJp91SY1761utJ4P5AQ=;
+        b=UyXDSEpSqJqSCCSRAl2GaHpDBNkxvH9trcGXi3/OH0yaxBRuswlMapSUeJ3JhCD7EM
+         Cm3EDPMlbGvSrnRRLpqjOvfr9y0cuQyuNL5j1CfZJKucz1/btGJoRGDaWYK5L8cCWr8B
+         AxpLcOqkt/2osDmRdb1cBo/gwWWGeKz7qNmghOtWbQMOrvQ7di7Mf/kDhebxJivQocdV
+         qjTtd/6zR379lyi37KNB+HxSl3U+HgcDF0OXhsdCcdcSpvAceA3oNHQlLVf9W41LbfHT
+         JYg4ZtMaieXfPLQ6q0CROJe9GzipCz2/2/0qgnQUU5IqwA9rPeSs4r4bOkwLXzjXCkXk
+         4ycw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713483671; x=1714088471;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KGXVJHkqXUXGowXRQlx5v2hqDJp91SY1761utJ4P5AQ=;
+        b=fNQztgrV1GSjVvhoee2hWDtTtKox73Z+QKvz4KsiNl7lihWarX3AXBzM1QVYHz70Ur
+         +ydT2mPh9z9n1cHY50lUnFBOKHc7YQiZaVMMG1xNmVvHYgOKX/onyWnfVUXOTsRt1L4Y
+         /1voSvuNzmPFtx2FF5TmYgD95rKxXSmsqeBx5/Njxbt5WhVJ9l4fEBUkFcCKOKAdyjDT
+         E8fgDNMDlLaA+bfRNI3wNUqiJB5qa2HNG8H0/KakBfhk2fOm5OaqzaXda0vJ7ZrNC60y
+         1x8fZgWT3eWoaj3xyfpxmar2PYwsTmB/iQ56otO2T3W5F5tlZVbP06mSavuyc4tXA1FD
+         YD+w==
+X-Forwarded-Encrypted: i=1; AJvYcCU6vwZ6r2S17d0ZNaf2OpB7K/p8KHeu9wkJ5hRgUDyE723tvh8LlIIi6NN6QKlh7zitOhteK5o2pDYy836nkoyE3z6sPDAbM3weBLaT
+X-Gm-Message-State: AOJu0YzP5lLY7eyHEmPyJ1eojx9aaqnF/ghy1tRYFEFt23nX6Cx9lZ3g
+	XqkclFD2TFa0SKpWQ/im0WKhxF1YUA4x4hYlencL00Z+0QGvxDShlHhDZVHJrTY=
+X-Google-Smtp-Source: AGHT+IHcWz5nk/GgsJQgu1UEhUdG0EsvhhpLCyj/MsQLD2WdQKca7fsvr1cU7UdC1GmlThxMGjCUMA==
+X-Received: by 2002:a05:6a00:2408:b0:6ed:416d:e9e with SMTP id z8-20020a056a00240800b006ed416d0e9emr867794pfh.16.1713483670741;
+        Thu, 18 Apr 2024 16:41:10 -0700 (PDT)
+Received: from [172.20.10.110] ([209.37.221.130])
+        by smtp.gmail.com with ESMTPSA id ld2-20020a056a004f8200b006eaf43bbcb5sm2050444pfb.114.2024.04.18.16.41.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 16:41:10 -0700 (PDT)
+Message-ID: <15164074-f050-49ef-8e24-f64fc417a0b4@linaro.org>
+Date: Fri, 19 Apr 2024 00:41:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Lo7x+b/tFAF1roENO8l.nWi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] usb: typec: qcom-pmic: fix use-after-free on late
+ probe errors
+To: Johan Hovold <johan+linaro@kernel.org>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240418145730.4605-1-johan+linaro@kernel.org>
+ <20240418145730.4605-2-johan+linaro@kernel.org>
+Content-Language: en-US
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240418145730.4605-2-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---Sig_/Lo7x+b/tFAF1roENO8l.nWi
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 18/04/2024 15:57, Johan Hovold wrote:
+> Make sure to stop and deregister the port in case of late probe errors
+> to avoid use-after-free issues when the underlying memory is released by
+> devres.
+> 
+> Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
+> Cc: stable@vger.kernel.org	# 6.5
+> Cc: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>   drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+> index e48412cdcb0f..d3958c061a97 100644
+> --- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+> +++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
+> @@ -104,14 +104,18 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
+>   
+>   	ret = tcpm->port_start(tcpm, tcpm->tcpm_port);
+>   	if (ret)
+> -		goto fwnode_remove;
+> +		goto port_unregister;
+>   
+>   	ret = tcpm->pdphy_start(tcpm, tcpm->tcpm_port);
+>   	if (ret)
+> -		goto fwnode_remove;
+> +		goto port_stop;
+>   
+>   	return 0;
+>   
+> +port_stop:
+> +	tcpm->port_stop(tcpm);
+> +port_unregister:
+> +	tcpm_unregister_port(tcpm->tcpm_port);
+>   fwnode_remove:
+>   	fwnode_remove_software_node(tcpm->tcpc.fwnode);
+>   
 
-Hi all,
-
-Today's linux-next merge of the mm-hotfixes tree got a conflict in:
-
-  tools/testing/selftests/kselftest_harness.h
-
-between commit:
-
-  caed8eba2215 ("selftests: kselftest_harness: fix Clang warning about zero=
--length format")
-
-from Linus' tree and commit:
-
-  52124c13ec1f ("selftests/harness: remove use of LINE_MAX")
-
-from the mm-hotfixes-unstable branch of the mm-hotfixes tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/testing/selftests/kselftest_harness.h
-index ba3ddeda24bf,f0ae1f6466db..000000000000
---- a/tools/testing/selftests/kselftest_harness.h
-+++ b/tools/testing/selftests/kselftest_harness.h
-@@@ -1205,7 -1205,8 +1208,8 @@@ void __run_test(struct __fixture_metada
-  		diagnostic =3D "unknown";
- =20
-  	ksft_test_result_code(t->exit_code, test_name,
- -			      diagnostic ? "%s" : "", diagnostic);
- +			      diagnostic ? "%s" : NULL, diagnostic);
-+ 	free(test_name);
-  }
- =20
-  static int test_harness_run(int argc, char **argv)
-
---Sig_/Lo7x+b/tFAF1roENO8l.nWi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYhrYYACgkQAVBC80lX
-0GxIXAf9GkUydFR4L+GRsO3dV79ZUMzgzwRca1uFwzNSaJkaO54D90SFXWhPecod
-1NY7M72Lg9cNT6PqpO6xQ9zPnWjdWlU1fAdZMuZx+Li/MFzmnqBW4S73F1q6HhCx
-LikcWI939KGsPG9uBbQ0lxQnG+JBNNp+z7Wny3ypLxOp5e2oqFkySwzWFgv+BS+x
-vH9a+BAuBXOzZv/a3heyAmOLx9sNzOAT0HFRnUrEb+dSAVH0wLD9uAdXqCbBQpgd
-WtcsCPewuKXVXnKd6GLelrG78GhhED/ezFejgxzDSrJCpcWGISzLO2lR7V7ijIRB
-x8POmTps9e6xUxr+8xAYqA9cFrYtuw==
-=wSr3
------END PGP SIGNATURE-----
-
---Sig_/Lo7x+b/tFAF1roENO8l.nWi--
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
