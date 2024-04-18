@@ -1,125 +1,158 @@
-Return-Path: <linux-kernel+bounces-150776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DD8F8AA469
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 472C48AA46B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:55:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49BA5282426
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:54:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 039DD282CEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3DB194C71;
-	Thu, 18 Apr 2024 20:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC51919068F;
+	Thu, 18 Apr 2024 20:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="E8MKuAiE"
-Received: from xry111.site (xry111.site [89.208.246.23])
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="iKBMnnuf"
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AABC7194C70
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 20:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13996D1C7
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 20:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713473679; cv=none; b=HbgtzSlsYu8Xm56pU5VuNnyK1RAdmxomD4rRKR6d56eQ9rgsYF7oi03DupHOfkEbf6OOaYtNOJW1pSfGLJYO1mp8l9dkJ4fuUiI7rxfgNv/a/oCBLDqKlUNoPyYWvJ+M2MYnRmJwiJjC1+VyMTJ7p0h4QXs9pEsJyh+hqFzyxAQ=
+	t=1713473735; cv=none; b=sEb32HonG0mqriZdQNNbkUm/YQGquBQArCq6CxzIE3gkqCv2P/9Zmeov8I6gBjUGyr//MCcIr1QhhendP8DgSD0LxmEtkUkHF5ELLSmyqK9XBnseQh5upgfdKSKRdO33ei8+FN3yaCjllCRJ4JpVp7QVSnLGJsTPvGBRbC86yB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713473679; c=relaxed/simple;
-	bh=jw7B6rN+W4EcAICNrjvS7o3xQ1r6kRpyDSmSpeRt/EM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DFzYM/PcKRtvLY8avQmbAONDJz7PPXUTUGFMAKZ9do4a1OAvF5RxZwhWCu2HzB7BJyANSbTadcx4EYPTIsj2fi7rkH0nuK0TyBcpMMqUtfwWNZddZpGjIQ2/6YXMfj/yhby6Hq5XansRmwlQZeU+PPOjoebUustB98SXWhn9Xo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=E8MKuAiE; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1713473676;
-	bh=jw7B6rN+W4EcAICNrjvS7o3xQ1r6kRpyDSmSpeRt/EM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=E8MKuAiEzkZyrBuQ6NASHrG/6+s4eK6Olk+yeKsBXEPWM+BA5iO19PHNMDFFmpKRM
-	 ZT+i+xnVAU6DqDYaqNl49VW3Idh88yJrKHUaNY0XFRNX365VapSNcArjkBrqSFrxod
-	 iY9tmDofrq/iz37esJveyV3sF/2uXBbwW7ANQk/0=
-Received: from stargazer.. (unknown [IPv6:240e:358:1129:f600:dc73:854d:832e:7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id 178101A4052;
-	Thu, 18 Apr 2024 16:54:30 -0400 (EDT)
-From: Xi Ruoyao <xry111@xry111.site>
-To: Dave Hansen <dave.hansen@linux.intel.com>,
-	Michael Kelley <mhklinux@outlook.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xi Ruoyao <xry111@xry111.site>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: [PATCH v9 2/2] x86/mm: Don't disable PCID if the kernel is running on a hypervisor
-Date: Fri, 19 Apr 2024 04:54:14 +0800
-Message-ID: <20240418205414.67735-2-xry111@xry111.site>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240418205414.67735-1-xry111@xry111.site>
-References: <20240418205414.67735-1-xry111@xry111.site>
+	s=arc-20240116; t=1713473735; c=relaxed/simple;
+	bh=Uz+ZlJEqo15wPjuyhcJL6oFRLFmTBAS5fb2Hjk9xTCM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=j4f1ZcsNDfiRZNTQmWUZwTcSOE0GDMjoxWwGWOSK2Oh7MokIxGoZDg15llrYKC0Tez26l4WgLEFoot0EUw4MkNVRlXqd0i/8vypA2wwJZP9u132e0pe1j/AXYC1nx9mvPNWEezIgc3K9hllyWZU+SovAg8BKYbQLA55Mo0xwpJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=iKBMnnuf; arc=none smtp.client-ip=192.134.164.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=G8QTA78gicQvOzCOLPgT2dkGgBOXRzDjv6gxywnqqYY=;
+  b=iKBMnnufEm63BJiJ736VH7eybDpAcLSFt8Jpjcc7GivmlCaKDSvE+BHY
+   DYyD4JvBLFKAZEkhcykeFxkpU6IcFxPWOTqzBqhd3OvJkg60LdGUTyymg
+   aMx1dYFxSkgpHpk1pZMcPOTLdBdk7JHPUDfYzZ0lCgP+0ZFfIyMnyQOrq
+   c=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.07,213,1708383600"; 
+   d="scan'208";a="162321955"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 22:55:24 +0200
+Date: Thu, 18 Apr 2024 22:55:23 +0200 (CEST)
+From: Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To: Ricardo Ribalda <ribalda@chromium.org>
+cc: Nicolas Palix <nicolas.palix@imag.fr>, Denis Efremov <efremov@linux.com>, 
+    cocci@inria.fr, linux-kernel@vger.kernel.org
+Subject: Re: [cocci] [PATCH] coccinelle: misc: minmax: Suppress reports for
+ err returns
+In-Reply-To: <20240415-minimax-v1-1-5feb20d66a79@chromium.org>
+Message-ID: <alpine.DEB.2.22.394.2404182255010.3213@hadrien>
+References: <20240415-minimax-v1-1-5feb20d66a79@chromium.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-The Intel erratum for "incomplete Global INVLPG flushes" says:
 
-    This erratum does not apply in VMX non-root operation. It applies
-    only when PCIDs are enabled and either in VMX root operation or
-    outside VMX operation.
 
-So if the kernel is running in a hypervisor, we are in VMX non-root
-operation and we should be safe to use PCID.
+On Mon, 15 Apr 2024, Ricardo Ribalda wrote:
 
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Michael Kelley <mhklinux@outlook.com>
-Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Andrew Cooper <andrew.cooper3@citrix.com>
-Link: https://lore.kernel.org/all/168436059559.404.13934972543631851306.tip-bot2@tip-bot2/
-Link: https://cdrdv2.intel.com/v1/dl/getContent/740518 # RPL042, rev. 13
-Link: https://cdrdv2.intel.com/v1/dl/getContent/682436 # ADL063, rev. 24
-Signed-off-by: Xi Ruoyao <xry111@xry111.site>
----
- arch/x86/mm/init.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> Most of the people prefer:
+>
+> return ret < 0 ? ret: 0;
+>
+> than:
+>
+> return min(ret, 0);
+>
+> Let's tweak the cocci file to ignore those lines completely.
+>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index c318cdc35467..b20e453c1217 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -286,7 +286,7 @@ static const struct x86_cpu_id invlpg_miss_ids[] = {
- 
- static void setup_pcid(void)
- {
--	const struct x86_cpu_id *invlpg_miss_match;
-+	const struct x86_cpu_id *invlpg_miss_match = NULL;
- 
- 	if (!IS_ENABLED(CONFIG_X86_64))
- 		return;
-@@ -294,7 +294,9 @@ static void setup_pcid(void)
- 	if (!boot_cpu_has(X86_FEATURE_PCID))
- 		return;
- 
--	invlpg_miss_match = x86_match_cpu(invlpg_miss_ids);
-+	/* Only bare-metal is affected.  PCIDs in guests are OK.  */
-+	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
-+		invlpg_miss_match = x86_match_cpu(invlpg_miss_ids);
- 
- 	if (invlpg_miss_match &&
- 	    boot_cpu_data.microcode < invlpg_miss_match->driver_data) {
--- 
-2.44.0
+Applied, thanks. (Coccinelle for-6.10 branch).
 
+julia
+
+> ---
+> Following discussion at:
+> https://lore.kernel.org/linux-media/20240415203304.GA3460978@ragnatech.se/T/#m4dce34572312bd8a02542d798f21af7e4fc05fe8
+> ---
+>  scripts/coccinelle/misc/minmax.cocci | 32 ++++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+>
+> diff --git a/scripts/coccinelle/misc/minmax.cocci b/scripts/coccinelle/misc/minmax.cocci
+> index fcf908b34f27..ca4830ae3042 100644
+> --- a/scripts/coccinelle/misc/minmax.cocci
+> +++ b/scripts/coccinelle/misc/minmax.cocci
+> @@ -50,11 +50,26 @@ func(...)
+>  	...>
+>  }
+>
+> +// Ignore errcode returns.
+> +@errcode@
+> +position p;
+> +identifier func;
+> +expression x;
+> +binary operator cmp = {<, <=};
+> +@@
+> +
+> +func(...)
+> +{
+> +	<...
+> +	return ((x) cmp@p 0 ? (x) : 0);
+> +	...>
+> +}
+> +
+>  @rmin depends on !patch@
+>  identifier func;
+>  expression x, y;
+>  binary operator cmp = {<, <=};
+> -position p;
+> +position p != errcode.p;
+>  @@
+>
+>  func(...)
+> @@ -116,21 +131,6 @@ func(...)
+>  	...>
+>  }
+>
+> -// Don't generate patches for errcode returns.
+> -@errcode depends on patch@
+> -position p;
+> -identifier func;
+> -expression x;
+> -binary operator cmp = {<, <=};
+> -@@
+> -
+> -func(...)
+> -{
+> -	<...
+> -	return ((x) cmp@p 0 ? (x) : 0);
+> -	...>
+> -}
+> -
+>  @pmin depends on patch@
+>  identifier func;
+>  expression x, y;
+>
+> ---
+> base-commit: 71b3ed53b08d87212fbbe51bdc3bf44eb8c462f8
+> change-id: 20240415-minimax-1e9110d4697b
+>
+> Best regards,
+> --
+> Ricardo Ribalda <ribalda@chromium.org>
+>
+>
 
