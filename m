@@ -1,226 +1,179 @@
-Return-Path: <linux-kernel+bounces-150818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105398AA4ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:57:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A3F08AA537
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:00:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 343A81C20DC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:57:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E6031C2134E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5F4D199EA5;
-	Thu, 18 Apr 2024 21:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B78199E97;
+	Thu, 18 Apr 2024 22:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hdDV1nrZ"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Qif+6AsN"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD6418131D
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 21:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD9B13F443
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 22:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713477444; cv=none; b=BB+BGvvAJeIjC5sB3sY3Xws2Pn/rwn4KhB/X0ELb4m/iLpTagXDvFRfftjq4KIUL74QyQ6K2l5cDQOYiXUsbrdpyoHMayI3IQn7pESSTkROZCdsrSNA086eZYZ+k0OhlMXaJkHfeuzarc72M3E6ILOJraVYMUJExuPb6sxbuUuc=
+	t=1713477647; cv=none; b=MpOw7+xucxm/338tbM2KbGZk6jo5suCrONESaOdX+osaEkReVUauASrdpCbm9ZORHM4uW17y1Bg8EtJH5lso8TZJhtc4/QC7uFbkjC36+3Paz2LqEBVoAd1AqW2EA+aPR3RcKl5BpP0FN0QMum5pymXMjMQ/LHWfohYaJHPAkTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713477444; c=relaxed/simple;
-	bh=zooV8U1KdjxrLXansfLdXT2+NI7EJnxfn32RZkboLRk=;
+	s=arc-20240116; t=1713477647; c=relaxed/simple;
+	bh=p5ZbW5eCLUWIBuL3FO6CJqzFEQBd5Cq98xh9PmgDJ5w=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ab4dowA2pKXcZUwz2HCqFR6Uodkell68GaUfs3izE+1JUAbnCGf5foPNKNMjbQ/rWYk4iQ9YJg4Y4hb1+BE3xSyivaayMQaJ/qPe1WXc2fbvJmBO4dWPrMhabwb/1Byx0nvwHPUNpKhk425E59Q2DgTAqjgSzHeacFV77m/Xzc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hdDV1nrZ; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c6f33a36-1fac-4738-8a4f-c930b544ba62@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713477439;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=biLTizcyKoXID4ZbzhVKkocFif6oiK6wrP0PDSnRgzg=;
-	b=hdDV1nrZbThWa8XN/NOAuO1TL/Ie+Qg92kBzCL9omoSluxR1TfCLUx3kwj9uwhbZkQYaly
-	uNfd4ePrxFLgf+WRQfHgp2SaiXqpRKDRAXNl3xVPpKLOw7cA/oobIZEK8kVA4zAI/YhO1e
-	GatKGoshXof6N78AwIH65m7xeSRUk7E=
-Date: Thu, 18 Apr 2024 14:57:12 -0700
+	 In-Reply-To:Content-Type; b=U1ltl01bsWAUs1z/7iX363DAjA1yMF6xWzUWB9nVUoLzAzZrJiVkW+/9vW5i2U6utiuPjL7h7eMw8wdb1PT/n6D1x/SSzpHy67Vqr6XyHBL0Qg1A5/nMRQurwVH4BnVRKAzMpEZYrFbQPp6/HGMir7zLYHzX2tgj/RK/dVp/Fn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Qif+6AsN; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7c8ad87b2acso36976439f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1713477645; x=1714082445; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LPPGE1q9s6cTnAk4kOg+eroFH/OZnnaVpd01j4nY80E=;
+        b=Qif+6AsNs8Q2NSdv6pQpqyWEtGuA2e78dViSM8asOXXT2sAJ9gkarmU4V/Pyj5VsNp
+         ZZJQaVj1LqZXXb8V9evChVt5BTm8eoTFoFtouhEynPpkZ7TMm9Jd8ML492Ks/+boctRk
+         /cAo8cg7bAF3R5eMYlslfq2/ONnhwKvAm+cWMShd6BOXPlk1J2Ojbw8T1AF4ujq9lgJs
+         yyFIjPeD55hH/tlFEV4FjhEmH0wYIpqX0rMUAEdwlgLqtjcL7c8YuGiNTZ1CIe9r701B
+         Vb8xgflDZsXyzvITnYz/m82QhJDZ0NWwWuhvIUCHCd3XK6FmOWzUG2Keu/DNTUPeaYPF
+         LANA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713477645; x=1714082445;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LPPGE1q9s6cTnAk4kOg+eroFH/OZnnaVpd01j4nY80E=;
+        b=EA+/cYm9twKAz+qGmHJrnbTeQGBRO/MmK//8JYMY/iGHZ85RHmikb5NqJradM9y8qZ
+         ZyM+H8L5gsH2IgtXkBlZWnfBkCD3VqcNS9vuxJFxf0VpMBwSZfkKj6lTo4NqOj/KkYo7
+         dIgTjy7J5N2K2lrW2u30h9JVNV8DqzBu99MF+iooUzdxRG6oKqa+wPY2WQZ9rTfaiLD8
+         ba/NJWzOPyA7IKN5KzGWbKr9+2CYopoTeUl5e87ynZEsAmGVzThI0ykanLmrlRz0pB7L
+         wpeIffwQ3WJwDjH3rEH106tFwqAIqIqRZaqLLRwGZ8m84EKq3Tr2GDXaFZcbWHVn5W7K
+         NqyA==
+X-Forwarded-Encrypted: i=1; AJvYcCUuoDz4wxe8QX0CupnPNxQ2FzwWVlchWxsUJevNGoewQyeB+pI9f6troAhowhnTbfvzSCGibjOJGvNaO+nDZmxGQ7IZjUoYCVC4nA/+
+X-Gm-Message-State: AOJu0YyPFKYzcvfJOF9zOY/wjDdPY5c3ko299gH38jl5vrapPyMWQMuw
+	EhIsJDzYuk7GwWWraTiCsJFqiYc1rLvPvN8zTtPZAyxe7Jvk7WhYPvT6ltmCX10=
+X-Google-Smtp-Source: AGHT+IF4iUMS3eOsGMRU754zue/Q9W8EqUFJSSWAR8r9SOKI8KHJgGqick2Fy8LHDjkEuBIaHtDFRg==
+X-Received: by 2002:a6b:4402:0:b0:7d5:f121:dee7 with SMTP id r2-20020a6b4402000000b007d5f121dee7mr498314ioa.19.1713477645449;
+        Thu, 18 Apr 2024 15:00:45 -0700 (PDT)
+Received: from [100.64.0.1] ([170.85.6.197])
+        by smtp.gmail.com with ESMTPSA id f2-20020a056638168200b00482a6d6ad31sm650286jat.92.2024.04.18.15.00.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 15:00:45 -0700 (PDT)
+Message-ID: <33de5d8f-5ccb-4dd0-9915-720e6f800560@sifive.com>
+Date: Thu, 18 Apr 2024 17:00:42 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v4 2/2] net: Add additional bit to support
- clockid_t timestamp type
-To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
- kernel@quicinc.com
-References: <20240418004308.1009262-1-quic_abchauha@quicinc.com>
- <20240418004308.1009262-3-quic_abchauha@quicinc.com>
- <66216f3ec638b_f648a294ec@willemb.c.googlers.com.notmuch>
- <cb922600-783e-4741-be85-260d1ded5bdb@quicinc.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 1/2] riscv: process: Introduce idle thread using Zawrs
+ extension
+To: Andrew Jones <ajones@ventanamicro.com>, Conor Dooley <conor@kernel.org>
+Cc: Xu Lu <luxu.kernel@bytedance.com>, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, andy.chiu@sifive.com,
+ guoren@kernel.org, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org, lihangjing@bytedance.com,
+ dengliang.1214@bytedance.com, xieyongji@bytedance.com,
+ chaiwen.cc@bytedance.com
+References: <20240418114942.52770-1-luxu.kernel@bytedance.com>
+ <20240418114942.52770-2-luxu.kernel@bytedance.com>
+ <20240418-dove-deferral-2b01100e13ca@spud>
+ <20240418-d9f305770dc71c2687a6e84b@orel>
 Content-Language: en-US
-In-Reply-To: <cb922600-783e-4741-be85-260d1ded5bdb@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240418-d9f305770dc71c2687a6e84b@orel>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 4/18/24 1:10 PM, Abhishek Chauhan (ABC) wrote:
->>>   #ifdef CONFIG_NET_XGRESS
->>>   	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
->>>   	__u8			tc_skip_classify:1;
->>> @@ -1096,10 +1100,12 @@ struct sk_buff {
->>>    */
->>>   #ifdef __BIG_ENDIAN_BITFIELD
->>>   #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7)
->>> -#define TC_AT_INGRESS_MASK		(1 << 6)
->>> +#define SKB_TAI_DELIVERY_TIME_MASK	(1 << 6)
+Hi Drew,
+
+On 2024-04-18 2:10 PM, Andrew Jones wrote:
+> On Thu, Apr 18, 2024 at 04:05:55PM +0100, Conor Dooley wrote:
+>> + Drew,
 >>
->> SKB_TSTAMP_TYPE_BIT2_MASK?
-
-nit. Shorten it to just SKB_TSTAMP_TYPE_MASK?
-
-#ifdef __BIG_ENDIAN_BITFIELD
-#define SKB_TSTAMP_TYPE_MASK	(3 << 6)
-#define SKB_TSTAMP_TYPE_RSH	(6)	/* more on this later */
-#else
-#define SKB_TSTAMP_TYPE_MASK	(3)
-#endif
-
+>> On Thu, Apr 18, 2024 at 07:49:41PM +0800, Xu Lu wrote:
+>>> The Zawrs extension introduces a new instruction WRS.NTO, which will
+>>> register a reservation set and causes the hart to temporarily stall
+>>> execution in a low-power state until a store occurs to the reservation
+>>> set or an interrupt is observed.
+>>>
+>>> This commit implements new version of idle thread for RISC-V via Zawrs
+>>> extension.
+>>>
+>>> Signed-off-by: Xu Lu <luxu.kernel@bytedance.com>
+>>> Reviewed-by: Hangjing Li <lihangjing@bytedance.com>
+>>> Reviewed-by: Liang Deng <dengliang.1214@bytedance.com>
+>>> Reviewed-by: Wen Chai <chaiwen.cc@bytedance.com>
+>>> ---
+>>>  arch/riscv/Kconfig                 | 24 +++++++++++++++++
+>>>  arch/riscv/include/asm/cpuidle.h   | 11 +-------
+>>>  arch/riscv/include/asm/hwcap.h     |  1 +
+>>>  arch/riscv/include/asm/processor.h | 17 +++++++++++++
+>>>  arch/riscv/kernel/cpu.c            |  5 ++++
+>>>  arch/riscv/kernel/cpufeature.c     |  1 +
+>>>  arch/riscv/kernel/process.c        | 41 +++++++++++++++++++++++++++++-
+>>>  7 files changed, 89 insertions(+), 11 deletions(-)
+>>>
+>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>>> index be09c8836d56..a0d344e9803f 100644
+>>> --- a/arch/riscv/Kconfig
+>>> +++ b/arch/riscv/Kconfig
+>>> @@ -19,6 +19,7 @@ config RISCV
+>>>  	select ARCH_ENABLE_SPLIT_PMD_PTLOCK if PGTABLE_LEVELS > 2
+>>>  	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
+>>>  	select ARCH_HAS_BINFMT_FLAT
+>>> +	select ARCH_HAS_CPU_FINALIZE_INIT
+>>>  	select ARCH_HAS_CURRENT_STACK_POINTER
+>>>  	select ARCH_HAS_DEBUG_VIRTUAL if MMU
+>>>  	select ARCH_HAS_DEBUG_VM_PGTABLE
+>>> @@ -525,6 +526,20 @@ config RISCV_ISA_SVPBMT
+>>>  
+>>>  	   If you don't know what to do here, say Y.
+>>>  
+>>> +config RISCV_ISA_ZAWRS
+>>> +	bool "Zawrs extension support for wait-on-reservation-set instructions"
+>>> +	depends on RISCV_ALTERNATIVE
+>>> +	default y
+>>> +	help
+>>> +	   Adds support to dynamically detect the presence of the Zawrs
+>>> +	   extension and enable its usage.
 >>
-> I was thinking to keep it as TAI because it will confuse developers. I hope thats okay.
-
-I think it is not very useful to distinguish each bit since it is an enum value 
-now. It becomes more like the "pkt_type:3" and its PKT_TYPE_MAX.
-
->>> +#define TC_AT_INGRESS_MASK		(1 << 5)
->>>   #else
->>>   #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
->>> -#define TC_AT_INGRESS_MASK		(1 << 1)
->>> +#define SKB_TAI_DELIVERY_TIME_MASK	(1 << 1)
->>> +#define TC_AT_INGRESS_MASK		(1 << 2)
->>>   #endif
->>>   #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
->>>   
->>> @@ -4206,6 +4212,11 @@ static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
->>>   	case CLOCK_MONOTONIC:
->>>   		skb->tstamp_type = SKB_CLOCK_MONO;
->>>   		break;
->>> +	case CLOCK_TAI:
->>> +		skb->tstamp_type = SKB_CLOCK_TAI;
->>> +		break;
->>> +	default:
->>> +		WARN_ONCE(true, "clockid %d not supported", tstamp_type);
->>
->> and set to 0 and default tstamp_type?
->> Actually thinking about it. I feel if its unsupported just fall back to default is the correct thing. I will take care of this.
->>>   	}
->>>   }
->>
->>>   >
->>   @@ -9372,10 +9378,16 @@ static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
->>>   	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
->>>   			      SKB_BF_MONO_TC_OFFSET);
->>>   	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
->>> -				SKB_MONO_DELIVERY_TIME_MASK, 2);
->>> +				SKB_MONO_DELIVERY_TIME_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2);
->>> +	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
->>> +				SKB_MONO_DELIVERY_TIME_MASK, 3);
->>> +	*insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
->>> +				SKB_TAI_DELIVERY_TIME_MASK, 4);
->>>   	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
->>>   	*insn++ = BPF_JMP_A(1);
->>>   	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_MONO);
->>> +	*insn++ = BPF_JMP_A(1);
->>> +	*insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_TAI);
-
-With SKB_TSTAMP_TYPE_MASK defined like above, this could be simplified like this 
-(untested):
-
-static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
-                                                      struct bpf_insn *insn)
-{
-	__u8 value_reg = si->dst_reg;
-	__u8 skb_reg = si->src_reg;
-
-	BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
-	*insn++ = BPF_LDX_MEM(BPF_B, value_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
-	*insn++ = BPF_ALU32_IMM(BPF_AND, value_reg, SKB_TSTAMP_TYPE_MASK);
-#ifdef __BIG_ENDIAN_BITFIELD
-	*insn++ = BPF_ALU32_IMM(BPF_RSH, value_reg, SKB_TSTAMP_TYPE_RSH);
-#else
-	BUILD_BUG_ON(!(SKB_TSTAMP_TYPE_MASK & 0x1));
-#endif
-
-	return insn;
-}
-
->>>   
->>>   	return insn;
->>>   }
->>> @@ -9418,10 +9430,26 @@ static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_prog *prog,
->>>   		__u8 tmp_reg = BPF_REG_AX;
->>>   
->>>   		*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, SKB_BF_MONO_TC_OFFSET);
->>> +		/*check if all three bits are set*/
->>>   		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
->>> -					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
->>> -		*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg,
->>> -					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 2);
->>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
->>> +					SKB_TAI_DELIVERY_TIME_MASK);
->>> +		/*if all 3 bits are set jump 3 instructions and clear the register */
->>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
->>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK |
->>> +					SKB_TAI_DELIVERY_TIME_MASK, 4);
->>> +		/*Now check Mono is set with ingress mask if so clear */
->>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
->>> +					TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK, 3);
->>> +		/*Now Check tai is set with ingress mask if so clear */
->>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
->>> +					TC_AT_INGRESS_MASK | SKB_TAI_DELIVERY_TIME_MASK, 2);
->>> +		/*Now Check tai and mono are set if so clear */
->>> +		*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg,
->>> +					SKB_MONO_DELIVERY_TIME_MASK |
->>> +					SKB_TAI_DELIVERY_TIME_MASK, 1);
-
-Same as the bpf_convert_tstamp_type_read, this could be simplified with 
-SKB_TSTAMP_TYPE_MASK.
-
->>
->> This looks as if all JEQ result in "if so clear"?
->>
->> Is the goal to only do something different for the two bits being 0x1,
->> can we have a single test with a two-bit mask, rather than four tests?
->>
-> I think Martin wanted to take care of TAI as well. I will wait for his comment here
+>> Drew, could you, in your update, use the wording:
+>> 	   Add support for enabling optimisations in the kernel when the
+>> 	   Zawrs extension is detected at boot.
 > 
-> My Goal was to take care of invalid combos which does not hold valid
-> 1. If all 3 bits are set => invalid combo (Test case written is Insane)
-> 2. If 2 bits are set (tai+mono)(Test case written is Insane) => this cannot happen (because clock base can only be one in skb)
-> 3. If 2 bit are set (ingress + tai/mono) => This is existing logic + tai being added (clear tstamp in ingress)
-> 4. For all other cases go ahead and fill in the tstamp in the dest register.
+> How about
+> 
+>   The Zawrs extension defines a pair of instructions to be used in
+>   polling loops which allow a hart to enter a low-power state or to
+>   trap to the hypervisor while waiting on a store to a memory location.
+>   Enable the use of these instructions when the Zawrs extension is
 
-If it is to ensure no new type is added without adding 
-BPF_SKB_TSTAMP_DELIVERY_XYZ, I would simplify this runtime bpf insns here and 
-use a BUILD_BUG_ON to catch it at compile time. Something like,
+                                        ^ in the kernel
 
-enum skb_tstamp_type {
-         SKB_CLOCK_REAL, /* Time base is skb is REALTIME */
-         SKB_CLOCK_MONO, /* Time base is skb is MONOTONIC */
-  	SKB_CLOCK_TAI,  /* Time base in skb is TAI */
-         __SKB_CLOCK_MAX = SKB_CLOCK_TAI,
-};
+I believe "in the kernel" was an important part of the clarification that these
+Kconfig options do not affect whether userspace can use these instructions.
 
-/* Same one used in the bpf_convert_tstamp_type_read() above */
-BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
+Regards,
+Samuel
 
-Another thing is, the UDP test in test_tc_dtime.c probably needs to be adjusted, 
-the userspace is using the CLOCK_TAI in SO_TXTIME and it is getting forwarded now.
+>   detected at boot.
+> 
+> Thanks,
+> drew
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
 
