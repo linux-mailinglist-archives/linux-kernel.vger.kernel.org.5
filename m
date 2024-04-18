@@ -1,127 +1,115 @@
-Return-Path: <linux-kernel+bounces-150433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59FE78A9F40
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:56:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C72188A9F3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:56:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 161E1281969
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:56:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5357F281BED
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC4316F84D;
-	Thu, 18 Apr 2024 15:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A38916F83E;
+	Thu, 18 Apr 2024 15:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YNp3qgbJ"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OTxcocgG"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A6116D4C0;
-	Thu, 18 Apr 2024 15:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F300A15FA9F
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:56:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713455810; cv=none; b=qZPtc5QQB9KNOeIpV6MFqsAKGWuqtGIf8Mn14Jq45hgWR0jfg0p7ftScnufpVYHPaaZptDze2LXvXrO1rCe1BJsYfuJm/a7r40BJxEKuw+brm76ckZeiI6ngaySS5/0cS1QPO7sQVJEpmM/7Z96QxYH3tcK8KP7F/LOIiIVbFeI=
+	t=1713455779; cv=none; b=ayoHYOkCO2qLeB0OvQlrD8Ge0gLnxnmB76PSWDYZo6kdJaAC+qep1K+RESf+fzXLHbxiArHzznCYRqjQVYDEgQzK2B5GQdJiBN7EXTN4Nmvxp3yxXw475fzPdqYqqGmv/N2C1lRlhYUeZs7ElNzX+GkZaPXTCnqdZlutyyEUEQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713455810; c=relaxed/simple;
-	bh=aBUT2+pQDzYwiVZKUr+Rvc3cYxV7V4n7dBGY3Vt9cNM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dxU5bt75kgLHZzrf338bXiHz3YasJfvsje+B2MHB5NEJGhEzTyPXSzwMTR6InmdS/1WJEYkIQVSeNojuYjxcn/ZcNLoM/bEX+rkZzk/U/psSYg41v3hxNRZ9VCZ9npZJLJ9Gzw2YIwpZOW1lXlptsJ1BBSif0BSrFJpC8S2uyL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YNp3qgbJ; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1713455779; c=relaxed/simple;
+	bh=mDRjfBiPjMWn261FMr3b8oWZieXKRIxWEC729h8K7sg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DL9j9K7udsxTPWnrKRLK8gV67cTON8r/P7Vi1FCvKO3OXc1rkpP5U6RWXCaSs0KsCUzGVm97TEwJxdVhtYRkLe1iAKWuHCAbowhHKYz3Z/a9N6zL2YSz/xM8Wt7P/bbY0nKuF65KZm+QJGXJSph+sZCUlAFPYasI2tKVCSGxXvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OTxcocgG; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso1698772e87.2;
-        Thu, 18 Apr 2024 08:56:48 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ed01c63657so988369b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713455807; x=1714060607; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yVAgtcipfkcWMHjlW6nU5upWM2mMxhSXqMN6JngOSHk=;
-        b=YNp3qgbJrbjjBWuirX0TRgGuMKJqG6tJzt4WupmJYKCTK52NTWYZSAP4lMn47lGdGb
-         Ix6KiGEKGdscZ9pUGRYS7hYxAsFn2AfUb9f10fVVXB6L1Sbf7AdZNU7EdCaVWYZ++JOi
-         zaenZ9OflDADMvtqCFkyFXoDur6MyLaGI1s8R3m52Rr/wXJ+0jgWSPAUd5r5RMCj6ABV
-         q9Ex9HQRSBQ04jVY0pHtfhO3J7+94dwMpRdNyY7ThIC2MUg2iZuxG71/jca8XW3LmD8D
-         zfK/6HaVFRl/tT3KpyU6xPNE+urxfzW/BQOMrocNU/1NQx6rb2E9mWd33bg1X7rI2w7S
-         20pQ==
+        d=gmail.com; s=20230601; t=1713455777; x=1714060577; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GnRoVABkMpTwTwJRlnT/WRT83zNRcjsjqktPei1RqZc=;
+        b=OTxcocgG+gc/7Br+1KJeAFOHbYwSFqLV0joIJBS/GUX2vZVMYpSetfcLwnw3XGMsu2
+         lrxWZUV6tXbNTpig1y1H1ukh81KJxdiDYqbEfPttYwRamQ/295ZedcoLg60ukF83F8BZ
+         QQNlmS18OpWYDJE+tc0o9eNdEXLfHW8/7uAtlBuMZwduvhTOdIeHVGwzYA5/p1uq4529
+         R9vU9fiAt9eIVmqTFCrLMeOtS32rf2EM8i7+aaRqUQFHPyKVdWD6jPvAWdBH198uSr7Z
+         sfscgwcENVmsEFNgWYOcOOHUV4ZiN9mYXDy7AtY+J9xygdVzdLQAao1ReP6c4W+LYJHt
+         eyUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713455807; x=1714060607;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713455777; x=1714060577;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yVAgtcipfkcWMHjlW6nU5upWM2mMxhSXqMN6JngOSHk=;
-        b=wiwpgrULwyy9w7ALnutQLw+RqJou65g7ogP24sj7DYqtVBxS+4IJHrgfaUNQz7yC9d
-         6rNrJNVzxxfnapriaEF6KDHAvuYK/bWcXojzvIF4eB20OqMeka9rRnQMzL56zYEit7W9
-         vApcbJIgqUqITLyJ9EWNjid0VtI75zU6dC0DwkOZL2cZVvMeQY8AeFcwVAErKNNGBOX/
-         x84+NADKDTjLULI9b/ASWzjE0pXh9QiFcvDegfblX9JZh9XStrV/S3veoW777UZ7q0WM
-         qbhKAbYP6pIQk+yfen1aDlTD5QgrRUmW+hvPt0ot6JTZT89qbHSf0MUnci1bnkVuvcdB
-         2IOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXQ+dSxK7wXtO/IXUt0d1I2NkApT0TgGDt/z6bea2eOQflBZJoYlQeqpgYATJoILUQW+jL6RYb8o53FO8arGKZy0aQ5TU6iSxBAJB4Itorwt6cr8P0Dqgka2gxZL0kw+jwUNZO7tskmpDOU/pzNr/n3rG64ycE7C5f0UwR/BUZGcTT8IL4ra3QuiOd/RrT3eprKllsyTXvSCavSpaDnub84
-X-Gm-Message-State: AOJu0YxLvm1D+bGd9fBt9FX9PlTyYgYJop4k3UDwJIwESt/FILNGFRHe
-	AP0MX2jyiR0kJnZ0k9NeSkuLHahHsC4pmJm71Ps5iGV82Goedr2bw2UgUorNHjq+kmDTwQvcow3
-	6Rsxu/4mEZ8imtnrfOPspKnMDZFg=
-X-Google-Smtp-Source: AGHT+IG1UvVvPMawq0PN1G95h2KMXcAMXcVnwWBMLVJAP/s7QKISoICSyXIA62E97yFHemf7G8s5MxQ9F1kvhWxIZAo=
-X-Received: by 2002:a2e:8383:0:b0:2da:b1fc:8095 with SMTP id
- x3-20020a2e8383000000b002dab1fc8095mr2163555ljg.7.1713455806891; Thu, 18 Apr
- 2024 08:56:46 -0700 (PDT)
+        bh=GnRoVABkMpTwTwJRlnT/WRT83zNRcjsjqktPei1RqZc=;
+        b=OjmuevfwkrVI+valAm7iiQEIBy/pQHt5oJi7o9oncRnprFtFLITCpMMo7WTYsVxmtK
+         cMEMLosYeHY7lM08ANRefgiCVLRZa8kahPEpC5hiVZuspJX8ylLTm7L0ShDGzu7xQj7j
+         GKoXhdPDtJ1CSAtBuUvLUdPZU17zy4nsXXSaQ8PQWiAlvSQIbBILPfSTWNHor0Uoddoi
+         atIZLMHeMFZhbJ8AHJoJB2UiLtjYg1rz3ikPX8x2zmHNnq4vXiRWbGPdKIvbd/T69khr
+         tNsHaeQaTb++QZK9XwphVmDThVbCggz3Za4l8lUwrqpVclgjot97L81mNC8dujf5zEH9
+         09Ag==
+X-Forwarded-Encrypted: i=1; AJvYcCWA+KooQbGnVF/BJXNE0QefDxU1z+7BZ+tzmh6t4qOlXV/8s3PsHVwDkvnjhSmN6EuTvNgaBNCiwLcq9kjTLSQLpFaHMilTMKMKu3D+
+X-Gm-Message-State: AOJu0YzE5uSCz0d6/94kKxvDvj+xgExEj1/hiEjpFNRHgCcWpLZX2wSH
+	G+a1gK8vsViesgzt41E0Fb2r75ntybUVUjhWgXZQw76hMJCVIXvG
+X-Google-Smtp-Source: AGHT+IGXisnKjI71uANED1CP/KTHgH+Gcr2xad6cRyLgWvCNRvdOFFUmfzdZFprOYudDsZZZcmmqGA==
+X-Received: by 2002:a05:6a00:3d07:b0:6ed:41f3:cd06 with SMTP id lo7-20020a056a003d0700b006ed41f3cd06mr3912520pfb.7.1713455777244;
+        Thu, 18 Apr 2024 08:56:17 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:6f51])
+        by smtp.gmail.com with ESMTPSA id x12-20020a056a000bcc00b006e580678dfbsm1639967pfu.193.2024.04.18.08.56.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 08:56:16 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 18 Apr 2024 05:56:15 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Sven Schnelle <svens@linux.ibm.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] workqueue: fix selection of wake_cpu in kick_pool()
+Message-ID: <ZiFCn2RLWhk7i4oB@slm.duckdns.org>
+References: <20240415053550.538722-1-svens@linux.ibm.com>
+ <Zh8EfxdVdiIj_27H@slm.duckdns.org>
+ <yt9dpluogfw9.fsf@linux.ibm.com>
+ <ZiB9rYBu-0qjsCbF@slm.duckdns.org>
+ <yt9djzkvfc6a.fsf@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240414175300.956243-1-aren@peacevolution.org>
- <20240414175716.958831-1-aren@peacevolution.org> <20240414175716.958831-2-aren@peacevolution.org>
- <CAHp75VdZavToGYqLYnkKYt53HXoQxXnRER5Cn5b2==gWTvkAWQ@mail.gmail.com> <xxeg3as5m5vmmu6fbjujcnvchrerxs2rr42nloirwsktbv4r57@vpxtxblxmspl>
-In-Reply-To: <xxeg3as5m5vmmu6fbjujcnvchrerxs2rr42nloirwsktbv4r57@vpxtxblxmspl>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Thu, 18 Apr 2024 18:56:09 +0300
-Message-ID: <CAHp75Veoibnk2pYuAY-T+u=8t7ackQ8zBjxSHcWb1AeHnq84yQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] iio: light: stk3310: Implement vdd supply and power
- it off during suspend
-To: Aren <aren@peacevolution.org>
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Ondrej Jirman <megi@xff.cz>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	linux-iio@vger.kernel.org, phone-devel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	Willow Barraco <contact@willowbarraco.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yt9djzkvfc6a.fsf@linux.ibm.com>
 
-On Thu, Apr 18, 2024 at 6:06=E2=80=AFPM Aren <aren@peacevolution.org> wrote=
-:
-> On Mon, Apr 15, 2024 at 05:04:53PM +0300, Andy Shevchenko wrote:
-> > On Sun, Apr 14, 2024 at 8:57=E2=80=AFPM Aren Moynihan <aren@peacevoluti=
-on.org> wrote:
-
-..
-
-> > >         stk3310_set_state(iio_priv(indio_dev), STK3310_STATE_STANDBY)=
-;
-> > > +       if (data->vdd_reg)
-> > > +               regulator_disable(data->vdd_reg);
+On Thu, Apr 18, 2024 at 07:54:37AM +0200, Sven Schnelle wrote:
+> Tejun Heo <tj@kernel.org> writes:
+> 
+> > Hello,
 > >
-> > I forgot to check the order of freeing resources, be sure you have no
-> > devm_*() releases happening before this call.
->
-> If I understand what you're saying, this should be fine. The driver just
-> uses devm to clean up acquired resources after remove is called. Or am I
-> missing something and resources could be freed before calling
-> stk3310_remove?
+> > On Wed, Apr 17, 2024 at 05:36:38PM +0200, Sven Schnelle wrote:
+> >> > This generally seems like a good idea but isn't this still racy? The CPU may
+> >> > go down between setting p->wake_cpu and wake_up_process().
+> >> 
+> >> Don't know without reading the source, but how does this code normally
+> >> protect against that?
+> >
+> > Probably by wrapping determining the wake_cpu and the wake_up inside
+> > cpu_read_lock() section.
+> 
+> Thanks. Should i send a v2 and incorporate your additional changes or do
+> you want to do that?
 
-I'm not objecting to that. The point here is that the resources should
-be freed in the reversed order. devm-allocated resources are deferred
-to be freed after the explicit driver ->remove() callback. At the end
-it should not interleave with each other, i.o.w. it should be
-probe: devm followed by non-devm
-remove: non-devm only.
+Yes, please send a v2.
 
---=20
-With Best Regards,
-Andy Shevchenko
+Thanks.
+
+-- 
+tejun
 
