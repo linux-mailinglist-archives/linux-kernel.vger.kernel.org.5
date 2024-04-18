@@ -1,228 +1,195 @@
-Return-Path: <linux-kernel+bounces-150397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E6628A9E7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:33:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14CED8A9E86
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:35:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB283B244F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:33:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E1C81F22C6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3482416EBEC;
-	Thu, 18 Apr 2024 15:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776D016EBFE;
+	Thu, 18 Apr 2024 15:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PyurcYtR"
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="TooE1OnV"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9FDD16D313;
-	Thu, 18 Apr 2024 15:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD15516D313
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 15:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713454408; cv=none; b=s0ZDBvL+8AZgYLB4TbqUV1rrXtHDNg02VorXDDwzu+cllr7o4I6yyqAkWV1LoXK/wcSkpU+nfxLq3L6jL8bJ5wjgGpJltoxMvO/+4BeE19LxaWMC6WOFlZnAiiJx3IRUNgTNGGr4GohUpo73IRA7azStS0VL+xI1ktuVO3J7wuA=
+	t=1713454520; cv=none; b=QKtz+kVRQXrGzfDvlE7l9wwYKQTlCE6mVlB9wTacdiitwGtBZvfVRDZC1RHRfywXKkGeAgKjkANArn8z/tKrMjFlZ6UXtaNhZGLzjfQUr1oFHhiWzPK0aChY3FjYNokj2XmR7Mmn4eideBEr3R2PZ7dXhkF90z6CI1vsGrDFP5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713454408; c=relaxed/simple;
-	bh=Pe8LF00fKAkUIpSGDfqhCDFPUTrRkXNW/s0iu1qxFS4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ozPrNdYyClYtlMyycHYrHouwzWZZb7th7PwtXZZ0eFpN8aWPSEcFQyXQqoA1VrsvPDbH4L6Pl0h51BwUgTjkj9iUJX4OiSRorPd+5sisVpZ35dhSfXp1ltAHtIeNo5TMjLO2D6d8fZc0tEBrFgCPJB2pF7awksf/ifZi4MVsSV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PyurcYtR; arc=none smtp.client-ip=209.85.161.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5aa1e9527d1so749092eaf.1;
-        Thu, 18 Apr 2024 08:33:26 -0700 (PDT)
+	s=arc-20240116; t=1713454520; c=relaxed/simple;
+	bh=aWFOpvJFMYnINTLSgA8EmWFpPZD1N9z9ko3OaW3FO0s=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=gXUxgnKf9Hs1gU478wi1uGdHpyP1O+K51EXd1tWIUcfCllIsUOYNG3KL5B8KpveQ5JRvs00AqMBR4OL9prNXak5VKT1sdsg/KCfNQ62XqwojXgqt2cs9CBKvKvsWRQ8q0dATxYmTAHKLVDcD9HSM57BcDvzw49gdKNX5UrUzA9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=TooE1OnV; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-418c2bf2f55so7480505e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 08:35:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713454406; x=1714059206; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0PpqV3h5TqPps9cVfBqAG1UcArnq9DB4nfERwYi+F10=;
-        b=PyurcYtR3Uh2CQr/ZiQhaIKJWeyWKk8qwj9HOUmIYD3IH1qhMRYZyBkI6PX+Kn9fsD
-         p1/P4tBYb9CaFK8f9yM4iYnkEuMVN0M58nWHJFXBNF3XUBCHXbFu9BykIXNxYs0RJKUn
-         ihaAN5Bhj4mZSnrqlAaRaXd/1wwwswHkVFHaXE/jVYu8ndpTQ47CKlVlsa4MNGSuV7zg
-         7Mh5gv5DzQ5xSvNb/i13yp3ZlQmS/uChIDF7KtCywycrpewGhYCVzIZKZC4QO7EjolHI
-         4XFsiScm8L9VxdRkCPhF/oFFFIAlrjXn17tf7DlBenp/eAIhn9jOVjUWvEw6ZSdVPLc0
-         P4Cw==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713454516; x=1714059316; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BRUfSYH5XLsc9HqAAEm8GMYbsUOd/W0lEWfoHF9LhJo=;
+        b=TooE1OnVDnouup+J7+nlEIKMvnyxCsqLZ0WvM3l7EBcVUq9KBWlCG1r6bYGVLp9i/K
+         y5s6YahoWR6aIJH0jZDiOziiNe9pczdKC6YzU1lwMrNjphD0paqhyro0/A0tfTw8Gg66
+         nD1GChPzBxQWijhVNo/2gepuQn6KJYdD3fhPW79M6vcyDDgcORjNbHeGBV2NtqqsHKUd
+         5R4DSKVgvFQECCUjWmpjYz6lf0m3iAa0jrVm6y9G51tREx05zGOSjczZ3m5AN5oV43Vh
+         MRCkgbnV09YMu6aqYHPmgbdfcg2fXaKGaGxWGxD2bDUzxXY3TY7ikcjCsV82Qtjd5Q9O
+         IqVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713454406; x=1714059206;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0PpqV3h5TqPps9cVfBqAG1UcArnq9DB4nfERwYi+F10=;
-        b=sQozywEd2Lb4z11Atj6Zyl0mO+7N+HeqTnvs3CNx9yqdUFe16vJc+U55i0aFw4oUca
-         GJUqqEUsU9BsZOW5WT1R8yN3Ua+jftaw9Hvy+8TFTYV3PzkbNDUXQdbLbjFzGr1N9AtU
-         GxOawVNZ/Jkx7Qa3Oe7kH5sxpNdEt5XzcKtzhLCWoBezaVGF1n07ySsOcpyWuiBW9pOg
-         3GDv1vVQTkypW7HrWyMg3eo/v0xYjBHrRCHEjEqnN0fYzDIS6TBIeH8qQMyKU9B59RFb
-         3YcnAOTklfiLS4sEvC7EKuPmNwAeNB4sgdWYe/DTx7KHSR79+KfxSG8wSZr3ehFuO9lt
-         Dr4g==
-X-Forwarded-Encrypted: i=1; AJvYcCVHY9vxVWDi6dQ+aAR7U0qydkPPtZKHTKFPtCfI3URxeDZxLfEZJPyLCu9x+73+kkL4Cb7cJ0mBYuvzprEeGn1Xiu/nmipiAK1vfxQW593dDhS5Abc707Ms83GzVl85wRvRhjPiRh7erVO3a/6gXBTGfKRrC2keQ81GIEqhJlQv4fwCPLqeD71oaFovBy3SjK0H2qqO65pjHKYJQX5evieEvbPg2/jKNU8i5MlvRpXtT5A2yR5qB/34nTdrKuk=
-X-Gm-Message-State: AOJu0YzcHu7WqdaUCzZ2lZDzfdBdsYnnYKYeB/Wa9keIBAOLWSSC8Dng
-	vm7QWaCQ9K/sWPKnn/3ba4IRw3s3y9bN2Ye7q9yS/JOyzfYxEU9y
-X-Google-Smtp-Source: AGHT+IFPSo0EiZkOCg4SbYDajm04Bi8eymG+RVOa0yqnQTLBlt5WMDawfM15TlYrRZA1R3HZD5ZEcg==
-X-Received: by 2002:a4a:98c8:0:b0:5ac:9ece:a7c with SMTP id b8-20020a4a98c8000000b005ac9ece0a7cmr3660118ooj.5.1713454405693;
-        Thu, 18 Apr 2024 08:33:25 -0700 (PDT)
-Received: from [192.168.7.169] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id bu10-20020a0568201aca00b005a4799f5428sm421440oob.21.2024.04.18.08.33.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 08:33:25 -0700 (PDT)
-Message-ID: <e8957b07-692f-7d38-e276-b0e3791d31f4@gmail.com>
-Date: Thu, 18 Apr 2024 10:33:23 -0500
+        d=1e100.net; s=20230601; t=1713454516; x=1714059316;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BRUfSYH5XLsc9HqAAEm8GMYbsUOd/W0lEWfoHF9LhJo=;
+        b=fTBstmaqFq4gHYzaOUAf74N7qXwkuWWd1bHmFyfWulGXi7G/1NjQ6yDsSKbQCE+xT9
+         qg2Q7JTF99izJm59BB44Xu+FxKG59OQV0J8fNyCZxLf/dxD23DSjAvxlaoAzWd5MIQeo
+         cUGasBN4Ot5XyDMKPqE+CyCZPT2bbfXoTisK7YXvLTjta/pN5YM5OATPl7MEMNw+U8h0
+         UdlWI8VESGbkCt9ApbVXRbaDvTfa1k5qWpysosqOXMDQUFvmzszZv5FVJglu8EFuIpFx
+         jKGIwD3lOVASNUgxLrb3WEy2BvHHomZwn1JNC5HKdfd7019Sgq5Din9M4dt9iizc1A8r
+         pZLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW8tmLRQYlnkVP38jn5XICmOQiiKonjDdou8wx8OtyLNYgv6TuXn8WlFmczUR87u/LpF3Z8FSKEp5qpKz02t2libAfU1rLQ/S2nHomI
+X-Gm-Message-State: AOJu0Yxs0QekhSW//z7EHmzJP2NRbi3nJ1iUZSXehaDMj/171Zi3SWr2
+	t62dlRdJwKyWexohNg7NHvqM3skVL6ffEVrjhQbwXQ85lWDlJeyK7/qu+WDBMzs=
+X-Google-Smtp-Source: AGHT+IEGhnJQ6Fok7VN1WH4AM0EqRnEGxnsBMAJ3GGvHLpxJH1+mZFZSOdaDrvcXA4chbbmDPSNp7A==
+X-Received: by 2002:a05:600c:358a:b0:416:c23a:2c4b with SMTP id p10-20020a05600c358a00b00416c23a2c4bmr2376814wmq.17.1713454516006;
+        Thu, 18 Apr 2024 08:35:16 -0700 (PDT)
+Received: from [127.0.1.1] ([84.102.31.74])
+        by smtp.gmail.com with ESMTPSA id i9-20020a05600c354900b00418ee62b507sm1834142wmq.35.2024.04.18.08.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 08:35:15 -0700 (PDT)
+From: Julien Panis <jpanis@baylibre.com>
+Date: Thu, 18 Apr 2024 17:34:55 +0200
+Subject: [PATCH net-next] net: ethernet: ti: am65-cpsw: Fix xdp_rxq error
+ for disabled port
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 7/7] arm64: dts: qcom: ipq9574: add PCIe2 nodes
-Content-Language: en-US
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-clk@vger.kernel.org
-References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
- <20240415182052.374494-8-mr.nuke.me@gmail.com>
- <20240417073412.GD3894@thinkpad>
-From: mr.nuke.me@gmail.com
-In-Reply-To: <20240417073412.GD3894@thinkpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240418-am65-cpsw-am62a-crash-v1-1-81d710cbc11b@baylibre.com>
+X-B4-Tracking: v=1; b=H4sIAJ49IWYC/z2NQQrCMBBFr1Jm7UASWg1eRUSmcWpm0bFkSi2U3
+ t3Uhbv/eDz+BsZF2ODabFB4EZO3VvCnBlImfTHKszIEF1rX+og0njtMk32OFQhTIcsYOF6IXYh
+ +6KC2PRljX0hTPmrlGZXX+TGS6OGnwoOsv9/b38J9379oK15kkQAAAA==
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Jacob Keller <jacob.e.keller@intel.com>
+Cc: Siddharth Vadapalli <s-vadapalli@ti.com>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+ Julien Panis <jpanis@baylibre.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713454514; l=4253;
+ i=jpanis@baylibre.com; s=20230526; h=from:subject:message-id;
+ bh=aWFOpvJFMYnINTLSgA8EmWFpPZD1N9z9ko3OaW3FO0s=;
+ b=ceuTtDABfUSLzYf2CRSwGuud4p4cuWrQU3NDG+3/9Fh1WFboCi8npyDanVy16X4bm3115UDeH
+ E8VSTzhqKOICfY/OmtzC2B3WNElH4ayYkjRoTEAoipcdHHl87Oty3fh
+X-Developer-Key: i=jpanis@baylibre.com; a=ed25519;
+ pk=8eSM4/xkiHWz2M1Cw1U3m2/YfPbsUdEJPCWY3Mh9ekQ=
 
+When an ethX port is disabled in the device tree, an error is returned
+by xdp_rxq_info_reg() function while transitioning the CPSW device to
+the up state. The message 'Missing net_device from driver' is output.
 
+This patch fixes the issue by registering xdp_rxq info only if ethX
+port is enabled (i.e. ndev pointer is not NULL).
 
-On 4/17/24 02:34, Manivannan Sadhasivam wrote:
-> On Mon, Apr 15, 2024 at 01:20:52PM -0500, Alexandru Gagniuc wrote:
->> On ipq9574, there are 4 PCIe controllers. Describe the pcie2 node, and
->> its PHY in devicetree.
->>
->> Only pcie2 is described, because only hardware using that controller
->> was available for testing.
->>
-> 
-> You should describe all the instances in DT. Since the unused ones will be
-> 'disabled', it won't affect anyone.
+Fixes: 8acacc40f733 ("net: ethernet: ti: am65-cpsw: Add minimal XDP support")
+Link: https://lore.kernel.org/all/260d258f-87a1-4aac-8883-aab4746b32d8@ti.com/
+Reported-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+Closes: https://gist.github.com/Siddharth-Vadapalli-at-TI/5ed0e436606001c247a7da664f75edee
+Signed-off-by: Julien Panis <jpanis@baylibre.com>
+---
+When an ethX port is disabled in the device tree, an error is returned
+by xdp_rxq_info_reg() function while transitioning the CPSW device to
+the up state. The following message is output:
 
-My concern with untested but "disabled" descriptions is that someone may 
-think it's supported, try to enable it on their board, and run into 
-issues. Theoretically, we could describe pcie3, as it uses the same 
-gen3x2 phy.
+[    1.966094] Missing net_device from driver
+[    1.966154] WARNING: CPU: 2 PID: 1 at net/core/xdp.c:173 __xdp_rxq_info_reg+0xcc/0xd8
+[    1.978064] Modules linked in:
+[    1.981113] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 6.9.0-rc4-next-20240417 #1
+[    1.988494] Hardware name: Texas Instruments AM62A7 SK (DT)
+[    1.993944] mmc1: new high speed SDHC card at address aaaa
+[    1.994051] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[    2.000135] mmcblk1: mmc1:aaaa SL32G 29.7 GiB
+[    2.006459] pc : __xdp_rxq_info_reg+0xcc/0xd8
+[    2.006468] lr : __xdp_rxq_info_reg+0xcc/0xd8
+[    2.006476] sp : ffff800082babad0
+[    2.006479] x29: ffff800082babad0
+[    2.015506]  mmcblk1: p1 p2 p3
+[    2.019500]  x28: 0000000000000440 x27: 0000000000000001
+[    2.019510] x26: ffff000800c10880 x25: ffff000801f29480 x24: 0000000000000000
+[    2.019520] x23: ffff000801f30000 x22: ffff000800c10080 x21: ffff000801f28080
+[    2.048687] x20: ffff000801e69800 x19: 0000000000000000 x18: 0000000000000028
+[    2.055813] x17: 00000000cd537234 x16: 0000000046cc0f2d x15: fffffffffffe51d8
+[    2.062938] x14: ffff8000826020f0 x13: 0000000000000396 x12: 0000000000000132
+[    2.070064] x11: fffffffffffe51d8 x10: fffffffffffe51b0 x9 : 00000000fffff132
+[    2.077189] x8 : ffff8000826020f0 x7 : ffff80008265a0f0 x6 : 0000000000000e58
+[    2.084314] x5 : 40000000fffff132 x4 : 000000000000aff5 x3 : 0000000000000000
+[    2.091439] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff000800110000
+[    2.098565] Call trace:
+[    2.101001]  __xdp_rxq_info_reg+0xcc/0xd8
+[    2.105004]  am65_cpsw_nuss_ndo_slave_open+0x358/0x8c4
+[    2.110137]  __dev_open+0xec/0x1d8
+[    2.113533]  __dev_change_flags+0x190/0x208
+[    2.117710]  dev_change_flags+0x24/0x6c
+[    2.121539]  ip_auto_config+0x248/0x10b4
+[    2.125456]  do_one_initcall+0x6c/0x1b0
+[    2.129285]  kernel_init_freeable+0x1cc/0x294
+[    2.133634]  kernel_init+0x20/0x1dc
+[    2.137119]  ret_from_fork+0x10/0x20
+[    2.140688] ---[ end trace 0000000000000000 ]---
+[    2.145443] am65-cpsw-nuss 8000000.ethernet: Failed to create XDP rx queues
 
-The pcie0 and pcie1 use a gen3x1 phy, which I do not support in this 
-series. I would have to leave the "phys" and "phy-names" for these 
-nodes, leading to an incomplete description
+This patch fixes the issue by registering xdp_rxq info only if ethX
+port is enabled (i.e. ndev pointer is not NULL).
+---
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Given this info, do you still wish that I add all other pcie nodes?
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+index bfba883d4fc4..022942281767 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -391,6 +391,9 @@ static void am65_cpsw_destroy_xdp_rxqs(struct am65_cpsw_common *common)
+ 	int i;
+ 
+ 	for (i = 0; i < common->port_num; i++) {
++		if (!common->ports[i].ndev)
++			continue;
++
+ 		rxq = &common->ports[i].xdp_rxq;
+ 
+ 		if (xdp_rxq_info_is_reg(rxq))
+@@ -426,6 +429,9 @@ static int am65_cpsw_create_xdp_rxqs(struct am65_cpsw_common *common)
+ 	rx_chn->page_pool = pool;
+ 
+ 	for (i = 0; i < common->port_num; i++) {
++		if (!common->ports[i].ndev)
++			continue;
++
+ 		rxq = &common->ports[i].xdp_rxq;
+ 
+ 		ret = xdp_rxq_info_reg(rxq, common->ports[i].ndev, i, 0);
 
->> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq9574.dtsi | 93 ++++++++++++++++++++++++++-
->>   1 file changed, 92 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> index 7f2e5cbf3bbb..f075e2715300 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> @@ -300,7 +300,7 @@ gcc: clock-controller@1800000 {
->>   				 <0>,
->>   				 <0>,
->>   				 <0>,
->> -				 <0>,
->> +				 <&pcie2_phy>,
->>   				 <0>,
->>   				 <0>;
->>   			#clock-cells = <1>;
->> @@ -745,6 +745,97 @@ frame@b128000 {
->>   				status = "disabled";
->>   			};
->>   		};
->> +
->> +		pcie2_phy: phy@8c000 {
->> +			compatible = "qcom,ipq9574-qmp-gen3x2-pcie-phy";
->> +			reg = <0x0008c000 0x14f4>;
->> +
->> +			clocks = <&gcc GCC_PCIE2_AUX_CLK>,
->> +				 <&gcc GCC_PCIE2_AHB_CLK>,
->> +				 <&gcc GCC_PCIE2_PIPE_CLK>,
->> +				 <&gcc GCC_ANOC_PCIE2_2LANE_M_CLK>,
->> +				 <&gcc GCC_SNOC_PCIE2_2LANE_S_CLK>;
->> +			clock-names = "aux",
->> +				      "cfg_ahb",
->> +				      "pipe",
->> +				      "anoc",
->> +				      "snoc";
->> +
->> +			clock-output-names = "pcie_phy2_pipe_clk";
->> +			#clock-cells = <0>;
->> +			#phy-cells = <0>;
->> +
->> +			resets = <&gcc GCC_PCIE2_PHY_BCR>,
->> +				 <&gcc GCC_PCIE2PHY_PHY_BCR>;
->> +			reset-names = "phy",
->> +				      "common";
->> +			status = "disabled";
->> +		};
->> +
->> +		pcie2: pcie@20000000 {
->> +			compatible = "qcom,pcie-ipq9574";
->> +			reg = <0x20000000 0xf1d>,
->> +			      <0x20000f20 0xa8>,
->> +			      <0x20001000 0x1000>,
->> +			      <0x00088000 0x4000>,
->> +			      <0x20100000 0x1000>;
->> +			reg-names = "dbi", "elbi", "atu", "parf", "config";
->> +
->> +			ranges = <0x81000000 0x0 0x20200000 0x20200000 0x0 0x00100000>,	/* I/O */
-> 
-> Please use below range:
-> 
-> <0x01000000 0x0 0x00000000 0x20200000 0x0 0x00100000>
-> <0x02000000 0x0 0x20300000 0x20300000 0x0 0x07d00000>
-> 
-Of course, thank you.
+---
+base-commit: aa37f8916d20cf58437d507fc9599492a342b3cd
+change-id: 20240418-am65-cpsw-am62a-crash-2e87ae0281f5
 
->> +				 <0x82000000 0x0 0x20300000 0x20300000 0x0 0x07d00000>;	/* MEM */
->> +
->> +			device_type = "pci";
->> +			linux,pci-domain = <3>;
->> +			bus-range = <0x00 0xff>;
->> +			num-lanes = <2>;
->> +			max-link-speed = <3>;
->> +			#address-cells = <3>;
->> +			#size-cells = <2>;
->> +
->> +			phys = <&pcie2_phy>;
->> +			phy-names = "pciephy";
->> +
->> +			interrupts = <GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>;
->> +			interrupt-names = "msi";
->> +
->> +			#interrupt-cells = <1>;
->> +			interrupt-map-mask = <0 0 0 0x7>;
->> +			interrupt-map = <0 0 0 1 &intc 0 0 164
->> +					 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
->> +					<0 0 0 2 &intc 0 0 165
->> +					 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
->> +					<0 0 0 3 &intc 0 0 186
->> +					 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
->> +					<0 0 0 4 &intc 0 0 187
->> +					 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
-> 
-> Use a single line for each INTX entry even if it exceeds 80 column width.
+Best regards,
+-- 
+Julien Panis <jpanis@baylibre.com>
 
-Yes. Will do.
-
-> - Mani
-> 
 
