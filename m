@@ -1,395 +1,185 @@
-Return-Path: <linux-kernel+bounces-150868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA0F38AA607
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:48:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 614FD8AA60A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:53:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 658081F224E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:48:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 204962840F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 23:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6EA579949;
-	Thu, 18 Apr 2024 23:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A98E7B3FA;
+	Thu, 18 Apr 2024 23:53:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YHzz0lqB"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XrOYcUrP"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220C329CEF;
-	Thu, 18 Apr 2024 23:48:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB03B71742
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713484091; cv=none; b=Ni8fSaZ8xBw8rlvtk8Eygb4yQ2DhRrgeExveY5cQu4T1Nt+Ha6L6Q+OJ++iGx26mjqOkOjbTpjsG5EjKrOjJAD5HpcT+Ynhbu0h0sbvAopV2cTiL23AsXijpkbgJbb9TB8daFi586qBpJdo9Ly2d9vPyXEjS/7pn2aC6fHrWyCg=
+	t=1713484385; cv=none; b=r4TTSVlTo3kysEvBZwSYvQaJpbBqoS2kBud3rgxDY/u/DdegqY7nI9ofXkMvHfGjVaGXplD55uKW36q6AV4gzBFw+tTj4JRVbB2KKN0ToE5dbodeazWiEONBfVSvpyCCaLHNrpy89Y4SByLlBBVDmc0vge+r/+psdoRZG48Txz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713484091; c=relaxed/simple;
-	bh=57Np717K4I4KqtlkBtE6WgtJrhVZMKWMg914ZwvSkUM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=LH/pnK1aQVl26wFI3aAV/k4vF6UOJm2Vi15zbh2j77whZyUUHPx59GxkqZqtFXwthUBe+oqYRnhQX178hD8KiHtuziCkMkNBNcRHZAcSIDvDIRgbTQYXY/YcFmHWJet8DWrgLwmn1EGeI/eXiDsyZBBIAG0xK6EzwMXbW36v9Ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YHzz0lqB; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2abf9305afcso773028a91.1;
-        Thu, 18 Apr 2024 16:48:09 -0700 (PDT)
+	s=arc-20240116; t=1713484385; c=relaxed/simple;
+	bh=EDzBhMg3yje1/eGD1XEWICChoTbSZ81Zm8yXEhJtxxo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RnkP2TbOWvgj6vuuZygdhs8yZmvIxhGfvwdjWdGVoLtOhQmEijFUutnillx80Ufdj2Cr2deJ+jpkgJDSdQY8i2pv8cKSWl1rKFcZYVmPUXxYckWzyLQgSm7zfOrYTH0i/4IlKbLx3WqV0j5BnA59mBozlVbv+rVThbJhRwlGVzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XrOYcUrP; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e4f341330fso12716845ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 16:53:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713484089; x=1714088889; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=linaro.org; s=google; t=1713484382; x=1714089182; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=e+K9hen2L8ySBS0PPv8txFhb7gijrCCVm9+09/nYtBg=;
-        b=YHzz0lqBOxYVq61pDaDbm2bSAz4JfGqn5wTENODKT0JXS1M7SU8kn3AHorwCNbk4jz
-         oJOK0Ai0N02wbqFJ6pYsq0tfAd7EXy9V7I3dwhqdLsQMIkvvawgW5fZcofIJoBpYq3rX
-         zXHoLe3yxnh22wcWp+yadccBonarw6/Fr+cJe1BSc1e+bnygSHOlEXBMf/qpNqDV414t
-         CJWME5DJpGNyLnpPna5PRgtwuI9Thd+dQ8aOCsYc/GXy5+QaecNqPPF23TUCNidFy2Ol
-         15HB/KnH6mntoiA1DG3XPdHGA6fSQzwFHtsvkFQmgkh9WtlWlYyTjSzk+qAzoSQprFxX
-         mbpQ==
+        bh=YzX9pV7TdTXrgXQbegjfNEKAsh+k3EiRMkuLKOr5KHA=;
+        b=XrOYcUrP+x6nO1eZ8FWERz1skw94W/NFrPCtW4E+CSmQEs4G7LBEGZxkHrdbxiSMmW
+         kBbXzt3SLvPEssXin/p6tSMoPriB79AMFJiMY9pwDYPr6cxiYReOoImSarZqmPjEq6N5
+         0Z/MH4o2d0Q8rDF7cNp+cRysxLj7ty3jbIEdES/HcGO8vOte+69XGxzpgFtWpvzZdiRC
+         2ZjxQ9YPotL3BvphPmgHRDtZPtrHyI7ec1WYOrIqPBr858Q0TG35ywIHtciJBzc7LWqm
+         AMQy+HjpfbyjksodLcTEX52tztROd9DGl0WSSMiHPxvb8L3FMjOPOJr+T2AR0Uq7LvIn
+         aUvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713484089; x=1714088889;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1713484382; x=1714089182;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e+K9hen2L8ySBS0PPv8txFhb7gijrCCVm9+09/nYtBg=;
-        b=G8VE/cEq+pmxOHTskzDaRAHnE9xATwEsZBFO+JT39EobWeYoQCrkVUh94XE6fPm60r
-         E/0DLrhm1f1V7mJdofuVmUNnJ3ok18h1ABl+XAUZZd4VASh3Tyj5NJPmqIpFJzAgRr09
-         uN7gsjzJrYPU4RH6E3XAQbXGirLdbWDBDfm3pNGX9o0xN0rEkY7WRSEZLLtuFSrnvxi9
-         5LISd8NVRUn51MbxUikmSZf218Wrp/1Y51aF1jq0ER7LZ9fF+nBh7GytftVVzDjYk/Rw
-         7HMvF8Jzx4iT2lm8LwJtA3kW3q6L7jybYEnlBpMcIIhaCQE/X/YOjeoRdm74jLsLInkz
-         DJ1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVzSDOztG0eaAdieL/RXcAHJNSRRZwl+eyooPyGn0Fp7jWIbv3h8DRTxyXKcAV0n387CMcDALG6CFwB4HPXca7LJVp/YHBi
-X-Gm-Message-State: AOJu0Yz5JBSv0BQDH/NukQLuxuiCUOXlRq0/iFmY4TFcUGO2rLnx4ZZI
-	2Q+KnBpVa6s/vHHskrrd8OWufP3Z7N4TLCNn6FrF0vWAoOX6Rh16
-X-Google-Smtp-Source: AGHT+IEbbzUNtoOGcGZmv6VbbEwiQEAIUy1hPSWKA3AeufzMlk/Eswk0uRjVpnPG+vW06VMdSE4HzQ==
-X-Received: by 2002:a17:90a:9291:b0:2a5:7e31:5030 with SMTP id n17-20020a17090a929100b002a57e315030mr667224pjo.15.1713484089131;
-        Thu, 18 Apr 2024 16:48:09 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id bt19-20020a17090af01300b002a2b06cbe46sm2041896pjb.22.2024.04.18.16.48.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 16:48:08 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id D85E218462BBF; Fri, 19 Apr 2024 06:48:05 +0700 (WIB)
-Date: Fri, 19 Apr 2024 06:48:05 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Mark Brown <broonie@kernel.org>,
-	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Breno Leitao <leitao@debian.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>, Jeff Garzik <jeff@garzik.org>,
-	j51569436@gmail.com
-Subject: Fwd: UAF in sl_sync due to race condition
-Message-ID: <ZiGxNQudF1nYkOmQ@archie.me>
+        bh=YzX9pV7TdTXrgXQbegjfNEKAsh+k3EiRMkuLKOr5KHA=;
+        b=cpK8hVN/+Pf5Huz8PQiDgsMVu+Rkz7e8Z1R8NxTVsKh/IJf5S98M7xmra/c/dLYFQv
+         YPcZlvYkrS9x2n2fZGWQcDT7W/YaR6g4/4zC8dltlM2ZW0XE2IylnySsmCcc5K4ikKHb
+         nosF0Rq6sRJ6JzY6zuZN4CrF4oIMO6TmEFmGjBF2sYXiItF9DT7dHkbux2FR7DnsHntt
+         49E+pfQFwXOoW4e9lyrYnK2T5SKWDWeXVdb/FAjT+JIgWA3egg22cYIUmwbw6EOlr1IH
+         hd0oyqMF3fbUe4rUWxp6nOR5XgnBY6IMNZpzf8rrsuERl91ctNsgPRTyqkBa7oFGNh4Q
+         Oi6A==
+X-Forwarded-Encrypted: i=1; AJvYcCWrpcPse32dGt/yEXnq0CTwok9xNDNXhT4pyX7qPEVpoUVVEUsHKJB9SlO5S3SpTOb+4b1Aan0fNDHwGUOPnImZ89x2oYRyGCxmtCMm
+X-Gm-Message-State: AOJu0YzpKbIRAndLHtDO1ZMiP3uYkGgU1L3Njqb8DcC1/lT+QqTQ0pS4
+	BuICJeESTVQkYrUgwoOl8sRMYpvds+Z/EHbhrfG98eqAZYwCDwAsKagXxbD2Ons=
+X-Google-Smtp-Source: AGHT+IGW0RLkSC3AZg6v7pfLU2MxaV8C6m7IOIUWMOVzP3hN/gFj68l3mm8pTK5mB7H109tSbfYIoQ==
+X-Received: by 2002:a17:902:6b49:b0:1e3:f2d0:1a4d with SMTP id g9-20020a1709026b4900b001e3f2d01a4dmr601126plt.45.1713484382187;
+        Thu, 18 Apr 2024 16:53:02 -0700 (PDT)
+Received: from [172.20.10.110] ([209.37.221.130])
+        by smtp.gmail.com with ESMTPSA id kq6-20020a170903284600b001e26b7d3e8dsm2087342plb.266.2024.04.18.16.52.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 16:53:01 -0700 (PDT)
+Message-ID: <2614c8b3-ee7f-4ac0-9b43-20905759756e@linaro.org>
+Date: Fri, 19 Apr 2024 00:52:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Zq/5TwPUDfRF2Kdb"
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/8] net: ipa: maintain bitmap of suspend-enabled
+ endpoints
+Content-Language: en-US
+To: Alex Elder <elder@linaro.org>, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com
+Cc: mka@chromium.org, andersson@kernel.org, quic_cpratapa@quicinc.com,
+ quic_avuyyuru@quicinc.com, quic_jponduru@quicinc.com,
+ quic_subashab@quicinc.com, elder@kernel.org, netdev@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240418204729.1952353-1-elder@linaro.org>
+ <20240418204729.1952353-2-elder@linaro.org>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240418204729.1952353-2-elder@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 18/04/2024 21:47, Alex Elder wrote:
+> Keep track of which endpoints have the SUSPEND IPA interrupt enabled
+> in a variable-length bitmap.  This will be used in the next patch to
+> allow the SUSPEND interrupt type to be disabled except when needed.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+>   drivers/net/ipa/ipa_interrupt.c | 19 +++++++++++++++++--
+>   1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ipa/ipa_interrupt.c b/drivers/net/ipa/ipa_interrupt.c
+> index c44ec05f71e6f..0e8d4e43275ea 100644
+> --- a/drivers/net/ipa/ipa_interrupt.c
+> +++ b/drivers/net/ipa/ipa_interrupt.c
+> @@ -37,11 +37,13 @@
+>    * @ipa:		IPA pointer
+>    * @irq:		Linux IRQ number used for IPA interrupts
+>    * @enabled:		Mask indicating which interrupts are enabled
+> + * @suspend_enabled:	Bitmap of endpoints with the SUSPEND interrupt enabled
+>    */
+>   struct ipa_interrupt {
+>   	struct ipa *ipa;
+>   	u32 irq;
+>   	u32 enabled;
+> +	unsigned long *suspend_enabled;
+>   };
+>   
+>   /* Clear the suspend interrupt for all endpoints that signaled it */
+> @@ -211,6 +213,7 @@ static void ipa_interrupt_suspend_control(struct ipa_interrupt *interrupt,
+>   		val |= mask;
+>   	else
+>   		val &= ~mask;
+> +	__change_bit(endpoint_id, interrupt->suspend_enabled);
+>   
+>   	iowrite32(val, ipa->reg_virt + offset);
+>   }
+> @@ -246,7 +249,16 @@ int ipa_interrupt_config(struct ipa *ipa)
+>   
+>   	interrupt->ipa = ipa;
+>   
+> -	/* Disable all IPA interrupt types */
+> +	/* Initially all IPA interrupt types are disabled */
+> +	interrupt->enabled = 0;
+> +	interrupt->suspend_enabled = bitmap_zalloc(ipa->endpoint_count,
+> +						   GFP_KERNEL);
 
---Zq/5TwPUDfRF2Kdb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+why not use devm_bitmap_zalloc() instead and skip managing the cleanup ?
 
-Hi,
+> +	if (!interrupt->suspend_enabled) {
+> +		ret = -ENOMEM;
+> +		goto err_kfree;
+> +	}
+> +
+> +	/* Disable IPA interrupt types */
+>   	reg = ipa_reg(ipa, IPA_IRQ_EN);
+>   	iowrite32(0, ipa->reg_virt + reg_offset(reg));
+>   
+> @@ -254,7 +266,7 @@ int ipa_interrupt_config(struct ipa *ipa)
+>   				   "ipa", interrupt);
+>   	if (ret) {
+>   		dev_err(dev, "error %d requesting \"ipa\" IRQ\n", ret);
+> -		goto err_kfree;
+> +		goto err_free_bitmap;
+>   	}
+>   
+>   	ret = dev_pm_set_wake_irq(dev, irq);
+> @@ -270,6 +282,8 @@ int ipa_interrupt_config(struct ipa *ipa)
+>   
+>   err_free_irq:
+>   	free_irq(interrupt->irq, interrupt);
+> +err_free_bitmap:
+> +	bitmap_free(interrupt->suspend_enabled);
+>   err_kfree:
+>   	kfree(interrupt);
 
-<j51569436@gmail.com> reported on Bugzilla race bug on SLIP driver, which is
-found with syzkaller [1].
+You could also use devm_kzalloc() and do away with the kfree()s you have 
+here on the probe path.
 
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D218713
+>   
+> @@ -286,6 +300,7 @@ void ipa_interrupt_deconfig(struct ipa *ipa)
+>   
+>   	dev_pm_clear_wake_irq(dev);
+>   	free_irq(interrupt->irq, interrupt);
+> +	bitmap_free(interrupt->suspend_enabled);
+>   }
+>   
+>   /* Initialize the IPA interrupt structure */
 
-The full stack trace was:
+Just suggestions though.
 
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KASAN: slab-use-after-free in sl_sync drivers/net/slip/slip.c:732 [i=
-nline]
-> BUG: KASAN: slab-use-after-free in slip_open+0xed9/0x1210 drivers/net/sli=
-p/slip.c:806
-> Read of size 4 at addr ffff88801a5fa0a8 by task syz-executor.1/296035
->=20
-> CPU: 0 PID: 296035 Comm: syz-executor.1 Not tainted 6.8.0-rc5-dirty #283
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/0=
-1/2014
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x37/0x50 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:377 [inline]
->  print_report+0xc1/0x5e0 mm/kasan/report.c:488
->  kasan_report+0xb0/0xe0 mm/kasan/report.c:601
->  sl_sync drivers/net/slip/slip.c:732 [inline]
->  slip_open+0xed9/0x1210 drivers/net/slip/slip.c:806
->  tty_ldisc_open+0x9f/0x120 drivers/tty/tty_ldisc.c:432
->  tty_set_ldisc+0x2e7/0x680 drivers/tty/tty_ldisc.c:557
->  tiocsetd drivers/tty/tty_io.c:2439 [inline]
->  tty_ioctl+0x5c0/0x1590 drivers/tty/tty_io.c:2739
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:871 [inline]
->  __se_sys_ioctl fs/ioctl.c:857 [inline]
->  __x64_sys_ioctl+0x12d/0x1a0 fs/ioctl.c:857
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xc0/0x250 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x6f/0x77
-> RIP: 0033:0x7fc365c9128f
-> Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 00 00 00 48 89 4=
-4 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <41> 89 c0 3d 00=
- f0 ff ff 77 1f 48 8b 44 24 18 64 48 2b 04 25 28 00
-> RSP: 002b:00007fc366a68f90 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 0000006900000000 RCX: 00007fc365c9128f
-> RDX: 00007fc366a68ff4 RSI: 0000000000005423 RDI: 000000000000006a
-> RBP: 000000000000006a R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 000000000000000b R14: 00007fc365dee040 R15: 00007fc366a49000
->  </TASK>
->=20
-> Allocated by task 296005:
->  kasan_save_stack+0x24/0x50 mm/kasan/common.c:47
->  kasan_save_track+0x14/0x30 mm/kasan/common.c:68
->  poison_kmalloc_redzone mm/kasan/common.c:372 [inline]
->  __kasan_kmalloc+0xaa/0xb0 mm/kasan/common.c:389
->  kasan_kmalloc include/linux/kasan.h:211 [inline]
->  __do_kmalloc_node mm/slub.c:3981 [inline]
->  __kmalloc_node+0x208/0x540 mm/slub.c:3988
->  kvmalloc include/linux/slab.h:728 [inline]
->  kvzalloc include/linux/slab.h:736 [inline]
->  alloc_netdev_mqs+0x5f/0x11d0 net/core/dev.c:10826
->  sl_alloc drivers/net/slip/slip.c:756 [inline]
->  slip_open+0x371/0x1210 drivers/net/slip/slip.c:817
->  tty_ldisc_open+0x9f/0x120 drivers/tty/tty_ldisc.c:432
->  tty_set_ldisc+0x2e7/0x680 drivers/tty/tty_ldisc.c:557
->  tiocsetd drivers/tty/tty_io.c:2439 [inline]
->  tty_ioctl+0x5c0/0x1590 drivers/tty/tty_io.c:2739
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:871 [inline]
->  __se_sys_ioctl fs/ioctl.c:857 [inline]
->  __x64_sys_ioctl+0x12d/0x1a0 fs/ioctl.c:857
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xc0/0x250 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x6f/0x77
->=20
-> Freed by task 296004:
->  kasan_save_stack+0x24/0x50 mm/kasan/common.c:47
->  kasan_save_track+0x14/0x30 mm/kasan/common.c:68
->  kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
->  poison_slab_object mm/kasan/common.c:241 [inline]
->  poison_slab_object+0x102/0x190 mm/kasan/common.c:212
->  __kasan_slab_free+0x37/0x80 mm/kasan/common.c:257
->  kasan_slab_free include/linux/kasan.h:184 [inline]
->  slab_free_hook mm/slub.c:2121 [inline]
->  slab_free mm/slub.c:4299 [inline]
->  kfree+0xfb/0x350 mm/slub.c:4409
->  device_release+0x97/0x210 drivers/base/core.c:2499
->  kobject_cleanup lib/kobject.c:689 [inline]
->  kobject_release lib/kobject.c:720 [inline]
->  kref_put include/linux/kref.h:65 [inline]
->  kobject_put+0x143/0x3f0 lib/kobject.c:737
->  netdev_run_todo+0x535/0xd40 net/core/dev.c:10581
->  slip_close drivers/net/slip/slip.c:906 [inline]
->  slip_hangup+0x165/0x1c0 drivers/net/slip/slip.c:912
->  tty_ldisc_hangup+0x1dd/0x700 drivers/tty/tty_ldisc.c:699
->  __tty_hangup.part.0+0x4d4/0x9b0 drivers/tty/tty_io.c:630
->  __tty_hangup drivers/tty/tty_io.c:585 [inline]
->  tty_vhangup+0x21/0x30 drivers/tty/tty_io.c:700
->  pty_close+0x3a3/0x4f0 drivers/tty/pty.c:79
->  tty_release+0x3a2/0x1390 drivers/tty/tty_io.c:1760
->  __fput+0x1fb/0xa90 fs/file_table.c:376
->  __do_sys_close fs/open.c:1554 [inline]
->  __se_sys_close fs/open.c:1539 [inline]
->  __x64_sys_close+0x78/0xd0 fs/open.c:1539
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xc0/0x250 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x6f/0x77
->=20
-> The buggy address belongs to the object at ffff88801a5fa000
->  which belongs to the cache kmalloc-cg-4k of size 4096
-> The buggy address is located 168 bytes inside of
->  freed 4096-byte region [ffff88801a5fa000, ffff88801a5fb000)
->=20
-> The buggy address belongs to the physical page:
-> page:ffffea0000697e00 refcount:1 mapcount:0 mapping:0000000000000000 inde=
-x:0x0 pfn:0x1a5f8
-> head:ffffea0000697e00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincoun=
-t:0
-> memcg:ffff888026f825c1
-> flags: 0xfff00000000840(slab|head|node=3D0|zone=3D1|lastcpupid=3D0x7ff)
-> page_type: 0xffffffff()
-> raw: 00fff00000000840 ffff888010c4e500 ffffea00005eb600 0000000000000002
-> raw: 0000000000000000 0000000000040004 00000001ffffffff ffff888026f825c1
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d20c0=
-(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|_=
-_GFP_HARDWALL), pid 5568, tgid 5568 (systemd-udevd), ts 937169338299, free_=
-ts 937110171114
->  set_page_owner include/linux/page_owner.h:31 [inline]
->  post_alloc_hook+0x2dd/0x350 mm/page_alloc.c:1533
->  prep_new_page mm/page_alloc.c:1540 [inline]
->  get_page_from_freelist+0xd0a/0x3570 mm/page_alloc.c:3311
->  __alloc_pages+0x21f/0x1f30 mm/page_alloc.c:4567
->  __alloc_pages_node include/linux/gfp.h:238 [inline]
->  alloc_pages_node include/linux/gfp.h:261 [inline]
->  alloc_slab_page mm/slub.c:2190 [inline]
->  allocate_slab mm/slub.c:2354 [inline]
->  new_slab+0xd3/0x3b0 mm/slub.c:2407
->  ___slab_alloc+0x679/0xba0 mm/slub.c:3540
->  __slab_alloc mm/slub.c:3625 [inline]
->  __slab_alloc_node mm/slub.c:3678 [inline]
->  slab_alloc_node mm/slub.c:3850 [inline]
->  __do_kmalloc_node mm/slub.c:3980 [inline]
->  __kmalloc_node+0x39e/0x540 mm/slub.c:3988
->  kvmalloc include/linux/slab.h:728 [inline]
->  seq_buf_alloc fs/seq_file.c:38 [inline]
->  seq_read_iter+0x6b0/0x10c0 fs/seq_file.c:210
->  call_read_iter include/linux/fs.h:2079 [inline]
->  new_sync_read fs/read_write.c:395 [inline]
->  vfs_read+0x4e9/0x8c0 fs/read_write.c:476
->  ksys_read+0xec/0x1c0 fs/read_write.c:619
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xc0/0x250 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x6f/0x77
-> page last free pid 0 tgid 0 stack trace:
->  reset_page_owner include/linux/page_owner.h:24 [inline]
->  free_pages_prepare mm/page_alloc.c:1140 [inline]
->  free_unref_page_prepare+0x5b8/0xbd0 mm/page_alloc.c:2346
->  free_unref_page+0x33/0x360 mm/page_alloc.c:2486
->  rcu_do_batch kernel/rcu/tree.c:2190 [inline]
->  rcu_core+0xe20/0x1930 kernel/rcu/tree.c:2465
->  __do_softirq+0x1a2/0x629 kernel/softirq.c:553
->=20
-> Memory state around the buggy address:
->  ffff88801a5f9f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  ffff88801a5fa000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >ffff88801a5fa080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                                   ^
->  ffff88801a5fa100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff88801a5fa180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->=20
-
-He also posted C reproducers:
-
-> slip_open calls sl_sync.=20
->=20
-> ```c
-> static int slip_open(struct tty_struct *tty)
-> {
-> 	struct slip *sl;
-> 	int err;
->=20
-> 	if (!capable(CAP_NET_ADMIN))
-> 		return -EPERM;
->=20
-> 	if (tty->ops->write =3D=3D NULL)
-> 		return -EOPNOTSUPP;
->=20
-> 	/* RTnetlink lock is misused here to serialize concurrent
-> 	   opens of slip channels. There are better ways, but it is
-> 	   the simplest one.
-> 	 */
-> 	rtnl_lock();
->=20
-> 	/* Collect hanged up channels. */
-> 	sl_sync();
-> ...
->=20
-> ```
->=20
-> sl_sync declares the dev variable by referencing the global variable slip=
-_devs. There is no lock to safely access the global variable.=20
->=20
-> ```c
->=20
-> /* Collect hanged up channels */
-> static void sl_sync(void)
-> {
-> 	int i;
-> 	struct net_device *dev;
-> 	struct slip	  *sl;
->=20
-> 	for (i =3D 0; i < slip_maxdev; i++) {
-> 		dev =3D slip_devs[i];
-> 		if (dev =3D=3D NULL)
-> 			break;
->=20
-> 		sl =3D netdev_priv(dev);
-> 		if (sl->tty || sl->leased)//[1]
-> 			continue;
-> 		if (dev->flags & IFF_UP)
-> 			dev_close(dev);
-> 	}
-> }
-> ```
->=20
->=20
-> slip_close call netdev_run_todo.=20
-> [1] : call __rtnl_unlock
-> [2] : call  sl_free_netdev. sl_free_netdev set slip_devs[i] to NULL;
-> [3] : free slip_devs[i]
-> ```c
-> void netdev_run_todo(void)
-> {
-> 	struct net_device *dev, *tmp;
-> 	struct list_head list;
-> #ifdef CONFIG_LOCKDEP
-> 	struct list_head unlink_list;
->=20
-> 	list_replace_init(&net_unlink_list, &unlink_list);
->=20
-> 	while (!list_empty(&unlink_list)) {
-> 		struct net_device *dev =3D list_first_entry(&unlink_list,
-> 							  struct net_device,
-> 							  unlink_list);
-> 		list_del_init(&dev->unlink_list);
-> 		dev->nested_level =3D dev->lower_level - 1;
-> 	}
-> #endif
->=20
-> 	/* Snapshot list, allow later requests */
-> 	list_replace_init(&net_todo_list, &list);
->=20
-> 	__rtnl_unlock();//[1]
->=20
-> 	while (!list_empty(&list)) {
-> ...
-> 		if (dev->priv_destructor)//[2]
-> 			dev->priv_destructor(dev);
-> 		if (dev->needs_free_netdev)
-> 			free_netdev(dev);
->=20
-> 		if (atomic_dec_and_test(&dev_net(dev)->dev_unreg_count))
-> 			wake_up(&netdev_unregistering_wq);
->=20
-> 		/* Free network device */
-> 		kobject_put(&dev->dev.kobj);//[3]
-> 	}
-> }
-> ```
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---Zq/5TwPUDfRF2Kdb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZiGxMQAKCRD2uYlJVVFO
-oyISAQDjeYb40sKofPlG2A3Tq/SOvkpL66UanqW7NHbSuK8EKgD/RyIyTKl9u54Y
-8bsL6ozSA0fPt0OnXujSgtXO6gQv7gw=
-=BkXJ
------END PGP SIGNATURE-----
-
---Zq/5TwPUDfRF2Kdb--
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
