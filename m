@@ -1,113 +1,165 @@
-Return-Path: <linux-kernel+bounces-150213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6DBE8A9BBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:55:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54A508A9BD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:57:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 882711F23A4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:55:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C806BB211B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69E6165FC7;
-	Thu, 18 Apr 2024 13:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86743165FB4;
+	Thu, 18 Apr 2024 13:56:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dN93vxBl"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="F19z3Dz3"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11olkn2034.outbound.protection.outlook.com [40.92.18.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C726C165FB6;
-	Thu, 18 Apr 2024 13:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713448493; cv=none; b=eItGK2bO/rBmkC5HPo7lvczvAnvWXgtbTfGWSKpSK5woFAgCKWIJPvf2RjuOEjYFPUfl0c3kYnI3RTFDc7y7FO7YPUkfNlK4eLWfqELs6e5OqUuSAXjbHFYXHep7Y6JSZZotf3s6HeJi02T6Oz1CEpwMx7LMdDdXvYMAs1ATQWw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713448493; c=relaxed/simple;
-	bh=g94a7qkSkn65haHDm+CsriRsABmH8NJg5ir3bpPXwj4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DSH9+adRehAEzG1QEuTQEy7dSqH21my/x0PQaSn7IJ32NkMt2Kem9YDSUQE2yD0TxEEafFY0qbzcpTn4ytarJ+8/VXgPZW6OfysSP7wLpqVEi2ib7MNMfIZnzqOXXNclmly5ycEJYJP85zABZ7Sb5olpLPOkHhcH5cq/iQ9OBCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dN93vxBl; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713448492; x=1744984492;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=g94a7qkSkn65haHDm+CsriRsABmH8NJg5ir3bpPXwj4=;
-  b=dN93vxBlEdrFsDUyYjUE60T8DftfDjo9oLnZQBzhR9tULVbQUGx0fms8
-   tbvkm+AeP1Wdd/kg7R0T7iXQN3emQQ2P14it4yICCFRgvkmWaMxAv3b0E
-   BvOtlBNeOlwYIsL4JP+4aLt6djQzzSu2SWtATY+uB3T28V//m4Qwx0+r5
-   D8sVclIczYvrchQrRsE4Fv3qS8fArSksQRj81f5e9QsaMfsF6UEESH7g0
-   simGfcypCWtUYuMYn5gK6hOxLmobwYhFV+vWmumIjYxg4HN+2LvOwZ+s4
-   FamFlqLEFmE9o/usclPfo01ukFD1NizJn2Zq4VA5QsIEnSw7oLqeakOCS
-   w==;
-X-CSE-ConnectionGUID: s/wVNknUSUyvVQtklyQCqg==
-X-CSE-MsgGUID: mle7J87DTViRTFnwGpchjA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="26453883"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="26453883"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 06:54:51 -0700
-X-CSE-ConnectionGUID: N9VOFXmTRCmiZ4OALNBa7Q==
-X-CSE-MsgGUID: LE/rr+LnRaaDedMot6OSVA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="27428787"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.236.140]) ([10.124.236.140])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 06:54:42 -0700
-Message-ID: <cfbe7d5a-e045-4254-8a8c-c0a8199db4b7@linux.intel.com>
-Date: Thu, 18 Apr 2024 21:54:39 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130E21649D5;
+	Thu, 18 Apr 2024 13:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.18.34
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713448614; cv=fail; b=Fd2i59q5ZpyabdTv83xzgg+bcUQq5jbmdHCpKA3TYeYWiQN9Tdp8HG2sVnqxa5PoH44VJPaO+tPQPAANvwy3CfkyaoPszAuA7Z/p/u651s7p2Sot+wrK/SHXp+euTVtSh9XFX0m0PVNbtS0z6DbAxDXoCGYMaiu/3VZdw9VfJdM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713448614; c=relaxed/simple;
+	bh=HlJsfb/TlgIgxwOUp5wIz0J/YhQ5isvqMs5g6JX5R3g=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=G36UaLlgNeDgBdFXvQ9lyGx2L/fzjOvVLwa7er6WSGCGyg29YP/dI44HRnzafjngltQpepWmyv74k5p4jHkcarQqZ9HurXsNQ/s/553F2BLX2fmmIopTVTVkTJe8raWh+651DW3vqBL9P74gLiruTTmuHWtLGkmHTdFivj3Rtdg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=F19z3Dz3; arc=fail smtp.client-ip=40.92.18.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oeOk5jKjsiaij1wpdLehAufmdvy9owVgfeIjLXhp1fYGSNSk9zWHu6Jgg1dHEVWx6EGWggwFrblX1I3oQ6fCMNNDe7lB1s5UlvBTwRbNTyoi0i8qSvPEUzFkP2NeQMuGEUcVCY5ebpmVhvgLE8d2e8pZ4nseJmk4K4jQq/acub4asZyAeZzqNokjDDARwSwIfPYpXVkFY3kKyc8Vbq4qsutXhOwVqq3OqqWh+/YC/MaDQlvuKGjKt1kAomuvQt2c5B8K6MwQtMd54N5bugZlgkA0DF8ske5YEjL37+PFzF/G0IwXdZuQ6ckoax8eFvyFipGlU1jQXrj9Egq+VDIL/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+hdT+BL+ygv9itSHI08CmEC/LpBZ9n3tHg4jp3A2+0c=;
+ b=V1iIBH96zFZBr2ck8snGtHlZrmxaMuPjWbiKpzMYEI1IyJb5FpHevKcS9LVOGyhYaQnuqrEyjEoJsRUohRk8uZdrBPB3cK4RJSgTw3eqvfUHSaGpP++fZUSTyD0zbvaw2FwZWq8AoH7hBuCy63UBkjIyFnlh6iHCbWPsr6DlxbDq9pL/GUjsVuus8WeCiHn+cXktIQz+SdXDa2nB+3M0hJNS1vIJAX6e1T2DMI/p3pJdTazErXeMxr9osZyWMHavSLo6Y+FecZRrfB76NzDDn+JR3J5frcOqc1iDakdju5OqMH4W4GoHvGM+I9EFuwEh1g8vRWQLXl6uFRGqsmQUCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+hdT+BL+ygv9itSHI08CmEC/LpBZ9n3tHg4jp3A2+0c=;
+ b=F19z3Dz3gcQHLUNTVf5vk3lhx/mnvwygs5wkUY9fgjwJzDozMRJkmCppJzV+8I9ZVZUTvacHNQwXdxeP+p/Cjto+GTg1JxOQWFtskr2YUF9hh32SsDeayo+s8YkwYYdR4FSsZawkVApvC+NBz4VuDuVN6JQ1KNBnLLN5w3PN9tS6LaGNg6tEAQ2FKV1b3SXLealKupnrtk4ho4OhwYOX0xusQpOLWMaX1vMOV7+9xv/6hd2n+GsT/gMEoHyFsFLBuzCtaEyyyvh6/GeZs/kAvpI2Uw2OazaJBAxL6m7MHFMYdP6DnIN36t4FKsIFOjY5ao88mwtptJbC3qB5WUfLCA==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by SN4PR0201MB8840.namprd02.prod.outlook.com (2603:10b6:806:207::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Thu, 18 Apr
+ 2024 13:56:51 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7472.037; Thu, 18 Apr 2024
+ 13:56:51 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Jean Delvare <jdelvare@suse.de>, Michael Schierl <schierlm@gmx.de>
+CC: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2] firmware: dmi: Stop decoding on broken entry
+Thread-Topic: [PATCH v2] firmware: dmi: Stop decoding on broken entry
+Thread-Index: AQHakYvPrt/ylfUZoUy5VQ48m3QhGLFuDMKA
+Date: Thu, 18 Apr 2024 13:56:51 +0000
+Message-ID:
+ <SN6PR02MB41578A69B87041B9EEFF983BD40E2@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240418142734.56e1db4b@endymion.delvare>
+In-Reply-To: <20240418142734.56e1db4b@endymion.delvare>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [74kwStrky6nlzCZAGxbNYrNxrL1hxx4B]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SN4PR0201MB8840:EE_
+x-ms-office365-filtering-correlation-id: d811348e-5fd9-46f2-d208-08dc5faf65e4
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ NUGHu5onA7av6ENJEtZLlGa6hhQdiEWMG8sDjBsgH9WbfcFxiuyS4Adg//U3L0ZPVjnh5Y7+gtTgvzS/3ClRt3qzkx4iWjo2X4DB8AXx/JW4DzcivJuTLm0aaiKMBgCo+FSi6Ks9ou18qResUPHoHyO9oHyL8QY+RsIaiGy8oooYbMLjB9EBhnurlZetS6gadjK2VnAis0OTaKkjIG7biQWgr3l8duWfeJSdzmncym1sykdF3s/iVsc9q+EubbriMLHfIQwHp3hI2zq1ZqkbZ7Z8n/WEMbHizG1VgLBfDavdSLqBilzzDdMt+pgTZgjSKII+y8FeFcp+98EZBChqJBDei1+qCZYTktoIPIKPlY9+QWJr58476pwnJ3v/QEZcKGqn0XWgu8PLSuERBg41obNSxgjmf0pV5d9QqL3kskS7wzIdiaRGJjdNIkCQGuGTqVRl/ZfWNCJHePZsTTlMTF4/bkG1p/eJRX2SJYjskCSW9TelFDwB0gDwngr+64fWKv8hELat5dCfs+QZF+MW+KGYZl2Bt9n0oNChY7/vUDoiR0p+rsxBEH6xpuJoEidZRyMNsYBV/aRIrucRF0nGDeEV3ip3h1Sb0POsfF3dmY/Qcg8hw3AQlamOkfN0JS/0IZRZHQFi9e+EgY1MoRa8nQb9yOUkYGOq6IP0u8Veu9w=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?Gx0PIyryYMVcAmYLnWWIss4jnqJU/emBfDjbJUWeQ9dHHJ7wXhkufCAa9BCb?=
+ =?us-ascii?Q?LKARJmHzkQgvGHMAnwICRcmv3hHeWkP6KBDfFFpA2LxAJyWL0b2EQClTd7ds?=
+ =?us-ascii?Q?vClm15Qr16zhL+NMzNrY6i7QvPlvcBJoWIsOI3EQtO8vmfGfa09nF4j1d0Q7?=
+ =?us-ascii?Q?3K4plgoWWFH6h3Yr0dvi9pEmXcIYPdJfIZWU3bDIFC6NZ2k0+MWWE46K6dBA?=
+ =?us-ascii?Q?8tqxtR25hAKVD13h0gMpVVV4q8oxHHCWFFSUpMdPVpLuQTn6Gr88isbmpexk?=
+ =?us-ascii?Q?HkXBvQjwYHMmlAdTJxxa5mQ9ojhPORGuQrN2JlopByCymf5R6OwfTku3P5NY?=
+ =?us-ascii?Q?VKECW4fNpuiQoPBAdLbBznMAaVop/3mX1CczoGW12rY4Xf0Mkh64vVg0IvQb?=
+ =?us-ascii?Q?406Vc2s4PTUmkm+oysHwYjHhMsFD+tdJYRgbwQN7bQiUvKMVXW8Dw3c7g2og?=
+ =?us-ascii?Q?4FolEmi56xk74T1EWqg1nhNrP4EqbCR8wenS8D0s3WZuTdpv3tx6LrZJ45wy?=
+ =?us-ascii?Q?QE+yvtF+ilmTc8PDVFY5MLWXLJqkylwxROvnaUrVldIrunQY5J8064fSl403?=
+ =?us-ascii?Q?BF0dqOjKOaHpBKPM/MMrqGvz5aV4JHEAanENDNrPHTig5Ys69nMuw1UyaoMg?=
+ =?us-ascii?Q?XhWGh3CjzvYad2hnRbMPq1yeAddjz1BI/3e6Hu6jPbNOAjIXliq6MmQQlwdI?=
+ =?us-ascii?Q?cXiY5iPNQSaBtMi18tHbtxgRs4Vum344TP2Nld7pRMfIaBAa4QthtF9uAnWd?=
+ =?us-ascii?Q?Rt/s9VdPqdnnjL6Na0HOb3jb2dndOfWrCG4U4suXke8QArUwHzFLOA2NLk+x?=
+ =?us-ascii?Q?y2dhUJ44TxyGwdOH7qSVzK0xLvMdiPOkdiGmjAnOKstNw8ucLGcbmkxpy5Ss?=
+ =?us-ascii?Q?EQ4Y7C5GMgvJdB+nwhDoZjFmmYm0c7jjkqDe5XwMQckE4dDfeIc3NpsBli84?=
+ =?us-ascii?Q?7wGllP7FRxV0Qxm9V62oY98a3qk6zqyocKwtvEacPtTRWHkvF9rIVYMV8mkx?=
+ =?us-ascii?Q?8omKqoe7ZX6Np1y4rmL7fGqV333BR2pQHZ+rmJd5ziugFG8h9+xImYOhfMKt?=
+ =?us-ascii?Q?hqMIapEyVNBZlbNQHuepkybkIjhxt/g7P+x3T77U0967KkrTp1KoCju0hA5o?=
+ =?us-ascii?Q?uEors6B7ZBV07owC2h57RcKBuWNmFI0hMYjGbKMVIt+xcq8+nzRShjvkXu/8?=
+ =?us-ascii?Q?4X5LcYM3cuoxMnZME2NftGcIc9MId3WrIPrNdQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 111/130] KVM: TDX: Implement callbacks for MSR
- operations for TDX
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <62f8890cb90e49a3e0b0d5946318c0267b80c540.1708933498.git.isaku.yamahata@intel.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <62f8890cb90e49a3e0b0d5946318c0267b80c540.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: d811348e-5fd9-46f2-d208-08dc5faf65e4
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Apr 2024 13:56:51.2963
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0201MB8840
 
+From: Jean Delvare <jdelvare@suse.de> Sent: Thursday, April 18, 2024 5:28 A=
+M
+>=20
+> If a DMI table entry is shorter than 4 bytes, it is invalid. Due to
+> how DMI table parsing works, it is impossible to safely recover from
+> such an error, so we have to stop decoding the table.
+>=20
+> Signed-off-by: Jean Delvare <jdelvare@suse.de>
+> Reported-by: Michael Schierl <schierlm@gmx.de>
+> Link: https://lore.kernel.org/linux-kernel/Zh2K3-HLXOesT_vZ@liuwe-devbox-=
+debian-v2/T/
+> Tested-by: Michael Schierl <schierlm@gmx.de>
+> ---
+> Changes since v1:
+>  * Also log the offset of the corrupted entry (suggested by Michael Kelle=
+y)
+>=20
+>  drivers/firmware/dmi_scan.c |   11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>=20
+> --- linux-6.8.orig/drivers/firmware/dmi_scan.c
+> +++ linux-6.8/drivers/firmware/dmi_scan.c
+> @@ -102,6 +102,17 @@ static void dmi_decode_table(u8 *buf,
+>  		const struct dmi_header *dm =3D (const struct dmi_header *)data;
+>=20
+>  		/*
+> +		 * If a short entry is found (less than 4 bytes), not only it
+> +		 * is invalid, but we cannot reliably locate the next entry.
+> +		 */
+> +		if (dm->length < sizeof(struct dmi_header)) {
+> +			pr_warn(FW_BUG
+> +				"Corrupted DMI table, offset %ld (only %d entries processed)\n",
+> +				data - buf, i);
+> +			break;
+> +		}
+> +
+> +		/*
+>  		 *  We want to know the total length (formatted area and
+>  		 *  strings) before decoding to make sure we won't run off the
+>  		 *  table in dmi_decode or dmi_string
+>=20
 
-
-On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> Implements set_msr/get_msr/has_emulated_msr methods for TDX to handle
-> hypercall from guest TD for paravirtualized rdmsr and wrmsr.  The TDX
-> module virtualizes MSRs.  For some MSRs, it injects #VE to the guest TD
-> upon RDMSR or WRMSR.  The exact list of such MSRs are defined in the spec.
->
-> Upon #VE, the guest TD may execute hypercalls,
-> TDG.VP.VMCALL<INSTRUCTION.RDMSR> and TDG.VP.VMCALL<INSTRUCTION.WRMSR>,
-> which are defined in GHCI (Guest-Host Communication Interface) so that the
-> host VMM (e.g. KVM) can virtualize the MSRs.
->
-> There are three classes of MSRs virtualization.
-> - non-configurable: TDX module directly virtualizes it. VMM can't
->    configure. the value set by KVM_SET_MSR_INDEX_LIST is ignored.
-
-There is no KVM_SET_MSR_INDEX_LIST in current kvm code.
-Do you mean KVM_SET_MSRS?
-
-> - configurable: TDX module directly virtualizes it. VMM can configure at
->    the VM creation time.  The value set by KVM_SET_MSR_INDEX_LIST is used.
-> - #VE case
->    Guest TD would issue TDG.VP.VMCALL<INSTRUCTION.{WRMSR,RDMSR> and
->    VMM handles the MSR hypercall. The value set by KVM_SET_MSR_INDEX_LIST
->    is used.
->
+Reviewed-by: Michael Kelley <mhklinux@outlook.com>
 
