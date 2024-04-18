@@ -1,91 +1,193 @@
-Return-Path: <linux-kernel+bounces-149454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 950928A914D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:51:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F9A18A9150
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 04:53:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23538B21FD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:51:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 736F51C20EC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 02:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5149537FC;
-	Thu, 18 Apr 2024 02:51:06 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49124F20E;
+	Thu, 18 Apr 2024 02:52:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="TtaGEZGN"
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286F351C5E
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED605244
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 02:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713408666; cv=none; b=sWoWLELS660W/bVLg/+P2xuIsw2tOsdGx96HFh1WyG1RkP9JO1WmUI/8u4yuAMoBWoNRo1DX6QDuJmWB6yVPTXS6aRFPQXHjpq0lkpT4y5T0twhnNXz/pSgHOuVy3p2bBj7nVp8/63cvFB++F1cXjDV9HYpX7n4XjWjhusJ2FdM=
+	t=1713408773; cv=none; b=IPVebfb19chIhldH8DTIoyNDzeD82p78xgIKl2gf1dkt3L7WJ2iSXxqgsDShdXKA1RD0rbFR1JyxppHKSpGxBmsjPsfgkIrtbauQ6v1vdPBbzsZXxYmr9q/yPU3knoKuz0FxVL5x6xsbzf4xvA16XXUFIZhLHVMwNA2kOHZ22OM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713408666; c=relaxed/simple;
-	bh=kemaksdsrlIR1S57gG0m03aOcevlas0sdvRbHQ9Py28=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=R5AWx8aXkDE/BU7RsF/ej2kRaJH3MwU06W5iDpgqFl42OKuU5YEWpk5n66sX0rLEYbnfM2+W7kOwJcTUqbsf35oYaXRmTQuxeAA8ky4tYZRPQXdCwZwkcylaWmqUAnFcG46EguS7iP5diuE+dq0jADeHQDG60qmq04fiTf75YYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cf265b30e2so52596639f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:51:04 -0700 (PDT)
+	s=arc-20240116; t=1713408773; c=relaxed/simple;
+	bh=Jnfaax+VThd3d1Rfm6iO+DeB5E6TecW6JeFhA8ggWIg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=reqm+MGy3srGsV8aqoL3QQ85c23kNkgWRMvSel9dCeamyKadJ7a0jkfhNrMW+puP+/yay1o6qvqIzwsFODFhcDRpoKpHDF2Vly4XjlBB+yeD0eQ1RPT2Tey11ePuR/76XsaiipXIJUSfYy/JmpMhzEHSUQRCfkPRBPBOMxjCprg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=TtaGEZGN; arc=none smtp.client-ip=209.85.160.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-2330f85c2ebso289612fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 19:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1713408770; x=1714013570; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1KAnRFRHACv8tVuZ6WXGHdutSp2eDzczfpAG5G+ekeo=;
+        b=TtaGEZGN0MftTRasoNS0qtdKpH6dRDnI1sGIG8XFaWyzDYNYJnZnsTJjMv2TtDo0TP
+         b9CznFt8TSCwjBF6t7dMq09DLt9nix3J2E+nsnvwilJ2MN/7LED45MyUEL2MId9mCQD8
+         BZn1HPRLnY6J0Wv2ET+goprrm6tcWFtdqdzB+fSdFfbhKabuJJkdeOaZi0kFALDa4wJn
+         Q4tHVoeqMtda0ciaHbEMF5vZLBnMnYLZMGs/+/kEDum/aiCfp5FhrSNa/9AR/iy8d4Lw
+         gN2o334RkP6UAtZM9KCJqX8dN6EhKe1Cl22iBJ7HqE+9sSjREREisb9K5zloSoyXaj/4
+         Xg2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713408664; x=1714013464;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ikh/8IxQiRxUmOZmfpOtSXJ4MJQsJVrq/VyspE2r/6Y=;
-        b=j0FJpaWMgetaYxyznODUxDDGl6EhJqD/Ie70O83994ElvSlyLSiT0h3GN33rXXanH9
-         Xhz9AsQKPIjSeRDmqjCao1Hem65tN3M4kvj/RYhIsZHMx4JfdS4RT7GVFmUJsKHe1n4l
-         jkCPoXeOPQNacifgHU5Wh65B7zhjXLnVo0Tql9PB+RpcPgKqCyDguLRgrYgKbUf99ms7
-         6bj91LABxu+30dK7xyOn7ROVjgdKR1C+uIMoaBjTBlCP472tMSPu0MZiV7ESOcKcDfEt
-         DeedbEj7Jkk/LmHJbUPc1TD7ladnjfylFg3Y0qfTsq61Gex454LUxLCzxpef9R7jPu6d
-         gYdg==
-X-Forwarded-Encrypted: i=1; AJvYcCX2cNQeyCGp2gl7Vzxq6OaxBVDGH3QFH8SQiXlmN4FQtzcHV6dTQxAhbgIGMrEHPPdl4kZVMb4IdU78AdiEV/Rv5VC4YS3ClGgYSosP
-X-Gm-Message-State: AOJu0Yzxyz/GET+015z3mTOohDanDEN5SPi5919JRMiVnWdnZ0c7h6FG
-	VO1W2xQV7E4jf2wbVcgpDDYe8q+F+xGA84SXA2nm1GpTcp0EtGi+zoHJr2X8Wa0YfbeibNkYWJn
-	YFDUM44Z+uD26e/71ooOlOmVUKZ7Vlb+BPEZaYbdxIII0l8xeiVYrgiw=
-X-Google-Smtp-Source: AGHT+IEH7hcoKAZspDMi2dP3VJIZw+p013dekRsehXW/X7ylh3IrZDuqB98iGe7Y8ncILxLfuz6GLvx/hTAlufONhdsfcuPNRCmR
+        d=1e100.net; s=20230601; t=1713408770; x=1714013570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1KAnRFRHACv8tVuZ6WXGHdutSp2eDzczfpAG5G+ekeo=;
+        b=iQ/Yh2B1gMtfiCQ8JuNysIqgXV8tXJw9z+k82iTSm3upw/RuEEbpZ0sME5wvKkKYDS
+         /zO5eGNyKGc0L1us8rMNKEFIH0r25ej4FJv6UhdgReyztBwhKu753VKurJSJHq+xQxF5
+         lqop1TNl4CeIdUcE8ZpArfhzTrHjLl7FEJECUIvW/+T432K5B+IlKwB+58mp5ZMsoEOT
+         gZ8RyKW6+T1KWJqmMCm+6HpDRez/w3mWkUJ1zFHyDimnfulVcUGEcvG9DzaJDlIm1oxc
+         XAWCOiVjytXu8NrV5850oFntDiaTj8vBalcX5OgGUHVtEvRj8E/qpg5JXveGBWurLIaw
+         Pojg==
+X-Forwarded-Encrypted: i=1; AJvYcCUnCbl7SVKNhZugGmcRdYJhfXftgkdO8715w4UD+EPfSZvh8y6zEpQeB8ZKtQTNMZOtWX5aTSAGY+0nG3BgoeKyxKcQqWVIremw+pAs
+X-Gm-Message-State: AOJu0YzZzS0l9PpjwMbN8+CMJSgIWJbNumZxjbSeVTc/wB7iOFoVGliF
+	nWE5PZFDmlv+8BgOFX4PWYeWJ2pxMxx9GazOdPBbk02p6OgAaZkns6ek9vC+lHEVgop+IfrlvOk
+	tG0gCjy5XwLOssuSs81i9Jzlf1u8kr3yZt6E+EQ==
+X-Google-Smtp-Source: AGHT+IEz1qXw0zEwY0hM3OQNuvnvteufmwQVzsfsyl68XIgc+AN5q25yfuZ+0bnJM0H06GgffoXYWnRbvoWwM1qazsY=
+X-Received: by 2002:a05:6870:4724:b0:22e:15d2:6773 with SMTP id
+ b36-20020a056870472400b0022e15d26773mr1921626oaq.32.1713408770492; Wed, 17
+ Apr 2024 19:52:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:378e:b0:482:f06b:70d5 with SMTP id
- w14-20020a056638378e00b00482f06b70d5mr77102jal.5.1713408664122; Wed, 17 Apr
- 2024 19:51:04 -0700 (PDT)
-Date: Wed, 17 Apr 2024 19:51:04 -0700
-In-Reply-To: <871q73vlvj.fsf@toke.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c7cac10616560a93@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] general protection fault in dev_map_enqueue
-From: syzbot <syzbot+af9492708df9797198d6@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, eadavis@qq.com, eddyz87@gmail.com, 
-	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	toke@kernel.org, yonghong.song@linux.dev
+References: <20240416031438.7637-1-cuiyunhui@bytedance.com>
+ <20240416031438.7637-2-cuiyunhui@bytedance.com> <9f36bedd-1a68-43a9-826d-ce56caf01c52@arm.com>
+ <CAEEQ3w=W+xLGP3WsyAQmRNaHm1xVRtqcGJ+t0TnZvJdCTR4v6w@mail.gmail.com> <260d9932-bf51-43ac-8490-99c39f5e9258@arm.com>
+In-Reply-To: <260d9932-bf51-43ac-8490-99c39f5e9258@arm.com>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Thu, 18 Apr 2024 10:52:39 +0800
+Message-ID: <CAEEQ3w=TZ8M6x0twDOcZ5iZ9O4L=bJNGFGKafZX1=e-Q8ALjYA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 2/3] riscv: cacheinfo: initialize
+ cacheinfo's level and type from ACPI PPTT
+To: Jeremy Linton <jeremy.linton@arm.com>
+Cc: rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org, bhelgaas@google.com, 
+	james.morse@arm.com, jhugo@codeaurora.org, john.garry@huawei.com, 
+	Jonathan.Cameron@huawei.com, pierre.gondois@arm.com, sudeep.holla@arm.com, 
+	tiantao6@huawei.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Hi Jeremy,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+On Wed, Apr 17, 2024 at 10:00=E2=80=AFPM Jeremy Linton <jeremy.linton@arm.c=
+om> wrote:
+>
+> Hi,
+>
+> On 4/16/24 22:15, yunhui cui wrote:
+> > Hi Jeremy,
+> >
+> > On Wed, Apr 17, 2024 at 4:04=E2=80=AFAM Jeremy Linton <jeremy.linton@ar=
+m.com> wrote:
+> >>
+> >> Hi,
+> >>
+> >>
+> >> On 4/15/24 22:14, Yunhui Cui wrote:
+> >>> Before cacheinfo can be built correctly, we need to initialize level
+> >>> and type. Since RSIC-V currently does not have a register group that
+> >>> describes cache-related attributes like ARM64, we cannot obtain them
+> >>> directly, so now we obtain cache leaves from the ACPI PPTT table
+> >>> (acpi_get_cache_info()) and set the cache type through split_levels.
+> >>>
+> >>> Suggested-by: Jeremy Linton <jeremy.linton@arm.com>
+> >>> Suggested-by: Sudeep Holla <sudeep.holla@arm.com>
+> >>> Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+> >>> ---
+> >>>    arch/riscv/kernel/cacheinfo.c | 20 ++++++++++++++++++++
+> >>>    1 file changed, 20 insertions(+)
+> >>>
+> >>> diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cachei=
+nfo.c
+> >>> index 30a6878287ad..dc5fb70362f1 100644
+> >>> --- a/arch/riscv/kernel/cacheinfo.c
+> >>> +++ b/arch/riscv/kernel/cacheinfo.c
+> >>> @@ -6,6 +6,7 @@
+> >>>    #include <linux/cpu.h>
+> >>>    #include <linux/of.h>
+> >>>    #include <asm/cacheinfo.h>
+> >>> +#include <linux/acpi.h>
+> >>>
+> >>>    static struct riscv_cacheinfo_ops *rv_cache_ops;
+> >>>
+> >>> @@ -78,6 +79,25 @@ int populate_cache_leaves(unsigned int cpu)
+> >>>        struct device_node *prev =3D NULL;
+> >>>        int levels =3D 1, level =3D 1;
+> >>>
+> >>> +     if (!acpi_disabled) {
+> >>> +             int ret, idx, fw_levels, split_levels;
+> >>> +
+> >>> +             ret =3D acpi_get_cache_info(cpu, &fw_levels, &split_lev=
+els);
+> >>> +             if (ret)
+> >>> +                     return ret;
+> >>> +
+> >>> +             for (idx =3D 0; level <=3D this_cpu_ci->num_levels &&
+> >>> +                  idx < this_cpu_ci->num_leaves; idx++, level++) {
+> >>
+> >> AFAIK the purpose of idx here it to assure that the number of cache
+> >> leaves is not overflowing. But right below we are utilizing two of the=
+m
+> >> at once, so this check isn't correct. OTOH, since its allocated as
+> >> levels + split_levels I don't think its actually possible for this to
+> >> cause a problem. Might be worthwhile to just hoist it before the loop
+> >> and revalidate the total leaves about to be utilized.
+> >>
+>
+> I think I was suggesting something along the lines of:
+>
+> BUG_ON((split_levels > fw_levels) || (split_levels + fw_levels >
+> this_cpu_ci->num_leaves));
+>
+> Then removing idx entirely. ex:
+Okay, I'll follow yours and update v4.
 
-Reported-and-tested-by: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
 
-Tested on:
+> for (; level <=3D this_cpu_ci->num_levels; level++)
+> ...
+> >
+> > Do you mean to modify the logic as follows to make it more complete?
+> Sure that is one way to do it, but then you need to probably repeat the
+> idx check:
+> > for (idx =3D 0; level <=3D this_cpu_ci->num_levels &&
+> >        idx < this_cpu_ci->num_leaves; level++) {
+> >          if (level <=3D split_levels) {
+> >                 ci_leaf_init(this_leaf++, CACHE_TYPE_DATA, level);
+> >                 idx++;
+> if (idx >=3D this_cpu_ci->num_leaves) break;
+> >                 ci_leaf_init(this_leaf++, CACHE_TYPE_INST, level);
+> >                 idx++;
+> >         } else {
+> >                 ci_leaf_init(this_leaf++, CACHE_TYPE_UNIFIED, level);
+> >                 idx++;
+> >        }
+> > }
+>
+>
+>
 
-commit:         443574b0 riscv, bpf: Fix kfunc parameters incompatibil..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=15d5b33b180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=af9492708df9797198d6
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12bfa653180000
-
-Note: testing is done by a robot and is best-effort only.
+Thanks,
+Yunhui
 
