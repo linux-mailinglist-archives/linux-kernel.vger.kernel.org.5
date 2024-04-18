@@ -1,102 +1,78 @@
-Return-Path: <linux-kernel+bounces-149622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D957B8A9394
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:56:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 907D78A9399
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 08:57:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E43E1F21DF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:56:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FC652838A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 06:57:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438E737719;
-	Thu, 18 Apr 2024 06:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rf4a6dBH"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 001E83BB22;
+	Thu, 18 Apr 2024 06:57:07 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD85F9E9;
-	Thu, 18 Apr 2024 06:56:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69C6136AFB
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 06:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713423370; cv=none; b=lUhV6dk3QvMVvWeEkrLPPJTwyfJ/+ATO/jNTkH1Dl+65bR48ccPZ7Z3RivSVnDjd1ANNxYd6z1+v2BSbkAdN1fNM02aIMHuIK6FGfom1az+q56sRj4efJtEHNhgbn6mCIzkOXEi3+vipEoJJtBfetwuV5YbAd3jsgfgqy2sePss=
+	t=1713423427; cv=none; b=sNPPZQdzPTMwwlnGKfLwcJvZdrE7rrNbwiGm5hYAGVgtCGEt1cI0a4mdkDGrgFlVnG3fWRxUKBJaeh4e9WRqBerL5/sH5J8BDNhba8I8NMkrLygRec6LRGZjB3xVmsYEP7OZiAoHnRydknufbBha3gKqXbmM9lLoA2556MYCbpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713423370; c=relaxed/simple;
-	bh=IsExlcz2Xfug/BF9nxQEE7UvsLNy9ys/X476DRWYKxw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=uuu0QG68bNfC0r53zMTkRNads6a8gaPZZL/72LabiQHR5U3CbwHGBWI00rIMeUs+3si6K7JOrT8PSTKCkCII5fhuE7OeyesadWO6FxFYfxiJCjUwZW7rmIBvp4KTEkUMkSkMwnf7rDZEBj9AqtYvqw/RYhH0Xmd+XHvKQoBZnyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rf4a6dBH; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
-	:Content-ID:Content-Description:References;
-	bh=rf7iH3kMuOmRA9x6ghFFTvcsrJ/ISQqGDxDhjq51q04=; b=rf4a6dBHA2GobREdG26szefzxA
-	HSdTSboPz51McD1ZaykaePmvtrK+wfJ3fJtYeQ+ygTaEGUMwhjlX8/2o9MIqjv3jY8jiJxazjH/YB
-	0xLiJgo4KxO2X85TbAjbjW+KherNdx8wK9ZuWOaN0f+PkW9bvtnMqFcjgAflHBIdZK8BtKJX/Tie6
-	sinLcqdj0XCZ8mNS2kgNb8rGaqrFLcEj6UPXn2j2q3PjaCuEO3K3VmBBH7/RdSCT53J5EF2r/VdSQ
-	IrMHyg0G6SzcYdf0iPM3kHeQmSSmF1UQTGYLeOhJ9fX4otg1XYoU4vbVzZpsA43QLRxuW0A8RYEJz
-	pKdaUvMQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxLgm-00000001Bod-2kwO;
-	Thu, 18 Apr 2024 06:56:08 +0000
-Date: Wed, 17 Apr 2024 23:56:08 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Xiubo Li <xiubli@redhat.com>, linux-xfs@vger.kernel.org,
-	chandan.babu@oracle.com, djwong@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	kasan-dev@googlegroups.com
-Subject: Re: xfs : WARNING: possible circular locking dependency detected
-Message-ID: <ZiDECInm854YiSPo@infradead.org>
+	s=arc-20240116; t=1713423427; c=relaxed/simple;
+	bh=KTV9d9m5ULqWdRsCWhcbktq4be9k6Rcu75frTwGa6cI=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=TN9ka/JAI25I23sH85P1FDur9QH1yENQpVSSrjkKTOTAJDLjWMmNHf8Sc7B3agzMCwXhOvBUE8e8hSIe7XrZMRe3GYJBIhoPAM8r+grdg+mtzqrY8TwNKUAwjXKMpw91qNXkAxl4n4JnRT6/V/Z/c7ouIKzd2rTEhOvqjwSwS0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VKpRd2KT1z1xv5q;
+	Thu, 18 Apr 2024 14:54:37 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8A3CF1400D4;
+	Thu, 18 Apr 2024 14:57:01 +0800 (CST)
+Received: from [10.174.185.179] (10.174.185.179) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 18 Apr 2024 14:57:00 +0800
+Subject: Re: [PATCH v5 2/2] irqchip/gic-v3-its: remove BUG_ON in
+ its_vpe_irq_domain_alloc
+To: Guanrui Huang <guanrui.huang@linux.alibaba.com>
+CC: <maz@kernel.org>, <Markus.Elfring@web.de>,
+	<shannon.zhao@linux.alibaba.com>, <tglx@linutronix.de>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20240418061053.96803-1-guanrui.huang@linux.alibaba.com>
+ <20240418061053.96803-3-guanrui.huang@linux.alibaba.com>
+From: Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <d22e706c-b964-ee5a-4930-25f22586f7d3@huawei.com>
+Date: Thu, 18 Apr 2024 14:56:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZiCp2ArgSzjGQZql@dread.disaster.area>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20240418061053.96803-3-guanrui.huang@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
-Adding the KASAN maintainer so that we actuall have a chane of
-fixing this instead of a rant that just gets lost on the xfs list..
+On 2024/4/18 14:10, Guanrui Huang wrote:
+> This BUG_ON() is useless, because the same effect will be obtained
+> by letting the code run its course and vm being dereferenced,
+> triggering an exception.
+> 
+> So just remove this check.
+> 
+> Acked-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Guanrui Huang <guanrui.huang@linux.alibaba.com>
 
-On Thu, Apr 18, 2024 at 03:04:24PM +1000, Dave Chinner wrote:
-> The only krealloc() in this path is:
-> 
-> 	new = krealloc(ifp->if_data, new_size,
->                         GFP_KERNEL | __GFP_NOLOCKDEP | __GFP_NOFAIL);
-> 
-> And it explicitly uses __GFP_NOLOCKDEP to tell lockdep not to warn
-> about this allocation because of this false positive situation.
-> 
-> Oh. I've seen this before. This is a KASAN bug, and I'm pretty sure
-> I've posted a patch to fix it a fair while back that nobody seemed
-> to care about enough to review or merge it.
-> 
-> That is: kasan_save_stack() is doing a fixed GFP_KERNEL allocation
-> in an context where GFP_KERNEL allocations are known to generate
-> lockdep false positives.  This occurs depsite the XFS and general
-> memory allocation code doing exactly the right thing to avoid the
-> lockdep false positives (i.e. using and obeying __GFP_NOLOCKDEP).
-> 
-> The kasan code ends up in stack_depot_save_flags(), which does a
-> GFP_KERNEL allocation but filters out __GFP_NOLOCKDEP and does not
-> add it back. Hence kasan generates the false positive lockdep
-> warnings, not the code doing the original allocation.
-> 
-> kasan and/or stack_depot_save_flags() needs fixing here.
-> 
-> -Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
-> 
----end quoted text---
+Reviewed-by: Zenghui Yu <yuzenghui@huawei.com>
 
