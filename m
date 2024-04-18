@@ -1,80 +1,92 @@
-Return-Path: <linux-kernel+bounces-149404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-149403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28C568A90B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C5DA8A90AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 03:30:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B14FE28322E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:31:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C13228300B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 01:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70CF338F94;
-	Thu, 18 Apr 2024 01:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA9D4BA88;
+	Thu, 18 Apr 2024 01:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T4t341uu"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HsVBNbwk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3BC3BBD4;
-	Thu, 18 Apr 2024 01:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E543BB3D;
+	Thu, 18 Apr 2024 01:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713403850; cv=none; b=CNL4TO4FOzcoJrBMhHHLkmvdQoMQ5hzN3ereiGhAaG26Kv9rC0qdRgZYr2+U1O4A07D3kvoYnvtvGJ5YgoL6RSUwqTJm5kTWY6bM1mspbn11+2tSV6TY/auksVOU8RGGIhRS9hDvegkhJuZ0VoQn9uSBT6Ut247es6XANl24D6w=
+	t=1713403829; cv=none; b=PBQQbofK4Ncqr5mTiM6CUnCkXKwpnEJQgPwX9usecB02g36wzsZvsdbTmjnX7LLbBHaild3qzXS+lwOQSDSA91eObHSzGsfyPooHNfuUgg/3aYKvGKTcRJkfTfR9fJ+3Ohh7MJvz03kzvKNaLanscfomgtBUraCBXWYtw+I6i2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713403850; c=relaxed/simple;
-	bh=JjynidKEZFAxpHdume9tSkQsH7/8Xm3xZGDHoj+Wf5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fLKuMnza7mVgzpVKuTDVZnyi8lqunabDUtzJhK3CaCB/MTKB0cuyvFYLxxLV2sSghJgEWCfVYjWZrhs90eD0GdxmWGpnR+TSli9HQNH93p8VWrHJL6qa3UYaOi1KJew2AAF98F8+gW/Ud4Sph7Z58o95BYzn41JVsT4l97HwExU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=T4t341uu; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=f/kljw3WIu9Nyid/c/jp8gr+BElyOPqDQkGlBVNzXGU=; b=T4t341uuJ0iIcv6IObZnoplnuJ
-	QvhQzlNIlkOP4kKYvsiTJks0GDoV9FzODjn0K+hp0MPz69D4xaTqXXV9ypP7Sp1Z54hYdySib553E
-	ZN625x+8mgnSHU5tHI6U/ky8oq6HQEGea1BvdVtxhK85KcCtRHQpr7Qa8UOx+iiJPBLtOcDf14YM+
-	S1rBvQETqdH0jvAnzTCN5iqpFKRwdkDjInBdACC6KlM7ZNZFNyE3kf8Wh8EyoJntAPHb7I2hT6mKv
-	Qku9qDciTYw2zgQ8ilYqfd8ByFhUwO82c1DoisITx0u+0pKjW4yAsw9osfl9ZfBz5rPYyI3+ULfch
-	3NFXKg5g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxGbW-00000004DjD-3q35;
-	Thu, 18 Apr 2024 01:30:23 +0000
-Date: Thu, 18 Apr 2024 02:30:22 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Xiubo Li <xiubli@redhat.com>
-Cc: Kairui Song <kasong@tencent.com>, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>,
-	Barry Song <v-songbaohua@oppo.com>,
-	Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>,
-	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-	Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org
-Subject: Re: [PATCH 4/8] ceph: drop usage of page_index
-Message-ID: <ZiB3rp6m4oWCdszj@casper.infradead.org>
-References: <20240417160842.76665-1-ryncsn@gmail.com>
- <20240417160842.76665-5-ryncsn@gmail.com>
- <fc89e5b9-cfc4-4303-b3ff-81f00a891488@redhat.com>
+	s=arc-20240116; t=1713403829; c=relaxed/simple;
+	bh=ZyhzTg/s0PUG65KrOeKffnLgw7Xx/VbURcWtjVQpvUA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=NDT9LMumFuGfqiR9j5Nk2ZbL945Bv4B3M/T+UrCFHjLnTtw35EU130c+Xe017goKbM0sAw/LMSc6P6SVCGi8UdK9bfLSsRryA3ICEb4vuXaIKQhCGGJ66M9e9uEa7TEgoJnLHoMi8x8xJBIc290d3KledH0rpzDkZjEFiQL3ov8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HsVBNbwk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 86E12C32781;
+	Thu, 18 Apr 2024 01:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713403829;
+	bh=ZyhzTg/s0PUG65KrOeKffnLgw7Xx/VbURcWtjVQpvUA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=HsVBNbwkc2xe9UjEO6lUgdFWOfJ1klrwgjWb/Uj+Q0yy/36hZ2bYbhf6JEM56Z01y
+	 dFdPF2sz/1EDXxd0Xh8ovka+QeDG8BuHaZk9K2KmCYSF+uOyHK9fbZs5NP4xcgg0mk
+	 maQouCruGovroH6bzc6wqnifsRIJHP10NoGqiWtrNO2LLMvdWVQPeFk1qvMpZA+D5h
+	 11AU3tGVj+JDTXiXchAz9rlgGyAItDnWKMg2j6jqEMoxO8tyIrTuurGm0wz9PYI1tq
+	 AHswrQS4qFcG4ZRYPQunFItMJCDWfDIyl61wFT3Ia8BgLkVKU31UJ0kcgvgqE9PgSo
+	 YJ7prqjMGkiOw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 71500C4361B;
+	Thu, 18 Apr 2024 01:30:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fc89e5b9-cfc4-4303-b3ff-81f00a891488@redhat.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] selftests: openvswitch: Fix escape chars in regexp.
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171340382946.22183.15564390234017793825.git-patchwork-notify@kernel.org>
+Date: Thu, 18 Apr 2024 01:30:29 +0000
+References: <20240416090913.2028475-1-amorenoz@redhat.com>
+In-Reply-To: <20240416090913.2028475-1-amorenoz@redhat.com>
+To: Adrian Moreno <amorenoz@redhat.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, pabeni@redhat.com,
+ edumazet@google.com, dev@openvswitch.org, linux-kselftest@vger.kernel.org,
+ pshelar@ovn.org, aconole@redhat.com, davem@davemloft.net, shuah@kernel.org,
+ kuba@kernel.org
 
-On Thu, Apr 18, 2024 at 08:28:22AM +0800, Xiubo Li wrote:
-> Thanks for you patch and will it be doable to switch to folio_index()
-> instead ?
+Hello:
 
-No.  Just use folio->index.  You only need folio_index() if the folio
-might belong to the swapcache instead of a file.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 16 Apr 2024 11:09:13 +0200 you wrote:
+> Character sequences starting with `\` are interpreted by python as
+> escaped Unicode characters. However, they have other meaning in
+> regular expressions (e.g: "\d").
+> 
+> It seems Python >= 3.12 starts emitting a SyntaxWarning when these
+> escaped sequences are not recognized as valid Unicode characters.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] selftests: openvswitch: Fix escape chars in regexp.
+    https://git.kernel.org/netdev/net-next/c/3fde60afe1f8
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
