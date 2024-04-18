@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-150003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7006A8A98F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:49:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD83E8A98F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 13:49:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A38C1B229DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:49:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF7D61C21646
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 11:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C72F15F302;
-	Thu, 18 Apr 2024 11:48:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3DD115F320;
+	Thu, 18 Apr 2024 11:48:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VJLxSHhh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jrbsXyY+"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C53915FCED
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D039C15F30D
+	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 11:48:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713440913; cv=none; b=qvSuIWInBKABam3mQB7qpdxyBgmsvNz/dSDzcGsCKjTcQS8TJUEC0CqhbHzgXa6O7MhGqh/dxBOoLQOBcWX1lbNbaACYGFfLARYu23traKFnZWqSwPswcQgqnAQeh7/5gWZQI8bZQYC+Ymwx0C0DjpUakFJhNqSRt/R7hO8lVD0=
+	t=1713440917; cv=none; b=VmqPrEii3WfbUmNv/29WGCOVZy0iRDX+LpC+oZlJSO6V33fxr6KAe79f18M0M+pJN7PPLR7MIv1snngGmMl0i++tF4O/J3/vQ90E23e0k3Tt2zDwomssxQEZpIkLUVC7NQHNRdXONIIFK1zlPei7GdS36Vv0wNIuOPJVPssD4tM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713440913; c=relaxed/simple;
-	bh=TCSbaHJV19pdfBbHTEW0sYbFoU09Oca/5zo+DBblDZE=;
+	s=arc-20240116; t=1713440917; c=relaxed/simple;
+	bh=fZ0TVXeO1x1cEVD9o4dos0k+DXgqUt8822Ue7ktezDk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=K9Qm7QKwL1yNbF9xHO+UPy0bHa2GLXYQpHRCBMysTIKr64tL2BKNPpt/w5P9v0oXqVjYeqqbhXjDMfK1+tt7XGmZy43SaaYY1D/cx3uyywQo7K+5TdCZls8xuF0AGqcyZ8qAvyB5GO1cyzH36lUWJosC1eJLa+gYjKGFHkYOnts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VJLxSHhh; arc=none smtp.client-ip=198.175.65.15
+	 MIME-Version; b=HEMuabCv3CeZkBKyqxr6Lfjx0Fm+tF++ad5N3gzSsu1B0c3EfBPikLOZFWolev7lvWEyHhlsyVN5pGOVHHGy4mfYBOtmNjH2Rp78+TKpxBQmFQk4fLDPyQ9LIzyRXftu1auDc16U/1i2ueNWDvUUh6Eg/nlwTEEDBCNw7cgzy60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jrbsXyY+; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713440912; x=1744976912;
+  t=1713440916; x=1744976916;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=TCSbaHJV19pdfBbHTEW0sYbFoU09Oca/5zo+DBblDZE=;
-  b=VJLxSHhhQVHhATgyiWFL/S/sq/9l6w+i9iKYfC/hye9LQaOorgIv5+6X
-   GjDSw0+HBtn0a77RCij3RcSVDR5s2TNBRc454+n6m4KbzXxKxy4TUB5uk
-   3BHQtiw0UxSO9vjEFr6ctQdECGdAariz9lCQdMuJh0B34O2LrNHqSoqGw
-   gw5Y/9GKLSF1FijQD33l1DkvfccbnIwIYoI3fuDB4XT8vKu+ynBnAxnCm
-   EZ7GgoSq+ztbHzh3bRRyPp6HRgEMRFFKmzluwmsxcAVW6BfhiigVmhlkV
-   W7jNS3ksJZmzd+KpoO6yMOB0OojN6ln3ZOxCg9UPiCvOq/4L9WrtgJeed
-   A==;
-X-CSE-ConnectionGUID: u5VMKiaeRb+WAzUekh9l2Q==
-X-CSE-MsgGUID: Rmqze5r5TSCE/ZcBt7NoMg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12769395"
+  bh=fZ0TVXeO1x1cEVD9o4dos0k+DXgqUt8822Ue7ktezDk=;
+  b=jrbsXyY+8G3WlxQJDD9zCweTVZIWhekLqm1JZ1xy/pAoY2X3hWNCmTGs
+   qZMXv+ZdmaL5MRSfAj1PmqkYWHvkkeEUJtJ+PX2iLbhUHmEr+yqg0tXD0
+   Nt/ZOtleZ4Tg42KxtqNwIHKaE6Vi+rOjpQzQ7LD2cUAwIR+OeEeRAdTTu
+   kTCUmb7lAFcv2wTHm1EsWFEcwtTDJSLy8hgU/D+70vAG4qMVt5C+KNWWk
+   nKAgGIGcUZQdnEFICX+7oeHRIfSUkV93Rf57oqPGVtTdKE0lrypYQGc99
+   a3bJgWwDEzm/nIaYLg8983Q2bIWhOnDGTir3jH3/AgG11DMAuV1/8Qkpj
+   Q==;
+X-CSE-ConnectionGUID: iIc+a6eETqW5y+zgh9So5Q==
+X-CSE-MsgGUID: AHTFm5HPRsutKLNrsow7/Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12769413"
 X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="12769395"
+   d="scan'208";a="12769413"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:48:32 -0700
-X-CSE-ConnectionGUID: updcIolhTYONw2Ctt0dyxg==
-X-CSE-MsgGUID: tC6sOh0DTMOgSo1cka1aAA==
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:48:36 -0700
+X-CSE-ConnectionGUID: EaP64czsQjqS5lHNnMlLGQ==
+X-CSE-MsgGUID: JR8gkd7jRYySu0ea9ShDfg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="23019904"
+   d="scan'208";a="23019913"
 Received: from vgannu-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.212.134.136])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:48:27 -0700
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 04:48:31 -0700
 From: Kai Huang <kai.huang@intel.com>
 To: linux-kernel@vger.kernel.org
 Cc: x86@kernel.org,
@@ -76,9 +76,9 @@ Cc: x86@kernel.org,
 	nik.borisov@suse.com,
 	pbonzini@redhat.com,
 	seanjc@google.com
-Subject: [PATCH v4 3/5] x86/kexec: Reset TDX private memory on platforms with TDX erratum
-Date: Thu, 18 Apr 2024 23:48:03 +1200
-Message-ID: <70eb7a559a5ba45e1ad5d42bf6d6721f9e548eec.1713439632.git.kai.huang@intel.com>
+Subject: [PATCH v4 4/5] x86/virt/tdx: Remove the !KEXEC_CORE dependency
+Date: Thu, 18 Apr 2024 23:48:04 +1200
+Message-ID: <9f96c89171ba0bc04209d33b4f812720a529c858.1713439632.git.kai.huang@intel.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <cover.1713439632.git.kai.huang@intel.com>
 References: <cover.1713439632.git.kai.huang@intel.com>
@@ -90,298 +90,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-TL;DR:
-
-On the platforms with TDX "partial write machine check" erratum, during
-kexec, convert TDX private memory back to normal before jumping to the
-second kernel to avoid the second kernel seeing potential unexpected
-machine check.
-
-Long version:
-
-The first few generations of TDX hardware have an erratum.  A partial
-write to a TDX private memory cacheline will silently "poison" the
-line.  Subsequent reads will consume the poison and generate a machine
-check.  According to the TDX hardware spec, neither of these things
-should have happened.
-
-== Background ==
-
-Virtually all kernel memory accesses operations happen in full
-cachelines.  In practice, writing a "byte" of memory usually reads a 64
-byte cacheline of memory, modifies it, then writes the whole line back.
-Those operations do not trigger this problem.
-
-This problem is triggered by "partial" writes where a write transaction
-of less than cacheline lands at the memory controller.  The CPU does
-these via non-temporal write instructions (like MOVNTI), or through
-UC/WC memory mappings.  The issue can also be triggered away from the
-CPU by devices doing partial writes via DMA.
-
-== Problem ==
-
-A fast warm reset doesn't reset TDX private memory.  Kexec() can also
-boot into the new kernel directly.  Thus if the old kernel has left any
-TDX private pages on the platform with this erratum, the new kernel
-might get unexpected machine check.
-
-Note that w/o this erratum any kernel read/write on TDX private memory
-should never cause machine check, thus it's OK for the old kernel to
-leave TDX private pages as is.
-
-== Solution ==
-
-In short, with this erratum, the kernel needs to explicitly convert all
-TDX private pages back to normal to give the new kernel a clean slate
-after kexec().  The BIOS is also expected to disable fast warm reset as
-a workaround to this erratum, thus this implementation doesn't try to
-reset TDX private memory for the reboot case in the kernel but depends
-on the BIOS to enable the workaround.
-
-Convert TDX private pages back to normal (using MOVDIR64B to clear these
-pages) after all remote cpus have been stopped and cache flush has been
-done on all cpus, when no more TDX activity can happen further.
-
-Do it in machine_kexec() to cover both normal kexec, and crash kexec.
-
-For now TDX private memory can only be PAMT pages.  It would be ideal to
-cover all types of TDX private memory here, but there are practical
-problems to do so:
-
-1) There's no existing infrastructure to track TDX private pages;
-2) It's not feasible to query the TDX module about page type, because
-   VMX, which making SEAMCALL requires, has already been disabled;
-3) Even if it is feasible to query the TDX module, the result may not be
-   accurate.  E.g., the remote CPU could be stopped right before
-   MOVDIR64B.
-
-One temporary solution is to blindly convert all memory pages, but it's
-problematic to do so too, because not all pages are mapped as writable
-in the direct mapping.  It can be done by switching to the identical
-mapping created for kexec(), or a new page table, but the complexity
-looks overkill.
-
-Therefore, rather than doing something dramatic, only reset PAMT pages
-here.
-
-Leave resetting other TDX private pages as a future work when they
-become possible to exist.
+Now TDX host can work with kexec().  Remove the !KEXEC_CORE dependency.
 
 Signed-off-by: Kai Huang <kai.huang@intel.com>
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
+ arch/x86/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-v3 -> v4:
- - No change
-
-v2 -> v3:
- - No change
-
-v1 -> v2:
- - Remove using reboot notifier to stop TDX module as it doesn't
-   cover crash kexec.  Change to use a variable with barrier instead.
-   (Rick)
- - Introduce kexec_save_processor_start() to make code better, and
-   make the comment around calling site of tdx_reset_memory() more
-   concise. (Dave)
- - Mention cache for all other cpus have been flushed around
-   native_wbinvd() in tdx_reset_memory(). (Dave)
- - Remove the extended alternaties discussion from the comment, but leave
-   it in the changelog. Point out what does current code do and point out
-   risk. (Dave)
-
-
----
- arch/x86/include/asm/tdx.h         |  2 +
- arch/x86/kernel/machine_kexec_64.c | 27 ++++++++--
- arch/x86/virt/vmx/tdx/tdx.c        | 79 ++++++++++++++++++++++++++++++
- 3 files changed, 104 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index eba178996d84..ed3ac9a8a079 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -116,11 +116,13 @@ static inline u64 sc_retry(sc_func_t func, u64 fn,
- int tdx_cpu_enable(void);
- int tdx_enable(void);
- const char *tdx_dump_mce_info(struct mce *m);
-+void tdx_reset_memory(void);
- #else
- static inline void tdx_init(void) { }
- static inline int tdx_cpu_enable(void) { return -ENODEV; }
- static inline int tdx_enable(void)  { return -ENODEV; }
- static inline const char *tdx_dump_mce_info(struct mce *m) { return NULL; }
-+static inline void tdx_reset_memory(void) { }
- #endif	/* CONFIG_INTEL_TDX_HOST */
- 
- #endif /* !__ASSEMBLY__ */
-diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-index a454477b7b4c..ba5a66bf724e 100644
---- a/arch/x86/kernel/machine_kexec_64.c
-+++ b/arch/x86/kernel/machine_kexec_64.c
-@@ -28,6 +28,7 @@
- #include <asm/setup.h>
- #include <asm/set_memory.h>
- #include <asm/cpu.h>
-+#include <asm/tdx.h>
- 
- #ifdef CONFIG_ACPI
- /*
-@@ -288,6 +289,14 @@ void machine_kexec_cleanup(struct kimage *image)
- 	free_transition_pgtable(image);
- }
- 
-+static void kexec_save_processor_start(struct kimage *image)
-+{
-+#ifdef CONFIG_KEXEC_JUMP
-+	if (image->preserve_context)
-+		save_processor_state();
-+#endif
-+}
-+
- /*
-  * Do not allocate memory (or fail in any way) in machine_kexec().
-  * We are past the point of no return, committed to rebooting now.
-@@ -298,10 +307,20 @@ void machine_kexec(struct kimage *image)
- 	void *control_page;
- 	int save_ftrace_enabled;
- 
--#ifdef CONFIG_KEXEC_JUMP
--	if (image->preserve_context)
--		save_processor_state();
--#endif
-+	kexec_save_processor_start(image);
-+
-+	/*
-+	 * Convert TDX private memory back to normal (when needed) to
-+	 * avoid the second kernel potentially seeing unexpected machine
-+	 * check.
-+	 *
-+	 * However skip this when preserve_context is on.  By reaching
-+	 * here, TDX (if ever got enabled by the kernel) has survived
-+	 * from the suspend when preserve_context is on, and it can
-+	 * continue to work after jumping back from the second kernel.
-+	 */
-+	if (!image->preserve_context)
-+		tdx_reset_memory();
- 
- 	save_ftrace_enabled = __ftrace_enabled_save();
- 
-diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-index 49a1c6890b55..7f5d388c5461 100644
---- a/arch/x86/virt/vmx/tdx/tdx.c
-+++ b/arch/x86/virt/vmx/tdx/tdx.c
-@@ -52,6 +52,8 @@ static DEFINE_MUTEX(tdx_module_lock);
- /* All TDX-usable memory regions.  Protected by mem_hotplug_lock. */
- static LIST_HEAD(tdx_memlist);
- 
-+static bool tdx_may_have_private_memory __read_mostly;
-+
- typedef void (*sc_err_func_t)(u64 fn, u64 err, struct tdx_module_args *args);
- 
- static inline void seamcall_err(u64 fn, u64 err, struct tdx_module_args *args)
-@@ -1096,6 +1098,18 @@ static int init_tdmrs(struct tdmr_info_list *tdmr_list)
- 	return 0;
- }
- 
-+static void mark_may_have_private_memory(bool may)
-+{
-+	tdx_may_have_private_memory = may;
-+
-+	/*
-+	 * Ensure update to tdx_may_have_private_memory is visible to all
-+	 * cpus.  This ensures when any remote cpu reads it as true, the
-+	 * 'tdx_tdmr_list' must be stable for reading PAMTs.
-+	 */
-+	smp_wmb();
-+}
-+
- static int init_tdx_module(void)
- {
- 	struct tdx_tdmr_sysinfo tdmr_sysinfo;
-@@ -1141,6 +1155,12 @@ static int init_tdx_module(void)
- 	if (ret)
- 		goto err_reset_pamts;
- 
-+	/*
-+	 * Starting from this point the system is possible to have
-+	 * TDX private memory.
-+	 */
-+	mark_may_have_private_memory(true);
-+
- 	/* Initialize TDMRs to complete the TDX module initialization */
- 	ret = init_tdmrs(&tdx_tdmr_list);
- 	if (ret)
-@@ -1172,6 +1192,7 @@ static int init_tdx_module(void)
- 	 * as suggested by the TDX spec.
- 	 */
- 	tdmrs_reset_pamt_all(&tdx_tdmr_list);
-+	mark_may_have_private_memory(false);
- err_free_pamts:
- 	tdmrs_free_pamt_all(&tdx_tdmr_list);
- err_free_tdmrs:
-@@ -1489,3 +1510,61 @@ void __init tdx_init(void)
- 
- 	check_tdx_erratum();
- }
-+
-+void tdx_reset_memory(void)
-+{
-+	if (!boot_cpu_has(X86_FEATURE_TDX_HOST_PLATFORM))
-+		return;
-+
-+	/*
-+	 * Converting TDX private pages back to normal must be done
-+	 * when there's no TDX activity anymore on all remote cpus.
-+	 * Verify this is only called when all remote cpus have
-+	 * been stopped.
-+	 */
-+	WARN_ON_ONCE(num_online_cpus() != 1);
-+
-+	/*
-+	 * Kernel read/write to TDX private memory doesn't cause
-+	 * machine check on hardware w/o this erratum.
-+	 */
-+	if (!boot_cpu_has_bug(X86_BUG_TDX_PW_MCE))
-+		return;
-+
-+	/*
-+	 * Nothing to convert if it's not possible to have any TDX
-+	 * private pages.
-+	 */
-+	if (!tdx_may_have_private_memory)
-+		return;
-+
-+	/*
-+	 * Ensure the 'tdx_tdmr_list' is stable for reading PAMTs
-+	 * when tdx_may_have_private_memory reads true, paired with
-+	 * the smp_wmb() in mark_may_have_private_memory().
-+	 */
-+	smp_rmb();
-+
-+	/*
-+	 * All remote cpus have been stopped, and their caches have
-+	 * been flushed in stop_this_cpu().  Now flush cache for the
-+	 * last running cpu _before_ converting TDX private pages.
-+	 */
-+	native_wbinvd();
-+
-+	/*
-+	 * It's ideal to cover all types of TDX private pages here, but
-+	 * currently there's no unified way to tell whether a given page
-+	 * is TDX private page or not.
-+	 *
-+	 * Just convert PAMT pages now, as currently TDX private pages
-+	 * can only be PAMT pages.
-+	 *
-+	 * TODO:
-+	 *
-+	 * This leaves all other types of TDX private pages undealt
-+	 * with.  They must be handled in _some_ way when they become
-+	 * possible to exist.
-+	 */
-+	tdmrs_reset_pamt_all(&tdx_tdmr_list);
-+}
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 2dac256b6e8d..3761f55c41ab 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1968,7 +1968,6 @@ config INTEL_TDX_HOST
+ 	depends on X86_X2APIC
+ 	select ARCH_KEEP_MEMBLOCK
+ 	depends on CONTIG_ALLOC
+-	depends on !KEXEC_CORE
+ 	depends on X86_MCE
+ 	help
+ 	  Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
 -- 
 2.43.2
 
