@@ -1,140 +1,230 @@
-Return-Path: <linux-kernel+bounces-150410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 280EE8A9EA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:39:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F7808A9EB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 17:40:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F7B8B261F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:39:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E41A3286EE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 15:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9573316F84E;
-	Thu, 18 Apr 2024 15:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7F716EBE3;
+	Thu, 18 Apr 2024 15:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oXLB5sN0";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oUbLhnlm"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BYdA9rPg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC894D9E8;
-	Thu, 18 Apr 2024 15:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA76D3B18D;
+	Thu, 18 Apr 2024 15:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713454742; cv=none; b=LOE2264RrTi0EwgbB2z6HCc0ownWq8TEO+15IdLPmBHynrW7RZnOYW8/ipUsEVsEeVMzdzKP7RThNVJN7KbIKJ3Ovlx4Plc5VQxpxq4lLMwnOmCs7aM1/Izaxe0R1lfmWOETrKoEbLBTRDfNq884zTyVWmbiz5IwZwCF7p5bS0s=
+	t=1713454799; cv=none; b=Qmjioeyurkww2TqgWZ++rZrqw7HpHWDoslUKmsecGcnGGFl5KMRNp+T5CUolXqpk4RDSCrMCsH+XdKQ0WZF3jsN7s4NCpQ+1DvDVgAgMCMpAgHL5rTPGbb/lAdMcXzMb7K7g+T3dtqQ5lxXmD83j3nexcAXZnQ50FgcVbeZcriY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713454742; c=relaxed/simple;
-	bh=I0N7vqLgwx/ovzLroPQMJTt+Vv+sX7iT2xBPYrabm9g=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=gmFAuzUTVdMXxWG/uRfCSVMbgJZHd20n0OgJT5xYWwkFdBZfiHB70HavOwgUikWAdl8GGM3lARZLHn05mH3GrQNxtyhSWrO10gU8SwJPa9Wdj5qEpP1ca7FdzfQq4ut1UmfU9i46RAso09E1QcxignTPkF6dsjGD39gciC9JMoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oXLB5sN0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oUbLhnlm; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 18 Apr 2024 15:38:55 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713454736;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IvA/t2jivurkcDV9sAhbbUx0Y5eX5ZVHrL8eAhn+ZGA=;
-	b=oXLB5sN0DjlOz9owHsXsC++DrBVu9Lql6/WdYKQ8ao+ePVuTgM27zaN3PFxrLoZnKtvVPH
-	5igLlrcHyCl8Z2Wbfp5oDc+g9qonWyYwACWhFtD2JAK9X8evHcflOAXLv6oeEl6/Bmbj3y
-	FzGB/38eRhoqUxapRav33K1VRXTHQZ9TEv/0Q53K7PdgeOmsZfOtQClpGwMk5YncPCln2A
-	vn2M0tMxKEbs5SiWo0ZNK4OkdKUZ5UMrFJvLpLhvUCULDdsRiqLJbA06a053ekiwx+nM+c
-	6m2dAXvnn8iss5M1izHCUNi5a3h6YqVyblHZ8XkA9L5LFQpO1z+WzgjculGb0g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713454736;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IvA/t2jivurkcDV9sAhbbUx0Y5eX5ZVHrL8eAhn+ZGA=;
-	b=oUbLhnlm7boHJKXg6gAolFtjpQ+xHAFnAsCvL5LuS76rKyRPA7ndvpozRgQpgEw76Pp1pr
-	yKAIULJjE41DqFAA==
-From: "tip-bot2 for Eric Biggers" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/cpufeatures: Fix dependencies for GFNI, VAES,
- and VPCLMULQDQ
-Cc: Eric Biggers <ebiggers@google.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240417060434.47101-1-ebiggers@kernel.org>
-References: <20240417060434.47101-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1713454799; c=relaxed/simple;
+	bh=eZMo4P2E3CI3NQ6VH6HqGAvDmu58DfAbXNVuH3h7jwE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gPe3xYsaUgnn6Wktkp+DML8ssB4YDCCMOh6jGpXhOpwK3ob6nbw3DVDOxlrZkhP8jtKeBZjEBYv4WdL9rhaRoxUNEDzgxqI0R6fw30Scj2iRGVYLkkpnpJTqbOKAUmJMweLd9hb3euL9FpKPnGHa6lgQQZ53S4uvknxoU622TrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BYdA9rPg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 353BCC113CC;
+	Thu, 18 Apr 2024 15:39:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713454799;
+	bh=eZMo4P2E3CI3NQ6VH6HqGAvDmu58DfAbXNVuH3h7jwE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BYdA9rPgLqH9mQrFMhFCJ0IxNEI1EPG1KW8IjdO8N34qYNd0IW7o+DhVI0Qvqo0/O
+	 nvZFc+kcsRtbdHHv3NpSVBq2Mbm3hBoEcVQoCOtxs8Feosp5VMtSHzD+ObJJDE+yVh
+	 GiQELdSH/N9ITBo1vWmCE2Kb3Yr+xPzzd5CFKaK3n0bAJYIVHLlDZmrX/WeQdtpbCy
+	 hAhQFdzzZJPdpNRUwKgew/X6ZJ/ImN2r2DmcfmTf9ztDXj7zVS9+yAtD/UWeex7Eru
+	 Mpb8W6ZEcLbI6mlxAiMFQRM2jJOxJc4BUNTw02oYt6d5ZV/cz3GkEtdwj9HIgFGGw3
+	 JgSE8/YIRYMMw==
+Date: Thu, 18 Apr 2024 16:39:52 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, andrew@lunn.ch, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 12/12] dt-bindings: net: add Microchip's
+ LAN865X 10BASE-T1S MACPHY
+Message-ID: <20240418-hypnosis-oblong-028c107e6c3f@spud>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <20240418125648.372526-13-Parthiban.Veerasooran@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171345473538.10875.3268830377740163335.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="OMoF28WElBeQfUgK"
+Content-Disposition: inline
+In-Reply-To: <20240418125648.372526-13-Parthiban.Veerasooran@microchip.com>
 
-The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     9543f6e26634537997b6e909c20911b7bf4876de
-Gitweb:        https://git.kernel.org/tip/9543f6e26634537997b6e909c20911b7bf4876de
-Author:        Eric Biggers <ebiggers@google.com>
-AuthorDate:    Tue, 16 Apr 2024 23:04:34 -07:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Thu, 18 Apr 2024 17:27:52 +02:00
+--OMoF28WElBeQfUgK
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-x86/cpufeatures: Fix dependencies for GFNI, VAES, and VPCLMULQDQ
+On Thu, Apr 18, 2024 at 06:26:48PM +0530, Parthiban Veerasooran wrote:
+> The LAN8650/1 combines a Media Access Controller (MAC) and an Ethernet
+> PHY to enable 10BASE-T1S networks. The Ethernet Media Access Controller
+> (MAC) module implements a 10 Mbps half duplex Ethernet MAC, compatible
+> with the IEEE 802.3 standard and a 10BASE-T1S physical layer transceiver
+> integrated into the LAN8650/1. The communication between the Host and the
+> MAC-PHY is specified in the OPEN Alliance 10BASE-T1x MACPHY Serial
+> Interface (TC6).
+>=20
+> Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+> ---
+>  .../bindings/net/microchip,lan865x.yaml       | 80 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 81 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/microchip,lan86=
+5x.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/microchip,lan865x.yaml=
+ b/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
+> new file mode 100644
+> index 000000000000..4fdec0ba3532
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/microchip,lan865x.yaml
 
-Fix cpuid_deps[] to list the correct dependencies for GFNI, VAES, and
-VPCLMULQDQ.  These features don't depend on AVX512, and there exist CPUs
-that support these features but not AVX512.  GFNI actually doesn't even
-depend on AVX.
+Filename matching a compatible please.
 
-This prevents GFNI from being unnecessarily disabled if AVX is disabled
-to mitigate the GDS vulnerability.
 
-This also prevents all three features from being unnecessarily disabled
-if AVX512VL (or its dependency AVX512F) were to be disabled, but it
-looks like there isn't any case where this happens anyway.
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/microchip,lan865x.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip LAN8650/1 10BASE-T1S MACPHY Ethernet Controllers
+> +
+> +maintainers:
+> +  - Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
+> +
+> +description:
+> +  The LAN8650/1 combines a Media Access Controller (MAC) and an Ethernet
+> +  PHY to enable 10BASE=E2=80=91T1S networks. The Ethernet Media Access C=
+ontroller
+> +  (MAC) module implements a 10 Mbps half duplex Ethernet MAC, compatible
+> +  with the IEEE 802.3 standard and a 10BASE-T1S physical layer transceiv=
+er
+> +  integrated into the LAN8650/1. The communication between the Host and
+> +  the MAC-PHY is specified in the OPEN Alliance 10BASE-T1x MACPHY Serial
+> +  Interface (TC6).
+> +
+> +allOf:
+> +  - $ref: ethernet-controller.yaml#
+> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
 
-Fixes: c128dbfa0f87 ("x86/cpufeatures: Enable new SSE/AVX/AVX512 CPU features")
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/r/20240417060434.47101-1-ebiggers@kernel.org
----
- arch/x86/kernel/cpu/cpuid-deps.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Can you use the same referencing style for both elements here please?
 
-diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
-index b717420..946813d 100644
---- a/arch/x86/kernel/cpu/cpuid-deps.c
-+++ b/arch/x86/kernel/cpu/cpuid-deps.c
-@@ -44,7 +44,10 @@ static const struct cpuid_dep cpuid_deps[] = {
- 	{ X86_FEATURE_F16C,			X86_FEATURE_XMM2,     },
- 	{ X86_FEATURE_AES,			X86_FEATURE_XMM2      },
- 	{ X86_FEATURE_SHA_NI,			X86_FEATURE_XMM2      },
-+	{ X86_FEATURE_GFNI,			X86_FEATURE_XMM2      },
- 	{ X86_FEATURE_FMA,			X86_FEATURE_AVX       },
-+	{ X86_FEATURE_VAES,			X86_FEATURE_AVX       },
-+	{ X86_FEATURE_VPCLMULQDQ,		X86_FEATURE_AVX       },
- 	{ X86_FEATURE_AVX2,			X86_FEATURE_AVX,      },
- 	{ X86_FEATURE_AVX512F,			X86_FEATURE_AVX,      },
- 	{ X86_FEATURE_AVX512IFMA,		X86_FEATURE_AVX512F   },
-@@ -56,9 +59,6 @@ static const struct cpuid_dep cpuid_deps[] = {
- 	{ X86_FEATURE_AVX512VL,			X86_FEATURE_AVX512F   },
- 	{ X86_FEATURE_AVX512VBMI,		X86_FEATURE_AVX512F   },
- 	{ X86_FEATURE_AVX512_VBMI2,		X86_FEATURE_AVX512VL  },
--	{ X86_FEATURE_GFNI,			X86_FEATURE_AVX512VL  },
--	{ X86_FEATURE_VAES,			X86_FEATURE_AVX512VL  },
--	{ X86_FEATURE_VPCLMULQDQ,		X86_FEATURE_AVX512VL  },
- 	{ X86_FEATURE_AVX512_VNNI,		X86_FEATURE_AVX512VL  },
- 	{ X86_FEATURE_AVX512_BITALG,		X86_FEATURE_AVX512VL  },
- 	{ X86_FEATURE_AVX512_4VNNIW,		X86_FEATURE_AVX512F   },
+
+Otherwise, looks aight to me, so with those fixed:
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: microchip,lan8650
+> +      - items:
+> +          - const: microchip,lan8651
+> +          - const: microchip,lan8650
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description:
+> +      Interrupt from MAC-PHY asserted in the event of Receive Chunks
+> +      Available, Transmit Chunk Credits Available and Extended Status
+> +      Event.
+> +    maxItems: 1
+> +
+> +  spi-max-frequency:
+> +    minimum: 15000000
+> +    maximum: 25000000
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - spi-max-frequency
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    spi {
+> +      #address-cells =3D <1>;
+> +      #size-cells =3D <0>;
+> +
+> +      ethernet@0 {
+> +        compatible =3D "microchip,lan8651", "microchip,lan8650";
+> +        reg =3D <0>;
+> +        pinctrl-names =3D "default";
+> +        pinctrl-0 =3D <&eth0_pins>;
+> +        interrupt-parent =3D <&gpio>;
+> +        interrupts =3D <6 IRQ_TYPE_EDGE_FALLING>;
+> +        local-mac-address =3D [04 05 06 01 02 03];
+> +        spi-max-frequency =3D <15000000>;
+> +      };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f41b7f2257d2..2172431a1935 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14378,6 +14378,7 @@ MICROCHIP LAN8650/1 10BASE-T1S MACPHY ETHERNET DR=
+IVER
+>  M:	Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
+>  L:	netdev@vger.kernel.org
+>  S:	Maintained
+> +F:	Documentation/devicetree/bindings/net/microchip,lan865x.yaml
+>  F:	drivers/net/ethernet/microchip/lan865x/lan865x.c
+> =20
+>  MICROCHIP LAN87xx/LAN937x T1 PHY DRIVER
+> --=20
+> 2.34.1
+>=20
+
+--OMoF28WElBeQfUgK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiE+yAAKCRB4tDGHoIJi
+0p0YAQCAdG43pmde0U/WZ/1qUZLp+G75xP7+MuDgEJBmYJK+ZQD+LbWbLS+rfHQD
+5Lbz0TgMasyOgD4o28CfPhXnnRx9hQc=
+=TRKB
+-----END PGP SIGNATURE-----
+
+--OMoF28WElBeQfUgK--
 
