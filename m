@@ -1,109 +1,140 @@
-Return-Path: <linux-kernel+bounces-150693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 589668AA31F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:44:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 005548AA345
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 21:48:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA0A8B2583A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:44:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA3341F23893
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 19:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C826018133F;
-	Thu, 18 Apr 2024 19:43:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F601A0B10;
+	Thu, 18 Apr 2024 19:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ra6OSZtY"
-Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com [209.85.217.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CmVx6dRz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB0118131D
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 19:43:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BAC0194C62;
+	Thu, 18 Apr 2024 19:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713469402; cv=none; b=oVm9SMWM3c+nUc2N0S48PY7TG/QPRIo3TmQYiaOZFqsNzS5tfGpmNQ/vPP5yOxgRz4DrH27Rmx9YDtW5sCQ9mcmri6qVYjF3RSoyDNny96cUyLugRF0TO8mUv2mSIVpnHCDH4Z8A+nTTjEe80P1lFipEr+DLidotJZC8SCXC7cg=
+	t=1713469549; cv=none; b=VqvR9C6I9hX5kFd3KznBHJpCoHWSkhjfX/p0NTjiqQxRxch5R/y7FGZMZDZRAEQIcGIaHUUDi+0L1QDLUqOL2BGSWH3O8Ak2R6gQeN0pzaC1HVhiNjFAz1qEL4obMskQnCcUbiIk7/6UFt7FWU05EUzhLs5chKh1VKa3lNOhL5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713469402; c=relaxed/simple;
-	bh=VbIGz95YZH3XYNg7XInkIfak5ZfhCtKIPtLRE4aQudg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q5UezGKfmLUlsTdDDWMUU8Ys7nlrTOJUANCoXC7Ex5Up1+MDw+kbJPXQSh4ma36M+tXEkUH0qaTVafeYRgQOmtJmlNoZYkBH2E7VsIEgkn6QH+VS/GcEYGztEjQAFr9OkmbF8n64cJvymFedsyAzCQO7DNf9QeKv9+y7l4ODmbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ra6OSZtY; arc=none smtp.client-ip=209.85.217.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-vs1-f52.google.com with SMTP id ada2fe7eead31-479e57ff63bso433607137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 12:43:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713469399; x=1714074199; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YpGkUZCBQa/pLyWOb8XDuhl5v0v9yjefjo0KD4tR0lQ=;
-        b=Ra6OSZtYCimdkymXprSN7VMvRz5dMtNTwbO58pKWFa8hH2RpgPH6Lg2MVmZ3Mdeucr
-         3HWsgS97nRuge6qAojGMYcgap24wN0D/P7JYP1l5r/sWRVvQV2p7AF/P8WH1H207zkwm
-         NecLT+NwTAI3CsFXE31djYuFBECejWr2HpE4k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713469399; x=1714074199;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YpGkUZCBQa/pLyWOb8XDuhl5v0v9yjefjo0KD4tR0lQ=;
-        b=SQXe0dM6cfJM6UbPg5Zc2RQMxU7USH4l1KB30fHVm4HrxJxjZ3I/r9SKM0ScXrbJSD
-         31GpbY5BRBDLUamBcqgX6qBxrTSguO5chGV21t3QFkQyj5hEJFGvUBn7vplF5Wt16me8
-         GZp7xd3PDBd7zKdh70pMv79dOg6E1ehaWvfq0QtHs6QOwnv53DgjwEDbIn/4vQyzmfbB
-         NEN5+/FMtdAL6n1xA76RhUMrQz8sljTRXG03Wh5y5XLlErAEfvm/Uq5KqE1B4q9mSD3r
-         pKkp1xVUwi2VthL4jDn1e8Xi9uS5GDqBhds+b+m+mTWbE8lL1qb9+SXyYfop2REVpz9V
-         WOUw==
-X-Forwarded-Encrypted: i=1; AJvYcCVpRT2ZdLZ/okeS0+Kxn5auODYMcGxvRRcX+yrFX7TxFIksTLFTbCSMWzcDddJLzcEN4MbyXsTE6+Iw6k5a6K0rj05gZOX57GjdXSaY
-X-Gm-Message-State: AOJu0YwoJYiwfrSLNEMMyduC2tCmmPYcWBD6OL0Z5Wlobsoa+noxRoA6
-	tJA6HDAOM5DPIQMsPczARK1TM4Dm9BV3PDHvNpEIsGQl0bSjc44jCUxq3Q0FlHKZb6trIieHRWB
-	+RLJWT+nDNndSKRFCoeITRTEFABtFif1sl74+
-X-Google-Smtp-Source: AGHT+IECjWKB6YH4nmd2JutpjqRG2yKbFCZooTJpITrlEUsuTUJk/P5FN2jEfGiO3NADYx74ECyoS12q0xh1/WFROLI=
-X-Received: by 2002:a05:6102:3ed4:b0:47b:b405:e479 with SMTP id
- n20-20020a0561023ed400b0047bb405e479mr5002750vsv.22.1713469398922; Thu, 18
- Apr 2024 12:43:18 -0700 (PDT)
+	s=arc-20240116; t=1713469549; c=relaxed/simple;
+	bh=dHO0bamdxUUeACG8WtZho+GCcL4yBYsb4entMWbbmyQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NeuLydmOy43wm77BprVIRDo9C2R0ZLK1SeQ9zN3+wz0EaAEPlphAvRSyd7M3fb9/ySjonJ1hgZhbmmAO20tH97yReu37Wzf8qSkWXdQIWo/9BPVN481ZQNKdSlBdpj+h7YQ8DVBTKArq/x62lwd6T0IHYsCNuhRNzCIdtEFEEf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CmVx6dRz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E87BEC113CC;
+	Thu, 18 Apr 2024 19:45:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713469548;
+	bh=dHO0bamdxUUeACG8WtZho+GCcL4yBYsb4entMWbbmyQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CmVx6dRzicEYeby+eqehWh43quHdNoBbYY/i36pebwlC3hu3ZmeS4VjBXURj7aNy3
+	 iceEu2pMqBEVdzfyoNs6zYPwdeFEVjMU4daLSOF+34RPv/VgtKgm1TQzPbhCvKJCzp
+	 PwHKW3yddAFwEE2clGQPe9VCz0EWlv35PYz4PkEEkLTMMrd+GAZOMmGABmKaUl5Y8d
+	 4udjlt3Z97dUrMWxxJyIATuY3MTqmnZM5WdZYeq2ykeLqUHwwS1ZlLE9RAdOJI4t5m
+	 dZHSPXrDPE8q2nmOH9o+Xw5o1ED5ivvKuuyvGRHdoAhgoYmdvYsWWSvRA9smcyAVNW
+	 9J1gVzjdVbV+Q==
+Date: Thu, 18 Apr 2024 22:44:31 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Nadav Amit <nadav.amit@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>, Helge Deller <deller@gmx.de>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>, Will Deacon <will@kernel.org>,
+	bpf <bpf@vger.kernel.org>, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	"open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+	the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [RFC PATCH 3/7] module: [
+Message-ID: <ZiF4H5_tGx7woaXH@kernel.org>
+References: <20240411160526.2093408-1-rppt@kernel.org>
+ <20240411160526.2093408-4-rppt@kernel.org>
+ <0C4B9C1A-97DE-4798-8256-158369AF42A4@gmail.com>
+ <ZiDz4YbIHEOAnpwF@kernel.org>
+ <A714B340-9EFB-4F27-9CD6-CFBC1BC9139F@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118060002.GV2543524@black.fi.intel.com> <23ee70d5-d6c0-4dff-aeac-08cc48b11c54@amd.com>
- <ZalOCPrVA52wyFfv@google.com> <20240119053756.GC2543524@black.fi.intel.com>
- <20240119074829.GD2543524@black.fi.intel.com> <20240119102258.GE2543524@black.fi.intel.com>
- <03926c6c-43dc-4ec4-b5a0-eae57c17f507@amd.com> <20240123061820.GL2543524@black.fi.intel.com>
- <CA+Y6NJFMDcB7NV49r2WxFzcfgarRiWsWO0rEPwz43PKDiXk61g@mail.gmail.com>
- <CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w90jmBw@mail.gmail.com> <20240416050353.GI112498@black.fi.intel.com>
-In-Reply-To: <20240416050353.GI112498@black.fi.intel.com>
-From: Esther Shimanovich <eshimanovich@chromium.org>
-Date: Thu, 18 Apr 2024 15:43:08 -0400
-Message-ID: <CA+Y6NJF6+s5zUZeaWtagpMt8Qu0a1oE+3re3c6EsppH+ZsuMRQ@mail.gmail.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <A714B340-9EFB-4F27-9CD6-CFBC1BC9139F@gmail.com>
 
-Thank you for your response! It is very much appreciated.
+On Thu, Apr 18, 2024 at 10:31:16PM +0300, Nadav Amit wrote:
+> 
+> > On 18 Apr 2024, at 13:20, Mike Rapoport <rppt@kernel.org> wrote:
+> > 
+> > On Tue, Apr 16, 2024 at 12:36:08PM +0300, Nadav Amit wrote:
+> >> 
+> >> 
+> >> 
+> >> I might be missing something, but it seems a bit racy.
+> >> 
+> >> IIUC, module_finalize() calls alternatives_smp_module_add(). At this
+> >> point, since you don’t hold the text_mutex, some might do text_poke(),
+> >> e.g., by enabling/disabling static-key, and the update would be
+> >> overwritten. No?
+> > 
+> > Right :(
+> > Even worse, for UP case alternatives_smp_unlock() will "patch" still empty
+> > area.
+> > 
+> > So I'm thinking about calling alternatives_smp_module_add() from an
+> > additional callback after the execmem_update_copy().
+> > 
+> > Does it make sense to you?
+> 
+> Going over the code again - I might have just been wrong: I confused the
+> alternatives and the jump-label mechanisms (as they do share a lot of
+> code and characteristics).
+> 
+> The jump-labels are updated when prepare_coming_module() is called, which
+> happens after post_relocation() [which means they would be updated using
+> text_poke() “inefficiently” but should be safe].
+> 
+> The “alternatives” appear only to use text_poke() (in contrast for
+> text_poke_early()) from very specific few flows, e.g., 
+> common_cpu_up() -> alternatives_enable_smp().
+> 
+> Are those flows pose a problem after boot?
 
-On the Tiger Lake device I was testing on, the usb4-host-interface
-value is NOT listed in its ACPI.
+Yes, common_cpu_up is called  on CPU hotplug, so it's possible to have a
+race between alternatives_smp_module_add() and common_cpu_up() ->
+alternatives_enable_smp().
 
-I then decided to query the ACPI values collected from devices in my
-office, to see if this issue is limited to my device.
-Ice Lake - 4 devices, none had "usb4-host-interface"
-Tiger Lake - 31 devices, none have "usb4-host-interface"
-Alder Lake - 32 devices, I see that 15 of them have
-"usb4-host-interface" in their ACPI
-Raptor Lake - 1 device, does not have "usb4-host-interface"
+And in UP case alternatives_smp_module_add() will call
+alternatives_smp_unlock() that will patch module text before it is updated.
 
-It looks like only Alder Lake has usb4-host-interface  listed in its
-ACPI for whatever reason.
+> Anyhow, sorry for the noise.
 
-It seems like I cannot use usb4-host-interface as a determinant
-whether the CPU has Thunderbolt capabilities (thus not needing a
-discrete Thunderbolt chip).
-ExternalFacingPort is listed in devices that don't have CPUs with
-Thunderbolts, so that can't be a determinant.
+On the contrary, I would have missed it.
 
-Am I missing something?
+-- 
+Sincerely yours,
+Mike.
 
