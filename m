@@ -1,192 +1,135 @@
-Return-Path: <linux-kernel+bounces-151205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 078AF8AAB18
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:02:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 464CA8AAB04
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:58:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6153CB232B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:01:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04247281E77
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5594479949;
-	Fri, 19 Apr 2024 09:00:50 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20AB5757F6;
+	Fri, 19 Apr 2024 08:58:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VlUUOVdk"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0FB65194
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:00:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F58657AC;
+	Fri, 19 Apr 2024 08:58:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713517249; cv=none; b=jkF2le5WBB08/RbWivls+AkvznEETB3lJRdBBPP/6nInfPuReuELwe0sZ0BJK9hIoGO/7UrNg+V1l1D1phJR0Gib6anUePw/c0izNUhy4HHngJhThVIzT1kgbxcLPgjqNcjeyrlkrd6fuX0e9hi9+dI0pdi2aYK+JEhfVlTKi0c=
+	t=1713517128; cv=none; b=piKXBKVbpsKrIqRmj3sA2q1ZCakqfDKonPRdERF+5yIrHk/sra1/5GUDhi5nvcIRuuwoQjwf1Os1MmUaqJA6vsuz67rAGFPnPYeb19bCLjHrUzc3XdTOCOGqPWYLy4ypMFHF01tJvTR8rrTma5+rDjz1T3NPSM6q94dIRh+IPjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713517249; c=relaxed/simple;
-	bh=i1geZbCak49qB4pVeuHPvkwxHT5Il3XYMjAPZf7+NTs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BGxmItTj8Hq/A7xhCbGrRseJE+iuVBiWO0MfD2zwD6PMcujIKb0Z+XW2XBMNXjbd00/YBd9V/4k1zMm0H6bbcVWOMfBogKVug2ncgAyU7mk3ZFCDA26/AQKbKQ/PT0qoqGxO5tu+TA4YAGBQvlTiDE/zdQ93EBoL5BHUdvaWlB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VLT7D5P3bz1RCg0;
-	Fri, 19 Apr 2024 16:57:44 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id D89341A016F;
-	Fri, 19 Apr 2024 17:00:44 +0800 (CST)
-Received: from huawei.com (10.173.135.154) by canpemm500002.china.huawei.com
- (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 19 Apr
- 2024 17:00:44 +0800
-From: Miaohe Lin <linmiaohe@huawei.com>
-To: <akpm@linux-foundation.org>, <muchun.song@linux.dev>
-CC: <mike.kravetz@oracle.com>, <linmiaohe@huawei.com>, <osalvador@suse.de>,
-	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] mm/hugetlb: fix DEBUG_LOCKS_WARN_ON(1) when dissolve_free_hugetlb_folio()
-Date: Fri, 19 Apr 2024 16:58:19 +0800
-Message-ID: <20240419085819.1901645-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.33.0
+	s=arc-20240116; t=1713517128; c=relaxed/simple;
+	bh=jgbeBRVzeXMYSheG4ZQAneV/ODr+RugakD1+LtLxDCA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W2Rbmu/pHaB3Rh//wbeS7euiNnIAVS+CfjlF8PyG3Bo0p9uBQLcg28ViDxX1nX0rS+v3A9kNlBFu/2svYZiRBJiLkr5cDMwp29eWqrhle0GLJ4DGBrhc6wnTMtlu1kEYBnxIi2HbAXVlOPKPxAAVaErkdJ1JlP+9mDhvsP1UCEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VlUUOVdk; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516d68d7a8bso1707268e87.1;
+        Fri, 19 Apr 2024 01:58:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713517125; x=1714121925; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NkPkWZD+fDDhemy2LIDiT55F/PO/TI//Q041lLZQk+c=;
+        b=VlUUOVdkGDjDSlaheHjEvYtT9PgAiEzhYjH4GRFhjGbLGzJu4JLsfb7cuiWuuKhHh3
+         DUSEGZ2pJuwISj9BuDk6K/CgYFiAxqycU6QbdfWRSXXUw/l1zJifxFZmt3X8tvCg9v0i
+         SHGhjcU4FAWUSpBRVjgPQxeHFeuGwzdywtalpQLopRTGbm/iOxeoi1qdPhzOUj2HaHZI
+         6bBKQgX8Oww42vMqIJ7JigZv/C7Phjywk/NmuurdiJSVbprR30oeLyQp/Sf3JiNWmSr/
+         E94VGoIGKMNzmzaBwIdDDhcAwAFENGeFqCicuEnZLmy4uRIOhZgjde1SmjyGr0U5xdtW
+         sdrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713517125; x=1714121925;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NkPkWZD+fDDhemy2LIDiT55F/PO/TI//Q041lLZQk+c=;
+        b=Eb0tNEUaU2OQEH5MwQcCRrPjvjWozracPrGYGfo1N4UR8lXCOOb+e3lrzJVIHzJOzD
+         JK4MUF68aodXZPN6U/o1ofQSVHgzOLw+o56Hw/BrpQ5wmDWyjmaPAB8020JtaAnNOVP7
+         4a429FGxPpthJ9kZ0BUynYoibPNRjmHnyVd4FWHh6KXVLTTETc5JOBrYTiXeYBgC1GF0
+         3/aRduWtXgI2QgA4eYLwtYNd1lAsRhW7t9uM6htLwyKq4wqpjX2flnt6zd++rQBwZhhj
+         QIoReU28r5dpoe8HLqIwPnzocvOJfWwFfQ8ytMk8S6pbGNiAV/x/F+tEzxX0H003csi5
+         h1Bg==
+X-Forwarded-Encrypted: i=1; AJvYcCWDP+9MYmhOrk98A3uoPxq8hF2G27VuH1xojmyjUeda99Hm31CUOMmlMVmMera04AsJBI50sGyCF76N7JSQ4+qJK8l5/ae05zfcyGYTiFmaqRe7Cp5rXeD7LsY0xtsxAd/NnaVa
+X-Gm-Message-State: AOJu0YzfPc474Pz0XibsrWJ8LFJ1isvOcpgqJTCer4z+AIkwLUDF8sXC
+	uWAw3EsYjcdbv/tnLXvH4kvgUNnF5kSmdEylUrU9YcGSLSVrDNWf
+X-Google-Smtp-Source: AGHT+IG9jaQLQRx7GI8egozbRcyQnR4eJjjPqvTksThvItCQ/0Y3ypRISV37b291kfO+3oDXaYzPfw==
+X-Received: by 2002:a19:6442:0:b0:51a:ae0a:26dd with SMTP id b2-20020a196442000000b0051aae0a26ddmr786111lfj.28.1713517124659;
+        Fri, 19 Apr 2024 01:58:44 -0700 (PDT)
+Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
+        by smtp.gmail.com with ESMTPSA id m24-20020a056512359800b0051950b8252asm606303lfr.240.2024.04.19.01.58.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 01:58:44 -0700 (PDT)
+Date: Fri, 19 Apr 2024 11:58:42 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Russell King <linux@armlinux.org.uk>, Yanteng Si <siyanteng@loongson.cn>, 
+	Romain Gantois <romain.gantois@bootlin.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	Simon Horman <horms@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
+	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 0/2] net: stmmac: Fix MAC-capabilities
+ procedure
+Message-ID: <axq6v6ya7nuov6x6vdjlp45i7bjdo2tkmmiuytye456fszycal@bkixd6ruplr7>
+References: <20240417140013.12575-1-fancer.lancer@gmail.com>
+ <20240418185328.79c38358@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500002.china.huawei.com (7.192.104.244)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418185328.79c38358@kernel.org>
 
-When I did memory failure tests recently, below warning occurs:
+On Thu, Apr 18, 2024 at 06:53:28PM -0700, Jakub Kicinski wrote:
+> On Wed, 17 Apr 2024 17:00:06 +0300 Serge Semin wrote:
+> > The series got born as a result of the discussions around the recent
+> > Yanteng' series adding the Loongson LS7A1000, LS2K1000, LS7A2000, LS2K2000
+> > MACs support:
+> > Link: https://lore.kernel.org/netdev/fu3f6uoakylnb6eijllakeu5i4okcyqq7sfafhp5efaocbsrwe@w74xe7gb6x7p
+> > 
+> > In particular the Yanteng' patchset needed to implement the Loongson
+> > MAC-specific constraints applied to the link speed and link duplex mode.
+> > As a result of the discussion with Russel the next preliminary patch was
+> > born:
+> > Link: https://lore.kernel.org/netdev/df31e8bcf74b3b4ddb7ddf5a1c371390f16a2ad5.1712917541.git.siyanteng@loongson.cn
+> > 
+> > The patch above was a temporal solution utilized by Yanteng for further
+> > developments and to move on with the on-going review. This patchset is a
+> > refactored version of that single patch with formatting required for the
+> > fixes patches.
+> > 
+> > The main part of the series has already been merged in on v1 stage. The
+> > leftover is the cleanup patches which rename
+> > stmmac_ops::phylink_get_caps() callback to stmmac_ops::update_caps() and
+> > move the MAC-capabilities init/re-init to the phylink MAC-capabilities
+> > getter.
+> 
 
-DEBUG_LOCKS_WARN_ON(1)
-WARNING: CPU: 8 PID: 1011 at kernel/locking/lockdep.c:232 __lock_acquire+0xccb/0x1ca0
-Modules linked in: mce_inject hwpoison_inject
-CPU: 8 PID: 1011 Comm: bash Kdump: loaded Not tainted 6.9.0-rc3-next-20240410-00012-gdb69f219f4be #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-RIP: 0010:__lock_acquire+0xccb/0x1ca0
-RSP: 0018:ffffa7a1c7fe3bd0 EFLAGS: 00000082
-RAX: 0000000000000000 RBX: eb851eb853975fcf RCX: ffffa1ce5fc1c9c8
-RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffffa1ce5fc1c9c0
-RBP: ffffa1c6865d3280 R08: ffffffffb0f570a8 R09: 0000000000009ffb
-R10: 0000000000000286 R11: ffffffffb0f2ad50 R12: ffffa1c6865d3d10
-R13: ffffa1c6865d3c70 R14: 0000000000000000 R15: 0000000000000004
-FS:  00007ff9f32aa740(0000) GS:ffffa1ce5fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff9f3134ba0 CR3: 00000008484e4000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- lock_acquire+0xbe/0x2d0
- _raw_spin_lock_irqsave+0x3a/0x60
- hugepage_subpool_put_pages.part.0+0xe/0xc0
- free_huge_folio+0x253/0x3f0
- dissolve_free_huge_page+0x147/0x210
- __page_handle_poison+0x9/0x70
- memory_failure+0x4e6/0x8c0
- hard_offline_page_store+0x55/0xa0
- kernfs_fop_write_iter+0x12c/0x1d0
- vfs_write+0x380/0x540
- ksys_write+0x64/0xe0
- do_syscall_64+0xbc/0x1d0
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7ff9f3114887
-RSP: 002b:00007ffecbacb458 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007ff9f3114887
-RDX: 000000000000000c RSI: 0000564494164e10 RDI: 0000000000000001
-RBP: 0000564494164e10 R08: 00007ff9f31d1460 R09: 000000007fffffff
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000000c
-R13: 00007ff9f321b780 R14: 00007ff9f3217600 R15: 00007ff9f3216a00
- </TASK>
-Kernel panic - not syncing: kernel: panic_on_warn set ...
-CPU: 8 PID: 1011 Comm: bash Kdump: loaded Not tainted 6.9.0-rc3-next-20240410-00012-gdb69f219f4be #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <TASK>
- panic+0x326/0x350
- check_panic_on_warn+0x4f/0x50
- __warn+0x98/0x190
- report_bug+0x18e/0x1a0
- handle_bug+0x3d/0x70
- exc_invalid_op+0x18/0x70
- asm_exc_invalid_op+0x1a/0x20
-RIP: 0010:__lock_acquire+0xccb/0x1ca0
-RSP: 0018:ffffa7a1c7fe3bd0 EFLAGS: 00000082
-RAX: 0000000000000000 RBX: eb851eb853975fcf RCX: ffffa1ce5fc1c9c8
-RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffffa1ce5fc1c9c0
-RBP: ffffa1c6865d3280 R08: ffffffffb0f570a8 R09: 0000000000009ffb
-R10: 0000000000000286 R11: ffffffffb0f2ad50 R12: ffffa1c6865d3d10
-R13: ffffa1c6865d3c70 R14: 0000000000000000 R15: 0000000000000004
- lock_acquire+0xbe/0x2d0
- _raw_spin_lock_irqsave+0x3a/0x60
- hugepage_subpool_put_pages.part.0+0xe/0xc0
- free_huge_folio+0x253/0x3f0
- dissolve_free_huge_page+0x147/0x210
- __page_handle_poison+0x9/0x70
- memory_failure+0x4e6/0x8c0
- hard_offline_page_store+0x55/0xa0
- kernfs_fop_write_iter+0x12c/0x1d0
- vfs_write+0x380/0x540
- ksys_write+0x64/0xe0
- do_syscall_64+0xbc/0x1d0
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7ff9f3114887
-RSP: 002b:00007ffecbacb458 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007ff9f3114887
-RDX: 000000000000000c RSI: 0000564494164e10 RDI: 0000000000000001
-RBP: 0000564494164e10 R08: 00007ff9f31d1460 R09: 000000007fffffff
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000000c
-R13: 00007ff9f321b780 R14: 00007ff9f3217600 R15: 00007ff9f3216a00
- </TASK>
+> According to the build bot it didn't apply at the time of posting :S
 
-After git bisecting and digging into the code, I believe the root cause
-is that _deferred_list field of folio is unioned with _hugetlb_subpool
-field. In __update_and_free_hugetlb_folio(), folio->_deferred_list is
-initialized leading to corrupted folio->_hugetlb_subpool when folio
-is hugetlb. Later free_huge_folio() will use _hugetlb_subpool and
-above warning happens.
+Most likely it happened because the first three patches
+https://lore.kernel.org/netdev/20240412180340.7965-1-fancer.lancer@gmail.com/
+hadn't been merged in yet back then. They are now.
 
-But it is assumed hugetlb flag must have been cleared when calling
-folio_put() in update_and_free_hugetlb_folio(). This assumption is
-broken due to below race:
+> It does apply now but the bot doesn't have a "retry now" button.
+> Could you repost?
 
-CPU1					CPU2
-dissolve_free_huge_page			update_and_free_pages_bulk
- update_and_free_hugetlb_folio		 hugetlb_vmemmap_restore_folios
-					  folio_clear_hugetlb_vmemmap_optimized
-  clear_flag = folio_test_hugetlb_vmemmap_optimized
-  if (clear_flag) <-- False, it's already cleared.
-   __folio_clear_hugetlb(folio) <-- Hugetlb is not cleared.
-  folio_put
-   free_huge_folio <-- free_the_page is expected.
-					 list_for_each_entry()
-					  __folio_clear_hugetlb <-- Too late.
+Sure. I'll do that in an instant.
 
-Fix this issue by checking whether folio is hugetlb directly instead
-of checking clear_flag to close the race window.
+-Serge(y)
 
-Fixes: 32c877191e02 ("hugetlb: do not clear hugetlb dtor until allocating vmemmap")
-CC: stable@vger.kernel.org
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
-v2:
- The root cause should be above race, so rework the fix.
----
- mm/hugetlb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index d748664bb2c9..3b7d5ddc32ad 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1773,7 +1773,7 @@ static void __update_and_free_hugetlb_folio(struct hstate *h,
- 	 * If vmemmap pages were allocated above, then we need to clear the
- 	 * hugetlb flag under the hugetlb lock.
- 	 */
--	if (clear_flag) {
-+	if (folio_test_hugetlb(folio)) {
- 		spin_lock_irq(&hugetlb_lock);
- 		__folio_clear_hugetlb(folio);
- 		spin_unlock_irq(&hugetlb_lock);
--- 
-2.33.0
-
+> -- 
+> pw-bot: cr
 
