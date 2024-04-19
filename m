@@ -1,171 +1,238 @@
-Return-Path: <linux-kernel+bounces-151724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18BAA8AB2CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:05:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 134608AB2D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:07:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C9E7283FB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:05:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E9AE1C2100C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17AE1130AD8;
-	Fri, 19 Apr 2024 16:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C85130E21;
+	Fri, 19 Apr 2024 16:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OwCCYdyR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hCVub2YF"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5751812F59E;
-	Fri, 19 Apr 2024 16:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B8212F59E;
+	Fri, 19 Apr 2024 16:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713542744; cv=none; b=CsOIG8O5Hhrc+x8YV2AqhR23lxqeQTvL+yNaue0yGlLsaiNtJ49R49vMKuSrmrSbVjdOPTtRyQHR0Y1sPcmdxB18iYc+RdB6OfwFiOt9tCgtLl6e6zyzk6Xgu6az/KrsJEdUTkJ2yJHzHti0AqYUYeFuv2DkAC1sxlCAbVWw8gI=
+	t=1713542840; cv=none; b=ayu0BSjmNpyoWrwY9Ys/tV5AnBKbFnQBTTDWXq4/kcXZzb0XyE8gxeG6iWlEgFnouXRCbf06ZVi1EZbIlrVLpQeHcxuZgm1ahNP0Z51MZ7ZU+t88R5Pqg97xzhmdgbl+hoezUPw8CFtvqCL0uMjLZUl/6UmGdgNImrybdyDDWRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713542744; c=relaxed/simple;
-	bh=3VqTx/MC+ZdPcEqq8wvrQXMLukiRoXnaGbZ1BaGpXo4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rslob81SzlcobcpUHZ5NFthCV9tssEwDXIf5tezFVrV3drjkAgxFAwWg3f3io6yQodEqXv7CKToc+Chkhc8kvUDo/b/WiZna+8YkexCUiqekhmTni8SyLzqILFYjO5j3qUDDRibA9FS2G1h+7YZ8mV4Md9chxkVuTrkGsE1hLv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OwCCYdyR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78379C32781;
-	Fri, 19 Apr 2024 16:05:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713542743;
-	bh=3VqTx/MC+ZdPcEqq8wvrQXMLukiRoXnaGbZ1BaGpXo4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OwCCYdyRv/+5/Zt90V/3HakgGm2piuce3WMCL8Zx/Kv5xKhKrE2jJIC92F6qogMg2
-	 2h2gqGWpgfgViad0yQPYAzIom6t56N1mf80JkNoe5m1jKHnIL8VDINOTEOGJDbFAYS
-	 Pn1p1DV6ZOUzQ/WG25q1ZF7GNNMALjZE+Z67Fv96tayRRWEsILvRdcxKd1ukgjL2Iw
-	 MNOq5bFmblTiPLgb/RBjcA1HyGiqoG+qsGyTYCWQuuiZSY6mvoFQYFfzcXiKUmJ17X
-	 OOi7/Fi3ufK1uZCNJkIWZsLzHdIKdWgoJ6nMu8npFKsljzNQY5OIZ61JrXkM822k0c
-	 cgmfxtZH/ytiA==
-Date: Fri, 19 Apr 2024 09:05:37 -0700
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Peter Zijlstra <peterz@infradead.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/2] cpu: Re-enable CPU mitigations by default for !X86
- architectures
-Message-ID: <20240419160537.namt5yaxhhvwwa3r@treble>
-References: <20240417001507.2264512-1-seanjc@google.com>
- <20240417001507.2264512-2-seanjc@google.com>
+	s=arc-20240116; t=1713542840; c=relaxed/simple;
+	bh=Oq+kH3rsAMkyCUdxGA9Qxc/W3YsEaKeWvqdpns5eWeo=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=SrWCOU1B1bSjX+i/MM69pq1fFBpA2jE5qPaCXfUXf0Vs42FhpCVAGwp8Iw5afJL4X9KW+uMoNSkb1y44rzmLQ3iBlIyRPZ1Y1umLPmxk3Beh7uyO+4eF0bg2a3QWGf8e6VtPzdI6DluVoY25TeCJF3JL0zh3xDHS66R0wDoR3jQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hCVub2YF; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-349bf9d46acso1252173f8f.0;
+        Fri, 19 Apr 2024 09:07:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713542837; x=1714147637; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n9HpYaBSLWlwQKwAi4O8ISOg7ZxmGCKm/tVCy7QD/uI=;
+        b=hCVub2YFFq5DnDX7JZSyMFmx385jfwecHu5NQ52BbjStWgDPqyJWlcyRmubXjq7b+e
+         6dBbm6gKGHQ5+QTuANsXNU/P69jASucXkYtZkJmHEHRUtc4IYAkYqT/juT6pc7nwH4lB
+         W3PneL99z++bm9IiVB0ra6g+MiGa92eXpc154r0FpkBGfdHpBVZe8vRdKbFJFsIO7+DK
+         oqzaqLgYJwKZUQxvEJFN21lPLChOhry+cmTreQC95lSXVro2R5cQWyoAsqpY8hMv9nNF
+         ZA/nyXUEANxwg4KAvoa7cPIrYHQExIZdlJ/h22oeHmH3nr2WIL4dO5Vn2Ya4mlP7bpWp
+         D+tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713542837; x=1714147637;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n9HpYaBSLWlwQKwAi4O8ISOg7ZxmGCKm/tVCy7QD/uI=;
+        b=IISrSsQOixhayc3jLR+WznAyaQnSmE4DW4eLaKU7iZXi4gFQAMB0O0isDe9VVSN3wS
+         dtJSNHPyHJQgybcWIz88qE3/hP3dP3IV7Su0aYfNa9cn+yhhkVRjot/RFU7EDRtWoV4H
+         sfKAihJ6e79ySpahbWdlrI13OcbCNeUGQLdwhnPWYJtUAHfnVhIm4kCTAoB6f7q9rY6H
+         GRm93S224S1J6P3+kzOTlTcbyl9hcjlUmF7d2EbHRBOLscxARpdtSrQU7Zf+6DYelxl3
+         93XjGC8G1Wqlt87Xb5qXF6whylX7+NMblHlcB/yCEbofpvP+H9i3u3ucxZUgCbPWXNZF
+         RhAA==
+X-Forwarded-Encrypted: i=1; AJvYcCVHNGDxHCj7tzIj8xDxOQ3oFNK/kwfiJN8nz++jandmH108bhngDicQHX2iWZ7h9vVGWcVMBpoZwlUWMutU3Fw3/Xaf9YzlTSGk4WKNqi5mDsuW00uvL4tm6i1akU0GKoDu7xWZw4xmzyfB6i/RZ/QU+T1lJECD1nteg9zarlfrkrA5f23xwpnsw7e2NOuaDtIEJmPouaOl2Q5vEg3V
+X-Gm-Message-State: AOJu0YwVOA97EawuQosapiDGQGvj40gvgCpMyTcOqof8ROmsBXsGyLxF
+	Ci0nL172h+9u+hENXNhpCRcP8SXIrJa484Fgd1Uo8ycg7I507miA
+X-Google-Smtp-Source: AGHT+IH8I9BUHyjbnZ1Fbsld6hhUhaxjdgb4IF2XTsH1z5ctVLubVlfaQRS04I0F5fuqHl+ikS3+JQ==
+X-Received: by 2002:adf:e743:0:b0:346:afab:9702 with SMTP id c3-20020adfe743000000b00346afab9702mr1865801wrn.13.1713542837235;
+        Fri, 19 Apr 2024 09:07:17 -0700 (PDT)
+Received: from [192.168.18.253] (54-240-197-236.amazon.com. [54.240.197.236])
+        by smtp.gmail.com with ESMTPSA id f9-20020a0560001b0900b003456c693fa4sm4733015wrz.93.2024.04.19.09.07.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 09:07:16 -0700 (PDT)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <d7f5f204-0895-44f6-a428-4afd058e8ea4@xen.org>
+Date: Fri, 19 Apr 2024 17:07:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240417001507.2264512-2-seanjc@google.com>
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH 10/10] KVM: x86: Fix KVM clock precision in
+ __get_kvmclock()
+To: David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Sean Christopherson <seanjc@google.com>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Oliver Upton <oliver.upton@linux.dev>, Marcelo Tosatti
+ <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
+References: <20240418193528.41780-1-dwmw2@infradead.org>
+ <20240418193528.41780-11-dwmw2@infradead.org>
+Content-Language: en-US
+Organization: Xen Project
+In-Reply-To: <20240418193528.41780-11-dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 16, 2024 at 05:15:06PM -0700, Sean Christopherson wrote:
-> Add a generic Kconfig, CPU_MITIGATIONS, to control whether or not CPU
-> mitigations are enabled by default, and force it on for all architectures
-> except x86.  A recent commit to turn mitigations off by default if
-> SPECULATION_MITIGATIONS=n kinda sorta missed that "cpu_mitigations" is
-> completely generic, where as SPECULATION_MITIGATIONS is x86 specific.
+On 18/04/2024 20:34, David Woodhouse wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
 > 
-> Alternatively, SPECULATION_MITIGATIONS could simply be defined in common
-> code, but that creates weirdness for x86 because SPECULATION_MITIGATIONS
-> ends up being defined twice, and the default behavior would likely depend
-> on the arbitrary include order (if the two definitions diverged).
+> When in 'master clock mode' (i.e. when host and guest TSCs are behaving
+> sanely and in sync), the KVM clock is defined in terms of the guest TSC.
 > 
-> Ideally, CPU_MITIGATIONS would be unconditionally on by default for all
-> architectures, and manually turned off, but there is no way to unselect a
-> Kconfig.
+> When TSC scaling is used, calculating the KVM clock directly from *host*
+> TSC cycles leads to a systemic drift from the values calculated by the
+> guest from its TSC.
 > 
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Closes: https://lkml.kernel.org/r/20240413115324.53303a68%40canb.auug.org.au
-> Fixes: f337a6a21e2f ("x86/cpu: Actually turn off mitigations by default for SPECULATION_MITIGATIONS=n")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Commit 451a707813ae ("KVM: x86/xen: improve accuracy of Xen timers")
+> had a simple workaround for the specific case of Xen timers, as it had an
+> actual vCPU to hand and could use its scaling information. That commit
+> noted that it was broken for the general case of get_kvmclock_ns(), and
+> said "I'll come back to that".
+> 
+> Since __get_kvmclock() is invoked without a specific CPU, it needs to
+> be able to find or generate the scaling values required to perform the
+> correct calculation.
+> 
+> Thankfully, TSC scaling can only happen with X86_FEATURE_CONSTANT_TSC,
+> so it isn't as complex as it might have been.
+> 
+> In __kvm_synchronize_tsc(), note the current vCPU's scaling ratio in
+> kvm->arch.last_tsc_scaling_ratio. That is only protected by the
+> tsc_writE_lock, so in pvclock_update_vm_gtod_copy(), copy it into a
 
-It seems confusing to have two config options which have very similar
-names and similar purposes (with subtle differences depending on the
-arch).
+^ typo: capitalization of the 'E'
 
-How about we instead just get rid of the x86-specific
-SPECULATION_MITIGATIONS and replace it with a menu which depends on
-CPU_MITIGATIONS:
+> separate kvm->arch.master_tsc_scaling_ratio so that it can be accessed
+> using the kvm->arch.pvclock_sc seqcount lock. Also generate the mul and
+> shift factors to convert to nanoseconds for the corresponding KVM clock,
+> just as kvm_guest_time_update() would.
+> 
+> In __get_kvmclock(), which runs within a seqcount retry loop, use those
+> values to convert host to guest TSC and then to nanoseconds. Only fall
+> back to using get_kvmclock_base_ns() when not in master clock mode.
+> 
+> There was previously a code path in __get_kvmclock() which looked like
+> it could set KVM_CLOCK_TSC_STABLE without KVM_CLOCK_REALTIME, perhaps
+> even on 32-bit hosts. In practice that could never happen as the
+> ka->use_master_clock flag couldn't be set on 32-bit, and even on 64-bit
+> hosts it would never be set when the system clock isn't TSC-based. So
+> that code path is now removed.
+> 
+> The kvm_get_wall_clock_epoch() function had the same problem; make it
+> just call get_kvmclock() and subtract kvmclock from wallclock, with
+> the same fallback as before.
+> 
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> ---
+>   arch/x86/include/asm/kvm_host.h |   4 +
+>   arch/x86/kvm/x86.c              | 150 ++++++++++++++++----------------
+>   2 files changed, 78 insertions(+), 76 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index cfac72b4aa64..13f979dd14b9 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1353,6 +1353,7 @@ struct kvm_arch {
+>   	u64 last_tsc_write;
+>   	u32 last_tsc_khz;
+>   	u64 last_tsc_offset;
+> +	u64 last_tsc_scaling_ratio;
+>   	u64 cur_tsc_nsec;
+>   	u64 cur_tsc_write;
+>   	u64 cur_tsc_offset;
+> @@ -1366,6 +1367,9 @@ struct kvm_arch {
+>   	bool use_master_clock;
+>   	u64 master_kernel_ns;
+>   	u64 master_cycle_now;
+> +	u64 master_tsc_scaling_ratio;
+> +	u32 master_tsc_mul;
+> +	s8 master_tsc_shift;
+>   	struct delayed_work kvmclock_update_work;
+>   	struct delayed_work kvmclock_sync_work;
+>   
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index f870e29d2558..5cd92f4b4c97 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2671,6 +2671,7 @@ static void __kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 offset, u64 tsc,
+>   	kvm->arch.last_tsc_nsec = ns;
+>   	kvm->arch.last_tsc_write = tsc;
+>   	kvm->arch.last_tsc_khz = vcpu->arch.virtual_tsc_khz;
+> +	kvm->arch.last_tsc_scaling_ratio = vcpu->arch.l1_tsc_scaling_ratio;
+>   	kvm->arch.last_tsc_offset = offset;
+>   
+>   	vcpu->arch.last_guest_tsc = tsc;
+> @@ -3006,6 +3007,7 @@ static void pvclock_update_vm_gtod_copy(struct kvm *kvm)
+>   {
+>   #ifdef CONFIG_X86_64
+>   	struct kvm_arch *ka = &kvm->arch;
+> +	uint64_t last_tsc_hz;
+>   	int vclock_mode;
+>   	bool host_tsc_clocksource, vcpus_matched;
+>   
+> @@ -3025,6 +3027,34 @@ static void pvclock_update_vm_gtod_copy(struct kvm *kvm)
+>   				&& !ka->backwards_tsc_observed
+>   				&& !ka->boot_vcpu_runs_old_kvmclock;
+>   
+> +	/*
+> +	 * When TSC scaling is in use (which can thankfully only happen
+> +	 * with X86_FEATURE_CONSTANT_TSC), the host must calculate the
+> +	 * KVM clock precisely as the guest would, by scaling through
+> +	 * the guest TSC frequency. Otherwise, differences in arithmetic
+> +	 * precision lead to systemic drift between the guest's and the
+> +	 * host's idea of the time.
+> +	 */
+> +	if (kvm_caps.has_tsc_control) {
+> +		/*
+> +		 * Copy from the field protected solely by ka->tsc_write_lock,
+> +		 * to the field protected by the ka->pvclock_sc seqlock.
+> +		 */
+> +		ka->master_tsc_scaling_ratio = ka->last_tsc_scaling_ratio;
+> +
+> +		/*
+> +		 * Calculate the scaling factors precisely the same way
+> +		 * that kvm_guest_time_update() does.
+> +		 */
+> +		last_tsc_hz = kvm_scale_tsc(tsc_khz * 1000,
+> +					    ka->last_tsc_scaling_ratio);
+> +		kvm_get_time_scale(NSEC_PER_SEC, last_tsc_hz,
+> +				   &ka->master_tsc_shift, &ka->master_tsc_mul);
+> +	} else if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC)) {
+> +		kvm_get_time_scale(NSEC_PER_SEC, tsc_khz * 1009,
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 4474bf32d0a4..85a4d57bce1e 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2488,17 +2488,8 @@ config PREFIX_SYMBOLS
- 	def_bool y
- 	depends on CALL_PADDING && !CFI_CLANG
- 
--menuconfig SPECULATION_MITIGATIONS
--	bool "Mitigations for speculative execution vulnerabilities"
--	default y
--	help
--	  Say Y here to enable options which enable mitigations for
--	  speculative execution hardware vulnerabilities.
--
--	  If you say N, all mitigations will be disabled. You really
--	  should know what you are doing to say so.
--
--if SPECULATION_MITIGATIONS
-+menu "CPU speculative execution mitigation defaults"
-+	depends on CPU_MITIGATIONS
- 
- config MITIGATION_PAGE_TABLE_ISOLATION
- 	bool "Remove the kernel mapping in user mode"
-@@ -2643,7 +2634,7 @@ config MITIGATION_SPECTRE_BHI
- 	  indirect branches.
- 	  See <file:Documentation/admin-guide/hw-vuln/spectre.rst>
- 
--endif
-+endmenu
- 
- config ARCH_HAS_ADD_PAGES
- 	def_bool y
-diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
-index 2b8fd6bb7da0..70c1e7eb64f0 100644
---- a/drivers/base/Kconfig
-+++ b/drivers/base/Kconfig
-@@ -191,6 +191,16 @@ config GENERIC_CPU_AUTOPROBE
- config GENERIC_CPU_VULNERABILITIES
- 	bool
- 
-+config CPU_MITIGATIONS
-+	bool "Mitigations for CPU speculative execution vulnerabilities"
-+	default y
-+	help
-+	  Say Y here to enable mitigations for CPU speculative execution
-+	  vulnerabilities.
-+
-+	  If you say N, all mitigations will be disabled. You really
-+	  should know what you are doing to say so.
-+
- config SOC_BUS
- 	bool
- 	select GLOB
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 07ad53b7f119..bb0ff275fb46 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -3207,8 +3207,8 @@ enum cpu_mitigations {
- };
- 
- static enum cpu_mitigations cpu_mitigations __ro_after_init =
--	IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS) ? CPU_MITIGATIONS_AUTO :
--						     CPU_MITIGATIONS_OFF;
-+	IS_ENABLED(CONFIG_CPU_MITIGATIONS) ? CPU_MITIGATIONS_AUTO :
-+					     CPU_MITIGATIONS_OFF;
- 
- static int __init mitigations_parse_cmdline(char *arg)
- {
+1009?
+
+> +				   &ka->master_tsc_shift, &ka->master_tsc_mul);
+> +	}
+> +
+>   	if (ka->use_master_clock)
+>   		atomic_set(&kvm_guest_has_master_clock, 1);
+>   
+
 
