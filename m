@@ -1,213 +1,131 @@
-Return-Path: <linux-kernel+bounces-151638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F7458AB16B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46F8A8AB16C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:12:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A308A1C21DEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:12:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 785D61C22BA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:12:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8481712F5A4;
-	Fri, 19 Apr 2024 15:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5405412FB2D;
+	Fri, 19 Apr 2024 15:12:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="a0Ypl7g1"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2085.outbound.protection.outlook.com [40.107.7.85])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILOpVh9K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F5712F38D;
-	Fri, 19 Apr 2024 15:12:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713539540; cv=fail; b=GeyfoJXLcKTv6o6vUjGiKJ8xCD7uhV3/LMWKpLyJVc5g4o3+/lTKMdMOA1FJ7mO4V7TmtSvky3zD5NWjQ1xhGNyY73DX+S6qxA/Xg9t1HVfQWcfNKKZMeCrBvgcbjy32SF8NSxk1EQ1yOLoN1WmSNW5xw+VFn7LYZY6KSacv7sE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713539540; c=relaxed/simple;
-	bh=ZmAMmuwHqkJa/N3+RfO/Y+gc/w1LSanjyFkGnUspK4Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=VzqaID8Gs/oJBoF3g4NDhJOWI6/WSkKviTxfYv+r5bqxNNhSsqNAslKbACQILFzBNY9IMvliscVhhy+AqbVbz22Vw5qB+Svkb2cDjN0fy5Bf2AykJYvczOu69+fnxkWee+/VkzJpr5zHOYsFzIsNyefYyntOQbAJAHqJS24A7Cg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=a0Ypl7g1; arc=fail smtp.client-ip=40.107.7.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M3IdMo/n3XLBHRDD6IU01JNv0e2Ske+oXz9VlxAXp/wZ8Nh4bPR56G2A8VrMLQnDMnlxUw4m4o4pCiX4gGnBVrZlvsLkokGoWdy9t1oKFvG4+xi/7CXXlbYWz1MsRgDbSP/RHTcA9H9hMR0xim6ecNtwl21WPDlbMqaU0fkF6q/CxyDoamoe1yhq8uGEgtsxBwHQZKmFsHfPbfkQwqudmAUYmQP0x0U5OJGpXhYKr7nWBuLx+GEyjQYcW9WiFOWz1Pg46hUpsS3QWPqrNdBskVFo6THlG4kOGx/x/1iT9TB94oAhOgz49P/LUe9wGZ+Dds7PNcqlsCSeOTamzFm7dw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PK+lL+E0BQKSAbqzmXxPO9CqNmmXKuWkBv9uFDTvWEQ=;
- b=kwNnFT7eggwKFxRFojapG7Gjm0s6PpAXYaqI/+f1ik7nu9/hG3Z4SbE/p9EYRLyhHdAK2bxwJHWfRODXMkvpi9yL+BCLn47JLYhnjJ128tXtT7oaWdrHseQXgC3lBAonly4LKl+pLFUITcbhrX7RgxtN8m+mfAglvol5zohJZ2jIKELsZ+y9TN0SrGnZ8e0ZCA+5+HJLnfHWn5dRnoQkEbPCWWRdYuTerpD+En82WoPNLN313DfRv20FlHWDW+VfZ1dcGTDZKONHusKRgSvxeL3SoiGuomoifL/Z+XqKWonVHWjuKTQzKJuMqO7l2K67vJDo4apOK4BiX/To61vs3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PK+lL+E0BQKSAbqzmXxPO9CqNmmXKuWkBv9uFDTvWEQ=;
- b=a0Ypl7g10PjlAdocqWwr6rA3b+40J2LzhqR3wdop3ZbcP1ZUZisEzfFJcE6bW1i71ijt1cNjJ/x9wNqLG9nVtF+1fv9MCuM5PCp4nVcR1I1dknLFqHns1ZbZVU6qEd8jsRCTcpuGnZ/Xea7fTWhsTGAVDfWaY2vwvI3hN7w10cI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AM9PR04MB8210.eurprd04.prod.outlook.com (2603:10a6:20b:3e7::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Fri, 19 Apr
- 2024 15:12:16 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7472.037; Fri, 19 Apr 2024
- 15:12:16 +0000
-Date: Fri, 19 Apr 2024 11:12:07 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Dexuan Cui <decui@microsoft.com>
-Cc: bhelgaas@google.com, wei.liu@kernel.org, kys@microsoft.com,
-	haiyangz@microsoft.com, lpieralisi@kernel.org,
-	linux-pci@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Boqun.Feng@microsoft.com,
-	sunilmut@microsoft.com, ssengar@microsoft.com
-Subject: Re: [PATCH] PCI: Add a mutex to protect the global list
- pci_domain_busn_res_list
-Message-ID: <ZiKJxz/vtn5/kBT8@lizhi-Precision-Tower-5810>
-References: <20240419015302.13871-1-decui@microsoft.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419015302.13871-1-decui@microsoft.com>
-X-ClientProxiedBy: BY3PR05CA0012.namprd05.prod.outlook.com
- (2603:10b6:a03:254::17) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943A312FB18;
+	Fri, 19 Apr 2024 15:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713539544; cv=none; b=VyE8aKfhlsyzUA9+G9AVurptMlMmfQLd8ROnJvma24MdEDYOVCRrV+Xt0iqVXV1aUcmKXd7x+f5sw6sbDxwavoY51thOqxFUSP4o1cf0zPXQEhyYUeje8j0Lj7M7szp+zkldZsZQQuUTl7aG2PtfELYifHuyNAPlXK9PIf1of5Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713539544; c=relaxed/simple;
+	bh=xQEphaQblCfW5AQQOS56beHxi0XAQWru7AWiLautQ2A=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=pPseVRRH9c8335KbhDdsChUFJDPdTf3qVqK48KkamU+S1kgsm9iUje1HaQFIR6GLz0kTLipE6KArUROl5axj9DixD1OFR9F0gYm/3MwL6FGmT8vcFA7LbPHJeqclqPXmJrgNhGqEsvVw+1e6sMcQb/fkfzgBQ05ZRrwxF/2XvQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ILOpVh9K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9682C072AA;
+	Fri, 19 Apr 2024 15:12:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713539544;
+	bh=xQEphaQblCfW5AQQOS56beHxi0XAQWru7AWiLautQ2A=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ILOpVh9KWtBQTPY7rnovDMii6R5GX3+uYENBstpvsUGgP1Tq2ZmQCQljbXL2ljt20
+	 pEY7rmFms58EMS4ihwmrZ154fY5iQGPljG1DLTRSjAiQuc4AYlwW2YqpHM0akxHGKy
+	 BF5xpvfrjQ2B8Y3rLED1wUOfCc0Z3XFlfzFLigL9v5a6NGPHX2xK37kb/tWaUnrBEe
+	 n69KoVAWvS/7Fbo9RXPd4UALkHYQInjVOdpS0M/5owr80QzKJyAs3FdahHL3va4/nb
+	 fnvT7x/40q9H7DUoz1Hk10yl7Df0mVjrlWkWLOf9oiSGFUJvpVvkFQq0wY2PS6W1Qa
+	 ztimxvi+ERv6w==
+Date: Fri, 19 Apr 2024 15:12:21 +0000
+From: Eric Van Hensbergen <ericvh@kernel.org>
+To: torvalds@linux-foundation.org
+Cc: v9fs@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] fs/9p fixes for 6.9-rc5
+Message-ID: <ZiKJ1Q7Ib6Fj6I9S@3f3e8491d9e9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM9PR04MB8210:EE_
-X-MS-Office365-Filtering-Correlation-Id: 11c72167-0def-4f6c-62d9-08dc60831952
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	cAkvZp8C59hZXtMHVHrAGKBMPsSx/ctKoeK8gpkg0SJZFlkqOKb5tMtWjGKAzcBt7A5g5u0zdKH62qFubcQXUDF4VJlZfLnT4KQSL6+ebBQ8PLHLVqh+ovAqYRZDF6QXNXcQ0hl3s2znnMj3ypHGezQ166UgJWDE4GSCGxZl+jvGw+ef/bey5hv0FB2NmBP4WiEA/KUbRZTTnVIP5zhNlwub3jR6AqmpFc09+9Pd52Dk2g7QmSbEBwAyh9WL6B/CF/XVseG5I4Stxzgf0H6fTJHVxueIEQ9zaURutgYkEAj3x4B8NHzVjVcsEiPYao5v5gXI2DxCUFgHkCgzgVmjCYU7KY2RuVJ3x8HFXYE1TyNzODsZyAP/Zb18gvlu75/vv5WJwvcYx3HFFDADrz7teTebgnoRLev9hSZsljpzPCDBFe1OR9sgYDjeKN+e7oLWqGoLQzi3joYWrxU8VBeash+iLBKHZWmrd0s9MbgyKf3e+cgI+M+AQTcXies1WKSnqsaHt7bozU/kAKvqrbssIqfMdv/8WEMW4EqVZ3g54Hmpk3ZiSaON8Oj8IaUnef9tbMtLQijfYEL9wjCmARK7IlEUamvWZDB1/Kf2vKY8erCNaJhRbpOyguhZrOWd6LcKesKaml4iQPJZd34dOHuyQjbLZ/lqGDTr0ky2rkovHzUt5Hq7n/H+RWaoMFLOHN2rF468al1KBZb/qZxfdCnCI16mQ9z1nZNZiWVkli4Ny1g=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005)(52116005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?BhhL7iypL8H4Giee47ZlI9BKO8zwhL4TNX0JnHlmIMaJR8npEUm4ZN+60Zvx?=
- =?us-ascii?Q?pr4lVX3i/WVaKtC4N+epHbsrTgZ/RF0n8EzWG//h4jxHbobOEeB6iwahCrPa?=
- =?us-ascii?Q?2Ufl8UYkddm2SPFkQ1g9oh0HllP5QAt3AhTaIBrbQaghtK5shiE3vOOjXZT+?=
- =?us-ascii?Q?+pE25F8F0tlt2VeBmf72N0WPS+m/zWnSNB4EgrdDXzMYAAh4yLA7Z/KB1rls?=
- =?us-ascii?Q?ZYPBNySGgffnvepzhjz2eh4D0PTtzPTD+hchw+S1So7yav3UCZkYeje4GTXr?=
- =?us-ascii?Q?0r6sg2pHyH4CNwQ+t2J63iGqjl4hwcnPi7JSJr9G+1zz542lZvXJuuj365uy?=
- =?us-ascii?Q?mY0IxJbs2ElUMm62BPSxjdAQeLx4anV/Ny+EToku9pO3PSBitJXirkV2u9J9?=
- =?us-ascii?Q?hKu3dGk1wG8kElVxDfmvx6OT93fcvBQKNbcVmBugFNtnbPaC4pIp1YPxRH/L?=
- =?us-ascii?Q?f0tAc8I5RIFmlP1yzTuH5rOJroS9Tg5NBIuhBHR9/qMAevGSyev0dycvZWSA?=
- =?us-ascii?Q?7H8PCfICUhtsrQSC1basdqNQPVfqYQCF/qH/iyDL2e0Tcr6MAROm8wJjMom2?=
- =?us-ascii?Q?kz5mxvKan2+YQ4ftoYn8J2c2SKlIHBXbgFg0QZSjK0G5+6y0U6MdzwL5Owvu?=
- =?us-ascii?Q?Lx1RKpUZx5/gMXnx6guTD0lM860G2Z3g1J99+R6FPkXI81viXXAs/bAxavWY?=
- =?us-ascii?Q?99s/Z3yoMvkJU8/VA8TjsvSdmDhRFuO8s0VL8RAGXvgpdIZpuVSRsxOrW/1d?=
- =?us-ascii?Q?Q5Wfhz3c/RcglNwyYjK4WZBnRLZL4UfYE9/KpWmTluoo1ASVXq7o5wP081a8?=
- =?us-ascii?Q?h8BT2OUhxG9yPZ5ZdvymCIS6kvwwiMffY+CjUjw/BWrRkzxiZWcdVBrshggF?=
- =?us-ascii?Q?KE8NSWLWOW92xOAVTjUPoiW2nx5juTIWXRLCxadfwWEhpzPPGJf1flstfpV7?=
- =?us-ascii?Q?rrOQFIvxEbfeMHT4TOy9q4Nr8l/l3zryI/9rSk3RdQkivH0SLBOvJuCBHdKS?=
- =?us-ascii?Q?juvL5j9IbLlrIv2NqeFH5NbYu2T6YYCgCEOqlj+R5GZX4qlkx5pJUJBRf0eO?=
- =?us-ascii?Q?eBF6HmDV9b6hQDm5yqzDs0KABnevvk1raXnGNe+T586GqzGbfsipxTdDnt6u?=
- =?us-ascii?Q?hrieICubVbmHZfGkbDI17RWrp1k3zB7uDJ4ZrEblKMNdq0xbpgrE9BNWlqYt?=
- =?us-ascii?Q?TCXmSAoYQ+9CuF6eB25xZnNoW1BVCVTCJ+xbpr2582MI64/80EzEx8Scchtd?=
- =?us-ascii?Q?m08asBWZHtiQGe+0DGJ/GGL9ZN5IYxeeZmxs5CLQscbCBPAF7yUTn2U+1abi?=
- =?us-ascii?Q?hQCPZBOquZc953GnMQagNAelsJQZGm5e8WHeUZAetHM5lX6wzpAOYEb2xE0y?=
- =?us-ascii?Q?Rado62R6DTdpg+mkukhqSQ3yvV4x0/ERqPwJhSBeGDMccsogIr7wTbFf/pXj?=
- =?us-ascii?Q?6ys6f89U4a3NFA1gAE3URrk7wGolbWhBZ4zBYg0emRWBIL/A3dvzbeIiUDtw?=
- =?us-ascii?Q?+FLKEwiuX1nHGNuksze9k3yQ7sMV8maaln8+PeOsaxGV9Ki+ilJeSgKODEF/?=
- =?us-ascii?Q?1HKyV+bPQArFSDm6aiBQJRqE8Wi4vyhVVoqJscgN?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11c72167-0def-4f6c-62d9-08dc60831952
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 15:12:16.2365
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HS4rMV2I2+00g3ErlwdHZ6CmQLZNWyg7Xp+512n+cXEU1ICPCG8ilGepx7ny/BG5P08/SYfoWJYO87dp+C36Nw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8210
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="O+hS8P7x9X5RAHSB"
+Content-Disposition: inline
 
-On Thu, Apr 18, 2024 at 06:53:02PM -0700, Dexuan Cui wrote:
-> There has been an effort to make the pci-hyperv driver support
-> async-probing to reduce the boot time. With async-probing, multiple
-> kernel threads can be running hv_pci_probe() -> create_root_hv_pci_bus() ->
-> pci_scan_root_bus_bridge() -> pci_bus_insert_busn_res() at the same time to
-> update the global list, causing list corruption.
-> 
-> Add a mutex to protect the list.
-> 
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> ---
->  drivers/pci/probe.c | 25 ++++++++++++++++++-------
->  1 file changed, 18 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index e19b79821dd6..1327fd820b24 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -37,6 +37,7 @@ LIST_HEAD(pci_root_buses);
->  EXPORT_SYMBOL(pci_root_buses);
->  
->  static LIST_HEAD(pci_domain_busn_res_list);
-> +static DEFINE_MUTEX(pci_domain_busn_res_list_lock);
->  
->  struct pci_domain_busn_res {
->  	struct list_head list;
-> @@ -47,14 +48,22 @@ struct pci_domain_busn_res {
->  static struct resource *get_pci_domain_busn_res(int domain_nr)
->  {
->  	struct pci_domain_busn_res *r;
-> +	struct resource *ret;
->  
-> -	list_for_each_entry(r, &pci_domain_busn_res_list, list)
-> -		if (r->domain_nr == domain_nr)
-> -			return &r->res;
-> +	mutex_lock(&pci_domain_busn_res_list_lock);
 
-Using
-	guard(mutex)(&pci_domain_busn_res_list_lock);
+--O+hS8P7x9X5RAHSB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-to simple logic, especially there are goto.
+The following changes since commit 8d025e2092e29bfd13e56c78e22af25fac83c8ec:
 
-You can avoid goto out, direct return NULL;
+  Merge tag 'erofs-for-6.9-rc2-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs (2024-03-27 20:24:09 -0700)
 
-Frank
+are available in the Git repository at:
 
-> +
-> +	list_for_each_entry(r, &pci_domain_busn_res_list, list) {
-> +		if (r->domain_nr == domain_nr) {
-> +			ret = &r->res;
-> +			goto out;
-> +		}
-> +	}
->  
->  	r = kzalloc(sizeof(*r), GFP_KERNEL);
-> -	if (!r)
-> -		return NULL;
-> +	if (!r) {
-> +		ret = NULL;
-> +		goto out;
-> +	}
->  
->  	r->domain_nr = domain_nr;
->  	r->res.start = 0;
-> @@ -62,8 +71,10 @@ static struct resource *get_pci_domain_busn_res(int domain_nr)
->  	r->res.flags = IORESOURCE_BUS | IORESOURCE_PCI_FIXED;
->  
->  	list_add_tail(&r->list, &pci_domain_busn_res_list);
-> -
-> -	return &r->res;
-> +	ret = &r->res;
-> +out:
-> +	mutex_unlock(&pci_domain_busn_res_list_lock);
-> +	return ret;
->  }
->  
->  /*
-> -- 
-> 2.25.1
-> 
+  git://git.kernel.org/pub/scm/linux/kernel/git/ericvh/v9fs.git tags/9p-fixes-for-6.9-rc5
+
+for you to fetch changes up to 7fd524b9bd1be210fe79035800f4bd78a41b349f:
+
+  fs/9p: drop inodes immediately on non-.L too (2024-04-11 23:40:55 +0000)
+
+----------------------------------------------------------------
+fs/9p: fixes regressions in 6.9
+
+This series contains a reversion of one of the original 6.9
+patches which seems to have been the cause of most of the
+instability.  It also incorporates several fixes to legacy
+support and cache fixes.
+
+There are few additional changes to improve stability,
+but I want another week of testing before sending them
+upstream.
+
+Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
+
+----------------------------------------------------------------
+Eric Van Hensbergen (2):
+      fs/9p: remove erroneous nlink init from legacy stat2inode
+      fs/9p: Revert "fs/9p: fix dups even in uncached mode"
+
+Jeff Layton (1):
+      9p: explicitly deny setlease attempts
+
+Joakim Sindholt (4):
+      fs/9p: only translate RWX permissions for plain 9P2000
+      fs/9p: translate O_TRUNC into OTRUNC
+      fs/9p: fix the cache always being enabled on files with qid flags
+      fs/9p: drop inodes immediately on non-.L too
+
+ fs/9p/fid.h       |  3 ---
+ fs/9p/vfs_file.c  |  2 ++
+ fs/9p/vfs_inode.c |  7 ++++---
+ fs/9p/vfs_super.c | 17 +++++++++++++++++
+ 4 files changed, 23 insertions(+), 6 deletions(-)
+
+--O+hS8P7x9X5RAHSB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElpbw0ZalkJikytFRiP/V+0pf/5gFAmYiidUACgkQiP/V+0pf
+/5jo3w//Tp8RQDwtPFXyeSa2SEEAUyNXE5UhaqlSfKnNdDn+QaiTmjxGFq7tLVh/
+e40eBdRVnuoucBXW5POdmv/7wuG9dYPwE8N1Ic6U2l+Gmz2poNr3Afly4BskudPz
+XRbdnir4Iefw1CpWdwZrkZLPDCB5LZGCMhIsV9Zdokve5QNpKenJ+OKiG+hNoSdb
+5iyQHSIvWOYP9jlalRMtEPoV2kqUy4Xzuu7/h6rvfMNoKBDY8brsD0wol95XuJAA
+TPslEvdn2nZ3CFYtGC1+vozlvaqnIC1TMJ4p4beQgODe5bfsSZxDnQGIHBvbdlRz
+hjjrEWCz2rOdl4LpdywTEWSXBKqpg71WuKub6Emxrs8q3ylw92urE2DLw2LovVIx
+rUCEFXDVF/DorQ9aQbNe01AdsCkY/bCV6S91lyTiud2Tcrqoto7fTQNA00L1r263
+smpYiwnv7kvqEb2teLbQ0gDfzVNZz1RMQ100eTftoYUvHu6089G4eGp2DZZKbvJv
+2TFgRFacknf5672Lm2yXfSCd8sIIvCL9LROM2kUGGgzewbY30PgOZxF09dtP3HdP
+jdpcoBTOHjUog22LRLOHyLooP82b1kjRQtOaI/SfGGGMZbIeYfNtKYFlvLhmYpns
+WaUMfh8PRHlOoZ11QanbbqLB2kqXUKA5YQhltXliKC7pF/ECthY=
+=Yiod
+-----END PGP SIGNATURE-----
+
+--O+hS8P7x9X5RAHSB--
 
