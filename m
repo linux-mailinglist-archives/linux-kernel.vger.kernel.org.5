@@ -1,170 +1,106 @@
-Return-Path: <linux-kernel+bounces-151858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8D578AB4D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A08318AB4DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:12:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32F811F22DD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:12:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EF241F22E53
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:12:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B150013BAFC;
-	Fri, 19 Apr 2024 18:12:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39AD313B5BE;
+	Fri, 19 Apr 2024 18:12:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CDhuYTbj"
-Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iIFwUUf1"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7042B13A871
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 18:12:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E12B13A871
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 18:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713550358; cv=none; b=YDdIJ1Kw1A6H3EHYoJnnq9/qJLYiEb5Snk38Lf9gWXFUIUbEGP6zQyzFAt7lNhWnHpApGnkkMLqHQJpHfZcU10YQLWqFvLFCrdcRAcGcPGYD1tGzN9wTymR9Wm88hmRBVswwGAQwex9vaiFtDwprxyMaOepidflYpwhtGQQ2PIA=
+	t=1713550368; cv=none; b=KAjgs1KihVDPmehrVSQH6Bc+Croudp1H0XuJjvE/Ycf+Iut3ul83POUXedoIx5X9Wa5JqqWk0gIPa+y8qYh1We/aEuefSUd40i6JEcpXKMz6BMm/UwgQX5KL8RXbeFSQ9SGswn+JqVBFa+XXLyR63S7KJjUK+Ke2J7wJ99K2S2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713550358; c=relaxed/simple;
-	bh=5OoEVXRanZ24jLnT2Kd6vCgLBegTb1q/k9NQXr41LEw=;
+	s=arc-20240116; t=1713550368; c=relaxed/simple;
+	bh=bcFICBmin4/tFtAgRJRkk8O34T3w5c4G9w2ytkNfj7s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OIVLRd6V7Gx2EXUTpYYfC1anS2uuZXYJW2ZwSDy0M80mWkBF/fD5iOLBmHxmvusWOvIELT4XicZo6f59/9446dV0N41wXWl4ambmiupArPIhEOEmZFh3Xxwj58T2LQW9wiHMRrE+aSvrcYALL5o/a0GT61uBsuxzVLAxaH9TFcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CDhuYTbj; arc=none smtp.client-ip=209.85.217.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f49.google.com with SMTP id ada2fe7eead31-479dd0261c8so1486316137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:12:37 -0700 (PDT)
+	 To:Cc:Content-Type; b=XwKXsyt8r1fmaEBqG47hBsylOZeOJPeFE2Kvo1yVsBKjvlCnQCPfhBMeG02ktEE3wKwV5JllgGohidEObRsNaby3ZR3vd8kUbGjFgcBycsHbqHZ4DczFZ38Y33ud9AFanTwL/pkXeWk5wrkbngYHO5VidB8cR046RXr9p0HW148=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iIFwUUf1; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so3248617276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:12:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713550356; x=1714155156; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pr4pi+Kny8bbVl+Iz+PAepuZ7kpgc/VuFcgkzz8aTw4=;
-        b=CDhuYTbj3VMN44oaNXnXxu27FtJXw/vS8mw1ORPB+RdOKvkG6MzSDK1Zf9LSM9bI46
-         ZrxThK4rGMaaCTZUfKDeEZJJK1HsaKI/+wwEFyXpF+umz6gNkzcZ1aqA9y7zs09QeEDw
-         lefHg3x1vMfrscfG8kz5QsZ8KU4kWSqFOLvqj5Fi+ZdvlqQrwKmHdrHGn6s/a2FJE6vN
-         liFXM0z1xQsNd25NoPAYkWDXD0SoPpCJr5FS+tHm9tPyVUi30nYzRM3VxQN71KFqh+iE
-         4uBYaTONRyZYQeKOruSS9MystM32a2sq/mtE5KBj7u4igNq+blWNZ0gza/y07v8D0gmt
-         gosA==
+        d=linaro.org; s=google; t=1713550365; x=1714155165; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lGEtTj/vH2KpXzCwJtz87h7PGuGLo80xWA52Z7kyHqs=;
+        b=iIFwUUf1TiG1puFXvwyVehq5MN8pH9cyjsH2Tkz+JA/2ZU7KgpWxD/ZUsutpheseQe
+         8TmOyCxXw/9ube9usZ3hSyTV/N5W+c+7fjWg3BTtuXjqtXQ9JiKg7LuY84d45bz+pc2c
+         /FrevCRFPV9e3P064c2BZkElqWb+3O0fnkwYLkI8GgWPNxRFYdHDYkwgnTSdiomR/qsh
+         cQ5SMK4X6QeXg5+EP/LaJFkvtyk71eAr93SE2iUA2RLIw/3Nu9WAuvddgUK54xcDm8y9
+         c3Gqm90i4VWjH/Jv8ThEcMzNEAFDCOFO5YJppxNW5Yh/HGC/ou/ad6LYsNLFjXhGXDVR
+         6L4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713550356; x=1714155156;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pr4pi+Kny8bbVl+Iz+PAepuZ7kpgc/VuFcgkzz8aTw4=;
-        b=b8vjQbOc68djA5wvoiEIOqhx9pEhg9xiuirZAPc+WGjH4g98klqvvdZtgnaaEXk2AT
-         j+kJT6qwQNxJxgSiBEag3W+LanEMsIRQhv3Wsa0i1htrMMS+4Y95mfoKQLTLUBrWeVlm
-         J+hT7PBUDbieJXXL97tVwtElhc7NMHiIOMHHL+HtBkVZWbpx6AR4trKmujIbSNVmBscW
-         44LMyfEbr0hYeOMTE1kNjGdHp0HQ4Pq4iu3n1/xl6/aZLEhtu1P3IDhdB7gkX3KZG4zv
-         A0/dhLkaIvwJx8KF0vEupnEEvpFzUra5l2geuwa+tECUSlPX2hIO3wog7Sb/Tzp4XEqV
-         ay3g==
-X-Forwarded-Encrypted: i=1; AJvYcCUX/RCE2D3Dmlcc34rmtymOHTsF97TTI47b1hxmvtQdtzd5ya4x9O9NSvSEr9tLtWx1EDJoPu9kGgn9U38YWUVu119uG1HX0x5ZGqTN
-X-Gm-Message-State: AOJu0Yz2O43tiqpxOjKvUpXTsXi1QgZVNk40BQoTknV9JvOSqFh/sjm5
-	3ng/cHPjSFpzdr6a4QHfVWpAr9ptVn21bAY6jXmnBDl6X60bPZiCUaWkyBhukFkrWdfmpwst0ZC
-	qclQVtHUh41Za+giBBQBSVY7AgyTcznQIiNyK
-X-Google-Smtp-Source: AGHT+IGKWqj19fr6lCGVBtuwAdS9DytWE1K5v7+RkbOscyxSEB74jIiRfprxzzsCH+WqgTqKdbso+jk/KyNVUnSu+YU=
-X-Received: by 2002:a05:6102:2844:b0:47b:5f05:5a57 with SMTP id
- az4-20020a056102284400b0047b5f055a57mr8647652vsb.16.1713550356213; Fri, 19
- Apr 2024 11:12:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713550365; x=1714155165;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lGEtTj/vH2KpXzCwJtz87h7PGuGLo80xWA52Z7kyHqs=;
+        b=rO7ilz1b30KyU7vhr47FbUcK8Y42b9lQ2kvGQY6vHeTq1O7I9WbEzUlFO+dMqz4fAW
+         Nzd2XgagrbwkKGmwSFk1+jIK+Fv/3NqenBHrmlfaTVW1/3tcW9jNI3lsP3Q0hmGY7Ajv
+         qCNrZmRmPfI2Cv+ENU5gUM/JM8YA/KE7yQzNtKhovvUhe0PH1zqNtduDmzX9vhwn1Rcy
+         TpyBqxYZoZ+hShbd2Tg7cGVsQaL4OtC4fIeKWgirbAGGshPs2LJ5DQ6jf7Hm/+cqt4Ss
+         XJG9s8Db7K8dE0+wFZ97CZ70jRjqPMuaPMi9NTNBafQeOVL86oi7crcr6TR4MMKUEPwp
+         Uuwg==
+X-Forwarded-Encrypted: i=1; AJvYcCV0fsHNlST8jDlMgv7u2L5759t6A43M98mhEiKWMXj+AbDnJFmqEvANhWN0hybHzOZqVnL2lXOxuiDOIxuLQ1/kiKUSDKSyXD9Qlv7d
+X-Gm-Message-State: AOJu0YweGq8ZpnJnXBZNq0tHBZ8U+9ckdaCeMkqs2ncZFaH95xZvt1v0
+	FCw5d0MulrDGmg/rww+DRDL8AkauTcX29S0m9u30dTYiKvPoI/LacBbnk/wwtHCadL5txI4SAM0
+	gMCmbypWsr3uoVHbT20yd3uiJRYmNCmXnM0DsFQ==
+X-Google-Smtp-Source: AGHT+IGQ4xZAlrLZPCqIX2Z5PVXFtctMByQgz4M8JwmgU34xnfsoRSL8OUzYibOugChD+d3y0VfIk2HrGsMA0Iq2jVk=
+X-Received: by 2002:a25:8051:0:b0:dc6:f0ac:6b53 with SMTP id
+ a17-20020a258051000000b00dc6f0ac6b53mr2627365ybn.15.1713550365672; Fri, 19
+ Apr 2024 11:12:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
- <20240418-alice-mm-v6-1-cb8f3e5d688f@google.com> <ZiKltinLGvKlBivm@boqun-archlinux>
-In-Reply-To: <ZiKltinLGvKlBivm@boqun-archlinux>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 19 Apr 2024 20:12:24 +0200
-Message-ID: <CAH5fLgh0rFMQcAA4a=Vk8uEkyHP455KeihR-2BkkOpgHS6teKA@mail.gmail.com>
-Subject: Re: [PATCH v6 1/4] rust: uaccess: add userspace pointers
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
-	Kees Cook <keescook@chromium.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, Trevor Gross <tmgross@umich.edu>, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, Christian Brauner <brauner@kernel.org>
+References: <20240419-x1e80100-dts-fix-mdss-dp3-v2-0-10f4ed7a09b4@linaro.org> <20240419-x1e80100-dts-fix-mdss-dp3-v2-3-10f4ed7a09b4@linaro.org>
+In-Reply-To: <20240419-x1e80100-dts-fix-mdss-dp3-v2-3-10f4ed7a09b4@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 19 Apr 2024 21:12:35 +0300
+Message-ID: <CAA8EJppWZ0uvjHwiLkKFPsEm+0FVF8Wa7zbm=npVmkcTHvEicw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: x1e80100-qcp: Add data-lanes and
+ link-frequencies to DP3
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Rajendra Nayak <quic_rjendra@quicinc.com>, Sibi Sankar <quic_sibis@quicinc.com>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 19, 2024 at 7:11=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
+On Fri, 19 Apr 2024 at 19:14, Abel Vesa <abel.vesa@linaro.org> wrote:
 >
-> On Thu, Apr 18, 2024 at 08:59:17AM +0000, Alice Ryhl wrote:
-> [...]
-> > +    /// Reads the entirety of the user slice, appending it to the end =
-of the provided buffer.
-> > +    ///
-> > +    /// Fails with `EFAULT` if the read happens on a bad address.
-> > +    pub fn read_all(mut self, buf: &mut Vec<u8>, flags: Flags) -> Resu=
-lt {
-> > +        let len =3D self.length;
-> > +        buf.reserve(len, flags)?;
+> The data-lanes are a property of the out remote endpoint, so move them
+> from mdss_dp3 to the mdss_dp3_out. Also add the link-frequencies to
+> mdss_dp3_out and make sure to include all frequencies.
 >
-> (Reportedy by Miguel)
->
-> When compile with `make rusttest`, kernel crate is compiled as userspace
-> program, so we need to explicitly pick where the `reserve` comes from
-> (Vec or VecExt), the current version will hit the following error:
->
->         error[E0061]: this method takes 1 argument but 2 arguments were s=
-upplied
->            --> rust/kernel/uaccess.rs:296:13
->             |
->         296 |         buf.reserve(len, flags)?;
->             |             ^^^^^^^    -------
->             |                        | |
->             |                        | unexpected argument of type `Flags=
-`
->             |                        help: remove the extra argument
->             |
->         note: method defined here
->            --> /home/boqun/linux-rust/rust/test/sysroot/lib/rustlib/src/r=
-ust/library/alloc/src/vec/mod.rs:910:12
->             |
->         910 |     pub fn reserve(&mut self, additional: usize) {
->             |            ^^^^^^^
->
->         error[E0277]: the `?` operator can only be applied to values that=
- implement `Try`
->            --> rust/kernel/uaccess.rs:296:9
->             |
->         296 |         buf.reserve(len, flags)?;
->             |         ^^^^^^^^^^^^^^^^^^^^^^^^ the `?` operator cannot be=
- applied to type `()`
->             |
->             =3D help: the trait `Try` is not implemented for `()`
->
->         error: aborting due to 2 previous errors
->
->         Some errors have detailed explanations: E0061, E0277.
->         For more information about an error, try `rustc --explain E0061`.
->
-> and we need to the following fix
->
-> diff --git a/rust/kernel/uaccess.rs b/rust/kernel/uaccess.rs
-> index 39481e374c40..80f7e7ca2f5e 100644
-> --- a/rust/kernel/uaccess.rs
-> +++ b/rust/kernel/uaccess.rs
-> @@ -293,7 +293,7 @@ pub fn read<T: FromBytes>(&mut self) -> Result<T> {
->      /// Fails with `EFAULT` if the read happens on a bad address.
->      pub fn read_all(mut self, buf: &mut Vec<u8>, flags: Flags) -> Result=
- {
->          let len =3D self.length;
-> -        buf.reserve(len, flags)?;
-> +        VecExt::<u8>::reserve(buf, len, flags)?;
->
->          // The call to `try_reserve` was successful, so the spare capaci=
-ty is at least `len` bytes
->          // long.
+> Fixes: f9a9c11471da ("arm64: dts: qcom: x1e80100-qcp: Enable more support")
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/x1e80100-qcp.dts | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 
-I'm sorry, what? This seems like a problem with `make rusttest`.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Alice
+
+-- 
+With best wishes
+Dmitry
 
