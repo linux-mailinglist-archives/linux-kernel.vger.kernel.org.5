@@ -1,106 +1,154 @@
-Return-Path: <linux-kernel+bounces-150931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9143D8AA6D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 04:07:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BC788AA6D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 04:08:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14179B2250B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:07:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E8C71F228CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE0C4436;
-	Fri, 19 Apr 2024 02:07:35 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4739153A1;
+	Fri, 19 Apr 2024 02:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jtBII6e3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CAA18F40
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 02:07:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808A84C6B;
+	Fri, 19 Apr 2024 02:07:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713492454; cv=none; b=Pti94StGZb/nQ5i00NcghsKYBhFelPa7HnlH5vFZmKVTiYa0cJonAC1Lo9W86IsFQyhgqsbSgDgz6sHs8pxCUU8rK2rvHNKP8yvRVmNTq4u3xgOaD8G/yHTYWJ5vcxwcPunEOki/qftg4vmgP0TwBum4QZ8tOsjhU5HZDBIaOfA=
+	t=1713492477; cv=none; b=IyCI/LN3Gueo1wON1t2X+9he8Bv3axXCQWByEp47fkC8FjFOOgv2P6a483ARCwj8b56NtitH9sZpTu+IkbU/jYtKG0c+HITg+PITEbPi78OJzbbGJj2bJuNu/qNjsRq0+QAWwZPtcKoLIkmQODj4WmYkXy2Snlch0uHTYWJr2WQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713492454; c=relaxed/simple;
-	bh=/vO6DS4SU3bALZ+yald3j/Gg1WUBYNbdVxwu05igwc8=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=NP3O6KsBNUa0euNos55Fi5I0IVLm/jjQcwzX2oyzpbpgZ2nHIHougtFwNQ9eI8dvridMBqzfgiURV4HDkMvw14s/aCB5zFEv4H7qTxgJ2ISbPTeLiyuJ7gPNey4Jp3UCN8OGrztyFPrcHEl5JETURNkvhXYN4MXCMfTwUVz+4x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VLHyS4KwRztX4s;
-	Fri, 19 Apr 2024 10:04:32 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4EA871401E9;
-	Fri, 19 Apr 2024 10:07:27 +0800 (CST)
-Received: from [10.173.135.154] (10.173.135.154) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 19 Apr 2024 10:07:26 +0800
-Subject: Re: [PATCH 2/2] mm/hugetlb: fix unable to handle page fault for
- address dead000000000108
-To: Andrew Morton <akpm@linux-foundation.org>
-CC: <muchun.song@linux.dev>, <david@redhat.com>, <vbabka@suse.cz>,
-	<willy@infradead.org>, <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20240418022000.3524229-1-linmiaohe@huawei.com>
- <20240418022000.3524229-3-linmiaohe@huawei.com>
- <20240418133817.afb65c8dcd11cfea7c686d25@linux-foundation.org>
-From: Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <2a7c22c6-edda-e113-4688-f728b4f2d65c@huawei.com>
-Date: Fri, 19 Apr 2024 10:07:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1713492477; c=relaxed/simple;
+	bh=X72OXuYe/3hsHFyy+rxRJlE3PBWjqR3xc0lDbLCji8w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Kf/J+c4j/ERLcuGZsJ+jLfjg1/m/nht0c3t1tRGFSDK/LWzzXYhKqGI07JXi4JTSj1OSMAkAIDR8L61QsQwZOWeNXzSsFWNEp93S5e748tsKtH2jTCumicpzNyE9NEZ5JDNYLCm8dWvGv+P/Pqa5C7G6lSAKHf73pBW5BfOJyhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jtBII6e3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A447C113CC;
+	Fri, 19 Apr 2024 02:07:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713492477;
+	bh=X72OXuYe/3hsHFyy+rxRJlE3PBWjqR3xc0lDbLCji8w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jtBII6e3f2HENWd7KuoNwDTV/183CC8TqBRqKBFlWw3RR7ZlnOMUaes5Zl8FESj5P
+	 blHKTMKQ1ThMO5FWY1r4AAahCDh0p2P6XFgnCePQZkHpaioLH+qpcBCYiZPbJrp/Tn
+	 MGmEYmhCVT6GeCmyupPI59S6FqBvhZTctZgxb1mJD5laEGbgX5PAoESbINhGNyGfg2
+	 NEitM6tsbbeH+lt4mR5Mb2F4CRqOBGkK0ICYdZUngNoO/czJizgeXvuFwdkk9x4otQ
+	 fznTWROR9Ex13jXHKw9LMbQCf7XFSC+sY9E/sPO9CyNvxPIwBgFv2G7Gh+PPPappJa
+	 0dSo1syYE99qg==
+Date: Thu, 18 Apr 2024 19:07:55 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Danielle Ratson <danieller@nvidia.com>
+Cc: <netdev@vger.kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+ <pabeni@redhat.com>, <corbet@lwn.net>, <linux@armlinux.org.uk>,
+ <sdf@google.com>, <kory.maincent@bootlin.com>,
+ <maxime.chevallier@bootlin.com>, <vladimir.oltean@nxp.com>,
+ <przemyslaw.kitszel@intel.com>, <ahmed.zaki@intel.com>,
+ <richardcochran@gmail.com>, <shayagr@amazon.com>,
+ <paul.greenwalt@intel.com>, <jiri@resnulli.us>,
+ <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <mlxsw@nvidia.com>, <petrm@nvidia.com>, <idosch@nvidia.com>
+Subject: Re: [PATCH net-next v4 03/10] ethtool: Add an interface for
+ flashing transceiver modules' firmware
+Message-ID: <20240418190755.1865fcaa@kernel.org>
+In-Reply-To: <20240418103455.3297870-4-danieller@nvidia.com>
+References: <20240418103455.3297870-1-danieller@nvidia.com>
+	<20240418103455.3297870-4-danieller@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240418133817.afb65c8dcd11cfea7c686d25@linux-foundation.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500002.china.huawei.com (7.192.104.244)
 
-On 2024/4/19 4:38, Andrew Morton wrote:
-> On Thu, 18 Apr 2024 10:20:00 +0800 Miaohe Lin <linmiaohe@huawei.com> wrote:
-> 
->> Below panic occurs when I did memory failure test:
->>
->> BUG: unable to handle page fault for address: dead000000000108
->>
->> ...
->>
->> The root cause is that list_del() is used to remove folio from list when
->> dissolve_free_hugetlb_folio(). But list_move() might be used to reenqueue
->> hugetlb folio when free_huge_folio() leading to above panic. Fix this
->> issue by using list_del_init() to remove folio.
->>
->> ...
->>
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -1642,7 +1642,7 @@ static void __remove_hugetlb_folio(struct hstate *h, struct folio *folio,
->>  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
->>  		return;
->>  
->> -	list_del(&folio->lru);
->> +	list_del_init(&folio->lru);
->>  
->>  	if (folio_test_hugetlb_freed(folio)) {
->>  		h->free_huge_pages--;
-> 
-> We should cc:stable and find a Fixes:.  This appears to predate
-> 6eb4e88a6d27022ea8aff424d47a0a5dfc9fcb34, after which I got lost.
+On Thu, 18 Apr 2024 13:34:48 +0300 Danielle Ratson wrote:
+> +  -
+> +    name: module-fw-flash
+> +    attributes:
+> +      -
+> +        name: header
+> +        type: nest
+> +        nested-attributes: header
+> +      -
+> +        name: file-name
+> +        type: string
+> +      -
+> +        name: password
+> +        type: u32
+> +  -
+> +    name: module-fw-flash-ntf
+> +    attributes:
+> +      -
+> +        name: header
+> +        type: nest
+> +        nested-attributes: header
+> +      -
+> +        name: status
+> +        type: u32
+> +        enum: module-fw-flash-status
+> +      -
+> +        name: status-msg
+> +        type: string
+> +      -
+> +        name: done
+> +        type: u64
 
-It's weird I didn't observe this issue before last merge window while corresponding
-code logic seems not changed. I will try again to find a Fixes.
-Thanks.
-.
+uint?
 
-> .
-> 
+> +      -
+> +        name: total
+> +        type: u64
 
+same?
+
+> +enum {
+> +	ETHTOOL_A_MODULE_FW_FLASH_UNSPEC,
+> +	ETHTOOL_A_MODULE_FW_FLASH_HEADER,		/* nest - _A_HEADER_* */
+> +	ETHTOOL_A_MODULE_FW_FLASH_FILE_NAME,		/* string */
+> +	ETHTOOL_A_MODULE_FW_FLASH_PASSWORD,		/* u32 */
+> +	ETHTOOL_A_MODULE_FW_FLASH_PAD,
+> +	ETHTOOL_A_MODULE_FW_FLASH_STATUS,		/* u8 */
+> +	ETHTOOL_A_MODULE_FW_FLASH_STATUS_MSG,		/* string */
+> +	ETHTOOL_A_MODULE_FW_FLASH_DONE,			/* u64 */
+> +	ETHTOOL_A_MODULE_FW_FLASH_TOTAL,		/* u64 */
+> +
+> +	/* add new constants above here */
+> +	__ETHTOOL_A_MODULE_FW_FLASH_CNT,
+> +	ETHTOOL_A_MODULE_FW_FLASH_MAX = (__ETHTOOL_A_MODULE_FW_FLASH_CNT - 1)
+> +};
+
+The next patch uses these names for notifications and patch 9 for the
+action. The YAML spec should contain basically this same info.
+Not sure why the spec ended up with two different nests.
+Just translate this enum into YAML:
+
+    name: module-fw-flash
+    attributes:
+      -
+        name: header
+        type: nest
+        nested-attributes: header
+      -
+        name: file-name
+        type: string
+      -
+        name: password
+        type: u32
+      -
+        name: pad
+        type: pad
+      -
+        name: status
+        type: u8
+ ...
+
+And you can use this nest in multiple operations, using the attributes
+members of the operation to narrow down which members will show up
+in given op.
 
