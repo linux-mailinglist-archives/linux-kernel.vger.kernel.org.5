@@ -1,123 +1,87 @@
-Return-Path: <linux-kernel+bounces-151687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 573288AB20A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:37:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A26A38AB21F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:39:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11D5028155D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:37:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58F9E1F23C43
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:39:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79356131BD8;
-	Fri, 19 Apr 2024 15:36:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eJ7ySSWl"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A6312FF8B;
+	Fri, 19 Apr 2024 15:39:06 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8859F1E893
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1F87C08E
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713541006; cv=none; b=tSHPiqN7genz2sm6ROZuZL6KdSo10OZJeA3Irr7UlNEM2+U7PSulT216IaTq1zbeow8e/5jZmlm+brKLVxHa2vWVnZNfFwX0uBBGeA399E0hcmvXhU4N7mG7pnt9q6o4toQPYwwZvvxbBx+Rd7JR896ij0FJAHwhZ0c8nOHJn1E=
+	t=1713541146; cv=none; b=OPCqpv08CO/s0bvqhOsLvWgPVfcLYCHakVA90U0OcWgnVHuIi+u5Ad5ZdzZ+Ng3DgT5fNUmWVXZf5y5IDvJIWsTKsvK0A6Buk8onP7rsI9UuwQ/8+0TGtZyKwkiqLaGgMuyH8vg8I/wRqz1YLAwUhID3yWQCRu+KH0qZ0OD+ebg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713541006; c=relaxed/simple;
-	bh=lfG20oqzf+WgdkIHChtaZcLJdG8DTLeewCgNNyYkvEo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U5dEDiNA2L+9cVcrS/QSSpa2pVcHr7GFv1eh4c88bcmCegXXGOVj8yx8ac1FfNdTfWwS2DKlUi0pLHXqRvaD2UHzaXFg/Hk2qblcWfW7EBMR6T2CHWOcJEYBiKpWLZH6uAM3mlCP96ZsK5p8BWAb8ZiDRDBV3Bg+/Re3o6d1stQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eJ7ySSWl; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2a2da57ab3aso1707156a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:36:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713541005; x=1714145805; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s6e7j2WSWs9sC+Ur3lef8hum6RjzipP7Zn2prRaEpPs=;
-        b=eJ7ySSWl56uVJ8wNhFnAEqvhpvDC8zK49EQHh+jQ0wdh5sZO4GHx+KcbeXf+Y2cFU3
-         Ek9MfgxLV5iAVdNVrSPLOi/nxP28VJGVZmzdsaepU5tLfYRGIqzCqTxv4083PQBdL4by
-         PlEypXCe/N7X1IZs1ceaLM7KXY7rado0Zxom9UUdP1DZUpw0QuZPjLKMCsCW2ZUWSXd/
-         LeIHMzQ7GnaJU7LTjBPLMq9ah1lzJSiHgs41q1NDAG5bIrrSUk0t1Q9NCYxxdiYvzEfq
-         dqCvalhxh5Dm1J0coU2q2lM6lyfjmqhOx6m6jcau/BBR9tlNsxpamFMqga4ymyrDjQd4
-         7yDA==
+	s=arc-20240116; t=1713541146; c=relaxed/simple;
+	bh=3Cmais+JY+zEStmIMYevCUnKD9m+GY58Ub0LuQ7CI1Y=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=GhnOntiIP+K/MKl6uBalZwgYmeLwtOPEM7gsGvqvj/6adCrxNBoIqgBnK6FI1k1Y67DIpxPqRBYdZ/QbHG2k/0Rvvj1cXKX/HJF4AjkReGFxORfY0LbGpuS/fCknynr5xU2DNBMIiJkIV/XSVJdgQOQfRqkfRLnBqF6csM4Ojtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c7e21711d0so205872839f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:39:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713541005; x=1714145805;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s6e7j2WSWs9sC+Ur3lef8hum6RjzipP7Zn2prRaEpPs=;
-        b=GdXK/zC94f/+LzBVYfdhPcw0g/QIzFbh2LOIBkvVQH8EfMyYRCcz+U9KgTHinukLoh
-         csj1nZWTMxSWN4HUQwcOjgHsqf1u3IvxsXCz1tB6tgptY20VKQ6UlupTegoMdQN8PYQw
-         8T4RaZzIHJ2GQudBkUr57Us/BF9FNz1dEKK9uPZ0pxo27TPYZWZI7a3o+aMqibmuHgGN
-         f2FofuNEfirUdNL/2MrbiJC2zQfkQkGqfYHCQgWv35awyzlhjTNgpREn1TDARND0XEyP
-         OVlEB67hQUcSe1iSEOEWP+fKpTREEfSNGwGFbZRCgOlPQ77EKyxG8j8vzPsUDIp08A+D
-         nDHA==
-X-Forwarded-Encrypted: i=1; AJvYcCXN7zZUPwskh9rgCzlY7n7a7qe76o/F0s1W4rk7kphhL3OvyHCMenN9esqoqUBdS4mXA4Tc1q+nO5JqmgOGaHKk6l4EFygLJMicPVHF
-X-Gm-Message-State: AOJu0YzlynzT7x0Ro81oKaINMfqAOYMD8hTKfD4e92utUigINak3UPWT
-	oEBrDi9v26QoF9Ru8I+cBZg/6hxtEaw5Jt3GxiWQo4jYFRu86t669s52sJWB7HLQtG+tayHoON/
-	Y1JZVdsakY0W/MstCBD0vjD49mOM=
-X-Google-Smtp-Source: AGHT+IHDtLS42hpyEP9uSJwLpq3epQxCgl+pjLxCfyMyr2PiLzXmGhsYXFFccicMl8yIiaaMiKpyNlk+AC+MFBmqn8c=
-X-Received: by 2002:a17:90b:804:b0:2ab:87c3:d12c with SMTP id
- bk4-20020a17090b080400b002ab87c3d12cmr2546212pjb.2.1713541004691; Fri, 19 Apr
- 2024 08:36:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713541144; x=1714145944;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VOrNjXLQverk7AgbEgKqgAmY6w7+zMA5GnQob2qDRqU=;
+        b=uB20UTssPXdp+Y+v8bFzXlSqbf3+rZ9wws5hWRKkwWcX7WYjLywZXsySDwWuAbI0n+
+         pIxS7m2QVzjQOD0XEb5dpPQ9mBMlaZMmNBKT9e59JOSgvUuWMrT5nmilejPDAUS6CaNI
+         USn2IqfEGDAeTlVZ1SEV1/9FcjvXBXOSPMZ/8PBUe/h9x04ajjn5sugu6KDn3/abKwbl
+         PZ9Mfrya7xNt0C8U6gPq0dIyn2FqBwI7TQQUsmhFV4vlBhMSaMu/jUW0HfdmQ88qt3z4
+         FxWVejjAYM6UOc7HoiBI2taDvXge4MxWVhBM2rz+x2kXEbVpdan4VZL22fVS9/jBlFQ6
+         t3ug==
+X-Forwarded-Encrypted: i=1; AJvYcCWBPu4Sktn2HdzYOnbKsRY093RHMt8TVZRI80jG+tBVMdyD+jYpxCsELFZe4RiyDh2TBZvk5ANpNnhMeGu9pY8bnAGjlXNQ0BTbLiYf
+X-Gm-Message-State: AOJu0YxYKN6VZvuaIjztRfxC86UjVMCy55BHdnpXBwd5JsnrIcB32n4M
+	Z17+ssm8/nLcT8kkv/1tD+xszkliZCbturxLg6KxTwUIg8qY/slOny+MwNA8nhETmAM3252q+/7
+	yVlxdn3DddkzvH48TILH51lJTLkmI83USptw+057asfIu2MI5fWBRRNQ=
+X-Google-Smtp-Source: AGHT+IFzvk2FBX5wAFxeIZp3jvixwQBguby6bhbSY1ylh6HwZATHPjyZz1ATDTzw9YsYBxtRFd7xi54407sVufpKlAXUrT9qeiVg
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240419021847.16585-1-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <20240419021847.16585-1-jiapeng.chong@linux.alibaba.com>
-From: Alex Deucher <alexdeucher@gmail.com>
-Date: Fri, 19 Apr 2024 11:36:32 -0400
-Message-ID: <CADnq5_NnC2ziUe8wwXKpw1yQf9phx36Gb3hm0gRhURZNp0Mo+g@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: Remove duplicate dcn32/dcn32_clk_mgr.h header
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: harry.wentland@amd.com, sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com, 
-	alexander.deucher@amd.com, christian.koenig@amd.com, Xinhui.Pan@amd.com, 
-	airlied@gmail.com, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Abaci Robot <abaci@linux.alibaba.com>
+X-Received: by 2002:a05:6638:2683:b0:484:e9c5:f8ee with SMTP id
+ o3-20020a056638268300b00484e9c5f8eemr45746jat.6.1713541144397; Fri, 19 Apr
+ 2024 08:39:04 -0700 (PDT)
+Date: Fri, 19 Apr 2024 08:39:04 -0700
+In-Reply-To: <20240419145619.12563-1-aha310510@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000385467061674e36f@google.com>
+Subject: Re: [syzbot] [virt?] [net?] KMSAN: uninit-value in
+ vsock_assign_transport (2)
+From: syzbot <syzbot+6c21aeb59d0e82eb2782@syzkaller.appspotmail.com>
+To: aha310510@gmail.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Hello,
 
-And applied.  Thanks!
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Alex
+Reported-and-tested-by: syzbot+6c21aeb59d0e82eb2782@syzkaller.appspotmail.com
 
-On Thu, Apr 18, 2024 at 10:37=E2=80=AFPM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> ./drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c: dcn32/dcn=
-32_clk_mgr.h is included more than once.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D8789
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c=
- b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-> index 7eecb3403f74..d7bbb0891398 100644
-> --- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-> +++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-> @@ -41,7 +41,6 @@
->  #include "dcn/dcn_3_2_0_offset.h"
->  #include "dcn/dcn_3_2_0_sh_mask.h"
->
-> -#include "dcn32/dcn32_clk_mgr.h"
->  #include "dml/dcn32/dcn32_fpu.h"
->
->  #define DCN_BASE__INST0_SEG1                       0x000000C0
-> --
-> 2.20.1.7.g153144c
->
+Tested on:
+
+commit:         2668e3ae Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1629bf67180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=87a805e655619c64
+dashboard link: https://syzkaller.appspot.com/bug?extid=6c21aeb59d0e82eb2782
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16ef09d7180000
+
+Note: testing is done by a robot and is best-effort only.
 
