@@ -1,181 +1,192 @@
-Return-Path: <linux-kernel+bounces-151087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 586228AA8E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:11:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D81D48AA8E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:10:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC4891F220A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:11:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48729282F01
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21303EA68;
-	Fri, 19 Apr 2024 07:10:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E053FBB1;
+	Fri, 19 Apr 2024 07:10:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LRiOizix"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qxj03nwZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736104E1AD;
-	Fri, 19 Apr 2024 07:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E253EA68
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713510645; cv=none; b=IncwLY2AnvQw9EI4zaHXig5x773yjDxRPPEy/YuHxFuW+RaINxQtWxZCl8eAvVxHKjqKNgcLogIi1+j+sTGfB8SL9q0pXFGcKqgWWVVoP4lAuSCuJrHBZfV+2xcLxSsL34iFRmknuSmFBWShGqi59ME3rx1Df7EkUzSjcK/uAFo=
+	t=1713510635; cv=none; b=LKUY7VbeadX2ZjFoQVk2O8gw+9H2GIEy4E6rY+3ttBlU3mCyBg+oGFo4vi70l6u1AV3KN1MYiz0G21C5KhDS/4Ry3ByjQu8xRxV3+By7PM/Xgrl6igXVAe5Cem5uJEfHoJ4PsnWdO7bUbW829LIROYWwEUFMU2K+WhtSLoDe5i8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713510645; c=relaxed/simple;
-	bh=/Q6Sp/a/VCj1FwCXRbrJ9YkgBf+bahR7pz6KrJ/M7yc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CxuppBTt4YQI5vzqE74suwNU1eDg3cCH9ZFcsoCU2X6L2biTwjOrH/ReKiBDV/3FjGYefKjCI3jOeRAfr1AOheWOFSBfX/unLEgGYLre5srVIhKaMdcvBEFQQS6HKdpfK1qqtDMZCVJQB74pntj/FUfbqTHxAhFojj334Fvm/XI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LRiOizix; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713510644; x=1745046644;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=/Q6Sp/a/VCj1FwCXRbrJ9YkgBf+bahR7pz6KrJ/M7yc=;
-  b=LRiOizix4dTfTdU3rY8+optSs3lI5F3TpgxkPUohMo5jcOVsj0w3d04V
-   7uFcu6t81L7BjXjDzOuWt7qP70KslMSxaNGZyV4n0p9MLP7Mp9XVc4C1o
-   DNmxvi0YV7PMgSCySHUvECn87RUxqK/GoPhKmLQ5ooqp3bY421AthGJeG
-   5uDGskWTR1qZAczWSXJKYH8HEQdisiTK11tWiTCrzlSiBoztedbsO/SgR
-   Z8NnGHEbkE84pu4uZOTqTXzsl5sz8NSc2UA/UkNgOitLwgkvqFflqjYrM
-   gvLpAyXhVxZZTgHphTJR5T/glm63oBknbI1Y0L4rYUwcV/OhJ86qAAnny
-   w==;
-X-CSE-ConnectionGUID: IiB4jHzyREGb015SkDtC3g==
-X-CSE-MsgGUID: mwg2a2z5RBe9LmjT/F1QEg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="26611872"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="26611872"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 00:10:39 -0700
-X-CSE-ConnectionGUID: R+/zK1yUSz+oVcr+4R0z9A==
-X-CSE-MsgGUID: +xwrOkUhTbS/eh2N2Lr18g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="54451894"
-Received: from lxia1-mobl2.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.254.214.225])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 00:10:35 -0700
-From: Zhang Rui <rui.zhang@intel.com>
-To: peterz@infradead.org
-Cc: mingo@redhat.com,
-	tglx@linutronix.de,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ak@linux.intel.com,
-	kan.liang@linux.intel.com
-Subject: [PATCH 3/3] perf/x86/intel/cstate: Add Lunarlake support
-Date: Fri, 19 Apr 2024 15:10:19 +0800
-Message-Id: <20240419071019.1103953-3-rui.zhang@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240419071019.1103953-1-rui.zhang@intel.com>
-References: <20240419071019.1103953-1-rui.zhang@intel.com>
+	s=arc-20240116; t=1713510635; c=relaxed/simple;
+	bh=kHuRjliUSEjrm2Gq+10yzLgwTgMxPwFdU0vM8Kttfcs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JNWfuBlHnvyI6vdPdecTvxJCUS8EPzwtxnrEASHlQ2RWSElxChQCHvqCSEce6m98ovDrQWVGOa8h/FHRq1rV+fx+RzlYUyaFf056l7CUxJ3+bb2cqjRXk/xNDgZtuHZcbFobMVCEurj+wNHjEpbuR3ULSC1er3FLMgZ4fRPn0Ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qxj03nwZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A578DC072AA;
+	Fri, 19 Apr 2024 07:10:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713510635;
+	bh=kHuRjliUSEjrm2Gq+10yzLgwTgMxPwFdU0vM8Kttfcs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Qxj03nwZncBf21FGHCZT17xkosrf6PbpvJT0iYk7g/GPt7GNZaYvqdxD1Zy5Jqmo4
+	 HoOpQFqAETmGwgeFZ3NgKBCxnWvU/OZhpSajb0Uw1VFtMhFDTM+W+QaQV/EFITQXcA
+	 Lz5G57oF9qOwlPANUEybCd9axh+Ugd+nzUZx18nGnACsidX1MMgS/5wkkTVwcFjnrH
+	 nHjVD2CS8jjFBFAOh1RFVjD+jRF9COz6hudqaAnu90yYkFv+gymgB20ce6D9bnQ7RC
+	 9GEMUhxHBiDiaNlIAbDZXM+pgTK4TXC5WWbmNpUvmEObaripsywQYj14urq15WCX4C
+	 Vwtulg8+jP9ag==
+Date: Fri, 19 Apr 2024 00:10:33 -0700
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [BUG] objtool complains about missing __noreturn__ on
+ x64_sys_call() and ia32_sys_call()
+Message-ID: <20240419071033.rqfhkyd2iae5qwte@treble>
+References: <6dba9b32-db2c-4e6d-9500-7a08852f17a3@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6dba9b32-db2c-4e6d-9500-7a08852f17a3@paulmck-laptop>
 
-Compared with previous client platforms, PC8 is removed from Lunarlake.
-It supports CC1/CC6/CC7 and PC2/PC3/PC6/PC10 residency counters.
+On Thu, Apr 18, 2024 at 05:22:26PM -0700, Paul E. McKenney wrote:
+> Hello!
+> 
+> Recent -next kernels, including next-20240418, get the following objtool
+> build errors:
+> 
+> vmlinux.o: warning: objtool: x64_sys_call+0x2804: __x64_sys_exit() is missing a __noreturn annotation
+> vmlinux.o: warning: objtool: ia32_sys_call+0x29b6: __ia32_sys_exit_group() is missing a __noreturn annotation
+> 
+> These functions appear to have been added to -next and mainline by
+> commit 1e3ad78334a6 ("x86/syscall: Don't force use of indirect calls
+> for system calls").  But the diagnostic does not make much sense because
+> both functions always return unless the system call itself doesn't return.
 
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
----
- arch/x86/events/intel/cstate.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+These warnings are (perhaps confusingly yet still correctly) calling out
+the fact that the exit syscalls __x64_sys_exit() and
+__ia32_sys_exit_group() don't return but are not annotated as such.
 
-diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
-index 22e8f2687349..2500a89fcb7c 100644
---- a/arch/x86/events/intel/cstate.c
-+++ b/arch/x86/events/intel/cstate.c
-@@ -41,7 +41,7 @@
-  *	MSR_CORE_C1_RES: CORE C1 Residency Counter
-  *			 perf code: 0x00
-  *			 Available model: SLM,AMT,GLM,CNL,ICX,TNT,ADL,RPL
-- *					  MTL,SRF,GRR,ARL
-+ *					  MTL,SRF,GRR,ARL,LNL
-  *			 Scope: Core (each processor core has a MSR)
-  *	MSR_CORE_C3_RESIDENCY: CORE C3 Residency Counter
-  *			       perf code: 0x01
-@@ -53,31 +53,31 @@
-  *			       Available model: SLM,AMT,NHM,WSM,SNB,IVB,HSW,BDW,
-  *						SKL,KNL,GLM,CNL,KBL,CML,ICL,ICX,
-  *						TGL,TNT,RKL,ADL,RPL,SPR,MTL,SRF,
-- *						GRR,ARL
-+ *						GRR,ARL,LNL
-  *			       Scope: Core
-  *	MSR_CORE_C7_RESIDENCY: CORE C7 Residency Counter
-  *			       perf code: 0x03
-  *			       Available model: SNB,IVB,HSW,BDW,SKL,CNL,KBL,CML,
-- *						ICL,TGL,RKL,ADL,RPL,MTL,ARL
-+ *						ICL,TGL,RKL,ADL,RPL,MTL,ARL,LNL
-  *			       Scope: Core
-  *	MSR_PKG_C2_RESIDENCY:  Package C2 Residency Counter.
-  *			       perf code: 0x00
-  *			       Available model: SNB,IVB,HSW,BDW,SKL,KNL,GLM,CNL,
-  *						KBL,CML,ICL,ICX,TGL,TNT,RKL,ADL,
-- *						RPL,SPR,MTL,ARL
-+ *						RPL,SPR,MTL,ARL,LNL
-  *			       Scope: Package (physical package)
-  *	MSR_PKG_C3_RESIDENCY:  Package C3 Residency Counter.
-  *			       perf code: 0x01
-  *			       Available model: NHM,WSM,SNB,IVB,HSW,BDW,SKL,KNL,
-  *						GLM,CNL,KBL,CML,ICL,TGL,TNT,RKL,
-- *						ADL,RPL,MTL,ARL
-+ *						ADL,RPL,MTL,ARL,LNL
-  *			       Scope: Package (physical package)
-  *	MSR_PKG_C6_RESIDENCY:  Package C6 Residency Counter.
-  *			       perf code: 0x02
-  *			       Available model: SLM,AMT,NHM,WSM,SNB,IVB,HSW,BDW,
-  *						SKL,KNL,GLM,CNL,KBL,CML,ICL,ICX,
-  *						TGL,TNT,RKL,ADL,RPL,SPR,MTL,SRF,
-- *						ARL
-+ *						ARL,LNL
-  *			       Scope: Package (physical package)
-  *	MSR_PKG_C7_RESIDENCY:  Package C7 Residency Counter.
-  *			       perf code: 0x03
-@@ -96,7 +96,7 @@
-  *	MSR_PKG_C10_RESIDENCY: Package C10 Residency Counter.
-  *			       perf code: 0x06
-  *			       Available model: HSW ULT,KBL,GLM,CNL,CML,ICL,TGL,
-- *						TNT,RKL,ADL,RPL,MTL,ARL
-+ *						TNT,RKL,ADL,RPL,MTL,ARL,LNL
-  *			       Scope: Package (physical package)
-  *	MSR_MODULE_C6_RES_MS:  Module C6 Residency Counter.
-  *			       perf code: 0x00
-@@ -646,6 +646,17 @@ static const struct cstate_model adl_cstates __initconst = {
- 				  BIT(PERF_CSTATE_PKG_C10_RES),
- };
+It probably doesn't matter much for syscalls and I could get objtool to
+just ignore such scenarios.
+
+Or we could actually annotate them as __noreturn.  Does this fix it?
+
+
+diff --git a/arch/x86/entry/syscall_64.c b/arch/x86/entry/syscall_64.c
+index 96ea1f8a1d3f..ff36a993a07e 100644
+--- a/arch/x86/entry/syscall_64.c
++++ b/arch/x86/entry/syscall_64.c
+@@ -8,9 +8,13 @@
+ #include <asm/syscall.h>
  
-+static const struct cstate_model lnl_cstates __initconst = {
-+	.core_events		= BIT(PERF_CSTATE_CORE_C1_RES) |
-+				  BIT(PERF_CSTATE_CORE_C6_RES) |
-+				  BIT(PERF_CSTATE_CORE_C7_RES),
+ #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
++#define __SYSCALL_NORETURN(nr, sym) extern long __noreturn __x64_##sym(const struct pt_regs *);
+ #include <asm/syscalls_64.h>
+ #undef __SYSCALL
+ 
++#undef __SYSCALL_NORETURN
++#define __SYSCALL_NORETURN __SYSCALL
 +
-+	.pkg_events		= BIT(PERF_CSTATE_PKG_C2_RES) |
-+				  BIT(PERF_CSTATE_PKG_C3_RES) |
-+				  BIT(PERF_CSTATE_PKG_C6_RES) |
-+				  BIT(PERF_CSTATE_PKG_C10_RES),
-+};
+ #define __SYSCALL(nr, sym) __x64_##sym,
+ const sys_call_ptr_t sys_call_table[] = {
+ #include <asm/syscalls_64.h>
+diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
+index 5aef4230faca..4221ecce6e68 100644
+--- a/arch/x86/entry/syscall_x32.c
++++ b/arch/x86/entry/syscall_x32.c
+@@ -8,9 +8,13 @@
+ #include <asm/syscall.h>
+ 
+ #define __SYSCALL(nr, sym) extern long __x64_##sym(const struct pt_regs *);
++#define __SYSCALL_NORETURN(nr, sym) extern long __noreturn __x64_##sym(const struct pt_regs *);
+ #include <asm/syscalls_x32.h>
+ #undef __SYSCALL
+ 
++#undef __SYSCALL_NORETURN
++#define __SYSCALL_NORETURN __SYSCALL
 +
- static const struct cstate_model slm_cstates __initconst = {
- 	.core_events		= BIT(PERF_CSTATE_CORE_C1_RES) |
- 				  BIT(PERF_CSTATE_CORE_C6_RES),
-@@ -768,6 +779,7 @@ static const struct x86_cpu_id intel_cstates_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE_L,	&adl_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(ARROWLAKE,		&adl_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(ARROWLAKE_H,		&adl_cstates),
-+	X86_MATCH_INTEL_FAM6_MODEL(LUNARLAKE_M,		&lnl_cstates),
- 	{ },
- };
- MODULE_DEVICE_TABLE(x86cpu, intel_cstates_match);
--- 
-2.34.1
-
+ #define __SYSCALL(nr, sym) __x64_##sym,
+ const sys_call_ptr_t x32_sys_call_table[] = {
+ #include <asm/syscalls_x32.h>
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 7e8d46f4147f..f99e9e4ad671 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -68,7 +68,7 @@
+ 57	common	fork			sys_fork
+ 58	common	vfork			sys_vfork
+ 59	64	execve			sys_execve
+-60	common	exit			sys_exit
++60	common	exit			sys_exit	0	noreturn
+ 61	common	wait4			sys_wait4
+ 62	common	kill			sys_kill
+ 63	common	uname			sys_newuname
+@@ -239,7 +239,7 @@
+ 228	common	clock_gettime		sys_clock_gettime
+ 229	common	clock_getres		sys_clock_getres
+ 230	common	clock_nanosleep		sys_clock_nanosleep
+-231	common	exit_group		sys_exit_group
++231	common	exit_group		sys_exit_group		0	noreturn
+ 232	common	epoll_wait		sys_epoll_wait
+ 233	common	epoll_ctl		sys_epoll_ctl
+ 234	common	tgkill			sys_tgkill
+diff --git a/scripts/syscalltbl.sh b/scripts/syscalltbl.sh
+index 6abe143889ef..16487d47e06a 100755
+--- a/scripts/syscalltbl.sh
++++ b/scripts/syscalltbl.sh
+@@ -54,7 +54,7 @@ nxt=0
+ 
+ grep -E "^[0-9]+[[:space:]]+$abis" "$infile" | {
+ 
+-	while read nr abi name native compat ; do
++	while read nr abi name native compat noreturn; do
+ 
+ 		if [ $nxt -gt $nr ]; then
+ 			echo "error: $infile: syscall table is not sorted or duplicates the same syscall number" >&2
+@@ -66,7 +66,9 @@ grep -E "^[0-9]+[[:space:]]+$abis" "$infile" | {
+ 			nxt=$((nxt + 1))
+ 		done
+ 
+-		if [ -n "$compat" ]; then
++		if [ -n "$noreturn" ]; then
++			echo "__SYSCALL_NORETURN($nr, $native)"
++		elif [ -n "$compat" ]; then
+ 			echo "__SYSCALL_WITH_COMPAT($nr, $native, $compat)"
+ 		elif [ -n "$native" ]; then
+ 			echo "__SYSCALL($nr, $native)"
+diff --git a/tools/objtool/noreturns.h b/tools/objtool/noreturns.h
+index 7ebf29c91184..1e8141ef1b15 100644
+--- a/tools/objtool/noreturns.h
++++ b/tools/objtool/noreturns.h
+@@ -7,12 +7,16 @@
+  * Yes, this is unfortunate.  A better solution is in the works.
+  */
+ NORETURN(__fortify_panic)
++NORETURN(__ia32_sys_exit)
++NORETURN(__ia32_sys_exit_group)
+ NORETURN(__kunit_abort)
+ NORETURN(__module_put_and_kthread_exit)
+ NORETURN(__reiserfs_panic)
+ NORETURN(__stack_chk_fail)
+ NORETURN(__tdx_hypercall_failed)
+ NORETURN(__ubsan_handle_builtin_unreachable)
++NORETURN(__x64_sys_exit)
++NORETURN(__x64_sys_exit_group)
+ NORETURN(arch_cpu_idle_dead)
+ NORETURN(bch2_trans_in_restart_error)
+ NORETURN(bch2_trans_restart_error)
 
