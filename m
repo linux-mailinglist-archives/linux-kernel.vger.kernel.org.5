@@ -1,103 +1,221 @@
-Return-Path: <linux-kernel+bounces-151035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11D338AA832
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:05:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22FFE8AA83D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:08:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 891E4284086
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:05:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C5191F21E80
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:08:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA85FC8FF;
-	Fri, 19 Apr 2024 06:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88900C15D;
+	Fri, 19 Apr 2024 06:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J7adLZnY"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bgcAgaqZ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA1DF883D;
-	Fri, 19 Apr 2024 06:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7158883D
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:08:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713506715; cv=none; b=ZVxw8lD3eJq0Sf2UIX4010TQCwaAcFTPsJGG3VhSlHhTg11aGjTG2iwxBn5ml4f3GhX0mu/gQNhWo5yNaMbSsda6LWHOrTrO2VlP+SSadRh7pcxeqfOoMZYb7g4MsGhzJ+Eys06k50T4d06DRoB5+DzKTN1m/QtjSBwH7FI/E44=
+	t=1713506909; cv=none; b=FR9S4NJlMl0keu0z0Llhkrw7HNG1/wwXWw5uzMjatjlRB10/nQBXNsUhehtLHqMHUbTMssAqo7rupGYgQCGg9h1OHkQJDG1BI06licbx3QNKfEVAg5bWDIQsyxPVyAj68TgvYWEtPYxCqm5ucaBI/uSrQHdCJ3M/AkIs87t4f4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713506715; c=relaxed/simple;
-	bh=Xs4qN48j4cQd3Py06qFO9cZzzc7akLDHwk4EwSAaGw0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rCiKBJ45nFm9i6tKDdHf7EGlqcUlq5zqe6WRFp50HihOx/pzIMVPV2mjgaSMx1TQ0t1w9qZAQL2gxjWaCflZjOfBhR3VpPLIIkPgt2RizWuZvRXOHHo513gbAALW9Ikcx/HLExl7U3FNp7Ftd5CqJ6pPtbLaE3ilBXqkOiT6+ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J7adLZnY; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e83a2a4f2cso10000675ad.1;
-        Thu, 18 Apr 2024 23:05:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713506713; x=1714111513; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H8omKplIPAi499atqXdwcLykhK2vn2gCUsgEUak78Ic=;
-        b=J7adLZnYiivT3B3v++PaihU0adXmUVwi4dyHLHCgnrExiriMFcz0ulr2RwgqLg2p0n
-         8iX3fApuGd3o7KTViL3IMN4gbv4RuajMrw80yvOCzUjuXvRUpO5rybmYSM4qAcPzfOYM
-         AZaMXcswldTVP2QkvNw8C48BNgeh9eoFhIB2AB/3VNhZGMa/73DrzCGuZpKs2r1LflU+
-         6+ncnip08KtM5bGGOBm0VJ/NvKPHeYa3Lw/jft6LMPCh6f3aceWnJIriaC70ZF04V+vl
-         wMx04bSJo0AcaX7K/2XRNpHZ1+z+hQYAf1U0qxTrTj6tlT8PrnBVF1g9GIAA1d/Pz4qn
-         8heQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713506713; x=1714111513;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H8omKplIPAi499atqXdwcLykhK2vn2gCUsgEUak78Ic=;
-        b=Ey8X+QEQtPXBiPBjbQA3eDQpHDVIiwltVN9XKllaAs5/HrziL6HM/Cv2yD5kaftz3d
-         GGIt76eR+D8escVfcMEYDloKUiABX5O51ET6V/eF0opLt8wnYnSA2d05nZLzyTRoPpJ5
-         MN3PQLKJrJs3H2ddrSAkcYwR+NTlbjxDRTy6Gz4Ms3Lk+bsYkvcLYCrAGsv0/OnJGuQe
-         67e6BCOQEEO1lr5nTbnADXaiIEcTDCzawBgTxUTK1eqcKaZrv1QmFQtFQV486ICwLPgh
-         zeutVxDr3inqeZBi85SafrvO94nf+hJCObDeVTtz6J3gWQc0rZNqp5dh6Q/UynPk0Lia
-         TucQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVwtxbzHbAveOh5FO4y8Bpt1ppuOdU8hqYxidaXDfoKJ7W9buPbcV9XU62hpvnWVUICQJR0bg9V5bEInSQSTcMHCgVQ7+1rGRbVNskkpOHNtjUjAbINXtPQAbMq9QtlGODeF+BxrfLeiImE/Fb6Qsiz/NdXBE62FnXBgTNT5H/8WIwA
-X-Gm-Message-State: AOJu0YwmDCeMrwDlAMJbMeSSFpSywvlEhBE6l3d7+xXp3j7DrUYAGqG7
-	vpKtj+V1oNQt1XMhImTwRY9mMDnM7llf3SpQ5ZwCne+4QnzXIug1dTPXCQ==
-X-Google-Smtp-Source: AGHT+IFIfVBfVza+5cuWpXb6ItwjPh2irMimhA5vYrc6K6X0+e0Mmr8f3XZMvdKNkb+BsERhPo0GeA==
-X-Received: by 2002:a17:903:11c9:b0:1e1:214:1b7d with SMTP id q9-20020a17090311c900b001e102141b7dmr1140762plh.61.1713506712987;
-        Thu, 18 Apr 2024 23:05:12 -0700 (PDT)
-Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::5:fbcc])
-        by smtp.gmail.com with ESMTPSA id h10-20020a170902f54a00b001e61d87e4aasm2529638plf.185.2024.04.18.23.05.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 23:05:12 -0700 (PDT)
-Date: Thu, 18 Apr 2024 23:05:09 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next 09/18] bpf: allow struct bpf_wq to be embedded
- in arraymaps and hashmaps
-Message-ID: <4y3abjilpoamebie7gmgn7cvs2s6m2eq3asd3huuw2xenx5fgp@lwyzs3ghxevp>
-References: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org>
- <20240416-bpf_wq-v1-9-c9e66092f842@kernel.org>
+	s=arc-20240116; t=1713506909; c=relaxed/simple;
+	bh=IGgBgBEQSVCduTNe5O0kJ/Q4QAhHDWDQ/BCjoNwvD94=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TxyqS11JLRzcrEyJhOTZhxNKPz93MhvrApiVS9m/KDb5/KDeKFtrGIyIjaX4oH9Y92SwKcbGthntX+rS6jd7m/p5rw3RosU/8IeT7PGlasCrfKU6Pv+actM8HV2rW4JLYv40KI8uCNhB+bgpxtvLdRO8PaC5DUX8IFY/6P2oUxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bgcAgaqZ; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713506908; x=1745042908;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=IGgBgBEQSVCduTNe5O0kJ/Q4QAhHDWDQ/BCjoNwvD94=;
+  b=bgcAgaqZ0Y3u1Tzs5R/xz4NKm5ffb9+7K1bXNE+sG+wU3yw8Z6TONUen
+   Cyx/ntZCCxGJYmFXjZ07992widvjyUKfwL4X07XCYXwM5P7uy7i48Qr8G
+   hpQPuxpg9hITDPGw7TH6xMpbU5qSragEoyoe+gNh8nNXpUtSfV9A1HQYK
+   NAIdjwLF4IWnjwUsY0icw26CR+4vWESQ/GJE0aPxlhQiFQEbuolHAd5iN
+   usHanV/4yEPH0m+pFJVedM2pKePWTciCgRWebKulwTG9z1MsKrKgOivb1
+   LcpDgI9nPqR0jOMDLk5fsSWdGvyBhCX9a/PQka9L0bVQlfOQY9Af0jnWZ
+   w==;
+X-CSE-ConnectionGUID: 0c9TwF87QkiU2/BrEFZoYA==
+X-CSE-MsgGUID: bVOhgLFQSuyCQ6SN8oTWeQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="34488721"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="34488721"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 23:08:27 -0700
+X-CSE-ConnectionGUID: oSQ2sxIETgOqx4gKNvbBZQ==
+X-CSE-MsgGUID: /mLe0RBqSluD0+4HvwAzUw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="27886071"
+Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 23:08:23 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Byungchul Park <byungchul@sk.com>
+Cc: <linux-kernel@vger.kernel.org>,  <linux-mm@kvack.org>,
+  <kernel_team@skhynix.com>,  <akpm@linux-foundation.org>,
+  <vernhao@tencent.com>,  <mgorman@techsingularity.net>,
+  <hughd@google.com>,  <willy@infradead.org>,  <david@redhat.com>,
+  <peterz@infradead.org>,  <luto@kernel.org>,  <tglx@linutronix.de>,
+  <mingo@redhat.com>,  <bp@alien8.de>,  <dave.hansen@linux.intel.com>,
+  <rjgolo@gmail.com>
+Subject: Re: [PATCH v9 rebase on mm-unstable 0/8] Reduce tlb and interrupt
+ numbers over 90% by improving folio migration
+In-Reply-To: <20240418061536.11645-1-byungchul@sk.com> (Byungchul Park's
+	message of "Thu, 18 Apr 2024 15:15:28 +0900")
+References: <20240418061536.11645-1-byungchul@sk.com>
+Date: Fri, 19 Apr 2024 14:06:30 +0800
+Message-ID: <87cyqlyjh5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416-bpf_wq-v1-9-c9e66092f842@kernel.org>
+Content-Type: text/plain; charset=ascii
 
-On Tue, Apr 16, 2024 at 04:08:22PM +0200, Benjamin Tissoires wrote:
->  			WRITE_ONCE(*(u64 *)field_ptr, 0);
-> @@ -1119,6 +1127,8 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
->  				}
->  				break;
->  			case BPF_TIMER:
-> +				fallthrough;
-> +			case BPF_WORKQUEUE:
+Byungchul Park <byungchul@sk.com> writes:
 
-fallthrough is unnecessary when cases are back to back.
+> Hi everyone,
+>
+> While I'm working with a tiered memory system e.g. CXL memory, I have
+> been facing migration overhead esp. tlb shootdown on promotion or
+> demotion between different tiers.  Yeah..  most tlb shootdowns on
+> migration through hinting fault can be avoided thanks to Huang Ying's
+> work, commit 4d4b6d66db ("mm,unmap: avoid flushing tlb in batch if PTE
+> is inaccessible").  See the following link for more information:
+>
+> https://lore.kernel.org/lkml/20231115025755.GA29979@system.software.com/
+>
+> However, it's only for ones using hinting fault.  I thought it'd be much
+> better if we have a general mechanism to reduce all tlb numbers that we
+> can ultimately apply to any type of migration.
+>
+> I'm suggesting a mechanism called MIGRC that stands for 'Migration Read
+> Copy', to reduce tlb numbers by deferring tlb flush until the source
+> folios at migration actually become used, of course, only if the target
+> PTE don't have write permission.
+>
+> To achieve that:
+>
+>    1. For the folios that map only to non-writable tlb entries, prevent
+>       tlb flush during migration but perform it just before the source
+>       folios actually become used out of buddy or pcp.
+>
+>    2. When any non-writable tlb entry changes to writable e.g. through
+>       fault handler, give up migrc mechanism and perform tlb flush
+>       required right away.
+>
+> No matter what type of workload is used for performance evaluation, the
+> result would be positive thanks to the unconditional reduction of tlb
+> flushes, tlb misses and interrupts.  For the test, I picked up XSBench
+> that is widely used for performance analysis on high performance
+> computing architectures - https://github.com/ANL-CESAR/XSBench.
+>
+> The result would depend on memory latency and how often reclaim runs,
+> which implies tlb miss overhead and how many times migration happens.
+> The slower the memory is and the more reclaim runs, the better migrc
+> works so as to obtain the better result.  In my system, the result
+> shows:
+>
+>    1. itlb flushes are reduced over 90%.
+>    2. itlb misses are reduced over 30%.
+>    3. All the other tlb numbers also get enhanced.
+>    4. tlb shootdown interrupts are reduced over 90%.
+>    5. The test program runtime is reduced over 5%.
+>
+> The test envitonment:
+>
+>    Architecture - x86_64
+>    QEMU - kvm enabled, host cpu
+
+The test is run in VM?  Do you have test results in bare metal
+environment?
+
+>    Numa - 2 nodes (16 CPUs 1GB, no CPUs 99GB)
+
+The configuration looks quite abnormal.  Have you tested with other
+configuration, such 1:4 or 1:8?
+
+>    Linux Kernel - v6.9-rc4, numa balancing tiering on, demotion enabled
+>
+> < measurement: raw data - tlb and interrupt numbers >
+>
+>    $ perf stat -a \
+>            -e itlb.itlb_flush \
+>            -e tlb_flush.dtlb_thread \
+>            -e tlb_flush.stlb_any \
+>            -e dtlb-load-misses \
+>            -e dtlb-store-misses \
+>            -e itlb-load-misses \
+>            XSBench -t 16 -p 50000000
+>
+>    $ grep "TLB shootdowns" /proc/interrupts
+>
+>    BEFORE
+>    ------
+>    40417078     itlb.itlb_flush
+>    234852566    tlb_flush.dtlb_thread
+>    153192357    tlb_flush.stlb_any
+>    119001107892 dTLB-load-misses
+>    307921167    dTLB-store-misses
+>    1355272118   iTLB-load-misses
+>
+>    TLB: 1364803    1303670    1333921    1349607
+>         1356934    1354216    1332972    1342842
+>         1350265    1316443    1355928    1360793
+>         1298239    1326358    1343006    1340971
+>         TLB shootdowns
+>
+>    AFTER
+>    -----
+>    3316495      itlb.itlb_flush
+>    138912511    tlb_flush.dtlb_thread
+>    115199341    tlb_flush.stlb_any
+>    117610390021 dTLB-load-misses
+>    198042233    dTLB-store-misses
+>    840066984    iTLB-load-misses
+>
+>    TLB: 117257     119219     117178     115737
+>         117967     118948     117508     116079
+>         116962     117266     117320     117215
+>         105808     103934     115672     117610
+>         TLB shootdowns
+>
+> < measurement: user experience - runtime >
+>
+>    $ time XSBench -t 16 -p 50000000
+>
+>    BEFORE
+>    ------
+>    Threads:     16
+>    Runtime:     968.783 seconds
+>    Lookups:     1,700,000,000
+>    Lookups/s:   1,754,778
+>
+>    15208.91s user 141.44s system 1564% cpu 16:20.98 total
+>
+>    AFTER
+>    -----
+>    Threads:     16
+>    Runtime:     913.210 seconds
+>    Lookups:     1,700,000,000
+>    Lookups/s:   1,861,565
+>
+>    14351.69s user 138.23s system 1565% cpu 15:25.47 total
+
+IIUC, the memory footprint will be larger with the patchset.  Do you
+have data?
+
+--
+Best Regards,
+Huang, Ying
 
