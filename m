@@ -1,106 +1,124 @@
-Return-Path: <linux-kernel+bounces-151750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A62298AB366
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:32:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DC588AB36A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:34:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6372B284BBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:32:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BFB41F231C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C62130E5C;
-	Fri, 19 Apr 2024 16:32:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F340130AEB;
+	Fri, 19 Apr 2024 16:33:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="WQVnycxB"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CUV+a5uJ"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB5585629;
-	Fri, 19 Apr 2024 16:32:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 971ED7F7C7
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713544341; cv=none; b=WbN1S88Ik5IJnWE8KueQ6iAa8Ul4dwZ5jr6ciikJ2fPLVd4WWnR2nfpDzpbo1F/LI3LEQg5ZaXogi6a/KUwbZ53fT1lBzGEHMDA8T+J1gSk18EDI8mX0gciJvd+kIzqBvDhpBQUFXkjcY+aCQ4vWCyaeV/fIZ7LliXR3W6c0gX0=
+	t=1713544435; cv=none; b=mx86JRcRNQVePhQUltIoJHerc8IqFYZzDH/kaCfwRtzoLL8428Cim1ClAHKGybCvtdH0XyrT2KpWM8FRNIFZqnQe2WAYwcBbD/XHK0b9HFers+RJwaPp30+NvKLU+RPuXMH46eKYKXUdIFMfSRo7gHc/XhymNubkpZetOIlZu0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713544341; c=relaxed/simple;
-	bh=eIbxWlxAN7PmEn+bwco0CingzsHowjfYYbnjMadAdbM=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=aLueTYU9pnEYhtLfu48gL98a8yyemgcY9noGNLPikQncbIKFVZ+/5n8j3Q4wR/jBLU6kALZQSuUHOX6E6SzLxx2D+rGZinjXv1e2jsX6y6EgsSJSWaeWzLoDNSS89kJd7TKkA4J4P8s+A+4lz6ah6eJzQezj3wWJGXJZaKt5BNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=WQVnycxB; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713544326; x=1714149126; i=markus.elfring@web.de;
-	bh=eIbxWlxAN7PmEn+bwco0CingzsHowjfYYbnjMadAdbM=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=WQVnycxB9+t5If4iKSq2luaQjPMqh2YTkUMSVmv08Kzykb2b8bH6AC18Rx/NYJ2n
-	 Q3uiTmYE3z0Fqj9ovZgZDSmvXUK6/oG4sllc0Voe1GUA3NECqmxPwI5SKPLJpeQ8k
-	 zsWHyfabjsO76vWYFl0WzryURrc20iBmHWXXeZRW5ODWCQ8G4X7iTJLW+vNcGdYMk
-	 vw9ddwtPAR4TQE2WfwtIOeXpT40LEfG6ufCv+7ou+CWPGBmdtAhfHEddR0wltiJb2
-	 tiaR2qPMERlAKIKR4VNTCa5Q2p6WJMyXAElmfxtXi3FxajVD/B7yGR37N2s4AnvUj
-	 nz/S8ayMqBQnzcuGvA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MG9DE-1rwlEw2bBE-00GWVB; Fri, 19
- Apr 2024 18:32:06 +0200
-Message-ID: <bf0dc8a8-d5e9-4402-8305-5b7a954e6382@web.de>
-Date: Fri, 19 Apr 2024 18:32:05 +0200
+	s=arc-20240116; t=1713544435; c=relaxed/simple;
+	bh=sgCSOUrC5ChzQ9bGbhGDj4Ib9Y4rYjst+19uVQIoYds=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Rxe6/G5ZjNj5O7PGipXhCPbi4iYUvhEkCwAtPYTOrtVED3KJVbtrg940MUY4NrK3ni0BMV9r/4W88o60GWj20X7b4MhH4tOQgUGzY1qB0KFvj0LC82f2yOXF2lC3aDCSR6L6fyCVRXxKMeJP7iE/VkqUTM7iumBQJcA9h1VzahI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CUV+a5uJ; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6f00f24f761so1961884b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713544434; x=1714149234; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+f/kdiwp4iNmzHb7qOG4xqLdzvYd8qDHQhZ+IysrBv8=;
+        b=CUV+a5uJE+nEmJLzv1uRuRNcXXiQh/Kp9+MpDChlLY5oW20Bt8BbEhnLPpHhaNYtr3
+         yrnB93eLaJ1dHse/i6b02CRMqoWEfNNghhg9VUl/QX5/uV+nFmF5MVmyY8HdO6a7M2or
+         N3KtWUwkW4AIojj7KJnAkYoOKnPAe6Pj2rI8qtUso/swph/Qvbg27nM+oCudT8VwbHy+
+         htdxzDiZh4LCqkv+tp5w/SyWChPXCl4XN/v2fM/yRJ4oJQCunrCcMGOugNDdFWh6LnHc
+         mnEnnq99jdd9Pqf15GKBigSjzHQgcxm8iGF7NJhl2plxlP1V/VYF4/Tq7lmtS3DFSrPY
+         KopA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713544434; x=1714149234;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+f/kdiwp4iNmzHb7qOG4xqLdzvYd8qDHQhZ+IysrBv8=;
+        b=u4oOWk1mni0wehT7vJ0+F2Z+SqDbdqX+fTuNivc2rhStZLx4OnH9own4O1qVuGH9fS
+         oWVaJyMFWMX77yc3E1Huqo940urfmRSlZJqAtcwPw4aGpRze1iLifLb/N/CaefgYGuDF
+         ZjLRdAaPcB3uvIt7jPgavQygW3vXPxfWcvUjmR19tFwfkRdCSEwYhPABP/d3prGuF1K7
+         TGuX74H9OFBJ9HPKWkw91k+EeZZ7Cip7IyIEAGa//mVK4yrd2WELdMc0ipteSQAG95mM
+         ZgDj0GnOgIbEAtvc182lMQm3B6hUCAD5VnwlOwj4C9l+m/iuXED2YEEeSSE1RF0ZnAub
+         6wbg==
+X-Gm-Message-State: AOJu0Yz6T08yX/4Ov71haqo3d4rKHkeG5mwBAWeWjHFi6z8SFzORFqpk
+	v4lpuJ9xqzG70qgeVftcoj20vFHKHp5L5id/N6Yar5VCdZrZJoPl
+X-Google-Smtp-Source: AGHT+IGlchinwQaHRtqz+GijWCiJDaHZtZvym4f0Q8uFUqz2oVlVsOznvySB0J4CRTervNCESw9bAg==
+X-Received: by 2002:a05:6a21:6d85:b0:1ac:dead:b221 with SMTP id wl5-20020a056a216d8500b001acdeadb221mr172296pzb.40.1713544433702;
+        Fri, 19 Apr 2024 09:33:53 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id h5-20020a056a00000500b006ed4aa9d5c0sm3419410pfk.188.2024.04.19.09.33.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 09:33:53 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: syzbot+d4c06e848a1c1f9f726f@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] possible deadlock in input_event (2)
+Date: Sat, 20 Apr 2024 01:33:49 +0900
+Message-Id: <20240419163349.20540-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <0000000000006d6f4105d2fe05ed@google.com>
+References: <0000000000006d6f4105d2fe05ed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Wander Lairson Costa <wander@redhat.com>, kunit-dev@googlegroups.com,
- linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Brendan Higgins <brendan.higgins@linux.dev>, David Gow
- <davidgow@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Matti Vaittinen <mazziesaccount@gmail.com>,
- Maxime Ripard <mripard@kernel.org>, Rae Moar <rmoar@google.com>,
- Shuah Khan <skhan@linuxfoundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <2024041955-strangely-snack-b335@gregkh>
-Subject: Re: [PATCH v4 1/2] kunit: unregister the device on error
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <2024041955-strangely-snack-b335@gregkh>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:stRam5aVtIuDvHM21SJEdP2eyrk/2IhupOPWo77UJqEdZj0lMjM
- 1kBBa93H53jLvhEicKH0EIcsnyhDgq4k/JqqZOj9b6fshRCXZaR5rJZys00OVaiA0FKlfp3
- 7EQfm7LfrEDW79nZv5OHCkqQ3QTnxi4SEQ5+kKxY9C+hiobcb2ksKG0magbesWswLM8jISr
- N7tyWaBMkpDPxqXb/wcNg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:dcJDmLSpQmg=;62Zr0Xznbtsg2eO6SE5TOHi9U9k
- EIia6P4/Stl6JX5AVZ5ObMPZdBsdwQFnWufZkVILT3fH2w48svA46fi5Dbd+tV9oaWVHix27g
- lDJksMgY9nbBWvoLHu5yEbB4ZRzNg3KgOfqKYlWV12UCLCMBDkcfHJk4wLV9TYaVPx7x9PCD0
- rGXRAsyJWhFo08PQpg84NiIM/yu47C0KehRSgF9uDyn139bBU2D2Jiw6tzcUQCt5eyhl8WfTM
- dURD2bzAZbnUONgtTz35Q8DarjuNUITZ71MkErUf70V9pz/EHrJw9PLQTffB1W5fv+jlTLdeE
- Ge4zd5qaJnBJa/o33ZQbIsDvi9BJjGAvDU/87K0+h4MaK25Rbzur/QZRoHbh9RHm2zMRS7LCj
- PAaVxz+TapnOvfqqDGZb3O3q5NEweFCnmaBHxhDpFh4XqN4+zlQczLxcd1KlzW7ZzStZUskII
- bs8ux9W/an4L5AKeiuSUPlii0kgTRjIkzPCel16/6WsujStS21czAd0iMJ3tZugIepvloRSyP
- znQYZI2e+PeAOtTyPmhHgqzuqAqaI0IzSsoSa45WVMnZpu+etU+7gohQWiPP7XKw3dAbGPYOa
- Yt6dImJsu5PJPjf0v1KtxUmzHAheMEandRW65wSuIE/HEXU+8smR7xhmtPkHnaiX8x1jKc+WZ
- zJIL3KcvIPa28jWgnxHNSd1usQShtvlPLxg758btAEM2yQ7YzENUGIQnk0UigLHxLw8loMWZM
- WUEL2qV/CGkvcnPrHATkyjnecf6RF8lYvWViWnj7xAvHBWUf3c8OVxqM0SMcDU2EukdshvgQG
- IXfQr2fwsjo1ifi9UYtSv0P9n1rbao2TxXvNN+Yx71bdQ=
+Content-Transfer-Encoding: 8bit
 
-> > kunit_init_device() should unregister the device on bus register error=
-,
-> > but mistakenly it tries to unregister the bus.
-> >
-> > Unregister the device instead of the bus.
-=E2=80=A6
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Would you ever like to distinguish hardware register errors from
-item registration failures according to further improved commit messages?
+please test deadlock in input_event
 
-Regards,
-Markus
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+
+---
+ fs/fcntl.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/fcntl.c b/fs/fcntl.c
+index 54cc85d3338e..30f4d75fdb03 100644
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -829,7 +829,7 @@ int send_sigurg(struct fown_struct *fown)
+ 	struct task_struct *p;
+ 	enum pid_type type;
+ 	struct pid *pid;
+-	unsigned long flags;
++	unsigned long flags, read_flags;
+ 	int ret = 0;
+ 	
+ 	read_lock_irqsave(&fown->lock, flags);
+@@ -848,11 +848,11 @@ int send_sigurg(struct fown_struct *fown)
+ 			send_sigurg_to_task(p, fown, type);
+ 		rcu_read_unlock();
+ 	} else {
+-		read_lock(&tasklist_lock);
++		read_lock_irqsave(&tasklist_lock, read_flags);
+ 		do_each_pid_task(pid, type, p) {
+ 			send_sigurg_to_task(p, fown, type);
+ 		} while_each_pid_task(pid, type, p);
+-		read_unlock(&tasklist_lock);
++		read_unlock_irqrestore(&tasklist_lock, read_flags);
+ 	}
+  out_unlock_fown:
+ 	read_unlock_irqrestore(&fown->lock, flags);
+-- 
+2.34.1
 
