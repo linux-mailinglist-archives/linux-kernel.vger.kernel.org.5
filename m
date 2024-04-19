@@ -1,129 +1,147 @@
-Return-Path: <linux-kernel+bounces-151692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62B668AB227
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:41:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4891E8AB229
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:41:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FDA8286147
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:41:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCC4C1F245EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:41:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59D2612FF8C;
-	Fri, 19 Apr 2024 15:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B5A130A5C;
+	Fri, 19 Apr 2024 15:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O4uW65Rh"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Ka0pMMog"
+Received: from OS0P286CU010.outbound.protection.outlook.com (mail-japanwestazolkn19010000.outbound.protection.outlook.com [52.103.66.0])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67169127B72
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713541255; cv=none; b=czZW5IpzcBjiCYz40SZVdK+PWGU3quybxVCF1WaxCkFjbpXcaYXB2TVRMNgNqgmL6Q1bX19mfu3fqNLEa8+DuvPCIhSjD6YF7tSr/zuGMrQdkU+5ng9Xp3s1n7H7GcKzqZ3d82ZAwpRKHQsTOfd+kMBh/4o+ZRGtAHtgNiTElQs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713541255; c=relaxed/simple;
-	bh=UiZy0WR1xVKTmKeEkD53TQth3wFjxVhwyQXMhAZgQ/E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ito4YDX178L+twsjavZ2M119ak/WsdTWYFdSxfs5JUm4LYgMenfAOVOPK1C7xx09yk1c8TZV8pmpxBTeuhn8PhmBvVOpJZ62vL2SFjFykdYC43hgOx3Ka1DtQitVgM/RrO/ghAbDLkPWUQyTELjPwC51jQeKfhjLQX/9zIsgwqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O4uW65Rh; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e36b7e7dd2so19483465ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:40:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713541254; x=1714146054; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2KNb7hURw628rOhLJDyvPT2Y9i+jl0k+DgwnKwzk8KI=;
-        b=O4uW65RhYIEAE2ZbC0E43bDgQ/JYlxTFnPoYKQaLOewkEceUVqm9aNgRnPDitpzNBW
-         PjEX17k00lVtNqbNT1nUwn/rpQ9MjKO8jIak0kmP6nJeBJaBrFnj20jmf/OTjEZ4cxkt
-         bUGSBxjHpSg3s612KEl5bHXoC5DpYxIYoZxYYCnbkmjFth+IicILx6gK8H8RsTuHJJ54
-         DAAx3YIUoQhPegelc2Ywe8tQuQdgbyQhzNyZRI8sViDFnKHD3VBEwnUk0KJvMWAcbtUf
-         B96RSD2bhDW5U7BgNQCryKqVhLP/wxmjYSqqTuYrnWMJyg8S0CMPka5jWN+xvBRqWGiT
-         NT2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713541254; x=1714146054;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2KNb7hURw628rOhLJDyvPT2Y9i+jl0k+DgwnKwzk8KI=;
-        b=GJPLsRnS8zHfzfMz26JFE7V593bFSUI0Y7oRryOcumAiUOQCiYbjwXCa7r/dQmDUFC
-         DaGEHTFBP2gGFtGyyR88Y5aN3dtLjxVcu5G2d1K5r+HxHbdkmo6QSI0B5I0LjJveJ1TC
-         BYebW45XzCX4mGeakZz/FLwuyptdE6EMwLana3nmzY5XBICm6ObKRlYhgDZzZXYMIlFC
-         ym2Ve33IAuAPC13VeGgHLVh8Bfh+8GfPX6R5c8AAOILYpQu/2CPzmLMagH10n0TPFQZJ
-         7EjGp1EKogd3hHpwl4oX2wKF/NKzP+wa735KycgevHXS9ajpYi22hTtRxio8oMv/WUMd
-         ydWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUSwHb1Lw3ZAP6uZ1WGKCCpg+tzgA57bw5iWf3E1kfG41hC4yeONn5/eqfI0xfxcD1WkS8i4oFsNkNOtw6MUvzLI0EyLJmSQ8KIVlvV
-X-Gm-Message-State: AOJu0Yw6WMsi0qRgUE39vtjjmQs0ft2mE6uKOp8gNYHWcLKy7iiuiDWF
-	SY1SFuvuZRvGzpijnjvAhE8ujaXGOiaWcFF9bzLrWJhDChEM8usUHu8xYM0K
-X-Google-Smtp-Source: AGHT+IHxpo0G7xYzi2NbO6qX3zNkH0rErE4LYBibDOHzeSj96P1T2oOu84Vs6NQyr4DLgYhUA2dDsw==
-X-Received: by 2002:a17:902:ecc1:b0:1e5:b82:3c24 with SMTP id a1-20020a170902ecc100b001e50b823c24mr3154050plh.53.1713541253557;
-        Fri, 19 Apr 2024 08:40:53 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id f14-20020a170902684e00b001e4008127a7sm3544116pln.137.2024.04.19.08.40.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 08:40:52 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 19 Apr 2024 05:40:51 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Sven Schnelle <svens@linux.ibm.com>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] workqueue: fix selection of wake_cpu in kick_pool()
-Message-ID: <ZiKQg6fxn6OxAmr5@slm.duckdns.org>
-References: <20240415053550.538722-1-svens@linux.ibm.com>
- <Zh8EfxdVdiIj_27H@slm.duckdns.org>
- <yt9dpluogfw9.fsf@linux.ibm.com>
- <ZiB9rYBu-0qjsCbF@slm.duckdns.org>
- <yt9dzftp3gh2.fsf@linux.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136F1130A4D;
+	Fri, 19 Apr 2024 15:40:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.66.0
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713541260; cv=fail; b=sXJdHWYvTERDIpmT+ncaixiTnq2KdWZxzNmZveC3JXZzfRz08ZJClc6t+NhRMPrSlx7NpqvKvU50pF2SvBD5IrX5OrgtVuque6lDpKdiCqYM8pytlRmz/kMILVl7jFJCKWxOlYMS1vdkVZ2YyV8Y5dzVEH2BG8eCQpyKYJz2Ph4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713541260; c=relaxed/simple;
+	bh=ZCZZewG2HTul4dll/38bVXYAwekM1ldgzxeNW7rCWR0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=MuUYNNYno+6e+RROhOIT/bXjCyGBrB02rzDL8aT2N5WItgJMj2F96Sut4/nxktof7AFM74nJDvktr797sCW3n4pJxK5OOxm7OcyyehySauW/H8B6dNyf2WOTJPTevaEc7bJHkpnkQww4VEzwtDrxDKHSUa2+51tXNFzRzk6QnKA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Ka0pMMog; arc=fail smtp.client-ip=52.103.66.0
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h/8o204DSJl2TjUjTrC9POF9+YIdK6a1eJYgu9Hb79fU+Vr/1h5y07vLpuugY4Lf0rRKh/qgOkm8xdV1bgLyeS3HtZSr1HMzn6CFbC57FjrISuDZAaqLwvFpCDxEmrO7THWFA+oE1KSkbmJ/oDreyveqzjqkWHRpE4VuOe+CtVcVltXtDnl0lDDhPEpb63D7ZVceiv3LybJLlmgfQhayvrqO/Kdk9oM92c+ZVaOHrtLELWAiK8knc17WAhHrwDG2EVaDQukjTqx4MxA2c+cOjmhjz7SlUab1Lk1ADrXfBzr62gT4iu6uAFCax8fQVyi3quIY6OMGOgnmQ0PWxasLGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZCZZewG2HTul4dll/38bVXYAwekM1ldgzxeNW7rCWR0=;
+ b=CQuvr/kgKeD8zEI+2pLQxFHRHulJ8FBz7dInCBDuGHeKswzgjIc/TNggmSy754Y8qLQLtocaL2LyYGwg8wSEped0KNWYpP5UUN8j+D85xeHKACdcdAo9aVDBTtUCGz0JvGfGJ2WCzXd/4fKbDByrFTAv3/Q/M2lpqp3/wp8LgcEkwHefeMh39Wn7jvqKczfSC2tqIF5mXDb3oaTNxQ/zGj/WD8fWQWa/ejLVm4qsPesdMXMof1PQ4wemGRKsWvYEvHXyDKsTunyY9E/dR4ZgivFbHUEaXTToWuLArb6JPcD5bjJpkq2ThYHVrQU4cUTDLOzJBWGO46+xAMCR291sDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZCZZewG2HTul4dll/38bVXYAwekM1ldgzxeNW7rCWR0=;
+ b=Ka0pMMogYseaehKk5DpLRnKSSSATdhuL5OTFtP9ylGZyjBfgeYBaLvlnH3sjvK9UUjxX8G+4+Gm1qFCFOo+cChPL1DPETCKqEHyR2CkjNTzsc3P7B3u7rmOg0xFshNrLPeKXTAqB3Dyxq+eNLWDD66ZMjxHBta+42hBrpAYH3SNNQqK8MgfMCcA09bOOvdwclraSXg3Z7Wo1AT6ZgWSgGR0wthY3HKi5V3nmR2J0Fx7nwGmBd5ZCWeBTFVg3cwHVwmW0uLozjVnIdc1rlhP7sT6uEXdAe1kccPUuHmAvR8pbxSAiOYHQU2aWUau0mxVTG0QT52nscona4ThAvnskTw==
+Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:209::11)
+ by TYCP286MB2928.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:302::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 19 Apr
+ 2024 15:40:55 +0000
+Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::f2c3:e53f:2ea9:55c8]) by TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::f2c3:e53f:2ea9:55c8%4]) with mapi id 15.20.7472.044; Fri, 19 Apr 2024
+ 15:40:55 +0000
+From: Qi Qi <ArcticLampyrid@outlook.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+CC: "sbinding@opensource.cirrus.com" <sbinding@opensource.cirrus.com>,
+	"david.rhodes@cirrus.com" <david.rhodes@cirrus.com>,
+	"james.schulman@cirrus.com" <james.schulman@cirrus.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>,
+	"patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+	"rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] ALSA: hda/realtek: Fix internal speakers for
+ Legion Y9000X 2022 IAH7
+Thread-Topic: [PATCH v3 2/2] ALSA: hda/realtek: Fix internal speakers for
+ Legion Y9000X 2022 IAH7
+Thread-Index: AQHakZMnl6GUz3RxgkmV9kw8BxeryrFuDjcAgAGuiwA=
+Date: Fri, 19 Apr 2024 15:40:55 +0000
+Message-ID: <5830451.DvuYhMxLoT@qlaptoparch>
+References:
+ <TYCP286MB25357A4599E935F26A8AAB24C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+ <TYCP286MB25359B61BB685A4B3110BB44C40E2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+ <ZiEnWBbvmWwKqytK@ediswmail9.ad.cirrus.com>
+In-Reply-To: <ZiEnWBbvmWwKqytK@ediswmail9.ad.cirrus.com>
+Reply-To: "ZiEnWBbvmWwKqytK@ediswmail9.ad.cirrus.com"
+	<ZiEnWBbvmWwKqytK@ediswmail9.ad.cirrus.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [OxaR2dtzbSKeJLXG2GdLqvRTtuGuXvWe]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYCP286MB2535:EE_|TYCP286MB2928:EE_
+x-ms-office365-filtering-correlation-id: 0c6197c1-75be-46ac-9b77-08dc60871a12
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ n5wAwctJK9cNYCC8CiRsUARWcKR9AcJx/PmZPlsTS9f2d8ep+tV+auk4yD6uiHsat5vHIPCodsFsjifFLQY5meXtyg2oxAuKA9f/+zAl5flKWv4fKCQDt7Pfozd+cxkLyJj/9QH+xL9v8iBNlHsbPKT2sDER9eMND18ZoC0RnD7/WL4SG8A8EX1D5L8pUZTKkKJw8GE91dsHasaSUELpOKgBSIFNChnVlswaOUusvBhIUVLuf4on6bzeDg4X1X8TZ2Mr0IHzCJOGrzrvtl8ULobzuuNYKbpw7tzpNZA9IKO/de1ET3aA+sbyBf+mn/v7mmoPO5os8Vh4ckvfzBGtVTqYj0qWcE8KE3IX6Et1jk3sMkeKgwqty1EhIVWJKa/ZO2GCHuhR7Zms/pRZo9F5C5TDasQYZJvo2eeCa6dmWGZOGNegAUArvD1MdyMacKRL9ULjFmD8r3J9IMwaFt5w3sVjoKr0FNBN9ji7YN5aXePh4BhhqhMjpvxV+gk0/cZvgWrLWwhY3jKE6BihlIh3Le7pLXqiFttoEg0oB5qdvUkQAq8NZr8dAMJwPcx5jXG6
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?TWI2bWdCZWZkQ1QyeVB5Yjc1WjMxZENWSkRNTTMwdUUwc0VaS0hjb3dVbXls?=
+ =?utf-8?B?bTNIQzBCRGd0NkVFYklLOGI1R3d2STV3Z09qazRNd01vMm5vdzJIN3NiRWdw?=
+ =?utf-8?B?MjVyOUNDYVQyS2FiUXFPZUE4YjBxSXZsYlVCWVhaNVFaUVBDTmtTc3lLNnFP?=
+ =?utf-8?B?VDAxK1pDOHJmTGx4SmsrR042MTh0OXV5U0V1R3lPSW1wd0FYbTBhUVFjeVM2?=
+ =?utf-8?B?ZmVKQXZ3RncwK08yeTZZdzZUTTIya2NpSXVaaDNoQmk4YndWM1JuWit6VE1U?=
+ =?utf-8?B?UVVYYWtCMTZGaUVYWjc2RUdRWklhSE81SjlTajAwVUtKOEZCUkdZcm4zQTNU?=
+ =?utf-8?B?Zys0dmpnelJFaTFhUWV1SnJudC8vVXJOb25hQ1N5YUJQZDJGbkdmbmEvK0o2?=
+ =?utf-8?B?cFpLUEhvcUFFTWp3Zk05RzdFS3lZVjNEMEZyMjlWVW9GSzVlcVJsYVZEL3Vn?=
+ =?utf-8?B?OTVMK3EyaXJlempKd0QzNEZtZzFWOUNhc0liV28wVU9ualNEK2J4cHBQdTcx?=
+ =?utf-8?B?TFRSeFcwd2JFWW1XSXNVWjlGSGVPQmhDM1JzK3lyZ2lHdkJBYW5GQzVwNjVK?=
+ =?utf-8?B?S29DbENXWkd3K01hTXNPdCtJMHkxa1l5SUNtNzdpblVXUkxNL0VOdHg3ZHlw?=
+ =?utf-8?B?QlRydGIzVGhFSFI1N2ZvZWUyQXBKbmJzSk1sVW1vWXVpSkpqRC9YTkdIUVJx?=
+ =?utf-8?B?T21kYjNnTGNPdUdpUk9GVDBmZlk5a0diK3A1aWtYOUpYS1BqZW84OEI3Z2dE?=
+ =?utf-8?B?Uk9NQ08wY1d3NUUrNmhlVlBMeURwMWQxc3NIaDRIVkNhSFp3R0Z6UHhxbG1C?=
+ =?utf-8?B?YXdPdDB3U2hOZjhKcS9VWnc1bElDTS9NdllVSVAvNWllNGltVldNL1NhL3Zv?=
+ =?utf-8?B?RTEvcU02azJoNlcwSDRsTGxNQW9SNDJQdVJUa0d2RWRaYVRTKy9kK0loY1JW?=
+ =?utf-8?B?Z0hCcGJITTZWWUZKdUlRRTZ1MG1QZGtCNHZ1MWVpNmJaUDVIY0VIOEtGTjNr?=
+ =?utf-8?B?Y1ZxNXZhcHhMM2hLK01Vd1FLaTJPbE8vUW1GVFc4S3Z4OUovYmk1TnJaNmZG?=
+ =?utf-8?B?Wlo1MXRIQWx2dEw0c01lR1h3M0Zmd0lQOC9BR29rTzlodlk1eFVVdGFza1k2?=
+ =?utf-8?B?cElwdWhTb3lLVEhvU04zdWttNElkQjRGSUFlSDZ6TGlkMWZJcWU4UFFzaGVF?=
+ =?utf-8?B?USsrVzkvdU5nT1Q1eW9YbE9rUWtyQkF4ei9zKzRtTEhROGl5RERoVTBvZlJi?=
+ =?utf-8?B?azZFQnE2UE4xRXhMUGtvbW9PdlpuS3ZaOWU2S0dPYStjQWtyRFBPRVI2b3dI?=
+ =?utf-8?B?Q1pPSEhJNUlON0VDaXA2Nk14a2NZUW1RUWUya3dlemNCNk5XV21ibkpCeEdn?=
+ =?utf-8?B?d3BOYTI1dDY5cWhMcVF0Z3AxdDNZbktmZzMzVi9iT2M4TEVLWmJqZ3ZORXRJ?=
+ =?utf-8?B?SWxKTkdZM0s2U25zcllhMW1QUk44OGRRQW12dGUxRnkvWGdRZVQzYk5QVUpl?=
+ =?utf-8?B?LzRZd2FJV3hoYXZ6VTFlelc1MDdFbzY5QWp1VVVBZWFTc2VQWFBZdFBrMHRU?=
+ =?utf-8?B?RjBhcG4yMTJqYlpPdWhQelIrbkw2UlRPUU40Tk5BSmNBeGVRVXVFK0pIdXpy?=
+ =?utf-8?B?NW5uTzJxZ3FtVGtGVDVkZHRRdm1uTTNrVERwUjQ2dzd6Q1M0Qmx5VjRKWURX?=
+ =?utf-8?Q?oyB9702XWPg9kKI12jtJ?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3B2B008B7DA13644970E24ED76682775@JPNP286.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yt9dzftp3gh2.fsf@linux.ibm.com>
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c6197c1-75be-46ac-9b77-08dc60871a12
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Apr 2024 15:40:55.3808
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCP286MB2928
 
-Hello, Sven.
-
-On Fri, Apr 19, 2024 at 10:27:05AM +0200, Sven Schnelle wrote:
-> > Probably by wrapping determining the wake_cpu and the wake_up inside
-> > cpu_read_lock() section.
-> 
-> Do you mean rcu_read_lock()? cpus_read_lock() takes a mutex, and the
-> crash happens in softirq context - so cpus_read_lock() can't be the
-> correct lock.
-
-I meant cpus_read_lock() but yeah we can't use that here.
-
-> If i read the code correctly, cpu hotplug uses stop_machine_cpuslocked()
-> - so rcu_read_lock() should be sufficient for non-atomic context.
->
-> Looking at the backtrace the crash is actually happening in
-> arch_vpu_is_preempted(). I don't know the semantics of that function,
-> whether it is ok to call it for offline CPUs, or whether the calling
-> code should make sure that the cpu is online (which would be my guess).
-> 
-> Following the backtrace from my initial mail, I can't find a place where
-> a check is done whether p->wake_cpu is actually online. Eventually
-> available_idle_cpu() is calling vcpu_is_preempted(). I wonder whether
-> available_idle_cpu() should do a cpu_online() check right at the
-> beginning?
-
-Yeah, adding a cpu_online() test there makes more sense to me.
-
-> Adding Peter to CC, he probably knows.
-
-Peter?
-
-Thanks.
-
--- 
-tejun
+SSBiZWxpZXZlIHdlIHNob3VsZCBvYmV5IHRoZSB0eXBlIGRlY2xhcmVkIGluIERTRFQgdGFibGUg
+aWYgaXQgZXhpc3RzLCBpbiAKZ2VuZXJhbCBjYXNlLgoKQ291bGQgeW91IHBsZWFzZSBleHBsYWlu
+IHdoeSBpdCBkaWQgbm90IHNvbHZlIHRoZSBpbnRlcnJ1cHQ/IElzIGl0IGEgCm1pc2xlYWRpbmcg
+aXRlbSBpbiBEU0RUPwoKVGhhbmtzIGZvciB5b3VyIHJlcGx5Lg==
 
