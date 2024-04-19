@@ -1,218 +1,160 @@
-Return-Path: <linux-kernel+bounces-151749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1FA18AB361
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:31:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB2868AB35D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:31:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8D2C2868D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:31:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81FCF2865DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9337B12E1ED;
-	Fri, 19 Apr 2024 16:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 160C0130AD4;
+	Fri, 19 Apr 2024 16:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="inJBvyKe"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pl9kVHpf"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3377019F;
-	Fri, 19 Apr 2024 16:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2BB12E1D5
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:30:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713544273; cv=none; b=j0tEFF2Bf8EuvGNTZllU5cI9prohTcV9hVlhmkiN5clgXZpQCDAk4ROg/cy/2d9fQaGzN9XxLBKRR7FDeyy0zoCgtsAF9gEM8I07cRLbQZrj7vgapUUk+h6og0lqR+Q4c8LHVg6z5c3kbbHCFT1KiHvJW5wk8wV5G0FYHyzSsRE=
+	t=1713544257; cv=none; b=Dqw+c9MyVZ4iieor6l4KXlGJBIisdGas3o4EiUCbV8QQ9AkJPAHxLdjB2SxQdoVcqV6QoQ8ZJqdhjdfmz9O7q+DbicRsGZ6rCEkv6pF4tJpvMgb48QgOLU85Y0sADLcMAW4Rnx/53IcJRvgrzXpPwoue5PtE7qMd/CKAqivkRRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713544273; c=relaxed/simple;
-	bh=e+sKh/riBgM9gqEPNz95H+RMDL31hHi0as3niQKIC2g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=GZ5NLhfEfkUqSHnpPJRlAgo5urv4LwIjp52LdOo18yO13AckH74oerz5esZaBcgWEa8fs4W+024eQjWh4PVAWQet1+OrnKYTI708yXE054bDTtQFrQTB0fwofEx2oUcPgxDCCPjPDL8lYe+QGGMhSiL4CWUhq4Hh0mSXj8WvHFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=inJBvyKe; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43JGDMri014023;
-	Fri, 19 Apr 2024 16:30:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=0QDOhTWbuUFwBwep9Nu8IuqSeqIbHmzx424IXR2aSi4=;
- b=inJBvyKevVbI1FG8o8cIkohN3GsELo86yV4vdcaFQa5nHxwiVtpmpPUWXmfQZIoR2LQq
- A64fgWBiExv82BcqVyL6WA4xIKeFWnk0XJtkoV5AVDKyOUf6WndU2FWzmP+pOoHzlPle
- 2RbCzcPkTIAPPMHW0jLoCGYSKgYl9hCuxMrqeCuX9bqC72vUtufLOjdAW3kWiiaqsbev
- 7W1IVrQWTBtvXZBPQy0IPLppULuhycu4oqLkuiq/E51dSqEeDAdckSvXhFOkgUz+jjj/
- +N1ae8CKrkz/O4RiftrqU/hUzWeOgoeRfGpyq7y3SR1exXDzsIgoc7x3VYx6rw2uV487 pg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xkuxhg1k4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 16:30:52 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43JGUq3l009001;
-	Fri, 19 Apr 2024 16:30:52 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xkuxhg1jy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 16:30:52 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43JFEbKX007847;
-	Fri, 19 Apr 2024 16:30:51 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xkbmcvr58-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 16:30:51 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43JGUlBp27394568
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 19 Apr 2024 16:30:49 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A34D82004D;
-	Fri, 19 Apr 2024 16:30:47 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 115D32004E;
-	Fri, 19 Apr 2024 16:30:46 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.171.32.113])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 19 Apr 2024 16:30:45 +0000 (GMT)
-Date: Fri, 19 Apr 2024 19:30:44 +0300
-From: Mike Rapoport <rppt@linux.ibm.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: Shivansh Vij <shivanshvij@outlook.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v1 0/5] arm64/mm: uffd write-protect and soft-dirty
- tracking
-Message-ID: <ZiKcNJ0Qw2awRwaa@linux.ibm.com>
-References: <20240419074344.2643212-1-ryan.roberts@arm.com>
- <24999e38-e4f7-4616-8eae-dfdeba327558@arm.com>
- <MW4PR12MB6875618342F088BE6F4ECBB2B90D2@MW4PR12MB6875.namprd12.prod.outlook.com>
- <c936083b-68b7-4d8f-a8fc-d188e646f390@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c936083b-68b7-4d8f-a8fc-d188e646f390@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ushm6xy8zROreUAp0pyD6uOja9Euat08
-X-Proofpoint-GUID: 1P6pz-AyBt7CYRR6NKabWy3Sw0WAvmLF
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1713544257; c=relaxed/simple;
+	bh=2ChmEuRipVKFDKO+61sOph/LVI0N2uCOf1rUm1S9VJc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NJJhZREo98afRBlzdjzuscWhKm5ojTK3CKkfskgWNbnHCqeRo+4mQs0HHcNvZ556fB8NxvRwFOOnsZTWbc0uPNkon3nfuWgMP3Qe9LXJ5GugyB8FhHcerMBOK1PJVara1ItvnvtsViXH/Eu9AenOC4BGavRe3b0h1nqMwTs62Uw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pl9kVHpf; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ece8991654so2066904b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713544255; x=1714149055; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=9AqGcd7l2AM+pHRo1KfIRKsSfduZ03PoAnP5ssDCeqM=;
+        b=pl9kVHpfUP4h+EKoWy8/3vSCH5KCiBS5FDSkS4yoy0rM1e1X/QE3ySm3qLrPxcjdgF
+         7+xxXZCpEaJZKj9zIEFbq8sxJ8W1Wh9YMelcqLAbvilrrWER8Fmz37y1Y5c7F8J0AdCh
+         x7aTIsPzwRwhLR0iXrg8kTSk/gZNJ/Z1mY2YdC1cEppdTBWNP5OhPJRFTf7/FTDZlqD1
+         7iBT4+r7TmDlGIBL/jkqrf63W6Ykq13l9fi9tz2jAvqpc4khzntM8vv0S1qjJ7Kbjza0
+         ot7lCfkvMwUPmitTyT3mqbugjbevaw1y0kvcsXSgyCMcPv7dFpdxjodzwYtA2/YqhkH5
+         r6SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713544255; x=1714149055;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9AqGcd7l2AM+pHRo1KfIRKsSfduZ03PoAnP5ssDCeqM=;
+        b=G9TCPKkpMKIaVWKfGd2CdghzRkjUZ8NZM9RWXVepvVIczjvknI1kUEHKzIBtq1eL8s
+         UCt4BZxBf5NfZDKIB6zbpj+HP/dFgQO/jFldQjXvr3ALuBdHej6GIoHGTEtZ1c8yhNmj
+         eo1XGvVA2AtKQE84slcgbrB2Sv+lE0/Wy6JyxphPwO5VsyAQJeNDPL0ujj4EHjQZyjJs
+         jioTTBL4uVzo1LnwGs1iIx68kq0pWybW+iVMgv96kAPg4GXPxyUllTrMEXSyfbFWREHS
+         pvLG8p45RW8jAtU0m8l6Y2tWzC3JehTo1hsCL1s1Qy8qRn+G8a8S4YtTY0npuCaCfiP6
+         6W7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVT0jVGc4TeAFGjGuGadVKLIcdw2M5t4BlI/3nZFS19FQDrfHOoJDyyx2JMsIgu8gXUwYNe3xKgAD9W02eZwTkvptWCQskvnLwmq2Qb
+X-Gm-Message-State: AOJu0YwI66do114ePyczj01VUYal8Ic+1bk9v87OZFztAIvJQOY4SF60
+	/rPH6ghsHm9xj43h0SM3LQlvwLi60b+EEF6Cr7podEJ6kgaoL3GYF5mR8fYHHac=
+X-Google-Smtp-Source: AGHT+IG1/H33eIhEJoNVFzIV3iLrOi7Lc4imyDOqsKKNxCuSWJwd2E6dw4y1PTZu+yerUyKaC9Zlog==
+X-Received: by 2002:a17:902:6bc4:b0:1e4:51ab:fffb with SMTP id m4-20020a1709026bc400b001e451abfffbmr2633396plt.25.1713544255224;
+        Fri, 19 Apr 2024 09:30:55 -0700 (PDT)
+Received: from [172.20.9.36] ([209.37.221.130])
+        by smtp.gmail.com with ESMTPSA id c8-20020a170902724800b001e2a42a2e34sm3546640pll.65.2024.04.19.09.30.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 09:30:54 -0700 (PDT)
+Message-ID: <64604842-6ac7-4428-9673-140eefed3433@linaro.org>
+Date: Fri, 19 Apr 2024 18:30:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-19_11,2024-04-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=603 spamscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 mlxscore=0 impostorscore=0 clxscore=1011
- phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404190125
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: PCI: qcom,pcie-sm8350: Drop redundant
+ 'oneOf' sub-schema
+To: "Rob Herring (Arm)" <robh@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240417200431.3173953-1-robh@kernel.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240417200431.3173953-1-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 19, 2024 at 11:45:14AM +0200, David Hildenbrand wrote:
-> On 19.04.24 10:33, Shivansh Vij wrote:
-> > > On 19/04/2024 08:43, Ryan Roberts wrote:
-> > > > Hi All,
-> > > > 
-> > > > This series adds uffd write-protect and soft-dirty tracking support for arm64. I
-> > > > consider the soft-dirty support (patches 3 and 4) as RFC - see rationale below.
-> > > > 
-> > > > That said, these are the last 2 SW bits and we may want to keep 1 bit in reserve
-> > > > for future use. soft-dirty is only used for CRIU to my knowledge, and it is
-> > > > thought that their use case could be solved with the more generic uffd-wp. So
-> > > > unless somebody makes a clear case for the inclusion of soft-dirty support, we
-> > > > are probably better off dropping patches 3 and 4 and keeping bit 63 for future
-> > > > use. Although note that the most recent attempt to add soft-dirty for arm64 was
-> > > > last month [1] so I'd like to give Shivansh Vij the opportunity to make the
-> > > > case.
-> > 
-> > Appreciate the opportunity to provide input here.
-> > 
-> > I picked option one (dirty tracking in arm) because it seems to be the
-> > simplest way to move forward, whereas it would be a relatively heavy
-> > effort to add uffd-wp support to CRIU.
-> > 
-> > From a performance perspective I am also a little worried that uffd
-> > will be slower than just tracking the dirty bits asynchronously with
-> > sw dirty, but maybe that's not as much of a concern with the addition
-> > of uffd-wp async.
-> > 
-> > With all this being said, I'll defer to the wisdom of the crowd about
-> > which approach makes more sense - after all, with this patch we should
-> > get uffd-wp support on arm so at least there will be _a_ way forward
-> > for CRIU (albeit one requiring slightly more work).
+On 17/04/2024 22:04, Rob Herring (Arm) wrote:
+> The first entry in the 'oneOf' schema doesn't work because the top
+> level schema requires exactly 8 interrupt entries. The 2nd entry is just
+> redundant with the top level. Since 1 entry appears to have been a
+> mistake, let's just drop the entire 'oneOf' rather than reworking the
+> top-level to allow 1 entry.
 > 
-> Ccing Mike and Peter. In 2017, Mike gave a presentation "Memory tracking for
-> iterative container migration"[1] at LPC
-> 
-> Some key points are still true I think:
-> (1) More flexible and robust than soft-dirty
-> (2) May obsolete soft-dirty
-> 
-> We further recently added a new UFFD_FEATURE_WP_ASYNC feature as part of
-> [2], because getting soft-dirty return reliable results in some cases turned
-> out rather hard to fix.
-> 
-> We might still have to optimize that approach for some very sparse large
-> VMAs, but that should be solvable.
-> 
->  "The major defect of this approach of dirty tracking is we need to
->  populate the pgtables when tracking starts. Soft-dirty doesn't do it
->  like that. It's unwanted in the case where the range of memory to track
->  is huge and unpopulated (e.g., tracking updates on a 10G file with
->  mmap() on top, without having any page cache installed yet). One way to
->  improve this is to allow pte markers exist for larger than PTE level
->  for PMD+. That will not change the interface if to implemented, so we
->  can leave that for later.")[3]
-> 
-> 
-> If we can avoid adding soft-dirty on arm64 that would be great. This will
-> require work on the CRIU side. One downside of uffd-wp is that it is
-> currently not as avilable on architectures as soft-dirty.
+> Signed-off-by: Rob Herring (Arm) <robh@kernel.org>
 
-Using uffd-wp instead of soft-dirty in CRIU will require quite some work on
-CRIU side and probably on the kernel side too.
+Indeed, copy-pasta. 8 entries is correct, just sometimes we were all too
+lazy to describe all of them in DTS.
 
-And as of now we'll anyway have to maintain soft-dirty because powerpc and
-s390 don't have uffd-wp.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-With UFFD_FEATURE_WP_ASYNC the concern that uffd-wp will be slower than
-soft-dirty probably doesn't exist, but we won't know for sure until
-somebody will try.
+Best regards,
+Krzysztof
 
-But there were other limitations, the most prominent was checkpointing an
-application that uses uffd. If CRIU is to use uffd-wp for tracking of the
-dirty pages, there should be some support for multiple uffd contexts for a
-VMA and that's surely a lot of work.
-
-> But I'll throw in another idea: do we really need soft-dirty and uffd-wp to
-> exist at the same time in the same process (or the VMA?). In theory, we
-
-For instance to have dirty memory tracking in CRIU for an application that
-uses uffd-wp :) 
-
-> could have a VMA flag that defines the semantics of the bit and simply have
-> arch code use a single, abstracted PTE bit. Requires a bit more work,
-> though, but the benfit would be that architecturs that do support soft-dirty
-> could support uffd-wp.
-> 
-> [1] https://blog.linuxplumbersconf.org/2017/ocw//system/presentations/4724/original/Memory%20tracking%20for%20iterative%20container%20migration.pdf
-> [2] https://lore.kernel.org/all/20230821141518.870589-1-usama.anjum@collabora.com/
-> [3] https://lore.kernel.org/all/20230821141518.870589-2-usama.anjum@collabora.com/
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
-
--- 
-Sincerely yours,
-Mike.
 
