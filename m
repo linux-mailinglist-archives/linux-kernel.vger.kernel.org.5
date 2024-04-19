@@ -1,156 +1,138 @@
-Return-Path: <linux-kernel+bounces-151078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C8C8AA8CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:01:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A468C8AA8D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:03:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2262028155A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:01:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20E2BB21234
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38773BBFC;
-	Fri, 19 Apr 2024 07:01:30 +0000 (UTC)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA60B3C47D;
+	Fri, 19 Apr 2024 07:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="IobtuWfw";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XFuRCP08"
+Received: from wfout4-smtp.messagingengine.com (wfout4-smtp.messagingengine.com [64.147.123.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D479473;
-	Fri, 19 Apr 2024 07:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78105171AF
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713510090; cv=none; b=cvV1CD4nhdZj6z6tFnY5hFdUiw6uDlvwHZZ7qi65Yx61d2x3CpMTRoVzea71uj3AfW1NClSns+i7BdyuxPHocihIcjpPc4/cc8Kr9OBYcL/5SmEg1Mw8mgEu0Hk1PKmCsrnQA3aBJr8Bas0IG47ZP1GiSzE5YVaSIjXQt/gpV6w=
+	t=1713510183; cv=none; b=pkhbpw9kA4yNkbU2NFL42FI1Vvm0Mvl3E7Nyofi3VyuD30Jr55Jbu6WB+y67dwjevbywlber7Z878ls7+DM3ABewi6+mfkO+woQ9phvQGQI7SNsiLoHtxWk2n+D/TZLSr51fDGwxgTZGnjkwwS5YglTQTkK7yp5ogljsg3Ve3K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713510090; c=relaxed/simple;
-	bh=sH1bmGiqxkK0mQrxS4tP7f19KIwVvxNpbYcGXlJTqRg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gsK+pOaIpu21YcVAzdpzk3pSjAx/eGXjBHlWXCTCkAj3y8X3RG1CD3noE+JOKMdCj6TM3cUD5wSDdvkEVdTn99Szj6tJqX6CbkCl+qwUQ4LwBaJB7hZiunECJ/sjd31Qh0j9KqsvSJ8LqZ0GiyIjAzlAnOQasV1qJj2cZB9x0MQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2da08b07157so20685561fa.1;
-        Fri, 19 Apr 2024 00:01:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713510084; x=1714114884;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1E/MdAMpPbSlbHO+k6ZK0j1SLtIJtidvuVwVd4MJDGw=;
-        b=ccizK8AmLWpip/v5iWbiQU49gkVvk7Z6SB9HqOIYkBkBKUgwTlTn5QrXlLrOMSh5l6
-         vU8brALV4zb6BUH657GFoMtoDR6BP2VakW4/UDN/NyuRKdmx/fHYVcuGVdCExLGSVWsq
-         LVFHyibm8qZjyc1E++7jdd1Pil5NaiOs0hAb+hUXOt7j76/jz0YOflSvdf0K6Ifg1LNh
-         AJIFcalHVFGZ+DVDWcvh9nQpt2bHnZLR05PsNYcjMG3uadMzwthk2nybOJmMYKEF5o0G
-         pRUDavwQ8DBhMKeeP5iqRzv4ZzEocTWztpcVyUHszhBjL/wrtkHw9+UoWnazZ++544R/
-         GIag==
-X-Forwarded-Encrypted: i=1; AJvYcCVbykx8u4++s+2DFURX5Qfm+ORE15rOlSdTCIOEtlhQGtqAtBKUYJzo7+pYWTZAsrlybpzkaqxz19ZiPA0OFrGsH7mjFe7m4OtUOhnO
-X-Gm-Message-State: AOJu0YzEkfmyAeWfYkb956lWbMy5YfrPm21xWOvhmlV0UeUUr0ac1ccj
-	GGIEjNZwGqBt+5LGMPSsZij2OUtsnoWJqFwoya7Oh9ZMXQ+dZzP0TTwzqQ48
-X-Google-Smtp-Source: AGHT+IG/pgr30UMciHlKbZ2mBniQgj5SwevI3RmxjUw6/BwTHbSQnqzxpGN8sHyp1bjkELThiFay+A==
-X-Received: by 2002:a2e:97d4:0:b0:2d6:8868:f1a6 with SMTP id m20-20020a2e97d4000000b002d68868f1a6mr807106ljj.43.1713510083993;
-        Fri, 19 Apr 2024 00:01:23 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
-        by smtp.gmail.com with ESMTPSA id ko18-20020a170907987200b00a5565ee5c24sm1808580ejc.0.2024.04.19.00.01.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 00:01:23 -0700 (PDT)
-Message-ID: <4a7a1c35-f1f6-4ed3-ad57-d71891220219@kernel.org>
-Date: Fri, 19 Apr 2024 09:01:22 +0200
+	s=arc-20240116; t=1713510183; c=relaxed/simple;
+	bh=xGgMLDuz/rrktqSSCqnQhSwLJiqFpG+/qepJMM3iD1c=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=D5D9Tv/0irW+M9nuTjZSO6U5fKuNiaO28MQJAqMUPAP6gPC+iEDi1qpkf8TvG2GJxxFEvJfpAmo+d3Ixz7oWkYUbPnXFHj1iJGLm6ApoNBwikUKs+JPVF+DT9we31RnCpZZcWzSWIKy6sm0yxdEAwa9gkj9nYFy5xCFyO/mSiHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=IobtuWfw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XFuRCP08; arc=none smtp.client-ip=64.147.123.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id AE7951C00091;
+	Fri, 19 Apr 2024 03:02:58 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 19 Apr 2024 03:02:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1713510178; x=1713596578; bh=zaw9vbMVge
+	SusjxjvLW2R0v983eLJic4pmYEHo2JBGE=; b=IobtuWfw2BGG7hCKF3eU5/zgnH
+	9cceIs1ycAvI1XRiVE54sJ55A6dxV9339JpXhH09QnCJI+mZLKYXu1FEVStmDQ9Q
+	E76l2mTjTqHjutK+5RLiEr8/x1P8At1pubpMm79VFAw8+ordhb19KFNzb2okDpCm
+	VU/iY/Gfw5ptyE6ULTEgkIiejEwhdnGzokMHOcQsC9p6p7UZA4jc2mtKsWXPvElZ
+	fgTVqMTOmqlv+eZCM0MPXTGxPGL0MH3Rozu5Wu2wK92/HzDox36ZzqsKPKpIPbPe
+	T7xBGggxFnbegpzoJT33MRHSBi9sYYAhTUTvtT1VvUyI+DW0XIXKCUYO8Qww==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1713510178; x=1713596578; bh=zaw9vbMVgeSusjxjvLW2R0v983eL
+	Jic4pmYEHo2JBGE=; b=XFuRCP0878g/Dgwz6Z6kkrnyrvWEJpEn+VAN3fEk7uzZ
+	BRSpiU6P0hnN1NpBEtXJ2pyjFATcb+gX4+W8WaQH2vJmmp4CHWyLOawEnNeLN6h6
+	PyY5zNcmKRl8wDuI/p38FIp6CKFVh/CQRsUpBoRIMrE5aeGusUA9+kjYhsUNI7rh
+	j75+L6Eqb376YiXCUQPdrVPAcgqLi+yGnicD9wo2muzR/HuP+akTnki5GuRpMDTg
+	Z+gAb6q6vKBUHt1AACZvfB0SGTYpjATSPYAFvTk/0O98n/QGBEKAf3Cwv0Q38hP9
+	HqntTvzLqgZAgNourEoAcyg+O4LLoj+u+inaKga9Cw==
+X-ME-Sender: <xms:IRciZl1Qcg455TzkfnUY3lyhc7K1w-ckgm-5xTEmyHJ-12RMHC3CUw>
+    <xme:IRciZsHhkd7MIdaINBYx1yAD94pDa5Vwgl4mcZuICTaxMq64AcUserwd0nU2r9Ire
+    sBX4N6yyTC1hKchWUM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekuddguddtgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:IRciZl7dPEiqqqVxbFI5IrsCu47YgnFmlL-fTrD7eHB9Xn1ocahltg>
+    <xmx:IRciZi0hWExZLuREf-0iQMmsFUuixUItY_CMWm6Q5Ip8y8ZUbcHhIA>
+    <xmx:IRciZoFSFIdP31yvc1PK-cNZUUoC8AfqBvPr_ioqZVxnWOg-5OvxfA>
+    <xmx:IRciZj-jmTN4g4SeNaiUoPlwCEIBh3EU7feJ0kkBiJ0oqqUtsImAdg>
+    <xmx:IhciZg-HqMdrDuRUDJXrEE2lEKjqmtN3sX-7vkbH6tXZvSX27XYxI5Wx>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 97E40B6008D; Fri, 19 Apr 2024 03:02:57 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/4] serial: exar: remove unneeded parenthesis
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Parker Newman <parker@finest.io>
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
- Parker Newman <pnewman@connecttech.com>
-References: <cover.1713452766.git.pnewman@connecttech.com>
- <1dbe1847d92dd34d223c6dc6b5cd0731b78e98e5.1713452766.git.pnewman@connecttech.com>
- <2024041951-paradox-stable-320e@gregkh>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <2024041951-paradox-stable-320e@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-Id: <4c448e78-11e8-497b-8e98-c227b9fa273e@app.fastmail.com>
+In-Reply-To: <2bcdf17c-c640-7c87-88eb-f465f8c78263@ti.com>
+References: <20240419060013.14909-1-r-gunasekaran@ti.com>
+ <4d63cbaa-63d9-49fa-bbf0-b3bc62ebfb36@app.fastmail.com>
+ <2bcdf17c-c640-7c87-88eb-f465f8c78263@ti.com>
+Date: Fri, 19 Apr 2024 09:02:36 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Ravi Gunasekaran" <r-gunasekaran@ti.com>,
+ "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>,
+ "Nishanth Menon" <nm@ti.com>, "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Tero Kristo" <kristo@kernel.org>
+Cc: "Bjorn Andersson" <quic_bjorande@quicinc.com>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ srk@ti.com
+Subject: Re: [PATCH] arm64: defconfig: Enable HSR driver
+Content-Type: text/plain
 
-On 19. 04. 24, 8:58, Greg Kroah-Hartman wrote:
-> On Thu, Apr 18, 2024 at 11:36:30AM -0400, Parker Newman wrote:
->> From: Parker Newman <pnewman@connecttech.com>
->>
->> Remove unneeded parenthesis from several locations.
->>
->> Based on feedback from:
->> Link: https://lore.kernel.org/linux-serial/f2353b8c-2079-b895-2707-f6be83161288@linux.intel.com
->>
->> Signed-off-by: Parker Newman <pnewman@connecttech.com>
->> ---
->>   drivers/tty/serial/8250/8250_exar.c | 28 ++++++++++++++--------------
->>   1 file changed, 14 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
->> index 01748ddbf729..10725ad0f3ef 100644
->> --- a/drivers/tty/serial/8250/8250_exar.c
->> +++ b/drivers/tty/serial/8250/8250_exar.c
->> @@ -317,7 +317,7 @@ static inline u8 exar_ee_read_bit(struct exar8250 *priv)
->>
->>   	regb = exar_read_reg(priv, UART_EXAR_REGB);
->>
->> -	return (regb & UART_EXAR_REGB_EEDO ? 1 : 0);
->> +	return regb & UART_EXAR_REGB_EEDO ? 1 : 0;
-> 
-> Again, spell out the ? : stuff here please.  Using () isn't the problem :)
+On Fri, Apr 19, 2024, at 08:25, Ravi Gunasekaran wrote:
+> On 4/19/24 11:32 AM, Arnd Bergmann wrote:
+>> On Fri, Apr 19, 2024, at 08:00, Ravi Gunasekaran wrote:
+>>> HSR is a redundancy protocol that can be realized with any
+>>> two port ethernet controller.
+>>>
+>>> Many of TI's K3 SoCs support multi port ethernet controller.
+>>> So enable HSR driver inorder to support this protocol on
+>>> such SoCs.
+>>>
+>>> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+>> 
+>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> The normal way this gets picked up into mainline is that you
+>> send it to the K3 platform maintainers (added to Cc) and they
+>> send me a pull request or forward the patch to soc@kernel.org.
+>> 
+>
+> I usually do that for TI specific patches. This one seemed like a
+> generic one as HSR protocol can be run on any multi port ethernet
+> controller. So I wasn't sure about including TI maintainers. 
+>
+> But no harm in Cc'ing them. I will follow this advice for future
+> patches.
 
-Could this in fact be inline bool exar_is_ee_set() (or alike) and return 
-that regb & UART_EXAR_REGB_EEDO directly (w/o using ternary at all)?
+Ah, I think I misread this as being much more hardware specific.
+In a case like this, going through either a platform maintainer
+or sending the patch directly to soc@kernel.org (with the usual
+Ccs) is equally fine.
 
-thanks,
--- 
-js
-suse labs
-
+    Arnd
 
