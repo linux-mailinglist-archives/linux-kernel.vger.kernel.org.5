@@ -1,107 +1,126 @@
-Return-Path: <linux-kernel+bounces-151998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB738AB730
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 028158AB735
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:24:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4BF71F22494
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:22:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A98611F22550
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:24:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726BB13D2AD;
-	Fri, 19 Apr 2024 22:22:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1E913D294;
+	Fri, 19 Apr 2024 22:23:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m2fgKXHi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P8isnNkf"
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E662B9B0;
-	Fri, 19 Apr 2024 22:22:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A1D13D292
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:23:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713565324; cv=none; b=g7tXVgHz1yyDzmd1VJFJ8WBOSDessodDueoUIGh/qda9XzMLwaLrdohY0LZ9PwdSvSBUXLkWT+C3EEzYT9YvYcXVYRdfpaiuowrzXbEm2HOJ30FFcZoyhXZY3F4hAxxBpKTejKBqTxaIbB1uZrs8/oBq42PLKfDiYeltCum5rgQ=
+	t=1713565436; cv=none; b=SC0Zeh53qCIC475TmvnGehxe1soAqE/6G+4KvjY3Y3wPwAGKeTV71nuWjX6kictq2KC4Wc5jpmddW8emsXL/9tBikNudl4lRH62hSyVa8fppZld1uGwuS4TWzbAEEGz0Hq9jDSpQ1FbwaIzExIkbTV8IOnJId0AQNKSrR8Ad/Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713565324; c=relaxed/simple;
-	bh=W93MArkTN2nFQxNyz/XsQyNZSKFRYf+2wns3m/0iJ9k=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=GBtyEj9YE0ZQGiYS1XjTbs2tfB+h/vZRPsEbvLM2ACE55rky3PAc1Loxb3Xv8dbG5SBTWw2TC9huIWCdJms49YdYgGH94jhqYcBAX7/JE7RnRuWxmTd3HDRJWk4dt2vm5mrktbwv5NSN/K0vHAj4pi1ll1RrXwy7gIW3XqlM20M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m2fgKXHi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13E9CC072AA;
-	Fri, 19 Apr 2024 22:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713565324;
-	bh=W93MArkTN2nFQxNyz/XsQyNZSKFRYf+2wns3m/0iJ9k=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=m2fgKXHiFy8amOaO1SVc9kiYlQYn5t7O2IUojLh7YNXpZaxiqfPAZ4WLuE/QQY4gF
-	 qZqKUlW0izC9UOkGw7qMIvfVfPR2imSHf2nRL0UsA7MdWyANPC7IIorwW5/CR5h++9
-	 WO9zlomf5CUir5xVMtWes6wKFQWgNXWda4I1IF3FTzIhnYuU36SCFM/xbYGw8efvLr
-	 aXKJL/guX+3Gk+RRY3sl3qXhhWXeznLga8jp/jwJqnOyJtMjA0+Rd2htFnKCIerpME
-	 8HcLjspkYW6nCEYIRi07S5Sf6CyprS0rGYsST8aHi00lwrMTLngudTLGNGe6/F5ddi
-	 jb1Wsgi6Ah9Dw==
-Message-ID: <e938c677de8e8c8742701c7660b84706.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713565436; c=relaxed/simple;
+	bh=VD6QFxX1Xd3DNVIOsaev//o7h4mZlv5eWXjCnxaWhik=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rsi+FGgJkE9C03Yx1QJ628FHssX//QOEHsMGcvI1EzYBGk2AyFG7zgZ2qaQLT0+B+OKpvjWKbewBNzdoHhpx+aCZAShhZKb33YEJKJR5QO/ES7ubzCRctdBJL3zJ/CsUZvNM0HlVVRNjWb2WKO0rUW3lKf5GsY3YwUe/Ldz9qfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P8isnNkf; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 19 Apr 2024 22:23:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713565432;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mthBWOOhcNSWoMZhMTAfzR7XGep2Qks53Rpg12wvEhs=;
+	b=P8isnNkfBYXWB0pGZ4e76KozKbuIPo6rHG7Ox+d9b31tlskAlwzX5Fiy922x3848sQHdds
+	2boqaE4bF1mMbPeod2X267+67KV2A02qKBDa6v3fbd7lZbgPblznjJvZe8hzyomSxDd6nH
+	88u9gjkSLzKAR6O3WgIDpbW6x4ZMNao=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: James Houghton <jthoughton@google.com>
+Cc: David Matlack <dmatlack@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Paolo Bonzini <pbonzini@redhat.com>, Yu Zhao <yuzhao@google.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Jonathan Corbet <corbet@lwn.net>, James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Shaoqin Huang <shahuang@redhat.com>, Gavin Shan <gshan@redhat.com>,
+	Ricardo Koller <ricarkol@google.com>,
+	Raghavendra Rao Ananta <rananta@google.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	David Rientjes <rientjes@google.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] mm/kvm: Improve parallelism for access bit
+ harvesting
+Message-ID: <ZiLu72SZ3tl_Cdvm@linux.dev>
+References: <20240401232946.1837665-1-jthoughton@google.com>
+ <ZhmAR1akBHjvZ9_4@google.com>
+ <CADrL8HW+4Yq-wBr1+DzJvSwRRL_hqt5RaCCLgOQndPGUqoX+Rg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240415182052.374494-3-mr.nuke.me@gmail.com>
-References: <20240415182052.374494-1-mr.nuke.me@gmail.com> <20240415182052.374494-3-mr.nuke.me@gmail.com>
-Subject: Re: [PATCH v3 2/7] clk: qcom: gcc-ipq9574: Add PCIe pipe clocks
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-To: Alexandru Gagniuc <mr.nuke.me@gmail.com>, Bjorn Andersson <andersson@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Conor Dooley <conor+dt@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Krzysztof =?utf-8?q?Wilczy=C5=84ski?= <kw@linux.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh@kernel.org>, Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, linux-phy@lists.infradead.org
-Date: Fri, 19 Apr 2024 15:22:01 -0700
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADrL8HW+4Yq-wBr1+DzJvSwRRL_hqt5RaCCLgOQndPGUqoX+Rg@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Quoting Alexandru Gagniuc (2024-04-15 11:20:47)
-> diff --git a/drivers/clk/qcom/gcc-ipq9574.c b/drivers/clk/qcom/gcc-ipq957=
-4.c
-> index 0a3f846695b8..c748d2f124f3 100644
-> --- a/drivers/clk/qcom/gcc-ipq9574.c
-> +++ b/drivers/clk/qcom/gcc-ipq9574.c
-> @@ -1569,6 +1569,24 @@ static struct clk_regmap_phy_mux pcie0_pipe_clk_sr=
-c =3D {
->         },
->  };
-> =20
-> +static struct clk_branch gcc_pcie0_pipe_clk =3D {
-> +       .halt_reg =3D 0x28044,
-> +       .halt_check =3D BRANCH_HALT_DELAY,
-> +       .clkr =3D {
-> +               .enable_reg =3D 0x28044,
-> +               .enable_mask =3D BIT(0),
-> +               .hw.init =3D &(struct clk_init_data){
-> +                       .name =3D "gcc_pcie0_pipe_clk",
-> +                       .parent_hws =3D (const struct clk_hw *[]) {
-> +                               &pcie0_pipe_clk_src.clkr.hw
-> +                       },
-> +                       .num_parents =3D 1,
-> +                       .flags =3D CLK_SET_RATE_PARENT,
-> +                       .ops =3D &clk_branch2_ops,
-> +               },
-> +       },
-> +};
-> +
->  static struct clk_regmap_phy_mux pcie1_pipe_clk_src =3D {
->         .reg =3D 0x29064,
->         .clkr =3D {
-> @@ -1583,6 +1601,24 @@ static struct clk_regmap_phy_mux pcie1_pipe_clk_sr=
-c =3D {
->         },
->  };
-> =20
-> +static struct clk_branch gcc_pcie1_pipe_clk =3D {
-> +       .halt_reg =3D 0x29044,
-> +       .halt_check =3D BRANCH_HALT_DELAY,
-> +       .clkr =3D {
-> +               .enable_reg =3D 0x29044,
-> +               .enable_mask =3D BIT(0),
-> +               .hw.init =3D &(struct clk_init_data){
+On Fri, Apr 19, 2024 at 01:57:03PM -0700, James Houghton wrote:
+> On Fri, Apr 12, 2024 at 11:41 AM David Matlack <dmatlack@google.com> wrote:
+> >
+> > On 2024-04-01 11:29 PM, James Houghton wrote:
+> > > This patchset adds a fast path in KVM to test and clear access bits on
+> > > sptes without taking the mmu_lock. It also adds support for using a
+> > > bitmap to (1) test the access bits for many sptes in a single call to
+> > > mmu_notifier_test_young, and to (2) clear the access bits for many ptes
+> > > in a single call to mmu_notifier_clear_young.
+> >
+> > How much improvement would we get if we _just_ made test/clear_young
+> > lockless on x86 and hold the read-lock on arm64? And then how much
+> > benefit does the bitmap look-around add on top of that?
 
-const clk_init_data please.
+Thanks David for providing the suggestion.
+
+> I don't have these results right now. For the next version I will (1)
+> separate the series into the locking change and the bitmap change, and
+> I will (2) have performance data for each change separately. It is
+> conceivable that the bitmap change should just be considered as a
+> completely separate patchset.
+
+That'd be great. Having the performance numbers will make it even more
+compelling, but I'd be tempted to go for the lock improvement just
+because it doesn't add any new complexity and leverages existing patterns
+in the architectures that people seem to want improvements for.
+
+The bitmap interface, OTOH, is rather complex. At least the current
+implementation breaks some of the isolation we have between the MMU code
+and the page table walker library on arm64, which I'm not ecstatic about.
+It _could_ be justified by a massive performance uplift over locking, but
+it'd have to be a sizable win.
+
+-- 
+Thanks,
+Oliver
 
