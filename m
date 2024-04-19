@@ -1,67 +1,63 @@
-Return-Path: <linux-kernel+bounces-151700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB7848AB246
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:47:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 586128AB24E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:49:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 808A31F2250B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:47:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB91A1F23BD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:49:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8373C1304B5;
-	Fri, 19 Apr 2024 15:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F3D130AD3;
+	Fri, 19 Apr 2024 15:49:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="IdnBr154"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VCoVBgtJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D4D12FB34;
-	Fri, 19 Apr 2024 15:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6C3130A4C;
+	Fri, 19 Apr 2024 15:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713541638; cv=none; b=lPrTpvtKOG4Nk+7Lre8OoWs+fc2uf9fqyNP06iYuLxhZ+esTuKl/nyvlf4FY/e17eIl1/OL6ca302VId6Iwu6YrGz9oKtqm3RZ2lKRj8inRI9eBphSWPhL05xVDWrp3jWo2rJ4SMLadnQPQNxSHpKk3a4SZIcfPwqcQE4RPW3OQ=
+	t=1713541762; cv=none; b=MAqtY/GekxuVAf/PrIG7RG6lTWhpZkkDBmjsYuurMJN1qy17xA8dMBTJv47KIMLn8w68SJQiHf3YecYiS5sStrduh4FY/NHu/XkdQwCk8tzDoiGqQv8Qiq1KTzqWE2BCJ42iBUaW1F3M0DmpM1zTPwDJBLfckph+05WHzU/4Io0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713541638; c=relaxed/simple;
-	bh=EL9kCsTV22lvYw6+slnwCr5qeD8Oo1czDJiqY4Q9Kwc=;
+	s=arc-20240116; t=1713541762; c=relaxed/simple;
+	bh=TTsrsLTEbA91sWgljrri+dhf/sihEuA67rqO4RBzqZI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BiipVfu77P9T0bRDUP+pr6qK1tKJDOJaDfu0x9hcaTZkAIKW8iHE3FLTKpY5KbAbVCCl4YKbOH7fT2otDEqHRNG1Wh9pW3UIUwcDd9GmfHc93go57cEyME61e7/BAjsZ9P1vf5xBNpp5GYLVTW8HMpiEj54uoF7IbspcJphQGXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=IdnBr154; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=JLXEF/5VB2hcB1dYfUi8oj/pSt/FLjk9X5NuzMP6VaU=; b=IdnBr15472jY5I52M21qLM7ixL
-	43CCwNezqBDlC3cUaCOsoyfDJO7Bi19fT7afae4F14aeBNn5R/bikFzt3U7MW9BtYCPcXUISx13pk
-	M/V2QS7uzu6ltce8i7LCBVEHBBKUb0RZxyWI7JDcNvxSL5YfJ5Cc5c29ATNCvW6e8ll8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rxqS8-00DSp2-Iz; Fri, 19 Apr 2024 17:47:04 +0200
-Date: Fri, 19 Apr 2024 17:47:04 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Josua Mayer <josua@solid-run.com>
-Cc: Michael Hennerich <michael.hennerich@analog.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Alexandru Tachici <alexandru.tachici@analog.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Jon Nettleton <jon@solid-run.com>,
-	Yazan Shhady <yazan.shhady@solid-run.com>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/2] net: phy: adin: add support for setting
- led-, link-status-pin polarity
-Message-ID: <65411c68-c76a-499d-88c7-e80ca59a3027@lunn.ch>
-References: <20240419-adin-pin-polarity-v1-0-eaae8708db8d@solid-run.com>
- <20240419-adin-pin-polarity-v1-2-eaae8708db8d@solid-run.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aEANpU6qBHvfiCXar9NEFti90rWAP3EZ8lQBmozYcX530Vh10HetE2HiH61tKQzFr9WT/w8PRmgtB/m5jrmoUeKsWgT0c2khuGFnZ7n5tlN6UL72u+3ewkrtOtFhayIOuQxR4Tplrle8S8OyJCSe2+akxtEdEZ2wB9Js+DI2o2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VCoVBgtJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 133AEC3277B;
+	Fri, 19 Apr 2024 15:49:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713541761;
+	bh=TTsrsLTEbA91sWgljrri+dhf/sihEuA67rqO4RBzqZI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VCoVBgtJvZLBFra+EAciHe3qFAsIm44f6/jXeaY6qe2KozPaU0pjDARbPy0vUaGeM
+	 btnGBwql5BxPVWS1O7Sl5Z69AGoWfqK2RELG75fhBxMI5y7BEK4Nc14D1aEyjTBw1k
+	 YUOAvI2KuGqPfzVC3Hj6wEBalKYrIa2SzMXZDUGJzdQ+PPGM6YJda5NoO5l/SV4idj
+	 baU2F9ULMQ715P4R91YLmDUtKkUexTK+c+/EKfv8bC4+TsssBy1FimQliT+YXDDtS4
+	 lrh/JAMUwWWRCS/dc7aG0O/C7Cb/6VSTHTu+asOmexY0rZCxyscsJ+Sr6eLrN8oMlh
+	 R0q0rq2A6S2LQ==
+Date: Fri, 19 Apr 2024 16:49:13 +0100
+From: Will Deacon <will@kernel.org>
+To: Xu Yang <xu.yang_2@nxp.com>
+Cc: frank.li@nxp.com, mark.rutland@arm.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	festevam@gmail.com, john.g.garry@oracle.com, jolsa@kernel.org,
+	namhyung@kernel.org, irogers@google.com, mike.leach@linaro.org,
+	peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+	alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	imx@lists.linux.dev
+Subject: Re: [PATCH v10 3/8] perf: imx_perf: let the driver manage the
+ counter usage rather the user
+Message-ID: <20240419154913.GA3983@willie-the-truck>
+References: <20240415061320.3948707-1-xu.yang_2@nxp.com>
+ <20240415061320.3948707-3-xu.yang_2@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,40 +66,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240419-adin-pin-polarity-v1-2-eaae8708db8d@solid-run.com>
+In-Reply-To: <20240415061320.3948707-3-xu.yang_2@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Fri, Apr 19, 2024 at 05:35:18PM +0200, Josua Mayer wrote:
-> ADIN1300 supports software control over pin polarity for both LED_0 and
-> LINK_ST pins.
+On Mon, Apr 15, 2024 at 02:13:15PM +0800, Xu Yang wrote:
+> In current design, the user of perf app needs to input counter ID to count
+> events. However, this is not user-friendly since the user needs to lookup
+> the map table to find the counter. Instead of letting the user to input
+> the counter, let this driver to manage the counters in this patch.
 > 
-> Configure the polarity during probe based on device-tree properties.
+> This will be implemented by:
+>  1. allocate counter 0 for cycle event.
+>  2. find unused counter from 1-10 for reference events.
+>  3. allocate specific counter for counter-specific events.
 > 
-> Led polarity is only set if specified in device-tree, otherwise the phy
-> can choose either active-low or active-high based on external line
-> voltage. Link-status polarity is set to active-high as default if not
-> specified, which is always the reset-default.
+> In this patch, counter attr will be kept for back-compatible but all the
+> value passed down by counter=<n> will be ignored. To mark counter-specific
+> events, counter ID will be encoded into perf_pmu_events_attr.id.
 > 
-> Signed-off-by: Josua Mayer <josua@solid-run.com>
+> Reviewed-by: Frank Li <Frank.Li@nxp.com>
+> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+> 
+> ---
+> Changes in v6:
+>  - new patch
+> Changes in v7:
+>  - no changes
+> Changes in v8:
+>  - add Rb tag
+> Changes in v9:
+>  - keep 'counter' attr for back-compatible
+> Changes in v10:
+>  - add some explanation about 'counter' attr in commit message
+> ---
+>  drivers/perf/fsl_imx9_ddr_perf.c | 168 ++++++++++++++++++-------------
+>  1 file changed, 100 insertions(+), 68 deletions(-)
 
-Hi Josua
+[...]
 
-Please take a look at:
+> @@ -245,8 +249,8 @@ static const struct attribute_group ddr_perf_events_attr_group = {
+>  	.attrs = ddr_perf_events_attrs,
+>  };
+>  
+> -PMU_FORMAT_ATTR(event, "config:0-7");
+> -PMU_FORMAT_ATTR(counter, "config:8-15");
+> +PMU_FORMAT_ATTR(event, "config:0-15");
+> +PMU_FORMAT_ATTR(counter, "config:16-23");
 
-commit 447b80a9330ef2d9a94fc5a9bf35b6eac061f38b
-Author: Alexander Stein <alexander.stein@ew.tq-group.com>
-Date:   Wed Jan 31 08:50:48 2024 +0100
+Although these mappings are advertised in sysfs, I don't think we can
+change them because userspace could be relying on them. I also can't
+find any examples of other PMU drivers in the kernel changing these
+mappings after being merged, so please keep tthem the same.
 
-    net: phy: dp83867: Add support for active-low LEDs
-    
-    Add the led_polarity_set callback for setting LED polarity.
-    
-    Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-    Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
+If you need to expand the properties to be 16-bit, then you'll need to
+split them into 2x8-bit fields.
 
-
-    Andrew
-
----
-pw-bot: cr
+Will
 
