@@ -1,162 +1,146 @@
-Return-Path: <linux-kernel+bounces-151594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D6628AB0E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:40:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78E2C8AB0CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:32:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA0F4B21F60
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:40:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9ADE1C2153A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B46B12EBEF;
-	Fri, 19 Apr 2024 14:40:10 +0000 (UTC)
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 389C612AAFD;
+	Fri, 19 Apr 2024 14:32:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mJYuwsrh"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446E42AE90;
-	Fri, 19 Apr 2024 14:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D1EB661;
+	Fri, 19 Apr 2024 14:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713537609; cv=none; b=YuK5aPDX8nKDFjPLceNLBRodx1xqpG5tZcjJpqDuwl7OrkY3EB8Zy/PhMFlCY5Rii1+Y0SnZtwubxu7Z9PDz+QWvvAan8yA0pNeAud2Sqe+InOGCh2jarZ39vueiydsFWaHMXWMcvSG92WHHMfkEd3cdf+TUEeoNDqtK6WNngFY=
+	t=1713537160; cv=none; b=CYgmg1MGXtBL7Y89pOepa8XAfOeFtKUMW2e/djIceK0YQpRiZsTJpn73GFplaJ7IxpjllZVQte6mrL6+wWxzkX/tpt6mp1kng4+NtTrzVs28qYvKtLVB4OLXySmBNLJmtbH7FJs/96kwuMgATRfc5BIKVFI/Sa5iXOjIQt1FMAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713537609; c=relaxed/simple;
-	bh=XdSze8OFeJ1AD3Cj0JRpT8h0SZDvisv0/jzNt7qjqFc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=o5LwJMUkOQ65bfc50vkAN+U19E7xuI17zVCu2CTggQMQuVkCYD6lLoUc7ED/ThFc/aP94l3vijTLArWi+upTQzr3OU6AK0Y92AFjFYgwoWV0zWF0bk39gRcVrIJ2K0K/ETD9K728eIUz10XXkVoXSloTVv/ShA/LGf1lUu9idLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 98B508512A;
-	Fri, 19 Apr 2024 16:31:18 +0200 (CEST)
-From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
-To: Catalin Marinas <catalin.marinas@arm.com>,
- Conor Dooley <conor+dt@kernel.org>,
- "Guilherme G.  Piccoli" <gpiccoli@igalia.com>,
- Haojian Zhuang <haojian.zhuang@linaro.org>,
- Kees Cook <keescook@chromium.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>, Lubomir Rintel <lkundrak@v3.sk>,
- Michael Turquette <mturquette@baylibre.com>,
- Rob Herring <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>,
- Tony Lindgren <tony@atomide.com>, Tony Luck <tony.luck@intel.com>,
- Will Deacon <will@kernel.org>, Stephen Boyd <sboyd@kernel.org>
-Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
- Karel Balej <balejk@matfyz.cz>, David Wronek <david@mainlining.org>,
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v9 5/9] clk: mmp: Add Marvell PXA1908 clock driver
-Date: Fri, 19 Apr 2024 16:31:14 +0200
-Message-ID: <3287993.aeNJFYEL58@radijator>
-In-Reply-To: <58b23157c088cb4774d579cc8700de85.sboyd@kernel.org>
-References:
- <20240402-pxa1908-lkml-v9-0-25a003e83c6f@skole.hr>
- <de4c56a8-488d-4cdb-9d6c-e9d6e63b22b9@skole.hr>
- <58b23157c088cb4774d579cc8700de85.sboyd@kernel.org>
+	s=arc-20240116; t=1713537160; c=relaxed/simple;
+	bh=wpubB5RGGs+N9oSpYbdeFOjJ3Vm/Rrf9Ev30ZPMU4sA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rKOjevaJe1tXiMI1I+2eMlG70RtsznmSc+hU6ju+EgIB9CZQmpglXEc5PlRev/ocbAbT2Ev3uK5uqOARFDhibYEcIG+7KNBMtZjxAeMaCfHO6CgSrSjEtGzpliwxUAC1QWqK9gpufoP9wzSnzRmxQJ24PYa7buLuNiAXZM3YsYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mJYuwsrh; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2a519ac18b3so1615364a91.2;
+        Fri, 19 Apr 2024 07:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713537158; x=1714141958; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wpubB5RGGs+N9oSpYbdeFOjJ3Vm/Rrf9Ev30ZPMU4sA=;
+        b=mJYuwsrhumsgrR9fTeyWJbnBfOZhyqMgnpc5z+cWVpME/rMUgfSl1die1CkXgDmTGC
+         RStUXdkoUKlfxP1ENaZVBDPEePW8dPYVgmEXmjN12+S2aUtzrwNqH6VaRTCKp1L4MDVd
+         +e7UmTI61b440wjpE3svaEqxmEjtaot9qxksXBFOf3yAXhra2ys8F0ivWrCHjqUm+Du6
+         KDWKbBUk6qWZwEOcIwOnHNnD/mTHi8q190vumOMc95MsxzTHrDkqtqWZJCsNTzT8tp8M
+         0vIL2ALIjH/X8ZWEkqJAfifxc5qMp8XhO2sATMi5Xoy7sWvSRAtzIUbUud7Wr/4jYpxB
+         NjFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713537158; x=1714141958;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wpubB5RGGs+N9oSpYbdeFOjJ3Vm/Rrf9Ev30ZPMU4sA=;
+        b=DjrCv0gyiqa0bQF8495ZAIUhzRIx5KZ9OBX8f/O74bwFERPaUJXhvSPDaGtHjGeTGD
+         A7jeqqiSpcR7lyT8kigggbVuvTFYpjnZ4NuXizKtiVrX7bofYpEwl82ZcAq1DG/HRxp1
+         xloR3mXEPw5iV5gMGPLXmra2/eVC33I/FwGWvdoLM9DZxxVhvs5awgjOf4CyoVYse33N
+         15peCrVqMPJMl/9taCQhRmHdBfeCXwPrxmA6XxjwWtg6ILFss/Y8T7vlVtOcAP2IPn3R
+         1+S8TIZSj9qj0iHnOp3g3+SA05okhYcLF7BG3hf/e7tQdhf4OgnOit88jcfuu3SD3BJg
+         M4ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW94sK8apuHqZzPxRsteK5nV/gnymRNPBHLGsWXuFQATTlOlUZXQ9Px43KzBqPopRtLuApdZTWpXloWo1MkZxIqyxj5NhMASysnjH1IW6slckTKD8IaCfkojsmd0I/MreH5j2foDIwATS6j48Vw4KCd14SJjC3ZuaJsBF0MudGUiy6SC6Lsvw==
+X-Gm-Message-State: AOJu0YwYhvARA5pUjYBcz7jkjij15qScGlX/e5SauMzdj2WcqZuXwz3n
+	YO3VQZrNHr3rQ8vvim8aSDTWeIXLiH5qnMpM/hxzL1kJXgTLjcFgP59zsjlCm/Q0yElwlgJHaJp
+	it0mMx2uCldCpfqoFEPwpJIoF1T4=
+X-Google-Smtp-Source: AGHT+IGx6hIS3g+ara6O42TicQaaFPwEmS+NsYEwehh6Rjx1ecg93nnhIbYtQVpE31PFXzePbkZG7q7XQx/qyxbn/Ao=
+X-Received: by 2002:a17:90b:1651:b0:2a5:99e6:45a with SMTP id
+ il17-20020a17090b165100b002a599e6045amr2284524pjb.29.1713537158490; Fri, 19
+ Apr 2024 07:32:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Autocrypt: addr=duje.mihanovic@skole.hr;
- keydata=
- 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
+References: <20240419124506.1531035-1-rilian.la.te@ya.ru> <20240419124506.1531035-3-rilian.la.te@ya.ru>
+ <20240419-glue-pyramid-584728c0076a@spud> <CAF1WSuy4OJVTU5VJdn23BSw4aTAq7i8UQ416V7BxveuQ+5=-1w@mail.gmail.com>
+ <dc6573ba-37cb-4394-9a89-16b6f8caa7ad@kernel.org>
+In-Reply-To: <dc6573ba-37cb-4394-9a89-16b6f8caa7ad@kernel.org>
+From: "Konstantin P." <ria.freelander@gmail.com>
+Date: Fri, 19 Apr 2024 17:34:44 +0300
+Message-ID: <CAF1WSuzVLrsYt6+CyMHJuRbuXNEy2XnWhbHkcPHT3xXpB3Yh-Q@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] dt-bindings: sc16is7xx: Add compatible line for
+ XR20M1172 UART
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Conor Dooley <conor@kernel.org>, Konstantin Pugin <rilian.la.te@ya.ru>, 
+	Vladimir Zapolskiy <vz@mleia.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Lech Perczak <lech.perczak@camlingroup.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
 
-On Friday, April 12, 2024 4:57:09=E2=80=AFAM GMT+2 Stephen Boyd wrote:
-> Quoting Duje Mihanovi=C4=87 (2024-04-11 03:15:34)
->=20
-> > On 4/11/2024 10:00 AM, Stephen Boyd wrote:
-> > > Is there a reason this file can't be a platform driver?
-> >=20
-> > Not that I know of, I did it like this only because the other in-tree
-> > MMP clk drivers do so. I guess the initialization should look like any
-> > of the qcom GCC drivers then?
->=20
-> Yes.
+On Fri, Apr 19, 2024 at 5:24=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.or=
+g> wrote:
+>
+> On 19/04/2024 16:17, Konstantin P. wrote:
+> > On Fri, Apr 19, 2024 at 5:08=E2=80=AFPM Conor Dooley <conor@kernel.org>=
+ wrote:
+> >>
+> >> On Fri, Apr 19, 2024 at 03:45:02PM +0300, Konstantin Pugin wrote:
+> >>> From: Konstantin Pugin <ria.freelander@gmail.com>
+> >>>
+> >>> Add EXAR XR20M1172 UART compatible line into devicetree documentation=
+.
+> >>
+> >> What you're doing is obvious from the diff, why this exar device is
+> >> related to the nxp devices is what should be mentioned here.
+> >>
+> >> Thanks,
+> >> Conor.
+> >
+> > It is already mentioned in cover letter and in previous patches in the
+> > series. Do I need to repeat it in DTS patch?
+> > If so, I will do it.
+> >
+> > Citation from my cover letter:
+> >
+> > EXAR XR20M1172 UART is mostly SC16IS762-compatible, but
+> > it has additional register which can change UART multiplier
+> > to 4x and 8x, similar to UPF_MAGIC_MULTIPLIER does. So, I used this
+> > flag to guard access to its specific DLD register. It seems than
+> > other EXAR SPI UART modules also have this register, but I tested
+> > only XR20M1172.
+> > Yes, in datasheet this register is called "DLD - Divisor Fractional"
+> > or "DLD - Divisor Fractional Register", calling depends on datasheet
+> > version.
+>
+> Commits must stand on their own. Cover letter is not merged. This is the
+> place where you add new hardware, so here you describe and explain the
+> hardware.
 
-With the entire clock driver code in one file this is quite messy as I also=
-=20
-needed to add module_init and module_exit functions to (un)register each=20
-platform driver, presumably because the module_platform_driver macro doesn'=
-t=20
-work with multiple platform drivers in one module. If I split up the driver=
-=20
-code for each clock controller block into its own file (such as clk-of-
-pxa1908-apbc.c) as I believe is the best option, should the commits be spli=
-t=20
-up accordingly as well?
+It is also described in patch 3 in the series. I need to repeat this
+description in patch 2 too?
 
-> > While at it, do you think the other MMP clk drivers could use a=20
-conversion?
->=20
-> I'm a little wary if the conversion cannot be tested though.
+Cite from patch 3:
 
-I'd rather leave it to someone with the hardware then, especially since the=
-=20
-only reason I found out about the above is that the board I'm working on=20
-failed to boot completely without the module_init function.
+XR20M1172 register set is mostly compatible with SC16IS762, but it has
+a support for additional division rates of UART with special DLD register.
 
-Regards,
-=2D-=20
-Duje
-
-
-
-
+> Best regards,
+> Krzysztof
+>
 
