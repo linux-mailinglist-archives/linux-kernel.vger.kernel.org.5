@@ -1,123 +1,131 @@
-Return-Path: <linux-kernel+bounces-151715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0124C8AB291
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:56:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14ECB8AB29A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:58:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD875286753
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:56:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45D451C22216
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66188130E3F;
-	Fri, 19 Apr 2024 15:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9CB130A44;
+	Fri, 19 Apr 2024 15:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TOR1vmlF"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NB10FGA3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB77130A6B;
-	Fri, 19 Apr 2024 15:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1490512F59B;
+	Fri, 19 Apr 2024 15:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713542152; cv=none; b=cWtkjMLENv22YUeYJpKkcQe9chge+j8dgSxcRHHKUmtiYs9gHDNYx2eq/pTBbz+VAaCoHRo53PJBUyO0zcJwOcC8ymMbIl8VDOQ/g8FAf9teWNBp5sn1zKG8cjjTMG9ebkybB12Y7+0FCoq9Fs/7gWynhScf3RweJ2RDKvosiyg=
+	t=1713542272; cv=none; b=pwhcw6Q/uiJCa8EQv4tLae7NMHpeiNpFQBeHiogzNuqJBOdvE5A2ega80WwgTsDIm+Flz8TxjzS+1p4rlGiXuCVm0EJz9QcXi2BAfh5YhMjFBSZ28N+7h780E1Vaj11yCIIbcsoiToSW/0ipDAf+imQej+MHhdwQA1uptvM60HU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713542152; c=relaxed/simple;
-	bh=A8FN6YL5Az3clcIJCbPbOL1X/kNc80XyKoP/anoignQ=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=cTXa3tYloiByFVk1YU4lAbmXfB7s4pobr+XzcATuCYeG9r7tusymoshHET15TFnoz2CG73/fYZqZ1kn+pFAzRi2fWjf4JUSNlC8EV/tdxwQdHDftdT5fiu5s/kMpfPoIK3duBt/as69D4ixuy7cLZhcf6zszF6izG8p/e7WETvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TOR1vmlF; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a4702457ccbso245996666b.3;
-        Fri, 19 Apr 2024 08:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713542149; x=1714146949; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ily9XXgSD/kSnjxbuyMtZIWiGo4h6I0dlgEt1ZQhU4=;
-        b=TOR1vmlF2VaEmVFTr/tFxi3TNhpt39pyBjqSDL2zVXZt6vxEdooAeq1xQpR7lzP87x
-         VXMc2ZMflXY+laSz1BUqpxQdavXckKM3OUbUf7F29LjMn/e1wPWPqRMvWe3htMgwB06D
-         Ul8ChtcKvCGndVVdwTzL3FoqenyqdWVfBGk4iCb7iY92gwTwVzZE1evl7h36RyL7jhmF
-         1N+lzEsOF1iYul+DnWpwjIjvCbfVqKwqLE1FV5IkFRuGeXerkrCvjyrWNcGTQcc2cLCL
-         25i6HEOF8W+j9+3/IgZsDcNNfJucYIqsKe40z+YqwqGdb3OqFFXcR5Z1J0cYTosafLtH
-         c4mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713542149; x=1714146949;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5ily9XXgSD/kSnjxbuyMtZIWiGo4h6I0dlgEt1ZQhU4=;
-        b=qirElfHIKH97KhomfUhR4vKaouAbvD186CGHAknrIXER9P+XyPPcOjq9rcMMUp6aVi
-         BjIYktIb5OHZwFcHMDvb98tdhNWILabjCTSDngpsH/Q2MX/eTgxqfo0qmVPDqVCLvjBm
-         0sANfVgVLWjFyuzqjsRr2oekx72yZtqJOwRJAzAkBwqMoeqSzMNpVJxFtPHi1pMdSmXj
-         DXJxdzB/H7KRV0UjZpB4P+2DBCCv+tbFxFWv03+o8XC99dKcYob33m+2f4c0U7xryZgm
-         ccSbsOu35zPtthXmlL7T2fE2ZUznOzr/tjmuXFcbGfnxz0mtF1pTQZ8pGJuPuML4xkNr
-         WKIg==
-X-Forwarded-Encrypted: i=1; AJvYcCWKrJI/xJ+sVyvO3hz5DCcMdT+QQwwu26DwSS69KG5Ewu43dPX380DIbl+tFQiAY4AMzj8Qq/PoPpMIbY62MU+21AQwOnssWR0NolfWDfxF9MZGvG0tw2nNlf6BlNrjnnvp2EdnAjR5ZydrsUpLjeFABA4gQ/TeNt9eT8nCCcYyD/Huq7GjobV1U8h67at0GQFlfvvhAPvTvC0eQIxx
-X-Gm-Message-State: AOJu0YzkRhLHXs8XRPPuqkYwH2ec0KY8B3A8NegH0kxF3Kbl24zGthcx
-	NCH+k5Fy6ywSrroL+Y24i3NgtDbH/Fyk9cErZMKUdKZGbtSg+/JI
-X-Google-Smtp-Source: AGHT+IFiBXFjHgdLNLqc/6MyFlXlHcUOp51E0aYDDjyISWqtYIAbODukC+t3gRLsiB//YhgYnwkUVw==
-X-Received: by 2002:a17:906:eb41:b0:a55:6b76:eedc with SMTP id mc1-20020a170906eb4100b00a556b76eedcmr1680531ejb.14.1713542149390;
-        Fri, 19 Apr 2024 08:55:49 -0700 (PDT)
-Received: from [192.168.18.253] (54-240-197-236.amazon.com. [54.240.197.236])
-        by smtp.gmail.com with ESMTPSA id jg36-20020a170907972400b00a526aa9e75asm2378399ejc.77.2024.04.19.08.55.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 08:55:48 -0700 (PDT)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <15a9176e-9221-44b9-b8df-910c0c16ddc2@xen.org>
-Date: Fri, 19 Apr 2024 16:55:47 +0100
+	s=arc-20240116; t=1713542272; c=relaxed/simple;
+	bh=8QEDQjOppN6rgrkwPLW/8KvmAUWYG8et7RnU5mOglu8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lzbg2gh7wJp2wxIBoMVef6n92HK66nvWzgA/GQz4jw8akbaJnE/fL5qBfQE2CU5GScvlSyDB8yafZ+5miSm77l/oqsiMoq3CsLOQIDB5XfKEy9fJ4Rof/FlMsP+iqeM+MiEm5W00Q3dzpUt+0TxjkM20z2B5T6EhcnPhE+MoYXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NB10FGA3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F5B9C072AA;
+	Fri, 19 Apr 2024 15:57:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713542271;
+	bh=8QEDQjOppN6rgrkwPLW/8KvmAUWYG8et7RnU5mOglu8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NB10FGA3HUo4FWUdWzr/7uRQFBe3lrvgTHD57CEE1hkQsdk2PFT0iRvsT6WlBsryH
+	 R9ECS0tIP+q2ePoWG3IXYHRwrC4ZbdKbm2b6WKVRbsH6kivseIWcvWn1YLLFFCjqnJ
+	 +WEiNG9+K6yDDCcarItZTLBsG6w0laG+wVvCVK6NBCvHmYuMpUV1H6260C2irK8N3s
+	 N1ICOKTf3K1upQySIskCOkv9FNsFnP6fBdzQmAOw3+O15/uvuu1Td3Jr7hm0nIo9ij
+	 ShYAEPNvj7I0A5Guge7e3pn+aQC+rO7on5RMuT9Gg8vururtjFLBW040ID3hA375Zi
+	 S69jOsJC2LEcw==
+Date: Fri, 19 Apr 2024 16:57:40 +0100
+From: Conor Dooley <conor@kernel.org>
+To: linux-riscv@lists.infradead.org
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Jamie Gibbons <jamie.gibbons@microchip.com>,
+	Valentina Fernandez <valentina.fernandezalanis@microchip.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org
+Subject: Re: [PATCH v1 4/5] dt-bindings: PCI: microchip: increase number of
+ items in ranges property
+Message-ID: <20240419-batboy-mutt-4da787cffd3d@spud>
+References: <20240327-parkway-dodgy-f0fe1fa20892@spud>
+ <20240327-debunk-perky-f5514ca332be@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH 08/10] KVM: x86: Remove periodic global clock updates
-To: David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Sean Christopherson <seanjc@google.com>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Oliver Upton <oliver.upton@linux.dev>, Marcelo Tosatti
- <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
-References: <20240418193528.41780-1-dwmw2@infradead.org>
- <20240418193528.41780-9-dwmw2@infradead.org>
-Content-Language: en-US
-Organization: Xen Project
-In-Reply-To: <20240418193528.41780-9-dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="P5gNKGuon3/meze+"
+Content-Disposition: inline
+In-Reply-To: <20240327-debunk-perky-f5514ca332be@spud>
 
-On 18/04/2024 20:34, David Woodhouse wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> This effectively reverts commit 332967a3eac0 ("x86: kvm: introduce
-> periodic global clock updates"). The periodic update was introduced to
-> propagate NTP corrections to the guest KVM clock, when the KVM clock was
-> based on CLOCK_MONOTONIC.
-> 
-> However, commit 53fafdbb8b21 ("KVM: x86: switch KVMCLOCK base to
-> monotonic raw clock") switched to using CLOCK_MONOTONIC_RAW as the basis
-> for the KVM clock, avoiding the NTP frequency skew altogether.
-> 
-> So the periodic update serves no purpose. Remove it.
-> 
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+
+--P5gNKGuon3/meze+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+PCI maintainers, could you please either apply this (preferred!) or give
+me an ack to take it with the dts?
+
+Thanks,
+Conor.
+
+On Wed, Mar 27, 2024 at 12:24:39PM +0000, Conor Dooley wrote:
+> From: Valentina Fernandez <valentina.fernandezalanis@microchip.com>
+>=20
+> Increase the number of items in the ranges property to allow up to 3
+> ranges. For example a prefetchable range, a non-prefetchable range
+> and an IO range, depending on configuration.
+>=20
+> Signed-off-by: Valentina Fernandez <valentina.fernandezalanis@microchip.c=
+om>
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 > ---
->   arch/x86/kvm/x86.c | 25 -------------------------
->   1 file changed, 25 deletions(-)
-> 
+>  Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/pci/microchip,pcie-host.ya=
+ml b/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
+> index f7a3c2636355..e8212a05b7b1 100644
+> --- a/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
+> +++ b/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
+> @@ -65,7 +65,8 @@ properties:
+>        - const: msi
+> =20
+>    ranges:
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 3
+> =20
+>    dma-ranges:
+>      minItems: 1
+> --=20
+> 2.43.0
+>=20
 
-Reviewed-by: Paul Durrant <paul@xen.org>
+--P5gNKGuon3/meze+
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiKUdAAKCRB4tDGHoIJi
+0uRiAP0V/vBz26onjgXgloeZ0gVi8i6q/SLsKfs59S/dQBZHkwEAjywPdUJikVo/
+2Y4XvNpmuSZqJZbzHcMQXcsxriJmdgQ=
+=nmUD
+-----END PGP SIGNATURE-----
+
+--P5gNKGuon3/meze+--
 
