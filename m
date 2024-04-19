@@ -1,284 +1,190 @@
-Return-Path: <linux-kernel+bounces-150891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F0D78AA64D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:43:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73BC88AA654
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:46:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7703BB2140D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:43:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F297B1F2179E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:46:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4786B10F9;
-	Fri, 19 Apr 2024 00:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C254E137E;
+	Fri, 19 Apr 2024 00:46:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qh2QOhZj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aoHeQSpw"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B37384;
-	Fri, 19 Apr 2024 00:43:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3732465F
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 00:46:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713487425; cv=none; b=Y2xFmxCQoxxNtOFirAY2wXx9GNfaXeHxir9tsCpXEuOP+VPZ+ye9+h9Y0BZz9t5hfUp2AIEedwJ12RMJeCJnYmeO5TcDtalDn9nTI/flXkKS1pobcFvrY1tyVmhyK0R2biToGTgOLcgVcpa0zshuK5oPPG6R2s4blDG/qS9XjhQ=
+	t=1713487605; cv=none; b=McT0dzO1+iT2in1kH/xGNqJ5FVmlufcASqPWTylE/coEY2u/gEcIRCb6A86GXDHWRUm4LoczEs8a5zRSFfLnLpd1EMXFH5Mz8X3Mr4Mat2vDw/UJYjSiOb/D5wZaPMuzLsLf9eU8GXo4FkC+aDCfyyfhxPg4+NyhY9SMrdh+2A4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713487425; c=relaxed/simple;
-	bh=hsYDhhbMEyQVSXstrp6LV8xMvFfmD+7c/VAqe7lXUMo=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=YH90DFOslWdqImzwNW93Cm/R9LZwIeW6OSZv2mxMuDQ+iB04QSTTQmWTFaT1BKsh8XXYU84xjqG+msCwdyqSwQfyN6K2V4IESGZMXp/8bJsfbIyXvLlmT1IVg8ei/9ksq/biwsHCAeIkfJxs7jcSt5CMGeouzPkbsgxAvxf0ozw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qh2QOhZj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBCC5C113CC;
-	Fri, 19 Apr 2024 00:43:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713487424;
-	bh=hsYDhhbMEyQVSXstrp6LV8xMvFfmD+7c/VAqe7lXUMo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Qh2QOhZjKyVjxTAZKfClDtQtTOUnnIqyqKK17mHoq4w3M6zJfh4yLnD6ITSRRGDK3
-	 7eIpnM4ERdTtKVd0P429/Ynu4NpbH+2FSi5x3uaw2UO5CAmrJSGnX4dijqifqtxSdv
-	 yINIIAJrtKPqZNH4YIQR069V+47Xdc51boruRVTRd8jBdhFoc06p7uElH8XV2ptSui
-	 aJo8QmHG8wEuWGNSXXSgUi5WXurQdlgTiJ3D7geaGe8ssgQ8mJKZGksfl673Hvoi24
-	 upnD8uAv3jmEguYs/rbdifo3bRxMH/UAN1gOlgVtK2/Rs66DhJjX55HA+LYUzZGvhC
-	 tkUgl9G4a2yhw==
-Date: Fri, 19 Apr 2024 09:43:38 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jonthan Haslam <jonathan.haslam@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- linux-trace-kernel@vger.kernel.org, andrii@kernel.org, bpf@vger.kernel.org,
- rostedt@goodmis.org, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
- <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung
- Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander
- Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa
- <jolsa@kernel.org>, linux-trace-kernel@vger.kernel.org, Ian Rogers
- <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
-Message-Id: <20240419094338.5c1cc590399078fad6422a05@kernel.org>
-In-Reply-To: <u6rrbsrjxpu43re5vb5o6vzvpxoto42wq47av3hagge6mfjsaj@25pujxi7z3u7>
-References: <20240325120323.ec3248d330b2755e73a6571e@kernel.org>
-	<CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
-	<20240327084245.a890ae12e579f0be1902ae4a@kernel.org>
-	<54jakntmdyedadce7yrf6kljcjapbwyoqqt26dnllrqvs3pg7x@itra4a2ikgqw>
-	<20240328091841.ce9cc613db375536de843cfb@kernel.org>
-	<CAEf4BzYCJWXAzdV3q5ex+8hj5ZFCnu5CT=w8eDbZCGqm+CGYOQ@mail.gmail.com>
-	<CAEf4BzbSvMa2+hdTifMKTsNiOL6X=P7eor4LpPKfHM=Y9-71fw@mail.gmail.com>
-	<20240330093631.72273967ba818cb16aeb58b6@kernel.org>
-	<lcc6lnkbfnyr6yjvybckevhzaafvh7jmpse6tnviq5bjar3y6z@yvz6cuzjzrky>
-	<20240411082156.6613cf4dc03129ea1183ab88@kernel.org>
-	<u6rrbsrjxpu43re5vb5o6vzvpxoto42wq47av3hagge6mfjsaj@25pujxi7z3u7>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713487605; c=relaxed/simple;
+	bh=SAxwfbUODKuVZAjbg4c/ynrHR8AgFFORXQJplr0LD0o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GzssEdwAZCKXJMzwfqmEDnPvVvYB+STyAajeVYMDgGzAsyLpNnhoi/APjuAeAUNJltgfcQchIf4Xgmjq+Ze9j48xDnPGmyTIgSpQ8A5uJXAJS765hoha/1s6XokVAfm7pwH8/KHOUaL200I0yyqDzHkz6LjmTyTp6ESwB0rlHyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aoHeQSpw; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-61ac183ee82so22524257b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:46:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713487601; x=1714092401; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pc2K8oSIkotNB7jJyCQuIZXRU6et6cxNtG+X9+wOPdo=;
+        b=aoHeQSpwvAlLt95baNIHl+F8Ul2uCXeMaX47VKhkcnpvawVmACbeFstUt0KTes1vlT
+         P9zbq54ubf9x8dTy08faGjpYN2zE5s7WMRFI3h8cEqx0DosPFnEb7UOuUNmHoJSkPqvb
+         OazrqAKCt4oD/q6JAlw3FeqxcL2+zuxzPPJrA7kYSx3T5vtuWPhgkqnvnTr81PZpGWP1
+         KMM8pKjhGam3sOCB6DwKup0Smm4aP+hmAi3rDnUKf2lkKaHpuU9jp8MmO3FioCTghG4I
+         +L/jpFH38MBpsTYq72LnRLBmWDSCoxZSwu8+d63dgkAdPR+5VLrHhRfJUxIDUErbEv+v
+         jaxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713487601; x=1714092401;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pc2K8oSIkotNB7jJyCQuIZXRU6et6cxNtG+X9+wOPdo=;
+        b=dZM991fjPaapIWKbQFJ/lue39DlJhNO2gfXSZHD0ljcjCpxbsKb86SyAdnL6sJRp38
+         b0aob/IqkF3jqdojcGMqC61jv+Ohrc4S6m4WG4fGQHSg05yJmJhOg+e1AkiAxwTl4trW
+         tfIE+Z9T/YM+kl9apK/WW1Ya/q9ruYf9yIhwXY2LvkBhuGcwsdAUkXvy/tZXhP6ALM0h
+         hjBoBtErw35susFIPCQFnvyyWnwdE+BZ4g/tRB/S3egu1+xfjPIycoOnSDbgpZv5hvqd
+         0+z9g6KHVIux2TgjjVYsRUxDkW/9Jf5fCCqfUrfXO/VCkASZRUSClnoQi1VoTVCrPZw9
+         B6Yw==
+X-Forwarded-Encrypted: i=1; AJvYcCUAZROsmzKBGI9V96JJ2djcWs4o8IPJv54zf5Jvs/C2k534XmytsAarF/NVrXeriAyRiGD5krAALJLFNb2gbnV7gOdS0LatMUzoGunX
+X-Gm-Message-State: AOJu0YwZtevnDKQSIp8KizyLvxAPbVPKNLzlpe9G5oTnye+/1Bfh9tmD
+	CLYsLmmxAJ0kyQ1TvDFFZ0ltgBlrolOFq/blEnQenw+4l8oNMgY0YduB+aO8EM4=
+X-Google-Smtp-Source: AGHT+IF9ox7XbuwU6pn2xh/zYYuFHCg4Tx9H6JkTzr7/7WPL8AC/fAwnxlf8VeYoxCBjnfRBP9KNDA==
+X-Received: by 2002:a0d:cc87:0:b0:61a:e7db:5f81 with SMTP id o129-20020a0dcc87000000b0061ae7db5f81mr3097958ywd.18.1713487601185;
+        Thu, 18 Apr 2024 17:46:41 -0700 (PDT)
+Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.gmail.com with ESMTPSA id t192-20020a0deac9000000b0061accf6a37esm561363ywe.131.2024.04.18.17.46.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 17:46:40 -0700 (PDT)
+Message-ID: <b675810d-d06b-454e-9726-c987603453e7@linaro.org>
+Date: Thu, 18 Apr 2024 19:46:38 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/8] net: ipa: maintain bitmap of suspend-enabled
+ endpoints
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc: mka@chromium.org, andersson@kernel.org, quic_cpratapa@quicinc.com,
+ quic_avuyyuru@quicinc.com, quic_jponduru@quicinc.com,
+ quic_subashab@quicinc.com, elder@kernel.org, netdev@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240418204729.1952353-1-elder@linaro.org>
+ <20240418204729.1952353-2-elder@linaro.org>
+ <2614c8b3-ee7f-4ac0-9b43-20905759756e@linaro.org>
+Content-Language: en-US
+From: Alex Elder <elder@linaro.org>
+In-Reply-To: <2614c8b3-ee7f-4ac0-9b43-20905759756e@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, 18 Apr 2024 12:10:59 +0100
-Jonthan Haslam <jonathan.haslam@gmail.com> wrote:
-
-> Hi Masami,
+On 4/18/24 6:52 PM, Bryan O'Donoghue wrote:
+> On 18/04/2024 21:47, Alex Elder wrote:
+>> Keep track of which endpoints have the SUSPEND IPA interrupt enabled
+>> in a variable-length bitmap.  This will be used in the next patch to
+>> allow the SUSPEND interrupt type to be disabled except when needed.
+>>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>>   drivers/net/ipa/ipa_interrupt.c | 19 +++++++++++++++++--
+>>   1 file changed, 17 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/ipa/ipa_interrupt.c 
+>> b/drivers/net/ipa/ipa_interrupt.c
+>> index c44ec05f71e6f..0e8d4e43275ea 100644
+>> --- a/drivers/net/ipa/ipa_interrupt.c
+>> +++ b/drivers/net/ipa/ipa_interrupt.c
+>> @@ -37,11 +37,13 @@
+>>    * @ipa:        IPA pointer
+>>    * @irq:        Linux IRQ number used for IPA interrupts
+>>    * @enabled:        Mask indicating which interrupts are enabled
+>> + * @suspend_enabled:    Bitmap of endpoints with the SUSPEND 
+>> interrupt enabled
+>>    */
+>>   struct ipa_interrupt {
+>>       struct ipa *ipa;
+>>       u32 irq;
+>>       u32 enabled;
+>> +    unsigned long *suspend_enabled;
+>>   };
+>>   /* Clear the suspend interrupt for all endpoints that signaled it */
+>> @@ -211,6 +213,7 @@ static void ipa_interrupt_suspend_control(struct 
+>> ipa_interrupt *interrupt,
+>>           val |= mask;
+>>       else
+>>           val &= ~mask;
+>> +    __change_bit(endpoint_id, interrupt->suspend_enabled);
+>>       iowrite32(val, ipa->reg_virt + offset);
+>>   }
+>> @@ -246,7 +249,16 @@ int ipa_interrupt_config(struct ipa *ipa)
+>>       interrupt->ipa = ipa;
+>> -    /* Disable all IPA interrupt types */
+>> +    /* Initially all IPA interrupt types are disabled */
+>> +    interrupt->enabled = 0;
+>> +    interrupt->suspend_enabled = bitmap_zalloc(ipa->endpoint_count,
+>> +                           GFP_KERNEL);
 > 
-> > > > OK, then I'll push this to for-next at this moment.
-> > > > Please share if you have a good idea for the batch interface which can be
-> > > > backported. I guess it should involve updating userspace changes too.
-> > > 
-> > > Did you (or anyone else) need anything more from me on this one so that it
-> > > can be pushed? I provided some benchmark numbers but happy to provide
-> > > anything else that may be required.
-> > 
-> > Yeah, if you can update with the result, it looks better to me.
-> > Or, can I update the description?
+> why not use devm_bitmap_zalloc() instead and skip managing the cleanup ?
+
+I don't use the devm_*() variants in the IPA driver.
+
+I know I can, but if I'm make the switch I want to
+do it everywhere.  Not now.
+
+Thanks for the review.
+
+					-Alex
+
+>> +    if (!interrupt->suspend_enabled) {
+>> +        ret = -ENOMEM;
+>> +        goto err_kfree;
+>> +    }
+>> +
+>> +    /* Disable IPA interrupt types */
+>>       reg = ipa_reg(ipa, IPA_IRQ_EN);
+>>       iowrite32(0, ipa->reg_virt + reg_offset(reg));
+>> @@ -254,7 +266,7 @@ int ipa_interrupt_config(struct ipa *ipa)
+>>                      "ipa", interrupt);
+>>       if (ret) {
+>>           dev_err(dev, "error %d requesting \"ipa\" IRQ\n", ret);
+>> -        goto err_kfree;
+>> +        goto err_free_bitmap;
+>>       }
+>>       ret = dev_pm_set_wake_irq(dev, irq);
+>> @@ -270,6 +282,8 @@ int ipa_interrupt_config(struct ipa *ipa)
+>>   err_free_irq:
+>>       free_irq(interrupt->irq, interrupt);
+>> +err_free_bitmap:
+>> +    bitmap_free(interrupt->suspend_enabled);
+>>   err_kfree:
+>>       kfree(interrupt);
 > 
-> Just checking if you need me to do anything on this so that it can be
-> pushed to for-next? Would be really great if we can get this in. Thanks
-> for all your help.
-
-Yes, other uprobe performance improvements[1][2] have the benchmark results,
-but this patch doesn't. If you update this with the benchmark results, it is
-helpful to me.
-
-[1] https://lore.kernel.org/all/20240318181728.2795838-3-andrii@kernel.org/
-[2] https://lore.kernel.org/all/20240318181728.2795838-4-andrii@kernel.org/
-
-Thank you,
-
+> You could also use devm_kzalloc() and do away with the kfree()s you have 
+> here on the probe path.
 > 
-> Jon.
+>> @@ -286,6 +300,7 @@ void ipa_interrupt_deconfig(struct ipa *ipa)
+>>       dev_pm_clear_wake_irq(dev);
+>>       free_irq(interrupt->irq, interrupt);
+>> +    bitmap_free(interrupt->suspend_enabled);
+>>   }
+>>   /* Initialize the IPA interrupt structure */
 > 
-> > 
-> > Thank you,
-> > 
-> > > 
-> > > Thanks!
-> > > 
-> > > Jon.
-> > > 
-> > > > 
-> > > > Thank you!
-> > > > 
-> > > > > >
-> > > > > > So I hope you can reconsider and accept improvements in this patch,
-> > > > > > while Jonathan will keep working on even better final solution.
-> > > > > > Thanks!
-> > > > > >
-> > > > > > > I look forward to your formalized results :)
-> > > > > > >
-> > > > > 
-> > > > > BTW, as part of BPF selftests, we have a multi-attach test for uprobes
-> > > > > and USDTs, reporting attach/detach timings:
-> > > > > $ sudo ./test_progs -v -t uprobe_multi_test/bench
-> > > > > bpf_testmod.ko is already unloaded.
-> > > > > Loading bpf_testmod.ko...
-> > > > > Successfully loaded bpf_testmod.ko.
-> > > > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__open_and_load 0 nsec
-> > > > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__attach 0 nsec
-> > > > > test_bench_attach_uprobe:PASS:uprobes_count 0 nsec
-> > > > > test_bench_attach_uprobe: attached in   0.120s
-> > > > > test_bench_attach_uprobe: detached in   0.092s
-> > > > > #400/5   uprobe_multi_test/bench_uprobe:OK
-> > > > > test_bench_attach_usdt:PASS:uprobe_multi__open 0 nsec
-> > > > > test_bench_attach_usdt:PASS:bpf_program__attach_usdt 0 nsec
-> > > > > test_bench_attach_usdt:PASS:usdt_count 0 nsec
-> > > > > test_bench_attach_usdt: attached in   0.124s
-> > > > > test_bench_attach_usdt: detached in   0.064s
-> > > > > #400/6   uprobe_multi_test/bench_usdt:OK
-> > > > > #400     uprobe_multi_test:OK
-> > > > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > > > > Successfully unloaded bpf_testmod.ko.
-> > > > > 
-> > > > > So it should be easy for Jonathan to validate his changes with this.
-> > > > > 
-> > > > > > > Thank you,
-> > > > > > >
-> > > > > > > >
-> > > > > > > > Jon.
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > Thank you,
-> > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > BTW, how did you measure the overhead? I think spinlock overhead
-> > > > > > > > > > > will depend on how much lock contention happens.
-> > > > > > > > > > >
-> > > > > > > > > > > Thank you,
-> > > > > > > > > > >
-> > > > > > > > > > > >
-> > > > > > > > > > > > [0] https://docs.kernel.org/locking/spinlocks.html
-> > > > > > > > > > > >
-> > > > > > > > > > > > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
-> > > > > > > > > > > > ---
-> > > > > > > > > > > >  kernel/events/uprobes.c | 22 +++++++++++-----------
-> > > > > > > > > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > > > > > > > > > > >
-> > > > > > > > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > > > > > > > > > > index 929e98c62965..42bf9b6e8bc0 100644
-> > > > > > > > > > > > --- a/kernel/events/uprobes.c
-> > > > > > > > > > > > +++ b/kernel/events/uprobes.c
-> > > > > > > > > > > > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
-> > > > > > > > > > > >   */
-> > > > > > > > > > > >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree)
-> > > > > > > > > > > >
-> > > > > > > > > > > > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serialize rbtree access */
-> > > > > > > > > > > > +static DEFINE_RWLOCK(uprobes_treelock);      /* serialize rbtree access */
-> > > > > > > > > > > >
-> > > > > > > > > > > >  #define UPROBES_HASH_SZ      13
-> > > > > > > > > > > >  /* serialize uprobe->pending_list */
-> > > > > > > > > > > > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
-> > > > > > > > > > > >  {
-> > > > > > > > > > > >       struct uprobe *uprobe;
-> > > > > > > > > > > >
-> > > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > > >       uprobe = __find_uprobe(inode, offset);
-> > > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > > >
-> > > > > > > > > > > >       return uprobe;
-> > > > > > > > > > > >  }
-> > > > > > > > > > > > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
-> > > > > > > > > > > >  {
-> > > > > > > > > > > >       struct uprobe *u;
-> > > > > > > > > > > >
-> > > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > > > > >       u = __insert_uprobe(uprobe);
-> > > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > > > > >
-> > > > > > > > > > > >       return u;
-> > > > > > > > > > > >  }
-> > > > > > > > > > > > @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
-> > > > > > > > > > > >       if (WARN_ON(!uprobe_is_active(uprobe)))
-> > > > > > > > > > > >               return;
-> > > > > > > > > > > >
-> > > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > > > > >       rb_erase(&uprobe->rb_node, &uprobes_tree);
-> > > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > > > > >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
-> > > > > > > > > > > >       put_uprobe(uprobe);
-> > > > > > > > > > > >  }
-> > > > > > > > > > > > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
-> > > > > > > > > > > >       min = vaddr_to_offset(vma, start);
-> > > > > > > > > > > >       max = min + (end - start) - 1;
-> > > > > > > > > > > >
-> > > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > > >       n = find_node_in_range(inode, min, max);
-> > > > > > > > > > > >       if (n) {
-> > > > > > > > > > > >               for (t = n; t; t = rb_prev(t)) {
-> > > > > > > > > > > > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
-> > > > > > > > > > > >                       get_uprobe(u);
-> > > > > > > > > > > >               }
-> > > > > > > > > > > >       }
-> > > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > > >  }
-> > > > > > > > > > > >
-> > > > > > > > > > > >  /* @vma contains reference counter, not the probed instruction. */
-> > > > > > > > > > > > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
-> > > > > > > > > > > >       min = vaddr_to_offset(vma, start);
-> > > > > > > > > > > >       max = min + (end - start) - 1;
-> > > > > > > > > > > >
-> > > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > > >       n = find_node_in_range(inode, min, max);
-> > > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > > >
-> > > > > > > > > > > >       return !!n;
-> > > > > > > > > > > >  }
-> > > > > > > > > > > > --
-> > > > > > > > > > > > 2.43.0
-> > > > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > --
-> > > > > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > --
-> > > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > > >
-> > > > > > >
-> > > > > > > --
-> > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > 
-> > > > 
-> > > > -- 
-> > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > 
-> > -- 
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Just suggestions though.
 > 
+> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
