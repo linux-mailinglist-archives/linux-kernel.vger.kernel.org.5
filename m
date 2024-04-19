@@ -1,298 +1,238 @@
-Return-Path: <linux-kernel+bounces-150941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41AA68AA6F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 04:30:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 585F28AA6FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 04:33:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C11AE1F22066
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:30:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8BF0B22057
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C87EA4C85;
-	Fri, 19 Apr 2024 02:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8364C94;
+	Fri, 19 Apr 2024 02:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jPQnPiqG"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JHVjW4vq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528E438D
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 02:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9138137E;
+	Fri, 19 Apr 2024 02:33:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713493831; cv=none; b=aG2VvsaJHBKChy1H5ivwQmW0SnWb5tDKCLz+fsMi/oFrM9njkGToxdqLLh3/ZoGLs58ZTyQ1gLlgN6LNoDW3rVaW4yXM/4UKUEjVowZS6a2wtH/KGIVhmnFVaSQd33fS4Jk06HH72mIJp8QAVeiWsLGXq/UW9cYbdppwyPtbBp8=
+	t=1713493990; cv=none; b=HXG2IloqH5+25w5BOfzWsQomT6t3H34JmvPNJEbt0Sklqy8IcsOXyu1Qbxqbd0d0IyfDi/IRAxNVHzZV+79irS2ERC+SN6ccqZGXxadBdzU/dMcH7lmcTNcnKByTeIF+8GxRp/IFO+0ijUKolQMAcjIk2WL9WHv40tEft+E+twc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713493831; c=relaxed/simple;
-	bh=Am84cdqWSckmqHURuFlza9spRPGOczepohza8PmEVUQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OPYhzUiu9Bm7FlMT/3As+/ugykwrb31l+GZJVngUbzIgLIrrRevDWwp7lIpPMPTM53oK1lNTdHSg5erGVn8FZqu+9FW6XelorvdYtwNGjuRo9DjUbJlzLr3jxvBM0AI3aLxYRp3rXUzcCTb+q6dD/1d2mI/dy/DRx8lJvtAM/Mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jPQnPiqG; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e65b29f703so13170595ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 19:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713493829; x=1714098629; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OqzqLAXxjHizAsgJ8y+IU6jvWunvLzLPi/Caa0cG/nw=;
-        b=jPQnPiqG1oSkDK+r9a8cDETT5RRCUkq5ZYzYGqbmlU6egsD92JbipSynj29qS8Iuj+
-         Vfb/TAjcz+qdSNVyeQiJjovKCtRmPDEu6MxfbQiLF8dbKdUDWb3SSuUovFZ1b9IXeDt1
-         r6YssUuFjxvR8bpj/BDXTrALM2oz10N1AuvtVmMAtu6g48/pdGK3knydEFWYXJA1MhUd
-         1wW0aiQltuwV52A5yRGbRBAJewYN6Sq+j79V4Vfm8JjXe1OSONs54i3YadLdFlqnAz35
-         M+VpF4TG3qqL4occKZsfqmBYzGYsPKgMl7yaJI5hS/mDjkQ4iAS00/VIRtSNPQkFvwy0
-         yJVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713493829; x=1714098629;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=OqzqLAXxjHizAsgJ8y+IU6jvWunvLzLPi/Caa0cG/nw=;
-        b=O6RDlRueo6zqE3nWChMI2GxPUsrGFSfPe3SmWsjBGZLKITmC0qc4q8N+jVctfSatnh
-         LDS4XILOr6A4Odo3cqItxkN6mSWgGIH9KIpSHOEnYFdbvguKk+6ZyY3GCW4wVPS5r3oN
-         Sh/tmZG6BG4DVlIrOMRjC7UZB10aH2Zhdv+UU+ed5ym1CEKdcnZQmZrBjmcdR1qZowR8
-         9Esf2Y1XhHmxAOPJbcPvn7LlZJ4iy+UDVsEHOVnZmGNrn3CM3A85CFJMpt95ZGx/K5rq
-         dMz6uGRGD5GtWYl46HZTDX9IOdP0HRYIwkdJtLVfT7A3JF3uzEhqjndPG/1hEifjdA7V
-         9Jzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVfEKyxxLptmo0k82IUYEvag7XccQQ7XgRncfuqrxMfFPr3pKUUVwUViMQ0z3DmJV7w7GKg0LEijoO+LPWrxqEmh9Im/NjyF8vSF5hk
-X-Gm-Message-State: AOJu0Yw6gNxxCDaEJrukHa63WGxGrBBNFzV2LR22gAsahuihOzYYkBIQ
-	+3w6fO+7xCLJ9Rok1GUakcFWtpXqTW95mwQXjCksqevxkwM7gHV0
-X-Google-Smtp-Source: AGHT+IEh3AxD9eCXwyzOo2QAfwekki2w8N44Hzo9DD9m6GmzMpcAsoKGxurQ2ONhYxx0b+cmPqN60w==
-X-Received: by 2002:a17:902:7617:b0:1e2:bf94:487 with SMTP id k23-20020a170902761700b001e2bf940487mr761197pll.57.1713493829422;
-        Thu, 18 Apr 2024 19:30:29 -0700 (PDT)
-Received: from [192.168.255.10] ([43.132.141.25])
-        by smtp.gmail.com with ESMTPSA id i9-20020a17090332c900b001e3cfb853a2sm2222893plr.183.2024.04.18.19.30.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 19:30:29 -0700 (PDT)
-Message-ID: <ec2b110b-fb85-4af2-942b-645511a32297@gmail.com>
-Date: Fri, 19 Apr 2024 10:30:24 +0800
+	s=arc-20240116; t=1713493990; c=relaxed/simple;
+	bh=b32gB5mmLTgH83geBuB0IJ9qfWDbzBC9We7CLDKlGIM=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=itdlSTXOs2Er29+/3+OHmRW53LEMP2qOmWOGh8j2AG1YugCw7/nsFMRrGEETsCf6w0oMq8ba9Tj2O5LbT6h/HsjVmmqt0/dIHYNtIchHH4n+c5Cn6zSazKzlZzzBHGY14StKNTkwG/82t/R9e16BcZiKu5LMA3JzsQoBEU3yZro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JHVjW4vq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85116C113CC;
+	Fri, 19 Apr 2024 02:33:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713493989;
+	bh=b32gB5mmLTgH83geBuB0IJ9qfWDbzBC9We7CLDKlGIM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=JHVjW4vqRTa3mRYpGwC6FQY2ORkbGjTCr7HbIXGGBUW1ojkPxX6skMIscw7qEseuy
+	 XGlOc+8YwbJ4pmfanEkIkj0oIYJBI+8FC2DkViIBmT9eU//SmlEpLvgvpnTSHBouBK
+	 pETj3z8khr4MzG+l35+wDVqEUbr7XOeesa/1L5A+jFQX2GsDnPoQyfGaKxEirF9AzO
+	 DPsIpT3l2aKV26vw1iQQjftLL2Gq5qAxcmY3PUKzoVAabkMWtFc6bTqaDwpQgcl888
+	 pMSktzgnrwCTb58Nb2g7XFZCSa+aEyDZJXkbyVUpESTkPPKKVqBPmNVZ12XFGKPvBO
+	 YiZEH2D5zwq5g==
+Date: Fri, 19 Apr 2024 11:33:05 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Beau Belgrave <beaub@linux.microsoft.com>
+Cc: rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ dcook@linux.microsoft.com
+Subject: Re: [PATCH 1/2] tracing/user_events: Fix non-spaced field matching
+Message-Id: <20240419113305.7b0ae2b11395eec16b5c15b6@kernel.org>
+In-Reply-To: <20240416224102.734-2-beaub@linux.microsoft.com>
+References: <20240416224102.734-1-beaub@linux.microsoft.com>
+	<20240416224102.734-2-beaub@linux.microsoft.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 2/2] mm: convert mm's rss stats to use atomic mode
-To: Peng Zhang <zhangpeng362@huawei.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-Cc: akpm@linux-foundation.org, dennisszhou@gmail.com, shakeelb@google.com,
- jack@suse.cz, surenb@google.com, kent.overstreet@linux.dev, mhocko@suse.cz,
- vbabka@suse.cz, yuzhao@google.com, yu.ma@intel.com,
- wangkefeng.wang@huawei.com, sunnanyong@huawei.com
-References: <20240418142008.2775308-1-zhangpeng362@huawei.com>
- <20240418142008.2775308-3-zhangpeng362@huawei.com>
-From: Rongwei Wang <rongwei.wrw@gmail.com>
-In-Reply-To: <20240418142008.2775308-3-zhangpeng362@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
+On Tue, 16 Apr 2024 22:41:01 +0000
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
+> When the ABI was updated to prevent same name w/different args, it
+> missed an important corner case when fields don't end with a space.
+> Typically, space is used for fields to help separate them, like
+> "u8 field1; u8 field2". If no spaces are used, like
+> "u8 field1;u8 field2", then the parsing works for the first time.
+> However, the match check fails on a subsequent register, leading to
+> confusion.
+> 
+> This is because the match check uses argv_split() and assumes that all
+> fields will be split upon the space. When spaces are used, we get back
+> { "u8", "field1;" }, without spaces we get back { "u8", "field1;u8" }.
+> This causes a mismatch, and the user program gets back -EADDRINUSE.
+> 
+> Add a method to detect this case before calling argv_split(). If found
+> force a space after the field separator character ';'. This ensures all
+> cases work properly for matching.
+> 
+> With this fix, the following are all treated as matching:
+> u8 field1;u8 field2
+> u8 field1; u8 field2
+> u8 field1;\tu8 field2
+> u8 field1;\nu8 field2
 
-On 2024/4/18 22:20, Peng Zhang wrote:
-> From: ZhangPeng <zhangpeng362@huawei.com>
->
-> Since commit f1a7941243c1 ("mm: convert mm's rss stats into
-> percpu_counter"), the rss_stats have converted into percpu_counter,
-> which convert the error margin from (nr_threads * 64) to approximately
-> (nr_cpus ^ 2). However, the new percpu allocation in mm_init() causes a
-> performance regression on fork/exec/shell. Even after commit 14ef95be6f55
-> ("kernel/fork: group allocation/free of per-cpu counters for mm struct"),
-> the performance of fork/exec/shell is still poor compared to previous
-> kernel versions.
->
-> To mitigate performance regression, we delay the allocation of percpu
-> memory for rss_stats. Therefore, we convert mm's rss stats to use
-> percpu_counter atomic mode. For single-thread processes, rss_stat is in
-> atomic mode, which reduces the memory consumption and performance
-> regression caused by using percpu. For multiple-thread processes,
-> rss_stat is switched to the percpu mode to reduce the error margin.
-> We convert rss_stats from atomic mode to percpu mode only when the
-> second thread is created.
-Hi, Zhang Peng
+Sounds good to me. I just have some nits.
 
-This regression we also found it in lmbench these days. I have not test 
-your patch, but it seems will solve a lot for it.
-And I see this patch not fix the regression in multi-threads, that's 
-because of the rss_stat switched to percpu mode?
-(If I'm wrong, please correct me.) And It seems percpu_counter also has 
-a bad effect in exit_mmap().
-
-If so, I'm wondering if we can further improving it on the exit_mmap() 
-path in multi-threads scenario, e.g. to determine which CPUs the process 
-has run on (mm_cpumask()? I'm not sure).
-
->
-> After lmbench test, we can get 2% ~ 4% performance improvement
-> for lmbench fork_proc/exec_proc/shell_proc and 6.7% performance
-> improvement for lmbench page_fault (before batch mode[1]).
->
-> The test results are as follows:
->
->               base           base+revert        base+this patch
->
-> fork_proc    416.3ms        400.0ms  (3.9%)    398.6ms  (4.2%)
-> exec_proc    2095.9ms       2061.1ms (1.7%)    2047.7ms (2.3%)
-> shell_proc   3028.2ms       2954.7ms (2.4%)    2961.2ms (2.2%)
-> page_fault   0.3603ms       0.3358ms (6.8%)    0.3361ms (6.7%)
-I think the regression will becomes more obvious if more cores. How 
-about your test machine?
-
-Thanks,
--wrw
->
-> [1] https://lore.kernel.org/all/20240412064751.119015-1-wangkefeng.wang@huawei.com/
->
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> 
+> Fixes: ba470eebc2f6 ("tracing/user_events: Prevent same name but different args event")
+> Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 > ---
->   include/linux/mm.h          | 50 +++++++++++++++++++++++++++++++------
->   include/trace/events/kmem.h |  4 +--
->   kernel/fork.c               | 18 +++++++------
->   3 files changed, 56 insertions(+), 16 deletions(-)
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index d261e45bb29b..8f1bfbd54697 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2631,30 +2631,66 @@ static inline bool get_user_page_fast_only(unsigned long addr,
->    */
->   static inline unsigned long get_mm_counter(struct mm_struct *mm, int member)
->   {
-> -	return percpu_counter_read_positive(&mm->rss_stat[member]);
-> +	struct percpu_counter *fbc = &mm->rss_stat[member];
-> +
-> +	if (percpu_counter_initialized(fbc))
-> +		return percpu_counter_read_positive(fbc);
-> +
-> +	return percpu_counter_atomic_read(fbc);
->   }
->   
->   void mm_trace_rss_stat(struct mm_struct *mm, int member);
->   
->   static inline void add_mm_counter(struct mm_struct *mm, int member, long value)
->   {
-> -	percpu_counter_add(&mm->rss_stat[member], value);
-> +	struct percpu_counter *fbc = &mm->rss_stat[member];
-> +
-> +	if (percpu_counter_initialized(fbc))
-> +		percpu_counter_add(fbc, value);
-> +	else
-> +		percpu_counter_atomic_add(fbc, value);
->   
->   	mm_trace_rss_stat(mm, member);
->   }
->   
->   static inline void inc_mm_counter(struct mm_struct *mm, int member)
->   {
-> -	percpu_counter_inc(&mm->rss_stat[member]);
-> -
-> -	mm_trace_rss_stat(mm, member);
-> +	add_mm_counter(mm, member, 1);
->   }
->   
->   static inline void dec_mm_counter(struct mm_struct *mm, int member)
->   {
-> -	percpu_counter_dec(&mm->rss_stat[member]);
-> +	add_mm_counter(mm, member, -1);
-> +}
->   
-> -	mm_trace_rss_stat(mm, member);
-> +static inline s64 mm_counter_sum(struct mm_struct *mm, int member)
+>  kernel/trace/trace_events_user.c | 88 +++++++++++++++++++++++++++++++-
+>  1 file changed, 87 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> index 70d428c394b6..9184d3962b2a 100644
+> --- a/kernel/trace/trace_events_user.c
+> +++ b/kernel/trace/trace_events_user.c
+> @@ -1989,6 +1989,92 @@ static int user_event_set_tp_name(struct user_event *user)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * Counts how many ';' without a trailing space are in the args.
+> + */
+> +static int count_semis_no_space(char *args)
 > +{
-> +	struct percpu_counter *fbc = &mm->rss_stat[member];
+> +	int count = 0;
 > +
-> +	if (percpu_counter_initialized(fbc))
-> +		return percpu_counter_sum(fbc);
+> +	while ((args = strchr(args, ';'))) {
+> +		args++;
 > +
-> +	return percpu_counter_atomic_read(fbc);
+> +		if (!isspace(*args))
+> +			count++;
+> +	}
+> +
+> +	return count;
 > +}
 > +
-> +static inline s64 mm_counter_sum_positive(struct mm_struct *mm, int member)
-> +{
-> +	struct percpu_counter *fbc = &mm->rss_stat[member];
-> +
-> +	if (percpu_counter_initialized(fbc))
-> +		return percpu_counter_sum_positive(fbc);
-> +
-> +	return percpu_counter_atomic_read(fbc);
-> +}
-> +
-> +static inline int mm_counter_switch_to_pcpu_many(struct mm_struct *mm)
-> +{
-> +	return percpu_counter_switch_to_pcpu_many(mm->rss_stat, NR_MM_COUNTERS);
-> +}
-> +
-> +static inline void mm_counter_destroy_many(struct mm_struct *mm)
-> +{
-> +	percpu_counter_destroy_many(mm->rss_stat, NR_MM_COUNTERS);
->   }
->   
->   /* Optimized variant when folio is already known not to be anon */
-> diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
-> index 6e62cc64cd92..a4e40ae6a8c8 100644
-> --- a/include/trace/events/kmem.h
-> +++ b/include/trace/events/kmem.h
-> @@ -399,8 +399,8 @@ TRACE_EVENT(rss_stat,
->   		__entry->mm_id = mm_ptr_to_hash(mm);
->   		__entry->curr = !!(current->mm == mm);
->   		__entry->member = member;
-> -		__entry->size = (percpu_counter_sum_positive(&mm->rss_stat[member])
-> -							    << PAGE_SHIFT);
-> +		__entry->size = (mm_counter_sum_positive(mm, member)
-> +							<< PAGE_SHIFT);
->   	),
->   
->   	TP_printk("mm_id=%u curr=%d type=%s size=%ldB",
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 99076dbe27d8..0214273798c5 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -823,7 +823,7 @@ static void check_mm(struct mm_struct *mm)
->   			 "Please make sure 'struct resident_page_types[]' is updated as well");
->   
->   	for (i = 0; i < NR_MM_COUNTERS; i++) {
-> -		long x = percpu_counter_sum(&mm->rss_stat[i]);
-> +		long x = mm_counter_sum(mm, i);
->   
->   		if (unlikely(x))
->   			pr_alert("BUG: Bad rss-counter state mm:%p type:%s val:%ld\n",
-> @@ -1301,16 +1301,10 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
->   	if (mm_alloc_cid(mm))
->   		goto fail_cid;
->   
-> -	if (percpu_counter_init_many(mm->rss_stat, 0, GFP_KERNEL_ACCOUNT,
-> -				     NR_MM_COUNTERS))
-> -		goto fail_pcpu;
-> -
->   	mm->user_ns = get_user_ns(user_ns);
->   	lru_gen_init_mm(mm);
->   	return mm;
->   
-> -fail_pcpu:
-> -	mm_destroy_cid(mm);
->   fail_cid:
->   	destroy_context(mm);
->   fail_nocontext:
-> @@ -1730,6 +1724,16 @@ static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
->   	if (!oldmm)
->   		return 0;
->   
-> +	/*
-> +	 * For single-thread processes, rss_stat is in atomic mode, which
-> +	 * reduces the memory consumption and performance regression caused by
-> +	 * using percpu. For multiple-thread processes, rss_stat is switched to
-> +	 * the percpu mode to reduce the error margin.
-> +	 */
-> +	if (clone_flags & CLONE_THREAD)
-> +		if (mm_counter_switch_to_pcpu_many(oldmm))
-> +			return -ENOMEM;
-> +
->   	if (clone_flags & CLONE_VM) {
->   		mmget(oldmm);
->   		mm = oldmm;
+> +/*
+> + * Copies the arguments while ensuring all ';' have a trailing space.
+> + */
+> +static char *fix_semis_no_space(char *args, int count)
 
+nit: This name does not represent what it does. 'insert_space_after_semis()'
+is more self-described.
+
+> +{
+> +	char *fixed, *pos;
+> +	char c, last;
+> +	int len;
+> +
+> +	len = strlen(args) + count;
+> +	fixed = kmalloc(len + 1, GFP_KERNEL);
+> +
+> +	if (!fixed)
+> +		return NULL;
+> +
+> +	pos = fixed;
+> +	last = '\0';
+> +
+> +	while (len > 0) {
+> +		c = *args++;
+> +
+> +		if (last == ';' && !isspace(c)) {
+> +			*pos++ = ' ';
+> +			len--;
+> +		}
+> +
+> +		if (len > 0) {
+> +			*pos++ = c;
+> +			len--;
+> +		}
+> +
+> +		last = c;
+> +	}
+
+nit: This loop can be simpler, because we are sure fixed has enough length;
+
+/* insert a space after ';' if there is no space. */
+while(*args) {
+	*pos = *args++;
+	if (*pos++ == ';' && !isspace(*args))
+		*pos++ = ' ';
+}
+
+> +
+> +	/*
+> +	 * len is the length of the copy excluding the null.
+> +	 * This ensures we always have room for a null.
+> +	 */
+> +	*pos = '\0';
+> +
+> +	return fixed;
+> +}
+> +
+> +static char **user_event_argv_split(char *args, int *argc)
+> +{
+> +	/* Count how many ';' without a trailing space */
+> +	int count = count_semis_no_space(args);
+> +
+> +	if (count) {
+
+nit: it is better to exit fast, so 
+
+	if (!count)
+		return argv_split(GFP_KERNEL, args, argc);
+
+	...
+
+Thank you,
+
+OT: BTW, can this also simplify synthetic events?
+
+> +		/* We must fixup 'field;field' to 'field; field' */
+> +		char *fixed = fix_semis_no_space(args, count);
+> +		char **split;
+> +
+> +		if (!fixed)
+> +			return NULL;
+> +
+> +		/* We do a normal split afterwards */
+> +		split = argv_split(GFP_KERNEL, fixed, argc);
+> +
+> +		/* We can free since argv_split makes a copy */
+> +		kfree(fixed);
+> +
+> +		return split;
+> +	}
+> +
+> +	/* No fixup is required */
+> +	return argv_split(GFP_KERNEL, args, argc);
+> +}
+> +
+>  /*
+>   * Parses the event name, arguments and flags then registers if successful.
+>   * The name buffer lifetime is owned by this method for success cases only.
+> @@ -2012,7 +2098,7 @@ static int user_event_parse(struct user_event_group *group, char *name,
+>  		return -EPERM;
+>  
+>  	if (args) {
+> -		argv = argv_split(GFP_KERNEL, args, &argc);
+> +		argv = user_event_argv_split(args, &argc);
+>  
+>  		if (!argv)
+>  			return -ENOMEM;
+> -- 
+> 2.34.1
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
