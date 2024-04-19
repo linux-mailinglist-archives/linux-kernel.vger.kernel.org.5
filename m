@@ -1,109 +1,156 @@
-Return-Path: <linux-kernel+bounces-151579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B0678AB0AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:23:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 490A88AB0AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:24:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B51811F24F67
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:23:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 015B1284543
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C3E12EBD8;
-	Fri, 19 Apr 2024 14:23:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86FF512E1C8;
+	Fri, 19 Apr 2024 14:24:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="S1hEqphq"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SxLY3P9L"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BDF512D76E
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B2712D1FE;
+	Fri, 19 Apr 2024 14:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713536617; cv=none; b=fYryN8Anhh9gXfVm1D8L+dIiqvIixxN/RN5AgNZhx+HvDgmN+m2NyP0oToXUwowziXkqKxdQM/sEH1jjs8KueX122Tv9o2p2kTGv8SazRRZdKNVoIxAqHkwWdpYqcyQfQqVprrHhSTykn4DzfYMe7E0ZzFhfeJap4T28hBgZnNg=
+	t=1713536657; cv=none; b=rE5xeN1Km59hn9u4I3FaNwFiv/T373R/thp6CyTlvCPp2Dd0FcYwgx6eiknUNuKVWX4XlUgyMJeZh1SLTrrl19AnzMgdvetz1ZH87luwUG+Fj9UXTGEZW43tp7jTAvOH5UbFtEUQ0zYhtb1DUId8sLDDgzJm017u13lL93hfLNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713536617; c=relaxed/simple;
-	bh=z7LNFmMI2CnVKzK3GSStJwEhMqLU5/+AJz5kclzlLhg=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=iZstP0kXJdljBpODGNeknmDFjBGuOVivKwdHCkkgN/4Qo9erf+UOOH8DAAhfmzBqP77jIQRvv61Ib9R9LLMdz4ckktlJEO0WbohEaVqlXivO8DJns9MgwM9VNzgJOcErVHin1iwSDVPhiCTZnsA6RhzLoVc9ODr641j4iAfvuJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=S1hEqphq; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a554afec54eso219150066b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1713536612; x=1714141412; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Bl4R5HFkhB+8HO5d3f2JEsdVUplHApG7HWomH51zC/Y=;
-        b=S1hEqphqWaJtxut0TKl0vk7QoBXXVMs1nCK7rjI9TdOjDNXNA17ovvMM8iwXMlqht9
-         0cAU6xTFoT3wOoadSfiFLJMxa1p4zdEb7aQwExRM57veKrbOU0RG6sXPsA5OpkROrYWu
-         h9jo7q8SR/KnvF13lzMoZcpJf1Es/h1ZUs3TM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713536612; x=1714141412;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Bl4R5HFkhB+8HO5d3f2JEsdVUplHApG7HWomH51zC/Y=;
-        b=T3k7G/bPs2xjWIxyutO5F31t78+xpT33MH7SstjjJBwor5VWDlC+zZFCypLFsYZQrh
-         ySPPDdMQ4or5YeZhYAK3lo139qflLY5B0KOaw4BJA9iEk2cG8QGA19bRs2MZy7GNhiTI
-         tMCB7n5MuRmNBNY9oZxjeawCtcZB6cddsqstQPJ6xXR2mpcCGD6nkNTnAZ8+qA6XgAZk
-         NE8g2XNDXA2ozklQimVD/k6sl2ITX2rJCCekEl7k4RB2fv+Avo2AEOO1F/RqFPFi4fMc
-         yvMPgPjLixyJ3sWPygeppl/UyFkjTHdkUmL5zrgxelJki7VC1Af3Qz+/FW/udEqqMjHh
-         6ePQ==
-X-Gm-Message-State: AOJu0YyYPE0ZjU81Y0klNfYOL5nboK9++jW5UST2FWp6sRlRSgGu7BSI
-	V2Hvz1YzrPMdb5/g09bErx8LEHw6+Auyal/9Zbs0S/jZiNsjkHWE0se1ydHtVnH9x2PB3vSw9OX
-	eL3FGHJi+9aa8Mbh3X3y/syx1AXB/6CCj+m90DQ==
-X-Google-Smtp-Source: AGHT+IF1hURnYhu1wm5S8u0wEHKbjLZvjqJ882LV9gsu2D/vVtXBw6UhFEPfozOEl1JDPiqQWj2Z5qFarA2z1Rfz47M=
-X-Received: by 2002:a17:906:fb86:b0:a52:143c:1901 with SMTP id
- lr6-20020a170906fb8600b00a52143c1901mr1649678ejb.22.1713536612086; Fri, 19
- Apr 2024 07:23:32 -0700 (PDT)
+	s=arc-20240116; t=1713536657; c=relaxed/simple;
+	bh=SdssixGdlPbY8jaq8GaNsgqoDDyzwfpqA2Jhpw+VFec=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MAEE7YZ9ukNDuAbEQtcxe4etLqQAfIfRa00stXJ3ftA2XqHlh/h/RCmtqPfvVtwTL1SP/v3JQxL2IzWJUGEdFyodT8izCaY0wz+uawpxoXzb0h7Js72ZNkkfeMZoKE9tmmFMGE591RdyeVMJZvvD7rQee/1BsaNkP8nNAMPIxHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SxLY3P9L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAC2EC072AA;
+	Fri, 19 Apr 2024 14:24:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713536657;
+	bh=SdssixGdlPbY8jaq8GaNsgqoDDyzwfpqA2Jhpw+VFec=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=SxLY3P9L2qLfmVMeCpmqihqVr+SmUfgjv+eFg47OCDiG9EG0NPWvx+wcmWDt4KxMc
+	 CcZfuEGI2rSQEO1T9ENnpWHhSZ+Z5Gd/qfzzm1bK7SU/U6GTVLL7NnmN2QIoQ6NMUe
+	 uN0mfInPBEyYhbJQGB7cW3JyjgqCXPSzZUodcVdnaNtt86AwpvR6eoYlg4kJgbkbUn
+	 FwqpgskuVcrJ1jo4+nHGJ25by7Thq63ZiuBOKlVAjSmI3biMno0yyULBRsN2X71niW
+	 JZdxewuW8GqaG5sPhxSCPqHpmRLhgvn9YcXaCY3ERFlgwCFjHm+tHVt4/+ON1+H17K
+	 zzarKwCHMgDew==
+Message-ID: <dc6573ba-37cb-4394-9a89-16b6f8caa7ad@kernel.org>
+Date: Fri, 19 Apr 2024 16:24:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Fri, 19 Apr 2024 16:23:20 +0200
-Message-ID: <CAJfpegvMf45cm=VQa35HdjM6=y8SeMojw8snnOjifqYjKbtM_w@mail.gmail.com>
-Subject: [GIT PULL] fuse fixes for 6.9-rc5
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/3] dt-bindings: sc16is7xx: Add compatible line for
+ XR20M1172 UART
+To: "Konstantin P." <ria.freelander@gmail.com>,
+ Conor Dooley <conor@kernel.org>
+Cc: Konstantin Pugin <rilian.la.te@ya.ru>, Vladimir Zapolskiy <vz@mleia.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Lech Perczak <lech.perczak@camlingroup.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240419124506.1531035-1-rilian.la.te@ya.ru>
+ <20240419124506.1531035-3-rilian.la.te@ya.ru>
+ <20240419-glue-pyramid-584728c0076a@spud>
+ <CAF1WSuy4OJVTU5VJdn23BSw4aTAq7i8UQ416V7BxveuQ+5=-1w@mail.gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <CAF1WSuy4OJVTU5VJdn23BSw4aTAq7i8UQ416V7BxveuQ+5=-1w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Linus,
+On 19/04/2024 16:17, Konstantin P. wrote:
+> On Fri, Apr 19, 2024 at 5:08 PM Conor Dooley <conor@kernel.org> wrote:
+>>
+>> On Fri, Apr 19, 2024 at 03:45:02PM +0300, Konstantin Pugin wrote:
+>>> From: Konstantin Pugin <ria.freelander@gmail.com>
+>>>
+>>> Add EXAR XR20M1172 UART compatible line into devicetree documentation.
+>>
+>> What you're doing is obvious from the diff, why this exar device is
+>> related to the nxp devices is what should be mentioned here.
+>>
+>> Thanks,
+>> Conor.
+> 
+> It is already mentioned in cover letter and in previous patches in the
+> series. Do I need to repeat it in DTS patch?
+> If so, I will do it.
+> 
+> Citation from my cover letter:
+> 
+> EXAR XR20M1172 UART is mostly SC16IS762-compatible, but
+> it has additional register which can change UART multiplier
+> to 4x and 8x, similar to UPF_MAGIC_MULTIPLIER does. So, I used this
+> flag to guard access to its specific DLD register. It seems than
+> other EXAR SPI UART modules also have this register, but I tested
+> only XR20M1172.
+> Yes, in datasheet this register is called "DLD - Divisor Fractional"
+> or "DLD - Divisor Fractional Register", calling depends on datasheet
+> version.
 
-Please pull from:
+Commits must stand on their own. Cover letter is not merged. This is the
+place where you add new hardware, so here you describe and explain the
+hardware.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git
-tags/fuse-fixes-6.9-rc5
+Best regards,
+Krzysztof
 
-- Fix two bugs in the new passthrough mode
-
-- Fix a statx bug introduced in v6.6
-
-- Fix code documentation
-
-Thanks,
-Miklos
-
----
-Amir Goldstein (2):
-      fuse: fix wrong ff->iomode state changes from parallel dio write
-      fuse: fix parallel dio write on file open in passthrough mode
-
-Danny Lin (1):
-      fuse: fix leaked ENOSYS error on first statx call
-
-Yang Li (1):
-      cuse: add kernel-doc comments to cuse_process_init_reply()
-
----
- fs/fuse/cuse.c   |  4 ++++
- fs/fuse/dir.c    |  1 +
- fs/fuse/file.c   | 12 +++++++-----
- fs/fuse/fuse_i.h |  7 ++++---
- fs/fuse/inode.c  |  1 +
- fs/fuse/iomode.c | 60 ++++++++++++++++++++++++++++++++++++++------------------
- 6 files changed, 58 insertions(+), 27 deletions(-)
 
