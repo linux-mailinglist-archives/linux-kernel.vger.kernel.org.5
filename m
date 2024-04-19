@@ -1,528 +1,219 @@
-Return-Path: <linux-kernel+bounces-151347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F6488AAD49
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:04:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85E8E8AAD32
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:02:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EFD41C20DEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:04:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE495B21E3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E20A81203;
-	Fri, 19 Apr 2024 11:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1FB78003B;
+	Fri, 19 Apr 2024 11:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="f0HDg5vv"
-Received: from smtpdh18-2.aruba.it (smtpdh18-2.aruba.it [62.149.155.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="L41Buqb+"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7BC47F7C3
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:04:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.155.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7514200D3
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:01:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713524677; cv=none; b=bJvi+4a4EKyWcYlm7Li5g6jL0VLUUScbvetneDQZqG770vhClGO2nzKcuHCkuS6Qz7PtBDsKlV+I/u60jxoC+hvIuteT3UNw75h214hvZEWhgdcO447chR99TBWAtNAcoYkZCjEKS8MK9h0CYCjUy95Hy06Yq0JsGggKpkIlfuo=
+	t=1713524518; cv=none; b=WREKwslzlcr2RDnbUuCaoZzvfC8UzPQwOjN8RH8v9qoPz++XkuN0fmJaiwJ/iXTr93LpaI3Hb2YgZY2us4SO1ocKbLzK/5kb/tJFjAA1Mi43aSouBlBQikcRuJhHASSjqDZcvzN0rrdGKWcZ2RszlKQKZeWZrKSeYSC00ImBVPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713524677; c=relaxed/simple;
-	bh=34ds8pezHaM8zXbo0rmCy4/NhMnoDRXFp3berQVnbqY=;
+	s=arc-20240116; t=1713524518; c=relaxed/simple;
+	bh=F+W5saRDghEOa41U9BAigfeFAuicLwkOtZt1ReNtfvY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sTWMyc9PMyzvLg9EAgUz8rXfzoAcfZPJ1/57tgKorclTuj15r0qqBskPqJ1gGtt8TWzGAYOJYDmUno8khPHt1MFyUDlEb/1OKYKR9H2o1agGBDY6UB/aDX0f8pcfJ+5hCC6zTR3FDYWfnrBkQfLfywCPE9CPT59P1AJFfV14+Fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=f0HDg5vv; arc=none smtp.client-ip=62.149.155.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
-Received: from engicam ([146.241.22.218])
-	by Aruba Outgoing Smtp  with ESMTPSA
-	id xlzfrZWY8wcFexlzgrNLR8; Fri, 19 Apr 2024 13:01:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1713524485; bh=34ds8pezHaM8zXbo0rmCy4/NhMnoDRXFp3berQVnbqY=;
-	h=Date:From:To:Subject:MIME-Version:Content-Type;
-	b=f0HDg5vvdopiAbL1mEWcSejSAEUD+vJkFHp8U/RWpon4kcKeAFjYiZ6hBj/fs1E8d
-	 qHm/7RklsfjOJFQALl49OJAJDWwNiqaVEpcBzvflm4ILCuAmp1srFCtkIRSkKGrkQP
-	 wP02gN2bFl3R0hdii1wns320D8SGMnfZ3bxBxTmjI9ZAzvfZCfRyGnAIiGyUaCpUYa
-	 6+q1Rj/oGSofoEe9F0Q5GEO+OxBAg7dgEqHESFUxMk+fiYzmXbijYmiKycSBJUDfMQ
-	 A65qaTA2ihT9lf1ryEoqnjY+oFF8rzcK9vrboCTs1bU3D9m71bSg6sHZKk4mSoqv6k
-	 VQjufBKJoAIHA==
-Date: Fri, 19 Apr 2024 13:01:22 +0200
-From: Fabio Aiuto <fabio.aiuto@engicam.com>
-To: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Matteo Lisi <matteo.lisi@engicam.com>,
-	Mirko Ardinghi <mirko.ardinghi@engicam.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: imx93: Add Engicam i.Core MX93 EDIMM
- 2.0 Starter Kit
-Message-ID: <ZiJPAr91xzBhuWbF@engicam>
-References: <20240418133923.3705-1-fabio.aiuto@engicam.com>
- <20240418133923.3705-4-fabio.aiuto@engicam.com>
- <CAOf5uwmy_3NOupkroYX=W2WJKK1sgg0r0L22fOrbbZ3Z6z1jFA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HT1JqhV1RMHcuoj+pve/bnC8IUZv8JihsQ/ARB5OPyPi+7t+ZIVPneTEIcblInsHZ3oNx6y2qNGv5gfkMvg5Ui5QulXXoP2bVaJfNYW7vKkpeXXjGMhW2EK25MxCE0Y0EuJuCghZU6qT34CmVxtzWf/z6PKq8JvAncoGdRZVKTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=L41Buqb+; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a526d0b2349so220555666b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 04:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1713524514; x=1714129314; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3VTTzqipQA62LbzqZVTLpZ7KIqqGEoS+t4l2KKK32uo=;
+        b=L41Buqb+GW+s9WdGsrq4vmUFF3d8NSWxSV7cuCPDd67WbgkCrVoMBT3J/KDktnJPLN
+         cTRwasTRR83rotPgN7dl9SbAPFbll5rdRVAxgSMfudpjz04wWl67HLA6VOMUkwDBhKSW
+         bQpHm17Hrvfn5e7/DOtpLLEJdU5pAaY3izWdAZqJ9sxA83xU+zl5QNXA3fpJ/hhrz8Uf
+         bGyFVLzQnHpGE6b8G//PfCsgU/Fydw5y6z8FmfkuW45QkVilUHK48VtHWuPJs/WVXckZ
+         etyuIlLqSt1tSROkiZHf9UFqc8z3af/aIjf6C/iH8t7coQAfbPO2xVERR9kuTBueWkdM
+         0c7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713524514; x=1714129314;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3VTTzqipQA62LbzqZVTLpZ7KIqqGEoS+t4l2KKK32uo=;
+        b=Mcisx1VPEAjhAKMcsw71jwKbgobMkD1QjbWOEBrNGVXLcF5mHqzo/OSsnAT0SwrSpV
+         pnKzgK4ZOuSoF25EADPi/wN3XfWhkRGowV672UN2Us/SYJFlyp2vCQrbXt4Xjk/nb60n
+         xIrP8J4fnXp6q5h3rJ9BA6ObRTR6GvNUVmnYmofI9si4ov63rG2XP4Am9hq+QnzDbJXN
+         EqvY9HH6I/IijVC0mt2LzKdiqUSqymrZe5ZK6nG1fR9Su5C5D7k9GIVJ5ArgYVDytBKg
+         XrqZfFgN4TmceQf0ItWeeijKKHWFq6Xkb+TWoajnT9kf+wDitGr0uDyMRxdWTk2fER4E
+         Gp3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWdVn46Dj96v07ZrsDClVIaXKLSEfL8zb0TYJl4et1TygJVT0i2maJRSMnXZlnwPr44rGADYVByPkqaznlxfoOOHXu/cVRsTH6yzra3
+X-Gm-Message-State: AOJu0YydfAMz/v02D00tT3H3XY5Y+D0OduNO8oU1h0znx5HRvk3hCcgS
+	r9UOzeUOSLrdXgTFJLLLG6L/0/odg2OAsb64n+cNIyBm/YOsBDJ12ZRK7A5O9mg=
+X-Google-Smtp-Source: AGHT+IFPLWd/fepjGkb60/ZFbc7sxCgg692Z+BCDRyWFZUyjJCwWhlOXF6oUhAX4lRUmpKzcAhVS9g==
+X-Received: by 2002:a17:906:488f:b0:a52:700d:818e with SMTP id v15-20020a170906488f00b00a52700d818emr1132855ejq.13.1713524513758;
+        Fri, 19 Apr 2024 04:01:53 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id hx20-20020a170906847400b00a529aeb4eccsm2091354ejc.140.2024.04.19.04.01.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 04:01:53 -0700 (PDT)
+Date: Fri, 19 Apr 2024 13:01:52 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-riscv@lists.infradead.org, 
+	Conor Dooley <conor.dooley@microchip.com>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
+	Samuel Holland <samuel.holland@sifive.com>, Pu Lehui <pulehui@huaweicloud.com>, 
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] RISC-V: clarify what some RISCV_ISA* config options do
+Message-ID: <20240419-ea2b867f6bde90e711464c95@orel>
+References: <20240418-stable-railway-7cce07e1e440@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOf5uwmy_3NOupkroYX=W2WJKK1sgg0r0L22fOrbbZ3Z6z1jFA@mail.gmail.com>
-X-CMAE-Envelope: MS4xfDq01KQxM5pcyd7Ph2lUxkEV+kMY3uThS5wlw58h4inUqJULoKSusFE8hXDkuaM5c2VuflrPauWHAbMqZ8IDoJhD16+070WjX7BR7gT2O/wpBjYlfMib
- 74lvy+WPrWEttlY76pSiZj0JmdkgnUa1wazzL0ZAVz/2hKVZ6odxgliy0tL+ju/xFxCoYL+vQH3oilBEap40ZeoX4XFNIv0GALJzxQLl7tJLKV+whxHcE6sh
- 5OP/LhZfuLW1IpYyJs9heExMJrZJCDeembyC12yNAAkRsq9Ac+vjK79jk7c2puiljP5r6IoCoJOuch4Aj+PyhYk8GJtNAVhbzmmckBxK5+r8IxYbh5X5sn4L
- T5Ry+SlRBhTPGIUM8B6CEvB21VaMYl5KE6VjsbGh921wyKtqfa8XKoGR3dxg/EiBHjS5NRyOJMyxZlyxAD5J8qgFdMbXRTsHjbx7rwhExTOYmoXaFjrd5r+R
- 3I2l7TO2YBcnG2mN4/t7u6k0AYCtedaLw8Lm7UphpUwFlWsQ051diQj1vaIqHL7+tRnXuVDtDl30R3MgMeoF/rTf05GHdy9y1Bxf2/bS63xNbcukP5s3VrSE
- 9LFfCvBd0OKUsgOfrZ3MIhkU
+In-Reply-To: <20240418-stable-railway-7cce07e1e440@spud>
 
-Hello Michael,
+On Thu, Apr 18, 2024 at 03:21:01PM +0100, Conor Dooley wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
+> 
+> During some discussion on IRC yesterday and on Pu's bpf patch [1]
+> I noticed that these RISCV_ISA* Kconfig options are not really clear
+> about their implications. Many of these options have no impact on what
+> userspace is allowed to do, for example an application can use Zbb
+> regardless of whether or not the kernel does. Change the help text to
+> try and clarify whether or not an option affects just the kernel, or
+> also userspace. None of these options actually control whether or not an
+> extension is detected dynamically as that's done regardless of Kconfig
+> options, so drop any text that implies the option is required for
+> dynamic detection, rewording them as "do x when y is detected".
+> 
+> Link: https://lore.kernel.org/linux-riscv/20240328-ferocity-repose-c554f75a676c@spud/ [1]
+> Reviewed-by: Björn Töpel <bjorn@rivosinc.com>
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+> 
+> Vector copy-paste-o fixed, correct spelling of optimisations kept.
+> 
+> CC: Samuel Holland <samuel.holland@sifive.com>
+> CC: Pu Lehui <pulehui@huaweicloud.com>
+> CC: Björn Töpel <bjorn@kernel.org>
+> CC: Paul Walmsley <paul.walmsley@sifive.com>
+> CC: Palmer Dabbelt <palmer@dabbelt.com>
+> CC: linux-riscv@lists.infradead.org
+> CC: linux-kernel@vger.kernel.org
+> ---
+>  arch/riscv/Kconfig | 28 +++++++++++++++-------------
+>  1 file changed, 15 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 6d64888134ba..c3a7793b0a7c 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -503,8 +503,8 @@ config RISCV_ISA_SVNAPOT
+>  	depends on RISCV_ALTERNATIVE
+>  	default y
+>  	help
+> -	  Allow kernel to detect the Svnapot ISA-extension dynamically at boot
+> -	  time and enable its usage.
+> +	  Add support for the Svnapot ISA-extension when it is detected by
+> +	  the kernel at boot.
 
-Il Fri, Apr 19, 2024 at 09:29:12AM +0200, Michael Nazzareno Trimarchi ha scritto:
-> Hi Fabio
-> 
-> On Thu, Apr 18, 2024 at 3:43â€¯PM Fabio Aiuto <fabio.aiuto@engicam.com> wrote:
-> >
-> > i.Core MX93 is a NXP i.MX93 based SoM by Enigcam which
-> > needs to be mounted on top of Engicam baseboards.
-> >
-> > Add support for EDIMM 2.0 Starter Kit hosting
-> > i.Core MX93.
-> >
-> > Starter Kit main features:
-> >
-> > 2x LVDS interfaces
-> > HDMI output
-> > Audio out
-> > Mic in
-> > Micro SD card slot
-> > USB 3.0 A port
-> > 3x USB 2.0 A port
-> > Gb Ethernet
-> > 2x CAN bus, 3x UART interfaces
-> > SIM card slot
-> > M.2 KEY_B slot
-> >
-> > Cc: Matteo Lisi <matteo.lisi@engicam.com>
-> > Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-> > Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
-> > ---
-> >  arch/arm64/boot/dts/freescale/Makefile        |   1 +
-> >  .../dts/freescale/imx93-icore-mx93-edimm2.dts | 354 ++++++++++++++++++
-> >  2 files changed, 355 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-> > index 045250d0a040..d26c0a458a44 100644
-> > --- a/arch/arm64/boot/dts/freescale/Makefile
-> > +++ b/arch/arm64/boot/dts/freescale/Makefile
-> > @@ -226,6 +226,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx8qxp-tqma8xqp-mba8xx.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
-> > +dtb-$(CONFIG_ARCH_MXC) += imx93-icore-mx93-edimm2.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx93-phyboard-segin.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
-> >  dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
-> > diff --git a/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> > new file mode 100644
-> > index 000000000000..8d57374eebdf
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> > @@ -0,0 +1,354 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > +/*
-> > + * Copyright 2022 NXP
-> > + * Copyright 2024 Engicam s.r.l.
-> > + */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "imx93-icore-mx93.dtsi"
-> > +
-> > +/ {
-> > +       model = "Engicam i.Core MX93 - EDIMM 2 Starterkit";
-> > +       compatible = "engicam,icore-mx93-edimm2", "engicam,icore-mx93",
-> > +                    "fsl,imx93";
-> > +
-> > +       aliases {
-> > +               rtc1 = &bbnsm_rtc;
-> > +       };
-> > +
-> > +       bt_reg_on: regulator-btregon {
-> > +               compatible = "regulator-gpio";
-> > +               regulator-name = "BT_REG_ON";
-> > +               pinctrl-names = "default";
-> > +               regulator-min-microvolt = <100000>;
-> > +               regulator-max-microvolt = <3300000>;
-> > +               states = <3300000 0x1>, <100000 0x0>;
-> > +               gpios = <&gpio2 19 GPIO_ACTIVE_HIGH>;
-> > +               regulator-always-on;
-> > +       };
-> > +
-> 
-> Are you sure about regulator always on? I have seen that you broadcom
-> wifi and bluetooth connected. Same comment for the other
-> patches where you have almost all the regulator boot on , always on. I
-> can not be sure that is really true
-> 
-> Please take a look here
-> arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-common.dtsi
+I'm not sure we need the 'by the kernel', since I guess that's implied by
+being in a Kconfig help text, but either way is fine by me.
 
-thank you for your comment, for wifi/bt module is better to
-remove regulator-always-on.
+>  
+>  	  The Svnapot extension is used to mark contiguous PTEs as a range
+>  	  of contiguous virtual-to-physical translations for a naturally
+> @@ -522,9 +522,9 @@ config RISCV_ISA_SVPBMT
+>  	depends on RISCV_ALTERNATIVE
+>  	default y
+>  	help
+> -	   Adds support to dynamically detect the presence of the Svpbmt
+> -	   ISA-extension (Supervisor-mode: page-based memory types) and
+> -	   enable its usage.
+> +	   Add support for the Svpbmt ISA-extension (Supervisor-mode:
+> +	   page-based memory types) when it is detected by the kernel at
+> +	   boot.
 
-For other regulators (e.g. sgtl5000) they are fixed and always on
-from an hardware design point of view.
+Same 'by the kernel' drop suggestion.
 
-Will remove regulator-always-on for bt_reg_on in the v3 patchset.
+>  
+>  	   The memory type for a page contains a combination of attributes
+>  	   that indicate the cacheability, idempotency, and ordering
+> @@ -543,14 +543,15 @@ config TOOLCHAIN_HAS_V
+>  	depends on AS_HAS_OPTION_ARCH
+>  
+>  config RISCV_ISA_V
+> -	bool "VECTOR extension support"
+> +	bool "Vector extension support"
+>  	depends on TOOLCHAIN_HAS_V
+>  	depends on FPU
+>  	select DYNAMIC_SIGFRAME
+>  	default y
+>  	help
+>  	  Say N here if you want to disable all vector related procedure
+> -	  in the kernel.
+> +	  in the kernel. Without this option enabled, neither the kernel nor
+> +	  userspace may use vector.
+>  
+>  	  If you don't know what to do here, say Y.
+>  
+> @@ -608,8 +609,8 @@ config RISCV_ISA_ZBB
+>  	depends on RISCV_ALTERNATIVE
+>  	default y
+>  	help
+> -	   Adds support to dynamically detect the presence of the ZBB
+> -	   extension (basic bit manipulation) and enable its usage.
+> +	   Add support for enabling optimisations in the kernel when the
+> +	   Zbb extension is detected at boot.
+>  
+>  	   The Zbb extension provides instructions to accelerate a number
+>  	   of bit-specific operations (count bit population, sign extending,
+> @@ -625,9 +626,9 @@ config RISCV_ISA_ZICBOM
+>  	select RISCV_DMA_NONCOHERENT
+>  	select DMA_DIRECT_REMAP
+>  	help
+> -	   Adds support to dynamically detect the presence of the ZICBOM
+> -	   extension (Cache Block Management Operations) and enable its
+> -	   usage.
+> +	   Add support for the Zicbom extension (Cache Block Management
+> +	   Operations) and enable its use in the kernel when it is detected
+> +	   at boot.
+>  
+>  	   The Zicbom extension can be used to handle for example
+>  	   non-coherent DMA support on devices that need it.
+> @@ -686,7 +687,8 @@ config FPU
+>  	default y
+>  	help
+>  	  Say N here if you want to disable all floating-point related procedure
+> -	  in the kernel.
+> +	  in the kernel. Without this option enabled, neither the kernel nor
+> +	  userspace may use floating-point procedures.
+>  
+>  	  If you don't know what to do here, say Y.
+>
 
-kr,
+Zicboz could also use some clarification, right? Or is the fact that
+RISCV_ISA_ZICBOZ enables the use in both the kernel and userspace the
+reason "Enable the use of the Zicboz extension (cbo.zero instruction)
+when available." looks sufficient? Maybe Zicboz should follow the
+"Say N here if..." pattern of V and FPU?
 
-fabio 
-
-> 
-> Michael
-> 
-> > +       chosen {
-> > +               stdout-path = &lpuart1;
-> > +       };
-> > +
-> > +       reg_1v8_sgtl: regulator-1v8-sgtl {
-> > +               compatible = "regulator-fixed";
-> > +               regulator-name = "1v8_sgtl";
-> > +               regulator-min-microvolt = <1800000>;
-> > +               regulator-max-microvolt = <1800000>;
-> > +               always-on;
-> > +       };
-> > +
-> > +       reg_3v3_avdd_sgtl: regulator-3v3-avdd-sgtl {
-> > +               compatible = "regulator-fixed";
-> > +               regulator-name = "3v3_avdd_sgtl";
-> > +               regulator-min-microvolt = <3300000>;
-> > +               regulator-max-microvolt = <3300000>;
-> > +               always-on;
-> > +       };
-> > +
-> > +       reg_3v3_sgtl: regulator-3v3-sgtl {
-> > +               compatible = "regulator-fixed";
-> > +               regulator-name = "3v3_sgtl";
-> > +               regulator-min-microvolt = <3300000>;
-> > +               regulator-max-microvolt = <3300000>;
-> > +               always-on;
-> > +       };
-> > +
-> > +       reserved-memory {
-> > +               #address-cells = <2>;
-> > +               #size-cells = <2>;
-> > +               ranges;
-> > +
-> > +               linux,cma {
-> > +                       compatible = "shared-dma-pool";
-> > +                       reusable;
-> > +                       alloc-ranges = <0 0x80000000 0 0x40000000>;
-> > +                       size = <0 0x10000000>;
-> > +                       linux,cma-default;
-> > +               };
-> > +
-> > +               rsc_table: rsc-table@2021f000 {
-> > +                       reg = <0 0x2021f000 0 0x1000>;
-> > +                       no-map;
-> > +               };
-> > +
-> > +               vdevbuffer: vdevbuffer@a4020000 {
-> > +                       compatible = "shared-dma-pool";
-> > +                       reg = <0 0xa4020000 0 0x100000>;
-> > +                       no-map;
-> > +               };
-> > +
-> > +               vdev0vring0: vdev0vring0@a4000000 {
-> > +                       reg = <0 0xa4000000 0 0x8000>;
-> > +                       no-map;
-> > +               };
-> > +
-> > +               vdev0vring1: vdev0vring1@a4008000 {
-> > +                       reg = <0 0xa4008000 0 0x8000>;
-> > +                       no-map;
-> > +               };
-> > +
-> > +               vdev1vring0: vdev1vring0@a4000000 {
-> > +                       reg = <0 0xa4010000 0 0x8000>;
-> > +                       no-map;
-> > +               };
-> > +
-> > +               vdev1vring1: vdev1vring1@a4018000 {
-> > +                       reg = <0 0xa4018000 0 0x8000>;
-> > +                       no-map;
-> > +               };
-> > +       };
-> > +
-> > +       sound {
-> > +               compatible = "simple-audio-card";
-> > +               simple-audio-card,name = "imx93-sgtl5000";
-> > +               simple-audio-card,format = "i2s";
-> > +               simple-audio-card,bitclock-master = <&dailink_master>;
-> > +               simple-audio-card,frame-master = <&dailink_master>;
-> > +               /*simple-audio-card,mclk-fs = <1>;*/
-> > +               simple-audio-card,cpu {
-> > +                       sound-dai = <&sai3>;
-> > +               };
-> > +
-> > +               dailink_master: simple-audio-card,codec {
-> > +                       sound-dai = <&sgtl5000>;
-> > +                       clocks = <&clk IMX93_CLK_SAI3_IPG>;
-> > +               };
-> > +       };
-> > +
-> > +       usdhc3_pwrseq: usdhc3-pwrseq {
-> > +               compatible = "mmc-pwrseq-simple";
-> > +       };
-> > +
-> > +       wl_reg_on: regulator-wlregon {
-> > +               compatible = "regulator-gpio";
-> > +               pinctrl-names = "default";
-> > +               regulator-name = "WL_REG_ON";
-> > +               regulator-min-microvolt = <100000>;
-> > +               regulator-max-microvolt = <3300000>;
-> > +               states = <3300000 0x1>,
-> > +                                <100000 0x0>;
-> > +               gpios = <&gpio2 22 GPIO_ACTIVE_HIGH>;
-> > +               enable-active-high;
-> > +               vin-supply = <&bt_reg_on>;
-> > +       };
-> > +};
-> > +
-> > +&cm33 {
-> > +       mbox-names = "tx", "rx", "rxdb";
-> > +       mboxes = <&mu1 0 1>,
-> > +                <&mu1 1 1>,
-> > +                <&mu1 3 1>;
-> > +       memory-region = <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>,
-> > +                       <&vdev1vring0>, <&vdev1vring1>, <&rsc_table>;
-> > +       status = "okay";
-> > +};
-> > +
-> > +&flexcan1 {
-> > +       pinctrl-names = "default";
-> > +       pinctrl-0 = <&pinctrl_flexcan1>;
-> > +       fsl,stop-mode = <&aonmix_ns_gpr 0x10 4>;
-> > +       status = "okay";
-> > +};
-> > +
-> > +&flexcan2 {
-> > +       pinctrl-names = "default";
-> > +       pinctrl-0 = <&pinctrl_flexcan2>;
-> > +       fsl,stop-mode = <&aonmix_ns_gpr 0x10 4>;
-> > +       status = "okay";
-> > +};
-> > +
-> > +&lpi2c1 {
-> > +       #address-cells = <1>;
-> > +       #size-cells = <0>;
-> > +       clock-frequency = <400000>;
-> > +       pinctrl-names = "default", "sleep";
-> > +       pinctrl-0 = <&pinctrl_lpi2c1>;
-> > +       pinctrl-1 = <&pinctrl_lpi2c1>;
-> > +       status = "okay";
-> > +
-> > +       pcf8523: rtc@68 {
-> > +               compatible = "nxp,pcf8523";
-> > +               reg = <0x68>;
-> > +       };
-> > +
-> > +       sgtl5000: codec@a {
-> > +               compatible = "fsl,sgtl5000";
-> > +               status = "okay";
-> > +               #sound-dai-cells = <0>;
-> > +               reg = <0x0a>;
-> > +               clocks = <&clk IMX93_CLK_SAI3_GATE>;
-> > +               clock-names = "mclk";
-> > +               assigned-clock-rates = <12000000>, <12000000>;
-> > +               VDDA-supply = <&reg_3v3_avdd_sgtl>;
-> > +               VDDIO-supply = <&reg_3v3_sgtl>;
-> > +               VDDD-supply = <&reg_1v8_sgtl>;
-> > +       };
-> > +};
-> > +
-> > +&lpuart1 { /* console */
-> > +       pinctrl-names = "default";
-> > +       pinctrl-0 = <&pinctrl_uart1>;
-> > +       status = "okay";
-> > +};
-> > +
-> > +&lpuart5 { /* RS485 */
-> > +       pinctrl-names = "default";
-> > +       pinctrl-0 = <&pinctrl_uart5>;
-> > +       status = "okay";
-> > +};
-> > +
-> > +&lpuart8 { /* RS232 */
-> > +       pinctrl-names = "default";
-> > +       pinctrl-0 = <&pinctrl_uart8>;
-> > +       status = "okay";
-> > +};
-> > +
-> > +&micfil {
-> > +       #sound-dai-cells = <0>;
-> > +       pinctrl-names = "default";
-> > +       assigned-clocks = <&clk IMX93_CLK_PDM>;
-> > +       assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-> > +       assigned-clock-rates = <196608000>;
-> > +       status = "okay";
-> > +};
-> > +
-> > +&mu1 {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&mu2 {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&sai1 {
-> > +       #sound-dai-cells = <0>;
-> > +       pinctrl-names = "default";
-> > +       pinctrl-0 = <&pinctrl_sai1>;
-> > +       assigned-clocks = <&clk IMX93_CLK_SAI1>;
-> > +       assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-> > +       assigned-clock-rates = <12288000>;
-> > +       status = "okay";
-> > +};
-> > +
-> > +&sai3 {
-> > +       pinctrl-names = "default";
-> > +       #sound-dai-cells = <0>;
-> > +       pinctrl-0 = <&pinctrl_sai3>;
-> > +       assigned-clocks = <&clk IMX93_CLK_SAI3>;
-> > +       assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-> > +       assigned-clock-rates = <24576000>;
-> > +       fsl,sai-mclk-direction-output;
-> > +       status = "okay";
-> > +};
-> > +
-> > +&usdhc3 { /* WiFi */
-> > +       pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> > +       pinctrl-0 = <&pinctrl_usdhc3>, <&pinctrl_laird>;
-> > +       pinctrl-1 = <&pinctrl_usdhc3>, <&pinctrl_laird>;
-> > +       pinctrl-2 = <&pinctrl_usdhc3>, <&pinctrl_laird>;
-> > +       vmmc-supply = <&wl_reg_on>;
-> > +       bus-width = <4>;
-> > +       no-1-8-v;
-> > +       non-removable;
-> > +       max-frequency = <25000000>;
-> > +       status = "okay";
-> > +
-> > +       #address-cells = <1>;
-> > +       #size-cells = <0>;
-> > +
-> > +       brcmf: bcrmf@1 {
-> > +               reg = <1>;
-> > +               compatible = "brcm,bcm4329-fmac";
-> > +       };
-> > +};
-> > +
-> > +&wdog3 {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&iomuxc {
-> > +
-> > +       pinctrl_flexcan1: flexcan1grp {
-> > +               fsl,pins = <
-> > +                       MX93_PAD_PDM_CLK__CAN1_TX               0x139e
-> > +                       MX93_PAD_PDM_BIT_STREAM0__CAN1_RX       0x139e
-> > +               >;
-> > +       };
-> > +
-> > +       pinctrl_flexcan2: flexcan2grp {
-> > +               fsl,pins = <
-> > +                       MX93_PAD_GPIO_IO25__CAN2_TX     0x139e
-> > +                       MX93_PAD_GPIO_IO27__CAN2_RX     0x139e
-> > +               >;
-> > +       };
-> > +
-> > +       pinctrl_laird: lairdgrp {
-> > +               fsl,pins = <
-> > +                       MX93_PAD_GPIO_IO22__GPIO2_IO22          0x31e // WL_REG_ON
-> > +                       MX93_PAD_GPIO_IO19__GPIO2_IO19          0x31e // BT_REG_ON
-> > +               >;
-> > +       };
-> > +
-> > +       pinctrl_lpi2c1: lpi2c1grp {
-> > +               fsl,pins = <
-> > +                       MX93_PAD_I2C1_SCL__LPI2C1_SCL           0x40000b9e
-> > +                       MX93_PAD_I2C1_SDA__LPI2C1_SDA           0x40000b9e
-> > +               >;
-> > +       };
-> > +
-> > +       pinctrl_sai1: sai1grp {
-> > +               fsl,pins = <
-> > +                       MX93_PAD_SAI1_TXC__SAI1_TX_BCLK         0x31e
-> > +                       MX93_PAD_SAI1_TXFS__SAI1_TX_SYNC        0x31e
-> > +                       MX93_PAD_SAI1_TXD0__SAI1_TX_DATA00      0x31e
-> > +                       MX93_PAD_SAI1_RXD0__SAI1_RX_DATA00      0x31e
-> > +               >;
-> > +       };
-> > +
-> > +       pinctrl_sai3: sai3grp {
-> > +               fsl,pins = <
-> > +                       MX93_PAD_GPIO_IO26__SAI3_TX_SYNC        0x31e
-> > +                       MX93_PAD_GPIO_IO16__SAI3_TX_BCLK        0x31e
-> > +                       MX93_PAD_GPIO_IO17__SAI3_MCLK           0x31e
-> > +                       MX93_PAD_GPIO_IO21__SAI3_TX_DATA00      0x31e
-> > +                       MX93_PAD_GPIO_IO20__SAI3_RX_DATA00      0x31e
-> > +               >;
-> > +       };
-> > +
-> > +       pinctrl_uart1: uart1grp {
-> > +               fsl,pins = <
-> > +                       MX93_PAD_UART1_RXD__LPUART1_RX          0x31e
-> > +                       MX93_PAD_UART1_TXD__LPUART1_TX          0x31e
-> > +               >;
-> > +       };
-> > +
-> > +       pinctrl_uart5: uart5grp {
-> > +               fsl,pins = <
-> > +                       MX93_PAD_GPIO_IO01__LPUART5_RX          0x31e
-> > +                       MX93_PAD_GPIO_IO00__LPUART5_TX          0x31e
-> > +                       MX93_PAD_GPIO_IO02__LPUART5_CTS_B       0x31e
-> > +                       MX93_PAD_GPIO_IO03__LPUART5_RTS_B       0x31e
-> > +               >;
-> > +       };
-> > +
-> > +       pinctrl_uart8: uart8grp {
-> > +               fsl,pins = <
-> > +                       MX93_PAD_GPIO_IO13__LPUART8_RX          0x31e
-> > +                       MX93_PAD_GPIO_IO12__LPUART8_TX          0x31e
-> > +               >;
-> > +       };
-> > +
-> > +       pinctrl_usdhc3: usdhc3grp {
-> > +               fsl,pins = <
-> > +                       MX93_PAD_SD3_CLK__USDHC3_CLK            0x17fe
-> > +                       MX93_PAD_SD3_CMD__USDHC3_CMD            0x13fe
-> > +                       MX93_PAD_SD3_DATA0__USDHC3_DATA0        0x13fe
-> > +                       MX93_PAD_SD3_DATA1__USDHC3_DATA1        0x13fe
-> > +                       MX93_PAD_SD3_DATA2__USDHC3_DATA2        0x13fe
-> > +                       MX93_PAD_SD3_DATA3__USDHC3_DATA3        0x13fe
-> > +               >;
-> > +       };
-> > +};
-> > --
-> > 2.34.1
-> >
-> >
-> 
-> 
-> -- 
-> Michael Nazzareno Trimarchi
-> Co-Founder & Chief Executive Officer
-> M. +39 347 913 2170
-> michael@amarulasolutions.com
-> __________________________________
-> 
-> Amarula Solutions BV
-> Joop Geesinkweg 125, 1114 AB, Amsterdam, NL
-> T. +31 (0)85 111 9172
-> info@amarulasolutions.com
-> www.amarulasolutions.com
+Thanks,
+drew
 
