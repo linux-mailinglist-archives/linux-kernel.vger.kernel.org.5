@@ -1,198 +1,218 @@
-Return-Path: <linux-kernel+bounces-151903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5760B8AB589
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:22:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A21A8AB58B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:24:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C3D02836A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:22:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72C26B21757
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:24:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724EA13C9B1;
-	Fri, 19 Apr 2024 19:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9A513C904;
+	Fri, 19 Apr 2024 19:24:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zIeHq+Th"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="QU97x+Q+"
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63CAB13C3F2
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 19:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8827428374
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 19:24:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713554530; cv=none; b=aZE0DA9vJf2vWVPAFlV27ZAO/DD7jRck8ga6vpDjbIyRkixzIc81gqc0YOkAxaXq0Jzjw2yV6e1XYiXqZbu4itqXKp1lDRGRcUsgCzemLwWBVNpqscZw6n5xYa92JkKrSU0cpEAWR6JNOZqEQe2dd10JjW9mNLS8qZLBAwiNrKo=
+	t=1713554681; cv=none; b=QBW4EjyUtZkXfbHIWelGjfiO4rX0kwGKSE5ifjw/dT6rtd/Xsk5rzIPyDE5l+XYy6SlQ8O3LoGEWJMwxKDbpJMdRZ+LLssx/POaE/MvFDt5QugNZVnihxY0ffUEqCDJYlivfjPKb4YK//BSNrswvcyMCfLJP8XhfyHOZptCyBpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713554530; c=relaxed/simple;
-	bh=0Yf1np1EiQRR1H+HojMtCteZkzQwyIMTFpovj1tcuSA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Kun5Tl4SDTzcxYx0iyNJZOM/CR5O3k5D+ljlLbS7X/CdxnFJKYuvzQq7douQR8IN28KLxsO/x4GTDetvFi+VSppgkrIwhRnmg4Em07CaDh3XdE64sn3orcLiQ1qAcMtjmhi/S/vhUmnohvUUnU8VRLawq1/1cJeqkzK184rR4Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zIeHq+Th; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a55602507a9so282038966b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 12:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713554527; x=1714159327; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cgxiaek1OC/UQSjtnluTE8oS+OxORZPByii8n2kRyX4=;
-        b=zIeHq+Thn7YTr3RpZM3b+1yEJ5ovU/PQYkZPXZhio6P7bZctZbZiLGj24cRFIg5oFw
-         kHsShSdrttqbvrsThk6/whQjz0PlCcUfi9PAf4QKVU5oX7NvZzjZaBMMDyrPYI9GHora
-         hI3hMxb4Xu1V3yVOfG25Gh/oSvOu8DBaJD58mNQty4nZZrLQpNnEVabb3PHEhYmbTzGA
-         lgOgUcUOb23NYEb7jAsI7wlpy/mr3hoJP9nOjpr1l7996mNf12bdNAiZCMNj5bHB4ACG
-         eqCJxOZKZ8nwG30IxCBu7PLmFtG7SkTk/KB2EkG/EC5tdC+3LWFoAcNftt/ysDAJgcOt
-         TXiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713554527; x=1714159327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Cgxiaek1OC/UQSjtnluTE8oS+OxORZPByii8n2kRyX4=;
-        b=J2J+miFX4UAxw1xJDB2S0a/9Cjy/iqOmpa4+srY5mdTZ6ZSj7CT/TVCR1himqgTQC4
-         j3UXSV2cf3g19BsGcCuBFEpqhOdTX0QZDycy8Od8Ay1U6/JKqtEaU/oA5zNdcpZDpz5h
-         w9TS7+8wCI3L+CdMcEcOe2HwIVxUIobtcPXCwTDUk4QGZhhHT+6lCE3S2Kqlq+jg6jxc
-         M+aYBwkJvb2K8OpGto28fjryEvJwAmtI86kTbl1YET4mSaG9sQV362OJPqDeiukSygPC
-         gG8+xLpLcMoGb7FfL6bQJBW6BFO9c2Pcygx6kYv/8tnywJ0UmprLaF7fKW7fCIMr6q8r
-         BmHg==
-X-Forwarded-Encrypted: i=1; AJvYcCWfo4eQEAbcwF4kVtMlOV3TNODAtSKBxN/NppgErkVjLkVfMV4WmP3t4fk7g+jPt0902gp1CkzDooU7wVfJOL+WfkcNAKvWwW0KswsR
-X-Gm-Message-State: AOJu0YxtYRimTUCX0BmltV6GIqg3PQWaep0JMk1i398QwRaMEoLV5HB6
-	uawBT1Vbj1brlEl5LiqJ4xIuu+UQ3gayzOQd22o+PAfzk+NPSP2gWul6n9Gn55GAExA1CANSVXU
-	VNGotShFWpCHR5BdL2DbbDstKXK4ZI86ZpSqX
-X-Google-Smtp-Source: AGHT+IEBjBNkvxdmuTE9VnI6C88nKhqq8KjzGCHHIFj/6VLY3xCFjTvSpOxoFw/tjaW8RUkr6IZWX3lHaV1KlXwC0BQ=
-X-Received: by 2002:a17:906:f255:b0:a52:2284:d97f with SMTP id
- gy21-20020a170906f25500b00a522284d97fmr2030488ejb.25.1713554526552; Fri, 19
- Apr 2024 12:22:06 -0700 (PDT)
+	s=arc-20240116; t=1713554681; c=relaxed/simple;
+	bh=KgdfRfZxHoDqdsAw65ukQuf/Dz7cxkXN/32luMZXWUU=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DkHbB3Fk0DLZwYeobCH7t5nL1WJDKyGRMz7WH3SAmNySMRrBoCXk1SYpBuMYLbZ5KgvH8G1TZD6KkpQJ60ANQQalAXcPQlbeStGEJpcbm83TiniJz6qnqKf0W9A2YAxSi7+vFqgiyQNwWl8DbSm5shxXTnOHkcF4wQet+PlIBqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=QU97x+Q+; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1713554676; x=1713813876;
+	bh=vCvePluHAcwgBw7ggt1O7z9u1s71ZLFHHPwyUG7O1aA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=QU97x+Q+uDPS0SdkO6EHo/RbHvPmEyCBeePZ9HCFVsz+d6ZrRGSMKl1sxvqgJkBbk
+	 reD8jB2hChO4rck/EVbn0IoXWbMLDtr9/6a8trMM3uGa0zm0k6yMpEliBg+ZhyKJ9b
+	 fy2WGKzcP28AAQzv2mzmTHCuabUlD/8AZZZh23GgYJfh3WnrjGCfOEnOkpVZdFEMz6
+	 w5AVy6PV1yxwikPO6S81SBVeDXE13wEzeEVf1pV9QzekcZQFLasv1UAWENmtMoTDCM
+	 xiSxsPW7++PhSAQvhJPQcKTtg1fPdA7/kxS67tENUIkJ/DwSTrVI8WxbSVesWTuKNt
+	 ZijcbRKnfvXbQ==
+Date: Fri, 19 Apr 2024 19:24:31 +0000
+To: Boqun Feng <boqun.feng@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, Trevor Gross <tmgross@umich.edu>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v6 4/4] rust: add abstraction for `struct page`
+Message-ID: <c500f9c6-8811-44c4-89a4-603a67d09e78@proton.me>
+In-Reply-To: <ZiKooOjXh209i8je@boqun-archlinux>
+References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com> <20240418-alice-mm-v6-4-cb8f3e5d688f@google.com> <ZiFsCLb-BZWbBHsu@boqun-archlinux> <87dc4cdf-ccf6-4b08-8915-313aad313f93@proton.me> <ZiGlC5AtRRikE1AI@boqun-archlinux> <ZiGnFI7cz5v-cowt@boqun-archlinux> <079c88af-2e6d-45fe-bf58-afebbf7583b4@proton.me> <ZiKooOjXh209i8je@boqun-archlinux>
+Feedback-ID: 71780778:user:proton
+X-Pm-Message-ID: 99067a81dd80b83b29b9214a862a2f3e3d937d32
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
- <171328989335.3930751.3091577850420501533.stgit@firesoul> <CAJD7tkZFnQK9CFofp5rxa7Mv9wYH2vWF=Bb28Dchupm8LRt7Aw@mail.gmail.com>
- <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org> <lxzi557wfbrkrj6phdlub4nmtulzbegykbmroextadvssdyfhe@qarxog72lheh>
- <CAJD7tkYJZgWOeFuTMYNoyH=9+uX2qaRdwc4cNuFN9wdhneuHfA@mail.gmail.com>
- <6392f7e8-d14c-40f4-8a19-110dfffb9707@kernel.org> <gckdqiczjtyd5qdod6a7uyaxppbglg3fkgx2pideuscsyhdrmy@by6rlly6crmz>
-In-Reply-To: <gckdqiczjtyd5qdod6a7uyaxppbglg3fkgx2pideuscsyhdrmy@by6rlly6crmz>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 19 Apr 2024 12:21:30 -0700
-Message-ID: <CAJD7tkbCzx1S9d0oK-wR7AY3O3ToBrEwKTaYTykE1WwczcYLBg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/3] cgroup/rstat: convert cgroup_rstat_lock back to mutex
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org, hannes@cmpxchg.org, 
-	lizefan.x@bytedance.com, cgroups@vger.kernel.org, longman@redhat.com, 
-	netdev@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-[..]
-> > > Perhaps we could experiment with always dropping the lock at CPU
-> > > boundaries instead?
-> > >
-> >
-> > I don't think this will be enough (always dropping the lock at CPU
-> > boundaries).  My measured "lock-hold" times that is blocking IRQ (and
-> > softirq) for too long.  When looking at prod with my new cgroup
-> > tracepoint script[2]. When contention occurs, I see many Yields
-> > happening and with same magnitude as Contended. But still see events
-> > with long "lock-hold" times, even-though yields are high.
-> >
-> >  [2] https://github.com/xdp-project/xdp-project/blob/master/areas/latency/cgroup_rstat_tracepoint.bt
-> >
-> > Example output:
-> >
-> >  12:46:56 High Lock-contention: wait: 739 usec (0 ms) on CPU:56 comm:kswapd7
-> >  12:46:56 Long lock-hold time: 6381 usec (6 ms) on CPU:27 comm:kswapd3
-> >  12:46:56 Long lock-hold time: 18905 usec (18 ms) on CPU:100
-> > comm:kworker/u261:12
-> >
-> >  12:46:56  time elapsed: 36 sec (interval = 1 sec)
-> >   Flushes(2051) 15/interval (avg 56/sec)
-> >   Locks(44464) 1340/interval (avg 1235/sec)
-> >   Yields(42413) 1325/interval (avg 1178/sec)
-> >   Contended(42112) 1322/interval (avg 1169/sec)
-> >
-> > There is reported 15 flushes/sec, but locks are yielded quickly.
-> >
-> > More problematically (for softirq latency) we see a Long lock-hold time
-> > reaching 18 ms.  For network RX softirq I need lower than 0.5ms latency,
-> > to avoid RX-ring HW queue overflows.
-
-Here we are measuring yields against contention, but the main problem
-here is IRQ serving latency, which doesn't have to correlate with
-contention, right?
-
-Perhaps contention is causing us to yield the lock every nth cpu
-boundary, but apparently this is not enough for IRQ serving latency.
-Dropping the lock on each boundary should improve IRQ serving latency,
-regardless of the presence of contention.
-
-Let's focus on one problem at a time ;)
-
-> >
-> >
-> > --Jesper
-> > p.s. I'm seeing a pattern with kswapdN contending on this lock.
-> >
-> > @stack[697, kswapd3]:
-> >         __cgroup_rstat_lock+107
-> >         __cgroup_rstat_lock+107
-> >         cgroup_rstat_flush_locked+851
-> >         cgroup_rstat_flush+35
-> >         shrink_node+226
-> >         balance_pgdat+807
-> >         kswapd+521
-> >         kthread+228
-> >         ret_from_fork+48
-> >         ret_from_fork_asm+27
-> >
-> > @stack[698, kswapd4]:
-> >         __cgroup_rstat_lock+107
-> >         __cgroup_rstat_lock+107
-> >         cgroup_rstat_flush_locked+851
-> >         cgroup_rstat_flush+35
-> >         shrink_node+226
-> >         balance_pgdat+807
-> >         kswapd+521
-> >         kthread+228
-> >         ret_from_fork+48
-> >         ret_from_fork_asm+27
-> >
-> > @stack[699, kswapd5]:
-> >         __cgroup_rstat_lock+107
-> >         __cgroup_rstat_lock+107
-> >         cgroup_rstat_flush_locked+851
-> >         cgroup_rstat_flush+35
-> >         shrink_node+226
-> >         balance_pgdat+807
-> >         kswapd+521
-> >         kthread+228
-> >         ret_from_fork+48
-> >         ret_from_fork_asm+27
-> >
+On 19.04.24 19:23, Boqun Feng wrote:
+> On Fri, Apr 19, 2024 at 08:36:11AM +0000, Benno Lossin wrote:
+>> On 19.04.24 01:04, Boqun Feng wrote:
+>>> On Thu, Apr 18, 2024 at 03:56:11PM -0700, Boqun Feng wrote:
+>>>> On Thu, Apr 18, 2024 at 10:08:40PM +0000, Benno Lossin wrote:
+>>>>> On 18.04.24 20:52, Boqun Feng wrote:
+>>>>>> On Thu, Apr 18, 2024 at 08:59:20AM +0000, Alice Ryhl wrote:
+>>>>>>> +    /// Runs a piece of code with a raw pointer to a slice of this=
+ page, with bounds checking.
+>>>>>>> +    ///
+>>>>>>> +    /// If `f` is called, then it will be called with a pointer th=
+at points at `off` bytes into the
+>>>>>>> +    /// page, and the pointer will be valid for at least `len` byt=
+es. The pointer is only valid on
+>>>>>>> +    /// this task, as this method uses a local mapping.
+>>>>>>> +    ///
+>>>>>>> +    /// If `off` and `len` refers to a region outside of this page=
+, then this method returns
+>>>>>>> +    /// `EINVAL` and does not call `f`.
+>>>>>>> +    ///
+>>>>>>> +    /// # Using the raw pointer
+>>>>>>> +    ///
+>>>>>>> +    /// It is up to the caller to use the provided raw pointer cor=
+rectly. The pointer is valid for
+>>>>>>> +    /// `len` bytes and for the duration in which the closure is c=
+alled. The pointer might only be
+>>>>>>> +    /// mapped on the current thread, and when that is the case, d=
+ereferencing it on other threads
+>>>>>>> +    /// is UB. Other than that, the usual rules for dereferencing =
+a raw pointer apply: don't cause
+>>>>>>> +    /// data races, the memory may be uninitialized, and so on.
+>>>>>>> +    ///
+>>>>>>> +    /// If multiple threads map the same page at the same time, th=
+en they may reference with
+>>>>>>> +    /// different addresses. However, even if the addresses are di=
+fferent, the underlying memory is
+>>>>>>> +    /// still the same for these purposes (e.g., it's still a data=
+ race if they both write to the
+>>>>>>> +    /// same underlying byte at the same time).
+>>>>>>> +    fn with_pointer_into_page<T>(
+>>>>>>> +        &self,
+>>>>>>> +        off: usize,
+>>>>>>> +        len: usize,
+>>>>>>> +        f: impl FnOnce(*mut u8) -> Result<T>,
+>>>>>>
+>>>>>> I wonder whether the way to go here is making this function signatur=
+e:
+>>>>>>
+>>>>>>        fn with_slice_in_page<T> (
+>>>>>>            &self,
+>>>>>> =09       off: usize,
+>>>>>> =09       len: usize,
+>>>>>> =09       f: iml FnOnce(&UnsafeCell<[u8]>) -> Result<T>
+>>>>>>        ) -> Result<T>
+>>>>>>
+>>>>>> , because in this way, it makes a bit more clear that what memory th=
+at
+>>>>>> `f` can access, in other words, the users are less likely to use the
+>>>>>> pointer in a wrong way.
+>>>>>>
+>>>>>> But that depends on whether `&UnsafeCell<[u8]>` is the correct
+>>>>>> abstraction and the ecosystem around it: for example, I feel like th=
+ese
+>>>>>> two functions:
+>>>>>>
+>>>>>> =09    fn len(slice: &UnsafeCell<[u8]>) -> usize
+>>>>>> =09    fn as_ptr(slice: &UnsafeCell<[u8]>) -> *mut u8
+>>>>>>
+>>>>>> should be trivially safe, but I might be wrong. Again this is just f=
+or
+>>>>>> future discussion.
+>>>>>
+>>>>> I think the "better" type would be `&[UnsafeCell<u8>]`. Since there y=
+ou
+>>>>> can always access the length.
+>>>>>
+>>>>
+>>>> Hmm.. here is the thing, having `&UnsafeCell<[u8]>` means having a `*m=
+ut
+>>>> [u8]>`, and it should always be safe to get a "length" of `*mut [u8]`,
+>>>> right? I haven't found any method doing that, but the length should be
+>>>> just a part of fat pointer, so I think getting that is a defined
+>>>> behavior. But maybe I'm missing something.
+>>
+>> There is `to_raw_parts` [1], but that is unstable. (Note that
+>> `<[T] as Pointee>::Metadata =3D usize`, see [2])
+>>
+>=20
+> Oh, that's good to know, thank you! ;-)
 >
-> Can you simply replace mem_cgroup_flush_stats() in
-> prepare_scan_control() with the ratelimited version and see if the issue
-> still persists for your production traffic?
+>>> Hmm... but I guess one of the problems of this approach, is how to
+>>> construct a `&UnsafeCell<[u8]>` from a pointer and length...
+>>
+>> We could use `from_raw_parts` [3]. But when making the slice the outer
+>> type, we can use a stable function to convert a pointer and a length to
+>> a slice [4].
+>>
+>=20
+> Yes, but there appears no way to get a pointer with larger provenance
+> from a `&[UnsafeCell<u8>]`, right?
 
-With thresholding, the fact that we reach cgroup_rstat_flush() means
-that there is a high magnitude of pending updates. I think Jesper
-mentioned 128 CPUs before, that means 128 * 64 (MEMCG_CHARGE_BATCH)
-page-sized updates. That could be over 33 MBs with 4K page size.
+What do you mean by "larger provenance"?
 
-I am not sure if it's fine to ignore such updates in shrink_node(),
-especially that it is called in a loop sometimes so I imagine we may
-want to see what changed after the last iteration.
+>>>>> Another question would be if page allows for uninitialized bits, in t=
+hat
+>>>>> case, we would need `&[Opaque<u8>]`.
+>>>>>
+>>>>
+>>>> Yes, or `&Opaque<[u8>]`.
+>>
+>> I don't think that putting the slice on the inside is what we want. Also
+>=20
+> Hmm.. why? So in `&UnsafeCell<[u8]>` vs `&[UnsafeCell<u8>]` case, I
+> think the former represent "a slice of u8 that can be modified in the
+> same time" very well, and this is what a pointer-and-length pair usually
+> represents in kernel, I think. But yes, the latter is OK to me as well,
+> just hard to play the provenance game I guess?
 
->
-> Also were you able to get which specific stats are getting the most
-> updates?
+Ultimately it again comes down to missing field projections :)
 
-This, on the other hand, would be very interesting. I think it is very
-possible that we don't actually have 33 MBs of updates, but rather we
-keep adding and subtracting from the same stat until we reach the
-threshold. This could especially be true for hot stats like slab
-allocations.
+The type `&UnsafeCell<[u8]>` is less *useful*, since you cannot even get
+the length of the slice. Also indexing into this type is not easily
+possible. This is because the only way to get/change the inner value of
+an `UnsafeCell` is via `get`.
+
+Compare this with the slice type. It allows getting the length, indexing
+into it (ie a form of field projections, if we consider slices as having
+a variable amount of fields).
+
+All those issues would be solved by (good) field projections.
+
+
+Field projections also give a reason for why using `&[UnsafeCell<u8>]`
+is not really different from `&UnsafeCell<[u8]>`: At any point in time
+we ought to be able to project `&UnsafeCell<[u8]> -> &[UnsafeCell<u8>]`.
+
+So it's fine to just use that from the get-go.
+
+>> note that `Opaque<T>` requires that `T: Sized` and that is not the case
+>> for `[u8]`.
+>=20
+> Oh, you're right. In case of MaybeUninit, it requires `T: Sized`, so
+> `Opaque<[u8]>` doesn't quite work.
+>=20
+> Moving forward, maybe the first step is to see whether `&[Opaque<u8>]`
+> and `&[UnsafeCell<u8>]` can have a good way to generate a pointer with
+> proper provenance? Time to ping t-opsem maybe?
+
+Good idea, do you want to do that, or should I do it?
+
+--=20
+Cheers,
+Benno
+
 
