@@ -1,120 +1,113 @@
-Return-Path: <linux-kernel+bounces-151153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 026788AA9E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:15:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB12F8AA9EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:15:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 349231C21EEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:15:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27F6D1C21DBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDEAC524DE;
-	Fri, 19 Apr 2024 08:14:57 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58E8F4F214;
+	Fri, 19 Apr 2024 08:15:37 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB28A55;
-	Fri, 19 Apr 2024 08:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69BD04EB54;
+	Fri, 19 Apr 2024 08:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713514497; cv=none; b=WkmQdZnLEK+WS02XmTEZzIji2XF293bPSJpspYdt8kH2j+4hbHU0wDjmJPqOXfM7ut0yQa82xTZ1yPwBjzGD7KXYy6wFPb14MKJquzNBhG38r1X+UPwAoiCIo+7u5XViOEulzPKKC7JTstdQCJGdteNuC4EG0Jgjb3rtcToXD5s=
+	t=1713514536; cv=none; b=oW9CrHPjwN1kufjMwZm6hVL6rv//T6KXsYL5tGnIc0yn/VjrRf0HMbF9QZj8O2z3XrS2fpBm1WRVsSfbkPIlbBTBwbC4AkjpElxcKGxNzBI3MlPL8r9i5IjhVT0htkg3qYdUZlvYXaSR8y+L52luj3febUmnDKXY+bHvE7vof4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713514497; c=relaxed/simple;
-	bh=oFL++jQKoc5OIkNRR7zRzPuCLaMahie017AaPrS2TVk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=FWbYXjpwpi2ngY3Dqkz0JO1r20zJ0kAd3+7NBbU+OteB3QdYbn7lYYOkZyMzwpndq8HaEES+KmBYeOarsBIVXckew6WmctaW+NKNaroz09n5DYSjAggja5u7jxUhxb12oFRz6fVsmELAkxAuTOqILM+G0F3dgfJQhuRkRk12tnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VLS9c1Nftz4f3knt;
-	Fri, 19 Apr 2024 16:14:44 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 73C851A016E;
-	Fri, 19 Apr 2024 16:14:51 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgAX6RH5JyJmdbiGKQ--.20192S3;
-	Fri, 19 Apr 2024 16:14:51 +0800 (CST)
-Subject: Re: [PATCH v4 6/9] iomap: don't increase i_size if it's not a write
- operation
-To: Chandan Babu R <chandanbabu@kernel.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, djwong@kernel.org, hch@infradead.org,
- brauner@kernel.org, david@fromorbit.com, tytso@mit.edu, jack@suse.cz,
- yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-References: <20240320110548.2200662-1-yi.zhang@huaweicloud.com>
- <20240320110548.2200662-7-yi.zhang@huaweicloud.com>
- <87edb13ms8.fsf@debian-BULLSEYE-live-builder-AMD64>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <4dd51853-1707-8d5f-1286-baa3126c162b@huaweicloud.com>
-Date: Fri, 19 Apr 2024 16:14:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1713514536; c=relaxed/simple;
+	bh=eTtw7T2D2WmM0Bt8eIyVPq5FDkQ/UnKl9FoHO8fq490=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RXEk3huxiqm46KLJPVMIaqPAdXaKHHH6Mv1SNI9yIagpXQ49mnjO7aKCvWsMKzulJB7f4TQG7/KzSDByV51K7vj6IsHhqD5ULo19nU8PMr/Oa1RJOygfwgai7/9z80nFeNUo1K1Z/YuRVdY9Yk25iSJm+YsLXmFl+CQ0+jQQ4og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: f51fa668fe2411ee9305a59a3cc225df-20240419
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: EDM_GE969F26
+X-CID-O-INFO: VERSION:1.1.37,REQID:fa4a5aa4-9e65-4e01-9582-446394e7828a,IP:10,
+	URL:0,TC:0,Content:-5,EDM:-25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,AC
+	TION:release,TS:-25
+X-CID-INFO: VERSION:1.1.37,REQID:fa4a5aa4-9e65-4e01-9582-446394e7828a,IP:10,UR
+	L:0,TC:0,Content:-5,EDM:-25,RT:0,SF:-5,FILE:0,BULK:0,RULE:EDM_GE969F26,ACT
+	ION:release,TS:-25
+X-CID-META: VersionHash:6f543d0,CLOUDID:d50ebc9251d99120bacb5292da8f2a87,BulkI
+	D:24041916152019M4AR9V,BulkQuantity:0,Recheck:0,SF:38|24|72|19|44|66|102,T
+	C:nil,Content:0,EDM:1,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,
+	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-CTIC-Tags:
+	HR_CC_AS_FROM, HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
+	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
+	DMARC_NOPASS, CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS
+	GTI_RG_INFO, GTI_C_BU, AMN_T1, AMN_GOOD, AMN_C_TI
+	AMN_C_BU, ABX_MISS_RDNS
+X-UUID: f51fa668fe2411ee9305a59a3cc225df-20240419
+X-User: aichao@kylinos.cn
+Received: from localhost.localdomain [(112.64.161.44)] by mailgw.kylinos.cn
+	(envelope-from <aichao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 818826828; Fri, 19 Apr 2024 16:15:17 +0800
+From: Ai Chao <aichao@kylinos.cn>
+To: perex@perex.cz,
+	tiwai@suse.com,
+	kailang@realtek.com,
+	sbinding@opensource.cirrus.com,
+	luke@ljones.dev,
+	shenghao-ding@ti.com,
+	simont@opensource.cirrus.com,
+	foss@athaariq.my.id,
+	rf@opensource.cirrus.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Ai Chao <aichao@kylinos.cn>
+Subject: [PATCH v2] ALSA: hda/realtek - Enable audio jacks of Haier Boyue G42 with ALC269VC
+Date: Fri, 19 Apr 2024 16:15:05 +0800
+Message-Id: <20240419081505.467027-1-aichao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <87edb13ms8.fsf@debian-BULLSEYE-live-builder-AMD64>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgAX6RH5JyJmdbiGKQ--.20192S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFWxGr17tF43KF4UXr4UCFg_yoW8XrWfpF
-	WfW3WIqrs5Kr1xtF9rXr15X3WrZF45Xry3uFyUGrW5AFnxAF4fJFs2grWDZrWUtayDAw1F
-	qw4kuFZ8Jry5urJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Transfer-Encoding: 8bit
 
-On 2024/4/19 14:07, Chandan Babu R wrote:
-> On Wed, Mar 20, 2024 at 07:05:45 PM +0800, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> Increase i_size in iomap_zero_range() and iomap_unshare_iter() is not
->> needed, the caller should handle it. Especially, when truncate partial
->> block, we should not increase i_size beyond the new EOF here. It doesn't
->> affect xfs and gfs2 now because they set the new file size after zero
->> out, it doesn't matter that a transient increase in i_size, but it will
->> affect ext4 because it set file size before truncate. So move the i_size
->> updating logic to iomap_write_iter().
->>
-> 
-> This patch causes generic/522 to consistently fail when using the following
-> fstest configuration,
-> 
-> TEST_DEV=/dev/loop16
-> TEST_LOGDEV=/dev/loop13
-> SCRATCH_DEV_POOL="/dev/loop5 /dev/loop6 /dev/loop7 /dev/loop8 /dev/loop9 /dev/loop10 /dev/loop11 /dev/loop12"
-> MKFS_OPTIONS='-f -m reflink=1,rmapbt=1, -i sparse=1, -lsize=1g'
-> MOUNT_OPTIONS='-o usrquota,grpquota,prjquota'
-> TEST_FS_MOUNT_OPTS="$TEST_FS_MOUNT_OPTS -o usrquota,grpquota,prjquota"
-> TEST_FS_MOUNT_OPTS="-o logdev=/dev/loop13"
-> SCRATCH_LOGDEV=/dev/loop15
-> USE_EXTERNAL=yes
-> LOGWRITES_DEV=/dev/loop15
-> 
+The Haier Boyue G42 with ALC269VC cannot detect the MIC of headset,
+the line out and internal speaker until
+ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS quirk applied.
 
-Sorry for the regression, I didn't notice this issue last time I ran
-this test. It looks like the 004 patch doesn't work for some cases.
-I can reproduce it on my machine now, and I'll take a look at this
-and fix it soon.
+Signed-off-by: Ai Chao <aichao@kylinos.cn>
+---
+v2: Follow PCI SSID order.
 
-Thanks,
-Yi.
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d6940bc4ec39..0ebdc676cfe1 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10473,6 +10473,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0xf111, 0x0001, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0xf111, 0x0005, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0xf111, 0x0006, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1d17, 0x3288, "Haier Boyue G42", ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS),
+ 
+ #if 0
+ 	/* Below is a quirk table taken from the old code.
+-- 
+2.25.1
 
 
