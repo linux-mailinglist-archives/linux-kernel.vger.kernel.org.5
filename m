@@ -1,124 +1,100 @@
-Return-Path: <linux-kernel+bounces-151553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 125BF8AB06C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:12:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 633758AB066
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:11:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 947ABB239D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:12:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10AF31F24BF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:11:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC14130AD4;
-	Fri, 19 Apr 2024 14:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366C912EBD9;
+	Fri, 19 Apr 2024 14:08:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="BXrL+qy7"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2qwXxU69"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BA612F378;
-	Fri, 19 Apr 2024 14:09:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347FF8562A
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713535754; cv=none; b=KrZ5O5CgFf9EuGXfMIfA5FRJdYI26a4yMLo4pM+Gp4IISdZABIQ+kHvsTs3/d6d6+jmOinKCe9P2qLAper4gT5+bH6o/6a//aXY4vloSDOYcsMRsM878ip2kvbDvDsZNbH5lHk/cHJHDZsI5qHvuRlo4sXTrjZ7hkC0TRC13KGQ=
+	t=1713535736; cv=none; b=VEnBP/cFbi62VriOsV+FSf21XZPXm7M1dTlwufPKTeznHE5V03el6bXHAMXXyElaSGIwIvNmJMf12jvYkObTZZ2qBoeif+uKvuzDLIQZhynMhvKM6AK/BaYvlEmfIpxOzL7rrTIu2tNJWiEY4HtVe8bBwGH50MIlwrjn1oAx2g0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713535754; c=relaxed/simple;
-	bh=lykCOLKqJjRDe+8Set3BA8BLXqNMhZRHNwizcwwY1R8=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=ubsQzStFZtMGG3SdXh1jWiYmzLexQJSPJTU/NCxmwT4yEjW6MQ3vftUfvxNZm5BxuMyuiwg4cq6ykzOrz2uMkkC6XczYRGBvwgY7oJyMXWec8SYMVMlTM2NHvCkebFPjAoVkUG0OqQ4vZ60BlGDbVxrUTgItRJjlXu6H33UFqX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=BXrL+qy7; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713535720; x=1714140520; i=markus.elfring@web.de;
-	bh=lAS9mTVpLnalSm5EePWLAsejXsUvIKNzzANCk7Zyh88=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:From:
-	 Subject:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=BXrL+qy7fKZKSy7vXMNGYc7EmhjKtAJ5OjAQginqikx1Pp94g+yz7C0WAZW9POva
-	 Phxn9z46+j3Trvz4xkZp/TchUKQBgINAmCUBTZB+BL6CUaMbReuXDBfAYww1gAvQi
-	 vikPRSBVxbCDVZ0Yo9nXMUkFSOQxukR69hLSZ1zsEzsJv6FPZKVuIs5xifpuhx1HJ
-	 8YMZ1EuE2YG1fzH0RtxH9ZAOxUW8w3MI6gy42wSOvh9a09uId+uKykhFOI2qelq65
-	 KucGTGQtZjtz/vvI6G7xgUMt/zpB1E0RvYkOoIHqnPUNmTGmFJG+xWTuUNyH6XXQl
-	 fQakCVTh9NuX0nmHNw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mo6O7-1sUcQV2IAN-00mvrD; Fri, 19
- Apr 2024 16:08:40 +0200
-Message-ID: <4cff158d-b5ac-4dca-9fbb-626237c1eafe@web.de>
-Date: Fri, 19 Apr 2024 16:08:33 +0200
+	s=arc-20240116; t=1713535736; c=relaxed/simple;
+	bh=AfSvAfZ+PLfkq85Cm4kW2djWmgUs/Kj0iJYGdgszdE4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=oLoUsy3vhgylQri4PIoRxF9rme0hK4uL99atG7Slm/j2hXgKRayCyqCCp09SGW4PwJ8vC/F+bAJ7xXTWSM8NDvsxMIAQg7F3LqhuENWiZTNcdd4HgldMTCykdRgdD52ORUNXGa1Sqb7XMUrFqS3k6imgvUrtoe6wLHDnBhs9urQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2qwXxU69; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61b2abd30f9so28392077b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:08:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713535734; x=1714140534; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=33sdiDZDWg4/FZTAXVC794hL3/UVeYFyR3Xkr0YWvZ0=;
+        b=2qwXxU69LJ2MMB4MZ/FDduh1HeesVYk5kwOP+71/R3KCITSog5zlUoYUZEi4Cl0JUn
+         BHTXi8vtGEFhYXjKyk4ZdWqP8Zz7gCTf7XEm8ldqtzXt/AxKBwJgN4eztzyiKaEtGpwN
+         Qg9hK+x43Wh5PLoklfMKqu+t1JajkYOwTzR940y27zEeckICZ5uLiR9MU2VLyne4Yicw
+         SOkhFp/xYNZA/2e+hSatotfByCS4Hmk5SxMnxuGnKbXwTHsD42JZ67+rydNosqyEhJ5G
+         GMQYmsyLyJDYZgD+fM0QRlg/7RBBnZRUkz1WJ9KwRMYwxJVqcvxcufjaROYD3UfaTC3v
+         zJlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713535734; x=1714140534;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=33sdiDZDWg4/FZTAXVC794hL3/UVeYFyR3Xkr0YWvZ0=;
+        b=lFL9TlH0q+yRRukOWZBN0nS7W7UobazMCvlRMYJNUozWvwea94kSjFMjknjrcpzIBP
+         mvxJYUcPCgi9SOt6XsHxhzFQz6xynlRH3uPFWufFDxj4ThNbIQLlRExwIPytgb+BVagi
+         pw86/NboyfOyDJz4DtCMJV8g2D3x6tRE72g3LO2HSsfYL98ex6AjOjzP6Y/Hztm8JXs9
+         TFrhU72t2FoWKBS73ioZBuLp3rVymjoFgapa72OGAAp4goVbCP4ypyJejz6eLgN01mHW
+         pwH2enRITprnGqDB7nDNMYPKGmoadXXtzUq/CuLe5TOFHjomjAQHuzmEF/w9+82bjXHA
+         73cw==
+X-Forwarded-Encrypted: i=1; AJvYcCVKmTSEMThEqu/F5svkatDPrbGQAzQFswQBIilUoGCEoIqys+Rq8QhVfR56D+XOuNbzSNOn4TAhpeq7YRcwuZ5y66BHbFjO3NZiISBD
+X-Gm-Message-State: AOJu0Yzd07D3cTq0f67V0c8NDvlSuX3lGFvsEVIOz5dpjmvH83vPNVhI
+	DrsnwKALIvhAsq9ZRdBnKBr5AWgVIAtTP+kfmRdL6BIIPqBqrkR329SAubfimcNiS0ZjnUY46vj
+	n8w==
+X-Google-Smtp-Source: AGHT+IFGxzB5q+UmtaeYs4fr1YvtZlgI+JgTd7YHhZpapr5Z1gcjIWkYcZeYP2XQFLsBW8qY+ksucflV/rA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:6b01:0:b0:ddd:7581:1234 with SMTP id
+ g1-20020a256b01000000b00ddd75811234mr148387ybc.11.1713535734251; Fri, 19 Apr
+ 2024 07:08:54 -0700 (PDT)
+Date: Fri, 19 Apr 2024 07:08:52 -0700
+In-Reply-To: <ZiJ4r70tsphVk45Q@yilunxu-OptiPlex-7050>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
- kernel-janitors@vger.kernel.org, "Aneesh Kumar K.V"
- <aneesh.kumar@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Haren Myneni <haren@linux.ibm.com>, Jakub Kicinski <kuba@kernel.org>,
- Michael Ellerman <mpe@ellerman.id.au>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Nicholas Piggin <npiggin@gmail.com>, Nick Child <nnac123@linux.ibm.com>,
- Paolo Abeni <pabeni@redhat.com>, Rick Lindsley <ricklind@linux.ibm.com>,
- Thomas Falcon <tlfalcon@linux.ibm.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] ibmvnic: Use -EBUSY in __ibmvnic_reset()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wHaYprIvoklgpYvLAHaNj+zV2sUobvP/1+QGxB/jpFxwfLQ3/qn
- 32vCTsyWO3nPL2VCwhbpCMJR8j7UPW1FscxEpo8oGbSL/aAgV/PX6Vpr+VEtuUd39Fl9Wwi
- C04dNziBBise3+TfaEabuRF7AP8kexSpDRo+9sw4iZ7FlHoVp7pytc0thcBAO/GXLQfi2ot
- HsTWBbbb3UTXqwH16qzxw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:J02Z7QBpCOg=;z+trVArPa8/FGsp1KNJLJcillff
- hRcWIsH8BcyVEgycHUM44aOJtRmtzAwN6ouXaz79v3pTmbM9d7GSKWrRZ6wnWy6i+vKj0djKA
- mU+vnmEikbKvaQBqUWsRZzp1MQxOLxf9psQ01whhYma8tGSY7u92a50OvXBn1IlRsngOvttjY
- qBUZP7pjSVzwwhd3h5QEpCyYQjDC3yDZbs32q8+6WrY7LJcSy7MoDCugO+FpXK/445fvX0Wv5
- 2qc1FLNzJac7LHzXbyXOSf6AC54e03yo3XF6qf0YXl1xswPXZQ9D/tt/a8upC9tzNlGm30GxY
- zmJLGtljbL+2GCEzBazjBrhIMvYfEMhTMEury3fLz/7Cef/6VJaNEkTf1H7PfxNMwmxrCSWAN
- SKexmvUTmcZt233uMeQcGmc5S3BroHa9QxNTKot1ydzi6RdYzJxnuv/5DJN8UFa1T3IFXTyyX
- aksxT0fyEwkmLDaB0MRhIhhsYteo88NDd2hIJS9LER0OsRgK0J0HSy0lWELkQmF1NNmxNUSGS
- umUOZ7XUzok6jX+BtbH7DAVIHqgy/IyLQXqBcThg6uHSizSVvXWpbqbztrVByJ1mCyz0bYHWi
- AtAIYC8SQS5xVRj5E33RR/+BT3xkqVBZSvioSSa25LrG2MHLROt0CAPteRYW0nnZAZHDeZVzN
- 8WfcVE+jXneHVHX9SGaL5GEHcFNxv6jK1W5TUTD8uqrFnuyRMg81483evRi2wy48cRdUjrbh7
- NW6pVBHGE6UvKCOYRhyE6xE2mjRUg20S+N3bC0houl+NYlZy9c5Gv9/oRUIrvK/w3mR3+VXbs
- CyioRbpVKMsnV52g2zH3aKGPSwPO3629RXSYANKTwAWbE=
+Mime-Version: 1.0
+References: <20240417153450.3608097-1-pbonzini@redhat.com> <20240417153450.3608097-3-pbonzini@redhat.com>
+ <20240417193625.GJ3039520@ls.amr.corp.intel.com> <ZiJ4r70tsphVk45Q@yilunxu-OptiPlex-7050>
+Message-ID: <ZiJ69KnDcYabiUwi@google.com>
+Subject: Re: [PATCH 2/7] KVM: Add KVM_MAP_MEMORY vcpu ioctl to pre-populate
+ guest memory
+From: Sean Christopherson <seanjc@google.com>
+To: Xu Yilun <yilun.xu@linux.intel.com>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, xiaoyao.li@intel.com, 
+	binbin.wu@linux.intel.com, rick.p.edgecombe@intel.com, 
+	isaku.yamahata@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 19 Apr 2024 15:46:17 +0200
+On Fri, Apr 19, 2024, Xu Yilun wrote:
+> > > +#ifdef CONFIG_KVM_GENERIC_MAP_MEMORY
+> > > +	case KVM_CAP_MAP_MEMORY:
+> > > +		if (!kvm)
+> > > +			return 1;
+> > > +		/* Leave per-VM implementation to kvm_vm_ioctl_check_extension().  */
+> > 
+> > nitpick:
+> >                 fallthough;
+> 
+> A little tricky. 'break;' should be more straightforward.  
 
-Add a minus sign before the error code =E2=80=9CEBUSY=E2=80=9D
-so that a negative value will be used as in other cases.
-
-This issue was transformed by using the Coccinelle software.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/net/ethernet/ibm/ibmvnic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm=
-/ibmvnic.c
-index 5e9a93bdb518..737ae83a836a 100644
-=2D-- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -3212,7 +3212,7 @@ static void __ibmvnic_reset(struct work_struct *work=
-)
- 		    adapter->state =3D=3D VNIC_REMOVED) {
- 			spin_unlock_irqrestore(&adapter->state_lock, flags);
- 			kfree(rwi);
--			rc =3D EBUSY;
-+			rc =3D -EBUSY;
- 			break;
- 		}
-
-=2D-
-2.44.0
-
++1, though it's a moot point as Paolo dropped this code in v4.
 
