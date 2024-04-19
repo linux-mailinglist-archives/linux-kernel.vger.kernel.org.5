@@ -1,72 +1,92 @@
-Return-Path: <linux-kernel+bounces-151174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2DD68AAAA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:35:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 170328AAAA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:36:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 791EF281D16
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:35:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AE271C21B11
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3F85F876;
-	Fri, 19 Apr 2024 08:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3D85FB8B;
+	Fri, 19 Apr 2024 08:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="W7mik2Oo"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iwh3bAjA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2EA46D1C7;
-	Fri, 19 Apr 2024 08:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E498405EC
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713515717; cv=none; b=ud9Sl4kBSJArHDMOUUf+MH940r6zUIIZQCHZVeEBN5IG+EdsTVa3z3FWJX2ExNcS2sYrTawlyaf7+e6Jb4FLTckveFL93KQ+FWSuAU5ZXgoZPW61H/y2uexPr8OKg197T7EurDLs2ouiRndV9XtQbMr2ItWo1YU18aKFlSq3c+4=
+	t=1713515772; cv=none; b=AQHvNeXZczeeUs3l0D9yhcYjwkXw86u1JcR/lNwt8naCKPwiSmRBnIiKfIbT/8SGEC7Mp/7fKA6074rrftomqUkOosDe9RA3z2hx4rVEcCt5XgJvNmEUk0Mbibuljpw6X9JwBefUxfGbSvJbuxf6jW7GYThCfj2aOatVuwWgSuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713515717; c=relaxed/simple;
-	bh=W4RQ5w1hAa21VS9VJ3DjxoIsK9jAAUv+KUBZYYNCmmE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XRzOEIipF7vPoYXOd+RBz1ijgo4EkgSKNdBhKnV+yNeQnmtrO5asdYstlpL6WaG8Jj1sQW1zLdN3sDdMfgWAhjAt52j7DTxbn67gcEloogVTrtz3RDrCCf79B8mXcJo4hVM7i2BqEjr2MzkILwRkk7CNasJYyiFILWqXyUI9e44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=W7mik2Oo; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 64E9D60006;
-	Fri, 19 Apr 2024 08:35:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713515707;
+	s=arc-20240116; t=1713515772; c=relaxed/simple;
+	bh=ki32pQWZPdeOnqu6wy6iaFLnakDcjYIYqsw/JYzRlS0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bLpr9q6hm8NbqB64b6T85kokHbUtRBfgVQlxTASJMpi3/iJxh0QruDnxMltlR3tqmWHRBzAMGFCp4QN24MMbmZbBOkHTQLsgmPxfeKxszXZrbRk2WZLVtyIX+t6yuyzz2lxm/tSkN5pROj395U6nlbwQzBlDrxePCRB+AxjLm7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iwh3bAjA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713515769;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z/4hCTlNt1kZFbxTPwdI9/0ph7WbmhycJ8JyqP8WSnw=;
-	b=W7mik2Oo0s7ZEKBg07sUIUXjY/xRlRU0h2xqs+ksCNyZ9+27O+0YmixZhVpaoopn61825F
-	TFKGlAV+qRCXuI/bdPjooHJ8uCsuDOQM7bxywsvJ5+f9pbpGZnS7KyXlxSSooBV8rD4xmP
-	FIadQmaaSKW2w+anrr+vZahw4Jz/5apyviQrgqrqYKKuzdEd1tJa2uABCfLDapPLzgTCDk
-	0CCN/MJaXDCHZG/Cw0trANZbsKcP8pZc7Z1ldsBg6LLFOiqaUK3PoQO4U2mJPuRyobp8uX
-	ocn5h59QiJwCJx0pj0j8DyQ+3quJ0LCZQN4mgT2uOvTkFQqlspH9Cd5CVEQAsw==
-From: Kamel Bouhara <kamel.bouhara@bootlin.com>
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Henrik Rydberg <rydberg@bitmath.org>,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Marco Felsch <m.felsch@pengutronix.de>,
-	Jeff LaBundy <jeff@labundy.com>
-Cc: catalin.popescu@leica-geosystems.com,
-	mark.satterthwaite@touchnetix.com,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	bsp-development.geo@leica-geosystems.com,
-	Kamel Bouhara <kamel.bouhara@bootlin.com>
-Subject: [PATCH v10 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
-Date: Fri, 19 Apr 2024 10:33:41 +0200
-Message-ID: <20240419083342.61199-4-kamel.bouhara@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240419083342.61199-1-kamel.bouhara@bootlin.com>
-References: <20240419083342.61199-1-kamel.bouhara@bootlin.com>
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=m8Z4JwBEgcNs/PB0AnWXpJ2AEsgxb+gwBzYIddtlxkc=;
+	b=iwh3bAjAv9C/g9W9LmObq1/+7OUuOmZc1joXM3KnSXFC4oRTYlNuILel3PoU9OtTxK6ZVx
+	OAASKRNjafzcc5/6uzxLdkJJamuduIo5LkFxWoYHIfqnhQsS8AKn9LOpoNf0h+b5FB19O8
+	3CXSn1PnEN/PK4Le1ncSlhWrz0clEZE=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-286-QYApYOt_NyKSwxW-nIT9hQ-1; Fri, 19 Apr 2024 04:36:08 -0400
+X-MC-Unique: QYApYOt_NyKSwxW-nIT9hQ-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-69b631714d4so27876836d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 01:36:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713515767; x=1714120567;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m8Z4JwBEgcNs/PB0AnWXpJ2AEsgxb+gwBzYIddtlxkc=;
+        b=UhEvc8fK7aT4ZLRJsnjjpgyk9afGDG9hujMqiPdi3qNlQ/xOcDeBbmAy/z0r+Qr7IH
+         Nj2DAgD1deconXQjIt6S4PhNRCoz4RekCLut+SQpCyLY83mpxQ07Pa/8DTyaavhX1CqJ
+         vQcNE++XNK27LP4lrD4PnEsGMo3uLvIDd7e/fEkkXhl4C4mNzw7YezYxaRAXSbA4Gdle
+         WCOao+zP5Vy9ZsRyJ+NV2yDm15Vm9JDE6/QZagNWY9YrU4SLYa22uGFQYiRVSRbbdBbl
+         nSzlVhha3lIA1M4qIgCCMnL3DbLr0DVLY/oEVKlcKNHtUcBNh3w8IArHEglzUrm6TW0i
+         qjpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUad4O126BfBupciTuWqlfZIMVgtHLFKHdVVhlBA+PEzqRI4sAC+ha7zdVK2Yy1shX+XtLdG1itdE0GfyCHowiG7BTPd1dZAPlFUGc4
+X-Gm-Message-State: AOJu0Yx6UJpTZ+akzdElIZhaiD63B6bPKFC3gq6SLTyb7I+esrcZRers
+	agag4cRNLYo+M2VgWAASJcNSshr5ty2rCN8++O1jRtkGZV5d1U2wRUJiGs0eETxizxwwsnZlSBt
+	nbajEEvPqd01v9u1lllyfqDdnbvErbFTDSnUNtTuF7dlnXizgl1f+N4AW9Nbh
+X-Received: by 2002:a0c:f583:0:b0:69b:695e:bde1 with SMTP id k3-20020a0cf583000000b0069b695ebde1mr1579693qvm.5.1713515767576;
+        Fri, 19 Apr 2024 01:36:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEGlA/WHb28Nuedm28MeG6UOBldUGYch8jOZ6vtabDmqXmylQ9Td7yq87/W2KGiQ+Yy3+jupA==
+X-Received: by 2002:a0c:f583:0:b0:69b:695e:bde1 with SMTP id k3-20020a0cf583000000b0069b695ebde1mr1579679qvm.5.1713515767287;
+        Fri, 19 Apr 2024 01:36:07 -0700 (PDT)
+Received: from klayman.redhat.com (net-2-34-26-208.cust.vodafonedsl.it. [2.34.26.208])
+        by smtp.gmail.com with ESMTPSA id n11-20020a0ce48b000000b0069b6c831e86sm1368482qvl.97.2024.04.19.01.36.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 01:36:07 -0700 (PDT)
+From: Marco Pagani <marpagan@redhat.com>
+To: Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Alan Tull <atull@opensource.altera.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Marco Pagani <marpagan@redhat.com>,
+	Russ Weight <russ.weight@linux.dev>,
+	linux-fpga@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v6] fpga: region: add owner module and take its refcount
+Date: Fri, 19 Apr 2024 10:35:59 +0200
+Message-ID: <20240419083601.77403-1-marpagan@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,738 +94,220 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: kamel.bouhara@bootlin.com
 
-Add a new driver for the TouchNetix's axiom family of
-touchscreen controllers. This driver only supports i2c
-and can be later adapted for SPI and USB support.
+The current implementation of the fpga region assumes that the low-level
+module registers a driver for the parent device and uses its owner pointer
+to take the module's refcount. This approach is problematic since it can
+lead to a null pointer dereference while attempting to get the region
+during programming if the parent device does not have a driver.
 
-Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+To address this problem, add a module owner pointer to the fpga_region
+struct and use it to take the module's refcount. Modify the functions for
+registering a region to take an additional owner module parameter and
+rename them to avoid conflicts. Use the old function names for helper
+macros that automatically set the module that registers the region as the
+owner. This ensures compatibility with existing low-level control modules
+and reduces the chances of registering a region without setting the owner.
+
+Also, update the documentation to keep it consistent with the new interface
+for registering an fpga region.
+
+Fixes: 0fa20cdfcc1f ("fpga: fpga-region: device tree control for FPGA")
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Xu Yilun <yilun.xu@intel.com>
+Reviewed-by: Russ Weight <russ.weight@linux.dev>
+Signed-off-by: Marco Pagani <marpagan@redhat.com>
+Acked-by: Xu Yilun <yilun.xu@intel.com>
 ---
- MAINTAINERS                                  |   2 +
- drivers/input/touchscreen/Kconfig            |  12 +
- drivers/input/touchscreen/Makefile           |   1 +
- drivers/input/touchscreen/touchnetix_axiom.c | 659 +++++++++++++++++++
- 4 files changed, 674 insertions(+)
- create mode 100644 drivers/input/touchscreen/touchnetix_axiom.c
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3c59cb760071..d9535d7e4061 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22421,9 +22421,11 @@ F:	drivers/platform/x86/toshiba-wmi.c
+v6:
+- Fixed typos in the @owner parameter description
+v5:
+- Reverted function names swap in the documentation
+- Renamed owner module pointer br_owner -> ops_owner
+v4:
+- Split out the swap between put_device() and mutex_unlock() while
+releasing the region to avoid potential use after release issues
+v3:
+- Add reviewed-by Russ Weight
+v2:
+- Fixed typo in the documentation sets -> set
+- Renamed owner module pointer get_br_owner -> br_owner
+---
+ Documentation/driver-api/fpga/fpga-region.rst | 13 ++++++----
+ drivers/fpga/fpga-region.c                    | 24 +++++++++++--------
+ include/linux/fpga/fpga-region.h              | 13 +++++++---
+ 3 files changed, 32 insertions(+), 18 deletions(-)
+
+diff --git a/Documentation/driver-api/fpga/fpga-region.rst b/Documentation/driver-api/fpga/fpga-region.rst
+index dc55d60a0b4a..2d03b5fb7657 100644
+--- a/Documentation/driver-api/fpga/fpga-region.rst
++++ b/Documentation/driver-api/fpga/fpga-region.rst
+@@ -46,13 +46,16 @@ API to add a new FPGA region
+ ----------------------------
  
- TOUCHNETIX AXIOM I2C TOUCHSCREEN DRIVER
- M:	Kamel Bouhara <kamel.bouhara@bootlin.com>
-+M:	bsp-development.geo@leica-geosystems.com
- L:	linux-input@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
-+F:	drivers/input/touchscreen/touchnetix_axiom.c
+ * struct fpga_region - The FPGA region struct
+-* struct fpga_region_info - Parameter structure for fpga_region_register_full()
+-* fpga_region_register_full() -  Create and register an FPGA region using the
++* struct fpga_region_info - Parameter structure for __fpga_region_register_full()
++* __fpga_region_register_full() -  Create and register an FPGA region using the
+   fpga_region_info structure to provide the full flexibility of options
+-* fpga_region_register() -  Create and register an FPGA region using standard
++* __fpga_region_register() -  Create and register an FPGA region using standard
+   arguments
+ * fpga_region_unregister() -  Unregister an FPGA region
  
- TPM DEVICE DRIVER
- M:	Peter Huewe <peterhuewe@gmx.de>
-diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index c821fe3ee794..503ccea5c1b0 100644
---- a/drivers/input/touchscreen/Kconfig
-+++ b/drivers/input/touchscreen/Kconfig
-@@ -834,6 +834,18 @@ config TOUCHSCREEN_MIGOR
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called migor_ts.
++Helper macros ``fpga_region_register()`` and ``fpga_region_register_full()``
++automatically set the module that registers the FPGA region as the owner.
++
+ The FPGA region's probe function will need to get a reference to the FPGA
+ Manager it will be using to do the programming.  This usually would happen
+ during the region's probe function.
+@@ -82,10 +85,10 @@ following APIs to handle building or tearing down that list.
+    :functions: fpga_region_info
  
-+config TOUCHSCREEN_TOUCHNETIX_AXIOM
-+	tristate "TouchNetix AXIOM based touchscreen controllers"
-+	depends on I2C
-+	help
-+	  Say Y here if you have a axiom touchscreen connected to
-+	  your system.
-+
-+	  If unsure, say N.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called axiom.
-+
- config TOUCHSCREEN_TOUCHRIGHT
- 	tristate "Touchright serial touchscreen"
- 	select SERIO
-diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index a81cb5aa21a5..6ce7b804adc7 100644
---- a/drivers/input/touchscreen/Makefile
-+++ b/drivers/input/touchscreen/Makefile
-@@ -91,6 +91,7 @@ obj-$(CONFIG_TOUCHSCREEN_SUR40)		+= sur40.o
- obj-$(CONFIG_TOUCHSCREEN_SURFACE3_SPI)	+= surface3_spi.o
- obj-$(CONFIG_TOUCHSCREEN_TI_AM335X_TSC)	+= ti_am335x_tsc.o
- obj-$(CONFIG_TOUCHSCREEN_TOUCHIT213)	+= touchit213.o
-+obj-$(CONFIG_TOUCHSCREEN_TOUCHNETIX_AXIOM)	+= touchnetix_axiom.o
- obj-$(CONFIG_TOUCHSCREEN_TOUCHRIGHT)	+= touchright.o
- obj-$(CONFIG_TOUCHSCREEN_TOUCHWIN)	+= touchwin.o
- obj-$(CONFIG_TOUCHSCREEN_TS4800)	+= ts4800-ts.o
-diff --git a/drivers/input/touchscreen/touchnetix_axiom.c b/drivers/input/touchscreen/touchnetix_axiom.c
-new file mode 100644
-index 000000000000..a2142de55a88
---- /dev/null
-+++ b/drivers/input/touchscreen/touchnetix_axiom.c
-@@ -0,0 +1,659 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * TouchNetix axiom Touchscreen Driver
-+ *
-+ * Copyright (C) 2020-2023 TouchNetix Ltd.
-+ *
-+ * Author(s): Bart Prescott <bartp@baasheep.co.uk>
-+ *            Pedro Torruella <pedro.torruella@touchnetix.com>
-+ *            Mark Satterthwaite <mark.satterthwaite@touchnetix.com>
-+ *            Hannah Rossiter <hannah.rossiter@touchnetix.com>
-+ *            Kamel Bouhara <kamel.bouhara@bootlin.com>
-+ *
-+ */
-+#include <linux/bitfield.h>
-+#include <linux/crc16.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/input.h>
-+#include <linux/input/mt.h>
-+#include <linux/input/touchscreen.h>
-+#include <linux/interrupt.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/regmap.h>
-+
-+#include <asm/unaligned.h>
-+#define AXIOM_PROX_LEVEL		-128
-+#define AXIOM_DMA_OPS_DELAY_USEC	250
-+#define AXIOM_STARTUP_TIME_MS		110
-+/*
-+ * Register group u31 has 2 pages for usage table entries.
-+ */
-+#define AXIOM_U31_MAX_USAGES		0xff
-+#define AXIOM_U31_BYTES_PER_USAGE	6
-+#define AXIOM_U31_PAGE0_LENGTH		0x0C
-+#define AXIOM_U31_BOOTMODE_MASK		BIT(7)
-+#define AXIOM_U31_DEVID_MASK		GENMASK(14, 0)
-+
-+#define AXIOM_MAX_REPORT_LEN		0x7f
-+
-+#define AXIOM_CMD_HEADER_READ_MASK	BIT(15)
-+#define AXIOM_U41_MAX_TARGETS		10
-+
-+#define AXIOM_U46_AUX_CHANNELS		4
-+#define AXIOM_U46_AUX_MASK		GENMASK(11, 0)
-+
-+#define AXIOM_COMMS_MAX_USAGE_PAGES	3
-+#define AXIOM_COMMS_PAGE_SIZE		256
-+#define AXIOM_COMMS_REPORT_LEN_MASK	GENMASK(6, 0)
-+
-+#define AXIOM_REPORT_USAGE_ID		0x34
-+#define AXIOM_DEVINFO_USAGE_ID		0x31
-+#define AXIOM_USAGE_2HB_REPORT_ID	0x01
-+#define AXIOM_USAGE_2AUX_REPORT_ID	0x46
-+#define AXIOM_USAGE_2DCTS_REPORT_ID	0x41
-+
-+#define AXIOM_PAGE_OFFSET_MASK		GENMASK(6, 0)
-+
-+struct axiom_devinfo {
-+	__le16 device_id;
-+	u8 fw_minor;
-+	u8 fw_major;
-+	u8 fw_info_extra;
-+	u8 tcp_revision;
-+	u8 bootloader_fw_minor;
-+	u8 bootloader_fw_major;
-+	__le16 jedec_id;
-+	u8 num_usages;
-+} __packed;
-+
-+/*
-+ * Describes parameters of a specific usage, essentially a single element of
-+ * the "Usage Table"
-+ */
-+struct axiom_usage_entry {
-+	u8 id;
-+	u8 is_report;
-+	u8 start_page;
-+	u8 num_pages;
-+};
-+
-+/*
-+ * Represents state of a touch or target when detected prior to a touch (eg.
-+ * hover or proximity events).
-+ */
-+enum axiom_target_state {
-+	AXIOM_TARGET_STATE_NOT_PRESENT = 0,
-+	AXIOM_TARGET_STATE_PROX = 1,
-+	AXIOM_TARGET_STATE_HOVER = 2,
-+	AXIOM_TARGET_STATE_TOUCHING = 3,
-+};
-+
-+struct axiom_u41_target {
-+	enum axiom_target_state state;
-+	u16 x;
-+	u16 y;
-+	s8 z;
-+	bool insert;
-+	bool touch;
-+};
-+
-+struct axiom_target_report {
-+	u8 index;
-+	u8 present;
-+	u16 x;
-+	u16 y;
-+	s8 z;
-+};
-+
-+struct axiom_cmd_header {
-+	__le16 target_address;
-+	__le16 length;
-+} __packed;
-+
-+struct axiom_data {
-+	struct axiom_devinfo devinfo;
-+	struct device *dev;
-+	struct gpio_desc *reset_gpio;
-+	struct i2c_client *client;
-+	struct input_dev *input_dev;
-+	u32 max_report_len;
-+	u8 rx_buf[AXIOM_COMMS_MAX_USAGE_PAGES * AXIOM_COMMS_PAGE_SIZE];
-+	struct axiom_u41_target targets[AXIOM_U41_MAX_TARGETS];
-+	struct axiom_usage_entry usage_table[AXIOM_U31_MAX_USAGES];
-+	bool usage_table_populated;
-+	struct regulator *vdda;
-+	struct regulator *vddi;
-+	struct regmap *regmap;
-+	struct touchscreen_properties	prop;
-+};
-+
-+static const struct regmap_config axiom_i2c_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_format_endian = REGMAP_ENDIAN_LITTLE,
-+	.val_bits = 8,
-+	.val_format_endian = REGMAP_ENDIAN_LITTLE,
-+};
-+
-+/*
-+ * axiom devices are typically configured to report touches at a rate
-+ * of 100Hz (10ms) for systems that require polling for reports.
-+ * When reports are polled, it will be expected to occasionally
-+ * observe the overflow bit being set in the reports.
-+ * This indicates that reports are not being read fast enough.
-+ */
-+#define POLL_INTERVAL_DEFAULT_MS 10
-+
-+/* Translate usage/page/offset triplet into physical address. */
-+static u16 axiom_usage_to_target_address(struct axiom_data *ts, u8 usage, u8 page,
-+					 char offset)
-+{
-+	/* At the moment the convention is that u31 is always at physical address 0x0 */
-+	if (!ts->usage_table_populated) {
-+		if (usage == AXIOM_DEVINFO_USAGE_ID)
-+			return ((page << 8) + offset);
-+		else
-+			return 0xffff;
-+	}
-+
-+	if (page >= ts->usage_table[usage].num_pages) {
-+		dev_err(ts->dev, "Invalid usage table! usage: u%02x, page: %02x, offset: %02x\n",
-+			usage, page, offset);
-+		return 0xffff;
-+	}
-+
-+	return ((ts->usage_table[usage].start_page + page) << 8) + offset;
-+}
-+
-+static int axiom_read(struct axiom_data *ts, u8 usage, u8 page, void *buf, u16 len)
-+{
-+	struct axiom_cmd_header cmd_header;
-+	u32 preamble;
-+	int ret;
-+
-+	cmd_header.target_address = cpu_to_le16(axiom_usage_to_target_address(ts, usage, page, 0));
-+	cmd_header.length = cpu_to_le16(len | AXIOM_CMD_HEADER_READ_MASK);
-+
-+	preamble = get_unaligned_le32(&cmd_header);
-+
-+	ret = regmap_write(ts->regmap, preamble, 0);
-+	if (ret) {
-+		dev_err(ts->dev, "failed to write preamble, error %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regmap_raw_read(ts->regmap, 0, buf, len);
-+	if (ret) {
-+		dev_err(ts->dev, "failed to read target address %04x, error %d\n",
-+			cmd_header.target_address, ret);
-+		return ret;
-+	}
-+
-+	/* Wait device's DMA operations */
-+	usleep_range(AXIOM_DMA_OPS_DELAY_USEC, AXIOM_DMA_OPS_DELAY_USEC + 50);
-+
-+	return 0;
-+}
-+
-+/*
-+ * One of the main purposes for reading the usage table is to identify
-+ * which usages reside at which target address.
-+ * When performing subsequent reads or writes to AXIOM, the target address
-+ * is used to specify which usage is being accessed.
-+ * Consider the following discovery code which will build up the usage table.
-+ */
-+static u32 axiom_populate_usage_table(struct axiom_data *ts)
-+{
-+	struct axiom_usage_entry *usage_table;
-+	u8 *rx_data = ts->rx_buf;
-+	u32 max_report_len = 0;
-+	u32 usage_id;
-+	int error;
-+
-+	usage_table = ts->usage_table;
-+
-+	/* Read the second page of usage u31 to get the usage table */
-+	error = axiom_read(ts, AXIOM_DEVINFO_USAGE_ID, 1, rx_data,
-+			   (AXIOM_U31_BYTES_PER_USAGE * ts->devinfo.num_usages));
-+
-+	if (error)
-+		return error;
-+
-+	for (usage_id = 0; usage_id < ts->devinfo.num_usages; usage_id++) {
-+		u16 offset = (usage_id * AXIOM_U31_BYTES_PER_USAGE);
-+		u8 id = rx_data[offset + 0];
-+		u8 start_page = rx_data[offset + 1];
-+		u8 num_pages = rx_data[offset + 2];
-+		u32 max_offset = ((rx_data[offset + 3] & AXIOM_PAGE_OFFSET_MASK) + 1) * 2;
-+
-+		usage_table[id].is_report = !num_pages;
-+
-+		/* Store the entry into the usage table */
-+		usage_table[id].id = id;
-+		usage_table[id].start_page = start_page;
-+		usage_table[id].num_pages = num_pages;
-+
-+		dev_dbg(ts->dev, "Usage u%02x Info: %*ph\n", id, AXIOM_U31_BYTES_PER_USAGE,
-+			&rx_data[offset]);
-+
-+		/* Identify the max report length the module will receive */
-+		if (usage_table[id].is_report && max_offset > max_report_len)
-+			max_report_len = max_offset;
-+	}
-+
-+	ts->usage_table_populated = true;
-+
-+	return max_report_len;
-+}
-+
-+static int axiom_discover(struct axiom_data *ts)
-+{
-+	int error;
-+
-+	/*
-+	 * Fetch the first page of usage u31 to get the
-+	 * device information and the number of usages
-+	 */
-+	error = axiom_read(ts, AXIOM_DEVINFO_USAGE_ID, 0, &ts->devinfo, AXIOM_U31_PAGE0_LENGTH);
-+	if (error)
-+		return error;
-+
-+	dev_dbg(ts->dev, "  Boot Mode      : %s\n",
-+		FIELD_GET(AXIOM_U31_BOOTMODE_MASK,
-+			  le16_to_cpu(ts->devinfo.device_id)) ? "BLP" : "TCP");
-+	dev_dbg(ts->dev, "  Device ID      : %04lx\n",
-+		FIELD_GET(AXIOM_U31_DEVID_MASK, le16_to_cpu(ts->devinfo.device_id)));
-+	dev_dbg(ts->dev, "  Firmware Rev   : %02x.%02x\n", ts->devinfo.fw_major,
-+		ts->devinfo.fw_minor);
-+	dev_dbg(ts->dev, "  Bootloader Rev : %02x.%02x\n", ts->devinfo.bootloader_fw_major,
-+		ts->devinfo.bootloader_fw_minor);
-+	dev_dbg(ts->dev, "  FW Extra Info  : %04x\n", ts->devinfo.fw_info_extra);
-+	dev_dbg(ts->dev, "  Silicon        : %04x\n", le16_to_cpu(ts->devinfo.jedec_id));
-+	dev_dbg(ts->dev, "  Number usages        : %04x\n", ts->devinfo.num_usages);
-+
-+	ts->max_report_len = axiom_populate_usage_table(ts);
-+	if (!ts->max_report_len || !ts->devinfo.num_usages ||
-+	    ts->max_report_len > AXIOM_MAX_REPORT_LEN) {
-+		dev_err(ts->dev, "Invalid report length or usages number");
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(ts->dev, "Max Report Length: %u\n", ts->max_report_len);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Support function to axiom_process_u41_report.
-+ * Generates input-subsystem events for every target.
-+ * After calling this function the caller shall issue
-+ * a Sync to the input sub-system.
-+ */
-+static bool axiom_process_u41_report_target(struct axiom_data *ts,
-+					    struct axiom_target_report *target)
-+{
-+	struct input_dev *input_dev = ts->input_dev;
-+	struct axiom_u41_target *target_prev_state;
-+	enum axiom_target_state current_state;
-+	int id;
-+
-+	/* Verify the target index */
-+	if (target->index >= AXIOM_U41_MAX_TARGETS) {
-+		dev_err(ts->dev, "Invalid target index! %u\n", target->index);
-+		return false;
-+	}
-+
-+	target_prev_state = &ts->targets[target->index];
-+
-+	current_state = AXIOM_TARGET_STATE_NOT_PRESENT;
-+
-+	if (target->present) {
-+		if (target->z >= 0)
-+			current_state = AXIOM_TARGET_STATE_TOUCHING;
-+		else if (target->z > AXIOM_PROX_LEVEL && target->z < 0)
-+			current_state = AXIOM_TARGET_STATE_HOVER;
-+		else if (target->z == AXIOM_PROX_LEVEL)
-+			current_state = AXIOM_TARGET_STATE_PROX;
-+	}
-+
-+	if (target_prev_state->state == current_state &&
-+	    target_prev_state->x == target->x &&
-+	    target_prev_state->y == target->y &&
-+	    target_prev_state->z == target->z)
-+		return false;
-+
-+	id = target->index;
-+
-+	dev_dbg(ts->dev, "U41 Target T%u, present:%u, x:%u, y:%u, z:%d\n",
-+		target->index, target->present,
-+		target->x, target->y, target->z);
-+
-+	switch (current_state) {
-+	case AXIOM_TARGET_STATE_NOT_PRESENT:
-+	case AXIOM_TARGET_STATE_PROX:
-+		if (!target_prev_state->insert)
-+			break;
-+		target_prev_state->insert = false;
-+
-+		if (!id)
-+			input_report_key(input_dev, BTN_TOUCH, 0);
-+
-+		input_mt_report_slot_inactive(input_dev);
-+		/*
-+		 * make sure the previous coordinates are
-+		 * all off screen when the finger comes back
-+		 */
-+		target->x = 65535;
-+		target->y = 65535;
-+		target->z = AXIOM_PROX_LEVEL;
-+		break;
-+	case AXIOM_TARGET_STATE_HOVER:
-+	case AXIOM_TARGET_STATE_TOUCHING:
-+		target_prev_state->insert = true;
-+		input_report_abs(input_dev, ABS_MT_TRACKING_ID, id);
-+		input_report_abs(input_dev, ABS_MT_POSITION_X, target->x);
-+		input_report_abs(input_dev, ABS_MT_POSITION_Y, target->y);
-+
-+		if (current_state == AXIOM_TARGET_STATE_TOUCHING) {
-+			input_report_abs(input_dev, ABS_MT_DISTANCE, 0);
-+			input_report_abs(input_dev, ABS_DISTANCE, 0);
-+			input_report_abs(input_dev, ABS_MT_PRESSURE, target->z);
-+			input_report_abs(input_dev, ABS_PRESSURE, target->z);
-+		} else {
-+			input_report_abs(input_dev, ABS_MT_DISTANCE, -target->z);
-+			input_report_abs(input_dev, ABS_DISTANCE, -target->z);
-+			input_report_abs(input_dev, ABS_MT_PRESSURE, 0);
-+			input_report_abs(input_dev, ABS_PRESSURE, 0);
-+		}
-+
-+		if (!id)
-+			input_report_key(input_dev, BTN_TOUCH, (current_state ==
-+					 AXIOM_TARGET_STATE_TOUCHING));
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	target_prev_state->state = current_state;
-+	target_prev_state->x = target->x;
-+	target_prev_state->y = target->y;
-+	target_prev_state->z = target->z;
-+
-+	return true;
-+}
-+
-+/*
-+ * U41 is the output report of the 2D CTS and contains the status of targets
-+ * (including contacts and pre-contacts) along with their X,Y,Z values.
-+ * When a target has been removed (no longer detected),
-+ * the corresponding X,Y,Z values will be zeroed.
-+ */
-+static bool axiom_process_u41_report(struct axiom_data *ts, u8 *rx_buf)
-+{
-+	struct axiom_target_report target;
-+	bool update_done = false;
-+	u16 target_status;
-+	int i;
-+
-+	target_status = get_unaligned_le16(rx_buf + 1);
-+
-+	for (i = 0; i < AXIOM_U41_MAX_TARGETS; i++) {
-+		u8 *target_step = &rx_buf[i * 4];
-+
-+		target.index = i;
-+		input_mt_slot(ts->input_dev, i);
-+		input_mt_report_slot_state(ts->input_dev, MT_TOOL_FINGER, true);
-+		target.present = ((target_status & (1 << i)) != 0) ? 1 : 0;
-+		target.x = get_unaligned_le16(target_step + 3);
-+		target.y = get_unaligned_le16(target_step + 5);
-+		target.z = (s8)(rx_buf[i + 43]);
-+		touchscreen_report_pos(ts->input_dev, &ts->prop, target.x, target.y, true);
-+		update_done |= axiom_process_u41_report_target(ts, &target);
-+	}
-+
-+	return update_done;
-+}
-+
-+/*
-+ * U46 report contains a low level measurement data generated by the capacitive
-+ * displacement sensor (CDS) algorithms from the auxiliary channels.
-+ * This information is useful when tuning multi-press to assess mechanical
-+ * consistency in the unit's construction.
-+ */
-+static void axiom_process_u46_report(struct axiom_data *ts, u8 *rx_buf)
-+{
-+	struct input_dev *input_dev = ts->input_dev;
-+	u32 event_value;
-+	u16 aux_value;
-+	int i;
-+
-+	for (i = 0; i < AXIOM_U46_AUX_CHANNELS; i++) {
-+		u8 *target_step = &rx_buf[i * 2];
-+
-+		input_mt_slot(input_dev, i);
-+		input_mt_report_slot_state(input_dev, MT_TOOL_FINGER, true);
-+		aux_value = get_unaligned_le16(target_step + 1) & AXIOM_U46_AUX_MASK;
-+		event_value = (i << 16) | (aux_value);
-+		input_event(input_dev, EV_MSC, MSC_RAW, event_value);
-+	}
-+}
-+
-+/*
-+ * Validates the crc and demultiplexes the axiom reports to the appropriate
-+ * report handler
-+ */
-+static int axiom_handle_events(struct axiom_data *ts)
-+{
-+	struct input_dev *input_dev = ts->input_dev;
-+	u8 *report_data = ts->rx_buf;
-+	struct device *dev = ts->dev;
-+	u16 crc_report;
-+	u8 *crc_bytes;
-+	u16 crc_calc;
-+	int error;
-+	u8 len;
-+
-+	error = axiom_read(ts, AXIOM_REPORT_USAGE_ID, 0, report_data, ts->max_report_len);
-+	if (error)
-+		return error;
-+
-+	len = (report_data[0] & AXIOM_COMMS_REPORT_LEN_MASK) << 1;
-+	if (len <= 2) {
-+		dev_err(dev, "Zero length report discarded.\n");
-+		return -ENODATA;
-+	}
-+
-+	/* Validate the report CRC */
-+	crc_bytes = &report_data[len];
-+
-+	crc_report = get_unaligned_le16(crc_bytes - 2);
-+	/* Length is in 16 bit words and remove the size of the CRC16 itself */
-+	crc_calc = crc16(0, report_data, (len - 2));
-+
-+	if (crc_calc != crc_report) {
-+		dev_err(dev,
-+			"CRC mismatch! Expected: %#x, Calculated CRC: %#x.\n",
-+			crc_report, crc_calc);
-+		return -EINVAL;
-+	}
-+
-+	switch (report_data[1]) {
-+	case AXIOM_USAGE_2DCTS_REPORT_ID:
-+		if (axiom_process_u41_report(ts, &report_data[1])) {
-+			input_mt_sync_frame(input_dev);
-+			input_sync(input_dev);
-+		}
-+		break;
-+
-+	case AXIOM_USAGE_2AUX_REPORT_ID:
-+		/* This is an aux report (force) */
-+		axiom_process_u46_report(ts, &report_data[1]);
-+		input_mt_sync(input_dev);
-+		input_sync(input_dev);
-+		break;
-+
-+	case AXIOM_USAGE_2HB_REPORT_ID:
-+		/* This is a heartbeat report */
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static void axiom_i2c_poll(struct input_dev *input_dev)
-+{
-+	struct axiom_data *ts = input_get_drvdata(input_dev);
-+
-+	axiom_handle_events(ts);
-+}
-+
-+static irqreturn_t axiom_irq(int irq, void *dev_id)
-+{
-+	struct axiom_data *ts = dev_id;
-+
-+	axiom_handle_events(ts);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void axiom_reset(struct gpio_desc *reset_gpio)
-+{
-+	gpiod_set_value_cansleep(reset_gpio, 1);
-+	usleep_range(1000, 2000);
-+	gpiod_set_value_cansleep(reset_gpio, 0);
-+	msleep(AXIOM_STARTUP_TIME_MS);
-+}
-+
-+static int axiom_i2c_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct input_dev *input_dev;
-+	struct axiom_data *ts;
-+	u32 poll_interval;
-+	int target;
-+	int error;
-+
-+	ts = devm_kzalloc(dev, sizeof(*ts), GFP_KERNEL);
-+	if (!ts)
-+		return -ENOMEM;
-+
-+	i2c_set_clientdata(client, ts);
-+	ts->client = client;
-+	ts->dev = dev;
-+
-+	ts->regmap = devm_regmap_init_i2c(client, &axiom_i2c_regmap_config);
-+	error = PTR_ERR_OR_ZERO(ts->regmap);
-+	if (error) {
-+		dev_err(dev, "Failed to initialize regmap: %d\n", error);
-+		return error;
-+	}
-+
-+	ts->vddi = devm_regulator_get(dev, "VDDI");
-+	if (IS_ERR(ts->vddi))
-+		return dev_err_probe(&client->dev, PTR_ERR(ts->vddi),
-+				     "Failed to enable VDDI regulator\n");
-+
-+	ts->vdda = devm_regulator_get(dev, "VDDA");
-+	if (IS_ERR(ts->vdda))
-+		return dev_err_probe(&client->dev, PTR_ERR(ts->vdda),
-+				     "Failed to enable VDDA regulator\n");
-+
-+	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(ts->reset_gpio))
-+		return dev_err_probe(dev, PTR_ERR(ts->reset_gpio), "failed to get reset GPIO\n");
-+
-+	if (ts->reset_gpio)
-+		axiom_reset(ts->reset_gpio);
-+	else
-+		msleep(AXIOM_STARTUP_TIME_MS);
-+
-+	error = axiom_discover(ts);
-+	if (error)
-+		return dev_err_probe(dev, error, "Failed touchscreen discover\n");
-+
-+	input_dev = devm_input_allocate_device(ts->dev);
-+	if (!input_dev)
-+		return -ENOMEM;
-+
-+	input_dev->name = "TouchNetix axiom Touchscreen";
-+	input_dev->phys = "input/axiom_ts";
-+
-+	input_set_abs_params(input_dev, ABS_MT_POSITION_X, 0, 65535, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, 0, 65535, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_TOOL_TYPE, 0, MT_TOOL_MAX, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_DISTANCE, 0, 127, 0, 0);
-+	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 127, 0, 0);
-+
-+	touchscreen_parse_properties(input_dev, true, &ts->prop);
-+
-+	/* Registers the axiom device as a touchscreen instead of a mouse pointer */
-+	error = input_mt_init_slots(input_dev, AXIOM_U41_MAX_TARGETS, INPUT_MT_DIRECT);
-+	if (error)
-+		return error;
-+
-+	/* Enables the raw data for up to 4 force channels to be sent to the input subsystem */
-+	set_bit(EV_REL, input_dev->evbit);
-+	set_bit(EV_MSC, input_dev->evbit);
-+	/* Declare that we support "RAW" Miscellaneous events */
-+	set_bit(MSC_RAW, input_dev->mscbit);
-+
-+	ts->input_dev = input_dev;
-+	input_set_drvdata(ts->input_dev, ts);
-+
-+	/* Ensure that all reports are initialised to not be present. */
-+	for (target = 0; target < AXIOM_U41_MAX_TARGETS; target++)
-+		ts->targets[target].state = AXIOM_TARGET_STATE_NOT_PRESENT;
-+
-+	error = devm_request_threaded_irq(dev, client->irq, NULL,
-+					  axiom_irq, IRQF_ONESHOT, dev_name(dev), ts);
-+	if (error) {
-+		dev_info(dev, "Request irq failed, falling back to polling mode");
-+
-+		error = input_setup_polling(input_dev, axiom_i2c_poll);
-+		if (error)
-+			return dev_err_probe(ts->dev, error, "Unable to set up polling mode\n");
-+
-+		if (!device_property_read_u32(ts->dev, "poll-interval", &poll_interval))
-+			input_set_poll_interval(input_dev, poll_interval);
-+		else
-+			input_set_poll_interval(input_dev, POLL_INTERVAL_DEFAULT_MS);
-+	}
-+
-+	return input_register_device(input_dev);
-+}
-+
-+static const struct i2c_device_id axiom_i2c_id_table[] = {
-+	{ "ax54a" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(i2c, axiom_i2c_id_table);
-+
-+static const struct of_device_id axiom_i2c_of_match[] = {
-+	{ .compatible = "touchnetix,ax54a", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, axiom_i2c_of_match);
-+
-+static struct i2c_driver axiom_i2c_driver = {
-+	.driver = {
-+		   .name = "axiom",
-+		   .of_match_table = axiom_i2c_of_match,
-+	},
-+	.id_table = axiom_i2c_id_table,
-+	.probe = axiom_i2c_probe,
-+};
-+module_i2c_driver(axiom_i2c_driver);
-+
-+MODULE_AUTHOR("Bart Prescott <bartp@baasheep.co.uk>");
-+MODULE_AUTHOR("Pedro Torruella <pedro.torruella@touchnetix.com>");
-+MODULE_AUTHOR("Mark Satterthwaite <mark.satterthwaite@touchnetix.com>");
-+MODULE_AUTHOR("Hannah Rossiter <hannah.rossiter@touchnetix.com>");
-+MODULE_AUTHOR("Kamel Bouhara <kamel.bouhara@bootlin.com>");
-+MODULE_DESCRIPTION("TouchNetix axiom touchscreen I2C bus driver");
-+MODULE_LICENSE("GPL");
+ .. kernel-doc:: drivers/fpga/fpga-region.c
+-   :functions: fpga_region_register_full
++   :functions: __fpga_region_register_full
+ 
+ .. kernel-doc:: drivers/fpga/fpga-region.c
+-   :functions: fpga_region_register
++   :functions: __fpga_region_register
+ 
+ .. kernel-doc:: drivers/fpga/fpga-region.c
+    :functions: fpga_region_unregister
+diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
+index b364a929425c..753cd142503e 100644
+--- a/drivers/fpga/fpga-region.c
++++ b/drivers/fpga/fpga-region.c
+@@ -53,7 +53,7 @@ static struct fpga_region *fpga_region_get(struct fpga_region *region)
+ 	}
+ 
+ 	get_device(dev);
+-	if (!try_module_get(dev->parent->driver->owner)) {
++	if (!try_module_get(region->ops_owner)) {
+ 		put_device(dev);
+ 		mutex_unlock(&region->mutex);
+ 		return ERR_PTR(-ENODEV);
+@@ -75,7 +75,7 @@ static void fpga_region_put(struct fpga_region *region)
+ 
+ 	dev_dbg(dev, "put\n");
+ 
+-	module_put(dev->parent->driver->owner);
++	module_put(region->ops_owner);
+ 	put_device(dev);
+ 	mutex_unlock(&region->mutex);
+ }
+@@ -181,14 +181,16 @@ static struct attribute *fpga_region_attrs[] = {
+ ATTRIBUTE_GROUPS(fpga_region);
+ 
+ /**
+- * fpga_region_register_full - create and register an FPGA Region device
++ * __fpga_region_register_full - create and register an FPGA Region device
+  * @parent: device parent
+  * @info: parameters for FPGA Region
++ * @owner: module containing the get_bridges function
+  *
+  * Return: struct fpga_region or ERR_PTR()
+  */
+ struct fpga_region *
+-fpga_region_register_full(struct device *parent, const struct fpga_region_info *info)
++__fpga_region_register_full(struct device *parent, const struct fpga_region_info *info,
++			    struct module *owner)
+ {
+ 	struct fpga_region *region;
+ 	int id, ret = 0;
+@@ -213,6 +215,7 @@ fpga_region_register_full(struct device *parent, const struct fpga_region_info *
+ 	region->compat_id = info->compat_id;
+ 	region->priv = info->priv;
+ 	region->get_bridges = info->get_bridges;
++	region->ops_owner = owner;
+ 
+ 	mutex_init(&region->mutex);
+ 	INIT_LIST_HEAD(&region->bridge_list);
+@@ -241,13 +244,14 @@ fpga_region_register_full(struct device *parent, const struct fpga_region_info *
+ 
+ 	return ERR_PTR(ret);
+ }
+-EXPORT_SYMBOL_GPL(fpga_region_register_full);
++EXPORT_SYMBOL_GPL(__fpga_region_register_full);
+ 
+ /**
+- * fpga_region_register - create and register an FPGA Region device
++ * __fpga_region_register - create and register an FPGA Region device
+  * @parent: device parent
+  * @mgr: manager that programs this region
+  * @get_bridges: optional function to get bridges to a list
++ * @owner: module containing the get_bridges function
+  *
+  * This simple version of the register function should be sufficient for most users.
+  * The fpga_region_register_full() function is available for users that need to
+@@ -256,17 +260,17 @@ EXPORT_SYMBOL_GPL(fpga_region_register_full);
+  * Return: struct fpga_region or ERR_PTR()
+  */
+ struct fpga_region *
+-fpga_region_register(struct device *parent, struct fpga_manager *mgr,
+-		     int (*get_bridges)(struct fpga_region *))
++__fpga_region_register(struct device *parent, struct fpga_manager *mgr,
++		       int (*get_bridges)(struct fpga_region *), struct module *owner)
+ {
+ 	struct fpga_region_info info = { 0 };
+ 
+ 	info.mgr = mgr;
+ 	info.get_bridges = get_bridges;
+ 
+-	return fpga_region_register_full(parent, &info);
++	return __fpga_region_register_full(parent, &info, owner);
+ }
+-EXPORT_SYMBOL_GPL(fpga_region_register);
++EXPORT_SYMBOL_GPL(__fpga_region_register);
+ 
+ /**
+  * fpga_region_unregister - unregister an FPGA region
+diff --git a/include/linux/fpga/fpga-region.h b/include/linux/fpga/fpga-region.h
+index 9d4d32909340..5fbc05fe70a6 100644
+--- a/include/linux/fpga/fpga-region.h
++++ b/include/linux/fpga/fpga-region.h
+@@ -36,6 +36,7 @@ struct fpga_region_info {
+  * @mgr: FPGA manager
+  * @info: FPGA image info
+  * @compat_id: FPGA region id for compatibility check.
++ * @ops_owner: module containing the get_bridges function
+  * @priv: private data
+  * @get_bridges: optional function to get bridges to a list
+  */
+@@ -46,6 +47,7 @@ struct fpga_region {
+ 	struct fpga_manager *mgr;
+ 	struct fpga_image_info *info;
+ 	struct fpga_compat_id *compat_id;
++	struct module *ops_owner;
+ 	void *priv;
+ 	int (*get_bridges)(struct fpga_region *region);
+ };
+@@ -58,12 +60,17 @@ fpga_region_class_find(struct device *start, const void *data,
+ 
+ int fpga_region_program_fpga(struct fpga_region *region);
+ 
++#define fpga_region_register_full(parent, info) \
++	__fpga_region_register_full(parent, info, THIS_MODULE)
+ struct fpga_region *
+-fpga_region_register_full(struct device *parent, const struct fpga_region_info *info);
++__fpga_region_register_full(struct device *parent, const struct fpga_region_info *info,
++			    struct module *owner);
+ 
++#define fpga_region_register(parent, mgr, get_bridges) \
++	__fpga_region_register(parent, mgr, get_bridges, THIS_MODULE)
+ struct fpga_region *
+-fpga_region_register(struct device *parent, struct fpga_manager *mgr,
+-		     int (*get_bridges)(struct fpga_region *));
++__fpga_region_register(struct device *parent, struct fpga_manager *mgr,
++		       int (*get_bridges)(struct fpga_region *), struct module *owner);
+ void fpga_region_unregister(struct fpga_region *region);
+ 
+ #endif /* _FPGA_REGION_H */
+
+base-commit: 5d04660b29fb31e88e945c8b3eb658976824d0fa
 -- 
-2.25.1
+2.44.0
 
 
