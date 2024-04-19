@@ -1,172 +1,271 @@
-Return-Path: <linux-kernel+bounces-151811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E14D08AB437
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:13:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A2748AB435
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:13:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E9331C20F49
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:13:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3D6D1F22A68
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:13:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D501137930;
-	Fri, 19 Apr 2024 17:13:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C0E139590;
+	Fri, 19 Apr 2024 17:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="RG3PVZFX"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2072.outbound.protection.outlook.com [40.107.95.72])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XLArRZ9N"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B1113A263;
-	Fri, 19 Apr 2024 17:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.72
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713546790; cv=fail; b=Z3/dl2jaQU8GgDIxSnckdkY4iLHhyDxXR+RoHvkyr+nf41VpTvRkcd9+YN3BuLOiGep6cCG6b4CKdTsYC81cHMgO5o1oFess0qn8uti6SF6pjWlKugcDJlUqxovfO+Ynojp7LOMPYgdhUYF1QlmZDMEdA7w+K+wucQr0L6LtOr4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713546790; c=relaxed/simple;
-	bh=mqTPclps3AmS3KTDiyEBm6gOyazCCaeWxJytr6fWX2k=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qNUh/d7e+KrmCvQpgJBdsn10zVpQomv/hPHI9bzb/o7S+XI971TTbhi0mQFTEXGomqa+suX520RvPgj2SPJwMH4JucvEoKWPLoJTXk/UkxCr5qdn5lWWcXbW5mTP9mRrETIJreKPWuvYtuF/sXzXTdhvebLwVPMvfmOJuYLhC/A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=RG3PVZFX; arc=fail smtp.client-ip=40.107.95.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UVs/BNhuvNy1mWM8c1vo9xRxezsTK4h3A8Pdn1du0UEny6325hfZbSgju/WHrxhr+WLQWtHe/kTCHJTxfcCrLXZfn+wYzqGdOpN66O/3TVoY+qolAiIY9ZSMbQMz4p1yUMjo0+xXrEcgtR2CI9C7rfb3Sp2BoweknS+XN2k8ZQcw7n21PlueIqVKdtR0eY4INdemhU35LKRIcGDxD3SBz7fF+E/fb1cP1GwVhqLdU+g2hDe0QmvCnkt6iXYG4L1C2IesCtisFfyCuxLHRp/Xsj8h7r740WpqfK7DIwjDvWhC2gSSr9poNrR/sdC+hsMtEptsI8ZGuT/wKfHlEXVq0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DvhiYh0CNb7+OKegWC/nYxq0nsiBeCz90VDH4RJPPYM=;
- b=Gx89USvCmXXvEZkWMEAx9msvZ4d1ZH7Ub5eaoJDD07Z6j/5Rhxby1oJetQFhbxO3/ToeaowDjCLw00J3T7wcCTvIxcOIsDC48FQYk6+XD5XFcixIqSdV1FuWE64J/21LGreBuGkLU7rVL9Hpz5A6CztRO+PuOYgU4soaH0e6SvKBO3UycQcqAccRMZiTRqRIIeu8NYi5hm+Ccf8XNf0anfrP2Wy9viYaaOPuFpqjsymU7smFza4gUCFB2YICJUYTbXpp/uVyDYP5vtDC39WpAmpBQ9y6PtsiNMcH/jC7CiYFpfD1bIWIOiqvvtQPa/JKubPocJij6Nv4deiWt+Jjnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DvhiYh0CNb7+OKegWC/nYxq0nsiBeCz90VDH4RJPPYM=;
- b=RG3PVZFXHL0ePs0yrgpfsAV0LGVOvMLnfl5pKWN6B5cLR4vwXl1Vpj7duudr2Z0J1gSUslqZa6NAkpYdAU6AXSoqbI1tMobqpfuSB0wNVxLaLErUl7bwBWpiYwjFbLhDMYp6FZV98ePF/6Tawha1j3FmQ24x/ubylop1/GgAIRly+FlVT1bxU868qmhSQJxTk/9DwXaA+sArS7l9RrXnBeWZEYH+FBOq1d5UhmAcDFT6tSpMO5En0+/RwGpB6rLrIXjqzlSfzxBzRhX3VjJOSZMKi55WtC3NFmJ7JzSH0TKdGzMIpKQ2haRgNas2HH+7DhOpxheUJkI8ZkphClcBBg==
-Received: from SJ0PR03CA0091.namprd03.prod.outlook.com (2603:10b6:a03:333::6)
- by LV3PR12MB9166.namprd12.prod.outlook.com (2603:10b6:408:19c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Fri, 19 Apr
- 2024 17:13:05 +0000
-Received: from DS3PEPF000099E2.namprd04.prod.outlook.com
- (2603:10b6:a03:333:cafe::24) by SJ0PR03CA0091.outlook.office365.com
- (2603:10b6:a03:333::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.30 via Frontend
- Transport; Fri, 19 Apr 2024 17:13:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- DS3PEPF000099E2.mail.protection.outlook.com (10.167.17.201) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Fri, 19 Apr 2024 17:13:04 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 19 Apr
- 2024 10:12:46 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 19 Apr
- 2024 10:12:46 -0700
-Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com (10.129.68.9)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4 via Frontend
- Transport; Fri, 19 Apr 2024 10:12:45 -0700
-Date: Fri, 19 Apr 2024 10:12:44 -0700
-From: Nicolin Chen <nicolinc@nvidia.com>
-To: <will@kernel.org>, <robin.murphy@arm.com>
-CC: <joro@8bytes.org>, <jgg@nvidia.com>, <thierry.reding@gmail.com>,
-	<vdumpa@nvidia.com>, <jonathanh@nvidia.com>, <linux-kernel@vger.kernel.org>,
-	<iommu@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v5 1/6] iommu/arm-smmu-v3: Add CS_NONE quirk
-Message-ID: <ZiKmDCAnAc0sRT7K@Asurada-Nvidia>
-References: <cover.1712977210.git.nicolinc@nvidia.com>
- <10a39a51cae4de9ef47580f0c4439fb6c5373588.1712977210.git.nicolinc@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6453A85284
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:13:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713546786; cv=none; b=sWaqCgrdCJYiVdreVhQgXW6I1QHv/CTgmxsA1TiZPwqw3IHa50d0720xsUf8QGjHoWxvUW0QCZaKNbhgJbeJ+nq0jWu8627r6GjlJEcaAFk2R2M7xAl9jshU7OvGYgRGmmYNnhXiLGisorrM3j9sjVtynuB6MKVMJFWshBoSq2Y=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713546786; c=relaxed/simple;
+	bh=6mkNayftPML6pT2KciKfd4FFbXSB1RlhvOicRs6zOX4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mpX+JBppBP+RbAPtec3LNS1Uzd5pEBECegfPCZOVtITjZZrrYaOCIjpEaItWZJ8LH+GYW2whMa5NSzhtpW+y9A2eA9jZZdW+WeZc8OYwPiW2zeKLsarKn89Rj236pTGsV4hsU5ysNECl30VWwSj+gOVxdXJunP6GqpsUZs9wXpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XLArRZ9N; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713546783;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ffWzMqu7mdQbYGoN2ZnXETKJDhCQefY93Dtj+EcLpGM=;
+	b=XLArRZ9NTWtGZh+8VtuUKKg45B0Kv2VbArL1arvAeIm+i1hy+7ixBN2z4quAIyw7fmJ7v6
+	Vrxcq1CXuHi2JVM+m0RHC/Ce1OL7knmuk6U/YsvwPCov7ogti/FllgSEz4s+lw3mcdUkAv
+	WYNJAs8wzJLYDMIF+OQVEeRsj1eCVv0=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-50-17A0bYekMAyQnYMB4mnmsg-1; Fri, 19 Apr 2024 13:12:59 -0400
+X-MC-Unique: 17A0bYekMAyQnYMB4mnmsg-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d45c064742so23346901fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:12:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713546778; x=1714151578;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ffWzMqu7mdQbYGoN2ZnXETKJDhCQefY93Dtj+EcLpGM=;
+        b=ZMYtbDHN+/TXf29FAFEP+0ibinOwYBNNfcUHnGI5dXtvU6ZlxwLHGG5FOk31GWJAlk
+         7co8PwkdFvI+iD7HdX3H5fjNv/IxObYsx7sGNAhh1YLHpKXQEI9YcTIZuNRA+daKTnxx
+         HxzL4HKGSkX3QvkN4Iskiym7j+h7pze0MneT2woNrrYE4y6rC3lNgcHXWItXJhZxq3vc
+         W8MN8/k5R7JrIsnEFKO4jdvCo7uzSwSu8qXBSE+Lb18S8xVroXLfs4JCYTFo9gPAkZ/u
+         39gUWR7AMhAvlHyN6FZlgu0W8XwUinrORnmis8N51dzrQlaueYEUcpACNOE0tgdbMBqz
+         m3uQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXvdJoaegSa/3ZelOlE0TrYpWONSKBMjtvNrBNZJ2Ls3+oMAbnOaHJBkZ4uF2tkT1IKKtbUT+Hoq+qgaK14esWFfCbTGd/rR6LIjPi1
+X-Gm-Message-State: AOJu0YwTaSGHLV4DkC2mOFnpsP/fg5yavBCXfTx+98h4GXy3pZ3qpHOr
+	MT5xtx4Pt2xD0UDs2c/Y55WmaPviE2lvkVT1bF52+x/UPVn0+ScKGA8ClQtXNHl6wr9oX+E73FQ
+	hh3mnl0z5O1B2+ag70HNnyC4bQIpPdrADUaHIhzWXS38zeijgWiwZcQe8NFDWRA==
+X-Received: by 2002:a2e:834b:0:b0:2d8:4158:cbaa with SMTP id l11-20020a2e834b000000b002d84158cbaamr1754470ljh.7.1713546778052;
+        Fri, 19 Apr 2024 10:12:58 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE/WsAq1RywBMvcnKm1ylFu3yIf/0wkUkJfkHeJmvKLZIe0rmnD3ACJULWqGSOo8wAsgmKA2Q==
+X-Received: by 2002:a2e:834b:0:b0:2d8:4158:cbaa with SMTP id l11-20020a2e834b000000b002d84158cbaamr1754446ljh.7.1713546777511;
+        Fri, 19 Apr 2024 10:12:57 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c716:f300:c9f0:f643:6aa2:16? (p200300cbc716f300c9f0f6436aa20016.dip0.t-ipconnect.de. [2003:cb:c716:f300:c9f0:f643:6aa2:16])
+        by smtp.gmail.com with ESMTPSA id fc14-20020a05600c524e00b004161af729f4sm7214198wmb.31.2024.04.19.10.12.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 10:12:57 -0700 (PDT)
+Message-ID: <ac4ffd88-2d13-4764-bb4e-18d0c4b9948d@redhat.com>
+Date: Fri, 19 Apr 2024 19:12:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <10a39a51cae4de9ef47580f0c4439fb6c5373588.1712977210.git.nicolinc@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099E2:EE_|LV3PR12MB9166:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8fc9b12d-f107-4729-1f0a-08dc6093f9bb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?fjTOlyDo0V8VYplXMBxZkaTnJrS2FBBg1me0SOC5vUqZlrbGav8FfPAo/M/u?=
- =?us-ascii?Q?42T/xoUMZ4u3kxUuuyYViPJjecgznnvtEvpug4DeOQlnMkaaBL/exja3S42X?=
- =?us-ascii?Q?5k22H6oCO2SEa9Tpm+WLlLC2gGQqmNPtQStdx56aAiadyOtGrg0eek0nqRvi?=
- =?us-ascii?Q?VcAwO7t7ugSGyh+KTeNG9fpJ43ri0UUfFSQ9WghYs99TvSqOobcrdOPltYmX?=
- =?us-ascii?Q?3yNNYa/euhB5CCjKr0ajnsy14S5DxeMx4yqyhTzv19FQ/SuVqQ4UEEXSoo3d?=
- =?us-ascii?Q?tWjj22Hd91iV9Pmn8ZlU+xkf0oRqDuwGuDSHSrEC+7dzYsrNxsDAbLGm2pQN?=
- =?us-ascii?Q?baugt8xNwAQP/fB3PYxWNdOUK8Jrt2smWiC3Hvi6ePqa/0kJ4wa19srhqIUM?=
- =?us-ascii?Q?0MAjzN2WqfJL8O6LDBiv3lSyCGiB+B852AAZ2IqUsRDaMif3N0iDMZ6vN+7R?=
- =?us-ascii?Q?/rUkQ5cZvztY5mKV5bfj4rZ0OxW/7tTK1Lc3s5aK/HY6rLRUZvS932yabrkO?=
- =?us-ascii?Q?aQolQvPmfDbDUI0+WUxFWcGxuLpUw7JO+GmvYZIeQf/CRImAzFiPYzYK/uhI?=
- =?us-ascii?Q?DTQ+rJu6j4nco3vAvJTvA8mvAWs3WcvIVjk36JFgq1BvxrUS9FfDTt8nNosz?=
- =?us-ascii?Q?ZGPA56lrlMqwX/pFGU+RzgsyxkR7qs/GL7BxFuG4MWiHEYF7XSc12TjUoWwl?=
- =?us-ascii?Q?KNZU3LoW8b0EbygqtP6Akd1HjsW7oiIaGLhFM7x0p7UbWqkibNMsJ6Q75n/4?=
- =?us-ascii?Q?8rd/bGibYqefz35spJoRNnej2sHCVDZyc4CsGGZMYTInD5xu7yCWmHw8Au9F?=
- =?us-ascii?Q?uGL+2n9ezL6M1UK+6eWniMfE4b5RcLY4nRYXyD1g99Cd8lZJ0Qqs8Yniuc7B?=
- =?us-ascii?Q?IrCTGkgBeck/46KAZGdtqJ9fLZyOG2s6PWwDtWk0R2FOIao+L+uUaP20b1Pr?=
- =?us-ascii?Q?8W2/cbKNTvw+QK9yGleZE5eMwzZFkfxA8bYG/0EDu9Cy/FyqsrJ/RpfaT13o?=
- =?us-ascii?Q?VHYR2SkCxJtwfmtKiA6VYPi6t6bO0421xL2WRAZGwt8dQCIjcIGfvh5UIJw5?=
- =?us-ascii?Q?gdsJJoP5XMq62NgPBpDtUhRM7HJv1UMv6aI+p/68QfGNW/9Q5+tDRqhr19D6?=
- =?us-ascii?Q?rJwJO2u/QoFx4n8AyaYkax9gd0LE3MGklwp1FM02NDsTkzlNbrkDYphZQBWI?=
- =?us-ascii?Q?U89ylhPls+TF7chYqyZs3PmDJVCVB9qvMp9s90TDW5oWvYlgvAGGtPTy1kT5?=
- =?us-ascii?Q?ghbw/S9ZfNddPAN+J0Rh2ZIKlr822Fkn9+Ts0GA8RbP4bGJts+DJeI6mAeEi?=
- =?us-ascii?Q?SsvXRa72kNs5tpWdbPSW4HcQPgiogBEehjE5t3g8clgyla80eyGO8lwMXESC?=
- =?us-ascii?Q?2rJlBHlSYJxx2OEKnokxnpVJ087/?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(1800799015)(376005)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 17:13:04.4610
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fc9b12d-f107-4729-1f0a-08dc6093f9bb
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099E2.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9166
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/5] arm64/mm: uffd write-protect and soft-dirty
+ tracking
+To: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Shivansh Vij <shivanshvij@outlook.com>,
+ Ryan Roberts <ryan.roberts@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
+ Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Anshuman Khandual <anshuman.khandual@arm.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+References: <20240419074344.2643212-1-ryan.roberts@arm.com>
+ <24999e38-e4f7-4616-8eae-dfdeba327558@arm.com>
+ <MW4PR12MB6875618342F088BE6F4ECBB2B90D2@MW4PR12MB6875.namprd12.prod.outlook.com>
+ <c936083b-68b7-4d8f-a8fc-d188e646f390@redhat.com>
+ <ZiKcNJ0Qw2awRwaa@linux.ibm.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZiKcNJ0Qw2awRwaa@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 12, 2024 at 08:43:49PM -0700, Nicolin Chen wrote:
-> The CMDQV extension in NVIDIA Tegra241 SoC only supports CS_NONE in the
-> CS field of CMD_SYNC. Add a quirk flag to accommodate that.
+On 19.04.24 18:30, Mike Rapoport wrote:
+> On Fri, Apr 19, 2024 at 11:45:14AM +0200, David Hildenbrand wrote:
+>> On 19.04.24 10:33, Shivansh Vij wrote:
+>>>> On 19/04/2024 08:43, Ryan Roberts wrote:
+>>>>> Hi All,
+>>>>>
+>>>>> This series adds uffd write-protect and soft-dirty tracking support for arm64. I
+>>>>> consider the soft-dirty support (patches 3 and 4) as RFC - see rationale below.
+>>>>>
+>>>>> That said, these are the last 2 SW bits and we may want to keep 1 bit in reserve
+>>>>> for future use. soft-dirty is only used for CRIU to my knowledge, and it is
+>>>>> thought that their use case could be solved with the more generic uffd-wp. So
+>>>>> unless somebody makes a clear case for the inclusion of soft-dirty support, we
+>>>>> are probably better off dropping patches 3 and 4 and keeping bit 63 for future
+>>>>> use. Although note that the most recent attempt to add soft-dirty for arm64 was
+>>>>> last month [1] so I'd like to give Shivansh Vij the opportunity to make the
+>>>>> case.
+>>>
+>>> Appreciate the opportunity to provide input here.
+>>>
+>>> I picked option one (dirty tracking in arm) because it seems to be the
+>>> simplest way to move forward, whereas it would be a relatively heavy
+>>> effort to add uffd-wp support to CRIU.
+>>>
+>>>  From a performance perspective I am also a little worried that uffd
+>>> will be slower than just tracking the dirty bits asynchronously with
+>>> sw dirty, but maybe that's not as much of a concern with the addition
+>>> of uffd-wp async.
+>>>
+>>> With all this being said, I'll defer to the wisdom of the crowd about
+>>> which approach makes more sense - after all, with this patch we should
+>>> get uffd-wp support on arm so at least there will be _a_ way forward
+>>> for CRIU (albeit one requiring slightly more work).
+>>
+>> Ccing Mike and Peter. In 2017, Mike gave a presentation "Memory tracking for
+>> iterative container migration"[1] at LPC
+>>
+>> Some key points are still true I think:
+>> (1) More flexible and robust than soft-dirty
+>> (2) May obsolete soft-dirty
+>>
+>> We further recently added a new UFFD_FEATURE_WP_ASYNC feature as part of
+>> [2], because getting soft-dirty return reliable results in some cases turned
+>> out rather hard to fix.
+>>
+>> We might still have to optimize that approach for some very sparse large
+>> VMAs, but that should be solvable.
+>>
+>>   "The major defect of this approach of dirty tracking is we need to
+>>   populate the pgtables when tracking starts. Soft-dirty doesn't do it
+>>   like that. It's unwanted in the case where the range of memory to track
+>>   is huge and unpopulated (e.g., tracking updates on a 10G file with
+>>   mmap() on top, without having any page cache installed yet). One way to
+>>   improve this is to allow pte markers exist for larger than PTE level
+>>   for PMD+. That will not change the interface if to implemented, so we
+>>   can leave that for later.")[3]
+>>
+>>
+>> If we can avoid adding soft-dirty on arm64 that would be great. This will
+>> require work on the CRIU side. One downside of uffd-wp is that it is
+>> currently not as avilable on architectures as soft-dirty.
 > 
-> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-> ---
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 10 ++++++++--
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  4 ++++
->  2 files changed, 12 insertions(+), 2 deletions(-)
+> Using uffd-wp instead of soft-dirty in CRIU will require quite some work on
+> CRIU side and probably on the kernel side too.
+> 
+> And as of now we'll anyway have to maintain soft-dirty because powerpc and
+> s390 don't have uffd-wp.
+> 
+> With UFFD_FEATURE_WP_ASYNC the concern that uffd-wp will be slower than
+> soft-dirty probably doesn't exist, but we won't know for sure until
+> somebody will try.
+> 
+> But there were other limitations, the most prominent was checkpointing an
+> application that uses uffd. If CRIU is to use uffd-wp for tracking of the
+> dirty pages, there should be some support for multiple uffd contexts for a
+> VMA and that's surely a lot of work.
 
-> @@ -707,7 +712,8 @@ static int __arm_smmu_cmdq_poll_until_consumed(struct arm_smmu_device *smmu,
->  static int arm_smmu_cmdq_poll_until_sync(struct arm_smmu_device *smmu,
->                                          struct arm_smmu_ll_queue *llq)
->  {
-> -       if (smmu->options & ARM_SMMU_OPT_MSIPOLL)
-> +       if (smmu->options & ARM_SMMU_OPT_MSIPOLL &&
-> +           !(cmdq->q.quirks & CMDQ_QUIRK_SYNC_CS_NONE_ONLY))
->                 return __arm_smmu_cmdq_poll_until_msi(smmu, llq);
+Is it even already supported to checkpoint an application that is using 
+uffd? Hard to believe, what if the monitor is running in a completely 
+different process than the one being checkpointed?
 
-Realized that I should have moved the PATCH-4 to the top for the
-cmdq pointer here. Otherwise it breaks git-bisect... Will fix in
-the next version.
+Further ... isn't CRIU already using uffd in some cases? 
+..documentation mentions [1] that it is used for "lazy (or post-copy) 
+restore in CRIU". At least if the documentation is correct and its 
+actually implemented.
 
-Nicolin
+[1] https://criu.org/Userfaultfd
+
+> 
+>> But I'll throw in another idea: do we really need soft-dirty and uffd-wp to
+>> exist at the same time in the same process (or the VMA?). In theory, we
+> 
+> For instance to have dirty memory tracking in CRIU for an application that
+> uses uffd-wp :)
+> 
+
+Hah! Not a concern for application on architectures where uffd-wp does 
+not exist yet! Well, initially, until these applications exist and make 
+use of it :P
+
+Also, I'm not sure if CRIU can checkpoint each and every application ... 
+I suspect one has to draw a line what can be supported and what not.
+
+Case in point: how should CRIU checkpoint an application that is using 
+softdirty tracking itself? If I'm not missing something important, that 
+might not work ....
+
+If the answer is "no other application is using soft-dirty tracking", 
+then it's really a shame we have to carry this baggage (+waste precious 
+PTE bits) only for one application ...
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
