@@ -1,191 +1,118 @@
-Return-Path: <linux-kernel+bounces-151919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 564C28AB5C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:51:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B244A8AB5BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:48:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12D5C283678
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:51:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 663701F22A4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9641813C9C3;
-	Fri, 19 Apr 2024 19:51:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA0E13C9BE;
+	Fri, 19 Apr 2024 19:48:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="no/tkbmQ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="TAwcgaIr"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5BA131188;
-	Fri, 19 Apr 2024 19:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0FB913C904;
+	Fri, 19 Apr 2024 19:48:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713556270; cv=none; b=f6CbEJRv5DfKmFu0RDLmMRSCKw6UyHw3woocBuT5XpbpcyQQVZWLSxtyW9lpC1Gv6zdwAMg3BRhs/Rijo4qEnlWOttegtFMWw6WCPtjQuinAEqz6tVedEExKoZ2JlJlPcnTIwiXVthzvu/uol37Pw1mMwtUYqs7XpqJg/qXfDrs=
+	t=1713556121; cv=none; b=sFDeexaUAnqbydQTOGnVwyFSps1LBMKrPsat420iaEGhGsB4wezsx2WRXQrzw3izi28SnyGacZHLB+eqikkZVou4h6bdJIbGCFx+AA/eKYD9IXcnxZ8qxQ+85MNJYTybXEwkUCISHib2BEBHxxd+JNQ07LjPsUoswamJsRAy524=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713556270; c=relaxed/simple;
-	bh=I+KaRSuYYHq33wzOX7I6A8aqVWCW9ldBZFg7/uknzuA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gwBkPmT/+2hAlzX5xkp342kY4qMHWrA4v0VtYNGrJYjrbhjUWfQjt4VJlarW6++7DNwrols26Tk+dcCE+N6tfJCJHTS2djnfnQjsxEjqSsN/VCZfcmQC6Bq9YSbEfE49C9iLqEk2oIvB/WD5ZGEo64i9bzNZB3cGnuL9YqrfclU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=no/tkbmQ; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713556269; x=1745092269;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=I+KaRSuYYHq33wzOX7I6A8aqVWCW9ldBZFg7/uknzuA=;
-  b=no/tkbmQhuHqWNGiTmyi1SeRcFY3VOVMhTwqXLiUNIxwi7NY62vpYhpb
-   HOJ16Y8tK4HqzBMocFVcL5W4UmK+liUgWdlmy8yjBNuzmM3oZ0lOdHPsp
-   MMWi9vvYCwmdi9TIIg4dqwNNaUnHmPVkgdczf51J7kajz/hLF03K1ux2R
-   KdisCNMRJXHDRJ1HktA7w4lnCOZB0YeHkH8r4ChVScU2jHtNpDjxxpDOZ
-   a5pC6BjJ9qGMXg8Hjsv1DeTTzWRyIMLOWZ6Y0bzfXizQ1Dnd6P4RRzRId
-   8FRI36yfeAO4RXpMmJSQchIUXva3n+FpsIvjw+5yR/gfe7JgOo6pnfJba
-   Q==;
-X-CSE-ConnectionGUID: ClTWVIqbQ7KhaG7fr6gd8g==
-X-CSE-MsgGUID: GSGavcpDTxaDsROCsUY8wg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="9046272"
-X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
-   d="scan'208";a="9046272"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 12:51:08 -0700
-X-CSE-ConnectionGUID: Xe14cQuhRnyFFqD/ir7/JA==
-X-CSE-MsgGUID: lljCEdhZS5OOh17gqeJo+w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
-   d="scan'208";a="46723350"
-Received: from amlin-018-114.igk.intel.com ([10.102.18.114])
-  by fmviesa002.fm.intel.com with ESMTP; 19 Apr 2024 12:51:05 -0700
-From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-To: netdev@vger.kernel.org
-Cc: vadim.fedorenko@linux.dev,
-	jiri@resnulli.us,
-	davem@davemloft.net,
-	rrameshbabu@nvidia.com,
-	linux-kernel@vger.kernel.org,
-	pabeni@redhat.com,
-	kuba@kernel.org,
-	mschmidt@redhat.com,
-	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Subject: [PATCH net] dpll: fix dpll_pin_registration missing refcount
-Date: Fri, 19 Apr 2024 21:47:11 +0200
-Message-Id: <20240419194711.1075349-1-arkadiusz.kubalewski@intel.com>
-X-Mailer: git-send-email 2.38.1
+	s=arc-20240116; t=1713556121; c=relaxed/simple;
+	bh=lcYzSMtqXOjiD9TMdZ2hUP6czF1+f1hwlL9IUcWlkcY=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=K+dzHOzFlBkeAplRpSwWmL7qqXHZBU5B/kHnZfqq8wqH4DeF6MPx99gXlwgh5oTtlcUm0G4+IZMgwYhc0s9ffFAnG02pGQ4pG95qH66TT/VgBET4dEQrVhksYaiZT3/aKInldghIS8DfMRnUFWYHmTRVQpUtmAKib56uPp9rc5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=TAwcgaIr; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713556065; x=1714160865; i=markus.elfring@web.de;
+	bh=0Uhmvl5HH++g4NG6yHvutmuZjckI/vNIFAeTfiT5pCY=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=TAwcgaIrNVdSRhgld6TxOdBMpR9dXAZBz6UohtK4Z/yAIHwqBxI/PlKJ3AEvstFN
+	 +nr71guGIJxqUf+b8edLprQioYOq6LuHVG6nZsQezfn7iw6KVc7nFXGCII++dvL2l
+	 XPoHngYDlkNfqW9ENLe6SD2z4iUHvY6C187YIFp7809i3yDrso3DWKWTFXiLfKoro
+	 iyjQJ/9F48pkETV2W02alPn5J1vXQd0QXZz2elFhb4sveF+0ocOQEFUl+4MX9/ehX
+	 NXxyO7R27082E2R1ovBFdFF+Xmz/vwQP45RpXoPCIFjW5LNxznKsCfgoBojozxLQh
+	 rB0orFaLTrOgfyRyxQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MIL0C-1ruf5B2Vuu-00HBKU; Fri, 19
+ Apr 2024 21:47:45 +0200
+Message-ID: <4938c547-04c1-448a-8435-1193e9c37595@web.de>
+Date: Fri, 19 Apr 2024 21:47:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: Aleksandr Mishin <amishin@t-argos.ru>, dri-devel@lists.freedesktop.org,
+ lvc-project@linuxtesting.org, kernel-janitors@vger.kernel.org,
+ Robert Foss <rfoss@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Andrzej Hajda <andrzej.hajda@intel.com>, Aradhya Bhatia <a-bhatia1@ti.com>,
+ Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ Jani Nikula <jani.nikula@intel.com>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>,
+ Jyri Sarha <jsarha@ti.com>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Nikhil Devshatwar <nikhil.nd@ti.com>,
+ Quentin Schulz <quentin.schulz@free-electrons.com>,
+ Rob Herring <robh@kernel.org>, Swapnil Jakhade <sjakhade@cadence.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Yuti Amonkar <yamonkar@cadence.com>, Zhu Wang <wangzhu9@huawei.com>
+References: <20240419113637.25745-1-amishin@t-argos.ru>
+Subject: Re: [PATCH] drm: bridge: cdns-mhdp8546: Fix missing mutex unlock on
+ error path
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240419113637.25745-1-amishin@t-argos.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:lLMzIzXyrO29Y4hG5MWHuBvr7iCi/ITtAQTGuj37Qq1b+mSzK7k
+ LLRmjMVCsrJdk+Vx/D1rpDJN4vVbC0ucZdP/jBD+M6TyBlcHNntJdeiz4syK5VildrZszk5
+ p6meGtq65UIbDm8ccaCA6nBhSau9XOec2PdFAFDJrsJqU/1asG4s8Dv5gSW/5/d6WSLGaLI
+ LNRFLhW4NfSJslqxpnn4A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:56fI1Z9/xMg=;4MPoBHay5UWyp6BGOVng1VQFd1C
+ nuxzNn4tPSYOiKdI7QHjlj2+DShWuHk9rk6BIUg28B1ZBzNaZG/vf7aM+M4BzJfw3XnTHR4RP
+ zIXUww/hja/+I9QIx0pYR/Z7KFOTsYUdbXRiphtfaF00zmYg1Lz6tfehgFdhZybgwJ0qHK/KF
+ teS4xL5Gpwyl9K4ts3ijG3t3Sl8oVRyd9yCkmfsNYLDxTMeOPRIkVwALYDVCtuONduOMCA6VN
+ TtTUQeTaWs96eesI6ShpdewfyvRZIn7M0nBWOtcfCITnocajHKn70d6+lRqq55bwVG4GiDYFC
+ v/Khidfc0iUm4TCAF3Cw6ZtKk6f2zWbO7HiyaLpJYKgIvWovGkmRBe/U/Bf6kVc9YAq/3UjLd
+ qfuwypqLZePdDBDmBg/QZGPkQKUpy+aUX6vNqrCEgEIuzSpxJVL3KrJhnjnHX2OAeMRUpwcFa
+ IJpVVM0jgWCjRmMrlgw1bd5lxLhl+FJpfSEMl6Y0+uHJsEDZE/YStj7zWYPpKE+TRvhL5VSsS
+ kfvoAa8RMSV+7dvHWFvObXWwXHJRmMU6hgaeZPX26wHHbzp6wPkUEK9ol/5uOjQvXBsATBi/r
+ pghavEOyWe6lOqeuMKmiebYqWAK94l8OE3mKQriy+1Zy8mE6zjL5K41XQ1MAe2oiqEBnYX7Wm
+ Ke2h6HTVjDyIFHu3jfvCvovoKR4voSwqMX3gQ0sXI1IuaZLI76BlJKkOsAbtLf8u6aOfS0lKb
+ e5PxR4QIqT+Oaprj/PYAtOnk2iU7oev+9bxVkUzMyo1jYv5jfCJl5yxyMNN/uFlmxpGhC07bE
+ sbbWwtvvdVEnZ8TtlfQTcOB0PJ8j5Q4gFcPDzcVd0SSB8=
 
-In scenario where pin is registered with multiple parent pins via
-dpll_pin_on_pin_register(..), belonging to the same dpll device,
-and each time with the same set of ops/priv data, a reference
-between a pin and dpll is created once and then refcounted, at the same
-time the dpll_pin_registration is only checked for existence and created
-if does not exist. This is wrong, as for the same ops/priv data a
-registration shall be also refcounted, a child pin is also registered
-with dpll device, until each child is unregistered the registration data
-shall exist.
+=E2=80=A6
+> Add a mutex unlock call.
 
-Add refcount and check if all registrations are dropped before releasing
-dpll_pin_registration resources.
+How do you think about a wording variant like the following?
 
-Currently, the following crash/call trace is produced when ice driver is
-removed on the system with installed NIC which includes dpll device:
+   Extend the exception handling so that the missed mutex_unlock() call
+   will be performed finally.
 
-WARNING: CPU: 51 PID: 9155 at drivers/dpll/dpll_core.c:809 dpll_pin_ops+0x20/0x30
-Call Trace:
- dpll_msg_add_pin_freq+0x37/0x1d0
- dpll_cmd_pin_get_one+0x1c0/0x400
- ? __nlmsg_put+0x63/0x80
- dpll_pin_event_send+0x93/0x140
- dpll_pin_on_pin_unregister+0x3f/0x100
- ice_dpll_deinit_pins+0xa1/0x230 [ice]
- ice_remove+0xf1/0x210 [ice]
 
-Fixes: b446631f355e ("dpll: fix dpll_xa_ref_*_del() for multiple registrations")
-Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
----
- drivers/dpll/dpll_core.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/dpll/dpll_core.c b/drivers/dpll/dpll_core.c
-index 64eaca80d736..7ababa327c0c 100644
---- a/drivers/dpll/dpll_core.c
-+++ b/drivers/dpll/dpll_core.c
-@@ -40,6 +40,7 @@ struct dpll_device_registration {
- 
- struct dpll_pin_registration {
- 	struct list_head list;
-+	refcount_t refcount;
- 	const struct dpll_pin_ops *ops;
- 	void *priv;
- };
-@@ -81,6 +82,7 @@ dpll_xa_ref_pin_add(struct xarray *xa_pins, struct dpll_pin *pin,
- 		reg = dpll_pin_registration_find(ref, ops, priv);
- 		if (reg) {
- 			refcount_inc(&ref->refcount);
-+			refcount_inc(&reg->refcount);
- 			return 0;
- 		}
- 		ref_exists = true;
-@@ -113,6 +115,7 @@ dpll_xa_ref_pin_add(struct xarray *xa_pins, struct dpll_pin *pin,
- 	reg->priv = priv;
- 	if (ref_exists)
- 		refcount_inc(&ref->refcount);
-+	refcount_set(&reg->refcount, 1);
- 	list_add_tail(&reg->list, &ref->registration_list);
- 
- 	return 0;
-@@ -131,8 +134,10 @@ static int dpll_xa_ref_pin_del(struct xarray *xa_pins, struct dpll_pin *pin,
- 		reg = dpll_pin_registration_find(ref, ops, priv);
- 		if (WARN_ON(!reg))
- 			return -EINVAL;
--		list_del(&reg->list);
--		kfree(reg);
-+		if (refcount_dec_and_test(&reg->refcount)) {
-+			list_del(&reg->list);
-+			kfree(reg);
-+		}
- 		if (refcount_dec_and_test(&ref->refcount)) {
- 			xa_erase(xa_pins, i);
- 			WARN_ON(!list_empty(&ref->registration_list));
-@@ -160,6 +165,7 @@ dpll_xa_ref_dpll_add(struct xarray *xa_dplls, struct dpll_device *dpll,
- 		reg = dpll_pin_registration_find(ref, ops, priv);
- 		if (reg) {
- 			refcount_inc(&ref->refcount);
-+			refcount_inc(&reg->refcount);
- 			return 0;
- 		}
- 		ref_exists = true;
-@@ -192,6 +198,7 @@ dpll_xa_ref_dpll_add(struct xarray *xa_dplls, struct dpll_device *dpll,
- 	reg->priv = priv;
- 	if (ref_exists)
- 		refcount_inc(&ref->refcount);
-+	refcount_set(&reg->refcount, 1);
- 	list_add_tail(&reg->list, &ref->registration_list);
- 
- 	return 0;
-@@ -211,8 +218,10 @@ dpll_xa_ref_dpll_del(struct xarray *xa_dplls, struct dpll_device *dpll,
- 		reg = dpll_pin_registration_find(ref, ops, priv);
- 		if (WARN_ON(!reg))
- 			return;
--		list_del(&reg->list);
--		kfree(reg);
-+		if (refcount_dec_and_test(&reg->refcount)) {
-+			list_del(&reg->list);
-+			kfree(reg);
-+		}
- 		if (refcount_dec_and_test(&ref->refcount)) {
- 			xa_erase(xa_dplls, i);
- 			WARN_ON(!list_empty(&ref->registration_list));
-
-base-commit: ac1a21db32eda8a09076bad025d7b848dd086d28
--- 
-2.38.1
-
+Regards,
+Markus
 
