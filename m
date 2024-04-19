@@ -1,190 +1,157 @@
-Return-Path: <linux-kernel+bounces-150892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73BC88AA654
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:46:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 797A88AA65D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:49:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F297B1F2179E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:46:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB2F41C21002
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:49:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C254E137E;
-	Fri, 19 Apr 2024 00:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C9337E1;
+	Fri, 19 Apr 2024 00:48:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aoHeQSpw"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PDix1jAB"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3732465F
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 00:46:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB3A4A11
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 00:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713487605; cv=none; b=McT0dzO1+iT2in1kH/xGNqJ5FVmlufcASqPWTylE/coEY2u/gEcIRCb6A86GXDHWRUm4LoczEs8a5zRSFfLnLpd1EMXFH5Mz8X3Mr4Mat2vDw/UJYjSiOb/D5wZaPMuzLsLf9eU8GXo4FkC+aDCfyyfhxPg4+NyhY9SMrdh+2A4=
+	t=1713487735; cv=none; b=MfMYxy+7U3HIxYq82uURJuVpq0cdK/4KXgbpfxWv7TwvX9t4rXMgsxvW9pmxhzQ+xKKLH+YtdMBWyukJf+DPCgHA3r5Pwu1E8MGD1jgjGR7rJEALcwrNGN7zx12W7RkiY1LXoqYdrNuMaguCBnlIZOMwOsEpyP1pfEemCqBQjs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713487605; c=relaxed/simple;
-	bh=SAxwfbUODKuVZAjbg4c/ynrHR8AgFFORXQJplr0LD0o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GzssEdwAZCKXJMzwfqmEDnPvVvYB+STyAajeVYMDgGzAsyLpNnhoi/APjuAeAUNJltgfcQchIf4Xgmjq+Ze9j48xDnPGmyTIgSpQ8A5uJXAJS765hoha/1s6XokVAfm7pwH8/KHOUaL200I0yyqDzHkz6LjmTyTp6ESwB0rlHyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aoHeQSpw; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-61ac183ee82so22524257b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:46:41 -0700 (PDT)
+	s=arc-20240116; t=1713487735; c=relaxed/simple;
+	bh=Cn8iBDpyHzBToc5x2IxvNZY+fV3HfAE451iVksU1Vo8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kxfzQ0+q5iwJnRTfuoLrn9OvT2qNJ4wHkgtVVjIAnrTcdfJ8MIDFeHla2A7uUqevyBZkTOwahlX3sX/0P6mQl8ETzqavsDXyE+c3FangD3Qgw87dy7P9erMFUvM9INaYETdE+N4ss8JcMmC6LnlruQJ9Krk0SRWeuwLp0yXIg+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PDix1jAB; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2a528e7f2b6so1210002a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 17:48:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713487601; x=1714092401; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pc2K8oSIkotNB7jJyCQuIZXRU6et6cxNtG+X9+wOPdo=;
-        b=aoHeQSpwvAlLt95baNIHl+F8Ul2uCXeMaX47VKhkcnpvawVmACbeFstUt0KTes1vlT
-         P9zbq54ubf9x8dTy08faGjpYN2zE5s7WMRFI3h8cEqx0DosPFnEb7UOuUNmHoJSkPqvb
-         OazrqAKCt4oD/q6JAlw3FeqxcL2+zuxzPPJrA7kYSx3T5vtuWPhgkqnvnTr81PZpGWP1
-         KMM8pKjhGam3sOCB6DwKup0Smm4aP+hmAi3rDnUKf2lkKaHpuU9jp8MmO3FioCTghG4I
-         +L/jpFH38MBpsTYq72LnRLBmWDSCoxZSwu8+d63dgkAdPR+5VLrHhRfJUxIDUErbEv+v
-         jaxg==
+        d=google.com; s=20230601; t=1713487733; x=1714092533; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+i6MbUVulprM4w6RPq5RF1Rimz1Zb3d0BGvo/86t4ac=;
+        b=PDix1jABHlli+FBeBekbds2MntpEVeWPx7VlFVuTSlL5hrsRTXX1WXUitpmoMqMtpO
+         j+izpENX2eXA/O5LG9U/+8lVhOw4+qjTZhx/YPCy1LedvWePqHH9SoT8sPKaFezaTj58
+         c1vSlje/4SLFQbtz5uhJEBhbeqkdYLt1uCc4DGCdyhIwl4hNaEjVQSDy2RdWnTcJq1CG
+         P+A+zv9QTa967FyZU4i/s4apEjvm2qh2CudbTgmN0BymDr38upahFt7FcPMKOlqH4JmA
+         T9C9E6sEav/EwzgNYMpR6a8UWq4enhAlxU/mBAvar/LIyCV0abgPx6ontp7+mvot3D3Q
+         TCUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713487601; x=1714092401;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pc2K8oSIkotNB7jJyCQuIZXRU6et6cxNtG+X9+wOPdo=;
-        b=dZM991fjPaapIWKbQFJ/lue39DlJhNO2gfXSZHD0ljcjCpxbsKb86SyAdnL6sJRp38
-         b0aob/IqkF3jqdojcGMqC61jv+Ohrc4S6m4WG4fGQHSg05yJmJhOg+e1AkiAxwTl4trW
-         tfIE+Z9T/YM+kl9apK/WW1Ya/q9ruYf9yIhwXY2LvkBhuGcwsdAUkXvy/tZXhP6ALM0h
-         hjBoBtErw35susFIPCQFnvyyWnwdE+BZ4g/tRB/S3egu1+xfjPIycoOnSDbgpZv5hvqd
-         0+z9g6KHVIux2TgjjVYsRUxDkW/9Jf5fCCqfUrfXO/VCkASZRUSClnoQi1VoTVCrPZw9
-         B6Yw==
-X-Forwarded-Encrypted: i=1; AJvYcCUAZROsmzKBGI9V96JJ2djcWs4o8IPJv54zf5Jvs/C2k534XmytsAarF/NVrXeriAyRiGD5krAALJLFNb2gbnV7gOdS0LatMUzoGunX
-X-Gm-Message-State: AOJu0YwZtevnDKQSIp8KizyLvxAPbVPKNLzlpe9G5oTnye+/1Bfh9tmD
-	CLYsLmmxAJ0kyQ1TvDFFZ0ltgBlrolOFq/blEnQenw+4l8oNMgY0YduB+aO8EM4=
-X-Google-Smtp-Source: AGHT+IF9ox7XbuwU6pn2xh/zYYuFHCg4Tx9H6JkTzr7/7WPL8AC/fAwnxlf8VeYoxCBjnfRBP9KNDA==
-X-Received: by 2002:a0d:cc87:0:b0:61a:e7db:5f81 with SMTP id o129-20020a0dcc87000000b0061ae7db5f81mr3097958ywd.18.1713487601185;
-        Thu, 18 Apr 2024 17:46:41 -0700 (PDT)
-Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.gmail.com with ESMTPSA id t192-20020a0deac9000000b0061accf6a37esm561363ywe.131.2024.04.18.17.46.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 17:46:40 -0700 (PDT)
-Message-ID: <b675810d-d06b-454e-9726-c987603453e7@linaro.org>
-Date: Thu, 18 Apr 2024 19:46:38 -0500
+        d=1e100.net; s=20230601; t=1713487733; x=1714092533;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+i6MbUVulprM4w6RPq5RF1Rimz1Zb3d0BGvo/86t4ac=;
+        b=gwHltP113BQmJPM4WsfZRi2pqbQtp8YFNUXu4T8WTsXvcekv17FHEypv/+fNCbonzd
+         uJw0YtFkRNV3IMFFjrcVgwMXYshUXRSXlr4R57zpaN4xLDXhl3On+wCBO7cAGdznfDKI
+         VHcNTcXFaJKyX1Z6B3oUjh9ZBs/cSIgg20dO7t1/VPUt1hE82S9Sd7qQSdms9wNib4iT
+         /lcu+jHrd0+kiZtsEUZQ/1P31nr27LD2LC1Vc/D9WSM/RyoJAwv2IIfI19Mrpv5UIYCG
+         k6WDqsaOblMeVd1wvxfgYB19WgSHWGwXne7PXCAXm/7ZUxzIdMGvDEKpRunFxmNUCBLf
+         mAww==
+X-Forwarded-Encrypted: i=1; AJvYcCUOdzdfNJdErbWvl/XKAv3MeHzIBPLmQL8aRs46M8hXD7/KQrCieIMZkdBxaynY+apEmuZKBtRFvEfFSoMNfED7gJUmBOKweXdkJOoh
+X-Gm-Message-State: AOJu0YwEUbxyKRBBqZz7dYLwmNxY53sbNINmJ/l/cx6s44Rk0wr9j+o/
+	6bJtKdw4BYYGkLHwW9jUxqJhxrqIgfFOPXvvAA+P6F41+O+GsaROlHQ3DTQ9XdepYJgW2vKFvOY
+	K/Eol36XJZcBCL5fiFskTRcsxTWoup2ttVWczag==
+X-Google-Smtp-Source: AGHT+IHvhJAZ8u8NbdyyMWW9Qdo19ozFbcLnpn2nmLxzT6yaxoL9DdwJWbhTCPyHaoQcP7I5NTV0L5vVt0pITogV8iU=
+X-Received: by 2002:a17:90a:c907:b0:2ab:9f04:703a with SMTP id
+ v7-20020a17090ac90700b002ab9f04703amr782215pjt.41.1713487733583; Thu, 18 Apr
+ 2024 17:48:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/8] net: ipa: maintain bitmap of suspend-enabled
- endpoints
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: mka@chromium.org, andersson@kernel.org, quic_cpratapa@quicinc.com,
- quic_avuyyuru@quicinc.com, quic_jponduru@quicinc.com,
- quic_subashab@quicinc.com, elder@kernel.org, netdev@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240418204729.1952353-1-elder@linaro.org>
- <20240418204729.1952353-2-elder@linaro.org>
- <2614c8b3-ee7f-4ac0-9b43-20905759756e@linaro.org>
-Content-Language: en-US
-From: Alex Elder <elder@linaro.org>
-In-Reply-To: <2614c8b3-ee7f-4ac0-9b43-20905759756e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240410071439.2152588-1-yangcong5@huaqin.corp-partner.google.com>
+ <20240410071439.2152588-3-yangcong5@huaqin.corp-partner.google.com>
+ <CAD=FV=V2J=Tth2zhpo-kPo4uvESt70mFneO2V6TV-haac0VZuQ@mail.gmail.com>
+ <CACRpkdYtM=5jdQddCqRFgBRXvcJEjk1ULJNKKFz7jhhkGxV59Q@mail.gmail.com>
+ <CAHwB_NLfaQWhFSbZ2ASmYgXJaVOTrjac3F0hyCJdwTTo-zHJrQ@mail.gmail.com> <CACRpkdYoM40RZyjTxLwDNta2+uV31_zzoj7XrXqhyyqrDtd5zQ@mail.gmail.com>
+In-Reply-To: <CACRpkdYoM40RZyjTxLwDNta2+uV31_zzoj7XrXqhyyqrDtd5zQ@mail.gmail.com>
+From: cong yang <yangcong5@huaqin.corp-partner.google.com>
+Date: Fri, 19 Apr 2024 08:48:42 +0800
+Message-ID: <CAHwB_N+39-kTcNX91JvNGM4HEJ_ZArKt2Vs61g-OR-Mz6akocw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/4] drm/panel: boe-tv101wum-nl6: Support for BOE
+ nv110wum-l60 MIPI-DSI panel
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Doug Anderson <dianders@chromium.org>, sam@ravnborg.org, neil.armstrong@linaro.org, 
+	daniel@ffwll.ch, airlied@gmail.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/18/24 6:52 PM, Bryan O'Donoghue wrote:
-> On 18/04/2024 21:47, Alex Elder wrote:
->> Keep track of which endpoints have the SUSPEND IPA interrupt enabled
->> in a variable-length bitmap.  This will be used in the next patch to
->> allow the SUSPEND interrupt type to be disabled except when needed.
->>
->> Signed-off-by: Alex Elder <elder@linaro.org>
->> ---
->>   drivers/net/ipa/ipa_interrupt.c | 19 +++++++++++++++++--
->>   1 file changed, 17 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/ipa/ipa_interrupt.c 
->> b/drivers/net/ipa/ipa_interrupt.c
->> index c44ec05f71e6f..0e8d4e43275ea 100644
->> --- a/drivers/net/ipa/ipa_interrupt.c
->> +++ b/drivers/net/ipa/ipa_interrupt.c
->> @@ -37,11 +37,13 @@
->>    * @ipa:        IPA pointer
->>    * @irq:        Linux IRQ number used for IPA interrupts
->>    * @enabled:        Mask indicating which interrupts are enabled
->> + * @suspend_enabled:    Bitmap of endpoints with the SUSPEND 
->> interrupt enabled
->>    */
->>   struct ipa_interrupt {
->>       struct ipa *ipa;
->>       u32 irq;
->>       u32 enabled;
->> +    unsigned long *suspend_enabled;
->>   };
->>   /* Clear the suspend interrupt for all endpoints that signaled it */
->> @@ -211,6 +213,7 @@ static void ipa_interrupt_suspend_control(struct 
->> ipa_interrupt *interrupt,
->>           val |= mask;
->>       else
->>           val &= ~mask;
->> +    __change_bit(endpoint_id, interrupt->suspend_enabled);
->>       iowrite32(val, ipa->reg_virt + offset);
->>   }
->> @@ -246,7 +249,16 @@ int ipa_interrupt_config(struct ipa *ipa)
->>       interrupt->ipa = ipa;
->> -    /* Disable all IPA interrupt types */
->> +    /* Initially all IPA interrupt types are disabled */
->> +    interrupt->enabled = 0;
->> +    interrupt->suspend_enabled = bitmap_zalloc(ipa->endpoint_count,
->> +                           GFP_KERNEL);
-> 
-> why not use devm_bitmap_zalloc() instead and skip managing the cleanup ?
+Hi,
 
-I don't use the devm_*() variants in the IPA driver.
+Linus Walleij <linus.walleij@linaro.org> =E4=BA=8E2024=E5=B9=B44=E6=9C=8818=
+=E6=97=A5=E5=91=A8=E5=9B=9B 22:00=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Thu, Apr 18, 2024 at 2:42=E2=80=AFPM cong yang
+> <yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> > I learned from himax that even if the same controller is used with
+> > different glasses, the corresponding parameters are not fixed.
+> >
+> > For example: _INIT_DCS_CMD(0xB9, 0x83, 0x10, 0x21, 0x55, 0x00),
+> >
+> > even in the group initial code, the same register will be loaded with
+> > parameters twice.
+> (...)
+> > So assuming that the registers of the two screens is the same now,
+> > it cannot be set as a common parameter.
+> > Otherwise, it may be a bit troublesome for the maintainers.
+> >
+> > If necessary, I can break out starry_himax83102_j02, boe_nv110wum and
+> > ivo_t109nw41
+> > as separate driver. Then add some define to these registers.
+>
+> Why would you do a separate driver per panel despite they have
+> the same display controller? I don't get it.
+>
+> Use one driver, use different compatible strings for the different
+> panels and use the corresponding sequence for each panel
+> selected by compatible string.
 
-I know I can, but if I'm make the switch I want to
-do it everywhere.  Not now.
+I mean add starry_himax83102_j02, boe_nv110wum and ivo_t109nw41
+together to make a separate driver and break out boe-tv101wum-nl6 ,
+because they belong to the same controller.
 
-Thanks for the review.
+As Doug said =EF=BC=9A
+=E2=80=9CI'm just guessing, but if those are the same controller as
+the two new ones you're adding in this series, maybe all
+3 of them should be in their own driver? Maybe we can do something to
+make more sense of some of these commands too? =E2=80=9D
 
-					-Alex
 
->> +    if (!interrupt->suspend_enabled) {
->> +        ret = -ENOMEM;
->> +        goto err_kfree;
->> +    }
->> +
->> +    /* Disable IPA interrupt types */
->>       reg = ipa_reg(ipa, IPA_IRQ_EN);
->>       iowrite32(0, ipa->reg_virt + reg_offset(reg));
->> @@ -254,7 +266,7 @@ int ipa_interrupt_config(struct ipa *ipa)
->>                      "ipa", interrupt);
->>       if (ret) {
->>           dev_err(dev, "error %d requesting \"ipa\" IRQ\n", ret);
->> -        goto err_kfree;
->> +        goto err_free_bitmap;
->>       }
->>       ret = dev_pm_set_wake_irq(dev, irq);
->> @@ -270,6 +282,8 @@ int ipa_interrupt_config(struct ipa *ipa)
->>   err_free_irq:
->>       free_irq(interrupt->irq, interrupt);
->> +err_free_bitmap:
->> +    bitmap_free(interrupt->suspend_enabled);
->>   err_kfree:
->>       kfree(interrupt);
-> 
-> You could also use devm_kzalloc() and do away with the kfree()s you have 
-> here on the probe path.
-> 
->> @@ -286,6 +300,7 @@ void ipa_interrupt_deconfig(struct ipa *ipa)
->>       dev_pm_clear_wake_irq(dev);
->>       free_irq(interrupt->irq, interrupt);
->> +    bitmap_free(interrupt->suspend_enabled);
->>   }
->>   /* Initialize the IPA interrupt structure */
-> 
-> Just suggestions though.
-> 
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-
+Thanks.
+>
+> For example, see drivers/gpu/drm/panel/panel-novatek-nt35510.c:
+>
+> static const struct of_device_id nt35510_of_match[] =3D {
+>         {
+>                 .compatible =3D "frida,frd400b25025",
+>                 .data =3D &nt35510_frida_frd400b25025,
+>         },
+>         {
+>                 .compatible =3D "hydis,hva40wv1",
+>                 .data =3D &nt35510_hydis_hva40wv1,
+>         },
+>         { }
+> };
+>
+>
+> Take some inspiration from this driver and how we parameterize
+> the different data depending on compatible string.
+>
+> Yours,
+> Linus Walleij
 
