@@ -1,127 +1,129 @@
-Return-Path: <linux-kernel+bounces-151399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E7D38AAE3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:14:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BF708AAE3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:14:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FCBE1C20D03
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:14:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26A60282A94
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:14:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86C268562E;
-	Fri, 19 Apr 2024 12:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9F085951;
+	Fri, 19 Apr 2024 12:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kuaishou.com header.i=@kuaishou.com header.b="eidpqVcu"
-Received: from mailhk01.kuaishou.com (mailhk01.kuaishou.com [129.226.226.143])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0689839F1;
-	Fri, 19 Apr 2024 12:13:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.226.226.143
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="d/Ym2Roc"
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30F3A8563B
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 12:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713528838; cv=none; b=O4rkD9S15iNl2e+wCYxGeoY4GBJmMZkRYohLjQk5MDZWHFlDIrHI0VxkJyGdbPSeP2VSj37dBHdDEZruRXea4I8LyxHiftR/f8Px/rcq6P7XF8EvzC+nKfSqLaWAq3llSg2TNpcXISyRcClpnYteduiOtFpAcBTJFf9RrhS68aU=
+	t=1713528841; cv=none; b=MbOV8cMzAVfat6ier5ggq/ajJjffxvdWEWU+BphT0ysRi+r0jKW1horpzHmR4lHDHuy0mQOUAmjiiah2KNiHHdIHOTK/6aoy7pOLEEd6udSXL0wofCGw1XdUJuO46CCkyITIrhvw+EYhrZoFl7XFVT7Aby27qDKWCPZCjMGRpgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713528838; c=relaxed/simple;
-	bh=kQXlIm+hk7ZcDtTEmOfJwkpRlUhwn8EeE4YRTcIyaZg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dUd0oexIxvJbJvFFzvJIf21gTEpyd2F+9Y+QdNMJprwMwY4aHxYMjTZdiADJ+jsRUINX/bSGJSVNoTn+q39YvjY4SGgKh4EKEShKO5tjoCUgS/hEQMDZYnjIxAZr0w+AtwwL9aZ1ggg31wk6hxyovM/TT8bWYx891UOPenXDgMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kuaishou.com; spf=pass smtp.mailfrom=kuaishou.com; dkim=pass (1024-bit key) header.d=kuaishou.com header.i=@kuaishou.com header.b=eidpqVcu; arc=none smtp.client-ip=129.226.226.143
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kuaishou.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kuaishou.com
-Received: from bjm7-spam02.kuaishou.com (smtpcn03.kuaishou.com [103.107.217.217])
-	by mailhk01.kuaishou.com (Postfix) with ESMTP id B3F2461579;
-	Fri, 19 Apr 2024 20:08:06 +0800 (CST)
-Received: from bjm7-pm-mail01.kuaishou.com (unknown [172.28.1.1])
-	by bjm7-spam02.kuaishou.com (Postfix) with ESMTPS id 42EBF19226D0D;
-	Fri, 19 Apr 2024 20:07:51 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; d=kuaishou.com; s=dkim; c=relaxed/relaxed;
-	t=1713528471; h=from:subject:to:date:message-id;
-	bh=0ojQK3AKejzo96bSCef2HP/0kdeYSr7fp5rz2r2c22s=;
-	b=eidpqVcu7qp9qlJL/Ie4vWLUzzqvlJXH5h0f2IXPG5NEstSyRYUfwR71cOcNlTebaG5fobPr0uQ
-	U2GO9iDZe+2HXf2R3CsI2b55oRPbyFxZEhwMVBab8B836foaZ+FwTQ2Din/O+aIUCxQKWdjbWuINE
-	13KaaF0k1iPXIqGmO/Y=
-Received: from rack-retrieve19671.idchb1az3.hb1.kwaidc.com (172.28.1.32) by
- bjm7-pm-mail01.kuaishou.com (172.28.1.1) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.20; Fri, 19 Apr 2024 20:07:50 +0800
-From: zhoutaiyu <zhoutaiyu@kuaishou.com>
-To: <tj@kernel.org>
-CC: <josef@toxicpanda.com>, <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
-	<linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] blk-throttle: fix repeat limit on bio with BIO_BPS_THROTTLED
-Date: Fri, 19 Apr 2024 20:07:47 +0800
-Message-ID: <20240419120747.38031-1-zhoutaiyu@kuaishou.com>
-X-Mailer: git-send-email 2.35.1
+	s=arc-20240116; t=1713528841; c=relaxed/simple;
+	bh=ExrFTBEMLysOlFee1rplMJqRkLcyI8BEBxqM1v/q8vw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BJdieT48hMzi4ThfeOLeEwAwSY3QB4PTRT1ZDtxoQ+E589udGfN1H6cCrvG5b2PAhRChSkbCHNXpqF5WI3wleUU3Nrf0cXkwrcuJ0cxjD8OX9pcTlSVscfhrfaqeIuyDwLbNiE5b7a6yGlpAYZnStcSEdpdMoIZGTt4Y5zxpDPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=d/Ym2Roc; arc=none smtp.client-ip=209.85.210.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6ea2436de79so990810a34.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 05:14:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1713528839; x=1714133639; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hClZeCrWEscg3J5h83DbwJ64WLBmvjGwEZ7n9vuYDf0=;
+        b=d/Ym2RocXeUfT4NSLSANYFCbVNbq4JWuZJSHDzT31qCrFN/rJ+0KM29vaVzNTcgmLa
+         TziCCiv3FvYHNIDuYz/RAwnIdtsXFvqSW6sjcEgRsM5U2l7zknedscv6zl+NaFsljGNy
+         i3dFHEbgF8JZFAQlIV20NW6EmMOl890DL8qIDu544YnrfBSba7JNjtXZXp4PsJyuVxwi
+         8RkQM9pgn1Q4J5YAb9ywUFVpus06Dk4m1L0kk6JINvQoM3M09a/+TMNG631EnlEW7fl8
+         VXQvkIPHpCIDA5SFP6OzMTtQg97Fv5t1nq+OaYem5Q0mTQ5ww3DHZTpucQbEI4mJw9A3
+         JO8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713528839; x=1714133639;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hClZeCrWEscg3J5h83DbwJ64WLBmvjGwEZ7n9vuYDf0=;
+        b=GdEmBFQJY05TKcHE4AlnroL40EgJcLKTlK7UvzG1Jd14pqJe+d9TVT98rfT43A9bnp
+         Ma3ZRr0P/8AOasJTqLNw2jpm/rcU7LYx1OKeg3/x2YxFbfOpyj3OMv6KrG+Hbho56MhT
+         QCOvyIStu9T9tclwXap7xg+IVNTJkzKO9kl7REQFy4ZYvvuKVCJ+QdutdtTRhfHTmTpd
+         Qm7IWxjql+O4os0KVpYXz283UFrqYV9gPsjW63IVYGQ3XV3gkpqsgWAtVwcduhMFYr2a
+         xdvcVR7fg9QJn65JUMNJUuWsKK40R+rymKNbWKqi2HUpLC/V9Sjn7Rmbj8orvIDr8SgJ
+         LwVg==
+X-Forwarded-Encrypted: i=1; AJvYcCVQmmpq09pk8FhKfigbBLhr5h/0LRUMHI+8Ripe0wJ0l4gCCwuEZhZd4GHaI5EH4LyNHt8hLsZ/gdkE7e9kvO7Unx0wUVOZCpjYBcQC
+X-Gm-Message-State: AOJu0YyEZLfZ9T3M6tnVyibBpyt1a1DIxb0x3jrb8Uc4jgrucVEcesop
+	Eu4GOHxcSNY83L6+3drdUH8VQhuXK4sYAZdVomZ1gavXvBnbBY9y/Wtx0s8R+TfGdLoBv+c3LgJ
+	5
+X-Google-Smtp-Source: AGHT+IFXe1Uvgf42Jw4ozBKiARbrTyiKg6q2CPN8avKsqmplfA08fWwIoKVSuopw8vPdavC70O3dLA==
+X-Received: by 2002:a05:6830:7306:b0:6eb:d6f0:fed5 with SMTP id ex6-20020a056830730600b006ebd6f0fed5mr1195950otb.6.1713528839059;
+        Fri, 19 Apr 2024 05:13:59 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id b8-20020a056830104800b006ebc74943bbsm550833otp.18.2024.04.19.05.13.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 05:13:58 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rxn7t-00FN5C-NG;
+	Fri, 19 Apr 2024 09:13:57 -0300
+Date: Fri, 19 Apr 2024 09:13:57 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Konstantin Taranov <kotaranov@microsoft.com>
+Cc: Konstantin Taranov <kotaranov@linux.microsoft.com>,
+	"sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+	Long Li <longli@microsoft.com>, "leon@kernel.org" <leon@kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH rdma-next 2/2] RDMA/mana_ib: Implement get_dma_mr
+Message-ID: <20240419121357.GB223006@ziepe.ca>
+References: <1713363659-30156-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1713363659-30156-3-git-send-email-kotaranov@linux.microsoft.com>
+ <20240417145106.GV223006@ziepe.ca>
+ <PAXPR83MB055789D898814B9F73B15C3BB40D2@PAXPR83MB0557.EURPRD83.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: bjm7-pm-mail09.kuaishou.com (172.28.1.91) To
- bjm7-pm-mail01.kuaishou.com (172.28.1.1)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PAXPR83MB055789D898814B9F73B15C3BB40D2@PAXPR83MB0557.EURPRD83.prod.outlook.com>
 
-Give a concrete example, a bio is throtted because of reaching bps
-limit. It is then dispatched to request layer after a delay. In the
-request layer, it is split and the split bio flagged with
-BIO_BPS_THROTTLED will re-enter blkthrottle.
-The bio with BIO_BPS_THROTTLED should not be throttled for its bytes
-again. However, when the bps_limit and iops_limit are both set and
-sq->queue is not empty, the bio will be throttled again even the tg is
-still within iops limit.
+On Fri, Apr 19, 2024 at 09:14:14AM +0000, Konstantin Taranov wrote:
+> > From: Jason Gunthorpe <jgg@ziepe.ca>
+> > On Wed, Apr 17, 2024 at 07:20:59AM -0700, Konstantin Taranov wrote:
+> > > From: Konstantin Taranov <kotaranov@microsoft.com>
+> > >
+> > > Implement allocation of DMA-mapped memory regions.
+> > >
+> > > Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+> > > ---
+> > >  drivers/infiniband/hw/mana/device.c |  1 +
+> > >  drivers/infiniband/hw/mana/mr.c     | 36
+> > +++++++++++++++++++++++++++++
+> > >  include/net/mana/gdma.h             |  5 ++++
+> > >  3 files changed, 42 insertions(+)
+> > 
+> > What is the point of doing this without supporting enough verbs to allow a
+> > kernel ULP?
+> > 
+> 
+> True, the proposed code is useless at this state.
+> Nevertheless, mana_ib team aims to send kernel ULP patches after we are done
+> with uverbs pathes (i.e., udata is not null). As this change does not conflict with the
+> current effort, I decided to send this patch now. I can extend the series to make
+> it more useful.
+> 
+> Jason, could  you suggest a minimal list of ib_device_ops methods, that includes
+> get_dma_mr, which can be approved?
 
-Test scrips:
-cgpath=/sys/fs/cgroup/blkio/test0
-mkdir -p $cgpath
-echo "8:0 10485760" > $cgpath/blkio.throttle.write_bps_device
-echo "8:16 100000" > $cgpath/blkio.throttle.write_iops_device
-for ((i=0;i<50;i++));do
-  fio -rw=write -direct=1 -bs=4M -iodepth=8 -size=200M -numjobs=1 \
--time_based=1 -runtime=30  -name=testt_$i -filename=testf_$i > /dev/null &
-  echo $! > $cgpath/tasks
-done
+Is there any chance you can send a single series to support a
+ULP. NVMe or something like?
 
-The output of iostat:
-Device:  ...  wMB/s  ...
-sdb      ...  3.75  ...
-sdb      ...  2.50  ...
-sdb      ...  3.75  ...
-sdb      ...  2.50  ...
-sdb      ...  3.75  ...
-
-In order to fix this problem, early throttled the bio only when
-sq->queue is no empty and the bio is not flagged with BIO_BPS_THROTTLED.
-
-Signed-off-by: zhoutaiyu <zhoutaiyu@kuaishou.com>
----
- block/blk-throttle.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index f4850a6..499c006 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -913,7 +913,8 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
- 	 * queued.
- 	 */
- 	BUG_ON(tg->service_queue.nr_queued[rw] &&
--	       bio != throtl_peek_queued(&tg->service_queue.queued[rw]));
-+	       bio != throtl_peek_queued(&tg->service_queue.queued[rw]) &&
-+	       !bio_flagged(bio, BIO_BPS_THROTTLED));
- 
- 	/* If tg->bps = -1, then BW is unlimited */
- 	if ((bps_limit == U64_MAX && iops_limit == UINT_MAX) ||
-@@ -2201,7 +2202,7 @@ bool __blk_throtl_bio(struct bio *bio)
- 		throtl_downgrade_check(tg);
- 		throtl_upgrade_check(tg);
- 		/* throtl is FIFO - if bios are already queued, should queue */
--		if (sq->nr_queued[rw])
-+		if (sq->nr_queued[rw] && !bio_flagged(bio, BIO_BPS_THROTTLED))
- 			break;
- 
- 		/* if above limits, break to queue */
--- 
-1.8.3.1
-
+Jason
 
