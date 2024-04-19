@@ -1,193 +1,260 @@
-Return-Path: <linux-kernel+bounces-151502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E975E8AAFB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:49:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1A368AAFAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:48:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C2CAB24985
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:49:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C58D51C21410
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E85C612C817;
-	Fri, 19 Apr 2024 13:48:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E4EE12C819;
+	Fri, 19 Apr 2024 13:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f/OWet7d"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JuKAH9fo"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E07312AAEA
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5027FA59;
+	Fri, 19 Apr 2024 13:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713534529; cv=none; b=SMlWe1ssRYF2Q8UlYPxvuqAtLEHVVFBao9xEob1shiRlm4iEDBrW/gWHV37TzoOy/yi+gJw/awvLlYYJCbOuKK6i1NcuofLMejJ0KBC8hiarcL0jGtsbbaBjlkF9sI23ysFRsoyybpR+NU4jwi6Ag+RE8/UBpop2S7L2m/xDhPU=
+	t=1713534469; cv=none; b=Mf9cHlVgTophYblGBhMjGMKxG7uPUZeEx3Y7iRFYsPK4k0ycXEEDCNvjXpM+Mp6MHSlrFSglbkxnp7zxADYvYmRW+jAbKk6jsXiLtIX5ZL46hvKDkStlm8a56dVjOcxHjHnlucpcXgio8QhOjvounS82BhtAOE1MUm9xFMjr76A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713534529; c=relaxed/simple;
-	bh=dB9jJa7A5Dpo4cAtlPeD6SuUUnxqSjzeMOuA9YVw2Dk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ljHevYfvD8xTknXnIgtac+oAiZ3YyS0IMcm1zaoWt+z39SXp7zbH/WZGMY2qu63PUs5+7LxRMfp3ABe0V0+VGBSzx/DbJ2W8mb2gj6un7luvdsGsLqDLC/zIA67iCCKDuFTkJU7iNaAWw6EHbF5C+y4V+0QYfU+CQayv3mHCRE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f/OWet7d; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713534526;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ruQr7qDnT73R568cDDERz2DEsE4oOe1QzIRa+fYjcK8=;
-	b=f/OWet7dFZALdC64dLTFDpT4VJXP1tsbTxuaRo7/GBKT7xR6DvLzJZYb+A3AhDTMa649Km
-	tdI9E9a4i25YJ78X6WAPCeueSs4GPkMBqtJLYrpWgSXdZoWgY+W3SVr2iPMtipnYcjuzGp
-	iJ3VH4PX0uDsphNtKqO/Q0lk8xa5oXw=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-347-3-ZM16OrP3ushC6-N3MOyg-1; Fri, 19 Apr 2024 09:48:44 -0400
-X-MC-Unique: 3-ZM16OrP3ushC6-N3MOyg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-346d3020e08so1149819f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:48:44 -0700 (PDT)
+	s=arc-20240116; t=1713534469; c=relaxed/simple;
+	bh=7t/9G7xb4CIJYOZHsfANKwbLN6ZfLsMJCoRjLg+TNgM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ul2TEAq3o1E6QlT4GfBQCYMU3IU33e65YZzewY0ZuXQCnaauY443+/92aZ8N5pURsM8gZYeSkLo4RLL5t+mJT7v6jCU9HcYId5iGCNwZaxA/dZajNMBNOrBeXpcAo7jKHxfewtXtrm9BDjOMIFR+pHH1uFqQoIlk09rGLUHl6HM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JuKAH9fo; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a55323f2ef9so247929066b.1;
+        Fri, 19 Apr 2024 06:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713534465; x=1714139265; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qw+LAbHXzENBty9Qv/cdMIi07xjBtDcGEnhBj5qMQZ0=;
+        b=JuKAH9foLW0Qeu8EQU1ArbZ4o+objD6VHHtGiwy3zPw/83bhyZk8paWnr8SScyd2Nd
+         hyTX6+q/nDmUhv1G2EydSzCpz9ZnUp8PRlzfc3esvYo9hQndRRGWBn63ztfVNSEhOfU+
+         xuoTztc5CFXIHNJPFTQd5WI2HNIy4iQXgQPPZrA1ZF5Kid+AjiCpa91V9N2/7SVyvUXP
+         fil92W2BuPkq2OBkZORcqvUF1RhHWh53hgmkuLwoYOkzgv9vzvZjVSIqXByJ6gW3Xdp4
+         Itq79U2NtfbkTBVLz131IGNV8aTN4aBqC7H9aPMTquE7ykx9B+4rc7KgCDfrb7EzDxc6
+         pvYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713534523; x=1714139323;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ruQr7qDnT73R568cDDERz2DEsE4oOe1QzIRa+fYjcK8=;
-        b=we8O5xFUTwzIb/M17rg/biLEBQlrFBAXCP0sJOQ4d63VBLrnEARsFpzUlMrtNl4nUr
-         hxGykpERDNuzvhNGk3RfloDcK+bGjmovOgKFSNT4zRWIqlEQ8CFdJd0ctqsRI/x9pIeb
-         BQ8vzI65YSq3UrAE5aLnSPTR+sEiHPAXk8mVmu4n3tQewhv4lPHtiR6M3ezzENRTWuR5
-         KawX9CvE3EDP3Bztz/f9Xa5t3utE75KT09E5vDV4jTblCKhynzCl1ddNRDIyM3JwHows
-         KqobsjXBHFvx2bmmAy0YY4kfnqJEVyLIUHxdaupmZRZi4LZBjOhN6mf/sgdLxOuTZZKo
-         /0Nw==
-X-Forwarded-Encrypted: i=1; AJvYcCVjMKxfxT+XY4k3iE/6xgMNJSwo/dg/7rVQInvYuGthXXziHOpnf9HhghvQKgTVFKsR24HnrXZFBPRBi0ouEk8fRPSjuNpOWrRUnOyy
-X-Gm-Message-State: AOJu0YwlsMNfYgz4XwjRtpezz46Iw5oAGQ0LitPslCKYs2yDid9o4jud
-	W4ZM8/wN+IUgwFqa4H4WcnAiqafXW2bwhyjA4Z8Ze5xrjA8A4kpe/NY1K3u8w5jhr9+eOg0jzcY
-	L5jyQcUKhEVk4NThiyh7SQFHIovJEJE2RdbwdlWfHHqBQmiaPs4UB7wUxFC4yjFz6AlwQlA==
-X-Received: by 2002:a5d:6245:0:b0:349:cafd:a779 with SMTP id m5-20020a5d6245000000b00349cafda779mr1477827wrv.68.1713534523267;
-        Fri, 19 Apr 2024 06:48:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFU5CRHpTY0lBK0APcNH+Sj29bT8cZHRt3dWDKvu9cpkvApPx22AxA8IX4tavMDoMRy68F1Qw==
-X-Received: by 2002:a5d:6245:0:b0:349:cafd:a779 with SMTP id m5-20020a5d6245000000b00349cafda779mr1477802wrv.68.1713534522785;
-        Fri, 19 Apr 2024 06:48:42 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c716:f300:c9f0:f643:6aa2:16? (p200300cbc716f300c9f0f6436aa20016.dip0.t-ipconnect.de. [2003:cb:c716:f300:c9f0:f643:6aa2:16])
-        by smtp.gmail.com with ESMTPSA id u17-20020adfeb51000000b00347321735a6sm4457248wrn.66.2024.04.19.06.48.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 06:48:42 -0700 (PDT)
-Message-ID: <96590444-4e38-416c-b37f-01c7b29ffdc2@redhat.com>
-Date: Fri, 19 Apr 2024 15:48:40 +0200
+        d=1e100.net; s=20230601; t=1713534465; x=1714139265;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qw+LAbHXzENBty9Qv/cdMIi07xjBtDcGEnhBj5qMQZ0=;
+        b=WcjhpuAYqPVeincgXtCGISCc9+NWHZANdbpeqvMPZ3LFBEYuRnYBlHlcdqhCttGUZA
+         om9chYmKmIvoSe5eM/7NRM486G3jAh6k4y1M8rJQjQKovXFU4IPnqcZywR0EvbRAlMWu
+         Ey6HfX7BSdpXIL7tyJcP4evBBQWOX9G5lnpbGiVHIrYscp6J7vPx0SbgcKJ3Gvn8ULjg
+         tIeNZwZ0a3G8D5MjYgeyz+xxoLT4xE8iiHGE3Jjld/BGamGVvx+q8OyfrWO2F05sjXbt
+         K0dxBOCN2jcE1/AAY0TufgRH5/56Rcgo6WM8gB8Qa6tKcevgoeToARPTvSo9WR0q4dWa
+         IQuA==
+X-Forwarded-Encrypted: i=1; AJvYcCWixtyI0jZSTj9UBj6/IIOcVKSVr7EFXuCuuRpKbpaKe3bhTdR7yf5/VmpednEIxtewtMLR5qOEIODgSO6yNCayV4GhbdVCioQOmdGJTJdSwh4smqLUCcx0gU8qyH16moKXcw/yGmu15b3ZUWqgrGSnzLqye1j6k9mQlHUndQ6m+Q8sRLn6NQ==
+X-Gm-Message-State: AOJu0YwEgUwdqg5Od9gV2pRhb8o6rQLgR/JIlCRTkvB5TMExC6G5qSUR
+	lmlIjdifHwK7sHGv80pDYYoJGG7wtHEwgcYVPUG2AVs12dGRW3f1wPnz2b9OdXYzRpPaPoW2+T6
+	sxtjc8+YDzLoJXn2pAiIGFGJFJKg=
+X-Google-Smtp-Source: AGHT+IF4BaBHnNRPBwlqtjlPr2pi8ZujC09NvQVWslSb3woGPjhNvKFBX5YAr0MZ4IQsJo5Cq65T2/CkExfx+ICn38g=
+X-Received: by 2002:a17:907:3e1a:b0:a55:8c0b:bc00 with SMTP id
+ hp26-20020a1709073e1a00b00a558c0bbc00mr1118441ejc.62.1713534465533; Fri, 19
+ Apr 2024 06:47:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 05/18] mm: improve folio_likely_mapped_shared() using
- the mapcount of large folios
-To: "Yin, Fengwei" <fengwei.yin@intel.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, Peter Xu
- <peterx@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
- Jonathan Corbet <corbet@lwn.net>, Hugh Dickins <hughd@google.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
- Muchun Song <muchun.song@linux.dev>, Miaohe Lin <linmiaohe@huawei.com>,
- Naoya Horiguchi <naoya.horiguchi@nec.com>,
- Richard Chang <richardycc@google.com>
-References: <20240409192301.907377-1-david@redhat.com>
- <20240409192301.907377-6-david@redhat.com>
- <b05cdac2-84f2-4727-af6c-3b666e6add14@intel.com>
- <7a8eb8c0-35e5-4f45-bdd5-11a775ae752d@redhat.com>
- <17c68728-9125-4597-9e3e-764b209edcd7@intel.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <17c68728-9125-4597-9e3e-764b209edcd7@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20240419124506.1531035-1-rilian.la.te@ya.ru> <20240419124506.1531035-3-rilian.la.te@ya.ru>
+ <7fc1a557-205e-481c-a1c6-3e0a37f7a7bc@kernel.org>
+In-Reply-To: <7fc1a557-205e-481c-a1c6-3e0a37f7a7bc@kernel.org>
+From: "Konstantin P." <ria.freelander@gmail.com>
+Date: Fri, 19 Apr 2024 16:49:50 +0300
+Message-ID: <CAF1WSuxUZCQNMAdjWUyhG=RV2a8t48NSm9ryoSpd=NTZ3rEEmA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] dt-bindings: sc16is7xx: Add compatible line for
+ XR20M1172 UART
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Konstantin Pugin <rilian.la.te@ya.ru>, Vladimir Zapolskiy <vz@mleia.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Lech Perczak <lech.perczak@camlingroup.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Apr 19, 2024 at 4:32=E2=80=AFPM Krzysztof Kozlowski <krzk@kernel.or=
+g> wrote:
+>
+> On 19/04/2024 14:45, Konstantin Pugin wrote:
+> > From: Konstantin Pugin <ria.freelander@gmail.com>
+> >
+> > Add EXAR XR20M1172 UART compatible line into devicetree documentation.
+> >
+> > Reviewed-by: Vladimir Zapolskiy <vz@mleia.com>
+> > Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/serial/nxp,sc16is7xx.ya
+>
+> This is fourth change, no cover letter, no changelog. Patch is trivial
+> but you do not make it easier to understand what is happening here.
+>
+> Please provide proper changelog under ---.
+>
+> (If you wrote changelog somewhere else and then decided not to send it
+> to us, it is like there was no changelog. I literally do not have it in
+> my inbox).
+>
+>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+>
+> ---
+>
+> This is an automated instruction, just in case, because many review tags
+> are being ignored. If you know the process, you can skip it (please do
+> not feel offended by me posting it here - no bad intentions intended).
+> If you do not know the process, here is a short explanation:
+>
+> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+> versions, under or above your Signed-off-by tag. Tag is "received", when
+> provided in a message replied to you on the mailing list. Tools like b4
+> can help here. However, there's no need to repost patches *only* to add
+> the tags. The upstream maintainer will do that for tags received on the
+> version they apply.
+>
+> https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/su=
+bmitting-patches.rst#L577
+>
+> Best regards,
+> Krzysztof
+>
+
+I am sorry, I used git send-email, and send all 3 patches and cover
+letter. I do not know why it was not ended up in your mailbox.
+Link to all patches (version 4)
+https://lore.kernel.org/linux-serial/20240419124506.1531035-1-rilian.la.te@=
+ya.ru/.
+
+Here is a git send-email log for cover letter:
+
+```
+$ git send-email v4*.patch --cc-cmd=3D'./scripts/get_maintainer.pl
+--norolestats v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.pat=
+ch'
+v4-0000-cover-letter.patch
+v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.patch
+v4-0002-dt-bindings-sc16is7xx-Add-compatible-line-for-XR2.patch
+v4-0003-serial-sc16is7xx-add-support-for-EXAR-XR20M1172-U.patch
+To whom should the emails be sent (if anyone)?
+Message-ID to be used as In-Reply-To for the first email (if any)?
+(mbox) Adding cc: Konstantin Pugin <ria.freelander@gmail.com> from
+line 'From: Konstantin Pugin <ria.freelander@gmail.com>'
+/scripts/get_maintainer.pl: file 'v4-0000-cover-letter.patch' doesn't
+appear to be a patch.  Add -f to options?
+(cc-cmd) Adding cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+from: './scripts/get_maintainer.pl --norolestats
+v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.patch'
+(cc-cmd) Adding cc: Jiri Slaby <jirislaby@kernel.org> from:
+'./scripts/get_maintainer.pl --norolestats
+v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.patch'
+(cc-cmd) Adding cc: Hugo Villeneuve <hvilleneuve@dimonoff.com> from:
+'./scripts/get_maintainer.pl --norolestats
+v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.patch'
+(cc-cmd) Adding cc: Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> from: './scripts/get_maintainer.pl
+--norolestats v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.pat=
+ch'
+(cc-cmd) Adding cc: Lech Perczak <lech.perczak@camlingroup.com> from:
+'./scripts/get_maintainer.pl --norolestats
+v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.patch'
+(cc-cmd) Adding cc: =3D?UTF-8?q?Ilpo=3D20J=3DC3=3DA4rvinen?=3D
+<ilpo.jarvinen@linux.intel.com> from: './scripts/get_maintainer.pl
+--norolestats v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.pat=
+ch'
+(cc-cmd) Adding cc: Thomas Gleixner <tglx@linutronix.de> from:
+'./scripts/get_maintainer.pl --norolestats
+v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.patch'
+(cc-cmd) Adding cc: linux-kernel@vger.kernel.org from:
+'./scripts/get_maintainer.pl --norolestats
+v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.patch'
+(cc-cmd) Adding cc: linux-serial@vger.kernel.org from:
+'./scripts/get_maintainer.pl --norolestats
+v4-0001-serial-sc16is7xx-announce-support-of-SER_RS485_RT.patch'
+
+From: Konstantin Pugin <rilian.la.te@ya.ru>
+To:
+Cc: Konstantin Pugin <ria.freelander@gmail.com>,
+       Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+       Jiri Slaby <jirislaby@kernel.org>,
+       Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+       Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+       Lech Perczak <lech.perczak@camlingroup.com>,
+       =3D?UTF-8?q?Ilpo=3D20J=3DC3=3DA4rvinen?=3D <ilpo.jarvinen@linux.inte=
+l.com>,
+       Thomas Gleixner <tglx@linutronix.de>,
+       linux-kernel@vger.kernel.org,
+       linux-serial@vger.kernel.org
+Subject: [PATCH v4 0/3] add support for EXAR XR20M1172 UART
+Date: Fri, 19 Apr 2024 15:45:00 +0300
+Message-Id: <20240419124506.1531035-1-rilian.la.te@ya.ru>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On 19.04.24 15:47, Yin, Fengwei wrote:
-> 
-> 
-> On 4/19/2024 5:19 PM, David Hildenbrand wrote:
->> On 19.04.24 04:29, Yin, Fengwei wrote:
->>>
->>>
->>> On 4/10/2024 3:22 AM, David Hildenbrand wrote:
->>>> @@ -2200,7 +2200,22 @@ static inline size_t folio_size(struct folio
->>>> *folio)
->>>>      */
->>>>     static inline bool folio_likely_mapped_shared(struct folio *folio)
->>>>     {
->>>> -    return page_mapcount(folio_page(folio, 0)) > 1;
->>>> +    int mapcount = folio_mapcount(folio);
->>>> +
->>>> +    /* Only partially-mappable folios require more care. */
->>>> +    if (!folio_test_large(folio) ||
->>>> unlikely(folio_test_hugetlb(folio)))
->>>> +        return mapcount > 1;
->>> My understanding is that mapcount > folio_nr_pages(folio) can cover
->>> order 0 folio. And also folio_entire_mapcount() can cover hugetlb (I am
->>> not 100% sure for this one).  I am wondering whether we can drop above
->>> two lines? Thanks.
->>
->> folio_entire_mapcount() does not apply to small folios, so we must not
->> call that for small folios.
-> Right. I missed this part. Thanks for clarification.
+   The Cc list above has been expanded by additional
+   addresses found in the patch commit message. By default
+   send-email prompts before sending whenever this occurs.
+   This behavior is controlled by the sendemail.confirm
+   configuration setting.
 
-Thanks for the review!
+   For additional information, run 'git send-email --help'.
+   To retain the current behavior, but squelch this message,
+   run 'git config --global sendemail.confirm auto'.
 
--- 
-Cheers,
+Send this email? ([y]es|[n]o|[e]dit|[q]uit|[a]ll):
+OK. Log says:
+Server: smtp.yandex.ru
+MAIL FROM:<rilian.la.te@ya.ru>
+RCPT TO:<ria.freelander@gmail.com>
+RCPT TO:<gregkh@linuxfoundation.org>
+RCPT TO:<jirislaby@kernel.org>
+RCPT TO:<hvilleneuve@dimonoff.com>
+RCPT TO:<andriy.shevchenko@linux.intel.com>
+RCPT TO:<lech.perczak@camlingroup.com>
+RCPT TO:<ilpo.jarvinen@linux.intel.com>
+RCPT TO:<tglx@linutronix.de>
+RCPT TO:<linux-kernel@vger.kernel.org>
+RCPT TO:<linux-serial@vger.kernel.org>
+From: Konstantin Pugin <rilian.la.te@ya.ru>
+To:
+Cc: Konstantin Pugin <ria.freelander@gmail.com>,
+       Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+       Jiri Slaby <jirislaby@kernel.org>,
+       Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+       Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+       Lech Perczak <lech.perczak@camlingroup.com>,
+       =3D?UTF-8?q?Ilpo=3D20J=3DC3=3DA4rvinen?=3D <ilpo.jarvinen@linux.inte=
+l.com>,
+       Thomas Gleixner <tglx@linutronix.de>,
+       linux-kernel@vger.kernel.org,
+       linux-serial@vger.kernel.org
+Subject: [PATCH v4 0/3] add support for EXAR XR20M1172 UART
+Date: Fri, 19 Apr 2024 15:45:00 +0300
+Message-Id: <20240419124506.1531035-1-rilian.la.te@ya.ru>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-David / dhildenb
+Result: 250
 
+```
 
