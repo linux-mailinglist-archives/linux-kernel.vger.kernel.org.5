@@ -1,251 +1,319 @@
-Return-Path: <linux-kernel+bounces-151587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3DCC8AB0C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:28:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76ADF8AB0C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:31:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49166B2379C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:28:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CA6F2815C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:31:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B39112E1C4;
-	Fri, 19 Apr 2024 14:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="CU9m6yRv"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2068.outbound.protection.outlook.com [40.107.6.68])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BACA912E1D2;
+	Fri, 19 Apr 2024 14:31:36 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 526174F214;
-	Fri, 19 Apr 2024 14:28:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.68
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713536905; cv=fail; b=n6QmItfn/eK+cL1t9C03H40WQi9nsZsixv4pTnyrqzGaPRlyseyQhuC4iskqdazupv8FINeGV2MXOn96hnTRwtBhsQNrHX5sKbnRFFQI01yi3M7u1eyukQAFy0pxEdSSV1kuN4bYUkObCvF8PTgrC9A4gGT/F+YqQZwzqiETq9o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713536905; c=relaxed/simple;
-	bh=vwCtR84FLS6urpXFpKrpK9F6NEjcfaWVV7vn54ERmG0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ASoQEIrZ7yzIrR7WehcMwJLQChwH9d+IBS3W3VgNvNRSYZsA5WiCjy5ot0X7NaEPtTwuqwX1ROMoRLcCGKIOuh64RrV4c2rPfgAwcI4dzas2L0mUEiJgzOzA3Mk2Npd0o/vh47hNCmCNUqEYRQJckDkvySP/0Q0bDi56JO/cSZw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=CU9m6yRv; arc=fail smtp.client-ip=40.107.6.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VpiBITgGU4slfwIkr5GgGlpgE5hiVZzIBPhIhZbVbgSBVVhxP8KkQNdLjQh2W6ekSUUbbMX/F6K/rDRQSEUn7ziwPe16v1F2+vlum/QRqF1KgcS9r/9F54mXCAlAL+P856pnhK8PWqoYgByip/DHmn5gI/2G8cUxOrvZ8pNP3RfG37ZBVG6jpECMCHBK23/0GOUUzs/YZ/IhqzG0ph23tebq+A77zwwpy//tIaG16kZb0yVyUuSkEM0xoeFyjY8VKp1B0S++4envSo7Wyn/wGxHBXhNhyxLZlfRzNArcuZe1WpeloRWIR+LIEfkTJeDAHE90RwbH7CgirOnB+eqWxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CeGlyxA8JqHJ2zRj4kJtUvTDJn2Sfqjj2mv6fNlz1jY=;
- b=SdDWxibbgfIGB4uLyPNijKPTibuKUHF4qju6Td7YeO6tk9LJuNyxqRz0wxhdoyArWxd+BD85Kc6W6QrnRnnOkQLWs9kGtb6Eh5ZZ9Ud2dVbq6m+0lSqVxuMQi3Z9TpwE4JwxYFd9Pod0E+T+nVuQFbNE0pqrOiFpDZbeQ++7tHfbe1Md6CoD4YVIG0Fvhj5q4En5GJlSdwp7xm6TdvIwlLWGB9S2b2N4/e8rwZpB0rzwEdIaEpCsxvXjK+k9pk9po6+tifWOn/9rH1Q/c+alXBGhJmEpmIkP/QSVyuhFHttYNw91bt4T/ZQ8g55rwXUwHHegCK1JvEtKfubyJP1+CA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CeGlyxA8JqHJ2zRj4kJtUvTDJn2Sfqjj2mv6fNlz1jY=;
- b=CU9m6yRv1+xSK0Z8uWkH96G/b6J12L4lAzq1HHcAbX5Z19iYrSERFbC1Fo8gfg9OfpnTBEeIqi+CFS4kyurJ0i3w5e4xTXQLCZD1gf6/SBYbeJkBM30EnXI5zn90C8EATNyhanAnsVktB1/4lqs/11tCY75U11YxThauFI+P+og=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AM0PR04MB7123.eurprd04.prod.outlook.com (2603:10a6:208:197::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.43; Fri, 19 Apr
- 2024 14:28:19 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7472.037; Fri, 19 Apr 2024
- 14:28:19 +0000
-Date: Fri, 19 Apr 2024 10:28:11 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v2 03/12] arm64: dts: imx93: add dma support for
- lpspi[1..8]
-Message-ID: <ZiJ/e3GqaQynf9ih@lizhi-Precision-Tower-5810>
-References: <20240419-imx93-dts-4-13-v2-0-9076e1d7d399@nxp.com>
- <20240419-imx93-dts-4-13-v2-3-9076e1d7d399@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419-imx93-dts-4-13-v2-3-9076e1d7d399@nxp.com>
-X-ClientProxiedBy: BYAPR08CA0032.namprd08.prod.outlook.com
- (2603:10b6:a03:100::45) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932FD34CDE;
+	Fri, 19 Apr 2024 14:31:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713537096; cv=none; b=Hiizjf63JQ9jgZeNhqSsdWrRG8EhTEu2VfEXPjkyrlE/LzxrBEEeN/XBEO7U9wJ7Sk5OWRE51zgHz7iew+Fs5a9EqBUnu2QuDfm/ScgAjMLesHhgGjSwDeUf8Ipu3vt52xqD3gfuHdO/1lo5Kk5aYaSdRF3PHWAyTI2nkumyA2o=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713537096; c=relaxed/simple;
+	bh=7vHcTKnFa6TkP/fIXVlsUnNkXfU+9zD1hXAjQ08uRE4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UembratKEjUoel6vhYdoOk0s30KRyZ3xlA75Zf1Ox+USna4aqY+Dnsd7UZkzV3UONbxufTEwC2QU7eSmI+TMeveqSEV4/PWv2AdYGnmz0TjiRy3rnlvLq9PaNdsWz//d0Ik4K7yZAc4hysZr9vnd4T/N+Goiqt3HD2wz8ibf0OQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i5e861917.versanet.de ([94.134.25.23] helo=diego.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rxpGd-0002D3-5t; Fri, 19 Apr 2024 16:31:07 +0200
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: Alban Browaeys <alban.browaeys@gmail.com>, Conor Dooley <conor@kernel.org>
+Cc: dev@folker-schwesinger.de, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Chris Ruehl <chris.ruehl@gtsys.com.hk>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Christopher Obbard <chris.obbard@collabora.com>,
+ Doug Anderson <dianders@chromium.org>,
+ Brian Norris <briannorris@chromium.org>,
+ Jensen Huang <jensenhuang@friendlyarm.com>, linux-phy@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/3] phy: rockchip: emmc: Enable pulldown for strobe line
+Date: Fri, 19 Apr 2024 16:31:05 +0200
+Message-ID: <2192003.Icojqenx9y@diego>
+In-Reply-To: <20240411-mushily-pucker-732583c1d340@spud>
+References:
+ <20240326-rk-default-enable-strobe-pulldown-v1-0-f410c71605c0@folker-schwesinger.de>
+ <313d5a24b6cffa1a9160e624bb6855aa7f66589e.camel@gmail.com>
+ <20240411-mushily-pucker-732583c1d340@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM0PR04MB7123:EE_
-X-MS-Office365-Filtering-Correlation-Id: 97b52337-e9ba-4573-9c30-08dc607cf5d6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?UDhS/oKvPMlgMrE42dtI+K1MFSBlhvxo3jKrruWtpajfT7fjzkyu/kdS7+EB?=
- =?us-ascii?Q?HfGrCArBNnbPxYnuPyVxlj3GFaRVFfEXsecLvhleG7OA9c2MyhaQXJQiPsOq?=
- =?us-ascii?Q?I/FV7VC4dRF1FTOShb1fmkOr8KZ29NFGJRzSw2dA/LYAUsckY9pFYeY4DlW9?=
- =?us-ascii?Q?zbYVlTEeJFWlxT/4ZRwybHswxJCzVIGduvvh+IMDfWO05Okx/fDmPWNs5JE+?=
- =?us-ascii?Q?HI1JXyhBJNANYCNHmYJJIzTW7EN4UUcMzbLbtjCr1WcAXxEQ3w4TIlr4U/UL?=
- =?us-ascii?Q?gqATd1MygfAkPWBZy+gzqjs2YMMKv+aF5KdHK3GJvfsJKHN+7VrFS4vY/ba6?=
- =?us-ascii?Q?r1vChNDwTkqEg1swaxitpir+lWsqf7LjL4IxYB/uaQi+4/L9aQq24p9Wpnx5?=
- =?us-ascii?Q?aVACxcUrtENeXqwEQyAhbwb/bSDsURvCkf/H4lIkPgv12mK9o1bdzVP58juY?=
- =?us-ascii?Q?ZRaJs/clCxCNBpEbTeo6FBmnVVcOyVD++wGK3ll6bzMEqPTDqS47fTni7p8K?=
- =?us-ascii?Q?VI0mOaVZTmclzzyiKC09Tgp2azhIANDTPTtEoJFgvtf/MXx57A25+KHbbtSU?=
- =?us-ascii?Q?oCjq2l4YxNoJf/3C8GMo5HGVn8tyAT68lGh0DeOktdWEIxR8mrzvIeMckY9v?=
- =?us-ascii?Q?rgdjG176TkMK+4aIhANg8EtFc90d5MuouJiWk7AEMe27xX5/q9GNtdCBeSGM?=
- =?us-ascii?Q?q1AORW6022t51YGNfOQ7LOm9nqVDOi2EPLrKtdw33PIw2zAFvESVkq5gOuX7?=
- =?us-ascii?Q?jTceIVQvblLKBVymvWMvtEY+cSo2C4Vmzok/fCmlRlPwX7eLIKMkCU60ezn/?=
- =?us-ascii?Q?8ANtcNvLw7PVe1z+kwABK9JdzirfzQ3V8nOXLaxtEpmrzb9IpjpWmtvSN9pZ?=
- =?us-ascii?Q?VIgRh1KZ8qlyPSJ8CjPrTPQRTTox9+MLzYyn4F8V7cKJFrx4E2N0U+vczhIw?=
- =?us-ascii?Q?kUbJcvrLqBgg9ydnF+FLJmWxiPCfnc320vWcXOA6dNODv+FXIJ8kcLp9Qmyo?=
- =?us-ascii?Q?JHckY5pmsxLTIlYO3cFhaQVXu5/Q9AIMbWnMAym62IIySUdpaSOkCA3yncQv?=
- =?us-ascii?Q?4ZqilK1g5zhVg5PcRjemLoH6hifdBE60GXe6pgi3w+51RiKVbj+Pzj4AENwe?=
- =?us-ascii?Q?K+KIRzeyck3+PEigoZXPJUK7iE4M9Vlr7vK+sSwj/57rjNmAcKj6/HZBnM2S?=
- =?us-ascii?Q?IezpaSfUppg5yaCTVho4284vL1Lu3/uiYiczSDGfwm4wXr11UO82vO/FkSr/?=
- =?us-ascii?Q?SmdW6zQeNdNv7qDPnGt0R8qf8cqXI9qEhu/k7wZYOUc2gK+VGtzKL7ZCNsYj?=
- =?us-ascii?Q?PXUkrNhFKTLYuqJ/VxnJMHSmYWJ1nvdIhA0TaQ60fpYzFg=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(52116005)(1800799015)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?k4pdDn0t8rrTjMkcW9W44g4wg0xzCgbqH0Y7liseVJUwSToqf8e5Z/zCmc9A?=
- =?us-ascii?Q?ujDT5npZkjgJ/QGB2jZSPm24G1kHctaSULXAXY5U5JIzdaGS5LF/eQBTOlzv?=
- =?us-ascii?Q?RhTDc0eDV1bWgVXe47m5m2faWCqfidZjrNOS7aOxspGqhyy1dFHb4VWTBu8/?=
- =?us-ascii?Q?h4fPD0DxcXp3nWa3R/tkM/UuevuW8MG5AyKmzxuHKTefmJkho12ls+V5ZsAC?=
- =?us-ascii?Q?88spqpJvB+UDWRYAsJ8Y9TGlkAT4ueoYfoRAlr6tlMyUkyCCfh1ZYXnoKmTh?=
- =?us-ascii?Q?jbzlI3YgV5VO5JyzGTJ7c2FBD73uPB0OPM4GhL+DDw/NJN1A8pQ3v0vKsPWr?=
- =?us-ascii?Q?oi8zT96tgcWgvyNPLQCrFRWIQLPft4OtNstTulo55v3KaI/LFILrWT/2yoCK?=
- =?us-ascii?Q?N1Jjkmbh2240czEK5cP3zPOz76MVZkthYue6gEiohiFdPIYCwLoWwkHu0KQr?=
- =?us-ascii?Q?Zey467rhdBDxt04xZKfureCASRUgQYxpxujruj99ONpGELULLMduAMWXEj06?=
- =?us-ascii?Q?zuKQQyhCiQnjLqPOrB5QpPJOw4rJPp1NpHuRTPZVujvfVjomcFPE4KObrDxw?=
- =?us-ascii?Q?zYSV4f4h0A+coCCueko/46pB9kcFA0vLb67abkJciahHs0NferjChdG+Tl5o?=
- =?us-ascii?Q?wYMOQZUEzLk9cb/m6Lj6T3svZiTgILxqOKLU61YaXbjKyUNYr2Y+iuoQviwz?=
- =?us-ascii?Q?2uf1xpgmikuto002ZJXvLijyDFdEKdWUYsNwwv6W2Z2AI8ZBr7r7BRP2HDSa?=
- =?us-ascii?Q?gVVuTf4dF9/aAaDTfpGNpGgbQbdyXe1v2XC9uPZMuAkCcfui1VtUthmHNRE4?=
- =?us-ascii?Q?K/fycDgk1AyRUlL2p+hAGKexlXFDa2LNMemQ8Ql2KxwfUVT4PmIpwTvmr7nJ?=
- =?us-ascii?Q?KZ7aM/tUNOdGppngjQx9NPX4tSHqaSPTUM2BEf2SQDWAl8+MyOzNjnYOSA+b?=
- =?us-ascii?Q?n8lo/WH3ftOiHcD8qRicoKLUbBzcC5pmjg1Ta+3DtP4UMdTi0DAlk+NlYA9b?=
- =?us-ascii?Q?NGhtpR63l+tzNK3eD3q6fk08u7Q/z00sLVgx9VWt/LAfDla19KZ8jqmTDYou?=
- =?us-ascii?Q?jXAK5D0zM0gq51VR6T4yZPi1gJw6p8boUZJDr2SwNIU1a31te8xk6lIBleSx?=
- =?us-ascii?Q?O2xSBf4Pt/yeQs1pOWqDtX23G+HeDbTCKWjI9DHCfvc9B5m+5Gt1Wgyz1Ycl?=
- =?us-ascii?Q?AY1ynIKtUerE2+LylCvR9skEOqHENqxt7QFCjUL+b9sgilOOdahc5X4fN8dy?=
- =?us-ascii?Q?URcD1vq1uVx+d0WO1KtWcLva/ixgkRJ3zTsLV45Vv4MewV74K0+uGiF69Eji?=
- =?us-ascii?Q?WrMw+nQJEK8ICSYhbw3hXjR4yM9eTkyvV7Xc9pH0o2v8xRLbd/W7BTqAoCVI?=
- =?us-ascii?Q?6dD2T4MRnbWPHI5+wQmf16t130NHc8xdWTV6U5yDD3EXHjAUx/xoDAZwty3D?=
- =?us-ascii?Q?9ouwTdZO2NcfxFryU3GSiEW4foC7ykPUd/tM4ahc/Va3Wpo0sCtu4xfM5XUx?=
- =?us-ascii?Q?1F/11orCXnctGrjdsOQ5ayJIY+PbQRxIo+QwOh/jMEgZ9AHqsCZn7FnzIwCq?=
- =?us-ascii?Q?Rg3tiZ4I2xJNG0pmg008UA9D1emPlol8r3/khuVB?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97b52337-e9ba-4573-9c30-08dc607cf5d6
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 14:28:19.7294
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rx95y3ou0AtxkS03ASJIUxitvnQaAz66uxtkV70PU5OufUnQ5QY+UTe3I+iOfSxnRvAMCyfKPjycV4usRwZCwg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7123
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-On Fri, Apr 19, 2024 at 11:36:58AM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Add dma support for lpspi[1..8]
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Am Donnerstag, 11. April 2024, 17:42:24 CEST schrieb Conor Dooley:
+> On Wed, Apr 10, 2024 at 08:28:57PM +0200, Alban Browaeys wrote:
+> > Le jeudi 28 mars 2024 =E0 18:01 +0000, Conor Dooley a =E9crit :
+> > > On Thu, Mar 28, 2024 at 06:00:03PM +0100, Alban Browaeys wrote:
+> > > > Le mardi 26 mars 2024 =E0 19:46 +0000, Conor Dooley a =E9crit :
+> > > > > On Tue, Mar 26, 2024 at 07:54:35PM +0100, Folker Schwesinger via
+> > > > > B4
+> > > > > Relay wrote:
+> > > > > > From: Folker Schwesinger <dev@folker-schwesinger.de>
+> > > > > > -	if (of_property_read_bool(dev->of_node,
+> > > > > > "rockchip,enable-
+> > > > > > strobe-pulldown"))
+> > > > > > -		rk_phy->enable_strobe_pulldown =3D
+> > > > > > PHYCTRL_REN_STRB_ENABLE;
+> > > > > > +	if (of_property_read_bool(dev->of_node,
+> > > > > > "rockchip,disable-
+> > > > > > strobe-pulldown"))
+> > > > > > +		rk_phy->enable_strobe_pulldown =3D
+> > > > > > PHYCTRL_REN_STRB_DISABLE;
+> > > > >=20
+> > > > > Unfortunately you cannot do this.
+> > > > > Previously no property at all meant disabled and a property was
+> > > > > required
+> > > > > to enable it. With this change the absence of a property means
+> > > > > that
+> > > > > it
+> > > > > will be enabled.
+> > > > > An old devicetree is that wanted this to be disabled would have
+> > > > > no
+> > > > > property and will now end up with it enabled. This is an ABI
+> > > > > break
+> > > > > and is
+> > > > > clearly not backwards compatible, that's a NAK unless it is
+> > > > > demonstrable
+> > > > > that noone actually wants to disable it at all.
+> > > >=20
+> > > >=20
+> > > > But the patch that introduced the new default to disable the
+> > > > pulldown
+> > > > explicitely introduced a regression for at least 4 boards.
+> > > > It took time to sort out that the default to disable pulldown was
+> > > > the
+> > > > culprit but still.
+> > > > Will we carry this new behavor that breaks the default design for
+> > > > rk3399 because since the regression was introduced new board
+> > > > definition
+> > > > might have expceted this new behavior.
+> > > >=20
+> > > > Could the best option be to revert to =E9not set a default
+> > > > enable/disable
+> > > > pulldown" (as before the commit that introduced the regression) and
+> > > > allow one to force the pulldown via the enable/disable pulldown
+> > > > property?
+> > > > I mean the commit that introduced a default value for the pulldown
+> > > > did
+> > > > not seem to be about fixing anything. But it broke a lot. ANd it
+> > > > was
+> > > > really really hard to find the description of this commit to
+> > > > understand
+> > > > that one had to enable pulldown to restore hs400.
+> > > >=20
+> > > > In more than 3 years, only one board maintainer noticed that this
+> > > > property was required to get back HS400  and thanks to a user
+> > > > telling
+> > > > me that this board was working I found from this board that this
+> > > > property was "missing" from most board definitions (while it was
+> > > > not
+> > > > required before).
+> > > >=20
+> > > >=20
+> > > > I am all for not breaking ABI. But what about not reverting a patch
+> > > > that already broke ABI because this patch introduced a new ABI that
+> > > > we
+> > > > don't want to break?
+> > > > I mean shouldn't a new commit with a new ABI that regressed the
+> > > > kernel
+> > > > be reverted?
+> > >=20
+> > > I think I said it after OP replied to me yesterday, but this is a
+> > > pretty
+> > > shitty situation in that the original default picked for the property
+> > > was actually incorrect. Given it's been like this for four years
+> > > before
+> > > anyone noticed, and others probably depend on the current behaviour,
+> > > that's hard to justify.
+> > >=20
+> >=20
+> > A lot of people noticed fast that HS400 was broken in the 5.10 branch
+> > but due to another commit (more later, ie double regulator init that
+> > messed up emmc) this second breakage was not detected. But mostly
+> > downstream. And most if not all rk3399 boards in Armbian had HS400
+> > disabled.
+> >=20
+> >=20
+> > It took 3 years to detect that HS400 was broken on a few boards like
+> > Rock Pi4 in the upstream kernel. Any might still be broken.
+> > I would not count on the fact that keeping the current behavior equals
+> > no more broken boards.
+> >=20
+> > From the previous exchanges the boards that requires the pulldown to be
+> > disabled seems well known.
+> >=20
+> > Though I am fine with adding a property to set enable pulldown to any
+> > board definition file where that is required.
+> >=20
+> > Only I do not believe keeping the statu quo equal everything works
+> > because it has been 3 years.
+>=20
+> FWIW, I didn't say this. Clearly if that was the case, this patch would
+> never have arrived.
+>=20
+> > In fact this commit reached the downstream kernels way later. Any
+> > stayed with the 5.10 branch for years.
+> >=20
+> > But on the other side the disable pulldown by default is alraedy in
+> > stable/linux-rolling-lts .
+> >=20
+> > > > Mind fixing the initial regression 8b5c2b45b8f0 "phy: rockchip: set
+> > > > pulldown for strobe line in dts" does not necessarily mean changing
+> > > > the
+> > > > default to the opposite value but could also be reverting to not
+> > > > setting a default.
+> > >=20
+> > > That's also problematic, as the only way to do this is make setting
+> > > one of the enabled or disabled properties required, which is also an
+> > > ABI
+> > > break, since you'd then be rejecting probe if one is not present.
+> >=20
+> >=20
+> > I don't understand.
+> > How reverting to not set either pulldown enabled or disabled by default
+> > force all board to set either enabled or disabled.
+> > I was telling about making the pulldown set by kernel optional be it
+> > enabled or disabled to revert to the previous behavior.=20
+> >=20
+> > I mean before the patch to set a default pulldown value (to disabled)
+> > there were no forced value.
+>=20
+> Ah, maybe I misunderstood what the code originally did. Did the original
+> code leave the bit however the bootloader or reset value had left it?
+> In that case, probe wouldn't be rejected and you'd not have the sort of
+> issue that I mentioned above.
+>=20
+> > > > Though I don't know if there are pros to setting a default.
+> > >=20
+> > > What you probably have to weigh up is the cons of each side. If what
+> > > you
+> > > lose is HS400 mode with what's in the kernel right now but switching
+> > > to
+> > > what's been proposed would entirely break some boards, I know which
+> > > I think the lesser of two evils is.
+> >=20
+> > More boards (even if not the most wide spread it seems) are broken by
+> > the current behavior.
+> >=20
+> > I agree that only HS400 is broken by keeping the status quo. But as far
+> > as I understand only HS400 will be broken either way.
+> > Be that by keeping the current disable pulldown which break the boards
+> > based on the rockchip default design or the boards that are non-
+> > standard or have a broken design.
+> > Both case this lead to data corruption on boot to eMMC.
+> >=20
+> > The only pro of keeping the current value the default is that most
+> > board broken by the new default introduced in 2020 "might" already be
+> > fixed (but that is just a guess).
 
-Reviewed-by: Frank Li <Frank.Li@nxp.com>
+which I guess are the least stale boards too.
 
-> ---
->  arch/arm64/boot/dts/freescale/imx93.dtsi | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
-> index 93c1d0fae291..d762d96afcd5 100644
-> --- a/arch/arm64/boot/dts/freescale/imx93.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
-> @@ -345,6 +345,8 @@ lpspi1: spi@44360000 {
->  				clocks = <&clk IMX93_CLK_LPSPI1_GATE>,
->  					 <&clk IMX93_CLK_BUS_AON>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma1 11 0 0>, <&edma1 12 0 FSL_EDMA_RX>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> @@ -357,6 +359,8 @@ lpspi2: spi@44370000 {
->  				clocks = <&clk IMX93_CLK_LPSPI2_GATE>,
->  					 <&clk IMX93_CLK_BUS_AON>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma1 13 0 0>, <&edma1 14 0 FSL_EDMA_RX>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> @@ -725,6 +729,8 @@ lpspi3: spi@42550000 {
->  				clocks = <&clk IMX93_CLK_LPSPI3_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 12 0 0>, <&edma2 13 0 FSL_EDMA_RX>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> @@ -737,6 +743,8 @@ lpspi4: spi@42560000 {
->  				clocks = <&clk IMX93_CLK_LPSPI4_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 14 0 0>, <&edma2 15 0 FSL_EDMA_RX>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> @@ -946,6 +954,8 @@ lpspi5: spi@426f0000 {
->  				clocks = <&clk IMX93_CLK_LPSPI5_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 79 0 0>, <&edma2 80 0 FSL_EDMA_RX>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> @@ -958,6 +968,8 @@ lpspi6: spi@42700000 {
->  				clocks = <&clk IMX93_CLK_LPSPI6_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 81 0 0>, <&edma2 82 0 FSL_EDMA_RX>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> @@ -970,6 +982,8 @@ lpspi7: spi@42710000 {
->  				clocks = <&clk IMX93_CLK_LPSPI7_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 83 0 0>, <&edma2 84 0 FSL_EDMA_RX>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> @@ -982,6 +996,8 @@ lpspi8: spi@42720000 {
->  				clocks = <&clk IMX93_CLK_LPSPI8_GATE>,
->  					 <&clk IMX93_CLK_BUS_WAKEUP>;
->  				clock-names = "per", "ipg";
-> +				dmas = <&edma2 85 0 0>, <&edma2 86 0 FSL_EDMA_RX>;
-> +				dma-names = "tx", "rx";
->  				status = "disabled";
->  			};
->  
-> 
-> -- 
-> 2.37.1
-> 
+> > > It's probably up to the platform maintainer to weigh in at this
+> > > point.
+> >=20
+> > I am not knowledged into the delegation scope. You mean that from now
+> > on it is up to the rockchip maintainer?
+> > I am fine with it either way.
+>=20
+> Yes, I meant the rockchip maintainer. I'm only a lowly bindings
+> maintainer, without any knowledge of rockchip specfics or the type of
+> boards we're talking about being broken here. Someone has to make a
+> judgement call about which "no property" behaviour is used going forward
+> and I don't want that to be me!
+
+I'm somehow all for not changing defaults again.
+
+I think in the past there was a similar example in some other kernel part,
+where some change broke the ABI, but meanwhile another ABI depended
+on the changed behaviour, so a revert was not possible.
+
+I think it's somewhat similar here. If the change has been in the kernel
+for 3-4 years now, I do think that ship has sailed somehow.
+
+As was said above, board introduced since 2020 might already be fixed
+and essentially for boards that weren't, it does look like these didn't run
+a mainline kernel for like 4 years now.
+
+So if it comes down to deciding who to keep working, I'm more in favor of
+those that did run on mainline in the years since.
+
+
+Though not sure if I understood all the details here yet.
+
+
+Heiko
+
+>=20
+> > I just wanted to point out that maybe we don't have to set a pulldown
+> > value after all. And that then all boards will be fine as before
+> > setting the pulldown explicitly was introduced.
+>=20
+> By "all boards will be fine" you mean "all boards that expected the
+> kernel didn't touch this bit will be fine". The boards that need the
+> kernel to set this bit because it {comes out of reset,is set by firmware}
+> incorrectly are going to need a property added if we revert the default
+> behaviour to not touching the bit.
+>=20
+> > In fact I am more eager to get this fixed be it by adding a enable-
+> > pulldown property to the board definitions, than to change the current
+> > behavior.
+> > Just wanted to sort out if that was not the wrong way to fix this
+> > issue. (ie if adding a setting on most boards was wrong).
+>=20
+> > During more than 2 years, I tried various patches and discussed on
+> > forums about the HS400 breakage. I had bisected the regulator init
+> > issue in the 5.10 branch. Sadly it took so much time for this issue to
+> > be understood that when the force pulldown to disable commit was
+> > introduced downstream before the first issue go fixed.
+> > This only made the matter worse because when one fixed the double
+> > regulator init issue HS400 was still broken, this time because the
+> > pulldown was forced to disable. But nobody noticed this commit that
+> > forced a default pulldown state (that was older than the regulator
+> > commit from 5.13 backported to the 5.10 stable branch commit, but that
+> > reached downstream later due to not having been backported to 5.10 from
+> > 5.11).
+> > Otherwise we would have emailed immeditaly.
+> > Bisecting was only able to catch the first breakage (as it was only
+> > fixed after the second breakage was introduced).
+> >=20
+> > Maybe the problem is that me and others did not complained to the
+> > kernel upstream ML because we were using heavily patched downstream
+> > kernels (like most if not all downstream ARM kernels). So sadly, the
+> > forums from back then are filled with complaints but nothing seemed to
+> > have reached the Linux ML.
+>=20
+> Aye, and all I can really say there is to buy boards from a vendor that
+> doesn't use some horribly hacked downstream kernel, which I know is
+> clearly an unsatisfactory suggestion. That said, we probably should have
+> caught that the new default behaviour when the changes were made was not
+> the default before. There was only one DT maintainer then though, and
+> things just slip by :/
+>=20
+
+
+
+
 
