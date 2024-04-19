@@ -1,273 +1,146 @@
-Return-Path: <linux-kernel+bounces-150871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57EF58AA612
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E6078AA623
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:12:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 180AA284041
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:01:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2970284C40
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:12:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF39C8E2;
-	Fri, 19 Apr 2024 00:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC075A59;
+	Fri, 19 Apr 2024 00:10:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GjJYeR+k"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="DDGWCZ53"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FCAC383;
-	Fri, 19 Apr 2024 00:01:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC961DDD5;
+	Fri, 19 Apr 2024 00:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713484883; cv=none; b=nFrcNABv8QlDM2xJZYkWGExuUZ1iZt0lBK+P9JmCzez36x2vqJ0qolvB1XuSQVUDYPx9oRWd4VFkD7qJsMkwxYvwsQCPe8GR++2GPXc2kQ/0lfWetTnyNPCxGWosFW2/6aj6XUBkb7GyQEuUMPmYAKw0mP50G5Q34Vh4acuXdxw=
+	t=1713485449; cv=none; b=DSZLbeB+OH+ZA4t6unMwH7F8Ar5ZKLI3P2IneCvB6Xdkzc9AeF4MwSE0xDjnIQdh0Lvs0VzbSyoW01/If2YaCARd9h+zvc6mSe8jlXH1VrkH2FoSBLK4igeyujuC80KD2X5xEcnLxHLnE63QOGHNB0PGbhx0nPJfjEsmOq9F9GE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713484883; c=relaxed/simple;
-	bh=GsOSqG+d+aXsocNGZFqAyduRtmrcvJZHq3i0NoxMLzU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kCX7/TlVKwWz1CY9f6alIBm3cd/xZf2Y7EAbxjOCeGMDy8Nd3k3t0tS8yLSmy//4nlFjuV/VNoQfZe4eMwCRHN61Se/WN9rVUSFZl9g17psBtRzzs8m6tAC4RwU2JMRBRqO4JNW/AaMkaMdYLdNzHtZSNdNdedFYxQ4Gg+9xK2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GjJYeR+k; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713484881; x=1745020881;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GsOSqG+d+aXsocNGZFqAyduRtmrcvJZHq3i0NoxMLzU=;
-  b=GjJYeR+ko3qv9eZaawPGWEfc42fHLTiOyFlptTpVruw94bzwKX0wCtqT
-   GssXFEClAmJ5BI8PO9WZsbOTgeOWUcDGYSgBIf3G8cqXobIbLiGgFAMjM
-   kE/joN2OAnN+j8aoYVqLean9H5WyEKz0VKsWP2D2jqdg3UBR0hND5LWo9
-   yl4sjCObgPX2Qm/DO84xosRPcUqKXZG0SjXsDgCyMZ2FhfW4Q/kK1DRoX
-   WA8E00UCDWojLYxczKR+Rahm3bAqgtLXgibqSR8gu2ZQxF+n4UGEYkima
-   141wCZQvXF1EHsDJw3B3fchFEE5tGVlP+xC7Y1pRwfZlvD6Av/j43CiP2
-   w==;
-X-CSE-ConnectionGUID: 0pYJJFxRRWuPaEMAGbLjWQ==
-X-CSE-MsgGUID: prOzMG2DR8qZ/vKTLCdsoA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12849715"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="12849715"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 17:01:21 -0700
-X-CSE-ConnectionGUID: vJCVfeBZTWeqsSA1+nqNOg==
-X-CSE-MsgGUID: cfDaxB79Q32WiYnyfnM73A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="60588307"
-Received: from sferrell-mobl2.amr.corp.intel.com (HELO desk) ([10.209.93.160])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 17:01:21 -0700
-Date: Thu, 18 Apr 2024 17:01:13 -0700
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: "Chang S. Bae" <chang.seok.bae@intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-	ebiggers@kernel.org, luto@kernel.org, dave.hansen@linux.intel.com,
-	tglx@linutronix.de, bp@alien8.de, mingo@kernel.org, x86@kernel.org,
-	herbert@gondor.apana.org.au, ardb@kernel.org, elliott@hpe.com,
-	dan.j.williams@intel.com, bernie.keany@intel.com,
-	charishma1.gairuboyina@intel.com,
-	Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [PATCH v9a 10/14] x86/cpu/keylocker: Check Gather Data Sampling
- mitigation
-Message-ID: <20240419000113.2tjvyigx7nlyymrw@desk>
-References: <20240329065742.fc5of75e776y2g4b@desk>
- <20240407230432.912290-1-chang.seok.bae@intel.com>
+	s=arc-20240116; t=1713485449; c=relaxed/simple;
+	bh=vt9o9pMYCW7hhpcZsv8ddcoj4OiStUOgb8ev/ufEpqU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EZlwS1zAEjAotvtMPMQvoIyPfgRzYnH2gXUbtckMotqmmHJ/UquTDB3d8oen0X1G87obIHP0J5yYgxQoLWUZsqreqNZf8i9gEjzUlNQqrgyY9QukvuB9kK261FF1u5rb5R4Jt7HmEMovvvVBC+Gf5gDII02V+cwQyBrcPr45eIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=DDGWCZ53; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43INbfPi004091;
+	Fri, 19 Apr 2024 00:10:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=E+MUUFF
+	9nUQU8Lod6cFIwRusIEFGRZulrqTCSTn2l4E=; b=DDGWCZ53FhT+QCfVKD32aYt
+	i0jfb2R8cKDlrQ5IsA28ZWUdPjARYcZ/ht64cUfJnVTPmQbfMe8a/fxYLvgrh4TW
+	EWxAbxjegTtGHWAV23EAabMwfOfF6FNX4R1IgSzpHUOuGKJcEmm5/7GLohFmNJ7d
+	SiimyCaZ+KWR8nNQDBl0e49rdBf7eLYrk4up5Q4gjq570Ak+oUzMU6uc2oO7b0hp
+	6HeK51qxYIF1jzS1hQnenwyacpIuxCGJHc3VTBgtgy4dSF5RAyMOarun6knvANkg
+	BO2lRVz0dUjtV42JsonoHJPsNwCIDX4yDmbzNH4zwFYP+xNXX7LnR0E0/Nnfong=
+	=
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xjx54j9dd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Apr 2024 00:10:33 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43J0AWOg015865
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Apr 2024 00:10:32 GMT
+Received: from adas-linux5.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 18 Apr 2024 17:10:31 -0700
+From: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
+To: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mani@kernel.org>
+CC: <quic_msarkar@quicinc.com>, <quic_kraravin@quicinc.com>,
+        Lorenzo Pieralisi
+	<lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?=
+	<kw@linux.com>,
+        Rob Herring <robh@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel
+	<gustavo.pimentel@synopsys.com>,
+        Manivannan Sadhasivam
+	<manivannan.sadhasivam@linaro.org>,
+        Yoshihiro Shimoda
+	<yoshihiro.shimoda.uh@renesas.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH v3 0/3] Add 16GT/s equalization and margining settings
+Date: Thu, 18 Apr 2024 17:09:33 -0700
+Message-ID: <20240419001013.28788-1-quic_schintav@quicinc.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240407230432.912290-1-chang.seok.bae@intel.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: CgrkrAVWo0boEGpqahhkjGnIaLHOEfu2
+X-Proofpoint-ORIG-GUID: CgrkrAVWo0boEGpqahhkjGnIaLHOEfu2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-18_21,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 mlxlogscore=764 bulkscore=0
+ impostorscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404190000
 
-On Sun, Apr 07, 2024 at 04:04:32PM -0700, Chang S. Bae wrote:
-> Gather Data Sampling is a transient execution side channel issue in some
-> CPU models. The stale data in registers is not guaranteed as secure when
-> this vulnerability is not addressed.
-> 
-> In the Key Locker usage during AES transformations, the temporary storage
-> of the original key in registers poses a risk. The key material can be
-> staled in some implementations, leading to susceptibility to leakage of
-> the AES key.
-> 
-> To mitigate this vulnerability, a qualified microcode image must be
-> applied. Add code to ensure that the mitigation is installed and securely
-> locked. Disable the feature, otherwise.
-> 
-> Expand gds_ucode_mitigated() to examine the lock state.
-> 
-> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-> ---
-> Changes from v9:
-> * Removed MSR reads and utilized the helper function. (Pawan Gupta)
-> 
-> Alternatively, 'gds_mitigation' can be exported and referenced directly.
-> Using 'gds_mitigation == GDS_MITIGATION_FULL_LOCKED' may also be
-> readable. However, it was opted to expand gds_ucode_mitigated() for
-> consistency, as it is already established.
-> 
-> Note that this approach aligns with Intel's guidance, as the bugs.c code
-> checks the following MSR bits:
->   "Intel recommends that system software does not enable Key Locker (by
->    setting CR4.KL) unless the GDS mitigation is enabled
->    (IA32_MCU_OPT_CTRL[GDS_MITG_DIS] (bit 4) is 0) and locked
->    (IA32_MCU_OPT_CTRL [GDS_MITG_LOCK](bit 5) is 1)."
-> 
-> For more information, refer to Intel's technical documentation on Gather
-> Data Sampling:
->   https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/technical-documentation/gather-data-sampling.html
-> ---
->  arch/x86/include/asm/processor.h |  7 ++++++-
->  arch/x86/kernel/cpu/bugs.c       |  5 ++++-
->  arch/x86/kernel/keylocker.c      | 12 ++++++++++++
->  arch/x86/kvm/x86.c               |  2 +-
->  4 files changed, 23 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-> index 811548f131f4..74eaa3a2b85b 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -721,7 +721,12 @@ enum mds_mitigations {
->  	MDS_MITIGATION_VMWERV,
->  };
->  
-> -extern bool gds_ucode_mitigated(void);
-> +enum mitigation_info {
-> +	MITG_FULL,
-> +	MITG_LOCKED,
-> +};
-> +
-> +extern bool gds_ucode_mitigated(enum mitigation_info mitg);
->  
->  /*
->   * Make previous memory operations globally visible before
-> diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-> index e7ba936d798b..80f6e70619cb 100644
-> --- a/arch/x86/kernel/cpu/bugs.c
-> +++ b/arch/x86/kernel/cpu/bugs.c
-> @@ -752,8 +752,11 @@ static const char * const gds_strings[] = {
->  	[GDS_MITIGATION_HYPERVISOR]	= "Unknown: Dependent on hypervisor status",
->  };
->  
-> -bool gds_ucode_mitigated(void)
-> +bool gds_ucode_mitigated(enum mitigation_info mitg)
->  {
-> +	if (mitg == MITG_LOCKED)
-> +		return gds_mitigation == GDS_MITIGATION_FULL_LOCKED;
-> +
->  	return (gds_mitigation == GDS_MITIGATION_FULL ||
->  		gds_mitigation == GDS_MITIGATION_FULL_LOCKED);
->  }
-> diff --git a/arch/x86/kernel/keylocker.c b/arch/x86/kernel/keylocker.c
-> index 1e81d0704eea..23cf4a235f11 100644
-> --- a/arch/x86/kernel/keylocker.c
-> +++ b/arch/x86/kernel/keylocker.c
-> @@ -113,6 +113,15 @@ void restore_keylocker(void)
->  	valid_wrapping_key = false;
->  }
->  
-> +/* Check if Key Locker is secure enough to be used. */
-> +static bool __init secure_keylocker(void)
-> +{
-> +	if (boot_cpu_has_bug(X86_BUG_GDS) && !gds_ucode_mitigated(MITG_LOCKED))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  static int __init init_keylocker(void)
->  {
->  	u32 eax, ebx, ecx, edx;
-> @@ -126,6 +135,9 @@ static int __init init_keylocker(void)
->  		goto clear_cap;
->  	}
->  
-> +	if (!secure_keylocker())
-> +		goto clear_cap;
-> +
->  	cr4_set_bits(X86_CR4_KEYLOCKER);
->  
->  	/* AESKLE depends on CR4.KEYLOCKER */
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 47d9f03b7778..4ab50e95fdb5 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1675,7 +1675,7 @@ static u64 kvm_get_arch_capabilities(void)
->  		 */
->  	}
->  
-> -	if (!boot_cpu_has_bug(X86_BUG_GDS) || gds_ucode_mitigated())
-> +	if (!boot_cpu_has_bug(X86_BUG_GDS) || gds_ucode_mitigated(MITG_FULL))
->  		data |= ARCH_CAP_GDS_NO;
->  
->  	return data;
+Add 16GT/s specific equalization and rx lane margining settings. These
+settings are inline with respective PHY settings for 16GT/s 
+operation. 
 
-Repurposing gds_ucode_mitigated() to check for the locked state is
-adding a bit of a churn. We can introduce gds_mitigation_locked()
-instead.
+In addition, current QCOM EP and RC drivers do not share common
+codebase which would result in code duplication. Hence, adding
+common files for code reusability among RC and EP drivers.
 
-Is below looking okay:
+v2 -> v3:
+- Replaced FIELD_GET/FIELD_PREP macros for bit operations.
+- Renamed cmn to common.
+- Avoided unnecessary argument validations.
+- Addressed review comments from Konrad and Mani.
 
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 811548f131f4..8ba96e8a8754 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -722,6 +722,7 @@ enum mds_mitigations {
- };
- 
- extern bool gds_ucode_mitigated(void);
-+extern bool gds_mitigation_locked(void);
- 
- /*
-  * Make previous memory operations globally visible before
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index ca295b0c1eee..a7ec26988ddb 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -753,6 +753,11 @@ bool gds_ucode_mitigated(void)
- }
- EXPORT_SYMBOL_GPL(gds_ucode_mitigated);
- 
-+bool gds_mitigation_locked(void)
-+{
-+	return gds_mitigation == GDS_MITIGATION_FULL_LOCKED;
-+}
-+
- void update_gds_msr(void)
- {
- 	u64 mcu_ctrl_after;
-diff --git a/arch/x86/kernel/keylocker.c b/arch/x86/kernel/keylocker.c
-index 1b57e11d93ad..c40e72f482b1 100644
---- a/arch/x86/kernel/keylocker.c
-+++ b/arch/x86/kernel/keylocker.c
-@@ -112,6 +112,15 @@ void restore_keylocker(void)
- 	valid_wrapping_key = false;
- }
- 
-+/* Check if Key Locker is secure enough to be used. */
-+static bool __init secure_keylocker(void)
-+{
-+	if (boot_cpu_has_bug(X86_BUG_GDS) && !gds_mitigation_locked())
-+		return false;
-+
-+	return true;
-+}
-+
- static int __init init_keylocker(void)
- {
- 	u32 eax, ebx, ecx, edx;
-@@ -125,6 +134,9 @@ static int __init init_keylocker(void)
- 		goto clear_cap;
- 	}
- 
-+	if (!secure_keylocker())
-+		goto clear_cap;
-+
- 	cr4_set_bits(X86_CR4_KEYLOCKER);
- 
- 	/* AESKLE depends on CR4.KEYLOCKER */
+v1 -> v2:
+- Capitilized commit message to be inline with history 
+- Dropped stubs from header file.
+- Moved Designware specific register offsets and masks to
+  pcie-designware.h header file.
+- Applied settings based on bus data rate rather than link generation.
+- Addressed review comments from Bjorn and Frank.
+
+Shashank Babu Chinta Venkata (3):
+  PCI: qcom: Refactor common code
+  PCI: qcom: Add equalization settings for 16GT/s
+  PCI: qcom: Add rx margining settings for 16GT/s
+
+ drivers/pci/controller/dwc/Kconfig            |   5 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ drivers/pci/controller/dwc/pcie-designware.h  |  30 ++++
+ drivers/pci/controller/dwc/pcie-qcom-common.c | 129 ++++++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom-common.h |  14 ++
+ drivers/pci/controller/dwc/pcie-qcom-ep.c     |  44 ++----
+ drivers/pci/controller/dwc/pcie-qcom.c        |  72 ++--------
+ 7 files changed, 201 insertions(+), 94 deletions(-)
+ create mode 100644 drivers/pci/controller/dwc/pcie-qcom-common.c
+ create mode 100644 drivers/pci/controller/dwc/pcie-qcom-common.h
+
+-- 
+2.43.2
+
 
