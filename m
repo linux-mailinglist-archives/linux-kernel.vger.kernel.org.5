@@ -1,91 +1,115 @@
-Return-Path: <linux-kernel+bounces-151469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50C0E8AAF4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:26:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79BB18AAF4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:27:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8109F1C22335
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:26:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED213B22DC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:27:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212D112837C;
-	Fri, 19 Apr 2024 13:26:17 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84428121F;
-	Fri, 19 Apr 2024 13:26:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51414127B7B;
+	Fri, 19 Apr 2024 13:27:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qekj9SK+"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2415685943;
+	Fri, 19 Apr 2024 13:27:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713533176; cv=none; b=MrE+A8fc3lAvF+QWtfHy3SZ0zlq1viNGGtGiThkjSi6uGgctSBbBkyi7TwEFTX1Azzb2s948T6amjXgPuEC/k+BoSpicBPQX+KUqZy4yAF8Gvv2upB0mYL7ABZSeEyNQ2zweCLNOcZDdkMjLWLBiUWnXaog6Px0xcD+whmOyNAM=
+	t=1713533267; cv=none; b=CzAQ2elanqSEnj21G8JJ5ktXqD2r+lbOyyqMmQSSeNAq7zUkaVIZTk1uD90PR/zjMNMp4qgQeQdET83EoQ7dpSjvFQb/rvCINFN6lNMC2pAoD+CyHr0le6TawErGDuWnM0EVqSIomNyw1eEzATDuP/+rlr0bg7ydPQY7C/65b1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713533176; c=relaxed/simple;
-	bh=6j8LAuPX+5y1QeKSrSDHV4idU5BIz6e5AHZh1OPYS4Y=;
+	s=arc-20240116; t=1713533267; c=relaxed/simple;
+	bh=tAjbLsXIapgYTL9f7raZF2mp3g+wwb4J9qj9tlHlRZE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ugz/p0IFR5FzYXZwBtJmE5Di+CRC7XO3gDT2tUZXJfLDNL7vEQssN2+57E22jFcO2nSPCuvM9aQkOyV86LoQqg9bIvIVnw8wzpIASZuet8SVj8My4pbiRqOJECgmTelkONT79w3/N81+0sXXR+lT9kv8HNm5IZ4elI5IbqE1gH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E72B2F;
-	Fri, 19 Apr 2024 06:26:42 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7813D3F64C;
-	Fri, 19 Apr 2024 06:26:11 -0700 (PDT)
-Date: Fri, 19 Apr 2024 14:26:08 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Dhruva Gole <d-gole@ti.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>,
-	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
-	Andy Shevchenko <andy@kernel.org>
-Subject: Re: [PATCH v11 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Message-ID: <20240419132608.3hlubncopeakdwo5@bogus>
-References: <20240418-pinctrl-scmi-v11-0-499dca9864a7@nxp.com>
- <CACRpkdbswetf2Tr6H216nxb8XKX8evyiWiVcsK5E=inqBUUVng@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iwq8khHrohCRHEg+QJeF2g8pFhj245us4ke+Qr6AlTo+RNIOQGS4jA6VcK7e0R5mcNbGckKnfSupiCyVTNa7OAu575+l5fJ76TCHzU3XVFhD1Fq2MGMAvpPCc/Zovog3ZL02ymPgZ7sWkTL1iVkbpcF40KLMZXwaJM3kP1BOOj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qekj9SK+; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713533266; x=1745069266;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tAjbLsXIapgYTL9f7raZF2mp3g+wwb4J9qj9tlHlRZE=;
+  b=Qekj9SK+/zK4PL8oJ97/ZmfmuTsNXRmYLpFDa1J1SCf1Q9yGarfIuqkr
+   MT9DdL+eONuaEHSK9R16mA6JP5LQLA5vg6qVVooGcM/DvuAxIuuK0XgnC
+   Va3yyb3Zgn+5UoRCuyHvxa5k7/67+TOms+tn9zauN+lvaCfCe1CMARm42
+   diEDaVaG8IwFVhWjAqLjZtXRiqIV2LutaTv/fGJ8GuLPUhVL1BUjzFuqM
+   uQeX5f0uC/aAu0g7gD+J5ttXtbrNCrPBbLPSFCK892G+019BGqaq2hZ3V
+   w+/RfXu3gx1S2B8X6vSx0P0VMQuSMTGXxyi69Q9//WX2cjkIzIf7yp8YR
+   Q==;
+X-CSE-ConnectionGUID: fqTkFCcZQaKoK1wI+CP/vA==
+X-CSE-MsgGUID: 6kXZDVLbRiKTjT/c2l7fUQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="20524795"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="20524795"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:27:45 -0700
+X-CSE-ConnectionGUID: 0giGa5KkRW6LbE4k6icGeA==
+X-CSE-MsgGUID: m+WgrNILSK+WJGx5ZDemgw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="23835138"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:27:41 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rxoHC-00000000jGq-0TsA;
+	Fri, 19 Apr 2024 16:27:38 +0300
+Date: Fri, 19 Apr 2024 16:27:37 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jiawen Wu <jiawenwu@trustnetic.com>
+Cc: brgl@bgdev.pl, bartosz.golaszewski@linaro.org, elder@linaro.org,
+	geert+renesas@glider.be, linus.walleij@linaro.org,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	paulmck@kernel.org, warthog618@gmail.com, wsa@the-dreams.de
+Subject: Re: [PATCH v3 00/24] gpio: rework locking and object life-time
+ control
+Message-ID: <ZiJxSeao5Zcv9KdF@smile.fi.intel.com>
+References: <02a101da9227$bda04cb0$38e0e610$@trustnetic.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdbswetf2Tr6H216nxb8XKX8evyiWiVcsK5E=inqBUUVng@mail.gmail.com>
+In-Reply-To: <02a101da9227$bda04cb0$38e0e610$@trustnetic.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, Apr 19, 2024 at 03:20:08PM +0200, Linus Walleij wrote:
-> On Thu, Apr 18, 2024 at 3:24 AM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+On Fri, Apr 19, 2024 at 03:03:54PM +0800, Jiawen Wu wrote:
+> Hi Bartosz Golaszewski,
 > 
-> > Per Sudeep's reply in v10,
-> > "This series looks good overall. Since it has pinctrl driver, I need Linus
-> > to ack/agree to pick the whole series up or I can ack them so that Linus
-> > can take the whole series. Either way it is fine for me."
-> >
-> > v11 is just minor update per Andy to patch 4 and Andy's R-b applied.
-> >
-> > Hope v11 is good for you to pick up.
-> >
-> > Linus, would you ack or this patchset go through your tree?
-> 
-> Since most of it is in firmware rather than pinctrl I suppose
-> the best is to merge it in the firmware or SoC tree, so:
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> 
+> I ran into a kernel crash problem when I pull the latest net-next.git, and
+> finally it was found that is caused by this patch series merged.
 
-Thanks, I will merge this soon for v6.10
+Can you bisect further, i.e. which patch (now a commit message) is the culprit?
+
+> The kernel crashed because I got gpio=0 when I called irq_find_mapping()
+> and then struct irq_data *d=null, as my driver describes:
+> 
+> 	int gpio = irq_find_mapping(gc->irq.domain, hwirq);
+> 	struct irq_data *d = irq_get_irq_data(gpio);
+> 
+> 	txgbe_gpio_irq_ack(d);
+> 
+> The deeper positioning is this line in __irq_resolve_mapping().
+> 
+> 	data = rcu_dereference(domain->revmap[hwirq]);
+> 		
+> So, is it the addition of SRCU infrastructure that causes this issue?
+
+Do you have a full traceback / Oops message to share?
 
 -- 
-Regards,
-Sudeep
+With Best Regards,
+Andy Shevchenko
+
+
 
