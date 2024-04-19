@@ -1,334 +1,153 @@
-Return-Path: <linux-kernel+bounces-151436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AED3A8AAEE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:56:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 157F18AAF05
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:01:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F200B21C4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:56:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C106B283C3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0D785C66;
-	Fri, 19 Apr 2024 12:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5688812D745;
+	Fri, 19 Apr 2024 13:00:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="ntjFvqAm"
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="JTk3EAzo"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F858529A
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 12:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC18C8594B;
+	Fri, 19 Apr 2024 13:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713531394; cv=none; b=iPpKZ1Q/S6SydPzS39/zSCQNjcXNXAnvsIviXLzLnYaaYMhBSdioFNcn7c8nVRlVfGCAm/2rPLd3PBTM10spSZKpFNGRVoo23nW7H7L0iHBJFlnqmDVXxhxRm0+4wCWGBKK2+mNhgO3cx4g3whrvXkfQXJPlHPX0PxASsiLrPdk=
+	t=1713531639; cv=none; b=SA4uyLysbmE9treM7o0dAnjpneEbe/uMmG7FlwmSO7yE+ZSAWHcl8EeSTxMV6iwOcLfVX41A+6X6PF0tK8Yt1cLXtD60PyDHS97wr4WjCYbzPEvtGfSEXe7pdnN6o3L8Btcfx4mRvZpKeAueygqxGU3IWkPeTiVIOSSNCJCu+A8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713531394; c=relaxed/simple;
-	bh=TMr4RZ19Bd7AjfjrbQ1usf3bz+QWBHzTOPk2Gqnrkm0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rt86mOREiNkYv6emjXrWTfan7C49KENcOR0X4nd8UKC9GjOycYWQH1fEdoVlK2OgsADLyWb13qXR0nczvMMPRXOzXxauFnS4I7wHgSvfBPtzfbUJvPst5cHWpzMU7iVdX+EfeOf6lHgH5lt+sqgxTInnhruYGXGtcKAqhYtwv3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=ntjFvqAm; arc=none smtp.client-ip=209.85.160.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-238e171b118so1078503fac.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 05:56:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1713531390; x=1714136190; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qAnQXOAIIj9oS1dVAkkGazDr3oWNNZyu5Ad+/xAUOSA=;
-        b=ntjFvqAmgQJAKfAGXMOtyQZvbezlAT8HXtIL5fYgBHKbggCEan/1WZ65sDMcjGjHNl
-         Q+6KqOqcmoTYV4qaEm4pKrkhqxG4pYFriOOXzCvpyoMxDI5mjn7VfPv2dfkcwouuc9IB
-         7N+g3HzlwhCX/uMKTlwnr41FVm5n72MHAAmLjHv0vZQJZq3MJ3TP8bUQAjSrp4LgNn1w
-         zcdKgNy5vnWgGJTubWsKyJEI1uH/9+WFQiJ2Puuu/03/e4jOvDZIdk6FujkKv9NYbEx9
-         P/eVBSMeMpb/U7pxKXS24H9SzscpHOjInIWRL1EanzluCmsJ3R6F5Zliwm7NjdPixKO5
-         ME/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713531390; x=1714136190;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qAnQXOAIIj9oS1dVAkkGazDr3oWNNZyu5Ad+/xAUOSA=;
-        b=pWfWJB6K+6+0jouT8LgZsZ0TTm0H5COGZnFC2kbS+y44oFmQTmhXYe1l3bg7lp6qLs
-         XSrKfZJ6opMZ1C78w//GK7DJ9eGUY4+DOniNaWM4yoq4sP92rwERub1j8iq75ZsEKOvq
-         sX2M+VuamCsmMcqjhzUmNQnMeh6wqoP7aeleVGk0/WEUeWultJ77nod6SC9+K9ShkZPJ
-         NM/anQj71XjWUf3m7meGxHv+AfyiufcUDHAd7LplZb14HCE78o6QW683C2vqNy2HtyLF
-         56BGSu+AvShlw3DoM/64ufYN5JyHAcf7JNS2IqtOmMJEraal/hyjJ0h1fhm/f2nlTrCJ
-         FtOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVWWRLbef+Nx9o+8M4j238kNI5idrd/lbQRrDKyZTcPjWWspvL2imJbH+18C+jFhzCJPkcZs40DVhuahmo+N02BfPeTY0J50Ieilsgt
-X-Gm-Message-State: AOJu0Yz4XaGWxYb11zLJdd/8swBDK8YSKnG6Z7DiuOekZ1uGM9U/pB5o
-	WhD9rAKqnChm4fn4s9xds1sKRI4toFgwn4uEHb/CIKALECkN+Cy3E87EJ0kZFMM=
-X-Google-Smtp-Source: AGHT+IHFfBcis79UcRir4VffHs5X6NLftoITO/91C4p4EpS7Z44Ysxagpcl0DozKM758wLJf4tJP1g==
-X-Received: by 2002:a05:6870:2d4:b0:22e:9901:ede4 with SMTP id r20-20020a05687002d400b0022e9901ede4mr2180580oaf.38.1713531389153;
-        Fri, 19 Apr 2024 05:56:29 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id t20-20020a05683014d400b006eb77e42ff5sm691060otq.26.2024.04.19.05.56.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 05:56:28 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rxnn1-00FPgO-MQ;
-	Fri, 19 Apr 2024 09:56:27 -0300
-Date: Fri, 19 Apr 2024 09:56:27 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Tomasz Jeznach <tjeznach@rivosinc.com>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Nick Kossifidis <mick@ics.forth.gr>,
-	Sebastien Boeuf <seb@rivosinc.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	iommu@lists.linux.dev, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux@rivosinc.com
-Subject: Re: [PATCH v2 7/7] iommu/riscv: Paging domain support
-Message-ID: <20240419125627.GD223006@ziepe.ca>
-References: <cover.1713456597.git.tjeznach@rivosinc.com>
- <301244bc3ff5da484b46d3fecc931cdad7d2806f.1713456598.git.tjeznach@rivosinc.com>
+	s=arc-20240116; t=1713531639; c=relaxed/simple;
+	bh=7pKojDMQuVrZIIvqhT/X6XWwh8Z/cok7nF7ciMlN8BE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RJyAWYlBrE6Y7z/cYDET+BJnwT19k5OHdckBVCiOx3bQS5NoBRAv4gu5z0otn/FbNAI+hF03yls2ldeiXhIOMjN4n0CkBZeu5Ox0suPhvBw5T1pXTry3x6W97FrnptyheQ662bAe6kzW1pm3GTUJNgzmGuuMh/erYL6vnOIIgtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=JTk3EAzo; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id DF042100007;
+	Fri, 19 Apr 2024 16:00:26 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru DF042100007
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1713531626;
+	bh=wKFbGy5kXF6YmVtQApc9Loyay81pnuGNBjJQMyo1XHY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=JTk3EAzoeVCi0LAVhcBtRyaZ5iOqwv+J8I0jB2MdXcy47F5vYDm71XyOhTbhTbBGA
+	 5HUXxV8cEAb+JkcncVQZkOVLVWVD89NrNNP/etjFUTN+0ScoY1rkmzA2Rf/I3n+PZu
+	 XZWLPYNLuSScVsEX3ugY7ZYa6inHZvODmGW1rikza8alooapkWEXHbA0RSn2kyWBda
+	 J+UnNddlNmjQlvRKcdL4iEbyTsuDoqWw6BCVV8UE2MyeTwWyjQaqb7E4MxLsGLRnPi
+	 IieTMCcXrapmWJyYAR3xbxQ0eQefy3aTOf2kXlT7nI2fBrLqqd0Imp9JnWho6rFxrq
+	 ByOzpbBrrv1DQ==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Fri, 19 Apr 2024 16:00:26 +0300 (MSK)
+Received: from CAB-WSD-0003115.sberdevices.ru (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 19 Apr 2024 16:00:26 +0300
+From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+To: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
+	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
+ Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor
+ Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>, Philipp Zabel
+	<p.zabel@pengutronix.de>, Jiucheng Xu <jiucheng.xu@amlogic.com>,
+	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: [RFC PATCH v3 0/6] Add A1 Soc audio clock controller driver
+Date: Fri, 19 Apr 2024 15:58:06 +0300
+Message-ID: <20240419125812.983409-1-jan.dakinevich@salutedevices.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <301244bc3ff5da484b46d3fecc931cdad7d2806f.1713456598.git.tjeznach@rivosinc.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184806 [Apr 19 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 18 0.3.18 b9d6ada76958f07c6a68617a7ac8df800bc4166c, {Tracking_smtp_not_equal_from}, {Tracking_uf_ne_domains}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;lore.kernel.org:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;smtp.sberdevices.ru:5.0.1,7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_sender_alignment_int}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/04/19 12:19:00
+X-KSMG-LinksScanning: Clean, bases: 2024/04/19 12:19:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/18 23:49:00 #24865988
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Thu, Apr 18, 2024 at 09:32:25AM -0700, Tomasz Jeznach wrote:
+This series adds support for audio clock and reset controllers on A1 SoC family.
 
-> diff --git a/drivers/iommu/riscv/iommu.c b/drivers/iommu/riscv/iommu.c
-> index a4f74588cdc2..32ddc372432d 100644
-> --- a/drivers/iommu/riscv/iommu.c
-> +++ b/drivers/iommu/riscv/iommu.c
-> @@ -46,6 +46,10 @@ MODULE_LICENSE("GPL");
->  #define dev_to_iommu(dev) \
->  	container_of((dev)->iommu->iommu_dev, struct riscv_iommu_device, iommu)
->  
-> +/* IOMMU PSCID allocation namespace. */
-> +static DEFINE_IDA(riscv_iommu_pscids);
-> +#define RISCV_IOMMU_MAX_PSCID		BIT(20)
-> +
+Changes v2 -> v3
+ - reset:
+   * added auxiliary device
+ - yaml:
+   * added declaration of optional clocks
+   * fixed names in example and another cosmetics
+ - clocks:
+   * reworked naming
+   * stop using of "core" clock name
+   * fixed wrong parenting
 
-You may consider putting this IDA in the riscv_iommu_device() and move
-the pscid from the domain to the bond?
+Changes v1 -> v2:
+ - Detached from v1's series (patch 2, 3, 4, 25).
+ - Reuse some of defines from axg-audio;
+ - Split the controller into two memory regions.
 
->  /* Device resource-managed allocations */
->  struct riscv_iommu_devres {
->  	unsigned long addr;
-> @@ -752,12 +756,77 @@ static int riscv_iommu_ddt_alloc(struct riscv_iommu_device *iommu)
->  	return 0;
->  }
->  
-> +struct riscv_iommu_bond {
-> +	struct list_head list;
-> +	struct rcu_head rcu;
-> +	struct device *dev;
-> +};
-> +
-> +/* This struct contains protection domain specific IOMMU driver data. */
-> +struct riscv_iommu_domain {
-> +	struct iommu_domain domain;
-> +	struct list_head bonds;
-> +	int pscid;
-> +	int numa_node;
-> +	int amo_enabled:1;
-> +	unsigned int pgd_mode;
-> +	/* paging domain */
-> +	unsigned long pgd_root;
-> +};
+Links:
+ [1] https://lore.kernel.org/lkml/20240314232201.2102178-1-jan.dakinevich@salutedevices.com/
+ [2] https://lore.kernel.org/lkml/20240328010831.884487-1-jan.dakinevich@salutedevices.com/
 
-Glad to see there is no riscv_iommu_device pointer in the domain!
+Jan Dakinevich (6):
+  reset: reset-meson-audio: introduce separate driver
+  clk: meson: axg: share the set of audio helper macro
+  clk: meson: axg: introduce AUD_MUX_TABLE() helper macro
+  dt-bindings: clock: meson: document A1 SoC audio clock controller
+    driver
+  clk: meson: a1: add the audio clock controller driver
+  arm64: dts: meson: a1: add the audio clock controller
 
-> +static void riscv_iommu_iotlb_inval(struct riscv_iommu_domain *domain,
-> +				    unsigned long start, unsigned long end)
-> +{
-> +	struct riscv_iommu_bond *bond;
-> +	struct riscv_iommu_device *iommu;
-> +	struct riscv_iommu_command cmd;
-> +	unsigned long len = end - start + 1;
-> +	unsigned long iova;
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(bond, &domain->bonds, list) {
-> +		iommu = dev_to_iommu(bond->dev);
+ .../bindings/clock/amlogic,a1-audio-clkc.yaml | 124 ++++
+ arch/arm64/boot/dts/amlogic/meson-a1.dtsi     |  46 ++
+ drivers/clk/meson/Kconfig                     |  16 +
+ drivers/clk/meson/Makefile                    |   1 +
+ drivers/clk/meson/a1-audio.c                  | 651 ++++++++++++++++++
+ drivers/clk/meson/axg-audio.c                 | 244 +------
+ drivers/clk/meson/meson-audio.h               | 149 ++++
+ drivers/reset/Kconfig                         |   7 +
+ drivers/reset/Makefile                        |   1 +
+ drivers/reset/reset-meson-audio.c             | 207 ++++++
+ .../dt-bindings/clock/amlogic,a1-audio-clkc.h | 122 ++++
+ .../reset/amlogic,meson-a1-audio-reset.h      |  29 +
+ include/soc/amlogic/meson-audio-reset.h       |  10 +
+ 13 files changed, 1371 insertions(+), 236 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/amlogic,a1-audio-clkc.yaml
+ create mode 100644 drivers/clk/meson/a1-audio.c
+ create mode 100644 drivers/clk/meson/meson-audio.h
+ create mode 100644 drivers/reset/reset-meson-audio.c
+ create mode 100644 include/dt-bindings/clock/amlogic,a1-audio-clkc.h
+ create mode 100644 include/dt-bindings/reset/amlogic,meson-a1-audio-reset.h
+ create mode 100644 include/soc/amlogic/meson-audio-reset.h
 
-Pedantically this locking isn't locked right, there is technically
-nothing that prevents bond->dev and the iommu instance struct from
-being freed here. eg iommufd can hit races here if userspace can hot
-unplug devices.
+-- 
+2.34.1
 
-I suggest storing the iommu pointer itself in the bond instead of the
-device then add a synchronize_rcu() to the iommu unregister path.
-
-> +		riscv_iommu_cmd_inval_vma(&cmd);
-> +		riscv_iommu_cmd_inval_set_pscid(&cmd, domain->pscid);
-> +		if (len > 0 && len < RISCV_IOMMU_IOTLB_INVAL_LIMIT) {
-> +			for (iova = start; iova < end; iova += PAGE_SIZE) {
-> +				riscv_iommu_cmd_inval_set_addr(&cmd, iova);
-> +				riscv_iommu_cmd_send(iommu, &cmd, 0);
-> +			}
-> +		} else {
-> +			riscv_iommu_cmd_send(iommu, &cmd, 0);
-> +		}
-> +	}
-
-This seems suboptimal, you probably want to copy the new design that
-Intel is doing where you allocate "bonds" that are already
-de-duplicated. Ie if I have 10 devices on the same iommu sharing the
-domain the above will invalidate the PSCID 10 times. It should only be
-done once.
-
-ie add a "bond" for the (iommu,pscid) and refcount that based on how
-many devices are used. Then another "bond" for the ATS stuff eventually.
-
-> +
-> +	list_for_each_entry_rcu(bond, &domain->bonds, list) {
-> +		iommu = dev_to_iommu(bond->dev);
-> +
-> +		riscv_iommu_cmd_iofence(&cmd);
-> +		riscv_iommu_cmd_send(iommu, &cmd, RISCV_IOMMU_QUEUE_TIMEOUT);
-> +	}
-> +	rcu_read_unlock();
-> +}
-> +
-
-> @@ -787,12 +870,390 @@ static int riscv_iommu_attach_domain(struct riscv_iommu_device *iommu,
->  		xchg64(&dc->ta, ta);
->  		xchg64(&dc->tc, tc);
->  
-> -		/* Device context invalidation will be required. Ignoring for now. */
-> +		if (!(tc & RISCV_IOMMU_DC_TC_V))
-> +			continue;
-
-No negative caching in HW?
-
-> +		/* Invalidate device context cache */
-> +		riscv_iommu_cmd_iodir_inval_ddt(&cmd);
-> +		riscv_iommu_cmd_iodir_set_did(&cmd, fwspec->ids[i]);
-> +		riscv_iommu_cmd_send(iommu, &cmd, 0);
-> +
-> +		if (FIELD_GET(RISCV_IOMMU_PC_FSC_MODE, fsc) == RISCV_IOMMU_DC_FSC_MODE_BARE)
-> +			continue;
-> +
-> +		/* Invalidate last valid PSCID */
-> +		riscv_iommu_cmd_inval_vma(&cmd);
-> +		riscv_iommu_cmd_inval_set_pscid(&cmd, FIELD_GET(RISCV_IOMMU_DC_TA_PSCID, ta));
-> +		riscv_iommu_cmd_send(iommu, &cmd, 0);
-> +	}
-> +
-> +	/* Synchronize directory update */
-> +	riscv_iommu_cmd_iofence(&cmd);
-> +	riscv_iommu_cmd_send(iommu, &cmd, RISCV_IOMMU_IOTINVAL_TIMEOUT);
-> +
-> +	/* Track domain to devices mapping. */
-> +	if (bond)
-> +		list_add_rcu(&bond->list, &domain->bonds);
-
-This is in the wrong order, the invalidation on the pscid needs to
-start before the pscid is loaded into HW in the first place otherwise
-concurrent invalidations may miss HW updates.
-
-> +
-> +	/* Remove tracking from previous domain, if needed. */
-> +	iommu_domain = iommu_get_domain_for_dev(dev);
-> +	if (iommu_domain && !!(iommu_domain->type & __IOMMU_DOMAIN_PAGING)) {
-
-No need for !!, && is already booleanizing
-
-> +		domain = iommu_domain_to_riscv(iommu_domain);
-> +		bond = NULL;
-> +		rcu_read_lock();
-> +		list_for_each_entry_rcu(b, &domain->bonds, list) {
-> +			if (b->dev == dev) {
-> +				bond = b;
-> +				break;
-> +			}
-> +		}
-> +		rcu_read_unlock();
-> +
-> +		if (bond) {
-> +			list_del_rcu(&bond->list);
-> +			kfree_rcu(bond, rcu);
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-
-> +static inline size_t get_page_size(size_t size)
-> +{
-> +	if (size >= IOMMU_PAGE_SIZE_512G)
-> +		return IOMMU_PAGE_SIZE_512G;
-> +	if (size >= IOMMU_PAGE_SIZE_1G)
-> +		return IOMMU_PAGE_SIZE_1G;
-> +	if (size >= IOMMU_PAGE_SIZE_2M)
-> +		return IOMMU_PAGE_SIZE_2M;
-> +	return IOMMU_PAGE_SIZE_4K;
-> +}
-> +
-> +#define _io_pte_present(pte)	((pte) & (_PAGE_PRESENT | _PAGE_PROT_NONE))
-> +#define _io_pte_leaf(pte)	((pte) & _PAGE_LEAF)
-> +#define _io_pte_none(pte)	((pte) == 0)
-> +#define _io_pte_entry(pn, prot)	((_PAGE_PFN_MASK & ((pn) << _PAGE_PFN_SHIFT)) | (prot))
-> +
-> +static void riscv_iommu_pte_free(struct riscv_iommu_domain *domain,
-> +				 unsigned long pte, struct list_head *freelist)
-> +{
-> +	unsigned long *ptr;
-> +	int i;
-> +
-> +	if (!_io_pte_present(pte) || _io_pte_leaf(pte))
-> +		return;
-> +
-> +	ptr = (unsigned long *)pfn_to_virt(__page_val_to_pfn(pte));
-> +
-> +	/* Recursively free all sub page table pages */
-> +	for (i = 0; i < PTRS_PER_PTE; i++) {
-> +		pte = READ_ONCE(ptr[i]);
-> +		if (!_io_pte_none(pte) && cmpxchg_relaxed(ptr + i, pte, 0) == pte)
-> +			riscv_iommu_pte_free(domain, pte, freelist);
-> +	}
-> +
-> +	if (freelist)
-> +		list_add_tail(&virt_to_page(ptr)->lru, freelist);
-> +	else
-> +		free_page((unsigned long)ptr);
-> +}
-
-Consider putting the page table handling in its own file?
-
-> +static int riscv_iommu_attach_paging_domain(struct iommu_domain *iommu_domain,
-> +					    struct device *dev)
-> +{
-> +	struct riscv_iommu_device *iommu = dev_to_iommu(dev);
-> +	struct riscv_iommu_domain *domain = iommu_domain_to_riscv(iommu_domain);
-> +	struct page *page;
-> +
-> +	if (!riscv_iommu_pt_supported(iommu, domain->pgd_mode))
-> +		return -ENODEV;
-> +
-> +	domain->numa_node = dev_to_node(iommu->dev);
-> +	domain->amo_enabled = !!(iommu->caps & RISCV_IOMMU_CAP_AMO_HWAD);
-> +
-> +	if (!domain->pgd_root) {
-> +		page = alloc_pages_node(domain->numa_node,
-> +					GFP_KERNEL_ACCOUNT | __GFP_ZERO, 0);
-> +		if (!page)
-> +			return -ENOMEM;
-> +		domain->pgd_root = (unsigned long)page_to_virt(page);
-
-The pgd_root should be allocated by the alloc_paging function, not
-during attach. There is no locking here that will protect against
-concurrent attach and also map before attach should work.
-
-You can pick up the numa affinity from the alloc paging dev pointer
-(note it may be null still in some cases)
-
-Jason
 
