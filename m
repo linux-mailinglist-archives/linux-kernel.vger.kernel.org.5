@@ -1,105 +1,165 @@
-Return-Path: <linux-kernel+bounces-151851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B93338AB4BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:05:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4E888AB4BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:07:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8A611C21F75
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:05:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DC7F2839DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D110113C3FE;
-	Fri, 19 Apr 2024 18:05:20 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C9F13BAFC;
+	Fri, 19 Apr 2024 18:06:53 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63143130AC4;
-	Fri, 19 Apr 2024 18:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44550130AC4;
+	Fri, 19 Apr 2024 18:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713549920; cv=none; b=GEM1zCmLsVhvquHbIKe0tUyaWmeRMyZ3uGIekgdAR72WAFt1+SKJTXmJon5RiiVFWJ3bGBKUe+OFrmU5IuuX14SQQ4VAUJFZ9fnjdHeGZcFnF0o/6EbH33mOtZo1KEQr8bH8ducmxL7gacnevUS3YSHodlKqvGRx1x3dBcmoBz0=
+	t=1713550013; cv=none; b=fmBVg7wy7AyYjGOUiEl65+uGunbk7ZoAWpkHJmJy1/LodO0KvdHP322sSDo5AwZpYDpwSeO+13/8HqvApGGAhdnCIT1yuCpV+0y+lIm1twpNyp35P4efSsmqtLkkuCHQm1TcTJ9zkdhMPckbkHctWGndYRplaliglqbqYlLy31Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713549920; c=relaxed/simple;
-	bh=UEVFeS+/tMCw0E76rQZ5tWlTwk4nDLScKXAuUGbS/4Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a+CmthJMEQITN3wMyFh4o882A2xCXEjXUpivdDlbgnMN4GUoddRnEVmblRXlhXyDJs1hAVuvYLPhKL1JNS3kXPp/0pFQozXITuB4p2XHsFKkHZCKxMjyfRFX9rHNKOcvONBG86fhbhIaA5g+TOqnNgtGM0tvpm6bcXhNJAEAJD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CC5CC116B1;
-	Fri, 19 Apr 2024 18:05:13 +0000 (UTC)
-Date: Fri, 19 Apr 2024 19:05:12 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Will Deacon <will@kernel.org>
-Cc: Zayd Qumsieh <zayd_qumsieh@apple.com>, Hector Martin <marcan@marcan.st>,
-	Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Justin Lu <ih_justin@apple.com>,
-	Ryan Houdek <Houdek.Ryan@fex-emu.org>,
-	Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Miguel Luis <miguel.luis@oracle.com>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Christoph Paasch <cpaasch@apple.com>,
-	Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Baoquan He <bhe@redhat.com>, Joel Granados <j.granados@samsung.com>,
-	Dawei Li <dawei.li@shingroup.cn>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Florent Revest <revest@chromium.org>,
-	David Hildenbrand <david@redhat.com>,
-	Stefan Roesch <shr@devkernel.io>, Andy Chiu <andy.chiu@sifive.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Oleg Nesterov <oleg@redhat.com>, Helge Deller <deller@gmx.de>,
-	Zev Weiss <zev@bewilderbeest.net>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Asahi Linux <asahi@lists.linux.dev>
-Subject: Re: [PATCH 0/4] arm64: Support the TSO memory model
-Message-ID: <ZiKyWGKTw6Aqntod@arm.com>
-References: <f6484dcd-ebf6-4b6f-be17-69b05539e33b@marcan.st>
- <20240416022242.89623-1-zayd_qumsieh@apple.com>
- <20240419165826.GB4020@willie-the-truck>
+	s=arc-20240116; t=1713550013; c=relaxed/simple;
+	bh=g6h4liwRb6pLZ6FcdagGwL8SquGArFkeky/4BcIbLcs=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ngfVmq4WyA+kioPq+FjWyTpqW0JmXq2gW/X8/wAOi9QIWtrIeEkvf/f2ijw8XKaxoHG68yp1PZ5FoPVC8uRNMhuAjNd01oDAATnMbF+tDesXyHrDol7cvwrc5NWRt+gw7qQx6yrtm7TyMOBUy22sj7cDmXb7+LfWky6VFa2w2LM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VLjGG1Ljkz6JBHw;
+	Sat, 20 Apr 2024 02:04:38 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 50007140447;
+	Sat, 20 Apr 2024 02:06:44 +0800 (CST)
+Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 19 Apr
+ 2024 19:06:43 +0100
+Date: Fri, 19 Apr 2024 19:06:42 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: <shiju.jose@huawei.com>
+CC: <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+	<linux-mm@kvack.org>, <dan.j.williams@intel.com>, <dave@stgolabs.net>,
+	<dave.jiang@intel.com>, <alison.schofield@intel.com>,
+	<vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
+	<linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<david@redhat.com>, <Vilas.Sridharan@amd.com>, <leo.duran@amd.com>,
+	<Yazen.Ghannam@amd.com>, <rientjes@google.com>, <jiaqiyan@google.com>,
+	<tony.luck@intel.com>, <Jon.Grimm@amd.com>, <dave.hansen@linux.intel.com>,
+	<rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
+	<james.morse@arm.com>, <jthoughton@google.com>, <somasundaram.a@hpe.com>,
+	<erdemaktas@google.com>, <pgonda@google.com>, <duenwen@google.com>,
+	<mike.malvestuto@intel.com>, <gthelen@google.com>,
+	<wschwartz@amperecomputing.com>, <dferguson@amperecomputing.com>,
+	<wbs@os.amperecomputing.com>, <nifan.cxl@gmail.com>, <tanxiaofei@huawei.com>,
+	<prime.zeng@hisilicon.com>, <kangkang.shen@futurewei.com>,
+	<wanghuiqiang@huawei.com>, <linuxarm@huawei.com>
+Subject: Re: [RFC PATCH v8 06/10] ACPICA: Add __free() based cleanup
+ function for acpi_put_table
+Message-ID: <20240419190642.00005ee7@huawei.com>
+In-Reply-To: <20240419164720.1765-7-shiju.jose@huawei.com>
+References: <20240419164720.1765-1-shiju.jose@huawei.com>
+	<20240419164720.1765-7-shiju.jose@huawei.com>
+Organization: Huawei Technologies R&D (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419165826.GB4020@willie-the-truck>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Fri, Apr 19, 2024 at 05:58:26PM +0100, Will Deacon wrote:
-> On Mon, Apr 15, 2024 at 07:22:41PM -0700, Zayd Qumsieh wrote:
-> > >I'm probably going to make myself hugely unpopular here, but I have a
-> > >strong objection to this patch series as it stands. I firmly believe
-> > >that providing a prctl() to query and toggle the memory model to/from
-> > >TSO is going to lead to subtle fragmentation of arm64 Linux userspace.
-> > 
-> > It's definitely not our intent to fragment the ecosystem. The goal
-> > of this memory ordering is to simplify emulation layers that benefit
-> > from this. If you have suggestions to reduce the risk of it being
-> > misused outside of emulators, we'd be happy to look into it.
+On Sat, 20 Apr 2024 00:47:15 +0800
+<shiju.jose@huawei.com> wrote:
+
+> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > 
-> Once you have exposed this toggle via prctl(), it doesn't really matter
-> what your intentions where. It will get used outside of emulation laters
-> and we'll be stuck supporting it.
+> Add __free() based cleanup function for acpi_put_table.
+> 
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+> ---
 
-Just FTR, I fully agree with Will. I'm strongly against this kind of ABI
-for a non-architected, implementation defined feature. I can't even tell
-exactly what TSO means on the Apple hardware. Is it close to the x86
-TSO? Is there a formal memory model for it? Are future Apple (or other
-Arm vendor) implementations going to follow exactly the same model to be
-able to call it some form of "Apple standard" that deserves an ABI?
+Reviewing (and rejecting) my own patch time ;(
 
-So, sorry, I'm going to NAK these approaches proposing imp def features
-as generic opt-in mechanisms (the microVMs thing sounds doable though,
-to my limited understanding; I guess that would mean running the
-emulator in a VM).
+I was thinking this would be useful more widely but hadn't looked
+as closely as I should have done.  Sorry Shiju for sending you
+down a bad path.
 
--- 
-Catalin
+>  include/acpi/acpixf.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/acpi/acpixf.h b/include/acpi/acpixf.h
+> index 3d90716f9522..fc64d903a703 100644
+> --- a/include/acpi/acpixf.h
+> +++ b/include/acpi/acpixf.h
+> @@ -492,6 +492,8 @@ ACPI_EXTERNAL_RETURN_STATUS(acpi_status
+>  					    **out_table))
+>  ACPI_EXTERNAL_RETURN_VOID(void acpi_put_table(struct acpi_table_header *table))
+>  
+> +DEFINE_FREE(acpi_put_table, struct acpi_table_header *, if (!IS_ERR_OR_NULL(_T)) acpi_put_table(_T))
+
+This is reliant on acpi_get_table2() in patch 8 / below being used as acpi_get_table()
+doesn't return the table.
+
+Maybe we are better off treating acpi_get_table() / acpi_put_table() as if it were a
+conditional lock? Or change the 93 instances of acpi_get_table to deal with it returning
+a copy of the table handle pointer
+
+That would bring it inline with many other get functions in the kernel + make our life
+easier using tooling like this.
+
+
++static struct acpi_table_header *acpi_get_table2(acpi_string signature,
++						  u32 instance)
++{
++	struct acpi_table_header *header = NULL;
++	acpi_status status = acpi_get_table(signature, instance, &header);
++
++	if (ACPI_FAILURE(status))
++		return ERR_PTR(-EINVAL);
++
++	return header;
++}
+So that we could do things like:
++	struct acpi_table_header *pAcpiTable __free(acpi_put_table) =
++						acpi_get_table2("RAS2", 0);
+
+and avoid having to call acpi_put_table() in error paths etc.
+
+The snag is that acpi_get_table() is from acpica (via this wrapper) so any
+modification would be a little messy. Also a number of cases use the status
+value via 
+const char *msg = acpi_format_exception(status);
+
+Which we'd need to return via some path (a parameter probably). We 'could'
+do that but the advantages of this are getting eroded.
+
+Upshot, this is messier than I thought, so we probably shouldn't do it.
+
+The code in ras2 can be done reasonably neatly an outer wrapper function
+that gets the table and an inner one that deals with the actual processing
+of the entries.
+
+Pity as there are some messy bits of code this would tidy up. In most of
+those a helper function also works.
+
+Jonathan
+
+p.s. Whilst looking at this I noticed that acpi_has_watchdog() if it
+succeeds doesn't put the wdat table which seems suspicious as a side
+effect.
+
+> +
+>  ACPI_EXTERNAL_RETURN_STATUS(acpi_status
+>  			    acpi_get_table_by_index(u32 table_index,
+>  						    struct acpi_table_header
+
 
