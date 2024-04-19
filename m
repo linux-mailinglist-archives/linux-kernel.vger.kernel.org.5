@@ -1,185 +1,194 @@
-Return-Path: <linux-kernel+bounces-151818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BC068AB44F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 88C8F8AB45A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:28:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B899C286BA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:24:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B38A287C5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:28:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C5F13A88D;
-	Fri, 19 Apr 2024 17:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B3F13AD02;
+	Fri, 19 Apr 2024 17:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="I2wLMuhE"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UJDvtBOr"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 802378004E
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4742977F13;
+	Fri, 19 Apr 2024 17:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713547435; cv=none; b=Jr8GvK46tbxQ7pRwYP/ZHzkOFGYdhBuFmX/0ZR2AtDobnrXP8YX/jKd4mSZJ/BJQ4Eypi+kh2DKbgPehqQAo/7o/L3gh2cZnkxLthcvc84W7+km+g46EYATzqzOnexKCIO1FfbF+L/tv58y/1tSeDi5aq10vcgOCor+FFHXHFD0=
+	t=1713547696; cv=none; b=S/bADADt8v69FeNFH1RPrY5TK5ds373q2ZckMbjCp+ESCK+lEvRFZcB6tvgD/9wxuJi+6APJFZ6SyD0dyXpdTmg9TTYv3/EplFUz0DmeRi6lXcafH+aWmHF38kqEHSgRnQKW9A33wUZ6XHTIYgTPJb4kDe6cx6yOCmETl29+0iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713547435; c=relaxed/simple;
-	bh=4zqi94Uc/R8iBsYBBImj/1Cm2SNGTxyyrkhMn0eenOY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=DVM3ILNav3buwuL/aRRUOTJv7zrxh2Re5XlHeSH2HXsP22vXTX6+TYyIfqMJsmYdpUocBNZJD6xCvyp4ifLR3j5+BCFYyNPvme4vmotSV6sH3/z39qw2pVW0MHck7PZTg3XmX6fH/tznWC+9htfdvV1qCgvp9JIkwixURVieWQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=I2wLMuhE; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2a2c4a28e43so2531577a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:23:54 -0700 (PDT)
+	s=arc-20240116; t=1713547696; c=relaxed/simple;
+	bh=CiY8/nAJ94vQ5TldCY4pGhgSrPvSqfEp6YEoeLDubQM=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=ZadozfQQuc9pzZ0ZAxlL43zYk3is4ciAt+1uniedKQ5OCyGry4wkUBcwFpPQRAx8Cclm4Q2kVKKmTUw0qX97oyX+86esgAKHJnrfkxqXaU91i6t719FT+jSbw+6RPDN7sZCoL+w9ZEznUJr2ZybjEOzVhB0p6Xze3bya+eu16h0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UJDvtBOr; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-343cfa6faf0so2106113f8f.0;
+        Fri, 19 Apr 2024 10:28:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713547434; x=1714152234; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5WPGtsMCwemSIr+JDp0r8nt/aMHu/Jjken9XpaKI2j4=;
-        b=I2wLMuhEPUQlJ/JAHQd9rpfMn/rWXxVBCSRNRSosBQRBgPfVNs4g1jYZbKF4IMMNJT
-         3j/U0j+RL13ceVq5SYdZGRRImSTZYybS6SFvd0ZtEERCoXiQdo2S++wgCpt8BSv7w0Pr
-         AZ9f/Y8l+J24Q00EL8nnxMVvrrQPKSb2dUU/TKIDc9Ynb/rJ6EirRpm8jDxJXihbs3zn
-         cEps/grfphrNm8UsWINftQ3E8BAUDjJZqb2ASHf8yxDQr2Z9E+GAZw0earqMDm4Mh5ep
-         CIxD5tl87957emeXdBO2WzLKh4hP19MZWAlX0Ssja9mbXchQuz2a6EZsC86DJTeDS36D
-         099w==
+        d=gmail.com; s=20230601; t=1713547693; x=1714152493; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Atbe4MPhJuRT7fbR5tzI2HH3PRwHbiVkk8k6A1FcZ4s=;
+        b=UJDvtBOr7K6tjoIEL0OrynSPH1ca8rHjfuEim2Ok2LHR17MoUSxuptkTm9ie7SOEVA
+         ng5HWcLF8pkS+cQRqmTvtYNcXDnHZ735EE0jholiGgQcxni418Mf+vtSv2RcAbK0l+hw
+         gewu1pizpktt1kmH/Bn+GFFsqpcPiLpNmxOuGMSysh24pJsOPdy7o63MRUUBrxdck2rx
+         FtDJoGKy8J0cMJ0/hHSzaS5tDCuOo2z9fXf3iGPj20XOgT8AFUxbOtN7qTP7zsgB8x3I
+         M1Lw/a8yz03ZWdcG0OI8xl0HtvHUlfkx5MBQVkCYKKzLNrxKO7zCTunFCUs3FuZiuHOw
+         pNsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713547434; x=1714152234;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5WPGtsMCwemSIr+JDp0r8nt/aMHu/Jjken9XpaKI2j4=;
-        b=f6IYlHogPkfGTqw2TUKLOjwFC/VQRLJKxApZNx6tqTVyBmbNVrdo6/tXMCGeGen8EF
-         LyFXdAysM6Z383lyQNgaVgYNOdpm5Iyv4xZ53fg0BDE42RFDFWkX9s+6iL7xrvLQWdTF
-         MmgpcXgV+nrM/IBJIWaP/RgYOy3PXpVAwc7YD21DCVBCEGIOiA7HBJcJc88ajotDwpfh
-         XQjAy2tpBUckBrCfkMMpuZJOpxmJRhi9IBjry3zB93Me+OXmrftNcxTJfa24yfrmkweD
-         6yGxyBoSBWKA3d1vFJXK42YILdG/gfbX3SWcSzdHJ+5sgevdvRBs1XzmpF1GawkqZDlu
-         uknA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6whz8idHMdQZWHvZD46NWFAPs1t9f3Hg5g1Rr/d4vecuf+XQiCZbizYyt19+0RwsFr4fNeyY0vq68xU15wUv1cWYHtV2vhlPKDw/o
-X-Gm-Message-State: AOJu0YyrbOfW4BSvOmzFMMLeW7m3RzTuxnTeZU2/+EinIG8uIe7MqBkc
-	sMQEGb27P/nswluzig3lK5HLfZWzsyVoOlEsjK5n4gyitcGTOOqXe812WJX434ottt4mbFlbEPM
-	wHA==
-X-Google-Smtp-Source: AGHT+IGGe/+C3TYWvB4s3TxxlXneQCY3I9SMxiecXVgkEzf3CZxByEf/KHHFm+qEb9Q+1OuEhyXw0yNn4Bg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:f411:b0:2ac:3c42:57ea with SMTP id
- ch17-20020a17090af41100b002ac3c4257eamr8941pjb.5.1713547433583; Fri, 19 Apr
- 2024 10:23:53 -0700 (PDT)
-Date: Fri, 19 Apr 2024 10:23:52 -0700
-In-Reply-To: <22b19d11-056c-402b-ac19-a389000d6339@intel.com>
+        d=1e100.net; s=20230601; t=1713547693; x=1714152493;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Atbe4MPhJuRT7fbR5tzI2HH3PRwHbiVkk8k6A1FcZ4s=;
+        b=r7LSTY5KHBbFUaZzDkN22shwemr25EtA1HUGEeGAfUmO5Ecs7vColfI9+Vw+hNy8tF
+         8gaSwiWFKxOAm0eNZW1o44PkKvf5TTwIi+5duavZUnL1S0mAdLR7UPwmL+2ZIxVSljmL
+         XnCNS+A7xYbNxAfeBlN5wcLpZJmT/FQc6Fsv+l9DlK2DUV+jx3z137IOR8kobqWsPR8y
+         NWGMe+nkXF1umhfpwfjB5O+dHs8cAKzzbGc0/rx+upJbBsjdwcBFjOaAXIadaqVfBLRE
+         0afrk9uGqrL428kXzrhZ0U6dp6m3vukP48b1B/RstK8yIxugQJcUwC2WJIYMvAb9prxs
+         YVRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVq/WlrUGo2w9uVFA9vx+CKFAbhm1/XQS2gmyCx/k8OgEBUU8IspJzdVh8NN7lGEMHlepKKDElgZuP6atU/4qsl2m/c24azReqzMSn2Wy/LazGVRGgRkzFvpZN+87Rz9PUwjM5RqexZZw==
+X-Gm-Message-State: AOJu0YwpTGVRhKYXq2uiOZdtR8uyUV/U7ACUlugsGZdI6pHIq95Tp5wa
+	9J3OHFcFEzwPhu4BpOA2qTzyND/XpYVNrqYTKrKGFg0R/l7XJiCH
+X-Google-Smtp-Source: AGHT+IF6A+v0NN01QBnz5fAkXZW88z/35Cm0aPRsMcAa+BCGpAJrxeXuNMaFWA8mTEjVyx/z7j97/Q==
+X-Received: by 2002:a5d:4e0d:0:b0:33e:c91a:127e with SMTP id p13-20020a5d4e0d000000b0033ec91a127emr2289532wrt.63.1713547693290;
+        Fri, 19 Apr 2024 10:28:13 -0700 (PDT)
+Received: from smtpclient.apple ([2a02:8010:6606:0:8130:9b6:fda5:3b16])
+        by smtp.gmail.com with ESMTPSA id fj3-20020a05600c0c8300b00416b2cbad06sm11117515wmb.41.2024.04.19.10.28.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 19 Apr 2024 10:28:12 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <Zhftbqo-0lW-uGGg@google.com> <6cd2a9ce-f46a-44d0-9f76-8e493b940dc4@intel.com>
- <Zh7KrSwJXu-odQpN@google.com> <900fc6f75b3704780ac16c90ace23b2f465bb689.camel@intel.com>
- <Zh_exbWc90khzmYm@google.com> <2383a1e9-ba2b-470f-8807-5f5f2528c7ad@intel.com>
- <ZiBc13qU6P3OBn7w@google.com> <5ffd4052-4735-449a-9bee-f42563add778@intel.com>
- <ZiEulnEr4TiYQxsB@google.com> <22b19d11-056c-402b-ac19-a389000d6339@intel.com>
-Message-ID: <ZiKoqMk-wZKdiar9@google.com>
-Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
- loading the KVM intel kernel module
-From: Sean Christopherson <seanjc@google.com>
-To: Kai Huang <kai.huang@intel.com>
-Cc: Tina Zhang <tina.zhang@intel.com>, Hang Yuan <hang.yuan@intel.com>, 
-	Bo2 Chen <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>, 
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Erdem Aktas <erdemaktas@google.com>, 
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
-	Isaku Yamahata <isaku.yamahata@intel.com>, 
-	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH v6 2/2] arm64: dts: rockchip: Add Hantro G1 VPU support
+ for RK3588
+From: Hugh Cole-Baker <sigmaris@gmail.com>
+In-Reply-To: <20240418111002.83015-3-liujianfeng1994@gmail.com>
+Date: Fri, 19 Apr 2024 18:28:01 +0100
+Cc: linux-media@vger.kernel.org,
+ linux-rockchip@lists.infradead.org,
+ devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ ezequiel@vanguardiasur.com.ar,
+ p.zabel@pengutronix.de,
+ mchehab@kernel.org,
+ robh@kernel.org,
+ krzk+dt@kernel.org,
+ Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>,
+ sfr@canb.auug.org.au,
+ sebastian.reichel@collabora.com,
+ didi.debian@cknow.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B9F108CF-4BC5-41A0-A28A-1CA1F4D2CD3C@gmail.com>
+References: <20240418111002.83015-1-liujianfeng1994@gmail.com>
+ <20240418111002.83015-3-liujianfeng1994@gmail.com>
+To: Jianfeng Liu <liujianfeng1994@gmail.com>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-On Fri, Apr 19, 2024, Kai Huang wrote:
-> On 19/04/2024 2:30 am, Sean Christopherson wrote:
-> > No, that will deadlock as cpuhp_setup_state() does cpus_read_lock().
-> 
-> Right, but it takes cpus_read_lock()/unlock() internally.  I was talking
-> about:
-> 
-> 	if (enable_tdx) {
-> 		kvm_x86_virtualization_enable();
-> 
-> 		/*
-> 		 * Unfortunately currently tdx_enable() internally has
-> 		 * lockdep_assert_cpus_held().
-> 		 */
-> 		cpus_read_lock();
-> 		tdx_enable();
-> 		cpus_read_unlock();
-> 	}
+Hi Jianfeng,
 
-Ah.  Just have tdx_enable() do cpus_read_lock(), I suspect/assume the current
-implemention was purely done in anticipation of KVM "needing" to do tdx_enable()
-while holding cpu_hotplug_lock.
+> On 18 Apr 2024, at 12:10, Jianfeng Liu <liujianfeng1994@gmail.com> =
+wrote:
+>=20
+> Enable Hantro G1 video decoder in RK3588's devicetree.
+>=20
+> Tested with FFmpeg v4l2_request code taken from [1]
+> with MPEG2, H.264 and VP8 samples.
+>=20
+> [1] =
+https://github.com/LibreELEC/LibreELEC.tv/blob/master/packages/multimedia/=
+ffmpeg/patches/v4l2-request/ffmpeg-001-v4l2-request.patch
+>=20
+> Signed-off-by: Jianfeng Liu <liujianfeng1994@gmail.com>
+> Tested-by: Hugh Cole-Baker <sigmaris@gmail.com>
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+> arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 21 +++++++++++++++++++++
+> 1 file changed, 21 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi =
+b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> index b0a59ec51..b0817382f 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> @@ -1135,6 +1135,27 @@ power-domain@RK3588_PD_SDMMC {
+> };
+> };
+>=20
+> + vpu: video-codec@fdb50000 {
+> + compatible =3D "rockchip,rk3588-vdpu121", "rockchip,rk3568-vpu";
+> + reg =3D <0x0 0xfdb50000 0x0 0x800>;
 
-And tdx_enable() should also do its best to verify that the caller is post-VMXON:
+The register range at 0xfdb50000 length 0x800 includes "VEPU121 core0" =
+encoder
+regs at offset 0 and "VDPU121" decoder regs at offset 0x400 (referring =
+to the
+TRM v1.0 Part 1, section 5.5.1). So I think the =
+"rockchip,rk3588-vdpu121"
+compatible isn't exactly correct to use for this entire device.
 
-	if (WARN_ON_ONCE(!(__read_cr4() & X86_CR4_VMXE)))
-		return -EINVAL;
+IMO "rockchip,rk3588-vpu121" would be more appropriate if including both =
+the
+decoder and encoder. It also raises the question of whether the decoder =
+and
+encoder should be modeled in DT as one device like on RK3399, or =
+separate
+devices. In the vendor DT [0] they are modeled as two devices but they =
+share
+clocks, resets, IOMMU, and a "rockchip,taskqueue-node" value.
 
-> > > Btw, why couldn't we do the 'system_state' check at the very beginning of
-> > > this function?
-> > 
-> > We could, but we'd still need to check after, and adding a small bit of extra
-> > complexity just to try to catch a very rare situation isn't worth it.
-> > 
-> > To prevent races, system_state needs to be check after register_syscore_ops(),
-> > because only once kvm_syscore_ops is registered is KVM guaranteed to get notified
-> > of a shutdown. >
-> > And because the kvm_syscore_ops hooks disable virtualization, they should be called
-> > after cpuhp_setup_state().  That's not strictly required, as the per-CPU
-> > hardware_enabled flag will prevent true problems if the system enter shutdown
-> > state before KVM reaches cpuhp_setup_state().
-> > 
-> > Hmm, but the same edge cases exists in the above flow.  If the system enters
-> > shutdown _just_ after register_syscore_ops(), KVM would see that in system_state
-> > and do cpuhp_remove_state(), i.e. invoke kvm_offline_cpu() and thus do a double
-> > disable (which again is benign because of hardware_enabled).
-> > 
-> > Ah, but registering syscore ops before doing cpuhp_setup_state() has another race,
-> > and one that could be fatal.  If the system does suspend+resume before the cpuhup
-> > hooks are registered, kvm_resume() would enable virtualization.  And then if
-> > cpuhp_setup_state() failed, virtualization would be left enabled.
-> > 
-> > So cpuhp_setup_state() *must* come before register_syscore_ops(), and
-> > register_syscore_ops() *must* come before the system_state check.
-> 
-> OK.  I guess I have to double check here to completely understand the races.
-> :-)
-> 
-> So I think we have consensus to go with the approach that shows in your
-> second diff -- that is to always enable virtualization during module loading
-> for all other ARCHs other than x86, for which we only always enables
-> virtualization during module loading for TDX.
+I've tested the JPEG encoding functionality of this encoder with [1], =
+and it
+seems to work, gstreamer produces a MJPEG video of the test pattern as
+expected.
 
-Assuming the other arch maintainers are ok with that approach.  If waiting until
-a VM is created is desirable for other architectures, then we'll need to figure
-out a plan b.  E.g. KVM arm64 doesn't support being built as a module, so enabling
-hardware during initialization would mean virtualization is enabled for any kernel
-that is built with CONFIG_KVM=y.
+> + interrupts =3D <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH 0>;
+> + interrupt-names =3D "vdpu";
+> + clocks =3D <&cru ACLK_VPU>, <&cru HCLK_VPU>;
+> + clock-names =3D "aclk", "hclk";
+> + iommus =3D <&vdpu_mmu>;
+> + power-domains =3D <&power RK3588_PD_VDPU>;
+> + };
+> +
+> + vdpu_mmu: iommu@fdb50800 {
+> + compatible =3D "rockchip,rk3588-iommu", "rockchip,rk3568-iommu";
+> + reg =3D <0x0 0xfdb50800 0x0 0x40>;
+> + interrupts =3D <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH 0>;
+> + clock-names =3D "aclk", "iface";
+> + clocks =3D <&cru ACLK_VPU>, <&cru HCLK_VPU>;
+> + power-domains =3D <&power RK3588_PD_VDPU>;
+> + #iommu-cells =3D <0>;
+> + };
+> +
+> av1d: video-codec@fdc70000 {
+> compatible =3D "rockchip,rk3588-av1-vpu";
+> reg =3D <0x0 0xfdc70000 0x0 0x800>;
+> --
+> 2.34.1
+>=20
 
-Actually, duh.  There's absolutely no reason to force other architectures to
-choose when to enable virtualization.  As evidenced by the massaging to have x86
-keep enabling virtualization on-demand for !TDX, the cleanups don't come from
-enabling virtualization during module load, they come from registering cpuup and
-syscore ops when virtualization is enabled.
+[0]: =
+https://github.com/friendlyarm/kernel-rockchip/blob/18fd1215fee01daef16b6c=
+ed1c0c3c3b83a4d8df/arch/arm64/boot/dts/rockchip/rk3588s.dtsi#L3630-L3683
+[1]: https://github.com/sigmaris/linux/tree/rk3588-hantro-vpus
+     with: gst-launch-1.0 videotestsrc pattern=3Dball flip=3Dtrue ! =
+v4l2jpegenc \
+      ! matroskamux ! filesink location=3Djpegtest.mkv
 
-I.e. we can keep kvm_usage_count in common code, and just do exactly what I
-proposed for kvm_x86_enable_virtualization().
-
-I have patches to do this, and initial testing suggests they aren't wildly
-broken.  I'll post them soon-ish, assuming nothing pops up in testing.  They are
-clean enough that they can land in advance of TDX, e.g. in kvm-coco-queue even
-before other architectures verify I didn't break them.
-
-> Then how about "do kvm_x86_virtualization_enable()  within
-> late_hardware_setup() in kvm_x86_vendor_init()"  vs "do
-> kvm_x86_virtualization_enable() in TDX-specific code after
-> kvm_x86_vendor_init()"?
-> 
-> Which do you prefer?
-
-The latter, assuming it doesn't make the TDX code more complex than it needs to
-be.  The fewer kvm_x86_ops hooks, the better.
 
