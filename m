@@ -1,124 +1,134 @@
-Return-Path: <linux-kernel+bounces-151432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAF828AAECA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 375208AAECD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:50:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 334BBB222BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:46:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF187B21E8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3D8128362;
-	Fri, 19 Apr 2024 12:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 887658565D;
+	Fri, 19 Apr 2024 12:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CczZO4ya"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="d4uqJJ/0"
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39CD17F7C7;
-	Fri, 19 Apr 2024 12:45:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3FA51E878;
+	Fri, 19 Apr 2024 12:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713530762; cv=none; b=SklA3/KSukqAsD1g24UELQSrIpDijkpk1RIlTZzzkr73mHwRT1B47XLrdM8pLwEM4+xFu9awnvlmkdT3ggaRe1oVN6oMiaxiZr4MLml2h7G8S+AQVDvurk0XS/hjEkMvmCKLqbbv7AxhSyauuiD5xNaTLtATBseBVXzP6748CaA=
+	t=1713531026; cv=none; b=a4cy9cS35HwG9sggT/NukiHR5UlSD1GSJVoxHM6aJJ4FLLQTA87DKr3H/p0BAhjy7WwluORDHEei3zs7aDYsGyaedSU1JSWOC6C2ufqgSwGxA0slmdDUgnVJtUjsrOqOHBykVlqdwGoXhE0F+aHbvvkSRXfLcrFg0F+51yOFfTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713530762; c=relaxed/simple;
-	bh=OMaHKk8t8LEdVTTsMeE2nM3fij2IhQCS7yN4v4SA/1I=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=LXAWGrKRl9y//gWIaFGynd7pfrbcoQaBvVKYxDdzc8HmCFZreG2mpyyAz4Cj8WWIsfgOoOrr8z+tEe26kUrwO/nLEmjD8K9nbJvuWhMgs9okDW1ZTqRUuz8gHzUAomSynD7Zf6jlgYzwKftYS+mvKAlGrk0r+ls7cf2WC2d78Dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CczZO4ya; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43JCiMmd017734;
-	Fri, 19 Apr 2024 12:45:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=+CrSGVTTFSyh+0AYRUWPdbxc3c984cPMqgN1EpYlOB4=;
- b=CczZO4yaUK67gdUK1ITRDkHuQiJbsDk4j36G9NNcu5Cn7bhQtZ9IszcIdz97qjc9E22l
- ZhAIJ4JSC1hn5kRWfZqE6MA4Ly0lQ8zdyXrlEYoPdFsyoATzxKRPS52uX9QHB/YbcgBT
- OvucVN+jGKDAbrVPg5O9ix6P/dytdHXbRfDcZ/meXPpoqZJGSoFWknI3CdRA25NgXLMB
- xWv5bM8/UyLTmiK2nFsxxSUcAf+HgNUr+6UANanweHoiNco0vBj7ekTGbkq2UQlbxGv3
- pwDTFZM3fm3cdvD7zRDY+/u2ravsng5vv/fQX92iufGpVsej4nIFU7Dx9Qe+f32fvxQd Lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xkruqg08d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 12:45:55 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43JCjsB5019552;
-	Fri, 19 Apr 2024 12:45:54 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xkruqg089-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 12:45:54 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43JCFUuK010526;
-	Fri, 19 Apr 2024 12:45:54 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xkbmm3ma9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 12:45:54 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43JCjptM28246754
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 19 Apr 2024 12:45:53 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 727F458062;
-	Fri, 19 Apr 2024 12:45:51 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E9BFC5805A;
-	Fri, 19 Apr 2024 12:45:49 +0000 (GMT)
-Received: from lingrow.int.hansenpartnership.com (unknown [9.67.0.28])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 19 Apr 2024 12:45:49 +0000 (GMT)
-Message-ID: <cd505cc611db537c1ecfab8a35e43ba9e1e28171.camel@linux.ibm.com>
-Subject: Re: [PATCH] scsi: qla2xxx: Use -EIO in qla_get_tmf()
-From: James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To: Markus Elfring <Markus.Elfring@web.de>, linux-scsi@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Nilesh Javali
- <njavali@marvell.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Date: Fri, 19 Apr 2024 08:45:48 -0400
-In-Reply-To: <18be23bd-415e-4030-8035-d1f180cdca7a@web.de>
-References: <18be23bd-415e-4030-8035-d1f180cdca7a@web.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1713531026; c=relaxed/simple;
+	bh=yFjYjqQyBQU76LrN+gDKRvv2an/8O8EpQH79UXcUorg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rxFgfCK52EruFC3wVpqlF3zfroZarB2+rKeViEsI82zLQOkSMEg52OSeP549yK105pPAv/fRc1Xmm/hVnlUQuuibJ9FOVPWyJc5UcvCYbkAfyCuFh8lVdjS6YdiOSILJu1p3oKG97x69ILFl9Ja9j26DGQuYPOH02xxQ6hHGTZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=d4uqJJ/0; arc=none smtp.client-ip=74.208.4.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
+	s=s1-ionos; t=1713531019; x=1714135819; i=parker@finest.io;
+	bh=bNY/7hj6dR8JMaNQap3x7uELT9glIvJBuZmmXt2CWDE=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
+	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=d4uqJJ/0Z5QyN8tUSgju/HIKzVFj0MpmDHwqkdTMdPcB23Oxm54EQOdMWlj+GkSL
+	 zfWohrgpt3Q2Y8N7WqqjND1Iog/gr+edzh8EaZeb129ofA8WIko/HH/QbSlq5cZJy
+	 pRXeRgnN3Rx1hZjceh5beBPoZ3ghpaOAysyDvepH9FIKVs2sen2se/O+8Dp/egZCp
+	 qnIgUjP6i/EEXz/O635Mq0rp8r8tn4+LEfC3oiRkgKk73EhHnu7d4wlL7TAT3MbEr
+	 EZ0B2+inavB4iAGNVnX+pB6ceZV+1jlQH+AyiIuY7s+ieQg7dr8sxguOJiPaO32fC
+	 iHQ6nfOo9rPV3iC0mw==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
+ mrelay.perfora.net (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id
+ 1N33hJ-1sjP4o1R2D-013MEI; Fri, 19 Apr 2024 14:50:19 +0200
+Date: Fri, 19 Apr 2024 08:50:18 -0400
+From: Parker Newman <parker@finest.io>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Parker Newman
+ <pnewman@connecttech.com>
+Subject: Re: [PATCH v1 3/4] serial: exar: remove unneeded parenthesis
+Message-ID: <20240419085018.5a5c5826@SWDEV2.connecttech.local>
+In-Reply-To: <4a7a1c35-f1f6-4ed3-ad57-d71891220219@kernel.org>
+References: <cover.1713452766.git.pnewman@connecttech.com>
+	<1dbe1847d92dd34d223c6dc6b5cd0731b78e98e5.1713452766.git.pnewman@connecttech.com>
+	<2024041951-paradox-stable-320e@gregkh>
+	<4a7a1c35-f1f6-4ed3-ad57-d71891220219@kernel.org>
+Organization: Connect Tech Inc.
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: c3VLcOXeB-MS_GU2ZZtpLn1RLqTuimcd
-X-Proofpoint-GUID: q-z0rHhkmaTtsWL_lJajXG_95dBh8k-9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-19_08,2024-04-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 priorityscore=1501 adultscore=0 bulkscore=0
- clxscore=1011 impostorscore=0 spamscore=0 phishscore=0 malwarescore=0
- mlxlogscore=554 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404190095
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nX6MR+9qHH2U4r/xs6zM//xIjgFCdQ8hhVeSjsjCEDKtm6xZihK
+ I2+a3JYQccPIm4Cv2S5+AtZdryE/L1xyzByjyqtztFukbx0YbNdmKd0MEc5948YRiRk5BRq
+ CZ9Wxhm7qMjUmAZ51+tp2VbHGD3OM+EsXuibK5oO5r4c0+blz45Wlc+8GZ9kerOspzWfNz5
+ DPhp5A3Cw9g2Qosovs5Lw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:hl9aSz4ph+8=;Dt2eAanbqVuhgV/69Tg9c4UYaHW
+ tvKR/ltNSYLIVW+Hae3nIGPcB7M2F+46otcCUYlkbnr6eq+HNV4DN6C0Sn40I/nLhMgKMCBv8
+ iCqc1m4FkgGdTdAC4ezkj+5eMYPESxrlnVB8oSaqLoQO0zP/dSY/BuHFR2VvbLlFe9mVmaF/w
+ pRzT5nBhwQAn15AO4STwD6PGOQMvEVEUnaYcFADUU7UBd+B/ZGOXEeiSpirPIiKs+vDCmpUPa
+ OxFz3fz1ePsfryru0D6b/x3DZRAgh4LLYPXo8YEE00YxuEsuVEF3pEOPvyGEQOl+eocpp4kCf
+ b9zfOAxLO83yUWZ9qMY2s9fSZVwrQ8OC28HILfhL4Zto4xpGax4PrtrSSw8hmW8nNm4Zb/hBA
+ 2c9UM/6hjtylpLk1+3ZtWx7Vhb52d6AjF3V4sb6SCiDiq9I1Zd4s04FSRn+r9+OlG5uHNnI0w
+ 5AhfxQFY3q0inxXXxKB0SztKAzrizj5tSQIOVxWwZgbF63pVww76C3fmry/xbEOADoOpAdIZ/
+ pWwCrhlnCCUnYr/U5vOO7ObfhJSpn9RoDRyURuuv2weKpASoGcNBDx1LN4Huf2ac6/FWogepv
+ ucYEVfbdp9nQi8qM6fbPqRuoG2mwEXQbD6ZVkVFoVBWqkRnDjyYwVtTLjF4V65qT/9HKxVMLK
+ dN7WLlu5E+WHaiVZnbzUSH6fHV9O3Ohnc4F82cDFYoNm9iib8JGwNggKJFjjtTVyIWFSTgeu4
+ gS16xn096qr3TJ+hnoi9FglXhW4WUZ8NoyaPYqT4Xd3e4sCKplDXzU=
 
-On Fri, 2024-04-19 at 14:34 +0200, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Fri, 19 Apr 2024 14:24:56 +0200
-> 
-> Add a minus sign before the error code “EIO”
-> so that a negative value will eventually be returned
-> as in another error case.
+On Fri, 19 Apr 2024 09:01:22 +0200
+Jiri Slaby <jirislaby@kernel.org> wrote:
 
-No it won't.  If you look how it's used the consumer doesn't pass on
-the error.
+> On 19. 04. 24, 8:58, Greg Kroah-Hartman wrote:
+> > On Thu, Apr 18, 2024 at 11:36:30AM -0400, Parker Newman wrote:
+> >> From: Parker Newman <pnewman@connecttech.com>
+> >>
+> >> Remove unneeded parenthesis from several locations.
+> >>
+> >> Based on feedback from:
+> >> Link: https://lore.kernel.org/linux-serial/f2353b8c-2079-b895-2707-f6=
+be83161288@linux.intel.com
+> >>
+> >> Signed-off-by: Parker Newman <pnewman@connecttech.com>
+> >> ---
+> >>   drivers/tty/serial/8250/8250_exar.c | 28 ++++++++++++++------------=
+--
+> >>   1 file changed, 14 insertions(+), 14 deletions(-)
+> >>
+> >> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial=
+/8250/8250_exar.c
+> >> index 01748ddbf729..10725ad0f3ef 100644
+> >> --- a/drivers/tty/serial/8250/8250_exar.c
+> >> +++ b/drivers/tty/serial/8250/8250_exar.c
+> >> @@ -317,7 +317,7 @@ static inline u8 exar_ee_read_bit(struct exar8250=
+ *priv)
+> >>
+> >>   	regb =3D exar_read_reg(priv, UART_EXAR_REGB);
+> >>
+> >> -	return (regb & UART_EXAR_REGB_EEDO ? 1 : 0);
+> >> +	return regb & UART_EXAR_REGB_EEDO ? 1 : 0;
+> >
+> > Again, spell out the ? : stuff here please.  Using () isn't the proble=
+m :)
+>
+> Could this in fact be inline bool exar_is_ee_set() (or alike) and return
+> that regb & UART_EXAR_REGB_EEDO directly (w/o using ternary at all)?
+>
+> thanks,
 
-James
-
+That would work. I will update.
+Thanks,
+Parker
 
