@@ -1,153 +1,152 @@
-Return-Path: <linux-kernel+bounces-151797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0AB68AB3FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:58:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D1078AB3FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:58:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D257D1C21256
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:58:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D64E285E58
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FBE1386C0;
-	Fri, 19 Apr 2024 16:58:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07987137C37;
+	Fri, 19 Apr 2024 16:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kLRJLc48"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tpJ0e1ui"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110601369AA;
-	Fri, 19 Apr 2024 16:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B25313775C;
+	Fri, 19 Apr 2024 16:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713545882; cv=none; b=C6c0o0zO+M69pxgmR25r4tXAaey/NwwIyO8vFfaIEWwjEwV7ZzQYwNAC5SkLf/0w8sfHfdRs0n+ZBZ9EH+G7PSUCA7RSfgGrUw1TrEUC+F5GOB08jnduGsksGKSzkTlZdkgyMMKj8ruQ1IWZ712hvr7U7koPKSeXlPgdZfdq2IA=
+	t=1713545899; cv=none; b=qXxa+dMJd/UrjgEvYrJDY8GpxOXo6o7MUjEcqLMZja5hKRbkkvjVLk7saO6N6NSDeEPIkeqG5h4f+Ceeq4n7zz6yYc4w6jUSbrR1lgXFtm+9SVkN9JPFMUepUUxT3YuyvnYjVPUosCHsADj+9XtJQptFu03W+9iBC//HGHbuS7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713545882; c=relaxed/simple;
-	bh=lXpDiwhQo98bP1FryEGDTvEaGE3S/DU83yCuP95iQf4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HL1j8p6/4/ESbN0AkxH+DqXZpyICyaETKIQ2ZGuRW28d6bZRNiKsdhEDHoCEGEWBBB6zFDNRdAuob4HkOTcLQU9HQcvRwG7Wan7xab7lVKo4js5IqWI0q71jwz+cPR4xcx9JxVo6wqhJLebEq0tB0U3s3nWihQE9OJnvtU94tWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kLRJLc48; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e50a04c317so13731005ad.1;
-        Fri, 19 Apr 2024 09:57:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713545879; x=1714150679; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UVhdLoqOmP33JcxmAZZppMT40QvlL/I6MqHHmvjWVwA=;
-        b=kLRJLc486T755n7RKGR5YKTiP8JBN1fbzEzTjq47m19Rc+9AvSwqAslt8i7eH6Pnq7
-         UyGf8rPR7cj/YVmBuhUDzWJlK1bEjDNMX68S3v9xe1pxQgoWz6xnCfqqn7RtX7tQsaWp
-         zDKh1+CYllTOmOaPPaZAtKutIHksYl3wWrmiHs5M5ALRs++DXbc3LemgyZraOOatHVUu
-         HfxCtx/s0vhCeEocRfGjxaHN9Hvj+NxVKb9FnuVDNB2TZ0mRqbEyNa27uZ9GpoWy+j3k
-         kV8ssAFpIq1crHSUww//ODEibyLztTG/I8eQT9DxkQ2MJfMb6i9L7mJUQmwRPbgXLmOs
-         m9QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713545879; x=1714150679;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UVhdLoqOmP33JcxmAZZppMT40QvlL/I6MqHHmvjWVwA=;
-        b=A9sbmiP0iJivzMcsURwdF49SxxGnfFCUCVZCIwel9RjYN8weiS65QNwp8HOa4gkAOm
-         qNVhme2t/PadKi0/RGV81c83tiX2PTpQ72h9FuJ+H5sT1Ad8GCd7gk86PhzExaIhqBIQ
-         nttIa5tVK6mIMGupSgSJ8pSdc5wDscvcaj8zswGWm6XiDWnQ+OuWjx2rdJlYvqun/MNk
-         GitFcxoK6jrVZhxdd9d/75eltGHqyAx0A0vpql7c4TJJbM/dfBEUy62Xq8TG6vBASqkx
-         x9SDnIYZVxUIxQ0FmqgSavZTOUOrd7wVCxaipOqkpwQuE5h9oMBSU1KxgOxn5duXbsBl
-         3owQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW5h2xK1WRoDSTdz8lnQuKlYLUSt1cljtAAnItlvyWozGFC5hPAEgaCDJCgNvVyeXhbBT411lZ4zMeqaEUVgmATFi9AlQV8tQwUjaja3WBttwOz48xuYwv7KQ0pZW4DlukkpPV8mA1BR6Q=
-X-Gm-Message-State: AOJu0YwlNWwLuN49Wzg+a/7bgtyaTGel2ioMBhXs7Ih8R93xSd3Q+6ir
-	rMG+Y4MqS82stotlc2oKBPhEP2o8nfrOaQao7yPtxh2/QuYhVlw4T4dMRlYYrDp84vx3cIuO4a1
-	73BNACVKhsCmDwc8Y8v5+H0sTGyA=
-X-Google-Smtp-Source: AGHT+IGd2q8SP9g4kc04Aop9W0vIGu3rv607Ws+SBDlsjApM9U32JwLK736Znh95YUtvArDUHHvirc9PKw/9X7r6Yj4=
-X-Received: by 2002:a17:90a:5d04:b0:2a0:4c3b:2c39 with SMTP id
- s4-20020a17090a5d0400b002a04c3b2c39mr3379824pji.23.1713545879215; Fri, 19 Apr
- 2024 09:57:59 -0700 (PDT)
+	s=arc-20240116; t=1713545899; c=relaxed/simple;
+	bh=fY83VWfSR+QZWsluWoCGu1XQqdbdOrpZq6vnbqfPttE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kCuP7nQLtnJ2cnC84D48R6HvwArwt/nDXBvT9aCXwA8/43aVyUiEwL5FU/Hkzq92mZ39zi0xLDpQNU1OWC1KLbG299dOYbcqcgEljiF/FITDnQbpknvqngB+cVmfJbfKP15DTWxDm7Z6BItMmIUJLTa6bzhjbS2wZaetuCdu3fI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tpJ0e1ui; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE430C072AA;
+	Fri, 19 Apr 2024 16:58:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713545898;
+	bh=fY83VWfSR+QZWsluWoCGu1XQqdbdOrpZq6vnbqfPttE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tpJ0e1uitz/zirsN92RbRzCEyXBo/Sp+jhhHLhOhV65B4G+SHDf9/nub1A1xCHEb6
+	 wmxY7JqARYjd/T+800sl1l4b7c4Y4VxUwIjDB8bogUJKKC6SoQSFfENoWdVkGPW5C3
+	 LxPniduOqhzKLZ1tQoM/jfl86SklOQ2uJD0VPqrsFhsP2j6bezrqzOE81U2LNZt6EL
+	 geKn0NxgW56ElmeUibatHBPpi1WzGd00eTaHwJ6y9zmvK29R0rY7NImLmdCQTpumvW
+	 KBzhB8y28ryyn93ds5LCMGlzm0+1EEaHt1DnJ8JftKnQ3cKJ7XfeZF18ajyGekdNnS
+	 0cQbqLo53DHTQ==
+Date: Fri, 19 Apr 2024 17:58:09 +0100
+From: Will Deacon <will@kernel.org>
+To: Hector Martin <marcan@marcan.st>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Zayd Qumsieh <zayd_qumsieh@apple.com>,
+	Justin Lu <ih_justin@apple.com>,
+	Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+	Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Miguel Luis <miguel.luis@oracle.com>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Christoph Paasch <cpaasch@apple.com>,
+	Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Baoquan He <bhe@redhat.com>, Joel Granados <j.granados@samsung.com>,
+	Dawei Li <dawei.li@shingroup.cn>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Florent Revest <revest@chromium.org>,
+	David Hildenbrand <david@redhat.com>,
+	Stefan Roesch <shr@devkernel.io>, Andy Chiu <andy.chiu@sifive.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Oleg Nesterov <oleg@redhat.com>, Helge Deller <deller@gmx.de>,
+	Zev Weiss <zev@bewilderbeest.net>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [PATCH 0/4] arm64: Support the TSO memory model
+Message-ID: <20240419165809.GA4020@willie-the-truck>
+References: <20240411-tso-v1-0-754f11abfbff@marcan.st>
+ <20240411132853.GA26481@willie-the-truck>
+ <28ab55b3-e699-4487-b332-f1f20a6b22a1@marcan.st>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409120605.4138472-1-Pascal.FONTAIN@bachmann.info>
- <20240409120605.4138472-3-Pascal.FONTAIN@bachmann.info> <2024040944-flashcard-tribune-6a8e@gregkh>
-In-Reply-To: <2024040944-flashcard-tribune-6a8e@gregkh>
-From: Christian Gmeiner <christian.gmeiner@gmail.com>
-Date: Fri, 19 Apr 2024 18:57:47 +0200
-Message-ID: <CAH9NwWezn1A=n9_NqY_Lp9VzYwzAd0dAjQPD9wBB3_ragddZWg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] misc: sram: Add DMA-BUF Heap exporting of SRAM areas
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Pascal FONTAIN <Pascal.FONTAIN@bachmann.info>, linux-kernel@vger.kernel.org, 
-	Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic <dragan.cvetic@amd.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, afd@ti.com, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linaro-mm-sig@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <28ab55b3-e699-4487-b332-f1f20a6b22a1@marcan.st>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Am Di., 9. Apr. 2024 um 14:14 Uhr schrieb Greg Kroah-Hartman
-<gregkh@linuxfoundation.org>:
->
-> On Tue, Apr 09, 2024 at 02:06:05PM +0200, Pascal FONTAIN wrote:
-> > From: Andrew Davis <afd@ti.com>
-> >
-> > This new export type exposes to userspace the SRAM area as a DMA-BUF
-> > Heap,
-> > this allows for allocations of DMA-BUFs that can be consumed by various
-> > DMA-BUF supporting devices.
-> >
-> > Signed-off-by: Andrew Davis <afd@ti.com>
-> > Tested-by: Pascal Fontain <pascal.fontain@bachmann.info>
->
-> When sending on a patch from someone else, you too must sign off on it
-> as per our documenation.  Please read it and understand what you are
-> agreeing to when you do that for a new version please.
->
-> > ---
-> >  drivers/misc/Kconfig         |   7 +
-> >  drivers/misc/Makefile        |   1 +
-> >  drivers/misc/sram-dma-heap.c | 246 +++++++++++++++++++++++++++++++++++
-> >  drivers/misc/sram.c          |   6 +
-> >  drivers/misc/sram.h          |  16 +++
-> >  5 files changed, 276 insertions(+)
-> >  create mode 100644 drivers/misc/sram-dma-heap.c
-> >
-> > diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> > index 9e4ad4d61f06..e6674e913168 100644
-> > --- a/drivers/misc/Kconfig
-> > +++ b/drivers/misc/Kconfig
-> > @@ -448,6 +448,13 @@ config SRAM
-> >  config SRAM_EXEC
-> >       bool
-> >
-> > +config SRAM_DMA_HEAP
-> > +     bool "Export on-chip SRAM pools using DMA-Heaps"
-> > +     depends on DMABUF_HEAPS && SRAM
-> > +     help
-> > +       This driver allows the export of on-chip SRAM marked as both pool
-> > +       and exportable to userspace using the DMA-Heaps interface.
->
-> What will use this in userspace?
->
+On Thu, Apr 11, 2024 at 11:19:13PM +0900, Hector Martin wrote:
+> On 2024/04/11 22:28, Will Deacon wrote:
+> >   * Some binaries in a distribution exhibit instability which goes away
+> >     in TSO mode, so a taskset-like program is used to run them with TSO
+> >     enabled.
+> 
+> Since the flag is cleared on execve, this third one isn't generally
+> possible as far as I know.
 
-I could imagine a way it might be used.
+Ah ok, I'd missed that. Thanks.
 
-Imagine a SoC like TI's AM64x series, where some cores (A53) run Linux
-and others (R5F) are managed by remoteproc to
-execute a RTOS. When it comes to efficiently exchanging large data
-sets, the conventional method involves using rpmsg,
-which has limitations due to message size and could potentially slow
-down data transfer. However, an alternative
-approach could be to allocate a sizable chunk of SRAM memory in
-userspace. By utilizing memcpy() to copy data into
-this memory, followed by a single rpmsg signal to notify the RTOS that
-the data is ready, we can leverage the faster access
-speed of SRAM compared to DDR from the remoteproc.
+> > In all these cases, we end up with native arm64 applications that will
+> > either fail to load or will crash in subtle ways on CPUs without the TSO
+> > feature. Assuming that the application cannot be fixed, a better
+> > approach would be to recompile using stronger instructions (e.g.
+> > LDAR/STLR) so that at least the resulting binary is portable. Now, it's
+> > true that some existing CPUs are TSO by design (this is a perfectly
+> > valid implementation of the arm64 memory model), but I think there's a
+> > big difference between quietly providing more ordering guarantees than
+> > software may be relying on and providing a mechanism to discover,
+> > request and ultimately rely upon the stronger behaviour.
+> 
+> The problem is "just" using stronger instructions is much more
+> expensive, as emulators have demonstrated. If TSO didn't serve a
+> practical purpose I wouldn't be submitting this, but it does. This is
+> basically non-negotiable for x86 emulation; if this is rejected
+> upstream, it will forever live as a downstream patch used by the entire
+> gaming-on-Mac-Linux ecosystem (and this is an ecosystem we are very
+> explicitly targeting, given our efforts with microVMs for 4K page size
+> support and the upcoming Vulkan drivers).
 
--- 
-greets
---
-Christian Gmeiner, MSc
+These microVMs sound quite interesting. What exactly are they? Are you
+running them under KVM?
 
-https://christian-gmeiner.info/privacypolicy
+Ignoring the mechanism for the time being, would it solve your problem
+if you were able to run specific microVMs in TSO mode, or do you *really*
+need the VM to have finer-grained control than that? If the whole VM is
+running in TSO mode, then my concerns largely disappear, as that's
+indistinguishable from running on a hardware implementation that happens
+to be TSO.
+
+> That said, I have a pragmatic proposal here. The "fixed TSO" part of the
+> implementation should be harmless, since those CPUs would correctly run
+> poorly-written applications anyway so the API is moot. That leaves Apple
+> Silicon. Our native kernels are and likely always will be 16K page size,
+> due to a bunch of pain around 16K-only IOMMUs (4K kernels do boot
+> natively but with very broken functionality including no GPU
+> acceleration) plus performance differences that favor 16K. How about we
+> gate the TSO functionality to only be supported on 4K kernel builds?
+> This would make them only work in 4K VMs on Asahi Linux. We are very
+> explicitly discouraging people from trying to use the microVMs to work
+> around page size problems (which they can already do, another
+> fragmentation problem, anyway); any application which requires the 4K VM
+> to run that isn't an emulator is already clearly broken and advertising
+> that fact openly. So, adding TSO to this should be only a marginal risk
+> of further fragmentation, and it wouldn't allow apps to "sneakily" "just
+> work" on Apple machines by abusing TSO.
+
+I appreciate that you're trying to be constructive here, but I don't think
+we should tie this to the page size. It's an artifical limitation and I
+don't think it really addresses the underlying concerns that I have.
+
+Will
 
