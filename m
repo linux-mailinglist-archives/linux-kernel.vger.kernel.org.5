@@ -1,203 +1,294 @@
-Return-Path: <linux-kernel+bounces-151822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 391CF8AB45D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:29:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A2A58AB462
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:30:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85FA4B22159
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:29:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53C16287D48
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:30:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFAE0139CE8;
-	Fri, 19 Apr 2024 17:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ED9913AD2D;
+	Fri, 19 Apr 2024 17:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="ObLmzB6H"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2083.outbound.protection.outlook.com [40.107.236.83])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tqHCGa+/"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588E783A07;
-	Fri, 19 Apr 2024 17:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.83
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713547745; cv=fail; b=IeegYfgHx3js4UVKk3og507F9UHjTBLmdKw3h7HM5SOncjMQ2o6Tq7/yOVK+uuL9Q2OVMVC8KII8mkIQajg8DCSlvBUt7WmhD5v4q9f4Lwlj8qUfVQLwXK/KC5ktEvifRlsBWR0Wnodb9Xx/LiGt8CYTcw17v7WElUWPVjSc6d4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713547745; c=relaxed/simple;
-	bh=c5zYnzreujVjV8cwl96BnAS2SQNq8lVdMJD7FXv9eHU=;
-	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=uGMUfBvLe/bjl8XW4gVbzmej8r+F5W7KvuGLF2r9ICP2JzUMEV5ysvsD2Q82e8L1vcvxnlJiwu6C7ief/A3B4wJzVZNZSuvyo1aOXTw9cQl7oVLtvpHQlw6HlVia3IO5F4pIn5NQQiF/Z/9woJ305DnR+dLvwKsbnvJYLMUcu+w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=ObLmzB6H; arc=fail smtp.client-ip=40.107.236.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IJYhGr9H5BFlGxbxM3cbdHTBqsyKj6uh62QaKFCe0pZJqBbPmU3LiTakThNc0MsNinrJFDoYSc73WW1c4fj043FoCq1w+LCUWS4S9xYu9FgTL8lFxd9kZE8+2Fv0KshUOYbNuacaOJ6adhoN/YjcqiEqz0nT/wdG1sbEbPsfrZ28xJbGGCg40EzfQFzgd62KhI+nPimwDpx131yp/9E2LOPylOf4ivepi/nv+Ww5QqJrUHupkK3GiLdQlNNwKQeK5BGGg8ucOq9s7HPI/T9UBnM2a0UuHRprv5bngg8fSJUGUEzXRM+5/yt9qv37Kw+uqOZg0LFjAKChRDYB6rHvmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9xE+Rfa4urfcYyjL9i33PNG4B1DUah3Raw4fFu+n4qk=;
- b=kjHAkg34bmvk/wT6T2zO1IxAepyxS+6J8xwa0uyxWT2D+p+le47NXOyIntic57jIupge7UmCQZLnG83ksVGLgQkpnCyDVOCHkW5GOsID8cansTIGE53HdsbC8F2EgeYutXG+hnhEgaEZopqetkjniQSubZZhGNyAF3URFxyqkSuqtLXwJXqUArT4Z6yjcIpOFkyLEpJhTg8W+kArcz801b5BiV7VMPEbjyAxCB356ppjZkQwpbUAXbmIFo+S+k26TlcvUWQn5tnJyppmxauzhggt3/xQYTZCESsiy/yL9fXsOIcPydf7mDadiD/3eisIVqbVIxwBkR+HytGpnexRSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9xE+Rfa4urfcYyjL9i33PNG4B1DUah3Raw4fFu+n4qk=;
- b=ObLmzB6HaA84EfCmiGmSTkDa4XtIaIkAvzRVu5rhXpvKcneWj5MduiPdPgJbAdBHMslJuOflsq9mY9Mu6kU+BsyfsYC4CPgyfwFWcOG9KD6qyczCXCNoGhI16WHKf/Igsyl6r4ja9fCk6CVqKLxFyD3sT8pAEGIBwrTywtQW2gYstiePM6vhEnmnNOardbxndVWPydsxSqcjpbjTEvoHSFOwY21uNqe8faMdMwSWE9sktFzDA422xQ+wSDmxG30S3bLAWY7CrnWFllWNdDRdGvHI8d2p8JE2XJG7D/PBp5jJtCsJKNhzxFT+0IjRVx/5+/fAIn8DxthCGS76YVk0sA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by MN2PR12MB4335.namprd12.prod.outlook.com (2603:10b6:208:1d4::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 19 Apr
- 2024 17:29:01 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7472.044; Fri, 19 Apr 2024
- 17:29:01 +0000
-Date: Fri, 19 Apr 2024 14:29:00 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: iommu@lists.linux.dev, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>
-Subject: [GIT PULL] Please pull IOMMUFD subsystem changes
-Message-ID: <20240419172900.GA3818133@nvidia.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rwOwfyHrED0VDoSA"
-Content-Disposition: inline
-X-ClientProxiedBy: DM6PR13CA0005.namprd13.prod.outlook.com
- (2603:10b6:5:bc::18) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0D7137920
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713547809; cv=none; b=GFZyG76krL23qk4H7WlTOKnFO9ISfNzcn8pTZM9fSvm+Vgw4f38bQkSItmJp9SQvx9BB9UrC9ytO8yeevki+ncT6Ass6870GGiYx2Lwe02FbCa/6UJKRi96QjnCownYk2Q5xltBKeNWfpNINcVpvENdco0J1NN9BGSRMBrtuRKg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713547809; c=relaxed/simple;
+	bh=9hYjyGUXEwckVg1Cg/VDpqtc9aM7eGRDW+Aan8bidik=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rizE3Cj4hPRLowtoxYBs+UzGxgIJhpORNaEARij9ncBAD07J58tZe3bZfqoLs+ukX8ysX8xGsCs/NQWRba6Ms1S1sZEze3tws/55VdTI+zvoFA9Dta7KuaEqWkl6wu0xRa9JpOJ3asZk1ilnUJEVBkkwgEBo+6rzaBgeHIXTVx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tqHCGa+/; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-571b5fba660so1206a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713547806; x=1714152606; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ACB+KsWFGBZZ7V+PQeAnsd5K8b26YfVzTbpcO/UizmY=;
+        b=tqHCGa+/HIpvPLzUV8QvO7QV07y0QLxKdqRdDYgGgXDBNtpgR8P/1jErys5zHT1g4a
+         5BnIl3JdEaHOisBFZcrvbuGvDvUEXZZJjemNQ1SF5v+qzaG2oXWHG0bbvdsSP/MHckqJ
+         tHFRG9q1Y/f1eApyVt+sY/KIOKqnduM4Ufxns1nIpZu2vRq5QjVNoGpys+dB1piuz1jN
+         vX2dFDZBiKRLYDqos/Uit4KEWAGlxoPlcvONYeul37HlGJGkuBIyAwUPgYC9lkuGXT7N
+         1f/pEiiEghTZb8AmX9fryjXvW6LW4xpL+dAKuyPWLwpknupt7P7AEXe2Oy6EcHk7TVUG
+         jc3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713547806; x=1714152606;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ACB+KsWFGBZZ7V+PQeAnsd5K8b26YfVzTbpcO/UizmY=;
+        b=O2dhqjhqNEXIIdnFa0fRrT3xVuhlioLhsA8ymRXRSWYsV/mAWtp65yHZ6/0nPau2IY
+         SSYz3A3ukv3juPhel+xOXvkOfccZRUkcUC+IEriPo19r5vRIP/GxSMQhqjhJylBy9bRw
+         hVLHAN0HI1Wz1YGv56cAk4Mey4n24iZZa9F6i2xIR7l0vlpkhzJ8KEhta6I83ELy8N/G
+         kPv2x2VaNnZHax7pEM2Mrr5RFE5wmCgx+beExXZt2JDF2SOMLeqCJ/caKCjfc6kCqjlH
+         lOp1cj/L8OeZjszFp58EUXX5wG9iub3ItBRQcF+Cw2W6npBglxFgL4Op7KL04gyB/r7B
+         j31g==
+X-Forwarded-Encrypted: i=1; AJvYcCVca+oFBRVkLAiRPIDKu9SkgAMud7R02zyAmObKvykPjz6i0YfCEqh0Y6HhKf17iVQLOPKsLFbv8eAupbIELfSdcC2cRMqlVYgm9e8O
+X-Gm-Message-State: AOJu0Yx+ScgE8Dn66nzdKQAWyJmzUNV/wITXq/Gl2RBEm5lIP/Iey/mZ
+	lgIjcbCzlJ1JLNgLhqICummIETdj+VFwlxSWYq6nrjvyvVcnR4gdKZOwof9UfZ0FoFVFHcXcWI7
+	h9YRiTMiiBt3HjoRMYGUbk4ZeMmtg+ON+g/kK
+X-Google-Smtp-Source: AGHT+IHsl5i6N7MypZgUZVbfAOeSNCoA9udZ0W0Svk2jnoGC9uc4W4P349cXO7g3dqHs4KtDSqZ3AaRaZnE+4zB94uI=
+X-Received: by 2002:aa7:c41a:0:b0:570:4467:ded7 with SMTP id
+ j26-20020aa7c41a000000b005704467ded7mr173183edq.7.1713547805492; Fri, 19 Apr
+ 2024 10:30:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|MN2PR12MB4335:EE_
-X-MS-Office365-Filtering-Correlation-Id: 453800bf-6aed-4804-e88a-08dc609633ee
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?cc97yeT+B4xbJBEa3C70O+6OTL9O0aGrvHOQPlutpJkoyp+djyv/3gysXLJN?=
- =?us-ascii?Q?ZbsiJkTlHSSdQxd98ei1SMoppyLcYrhmsM/AvjKLFFfzv6rfbM48XdU862pp?=
- =?us-ascii?Q?4l9FFBS4HHlets0v0639Whrr1ycVcA00HILi/RbwWqfHPjf/JLWxQD+7TaHU?=
- =?us-ascii?Q?Vp/DnTkmVxK9lUJVZ7Ld6ivq2rzId9W6EA0kLEbJ4UPxIpRuXPKje7zLgbpw?=
- =?us-ascii?Q?LAO82pvYzUO9hgEUv7S6LVb4y+CCbiHlEhb/ZsHLfSUN48CijzW+p9Wag3gt?=
- =?us-ascii?Q?mrntYhol4onjAis6p3rc8zieXH4t5RjiO9X0oGcVbg0kHkL8P9EJ8Y1Hv2r2?=
- =?us-ascii?Q?KSiIY2uBROWepiuwle3F1Cozdm88xslZSsSZcsz3xqkdOXmUVgmKutrffj53?=
- =?us-ascii?Q?klNwUdlohD5OKBYeD9VpXqyXNyk+m5cibYcXj0McHtkHfptXPkq0VxcwLvxx?=
- =?us-ascii?Q?r1gtnr0NtCGRI6+fceUshqnpBRTMTdQ7RqlTRhJifZHfZO1EioGV/v7tNxG9?=
- =?us-ascii?Q?IqnpNpqSqcjv1A+bzyH0fv/niofa+3qMD5UsrSP3Y8um9SK9nkyOewBRe+Fi?=
- =?us-ascii?Q?gYF2gybtxxqXaPRHBVnnEj4A3/PGlAKNqf24yP/prcfeV1L6tsW+02jBgewS?=
- =?us-ascii?Q?EknGuxtYLTLp9S8PBB/vQCxZ7mqPrXISMasqnhhrZdNxv8PhDdn4C6AMY7g4?=
- =?us-ascii?Q?z63g2gMctJVYGuRtoTYFQ1vaXUV9u4QJjOGstf04fpKJ0PBHxDvRaTkfj/IL?=
- =?us-ascii?Q?hmfsj8zOMpZz1Itf51EP3X6jZE22GTslDeBIG774X0mSxDzgZAc2DRYmSVKY?=
- =?us-ascii?Q?u9EKAe28TwHyoCiYlqb98+1x94l6RN7XWG+FTz84iYjCvPMJN67c0NmXrudC?=
- =?us-ascii?Q?2+JqmDjvFIGXMlcSaz3kXu9SqtDQOJpo9xWC+fIpGeuuccAJbk+3vbgoAP3S?=
- =?us-ascii?Q?3WYJhv0wffUy/VaB4xjiu7gpCxisTqEbGNCGMScKcpPHgjPSDOHAgDEYxeHe?=
- =?us-ascii?Q?ebCyR3X0UQlTkKShui5jTErPiGQv0Pl7507/cioCGzgQbArzoLwzZBdhjBMN?=
- =?us-ascii?Q?pHkBXZLXPEPautRmr6agSU707/6O6lxDe7pw849AAHWMGjM6uqNDcZevV1Nz?=
- =?us-ascii?Q?7wRMVHWCs33pqmyQD9Kyc/d4M/NrvMNZDpa/hwu87xQHTiQeu8W0AQEa6ZEF?=
- =?us-ascii?Q?bVtThaGHX8ik4obBUKvCAo/FbnvBtegGJyMMJv5dE7NvvgcVqXj7yjpzVLW3?=
- =?us-ascii?Q?caQilJ/sM7wtF6zfjbPbbW6LzH4282oRQKX1OV80kQ=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?QXQ8rdoPzgciTpe15EMayUjLSty3b7WqT4BAIXC+H1kkVBEbmhgjczWHlnf5?=
- =?us-ascii?Q?D1MDbYkpm1Lsa5A+vO7CCgkZsqeGQ4s7cw62dWvE4dnG7P2EfL5o7R0OrU9b?=
- =?us-ascii?Q?pccy50ITX7ZkzBaOGmfhlWXGZz4sMHY03dbfxoz8ia6v+wHRp96aXShoUv3K?=
- =?us-ascii?Q?vYlzkV7yss7WRVw/YmOTCqjNPrOGJ7Xh6GgRpOLZpA+OLXk6VFIuXFQz7XL+?=
- =?us-ascii?Q?ay+SQFRkT76zFjBOm+7FnQ5Ih/M0Rl46lULCNTG48vPopIOhq9OD9EcUCKD3?=
- =?us-ascii?Q?D2izNbZxMOUmCq6rnN+iwYm5nrhF3+IJ5DzCeqjdw2voLki5nZ2L4g3vfuG2?=
- =?us-ascii?Q?bqsQqSHoo/RGK7siIhs6syuGdOA1GTGtkcvh2xlKWXZrYM3N6zZA3JBOuLZ7?=
- =?us-ascii?Q?aFjEtaNVi/T2Paxj4RfO/IYEkfjPKQfPkjd7FCT0hskqS9ObvvhF4Gmzzy33?=
- =?us-ascii?Q?Wim+rqN296XaQPzchWiCTEIvd1c6nU6hP44Ljlay4aL+9MCDMuhf1/sJk5NB?=
- =?us-ascii?Q?mp7mfLEsQCmguLbuGmFYr3tYQxvLG725TSrn19zWFdAbp4Ltacufd28Uh+kd?=
- =?us-ascii?Q?ufMZq0VmLvvNlmvZny9J/PgKQEc9k6zlBBx0H32oSj8EK6XrcvV/zNUxemOP?=
- =?us-ascii?Q?ds337OchZlbSmOpX4rUg2xOf5KROLaAqXfPQUjBP6rqcHfEAdbgcBT/mN/T6?=
- =?us-ascii?Q?nKWTSdzSQ6wEkVx01igRuok/iouhhEJ2m5W4s6Vsj9V0UWTauIx03i/Mkgda?=
- =?us-ascii?Q?eL2bOAVew7h0Ypf3Pl9b+Q7kU/yEBiJphVORrpT9JLexp7QYslL5epBlwfEw?=
- =?us-ascii?Q?qz5djlFCUgND/0ViLY6RRJB/b1gbLl17wRE4RXKf7EV9ZcWG4IfoiZrANnCv?=
- =?us-ascii?Q?KpvdqnUcmIloizeSArYm5z3ohZB1X5vaMqpqrCQqqVsgskXlo94gcLz4SET9?=
- =?us-ascii?Q?sweW8lTTT4ptTOByTmwVvx5CsbfswtWa5xiKeWg82ME+YTFhpoGdvPBFP7zu?=
- =?us-ascii?Q?0jRQYMODcfmwS0S/Kwk1/cF/i1bLpooGWxytGbIiGX8MO+kEt+qIb4BOl04j?=
- =?us-ascii?Q?npnGIEn3iklTuGYSreNveTityRq73Hi7i03NXWiGuBl341WdG84uXhP9k0pH?=
- =?us-ascii?Q?s/LzFFYN6rqPi8flU9xzV9tbQ6GQocbFTEW/xDzsqVtp05fbqw0VRzoKXkS5?=
- =?us-ascii?Q?KUcAzSbn/6H5uPSj4o6PpMdJ9EKGIrV8mb2JKKzqc82Rges59UJRppjkYCuD?=
- =?us-ascii?Q?OFxh25LwefnYgitUj5U5P6shTbnmphzr5JAavyZEB/rWyiW8S5i3oDDrmksl?=
- =?us-ascii?Q?7sz0QZicnr+H6EVoD5XnbQQEUx8p732Qb0vp/OmzedhStBfy69TNy71DNuAM?=
- =?us-ascii?Q?ZYOVim5wdF7m5/YQ0AoaIUR+FkG674pYa/lQGqHJOh5Px5aMYu/eY3TyALIR?=
- =?us-ascii?Q?5FVqz0iQpixd/rithXUIHPZgrLMR8BbDpEqo03jILW/6+Y7OB4JJnXb3j7yZ?=
- =?us-ascii?Q?JU6Q3OuWzjis3HISYk7j1g2M3zw21JwkEPY5X+sCqUGtdSUo90uz9/wxl+se?=
- =?us-ascii?Q?sGTN45h5m5Zf5l9SWH8=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 453800bf-6aed-4804-e88a-08dc609633ee
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 17:29:01.3404
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VQFtoaa5cSFYnTi1KSexIyYsWCIkISu/jOGNguQmNag3+PTA0Y+W6lirBH3cHj9m
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4335
+References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
+ <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch> <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+ <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
+ <661eb25eeb09e_6672129490@willemb.c.googlers.com.notmuch> <CANP3RGdrRDERiPFVQ1nZYVtopErjqOQ72qQ_+ijGQiL7bTtcLQ@mail.gmail.com>
+ <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
+ <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch> <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
+ <662027965bdb1_c8647294b3@willemb.c.googlers.com.notmuch> <11395231f8be21718f89981ffe3703da3f829742.camel@mediatek.com>
+ <CANP3RGdh24xyH2V7Sa2fs9Ca=tiZNBdKu1qQ8LFHS3sY41CxmA@mail.gmail.com>
+ <b24bc70ae2c50dc50089c45afbed34904f3ee189.camel@mediatek.com> <66227ce6c1898_116a9b294be@willemb.c.googlers.com.notmuch>
+In-Reply-To: <66227ce6c1898_116a9b294be@willemb.c.googlers.com.notmuch>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date: Fri, 19 Apr 2024 10:29:47 -0700
+Message-ID: <CANP3RGfxeKDUmGwSsZrAs88Fmzk50XxN+-MtaJZTp641aOhotA@mail.gmail.com>
+Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without fraglist
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, "kuba@kernel.org" <kuba@kernel.org>, 
+	=?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
+	"pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com" <edumazet@google.com>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
+	"davem@davemloft.net" <davem@davemloft.net>, yan@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
---rwOwfyHrED0VDoSA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Fri, Apr 19, 2024 at 7:17=E2=80=AFAM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> Lena Wang (=E7=8E=8B=E5=A8=9C) wrote:
+> > On Wed, 2024-04-17 at 21:15 -0700, Maciej =C5=BBenczykowski wrote:
+> > >
+> > > External email : Please do not click links or open attachments until
+> > > you have verified the sender or the content.
+> > >  On Wed, Apr 17, 2024 at 7:53=E2=80=AFPM Lena Wang (=E7=8E=8B=E5=A8=
+=9C) <
+> > > Lena.Wang@mediatek.com> wrote:
+> > > >
+> > > > On Wed, 2024-04-17 at 15:48 -0400, Willem de Bruijn wrote:
+> > > > >
+> > > > > External email : Please do not click links or open attachments
+> > > until
+> > > > > you have verified the sender or the content.
+> > > > >  Lena Wang (=E7=8E=8B=E5=A8=9C) wrote:
+> > > > > > On Tue, 2024-04-16 at 19:14 -0400, Willem de Bruijn wrote:
+> > > > > > >
+> > > > > > > External email : Please do not click links or open
+> > > attachments
+> > > > > until
+> > > > > > > you have verified the sender or the content.
+> > > > > > >  > > > > Personally, I think bpf_skb_pull_data() should have
+> > > > > > > automatically
+> > > > > > > > > > > (ie. in kernel code) reduced how much it pulls so
+> > > that it
+> > > > > > > would pull
+> > > > > > > > > > > headers only,
+> > > > > > > > > >
+> > > > > > > > > > That would be a helper that parses headers to discover
+> > > > > header
+> > > > > > > length.
+> > > > > > > > >
+> > > > > > > > > Does it actually need to?  Presumably the bpf pull
+> > > function
+> > > > > could
+> > > > > > > > > notice that it is
+> > > > > > > > > a packet flagged as being of type X (UDP GSO FRAGLIST)
+> > > and
+> > > > > reduce
+> > > > > > > the pull
+> > > > > > > > > accordingly so that it doesn't pull anything from the
+> > > non-
+> > > > > linear
+> > > > > > > > > fraglist portion???
+> > > > > > > > >
+> > > > > > > > > I know only the generic overview of what udp gso is, not
+> > > any
+> > > > > > > details, so I am
+> > > > > > > > > assuming here that there's some sort of guarantee to how
+> > > > > these
+> > > > > > > packets
+> > > > > > > > > are structured...  But I imagine there must be or we
+> > > wouldn't
+> > > > > be
+> > > > > > > hitting these
+> > > > > > > > > issues deeper in the stack?
+> > > > > > > >
+> > > > > > > > Perhaps for a packet of this type we're already guaranteed
+> > > the
+> > > > > > > headers
+> > > > > > > > are in the linear portion,
+> > > > > > > > and the pull should simply be ignored?
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > > Parsing is better left to the BPF program.
+> > > > > > >
+> > > > > > > I do prefer adding sanity checks to the BPF helpers, over
+> > > having
+> > > > > to
+> > > > > > > add then in the net hot path only to protect against
+> > > dangerous
+> > > > > BPF
+> > > > > > > programs.
+> > > > > > >
+> > > > > > Is it OK to ignore or decrease pull length for udp gro fraglist
+> > > > > packet?
+> > > > > > It could save the normal packet and sent to user correctly.
+> > > > > >
+> > > > > > In common/net/core/filter.c
+> > > > > > static inline int __bpf_try_make_writable(struct sk_buff *skb,
+> > > > > >               unsigned int write_len)
+> > > > > > {
+> > > > > > +if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> > > > > > +(SKB_GSO_UDP  |SKB_GSO_UDP_L4)) {
+> > > > >
+> > > > > The issue is not with SKB_GSO_UDP_L4, but with SKB_GSO_FRAGLIST.
+> > > > >
+> > > > Current in kernel just UDP uses SKB_GSO_FRAGLIST to do GRO. In
+> > > > udp_offload.c udp4_gro_complete gso_type adds "SKB_GSO_FRAGLIST|
+> > > > SKB_GSO_UDP_L4". Here checking these two flags is to limit the
+> > > packet
+> > > > as "UDP + need GSO + fraglist".
+> > > >
+> > > > We could remove SKB_GSO_UDP_L4 check for more packet that may
+> > > addrive
+> > > > skb_segment_list.
+> > > >
+> > > > > > +return 0;
+> > > > >
+> > > > > Failing for any pull is a bit excessive. And would kill a sane
+> > > > > workaround of pulling only as many bytes as needed.
+> > > > >
+> > > > > > +     or if (write_len > skb_headlen(skb))
+> > > > > > +write_len =3D skb_headlen(skb);
+> > > > >
+> > > > > Truncating requests would be a surprising change of behavior
+> > > > > for this function.
+> > > > >
+> > > > > Failing for a pull > skb_headlen is arguably reasonable, as
+> > > > > the alternative is that we let it go through but have to drop
+> > > > > the now malformed packets on segmentation.
+> > > > >
+> > > > >
+> > > > Is it OK as below?
+> > > >
+> > > > In common/net/core/filter.c
+> > > > static inline int __bpf_try_make_writable(struct sk_buff *skb,
+> > > >               unsigned int write_len)
+> > > > {
+> > > > +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> > > > +               SKB_GSO_FRAGLIST) && (write_len >
+> > > skb_headlen(skb))) {
+> > > > +               return 0;
+> > >
+> > > please limit write_len to skb_headlen() instead of just returning 0
+> > >
+> >
+> > Hi Maze & Willem,
+> > Maze's advice is:
+> > In common/net/core/filter.c
+> > static inline int __bpf_try_make_writable(struct sk_buff *skb,
+> >               unsigned int write_len)
+> > {
+> > +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> > +               SKB_GSO_FRAGLIST) && (write_len > skb_headlen(skb))) {
+> > +               write_len =3D skb_headlen(skb);
+> > +       }
+> >         return skb_ensure_writable(skb, write_len);
+> > }
+> >
+> > Willem's advice is to "Failing for a pull > skb_headlen is arguably
+> > reasonable...". It prefers to return 0 :
+> > +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> > +               SKB_GSO_FRAGLIST) && (write_len > skb_headlen(skb))) {
+> > +               return 0;
+> > +       }
+> >
+> > It seems a bit conflict. However I am not sure if my understanding is
+> > right and hope to get your further guide.
+>
+> I did not mean to return 0. But to fail a request that would pull an
+> unsafe amount. The caller must get a clear error signal.
 
-Hi Linus,
+That's hostile on userspace.
+Currently the caller doesn't even check the error return...
+Why would we?  We already have to reload all pointers, and have to do
+and will thus redo checking on those.
 
-Minor selftest fixes.
+What do you expect the caller to do? Subtract -1 and try again?
+That's hard to do from BPF as it involves looping... and is slow.
 
-The following changes since commit fec50db7033ea478773b159e0e2efb135270e3b7:
+We already try to not pull too much:
 
-  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
+void try_make_writable(struct __sk_buff* skb, int len) {
+  if (len > skb->len) len =3D skb->len;
+  if (skb->data_end - skb->data < len) bpf_skb_pull_data(skb, len);
+}
 
-are available in the Git repository at:
+Is there at least something like skb->len that has the actually
+pullable length in it?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jgg/iommufd.git tags/for-linus-iommufd
+Or are these skb's structured in such a way that there is never a need
+to pull anything,
+because the headers are already always in the linear portion?
 
-for you to fetch changes up to 2760c51b8040d7cffedc337939e7475a17cc4b19:
+> Back to the original report: the issue should already have been fixed
+> by commit 876e8ca83667 ("net: fix NULL pointer in skb_segment_list").
+> But that commit is in the kernel for which you report the error.
+>
+> Turns out that the crash is not in skb_segment_list, but later in
+> __udpv4_gso_segment_list_csum. Which unconditionally dereferences
+> udp_hdr(seg).
+>
+> The above fix also mentions skb pull as the culprit, but does not
+> include a BPF program. If this can be reached in other ways, then we
+> do need a stronger test in skb_segment_list, as you propose.
+>
+> I don't want to narrowly check whether udp_hdr is safe. Essentially,
+> an SKB_GSO_FRAGLIST skb layout cannot be trusted at all if even one
+> byte would get pulled.
 
-  iommufd: Add config needed for iommufd_fail_nth (2024-04-14 13:52:08 -0300)
-
-----------------------------------------------------------------
-iommufd for 6.9 first rc
-
-Two fixes for the selftests:
-
-- CONFIG_IOMMUFD_TEST needs CONFIG_IOMMUFD_DRIVER to work
-
-- The kconfig fragment sshould include fault injection so the fault
-  injection test can work
-
-----------------------------------------------------------------
-Jason Gunthorpe (1):
-      iommufd: Add missing IOMMUFD_DRIVER kconfig for the selftest
-
-Muhammad Usama Anjum (1):
-      iommufd: Add config needed for iommufd_fail_nth
-
- drivers/iommu/iommufd/Kconfig        | 1 +
- tools/testing/selftests/iommu/config | 2 ++
- 2 files changed, 3 insertions(+)
-
---rwOwfyHrED0VDoSA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCZiKp2QAKCRCFwuHvBreF
-YQyXAQC95xel+MDaFodAalged/FP47FflPcXo04xP9cWzw4k8gD/dGF6NB70hujK
-utWbaptC7ckY6BD3/j0fWSvlLiG8zgk=
-=oy16
------END PGP SIGNATURE-----
-
---rwOwfyHrED0VDoSA--
+--
+Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
