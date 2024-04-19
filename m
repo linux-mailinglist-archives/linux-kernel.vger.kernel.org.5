@@ -1,133 +1,137 @@
-Return-Path: <linux-kernel+bounces-151671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B2248AB1DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:30:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37D918AB1E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:31:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D5B21C21CE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:30:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8D6E2820A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636FC130E21;
-	Fri, 19 Apr 2024 15:29:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C8FC12F38C;
+	Fri, 19 Apr 2024 15:31:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E3ZADtVJ"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jDM5Juur"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12AD513049E;
-	Fri, 19 Apr 2024 15:29:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B0912E1D2
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:31:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713540597; cv=none; b=uyHx9EBHxCFm1LJIE8Sx/sO1nSwELt373qBTP8oAmCTGdlKtn/gSN0KzS1wGofr/7YxTHH0qAMl2dsDKc1duL3kAkZYd1aJWnt/8+smLqB1qJhzNEmf2mCkt95F+lYnoQSXFQRsqG51/LZbBp1rCXHckA22+TMpIl4ighcux1W8=
+	t=1713540675; cv=none; b=gHJIAexLsfeL8PaF/ew7SmQfIwKVTu5qHnA6JWqJzWZROHoeLDqWI4b7+mDid8NHc8DgFcwCRrbGm2+o1kWlKdpfXwD/dEpkB9KWJhm3w2kPuUb7T3LkdCiur45kHasFQF0aK3zIsDkOeatnA/OTfhgjtxDTpbuSG+nKeZ5E9DE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713540597; c=relaxed/simple;
-	bh=zT9iJ5PbjhLLEYo+jfeZgwNnELE4T6yi5z/mQLNwves=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=MZZFy1dgqfrDObbXb1TYn53RueBRD9zo+2RRcpca0p8vcqI71Ha3IiRpY3g90ql9CypAKHEoN2heMzPK9MGvzlFGpivY/cRQnPDD3TIuHGnVQN1A0qiCHFuTDOg9N45ZHmB+7RWdz21JWgc+6ugqXGK/b2m8wpFYDXjs15iRK1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E3ZADtVJ; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-419d320b8a5so847545e9.3;
-        Fri, 19 Apr 2024 08:29:55 -0700 (PDT)
+	s=arc-20240116; t=1713540675; c=relaxed/simple;
+	bh=iyORyWpSBMWMCLstc8MOWi6t89RmrF3ru6q2Rw2Q2Y0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GcHYl0ERjiBiwL/XP5AqTmcM/quV87RlBNbiJhwhyubrg5Rz+ZFtQIxQiS8SgeJT2W4vyi4G2LKJnZ2cA5Jz+3LFtcdzNcWUbIumshIEDVVQ1RKbEo5EKhJMSCWa/p3YSBLPP5QJYc1/tPPPj0cxEhUqJcqZK5soUOAUecBWSmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jDM5Juur; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-de45e5c3c68so2454512276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:31:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713540594; x=1714145394; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vA4Wyq7G4LwKrA+RVKqAzEJ7JuH0WyGpbgryKUE75M4=;
-        b=E3ZADtVJSkQgTE9zq2y4iK4MJ0XdMqXjOZxY9OCKl0a/E51Fx8Q7du181vX2DXeK/q
-         v3yWXFS702DZaOcPlwVZwWy0JoN5+Itet9xHheGLP3YwoyPTARLlnbeAAvz8CJ1XbKB0
-         q1HZPMjGxiRzUXlVPifAXTvk5IOn4e96HmK79J9yhwCfuAUpf0t/jrhujqzf/Qr1/KXM
-         e/F3QJ0YtIDAkLsgmNjwZtJ48AKdjbDe9DXUaEzrOujZ/sp84X2DTMB4hFDHeP1dA5/k
-         3zQDa+TJ0CoW7rEm5FT34BaX5d65NvD8JHof60dmbbebSrtIOsqU0KV8VaZPJgFbuFkA
-         +ukA==
+        d=linaro.org; s=google; t=1713540673; x=1714145473; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UOhFLujYxKZnKXu9a33FDTIua+PpsCvzUprH7ByhBWw=;
+        b=jDM5Juur0PD7bkKzTsca2p4Iv7TQMDnIOcLIdCImTY4dpZrd0MBZXlX8A0pvyRzuC7
+         o/9dxPoJxl93uOgMHDdERKvoJ+Qc20Ni45M3uaRCdXNyUgO7v2qr85nMVvQt34BNxw/k
+         sc7QkMAHA1iZqoRNDJLrrb8mzJRCEe2+a707nbKvFoSxyk+FNCwFTPMZghjoj6pYpJMs
+         dSvpptkmR9FlUfc8AGJmjbqXhoDlnnmIDNTWmN04wj+SFvgastH43z9+E4gZY5PxbhHA
+         jyg4feK1MFUNrezVvh0DMis0HDTU5X2l2gP9b1TwqiqiQnu6n59IAEfC9aZBY7brFeXL
+         jMgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713540594; x=1714145394;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vA4Wyq7G4LwKrA+RVKqAzEJ7JuH0WyGpbgryKUE75M4=;
-        b=TkG1/m2sJFptos/6IH40HIiy2Vb+F80wteVCNHtkBKJ13V5qMo+VuGX7gAGm4ACDmp
-         cbCZy9jEQAIkhEiZHk2UC1kjbYCjwCYw4GVD6zVw5EIW23d8fZ3+rFNyh/PFF6ewaT7Z
-         TT4OGkzgZAcinXyaIq48YKf8X7bs7p25hVpk3de+xAzFEygadpOKuPcOJVmS0zjKH8KR
-         YZAblUtYBTnB1K4QT6qbYdCcxn7BwbG/IEg98a79OLi/RvKsn71H+JowWY4vqiBjzdTD
-         ot9/kmC5BOeJ5hOeyx8mDZ7rEyMQnKrObQr2z1IpDuloNHVpxI9MvPz6wPSJqZn2aZKE
-         QH4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWicUMcKUyaAWa0SlRD/QzT41V19jBxnE9vUkIQZg4tdwLdcZsDnZlWIDbYVZfTe2wSSWotor9IdBnNeSO0C4ftzZnxT3uwW6q/XlFczeS3rpB+pqXDJ4u1elxSh+4lsKIrlCuiTBH8O9RxP1dF2ykITMFqzETGXKXfjfpEVBg7ROFP+kgE7cuYyC4EjKvwIi+BIAPoLDNr1PrWom1C
-X-Gm-Message-State: AOJu0Yw/5/tVFfxvuybRMTD2iOGienpLC3poHngkJ0lUd0+Mr4eWx8L6
-	P3MSRkI36wxmSvEaJ1Y1R5JSYswkJ3+LBx1RO6l91U8wIsopXmGX
-X-Google-Smtp-Source: AGHT+IFunWtJWZrTq7c04EP2u1pyUQraDQihoidKL/m4rvFGMZmmkHrnyWKWLLqIPM03fOBYa5hgKQ==
-X-Received: by 2002:a05:600c:1547:b0:418:e08c:817 with SMTP id f7-20020a05600c154700b00418e08c0817mr1695973wmg.32.1713540594088;
-        Fri, 19 Apr 2024 08:29:54 -0700 (PDT)
-Received: from [192.168.18.253] (54-240-197-236.amazon.com. [54.240.197.236])
-        by smtp.gmail.com with ESMTPSA id s6-20020a05600c45c600b00418244d459esm6936153wmo.4.2024.04.19.08.29.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 08:29:53 -0700 (PDT)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <cb0a026d-aaf9-4503-a07a-a3c433a25c0e@xen.org>
-Date: Fri, 19 Apr 2024 16:29:51 +0100
+        d=1e100.net; s=20230601; t=1713540673; x=1714145473;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UOhFLujYxKZnKXu9a33FDTIua+PpsCvzUprH7ByhBWw=;
+        b=EqbyfCRhdkZ7gqFe8PVamgyFb54tYoAlqt159zi4pG+pTat/HsA/XEQrFUASO2sq7U
+         7oFtV2HtYPMzk35QKHi39CeG0UcXBkdJkUEme5jkw+U7MUzRe/Exlx4figQrcWfT/v+/
+         VAfaw12r3pvShBUcHWBzsdemWWSpZe5T5txxSkitlI50mbaql+GEkerqODRpxnWAGj8m
+         2aKBNZjMGRRkAsdM79IxwDSzHvleHFZjHn7zwF09mmKIlUSiUsens7KjI7H5xqq70KYY
+         87qCRgJHeCJXwmxOSY9OVjSm7kmhNSEVDJ3+19cx7kJBu/TXv96mrAOfcLf1EqfbJb/K
+         p8dA==
+X-Forwarded-Encrypted: i=1; AJvYcCVCIrBph2H4ai6u2Bg9p7cgcGffn8m0cBlWEOfos0nYp/InQaK85/yuYUtY/mU0sAWgCnf4X2UyXudAn9FD1QYLVX7K3nxkXMfPMvT+
+X-Gm-Message-State: AOJu0YwG7sd9luftHTY7yV2eMD2LX+9kAY8cu8ps4cXd5q8xqeqj23EC
+	87DwLblOeqEJPiJxoap8HRGkbaLiIhVMKPHRIt8RVfNuWCnEL93Gpfm61gTu2eTdvqRu6VQ6Xfn
+	Ch9ElIgpzlCbtMCd+5KH1l7lQzP96HfNpgulXSQ==
+X-Google-Smtp-Source: AGHT+IFuq+KlOolhiQ+NHAAq8t1+6TVTfRh2XE/ClYxC+SNRITjdX3YHAzkPtLbPf7S1Y9gyH6+1IPTqOXEALwqSWu0=
+X-Received: by 2002:a25:ceca:0:b0:de4:5d8f:eca8 with SMTP id
+ x193-20020a25ceca000000b00de45d8feca8mr2363800ybe.5.1713540673130; Fri, 19
+ Apr 2024 08:31:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH 02/10] KVM: x86: Improve accuracy of KVM clock when TSC
- scaling is in force
-To: David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Sean Christopherson <seanjc@google.com>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Oliver Upton <oliver.upton@linux.dev>, Marcelo Tosatti
- <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
-References: <20240418193528.41780-1-dwmw2@infradead.org>
- <20240418193528.41780-3-dwmw2@infradead.org>
-Content-Language: en-US
-Organization: Xen Project
-In-Reply-To: <20240418193528.41780-3-dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240403043416.3800259-1-sumit.garg@linaro.org>
+ <CAFA6WYNxTPgiq6WLQaKGMTenuKe51SXXhgGYkdyRibghXAMfnA@mail.gmail.com> <CAFA6WYPk6E8JM8z62Skxq454WwPFYQ9EDx7FD--inqe7YoNJkg@mail.gmail.com>
+In-Reply-To: <CAFA6WYPk6E8JM8z62Skxq454WwPFYQ9EDx7FD--inqe7YoNJkg@mail.gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 19 Apr 2024 18:31:02 +0300
+Message-ID: <CAA8EJpont5jn9X24saBiM_TVRNh9984xoRXFojj-wmTiK0nU+g@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
+ board DTS
+To: Sumit Garg <sumit.garg@linaro.org>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, stephan@gerhold.net, 
+	caleb.connolly@linaro.org, neil.armstrong@linaro.org, 
+	laetitia.mariottini@se.com, pascal.eberhard@se.com, abdou.saker@se.com, 
+	jimmy.lalande@se.com, benjamin.missey@non.se.com, daniel.thompson@linaro.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 18/04/2024 20:34, David Woodhouse wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> The kvm_guest_time_update() function scales the host TSC frequency to
-> the guest's using kvm_scale_tsc() and the v->arch.l1_tsc_scaling_ratio
-> scaling ratio previously calculated for that vCPU. Then calcuates the
-> scaling factors for the KVM clock itself based on that guest TSC
-> frequency.
-> 
-> However, it uses kHz as the unit when scaling, and then multiplies by
-> 1000 only at the end.
-> 
-> With a host TSC frequency of 3000MHz and a guest set to 2500MHz, the
-> result of kvm_scale_tsc() will actually come out at 2,499,999kHz. So
-> the KVM clock advertised to the guest is based on a frequency of
-> 2,499,999,000 Hz.
-> 
-> By using Hz as the unit from the beginning, the KVM clock would be based
-> on a more accurate frequency of 2,499,999,999 Hz in this example.
-> 
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> Fixes: 78db6a503796 ("KVM: x86: rewrite handling of scaled TSC for kvmclock")
-> ---
->   arch/x86/include/asm/kvm_host.h |  2 +-
->   arch/x86/kvm/x86.c              | 17 +++++++++--------
->   arch/x86/kvm/xen.c              |  2 +-
->   3 files changed, 11 insertions(+), 10 deletions(-)
-> 
+On Fri, 19 Apr 2024 at 18:27, Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> On Tue, 9 Apr 2024 at 23:24, Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > Hi Bjorn, Konrad,
+> >
+> > On Wed, 3 Apr 2024 at 10:04, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > >
+> > > Add Schneider Electric HMIBSC board DTS. The HMIBSC board is an IIoT Edge
+> > > Box Core board based on the Qualcomm APQ8016E SoC. For more information
+> > > refer to the product page [1].
+> > >
+> > > One of the major difference from db410c is serial port where HMIBSC board
+> > > uses UART1 as the debug console with a default RS232 mode (UART1 mode mux
+> > > configured via gpio99 and gpio100).
+> > >
+> > > Support for Schneider Electric HMIBSC. Features:
+> > > - Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno 306)
+> > > - 1GiB RAM
+> > > - 8GiB eMMC, SD slot
+> > > - WiFi and Bluetooth
+> > > - 2x Host, 1x Device USB port
+> > > - HDMI
+> > > - Discrete TPM2 chip over SPI
+> > > - USB ethernet adaptors (soldered)
+> > >
+> > > This series is a v2 since v1 of this DTS file has been reviewed on the
+> > > U-Boot mailing list [2].
+> > >
+> > > Changes in v5:
+> > > - Addressed another nitpick from Stephen.
+> > > - Collected Stephen's review tag.
+> > > - Warnings reported by Rob's DT check bot aren't related to HMIBSC
+> > >   board DTS but rather they are due to msm8916.dtsi or extcon-usb-gpio.txt
+> > >   still not converted to YAML format.
+> > >
+> >
+> > I haven't seen any further comments on this series, can you help to pick it up?
+>
+> Gentle reminder.
 
-Reviewed-by: Paul Durrant <paul@xen.org>
+I see an email from Rob. At least GPIO-related warnings are related to HMIBSC
 
+
+-- 
+With best wishes
+Dmitry
 
