@@ -1,173 +1,163 @@
-Return-Path: <linux-kernel+bounces-151728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA6AD8AB307
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:13:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E63FE8AB30B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:13:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07346B212A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:13:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F497282A36
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:13:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCBB8131BA9;
-	Fri, 19 Apr 2024 16:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB3A1311B6;
+	Fri, 19 Apr 2024 16:12:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Bpc2mp6S"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QBr/DvN5"
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CD31130A72
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D5D4130E5B
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713543150; cv=none; b=T7EdQf41gn5POh5G5qgB8VnjpdxG8tGARp4DNX+ZvLMnoHBghLYDamvaNL4pU942RFomYWkhPUcPf5T5LePHXl/KPHqBIvT2I2NC40OqpXTBqQtgEUuYUVE7CVB3vezpRYbni+cbzE+0BRgHM8PnuxonPBwtYyUElZ84U2HscLY=
+	t=1713543178; cv=none; b=MuzaHrgDExKJOQmRlRxVRxS/+F6HxfyXJvdcXvNqjFibRQK2/A43/gmtO53Efz0E17fNfmE0DGoUoWD6ZyBl09/m8YtpudtcYAmOL6kfdM8g8TSxYq7ctmgv0NhVkQp8lL73qIO3hEYVpLJy/7oCwi7CY48cVPDkAUOEAkNL9CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713543150; c=relaxed/simple;
-	bh=BoY/Dy3UEpWzAlEVCqDQTE76CEu5CAwU1Yr/gwGs0FU=;
+	s=arc-20240116; t=1713543178; c=relaxed/simple;
+	bh=JxNKpsR1inImUDvLSsSZiGbU8WwvelNQnh56OEKC6rk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h5FogOH2PDI8ZaypJO1BhQWqrPPUY8u7AvRJKvXN4xcgzf61gvkMehcQqKiRcz9WeOyE310KsGwJUZdYMmI2xj48AHQCzLszgnQd47SrrrkZClY25hednU6nV9vBpDQUq1ZZXD7tgEEsnWmNq+8ARTQgXllnEI1ukoNrqMzuXVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Bpc2mp6S; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713543147;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9uBiWyy2Y6aSUbUd2veflvDo2gmH6uQXxYZf3A1GRsI=;
-	b=Bpc2mp6SLG7zIQdxlmAKtdIxjFmShYq7tjJaZ+Rn28vu9VxFhO1io2a7EX3WfzX2gqzvqL
-	r/009oZ14Cvn/A882ptEdpPfDG25PiYvHsarV8Bwd+d4tDzx/TaICQXMYgqmD68jqZy7Gh
-	bYiqar9zJ8SFjsHzAnb6+ZYej0rElCY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-624-nllKYZofM5ibf0YE6IiCMA-1; Fri, 19 Apr 2024 12:12:24 -0400
-X-MC-Unique: nllKYZofM5ibf0YE6IiCMA-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3473168c856so1346682f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:12:23 -0700 (PDT)
+	 To:Cc:Content-Type; b=pqIS0CLU8dD85EoPLf78nAML8n5z2C7QTZh9Xf4TuahE/qm9w1ieY6/x0WCN4ppaNSQgY27JOy2+iIJ9UcndzQxIOtkeHr8hYMKbW6lkAu7eSh4POptmaPWjoRi5C+NaqqcS1XUFRpl+Rbt9G8A3bCfRRlqDowMLqJYVzAHMK6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QBr/DvN5; arc=none smtp.client-ip=209.85.210.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6eb658ca1ceso1498518a34.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:12:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713543176; x=1714147976; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OPxZQoPoT3cD510S1fWj22o1C31vqdc0Bvc4+kC+CBg=;
+        b=QBr/DvN57T1vLgBojLoN7JwE6lD4SHrjL25D0Xaqk49dMbOKScW+ZgNFec1F4jAcf/
+         Ev4Ud695JWp/fzUWeKzDcK0AdIZUClktoFGxTh9k2pC1snwyQR/B4cVN/pV6Olx2c9ue
+         Xd82oE/HfFRdFLIoDLwx9dFVukldF3Xw855cmgAX9GlG+8GjaZUbuGM3I0uul+QmPV8C
+         kfJfRdiyrcC6CCDfO9H01lG+fGTk9StP7jbZOOT51qvdG08K/8f+ginXfoCl+TZvRgh5
+         pCRuUSwsAI/TOEIefAOjWhpjsnTM/Ux6tljaEPjx+Cm2zLmR4UGIMNh6A9e1eF/t/ZUL
+         eJJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713543143; x=1714147943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9uBiWyy2Y6aSUbUd2veflvDo2gmH6uQXxYZf3A1GRsI=;
-        b=ddEl1d6Hd0fVIbLXrUvonFsTIjhd21LZnNMhkSvLqBlJ7m8qMc9yTdATp6hz+zNzKw
-         0BXPK1lorqZOcQ6jLKYxR3XBAK/CWZEuD1UfvQzq2aMgduVfP2lMAsd2/xwqzvXdsOAu
-         3qsHuHeeYUS4OG6AJXQSCbfitjS4k1Nowpt06+MBPQX8+k66gCRecLLewTM2CeQz2qDC
-         JqUSuZHi6KlIRdCfbX+bvm2w1Zh7Il94x0g/5DPeSzcdyo7KLzNYCdjbEa0o4jE/hrBh
-         DobvcfUK8CxQ/up06mBZXtZgPdV+OGGPpcyxBA8K6HGEZJcmVVHhz3pb6CDGLDpPGOPT
-         AWYA==
-X-Forwarded-Encrypted: i=1; AJvYcCXFcbxVLAdlxDxgBtoGqkip9K3kOFFq7JUccThLuf2VbmsmD7C0pUMJ3mmRqcq9bDWG5bSDwOkjGxqym38fBlJTc76aGOdDyiE6yXoh
-X-Gm-Message-State: AOJu0YxRkxwywgj6lMCQIbJManPTkX5rYKLdQVL6rxzFcq25mA15gnYt
-	Vv9WI6OlufLFXtwzwxuDprODC2tl+s8+t7LCZJ1Vtk2PmA9MLO5ko9cFAFKO1dASh7e96J7m0S8
-	7v/N3/LJg8ijLSvJt8DnZzt3Ee5k+P01zJJY6RU6DcMYhYAT6wEbiyt1lgriv5EihNqwOJBbUJY
-	kYL9H6916EHwDXKsS3+x67+Mnh/KS9g6VMB2vy
-X-Received: by 2002:a05:6000:f:b0:34a:72d:8dae with SMTP id h15-20020a056000000f00b0034a072d8daemr1744526wrx.22.1713543142973;
-        Fri, 19 Apr 2024 09:12:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGu/laGQnrA9BrIF/Cu+lsjfknC5maDVu87SwW7AhUXq8hp5tDZF8U2qhpYBw4LEzoXCxA4xzi8O802s4cFw3o=
-X-Received: by 2002:a05:6000:f:b0:34a:72d:8dae with SMTP id
- h15-20020a056000000f00b0034a072d8daemr1744478wrx.22.1713543142601; Fri, 19
- Apr 2024 09:12:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713543176; x=1714147976;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OPxZQoPoT3cD510S1fWj22o1C31vqdc0Bvc4+kC+CBg=;
+        b=Evu8kJfoMs/tsV0N+6mF7hB1zFMOvDbBXfFo5BpVyBC978Hgvwn3LUr+AExgXR9WMo
+         3mCipn9k4/IXFazeKv81/syzLtQVZYB9vD8zwasQu1gCgPeLu9Gir2r7PagqAG4RVz8u
+         FeQOxTTYXMmh7QLOMFMAOcpFXRsT6zDjz0jEF3kj1iDNpcvdYTg7OrASoi28hr0iTKoq
+         nYCpmnXliFU3emnTCpfyj1LGv/t53DFrzXI5197oepdACE0opwzRZW0k/Qkc6LKv5non
+         cEnVr/TiQU01SCKZVMGQV83ztUp8jHZlawTo0tX9xBKBAAoEW6H5aDRuuhVW4Qrb/aHX
+         asmg==
+X-Forwarded-Encrypted: i=1; AJvYcCWNG57py+ceZr/K8shHjHB7f9frdhUOEErTha7Ekc+9EyZIneQ21DAIWZmc5zT05yx1V6nwx9tLlhE9q9ZCksXNy/sQUgrmxefPT4LZ
+X-Gm-Message-State: AOJu0Yw/gGpHywaaGl99b4K/vwudcUmZ7V2AbchcbVY3OtTpZ07sRufL
+	3+jjvBgnju19pnm4YK7htkw6oGb39nv3qiFxYWIZM4msIHTO3F70sfdnSg09tiQsN2t7fjz12sl
+	Pi99fX1H2+blydU1QgxJj7DQyAZTtuv0q0jy6hw==
+X-Google-Smtp-Source: AGHT+IEgTLjaLHTZ0zguQcs1gqrqg8KFpY0l6KJG+wR1xIBf2/IdI8JPFT/aa4FSMBdX31NRF6xYRt6E1kuu8nb1WlE=
+X-Received: by 2002:aca:240c:0:b0:3c5:ed16:c0fc with SMTP id
+ n12-20020aca240c000000b003c5ed16c0fcmr2516936oic.52.1713543176263; Fri, 19
+ Apr 2024 09:12:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418194133.1452059-1-michael.roth@amd.com>
- <20240418194133.1452059-11-michael.roth@amd.com> <CABgObfaj4-GXSCWFx+=o7Cdhouo8Ftz4YEWgsQ2XNRc3KD-jPg@mail.gmail.com>
-In-Reply-To: <CABgObfaj4-GXSCWFx+=o7Cdhouo8Ftz4YEWgsQ2XNRc3KD-jPg@mail.gmail.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Fri, 19 Apr 2024 18:12:11 +0200
-Message-ID: <CABgObfa9Ya-taTKkRbmUQGcwqYG+6cs_=kwdqzmFrbgBQG3Epw@mail.gmail.com>
-Subject: Re: [PATCH v13 10/26] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_UPDATE command
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
-	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
-	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com, 
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
-	Brijesh Singh <brijesh.singh@amd.com>
+References: <20240403043416.3800259-1-sumit.garg@linaro.org>
+ <CAFA6WYNxTPgiq6WLQaKGMTenuKe51SXXhgGYkdyRibghXAMfnA@mail.gmail.com>
+ <CAFA6WYPk6E8JM8z62Skxq454WwPFYQ9EDx7FD--inqe7YoNJkg@mail.gmail.com> <CAA8EJpont5jn9X24saBiM_TVRNh9984xoRXFojj-wmTiK0nU+g@mail.gmail.com>
+In-Reply-To: <CAA8EJpont5jn9X24saBiM_TVRNh9984xoRXFojj-wmTiK0nU+g@mail.gmail.com>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Fri, 19 Apr 2024 09:12:44 -0700
+Message-ID: <CAFA6WYMtnAjkK0j-KqrUNWOTSnxjvrayBk3+4gqUE+ZxgceieQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
+ board DTS
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, stephan@gerhold.net, 
+	caleb.connolly@linaro.org, neil.armstrong@linaro.org, 
+	laetitia.mariottini@se.com, pascal.eberhard@se.com, abdou.saker@se.com, 
+	jimmy.lalande@se.com, benjamin.missey@non.se.com, daniel.thompson@linaro.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 19, 2024 at 1:56=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com>=
- wrote:
-> > +       ret =3D kvm_gmem_populate(kvm, params.gfn_start, u64_to_user_pt=
-r(params.uaddr),
-> > +                               npages, sev_gmem_post_populate, &sev_po=
-pulate_args);
-> > +       if (ret < 0) {
-> > +               argp->error =3D sev_populate_args.fw_error;
-> > +               pr_debug("%s: kvm_gmem_populate failed, ret %d (fw_erro=
-r %d)\n",
-> > +                        __func__, ret, argp->error);
-> > +       } else if (ret < npages) {
-> > +               params.len =3D ret * PAGE_SIZE;
-> > +               ret =3D -EINTR;
+On Fri, 19 Apr 2024 at 08:31, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
 >
-> This probably should 1) update also gfn_start and uaddr 2) return 0
-> for consistency with the planned KVM_PRE_FAULT_MEMORY ioctl (aka
-> KVM_MAP_MEMORY).
+> On Fri, 19 Apr 2024 at 18:27, Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > On Tue, 9 Apr 2024 at 23:24, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > >
+> > > Hi Bjorn, Konrad,
+> > >
+> > > On Wed, 3 Apr 2024 at 10:04, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > > >
+> > > > Add Schneider Electric HMIBSC board DTS. The HMIBSC board is an IIoT Edge
+> > > > Box Core board based on the Qualcomm APQ8016E SoC. For more information
+> > > > refer to the product page [1].
+> > > >
+> > > > One of the major difference from db410c is serial port where HMIBSC board
+> > > > uses UART1 as the debug console with a default RS232 mode (UART1 mode mux
+> > > > configured via gpio99 and gpio100).
+> > > >
+> > > > Support for Schneider Electric HMIBSC. Features:
+> > > > - Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno 306)
+> > > > - 1GiB RAM
+> > > > - 8GiB eMMC, SD slot
+> > > > - WiFi and Bluetooth
+> > > > - 2x Host, 1x Device USB port
+> > > > - HDMI
+> > > > - Discrete TPM2 chip over SPI
+> > > > - USB ethernet adaptors (soldered)
+> > > >
+> > > > This series is a v2 since v1 of this DTS file has been reviewed on the
+> > > > U-Boot mailing list [2].
+> > > >
+> > > > Changes in v5:
+> > > > - Addressed another nitpick from Stephen.
+> > > > - Collected Stephen's review tag.
+> > > > - Warnings reported by Rob's DT check bot aren't related to HMIBSC
+> > > >   board DTS but rather they are due to msm8916.dtsi or extcon-usb-gpio.txt
+> > > >   still not converted to YAML format.
+> > > >
+> > >
+> > > I haven't seen any further comments on this series, can you help to pick it up?
+> >
+> > Gentle reminder.
+>
+> I see an email from Rob. At least GPIO-related warnings are related to HMIBSC
+>
 
-To be more precise, params.len should be set to the number of bytes *left*,=
- i.e.
+I suppose you are referring to:
 
-   params.len -=3D ret * PAGE_SIZE;
-   params.gfn_start +=3D ret * PAGE_SIZE;
-   if (params.type !=3D KVM_SEV_SNP_PAGE_TYPE_ZERO)
-       params.uaddr +=3D ret * PAGE_SIZE;
+arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb: pmic@0:
+gpio@c000:gpio-line-names: ['USB_HUB_RESET_N_PM', 'USB_SW_SEL_PM',
+'NC', 'NC'] is too short
+from schema $id: http://devicetree.org/schemas/mfd/qcom,spmi-pmic.yaml#
+arch/arm64/boot/dts/qcom/apq8016-schneider-hmibsc.dtb: gpio@c000:
+gpio-line-names: ['USB_HUB_RESET_N_PM', 'USB_SW_SEL_PM', 'NC', 'NC']
+is too short
+from schema $id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
 
-Also this patch needs some other changes:
+I am really not sure as to why those warnings are being reported for
+v5 and not reported for v4 here [1]. Also, there are only 4 PMIC GPIOs
+available on PM8916 out of which only 2 are connected on HMIBSC and
+the other 2 are not connected. AFAICT, these seem to be false warning
+reports or am I missing something?
 
-1) snp_launch_update() should have something like this:
+[1] https://lore.kernel.org/lkml/171155390164.3454213.14779164019451021567.robh@kernel.org/
 
-   src =3D params.type =3D=3D KVM_SEV_SNP_PAGE_TYPE_ZERO ? NULL :
-u64_to_user_ptr(params.uaddr),;
+-Sumit
 
-so that then...
-
-> +               vaddr =3D kmap_local_pfn(pfn + i);
-> +               ret =3D copy_from_user(vaddr, src + i * PAGE_SIZE, PAGE_S=
-IZE);
-> +               if (ret) {
-> +                       pr_debug("Failed to copy source page into GFN 0x%=
-llx\n", gfn);
-> +                       goto out_unmap;
-> +               }
-
-.. the copy can be done only if src is non-NULL
-
-2) the struct should have some more fields
-
-> +        struct kvm_sev_snp_launch_update {
-> +                __u64 gfn_start;        /* Guest page number to load/enc=
-rypt data into. */
-> +                __u64 uaddr;            /* Userspace address of data to =
-be loaded/encrypted. */
-> +                __u32 len;              /* 4k-aligned length in bytes to=
- copy into guest memory.*/
-> +                __u8 type;              /* The type of the guest pages b=
-eing initialized. */
-
-__u8 pad0;
-__u16 flags;   // must be zero
-__u64 pad1[5];
-
-with accompanying flags check in snp_launch_update().
-
-If you think IMI can be implemented already (with a bit in flags) go
-ahead and do it.
-
-Paolo
-
+>
+> --
+> With best wishes
+> Dmitry
 
