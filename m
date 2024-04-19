@@ -1,112 +1,160 @@
-Return-Path: <linux-kernel+bounces-151839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 102468AB492
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:56:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5969A8AB496
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:57:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B337F1F20FFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:56:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CF671C20C9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDD413C3EF;
-	Fri, 19 Apr 2024 17:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18C5613B285;
+	Fri, 19 Apr 2024 17:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="O7EnkUAx"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cvh3occt"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794BA13B59E
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1CE130E5E;
+	Fri, 19 Apr 2024 17:57:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713549390; cv=none; b=f2HznxrPiNfEiXUWVaNT+s6pCBVbCAyQ8WfJiCI94cm5keSpGnDUsQbLCHMeY+Mn/VScU/OilDexWv4U5trbI/IRiZRe0GyalxcHms9sm0T0twqS+3f5202jtnXCyZnPYj2NmEyV8ef5dK5DnJTZKAbNyh+3Xy/vzOYG2P69MzE=
+	t=1713549451; cv=none; b=PVjBbuZNi8Er3wDzcf5L9VuHHsIJOPw19th8L5RPlLfRVTchHXAG2K/YdtY2CaxJKyzAAnYzUJzlJDFU3n1b8jKttXRcP+2HCEHt+K12SoP0bN0kBJp0sv7TnOgdX7qYw8kvapdEVs8MS3EbKs81K2cPfHFDdVqB7WUhShO/3xM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713549390; c=relaxed/simple;
-	bh=KOoPPpNqh/95U3yEGbqqVgA5PPKwYYmBh41qdD18jAc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QQPQe6bz2//RKkooIuisG1SDz6DvSdt1ZgdakNyxVUQR+0jqEsm5swKhfNJtKX5B1ANJAN3Kjhfxu+pCzswt6QlI5NmNzU8jWkDajOYBYLL3mYyEn8RBAtVCVjDORFmXSvHrNzntZuBKa3jTQsJagMvtZ6wsjLBSFv4HSx03WzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=O7EnkUAx; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43JGi3x6030352;
-	Fri, 19 Apr 2024 17:56:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2023-11-20;
- bh=E4ycvTEE8d8tsFa3XEXhTzxsb88jl02QoN97F8t0DMs=;
- b=O7EnkUAxu6+JwaIdG+XQWmPC3YXCmvTnio0EzM4WV/mouFcJw9MuEmhRi5Qp6qfnpOEc
- 9yALSY1fs8//YcBqvY9edw4JF0qaraCgKUFcxP1L6weQIm+MuNytl4Nd2uOLVu2gMb7o
- 430vMzcnBL/esbGeQpyjCPiY3mjraiXpZSFWNSjPigQBfEVI4YpBfbzR9K+iJRyO24t+
- yVEmrSldDymURZlYUa1I+2oC+F+uKPLaSC2IA2embb9543K23EBI6DHP6liIzuK6BRAD
- WR3RDIiVfyJ/h8he3+QcEm8Dl9VpLMVwkC1xnB5p7sn8enV+FOwBHigZ/cK4fP9NcqYo FQ== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfgujwjm5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 19 Apr 2024 17:56:14 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43JH48SJ005568;
-	Fri, 19 Apr 2024 17:56:13 GMT
-Received: from jfwang-mac.us.oracle.com (dhcp-10-159-230-131.vpn.oracle.com [10.159.230.131])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xkc7xd76r-3;
-	Fri, 19 Apr 2024 17:56:13 +0000
-From: Jianfeng Wang <jianfeng.w.wang@oracle.com>
-To: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: vbabka@suse.cz, cl@linux.com, akpm@linux-foundation.org,
-        penberg@kernel.org, rientjes@google.com
-Subject: [PATCH v3 2/2] slub: use count_partial_free_approx() in slab_out_of_memory()
-Date: Fri, 19 Apr 2024 10:56:11 -0700
-Message-ID: <20240419175611.47413-3-jianfeng.w.wang@oracle.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20240419175611.47413-1-jianfeng.w.wang@oracle.com>
-References: <20240419175611.47413-1-jianfeng.w.wang@oracle.com>
+	s=arc-20240116; t=1713549451; c=relaxed/simple;
+	bh=8KqYsbZxPpbmqR7WVXJVcqr2/Dlmjyv5KgkXl0VbG18=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oa976OKTTMYvSaPriwX5fR3vMgbOGBYZB19W1wADwjYmjLZ76mdDvjAGJHS7ys9+lQqsewlBhFymje6yZOKgGCHp5J7/BH0L6uN2vmw8fLXqCbURZqho/wAFlWqoVOXTlMU3lPN0AWgTdiHVi1o2bdtfxLMQyJG/gv4wbrKmCl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cvh3occt; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d8b2389e73so27535911fa.3;
+        Fri, 19 Apr 2024 10:57:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713549448; x=1714154248; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xb7IxX2SneQa14Cc8sJ0b06K9/cpUqtMAYa24U3BHcw=;
+        b=Cvh3occt76VX6l93zCc3q6VCi65q1CgWAjeTk5gHD7+A0SoEs3luDgTor7HkJ08wrq
+         cd+IVak7MirCmRZoWvR5R0KOHJGCzKuS+23JyeCXddIZfqCoURXUq2sQh56gt2YzStKL
+         rzygeSc6xM4aXp1kvUp6hDVogdgvJ7qnF+MlU3qPsa/zhA/qh5KqbPIUBV+ZNpxB0Q4C
+         nao6d/lTl3nN8AUyHs72kmv60hrspZglhv5r7UwyceiA62VO7SnGvaaqMs6iDvlQECRR
+         7IR8PFg6V+WNVQBVrqfGV5Ua8remSYpR5sLHbF8Xj85nj5SNzCbLEgbEQEUg4OpmscqM
+         QQxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713549448; x=1714154248;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xb7IxX2SneQa14Cc8sJ0b06K9/cpUqtMAYa24U3BHcw=;
+        b=BMUSAPJ+XPnc+JFsS3JcW9lgHpjYAZLB5Mr9AbipXjfjNO0Ik5hqf/22eBg9K58oIX
+         KGg2N6egD4H9tbfncOtg9/kMZlA+Fvks0HZgmsRAb+STtc02Vy8varzO+XUTBK9wrV0G
+         ulv+RYhIycp/DWdtAaMk0BHqdiO225dJHAyeDQItCuR3wCud/6D1vu4MSfwMDTEq7NKW
+         LUwy+8DoPHDbp/FSHDSvfqz21qTvIODkEJ3uGFzLYjgOCGNKLV23u8lbz8HbdOk3MbSv
+         GOXdstro59qM6QLOPeBVVitYXoEc4A5InlPYfYom/hZj21BaLqGaffH8YVYvCXsupicc
+         rvRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXSd2Pfkxm3O3m98NIsbknHoxpbBfSEMI54tsLAkvnU1sr+j9ZtBLUD7tdbNsBiXXEH8QjwXPJCZaq9yE+7QZmmO24Xl5fuj4ZdAioYhqgYv7b8lMlp+PUxYcTwrqLYCnoIYFT+5YJdSVvsFvLov39sSqIqV0DwSdZoQ6VcnFwVkS2RvETz
+X-Gm-Message-State: AOJu0Yzbn2f7GqSWLiSPNTekLy1lsbCO3KS9j2Gsge6eKxG95ElxC+qq
+	xxcx1n+vcHHE1YVA52V6bzRkNU+z+iEcNWonnLTNqr/Wqlq8DHOszLgJuQ==
+X-Google-Smtp-Source: AGHT+IGHTEV1ol6nILJHFaiC6F9WEo56gfw8hOxNK0OccNJgMINBYznO11NulRZ78isU46I1Ys73Lg==
+X-Received: by 2002:a2e:850b:0:b0:2d9:ecc1:6d56 with SMTP id j11-20020a2e850b000000b002d9ecc16d56mr1695817lji.11.1713549447402;
+        Fri, 19 Apr 2024 10:57:27 -0700 (PDT)
+Received: from localhost ([213.79.110.82])
+        by smtp.gmail.com with ESMTPSA id v20-20020a2e9614000000b002dba279f81asm642625ljh.59.2024.04.19.10.57.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 10:57:26 -0700 (PDT)
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Viresh Kumar <vireshk@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Vinod Koul <vkoul@kernel.org>
+Cc: Serge Semin <fancer.lancer@gmail.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	dmaengine@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] dmaengine: dw: Fix src/dst addr width misconfig
+Date: Fri, 19 Apr 2024 20:56:42 +0300
+Message-ID: <20240419175655.25547-1-fancer.lancer@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-19_13,2024-04-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- malwarescore=0 suspectscore=0 spamscore=0 adultscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404190137
-X-Proofpoint-ORIG-GUID: etvbRzFUFWO99kOfRwSYzVdQlvEBJIX2
-X-Proofpoint-GUID: etvbRzFUFWO99kOfRwSYzVdQlvEBJIX2
 
-slab_out_of_memory() uses count_partial() to get the exact count
-of free objects for each node. As it may get called in the slab
-allocation path, count_partial_free_approx() can be used to avoid
-the risk and overhead of traversing a long partial slab list.
+The main goal of this series is to fix the data disappearance in case of
+the DW UART handled by the DW AHB DMA engine. The problem happens on a
+portion of the data received when the pre-initialized DEV_TO_MEM
+DMA-transfer is paused and then disabled. The data just hangs up in the
+DMA-engine FIFO and isn't flushed out to the memory on the DMA-channel
+suspension (see the second commit log for details). On a way to find the
+denoted problem fix it was discovered that the driver doesn't verify the
+peripheral device address width specified by a client driver, which in its
+turn if unsupported or undefined value passed may cause DMA-transfer being
+misconfigured. It's fixed in the first patch of the series.
 
-At the same time, show_slab_objects() still uses count_partial().
-Thus, slub users can still have the option to access the exact
-count of objects via sysfs if the overhead is acceptable to them.
+In addition to that three cleanup patches follow the fixes described above
+in order to make the DWC-engine configuration procedure more coherent.
+First one simplifies the CTL_LO register setup methods. Second and third
+patches simplify the max-burst calculation procedure and unify it with the
+rest of the verification methods. Please see the patches log for more
+details.
 
-Signed-off-by: Jianfeng Wang <jianfeng.w.wang@oracle.com>
----
- mm/slub.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Final patch is another cleanup which unifies the status variables naming
+in the driver.
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 993cbbdd2b6c..fa55699aa21a 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3292,7 +3292,7 @@ slab_out_of_memory(struct kmem_cache *s, gfp_t gfpflags, int nid)
- 		unsigned long nr_objs;
- 		unsigned long nr_free;
- 
--		nr_free  = count_partial(n, count_free);
-+		nr_free  = count_partial_free_approx(n);
- 		nr_slabs = node_nr_slabs(n);
- 		nr_objs  = node_nr_objs(n);
- 
+Link: https://lore.kernel.org/dmaengine/20240416162908.24180-1-fancer.lancer@gmail.com/
+Changelog v2:
+- Add a note to the Patch #1 commit message about having the verification
+  method called in the dwc_config() function. (Andy)
+- Add hyphen to "1byte" in the in-situ comment. (Andy)
+- Convert "err" to "ret" variables and add a new patch which unifies the
+  status variables naming. (Andy)
+- Add a in-situ comment regarding why the memory-side bus width
+  verification was required. (Andy)
+- Group sms+dms and smsize+dmsize local variables initializations up. (Andy)
+- Move the zero initializations out to the variables init block
+  in the prepare_ctllo() callbacks. (Andy)
+- Directly refer to dwc_config() in the commit messages. (Andy)
+- Convert dwc_verify_maxburst() to returning zero. (Andy)
+- Add a comment regarding the values utilized in dwc_verify_p_buswidth()
+  being pre-verified before the method is called. (Andy)
+- Add new patches:
+  [PATCH v2 4/6] dmaengine: dw: Define encode_maxburst() above prepare_ctllo() callbacks
+  [PATCH v2 6/6] dmaengine: dw: Unify ret-val local variable naming
+  (Andy)
+
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+Cc: "Ilpo Järvinen" <ilpo.jarvinen@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Cc: dmaengine@vger.kernel.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (6):
+  dmaengine: dw: Add peripheral bus width verification
+  dmaengine: dw: Add memory bus width verification
+  dmaengine: dw: Simplify prepare CTL_LO methods
+  dmaengine: dw: Define encode_maxburst() above prepare_ctllo()
+    callbacks
+  dmaengine: dw: Simplify max-burst calculation procedure
+  dmaengine: dw: Unify ret-val local variables naming
+
+ drivers/dma/dw/core.c     | 131 +++++++++++++++++++++++++++++++-------
+ drivers/dma/dw/dw.c       |  40 +++++++-----
+ drivers/dma/dw/idma32.c   |  19 +++---
+ drivers/dma/dw/platform.c |  20 +++---
+ drivers/dma/dw/regs.h     |   1 -
+ 5 files changed, 154 insertions(+), 57 deletions(-)
+
 -- 
-2.42.1
+2.43.0
 
 
