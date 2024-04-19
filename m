@@ -1,57 +1,67 @@
-Return-Path: <linux-kernel+bounces-151231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC8178AAB75
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:27:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F13F8AAB77
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:28:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E7E8B219E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:27:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98221B21A95
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED2478286;
-	Fri, 19 Apr 2024 09:27:37 +0000 (UTC)
-Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A006578676;
+	Fri, 19 Apr 2024 09:28:38 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5DC37350E;
-	Fri, 19 Apr 2024 09:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFBB762F7
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713518857; cv=none; b=LNeFzBYLfyk1WVJ/1FEKmPfutqBZnbVGEdvaqAZxHYf838XRf29A3xtAi6ZJ/SEhjE5RiNUsfRVBv7c4V+7rdpfekQIwIiYZme3uLZFlb5omPG8Dtv0eV1fwKRGBgkabx/r4KCqry9vrXDrJyj1cWZWAKEMV+eVhSOCGbw+99PU=
+	t=1713518918; cv=none; b=luOEc4Htfom2YH3msFAsykFhoMvtl0/pGF7wHXMkzi5WwABvBIa5uRQ0zLSCsnSOOCHPCLHfe+Iw7aqVVlm7X7Zd+RgeOdEn+Dyl85L477nM5v9tQrBjk6zgy0Mh3wE9F4l+Qr/YWEhxpdxI01R6j5q96/VRVysf7zieUyBBK0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713518857; c=relaxed/simple;
-	bh=Qmc9EhkIIpbFeNtP0amEmcND1IWo5a+HNUEfwXlCQEM=;
+	s=arc-20240116; t=1713518918; c=relaxed/simple;
+	bh=RzsGOHqQ+PBnsoxOmJDgqk3bfw/edxPwlwpalPgjzwg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UtqVZ3bg43iV6Jq0/iSn8cvF1483kOv+xgbTCUaRgPyu4Lh2ym7QOOThQEBtT1/lgznI7/IEuEwhhN5Fth0MXEZP/zz4tlqP2GhJVRCGJp3y7Xw6MUtQ6kk8TRUH/v2QIzqBszjN9DQlonGQxgy1ZeHGBWCMsT/ilouxVyjXiRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.204.34.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp81t1713518795t5jgjnqm
-X-QQ-Originating-IP: jXEkGEh+B+S0nZ2C29fIOx9NXHavu5sUQaHThL7wZlM=
-Received: from localhost ( [112.0.147.129])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 19 Apr 2024 17:26:34 +0800 (CST)
-X-QQ-SSF: 01400000000000903000000A0000000
-X-QQ-FEAT: Q2yP8jvsZ988yftLcKE2iBRbKi+JY8eZPdsG5w93SH/6DQ9/iMXbEg+46jVVC
-	l+GQZzrrXkNmvOfoMTTCLABJDCtD2La/UFlrrhOsmsxsmRTEudlYdmBa4CMesDAfiM/pvKl
-	wxG/PTwMbaFF6G9YyYH14Kx2koU18EJT6nNO6CAl5zB/lurQ9E0IdoTr13MR2adKPEsvHA2
-	7Nqn9sLcuFZc6bTGkYfeISu62VfoRqQczjhG5LwkpQqQvQdJoAMw/8QtaPwsu4y1rQHrpBd
-	qoy0JLLW5F+OxR3CmhFALqw7O6+ugbKhvSxTJBPCywjGjrxYaP8UPDiuS3dKt6uwOx2Ynq6
-	UTakw+RyFprKhG85cfk5agnJZGOHWCb0Ki2IZy5Jo8h4nD0KZqrL6tpM6U2awK0OMwJdEND
-	2AHAzPhqbqA=
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 9083245040578109237
-Date: Fri, 19 Apr 2024 17:26:34 +0800
-From: Dawei Li <dawei.li@shingroup.cn>
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: davem@davemloft.net, andreas@gaisler.com, sparclinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yury.norov@gmail.com
-Subject: Re: [PATCH 0/5] Remove onstack cpumask var usage
-Message-ID: <A60F94A9589C8589+ZiI4yj073cgmt5Qq@centos8>
-References: <20240418104949.3606645-1-dawei.li@shingroup.cn>
- <20240419051350.GA558245@ravnborg.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=obvSheKv3uZ0ZQEQjdlut+nrFpM10VTPhbpWwhskXqr6apVxjYUkwxgxyNgHtgJibUtRCCN2zhrF7i1K8QJ6dd3Qt2f8S+odLsMucfTrmGdA71yy7Al52Af4s66/6/NBnuZUDqsqnHcysy400jEONUIFniOZi2xgE80d58o/yls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rxkXj-0008Iw-W0; Fri, 19 Apr 2024 11:28:28 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rxkXi-00D89e-MH; Fri, 19 Apr 2024 11:28:26 +0200
+Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rxkXi-0039nT-1t;
+	Fri, 19 Apr 2024 11:28:26 +0200
+Date: Fri, 19 Apr 2024 11:28:26 +0200
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Kamel Bouhara <kamel.bouhara@bootlin.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Henrik Rydberg <rydberg@bitmath.org>, linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Jeff LaBundy <jeff@labundy.com>,
+	catalin.popescu@leica-geosystems.com,
+	mark.satterthwaite@touchnetix.com,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	bsp-development.geo@leica-geosystems.com
+Subject: Re: [PATCH v10 3/3] Input: Add TouchNetix axiom i2c touchscreen
+ driver
+Message-ID: <20240419092826.2gq72etn4fh4q7ph@pengutronix.de>
+References: <20240419083342.61199-1-kamel.bouhara@bootlin.com>
+ <20240419083342.61199-4-kamel.bouhara@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,146 +70,173 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240419051350.GA558245@ravnborg.org>
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
+In-Reply-To: <20240419083342.61199-4-kamel.bouhara@bootlin.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hi Sam,
+Hi Kamel,
 
-Thanks for the review.
+thank you for the patch. Again just a rough review.
 
-On Fri, Apr 19, 2024 at 07:13:50AM +0200, Sam Ravnborg wrote:
-> Hi Dawei,
+On 24-04-19, Kamel Bouhara wrote:
+> Add a new driver for the TouchNetix's axiom family of
+> touchscreen controllers. This driver only supports i2c
+> and can be later adapted for SPI and USB support.
 > 
-> On Thu, Apr 18, 2024 at 06:49:44PM +0800, Dawei Li wrote:
-> > Hi,
-> > 
-> > This series aims at removing on-stack cpumask var usage for sparc arch.
-> > 
-> > Generally it's preferable to avoid placing cpumasks on the stack, as
-> > for large values of NR_CPUS these can consume significant amounts of
-> > stack space and make stack overflows more likely.
+> Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> ---
+
+..
+
+> +static int axiom_i2c_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct input_dev *input_dev;
+> +	struct axiom_data *ts;
+> +	u32 poll_interval;
+> +	int target;
+> +	int error;
+> +
+> +	ts = devm_kzalloc(dev, sizeof(*ts), GFP_KERNEL);
+> +	if (!ts)
+> +		return -ENOMEM;
+> +
+> +	i2c_set_clientdata(client, ts);
+> +	ts->client = client;
+> +	ts->dev = dev;
+> +
+> +	ts->regmap = devm_regmap_init_i2c(client, &axiom_i2c_regmap_config);
+> +	error = PTR_ERR_OR_ZERO(ts->regmap);
+> +	if (error) {
+> +		dev_err(dev, "Failed to initialize regmap: %d\n", error);
+> +		return error;
+> +	}
+> +
+> +	ts->vddi = devm_regulator_get(dev, "VDDI");
+
+This does not match the dt-bindings.
+
+> +	if (IS_ERR(ts->vddi))
+> +		return dev_err_probe(&client->dev, PTR_ERR(ts->vddi),
+> +				     "Failed to enable VDDI regulator\n");
+> +
+> +	ts->vdda = devm_regulator_get(dev, "VDDA");
+
+Here as well.
+
+> +	if (IS_ERR(ts->vdda))
+> +		return dev_err_probe(&client->dev, PTR_ERR(ts->vdda),
+> +				     "Failed to enable VDDA regulator\n");
+
+Now we handle it as always but..
+
+> +	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(ts->reset_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(ts->reset_gpio), "failed to get reset GPIO\n");
+> +
+> +	if (ts->reset_gpio)
+> +		axiom_reset(ts->reset_gpio);
+> +	else
+> +		msleep(AXIOM_STARTUP_TIME_MS);
+
+still the reset is useless since you never enabled the regulators. So
+either use devm_regulator_get_enable() or you do the enable/disable
+separate via regulator_enable()/disable(). If there are no strict
+enablement restrictions like orders and timings you could also make use
+of the regulator_bulk API (e.g. devm_regulator_bulk_get_enable).
+
+Regards,
+  Marco
+
+> +
+> +	error = axiom_discover(ts);
+> +	if (error)
+> +		return dev_err_probe(dev, error, "Failed touchscreen discover\n");
+> +
+> +	input_dev = devm_input_allocate_device(ts->dev);
+> +	if (!input_dev)
+> +		return -ENOMEM;
+> +
+> +	input_dev->name = "TouchNetix axiom Touchscreen";
+> +	input_dev->phys = "input/axiom_ts";
+> +
+> +	input_set_abs_params(input_dev, ABS_MT_POSITION_X, 0, 65535, 0, 0);
+> +	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, 0, 65535, 0, 0);
+> +	input_set_abs_params(input_dev, ABS_MT_TOOL_TYPE, 0, MT_TOOL_MAX, 0, 0);
+> +	input_set_abs_params(input_dev, ABS_MT_DISTANCE, 0, 127, 0, 0);
+> +	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 127, 0, 0);
+> +
+> +	touchscreen_parse_properties(input_dev, true, &ts->prop);
+> +
+> +	/* Registers the axiom device as a touchscreen instead of a mouse pointer */
+> +	error = input_mt_init_slots(input_dev, AXIOM_U41_MAX_TARGETS, INPUT_MT_DIRECT);
+> +	if (error)
+> +		return error;
+> +
+> +	/* Enables the raw data for up to 4 force channels to be sent to the input subsystem */
+> +	set_bit(EV_REL, input_dev->evbit);
+> +	set_bit(EV_MSC, input_dev->evbit);
+> +	/* Declare that we support "RAW" Miscellaneous events */
+> +	set_bit(MSC_RAW, input_dev->mscbit);
+> +
+> +	ts->input_dev = input_dev;
+> +	input_set_drvdata(ts->input_dev, ts);
+> +
+> +	/* Ensure that all reports are initialised to not be present. */
+> +	for (target = 0; target < AXIOM_U41_MAX_TARGETS; target++)
+> +		ts->targets[target].state = AXIOM_TARGET_STATE_NOT_PRESENT;
+> +
+> +	error = devm_request_threaded_irq(dev, client->irq, NULL,
+> +					  axiom_irq, IRQF_ONESHOT, dev_name(dev), ts);
+> +	if (error) {
+> +		dev_info(dev, "Request irq failed, falling back to polling mode");
+> +
+> +		error = input_setup_polling(input_dev, axiom_i2c_poll);
+> +		if (error)
+> +			return dev_err_probe(ts->dev, error, "Unable to set up polling mode\n");
+> +
+> +		if (!device_property_read_u32(ts->dev, "poll-interval", &poll_interval))
+> +			input_set_poll_interval(input_dev, poll_interval);
+> +		else
+> +			input_set_poll_interval(input_dev, POLL_INTERVAL_DEFAULT_MS);
+> +	}
+> +
+> +	return input_register_device(input_dev);
+> +}
+> +
+> +static const struct i2c_device_id axiom_i2c_id_table[] = {
+> +	{ "ax54a" },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(i2c, axiom_i2c_id_table);
+> +
+> +static const struct of_device_id axiom_i2c_of_match[] = {
+> +	{ .compatible = "touchnetix,ax54a", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, axiom_i2c_of_match);
+> +
+> +static struct i2c_driver axiom_i2c_driver = {
+> +	.driver = {
+> +		   .name = "axiom",
+> +		   .of_match_table = axiom_i2c_of_match,
+> +	},
+> +	.id_table = axiom_i2c_id_table,
+> +	.probe = axiom_i2c_probe,
+> +};
+> +module_i2c_driver(axiom_i2c_driver);
+> +
+> +MODULE_AUTHOR("Bart Prescott <bartp@baasheep.co.uk>");
+> +MODULE_AUTHOR("Pedro Torruella <pedro.torruella@touchnetix.com>");
+> +MODULE_AUTHOR("Mark Satterthwaite <mark.satterthwaite@touchnetix.com>");
+> +MODULE_AUTHOR("Hannah Rossiter <hannah.rossiter@touchnetix.com>");
+> +MODULE_AUTHOR("Kamel Bouhara <kamel.bouhara@bootlin.com>");
+> +MODULE_DESCRIPTION("TouchNetix axiom touchscreen I2C bus driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.25.1
 > 
-> Took a quick look at the patches, looks good except the one the bot
-> already complained about.
-
-I will fix this building warning in respinning.
-
-> A quick grep shows a few more cases where we have an on-stack cpumask
-> in sparc code.
-> 
-> kernel/ds.c:    cpumask_t mask;
-
-About this case, it's kinda tricky for:
-- dr_cpu_data() returns void, so alloc_cpumask_var() is no go.
-
-- No idea of the calling context of dr_cpu_data(). IIUC,
-  dr_cpu_data()
-  ->dr_cpu_configure()  
-   ->kzalloc(resp_len, GFP_KERNEL)
-  So I guess it's in process context?
-  If consumption above is OK, a simple but _ugly_ solution could be:
-
-diff --git a/arch/sparc/kernel/ds.c b/arch/sparc/kernel/ds.c
-index ffdc15588ac2..c9e4ebdccf49 100644
---- a/arch/sparc/kernel/ds.c
-+++ b/arch/sparc/kernel/ds.c
-@@ -634,7 +634,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
-        struct dr_cpu_tag *tag = (struct dr_cpu_tag *) (data + 1);
-        u32 *cpu_list = (u32 *) (tag + 1);
-        u64 req_num = tag->req_num;
--       cpumask_t mask;
-+       static DEFINE_MUTEX(mask_lock);
-+       static cpumask_t mask;
-        unsigned int i;
-        int err;
-
-@@ -651,6 +652,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
-
-        purge_dups(cpu_list, tag->num_records);
-
-+       mutex_lock(&mask_lock);
-+
-        cpumask_clear(&mask);
-        for (i = 0; i < tag->num_records; i++) {
-                if (cpu_list[i] == CPU_SENTINEL)
-@@ -665,6 +668,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
-        else
-                err = dr_cpu_unconfigure(dp, cp, req_num, &mask);
-
-+       mutex_unlock(&mask_lock);
-+
-        if (err)
-                dr_cpu_send_error(dp, cp, data);
- }
-
-How does it sound to you?
-
-> kernel/leon_kernel.c:   cpumask_t mask;
-
-It's in irqchip::irq_set_affinity(), which is in atomic context(raw spinlock(s) held),
-so dynamic allocation is not a good idea.
-
-My proposal(*untested*) is somewhat complicated for it introduces a new helper.
-
-diff --git a/arch/sparc/kernel/leon_kernel.c b/arch/sparc/kernel/leon_kernel.c
-index 4c61da491fee..6eced7acb8bc 100644
---- a/arch/sparc/kernel/leon_kernel.c
-+++ b/arch/sparc/kernel/leon_kernel.c
-@@ -104,15 +104,25 @@ unsigned long leon_get_irqmask(unsigned int irq)
- }
-
- #ifdef CONFIG_SMP
-+
-+static bool cpumask_include(const struct cpumask *srcp1, const struct cpumask *srcp2)
-+{
-+       unsigned int cpu;
-+
-+       for_each_cpu(cpu, srcp2) {
-+               if (!cpumask_test_cpu(cpu, srcp1))
-+                       return false;
-+       }
-+
-+       return true;
-+}
-+
- static int irq_choose_cpu(const struct cpumask *affinity)
- {
--       cpumask_t mask;
-+       unsigned int cpu = cpumask_first_and(affinity, cpu_online_mask);
-
--       cpumask_and(&mask, cpu_online_mask, affinity);
--       if (cpumask_equal(&mask, cpu_online_mask) || cpumask_empty(&mask))
--               return boot_cpu_id;
--       else
--               return cpumask_first(&mask);
-+       return cpumask_include(affinity, cpu_online_mask) || cpu >= nr_cpu_ids ?
-+              boot_cpu_id : cpu;
- }
- #else
- #define irq_choose_cpu(affinity) boot_cpu_id
-
-Is it OK?
-
-[cc Yury for bitmap API]
-
-> kernel/leon_smp.c:static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
-> kernel/sun4d_smp.c:static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
-
-Actually I am awared of existence of (at least some of) them, but so far I
-have not found a _proper_ way of dealing with them(especially for case of
-ds.c).
-
-Please lemme dig into it.
-
-Thanks,
-
-    Dawei
-
-> 
-> Do you plan to look at the other on-stack users too?
-> It would be nice to see them all gone in one patch-set.
-> 
-> 	Sam
 > 
 
