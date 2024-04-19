@@ -1,39 +1,76 @@
-Return-Path: <linux-kernel+bounces-151665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3237D8AB1C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:29:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B2248AB1DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:30:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E6121C219CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:28:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D5B21C21CE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10EB512FB08;
-	Fri, 19 Apr 2024 15:28:53 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C77F184E;
-	Fri, 19 Apr 2024 15:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636FC130E21;
+	Fri, 19 Apr 2024 15:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E3ZADtVJ"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12AD513049E;
+	Fri, 19 Apr 2024 15:29:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713540532; cv=none; b=oTdC26vYckLwB8irVTA0Tc+Tc8Z+YihI1iAqJKup78XNwQ0TdY39XU16gfZjKSTUkuBvNfA8RsyvQrngldRLSOI+eCXxm0fWmvvCn87HCg/7Cwe/Moflnq1ZHVxuU3M8lptxVBOWnr2gZ9eDmegpMAzH97xK7VGurSVmRHShzbM=
+	t=1713540597; cv=none; b=uyHx9EBHxCFm1LJIE8Sx/sO1nSwELt373qBTP8oAmCTGdlKtn/gSN0KzS1wGofr/7YxTHH0qAMl2dsDKc1duL3kAkZYd1aJWnt/8+smLqB1qJhzNEmf2mCkt95F+lYnoQSXFQRsqG51/LZbBp1rCXHckA22+TMpIl4ighcux1W8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713540532; c=relaxed/simple;
-	bh=bfF74m4I4t9XPTgeXN2m67auBjU4qnUvI02BEMhTbY4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=RtA20W5bwm24gxh526StNTeDN5ZgGNOJp8TWb+9m8VAJUt5PJGWFQwHij+Yq6aPcT26Shwbt4WLlITkgnYUnE6D8qIyG0knrxMAmBHVaijmq9R8k9SLJdGkOnqJpHIuLgBsZ1wBq90zrcbcN+6VtXeItt0QT+DIeQHATU/TIv8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4FEF2F;
-	Fri, 19 Apr 2024 08:29:17 -0700 (PDT)
-Received: from [192.168.20.58] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6820C3F64C;
-	Fri, 19 Apr 2024 08:28:46 -0700 (PDT)
-Message-ID: <d143cd11-26ea-42e3-8f32-700a34b3705e@arm.com>
-Date: Fri, 19 Apr 2024 10:28:45 -0500
+	s=arc-20240116; t=1713540597; c=relaxed/simple;
+	bh=zT9iJ5PbjhLLEYo+jfeZgwNnELE4T6yi5z/mQLNwves=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=MZZFy1dgqfrDObbXb1TYn53RueBRD9zo+2RRcpca0p8vcqI71Ha3IiRpY3g90ql9CypAKHEoN2heMzPK9MGvzlFGpivY/cRQnPDD3TIuHGnVQN1A0qiCHFuTDOg9N45ZHmB+7RWdz21JWgc+6ugqXGK/b2m8wpFYDXjs15iRK1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E3ZADtVJ; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-419d320b8a5so847545e9.3;
+        Fri, 19 Apr 2024 08:29:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713540594; x=1714145394; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vA4Wyq7G4LwKrA+RVKqAzEJ7JuH0WyGpbgryKUE75M4=;
+        b=E3ZADtVJSkQgTE9zq2y4iK4MJ0XdMqXjOZxY9OCKl0a/E51Fx8Q7du181vX2DXeK/q
+         v3yWXFS702DZaOcPlwVZwWy0JoN5+Itet9xHheGLP3YwoyPTARLlnbeAAvz8CJ1XbKB0
+         q1HZPMjGxiRzUXlVPifAXTvk5IOn4e96HmK79J9yhwCfuAUpf0t/jrhujqzf/Qr1/KXM
+         e/F3QJ0YtIDAkLsgmNjwZtJ48AKdjbDe9DXUaEzrOujZ/sp84X2DTMB4hFDHeP1dA5/k
+         3zQDa+TJ0CoW7rEm5FT34BaX5d65NvD8JHof60dmbbebSrtIOsqU0KV8VaZPJgFbuFkA
+         +ukA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713540594; x=1714145394;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vA4Wyq7G4LwKrA+RVKqAzEJ7JuH0WyGpbgryKUE75M4=;
+        b=TkG1/m2sJFptos/6IH40HIiy2Vb+F80wteVCNHtkBKJ13V5qMo+VuGX7gAGm4ACDmp
+         cbCZy9jEQAIkhEiZHk2UC1kjbYCjwCYw4GVD6zVw5EIW23d8fZ3+rFNyh/PFF6ewaT7Z
+         TT4OGkzgZAcinXyaIq48YKf8X7bs7p25hVpk3de+xAzFEygadpOKuPcOJVmS0zjKH8KR
+         YZAblUtYBTnB1K4QT6qbYdCcxn7BwbG/IEg98a79OLi/RvKsn71H+JowWY4vqiBjzdTD
+         ot9/kmC5BOeJ5hOeyx8mDZ7rEyMQnKrObQr2z1IpDuloNHVpxI9MvPz6wPSJqZn2aZKE
+         QH4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWicUMcKUyaAWa0SlRD/QzT41V19jBxnE9vUkIQZg4tdwLdcZsDnZlWIDbYVZfTe2wSSWotor9IdBnNeSO0C4ftzZnxT3uwW6q/XlFczeS3rpB+pqXDJ4u1elxSh+4lsKIrlCuiTBH8O9RxP1dF2ykITMFqzETGXKXfjfpEVBg7ROFP+kgE7cuYyC4EjKvwIi+BIAPoLDNr1PrWom1C
+X-Gm-Message-State: AOJu0Yw/5/tVFfxvuybRMTD2iOGienpLC3poHngkJ0lUd0+Mr4eWx8L6
+	P3MSRkI36wxmSvEaJ1Y1R5JSYswkJ3+LBx1RO6l91U8wIsopXmGX
+X-Google-Smtp-Source: AGHT+IFunWtJWZrTq7c04EP2u1pyUQraDQihoidKL/m4rvFGMZmmkHrnyWKWLLqIPM03fOBYa5hgKQ==
+X-Received: by 2002:a05:600c:1547:b0:418:e08c:817 with SMTP id f7-20020a05600c154700b00418e08c0817mr1695973wmg.32.1713540594088;
+        Fri, 19 Apr 2024 08:29:54 -0700 (PDT)
+Received: from [192.168.18.253] (54-240-197-236.amazon.com. [54.240.197.236])
+        by smtp.gmail.com with ESMTPSA id s6-20020a05600c45c600b00418244d459esm6936153wmo.4.2024.04.19.08.29.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 08:29:53 -0700 (PDT)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <cb0a026d-aaf9-4503-a07a-a3c433a25c0e@xen.org>
+Date: Fri, 19 Apr 2024 16:29:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,84 +78,56 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] riscv: cacheinfo: initialize cacheinfo's level and
- type from ACPI PPTT
+Reply-To: paul@xen.org
+Subject: Re: [PATCH 02/10] KVM: x86: Improve accuracy of KVM clock when TSC
+ scaling is in force
+To: David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Sean Christopherson <seanjc@google.com>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Oliver Upton <oliver.upton@linux.dev>, Marcelo Tosatti
+ <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
+References: <20240418193528.41780-1-dwmw2@infradead.org>
+ <20240418193528.41780-3-dwmw2@infradead.org>
 Content-Language: en-US
-To: Yunhui Cui <cuiyunhui@bytedance.com>, rafael@kernel.org, lenb@kernel.org,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
- paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
- linux-riscv@lists.infradead.org, bhelgaas@google.com, james.morse@arm.com,
- jhugo@codeaurora.org, john.garry@huawei.com, Jonathan.Cameron@huawei.com,
- pierre.gondois@arm.com, sudeep.holla@arm.com, tiantao6@huawei.com
-References: <20240418034330.84721-1-cuiyunhui@bytedance.com>
- <20240418034330.84721-2-cuiyunhui@bytedance.com>
-From: Jeremy Linton <jeremy.linton@arm.com>
-In-Reply-To: <20240418034330.84721-2-cuiyunhui@bytedance.com>
+Organization: Xen Project
+In-Reply-To: <20240418193528.41780-3-dwmw2@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi,
-
-On 4/17/24 22:43, Yunhui Cui wrote:
-> Before cacheinfo can be built correctly, we need to initialize level
-> and type. Since RSIC-V currently does not have a register group that
-> describes cache-related attributes like ARM64, we cannot obtain them
-> directly, so now we obtain cache leaves from the ACPI PPTT table
-> (acpi_get_cache_info()) and set the cache type through split_levels.
+On 18/04/2024 20:34, David Woodhouse wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
 > 
-> Suggested-by: Jeremy Linton <jeremy.linton@arm.com>
-> Suggested-by: Sudeep Holla <sudeep.holla@arm.com>
-> Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+> The kvm_guest_time_update() function scales the host TSC frequency to
+> the guest's using kvm_scale_tsc() and the v->arch.l1_tsc_scaling_ratio
+> scaling ratio previously calculated for that vCPU. Then calcuates the
+> scaling factors for the KVM clock itself based on that guest TSC
+> frequency.
+> 
+> However, it uses kHz as the unit when scaling, and then multiplies by
+> 1000 only at the end.
+> 
+> With a host TSC frequency of 3000MHz and a guest set to 2500MHz, the
+> result of kvm_scale_tsc() will actually come out at 2,499,999kHz. So
+> the KVM clock advertised to the guest is based on a frequency of
+> 2,499,999,000 Hz.
+> 
+> By using Hz as the unit from the beginning, the KVM clock would be based
+> on a more accurate frequency of 2,499,999,999 Hz in this example.
+> 
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> Fixes: 78db6a503796 ("KVM: x86: rewrite handling of scaled TSC for kvmclock")
 > ---
->   arch/riscv/kernel/cacheinfo.c | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
+>   arch/x86/include/asm/kvm_host.h |  2 +-
+>   arch/x86/kvm/x86.c              | 17 +++++++++--------
+>   arch/x86/kvm/xen.c              |  2 +-
+>   3 files changed, 11 insertions(+), 10 deletions(-)
 > 
-> diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinfo.c
-> index 30a6878287ad..e47a1e6bd3fe 100644
-> --- a/arch/riscv/kernel/cacheinfo.c
-> +++ b/arch/riscv/kernel/cacheinfo.c
-> @@ -6,6 +6,7 @@
->   #include <linux/cpu.h>
->   #include <linux/of.h>
->   #include <asm/cacheinfo.h>
-> +#include <linux/acpi.h>
->   
->   static struct riscv_cacheinfo_ops *rv_cache_ops;
->   
-> @@ -78,6 +79,27 @@ int populate_cache_leaves(unsigned int cpu)
->   	struct device_node *prev = NULL;
->   	int levels = 1, level = 1;
->   
-> +	if (!acpi_disabled) {
-> +		int ret, fw_levels, split_levels;
-> +
-> +		ret = acpi_get_cache_info(cpu, &fw_levels, &split_levels);
-> +		if (ret)
-> +			return ret;
-> +
-> +		BUG_ON((split_levels > fw_levels) ||
-> +		       (split_levels + fw_levels > this_cpu_ci->num_leaves));
-> +
-> +		for (; level <= this_cpu_ci->num_levels; level++) {
-> +			if (level <= split_levels) {
-> +				ci_leaf_init(this_leaf++, CACHE_TYPE_DATA, level);
-> +				ci_leaf_init(this_leaf++, CACHE_TYPE_INST, level);
-> +			} else {
-> +				ci_leaf_init(this_leaf++, CACHE_TYPE_UNIFIED, level);
-> +			}
-> +		}
-> +		return 0;
-> +	}
-> +
->   	if (of_property_read_bool(np, "cache-size"))
->   		ci_leaf_init(this_leaf++, CACHE_TYPE_UNIFIED, level);
->   	if (of_property_read_bool(np, "i-cache-size"))
 
-Yes, looks good.
+Reviewed-by: Paul Durrant <paul@xen.org>
 
-Reviewed-by: Jeremy Linton <jeremy.linton@arm.com>
-
-
-
-Thanks,
 
