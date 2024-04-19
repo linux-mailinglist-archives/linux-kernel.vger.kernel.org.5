@@ -1,108 +1,116 @@
-Return-Path: <linux-kernel+bounces-152016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D17828AB773
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 01:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 38E048AB77A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 01:30:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 820CA1F21A8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:28:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E406F1F21A42
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2FC13D88F;
-	Fri, 19 Apr 2024 23:27:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="jRzCfYod"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067E313D8AC;
+	Fri, 19 Apr 2024 23:30:19 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D9C64D;
-	Fri, 19 Apr 2024 23:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B4664D;
+	Fri, 19 Apr 2024 23:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713569273; cv=none; b=KMJ/nAYqM3R5uLkAwq2w0IZw5eOdlyZajKGios0i/HM1/GAXNq/gTRgLwkTNxmoyLW0vaqHnTjjk2Xx30TMbj2R37MrP8pMHwIqJqaWDQPxZscjHlRMf11OJOK5CE2ydddg7kZ3ZgIRD3jef6ly0RKOR2JBggheTiQxSiRMPIbI=
+	t=1713569418; cv=none; b=VchaxWl1QOf8ul7RqeRNRslfbfPUQ3OhzfYTodDUNOB9Wf/g9AuCNnK4MVejr/is80Fb9wIWrli6bAvlKREropYW8GnrPKQ4FXxkeXQZlI3cZwB/p6Cm16Foo1gi/nCuoUChiNkX+gbJEy65CLqXvrR7UZqIGiLLUEfkz8nuWkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713569273; c=relaxed/simple;
-	bh=+Qx+phbbez3nCafVJWvHw2p/4Osq43K/uQphuHmnUwQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mDLb4QCC1OCpKhSdW8ZmnRBcHAcCMtbFOnhoSI8wul1PvvMKFtgERjRx6owDsHjmJFUGurahqd0X2HAxBbGctE9dOfLmPTn9/KgJsAPs5CVdNkt/DC8/9f6lraX7aVMwBgRB9nrd/kM8lnannijdhQSuTp55OTTpu2vj20QleO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=jRzCfYod; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1713569268;
-	bh=0COLxRjPIo77fJ3J44TSQPzwMK0xvmc5G2PIo/aN2Q8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=jRzCfYodBkOvSSB3DEIlwaJYIHkgEocozaQ66gtnmx5Gcv6SEyXG11mGfxhHYwSke
-	 WWOSHQ4aB+1bBQcWeYCAG4b09buYqx/SU3cEtl4pcEOrjy5qFSbteJsh+mrhevSvxn
-	 eX6sDRRAJTTN2fZJ5Uy9PDZF/YUOPbI4SFIogsdFCK/v4MXX8pdHgeJbEMx5Y0LjnH
-	 fPP/0ocARMSuF7TM+93Ar+IzQiu/3IzaNgE3E3diUMRA9RxmuUv/7ZvjuE8qz7Bo4T
-	 aqvOs5qIPJXQHQXCUrFvX7AAfrZi/wrUZtJbkVKni2l6MslwX2g82hcad7fASbUyd0
-	 wQboUqWmZ1ALQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VLrR66xPqz4wjF;
-	Sat, 20 Apr 2024 09:27:46 +1000 (AEST)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Josh Poimboeuf <jpoimboe@kernel.org>, Sean Christopherson
- <seanjc@google.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Peter Zijlstra <peterz@infradead.org>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Stephen Rothwell
- <sfr@canb.auug.org.au>, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 1/2] cpu: Re-enable CPU mitigations by default for !X86
- architectures
-In-Reply-To: <20240419160537.namt5yaxhhvwwa3r@treble>
-References: <20240417001507.2264512-1-seanjc@google.com>
- <20240417001507.2264512-2-seanjc@google.com>
- <20240419160537.namt5yaxhhvwwa3r@treble>
-Date: Sat, 20 Apr 2024 09:27:45 +1000
-Message-ID: <87mspp9bm6.fsf@mail.lhotse>
+	s=arc-20240116; t=1713569418; c=relaxed/simple;
+	bh=qZkLWvAWlgCjjdU0qNRhZCkRLi0oUlD656x5rum5Qvs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eZwN8Skbss+GkXy2+jhSECD9w8EZiTVsIhANEIU77atxd5mYNAXxdFVxAPfKYemOAoOhhb6b2TS5Y5Cvqgh9l0vKkGGHwrSZX4VPkL1Ov+uPkJmZN8bXDi3ashebRvd0bQU9zHXRUbbSHwxq2jdMRvte7nBjhkx8slJxDl+6bK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4VLr6h0Nn9z9ttCp;
+	Sat, 20 Apr 2024 07:13:32 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 2163D140B21;
+	Sat, 20 Apr 2024 07:30:03 +0800 (CST)
+Received: from [10.81.201.160] (unknown [10.81.201.160])
+	by APP2 (Coremail) with SMTP id GxC2BwBHgCRh_iJmFsaOBg--.38143S2;
+	Sat, 20 Apr 2024 00:30:02 +0100 (CET)
+Message-ID: <8a47707d-f1ba-4eb5-b516-d689ad42a168@huaweicloud.com>
+Date: Fri, 19 Apr 2024 16:29:32 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
+To: Bagas Sanjaya <bagasdotme@gmail.com>,
+ Roberto Sassu <roberto.sassu@huawei.com>, corbet <corbet@lwn.net>,
+ paul <paul@paul-moore.com>, jmorris <jmorris@namei.org>,
+ serge <serge@hallyn.com>, akpm <akpm@linux-foundation.org>,
+ shuah <shuah@kernel.org>, "mcoquelin.stm32" <mcoquelin.stm32@gmail.com>,
+ "alexandre.torgue" <alexandre.torgue@foss.st.com>, mic <mic@digikod.net>
+Cc: linux-security-module <linux-security-module@vger.kernel.org>,
+ linux-doc <linux-doc@vger.kernel.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-kselftest <linux-kselftest@vger.kernel.org>, bpf
+ <bpf@vger.kernel.org>, zohar <zohar@linux.ibm.com>,
+ "dmitry.kasatkin" <dmitry.kasatkin@gmail.com>,
+ linux-integrity <linux-integrity@vger.kernel.org>,
+ wufan <wufan@linux.microsoft.com>, pbrobinson <pbrobinson@gmail.com>,
+ zbyszek <zbyszek@in.waw.pl>, hch <hch@lst.de>, mjg59 <mjg59@srcf.ucam.org>,
+ pmatilai <pmatilai@redhat.com>, jannh <jannh@google.com>,
+ dhowells <dhowells@redhat.com>, jikos <jikos@kernel.org>,
+ mkoutny <mkoutny@suse.com>, ppavlu <ppavlu@suse.com>,
+ "petr.vorel" <petr.vorel@gmail.com>, mzerqung <mzerqung@0pointer.de>,
+ kgold <kgold@linux.ibm.com>
+References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
+ <Zh4DQ7RGxtWCam8K@archie.me>
+ <66201cd2.df0a0220.a8ad5.6fbaSMTPIN_ADDED_BROKEN@mx.google.com>
+ <fe361a16-1536-4c92-894a-0b24258384bf@gmail.com>
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+In-Reply-To: <fe361a16-1536-4c92-894a-0b24258384bf@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:GxC2BwBHgCRh_iJmFsaOBg--.38143S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYj7kC6x804xWl14x267AKxVWrJVCq3wAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjc
+	xK6I8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+	FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+	0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+	04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+	Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7
+	UUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgASBF1jj5iejAAAsv
 
-Josh Poimboeuf <jpoimboe@kernel.org> writes:
-> On Tue, Apr 16, 2024 at 05:15:06PM -0700, Sean Christopherson wrote:
->> Add a generic Kconfig, CPU_MITIGATIONS, to control whether or not CPU
->> mitigations are enabled by default, and force it on for all architectures
->> except x86.  A recent commit to turn mitigations off by default if
->> SPECULATION_MITIGATIONS=n kinda sorta missed that "cpu_mitigations" is
->> completely generic, where as SPECULATION_MITIGATIONS is x86 specific.
->> 
->> Alternatively, SPECULATION_MITIGATIONS could simply be defined in common
->> code, but that creates weirdness for x86 because SPECULATION_MITIGATIONS
->> ends up being defined twice, and the default behavior would likely depend
->> on the arbitrary include order (if the two definitions diverged).
->> 
->> Ideally, CPU_MITIGATIONS would be unconditionally on by default for all
->> architectures, and manually turned off, but there is no way to unselect a
->> Kconfig.
->> 
->> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
->> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
->> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> Closes: https://lkml.kernel.org/r/20240413115324.53303a68%40canb.auug.org.au
->> Fixes: f337a6a21e2f ("x86/cpu: Actually turn off mitigations by default for SPECULATION_MITIGATIONS=n")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Sean Christopherson <seanjc@google.com>
->
-> It seems confusing to have two config options which have very similar
-> names and similar purposes (with subtle differences depending on the
-> arch).
+On 4/19/2024 4:18 AM, Bagas Sanjaya wrote:
+> On 4/18/24 02:02, Roberto Sassu wrote:
+>>
+>> 72374d71c315
+>>
+>> Roberto
+>>
+> 
+> Still FTA (fail to apply), unfortunately.
 
-I agree.
+Sorry, looks like I didn't regenerate the patches after rebasing to the 
+latest kernel. The current ones are still based on 6.8-rc3, but they 
+still require some additional patches that I picked up.
 
-But can we please get Sean's fix into mainline before rc5.
+Will send the new version with Jarkko suggestions implemented.
 
-cheers
+Thanks
+
+Roberto
+
+
 
