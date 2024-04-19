@@ -1,172 +1,105 @@
-Return-Path: <linux-kernel+bounces-151856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D43568AB4D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:12:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94FBB8AB4D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:12:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BECB1F22DDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:12:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6EB11C2209D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:12:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C72BF13C908;
-	Fri, 19 Apr 2024 18:11:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BD813AD02;
+	Fri, 19 Apr 2024 18:12:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dvOFEz1D"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nfetJ4Ni"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D49013C3F9;
-	Fri, 19 Apr 2024 18:11:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495F113A86D
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 18:12:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713550315; cv=none; b=rOJ4zSBpZW+NYi//xNPDWv1zsjYSK16jPgplddriqG6Vgd+cWJYHDQGqNCjRv9pUfdYFM97Obsvwbfj3e1+dyLmvFCTq7Vbzb9sQtTQLtO6JkBGcWCY7vBgQlicpv6bgHxPiqHR2k+nqpQos3HcDfuMGok9uNRD+WIa6s6qBgpk=
+	t=1713550340; cv=none; b=f+8uaV2aGvLMXb4ayonQMkU25XvJGsV2zHFmCG+zFmAEO6MP5y2Wn/t+E1jasIeoTrpUhzF9ytKqlSrX+6AnzIxNReeWgbU2GOr3H7eQAys5OvXSnxX9GjbG/TKyVM+zn/swkykRE5GTlH8GnEDOvmGAnMtdSCYtTQa0S3ir0KE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713550315; c=relaxed/simple;
-	bh=3mxrOnmBvzmj0ZYSR/MunZ79FD1UTN8MfV9B9pSDJ8o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pvtwCDOhe80vifJXqcrmwlu/lltXfNj3spbwXNU8vp6or3X7vfnZo8+lIMSbBEIaO7+5lNvHzkSBobM9GZ/5kAjO+EG1gtx4U3Rz6xGyQLDdO6MAGUYrAilZ3+6wK+Xaeu0D+4spRjhM2f7hDmtGjwNhaT0EWYCkxjXkMu8OTHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dvOFEz1D; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713550313; x=1745086313;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3mxrOnmBvzmj0ZYSR/MunZ79FD1UTN8MfV9B9pSDJ8o=;
-  b=dvOFEz1D7I+d7vjcwEKwrjpKU2S6EtXLKUu2OtZ0L/q0itwUtxsArV5k
-   1leyHJzMUMnU8nqyHtNWuvb8bXCCyK+zX0iERT/GMnWndE7nXKZillVew
-   7zOooxuFxSN+SNiVbTChvzgwbtCC/FoqCIJgRg/+rKiS7Xp4olvqe1Nh5
-   lep/em2W2Eax1Zid4SSZ+wRVWs1zKFcf/q5kpiCFNIBkYogzi4sHqLV81
-   uxg0f7x4SoAnzf+AkCph8I7hkQixOK9TYEzMrztNxz+0PQmlZJSnCg4x8
-   e0Ef9H2sa1nwilWPV+y23O+qJ9y/6zWO3734zOnxDBHwLhMH1PA66CF7b
-   Q==;
-X-CSE-ConnectionGUID: nhcGRRI8RMmHDnDAITM79A==
-X-CSE-MsgGUID: 2Jha/jR5T/uQ3LHTeZDQyQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="9287939"
-X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
-   d="scan'208";a="9287939"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 11:11:52 -0700
-X-CSE-ConnectionGUID: po3BlA2/R82Z9iSdF23eGA==
-X-CSE-MsgGUID: V6xWtUSLQTyr66bSW8UXoQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
-   d="scan'208";a="23473257"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 11:11:52 -0700
-Date: Fri, 19 Apr 2024 11:11:51 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 116/130] KVM: TDX: Silently discard SMI request
-Message-ID: <20240419181151.GG3596705@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <9c4547ea234a2ba09ebe05219f180f08ac6fc2e3.1708933498.git.isaku.yamahata@intel.com>
- <ZiJ3Krs_HoqdfyWN@google.com>
+	s=arc-20240116; t=1713550340; c=relaxed/simple;
+	bh=Wz+7M6kLV5/j49HNQftiuWnlx11DArswdMRdOqQ/jc8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Glkxxf4m8teVxar6D5AXwsRK+3/mfvAndUN2KzNTRfeQm+GN9JZWPu8jrPAS+DCQ2B5O1u134Rnp+kF5XW307H/oTYljq5LnZIW4mINzE2aEg4xNsZGTDdYpqaitcBCmPjDYVCFSxGUhjNE6ocoRrBvDO4P/lEKwegL35AZVz2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nfetJ4Ni; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so2583864276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:12:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713550338; x=1714155138; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qOPICZmb4msrHYUkaQcpA3qKXuhnZGxWuMEasDEx0MA=;
+        b=nfetJ4NiMriS8KFIu7znDhCUzNpTirbEaEp4dZzKyLnrzO/lkXCkw4XEo6N1dNI/zx
+         R4EdbvKLluwQRepP1AxngCUpW/pD5xBYvQyAZazmQkVJ2M36rmAbEhdd/iq2wKmWUga8
+         jnlwYoJASHcXV625aURO8JOx3pDc17PyI23E4Zd6TOdbeE4llPu0DpHBVgbRVU5K7AYn
+         rJmbrK2vcJErLbmyv55rfzNjvHXgNhq+CYWK81Z0hskB26xhdkDgSnvaS4DSks5XEUYV
+         gdO4YfWKthYLdYx6Es0Z0vchuJETR1qfRQf7IZ8cWUD96wz3zsbT8XCgkBHvxT+4hFPY
+         0IXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713550338; x=1714155138;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qOPICZmb4msrHYUkaQcpA3qKXuhnZGxWuMEasDEx0MA=;
+        b=Sk+6wgXF8B7MjRtat1Jp69anB0/aS0q3ie1jr484Rp6z0h6+B++ylM7xtmr1Pjg8ln
+         E9PMCsKXeEl2+phf3EtayaAMX2HtsnGVh/xOKTepdzLLEG6auUN0L7kY7fmaKIdhvDYx
+         8Yrz53IKRsqqfPPusrG3jxrGnqnuJUWNeGNsVkl4rZLU+MuLsYbI55h6JeQgUymF2TJD
+         xvH5Mb5DJRoWx6h07PoxUF+/u+/Zy7k3Xh0NZn9i+4oYACDf3GGBTqBdlv9LW2pZ2q9O
+         wKmZPC4+WZYSfAdXjYgACAJJTip+V0OViKPnJZbxN0yS7mOHmg8bp4F75xCzO0w8DvuQ
+         b4Dg==
+X-Forwarded-Encrypted: i=1; AJvYcCUXTRsZwXWr0MiITOctSlGRxOVBVeJn413T4SsQ9/YOTc31yXVXk4hfz55ryVwhyqjGrxiq6kxsuFl5Fdkkn5DxSl2jQ247RKyPEtad
+X-Gm-Message-State: AOJu0YzZ0uJygXjilp5wr44XxvTAZooZVhk5bu3pwCsTa7iv2nqlftvH
+	L68f+S4lDjPLL9pUq0aOySBzAEIUauO/XGDCz2Jg62jZ9D2/AV6wNsY0v5/9CFBv1hcqmXWWEsy
+	ipGLvti0jI2yq9pYO47Q88KZB3GAvVcFcNsykig==
+X-Google-Smtp-Source: AGHT+IGxhkLPIsofUv6p/cU6MHWkhFG1QRKjgtI0vTLgun0UHmUTqcgaXxpBHh1DwVbCWGl418JAxbU/8nZLjPJmAms=
+X-Received: by 2002:a25:bc85:0:b0:dc7:8c3a:4e42 with SMTP id
+ e5-20020a25bc85000000b00dc78c3a4e42mr2771282ybk.30.1713550338352; Fri, 19 Apr
+ 2024 11:12:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZiJ3Krs_HoqdfyWN@google.com>
+References: <20240419-x1e80100-dts-fix-mdss-dp3-v2-0-10f4ed7a09b4@linaro.org> <20240419-x1e80100-dts-fix-mdss-dp3-v2-2-10f4ed7a09b4@linaro.org>
+In-Reply-To: <20240419-x1e80100-dts-fix-mdss-dp3-v2-2-10f4ed7a09b4@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 19 Apr 2024 21:12:08 +0300
+Message-ID: <CAA8EJpod25xV_0Mdx5vipaggpu74+NWrDdQOFD=wT6t6Z-sEAg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] arm64: dts: qcom: x1e80100-crd: Add data-lanes and
+ link-frequencies to DP3
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Rajendra Nayak <quic_rjendra@quicinc.com>, Sibi Sankar <quic_sibis@quicinc.com>, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Apr 19, 2024 at 06:52:42AM -0700,
-Sean Christopherson <seanjc@google.com> wrote:
+On Fri, 19 Apr 2024 at 19:14, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> The data-lanes are a property of the out remote endpoint, so move them
+> from mdss_dp3 to the mdss_dp3_out. Also add the link-frequencies to
+> mdss_dp3_out and make sure to include all frequencies.
+>
+> Fixes: d7e03cce0400 ("arm64: dts: qcom: x1e80100-crd: Enable more support")
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/x1e80100-crd.dts | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 
-> On Mon, Feb 26, 2024, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > TDX doesn't support system-management mode (SMM) and system-management
-> > interrupt (SMI) in guest TDs.  Because guest state (vcpu state, memory
-> > state) is protected, it must go through the TDX module APIs to change guest
-> > state, injecting SMI and changing vcpu mode into SMM.  The TDX module
-> > doesn't provide a way for VMM to inject SMI into guest TD and a way for VMM
-> > to switch guest vcpu mode into SMM.
-> > 
-> > We have two options in KVM when handling SMM or SMI in the guest TD or the
-> > device model (e.g. QEMU): 1) silently ignore the request or 2) return a
-> > meaningful error.
-> > 
-> > For simplicity, we implemented the option 1).
-> >
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> >  arch/x86/kvm/smm.h         |  7 +++++-
-> >  arch/x86/kvm/vmx/main.c    | 45 ++++++++++++++++++++++++++++++++++----
-> >  arch/x86/kvm/vmx/tdx.c     | 29 ++++++++++++++++++++++++
-> >  arch/x86/kvm/vmx/x86_ops.h | 12 ++++++++++
-> >  4 files changed, 88 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/smm.h b/arch/x86/kvm/smm.h
-> > index a1cf2ac5bd78..bc77902f5c18 100644
-> > --- a/arch/x86/kvm/smm.h
-> > +++ b/arch/x86/kvm/smm.h
-> > @@ -142,7 +142,12 @@ union kvm_smram {
-> >  
-> >  static inline int kvm_inject_smi(struct kvm_vcpu *vcpu)
-> >  {
-> > -	kvm_make_request(KVM_REQ_SMI, vcpu);
-> > +	/*
-> > +	 * If SMM isn't supported (e.g. TDX), silently discard SMI request.
-> > +	 * Assume that SMM supported = MSR_IA32_SMBASE supported.
-> > +	 */
-> > +	if (static_call(kvm_x86_has_emulated_msr)(vcpu->kvm, MSR_IA32_SMBASE))
-> > +		kvm_make_request(KVM_REQ_SMI, vcpu);
-> >  	return 0;
-> 
-> No, just do what KVM already does for CONFIG_KVM_SMM=n, and return -ENOTTY.  The
-> *entire* point of have a return code is to handle setups that don't support SMM.
-> 
-> 	if (!static_call(kvm_x86_has_emulated_msr)(vcpu->kvm, MSR_IA32_SMBASE)))
-> 		return -ENOTTY;
-> 
-> And with that, I would drop the comment, it's pretty darn clear what "assumption"
-> is being made.  In quotes because it's not an assumption, it's literally KVM's
-> implementation.
-> 
-> And then the changelog can say "do what KVM does for CONFIG_KVM_SMM=n" without
-> having to explain why we decided to do something completely arbitrary for TDX.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Ok.
-
-> >  }
-> >  
-> > diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> > index ed46e7e57c18..4f3b872cd401 100644
-> > --- a/arch/x86/kvm/vmx/main.c
-> > +++ b/arch/x86/kvm/vmx/main.c
-> > @@ -283,6 +283,43 @@ static void vt_msr_filter_changed(struct kvm_vcpu *vcpu)
-> >  	vmx_msr_filter_changed(vcpu);
-> >  }
-> >  
-> > +#ifdef CONFIG_KVM_SMM
-> > +static int vt_smi_allowed(struct kvm_vcpu *vcpu, bool for_injection)
-> > +{
-> > +	if (is_td_vcpu(vcpu))
-> > +		return tdx_smi_allowed(vcpu, for_injection);
-> 
-> Adding stubs for something that TDX will never support is silly.  Bug the VM and
-> return an error.
-> 
-> 	if (KVM_BUG_ON(is_td_vcpu(vcpu)))
-> 		return -EIO;
-> 
-> And I wouldn't even bother with vt_* wrappers, just put that right in vmx_*().
-> Same thing for everything below.
-
-Will drop them.  Those are traces to support guest debug.  It's future topic
-and we have arch.guest_state_protected check now.
 -- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+With best wishes
+Dmitry
 
