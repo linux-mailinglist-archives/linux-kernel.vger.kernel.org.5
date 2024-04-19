@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-151298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA5658AAC96
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:12:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 596638AAC97
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:13:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00A591C210B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:12:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19E211F210A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:13:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C45E812C805;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFDC712C819;
 	Fri, 19 Apr 2024 10:09:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e2Aayrm2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5sAkAz+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B5547F7C5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8277F7CF;
 	Fri, 19 Apr 2024 10:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713521378; cv=none; b=mHHF+Clcb0lFqKBzk5IbQ45ZwgXp/R0yiO8ohHMElF9AKwB8J9qeizRJVgOCrWwUB5MvcNg2qS+0TcQ7KPTh2UaA5cizrIT1fYDNqNuO2/Ik21j85Fq8g7dNdxJ8S768PCoxO54E7EQjhHJyUZJIUzu808+ES9a49h8hKmx5Jho=
+	t=1713521378; cv=none; b=HC8XG2TFP6Aoaz27nafrnYsB/PfguMooR72iGIBLgvkHmrVF4VCd8XdtJf5jgHjkge3ZuhJnUKZ0dEFNyc9wXhtdWuietF6fYT38feDJ9KLii585JdS5sw0iL9HAx8NxkzKl4GIzkR+fcxAkPxsM+rmAHitGTfwEcfUphUEXlP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713521378; c=relaxed/simple;
-	bh=Oh54loCHRJVtFGJB4q2HCwiYLcs9oRYxgNGQDVhsNV0=;
+	bh=zupCYmW/khoZsM2dTyo44r06AeRMOCSbdh6WzpcdHaQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=cq5+Tu+MxYWY4vVLu6AK5BPuJPzMEeUuQHX7mamr+c9PVTBSVRennfYKakAyqUvEQtlO8W/hIO5ryqTXG6n7fhKJjGVi5JYkzLAmYePVKGVJBsvWra8L2rq1g/5h68nhzeTkdjd6xiB+v8HTz3M5ZN+wh0UomtMxfpZkRxJhHa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e2Aayrm2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2B80EC4AF16;
+	 In-Reply-To:To:Cc; b=NNEJYcxW8FWec2CeOFQpNgmrJJuhSQNo/NlJ8217yKYgnvUQW7Xl070M5mZwlD63ALzO+2W3nSEKVC1SFupxVQqyqGEung8gXdw8O0IC6dQMbWfEGeGEKH/IHF0SER9hgXAdcbgjlTqrQT5rQcMXH45sVFUcvOksQDgSoA9Ksgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5sAkAz+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3C2CCC4AF18;
 	Fri, 19 Apr 2024 10:09:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1713521378;
-	bh=Oh54loCHRJVtFGJB4q2HCwiYLcs9oRYxgNGQDVhsNV0=;
+	bh=zupCYmW/khoZsM2dTyo44r06AeRMOCSbdh6WzpcdHaQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=e2Aayrm2VdczGpLjFUKoPvnhNKjRSorQazsy17gI21caKdIX51UX5MCdYNJj8qhqW
-	 6SkIkXB09U8/xUqQFbmddZwvpEmUnvHDHVYEhqOK7h0wX6DSRmccucpZy/uxtzunwT
-	 iqyWC4F4Xnkyzypz7g+wJO2/XyEIvtmSG588kHs4UnjnrxnXoqlcwV9vChM2xxTp8i
-	 IS54lavsPQNbz7Pun1mXmVr2gXvf0VLChUdzDiZ2sguQyALnc15R4oAOn5LS8QdRbj
-	 9zBPPx5PQpzo9KJ6B/uo6ZV7u8mGAMZVN2bETjal67HwTOIUzdFMeMWXb+99ufhO3Q
-	 P5xezx5ncMcFw==
+	b=b5sAkAz+MYlWVHjGyJhb7cjjMrIzPLWwdRocg9MBNvjMifN5c/oWFNcZ3YFa0pOHw
+	 rhg0FS8695lhRsCbTyEFgBfwtyd83UnH5VkXlVethdkYK/JzqPqylBJaJVr4gHIcoU
+	 VKDdVXLMJRji+B0iMICIO3yzKEoUyqm3YeitpHcUGrGd4NsWJMIaFefo+62vu1wkj4
+	 WIpyRnxpzp+FrSBckUZSmpiFmQPIqKFBxsUcA//iM0tb3qJsq6UUHYwXxOR7kyL+5K
+	 5gX4NiKRZ5yFHmUrATbcxtwXvq9ZaR+QZDmm5lNMv+/KvTEhBwptZTKSxeydAxj6z3
+	 70CwM/JLB/jLg==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2362AC04FF6;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34513C4345F;
 	Fri, 19 Apr 2024 10:09:38 +0000 (UTC)
 From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Fri, 19 Apr 2024 13:09:34 +0300
-Subject: [PATCH net-next 11/13] net: dsa: mt7530: refactor
- MT7530_PMEEECR_P()
+Date: Fri, 19 Apr 2024 13:09:35 +0300
+Subject: [PATCH net-next 12/13] net: dsa: mt7530: get rid of
+ mac_port_validate member of mt753x_info
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240419-for-netnext-mt7530-improvements-4-v1-11-6d852ca79b1d@arinc9.com>
+Message-Id: <20240419-for-netnext-mt7530-improvements-4-v1-12-6d852ca79b1d@arinc9.com>
 References: <20240419-for-netnext-mt7530-improvements-4-v1-0-6d852ca79b1d@arinc9.com>
 In-Reply-To: <20240419-for-netnext-mt7530-improvements-4-v1-0-6d852ca79b1d@arinc9.com>
 To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
@@ -73,11 +73,11 @@ Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>,
  linux-mediatek@lists.infradead.org, 
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713521374; l=2734;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713521374; l=1895;
  i=arinc.unal@arinc9.com; s=arinc9-Xeront; h=from:subject:message-id;
- bh=5wCatVwUOJ5yoMFPAyKVGUVnt4uS95CCabQrn8tU2fM=;
- b=0maqjVEcj9wlVirz6+trEGtEtGukLTt1jDOulxmYgtc5awUa2FB0JBcInEGiTz/1ZtI7g0Nkx
- nrBY7jShcPgD+dXTV3+bj4vkREykqXSfz+yJ1z1WqjGU0jWdA7aeM5x
+ bh=eQVxi9XpKVjFwy7G/fq5LbkX2JyuVqKa+YvcokozwTs=;
+ b=lxKhAM4lxFCiiqoqRrJSVABwHhzwSUDPFhr7NyBQKSYKAJ/uj+TkzxfnF1NgqOky4nNKWj8lp
+ OBrKUp3G5FsDnkupYnsKRep6NDcDGaDggv/efjBlf2CKrFDM975BVzK
 X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
  pk=z49tLn29CyiL4uwBTrqH9HO1Wu3sZIuRp4DaLZvtP9M=
 X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-Xeront
@@ -87,73 +87,47 @@ Reply-To: arinc.unal@arinc9.com
 
 From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-The MT7530_PMEEECR_P() register is on MT7530, MT7531, and the switch on the
-MT7988 SoC. Rename the definition for them to MT753X_PMEEECR_P(). Use the
-FIELD_PREP and FIELD_GET macros. Rename GET_LPI_THRESH() and
-SET_LPI_THRESH() to LPI_THRESH_GET() and LPI_THRESH_SET().
+The mac_port_validate member of the mt753x_info structure is not being
+used, remove it. Improve the member description section in the process.
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
- drivers/net/dsa/mt7530.c |  8 ++++----
- drivers/net/dsa/mt7530.h | 13 +++++++------
- 2 files changed, 11 insertions(+), 10 deletions(-)
+ drivers/net/dsa/mt7530.h | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 842c2573dfe4..5e69ff0a4b24 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -3051,10 +3051,10 @@ static int mt753x_get_mac_eee(struct dsa_switch *ds, int port,
- 			      struct ethtool_keee *e)
- {
- 	struct mt7530_priv *priv = ds->priv;
--	u32 eeecr = mt7530_read(priv, MT7530_PMEEECR_P(port));
-+	u32 eeecr = mt7530_read(priv, MT753X_PMEEECR_P(port));
- 
- 	e->tx_lpi_enabled = !(eeecr & LPI_MODE_EN);
--	e->tx_lpi_timer = GET_LPI_THRESH(eeecr);
-+	e->tx_lpi_timer = LPI_THRESH_GET(eeecr);
- 
- 	return 0;
- }
-@@ -3068,11 +3068,11 @@ static int mt753x_set_mac_eee(struct dsa_switch *ds, int port,
- 	if (e->tx_lpi_timer > 0xFFF)
- 		return -EINVAL;
- 
--	set = SET_LPI_THRESH(e->tx_lpi_timer);
-+	set = LPI_THRESH_SET(e->tx_lpi_timer);
- 	if (!e->tx_lpi_enabled)
- 		/* Force LPI Mode without a delay */
- 		set |= LPI_MODE_EN;
--	mt7530_rmw(priv, MT7530_PMEEECR_P(port), mask, set);
-+	mt7530_rmw(priv, MT753X_PMEEECR_P(port), mask, set);
- 
- 	return 0;
- }
 diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index 1f3aeccc77be..6a6ef34b48c4 100644
+index 6a6ef34b48c4..2ea4e24628c6 100644
 --- a/drivers/net/dsa/mt7530.h
 +++ b/drivers/net/dsa/mt7530.h
-@@ -364,13 +364,14 @@ enum mt7530_vlan_port_acc_frm {
- 					 PMCR_FORCE_SPEED_100 | \
- 					 PMCR_FORCE_FDX | PMCR_FORCE_LNK)
+@@ -743,15 +743,14 @@ struct mt753x_pcs {
  
--#define MT7530_PMEEECR_P(x)		(0x3004 + (x) * 0x100)
--#define  WAKEUP_TIME_1000(x)		(((x) & 0xFF) << 24)
--#define  WAKEUP_TIME_100(x)		(((x) & 0xFF) << 16)
-+#define MT753X_PMEEECR_P(x)		(0x3004 + (x) * 0x100)
-+#define  WAKEUP_TIME_1000_MASK		GENMASK(31, 24)
-+#define  WAKEUP_TIME_1000(x)		FIELD_PREP(WAKEUP_TIME_1000_MASK, x)
-+#define  WAKEUP_TIME_100_MASK		GENMASK(23, 16)
-+#define  WAKEUP_TIME_100(x)		FIELD_PREP(WAKEUP_TIME_100_MASK, x)
- #define  LPI_THRESH_MASK		GENMASK(15, 4)
--#define  LPI_THRESH_SHT			4
--#define  SET_LPI_THRESH(x)		(((x) << LPI_THRESH_SHT) & LPI_THRESH_MASK)
--#define  GET_LPI_THRESH(x)		(((x) & LPI_THRESH_MASK) >> LPI_THRESH_SHT)
-+#define  LPI_THRESH_GET(x)		FIELD_GET(LPI_THRESH_MASK, x)
-+#define  LPI_THRESH_SET(x)		FIELD_PREP(LPI_THRESH_MASK, x)
- #define  LPI_MODE_EN			BIT(0)
- 
- #define MT7530_PMSR_P(x)		(0x3008 + (x) * 0x100)
+ /* struct mt753x_info -	This is the main data structure for holding the specific
+  *			part for each supported device
++ * @id:			Holding the identifier to a switch model
++ * @pcs_ops:		Holding the pointer to the MAC PCS operations structure
+  * @sw_setup:		Holding the handler to a device initialization
+  * @phy_read_c22:	Holding the way reading PHY port using C22
+  * @phy_write_c22:	Holding the way writing PHY port using C22
+  * @phy_read_c45:	Holding the way reading PHY port using C45
+  * @phy_write_c45:	Holding the way writing PHY port using C45
+- * @phy_mode_supported:	Check if the PHY type is being supported on a certain
+- *			port
+- * @mac_port_validate:	Holding the way to set addition validate type for a
+- *			certan MAC port
++ * @mac_port_get_caps:	Holding the handler that provides MAC capabilities
+  * @mac_port_config:	Holding the way setting up the PHY attribute to a
+  *			certain MAC port
+  */
+@@ -770,9 +769,6 @@ struct mt753x_info {
+ 			     int regnum, u16 val);
+ 	void (*mac_port_get_caps)(struct dsa_switch *ds, int port,
+ 				  struct phylink_config *config);
+-	void (*mac_port_validate)(struct dsa_switch *ds, int port,
+-				  phy_interface_t interface,
+-				  unsigned long *supported);
+ 	void (*mac_port_config)(struct dsa_switch *ds, int port,
+ 				unsigned int mode,
+ 				phy_interface_t interface);
 
 -- 
 2.40.1
