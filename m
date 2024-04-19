@@ -1,140 +1,292 @@
-Return-Path: <linux-kernel+bounces-150952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1325E8AA718
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 05:23:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A5378AA739
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 05:33:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4478F1C20B6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:23:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD85D1F21B29
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF7879F9;
-	Fri, 19 Apr 2024 03:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AyCch/jV"
-Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91EE979F9;
+	Fri, 19 Apr 2024 03:32:55 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9712F29;
-	Fri, 19 Apr 2024 03:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2514E6107
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 03:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713497010; cv=none; b=dHfQd8nPc1UI7DJ5e2sj92uCYR00yQoOI0RLBafYLF1mDoF+pH41braZDCNsuET03CKsc1NtYKnsGSsAFK9OaRW6vjIGp95J6zLVOm77p2v/qfkSeErjm/VVypIXrEurAtX6PkRDDOrk2W4B7CnJgNL4A6BbTqvo5sDqmdbSxwU=
+	t=1713497574; cv=none; b=PVf9+JYduBsOjNLifmC3sYrzjEtededUzYX/b3f+MEdwVIjVgQEGP6li+0UtNeJQtcieplN4zXth+64YOc8s78AVMQrJlPvssufJNSbz/u2rpPxsU76eyrXgg439SE1nmKdPO29lTI4dVQOsZdVidLO+i0LYt6un4ctmdmagz24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713497010; c=relaxed/simple;
-	bh=SUmuINA+bjdWdk4wF+C/KB+0NtQvv+XG/HKRIM+2tWs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hjIaksJ0mTu3ttm3pRTUZSg/tt9/n4Gg8Jirojv17sBfzRUizf6SkBm+xcrGYlOaUTrT0PmBq2Xt3Hi1pr3PFnn2ZUX+sp1we/6M64VIWNAquW+8u31p854e3dGgmUx4bQ6Srjcy7+hce16vcD4REKAy2hqEPo7AUByPAFxca3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AyCch/jV; arc=none smtp.client-ip=209.85.214.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-1e2bbc2048eso13830525ad.3;
-        Thu, 18 Apr 2024 20:23:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713497008; x=1714101808; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rkTMLIqteFTKJ/kNcp3QQqr3wtAr/MdNE0+T1ql8bB4=;
-        b=AyCch/jV1iiXfQX9L+hNJsmYIgyilJvywtT+nkpmC6SxhcY+jtEF7mrvCMJ0Th8pOj
-         2PdbiXfwGExAxeUqk0pDcg9bEitnIsLSu7hDI5Rmpl1GZxslFsrKgDTMm8IRE0bI0i03
-         vb7T8jUGcNvyVLwm28W63lmlEw7D4iQ8mD79zkQz9+5weNmXUG7LZ1lGbbs0QRhLxeDu
-         hpvEW+F++az/ZwFVzNghYq6iY9V8MQEahyzYnyFZVUxShL50S5dXJoUCHGTmfklu7lS+
-         FbqafeMwbp+drKvhpq5Kdl41kKU+S7qizBLk1GpYtYL7+87ftHa1sKNwIFAsXSgtt/b3
-         9X9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713497008; x=1714101808;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rkTMLIqteFTKJ/kNcp3QQqr3wtAr/MdNE0+T1ql8bB4=;
-        b=eqa8xdKOnWp8Qv2al7q9/NcNQFJtmo6pH0zaT7Vd/pm1u/i3sZwRBnWRSHqT/2OOeZ
-         TulxaDduIVWMCeTp8CJk/ltINFMXRVorUybzdu9ui2YupfLWClVyKspq/J4sjbGOVJKq
-         gg2gY2uf0RGo5yKvI/sddEt4kRNp2q/7MGAtDq0kCNTXmyGXKm/mR9aH4TGwEhjdJ0KE
-         uByYMWYRtkVClEf03ceqZCj+yXeXStnhK/9WnxA/yjSxu5JXkZCLzR+n4A86WBz5X1Qm
-         0nzgy78b7dKCeW/V0YDuq2PJLOVpeLKbXa1GWZXZdtvGZIbA1B8RxGqLugY1Tv5tEUma
-         dsvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWKT8KXFTIR/34BR7SDRGMYdBiyErVf/USW5RoTvEAzFMbkW2VSH4807xiVc50QHarWzngWaJmq/mHV/xDk5C7MQQnrUtuOi4YAlxug8AnI6u4G9fPS97dwrgSj6F3Gb4O/kevWzK+JRg==
-X-Gm-Message-State: AOJu0YwjD8Ywton2hRFbBdaTMpLB13PNq7jlorG5/ri1JLElcmoW0Yv+
-	3FsAomJ2B5Fj6Nug5WK1IOqe+7xFDAoURkEO3jZXChDXNWPVQq5c
-X-Google-Smtp-Source: AGHT+IFcqSNcJwvLtQsKIF35W+no4QmEUqR9PgxOJnSrzkqnfVrSeUklYgHoCBe3eD+W5EXz3SXiCg==
-X-Received: by 2002:a17:902:ecc8:b0:1e2:71fd:dd85 with SMTP id a8-20020a170902ecc800b001e271fddd85mr1103014plh.23.1713497008312;
-        Thu, 18 Apr 2024 20:23:28 -0700 (PDT)
-Received: from [172.27.234.152] (ec2-16-163-40-128.ap-east-1.compute.amazonaws.com. [16.163.40.128])
-        by smtp.gmail.com with ESMTPSA id s2-20020a170902ea0200b001e43cf17fe5sm2291080plg.6.2024.04.18.20.23.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 20:23:27 -0700 (PDT)
-Message-ID: <8738cb85-fac1-4a15-9666-eb05316f5368@gmail.com>
-Date: Fri, 19 Apr 2024 11:23:20 +0800
+	s=arc-20240116; t=1713497574; c=relaxed/simple;
+	bh=j+w1JdCsgcolRrZvw5BmG6lB2lEdHyVr4MYijlN2HH4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=F0Yx1NIBdP8HkU5RYYj4kVV3F6tZb42w5Zim2Lllr0oQ3VpH5ziLnGULl+20TSYVVa9ae0Xkpt5zepxv+jKs8hgTchfAw1DR9I8AH2Rr+zW3giskVKNo0/K1Nopnuo0/FTPCmPvN2cDhmXn12cmnvimHT0dsp8jk+zqr14x0x2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VLKsQ4HXDz1xv0l;
+	Fri, 19 Apr 2024 11:30:18 +0800 (CST)
+Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
+	by mail.maildlp.com (Postfix) with ESMTPS id BD084140136;
+	Fri, 19 Apr 2024 11:32:43 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 19 Apr 2024 11:32:42 +0800
+Message-ID: <c1c79eb5-4d48-40e5-6f17-f8bc42f2d274@huawei.com>
+Date: Fri, 19 Apr 2024 11:32:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v16 2/9] irqchip: Add RISC-V incoming MSI controller early
- driver
-To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>,
- Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Frank Rowand <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Atish Patra <atishp@atishpatra.org>,
- Andrew Jones <ajones@ventanamicro.com>, Sunil V L
- <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>,
- Anup Patel <anup@brainfault.org>, linux-riscv@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240307140307.646078-1-apatel@ventanamicro.com>
- <20240307140307.646078-3-apatel@ventanamicro.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [RFC PATCH v2 2/2] mm: convert mm's rss stats to use atomic mode
 Content-Language: en-US
-From: Eric Cheng <eric.cheng.linux@gmail.com>
-In-Reply-To: <20240307140307.646078-3-apatel@ventanamicro.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Rongwei Wang <rongwei.wrw@gmail.com>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <akpm@linux-foundation.org>, <dennisszhou@gmail.com>,
+	<shakeelb@google.com>, <jack@suse.cz>, <surenb@google.com>,
+	<kent.overstreet@linux.dev>, <mhocko@suse.cz>, <vbabka@suse.cz>,
+	<yuzhao@google.com>, <yu.ma@intel.com>, <wangkefeng.wang@huawei.com>,
+	<sunnanyong@huawei.com>
+References: <20240418142008.2775308-1-zhangpeng362@huawei.com>
+ <20240418142008.2775308-3-zhangpeng362@huawei.com>
+ <ec2b110b-fb85-4af2-942b-645511a32297@gmail.com>
+From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <ec2b110b-fb85-4af2-942b-645511a32297@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600020.china.huawei.com (7.193.23.147)
 
-On 3/7/2024 10:03 PM, Anup Patel wrote:
+On 2024/4/19 10:30, Rongwei Wang wrote:
 
-> +static int __init imsic_parse_fwnode(struct fwnode_handle *fwnode,
-> +				     struct imsic_global_config *global,
-> +				     u32 *nr_parent_irqs,
-> +				     u32 *nr_mmios)
-> +{
+> On 2024/4/18 22:20, Peng Zhang wrote:
+>> From: ZhangPeng <zhangpeng362@huawei.com>
+>>
+>> Since commit f1a7941243c1 ("mm: convert mm's rss stats into
+>> percpu_counter"), the rss_stats have converted into percpu_counter,
+>> which convert the error margin from (nr_threads * 64) to approximately
+>> (nr_cpus ^ 2). However, the new percpu allocation in mm_init() causes a
+>> performance regression on fork/exec/shell. Even after commit 
+>> 14ef95be6f55
+>> ("kernel/fork: group allocation/free of per-cpu counters for mm 
+>> struct"),
+>> the performance of fork/exec/shell is still poor compared to previous
+>> kernel versions.
+>>
+>> To mitigate performance regression, we delay the allocation of percpu
+>> memory for rss_stats. Therefore, we convert mm's rss stats to use
+>> percpu_counter atomic mode. For single-thread processes, rss_stat is in
+>> atomic mode, which reduces the memory consumption and performance
+>> regression caused by using percpu. For multiple-thread processes,
+>> rss_stat is switched to the percpu mode to reduce the error margin.
+>> We convert rss_stats from atomic mode to percpu mode only when the
+>> second thread is created.
+> Hi, Zhang Peng
+>
+> This regression we also found it in lmbench these days. I have not 
+> test your patch, but it seems will solve a lot for it.
+> And I see this patch not fix the regression in multi-threads, that's 
+> because of the rss_stat switched to percpu mode?
+> (If I'm wrong, please correct me.) And It seems percpu_counter also 
+> has a bad effect in exit_mmap().
+>
+> If so, I'm wondering if we can further improving it on the exit_mmap() 
+> path in multi-threads scenario, e.g. to determine which CPUs the 
+> process has run on (mm_cpumask()? I'm not sure).
+>
+Hi, Rongwei,
 
-..
+Yes, this patch only fixes the regression in single-thread processes. How
+much bad effect does percpu_counter have in exit_mmap()? IMHO, the addition
+of mm counter is already in batch mode, maybe I miss something?
 
-> +	/*
-> +	 * Find first bit position of group index.
-> +	 * If not specified assumed the default APLIC-IMSIC configuration.
-> +	 */
-> +	rc = of_property_read_u32(to_of_node(fwnode), "riscv,group-index-shift",
-> +				  &global->group_index_shift);
-> +	if (rc)
-> +		global->group_index_shift = IMSIC_MMIO_PAGE_SHIFT * 2;
-> +
-> +	/* Find number of interrupt identities */
-> +	rc = of_property_read_u32(to_of_node(fwnode), "riscv,num-ids",
-> +				  &global->nr_ids);
+>>
+>> After lmbench test, we can get 2% ~ 4% performance improvement
+>> for lmbench fork_proc/exec_proc/shell_proc and 6.7% performance
+>> improvement for lmbench page_fault (before batch mode[1]).
+>>
+>> The test results are as follows:
+>>
+>>               base           base+revert        base+this patch
+>>
+>> fork_proc    416.3ms        400.0ms  (3.9%)    398.6ms  (4.2%)
+>> exec_proc    2095.9ms       2061.1ms (1.7%)    2047.7ms (2.3%)
+>> shell_proc   3028.2ms       2954.7ms (2.4%)    2961.2ms (2.2%)
+>> page_fault   0.3603ms       0.3358ms (6.8%)    0.3361ms (6.7%)
+> I think the regression will becomes more obvious if more cores. How 
+> about your test machine?
+>
+Maybe multi-core is not a factor in the performance of the lmbench test here.
+Both of my test machines have 96 cores.
 
-Will here check if the pass-in interrupt identity number is (multi-64 -1) && 
-between [63, 2047]?
-Per spec AIA v1.0, Sec. 3.1 Interrupt files and interrupt identities:
-"The number of interrupt identities supported by an interrupt file (and hence 
-the number of active
-bits in each array) is one less than a multiple of 64, and may be a minimum of 
-63 and a maximum
-of 2047."
-
-> +	if (rc) {
-> +		pr_err("%pfwP: number of interrupt identities not found\n", fwnode);
-> +		return rc;
-> +	}
-> +
-..
-
+> Thanks,
+> -wrw
+>>
+>> [1] 
+>> https://lore.kernel.org/all/20240412064751.119015-1-wangkefeng.wang@huawei.com/
+>>
+>> Suggested-by: Jan Kara <jack@suse.cz>
+>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>> ---
+>>   include/linux/mm.h          | 50 +++++++++++++++++++++++++++++++------
+>>   include/trace/events/kmem.h |  4 +--
+>>   kernel/fork.c               | 18 +++++++------
+>>   3 files changed, 56 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>> index d261e45bb29b..8f1bfbd54697 100644
+>> --- a/include/linux/mm.h
+>> +++ b/include/linux/mm.h
+>> @@ -2631,30 +2631,66 @@ static inline bool 
+>> get_user_page_fast_only(unsigned long addr,
+>>    */
+>>   static inline unsigned long get_mm_counter(struct mm_struct *mm, 
+>> int member)
+>>   {
+>> -    return percpu_counter_read_positive(&mm->rss_stat[member]);
+>> +    struct percpu_counter *fbc = &mm->rss_stat[member];
+>> +
+>> +    if (percpu_counter_initialized(fbc))
+>> +        return percpu_counter_read_positive(fbc);
+>> +
+>> +    return percpu_counter_atomic_read(fbc);
+>>   }
+>>     void mm_trace_rss_stat(struct mm_struct *mm, int member);
+>>     static inline void add_mm_counter(struct mm_struct *mm, int 
+>> member, long value)
+>>   {
+>> -    percpu_counter_add(&mm->rss_stat[member], value);
+>> +    struct percpu_counter *fbc = &mm->rss_stat[member];
+>> +
+>> +    if (percpu_counter_initialized(fbc))
+>> +        percpu_counter_add(fbc, value);
+>> +    else
+>> +        percpu_counter_atomic_add(fbc, value);
+>>         mm_trace_rss_stat(mm, member);
+>>   }
+>>     static inline void inc_mm_counter(struct mm_struct *mm, int member)
+>>   {
+>> -    percpu_counter_inc(&mm->rss_stat[member]);
+>> -
+>> -    mm_trace_rss_stat(mm, member);
+>> +    add_mm_counter(mm, member, 1);
+>>   }
+>>     static inline void dec_mm_counter(struct mm_struct *mm, int member)
+>>   {
+>> -    percpu_counter_dec(&mm->rss_stat[member]);
+>> +    add_mm_counter(mm, member, -1);
+>> +}
+>>   -    mm_trace_rss_stat(mm, member);
+>> +static inline s64 mm_counter_sum(struct mm_struct *mm, int member)
+>> +{
+>> +    struct percpu_counter *fbc = &mm->rss_stat[member];
+>> +
+>> +    if (percpu_counter_initialized(fbc))
+>> +        return percpu_counter_sum(fbc);
+>> +
+>> +    return percpu_counter_atomic_read(fbc);
+>> +}
+>> +
+>> +static inline s64 mm_counter_sum_positive(struct mm_struct *mm, int 
+>> member)
+>> +{
+>> +    struct percpu_counter *fbc = &mm->rss_stat[member];
+>> +
+>> +    if (percpu_counter_initialized(fbc))
+>> +        return percpu_counter_sum_positive(fbc);
+>> +
+>> +    return percpu_counter_atomic_read(fbc);
+>> +}
+>> +
+>> +static inline int mm_counter_switch_to_pcpu_many(struct mm_struct *mm)
+>> +{
+>> +    return percpu_counter_switch_to_pcpu_many(mm->rss_stat, 
+>> NR_MM_COUNTERS);
+>> +}
+>> +
+>> +static inline void mm_counter_destroy_many(struct mm_struct *mm)
+>> +{
+>> +    percpu_counter_destroy_many(mm->rss_stat, NR_MM_COUNTERS);
+>>   }
+>>     /* Optimized variant when folio is already known not to be anon */
+>> diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
+>> index 6e62cc64cd92..a4e40ae6a8c8 100644
+>> --- a/include/trace/events/kmem.h
+>> +++ b/include/trace/events/kmem.h
+>> @@ -399,8 +399,8 @@ TRACE_EVENT(rss_stat,
+>>           __entry->mm_id = mm_ptr_to_hash(mm);
+>>           __entry->curr = !!(current->mm == mm);
+>>           __entry->member = member;
+>> -        __entry->size = 
+>> (percpu_counter_sum_positive(&mm->rss_stat[member])
+>> -                                << PAGE_SHIFT);
+>> +        __entry->size = (mm_counter_sum_positive(mm, member)
+>> +                            << PAGE_SHIFT);
+>>       ),
+>>         TP_printk("mm_id=%u curr=%d type=%s size=%ldB",
+>> diff --git a/kernel/fork.c b/kernel/fork.c
+>> index 99076dbe27d8..0214273798c5 100644
+>> --- a/kernel/fork.c
+>> +++ b/kernel/fork.c
+>> @@ -823,7 +823,7 @@ static void check_mm(struct mm_struct *mm)
+>>                "Please make sure 'struct resident_page_types[]' is 
+>> updated as well");
+>>         for (i = 0; i < NR_MM_COUNTERS; i++) {
+>> -        long x = percpu_counter_sum(&mm->rss_stat[i]);
+>> +        long x = mm_counter_sum(mm, i);
+>>             if (unlikely(x))
+>>               pr_alert("BUG: Bad rss-counter state mm:%p type:%s 
+>> val:%ld\n",
+>> @@ -1301,16 +1301,10 @@ static struct mm_struct *mm_init(struct 
+>> mm_struct *mm, struct task_struct *p,
+>>       if (mm_alloc_cid(mm))
+>>           goto fail_cid;
+>>   -    if (percpu_counter_init_many(mm->rss_stat, 0, GFP_KERNEL_ACCOUNT,
+>> -                     NR_MM_COUNTERS))
+>> -        goto fail_pcpu;
+>> -
+>>       mm->user_ns = get_user_ns(user_ns);
+>>       lru_gen_init_mm(mm);
+>>       return mm;
+>>   -fail_pcpu:
+>> -    mm_destroy_cid(mm);
+>>   fail_cid:
+>>       destroy_context(mm);
+>>   fail_nocontext:
+>> @@ -1730,6 +1724,16 @@ static int copy_mm(unsigned long clone_flags, 
+>> struct task_struct *tsk)
+>>       if (!oldmm)
+>>           return 0;
+>>   +    /*
+>> +     * For single-thread processes, rss_stat is in atomic mode, which
+>> +     * reduces the memory consumption and performance regression 
+>> caused by
+>> +     * using percpu. For multiple-thread processes, rss_stat is 
+>> switched to
+>> +     * the percpu mode to reduce the error margin.
+>> +     */
+>> +    if (clone_flags & CLONE_THREAD)
+>> +        if (mm_counter_switch_to_pcpu_many(oldmm))
+>> +            return -ENOMEM;
+>> +
+>>       if (clone_flags & CLONE_VM) {
+>>           mmget(oldmm);
+>>           mm = oldmm;
+>
+>
+-- 
+Best Regards,
+Peng
 
 
