@@ -1,344 +1,144 @@
-Return-Path: <linux-kernel+bounces-151163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C91F8AAA25
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:27:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 545408AAA26
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:28:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 654291C21FDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:27:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 091961F21D5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF16664CE8;
-	Fri, 19 Apr 2024 08:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82EE85FB95;
+	Fri, 19 Apr 2024 08:27:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NLdUCz4t"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="L7Qc9X8A"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F7D54BE0;
-	Fri, 19 Apr 2024 08:27:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5299565BA8
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713515240; cv=none; b=mU3UffMwrEjdKe0+jr7elNNA/8nFBKM4E0Sg8ECerR7hJJMTgUXm+6TBXmnoPPr0ZTZ1jm7dR1C53ItK8DGKcMIq61nUDap8fHBFj9q1clMpfpuL7dbVtoMnqVn/pg7kMDdEHAk+Yp/GubE98qsrTqYa4UzkE2aHILXI9Lw60BU=
+	t=1713515247; cv=none; b=W7+Z7QfKc9EREjfLMWRgLdyfOBC9Ehhg5h9u15rvRcSrV1vsmWFEgvlCLfItvlASMZnQBskxeTNxdLWqxeb408aQS/wBIcY+lOQ8VDOF2yssUCpK1TOW3jVoLSMWJch5/zZ2k/QdJylpyLr1mHEyHJpOEOINgn2HqQdN7FCK8SE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713515240; c=relaxed/simple;
-	bh=0+R20zaH/T9a4jn+y979zfViHDl1b73xGQgSknZkUGk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tnx4RnlnrzSfbJrTgYgVbDQNWgGrV1EFWYzFtvJa8TQrvIqqLCmH7UX6iRvqnTwMsNk3F8UZ1OK/1eNjzDwRl6dR1r3qLM2zmPNObvdhNE9hGQwL+bzSyAYxB0aEcc3xGJ4oBIhhnx3zYl/3+Sz4zTAMZC0U7ZW3PqDCbsSem9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NLdUCz4t; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43J8QrEQ068321;
-	Fri, 19 Apr 2024 03:26:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713515214;
-	bh=HrrgexdadworYGywLGjaNy1Fs6tTvKMaNiSYA/XEieI=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=NLdUCz4t36duulEP6HhOFNQf3BMo7VOg1t6i+m17q3DEzXrD1YaM52jZ+WcDYM9hV
-	 96bm5VLCq522RTrLz0Nc44r5dyENvEU2P7Sm0oWsWJcrcNKEpwLs0JkUogWCTZADfs
-	 UMPSCwSP3bDwcHXyFjZSoprixRtVgrqDJaQxDl5Q=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43J8QrIn019146
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 19 Apr 2024 03:26:53 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 19
- Apr 2024 03:26:53 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 19 Apr 2024 03:26:54 -0500
-Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43J8QqhI036096;
-	Fri, 19 Apr 2024 03:26:53 -0500
-From: Chintan Vankar <c-vankar@ti.com>
-To: Julien Panis <jpanis@baylibre.com>, Arnd Bergmann <arnd@arndb.de>,
-        Dan
- Carpenter <dan.carpenter@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Chintan Vankar <c-vankar@ti.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>, Roger Quadros <rogerq@kernel.org>,
-        Richard
- Cochran <richardcochran@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>, Jakub
- Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S.
- Miller" <davem@davemloft.net>, <s-vadapalli@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: [PATCH net-next v8 2/2] net: ethernet: ti: am65-cpsw/ethtool: Enable RX HW timestamp only for PTP packets
-Date: Fri, 19 Apr 2024 13:56:26 +0530
-Message-ID: <20240419082626.57225-3-c-vankar@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240419082626.57225-1-c-vankar@ti.com>
-References: <20240419082626.57225-1-c-vankar@ti.com>
+	s=arc-20240116; t=1713515247; c=relaxed/simple;
+	bh=aP8T+L34lw2c4CnWLlQ0WQsB+pBClVN9MOPNilVm71Q=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Z4NNeSGkPX9hymjyQOTGAHw1oiQDrX+HZRfof92+997Eka+GONPhJQAqKzxnu75iV+NIY08VLfInXBMd/ZqUWwj7uvPW8rgY0qH7JXBpp+gVNF5lHrXsHknPF21ymx3CBsUYT31+4Y7F+oE79QCg4T+eVIBM32WPMI0oxQZ7Um0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=L7Qc9X8A; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43J8RCkn001727;
+	Fri, 19 Apr 2024 08:27:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=mUz7G2I31WWjnfIm90UXXiHcAE5I6dJUYddf94VWWLk=;
+ b=L7Qc9X8AaG34HRMO88C4PXIzIaUK1HzIh2LaB0OvyuLI2rHX3dbRPwdXXT9XwZj+5a6a
+ D7+LAxU0cg7Mte9Hj2AOYEscDAMgdO/aseF6y/KpPFL6D7RZWq4gOzPDsigPO05CIoNU
+ eSBo8r59fx+aK69vnt/eeL1nhwsT8I9jG3bzoT+d96Ti2fmyBJlu/nrz4vh9u8YQMiRf
+ s3eCwQ/sW0lU+6Yx5OgN6pNev63Qo2gcg4upwOmanH0qexhwXqcVp5QHmXz53h5SR/1o
+ HImvqnF1DPkaUOUDE1dAj4s0xxoBxc7LvcqAphDgfzeMmTdtvL4cL5bG3x1EnXhOL/qS 3g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xkn40g014-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Apr 2024 08:27:12 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43J8RBNJ001717;
+	Fri, 19 Apr 2024 08:27:11 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xkn40g011-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Apr 2024 08:27:11 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43J5FbYx020834;
+	Fri, 19 Apr 2024 08:27:10 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xkbm9jh1s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 19 Apr 2024 08:27:10 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43J8R6Xi36831546
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Apr 2024 08:27:08 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6187D2004D;
+	Fri, 19 Apr 2024 08:27:06 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3C4BD2004B;
+	Fri, 19 Apr 2024 08:27:06 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 19 Apr 2024 08:27:06 +0000 (GMT)
+From: Sven Schnelle <svens@linux.ibm.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] workqueue: fix selection of wake_cpu in kick_pool()
+In-Reply-To: <ZiB9rYBu-0qjsCbF@slm.duckdns.org> (Tejun Heo's message of "Wed,
+	17 Apr 2024 15:55:57 -1000")
+References: <20240415053550.538722-1-svens@linux.ibm.com>
+	<Zh8EfxdVdiIj_27H@slm.duckdns.org> <yt9dpluogfw9.fsf@linux.ibm.com>
+	<ZiB9rYBu-0qjsCbF@slm.duckdns.org>
+Date: Fri, 19 Apr 2024 10:27:05 +0200
+Message-ID: <yt9dzftp3gh2.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Y4SsCU9Q2x3du1ED6odiU_SQestHSyPM
+X-Proofpoint-GUID: L9Jn3h-Az_dddY7AlmM7LgwALECaXbq1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-19_05,2024-04-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=472 impostorscore=0 suspectscore=0 adultscore=0 phishscore=0
+ malwarescore=0 clxscore=1011 bulkscore=0 spamscore=0 lowpriorityscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404190062
 
-In the current mechanism of timestamping, am65-cpsw-nuss driver
-enables hardware timestamping for all received packets by setting
-the TSTAMP_EN bit in CPTS_CONTROL register, which directs the CPTS
-module to timestamp all received packets, followed by passing
-timestamp via DMA descriptors. This mechanism causes CPSW Port to
-Lock up.
+Hi Tejun,
 
-To prevent port lock up, don't enable rx packet timestamping by
-setting TSTAMP_EN bit in CPTS_CONTROL register. The workaround for
-timestamping received packets is to utilize the CPTS Event FIFO
-that records timestamps corresponding to certain events. The CPTS
-module is configured to generate timestamps for Multicast Ethernet,
-UDP/IPv4 and UDP/IPv6 PTP packets.
+Tejun Heo <tj@kernel.org> writes:
 
-Update supported hwtstamp_rx_filters values for CPSW's timestamping
-capability.
+> On Wed, Apr 17, 2024 at 05:36:38PM +0200, Sven Schnelle wrote:
+>> > This generally seems like a good idea but isn't this still racy? The CPU may
+>> > go down between setting p->wake_cpu and wake_up_process().
+>> 
+>> Don't know without reading the source, but how does this code normally
+>> protect against that?
+>
+> Probably by wrapping determining the wake_cpu and the wake_up inside
+> cpu_read_lock() section.
 
-Fixes: b1f66a5bee07 ("net: ethernet: ti: am65-cpsw-nuss: enable packet timestamping support")
-Signed-off-by: Chintan Vankar <c-vankar@ti.com>
----
+Do you mean rcu_read_lock()? cpus_read_lock() takes a mutex, and the
+crash happens in softirq context - so cpus_read_lock() can't be the
+correct lock.
 
-Link to v7:
-https://lore.kernel.org/r/20240417120913.3811519-3-c-vankar@ti.com/
+If i read the code correctly, cpu hotplug uses stop_machine_cpuslocked()
+- so rcu_read_lock() should be sufficient for non-atomic context.
 
-Changes from v7 to v8:
-- Removed empty lines between trailers as suggested by Jakub.
+Looking at the backtrace the crash is actually happening in
+arch_vpu_is_preempted(). I don't know the semantics of that function,
+whether it is ok to call it for offline CPUs, or whether the calling
+code should make sure that the cpu is online (which would be my guess).
 
- drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 13 +++++-
- drivers/net/ethernet/ti/am65-cpsw-nuss.c    | 51 ++++++++++-----------
- drivers/net/ethernet/ti/am65-cpts.c         | 23 ----------
- drivers/net/ethernet/ti/am65-cpts.h         |  5 --
- 4 files changed, 35 insertions(+), 57 deletions(-)
+Following the backtrace from my initial mail, I can't find a place where
+a check is done whether p->wake_cpu is actually online. Eventually
+available_idle_cpu() is calling vcpu_is_preempted(). I wonder whether
+available_idle_cpu() should do a cpu_online() check right at the
+beginning?
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-index d6ce2c9f0a8d..a1d0935d1ebe 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-@@ -695,6 +695,17 @@ static int am65_cpsw_get_ethtool_ts_info(struct net_device *ndev,
- 					 struct ethtool_ts_info *info)
- {
- 	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
-+	unsigned int ptp_v2_filter;
-+
-+	ptp_v2_filter = BIT(HWTSTAMP_FILTER_PTP_V2_L4_EVENT)	 |
-+			BIT(HWTSTAMP_FILTER_PTP_V2_L4_SYNC)	 |
-+			BIT(HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ) |
-+			BIT(HWTSTAMP_FILTER_PTP_V2_L2_EVENT)	 |
-+			BIT(HWTSTAMP_FILTER_PTP_V2_L2_SYNC)	 |
-+			BIT(HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ) |
-+			BIT(HWTSTAMP_FILTER_PTP_V2_EVENT)	 |
-+			BIT(HWTSTAMP_FILTER_PTP_V2_SYNC)	 |
-+			BIT(HWTSTAMP_FILTER_PTP_V2_DELAY_REQ);
- 
- 	if (!IS_ENABLED(CONFIG_TI_K3_AM65_CPTS))
- 		return ethtool_op_get_ts_info(ndev, info);
-@@ -708,7 +719,7 @@ static int am65_cpsw_get_ethtool_ts_info(struct net_device *ndev,
- 		SOF_TIMESTAMPING_RAW_HARDWARE;
- 	info->phc_index = am65_cpts_phc_index(common->cpts);
- 	info->tx_types = BIT(HWTSTAMP_TX_OFF) | BIT(HWTSTAMP_TX_ON);
--	info->rx_filters = BIT(HWTSTAMP_FILTER_NONE) | BIT(HWTSTAMP_FILTER_ALL);
-+	info->rx_filters = BIT(HWTSTAMP_FILTER_NONE) | ptp_v2_filter;
- 	return 0;
- }
- 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 259d7cb13f6e..18c61d8c14f5 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -103,6 +103,12 @@
- #define AM65_CPSW_PN_TS_CTL_TX_HOST_TS_EN	BIT(11)
- #define AM65_CPSW_PN_TS_CTL_MSG_TYPE_EN_SHIFT	16
- 
-+#define AM65_CPSW_PN_TS_CTL_RX_ANX_F_EN		BIT(0)
-+#define AM65_CPSW_PN_TS_CTL_RX_VLAN_LT1_EN	BIT(1)
-+#define AM65_CPSW_PN_TS_CTL_RX_VLAN_LT2_EN	BIT(2)
-+#define AM65_CPSW_PN_TS_CTL_RX_ANX_D_EN		BIT(3)
-+#define AM65_CPSW_PN_TS_CTL_RX_ANX_E_EN		BIT(9)
-+
- /* AM65_CPSW_PORTN_REG_TS_SEQ_LTYPE_REG register fields */
- #define AM65_CPSW_PN_TS_SEQ_ID_OFFSET_SHIFT	16
- 
-@@ -126,6 +132,11 @@
- 	 AM65_CPSW_PN_TS_CTL_TX_ANX_E_EN |	\
- 	 AM65_CPSW_PN_TS_CTL_TX_ANX_F_EN)
- 
-+#define AM65_CPSW_TS_RX_ANX_ALL_EN		\
-+	(AM65_CPSW_PN_TS_CTL_RX_ANX_D_EN |	\
-+	 AM65_CPSW_PN_TS_CTL_RX_ANX_E_EN |	\
-+	 AM65_CPSW_PN_TS_CTL_RX_ANX_F_EN)
-+
- #define AM65_CPSW_ALE_AGEOUT_DEFAULT	30
- /* Number of TX/RX descriptors */
- #define AM65_CPSW_MAX_TX_DESC	500
-@@ -1044,18 +1055,6 @@ static int am65_cpsw_run_xdp(struct am65_cpsw_common *common,
- 	return ret;
- }
- 
--static void am65_cpsw_nuss_rx_ts(struct sk_buff *skb, u32 *psdata)
--{
--	struct skb_shared_hwtstamps *ssh;
--	u64 ns;
--
--	ns = ((u64)psdata[1] << 32) | psdata[0];
--
--	ssh = skb_hwtstamps(skb);
--	memset(ssh, 0, sizeof(*ssh));
--	ssh->hwtstamp = ns_to_ktime(ns);
--}
--
- /* RX psdata[2] word format - checksum information */
- #define AM65_CPSW_RX_PSD_CSUM_ADD	GENMASK(15, 0)
- #define AM65_CPSW_RX_PSD_CSUM_ERR	BIT(16)
-@@ -1171,13 +1170,11 @@ static int am65_cpsw_nuss_rx_packets(struct am65_cpsw_common *common,
- 		skb_reserve(skb, headroom);
- 	}
- 
--	/* Pass skb to netstack if no XDP prog or returned XDP_PASS */
--	if (port->rx_ts_enabled)
--		am65_cpsw_nuss_rx_ts(skb, psdata);
--
- 	ndev_priv = netdev_priv(ndev);
- 	am65_cpsw_nuss_set_offload_fwd_mark(skb, ndev_priv->offload_fwd_mark);
- 	skb_put(skb, pkt_len);
-+	if (port->rx_ts_enabled)
-+		am65_cpts_rx_timestamp(common->cpts, skb);
- 	skb_mark_for_recycle(skb);
- 	skb->protocol = eth_type_trans(skb, ndev);
- 	am65_cpsw_nuss_rx_csum(skb, csum_info);
-@@ -1730,7 +1727,6 @@ static int am65_cpsw_nuss_ndo_slave_set_mac_address(struct net_device *ndev,
- static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
- 				       struct ifreq *ifr)
- {
--	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
- 	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
- 	u32 ts_ctrl, seq_id, ts_ctrl_ltype2, ts_vlan_ltype;
- 	struct hwtstamp_config cfg;
-@@ -1754,11 +1750,6 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
- 	case HWTSTAMP_FILTER_NONE:
- 		port->rx_ts_enabled = false;
- 		break;
--	case HWTSTAMP_FILTER_ALL:
--	case HWTSTAMP_FILTER_SOME:
--	case HWTSTAMP_FILTER_PTP_V1_L4_EVENT:
--	case HWTSTAMP_FILTER_PTP_V1_L4_SYNC:
--	case HWTSTAMP_FILTER_PTP_V1_L4_DELAY_REQ:
- 	case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
- 	case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
- 	case HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ:
-@@ -1768,10 +1759,13 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
- 	case HWTSTAMP_FILTER_PTP_V2_EVENT:
- 	case HWTSTAMP_FILTER_PTP_V2_SYNC:
- 	case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
--	case HWTSTAMP_FILTER_NTP_ALL:
- 		port->rx_ts_enabled = true;
--		cfg.rx_filter = HWTSTAMP_FILTER_ALL;
-+		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
- 		break;
-+	case HWTSTAMP_FILTER_ALL:
-+	case HWTSTAMP_FILTER_SOME:
-+	case HWTSTAMP_FILTER_NTP_ALL:
-+		return -EOPNOTSUPP;
- 	default:
- 		return -ERANGE;
- 	}
-@@ -1801,6 +1795,10 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
- 		ts_ctrl |= AM65_CPSW_TS_TX_ANX_ALL_EN |
- 			   AM65_CPSW_PN_TS_CTL_TX_VLAN_LT1_EN;
- 
-+	if (port->rx_ts_enabled)
-+		ts_ctrl |= AM65_CPSW_TS_RX_ANX_ALL_EN |
-+			   AM65_CPSW_PN_TS_CTL_RX_VLAN_LT1_EN;
-+
- 	writel(seq_id, port->port_base + AM65_CPSW_PORTN_REG_TS_SEQ_LTYPE_REG);
- 	writel(ts_vlan_ltype, port->port_base +
- 	       AM65_CPSW_PORTN_REG_TS_VLAN_LTYPE_REG);
-@@ -1808,9 +1806,6 @@ static int am65_cpsw_nuss_hwtstamp_set(struct net_device *ndev,
- 	       AM65_CPSW_PORTN_REG_TS_CTL_LTYPE2);
- 	writel(ts_ctrl, port->port_base + AM65_CPSW_PORTN_REG_TS_CTL);
- 
--	/* en/dis RX timestamp */
--	am65_cpts_rx_enable(common->cpts, port->rx_ts_enabled);
--
- 	return copy_to_user(ifr->ifr_data, &cfg, sizeof(cfg)) ? -EFAULT : 0;
- }
- 
-@@ -1827,7 +1822,7 @@ static int am65_cpsw_nuss_hwtstamp_get(struct net_device *ndev,
- 	cfg.tx_type = port->tx_ts_enabled ?
- 		      HWTSTAMP_TX_ON : HWTSTAMP_TX_OFF;
- 	cfg.rx_filter = port->rx_ts_enabled ?
--			HWTSTAMP_FILTER_ALL : HWTSTAMP_FILTER_NONE;
-+			HWTSTAMP_FILTER_PTP_V2_EVENT : HWTSTAMP_FILTER_NONE;
- 
- 	return copy_to_user(ifr->ifr_data, &cfg, sizeof(cfg)) ? -EFAULT : 0;
- }
-diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
-index 599454c1d19f..68891a227dc8 100644
---- a/drivers/net/ethernet/ti/am65-cpts.c
-+++ b/drivers/net/ethernet/ti/am65-cpts.c
-@@ -866,29 +866,6 @@ static long am65_cpts_ts_work(struct ptp_clock_info *ptp)
- 	return delay;
- }
- 
--/**
-- * am65_cpts_rx_enable - enable rx timestamping
-- * @cpts: cpts handle
-- * @en: enable
-- *
-- * This functions enables rx packets timestamping. The CPTS can timestamp all
-- * rx packets.
-- */
--void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
--{
--	u32 val;
--
--	mutex_lock(&cpts->ptp_clk_lock);
--	val = am65_cpts_read32(cpts, control);
--	if (en)
--		val |= AM65_CPTS_CONTROL_TSTAMP_EN;
--	else
--		val &= ~AM65_CPTS_CONTROL_TSTAMP_EN;
--	am65_cpts_write32(cpts, val, control);
--	mutex_unlock(&cpts->ptp_clk_lock);
--}
--EXPORT_SYMBOL_GPL(am65_cpts_rx_enable);
--
- static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
- {
- 	unsigned int ptp_class = ptp_classify_raw(skb);
-diff --git a/drivers/net/ethernet/ti/am65-cpts.h b/drivers/net/ethernet/ti/am65-cpts.h
-index 90296968a75c..6099d772799d 100644
---- a/drivers/net/ethernet/ti/am65-cpts.h
-+++ b/drivers/net/ethernet/ti/am65-cpts.h
-@@ -25,7 +25,6 @@ int am65_cpts_phc_index(struct am65_cpts *cpts);
- void am65_cpts_rx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
- void am65_cpts_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
- void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
--void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en);
- u64 am65_cpts_ns_gettime(struct am65_cpts *cpts);
- int am65_cpts_estf_enable(struct am65_cpts *cpts, int idx,
- 			  struct am65_cpts_estf_cfg *cfg);
-@@ -64,10 +63,6 @@ static inline void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts,
- {
- }
- 
--static inline void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
--{
--}
--
- static inline s64 am65_cpts_ns_gettime(struct am65_cpts *cpts)
- {
- 	return 0;
--- 
-2.34.1
+Adding Peter to CC, he probably knows.
 
+Thanks,
+Sven
 
