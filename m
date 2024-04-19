@@ -1,233 +1,119 @@
-Return-Path: <linux-kernel+bounces-151993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AFB48AB71E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:14:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01D478AB720
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:14:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE4401F22043
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:14:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32D151C20D47
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7B913D287;
-	Fri, 19 Apr 2024 22:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2DB13D294;
+	Fri, 19 Apr 2024 22:14:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eBUVhb7G"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="I72Toh/B"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC08712DD97;
-	Fri, 19 Apr 2024 22:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D710B13D250
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713564834; cv=none; b=UzpuKnjhrLR8Z0zuO+ZhUYA3JrOETcmT4qnSEoU+S6GPWKRB4hb8VwqPRbTwsXV7VBH4obaCISlnj398tHtpDYjgJ7qCqpCs8CeRNJprK3WH1Q1dtEuDmsD1lUqNmgwJOS6gh7uX9F/myocdDr/Cp7/8SjhSkk1zp5/iOkvZKk0=
+	t=1713564890; cv=none; b=iJ//osDTLALwy5qGEkJ1GpFV+J0L0HEvB6WAz9SrkxdI0y1rnd+goMxHM73GQkbq+BciXrfdtPgkgydq54fVokpjdzNn1BlC0oF31EGoBBV62WKLC9x7InbXfTK9mYTsTM3fCP4W9+q+9g5sImBVZmyO4YfMZ5Hnm2JigO+3jIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713564834; c=relaxed/simple;
-	bh=4RCTcwheMb+Q4EVU5iBIoEbIEMFY5NKFObbcFjjXIbI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NdV/qW8SGG8F5CfJrGQnzMnHcCtekLwjBsCiUtU/L8+IaYtDmbWyoje/hWBH0mckXdGUkNT7zbvJmnT/oV7yjosH/w9eqMfMcrQvEA59rEgbF5dfxMp0nBqyz7Uw9dGU0M6ISZKqyTLToN8K0dW5XNBQyQ0knSY8LGNMnBueOIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eBUVhb7G; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-61b2218ab6fso19151057b3.1;
-        Fri, 19 Apr 2024 15:13:52 -0700 (PDT)
+	s=arc-20240116; t=1713564890; c=relaxed/simple;
+	bh=rvuzjRzSkyxRF2iNeXMy1pRg2zH+eva/o8+UMG/qlIY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UxSGSW19eQuhtlVhw8WpPEwxOBx75LA4dWhGD3fsaIB8a+5WM9Hcw8xJz4Nb5PELZhS8ktuGgx1W5hL99CkvhFsejAteuPjgoP5hMKIvoQhOXbgEWJsrHFPlWwnDXxySYeGbr7vCSGX7z2H8DaPMzqQylIL6TZwGEbnfibtiEjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=I72Toh/B; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-696609f5cf2so14565606d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:14:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713564831; x=1714169631; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XLemlwrfOOHHIdLYfovzq1+tB6FxSufcqxpxI2QR6C4=;
-        b=eBUVhb7GtmQP5q1TjYAWoU40THJtXmg/ihX9CGCsKx2/VC4CZ3mLPV8Y1G75gok1YM
-         JuFG5I5hyw6mYtBteTa1ZESMPp35EVaVBE3fd7jpsV+8+G2t/vkhDrxkznBLcL0e1isp
-         f/fhdADRmBaBxRMXjWp8oZVK52aR1lEHPc6T+niyXJ1KTDsg1nyMsV2enhfFOyovkV6r
-         VLVZXhSZfWsZ/Hwn3DOjSOxAFCIK4oNsBfApJW3GjWAjoXAVbI/cj5sFpVLhr9jOtXw5
-         XmJQ93jmovdAcDLfCra4rz2DUCruXl0W8DsaTloaPyFjiOB4hizsHMfv6hwUXnM4AV66
-         KZ5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713564831; x=1714169631;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1713564888; x=1714169688; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XLemlwrfOOHHIdLYfovzq1+tB6FxSufcqxpxI2QR6C4=;
-        b=mmy7QT7h5duNhgkENtiNUaNCTFhdNlxWYdYLKEJZFsts7Wt/pdxczrgDO5r/4QBwOn
-         i5mzXzbqbpdNx38tL5CSLjOQOJja1UjM6yk03NmFwVBnndQNiy+gShhgkMBZQ52xRWF6
-         gYJmKaFu59WgW/vhtq5li4ymRZtp8Lr0XBJ09aP87Q1v9z66p2jdrD8ofcVOmhsq9l5Q
-         POzsbt29EqcsEtcwoPgCMBLqLuGI90G1XGHNxwolfgIi2/VWRiiU/zQs1+0B9FE0z1QU
-         4UG2vDejwFErgm8MvE8ka77ODL+0g9SKxZ2LggtPZPNGRuqPBBJFG4ZmgrkM+ozi+dB/
-         ziYw==
-X-Forwarded-Encrypted: i=1; AJvYcCU40pt8BzujvgtmJYSpB6BJZG6G+z0MwHhLapZSIq4NiWxDiCjklRgUePXZwSISGWCXBCWmc9q5JzG0T6h/QJwBXKyf7zUL+5QL/X9RdQfRiNbD5mDS3M4Wd8fWCx3Ow80JYmOmQ/dOUg==
-X-Gm-Message-State: AOJu0YxUpKHNGyJYBV/DroyTfTS0wku6/5mibdPsfv8Zzzz02f5Mzprr
-	SS72X3r3J6kAexk9pkcxt4NqZ/J/B4vSGEXyQpXXWJNnuedHSnYlteJkFw==
-X-Google-Smtp-Source: AGHT+IH2N5eKsc9Rjjtj4X/zIbgz/X9/U8Xd5WX+HS2hQDR9mjWXz5YG8AgO+0yMV+9ZfE7ZaY/OSg==
-X-Received: by 2002:a05:690c:301:b0:618:2972:ee3b with SMTP id bg1-20020a05690c030100b006182972ee3bmr3438512ywb.39.1713564831483;
-        Fri, 19 Apr 2024 15:13:51 -0700 (PDT)
-Received: from localhost ([2601:344:8301:57f0:7f85:3703:8b1a:b551])
-        by smtp.gmail.com with ESMTPSA id m190-20020a0dfcc7000000b006187ad29fe8sm957045ywf.61.2024.04.19.15.13.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 15:13:50 -0700 (PDT)
-Date: Fri, 19 Apr 2024 15:13:49 -0700
-From: Yury Norov <yury.norov@gmail.com>
-To: Dawei Li <dawei.li@shingroup.cn>
-Cc: Sam Ravnborg <sam@ravnborg.org>, davem@davemloft.net,
-	andreas@gaisler.com, sparclinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Remove onstack cpumask var usage
-Message-ID: <ZiLsnWCwKeg4B65a@yury-ThinkPad>
-References: <20240418104949.3606645-1-dawei.li@shingroup.cn>
- <20240419051350.GA558245@ravnborg.org>
- <A60F94A9589C8589+ZiI4yj073cgmt5Qq@centos8>
+        bh=b6gH6XCg5jIlnRMmDrx2Di9LcjiK/49bY7DTwVZH5Us=;
+        b=I72Toh/Bv5q28LAfQJFs9TrfvMzoT1dw4Mku+A+9rmxoHFWT7iUlOk5YUJxKYhGd67
+         3dvvap4MyL61kuFqyoPQpDis7KbM+1p9gxsVSkcdrm1y71/rUv1UtTMLxxuVa9ZgG6uC
+         hfSh68vKF0r8T0dYChXpVlWR5zmpG7Q25Kj4FPwyT0ZN2EjjoNSifF42wEuAknDpqWdE
+         910UroTfC6X9gAfKrRqjmVAzbMkq5D5/TywEiP74xNkLkIQrgoZR5bfYxkSApaPIM0za
+         q8f9XcBHeRFAbcv93anSIrKGErIwitzTQh8FRNsaJfYrXHk038rWzHSwlWKLrS0BaCBb
+         E1EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713564888; x=1714169688;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b6gH6XCg5jIlnRMmDrx2Di9LcjiK/49bY7DTwVZH5Us=;
+        b=UlRPSA7txGwU9KCJv0XSnnLHxuDzSGKpfxlqItPk/f2gu6eaIBpNFmikm7pK/qFQlr
+         dvguJu0YS37oTSWTjVF7+6HXUHBTfazo69qc19dgyCRsNSlmSUyZehOyyd2xkA3z1yAf
+         ENbBDmBtG5XCwxtcIKTKY+QzZOLD5oP923N4pFyenA584eLQeMWkFO6AlxIn4iWzsB0l
+         n95jKyJYo2ouIx+zaP/KRZJekgMDapgAJDEJKOSLVrbVsIKgbGihwC1jWAqXTuKxg+Fd
+         31aNL1bsoYXGbPxGzvpJ/+UlKQQbZMHhhmBwSB4uSmRVtswoANi3wCGurEIZhhFaLVsK
+         m8tg==
+X-Forwarded-Encrypted: i=1; AJvYcCXo+lwOLYfk2m2PliiLrZ2e08S6CvDcGCo2ozMemPRtfTQp+fv59lvcvyhWR1hRJfQU0uZEJ0i+yck4d3KDZ2UDj5JlkyS0s6bB2zOc
+X-Gm-Message-State: AOJu0Yxy3YZeIfWmpDf2r0eTEblUjk2/Zo+hpX0cZSfUOfN3V/95RcTJ
+	+Vz55B4c76s0NJE6k3plOdS1II76SJVp7mIHCUuQrbIqVcn2TucI/NxDLXra3Vk8FixZ3nwsdgx
+	pwi7H74H603RoiFGIBGDDVmgJaKUvg3xeTe6b
+X-Google-Smtp-Source: AGHT+IEJb118AnyH+IevWpP8ieDaJ3zOxvlDGJ+ue1Yu9AmuXk6CyrQ4osZTMiz0UibRY5dmfssTzDpYs57t5wU2or0=
+X-Received: by 2002:a0c:e113:0:b0:69b:1be3:e773 with SMTP id
+ w19-20020a0ce113000000b0069b1be3e773mr4168322qvk.5.1713564887745; Fri, 19 Apr
+ 2024 15:14:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A60F94A9589C8589+ZiI4yj073cgmt5Qq@centos8>
+References: <20240418042706.1261473-1-maheshb@google.com> <20240418185524.18801983@kernel.org>
+In-Reply-To: <20240418185524.18801983@kernel.org>
+From: =?UTF-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS14KS+4KSwKQ==?= <maheshb@google.com>
+Date: Fri, 19 Apr 2024 15:14:19 -0700
+Message-ID: <CAF2d9jhrC0uywa3NJLqgXGKauTEkGhK4A0YWorw4BV-fa5hbmg@mail.gmail.com>
+Subject: Re: [PATCHv2 next] ptp: update gettimex64 to provide ts optionally in
+ mono-raw base.
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Netdev <netdev@vger.kernel.org>, Linux <linux-kernel@vger.kernel.org>, 
+	David Miller <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Paolo Abeni <pabeni@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Richard Cochran <richardcochran@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Sagi Maimon <maimon.sagi@gmail.com>, Jonathan Corbet <corbet@lwn.net>, John Stultz <jstultz@google.com>, 
+	Mahesh Bandewar <mahesh@bandewar.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 19, 2024 at 05:26:34PM +0800, Dawei Li wrote:
-> Hi Sam,
-> 
-> Thanks for the review.
-> 
-> On Fri, Apr 19, 2024 at 07:13:50AM +0200, Sam Ravnborg wrote:
-> > Hi Dawei,
-> > 
-> > On Thu, Apr 18, 2024 at 06:49:44PM +0800, Dawei Li wrote:
-> > > Hi,
-> > > 
-> > > This series aims at removing on-stack cpumask var usage for sparc arch.
-> > > 
-> > > Generally it's preferable to avoid placing cpumasks on the stack, as
-> > > for large values of NR_CPUS these can consume significant amounts of
-> > > stack space and make stack overflows more likely.
-> > 
-> > Took a quick look at the patches, looks good except the one the bot
-> > already complained about.
-> 
-> I will fix this building warning in respinning.
-> 
-> > A quick grep shows a few more cases where we have an on-stack cpumask
-> > in sparc code.
-> > 
-> > kernel/ds.c:    cpumask_t mask;
-> 
-> About this case, it's kinda tricky for:
-> - dr_cpu_data() returns void, so alloc_cpumask_var() is no go.
-> 
-> - No idea of the calling context of dr_cpu_data(). IIUC,
->   dr_cpu_data()
->   ->dr_cpu_configure()  
->    ->kzalloc(resp_len, GFP_KERNEL)
->   So I guess it's in process context?
->   If consumption above is OK, a simple but _ugly_ solution could be:
-> 
-> diff --git a/arch/sparc/kernel/ds.c b/arch/sparc/kernel/ds.c
-> index ffdc15588ac2..c9e4ebdccf49 100644
-> --- a/arch/sparc/kernel/ds.c
-> +++ b/arch/sparc/kernel/ds.c
-> @@ -634,7 +634,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
->         struct dr_cpu_tag *tag = (struct dr_cpu_tag *) (data + 1);
->         u32 *cpu_list = (u32 *) (tag + 1);
->         u64 req_num = tag->req_num;
-> -       cpumask_t mask;
-> +       static DEFINE_MUTEX(mask_lock);
-> +       static cpumask_t mask;
->         unsigned int i;
->         int err;
-> 
-> @@ -651,6 +652,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
-> 
->         purge_dups(cpu_list, tag->num_records);
-> 
-> +       mutex_lock(&mask_lock);
-> +
->         cpumask_clear(&mask);
->         for (i = 0; i < tag->num_records; i++) {
->                 if (cpu_list[i] == CPU_SENTINEL)
-> @@ -665,6 +668,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
->         else
->                 err = dr_cpu_unconfigure(dp, cp, req_num, &mask);
-> 
-> +       mutex_unlock(&mask_lock);
-> +
->         if (err)
->                 dr_cpu_send_error(dp, cp, data);
->  }
-> 
-> How does it sound to you?
-> 
-> > kernel/leon_kernel.c:   cpumask_t mask;
-> 
-> It's in irqchip::irq_set_affinity(), which is in atomic context(raw spinlock(s) held),
-> so dynamic allocation is not a good idea.
-> 
-> My proposal(*untested*) is somewhat complicated for it introduces a new helper.
-> 
-> diff --git a/arch/sparc/kernel/leon_kernel.c b/arch/sparc/kernel/leon_kernel.c
-> index 4c61da491fee..6eced7acb8bc 100644
-> --- a/arch/sparc/kernel/leon_kernel.c
-> +++ b/arch/sparc/kernel/leon_kernel.c
-> @@ -104,15 +104,25 @@ unsigned long leon_get_irqmask(unsigned int irq)
->  }
-> 
->  #ifdef CONFIG_SMP
-> +
-> +static bool cpumask_include(const struct cpumask *srcp1, const struct cpumask *srcp2)
-
-Don't steal the other's subsystems prefixes.
-
-> +{
-> +       unsigned int cpu;
-> +
-> +       for_each_cpu(cpu, srcp2) {
-> +               if (!cpumask_test_cpu(cpu, srcp1))
-> +                       return false;
-> +       }
-> +
-> +       return true;
-> +}
-
-We've got cpumask_subset() for this. 
-
->  static int irq_choose_cpu(const struct cpumask *affinity)
->  {
-> -       cpumask_t mask;
-> +       unsigned int cpu = cpumask_first_and(affinity, cpu_online_mask);
-> 
-> -       cpumask_and(&mask, cpu_online_mask, affinity);
-> -       if (cpumask_equal(&mask, cpu_online_mask) || cpumask_empty(&mask))
-> -               return boot_cpu_id;
-> -       else
-> -               return cpumask_first(&mask);
-> +       return cpumask_include(affinity, cpu_online_mask) || cpu >= nr_cpu_ids ?
-> +              boot_cpu_id : cpu;
->  }
->  #else
->  #define irq_choose_cpu(affinity) boot_cpu_id
-> 
-> Is it OK?
-> 
-> [cc Yury for bitmap API]
-> 
-> > kernel/leon_smp.c:static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
-> > kernel/sun4d_smp.c:static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
-> 
-> Actually I am awared of existence of (at least some of) them, but so far I
-> have not found a _proper_ way of dealing with them(especially for case of
-> ds.c).
-> 
-> Please lemme dig into it.
-> 
-> Thanks,
-> 
->     Dawei
-> 
-> > 
-> > Do you plan to look at the other on-stack users too?
-> > It would be nice to see them all gone in one patch-set.
-> > 
-> > 	Sam
-> > 
+On Thu, Apr 18, 2024 at 6:55=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Wed, 17 Apr 2024 21:27:06 -0700 Mahesh Bandewar wrote:
+> > --- a/include/uapi/linux/ptp_clock.h
+> > +++ b/include/uapi/linux/ptp_clock.h
+> > @@ -157,7 +157,12 @@ struct ptp_sys_offset {
+> >
+> >  struct ptp_sys_offset_extended {
+> >       unsigned int n_samples; /* Desired number of measurements. */
+> > -     unsigned int rsv[3];    /* Reserved for future use. */
+> > +     /* The original implementation provided timestamps (always) in
+> > +      * REALTIME clock-base. Since CLOCK_REALTIME is 0, adding
+> > +      * clockid doesn't break backward compatibility.
+> > +      */
+> > +     clockid_t clockid;      /* One of the supported clock-ids */
+> > +     unsigned int rsv[2];    /* Reserved for future use. */
+>
+> This suffers from a moderate inability to build:
+>
+> usr/include/linux/ptp_clock.h:164:2: error: unknown type name 'clockid_t'
+>   164 |         clockid_t clockid;      /* One of the supported clock-ids=
+ */
+>       |         ^
+Hmm, my bad, it didn't fail while I was testing/building. I should
+watch the bot checks more carefully :(
+I'll fix it in the next revision.
+> --
+> pw-bot: cr
 
