@@ -1,162 +1,191 @@
-Return-Path: <linux-kernel+bounces-151915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73BE88AB5B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:44:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 564C28AB5C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:51:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32AD21C21B14
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:44:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12D5C283678
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A874C13C9B7;
-	Fri, 19 Apr 2024 19:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9641813C9C3;
+	Fri, 19 Apr 2024 19:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lNp84dBc"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="no/tkbmQ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ADAEF9D9;
-	Fri, 19 Apr 2024 19:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5BA131188;
+	Fri, 19 Apr 2024 19:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713555880; cv=none; b=bDHa08iCdSBV+5sV1uYA3ytGNqhCRT2+gjWV6WqK4AbIZKjDtoUf8dlSUZYv4aiagp07fw9NRAZuatPlX7XLseWto7wz/yaVURzRP66l1I2E5RwRbcUfrvSMak0eKlvT3ClkRE1GkOykYOovcACO6YlAhogKod+iL4BubMGIr8Y=
+	t=1713556270; cv=none; b=f6CbEJRv5DfKmFu0RDLmMRSCKw6UyHw3woocBuT5XpbpcyQQVZWLSxtyW9lpC1Gv6zdwAMg3BRhs/Rijo4qEnlWOttegtFMWw6WCPtjQuinAEqz6tVedEExKoZ2JlJlPcnTIwiXVthzvu/uol37Pw1mMwtUYqs7XpqJg/qXfDrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713555880; c=relaxed/simple;
-	bh=i6tzshrxouG4GHxMCjPCZ87XlDWmHs+s+JkYc1k6C5o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e2grB+2yRu8wrSe1q9jvVHVhZuXnu/0aWT7Oq3IdMvL2D86M+on7jJ6T11PsPj9jy4SztaCgt2j3dUttFH1bAMc5pU60pEEFopv1UIEg2Yx6Mx/UVWzCR2RUPS3k/1Kn4/xbJZOikpgX+g6YwFCTGzjc4w6jgxPmU6mEY4df7sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lNp84dBc; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-234cbd333f5so1834193fac.0;
-        Fri, 19 Apr 2024 12:44:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713555878; x=1714160678; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P1BGAYuhr6Jr83/QJyI90NsvCbuHw5i7BYScCO/Al8w=;
-        b=lNp84dBcDBEr/EjjhROvauRjF71umYQluS9htGInZG9izurctc5NzdZycay4cc/j7Y
-         NDGBMq80kPp1TbnDMl6WGhyfmy5iPE7hGZ8BqmyJ/gKSq5kAU0qtaqPjBLedW177v1bq
-         YBafYmHVdTWUQnnzGTIV+hfkN3Bx0LhVwg6cpdtFd5I5MAcCRyH2xJ24v77JJKgF6BSQ
-         fa2A3XqSNetx5nHqgULfZHCuLWa+jt/LYK7+pYNG5t301Q4RSLvCUBumjlV1wGkV8Ief
-         MGoKaNXSP97k+xsKEKdzu7pbbzEPFVLafhjTaleOGo4pugDFr72aZioiYH8XBHkGC9yC
-         gJkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713555878; x=1714160678;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P1BGAYuhr6Jr83/QJyI90NsvCbuHw5i7BYScCO/Al8w=;
-        b=LKwmfFhxexRXrgvleBhaQq+4sbl0JmIOXKePGP+vw0u/Z9WZez1nVMxT1wZ1cuZZM/
-         cQMTDc9v6PTALIrAe5hT8VMFu0aS/KKP2aP/8kUak9em1+fbkjz+GSqfANmgml0oiVG9
-         7zIABO4e6li/AfjrIWaf9v7RddXiiMDlE3YDwMDtvS1PuEyBA8tNYyNEyuXqqMSf45Kd
-         dTtbFsZHUesye37Gvcyv+1q2AUUsiqIND4itez1mjZyVnCNpdKNpOYrY90ldywqG1yY7
-         WTZa4WGZL/ouTnmoSeGVvfo4enwdf3Dttrr3AyXd48Xky2TvIuMDa3BSIyP5f2+jRpYy
-         9XwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVfySUW8U3+/hufKOrUMSXUj/RFQCvGOAUZGf8QZrNVhu0XD9curRjVpxyBjb+U13xCz3XuwjP4lxWYNu5VpVzuxq0ri9Lsl+1CG/JfWXDPqeXj07EdV9lWM7SwN55d9kSCHniRsXlR0WlJJi+07UrWFouij075yuJTFtZfvmdMDsuwhLP1CutJw9CErDsTqMEUgQ9QYobuwJLBt5oW/BB49hwie6VGFa98ks21pDBtZsZX5uo83C02QdVr17Q=
-X-Gm-Message-State: AOJu0YwgsaN9ovjsoE9Xl/HaYFR7NVanOfY//+sa+lTwqF7uCBnRbv+F
-	vET1M787+2P+ZTpH98r+CfZkRw9xI0qFUsKHyQD7+lvIwU71jcag
-X-Google-Smtp-Source: AGHT+IHseVtPGmY+lrtZnP4ORatX7mqfP+JxbR+E+KFQHqu5qkdPApEXoEstZaCDMmG0pP6LwJb0sA==
-X-Received: by 2002:a05:6870:3119:b0:235:45b9:dfca with SMTP id v25-20020a056870311900b0023545b9dfcamr1177207oaa.18.1713555878592;
-        Fri, 19 Apr 2024 12:44:38 -0700 (PDT)
-Received: from [192.168.7.169] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id pq4-20020a0568709c8400b002349fc4cdedsm940798oab.49.2024.04.19.12.44.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 12:44:37 -0700 (PDT)
-Message-ID: <102f209c-3367-86ac-c583-73103d5510a9@gmail.com>
-Date: Fri, 19 Apr 2024 14:44:36 -0500
+	s=arc-20240116; t=1713556270; c=relaxed/simple;
+	bh=I+KaRSuYYHq33wzOX7I6A8aqVWCW9ldBZFg7/uknzuA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gwBkPmT/+2hAlzX5xkp342kY4qMHWrA4v0VtYNGrJYjrbhjUWfQjt4VJlarW6++7DNwrols26Tk+dcCE+N6tfJCJHTS2djnfnQjsxEjqSsN/VCZfcmQC6Bq9YSbEfE49C9iLqEk2oIvB/WD5ZGEo64i9bzNZB3cGnuL9YqrfclU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=no/tkbmQ; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713556269; x=1745092269;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=I+KaRSuYYHq33wzOX7I6A8aqVWCW9ldBZFg7/uknzuA=;
+  b=no/tkbmQhuHqWNGiTmyi1SeRcFY3VOVMhTwqXLiUNIxwi7NY62vpYhpb
+   HOJ16Y8tK4HqzBMocFVcL5W4UmK+liUgWdlmy8yjBNuzmM3oZ0lOdHPsp
+   MMWi9vvYCwmdi9TIIg4dqwNNaUnHmPVkgdczf51J7kajz/hLF03K1ux2R
+   KdisCNMRJXHDRJ1HktA7w4lnCOZB0YeHkH8r4ChVScU2jHtNpDjxxpDOZ
+   a5pC6BjJ9qGMXg8Hjsv1DeTTzWRyIMLOWZ6Y0bzfXizQ1Dnd6P4RRzRId
+   8FRI36yfeAO4RXpMmJSQchIUXva3n+FpsIvjw+5yR/gfe7JgOo6pnfJba
+   Q==;
+X-CSE-ConnectionGUID: ClTWVIqbQ7KhaG7fr6gd8g==
+X-CSE-MsgGUID: GSGavcpDTxaDsROCsUY8wg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="9046272"
+X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
+   d="scan'208";a="9046272"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 12:51:08 -0700
+X-CSE-ConnectionGUID: Xe14cQuhRnyFFqD/ir7/JA==
+X-CSE-MsgGUID: lljCEdhZS5OOh17gqeJo+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
+   d="scan'208";a="46723350"
+Received: from amlin-018-114.igk.intel.com ([10.102.18.114])
+  by fmviesa002.fm.intel.com with ESMTP; 19 Apr 2024 12:51:05 -0700
+From: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+To: netdev@vger.kernel.org
+Cc: vadim.fedorenko@linux.dev,
+	jiri@resnulli.us,
+	davem@davemloft.net,
+	rrameshbabu@nvidia.com,
+	linux-kernel@vger.kernel.org,
+	pabeni@redhat.com,
+	kuba@kernel.org,
+	mschmidt@redhat.com,
+	Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Subject: [PATCH net] dpll: fix dpll_pin_registration missing refcount
+Date: Fri, 19 Apr 2024 21:47:11 +0200
+Message-Id: <20240419194711.1075349-1-arkadiusz.kubalewski@intel.com>
+X-Mailer: git-send-email 2.38.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 4/7] PCI: qcom: Add support for IPQ9574
-Content-Language: en-US
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-clk@vger.kernel.org
-References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
- <20240415182052.374494-5-mr.nuke.me@gmail.com>
- <CAA8EJpqKWJBqDUacE0xTLzxny32ZTStiRgXsd2LBD=Hou_CRBw@mail.gmail.com>
- <3cfc26e6-5587-d4a2-f217-1a30169ad1a0@gmail.com>
- <20240417070616.GB3894@thinkpad>
-From: mr.nuke.me@gmail.com
-In-Reply-To: <20240417070616.GB3894@thinkpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Mani.
+In scenario where pin is registered with multiple parent pins via
+dpll_pin_on_pin_register(..), belonging to the same dpll device,
+and each time with the same set of ops/priv data, a reference
+between a pin and dpll is created once and then refcounted, at the same
+time the dpll_pin_registration is only checked for existence and created
+if does not exist. This is wrong, as for the same ops/priv data a
+registration shall be also refcounted, a child pin is also registered
+with dpll device, until each child is unregistered the registration data
+shall exist.
 
-On 4/17/24 02:06, Manivannan Sadhasivam wrote:
-> On Mon, Apr 15, 2024 at 03:07:02PM -0500, mr.nuke.me@gmail.com wrote:
->>
->>
->> On 4/15/24 15:04, Dmitry Baryshkov wrote:
->>> On Mon, 15 Apr 2024 at 21:22, Alexandru Gagniuc <mr.nuke.me@gmail.com> wrote:
->>>>
->>>> Add support for the PCIe on IPQ9574. The main difference from ipq6018
->>>> is that the "iface" clock is not necessarry. Add a special case in
->>>> qcom_pcie_get_resources_2_9_0() to handle this.
->>>>
->>>> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
->>>> ---
->>>>    drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++----
->>>>    1 file changed, 9 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
->>>> index 14772edcf0d3..10560d6d6336 100644
->>>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
->>>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->>>> @@ -1101,15 +1101,19 @@ static int qcom_pcie_get_resources_2_9_0(struct qcom_pcie *pcie)
->>>>           struct qcom_pcie_resources_2_9_0 *res = &pcie->res.v2_9_0;
->>>>           struct dw_pcie *pci = pcie->pci;
->>>>           struct device *dev = pci->dev;
->>>> -       int ret;
->>>> +       int ret, num_clks = ARRAY_SIZE(res->clks) - 1;
->>>>
->>>> -       res->clks[0].id = "iface";
->>>> +       res->clks[0].id = "rchng";
->>>>           res->clks[1].id = "axi_m";
->>>>           res->clks[2].id = "axi_s";
->>>>           res->clks[3].id = "axi_bridge";
->>>> -       res->clks[4].id = "rchng";
->>>>
->>>> -       ret = devm_clk_bulk_get(dev, ARRAY_SIZE(res->clks), res->clks);
->>>> +       if (!of_device_is_compatible(dev->of_node, "qcom,pcie-ipq9574")) {
->>>> +               res->clks[4].id = "iface";
->>>> +               num_clks++;
->>>> +       }
->>>> +
->>>> +       ret = devm_clk_bulk_get(dev, num_clks, res->clks);
->>>
->>> Just use devm_clk_bulk_get_optional() here.
->>
->> Thank you! I wasn't sure if this was the correct solution here. I will get
->> this updated in v4.
->>
-> 
-> Please rebase on top of [1] and mention the dependency in cover letter.
+Add refcount and check if all registrations are dropped before releasing
+dpll_pin_registration resources.
 
-I am very hesitant to depend on another patch series. Is it okay if I 
-include your patch in v4 of this series?
+Currently, the following crash/call trace is produced when ice driver is
+removed on the system with installed NIC which includes dpll device:
 
-Alex
+WARNING: CPU: 51 PID: 9155 at drivers/dpll/dpll_core.c:809 dpll_pin_ops+0x20/0x30
+Call Trace:
+ dpll_msg_add_pin_freq+0x37/0x1d0
+ dpll_cmd_pin_get_one+0x1c0/0x400
+ ? __nlmsg_put+0x63/0x80
+ dpll_pin_event_send+0x93/0x140
+ dpll_pin_on_pin_unregister+0x3f/0x100
+ ice_dpll_deinit_pins+0xa1/0x230 [ice]
+ ice_remove+0xf1/0x210 [ice]
+
+Fixes: b446631f355e ("dpll: fix dpll_xa_ref_*_del() for multiple registrations")
+Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+---
+ drivers/dpll/dpll_core.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/dpll/dpll_core.c b/drivers/dpll/dpll_core.c
+index 64eaca80d736..7ababa327c0c 100644
+--- a/drivers/dpll/dpll_core.c
++++ b/drivers/dpll/dpll_core.c
+@@ -40,6 +40,7 @@ struct dpll_device_registration {
+ 
+ struct dpll_pin_registration {
+ 	struct list_head list;
++	refcount_t refcount;
+ 	const struct dpll_pin_ops *ops;
+ 	void *priv;
+ };
+@@ -81,6 +82,7 @@ dpll_xa_ref_pin_add(struct xarray *xa_pins, struct dpll_pin *pin,
+ 		reg = dpll_pin_registration_find(ref, ops, priv);
+ 		if (reg) {
+ 			refcount_inc(&ref->refcount);
++			refcount_inc(&reg->refcount);
+ 			return 0;
+ 		}
+ 		ref_exists = true;
+@@ -113,6 +115,7 @@ dpll_xa_ref_pin_add(struct xarray *xa_pins, struct dpll_pin *pin,
+ 	reg->priv = priv;
+ 	if (ref_exists)
+ 		refcount_inc(&ref->refcount);
++	refcount_set(&reg->refcount, 1);
+ 	list_add_tail(&reg->list, &ref->registration_list);
+ 
+ 	return 0;
+@@ -131,8 +134,10 @@ static int dpll_xa_ref_pin_del(struct xarray *xa_pins, struct dpll_pin *pin,
+ 		reg = dpll_pin_registration_find(ref, ops, priv);
+ 		if (WARN_ON(!reg))
+ 			return -EINVAL;
+-		list_del(&reg->list);
+-		kfree(reg);
++		if (refcount_dec_and_test(&reg->refcount)) {
++			list_del(&reg->list);
++			kfree(reg);
++		}
+ 		if (refcount_dec_and_test(&ref->refcount)) {
+ 			xa_erase(xa_pins, i);
+ 			WARN_ON(!list_empty(&ref->registration_list));
+@@ -160,6 +165,7 @@ dpll_xa_ref_dpll_add(struct xarray *xa_dplls, struct dpll_device *dpll,
+ 		reg = dpll_pin_registration_find(ref, ops, priv);
+ 		if (reg) {
+ 			refcount_inc(&ref->refcount);
++			refcount_inc(&reg->refcount);
+ 			return 0;
+ 		}
+ 		ref_exists = true;
+@@ -192,6 +198,7 @@ dpll_xa_ref_dpll_add(struct xarray *xa_dplls, struct dpll_device *dpll,
+ 	reg->priv = priv;
+ 	if (ref_exists)
+ 		refcount_inc(&ref->refcount);
++	refcount_set(&reg->refcount, 1);
+ 	list_add_tail(&reg->list, &ref->registration_list);
+ 
+ 	return 0;
+@@ -211,8 +218,10 @@ dpll_xa_ref_dpll_del(struct xarray *xa_dplls, struct dpll_device *dpll,
+ 		reg = dpll_pin_registration_find(ref, ops, priv);
+ 		if (WARN_ON(!reg))
+ 			return;
+-		list_del(&reg->list);
+-		kfree(reg);
++		if (refcount_dec_and_test(&reg->refcount)) {
++			list_del(&reg->list);
++			kfree(reg);
++		}
+ 		if (refcount_dec_and_test(&ref->refcount)) {
+ 			xa_erase(xa_dplls, i);
+ 			WARN_ON(!list_empty(&ref->registration_list));
+
+base-commit: ac1a21db32eda8a09076bad025d7b848dd086d28
+-- 
+2.38.1
+
 
