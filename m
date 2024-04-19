@@ -1,257 +1,172 @@
-Return-Path: <linux-kernel+bounces-151809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BFC48AB431
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:12:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E14D08AB437
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:13:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D0D0286F07
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:11:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E9331C20F49
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:13:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F533131BAD;
-	Fri, 19 Apr 2024 17:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D501137930;
+	Fri, 19 Apr 2024 17:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z8NOizub"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="RG3PVZFX"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2072.outbound.protection.outlook.com [40.107.95.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE8E85284;
-	Fri, 19 Apr 2024 17:11:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713546710; cv=none; b=rBvtRihujWwIAY7eamAcVdFlmqkqpXEpzVNLbjxq287dgV+nZiWuOBaNg1ksYmLW3zmnZED6XW9ACcsc6f7j/sC1JsPZM+30dlkcvlcNf4j/4Pqv+G3rikn4/c6jCw/Ha0aICUxIbPG9Q1D39nXc80ScMhcIzmgWOUwWAdvRMzM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713546710; c=relaxed/simple;
-	bh=8tkp2OzXq/LQyBsBo9UUSKU1a3auTWKdaRyv5yhqPDQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RMYGTLRb6Y8nO+nPPCUUBPGA/HLtlZ7UDzfsGb2kXKtExMX5SMVG+uzliv2qHV4ZysaqdXAgmposToJogWMnV8pi09XKL8mWOiijX2ckGb/cMZ4kM61wjK2ko0WoGYNeO3b/3rzQG0BSVShBS1HAPV3aMXuZ+QSqG07LH8MLwBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z8NOizub; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78edc3e80e6so153405785a.2;
-        Fri, 19 Apr 2024 10:11:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713546707; x=1714151507; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=etFE82tcfTZVhWATTB9AHQDcgyv5F3QBoyzAyqb3uco=;
-        b=Z8NOizubSZM+EYSZbV7w0Y4nNw610IfAi4SQ6tgaisRs1mddMR693mkcuhwxKapJLE
-         NNkKcszX4eJzVgoZ675HTgvTHed53DR9VRrXVcuQDc839iY3zQiFgc2lFxlZjh5+19fD
-         SeqK798RQspdM7Xti5zgXQLYOIDSF2M4J00Mvce6EUbdayJA16uJLc/HbdB6GXhUZ+n+
-         v+0ARaxba2o9+H8grueUKKTdJOX/cTupH5eYjbLju6gONMVbtVGC5zpoOjo/13+HL0QQ
-         UVk+lxjanx3+i1ExMSJM6Rs8hXksIso+292ZQ6G8j6UFZ/WUvVpDNouvM/JMChnfBt7+
-         Og7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713546707; x=1714151507;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=etFE82tcfTZVhWATTB9AHQDcgyv5F3QBoyzAyqb3uco=;
-        b=rw/0FdpbI50z1f0cjPrBz9k/4FNY5EP9t4bY43stD91I80y1M1QrYEVipHwe1MrSzC
-         cOzeh4KhGVXCyyuTrsvkciM+txQJPJlcUIb0+fXYjKnptDzIxDaYXX3OhQTrFnae/uEO
-         6r7yI+LUdpyqAOepWlU+IpqOFXDQGZvYdxBgw4VtOKPpyEMJAutF06lM95fffGVNBv5L
-         dShILVJIa76JdMF4Pvbbm+g4pLvszFv5O+z178YnjmskI/TXjkYYdmoH1mSqoS4BFtHe
-         m96bRXyhvZ8Uw+YIaQKBL5IjqZRgtMEH0o3KJJevK0H/IEOPBG5hfJxWu4cyEDzyqzd1
-         pkdA==
-X-Forwarded-Encrypted: i=1; AJvYcCU+VsWuZkaIXC+VAevgPyxi2mUL8PCsASrL8tIOsh/pyKJi0/bfLhqNI+2SyhCUqmhQeVY5tH9vK3iVLsKPCdrnqRkc1xbSYryTh7XCBEFHRqPgAKmpMaCDppYJghB5yFlI/tthqNh2iQRMuYI=
-X-Gm-Message-State: AOJu0Yx+nWwU1b74S7ww8IbMQIs9y/68f36YTLSdq8JhMm5MITsiV5G2
-	0CUDF1TLApkZF1iS6OAczNBZ0IaQwCVUyXkG0LIB01XzAjUPlnH/
-X-Google-Smtp-Source: AGHT+IFFep7UovV+uvyU+cQO4IWzeXpZBAOpFsUdttQtI/h3gTiHDpMDMDoLwJyOro/ZCj5auCJHrQ==
-X-Received: by 2002:a05:620a:5650:b0:78b:ac85:3b79 with SMTP id vw16-20020a05620a565000b0078bac853b79mr2904061qkn.40.1713546707344;
-        Fri, 19 Apr 2024 10:11:47 -0700 (PDT)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id a4-20020a05620a066400b0078d73685803sm1760929qkh.99.2024.04.19.10.11.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 10:11:46 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id D72DA1200043;
-	Fri, 19 Apr 2024 13:11:45 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 19 Apr 2024 13:11:45 -0400
-X-ME-Sender: <xms:0aUiZhSPzSuQg4DTApEsEAjpXHt8CmgJrO1vDLtmTiJimCpEckwTUw>
-    <xme:0aUiZqz_d9vv7PPpAH9HcAnuhp-Jrun3mEMLAm4WevDUelHoVDUXvJuxGD13SZ_Bo
-    09SE9dQlkVxVnNCwA>
-X-ME-Received: <xmr:0aUiZm28vBNG8_GgM2huFOEesi0b1riz3u6pJ1kfYVNW0OwXAEH9RTTN0ZM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekvddgudduvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdortddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhepiedtfeevhfetkeelgfethfegleekfeffledvvefhheeukedtvefhtedt
-    vdetvedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:0aUiZpCUBXgWv12Ldrj4S-GSVQi7WFp6yzWoS2HFGt73FbL7USWdGw>
-    <xmx:0aUiZqhl3S6DOGlIhZRC-lkgPCAD086VJ1r7yiyKlsKUfeZRRlpbgQ>
-    <xmx:0aUiZtrUX8XkXzc9jLWOTVcebbOEliXvZRscJQ4RiuyDgOnsF2AA3A>
-    <xmx:0aUiZlgOn9oLlNYRCPSDP0uBlTzQ-gAVtZ6x97vouXW_BWtXJURCUA>
-    <xmx:0aUiZlT4bI7fS71Yy7zhszobVzjSXoBXNANObMS0Rj_0ejNKqAnA6WQR>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Apr 2024 13:11:45 -0400 (EDT)
-Date: Fri, 19 Apr 2024 10:11:18 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Trevor Gross <tmgross@umich.edu>,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v6 1/4] rust: uaccess: add userspace pointers
-Message-ID: <ZiKltinLGvKlBivm@boqun-archlinux>
-References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
- <20240418-alice-mm-v6-1-cb8f3e5d688f@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B1113A263;
+	Fri, 19 Apr 2024 17:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.72
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713546790; cv=fail; b=Z3/dl2jaQU8GgDIxSnckdkY4iLHhyDxXR+RoHvkyr+nf41VpTvRkcd9+YN3BuLOiGep6cCG6b4CKdTsYC81cHMgO5o1oFess0qn8uti6SF6pjWlKugcDJlUqxovfO+Ynojp7LOMPYgdhUYF1QlmZDMEdA7w+K+wucQr0L6LtOr4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713546790; c=relaxed/simple;
+	bh=mqTPclps3AmS3KTDiyEBm6gOyazCCaeWxJytr6fWX2k=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qNUh/d7e+KrmCvQpgJBdsn10zVpQomv/hPHI9bzb/o7S+XI971TTbhi0mQFTEXGomqa+suX520RvPgj2SPJwMH4JucvEoKWPLoJTXk/UkxCr5qdn5lWWcXbW5mTP9mRrETIJreKPWuvYtuF/sXzXTdhvebLwVPMvfmOJuYLhC/A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=RG3PVZFX; arc=fail smtp.client-ip=40.107.95.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UVs/BNhuvNy1mWM8c1vo9xRxezsTK4h3A8Pdn1du0UEny6325hfZbSgju/WHrxhr+WLQWtHe/kTCHJTxfcCrLXZfn+wYzqGdOpN66O/3TVoY+qolAiIY9ZSMbQMz4p1yUMjo0+xXrEcgtR2CI9C7rfb3Sp2BoweknS+XN2k8ZQcw7n21PlueIqVKdtR0eY4INdemhU35LKRIcGDxD3SBz7fF+E/fb1cP1GwVhqLdU+g2hDe0QmvCnkt6iXYG4L1C2IesCtisFfyCuxLHRp/Xsj8h7r740WpqfK7DIwjDvWhC2gSSr9poNrR/sdC+hsMtEptsI8ZGuT/wKfHlEXVq0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DvhiYh0CNb7+OKegWC/nYxq0nsiBeCz90VDH4RJPPYM=;
+ b=Gx89USvCmXXvEZkWMEAx9msvZ4d1ZH7Ub5eaoJDD07Z6j/5Rhxby1oJetQFhbxO3/ToeaowDjCLw00J3T7wcCTvIxcOIsDC48FQYk6+XD5XFcixIqSdV1FuWE64J/21LGreBuGkLU7rVL9Hpz5A6CztRO+PuOYgU4soaH0e6SvKBO3UycQcqAccRMZiTRqRIIeu8NYi5hm+Ccf8XNf0anfrP2Wy9viYaaOPuFpqjsymU7smFza4gUCFB2YICJUYTbXpp/uVyDYP5vtDC39WpAmpBQ9y6PtsiNMcH/jC7CiYFpfD1bIWIOiqvvtQPa/JKubPocJij6Nv4deiWt+Jjnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DvhiYh0CNb7+OKegWC/nYxq0nsiBeCz90VDH4RJPPYM=;
+ b=RG3PVZFXHL0ePs0yrgpfsAV0LGVOvMLnfl5pKWN6B5cLR4vwXl1Vpj7duudr2Z0J1gSUslqZa6NAkpYdAU6AXSoqbI1tMobqpfuSB0wNVxLaLErUl7bwBWpiYwjFbLhDMYp6FZV98ePF/6Tawha1j3FmQ24x/ubylop1/GgAIRly+FlVT1bxU868qmhSQJxTk/9DwXaA+sArS7l9RrXnBeWZEYH+FBOq1d5UhmAcDFT6tSpMO5En0+/RwGpB6rLrIXjqzlSfzxBzRhX3VjJOSZMKi55WtC3NFmJ7JzSH0TKdGzMIpKQ2haRgNas2HH+7DhOpxheUJkI8ZkphClcBBg==
+Received: from SJ0PR03CA0091.namprd03.prod.outlook.com (2603:10b6:a03:333::6)
+ by LV3PR12MB9166.namprd12.prod.outlook.com (2603:10b6:408:19c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.39; Fri, 19 Apr
+ 2024 17:13:05 +0000
+Received: from DS3PEPF000099E2.namprd04.prod.outlook.com
+ (2603:10b6:a03:333:cafe::24) by SJ0PR03CA0091.outlook.office365.com
+ (2603:10b6:a03:333::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.30 via Frontend
+ Transport; Fri, 19 Apr 2024 17:13:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ DS3PEPF000099E2.mail.protection.outlook.com (10.167.17.201) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Fri, 19 Apr 2024 17:13:04 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 19 Apr
+ 2024 10:12:46 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 19 Apr
+ 2024 10:12:46 -0700
+Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com (10.129.68.9)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4 via Frontend
+ Transport; Fri, 19 Apr 2024 10:12:45 -0700
+Date: Fri, 19 Apr 2024 10:12:44 -0700
+From: Nicolin Chen <nicolinc@nvidia.com>
+To: <will@kernel.org>, <robin.murphy@arm.com>
+CC: <joro@8bytes.org>, <jgg@nvidia.com>, <thierry.reding@gmail.com>,
+	<vdumpa@nvidia.com>, <jonathanh@nvidia.com>, <linux-kernel@vger.kernel.org>,
+	<iommu@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v5 1/6] iommu/arm-smmu-v3: Add CS_NONE quirk
+Message-ID: <ZiKmDCAnAc0sRT7K@Asurada-Nvidia>
+References: <cover.1712977210.git.nicolinc@nvidia.com>
+ <10a39a51cae4de9ef47580f0c4439fb6c5373588.1712977210.git.nicolinc@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240418-alice-mm-v6-1-cb8f3e5d688f@google.com>
+In-Reply-To: <10a39a51cae4de9ef47580f0c4439fb6c5373588.1712977210.git.nicolinc@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099E2:EE_|LV3PR12MB9166:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8fc9b12d-f107-4729-1f0a-08dc6093f9bb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?fjTOlyDo0V8VYplXMBxZkaTnJrS2FBBg1me0SOC5vUqZlrbGav8FfPAo/M/u?=
+ =?us-ascii?Q?42T/xoUMZ4u3kxUuuyYViPJjecgznnvtEvpug4DeOQlnMkaaBL/exja3S42X?=
+ =?us-ascii?Q?5k22H6oCO2SEa9Tpm+WLlLC2gGQqmNPtQStdx56aAiadyOtGrg0eek0nqRvi?=
+ =?us-ascii?Q?VcAwO7t7ugSGyh+KTeNG9fpJ43ri0UUfFSQ9WghYs99TvSqOobcrdOPltYmX?=
+ =?us-ascii?Q?3yNNYa/euhB5CCjKr0ajnsy14S5DxeMx4yqyhTzv19FQ/SuVqQ4UEEXSoo3d?=
+ =?us-ascii?Q?tWjj22Hd91iV9Pmn8ZlU+xkf0oRqDuwGuDSHSrEC+7dzYsrNxsDAbLGm2pQN?=
+ =?us-ascii?Q?baugt8xNwAQP/fB3PYxWNdOUK8Jrt2smWiC3Hvi6ePqa/0kJ4wa19srhqIUM?=
+ =?us-ascii?Q?0MAjzN2WqfJL8O6LDBiv3lSyCGiB+B852AAZ2IqUsRDaMif3N0iDMZ6vN+7R?=
+ =?us-ascii?Q?/rUkQ5cZvztY5mKV5bfj4rZ0OxW/7tTK1Lc3s5aK/HY6rLRUZvS932yabrkO?=
+ =?us-ascii?Q?aQolQvPmfDbDUI0+WUxFWcGxuLpUw7JO+GmvYZIeQf/CRImAzFiPYzYK/uhI?=
+ =?us-ascii?Q?DTQ+rJu6j4nco3vAvJTvA8mvAWs3WcvIVjk36JFgq1BvxrUS9FfDTt8nNosz?=
+ =?us-ascii?Q?ZGPA56lrlMqwX/pFGU+RzgsyxkR7qs/GL7BxFuG4MWiHEYF7XSc12TjUoWwl?=
+ =?us-ascii?Q?KNZU3LoW8b0EbygqtP6Akd1HjsW7oiIaGLhFM7x0p7UbWqkibNMsJ6Q75n/4?=
+ =?us-ascii?Q?8rd/bGibYqefz35spJoRNnej2sHCVDZyc4CsGGZMYTInD5xu7yCWmHw8Au9F?=
+ =?us-ascii?Q?uGL+2n9ezL6M1UK+6eWniMfE4b5RcLY4nRYXyD1g99Cd8lZJ0Qqs8Yniuc7B?=
+ =?us-ascii?Q?IrCTGkgBeck/46KAZGdtqJ9fLZyOG2s6PWwDtWk0R2FOIao+L+uUaP20b1Pr?=
+ =?us-ascii?Q?8W2/cbKNTvw+QK9yGleZE5eMwzZFkfxA8bYG/0EDu9Cy/FyqsrJ/RpfaT13o?=
+ =?us-ascii?Q?VHYR2SkCxJtwfmtKiA6VYPi6t6bO0421xL2WRAZGwt8dQCIjcIGfvh5UIJw5?=
+ =?us-ascii?Q?gdsJJoP5XMq62NgPBpDtUhRM7HJv1UMv6aI+p/68QfGNW/9Q5+tDRqhr19D6?=
+ =?us-ascii?Q?rJwJO2u/QoFx4n8AyaYkax9gd0LE3MGklwp1FM02NDsTkzlNbrkDYphZQBWI?=
+ =?us-ascii?Q?U89ylhPls+TF7chYqyZs3PmDJVCVB9qvMp9s90TDW5oWvYlgvAGGtPTy1kT5?=
+ =?us-ascii?Q?ghbw/S9ZfNddPAN+J0Rh2ZIKlr822Fkn9+Ts0GA8RbP4bGJts+DJeI6mAeEi?=
+ =?us-ascii?Q?SsvXRa72kNs5tpWdbPSW4HcQPgiogBEehjE5t3g8clgyla80eyGO8lwMXESC?=
+ =?us-ascii?Q?2rJlBHlSYJxx2OEKnokxnpVJ087/?=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(1800799015)(376005)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 17:13:04.4610
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8fc9b12d-f107-4729-1f0a-08dc6093f9bb
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS3PEPF000099E2.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9166
 
-On Thu, Apr 18, 2024 at 08:59:17AM +0000, Alice Ryhl wrote:
-[...]
-> +    /// Reads the entirety of the user slice, appending it to the end of the provided buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the read happens on a bad address.
-> +    pub fn read_all(mut self, buf: &mut Vec<u8>, flags: Flags) -> Result {
-> +        let len = self.length;
-> +        buf.reserve(len, flags)?;
-
-(Reportedy by Miguel)
-
-When compile with `make rusttest`, kernel crate is compiled as userspace
-program, so we need to explicitly pick where the `reserve` comes from
-(Vec or VecExt), the current version will hit the following error:
-
-	error[E0061]: this method takes 1 argument but 2 arguments were supplied
-	   --> rust/kernel/uaccess.rs:296:13
-	    |
-	296 |         buf.reserve(len, flags)?;
-	    |             ^^^^^^^    -------
-	    |                        | |
-	    |                        | unexpected argument of type `Flags`
-	    |                        help: remove the extra argument
-	    |
-	note: method defined here
-	   --> /home/boqun/linux-rust/rust/test/sysroot/lib/rustlib/src/rust/library/alloc/src/vec/mod.rs:910:12
-	    |
-	910 |     pub fn reserve(&mut self, additional: usize) {
-	    |            ^^^^^^^
-
-	error[E0277]: the `?` operator can only be applied to values that implement `Try`
-	   --> rust/kernel/uaccess.rs:296:9
-	    |
-	296 |         buf.reserve(len, flags)?;
-	    |         ^^^^^^^^^^^^^^^^^^^^^^^^ the `?` operator cannot be applied to type `()`
-	    |
-	    = help: the trait `Try` is not implemented for `()`
-
-	error: aborting due to 2 previous errors
-
-	Some errors have detailed explanations: E0061, E0277.
-	For more information about an error, try `rustc --explain E0061`.
-
-and we need to the following fix
-
-diff --git a/rust/kernel/uaccess.rs b/rust/kernel/uaccess.rs
-index 39481e374c40..80f7e7ca2f5e 100644
---- a/rust/kernel/uaccess.rs
-+++ b/rust/kernel/uaccess.rs
-@@ -293,7 +293,7 @@ pub fn read<T: FromBytes>(&mut self) -> Result<T> {
-     /// Fails with `EFAULT` if the read happens on a bad address.
-     pub fn read_all(mut self, buf: &mut Vec<u8>, flags: Flags) -> Result {
-         let len = self.length;
--        buf.reserve(len, flags)?;
-+        VecExt::<u8>::reserve(buf, len, flags)?;
- 
-         // The call to `try_reserve` was successful, so the spare capacity is at least `len` bytes
-         // long.
-
-Regards,
-Boqun
-
-> +
-> +        // The call to `try_reserve` was successful, so the spare capacity is at least `len` bytes
-> +        // long.
-> +        self.read_raw(&mut buf.spare_capacity_mut()[..len])?;
-> +
-> +        // SAFETY: Since the call to `read_raw` was successful, so the next `len` bytes of the
-> +        // vector have been initialized.
-> +        unsafe { buf.set_len(buf.len() + len) };
-> +        Ok(())
-> +    }
-> +}
-> +
-> +/// A writer for [`UserSlice`].
-> +///
-> +/// Used to incrementally write into the user slice.
-> +pub struct UserSliceWriter {
-> +    ptr: UserPtr,
-> +    length: usize,
-> +}
-> +
-> +impl UserSliceWriter {
-> +    /// Returns the amount of space remaining in this buffer.
-> +    ///
-> +    /// Note that even writing less than this number of bytes may fail.
-> +    pub fn len(&self) -> usize {
-> +        self.length
-> +    }
-> +
-> +    /// Returns `true` if no more data can be written to this buffer.
-> +    pub fn is_empty(&self) -> bool {
-> +        self.length == 0
-> +    }
-> +
-> +    /// Writes raw data to this user pointer from a kernel buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the write happens on a bad address, or if the write goes out of bounds
-> +    /// of this [`UserSliceWriter`]. This call may modify the associated userspace slice even if it
-> +    /// returns an error.
-> +    pub fn write_slice(&mut self, data: &[u8]) -> Result {
-> +        let len = data.len();
-> +        let data_ptr = data.as_ptr().cast::<c_void>();
-> +        if len > self.length {
-> +            return Err(EFAULT);
-> +        }
-> +        let Ok(len_ulong) = c_ulong::try_from(len) else {
-> +            return Err(EFAULT);
-> +        };
-> +        // SAFETY: `data_ptr` points into an immutable slice of length `len_ulong`, so we may read
-> +        // that many bytes from it.
-> +        let res = unsafe { bindings::copy_to_user(self.ptr as *mut c_void, data_ptr, len_ulong) };
-> +        if res != 0 {
-> +            return Err(EFAULT);
-> +        }
-> +        self.ptr = self.ptr.wrapping_add(len);
-> +        self.length -= len;
-> +        Ok(())
-> +    }
-> +}
+On Fri, Apr 12, 2024 at 08:43:49PM -0700, Nicolin Chen wrote:
+> The CMDQV extension in NVIDIA Tegra241 SoC only supports CS_NONE in the
+> CS field of CMD_SYNC. Add a quirk flag to accommodate that.
 > 
-> -- 
-> 2.44.0.683.g7961c838ac-goog
-> 
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 10 ++++++++--
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  4 ++++
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+
+> @@ -707,7 +712,8 @@ static int __arm_smmu_cmdq_poll_until_consumed(struct arm_smmu_device *smmu,
+>  static int arm_smmu_cmdq_poll_until_sync(struct arm_smmu_device *smmu,
+>                                          struct arm_smmu_ll_queue *llq)
+>  {
+> -       if (smmu->options & ARM_SMMU_OPT_MSIPOLL)
+> +       if (smmu->options & ARM_SMMU_OPT_MSIPOLL &&
+> +           !(cmdq->q.quirks & CMDQ_QUIRK_SYNC_CS_NONE_ONLY))
+>                 return __arm_smmu_cmdq_poll_until_msi(smmu, llq);
+
+Realized that I should have moved the PATCH-4 to the top for the
+cmdq pointer here. Otherwise it breaks git-bisect... Will fix in
+the next version.
+
+Nicolin
 
