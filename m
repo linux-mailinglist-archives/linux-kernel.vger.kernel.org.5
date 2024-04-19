@@ -1,98 +1,116 @@
-Return-Path: <linux-kernel+bounces-151167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 913898AAA33
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:31:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5FF18AAA35
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:32:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09CE9B21E18
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:31:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5636E1F20F9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FBF5FBB5;
-	Fri, 19 Apr 2024 08:31:30 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93755B1EE;
+	Fri, 19 Apr 2024 08:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QnEdvGUT"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0A0F507
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:31:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4925A51004;
+	Fri, 19 Apr 2024 08:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713515490; cv=none; b=HJ/ayUW/A1JIVm8JJp4C/PXBFGr90O46kODSo/Dz1LJ9nmRMkXPmdSEZl0mh77OzRxSeVGYf9rcxi0MtteOMFeYwx9eEutqAIZnitIG7i5rNV4Qxk9mcoPRyBCkYE+OtEoPt7VnEEsrgqUqzgPqZbGOkrUTFwIFRqAbRLCmQ0PI=
+	t=1713515522; cv=none; b=fcCCuT2s7BktlZ/85hKxvd+GsVy+C+b3pSiGibl/cBb1CztHgRWVOfuT4XsFk+UyEGrPZOvMReTSesMk9HYs+UAWSXUSLDJW9PB9btdRkEQg2OFWsNVmqEO8VB+lLpEzfJ4Ydt60Gfjj1kVBxv1qQTCCXXJpc0td7LjlZMXzqmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713515490; c=relaxed/simple;
-	bh=aLCYOY9uDoJrqIV3AUBSqW/EEWxfcdmxTZoQdRkDNR4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JaeBY/2vgYb17hieHTrfe3UlWL1qIhtDddFIbQkMXv+oJy01Q8aelzhPlxt5HH07GdFabmitJEQWkmkzZVQIN1P5DYn3h/irRcx3phXONsdi3yVvbTeZbKQQZP79Q+A81ltfvoo9TriFeHDl+0uHc2fp5PW+0BA9wXkyWg1IB+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <has@pengutronix.de>)
-	id 1rxjeR-0006iN-HF; Fri, 19 Apr 2024 10:31:19 +0200
-Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <has@pengutronix.de>)
-	id 1rxjeR-00D7hF-43; Fri, 19 Apr 2024 10:31:19 +0200
-Received: from has by dude03.red.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <has@pengutronix.de>)
-	id 1rxjeQ-00DyIU-3B;
-	Fri, 19 Apr 2024 10:31:19 +0200
-From: Holger Assmann <h.assmann@pengutronix.de>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	yibin.gong@nxp.com
-Cc: linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Holger Assmann <h.assmann@pengutronix.de>
-Subject: [PATCH 2/2] dt-bindings: regulator: pca9450: add restart handler priority
-Date: Fri, 19 Apr 2024 10:31:04 +0200
-Message-Id: <20240419083104.3329252-3-h.assmann@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240419083104.3329252-1-h.assmann@pengutronix.de>
-References: <20240419083104.3329252-1-h.assmann@pengutronix.de>
+	s=arc-20240116; t=1713515522; c=relaxed/simple;
+	bh=OMlxlvn+v5dCEZSvtMC2q0m9aDtCxxSWRWfi6Q60WDI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DAxbuGTnGeaMs2Qx4E3onNdwpKyfvlawThPuotr2N8/84oap4JHcd6IxPvtkrwbT0VSISdKt8TjlGHGFmBwRtU2oXH4sWTqQHm1ouqxDTvh8Dxig6FtvhAA8n5TmHUlWEPsDpp6qJJZKoeZYTGbuGFMErlvLu8LXHZPjyrS7chI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QnEdvGUT; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713515520; x=1745051520;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=OMlxlvn+v5dCEZSvtMC2q0m9aDtCxxSWRWfi6Q60WDI=;
+  b=QnEdvGUTvXx+TasWS5yl5BwC+U63qV31oeCwRzaRCs8L2VkpetD5zCB9
+   eDHWSSrTyaeCoQmIR8WaR7FU2UDU0QEfBrv8r2RxfU+/wvEH17u4ScruY
+   PTi5ANlhFSvinc8lcrM6TCcI+Rip82aozTDxIUGhoOnIp/yp9xxSrBdvk
+   EIooke72wkPKW1+9VjSbO55xN/eQDkG6rGqUrAvPn14NvBOnjGZdEdv/6
+   /Do9//Q7vnIsYn9kRCpZke64BtuK2sabweL+TUq039NgmMBWrWyM3hFKb
+   1MPFbjfh7tP4KV7wcses9v51V9vV7O3m6Z6LF1+ZiyFMkglxVR8TrrHXW
+   w==;
+X-CSE-ConnectionGUID: 2m0tbYkvReiBnc6TCVEoiA==
+X-CSE-MsgGUID: VI0OBgVgThaqOfr9rMn7cA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="34504727"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="34504727"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 01:31:59 -0700
+X-CSE-ConnectionGUID: 2soE2fBTS2KGUANzz0HUNA==
+X-CSE-MsgGUID: GWW+RnrQTpeAm04mCQohjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="23338204"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.225.183]) ([10.124.225.183])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 01:31:56 -0700
+Message-ID: <7c71c294-8ce4-4f13-b827-d16a8811739a@linux.intel.com>
+Date: Fri, 19 Apr 2024 16:31:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: has@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 117/130] KVM: TDX: Silently ignore INIT/SIPI
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <4a4225de42be0f7568c5ecb5c22f2029f8e91d62.1708933498.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <4a4225de42be0f7568c5ecb5c22f2029f8e91d62.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This is an optional property. If set, the pca9450 will be registered as
-a reset device with the chosen priority level.
 
-Signed-off-by: Holger Assmann <h.assmann@pengutronix.de>
----
- .../devicetree/bindings/regulator/nxp,pca9450-regulator.yaml   | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml
-index 3d469b8e97748..7cc2d6636cf52 100644
---- a/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml
-@@ -35,6 +35,9 @@ properties:
-   interrupts:
-     maxItems: 1
- 
-+  priority:
-+    $ref: /schemas/power/reset/restart-handler.yaml#
-+
-   regulators:
-     type: object
-     description: |
--- 
-2.39.2
+On 2/26/2024 4:26 PM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> The TDX module API doesn't provide API for VMM to inject INIT IPI and SIPI.
+> Instead it defines the different protocols to boot application processors.
+> Ignore INIT and SIPI events for the TDX guest.
+>
+> There are two options. 1) (silently) ignore INIT/SIPI request or 2) return
+> error to guest TDs somehow.  Given that TDX guest is paravirtualized to
+> boot AP, the option 1 is chosen for simplicity.
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+[...]
+> +
+> +static void vt_vcpu_deliver_init(struct kvm_vcpu *vcpu)
+> +{
+> +	if (is_td_vcpu(vcpu)) {
+> +		/* TDX doesn't support INIT.  Ignore INIT event */
+> +		vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+Why change the mp_state to KVM_MP_STATE_RUNNABLE here?
 
+And I am not sure whether we can say the INIT event is ignored since 
+mp_state could be modified.
+
+> +		return;
+> +	}
+> +
+> +	kvm_vcpu_deliver_init(vcpu);
+> +}
+> +
 
