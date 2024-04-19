@@ -1,89 +1,65 @@
-Return-Path: <linux-kernel+bounces-151830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79AE98AB484
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:44:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44A3C8AB486
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:45:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08095B218DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:44:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEB401F228A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2FF113B284;
-	Fri, 19 Apr 2024 17:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49A013AD28;
+	Fri, 19 Apr 2024 17:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FEKH5txJ"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="aCRdVpda"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B80741386C0;
-	Fri, 19 Apr 2024 17:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9215D13A86B
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:45:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713548647; cv=none; b=HvVZFu44QLp80Osg8gifSV4gEX33hR7dRsHvgCwD+X6Vk3BfccVFYjWz5RWZnAr2oEktUjbhbaBojUjJKBdqwlDj+hHz0KweG5ISz4vuUKxJCtAnLMPVZSwneFGixKCHZWVn9+A1wRkDEF4nsl+6xGseo5+SzPKGQtCpdkFfkeU=
+	t=1713548750; cv=none; b=mEd2xWRbrKPngO47vgkXncL67g1T1etfWESbxFmn7WEir5uvfFC3Z2biXp1i/WMJymO0twnqy9qPtqWc56iYeqUdXtavXBmo86O2DR3sDo2Eo9Wi5cR6xBxCctT0P6OboulCCesF3OXS4u3waVFxDfhbjOvbmB4UcjhqtUQALjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713548647; c=relaxed/simple;
-	bh=85Ii+8WtZG4Na/S19N75HT4zm3QuIWPvSPHzheuGau4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BT1nYa0TrtRlq6KctoGk11i86L96FmXu0fectLb7/rjXpy/iyToXtD4dKcjMy0Ifb8UgdgfMG+mlR5YWV17Gr82RBKqqIJ5bxbyUaztngZhuEJ3Cr2jjC8vyqOOxoR2OgTaOxsljCo6yFuY84f1WFadHPAIZCLs2aivptRaZHoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FEKH5txJ; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso1251113b3a.2;
-        Fri, 19 Apr 2024 10:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713548645; x=1714153445; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DYge8k8yiQNLUXp9tI3nUecGn5nWrAEYfDqzby5J/0Y=;
-        b=FEKH5txJss8CPw5ZWRmwZF8z3UTWV/WTIy78QDtN8iu//7kDRD9+H+k65mMwnytCbY
-         JhA4bofg9SgY+qPrKgKCfdz9xvymRXoHr2Pg4PqwDGIS6mpRZFgPnT8lxFqthwQQ+L1w
-         758MHaDbM7uv14uiZWMMFGYCQWqloBKt6UR6DqukviTXmEbhhxLnWYL7YyTiWUTZYHuL
-         UYtJyRDyvgY4RRpWBVZPJOj1qxuCQx/TvFLqod95v/PL1+CaPYAOb8mJ+R5GLRmOs5al
-         YVk0U46XEoqkmC7dPUolR2sf4+3ApCj0ygwSIBHrZf5GZGi8sYBUY1gmBuCB8YTRDbUn
-         YpGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713548645; x=1714153445;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DYge8k8yiQNLUXp9tI3nUecGn5nWrAEYfDqzby5J/0Y=;
-        b=jkdKOHJHNmU4jKFvkCoHsP1KBXiCsWaR8k4p7YdwhIgJ9StbTaYRClBgUyxiC7y7Fg
-         5OXbC2aKDkM3s/SF3URbkhzE8wauf1GHowFMWcZIW8sZvJmkOZFCOi0hLPqrljbj/LgS
-         Nv8JOXZy9EsnDQt3SoAS2NxOvWNzsgU/8JEaCmINFbsr/VuitzIgqEclbJ1YNCYmcBf1
-         YAyUV/1f9/G7qM/rkdqgHu5gUzQbHeP4Ou7QK7QwAMWNdOIJTkk/vzcTrxGIKz+iKdAx
-         U4pRd6Ah7EUWKq9TTy6ENIqyDCDmZLbbTtuo1YB1WkGU64/RPjLigDHFz4ZsfxIvjaes
-         6Aog==
-X-Forwarded-Encrypted: i=1; AJvYcCXWabY4uw6090c8Nnjz4JHH5pqiW6vvnlbd9znnUv90NMM11BMsZ0ISPi9S2ywbVR90ZRM6M/Nf1f60wukRPHRfpculXLwUAJJaFMRL9w2bbgWGg9dxW1wZCweKeMZvx6VylrcZ8Gdj1YMRqERNkwNsMMP3tkOA92EUhRCXEYyskg==
-X-Gm-Message-State: AOJu0Yw78XJHlmnv9pZfKnjPp6QFUXvWjfplcID+sgYGkgCJ9simcq+e
-	Mdq608+3Q2Evux6JCpHLiUYrIvLp7Qx+3WxI8eZbZva0KA/q1EA9
-X-Google-Smtp-Source: AGHT+IFKGFRUI0+Gv23iQkL5gzsAanvmwGAZnj6jAcNoHux3oyFG9MjAtMJWpluphkxTU2lIlPl3Cg==
-X-Received: by 2002:a05:6a00:3a1e:b0:6ed:5f66:602 with SMTP id fj30-20020a056a003a1e00b006ed5f660602mr3382726pfb.9.1713548644806;
-        Fri, 19 Apr 2024 10:44:04 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id n56-20020a056a000d7800b006e6b7124b33sm3491511pfv.209.2024.04.19.10.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 10:44:04 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: syzbot+8e03da5d64bc85098811@syzkaller.appspotmail.com
-Cc: ajk@comnets.uni-bremen.de,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	linux-hams@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	syzkaller-bugs@googlegroups.com,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: [PATCH v2] net: hams: Fix deadlock caused by unsafe-irq lock in sp_get()
-Date: Sat, 20 Apr 2024 02:43:21 +0900
-Message-Id: <20240419174319.28528-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <0000000000005e18f00615207de6@google.com>
-References: <0000000000005e18f00615207de6@google.com>
+	s=arc-20240116; t=1713548750; c=relaxed/simple;
+	bh=tg8CNjSpWN2BcBDo2ESp9bjBzlZSzMIk0QNMl4nZYbA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=boS9sBNvMx6cQeEMirIiwpZyUFS0+goeyVPCS1EvKweulKC5s73Lp9HSG1a2cr8Q7Zg+lwyS8iS8AVr41QIadlTVGCNDpS15w5tIhvI53zPgJ96PzXaLrU94Em9U4bLbKjmOeyNd6JmiFEOpIVq+BoZVz0s/WbCocxRwYCbVuQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=aCRdVpda; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713548746;
+	bh=tg8CNjSpWN2BcBDo2ESp9bjBzlZSzMIk0QNMl4nZYbA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=aCRdVpdahXIbXIWgMggkkeyMfyj00RFePkKCUXa9vvmPOryTab8WeJK1xioUerVe3
+	 3j9qCE22dAYsDJfJO8IarsnMX9631nkI/BkTBHo7Me9zzVE4WjxJX3AiAP3pJm49A3
+	 YyTsRgMbvJzIbR76votXMr/ObHPp0UHTz16W1xGXS1QPXXz8BH/8JMRsGQ6pSpO5+g
+	 S+Bl8WxsE1pcL1869tsyNzY3JN97U3G23JLPyJd5zJ5Yh57tvkvv6PZCe+FLkRyYUt
+	 aBV6PSfWhGetcgqmwBh5gVx+IGooPEDOWMzvdfaxrJ45jAZFnl5EJE80zwNqeOOxZJ
+	 rWkisKZhhNqiA==
+Received: from hermes-devbox.lan (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbeckett)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D62E83782154;
+	Fri, 19 Apr 2024 17:45:45 +0000 (UTC)
+From: Bob Beckett <bob.beckett@collabora.com>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>
+Cc: kernel@collabora.com,
+	Robert Beckett <bob.beckett@collabora.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: fix drm lastclose ignoring closed active fbs
+Date: Fri, 19 Apr 2024 18:45:30 +0100
+Message-ID: <20240419174531.1696581-1-bob.beckett@collabora.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,34 +68,78 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
+From: Robert Beckett <bob.beckett@collabora.com>
 
-read_lock() present in sp_get() is interrupt-vulnerable, so the function needs to be modified.
+when fb's have been marked as closed, if there is still something active
+then don't restore fbdev during lastclose
 
-
-Reported-by: syzbot+8e03da5d64bc85098811@syzkaller.appspotmail.com
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
 ---
- drivers/net/hamradio/6pack.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_fb_helper.c |  3 +++
+ drivers/gpu/drm/drm_plane.c     | 21 +++++++++++++++++++++
+ include/drm/drm_plane.h         |  2 ++
+ 3 files changed, 26 insertions(+)
 
-diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
-index 6ed38a3cdd73..fee583b1e59a 100644
---- a/drivers/net/hamradio/6pack.c
-+++ b/drivers/net/hamradio/6pack.c
-@@ -373,11 +373,11 @@ static struct sixpack *sp_get(struct tty_struct *tty)
+diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
+index d612133e2cf7e..b7509b0cd926a 100644
+--- a/drivers/gpu/drm/drm_fb_helper.c
++++ b/drivers/gpu/drm/drm_fb_helper.c
+@@ -2002,6 +2002,9 @@ EXPORT_SYMBOL(drm_fb_helper_hotplug_event);
+  */
+ void drm_fb_helper_lastclose(struct drm_device *dev)
  {
- 	struct sixpack *sp;
- 
--	read_lock(&disc_data_lock);
-+	read_lock_irq(&disc_data_lock);
- 	sp = tty->disc_data;
- 	if (sp)
- 		refcount_inc(&sp->refcnt);
--	read_unlock(&disc_data_lock);
-+	read_unlock_irq(&disc_data_lock);
- 
- 	return sp;
++	if (drm_has_active_plane(dev))
++		return;
++
+ 	drm_fb_helper_restore_fbdev_mode_unlocked(dev->fb_helper);
  }
+ EXPORT_SYMBOL(drm_fb_helper_lastclose);
+diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
+index 672c655c7a8e7..7eb3d06696ca7 100644
+--- a/drivers/gpu/drm/drm_plane.c
++++ b/drivers/gpu/drm/drm_plane.c
+@@ -930,6 +930,27 @@ static int __setplane_check(struct drm_plane *plane,
+ 	return 0;
+ }
+ 
++/**
++ * drm_has_active_plane - check whether any planes are currently active
++ * @dev: the DRM device
++ *
++ * Return true if any planes are currently active
++ */
++bool drm_has_active_plane(struct drm_device *dev)
++{
++	struct drm_plane *plane;
++
++	drm_for_each_plane(plane, dev) {
++		if (plane->state && plane->state->crtc && plane->state->fb)
++			return true;
++		if (plane->crtc && plane->fb)
++			return true;
++	}
++
++	return false;
++}
++EXPORT_SYMBOL(drm_has_active_plane);
++
+ /**
+  * drm_any_plane_has_format - Check whether any plane supports this format and modifier combination
+  * @dev: DRM device
+diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
+index 641fe298052dc..74fec8cbee8c6 100644
+--- a/include/drm/drm_plane.h
++++ b/include/drm/drm_plane.h
+@@ -965,6 +965,8 @@ static inline struct drm_plane *drm_plane_find(struct drm_device *dev,
+ #define drm_for_each_plane(plane, dev) \
+ 	list_for_each_entry(plane, &(dev)->mode_config.plane_list, head)
+ 
++bool drm_has_active_plane(struct drm_device *dev);
++
+ bool drm_any_plane_has_format(struct drm_device *dev,
+ 			      u32 format, u64 modifier);
+ 
 -- 
-2.34.1
+2.44.0
+
 
