@@ -1,138 +1,134 @@
-Return-Path: <linux-kernel+bounces-151159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 742CE8AAA07
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6BE98AAA21
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3094928249F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:25:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2C6E28242F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D603F52F83;
-	Fri, 19 Apr 2024 08:24:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF2856477;
+	Fri, 19 Apr 2024 08:27:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KmVmXHmN"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="EBOctmOK"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E1E3EA8C
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:24:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9104AED9;
+	Fri, 19 Apr 2024 08:27:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713515099; cv=none; b=g9ztNbIARQsZPenwcXSz/fMKcSuDhwfl+yYct2uQ8eNQgxDvRFMbzGcBJvGvSfHAfjydKWC0iCEfD6RPBJwBCMZJZIO3r1t1oEkyfPQ23pK/OWeaQRwD44ojXg2JxJ6I+aUBiGMkJFEUeqd3tNnDkqRkkkHaw3Nfp6d2lkv9KI4=
+	t=1713515229; cv=none; b=XmQAlRopRD3xqKdyhmcfXupbWtgJjkWHpw0PKYOA8EZUh4jCkjitnaY//qjhNRyxL0k+2XlPJQ7d7ZTtH0JHYirVSvTkX6DJnVPgUrhtYiC8X2YeEDr+/a/rWwSyIXaot1xG6rP+JuwBG2c4bt4b01bLPB1+14QQ/JKJkHARii4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713515099; c=relaxed/simple;
-	bh=uGJ6gQhF4xtaVh8DkoSSMEyowEiQyVEblcOoCU+SWmU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pULV/8pRXOX0dxVSKCkeO6uhRBvh3qtI3fO7JL+zJmZzYwkkSexetEbOWM/gcUBPgOPw0n9dRMU+pEeA5ik7mF/KZ+CY6S5FtilXS4gyneB2Cf38zri3nW8RIic2iADb41NtQQvJ2md2kBGMDM9p+BP4q1Xc0XrhkzMi6QaT5Bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KmVmXHmN; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=hWwmKuXcipLwwNOWyBLW6snZ40xHGiVaXCKs4svZ0Ng=; b=KmVmXHmNDe9L0zzayfyNQaGwFa
-	uKdI8HtxzIx+osADnb0urrkc0NzUnlS8O1c4WL/uRCr2vulhP1BpsvTDrC5dZaaCsYEMJm97rj8AL
-	ZY5R+lKfPOXhgnx537Y7lBXBxzXiyx2noLnS9Xmtu1Oz0pgs+aQ6FFT5S6fo4urklTWvtZTCrXBus
-	ygNqV9Pc7irh4+8PT3I8Apl/uEnWRNzagUlNU6SNSjkHvROo2CzL89lUAMsDE5VbnTpdQBzg+WYvf
-	1Thdyt9t63z1ux9RDZgFm65JwqBNBsH4dKt7wJ/IE8gg4MW+Jhfil0ELp0NLqwON1BK80AexUfiIE
-	7+R+Qo9Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxjY0-00000007G8h-2Egm;
-	Fri, 19 Apr 2024 08:24:40 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 33D093005AA; Fri, 19 Apr 2024 10:24:40 +0200 (CEST)
-Date: Fri, 19 Apr 2024 10:24:40 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Chen Yu <yu.c.chen@intel.com>
-Cc: Xuewen Yan <xuewen.yan94@gmail.com>, Abel Wu <wuyun.abel@bytedance.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Juri Lelli <juri.lelli@redhat.com>, Tim Chen <tim.c.chen@intel.com>,
-	Tiwei Bie <tiwei.btw@antgroup.com>,
-	Honglei Wang <wanghonglei@didichuxing.com>,
-	Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
-	Yujie Liu <yujie.liu@intel.com>, linux-kernel@vger.kernel.org,
-	kernel test robot <oliver.sang@intel.com>,
-	Tianchen Ding <dtcccc@linux.alibaba.com>
-Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
- if no eligible entity is found
-Message-ID: <20240419082440.GB6345@noisy.programming.kicks-ass.net>
-References: <20240226082349.302363-1-yu.c.chen@intel.com>
- <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
- <20240408115833.GF21904@noisy.programming.kicks-ass.net>
- <ZhPtCyRmPxa0DpMe@chenyu5-mobl2>
- <20240409092104.GA2665@noisy.programming.kicks-ass.net>
- <ZiAWTU5xb/JMn/Hs@chenyu5-mobl2>
- <CAB8ipk-fejQ41Jgk6z52+T6CP+impwbaOAfhA9vG_-FB9BeRyw@mail.gmail.com>
- <ZiEaKOQwiNEglYtS@chenyu5-mobl2>
+	s=arc-20240116; t=1713515229; c=relaxed/simple;
+	bh=ofgIfXEUZyXIhhEeNyNeHg/vT25Lnt/08niZkgCBmec=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mJ7D6HotLuP9heSaY31UoYJ3h8XGMPM4kCm5NHiWPY/gkUyuPMhgp/M2v+R56I5T8S7cYAtrM1sYoXJpbjDtfrmkC4tNhRBD5dVAKIXAo2qXL9qi2Fp6spkmxG+AykQ6PXoPS7PeTlhaoGpzy3yBYx9OhxKfkXB+r8TUFWs3Ekk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=EBOctmOK; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43J8QoE0038515;
+	Fri, 19 Apr 2024 03:26:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713515210;
+	bh=2ZZ/WurYzNmG+fF4XG7e2gevauRo3lC7JLRh3tkitu4=;
+	h=From:To:CC:Subject:Date;
+	b=EBOctmOKRAvqwd8H1/+IUAjwHepvT6D7Gbk8wnCDEdHXDpJbJYgrAS+y5+1i/Exu0
+	 hkXZwShb8k6HDuArNHOG+G964/9C3qOFP+ak/A3Ns4g7gDrSKuatSZgOlaFK56NLk6
+	 NthLmc6c7ubiVl9fTKpOiCa8g/w/tQa7VguwRj5E=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43J8Qoqo127401
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 19 Apr 2024 03:26:50 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 19
+ Apr 2024 03:26:50 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 19 Apr 2024 03:26:50 -0500
+Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43J8QnZv042265;
+	Fri, 19 Apr 2024 03:26:50 -0500
+From: Chintan Vankar <c-vankar@ti.com>
+To: Julien Panis <jpanis@baylibre.com>, Arnd Bergmann <arnd@arndb.de>,
+        Dan
+ Carpenter <dan.carpenter@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Chintan Vankar <c-vankar@ti.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>, Roger Quadros <rogerq@kernel.org>,
+        Richard
+ Cochran <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, Jakub
+ Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S.
+ Miller" <davem@davemloft.net>, <s-vadapalli@ti.com>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: [PATCH net-next v8 0/2] Enable RX HW timestamp for PTP packets using CPTS FIFO
+Date: Fri, 19 Apr 2024 13:56:24 +0530
+Message-ID: <20240419082626.57225-1-c-vankar@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZiEaKOQwiNEglYtS@chenyu5-mobl2>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Apr 18, 2024 at 09:03:36PM +0800, Chen Yu wrote:
+The CPSW offers two mechanisms for communicating packet ingress timestamp
+information to the host.
 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 31bca05c3612..9f203012e8f5 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -696,15 +696,23 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
->   *
->   * XXX could add max_slice to the augmented data to track this.
->   */
-> +
-> +static s64 limit_entity_lag(struct sched_entity *se, s64 lag)
-> +{
-> +	s64 limit;
-> +
-> +	limit = calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se);
-> +	return clamp(lag, -limit, limit);
-> +}
+The first mechanism is via the CPTS Event FIFO which records timestamp
+when triggered by certain events. One such event is the reception of an
+Ethernet packet with a specified EtherType field. This is used to capture
+ingress timestamps for PTP packets. With this mechanism the host must
+read the timestamp (from the CPTS FIFO) separately from the packet payload
+which is delivered via DMA.
 
-Right, helper makes sense.
+In the second mechanism of timestamping, CPSW driver enables hardware
+timestamping for all received packets by setting the TSTAMP_EN bit in
+CPTS_CONTROL register, which directs the CPTS module to timestamp all
+received packets, followed by passing timestamp via DMA descriptors.
+This mechanism is responsible for triggering errata i2401:
+"CPSW: Host Timestamps Cause CPSW Port to Lock up."
 
-> @@ -3721,6 +3729,7 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se,
->  	if (avruntime != se->vruntime) {
->  		vlag = (s64)(avruntime - se->vruntime);
->  		vlag = div_s64(vlag * old_weight, weight);
-> +		vlag = limit_entity_lag(se, vlag);
->  		se->vruntime = avruntime - vlag;
+The errata affects all K3 SoCs. Link to errata for AM64x:
+https://www.ti.com/lit/er/sprz457h/sprz457h.pdf
 
-So the !on_rq case has clamping in update_entity_lag() which is before
-scaling. And that makes more sense to me, because putting a limit on
-vlag before the multiplication *should* ensure the multiplication itself
-doesn't overflow.
+As a workaround we can use first mechanism to timestamp received
+packets.
 
-But now you allow it to compute garbage and then clip the garbage.
+Series is based on linux-next tagged next-20240419.
 
->  	}
->  
-> @@ -3768,6 +3777,9 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
->  
->  	update_load_set(&se->load, weight);
->  
-> +	if (!se->on_rq)
-> +		se->vlag = limit_entity_lag(se, se->vlag);
-> +
+Link to v7:
+https://lore.kernel.org/r/20240417120913.3811519-1-c-vankar@ti.com/
 
-Except you now add clamping after scaling too, but in a really weird
-place. Should this not go right after the div_s64() that scales?
+Changes from v7 to v8:
+- Removed empty lines between trailers in [PATCH v7 2/2] as suggested
+  by Jakub.
 
-Unlike the reweight_eevdf() case, there might be an argument for doing
-it after scaling in this case. Namely, you can have multiple reweights
-stacking their scale ops.
+Chintan Vankar (2):
+  net: ethernet: ti: am65-cpts: Enable RX HW timestamp for PTP packets
+    using CPTS FIFO
+  net: ethernet: ti: am65-cpsw/ethtool: Enable RX HW timestamp only for
+    PTP packets
 
+ drivers/net/ethernet/ti/am65-cpsw-ethtool.c |  13 ++-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c    |  51 +++++-----
+ drivers/net/ethernet/ti/am65-cpts.c         | 107 ++++++++++++++------
+ drivers/net/ethernet/ti/am65-cpts.h         |  11 +-
+ 4 files changed, 118 insertions(+), 64 deletions(-)
 
-Also, could you put a few words in on how often these clips are hit? I
-suspect it's fairly rare (but crucial when it does).
+-- 
+2.34.1
+
 
