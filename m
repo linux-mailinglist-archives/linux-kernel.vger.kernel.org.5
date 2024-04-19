@@ -1,130 +1,137 @@
-Return-Path: <linux-kernel+bounces-151894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83AC68AB56F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:11:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B32248AB571
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:12:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 410E4284340
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:11:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A67A1F22374
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:12:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B423913C809;
-	Fri, 19 Apr 2024 19:11:48 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3AA13B284;
-	Fri, 19 Apr 2024 19:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6302813C816;
+	Fri, 19 Apr 2024 19:12:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WsY9X5WO"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D8D13C3F9
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 19:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713553908; cv=none; b=FghEoVn6mOs7wOAkA5uHwKV3XnaFykbwApJs61WJSArVtqEOfCnPABOpgUbzAoXMzgdbEJ+f5UCnx+eCNnPOqoV++ZuUfO5fovyZbArhqurLMuvgiCQnByrXE8pp+cH+R1NO1jDSRo91U1DvaXYT0Lt6FaEyJsLRbZCTvQNdUC8=
+	t=1713553936; cv=none; b=VLMcUrxnMpHjOm82crpZ3Asjbe6zJPweTjY6Ejq91stb133dP03Gyha6GYgk0hWxc3XbckUDWiS5oB3PqLdZetnTPOcDZ9FguIQnpZfpJQ0Vnq9ZseeF9gAzE2K0iJ3tqrdHoS0ahfZp+ao7B1FPdk+N+4wNrUOu0QNDm4Jf40g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713553908; c=relaxed/simple;
-	bh=kqMCpndmWFZjXsjIShMKBOUoUhJZZSYr8ABoLqLSEH8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TK/RV4nrtpZAWITITJUGIEytbqcDlyNPMsLnrvrYEKb99v+VH9GqOi+Jn2PFMoyT6kQi2WYiBm8iZs6SfC1VIyzcwg3vnPsp8o6r1XL8n5efTbBmmIE34Cdp8AjWpVYcUXypFNKEAxxSnrZiOw3X9uZeMqmIOCQ2WOlYs27DdaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A0F62F;
-	Fri, 19 Apr 2024 12:12:14 -0700 (PDT)
-Received: from [10.57.77.69] (unknown [10.57.77.69])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC5893F64C;
-	Fri, 19 Apr 2024 12:11:44 -0700 (PDT)
-Message-ID: <111aa494-124c-4236-a5f2-29cb1cb0fb56@arm.com>
-Date: Fri, 19 Apr 2024 20:11:51 +0100
+	s=arc-20240116; t=1713553936; c=relaxed/simple;
+	bh=0BdrZ3xw4Yg9KU1Jb5k96XvpBhEfUhYdRlzZJRoScYQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=JQUI1iiYtJbY0msReTh04L8/68ddQNaQsVtsYP+mQGNYjmzH4K/DjXa3pkxIaWIlaJJB7n/tnQMqfOtwelhNrtf8iN7MihUg6Nw91FNDO59WaTUFzk7Vx6Um4MfYZsPsBHCy0lLmvmDKUS/I4H3ibZObpXEVpSjqhRCAdneIMSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--dtokazaki.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WsY9X5WO; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--dtokazaki.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc64f63d768so4430889276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 12:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713553934; x=1714158734; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S3nn0uxGKg2XiHfenj6FC27XZwwqUuZAKVQOuRIbTsY=;
+        b=WsY9X5WOjLsKbNtGBbCKP9yo4UEXSzOcch7/yA1JuSXzZ50JjOp5SNiYemXfkMnh6F
+         DDswJTf2fSYip6jwACsHWBTGvcoKF+tXhJO7Kyq2Yppszz6u0Igtnd3X/jeha4wQVLBU
+         xRrWmJLPQyBdXV5cE+dh8qBnLmijS+5cz2UNIlnt6T3IAoCL5rBPLIg2+ZmoWJc65Mkq
+         aRMTysgzXp9wtTbRITVhsPG3WRZbe+uQ/m0dr/s+Ig45qRJ0LxXOOBDkvqwKxn/bLonT
+         ztFJizr50/GwkYP1B9OMkHqAEz6mGDl5QLSkKLcQ/Htn5z/zQXcrEjLjrKepuRO+WzWJ
+         EaZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713553934; x=1714158734;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S3nn0uxGKg2XiHfenj6FC27XZwwqUuZAKVQOuRIbTsY=;
+        b=WaNG+nUDBReD3h2p9/iIE13wQsY38xB1plleBfZpoLI4mNrzqaeD0J1aA3HCZqh80a
+         mG+zKMCNeN8czDgZtZ1aJrAzvXJ0pSSaxQmNcALcEelfFr8N0ccAJ9QZ90MwjnF91cbk
+         ViJgvxwzaLJ5JqsbOvBlUJ4V3ExukLJU9e/x0bztcA95ImSTJwP3BnI6zhedwfbm+IXk
+         6hd/+vQReuQlVfo5F+wf9riVNDDUte6oKbtJ6iaZFU+Kw3+EZm55ViibXUwdTHkcTCTd
+         6MUHNrXZ7kv4t7mEI22S17kS8743SRcoFR0JvX+QbOhdT22RsFZhNPGR0eciDitEy9Em
+         /14Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXy8vOETwN7Um9YdAIvNUQ021r9kdOW+PAwY0X4vA1kYzj//24iS5rJ+M2pe+3lZ92vkYGL6QQep4jM6a/hEyTWCPGTljN4rfBaNWD1
+X-Gm-Message-State: AOJu0YyanNIx2BU/Rty46mVIXx9yr+0o+/auYHDfDD0GB8a6H3g9K1PQ
+	LzbIbFqqhJFxCn8tJ5Xa0YqxPdP5uDhF4lqtY7AEbNlyC4OlEkMdFdQjk0dCUvb7qifwV5HTLYG
+	LqkrpLDLXQv6joQ==
+X-Google-Smtp-Source: AGHT+IHj6eljA4uiwvsWvXU1nqdzDaAjyxYm04dHEC2MitRGBMqDA0aouZ+8aEII49bUkpOJNBfyhLBrhL5qAeE=
+X-Received: from dtokazaki-pixel.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1a03])
+ (user=dtokazaki job=sendgmr) by 2002:a05:6902:709:b0:dcc:c57c:8873 with SMTP
+ id k9-20020a056902070900b00dccc57c8873mr895580ybt.9.1713553934410; Fri, 19
+ Apr 2024 12:12:14 -0700 (PDT)
+Date: Fri, 19 Apr 2024 19:12:00 +0000
+In-Reply-To: <cd8ff4fc-f6bd-4834-b837-2a0d59c93648@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 09/16] thermal: gov_step_wise: Use trip thresholds
- instead of trip temperatures
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <13515747.uLZWGnKmhe@kreacher> <3769085.MHq7AAxBmi@kreacher>
-Content-Language: en-US
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <3769085.MHq7AAxBmi@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <cd8ff4fc-f6bd-4834-b837-2a0d59c93648@web.de>
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240419191200.219548-1-dtokazaki@google.com>
+Subject: [PATCH v3] eeprom: at24: fix memory corruption race condition
+From: Daniel Okazaki <dtokazaki@google.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Daniel Okazaki <dtokazaki@google.com>, kernel-team@android.com, 
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+If the eeprom is not accessible, an nvmem device will be registered, the
+read will fail, and the device will be torn down. If another driver
+accesses the nvmem device after the teardown, it will reference
+invalid memory.
 
+Move the failure point before registering the nvmem device.
 
-On 4/10/24 17:43, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> In principle, the Step-Wise governor should take trip hystereses into
+Signed-off-by: Daniel Okazaki <dtokazaki@google.com>
+Fixes: b20eb4c1f026 ("eeprom: at24: drop unnecessary label")
+---
+ drivers/misc/eeprom/at24.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-s/hystereses/hysteresis/
+diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+index 572333ead5fb..4bd4f32bcdab 100644
+--- a/drivers/misc/eeprom/at24.c
++++ b/drivers/misc/eeprom/at24.c
+@@ -758,15 +758,6 @@ static int at24_probe(struct i2c_client *client)
+ 	}
+ 	pm_runtime_enable(dev);
+ 
+-	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
+-	if (IS_ERR(at24->nvmem)) {
+-		pm_runtime_disable(dev);
+-		if (!pm_runtime_status_suspended(dev))
+-			regulator_disable(at24->vcc_reg);
+-		return dev_err_probe(dev, PTR_ERR(at24->nvmem),
+-				     "failed to register nvmem\n");
+-	}
+-
+ 	/*
+ 	 * Perform a one-byte test read to verify that the chip is functional,
+ 	 * unless powering on the device is to be avoided during probe (i.e.
+@@ -782,6 +773,15 @@ static int at24_probe(struct i2c_client *client)
+ 		}
+ 	}
+ 
++	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
++	if (IS_ERR(at24->nvmem)) {
++		pm_runtime_disable(dev);
++		if (!pm_runtime_status_suspended(dev))
++			regulator_disable(at24->vcc_reg);
++		return dev_err_probe(dev, PTR_ERR(at24->nvmem),
++				     "failed to register nvmem\n");
++	}
++
+ 	/* If this a SPD EEPROM, probe for DDR3 thermal sensor */
+ 	if (cdata == &at24_data_spd)
+ 		at24_probe_temp_sensor(client);
+-- 
+2.44.0.769.g3c40516874-goog
 
-> account.  After all, once a trip has been crossed on the way up,
-> mitigation is still needed until it is crossed on the way down.
-> 
-> For this reason, make it use trip thresholds that are computed by
-> the core when trips are crossed, so as to apply mitigations in the
-> hysteresis rages of trips that were crossed on the way up, but have
-> not been crossed on the way down yet.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->   drivers/thermal/gov_step_wise.c |    9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> Index: linux-pm/drivers/thermal/gov_step_wise.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/gov_step_wise.c
-> +++ linux-pm/drivers/thermal/gov_step_wise.c
-> @@ -62,7 +62,8 @@ static unsigned long get_target_state(st
->   }
->   
->   static void thermal_zone_trip_update(struct thermal_zone_device *tz,
-> -				     const struct thermal_trip *trip)
-> +				     const struct thermal_trip *trip,
-> +				     int trip_threshold)
->   {
->   	int trip_id = thermal_zone_trip_id(tz, trip);
->   	enum thermal_trend trend;
-> @@ -72,13 +73,13 @@ static void thermal_zone_trip_update(str
->   
->   	trend = get_tz_trend(tz, trip);
->   
-> -	if (tz->temperature >= trip->temperature) {
-> +	if (tz->temperature >= trip_threshold) {
-
-So this value in 'trip_threshold' might be lower than older
-'trip->temperature', but not necessarily. Anyway, all good here.
-
->   		throttle = true;
->   		trace_thermal_zone_trip(tz, trip_id, trip->type);
->   	}
->   
->   	dev_dbg(&tz->device, "Trip%d[type=%d,temp=%d]:trend=%d,throttle=%d\n",
-> -		trip_id, trip->type, trip->temperature, trend, throttle);
-> +		trip_id, trip->type, trip_threshold, trend, throttle);
->   
->   	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
->   		if (instance->trip != trip)
-> @@ -131,7 +132,7 @@ static void step_wise_manage(struct ther
->   		    trip->type == THERMAL_TRIP_HOT)
->   			continue;
->   
-> -		thermal_zone_trip_update(tz, trip);
-> +		thermal_zone_trip_update(tz, trip, td->threshold);
->   	}
->   
->   	list_for_each_entry(instance, &tz->thermal_instances, tz_node)
-> 
-> 
-> 
-
-
-LGTM w/ spelling fixed.
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
