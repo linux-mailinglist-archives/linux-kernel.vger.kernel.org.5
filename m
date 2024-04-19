@@ -1,229 +1,165 @@
-Return-Path: <linux-kernel+bounces-150881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC3658AA62C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:13:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 484ED8AA620
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:12:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 325261F215F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:13:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0535D2837F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:12:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1FBB4A11;
-	Fri, 19 Apr 2024 00:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03FA4391;
+	Fri, 19 Apr 2024 00:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bKwJ4PPk"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fLkuqs2y"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A8510A25;
-	Fri, 19 Apr 2024 00:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B2B19B;
+	Fri, 19 Apr 2024 00:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713485474; cv=none; b=H+7n8dlyzZ1mYS/f7M4BsX1lJBM9NBYypD+AiB3XXGXKrUdweYzdRwLQBeD2CziFP8gdfTi4trBL7ufBUe1Rypn5xZv59ME4g4/ACKT+UgxKfIDaoDrBCKKR/6s2tMk7QF8ar3tanOhdvtpRgb4MmTvdtEjYqO92piAFmPUJIEk=
+	t=1713485440; cv=none; b=neDAW8OzT0evjYLPq5l5JMhhvZKPrW9ON0lms8A3F4F3fReggmIej90HW9dkDJs5RTcZVazxFyw4qjEjY1SgM0qotKj+52sY6FuJk6HdFknRQmMG41YT/SuE32xpc2Km+frBbXPC2NjfRjhgD46YAXw8XX5NeIz32c0ZB2DMd4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713485474; c=relaxed/simple;
-	bh=qTRflK83hWPe8WMZaUDFvxeBpnPe3PBX9JmEeKHKz5g=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GOblJ+LTqjcKp44aV30szgX+1S9xgOIppjuJDBvrfIdMuUT6s2153J7Eeq5k4fkwu/RMlisbM2LF3ENMAMca5jRAzOe6cuWAaxn5Eo7/0M2qU7jItSsfl1VuDUPcbXMCOrQBEKX/whQgm0p4KRSGqfKzqaGMMFbFC5i7TkRjDu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bKwJ4PPk; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43IMserW000792;
-	Fri, 19 Apr 2024 00:10:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=QMLqYCG5YLp0bH+Im5zgY8BvC8QMj6jH3G/EsLQGnTk=; b=bK
-	wJ4PPkTweKhfPAuSEwzkO/epfybcwuFn6JOQRIzLaV1V+kW+BA7yNt+4B9uj9wT/
-	GTPyZQKXOzHk55RBTblHici9wb69fGexbBO+KrklLmBYi2DOvrVaLTGTfwR4z7+2
-	+be0vr4w9B2Ox4i9Q13Lc8vUBNXi0SAM12fAQaSHj5egP8KOy6Ds6q0d0aqPAN+T
-	RvCdWhvIbm4U1HaoJU9INY4BYHtVHnTFT9rDRBxveZPGv8sej3LDDIb6RoS1B11n
-	7BqzspI5ML2emdlImYaQRPk6of+1ojnNJzm3ZyThGN7M87YMyc9N8OgSJ+eQM0ZT
-	K0u/e4fMaCdOVTtHsU+g==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xk4vm9a4r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 00:10:57 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43J0Aud6001710
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 00:10:56 GMT
-Received: from adas-linux5.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 18 Apr 2024 17:10:55 -0700
-From: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-To: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mani@kernel.org>
-CC: <quic_msarkar@quicinc.com>, <quic_kraravin@quicinc.com>,
-        Lorenzo Pieralisi
-	<lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?=
-	<kw@linux.com>,
-        Rob Herring <robh@kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel
-	<gustavo.pimentel@synopsys.com>,
-        Manivannan Sadhasivam
-	<manivannan.sadhasivam@linaro.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Conor Dooley
-	<conor.dooley@microchip.com>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-Subject: [PATCH v3 3/3] PCI: qcom: Add rx margining settings for 16GT/s
-Date: Thu, 18 Apr 2024 17:09:36 -0700
-Message-ID: <20240419001013.28788-4-quic_schintav@quicinc.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240419001013.28788-1-quic_schintav@quicinc.com>
-References: <20240419001013.28788-1-quic_schintav@quicinc.com>
+	s=arc-20240116; t=1713485440; c=relaxed/simple;
+	bh=G9Z/tW8og1ICHUXARDylS43YX/C9X4jXDk8QDq5f9S8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KaAz7FBFuyDSscqtaSvNVZJGWQ7ehJNdJ/Vg0aIkoPxl3fUi0rNkkQ//egwCs9Kj15ZXdlk5KUcHIZdxMayVDmARRagBHCVmJNS21vluRs9uESicIzESQy9VAQ7o9fkpUaIfDBjH8+u/OmUrCwBKzP3kjzu88mwKKOb5Q095fks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fLkuqs2y; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713485438; x=1745021438;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=G9Z/tW8og1ICHUXARDylS43YX/C9X4jXDk8QDq5f9S8=;
+  b=fLkuqs2yGUWOZba3PC7Tea0Tk7RAavcychMJOuejCa9/sAa+JheGgA8z
+   R8r1PtdY7Jza+bcCv8m7bIlYQ/7XDf2rhzximQT7iiap88Q2U6nRnk62q
+   PiZ4yeCSPV0QaNWj92VdNXqjYT05gyXHwW1+rVehSKw4yHpRFhvE1MjWp
+   NUDp7bBIkTeVGR/MYVgKyTeleQ3jjwfS2Q4jeOVSEOwf3rjJdn73FQxL2
+   2eunfd6MzQaP0K/Ae7SWFuRMUC2mpczEcfbBUhRWO8NmBUk19Q3r4kYy/
+   lMDxInoPP/J2HjHjf9A4jtyGTFWDpDFuEMaGd1GMYAAguIvUN53qadnm6
+   g==;
+X-CSE-ConnectionGUID: ue2+92HqTaiAj75KnhSJ3g==
+X-CSE-MsgGUID: S1nq7XABT7eegfANSYKfsA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12850768"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="12850768"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 17:10:37 -0700
+X-CSE-ConnectionGUID: yWA50Pj5ROG4BJ3wgFI6Ww==
+X-CSE-MsgGUID: XbpKVrp8TbGXaGj2n7IMTg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="27789915"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by fmviesa004.fm.intel.com with ESMTP; 18 Apr 2024 17:10:34 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rxbpm-0009Ml-1x;
+	Fri, 19 Apr 2024 00:10:30 +0000
+Date: Fri, 19 Apr 2024 08:09:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>,
+	dmitry.torokhov@gmail.com, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	jikos@kernel.org, benjamin.tissoires@redhat.co, dianders@google.com,
+	hsinyi@google.com
+Cc: oe-kbuild-all@lists.linux.dev, dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	lvzhaoxiong <lvzhaoxiong@huaqin.corp-partner.google.com>
+Subject: Re: [PATCH v1 1/2] dt-bindings: input: i2c-hid: Introduce Ilitek
+ ili2900
+Message-ID: <202404190818.TnHkpNZd-lkp@intel.com>
+References: <20240418124815.31897-2-lvzhaoxiong@huaqin.corp-partner.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: a0jWp-cJVae7NLxedAhk-PU-PCefoKqu
-X-Proofpoint-GUID: a0jWp-cJVae7NLxedAhk-PU-PCefoKqu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-18_21,2024-04-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- spamscore=0 impostorscore=0 bulkscore=0 clxscore=1015 suspectscore=0
- lowpriorityscore=0 mlxlogscore=859 mlxscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404190000
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418124815.31897-2-lvzhaoxiong@huaqin.corp-partner.google.com>
 
-Add rx lane margining settings for 16GT/s(GEN 4) data rate. These
-settings improve link stability while operating at high date rates
-and helps to improve signal quality.
+Hi lvzhaoxiong,
 
-Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
----
- drivers/pci/controller/dwc/pcie-designware.h  | 18 ++++++++++++++
- drivers/pci/controller/dwc/pcie-qcom-common.c | 24 +++++++++++++++++++
- drivers/pci/controller/dwc/pcie-qcom-common.h |  1 +
- drivers/pci/controller/dwc/pcie-qcom-ep.c     |  4 +++-
- drivers/pci/controller/dwc/pcie-qcom.c        |  4 +++-
- 5 files changed, 49 insertions(+), 2 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index ad771bb52d29..e8c48855143f 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -203,6 +203,24 @@
- 
- #define PCIE_PL_CHK_REG_ERR_ADDR			0xB28
- 
-+/*
-+ * GEN4 lane margining register definitions
-+ */
-+#define GEN4_LANE_MARGINING_1_OFF		0xb80
-+#define MARGINING_MAX_VOLTAGE_OFFSET(n)		FIELD_PREP(GENMASK(29, 24), n)
-+#define MARGINING_NUM_VOLTAGE_STEPS(n)		FIELD_PREP(GENMASK(22, 16), n)
-+#define MARGINING_MAX_TIMING_OFFSET(n)		FIELD_PREP(GENMASK(13, 8), n)
-+#define MARGINING_NUM_TIMING_STEPS(n)		FIELD_PREP(GENMASK(5, 0), n)
-+
-+#define GEN4_LANE_MARGINING_2_OFF		0xb84
-+#define MARGINING_IND_ERROR_SAMPLER(n)		FIELD_PREP(BIT(28), n)
-+#define MARGINING_SAMPLE_REPORTING_METHOD(n)	FIELD_PREP(BIT(27), n)
-+#define MARGINING_IND_LEFT_RIGHT_TIMING(n)	FIELD_PREP(BIT(26), n)
-+#define MARGINING_IND_UP_DOWN_VOLTAGE(n)	FIELD_PREP(BIT(25), n)
-+#define MARGINING_VOLTAGE_SUPPORTED(n)		FIELD_PREP(BIT(24), n)
-+#define MARGINING_MAXLANES(n)			FIELD_PREP(GENMASK(20, 16), n)
-+#define MARGINING_SAMPLE_RATE_TIMING(n)		FIELD_PREP(GENMASK(13, 8), n)
-+#define MARGINING_SAMPLE_RATE_VOLTAGE(n)	FIELD_PREP(GENMASK(5, 0), n)
- /*
-  * iATU Unroll-specific register definitions
-  * From 4.80 core version the address translation will be made by unroll
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-common.c b/drivers/pci/controller/dwc/pcie-qcom-common.c
-index a6f3eb4c3ee6..3279314ae78c 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-common.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-common.c
-@@ -46,6 +46,30 @@ void qcom_pcie_common_set_16gt_eq_settings(struct dw_pcie *pci)
- }
- EXPORT_SYMBOL_GPL(qcom_pcie_common_set_16gt_eq_settings);
- 
-+void qcom_pcie_common_set_16gt_rx_margining_settings(struct dw_pcie *pci)
-+{
-+	u32 reg;
-+
-+	reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_1_OFF);
-+	reg = MARGINING_MAX_VOLTAGE_OFFSET(0x24) |
-+		MARGINING_NUM_VOLTAGE_STEPS(0x78) |
-+		MARGINING_MAX_TIMING_OFFSET(0x32) |
-+		MARGINING_NUM_TIMING_STEPS(0x10);
-+	dw_pcie_writel_dbi(pci, GEN4_LANE_MARGINING_1_OFF, reg);
-+
-+	reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_2_OFF);
-+	reg = MARGINING_IND_ERROR_SAMPLER(1) |
-+		MARGINING_SAMPLE_REPORTING_METHOD(1) |
-+		MARGINING_IND_LEFT_RIGHT_TIMING(1) |
-+		MARGINING_VOLTAGE_SUPPORTED(1) |
-+		MARGINING_IND_UP_DOWN_VOLTAGE(0) |
-+		MARGINING_MAXLANES(pci->num_lanes) |
-+		MARGINING_SAMPLE_RATE_TIMING(0x3f) |
-+		MARGINING_SAMPLE_RATE_VOLTAGE(0x3f);
-+	dw_pcie_writel_dbi(pci, GEN4_LANE_MARGINING_2_OFF, reg);
-+}
-+EXPORT_SYMBOL_GPL(qcom_pcie_common_set_16gt_rx_margining_settings);
-+
- int qcom_pcie_common_icc_get_resource(struct dw_pcie *pci, struct icc_path **icc_mem_p)
- {
- 	*icc_mem_p = devm_of_icc_get(pci->dev, "pcie-mem");
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-common.h b/drivers/pci/controller/dwc/pcie-qcom-common.h
-index e72c651b0d28..b9eb78fcc766 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-common.h
-+++ b/drivers/pci/controller/dwc/pcie-qcom-common.h
-@@ -11,3 +11,4 @@ int qcom_pcie_common_icc_get_resource(struct dw_pcie *pci, struct icc_path **icc
- int qcom_pcie_common_icc_init(struct dw_pcie *pci, struct icc_path *icc_mem);
- void qcom_pcie_common_icc_update(struct dw_pcie *pci, struct icc_path *icc_mem);
- void qcom_pcie_common_set_16gt_eq_settings(struct dw_pcie *pci);
-+void qcom_pcie_common_set_16gt_rx_margining_settings(struct dw_pcie *pci);
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-index cb75a874f76c..3032dd91514c 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-@@ -438,8 +438,10 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
- 		goto err_disable_resources;
- 	}
- 
--	if (pcie_link_speed[pci->link_gen] == PCIE_SPEED_16_0GT)
-+	if (pcie_link_speed[pci->link_gen] == PCIE_SPEED_16_0GT) {
- 		qcom_pcie_common_set_16gt_eq_settings(pci);
-+		qcom_pcie_common_set_16gt_rx_margining_settings(pci);
-+	}
- 
- 	/*
- 	 * The physical address of the MMIO region which is exposed as the BAR
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index acf66f974edc..f69364ecf2de 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -263,8 +263,10 @@ static int qcom_pcie_start_link(struct dw_pcie *pci)
- {
- 	struct qcom_pcie *pcie = to_qcom_pcie(pci);
- 
--	if (pcie_link_speed[pci->link_gen] == PCIE_SPEED_16_0GT)
-+	if (pcie_link_speed[pci->link_gen] == PCIE_SPEED_16_0GT) {
- 		qcom_pcie_common_set_16gt_eq_settings(pci);
-+		qcom_pcie_common_set_16gt_rx_margining_settings(pci);
-+	}
- 
- 	/* Enable Link Training state machine */
- 	if (pcie->cfg->ops->ltssm_enable)
+[auto build test WARNING on hid/for-next]
+[also build test WARNING on robh/for-next linus/master v6.9-rc4 next-20240418]
+[cannot apply to dtor-input/next dtor-input/for-linus]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/lvzhaoxiong/dt-bindings-input-i2c-hid-Introduce-Ilitek-ili2900/20240418-205059
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
+patch link:    https://lore.kernel.org/r/20240418124815.31897-2-lvzhaoxiong%40huaqin.corp-partner.google.com
+patch subject: [PATCH v1 1/2] dt-bindings: input: i2c-hid: Introduce Ilitek ili2900
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+dtschema version: 2024.3.dev14+g64b72b0
+reproduce: (https://download.01.org/0day-ci/archive/20240419/202404190818.TnHkpNZd-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404190818.TnHkpNZd-lkp@intel.com/
+
+dtcheck warnings: (new ones prefixed by >>)
+>> Documentation/devicetree/bindings/input/ilitek,ili9882t.yaml:22:5: [error] duplication of key "const" in mapping (key-duplicates)
+--
+   Documentation/devicetree/bindings/firmware/xilinx/xlnx,zynqmp-firmware.yaml:
+   Error in referenced schema matching $id: http://devicetree.org/schemas/nvmem/xlnx,zynqmp-nvmem.yaml
+>> Documentation/devicetree/bindings/input/ilitek,ili9882t.yaml:22:5: found duplicate key "const" with value "ilitek,ili2900" (original value: "ilitek,ili9882t")
+--
+>> Documentation/devicetree/bindings/input/ilitek,ili9882t.yaml: ignoring, error parsing file
+
+vim +/const +22 Documentation/devicetree/bindings/input/ilitek,ili9882t.yaml
+
+     8	
+     9	maintainers:
+    10	  - Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+    11	
+    12	description:
+    13	  Supports the Ilitek ili9882t touchscreen controller.
+    14	  This touchscreen controller uses the i2c-hid protocol with a reset GPIO.
+    15	
+    16	allOf:
+    17	  - $ref: /schemas/input/touchscreen/touchscreen.yaml#
+    18	
+    19	properties:
+    20	  compatible:
+    21	    const: ilitek,ili9882t
+  > 22	    const: ilitek,ili2900
+    23	
+    24	  reg:
+    25	    const: 0x41
+    26	
+    27	  interrupts:
+    28	    maxItems: 1
+    29	
+    30	  panel: true
+    31	
+    32	  reset-gpios:
+    33	    maxItems: 1
+    34	    description: Reset GPIO.
+    35	
+    36	  vccio-supply:
+    37	    description: The 1.8V supply to the touchscreen.
+    38	
+    39	required:
+    40	  - compatible
+    41	  - reg
+    42	  - interrupts
+    43	  - panel
+    44	  - vccio-supply
+    45	
+
 -- 
-2.43.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
