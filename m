@@ -1,317 +1,160 @@
-Return-Path: <linux-kernel+bounces-151589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76ADF8AB0C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:31:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D6628AB0E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:40:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CA6F2815C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:31:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA0F4B21F60
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:40:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BACA912E1D2;
-	Fri, 19 Apr 2024 14:31:36 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B46B12EBEF;
+	Fri, 19 Apr 2024 14:40:10 +0000 (UTC)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932FD34CDE;
-	Fri, 19 Apr 2024 14:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446E42AE90;
+	Fri, 19 Apr 2024 14:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713537096; cv=none; b=Hiizjf63JQ9jgZeNhqSsdWrRG8EhTEu2VfEXPjkyrlE/LzxrBEEeN/XBEO7U9wJ7Sk5OWRE51zgHz7iew+Fs5a9EqBUnu2QuDfm/ScgAjMLesHhgGjSwDeUf8Ipu3vt52xqD3gfuHdO/1lo5Kk5aYaSdRF3PHWAyTI2nkumyA2o=
+	t=1713537609; cv=none; b=YuK5aPDX8nKDFjPLceNLBRodx1xqpG5tZcjJpqDuwl7OrkY3EB8Zy/PhMFlCY5Rii1+Y0SnZtwubxu7Z9PDz+QWvvAan8yA0pNeAud2Sqe+InOGCh2jarZ39vueiydsFWaHMXWMcvSG92WHHMfkEd3cdf+TUEeoNDqtK6WNngFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713537096; c=relaxed/simple;
-	bh=7vHcTKnFa6TkP/fIXVlsUnNkXfU+9zD1hXAjQ08uRE4=;
+	s=arc-20240116; t=1713537609; c=relaxed/simple;
+	bh=XdSze8OFeJ1AD3Cj0JRpT8h0SZDvisv0/jzNt7qjqFc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UembratKEjUoel6vhYdoOk0s30KRyZ3xlA75Zf1Ox+USna4aqY+Dnsd7UZkzV3UONbxufTEwC2QU7eSmI+TMeveqSEV4/PWv2AdYGnmz0TjiRy3rnlvLq9PaNdsWz//d0Ik4K7yZAc4hysZr9vnd4T/N+Goiqt3HD2wz8ibf0OQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i5e861917.versanet.de ([94.134.25.23] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rxpGd-0002D3-5t; Fri, 19 Apr 2024 16:31:07 +0200
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Alban Browaeys <alban.browaeys@gmail.com>, Conor Dooley <conor@kernel.org>
-Cc: dev@folker-schwesinger.de, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Chris Ruehl <chris.ruehl@gtsys.com.hk>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	 MIME-Version:Content-Type; b=o5LwJMUkOQ65bfc50vkAN+U19E7xuI17zVCu2CTggQMQuVkCYD6lLoUc7ED/ThFc/aP94l3vijTLArWi+upTQzr3OU6AK0Y92AFjFYgwoWV0zWF0bk39gRcVrIJ2K0K/ETD9K728eIUz10XXkVoXSloTVv/ShA/LGf1lUu9idLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 98B508512A;
+	Fri, 19 Apr 2024 16:31:18 +0200 (CEST)
+From: Duje =?utf-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>
+To: Catalin Marinas <catalin.marinas@arm.com>,
  Conor Dooley <conor+dt@kernel.org>,
- Christopher Obbard <chris.obbard@collabora.com>,
- Doug Anderson <dianders@chromium.org>,
- Brian Norris <briannorris@chromium.org>,
- Jensen Huang <jensenhuang@friendlyarm.com>, linux-phy@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/3] phy: rockchip: emmc: Enable pulldown for strobe line
-Date: Fri, 19 Apr 2024 16:31:05 +0200
-Message-ID: <2192003.Icojqenx9y@diego>
-In-Reply-To: <20240411-mushily-pucker-732583c1d340@spud>
+ "Guilherme G.  Piccoli" <gpiccoli@igalia.com>,
+ Haojian Zhuang <haojian.zhuang@linaro.org>,
+ Kees Cook <keescook@chromium.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Lubomir Rintel <lkundrak@v3.sk>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Rob Herring <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+ Tony Lindgren <tony@atomide.com>, Tony Luck <tony.luck@intel.com>,
+ Will Deacon <will@kernel.org>, Stephen Boyd <sboyd@kernel.org>
+Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+ Karel Balej <balejk@matfyz.cz>, David Wronek <david@mainlining.org>,
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v9 5/9] clk: mmp: Add Marvell PXA1908 clock driver
+Date: Fri, 19 Apr 2024 16:31:14 +0200
+Message-ID: <3287993.aeNJFYEL58@radijator>
+In-Reply-To: <58b23157c088cb4774d579cc8700de85.sboyd@kernel.org>
 References:
- <20240326-rk-default-enable-strobe-pulldown-v1-0-f410c71605c0@folker-schwesinger.de>
- <313d5a24b6cffa1a9160e624bb6855aa7f66589e.camel@gmail.com>
- <20240411-mushily-pucker-732583c1d340@spud>
+ <20240402-pxa1908-lkml-v9-0-25a003e83c6f@skole.hr>
+ <de4c56a8-488d-4cdb-9d6c-e9d6e63b22b9@skole.hr>
+ <58b23157c088cb4774d579cc8700de85.sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Autocrypt: addr=duje.mihanovic@skole.hr;
+ keydata=
+ mQINBGBhuA8BEACtpIbYNfUtQkpVqgHMPlcQR/vZhB7VUh5S32uSyerG28gUxFs2be//GOhSHv+
+ DilYp3N3pnTdu1NPGD/D1bzxpSuCz6lylansMzpP21Idn3ydqFydDTduQlvY6nqR2p5hndQg6II
+ pmVvNZXLyP2B3EE1ypdLIm6dJJIZzLm6uJywAePCyncRDJY0J7mn7q8Nwzd6LG74D8+6+fKptFS
+ QYI8Ira7rLtGZHsbfO9MLQI/dSL6xe8ZTnEMjQMAmFvsd2M2rAm8YIV57h/B8oP5V0U4/CkHVho
+ m+a2p0nGRmyDeluQ3rQmX1/m6M5W0yBnEcz5yWgVV63zoZp9EJu3NcZWs22LD6SQjTV1X8Eo999
+ LtviIj2rIeCliozdsHwv3lN0BzTg9ST9klnDgY0eYeSY1lstwCXrApZCSBKnz98nX9CuuZeGx0b
+ PHelxzHW/+VtWu1IH5679wcZ7J/kQYUxhhk+cIpadRiRaXgZffxd3Fkv4sJ8gP0mTU8g6UEresg
+ lm9kZKYIeKpaKreM7f/WadUbtpkxby8Tl1qp24jS1XcFTdnjTo3YB2i2Rm9mAL2Bun9rNSwvDjE
+ fjMt5D5I+CIpIshaQwAXwRTBJHHAfeEt62C1FQRQEMAksp4Kk1s2UpZkekZzNn48BnwWq75+kEj
+ tuOtJIQGWTEHBgMG9dBO6OwARAQABtClEdWplIE1paGFub3ZpxIcgPGR1amUubWloYW5vdmljQH
+ Nrb2xlLmhyPokCTgQTAQgAOAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBFPfnU2cP+EQ+
+ zYteJoRnrBCLZbhBQJg01LLAAoJEJoRnrBCLZbhMwoQAJBNKdxLxUBUYjLR3dEePkIXmY27++cI
+ DHGmoSSTu5BWqlw9rKyDK8dGxTOdc9Pd4968hskWhLSwmb8vTgNPRf1qOg2PROdeXG34pYc2DEC
+ 0qfzs19jGE+fGE4QnvPCHBe5fkT2FPCBmNShxZc1YSkhHjpTIKHPAtX1/eIYveNK2AS/jpl23Uh
+ hG9wsR2+tlySPNjAtYOnXxWDIUex8Vsj2a2PBXNVS3bRDeKmtSHuYo7JrQZdDc0IJiRm0BiLEOI
+ ehTtcYqYr1Ztw7VNN2Mop/JG2nlxXNaQmyaV6kF/tuaqn1DJQcb0OxjAXEUMaICYJOwS9HSt26n
+ uwo8dUiUPLQTih/wm6tyu2xrgMwqVT5jiKIssSS+7QNTsmldubRSYjFT49vwkVoUQ6Z3UO6BVdd
+ f3OG4meE0S5uQc7Moebq67ILxfQ8XsDvdvEliVuHh89GAlQOttTpc6lNk8gCWQ+LFLvS66/6LFz
+ mK1X4zC7K/V6B2xlP4ZIa3IC9QIGuQaRsVBbbiGB3CNgh0Sabsfs4cDJ7zzG1jE7Y4R9uYvdSFj
+ Liq5SFlaswQ+LRl9sgzukEBTmNjdDVhufMY2jxtcMtck978E1W1zrg94iVl5E0HQZcpFHCZjRZX
+ Fa42yPsvVkFwy4IEht9UJacMW9Hkq5BFHsdToWmg7RY8Mh04rszTiQJUBBMBCAA+AhsDBQsJCAc
+ CBhUKCQgLAgQWAgMBAh4BAheAFiEEU9+dTZw/4RD7Ni14mhGesEItluEFAmCVBxAFCQXW6YEACg
+ kQmhGesEItluFXIg//QnqY5RrQ1pLw2J51UwFec4hFMFJ6MixI9/YgizsRd2QLM7Cyi+ljkaHFQ
+ mO4O5p0RsbF/2cc4u1D+MhQJGl6Ch6bdHoiWFrNUexgBUmflr4ekpI+GIFzikl6JTYHcRfkjobj
+ 0Tmr8zWoxzcdFhrzGn5/6AH3GxudpUr6WQD5iDSe43T7ZcY8zHfD+9zcsZ2LHhRhpHU0q+ERQw+
+ Rnh7C3urXlrAlFzuKuPh2tHT76glRaledJ8cK34vHNi73TYpsFy4tfhAPhHwBogtjBf63jBOd/E
+ S6wuYpKwcfNXo9EuEpJzJOitFwOvAra5AbCE+N/C/IOu2aFeOyu2SbHro06+Eyf/jy1A2t+LgLb
+ E5cZu5ETyicfpN8L7m7wTTXTSx0NhETNWfgV95RUI6WIW5N4OCOVo8d/GOMVEYqMoDZndQin9B3
+ lDgojyagdzhXljP2BqavKdnPWbcKQ+JViR+e7EjLWVifgZkAvEhyirbTKYsgKkaRxoQP68U0bEy
+ ukygDZRdzBmWaZPqBOzA5AH+OYiYVzzFqdBAHr2+z4mTN6W0td7CFDRAS2RzQApO3B1QH408Ke9
+ Oy69HwG+gdlfwloN6JTvgr5vQc8T6e3iC3Be/guLyW5UbLPxyFHimznVOizDYbZO1QSZMqk4G9I
+ gA8e05P8dxEQJUsdZFtDdNPOYm5Ag0EYGG4DwEQAMD0bO0u9apmI1WOk41IdU1Hc76HLUA9jsiB
+ ffA9yZ1OpnFEIAwSeUO8PFK7W5YPdRreNsUvMmBiLJid9y0tW5sACjSrH+amCQl0hJ3KlEkr+Vu
+ Wga1a+Ye0qzg87bQae769RhwzEPvQvvNoTxTtvT5Alg2p3JSv5d/wC2Tu9IoFKkDAIoCFsvytuZ
+ r2LuH3oK57oThhbEogYXR7YJ0JIwVg7nOQXnqpUTzxkh/73FKN6Bx01m37pB3wTe8w3w8r8WOip
+ oRU+aPWhafDNFrdyBfSVOAw3fmX9yAfFfZo4w9OTdkrLLdK6SmX7mqiMstoZnvZIpLRk/L0ZNrJ
+ 8fAVD+fEcpUiCoKwiiY0QFCWumMXITeD4zlo/Y6lQKhUp6EY0kcjG1D7n5sBR5oQcsC9PlH9a12
+ L+tNIfljayiEVobmkPwGf5p3sxOqeks6WWoB9+ZIk888kQdI/b7VA/86QvsTqubpJtr5uVNtyyj
+ ZYTBHFnEGcA5+Rs2K/8TWFYDEBZiybfpCxrYT2RdTF7ef2wQZAiNZhzaEwxr7S4YTFuCwwqaKLt
+ vckGv2fsFUy3qe28tw93oCNQxSqgOq6RD0HfblViXeioyP1nWVLAx6paS7d38TT6cz0HJCtOMFn
+ S+UpJDv2x3gReCPBoqRx7LV4aYMyGy4pzwes+yO87hxULtw/ABEBAAGJAjYEGAEIACAWIQRT351
+ NnD/hEPs2LXiaEZ6wQi2W4QUCYGG4DwIbDAAKCRCaEZ6wQi2W4de4D/0aCxE4dTmO1xQ6BDXlKp
+ DCegk8dIqrxK8Edbdq9/WGSO6Js0QfIL50IHAR739FbScT4+oSObeg0ap9kCGfW0AXGZaU82Ed1
+ 5u+MzgksHE+t8cgULTKjqqt+PXq0yxZfLwI9itTa3zE2d6Uxd4Vzq77jjQuDL6o3zM6BQTJGYxx
+ S6mELElcnMlo9lIZKzCAHaIkkMlMNBfvm8Q92aCuQ75xjWhis9K9lyV9cQZfu8AyP4zMGFk50Z5
+ tEF2UFylqKu+v8FZiezviwu9NsZegIY4DRaPWF5GWmFhYU4e9gBFG5xhEoIlO+etu1nSE1UJk+r
+ mvJL20uKNUPnhXTJaQTzACpA1/2FqDnOUUx8qOYqmHMlFuy2qUh/QHShjc2AtngTFZrzAnGz6ni
+ lRl32b7p8N+KaO4u2UGmGOwd/CuCzr2DxGomUSyCwOta7vOxator+NPK48roa417gBZ6ZFRplma
+ ExicLFSnwBdGC3NnDa+yoRHKXHVSDfkb/FEhWuN/1tTZ96uxVYtHcln+snB2N6/hwmrOon2cHNu
+ UeTLcrVyqI0Qz8JT4ksGxkxziO2L/e0O/xUp9mLAswixWt8+BMz/3sIJbdAPBVyt5QbHzWR6aID
+ B5cQ1aQwZB8n7yt8B0sd/uIQItYu2urJ9gVAJkaEDms8+vbtOM4totXk5swwGxRg==
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="utf-8"
 
-Am Donnerstag, 11. April 2024, 17:42:24 CEST schrieb Conor Dooley:
-> On Wed, Apr 10, 2024 at 08:28:57PM +0200, Alban Browaeys wrote:
-> > Le jeudi 28 mars 2024 =E0 18:01 +0000, Conor Dooley a =E9crit :
-> > > On Thu, Mar 28, 2024 at 06:00:03PM +0100, Alban Browaeys wrote:
-> > > > Le mardi 26 mars 2024 =E0 19:46 +0000, Conor Dooley a =E9crit :
-> > > > > On Tue, Mar 26, 2024 at 07:54:35PM +0100, Folker Schwesinger via
-> > > > > B4
-> > > > > Relay wrote:
-> > > > > > From: Folker Schwesinger <dev@folker-schwesinger.de>
-> > > > > > -	if (of_property_read_bool(dev->of_node,
-> > > > > > "rockchip,enable-
-> > > > > > strobe-pulldown"))
-> > > > > > -		rk_phy->enable_strobe_pulldown =3D
-> > > > > > PHYCTRL_REN_STRB_ENABLE;
-> > > > > > +	if (of_property_read_bool(dev->of_node,
-> > > > > > "rockchip,disable-
-> > > > > > strobe-pulldown"))
-> > > > > > +		rk_phy->enable_strobe_pulldown =3D
-> > > > > > PHYCTRL_REN_STRB_DISABLE;
-> > > > >=20
-> > > > > Unfortunately you cannot do this.
-> > > > > Previously no property at all meant disabled and a property was
-> > > > > required
-> > > > > to enable it. With this change the absence of a property means
-> > > > > that
-> > > > > it
-> > > > > will be enabled.
-> > > > > An old devicetree is that wanted this to be disabled would have
-> > > > > no
-> > > > > property and will now end up with it enabled. This is an ABI
-> > > > > break
-> > > > > and is
-> > > > > clearly not backwards compatible, that's a NAK unless it is
-> > > > > demonstrable
-> > > > > that noone actually wants to disable it at all.
-> > > >=20
-> > > >=20
-> > > > But the patch that introduced the new default to disable the
-> > > > pulldown
-> > > > explicitely introduced a regression for at least 4 boards.
-> > > > It took time to sort out that the default to disable pulldown was
-> > > > the
-> > > > culprit but still.
-> > > > Will we carry this new behavor that breaks the default design for
-> > > > rk3399 because since the regression was introduced new board
-> > > > definition
-> > > > might have expceted this new behavior.
-> > > >=20
-> > > > Could the best option be to revert to =E9not set a default
-> > > > enable/disable
-> > > > pulldown" (as before the commit that introduced the regression) and
-> > > > allow one to force the pulldown via the enable/disable pulldown
-> > > > property?
-> > > > I mean the commit that introduced a default value for the pulldown
-> > > > did
-> > > > not seem to be about fixing anything. But it broke a lot. ANd it
-> > > > was
-> > > > really really hard to find the description of this commit to
-> > > > understand
-> > > > that one had to enable pulldown to restore hs400.
-> > > >=20
-> > > > In more than 3 years, only one board maintainer noticed that this
-> > > > property was required to get back HS400  and thanks to a user
-> > > > telling
-> > > > me that this board was working I found from this board that this
-> > > > property was "missing" from most board definitions (while it was
-> > > > not
-> > > > required before).
-> > > >=20
-> > > >=20
-> > > > I am all for not breaking ABI. But what about not reverting a patch
-> > > > that already broke ABI because this patch introduced a new ABI that
-> > > > we
-> > > > don't want to break?
-> > > > I mean shouldn't a new commit with a new ABI that regressed the
-> > > > kernel
-> > > > be reverted?
-> > >=20
-> > > I think I said it after OP replied to me yesterday, but this is a
-> > > pretty
-> > > shitty situation in that the original default picked for the property
-> > > was actually incorrect. Given it's been like this for four years
-> > > before
-> > > anyone noticed, and others probably depend on the current behaviour,
-> > > that's hard to justify.
-> > >=20
-> >=20
-> > A lot of people noticed fast that HS400 was broken in the 5.10 branch
-> > but due to another commit (more later, ie double regulator init that
-> > messed up emmc) this second breakage was not detected. But mostly
-> > downstream. And most if not all rk3399 boards in Armbian had HS400
-> > disabled.
-> >=20
-> >=20
-> > It took 3 years to detect that HS400 was broken on a few boards like
-> > Rock Pi4 in the upstream kernel. Any might still be broken.
-> > I would not count on the fact that keeping the current behavior equals
-> > no more broken boards.
-> >=20
-> > From the previous exchanges the boards that requires the pulldown to be
-> > disabled seems well known.
-> >=20
-> > Though I am fine with adding a property to set enable pulldown to any
-> > board definition file where that is required.
-> >=20
-> > Only I do not believe keeping the statu quo equal everything works
-> > because it has been 3 years.
+On Friday, April 12, 2024 4:57:09=E2=80=AFAM GMT+2 Stephen Boyd wrote:
+> Quoting Duje Mihanovi=C4=87 (2024-04-11 03:15:34)
 >=20
-> FWIW, I didn't say this. Clearly if that was the case, this patch would
-> never have arrived.
->=20
-> > In fact this commit reached the downstream kernels way later. Any
-> > stayed with the 5.10 branch for years.
+> > On 4/11/2024 10:00 AM, Stephen Boyd wrote:
+> > > Is there a reason this file can't be a platform driver?
 > >=20
-> > But on the other side the disable pulldown by default is alraedy in
-> > stable/linux-rolling-lts .
-> >=20
-> > > > Mind fixing the initial regression 8b5c2b45b8f0 "phy: rockchip: set
-> > > > pulldown for strobe line in dts" does not necessarily mean changing
-> > > > the
-> > > > default to the opposite value but could also be reverting to not
-> > > > setting a default.
-> > >=20
-> > > That's also problematic, as the only way to do this is make setting
-> > > one of the enabled or disabled properties required, which is also an
-> > > ABI
-> > > break, since you'd then be rejecting probe if one is not present.
-> >=20
-> >=20
-> > I don't understand.
-> > How reverting to not set either pulldown enabled or disabled by default
-> > force all board to set either enabled or disabled.
-> > I was telling about making the pulldown set by kernel optional be it
-> > enabled or disabled to revert to the previous behavior.=20
-> >=20
-> > I mean before the patch to set a default pulldown value (to disabled)
-> > there were no forced value.
+> > Not that I know of, I did it like this only because the other in-tree
+> > MMP clk drivers do so. I guess the initialization should look like any
+> > of the qcom GCC drivers then?
 >=20
-> Ah, maybe I misunderstood what the code originally did. Did the original
-> code leave the bit however the bootloader or reset value had left it?
-> In that case, probe wouldn't be rejected and you'd not have the sort of
-> issue that I mentioned above.
+> Yes.
+
+With the entire clock driver code in one file this is quite messy as I also=
+=20
+needed to add module_init and module_exit functions to (un)register each=20
+platform driver, presumably because the module_platform_driver macro doesn'=
+t=20
+work with multiple platform drivers in one module. If I split up the driver=
+=20
+code for each clock controller block into its own file (such as clk-of-
+pxa1908-apbc.c) as I believe is the best option, should the commits be spli=
+t=20
+up accordingly as well?
+
+> > While at it, do you think the other MMP clk drivers could use a=20
+conversion?
 >=20
-> > > > Though I don't know if there are pros to setting a default.
-> > >=20
-> > > What you probably have to weigh up is the cons of each side. If what
-> > > you
-> > > lose is HS400 mode with what's in the kernel right now but switching
-> > > to
-> > > what's been proposed would entirely break some boards, I know which
-> > > I think the lesser of two evils is.
-> >=20
-> > More boards (even if not the most wide spread it seems) are broken by
-> > the current behavior.
-> >=20
-> > I agree that only HS400 is broken by keeping the status quo. But as far
-> > as I understand only HS400 will be broken either way.
-> > Be that by keeping the current disable pulldown which break the boards
-> > based on the rockchip default design or the boards that are non-
-> > standard or have a broken design.
-> > Both case this lead to data corruption on boot to eMMC.
-> >=20
-> > The only pro of keeping the current value the default is that most
-> > board broken by the new default introduced in 2020 "might" already be
-> > fixed (but that is just a guess).
+> I'm a little wary if the conversion cannot be tested though.
 
-which I guess are the least stale boards too.
+I'd rather leave it to someone with the hardware then, especially since the=
+=20
+only reason I found out about the above is that the board I'm working on=20
+failed to boot completely without the module_init function.
 
-> > > It's probably up to the platform maintainer to weigh in at this
-> > > point.
-> >=20
-> > I am not knowledged into the delegation scope. You mean that from now
-> > on it is up to the rockchip maintainer?
-> > I am fine with it either way.
->=20
-> Yes, I meant the rockchip maintainer. I'm only a lowly bindings
-> maintainer, without any knowledge of rockchip specfics or the type of
-> boards we're talking about being broken here. Someone has to make a
-> judgement call about which "no property" behaviour is used going forward
-> and I don't want that to be me!
-
-I'm somehow all for not changing defaults again.
-
-I think in the past there was a similar example in some other kernel part,
-where some change broke the ABI, but meanwhile another ABI depended
-on the changed behaviour, so a revert was not possible.
-
-I think it's somewhat similar here. If the change has been in the kernel
-for 3-4 years now, I do think that ship has sailed somehow.
-
-As was said above, board introduced since 2020 might already be fixed
-and essentially for boards that weren't, it does look like these didn't run
-a mainline kernel for like 4 years now.
-
-So if it comes down to deciding who to keep working, I'm more in favor of
-those that did run on mainline in the years since.
-
-
-Though not sure if I understood all the details here yet.
-
-
-Heiko
-
->=20
-> > I just wanted to point out that maybe we don't have to set a pulldown
-> > value after all. And that then all boards will be fine as before
-> > setting the pulldown explicitly was introduced.
->=20
-> By "all boards will be fine" you mean "all boards that expected the
-> kernel didn't touch this bit will be fine". The boards that need the
-> kernel to set this bit because it {comes out of reset,is set by firmware}
-> incorrectly are going to need a property added if we revert the default
-> behaviour to not touching the bit.
->=20
-> > In fact I am more eager to get this fixed be it by adding a enable-
-> > pulldown property to the board definitions, than to change the current
-> > behavior.
-> > Just wanted to sort out if that was not the wrong way to fix this
-> > issue. (ie if adding a setting on most boards was wrong).
->=20
-> > During more than 2 years, I tried various patches and discussed on
-> > forums about the HS400 breakage. I had bisected the regulator init
-> > issue in the 5.10 branch. Sadly it took so much time for this issue to
-> > be understood that when the force pulldown to disable commit was
-> > introduced downstream before the first issue go fixed.
-> > This only made the matter worse because when one fixed the double
-> > regulator init issue HS400 was still broken, this time because the
-> > pulldown was forced to disable. But nobody noticed this commit that
-> > forced a default pulldown state (that was older than the regulator
-> > commit from 5.13 backported to the 5.10 stable branch commit, but that
-> > reached downstream later due to not having been backported to 5.10 from
-> > 5.11).
-> > Otherwise we would have emailed immeditaly.
-> > Bisecting was only able to catch the first breakage (as it was only
-> > fixed after the second breakage was introduced).
-> >=20
-> > Maybe the problem is that me and others did not complained to the
-> > kernel upstream ML because we were using heavily patched downstream
-> > kernels (like most if not all downstream ARM kernels). So sadly, the
-> > forums from back then are filled with complaints but nothing seemed to
-> > have reached the Linux ML.
->=20
-> Aye, and all I can really say there is to buy boards from a vendor that
-> doesn't use some horribly hacked downstream kernel, which I know is
-> clearly an unsatisfactory suggestion. That said, we probably should have
-> caught that the new default behaviour when the changes were made was not
-> the default before. There was only one DT maintainer then though, and
-> things just slip by :/
->=20
+Regards,
+=2D-=20
+Duje
 
 
 
