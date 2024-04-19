@@ -1,178 +1,124 @@
-Return-Path: <linux-kernel+bounces-151113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FFB58AA944
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:35:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 877FE8AA95F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:40:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D509B1F21F27
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:35:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0C3C1C21815
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE66446453;
-	Fri, 19 Apr 2024 07:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E6614596B;
+	Fri, 19 Apr 2024 07:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MpqxRIGz"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F0wBlOj8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65FFA3BBFE;
-	Fri, 19 Apr 2024 07:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7264314E;
+	Fri, 19 Apr 2024 07:40:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713512117; cv=none; b=ZLjsiSABLh/LOFtge50ISJNdhJMFf4GSZPQQeDXVBVEGK1b4nLCnO/dfabUy/XWZTgxI07Kdsd6BBnZKB2cQ/GwZO57T+UV8Wk6iUgd3ETf3ENM4BavGAdgu+kMBpoB8JvlYck8pgowhn0pKTo1uapNtMVj26Y58nqXElHLNZ7Y=
+	t=1713512452; cv=none; b=u1hxX2aLGqAXOj05puBAIWFZ5PjyztumGnN8gNhkWVW4iGm1E7T65k/Tv2adThAgI/+uDSYaSCVimaYMq2NelXx/0z8oDFKkvZxbdK3vb3Q5IKbfutgydy6b9+sSh3rRv3mwF91CsS5uSx+imcvdH5XGGFnHL25/VBNJRpm31II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713512117; c=relaxed/simple;
-	bh=Z/1I5VPuFHd+wm5X7ByR4EwnyMSQhuYPwkbtHK+yhTs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K3F2c70RKK+9WAH8/SIep2AQn+nfl4VnWdCwWPJjOgzizCOLXIzUnXqarZlmB5mWIHVssGoNmELr3oWi0iEJWQBherP9DCA9Va/47hKbdVCqOXM6PgCe9XxHg0RPpTeN/r1fgPL4f6JX4f03jGfbtXCRXepei0KyIPawr3djmE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MpqxRIGz; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1713512452; c=relaxed/simple;
+	bh=qZOTaYe15U2NKYw7NsaWXXCCYXLgb92jG31Z6M7FrEI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZebpEDOFio3kJckwHg3LaoVbnE7w8SuZTPvRuWC1lgt98MQnKfBTWKzfPjUHEyMCN8286qFgYkQgIwTU2QaItLLdtQK4zIlJy0/GNxvufCvmfntzlb3zcJgYaMl59dO0QsOb3YG12SX9aRN/fbRU0N4V9E8SZmJah+xptqZw4uw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F0wBlOj8; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713512115; x=1745048115;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Z/1I5VPuFHd+wm5X7ByR4EwnyMSQhuYPwkbtHK+yhTs=;
-  b=MpqxRIGzN9iZdwKGOfNFLxynkCMY3fNLYccBRKYzO21azpPhAW+kJDyX
-   yku/7MQeIN3ygI3OfI4VYCPli6wyGvxf8Imf3In2ev6Xw2ePLvgw4k5S/
-   DIE8KpwIqUkQyteB1152ewC1hFlzp8/rYM/cG4j5SYwxmxzY55GqizM9s
-   bWqkY5XyCoSrKh3Xr1kUXVcNI2sbvPsBV7kf7IttmKoUzEyYn/CGTXuAA
-   R+2AnRdYdbqbD+6RVVfm0UyRbj675F3XB7npYHny/RcnjnOYQCLzhWfQk
-   ywBT8N+sN6drlacHB6UGhXtdmpfXow6JYOxB/cK/OLW0pKmP8m7pSYa2J
-   A==;
-X-CSE-ConnectionGUID: UGMirkTcRz6+V6jWS81rzw==
-X-CSE-MsgGUID: gvf+wShFQm+3bAkiU0MN7w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9259933"
+  t=1713512451; x=1745048451;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qZOTaYe15U2NKYw7NsaWXXCCYXLgb92jG31Z6M7FrEI=;
+  b=F0wBlOj8cc4DJJX2V06Vf/Ey3ScrT9HhdR5akMuwCPwpX/peJF4OAgVF
+   fAlkGiNInLGfU145qUZEr0aU5aIkYiMY2fl6TgvYyi2j1oHcGA4Z1ycVe
+   naWk6V5pMao+eFCU9zOVFMDOg51Cq/IgvTP7oCqPgI0209MAWZMp8XUN8
+   4URKmJe06UpFYhB8NMQ20MKq9o4ytLj9XF/vUG3o3C7zmQsen0rqBvRlD
+   BiPqtdfpU89TnZSb1SFtNsMnURMql/wuqAeQWBAaHM1JmPHHgLlkxbl96
+   xcpVPX5phKzB3Wuum5Ko9q0Z3ZsVJl81VW26uhoXSC5tjwzVzzeVpKtge
+   w==;
+X-CSE-ConnectionGUID: BDmnLdu1ReufYVBW55Q5ug==
+X-CSE-MsgGUID: azS5vRgdQ8eSz41WlRzW5Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="19711393"
 X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="9259933"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 00:35:15 -0700
-X-CSE-ConnectionGUID: 4iv1xvdLQTyGoXInCbiP6w==
-X-CSE-MsgGUID: UdJGMuTZTgmrvWrMizAm2g==
+   d="scan'208";a="19711393"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 00:40:50 -0700
+X-CSE-ConnectionGUID: YIAcryn5RWuUzXu2oFTlNg==
+X-CSE-MsgGUID: DamULQioR/2laquRHHXpaQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="27909345"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.238.14]) ([10.124.238.14])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 00:35:12 -0700
-Message-ID: <9737d0db-0cce-41c5-94fa-c3d9550d7300@intel.com>
-Date: Fri, 19 Apr 2024 15:35:09 +0800
+   d="scan'208";a="23233044"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa009.jf.intel.com with ESMTP; 19 Apr 2024 00:40:48 -0700
+Date: Fri, 19 Apr 2024 15:35:34 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
+Subject: Re: [PATCH v1 1/1] fpga: ice40-spi: Don't use "proxy" headers
+Message-ID: <ZiIexi02eCIGQtib@yilunxu-OptiPlex-7050>
+References: <20240415142428.853812-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 10/10] KVM: x86/mmu: check for invalid async page
- faults involving private memory
-To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
- kvm@vger.kernel.org
-Cc: isaku.yamahata@intel.com, binbin.wu@linux.intel.com, chao.gao@intel.com
-References: <20240416201935.3525739-1-pbonzini@redhat.com>
- <20240416201935.3525739-11-pbonzini@redhat.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240416201935.3525739-11-pbonzini@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240415142428.853812-1-andriy.shevchenko@linux.intel.com>
 
-On 4/17/2024 4:19 AM, Paolo Bonzini wrote:
-> Right now the error code is not used when an async page fault is completed.
-> This is not a problem in the current code, but it is untidy.  For protected
-> VMs, we will also need to check that the page attributes match the current
-> state of the page, because asynchronous page faults can only occur on
-> shared pages (private pages go through kvm_faultin_pfn_private() instead of
-> __gfn_to_pfn_memslot()).
+On Mon, Apr 15, 2024 at 05:23:28PM +0300, Andy Shevchenko wrote:
+> Update header inclusions to follow IWYU (Include What You Use)
+> principle.
 > 
-> Start by piping the error code from kvm_arch_setup_async_pf() to
-> kvm_arch_async_page_ready() via the architecture-specific async page
-> fault data.  
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-It is missed in this patch ...
+Acked-by: Xu Yilun <yilun.xu@intel.com>
 
-> For now, it can be used to assert that there are no
-> async page faults on private memory.
-> 
-> Extracted from a patch by Isaku Yamahata.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Applied to for-next.
+
 > ---
->   arch/x86/include/asm/kvm_host.h |  1 +
->   arch/x86/kvm/mmu/mmu.c          | 17 ++++++++++-------
->   2 files changed, 11 insertions(+), 7 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 7c73952b6f4e..57ec96bd4221 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1850,6 +1850,7 @@ struct kvm_arch_async_pf {
->   	gfn_t gfn;
->   	unsigned long cr3;
->   	bool direct_map;
-> +	u64 error_code;
->   };
->   
->   extern u32 __read_mostly kvm_nr_uret_msrs;
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 33aea47dce8b..402d04aa5423 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4207,24 +4207,27 @@ static u32 alloc_apf_token(struct kvm_vcpu *vcpu)
->   	return (vcpu->arch.apf.id++ << 12) | vcpu->vcpu_id;
->   }
->   
-> -static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> -				    gfn_t gfn)
-> +static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu,
-> +				    struct kvm_page_fault *fault)
->   {
->   	struct kvm_arch_async_pf arch;
->   
->   	arch.token = alloc_apf_token(vcpu);
-> -	arch.gfn = gfn;
-> +	arch.gfn = fault->gfn;
->   	arch.direct_map = vcpu->arch.mmu->root_role.direct;
->   	arch.cr3 = kvm_mmu_get_guest_pgd(vcpu, vcpu->arch.mmu);
-
-+ 	arch.error_code = fault->error_code;
-
->   
-> -	return kvm_setup_async_pf(vcpu, cr2_or_gpa,
-> -				  kvm_vcpu_gfn_to_hva(vcpu, gfn), &arch);
-> +	return kvm_setup_async_pf(vcpu, fault->addr,
-> +				  kvm_vcpu_gfn_to_hva(vcpu, fault->gfn), &arch);
->   }
->   
->   void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
->   {
->   	int r;
->   
-> +	if (WARN_ON_ONCE(work->arch.error_code & PFERR_GUEST_ENC_MASK))
-> +		return;
-> +
->   	if ((vcpu->arch.mmu->root_role.direct != work->arch.direct_map) ||
->   	      work->wakeup_all)
->   		return;
-> @@ -4237,7 +4240,7 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
->   	      work->arch.cr3 != kvm_mmu_get_guest_pgd(vcpu, vcpu->arch.mmu))
->   		return;
->   
-> -	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true, NULL);
-> +	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, work->arch.error_code, true, NULL);
->   }
->   
->   static inline u8 kvm_max_level_for_order(int order)
-> @@ -4342,7 +4345,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
->   			trace_kvm_async_pf_repeated_fault(fault->addr, fault->gfn);
->   			kvm_make_request(KVM_REQ_APF_HALT, vcpu);
->   			return RET_PF_RETRY;
-> -		} else if (kvm_arch_setup_async_pf(vcpu, fault->addr, fault->gfn)) {
-> +		} else if (kvm_arch_setup_async_pf(vcpu, fault)) {
->   			return RET_PF_RETRY;
->   		}
->   	}
-
+> This is a replacement of previously sent:
+> fpga: ice40-spi: Remove unused of_gpio.h
+> fpga: ice40-spi: Remove redundant of_match_ptr() macros
+> 
+>  drivers/fpga/ice40-spi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/fpga/ice40-spi.c b/drivers/fpga/ice40-spi.c
+> index c0028ae4c5b7..62c30266130d 100644
+> --- a/drivers/fpga/ice40-spi.c
+> +++ b/drivers/fpga/ice40-spi.c
+> @@ -10,8 +10,8 @@
+>  
+>  #include <linux/fpga/fpga-mgr.h>
+>  #include <linux/gpio/consumer.h>
+> +#include <linux/mod_devicetable.h>
+>  #include <linux/module.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/spi/spi.h>
+>  #include <linux/stringify.h>
+>  
+> @@ -199,7 +199,7 @@ static struct spi_driver ice40_fpga_driver = {
+>  	.probe = ice40_fpga_probe,
+>  	.driver = {
+>  		.name = "ice40spi",
+> -		.of_match_table = of_match_ptr(ice40_fpga_of_match),
+> +		.of_match_table = ice40_fpga_of_match,
+>  	},
+>  	.id_table = ice40_fpga_spi_ids,
+>  };
+> -- 
+> 2.43.0.rc1.1336.g36b5255a03ac
+> 
 
