@@ -1,475 +1,284 @@
-Return-Path: <linux-kernel+bounces-151611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E20118AB11B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:53:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D038AB10E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:51:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97CDD285A84
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:53:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07D341F247C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35EBC12FF88;
-	Fri, 19 Apr 2024 14:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DADF112F38B;
+	Fri, 19 Apr 2024 14:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="d3imeC/T"
-Received: from smtpcmd0872.aruba.it (smtpcmd0872.aruba.it [62.149.156.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eQe8if3j";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="z67OzjRn";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="FYzHrNhW";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="wNGssJt/"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B830212F391
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:53:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8FC7E11E;
+	Fri, 19 Apr 2024 14:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713538392; cv=none; b=AAG9wBouYgH/StJUUVg/Xh4v/Gb2Q1UDmRImrBb2yswMIULXdXlQUErfrSCiJ7SkP0b+rsXyOoBKa8Q3CAiz/VncHoI1zLich9DzqOfFUUsPNs7b8MslVdXfkSbMnmTwHL8btzMx56ADmE4ldouZukPBka3xfcYCw4V2Uq50WJk=
+	t=1713538288; cv=none; b=niUPrghvxHzPAdEMyqSmDh4sGbLlB7a3ssg7P2iJwuQ5G4NN+SrVt2DfedazywIhAMWo+tOLfp4NJxQYARcQQu0wuTIhEsGzXCRDIE1Or3g21M18TWfmviF0GiEHXXBjrYgcN7X5JNqGXjsJBq1N0By3gU/qMddvPWUgrx82POI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713538392; c=relaxed/simple;
-	bh=9qMIGz9xymy53XjWQbEFGHYETD4tbojKWqztZWVKbBE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eGjARGPxjtY0MGjuC9ArR1ZseMTVHYBAaTyIiRrHzmBpECEM+6amtGo0cbMs+bvmzV2kUvwWZzi1lsRq7OdHav7uHkHtyXkaeL/uHeZVpOiVXL4xIJzhCU606DJCVj3oxqaa6u+sS6dWjsVwetyt504/G2vTzADlO/uNblBTwPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=d3imeC/T; arc=none smtp.client-ip=62.149.156.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
-Received: from engicam.com ([146.241.23.200])
-	by Aruba Outgoing Smtp  with ESMTPSA
-	id xpYprTscuBZCLxpYtrR4uc; Fri, 19 Apr 2024 16:49:59 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1713538199; bh=9qMIGz9xymy53XjWQbEFGHYETD4tbojKWqztZWVKbBE=;
-	h=From:To:Subject:Date:MIME-Version;
-	b=d3imeC/TmERTlQlfN50TI1jSq5Ufz78ZVGVBozaferjb4OjDtTW76u7aLkNaijWcg
-	 pVn7XllSJnZU4FvG/1Sfg6IusspXSCKRA7zN++eAv3KE/W+jrTgdi1ctZnfuE4LI7R
-	 Dc/BjDVmneKa+7ZMiZuSNpRqoIERkACfv75liQqOzb8W3aVCLooflL+9b2dM2vWdqf
-	 AocIdirXZrZ7cCGCrg/24DYAKXPVi/ZuN60IReoDd6G71vCURTwKj7D6SPBMwN7EYs
-	 kOU0pCfyOA8AkgTTa7vJNMtTx4kJISrCYUVKVP5zGgc0BO1QoId0jk+MWmVKyvBwvi
-	 sn/E8/+NaDLjA==
-From: Fabio Aiuto <fabio.aiuto@engicam.com>
-To: Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Fabio Aiuto <fabio.aiuto@engicam.com>,
-	Matteo Lisi <matteo.lisi@engicam.com>,
-	Mirko Ardinghi <mirko.ardinghi@engicam.com>
-Subject: [PATCH v3 3/3] arm64: dts: imx93: Add Engicam i.Core MX93 EDIMM 2.0 Starter Kit
-Date: Fri, 19 Apr 2024 16:49:53 +0200
-Message-Id: <20240419144953.8700-4-fabio.aiuto@engicam.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240419144953.8700-1-fabio.aiuto@engicam.com>
-References: <20240419144953.8700-1-fabio.aiuto@engicam.com>
+	s=arc-20240116; t=1713538288; c=relaxed/simple;
+	bh=T8CLr1EK+PL03WYbPidGaQUkxWlf+IiGWcm14wkF5SA=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=H0FXjIxnCxFxcxIG/7gUSmM6o7kCPwBHDFQsm/E0iGnwW/uaZKbmHD+gFsuKERbtER34HlI9Pcm4PyUuGHZrSQeOQnN5ia9tN5M7lO4eqloV+uhOl4OcskPzz2ip0SZ0O20oRUV3ystoe2/j5gB3F/iXq6S6ZdvIBRYk7wGILTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eQe8if3j; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=z67OzjRn; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=FYzHrNhW; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=wNGssJt/; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E09883788F;
+	Fri, 19 Apr 2024 14:51:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713538279; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WIkR9gPm5JkJwOvVohQpNqV/QJ9qSICPkeseQbgyIG8=;
+	b=eQe8if3jSFmjI5hEY7POoZ9u+dUvStqmZhEl1GhL1FpEPFjsn/dhn3DLKA01GqmD2r/Ylc
+	GKwePO8821z/JM1dCgalKgJXbE00m/g4tOgWV0SyGD/jvmlVWezIbQSW0JOfEeBrpaN13F
+	UKK6wekqQ7KA3nYy4jIDgB6fhwDH4CM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713538279;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WIkR9gPm5JkJwOvVohQpNqV/QJ9qSICPkeseQbgyIG8=;
+	b=z67OzjRnq4EGu+xWYdDGP8VPRI2aPR+XZr5nwrTkLX20+YyPzmMZZyjj+nIFaj1XKO07Z1
+	BNKBSCuxfpBaSxCg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713538277; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WIkR9gPm5JkJwOvVohQpNqV/QJ9qSICPkeseQbgyIG8=;
+	b=FYzHrNhWPZZV+GqsP83bdyP1IYWc08YShDUKoY0+7W5V7n1EJk++2SccwN1NKGEOPiqxuo
+	3Q2a/IQqQEzKmwlPIDQ2UUBzszgdu1tqvKsyT+n6bmtjUs/RYZzFzhRIgBkdRQqGN/rAvg
+	cnLgobbdfbDRFG2tWQZVbHRIWtmdk8E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713538277;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WIkR9gPm5JkJwOvVohQpNqV/QJ9qSICPkeseQbgyIG8=;
+	b=wNGssJt/rj8gApzi2Gonmi5itxCtIvfpovfbV6xSvLe2t4G5ovY4MI+VTmragzQOBosWuJ
+	ZPhcfboAqi4if4BA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9C51113687;
+	Fri, 19 Apr 2024 14:51:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ogjuJOWEImYudAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 19 Apr 2024 14:51:17 +0000
+Date: Fri, 19 Apr 2024 16:51:25 +0200
+Message-ID: <87le59s8wi.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc: "Yang, Chenyuan" <cy54@illinois.edu>,
+	"linux-media@vger.kernel.org"
+	<linux-media@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+	"jani.nikula@intel.com" <jani.nikula@intel.com>,
+	"syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
+	"mchehab@kernel.org" <mchehab@kernel.org>,
+	"Zhao, Zijie"
+	<zijie4@illinois.edu>,
+	"Zhang, Lingming" <lingming@illinois.edu>
+Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
+In-Reply-To: <7E36CBBD-F2AD-4D98-8D4E-F52E62C3E812@illinois.edu>
+References: <PH7PR11MB57688E64ADE4FE82E658D86DA09EA@PH7PR11MB5768.namprd11.prod.outlook.com>
+	<f985d664-d907-48ed-9b3d-dc956c178b88@xs4all.nl>
+	<526380BE-57AC-493D-A7B0-B8F0ECC0FE0A@illinois.edu>
+	<f1855145-9562-4bef-800f-43bcacff6fc8@xs4all.nl>
+	<2e5f1e92-7fad-4a74-b375-1e194ff08ce6@xs4all.nl>
+	<F8D4A291-8CFB-4A25-B296-3CA07B56F459@illinois.edu>
+	<49a68c10-9549-4fd8-b929-d4c7a9c8debf@xs4all.nl>
+	<PH7PR11MB5768B0BC3C042A6EA4EC1EF0A0542@PH7PR11MB5768.namprd11.prod.outlook.com>
+	<7E36CBBD-F2AD-4D98-8D4E-F52E62C3E812@illinois.edu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfBa26f888bMB6OaFgSRx403/nMk9rZTPdIW5C5isNhcUIRQq6sz/3ZUKLctauuf7ZTh3/JsWfjHcpwucEaTbKeJc+nlmFmukd3HuUNCM9+tK6FP8ACh/
- 92f6ZR/chJ9V1mfqLz1FOTZEQWa4jOKjE47sVx3SYgJripl++yErxl3Ny3tq/Ji7nscQZmBRjwzHkxfywOfW8FgWmHpzGyZo3GBpxhCrffeDYhgV3tcb5ke2
- NdfYLdlG3R9gDoTvGWAoESdYg1+AXvu7vJfVpUqaSAVMvHesuHYU5GY1cLn7b72fTW+pWlEL9pV3vpYj4qh5MHKbS/o15qfXLQN36iIinUZ+BCC6yabwUHC/
- M8nR5jLuWwIfUzplDiW7+Fo4BmPxNuae29N6vQrvXk8MfiehKymbxa8cn3IixhtQufKSGNXZj2nsXofNPC47tjB68p+QgD3AFuETiLDZCrIjhSyHfCN+tM1u
- Xy+S3lTwe3fMXONyOgnP1/xMFlmwsxpqmtQ9Pg07XOdkUXOTwhEqdC+B9ZAaV9RSAHBsMcGEcfvooskwhY+9yNvFnvoCWzoKVyc8tVAPC+h/OGWXKzeTAnja
- TIjKpFB/8d56p68tZspMicKZ
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[xs4all.nl];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[xs4all.nl];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[googlegroups.com:email,xs4all.nl:email,intel.com:email,illinois.edu:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -3.30
+X-Spam-Flag: NO
 
-i.Core MX93 is a NXP i.MX93 based SoM by Enigcam which
-needs to be mounted on top of Engicam baseboards.
+On Mon, 26 Feb 2024 13:27:16 +0100,
+Yang, Chenyuan wrote:
+> 
+> Hi Hans,
+> 
+> Thank you for your continued efforts in investigating this bug and implementing the new patch!
+> 
+> Regarding the two warnings, they have been addressed by this new patch and are no longer reproducible. Additionally, I conducted a 48-hour fuzzing test on the CEC driver, which has successfully eliminated the previous hanging issue.
+> 
+> One thing to note that the system will now log timeout events:
+> ```
+> [ 2281.265385][ T2034] cec-vivid-001-vid-out0: transmit timed out
+> [ 2282.994510][ T2017] cec-vivid-000-vid-cap0: transmit timed out
+> [ 2283.063484][ T2050] cec-vivid-002-vid-out0: transmit timed out
+> [ 2283.073468][ T2065] cec-vivid-003-vid-cap0: transmit timed out
+> [ 2283.373518][ T2033] cec-vivid-001-vid-cap0: transmit timed out
+> [ 2285.113544][ T2018] cec-vivid-000-vid-out0: transmit timed out
+> [ 2285.193502][ T2050] cec-vivid-002-vid-out0: transmit timed out
+> [ 2285.193570][ T2065] cec-vivid-003-vid-cap0: transmit timed out
+> [ 2285.513570][ T2033] cec-vivid-001-vid-cap0: transmit timed out
+> ```
+> 
+> Best,
+> Chenyuan
 
-Add support for EDIMM 2.0 Starter Kit hosting
-i.Core MX93.
+Hi Hans,
 
-Starter Kit main features:
+how is the current status of this bug fix?  It seems that the thread
+stalled, and I wonder how we can go further.
 
-2x LVDS interfaces
-HDMI output
-Audio out
-Mic in
-Micro SD card slot
-USB 3.0 A port
-3x USB 2.0 A port
-Gb Ethernet
-2x CAN bus, 3x UART interfaces
-SIM card slot
-M.2 KEY_B slot
+I'm asking it because CVE-2024-23848 was assigned and we've been asked
+about the bug fix.
 
-Cc: Matteo Lisi <matteo.lisi@engicam.com>
-Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../dts/freescale/imx93-icore-mx93-edimm2.dts | 347 ++++++++++++++++++
- 2 files changed, 348 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 045250d0a040..d26c0a458a44 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -226,6 +226,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8qxp-tqma8xqp-mba8xx.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx93-icore-mx93-edimm2.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-phyboard-segin.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-new file mode 100644
-index 000000000000..470e1098d3eb
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-@@ -0,0 +1,347 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2022 NXP
-+ * Copyright 2024 Engicam s.r.l.
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx93-icore-mx93.dtsi"
-+
-+/ {
-+	model = "Engicam i.Core MX93 - EDIMM 2 Starterkit";
-+	compatible = "engicam,icore-mx93-edimm2", "engicam,icore-mx93",
-+		     "fsl,imx93";
-+
-+	aliases {
-+		rtc1 = &bbnsm_rtc;
-+	};
-+
-+	bt_reg_on: regulator-btregon {
-+		compatible = "regulator-gpio";
-+		regulator-name = "BT_REG_ON";
-+		regulator-min-microvolt = <100000>;
-+		regulator-max-microvolt = <3300000>;
-+		states = <3300000 0x1>, <100000 0x0>;
-+		gpios = <&gpio2 19 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	chosen {
-+		stdout-path = &lpuart1;
-+	};
-+
-+	reg_1v8_sgtl: regulator-1v8-sgtl {
-+		compatible = "regulator-fixed";
-+		regulator-name = "1v8_sgtl";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+	};
-+
-+	reg_3v3_avdd_sgtl: regulator-3v3-avdd-sgtl {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v3_avdd_sgtl";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	reg_3v3_sgtl: regulator-3v3-sgtl {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v3_sgtl";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		linux,cma {
-+			compatible = "shared-dma-pool";
-+			reusable;
-+			alloc-ranges = <0 0x80000000 0 0x40000000>;
-+			size = <0 0x10000000>;
-+			linux,cma-default;
-+		};
-+
-+		rsc_table: rsc-table@2021f000 {
-+			reg = <0 0x2021f000 0 0x1000>;
-+			no-map;
-+		};
-+
-+		vdevbuffer: vdevbuffer@a4020000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0 0xa4020000 0 0x100000>;
-+			no-map;
-+		};
-+
-+		vdev0vring0: vdev0vring0@a4000000 {
-+			reg = <0 0xa4000000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev0vring1: vdev0vring1@a4008000 {
-+			reg = <0 0xa4008000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev1vring0: vdev1vring0@a4000000 {
-+			reg = <0 0xa4010000 0 0x8000>;
-+			no-map;
-+		};
-+
-+		vdev1vring1: vdev1vring1@a4018000 {
-+			reg = <0 0xa4018000 0 0x8000>;
-+			no-map;
-+		};
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "imx93-sgtl5000";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,bitclock-master = <&dailink_master>;
-+		simple-audio-card,frame-master = <&dailink_master>;
-+		/*simple-audio-card,mclk-fs = <1>;*/
-+		simple-audio-card,cpu {
-+			sound-dai = <&sai3>;
-+		};
-+
-+		dailink_master: simple-audio-card,codec {
-+			sound-dai = <&sgtl5000>;
-+			clocks = <&clk IMX93_CLK_SAI3_IPG>;
-+		};
-+	};
-+
-+	usdhc3_pwrseq: usdhc3-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+	};
-+
-+	wl_reg_on: regulator-wlregon {
-+		compatible = "regulator-gpio";
-+		regulator-name = "WL_REG_ON";
-+		regulator-min-microvolt = <100000>;
-+		regulator-max-microvolt = <3300000>;
-+		states = <3300000 0x1>, <100000 0x0>;
-+		gpios = <&gpio2 22 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		vin-supply = <&bt_reg_on>;
-+	};
-+};
-+
-+&cm33 {
-+	mbox-names = "tx", "rx", "rxdb";
-+	mboxes = <&mu1 0 1>,
-+		 <&mu1 1 1>,
-+		 <&mu1 3 1>;
-+	memory-region = <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>,
-+			<&vdev1vring0>, <&vdev1vring1>, <&rsc_table>;
-+	status = "okay";
-+};
-+
-+&flexcan1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexcan1>;
-+	fsl,stop-mode = <&aonmix_ns_gpr 0x10 4>;
-+	status = "okay";
-+};
-+
-+&flexcan2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexcan2>;
-+	fsl,stop-mode = <&aonmix_ns_gpr 0x10 4>;
-+	status = "okay";
-+};
-+
-+&lpi2c1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&pinctrl_lpi2c1>;
-+	pinctrl-1 = <&pinctrl_lpi2c1>;
-+	status = "okay";
-+
-+	pcf8523: rtc@68 {
-+		compatible = "nxp,pcf8523";
-+		reg = <0x68>;
-+	};
-+
-+	sgtl5000: codec@a {
-+		compatible = "fsl,sgtl5000";
-+		status = "okay";
-+		#sound-dai-cells = <0>;
-+		reg = <0x0a>;
-+		clocks = <&clk IMX93_CLK_SAI3_GATE>;
-+		VDDA-supply = <&reg_3v3_avdd_sgtl>;
-+		VDDIO-supply = <&reg_3v3_sgtl>;
-+		VDDD-supply = <&reg_1v8_sgtl>;
-+	};
-+};
-+
-+&lpuart1 { /* console */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+&lpuart5 { /* RS485 */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart5>;
-+	status = "okay";
-+};
-+
-+&lpuart8 { /* RS232 */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart8>;
-+	status = "okay";
-+};
-+
-+&micfil {
-+	#sound-dai-cells = <0>;
-+	assigned-clocks = <&clk IMX93_CLK_PDM>;
-+	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-+	assigned-clock-rates = <196608000>;
-+	status = "okay";
-+};
-+
-+&mu1 {
-+	status = "okay";
-+};
-+
-+&mu2 {
-+	status = "okay";
-+};
-+
-+&sai1 {
-+	#sound-dai-cells = <0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sai1>;
-+	assigned-clocks = <&clk IMX93_CLK_SAI1>;
-+	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-+	assigned-clock-rates = <12288000>;
-+	status = "okay";
-+};
-+
-+&sai3 {
-+	pinctrl-names = "default";
-+	#sound-dai-cells = <0>;
-+	pinctrl-0 = <&pinctrl_sai3>;
-+	assigned-clocks = <&clk IMX93_CLK_SAI3>;
-+	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
-+	assigned-clock-rates = <24576000>;
-+	fsl,sai-mclk-direction-output;
-+	status = "okay";
-+};
-+
-+&usdhc3 { /* WiFi */
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&pinctrl_usdhc3>, <&pinctrl_laird>;
-+	pinctrl-1 = <&pinctrl_usdhc3>, <&pinctrl_laird>;
-+	pinctrl-2 = <&pinctrl_usdhc3>, <&pinctrl_laird>;
-+	vmmc-supply = <&wl_reg_on>;
-+	bus-width = <4>;
-+	no-1-8-v;
-+	non-removable;
-+	max-frequency = <25000000>;
-+	status = "okay";
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	brcmf: bcrmf@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+&wdog3 {
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+
-+	pinctrl_flexcan1: flexcan1grp {
-+		fsl,pins = <
-+			MX93_PAD_PDM_CLK__CAN1_TX		0x139e
-+			MX93_PAD_PDM_BIT_STREAM0__CAN1_RX	0x139e
-+		>;
-+	};
-+
-+	pinctrl_flexcan2: flexcan2grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO25__CAN2_TX	0x139e
-+			MX93_PAD_GPIO_IO27__CAN2_RX	0x139e
-+		>;
-+	};
-+
-+	pinctrl_laird: lairdgrp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO22__GPIO2_IO22		0x31e // WL_REG_ON
-+			MX93_PAD_GPIO_IO19__GPIO2_IO19		0x31e // BT_REG_ON
-+		>;
-+	};
-+
-+	pinctrl_lpi2c1: lpi2c1grp {
-+		fsl,pins = <
-+			MX93_PAD_I2C1_SCL__LPI2C1_SCL		0x40000b9e
-+			MX93_PAD_I2C1_SDA__LPI2C1_SDA		0x40000b9e
-+		>;
-+	};
-+
-+	pinctrl_sai1: sai1grp {
-+		fsl,pins = <
-+			MX93_PAD_SAI1_TXC__SAI1_TX_BCLK		0x31e
-+			MX93_PAD_SAI1_TXFS__SAI1_TX_SYNC	0x31e
-+			MX93_PAD_SAI1_TXD0__SAI1_TX_DATA00	0x31e
-+			MX93_PAD_SAI1_RXD0__SAI1_RX_DATA00	0x31e
-+		>;
-+	};
-+
-+	pinctrl_sai3: sai3grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO26__SAI3_TX_SYNC	0x31e
-+			MX93_PAD_GPIO_IO16__SAI3_TX_BCLK	0x31e
-+			MX93_PAD_GPIO_IO17__SAI3_MCLK		0x31e
-+			MX93_PAD_GPIO_IO21__SAI3_TX_DATA00	0x31e
-+			MX93_PAD_GPIO_IO20__SAI3_RX_DATA00	0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX93_PAD_UART1_RXD__LPUART1_RX		0x31e
-+			MX93_PAD_UART1_TXD__LPUART1_TX		0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart5: uart5grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO01__LPUART5_RX		0x31e
-+			MX93_PAD_GPIO_IO00__LPUART5_TX		0x31e
-+			MX93_PAD_GPIO_IO02__LPUART5_CTS_B	0x31e
-+			MX93_PAD_GPIO_IO03__LPUART5_RTS_B	0x31e
-+		>;
-+	};
-+
-+	pinctrl_uart8: uart8grp {
-+		fsl,pins = <
-+			MX93_PAD_GPIO_IO13__LPUART8_RX		0x31e
-+			MX93_PAD_GPIO_IO12__LPUART8_TX		0x31e
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX93_PAD_SD3_CLK__USDHC3_CLK		0x17fe
-+			MX93_PAD_SD3_CMD__USDHC3_CMD		0x13fe
-+			MX93_PAD_SD3_DATA0__USDHC3_DATA0	0x13fe
-+			MX93_PAD_SD3_DATA1__USDHC3_DATA1        0x13fe
-+			MX93_PAD_SD3_DATA2__USDHC3_DATA2        0x13fe
-+			MX93_PAD_SD3_DATA3__USDHC3_DATA3        0x13fe
-+		>;
-+	};
-+};
--- 
-2.34.1
+Thanks!
 
+Takashi
+
+> 
+> From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Date: Friday, February 23, 2024 at 8:44 AM
+> To: Yang, Chenyuan <cy54@illinois.edu>, linux-media@vger.kernel.org <linux-media@vger.kernel.org>, linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+> Cc: jani.nikula@intel.com <jani.nikula@intel.com>, syzkaller@googlegroups.com <syzkaller@googlegroups.com>, mchehab@kernel.org <mchehab@kernel.org>, Zhao, Zijie <zijie4@illinois.edu>, Zhang, Lingming <lingming@illinois.edu>
+> Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
+> Hi Chenyuan,
+> 
+> Here is another patch for you to try. I think it is good for blocking CEC_ADAP_S_LOG_ADDRS
+> ioctl calls, but if the filehandle is in non-blocking mode, I'm still not certain it
+> is correct. But one issue at a time :-)
+> 
+> Regards,
+> 
+>         Hans
+> 
+> diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
+> index 559a172ebc6c..a493cbce2456 100644
+> --- a/drivers/media/cec/core/cec-adap.c
+> +++ b/drivers/media/cec/core/cec-adap.c
+> @@ -936,8 +936,7 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+>           */
+>          mutex_unlock(&adap->lock);
+>          wait_for_completion_killable(&data->c);
+> -       if (!data->completed)
+> -               cancel_delayed_work_sync(&data->work);
+> +       cancel_delayed_work_sync(&data->work);
+>          mutex_lock(&adap->lock);
+> 
+>          /* Cancel the transmit if it was interrupted */
+> @@ -1575,9 +1574,12 @@ static int cec_config_thread_func(void *arg)
+>   */
+>  static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+>  {
+> -       if (WARN_ON(adap->is_configuring || adap->is_configured))
+> +       if (WARN_ON(adap->is_claiming_log_addrs ||
+> +                   adap->is_configuring || adap->is_configured))
+>                  return;
+> 
+> +       adap->is_claiming_log_addrs = true;
+> +
+>          init_completion(&adap->config_completion);
+> 
+>          /* Ready to kick off the thread */
+> @@ -1592,6 +1594,7 @@ static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+>                  wait_for_completion(&adap->config_completion);
+>                  mutex_lock(&adap->lock);
+>          }
+> +       adap->is_claiming_log_addrs = false;
+>  }
+> 
+>  /*
+> diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+> index 67dc79ef1705..3ef915344304 100644
+> --- a/drivers/media/cec/core/cec-api.c
+> +++ b/drivers/media/cec/core/cec-api.c
+> @@ -178,7 +178,7 @@ static long cec_adap_s_log_addrs(struct cec_adapter *adap, struct cec_fh *fh,
+>                             CEC_LOG_ADDRS_FL_ALLOW_RC_PASSTHRU |
+>                             CEC_LOG_ADDRS_FL_CDC_ONLY;
+>          mutex_lock(&adap->lock);
+> -       if (!adap->is_configuring &&
+> +       if (!adap->is_claiming_log_addrs && !adap->is_configuring &&
+>              (!log_addrs.num_log_addrs || !adap->is_configured) &&
+>              !cec_is_busy(adap, fh)) {
+>                  err = __cec_s_log_addrs(adap, &log_addrs, block);
+> @@ -664,6 +664,8 @@ static int cec_release(struct inode *inode, struct file *filp)
+>                  list_del_init(&data->xfer_list);
+>          }
+>          mutex_unlock(&adap->lock);
+> +
+> +       mutex_lock(&fh->lock);
+>          while (!list_empty(&fh->msgs)) {
+>                  struct cec_msg_entry *entry =
+>                          list_first_entry(&fh->msgs, struct cec_msg_entry, list);
+> @@ -681,6 +683,7 @@ static int cec_release(struct inode *inode, struct file *filp)
+>                          kfree(entry);
+>                  }
+>          }
+> +       mutex_unlock(&fh->lock);
+>          kfree(fh);
+> 
+>          cec_put_device(devnode);
+> diff --git a/include/media/cec.h b/include/media/cec.h
+> index 10c9cf6058b7..cc3fcd0496c3 100644
+> --- a/include/media/cec.h
+> +++ b/include/media/cec.h
+> @@ -258,6 +258,7 @@ struct cec_adapter {
+>          u16 phys_addr;
+>          bool needs_hpd;
+>          bool is_enabled;
+> +       bool is_claiming_log_addrs;
+>          bool is_configuring;
+>          bool must_reconfigure;
+>          bool is_configured;
+> 
 
