@@ -1,169 +1,289 @@
-Return-Path: <linux-kernel+bounces-151570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A15EE8AB08F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:17:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 690618AB08B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:17:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 583BB1F24322
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:17:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1886C281B02
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC5612E1DA;
-	Fri, 19 Apr 2024 14:17:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C286612DDB0;
+	Fri, 19 Apr 2024 14:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="C4kmhbju"
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eQmE/Xnr"
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E53912C817;
-	Fri, 19 Apr 2024 14:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 534538562A;
+	Fri, 19 Apr 2024 14:17:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713536252; cv=none; b=ZCGo9PJ5kYseY3J5fhUZt0sCf6gS2b7dEuvrxw1QP/8HiGD8XIYsn00gwUhcYIoDajaXlJqxIPb+hm1x8IgMG4SE5FHFSv0XhaH6opkPT5impyEE9BUU02RSryxKsOWTw7YqdaoetvxJwtyInpLG80zaL0rOFcvX5D4+To8hhdg=
+	t=1713536233; cv=none; b=CCZTdqF6TnKSS8sRBI+OltMzyNti5AeIxgiIBeCjKDhAyouXzhtdJqRO1z6V0ZeFkM6PQM9dQNUA5jkLC55tkOcH1/Xli9OceyckVYmmmD9oWGYp3AbG8G1uFMIF18Ob02NQoeoOTG+hBSahMKZO1RpxEbpQg6lHa4JIH+VNMBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713536252; c=relaxed/simple;
-	bh=euXPQiBqqIG2+cRuTUbXpVJ3280d78ADpFb0BaPYG54=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cqb8kk6kIykoulvCGoR1Pk78thQZ+Hz8IIz1PSv5d9bRzTGcqe/xMHEV6QcSpIWzeG14QU7eEU8+f9eWcR0cw50wfHqS/H88Tx+a/bniiVHD4eZClxAiy5dZYHzhnzibUgrUlrQXvhKkEehMLVSdjxnZYLKg/E9Ge5hM+DWVEAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=C4kmhbju; arc=none smtp.client-ip=74.208.4.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
-	s=s1-ionos; t=1713536244; x=1714141044; i=parker@finest.io;
-	bh=nWFQ37RsfGMWOYIzH+ps6Dt2wTvbrcgBevzsVRsv/OM=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=C4kmhbjuw5LZ4uH/ZvMGpZMC8feopacN9/1dZM+U2FhwgHfhiMWbLD4mW2osHRbA
-	 4fuFeC9c+RTsKh8ZOJTkm6tfo0imZzKCQicXHDVUodnNDX1P9YVwy9PQsysVICifD
-	 uCaoS0JvMe5pvRAGvooUBLG+6qUD9eniZM+4RAuznate8zUcuroWiO9Y6WsyKHzDY
-	 Yp3kmZgz8aIDCjmkkPPY+iRuQRYLoMsgDiwc5sk66chxynEGC6o0qSEeWelIsZEFC
-	 IRrFHJfoAqSzjImeo+m9mHWBZHgmjYoF0c/LmDHD8/8uCjg0EXHUPBOpYpi7V+1Hw
-	 NCocvfFzJoOuxfc7VQ==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from finest.io ([98.159.241.229]) by mrelay.perfora.net (mreueus003
- [74.208.5.2]) with ESMTPSA (Nemesis) id 0MO8aA-1s3Ih62rx6-005cbY; Fri, 19 Apr
- 2024 16:17:24 +0200
-From: Parker Newman <parker@finest.io>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Parker Newman <pnewman@connecttech.com>
-Subject: [PATCH v2 4/4] serial: exar: remove ternaries from cti_get_port_type_xr17c15x_xr17v25x()
-Date: Fri, 19 Apr 2024 10:17:04 -0400
-Message-ID: <d672326427b1026c7700303eedef8594f2688def.1713533298.git.pnewman@connecttech.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <cover.1713533298.git.pnewman@connecttech.com>
-References: <cover.1713533298.git.pnewman@connecttech.com>
+	s=arc-20240116; t=1713536233; c=relaxed/simple;
+	bh=sJIqAxmp0MkI+0Rle3MPmTH/t6Q5u46iHaETUAfB5/s=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=i0Aq+kqtGSMsQQvifAry/wx7crMlfqgjYft8DPRW8tSuW6H1nEgZtzxrtCP0HxYKRznNvr/FAfV/tBpUX0BbwEpYu34FF9tbiI/tp9zS4et5zdOrIAs91YW8y4hP2gi6j6vJx35dP/0cJCsirsN2TztpD2xxyW6VSKmq+bgDoVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eQmE/Xnr; arc=none smtp.client-ip=209.85.219.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-69b5ece41dfso9001766d6.2;
+        Fri, 19 Apr 2024 07:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713536231; x=1714141031; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JTXvfmS2qR6Ir1vYAUrlQKPmC+TTAVl7HcrdLRbgBYI=;
+        b=eQmE/XnrZcdmKG/rhobsYJFoDvWrig/PI9QMKAbqhQjCnbkyssQyWoOswTqqcjZTcy
+         nLLBdQu5XOEbflyQyCwn6dMcY4MisIzGcGG05iVGpDB2EpnjJq0Ct6SAgAuybW9ze5Uv
+         gC4GGMbM1omHLZZMq9ozxAt2nVW8og71xowM2fy4ljTMc3Wt0r3Lxzf1ZRO9QiyTYXSn
+         gbn4ojz8mtxqh04GXzJRrxWSZuiKKlhse3/TtCseDO9iFTSjZxMKP58a478zG1yDIX/m
+         +jt6eUZ/KRQLg5hiVeg3HhA4Cwolxqb6l0FU8T3QL/aHqzyvsLb0CuoGHd1fmaTII+aH
+         /sdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713536231; x=1714141031;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JTXvfmS2qR6Ir1vYAUrlQKPmC+TTAVl7HcrdLRbgBYI=;
+        b=g/Y4g5j0VgmUmfBuSAVtH86nOtkOJ+IR73jBPE6ABFhHGyz/mS+OnyujeKz3WE4vx/
+         PkcPFYifY8tsAg2vCaoTNCpvxo9rDBFEXxRioi4RkDlUw9FdTcffvL4mJfAorKyJdNUy
+         oYibhUZFR6zSdLiS3C+41nYAJPDQ3J1eW6t5My2azlMIAYTSgy/W5s1fN0sf1NnKRF9B
+         aFX+C7gVNQuolcrTpQYyvU0viPSDvjup7BISfkluyLtBqBoDpo4YTLEg9IOtu9kHKNOO
+         YLuQPdmN+nrT/2J08fndAvgNzAbPPaNIxZcrhKUjVX9ejTB+hhNpX1nuqfY0bwKo3+CQ
+         QEmw==
+X-Forwarded-Encrypted: i=1; AJvYcCXsIW0aJZ4ELlRJxqbN5hvVmGUyRy7CK18OiKFVEN78sYNtPvtQmiPnpIU1bLRXOR0JwAxWKfbZoks7A37nb6FCssQLyz+Bm0qHKOay9iy6UYC1/AfQd3pdiz+p
+X-Gm-Message-State: AOJu0Yxnxhp4sFJK7doVTe55ll1kzfa3uKcX8RLaxn9OIZxgv0h/Lp0H
+	v4n9DjD6rVBlVUeuNMag6Aq23uQ5ScmJd+4HkmhXhi7wKCaqhyAlkiIvhg==
+X-Google-Smtp-Source: AGHT+IFwrjRVpq0snyoB1FHwCdBCa0bAZL0wV//OlWBYxoRztrm4rVxhQFgtzOTuyKRMA/r40ls8RA==
+X-Received: by 2002:ad4:538c:0:b0:69b:fb9:9a75 with SMTP id i12-20020ad4538c000000b0069b0fb99a75mr1677835qvv.49.1713536231400;
+        Fri, 19 Apr 2024 07:17:11 -0700 (PDT)
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id b17-20020a0cc991000000b006a0488c5cd1sm1568268qvk.83.2024.04.19.07.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 07:17:11 -0700 (PDT)
+Date: Fri, 19 Apr 2024 10:17:10 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>, 
+ "maze@google.com" <maze@google.com>, 
+ "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+ "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, 
+ "kuba@kernel.org" <kuba@kernel.org>, 
+ =?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
+ "pabeni@redhat.com" <pabeni@redhat.com>, 
+ "edumazet@google.com" <edumazet@google.com>, 
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
+ "davem@davemloft.net" <davem@davemloft.net>, 
+ yan@cloudflare.com
+Message-ID: <66227ce6c1898_116a9b294be@willemb.c.googlers.com.notmuch>
+In-Reply-To: <b24bc70ae2c50dc50089c45afbed34904f3ee189.camel@mediatek.com>
+References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
+ <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch>
+ <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
+ <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
+ <661eb25eeb09e_6672129490@willemb.c.googlers.com.notmuch>
+ <CANP3RGdrRDERiPFVQ1nZYVtopErjqOQ72qQ_+ijGQiL7bTtcLQ@mail.gmail.com>
+ <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
+ <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch>
+ <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
+ <662027965bdb1_c8647294b3@willemb.c.googlers.com.notmuch>
+ <11395231f8be21718f89981ffe3703da3f829742.camel@mediatek.com>
+ <CANP3RGdh24xyH2V7Sa2fs9Ca=tiZNBdKu1qQ8LFHS3sY41CxmA@mail.gmail.com>
+ <b24bc70ae2c50dc50089c45afbed34904f3ee189.camel@mediatek.com>
+Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without
+ fraglist
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:e14IZuYugv8xagY2QPH0Fz/gGkBpK3QfnisJhgzbn3Dkbz+BL0I
- 20gTiAWsLO6wCszC1oSJiGjHckV+U3ENhRVrU3cCcVBy8hVPmU43YfgMKkkJV3Miij/2a9L
- qGcmxoX38afdWBqvWwRqo+26G+89lN3jxTXtOZBFEB9kLl8Vgg1dZd6LU4Byo6ownImBol+
- uo/Ek/bJ2Ed823bg39t+Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BwRiKUOze6Y=;EvYC6pMJhilTeMZfsCFEDNjmvwa
- 1xcpwMRk0KxyE0nLMPkEU8VCHdzOHujxlZjB3OMCkjSZAdAbLhTBLVv9K1GBWVfkN3YO+YZKf
- OjVPqHTWKP98b3oDn/jBv+k3IkDc78i7MT90/Ovn+ETgPrTWRlyHWQn49Aq6U4CDjYRyZzWBI
- UEJoe3inA9OSt7nHabADMY1+qH1iTq0rXrLtj1+QgSAZbgMi4HJZBow3nmDq/XfX4jXNkPAu2
- 4deOsTC3xvfZoQ/7R5nN+iKiZ4rxkMIhJWXbxglAT536IQxCrIy7IQzypjT4qhxCeJ6+6qDak
- HfPYmUumPNdTXtc3mkRPcRyYpgYvPB1tGrrA1B8VMY2tV+N0DF7BTAOGvku/LuJNYbOTPhpAg
- AM4N7MQlZz6i5EgaFrDiwwT50bHyJ1jQ9XsjFbawuNfJ+rRfL85Nc0OnbNkjSPWkd+HqjndDS
- aXkuyg6PPh2AnFJrdaVctAU3BJAKlqUDCozs23kFB9Vo5xNiI5ZYO3KVXSjUj0KQvARiQ59uh
- xH7HrJKBHCbbMgpPzXTROqHa2+2szeyrGP7llb+z/2cZyY5QeBoLOUvbiQ14LmiSuP9H8uVHG
- qTFx0BQMGMjO9vWuhm+ropH6dwk0xhagfV9vzy6qLwNQzX5pKaxawhEAp9LRG02MNGI3gEnUU
- 0rNYGKJqMaQMHF7S/ij2gAWzTyYLNxUIV5iZ/gN+mbtpjiGFnvDqkiUQYmWExB60KTbWC1T1P
- q738Vv259C7KUbOZbJzG1ousVHtm09KHepYVs1aF1H59SooDzM2xB0=
 
-From: Parker Newman <pnewman@connecttech.com>
+Lena Wang (=E7=8E=8B=E5=A8=9C) wrote:
+> On Wed, 2024-04-17 at 21:15 -0700, Maciej =C5=BBenczykowski wrote:
+> >  	 =
 
-Remove ternary operators from cti_get_port_type_xr17c15x_xr17v25x() for
-better readability.
+> > External email : Please do not click links or open attachments until
+> > you have verified the sender or the content.
+> >  On Wed, Apr 17, 2024 at 7:53=E2=80=AFPM Lena Wang (=E7=8E=8B=E5=A8=9C=
+) <
+> > Lena.Wang@mediatek.com> wrote:
+> > >
+> > > On Wed, 2024-04-17 at 15:48 -0400, Willem de Bruijn wrote:
+> > > >
+> > > > External email : Please do not click links or open attachments
+> > until
+> > > > you have verified the sender or the content.
+> > > >  Lena Wang (=E7=8E=8B=E5=A8=9C) wrote:
+> > > > > On Tue, 2024-04-16 at 19:14 -0400, Willem de Bruijn wrote:
+> > > > > >
+> > > > > > External email : Please do not click links or open
+> > attachments
+> > > > until
+> > > > > > you have verified the sender or the content.
+> > > > > >  > > > > Personally, I think bpf_skb_pull_data() should have
+> > > > > > automatically
+> > > > > > > > > > (ie. in kernel code) reduced how much it pulls so
+> > that it
+> > > > > > would pull
+> > > > > > > > > > headers only,
+> > > > > > > > >
+> > > > > > > > > That would be a helper that parses headers to discover
+> > > > header
+> > > > > > length.
+> > > > > > > >
+> > > > > > > > Does it actually need to?  Presumably the bpf pull
+> > function
+> > > > could
+> > > > > > > > notice that it is
+> > > > > > > > a packet flagged as being of type X (UDP GSO FRAGLIST)
+> > and
+> > > > reduce
+> > > > > > the pull
+> > > > > > > > accordingly so that it doesn't pull anything from the
+> > non-
+> > > > linear
+> > > > > > > > fraglist portion???
+> > > > > > > >
+> > > > > > > > I know only the generic overview of what udp gso is, not
+> > any
+> > > > > > details, so I am
+> > > > > > > > assuming here that there's some sort of guarantee to how
+> > > > these
+> > > > > > packets
+> > > > > > > > are structured...  But I imagine there must be or we
+> > wouldn't
+> > > > be
+> > > > > > hitting these
+> > > > > > > > issues deeper in the stack?
+> > > > > > >
+> > > > > > > Perhaps for a packet of this type we're already guaranteed
+> > the
+> > > > > > headers
+> > > > > > > are in the linear portion,
+> > > > > > > and the pull should simply be ignored?
+> > > > > > >
+> > > > > > > >
+> > > > > > > > > Parsing is better left to the BPF program.
+> > > > > >
+> > > > > > I do prefer adding sanity checks to the BPF helpers, over
+> > having
+> > > > to
+> > > > > > add then in the net hot path only to protect against
+> > dangerous
+> > > > BPF
+> > > > > > programs.
+> > > > > >
+> > > > > Is it OK to ignore or decrease pull length for udp gro fraglist=
 
-Signed-off-by: Parker Newman <pnewman@connecttech.com>
-=2D--
-Changes in v2:
-- Removed ternary operators completely
+> > > > packet?
+> > > > > It could save the normal packet and sent to user correctly.
+> > > > >
+> > > > > In common/net/core/filter.c
+> > > > > static inline int __bpf_try_make_writable(struct sk_buff *skb,
+> > > > >               unsigned int write_len)
+> > > > > {
+> > > > > +if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> > > > > +(SKB_GSO_UDP  |SKB_GSO_UDP_L4)) {
+> > > >
+> > > > The issue is not with SKB_GSO_UDP_L4, but with SKB_GSO_FRAGLIST.
+> > > >
+> > > Current in kernel just UDP uses SKB_GSO_FRAGLIST to do GRO. In
+> > > udp_offload.c udp4_gro_complete gso_type adds "SKB_GSO_FRAGLIST|
+> > > SKB_GSO_UDP_L4". Here checking these two flags is to limit the
+> > packet
+> > > as "UDP + need GSO + fraglist".
+> > >
+> > > We could remove SKB_GSO_UDP_L4 check for more packet that may
+> > addrive
+> > > skb_segment_list.
+> > >
+> > > > > +return 0;
+> > > >
+> > > > Failing for any pull is a bit excessive. And would kill a sane
+> > > > workaround of pulling only as many bytes as needed.
+> > > >
+> > > > > +     or if (write_len > skb_headlen(skb))
+> > > > > +write_len =3D skb_headlen(skb);
+> > > >
+> > > > Truncating requests would be a surprising change of behavior
+> > > > for this function.
+> > > >
+> > > > Failing for a pull > skb_headlen is arguably reasonable, as
+> > > > the alternative is that we let it go through but have to drop
+> > > > the now malformed packets on segmentation.
+> > > >
+> > > >
+> > > Is it OK as below?
+> > >
+> > > In common/net/core/filter.c
+> > > static inline int __bpf_try_make_writable(struct sk_buff *skb,
+> > >               unsigned int write_len)
+> > > {
+> > > +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> > > +               SKB_GSO_FRAGLIST) && (write_len >
+> > skb_headlen(skb))) {
+> > > +               return 0;
+> > =
 
- drivers/tty/serial/8250/8250_exar.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+> > please limit write_len to skb_headlen() instead of just returning 0
+> > =
 
-diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250=
-/8250_exar.c
-index 8665d3b7b673..521d2acf4004 100644
-=2D-- a/drivers/tty/serial/8250/8250_exar.c
-+++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -726,7 +726,7 @@ static enum cti_port_type cti_get_port_type_xr17c15x_x=
-r17v25x(struct exar8250 *p
- 							struct pci_dev *pcidev,
- 							unsigned int port_num)
- {
--	enum cti_port_type port_type;
-+	enum cti_port_type port_type =3D CTI_PORT_TYPE_RS232;
+> =
 
- 	switch (pcidev->subsystem_device) {
- 	// RS232 only cards
-@@ -737,23 +737,22 @@ static enum cti_port_type cti_get_port_type_xr17c15x=
-_xr17v25x(struct exar8250 *p
- 	case PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_SP_232_NS:
- 	case PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_XPRS_LP_232:
- 	case PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_XPRS_LP_232_NS:
--		port_type =3D CTI_PORT_TYPE_RS232;
- 		break;
- 	// 1x RS232, 1x RS422/RS485
- 	case PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_1_1:
--		port_type =3D (port_num =3D=3D 0) ?
--			CTI_PORT_TYPE_RS232 : CTI_PORT_TYPE_RS422_485;
-+		if (port_num)
-+			port_type =3D CTI_PORT_TYPE_RS422_485;
- 		break;
- 	// 2x RS232, 2x RS422/RS485
- 	case PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_2:
--		port_type =3D (port_num < 2) ?
--			CTI_PORT_TYPE_RS232 : CTI_PORT_TYPE_RS422_485;
-+		if (port_num > 1)
-+			port_type =3D CTI_PORT_TYPE_RS422_485;
- 		break;
- 	// 4x RS232, 4x RS422/RS485
- 	case PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_4:
- 	case PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_4_SP:
--		port_type =3D (port_num < 4) ?
--			CTI_PORT_TYPE_RS232 : CTI_PORT_TYPE_RS422_485;
-+		if (port_num > 3)
-+			port_type =3D CTI_PORT_TYPE_RS422_485;
- 		break;
- 	// RS232/RS422/RS485 HW (jumper) selectable
- 	case PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2:
-@@ -789,13 +788,13 @@ static enum cti_port_type cti_get_port_type_xr17c15x=
-_xr17v25x(struct exar8250 *p
- 		break;
- 	// 6x RS232, 2x RS422/RS485
- 	case PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_6_2_SP:
--		port_type =3D (port_num < 6) ?
--			CTI_PORT_TYPE_RS232 : CTI_PORT_TYPE_RS422_485;
-+		if (port_num > 5)
-+			port_type =3D CTI_PORT_TYPE_RS422_485;
- 		break;
- 	// 2x RS232, 6x RS422/RS485
- 	case PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_6_SP:
--		port_type =3D (port_num < 2) ?
--			CTI_PORT_TYPE_RS232 : CTI_PORT_TYPE_RS422_485;
-+		if (port_num > 1)
-+			port_type =3D CTI_PORT_TYPE_RS422_485;
- 		break;
- 	default:
- 		dev_err(&pcidev->dev, "unknown/unsupported device\n");
-=2D-
-2.43.2
+> Hi Maze & Willem,
+> Maze's advice is:
+> In common/net/core/filter.c
+> static inline int __bpf_try_make_writable(struct sk_buff *skb,
+>               unsigned int write_len)
+> { =
 
+> +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> +               SKB_GSO_FRAGLIST) && (write_len > skb_headlen(skb))) {
+> +               write_len =3D skb_headlen(skb);
+> +       }
+>         return skb_ensure_writable(skb, write_len);
+> }
+> =
+
+> Willem's advice is to "Failing for a pull > skb_headlen is arguably =
+
+> reasonable...". It prefers to return 0 :
+> +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
+> +               SKB_GSO_FRAGLIST) && (write_len > skb_headlen(skb))) {
+> +               return 0;
+> +       }
+> =
+
+> It seems a bit conflict. However I am not sure if my understanding is
+> right and hope to get your further guide.
+
+I did not mean to return 0. But to fail a request that would pull an
+unsafe amount. The caller must get a clear error signal.
+
+Back to the original report: the issue should already have been fixed
+by commit 876e8ca83667 ("net: fix NULL pointer in skb_segment_list").
+But that commit is in the kernel for which you report the error.
+
+Turns out that the crash is not in skb_segment_list, but later in
+__udpv4_gso_segment_list_csum. Which unconditionally dereferences
+udp_hdr(seg).
+
+The above fix also mentions skb pull as the culprit, but does not
+include a BPF program. If this can be reached in other ways, then we
+do need a stronger test in skb_segment_list, as you propose.
+
+I don't want to narrowly check whether udp_hdr is safe. Essentially,
+an SKB_GSO_FRAGLIST skb layout cannot be trusted at all if even one
+byte would get pulled.=
 
