@@ -1,361 +1,205 @@
-Return-Path: <linux-kernel+bounces-151304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC4F68AAC9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F40B8AACA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:16:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A00B21C21402
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:14:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6259A1C21809
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CCFB7E765;
-	Fri, 19 Apr 2024 10:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605FC7BB17;
+	Fri, 19 Apr 2024 10:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L0u2/NcA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b="ZPAUOomI"
+Received: from forwardcorp1c.mail.yandex.net (forwardcorp1c.mail.yandex.net [178.154.239.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335F23A8F7
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5ACC4D131
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713521615; cv=none; b=CwV9PGGZ2wd9bJ/+UvAhZmD+SPnItobOGNEKUA0Js3fl8YxDsC4sPMXxo/BBC4Iyi79PPMPFGqWda7USOBugFgXVVWh747gq+Y4DcoX62Ynl+fQiI4gVojrfKlMttQcD0hRvf2OgAc7SpUU4Xos4yQbcK4ZoEKWOJHfMMhIyfLE=
+	t=1713521774; cv=none; b=p27w6LIqJ6+EfBB4DU551iHaZUhRqx7yMSC0dtnN7dRyZIpbNHJbmd+Nx1t/Rc2ZgGuqzZGbxOzxw6DqlIVCgpHHOvSzHWQ5aq8+Xzwzx4n0nujGYIcjhV6/oWcuy0bhkC/pDubnbPZ5GtvzaVJEKaWReJ1VNSyMhJX1XZpxYDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713521615; c=relaxed/simple;
-	bh=wj4r4PZTD9VeC2bOYlp5oAQl2RQdx30YKGcIWnuAFbA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LBI33LjBAbFyh/LlIkNbzbYwOYMneupHpMQ84DJ6DrrYpKk7OTowhb8K51z7r++DGI58GGTNCPn5nYoZw5P5dlBZuaM/EH2gtj5AtjjheLC82zUuUOAQOadlMZMFLSLY7lt5AF5/4khR3IOW+HQq+FaLxMaqdfTMsmmzBYDp4Aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L0u2/NcA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F709C072AA;
-	Fri, 19 Apr 2024 10:13:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713521614;
-	bh=wj4r4PZTD9VeC2bOYlp5oAQl2RQdx30YKGcIWnuAFbA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L0u2/NcAQtxSXmP+xCJ+SPrkvptctqAEkSg7TDv2d+UtuejBS6Ug0Qs5nh13p2pye
-	 3UuHmZuKD3sKlIErNMdro6izcpwSBBYRurddoC+bOsPcFd3BHbYMbbo6f9M+UQbEsN
-	 hND1kyTRe5ySGgkFmPcIUeetihWlvPCJ6sWocK/OTWEsDLzwQbfhXYxgAORqXNCCj8
-	 fGXURx5JV9+ceR+RrddGK9VWmybhHSfH7P6gXD3mO4Zk5qwHb+XG4KeBNWstxh+jOl
-	 9FPlONX9ySnWzlvA6c9e4JAC+sZqMvxQVK+7uhEXm6+ZzcGqxPF++9WwB6FZRjUuZT
-	 82lwS/MY4GLJA==
-Date: Fri, 19 Apr 2024 12:13:28 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org, 
-	huyue2@coolpad.com, jefflexu@linux.alibaba.com, viro@zeniv.linux.org.uk, 
-	linux-kernel@vger.kernel.org, yangerkun@huawei.com, houtao1@huawei.com
-Subject: Re: [PATCH -next] erofs: get rid of erofs_fs_context
-Message-ID: <20240419-tundra-komodowaran-5c3758d496e4@brauner>
-References: <20240419031459.3050864-1-libaokun1@huawei.com>
+	s=arc-20240116; t=1713521774; c=relaxed/simple;
+	bh=P1ol6MpU9FzJNRsmymRHOmpfUJwsLQ72yX6NlQXLbrs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i5zPItTAUwiEWbXMsvLfprgnDAvEoPNoIceDba65WxLaTYsB6FJPKFWStQHuTo9uiGSAGgBBSD98F10VUR90IA0fg1zq00Ym8abbS1UVirgcvqfAwa2MZwwPFTljnb6GrmBt07Hm2OP7mx7pqOXUX4tTgeutsNqK1Bv56VOPWrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru; spf=pass smtp.mailfrom=yandex-team.ru; dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b=ZPAUOomI; arc=none smtp.client-ip=178.154.239.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex-team.ru
+Received: from mail-nwsmtp-smtp-corp-main-66.iva.yp-c.yandex.net (mail-nwsmtp-smtp-corp-main-66.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:220a:0:640:7faf:0])
+	by forwardcorp1c.mail.yandex.net (Yandex) with ESMTPS id 0A96760C1C;
+	Fri, 19 Apr 2024 13:16:01 +0300 (MSK)
+Received: from [IPV6:2a02:6b8:b081:b65b::1:3] (unknown [2a02:6b8:b081:b65b::1:3])
+	by mail-nwsmtp-smtp-corp-main-66.iva.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id xFDZQe0GjGk0-vZnVcnce;
+	Fri, 19 Apr 2024 13:16:00 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
+	s=default; t=1713521760;
+	bh=al9SDjDm+VqOfC7HhDkWckoSvh3JHkwfsnoQVdgJv4c=;
+	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
+	b=ZPAUOomI+6EjiMlG8gLZnOySS9i5BC/mWWry3LmONhfvGjQdjiaRw8nKSgF0cFZvi
+	 vrXkj3KXJJsSLg0TJuUqWNQ3ubNgy3PqZwbnTYyKdFz/eLoNGAEJCntYbOgA3SG63n
+	 BEG0w8c2mtqUNGoezP3VwCFAvbiOjGyyE7Yc8xag=
+Authentication-Results: mail-nwsmtp-smtp-corp-main-66.iva.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Message-ID: <4dce371e-8457-4e4b-a79b-5497f5ccef86@yandex-team.ru>
+Date: Fri, 19 Apr 2024 13:15:59 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240419031459.3050864-1-libaokun1@huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/split_lock: fix delayed detection enabling
+To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc: den-plotnikov@yandex-team.ru, x86@kernel.org,
+ linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
+References: <20240321195522.24830-1-davydov-max@yandex-team.ru>
+ <7c8c6f7c-7476-d73d-4df1-9dea0aa4ecf2@igalia.com>
+Content-Language: en-US
+From: Maksim Davydov <davydov-max@yandex-team.ru>
+In-Reply-To: <7c8c6f7c-7476-d73d-4df1-9dea0aa4ecf2@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 19, 2024 at 11:14:59AM +0800, Baokun Li wrote:
-> Instead of allocating the erofs_sb_info in get_tree() allocate it during
-> init_fs_context() and after this erofs_fs_context is no longer needed,
-> so replace ctx with sbi, no functional changes.
-> 
-> Suggested-by: Jingbo Xu <jefflexu@linux.alibaba.com>
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
-> Hi Gao Xiang,
-> Hi Jingbo,
-> 
-> I noticed that Christian's original patch has been merged into the next
-> branch, so I'm sending this patch out separately.
 
-An an accident on my part as I left it in the vfs.fixes branch. I expect
-that the erofs tree will pick it up.
+On 3/31/24 20:07, Guilherme G. Piccoli wrote:
+> On 21/03/2024 16:55, Maksim Davydov wrote:
+>> If the warn mode with disabled mitigation mode is used, then on each cpu
+>> where the split lock occurred detection will be disabled in order to make
+>> progress and delayed work will be scheduled, which then will enable
+>> detection back. Now it turns out that all CPUs use one global delayed
+>> work structure. This leads to the fact that if a split lock occurs on
+>> several CPUs at the same time (within 2 jiffies), only one cpu will
+>> schedule delayed work, but the rest will not. The return value of
+>> schedule_delayed_work_on() would have shown this, but it is not checked
+>> in the code
+>> In order to fix the warn mode with disabled mitigation mode, delayed work
+>> has to be a per-cpu.
+>>
+>> Fixes: 727209376f49 ("x86/split_lock: Add sysctl to control the misery mode")
+> Thanks Maksim! I confess I (think I) understand the theory behind the
+> possible problem, but I'm not seeing how it happens - probably just me
+> being silly , but can you help me to understand it clearly?
+>
+> Let's say we have 2 CPUs, CPU0 and CPU1 and we're running with
+> sld_mitigate = 0, meaning we don't have "the misery".
+>
+> If the code running in CPU0 reaches split_lock_warn(), my understanding
+> is that it warns the user, schedule the sld reenable [via and
+> schedule_delayed_work_on()] and disables the feature with
+> sld_update_msr(false), correct? So, does this disabling happens only at
+> core level, or it disables for the whole CPU including all cores?
+>
+> But back to our example, if CPU1 detects the split lock, it'll run the
+> same procedure as CPU0 did - so are you saying we have a race there if
+> CPU1 face a split lock before CPU0 disabled the MSR?
+>
+> Maybe a more clear example of the issue would be even helpful in the
+> commit message, showing the path both CPUs would take and how the
+> problem happens exactly.
+>
+> Thanks in advance,
+>
+>
+> Guilherme
 
-> 
-> Regards,
-> Baokun
-> 
->  fs/erofs/internal.h |   7 ---
->  fs/erofs/super.c    | 112 ++++++++++++++++++--------------------------
->  2 files changed, 46 insertions(+), 73 deletions(-)
-> 
-> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> index 116c1d5d1932..53ebba952a2f 100644
-> --- a/fs/erofs/internal.h
-> +++ b/fs/erofs/internal.h
-> @@ -84,13 +84,6 @@ struct erofs_dev_context {
->  	bool flatdev;
->  };
->  
-> -struct erofs_fs_context {
-> -	struct erofs_mount_opts opt;
-> -	struct erofs_dev_context *devs;
-> -	char *fsid;
-> -	char *domain_id;
-> -};
-> -
->  /* all filesystem-wide lz4 configurations */
->  struct erofs_sb_lz4_info {
->  	/* # of pages needed for EROFS lz4 rolling decompression */
-> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-> index 4fc34b984e51..7172271290b9 100644
-> --- a/fs/erofs/super.c
-> +++ b/fs/erofs/super.c
-> @@ -370,18 +370,18 @@ static int erofs_read_superblock(struct super_block *sb)
->  	return ret;
->  }
->  
-> -static void erofs_default_options(struct erofs_fs_context *ctx)
-> +static void erofs_default_options(struct erofs_sb_info *sbi)
->  {
->  #ifdef CONFIG_EROFS_FS_ZIP
-> -	ctx->opt.cache_strategy = EROFS_ZIP_CACHE_READAROUND;
-> -	ctx->opt.max_sync_decompress_pages = 3;
-> -	ctx->opt.sync_decompress = EROFS_SYNC_DECOMPRESS_AUTO;
-> +	sbi->opt.cache_strategy = EROFS_ZIP_CACHE_READAROUND;
-> +	sbi->opt.max_sync_decompress_pages = 3;
-> +	sbi->opt.sync_decompress = EROFS_SYNC_DECOMPRESS_AUTO;
->  #endif
->  #ifdef CONFIG_EROFS_FS_XATTR
-> -	set_opt(&ctx->opt, XATTR_USER);
-> +	set_opt(&sbi->opt, XATTR_USER);
->  #endif
->  #ifdef CONFIG_EROFS_FS_POSIX_ACL
-> -	set_opt(&ctx->opt, POSIX_ACL);
-> +	set_opt(&sbi->opt, POSIX_ACL);
->  #endif
->  }
->  
-> @@ -426,16 +426,16 @@ static const struct fs_parameter_spec erofs_fs_parameters[] = {
->  static bool erofs_fc_set_dax_mode(struct fs_context *fc, unsigned int mode)
->  {
->  #ifdef CONFIG_FS_DAX
-> -	struct erofs_fs_context *ctx = fc->fs_private;
-> +	struct erofs_sb_info *sbi = fc->s_fs_info;
->  
->  	switch (mode) {
->  	case EROFS_MOUNT_DAX_ALWAYS:
-> -		set_opt(&ctx->opt, DAX_ALWAYS);
-> -		clear_opt(&ctx->opt, DAX_NEVER);
-> +		set_opt(&sbi->opt, DAX_ALWAYS);
-> +		clear_opt(&sbi->opt, DAX_NEVER);
->  		return true;
->  	case EROFS_MOUNT_DAX_NEVER:
-> -		set_opt(&ctx->opt, DAX_NEVER);
-> -		clear_opt(&ctx->opt, DAX_ALWAYS);
-> +		set_opt(&sbi->opt, DAX_NEVER);
-> +		clear_opt(&sbi->opt, DAX_ALWAYS);
->  		return true;
->  	default:
->  		DBG_BUGON(1);
-> @@ -450,7 +450,7 @@ static bool erofs_fc_set_dax_mode(struct fs_context *fc, unsigned int mode)
->  static int erofs_fc_parse_param(struct fs_context *fc,
->  				struct fs_parameter *param)
->  {
-> -	struct erofs_fs_context *ctx = fc->fs_private;
-> +	struct erofs_sb_info *sbi = fc->s_fs_info;
->  	struct fs_parse_result result;
->  	struct erofs_device_info *dif;
->  	int opt, ret;
-> @@ -463,9 +463,9 @@ static int erofs_fc_parse_param(struct fs_context *fc,
->  	case Opt_user_xattr:
->  #ifdef CONFIG_EROFS_FS_XATTR
->  		if (result.boolean)
-> -			set_opt(&ctx->opt, XATTR_USER);
-> +			set_opt(&sbi->opt, XATTR_USER);
->  		else
-> -			clear_opt(&ctx->opt, XATTR_USER);
-> +			clear_opt(&sbi->opt, XATTR_USER);
->  #else
->  		errorfc(fc, "{,no}user_xattr options not supported");
->  #endif
-> @@ -473,16 +473,16 @@ static int erofs_fc_parse_param(struct fs_context *fc,
->  	case Opt_acl:
->  #ifdef CONFIG_EROFS_FS_POSIX_ACL
->  		if (result.boolean)
-> -			set_opt(&ctx->opt, POSIX_ACL);
-> +			set_opt(&sbi->opt, POSIX_ACL);
->  		else
-> -			clear_opt(&ctx->opt, POSIX_ACL);
-> +			clear_opt(&sbi->opt, POSIX_ACL);
->  #else
->  		errorfc(fc, "{,no}acl options not supported");
->  #endif
->  		break;
->  	case Opt_cache_strategy:
->  #ifdef CONFIG_EROFS_FS_ZIP
-> -		ctx->opt.cache_strategy = result.uint_32;
-> +		sbi->opt.cache_strategy = result.uint_32;
->  #else
->  		errorfc(fc, "compression not supported, cache_strategy ignored");
->  #endif
-> @@ -504,27 +504,27 @@ static int erofs_fc_parse_param(struct fs_context *fc,
->  			kfree(dif);
->  			return -ENOMEM;
->  		}
-> -		down_write(&ctx->devs->rwsem);
-> -		ret = idr_alloc(&ctx->devs->tree, dif, 0, 0, GFP_KERNEL);
-> -		up_write(&ctx->devs->rwsem);
-> +		down_write(&sbi->devs->rwsem);
-> +		ret = idr_alloc(&sbi->devs->tree, dif, 0, 0, GFP_KERNEL);
-> +		up_write(&sbi->devs->rwsem);
->  		if (ret < 0) {
->  			kfree(dif->path);
->  			kfree(dif);
->  			return ret;
->  		}
-> -		++ctx->devs->extra_devices;
-> +		++sbi->devs->extra_devices;
->  		break;
->  #ifdef CONFIG_EROFS_FS_ONDEMAND
->  	case Opt_fsid:
-> -		kfree(ctx->fsid);
-> -		ctx->fsid = kstrdup(param->string, GFP_KERNEL);
-> -		if (!ctx->fsid)
-> +		kfree(sbi->fsid);
-> +		sbi->fsid = kstrdup(param->string, GFP_KERNEL);
-> +		if (!sbi->fsid)
->  			return -ENOMEM;
->  		break;
->  	case Opt_domain_id:
-> -		kfree(ctx->domain_id);
-> -		ctx->domain_id = kstrdup(param->string, GFP_KERNEL);
-> -		if (!ctx->domain_id)
-> +		kfree(sbi->domain_id);
-> +		sbi->domain_id = kstrdup(param->string, GFP_KERNEL);
-> +		if (!sbi->domain_id)
->  			return -ENOMEM;
->  		break;
->  #else
-> @@ -582,7 +582,6 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
->  {
->  	struct inode *inode;
->  	struct erofs_sb_info *sbi = EROFS_SB(sb);
-> -	struct erofs_fs_context *ctx = fc->fs_private;
->  	int err;
->  
->  	sb->s_magic = EROFS_SUPER_MAGIC;
-> @@ -590,14 +589,6 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
->  	sb->s_maxbytes = MAX_LFS_FILESIZE;
->  	sb->s_op = &erofs_sops;
->  
-> -	sb->s_fs_info = sbi;
-> -	sbi->opt = ctx->opt;
-> -	sbi->devs = ctx->devs;
-> -	ctx->devs = NULL;
-> -	ctx->fsid = NULL;
-> -	sbi->domain_id = ctx->domain_id;
-> -	ctx->domain_id = NULL;
-> -
->  	sbi->blkszbits = PAGE_SHIFT;
->  	if (erofs_is_fscache_mode(sb)) {
->  		sb->s_blocksize = PAGE_SIZE;
-> @@ -701,15 +692,8 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
->  
->  static int erofs_fc_get_tree(struct fs_context *fc)
->  {
-> -	struct erofs_fs_context *ctx = fc->fs_private;
-> -	struct erofs_sb_info *sbi;
-> -
-> -	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
-> -	if (!sbi)
-> -		return -ENOMEM;
-> +	struct erofs_sb_info *sbi = fc->s_fs_info;
->  
-> -	fc->s_fs_info = sbi;
-> -	sbi->fsid = ctx->fsid;
->  	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && sbi->fsid)
->  		return get_tree_nodev(fc, erofs_fc_fill_super);
->  
-> @@ -720,19 +704,19 @@ static int erofs_fc_reconfigure(struct fs_context *fc)
->  {
->  	struct super_block *sb = fc->root->d_sb;
->  	struct erofs_sb_info *sbi = EROFS_SB(sb);
-> -	struct erofs_fs_context *ctx = fc->fs_private;
-> +	struct erofs_sb_info *new_sbi = fc->s_fs_info;
->  
->  	DBG_BUGON(!sb_rdonly(sb));
->  
-> -	if (ctx->fsid || ctx->domain_id)
-> +	if (new_sbi->fsid || new_sbi->domain_id)
->  		erofs_info(sb, "ignoring reconfiguration for fsid|domain_id.");
->  
-> -	if (test_opt(&ctx->opt, POSIX_ACL))
-> +	if (test_opt(&new_sbi->opt, POSIX_ACL))
->  		fc->sb_flags |= SB_POSIXACL;
->  	else
->  		fc->sb_flags &= ~SB_POSIXACL;
->  
-> -	sbi->opt = ctx->opt;
-> +	sbi->opt = new_sbi->opt;
->  
->  	fc->sb_flags |= SB_RDONLY;
->  	return 0;
-> @@ -763,16 +747,12 @@ static void erofs_free_dev_context(struct erofs_dev_context *devs)
->  
->  static void erofs_fc_free(struct fs_context *fc)
->  {
-> -	struct erofs_fs_context *ctx = fc->fs_private;
->  	struct erofs_sb_info *sbi = fc->s_fs_info;
->  
-> -	erofs_free_dev_context(ctx->devs);
-> -	kfree(ctx->fsid);
-> -	kfree(ctx->domain_id);
-> -	kfree(ctx);
-> -
-> -	if (sbi)
-> -		kfree(sbi);
-> +	erofs_free_dev_context(sbi->devs);
-> +	kfree(sbi->fsid);
-> +	kfree(sbi->domain_id);
-> +	kfree(sbi);
->  }
->  
->  static const struct fs_context_operations erofs_context_ops = {
-> @@ -784,22 +764,22 @@ static const struct fs_context_operations erofs_context_ops = {
->  
->  static int erofs_init_fs_context(struct fs_context *fc)
->  {
-> -	struct erofs_fs_context *ctx;
-> +	struct erofs_sb_info *sbi;
->  
-> -	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-> -	if (!ctx)
-> +	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
-> +	if (!sbi)
->  		return -ENOMEM;
->  
-> -	ctx->devs = kzalloc(sizeof(struct erofs_dev_context), GFP_KERNEL);
-> -	if (!ctx->devs) {
-> -		kfree(ctx);
-> +	sbi->devs = kzalloc(sizeof(struct erofs_dev_context), GFP_KERNEL);
-> +	if (!sbi->devs) {
-> +		kfree(sbi);
->  		return -ENOMEM;
->  	}
-> -	fc->fs_private = ctx;
-> +	fc->fs_private = sbi;
+Sorry for a late reply.
 
-I don't understand how your patch is going to work. fs_private isn't
-transfered by the generic code to sb->s_fs_info. Did you mean
-fc->s_fs_info = sbi?
+I made a diagram to explain how this bug occurs. If it makes it clearer,
+then I will include the diagram in the commit description.
 
->  
-> -	idr_init(&ctx->devs->tree);
-> -	init_rwsem(&ctx->devs->rwsem);
-> -	erofs_default_options(ctx);
-> +	idr_init(&sbi->devs->tree);
-> +	init_rwsem(&sbi->devs->rwsem);
-> +	erofs_default_options(sbi);
->  	fc->ops = &erofs_context_ops;
->  	return 0;
->  }
-> -- 
-> 2.31.1
-> 
+Some information that should be taken into account:
+* sld_update_msr() enables/disables SLD on both CPUs on the same core
+* schedule_delayed_work_on() internally checks WORK_STRUCT_PENDING_BIT. If
+   a work has the 'pending' status, then schedule_delayed_work_on() will
+   return an error code and, most importantly, the work will not be placed
+   in the workqueue
+
+Let's say we have a multicore system on which split_lock_mitigate=0 and
+a multithreaded application is running that calls splitlock in multiple
+threads. Due to the fact that sld_update_msr() affects the entire core (both
+CPUs), we will consider 2 CPUs from different cores. Let the 2 threads of
+this application schedule to CPU0 (core 0) and to CPU 2 (core 1), then:
+
+| ||                                      |
+|             CPU 0 (core 0)          ||             CPU 2 (core 
+1)           |
+|_____________________________________||______________________________________|
+| ||                                      |
+| 1) SPLIT LOCK occured ||                                      |
+| ||                                      |
+| 2) split_lock_warn() ||                                      |
+| ||                                      |
+| 3) sysctl_sld_mitigate == 0 ||                                      |
+|    (work = &sl_reenable) ||                                      |
+| ||                                      |
+| 4) schedule_delayed_work_on() ||                                      |
+|    (reenable will be called after 
+||                                      |
+|     2 jiffies on CPU 0) ||                                      |
+| ||                                      |
+| 5) disable SLD for core 0 ||                                      |
+| ||                                      |
+|    ----------------------------- ||                                      |
+| ||                                      |
+|                                     || 6) SPLIT LOCK 
+occured                |
+| ||                                      |
+|                                     || 7) 
+split_lock_warn()                 |
+| ||                                      |
+|                                     || 8) sysctl_sld_mitigate == 
+0          |
+|                                     ||    (work = 
+&sl_reenable,             |
+|                                     ||     the same address as in 3) 
+)      |
+| ||                                      |
+|             2 jiffies               || 9) schedule_delayed_work_on() 
+fails  |
+|                                     ||    because the work is in 
+the        |
+|                                     ||    pending state since 4). The 
+work  |
+|                                     ||    wasn't placed to the 
+workqueue.   |
+|                                     ||    reenable won't be called on 
+CPU 2 |
+| ||                                      |
+|                                     || 10) disable SLD for core 
+0           |
+| ||                                      |
+|                                     ||     From now on, SLD 
+will            |
+|                                     ||     never be reenabled on core 
+1     |
+| ||                                      |
+|    ----------------------------- ||                                      |
+| ||                                      |
+|    11) enable SLD for core 0 by ||                                      |
+|        __split_lock_reenable ||                                      |
+| ||                                      |
+
+
+If the application threads can be scheduled to all processor cores, then 
+over
+time there will be only one core left, on which SLD will be enabled and 
+split
+lock can be detected; and on all other cores SLD will be disabled all the
+time.
+Most likely, this bug has not been noticed for so long because
+sysctl_sld_mitigate default value is 1, and in this case a semaphore is used
+that does not allow 2 different cores to have SLD disabled at the same time,
+that is, strictly only one work is placed in the workqueue.
+
+-- 
+Best regards,
+Maksim Davydov
+
 
