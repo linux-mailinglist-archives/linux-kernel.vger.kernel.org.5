@@ -1,187 +1,291 @@
-Return-Path: <linux-kernel+bounces-152006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB4A98AB745
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:32:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E321A8AB746
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:33:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B7E428125D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:32:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70C7B1F2182B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1845313D600;
-	Fri, 19 Apr 2024 22:32:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16D3113D600;
+	Fri, 19 Apr 2024 22:33:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="PGelmCmi"
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02olkn2024.outbound.protection.outlook.com [40.92.44.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u7t8xvfO"
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BDB52BAE0;
-	Fri, 19 Apr 2024 22:32:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.44.24
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713565945; cv=fail; b=SNnzf6trYsJCQNvoNwWAWbcfXvDGND/A09bEcxMxOlgg+cPcjOOMwS8//wDaIZfY9qntT42xfkNPzOnphw5FkB1whXSnzS+IB67drvjhMsyTUR4qyApluqboClemsTWgYJppRGooRObAt8TAwLojO1V9TS+w3QnNdIpcCqdkxTo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713565945; c=relaxed/simple;
-	bh=1/ZM3vHoDgkVeQEGDOj7eb5NuHvfITch/c+V1rA6TUM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Pn2N3NGcW+QVQNvkDyL4D5rPUt2vUi6IB50+zJvkq7JnlQbAZ+HzCgAwz6KFDrnA4XJrMivUipS6qL/IkHAkt4hwPZ613P7svmuNnynPLb+gtyzHugPk2YBb2ZWFO6qNy62qbDjYWHn2JWeKd0+vXH9dws06Ac3OulFtdVm1tR4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=PGelmCmi; arc=fail smtp.client-ip=40.92.44.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cO8RdAnWw7WEOCdffcYKGjLRJb5FBjPRJ90ISuyuDG0SaEaVf0ebOnME5DLw8NH68C4ru3UG4MaxNv9wufA56PKNbN6+FcaC+mTF++wkMwcy6M1T/QIbimFKv79WCFDhQBD4cPyGKhTEttG6qXrYa5PaQKvmlZSyPd/gTDeCJ2IvJh/s0gkD6UW6TmGq7vdJL9d71sWCu8R+dwbcKWJmXBVfa6PuxHH+v3GkXmMEcyqQVpv2th7J/9O2TyV1HIf2hE9uomnPEo7AgHuAAGaIr1RyeKFAOSC7lL/JZGXFlaYOOThb15DF+29rktCtRs9GqegPAtnPQuqxPa//J1IYCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y5Vaq1bN+bUhPH0leylPA5KCdrPWU8YGOY2jLqb0orw=;
- b=I/clhi4Rw6n666PhLo/vE0ZGgCSpOjEYCwd+gVdNdK1isLz8qYqFkF7B0UlwkEaHvFPirlt0ayxv/Vrk7ycasgosfWY7fE0kMckZOYYUs9+FXqavTCWs2kxqxgSpB75RRC61kyKcNV7OwKt6t6dA4sF3bC2V6VqmYDAOZPLR/H6MmA9y6pRhq6/O5UOVciFBAb/43rpm9zdsHE1U5Hw5Bdf4EFBINRCsvVrpAUqbDnTKW5SuDAgAchgHf7Iu12DX7yHCxzNr8a+iyufZ+5AxfpKkAvwQ4N+DKvUgJL23EnSfJU7gehvTV9Ev+bEXMejiQFz/2A3IAoJYJOzuQ/Zsig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y5Vaq1bN+bUhPH0leylPA5KCdrPWU8YGOY2jLqb0orw=;
- b=PGelmCmi8c2mjSAOLFQN0U/iIjCJ6r7bqousknOSeJhaolTmsjfIM6oCV/dmQFOjN7EOPW5BA9vEU7q48PTqSkLLG8Ea0E1a6IF7BplBrHP0R9vjrrIckPiuCMW857WzZTbtEDelylD6gWbkys3yBtfwFLN/OL9DA1V9MXpYiUOVnIb+Ld3LuTnqtzCTLVxel1MKhNBN1isoP3nUoj044HERwjWE7YmQRJuRTJAmm2it/QA0TsTip64MDKeQ1M0lqWpCfGhGdZXMCOMbA7bHanVgPH+swEFB4+L8ZNeJQu+vl7wyGXaET4XvsMWl8eKApFeC3gRpA9U3CKuQnBBEQg==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by DS0PR02MB9432.namprd02.prod.outlook.com (2603:10b6:8:dd::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.42; Fri, 19 Apr
- 2024 22:32:21 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7472.037; Fri, 19 Apr 2024
- 22:32:21 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Michael Schierl <schierlm@gmx.de>, Jean DELVARE <jdelvare@suse.com>, "K.
- Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>
-CC: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: Early kernel panic in dmi_decode when running 32-bit kernel on
- Hyper-V on Windows 11
-Thread-Topic: Early kernel panic in dmi_decode when running 32-bit kernel on
- Hyper-V on Windows 11
-Thread-Index:
- AQHajaNnaKjzbQWkCEqfKgwSAQ9VW7FopBnAgAExRwCAACYysIABcguAgAAcUjCAALI+AIAAvzYAgAAT/rCAAsG3QIAASRsAgAAaOFA=
-Date: Fri, 19 Apr 2024 22:32:21 +0000
-Message-ID:
- <SN6PR02MB4157337ED192FFBA81A9CDD0D40D2@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <2db080ae-5e59-46e8-ac4e-13cdf26067cc@gmx.de>
- <SN6PR02MB41578C71EB900E5725231462D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
- <e416f2a0-6162-481e-9194-11101fa1224c@gmx.de>
- <SN6PR02MB41573B2FED887B1E3DCADB55D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
- <71af4abb-cffd-449e-b397-bd3134d98fb3@gmx.de>
- <SN6PR02MB4157CFEA1F504635E4B8B471D4082@SN6PR02MB4157.namprd02.prod.outlook.com>
- <dade3cd83d4957d4407470f0ea494777406b44bd.camel@suse.com>
- <3c6f9fea-6865-40da-96c5-d12bc08ba266@gmx.de>
- <SN6PR02MB4157C677FDAD6507B443A8C7D40F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <SN6PR02MB415733CB1854317C980C3F18D40D2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <938f6eda-f62c-457f-bc42-b2d12fc6e2c7@gmx.de>
-In-Reply-To: <938f6eda-f62c-457f-bc42-b2d12fc6e2c7@gmx.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [4IhVyVjwlUdazfp97S/mDxIe8vdJC6bC]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|DS0PR02MB9432:EE_
-x-ms-office365-filtering-correlation-id: cbcbf43d-259e-4822-429b-08dc60c093e5
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 0sYmMcg1VpC15GuMn7PEn45GvRSnm36p3dxV7wkOEQ4YmH4Q+aSsEWd96CukjO9d15Ip89yu9ck5HBn8REKp9rPE9IOUmzv64qXUQYLOMGTbo1IkYg6twxC8o5H8Cnig092fqNDzLeXclpYeoxrgCEgcJ2o18wsLrm8jEq5xNkjUEhqgsopme7ZXaySdWCb3/yA30tfUGmAs6tZz6p7B0bLsVhyNALYlr/LPCD6QSQb4VzjAbFoUPueKKyDU/Xeb9J8kf7lkbpZ/XUwrurCX+klITeNcLve7YHP0fTqocGOqxkdn16Tk/+D/RDVH7pJnK1mGrZZS90FMAShyBNVty+IGYp4Msw+5gxgvviY5hMGBKeLcKyNwlPafM/nvUdkirqprh0k+b0+LKK65Z9DaQhm8W1knkt3mTA3bL1K779QDpxENpb4PA/+fpuJuEaE951KZ6EmdjgD+pCvFBvo7H3RaMYQTwuw2e0dsMUakD4bebO402qhlB6uqH4OJNK8tbEIB9JO/ukwhnx5nJnLTCR1v1jikGV/+RF2BwgkddSymyOjkg7d7ATSWA+mvaB0G/ki0Doiz6xqEN6VVG143pOQCC2NcyYVA8GI/rUxXSl4=
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?OmvzfokT1Mc0ojejbK8SvjVoxvAfLRe88PuMYABJPyL20pFD9P+99R9xWl3e?=
- =?us-ascii?Q?09Aue7UDOAKIkc22wHgrOvqT+jR5UoEbXIPPYKRYpPLzAKpa5dZ1euhFNRBy?=
- =?us-ascii?Q?s+NploJ+/eQ7wv76cK7ZDh26D/7ytoo4ZUcLIvapekNnrzGHDMcG5lvt9Qhp?=
- =?us-ascii?Q?3QVB8XpDGPo+PdApJQgQsFnuZmZ7PTyA4JG7vtoaxk24hqWXsv0KxridTNNU?=
- =?us-ascii?Q?wTbWXoHkvf1Z7WxiyKe1FtODVGkfN/HpTVaXw5xW1daq4c3QVv47hgPgFP9q?=
- =?us-ascii?Q?oxHoSg/IztYy9r6GRks7oMo5mOmlRLQQ1FXk4OJoRkjAwr0XGw/f2gPNk6DC?=
- =?us-ascii?Q?Tm1EUkMmi16Vaos/Bey4lBjjF8lki2dYpdY1pqqStHQuv5u3TXcZja1zlVgN?=
- =?us-ascii?Q?Yb5wJS9iwnou/O3E6Fk7JlfptQRJ6tToqvBrLTtggUsMxBJNu/h5Wqpwuinj?=
- =?us-ascii?Q?5o5JCAmgOSZpUkaOIKEpfghzhIDD44rKHtVybmUPuUy3DRe5yHglB+Mv/jrY?=
- =?us-ascii?Q?3cen9uldMdp+/3SJgW81nxaCc/JimYSHl1lvnCjFvWCZpF3DN0IMbwluNzsq?=
- =?us-ascii?Q?InjOc6xMpK6BM52eKKwlPoE+WENzQdffrc7al39sYmJLg01WhLaOAz3noEHA?=
- =?us-ascii?Q?h6kWcijMENBuyaWg6uNMnejj393InmZU1BdXQ8MASeUhcqIBQe5kk4Xq2MOW?=
- =?us-ascii?Q?qZF1gDYFbSFWU3WQGM6DOlpoVvD4/CxU7OB8TzQvzaBcgxqPOHXW53mw1CoW?=
- =?us-ascii?Q?36jH7BfBPR/5aPxyP0rJ2iav+yXjc4dck3YRF5huWWwwnY1iuQYyNXZjZbLD?=
- =?us-ascii?Q?r9xt0/eEVRbJpJl7E3d1ZlDUJV6tpJhvwR/7MkAQwN0DCBP5iAaeYcjH75NE?=
- =?us-ascii?Q?5AYMjJrmp/kUtKSSZ4NUIWydsTaH8KgEC0f2vadVLFf4GWvQzvfJ8wwMnRmL?=
- =?us-ascii?Q?F2bzWClo640t1Ch8sUP/Fu+ix6MNWRsk9rFHvV/DIU3yDoLyp+qeD4VxJ92s?=
- =?us-ascii?Q?W/a3O8jgULVBnLVD30/T4fXKr+1ACiOHFUAF/AQeE0sdRD4mr89NwmfTIWWa?=
- =?us-ascii?Q?lv92bCtnZujj+e8zWRg3CIleFpzTySS63eih1p+QWN4o6uTDuCtd6TAhDGiG?=
- =?us-ascii?Q?IoX+C+SkhLe1E4XjTOpxxarDll/qFQoS8u2r6TM2m7ZP4y9AbUQI3hOHHo8u?=
- =?us-ascii?Q?NlLIlqdcr7fh+enMeNbmcE1iJ2FKlOVYCvYL3Q=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9807D10A28
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:33:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713565988; cv=none; b=YcemJqoOFooahGtL4rPbASh26gCFfpav5CwDzvz6PvDh1N+4Y2IMZFS8JcHZkUtmgyrs8RZvLX61K0YeBo7MX22k6lhzmf3yGg+STAkPzzEE1p+BTSZ2r/8rF6jMk57mlYXAx+8Elg7k9sYjcOtOC6aQpJxa/S0U/yosu54fDr8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713565988; c=relaxed/simple;
+	bh=qo7/N5ZF9+TTT+lb3wooerYp+x/U68ObQtBJ6S9FeKE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aXd6cIVzQn5O1BzUSiLKxALaoVu93bcwObswTU5YAtkvvDVXNQh+H0vCqRnJu8zkZqkQGGt7q8UwvnWPCKIYvp314BV7cClYdP6vNTSGFePYx2kXuoFGFwgFhUKHbljqoI9d0clQ4hgdWedRZebfYXyMvEmq30c6VouMzpw6u/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u7t8xvfO; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5acf5c1a2f5so1652240eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:33:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713565985; x=1714170785; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EICelP/lE33eIq2U0CujJA6vcfBMPCSauA8jxb4szvI=;
+        b=u7t8xvfOt/2PWWJX0GO62wwDFNOiCd8dcypkXmGjKbNPru2pGrz+Teg+hsmHdmJI8c
+         rh4d8mhsPsV+AgOtH/JgYleSZ1eehf7K91JZvGrds1erFAeAqNSfBNiZaBP5Z31am7SI
+         C4tplUS5i1avIkZWzrl99QzjpxxnS93+6mHgOrq3wamx4Ijz7w+WeDiJsQKeSZbZ8Dsk
+         UcroIMFtqiUcFwkRYIa0/KLPM0DekD3JFGzbZSoOlE3xiwqrdne96nAjnqD39ub+Qs8X
+         /uVrpqkTz2qoT0oLQGLAZ+Eeyr/7Xsr8l4VLGVbYgOlyi6Wp3ca4042DQjaNHqDHe6kM
+         oNXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713565985; x=1714170785;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EICelP/lE33eIq2U0CujJA6vcfBMPCSauA8jxb4szvI=;
+        b=T58kyaOH3y219ztQTxlPbF+ZB+dilz1IyzewJnF1vfkDbGo4I+hwfFCRXSWT93QUHX
+         wArladkGIEz7smNgsNNFSgqho3MW57DzH2b3U8KhY8cEX2aVqk/RS3fIdx8sdi+jwM3Q
+         2DOwJ0d4NSeDOrRqFU3eHajwTmKllIMU8nNAkBwo0uoS0KJORV7sl7d6CFEjq5Zau/uw
+         aqZSPvAhlhng37Omr/V5yo4Y9PeeHaLlkCjiDsLV3C+wt3oAgNF5j1Cof5xBDhWEzOwH
+         wJ85G93/8Fd1OZfw0mvI5Yd6eg9vAtSfZgWCUqxKviawZV03eGUjbrtMHQcNLnqjBBAA
+         c7kA==
+X-Forwarded-Encrypted: i=1; AJvYcCU8hA1KugeiU9zaUGsoLGjiV1bQ5SudveBtnBljaAw8EpOvcPCMpP4aq1KA4WH/kf1ZciARsWDefM5e2EtYM5aEp+QGfJYqJjTTFPCz
+X-Gm-Message-State: AOJu0YwPjRAeCSBpAUYsXsvseeNj0iNYZ7pmcTvV5ZCQnD9otXOF4ZRd
+	x4ZWZWfS0uRe17aWF0odVbUyU74etKErfddDXaJe7ezkkEKqZ/bWghVT4DPbHovo9AK9S2RkOhj
+	FsOr0O11ZeCX41KqwSRKuSv2dbz6CliXn7dlB
+X-Google-Smtp-Source: AGHT+IHEnnhJ3TpniFY55Ans9kw7hmgu60cCGtL/COtzPJLQc4/WppOPvC3h7Nu+VstK2Zo6B4TfM66ODjZpeYGOcBQ=
+X-Received: by 2002:a05:6358:5d8e:b0:185:fc1f:23ab with SMTP id
+ s14-20020a0563585d8e00b00185fc1f23abmr4306920rwm.6.1713565985270; Fri, 19 Apr
+ 2024 15:33:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbcbf43d-259e-4822-429b-08dc60c093e5
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Apr 2024 22:32:21.0675
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR02MB9432
+References: <20240418042706.1261473-1-maheshb@google.com> <87cyqmx850.ffs@tglx>
+In-Reply-To: <87cyqmx850.ffs@tglx>
+From: =?UTF-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS14KS+4KSwKQ==?= <maheshb@google.com>
+Date: Fri, 19 Apr 2024 15:32:37 -0700
+Message-ID: <CAF2d9jjeYACm3ueLPjiYqNMBXrJ3U2dnWqKx-AbgRWLVLz+qUw@mail.gmail.com>
+Subject: Re: [PATCHv2 next] ptp: update gettimex64 to provide ts optionally in
+ mono-raw base.
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Netdev <netdev@vger.kernel.org>, Linux <linux-kernel@vger.kernel.org>, 
+	David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Richard Cochran <richardcochran@gmail.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Sagi Maimon <maimon.sagi@gmail.com>, Jonathan Corbet <corbet@lwn.net>, John Stultz <jstultz@google.com>, 
+	Mahesh Bandewar <mahesh@bandewar.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Michael Schierl <schierlm@gmx.de> Sent: Friday, April 19, 2024 1:47 P=
-M
-> Am 19.04.2024 um 18:36 schrieb Michael Kelley:
->=20
-> >> I still want to understand why 32-bit Linux is taking an oops during
-> >> boot while 64-bit Linux does not.
-> >
-> > The difference is in this statement in dmi_save_devices():
-> >
-> > 	count =3D (dm->length - sizeof(struct dmi_header)) / 2;
-> >
-> > On a 64-bit system, count is 0xFFFFFFFE.  That's seen as a
-> > negative value, and the "for" loop does not do any iterations. So
-> > nothing bad happens.
-> >
-> > But on a 32-bit system, count is 0x7FFFFFFE. That's a big
-> > positive number, and the "for" loop iterates to non-existent
-> > memory as Michael Schierl originally described.
-> >
-> > I don't know the "C" rules for mixed signed and unsigned
-> > expressions, and how they differ on 32-bit and 64-bit systems.
-> > But that's the cause of the different behavior.
->=20
-> Probably lots of implementation defined behaviour here. But when looking
-> at gcc 12.2 for x86/amd64 architecture (which is the version in Debian),
-> it is at least apparent from the assembly listing:
->=20
-> https://godbolt.org/z/he7MfcWfE=20
->=20
-> First of all (this gets me every time): sizeof(int) is 4 on both 32-and
-> 64-bit, unlike sizeof(uintptr_t), which is 8 on 64-bit.
->=20
-> Both 32-bit and 64-bit versions zero-extend the value of dm->length from
-> 8 bits to 32 bits (or actually native bitlength as the upper 32 bits of
-> rax get set to zero whenever eax is assigned), and then the subtraction
-> and shifting (division) happen as native unsigend type, taking only the
-> lowest 32 bits of the result as value for count. In the 64-bit case one
-> of the extra leading 1 bits from the subtraction gets shifted into the
-> MSB of the result, while in the 32-bit case it remains empty.
+On Thu, Apr 18, 2024 at 9:56=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+> On Wed, Apr 17 2024 at 21:27, Mahesh Bandewar wrote:
+>
+> Subject: ptp: update gettimex64 to provide ts optionally in mono-raw base=
+.
+>
+> Can we please have proper sentences without cryptic abbreviations? This
+> is not twatter or SMS.
+>
+character limit in the description is the limiting factor.
 
-Yep -- makes sense.  As you said, the sub-expression
-(dm->length - sizeof(struct dmi_header)) is unsigned with a size that
-is the size we're compiling for.  When compiling for 32-bit, the right shif=
-t
-puts a zero in the upper bit (bit 31) because the value is treated as
-unsigned. But when compiling for 64-bit, bits [63:32] exist and they
-are all ones.  The right shift puts the zero in bit 63, and bit 32 (a "1")
-gets shifted into bit 31.
+> Aside of that this is not about updating gettimex64(). The fact that
+> this is an UAPI change is the real important information. gettimex64()
+> is only the kernel side implementation detail.
+>
+>    ptp/ioctl: Support MONOTONIC_RAW timestamps forPTP_SYS_OFFSET_EXTENDED
+>
+> or something like that.
+>
+ack.
 
-Michael
+> > The current implementation of PTP_SYS_OFFSET_EXTENDED provides
+> > PHC reads in the form of [pre-TS, PHC, post-TS]. These pre and
+> > post timestamps are useful to measure the width of the PHC read.
+> > However, the current implementation provides these timestamps in
+> > CLOCK_REALTIME only. Since CLOCK_REALTIME is disciplined by NTP
+> > or NTP-like service(s), the value is subjected to change. This
+> > makes some applications that are very sensitive to time change
+> > have these timestamps delivered in different time-base.
+>
+> The last sentence does not make any sense to me.
+>
+> > This patch updates the gettimex64 / ioctl op PTP_SYS_OFFSET_EXTENDED
+>
+> git grep 'This patch' Documentation/process/
+>
+> > to provide these (sandwich) timestamps optionally in
+> > CLOCK_MONOTONIC_RAW timebase while maintaining the default behavior
+> > or giving them in CLOCK_REALTIME.
+>
+> This change log lacks a proper explanation why this is needed and what's
+> the purpose and benefit.
+>
+> Aside of that it fails to mention that using the currently unused
+> reserved field is correct because CLOCK_REALTIME =3D=3D 0.
+>
+> > ~# testptp -d /dev/ptp0 -x 3 -y raw
+> > extended timestamp request returned 3 samples
+> > sample # 0: mono-raw time before: 371.548640128
+> >             phc time: 371.579671788
+> >             mono-raw time after: 371.548640912
+> > sample # 1: mono-raw time before: 371.548642104
+> >             phc time: 371.579673346
+> >             mono-raw time after: 371.548642490
+> > sample # 2: mono-raw time before: 371.548643320
+> >             phc time: 371.579674652
+> >             mono-raw time after: 371.548643756
+> > ~# testptp -d /dev/ptp0 -x 3 -y real
+> > extended timestamp request returned 3 samples
+> > sample # 0: system time before: 1713243413.403474250
+> >             phc time: 385.699915490
+> >             system time after: 1713243413.403474948
+> > sample # 1: system time before: 1713243413.403476220
+> >             phc time: 385.699917168
+> >             system time after: 1713243413.403476642
+> > sample # 2: system time before: 1713243413.403477555
+> >             phc time: 385.699918442
+> >             system time after: 1713243413.403477961
+>
+> That takes up a lot of space, but what's the actual value of this
+> information? Especially as there is no actual test case for this which
+> people can use to validate the changes.
+>
+I'll polish the testptp.c changes and submit them later. But if this
+is not adding any value, I can remove it from the log.
+
+> > diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock=
+_kernel.h
+> > index 6e4b8206c7d0..7563da6db09b 100644
+> > --- a/include/linux/ptp_clock_kernel.h
+> > +++ b/include/linux/ptp_clock_kernel.h
+> > @@ -47,10 +47,12 @@ struct system_device_crosststamp;
+> >   * struct ptp_system_timestamp - system time corresponding to a PHC ti=
+mestamp
+> >   * @pre_ts: system timestamp before capturing PHC
+> >   * @post_ts: system timestamp after capturing PHC
+> > + * @clockid: clockid used for cpaturing timestamp
+>
+> cpaturing?
+>
+> s/timestamp/the system timestamps/
+>
+> Precision matters not only for PTP.
+>
+:) ack
+
+> >   */
+> >  struct ptp_system_timestamp {
+> >       struct timespec64 pre_ts;
+> >       struct timespec64 post_ts;
+> > +     clockid_t clockid;
+> >  };
+> >
+> >  /**
+> > @@ -457,14 +459,34 @@ static inline ktime_t ptp_convert_timestamp(const=
+ ktime_t *hwtstamp,
+> >
+> >  static inline void ptp_read_system_prets(struct ptp_system_timestamp *=
+sts)
+> >  {
+> > -     if (sts)
+> > -             ktime_get_real_ts64(&sts->pre_ts);
+> > +     if (sts) {
+> > +             switch (sts->clockid) {
+> > +             case CLOCK_REALTIME:
+> > +                     ktime_get_real_ts64(&sts->pre_ts);
+> > +                     break;
+> > +             case CLOCK_MONOTONIC_RAW:
+> > +                     ktime_get_raw_ts64(&sts->pre_ts);
+> > +                     break;
+> > +             default:
+> > +                     break;
+> > +             }
+> > +     }
+> >  }
+> >
+> >  static inline void ptp_read_system_postts(struct ptp_system_timestamp =
+*sts)
+> >  {
+> > -     if (sts)
+> > -             ktime_get_real_ts64(&sts->post_ts);
+> > +     if (sts) {
+> > +             switch (sts->clockid) {
+> > +             case CLOCK_REALTIME:
+> > +                     ktime_get_real_ts64(&sts->post_ts);
+> > +                     break;
+> > +             case CLOCK_MONOTONIC_RAW:
+> > +                     ktime_get_raw_ts64(&sts->post_ts);
+> > +                     break;
+> > +             default:
+> > +                     break;
+> > +             }
+> > +     }
+> >  }
+> >
+> >  #endif
+> > diff --git a/include/uapi/linux/ptp_clock.h b/include/uapi/linux/ptp_cl=
+ock.h
+> > index 053b40d642de..fc5825e72330 100644
+> > --- a/include/uapi/linux/ptp_clock.h
+> > +++ b/include/uapi/linux/ptp_clock.h
+> > @@ -157,7 +157,12 @@ struct ptp_sys_offset {
+> >
+> >  struct ptp_sys_offset_extended {
+> >       unsigned int n_samples; /* Desired number of measurements. */
+> > -     unsigned int rsv[3];    /* Reserved for future use. */
+> > +     /* The original implementation provided timestamps (always) in
+> > +      * REALTIME clock-base. Since CLOCK_REALTIME is 0, adding
+> > +      * clockid doesn't break backward compatibility.
+> > +      */
+>
+> This wants to be in the change log.
+>
+Ack
+
+> If you want to document the evolution of this data structure in a
+> comment, then 'original implementation' is not really the best wording
+> to use.
+>
+> I'd rather see the documentation fixed so that it uses proper kernel doc
+> style for the whole data structure instead of having this mix of inline
+> and tail comments along with a properly structured version information.
+>
+> /**
+>  * ptp_sys_offset_extended - Data structure for IOCTL_PTP_.....
+>  *
+>  * @n_samples:          Desired number of samples
+>  * ....
+>  * @...
+>  *
+>  * History:
+>  * V1:  Initial implementation
+>  *
+>  * V2:  Use the first reserved field for @clockid. That's backwards
+>  *      compatible for V1 user space because CLOCK_REALTIME is 0 and
+>  *      the reserved fields must be 0.
+>  */
+>
+> Or something like that. Hmm?
+>
+will attempt to add it.
+
+> Thanks,
+>
+>         tglx
+
+Thanks for reviewing Thomas, I'll address them in the next revision.
+
+--mahesh..
 
