@@ -1,229 +1,127 @@
-Return-Path: <linux-kernel+bounces-151703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A534F8AB253
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:50:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B52838AB26A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:51:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D8661F24587
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:50:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5D961C23469
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:51:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C52B1311A6;
-	Fri, 19 Apr 2024 15:49:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8725B130AF4;
+	Fri, 19 Apr 2024 15:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cXF3MH9U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OHj3fHUB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3452712F361;
-	Fri, 19 Apr 2024 15:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52BC77F13;
+	Fri, 19 Apr 2024 15:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713541768; cv=none; b=t6KZLjCf4lACE1BE7kznBNG8qf6yacZKAkzybTGxT4+dW3PmKbTOT+uwyzAKGGIF4PP4h7C/klVlqMRHYKz7Ma1zB+Z+kDtjUh4v0pjypVaDp1x8JwkdFHFiTRYN/vCGpkKY4ybQeyJYzlU4Wg00aCrPzGh6wl468ceHlBifvtI=
+	t=1713541839; cv=none; b=llxUtTwdAiKq8S2FEKL8LydSacvUQ9TpvrR9IJhg6N05U6DgWqyv6AGjaWydIydVEz5g0C0lpIwrVRZkWuNf/mYF7s6xZI1D5eBUk476x9Pph/MxBKWrwKPxcSuyAi/6wqycKbzEIdg91jxUnH9NppKyaWOLzDxaonOTtiP4YfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713541768; c=relaxed/simple;
-	bh=MMNCu9qXo/Sui8C3tMfJ7lzuoTJCSLI1PUO4ACRkh8M=;
+	s=arc-20240116; t=1713541839; c=relaxed/simple;
+	bh=4syrMVBjLG+mqSAuWdu45onjerLE6hugRcJZYIbTm9w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qJ6i3sVogZDql9IK1FPHjM//a/a0+aWriVDV1PSuWxinBgR/rIb/vt0ZzSJN9lScLjnky2zAh0vVxWZtwM2lNMygkt2MxcvqENFA3P4LGgxlrNoe/n2JiAOs6OqAl89C99F1d/joDO+mHSX0Aw2IkReTp8XWKloY1hggs//LHDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cXF3MH9U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1F25C2BD10;
-	Fri, 19 Apr 2024 15:49:24 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=eRQOzsrj/ljKZqDXeCjzoqjDfNZ7gDiQqNMj/V3zxy6Yy3GW8lNZ8Wpj+4Ze0h9to0OYve361+ZtgU+i+EptEWjNOZhPbTulto8OduVyHbVsfZKROE8yHI0m5CxDzD1YOGYxJOieOXc7RpR1PtGT81f/avI2+EjtzQDf6o8E0W0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OHj3fHUB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B33F9C3277B;
+	Fri, 19 Apr 2024 15:50:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713541768;
-	bh=MMNCu9qXo/Sui8C3tMfJ7lzuoTJCSLI1PUO4ACRkh8M=;
+	s=k20201202; t=1713541839;
+	bh=4syrMVBjLG+mqSAuWdu45onjerLE6hugRcJZYIbTm9w=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cXF3MH9UhHZaW5c+fQbICV8+tqL8zZd3GbsK+MMtlVnuI+U9MykD5EdYMbnqzGiQA
-	 clolbwi+WJpRnCi8Bgt+tEF57vK45kHXEgAivOzflaV60ugfWPJize6jQXFRFHwjyr
-	 VRS95okpFhaUArffiB/+u6m+wylmbq/z7sLeQsbFvkITQqoo7UuMHWOkDxb5E4UPYj
-	 yAg41C5DHBDH+t2YzcwksmCMBm7ZYDOWSL2q4WPfoHN6O8DqUXWH6xY+zsUNil7480
-	 D0X+YTTKNs+W1AwuRvHl2QI8DgHMxQgN51X8xpUibgE1yudXL+nOsnAy3LXdkfDXNg
-	 tmjlh9MV2WO1A==
-Date: Fri, 19 Apr 2024 16:49:16 +0100
-From: Conor Dooley <conor@kernel.org>
-To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
-Cc: Jonathan Corbet <corbet@lwn.net>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
+	b=OHj3fHUBZ5oW6uWZr153zLjsZ6q0yv8DxwxD0Zy4isctsEWry5XXGSfR8Vc3hMrh/
+	 vizLT7qFrrEF533kmJCP3HWtZ7Qzr6mVAw251VXfA8O2WlqLyeSYgvuFfPALuIdv03
+	 8KfWQePVkfruiceot7yZycnjNdoMZw4MifC81l3AU9dBYam0QRDoIaUN7a6lFYb8MN
+	 K0Whze6qtl25bkJdh4oiv03gWibiSz5LhY9l5mv+w3PTDhkRKRk4JGDzV2xKnexhV7
+	 tGBMGlG1WEFnNmkggVGWaWOAgxzIa+Avjitv3Mny3kNElAG5XpvzSHnQsEDp7b51Tm
+	 Ziw7Ozh3aQ/+w==
+Date: Fri, 19 Apr 2024 18:49:17 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Masami Hiramatsu <masami.hiramatsu@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
-	Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 03/12] dt-bindings: riscv: add Zc* extension rules
- implied by C extension
-Message-ID: <20240419-blinked-timid-da722ec6ddc4@spud>
-References: <20240418124300.1387978-1-cleger@rivosinc.com>
- <20240418124300.1387978-4-cleger@rivosinc.com>
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 14/15] kprobes: remove dependency on CONFIG_MODULES
+Message-ID: <ZiKSffcTiP2c6fbs@kernel.org>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+ <20240411160051.2093261-15-rppt@kernel.org>
+ <20240418061615.5fad23b954bf317c029acc4d@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DpdcO0rlxZdj1hXZ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240418124300.1387978-4-cleger@rivosinc.com>
+In-Reply-To: <20240418061615.5fad23b954bf317c029acc4d@gmail.com>
 
+Hi Masami,
 
---DpdcO0rlxZdj1hXZ
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Apr 18, 2024 at 06:16:15AM +0900, Masami Hiramatsu wrote:
+> Hi Mike,
+> 
+> On Thu, 11 Apr 2024 19:00:50 +0300
+> Mike Rapoport <rppt@kernel.org> wrote:
+> 
+> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> > 
+> > kprobes depended on CONFIG_MODULES because it has to allocate memory for
+> > code.
+> > 
+> > Since code allocations are now implemented with execmem, kprobes can be
+> > enabled in non-modular kernels.
+> > 
+> > Add #ifdef CONFIG_MODULE guards for the code dealing with kprobes inside
+> > modules, make CONFIG_KPROBES select CONFIG_EXECMEM and drop the
+> > dependency of CONFIG_KPROBES on CONFIG_MODULES.
+> 
+> Thanks for this work, but this conflicts with the latest fix in v6.9-rc4.
+> Also, can you use IS_ENABLED(CONFIG_MODULES) instead of #ifdefs in
+> function body? We have enough dummy functions for that, so it should
+> not make a problem.
 
-On Thu, Apr 18, 2024 at 02:42:26PM +0200, Cl=E9ment L=E9ger wrote:
-> As stated by Zc* spec:
->=20
-> "As C defines the same instructions as Zca, Zcf and Zcd, the rule is that:
->  - C always implies Zca
->  - C+F implies Zcf (RV32 only)
->  - C+D implies Zcd"
->=20
-> Add additionnal validation rules to enforce this in dts.
+The code in check_kprobe_address_safe() that gets the module and checks for
+__init functions does not compile with IS_ENABLED(CONFIG_MODULES). 
+I can pull it out to a helper or leave #ifdef in the function body,
+whichever you prefer.
+ 
+> -- 
+> Masami Hiramatsu
 
-I'll get it out of the way: NAK, and the dts patch is the perfect
-example of why. I don't want us to have to continually update
-devicetrees. If these are implied due to being subsets of other
-extensions, then software should be able to enable them when that
-other extension is present.
-
-My fear is that, and a quick look at the "add probing" commit seemed to
-confirm it, new subsets would require updates to the dts, even though
-the existing extension is perfectly sufficient to determine presence.
-
-I definitely want to avoid continual updates to the devicetree for churn
-reasons whenever subsets are added, but not turning on the likes of Zca
-when C is present because "the bindings were updated to enforce this"
-is a complete blocker. I do concede that having two parents makes that
-more difficult and will likely require some changes to how we probe - do
-we need to have a "second round" type thing?
-Taking Zcf as an example, maybe something like making both of C and F into
-"standard" supersets and adding a case to riscv_isa_extension_check()
-that would mandate that Zca and F are enabled before enabling it, and we
-would ensure that C implies Zca before it implies Zcf?
-
-Given we'd be relying on ordering, we have to perform the same implication
-for both F and C and make sure that the "implies" struct has Zca before Zcf.
-I don't really like that suggestion, hopefully there's a nicer way of doing
-that, but I don't like the dt stuff here.
-
-Thanks,
-Conor.
-
->=20
-> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
-> ---
->  .../devicetree/bindings/riscv/cpus.yaml       |  8 +++--
->  .../devicetree/bindings/riscv/extensions.yaml | 34 +++++++++++++++++++
->  2 files changed, 39 insertions(+), 3 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Document=
-ation/devicetree/bindings/riscv/cpus.yaml
-> index d87dd50f1a4b..c4e2c65437b1 100644
-> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> @@ -168,7 +168,7 @@ examples:
->                  i-cache-size =3D <16384>;
->                  reg =3D <0>;
->                  riscv,isa-base =3D "rv64i";
-> -                riscv,isa-extensions =3D "i", "m", "a", "c";
-> +                riscv,isa-extensions =3D "i", "m", "a", "c", "zca";
-> =20
->                  cpu_intc0: interrupt-controller {
->                          #interrupt-cells =3D <1>;
-> @@ -194,7 +194,8 @@ examples:
->                  reg =3D <1>;
->                  tlb-split;
->                  riscv,isa-base =3D "rv64i";
-> -                riscv,isa-extensions =3D "i", "m", "a", "f", "d", "c";
-> +                riscv,isa-extensions =3D "i", "m", "a", "f", "d", "c", "=
-zca",
-> +                                       "zcd";
-> =20
->                  cpu_intc1: interrupt-controller {
->                          #interrupt-cells =3D <1>;
-> @@ -215,7 +216,8 @@ examples:
->                  compatible =3D "riscv";
->                  mmu-type =3D "riscv,sv48";
->                  riscv,isa-base =3D "rv64i";
-> -                riscv,isa-extensions =3D "i", "m", "a", "f", "d", "c";
-> +                riscv,isa-extensions =3D "i", "m", "a", "f", "d", "c", "=
-zca",
-> +                                       "zcd";
-> =20
->                  interrupt-controller {
->                          #interrupt-cells =3D <1>;
-> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Do=
-cumentation/devicetree/bindings/riscv/extensions.yaml
-> index db7daf22b863..0172cbaa13ca 100644
-> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> @@ -549,6 +549,23 @@ properties:
->                  const: zca
->              - contains:
->                  const: f
-> +      # C extension implies Zca
-> +      - if:
-> +          contains:
-> +            const: c
-> +        then:
-> +          contains:
-> +            const: zca
-> +      # C extension implies Zcd if d
-> +      - if:
-> +          allOf:
-> +            - contains:
-> +                const: c
-> +            - contains:
-> +                const: d
-> +        then:
-> +          contains:
-> +            const: zcd
-> =20
->  allOf:
->    # Zcf extension does not exists on rv64
-> @@ -566,6 +583,23 @@ allOf:
->            not:
->              contains:
->                const: zcf
-> +  # C extension implies Zcf if f on rv32 only
-> +  - if:
-> +      properties:
-> +        riscv,isa-extensions:
-> +          allOf:
-> +            - contains:
-> +                const: c
-> +            - contains:
-> +                const: f
-> +        riscv,isa-base:
-> +          contains:
-> +            const: rv32i
-> +    then:
-> +      properties:
-> +        riscv,isa-extensions:
-> +          contains:
-> +            const: zcf
-> =20
->  additionalProperties: true
->  ...
-> --=20
-> 2.43.0
->=20
-
---DpdcO0rlxZdj1hXZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiKSfAAKCRB4tDGHoIJi
-0p0bAQCI0ZdOO2q+xaWhcL7Krk9HCdLpniOsKdATTU8zMWqUWgEA7ccpybuwBzK1
-KglS0OiA5rjSvLYmJv2WgOCxlKn58AQ=
-=l0RY
------END PGP SIGNATURE-----
-
---DpdcO0rlxZdj1hXZ--
+-- 
+Sincerely yours,
+Mike.
 
