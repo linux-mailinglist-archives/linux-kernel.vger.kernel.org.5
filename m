@@ -1,153 +1,75 @@
-Return-Path: <linux-kernel+bounces-151537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 127BD8AB031
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:06:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2281C8AB044
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:08:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2F45283673
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:06:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5726CB25900
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE6212FF6E;
-	Fri, 19 Apr 2024 14:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE87A13775C;
+	Fri, 19 Apr 2024 14:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WJrriT5J"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="VS9F9Aml"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C0812FB23;
-	Fri, 19 Apr 2024 14:03:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA9A136E03;
+	Fri, 19 Apr 2024 14:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713535409; cv=none; b=RNxbMwF2fxI9okkwOpDvZ7Gv7UHdVH5737PMRjckmYyzwnuYT2+Y5IDbtnamvvuPlXG1dKwCUZmCxBVlL4sYyqJFiXSEE6UvIOws9QMKlt1CDXtxQLE0Xfw+QxsYXW8E1qAqUVqUzxPmWfDzEsDmGHOZonovIFrg9PXBmp+O1IY=
+	t=1713535450; cv=none; b=EcS9v+VG7ice2YGff84c9ex+6o0Eeq2XWMUWjHuzS0wWkU2CfFQUoD1kvk7pzwIBzblu4JuURwT5yb5tqF1vAHoe1FXl2AKxN6Txel4TEvgNL82UymU3mA9yKQmXVMcAqRRIk9Ei3NiO4vYqWJmqGGQB+5a35sZ4WrUpj1HsFGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713535409; c=relaxed/simple;
-	bh=DU2Oh8nrRgXZi/yPndOQwhsltv4XMpBfwRnb1FWmP0Q=;
+	s=arc-20240116; t=1713535450; c=relaxed/simple;
+	bh=zd4B2k2WaVQRixz1Zz7N9Fik5Yjb6pyjzhJ5NlvMHZ4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rKpjVek39pbyB0Kq4EdiIj3LnK3LrgMe0mTbetYPbXQHO306+29BghgowcXlY6nd+MflnqZzL6sQ1Z5JZlKU/KvV1/r039nIlP8rg0yXUgncz+he6TDIYCAUXRrMz1+Fae6dhVZq8SXXE2GtYYRBedACOvHDSWkZm3hsyGhalNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WJrriT5J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72650C072AA;
-	Fri, 19 Apr 2024 14:03:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713535409;
-	bh=DU2Oh8nrRgXZi/yPndOQwhsltv4XMpBfwRnb1FWmP0Q=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=GDHmyTfMCCAODVPFXbQnoM1mPYcCUBW26jhdB8I1qjXt+t5hhFjS//wmUsvhBlCM4VJOru0Dm3W6uaL5+t0ls3XSulQdvV5YwRPOstqPvY7iz8CcDsS7A2o7ZKQYaG+V8OYR+8ovI/QYOimiG6SF530l2K/WJaSX5WTTS4ln7ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=VS9F9Aml; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9F1DC32781;
+	Fri, 19 Apr 2024 14:04:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713535449;
+	bh=zd4B2k2WaVQRixz1Zz7N9Fik5Yjb6pyjzhJ5NlvMHZ4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WJrriT5J2X7hf4oYYUmstmlkPeq3DgvatCicCKVfFY05MHAXsGjIvsIH6c2UeFUCK
-	 b1tQA9eFfPT9My24Bx5MwU3csOfL2xbVgwabrXecyWtYmZRKLwmjFTjcB9j5GYWGoy
-	 bTMMwme5TOdiXtbdlz/weS3ViPl7AR23/VsdRSztQE4oWHicuv1Q1F6jzoDfRx6oFs
-	 e91S/8iEAE+36zTfeMrMhg/6jsGIwDPTUf6JEt6bvmNpYbnQaXgYkrjgO5C+kCE1Jv
-	 URoPOjT0e9X5jEpWoycpzzCiinEHMpKHGeCeKhjSjfGUKHI96+oFtwuokS//ELD+RL
-	 Qpa7Bkn0p5REw==
-Date: Fri, 19 Apr 2024 15:03:22 +0100
-From: Will Deacon <will@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH 1/3] x86/cpu: Actually turn off mitigations by default
- for SPECULATION_MITIGATIONS=n
-Message-ID: <20240419140321.GF3148@willie-the-truck>
-References: <20240409175108.1512861-1-seanjc@google.com>
- <20240409175108.1512861-2-seanjc@google.com>
- <20240413115324.53303a68@canb.auug.org.au>
- <87edb9d33r.fsf@mail.lhotse>
- <87bk6dd2l4.fsf@mail.lhotse>
- <CAMuHMdWD+UKZAkiUQUJOeRkOoyT4cH1o8=Gu465=K-Ub7O4y9A@mail.gmail.com>
- <Zh06O35yKIF2vNdE@google.com>
+	b=VS9F9AmlyXURr86YUdWYb7QN54sEF+o9/HopbQ4zfMb5YwPOAncRA6X6L4yQm8A2j
+	 9YHZPcyknj2LuFKdbF4qqLu9FEW9kN2n9SX1EBn6ftAmfEWi3Z+C7xmjhUWcE3iye3
+	 okShGGuMa+cG/4TfFhmZOH93RJzKObNz8g7O1dPQ=
+Date: Fri, 19 Apr 2024 16:04:03 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Wander Lairson Costa <wander@redhat.com>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	"open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)" <linux-kselftest@vger.kernel.org>,
+	"open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)" <kunit-dev@googlegroups.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/2] kunit: unregister the device on error
+Message-ID: <2024041955-strangely-snack-b335@gregkh>
+References: <20240419132504.9488-1-wander@redhat.com>
+ <20240419132504.9488-2-wander@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zh06O35yKIF2vNdE@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240419132504.9488-2-wander@redhat.com>
 
-On Mon, Apr 15, 2024 at 07:31:23AM -0700, Sean Christopherson wrote:
-> On Mon, Apr 15, 2024, Geert Uytterhoeven wrote:
-> > On Sat, Apr 13, 2024 at 11:38 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> > > Michael Ellerman <mpe@ellerman.id.au> writes:
-> > > > Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> > > ...
-> > > >> On Tue,  9 Apr 2024 10:51:05 -0700 Sean Christopherson <seanjc@google.com> wrote:
-> > > ...
-> > > >>> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> > > >>> index 8f6affd051f7..07ad53b7f119 100644
-> > > >>> --- a/kernel/cpu.c
-> > > >>> +++ b/kernel/cpu.c
-> > > >>> @@ -3207,7 +3207,8 @@ enum cpu_mitigations {
-> > > >>>  };
-> > > >>>
-> > > >>>  static enum cpu_mitigations cpu_mitigations __ro_after_init =
-> > > >>> -   CPU_MITIGATIONS_AUTO;
-> > > >>> +   IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS) ? CPU_MITIGATIONS_AUTO :
-> > > >>> +                                                CPU_MITIGATIONS_OFF;
-> > > >>>
-> > > >>>  static int __init mitigations_parse_cmdline(char *arg)
-> > > >>>  {
-> > >
-> > > I think a minimal workaround/fix would be:
-> > >
-> > > diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
-> > > index 2b8fd6bb7da0..290be2f9e909 100644
-> > > --- a/drivers/base/Kconfig
-> > > +++ b/drivers/base/Kconfig
-> > > @@ -191,6 +191,10 @@ config GENERIC_CPU_AUTOPROBE
-> > >  config GENERIC_CPU_VULNERABILITIES
-> > >         bool
-> > >
-> > > +config SPECULATION_MITIGATIONS
-> > > +       def_bool y
-> > > +       depends on !X86
-> > > +
-> > >  config SOC_BUS
-> > >         bool
-> > >         select GLOB
-> > 
-> > Thanks, that works for me (on arm64), so
-> > Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Fri, Apr 19, 2024 at 10:25:01AM -0300, Wander Lairson Costa wrote:
+> kunit_init_device() should unregister the device on bus register error,
+> but mistakenly it tries to unregister the bus.
 > 
-> Oof.  I completely missed that "cpu_mitigations" wasn't x86-only.  I can't think
-> of better solution than an on-by-default generic Kconfig, though can't that it
-> more simply be:
+> Unregister the device instead of the bus.
 > 
-> diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
-> index 2b8fd6bb7da0..5930cb56ee29 100644
-> --- a/drivers/base/Kconfig
-> +++ b/drivers/base/Kconfig
-> @@ -191,6 +191,9 @@ config GENERIC_CPU_AUTOPROBE
->  config GENERIC_CPU_VULNERABILITIES
->         bool
->  
-> +config SPECULATION_MITIGATIONS
-> +       def_bool !X86
-> +
->  config SOC_BUS
->         bool
->         select GLOB
+> Signed-off-by: Wander Lairson Costa <wander@redhat.com>
+> Fixes: d03c720e03bd ("kunit: Add APIs for managing devices")
 
-I can't see this in -next yet. Do you plan to post it as a proper patch
-to collect acks etc?
-
-Cheers,
-
-Will
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
