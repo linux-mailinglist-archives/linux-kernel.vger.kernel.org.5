@@ -1,130 +1,113 @@
-Return-Path: <linux-kernel+bounces-151072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DFCA8AA8A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:51:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC0078AA8AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:53:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DB331F214D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:51:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 773881F21565
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126DE3A29B;
-	Fri, 19 Apr 2024 06:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Hz7scD+I"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4BD3A28E;
+	Fri, 19 Apr 2024 06:53:45 +0000 (UTC)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B5B79F9;
-	Fri, 19 Apr 2024 06:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D775663E;
+	Fri, 19 Apr 2024 06:53:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.75.126.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713509491; cv=none; b=BJ/XoXFBRgBCKd68FiLogqXopoGYenl2I99iTCfrB0gUQfxnmTfWfOaVYYAJBiW08Gx4N2nMqnQ4Brr09vmxJEDAh2AGEyahmrClozVVmzmDX3NW/17Bv6pqWQgX4+81AS5vNvHxNYaqxzmoFhPadhfSGK22cfKSdYwE1/EY5Hc=
+	t=1713509625; cv=none; b=m1iET2V89g78yaoR3TAyr74uhzmh0z4owmb1W5V5JWyvpdAK5d1/pjwAv9lnRjhyNGVrFWiXG/tKtsH52NNEvo3uNpq5zCrN0+YKdr/qqDmCvFnA72iFPypOBoyW2UewyCdznvzmOv3CCtWg62J2wrC54zsLBtkoB+h3o5aTqhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713509491; c=relaxed/simple;
-	bh=kNV+Cr8IeaPgt0ekBbelYW4XAy06Z4dnET3H5hMF8OY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=Mu/j0TX1HAqCOPOmXvvTs/pwB7ltQA4nRSDTQVJxYCnGTEtEUoC5nUlJBpFycRb1OMIUsE/iRK36X/nF3GrTk9E5I4Zimy2PqCg8UqQofpEOBPmEP6DZ+JySD8Bp3kP9fh1rQqWOqJUrqQf5eMUHlnr1mJpa4njdruduBkMSNX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=Hz7scD+I; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713509480; x=1714114280; i=markus.elfring@web.de;
-	bh=Tp4fDh1EM73eA9LppB8jCZQssdvVqY1VS8ada0xBL2I=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:Cc:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=Hz7scD+I+gTR5ejWD3rX7rgAzJ2u/DHZkEq+PpdaB8wp2N7HJ8+CxD/vpxCY2svA
-	 bXbsciwuAxovyCMSnTBnsqPIaKDlc4qjBc8OuA2RjNuUNFcuv/p/U5uAK1otyyQ0T
-	 6vp3arBHXC4f2+Gbdh+LLtzaExr4Zkr0Vtrg6O1i6xrYOjRGisCZrHluok1heULtq
-	 kFNKoJk3kAi4udxJCejt3rpeKz6lohWvjnI2pivqhoSs+oBP/qjn298cSmUT2CEN5
-	 05uIRyQEhNIpYZRHJSoPOcG6rEivtvwKKcEBfESntD/DCuDN5PB/m0i17OvLA9Zks
-	 nZ4f/gKLUYKIQJnN/A==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mhnvw-1sbQd61dvk-00gZyN; Fri, 19
- Apr 2024 08:51:20 +0200
-Message-ID: <f1f47166-00d7-49f3-9b80-34aa7b7b5510@web.de>
-Date: Fri, 19 Apr 2024 08:51:19 +0200
+	s=arc-20240116; t=1713509625; c=relaxed/simple;
+	bh=vO6jtl95JtCYDR2yKdhkHYFHamW52HJiQ3BpdOR+C0c=;
+	h=From:To:CC:Subject:Date:Message-ID:References:Content-Type:
+	 MIME-Version; b=GpFqajwtdUIeVoJUwnKm/HpqkiNQCXWtQf0GZUuV1afLPtqU3xn0JBB2VwnOUUrCF6JTnE2ZsJUNRXsMQy34TEu5hA7cXolfo4uUmOyEd05GxCTUyF9+XnMV5WyLAvfxnG5EhIb6mv0puJy+nJocBR+qSDJoKiy+LqEKYeb4srQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com; spf=pass smtp.mailfrom=realtek.com; arc=none smtp.client-ip=211.75.126.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 43J6rGOU11095324, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 43J6rGOU11095324
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Apr 2024 14:53:16 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 19 Apr 2024 14:53:17 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 19 Apr 2024 14:53:16 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::d5b2:56ba:6b47:9975]) by
+ RTEXMBS01.realtek.com.tw ([fe80::d5b2:56ba:6b47:9975%5]) with mapi id
+ 15.01.2507.035; Fri, 19 Apr 2024 14:53:16 +0800
+From: Ricky WU <ricky_wu@realtek.com>
+To: Ulf Hansson <ulf.hansson@linaro.org>
+CC: "wenchao.chen@unisoc.com" <wenchao.chen@unisoc.com>,
+        "ricardo@marliere.net" <ricardo@marliere.net>,
+        "marex@denx.de"
+	<marex@denx.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mmc: core: resume not check card exist before powerup
+Thread-Topic: [PATCH] mmc: core: resume not check card exist before powerup
+Thread-Index: AQHaf/Di2MMAmClaHUaVpFhOVxydUrFMk6cAgAHWPUCAIOE18A==
+Date: Fri, 19 Apr 2024 06:53:16 +0000
+Message-ID: <8b966794f2bb4fda8cc7d3e111bfef70@realtek.com>
+References: <20240327024545.138351-1-ricky_wu@realtek.com>
+ <CAPDyKFo3dkzDDEU7Lk14zH0td0AP=z2RJQibj8SP6JeUuz=iFA@mail.gmail.com> 
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [cocci] [PATCH] coccinelle: misc: minmax: Suppress reports for
- err returns
-To: Julia Lawall <julia.lawall@inria.fr>,
- Ricardo Ribalda <ribalda@chromium.org>, Denis Efremov <efremov@linux.com>,
- Nicolas Palix <nicolas.palix@imag.fr>, cocci@inria.fr,
- kernel-janitors@vger.kernel.org
-References: <20240415-minimax-v1-1-5feb20d66a79@chromium.org>
- <alpine.DEB.2.22.394.2404182255010.3213@hadrien>
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-Cc: LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.22.394.2404182255010.3213@hadrien>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZqBxasO1k8IZLHBuzwDX0hZEP94LaRo3JlVkMX5m417nUWPFam5
- JaWUOpVcL2/fEHCh67X0zRkV687+xjduWG5zNnNaorIpsL+Py5LGtjiJea+eFcdiOk8nwvx
- ivZbmu4QpPs0M2TY+ArXMJrniBX+QNmYzdY/Zf5WzAbjnqZlvOMDp0Pnu6EtvNNbLPSoMVc
- oc//e1kok5W4vhTL71wMA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:XpNQKZxqhRE=;nnLa+g7p9oEH0zrRsObeIx72MQP
- 7vGqAqqLin1TpJLALxWnCj7UqWgZdegrKpV2m2h0nj7/u47fVVyz3boDtdSKm6nBfDxWzQXJa
- eb/PMN9q0E6asMwSX7mqoCl9/hlTA3PYh4XgK8SJUrRqdZAyYBA5xM8zEOWxAgGlzyPY+ZfoV
- p3rB7ctc2t3QqP5KnAa45QAJzyS+jrlTBEbAsx5gwqydgPCzGn/sF2N9x9wLPOakqFJ5UhwBx
- kUrfl1/u0h/k0MQT6KCDYld0Dy8qJIYQbm7ZtuS4MyYYwA806K5DcyUEO7Kk+uz8hH/A2+uR7
- kVsLP/bMpHoEMw5CaWx+pa+mAZ92pGG8xP4DE92iUIGqt4RyO8XauzyhMw8sQdyieFbQg80+X
- 1SDIlZUeyoC2aC4Kzn3n1B8I0/9+CAjm27K+xcf9pMUTJMglKH2FSddfQMGO83+zo7/YAhHRe
- JuHYzFXkXBjB0Zu4XTzJTAMfQbJhSiN5WoXeZYHV/jLdXF9U62h6iv1gNwEdFlU3tdxGrXzQS
- G66Qg9LAAHxFw4A2gNl16HSo9jFTz2LCBNUUsErAcMQ2wU/eHZnivan72gRdx3Ymfq7nFBJg0
- WUXLwOoCBmRS1jmK55wj0t5FJKm/alZRWLi3XZMi0VjhUYS94TCgl6NAM1cGzu6c6x5Mg+PxS
- cShZkSOw4EuO+/9kI0Yy8aQWbcbTdmEYdV3hy35Z+pbGE9xwgl7nUsPme4qdJA9b2tR6QIJZy
- cI+b2WpcGGmI1Eb1rC4+t6FDm8iwnOnRWalGIRwv6sZHUUMhxIHb7BYLKgMp8Pcr4xg3HDDlZ
- YLXFqrrPPCIb3ZenwQewy76CYfwgMrB6oYu+lVKSah7Gw=
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 
->> Most of the people prefer:
->>
->> return ret < 0 ? ret: 0;
->>
->> than:
->>
->> return min(ret, 0);
->>
->> Let's tweak the cocci file to ignore those lines completely.
-=E2=80=A6
-> Applied, thanks. (Coccinelle for-6.10 branch).
-
-Was a planned code adjustment published?
-
-
-=E2=80=A6
->> +++ b/scripts/coccinelle/misc/minmax.cocci
->> @@ -50,11 +50,26 @@ func(...)
->>  	...>
->>  }
->>
->> +// Ignore errcode returns.
->> +@errcode@
-=E2=80=A6
->> -// Don't generate patches for errcode returns.
->> -@errcode depends on patch@
-=E2=80=A6
-
-How does such a change fit to the usability of the coccicheck operation mo=
-des
-=E2=80=9Ccontext=E2=80=9D and =E2=80=9Corg=E2=80=9D?
-
-Should dependencies be reconsidered any more for the desired consistency
-of involved rules for scripts of the semantic patch language?
-
-Regards,
-Markus
+U29mdCByZW1pbmRlcg0KDQpJZiB0aGlzIHNvbHV0aW9uLCB5b3Ugc3RpbGwgaGF2ZSBjb25jZXJ0
+IG9uIHNkLmMuDQpjYW4gd2UganVzdCBkbyB0aGlzIGNoZWNrIGNhcmQgZmxvdyBpbiBtbWMgaG9z
+dCBwb3dlciB1cCBjYWxsX2JhY2s/IA0KDQo+ID4gPg0KPiA+ID4gX21tY19zZF9yZXN1bWUNCj4g
+PiA+IGFkZCBnZXRfY2QgYmVmb3JlIGNhbGwgcG93ZXJ1cCwgbWFrZSBzdXJlIHRoZSBjYXJkIGV4
+aXN0DQo+ID4NCj4gPiBQbGVhc2UgZWxhYm9yYXRlIG1vcmUgb24gd2hhdCBwcm9ibGVtIHlvdSBh
+cmUgdHJ5aW5nIHRvIHNvbHZlLCB0aGUNCj4gPiBhYm92ZSBkb2Vzbid0IG1ha2UgbXVjaCBzZW5z
+ZSB0byBtZSwgc29ycnkuDQo+ID4NCj4gPiBZZXMsIHRoZSBjYXJkIG1heSBiZSByZW1vdmVkIHdo
+aWxlIHRoZSBzeXN0ZW0gaXMgc3VzcGVuZGVkLiBUaGVuLCBldmVuDQo+ID4gaWYgLT5nZXRfY2Qo
+KSBpbmRpY2F0ZXMgdGhhdCB0aGVyZSBpcyBubyBjYXJkIGluc2VydGVkIGluIHRoZQ0KPiA+IFNE
+LWNhcmQtc2xvdCwgd2UgbWF5IHN0aWxsIGhhdmUgdGhlIGNhcmQgYmVpbmcgcmVnaXN0ZXJlZCAt
+IGFuZCB0aGVuDQo+ID4gd2UgbmVlZCB0byB1bnJlZ2lzdGVyIGl0Lg0KPiA+IFRoYXQgc2FpZCwg
+d2UgbmVlZCB0byBjYWxsIG1tY19wb3dlcl91cCgpIGluIG9yZGVyIHRvIHRyeSB0bw0KPiA+IGNv
+bW11bmljYXRlIHdpdGggdGhlIGNhcmQgYWdhaW4uIEF0IGxlYXN0IHRoYXQgaXMgd2hhdCB0aGUN
+Cj4gPiBtbWNfcmVzY2FuKCkgd29yayBhc3N1bWVzIHdoZW4gaXQgcnVucyB0aGUgYnVzX29wcy0+
+ZGV0ZWN0KCkgY2FsbGJhY2sNCj4gPiBhdCBzb21lIHBvaW50IGxhdGVyIGluIHRpbWUuDQo+ID4N
+Cj4gDQo+IFdlIHNhdyB0aGUgcG93ZXIgdXAgaW4gYSBzaG9ydCB0aW1lIGZyb20gd2F2ZWZvcm0g
+d2hlbiByZW1vdmluZyB0aGUgY2FyZCwNCj4gU28gd2Ugc2F3IG1tY19zZF9yZXN1bWUgY2FsbCB0
+aGUgcG93ZXIgdXAgZGlkIG5vdCBjaGVjayB0aGUgY2FyZCBleGlzdC4NCj4gDQo+IFdlIHRoaW5r
+IHRoaXMgdGhlIHNob3J0IHRpbWUgcG93ZXIgdXAgbWF5YmUgY2F1c2UgT0NQIGlmIG5vIGNhcmQg
+ZXhpc3QuDQo+IEFuZCB0aGlzIHBvd2VyIHVwIHdlIHRoaW5rIGlzIHVubmVjZXNzYXJ5IHdoZW4g
+bm8gY2FyZCBleGlzdC4NCj4gDQo+IA0KPiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IFJpY2t5
+IFd1IDxyaWNreV93dUByZWFsdGVrLmNvbT4NCj4gPiA+IC0tLQ0KPiA+ID4gIGRyaXZlcnMvbW1j
+L2NvcmUvc2QuYyB8IDMgKysrDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygr
+KQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21tYy9jb3JlL3NkLmMgYi9kcml2
+ZXJzL21tYy9jb3JlL3NkLmMgaW5kZXgNCj4gPiA+IDFjODE0OGNkZGE1MC4uMzVlMDM2NjcyY2Zi
+IDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJpdmVycy9tbWMvY29yZS9zZC5jDQo+ID4gPiArKysgYi9k
+cml2ZXJzL21tYy9jb3JlL3NkLmMNCj4gPiA+IEBAIC0xNzUwLDYgKzE3NTAsOSBAQCBzdGF0aWMg
+aW50IF9tbWNfc2RfcmVzdW1lKHN0cnVjdCBtbWNfaG9zdA0KPiA+ICpob3N0KQ0KPiA+ID4gICAg
+ICAgICBpZiAoIW1tY19jYXJkX3N1c3BlbmRlZChob3N0LT5jYXJkKSkNCj4gPiA+ICAgICAgICAg
+ICAgICAgICBnb3RvIG91dDsNCj4gPiA+DQo+ID4gPiArICAgICAgIGlmIChob3N0LT5vcHMtPmdl
+dF9jZCAmJiAhaG9zdC0+b3BzLT5nZXRfY2QoaG9zdCkpDQo+ID4gPiArICAgICAgICAgICAgICAg
+Z290byBvdXQ7DQo+ID4gPiArDQo+ID4gPiAgICAgICAgIG1tY19wb3dlcl91cChob3N0LCBob3N0
+LT5jYXJkLT5vY3IpOw0KPiA+ID4gICAgICAgICBlcnIgPSBtbWNfc2RfaW5pdF9jYXJkKGhvc3Qs
+IGhvc3QtPmNhcmQtPm9jciwgaG9zdC0+Y2FyZCk7DQo+ID4gPiAgICAgICAgIG1tY19jYXJkX2Ns
+cl9zdXNwZW5kZWQoaG9zdC0+Y2FyZCk7DQo+ID4gPiAtLQ0KPiA+ID4gMi4yNS4xDQo+ID4gPg0K
+PiA+DQo+ID4gS2luZCByZWdhcmRzDQo+ID4gVWZmZQ0K
 
