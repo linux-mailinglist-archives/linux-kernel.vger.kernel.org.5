@@ -1,77 +1,64 @@
-Return-Path: <linux-kernel+bounces-151674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB7428AB1E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:33:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3469A8AB1E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:33:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78E3B28313E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:33:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66C6D1C21E41
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B950412FF9E;
-	Fri, 19 Apr 2024 15:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917C6130A56;
+	Fri, 19 Apr 2024 15:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T0MlU2GV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oi9AiWme"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25BD12AAF4;
-	Fri, 19 Apr 2024 15:33:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE30912F5AF;
+	Fri, 19 Apr 2024 15:33:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713540793; cv=none; b=F9Yxr3IA21v5XVuQ2PDsg7eJ4Go7yhDirtiXlqXoTqIOe0Mwj2g8vic9Jy+LqvJCR6KEJwRbQZWETAacMhIZXK7uobom3N/5wQM2REOvvlAqKCWZYtcQPOe9XOMsYStldj8vhBxgT9laL5hWUEJqrLVaHyl7QfyrSEWe4xziHf0=
+	t=1713540795; cv=none; b=Wld/e068YB4BOVWkmtwxP0iaAiEEs+nCQN65gBl1Sx2++ZHeM1DZ1jIkK/6k6/JxJN2RxkpLCfVLc3pA7/MglwzOwtDVIAlP1SYcbwE/bhIZdAY/xHFcf1WU0n3cCc9gnWcOUzjuWUxESAln9Z/Xqy4ffSPIBTZyBwjo87UQ0IA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713540793; c=relaxed/simple;
-	bh=0O8rL07X4cRDqlk5nyVo8fbFX9mlJwFUGy/DUqJy5B8=;
+	s=arc-20240116; t=1713540795; c=relaxed/simple;
+	bh=qh3vNFBVAwBLO622Q3sbcNK0OnRPD6sqlJxOuDdcyBk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YgqcTKEr0zi9EvW+AGth9Hb/TgmQk4z3L3z/OqAIiM+y8XglqWPBlHBwNekUopmyGKky3srw7yGfhQZC5+spy8w0J4HqGf5tGJwTcZ/C155QFutZAgdcLK8mQuSdp5Y1Rm9NuFiCZ4zMkx30kfhfGH/6oWVR8AGhP/ImR5Sh1WY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T0MlU2GV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14517C2BD10;
-	Fri, 19 Apr 2024 15:33:07 +0000 (UTC)
+	 MIME-Version:Content-Type; b=lHLEXW6gAysctb5FBXsRm2SylfW103euhhwk9eBP0DAewH8VigAxPinrIsQwN+4o9i+/uBxbIDqDLAJ3icqxQxSHOGtmwKZEYpPMwd4KykxZKkLaG2II9syIX5KMnD0eO+J2Vzlacx64Dhlu+am2wbLxTcs8wL4tL8solZvNO2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oi9AiWme; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FBD4C32782;
+	Fri, 19 Apr 2024 15:33:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713540792;
-	bh=0O8rL07X4cRDqlk5nyVo8fbFX9mlJwFUGy/DUqJy5B8=;
+	s=k20201202; t=1713540795;
+	bh=qh3vNFBVAwBLO622Q3sbcNK0OnRPD6sqlJxOuDdcyBk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T0MlU2GVClmAuHg76TKlYktuGHJkoM5RCSUmjrHQce6VPKYhZKcvJd/s0rHruCwbs
-	 Rm7e8VlSRUDH1O5YvHiN0Rg8IdzbOBaiZ4guzCLJtQGF9eknIXgIl80WgnGGT5P5kS
-	 Gdn/IJfTbCrPNJtthaoufwKzFGImAUd6ndpbxXPcVHTGUsFsZQ+yB6aq4d10rvbGhM
-	 +LHVlDlnJURnUcyZ8D2uNRbwTZr4RQQ1sHL2pPe7rGFfLO/Ht2fHlk84G95tVJY7Nc
-	 /EbQseko55FOgJAD94K7lsofotYa/L+xiwXDJegzgy316L/GedTGaUdNVyEyu0QinB
-	 w9yZq1gfgT4QA==
+	b=oi9AiWme+dHsshak9uz3sb7NIUWiOkX6kVzQdudCPe45QeF4RYdGtGace23uUBVO1
+	 +KgKULeNKBPI3X0vOD3cIi1EObCf4Vp9RfDHkMgC0ZXHxKz/PcGcvojcv/y5zMZqD6
+	 0/mXtMBPHXKh3f8qtqeFD4OqXblx4Z7iAamJ7Bp6a8ewKbiFE48Yb+etircx2RlgRI
+	 9L4CJoc7e5WTU7vIQNXxK4m7RjOlmPe4RBZoISSp1IT9CASZyTZ5Ne4fFI3FzHhkJ1
+	 GyFGq6BawYh1vcex9e2tclwJKcQ6BOzBiiFMv0Hx1REe/Cr81/zzU82B7d1LIBVHaM
+	 cOcTWvKYjk0Hw==
 From: Will Deacon <will@kernel.org>
-To: acme@redhat.com,
-	catalin.marinas@arm.com,
-	john.g.garry@oracle.com,
-	james.clark@arm.com,
-	mike.leach@linaro.org,
-	peterz@infradead.org,
-	mingo@redhat.com,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	alisaidi@amazon.com,
-	vsethi@nvidia.com,
-	rwiley@nvidia.com,
-	ywan@nvidia.com,
-	Besar Wicaksono <bwicaksono@nvidia.com>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	David Woodhouse <dwmw2@infradead.org>
 Cc: kernel-team@android.com,
 	Will Deacon <will@kernel.org>,
-	linux-kernel@vger.kernel.org,
+	Robert Moore <robert.moore@intel.com>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Len Brown <lenb@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
 	linux-arm-kernel@lists.infradead.org,
-	linux-perf-users@vger.kernel.org,
-	linux-tegra@vger.kernel.org,
-	treding@nvidia.com,
-	jonathanh@nvidia.com
-Subject: Re: [PATCH v1 0/3] arm64: Support Neoverse-V2 for Perf Arm SPE
-Date: Fri, 19 Apr 2024 16:32:57 +0100
-Message-Id: <171353423620.13067.5339491128253092613.b4-ty@kernel.org>
+	linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	acpica-devel@lists.linux.dev
+Subject: Re: [PATCH v2 0/2] Support clean reboot after hibernate on Arm64
+Date: Fri, 19 Apr 2024 16:32:58 +0100
+Message-Id: <171345345397.312430.3943582845307730698.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240109192310.16234-1-bwicaksono@nvidia.com>
-References: <20240109192310.16234-1-bwicaksono@nvidia.com>
+In-Reply-To: <20240412073530.2222496-1-dwmw2@infradead.org>
+References: <20240412073530.2222496-1-dwmw2@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,23 +68,23 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Tue, 09 Jan 2024 13:23:07 -0600, Besar Wicaksono wrote:
-> This series support Neoverse-V2 CPU in Perf Arm SPE.
-> The first patch adds the Neoverse-V2 part number in kernel header.
-> The second patch syncs the kernel change to the tools header.
-> The third patch adds Neoverse-V2 into perf's Neoverse SPE data source list.
+On Mon, 11 Mar 2024 12:19:14 +0000, David Woodhouse wrote:
+> When the hardware signature in the ACPI FACS changes, the OS is supposed
+> to perform a clean reboot instead of attempting to resume on a changed
+> platform.
 > 
-> Besar Wicaksono (3):
->   arm64: Add Neoverse-V2 part
->   tools headers arm64: Add Neoverse-V2 part
->   perf arm-spe: Add Neoverse-V2 to neoverse list
+> Although these patches have a functional dependency, they could be merged
+> separately. The second patch just won't *see* a FACS table if the ACPICA
+> fix isn't present.
 > 
 > [...]
 
-Applied arch/arm64 part to arm64 (for-next/misc), thanks!
+Applied to arm64 (for-next/acpi), thanks!
 
-[1/3] arm64: Add Neoverse-V2 part
-      https://git.kernel.org/arm64/c/f4d9d9dcc70b
+[1/2] ACPICA: Detect FACS even for hardware reduced platforms
+      https://git.kernel.org/arm64/c/bc5b492ac305
+[2/2] arm64: acpi: Honour firmware_signature field of FACS, if it exists
+      https://git.kernel.org/arm64/c/fbaad243b536
 
 Cheers,
 -- 
