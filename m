@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-151864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39DF8AB4EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:16:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 881B88AB502
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:22:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B70FB1C22189
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:16:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28EE01F21CD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:22:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24A313BC37;
-	Fri, 19 Apr 2024 18:16:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C32A613C3D4;
+	Fri, 19 Apr 2024 18:21:53 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6C9137920;
-	Fri, 19 Apr 2024 18:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC358004E;
+	Fri, 19 Apr 2024 18:21:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713550601; cv=none; b=G1jtCzY5ryV40NVH7fA4wqewdqx2tdNwhZW2AMRoeT52fS/QLKV1GQz/VVHiyqnzN47zE2nd0T6vzSiYUSjJXRX0cOWiHe1tIsavhK/7YnGrjUP71aeQ+r8e1kESj1rW7Z9jRc0XnHkhIYTxJdY+eWxHaCT7hTzuQEYORL/jua4=
+	t=1713550913; cv=none; b=kAmS41l0pyEmwnz5eaBotE0f1Pk4i5l05MN8JRPUuMK5HSqLH9XIUDRCrDq38IamZByqu9nIJm8yzYUVHIu2Of+AE6vbN6jC1al2qO6cFO5YjTVVV8LPSrRFaZgCsHGbrHkkkfVWnaeIa9xZgFd2Bz7fwVuLBO4WM9IDRv5AGsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713550601; c=relaxed/simple;
-	bh=LCDBb0+cBge6lTflKm2wNezAMCx7jK2wKOdmZaK4KcY=;
+	s=arc-20240116; t=1713550913; c=relaxed/simple;
+	bh=HJqGs58SwQcHskZ/zUCCkx/SDgDbJpe0+oBP1ApuyA8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fy/Y74wfWkVIkgY1oemvTY8cOHcwBo3GAO5hxhNHULTfink/k9nvLftU/J/8Q0oA+ixjIfJDtv2cWlFEvcqLjpttuHC3LchQvtxbNjYVdwtmLt7ew6JkNjml85ILB1PQg4zoWP4fyaCs2cLYBRaGwofXdzqR9CTn5B/W9ZeEBew=
+	 In-Reply-To:Content-Type; b=EqVqm9lM3hB67Mk1uZ3vMVggUM1RaZOp4x2uFx1scKOfasgC0C1tSlnjHZjdqlfRm4jEM/orLpEsDqo9r+pG2OX+fQPRcn1Hv9cfNJuMizqFMtDUCwS66jE9c6r4hk0EU7r0OaF+pOJMj1V74vFQgOexMGJlf92RvHvaXaPdJCc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DD422F;
-	Fri, 19 Apr 2024 11:17:05 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5CAF2F;
+	Fri, 19 Apr 2024 11:22:18 -0700 (PDT)
 Received: from [10.57.77.69] (unknown [10.57.77.69])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CBC223F792;
-	Fri, 19 Apr 2024 11:16:35 -0700 (PDT)
-Message-ID: <16a47cb9-a567-482a-a875-9070ce9973bf@arm.com>
-Date: Fri, 19 Apr 2024 19:16:42 +0100
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D7DC3F792;
+	Fri, 19 Apr 2024 11:21:49 -0700 (PDT)
+Message-ID: <ea5b7f04-f51d-4bfd-9b88-a850af5fa95f@arm.com>
+Date: Fri, 19 Apr 2024 19:21:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,101 +41,91 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 14/16] thermal: gov_user_space: Use .trip_crossed()
- instead of .throttle()
+Subject: Re: [PATCH v1 10/16] thermal: gov_step_wise: Clean up
+ thermal_zone_trip_update()
 To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
 Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <13515747.uLZWGnKmhe@kreacher> <15186663.tv2OnDr8pf@kreacher>
+References: <13515747.uLZWGnKmhe@kreacher> <1883063.atdPhlSkOF@kreacher>
 Content-Language: en-US
 From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <15186663.tv2OnDr8pf@kreacher>
+In-Reply-To: <1883063.atdPhlSkOF@kreacher>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 4/10/24 18:03, Rafael J. Wysocki wrote:
+On 4/10/24 17:44, Rafael J. Wysocki wrote:
 > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Notifying user space about trip points that have not been crossed is
-> not particuarly useful, so modity the User Space governor to use the
+> Do some assorted cleanups in thermal_zone_trip_update():
+> 
+>   * Compute the trend value upfront.
+>   * Move old_target definition to the block where it is used.
+>   * Adjust white space around diagnositc messages and locking.
 
-s/particuarly/particularly/
+s/diagnositc/diagnostic/
 
-s/modity/modify/
-
-> .trip_crossed() callback, which is only invoked for trips that have been
-> crossed, instead of .throttle() that is invoked for all trips in a
-> thermal zone every time the zone is updated.
+>   * Use suitable field formatting in a message to avoid an explicit
+>     cast to int.
 > 
 > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
+>   drivers/thermal/gov_step_wise.c |   13 +++++++------
+>   1 file changed, 7 insertions(+), 6 deletions(-)
 > 
-> Note: I am not actually sure if there is user space depending on the
-> current behavior that can be broken by this change.
-> 
-> I can easily imagine trying to implement a complicated governor in user
-> space that will look at all of the trips in the thermal zone regardless
-> of whether or not they are crossed, which can be kind of helped by the
-> current behavior of the user space governor.
-> 
-> However, the total overhead caused by it is considerable and quite
-> arguably it may not be acceptable at least in some cases.
-
-If there is a such user space governor - it should not rely on
-notifications from each trip. It should rather read from sysfs
-the list of all trips during setup and just act on those which
-have been crossed in runtime, IMO.
-
-Therefore, I agree with the proposed change.
-
-> 
-> ---
->   drivers/thermal/gov_user_space.c |   10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> Index: linux-pm/drivers/thermal/gov_user_space.c
+> Index: linux-pm/drivers/thermal/gov_step_wise.c
 > ===================================================================
-> --- linux-pm.orig/drivers/thermal/gov_user_space.c
-> +++ linux-pm/drivers/thermal/gov_user_space.c
-> @@ -26,11 +26,13 @@ static int user_space_bind(struct therma
->    * notify_user_space - Notifies user space about thermal events
->    * @tz: thermal_zone_device
->    * @trip: trip point
-> + * @crossed_up: whether or not the trip has been crossed on the way up
->    *
->    * This function notifies the user space through UEvents.
->    */
-> -static int notify_user_space(struct thermal_zone_device *tz,
-> -			     const struct thermal_trip *trip)
-> +static void notify_user_space(struct thermal_zone_device *tz,
-> +			      const struct thermal_trip *trip,
-> +			      bool crossed_up)
+> --- linux-pm.orig/drivers/thermal/gov_step_wise.c
+> +++ linux-pm/drivers/thermal/gov_step_wise.c
+> @@ -65,13 +65,10 @@ static void thermal_zone_trip_update(str
+>   				     const struct thermal_trip *trip,
+>   				     int trip_threshold)
 >   {
->   	char *thermal_prop[5];
->   	int i;
-> @@ -46,13 +48,11 @@ static int notify_user_space(struct ther
->   	kobject_uevent_env(&tz->device.kobj, KOBJ_CHANGE, thermal_prop);
->   	for (i = 0; i < 4; ++i)
->   		kfree(thermal_prop[i]);
+> +	enum thermal_trend trend = get_tz_trend(tz, trip);
+>   	int trip_id = thermal_zone_trip_id(tz, trip);
+> -	enum thermal_trend trend;
+>   	struct thermal_instance *instance;
+>   	bool throttle = false;
+> -	int old_target;
 > -
-> -	return 0;
->   }
+> -	trend = get_tz_trend(tz, trip);
 >   
->   static struct thermal_governor thermal_gov_user_space = {
->   	.name		= "user_space",
-> -	.throttle	= notify_user_space,
-> +	.trip_crossed	= notify_user_space,
->   	.bind_to_tz	= user_space_bind,
->   };
->   THERMAL_GOVERNOR_DECLARE(thermal_gov_user_space);
+>   	if (tz->temperature >= trip_threshold) {
+>   		throttle = true;
+> @@ -82,13 +79,16 @@ static void thermal_zone_trip_update(str
+>   		trip_id, trip->type, trip_threshold, trend, throttle);
+>   
+>   	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
+> +		int old_target;
+> +
+>   		if (instance->trip != trip)
+>   			continue;
+>   
+>   		old_target = instance->target;
+>   		instance->target = get_target_state(instance, trend, throttle);
+> -		dev_dbg(&instance->cdev->device, "old_target=%d, target=%d\n",
+> -					old_target, (int)instance->target);
+> +
+> +		dev_dbg(&instance->cdev->device, "old_target=%d, target=%ld\n",
+> +			old_target, instance->target);
+>   
+>   		if (instance->initialized && old_target == instance->target)
+>   			continue;
+> @@ -104,6 +104,7 @@ static void thermal_zone_trip_update(str
+>   		}
+>   
+>   		instance->initialized = true;
+> +
+>   		mutex_lock(&instance->cdev->lock);
+>   		instance->cdev->updated = false; /* cdev needs update */
+>   		mutex_unlock(&instance->cdev->lock);
 > 
 > 
 > 
 
-LGTM w/ the spelling fixes applied
+LGTM w/ spelling fixed.
 
 Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
