@@ -1,102 +1,163 @@
-Return-Path: <linux-kernel+bounces-151324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 905548AACED
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:36:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 900518AACF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:37:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9541C21267
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:36:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C23951C21132
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:37:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3167E78F;
-	Fri, 19 Apr 2024 10:36:39 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C523D55B;
-	Fri, 19 Apr 2024 10:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C947EEEC;
+	Fri, 19 Apr 2024 10:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N9rNHwre"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D89C7E771
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:37:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713522998; cv=none; b=U3cmIw64f4HnTpxPVlh8cqgb9aDKzg/3CGjE1GLDvceES+Sd2doud9CCpALnnU57RMb337Yy5K0W0sJgHjaaKACk4nLB3MNuLUeKTTFx3DoT8f+zLcXDgQ48shhHX03m2vuM2GELtSvcMd9X2464F2E9elFSaJRlnqaLZgWBGXY=
+	t=1713523075; cv=none; b=M3eDbAbn1FQzvNsSKxMSE7W6ZdX8mTy1EFVOPf9kqw3BvAg6V5m6wh9Cb+9iC1cjdcA5q/n1ut2spETuY8K+5XqC1kFrqhKQLvLSzeDILxo7601zDVlpRbQ8nLh2v7awybX5mr6rMMYZFaG/nlIJ8QNNlMFWmk/OC39Ce6BCI3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713522998; c=relaxed/simple;
-	bh=YwuYrJiDpMf0xpFrF+ROIqaQPvA8R9O7wX9L8vXB5qY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AgO86g1tIKmZsddBcAqm8UKja9J8UMPoY/0MTpf5RotdGdakdcAGhblUBNTPqOXtdIwZezlXVdbE8km5LHzAZ/f1vikrBH8JfazG1ilSYvnntLV6Q1W9f5cZvv7ek9FrzxxqKPn0Y7I469RvXL+xeOzGxjxLHvPR+wE5qXtwP3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [112.20.112.218])
-	by gateway (Coremail) with SMTP id _____8DxJ+gxSSJmGcIpAA--.8776S3;
-	Fri, 19 Apr 2024 18:36:33 +0800 (CST)
-Received: from [192.168.100.8] (unknown [112.20.112.218])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx1xEvSSJmEyKAAA--.36198S3;
-	Fri, 19 Apr 2024 18:36:31 +0800 (CST)
-Message-ID: <b5d65679-a789-4cf9-b4ba-0db3c0886688@loongson.cn>
-Date: Fri, 19 Apr 2024 18:36:31 +0800
+	s=arc-20240116; t=1713523075; c=relaxed/simple;
+	bh=q6S5k2AYRf3VHkAogHkDqnUN5dbXK84Dvl8FFElNO6s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LAMZ+rPRva8zb39wu2oAJ8b+gz9do4s12f0N8idZMh+5V4C1Li6jzHHIxPfBNCWjjtyaDiAwo3U1Dnejhf/V8jlukJC0jxGIt570rhpquyKCwrb2TYWb96B4FXGPVZYHmMQOo7+Kq2CRRt3LHpRp1YIzA2pu7lwI3eqsar9nF2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N9rNHwre; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713523073;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k2JSSVZQsCxpolLVY1oFfy3+Jt4qlV9RE+KjhK5Nlq4=;
+	b=N9rNHwrekAVGktQzugVtoOj8EMiukDHu7diYDOM/FCGiDPzoz8HVaIB1dwfPvsXzr0/K06
+	cUUoPk6l5AP78yWJ40lHJlVRv0JnJ9c0yioZbQDZlnJYSlMB3g0E3NCwOXCYvDE9ph+LTq
+	FOfDs5LUIHy+AfKSFipukGQgjQnfzvU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-323-0jMjH9ZgOF6bdiUQRMDSQg-1; Fri, 19 Apr 2024 06:37:49 -0400
+X-MC-Unique: 0jMjH9ZgOF6bdiUQRMDSQg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A991B802E4D;
+	Fri, 19 Apr 2024 10:37:48 +0000 (UTC)
+Received: from localhost (unknown [10.22.32.158])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 59959581CF;
+	Fri, 19 Apr 2024 10:37:47 +0000 (UTC)
+Date: Fri, 19 Apr 2024 07:37:46 -0300
+From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To: Pavel Machek <pavel@denx.de>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	linux-rt-users <linux-rt-users@vger.kernel.org>,
+	stable-rt <stable-rt@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Carsten Emde <C.Emde@osadl.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Daniel Wagner <daniel.wagner@suse.com>,
+	Tom Zanussi <tom.zanussi@linux.intel.com>,
+	Clark Williams <williams@redhat.com>,
+	Mark Gross <markgross@kernel.org>,
+	Jeff Brady <jeffreyjbrady@gmail.com>
+Subject: Re: [ANNOUNCE] 5.10.214-rt106
+Message-ID: <ZiJJeiAjLAk3YMZz@uudg.org>
+References: <ZiF_h-W4jgLiRag5@uudg.org>
+ <ZiI4Hq5yfrOUdbHk@duo.ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] docs/zh_CN: add process/cve Chinese translation
-To: Dongliang Mu <dzm91@hust.edu.cn>, Alex Shi <alexs@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>,
- Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240419020114.3391933-1-dzm91@hust.edu.cn>
-Content-Language: en-US
-From: Yanteng Si <siyanteng@loongson.cn>
-In-Reply-To: <20240419020114.3391933-1-dzm91@hust.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Bx1xEvSSJmEyKAAA--.36198S3
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrury7JrW5WF47Jw45WrW5CFX_yoWfWFb_A3
-	97JayqkrZ7tF1xtFW8Cr43JrW8ZF4xuw1DtFn0ka98GayI9FWDWa4Uuwn3urn0vFWSvFW5
-	Cr97uryfXFnI9osvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb3xYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6F4UJVW0owAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-	Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
-	JF1lYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-	1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_
-	JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17
-	CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0
-	I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I
-	8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
-	nUUI43ZEXa7IU8O18PUUUUU==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SqjY3vdOpGcvkOgo"
+Content-Disposition: inline
+In-Reply-To: <ZiI4Hq5yfrOUdbHk@duo.ucw.cz>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
 
-在 2024/4/19 10:01, Dongliang Mu 写道:
-> Translate process/cve.rst into Chinese and add it to
-> Documentation/translations/zh_CN directory.
->
-> Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
-> ---
-> v1 -> v2: add a newline at then end of cve.rst.
->   .../translations/zh_CN/process/cve.rst        | 89 +++++++++++++++++++
->   .../translations/zh_CN/process/index.rst      |  1 +
->   2 files changed, 90 insertions(+)
->   create mode 100644 Documentation/translations/zh_CN/process/cve.rst
->
-When I apply your patch, git output:
+--SqjY3vdOpGcvkOgo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applying: docs/zh_CN: add process/cve Chinese translation
-git/rebase-apply/patch:32: trailing whitespace.
-所有分配给Linux内核的CVE列表都可以在linux-cve邮件列表的存档中找到，如
-warning: 1 line adds whitespace errors.
+On Fri, Apr 19, 2024 at 11:23:42AM +0200, Pavel Machek wrote:
+> Hi!
+>=20
+> > I'm pleased to announce the 5.10.214-rt106 stable release.
+> >=20
+> > This release is simply an update to the new stable 5.10.214 version and=
+ no
+> > RT-specific changes have been performed.
+> >=20
+> > You can get this release via the git tree at:
+> >=20
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+> >=20
+> >   branch: v5.10-rt
+> >   Head SHA1: 3d208061796d4addeb543c78e0a4ec769b6ce6b2
+>=20
+> Thank you.
+>=20
+> Could you also push v5.10.214-rt106-rebase tag to the repository for
+> consistency?
 
-checkpatch.pl also outputs associated noise.
+Hi Pavel!
+
+The tag is there in the repository:
+
+    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git/=
+commit/?h=3Dv5.10.214-rt106-rebase
+
+When I released 5.10.215-rt107 (and its -rebase counterpart), 5.10.214-rt10=
+6-rebase
+was no longer pointing to a commit inside that  branch, probably why your g=
+it
+update didn't get the tag. You could try a
+
+    git fetch --tags <rt-stable-remote-name>
+
+Best regards,
+Luis
+
+> Best regards,
+> 								Pavel
+> --=20
+> DENX Software Engineering GmbH,        Managing Director: Erika Unter
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
 
-Thanks,
+---end quoted text---
 
-Yanteng
+--SqjY3vdOpGcvkOgo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEk1QGSZlyjTHUZNFA85SkI/jmfCYFAmYiSXoACgkQ85SkI/jm
+fCbe/BAAkpQGjzY4WxJrumVywMmMlpq7ZImnMhcB2PHG/GMxz8N3U9heXTkcUp5k
+Uj8eN/uYNK5Pp6S6Mr0ewsqoZbxpQ3n5MZn4pu979Lfe6HYJXfg07jFu6KiKgo9H
+1if3rirze63Ryae0bNrCoc5F3z8fiOl2tL4p7i0Tfd8uHL1Fwva6qrkWuU4Np0IY
+5XCW3O3bAGTpMgvpWXRtQb2WwxB+WGOQVaeofyZ7391xy10aonji7hN50U3CIJI3
+RjiIo+D1massyqGoF1+j36oA/VJfQDlSkBzX0hNlxiQB0DphIyRJT8fnRISS7h9H
+jdMcBeCNjsKsfxmbA1Bdcw0lcqDKH5g3ufaO/TzsNvoRLQ+64Kzlk/UBD8VMarb2
+i6kLp8livYJ2JdQu2wEzJoZj0kNSRYmiFmQv4S8R5ljiEyo1IexiXOWbZEZq7Rrn
+tD3unR1120OpJD/aMWj+W33gzcnWNiiLbTir1TQOBQN9jqrOeY+MkrvQ+f6f5Kk3
+98tKHR9CJKtEibQYrNKQP+Hn2FCZtp2LxV+1bP6r45BNrtVey+/MaaNgd9DnAl7m
+JbYFLw5C0A1Eumd7E6gSHADlRhPzGUgVDXmjEWIarvZtaeKxOzGyawNO5dbOge5A
+hXh2oNgTwJGA32lf5cxTJfI72wpctdNu5ilLHZ6pg1hwuenX+q8=
+=Zy6t
+-----END PGP SIGNATURE-----
+
+--SqjY3vdOpGcvkOgo--
 
 
