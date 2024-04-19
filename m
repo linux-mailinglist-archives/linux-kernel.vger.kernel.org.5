@@ -1,96 +1,125 @@
-Return-Path: <linux-kernel+bounces-151744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE4CB8AB349
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:24:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B53A8AB350
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:28:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BEA21C21199
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:24:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19B191F237AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CD08131188;
-	Fri, 19 Apr 2024 16:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6FA3131BD8;
+	Fri, 19 Apr 2024 16:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VxeNt3aH"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GUxiIJAm"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B15313049E
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EEA313118B;
+	Fri, 19 Apr 2024 16:28:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713543891; cv=none; b=a7vy6MYXeyT8Ni1NSozuUnItNSqw7IhOdPuUG884L2scguQrffr0UYVRqrdoGzEs2rqXPr4TUd06wPa8bAWP5/74mGdPvOX2GwfWaCMiO0aJtpwtZPj1V5uazn0h6vUp0ilpfyjhS/dDUUNWa9AMpfqYW/l8R6VansLhtKEK+f4=
+	t=1713544096; cv=none; b=C6XazGlR/s7h5sPTkRMJKbQ+QuylALro08VEwvJ2Szvm9BG/s16SfZEo8oo1U0XuksKp1dp81oKufQIbzNhL6eUp0F5TfQyCLlzcARo3ue67voJFHnRGicnZ+p4IBVVJyy00tPg1RUVfW+yMMCCXx/yHvwd+4aohh6qWv6vtrA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713543891; c=relaxed/simple;
-	bh=MXSUTg8AAbXiv5XWWvlhI53mkeRPnCzdbes7s/84ff4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mZiBaWGOHEATqNwYRuoRE88TNMF+xs5r6UVOSm4dDOW8NDkmA1BpJNosADjWu/wNQFjx3vbW55gkw80CxGqQEtkPcFXq4Y15YsO3GhabuOnRB6uIyhgoR4KqOEujd93j2+ADr3ZN0s+FnqtHII9TcCdAfQjgc8tDoi41FopY3mA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VxeNt3aH; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=c+bc2YaEMvUu+sQwXlHTLLHCVxXL532Ilhya9YUv2jY=; b=VxeNt3aHYm1RAi2j2tlX+s1h66
-	4LigqpT28igYQWD8QeQZvtbssha4azUu7falSkMqp0sdaImIT53L2TRITp8MF+hGVtN3zFOdulsZx
-	2FsppxlLne3StVaUdf157h4M+qMkgARiqxDDsEjw5kARbGmTosSyd9CTTxdQ1vwmT/TIEZhzT7G84
-	LmdvQglNEXqnotFNrXL+re/Z4smxbsETXVqL62U6XEoU6EGcVh3WkV4ntDL1Rr86asz7yhr3Cc/GX
-	0lHRW/9DdeE5lf1i0XekMBdRjfi3QooZbpu4s6v2uvHzVw3Dpg/zuXzrZxmnmt3H6RgJPhIptpYq4
-	bI9h59fA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxr2L-0000000CVid-0Ag9;
-	Fri, 19 Apr 2024 16:24:30 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id B101530043E; Fri, 19 Apr 2024 18:24:28 +0200 (CEST)
-Date: Fri, 19 Apr 2024 18:24:28 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Chen Yu <yu.c.chen@intel.com>
-Cc: Xuewen Yan <xuewen.yan94@gmail.com>, Abel Wu <wuyun.abel@bytedance.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Juri Lelli <juri.lelli@redhat.com>, Tim Chen <tim.c.chen@intel.com>,
-	Tiwei Bie <tiwei.btw@antgroup.com>,
-	Honglei Wang <wanghonglei@didichuxing.com>,
-	Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.chen.surf@gmail.com>,
-	Yujie Liu <yujie.liu@intel.com>, linux-kernel@vger.kernel.org,
-	kernel test robot <oliver.sang@intel.com>,
-	Tianchen Ding <dtcccc@linux.alibaba.com>
-Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
- if no eligible entity is found
-Message-ID: <20240419162428.GB23130@noisy.programming.kicks-ass.net>
-References: <20240226082349.302363-1-yu.c.chen@intel.com>
- <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
- <20240408115833.GF21904@noisy.programming.kicks-ass.net>
- <ZhPtCyRmPxa0DpMe@chenyu5-mobl2>
- <20240409092104.GA2665@noisy.programming.kicks-ass.net>
- <ZiAWTU5xb/JMn/Hs@chenyu5-mobl2>
- <CAB8ipk-fejQ41Jgk6z52+T6CP+impwbaOAfhA9vG_-FB9BeRyw@mail.gmail.com>
- <ZiEaKOQwiNEglYtS@chenyu5-mobl2>
- <20240419082440.GB6345@noisy.programming.kicks-ass.net>
- <ZiJBqRafMdBi+wCV@chenyu5-mobl2>
+	s=arc-20240116; t=1713544096; c=relaxed/simple;
+	bh=QvlnKcfUXd9ghJBIsUKXVa09unyUXlbufFJu5bfaDws=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fCpqYzaQoeb1Hr27sxPIEQb0EO1r73jHBgU72XX9GaKsw0msOGntVV75lQ1Tzm/QfaQiNZfpCxnF/NYqxR5+Uvgd6GU9pUOFcQMFopEciRPkHberNQXjc0WFUa/j+LLcFm0YTPaWbTEQ+31dzVODBLq8885jEdqkGxSGkKW8PE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GUxiIJAm; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-349a33a9667so329299f8f.3;
+        Fri, 19 Apr 2024 09:28:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713544092; x=1714148892; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NKvBaK8IulYDHeht15hMBBpdCFxjrVh7TLjc+u1RIOQ=;
+        b=GUxiIJAmU+vbLM9hbkiBDczV56cKLMu8me74VA1Lkth5jxwXjM11eCucCNUqolrsGO
+         oqpLdGdAqk4ela3IX9y7RGhHRBvRzqr1aBM5+g7NS3cbPJEcBBLkx9gmXdhLOcaACwrT
+         pHHx1k/tNLNQJDHuPbQEuriK1c0NjR3TKJyNJEpoWVzu4NF/WX2P0j/Ex/V/bWI0JEm+
+         R2eXw2FVTxBKh5WVTdLlEBY7yUePdGmyba6CGe3FTJy/HQB52l2ZO9y6/k9zIfpKI5L1
+         l2H5+MsZyRxy7Kpn6BvO5nn6pkqdn+w/DXyk2X9VUwNXCYEMMrvVx3E7XF4skvg/i5Y7
+         RUkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713544092; x=1714148892;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NKvBaK8IulYDHeht15hMBBpdCFxjrVh7TLjc+u1RIOQ=;
+        b=ubJfyrq8IxFu1nkVab49BvmrFWU1h9r+sATxZGCGvIW8eOBMZ//Arag7QJ7mepOkdM
+         Lng2LOpdaDmoMigtAwna+XhwkSgvgTGvU9rgmn9vsdrawjjbivwmmyTDPw2kg10Yxahi
+         NnfdTDT/y/iMmFdzsH5V/7cJPDyFNz/nO3bSxGnpRg2GCVRx8d1pFZ9v9kLQLrgX1Q0V
+         keO1/FKzyv5YzJDX7xZk4nkwmWv5LsHhR0Zl/WCmyI3lJv5eOuGHg4JOhS03wOc2DdfN
+         e/zuZkZvIZysLr9UEvCeWmXL9k5zlZypAus39xy9v5Py26ZTDBIOs8CI8z0Lgm/6XKe9
+         v5SA==
+X-Forwarded-Encrypted: i=1; AJvYcCWTf0FX5CJ153qiQl1yeWv5sgHTjW+oP9wEjhfr+DUxyUNY7/Y+KfKfcblKZtzaCIcJos1tZAq8+eDcGg6m2Qj2Lg8YVSpQEeT1fez/+Dlv
+X-Gm-Message-State: AOJu0YzMJW9WipI6CMZMZAp9xyfP3mdhSVnTorRqF0KkIxp6vDPb8flq
+	9vBfdrvHJQtQx9bQFVyKFbBDoDZajcBFRV+7QlusLbfpqJPhjbeeswgLhA==
+X-Google-Smtp-Source: AGHT+IGxBbMeD6JeHgbcoxTwOlr8/cHIKrumJiQ8lj5PZ20CNcGeGXoJHXDV0DoRchV6zbdmfc41sw==
+X-Received: by 2002:a05:600c:1c9c:b0:418:ef65:4b5f with SMTP id k28-20020a05600c1c9c00b00418ef654b5fmr1848314wms.3.1713544092302;
+        Fri, 19 Apr 2024 09:28:12 -0700 (PDT)
+Received: from [172.16.102.219] ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id j1-20020a05600c1c0100b0041895d1c7bfsm10900543wms.42.2024.04.19.09.28.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 09:28:11 -0700 (PDT)
+Message-ID: <cff8eeeb-ae4c-42b8-8a85-4838959c1e28@gmail.com>
+Date: Fri, 19 Apr 2024 17:28:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZiJBqRafMdBi+wCV@chenyu5-mobl2>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] string: Merge separate tests into string_kunit.c
+To: Kees Cook <keescook@chromium.org>, Andy Shevchenko <andy@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240419140017.work.012-kees@kernel.org>
+Content-Language: en-US
+From: Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <20240419140017.work.012-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 19, 2024 at 06:04:25PM +0800, Chen Yu wrote:
-
-> > Also, could you put a few words in on how often these clips are hit? I
-> > suspect it's fairly rare (but crucial when it does).
+On 4/19/24 15:01, Kees Cook wrote:
+> Hi,
 > 
-> Everytime it happens a subsequent NULL pointer exception usually happens.
-> The trace data was posted here: 
+> We have a few lone function tests (strscpy and strcat) that are better
+> collected into the common string_kunit.c test suite. Perform various
+> renamings, merge everything, and clean up after them.
+> 
+> -Kees
+> 
+> Kees Cook (5):
+>    string: Prepare to merge strscpy_kunit.c into string_kunit.c
+>    string: Merge strscpy KUnit tests into string_kunit.c
+>    string: Prepare to merge strcat KUnit tests into string_kunit.c
+>    string: Merge strcat KUnit tests into string_kunit.c
+>    string: Convert KUnit test names to standard convention
+> 
+>   MAINTAINERS         |   2 -
+>   lib/Kconfig.debug   |  10 --
+>   lib/Makefile        |   2 -
+>   lib/strcat_kunit.c  | 104 ------------------
+>   lib/string_kunit.c  | 258 +++++++++++++++++++++++++++++++++++++++-----
+>   lib/strscpy_kunit.c | 142 ------------------------
+>   6 files changed, 230 insertions(+), 288 deletions(-)
+>   delete mode 100644 lib/strcat_kunit.c
+>   delete mode 100644 lib/strscpy_kunit.c
+> 
 
-That was not the question. Suppose I put a printk whenever the clamp()
-actually changes the value, do I get a stormflood of output, or do I get
-a sporadic blip.
+I tested all of the patches in the series with kunit_tool, and 
+everything works correctly.
+
+Thank you for doing this!
+
+Tested-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+-- 
+Kind regards,
+Ivan Orlov
+
 
