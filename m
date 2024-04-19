@@ -1,130 +1,115 @@
-Return-Path: <linux-kernel+bounces-151882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B7C18AB537
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:50:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 692678AB53B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:51:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 737EC1C21D49
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:50:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B0C51C219E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C75912E1C4;
-	Fri, 19 Apr 2024 18:50:06 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037AFD268;
-	Fri, 19 Apr 2024 18:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24BF913A877;
+	Fri, 19 Apr 2024 18:51:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="KBEvA+an"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85F1D268;
+	Fri, 19 Apr 2024 18:51:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713552605; cv=none; b=EbpHz0/t1jQ2Xdx1Lh0IhawOlSBwUVM9UmG5N6yOa/degVyTcFsVEYS1dkVTgJoIh0X/SDZAbe04L9tSpFmkFZh2KKgGNC9kWvKG9MjT564JcJBDVdR7HB0YKP7Py0+EFKS6PKmA4aUIN+POEfyZEubb04+8TIU4Jdz52B90Jao=
+	t=1713552669; cv=none; b=urX1NQPXAJrbp9oGBy7K4y7q0LZxNRy72TAuBTx8v4WzXjB1BapEl9YMV3lE+ZgL6CJv7wtTArxNt2nMO2oai0oSJbP95YpYHX27KaFPVxsiN87nYm7N0pEKeI1vvNrmF6nBf2hUYC31BKUshMvYF4F7wb3zW4Cdu0agn9Sh9iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713552605; c=relaxed/simple;
-	bh=1ggBmLkPz+ipDBQEkORKrE3vtL6SmwmuVgCydJ99IsY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J82+jNywPOG3yWbU++fFClo/PtzC7Z3cM/ERbTKyB/XyGoD71n8KkaDqnluc/6Q5WGjgAdbaW0Vk0z6uOD6rtx+cYmdmyFAqyEUKAVPr41bMI6MqIV+1DOh4GiY4LdgP0QPqTW8yXMkkzGPTCVEGNypy16zfSj/ZIthInpO4/38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7D352F;
-	Fri, 19 Apr 2024 11:50:31 -0700 (PDT)
-Received: from [10.57.77.69] (unknown [10.57.77.69])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B2263F64C;
-	Fri, 19 Apr 2024 11:50:02 -0700 (PDT)
-Message-ID: <80a764dc-b54c-443b-9832-977ab9f6d7cf@arm.com>
-Date: Fri, 19 Apr 2024 19:50:09 +0100
+	s=arc-20240116; t=1713552669; c=relaxed/simple;
+	bh=P4EtuerERfS5igN+jp36Qe+A7aj+Bbvo7bQyGhs8zHo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DKZA5ke/MX3G8KwUWIyxIMe0qLvvLgiYKetBcdWtHmaiP9V3woGU1sgl3trevOvs7i7DgMWm3RMxe1uMqCFvs1pZVe9YccPDQSqgq6wj6+iZ/6LTfrNev2yR0Lbcxmrpajvm88GnRjU1u5ARNC7KS2cZQs5M/kyvSPQMjU7cadU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=KBEvA+an; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=jRVHW2PCpBb94pqr05BjINl9EOFyc8yE25pKcg6N4Ao=; b=KBEvA+anCYQeH7oaHpSIuEiU3p
+	zaq2qt2V/W3XaJNXKU6wKxZ1uvt6SUB52khMl5RscIcjN2+zV5ZcuEJz3ONS5VrpBTKIFTgP/q5lv
+	oRYfhuf01Ms8nK7wX4vQvMoBYZu3hmR67ZScYXXaqLFwblTT7o+7AgLpAP9LdWSpaSzM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rxtKA-00DTWj-F5; Fri, 19 Apr 2024 20:51:02 +0200
+Date: Fri, 19 Apr 2024 20:51:02 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <yanjun.zhu@linux.dev>,
+	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
+Message-ID: <fc345b4d-0747-4ca3-aee0-c53064cc7fe1@lunn.ch>
+References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20240415161305.GO223006@ziepe.ca>
+ <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
+ <b34bfb11-98a3-4418-b482-14f2e50745d3@lunn.ch>
+ <20240418060108.GB13182@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20240418175059.GZ223006@ziepe.ca>
+ <f3e7ea07-2903-4f19-ba86-94bba569dae9@lunn.ch>
+ <20240419165926.GC506@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 15/16] thermal: core: Drop the .throttle() governor
- callback
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <13515747.uLZWGnKmhe@kreacher> <2701448.BddDVKsqQX@kreacher>
-Content-Language: en-US
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <2701448.BddDVKsqQX@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240419165926.GC506@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 
+On Fri, Apr 19, 2024 at 09:59:26AM -0700, Shradha Gupta wrote:
+> On Thu, Apr 18, 2024 at 08:42:59PM +0200, Andrew Lunn wrote:
+> > > >From an RDMA perspective this is all available from other APIs already
+> > > at least and I wouldn't want to see new sysfs unless there is a netdev
+> > > justification.
+> > 
+> > It is unlikely there is a netdev justification. Configuration happens
+> > via netlink, not sysfs.
+> > 
+> >     Andrew
+> 
+> Thanks. Sure, it makes sense to make the generic attribute configurable
+> through the netdevice ops or netlink implementation. I will keep that in
+> mind while adding the next set of configuration attributes for the driver.
+> These attributes(from the patch) however, are hardware specific(that show
+> the maximum supported values by the hardware in most cases).
 
+        ndev->max_mtu = gc->adapter_mtu - ETH_HLEN;
+        ndev->min_mtu = ETH_MIN_MTU;
 
-On 4/10/24 18:42, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Since all of the governors in the tree have been switched over to using
-> the new callbacks, either .trip_crossed() or .manage(), the .throttle()
-> governor callback is not used any more, so drop it.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->   drivers/thermal/thermal_core.c |   11 -----------
->   drivers/thermal/thermal_core.h |    4 ----
->   2 files changed, 15 deletions(-)
-> 
-> Index: linux-pm/drivers/thermal/thermal_core.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/thermal_core.c
-> +++ linux-pm/drivers/thermal/thermal_core.c
-> @@ -310,15 +310,6 @@ static struct thermal_governor *thermal_
->   	return def_governor;
->   }
->   
-> -static void handle_non_critical_trips(struct thermal_zone_device *tz,
-> -				      const struct thermal_trip *trip)
-> -{
-> -	struct thermal_governor *governor = thermal_get_tz_governor(tz);
-> -
-> -	if (governor->throttle)
-> -		governor->throttle(tz, trip);
-> -}
-> -
->   void thermal_governor_update_tz(struct thermal_zone_device *tz,
->   				enum thermal_notify_event reason)
->   {
-> @@ -418,8 +409,6 @@ static void handle_thermal_trip(struct t
->   
->   	if (trip->type == THERMAL_TRIP_CRITICAL || trip->type == THERMAL_TRIP_HOT)
->   		handle_critical_trips(tz, trip);
-> -	else
-> -		handle_non_critical_trips(tz, trip);
->   }
->   
->   static void update_temperature(struct thermal_zone_device *tz)
-> Index: linux-pm/drivers/thermal/thermal_core.h
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/thermal_core.h
-> +++ linux-pm/drivers/thermal/thermal_core.h
-> @@ -32,8 +32,6 @@ struct thermal_trip_desc {
->    *			thermal zone.
->    * @trip_crossed:	called for trip points that have just been crossed
->    * @manage:	called on thermal zone temperature updates
-> - * @throttle:	callback called for every trip point even if temperature is
-> - *		below the trip point temperature
->    * @update_tz:	callback called when thermal zone internals have changed, e.g.
->    *		thermal cooling instance was added/removed
->    * @governor_list:	node in thermal_governor_list (in thermal_core.c)
-> @@ -46,8 +44,6 @@ struct thermal_governor {
->   			     const struct thermal_trip *trip,
->   			     bool crossed_up);
->   	void (*manage)(struct thermal_zone_device *tz);
-> -	int (*throttle)(struct thermal_zone_device *tz,
-> -			const struct thermal_trip *trip);
->   	void (*update_tz)(struct thermal_zone_device *tz,
->   			  enum thermal_notify_event reason);
->   	struct list_head	governor_list;
-> 
-> 
-> 
+This does not appear to be specific to your device. This is very
+generic. We already have /sys/class/net/eth42/mtu, why not add
+/sys/class/net/eth42/max_mtu and /sys/class/net/eth42/min_mtu for
+every driver?
 
+Are these values really hardware specific? Are they really unique to
+your hardware? I have to wounder because you clearly did not think
+much about MTU, and how it is actually generic...
 
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+     Andrew
 
