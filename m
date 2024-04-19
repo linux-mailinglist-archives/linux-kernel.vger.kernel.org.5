@@ -1,275 +1,150 @@
-Return-Path: <linux-kernel+bounces-151288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 439F98AAC7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:09:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E88458AAC81
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:10:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0B431F218B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:09:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9ED128409C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD30B7E78E;
-	Fri, 19 Apr 2024 10:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A94717FBC7;
+	Fri, 19 Apr 2024 10:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gZSZwILu"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HIOa2uVW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C077E572
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:09:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7E977D3E3;
+	Fri, 19 Apr 2024 10:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713521370; cv=none; b=F9fHF9FuLx4epmBdKHX3NwHJKo33ugBBYBhzwScuiioTrADqpqUaFZr08Foqh08dPd5horID0Aj/0aGJEG3scfIFZ0jY/49ULlBwba4d3Hhhe5MD2IvfgdlAFOh03UTxYj3qUZQj6d8lQOhQoIyeJoY3ZcpNReacPpRF90PN764=
+	t=1713521377; cv=none; b=VUdROG70mxMRjVICHdUYqukz852NqdFqpSZ3ZrkyZCNamWxHfxoo4cl64vpMrt9Pp4CvH3LUGS0NTCP7NPT0qK7IL0efpDiU7BOAPP145PDYQxIO5ZcmAjZnsF8C5pWTwulMwmQb1RIwZpZswdgvzh2rvjJVXi1U7yzuiY1RcMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713521370; c=relaxed/simple;
-	bh=bXJMXZ68DgUOW1zy7tUTKJEKi+m85eA9cqt47G2kTmQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PkmOua6S4mjzacYXvWvCiKo35F/x6dtXatgiFPLu2pUbOXtfykSy0IEXdJ+wJXzuUrOp1sqsBt/OErEROc5MoDFdsoCAhw/SYtDrHd8ocuCSIByUb9OEghJvFaAxzT3RwgnmbDlX/z5TxOdwYX5jANZQ3p3SAb3i70OqHbQo+f0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gZSZwILu; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-343d1003106so1337787f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 03:09:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713521366; x=1714126166; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HDdtreEIc+pN1pyeh91rfo/1psHMMuNAA8V0eM8Sv8I=;
-        b=gZSZwILuInxuL9Nipk/KQCO7Mw6MyU5cv4RgbybEM7Z3inW0P9wtj0P8LyK746peKo
-         lRXVuiUJvxQwrfZ90+axEiAJrqQKMEaiaEnlJMxB3HV8xlgFSXMwp8OJQcMcg5Dbp0Wa
-         IVu/RwvYvlMfqXEPoJn6xeFxg9KIpDWzatiFHilolHFeA4pjqLrMlepwSlUJkSkwOFGt
-         3iDFXEj3TbVIJJFO+qpyHcDRQJM3JEQdy7hOGM+XuH7iu0hOeIt18B0lehjB5tbcvhmE
-         Trt+bS7FWH5/p549MZZA78WboZ8X/go2OH7qlSvkA71y9mJJgHPgOmlOXieKXy1+sa/T
-         jfdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713521366; x=1714126166;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HDdtreEIc+pN1pyeh91rfo/1psHMMuNAA8V0eM8Sv8I=;
-        b=WaLuKquX2FXmqhKzBgdNl1+zZci6fU4M6lCrg49/e4evip58UeSaEFLbALowTDnMKn
-         68k69WK0I+b2rpW/7zmcMrub2RsiOs7NXyFCCCvFURrmoMRvPfCSeoDn3IOktTK/dxA5
-         ltNQ0zCj8TVvUYLa4kKkubdKcEMomELvwgDPaW6oC4b/baPOTbOT0H8zyWbjpOAlpaJq
-         nzRhtMp9DIsRNixcEg4GCsSSbG3FxbXLIIumtSFpPi+5kmdujtH+mrE33teY0jdyoV5c
-         HNkJb264UlZuhj81F2eWlXEjR3kZzbapaA9Xlrw3bSWJZibplNe7saNx9hP5AlvulIIO
-         d+7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXFjrsoI6jsRSIcl7Q5RCKU18sP9snIi6RSB/ha6gGNnejE4egtPPQXyLjW6F6u/Xhrz7pjPxSh+vBQ8MTZec6m2A8Zt3+RX8+GZDXZ
-X-Gm-Message-State: AOJu0YwNOaa1nuho94ZLpJOqLR4e7ooV825ISta0nOgv5rgLwEp3hHn5
-	xcm3pYemP4PPzQ/tJ6xyp93TUYTeFXgNRXqz6Fd2hsDHSPD9HaXM7mTQYxxGp1Y=
-X-Google-Smtp-Source: AGHT+IHRURSzCXJcKnyxbgA1qGZn8zl0c7bkl9QVzrrsd7uo4yKg7LtdHME2l7ZWITA9DG007nuCvg==
-X-Received: by 2002:adf:f28e:0:b0:343:751e:8ef7 with SMTP id k14-20020adff28e000000b00343751e8ef7mr1312440wro.51.1713521366511;
-        Fri, 19 Apr 2024 03:09:26 -0700 (PDT)
-Received: from ta2.c.googlers.com.com (158.100.79.34.bc.googleusercontent.com. [34.79.100.158])
-        by smtp.gmail.com with ESMTPSA id p13-20020adfe60d000000b00349b73143e7sm4061773wrm.75.2024.04.19.03.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 03:09:24 -0700 (PDT)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: peter.griffin@linaro.org,
-	krzysztof.kozlowski@linaro.org
-Cc: s.nawrocki@samsung.com,
-	cw00.choi@samsung.com,
-	alim.akhtar@samsung.com,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	semen.protsenko@linaro.org,
-	andre.draszik@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	willmcvicker@google.com,
-	kernel-team@android.com,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v4 2/2] clk: samsung: gs101: propagate PERIC1 USI SPI clock rate
-Date: Fri, 19 Apr 2024 10:09:15 +0000
-Message-ID: <20240419100915.2168573-3-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-In-Reply-To: <20240419100915.2168573-1-tudor.ambarus@linaro.org>
-References: <20240419100915.2168573-1-tudor.ambarus@linaro.org>
+	s=arc-20240116; t=1713521377; c=relaxed/simple;
+	bh=hIqlbjO65jZjxYKpeWau84wCqd4vKuYsewjegaEPtAw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=rPqLweVAkXBxEb4W53kpJvKtX8qsFWd5OfKTok7KsEeixJb/CATBv7ckkcUvsntq68nGfdS0mtV3TZGBsRPy43uU2vDXHvb5hrq2uc/WRzdesv2T29qFBLtYwM94GBCt7TnhCruzZk1wlJnVQAVJnaHhpsm1UHKJC2CK/w22DaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HIOa2uVW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 56899C072AA;
+	Fri, 19 Apr 2024 10:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713521377;
+	bh=hIqlbjO65jZjxYKpeWau84wCqd4vKuYsewjegaEPtAw=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=HIOa2uVW3uIspoEQuRXVy2cZHWLeq1qvOOOQ2kfIa0fnUnSrkOe1tgVZDNGpFRfgy
+	 5eO1xkGuG1eGzAVeXizFsVCDv3Ti3ASsNNlniq/GfsyRluxJQJNm5S0C4X6M7jSyYg
+	 zXuOxUwt7V7IDgsFQcj4p0KCHPheacQTGFVgBA6zOWPI8EXIdR4aS79G8uqVIEh81A
+	 iAwxtJRnd383YK68tfm1s/pI9dhyoZSXJZR54vDkEXlXQC9g1MOyHdXWSqoAfE+j+P
+	 1svKDTfn/LPa6hDZYNnlSfEL+gjHGEaBH7hQ9QthB5+wIxCfY5lJxrRXTQmpnm4KBn
+	 7tQ1jOyY5gWDA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B112C04FF6;
+	Fri, 19 Apr 2024 10:09:37 +0000 (UTC)
+From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
+Subject: [PATCH net-next 00/13] MT7530 DSA Subdriver Improvements Act IV
+Date: Fri, 19 Apr 2024 13:09:23 +0300
+Message-Id: <20240419-for-netnext-mt7530-improvements-4-v1-0-6d852ca79b1d@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIANNCImYC/x2NywqDQAwAf0VyNhD3QWl/pXgoGjWHzUp2EUH89
+ 257nMPMXFDYhAu8uguMDymStcHQdzBtH10ZZW4Mjlwg7wiXbKhclc+KqT6iJ5S0Wz44sdaCAZ8
+ xeJqHSBNFaJ3deJHz/3hDU/HnwnjfX14TZvh9AAAA
+To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
+ Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
+ Florian Fainelli <f.fainelli@gmail.com>, 
+ Vladimir Oltean <olteanv@gmail.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Russell King <linux@armlinux.org.uk>
+Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>, 
+ mithat.guner@xeront.com, erkin.bozoglu@xeront.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mediatek@lists.infradead.org, 
+ =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713521374; l=2654;
+ i=arinc.unal@arinc9.com; s=arinc9-Xeront; h=from:subject:message-id;
+ bh=hIqlbjO65jZjxYKpeWau84wCqd4vKuYsewjegaEPtAw=;
+ b=iGbg2Xv6D/RpNIc/k3j1XoPdRClUOkq02kgugFhytAdQDrC0bmxdXD7gR+Ink69lISXC1XYSC
+ O1swa4N6PULD3Y43CMD7t5opgf7OEhELDS4iH9UGGRxzf/SVMm+9UKF
+X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
+ pk=z49tLn29CyiL4uwBTrqH9HO1Wu3sZIuRp4DaLZvtP9M=
+X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-Xeront
+ with auth_id=137
+X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Reply-To: arinc.unal@arinc9.com
 
-When SPI transfer is being prepared, the spi-s3c64xx driver will call
-clk_set_rate() to change the rate of SPI source clock (IPCLK). But IPCLK
-is a gate (leaf) clock, so it must propagate the rate change up the
-clock tree, so that corresponding MUX/DIV clocks can actually change
-their values. Add CLK_SET_RATE_PARENT flag to corresponding clocks for
-all USI instances in GS101 PERIC1: USI{0, 9, 10, 11, 12, 13}. This change
-involves the following clocks:
+Hello!
 
-PERIC1 USI*:
+This is the forth patch series with the goal of simplifying the MT7530 DSA
+subdriver and improving support for MT7530, MT7531, and the switch on the
+MT7988 SoC.
 
-    Clock                              Div range    MUX Selection
-    -------------------------------------------------------------------
-    gout_peric1_peric1_top0_ipclk_*    -            -
-    dout_peric1_usi*_usi               /1..16       -
-    mout_peric1_usi*_usi_user          -            {24.5 MHz, 400 MHz}
+I have done a simple ping test to confirm basic communication on all switch
+ports on MCM and standalone MT7530, and MT7531 switch with this patch
+series applied.
 
-With input clock of 400 MHz this scheme provides the following IPCLK
-rate range, for each USI block:
+MT7621 Unielec, MCM MT7530:
 
-    PERIC1 USI*:       1.5 MHz ... 400 MHz
+rgmii-only-gmac0-mt7621-unielec-u7621-06-16m.dtb
+gmac0-and-gmac1-mt7621-unielec-u7621-06-16m.dtb
 
-Accounting for internal /4 divider in SPI blocks, and because the max
-SPI frequency is limited at 50 MHz, it gives us next SPI SCK rates:
+tftpboot 0x80008000 mips-uzImage.bin; tftpboot 0x83000000 mips-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootm 0x80008000 0x83000000 0x83f00000
 
-    PERIC1 USI_SPI*:   384 KHz ... 49.9 MHz
+MT7622 Bananapi, MT7531:
 
-Which shall be fine for the applications of the SPI bus.
+gmac0-and-gmac1-mt7622-bananapi-bpi-r64.dtb
 
-Note that with this we allow the reparenting of the MUX_USIx clocks to
-OSCCLK. Each instance of the USI IP has its own MUX_USI clock, thus the
-reparenting of a MUX_USI clock corresponds to a single instance of the
-USI IP. The datasheet mentions OSCCLK just in the low-power mode
-context, but the downstream driver reparents too the MUX_USI clocks to
-OSCCLK. Follow the downstream driver and do the same.
+tftpboot 0x40000000 arm64-Image; tftpboot 0x45000000 arm64-rootfs.cpio.uboot; tftpboot 0x4a000000 $dtb; booti 0x40000000 0x45000000 0x4a000000
 
-Fixes: 2999e786d7e9 ("clk: samsung: gs101: add support for cmu_peric1")
-Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
-Acked-by: André Draszik <andre.draszik@linaro.org>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+MT7623 Bananapi, standalone MT7530:
+
+rgmii-only-gmac0-mt7623n-bananapi-bpi-r2.dtb
+gmac0-and-gmac1-mt7623n-bananapi-bpi-r2.dtb
+
+tftpboot 0x80008000 arm-zImage; tftpboot 0x83000000 arm-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootz 0x80008000 0x83000000 0x83f00000
+
+This patch series finalises the patch series linked below.
+
+https://lore.kernel.org/r/20230522121532.86610-1-arinc.unal@arinc9.com
+
+Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
- drivers/clk/samsung/clk-gs101.c | 90 ++++++++++++++++++---------------
- 1 file changed, 48 insertions(+), 42 deletions(-)
+Arınç ÜNAL (13):
+      net: dsa: mt7530: disable EEE abilities on failure on MT7531 and MT7988
+      net: dsa: mt7530: refactor MT7530_PMCR_P()
+      net: dsa: mt7530: rename p5_intf_sel and use only for MT7530 switch
+      net: dsa: mt7530: rename mt753x_bpdu_port_fw enum to mt753x_to_cpu_fw
+      net: dsa: mt7530: refactor MT7530_MFC and MT7531_CFC, add MT7531_QRY_FFP
+      net: dsa: mt7530: refactor MT7530_HWTRAP and MT7530_MHWTRAP
+      net: dsa: mt7530: move MT753X_MTRAP operations for MT7530
+      net: dsa: mt7530: return mt7530_setup_mdio & mt7531_setup_common on error
+      net: dsa: mt7530: define MAC speed capabilities per switch model
+      net: dsa: mt7530: get rid of function sanity check
+      net: dsa: mt7530: refactor MT7530_PMEEECR_P()
+      net: dsa: mt7530: get rid of mac_port_validate member of mt753x_info
+      net: dsa: mt7530: use priv->ds->num_ports instead of MT7530_NUM_PORTS
 
-diff --git a/drivers/clk/samsung/clk-gs101.c b/drivers/clk/samsung/clk-gs101.c
-index 76d4d0fa1168..bd3c1b02715b 100644
---- a/drivers/clk/samsung/clk-gs101.c
-+++ b/drivers/clk/samsung/clk-gs101.c
-@@ -3239,47 +3239,53 @@ static const struct samsung_mux_clock peric1_mux_clks[] __initconst = {
- 	MUX(CLK_MOUT_PERIC1_I3C_USER,
- 	    "mout_peric1_i3c_user", mout_peric1_nonbususer_p,
- 	    PLL_CON0_MUX_CLKCMU_PERIC1_I3C_USER, 4, 1),
--	MUX(CLK_MOUT_PERIC1_USI0_USI_USER,
--	    "mout_peric1_usi0_usi_user", mout_peric1_nonbususer_p,
--	    PLL_CON0_MUX_CLKCMU_PERIC1_USI0_USI_USER, 4, 1),
--	MUX(CLK_MOUT_PERIC1_USI10_USI_USER,
--	    "mout_peric1_usi10_usi_user", mout_peric1_nonbususer_p,
--	    PLL_CON0_MUX_CLKCMU_PERIC1_USI10_USI_USER, 4, 1),
--	MUX(CLK_MOUT_PERIC1_USI11_USI_USER,
--	    "mout_peric1_usi11_usi_user", mout_peric1_nonbususer_p,
--	    PLL_CON0_MUX_CLKCMU_PERIC1_USI11_USI_USER, 4, 1),
--	MUX(CLK_MOUT_PERIC1_USI12_USI_USER,
--	    "mout_peric1_usi12_usi_user", mout_peric1_nonbususer_p,
--	    PLL_CON0_MUX_CLKCMU_PERIC1_USI12_USI_USER, 4, 1),
--	MUX(CLK_MOUT_PERIC1_USI13_USI_USER,
--	    "mout_peric1_usi13_usi_user", mout_peric1_nonbususer_p,
--	    PLL_CON0_MUX_CLKCMU_PERIC1_USI13_USI_USER, 4, 1),
--	MUX(CLK_MOUT_PERIC1_USI9_USI_USER,
--	    "mout_peric1_usi9_usi_user", mout_peric1_nonbususer_p,
--	    PLL_CON0_MUX_CLKCMU_PERIC1_USI9_USI_USER, 4, 1),
-+	nMUX(CLK_MOUT_PERIC1_USI0_USI_USER,
-+	     "mout_peric1_usi0_usi_user", mout_peric1_nonbususer_p,
-+	     PLL_CON0_MUX_CLKCMU_PERIC1_USI0_USI_USER, 4, 1),
-+	nMUX(CLK_MOUT_PERIC1_USI10_USI_USER,
-+	     "mout_peric1_usi10_usi_user", mout_peric1_nonbususer_p,
-+	     PLL_CON0_MUX_CLKCMU_PERIC1_USI10_USI_USER, 4, 1),
-+	nMUX(CLK_MOUT_PERIC1_USI11_USI_USER,
-+	     "mout_peric1_usi11_usi_user", mout_peric1_nonbususer_p,
-+	     PLL_CON0_MUX_CLKCMU_PERIC1_USI11_USI_USER, 4, 1),
-+	nMUX(CLK_MOUT_PERIC1_USI12_USI_USER,
-+	     "mout_peric1_usi12_usi_user", mout_peric1_nonbususer_p,
-+	     PLL_CON0_MUX_CLKCMU_PERIC1_USI12_USI_USER, 4, 1),
-+	nMUX(CLK_MOUT_PERIC1_USI13_USI_USER,
-+	     "mout_peric1_usi13_usi_user", mout_peric1_nonbususer_p,
-+	     PLL_CON0_MUX_CLKCMU_PERIC1_USI13_USI_USER, 4, 1),
-+	nMUX(CLK_MOUT_PERIC1_USI9_USI_USER,
-+	     "mout_peric1_usi9_usi_user", mout_peric1_nonbususer_p,
-+	     PLL_CON0_MUX_CLKCMU_PERIC1_USI9_USI_USER, 4, 1),
- };
- 
- static const struct samsung_div_clock peric1_div_clks[] __initconst = {
- 	DIV(CLK_DOUT_PERIC1_I3C, "dout_peric1_i3c", "mout_peric1_i3c_user",
- 	    CLK_CON_DIV_DIV_CLK_PERIC1_I3C, 0, 4),
--	DIV(CLK_DOUT_PERIC1_USI0_USI,
--	    "dout_peric1_usi0_usi", "mout_peric1_usi0_usi_user",
--	    CLK_CON_DIV_DIV_CLK_PERIC1_USI0_USI, 0, 4),
--	DIV(CLK_DOUT_PERIC1_USI10_USI,
--	    "dout_peric1_usi10_usi", "mout_peric1_usi10_usi_user",
--	    CLK_CON_DIV_DIV_CLK_PERIC1_USI10_USI, 0, 4),
--	DIV(CLK_DOUT_PERIC1_USI11_USI,
--	    "dout_peric1_usi11_usi", "mout_peric1_usi11_usi_user",
--	    CLK_CON_DIV_DIV_CLK_PERIC1_USI11_USI, 0, 4),
--	DIV(CLK_DOUT_PERIC1_USI12_USI,
--	    "dout_peric1_usi12_usi", "mout_peric1_usi12_usi_user",
--	    CLK_CON_DIV_DIV_CLK_PERIC1_USI12_USI, 0, 4),
--	DIV(CLK_DOUT_PERIC1_USI13_USI,
--	    "dout_peric1_usi13_usi", "mout_peric1_usi13_usi_user",
--	    CLK_CON_DIV_DIV_CLK_PERIC1_USI13_USI, 0, 4),
--	DIV(CLK_DOUT_PERIC1_USI9_USI,
--	    "dout_peric1_usi9_usi", "mout_peric1_usi9_usi_user",
--	    CLK_CON_DIV_DIV_CLK_PERIC1_USI9_USI, 0, 4),
-+	DIV_F(CLK_DOUT_PERIC1_USI0_USI,
-+	      "dout_peric1_usi0_usi", "mout_peric1_usi0_usi_user",
-+	      CLK_CON_DIV_DIV_CLK_PERIC1_USI0_USI, 0, 4,
-+	      CLK_SET_RATE_PARENT, 0),
-+	DIV_F(CLK_DOUT_PERIC1_USI10_USI,
-+	      "dout_peric1_usi10_usi", "mout_peric1_usi10_usi_user",
-+	      CLK_CON_DIV_DIV_CLK_PERIC1_USI10_USI, 0, 4,
-+	      CLK_SET_RATE_PARENT, 0),
-+	DIV_F(CLK_DOUT_PERIC1_USI11_USI,
-+	      "dout_peric1_usi11_usi", "mout_peric1_usi11_usi_user",
-+	      CLK_CON_DIV_DIV_CLK_PERIC1_USI11_USI, 0, 4,
-+	      CLK_SET_RATE_PARENT, 0),
-+	DIV_F(CLK_DOUT_PERIC1_USI12_USI,
-+	      "dout_peric1_usi12_usi", "mout_peric1_usi12_usi_user",
-+	      CLK_CON_DIV_DIV_CLK_PERIC1_USI12_USI, 0, 4,
-+	      CLK_SET_RATE_PARENT, 0),
-+	DIV_F(CLK_DOUT_PERIC1_USI13_USI,
-+	      "dout_peric1_usi13_usi", "mout_peric1_usi13_usi_user",
-+	      CLK_CON_DIV_DIV_CLK_PERIC1_USI13_USI, 0, 4,
-+	      CLK_SET_RATE_PARENT, 0),
-+	DIV_F(CLK_DOUT_PERIC1_USI9_USI,
-+	      "dout_peric1_usi9_usi", "mout_peric1_usi9_usi_user",
-+	      CLK_CON_DIV_DIV_CLK_PERIC1_USI9_USI, 0, 4,
-+	      CLK_SET_RATE_PARENT, 0),
- };
- 
- static const struct samsung_gate_clock peric1_gate_clks[] __initconst = {
-@@ -3314,27 +3320,27 @@ static const struct samsung_gate_clock peric1_gate_clks[] __initconst = {
- 	GATE(CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_1,
- 	     "gout_peric1_peric1_top0_ipclk_1", "dout_peric1_usi0_usi",
- 	     CLK_CON_GAT_GOUT_BLK_PERIC1_UID_PERIC1_TOP0_IPCLKPORT_IPCLK_1,
--	     21, 0, 0),
-+	     21, CLK_SET_RATE_PARENT, 0),
- 	GATE(CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_2,
- 	     "gout_peric1_peric1_top0_ipclk_2", "dout_peric1_usi9_usi",
- 	     CLK_CON_GAT_GOUT_BLK_PERIC1_UID_PERIC1_TOP0_IPCLKPORT_IPCLK_2,
--	     21, 0, 0),
-+	     21, CLK_SET_RATE_PARENT, 0),
- 	GATE(CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_3,
- 	     "gout_peric1_peric1_top0_ipclk_3", "dout_peric1_usi10_usi",
- 	     CLK_CON_GAT_GOUT_BLK_PERIC1_UID_PERIC1_TOP0_IPCLKPORT_IPCLK_3,
--	     21, 0, 0),
-+	     21, CLK_SET_RATE_PARENT, 0),
- 	GATE(CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_4,
- 	     "gout_peric1_peric1_top0_ipclk_4", "dout_peric1_usi11_usi",
- 	     CLK_CON_GAT_GOUT_BLK_PERIC1_UID_PERIC1_TOP0_IPCLKPORT_IPCLK_4,
--	     21, 0, 0),
-+	     21, CLK_SET_RATE_PARENT, 0),
- 	GATE(CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_5,
- 	     "gout_peric1_peric1_top0_ipclk_5", "dout_peric1_usi12_usi",
- 	     CLK_CON_GAT_GOUT_BLK_PERIC1_UID_PERIC1_TOP0_IPCLKPORT_IPCLK_5,
--	     21, 0, 0),
-+	     21, CLK_SET_RATE_PARENT, 0),
- 	GATE(CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_6,
- 	     "gout_peric1_peric1_top0_ipclk_6", "dout_peric1_usi13_usi",
- 	     CLK_CON_GAT_GOUT_BLK_PERIC1_UID_PERIC1_TOP0_IPCLKPORT_IPCLK_6,
--	     21, 0, 0),
-+	     21, CLK_SET_RATE_PARENT, 0),
- 	GATE(CLK_GOUT_PERIC1_PERIC1_TOP0_IPCLK_8,
- 	     "gout_peric1_peric1_top0_ipclk_8", "dout_peric1_i3c",
- 	     CLK_CON_GAT_GOUT_BLK_PERIC1_UID_PERIC1_TOP0_IPCLKPORT_IPCLK_8,
+ drivers/net/dsa/mt7530.c | 285 ++++++++++++++++++++++------------------------
+ drivers/net/dsa/mt7530.h | 289 +++++++++++++++++++++++++----------------------
+ 2 files changed, 291 insertions(+), 283 deletions(-)
+---
+base-commit: e1bc03d8372ac081810c2956cd244ed9899f9a02
+change-id: 20240320-for-netnext-mt7530-improvements-4-95430d150c05
+
+Best regards,
 -- 
-2.44.0.769.g3c40516874-goog
+Arınç ÜNAL <arinc.unal@arinc9.com>
+
 
 
