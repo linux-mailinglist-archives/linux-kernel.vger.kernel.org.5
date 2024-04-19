@@ -1,162 +1,237 @@
-Return-Path: <linux-kernel+bounces-151048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 045D58AA857
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:19:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DA6C8AA85D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:22:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEDBF281C16
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:19:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF4DA1F21E97
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:22:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF16D268;
-	Fri, 19 Apr 2024 06:19:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="gPhxO6vM"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50BE6BE49
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25C4C8E2;
+	Fri, 19 Apr 2024 06:22:09 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0AB37494
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:22:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713507581; cv=none; b=uoVDWGq5sv+1UMfjiOvNGUlGalaaSBsMP4X2HRmRANN1fHBNh4Q+hxC+P163xI9FK9aRLD4zUKMK6vbLWfBRml7XBai8e9YAy99IqGC0z6FI1uMFORQ8KzznF1bVlq0CAuwwntKDQ0gkCFy6mSeRMJBj4leCXI2RDsrbHjeysmo=
+	t=1713507729; cv=none; b=hfBoFM7zk3Pqr5x+dTmKe4GVjuwckc9y8AukHfiP+p4/XlmuZZtdli7ICJBbPjE2/GNC9HNoHSmAYFvqnMp6d4ERYQwlyLDuq5RIZ65lnpKcFAn0P1Bmc8a1i9p55JYG9B2hAdINn3gn7eEfJiA/qMC+6b9m8996sAUisgxtTfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713507581; c=relaxed/simple;
-	bh=vaoFx8rbE+/vHCI1FihLLacdyluledX4OyjZ/J1iRfE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FES+lVRUttum7gKB5Jqsy4WFdC0tGiZJ5OjFl7T3pfujpBB074rbay+VL8IlD+4lY2yM7Zm0kW8K+jJjwVXhtCXfDxHpEZ65/wANKPf1t2KjDM6IidQGRkQFlsiwccmkhdaPzXpoH6QTLFPvl3At93V7YUy7WbcWwrXtmUIdSSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=gPhxO6vM; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so2396338a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1713507577; x=1714112377; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zChC2XDsDI5Ah8bNA8dPVgVBQVKq5xeUehrSiQnngTk=;
-        b=gPhxO6vML+PlpwaekkP8sfyvKtjzWjLOgy7s6jkYv3Gt9NBafMyQnm7JKLomxUMfAc
-         X1UvwosUSMZgsoVnFLTbyNhg/M1SZkI/NmdfPpepo+2Ep9Z9IGSMEnujiI2t7HF03k9u
-         Q6oWYCmbHsuCse1tV0CnSinKYKVz6f0qiT46YcVd066j9bFv6qZpegsXVjI+UbAH1EVl
-         qdxmMudIrHEJcXwlDcCAHTmMNy3glEhd5CfXOPiY/7de9c/M9ahFQJtc1XJBOsCgB653
-         Oa8DsdBBDdeIBxSVQCN+m3X5gW7n7FZlHdyzXAuA3PmDPxYiPCWz86yuuMi4NHv6/wqA
-         kO6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713507577; x=1714112377;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zChC2XDsDI5Ah8bNA8dPVgVBQVKq5xeUehrSiQnngTk=;
-        b=LCl4nf/HiwV9D688JOViaXHNOhLmlDocczFa6LoDbyY3nn9k5gF9XHuuge597ieew3
-         6ltjA3ciVYwW4ki9XUwfqRBNCDXYGaMy5+eWiGXXAkDqtXFhtrA8DuRIuCIAOS/S50zR
-         7RNkjCZKSqVHN32pXuXUvTJb7oCLp77e+AanQwQqrXKEsN3P5CLX0ay/jkEHdLA2ppt/
-         bJklgOtzh37yKgqSr6txlZ+juEVVmxvTEYXMTOrrqN3X2lvtGoi4qQ/NNmvz7DQiuRIO
-         sl7x2hzp2mFr1Jx3i5Lmy/byABQ/yEKlw6gfz0qZtZV1CiU+9Jg1cKfIepTuxnUBjCE0
-         eR1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXptkVOx42sxZV/DkInw7lJTBZWPEeO8G0Ix2sIcKlTo1b7FUdRYytLGTCW48Ny/kpqC/MbvG8B2yX2dGWXaoJPIaQDFXLqHRGmKKfM
-X-Gm-Message-State: AOJu0Yzqen0w3/c8cS/eV4p49khItmeM5mKNb23HIZnxfzkBKt/xu5Hc
-	Y2oTFfBwNxP/ygTCBZSU1ktpx1ZB+T49BxYTW1cjWV3sNAiItCklxbhJ6j1v6RM=
-X-Google-Smtp-Source: AGHT+IHyl278IrvxXKkNFcB/lbp76vS0EdeltovBWNosOdxm88e/bktWgiecN97W3uyDlaj9aKKxiA==
-X-Received: by 2002:a50:8e0e:0:b0:56d:f78f:8747 with SMTP id 14-20020a508e0e000000b0056df78f8747mr966336edw.16.1713507577563;
-        Thu, 18 Apr 2024 23:19:37 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.185])
-        by smtp.gmail.com with ESMTPSA id k4-20020a50cb84000000b005705bb48307sm1721233edi.42.2024.04.18.23.19.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 23:19:37 -0700 (PDT)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: geert+renesas@glider.be,
-	linus.walleij@linaro.org,
-	biju.das.jz@bp.renesas.com,
-	tglx@linutronix.de
-Cc: linux-renesas-soc@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v3] pinctrl: renesas: rzg2l: Configure the interrupt type on resume
-Date: Fri, 19 Apr 2024 09:19:24 +0300
-Message-Id: <20240419061924.3363667-1-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713507729; c=relaxed/simple;
+	bh=CCTUV2khsqbnKQRPPnORCP2FFCgPHmJyOA/jrQ9ycgg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sVnoZel25s5FLPgc7FGdaAvjen56NpFDtXt6DyRO9fEfyaVJQXDwkB24ya2h3+DB/X+NxHhAIRpBFQvU0DgfFvjVds/cl8JJ9kbQkaYqG5rXZGo8+0GHRmSa5m+7WDnD3R0OOcayQATh35BUPTG0J2DBNMm2D9C9R425qYcfeXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-de-66220d871b94
+Date: Fri, 19 Apr 2024 15:21:54 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org,
+	vernhao@tencent.com, mgorman@techsingularity.net, hughd@google.com,
+	willy@infradead.org, david@redhat.com, peterz@infradead.org,
+	luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, rjgolo@gmail.com
+Subject: Re: [PATCH v9 rebase on mm-unstable 0/8] Reduce tlb and interrupt
+ numbers over 90% by improving folio migration
+Message-ID: <20240419062154.GA26669@system.software.com>
+References: <20240418061536.11645-1-byungchul@sk.com>
+ <87cyqlyjh5.fsf@yhuang6-desk2.ccr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87cyqlyjh5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsXC9ZZnoW4Hr1KawZI5LBZz1q9hs/i84R+b
+	xYsN7YwWX9f/YrZ4+qmPxeLyrjlsFvfW/Ge1OL9rLavFjqX7mCwuHVjAZHG89wCTxfx7n9ks
+	Nm+aymxxfMpURovfP4CKT86azOIg4PG9tY/FY+esu+weCzaVemxeoeWxeM9LJo9NqzrZPDZ9
+	msTu8e7cOXaPEzN+s3jMOxno8X7fVTaPrb/sPBqnXmPz+LxJLoAvissmJTUnsyy1SN8ugSvj
+	6fEXzAUPdSqWbE9tYNyo0MXIwSEhYCLR3B7VxcgJZn7r+swKYrMIqEos7WoAs9kE1CVu3PjJ
+	DGKLCGhIfFq4nL2LkYuDWeA5k8TvN7/ZQRLCAlUS627fZQOxeQUsJA4fXATWICSQKXH3/gYm
+	iLigxMmZT1hAbGYBLYkb/14ygdzALCAtsfwfB0iYU8BO4vGXr2DlogLKEge2HWcC2SUhsI5d
+	Yu6hbkaIQyUlDq64wTKBUWAWkrGzkIydhTB2ASPzKkahzLyy3MTMHBO9jMq8zAq95PzcTYzA
+	KFxW+yd6B+OnC8GHGAU4GJV4eBfEK6YJsSaWFVfmHmKU4GBWEuE14wAK8aYkVlalFuXHF5Xm
+	pBYfYpTmYFES5zX6Vp4iJJCeWJKanZpakFoEk2Xi4JRqYAzzPnkuQUDGd87LaZ/nHgu+ccVh
+	wbxn5lpie0Wl/158Ffd9ofOX+dKVT2bKruPL+/H1ZL5b/6M3O2KWrOxTLdgVJDDVrmY32/xY
+	CQG1eX31ASvuLS9/M3/ZxbmnMo3rUnZP/KHK1ibF0Vbs0dNYMN9YzKNgx5TbQVdC82NcN4ay
+	sBe2fqsOFVFiKc5INNRiLipOBABquc+XvgIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMIsWRmVeSWpSXmKPExsXC5WfdrNvOq5RmcPaSnsWc9WvYLD5v+Mdm
+	8WJDO6PF1/W/mC2efupjsTg89ySrxeVdc9gs7q35z2pxftdaVosdS/cxWVw6sIDJ4njvASaL
+	+fc+s1ls3jSV2eL4lKmMFr9/ABWfnDWZxUHQ43trH4vHzll32T0WbCr12LxCy2PxnpdMHptW
+	dbJ5bPo0id3j3blz7B4nZvxm8Zh3MtDj/b6rbB6LX3xg8tj6y86jceo1No/Pm+QC+KO4bFJS
+	czLLUov07RK4Mp4ef8Fc8FCnYsn21AbGjQpdjJwcEgImEt+6PrOC2CwCqhJLuxrAbDYBdYkb
+	N34yg9giAhoSnxYuZ+9i5OJgFnjOJPH7zW92kISwQJXEutt32UBsXgELicMHF4E1CAlkSty9
+	v4EJIi4ocXLmExYQm1lAS+LGv5dAcQ4gW1pi+T8OkDCngJ3E4y9fwcpFBZQlDmw7zjSBkXcW
+	ku5ZSLpnIXQvYGRexSiSmVeWm5iZY6pXnJ1RmZdZoZecn7uJERhVy2r/TNzB+OWy+yFGAQ5G
+	JR7eBfGKaUKsiWXFlbmHGCU4mJVEeM04gEK8KYmVValF+fFFpTmpxYcYpTlYlMR5vcJTE4QE
+	0hNLUrNTUwtSi2CyTBycUg2MGb+cN/2/f3PBZJPn828+8X124UX1vAO7fnP/WDNfRuTJObNo
+	5WTPa67x9Yas7CuW/5y8fxJrVfvqBc1+r5fukJm0ZeKsJ5zRgSvu5clczWj84xH1dP/9EI7g
+	vxdWHzy6y31LdUUaW7c994SUeK8FH4Tyj37MO1QmYrWgb+np91vr91tVcHxSU1NiKc5INNRi
+	LipOBACRLonapgIAAA==
+X-CFilter-Loop: Reflected
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Fri, Apr 19, 2024 at 02:06:30PM +0800, Huang, Ying wrote:
+> Byungchul Park <byungchul@sk.com> writes:
+> 
+> > Hi everyone,
+> >
+> > While I'm working with a tiered memory system e.g. CXL memory, I have
+> > been facing migration overhead esp. tlb shootdown on promotion or
+> > demotion between different tiers.  Yeah..  most tlb shootdowns on
+> > migration through hinting fault can be avoided thanks to Huang Ying's
+> > work, commit 4d4b6d66db ("mm,unmap: avoid flushing tlb in batch if PTE
+> > is inaccessible").  See the following link for more information:
+> >
+> > https://lore.kernel.org/lkml/20231115025755.GA29979@system.software.com/
+> >
+> > However, it's only for ones using hinting fault.  I thought it'd be much
+> > better if we have a general mechanism to reduce all tlb numbers that we
+> > can ultimately apply to any type of migration.
+> >
+> > I'm suggesting a mechanism called MIGRC that stands for 'Migration Read
+> > Copy', to reduce tlb numbers by deferring tlb flush until the source
+> > folios at migration actually become used, of course, only if the target
+> > PTE don't have write permission.
+> >
+> > To achieve that:
+> >
+> >    1. For the folios that map only to non-writable tlb entries, prevent
+> >       tlb flush during migration but perform it just before the source
+> >       folios actually become used out of buddy or pcp.
+> >
+> >    2. When any non-writable tlb entry changes to writable e.g. through
+> >       fault handler, give up migrc mechanism and perform tlb flush
+> >       required right away.
+> >
+> > No matter what type of workload is used for performance evaluation, the
+> > result would be positive thanks to the unconditional reduction of tlb
+> > flushes, tlb misses and interrupts.  For the test, I picked up XSBench
+> > that is widely used for performance analysis on high performance
+> > computing architectures - https://github.com/ANL-CESAR/XSBench.
+> >
+> > The result would depend on memory latency and how often reclaim runs,
+> > which implies tlb miss overhead and how many times migration happens.
+> > The slower the memory is and the more reclaim runs, the better migrc
+> > works so as to obtain the better result.  In my system, the result
+> > shows:
+> >
+> >    1. itlb flushes are reduced over 90%.
+> >    2. itlb misses are reduced over 30%.
+> >    3. All the other tlb numbers also get enhanced.
+> >    4. tlb shootdown interrupts are reduced over 90%.
+> >    5. The test program runtime is reduced over 5%.
+> >
+> > The test envitonment:
+> >
+> >    Architecture - x86_64
+> >    QEMU - kvm enabled, host cpu
+> 
+> The test is run in VM?  Do you have test results in bare metal
+> environment?
 
-Commit dce0919c83c3 ("irqchip/renesas-rzg2l: Do not set TIEN and TINT
-source at the same time") removed the setup of TINT from
-rzg2l_irqc_irq_enable(). To address the spourious interrupt issue the setup
-of TINT has been moved in rzg2l_tint_set_edge() though
-rzg2l_disable_tint_and_set_tint_source(). With this, the interrupts are
-not properly re-configured after a suspend-to-RAM cycle. To address
-this issue and avoid spurious interrupts while resumming set the
-interrupt type before enabling it.
+I will test in a bare metal environment and share the result.
 
-Fixes: dce0919c83c3 ("irqchip/renesas-rzg2l: Do not set TIEN and TINT source at the same time")
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
+> >    Numa - 2 nodes (16 CPUs 1GB, no CPUs 99GB)
+> 
+> The configuration looks quite abnormal.  Have you tested with other
+> configuration, such 1:4 or 1:8?
 
-Changes in v3:
-- moved dev_crit() out of critical section
+Okay I will test with the configurations.
 
-Changes in v2:
-- none; this patch was part of series at [1] and added in v2 of that
-  series
+> >    Linux Kernel - v6.9-rc4, numa balancing tiering on, demotion enabled
+> >
+> > < measurement: raw data - tlb and interrupt numbers >
+> >
+> >    $ perf stat -a \
+> >            -e itlb.itlb_flush \
+> >            -e tlb_flush.dtlb_thread \
+> >            -e tlb_flush.stlb_any \
+> >            -e dtlb-load-misses \
+> >            -e dtlb-store-misses \
+> >            -e itlb-load-misses \
+> >            XSBench -t 16 -p 50000000
+> >
+> >    $ grep "TLB shootdowns" /proc/interrupts
+> >
+> >    BEFORE
+> >    ------
+> >    40417078     itlb.itlb_flush
+> >    234852566    tlb_flush.dtlb_thread
+> >    153192357    tlb_flush.stlb_any
+> >    119001107892 dTLB-load-misses
+> >    307921167    dTLB-store-misses
+> >    1355272118   iTLB-load-misses
+> >
+> >    TLB: 1364803    1303670    1333921    1349607
+> >         1356934    1354216    1332972    1342842
+> >         1350265    1316443    1355928    1360793
+> >         1298239    1326358    1343006    1340971
+> >         TLB shootdowns
+> >
+> >    AFTER
+> >    -----
+> >    3316495      itlb.itlb_flush
+> >    138912511    tlb_flush.dtlb_thread
+> >    115199341    tlb_flush.stlb_any
+> >    117610390021 dTLB-load-misses
+> >    198042233    dTLB-store-misses
+> >    840066984    iTLB-load-misses
+> >
+> >    TLB: 117257     119219     117178     115737
+> >         117967     118948     117508     116079
+> >         116962     117266     117320     117215
+> >         105808     103934     115672     117610
+> >         TLB shootdowns
+> >
+> > < measurement: user experience - runtime >
+> >
+> >    $ time XSBench -t 16 -p 50000000
+> >
+> >    BEFORE
+> >    ------
+> >    Threads:     16
+> >    Runtime:     968.783 seconds
+> >    Lookups:     1,700,000,000
+> >    Lookups/s:   1,754,778
+> >
+> >    15208.91s user 141.44s system 1564% cpu 16:20.98 total
+> >
+> >    AFTER
+> >    -----
+> >    Threads:     16
+> >    Runtime:     913.210 seconds
+> >    Lookups:     1,700,000,000
+> >    Lookups/s:   1,861,565
+> >
+> >    14351.69s user 138.23s system 1565% cpu 15:25.47 total
+> 
+> IIUC, the memory footprint will be larger with the patchset.  Do you
+> have data?
 
-[1] https://lore.kernel.org/all/20240320104230.446400-1-claudiu.beznea.uj@bp.renesas.com/
+No. The footprint is, I expect, same as vanilla with this patchset. I
+will share the data.
 
- drivers/pinctrl/renesas/pinctrl-rzg2l.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+Last time, since you pointed out that the footprint seemed to be larger
+with the previous patchset becasue it worked anyway based on deferring
+freeing folios.
 
-diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-index 93916553bcc7..20425afc6b33 100644
---- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-@@ -2045,7 +2045,9 @@ static void rzg2l_gpio_irq_restore(struct rzg2l_pinctrl *pctrl)
- 
- 	for (unsigned int i = 0; i < RZG2L_TINT_MAX_INTERRUPT; i++) {
- 		struct irq_data *data;
-+		unsigned long flags;
- 		unsigned int virq;
-+		int ret;
- 
- 		if (!pctrl->hwirq[i])
- 			continue;
-@@ -2063,17 +2065,18 @@ static void rzg2l_gpio_irq_restore(struct rzg2l_pinctrl *pctrl)
- 			continue;
- 		}
- 
--		if (!irqd_irq_disabled(data)) {
--			unsigned long flags;
--
--			/*
--			 * This has to be atomically executed to protect against a concurrent
--			 * interrupt.
--			 */
--			raw_spin_lock_irqsave(&pctrl->lock.rlock, flags);
-+		/*
-+		 * This has to be atomically executed to protect against a concurrent
-+		 * interrupt.
-+		 */
-+		raw_spin_lock_irqsave(&pctrl->lock.rlock, flags);
-+		ret = rzg2l_gpio_irq_set_type(data, irqd_get_trigger_type(data));
-+		if (!ret && !irqd_irq_disabled(data))
- 			rzg2l_gpio_irq_enable(data);
--			raw_spin_unlock_irqrestore(&pctrl->lock.rlock, flags);
--		}
-+		raw_spin_unlock_irqrestore(&pctrl->lock.rlock, flags);
-+
-+		if (ret)
-+			dev_crit(pctrl->dev, "Failed to set IRQ type for virq=%u\n", virq);
- 	}
- }
- 
--- 
-2.39.2
+Which made me rework on it so as to avoid tweaking the original behavior
+of mm.  Instead, the current version of migrc let it go exactly same as
+it is with vanilla until the interesting folios exit from pcp or buddy,
+and do tlb flush if needed.
 
+	Byungchul
+
+> --
+> Best Regards,
+> Huang, Ying
 
