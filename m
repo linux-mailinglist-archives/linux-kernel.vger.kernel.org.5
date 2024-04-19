@@ -1,60 +1,54 @@
-Return-Path: <linux-kernel+bounces-151281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 789858AAC5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:04:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE9618AAC60
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:04:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CB931F21D93
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:04:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6158EB21BE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3A67E567;
-	Fri, 19 Apr 2024 10:03:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE857D416;
+	Fri, 19 Apr 2024 10:03:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YOktfFrN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g98+0TD+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4086B7D416;
-	Fri, 19 Apr 2024 10:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8063D961;
+	Fri, 19 Apr 2024 10:03:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713521023; cv=none; b=neeNrGlgsfdYkTna+F8v5AV8FNEwz/inpzZKpCDIrkqudoSA3PJJ0v9wfrXg1zbvMVEknlnuuLokPO6M8YDbEstl/O/pvHAuxGNXz4Y85KxQ6HX0KhX7cBWkwJVuRqqFZlLFQdfJx4g1bjChs6lpYMIEdPrM3zb6WYDn81wxiOc=
+	t=1713521029; cv=none; b=by0860LnQ5kjegKhl0nLhlnRDRW51kQpWlaRyyutQqd2/7uOci6EWqC68UZLTqk+MOvSgDdVA692F7fvQIGbS/4xLKY56uw/7FSW/wflLLRmAC24fXCA7Qn0An1jAqhAkQRXg/6ZfhtB3ATmL4+TdZPXztQYmv7uiyAc2yJlU+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713521023; c=relaxed/simple;
-	bh=n7OH67vOnUXT5E0+NaPP78ro9DgTG2qSCSXMWSem9jY=;
+	s=arc-20240116; t=1713521029; c=relaxed/simple;
+	bh=LZ8j7/DAFq2z05bW7r9GYgMXjNxvmbu0CIMhbcQqQiY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=kqVL63vWsIxFi2C+xV7YZUBHArJGR8em3CSmZmdt/f9VaxcwdMA2Mbs8JBuWkyeTC0X6xHoH2gwe4/P9b3GulwDD2M8vYkNdi29PzfNeonRVkxcLRjT+7pLcwwDKhnvocxI/aOgILhZisfTPagTd7N9X89o7aqwKphCXp0DxBwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YOktfFrN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47D28C116B1;
-	Fri, 19 Apr 2024 10:03:40 +0000 (UTC)
+	 MIME-Version:Content-Type; b=sf5GLGZCC3p5wMg8R93EWnCaZrGe3XoDyYZdHtXreaMudZTfCbRBM/JoSHHXyabztqhirYmvatGwNfFaJm2YlVxa982hI8cvTPXzNHa/RkL62dtzdVv3Egf2bMjWOTfk05XbVIuBpnwmcxjIEwrhKkCuCJIdkkWxUKy7C6Ayb/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g98+0TD+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4CEBC116B1;
+	Fri, 19 Apr 2024 10:03:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713521022;
-	bh=n7OH67vOnUXT5E0+NaPP78ro9DgTG2qSCSXMWSem9jY=;
+	s=k20201202; t=1713521028;
+	bh=LZ8j7/DAFq2z05bW7r9GYgMXjNxvmbu0CIMhbcQqQiY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=YOktfFrNflfjaUdNMGWq/tg+BH5si9SBuwqCBudQsIk6tMeJFYAyibAjYpFRZbL9v
-	 QMQ9rpTYoW/+hQsqvPenWVvfaddwu6UHyjEpumpPOROBv0aBY9Bg9c1LAYQJTOATBu
-	 LiayzcykMUo/eMMh+QTCec9QZLXjhXpE9UZ0uCdtV0aujGM01CkKv/PHdlx19r4gGH
-	 5iwVowdHMsZraL78IKkSq1a1bXW4QTSJeLCBsfLsdlpQo1hqEAFaEAl4Oe6TcYyR6I
-	 ngmV2XhEusPwg30t1ue1FgWwJSH84e/Edqox2CeTGqwKZIQiN7Ogf4046dvJuRki+s
-	 3vqkz4QJ0QtvQ==
+	b=g98+0TD+/HxT7CXg/LLA5YzVNNafZurzBeoXHBYkCtNcBNrvfXotZ82/KHJX6KlM2
+	 ap6wQ9VlSK0I1O2XVwmQcDzKfs415b1oTkzNdw5n8WF5ZUywRoLtMg8qrGz2nspnqm
+	 C7Eazf1H/ZBFJwsfZbH7kTqtcXxIoMVEvl96zxxx/NzNUiT8JBe9toADTaTuMRs7f5
+	 R7s+IgpllAXC3zIwSNLQul/oWhosDOPOUXpKf01eNUt6H4kiT8jUfNNr40xQyLFye6
+	 gz7Sphiqs0TZLTUDM6by4pwe1czFcG0LYUqP+29jVjHKl53B5KEsduW3cKxUg+L/jV
+	 QV31Fb3TN4xew==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
-Cc: Thierry Reding <treding@nvidia.com>, linux-sound@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-tegra@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240418163326.58365-1-sheharyaar48@gmail.com>
-References: <20240418163326.58365-1-sheharyaar48@gmail.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: tegra20-das: Convert to schema
-Message-Id: <171352101993.1723702.4818534972723783279.b4-ty@kernel.org>
-Date: Fri, 19 Apr 2024 19:03:39 +0900
+To: Maciej Strozek <mstrozek@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, 
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240418103315.1487267-1-mstrozek@opensource.cirrus.com>
+References: <20240418103315.1487267-1-mstrozek@opensource.cirrus.com>
+Subject: Re: [PATCH v2] spi: cs42l43: Correct name of ACPI property
+Message-Id: <171352102742.1723864.2404098054563161997.b4-ty@kernel.org>
+Date: Fri, 19 Apr 2024 19:03:47 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,19 +59,19 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Thu, 18 Apr 2024 22:03:24 +0530, Mohammad Shehar Yaar Tausif wrote:
-> Convert NVIDIA Tegra20 DAS (Digital Audio Switch) binding to schema.
+On Thu, 18 Apr 2024 11:33:15 +0100, Maciej Strozek wrote:
+> Fixes: 439fbc97502a ("spi: cs42l43: Add bridged cs35l56 amplifiers")
 > 
 > 
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: tegra20-das: Convert to schema
-      commit: ed37d240d03e84d09d4d2a771fda419da4308d17
+[1/1] spi: cs42l43: Correct name of ACPI property
+      commit: e4f23c4c4dd0aa9bb3a70a873d3fc32a41f64007
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
