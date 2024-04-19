@@ -1,143 +1,114 @@
-Return-Path: <linux-kernel+bounces-151660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0FF98AB1B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:22:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF4028AB1B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:23:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 760C61F22CA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:22:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A5F5281F26
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DDF012F5A5;
-	Fri, 19 Apr 2024 15:22:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F0512F5B2;
+	Fri, 19 Apr 2024 15:23:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CqGCGbjl"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z6e+1u4F"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B1D12F5AE
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:22:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A604112AAF4
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713540125; cv=none; b=rfER0BNF16tBNei3iISqIXzinTmFMJBaJVJpHjHU5F4DcX29LiD/6w4y/wbd7IE4xywIS+qLRajon7e458bTD0ouJ/vJcrjneSHs0Yszbtu7du9JPKF1ikhS+xz4Rk9dw37Agz3UD7WMWUB8y/lswSBfHEMFZ4sTc6/VHGQZa5w=
+	t=1713540201; cv=none; b=bEYAEOB48a8138JUE9ozANoFCZoloQwq+EMEt4y3HsrHrl0TecRnZFZEUPew0Js9mgl8wc59h/WPBnlZYukm/7zYjJcXs8hLugxZ/CvgZ4hQQPZiH96sZ8VPh2bmS2uD7AP/gJGkL2yMTHu6oKCMGNK3yAZNpdYivsn0RdLBBxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713540125; c=relaxed/simple;
-	bh=MJGoZTVpjtviiVYwoZxi+ES4Zin/KP+7Zanoc63PsIY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DMbv0Mo1PAG/wRQMwPqIvZSF27lxYQMh15nA5nC8ThTU2QXCDf5sBPKfMnJWzWVIZb9wxuqNVIOdhVAqWLlKFYdUe28KGHY1M76LarpVt0yLUm1YqCYUAOyPnB8G0fajxtUq6xLSAru+4Jui/dVWzWzz41q7wtGPIJ9DsxaTAxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CqGCGbjl; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713540123;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XYoEcbDndyhCownGWpj006Efk7M0aOxnlzP6C0Hoi1o=;
-	b=CqGCGbjl+Dip8jROrPhE507Tskggu9IoTyHNA5/vsLz7EtSoy5IZKLE56wH5J5pkJOC8B/
-	zip3WDIlmV/E6IyPpjBZiJRE7SKVcIRL91+RXEaTedkI2esHqKa97x1TSqgPKT0NyzBsut
-	7stBC6+fuOkgmVAlIu4aV6DWnX5Fbhs=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-338-1-RR6fVeNIukpkDih73Vig-1; Fri, 19 Apr 2024 11:22:01 -0400
-X-MC-Unique: 1-RR6fVeNIukpkDih73Vig-1
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6ebc82e112bso552141a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:22:01 -0700 (PDT)
+	s=arc-20240116; t=1713540201; c=relaxed/simple;
+	bh=sMYmeGEwN83BEA6+SV4SlkrUjV7nTJSPzcIVkqnAUOw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Iip9VBO+RijgumQGs1raa57jnLXy2Y4Xu4LRv7DtetNRqHf2Rxg0vcBhLr4Dh8WDM7G1CmiybPIsxU8sPS+VHw3QjciEPRvV0niQIEZBs+xRZJ2bDh6MB3/Ip3y9g6lf0h11gab/4zIU71fhOrOd7S9v/r5daZhbHZ329fekvVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z6e+1u4F; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ed627829e6so2336132b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:23:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713540199; x=1714144999; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=INx2PSoC80punQbd7jMF0869fDvIdi67uwkmtDA3+5E=;
+        b=Z6e+1u4Fv67m8KLYUfnEJEe8LsMzNUr2AkyCpkBMTrt6/tVfj4mbmsH85mNelEsxG3
+         m9ZuoOR6BPQcKAyxkQRaefuN5CO+LR48/VeiRKLa+crZzYoPv+GY8suUm6plVHavnLyN
+         tHR+aGt7bEWRtjKI2Aau3njjZwOIPXwQb+PxveAJ0MH8n8vADlKrD64I2AeAG75AXTjj
+         Bp7uOr9e5KddNR4uAAZFr0jwpCkJoDHpUStaIJE0Y1K/OwSxP0BwfirxUBTmoFZCrr/f
+         bg4YkPTqVNZnk48dbl+w8UwVYXXcmJLe8N/aFR+cbwcI+CfJde/LDOVEDKwc52Mc3we0
+         CNow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713540121; x=1714144921;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XYoEcbDndyhCownGWpj006Efk7M0aOxnlzP6C0Hoi1o=;
-        b=vs84T9VAfXDPNeNqdHe21YtTnk/gqaL9Wz5cTVVO/mstO7s1sWP606xYGYo34AFx+X
-         Sk7K4WL2i59Z7jz8VfF8qoCW3iLyf0a0bOhKlOcdgorUglkCabcJBRjkkSQNQ89xU4MD
-         P94QANIwY+b7AIg7ardR3Zh361UQStTeALYOQh5qvUiUvRCiQ2trf/ZZc50CFUQy3ARR
-         23OwcdpPPAg24eVd6xgZXAedlTqL+3S2UBFcqNeDQXgMOiJacBo+klAi1aDt3FbPAYzA
-         ODnFJuN7VRdH0oIs/j8f0SZA5i9Yd8vdJSjR8yLcd60A04GWGhDafRGHK8jHDtufvuc/
-         zrAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWVtQ7YCAIxTPQxxjJCPzW6XjwLD2HJh+LKD9uRe+cZvgNe/RZD24F/WIfR7WVCNi2tLz01PQY8EnzmTGcr/XctzqSGSvaBnzk9T0JD
-X-Gm-Message-State: AOJu0Yxr0YQjlFIWGacbupuMI0YB9OXQU7Mt5Vq+XcJ+bCVMewG2ytx+
-	PsDY0c/utMXdh9obQJA7+/4X3GBPSa0DAZheRWjHaFFJSfhyPbiqbg4kfmw18MF5K5ESENB2cXw
-	CBl4holfgJAgl7dNMPrmZ85AUgafdxKOtVuHYZB94HKbykYusg4qlpGqFJqhpF073JAltgQ==
-X-Received: by 2002:a05:6830:1005:b0:6eb:d466:aaf5 with SMTP id a5-20020a056830100500b006ebd466aaf5mr2052444otp.0.1713540120745;
-        Fri, 19 Apr 2024 08:22:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHY2wIQBnATGA2C+bt/ZQ3xgZjYZvLmZNmXi8KS8LWrW44TJf7aT5W27ju6eUf2PBuAp5a4bw==
-X-Received: by 2002:a05:6830:1005:b0:6eb:d466:aaf5 with SMTP id a5-20020a056830100500b006ebd466aaf5mr2052412otp.0.1713540120236;
-        Fri, 19 Apr 2024 08:22:00 -0700 (PDT)
-Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id wk17-20020a05620a579100b0078f1c03f06csm497608qkn.113.2024.04.19.08.21.59
+        d=1e100.net; s=20230601; t=1713540199; x=1714144999;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=INx2PSoC80punQbd7jMF0869fDvIdi67uwkmtDA3+5E=;
+        b=JEa0e0k8TxhKXgxyew2eE2rF/TWboael7uvPBF/t526L3u2g6vkAX/WYuQA2IeZjU7
+         vUHlPOcR/ILxZojtNOFt4UBJOtOo3rNxl1tXwJlN5+7eDqXri8fciWP56txVtBQRJf3x
+         O7z1e3HfPLHrnCGuCyunV6tqmvv4NjswZzqkyiy3liRhmfyBCqP51cAV9dvd8ocX3f8L
+         lHdQzXBv0oTmeqbeZ/yygkyKfus2Tn4kM4SApd5kDoqjvPz6K8TPywwAuCE2IIt1FfFY
+         iUruUbHqiMU76ZpjsEkrl22L0XfK1IWrPcSewlbxX14s4OAr3ORoKsarxvnNLBvALPwr
+         /GkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUJpDK2GcA+IsTHR/x6+P+LJsSNzij5y5GKm3qmGL1dvea2EV4SpTbbYb0XcHk4p8Qhh3cJqIzXNhSwCvGr6BidebHERcCleFRs/2fu
+X-Gm-Message-State: AOJu0YxvnS9CeoavtOk7N8KHjyVCNx1rGpDjPRGjzUvFGYh9iSagvi5o
+	d8NUsHvFPmMTxFfK56nKrWxp+kTcZJbY3k0ORk15EXuGH+1eaX72
+X-Google-Smtp-Source: AGHT+IGDRJOmEWJobRQpk5TnSzXpKTEgICaYfQ2jmDxPFG4qoZuXuS3icvGufHpIFmT4dog+HvWLfw==
+X-Received: by 2002:a05:6a20:7287:b0:1a9:7f1b:e3f7 with SMTP id o7-20020a056a20728700b001a97f1be3f7mr2884556pzk.50.1713540199574;
+        Fri, 19 Apr 2024 08:23:19 -0700 (PDT)
+Received: from kernel.. ([2402:e280:214c:86:c4a9:af77:5f5:9531])
+        by smtp.gmail.com with ESMTPSA id l23-20020a17090a3f1700b002a55198259fsm6412036pjc.0.2024.04.19.08.23.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 08:21:59 -0700 (PDT)
-Date: Fri, 19 Apr 2024 11:21:58 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH 3/3] mm/hugetlb: Assert hugetlb_lock in
- __hugetlb_cgroup_commit_charge
-Message-ID: <ZiKMFiEyjz_A-hkj@x1n>
-References: <20240417211836.2742593-1-peterx@redhat.com>
- <20240417211836.2742593-4-peterx@redhat.com>
- <CAHS8izPMjBMNUStsUjobbo4rUXirFtkOZVvJTFFqD4SUafQZaQ@mail.gmail.com>
+        Fri, 19 Apr 2024 08:23:19 -0700 (PDT)
+From: sundar <prosunofficial@gmail.com>
+To: maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch
+Cc: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	sundar <prosunofficial@gmail.com>
+Subject: [PATCH] Fix for kernel doc warning [linux-next]
+Date: Fri, 19 Apr 2024 20:53:07 +0530
+Message-Id: <20240419152307.13099-1-prosunofficial@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izPMjBMNUStsUjobbo4rUXirFtkOZVvJTFFqD4SUafQZaQ@mail.gmail.com>
 
-On Fri, Apr 19, 2024 at 08:03:08AM -0700, Mina Almasry wrote:
-> On Wed, Apr 17, 2024 at 2:18 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > This is similar to __hugetlb_cgroup_uncharge_folio() where it relies on
-> > holding hugetlb_lock.  Add the similar assertion like the other one, since
-> > it looks like such things may help some day.
-> >
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> 
-> Reviewed-by: Mina Almasry <almasrymina@google.com>
+Fixed the kernel doc warning due to typo error in field name.
 
-Thanks.
+/include/drm/drm_mode_config.h:973: warning: Function parameter or struct member 'size_hints_property' not described in 'drm_mode_config'
+/include/drm/drm_mode_config.h:973: warning: Excess struct member 'size_hints_propertty' description in 'drm_mode_config'
 
-> 
-> > ---
-> >  mm/hugetlb_cgroup.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
-> > index aa4486bd3904..e20339a346b9 100644
-> > --- a/mm/hugetlb_cgroup.c
-> > +++ b/mm/hugetlb_cgroup.c
-> > @@ -308,7 +308,7 @@ static void __hugetlb_cgroup_commit_charge(int idx, unsigned long nr_pages,
-> >  {
-> >         if (hugetlb_cgroup_disabled() || !h_cg)
-> >                 return;
-> > -
-> > +       lockdep_assert_held(&hugetlb_lock);
-> 
-> Maybe also remove the comment on the top of the function:
-> 
-> /* Should be called with hugetlb_lock held */
-> 
-> Now that the function asserts, the comment seems redundant, but up to you.
+Signed-off-by: sundar <prosunofficial@gmail.com>
+---
+ include/drm/drm_mode_config.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-IMHO there's no harm to be verbose in this case, so I'll just keep it
-simple to be as-is.
-
-Thanks,
-
+diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
+index 06d7777a881f..8de3c9a5f61b 100644
+--- a/include/drm/drm_mode_config.h
++++ b/include/drm/drm_mode_config.h
+@@ -953,7 +953,7 @@ struct drm_mode_config {
+ 	struct drm_property *modifiers_property;
+ 
+ 	/**
+-	 * @size_hints_propertty: Plane SIZE_HINTS property.
++	 * @size_hints_property: Plane SIZE_HINTS property.
+ 	 */
+ 	struct drm_property *size_hints_property;
+ 
 -- 
-Peter Xu
+2.34.1
 
 
