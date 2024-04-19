@@ -1,123 +1,121 @@
-Return-Path: <linux-kernel+bounces-151138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB9678AA999
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:57:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2031A8AA989
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:52:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36499B228E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:57:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0D09281BCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47B8947F5F;
-	Fri, 19 Apr 2024 07:57:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mK1SK2+X"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05AC4AECF;
+	Fri, 19 Apr 2024 07:52:26 +0000 (UTC)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19EE52F63;
-	Fri, 19 Apr 2024 07:57:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2FC39FC1;
+	Fri, 19 Apr 2024 07:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713513445; cv=none; b=JYmdts0n/T55BpxfSi+RedNr6t+CGnAnGrKty0mluC3Puy0Mww9vz6r3gQFmwfBY8Vwds6iKAr0n45QGD9Rv8Z5DEmbK0o+toQI2UlV8Up3HwppknhJmx1AO30HjAj7UVKnbYlMEs1ZDGYjpoAsEZSpKhPR+Srz8zVHw4uXtXD4=
+	t=1713513146; cv=none; b=advq88IyFE7ZLDpBBiioN0HdZ3WJYKhRg2IU5RLxKaoOXMwwijwjQICvZr63x63AISfdqUC56o5VnToGVTqPC3mFDi3Nip8kKN+6PXkEHLTmynNQ0yzKcjrqPotBA4Ei4IKZMmA3wxTHPZ+AoiNoePHEdwU+wlJB3lcsw6SvQvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713513445; c=relaxed/simple;
-	bh=/azgN9fac9eSB9GDOVwcavx6OAd95Ef5uZBSpwv/e8g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VoIoY+W/rDw1chI0gOjtEQsi+i+i82d2Vgq4tpXRHuWfdiJT2qYTlcXHBEgu8rweI1O4ENrlW+hdSDD8dIgFtYRmDTmSWYLDXR0Z8L+RLsoZfSL0AEQe++RsAhgegS8v91oQ0gpIxDGeXo8vh6nvGkC/Ug2BATaNkAvkDzN34cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mK1SK2+X; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713513444; x=1745049444;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/azgN9fac9eSB9GDOVwcavx6OAd95Ef5uZBSpwv/e8g=;
-  b=mK1SK2+XrnbruwTav+3uwYvU1fYeX/c4ASSCDjf7heFk04zxykT+0v4m
-   VexlknCu3z8TVQ3IOHD1g1j5YDEeCmfluVkARXl1t1Bvuj1dW78poTqUv
-   7e56TI0I5q6oLrX79FA+Bw9gCIzyIF6kfMA6bckw3ki8xIfYH/P3BSReY
-   rbQaMLzbhNpNYFNFWkRmnD5G9+h4aoJfovBKtPOTXgXZA9vRZ20s1HuqU
-   DWpoR7mFnmVnOFcNLEJWvMMwXYiE6jZ9l6QkJnzo6VJ6Gr+BAysmOi3Sw
-   H5DdqX/lncqcfFUy9ODr5AmCyjKzY+bk1ZH3q4sNUX1q4DMgWex22dtUq
-   w==;
-X-CSE-ConnectionGUID: bRjAzBujRpaG4D3ROVuCcQ==
-X-CSE-MsgGUID: syFEHzbtTDOgoyiV/zChHQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="34501527"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="34501527"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 00:57:23 -0700
-X-CSE-ConnectionGUID: uZpu/pNASeeRbeBwLJk6gA==
-X-CSE-MsgGUID: A9VbWiRERTquWs18JfEGlA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="23319101"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa010.fm.intel.com with ESMTP; 19 Apr 2024 00:57:20 -0700
-Date: Fri, 19 Apr 2024 15:52:06 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Peter Colberg <peter.colberg@intel.com>
-Cc: Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-	Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Russ Weight <russ.weight@linux.dev>,
-	Marco Pagani <marpagan@redhat.com>,
-	Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: Re: [PATCH v2] fpga: dfl: remove unused function
- is_dfl_feature_present
-Message-ID: <ZiIipqA6PdZIslfR@yilunxu-OptiPlex-7050>
-References: <20240415235743.3045-1-peter.colberg@intel.com>
+	s=arc-20240116; t=1713513146; c=relaxed/simple;
+	bh=C6lmziyxUI1u/f3T9IScmFqFqlDnWuHEZJ/CoqIPKLM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l/t6PP4Ri+SzqEVjQdG9EQB4DHv3qvmGZngn1TUQ43zB3F07XEcf3/n0mYDehBWkf3OMpRm4l+Dk5ALc1rz59yjInQlE28xgUmUNWVDBFuQVjjRVorZrxbB8vTI3E7HP40tw5Hs7PknZn09v47W2/u/XAK3Ky+kunIUkO2JZLJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso1772155276.1;
+        Fri, 19 Apr 2024 00:52:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713513143; x=1714117943;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ls5rSBCoF7f0JNFwNazATV5qYNLhrhhntLXb+o+5pX8=;
+        b=Ebz6LyqsS48YOXQuPGytd6WMqwI/dIg0J2XTM1jD4oyw+XnEG7nAy3PcnLLuUpaAV8
+         3rpijoN29XMF7zdgbiECrs4MBWWq6P5/A8inVxNgsZPvnI6HWzbxSie9Yhi2Ho5i9myo
+         W0+0ENWVFP9N27lBSkBQfrh9m6HyKKoSzNUYEJBpnYM5a//vJaHMAKeYtv9rNhr9ncov
+         I1WlZb41egdHpS1PiJ6mFeKpnJF06QKtuUOZ9rM4qVB7W145W22UMrFwxxZS7QEWtrYG
+         o638NrqX52g0y7scNQMwS18Zp3dc5wucWFeqOUl9EDIIhuauDwU6Yub98QmFS9LCl+b0
+         onTw==
+X-Forwarded-Encrypted: i=1; AJvYcCW3dGMhSPvpvTdLr2oERHLRlE4PG4CyQLm8/ajhfz+QYMn9Cawu5gl9SZQUECsgfCf3P5AbrIBAU1tIUtzmuzJfBrNtcc8Feck22GgWkh1bCjJr77Aew3lgyQ7Gfh9rRs1OS1CRX2ZvTj6hzeVZE1IfFxtDmDIff1QZKmxcz2GcGMI6L6ncssY4N+aW
+X-Gm-Message-State: AOJu0YxvlMvy2UyZCDEtQYVEh+blcXnp7Etd9Mxxq482GwS37AuwSuB/
+	6UkpBQAMAr8vLlJ+0OF+2Izo8LckXjlsyfQX/qSIULp1tb9sBt/u+GIO4WAW
+X-Google-Smtp-Source: AGHT+IHtQsA43ifEA07hW7LIUiEb3FKXiqqvkHK/ujPx4JB9bTTzHhjYthgIe0Fny/lnk2WcRLiaxw==
+X-Received: by 2002:a25:ad88:0:b0:dc8:5e26:f501 with SMTP id z8-20020a25ad88000000b00dc85e26f501mr1045663ybi.61.1713513143360;
+        Fri, 19 Apr 2024 00:52:23 -0700 (PDT)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id u16-20020a05690201d000b00dcc45635f27sm708124ybh.18.2024.04.19.00.52.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 00:52:23 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso1772144276.1;
+        Fri, 19 Apr 2024 00:52:23 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVqhzI4Ijk+F/geUz0IHIMyGOigo8sl+A6tWIQurKllvja8E5Gz4KPuO07RCVh0UU2N06fznZqSh7OMKsM9pX4TYfFUctzUnBUbT4U+4U3OWAV0SFosuCltFQHw/cbV0QgOrSem5SQKtxbrhto5NywjuG0OykjW8hCev9/JsqZtVcr+3vfPWGUnzCWN
+X-Received: by 2002:a25:8209:0:b0:ddd:7456:d203 with SMTP id
+ q9-20020a258209000000b00ddd7456d203mr1152202ybk.41.1713513142996; Fri, 19 Apr
+ 2024 00:52:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415235743.3045-1-peter.colberg@intel.com>
+References: <20240419063822.3467424-1-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240419063822.3467424-1-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 19 Apr 2024 09:52:11 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUp3PWJPKDRetyVNW42dGwAes0SY+gJJakAkvbFqab=Dg@mail.gmail.com>
+Message-ID: <CAMuHMdUp3PWJPKDRetyVNW42dGwAes0SY+gJJakAkvbFqab=Dg@mail.gmail.com>
+Subject: Re: [PATCH v4] pinctrl: renesas: rzg2l: Configure the interrupt type
+ on resume
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: linus.walleij@linaro.org, biju.das.jz@bp.renesas.com, tglx@linutronix.de, 
+	linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 07:57:43PM -0400, Peter Colberg wrote:
-> The function is_dfl_feature_present was added but never used.
-                                    ^
-
-Function reference should use the format "function_name()", I fixed it
-in place.
-
-Applied to for-next.
-
-> 
-> Fixes: 5b57d02a2f94 ("fpga: dfl: add feature device infrastructure")
-> Signed-off-by: Peter Colberg <peter.colberg@intel.com>
-> Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+On Fri, Apr 19, 2024 at 8:38=E2=80=AFAM Claudiu <claudiu.beznea@tuxon.dev> =
+wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Commit dce0919c83c3 ("irqchip/renesas-rzg2l: Do not set TIEN and TINT
+> source at the same time") removed the setup of TINT from
+> rzg2l_irqc_irq_enable(). To address the spourious interrupt issue the set=
+up
+> of TINT has been moved in rzg2l_tint_set_edge() though
+> rzg2l_disable_tint_and_set_tint_source(). With this, the interrupts are
+> not properly re-configured after a suspend-to-RAM cycle. To address
+> this issue and avoid spurious interrupts while resumming set the
+> interrupt type before enabling it.
+>
+> Fixes: dce0919c83c3 ("irqchip/renesas-rzg2l: Do not set TIEN and TINT sou=
+rce at the same time")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > ---
-> v2:
-> - Do not wrap commit reference and move to Fixes: tag.
-> ---
->  drivers/fpga/dfl.h | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> index 1d724a28f00a..5063d73b0d82 100644
-> --- a/drivers/fpga/dfl.h
-> +++ b/drivers/fpga/dfl.h
-> @@ -437,11 +437,6 @@ void __iomem *dfl_get_feature_ioaddr_by_id(struct device *dev, u16 id)
->  	return NULL;
->  }
->  
-> -static inline bool is_dfl_feature_present(struct device *dev, u16 id)
-> -{
-> -	return !!dfl_get_feature_ioaddr_by_id(dev, id);
-> -}
-> -
->  static inline
->  struct device *dfl_fpga_pdata_to_parent(struct dfl_feature_platform_data *pdata)
->  {
-> -- 
-> 2.44.0
-> 
-> 
+>
+> Changes in v4:
+> - moved dev_crit() out of critical section
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-fixes for v6.9.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
