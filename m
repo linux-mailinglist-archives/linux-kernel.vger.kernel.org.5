@@ -1,303 +1,202 @@
-Return-Path: <linux-kernel+bounces-151318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 584498AACCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:27:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2A3F8AACE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:31:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C43B81F2194A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:27:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80AEA1F223BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036BD7D408;
-	Fri, 19 Apr 2024 10:27:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47277EF0A;
+	Fri, 19 Apr 2024 10:30:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rp+SNQ87"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OZIrMUT+"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D85B78276
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DFEA3D62
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:30:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713522456; cv=none; b=ZL+tku6fD4tSfFCUbBw1/vgBQQ9VphQ609Cb/acmSR3RrjH5245HQDv5i23tKbF3ykj96IYFNaeHIHLy2XhWtckbvqbuDlLxAJRYWGAEph175R5tiqi00CN09Z3ELF3SiXITBEjS5IGVRR7gmAr6f8g16xF63rEWkBGkdMfFkH4=
+	t=1713522643; cv=none; b=WwKgw9JqCax2zSfcIu/9kKwTQ64SIqeUj3acSuSc969n6Moug/INzGgIHTdRroHaf8pEYaPgzf0DNTHHcKRBG6+YfTxTpoysJ2TRUdN37q9xHm7p961sP+SFIASvpdCyvdI2O93IRmW2wMVWiIftpIjf6kYs8xCEVnGuc4pypa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713522456; c=relaxed/simple;
-	bh=akJ3UOzwy9Ko4wMDhjh3beJfY0oqhz0kPPt9UTqx36I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rS/kdo7+28vXw152/HI6gVM0hUeLgz57ZHE1CNKGgw8xLFQjKQVkLMpZzZp0OvTF5HAaB2YyAimYF+LRwGwwpmPhmn5eGQpyBiipCjzMNQqijirbWE7RwdXRY9ZHh9wA2uKFUjF9tK97jwg5bFaz8IYV2Jh4w+HID3CoSOzocoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rp+SNQ87; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a557044f2ddso190323966b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 03:27:33 -0700 (PDT)
+	s=arc-20240116; t=1713522643; c=relaxed/simple;
+	bh=C+qOn5JTN9zJb5FySGwxd2G4kTU2FmFYAYBmugqPSPE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=DmHgoismaQJBvDON+pLvkeSy+VUrvK1fPDuRDymbX5EmSpFAMHsiffUuta45W4UacGB87OIQCSlFugyJ0fCm+Ff6PrMld6gUJd+06JwE98iEcKjorAJXhxHhxrIpQcPC4XSJLM8vNZBWXBC55sqbdLy4/Qs2fjcoxzzujREMdrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OZIrMUT+; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-41882c16824so15063445e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 03:30:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713522452; x=1714127252; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ymktnwao7az+LFVgnqD7jFOZn9xsvS/2Wg2WVoxC6nM=;
-        b=Rp+SNQ87rHLPStJkfQIvheS6cwpd23sCcS86Ej33DrYIaEVT9cur75s7aOfgKS3PKm
-         a1EtfGjn5ncoSlwJbllO6iSaA7EQQ/viLQsR5PZXwDZOa7rL3LK6w7WGVGb7L4ID1qgl
-         letlfV4hfZvDW80bg53/urDnz0B4+Bm8yIVGa7W6zBGH66PuqATSzSXt9D3uD2QFD0GD
-         8Vn0Jjj/J4gTP88jeGQ0L0mO8YGy9mM/s7tf8Ua5N9qauJXIbGKt4Lu4Sogmqvx1syZ9
-         42xX4Ox5Jky/SVb+d4Rb+GZ9xSsQVXiJrySAulS3fMZIdKREmD8sH5AQB99lgATiSbY+
-         UPkw==
+        d=linaro.org; s=google; t=1713522639; x=1714127439; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zXfB1XmyJGycp6o9EvN2dcs3pfRs+qgNDmJ2Wpliu7Y=;
+        b=OZIrMUT+//6cXhkvDocEAfhEH1IELAy6u9w1akANGX0tQK1JsF9DyJ2dBETGMKhFBy
+         JHe4Kdc6pI9KIb3trnvSsMVNiGmS8iTX4AsLVeAcgHlqHjxwjrQecCV4MHFs9ioPvVOM
+         v4PpWCuAW7NnvzksiOooxfWBxEZ0F+ZKf47o2B1uqbgkciCxbADPhJL7a9SVxr0kVcVO
+         zVoha0DujNzBfGGVg7sGnGUSf2bv4xnHkOtlSA5MNpTskKzOTfYMWUEQORX3C0ghtJAW
+         cgZd8kkZAT2JPuO2tSe/HzmiF6gQWL6HXc/1xo3C1XIfWc8qk9SMO/kryiAvMbM+eyh4
+         tC4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713522452; x=1714127252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ymktnwao7az+LFVgnqD7jFOZn9xsvS/2Wg2WVoxC6nM=;
-        b=QchT2BgDqoUOQELepZlYALX7N6Quz1Uf64f0q9hci9asEa5BgJJNwtSaQGXmV7mZez
-         ePjGb2j8gbXbc6Zhu//CxvnphBXhweK7j0YePteCDMhlPlbzBrG0W3hkrfgJDGi0QNes
-         IS9n1X89sGU8X2i7c24o367qle+JjXDIPFjiBsLniteWO6fGY6kfyaXj2XJFojcIz3fb
-         oNOz9bcWlKzqPkKcUFl/ypt3fbYYbV9rHWH0wMZx9abnPMtb+OGtUE0eWawA2/8aMLAD
-         0h5dLU5ZtNPlLG437Tx0wOxgS0L9LrHw0W31K7Z01Z5LmK44n/r/TiAbRteZZB/KLWBJ
-         raTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUKURPjqT+po8rv7eVSk3wB4jNz/7x3s66BAILE41HYVd1OQMbh3TrdvHz+hbat6m8fI8bN7lRgN4Y+G/PxT90ARVR0A6imwHeaM9Ru
-X-Gm-Message-State: AOJu0YwB41T1ZExKOyXiNgE1qc6aHgyvzrSUNk7FymXGjWC8fyeE/iqg
-	lDtSThJjkPFkBvUoklGoA00U8iOrm/ZkkDAZbkJfbYompY+AjzsyMi0as7/Mrd7wy+y7EawxWS9
-	Joic7jZO4GTLNAjYWEZec5FdLpok=
-X-Google-Smtp-Source: AGHT+IGNgyYc3Ns8gPxZxDY0qvdByFCwb6qp9WjshdssbYI1zEO97pv9KF5rehMhOHBnSyL86mcxAo8wECu8xQfQNKQ=
-X-Received: by 2002:a17:906:7fc6:b0:a52:3f01:e11d with SMTP id
- r6-20020a1709067fc600b00a523f01e11dmr1268730ejs.34.1713522452118; Fri, 19 Apr
- 2024 03:27:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713522639; x=1714127439;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zXfB1XmyJGycp6o9EvN2dcs3pfRs+qgNDmJ2Wpliu7Y=;
+        b=HIZEnAOMzsMnHc7gILCePE5dFHv09B19AO2157gqfNQdE+0mRhRgxy4PiU7/gQcTWK
+         OzrEMBlxBwX43Kherr/beD6LK23d0qbNxeO0h0kYyjqd+OhLgOzgKqLgHnNEdtNO5KDH
+         bMYWjaJM0cWaDbLiiciuNoJcVHa443rRXKKBvFz9w0yqYVxFPeKbtiC/b0fDy6/m/8oj
+         h/O9qqmXcG2yhVZcJ1EcOr7Sesnk76gTTleMRPdZH9PF2o/aHXJD2nhdt6RQ94IIrCQe
+         LCEjo2xTJBHStla1ZYjZB3tOoArBa0PPXcKyjk1A2btFptqY97CrSp/GT30LYZeBmCfB
+         LbTg==
+X-Forwarded-Encrypted: i=1; AJvYcCXN37p13eLHSUIkOtdVELYyNAHO+MRs7A3CuIny7GHmljMd5Rz/VYCdUSP9eFEnMavbsJe/Owj66OfajRPCp6q9fZJ77iNtkXcDiVcl
+X-Gm-Message-State: AOJu0Yy5Xdc1S8bZFk1oW6hatkzOVohpBmQQT2X745RTBlHK9hGk0V/l
+	4nWQOr9rbxHv/1DHtLpnTbFkciyU6Ag2mSWES+PvNyIkJvYN5p4u3I5N4qYlD84=
+X-Google-Smtp-Source: AGHT+IGiH7Y+JOa4zFWT4uBG5e0nxTZ7q2bT95W8eY0sXWj0RTRbbUTMVj2Y/lTD0+EbzWnZRuMC8Q==
+X-Received: by 2002:a05:600c:3ba3:b0:418:d4a5:b10c with SMTP id n35-20020a05600c3ba300b00418d4a5b10cmr1203298wms.28.1713522639574;
+        Fri, 19 Apr 2024 03:30:39 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id jg1-20020a05600ca00100b004183e983d97sm5885615wmb.39.2024.04.19.03.30.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 03:30:39 -0700 (PDT)
+From: Daniel Thompson <daniel.thompson@linaro.org>
+Date: Fri, 19 Apr 2024 11:30:01 +0100
+Subject: [PATCH] serial: kgdboc: Fix NMI-safety problems from keyboard
+ reset code
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409203411.1885121-1-jaegeuk@kernel.org> <20240409203411.1885121-3-jaegeuk@kernel.org>
- <050a93dc-d9a8-44bd-9a83-83718e95f04d@kernel.org> <Zhmf4klcOr4eplin@google.com>
-In-Reply-To: <Zhmf4klcOr4eplin@google.com>
-From: Juhyung Park <qkrwngud825@gmail.com>
-Date: Fri, 19 Apr 2024 19:27:20 +0900
-Message-ID: <CAD14+f0Scnc1GTjqR1izHqPerCqgHsLMR9mfKocUxw_4hyZ+Zg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 3/3] f2fs: fix false alarm on invalid block address
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Chao Yu <chao@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240419-kgdboc_fix_schedule_work-v1-1-ff19881677e5@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAKhHImYC/x2MSQqAMBDAviJztlB1BPUrIqXLqINipcUFxL9bP
+ AaSPBApMEXosgcCnRzZbwmKPAM7620iwS4xlLJEiUUrlskZb9XIt4p2JnespC4fFjFKaxBNo6s
+ aIeV7oCT963543w83lr0YagAAAA==
+To: Jason Wessel <jason.wessel@windriver.com>, 
+ Douglas Anderson <dianders@chromium.org>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Jiri Slaby <jirislaby@kernel.org>
+Cc: kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
+ linux-serial@vger.kernel.org, Liuye <liu.yeC@h3c.com>, 
+ stable@vger.kernel.org, Daniel Thompson <daniel.thompson@linaro.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3694;
+ i=daniel.thompson@linaro.org; h=from:subject:message-id;
+ bh=C+qOn5JTN9zJb5FySGwxd2G4kTU2FmFYAYBmugqPSPE=;
+ b=owEBbQKS/ZANAwAKAXzjJV0594ihAcsmYgBmIke9ZVMNfK8Mz+OrFbqaCdj672YT4w8UQ6ueq
+ XBwtvN/r82JAjMEAAEKAB0WIQQvNUFTUPeVarpwrPB84yVdOfeIoQUCZiJHvQAKCRB84yVdOfeI
+ ofNLD/0Umjj+W7GAbBqQ40IwzKkdPszIlUlf+waYzWOInyWrpl4sPA64fuVxOM2OiIaMG76D5wZ
+ TaHUmY75/p8yYCvxnDmCImLbbfksCTqMWW6U4OIg/Smf2j04Qr11sM8bjhpZsS7yDBZK6wCdFec
+ ixKLPDfcJLWujuojN8mgtzUD5HDdNTytJFS7HsMTNC9sZHHUN0quVcTU3P6AaqYApXoBzQN2H6B
+ HtDoEBSNjeeq/LrZCcrLHNTgWTQ9xlnZVOHFdlzCmSSMKaonGBK2Q57W3yOgcdGUqkL3fTmM97+
+ EebnbAIuqfIHzbeHkFJNDThEsUCqyg4GXpHi/De94YHJoab9H8DazLfa5p1BqmVM7obUOK+4z4v
+ nLTeji+w4KrvcAqxGu5y4IHL3rwd7c14dD0USQqNS32p1mnzrkJN95l7SV2MwyeBjiAFJ6j8dd7
+ NEOqHbly54qnGxAKN2NNAjo6b7upiB3zBnvKB8smcKodgoNxiqDzXWmRlXWrSymGVUidj/WQBpq
+ 343NQhA3JUChjQXwvXUONWV/Vka8QXMflolG+vVdOGfXbjfWyXlkWVMtNuOBFZR/1ChTcqAWYls
+ 1BuHcD+sywGdEzXvb2qP7Fbc4S47aYDSAy+T2fX4aDz5z+9qpjG+EvMJniaR7tceykHS3GzOOMi
+ v/BaL26UzkgkwSQ==
+X-Developer-Key: i=daniel.thompson@linaro.org; a=openpgp;
+ fpr=E38BE19861669213F6E2661AA8A4E3BC5B7B28BE
 
-On Sat, Apr 13, 2024 at 5:57=E2=80=AFAM Jaegeuk Kim <jaegeuk@kernel.org> wr=
-ote:
->
-> On 04/11, Chao Yu wrote:
-> > On 2024/4/10 4:34, Jaegeuk Kim wrote:
-> > > f2fs_ra_meta_pages can try to read ahead on invalid block address whi=
-ch is
-> > > not the corruption case.
-> >
-> > In which case we will read ahead invalid meta pages? recovery w/ META_P=
-OR?
+Currently, when kdb is compiled with keyboard support, then we will use
+schedule_work() to provoke reset of the keyboard status.  Unfortunately
+schedule_work() gets called from the kgdboc post-debug-exception
+handler.  That risks deadlock since schedule_work() is not NMI-safe and,
+even on platforms where the NMI is not directly used for debugging, the
+debug trap can have NMI-like behaviour depending on where breakpoints
+are placed.
 
-In my case, it seems like it's META_SIT, and it's triggered right after mou=
-nt.
-fsck detects invalid_blkaddr, and when the kernel mounts it, it
-immediately flags invalid_blkaddr again:
+Fix this by using the irq work system, which is NMI-safe, to defer the
+call to schedule_work() to a point when it is safe to call.
 
-[    6.333498] init: [libfs_mgr] Running /system/bin/fsck.f2fs -a -c
-10000 --debug-cache /dev/block/sda13
-[    6.337671] fsck.f2fs: Info: Fix the reported corruption.
-[    6.337947] fsck.f2fs: Info: not exist /proc/version!
-[    6.338010] fsck.f2fs: Info: can't find /sys, assuming normal block devi=
-ce
-[    6.338294] fsck.f2fs: Info: MKFS version
-[    6.338319] fsck.f2fs:   "5.10.160-android12-9-ge5cfec41c8e2"
-[    6.338366] fsck.f2fs: Info: FSCK version
-[    6.338380] fsck.f2fs:   from "5.10-arter97"
-[    6.338393] fsck.f2fs:     to "5.10-arter97"
-[    6.338414] fsck.f2fs: Info: superblock features =3D 1499 :  encrypt
-verity extra_attr project_quota quota_ino casefold
-[    6.338429] fsck.f2fs: Info: superblock encrypt level =3D 0, salt =3D
-00000000000000000000000000000000
-[    6.338442] fsck.f2fs: Info: checkpoint stop reason: shutdown(180)
-[    6.338455] fsck.f2fs: Info: fs errors: invalid_blkaddr
-[    6.338468] fsck.f2fs: Info: Segments per section =3D 1
-[    6.338480] fsck.f2fs: Info: Sections per zone =3D 1
-[    6.338492] fsck.f2fs: Info: total FS sectors =3D 58971571 (230357 MB)
-[    6.340599] fsck.f2fs: Info: CKPT version =3D 2b7e3b29
-[    6.340620] fsck.f2fs: Info: version timestamp cur: 19789296, prev: 1840=
-7008
-[    6.677041] fsck.f2fs: Info: checkpoint state =3D 46 :  crc
-compacted_summary orphan_inodes sudden-power-off
-[    6.677052] fsck.f2fs: [FSCK] Check node 1 / 712937 (0.00%)
-[    8.997922] fsck.f2fs: [FSCK] Check node 71294 / 712937 (10.00%)
-[   10.629205] fsck.f2fs: [FSCK] Check node 142587 / 712937 (20.00%)
-[   12.278186] fsck.f2fs: [FSCK] Check node 213880 / 712937 (30.00%)
-[   13.768177] fsck.f2fs: [FSCK] Check node 285173 / 712937 (40.00%)
-[   17.446971] fsck.f2fs: [FSCK] Check node 356466 / 712937 (50.00%)
-[   19.891623] fsck.f2fs: [FSCK] Check node 427759 / 712937 (60.00%)
-[   23.251327] fsck.f2fs: [FSCK] Check node 499052 / 712937 (70.00%)
-[   28.493457] fsck.f2fs: [FSCK] Check node 570345 / 712937 (80.00%)
-[   29.640800] fsck.f2fs: [FSCK] Check node 641638 / 712937 (90.00%)
-[   30.718347] fsck.f2fs: [FSCK] Check node 712931 / 712937 (100.00%)
-[   30.724176] fsck.f2fs:
-[   30.737160] fsck.f2fs: [FSCK] Max image size: 167506 MB, Free space: 628=
-50 MB
-[   30.737164] fsck.f2fs: [FSCK] Unreachable nat entries
-         [Ok..] [0x0]
-[   30.737638] fsck.f2fs: [FSCK] SIT valid block bitmap checking
-         [Ok..]
-[   30.737640] fsck.f2fs: [FSCK] Hard link checking for regular file
-         [Ok..] [0xd]
-[   30.737641] fsck.f2fs: [FSCK] valid_block_count matching with CP
-         [Ok..] [0x28b98e6]
-[   30.737644] fsck.f2fs: [FSCK] valid_node_count matching with CP (de
-lookup)  [Ok..] [0xae0e9]
-[   30.737646] fsck.f2fs: [FSCK] valid_node_count matching with CP
-(nat lookup) [Ok..] [0xae0e9]
-[   30.737647] fsck.f2fs: [FSCK] valid_inode_count matched with CP
-         [Ok..] [0xa74a3]
-[   30.737649] fsck.f2fs: [FSCK] free segment_count matched with CP
-         [Ok..] [0x7aa3]
-[   30.737662] fsck.f2fs: [FSCK] next block offset is free
-         [Ok..]
-[   30.737663] fsck.f2fs: [FSCK] fixing SIT types
-[   30.737867] fsck.f2fs: [FSCK] other corrupted bugs
-         [Ok..]
-[   30.737893] fsck.f2fs: [update_superblock: 765] Info: Done to
-update superblock
-[   30.960610] fsck.f2fs:
-[   30.960618] fsck.f2fs: Done: 24.622956 secs
-[   30.960620] fsck.f2fs:
-[   30.960622] fsck.f2fs: c, u, RA, CH, CM, Repl=3D
-[   30.960627] fsck.f2fs: 10000 10000 43600517 42605434 995083 985083
-[   30.963274] F2FS-fs (sda13): Using encoding defined by superblock:
-utf8-12.1.0 with flags 0x0
-[   30.995360] __f2fs_is_valid_blkaddr: type=3D2
+Reported-by: Liuye <liu.yeC@h3c.com>
+Closes: https://lore.kernel.org/all/20240228025602.3087748-1-liu.yeC@h3c.com/
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+---
+ drivers/tty/serial/kgdboc.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
-(Manually added that print ^)
+diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+index 7ce7bb1640054..adcea70fd7507 100644
+--- a/drivers/tty/serial/kgdboc.c
++++ b/drivers/tty/serial/kgdboc.c
+@@ -19,6 +19,7 @@
+ #include <linux/console.h>
+ #include <linux/vt_kern.h>
+ #include <linux/input.h>
++#include <linux/irq_work.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/serial_core.h>
+@@ -48,6 +49,25 @@ static struct kgdb_io		kgdboc_earlycon_io_ops;
+ static int                      (*earlycon_orig_exit)(struct console *con);
+ #endif /* IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
+ 
++/*
++ * When we leave the debug trap handler we need to reset the keyboard status
++ * (since the original keyboard state gets partially clobbered by kdb use of
++ * the keyboard).
++ *
++ * The path to deliver the reset is somewhat circuitous.
++ *
++ * To deliver the reset we register an input handler, reset the keyboard and
++ * then deregister the input handler. However, to get this done right, we do
++ * have to carefully manage the calling context because we can only register
++ * input handlers from task context.
++ *
++ * In particular we need to trigger the action from the debug trap handler with
++ * all its NMI and/or NMI-like oddities. To solve this the kgdboc trap exit code
++ * (the "post_exception" callback) uses irq_work_queue(), which is NMI-safe, to
++ * schedule a callback from a hardirq context. From there we have to defer the
++ * work again, this time using schedule_Work(), to get a callback using the
++ * system workqueue, which runs in task context.
++ */
+ #ifdef CONFIG_KDB_KEYBOARD
+ static int kgdboc_reset_connect(struct input_handler *handler,
+ 				struct input_dev *dev,
+@@ -99,10 +119,17 @@ static void kgdboc_restore_input_helper(struct work_struct *dummy)
+ 
+ static DECLARE_WORK(kgdboc_restore_input_work, kgdboc_restore_input_helper);
+ 
++static void kgdboc_queue_restore_input_helper(struct irq_work *unused)
++{
++	schedule_work(&kgdboc_restore_input_work);
++}
++
++static DEFINE_IRQ_WORK(kgdboc_restore_input_irq_work, kgdboc_queue_restore_input_helper);
++
+ static void kgdboc_restore_input(void)
+ {
+ 	if (likely(system_state == SYSTEM_RUNNING))
+-		schedule_work(&kgdboc_restore_input_work);
++		irq_work_queue(&kgdboc_restore_input_irq_work);
+ }
+ 
+ static int kgdboc_register_kbd(char **cptr)
+@@ -133,6 +160,7 @@ static void kgdboc_unregister_kbd(void)
+ 			i--;
+ 		}
+ 	}
++	irq_work_sync(&kgdboc_restore_input_irq_work);
+ 	flush_work(&kgdboc_restore_input_work);
+ }
+ #else /* ! CONFIG_KDB_KEYBOARD */
 
-[   30.995369] ------------[ cut here ]------------
-[   30.995375] WARNING: CPU: 7 PID: 1 at f2fs_handle_error+0x18/0x3c
-[   30.995378] CPU: 7 PID: 1 Comm: init Tainted: G S      W
-5.10.209-arter97-r15-kernelsu-g0867d0e4f1d2 #6
-[   30.995379] Hardware name: Qualcomm Technologies, Inc. Cape QRD
-with PM8010 (DT)
-[   30.995380] pstate: 22400005 (nzCv daif +PAN -UAO +TCO BTYPE=3D--)
-[   30.995382] pc : f2fs_handle_error+0x18/0x3c
-[   30.995384] lr : __f2fs_is_valid_blkaddr+0x2a4/0x2b0
-[   30.995385] sp : ffffff80209e79b0
-[   30.995386] x29: ffffff80209e79b0 x28: 0000000000000037
-[   30.995388] x27: 00000000000001c7 x26: 0000000020120121
-[   30.995389] x25: 00000000000000d9 x24: 0000000000000000
-[   30.995390] x23: ffffffff00f1a700 x22: 0000000000000828
-[   30.995391] x21: ffffff80462aa000 x20: ffffff80462aa000
-[   30.995392] x19: 0000000000000002 x18: ffffffffffffffff
-[   30.995393] x17: 0000000000000000 x16: 00000000ffff0000
-[   30.995394] x15: 0000000000000004 x14: ffffffd1675ac6d0
-[   30.995395] x13: 0000000000000003 x12: 0000000000000003
-[   30.995396] x11: 00000000ffffffff x10: 0000000000000000
-[   30.995397] x9 : 0000000100000001 x8 : 0000000100000000
-[   30.995398] x7 : 64696c61765f7369 x6 : ffffffd1681279e8
-[   30.995399] x5 : 000000000000001f x4 : 0000000000000001
-[   30.995400] x3 : 0000000000000000 x2 : ffffff89f03dedc8
-[   30.995401] x1 : 0000000000000002 x0 : ffffff80462aa000
-[   30.995403] Call trace:
-[   30.995404] f2fs_handle_error+0x18/0x3c
-[   30.995405] __f2fs_is_valid_blkaddr+0x2a4/0x2b0
-[   30.995406] f2fs_is_valid_blkaddr+0x10/0x20
-[   30.995407] f2fs_ra_meta_pages+0xe0/0x230
-[   30.995409] build_sit_entries+0xa8/0x580
-[   30.995411] f2fs_build_segment_manager+0x124/0x170
-[   30.995412] f2fs_fill_super+0x78c/0xd1c
-[   30.995415] mount_bdev+0x168/0x1ac
-[   30.995416] f2fs_mount+0x18/0x24
-[   30.995418] legacy_get_tree.llvm.9147845779559715083+0x30/0x5c
-[   30.995419] vfs_get_tree+0x30/0xe0
-[   30.995421] do_new_mount+0x140/0x358
-[   30.995422] path_mount+0x1fc/0x4e8
-[   30.995423] __arm64_sys_mount+0x150/0x294
-[   30.995425] el0_svc_common.llvm.15698454952154965787+0xa8/0x138
-[   30.995426] do_el0_svc+0x24/0x90
-[   30.995429] el0_svc+0x10/0x1c
-[   30.995430] el0_sync_handler+0xcc/0xe4
-[   30.995432] el0_sync+0x1a0/0x1c0
-[   30.995433] ---[ end trace 3b83295e0cdac94e ]---
-[   31.005011] F2FS-fs (sda13): Mounted with checkpoint version =3D 2b7e3b2=
-9
-[   31.005176] init: [libfs_mgr]
-__mount(source=3D/dev/block/bootdevice/by-name/userdata,target=3D/data,type=
-=3Df2fs)=3D0:
-Success
-[   31.007749] init: Userdata mounted using /vendor/etc/fstab.qcom result :=
- 0
+---
+base-commit: 0bbac3facb5d6cc0171c45c9873a2dc96bea9680
+change-id: 20240419-kgdboc_fix_schedule_work-f0cb44b8a354
 
+Best regards,
+-- 
+Daniel Thompson <daniel.thompson@linaro.org>
 
-I was bisecting a long boot time (24 additional seconds) issue, which
-is always reproducible, and found commit 31f85ccc84b8 ("f2fs: unify
-the error handling of f2fs_is_valid_blkaddr") to be causing it.
-
-I'll just revert that patch locally. Seems like Jaegeuk's dev branch
-doesn't have the fix for this specifically yet.
-
-Thanks.
-
->
-> I was trying to debug another issue, but found the root cause. Let me dro=
-p this
-> patch.
->
-> >
-> > Thanks,
-> >
-> > >
-> > > Fixes: 31f85ccc84b8 ("f2fs: unify the error handling of f2fs_is_valid=
-_blkaddr")
-> > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > > ---
-> > >   fs/f2fs/checkpoint.c | 9 +++++----
-> > >   1 file changed, 5 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-> > > index eac698b8dd38..b01320502624 100644
-> > > --- a/fs/f2fs/checkpoint.c
-> > > +++ b/fs/f2fs/checkpoint.c
-> > > @@ -179,22 +179,22 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs=
-_sb_info *sbi,
-> > >             break;
-> > >     case META_SIT:
-> > >             if (unlikely(blkaddr >=3D SIT_BLK_CNT(sbi)))
-> > > -                   goto err;
-> > > +                   goto check_only;
-> > >             break;
-> > >     case META_SSA:
-> > >             if (unlikely(blkaddr >=3D MAIN_BLKADDR(sbi) ||
-> > >                     blkaddr < SM_I(sbi)->ssa_blkaddr))
-> > > -                   goto err;
-> > > +                   goto check_only;
-> > >             break;
-> > >     case META_CP:
-> > >             if (unlikely(blkaddr >=3D SIT_I(sbi)->sit_base_addr ||
-> > >                     blkaddr < __start_cp_addr(sbi)))
-> > > -                   goto err;
-> > > +                   goto check_only;
-> > >             break;
-> > >     case META_POR:
-> > >             if (unlikely(blkaddr >=3D MAX_BLKADDR(sbi) ||
-> > >                     blkaddr < MAIN_BLKADDR(sbi)))
-> > > -                   goto err;
-> > > +                   goto check_only;
-> > >             break;
-> > >     case DATA_GENERIC:
-> > >     case DATA_GENERIC_ENHANCE:
-> > > @@ -228,6 +228,7 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_s=
-b_info *sbi,
-> > >     return true;
-> > >   err:
-> > >     f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
-> > > +check_only:
-> > >     return false;
-> > >   }
->
->
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
