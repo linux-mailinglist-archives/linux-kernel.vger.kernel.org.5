@@ -1,183 +1,96 @@
-Return-Path: <linux-kernel+bounces-151219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 208CC8AAB44
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:14:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FD7B8AAB49
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:17:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A29E61F22A56
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:14:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3CD11F22652
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:17:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDDCD757F6;
-	Fri, 19 Apr 2024 09:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UFlZ/Ko4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B1E768FC;
+	Fri, 19 Apr 2024 09:17:27 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E537BAE5
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:14:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD1DF9CD;
+	Fri, 19 Apr 2024 09:17:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713518068; cv=none; b=WkKLfLcMw/5A5VUviJ1fJ3XkQ/ypqdhd1YMJM70TkCQ4ugYZUY4dYm/3kg0G8rs/vp6e3M26CYKeTaA+F3eYdewhUcXXE05Y3D479D7NBje/jyf+t/V2NjR6avd201AHEwrXjyS2ojIceKGQlg0bysqvEX7Q72lTtzsXBnXjLOg=
+	t=1713518247; cv=none; b=YWWax9fAdjswT9TX292lZCu16HwQ/vfDF5NT6o4aJZp08bUXiHwqjZYtC3mt2dDSNPpyDfD8GpLFfgThDNjQg6B2ylphoe762TfUHoVZaGwxxDGnbLCVaEy3Gw63Xxeq7oa3j5QFxsxCLpfU2Ttor3mXuf3fhi/tLk6U7LOgZTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713518068; c=relaxed/simple;
-	bh=Xp2EiSEdIviNVxs+Qz+eQmTpkeDvxnaGWVXfC1igFFE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bQdOFzfDfEMejDbFtNfn8NYHBgxhUyWdcp8/CQz6hZ7XoT/pePazkayl0xkuXgMz2TryZOps6V2mG70Txetg97r4EVhPx5/xaEnTNVd7fNEQzMs0hYTRzzrxF6aFnDsxapM5MprRVaZhz95lFRxNmCDsJpmhm4W7Kcj3nYi8VpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UFlZ/Ko4; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713518065;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=EqwO0572yowA0TBakaonePZNHGnWtzDXOOjoM1DutVs=;
-	b=UFlZ/Ko44p097GFKO/hDNw5u8m0tuEkyJ0JGpw2ZaNPDAC0mEtkyCOzUReEvPidASY5pd0
-	jSS0qGNa1jsI3o28ouya9BrIWcsBAOs34gopCiy4exLfK71+tTjNrsq9p8YGBYpcpgw17Z
-	rgDOBH3UpeToEk3S4wNCGAlrz7q48dc=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-596--Cjdb8VdN2aogjfvbbmINA-1; Fri, 19 Apr 2024 05:14:21 -0400
-X-MC-Unique: -Cjdb8VdN2aogjfvbbmINA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-416e58bdc1eso10307715e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 02:14:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713518060; x=1714122860;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EqwO0572yowA0TBakaonePZNHGnWtzDXOOjoM1DutVs=;
-        b=WKWosHcac8Pm35O0zHa3E7Lnm9xxLARrNwjvFb7AK4YyKpOLRfsTkvS2isrm/i5R87
-         Um1nrf0LRTJhHOxdf5Z79YThpbH/9tWNzedPXEI3/3n83YTP6j08tmb4iYCo4mMBR4sR
-         1GOAPYJKOoxxq+O2Mjq4TADCczBWxs8FkCd6zT8AEc31xPMVRX7+A/qyBHVmFjkuqZbj
-         Cxd5EntjaAD3iG8/ZzTgqe9pm1N6MM1itrTylLCNdm5zVVZrP3o04E76VohxP6RFr2dg
-         bsZ55XCfySprZ7iLReEaRNQ3HnDpZMEH4jf4uynKeeAF2kYOaI0xVeXGd+nDOUD1WP9n
-         X7tw==
-X-Forwarded-Encrypted: i=1; AJvYcCV+P8VUnLMih5tXvCwoysUzPdsIsD6xOGjelM0ALscCj5XrLMvbGuaraAyQVwn6F4o9mnFvymecmlrfCZlLtnGq+GbXq1CTkvb7eJBN
-X-Gm-Message-State: AOJu0YzcmX4ge0KyPZEffZNS8LpNr1b57AiShHOvQk6eY+8UPMOAloHt
-	v4Jm1AFF11NiSYjiPe8HUd67k9KolqRjR5tiBaJxZpW0rzhyCarpskFCQIyYT5XIXrZ/Y3g6/zr
-	bwgRspFBWSNlhjOxlnzHjirXGVVURq9H0fn1PuWjkiT5aLAFBUxua9HlycCQCTQ==
-X-Received: by 2002:a05:600c:c16:b0:418:fdcc:7080 with SMTP id fm22-20020a05600c0c1600b00418fdcc7080mr1087551wmb.12.1713518060734;
-        Fri, 19 Apr 2024 02:14:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE5KCUiiuZF9OZuh6RkThz19zIB1mi9FMS0XWUZ94xu1t5eHJnPpGKa3Ly3AFrnJLxt6FqYug==
-X-Received: by 2002:a05:600c:c16:b0:418:fdcc:7080 with SMTP id fm22-20020a05600c0c1600b00418fdcc7080mr1087525wmb.12.1713518060295;
-        Fri, 19 Apr 2024 02:14:20 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c716:f300:c9f0:f643:6aa2:16? (p200300cbc716f300c9f0f6436aa20016.dip0.t-ipconnect.de. [2003:cb:c716:f300:c9f0:f643:6aa2:16])
-        by smtp.gmail.com with ESMTPSA id p15-20020a05600c358f00b00418ef96472asm4398962wmq.0.2024.04.19.02.14.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 02:14:19 -0700 (PDT)
-Message-ID: <bcd887c8-9830-42ed-b43a-2fdaa11dc837@redhat.com>
-Date: Fri, 19 Apr 2024 11:14:18 +0200
+	s=arc-20240116; t=1713518247; c=relaxed/simple;
+	bh=fVtm2MQDOR/x6RlSD7/xIApw8gEH7eq2JLBMAl1iBLs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IcLGPH8+HpfxIeBtOyAhzyIFvt0IATGdongaG7t1mks1XanLFSRH7nXNwXKn1mWc8PfgLGQ6XWTgAW5Yx1p1uhLN/HQoxZu1mx9/PPbAbE5WaTKLqkoRw7k2+AgpIVE/gKSqZ7Zx2C53maNcUYmQoUCKbsHhxEoz5qCLmSiFrzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id CD4911C0080; Fri, 19 Apr 2024 11:17:16 +0200 (CEST)
+Date: Fri, 19 Apr 2024 11:17:16 +0200
+From: Pavel Machek <pavel@denx.de>
+To: Dominique Martinet <asmadeus@codewreck.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, Anand Jain <anand.jain@oracle.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Dominique Martinet <dominique.martinet@atmark-techno.com>,
+	Pavel Machek <pavel@denx.de>, stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add missing mutex_unlock in
+ btrfs_relocate_sys_chunks()
+Message-ID: <ZiI2nIYK0X6RLciF@duo.ucw.cz>
+References: <20240419-btrfs_unlock-v1-1-c3557976a691@codewreck.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 02/18] mm/rmap: always inline anon/file rmap
- duplication of a single PTE
-To: "Yin, Fengwei" <fengwei.yin@intel.com>, linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org, linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, Peter Xu
- <peterx@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
- Jonathan Corbet <corbet@lwn.net>, Hugh Dickins <hughd@google.com>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
- Muchun Song <muchun.song@linux.dev>, Miaohe Lin <linmiaohe@huawei.com>,
- Naoya Horiguchi <naoya.horiguchi@nec.com>,
- Richard Chang <richardycc@google.com>
-References: <20240409192301.907377-1-david@redhat.com>
- <20240409192301.907377-3-david@redhat.com>
- <c5c2ae26-d405-4b0f-8bf6-281abcdb3239@intel.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <c5c2ae26-d405-4b0f-8bf6-281abcdb3239@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="d/xyR8aY9qMuo2Dt"
+Content-Disposition: inline
+In-Reply-To: <20240419-btrfs_unlock-v1-1-c3557976a691@codewreck.org>
 
-On 19.04.24 04:25, Yin, Fengwei wrote:
-> 
-> 
-> On 4/10/2024 3:22 AM, David Hildenbrand wrote:
->> As we grow the code, the compiler might make stupid decisions and
->> unnecessarily degrade fork() performance. Let's make sure to always inline
->> functions that operate on a single PTE so the compiler will always
->> optimize out the loop and avoid a function call.
->>
->> This is a preparation for maintining a total mapcount for large folios.
->>
->> Signed-off-by: David Hildenbrand<david@redhat.com>
-> The patch looks good to me. Just curious: Is this change driven by code
-> reviewing or performance data profiling? Thanks.
 
-It was identified while observing an performance degradation with small 
-folios in the fork() microbenchmark discussed in the cover letter 
-(mentioned here as "unnecessarily degrade fork() performance").
+--d/xyR8aY9qMuo2Dt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The added atomic_add() was sufficient for the compiler not inline and 
-optimize-out nr_pages, inserting a function call to a function where 
-nr_pages is not optimized out.
+On Fri 2024-04-19 11:22:48, Dominique Martinet wrote:
+> From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+>=20
+> The previous patch forgot to unlock in the error path
+>=20
+> Link: https://lore.kernel.org/all/Zh%2fHpAGFqa7YAFuM@duo.ucw.cz
+> Reported-by: Pavel Machek <pavel@denx.de>
+> Cc: stable@vger.kernel.org
+> Fixes: 7411055db5ce ("btrfs: handle chunk tree lookup error in btrfs_relo=
+cate_sys_chunks()")
+> Signed-off-by: Dominique Martinet<dominique.martinet@atmark-techno.com>
 
--- 
-Cheers,
+Reviewed-by: Pavel Machek <pavel@denx.de>
 
-David / dhildenb
+Thank you!
 
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--d/xyR8aY9qMuo2Dt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZiI2nAAKCRAw5/Bqldv6
+8sZaAJ4xe8Los8Q9+crUyfsKAtYLU9NzHQCgsXwYrzAz9gTdBy8Cqqum4uHMIYA=
+=t1ta
+-----END PGP SIGNATURE-----
+
+--d/xyR8aY9qMuo2Dt--
 
