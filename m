@@ -1,230 +1,154 @@
-Return-Path: <linux-kernel+bounces-151929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEFC28AB5E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:07:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45BA28AB5F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:14:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9269F282900
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:07:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D83BA1F21AF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E078313CF9A;
-	Fri, 19 Apr 2024 20:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4679F13CAB5;
+	Fri, 19 Apr 2024 20:14:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QfiCvfRU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JzkPXfmf"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0718D10A03;
-	Fri, 19 Apr 2024 20:07:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7AC710A03
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 20:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713557241; cv=none; b=EWCfgw6IHu+P8Vqjw1DAtj2EMaQ7D08Y8jVSc0yEMlkw+jRPsu2okUhWyHKUKvXnj5SAWtFBL3lDaHC4ZXUZ1ws60qcwJ+DuQtPPHlXqO2d7ml2LH0mQXd61q5uKEaHiYL11R3yvz+kf1MzuDW85kSEpO3Ilb359dWXeolTlSpI=
+	t=1713557645; cv=none; b=eqJm95NLfRe+bIFcCzjTZcOplGei5bloUdsfK8ry8ozX6zpGCAEiFIJLtFw+Dzug5q15/D/D/1ZTmBa2zaCGfgtuRw+nlQXX3mhU7HAnOJIzQvMhEqURy1lmzrl99v/icOyn+gRam/f/LK0sLr2NQftMDFN3NMKV15s6rX4zfh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713557241; c=relaxed/simple;
-	bh=ycgfHMlt+UlcaG4ketR/yuNNw2hvmApeoBvZ3KPmBP4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KC5eSQxMEInqzmma7a4O3BA0Untk4pIsTRhkS1/ArH+IXfvBu/q+AC8ujkY7JSvXQQ5vVQQz6fQxXDE5ueseOTA8uFrslKZYQvVxHR0iSXikYfPCdlG97nkKRYvVVdR/n7+PZ2dZE2ButJYnaS342Cq1nf9cd/JmKSJTRBAAVSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QfiCvfRU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1759C072AA;
-	Fri, 19 Apr 2024 20:07:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713557240;
-	bh=ycgfHMlt+UlcaG4ketR/yuNNw2hvmApeoBvZ3KPmBP4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QfiCvfRU8afAJ78s4+eQn6qzBAimsQ2168PoqAIHVelV/LRVyalukWuZ6HVlfP68B
-	 FAeSC1pSGwpOwealSFcBOFuDOIU7XREj+dbocpnEGmodtiP0831dOBTYtVLkqHaFy/
-	 a6O81VtJbB5ZZVd7SYwZuKvDZnRFJ6DdxWqL9vTOVXvHFIpXlzjGeJwGjzloMikfA3
-	 8Ogdj9mHkI+ra9Ew6t8V0IiTht/NZ1wxXIy8cHyS+GUIe0JhxNXwvEBnsqo2AWnAhu
-	 RkbLosw5jKAGFaadrKUV2+dhdXWWbgbC/+XS9+imfzkke0f7phdt6hOdEbVMkhsjJi
-	 JCzeiah7YRVZA==
-Date: Fri, 19 Apr 2024 17:07:17 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>,
-	LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev,
-	Lu Baolu <baolu.lu@linux.intel.com>, kvm@vger.kernel.org,
-	Dave Hansen <dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Paul Luse <paul.e.luse@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Jens Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>,
-	"Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
-	seanjc@google.com, Robin Murphy <robin.murphy@arm.com>,
-	jim.harris@samsung.com, a.manzanares@samsung.com,
-	Bjorn Helgaas <helgaas@kernel.org>, guang.zeng@intel.com,
-	robert.hoo.linux@gmail.com, kan.liang@intel.com,
-	"Kleen, Andi" <andi.kleen@intel.com>
-Subject: Re: [PATCH v2 05/13] x86/irq: Reserve a per CPU IDT vector for
- posted MSIs
-Message-ID: <ZiLO9RUdMsNlCtI_@x1>
-References: <20240415134354.67c9d1d1@jacob-builder>
- <87jzkuxaqv.ffs@tglx>
+	s=arc-20240116; t=1713557645; c=relaxed/simple;
+	bh=QVe30pNQfjn4Hsx1tvDUc19vE02t0tecn5ysBPJ3hPI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pcLKcFDwc71k7hNHFk3UiKz195j2/ZRoDhkBGvadhiLcs9nKnMklmcVz/Pnotk3C+gjUaAZ0d5IaRkFElwB0EvChGRQ4gtk9geY/rXUPcTnVGGjT6h5ZtwLPqSrZ18HVudmr9g1O862FCrlxpNtpghUB8UthzRyRzeSiJIhxPEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JzkPXfmf; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713557644; x=1745093644;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QVe30pNQfjn4Hsx1tvDUc19vE02t0tecn5ysBPJ3hPI=;
+  b=JzkPXfmfZJVMZ/QE0cqPPUmcV8VpfBgEsZ9/9l9h4XflCLWa02pcFTSS
+   chclv4KSjOOFljVPm8wHlFm2Cvcg9GE21RCP/m8m35X2KPMzgChDTuwo9
+   +n6div+tIAnGDv23fkoXQO3z6mu98y7tSq2lHHP6MaBlUsmczbTb9uyti
+   gmmozbVVMn31HdultVgtnFvpk8ZYsGrTw5wiMRW1hIEOkoPT+pgoriQVa
+   3lR7P+lbZxCCfI4PgPjLRn/Zi43b4zaNWfbp4FYk6176wsDotZUNa9Fb8
+   gzFhEwmoMa3nWIbZMyjbUH7EBbQ15J6gUgHo+aLa/F4QbwVK3paIXx7Sm
+   A==;
+X-CSE-ConnectionGUID: H93uszjvRaGOvnYdCTTyiA==
+X-CSE-MsgGUID: s9ZIGHBgSMymXdDKCIEQXA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="9298423"
+X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
+   d="scan'208";a="9298423"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 13:14:03 -0700
+X-CSE-ConnectionGUID: RUnQRXSfRLifO78AMABfTw==
+X-CSE-MsgGUID: k2gRDKGmQaOSNPw+2wHdRA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
+   d="scan'208";a="54363905"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa002.jf.intel.com with ESMTP; 19 Apr 2024 13:13:59 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 9B8AD18F; Fri, 19 Apr 2024 23:13:58 +0300 (EEST)
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@intel.com
+Cc: sathyanarayanan.kuppuswamy@linux.intel.com,
+	hpa@zytor.com,
+	seanjc@google.com,
+	elena.reshetova@intel.com,
+	rick.p.edgecombe@intel.com,
+	x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Chris Oo <cho@microsoft.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dexuan Cui <decui@microsoft.com>
+Subject: [PATCHv2] x86/tdx: Preserve shared bit on mprotect()
+Date: Fri, 19 Apr 2024 23:13:53 +0300
+Message-ID: <20240419201353.3937135-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87jzkuxaqv.ffs@tglx>
 
-On Fri, Apr 19, 2024 at 06:00:24AM +0200, Thomas Gleixner wrote:
-> On Mon, Apr 15 2024 at 13:43, Jacob Pan wrote:
-> > On Mon, 15 Apr 2024 11:53:58 -0700, Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
-> >> On Thu, 11 Apr 2024 18:51:14 +0200, Thomas Gleixner <tglx@linutronix.de> wrote:
-> >> > If we really care then we do it proper for _all_ of them. Something like
-> >> > the uncompiled below. There is certainly a smarter way to do the build
-> >> > thing, but my kbuild foo is rusty.  
-> >> I too had the concern of the wasting system vectors, but did not know how
-> >> to fix it. But now your code below works well. Tested without KVM in
-> >> .config to show the gaps:
-> >> 
-> >> In VECTOR IRQ domain.
-> >> 
-> >> BEFORE:
-> >> System: 46: 0-31,50,235-236,244,246-255
-> >> 
-> >> AFTER:
-> >> System: 46: 0-31,50,241-242,245-255
-> >> 
-> >> The only gap is MANAGED_IRQ_SHUTDOWN_VECTOR(243), which is expected on a
-> >> running system.
-> >> 
-> >> Verified in irqvectors.s: .ascii "->MANAGED_IRQ_SHUTDOWN_VECTOR $243
-> >> 
-> >> POSTED MSI/first system vector moved up from 235 to 241 for this case.
-> >> 
-> >> Will try to let tools/arch/x86/include/asm/irq_vectors.h also use it
-> >> instead of manually copy over each time. Any suggestions greatly
-> >> appreciated.
-> >>
-> > On a second thought, if we make system IRQ vector determined at compile
-> > time based on different CONFIG options, will it break userspace tools such
-> > as perf? More importantly the rule of not breaking userspace.
+The TDX guest platform takes one bit from the physical address to
+indicate if the page is shared (accessible by VMM). This bit is not part
+of the physical_mask and is not preserved during mprotect(). As a
+result, the 'shared' bit is lost during mprotect() on shared mappings.
 
-The rule for tools/perf is "don't impose _any requirement_ on the kernel
-developers, they don't have to test if any change they do outside of
-tools/ will break something inside tools/."
+_COMMON_PAGE_CHG_MASK specifies which PTE bits need to be preserved
+during modification. AMD includes 'sme_me_mask' in the define to
+preserve the 'encrypt' bit.
+
+To cover both Intel and AMD cases, include 'cc_mask' in
+_COMMON_PAGE_CHG_MASK instead of 'sme_me_mask'.
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Fixes: 41394e33f3a0 ("x86/tdx: Extend the confidential computing API to support TDX guests")
+Reported-and-tested-by: Chris Oo <cho@microsoft.com>
+Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Dexuan Cui <decui@microsoft.com>
+---
+
+ v2:
+   - Fix build for !CONFIG_ARCH_HAS_CC_PLATFORM
+
+---
+ arch/x86/include/asm/coco.h          | 1 +
+ arch/x86/include/asm/pgtable_types.h | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/coco.h b/arch/x86/include/asm/coco.h
+index c086699b0d0c..ac8cd4447d48 100644
+--- a/arch/x86/include/asm/coco.h
++++ b/arch/x86/include/asm/coco.h
+@@ -25,6 +25,7 @@ u64 cc_mkdec(u64 val);
+ void cc_random_init(void);
+ #else
+ #define cc_vendor (CC_VENDOR_NONE)
++#define cc_mask 0
  
-> tools/arch/x86/include/asm/irq_vectors.h is only used to generate the
-> list of system vectors for pretty output. And your change already broke
-> that.
-
-Yeah, I even moved that from tools/arch/x86/include/asm/irq_vectors.h
-to tools/perf/trace/beauty/arch/x86/include/asm/irq_vectors.h (for next
-merge window).
-
-Having it in tools/arch/x86/include/asm/irq_vectors.h was a bad decision
-as it, as you mentinoned, is only used to generate string tables:
-
-⬢[acme@toolbox perf-tools-next]$ tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh 
-static const char *x86_irq_vectors[] = {
-	[0x02] = "NMI",
-	[0x80] = "IA32_SYSCALL",
-	[0xec] = "LOCAL_TIMER",
-	[0xed] = "HYPERV_STIMER0",
-	[0xee] = "HYPERV_REENLIGHTENMENT",
-	[0xef] = "MANAGED_IRQ_SHUTDOWN",
-	[0xf0] = "POSTED_INTR_NESTED",
-	[0xf1] = "POSTED_INTR_WAKEUP",
-	[0xf2] = "POSTED_INTR",
-	[0xf3] = "HYPERVISOR_CALLBACK",
-	[0xf4] = "DEFERRED_ERROR",
-	[0xf6] = "IRQ_WORK",
-	[0xf7] = "X86_PLATFORM_IPI",
-	[0xf8] = "REBOOT",
-	[0xf9] = "THRESHOLD_APIC",
-	[0xfa] = "THERMAL_APIC",
-	[0xfb] = "CALL_FUNCTION_SINGLE",
-	[0xfc] = "CALL_FUNCTION",
-	[0xfd] = "RESCHEDULE",
-	[0xfe] = "ERROR_APIC",
-	[0xff] = "SPURIOUS_APIC",
-};
-
-⬢[acme@toolbox perf-tools-next]$
-
-Used in:
-
-root@number:~# perf trace -a -e irq_vectors:irq_work_entry/max-stack=32/ --max-events=1
-     0.000 kworker/u57:0-/9912 irq_vectors:irq_work_entry(vector: IRQ_WORK)
-                                       __sysvec_irq_work ([kernel.kallsyms])
-                                       __sysvec_irq_work ([kernel.kallsyms])
-                                       sysvec_irq_work ([kernel.kallsyms])
-                                       asm_sysvec_irq_work ([kernel.kallsyms])
-                                       _raw_spin_unlock_irqrestore ([kernel.kallsyms])
-                                       dma_fence_wait_timeout ([kernel.kallsyms])
-                                       intel_atomic_commit_tail ([kernel.kallsyms])
-                                       process_one_work ([kernel.kallsyms])
-                                       worker_thread ([kernel.kallsyms])
-                                       kthread ([kernel.kallsyms])
-                                       ret_from_fork ([kernel.kallsyms])
-                                       ret_from_fork_asm ([kernel.kallsyms])
-root@number:~#
-
-But as the original cset introducing this explains, these irq_vectors:
-tracepoins operate on just one of the vectors, so irq_work_entry(vector:
-IRQ_WORK), irq_vectors:reschedule_exit(vector: RESCHEDULE), etc. 
-
-> The obvious solution to that is to expose that list in sysfs for
-> consumption by perf.
-
-nah, the best thing these days is stop using 'int' for vector and use
-'enum irq_vector', then since we have BTF we can use that to do the enum
--> string translation, like with (using /sys/kernel/btf/vmlinux, that is
-pretty much available everywhere these days):
-
-root@number:~# pahole clocksource_ids
-enum clocksource_ids {
-	CSID_GENERIC          = 0,
-	CSID_ARM_ARCH_COUNTER = 1,
-	CSID_MAX              = 2,
-};
-
-root@number:~# pahole skb_drop_reason | head
-enum skb_drop_reason {
-	SKB_NOT_DROPPED_YET                     = 0,
-	SKB_CONSUMED                            = 1,
-	SKB_DROP_REASON_NOT_SPECIFIED           = 2,
-	SKB_DROP_REASON_NO_SOCKET               = 3,
-	SKB_DROP_REASON_PKT_TOO_SMALL           = 4,
-	SKB_DROP_REASON_TCP_CSUM                = 5,
-	SKB_DROP_REASON_SOCKET_FILTER           = 6,
-	SKB_DROP_REASON_UDP_CSUM                = 7,
-	SKB_DROP_REASON_NETFILTER_DROP          = 8,
-root@number:~#
-
-Then its easy to go from 0 to CSID_GENERIC, etc.
-
-⬢[acme@toolbox pahole]$ perf stat -e cycles pahole skb_drop_reason > /dev/null
-
- Performance counter stats for 'pahole skb_drop_reason':
-
-         6,095,427      cpu_atom/cycles:u/                                                      (2.82%)
-       103,694,633      cpu_core/cycles:u/                                                      (97.18%)
-
-       0.039031759 seconds time elapsed
-
-       0.016028000 seconds user
-       0.023007000 seconds sys
-
-
-⬢[acme@toolbox pahole]$
-
-- Arnaldo
+ static inline u64 cc_mkenc(u64 val)
+ {
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index 8857d811fb5d..2f321137736c 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -148,7 +148,7 @@
+ #define _COMMON_PAGE_CHG_MASK	(PTE_PFN_MASK | _PAGE_PCD | _PAGE_PWT |	\
+ 				 _PAGE_SPECIAL | _PAGE_ACCESSED |	\
+ 				 _PAGE_DIRTY_BITS | _PAGE_SOFT_DIRTY |	\
+-				 _PAGE_DEVMAP | _PAGE_ENC | _PAGE_UFFD_WP)
++				 _PAGE_DEVMAP | _PAGE_CC | _PAGE_UFFD_WP)
+ #define _PAGE_CHG_MASK	(_COMMON_PAGE_CHG_MASK | _PAGE_PAT)
+ #define _HPAGE_CHG_MASK (_COMMON_PAGE_CHG_MASK | _PAGE_PSE | _PAGE_PAT_LARGE)
  
-> But we don't have to do any of that right away. It's an orthogonal
-> issue. Just waste the extra system vector to start with and then we can
-> add the compile time dependend change on top if we really care about
-> gaining back the vectors.
-> 
-> Thanks,
-> 
->         tglx
+@@ -173,6 +173,7 @@ enum page_cache_mode {
+ };
+ #endif
+ 
++#define _PAGE_CC		(_AT(pteval_t, cc_mask))
+ #define _PAGE_ENC		(_AT(pteval_t, sme_me_mask))
+ 
+ #define _PAGE_CACHE_MASK	(_PAGE_PWT | _PAGE_PCD | _PAGE_PAT)
+-- 
+2.43.0
+
 
