@@ -1,87 +1,81 @@
-Return-Path: <linux-kernel+bounces-151343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E944D8AAD3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:03:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9F028AAD42
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:04:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A280A282C53
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:03:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95DF22811E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:04:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C44A823A9;
-	Fri, 19 Apr 2024 11:03:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D4CnkOV8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FEF88061D;
+	Fri, 19 Apr 2024 11:04:09 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9E9C81216
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A2A8005E;
+	Fri, 19 Apr 2024 11:04:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713524592; cv=none; b=CJMhzOW+sbwkoj+MwBfhC77UQGR9cMylIfrxnjCY1jgIcz22TspWbQIID2v/a/yobgAYx7DzY2LgIqPYwYlNZnu9FYdc/AdRzrZhryS7yJVj43K07CiLQkpb8WfVM3iNGdeZT5hiS8cBn0jgTgZ9rfIa8ThN5iDdnjTOnuQ7aEA=
+	t=1713524648; cv=none; b=SUNeZDckJE2BCy6WwMfXPMZru1KBU06qUkzLGA3lFpbq961WwQdohKxg0UgWZHZnyS8zlL2HcbMEPB3AzeNq4Xoy7II0WQ0aqF4g7Y4cXIf9nGF6SEQoG4mXLQzq/+kiF41rx3Xvp1BzX9WYoF5n/FZNlf0ljsOicMexbK6nUKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713524592; c=relaxed/simple;
-	bh=uWAY6LlF7v6+sqojjMdbCQRzzgR4DjCY8JKq5y18Ehk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NCYXOgy7z1bZb5Gd9gS20RA3vNeqkKjoLrP3AOqD7zV6VJbbpowBFslbU5B9uLekD+/8SwQelR0r62P3dP47DXJocqDL7IgqwRCXuVELncB99pPfhvF9pJNeOfJhnnceI8f6XeShthhnwm2d9ppbOzSqV3PXhQAXNkrscwij47U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D4CnkOV8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18D71C072AA;
-	Fri, 19 Apr 2024 11:03:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713524592;
-	bh=uWAY6LlF7v6+sqojjMdbCQRzzgR4DjCY8JKq5y18Ehk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D4CnkOV8TzpWGtuWggKvbOgGgmDnwWfihPiKWDyeKOBgfMQgKbYqAWbV0zNi09unu
-	 F6w+nEDNflQn9cwHTby2xXiJ9MTWm/QrSda0u4cpCBYLoa/RqiLmzG8NXqvSfQenri
-	 5k8ACsd7zdPRvLqTOV8cnP8JLL9bC+spTsesgIhlB/onl2LiCvS517GIm7uSG5M51A
-	 KAD4Q+WYmNz+CpMnYngIUdlMwvyrC1G/Y561SbvIf6XO7FNgFU5AVjNW8K27bBgQ0I
-	 uxbd91aRxGTbT0+nw8jptnCTZ00/9p7sog6tB/HmoZtM5pqFNusVV3/ASfza6XMse1
-	 41BbtdZO+HI1g==
-Date: Fri, 19 Apr 2024 12:03:06 +0100
-From: Will Deacon <will@kernel.org>
-To: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: alexghiti@rivosinc.com, ryan.roberts@arm.com,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-	akpm@linux-foundation.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 0/9] Merge arm64/riscv hugetlbfs contpte support
-Message-ID: <20240419110306.GA2972@willie-the-truck>
-References: <CAHVXubiH64beFuB_GHSq5BKCus=O_+bqYTCwWQ+=2Q-F=T=ctQ@mail.gmail.com>
- <mhng-911ba065-e6c8-4d42-978c-e47897bcb493@palmer-ri-x1c9a>
+	s=arc-20240116; t=1713524648; c=relaxed/simple;
+	bh=M7P3XyB7/DWC66Xwuz9WozSWgLRzwKjY/6zlNfx9arU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=OWiBBKRjC7Jk3MebLOgsH6yerftILNYClz4DRYl9FfEuG8vY0AG435TW9Bglrm6Zx8RKinE5MD2hK9A+AF3NhWhpiDTd/FsPaQmqcQS0WpOCStzdWuSxZ68isT1Y9iKjxBcr3saQ4gnJ8S522fqGv2GFwJwGNWF+54um+nHR7tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rxm2E-003sag-Ez; Fri, 19 Apr 2024 19:04:03 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 19 Apr 2024 19:04:20 +0800
+Date: Fri, 19 Apr 2024 19:04:20 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-crypto@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, chang.seok.bae@intel.com
+Subject: Re: [PATCH] crypto: x86/aes-xts - handle CTS encryption more
+ efficiently
+Message-ID: <ZiJPtK+cVWBXPn67@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <mhng-911ba065-e6c8-4d42-978c-e47897bcb493@palmer-ri-x1c9a>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240412154559.91807-1-ebiggers@kernel.org>
+X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
 
-On Thu, Apr 18, 2024 at 03:11:56PM -0700, Palmer Dabbelt wrote:
-> On Fri, 01 Mar 2024 03:29:18 PST (-0800), alexghiti@rivosinc.com wrote:
-> > On Fri, Mar 1, 2024 at 11:45 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
-> > > I confess I haven't looked at the patches yet, but this cover letter raises a
-> > > few quesions for me. I'll aim to look at the actual patches in due course.
+Eric Biggers <ebiggers@kernel.org> wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+> When encrypting a message whose length isn't a multiple of 16 bytes,
+> encrypt the last full block in the main loop.  This works because only
+> decryption uses the last two tweaks in reverse order, not encryption.
 > 
-> in case someone wants to pick them up via a generic tree.  I'm happy to take
-> them via the RISC-V tree if folk want, no rush on my end I'm just scrubbing
-> through old stuff.
+> This improves the performance of decrypting messages whose length isn't
+> a multiple of the AES block length, shrinks the size of
+> aes-xts-avx-x86_64.o by 5.0%, and eliminates two instructions (a test
+> and a not-taken conditional jump) when encrypting a message whose length
+> *is* a multiple of the AES block length.
+> 
+> While it's not super useful to optimize for ciphertext stealing given
+> that it's rarely needed in practice, the other two benefits mentioned
+> above make this optimization worthwhile.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+> arch/x86/crypto/aes-xts-avx-x86_64.S | 53 +++++++++++++++-------------
+> 1 file changed, 29 insertions(+), 24 deletions(-)
 
-I'd definitely like to take the arm64 parts via the arm64 tree (on a
-shared branch), as it's a non-trivial amount of mm code which may end up
-conflicting. I'd also like to see Ryan's Ack on the changes before these
-end up in -next.
-
-Will
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
