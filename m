@@ -1,179 +1,142 @@
-Return-Path: <linux-kernel+bounces-151384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C84298AADE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:50:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1EEF8AADE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:52:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 850D9282543
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:50:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C6F628242A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D946783A07;
-	Fri, 19 Apr 2024 11:50:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A14A83CC7;
+	Fri, 19 Apr 2024 11:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FlJAu8fM"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QvHM1QVx"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97931200D3;
-	Fri, 19 Apr 2024 11:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAB6823D9
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713527408; cv=none; b=RDC+SiEviz2RzzvQhYqF6hf8SKjfQKOpmxrVSt6mEMnXqx7o+C4IQKDy1SVbLu5r+wK4gZeixNeYf9lmAL+1lxhu+Rioj2GyAcJdOHJFxhvplgK+Bp/VfX5ubZXCjoqskHdjVj/sYBmDhpP9t1bGq+O1R68sIOmJ0Jl9tM46zj0=
+	t=1713527561; cv=none; b=OV7iAy1e66m/mhRnOsclIWeVWTapqYAlE7BB031XM5ZkNwxh5go0eMvG5IutFc8OOEEa7H5uIIFx5kT6/g/6DzjxajIOJBKTgo574haFIsEwewtfnlmnu5RIpEQ5vciIkp3P/0fDB8ecFPpG8DqqEr6vaj8YgN+6t80WW+ur2UU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713527408; c=relaxed/simple;
-	bh=Lep34Beis5C2ihwH+Dc5DzCkhyzByh/1RyjpIIWrCf0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YyJoaRNFZwtFCB6NoRxyCYUKSSWNiHHy8N2KYfPZ4yfB7gz40AeWP4D+maq0g6tl8fKorOZ5rQe/91k3d/A/v0EbWc6xfgyZZwMkZZsiyFn+10EHoUxDT3NLodG2UZ5ri+iGVlk1cIliWgeRR/tv7CP22qy1mI+gbUUop7VISb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FlJAu8fM; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713527404;
-	bh=Lep34Beis5C2ihwH+Dc5DzCkhyzByh/1RyjpIIWrCf0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=FlJAu8fMvcBak3ke9sp8Ks2GnEYU/NmHOnQcAFdOzNcwCHpIbjM32jwOdl9axlvmV
-	 fyHkSXvfa+bmxWoj/ssL4MmdQ+oKK2gOu4Efn4B+n/pNiTUn+lhFZTxHuu/oieYpfI
-	 lb14UsrWh0T+fHyHYx7L6g6Bn29GOL4t3w3SEueYGWa01LoN9lPO9Tn3m0147Hal+G
-	 2VrPIBhgtUieTPiUjnTJSfl/VrHzbYazcI3yOjgeVJO/PDgt8RJFIXZUYIOBdV0qqC
-	 z1UcE3SS3dv2ItyrMafEVg3JZE/I+zVf3SzFQvQFNKx8dsUygSbAod8JHvoE3NN6H5
-	 OXT8xwapuKQwQ==
-Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 919A7378214D;
-	Fri, 19 Apr 2024 11:50:01 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: kernel@collabora.com,
-	Joey Gouly <joey.gouly@arm.com>,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests: mm: protection_keys: save/restore nr_hugepages value from launch script
-Date: Fri, 19 Apr 2024 16:50:27 +0500
-Message-Id: <20240419115027.3848958-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713527561; c=relaxed/simple;
+	bh=+HnpYIljW903ODlD5/xLD4aOITxYFLDumzggzFZ3LXU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=e5gFN6YbBTK0SnTmj3UjB/IsYd1ib3FDCGAEsZLYdNMYx3I9AXbNDCRUYzZS7yPuHtuDAY33Q5+w1euyM5VGaVrN5kSTOHEWl7csoXszEh1RbWnnEHzBjxStvafw4RLMvRWnh0nQlebBumn6SfAr9RyWar+J3yDn/w98JUvPhJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QvHM1QVx; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713527559;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+9gAW74TdLSgAKKdOeHRcIuNI+2QlXI+dYyfePDOsqM=;
+	b=QvHM1QVxXd24ATflP4j3EP3JLsgHH5oOiuRX4z2SfJmPwCr+muAzsDosE8SrJGYIY7Jhc9
+	inL0nS2Te9StRN2JXrNa7BuxSxoI4el830nrv7l6tByDJrXGMh0N0Msr5f4+Ke4wlFuhnr
+	Yg8V0jb5hVKk0kuRJ51c8ZDua88CKOM=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-383-1UeD_w1qMQOwJNP_62--eA-1; Fri, 19 Apr 2024 07:52:37 -0400
+X-MC-Unique: 1UeD_w1qMQOwJNP_62--eA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-34a49f5a6baso586845f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 04:52:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713527557; x=1714132357;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+9gAW74TdLSgAKKdOeHRcIuNI+2QlXI+dYyfePDOsqM=;
+        b=m9rJuEddmEmkT+cHuX2Wo3rkoWhCphk7c+bloSdEPFcDDO7e+NZ1dr/DhrJMUc5d1U
+         eBqTcl1h/gGfWP6vDtqPlj/8ySYrH+qevJs4gCOlHiOT/f2EmWfC92CLf1QTD2ooaGMI
+         ZDxL5jG58lXJKu+k6LCeJwD5T+u7JG9TSLwBaHu9qQ11s65DLfYwF7Y9pbzo+wDMaoXA
+         YHH3zT77OGyrckOCBHMsAq9tNrPfe5R6Jedw61v1EwKj6vTF30JbynKg3kIgSXQTiWCX
+         imlkm+R2BJWdNu4+wbuXK3/AlZvTbKOSHZtSJR3G0EtdmeS6Yqh0QaPRq5WlwGG0Ku/H
+         ejqA==
+X-Forwarded-Encrypted: i=1; AJvYcCV4H73qdivO7u2vKKmYoEmEjw88Iiu2uVaS9Ab2Vt2aDT2O86xnhmDDXNEMgB/D/CY+Yu4SEhOmSkoXNKNf6mqHen1XCzxxQCa96s5p
+X-Gm-Message-State: AOJu0YzbJlFME+2AzUNSL79+woGKaqzUlwZStwdYJPKy9SaeWvNMng87
+	ugAD9EhGGFh57y6R+UlPUgC6HiMDCcXNiGerhHo47sTz36JWd0nI2p9XbDNqy13WdguOZu6DueC
+	W+wpHdIVc9D0HfoGDZCHHcp4IAkP72/cj4H7R87jlcJnO3ZCMAHoUI70Ej3BemePcZ0M7+K5k9s
+	WLM9iET8hNodTTjx19N64Q6wZNdUxnriZlGDSp
+X-Received: by 2002:adf:e683:0:b0:345:605e:fa38 with SMTP id r3-20020adfe683000000b00345605efa38mr1433587wrm.60.1713527556817;
+        Fri, 19 Apr 2024 04:52:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHfUJrGef9Pu8qycGP8hLzLT/FO8q371w7fw92YbXK5+2PaDsTI6UQGUVVeBTULcSVYlzzGDl9d79lt6LyM70w=
+X-Received: by 2002:adf:e683:0:b0:345:605e:fa38 with SMTP id
+ r3-20020adfe683000000b00345605efa38mr1433571wrm.60.1713527556446; Fri, 19 Apr
+ 2024 04:52:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240418194133.1452059-1-michael.roth@amd.com> <20240418194133.1452059-10-michael.roth@amd.com>
+In-Reply-To: <20240418194133.1452059-10-michael.roth@amd.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Fri, 19 Apr 2024 13:52:24 +0200
+Message-ID: <CABgObfYztTP+qoTa-tuPC8Au-aKhwiBkcvHni4T+n6MCD-P9Dw@mail.gmail.com>
+Subject: Re: [PATCH v13 09/26] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_START command
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
+	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com, 
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
+	Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The save/restore of nr_hugepages was added to the test itself by using
-the atexit() functionality. But it is broken as parent exits after
-creating child. Hence calling the atexit() function early. That's not
-it. The child exits after creating its child and so on.
+On Thu, Apr 18, 2024 at 9:42=E2=80=AFPM Michael Roth <michael.roth@amd.com>=
+ wrote:
+> +/* As defined by SEV-SNP Firmware ABI, under "Guest Policy". */
+> +#define SNP_POLICY_MASK_API_MAJOR      GENMASK_ULL(15, 8)
+> +#define SNP_POLICY_MASK_API_MINOR      GENMASK_ULL(7, 0)
+> +
+> +#define SNP_POLICY_MASK_VALID          (SNP_POLICY_MASK_SMT            |=
+ \
+> +                                        SNP_POLICY_MASK_RSVD_MBO       |=
+ \
+> +                                        SNP_POLICY_MASK_DEBUG          |=
+ \
+> +                                        SNP_POLICY_MASK_SINGLE_SOCKET  |=
+ \
+> +                                        SNP_POLICY_MASK_API_MAJOR      |=
+ \
+> +                                        SNP_POLICY_MASK_API_MINOR)
+> +
+> +/* KVM's SNP support is compatible with 1.51 of the SEV-SNP Firmware ABI=
+ */
+> +#define SNP_POLICY_API_MAJOR           1
+> +#define SNP_POLICY_API_MINOR           51
 
-The parent cannot wait to get the termination status for its children as
-it'll keep on holding the resources until the new pkey allocation fails.
-It is impossible to wait for exits of all the grand and great grand
-children. Hence the restoring of nr_hugepages value from parent is
-wrong.
+> +static inline bool sev_version_greater_or_equal(u8 major, u8 minor)
+> +{
+> +       if (major < SNP_POLICY_API_MAJOR)
+> +               return true;
 
-Let's save/restore the nr_hugepages settings in the launch script
-instead of doing it in the test.
+Should it perhaps refuse version 0.x? With something like a
 
-Fixes: c52eb6db7b7d ("selftests: mm: restore settings from only parent process")
-Reported-by: Joey Gouly <joey.gouly@arm.com>
-Closes: https://lore.kernel.org/all/20240418125250.GA2941398@e124191.cambridge.arm.com
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
- tools/testing/selftests/mm/protection_keys.c | 38 --------------------
- tools/testing/selftests/mm/run_vmtests.sh    |  2 ++
- 2 files changed, 2 insertions(+), 38 deletions(-)
+#define SNP_POLICY_API_MAJOR_MIN    1
 
-diff --git a/tools/testing/selftests/mm/protection_keys.c b/tools/testing/selftests/mm/protection_keys.c
-index 374a308174d2b..48dc151f8fca8 100644
---- a/tools/testing/selftests/mm/protection_keys.c
-+++ b/tools/testing/selftests/mm/protection_keys.c
-@@ -54,7 +54,6 @@ int test_nr;
- u64 shadow_pkey_reg;
- int dprint_in_signal;
- char dprint_in_signal_buffer[DPRINT_IN_SIGNAL_BUF_SIZE];
--char buf[256];
- 
- void cat_into_file(char *str, char *file)
- {
-@@ -1745,42 +1744,6 @@ void pkey_setup_shadow(void)
- 	shadow_pkey_reg = __read_pkey_reg();
- }
- 
--pid_t parent_pid;
--
--void restore_settings_atexit(void)
--{
--	if (parent_pid == getpid())
--		cat_into_file(buf, "/proc/sys/vm/nr_hugepages");
--}
--
--void save_settings(void)
--{
--	int fd;
--	int err;
--
--	if (geteuid())
--		return;
--
--	fd = open("/proc/sys/vm/nr_hugepages", O_RDONLY);
--	if (fd < 0) {
--		fprintf(stderr, "error opening\n");
--		perror("error: ");
--		exit(__LINE__);
--	}
--
--	/* -1 to guarantee leaving the trailing \0 */
--	err = read(fd, buf, sizeof(buf)-1);
--	if (err < 0) {
--		fprintf(stderr, "error reading\n");
--		perror("error: ");
--		exit(__LINE__);
--	}
--
--	parent_pid = getpid();
--	atexit(restore_settings_atexit);
--	close(fd);
--}
--
- int main(void)
- {
- 	int nr_iterations = 22;
-@@ -1788,7 +1751,6 @@ int main(void)
- 
- 	srand((unsigned int)time(NULL));
- 
--	save_settings();
- 	setup_handlers();
- 
- 	printf("has pkeys: %d\n", pkeys_supported);
-diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-index 223c2304f885c..3157204b90476 100755
---- a/tools/testing/selftests/mm/run_vmtests.sh
-+++ b/tools/testing/selftests/mm/run_vmtests.sh
-@@ -390,6 +390,7 @@ CATEGORY="ksm_numa" run_test ./ksm_tests -N -m 0
- CATEGORY="ksm" run_test ./ksm_functional_tests
- 
- # protection_keys tests
-+nr_hugepgs=$(cat /proc/sys/vm/nr_hugepages)
- if [ -x ./protection_keys_32 ]
- then
- 	CATEGORY="pkey" run_test ./protection_keys_32
-@@ -399,6 +400,7 @@ if [ -x ./protection_keys_64 ]
- then
- 	CATEGORY="pkey" run_test ./protection_keys_64
- fi
-+echo "$nr_hugepgs" > /proc/sys/vm/nr_hugepages
- 
- if [ -x ./soft-dirty ]
- then
--- 
-2.39.2
+to make it a bit more future proof (and testable).
+
+> +       major =3D (params.policy & SNP_POLICY_MASK_API_MAJOR);
+
+This should be >> 8. Do the QEMU patches not set the API version? :)
+
+Paolo
 
 
