@@ -1,135 +1,149 @@
-Return-Path: <linux-kernel+bounces-151196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 464CA8AAB04
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:58:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC9FF8AAB0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:00:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04247281E77
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:58:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 813281F21D30
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20AB5757F6;
-	Fri, 19 Apr 2024 08:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6A87BB19;
+	Fri, 19 Apr 2024 08:59:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VlUUOVdk"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UaSntZUL"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F58657AC;
-	Fri, 19 Apr 2024 08:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05D00745C3
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713517128; cv=none; b=piKXBKVbpsKrIqRmj3sA2q1ZCakqfDKonPRdERF+5yIrHk/sra1/5GUDhi5nvcIRuuwoQjwf1Os1MmUaqJA6vsuz67rAGFPnPYeb19bCLjHrUzc3XdTOCOGqPWYLy4ypMFHF01tJvTR8rrTma5+rDjz1T3NPSM6q94dIRh+IPjs=
+	t=1713517175; cv=none; b=N1c5Zc7GbHMgU0qTtBDLDEZ2BeXfplsdW5E+GD/HicrVhLFbfsTib+vvdu7HRvCycZ78ANXz4oLwXkRpXJIhmT4cMtWhEpGX73Oh0c1avoURPOtIM51+Umgh1F0TQu5J1f9nqctaMLdZhZdaj49pOcCeLK3xy8+YIFOOieq9lDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713517128; c=relaxed/simple;
-	bh=jgbeBRVzeXMYSheG4ZQAneV/ODr+RugakD1+LtLxDCA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W2Rbmu/pHaB3Rh//wbeS7euiNnIAVS+CfjlF8PyG3Bo0p9uBQLcg28ViDxX1nX0rS+v3A9kNlBFu/2svYZiRBJiLkr5cDMwp29eWqrhle0GLJ4DGBrhc6wnTMtlu1kEYBnxIi2HbAXVlOPKPxAAVaErkdJ1JlP+9mDhvsP1UCEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VlUUOVdk; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516d68d7a8bso1707268e87.1;
-        Fri, 19 Apr 2024 01:58:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713517125; x=1714121925; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NkPkWZD+fDDhemy2LIDiT55F/PO/TI//Q041lLZQk+c=;
-        b=VlUUOVdkGDjDSlaheHjEvYtT9PgAiEzhYjH4GRFhjGbLGzJu4JLsfb7cuiWuuKhHh3
-         DUSEGZ2pJuwISj9BuDk6K/CgYFiAxqycU6QbdfWRSXXUw/l1zJifxFZmt3X8tvCg9v0i
-         SHGhjcU4FAWUSpBRVjgPQxeHFeuGwzdywtalpQLopRTGbm/iOxeoi1qdPhzOUj2HaHZI
-         6bBKQgX8Oww42vMqIJ7JigZv/C7Phjywk/NmuurdiJSVbprR30oeLyQp/Sf3JiNWmSr/
-         E94VGoIGKMNzmzaBwIdDDhcAwAFENGeFqCicuEnZLmy4uRIOhZgjde1SmjyGr0U5xdtW
-         sdrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713517125; x=1714121925;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NkPkWZD+fDDhemy2LIDiT55F/PO/TI//Q041lLZQk+c=;
-        b=Eb0tNEUaU2OQEH5MwQcCRrPjvjWozracPrGYGfo1N4UR8lXCOOb+e3lrzJVIHzJOzD
-         JK4MUF68aodXZPN6U/o1ofQSVHgzOLw+o56Hw/BrpQ5wmDWyjmaPAB8020JtaAnNOVP7
-         4a429FGxPpthJ9kZ0BUynYoibPNRjmHnyVd4FWHh6KXVLTTETc5JOBrYTiXeYBgC1GF0
-         3/aRduWtXgI2QgA4eYLwtYNd1lAsRhW7t9uM6htLwyKq4wqpjX2flnt6zd++rQBwZhhj
-         QIoReU28r5dpoe8HLqIwPnzocvOJfWwFfQ8ytMk8S6pbGNiAV/x/F+tEzxX0H003csi5
-         h1Bg==
-X-Forwarded-Encrypted: i=1; AJvYcCWDP+9MYmhOrk98A3uoPxq8hF2G27VuH1xojmyjUeda99Hm31CUOMmlMVmMera04AsJBI50sGyCF76N7JSQ4+qJK8l5/ae05zfcyGYTiFmaqRe7Cp5rXeD7LsY0xtsxAd/NnaVa
-X-Gm-Message-State: AOJu0YzfPc474Pz0XibsrWJ8LFJ1isvOcpgqJTCer4z+AIkwLUDF8sXC
-	uWAw3EsYjcdbv/tnLXvH4kvgUNnF5kSmdEylUrU9YcGSLSVrDNWf
-X-Google-Smtp-Source: AGHT+IG9jaQLQRx7GI8egozbRcyQnR4eJjjPqvTksThvItCQ/0Y3ypRISV37b291kfO+3oDXaYzPfw==
-X-Received: by 2002:a19:6442:0:b0:51a:ae0a:26dd with SMTP id b2-20020a196442000000b0051aae0a26ddmr786111lfj.28.1713517124659;
-        Fri, 19 Apr 2024 01:58:44 -0700 (PDT)
-Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
-        by smtp.gmail.com with ESMTPSA id m24-20020a056512359800b0051950b8252asm606303lfr.240.2024.04.19.01.58.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 01:58:44 -0700 (PDT)
-Date: Fri, 19 Apr 2024 11:58:42 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Russell King <linux@armlinux.org.uk>, Yanteng Si <siyanteng@loongson.cn>, 
-	Romain Gantois <romain.gantois@bootlin.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Simon Horman <horms@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 0/2] net: stmmac: Fix MAC-capabilities
- procedure
-Message-ID: <axq6v6ya7nuov6x6vdjlp45i7bjdo2tkmmiuytye456fszycal@bkixd6ruplr7>
-References: <20240417140013.12575-1-fancer.lancer@gmail.com>
- <20240418185328.79c38358@kernel.org>
+	s=arc-20240116; t=1713517175; c=relaxed/simple;
+	bh=y4rNe9gyVulZlmm7cp7LGHzmoqxjT4o9TZAfg83xNSA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AKrJ9L8j52JSJmFRrliJi6ItSpi37lrJ4oHfDonlqsyf7k8LRVWfcQaZTxcTySFdjIJnKFgBIpQUCAnkbhNl/ur83oYLMFCRQ9YKRSVS4moLwjBZxkQa1t7nu4hZUdo7Kviq8WAnSUfZQ1zD3qf67O48auGi+fc5HdXdGi3bKS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UaSntZUL; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713517173;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=xCXBhCcX/Rs9QQci0q4QWTKJT0dsFBOURhywyhJQSgc=;
+	b=UaSntZULwbFQoqQpgGhxjeWsWnrdB0ruAnSChtkXC09oZ8h3J9sCJcQ/5l5zRr7JzXHxVY
+	e4DPUi99b8t+0PmgDP6bx2b1/FpYLlt+Hd6cG4O8erJTkD5KuKEMThNYMu5bPm/SaKBy2/
+	+iha/lcKs80uhTxPSWUeuAPjMpBx454=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-173-YW7Akur9Ok2f0fIbn8Tltw-1; Fri, 19 Apr 2024 04:59:29 -0400
+X-MC-Unique: YW7Akur9Ok2f0fIbn8Tltw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7A2E181384E;
+	Fri, 19 Apr 2024 08:59:28 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 09C1A20368B9;
+	Fri, 19 Apr 2024 08:59:27 +0000 (UTC)
+From: Paolo Bonzini <pbonzini@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Cc: isaku.yamahata@intel.com,
+	xiaoyao.li@intel.com,
+	binbin.wu@linux.intel.com,
+	seanjc@google.com,
+	rick.p.edgecombe@intel.com
+Subject: [PATCH v4 0/6] KVM: Guest Memory Pre-Population API
+Date: Fri, 19 Apr 2024 04:59:21 -0400
+Message-ID: <20240419085927.3648704-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418185328.79c38358@kernel.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Thu, Apr 18, 2024 at 06:53:28PM -0700, Jakub Kicinski wrote:
-> On Wed, 17 Apr 2024 17:00:06 +0300 Serge Semin wrote:
-> > The series got born as a result of the discussions around the recent
-> > Yanteng' series adding the Loongson LS7A1000, LS2K1000, LS7A2000, LS2K2000
-> > MACs support:
-> > Link: https://lore.kernel.org/netdev/fu3f6uoakylnb6eijllakeu5i4okcyqq7sfafhp5efaocbsrwe@w74xe7gb6x7p
-> > 
-> > In particular the Yanteng' patchset needed to implement the Loongson
-> > MAC-specific constraints applied to the link speed and link duplex mode.
-> > As a result of the discussion with Russel the next preliminary patch was
-> > born:
-> > Link: https://lore.kernel.org/netdev/df31e8bcf74b3b4ddb7ddf5a1c371390f16a2ad5.1712917541.git.siyanteng@loongson.cn
-> > 
-> > The patch above was a temporal solution utilized by Yanteng for further
-> > developments and to move on with the on-going review. This patchset is a
-> > refactored version of that single patch with formatting required for the
-> > fixes patches.
-> > 
-> > The main part of the series has already been merged in on v1 stage. The
-> > leftover is the cleanup patches which rename
-> > stmmac_ops::phylink_get_caps() callback to stmmac_ops::update_caps() and
-> > move the MAC-capabilities init/re-init to the phylink MAC-capabilities
-> > getter.
-> 
+Pre-population has been requested several times to mitigate KVM page faults
+during guest boot or after live migration.  It is also required by TDX
+before filling in the initial guest memory with measured contents; while
+I am not yet sure that userspace will use this ioctl, if not the code
+will be used by a TDX-specific ioctl---to pre-populate the SEPT before
+invoking TDH.MEM.PAGE.ADD or TDH.MR.EXTEND.
 
-> According to the build bot it didn't apply at the time of posting :S
+This patch series depends on the other pieces that have been applied
+to the kvm-coco-queue branch (and is present on the branch).
 
-Most likely it happened because the first three patches
-https://lore.kernel.org/netdev/20240412180340.7965-1-fancer.lancer@gmail.com/
-hadn't been merged in yet back then. They are now.
+Paolo
 
-> It does apply now but the bot doesn't have a "retry now" button.
-> Could you repost?
+v3->v4:
+- renamed everything to KVM_PRE_FAULT_MEMORY, KVM_CAP_PRE_FAULT_MEMORY,
+  struct kvm_pre_fault_memory.
+- renamed base_address field to gpa
+- merged introduction of kvm_tdp_map_page() and kvm_arch_vcpu_map_memory()
+  in a single patch, moving the latter to mmu.c; did *not* merge them
+  in a single function though
+- removed EINVAL return code for RET_PF_RETRY, do it in KVM and exit
+  on signal_pending()
+- return ENOENT for RET_PF_EMULATE
+- do not document the possibility that different VMs can have different
+  results for KVM_CHECK_EXTENSION(KVM_CAP_PRE_FAULT_MEMORY)
+- return long from kvm_arch_vcpu_map_memory(), update size and gpa in
+  kvm_vcpu_map_memory()
+- cover remaining range.size more thoroughly in the selftest
 
-Sure. I'll do that in an instant.
+v2->v3:
+- no vendor-specific hooks
+- just fail if pre-population is invoked while nested virt is access
+- just populate page tables for the SMM address space if invoked while
+  SMM is active
+- struct name changed to `kvm_map_memory`
+- common code has supports for KVM_CHECK_EXTENSION(KVM_MAP_MEMORY)
+  on the VM file descriptor, which allows to make this ioctl supported
+  only on a subset of VM types
+- if EINTR or EAGAIN happens on the first page, it is returned.  Otherwise,
+  the ioctl *succeeds* but mapping->size is left nonzero.  While this
+  drops the detail as to why the system call was interrupted, it is
+  consistent with other interruptible system calls such as read().
+- the test is not x86-specific anymore (though for now only compiled
+  on x86 because no other architectures supports the feature)
+- instead of using __weak symbols, the code is conditional on a new
+  Kconfig CONFIG_KVM_GENERIC_MAP_MEMORY.
 
--Serge(y)
 
-> -- 
-> pw-bot: cr
+Isaku Yamahata (6):
+  KVM: Document KVM_PRE_FAULT_MEMORY ioctl
+  KVM: Add KVM_PRE_FAULT_MEMORY vcpu ioctl to pre-populate guest memory
+  KVM: x86/mmu: Extract __kvm_mmu_do_page_fault()
+  KVM: x86/mmu: Make __kvm_mmu_do_page_fault() return mapped level
+  KVM: x86: Implement kvm_arch_vcpu_pre_fault_memory()
+  KVM: selftests: x86: Add test for KVM_PRE_FAULT_MEMORY
+
+ Documentation/virt/kvm/api.rst                |  50 ++++++
+ arch/x86/kvm/Kconfig                          |   1 +
+ arch/x86/kvm/mmu/mmu.c                        |  72 +++++++++
+ arch/x86/kvm/mmu/mmu_internal.h               |  42 +++--
+ arch/x86/kvm/x86.c                            |   3 +
+ include/linux/kvm_host.h                      |   5 +
+ include/uapi/linux/kvm.h                      |  10 ++
+ tools/include/uapi/linux/kvm.h                |   8 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/pre_fault_memory_test.c     | 146 ++++++++++++++++++
+ virt/kvm/Kconfig                              |   3 +
+ virt/kvm/kvm_main.c                           |  63 ++++++++
+ 12 files changed, 390 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/pre_fault_memory_test.c
+
+-- 
+2.43.0
+
 
