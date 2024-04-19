@@ -1,121 +1,111 @@
-Return-Path: <linux-kernel+bounces-151425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04C9C8AAEB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B0CC8AAEB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:40:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5B0F28202E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:39:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9588282BCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD3A512B17C;
-	Fri, 19 Apr 2024 12:38:56 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B03185943;
-	Fri, 19 Apr 2024 12:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 272CC83CD1;
+	Fri, 19 Apr 2024 12:40:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FatThHaQ"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 413A9BE66
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 12:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713530336; cv=none; b=l0ogdbnm+50WAWGtHVvp+d6IEbClSfN5JUUZOQrqf4Bhj9Iubgxu7rCuYdClIu4+DLUWWMdl/wT3WpHCSXuIqB6o2zuimru9z2MBVxrZ9z4nxY4+pMixnNzPSxD+AHv372wdl8r2M/uKSd+PZZn4ntDhzt8HK5PEkSv+J+ODEL4=
+	t=1713530406; cv=none; b=uxyPECqzB2oIr251lrVLgKKVvXHmH8GCLv6VkSvFhh16OV8Pq72ZLOlEcj8jiDXBcPnMD2HkGF44i9GRWaNoCU3UMUBzOg3I8Z5daY7J9xdyS2BMW+BkGOj4TCYNk0EWP299fjJBvIlMFzRy8E9KKnKSyYTr+SbCWNonll0WNuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713530336; c=relaxed/simple;
-	bh=6c4g+/06gQCstLfzuVhVmJ7KExrdz67CYKZTprqbHuk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hod9qIm+tAbT2RLRNLbHs+Af+HmDtj/mnhnso/kJYhdkSV7qNe04COHi92yMPApsg9ZiCQuTfunRJRy8l0efBbTIrssNNB0inCv/dit8346iymXkk9H8Z+cDtACdfzRTKYZD4qBA02P//PzAJ+cQK+eBLNIe0vijlXCxJyF0GsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69E772F;
-	Fri, 19 Apr 2024 05:39:21 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A9ED3F64C;
-	Fri, 19 Apr 2024 05:38:49 -0700 (PDT)
-Date: Fri, 19 Apr 2024 13:38:47 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Elliot Berman <quic_eberman@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Sebastian Reichel <sre@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Andy Yan <andy.yan@rock-chips.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-	Melody Olvera <quic_molvera@quicinc.com>,
-	Shivendra Pratap <quic_spratap@quicinc.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] Implement vendor resets for PSCI SYSTEM_RESET2
-Message-ID: <20240419123847.ica22nft3sejqnm7@bogus>
-References: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
- <Zh5GWqt2oCNHdF_h@bogus>
- <48f366f5-4a17-474c-a8e3-6d79c9092d62@broadcom.com>
+	s=arc-20240116; t=1713530406; c=relaxed/simple;
+	bh=gh+ce3V0R5u8LemmWy7Lb53EFXvlT/mC8nvuXLXwbas=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=k3Ixcrz3pkmrKufQ6+5OaJkUFGV6DbM2wnZGXQWms7CpUpnSLpZMPztYasLckiwscDgvT9TAfvYu1WZ37nF3IIbgXkFgqHxukws3HaSneV4nw9mWo9ZKo4qCvQDLbXdJQsdb3JtyQ8lOvBKCzrAsltY3cnEqkM0abhX/bRuBocU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FatThHaQ; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f074520c8cso1950109b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 05:40:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713530404; x=1714135204; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c6gvbTkCl4kOc38ddXvfXR7xJWrUmpN2MY/YPrZ9UCo=;
+        b=FatThHaQFrZehx4qG5T620iduv/tPwHyewrpzY8CflUjPh8CFk6n+Pji2byHE87zZZ
+         ZZBwrGhy9Vry6xLNC8QttRsXs7+aYijkweVJcnIONvWIbpZJ0E/9Yni1boMAgyyEDEZb
+         f73pSPStGQb8NWA9LzyYpNbtKryZv2nC9OcMQ9ESChyIFn3LlGfU+UZvsZB5mS/Pri91
+         bi0EdYaU4+7/XClQCAW2a1sppFggS10D7IpjMAFy10UfHOCRjZR+DNstaLUhYJ61d0Bf
+         JDTCK4mvCnXOt1OAC06YOVclyF8F8cIySM0tP5MfGSrhUqFpNzNJ42ZsY+CtRvLmuKZv
+         OptQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713530404; x=1714135204;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c6gvbTkCl4kOc38ddXvfXR7xJWrUmpN2MY/YPrZ9UCo=;
+        b=enNxBBLe5UhrAWo1jHBT3MgdrMpcoACCzPiJycIhPUaRsb2NYDvEN1aTrBg2uxpWIH
+         ggp+1MeQhz3QJvmRy6KDPLTCUsn4nk5262OJXQwb31KvbQMFpBvELGUGHC6z/GzuKXra
+         VByZqkUK5sVZyduYGsQo+LY79NCVGmSJeyexNZu96LWQ1+Fy6m86+SQ3FlV7kV9qFvs7
+         fZn60I3f/t2BUS11gowcBu8U5+JvWaUwNmiWXv26w/aRn6+aoAApr05QQoyhqkGG3rVS
+         v79M6hDZPK1Wn5cdUscfvz9ymZiSHAnjQmr9TkxNG+i7oeJf2XDtgeWveQDEH/8tlSmF
+         AuGw==
+X-Gm-Message-State: AOJu0YxOoR31PjmnP88g9cL80/p0faQdYmVo2l51Jq5kOmo9QZGM1nsL
+	mOwPMBRBgW5ymPkDL7Yv4SveoHwTf48DBbLSYLp1rRINVTc4Mjfy
+X-Google-Smtp-Source: AGHT+IEM2FGG6AhfznV6YdsNoTzYj4xh8GuTC3lc/tR17kvmWE4VVWpQwpzUq9kNAkFraAhtBEYPqg==
+X-Received: by 2002:a05:6a00:4b0f:b0:6ed:4203:bdd2 with SMTP id kq15-20020a056a004b0f00b006ed4203bdd2mr2342756pfb.9.1713530404553;
+        Fri, 19 Apr 2024 05:40:04 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id y24-20020aa78558000000b006ecfb06413dsm3124953pfn.197.2024.04.19.05.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 05:40:04 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: syzbot+6c21aeb59d0e82eb2782@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [virt?] [net?] KMSAN: uninit-value in vsock_assign_transport (2)
+Date: Fri, 19 Apr 2024 21:39:59 +0900
+Message-Id: <20240419123959.8572-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <000000000000be4e1c06166fdc85@google.com>
+References: <000000000000be4e1c06166fdc85@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48f366f5-4a17-474c-a8e3-6d79c9092d62@broadcom.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 17, 2024 at 10:50:07AM -0700, Florian Fainelli wrote:
-> On 4/16/24 02:35, Sudeep Holla wrote:
-> > On Sun, Apr 14, 2024 at 12:30:23PM -0700, Elliot Berman wrote:
-> > > The PSCI SYSTEM_RESET2 call allows vendor firmware to define additional
-> > > reset types which could be mapped to the reboot argument.
-> > >
-> > > Setting up reboot on Qualcomm devices can be inconsistent from chipset
-> > > to chipset.
-> >
-> > That doesn't sound good. Do you mean PSCI SYSTEM_RESET doesn't work as
-> > expected ? Does it mean it is not conformant to the specification ?
-> >
-> > > Generally, there is a PMIC register that gets written to
-> > > decide the reboot type. There is also sometimes a cookie that can be
-> > > written to indicate that the bootloader should behave differently than a
-> > > regular boot. These knobs evolve over product generations and require
-> > > more drivers. Qualcomm firmwares are beginning to expose vendor
-> > > SYSTEM_RESET2 types to simplify driver requirements from Linux.
-> > >
-> >
-> > Why can't this be fully userspace driven ? What is the need to keep the
-> > cookie in the DT ?
-> >
-> >
->
-> Using the second example in the Device Tree:
->
-> mode-bootloader = <1 2>;
->
-> are you suggesting that within psci_vendor_sys_reset2() we would look at the
-> data argument and assume that we have something like this in memory:
->
-> const char *cmd = data;
->
-> cmd[] = "bootloader 2"
->
-> where "bootloader" is the reboot command, and "2" is the cookie? From an
-> util-linux, busybox, toybox, etc. we would have to concatenate those
-> arguments with a space, but I suppose that would be doable.
->
 
-Yes that was my thought when I wrote the email. But since I have looked at
-existing bindings and support in the kernel in little more detail I would say.
-So I am not sure what would be the better choice for PSCI SYSTEM_RESET2
-especially when there is some ground support to build.
+please test uninit-value in vsock_assign_transport
 
-So I am open for alternatives including this approach.
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
---
-Regards,
-Sudeep
+---
+ drivers/vhost/vsock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+index ec20ecff85c7..652ef97a444b 100644
+--- a/drivers/vhost/vsock.c
++++ b/drivers/vhost/vsock.c
+@@ -656,7 +656,7 @@ static int vhost_vsock_dev_open(struct inode *inode, struct file *file)
+ 	/* This struct is large and allocation could fail, fall back to vmalloc
+ 	 * if there is no other way.
+ 	 */
+-	vsock = kvmalloc(sizeof(*vsock), GFP_KERNEL | __GFP_RETRY_MAYFAIL);
++	vsock = kvzmalloc(sizeof(*vsock), GFP_KERNEL | __GFP_RETRY_MAYFAIL);
+ 	if (!vsock)
+ 		return -ENOMEM;
+ 
+-- 
+2.34.1
+
 
