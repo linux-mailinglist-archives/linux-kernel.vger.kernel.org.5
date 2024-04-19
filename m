@@ -1,121 +1,162 @@
-Return-Path: <linux-kernel+bounces-151867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEC438AB507
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:25:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BFED8AB508
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:26:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AB571C20A8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:25:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8391281AE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D8313C3EF;
-	Fri, 19 Apr 2024 18:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B5413C3E9;
+	Fri, 19 Apr 2024 18:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="tuF4lAOI"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jF3Igy20"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D1C713B5BE;
-	Fri, 19 Apr 2024 18:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74901137C32;
+	Fri, 19 Apr 2024 18:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713551131; cv=none; b=TYVy4yHacEBuA2aEW7Uz7fyaTRqFeGn2Ev0L30BhjZPvtFm/lC2EvMdTMXx11RiWGw1hxO8jszdeLP/k5gjSxpHOv0Dwv2/xrK9Sl2YJukyfbouWLRdpBwLM26QzggHD2RfkfTakHMI6VPjEyuWyUM9wU3VgTVE9aulNjiWpcs4=
+	t=1713551178; cv=none; b=PxSOSn3kFjEA4FCeS6ocw0zayizeOV+sJFka3A9PjxWPBgyvcMvOO0+RgF69mdg2S1lCcXkL+FPyXzj4kovoIQfVvRIP8abDhhaoAGShksuC5xqw97x+9kpSliK43+DjcyjcGgOOu2jEA6aTQGc9cSpbGw2E5NG/5dYYyCk1zvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713551131; c=relaxed/simple;
-	bh=NiUB2jWvX+wsKtvOZdF+F2qUCl/RH7QB2FrO/Tls7mo=;
-	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=DKLUqCBpfTlGSI2ESeX0Kv0I73rvKf+LEsSAyz4Aths09ZUv55IHazXAIS57XzVUsAdwYcVvEhRbGBCdTzJw6nQ3LHIEPbz76GX1OI8J+ldWAKp68RT+rdGvSPPbt88VF5JMWjsUblsSa1I/EVKbOZBFTTVHnX9fOgeXpjKPXs0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=tuF4lAOI; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1713551119;
-	bh=NiUB2jWvX+wsKtvOZdF+F2qUCl/RH7QB2FrO/Tls7mo=;
-	h=Date:From:To:Subject:From;
-	b=tuF4lAOIGv+fqCJFeFcTDr5vaGt7+dtnYKsSZq+tohxkCMu0kty2/yUq3Ogbcycrl
-	 fvA4+99B0l1jWj4SRXcAXLEQVJWbGn+zUgh763EsKmfRrQ83laF0k8S3HTptGXM3Rj
-	 VkfYYQ18EK4oBLUUTJ35U/3JRrmL4fGaK6HQRj7amiDxAVkn5R2RdNX1Mw6/hvCp11
-	 mvbWQCZwCCBl+e5KdK5h4KIwuo820k9/7BCr81XsGmz1NTgk1Ufpr9lTyaEVvW3obI
-	 eps7VhAdsOlAj56k7yZyQAZ58NXlx65Z6PREm5QAtiU8tqljmk4J02YwQxtIKjUQHO
-	 yk/CaNohbN/zQ==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4VLjk70MsCzwgk;
-	Fri, 19 Apr 2024 14:25:19 -0400 (EDT)
-Message-ID: <8987e081-13bb-4af2-80d7-5819ad5d4784@efficios.com>
-Date: Fri, 19 Apr 2024 14:25:24 -0400
+	s=arc-20240116; t=1713551178; c=relaxed/simple;
+	bh=FcmgegUL0KYISrNVi5jFjXyRdn4R5c69I7t4CMevUMg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YsrAt1gimkqIGKQq8FPZ2OJSpBx1qmMQ/b+nWPJl5EEsJy9xeb/rWdinquSjUMEZ3pqND1Dn0AqnrVyVj2gq1b7G/uczsrMJp0HjKO3su47Xomxx/IZHd6UDGGmLi4aWzAHv+fWB5p8hrRKQu8Mg8MGFum7tRT81mQhNPIq5bFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jF3Igy20; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713551176; x=1745087176;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FcmgegUL0KYISrNVi5jFjXyRdn4R5c69I7t4CMevUMg=;
+  b=jF3Igy20rK9jQWvuDRSCehJCqWhDmrz6KMNh0uVa4B+r/atvCFmdbKL5
+   3stUrXbN5K3dxgix11gngHLTHcecyH2FEXyk5k7KQCd1e0uy/s6jp6UPF
+   YiLml+xJYit59Mi2CoLEOELspu0GT+ell494MJrxSdJ/839/115EDmqgO
+   /ZNVCzA23cogOq33CVz0wSHbWzM57j2jcYh6FCOvdOhioNBsfeGz6+mti
+   oEIYgxv0Cs/NsuFY4P2Ncv1WBGyziTFqLqoan5PvKk67gdx+6qY92rIB/
+   MPVRY7wCfaUnk3CJKmz60laxzcuBCLmFtEG+Ki4A04wJfIlNVNOGMRwu2
+   Q==;
+X-CSE-ConnectionGUID: e6o0rx2jSEmeDC6BoTM6zw==
+X-CSE-MsgGUID: 68/s4jOASQ2M3nIhAZSO9A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="9289011"
+X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
+   d="scan'208";a="9289011"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 11:26:16 -0700
+X-CSE-ConnectionGUID: kXBs05T+T+GC/MSIHYuqOA==
+X-CSE-MsgGUID: Hh88V84MTNWo9xl64ooMFw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
+   d="scan'208";a="28054243"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 11:26:15 -0700
+Date: Fri, 19 Apr 2024 11:26:15 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Michael Roth <michael.roth@amd.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, seanjc@google.com, isaku.yamahata@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH 11/11] KVM: x86: Add gmem hook for determining max NPT
+ mapping level
+Message-ID: <20240419182615.GH3596705@ls.amr.corp.intel.com>
+References: <20240404185034.3184582-1-pbonzini@redhat.com>
+ <20240404185034.3184582-12-pbonzini@redhat.com>
+ <20240409234632.fb5mly7mkgvzbtqo@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: lttng-dev@lists.lttng.org, diamon-discuss@lists.linuxfoundation.org,
- linux-trace-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RELEASE] LTTng-UST 2.12.10 and 2.13.8 (Linux user-space tracer)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240409234632.fb5mly7mkgvzbtqo@amd.com>
 
-LTTng-UST, the Linux Trace Toolkit Next Generation Userspace Tracer,
-is a low-overhead application tracer. The library "liblttng-ust" enables
-tracing of applications and libraries.
+On Tue, Apr 09, 2024 at 06:46:32PM -0500,
+Michael Roth <michael.roth@amd.com> wrote:
 
-New in both 2.12.10 and 2.13.8:
+> On Thu, Apr 04, 2024 at 02:50:33PM -0400, Paolo Bonzini wrote:
+> > From: Michael Roth <michael.roth@amd.com>
+> > 
+> > In the case of SEV-SNP, whether or not a 2MB page can be mapped via a
+> > 2MB mapping in the guest's nested page table depends on whether or not
+> > any subpages within the range have already been initialized as private
+> > in the RMP table. The existing mixed-attribute tracking in KVM is
+> > insufficient here, for instance:
+> > 
+> >   - gmem allocates 2MB page
+> >   - guest issues PVALIDATE on 2MB page
+> >   - guest later converts a subpage to shared
+> >   - SNP host code issues PSMASH to split 2MB RMP mapping to 4K
+> >   - KVM MMU splits NPT mapping to 4K
+> 
+> Binbin caught that I'd neglected to document the last step in the
+> theoretical sequence here. It should state something to the effect
+> of:
+> 
+>   - guest later converts that shared page back to private
+> 
+> -Mike
+> 
+> > 
+> > At this point there are no mixed attributes, and KVM would normally
+> > allow for 2MB NPT mappings again, but this is actually not allowed
+> > because the RMP table mappings are 4K and cannot be promoted on the
+> > hypervisor side, so the NPT mappings must still be limited to 4K to
+> > match this.
+> > 
+> > Add a hook to determine the max NPT mapping size in situations like
+> > this.
+> > 
+> > Signed-off-by: Michael Roth <michael.roth@amd.com>
+> > Message-Id: <20231230172351.574091-31-michael.roth@amd.com>
+> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> > ---
+> >  arch/x86/include/asm/kvm-x86-ops.h | 1 +
+> >  arch/x86/include/asm/kvm_host.h    | 2 ++
+> >  arch/x86/kvm/mmu/mmu.c             | 8 ++++++++
+> >  3 files changed, 11 insertions(+)
+> > 
+> > diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> > index c81990937ab4..2db87a6fd52a 100644
+> > --- a/arch/x86/include/asm/kvm-x86-ops.h
+> > +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> > @@ -140,6 +140,7 @@ KVM_X86_OP_OPTIONAL_RET0(vcpu_get_apicv_inhibit_reasons);
+> >  KVM_X86_OP_OPTIONAL(get_untagged_addr)
+> >  KVM_X86_OP_OPTIONAL(alloc_apic_backing_page)
+> >  KVM_X86_OP_OPTIONAL_RET0(gmem_prepare)
+> > +KVM_X86_OP_OPTIONAL_RET0(gmem_validate_fault)
+> >  KVM_X86_OP_OPTIONAL(gmem_invalidate)
+> >  
+> >  #undef KVM_X86_OP
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > index 59c7b95034fc..67dc108dd366 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -1811,6 +1811,8 @@ struct kvm_x86_ops {
+> >  	void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
+> >  	int (*gmem_prepare)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order);
+> >  	void (*gmem_invalidate)(kvm_pfn_t start, kvm_pfn_t end);
+> > +	int (*gmem_validate_fault)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, bool is_private,
+> > +				   u8 *max_level);
+> >  };
 
-* Add close_range wrapper to liblttng-ust-fd.so
+I think you added is_private due to the TDX patches.  As Yan pointed out at
+https://lore.kernel.org/kvm/ZiHGoUUcGlZObQvx@yzhao56-desk.sh.intel.com/
 
-GNU libc 2.34 implements a new close_range symbol which is used
-by the ssh client and other applications to close all file descriptors,
-including those which do not belong to the application. Override
-this symbol to prevent the application from closing file descriptors
-actively used by lttng-ust.
+It's guaranteed that is_private is always true because the caller check it.
 
-* Fix: libc wrapper: use initial-exec for malloc_nesting TLS
+  if (fault->is_private)
+    kvm_faultin_pfn_private()
 
-Use the initial-exec TLS model for the malloc_nesting nesting guard
-variable to ensure that the GNU libc implementation of the TLS access
-don't trigger infinite recursion by calling the memory allocator wrapper
-functions, which can happen with global-dynamic.
-
-This fixes a liblttng-ust-libc-wrapper.so regression on recent
-Fedora distributions.
-
-* lttng-ust(3): Fix wrong len_type for sequence
-
-`len_type' of a sequence field must be of type unsigned integer. Some
-provided examples in the man page were incorrectly using a type signed
-integer, resulting in correct compilation, but error while decoding.
-
-New in 2.13.8:
-
-* ust-tracepoint-event: Add static check of sequences length type
-
-Add a compile-time check to validate that unsigned types are used
-for the length field of sequences.
-
-Detailed change logs:
-
-2024-04-19 (National Garlic Day) lttng-ust 2.13.8
-         * Add close_range wrapper to liblttng-ust-fd.so
-         * ust-tracepoint-event: Add static check of sequences length type
-         * lttng-ust(3): Fix wrong len_type for sequence
-         * Fix: libc wrapper: use initial-exec for malloc_nesting TLS
-
-2024-04-19 (National Garlic Day) lttng-ust 2.12.10
-         * Add close_range wrapper to liblttng-ust-fd.so
-         * lttng-ust(3): Fix wrong len_type for sequence
-         * Fix: libc wrapper: use initial-exec for malloc_nesting TL
-
-
-Project website: https://lttng.org
-Documentation: https://lttng.org/docs
-Download link: https://lttng.org/download
-
+So we can drop is_private parameter.
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Isaku Yamahata <isaku.yamahata@intel.com>
 
