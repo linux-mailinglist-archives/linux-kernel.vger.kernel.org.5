@@ -1,235 +1,305 @@
-Return-Path: <linux-kernel+bounces-150902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23B8D8AA686
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:22:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02D18AA68A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:32:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 136301C215CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:22:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A0661F21E58
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B15B15C3;
-	Fri, 19 Apr 2024 01:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D3D15CB;
+	Fri, 19 Apr 2024 01:32:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YMZOoymi"
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dhuatcch"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D69410E3
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 01:22:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713489750; cv=none; b=Ry7VgCFgds3CivdpuMTh1izVWqITeBXkdSCitN9h9iW0n70JsLrW1blbrUXa8NZ7Q5oIXxuKqD6EpoEUBxYslvI4lc2XMZ9pdT+adA4dBgwRjmcei3mmrXJpu+Kf61NstV7rR2vCHQz+lw3678L87riOWtLqrbb2bGHBf2WI/wA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713489750; c=relaxed/simple;
-	bh=1Pqd2IO38h18ms2DCwcvnLo4KlczMtlBA4Tg51+NUy8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oLhsq0iM2IyAZfUUSoK6LPIhHxbU/9UyJc7Pqe9dv2aT7XS7p4a50cjfrvlSOhYuwMFwlSyWA1C3MVsZEDlZJ9dVsI0+d1IArey5oR0DwKFsIq235/bcV2uH/c2TJaK7omr4Qim4VSbVGWMZ85GkOCJ+GSgoBl/LM0XvxXdghxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YMZOoymi; arc=none smtp.client-ip=209.85.160.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-23333ef4a02so934656fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 18:22:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713489748; x=1714094548; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v9ROGqlYMf4EWKkuF17eFEGeQPXT7Cmyk3kLJypWimE=;
-        b=YMZOoymif96InqDYvEhyZ2owFZSgwVbGlfaj0tUj6o9D/gNNNwcundQXFe5IiSA+6D
-         e9OyQ1DB/goPBPbm0V2Az/h/n4IJT3Wwmm+N5T8LgD8sN1aAHWum0wpGX2ANGkLdQOMO
-         8l77pN9szYwi6kvHSpdL4pfhbRPb7jzTh/Wug=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713489748; x=1714094548;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v9ROGqlYMf4EWKkuF17eFEGeQPXT7Cmyk3kLJypWimE=;
-        b=Mq4JQcrHoKXrhLiZZudXSqel6ze18Q6zZxJLAyNbxzJtC5xJ7/dyqLCHx7CyOk4f5j
-         06bp7UFckxOAHVp2Usds+yYWUF4VYU2U5ORPlB/BS8Ky9WRuKNeuUJFL8gKDQXr6rI9t
-         dPwMb2XGEAzyIknfn3PgWzgo2L82W62Z2119lemlLmiHASjC+sgIPEkJSdhHl+omGwxa
-         ndpZaaCN45fXGvyF43mMP1F5gGCDd4v8k2pNk37wvGSRivLowYcWVUKMIRp9XDJRhA9P
-         yj9DIN8I9g0R+1mBUtSxPMuM79Y/mZyBcTDXhJL9dFqiSQojTpLKnvsQMLfslofGqzbk
-         7u0A==
-X-Forwarded-Encrypted: i=1; AJvYcCUpC+P736QYbxIG+2SRa2UQvOmlz9eg2fLBQ+D9oM+sRVTAsJYbPpuZ+5RlA3fC7C6O0XvwvsIQYbw6B+wKi6CGkVRDjmv5PUVcVxsb
-X-Gm-Message-State: AOJu0Yxi+DAonfW/BtW7VCANSRRw9xLMiK8kB1IDYib/KQZ7ujI+99uy
-	aSmwzkBtZqmRBn8MPRhgXUwWIX7FFCTQ7MhIwoYiw10IwG68OiHRzSYsX+6V3apPXkyf4YEKMqc
-	sfl3Py/nRU3gUkuaBx9bx92tFDTXB/yaxIgla
-X-Google-Smtp-Source: AGHT+IEIBWNW7I5IBkSSrZoL3bQdbE0EnKQ5DMsc2OrG+K8cpwjoWbHljs2kaRoC/Lt0/1+1WBv43RrQh4SZC/NgzxY=
-X-Received: by 2002:a05:6870:cb8e:b0:21e:a957:efef with SMTP id
- ov14-20020a056870cb8e00b0021ea957efefmr870266oab.19.1713489748193; Thu, 18
- Apr 2024 18:22:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C1310FA;
+	Fri, 19 Apr 2024 01:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713490358; cv=fail; b=Y7+2bwESMOEm9Kf9Q9jPF+B7WuD4Cd4KAejGzwFMZQhFKVXsUJvrEq42ZkqtrFlWmY8SfE3+WHJa6DXz92nu4XCfFe0MucRYzm5oTtObmCPC7uBqNyDw/XvOQoV82N3zu2fXb4iUK7kaLis+t3+7VMwPV+6lRtgwEuycpEIjKT8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713490358; c=relaxed/simple;
+	bh=JsraNVDODJMoSZ+AX5HW1LLfQ8dK4cyqJRv3xq6g9DY=;
+	h=Message-ID:Date:Subject:References:From:To:CC:In-Reply-To:
+	 Content-Type:MIME-Version; b=j8aTt+3SYGtrKqtUQUKowOrs8NnuqAUVnYaYHdZONN862yjgopHsJFDcWzgmk1k04FQGsLQGe1tfgAheg3AOAFOANTGMPqGcgP9Wm+d+HVghuuQPmYBUT1bFaWtLZKfAFtdm54jmi4JVkv1nwosXFlTaFCkPo7A3QG+m44hoVDM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Dhuatcch; arc=fail smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713490356; x=1745026356;
+  h=message-id:date:subject:references:from:to:cc:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=JsraNVDODJMoSZ+AX5HW1LLfQ8dK4cyqJRv3xq6g9DY=;
+  b=Dhuatcch5iHQuVXR0BOCSnOmtljdnfVY1m9TYzVTQ31qTI4S0KpDESqD
+   TBLyoO7Kxi8rUJMcpoMf0nt29dGJDVnQVbMxEC6j1Sz5K+ZH3V1C07uEr
+   bqARPe+pUC9OKgmHtGkD+1AHTcN0PO/nBPPUCzkjU3SLXbLe2gxpNJtJp
+   WxBwLBLkwAlWijlzOsWnwc5oEnMBOLerhd0aQoAbSU6H5STIEOuj9+aHB
+   dVHS8hz9Ep9NzAKsw4RyzuGd4vI2OJ/bKDyCMcB7YeoxLCgDLpVDMrbMo
+   l6hcssZ3AP7utM8XUR0s11y7QQMIvWQLpG9cTIu+MQvITROY0hK4ujlkB
+   w==;
+X-CSE-ConnectionGUID: QAL5XBC6Tbe2AHt8ODxQOQ==
+X-CSE-MsgGUID: 85NgWm3UT/SS3//kGshr8w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8948168"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="8948168"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 18:32:35 -0700
+X-CSE-ConnectionGUID: 4ZuoKDIZQ76Kmhj8DidQJA==
+X-CSE-MsgGUID: 7ap3FN3+SsedrKsZB8MsIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="54094071"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Apr 2024 18:32:36 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 18 Apr 2024 18:32:35 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 18 Apr 2024 18:32:34 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 18 Apr 2024 18:32:34 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 18 Apr 2024 18:32:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AuxJxx2CXigiiKsqIvDZjXMFMiY6G2QLd7ZaMnbLHgGnTDY5hRztuYLhccSm4t6DyIhJSAGgT9kciynp5ElGNE7tPMOSUlHmCk7VRMvS/Bwc+E/Y97JngB1er1WpAEh4CRKqLvPjtzw1e7hm0Qp4iUstBYXHudsLRAwAmsYw5nzyJEYcauLoo9BsCBoYeEkChrEJxPQ/USK/mI/K6RxVetgzTE2vLQZVCGjeC3Ctg0EBY6j+z5w3sHen4dbIr5BWNzYZDrf93fqC4mnxqpFZwqmSbXpgrUPv3uce4iXD/MXQ7nN96iiBLPCT7fmEvhVY9HP5axuS7bjbGfCllDVJvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oAIMZ+K7ti1qWJ974K42qCAxkCmHXnJpGAMM3iTLu3k=;
+ b=Ln8Q+cD8z74ydx0uwDVApfQUcdQuFDIwu9r0uFMT3DDCYzQ3MBQt8DKIkwpyMnHDd8wtVQ9QBiJsnRWeNAzdbqOqEqrkGYDVPDB7bd7XGhq8JxEHAzcgjA8qLdBSNpqE/Fk3GsL1PHS0keWgOn4fgtWDaof3u3bqrIzi897CPZAUKhQK7vtpuxr44+6Qe+32Tc/LdllHpRtm5Nbmja2MewZnmWcQCU7GosqBfQAUVG1BcBV2bin09s7+5LI42Qdd8NZo9Mlb/sYtbakxpJbILGoBLccBx6k5GfBwtDg/D8VTNCPStFX9GnqNGZKL91G4YO/zZ/NN5x1RywZ6ijykiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by DS7PR11MB6222.namprd11.prod.outlook.com (2603:10b6:8:99::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.26; Fri, 19 Apr
+ 2024 01:32:26 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7472.037; Fri, 19 Apr 2024
+ 01:32:26 +0000
+Message-ID: <640866c5-9fe0-4f7b-a459-7a685dbe4092@intel.com>
+Date: Fri, 19 Apr 2024 13:32:14 +1200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 09/14] x86/sgx: Implement async reclamation for cgroup
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-10-haitao.huang@linux.intel.com>
+Content-Language: en-US
+From: "Huang, Kai" <kai.huang@intel.com>
+To: Haitao Huang <haitao.huang@linux.intel.com>, <jarkko@kernel.org>,
+	<dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
+	<linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+	<x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+	<mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>, <sohil.mehta@intel.com>,
+	<tim.c.chen@linux.intel.com>
+CC: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+	<zhanb@microsoft.com>, <anakrish@microsoft.com>,
+	<mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+	<chrisyan@microsoft.com>
+In-Reply-To: <20240416032011.58578-10-haitao.huang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR03CA0003.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::16) To BL1PR11MB5978.namprd11.prod.outlook.com
+ (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415163527.626541-1-jeffxu@chromium.org> <znrbeb744774vre5dkeg7kjnnt7uuifs6xw63udcyupwj3veqh@rpcqs7dmoxi6>
- <CABi2SkU8B27O28jjTDajFpENgUHhntuRAMKFUMXr6A6AxZeyiQ@mail.gmail.com> <CAJuCfpFLwJg4n7wPpT+u9vC4XHoLE_BPPZ0tDKf7W45hGky4_Q@mail.gmail.com>
-In-Reply-To: <CAJuCfpFLwJg4n7wPpT+u9vC4XHoLE_BPPZ0tDKf7W45hGky4_Q@mail.gmail.com>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Thu, 18 Apr 2024 18:22:16 -0700
-Message-ID: <CABi2SkXCC8tvuHTiZ=tYcZw0sQ2SswQqDuFuQi5bKArW9+Nbaw@mail.gmail.com>
-Subject: Re: [PATCH v10 0/5] Introduce mseal
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, akpm@linux-foundation.org, 
-	keescook@chromium.org, jannh@google.com, sroettger@google.com, 
-	willy@infradead.org, gregkh@linuxfoundation.org, 
-	torvalds@linux-foundation.org, usama.anjum@collabora.com, corbet@lwn.net, 
-	merimus@google.com, rdunlap@infradead.org, jeffxu@google.com, 
-	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
-	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Apr 18, 2024 at 1:19=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Tue, Apr 16, 2024 at 12:40=E2=80=AFPM Jeff Xu <jeffxu@chromium.org> wr=
-ote:
-> >
-> > On Tue, Apr 16, 2024 at 8:13=E2=80=AFAM Liam R. Howlett <Liam.Howlett@o=
-racle.com> wrote:
-> > >
-> > > * jeffxu@chromium.org <jeffxu@chromium.org> [240415 12:35]:
-> > > > From: Jeff Xu <jeffxu@chromium.org>
-> > > >
-> > > > This is V10 version, it rebases v9 patch to 6.9.rc3.
-> > > > We also applied and tested mseal() in chrome and chromebook.
-> > > >
-> > > > ------------------------------------------------------------------
-> > > ...
-> > >
-> > > > MM perf benchmarks
-> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > > This patch adds a loop in the mprotect/munmap/madvise(DONTNEED) to
-> > > > check the VMAs=E2=80=99 sealing flag, so that no partial update can=
- be made,
-> > > > when any segment within the given memory range is sealed.
-> > > >
-> > > > To measure the performance impact of this loop, two tests are devel=
-oped.
-> > > > [8]
-> > > >
-> > > > The first is measuring the time taken for a particular system call,
-> > > > by using clock_gettime(CLOCK_MONOTONIC). The second is using
-> > > > PERF_COUNT_HW_REF_CPU_CYCLES (exclude user space). Both tests have
-> > > > similar results.
-> > > >
-> > > > The tests have roughly below sequence:
-> > > > for (i =3D 0; i < 1000, i++)
-> > > >     create 1000 mappings (1 page per VMA)
-> > > >     start the sampling
-> > > >     for (j =3D 0; j < 1000, j++)
-> > > >         mprotect one mapping
-> > > >     stop and save the sample
-> > > >     delete 1000 mappings
-> > > > calculates all samples.
-> > >
-> > >
-> > > Thank you for doing this performance testing.
-> > >
-> > > >
-> > > > Below tests are performed on Intel(R) Pentium(R) Gold 7505 @ 2.00GH=
-z,
-> > > > 4G memory, Chromebook.
-> > > >
-> > > > Based on the latest upstream code:
-> > > > The first test (measuring time)
-> > > > syscall__     vmas    t       t_mseal delta_ns        per_vma %
-> > > > munmap__      1       909     944     35      35      104%
-> > > > munmap__      2       1398    1502    104     52      107%
-> > > > munmap__      4       2444    2594    149     37      106%
-> > > > munmap__      8       4029    4323    293     37      107%
-> > > > munmap__      16      6647    6935    288     18      104%
-> > > > munmap__      32      11811   12398   587     18      105%
-> > > > mprotect      1       439     465     26      26      106%
-> > > > mprotect      2       1659    1745    86      43      105%
-> > > > mprotect      4       3747    3889    142     36      104%
-> > > > mprotect      8       6755    6969    215     27      103%
-> > > > mprotect      16      13748   14144   396     25      103%
-> > > > mprotect      32      27827   28969   1142    36      104%
-> > > > madvise_      1       240     262     22      22      109%
-> > > > madvise_      2       366     442     76      38      121%
-> > > > madvise_      4       623     751     128     32      121%
-> > > > madvise_      8       1110    1324    215     27      119%
-> > > > madvise_      16      2127    2451    324     20      115%
-> > > > madvise_      32      4109    4642    534     17      113%
-> > > >
-> > > > The second test (measuring cpu cycle)
-> > > > syscall__     vmas    cpu     cmseal  delta_cpu       per_vma %
-> > > > munmap__      1       1790    1890    100     100     106%
-> > > > munmap__      2       2819    3033    214     107     108%
-> > > > munmap__      4       4959    5271    312     78      106%
-> > > > munmap__      8       8262    8745    483     60      106%
-> > > > munmap__      16      13099   14116   1017    64      108%
-> > > > munmap__      32      23221   24785   1565    49      107%
-> > > > mprotect      1       906     967     62      62      107%
-> > > > mprotect      2       3019    3203    184     92      106%
-> > > > mprotect      4       6149    6569    420     105     107%
-> > > > mprotect      8       9978    10524   545     68      105%
-> > > > mprotect      16      20448   21427   979     61      105%
-> > > > mprotect      32      40972   42935   1963    61      105%
-> > > > madvise_      1       434     497     63      63      115%
-> > > > madvise_      2       752     899     147     74      120%
-> > > > madvise_      4       1313    1513    200     50      115%
-> > > > madvise_      8       2271    2627    356     44      116%
-> > > > madvise_      16      4312    4883    571     36      113%
-> > > > madvise_      32      8376    9319    943     29      111%
-> > > >
-> > >
-> > > If I am reading this right, madvise() is affected more than the other
-> > > calls?  Is that expected or do we need to have a closer look?
-> > >
-> > The madvise() has a bigger percentage (per_vma %), but it also has a
-> > smaller base value (cpu).
->
-> Sorry, it's unclear to me what the "vmas" column denotes. Is that how
-> many VMAs were created before timing the syscall? If so, then 32 is
-> the max that you show here while you seem to have tested with 1000
-> VMAs. What is the overhead with 1000 VMAs?
-
-The vmas column is the number of VMA used in one call.
-
-For example: for 32 and mprotect(ptr,size), the memory range used in
-mprotect has 32 VMAs.
-
-It also matters how many memory ranges are in-use at the time of the
-test, This is where 1000 comes in. The test creates 1000 memory
-ranges, each memory range has 32 vmas, then calls mprotect on the 1000
-memory range. (the pseudocode was included in the original email)
-
-> My worry is that if the overhead grows linearly with the number of
-> VMAs then the effects will be quite noticeable on Android where an
-> application with a few thousand VMAs is not so unusual.
->
-The overhead is likely to grow linearly with the number of VMA, since
-it takes time to retrieve VMA's metadata.
-
-Let's use one data sample to look at impact:
-
-Test: munmap 1000 memory range, each memory range has 1 VMA
-
-syscall__       vmas    t       t_mseal delta_ns        per_vma %
-munmap__        1       909     944     35      35      104%
-
-For those 1000 munmap calls, sealing adds 35000 ns in total, or 35 ns per c=
-all.
-
-The delta seems to be insignificant. e.g. it will take about 28571
-munmap call to have 1 ms difference (1000000/35=3D28571)
-
-When I look at the data from 5.10 to 6.8, for the same munmap call,
-6.8 adds 552 ns per call, which is 15 times bigger.
-
-syscall__       vmas    t_5_10  t_6_8   delta_ns        per_vma %
-munmap__        1       357     909     552     552     254%
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|DS7PR11MB6222:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6473134e-03e8-40eb-739b-08dc60109215
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ppp9VnLx5PsKnzp49BFIAQ6UMw52nvrC6aPF6PI2Z0OPlqDd4qmGPPmKqSyXj5rVdQvFh3DjJMlc0ipTwEIX6EeuNcImbQin7kTuGA9DFN/ZL48YFlmUsPhhCGyqSsa4bUDbrz7VThF+XsWGkUkwCAK75klsTVt6S1VoFxucr4ar2kDlMYorRedm+EQyIQSFqQElfHUWM/SIBG6Yw5Y6C3OXzFchUsvWTrD7hzaVUrSA/w9kfjuZtugI7CDhq2usL+wUSALZGPFf4mD7vxhW9e+ay+B90D+Z1M6NFreV8RZFmSSW7pFxEgfCnTo0M3ph5GiNNzgmzE+mTJ7O8RjK9XGxfKAlPaJsTaHKKWTS5GJEu+zPEpbB4OdPMraUX0b1C7Q3f/rFzc+NOgbtxdvhu8Sgyq/x5343L9l7uOAEo13Srvu4zYpXh2P9JfyGD8zJF39CcvseEPdEtuOnc9E5rca/1/Ve0u4/wwYPGf/8ZynFyYcd3hPl3kLODzu7LYRP828oTNPtR3xI+aSWqPDCB+rvhIlt1MyKaIFDHRBqspCmzlzDwN+FT2AEHQeyAJiQu1fC085qqiErBpah/BV0IybhJsUhHNzLaf85eDILvThOWehW1v6E87TZiYUbdNaeTob2LbSUzZvKKfpwwTB8hTIy8NbxJ3yEQ2dCuZIBIFoIg529K9iMbt11yT9tcUMGU7/GH9576u/oYuZopBnWLg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aEFpaEhseTQydmw5dERGL1h1d0FRdVFZM2tjNlNCRkpjMGFaUTZKNEhuTDFZ?=
+ =?utf-8?B?Rk5IZDB3TVVwL1NXd2N4eGZseVFIZjR4R0JiOXUwbW8xdnYrZnloRzFRMWw1?=
+ =?utf-8?B?Mjl3c2hSM0ZrdVRtY3k2S2lUdHBnRXJiUWNnNTJVRVJpc3NNS2RjM1M5Nzhk?=
+ =?utf-8?B?aUVaallxNEYwWUR0OFkxMGo4aXMzTlFhSTRhQ1ZvVGNoQ0xmMW82Ym9hZWFD?=
+ =?utf-8?B?ZlRyRStGT1I2enJ5cmUwL0tYUUZmRzZ6ZUQ2eTFXR3BsRGJnMW1WOHFJdWpD?=
+ =?utf-8?B?T1cyYlhQb3FPU0FMbWUvZjF1SDJscHFOeldEODd1Z09ob0s4REptYmltaVFS?=
+ =?utf-8?B?YlhzR0Rwakt4V1dqZ01zZFlFVUpaZ2FUcjNRZDNEdzd4OUN4Wk1LL1BaSktF?=
+ =?utf-8?B?cm1SMThCa1hndW5ydEZhMEcrTjFpY09OL052MS9hRUhqWEpiVmZrS0VtRWV1?=
+ =?utf-8?B?M3E4VkZiRkpvZzRVRVJRMlRBTEFjcEFuSjEvZUJGckp2aWswbUVtQUZ1RHBS?=
+ =?utf-8?B?aU0xVjZTSTFZOVFkUktYSWlaUnYzQ1hmU3prQlN6a2dIRVVlVnhUcTVSbWxR?=
+ =?utf-8?B?UlQzc2FXcS94Zmhhek4xVjR2WVdrRDhiS0JDMzhZYUpTWXhZK1c3Q1VqVFNS?=
+ =?utf-8?B?ZkFoNlY3eGRuWVIrZ2FLUjY0RzlkVHVVN0hTQkw0VktrbzRuY1RhZG9vcG5B?=
+ =?utf-8?B?bHUwYmQxRWl5ZFE1V0Y4OFQycHdzMk5Zd2xXWDdzbmN5cm5iRFhCYWM3dFls?=
+ =?utf-8?B?Y3NQMERzL1VKbXFVcHdELzdJU0pNR2NIWWZJWTdXQk5Zb0JBdmVUeWIxVzE1?=
+ =?utf-8?B?WUxQUzREa1dYT0twMnI5bkRqd2tYQWx0TzJxdWphWVZSa3lDQWU1ZmdyZ211?=
+ =?utf-8?B?RFpuTUt6djJoQzNTTm9tdFBZemFnemNLMTB0V1ZYVU53RFhiT0ZsbTRlVXpj?=
+ =?utf-8?B?Q25kU2dMcDErTXIySnNBcWZIL0s0M2RRZDN3OFJxVHA3VEZTTXhqYjdGa0VN?=
+ =?utf-8?B?d1hLSEdDc0NVTDRtVFlrQUpQY1IydVVlMWZIUXE0cWJxNXNjck54alpmMnp0?=
+ =?utf-8?B?MTd0MUxqVkJmUVFUMFZlY2dOUG53UTRzVDArWm5rb0dqTjI5NHdsU05qYWV3?=
+ =?utf-8?B?TjhqUmpVTDR4MFlqRU5iWnJvbjlPZnN2bE5hUGlFMmRpek9zaDYrTWdjWmkr?=
+ =?utf-8?B?TmsyMTBCWEVxMG9OcDFFcGlGQk94cWJRbThtUVJPNTliaHZ6VWUxdHQvL2tv?=
+ =?utf-8?B?K1E1MXZBQUVsZmhJbUlKdFpwNXFlSFFLczFXN21QMWMxaEdLMTBMY3ZPMmda?=
+ =?utf-8?B?UW14b042eHNDL2I1bGk5S0ttUVVMOTVWTkNuazJDdTNDd0s1RTI0RkR0bW9i?=
+ =?utf-8?B?MUtISDZNVThBbDdXQXZnbEV1U0w4UXlpdzl2L2RaSmJEcm5nWlgvdUk3SEdx?=
+ =?utf-8?B?bGdwQXc1OFF4MzdlWTV1dFBFMjV3eVp5WVBpU093b3lDRVU5dFJYeks5Rm5z?=
+ =?utf-8?B?UlE3ODNxMVlzdEEzSFlJc0VhMGJrei9aR1ZWTkhrYTBxQzByd2R4YWVzaWVN?=
+ =?utf-8?B?TWlHWEdTT3pXQVlXUVNNWmtGSmhOZWI4UTJmSERTZ0MvMWpRVVZhZklwMTVN?=
+ =?utf-8?B?NXhiUTdsZ214OHNKMmg5aFFuUDlFNFJoNnhpbmVhb01kWVBNS1MwdUErMi9E?=
+ =?utf-8?B?RjFWaGhmZGdpbnFrR1J1aFQwYjZNU0FlcDh0REFRQllKWms2YnBUYTFrRnZH?=
+ =?utf-8?B?U21FclRJSENXQ2o2LzEvcysvdzdNWDMvcTdHcDJlNm9DU3FJWHRPbVFkeG10?=
+ =?utf-8?B?ZHRTTkczaTFGNmF6M0VQcmNMcDlQN0JBMFpPaXdWRjZBVjhzajc0Q08yNHJw?=
+ =?utf-8?B?bjFPV3VwTG9aNGNUNi9qRHN0VEZzSGZoRWxJb3RpeHI1b2lWeU5GekplaWpi?=
+ =?utf-8?B?cWdBR2lsNzc3MGRzWUFYdFNWY0gxMHJQRCtXSzJ5Zzd3c2M3V3h6dkcyeW9C?=
+ =?utf-8?B?UzJZMXl6VVRPc3lleUI3S2xxYy9hTk9mSzNDZm5mL0VnK04xWFZ6bTlIMEFT?=
+ =?utf-8?B?R0JjYk83Q1psZ2dWY0NldDBUUjJKRmtDMENWQXFjeDVCenBaeVFqa3lNYlRj?=
+ =?utf-8?Q?5giyPpqcPdpL2hRJGTS9PjPcc?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6473134e-03e8-40eb-739b-08dc60109215
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 01:32:26.8036
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: U64ZlP+YB9YFcv3whQl0lyfvlaJJkRsZRfJtQOZHlJU2TyBaitHepJWH9+53YUgne7kN8O4lTkKLAW7S6KkfDg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6222
+X-OriginatorOrg: intel.com
 
 
-> >
-> > -Jeff
+
+On 16/04/2024 3:20 pm, Haitao Huang wrote:
+> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+> 
+> In cases EPC pages need be allocated during a page fault and the cgroup
+> usage is near its limit, an asynchronous reclamation needs be triggered
+> to avoid blocking the page fault handling.
+> 
+> Create a workqueue, corresponding work item and function definitions
+> for EPC cgroup to support the asynchronous reclamation.
+> 
+> In case the workqueue allocation is failed during init, disable cgroup.
+
+It's fine and reasonable to disable (SGX EPC) cgroup.  The problem is 
+"exactly what does this mean" isn't quite clear.
+
+Given SGX EPC is just one type of MISC cgroup resources, we cannot just 
+disable MISC cgroup as a whole.
+
+So, the first interpretation is we treat the entire MISC_CG_RES_SGX 
+resource type doesn't exist, that is, we just don't show control files 
+in the file system, and all EPC pages are tracked in the global list.
+
+But it might be not straightforward to implement in the SGX driver, 
+i.e., we might need to do more MISC cgroup core code change to make it 
+being able to support disable particular resource at runtime -- I need 
+to double check.
+
+So if that is not something worth to do, we will still need to live with 
+the fact that, the user is still able to create SGX cgroup in the 
+hierarchy and see those control files, and being able to read/write them.
+
+The second interpretation I suppose is, although the SGX cgroup is still 
+seen as supported in userspace, in kernel we just treat it doesn't exist.
+
+Specifically, that means: 1) we always return the root SGX cgroup for 
+any EPC page when allocating a new one; 2) as a result, we still track 
+all EPC pages in a single global list.
+
+But from the code below ...
+
+
+>   static int __sgx_cgroup_try_charge(struct sgx_cgroup *epc_cg)
+>   {
+>   	if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE))
+> @@ -117,19 +226,28 @@ int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg, enum sgx_reclaim reclaim)
+>   {
+>   	int ret;
+>   
+> +	/* cgroup disabled due to wq allocation failure during sgx_cgroup_init(). */
+> +	if (!sgx_cg_wq)
+> +		return 0;
+> +
+
+.., IIUC you choose a (third) solution that is even one more step back:
+
+It just makes try_charge() always succeed, but EPC pages are still 
+managed in the "per-cgroup" list.
+
+But this solution, AFAICT, doesn't work.  The reason is when you fail to 
+allocate EPC page you will do the global reclaim, but now the global 
+list is empty.
+
+Am I missing anything?
+
+So my thinking is, we have two options:
+
+1) Modify the MISC cgroup core code to allow the kernel to disable one 
+particular resource.  It shouldn't be hard, e.g., we can add a 
+'disabled' flag to the 'struct misc_res'.
+
+Hmm.. wait, after checking, the MISC cgroup won't show any control files 
+if the "capacity" of the resource is 0:
+
+"
+  * Miscellaneous resources capacity for the entire machine. 0 capacity
+  * means resource is not initialized or not present in the host.
+"
+
+So I really suppose we should go with this route, i.e., by just setting 
+the EPC capacity to 0?
+
+Note misc_cg_try_charge() will fail if capacity is 0, but we can make it 
+return success by explicitly check whether SGX cgroup is disabled by 
+using a helper, e.g., sgx_cgroup_disabled().
+
+And you always return the root SGX cgroup in sgx_get_current_cg() when 
+sgx_cgroup_disabled() is true.
+
+And in sgx_reclaim_pages_global(), you do something like:
+
+	static void sgx_reclaim_pages_global(..)
+	{
+	#ifdef CONFIG_CGROUP_MISC
+		if (sgx_cgroup_disabled())
+			sgx_reclaim_pages(&sgx_root_cg.lru);
+		else
+			sgx_cgroup_reclaim_pages(misc_cg_root());
+	#else
+		sgx_reclaim_pages(&sgx_global_list);
+	#endif
+	}
+
+I am perhaps missing some other spots too but you got the idea.
+
+At last, after typing those, I believe we should have a separate patch 
+to handle disable SGX cgroup at initialization time.  And you can even 
+put this patch _somewhere_ after the patch
+
+	"x86/sgx: Implement basic EPC misc cgroup functionality"
+
+and before this patch.
+
+It makes sense to have such patch anyway, because with it we can easily 
+to add a kernel command line 'sgx_cgroup=disabled" if the user wants it 
+disabled (when someone has such requirement in the future).
+
+
+
 
