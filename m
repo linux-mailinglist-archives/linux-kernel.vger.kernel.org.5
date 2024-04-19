@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-151959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1F588AB644
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:10:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A605F8AB645
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:10:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80DA0B22396
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:10:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B66A282FB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:10:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E0813D2A2;
-	Fri, 19 Apr 2024 21:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22EAF13D50B;
+	Fri, 19 Apr 2024 21:10:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uEjKo5iB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UFhMXi3Y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972B813D278
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 21:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2BF13D2A1
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 21:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713560998; cv=none; b=J2dqP3nYPW2Hz8ITmYgqtG0BstWl9/sqj0aBHAqs+Vc9wOIxhMW5DSW3+eaVPvM0eNw0rQJHI4pNuE6JtAMGzLlrf36EyphxnRAaVXM6ITGkvLyEglkR+Qbw0fRpy1kzOzxM+0nhWuYNxjDA4A/kpzOldsfYE9NGgtKmbArtbmM=
+	t=1713560999; cv=none; b=unYwxnkVCpbxaxgk81mHz3qZARnpS7+JFfSPukl/WHFKU00Jtg+9ViKhLYuwgW21R3402msC21oDtoSfmPZ0wPVqgh/UcZ6sCplhDxS2zM537Rp/iHLkjNX5hXXmTac+EynP4JhM+KDqp17ViU2YfdUGXJQ+1EJhAO/99tPShuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713560998; c=relaxed/simple;
-	bh=2mmHXkHoIDd4IMtBzLUixZKjNwd7j1hlbGi1zfFJhhc=;
+	s=arc-20240116; t=1713560999; c=relaxed/simple;
+	bh=1pOp7H6ONa8rNfkfdp1+cHrXMNg+IHDkIHDMg0sIPP4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aH460ldc152SGa4RqtsPt2VaDV/WED+KrPgn/ak1Wcm76jxuxXlsBUlPN4yq1lza7aZOyza9e54uYbILyxgMnWNy3YJiGDoHkDOYd/ppAfsa3wAkPewg9Cf8lAjEPf73hsUTmt8kDnwPI4sd6TCO3iM6lta9GrA2k78OhHOyZl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uEjKo5iB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C6BC32786;
-	Fri, 19 Apr 2024 21:09:57 +0000 (UTC)
+	 MIME-Version; b=HWfsJEADN25cZ0a7K22VabVv7gVc+4uziRQa1z4bQhPmi3k2whMz2h0YL3OXe/DsDV2yteLh7lxpKLF6VPZeWAC83JjvKzLiRaDc7q9OEnbyy3JpeiVnRZJPrj/FZatt4jzwJeBdOh5LpR5KjJ51ME0VTt9NK+SgHI489Teptno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UFhMXi3Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D369C2BD11;
+	Fri, 19 Apr 2024 21:09:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713560998;
-	bh=2mmHXkHoIDd4IMtBzLUixZKjNwd7j1hlbGi1zfFJhhc=;
+	s=k20201202; t=1713560999;
+	bh=1pOp7H6ONa8rNfkfdp1+cHrXMNg+IHDkIHDMg0sIPP4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uEjKo5iB/3niZzMJSg2NPJZ/idQB5q5uRC39vu8MBIC9OUuxP+XeWjQATKrklMcl/
-	 fOr0rLOdUFq1w3tqOCVYNdy0zNfMblMzo0SVsi3pgZlyIYFMKlZsmMtHFC1AHWksKL
-	 u6I7CdJ/Dpd+/R2ne2RSGdfxPnLcq8BSWCcQzBy45i4IvscTuP2cEq17plCxGOoKOa
-	 g8br8pCAlhKtr9A0zfbYAk7ALub2ReR2hmc+mb+xcNWc0cvmbU50WAUYs5n5GNJqLw
-	 1U38WjwzvhujAsFNSAg4Xhgd17LZjnXa7Ab0SCCbttzzxKy0zy9FwvLq0e6RZYmWdi
-	 /K+6tC8UgKlGA==
+	b=UFhMXi3Y3O+S6lhGECkAE9otSVDwIyPmkoXVOhFUMwHyHFEgDbMgHy8R3KiW60qTA
+	 cE/Xfr49JNmX0ES0jYyQmA/4BoRdkVzKrjZhAmwAzYzXpjr8Ca3nyy3zl1x6Bzslmj
+	 gHph/qR/nkkp6DsS+s7d9BW4h4GfWGidAaQ2g/kHMxaKLbeKqeVgS3Jy78dc11hVFt
+	 7h2qShY5BAaH80VuvpMusk+qMMEVKwo9ylF123wLQZZzfAnnciaV6oHZQsq1zHRWjP
+	 KADU32zXCGxMjuvzV893mdDBIdb9pPSl+vU0BCnMw1YG/vSvRl1qBtsM6/wrnMwZ4a
+	 JCX0rWDBYzJtg==
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 To: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -58,10 +58,11 @@ Cc: linux-kernel@vger.kernel.org,
 	KP Singh <kpsingh@kernel.org>,
 	Waiman Long <longman@redhat.com>,
 	Borislav Petkov <bp@alien8.de>,
-	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH v4 4/5] x86/bugs: Remove duplicate Spectre cmdline option descriptions
-Date: Fri, 19 Apr 2024 14:09:50 -0700
-Message-ID: <7862dbc387213d8b3bb208c421caaf92623be856.1713559768.git.jpoimboe@kernel.org>
+	Ingo Molnar <mingo@kernel.org>,
+	Maksim Davydov <davydov-max@yandex-team.ru>
+Subject: [PATCH v4 5/5] x86/bugs: Add 'spectre_bhi=vmexit' cmdline option
+Date: Fri, 19 Apr 2024 14:09:51 -0700
+Message-ID: <72d86c6da24138f39ca6fc9459b1d037301c1427.1713559768.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1713559768.git.jpoimboe@kernel.org>
 References: <cover.1713559768.git.jpoimboe@kernel.org>
@@ -73,114 +74,97 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Duplicating the documentation of all the Spectre kernel cmdline options
-in two separate places is unwieldy and error-prone.  Instead just add a
-reference to kernel-parameters.txt from spectre.rst.
+In cloud environments it can be useful to *only* enable the vmexit
+mitigation and leave syscalls vulnerable.  Add that as an option.
 
+This is similar to the old spectre_v2=auto option which was removed with
+the following commit:
+
+  36d4fe147c87 ("x86/bugs: Remove CONFIG_BHI_MITIGATION_AUTO and spectre_bhi=auto")
+
+with the main difference being that this has a more descriptive name and
+is disabled by default.
+
+Requested-by: Maksim Davydov <davydov-max@yandex-team.ru>
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- Documentation/admin-guide/hw-vuln/spectre.rst | 84 ++-----------------
- 1 file changed, 9 insertions(+), 75 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 12 +++++++++---
+ arch/x86/kernel/cpu/bugs.c                      | 16 +++++++++++-----
+ 2 files changed, 20 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
-index 25a04cda4c2c..f9797ab6b38f 100644
---- a/Documentation/admin-guide/hw-vuln/spectre.rst
-+++ b/Documentation/admin-guide/hw-vuln/spectre.rst
-@@ -592,85 +592,19 @@ Spectre variant 2
- Mitigation control on the kernel command line
- ---------------------------------------------
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 902ecd92a29f..83c4889b88d2 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6069,9 +6069,15 @@
+ 			deployment of the HW BHI control and the SW BHB
+ 			clearing sequence.
  
--Spectre variant 2 mitigation can be disabled or force enabled at the
--kernel command line.
-+In general the kernel selects reasonable default mitigations for the
-+current CPU.
-+
-+Spectre default mitigations can be disabled or changed at the kernel
-+command line with the following options:
+-			on   - (default) Enable the HW or SW mitigation
+-			       as needed.
+-			off  - Disable the mitigation.
++			on     - (default) Enable the HW or SW mitigation as
++				 needed.  This protects the kernel from
++				 both syscalls and VMs.
++			vmexit - On systems which don't have the HW mitigation
++				 available, enable the SW mitigation on vmexit
++				 ONLY.  On such systems, the host kernel is
++				 protected from VM-originated BHI attacks, but
++				 may still be vulnerable to syscall attacks.
++			off    - Disable the mitigation.
  
- 	nospectre_v1
--
--		[X86,PPC] Disable mitigations for Spectre Variant 1
--		(bounds check bypass). With this option data leaks are
--		possible in the system.
--
- 	nospectre_v2
-+	spectre_v2={option}
-+	spectre_v2_user={option}
-+	spectre_bhi={option}
+ 	spectre_v2=	[X86,EARLY] Control mitigation of Spectre variant 2
+ 			(indirect branch speculation) vulnerability.
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 5fca46c78daf..575a4bb5a78d 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1625,6 +1625,7 @@ static bool __init spec_ctrl_bhi_dis(void)
+ enum bhi_mitigations {
+ 	BHI_MITIGATION_OFF,
+ 	BHI_MITIGATION_ON,
++	BHI_MITIGATION_VMEXIT_ONLY,
+ };
  
--		[X86] Disable all mitigations for the Spectre variant 2
--		(indirect branch prediction) vulnerability. System may
--		allow data leaks with this option, which is equivalent
--		to spectre_v2=off.
--
--
--        spectre_v2=
--
--		[X86] Control mitigation of Spectre variant 2
--		(indirect branch speculation) vulnerability.
--		The default operation protects the kernel from
--		user space attacks.
--
--		on
--			unconditionally enable, implies
--			spectre_v2_user=on
--		off
--			unconditionally disable, implies
--		        spectre_v2_user=off
--		auto
--			kernel detects whether your CPU model is
--		        vulnerable
--
--		Selecting 'on' will, and 'auto' may, choose a
--		mitigation method at run time according to the
--		CPU, the available microcode, the setting of the
--		CONFIG_MITIGATION_RETPOLINE configuration option,
--		and the compiler with which the kernel was built.
--
--		Selecting 'on' will also enable the mitigation
--		against user space to user space task attacks.
--
--		Selecting 'off' will disable both the kernel and
--		the user space protections.
--
--		Specific mitigations can also be selected manually:
--
--                retpoline               auto pick between generic,lfence
--                retpoline,generic       Retpolines
--                retpoline,lfence        LFENCE; indirect branch
--                retpoline,amd           alias for retpoline,lfence
--                eibrs                   Enhanced/Auto IBRS
--                eibrs,retpoline         Enhanced/Auto IBRS + Retpolines
--                eibrs,lfence            Enhanced/Auto IBRS + LFENCE
--                ibrs                    use IBRS to protect kernel
--
--		Not specifying this option is equivalent to
--		spectre_v2=auto.
--
--		In general the kernel by default selects
--		reasonable mitigations for the current CPU. To
--		disable Spectre variant 2 mitigations, boot with
--		spectre_v2=off. Spectre variant 1 mitigations
--		cannot be disabled.
--
--	spectre_bhi=
--
--		[X86] Control mitigation of Branch History Injection
--		(BHI) vulnerability.  This setting affects the deployment
--		of the HW BHI control and the SW BHB clearing sequence.
--
--		on
--			(default) Enable the HW or SW mitigation as
--			needed.
--		off
--			Disable the mitigation.
--
--For spectre_v2_user see Documentation/admin-guide/kernel-parameters.txt
-+For more details on the available options, refer to Documentation/admin-guide/kernel-parameters.txt
+ static enum bhi_mitigations bhi_mitigation __ro_after_init =
+@@ -1639,6 +1640,8 @@ static int __init spectre_bhi_parse_cmdline(char *str)
+ 		bhi_mitigation = BHI_MITIGATION_OFF;
+ 	else if (!strcmp(str, "on"))
+ 		bhi_mitigation = BHI_MITIGATION_ON;
++	else if (!strcmp(str, "vmexit"))
++		bhi_mitigation = BHI_MITIGATION_VMEXIT_ONLY;
+ 	else
+ 		pr_err("Ignoring unknown spectre_bhi option (%s)", str);
  
- Mitigation selection guide
- --------------------------
+@@ -1659,6 +1662,7 @@ static void __init bhi_select_mitigation(void)
+ 			return;
+ 	}
+ 
++	/* Mitigate in hardware if supported */
+ 	if (spec_ctrl_bhi_dis())
+ 		return;
+ 
+@@ -1671,13 +1675,15 @@ static void __init bhi_select_mitigation(void)
+ 	 */
+ 	setup_clear_cpu_cap(X86_FEATURE_INDIRECT_BRANCH_OK);
+ 
+-	/* Mitigate KVM by default */
+-	setup_force_cpu_cap(X86_FEATURE_CLEAR_BHB_LOOP_ON_VMEXIT);
+-	pr_info("Spectre BHI mitigation: SW BHB clearing on vm exit\n");
++	if (bhi_mitigation == BHI_MITIGATION_VMEXIT_ONLY) {
++		pr_info("Spectre BHI mitigation: SW BHB clearing on vm exit only\n");
++		setup_force_cpu_cap(X86_FEATURE_CLEAR_BHB_LOOP_ON_VMEXIT);
++		return;
++	}
+ 
+-	/* Mitigate syscalls when the mitigation is forced =on */
++	pr_info("Spectre BHI mitigation: SW BHB clearing on syscall and vm exit\n");
+ 	setup_force_cpu_cap(X86_FEATURE_CLEAR_BHB_LOOP);
+-	pr_info("Spectre BHI mitigation: SW BHB clearing on syscall\n");
++	setup_force_cpu_cap(X86_FEATURE_CLEAR_BHB_LOOP_ON_VMEXIT);
+ }
+ 
+ static void __init spectre_v2_select_mitigation(void)
 -- 
 2.44.0
 
