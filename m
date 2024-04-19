@@ -1,131 +1,205 @@
-Return-Path: <linux-kernel+bounces-151230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F7F98AAB71
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:26:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC8178AAB75
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:27:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06D551F2152C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:26:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E7E8B219E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6933879950;
-	Fri, 19 Apr 2024 09:26:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zGUF9Kg+"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED2478286;
+	Fri, 19 Apr 2024 09:27:37 +0000 (UTC)
+Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CBD745D6
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5DC37350E;
+	Fri, 19 Apr 2024 09:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.204.34.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713518798; cv=none; b=gQzp/MlcQUjQLBUB00/tK4RU7k5eYQ9i/2dXrI2/IoarSJDSvW1wummHo81Q2b/BlUX9RNfyK8LYEwuZ+Au1Lx6x4OGJqnRROQ0tpaROEN3J9C/XlM4WG095H/1RapY0BMvznpiqujfCDAqg2fRd4rXuWpX5RLmKNVxu7POaCco=
+	t=1713518857; cv=none; b=LNeFzBYLfyk1WVJ/1FEKmPfutqBZnbVGEdvaqAZxHYf838XRf29A3xtAi6ZJ/SEhjE5RiNUsfRVBv7c4V+7rdpfekQIwIiYZme3uLZFlb5omPG8Dtv0eV1fwKRGBgkabx/r4KCqry9vrXDrJyj1cWZWAKEMV+eVhSOCGbw+99PU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713518798; c=relaxed/simple;
-	bh=nEQE1bgcahfGAeEROm4nIOqoBwmVPoodJbRFX+eJFiA=;
+	s=arc-20240116; t=1713518857; c=relaxed/simple;
+	bh=Qmc9EhkIIpbFeNtP0amEmcND1IWo5a+HNUEfwXlCQEM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CU1WMo+0Uathou1EiJtkTegXNRlDxvqFf3k4OI0e/bJgD6PSqMwq4UFJjpCCrwRl+wUW+Zz8ZAnzN5vyShD0RfJ0vgoAZRpssC14rTwELTpYG+erzONaQTI9nL5gVmCRIgKVyskbOpicTq1flQ+hVF3oqXiFKOJEi2+MAz2DDG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zGUF9Kg+; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-234db9dde9bso824057fac.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 02:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713518796; x=1714123596; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=f2k6wBjEwpSJIIcZ8MPn1YroTKsxMSXWDSsv1Yc3sRE=;
-        b=zGUF9Kg+YfIg5reVeeXUQSnLyDkpUGj4ulcrTG/5U9jobWew3+UbDq2OCWNOICgrin
-         7hq+3cPPix++lBy9F14RWm5Kz62j93bljrW2wyIbZfSBeV6hVlDONbm0khRSoONFcdlX
-         m41WZ3vCnL/HRQCbm9Qj5cOGZ83h+9xNVYIElD3ISyaC3qoGA2OXFv93nWqtkEmGcRmf
-         xia1REZQMbnyGTtMXEg7PqQug4haRsaTWrvhTunIto3xjfTmbDau0evVRjD2xId5dtLs
-         XrYMSEZPOuvjnznpUiRiIb5UH5FkSK+75423udCleJnPXJH82URJBsBFXKV9Z6T+oSqn
-         DmWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713518796; x=1714123596;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f2k6wBjEwpSJIIcZ8MPn1YroTKsxMSXWDSsv1Yc3sRE=;
-        b=EemuQkpIhWcfALTIcKZ2kJepfKCjy6tMmSpaTCJympx5G66yAk9/q6tGPWJfrIwD0E
-         vsE08Uj92pdv8Ya78aITvH9SecdMEP9naXYFnUjapRr2iK04Ssoq8bjo/AGA2JRY0WNG
-         MVTSqmw3U65LM3LYHE3s+h8A5eLTVp4VnbD6EsICAR9X0fxYGjHnWBAtgxdnxe6JoFN4
-         voiddq6OBPHg4QngngW73FrHAMwuOmaCKIX4JZRCwpnKw28/j2pSY7k4EQ+tyw4QTAmT
-         yBEZA8JWywBvNKgHkCcNHlTl9o3xDmF3JpxAfy/Txj1xbUt07k2O4l4cwb1kivQylRje
-         NZPA==
-X-Forwarded-Encrypted: i=1; AJvYcCWGMqegPOqUCZF1PeTfb1SprDiM73kVSOGOumzNAfcFq5aXa+blwBiuKroG+RKeBaOMa7/p1vkVGw4KJPwrzqqkjgMDTo2v48AKpJkf
-X-Gm-Message-State: AOJu0YwF/9SxIC3C/Ir9zbK89/aNO1ZpWWZGzFSTSt5PeTEmKPm7V1s2
-	b2+FN6DM7opORkSDdPkP3vrRXF+l0wStEVsxKGmNg9L0Hu4BS7k53hJ+Ii/g1A==
-X-Google-Smtp-Source: AGHT+IGPIPPIitXX4Yw0hrulDjF2tnglO0Qdegfb3hKjRqYEF4E5wtIteUhkJR61YJc1aF7VAjq+9A==
-X-Received: by 2002:a05:6870:12d9:b0:22e:c37c:453d with SMTP id 25-20020a05687012d900b0022ec37c453dmr1625314oam.30.1713518796449;
-        Fri, 19 Apr 2024 02:26:36 -0700 (PDT)
-Received: from thinkpad ([220.158.156.51])
-        by smtp.gmail.com with ESMTPSA id z17-20020a634c11000000b005f0793db2ebsm2715872pga.74.2024.04.19.02.26.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 02:26:35 -0700 (PDT)
-Date: Fri, 19 Apr 2024 14:56:29 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mhi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	Damien Le Moal <dlemoal@kernel.org>
-Subject: Re: [PATCH v3 3/9] PCI: endpoint: Rename BME to Bus Master Enable
-Message-ID: <20240419092629.GA3636@thinkpad>
-References: <20240418-pci-epf-rework-v3-0-222a5d1ed2e5@linaro.org>
- <20240418-pci-epf-rework-v3-3-222a5d1ed2e5@linaro.org>
- <ZiEy4EVcVpUry9qn@ryzen>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UtqVZ3bg43iV6Jq0/iSn8cvF1483kOv+xgbTCUaRgPyu4Lh2ym7QOOThQEBtT1/lgznI7/IEuEwhhN5Fth0MXEZP/zz4tlqP2GhJVRCGJp3y7Xw6MUtQ6kk8TRUH/v2QIzqBszjN9DQlonGQxgy1ZeHGBWCMsT/ilouxVyjXiRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.204.34.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp81t1713518795t5jgjnqm
+X-QQ-Originating-IP: jXEkGEh+B+S0nZ2C29fIOx9NXHavu5sUQaHThL7wZlM=
+Received: from localhost ( [112.0.147.129])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Fri, 19 Apr 2024 17:26:34 +0800 (CST)
+X-QQ-SSF: 01400000000000903000000A0000000
+X-QQ-FEAT: Q2yP8jvsZ988yftLcKE2iBRbKi+JY8eZPdsG5w93SH/6DQ9/iMXbEg+46jVVC
+	l+GQZzrrXkNmvOfoMTTCLABJDCtD2La/UFlrrhOsmsxsmRTEudlYdmBa4CMesDAfiM/pvKl
+	wxG/PTwMbaFF6G9YyYH14Kx2koU18EJT6nNO6CAl5zB/lurQ9E0IdoTr13MR2adKPEsvHA2
+	7Nqn9sLcuFZc6bTGkYfeISu62VfoRqQczjhG5LwkpQqQvQdJoAMw/8QtaPwsu4y1rQHrpBd
+	qoy0JLLW5F+OxR3CmhFALqw7O6+ugbKhvSxTJBPCywjGjrxYaP8UPDiuS3dKt6uwOx2Ynq6
+	UTakw+RyFprKhG85cfk5agnJZGOHWCb0Ki2IZy5Jo8h4nD0KZqrL6tpM6U2awK0OMwJdEND
+	2AHAzPhqbqA=
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 9083245040578109237
+Date: Fri, 19 Apr 2024 17:26:34 +0800
+From: Dawei Li <dawei.li@shingroup.cn>
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: davem@davemloft.net, andreas@gaisler.com, sparclinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org, yury.norov@gmail.com
+Subject: Re: [PATCH 0/5] Remove onstack cpumask var usage
+Message-ID: <A60F94A9589C8589+ZiI4yj073cgmt5Qq@centos8>
+References: <20240418104949.3606645-1-dawei.li@shingroup.cn>
+ <20240419051350.GA558245@ravnborg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZiEy4EVcVpUry9qn@ryzen>
+In-Reply-To: <20240419051350.GA558245@ravnborg.org>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-On Thu, Apr 18, 2024 at 04:49:04PM +0200, Niklas Cassel wrote:
-> On Thu, Apr 18, 2024 at 05:28:31PM +0530, Manivannan Sadhasivam wrote:
-> > BME which stands for 'Bus Master Enable' is not defined in the PCIe base
-> > spec even though it is commonly referred in many places (vendor docs). But
-> > to align with the spec, let's rename it to its expansion 'Bus Master
-> > Enable'.
+Hi Sam,
+
+Thanks for the review.
+
+On Fri, Apr 19, 2024 at 07:13:50AM +0200, Sam Ravnborg wrote:
+> Hi Dawei,
+> 
+> On Thu, Apr 18, 2024 at 06:49:44PM +0800, Dawei Li wrote:
+> > Hi,
 > > 
-> > Suggested-by: Damien Le Moal <dlemoal@kernel.org>
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
+> > This series aims at removing on-stack cpumask var usage for sparc arch.
+> > 
+> > Generally it's preferable to avoid placing cpumasks on the stack, as
+> > for large values of NR_CPUS these can consume significant amounts of
+> > stack space and make stack overflows more likely.
 > 
-> Reviewed-by: Niklas Cassel <cassel@kernel.org>
+> Took a quick look at the patches, looks good except the one the bot
+> already complained about.
+
+I will fix this building warning in respinning.
+
+> A quick grep shows a few more cases where we have an on-stack cpumask
+> in sparc code.
 > 
+> kernel/ds.c:    cpumask_t mask;
+
+About this case, it's kinda tricky for:
+- dr_cpu_data() returns void, so alloc_cpumask_var() is no go.
+
+- No idea of the calling context of dr_cpu_data(). IIUC,
+  dr_cpu_data()
+  ->dr_cpu_configure()  
+   ->kzalloc(resp_len, GFP_KERNEL)
+  So I guess it's in process context?
+  If consumption above is OK, a simple but _ugly_ solution could be:
+
+diff --git a/arch/sparc/kernel/ds.c b/arch/sparc/kernel/ds.c
+index ffdc15588ac2..c9e4ebdccf49 100644
+--- a/arch/sparc/kernel/ds.c
++++ b/arch/sparc/kernel/ds.c
+@@ -634,7 +634,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
+        struct dr_cpu_tag *tag = (struct dr_cpu_tag *) (data + 1);
+        u32 *cpu_list = (u32 *) (tag + 1);
+        u64 req_num = tag->req_num;
+-       cpumask_t mask;
++       static DEFINE_MUTEX(mask_lock);
++       static cpumask_t mask;
+        unsigned int i;
+        int err;
+
+@@ -651,6 +652,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
+
+        purge_dups(cpu_list, tag->num_records);
+
++       mutex_lock(&mask_lock);
++
+        cpumask_clear(&mask);
+        for (i = 0; i < tag->num_records; i++) {
+                if (cpu_list[i] == CPU_SENTINEL)
+@@ -665,6 +668,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
+        else
+                err = dr_cpu_unconfigure(dp, cp, req_num, &mask);
+
++       mutex_unlock(&mask_lock);
++
+        if (err)
+                dr_cpu_send_error(dp, cp, data);
+ }
+
+How does it sound to you?
+
+> kernel/leon_kernel.c:   cpumask_t mask;
+
+It's in irqchip::irq_set_affinity(), which is in atomic context(raw spinlock(s) held),
+so dynamic allocation is not a good idea.
+
+My proposal(*untested*) is somewhat complicated for it introduces a new helper.
+
+diff --git a/arch/sparc/kernel/leon_kernel.c b/arch/sparc/kernel/leon_kernel.c
+index 4c61da491fee..6eced7acb8bc 100644
+--- a/arch/sparc/kernel/leon_kernel.c
++++ b/arch/sparc/kernel/leon_kernel.c
+@@ -104,15 +104,25 @@ unsigned long leon_get_irqmask(unsigned int irq)
+ }
+
+ #ifdef CONFIG_SMP
++
++static bool cpumask_include(const struct cpumask *srcp1, const struct cpumask *srcp2)
++{
++       unsigned int cpu;
++
++       for_each_cpu(cpu, srcp2) {
++               if (!cpumask_test_cpu(cpu, srcp1))
++                       return false;
++       }
++
++       return true;
++}
++
+ static int irq_choose_cpu(const struct cpumask *affinity)
+ {
+-       cpumask_t mask;
++       unsigned int cpu = cpumask_first_and(affinity, cpu_online_mask);
+
+-       cpumask_and(&mask, cpu_online_mask, affinity);
+-       if (cpumask_equal(&mask, cpu_online_mask) || cpumask_empty(&mask))
+-               return boot_cpu_id;
+-       else
+-               return cpumask_first(&mask);
++       return cpumask_include(affinity, cpu_online_mask) || cpu >= nr_cpu_ids ?
++              boot_cpu_id : cpu;
+ }
+ #else
+ #define irq_choose_cpu(affinity) boot_cpu_id
+
+Is it OK?
+
+[cc Yury for bitmap API]
+
+> kernel/leon_smp.c:static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+> kernel/sun4d_smp.c:static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+
+Actually I am awared of existence of (at least some of) them, but so far I
+have not found a _proper_ way of dealing with them(especially for case of
+ds.c).
+
+Please lemme dig into it.
+
+Thanks,
+
+    Dawei
+
 > 
-> Outside the scope of this patch/series:
-> Do we perhaps want to add a bus_master_enable() callback also for the
-> pci-epf-test driver?
+> Do you plan to look at the other on-stack users too?
+> It would be nice to see them all gone in one patch-set.
 > 
-
-Makes sense to me.
-
-> In my opinion, the test driver should be "the driver" that tests that
-> all the EPF features/callbacks work, at least a basic test "does it
-> work at all". Other EPF drivers can implement the callbacks, and do
-> more intelligent things, i.e. more than just seeing that "it works".
+> 	Sam
 > 
-
-Agree. Feel free to send a patch :)
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
 
