@@ -1,295 +1,182 @@
-Return-Path: <linux-kernel+bounces-151908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCDF58AB5A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:36:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54FC18AB5A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:36:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F07331C2190E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:36:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16B9D284C21
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48FCC13C91F;
-	Fri, 19 Apr 2024 19:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7036413C91F;
+	Fri, 19 Apr 2024 19:36:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XzrnqDBv"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=phytec.com header.i=@phytec.com header.b="E8mxwxV5"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2093.outbound.protection.outlook.com [40.107.95.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77721C10;
-	Fri, 19 Apr 2024 19:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713555350; cv=none; b=bV2t3aFl5oBfbes4a5XrVV9zf206A0UUSGq9wcHO3RtmtaxOm6+BqKpg/Ya62eq5DxS4U3H/n/nvfLAKdAwOlb9ScmYwzKevfI4d0vD6VNuvj/XnrbPcg11mirpcNvoKuzyeQOZk+pDFGiHAK6/NgNtZCAWjjjTYZJp+qlUN1gQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713555350; c=relaxed/simple;
-	bh=FWRrYM05Gl24NysJZA4lFfJmUGtilj/4tzDe1726Ysc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aEmcLEDf/WPOV5rNb7bk224nCJwbLtxwL4LQHErcLkEATEAbnWSy5LH88sYmPzba8+3l+pRl3yTPpRrvYQRNLHRquPL/TUPDmy6GkT1LUZ4Fg4QvmS96UUCCwYZUIeruxj6JBFtXeZQ3SrmKdCq2MG1a2Kbw9QEBM8rmgJf5kiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XzrnqDBv; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-78f049ddd7dso160331685a.1;
-        Fri, 19 Apr 2024 12:35:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713555347; x=1714160147; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MhQJU3CrlVoAGP7ZGiJSNVNFVjdkVbIc18tFWpLQjSo=;
-        b=XzrnqDBvmy46CuoX6QpPy5LgguhsrK+XDRH33tM/9FFhdIRh3HRQpJCdKJgkKo9Alz
-         +G//6gSsmwo0WvROO4fTwXRoNNVyx+7mx7XlDaaKPztY2p2lhmxOjI5q8KgrY5i2mmOh
-         RR7E99vdO272vm8+f9K5Wa8FGcm2N+8W5M2lkpSZSZm5U3VI0Co+XI+NBzRuql9qtSgW
-         8dEI8rGj9G7s5bo+MSzg7xiEui36Zm4Q08FQ0VJ8mI1vMAkvZQWqcI4HRwVLnwgKKsj/
-         5sfk2R/13aiypCkjVmtW5KWNHMfUg5ZyAs8j7d0iAx+cCpA2NNgFEEnWuXtQ8QF99n+h
-         NrRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713555347; x=1714160147;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MhQJU3CrlVoAGP7ZGiJSNVNFVjdkVbIc18tFWpLQjSo=;
-        b=A0x4SR8ppL4z9ceeUx7+XhW2UFUuvagbunvbCkU0F0Zaa3siTOlCnSVZI8TMvMei/T
-         f1cDkIMJCYzyuK9CZtRRI65/oFlWAk0ZRWcUENQZGg8T+cpq5MHFrKPTMwmMcGe7HYPM
-         xOy4y2dsMXt+SjiwfUs3CEzPvXfVjUTsFlpKmM7AxlxjKCiUJHlNpo5KLgAjPgMhy7Js
-         3UhufJ7zkDFimS8s9isXVTm2vJufLV6LOe+m78HAHHoZ2DfkNMLVcf1jOR9vA6YjM+5z
-         lCEriSIJDqppdk+BvYqiqX4o2utsk7gOpbdWxmJH6iNvgf6kVsHG3+1G+MNM099Q+01A
-         pKxg==
-X-Forwarded-Encrypted: i=1; AJvYcCWMLQxwwnAg4Bf7MVzMjKSlSLll8bucVF08OuBeoICoOhi2pgFAfEE3ZgsdwQM3JLbXkeFgXgTWa89qMw4MLyYTiaE5N5ZtiutBCJmO+kDfKCVdWSm8l9Ow2GXOvmg3ghxrZDqdBm7s3Su02wA=
-X-Gm-Message-State: AOJu0Yx3XHS/JEsQeKF6LYOls3uesRCnv1wU1+fHyoHE/YPs+j+XyyJ4
-	2Vg//UZQO8rEApQLNA9IRavW8DIE33GGJLSpdkVaz5DDEdUadOtC
-X-Google-Smtp-Source: AGHT+IGMzxbgo4MC6cWlaiaYeVDGJBl+nICEONZyC/N08VTx98tp07xM/2TX/V8ztom/HuGyYxampA==
-X-Received: by 2002:a05:620a:d53:b0:78a:724b:af30 with SMTP id o19-20020a05620a0d5300b0078a724baf30mr3536555qkl.24.1713555347483;
-        Fri, 19 Apr 2024 12:35:47 -0700 (PDT)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id h6-20020a05620a13e600b0078f044ff474sm1874956qkl.35.2024.04.19.12.35.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 12:35:46 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 1CE041200032;
-	Fri, 19 Apr 2024 15:35:46 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 19 Apr 2024 15:35:46 -0400
-X-ME-Sender: <xms:kcciZjTWqxGCUxifFZ_8CJI18-1xfUzuIQDTib51K0AWSNij2ZdXrg>
-    <xme:kcciZkwIg8CWPyhqvuRKXVvXZqSefFgPJNC4_sl_BOQsxkPJtvq5Ly4xB_OjKIBXr
-    eyg2azN4vBFagl_eg>
-X-ME-Received: <xmr:kcciZo0orzaXTjnkB0rLLUvkArpuy9kEsMlKboQi7i01UdqK4zcl85bCzBsvPg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekvddgudegudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:kcciZjBe4pPetv2Z9f3bplpd7rLkyhJ9mvyOF3RqnNSUqa2gO8c1JQ>
-    <xmx:kcciZsj-hAizIeILIJgz8dkf15DXKKjPmYBTyEZMfg2Eqr3mnzFNvg>
-    <xmx:kcciZnrHzu7LsI8S9fJLnzr4iHaiWY--kEnhqDHpGZNkHGhuB4YI_Q>
-    <xmx:kcciZngcWJh1KhnbqifomY1MGwJwkRq_eSXXitP_id3AebLuiV6vOw>
-    <xmx:ksciZvS7aF6YwrdvWA2PryR-yCu5OHX9W1ES6BwWQkr6GzyuBifwiQm->
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Apr 2024 15:35:45 -0400 (EDT)
-Date: Fri, 19 Apr 2024 12:35:18 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Trevor Gross <tmgross@umich.edu>,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v6 4/4] rust: add abstraction for `struct page`
-Message-ID: <ZiLHdiXzPS5wa6p-@boqun-archlinux>
-References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
- <20240418-alice-mm-v6-4-cb8f3e5d688f@google.com>
- <ZiFsCLb-BZWbBHsu@boqun-archlinux>
- <87dc4cdf-ccf6-4b08-8915-313aad313f93@proton.me>
- <ZiGlC5AtRRikE1AI@boqun-archlinux>
- <ZiGnFI7cz5v-cowt@boqun-archlinux>
- <079c88af-2e6d-45fe-bf58-afebbf7583b4@proton.me>
- <ZiKooOjXh209i8je@boqun-archlinux>
- <c500f9c6-8811-44c4-89a4-603a67d09e78@proton.me>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117F413B299;
+	Fri, 19 Apr 2024 19:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.93
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713555370; cv=fail; b=o5CzjXNMuIpbJTttz4Ld5cocwwoP8x57UGl0ZHyt+kgikMv5ufdxiWHeGvM7xnOwGtZ1ehatYL4g7SJh2UFA5j4nbU8o5DmZiIY5Uxg+6629YieKLPDvy4H4OiU5Fwr+wtQ1ZOPnlsRWdFUuvsLHlJVhOaxmGUysiPKWD70As3g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713555370; c=relaxed/simple;
+	bh=/Bn2g/B4v5LwWP6K88jOFSH2snmbhHGnZS5il/1mUDk=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=TLCKAMlV2c2AruQVbhXQLVz/8pPzApIb5f0wi8pabuMAShDFXTjFuM0PAijlCGnpGXaSViHkq8ZRv3kJv4gVb7aiOEyNPX+Ppsv6/uXPtmBQ1srG0Lfd3G1AwrGGbhX8z1mpjycMXoORjahw70WEjksnbB7bdSU9CbYtUUmislw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com; spf=pass smtp.mailfrom=phytec.com; dkim=pass (1024-bit key) header.d=phytec.com header.i=@phytec.com header.b=E8mxwxV5; arc=fail smtp.client-ip=40.107.95.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GmMyIXSuKoNXry7h6k9WzfVYao0+rdU7sMYAi5kieVHC3KnbTvarhLkvpjfZ/YLK/1oUp6JVjh91HUHOOr6gqiIL5cma2NQhoWNLp4CP63tAqXZ1chVvQu9UtEJwb2g7ZsE00QA0fofCwE7H2w7mg5fpL1dhOsAuHngAt58DQUcMWOTyWFho9PvMFKbFzIVTgnqa9MDEMMJzU7cF8dzVEY861y303Lq1XAo6tjPldIl6G9kftBUwiK39fRvIxpZ8dzF4baHMGvM22TPj3JByfHN3PSL+Rzo9/sEvKzqIeVbwlSbpueRyBFkAEhOzAvWVazSXP5pzjtS6ji6So+YalQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MrVzXPets2A8SAAYpz+89rYo1zZwmKOnoBJydx2GLHg=;
+ b=PsgKcv+MSLyVRcXVJTCNwElGqdvkNNEg6DV/3wR/vfaV05+U6yrVOStMMSTrs2ug5priX9RtW+uEgnU/a/JH9qMrij7Lb8M8EauPf2ykGdyL+QYybjltw4Udcw4hQF+OIt2/2LBVxStaCR6y556SJgqFbyuiT0Ch7H47bEYcBTxJozURHH1fJAKAj1FJbHsV6aOBKO1EG1gch0l1iTHM0I2VDtX60Y/PZGIEeYcDSSxYi3zMAgudO1Gkg1WKZWkfseQIUjmZiwAYopSB31IK+4vb9vlPorZbkSQgKsB60VyC8upROFkAofmT/6wxCJ8p8jDhCS9wzOMsBm6ndy717A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=phytec.com; dmarc=pass action=none header.from=phytec.com;
+ dkim=pass header.d=phytec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=phytec.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MrVzXPets2A8SAAYpz+89rYo1zZwmKOnoBJydx2GLHg=;
+ b=E8mxwxV5D3vojxGoEN8/3TiEPPC/nvXU8ZcSRUiiHtnpDArEAUwRLinceasjgFVtvRp+Ozl9JxKlExreQTabVs1zGxw5VDghw5ap5MO/gAasi6PJQ5Mhmh3T2boPeLfzDg7Fd/aUEti6hNym4+DvHHYWgiXi+8OQ1gQbOupNT8Q=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=phytec.com;
+Received: from MN0PR22MB5638.namprd22.prod.outlook.com (2603:10b6:208:4a5::17)
+ by CO6PR22MB2883.namprd22.prod.outlook.com (2603:10b6:303:14a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Fri, 19 Apr
+ 2024 19:36:03 +0000
+Received: from MN0PR22MB5638.namprd22.prod.outlook.com
+ ([fe80::2041:9d22:48c3:e667]) by MN0PR22MB5638.namprd22.prod.outlook.com
+ ([fe80::2041:9d22:48c3:e667%6]) with mapi id 15.20.7472.044; Fri, 19 Apr 2024
+ 19:36:03 +0000
+From: Nathan Morrisson <nmorrisson@phytec.com>
+To: nm@ti.com,
+	vigneshr@ti.com,
+	kristo@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	upstream@lists.phytec.de,
+	w.egorov@phytec.de
+Subject: [PATCH] arm64: dts: ti: Enable overlays for the am625-phyboard-lyra
+Date: Fri, 19 Apr 2024 12:35:52 -0700
+Message-Id: <20240419193552.3090343-1-nmorrisson@phytec.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: CH2PR11CA0028.namprd11.prod.outlook.com
+ (2603:10b6:610:54::38) To MN0PR22MB5638.namprd22.prod.outlook.com
+ (2603:10b6:208:4a5::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c500f9c6-8811-44c4-89a4-603a67d09e78@proton.me>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR22MB5638:EE_|CO6PR22MB2883:EE_
+X-MS-Office365-Filtering-Correlation-Id: 566886e9-807b-4f7d-0620-08dc60a7f2d4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?TI2Foixbk/kjWqwWg2gedyGAAkr1OJkcZ8EVvhvpZf6rx7yNaMr/Jxx8DUEZ?=
+ =?us-ascii?Q?acIpXY+tnBsz90byyZHYtItl04fTeKuO9zDua5Uw6h2YCyiS7VDVTbYyGuUy?=
+ =?us-ascii?Q?osaWKKUkkOjUNN1FKwJnn45sw3uzTGoNUSvOD147Zoj1pTkcxO57net7bPB4?=
+ =?us-ascii?Q?ZrpuvNjszN/ZG175UBBr0I0Xnf6z4+lDLH//zV8DO5DJI2uqMy0NVX2RlW4D?=
+ =?us-ascii?Q?tmI+ujHGxSK0jfMJW2Zje4nokrURPMpoOiSTtBIw6Kl3yFI2mHcGO1n3OEVW?=
+ =?us-ascii?Q?2+9em/exGzgoGd2fKndywFGLXGpq+HbH+Jrdsl1CKk8Yif4OeZB7hESZc4tr?=
+ =?us-ascii?Q?HiGvI2byTpA0lsjm0kMmRI9Ma57F6d9NA0Odxdk3eQ9MKWMuIt0fYVFqKGug?=
+ =?us-ascii?Q?GzjmGowsFGIzpsdcOchVTIaN6+XvVq72tokA5kQfikDbNwT0AfNXXUtPiDXY?=
+ =?us-ascii?Q?cG7gkGxyoDEEvlZP4zewS+B6fdKf/E+DYfVqJiC4UIiYi93U1truDSe4aivk?=
+ =?us-ascii?Q?MDpdY+NAjXJnDxjcspt8V9qLd3XQRqfdLXWA1s9zMOoceapeirJ3P4Qbb30d?=
+ =?us-ascii?Q?M2yKwBwAqh3Biif5CLd+p0bXAiXHxdKX9/1J1ky3JjSerneOaoCtY0tZIt6t?=
+ =?us-ascii?Q?LvoJFJG0rnVr/QqKjD5XXYv7WypQt6xTZZ6MyK/h2eKZ7eFDK1cPxT1F8gDB?=
+ =?us-ascii?Q?u7C7/dl7uHb7lGSpJ9FjhlcYFNH+lUjGFGhSpJ5UNlL5HORVm0sgFJbang1c?=
+ =?us-ascii?Q?g6S52+AVPWNTqnjQc9FngbEjZKSHXXyDYHSHXAoEPW7M0cBwwjVcTSCJhOSV?=
+ =?us-ascii?Q?6/KzQpMp7XyiOZHxmncsLP+j8irg9eiZdOsDaLR9TWP7B06Kj7jjST0ITjCS?=
+ =?us-ascii?Q?xnZPz4exIsZhaIlWiI7d+UuEN6lZNVYwsux0rIuG91Rdwxwa7CO3EUx+ufug?=
+ =?us-ascii?Q?fu7+gE77BstfFuOIpRLNgu7D8VG960woQQc+5jGry4l3eyGSFdUqHNhP4+3R?=
+ =?us-ascii?Q?KvBVnAjCw8x3iPQhwNc55V2F4ZeqTjV1mz7fnWufRVTIwLBKA821SDsyvMC9?=
+ =?us-ascii?Q?DOP2KAEJKpH7hOy1rH92zw9mYr4RbeGS0LHjZgMPOo0BSxZScd2Mutg5+6ZA?=
+ =?us-ascii?Q?BfnMVYI5zR3SQLkvctEoFaMos+eVSTfnHc1m96sBvlZP7KUf2+ly9sexGhO5?=
+ =?us-ascii?Q?aBZ7s6j0d2rQ17WaSGYHMCxhHLh81fuoMa3nf3JbGb09gxOf8G+ZduGQXO3f?=
+ =?us-ascii?Q?zcRCcmYtx7cujQUrgb1X1ajeI3H4lIvHx84zJ1jw6VB2eOpaE4xzaxkU9U4s?=
+ =?us-ascii?Q?0Wdp4kFpkZOdLAv38xJCN+qCf3gX5IAv0CoOMmMMMVKBiA=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR22MB5638.namprd22.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(52116005)(7416005)(376005)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?dyxEV+wZ6vsNHpw/mC9vt7D/L9cqNqnH1H2+icI2PwDOjJQNzCnT63K6pXDP?=
+ =?us-ascii?Q?xC/hC+rqsUlInuXngL8di78zenkmfFT2MuCO8N7oULDoXYncJLHUTynlb+dP?=
+ =?us-ascii?Q?Fon1xsZOpgtJk9XDJAhsg180mehvuz2h1hZpQ5sROxY0+H6mU8TDrbUQgxpi?=
+ =?us-ascii?Q?a1H/VJGTbNpu1aujF+iYepeG8P2cciGIcLETRvjyPeSnA9ut4m1oBy/TzDnN?=
+ =?us-ascii?Q?ddWZWM4FGQx9pw/qKo1R/xdqjP+0WdGnx8ssPAD3isJW4Q4qbyCUS1xwlxXA?=
+ =?us-ascii?Q?fFGwDEXWt/Q8acbefak9PzADu7whWe90lW8QRh0uHuecFwgaJdHzGwZ4cyF3?=
+ =?us-ascii?Q?R8Esq5Jo3gJUbHLhPtrQti7Q85Toybgp38pdHPjLR0JfJrZzmLGshGW5QiA2?=
+ =?us-ascii?Q?gkVxPt2YscDeoSI7+lWAy9jJK2zhZzYSnZP/8HypfteJnFLM3Hmg51IOOekv?=
+ =?us-ascii?Q?Un3R4EWHYFgtEF5dmTHpaNJLwtO/m6tccMP7OcM/EsUKv2Q0ESgA4uzIuL5S?=
+ =?us-ascii?Q?vBqs8eq643EN9hBlS+Syv0KKi2mZNkilLA/4TA/sk91zDAjr4WSkhPaJxU3s?=
+ =?us-ascii?Q?41ZsUyxYhrcWxm+IfmETP8WcSfB9/pByN5c8zvwTtPzkX23oICs5OC5K4zJO?=
+ =?us-ascii?Q?C9cAA39uhaUVATEVbUm5KtvG9kF4UsmxR/FeZKOd0a963FqORhESLdhA+aQt?=
+ =?us-ascii?Q?hmfOxMb66T3TJmqhh6cW/gUvRrAAsd7ljGsQsTsCCVbdZb/8BUiWp83IPXwZ?=
+ =?us-ascii?Q?G78Eo2+54u0ZVOPbvMuzznmg2vbzTsPAUm02TB1z5ZHt/wijERRt+PwlYYLf?=
+ =?us-ascii?Q?Rx117yIRaM9SzeLGs8mn7nYmhzAq9G4uWkCNetK1kJpd9hJyahMLpyA0SNko?=
+ =?us-ascii?Q?68d4JJsRIy8zknyf4yhMfFXK0yhl3kD8hzia425jKo53R1pUp48/sAX0aHLm?=
+ =?us-ascii?Q?7kmNCpve4P3BjBBagv+HwpRvmweAO2FyMtjqvqiamWU/c9lffaJyZpkNeiZv?=
+ =?us-ascii?Q?Z/b4WLy1RZXSROvWoFEQVNWp5z3XWsAqAs+9tm960lJB8cdeJLKB9Fdzn5hk?=
+ =?us-ascii?Q?5OLKPwXICVl/Rke5pCmPX0/tacQXL7Gex81a86YarqqezZvkA0UkEwvWUlgc?=
+ =?us-ascii?Q?KQ1CzSoabfTyKe07vd9Gzx0AN8/B//mNeiV3L1oi/2J19+eWqafiLGg4uJrl?=
+ =?us-ascii?Q?13E1km3IGuHfbt7UyHF3vtAGOSkVuJ9Qq6ys9hBO1sjmOpyDLU22luACWb+A?=
+ =?us-ascii?Q?T6IQgkZLdiYdU62fdnQ+gTdl7Ekho3lO75+biEtZNpucx4eoueZH2hiY7JAu?=
+ =?us-ascii?Q?rKdwsIqDH2CFwHsYYY9nw8z+MVOcCbMR4HzWxDI8YYMK/CuJVVljgEkD/VVe?=
+ =?us-ascii?Q?iQ0/4reyFMw9o8MYSGeRzbRrtx57E+suS/1x6v3/idRj7yv5/SsMB6CyRQki?=
+ =?us-ascii?Q?l9rZFIw6NJWLE5ESCumIwN91Nswo1DOG4AnFZkZyEi8OWhfVxEi2/qOdFu8I?=
+ =?us-ascii?Q?dZ8kT33OqiI0uWVZMpjmxCHWWcdBzyftvv+uarmopvRhF72GkeyWDsOY60Dx?=
+ =?us-ascii?Q?JR5cOLb9k90DsonIwC1Vph+yKD5yq5Y/XOuWNgXz?=
+X-OriginatorOrg: phytec.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 566886e9-807b-4f7d-0620-08dc60a7f2d4
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR22MB5638.namprd22.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 19:36:03.1173
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 67bcab1a-5db0-4ee8-86f4-1533d0b4b5c7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7KXTnAyTXr3UAkwqis66iIYi52GjR3lGHOSnck5w9QNpKtZY1vF6dbgNpqBVZArmcq0jLABLCdUZfGrqKVG8Xg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR22MB2883
 
-On Fri, Apr 19, 2024 at 07:24:31PM +0000, Benno Lossin wrote:
-> On 19.04.24 19:23, Boqun Feng wrote:
-> > On Fri, Apr 19, 2024 at 08:36:11AM +0000, Benno Lossin wrote:
-> >> On 19.04.24 01:04, Boqun Feng wrote:
-> >>> On Thu, Apr 18, 2024 at 03:56:11PM -0700, Boqun Feng wrote:
-> >>>> On Thu, Apr 18, 2024 at 10:08:40PM +0000, Benno Lossin wrote:
-> >>>>> On 18.04.24 20:52, Boqun Feng wrote:
-> >>>>>> On Thu, Apr 18, 2024 at 08:59:20AM +0000, Alice Ryhl wrote:
-> >>>>>>> +    /// Runs a piece of code with a raw pointer to a slice of this page, with bounds checking.
-> >>>>>>> +    ///
-> >>>>>>> +    /// If `f` is called, then it will be called with a pointer that points at `off` bytes into the
-> >>>>>>> +    /// page, and the pointer will be valid for at least `len` bytes. The pointer is only valid on
-> >>>>>>> +    /// this task, as this method uses a local mapping.
-> >>>>>>> +    ///
-> >>>>>>> +    /// If `off` and `len` refers to a region outside of this page, then this method returns
-> >>>>>>> +    /// `EINVAL` and does not call `f`.
-> >>>>>>> +    ///
-> >>>>>>> +    /// # Using the raw pointer
-> >>>>>>> +    ///
-> >>>>>>> +    /// It is up to the caller to use the provided raw pointer correctly. The pointer is valid for
-> >>>>>>> +    /// `len` bytes and for the duration in which the closure is called. The pointer might only be
-> >>>>>>> +    /// mapped on the current thread, and when that is the case, dereferencing it on other threads
-> >>>>>>> +    /// is UB. Other than that, the usual rules for dereferencing a raw pointer apply: don't cause
-> >>>>>>> +    /// data races, the memory may be uninitialized, and so on.
-> >>>>>>> +    ///
-> >>>>>>> +    /// If multiple threads map the same page at the same time, then they may reference with
-> >>>>>>> +    /// different addresses. However, even if the addresses are different, the underlying memory is
-> >>>>>>> +    /// still the same for these purposes (e.g., it's still a data race if they both write to the
-> >>>>>>> +    /// same underlying byte at the same time).
-> >>>>>>> +    fn with_pointer_into_page<T>(
-> >>>>>>> +        &self,
-> >>>>>>> +        off: usize,
-> >>>>>>> +        len: usize,
-> >>>>>>> +        f: impl FnOnce(*mut u8) -> Result<T>,
-> >>>>>>
-> >>>>>> I wonder whether the way to go here is making this function signature:
-> >>>>>>
-> >>>>>>        fn with_slice_in_page<T> (
-> >>>>>>            &self,
-> >>>>>> 	       off: usize,
-> >>>>>> 	       len: usize,
-> >>>>>> 	       f: iml FnOnce(&UnsafeCell<[u8]>) -> Result<T>
-> >>>>>>        ) -> Result<T>
-> >>>>>>
-> >>>>>> , because in this way, it makes a bit more clear that what memory that
-> >>>>>> `f` can access, in other words, the users are less likely to use the
-> >>>>>> pointer in a wrong way.
-> >>>>>>
-> >>>>>> But that depends on whether `&UnsafeCell<[u8]>` is the correct
-> >>>>>> abstraction and the ecosystem around it: for example, I feel like these
-> >>>>>> two functions:
-> >>>>>>
-> >>>>>> 	    fn len(slice: &UnsafeCell<[u8]>) -> usize
-> >>>>>> 	    fn as_ptr(slice: &UnsafeCell<[u8]>) -> *mut u8
-> >>>>>>
-> >>>>>> should be trivially safe, but I might be wrong. Again this is just for
-> >>>>>> future discussion.
-> >>>>>
-> >>>>> I think the "better" type would be `&[UnsafeCell<u8>]`. Since there you
-> >>>>> can always access the length.
-> >>>>>
-> >>>>
-> >>>> Hmm.. here is the thing, having `&UnsafeCell<[u8]>` means having a `*mut
-> >>>> [u8]>`, and it should always be safe to get a "length" of `*mut [u8]`,
-> >>>> right? I haven't found any method doing that, but the length should be
-> >>>> just a part of fat pointer, so I think getting that is a defined
-> >>>> behavior. But maybe I'm missing something.
-> >>
-> >> There is `to_raw_parts` [1], but that is unstable. (Note that
-> >> `<[T] as Pointee>::Metadata = usize`, see [2])
-> >>
-> > 
-> > Oh, that's good to know, thank you! ;-)
-> >
-> >>> Hmm... but I guess one of the problems of this approach, is how to
-> >>> construct a `&UnsafeCell<[u8]>` from a pointer and length...
-> >>
-> >> We could use `from_raw_parts` [3]. But when making the slice the outer
-> >> type, we can use a stable function to convert a pointer and a length to
-> >> a slice [4].
-> >>
-> > 
-> > Yes, but there appears no way to get a pointer with larger provenance
-> > from a `&[UnsafeCell<u8>]`, right?
-> 
-> What do you mean by "larger provenance"?
-> 
+Add symbols when building the am625-phyboard-lyra-rdk DTB so
+overlays can be applied.
 
-Say you have a `&[UnsafeCell<u8>]` whose length is 64, what's the proper
-way to get a `*mut u8` (or any other pointer) has the provenance for the
-whole 64 bytes, so that you can pass it to a memcpy like function?
-"larger" means the size of the provenance is larger than u8.
+Fixes: d8280f30a9cd ("arm64: dts: ti: am62-phyboard-lyra: Add overlay to enable a GPIO fan")
+Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
+---
+ arch/arm64/boot/dts/ti/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-> >>>>> Another question would be if page allows for uninitialized bits, in that
-> >>>>> case, we would need `&[Opaque<u8>]`.
-> >>>>>
-> >>>>
-> >>>> Yes, or `&Opaque<[u8>]`.
-> >>
-> >> I don't think that putting the slice on the inside is what we want. Also
-> > 
-> > Hmm.. why? So in `&UnsafeCell<[u8]>` vs `&[UnsafeCell<u8>]` case, I
-> > think the former represent "a slice of u8 that can be modified in the
-> > same time" very well, and this is what a pointer-and-length pair usually
-> > represents in kernel, I think. But yes, the latter is OK to me as well,
-> > just hard to play the provenance game I guess?
-> 
-> Ultimately it again comes down to missing field projections :)
-> 
-> The type `&UnsafeCell<[u8]>` is less *useful*, since you cannot even get
-> the length of the slice. Also indexing into this type is not easily
-> possible. This is because the only way to get/change the inner value of
-> an `UnsafeCell` is via `get`.
-> 
-> Compare this with the slice type. It allows getting the length, indexing
-> into it (ie a form of field projections, if we consider slices as having
-> a variable amount of fields).
-> 
-> All those issues would be solved by (good) field projections.
-> 
-> 
-> Field projections also give a reason for why using `&[UnsafeCell<u8>]`
-> is not really different from `&UnsafeCell<[u8]>`: At any point in time
-> we ought to be able to project `&UnsafeCell<[u8]> -> &[UnsafeCell<u8>]`.
-> 
+diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+index 9a722c2473fb..3fa1257efcd3 100644
+--- a/arch/arm64/boot/dts/ti/Makefile
++++ b/arch/arm64/boot/dts/ti/Makefile
+@@ -169,6 +169,7 @@ dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
+ 
+ # Enable support for device-tree overlays
+ DTC_FLAGS_k3-am625-beagleplay += -@
++DTC_FLAGS_k3-am625-phyboard-lyra-rdk += -@
+ DTC_FLAGS_k3-am625-sk += -@
+ DTC_FLAGS_k3-am62-lp-sk += -@
+ DTC_FLAGS_k3-am62a7-sk += -@
+-- 
+2.25.1
 
-Right, to me there is no significant difference between these two. Maybe
-because I'm full field projected minded ;-)
-
-> So it's fine to just use that from the get-go.
-> 
-> >> note that `Opaque<T>` requires that `T: Sized` and that is not the case
-> >> for `[u8]`.
-> > 
-> > Oh, you're right. In case of MaybeUninit, it requires `T: Sized`, so
-> > `Opaque<[u8]>` doesn't quite work.
-> > 
-> > Moving forward, maybe the first step is to see whether `&[Opaque<u8>]`
-> > and `&[UnsafeCell<u8>]` can have a good way to generate a pointer with
-> > proper provenance? Time to ping t-opsem maybe?
-> 
-> Good idea, do you want to do that, or should I do it?
-> 
-
-A way to get a larger provenance (explained above) is currently my only
-question, so if you think that's something reasonable to ask, i.e.
-nothing you know of can help. I will post a message there.
-
-Regards,
-Boqun
-
-> -- 
-> Cheers,
-> Benno
-> 
 
