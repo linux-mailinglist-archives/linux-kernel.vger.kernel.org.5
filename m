@@ -1,104 +1,128 @@
-Return-Path: <linux-kernel+bounces-151657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCA2B8AB1A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:20:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B42D8AB1AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:21:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A8DE1C21D03
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:20:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F4AEB22688
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37F2136985;
-	Fri, 19 Apr 2024 15:18:15 +0000 (UTC)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9418712FB34;
+	Fri, 19 Apr 2024 15:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xjCz/GSk";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GMFja7Ny"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81EF913248F;
-	Fri, 19 Apr 2024 15:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECC812F59B;
+	Fri, 19 Apr 2024 15:18:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713539895; cv=none; b=kVaTA3BicGgJYBb/UDKjWKn0KDLvDCThO7Av/6VG0NKwt4Wxe13D1lajIPFd/LhOlHp7fOJ/Hg5UOdYpYXoDsaXuFxI3nPqO9DNuoKtxL7ozil+VPa0Q4sC/LxzWg9ViHKs7J7LuNyDhXYYza2HE6fODUFu5L7kshLLP0OwNtw8=
+	t=1713539919; cv=none; b=qsFeXbsHBT+01ig6xLgUPNUEbLfz22SbwVCBf7n2O8iJydIB40aPV40TnPOUS1Qedb2qREmrZuquDzxNFUu2H6AF4t4RXshxHQ2AvGYpHrU4TwrjKZYRxeCRSE/p0vfrZ7uq+DXnK9GatTCQj0wpD2dsoFIfzvp2Yf7XE5EedW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713539895; c=relaxed/simple;
-	bh=v06x2WSznbdbSphBXwDn6u5OwE4X/omoi3S7OzDA8r4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CZqIMdGlSyeqMY3l+TcXIefotFEFpUWCmxWFW4c5Z/9TKKaAY8z3m0akc1Jmf4iFYsKNg7IMr0+emnQ5W/0iJ82kicyJzB+WNJsTYTcZRVboryHLtQ1T0U0cMh+xV13J609hsX6y+vmsbYPWrVeuSTK96Wc6jOjwBohqBrUz+Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 445DC1C0080; Fri, 19 Apr 2024 17:18:11 +0200 (CEST)
-Date: Fri, 19 Apr 2024 17:18:10 +0200
-From: Pavel Machek <pavel@denx.de>
-To: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-Cc: Pavel Machek <pavel@denx.de>, LKML <linux-kernel@vger.kernel.org>,
-	linux-rt-users <linux-rt-users@vger.kernel.org>,
-	stable-rt <stable-rt@vger.kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Carsten Emde <C.Emde@osadl.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Daniel Wagner <daniel.wagner@suse.com>,
-	Tom Zanussi <tom.zanussi@linux.intel.com>,
-	Clark Williams <williams@redhat.com>,
-	Mark Gross <markgross@kernel.org>,
-	Jeff Brady <jeffreyjbrady@gmail.com>
-Subject: Re: [ANNOUNCE] 5.10.214-rt106
-Message-ID: <ZiKLMkOZhU6f7YXd@duo.ucw.cz>
-References: <ZiF_h-W4jgLiRag5@uudg.org>
- <ZiI4Hq5yfrOUdbHk@duo.ucw.cz>
- <ZiJJeiAjLAk3YMZz@uudg.org>
+	s=arc-20240116; t=1713539919; c=relaxed/simple;
+	bh=v1u6M1I7hfUyhQBN/cwpO9ocGTQ1Qy4P5YzpeMaFhQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rvZwHVpWsRmtnCd26TSM8ABpEz9q00EydsPlPA8JAY32P3QNdXREoSsQY4YxNBIj8LxXCPjUTbVpy6W78qiRIZdow12xnneBrJ7RvL5mUXo+Hi/vUuLN/la0eCvVm/UA+lAcHzJIij9ZEaJSy8bXlITVWCw8TSPA72KrkZY5jO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xjCz/GSk; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GMFja7Ny; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 19 Apr 2024 17:18:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713539916;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=v1u6M1I7hfUyhQBN/cwpO9ocGTQ1Qy4P5YzpeMaFhQk=;
+	b=xjCz/GSkAs50I+QI7DCxQjyQohYIKc6gfvXM/lOOMOQ9u4NDYv4qdY0z6mGx+hROJgFmKZ
+	9zWABT+BP9mqJwBa9/4yjtYDKpgRik0Cv9GA8jRsyhvXHu/MKWDm8b66esCWPBv2iLgmtT
+	+ClBiXzbUFG/aZE+faPmaO96/IJ0GxLADiEcabH9wroL7jIYAF5/fsnkaYTATpoXx5G1gu
+	UgVOwkWp2/Iqt4SGIo5q/Y+khYcmWoOpDBOZm1LsGnQBxF6IWpUDLvaO9NHxL5ECZ/Fox7
+	Yx5FU8Trbb/wjAuloMMQjlBMJpWky5bQgDrrxWHMEZ7QpqqDNeF6CkxOGonjOA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713539916;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=v1u6M1I7hfUyhQBN/cwpO9ocGTQ1Qy4P5YzpeMaFhQk=;
+	b=GMFja7NyiVFhz0KcOQninz2/TkAOL/1k/FUec7DzdPA2AaqJJSnOAQ/5sXQ/BziLmr/ddB
+	rUE1t7yBUbab7YDw==
+From: Nam Cao <namcao@linutronix.de>
+To: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Cc: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+ jayalk@intworks.biz, Daniel Vetter <daniel@ffwll.ch>, deller@gmx.de,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ tiwai@suse.de, bigeasy@linutronix.de, LKML <linux-kernel@vger.kernel.org>,
+ Vegard Nossum <vegard.nossum@oracle.com>, George Kennedy
+ <george.kennedy@oracle.com>, Darren Kenny <darren.kenny@oracle.com>,
+ chuansheng.liu@intel.com
+Subject: Re: [bug-report] task info hung problem in fb_deferred_io_work()
+Message-ID: <20240419171835.5f31e32d@namcao>
+In-Reply-To: <CAMeQTsaGXv6hUmXg3ROLb83JZEAfoSuQGCQgz0wG38Me8UtQYA@mail.gmail.com>
+References: <271372d6-e665-4e7f-b088-dee5f4ab341a@oracle.com>
+	<CAMeQTsbCESSTrEyHgqF9HreSuzQ9kMBnGpKLT0QNJ+n4hv9qOw@mail.gmail.com>
+	<20240418160526.3b3c385f@namcao>
+	<CAMeQTsaGXv6hUmXg3ROLb83JZEAfoSuQGCQgz0wG38Me8UtQYA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="4VRVcZfQOWi2/2BF"
-Content-Disposition: inline
-In-Reply-To: <ZiJJeiAjLAk3YMZz@uudg.org>
-
-
---4VRVcZfQOWi2/2BF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On 2024-04-18 Patrik Jakobsson wrote:
+> On Thu, Apr 18, 2024 at 4:05=E2=80=AFPM Nam Cao <namcao@linutronix.de> wr=
+ote:
+> >
+> > On 2024-04-18 Patrik Jakobsson wrote: =20
+> > > This sounds similar to the SUSE bug [1]. We fixed it by reverting [2]
+> > > in the SUSE kernel. The problem seems to be that flush_delayed_work()
+> > > kills the timer and re-queues the work but doesn't guarantee that it
+> > > is finished when returning. So when the device is closed, the
+> > > fb_deferred_io_work() function can still be queued and tries to access
+> > > memory that's been freed. =20
+> >
+> > flush_delayed_work() *does* guarantee the work is finished before
+> > returning. =20
+>=20
+> Right, flush_work() does guarantee that the work is finished, but it
+> doesn't guarantee that the queue is idle if work has been requeued
+> since flush started. So fb_deferred_io_work() should be able to happen
+> after the device is closed. Or am I missing something?
 
-> The tag is there in the repository:
->=20
->     https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.gi=
-t/commit/?h=3Dv5.10.214-rt106-rebase
->=20
-> When I released 5.10.215-rt107 (and its -rebase counterpart), 5.10.214-rt=
-106-rebase
-> was no longer pointing to a commit inside that  branch, probably why your=
- git
-> update didn't get the tag. You could try a
->=20
->     git fetch --tags <rt-stable-remote-name>
+I'm confused: how is it possible for fb_deferred_io_work() to run after
+the device is closed?
 
-Aha, thanks for the pointer and sorry for the noise.
+The workqueue is flushed during closing of device. If more work is
+queued during/after the flushing, then someone must be writing to the
+device during/after the closing of the device. How can that happen?
 
 Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Nam
 
---4VRVcZfQOWi2/2BF
-Content-Type: application/pgp-signature; name="signature.asc"
+> > =20
+> > > Patch [2] tries to solve the problem of not throwing away pending data
+> > > when closing the device. Perhaps calling cancel_delayed_work_sync()
+> > > and then follow up with a manual call to fb_deferred_io_work() would
+> > > be enough to flush the remaining data?
+> > >
+> > > -Patrik
+> > >
+> > > [1] https://bugzilla.suse.com/show_bug.cgi?id=3D1221814
+> > > [2] 33cd6ea9c067 fbdev: flush deferred IO before closing
+> > > =20
+> > > >
+> > > >
+> > > > Thanks,
+> > > > Harshit =20
+> > =20
 
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZiKLMgAKCRAw5/Bqldv6
-8tbCAKDAvtniYIhg1C/iRVDr6CX7JIEqzACdFYmLVlEV11QqPIXb0nD4IDwZ+b0=
-=uV+I
------END PGP SIGNATURE-----
-
---4VRVcZfQOWi2/2BF--
 
