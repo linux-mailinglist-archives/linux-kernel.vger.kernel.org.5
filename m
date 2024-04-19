@@ -1,91 +1,140 @@
-Return-Path: <linux-kernel+bounces-150937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F1938AA6E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 04:19:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B025F8AA6E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 04:23:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA17AB22481
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:19:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5020D1F22066
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC974C85;
-	Fri, 19 Apr 2024 02:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A6F5664;
+	Fri, 19 Apr 2024 02:23:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="xv9VR1+h"
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="15H+RZxc";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="15H+RZxc"
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F5D34C8A
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 02:19:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E3F115BB;
+	Fri, 19 Apr 2024 02:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.121.71.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713493162; cv=none; b=eK/LWkVLv2piPsoN+n3gv6CO60w/HD62FDqYFWIMVTbp9KrWEYbWH4zrWPRlIvMIofyznMKWC9ezSd2GLMWisgQlno2lDDsAvb98xmZ903LrDvubVgLZSVPFQNU92+MGF2qBu4zarNEG0FajUSC0d1SXkg0Z+wPdNXNhN89EujU=
+	t=1713493389; cv=none; b=l3JKdw2X4H8ZVVDNYVQO4LQIveMYTvti0pZwtJ465S5FwkjLy2Lce5RR7kYc5Fvp6XyUXZQ4McKwMEjB/HsqlDv/vWd4MK5PgcYKNUx62sGMP+nSFlZD+t3dHTn0KDjfKWGAM2NP1Bx4u1iFh+Wosg0ExsKOkcEkzZL4Ys+dsMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713493162; c=relaxed/simple;
-	bh=/+KvTI1u3nFceMr/A4WlUovD0kyARNV6CK6TkUnGV3c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=V4dUCDf8jm1PB5Uhldntn3h55y0TbCM0EJbFttdoTHb6G7OACvxpTdLB9LArFZVs8h3J+Djuwo+CrOeVkwFjW57kHLDmKJW+gzxKq7LLUUen9mcrMKy3CH+L20FcxEUG1IebcMmj7mt5T9fN21J21QxqrM3PGVjVsdrE74vgZt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=xv9VR1+h; arc=none smtp.client-ip=115.124.30.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1713493156; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=Td7V3A43ySEiCBw4iP8fzhTEsH+umasH6SY05GOKao8=;
-	b=xv9VR1+hB/b4uvPKsNSnM/ibjYR+kd/cYKAtZhwHHOSmRFdXKR6eCRpsWstSshOf/5attVcxGOQcGV44jsEZXeocPDd8SKayU2fexTXAvmNBM+SP4iX1ECGT8NeDofdijAP2v97pMIgRNQIATiqNg/lSzTMJoG0iaZMjUYigaDg=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W4qBpQY_1713493129;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W4qBpQY_1713493129)
-          by smtp.aliyun-inc.com;
-          Fri, 19 Apr 2024 10:19:16 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: harry.wentland@amd.com
-Cc: sunpeng.li@amd.com,
-	Rodrigo.Siqueira@amd.com,
-	alexander.deucher@amd.com,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] drm/amd/display: Remove duplicate dcn32/dcn32_clk_mgr.h header
-Date: Fri, 19 Apr 2024 10:18:47 +0800
-Message-Id: <20240419021847.16585-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	s=arc-20240116; t=1713493389; c=relaxed/simple;
+	bh=YWIvHmwPsFjnECnsYOTQPHTSsM5bF0cCK0ua+j7JWK8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Tj453N9WwNzyJQBffsT6fJb6mAmGwWybm9tzLCPcjsbQaa4u5viemTiwMYq7Oh5Mv/vUOVQL4qq9sF7e8R5frAT7oL++nVIeW4xD5YG0CJJae9ySfuWrH73A0A/P5LO+hlvHnbcHRN5fJXZ+xJ1HTl7UeremkoLxXB++9EPsk2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=15H+RZxc; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=15H+RZxc; arc=none smtp.client-ip=91.121.71.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id F1620C01D; Fri, 19 Apr 2024 04:23:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1713493385; bh=dey0f+0Jtz8lFCvTxKq0L2AIbLXAE1Fp/uaRIkkiwPY=;
+	h=From:Date:Subject:To:Cc:From;
+	b=15H+RZxcUqlMFX7ZV4nDUoE56YYNSddgeUhKmYR3456zpIQoHRl1FpeLnsr3voRns
+	 YSVzjF/yzMR3o+OHi2GoSdzC4Z9vNnRHA+baMs5ScAmwpv371gAZk8WuUPYVHARLCG
+	 HkI2ZC6O9ZtpV/7ZiXSL7uLDkGqvB7QDWD5UGVfd8QQXLm6MjZYhFKILJ/RJVFc0Bv
+	 XdifIVWShjQMpbzbakh0aNcgdP2Wf+jF6uDSirjvItimmTSZpyWCvgiQy8Vsd/kUNh
+	 NQolSc9m2IBQHmun8juSGKkGVFZzVmEJDtuQvPUgpfLm9+1Lh2umMrFmN9akuDFs76
+	 OmK8CL9W14UHg==
+X-Spam-Level: 
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id 38679C009;
+	Fri, 19 Apr 2024 04:23:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1713493385; bh=dey0f+0Jtz8lFCvTxKq0L2AIbLXAE1Fp/uaRIkkiwPY=;
+	h=From:Date:Subject:To:Cc:From;
+	b=15H+RZxcUqlMFX7ZV4nDUoE56YYNSddgeUhKmYR3456zpIQoHRl1FpeLnsr3voRns
+	 YSVzjF/yzMR3o+OHi2GoSdzC4Z9vNnRHA+baMs5ScAmwpv371gAZk8WuUPYVHARLCG
+	 HkI2ZC6O9ZtpV/7ZiXSL7uLDkGqvB7QDWD5UGVfd8QQXLm6MjZYhFKILJ/RJVFc0Bv
+	 XdifIVWShjQMpbzbakh0aNcgdP2Wf+jF6uDSirjvItimmTSZpyWCvgiQy8Vsd/kUNh
+	 NQolSc9m2IBQHmun8juSGKkGVFZzVmEJDtuQvPUgpfLm9+1Lh2umMrFmN9akuDFs76
+	 OmK8CL9W14UHg==
+Received: from [127.0.0.1] (localhost.lan [::1])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTP id cb34d8c8;
+	Fri, 19 Apr 2024 02:22:57 +0000 (UTC)
+From: Dominique Martinet <asmadeus@codewreck.org>
+Date: Fri, 19 Apr 2024 11:22:48 +0900
+Subject: [PATCH] btrfs: add missing mutex_unlock in
+ btrfs_relocate_sys_chunks()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240419-btrfs_unlock-v1-1-c3557976a691@codewreck.org>
+X-B4-Tracking: v=1; b=H4sIAHfVIWYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDE0NL3aSSorTi+NK8nPzkbF1L01SDJONUo1SjtGQloJaCotS0zAqwcdG
+ xtbUALEvZuF4AAAA=
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+ David Sterba <dsterba@suse.com>, Anand Jain <anand.jain@oracle.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Dominique Martinet <dominique.martinet@atmark-techno.com>, 
+ Pavel Machek <pavel@denx.de>, stable@vger.kernel.org
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1219;
+ i=asmadeus@codewreck.org; h=from:subject:message-id;
+ bh=PQDfb7YN93UFq1W9UaceWw4qYGbjxHk52DSUfrpslKA=;
+ b=owEBbQKS/ZANAwAIAatOm+xqmOZwAcsmYgBmIdWBHt6FPFqgoCOFtFR2ZsfKECrOk7B27Plfd
+ qu1WHsMxTOJAjMEAAEIAB0WIQT8g9txgG5a3TOhiE6rTpvsapjmcAUCZiHVgQAKCRCrTpvsapjm
+ cIUBD/40v1L0o/u1aYX/jSbe1+NO/6Hbl3Iw2V/NsLUs2zkHWnKC2cnwgRALEVz7XBouNh2tSdm
+ hHPBL9lR6TbSYQ0DUrpTGh67QGRLYYCEirEi+hgQtWKTXQn6kc3UCJbEaYmA4lIKgJXzEjSjRry
+ 2itAEZUNjvtFcViRlDZqFSGK6mNhPGQ/m99n4V+Lmz4kMa9YFhxWV9NtNeqPOm0CjgCzbKtXjZf
+ inYgEiFjGGGGLNsd+UREqXtyqH4lwtqFNMb6XpeEJGhtD0eQedMrAPfQZNJuHkfU5y+uxh51FZv
+ DPH7Ykw3LM2gcRMumAwVTHtZIj+JCEn2u4RpARUZmti0+oGSQKSMb1LckCiiPCFXH71A0u9lbrA
+ ALmfr6cwDvrZhiW8OIJhrJi8nedTXaWuGtAUHOstN2FO2id4owqS3G++/YcEWRzw5GNu1Y9jF3p
+ pGeEg/gWixBnOkxFt4Yg2D640PJb99Qkos7YXYSKzfipgBQoShr6I26DRR6LyRH46A4JysYHbNb
+ yCClerECFb8xgwHz5amZqBqi4HvVTUde3+0QGTddFynXixiohMDImHGeDvW7q8f0E/nTdqn24RS
+ FcefkWy1l/DAo6/uxYZBMV0WUo2T0GDgo0ZFhc8seEeKGX3WVEyZOMskHChrDLyI6Lu3K42Xzr+
+ 8y5kI7xk+7spAKw==
+X-Developer-Key: i=asmadeus@codewreck.org; a=openpgp;
+ fpr=B894379F662089525B3FB1B9333F1F391BBBB00A
 
-/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c: dcn32/dcn32_clk_mgr.h is included more than once.
+From: Dominique Martinet <dominique.martinet@atmark-techno.com>
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8789
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+The previous patch forgot to unlock in the error path
+
+Link: https://lore.kernel.org/all/Zh%2fHpAGFqa7YAFuM@duo.ucw.cz
+Reported-by: Pavel Machek <pavel@denx.de>
+Cc: stable@vger.kernel.org
+Fixes: 7411055db5ce ("btrfs: handle chunk tree lookup error in btrfs_relocate_sys_chunks()")
+Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
 ---
- drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c | 1 -
- 1 file changed, 1 deletion(-)
+Note for stable: the mutex has been renamed from delete_unused_bgs_mutex
+in 5.13, so the 5.10 and 4.19 backports need a trivial rename:
+  s/reclaim_bgs_lock/delete_unused_bgs_mutex/
+If required I'll send branch-specific patches after this is merged.
+---
+ fs/btrfs/volumes.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-index 7eecb3403f74..d7bbb0891398 100644
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn32/dcn32_clk_mgr.c
-@@ -41,7 +41,6 @@
- #include "dcn/dcn_3_2_0_offset.h"
- #include "dcn/dcn_3_2_0_sh_mask.h"
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index f15591f3e54f..ef6bd2f4251b 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3455,6 +3455,7 @@ static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info)
+ 			 * alignment and size).
+ 			 */
+ 			ret = -EUCLEAN;
++			mutex_unlock(&fs_info->reclaim_bgs_lock);
+ 			goto error;
+ 		}
  
--#include "dcn32/dcn32_clk_mgr.h"
- #include "dml/dcn32/dcn32_fpu.h"
- 
- #define DCN_BASE__INST0_SEG1                       0x000000C0
+
+---
+base-commit: 2668e3ae2ef36d5e7c52f818ad7d90822c037de4
+change-id: 20240419-btrfs_unlock-95e0b3e2e2fc
+
+Best regards,
 -- 
-2.20.1.7.g153144c
+Dominique Martinet | Asmadeus
 
 
