@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-151291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E88458AAC81
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:10:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A6A08AAC82
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:10:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9ED128409C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:10:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 406292840A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A94717FBC7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21CF7FBC2;
 	Fri, 19 Apr 2024 10:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HIOa2uVW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o52V/NHw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7E977D3E3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EDB7D3E6;
 	Fri, 19 Apr 2024 10:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713521377; cv=none; b=VUdROG70mxMRjVICHdUYqukz852NqdFqpSZ3ZrkyZCNamWxHfxoo4cl64vpMrt9Pp4CvH3LUGS0NTCP7NPT0qK7IL0efpDiU7BOAPP145PDYQxIO5ZcmAjZnsF8C5pWTwulMwmQb1RIwZpZswdgvzh2rvjJVXi1U7yzuiY1RcMw=
+	t=1713521377; cv=none; b=pdyxIRCAzwC3q0E5JP3B6NnoaIZDjqZ0pWbvLIcHaAjXtxBXwkIBnsEQ+/OKy30WNhuVCBu7nznu+Ce+ZV2MoyxDen2KW9anNOHetxZm8sEUhQgwb/yobbYc+olS7+9FXM16WOJ0qoAjjeVss02VAaZ6z7K5IKLu8zMmt67r+rA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713521377; c=relaxed/simple;
-	bh=hIqlbjO65jZjxYKpeWau84wCqd4vKuYsewjegaEPtAw=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=rPqLweVAkXBxEb4W53kpJvKtX8qsFWd5OfKTok7KsEeixJb/CATBv7ckkcUvsntq68nGfdS0mtV3TZGBsRPy43uU2vDXHvb5hrq2uc/WRzdesv2T29qFBLtYwM94GBCt7TnhCruzZk1wlJnVQAVJnaHhpsm1UHKJC2CK/w22DaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HIOa2uVW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 56899C072AA;
+	bh=z4CnLGKrUD1pUXLNlD1qUSpXMrxsT8sEfZkE95NlMB0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=eNZinR0N/X8nsvtys9Dtn/5hR10Csddqzph43OQ4MFO5WaJG/Wpkm/guZuYqcTeLaYwPZFkX2BAEGdTQQ87Xp+9T0fVUu9KE3gBFEeA4tXKaIHtASn2kanRBYeARDqFzzrZg3zvTAO/ixVLmertgx3DZkKPCqHPTcbF93AyZZMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o52V/NHw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 77082C2BD11;
 	Fri, 19 Apr 2024 10:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1713521377;
-	bh=hIqlbjO65jZjxYKpeWau84wCqd4vKuYsewjegaEPtAw=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=HIOa2uVW3uIspoEQuRXVy2cZHWLeq1qvOOOQ2kfIa0fnUnSrkOe1tgVZDNGpFRfgy
-	 5eO1xkGuG1eGzAVeXizFsVCDv3Ti3ASsNNlniq/GfsyRluxJQJNm5S0C4X6M7jSyYg
-	 zXuOxUwt7V7IDgsFQcj4p0KCHPheacQTGFVgBA6zOWPI8EXIdR4aS79G8uqVIEh81A
-	 iAwxtJRnd383YK68tfm1s/pI9dhyoZSXJZR54vDkEXlXQC9g1MOyHdXWSqoAfE+j+P
-	 1svKDTfn/LPa6hDZYNnlSfEL+gjHGEaBH7hQ9QthB5+wIxCfY5lJxrRXTQmpnm4KBn
-	 7tQ1jOyY5gWDA==
+	bh=z4CnLGKrUD1pUXLNlD1qUSpXMrxsT8sEfZkE95NlMB0=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=o52V/NHwnruO3z3kJzNA49N2fZRIq4YlI/ultA6zQEl0QwnYJ4hEe1oxhvSLK8KUV
+	 12c2vjVuUD6jqa9ktQPM6JbnECI670JMc0PX5MLKV5uoivrKx6SAMwkmzG5SY1Za00
+	 YLldBadS8Z3gZhkD+ZmUfV30v35DMFzM0r1+wWJjhtoPLxsOB1zzAwx0nnZSlVh1Jr
+	 TjxyPlIhxKQVYNCyZCAqW+EfejBTQptnKEPmMhj3VVqXxArt2MTL8A0Th3TDUer96L
+	 09EewhsD9ZC8YOVQqQtTfyM1+1AgsjPy0jiYnAVfwkHHDThksWL26D0nMUO9RQu++a
+	 TELIKt/aO0RDw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B112C04FF6;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60D6BC04FFE;
 	Fri, 19 Apr 2024 10:09:37 +0000 (UTC)
 From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Subject: [PATCH net-next 00/13] MT7530 DSA Subdriver Improvements Act IV
-Date: Fri, 19 Apr 2024 13:09:23 +0300
-Message-Id: <20240419-for-netnext-mt7530-improvements-4-v1-0-6d852ca79b1d@arinc9.com>
+Date: Fri, 19 Apr 2024 13:09:24 +0300
+Subject: [PATCH net-next 01/13] net: dsa: mt7530: disable EEE abilities on
+ failure on MT7531 and MT7988
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,9 +55,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIANNCImYC/x2NywqDQAwAf0VyNhD3QWl/pXgoGjWHzUp2EUH89
- 257nMPMXFDYhAu8uguMDymStcHQdzBtH10ZZW4Mjlwg7wiXbKhclc+KqT6iJ5S0Wz44sdaCAZ8
- xeJqHSBNFaJ3deJHz/3hDU/HnwnjfX14TZvh9AAAA
+Message-Id: <20240419-for-netnext-mt7530-improvements-4-v1-1-6d852ca79b1d@arinc9.com>
+References: <20240419-for-netnext-mt7530-improvements-4-v1-0-6d852ca79b1d@arinc9.com>
+In-Reply-To: <20240419-for-netnext-mt7530-improvements-4-v1-0-6d852ca79b1d@arinc9.com>
 To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
  Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
  Florian Fainelli <f.fainelli@gmail.com>, 
@@ -72,11 +73,11 @@ Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>,
  linux-mediatek@lists.infradead.org, 
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713521374; l=2654;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713521374; l=3406;
  i=arinc.unal@arinc9.com; s=arinc9-Xeront; h=from:subject:message-id;
- bh=hIqlbjO65jZjxYKpeWau84wCqd4vKuYsewjegaEPtAw=;
- b=iGbg2Xv6D/RpNIc/k3j1XoPdRClUOkq02kgugFhytAdQDrC0bmxdXD7gR+Ink69lISXC1XYSC
- O1swa4N6PULD3Y43CMD7t5opgf7OEhELDS4iH9UGGRxzf/SVMm+9UKF
+ bh=1dA5Tqo1oiLbTJdCrnbheqEyfiDY3WFrwARn+Ftc72o=;
+ b=UO3hPYTxBJo1mK0GV+DML+3WC507lLVCAZaSDKCUa50HDDTamo4u6Lug3dOxyYxfuxU7+S0nj
+ JyMPdPBjZ7ZDNOx2QVMov1G6N7F5CIQ2nMMXrw5qavBN57Jh1EiFU3l
 X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
  pk=z49tLn29CyiL4uwBTrqH9HO1Wu3sZIuRp4DaLZvtP9M=
 X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-Xeront
@@ -84,67 +85,92 @@ X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-Xeront
 X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
 Reply-To: arinc.unal@arinc9.com
 
-Hello!
+From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-This is the forth patch series with the goal of simplifying the MT7530 DSA
-subdriver and improving support for MT7530, MT7531, and the switch on the
-MT7988 SoC.
+The MT7531_FORCE_EEE1G and MT7531_FORCE_EEE100 bits let the
+PMCR_FORCE_EEE1G and PMCR_FORCE_EEE100 bits determine the 1G/100 EEE
+abilities of the MAC. If MT7531_FORCE_EEE1G and MT7531_FORCE_EEE100 are
+unset, the abilities are left to be determined by PHY auto polling.
 
-I have done a simple ping test to confirm basic communication on all switch
-ports on MCM and standalone MT7530, and MT7531 switch with this patch
-series applied.
+The commit 40b5d2f15c09 ("net: dsa: mt7530: Add support for EEE features")
+made it so that the PMCR_FORCE_EEE1G and PMCR_FORCE_EEE100 bits are set on
+mt753x_phylink_mac_link_up(). But it did not set the MT7531_FORCE_EEE1G and
+MT7531_FORCE_EEE100 bits. Because of this, the EEE abilities will be
+determined by PHY auto polling, regardless of the result of phy_init_eee().
 
-MT7621 Unielec, MCM MT7530:
+Define these bits and add them to the MT7531_FORCE_MODE mask which is set
+in mt7531_setup_common(). With this, there won't be any EEE abilities set
+when phy_init_eee() returns a negative value.
 
-rgmii-only-gmac0-mt7621-unielec-u7621-06-16m.dtb
-gmac0-and-gmac1-mt7621-unielec-u7621-06-16m.dtb
+Thanks to Russell for explaining when phy_init_eee() could return a
+negative value below.
 
-tftpboot 0x80008000 mips-uzImage.bin; tftpboot 0x83000000 mips-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootm 0x80008000 0x83000000 0x83f00000
+Looking at phy_init_eee(), it could return a negative value when:
 
-MT7622 Bananapi, MT7531:
+1. phydev->drv is NULL
+2. if genphy_c45_eee_is_active() returns negative
+3. if genphy_c45_eee_is_active() returns zero, it returns -EPROTONOSUPPORT
+4. if phy_set_bits_mmd() fails (e.g. communication error with the PHY)
 
-gmac0-and-gmac1-mt7622-bananapi-bpi-r64.dtb
+If we then look at genphy_c45_eee_is_active(), then:
 
-tftpboot 0x40000000 arm64-Image; tftpboot 0x45000000 arm64-rootfs.cpio.uboot; tftpboot 0x4a000000 $dtb; booti 0x40000000 0x45000000 0x4a000000
+genphy_c45_read_eee_adv() and genphy_c45_read_eee_lpa() propagate their
+non-zero return values, otherwise this function returns zero or positive
+integer.
 
-MT7623 Bananapi, standalone MT7530:
+If we then look at genphy_c45_read_eee_adv(), then a failure of
+phy_read_mmd() would cause a negative value to be returned.
 
-rgmii-only-gmac0-mt7623n-bananapi-bpi-r2.dtb
-gmac0-and-gmac1-mt7623n-bananapi-bpi-r2.dtb
+Looking at genphy_c45_read_eee_lpa(), the same is true.
 
-tftpboot 0x80008000 arm-zImage; tftpboot 0x83000000 arm-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootz 0x80008000 0x83000000 0x83f00000
+So, it can be summarised as:
 
-This patch series finalises the patch series linked below.
+- phydev->drv is NULL
+- there is a communication error accessing the PHY
+- EEE is not active
 
-https://lore.kernel.org/r/20230522121532.86610-1-arinc.unal@arinc9.com
+otherwise, it returns zero on success.
+
+If one wishes to determine whether an error occurred vs EEE not being
+supported through negotiation for the negotiated speed, if it returns
+-EPROTONOSUPPORT in the latter case. Other error codes mean either the
+driver has been unloaded or communication error.
+
+In conclusion, determining the EEE abilities by PHY auto polling shouldn't
+result in having any EEE abilities enabled, when one of the last two
+situations in the summary happens. And it seems that if phydev->drv is
+NULL, there would be bigger problems with the device than a broken link. So
+this is not a bugfix.
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
-Arınç ÜNAL (13):
-      net: dsa: mt7530: disable EEE abilities on failure on MT7531 and MT7988
-      net: dsa: mt7530: refactor MT7530_PMCR_P()
-      net: dsa: mt7530: rename p5_intf_sel and use only for MT7530 switch
-      net: dsa: mt7530: rename mt753x_bpdu_port_fw enum to mt753x_to_cpu_fw
-      net: dsa: mt7530: refactor MT7530_MFC and MT7531_CFC, add MT7531_QRY_FFP
-      net: dsa: mt7530: refactor MT7530_HWTRAP and MT7530_MHWTRAP
-      net: dsa: mt7530: move MT753X_MTRAP operations for MT7530
-      net: dsa: mt7530: return mt7530_setup_mdio & mt7531_setup_common on error
-      net: dsa: mt7530: define MAC speed capabilities per switch model
-      net: dsa: mt7530: get rid of function sanity check
-      net: dsa: mt7530: refactor MT7530_PMEEECR_P()
-      net: dsa: mt7530: get rid of mac_port_validate member of mt753x_info
-      net: dsa: mt7530: use priv->ds->num_ports instead of MT7530_NUM_PORTS
+ drivers/net/dsa/mt7530.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
- drivers/net/dsa/mt7530.c | 285 ++++++++++++++++++++++------------------------
- drivers/net/dsa/mt7530.h | 289 +++++++++++++++++++++++++----------------------
- 2 files changed, 291 insertions(+), 283 deletions(-)
----
-base-commit: e1bc03d8372ac081810c2956cd244ed9899f9a02
-change-id: 20240320-for-netnext-mt7530-improvements-4-95430d150c05
+diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
+index 94932c3dbde9..f7c5355c1642 100644
+--- a/drivers/net/dsa/mt7530.h
++++ b/drivers/net/dsa/mt7530.h
+@@ -328,11 +328,15 @@ enum mt7530_vlan_port_acc_frm {
+ #define  MT7531_FORCE_DPX		BIT(29)
+ #define  MT7531_FORCE_RX_FC		BIT(28)
+ #define  MT7531_FORCE_TX_FC		BIT(27)
++#define  MT7531_FORCE_EEE100		BIT(26)
++#define  MT7531_FORCE_EEE1G		BIT(25)
+ #define  MT7531_FORCE_MODE		(MT7531_FORCE_LNK | \
+ 					 MT7531_FORCE_SPD | \
+ 					 MT7531_FORCE_DPX | \
+ 					 MT7531_FORCE_RX_FC | \
+-					 MT7531_FORCE_TX_FC)
++					 MT7531_FORCE_TX_FC | \
++					 MT7531_FORCE_EEE100 | \
++					 MT7531_FORCE_EEE1G)
+ #define  PMCR_LINK_SETTINGS_MASK	(PMCR_TX_EN | PMCR_FORCE_SPEED_1000 | \
+ 					 PMCR_RX_EN | PMCR_FORCE_SPEED_100 | \
+ 					 PMCR_TX_FC_EN | PMCR_RX_FC_EN | \
 
-Best regards,
 -- 
-Arınç ÜNAL <arinc.unal@arinc9.com>
+2.40.1
 
 
 
