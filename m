@@ -1,98 +1,106 @@
-Return-Path: <linux-kernel+bounces-151464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E628AAF3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:25:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC948AAF40
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:25:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 311AC1C22216
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:25:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7147B22650
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:25:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE90E127B56;
-	Fri, 19 Apr 2024 13:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E665127B54;
+	Fri, 19 Apr 2024 13:25:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aa5bLbHd"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E20lzisu"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE08241C66
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018BB41C66
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:25:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713533105; cv=none; b=N1F0Z0iGLdP7Oo3f97DmFhu26VSsLmnOHI2oBimCE/+GtrMWcJ4rP1hkYxQ5NbKZr0eUKO3lT8z6jkBJVKOkMPVAa806Ijr6B0YSNYW+aLRI7RjkH1Hq4gapKfgAb7Ib46Hi6w4tA5cuTYic56M2BNL5FjrEuKIb4Ka7+WaUbn0=
+	t=1713533116; cv=none; b=kFwAgAF63L5RDLzu9/Z8QzuDeyGoHz5XBVj49DKjoYi4hdXIsE1MAxd7TOpoG73RWhWLMi4mZHYryyWxP9HluS911kR+BuQjq2BMczK1i6bCwJjFEem9Pzo/aiDEmo8lx3Ickgk1i2Y9bQL3/PSDRDgMvXh7c3S9NEHDy8Fst+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713533105; c=relaxed/simple;
-	bh=UWXTaQ82HyFtQb3TRUV4cf5MB8r08tl9SIn+hgm0d+I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Hs5Uc6KA7HAb0tdf/5ZJ/gCc4s9M1V4PdqT4nsnrTwd1Ux/5D+2QKxI6z+C82E8yjnUyCwyNE9M/Xz9AvxxiqM9JOxkklxpdGtO44FWorGgEdKhqpE6El5El6D+qfnV89JNEPwllRpw7QGDtWEFUOQsXDx/rvrDG4ET3NYgNHFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aa5bLbHd; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-de45e5c3c68so2301021276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:25:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713533103; x=1714137903; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VkrOJ4wKG+fycpys61fJmDawiloLrXFnzq3mdhSsqRc=;
-        b=aa5bLbHdbG/MRkL+K3v6q4HnJIyKyjT0PNGYQzu3xcKehSZhCBZo0Oa2STrIIHGxmI
-         NYTDDIHZoVKFVSiamSwyZc86AOfpOIsn9UzsEhWUDoei/N+k2CeqKrZONtwqmJYwFtjn
-         wGfloUa4qUl6S+LdV8pTsGWWZrfUk29P50IoEp4t9KHOcVz35KI3CWO3IqcCz7Z0kE1N
-         Oucg0qfX3gDjuPo3fPNcf+8M7igM1XtK8XVeaOy+i+rCTjKt+e9Uy9X9LMwoFFo9WSOS
-         hkT64eWbFcnhvV5hl2FFgt/1S9LdhwHvAHps+QECurjuNctvfCVrK7H5h77RkdcohOHI
-         MroQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713533103; x=1714137903;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VkrOJ4wKG+fycpys61fJmDawiloLrXFnzq3mdhSsqRc=;
-        b=FHNtupgACpEeRVJ6xEuFbhr5VzoLyHv97+mFyNM3fmUjVTOAO+9gK8+7pB/zJTBdDQ
-         APvid9dmh6+mxXXs1v1fJDm7fhVqeoJ7zJ68vvkwt4/q3v/Ss/rWKxOb3pGfnaW28hUI
-         6M4t/Rt7h9C4zVtAKVyiQKUDXQnqb96aWrml4v3Q1oZAJALiTC3btsBQqL3NSdYWpzWs
-         pK+EfNpCLQT1/2+ZJBIIhMW+UFsdAsv3VG089gfqLEvDXmK5pSOUadGLUjgCmxd/AFef
-         xAe7zWrs9EeyFBSsoGYFDF/uT+4fMPCzO+XjT56XPz9L6CjrSdPI/FxyxSggGNVD+mwj
-         KVkA==
-X-Forwarded-Encrypted: i=1; AJvYcCU0JMqqMD9bs+O6gf3tDrGS4ZC42fpHDtYDprw65wryOJjwSJhAJfTZZmzuh7r26KM8FQvr16iHc4qH4uy1ioynaFLjv61NK2kf7sGW
-X-Gm-Message-State: AOJu0YzSEuEDy3YfihdIE2C+8xpjUbxUWs/dI35anIPGmFIHCLNrblQs
-	enREl+ub+Sl7VojpngaZwwz/4n5gPLENcK43MwLR0MmHB/6QNpIDODBnO60UIN5SHlrP8YHScL8
-	AD1009G8k+zNhwbp1EMzxqSanFTT/F79HBaAO8w==
-X-Google-Smtp-Source: AGHT+IEyyp8kZfsahZ+i2TdwPhFvo3EiP8GYbc2UBm1PxE1KueAyxKWGN/Vu8bv/kI+9tRapKwazomvLnYLu8G9C8dY=
-X-Received: by 2002:a25:55:0:b0:dcc:f0a:e495 with SMTP id 82-20020a250055000000b00dcc0f0ae495mr1727089yba.3.1713533102898;
- Fri, 19 Apr 2024 06:25:02 -0700 (PDT)
+	s=arc-20240116; t=1713533116; c=relaxed/simple;
+	bh=c6YNZQMZa7y63US6bB3GnkhSoC9TcxPMDsK3wXIYReI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FBjyGvflwu/35Tq9w/UUvDnwaGJeVGKqM8O7Sw5EOAi5B7YraWScNd8sXszvEE9cNdhUkxxNrVkZv8XN19E+Iw7f0tPiDoPFsLmwhrYYoqQI+Ki/X1/6p6P09GENDok4P/oJ6roZMbgHaA3n/JjVauqohlrm1Q6eC1N6BjJTi0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E20lzisu; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713533113;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=C1PyGSiVgUoNQKymy+4spZn2EEqSqTryQAUGgxHMSt4=;
+	b=E20lzisuu4JXLoVtDq2mqjTguAmCxCCI7sZX7/Rc+nOAggBtlzmzdH5pkwbKIbJ5uyd1FD
+	Wli+yQbzAwR4+/K2VX59jQlI0S5cd9+5hauZH3ban/GZJEiFsAQssYmYZO4Yi+KT7r+q2H
+	+1tpCXkb0inF2LY6Bz0lCbW1aW9c06s=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-78-ZAJx059IPQC5AJitI_IIXQ-1; Fri, 19 Apr 2024 09:25:12 -0400
+X-MC-Unique: ZAJx059IPQC5AJitI_IIXQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9EA248943AE;
+	Fri, 19 Apr 2024 13:25:11 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.22.8.218])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 230D33543A;
+	Fri, 19 Apr 2024 13:25:06 +0000 (UTC)
+From: Wander Lairson Costa <wander@redhat.com>
+To: Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>,
+	Rae Moar <rmoar@google.com>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	linux-kselftest@vger.kernel.org (open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)),
+	kunit-dev@googlegroups.com (open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)),
+	linux-kernel@vger.kernel.org (open list)
+Cc: Wander Lairson Costa <wander@redhat.com>
+Subject: [PATCH v4 0/2] kunit: fix minor error path mistakes
+Date: Fri, 19 Apr 2024 10:25:00 -0300
+Message-ID: <20240419132504.9488-1-wander@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415105328.3651441-1-zengheng4@huawei.com>
- <Zh_rM04PspfXxlv_@smile.fi.intel.com> <d80e09d8-5f35-4865-9fe8-195b86527972@moroto.mountain>
- <ZiAC9zzSWume8063@smile.fi.intel.com> <fe83e07f-ca28-4c00-9b1b-7d16c63bad62@moroto.mountain>
-In-Reply-To: <fe83e07f-ca28-4c00-9b1b-7d16c63bad62@moroto.mountain>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 19 Apr 2024 15:24:52 +0200
-Message-ID: <CACRpkdb2YCrG_wJtdSNhqUJt5x-fPSb4A9uaU6DmAOm3roFN0Q@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: devicetree: fix refcount leak in pinctrl_dt_to_map()
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Andy Shevchenko <andriy.shevchenko@intel.com>, Zeng Heng <zengheng4@huawei.com>, 
-	linux-kernel@vger.kernel.org, xiexiuqi@huawei.com, linux-gpio@vger.kernel.org, 
-	weiyongjun1@huawei.com, liwei391@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Wed, Apr 17, 2024 at 7:49=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro=
-org> wrote:
+Hi,
 
-> Probably we should add a comment to say:
->
->         /* Return -ENODEV if the property 'pinctrl-0' is not present. */
+These two patches fix some minor error path mistakes in the device
+module.
 
-Would you mind sending a oneliner on top to fix this?
+Changes
+-------
 
-Yours,
-Linus Walleij
+v1->v2
+* Add fixes tag
+* Add imperative statement in the commit description
+v2->v3
+* Add a goto exit label kunit_device_register_internal
+v3->v4
+* Remove some changes requested by Marcus Elfring, as I was alerted he
+is a known troll.
+
+Wander Lairson Costa (2):
+  kunit: unregister the device on error
+  kunit: avoid memory leak on device register error
+
+ lib/kunit/device.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+-- 
+2.44.0
+
 
