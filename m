@@ -1,219 +1,181 @@
-Return-Path: <linux-kernel+bounces-151339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85E8E8AAD32
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:02:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCF518AAD3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:03:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE495B21E3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:02:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54F111F21CF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1FB78003B;
-	Fri, 19 Apr 2024 11:01:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE41A8173C;
+	Fri, 19 Apr 2024 11:02:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="L41Buqb+"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QyxaNGkZ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7514200D3
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:01:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713524518; cv=none; b=WREKwslzlcr2RDnbUuCaoZzvfC8UzPQwOjN8RH8v9qoPz++XkuN0fmJaiwJ/iXTr93LpaI3Hb2YgZY2us4SO1ocKbLzK/5kb/tJFjAA1Mi43aSouBlBQikcRuJhHASSjqDZcvzN0rrdGKWcZ2RszlKQKZeWZrKSeYSC00ImBVPc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713524518; c=relaxed/simple;
-	bh=F+W5saRDghEOa41U9BAigfeFAuicLwkOtZt1ReNtfvY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HT1JqhV1RMHcuoj+pve/bnC8IUZv8JihsQ/ARB5OPyPi+7t+ZIVPneTEIcblInsHZ3oNx6y2qNGv5gfkMvg5Ui5QulXXoP2bVaJfNYW7vKkpeXXjGMhW2EK25MxCE0Y0EuJuCghZU6qT34CmVxtzWf/z6PKq8JvAncoGdRZVKTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=L41Buqb+; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a526d0b2349so220555666b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 04:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1713524514; x=1714129314; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3VTTzqipQA62LbzqZVTLpZ7KIqqGEoS+t4l2KKK32uo=;
-        b=L41Buqb+GW+s9WdGsrq4vmUFF3d8NSWxSV7cuCPDd67WbgkCrVoMBT3J/KDktnJPLN
-         cTRwasTRR83rotPgN7dl9SbAPFbll5rdRVAxgSMfudpjz04wWl67HLA6VOMUkwDBhKSW
-         bQpHm17Hrvfn5e7/DOtpLLEJdU5pAaY3izWdAZqJ9sxA83xU+zl5QNXA3fpJ/hhrz8Uf
-         bGyFVLzQnHpGE6b8G//PfCsgU/Fydw5y6z8FmfkuW45QkVilUHK48VtHWuPJs/WVXckZ
-         etyuIlLqSt1tSROkiZHf9UFqc8z3af/aIjf6C/iH8t7coQAfbPO2xVERR9kuTBueWkdM
-         0c7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713524514; x=1714129314;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3VTTzqipQA62LbzqZVTLpZ7KIqqGEoS+t4l2KKK32uo=;
-        b=Mcisx1VPEAjhAKMcsw71jwKbgobMkD1QjbWOEBrNGVXLcF5mHqzo/OSsnAT0SwrSpV
-         pnKzgK4ZOuSoF25EADPi/wN3XfWhkRGowV672UN2Us/SYJFlyp2vCQrbXt4Xjk/nb60n
-         xIrP8J4fnXp6q5h3rJ9BA6ObRTR6GvNUVmnYmofI9si4ov63rG2XP4Am9hq+QnzDbJXN
-         EqvY9HH6I/IijVC0mt2LzKdiqUSqymrZe5ZK6nG1fR9Su5C5D7k9GIVJ5ArgYVDytBKg
-         XrqZfFgN4TmceQf0ItWeeijKKHWFq6Xkb+TWoajnT9kf+wDitGr0uDyMRxdWTk2fER4E
-         Gp3w==
-X-Forwarded-Encrypted: i=1; AJvYcCWdVn46Dj96v07ZrsDClVIaXKLSEfL8zb0TYJl4et1TygJVT0i2maJRSMnXZlnwPr44rGADYVByPkqaznlxfoOOHXu/cVRsTH6yzra3
-X-Gm-Message-State: AOJu0YydfAMz/v02D00tT3H3XY5Y+D0OduNO8oU1h0znx5HRvk3hCcgS
-	r9UOzeUOSLrdXgTFJLLLG6L/0/odg2OAsb64n+cNIyBm/YOsBDJ12ZRK7A5O9mg=
-X-Google-Smtp-Source: AGHT+IFPLWd/fepjGkb60/ZFbc7sxCgg692Z+BCDRyWFZUyjJCwWhlOXF6oUhAX4lRUmpKzcAhVS9g==
-X-Received: by 2002:a17:906:488f:b0:a52:700d:818e with SMTP id v15-20020a170906488f00b00a52700d818emr1132855ejq.13.1713524513758;
-        Fri, 19 Apr 2024 04:01:53 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id hx20-20020a170906847400b00a529aeb4eccsm2091354ejc.140.2024.04.19.04.01.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 04:01:53 -0700 (PDT)
-Date: Fri, 19 Apr 2024 13:01:52 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, 
-	Conor Dooley <conor.dooley@microchip.com>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
-	Samuel Holland <samuel.holland@sifive.com>, Pu Lehui <pulehui@huaweicloud.com>, 
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] RISC-V: clarify what some RISCV_ISA* config options do
-Message-ID: <20240419-ea2b867f6bde90e711464c95@orel>
-References: <20240418-stable-railway-7cce07e1e440@spud>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410CE8004B;
+	Fri, 19 Apr 2024 11:02:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713524569; cv=fail; b=qo3BfVhpthrntBhBdVNWUzQL3ntXvX+w6Hibi8RMuNFpqf9wbz+SbUv2+mdCAm0/lyCuxQ1Y3kPDN6fjMtPPePJw5s3wZ4VfLjPaWFLVwmRSXAxiNHWPmtgzueiSuTBeDz3Ka1YL+lQZ2dwsMX0ndhgaZ8nu6DRq2cVzGkjV1DQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713524569; c=relaxed/simple;
+	bh=21NuqLKztBTqn8wlxcqiwqAQYb7yLyALLYUi47Ae9dM=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=K/+UAbS2D2lF5BAm9uxTS9C5RcztbRWGUWmr8gDR+cNYj77g3NCjwAAYUnxebk9tWmyHCdEJym0VU3HFIm7Id1H+jgBvfNAUBchB3jR1M+sunwEVd0wVvkXaSEIIaNhD4mcUEz+E5wLP3HPzy/PoGP9r1WeTsnDCvAIGk23PWEE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QyxaNGkZ; arc=fail smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713524567; x=1745060567;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=21NuqLKztBTqn8wlxcqiwqAQYb7yLyALLYUi47Ae9dM=;
+  b=QyxaNGkZ/pprgoMzwviLLTx18pc3xru3Fih/hkq/NAFTVfgNVPTmQH6o
+   6mFdmj/ZxeD7qiLnJOKWpmraH71y/J1l8VIu0vchqvwoNPpUnbxZ5liLG
+   vLtyepHvZp5Fn40nn+4C3ojsd5HgeTBl1vBW5Cw378rWqDys8G1P533Jt
+   eV/Kl8pOqgXiJujQXss7VUAiysRROLQloIyzEXMdCGY5dXSyE0D6439Pf
+   cGi6TYEgsdnJxVhMLUOEeoqgHHPX6+hzwvU1cEVzpeZcoL1f1K5UGd/YP
+   xygysBKEYfARS4br+TXqWXxAAjLxXxJMVaQWkRCCKYSmDABXPR0PL5SUO
+   g==;
+X-CSE-ConnectionGUID: SVLiSMcOT8yAcnQfUVZ76A==
+X-CSE-MsgGUID: S4qS9FttTiuVJDuLg7wYng==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="19683809"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="19683809"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 04:02:46 -0700
+X-CSE-ConnectionGUID: CTt5he5yQQWieW7PRi+daw==
+X-CSE-MsgGUID: nuuYljVYRq60KwtmmK8xSg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="54218497"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Apr 2024 04:02:47 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 19 Apr 2024 04:02:45 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 19 Apr 2024 04:02:45 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 19 Apr 2024 04:02:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cqov/vnB+PiTTYgumVWTN37rDbvA9tpnhYO2erbuqJexUybm8CuizNYYmqSYodBORd16OvkA1Z+Ke8018k/9Ndu4UxKf1ZodAPlBaXPE9cVXIuYk7BhFIVUtizY8py1DdRqM/htquqEwZ8dQ1s7N1z3W/7USB15Oq5YlEhUquzhCdeecWtMNBeinRozc3G9d1HjZMH6y8CJEproLZU25yJxsOi4ntZXT7ZiNZ0poLytJTLd2PjMxK0ppCVULH4os+c5noS/H1z9+pMyfOkvFb6FsXyk/MeezbGuiKrnoyPyhqH7DnIYGPcPoKEGzToTm4l8z8/uNrbKtuSmYQBJRXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=21NuqLKztBTqn8wlxcqiwqAQYb7yLyALLYUi47Ae9dM=;
+ b=PlO2+FGGBZ1oWPxSwDtMq9ZiA278fVupZeujMDQDUrvdy9+uMR1ndBQDGI3E6lxo8ohHwBEegAQWd3b8kG7JyrlA5Wk9wEsoRN4dcdaolXowg/zbujVP9moHsSbfeHCo5PDyVIb2FFUqzrFBfzq3kuJ2pyR6BmtLaY0La5siCuZSDkno9BnxFthr5cG/eEID5kAtOleSb+7BzP69QS5Z60vgaQ/WiAXfI6o1WPDY8/xHoeKCigoTiFRaKLQ24R2ntzP4pYOVvROkpqfZxU/9W7jrpJ0no3W7U/w1sj0Gnv0QJZyZaMXG5KYDxMsUGunZA6YHavZSNcu0Bw3D9dDwAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
+ by PH8PR11MB6832.namprd11.prod.outlook.com (2603:10b6:510:22c::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Fri, 19 Apr
+ 2024 11:02:43 +0000
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::5135:2255:52ba:c64e%4]) with mapi id 15.20.7519.010; Fri, 19 Apr 2024
+ 11:02:43 +0000
+Date: Fri, 19 Apr 2024 19:02:32 +0800
+From: Chao Gao <chao.gao@intel.com>
+To: Xin Li <xin3.li@intel.com>
+CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<seanjc@google.com>, <pbonzini@redhat.com>, <corbet@lwn.net>,
+	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
+	<shuah@kernel.org>, <vkuznets@redhat.com>, <peterz@infradead.org>,
+	<ravi.v.shankar@intel.com>, <xin@zytor.com>
+Subject: Re: [PATCH v2 06/25] KVM: VMX: Defer enabling FRED MSRs save/load
+ until after set CPUID
+Message-ID: <ZiJPSCO+U7iLWiuu@chao-email>
+References: <20240207172646.3981-1-xin3.li@intel.com>
+ <20240207172646.3981-7-xin3.li@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240207172646.3981-7-xin3.li@intel.com>
+X-ClientProxiedBy: SG2PR04CA0180.apcprd04.prod.outlook.com
+ (2603:1096:4:14::18) To CH3PR11MB8660.namprd11.prod.outlook.com
+ (2603:10b6:610:1ce::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240418-stable-railway-7cce07e1e440@spud>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|PH8PR11MB6832:EE_
+X-MS-Office365-Filtering-Correlation-Id: e6cb965b-1408-4685-2054-08dc60603cf0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Rv4Z9HEX9wtmBUiedyPIB8cpZJJS80Yf8nBL6wdph+6Z1rr/ehJrLcW3iZaNDnr3PlBv4dqDsyS8RYi27dgCmw3KiKtOpm3iktLqEO9tIUVUSDa9R6bHpSLB5wV5CA2q/D1pSlrBx/ZJwF/QGrPZtNoKHz/zcnuzG36bsTvGrUgNiynXQ6Qm4UXyX8bXs8TcgmDFOoj8LWgrKLIatn3CdVj8kU7hGgnB6mtSF1jf6fsgvJdNKldiMBziyYrKX+mnNbIKLt1gIVR7cKs/KN675eMWIdN42+LOrKfr470B2oNZZ7hjXgCHtD3xWww43X1DS8+Kgs8SWPPNNHdrp/YN15slRaq61OH44+STxJhVTt/4t2MT7OTF3UoZ9Iqjit6ag5zzEXcahEhqG7wOkN85E/ahnIxR8c0zGXxY2Y/ld6jvc2WXgU6BDZJF9PNaIuhDiQzeRM2p8KBqQh4gT4AggBWFeIYUxJOmIFhH/XHfmXBUjnsRBnH8OsmAgyQbXEp3iipxY3qIqBMJ+bVD7D/pHH9TavV9tcmGx3ev3dRun7T1hlm9Sp9mZ/hJIJRCMgl5TUtPQ6Y9EYR0uha1k6D+9t7sgY2l6ecK/0hzRT/5gNQMYjfTeaaGLa8COWBtJBMED0Qphun8o52WEEX4zVA2OAQOc7w8HkYe5aoDW/XJ7NA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2La3TbQyTlfJf1ZK+p/xB4zNJ2LbGluN4sGtYEQhQLWl35CmNhCZ5Bkyqm2t?=
+ =?us-ascii?Q?x63imsgdMXPqccJQf2P65u2vj21+7iONJGuIgi8p5v+R2I/Z+KTq6YsdfHID?=
+ =?us-ascii?Q?f2/zcqgIuiixS++xBhmQaCJELTekEdEBVmtzT3oEDTimbBlpNWxIz4vkcRcr?=
+ =?us-ascii?Q?4Ls3yz/9XMNioFWoaAiVHTOLakcOawb1S2vmZWiTCCamZePca/ukyb6admrr?=
+ =?us-ascii?Q?r3sFlh8cGieAo99qez1xz3+5IuCIfsh3SRIhOW6qMABvrOFq8yEVfhpCXmdm?=
+ =?us-ascii?Q?aCSbE+fBuUSuHHWJEDiIh+y3WAApoYu1EtI9pGnrLNP0GV5v4W1ucjRYi/Uh?=
+ =?us-ascii?Q?2IcfdKbIwtPh2RMl4apM1Eba/0NwaAAaWBAtPVXkD9ijrfSKt+WENLDrxNvm?=
+ =?us-ascii?Q?jA88QOc3LWGxE/5yINHi3h+HNs0whbCq8ivSt2+o/Fxy/rakZ0qISK7yCPAl?=
+ =?us-ascii?Q?13/RnYub234Tvybw1D5K9y947xfSJGNIcSYte6I/h1gyA4LmCZZaOSQ0egG0?=
+ =?us-ascii?Q?2fn1utGI54WfbbFUNy4Zy10gA2sWp/tT0VXbunrtP8whr7TeBtzP5up7HLLu?=
+ =?us-ascii?Q?AofRL/H4OtWmLz2pN4oIVqn9JySNDhwgLhXZbNGd+XY3+SZ5YfXHQho1GmOu?=
+ =?us-ascii?Q?tw4YOecBeJYa6jJASq5lWIUjR/zF/SlnKlNbRAEjkvbCeUSAWZCqNaFY/5sL?=
+ =?us-ascii?Q?QhX4v+nbD8YeA+q4I/1czg6pZiZC2hUMlSvR/ApsX3b8gJyYy4wq0Sjaf2OX?=
+ =?us-ascii?Q?waBBUKWwNdVBnqIEVKA7wZhMm2eVvbvrxMmN9TR7GAi/bcygb69K5TYVLS8Y?=
+ =?us-ascii?Q?SGanN6+10Xdpmco/P7Ai7tGGuJjv/VN/1ar2VM1qsFU+zh+VFF4PdVbx32KC?=
+ =?us-ascii?Q?5yTmZ57hh7e5m72VPEKT85G30JiD7xERu3Kdw5NLgwosNlKhruAp4dlom+SU?=
+ =?us-ascii?Q?k8I2dNlJH13YAppx95aF97WG8XSCenhvOZsYRGIBgpfp/3j+utDw0677FLvx?=
+ =?us-ascii?Q?Ccsq+EwGg5KLtXBbXAXGQPlxuwvE6n0E1pJFSTkspesfS5C6qPR25BOvYq8x?=
+ =?us-ascii?Q?xdcbxFuJ+48MYqCbUcd55CGExMmyLU8f6f7zF3PatpXc/aM5wLoDMEeJfqpq?=
+ =?us-ascii?Q?+F6WhB8tsJTKFflZvQw1Q+ayR7qdP58/QlEcfYmlPY4b8HyvAUPZS7zpayiv?=
+ =?us-ascii?Q?7et8Szm6cClI2RIiH2UbvE1CjgW3Q+7bMvoVCQkfRIy9aFWD1150RmmD4KT1?=
+ =?us-ascii?Q?qpEi/sitXWSvpi5ESMkBZp/4KgwzWkLgjDEHbk39PiU70PkEkBlfuup12o/9?=
+ =?us-ascii?Q?1WWBejPtNhfgmNJ+Zo5KXGXgHWz6AJOTTQyb7ujE+1jL4FeiJSo4s9Y03tod?=
+ =?us-ascii?Q?0Usb0TpCDMVY46VgXuySWaN4O+izikfmvqtV4H1I7n1FKOnJZtrO4pqufzPi?=
+ =?us-ascii?Q?abWZtbHPOX1VRmhYqSuGbhD3eo42xhqitZtfzOZ2ssq9s9pD8fAZjf6dPT0X?=
+ =?us-ascii?Q?Cxo+34nZbkFp45GtGKZpVS7DWTJ685TIzOxSFZaummYKYSqJJzYMAiOLTDo2?=
+ =?us-ascii?Q?1h99DAKqdEepwrueljKsmdW+v3h7yP4+YxyvVFVO?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6cb965b-1408-4685-2054-08dc60603cf0
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 11:02:43.6402
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mYFInZ43Z8MNq16k+mO1f7FIiSvCEGT4p5UlDe58arXo75tvdblM+EwGDbDzUuxlE6//tPft1P8L2d5z3lmqow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6832
+X-OriginatorOrg: intel.com
 
-On Thu, Apr 18, 2024 at 03:21:01PM +0100, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
-> 
-> During some discussion on IRC yesterday and on Pu's bpf patch [1]
-> I noticed that these RISCV_ISA* Kconfig options are not really clear
-> about their implications. Many of these options have no impact on what
-> userspace is allowed to do, for example an application can use Zbb
-> regardless of whether or not the kernel does. Change the help text to
-> try and clarify whether or not an option affects just the kernel, or
-> also userspace. None of these options actually control whether or not an
-> extension is detected dynamically as that's done regardless of Kconfig
-> options, so drop any text that implies the option is required for
-> dynamic detection, rewording them as "do x when y is detected".
-> 
-> Link: https://lore.kernel.org/linux-riscv/20240328-ferocity-repose-c554f75a676c@spud/ [1]
-> Reviewed-by: Björn Töpel <bjorn@rivosinc.com>
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
-> 
-> Vector copy-paste-o fixed, correct spelling of optimisations kept.
-> 
-> CC: Samuel Holland <samuel.holland@sifive.com>
-> CC: Pu Lehui <pulehui@huaweicloud.com>
-> CC: Björn Töpel <bjorn@kernel.org>
-> CC: Paul Walmsley <paul.walmsley@sifive.com>
-> CC: Palmer Dabbelt <palmer@dabbelt.com>
-> CC: linux-riscv@lists.infradead.org
-> CC: linux-kernel@vger.kernel.org
-> ---
->  arch/riscv/Kconfig | 28 +++++++++++++++-------------
->  1 file changed, 15 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 6d64888134ba..c3a7793b0a7c 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -503,8 +503,8 @@ config RISCV_ISA_SVNAPOT
->  	depends on RISCV_ALTERNATIVE
->  	default y
->  	help
-> -	  Allow kernel to detect the Svnapot ISA-extension dynamically at boot
-> -	  time and enable its usage.
-> +	  Add support for the Svnapot ISA-extension when it is detected by
-> +	  the kernel at boot.
-
-I'm not sure we need the 'by the kernel', since I guess that's implied by
-being in a Kconfig help text, but either way is fine by me.
-
->  
->  	  The Svnapot extension is used to mark contiguous PTEs as a range
->  	  of contiguous virtual-to-physical translations for a naturally
-> @@ -522,9 +522,9 @@ config RISCV_ISA_SVPBMT
->  	depends on RISCV_ALTERNATIVE
->  	default y
->  	help
-> -	   Adds support to dynamically detect the presence of the Svpbmt
-> -	   ISA-extension (Supervisor-mode: page-based memory types) and
-> -	   enable its usage.
-> +	   Add support for the Svpbmt ISA-extension (Supervisor-mode:
-> +	   page-based memory types) when it is detected by the kernel at
-> +	   boot.
-
-Same 'by the kernel' drop suggestion.
-
->  
->  	   The memory type for a page contains a combination of attributes
->  	   that indicate the cacheability, idempotency, and ordering
-> @@ -543,14 +543,15 @@ config TOOLCHAIN_HAS_V
->  	depends on AS_HAS_OPTION_ARCH
->  
->  config RISCV_ISA_V
-> -	bool "VECTOR extension support"
-> +	bool "Vector extension support"
->  	depends on TOOLCHAIN_HAS_V
->  	depends on FPU
->  	select DYNAMIC_SIGFRAME
->  	default y
->  	help
->  	  Say N here if you want to disable all vector related procedure
-> -	  in the kernel.
-> +	  in the kernel. Without this option enabled, neither the kernel nor
-> +	  userspace may use vector.
->  
->  	  If you don't know what to do here, say Y.
->  
-> @@ -608,8 +609,8 @@ config RISCV_ISA_ZBB
->  	depends on RISCV_ALTERNATIVE
->  	default y
->  	help
-> -	   Adds support to dynamically detect the presence of the ZBB
-> -	   extension (basic bit manipulation) and enable its usage.
-> +	   Add support for enabling optimisations in the kernel when the
-> +	   Zbb extension is detected at boot.
->  
->  	   The Zbb extension provides instructions to accelerate a number
->  	   of bit-specific operations (count bit population, sign extending,
-> @@ -625,9 +626,9 @@ config RISCV_ISA_ZICBOM
->  	select RISCV_DMA_NONCOHERENT
->  	select DMA_DIRECT_REMAP
->  	help
-> -	   Adds support to dynamically detect the presence of the ZICBOM
-> -	   extension (Cache Block Management Operations) and enable its
-> -	   usage.
-> +	   Add support for the Zicbom extension (Cache Block Management
-> +	   Operations) and enable its use in the kernel when it is detected
-> +	   at boot.
->  
->  	   The Zicbom extension can be used to handle for example
->  	   non-coherent DMA support on devices that need it.
-> @@ -686,7 +687,8 @@ config FPU
->  	default y
->  	help
->  	  Say N here if you want to disable all floating-point related procedure
-> -	  in the kernel.
-> +	  in the kernel. Without this option enabled, neither the kernel nor
-> +	  userspace may use floating-point procedures.
->  
->  	  If you don't know what to do here, say Y.
+On Wed, Feb 07, 2024 at 09:26:26AM -0800, Xin Li wrote:
+>Clear FRED VM entry/exit controls when initializing a vCPU, and set
+>these controls only if FRED is enumerated after set CPUID.
 >
+>FRED VM entry/exit controls need to be set to establish context
+>sufficient to support FRED event delivery immediately after VM entry
+>and exit. However it is not required to save/load FRED MSRs for
+>a non-FRED guest, which aren't supposed to access FRED MSRs.
+>
+>Signed-off-by: Xin Li <xin3.li@intel.com>
+>Tested-by: Shan Kang <shan.kang@intel.com>
 
-Zicboz could also use some clarification, right? Or is the fact that
-RISCV_ISA_ZICBOZ enables the use in both the kernel and userspace the
-reason "Enable the use of the Zicboz extension (cbo.zero instruction)
-when available." looks sufficient? Maybe Zicboz should follow the
-"Say N here if..." pattern of V and FPU?
-
-Thanks,
-drew
+Reviewed-by: Chao Gao <chao.gao@intel.com>
 
