@@ -1,195 +1,173 @@
-Return-Path: <linux-kernel+bounces-151727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DA318AB2F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA6AD8AB307
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:13:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9D76B231F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:12:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07346B212A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:13:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83AB9131E2C;
-	Fri, 19 Apr 2024 16:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCBB8131BA9;
+	Fri, 19 Apr 2024 16:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K1flVzQT"
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Bpc2mp6S"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECDD6130AFE
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CD31130A72
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713543104; cv=none; b=OH0XmCWMcX5d2xTIV6BBNduWqMgFkuputMxSac3y7ybYe47JRydv05yerJesDHLgaTCAEyKcld9CMeHH9fpkWLpTlLJTtviqC9BanqOqCV677NkunP+5OhzAdq/It0VUeTvTzkegVogr06H/HNMVUdD3AGjDiCO8pWh0tz1fN/M=
+	t=1713543150; cv=none; b=T7EdQf41gn5POh5G5qgB8VnjpdxG8tGARp4DNX+ZvLMnoHBghLYDamvaNL4pU942RFomYWkhPUcPf5T5LePHXl/KPHqBIvT2I2NC40OqpXTBqQtgEUuYUVE7CVB3vezpRYbni+cbzE+0BRgHM8PnuxonPBwtYyUElZ84U2HscLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713543104; c=relaxed/simple;
-	bh=YiIo7bwh+JygPxi96MWkEdF0Xun4ILTm7Qlbps8sJxU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D5z4YrGRdriYPpWEuFuOOXcNOeUFwfDfnm3DKl/i26snMGAwacQxcLWbTao7Hvv7vFiXkBlNcR+DYzLULunjvxtH+rBn39QNfCXRllWQzVU/X1dPcG+MFhETnW8UaalrRSQVl2BP523XRBmBvqi3D4VzQ57n3UhiDsMvt+D+37s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K1flVzQT; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 19 Apr 2024 09:11:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713543100;
+	s=arc-20240116; t=1713543150; c=relaxed/simple;
+	bh=BoY/Dy3UEpWzAlEVCqDQTE76CEu5CAwU1Yr/gwGs0FU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=h5FogOH2PDI8ZaypJO1BhQWqrPPUY8u7AvRJKvXN4xcgzf61gvkMehcQqKiRcz9WeOyE310KsGwJUZdYMmI2xj48AHQCzLszgnQd47SrrrkZClY25hednU6nV9vBpDQUq1ZZXD7tgEEsnWmNq+8ARTQgXllnEI1ukoNrqMzuXVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Bpc2mp6S; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713543147;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1M1JrcjILmKzY/pZvXVWiYtUaqkIh9p05oVmfNf0rww=;
-	b=K1flVzQTM+oFA2r7zbEZfWL1Cx45FZeshKvy/vWeELZmkSdsf1KvuEo2B1ZxDCkvrBw2te
-	R6sUPQwVqPUrsBOcAs0PiOqaZKW0Z3YrHoCJbASaz+8VkxORdept/DSJTLhjQW4N4ye1xQ
-	25T+Xm6zatF7tmP04YMcsMfql4Xb+M0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>, tj@kernel.org, hannes@cmpxchg.org, 
-	lizefan.x@bytedance.com, cgroups@vger.kernel.org, longman@redhat.com, 
-	netdev@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
-Subject: Re: [PATCH v1 2/3] cgroup/rstat: convert cgroup_rstat_lock back to
- mutex
-Message-ID: <gckdqiczjtyd5qdod6a7uyaxppbglg3fkgx2pideuscsyhdrmy@by6rlly6crmz>
-References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
- <171328989335.3930751.3091577850420501533.stgit@firesoul>
- <CAJD7tkZFnQK9CFofp5rxa7Mv9wYH2vWF=Bb28Dchupm8LRt7Aw@mail.gmail.com>
- <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org>
- <lxzi557wfbrkrj6phdlub4nmtulzbegykbmroextadvssdyfhe@qarxog72lheh>
- <CAJD7tkYJZgWOeFuTMYNoyH=9+uX2qaRdwc4cNuFN9wdhneuHfA@mail.gmail.com>
- <6392f7e8-d14c-40f4-8a19-110dfffb9707@kernel.org>
+	bh=9uBiWyy2Y6aSUbUd2veflvDo2gmH6uQXxYZf3A1GRsI=;
+	b=Bpc2mp6SLG7zIQdxlmAKtdIxjFmShYq7tjJaZ+Rn28vu9VxFhO1io2a7EX3WfzX2gqzvqL
+	r/009oZ14Cvn/A882ptEdpPfDG25PiYvHsarV8Bwd+d4tDzx/TaICQXMYgqmD68jqZy7Gh
+	bYiqar9zJ8SFjsHzAnb6+ZYej0rElCY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-624-nllKYZofM5ibf0YE6IiCMA-1; Fri, 19 Apr 2024 12:12:24 -0400
+X-MC-Unique: nllKYZofM5ibf0YE6IiCMA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3473168c856so1346682f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:12:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713543143; x=1714147943;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9uBiWyy2Y6aSUbUd2veflvDo2gmH6uQXxYZf3A1GRsI=;
+        b=ddEl1d6Hd0fVIbLXrUvonFsTIjhd21LZnNMhkSvLqBlJ7m8qMc9yTdATp6hz+zNzKw
+         0BXPK1lorqZOcQ6jLKYxR3XBAK/CWZEuD1UfvQzq2aMgduVfP2lMAsd2/xwqzvXdsOAu
+         3qsHuHeeYUS4OG6AJXQSCbfitjS4k1Nowpt06+MBPQX8+k66gCRecLLewTM2CeQz2qDC
+         JqUSuZHi6KlIRdCfbX+bvm2w1Zh7Il94x0g/5DPeSzcdyo7KLzNYCdjbEa0o4jE/hrBh
+         DobvcfUK8CxQ/up06mBZXtZgPdV+OGGPpcyxBA8K6HGEZJcmVVHhz3pb6CDGLDpPGOPT
+         AWYA==
+X-Forwarded-Encrypted: i=1; AJvYcCXFcbxVLAdlxDxgBtoGqkip9K3kOFFq7JUccThLuf2VbmsmD7C0pUMJ3mmRqcq9bDWG5bSDwOkjGxqym38fBlJTc76aGOdDyiE6yXoh
+X-Gm-Message-State: AOJu0YxRkxwywgj6lMCQIbJManPTkX5rYKLdQVL6rxzFcq25mA15gnYt
+	Vv9WI6OlufLFXtwzwxuDprODC2tl+s8+t7LCZJ1Vtk2PmA9MLO5ko9cFAFKO1dASh7e96J7m0S8
+	7v/N3/LJg8ijLSvJt8DnZzt3Ee5k+P01zJJY6RU6DcMYhYAT6wEbiyt1lgriv5EihNqwOJBbUJY
+	kYL9H6916EHwDXKsS3+x67+Mnh/KS9g6VMB2vy
+X-Received: by 2002:a05:6000:f:b0:34a:72d:8dae with SMTP id h15-20020a056000000f00b0034a072d8daemr1744526wrx.22.1713543142973;
+        Fri, 19 Apr 2024 09:12:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGu/laGQnrA9BrIF/Cu+lsjfknC5maDVu87SwW7AhUXq8hp5tDZF8U2qhpYBw4LEzoXCxA4xzi8O802s4cFw3o=
+X-Received: by 2002:a05:6000:f:b0:34a:72d:8dae with SMTP id
+ h15-20020a056000000f00b0034a072d8daemr1744478wrx.22.1713543142601; Fri, 19
+ Apr 2024 09:12:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6392f7e8-d14c-40f4-8a19-110dfffb9707@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20240418194133.1452059-1-michael.roth@amd.com>
+ <20240418194133.1452059-11-michael.roth@amd.com> <CABgObfaj4-GXSCWFx+=o7Cdhouo8Ftz4YEWgsQ2XNRc3KD-jPg@mail.gmail.com>
+In-Reply-To: <CABgObfaj4-GXSCWFx+=o7Cdhouo8Ftz4YEWgsQ2XNRc3KD-jPg@mail.gmail.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Fri, 19 Apr 2024 18:12:11 +0200
+Message-ID: <CABgObfa9Ya-taTKkRbmUQGcwqYG+6cs_=kwdqzmFrbgBQG3Epw@mail.gmail.com>
+Subject: Re: [PATCH v13 10/26] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_UPDATE command
+To: Michael Roth <michael.roth@amd.com>
+Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
+	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
+	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com, 
+	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
+	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
+	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
+	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
+	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
+	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
+	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
+	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
+	Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 19, 2024 at 03:15:01PM +0200, Jesper Dangaard Brouer wrote:
-> 
-> 
-> On 18/04/2024 22.39, Yosry Ahmed wrote:
-> > On Thu, Apr 18, 2024 at 7:49 AM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > > 
-> > > On Thu, Apr 18, 2024 at 11:02:06AM +0200, Jesper Dangaard Brouer wrote:
-> > > > 
-> > > > 
-> > > > On 18/04/2024 04.19, Yosry Ahmed wrote:
-> > > [...]
-> > > > > 
-> > > > > I will keep the high-level conversation about using the mutex here in
-> > > > > the cover letter thread, but I am wondering why we are keeping the
-> > > > > lock dropping logic here with the mutex?
-> > > > > 
-> > > > 
-> > > > I agree that yielding the mutex in the loop makes less sense.
-> > > > Especially since the raw_spin_unlock_irqrestore(cpu_lock, flags) call
-> > > > will be a preemption point for my softirq.   But I kept it because, we
-> > > > are running a CONFIG_PREEMPT_VOLUNTARY kernel, so I still worried that
-> > > > there was no sched point for other userspace processes while holding the
-> > > > mutex, but I don't fully know the sched implication when holding a mutex.
-> > > > 
-> > > 
-> > > Are the softirqs you are interested in, raised from the same cpu or
-> > > remote cpu? What about local_softirq_pending() check in addition to
-> > > need_resched() and spin_needbreak() checks? If softirq can only be
-> > > raised on local cpu then convert the spin_lock to non-irq one (Please
-> > > correct me if I am wrong but on return from hard irq and not within bh
-> > > or irq disabled spin_lock, the kernel will run the pending softirqs,
-> > > right?). Did you get the chance to test these two changes or something
-> > > similar in your prod environment?
-> > 
-> > I tried making the spinlock a non-irq lock before, but Tejun objected [1].
-> > [1] https://lore.kernel.org/lkml/ZBz%2FV5a7%2F6PZeM7S@slm.duckdns.org/
-> > 
-> 
-> After reading [1], I think using a mutex is a better approach (than non-irq
-> spinlock).
-> 
-> 
-> > Perhaps we could experiment with always dropping the lock at CPU
-> > boundaries instead?
-> > 
-> 
-> I don't think this will be enough (always dropping the lock at CPU
-> boundaries).  My measured "lock-hold" times that is blocking IRQ (and
-> softirq) for too long.  When looking at prod with my new cgroup
-> tracepoint script[2]. When contention occurs, I see many Yields
-> happening and with same magnitude as Contended. But still see events
-> with long "lock-hold" times, even-though yields are high.
-> 
->  [2] https://github.com/xdp-project/xdp-project/blob/master/areas/latency/cgroup_rstat_tracepoint.bt
-> 
-> Example output:
-> 
->  12:46:56 High Lock-contention: wait: 739 usec (0 ms) on CPU:56 comm:kswapd7
->  12:46:56 Long lock-hold time: 6381 usec (6 ms) on CPU:27 comm:kswapd3
->  12:46:56 Long lock-hold time: 18905 usec (18 ms) on CPU:100
-> comm:kworker/u261:12
-> 
->  12:46:56  time elapsed: 36 sec (interval = 1 sec)
->   Flushes(2051) 15/interval (avg 56/sec)
->   Locks(44464) 1340/interval (avg 1235/sec)
->   Yields(42413) 1325/interval (avg 1178/sec)
->   Contended(42112) 1322/interval (avg 1169/sec)
-> 
-> There is reported 15 flushes/sec, but locks are yielded quickly.
-> 
-> More problematically (for softirq latency) we see a Long lock-hold time
-> reaching 18 ms.  For network RX softirq I need lower than 0.5ms latency,
-> to avoid RX-ring HW queue overflows.
-> 
-> 
-> --Jesper
-> p.s. I'm seeing a pattern with kswapdN contending on this lock.
-> 
-> @stack[697, kswapd3]:
->         __cgroup_rstat_lock+107
->         __cgroup_rstat_lock+107
->         cgroup_rstat_flush_locked+851
->         cgroup_rstat_flush+35
->         shrink_node+226
->         balance_pgdat+807
->         kswapd+521
->         kthread+228
->         ret_from_fork+48
->         ret_from_fork_asm+27
-> 
-> @stack[698, kswapd4]:
->         __cgroup_rstat_lock+107
->         __cgroup_rstat_lock+107
->         cgroup_rstat_flush_locked+851
->         cgroup_rstat_flush+35
->         shrink_node+226
->         balance_pgdat+807
->         kswapd+521
->         kthread+228
->         ret_from_fork+48
->         ret_from_fork_asm+27
-> 
-> @stack[699, kswapd5]:
->         __cgroup_rstat_lock+107
->         __cgroup_rstat_lock+107
->         cgroup_rstat_flush_locked+851
->         cgroup_rstat_flush+35
->         shrink_node+226
->         balance_pgdat+807
->         kswapd+521
->         kthread+228
->         ret_from_fork+48
->         ret_from_fork_asm+27
-> 
+On Fri, Apr 19, 2024 at 1:56=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com>=
+ wrote:
+> > +       ret =3D kvm_gmem_populate(kvm, params.gfn_start, u64_to_user_pt=
+r(params.uaddr),
+> > +                               npages, sev_gmem_post_populate, &sev_po=
+pulate_args);
+> > +       if (ret < 0) {
+> > +               argp->error =3D sev_populate_args.fw_error;
+> > +               pr_debug("%s: kvm_gmem_populate failed, ret %d (fw_erro=
+r %d)\n",
+> > +                        __func__, ret, argp->error);
+> > +       } else if (ret < npages) {
+> > +               params.len =3D ret * PAGE_SIZE;
+> > +               ret =3D -EINTR;
+>
+> This probably should 1) update also gfn_start and uaddr 2) return 0
+> for consistency with the planned KVM_PRE_FAULT_MEMORY ioctl (aka
+> KVM_MAP_MEMORY).
 
-Can you simply replace mem_cgroup_flush_stats() in
-prepare_scan_control() with the ratelimited version and see if the issue
-still persists for your production traffic?
+To be more precise, params.len should be set to the number of bytes *left*,=
+ i.e.
 
-Also were you able to get which specific stats are getting the most
-updates?
+   params.len -=3D ret * PAGE_SIZE;
+   params.gfn_start +=3D ret * PAGE_SIZE;
+   if (params.type !=3D KVM_SEV_SNP_PAGE_TYPE_ZERO)
+       params.uaddr +=3D ret * PAGE_SIZE;
+
+Also this patch needs some other changes:
+
+1) snp_launch_update() should have something like this:
+
+   src =3D params.type =3D=3D KVM_SEV_SNP_PAGE_TYPE_ZERO ? NULL :
+u64_to_user_ptr(params.uaddr),;
+
+so that then...
+
+> +               vaddr =3D kmap_local_pfn(pfn + i);
+> +               ret =3D copy_from_user(vaddr, src + i * PAGE_SIZE, PAGE_S=
+IZE);
+> +               if (ret) {
+> +                       pr_debug("Failed to copy source page into GFN 0x%=
+llx\n", gfn);
+> +                       goto out_unmap;
+> +               }
+
+.. the copy can be done only if src is non-NULL
+
+2) the struct should have some more fields
+
+> +        struct kvm_sev_snp_launch_update {
+> +                __u64 gfn_start;        /* Guest page number to load/enc=
+rypt data into. */
+> +                __u64 uaddr;            /* Userspace address of data to =
+be loaded/encrypted. */
+> +                __u32 len;              /* 4k-aligned length in bytes to=
+ copy into guest memory.*/
+> +                __u8 type;              /* The type of the guest pages b=
+eing initialized. */
+
+__u8 pad0;
+__u16 flags;   // must be zero
+__u64 pad1[5];
+
+with accompanying flags check in snp_launch_update().
+
+If you think IMI can be implemented already (with a bit in flags) go
+ahead and do it.
+
+Paolo
+
 
