@@ -1,120 +1,90 @@
-Return-Path: <linux-kernel+bounces-151391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 126828AADFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:01:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B684A8AAE35
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:12:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CBCD1C20AF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:01:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 736EE2827A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:12:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC3DB84A5A;
-	Fri, 19 Apr 2024 12:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Akw+r+IT"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48B3D84FCE;
+	Fri, 19 Apr 2024 12:12:47 +0000 (UTC)
+Received: from mail-m25499.xmail.ntesmail.com (mail-m25499.xmail.ntesmail.com [103.129.254.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAC4C22064
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 12:01:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4312378285;
+	Fri, 19 Apr 2024 12:12:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.129.254.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713528106; cv=none; b=PmHzAYMsri/qdDDWWIl5JJwXVqZkEJPLm/tp98eaXNEs04uHDlqGn3nJNJVrxCs0iK97253t//Xq2V8CjGNjK0KTzW895hBas+g2hPUW0RSvDtW/aKIUPZyVMtmpK9GJV2Yx8HJ4qfkf8H1AEdqAZ0qyX8HNEM1B9f6vpfvhqCE=
+	t=1713528766; cv=none; b=Fk+MsmtDSYiauG3Wri77oc+a3ZseTDq7m02XcisARHpoOPu/KyX5U80JTl1z1+WwFLwNsHvCXbIH1qPBkqgaKM7o2NZWMNHFwLPEZHWkzV7k0i6gdGdxXfzywCPoJtZ6Ei/Yex4F2QrU5fPwauNT5puFAJEQlTdfVgfN9eEoxhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713528106; c=relaxed/simple;
-	bh=acN4eXWZt8iLvqysCB2S2Dc6auK2r1UT70yxAxadgbw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hBiVTUVek1ugXqfCM9i71Fy6SrDzsYsYuFAkD5FnK7kHW2HtWPzNu/4xUNCvs1/rJTnGj603AorftnDuF2ibJvNOXM5rbpm2zyw6TXZ1miAsOjVNAz88NwvDCcsp1Cbtjq2T8D7ywA4j/oPqVCNTb56W136SG1F8ckQYEgLko9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Akw+r+IT; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713528104;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vahs511qBysOkO0uiEmPvdJfNTUFHsURAvS7DcBv8xY=;
-	b=Akw+r+ITtB6jgATaNf+mskwcKMUt3m4QXf/7JL+1hd09iQ5PHq5rQXrX7dnOXhSuRl3mFj
-	/aIHEa/JxbuZfgCKM4urVzCW5K1QcHziyzYv1fpSx/jxey70qhHOQj8AlWanPXL3sgf7M1
-	VNlofBOtP56Y9kWFuTP0tWPDr72JY70=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-515-2KcJdromNqGegCUOmBND6A-1; Fri, 19 Apr 2024 08:01:42 -0400
-X-MC-Unique: 2KcJdromNqGegCUOmBND6A-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-41828dd7c29so10044555e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 05:01:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713528101; x=1714132901;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vahs511qBysOkO0uiEmPvdJfNTUFHsURAvS7DcBv8xY=;
-        b=sitV7sYWWq093OsBS96BJzZ6Sdq+cYldHbo7oiC6FTRz16zJZW+OP+4VcDhdL+XFVh
-         NO+xa2tVqcwC6lVW9bzpgV/eiej2PE/3olKgIBuugQUvzRq0KXmwGw8m+wsBNvJiurl1
-         oqs3aBUmkzqE1O1XoqWr1yaOlR0PTxQ87Hol2GJvm8V79PDASuyJsROb7ypIAxyNHdZ1
-         kxaDyol1+uqynAXV21VUgrgmK0kILIFFf6dKoOR7fa4oc06um+UXkkY6+k8HmwVfcdl1
-         cWdWBuxQgdtZejR2CSk3h+W0lzHOdssAP+BODkoXsJdHuv5oMz2bIJEKx8RLZ9B58vMl
-         fccA==
-X-Forwarded-Encrypted: i=1; AJvYcCVxkAZIjeGwPGBK4SYwWf3CAT/VRL42Ple14Cb4M/mKstzMGu52SvZDE8z7DPeJUG1w0kFYjsgHvVRVUkFYTSGEBvm8N9d9+d+/Sal6
-X-Gm-Message-State: AOJu0YzqDzSiWCJS5HSgu+1SRv2fZRN12FF118BCv1ZVk1SjsyQpgoXp
-	RBC95fFwGlBGfJWa7mT5jwifIvu8ISjfTy+EMW8gHZ2FMzVRV9Rr0TrrOgRnP9JvtHzNASiSQkc
-	8YxctN7E+Wgb3BZEZnsFNXxLr5Sz3Bk879ceGiunJRt1txRv4+nm9E9VVTdHC6SuBcvGqLR5D6R
-	M7D/NbHdLFVGs6Wf2E4Jsk+9+ycIHoCh+dopUE
-X-Received: by 2002:a05:600c:45cd:b0:418:9ba3:ee76 with SMTP id s13-20020a05600c45cd00b004189ba3ee76mr1378065wmo.4.1713528101564;
-        Fri, 19 Apr 2024 05:01:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEaFUZhMFYFAs3ZhsYYcBoV+2/MzoyjDzM+1t4+goj9WAVZ/2QAmnhBwnZ/PquJCML4YzG+HJVNxiJvWhvW6sY=
-X-Received: by 2002:a05:600c:45cd:b0:418:9ba3:ee76 with SMTP id
- s13-20020a05600c45cd00b004189ba3ee76mr1378024wmo.4.1713528101121; Fri, 19 Apr
- 2024 05:01:41 -0700 (PDT)
+	s=arc-20240116; t=1713528766; c=relaxed/simple;
+	bh=KZGUHlRWEuj7dHpQ9LaQKSzrzqTzErAnF5h96rQdeJo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=df+Wz76eGw2j8kZMQhMIWr1ahw+qZzZ/Rv3QJNrCxgkV4LA3o/cnWZP5274YDUbuaUYbD1eSGIdHszHKGGRjG/3ikKEY0UBgBV2gDY7scFf4sFHc5enl7++pYSY8z3FDPudzJKjLuQtSp/ltonmPKWB3PZgk71QWfXHupAogvIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=easystack.cn; spf=none smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=103.129.254.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=easystack.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=easystack.cn
+Received: from localhost.localdomain (unknown [110.185.170.227])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 6F0EF56025F;
+	Fri, 19 Apr 2024 14:14:28 +0800 (CST)
+From: Jun Gu <jun.gu@easystack.cn>
+To: kuba@kernel.org
+Cc: dev@openvswitch.org,
+	echaudro@redhat.com,
+	jun.gu@easystack.cn,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH net-next v4] net: openvswitch: Check vport netdev name
+Date: Fri, 19 Apr 2024 14:14:25 +0800
+Message-Id: <20240419061425.132723-1-jun.gu@easystack.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418194133.1452059-1-michael.roth@amd.com> <20240418194133.1452059-17-michael.roth@amd.com>
-In-Reply-To: <20240418194133.1452059-17-michael.roth@amd.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Fri, 19 Apr 2024 14:01:29 +0200
-Message-ID: <CABgObfYzM4tsoYtVdACtbY4ZXs4j2hrsVEafD9=EnqnXjoJ+2Q@mail.gmail.com>
-Subject: Re: [PATCH v13 16/26] KVM: SEV: Support SEV-SNP AP Creation NAE event
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
-	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
-	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, seanjc@google.com, 
-	vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
-	dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com, 
-	peterz@infradead.org, srinivas.pandruvada@linux.intel.com, 
-	rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, 
-	vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, 
-	Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVlCTh8eVk5DGksYGh4dTxgfSlUZERMWGhIXJBQOD1
+	lXWRgSC1lBWUpKS1VKQ05VSkxLVUlJTFlXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQktLWQ
+	Y+
+X-HM-Tid: 0a8ef4fdf7cc023dkunm6f0ef56025f
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Ok06Pxw5Gjc0Th8uMRwoLA9N
+	GQkaFChVSlVKTEpITktMSU1DQ0JCVTMWGhIXVREOFVUcDjseGggCCA8aGBBVGBVFWVdZEgtZQVlK
+	SktVSkNOVUpMS1VJSUxZV1kIAVlBSkxJSjcG
 
-On Thu, Apr 18, 2024 at 9:45=E2=80=AFPM Michael Roth <michael.roth@amd.com>=
- wrote:
->          * the VMSA will be NULL if this vCPU is the destination for intr=
-ahost
->          * migration, and will be copied later.
->          */
-> -       if (svm->sev_es.vmsa)
-> +       if (!svm->sev_es.snp_has_guest_vmsa)
->                 svm->vmcb->control.vmsa_pa =3D __pa(svm->sev_es.vmsa);
->
->         /* Can't intercept CR register access, HV can't modify CR registe=
-rs */
+Ensure that the provided netdev name is not one of its aliases to
+prevent unnecessary creation and destruction of the vport by
+ovs-vswitchd.
 
-This needs to be svm->sev_es.vmsa && ... (see existing comment above the "i=
-f").
+Signed-off-by: Jun Gu <jun.gu@easystack.cn>
+Acked-by: Eelco Chaudron <echaudro@redhat.com>
+---
+ net/openvswitch/vport-netdev.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Paolo
+diff --git a/net/openvswitch/vport-netdev.c b/net/openvswitch/vport-netdev.c
+index 903537a5da22..618edc346c0f 100644
+--- a/net/openvswitch/vport-netdev.c
++++ b/net/openvswitch/vport-netdev.c
+@@ -78,7 +78,10 @@ struct vport *ovs_netdev_link(struct vport *vport, const char *name)
+ 	int err;
+ 
+ 	vport->dev = dev_get_by_name(ovs_dp_get_net(vport->dp), name);
+-	if (!vport->dev) {
++	/* Ensure that the device exists and that the provided
++	 * name is not one of its aliases.
++	 */
++	if (!vport->dev || strcmp(name, ovs_vport_name(vport))) {
+ 		err = -ENODEV;
+ 		goto error_free_vport;
+ 	}
+-- 
+2.25.1
 
 
