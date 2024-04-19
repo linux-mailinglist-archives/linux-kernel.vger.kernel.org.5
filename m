@@ -1,134 +1,173 @@
-Return-Path: <linux-kernel+bounces-151070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 208AB8AA89D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:47:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4204D8AA89A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:46:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C96081F20F6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:47:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BD0B1C20D49
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 865C23D55B;
-	Fri, 19 Apr 2024 06:46:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F3F3717D;
+	Fri, 19 Apr 2024 06:46:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YKl8PeqU"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GfGoiyWl";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7nYIMsGN";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GfGoiyWl";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7nYIMsGN"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8585237165;
-	Fri, 19 Apr 2024 06:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0D037165;
+	Fri, 19 Apr 2024 06:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713509213; cv=none; b=kbY4gJJGvvU6ul1sK6Li5sP6aSYKukHTTUm9pjj10XVHBgH9jLy1hzEGxmxl43Ia3ZsxojCyW+fqLZkbPN6yQBRYUFLWt8RnAQdbSWLXiA8ymNh38r9o11hopvhG4rhu/ed9bhDDUIxdMZ2TOm1cusyDVvueZAocCeWMf0u/nZc=
+	t=1713509205; cv=none; b=Ye21eIqS/KXy0b6gDHt03YZfJSyukh9XVVsSdfHDNGWUPA2UtyTwYoGobj8L4pMWGkdk01Zkew2IdA7LGpsPOQpdd60dRCdULAjDjwqN8uQMXvS608sXt5tfMTMtEZTunagSoO6YUE1q2mjlO9CxhvDZgkBNJ5/oB/8QZ84/Mek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713509213; c=relaxed/simple;
-	bh=6Lk2R6y1Ms4neAaNsZ7lhhpYZy6AgWbaZOXp8KTkQac=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QSFzIGSv6R7TDAZmb9MyMSczD1CQWilv/htrX2CQ42Pho0uHSuvsOvujGfaZ+0GLp/1Kq54so05tu729np8ykns212L7XGOi9rZ/5OteIDoZQoFbL6Tu1QkjWcEkV56jEL0R9DLpz/7CwP3hbx73dgLCTNJM+7OEc3Py51pgCY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YKl8PeqU; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-de4654c3423so177691276.0;
-        Thu, 18 Apr 2024 23:46:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713509211; x=1714114011; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XbSzBtnw4hgq7px4JzzkDwNDE3yBxvZABkHTmlQ2vAA=;
-        b=YKl8PeqUEBuNCxmpa+lR3tExhG5LmRS8jHb2fAMVCUhU7s5lGFalVM2hcx5Za++tvl
-         nKHwwmEEcgpxm0QbrVgzXoEfNRScRWugBrqlRFzNv40csy2j/P0zCS96ljTbDFNfpoyH
-         rlZ2xAdKPGW6sdZl9E21xtpwwhLklPnMEHzDrY5976lvYZQxepGkaJ9RMuglKCyT0/6U
-         I76BMr8MpCOkVlbeh9S3cNzm03+3RtMgu5w9w1IxqSpz579+MZ1l592nMCXizvyVR+jh
-         ylpVTQk3i3aCzcCqLE39LNEGTEIL8/6GuhMB7FMvYPuDB+PJAy2SEQWnvPSn5rEpsA3Q
-         inXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713509211; x=1714114011;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XbSzBtnw4hgq7px4JzzkDwNDE3yBxvZABkHTmlQ2vAA=;
-        b=riGWHki7eg9WL7MfMN25Uwz9p59+OEpKoCsNlmWi/2fx8GM2K+j1mUjjEveJEmmGpC
-         qoK4I1LBx0ThQYQUkwh3vaqvgaJRZ8n1DHpUAjdFCWs9oviUhNiehSXAxQwOnIWw5iKV
-         CSqK9uWopJyb8LdA61vdroqU2XJGy4BA8QZXJxJxZ/70vI2N2b8LfvLPzuNQKx7hxmMm
-         XI3dvCj1pmXicRZPvoBxy0IlR14ENaai4EFKdN4fEvnUepaXPYVuswPBhoF+9Nio0DrB
-         mzWEtaClsnqfzNovrs18Ir5V8wAHnhWRe1mhB2cSNGQkQKUEhNwTvPzEEhRrAi0bOEOk
-         mkFA==
-X-Forwarded-Encrypted: i=1; AJvYcCVE30Z1oDllOqGlLqdQ5h1P0BK7tXilBnH0u2dJZlvpz72/G9pAOgW8Gjolzx4B74P4QrXgn46fXew+XSg+PWQLMZTmbxMSHkMay63Z6a5SOUEuc0vcv40KrW4Jc5GHja0K90bE
-X-Gm-Message-State: AOJu0YyGQNM6FiVQQrI6DsP/TaCGd5urG7ccwRYguel0ukLdXiKFts5P
-	tlBgKEK/iKdIKbPJ3kI6QhGOPPtmG3+sPdvFNTfiKkQ54cHH6TBF
-X-Google-Smtp-Source: AGHT+IGLlCfPF0PKkwCVFiCiRzCfoD021zL84oexxmQJIgFwc875Wlv9wzHYbxGcRz0ExGpQvo1mlg==
-X-Received: by 2002:a0d:fb06:0:b0:61a:fac1:b045 with SMTP id l6-20020a0dfb06000000b0061afac1b045mr792092ywf.3.1713509211428;
-        Thu, 18 Apr 2024 23:46:51 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id p66-20020a0dcd45000000b0061b04dd1806sm666269ywd.50.2024.04.18.23.46.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 23:46:51 -0700 (PDT)
-Date: Thu, 18 Apr 2024 23:46:48 -0700
-From: Richard Cochran <richardcochran@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Woojung Huh <woojung.huh@microchip.com>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>,
-	Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	UNGLinuxDriver@microchip.com,
-	linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH net-next v1 2/4] net: phy: micrel: lan8841: set default
- PTP latency values
-Message-ID: <ZiITWEZgTx9aPqIy@hoboy.vegasvil.org>
-References: <20240417164316.1755299-1-o.rempel@pengutronix.de>
- <20240417164316.1755299-3-o.rempel@pengutronix.de>
- <c8e3f5d0-832b-4ab1-a65f-52f983ff110a@lunn.ch>
- <ZiAtREiqPuvXkB4S@pengutronix.de>
- <b44a4aee-f76f-4472-9b5c-343a09ed0d33@lunn.ch>
+	s=arc-20240116; t=1713509205; c=relaxed/simple;
+	bh=rk5dYVTOEKcf8TieWS5krXZV5RTCOihx7uuqubWxOxo=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iqOP4Fcz/wWnkhXQDI0SqekFjR0G5cMDvBsAGBfzVd+CHgH9YL4vk5o0A2U6/OIoScPGV0Ng4CO21CSzEplTIp1PwmFExF28t7RUj1eMBpt4NB5DNT66NHFO90DKtsQS8k02QM9DYB7cYP5qFdw1YYjjXRi4ESiibdwwyWSEt08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GfGoiyWl; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7nYIMsGN; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GfGoiyWl; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7nYIMsGN; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 415A15D3A0;
+	Fri, 19 Apr 2024 06:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713509202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EeNeAuoW3dXuECUX3IUeU9F3dbFOKMP5qwJi1Qt8HHs=;
+	b=GfGoiyWlF88tWZKouoMgWbF7SKh+0j8aVEgv0L0dY0MnEv9yBX2BvIhYrfRqGVUDspN/XM
+	zdDxE8hzJyOeZ9e5URPaODXlw36w8fAIfhPVUYC3jGhHRhd/yCsn+cb89FFZTM/GFLSuN/
+	tfDZp2W+lreJ7UMkAgeybzJA2grjWk0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713509202;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EeNeAuoW3dXuECUX3IUeU9F3dbFOKMP5qwJi1Qt8HHs=;
+	b=7nYIMsGNjkFwF1RowN4V7yzcnP2t4kaa0IoZJCD12w2k3z9uWDR6n+435fst6tA0AjrZDo
+	Ky+6o1lw4IQk4vBA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=GfGoiyWl;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=7nYIMsGN
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713509202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EeNeAuoW3dXuECUX3IUeU9F3dbFOKMP5qwJi1Qt8HHs=;
+	b=GfGoiyWlF88tWZKouoMgWbF7SKh+0j8aVEgv0L0dY0MnEv9yBX2BvIhYrfRqGVUDspN/XM
+	zdDxE8hzJyOeZ9e5URPaODXlw36w8fAIfhPVUYC3jGhHRhd/yCsn+cb89FFZTM/GFLSuN/
+	tfDZp2W+lreJ7UMkAgeybzJA2grjWk0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713509202;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EeNeAuoW3dXuECUX3IUeU9F3dbFOKMP5qwJi1Qt8HHs=;
+	b=7nYIMsGNjkFwF1RowN4V7yzcnP2t4kaa0IoZJCD12w2k3z9uWDR6n+435fst6tA0AjrZDo
+	Ky+6o1lw4IQk4vBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DD30313687;
+	Fri, 19 Apr 2024 06:46:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id HKGPNFETImbLRgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 19 Apr 2024 06:46:41 +0000
+Date: Fri, 19 Apr 2024 08:46:49 +0200
+Message-ID: <877cgtvoh2.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Ai Chao <aichao@kylinos.cn>
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	kailang@realtek.com,
+	sbinding@opensource.cirrus.com,
+	luke@ljones.dev,
+	shenghao-ding@ti.com,
+	simont@opensource.cirrus.com,
+	foss@athaariq.my.id,
+	rf@opensource.cirrus.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: hda/realtek - Enable audio jacks of Haier Boyue G42 with ALC269VC
+In-Reply-To: <20240419052803.339466-1-aichao@kylinos.cn>
+References: <20240419052803.339466-1-aichao@kylinos.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b44a4aee-f76f-4472-9b5c-343a09ed0d33@lunn.ch>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.54 / 50.00];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	BAYES_HAM(-0.03)[55.20%];
+	MX_GOOD(-0.01)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,suse.de:dkim];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Spam-Flag: NO
+X-Spam-Score: -0.54
+X-Spamd-Bar: /
+X-Rspamd-Queue-Id: 415A15D3A0
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 
-On Wed, Apr 17, 2024 at 10:23:07PM +0200, Andrew Lunn wrote:
-> I suggest you go read older messages from Richard. It was a discussion
-> with Microchip about one of their PHYs.
+On Fri, 19 Apr 2024 07:28:03 +0200,
+Ai Chao wrote:
+> 
+> The Haier Boyue G42 with ALC269VC cannot detect the MIC of headset,
+> the line out and internal speaker until
+> ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS quirk applied.
+> 
+> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+> ---
+>  sound/pci/hda/patch_realtek.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index d6940bc4ec39..0ebdc676cfe1 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -10473,6 +10473,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>  	SND_PCI_QUIRK(0xf111, 0x0001, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
+>  	SND_PCI_QUIRK(0xf111, 0x0005, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
+>  	SND_PCI_QUIRK(0xf111, 0x0006, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
+> +	SND_PCI_QUIRK(0x1d17, 0x3288, "Haier Boyue G42", ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS),
 
-My 2 cents:
+The table is sorted in PCI SSID order.  Could you try to put at the
+right place?
 
-User space has all of the hooks needed to configure corrections for a
-given setup.
 
-Hard coding corrections in device drivers is bound to fail, based on
-prior experience with Vendors not knowing or caring how their products
-actually work.  Vendors will publish value X one year, then delete the
-info (to avoid embarrassment), then publish the new value Y, once
-customers have forgotten about X.
+thanks,
 
-So, prudent users will always calibrate their beloved systems, not
-trusting the Vendors to provide anything close to reasonable.
-
-Ergo, adding new magical correction in a kernel release causes
-regressions for prudent users.
-
-But, in the end, that doesn't matter, because prudent users are used
-to being abused by well-meaning yet misguided device driver authors.
-
-Prudent users are wise, and they will re-calibrate their systems
-before rolling out an updated kernel.
-
-After all, device driver authors leave them no other choice.
-
-Thanks,
-Richard
+Takashi
 
