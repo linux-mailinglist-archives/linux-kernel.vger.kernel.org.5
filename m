@@ -1,73 +1,64 @@
-Return-Path: <linux-kernel+bounces-150908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F5998AA697
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:39:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC4D8AA699
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:43:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E5731C21AB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:39:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84F241F22431
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D7C7460;
-	Fri, 19 Apr 2024 01:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1604F1FB4;
+	Fri, 19 Apr 2024 01:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D+sy9HyZ"
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="expQ49LH"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A4D137E;
-	Fri, 19 Apr 2024 01:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE38F1362;
+	Fri, 19 Apr 2024 01:42:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713490726; cv=none; b=kYrvyavn8V1gmrWzd6daj/t5S06qiqhJf3RkoGLlEzGeKx9mmBpCS3hTGqO4D6ygUk9gnq5xzacUuGr6QHy3n8F22Sfz1tlgXQUnan96ZW4KSSN9IilGj5YLQADbv/IkyGCpZGFQ3bvYkE59d/XC/NLsRTP5ldkm5OE+VbVyqj4=
+	t=1713490977; cv=none; b=kjN7OMC6pnG6/WaKrltBxeNJLsP+lfgPRhcSr9CtD4h4BDVT8K6ehrujN72kBoIeexI1WccJWQujBzjLQ92iZnCtDWdR5pALM4TC22GKJp+Dq9QXeqwM0dUxd4y78AyG9wfzFBGCMrXbcJWP6bIHq/Pg7EbTeIa5ZbGCQL3NmaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713490726; c=relaxed/simple;
-	bh=GEWSZZ3vvOSe6AkDVJislZ1FHZ520OZtFm4gPShQLEA=;
+	s=arc-20240116; t=1713490977; c=relaxed/simple;
+	bh=cSZkElQuxZTV1/D8NzqIO8txy29Fe8ChfyA1kCtXJjc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vEzknFgix39wAZz0Pr3GFgeBVr2WzeB49u9x1hO0vJtjNd7EWtYF4Rwihgly31BPZwzNzgcrYU8AKeyYSneEyMecHa7gA4Wg7M/3OxPJIAgxrFYzRjY41vVDJhVGeiNN5Snw/oOYcX6fshNoGJxrp1bsmF2JMlQQn12Cr+yrUr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D+sy9HyZ; arc=none smtp.client-ip=209.85.167.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c6f6c5bc37so818730b6e.1;
-        Thu, 18 Apr 2024 18:38:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713490724; x=1714095524; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GPo2YBoXEtUt5FR3hk3RQoIHxRhTHP8ecG0sGnnf1Bs=;
-        b=D+sy9HyZxRufj6JYHQB/KUXFgUXDpPbRfWWPQQcwxsS3xy8TEtgtxux8A8mx4g8npn
-         /Ar5ldxivPAGDksVGUR8rNnxJBBZSIUXsHWJSI8SKSaosmrmdLHCwm6zpFP94WikSc23
-         F2r743s1rGlHU4ajVyjGYqsVJdc6G4WVudBpmTMPQ0GZraLxlAmvmeSmjI7xi1Zj/AgO
-         5arWEHqMqWcCYfQvJcCzSeuj1r+g8dpcxapecnuspOn0VTDcVvZBQuaLyTdHJnkPj8lz
-         FYuIaVfrLtTn4Q9fzKs+xzS75k4RUQxGNC4YZVtIWom7r/FhnTsr7ml6vmMs4ntiJWvy
-         sf2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713490724; x=1714095524;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GPo2YBoXEtUt5FR3hk3RQoIHxRhTHP8ecG0sGnnf1Bs=;
-        b=KPqHf/1dDwEhzcWVLCc7O1O1/Zdih8ljDI30NeaWuwtqXkOQ0ey6iCrKM1d3PGZyhm
-         EVn9pgyn5aqAU8xD+yzr92sZWSYI2Q6iUUPSeKM/Uzf+ucE5eKWX3+Z7TmbKDaLqPyG8
-         CsL3Q7mIuLadQkbmSK3BfMcK1/KQYiHCm+t5oafbygZiu8tckF3xVJ9inYKTdNO62f+4
-         WnI/sM4U1QRJv/YtfIAraAnT8DbfpDCIVIESK13tX/pBb0fJ/JY1qXX4u2+w6VROiPJg
-         8MVM5+QyiiDQsFp9mo1rRDr5ywpFo1l6fWxNaRCvcy9AeQqeqldHSmDeDgJoRw2npsvw
-         Jiaw==
-X-Forwarded-Encrypted: i=1; AJvYcCU21w3ab+snocOaSTahKPVTCvYI3ngn9xajCvs9SydWk8FSOKGQI//cq/SSmIwe65JkYl4QgbKRJWqo0uMQvQuVstB9cdKK6RXj42U+I6tlKkqoKzFfdodfkG5TdP4SO3CS03xsUy0Cj6uT5W7Zfs6b6g==
-X-Gm-Message-State: AOJu0Yw19yZguA5ffxUpxuPLoUJ1N/D5PGqkhDY4gxAU3jHalahB90qW
-	0gn6wgihWc4qbwQQVIgT1pNvnQPM4tvFmz6d70X0qdelNeP5EeKw
-X-Google-Smtp-Source: AGHT+IHvWdtljGzkpyRy9juDffeZQxeStoqibKWESrgiGIXKc46p52JCVHa+vIEguRUBhxW+K+Ax6Q==
-X-Received: by 2002:a05:6808:3d3:b0:3c7:4577:f31f with SMTP id o19-20020a05680803d300b003c74577f31fmr669710oie.58.1713490724434;
-        Thu, 18 Apr 2024 18:38:44 -0700 (PDT)
-Received: from ?IPV6:2600:1700:70:f702:9c77:c230:a0ba:a1a1? ([2600:1700:70:f702:9c77:c230:a0ba:a1a1])
-        by smtp.gmail.com with ESMTPSA id 11-20020a54418b000000b003c5f66569c9sm451204oiy.46.2024.04.18.18.38.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 18:38:43 -0700 (PDT)
-Message-ID: <569ad84d-4876-4d10-bdf9-a0b65aa76ddb@gmail.com>
-Date: Thu, 18 Apr 2024 20:38:43 -0500
+	 In-Reply-To:Content-Type; b=X9zz8RMue4jzCZAvLyo8wKmwISWshIM8POHkOvuriK2sb76HD//m1xlLsB26j4cbfa8aQ/YY/d9v/o5Amq1l9LS0w91ZGNlhPu1TsQQEx6E9cnoel7pSo/0RylqOesmmF/njz7qENCVJKt5cRbirVohG7B0MQgFAPcSzFjY8ZRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=expQ49LH; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713490976; x=1745026976;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=cSZkElQuxZTV1/D8NzqIO8txy29Fe8ChfyA1kCtXJjc=;
+  b=expQ49LHOkuMzeynhwff9X397oAp+6/VTsZZDO/K0KfwmsDp9Pv43Qii
+   o77Gv3d9d4CEey9Yus/TE0ypfzoRHDw+VRdfiMvTxeRSU4chiUhGrzntp
+   WDOY8NOmX/B2JI9X1FjvG06deUvBJQH84/7cPofHAcQGq7IWC82guaK7j
+   89NXLhHP27+WZgB1uVmKsNXz67wWJIMOLUzis9eNz23JqKQ4P/HQSFHgL
+   nHmcwJdpSHoghOy8wvFzlR+N3eBIW2NeNfUH3jFdwrrcllIMAsP+ucome
+   f1sKVWN17B0dOydvRwS9RX6yRInVfAzSivHgZNcl+beAVsUXl0Fzmne+2
+   w==;
+X-CSE-ConnectionGUID: 7AEnpK7iScGwU1yme1Cg4g==
+X-CSE-MsgGUID: 87iGdm0DQeGtqRV9R4HCxg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9202175"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="9202175"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 18:42:55 -0700
+X-CSE-ConnectionGUID: 1iL09b7CTDqgzgzUMFAIlw==
+X-CSE-MsgGUID: dw35IcYrRCet56oNwtTe1A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="23250130"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.242.47]) ([10.124.242.47])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 18:42:51 -0700
+Message-ID: <f83f6923-7aa2-4a10-8e83-3fa77400c446@linux.intel.com>
+Date: Fri, 19 Apr 2024 09:42:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,79 +66,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] platform/x86/amd: Don't allow HSMP to be loaded on
- non-server hardware
-Content-Language: en-US
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>,
- Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>,
- Carlos Bilbao <carlos.bilbao@amd.com>,
- "open list:AMD HSMP DRIVER" <platform-driver-x86@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- Mario Limonciello <mario.limonciello@amd.com>
-References: <20240416182057.8230-1-superm1@gmail.com>
- <ca6e0dc7-f5ea-4c0a-b9fe-0667fadc78a6@redhat.com>
- <1071ea83-7919-469a-ac5b-3209fe9e018c@gmail.com>
- <85728284-d771-bf06-9ed3-333633ebf8b0@linux.intel.com>
-From: Mario Limonciello <superm1@gmail.com>
-In-Reply-To: <85728284-d771-bf06-9ed3-333633ebf8b0@linux.intel.com>
+Subject: Re: [PATCH v19 110/130] KVM: TDX: Handle TDX PV MMIO hypercall
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: Sean Christopherson <sean.j.christopherson@intel.com>,
+ kvm@vger.kernel.org, linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+ Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+ Sean Christopherson <seanjc@google.com>, Sagi Shahar <sagis@google.com>,
+ Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, hang.yuan@intel.com,
+ tina.zhang@intel.com, isaku.yamahata@linux.intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <a4421e0f2eafc17b4703c920936e32489d2382a3.1708933498.git.isaku.yamahata@intel.com>
+ <e2400cf8-ee36-4e7f-ba1f-bb0c740b045c@linux.intel.com>
+ <dac4aa8c-94d1-475e-ae97-20229bd9ade2@linux.intel.com>
+ <20240418212214.GB3596705@ls.amr.corp.intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240418212214.GB3596705@ls.amr.corp.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 4/18/24 08:51, Ilpo Järvinen wrote:
-> On Thu, 18 Apr 2024, Mario Limonciello wrote:
->> On 4/18/24 04:04, Hans de Goede wrote:
->>> On 4/16/24 8:20 PM, Mario Limonciello wrote:
->>>> From: Mario Limonciello <mario.limonciello@amd.com>
->>>>
->>>> If the HSMP driver is compiled into the kernel or a module manually loaded
->>>> on client hardware it can cause problems with the functionality of the PMC
->>>> module since it probes a mailbox with a different definition on servers.
->>>>
->>>> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2414
->>>> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/3285
->>>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
->>>> ---
->>>> v1->v2:
->>>>    * use pm preferred profile instead
->>>
->>> Thanks, patch looks good to me:
->>>
->>> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->>>
->>> Mario, should this go in as a fix for the 6.9 cylce, or is
->>> this for-next material ?  (I'm not sure what to do myself)
->> The main risk with this patch is if there are servers that previously loaded
->> amd-hsmp no longer working because of a BIOS bug to exporting the incorrect
->> profile.  I think this is quite unlikely but not non-zero.
+On 4/19/2024 5:22 AM, Isaku Yamahata wrote:
+> On Thu, Apr 18, 2024 at 07:04:11PM +0800,
+> Binbin Wu <binbin.wu@linux.intel.com> wrote:
+>
 >>
->> To at least give some time for anything like that to be raised I feel this
->> should go to for-next.
-> 
-> I was also thinking it would be better to route this through for-next.
-> 
->> Ideally I do want to see it go to stable kernels after we're all sufficiently
->> happy though.  Random bug reports to me like the ones I added to the commit
->> message get raised mostly by people who compile their own (stable) kernels and
->> enable all the AMD stuff because they have AMD hardware.
->>
->> So how about we target for-next, but also add a stable tag for when it gets
->> merged in the 6.10 cycle?
-> 
-> That's possible but if you want to retain true control over it, don't add
-> stable tag at all now. You can send it on your own volition into stable
-> address later once the change is in Linus' tree and your "happy" condition
-> is met (Option 3 in Documentation/process/stable-kernel-rules.rst).
-> 
-> Otherwise, stable will autoselect it the moment it lands into Linus' tree
-> and you don't have much control over the timeline from that point on (I've
-> seen stable folks to grumble when somebody asked to delay including a
-> patch marked for stable, their reasoning was that their autotools keep
-> reselecting the patch over and over again).
-> 
+>> On 4/18/2024 5:29 PM, Binbin Wu wrote:
+>>>> +
+>>>> +static int tdx_emulate_mmio(struct kvm_vcpu *vcpu)
+>>>> +{
+>>>> +    struct kvm_memory_slot *slot;
+>>>> +    int size, write, r;
+>>>> +    unsigned long val;
+>>>> +    gpa_t gpa;
+>>>> +
+>>>> +    KVM_BUG_ON(vcpu->mmio_needed, vcpu->kvm);
+>>>> +
+>>>> +    size = tdvmcall_a0_read(vcpu);
+>>>> +    write = tdvmcall_a1_read(vcpu);
+>>>> +    gpa = tdvmcall_a2_read(vcpu);
+>>>> +    val = write ? tdvmcall_a3_read(vcpu) : 0;
+>>>> +
+>>>> +    if (size != 1 && size != 2 && size != 4 && size != 8)
+>>>> +        goto error;
+>>>> +    if (write != 0 && write != 1)
+>>>> +        goto error;
+>>>> +
+>>>> +    /* Strip the shared bit, allow MMIO with and without it set. */
+>>> Based on the discussion
+>>> https://lore.kernel.org/all/ZcUO5sFEAIH68JIA@google.com/
+>>> Do we still allow the MMIO without shared bit?
+> That's independent.  The part is how to work around guest accesses the
+> MMIO region with private GPA.  This part is,  the guest issues
+> TDG.VP.VMCALL<MMMIO> and KVM masks out the shared bit to make it friendly
+> to the user space VMM.
+It's similar.
+The tdvmcall from the guest for mmio can also be private GPA, which is 
+not reasonable, right?
+According to the comment, kvm doens't care about if the TD guest issue 
+the tdvmcall with private GPA or shared GPA.
 
-I don't feel a strong need for a specific timing.  The timeline of of it 
-going to the stable trees when 6.10-rc1~ish seems fine by me.
+
 
