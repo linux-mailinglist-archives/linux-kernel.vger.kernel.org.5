@@ -1,704 +1,201 @@
-Return-Path: <linux-kernel+bounces-151053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7EF58AA865
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:23:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 662BF8AA868
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:25:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CDB31F221E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:23:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96777B21F13
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:25:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102DA107B2;
-	Fri, 19 Apr 2024 06:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D4B2206C;
+	Fri, 19 Apr 2024 06:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rmdOMnWd"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="DI74vwIN"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2051.outbound.protection.outlook.com [40.107.215.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B829C2C6
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713507754; cv=none; b=bjhIB402sdbGovu9IW4uvrLt9FQH2ysobZR3A57N865cD+ahyIbKLyugErm/au8cI85txe2lQ+yuI025PRlaV6iplpXmYnE9ZtHV9Rll05s8K8iLUef1yJ+VLZfeZifcjE86g+Yli6fI+WfivRgB6YpUMMggzvW831lrAYR840U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713507754; c=relaxed/simple;
-	bh=IKq6kKpYxQNQOiztjaJiLJb/Gw02MGrfhHR94xStGEc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Pk6wO+ucjJhXBlGxBJXmTaLFGPyiFQbkdPYM8qO3C5BWIXOpnV4rfgs6DedXzyivW/Z1UetKLUAKgd4IAwtngUB6Lgmft/MV/Ts1Pimbnrxrcn9BwoaGP2EKi78iIdj322lsMVoodLJ6QCnq13BIqUST0sTKCi8MAMLz6XN+PtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rmdOMnWd; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-434b5abbb0dso157451cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713507751; x=1714112551; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u5DJQiWaC946xoBV83e/CuzUpiC08XaA6Db/7lyPjZ8=;
-        b=rmdOMnWdRLwjUSRmjrtt0PLz9T/mZFDuB/nxbV2G5tD9rfF2tg/jMkHHM07L8Ytu8d
-         LYsf+JcknV3Ozu2oqGWAtHyPBCtK41jbOomljSknpNMhjix706WQTrZZAXFgjAzCAQL8
-         auj1dF2I3tKLd/rRs6R6c0/ek50qJbMaOjMruo3YZsDFb3D2DETF2L6EsYqgl5EXDFki
-         LD1iS2Hzqy4qan/oeF7mYRAl9V5sMbOc0v/h6eTxJ+uZWY5ns4MwqKCx2j4oOM7X0tM5
-         F1d5gKVWJtOOziJDRNJBi+cnXFxRR8LlLfBEzjPub+xP6Sk1HV7leexNJe+FELrqd2hX
-         Wr5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713507751; x=1714112551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u5DJQiWaC946xoBV83e/CuzUpiC08XaA6Db/7lyPjZ8=;
-        b=laIpAGBCpcFy630rJW4yvseQCSBgKjAJAkEhE3uK/B890ndlUbP6KcNTLVlTMvfMAr
-         y+ax2QyeSAY7Ypjc/L7agSMzow+Y6XtHZ++7SWIUrMO7BJqdC+GhZqzV7F7omSxf24iA
-         ATDd46vSdHcjw94sbD4IRqRVqYrjFBUpgIOGop2tGFr9lnIWrEG/9XA4o1r3E/4mhPtR
-         4uo8VkOExA4yAKCGp/PNN/otgEZuGRoKkGG8gCRkd6I7m2fLdRjbtOqTPHYu8kJlRZiJ
-         jfYcBNmzie1xiyUYoQHPKC9rtaP+hDwwUE/97sQjelPnffrqiEq3i7NJY4MindDssC0Y
-         /m6A==
-X-Forwarded-Encrypted: i=1; AJvYcCU5QH+hbw4ebKOCR6JB+GnvU9G2PzGto/pclID6f0syLN69waEZjGHQKe2SVZHl9MjxrTF9Y8fFWwtD/Vm9S6wf0Ffc+Zms2i8/pDfH
-X-Gm-Message-State: AOJu0YwcCz8PEe1RTll1WysFibZFGVxdpt2d5mtVvGuAYrsq7SMCBaf0
-	vRzcBJdio3cChJVQiC9I47pvfil6GX4LBURsxo413ovsio/F9z2ob/Sg959hV0Dy3CEqMq4TElW
-	+CejJizIuZS6vTWQPf99T3VsWPMkrjyG1dk61
-X-Google-Smtp-Source: AGHT+IENV2HEZCn2LqbsJxRcCDznXxeH7z8V4If10jpgSw5wWwDWNX0+BrOqw4akRra4KlLXGnxfubGbL44SASaMpIU=
-X-Received: by 2002:a05:622a:1aa2:b0:437:87f9:21cd with SMTP id
- s34-20020a05622a1aa200b0043787f921cdmr190046qtc.16.1713507750715; Thu, 18 Apr
- 2024 23:22:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E0A7883D;
+	Fri, 19 Apr 2024 06:25:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713507919; cv=fail; b=MVsGoW1kmeuTNd2H6NHqBWngx0/AN8vFsTVSTa8l+/noOrpHDJ5bjMD7/FBzKHfzwngU9l+PllCsb2VAn9a68MR405soAc9taL99KKJLJK6DpTqRMu6rvCcjkjzPYKtkfYeU0lPWFj3UrrwyNQcxoZ9svDXtjUdtRdoYXapNE9M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713507919; c=relaxed/simple;
+	bh=i9s7KmL/Og66uv5q3reF5HL9g45LoS5kGuwr9uGSaoM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=rsReDQAlHQwxloMyM8it2PycCy7e22mQ1FDQcRCn+om4PnttiRwMiuE1olrS7oYB58o/cOpsv2pV6Iylu76tZfoUUwD5U3wi7ymtEp8tHZD0EMpSTfj1BjSU//lIhhjdo7vOnUctVvuMyQpv/Cdu4/O5FOXbbJncd9yyJ2z30SI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=DI74vwIN; arc=fail smtp.client-ip=40.107.215.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wrks1KLjh3WmCgrNano2fUi57cYQihvGQxqSC8ap6u7/mj30UsP07kyVf5yCAyiO7rOM1sVnfgO2JoG04udGk4fxhLXxS7sqWaURDyHSB//A5WM+HSKBbjskbA//U+aiTMfWnyzI34OoYY8dpULsThh5ht0c3sKLekjcfC4YMfye2tOK9seF3NlsGqf9sKzREQlh892UlzF9i52TV3Sbu6VQhH2JHO5v5UEOjyaB+f9OaBP6vE7B5smi7m8s6D+NvcTi8QIFb8zK4mjlI3xiFA4iW/7OuwiKczGhkC/T1G3bprsdeYkGzjHpWFhwANmMWyM6SPOKPUwtw5EnOyMqiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=10u1UPe9mZs70V9VeMGoKD5ZJWh+qDfNwaySPf6cRJE=;
+ b=kvQUxv50GilBsL1cKFTsXQcrS/XvD9G/q480Q2SCq93NdMDRpB3Tz0JAT6lqkxBNLJfLa042h6rmB11KI9a7Q5aMoE0F/DeAdASH3hDJzkiaaDHnTfsCrouWDB/oc79ARyCqfMhqwpE/SFBEtlHQEekpTJyyp/m5ryZ82wub8fMdMrEj31U3YOqRPwEBWc+Ao433rzvt9wuWvflf6NljRsAddPXSBBDvv7FaeaU2pyV4T0nNl2c45B4eR9oQmuezwDh4C7vcfSjq1Mw6eKmdEePqx0iQShDMVgJoSbLbzhxHtNU5NpWXpphA/iNtErts6z7IrQUMZ+TwjDYP+lNg2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=10u1UPe9mZs70V9VeMGoKD5ZJWh+qDfNwaySPf6cRJE=;
+ b=DI74vwINq9rd743gal+FoYjdQ1cBbWU01Afy9NJTpLv4xoWuFPL3Qhex9VJlszV8i3N1Wk9tx2fw1YVrs+X9psG8YuhiI392klXihILBBD310L9xaEOA4DOwue5oq94+vos5KxC3JW5J5gs4of4Sr/d52z9V5xqCTRssIh00CAlYsb5J0HiZ/p3p31v4zLlCD2Dix5SN8SwQGf1ThgyRFhctVvEfxnwnHO2J8WdhT3RcIRbODwy1sQAx4/vBFjdREtg019iYjT3ONzxB0aQ45zJrC3OD0I9VcAvK/UZWETQBJjG4xL+/REVLmYuLqcyl1J3CJcsgMvo14nlNJxUEhw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by SEZPR06MB5898.apcprd06.prod.outlook.com (2603:1096:101:e5::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Fri, 19 Apr
+ 2024 06:25:10 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::ad3:f48a:aa04:e11a]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::ad3:f48a:aa04:e11a%7]) with mapi id 15.20.7472.042; Fri, 19 Apr 2024
+ 06:25:10 +0000
+Message-ID: <945d1e73-21f6-4a56-81ee-9625491f3b26@vivo.com>
+Date: Fri, 19 Apr 2024 14:25:04 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup: make cgroups info more readable
+To: xiujianfeng <xiujianfeng@huawei.com>, Huan Yang <link@vivo.com>,
+ Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: opensource.kernel@vivo.com
+References: <20240409021826.1171921-1-link@vivo.com>
+ <9d01ab99-bbfd-536b-a375-9c44f988aa9a@huawei.com>
+From: Huan Yang <11133793@vivo.com>
+In-Reply-To: <9d01ab99-bbfd-536b-a375-9c44f988aa9a@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR03CA0085.apcprd03.prod.outlook.com
+ (2603:1096:4:7c::13) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416061533.921723-1-irogers@google.com> <20240416061533.921723-14-irogers@google.com>
- <e8147f53-1930-44d8-abb8-fee460ec355f@linux.intel.com>
-In-Reply-To: <e8147f53-1930-44d8-abb8-fee460ec355f@linux.intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 18 Apr 2024 23:22:18 -0700
-Message-ID: <CAP-5=fVXv_gsoq5L08gaEJvU1E8xoihc3-L4taA+bPHyOJfgqw@mail.gmail.com>
-Subject: Re: [PATCH v2 13/16] perf parse-events: Improvements to modifier parsing
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, James Clark <james.clark@arm.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org, 
-	Beeman Strong <beeman@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|SEZPR06MB5898:EE_
+X-MS-Office365-Filtering-Correlation-Id: 98369be3-3e5b-4c5a-bad9-08dc603976cd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ok08DFCdJmoFYPVAd5DPamAnXBdBHrgZDX3zPkWP63UudWgjUH1vQQxwpKiYDV5thUDhvVt+y6UfBA7wF0WdIi6+4ccObXfg3MsJGyBE3cX9jcika7d7y3jaYpXX2qnpiGOWtus0k0Q9q9v6OeWbemn95R0UbrB9vDvB8tIYw2N8YXJhSGXFThbosh5wD/nbh6tDCo6w/UaRwDlPnnInUIUdBSOWQuE6z13/4izRTodcsupGGLkvTcASL716+O6RiucktL5vC/ZlmK8LmFeBCufKaaqrGPpu19XyFx1r95pUNTqIr7mUNp+P4GDShNcabBE2cISgWFsd8flXkYXOtWeew0PT7TVrFkAKFX/GBh5LmRnJOsk22mc2zqhSNKL5+xOdkJ5hRZHahtapYid9zDw3arErKg5izNrznDxQ06gjb4VQv+J/wpWw5SuqMTyFS0kaKNl/V+ZawBqc8bWYAas+ESrn/0ySxvVGgV9VVGbXCcb+Ob4OpmF0pawGPklYwKWssMN0RG8nWMOKUO0UaN/fPRj+rVJXpMow/jL1aWYABWA5bDi1qzLZDYVifPV1+VGCczy/uHeh1naQtTmwaHTodrtfwJp0mzlrFEIhBDUILcijzKOppsJQ9sMlE7k76ui3yjbT2KuXFdM7UM1AYNs099n+a34z6O6fwcac6hQu1EoEFJNbssdZKhvDxXViu62386zyoGXGktN0tP5uRRPYxmpFtQaM5u3eZFaT2uJhXR99B36E2hhOOI+rLfnI
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(52116005)(38350700005)(81742002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?LytGTVErMkMzTHNxNTZ3RC9zVWhXaG94RWVrTkdJZ2hrNGFVcFo4MFR1Ti9x?=
+ =?utf-8?B?VGFJQ0RwdmVnWGtBUkpYd0pzRm8zTkdkTTZhcDRyWXlFeWxweDVhTGZNYlRH?=
+ =?utf-8?B?RkMrakROMVpXbkJyekorMTlOSFNScE5xelpZaU5PNUdMNXZXVVNIQkJiSmNG?=
+ =?utf-8?B?UDJZVklJdGY2dUJKaVgxZUtyejBzeVQ0Tk95MlU4WHhTWVM3c0IzWW5NR0cr?=
+ =?utf-8?B?TEk1YkFJdHJyS1p4OUtXazVXYmpNbE5yYUkvUkFSbW85UDJ0K0dKSFFUV21E?=
+ =?utf-8?B?RTRWVzhLVk5yTlJuQnNKb0h4ZHNLd29FSGVZK2k4bU95cGtlMVRkSDIwRGNt?=
+ =?utf-8?B?Ym96Ris0T0VVaTdja2RyY2NyVnAxa2FvMThIUVF6SEsrRTA5emJ6WFZQQy9y?=
+ =?utf-8?B?WlBPVE1vQjJSbmk2Z0FwdVQ0OFZFK3hzWkFDMkFxRnJFMm9oMEFBTmlFNmt5?=
+ =?utf-8?B?TnR1UUIwZ0Mzeld6bjIzZGNNRGhTQXJwK2h1U09SWTY3aEwrekJGVnZLNmoz?=
+ =?utf-8?B?UThsUTkyN2M4OG5GQis0K29UWjV0enpjUmprTWt4cjVYQk9VZmFIbFcyaWd0?=
+ =?utf-8?B?U1FTa2ExeEZ6QmxTVm1qVFA2dGZ5L3B5MGJ5Qmh6UjlTL05YR1hWcDJkSTRm?=
+ =?utf-8?B?MU9qdW5JaHVGWEEyYVFOYjZHbWlaTmhvR0oxMkhsU1UvNnRyamZZSXRZM0Y2?=
+ =?utf-8?B?VDZBRThSZDNnSGI0T3hPZVN2V3MxYzNBa2d4cC9hOVRaWW5TaklacG1ubXNP?=
+ =?utf-8?B?ZTE0ME9XeGFQbUNqYlVucEh5RVNxbjdvT2pCZDhBb1YzOXNXNHM4dHBMYmVu?=
+ =?utf-8?B?ZW5BUEVtVWNzSmtKbzlBV1llanVHL3FFVDVGblNkR2ZWd0JqL3UzMDJyNnlo?=
+ =?utf-8?B?NDlGL3VUVDgwTEpTWkFoQVJDUGJNc3MrZHdweUZDOGlnaTFrQ054QVZkUUpO?=
+ =?utf-8?B?UGRBV3ZOZGUxS0RVS29kRjJYdEdCY3RMV1IxMFAwMGNIUVBPZFlrVHZiZWcx?=
+ =?utf-8?B?UFQwVytMSUhFWldRN2MzU2UyMFU0Z3JzTWVNaXRzRkRlMG9WZGwxMm9Da2xR?=
+ =?utf-8?B?cTJlcmM3a21lZy93QWw2dGF5STBWYzR1WWI4SEZzWnlDWVUvNU9PNFlpcVow?=
+ =?utf-8?B?ZVlVMk41cFBnSVNuZ2srTmp2TFhRNmdIeng5dmFiajBESml0VFlUYUdGRTYy?=
+ =?utf-8?B?TXRWS3BPb3N1Q08xWVdwSTRaNWE3d1N1dzlSVlFxRmROZkwrd1pDM2JpZldk?=
+ =?utf-8?B?SlhuampwZ2NRZWlsd2R4aDh1ZkQzSW03Sjk5OGtwMFA2N2licm5kNUh6RlFa?=
+ =?utf-8?B?WGkrTGNzSmVaVHNpWDZBbGxYS0JKTGVNdGhmZWEzbndYV0hMVEdVUmtyUG9m?=
+ =?utf-8?B?R1krcXRoSjhwSEVMblZEVFhpR0gzWWxWemVEM09IbWNUK1V6K3F3eGhOSldk?=
+ =?utf-8?B?QllrczdkL1dLblJmY0tkbnZRcTNFbDF6WDdneEhWYno4NEFYSitHMEMxRFJ5?=
+ =?utf-8?B?d0ROZ3lEbFJFdFFHWnhjWHlWY0NhL1VQdk9EL2pWRXVZTEtCN2lGSlFScGRB?=
+ =?utf-8?B?azV3dmkyc20vamd0N21WOHhKanlZWm43RW9rN2g2bUNSSnBXR1BudG1WZmkw?=
+ =?utf-8?B?YVZQc3h3QnlSL0N2eldTQ0ZMaUMzZHd0czY5aHdzclhVSmtRRXhaWXJlcWo0?=
+ =?utf-8?B?eW1JcEFaT1JnbW13K1BNajlCMDNVSWUrckFraHdKVVdmVXRKQ09CMjZPM0ZI?=
+ =?utf-8?B?Uml4aU5OMW9RYnVPeWhneWNXdzhiaCttb1FtclhJM0RVRDNRRWNjOGd5dnFW?=
+ =?utf-8?B?dTh1clU1eFB3ZWpMdmIvV1ZsaDkzVU81YmQwZkJBOEc1L25xUnFNVFNBNEZa?=
+ =?utf-8?B?bzhuUEFpOEF0VlBScGlQcVEvaWtla2JUeHk2a0sxZXVkUWxCS2M3dFZUTTZu?=
+ =?utf-8?B?WGtySDQraHM5bW5XRHR3QUtnNDJLMXRhZXRHTEMxTEdZc0ViSTVQQnZISU4v?=
+ =?utf-8?B?UFdLeGs3Y1had0VTU3I3Q1pUY1VjdnJ5bXdSWlZrU3pBMHdRSDN1ekhVSzRu?=
+ =?utf-8?B?RnJ1cUhsOWR6ZjdGRk9YYlE4cmRWV2FYWnZ0OXVDMFVFUEhqb052VHJ5R0Rk?=
+ =?utf-8?Q?oVyV+P6jvVSFhKx4MlZ1JY46Y?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98369be3-3e5b-4c5a-bad9-08dc603976cd
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 06:25:10.4096
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7bZ3PnLN7HFKMRIDACvOhW1bTYDhpEPxiCpQHRwWJQ9yudW3leZ8LMBbXYKSNbMz0TCxU77wwf73e/wJRRQvmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5898
 
-On Thu, Apr 18, 2024 at 1:32=E2=80=AFPM Liang, Kan <kan.liang@linux.intel.c=
-om> wrote:
->
->
->
-> On 2024-04-16 2:15 a.m., Ian Rogers wrote:
-> > Use a struct/bitmap rather than a copied string from lexer.
-> >
-> > In lexer give improved error message when too many precise flags are
-> > given or repeated modifiers.
-> >
-> > Before:
-> > ```
-> > $ perf stat -e 'cycles:kuk' true
-> > event syntax error: 'cycles:kuk'
-> >                             \___ Bad modifier
-> > ...
-> > $ perf stat -e 'cycles:pppp' true
-> > event syntax error: 'cycles:pppp'
-> >                             \___ Bad modifier
-> > ...
-> > $ perf stat -e '{instructions:p,cycles:pp}:pp' -a true
-> > event syntax error: '..cycles:pp}:pp'
-> >                                   \___ Bad modifier
-> > ...
-> > ```
-> > After:
-> > ```
-> > $ perf stat -e 'cycles:kuk' true
-> > event syntax error: 'cycles:kuk'
-> >                               \___ Duplicate modifier 'k' (kernel)
-> > ...
-> > $ perf stat -e 'cycles:pppp' true
-> > event syntax error: 'cycles:pppp'
-> >                                \___ Maximum precise value is 3
-> > ...
-> > $ perf stat -e '{instructions:p,cycles:pp}:pp' true
-> > event syntax error: '..cycles:pp}:pp'
-> >                                   \___ Maximum combined precise value i=
-s 3, adding precision to "cycles:pp"
-> > ...
-> > ```
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/parse-events.c | 250 ++++++++++++---------------------
-> >  tools/perf/util/parse-events.h |  23 ++-
-> >  tools/perf/util/parse-events.l |  75 +++++++++-
-> >  tools/perf/util/parse-events.y |  28 +---
-> >  4 files changed, 194 insertions(+), 182 deletions(-)
-> >
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-eve=
-nts.c
-> > index ebada37ef98a..3ab533d0e653 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -1700,12 +1700,6 @@ int parse_events_multi_pmu_add_or_add_pmu(struct=
- parse_events_state *parse_state
-> >       return -EINVAL;
-> >  }
-> >
-> > -int parse_events__modifier_group(struct list_head *list,
-> > -                              char *event_mod)
-> > -{
-> > -     return parse_events__modifier_event(list, event_mod, true);
-> > -}
-> > -
-> >  void parse_events__set_leader(char *name, struct list_head *list)
-> >  {
-> >       struct evsel *leader;
-> > @@ -1720,183 +1714,125 @@ void parse_events__set_leader(char *name, str=
-uct list_head *list)
-> >       leader->group_name =3D name;
-> >  }
-> >
-> > -struct event_modifier {
-> > -     int eu;
-> > -     int ek;
-> > -     int eh;
-> > -     int eH;
-> > -     int eG;
-> > -     int eI;
-> > -     int precise;
-> > -     int precise_max;
-> > -     int exclude_GH;
-> > -     int sample_read;
-> > -     int pinned;
-> > -     int weak;
-> > -     int exclusive;
-> > -     int bpf_counter;
-> > -};
-> > +static int parse_events__modifier_list(struct parse_events_state *pars=
-e_state,
-> > +                                    YYLTYPE *loc,
-> > +                                    struct list_head *list,
-> > +                                    struct parse_events_modifier mod,
-> > +                                    bool group)
-> > +{
-> > +     struct evsel *evsel;
-> >
-> > -static int get_event_modifier(struct event_modifier *mod, char *str,
-> > -                            struct evsel *evsel)
-> > -{
-> > -     int eu =3D evsel ? evsel->core.attr.exclude_user : 0;
-> > -     int ek =3D evsel ? evsel->core.attr.exclude_kernel : 0;
-> > -     int eh =3D evsel ? evsel->core.attr.exclude_hv : 0;
-> > -     int eH =3D evsel ? evsel->core.attr.exclude_host : 0;
-> > -     int eG =3D evsel ? evsel->core.attr.exclude_guest : 0;
-> > -     int eI =3D evsel ? evsel->core.attr.exclude_idle : 0;
-> > -     int precise =3D evsel ? evsel->core.attr.precise_ip : 0;
-> > -     int precise_max =3D 0;
-> > -     int sample_read =3D 0;
-> > -     int pinned =3D evsel ? evsel->core.attr.pinned : 0;
-> > -     int exclusive =3D evsel ? evsel->core.attr.exclusive : 0;
-> > -
-> > -     int exclude =3D eu | ek | eh;
-> > -     int exclude_GH =3D evsel ? evsel->exclude_GH : 0;
-> > -     int weak =3D 0;
-> > -     int bpf_counter =3D 0;
-> > -
-> > -     memset(mod, 0, sizeof(*mod));
-> > -
-> > -     while (*str) {
-> > -             if (*str =3D=3D 'u') {
-> > +     if (!group && mod.weak) {
-> > +             parse_events_error__handle(parse_state->error, loc->first=
-_column,
-> > +                                        strdup("Weak modifier is for u=
-se with groups"), NULL);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     __evlist__for_each_entry(list, evsel) {
-> > +             /* Translate modifiers into the equivalent evsel excludes=
- */
-> > +             int eu =3D group ? evsel->core.attr.exclude_user : 0;
-> > +             int ek =3D group ? evsel->core.attr.exclude_kernel : 0;
-> > +             int eh =3D group ? evsel->core.attr.exclude_hv : 0;
-> > +             int eH =3D group ? evsel->core.attr.exclude_host : 0;
-> > +             int eG =3D group ? evsel->core.attr.exclude_guest : 0;
-> > +             int exclude =3D eu | ek | eh;
-> > +             int exclude_GH =3D group ? evsel->exclude_GH : 0;
-> > +
-> > +             if (mod.precise) {
-> > +                     /* use of precise requires exclude_guest */
-> > +                     eG =3D 1;
-> > +             }
-> > +             if (mod.user) {
-> >                       if (!exclude)
-> >                               exclude =3D eu =3D ek =3D eh =3D 1;
-> >                       if (!exclude_GH && !perf_guest)
-> >                               eG =3D 1;
-> >                       eu =3D 0;
-> > -             } else if (*str =3D=3D 'k') {
-> > +             }
-> > +             if (mod.kernel) {
-> >                       if (!exclude)
-> >                               exclude =3D eu =3D ek =3D eh =3D 1;
-> >                       ek =3D 0;
-> > -             } else if (*str =3D=3D 'h') {
-> > +             }
-> > +             if (mod.hypervisor) {
-> >                       if (!exclude)
-> >                               exclude =3D eu =3D ek =3D eh =3D 1;
-> >                       eh =3D 0;
-> > -             } else if (*str =3D=3D 'G') {
-> > +             }
-> > +             if (mod.guest) {
-> >                       if (!exclude_GH)
-> >                               exclude_GH =3D eG =3D eH =3D 1;
-> >                       eG =3D 0;
-> > -             } else if (*str =3D=3D 'H') {
-> > +             }
-> > +             if (mod.host) {
-> >                       if (!exclude_GH)
-> >                               exclude_GH =3D eG =3D eH =3D 1;
-> >                       eH =3D 0;
-> > -             } else if (*str =3D=3D 'I') {
-> > -                     eI =3D 1;
-> > -             } else if (*str =3D=3D 'p') {
-> > -                     precise++;
-> > -                     /* use of precise requires exclude_guest */
-> > -                     if (!exclude_GH)
-> > -                             eG =3D 1;
-> > -             } else if (*str =3D=3D 'P') {
-> > -                     precise_max =3D 1;
-> > -             } else if (*str =3D=3D 'S') {
-> > -                     sample_read =3D 1;
-> > -             } else if (*str =3D=3D 'D') {
-> > -                     pinned =3D 1;
-> > -             } else if (*str =3D=3D 'e') {
-> > -                     exclusive =3D 1;
-> > -             } else if (*str =3D=3D 'W') {
-> > -                     weak =3D 1;
-> > -             } else if (*str =3D=3D 'b') {
-> > -                     bpf_counter =3D 1;
-> > -             } else
-> > -                     break;
-> > -
-> > -             ++str;
-> > +             }
-> > +             evsel->core.attr.exclude_user   =3D eu;
-> > +             evsel->core.attr.exclude_kernel =3D ek;
-> > +             evsel->core.attr.exclude_hv     =3D eh;
-> > +             evsel->core.attr.exclude_host   =3D eH;
-> > +             evsel->core.attr.exclude_guest  =3D eG;
-> > +             evsel->exclude_GH               =3D exclude_GH;
-> > +
-> > +             /* Simple modifiers copied to the evsel. */
-> > +             if (mod.precise) {
-> > +                     u8 precise =3D evsel->core.attr.precise_ip + mod.=
-precise;
-> > +                     /*
-> > +                      * precise ip:
-> > +                      *
-> > +                      *  0 - SAMPLE_IP can have arbitrary skid
-> > +                      *  1 - SAMPLE_IP must have constant skid
-> > +                      *  2 - SAMPLE_IP requested to have 0 skid
-> > +                      *  3 - SAMPLE_IP must have 0 skid
-> > +                      *
-> > +                      *  See also PERF_RECORD_MISC_EXACT_IP
-> > +                      */
-> > +                     if (precise > 3) {
->
-> The pmu_max_precise() should return the max precise the current kernel
-> supports. It checks the /sys/devices/cpu/caps/max_precise.
->
-> I think we should use that value rather than hard code it to 3.
+HI jianfeng
 
-I'll add an extra patch to do that. I'm a bit concerned it may break
-event parsing on platforms not supporting max_precise of 3.
-
-Thanks,
-Ian
-
-> Thanks,
-> Kan
+在 2024/4/19 11:33, xiujianfeng 写道:
+> [Some people who received this message don't often get email from xiujianfeng@huawei.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
 >
-> > +                             char *help;
-> > +
-> > +                             if (asprintf(&help,
-> > +                                          "Maximum combined precise va=
-lue is 3, adding precision to \"%s\"",
-> > +                                          evsel__name(evsel)) > 0) {
-> > +                                     parse_events_error__handle(parse_=
-state->error,
-> > +                                                                loc->f=
-irst_column,
-> > +                                                                help, =
-NULL);
-> > +                             }
-> > +                             return -EINVAL;
-> > +                     }
-> > +                     evsel->core.attr.precise_ip =3D precise;
-> > +             }
-> > +             if (mod.precise_max)
-> > +                     evsel->precise_max =3D 1;
-> > +             if (mod.non_idle)
-> > +                     evsel->core.attr.exclude_idle =3D 1;
-> > +             if (mod.sample_read)
-> > +                     evsel->sample_read =3D 1;
-> > +             if (mod.pinned && evsel__is_group_leader(evsel))
-> > +                     evsel->core.attr.pinned =3D 1;
-> > +             if (mod.exclusive && evsel__is_group_leader(evsel))
-> > +                     evsel->core.attr.exclusive =3D 1;
-> > +             if (mod.weak)
-> > +                     evsel->weak_group =3D true;
-> > +             if (mod.bpf)
-> > +                     evsel->bpf_counter =3D true;
-> >       }
-> > -
-> > -     /*
-> > -      * precise ip:
-> > -      *
-> > -      *  0 - SAMPLE_IP can have arbitrary skid
-> > -      *  1 - SAMPLE_IP must have constant skid
-> > -      *  2 - SAMPLE_IP requested to have 0 skid
-> > -      *  3 - SAMPLE_IP must have 0 skid
-> > -      *
-> > -      *  See also PERF_RECORD_MISC_EXACT_IP
-> > -      */
-> > -     if (precise > 3)
-> > -             return -EINVAL;
-> > -
-> > -     mod->eu =3D eu;
-> > -     mod->ek =3D ek;
-> > -     mod->eh =3D eh;
-> > -     mod->eH =3D eH;
-> > -     mod->eG =3D eG;
-> > -     mod->eI =3D eI;
-> > -     mod->precise =3D precise;
-> > -     mod->precise_max =3D precise_max;
-> > -     mod->exclude_GH =3D exclude_GH;
-> > -     mod->sample_read =3D sample_read;
-> > -     mod->pinned =3D pinned;
-> > -     mod->weak =3D weak;
-> > -     mod->bpf_counter =3D bpf_counter;
-> > -     mod->exclusive =3D exclusive;
-> > -
-> >       return 0;
-> >  }
-> >
-> > -/*
-> > - * Basic modifier sanity check to validate it contains only one
-> > - * instance of any modifier (apart from 'p') present.
-> > - */
-> > -static int check_modifier(char *str)
-> > +int parse_events__modifier_group(struct parse_events_state *parse_stat=
-e, void *loc,
-> > +                              struct list_head *list,
-> > +                              struct parse_events_modifier mod)
-> >  {
-> > -     char *p =3D str;
-> > -
-> > -     /* The sizeof includes 0 byte as well. */
-> > -     if (strlen(str) > (sizeof("ukhGHpppPSDIWeb") - 1))
-> > -             return -1;
-> > -
-> > -     while (*p) {
-> > -             if (*p !=3D 'p' && strchr(p + 1, *p))
-> > -                     return -1;
-> > -             p++;
-> > -     }
-> > -
-> > -     return 0;
-> > +     return parse_events__modifier_list(parse_state, loc, list, mod, /=
-*group=3D*/true);
-> >  }
-> >
-> > -int parse_events__modifier_event(struct list_head *list, char *str, bo=
-ol add)
-> > +int parse_events__modifier_event(struct parse_events_state *parse_stat=
-e, void *loc,
-> > +                              struct list_head *list,
-> > +                              struct parse_events_modifier mod)
-> >  {
-> > -     struct evsel *evsel;
-> > -     struct event_modifier mod;
-> > -
-> > -     if (str =3D=3D NULL)
-> > -             return 0;
-> > -
-> > -     if (check_modifier(str))
-> > -             return -EINVAL;
-> > -
-> > -     if (!add && get_event_modifier(&mod, str, NULL))
-> > -             return -EINVAL;
-> > -
-> > -     __evlist__for_each_entry(list, evsel) {
-> > -             if (add && get_event_modifier(&mod, str, evsel))
-> > -                     return -EINVAL;
-> > -
-> > -             evsel->core.attr.exclude_user   =3D mod.eu;
-> > -             evsel->core.attr.exclude_kernel =3D mod.ek;
-> > -             evsel->core.attr.exclude_hv     =3D mod.eh;
-> > -             evsel->core.attr.precise_ip     =3D mod.precise;
-> > -             evsel->core.attr.exclude_host   =3D mod.eH;
-> > -             evsel->core.attr.exclude_guest  =3D mod.eG;
-> > -             evsel->core.attr.exclude_idle   =3D mod.eI;
-> > -             evsel->exclude_GH          =3D mod.exclude_GH;
-> > -             evsel->sample_read         =3D mod.sample_read;
-> > -             evsel->precise_max         =3D mod.precise_max;
-> > -             evsel->weak_group          =3D mod.weak;
-> > -             evsel->bpf_counter         =3D mod.bpf_counter;
-> > -
-> > -             if (evsel__is_group_leader(evsel)) {
-> > -                     evsel->core.attr.pinned =3D mod.pinned;
-> > -                     evsel->core.attr.exclusive =3D mod.exclusive;
-> > -             }
-> > -     }
-> > -
-> > -     return 0;
-> > +     return parse_events__modifier_list(parse_state, loc, list, mod, /=
-*group=3D*/false);
-> >  }
-> >
-> >  int parse_events_name(struct list_head *list, const char *name)
-> > diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-eve=
-nts.h
-> > index 290ae6c72ec5..f104faef1a78 100644
-> > --- a/tools/perf/util/parse-events.h
-> > +++ b/tools/perf/util/parse-events.h
-> > @@ -186,8 +186,27 @@ void parse_events_terms__init(struct parse_events_=
-terms *terms);
-> >  void parse_events_terms__exit(struct parse_events_terms *terms);
-> >  int parse_events_terms(struct parse_events_terms *terms, const char *s=
-tr, FILE *input);
-> >  int parse_events_terms__to_strbuf(const struct parse_events_terms *ter=
-ms, struct strbuf *sb);
-> > -int parse_events__modifier_event(struct list_head *list, char *str, bo=
-ol add);
-> > -int parse_events__modifier_group(struct list_head *list, char *event_m=
-od);
-> > +
-> > +struct parse_events_modifier {
-> > +     u8 precise;     /* Number of repeated 'p' for precision. */
-> > +     bool precise_max : 1;   /* 'P' */
-> > +     bool non_idle : 1;      /* 'I' */
-> > +     bool sample_read : 1;   /* 'S' */
-> > +     bool pinned : 1;        /* 'D' */
-> > +     bool exclusive : 1;     /* 'e' */
-> > +     bool weak : 1;          /* 'W' */
-> > +     bool bpf : 1;           /* 'b' */
-> > +     bool user : 1;          /* 'u' */
-> > +     bool kernel : 1;        /* 'k' */
-> > +     bool hypervisor : 1;    /* 'h' */
-> > +     bool guest : 1;         /* 'G' */
-> > +     bool host : 1;          /* 'H' */
-> > +};
-> > +
-> > +int parse_events__modifier_event(struct parse_events_state *parse_stat=
-e, void *loc,
-> > +                              struct list_head *list, struct parse_eve=
-nts_modifier mod);
-> > +int parse_events__modifier_group(struct parse_events_state *parse_stat=
-e, void *loc,
-> > +                              struct list_head *list, struct parse_eve=
-nts_modifier mod);
-> >  int parse_events_name(struct list_head *list, const char *name);
-> >  int parse_events_add_tracepoint(struct list_head *list, int *idx,
-> >                               const char *sys, const char *event,
-> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-eve=
-nts.l
-> > index 0cd68c9f0d4f..4aaf0c53d9b6 100644
-> > --- a/tools/perf/util/parse-events.l
-> > +++ b/tools/perf/util/parse-events.l
-> > @@ -142,6 +142,77 @@ static int hw(yyscan_t scanner, int config)
-> >       return PE_TERM_HW;
-> >  }
-> >
-> > +static void modifiers_error(struct parse_events_state *parse_state, yy=
-scan_t scanner,
-> > +                         int pos, char mod_char, const char *mod_name)
-> > +{
-> > +     struct parse_events_error *error =3D parse_state->error;
-> > +     char *help =3D NULL;
-> > +
-> > +     if (asprintf(&help, "Duplicate modifier '%c' (%s)", mod_char, mod=
-_name) > 0)
-> > +             parse_events_error__handle(error, get_column(scanner) + p=
-os, help , NULL);
-> > +}
-> > +
-> > +static int modifiers(struct parse_events_state *parse_state, yyscan_t =
-scanner)
-> > +{
-> > +     YYSTYPE *yylval =3D parse_events_get_lval(scanner);
-> > +     char *text =3D parse_events_get_text(scanner);
-> > +     struct parse_events_modifier mod =3D { .precise =3D 0, };
-> > +
-> > +     for (size_t i =3D 0, n =3D strlen(text); i < n; i++) {
-> > +#define CASE(c, field)                                                =
-       \
-> > +             case c:                                                 \
-> > +                     if (mod.field) {                                \
-> > +                             modifiers_error(parse_state, scanner, i, =
-c, #field); \
-> > +                             return PE_ERROR;                        \
-> > +                     }                                               \
-> > +                     mod.field =3D true;                              =
- \
-> > +                     break
-> > +
-> > +             switch (text[i]) {
-> > +             CASE('u', user);
-> > +             CASE('k', kernel);
-> > +             CASE('h', hypervisor);
-> > +             CASE('I', non_idle);
-> > +             CASE('G', guest);
-> > +             CASE('H', host);
-> > +             case 'p':
-> > +                     mod.precise++;
-> > +                     /*
-> > +                      * precise ip:
-> > +                      *
-> > +                      *  0 - SAMPLE_IP can have arbitrary skid
-> > +                      *  1 - SAMPLE_IP must have constant skid
-> > +                      *  2 - SAMPLE_IP requested to have 0 skid
-> > +                      *  3 - SAMPLE_IP must have 0 skid
-> > +                      *
-> > +                      *  See also PERF_RECORD_MISC_EXACT_IP
-> > +                      */
-> > +                     if (mod.precise > 3) {
-> > +                             struct parse_events_error *error =3D pars=
-e_state->error;
-> > +                             char *help =3D strdup("Maximum precise va=
-lue is 3");
-> > +
-> > +                             if (help) {
-> > +                                     parse_events_error__handle(error,=
- get_column(scanner) + i,
-> > +                                                                help ,=
- NULL);
-> > +                             }
-> > +                             return PE_ERROR;
-> > +                     }
-> > +                     break;
-> > +             CASE('P', precise_max);
-> > +             CASE('S', sample_read);
-> > +             CASE('D', pinned);
-> > +             CASE('W', weak);
-> > +             CASE('e', exclusive);
-> > +             CASE('b', bpf);
-> > +             default:
-> > +                     return PE_ERROR;
-> > +             }
-> > +#undef CASE
-> > +     }
-> > +     yylval->mod =3D mod;
-> > +     return PE_MODIFIER_EVENT;
-> > +}
-> > +
-> >  #define YY_USER_ACTION                                       \
-> >  do {                                                 \
-> >       yylloc->last_column  =3D yylloc->first_column;    \
-> > @@ -174,7 +245,7 @@ drv_cfg_term      [a-zA-Z0-9_\.]+(=3D[a-zA-Z0-9_*?\=
-:]+)?
-> >   * If you add a modifier you need to update check_modifier().
-> >   * Also, the letters in modifier_event must not be in modifier_bp.
-> >   */
-> > -modifier_event       [ukhpPGHSDIWeb]+
-> > +modifier_event       [ukhpPGHSDIWeb]{1,15}
-> >  modifier_bp  [rwx]{1,3}
-> >  lc_type      (L1-dcache|l1-d|l1d|L1-data|L1-icache|l1-i|l1i|L1-instruc=
-tion|LLC|L2|dTLB|d-tlb|Data-TLB|iTLB|i-tlb|Instruction-TLB|branch|branches|=
-bpu|btb|bpc|node)
-> >  lc_op_result (load|loads|read|store|stores|write|prefetch|prefetches|s=
-peculative-read|speculative-load|refs|Reference|ops|access|misses|miss)
-> > @@ -341,7 +412,7 @@ r{num_raw_hex}            { return str(yyscanner, P=
-E_RAW); }
-> >  {num_dec}            { return value(_parse_state, yyscanner, 10); }
-> >  {num_hex}            { return value(_parse_state, yyscanner, 16); }
-> >
-> > -{modifier_event}     { return str(yyscanner, PE_MODIFIER_EVENT); }
-> > +{modifier_event}     { return modifiers(_parse_state, yyscanner); }
-> >  {name}                       { return str(yyscanner, PE_NAME); }
-> >  {name_tag}           { return str(yyscanner, PE_NAME); }
-> >  "/"                  { BEGIN(config); return '/'; }
-> > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-eve=
-nts.y
-> > index 2c4817e126c1..79f254189be6 100644
-> > --- a/tools/perf/util/parse-events.y
-> > +++ b/tools/perf/util/parse-events.y
-> > @@ -68,11 +68,11 @@ static void free_list_evsel(struct list_head* list_=
-evsel)
-> >  %type <num> PE_VALUE
-> >  %type <num> PE_VALUE_SYM_SW
-> >  %type <num> PE_VALUE_SYM_TOOL
-> > +%type <mod> PE_MODIFIER_EVENT
-> >  %type <term_type> PE_TERM
-> >  %type <str> PE_RAW
-> >  %type <str> PE_NAME
-> >  %type <str> PE_LEGACY_CACHE
-> > -%type <str> PE_MODIFIER_EVENT
-> >  %type <str> PE_MODIFIER_BP
-> >  %type <str> PE_EVENT_NAME
-> >  %type <str> PE_DRV_CFG_TERM
-> > @@ -110,6 +110,7 @@ static void free_list_evsel(struct list_head* list_=
-evsel)
-> >  {
-> >       char *str;
-> >       u64 num;
-> > +     struct parse_events_modifier mod;
-> >       enum parse_events__term_type term_type;
-> >       struct list_head *list_evsel;
-> >       struct parse_events_terms *list_terms;
-> > @@ -175,20 +176,13 @@ event
-> >  group:
-> >  group_def ':' PE_MODIFIER_EVENT
-> >  {
-> > +     /* Apply the modifier to the events in the group_def. */
-> >       struct list_head *list =3D $1;
-> >       int err;
-> >
-> > -     err =3D parse_events__modifier_group(list, $3);
-> > -     free($3);
-> > -     if (err) {
-> > -             struct parse_events_state *parse_state =3D _parse_state;
-> > -             struct parse_events_error *error =3D parse_state->error;
-> > -
-> > -             parse_events_error__handle(error, @3.first_column,
-> > -                                        strdup("Bad modifier"), NULL);
-> > -             free_list_evsel(list);
-> > +     err =3D parse_events__modifier_group(_parse_state, &@3, list, $3)=
-;
-> > +     if (err)
-> >               YYABORT;
-> > -     }
-> >       $$ =3D list;
-> >  }
-> >  |
-> > @@ -238,17 +232,9 @@ event_name PE_MODIFIER_EVENT
-> >        * (there could be more events added for multiple tracepoint
-> >        * definitions via '*?'.
-> >        */
-> > -     err =3D parse_events__modifier_event(list, $2, false);
-> > -     free($2);
-> > -     if (err) {
-> > -             struct parse_events_state *parse_state =3D _parse_state;
-> > -             struct parse_events_error *error =3D parse_state->error;
-> > -
-> > -             parse_events_error__handle(error, @2.first_column,
-> > -                                        strdup("Bad modifier"), NULL);
-> > -             free_list_evsel(list);
-> > +     err =3D parse_events__modifier_event(_parse_state, &@2, list, $2)=
-;
-> > +     if (err)
-> >               YYABORT;
-> > -     }
-> >       $$ =3D list;
-> >  }
-> >  |
+> Hi,
+>
+> I found a discussion about this change in the email thread bellow, and
+> hope it helps you.
+It's helpful to know why this patch not need, thank you.
+>
+> https://lore.kernel.org/all/YwMwlMv%2FtK3sRXbB@slm.duckdns.org/#t
+
+I have a question, that, now that only for cgroup1, when I running qemu 
+ubuntu, I got this:
+
+ > mount | grep cgroup
+ > cgroup2 on /sys/fs/cgroup type cgroup2 
+(rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot)
+
+Only cgroup2 mount in my system, but /proc/cgroup also worked, maybe 
+better to disable this when only cgroup2 mounted?
+
+> On 2024/4/9 10:18, Huan Yang wrote:
+>> The current cgroups output format is based on tabs, which
+>> may cause misalignment of output information.
+>>
+>> Using placeholder formatting can make the output information
+>> more readable.
+>>
+>> Signed-off-by: Huan Yang <link@vivo.com>
+>> ---
+>>   kernel/cgroup/cgroup-v1.c | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+>> index 520a11cb12f4..c082a78f4c22 100644
+>> --- a/kernel/cgroup/cgroup-v1.c
+>> +++ b/kernel/cgroup/cgroup-v1.c
+>> @@ -669,15 +669,16 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
+>>        struct cgroup_subsys *ss;
+>>        int i;
+>>
+>> -     seq_puts(m, "#subsys_name\thierarchy\tnum_cgroups\tenabled\n");
+>> +     seq_printf(m, "%16s %16s %16s %16s\n", "#subsys_name", "hierarchy",
+>> +                "num_cgroups", "enabled");
+>>        /*
+>>         * Grab the subsystems state racily. No need to add avenue to
+>>         * cgroup_mutex contention.
+>>         */
+>>
+>>        for_each_subsys(ss, i)
+>> -             seq_printf(m, "%s\t%d\t%d\t%d\n",
+>> -                        ss->legacy_name, ss->root->hierarchy_id,
+>> +             seq_printf(m, "%16s %16d %16d %16d\n", ss->legacy_name,
+>> +                        ss->root->hierarchy_id,
+>>                           atomic_read(&ss->root->nr_cgrps),
+>>                           cgroup_ssid_enabled(i));
+>>
 
