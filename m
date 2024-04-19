@@ -1,184 +1,183 @@
-Return-Path: <linux-kernel+bounces-151635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83BDB8AB162
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:10:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C75CF8AB166
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:11:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFC67B2246E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:10:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 412CE1F24969
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B077C130A7E;
-	Fri, 19 Apr 2024 15:09:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC73D12F5A5;
+	Fri, 19 Apr 2024 15:11:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="c3GiTWQw"
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Lwy9C1xR"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2086.outbound.protection.outlook.com [40.107.93.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83076130A49;
-	Fri, 19 Apr 2024 15:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713539392; cv=none; b=pXcj3O7IxUK1QDizI122sosY16fraWQNZf8Vcr09VEZIoceWxwE7nqnskvu3Th+UONx+RTx/s+etJioOCYL4y4189LCCB1dU5v++iGNMagnPvwyvTyKtR5/z4wEMZW5ckrMzY2Lx9wusAJnaoRzifD9pARViUtzbP8kwlg76Z3Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713539392; c=relaxed/simple;
-	bh=h+fwpAsM9F/f7Szlj6S/NNeA4wZQuFUyN28t89RHvCA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eub8vaauP/SN7nr/cCPnhyUqIywHvx4oCmTotWd384z4UhjVQjpETUyYstjTzn7fHJqhnOGe5PYDk9DfWWtmT+ebGyVYoWRL/4CRaFYym0xq1GnwYWTRrmvEsSK9D0U4tMvNZqgNS8KSxqwB3NCNxnYGWdyTaGC1AMxUtseqsUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=fjasle.eu; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=c3GiTWQw; arc=none smtp.client-ip=194.63.252.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fjasle.eu
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fjasle.eu;
-	s=ds202307; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=aOF3WD8/Ne6KGP9471zOOzhLuh/9R5L/lErCrkAZ57g=; b=c3GiTWQwv/dRbkIcM12O0M43SL
-	4rZgofrWXACS11eeAhfY9VVFMHN/NxRH4qWKBaTpkUMl0XSv9hdtukpHWC7lRpAfenQrr599rJw5z
-	Dlp+2UGCPrRhBOvCexpQAfcTn6mwbvSL9x27cqZeYgi5NGYkgEsZuiL+u60/5z5k2BE7diGDbnuQK
-	+49yXltgio6KHNgSyFHcrqnghhX1iW9enyq8EZ4J3/msCarmHcSl/qu3h+wc7e6g6f9vZlJANV/AZ
-	Bh18NnF/H8jlDmG+ce0bTCHOi+2ua1ztokEHHK5AIuwpjfhdhj5rie9L6C6Uc1RaQrnOsQsAiiDcF
-	KNCdIctA==;
-Received: from [2001:9e8:9f5:cc01:6f0:21ff:fe91:394] (port=46890 helo=bergen.fjasle.eu)
-	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <nicolas@fjasle.eu>)
-	id 1rxps1-004AhA-EU;
-	Fri, 19 Apr 2024 17:09:45 +0200
-Date: Fri, 19 Apr 2024 17:09:42 +0200
-From: Nicolas Schier <nicolas@fjasle.eu>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] kbuild: use $(src) instead of $(srctree)/$(src) for
- source directory
-Message-ID: <ZiKJNrei7zUVaLkb@bergen.fjasle.eu>
-References: <20240416121838.95427-1-masahiroy@kernel.org>
- <20240416121838.95427-5-masahiroy@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 641A912E1D2;
+	Fri, 19 Apr 2024 15:11:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.86
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713539476; cv=fail; b=GyPZ2RyDt0CUR2WEuYFclyLqQpjswjhBLkRG2zOYDMIUTXIYqZKYTPUihecsuQcMLXMz0HzM3TRg8PPXUTZpCCFq0aKkyYBZ7JVGmP8MGXb68o6gH96SUUOSue1HALdBCAUVqoLqm98HtNn9ANouEMR1nSxXYMhk6XFt9EqdpqY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713539476; c=relaxed/simple;
+	bh=v9J70aGyBGgGJXGFNR48Z4WndwkG7puOXl4FXXuIZ5g=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dEfag/xQpvaXCn4GNUd0n4fgo5hxFO261Vp5byShf8Lh2jjaduLoJ78d1YjQu3p6rxqUovKNxrDfjmqJsnhmzmz2Ifib0Y0w4Xo9jHUtz4RL/0gDI17Fp1jo2mbMWKKqrSnjuWCysZJNMXKnXdCEjcVtt+l13d2hGSvmvj7qJVU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Lwy9C1xR; arc=fail smtp.client-ip=40.107.93.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iGglFsMezYIvPja6laEvVLvSTpYRXcOQZOYjSCRFE2AOzHUu04vz4/hvPNLqvUuK/f0i2vL6wt8q1wx7l2VgexiXWF9b552cCJX7yapSbBmmiCmVKajtViUQveLDfsi17bUGObPJaVJkpR2hoYAzHcpTaxmdt2ellWs8MvKx7/k+xnH+enTUDBAEEJCX3r7vrU9YEI3vudWUDzkMyGnr6shMg4zqgN0+bA6z1HifTZxwj/C2CmKOWCCCX6Zc30p8TWyc3drURexESAoeJi35qWDvh1LZtKnmV+KKpRQbxxt5QNH0QZqNb+UBtmtOyJIs8cYwMfuj6nEHa5ddjFVv2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3qSeQz0enh3nAACey1JKcfgjxc5ZS1pjRYCYrOLMTs4=;
+ b=gmnxAfuw71cwuJQIaUmunjmR29KdQiW4tVzSfRsMGQuNd4hNJYIm+QgsGnMseYfmTSJBv7yKVTpnP/yzcPdaujpzg2O6aMj0ExQCSOd6hF6+eL7IjsgyYrn2LkOyYUDmVD6vz4WZZ6jHHTE+AlG96+TWpr5tAcu1egvo7RWsb0pubNyPOh9AhRRZBctCyq3oI4hkd6CLG8kcfR21EfIEVesnjHxhkxdv5+8LH1JNMO+d94XbnYpFB+3IIikazgWsOelmt8Ega/OFTqTDN2FXHB+xkW4Xrgmc5DJFxApXfZ1sHLS6vRujDDgf6rV16CN/2TqhVrO505MiR6G3LHyGYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3qSeQz0enh3nAACey1JKcfgjxc5ZS1pjRYCYrOLMTs4=;
+ b=Lwy9C1xRLLYn38lSawithV5dB0Yb5+GmGWmbBq8bAcBq1nmBJ8ZvU2xOazICg0cN8KiEm6873XgOpZn2gDETGcaFoK3Uro71xKXkbGi5gw3UFlLDwfRNfA4+GcxbSO9MQw8sI7iFci8bgq6AYYRmB+KvaZrTE6dWtEQhsxJXcog=
+Received: from DS7PR06CA0038.namprd06.prod.outlook.com (2603:10b6:8:54::19) by
+ SJ2PR12MB9139.namprd12.prod.outlook.com (2603:10b6:a03:564::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7472.44; Fri, 19 Apr 2024 15:11:09 +0000
+Received: from CY4PEPF0000EE32.namprd05.prod.outlook.com
+ (2603:10b6:8:54:cafe::eb) by DS7PR06CA0038.outlook.office365.com
+ (2603:10b6:8:54::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.33 via Frontend
+ Transport; Fri, 19 Apr 2024 15:11:09 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE32.mail.protection.outlook.com (10.167.242.38) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Fri, 19 Apr 2024 15:11:09 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 19 Apr
+ 2024 10:11:07 -0500
+Date: Fri, 19 Apr 2024 10:11:09 -0500
+From: Michael Roth <michael.roth@amd.com>
+To: David Hildenbrand <david@redhat.com>
+CC: <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
+	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
+	<ardb@kernel.org>, <pbonzini@redhat.com>, <seanjc@google.com>,
+	<vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
+	<dave.hansen@linux.intel.com>, <slp@redhat.com>, <pgonda@google.com>,
+	<peterz@infradead.org>, <srinivas.pandruvada@linux.intel.com>,
+	<rientjes@google.com>, <dovmurik@linux.ibm.com>, <tobin@ibm.com>,
+	<bp@alien8.de>, <vbabka@suse.cz>, <kirill@shutemov.name>,
+	<ak@linux.intel.com>, <tony.luck@intel.com>,
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
+	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
+	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>
+Subject: Re: [PATCH v13 04/26] KVM: guest_memfd: Fix PTR_ERR() handling in
+ __kvm_gmem_get_pfn()
+Message-ID: <20240419151109.bo6kz4s24jgrmaj4@amd.com>
+References: <20240418194133.1452059-1-michael.roth@amd.com>
+ <20240418194133.1452059-5-michael.roth@amd.com>
+ <a6086ba5-6137-44a0-9e51-ce4df5eb6ce4@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="i0u71n+gDxHrlL+f"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240416121838.95427-5-masahiroy@kernel.org>
-X-Operating-System: Debian GNU/Linux trixie/sid
-Jabber-ID: nicolas@jabber.no
+In-Reply-To: <a6086ba5-6137-44a0-9e51-ce4df5eb6ce4@redhat.com>
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE32:EE_|SJ2PR12MB9139:EE_
+X-MS-Office365-Filtering-Correlation-Id: f21d702e-2189-412d-a4ec-08dc6082f18d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	iunGVMZpDu9mmJf9+rNqettYlXiVIlnxFFBNycGuCOBsltobTMrWMJkFNMcmeGL27PuOg9ToDLyrJJWNOxLeuo0Wb43m7KnJpPsR9uVIIARMEBoDOnw+tLOTlNF2t+0jLhBD7ZKduQYR992RTyasB3OI4f/z6qcxIlk++by+mjedc90GRwRyHwtiWqdm92qLWTi+Rjr6THEWQHe9C78+1DYuV2VLQETWFVE07wSzuYVAwd8QHs5JsV8w3eiwntXSfn1PDrThFKzXt026Vp/PbQt51/OjuZ3f/Be7HoW1CcOpbys1ZFfZb1rTj6ISppynBGA9wgfp9ms5y2qX643eWarbQmCj0mRv/u9HtLeAQjtNc+oVFxhEmgdY/QjlpsXBCpC+NgncZR9ytlLAa0UdBR0ZgS4+61o9pTGlB426wyjVaXbdv3qLPrn6XZLwNaEpOyXFGMZWSlFfye3nYXR0DnglixQEqS2ubob7AWu5SHOzLvrTTdPf2hv4LFh/04fsWsBMKVOUtLFSs3VNBrUO0y0FrKKXldEoi3MT1sCDzuF8eMw6KFSGB4nxmSe4tmqBOjRMwB/1Dh3ZKEWSMCo1ePPeFYm5uLsy5wxXtE1cvRKksZVQFYqVaZ6F/NrT900WiPI/PbvY6riEKdodD7oBUqsHNGoPu/grhLrCA98bkIYBBBI9YMRcLv3u/QaLR/chu9QruKaPTG2HTVfZfmuu0coWAVaYs7jM21lm6xRhzoo9LHzZ5T/Q9EpFlnyoZMgm
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(376005)(82310400014)(1800799015)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 15:11:09.2923
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f21d702e-2189-412d-a4ec-08dc6082f18d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EE32.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9139
 
+On Fri, Apr 19, 2024 at 02:58:43PM +0200, David Hildenbrand wrote:
+> On 18.04.24 21:41, Michael Roth wrote:
+> > kvm_gmem_get_folio() may return a PTR_ERR() rather than just NULL. In
+> > particular, for cases where EEXISTS is returned when FGP_CREAT_ONLY
+> > flag is used. Handle this properly in __kvm_gmem_get_pfn().
+> > 
+> > Signed-off-by: Michael Roth <michael.roth@amd.com>
+> > ---
+> >   virt/kvm/guest_memfd.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+> > index ccf22e44f387..9d7c6a70c547 100644
+> > --- a/virt/kvm/guest_memfd.c
+> > +++ b/virt/kvm/guest_memfd.c
+> > @@ -580,8 +580,8 @@ static int __kvm_gmem_get_pfn(struct file *file, struct kvm_memory_slot *slot,
+> >   	}
+> >   	folio = kvm_gmem_get_folio(file_inode(file), index, prepare);
+> > -	if (!folio)
+> > -		return -ENOMEM;
+> > +	if (IS_ERR_OR_NULL(folio))
+> > +		return folio ? PTR_ERR(folio) : -ENOMEM;
+> 
+> Will it even return NULL?  Staring at other filemap_grab_folio() users, they
+> all check for IS_ERR().
 
---i0u71n+gDxHrlL+f
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looks like the NULL case is handled with PTR_ERR(-ENOENT), so IS_ERR()
+would be sufficient. I think in the past kvm_gmem_get_folio() itself
+would return NULL in some cases, but as of commit 2b01b7e994e95 that's
+no longer the case.
 
-On Tue 16 Apr 2024 21:18:38 GMT, Masahiro Yamada wrote:
-> Kbuild conventionally uses $(obj)/ for generated files, and $(src)/ for
-> checked-in source files. It is merely a convention without any functional
-> difference. In fact, $(obj) and $(src) are exactly the same, as defined
-> in scripts/Makefile.build:
->=20
->     src :=3D $(obj)
->=20
-> When the kernel is built in a separate output directory, $(src) does
-> not match the directory in the source tree. It still works because the
-> top Makefile sets VPATH to $(srctree). However, VPATH does not cover
-> all cases. There are many places where the exact path to the source
-> directory is needed. For example, when adding a header search path for
-> local headers, it is typical to pass -I$(srctree)/$(src) to the compiler.
->=20
-> However, it introduces inconsistency between upstream Makefiles and
-> downstream Makefiles; when the source directory path is needed,
-> $(srctree)/$(src) is used in the upstream kernel, while $(src) is used
-> in external modules.
->=20
-> To resolve the distortion, this commit changes the semantics of $(src)
-> so that it always points to the directory in the source tree.
->=20
-> Going forward, the variables used in Makefiles will work as follows:
->=20
->   $(obj)     - directory in the object tree
->   $(src)     - directory in the source tree  (changed by this commit!)
->   $(objtree) - the top of the kernel object tree
->   $(srctree) - the top of the kernel source tree
->=20
-> This is a tweewide Makefile conversion for replacing $(srctree)/$(src)
-> with $(src).
+I'll fix this up to expect only PTR_ERR() when I re-spin v14, and also
+address the other kvm_gmem_get_folio() / __filemap_get_folio() call
+sites.
 
-tweewide -> treewide
+> 
+> >   	if (folio_test_hwpoison(folio)) {
+> >   		r = -EHWPOISON;
+> 
+> Do we have a Fixes: tag?
 
-[...]
-> diff --git a/drivers/Makefile b/drivers/Makefile
-> index 3bf5cab4b451..fe9ceb0d2288 100644
-> --- a/drivers/Makefile
-> +++ b/drivers/Makefile
-> @@ -6,11 +6,6 @@
->  # Rewritten to use lists instead of if-statements.
->  #
-> =20
-> -# Some driver Makefiles miss $(srctree)/ for include directive.
-> -ifdef building_out_of_srctree
-> -MAKEFLAGS +=3D --include-dir=3D$(srctree)
-> -endif
-> -
+Fixes: 2b01b7e994e95 ("KVM: guest_memfd: pass error up from filemap_grab_folio")
 
-Ah, it's nice to get rid of this.
+Will add that in the re-spin as well.
 
->  obj-y				+=3D cache/
->  obj-y				+=3D irqchip/
->  obj-y				+=3D bus/
-[...]
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 3179747cbd2c..c53d2f168801 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -209,13 +209,13 @@ _c_flags +=3D $(if $(patsubst n%,, \
->  	-D__KCSAN_INSTRUMENT_BARRIERS__)
->  endif
-> =20
-> -# $(srctree)/$(src) for including checkin headers from generated source =
-files
-> -# $(objtree)/$(obj) for including generated headers from checkin source =
-files
-> +# $(src) for including checkin headers from generated source files
-> +# $(obj) for including generated headers from checkin source files
+Thanks!
 
-this is a funny criss-cross of words; but might the following be more=20
-accurate?
+-Mike
 
-# $(src) for including headers from checked-in source files
-# $(obj) for including generated headers
-
-
-
-
-Anyway, thanks for the patch.  I think it is quite a good way forward!
-
-Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
-
---i0u71n+gDxHrlL+f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmYiiTUACgkQB1IKcBYm
-Emmj6Q//cIvEL5iZu7UNYQC1sjxZ7oCAdl9f00PUES61cSQj1fcrXxz2cEdStnOw
-ZKYwn8tiprhRkLmfdX+udQUlVKXKCBXIAozpdH24w706YMfBiAbw7eOqfgIP302b
-BNjhMc24saIePZPYNj2EVB1IrQYNrY+R7tfF8gOtON80TgGEMYoUp54NOlzZVGAp
-E9zTI1LcU1jdNg2TXh5+cWw0INy5sIIy0McSG8jPwgV04HG722MrhH/NhoFZqOi3
-ajLGhaNJLfa7Yb2WPHjEVS07z2hugQd7WYU1+Fx3uUO6N6ZoCDcwEDYTibDtotUb
-nFtiUQGuHDLtUZo6QI/ZB/wH7dHKp36vQqo3X19CtZwf5relCASs2KtMp4chUoZM
-0Ve/JKth7JfjMGKZAsF2yluujSNiieHrxQLROgEJxd79Sk25Ks6SDcL+Nb83TqOl
-QwQ9qq2qwRat8rBjSHbNiDESAhvXybbbvl2aL4+k+HluyAs1m9zBxrHpjzM9xav0
-bksXUfHxgNJrk6cpVg5Lk3w/EC01nSb6W/mPnWfGgMAa72Hzk21SDw8h4/fnGdxG
-wHBq7WEsWRnLwZSXf0HLz+KJAPC6At2PLldq+d1w+HUEJwM4vOxwP8x9sUBaUycm
-QmmZ0Rty83AkkZLb9ncIoBRdXYagH7SZXHzEOcztIyznp8zG/Mk=
-=Txrt
------END PGP SIGNATURE-----
-
---i0u71n+gDxHrlL+f--
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
 
