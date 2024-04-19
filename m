@@ -1,173 +1,120 @@
-Return-Path: <linux-kernel+bounces-151069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4204D8AA89A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C92D78AA89E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:47:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BD0B1C20D49
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:46:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0658D1C213F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:47:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F3F3717D;
-	Fri, 19 Apr 2024 06:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF993A28E;
+	Fri, 19 Apr 2024 06:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GfGoiyWl";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7nYIMsGN";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GfGoiyWl";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7nYIMsGN"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U37DA/kB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F0D037165;
-	Fri, 19 Apr 2024 06:46:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B1AE37165;
+	Fri, 19 Apr 2024 06:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713509205; cv=none; b=Ye21eIqS/KXy0b6gDHt03YZfJSyukh9XVVsSdfHDNGWUPA2UtyTwYoGobj8L4pMWGkdk01Zkew2IdA7LGpsPOQpdd60dRCdULAjDjwqN8uQMXvS608sXt5tfMTMtEZTunagSoO6YUE1q2mjlO9CxhvDZgkBNJ5/oB/8QZ84/Mek=
+	t=1713509245; cv=none; b=MIE47GCAjElGMmhmfEBR+T3SNuSZy8WCVn9xCaLjPJrsHXtiMgSaH2rlaUw8SHxNVdjfbOj0XQ/A6htZMBobG/lPPDv+29jaGY90wu+09noYt9bOcbZbnKvRfaNWaP0VYQ9NnfBXE2EndzkJrPny/kDO/UPbWY+c9mwo5Uk9buM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713509205; c=relaxed/simple;
-	bh=rk5dYVTOEKcf8TieWS5krXZV5RTCOihx7uuqubWxOxo=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iqOP4Fcz/wWnkhXQDI0SqekFjR0G5cMDvBsAGBfzVd+CHgH9YL4vk5o0A2U6/OIoScPGV0Ng4CO21CSzEplTIp1PwmFExF28t7RUj1eMBpt4NB5DNT66NHFO90DKtsQS8k02QM9DYB7cYP5qFdw1YYjjXRi4ESiibdwwyWSEt08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GfGoiyWl; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7nYIMsGN; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GfGoiyWl; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7nYIMsGN; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 415A15D3A0;
-	Fri, 19 Apr 2024 06:46:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713509202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EeNeAuoW3dXuECUX3IUeU9F3dbFOKMP5qwJi1Qt8HHs=;
-	b=GfGoiyWlF88tWZKouoMgWbF7SKh+0j8aVEgv0L0dY0MnEv9yBX2BvIhYrfRqGVUDspN/XM
-	zdDxE8hzJyOeZ9e5URPaODXlw36w8fAIfhPVUYC3jGhHRhd/yCsn+cb89FFZTM/GFLSuN/
-	tfDZp2W+lreJ7UMkAgeybzJA2grjWk0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713509202;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EeNeAuoW3dXuECUX3IUeU9F3dbFOKMP5qwJi1Qt8HHs=;
-	b=7nYIMsGNjkFwF1RowN4V7yzcnP2t4kaa0IoZJCD12w2k3z9uWDR6n+435fst6tA0AjrZDo
-	Ky+6o1lw4IQk4vBA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=GfGoiyWl;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=7nYIMsGN
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713509202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EeNeAuoW3dXuECUX3IUeU9F3dbFOKMP5qwJi1Qt8HHs=;
-	b=GfGoiyWlF88tWZKouoMgWbF7SKh+0j8aVEgv0L0dY0MnEv9yBX2BvIhYrfRqGVUDspN/XM
-	zdDxE8hzJyOeZ9e5URPaODXlw36w8fAIfhPVUYC3jGhHRhd/yCsn+cb89FFZTM/GFLSuN/
-	tfDZp2W+lreJ7UMkAgeybzJA2grjWk0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713509202;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EeNeAuoW3dXuECUX3IUeU9F3dbFOKMP5qwJi1Qt8HHs=;
-	b=7nYIMsGNjkFwF1RowN4V7yzcnP2t4kaa0IoZJCD12w2k3z9uWDR6n+435fst6tA0AjrZDo
-	Ky+6o1lw4IQk4vBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DD30313687;
-	Fri, 19 Apr 2024 06:46:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HKGPNFETImbLRgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 19 Apr 2024 06:46:41 +0000
-Date: Fri, 19 Apr 2024 08:46:49 +0200
-Message-ID: <877cgtvoh2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Ai Chao <aichao@kylinos.cn>
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	kailang@realtek.com,
-	sbinding@opensource.cirrus.com,
-	luke@ljones.dev,
-	shenghao-ding@ti.com,
-	simont@opensource.cirrus.com,
-	foss@athaariq.my.id,
-	rf@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda/realtek - Enable audio jacks of Haier Boyue G42 with ALC269VC
-In-Reply-To: <20240419052803.339466-1-aichao@kylinos.cn>
-References: <20240419052803.339466-1-aichao@kylinos.cn>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1713509245; c=relaxed/simple;
+	bh=qmJspUN5/sFyMT1W/2++coD8shFK3AdJHmIK+WO0s4A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rcPLs3HDkT4uvV+XvZnyDJKxQrf1oM6G0XMBeOQ63iG01+9/X/dGGXWPy4VMOZj8Z6TdVX8JPdhaQ4wm5b57Bm8gFeFRNmQRWTuTWqbWnnjDJgG3aqQW15OgfUN1Lc86JqcGa335Ul1oKpH812Ivp8INzhBqO076fQnzDEt6/BI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U37DA/kB; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713509243; x=1745045243;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qmJspUN5/sFyMT1W/2++coD8shFK3AdJHmIK+WO0s4A=;
+  b=U37DA/kBkSpMZEiG4fUigdEB8EAbUCm9SbdN09lidE9tpIHOy/UQhQuL
+   wQJ4qZvCEoIFmDiAfVDPVU2jQSS5Sr+V5M2CAiY3unfZhkPYR+aZALBgp
+   oJ1oL8HNi/Mrfs3PTDph54Lqqz2B6zyz79Zedsi2lMkd+qgMP+P24XKn7
+   PtRR0NWzZN6CIp0M0YpEtN9VDN0zGVQaVlehA11X3pSWiO8gJSTEq5+zA
+   ib23n/QJJmH4tiJi5hcORD60M3Tts7VlBPMDgBjiXYqFMh3UDp99JXmHu
+   BQmIDULzAt00xZ/0c8nqd4kzQ9e45j/3KpyyMmTirfktRnFGT+vU0c5Bh
+   w==;
+X-CSE-ConnectionGUID: E7ENx/qrQ8mWGLvqKR4IiQ==
+X-CSE-MsgGUID: Qc/0W+CkQpuG3bi9Bs0n+Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="31579524"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="31579524"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 23:47:23 -0700
+X-CSE-ConnectionGUID: RWvXiigjQCqQ0R6Kfzu4nw==
+X-CSE-MsgGUID: hkiTvbDYRkGBTagcSkQ48Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="23223618"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.238.14]) ([10.124.238.14])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 23:47:19 -0700
+Message-ID: <7b23e6f6-23cc-4dff-aea1-cb30e91d046d@intel.com>
+Date: Fri, 19 Apr 2024 14:47:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-X-Spamd-Result: default: False [-0.54 / 50.00];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	BAYES_HAM(-0.03)[55.20%];
-	MX_GOOD(-0.01)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	DWL_DNSWL_BLOCKED(0.00)[suse.de:dkim];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,suse.de:dkim];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Spam-Flag: NO
-X-Spam-Score: -0.54
-X-Spamd-Bar: /
-X-Rspamd-Queue-Id: 415A15D3A0
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/16] KVM: x86/mmu: Page fault and MMIO cleanups
+To: Paolo Bonzini <pbonzini@redhat.com>,
+ Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>,
+ Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>,
+ Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>,
+ David Matlack <dmatlack@google.com>
+References: <20240228024147.41573-1-seanjc@google.com>
+ <CABgObfaS7RhUPe_FYS9SCuDzOfFw4X9P8XOhJSspVdzsYeoX2A@mail.gmail.com>
+Content-Language: en-US
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <CABgObfaS7RhUPe_FYS9SCuDzOfFw4X9P8XOhJSspVdzsYeoX2A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 19 Apr 2024 07:28:03 +0200,
-Ai Chao wrote:
+On 4/17/2024 8:48 PM, Paolo Bonzini wrote:
+> On Wed, Feb 28, 2024 at 3:41 AM Sean Christopherson <seanjc@google.com> wrote:
+>>
+>> This is a combination of prep work for TDX and SNP, and a clean up of the
+>> page fault path to (hopefully) make it easier to follow the rules for
+>> private memory, noslot faults, writes to read-only slots, etc.
+>>
+>> Paolo, this is the series I mentioned in your TDX/SNP prep work series.
+>> Stating the obvious, these
+>>
+>>    KVM: x86/mmu: Pass full 64-bit error code when handling page faults
+>>    KVM: x86: Move synthetic PFERR_* sanity checks to SVM's #NPF handler
+>>
+>> are the drop-in replacements.
 > 
-> The Haier Boyue G42 with ALC269VC cannot detect the MIC of headset,
-> the line out and internal speaker until
-> ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS quirk applied.
+> Applied to kvm-coco-queue, thanks, and these to kvm/queue as well:
 > 
-> Signed-off-by: Ai Chao <aichao@kylinos.cn>
-> ---
->  sound/pci/hda/patch_realtek.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index d6940bc4ec39..0ebdc676cfe1 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -10473,6 +10473,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	SND_PCI_QUIRK(0xf111, 0x0001, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
->  	SND_PCI_QUIRK(0xf111, 0x0005, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
->  	SND_PCI_QUIRK(0xf111, 0x0006, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
-> +	SND_PCI_QUIRK(0x1d17, 0x3288, "Haier Boyue G42", ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS),
+>   KVM: x86/mmu: Exit to userspace with -EFAULT if private fault hits emulation
+>   KVM: x86: Remove separate "bit" defines for page fault error code masks
+>   KVM: x86: Define more SEV+ page fault error bits/flags for #NPF
+>   KVM: x86: Move synthetic PFERR_* sanity checks to SVM's #NPF handler
+>   KVM: x86/mmu: Pass full 64-bit error code when handling page faults
+>   KVM: x86/mmu: WARN if upper 32 bits of legacy #PF error code are non-zero
 
-The table is sorted in PCI SSID order.  Could you try to put at the
-right place?
+Paolo,
 
+It seems you forgot to incorporate the review comment into the patch 
+before you queued them to kvm/queue.
 
-thanks,
+e.g., the comment from Dongli to
 
-Takashi
+KVM: x86: Define more SEV+ page fault error bits/flags for #NPF
+
+https://lore.kernel.org/all/12f0b643-e2e8-8a9a-b264-5c7c460f1a24@oracle.com/
+
 
