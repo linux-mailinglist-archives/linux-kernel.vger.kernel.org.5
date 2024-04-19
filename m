@@ -1,427 +1,259 @@
-Return-Path: <linux-kernel+bounces-151964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69FD68AB64C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:13:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36D888AB64D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:13:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D9891C2103C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:13:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1015281EA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:13:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A922E417;
-	Fri, 19 Apr 2024 21:13:06 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AFB62E3F7
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 21:13:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BDA3376F1;
+	Fri, 19 Apr 2024 21:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="cuEjqFg4"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B8EF10A2C;
+	Fri, 19 Apr 2024 21:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713561185; cv=none; b=WQaW4610GDxAQUlsgNTkoMnp+D6PE3tqOKug5AQgJXHYKxVfhlh0FpKwS8MLK4DnrPXktytO104O3R9108P367KqzrtfmDQ/CxNFwQWCtvUuhkrfSonr6oq4l+dmVinpHg+vDgXwsFP+1OjfdRX994sS7HWy89/IwNygRFoT6YI=
+	t=1713561222; cv=none; b=B/0NdNEsE69S4AaMEHfXmHDK2wP0T05RaALW7oKV++rp+sOuhxmUftp6q4EMoD4q0GUBlmCeq7GLNTbqY6UdvTfV+nnjEVN2bfVxfFex+gQvlZRrd8SYMzZHK54Amh45MUkkp+mAEd1272XRVGSO9isCgt7CwV7t4D7SlzWso5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713561185; c=relaxed/simple;
-	bh=qBeNX0eKRM8l2memsXLhrx1KgVTuKZafgT+y13AN9oE=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=boqW9V2FzZdsw4gAwvejYtgf4BXph7jNXTXaipYeLRzUoHuGswWmzHTpqiqKusHCTuQIjitkmCppZ0E8R7uoAs03PfuzPzypOcvDbedfoNhvY0kdKKwtnLrZwXLwhoFNMCpoRB5kpJf9jn3saAJQwXun6hPxEGZLap51uqJzKk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d622cae9e4so274713739f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:13:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713561182; x=1714165982;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9Uy2/NL1CdN2lrJCb5YM2yvIF4z5nVY0Gs3xSdjoIsk=;
-        b=YiFfAlPHFE0pQpUssJ+CcJcDJs4TQu5TeWLOK7aDLttkjtJzDVrhyL1uM4hWKmekOa
-         zwlZ9iYm4ONWSWDx/8zOS7sehLb7FVIZGogPXc4UzUpO7cwS5xV/kTttcqK2pHDIp0bW
-         rY6gqtbIKspXAfGjrw2EnyZ5rHLWhsofOx+/Q0D3RXHsy3k6Tyypt5NOvjo8bqFm5u5u
-         bC69B2apDWPqeXNG3zrTjUxDSHVsuMOmoo6LNDV0L4s1LuSy4AFi4wAVQeC0HwF75w1w
-         XgeS7gNLnG/Xr7pU5MSfD+SjpoWdr4566UNrCDdup+IBX+9DCNmTtaGbJVF6IGCYyCob
-         H9GA==
-X-Forwarded-Encrypted: i=1; AJvYcCVQi/q/n4QpjExplgV3+LxK+GxN5bogBtPStia3SilcionyccL9c63jKXzbrUPSS+4dPrxlsxyDbP2zJaEQeVuAD6FmQR4JP1BW3Gi2
-X-Gm-Message-State: AOJu0YxqrJiDLe+XaBAO6KxnXW+INigE2SITeYkw5z4dF7flB5ylWLqx
-	n89C1LxMEZQkvPx9miZToh0tpnb6cpWdxI7bCT+XW0Yw+JZ8WwpwyO4ND0j4keVlT4YVNlIjHUa
-	fP/Hbmm1y7o0yy09QGdUtz8dDzPhfsZvtYWw9q2qaugwuDDWSVUlo83Q=
-X-Google-Smtp-Source: AGHT+IF7r/Civg1eFyblINP/5BeTY7E1Ry0kAqfIkLVwqlACHKyf1EpON7jcfC5cXlwC45AfjWMwp2KkvmSu9KP9aGaimFFLqt/s
+	s=arc-20240116; t=1713561222; c=relaxed/simple;
+	bh=oIcZefAdb+coatM174ij1LdSIN84ZaCFeDnUlLrqGXU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kU/LZ5BGQZByleJCiq9T6LljevPEcgpYBNYqDpUv6RmAQKDCi6KnQ9prZiOUIFuKhTpQSVnsOTjvw+Ie/qo8677cRQTba9pYGsqezemLCxzKIibSytDaKBsrecfvil/IQyCVWVKq+ERZGWU/dA+d+X/bB6HPw6eNbx1ZL1MKIKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=cuEjqFg4; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from DESKTOP-4OLSCEK. (c-76-135-27-212.hsd1.wa.comcast.net [76.135.27.212])
+	by linux.microsoft.com (Postfix) with ESMTPSA id C44D620FDC4B;
+	Fri, 19 Apr 2024 14:13:40 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C44D620FDC4B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1713561220;
+	bh=XE0uXoNgtxaWLEQbxNxQNdOcqHe9iSSF1gbTqedCfmc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cuEjqFg4dJDkNgNbzNK76wVSFkgIGMb3iAw//dEEgp9GwYszBB9YeKAONXAKwQrIE
+	 ZbXNd419UkKbywo2Fbm6yYUuTKOcM7iHmgNqrMAKnYecX/dVbMhJ1jQ52xra354K77
+	 KhBHDRu/QjWB+xGPxU5igmsVJAEiIVLHN107LPek=
+Date: Fri, 19 Apr 2024 14:13:34 -0700
+From: Beau Belgrave <beaub@linux.microsoft.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	dcook@linux.microsoft.com
+Subject: Re: [PATCH 1/2] tracing/user_events: Fix non-spaced field matching
+Message-ID: <20240419211334.GA7774-beaub@linux.microsoft.com>
+References: <20240416224102.734-1-beaub@linux.microsoft.com>
+ <20240416224102.734-2-beaub@linux.microsoft.com>
+ <20240419113305.7b0ae2b11395eec16b5c15b6@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:860d:b0:482:ced6:e5f5 with SMTP id
- iu13-20020a056638860d00b00482ced6e5f5mr237425jab.1.1713561181781; Fri, 19 Apr
- 2024 14:13:01 -0700 (PDT)
-Date: Fri, 19 Apr 2024 14:13:01 -0700
-In-Reply-To: <20240419203945.2526-1-kuniyu@amazon.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008a94e60616798d9a@google.com>
-Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in unix_del_edges
-From: syzbot <syzbot+f3f3eef1d2100200e593@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	kuniyu@amazon.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240419113305.7b0ae2b11395eec16b5c15b6@kernel.org>
 
-Hello,
+On Fri, Apr 19, 2024 at 11:33:05AM +0900, Masami Hiramatsu wrote:
+> On Tue, 16 Apr 2024 22:41:01 +0000
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> > When the ABI was updated to prevent same name w/different args, it
+> > missed an important corner case when fields don't end with a space.
+> > Typically, space is used for fields to help separate them, like
+> > "u8 field1; u8 field2". If no spaces are used, like
+> > "u8 field1;u8 field2", then the parsing works for the first time.
+> > However, the match check fails on a subsequent register, leading to
+> > confusion.
+> > 
+> > This is because the match check uses argv_split() and assumes that all
+> > fields will be split upon the space. When spaces are used, we get back
+> > { "u8", "field1;" }, without spaces we get back { "u8", "field1;u8" }.
+> > This causes a mismatch, and the user program gets back -EADDRINUSE.
+> > 
+> > Add a method to detect this case before calling argv_split(). If found
+> > force a space after the field separator character ';'. This ensures all
+> > cases work properly for matching.
+> > 
+> > With this fix, the following are all treated as matching:
+> > u8 field1;u8 field2
+> > u8 field1; u8 field2
+> > u8 field1;\tu8 field2
+> > u8 field1;\nu8 field2
+> 
+> Sounds good to me. I just have some nits.
+> 
+> > 
+> > Fixes: ba470eebc2f6 ("tracing/user_events: Prevent same name but different args event")
+> > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> > ---
+> >  kernel/trace/trace_events_user.c | 88 +++++++++++++++++++++++++++++++-
+> >  1 file changed, 87 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> > index 70d428c394b6..9184d3962b2a 100644
+> > --- a/kernel/trace/trace_events_user.c
+> > +++ b/kernel/trace/trace_events_user.c
+> > @@ -1989,6 +1989,92 @@ static int user_event_set_tp_name(struct user_event *user)
+> >  	return 0;
+> >  }
+> >  
+> > +/*
+> > + * Counts how many ';' without a trailing space are in the args.
+> > + */
+> > +static int count_semis_no_space(char *args)
+> > +{
+> > +	int count = 0;
+> > +
+> > +	while ((args = strchr(args, ';'))) {
+> > +		args++;
+> > +
+> > +		if (!isspace(*args))
+> > +			count++;
+> > +	}
+> > +
+> > +	return count;
+> > +}
+> > +
+> > +/*
+> > + * Copies the arguments while ensuring all ';' have a trailing space.
+> > + */
+> > +static char *fix_semis_no_space(char *args, int count)
+> 
+> nit: This name does not represent what it does. 'insert_space_after_semis()'
+> is more self-described.
+> 
 
-syzbot tried to test the proposed patch but the build/boot failed:
+Sure, will fix in a v2.
 
-registered new interface driver rtsx_usb
-[    7.654500][    T1] usbcore: registered new interface driver viperboard
-[    7.656820][    T1] usbcore: registered new interface driver dln2
-[    7.658229][    T1] usbcore: registered new interface driver pn533_usb
-[    7.665094][    T1] nfcsim 0.2 initialized
-[    7.666287][    T1] usbcore: registered new interface driver port100
-[    7.667860][    T1] usbcore: registered new interface driver nfcmrvl
-[    7.677894][    T1] Loading iSCSI transport class v2.0-870.
-[    7.691826][    T1] virtio_scsi virtio0: 1/0/0 default/read/poll queues
-[    7.700510][    T1] ------------[ cut here ]------------
-[    7.701647][    T1] refcount_t: decrement hit 0; leaking memory.
-[    7.702712][    T1] WARNING: CPU: 1 PID: 1 at lib/refcount.c:31 refcount=
-_warn_saturate+0xfa/0x1d0
-[    7.705030][    T1] Modules linked in:
-[    7.705931][    T1] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.9.0-rc4-=
-syzkaller-00895-g4cad4efa6eb2-dirty #0
-[    7.707420][    T1] Hardware name: Google Google Compute Engine/Google C=
-ompute Engine, BIOS Google 03/27/2024
-[    7.708867][    T1] RIP: 0010:refcount_warn_saturate+0xfa/0x1d0
-[    7.709787][    T1] Code: b2 00 00 00 e8 97 ee e6 fc 5b 5d c3 cc cc cc c=
-c e8 8b ee e6 fc c6 05 92 84 e4 0a 01 90 48 c7 c7 80 33 1f 8c e8 f7 6a a9 f=
-c 90 <0f> 0b 90 90 eb d9 e8 6b ee e6 fc c6 05 6f 84 e4 0a 01 90 48 c7 c7
-[    7.712924][    T1] RSP: 0000:ffffc90000066e18 EFLAGS: 00010246
-[    7.714098][    T1] RAX: 802fad55264ab500 RBX: ffff888146ad6b3c RCX: fff=
-f8880166d0000
-[    7.715583][    T1] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000=
-0000000000000
-[    7.717186][    T1] RBP: 0000000000000004 R08: ffffffff81588082 R09: fff=
-ffbfff1c39b48
-[    7.718689][    T1] R10: dffffc0000000000 R11: fffffbfff1c39b48 R12: fff=
-fea0000850dc0
-[    7.720446][    T1] R13: ffffea0000850dc8 R14: 1ffffd400010a1b9 R15: 000=
-0000000000000
-[    7.721919][    T1] FS:  0000000000000000(0000) GS:ffff8880b9500000(0000=
-) knlGS:0000000000000000
-[    7.723283][    T1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    7.724203][    T1] CR2: 0000000000000000 CR3: 000000000e134000 CR4: 000=
-00000003506f0
-[    7.725329][    T1] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000=
-0000000000000
-[    7.726405][    T1] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000=
-0000000000400
-[    7.727490][    T1] Call Trace:
-[    7.727952][    T1]  <TASK>
-[    7.728408][    T1]  ? __warn+0x163/0x4e0
-[    7.729132][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
-[    7.729918][    T1]  ? report_bug+0x2b3/0x500
-[    7.730722][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
-[    7.731598][    T1]  ? handle_bug+0x3e/0x70
-[    7.732470][    T1]  ? exc_invalid_op+0x1a/0x50
-[    7.733180][    T1]  ? asm_exc_invalid_op+0x1a/0x20
-[    7.734321][    T1]  ? __warn_printk+0x292/0x360
-[    7.735110][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
-[    7.736046][    T1]  ? refcount_warn_saturate+0xf9/0x1d0
-[    7.737157][    T1]  __free_pages_ok+0xc60/0xd90
-[    7.737974][    T1]  make_alloc_exact+0xa3/0xf0
-[    7.739152][    T1]  vring_alloc_queue_split+0x20a/0x600
-[    7.739921][    T1]  ? __pfx_vring_alloc_queue_split+0x10/0x10
-[    7.740857][    T1]  ? vp_find_vqs+0x4c/0x4e0
-[    7.742030][    T1]  ? virtscsi_probe+0x3ea/0xf60
-[    7.743130][    T1]  ? virtio_dev_probe+0x991/0xaf0
-[    7.744156][    T1]  ? really_probe+0x2b8/0xad0
-[    7.745411][    T1]  ? driver_probe_device+0x50/0x430
-[    7.746481][    T1]  vring_create_virtqueue_split+0xc6/0x310
-[    7.747395][    T1]  ? ret_from_fork+0x4b/0x80
-[    7.748185][    T1]  ? __pfx_vring_create_virtqueue_split+0x10/0x10
-[    7.749718][    T1]  vring_create_virtqueue+0xca/0x110
-[    7.750680][    T1]  ? __pfx_vp_notify+0x10/0x10
-[    7.751352][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-[    7.752127][    T1]  setup_vq+0xe9/0x2d0
-[    7.752740][    T1]  ? __pfx_vp_notify+0x10/0x10
-[    7.753739][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-[    7.754582][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-[    7.755808][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-[    7.756624][    T1]  vp_setup_vq+0xbf/0x330
-[    7.757294][    T1]  ? __pfx_vp_config_changed+0x10/0x10
-[    7.758740][    T1]  ? ioread16+0x2f/0x90
-[    7.759423][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-[    7.760184][    T1]  vp_find_vqs_msix+0x8b2/0xc80
-[    7.761570][    T1]  vp_find_vqs+0x4c/0x4e0
-[    7.762347][    T1]  virtscsi_init+0x8db/0xd00
-[    7.763210][    T1]  ? __pfx_virtscsi_init+0x10/0x10
-[    7.764163][    T1]  ? __pfx_default_calc_sets+0x10/0x10
-[    7.765029][    T1]  ? scsi_host_alloc+0xa57/0xea0
-[    7.765845][    T1]  ? vp_get+0xfd/0x140
-[    7.766595][    T1]  virtscsi_probe+0x3ea/0xf60
-[    7.767420][    T1]  ? __pfx_virtscsi_probe+0x10/0x10
-[    7.768268][    T1]  ? kernfs_add_one+0x156/0x8b0
-[    7.769025][    T1]  ? virtio_no_restricted_mem_acc+0x9/0x10
-[    7.769838][    T1]  ? virtio_features_ok+0x10c/0x270
-[    7.770612][    T1]  virtio_dev_probe+0x991/0xaf0
-[    7.771348][    T1]  ? __pfx_virtio_dev_probe+0x10/0x10
-[    7.772249][    T1]  really_probe+0x2b8/0xad0
-[    7.773081][    T1]  __driver_probe_device+0x1a2/0x390
-[    7.774142][    T1]  driver_probe_device+0x50/0x430
-[    7.775055][    T1]  __driver_attach+0x45f/0x710
-[    7.775738][    T1]  ? __pfx___driver_attach+0x10/0x10
-[    7.777068][    T1]  bus_for_each_dev+0x239/0x2b0
-[    7.778013][    T1]  ? __pfx___driver_attach+0x10/0x10
-[    7.778935][    T1]  ? __pfx_bus_for_each_dev+0x10/0x10
-[    7.779835][    T1]  ? do_raw_spin_unlock+0x13c/0x8b0
-[    7.780678][    T1]  bus_add_driver+0x347/0x620
-[    7.781572][    T1]  driver_register+0x23a/0x320
-[    7.782416][    T1]  virtio_scsi_init+0x69/0xe0
-[    7.783114][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
-[    7.783862][    T1]  do_one_initcall+0x248/0x880
-[    7.784838][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
-[    7.785602][    T1]  ? __pfx_lockdep_hardirqs_on_prepare+0x10/0x10
-[    7.786590][    T1]  ? __pfx_do_one_initcall+0x10/0x10
-[    7.787715][    T1]  ? __pfx_parse_args+0x10/0x10
-[    7.788740][    T1]  ? do_initcalls+0x1c/0x80
-[    7.789436][    T1]  ? rcu_is_watching+0x15/0xb0
-[    7.790134][    T1]  do_initcall_level+0x157/0x210
-[    7.791134][    T1]  do_initcalls+0x3f/0x80
-[    7.791963][    T1]  kernel_init_freeable+0x435/0x5d0
-[    7.792838][    T1]  ? __pfx_kernel_init_freeable+0x10/0x10
-[    7.793797][    T1]  ? __pfx_lockdep_hardirqs_on_prepare+0x10/0x10
-[    7.794852][    T1]  ? __pfx_kernel_init+0x10/0x10
-[    7.795572][    T1]  ? __pfx_kernel_init+0x10/0x10
-[    7.796447][    T1]  ? __pfx_kernel_init+0x10/0x10
-[    7.797205][    T1]  kernel_init+0x1d/0x2b0
-[    7.797981][    T1]  ret_from_fork+0x4b/0x80
-[    7.798980][    T1]  ? __pfx_kernel_init+0x10/0x10
-[    7.799980][    T1]  ret_from_fork_asm+0x1a/0x30
-[    7.801171][    T1]  </TASK>
-[    7.801810][    T1] Kernel panic - not syncing: kernel: panic_on_warn se=
-t ...
-[    7.802882][    T1] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.9.0-rc4-=
-syzkaller-00895-g4cad4efa6eb2-dirty #0
-[    7.804509][    T1] Hardware name: Google Google Compute Engine/Google C=
-ompute Engine, BIOS Google 03/27/2024
-[    7.804834][    T1] Call Trace:
-[    7.804834][    T1]  <TASK>
-[    7.804834][    T1]  dump_stack_lvl+0x241/0x360
-[    7.804834][    T1]  ? __pfx_dump_stack_lvl+0x10/0x10
-[    7.804834][    T1]  ? __pfx__printk+0x10/0x10
-[    7.804834][    T1]  ? _printk+0xd5/0x120
-[    7.804834][    T1]  ? vscnprintf+0x5d/0x90
-[    7.804834][    T1]  panic+0x349/0x860
-[    7.804834][    T1]  ? __warn+0x172/0x4e0
-[    7.804834][    T1]  ? __pfx_panic+0x10/0x10
-[    7.804834][    T1]  ? show_trace_log_lvl+0x4e6/0x520
-[    7.814431][    T1]  ? ret_from_fork_asm+0x1a/0x30
-[    7.814431][    T1]  __warn+0x346/0x4e0
-[    7.814431][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
-[    7.814431][    T1]  report_bug+0x2b3/0x500
-[    7.814431][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
-[    7.814431][    T1]  handle_bug+0x3e/0x70
-[    7.814431][    T1]  exc_invalid_op+0x1a/0x50
-[    7.814431][    T1]  asm_exc_invalid_op+0x1a/0x20
-[    7.814431][    T1] RIP: 0010:refcount_warn_saturate+0xfa/0x1d0
-[    7.814431][    T1] Code: b2 00 00 00 e8 97 ee e6 fc 5b 5d c3 cc cc cc c=
-c e8 8b ee e6 fc c6 05 92 84 e4 0a 01 90 48 c7 c7 80 33 1f 8c e8 f7 6a a9 f=
-c 90 <0f> 0b 90 90 eb d9 e8 6b ee e6 fc c6 05 6f 84 e4 0a 01 90 48 c7 c7
-[    7.814431][    T1] RSP: 0000:ffffc90000066e18 EFLAGS: 00010246
-[    7.824572][    T1] RAX: 802fad55264ab500 RBX: ffff888146ad6b3c RCX: fff=
-f8880166d0000
-[    7.824572][    T1] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000=
-0000000000000
-[    7.824572][    T1] RBP: 0000000000000004 R08: ffffffff81588082 R09: fff=
-ffbfff1c39b48
-[    7.824572][    T1] R10: dffffc0000000000 R11: fffffbfff1c39b48 R12: fff=
-fea0000850dc0
-[    7.824572][    T1] R13: ffffea0000850dc8 R14: 1ffffd400010a1b9 R15: 000=
-0000000000000
-[    7.824572][    T1]  ? __warn_printk+0x292/0x360
-[    7.824572][    T1]  ? refcount_warn_saturate+0xf9/0x1d0
-[    7.824572][    T1]  __free_pages_ok+0xc60/0xd90
-[    7.824572][    T1]  make_alloc_exact+0xa3/0xf0
-[    7.824572][    T1]  vring_alloc_queue_split+0x20a/0x600
-[    7.824572][    T1]  ? __pfx_vring_alloc_queue_split+0x10/0x10
-[    7.834413][    T1]  ? vp_find_vqs+0x4c/0x4e0
-[    7.834413][    T1]  ? virtscsi_probe+0x3ea/0xf60
-[    7.834413][    T1]  ? virtio_dev_probe+0x991/0xaf0
-[    7.834413][    T1]  ? really_probe+0x2b8/0xad0
-[    7.834413][    T1]  ? driver_probe_device+0x50/0x430
-[    7.834413][    T1]  vring_create_virtqueue_split+0xc6/0x310
-[    7.834413][    T1]  ? ret_from_fork+0x4b/0x80
-[    7.834413][    T1]  ? __pfx_vring_create_virtqueue_split+0x10/0x10
-[    7.834413][    T1]  vring_create_virtqueue+0xca/0x110
-[    7.834413][    T1]  ? __pfx_vp_notify+0x10/0x10
-[    7.834413][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-[    7.834413][    T1]  setup_vq+0xe9/0x2d0
-[    7.834413][    T1]  ? __pfx_vp_notify+0x10/0x10
-[    7.844326][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-[    7.844326][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-[    7.844326][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-[    7.844326][    T1]  vp_setup_vq+0xbf/0x330
-[    7.844326][    T1]  ? __pfx_vp_config_changed+0x10/0x10
-[    7.844326][    T1]  ? ioread16+0x2f/0x90
-[    7.844326][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-[    7.844326][    T1]  vp_find_vqs_msix+0x8b2/0xc80
-[    7.844326][    T1]  vp_find_vqs+0x4c/0x4e0
-[    7.844326][    T1]  virtscsi_init+0x8db/0xd00
-[    7.844326][    T1]  ? __pfx_virtscsi_init+0x10/0x10
-[    7.844326][    T1]  ? __pfx_default_calc_sets+0x10/0x10
-[    7.844326][    T1]  ? scsi_host_alloc+0xa57/0xea0
-[    7.844326][    T1]  ? vp_get+0xfd/0x140
-[    7.854405][    T1]  virtscsi_probe+0x3ea/0xf60
-[    7.854405][    T1]  ? __pfx_virtscsi_probe+0x10/0x10
-[    7.854405][    T1]  ? kernfs_add_one+0x156/0x8b0
-[    7.854405][    T1]  ? virtio_no_restricted_mem_acc+0x9/0x10
-[    7.854405][    T1]  ? virtio_features_ok+0x10c/0x270
-[    7.854405][    T1]  virtio_dev_probe+0x991/0xaf0
-[    7.854405][    T1]  ? __pfx_virtio_dev_probe+0x10/0x10
-[    7.854405][    T1]  really_probe+0x2b8/0xad0
-[    7.854405][    T1]  __driver_probe_device+0x1a2/0x390
-[    7.854405][    T1]  driver_probe_device+0x50/0x430
-[    7.854405][    T1]  __driver_attach+0x45f/0x710
-[    7.854405][    T1]  ? __pfx___driver_attach+0x10/0x10
-[    7.854405][    T1]  bus_for_each_dev+0x239/0x2b0
-[    7.864323][    T1]  ? __pfx___driver_attach+0x10/0x10
-[    7.864323][    T1]  ? __pfx_bus_for_each_dev+0x10/0x10
-[    7.864323][    T1]  ? do_raw_spin_unlock+0x13c/0x8b0
-[    7.864323][    T1]  bus_add_driver+0x347/0x620
-[    7.864323][    T1]  driver_register+0x23a/0x320
-[    7.864323][    T1]  virtio_scsi_init+0x69/0xe0
-[    7.864323][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
-[    7.864323][    T1]  do_one_initcall+0x248/0x880
-[    7.864323][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
-[    7.864323][    T1]  ? __pfx_lockdep_hardirqs_on_prepare+0x10/0x10
-[    7.864323][    T1]  ? __pfx_do_one_initcall+0x10/0x10
-[    7.864323][    T1]  ? __pfx_parse_args+0x10/0x10
-[    7.864323][    T1]  ? do_initcalls+0x1c/0x80
-[    7.864323][    T1]  ? rcu_is_watching+0x15/0xb0
-[    7.874391][    T1]  do_initcall_level+0x157/0x210
-[    7.874391][    T1]  do_initcalls+0x3f/0x80
-[    7.874391][    T1]  kernel_init_freeable+0x435/0x5d0
-[    7.874391][    T1]  ? __pfx_kernel_init_freeable+0x10/0x10
-[    7.874391][    T1]  ? __pfx_lockdep_hardirqs_on_prepare+0x10/0x10
-[    7.874391][    T1]  ? __pfx_kernel_init+0x10/0x10
-[    7.874391][    T1]  ? __pfx_kernel_init+0x10/0x10
-[    7.874391][    T1]  ? __pfx_kernel_init+0x10/0x10
-[    7.874391][    T1]  kernel_init+0x1d/0x2b0
-[    7.874391][    T1]  ret_from_fork+0x4b/0x80
-[    7.874391][    T1]  ? __pfx_kernel_init+0x10/0x10
-[    7.874391][    T1]  ret_from_fork_asm+0x1a/0x30
-[    7.874391][    T1]  </TASK>
-[    7.884330][    T1] Kernel Offset: disabled
-[    7.884330][    T1] Rebooting in 86400 seconds..
+> > +{
+> > +	char *fixed, *pos;
+> > +	char c, last;
+> > +	int len;
+> > +
+> > +	len = strlen(args) + count;
+> > +	fixed = kmalloc(len + 1, GFP_KERNEL);
+> > +
+> > +	if (!fixed)
+> > +		return NULL;
+> > +
+> > +	pos = fixed;
+> > +	last = '\0';
+> > +
+> > +	while (len > 0) {
+> > +		c = *args++;
+> > +
+> > +		if (last == ';' && !isspace(c)) {
+> > +			*pos++ = ' ';
+> > +			len--;
+> > +		}
+> > +
+> > +		if (len > 0) {
+> > +			*pos++ = c;
+> > +			len--;
+> > +		}
+> > +
+> > +		last = c;
+> > +	}
+> 
+> nit: This loop can be simpler, because we are sure fixed has enough length;
+> 
+> /* insert a space after ';' if there is no space. */
+> while(*args) {
+> 	*pos = *args++;
+> 	if (*pos++ == ';' && !isspace(*args))
+> 		*pos++ = ' ';
+> }
+> 
 
+I was worried that if count_semis_no_space() ever had different logic
+(maybe after this commit) that it could cause an overflow if the count
+was wrong, etc.
 
-syzkaller build log:
-go env (err=3D<nil>)
-GO111MODULE=3D'auto'
-GOARCH=3D'amd64'
-GOBIN=3D''
-GOCACHE=3D'/syzkaller/.cache/go-build'
-GOENV=3D'/syzkaller/.config/go/env'
-GOEXE=3D''
-GOEXPERIMENT=3D''
-GOFLAGS=3D''
-GOHOSTARCH=3D'amd64'
-GOHOSTOS=3D'linux'
-GOINSECURE=3D''
-GOMODCACHE=3D'/syzkaller/jobs/linux/gopath/pkg/mod'
-GONOPROXY=3D''
-GONOSUMDB=3D''
-GOOS=3D'linux'
-GOPATH=3D'/syzkaller/jobs/linux/gopath'
-GOPRIVATE=3D''
-GOPROXY=3D'https://proxy.golang.org,direct'
-GOROOT=3D'/usr/local/go'
-GOSUMDB=3D'sum.golang.org'
-GOTMPDIR=3D''
-GOTOOLCHAIN=3D'auto'
-GOTOOLDIR=3D'/usr/local/go/pkg/tool/linux_amd64'
-GOVCS=3D''
-GOVERSION=3D'go1.21.4'
-GCCGO=3D'gccgo'
-GOAMD64=3D'v1'
-AR=3D'ar'
-CC=3D'gcc'
-CXX=3D'g++'
-CGO_ENABLED=3D'1'
-GOMOD=3D'/syzkaller/jobs/linux/gopath/src/github.com/google/syzkaller/go.mo=
-d'
-GOWORK=3D''
-CGO_CFLAGS=3D'-O2 -g'
-CGO_CPPFLAGS=3D''
-CGO_CXXFLAGS=3D'-O2 -g'
-CGO_FFLAGS=3D'-O2 -g'
-CGO_LDFLAGS=3D'-O2 -g'
-PKG_CONFIG=3D'pkg-config'
-GOGCCFLAGS=3D'-fPIC -m64 -pthread -Wl,--no-gc-sections -fmessage-length=3D0=
- -ffile-prefix-map=3D/tmp/go-build3954342966=3D/tmp/go-build -gno-record-gc=
-c-switches'
+I don't have an issue making it shorter, but I was trying to be more on
+the safe side, since this isn't a fast path (event register).
 
-git status (err=3D<nil>)
-HEAD detached at af24b0505
-nothing to commit, working tree clean
+> > +
+> > +	/*
+> > +	 * len is the length of the copy excluding the null.
+> > +	 * This ensures we always have room for a null.
+> > +	 */
+> > +	*pos = '\0';
+> > +
+> > +	return fixed;
+> > +}
+> > +
+> > +static char **user_event_argv_split(char *args, int *argc)
+> > +{
+> > +	/* Count how many ';' without a trailing space */
+> > +	int count = count_semis_no_space(args);
+> > +
+> > +	if (count) {
+> 
+> nit: it is better to exit fast, so 
+> 
+> 	if (!count)
+> 		return argv_split(GFP_KERNEL, args, argc);
+> 
+> 	...
 
+Sure, will fix in a v2.
 
-tput: No value for $TERM and no -T specified
-tput: No value for $TERM and no -T specified
-Makefile:31: run command via tools/syz-env for best compatibility, see:
-Makefile:32: https://github.com/google/syzkaller/blob/master/docs/contribut=
-ing.md#using-syz-env
-go list -f '{{.Stale}}' ./sys/syz-sysgen | grep -q false || go install ./sy=
-s/syz-sysgen
-make .descriptions
-tput: No value for $TERM and no -T specified
-tput: No value for $TERM and no -T specified
-Makefile:31: run command via tools/syz-env for best compatibility, see:
-Makefile:32: https://github.com/google/syzkaller/blob/master/docs/contribut=
-ing.md#using-syz-env
-bin/syz-sysgen
-touch .descriptions
-GOOS=3Dlinux GOARCH=3Damd64 go build "-ldflags=3D-s -w -X github.com/google=
-/syzkaller/prog.GitRevision=3Daf24b0505c748561efb50f1d03c824d6642f6c0b -X '=
-github.com/google/syzkaller/prog.gitRevisionDate=3D20240418-062732'" "-tags=
-=3Dsyz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-fuzzer=
- github.com/google/syzkaller/syz-fuzzer
-GOOS=3Dlinux GOARCH=3Damd64 go build "-ldflags=3D-s -w -X github.com/google=
-/syzkaller/prog.GitRevision=3Daf24b0505c748561efb50f1d03c824d6642f6c0b -X '=
-github.com/google/syzkaller/prog.gitRevisionDate=3D20240418-062732'" "-tags=
-=3Dsyz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-execpr=
-og github.com/google/syzkaller/tools/syz-execprog
-GOOS=3Dlinux GOARCH=3Damd64 go build "-ldflags=3D-s -w -X github.com/google=
-/syzkaller/prog.GitRevision=3Daf24b0505c748561efb50f1d03c824d6642f6c0b -X '=
-github.com/google/syzkaller/prog.gitRevisionDate=3D20240418-062732'" "-tags=
-=3Dsyz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-stress=
- github.com/google/syzkaller/tools/syz-stress
-mkdir -p ./bin/linux_amd64
-gcc -o ./bin/linux_amd64/syz-executor executor/executor.cc \
-	-m64 -O2 -pthread -Wall -Werror -Wparentheses -Wunused-const-variable -Wfr=
-ame-larger-than=3D16384 -Wno-stringop-overflow -Wno-array-bounds -Wno-forma=
-t-overflow -Wno-unused-but-set-variable -Wno-unused-command-line-argument -=
-static-pie -fpermissive -w -DGOOS_linux=3D1 -DGOARCH_amd64=3D1 \
-	-DHOSTGOOS_linux=3D1 -DGIT_REVISION=3D\"af24b0505c748561efb50f1d03c824d664=
-2f6c0b\"
+> 
+> Thank you,
+> 
+> OT: BTW, can this also simplify synthetic events?
+> 
 
+I'm not sure, I'll check when I have some time. I want to get this fix
+in sooner rather than later.
 
-Error text is too large and was truncated, full error text is at:
-https://syzkaller.appspot.com/x/error.txt?x=3D11617880980000
+Thanks,
+-Beau
 
-
-Tested on:
-
-commit:         4cad4efa Merge branch 'net-neigh-rcu'
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-ne=
-xt.git main
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3Decd971c4c871c35=
-d
-dashboard link: https://syzkaller.appspot.com/bug?extid=3Df3f3eef1d2100200e=
-593
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debia=
-n) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=3D15ef206f1800=
-00
-
+> > +		/* We must fixup 'field;field' to 'field; field' */
+> > +		char *fixed = fix_semis_no_space(args, count);
+> > +		char **split;
+> > +
+> > +		if (!fixed)
+> > +			return NULL;
+> > +
+> > +		/* We do a normal split afterwards */
+> > +		split = argv_split(GFP_KERNEL, fixed, argc);
+> > +
+> > +		/* We can free since argv_split makes a copy */
+> > +		kfree(fixed);
+> > +
+> > +		return split;
+> > +	}
+> > +
+> > +	/* No fixup is required */
+> > +	return argv_split(GFP_KERNEL, args, argc);
+> > +}
+> > +
+> >  /*
+> >   * Parses the event name, arguments and flags then registers if successful.
+> >   * The name buffer lifetime is owned by this method for success cases only.
+> > @@ -2012,7 +2098,7 @@ static int user_event_parse(struct user_event_group *group, char *name,
+> >  		return -EPERM;
+> >  
+> >  	if (args) {
+> > -		argv = argv_split(GFP_KERNEL, args, &argc);
+> > +		argv = user_event_argv_split(args, &argc);
+> >  
+> >  		if (!argv)
+> >  			return -ENOMEM;
+> > -- 
+> > 2.34.1
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
