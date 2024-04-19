@@ -1,149 +1,118 @@
-Return-Path: <linux-kernel+bounces-151225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73A868AAB5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:20:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3827D8AAB63
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:22:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 979AF1C21E92
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:20:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBFB21F224CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:22:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5037C097;
-	Fri, 19 Apr 2024 09:20:29 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2847641B;
+	Fri, 19 Apr 2024 09:22:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="UPvkd/i8"
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D4917581A;
-	Fri, 19 Apr 2024 09:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9A0757F6;
+	Fri, 19 Apr 2024 09:22:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713518428; cv=none; b=Klw+ww5mQkd9vIwllXdFsmWtwJkyDia3gr8oOrLNHx5H7lZfm0vAoYbuR6VfEB5UvRw+PZAqH9mewnvndZbvYuZX613UJYbkRR6lUPU6glGjzhKVgPdMSDqEzg+veXdbbG+LFz5+yUO9hhHlLzugn7/tv0g1xhMpOlpoxzLZwcY=
+	t=1713518526; cv=none; b=gmMWaFGlQ9HfLtRAbF93m+FENpcaEdoccNnMVDOQAsenkHf+NA1aCsdU1zZajGAJdjnOfrHFP0W9aMckMqmveYmIcoejUkyBtodFlfk/TW1XRIY5AWbJWzYt/pA3v2f6f7zlRDtPRB54PDNSphFR0GvUMUBnHrQMz8vC+2c/nG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713518428; c=relaxed/simple;
-	bh=WaogRnoe7hdBqtvTzhUFskAdd+jFv4uOzZL7FIIZjHs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qSjE/8EvI38cNhQjk7JaHLokHp/WSQshFqKcxcbuH3m5L8VaXgFDR0hGmnBV1MlzrnbweArP34AfgktkCl/Mt/ShbUAJUHdsu1PKJlY2aPIk291BoM9D6a0eZmODa1EwndqCLjJc5DdNblw95jliBfbMQ1cRaNE2UTYD2rBSrLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VLTd93rwnz4f3p13;
-	Fri, 19 Apr 2024 17:20:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 8524F1A09FD;
-	Fri, 19 Apr 2024 17:20:22 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-	by APP2 (Coremail) with SMTP id Syh0CgAXOQxUNyJmH6p5Kg--.17521S3;
-	Fri, 19 Apr 2024 17:20:22 +0800 (CST)
-Message-ID: <f641e693-6ae2-b3a6-8655-848b2986503b@huaweicloud.com>
-Date: Fri, 19 Apr 2024 17:20:20 +0800
+	s=arc-20240116; t=1713518526; c=relaxed/simple;
+	bh=IUrIh1I9EDMmK3qzfuZjUzF9xzQMX9HYeY8NCQKJLtg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cbS/N5WL1eZYrB6v3PwVHkKdj3TXcX+DtAM0pDr/NdPxd81Ogd55X92oBg63u9EWzWfF74xUCfqeBr/e9XuIWR517rS3h5nDaWE7gUE+0UAQC2eRRBp4kvynIGOaxjT37q9msX/8uu/a5BYUtwb9WBu66T20HyUGXqt/2/oPMRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=UPvkd/i8; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=TFSJ5LfZA5Gm93ONYseApmxHZXK4HLQCtQRfs6Mkz/E=; t=1713518523; x=1714123323; 
+	b=UPvkd/i8C4TZos6R0FScCUAAqAuJf/dcdPgMP79F89ovozgn7Lpm0d0xr8bxkmo9q3eM06k+03B
+	DKo0gQGryrCWNZjyzUZV+zzoSU7dj/G/EvXYi4AfvPLmZBg1nzzAmKwJWcUijTX6MFWi/7pAgjtEb
+	9Yb3xFnvJMadMKWxgvG6o4QwWc4pgqxWbxYvkQGeXgzfJISD3Irh/Gu/2FqRaYB46o79cuu2aw+EP
+	s9LnX04Wyd4kLdblTpCgg4WAkYN+WSGstvNx0wdVwNBHDLDxrW8X/oLyUyIWYQj9sP8xJVjAc58yX
+	XQGal+NjHC6oEkSrTHmsEkBhncM+r7TWYOZw==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.97)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1rxkRP-00000001UNO-3Ki2; Fri, 19 Apr 2024 11:21:55 +0200
+Received: from p57bd90e8.dip0.t-ipconnect.de ([87.189.144.232] helo=[192.168.178.20])
+          by inpost2.zedat.fu-berlin.de (Exim 4.97)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1rxkRP-00000001KE4-2Rb3; Fri, 19 Apr 2024 11:21:55 +0200
+Message-ID: <377b0acf906b9bcfbc1053ca07d64f14a6cf9a1e.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH -next] dma: Add dev_id parameter description in
+ request_dma_bycap
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Yang Li <yang.lee@linux.alibaba.com>, ysato@users.sourceforge.jp, 
+	dalias@libc.org
+Cc: linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Fri, 19 Apr 2024 11:21:55 +0200
+In-Reply-To: <20240419090259.39542-1-yang.lee@linux.alibaba.com>
+References: <20240419090259.39542-1-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH] blk-iocost: do not WARNING if iocg has already offlined
-To: Tejun Heo <tj@kernel.org>, linan666@huaweicloud.com
-Cc: josef@toxicpanda.com, axboe@kernel.dk, hch@lst.de,
- cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com,
- houtao1@huawei.com, yangerkun@huawei.com
-References: <20240418072340.2090877-1-linan666@huaweicloud.com>
- <ZiFG5KtGGpYdOmnY@slm.duckdns.org>
-From: Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <ZiFG5KtGGpYdOmnY@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAXOQxUNyJmH6p5Kg--.17521S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wry7uFyxWw15uF4fGw1kGrg_yoW8uw1kpr
-	W5K3ZFkF1jqrnFya92q3Z2qw10gan5Xw1fJw1fWrn8AFy3uF1Iq3Wq9r4YqF92qr1rAFZ3
-	ZF48G3ySvF4UGaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBI14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-	4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-	04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbHa0DUUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
+Hi Yang,
 
+On Fri, 2024-04-19 at 17:02 +0800, Yang Li wrote:
+> This patch adds the missing description for the dev_id parameter in the
+> kernel documentation for the request_dma_bycap function.
+>=20
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  arch/sh/drivers/dma/dma-api.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/arch/sh/drivers/dma/dma-api.c b/arch/sh/drivers/dma/dma-api.=
+c
+> index 89cd4a3b4cca..65005d348877 100644
+> --- a/arch/sh/drivers/dma/dma-api.c
+> +++ b/arch/sh/drivers/dma/dma-api.c
+> @@ -116,6 +116,7 @@ static int search_cap(const char **haystack, const ch=
+ar *needle)
+>   * request_dma_bycap - Allocate a DMA channel based on its capabilities
+>   * @dmac: List of DMA controllers to search
+>   * @caps: List of capabilities
+> + * @dev_id: Unique identifier for the device that is requesting a DMA ch=
+annel
+>   *
+>   * Search all channels of all DMA controllers to find a channel which
+>   * matches the requested capabilities. The result is the channel
 
-在 2024/4/19 0:14, Tejun Heo 写道:
-> Hello,
-> 
-> On Thu, Apr 18, 2024 at 03:23:40PM +0800, linan666@huaweicloud.com wrote:
->> From: Li Nan <linan122@huawei.com>
->>
->> In iocg_pay_debt(), warn is triggered if 'active_list' is empty, which
->> is intended to confirm iocg is avitve when it has debt. However, warn
->> can be triggered during removing cgroup controller, as
-> 
-> Maybe saying "a blkcg is being removed" is clearer?
+Thanks. This should include "sh:" in the subject. I will add this manually
+when picking up the patch. Also, the missing Fixes tag as Geert noted.
 
-Thanks for your suggestion. I will correct my expression in next version.
+Reviewed-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 
-> 
->> iocg_waitq_timer_fn() is awakened at that time.
->>
->>    WARNING: CPU: 0 PID: 2344971 at block/blk-iocost.c:1402 iocg_pay_debt+0x14c/0x190
->>    Call trace:
->>    iocg_pay_debt+0x14c/0x190
->>    iocg_kick_waitq+0x438/0x4c0
->>    iocg_waitq_timer_fn+0xd8/0x130
->>    __run_hrtimer+0x144/0x45c
->>    __hrtimer_run_queues+0x16c/0x244
->>    hrtimer_interrupt+0x2cc/0x7b0
->>
->> The warn in this situation is meaningless. Since this iocg is being
->> removed, the state of the 'active_list' is irrelevant, and 'waitq_timer'
->> is canceled after removing 'active_list' in ioc_pd_free(), which ensure
->> iocg is freed after iocg_waitq_timer_fn() returns.
->>
->> Therefore, add the check if iocg has already offlined to avoid warn
->> when removing cgroup controller.
->>
->> Signed-off-by: Li Nan <linan122@huawei.com>
->> ---
->>   block/blk-iocost.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
->> index baa20c85799d..2e109c016a39 100644
->> --- a/block/blk-iocost.c
->> +++ b/block/blk-iocost.c
->> @@ -1440,7 +1440,7 @@ static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
->>   	lockdep_assert_held(&iocg->waitq.lock);
->>   
->>   	/* make sure that nobody messed with @iocg */
->> -	WARN_ON_ONCE(list_empty(&iocg->active_list));
->> +	WARN_ON_ONCE(list_empty(&iocg->active_list) && iocg->pd.online);
-> 
-> Can you add a comment explaining why we need the pd.online test?
+Adrian
 
-Yeah, I will add comment in next version.
-
-> 
-> Other than the above nits, looks great to me. Please feel free to add
-> 
->    Acked-by: Tejun Heo <tj@kernel.org>
-> 
-> Thanks.
-> 
-
--- 
-Thanks,
-Nan
-
+--=20
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
