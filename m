@@ -1,100 +1,116 @@
-Return-Path: <linux-kernel+bounces-150888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EED8D8AA644
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:37:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 350C48AA646
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:40:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BA861C20BD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:37:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5E3C2820DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95748818;
-	Fri, 19 Apr 2024 00:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CAA810F1;
+	Fri, 19 Apr 2024 00:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="VTFRe/ZD"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cjyIVPbA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62723384;
-	Fri, 19 Apr 2024 00:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439D47E1
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 00:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713487054; cv=none; b=uoXb2qV2+STPJwoG2oypN4dqUErPgeWjdiCecicnDSA3Z+1mWBbgUrz+G4wfHO19tSRZw1Lmy7VpLAw2NdwGeDTtI1j9cQWVPMaX2bJ6/bWKn+XDGMq2QOzd3ZFOEX2CD69N4mI6BZksOhs0j2aVk8joubNrwtiVuuTyqqeaao0=
+	t=1713487210; cv=none; b=ttADsE9oCgDA6YzURHscUE01xy18t9g1C9jqfyENg9fd3WwJ8tWApXGVT6rZkd19g1xo9gL8AP7cw/R/dFga9wRt72xPweaYWhJXk8/OwFnucCV8+5J/FRTn2CvhUQX3pj3e7d3hz6dmPfqU32bSPOTJ3JP866jfyV4+G0ge1/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713487054; c=relaxed/simple;
-	bh=CcGEKncHjnK9oegEy+rFRUzjPhjImM2kopuifNanh+g=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=FGLzS3zF/17i+JHDZtTUvZeS75Chz5VNIuNJ+MYxVbANypItc+Us2Eqgi9/LyJ+FYYZVID18+UHgz7t2E2T4mr16MEwGcj7vlIZHohPF/xb7PJtDCBp2PT0dthlKrO7OH3DxlWAUurBijP0LxnOmbkdvS6GvOsv40CFZR8FBlu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=VTFRe/ZD; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1713487045;
-	bh=OX7S1sR6sXcP0D47BRR5wjNC+gpszdeK3EnHLvWyQDc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=VTFRe/ZDlj34t0VP9+KvFSxBVZcCTSXuVurePCE34zCjxbDmFWBe54Lm0g8PdUsWP
-	 ftOfx6WVaN7/xbmfT7zL4prCn5YMcXej46cXK/i3q4AWGLgzci3LOFtO6QvLAqi0Mn
-	 divzvbblxU4PoRO7QXn65TWqKRfvkD8x+9qyeoDm+Q0ukJYKF5ZU8NX5n/qNYq3zZv
-	 peJd4re6k0YcRdl3AIq9geoSNvqnt7gQ6nkDkYFQuVYropXbwY22NXUBsEsJH/B6Ud
-	 dMgr9pqQf1+qmV724c+Fpqo1OpacIC2pjPGrPYD3phUsTLRt3caNln/t1PjVcgbec2
-	 4ipM5IXEHKW8w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	s=arc-20240116; t=1713487210; c=relaxed/simple;
+	bh=uSfbOIFusL7yPA50dYF5H5x/u32T7cdQCxoVsUks114=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=cdQDjEBk6N0DeHAV0cLgAMV9Xhy3RZ7C+j7cLB3fIOs81xfZ5DIWOfKOowXZtaMUQZKguPcKNn0cdEkgKD6yNzaEFTfdZfmvHGbdnBf+EO9WcGoOyPfVK7agyaDWGqJTtDg1rnrrqSlickDowfGAxmr1QztS1YYQK5+MvT4djUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cjyIVPbA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713487207;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=m2bpW9rm2qv+2Wunav+fPG5Qki620lzFcR5jp/JLSVc=;
+	b=cjyIVPbALnNM29lrmYYZwbxUDx9FfQBuZFJ0ij+W0AX1VSqLL852aBVpMT7ZMPktytMlsp
+	KZkoL5npWtgliaty1wobtOy6yJcCbffTfvo61NnvklhVzIUhAydY09VuCeKlSFkivLM1Cf
+	ZDUm2hywLH9lsnEVPkWOjBenOs2ULec=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-112-dhEQf1NgPf6CB8kNhSyeow-1; Thu,
+ 18 Apr 2024 20:39:55 -0400
+X-MC-Unique: dhEQf1NgPf6CB8kNhSyeow-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VLG1x65vbz4wyq;
-	Fri, 19 Apr 2024 10:37:25 +1000 (AEST)
-Date: Fri, 19 Apr 2024 10:37:23 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: David Sterba <dsterba@suse.cz>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the btrfs tree
-Message-ID: <20240419103723.3192c053@canb.auug.org.au>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ECA383819C64;
+	Fri, 19 Apr 2024 00:39:54 +0000 (UTC)
+Received: from localhost (unknown [10.22.10.25])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id EAE9D1121312;
+	Fri, 19 Apr 2024 00:39:53 +0000 (UTC)
+Date: Thu, 18 Apr 2024 21:39:53 -0300
+From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To: LKML <linux-kernel@vger.kernel.org>,
+	linux-rt-users <linux-rt-users@vger.kernel.org>,
+	stable-rt <stable-rt@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Carsten Emde <C.Emde@osadl.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Daniel Wagner <daniel.wagner@suse.com>,
+	Tom Zanussi <tom.zanussi@linux.intel.com>,
+	Clark Williams <williams@redhat.com>,
+	Mark Gross <markgross@kernel.org>, Pavel Machek <pavel@denx.de>,
+	Jeff Brady <jeffreyjbrady@gmail.com>,
+	Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 5.10.215-rt107
+Message-ID: <ZiG9WanmSqCUNTuq@uudg.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_yftGmpBDooVRbQmi/Or5S+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
---Sig_/_yftGmpBDooVRbQmi/Or5S+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello RT-list!
 
-Hi all,
+I'm pleased to announce the 5.10.215-rt107 stable release.
 
-The following commits are also in the btrfs-fixes tree as different
-commits (but the same patches):
+This release is simply an update to the new stable 5.10.215 version and no
+RT-specific changes have been performed.
 
-  040702ff5478 ("btrfs: scrub: run relocation repair when/only needed")
-  37590e1de8dc ("btrfs: fallback if compressed IO fails for ENOSPC")
-  43832980f44a ("btrfs: fix wrong block_start calculation for btrfs_drop_ex=
-tent_map_range()")
-  5093db2d7628 ("btrfs: remove colon from messages with state")
+You can get this release via the git tree at:
 
---=20
-Cheers,
-Stephen Rothwell
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
---Sig_/_yftGmpBDooVRbQmi/Or5S+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+  branch: v5.10-rt
+  Head SHA1: b850d563e91f696a605c28e8d6a968a950cff491
 
------BEGIN PGP SIGNATURE-----
+Or to build 5.10.215-rt107 directly, the following patches should be applied:
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYhvMMACgkQAVBC80lX
-0GxCPQgAo1T1K4ZEeesFNJGTJwA+V31WwhAsrc4nXSb8UO2Cc6moCR/wdCCfF7jO
-NQ5WdYfJN6W2mDZkWIcaDCO9E2VildCknMXwLfYOQywNUAi+U+hIs59lQYRYKQZc
-uqs9alPjiNRHgKYRb0XoY9jGcdhEZs5wGvDD1gTdbZzvyoLtlRmdK/ubTr/xUtRX
-Af+UybNytoctQQlU1ZpIBII+BPSfz/SqdxjtfLDI1xh27jPIraIE4PLPo35nFqXQ
-HRkA/cvTTyfiBWssZ4T5Wsj+p94XG7llrAe5ZPDdgVsAMSkwbBKYDUU7o3pUSOqH
-pMT7N3wCSwk7Dh3mOct5Gb1bjUUwTQ==
-=SO2j
------END PGP SIGNATURE-----
+  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
 
---Sig_/_yftGmpBDooVRbQmi/Or5S+--
+  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.215.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.215-rt107.patch.xz
+
+Signing key fingerprint:
+
+  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
+
+All keys used for the above files and repositories can be found on the
+following git repository:
+
+   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
+
+Enjoy!
+Luis
+
 
