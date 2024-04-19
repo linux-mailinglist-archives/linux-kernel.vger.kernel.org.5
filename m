@@ -1,181 +1,112 @@
-Return-Path: <linux-kernel+bounces-151341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF518AAD3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:03:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 313C98AAD37
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:02:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54F111F21CF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:03:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90E25B22420
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE41A8173C;
-	Fri, 19 Apr 2024 11:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QyxaNGkZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC62780618;
+	Fri, 19 Apr 2024 11:02:47 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410CE8004B;
-	Fri, 19 Apr 2024 11:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713524569; cv=fail; b=qo3BfVhpthrntBhBdVNWUzQL3ntXvX+w6Hibi8RMuNFpqf9wbz+SbUv2+mdCAm0/lyCuxQ1Y3kPDN6fjMtPPePJw5s3wZ4VfLjPaWFLVwmRSXAxiNHWPmtgzueiSuTBeDz3Ka1YL+lQZ2dwsMX0ndhgaZ8nu6DRq2cVzGkjV1DQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713524569; c=relaxed/simple;
-	bh=21NuqLKztBTqn8wlxcqiwqAQYb7yLyALLYUi47Ae9dM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=K/+UAbS2D2lF5BAm9uxTS9C5RcztbRWGUWmr8gDR+cNYj77g3NCjwAAYUnxebk9tWmyHCdEJym0VU3HFIm7Id1H+jgBvfNAUBchB3jR1M+sunwEVd0wVvkXaSEIIaNhD4mcUEz+E5wLP3HPzy/PoGP9r1WeTsnDCvAIGk23PWEE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QyxaNGkZ; arc=fail smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713524567; x=1745060567;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=21NuqLKztBTqn8wlxcqiwqAQYb7yLyALLYUi47Ae9dM=;
-  b=QyxaNGkZ/pprgoMzwviLLTx18pc3xru3Fih/hkq/NAFTVfgNVPTmQH6o
-   6mFdmj/ZxeD7qiLnJOKWpmraH71y/J1l8VIu0vchqvwoNPpUnbxZ5liLG
-   vLtyepHvZp5Fn40nn+4C3ojsd5HgeTBl1vBW5Cw378rWqDys8G1P533Jt
-   eV/Kl8pOqgXiJujQXss7VUAiysRROLQloIyzEXMdCGY5dXSyE0D6439Pf
-   cGi6TYEgsdnJxVhMLUOEeoqgHHPX6+hzwvU1cEVzpeZcoL1f1K5UGd/YP
-   xygysBKEYfARS4br+TXqWXxAAjLxXxJMVaQWkRCCKYSmDABXPR0PL5SUO
-   g==;
-X-CSE-ConnectionGUID: SVLiSMcOT8yAcnQfUVZ76A==
-X-CSE-MsgGUID: S4qS9FttTiuVJDuLg7wYng==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="19683809"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="19683809"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 04:02:46 -0700
-X-CSE-ConnectionGUID: CTt5he5yQQWieW7PRi+daw==
-X-CSE-MsgGUID: nuuYljVYRq60KwtmmK8xSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="54218497"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Apr 2024 04:02:47 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 19 Apr 2024 04:02:45 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 19 Apr 2024 04:02:45 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 19 Apr 2024 04:02:45 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cqov/vnB+PiTTYgumVWTN37rDbvA9tpnhYO2erbuqJexUybm8CuizNYYmqSYodBORd16OvkA1Z+Ke8018k/9Ndu4UxKf1ZodAPlBaXPE9cVXIuYk7BhFIVUtizY8py1DdRqM/htquqEwZ8dQ1s7N1z3W/7USB15Oq5YlEhUquzhCdeecWtMNBeinRozc3G9d1HjZMH6y8CJEproLZU25yJxsOi4ntZXT7ZiNZ0poLytJTLd2PjMxK0ppCVULH4os+c5noS/H1z9+pMyfOkvFb6FsXyk/MeezbGuiKrnoyPyhqH7DnIYGPcPoKEGzToTm4l8z8/uNrbKtuSmYQBJRXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=21NuqLKztBTqn8wlxcqiwqAQYb7yLyALLYUi47Ae9dM=;
- b=PlO2+FGGBZ1oWPxSwDtMq9ZiA278fVupZeujMDQDUrvdy9+uMR1ndBQDGI3E6lxo8ohHwBEegAQWd3b8kG7JyrlA5Wk9wEsoRN4dcdaolXowg/zbujVP9moHsSbfeHCo5PDyVIb2FFUqzrFBfzq3kuJ2pyR6BmtLaY0La5siCuZSDkno9BnxFthr5cG/eEID5kAtOleSb+7BzP69QS5Z60vgaQ/WiAXfI6o1WPDY8/xHoeKCigoTiFRaKLQ24R2ntzP4pYOVvROkpqfZxU/9W7jrpJ0no3W7U/w1sj0Gnv0QJZyZaMXG5KYDxMsUGunZA6YHavZSNcu0Bw3D9dDwAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
- by PH8PR11MB6832.namprd11.prod.outlook.com (2603:10b6:510:22c::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.37; Fri, 19 Apr
- 2024 11:02:43 +0000
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::5135:2255:52ba:c64e%4]) with mapi id 15.20.7519.010; Fri, 19 Apr 2024
- 11:02:43 +0000
-Date: Fri, 19 Apr 2024 19:02:32 +0800
-From: Chao Gao <chao.gao@intel.com>
-To: Xin Li <xin3.li@intel.com>
-CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<seanjc@google.com>, <pbonzini@redhat.com>, <corbet@lwn.net>,
-	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
-	<shuah@kernel.org>, <vkuznets@redhat.com>, <peterz@infradead.org>,
-	<ravi.v.shankar@intel.com>, <xin@zytor.com>
-Subject: Re: [PATCH v2 06/25] KVM: VMX: Defer enabling FRED MSRs save/load
- until after set CPUID
-Message-ID: <ZiJPSCO+U7iLWiuu@chao-email>
-References: <20240207172646.3981-1-xin3.li@intel.com>
- <20240207172646.3981-7-xin3.li@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240207172646.3981-7-xin3.li@intel.com>
-X-ClientProxiedBy: SG2PR04CA0180.apcprd04.prod.outlook.com
- (2603:1096:4:14::18) To CH3PR11MB8660.namprd11.prod.outlook.com
- (2603:10b6:610:1ce::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD2880029;
+	Fri, 19 Apr 2024 11:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713524567; cv=none; b=bvIw9/Sx2iC5nvdzlq0ExK/atKhz8oWe+um0RWSwTbKH8BSmvhivyYd7HTBLsKkXHA5i9/3tUnr4WFHA2voPZ1yIj/LN89xOGrTRfll8o4GtGjV+F/szhfpg+vDixHgkw+qCNa4vRV8ArGMk/BmaqUQvQC3r3DGHeNRHiVdDMJ4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713524567; c=relaxed/simple;
+	bh=uOc8bRt28hywY+XHnYMyFbdj527QclSJy0WsFXwCO1M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z1cI9tMImKMUg9ySymy/96xK3ysVn8dZma+dSVjr0WShGJarldUBpQyQPCQfFEVYXMsej76WZGxBPUDFyEOrQaZt4llAt9PZuI9oHRV4cSTBaYAlC+Qab5bGf93BunP2oCb3TbA8/aLgb4uHeaRm5AEndSJ1ZxXcI0JmOdfQXGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rxm0Y-003sYC-55; Fri, 19 Apr 2024 19:02:19 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 19 Apr 2024 19:02:35 +0800
+Date: Fri, 19 Apr 2024 19:02:35 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Maxime MERE <maxime.mere@foss.st.com>
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Thomas Bourgoin <thomas.bourgoin@foss.st.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Eric Biggers <ebiggers@google.com>, Rob Herring <robh@kernel.org>,
+	linux-crypto@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: stm32/hash - add full DMA support for stm32mpx
+Message-ID: <ZiJPS1dhc/uOT08A@gondor.apana.org.au>
+References: <20240412124545.2704487-1-maxime.mere@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|PH8PR11MB6832:EE_
-X-MS-Office365-Filtering-Correlation-Id: e6cb965b-1408-4685-2054-08dc60603cf0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rv4Z9HEX9wtmBUiedyPIB8cpZJJS80Yf8nBL6wdph+6Z1rr/ehJrLcW3iZaNDnr3PlBv4dqDsyS8RYi27dgCmw3KiKtOpm3iktLqEO9tIUVUSDa9R6bHpSLB5wV5CA2q/D1pSlrBx/ZJwF/QGrPZtNoKHz/zcnuzG36bsTvGrUgNiynXQ6Qm4UXyX8bXs8TcgmDFOoj8LWgrKLIatn3CdVj8kU7hGgnB6mtSF1jf6fsgvJdNKldiMBziyYrKX+mnNbIKLt1gIVR7cKs/KN675eMWIdN42+LOrKfr470B2oNZZ7hjXgCHtD3xWww43X1DS8+Kgs8SWPPNNHdrp/YN15slRaq61OH44+STxJhVTt/4t2MT7OTF3UoZ9Iqjit6ag5zzEXcahEhqG7wOkN85E/ahnIxR8c0zGXxY2Y/ld6jvc2WXgU6BDZJF9PNaIuhDiQzeRM2p8KBqQh4gT4AggBWFeIYUxJOmIFhH/XHfmXBUjnsRBnH8OsmAgyQbXEp3iipxY3qIqBMJ+bVD7D/pHH9TavV9tcmGx3ev3dRun7T1hlm9Sp9mZ/hJIJRCMgl5TUtPQ6Y9EYR0uha1k6D+9t7sgY2l6ecK/0hzRT/5gNQMYjfTeaaGLa8COWBtJBMED0Qphun8o52WEEX4zVA2OAQOc7w8HkYe5aoDW/XJ7NA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2La3TbQyTlfJf1ZK+p/xB4zNJ2LbGluN4sGtYEQhQLWl35CmNhCZ5Bkyqm2t?=
- =?us-ascii?Q?x63imsgdMXPqccJQf2P65u2vj21+7iONJGuIgi8p5v+R2I/Z+KTq6YsdfHID?=
- =?us-ascii?Q?f2/zcqgIuiixS++xBhmQaCJELTekEdEBVmtzT3oEDTimbBlpNWxIz4vkcRcr?=
- =?us-ascii?Q?4Ls3yz/9XMNioFWoaAiVHTOLakcOawb1S2vmZWiTCCamZePca/ukyb6admrr?=
- =?us-ascii?Q?r3sFlh8cGieAo99qez1xz3+5IuCIfsh3SRIhOW6qMABvrOFq8yEVfhpCXmdm?=
- =?us-ascii?Q?aCSbE+fBuUSuHHWJEDiIh+y3WAApoYu1EtI9pGnrLNP0GV5v4W1ucjRYi/Uh?=
- =?us-ascii?Q?2IcfdKbIwtPh2RMl4apM1Eba/0NwaAAaWBAtPVXkD9ijrfSKt+WENLDrxNvm?=
- =?us-ascii?Q?jA88QOc3LWGxE/5yINHi3h+HNs0whbCq8ivSt2+o/Fxy/rakZ0qISK7yCPAl?=
- =?us-ascii?Q?13/RnYub234Tvybw1D5K9y947xfSJGNIcSYte6I/h1gyA4LmCZZaOSQ0egG0?=
- =?us-ascii?Q?2fn1utGI54WfbbFUNy4Zy10gA2sWp/tT0VXbunrtP8whr7TeBtzP5up7HLLu?=
- =?us-ascii?Q?AofRL/H4OtWmLz2pN4oIVqn9JySNDhwgLhXZbNGd+XY3+SZ5YfXHQho1GmOu?=
- =?us-ascii?Q?tw4YOecBeJYa6jJASq5lWIUjR/zF/SlnKlNbRAEjkvbCeUSAWZCqNaFY/5sL?=
- =?us-ascii?Q?QhX4v+nbD8YeA+q4I/1czg6pZiZC2hUMlSvR/ApsX3b8gJyYy4wq0Sjaf2OX?=
- =?us-ascii?Q?waBBUKWwNdVBnqIEVKA7wZhMm2eVvbvrxMmN9TR7GAi/bcygb69K5TYVLS8Y?=
- =?us-ascii?Q?SGanN6+10Xdpmco/P7Ai7tGGuJjv/VN/1ar2VM1qsFU+zh+VFF4PdVbx32KC?=
- =?us-ascii?Q?5yTmZ57hh7e5m72VPEKT85G30JiD7xERu3Kdw5NLgwosNlKhruAp4dlom+SU?=
- =?us-ascii?Q?k8I2dNlJH13YAppx95aF97WG8XSCenhvOZsYRGIBgpfp/3j+utDw0677FLvx?=
- =?us-ascii?Q?Ccsq+EwGg5KLtXBbXAXGQPlxuwvE6n0E1pJFSTkspesfS5C6qPR25BOvYq8x?=
- =?us-ascii?Q?xdcbxFuJ+48MYqCbUcd55CGExMmyLU8f6f7zF3PatpXc/aM5wLoDMEeJfqpq?=
- =?us-ascii?Q?+F6WhB8tsJTKFflZvQw1Q+ayR7qdP58/QlEcfYmlPY4b8HyvAUPZS7zpayiv?=
- =?us-ascii?Q?7et8Szm6cClI2RIiH2UbvE1CjgW3Q+7bMvoVCQkfRIy9aFWD1150RmmD4KT1?=
- =?us-ascii?Q?qpEi/sitXWSvpi5ESMkBZp/4KgwzWkLgjDEHbk39PiU70PkEkBlfuup12o/9?=
- =?us-ascii?Q?1WWBejPtNhfgmNJ+Zo5KXGXgHWz6AJOTTQyb7ujE+1jL4FeiJSo4s9Y03tod?=
- =?us-ascii?Q?0Usb0TpCDMVY46VgXuySWaN4O+izikfmvqtV4H1I7n1FKOnJZtrO4pqufzPi?=
- =?us-ascii?Q?abWZtbHPOX1VRmhYqSuGbhD3eo42xhqitZtfzOZ2ssq9s9pD8fAZjf6dPT0X?=
- =?us-ascii?Q?Cxo+34nZbkFp45GtGKZpVS7DWTJ685TIzOxSFZaummYKYSqJJzYMAiOLTDo2?=
- =?us-ascii?Q?1h99DAKqdEepwrueljKsmdW+v3h7yP4+YxyvVFVO?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6cb965b-1408-4685-2054-08dc60603cf0
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 11:02:43.6402
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mYFInZ43Z8MNq16k+mO1f7FIiSvCEGT4p5UlDe58arXo75tvdblM+EwGDbDzUuxlE6//tPft1P8L2d5z3lmqow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6832
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240412124545.2704487-1-maxime.mere@foss.st.com>
 
-On Wed, Feb 07, 2024 at 09:26:26AM -0800, Xin Li wrote:
->Clear FRED VM entry/exit controls when initializing a vCPU, and set
->these controls only if FRED is enumerated after set CPUID.
->
->FRED VM entry/exit controls need to be set to establish context
->sufficient to support FRED event delivery immediately after VM entry
->and exit. However it is not required to save/load FRED MSRs for
->a non-FRED guest, which aren't supposed to access FRED MSRs.
->
->Signed-off-by: Xin Li <xin3.li@intel.com>
->Tested-by: Shan Kang <shan.kang@intel.com>
+On Fri, Apr 12, 2024 at 02:45:45PM +0200, Maxime MERE wrote:
+> From: Maxime Méré <maxime.mere@foss.st.com>
+> 
+> Due to a lack of alignment in the data sent by requests, the actual DMA
+> support of the STM32 hash driver is only working with digest calls.
+> This patch, based on the algorithm used in the driver omap-sham.c,
+> allows for the usage of DMA in any situation.
+> 
+> It has been functionally tested on STM32MP15, STM32MP13 and STM32MP25.
+> 
+> By checking the performance of this new driver with OpenSSL, the
+> following results were found:
+> 
+> Performance:
+> 
+> (datasize: 4096, number of hashes performed in 10s)
+> 
+> |type   |no DMA    |DMA support|software  |
+> |-------|----------|-----------|----------|
+> |md5    |13873.56k |10958.03k  |71163.08k |
+> |sha1   |13796.15k |10729.47k  |39670.58k |
+> |sha224 |13737.98k |10775.76k  |22094.64k |
+> |sha256 |13655.65k |10872.01k  |22075.39k |
+> 
+> CPU Usage:
+> 
+> (algorithm used: sha256, computation time: 20s, measurement taken at
+> ~10s)
+> 
+> |datasize  |no DMA |DMA  | software |
+> |----------|-------|-----|----------|
+> |  2048    | 56%   | 49% | 50%      |
+> |  4096    | 54%   | 46% | 50%      |
+> |  8192    | 53%   | 40% | 50%      |
+> | 16384    | 53%   | 33% | 50%      |
+> 
+> Note: this update doesn't change the driver performance without DMA.
+> 
+> As shown, performance with DMA is slightly lower than without, but in
+> most cases, it will save CPU time.
+> 
+> Signed-off-by: Maxime Méré <maxime.mere@foss.st.com>
+> ---
+>  drivers/crypto/stm32/stm32-hash.c | 570 +++++++++++++++++++++++-------
+>  1 file changed, 448 insertions(+), 122 deletions(-)
 
-Reviewed-by: Chao Gao <chao.gao@intel.com>
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
