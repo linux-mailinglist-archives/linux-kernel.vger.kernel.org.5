@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-151560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D53F38AB07A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:14:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A14EC8AB07B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:14:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6303C1F264FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:14:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41D8B1F2650F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:14:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9E582D62;
-	Fri, 19 Apr 2024 14:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85DD512E1F3;
+	Fri, 19 Apr 2024 14:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hFWe2oXO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y+pT+XHE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7521C12D76E
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B79DF12E1DA
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713536049; cv=none; b=R4+oEk3KUizXgEENzmBR87BPiXNfVOMpRorKze0YRRxM6CtrmUs1fMmgTkgWab9EhS+OWJ2ER0/80swHkc+uZBXkdArGklHXqYfrXbJTEgZKQAC6MEoc7S274Kci00WUmvlQK5lgT8N3hJJgZ0J8EwgqFUykLvAOaIcGEBEyonQ=
+	t=1713536051; cv=none; b=msQilXWvPWARdLj/urLUFuRkL44G48x257ECY5WU1KU9N/qnPSXivx0wBJP2xaF5c53aKJH2ufYSupvViY6+yCyhnX1x9Edm9CFIyf9wEdVzwvsIj/7Id0O1K61TOwVErQ625YhdROth6wl+vT13YWL2ErmIjo64RcYSO7kJVkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713536049; c=relaxed/simple;
-	bh=WU/MlA5F6U8Yw7nLVGdMlcTE8VeVpWRoQVE2dfuxctY=;
+	s=arc-20240116; t=1713536051; c=relaxed/simple;
+	bh=q2bEZDZIudIS1aIa7CkbX4KQHDVLkk1sD20tkmStKgo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EaBGc432Cuhn0L8njj908e3tMUKi7PRhHocNB2R/BSi2LvvCTiERGS/iSgCzAHTaU5DJrqBGYp2TD88/cQXN19nOVmorNqn69UnRgJwUunYcyAxT8WtBOI2P5eelGC0S7bsVoA5dHdQPwBsY863/wSBTuUe/kDeWeZo6FKHF460=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hFWe2oXO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C1AAC32782;
-	Fri, 19 Apr 2024 14:14:06 +0000 (UTC)
+	 MIME-Version; b=N2OwJCcMdmKtem5deTkehugpWsphQ5vo8kUIUrBVbn7BzI9123wg6hR6W26zMSaLpjIwVTIjmXg4P5gkxrnUbNSCZsy2zypyCOXtodAAIC+q9+VQRd9hyhWKy/XNU0lk1WTQTztxbABTxG3NKuxnsbEp3VLefqNWs7JsjWMkjSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y+pT+XHE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D068C3277B;
+	Fri, 19 Apr 2024 14:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713536049;
-	bh=WU/MlA5F6U8Yw7nLVGdMlcTE8VeVpWRoQVE2dfuxctY=;
+	s=k20201202; t=1713536051;
+	bh=q2bEZDZIudIS1aIa7CkbX4KQHDVLkk1sD20tkmStKgo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hFWe2oXOO/WrOOgFQ0hYsGzdW/vFXGY0rGUDu4Pre50C/+QnZTr2bMUtpBTops7Fy
-	 n76omYvelKPfZrezKoWuIhEL8ZjTTLlctrXDS7rxma4sN0xbH7VjZ1hqiFf2Q2oZY7
-	 WV5+4c1KH3cIP2zNlb5LGsz6G0dWEnwKvoYxlxBgeEbsYrzI69DqterRn+6Ly5mxUp
-	 tBVVxxZ5oIrFT3UaQ2sK9Gkkvqwx2wtiWJhBUjOHWB9EYQGjELlI4bE0icFuyWAYVx
-	 jlJ70L+uysiSoz628/X6bCw+jL/z7jo2HoQ7lJ/qRnjyY4cFjOiWoGC96fFR86T4eE
-	 oGMR0vXA1iUBg==
+	b=Y+pT+XHEQrmbwKuAGXrFAPoJzygazswmUPaVuAbqaudckIJXqbZYvfTbyFkk/tWnP
+	 sG7XtRzpei9J+MiWAoFJoCMDckSUtF98Kks8UiEm5kM5UnBEAPiLjlGu6acnOkzU5P
+	 Irar+7lFMBF9zl1INSMepDc2gzARH4HUmPxxAR9X5yTv7ZzZ4Gi05GI0kYCHTeyKPs
+	 /7Tad5JZCoQOA96NHTFQ7/Onrk6cKv7JHDIrZ/K/Bn6RsdByTGVkMqEFUCXN6fSqmH
+	 pVfw7HWDHpxjWcSCyFxUO2wr6uURB9eIVppuGwtq+kOOxJP/vNhN/7AU8KZtrzn15G
+	 VhsTHZgHUAoXQ==
 From: Michael Walle <mwalle@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Pratyush Yadav <pratyush@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Ricardo Ribalda <ribalda@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	Michael Walle <mwalle@kernel.org>
-Subject: [PATCH v2 1/6] mtd: spi-nor: Remove support for Xilinx S3AN flashes
-Date: Fri, 19 Apr 2024 16:12:44 +0200
-Message-Id: <20240419141249.609534-2-mwalle@kernel.org>
+Subject: [PATCH v2 2/6] mtd: spi-nor: get rid of non-power-of-2 page size handling
+Date: Fri, 19 Apr 2024 16:12:45 +0200
+Message-Id: <20240419141249.609534-3-mwalle@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240419141249.609534-1-mwalle@kernel.org>
 References: <20240419141249.609534-1-mwalle@kernel.org>
@@ -64,235 +64,127 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-These flashes are kind of an oddball for the very old Xilinx Spartan 3
-FPGAs to store their bitstream. More importantly, they reuse the Atmel
-JEDEC manufacturer ID and in fact the at45db081d already blocks the use
-of the 3S700AN flash chip. It's time to sunset support for these
-flashes.
+The Xilinx flashes were the only user of the page sized that were no
+power of 2. Support for them were dropped, thus we can also get rid of
+the special page size handling for it.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 Acked-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-Reviewed-by: Pratyush Yadav <pratyush@kernel.org>
-Cc: Ricardo Ribalda <ribalda@kernel.org>
 ---
- drivers/mtd/spi-nor/Makefile |   1 -
- drivers/mtd/spi-nor/core.c   |   1 -
- drivers/mtd/spi-nor/core.h   |   1 -
- drivers/mtd/spi-nor/xilinx.c | 169 -----------------------------------
- 4 files changed, 172 deletions(-)
- delete mode 100644 drivers/mtd/spi-nor/xilinx.c
+ drivers/mtd/spi-nor/core.c | 41 ++++++++++----------------------------
+ drivers/mtd/spi-nor/core.h |  4 ----
+ 2 files changed, 11 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 5e68468b72fc..5dd9c35f6b6f 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -13,7 +13,6 @@ spi-nor-objs			+= micron-st.o
- spi-nor-objs			+= spansion.o
- spi-nor-objs			+= sst.o
- spi-nor-objs			+= winbond.o
--spi-nor-objs			+= xilinx.o
- spi-nor-objs			+= xmc.o
- spi-nor-$(CONFIG_DEBUG_FS)	+= debugfs.o
- obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 3e1f1913536b..cbe5f92eb0af 100644
+index cbe5f92eb0af..31dfdbf96765 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -1986,7 +1986,6 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_spansion,
- 	&spi_nor_sst,
- 	&spi_nor_winbond,
--	&spi_nor_xilinx,
- 	&spi_nor_xmc,
- };
+@@ -1463,14 +1463,6 @@ static void spi_nor_unlock_and_unprep_rd(struct spi_nor *nor, loff_t start, size
+ 	spi_nor_unprep(nor);
+ }
  
+-static u32 spi_nor_convert_addr(struct spi_nor *nor, loff_t addr)
+-{
+-	if (!nor->params->convert_addr)
+-		return addr;
+-
+-	return nor->params->convert_addr(nor, addr);
+-}
+-
+ /*
+  * Initiate the erasure of a single sector
+  */
+@@ -1478,8 +1470,6 @@ int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
+ {
+ 	int i;
+ 
+-	addr = spi_nor_convert_addr(nor, addr);
+-
+ 	if (nor->spimem) {
+ 		struct spi_mem_op op =
+ 			SPI_NOR_SECTOR_ERASE_OP(nor->erase_opcode,
+@@ -2064,8 +2054,6 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	while (len) {
+ 		loff_t addr = from;
+ 
+-		addr = spi_nor_convert_addr(nor, addr);
+-
+ 		ret = spi_nor_read_data(nor, addr, len, buf);
+ 		if (ret == 0) {
+ 			/* We shouldn't see 0-length reads */
+@@ -2098,7 +2086,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	size_t *retlen, const u_char *buf)
+ {
+ 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+-	size_t page_offset, page_remain, i;
++	size_t i;
+ 	ssize_t ret;
+ 	u32 page_size = nor->params->page_size;
+ 
+@@ -2111,23 +2099,9 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	for (i = 0; i < len; ) {
+ 		ssize_t written;
+ 		loff_t addr = to + i;
+-
+-		/*
+-		 * If page_size is a power of two, the offset can be quickly
+-		 * calculated with an AND operation. On the other cases we
+-		 * need to do a modulus operation (more expensive).
+-		 */
+-		if (is_power_of_2(page_size)) {
+-			page_offset = addr & (page_size - 1);
+-		} else {
+-			u64 aux = addr;
+-
+-			page_offset = do_div(aux, page_size);
+-		}
++		size_t page_offset = addr & (page_size - 1);
+ 		/* the size of data remaining on the first page */
+-		page_remain = min_t(size_t, page_size - page_offset, len - i);
+-
+-		addr = spi_nor_convert_addr(nor, addr);
++		size_t page_remain = min_t(size_t, page_size - page_offset, len - i);
+ 
+ 		ret = spi_nor_lock_device(nor);
+ 		if (ret)
+@@ -3054,7 +3028,14 @@ static int spi_nor_init_params(struct spi_nor *nor)
+ 		spi_nor_init_params_deprecated(nor);
+ 	}
+ 
+-	return spi_nor_late_init_params(nor);
++	ret = spi_nor_late_init_params(nor);
++	if (ret)
++		return ret;
++
++	if (WARN_ON(!is_power_of_2(nor->params->page_size)))
++		return -EINVAL;
++
++	return 0;
+ }
+ 
+ /** spi_nor_set_octal_dtr() - enable or disable Octal DTR I/O.
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 442786685515..072c69b0d06c 100644
+index 072c69b0d06c..3043d583eac2 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -603,7 +603,6 @@ extern const struct spi_nor_manufacturer spi_nor_st;
- extern const struct spi_nor_manufacturer spi_nor_spansion;
- extern const struct spi_nor_manufacturer spi_nor_sst;
- extern const struct spi_nor_manufacturer spi_nor_winbond;
--extern const struct spi_nor_manufacturer spi_nor_xilinx;
- extern const struct spi_nor_manufacturer spi_nor_xmc;
+@@ -366,9 +366,6 @@ struct spi_nor_otp {
+  * @set_octal_dtr:	enables or disables SPI NOR octal DTR mode.
+  * @quad_enable:	enables SPI NOR quad mode.
+  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
+- * @convert_addr:	converts an absolute address into something the flash
+- *                      will understand. Particularly useful when pagesize is
+- *                      not a power-of-2.
+  * @setup:		(optional) configures the SPI NOR memory. Useful for
+  *			SPI NOR flashes that have peculiarities to the SPI NOR
+  *			standard e.g. different opcodes, specific address
+@@ -403,7 +400,6 @@ struct spi_nor_flash_parameter {
+ 	int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
+ 	int (*quad_enable)(struct spi_nor *nor);
+ 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
+-	u32 (*convert_addr)(struct spi_nor *nor, u32 addr);
+ 	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
+ 	int (*ready)(struct spi_nor *nor);
  
- extern const struct attribute_group *spi_nor_sysfs_groups[];
-diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
-deleted file mode 100644
-index f99118c691b0..000000000000
---- a/drivers/mtd/spi-nor/xilinx.c
-+++ /dev/null
-@@ -1,169 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright (C) 2005, Intec Automation Inc.
-- * Copyright (C) 2014, Freescale Semiconductor, Inc.
-- */
--
--#include <linux/mtd/spi-nor.h>
--
--#include "core.h"
--
--#define XILINX_OP_SE		0x50	/* Sector erase */
--#define XILINX_OP_PP		0x82	/* Page program */
--#define XILINX_OP_RDSR		0xd7	/* Read status register */
--
--#define XSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
--#define XSR_RDY			BIT(7)	/* Ready */
--
--#define XILINX_RDSR_OP(buf)						\
--	SPI_MEM_OP(SPI_MEM_OP_CMD(XILINX_OP_RDSR, 0),			\
--		   SPI_MEM_OP_NO_ADDR,					\
--		   SPI_MEM_OP_NO_DUMMY,					\
--		   SPI_MEM_OP_DATA_IN(1, buf, 0))
--
--#define S3AN_FLASH(_id, _name, _n_sectors, _page_size)		\
--	.id = _id,						\
--	.name = _name,						\
--	.size = 8 * (_page_size) * (_n_sectors),		\
--	.sector_size = (8 * (_page_size)),			\
--	.page_size = (_page_size),				\
--	.flags = SPI_NOR_NO_FR
--
--/* Xilinx S3AN share MFR with Atmel SPI NOR */
--static const struct flash_info xilinx_nor_parts[] = {
--	/* Xilinx S3AN Internal Flash */
--	{ S3AN_FLASH(SNOR_ID(0x1f, 0x22, 0x00), "3S50AN", 64, 264) },
--	{ S3AN_FLASH(SNOR_ID(0x1f, 0x24, 0x00), "3S200AN", 256, 264) },
--	{ S3AN_FLASH(SNOR_ID(0x1f, 0x24, 0x00), "3S400AN", 256, 264) },
--	{ S3AN_FLASH(SNOR_ID(0x1f, 0x25, 0x00), "3S700AN", 512, 264) },
--	{ S3AN_FLASH(SNOR_ID(0x1f, 0x26, 0x00), "3S1400AN", 512, 528) },
--};
--
--/*
-- * This code converts an address to the Default Address Mode, that has non
-- * power of two page sizes. We must support this mode because it is the default
-- * mode supported by Xilinx tools, it can access the whole flash area and
-- * changing over to the Power-of-two mode is irreversible and corrupts the
-- * original data.
-- * Addr can safely be unsigned int, the biggest S3AN device is smaller than
-- * 4 MiB.
-- */
--static u32 s3an_nor_convert_addr(struct spi_nor *nor, u32 addr)
--{
--	u32 page_size = nor->params->page_size;
--	u32 offset, page;
--
--	offset = addr % page_size;
--	page = addr / page_size;
--	page <<= (page_size > 512) ? 10 : 9;
--
--	return page | offset;
--}
--
--/**
-- * xilinx_nor_read_sr() - Read the Status Register on S3AN flashes.
-- * @nor:	pointer to 'struct spi_nor'.
-- * @sr:		pointer to a DMA-able buffer where the value of the
-- *              Status Register will be written.
-- *
-- * Return: 0 on success, -errno otherwise.
-- */
--static int xilinx_nor_read_sr(struct spi_nor *nor, u8 *sr)
--{
--	int ret;
--
--	if (nor->spimem) {
--		struct spi_mem_op op = XILINX_RDSR_OP(sr);
--
--		spi_nor_spimem_setup_op(nor, &op, nor->reg_proto);
--
--		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = spi_nor_controller_ops_read_reg(nor, XILINX_OP_RDSR, sr,
--						      1);
--	}
--
--	if (ret)
--		dev_dbg(nor->dev, "error %d reading SR\n", ret);
--
--	return ret;
--}
--
--/**
-- * xilinx_nor_sr_ready() - Query the Status Register of the S3AN flash to see
-- * if the flash is ready for new commands.
-- * @nor:	pointer to 'struct spi_nor'.
-- *
-- * Return: 1 if ready, 0 if not ready, -errno on errors.
-- */
--static int xilinx_nor_sr_ready(struct spi_nor *nor)
--{
--	int ret;
--
--	ret = xilinx_nor_read_sr(nor, nor->bouncebuf);
--	if (ret)
--		return ret;
--
--	return !!(nor->bouncebuf[0] & XSR_RDY);
--}
--
--static int xilinx_nor_setup(struct spi_nor *nor,
--			    const struct spi_nor_hwcaps *hwcaps)
--{
--	u32 page_size;
--	int ret;
--
--	ret = xilinx_nor_read_sr(nor, nor->bouncebuf);
--	if (ret)
--		return ret;
--
--	nor->erase_opcode = XILINX_OP_SE;
--	nor->program_opcode = XILINX_OP_PP;
--	nor->read_opcode = SPINOR_OP_READ;
--	nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
--
--	/*
--	 * This flashes have a page size of 264 or 528 bytes (known as
--	 * Default addressing mode). It can be changed to a more standard
--	 * Power of two mode where the page size is 256/512. This comes
--	 * with a price: there is 3% less of space, the data is corrupted
--	 * and the page size cannot be changed back to default addressing
--	 * mode.
--	 *
--	 * The current addressing mode can be read from the XRDSR register
--	 * and should not be changed, because is a destructive operation.
--	 */
--	if (nor->bouncebuf[0] & XSR_PAGESIZE) {
--		/* Flash in Power of 2 mode */
--		page_size = (nor->params->page_size == 264) ? 256 : 512;
--		nor->params->page_size = page_size;
--		nor->mtd.writebufsize = page_size;
--		nor->params->size = nor->info->size;
--		nor->mtd.erasesize = 8 * page_size;
--	} else {
--		/* Flash in Default addressing mode */
--		nor->params->convert_addr = s3an_nor_convert_addr;
--		nor->mtd.erasesize = nor->info->sector_size;
--	}
--
--	return 0;
--}
--
--static int xilinx_nor_late_init(struct spi_nor *nor)
--{
--	nor->params->setup = xilinx_nor_setup;
--	nor->params->ready = xilinx_nor_sr_ready;
--
--	return 0;
--}
--
--static const struct spi_nor_fixups xilinx_nor_fixups = {
--	.late_init = xilinx_nor_late_init,
--};
--
--const struct spi_nor_manufacturer spi_nor_xilinx = {
--	.name = "xilinx",
--	.parts = xilinx_nor_parts,
--	.nparts = ARRAY_SIZE(xilinx_nor_parts),
--	.fixups = &xilinx_nor_fixups,
--};
 -- 
 2.39.2
 
