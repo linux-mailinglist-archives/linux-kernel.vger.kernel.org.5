@@ -1,128 +1,73 @@
-Return-Path: <linux-kernel+bounces-151046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 036938AA850
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:15:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268B18AA863
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:22:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABF5A1F21C9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:15:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58A621C20B5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45644D51C;
-	Fri, 19 Apr 2024 06:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="jPEmfXN1"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526A1182C5;
+	Fri, 19 Apr 2024 06:22:13 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB8FB667;
-	Fri, 19 Apr 2024 06:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA284D515;
+	Fri, 19 Apr 2024 06:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713507342; cv=none; b=dSsE58/dr28tPxHPkyYsBAXUvNodJsiJhjfWieIOMiGf4F8YnKHbftCzoYglqSKZTpx20nF7WznFnEUWnr6iUyAxBP4a0hEu5Rfen09gfz+xBR6FfvqxIYxCoN5nPh2WT/fldAxGj0IsG7SDoxse7DVNSAN847nZrOdxYtfzYiY=
+	t=1713507732; cv=none; b=bVOtLATh29SBy3CiDtePkHjfJN7eonkkiwY4N6TVvlHGB7eQ6/OCbH+oCU7ZPGCNOUA3RkVDGt9QOvNN+ZfL9Y6WYoBUkQVhCuBvEJztS55kLtc9HuvRVfvuKS8fVp7iCtcU9x7KUAODbI6BBsJSRRnITa5Hiw8AV6Maczam1+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713507342; c=relaxed/simple;
-	bh=QE1SDfhNjvPtChP7Aj1UbHskIeF99ihKXjAVio0OQFI=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=btk/UCmA+lRApc4tHqk/z0zH8esiGmldSuJZt2wvudg8ss9BQCz83orrLjTJfZlH9LLyxoJ/qpL6FlD5PUM1gwA76TkDg8igLDCDNcOix4IPdZiLzyBhQA1gYOOMV3sJRVU2y12x87mfcNuiN/748Qi60Wg3l9WNXR6Z5L54tQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=jPEmfXN1; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713507326; x=1714112126; i=markus.elfring@web.de;
-	bh=SZj8ghAjaLE6nyctSaVo0FKCiOsfPBVQxbO6b2IlqcU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=jPEmfXN1C7JBdJLHpnDWAqi+4KlfDrwl0j6uaHfBQms2mAPneVjv122no8KQW7St
-	 uQLwBBzmINXWbvxrmsrN8LOPy8EDIy5W4mMZ0h1ZlB75Na6owz7xvr3ULETZU+86x
-	 n/xqkEQ4WB+/TpDZ1O13xEMZGBPJWPveTUvg5N8Q83yrNRLCyMHEW7JRWu1nBXyq7
-	 GSK+R5vSrPA/5wPkVATbTfZ4qd/d0SRbjZI78FixCbBrsU82xGws9sD753QG5lxmD
-	 kUML4tFHiNLioa9S/3wVMbxz198qcmub8zotBJMsbYU10taDwvTlV6gCKRntTU8UO
-	 3K2woMyP8ArF10Rnbg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mi4yz-1sbj6l2DtR-00e4QZ; Fri, 19
- Apr 2024 08:15:26 +0200
-Message-ID: <b18c2e4b-bf61-41ad-b5f9-8e52d7651cca@web.de>
-Date: Fri, 19 Apr 2024 08:15:25 +0200
+	s=arc-20240116; t=1713507732; c=relaxed/simple;
+	bh=gw642tX2UMxYZ0kju62sZCES2c1hxstbaHoRke+U3yo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DsYsmDKAoh+Q8P38+90fE3oSWBZjZ4t0U5SAUPzE3zx0zsdRor8dk8Wt8yvHhqetg2d6o/XZ75DnXMhiPqf0YNfZpxmdQDhMgzhbc/5Z43WsLwgr8bwCGW9rIcrCrcDAdwgngtWw5ej2R1OFE4S4Qj9SmZIcULeUOCVCYuojT0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VLPc52dwRzwSwh;
+	Fri, 19 Apr 2024 14:19:01 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id 695E318006D;
+	Fri, 19 Apr 2024 14:22:06 +0800 (CST)
+Received: from huawei.com (10.175.101.107) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 19 Apr
+ 2024 14:22:05 +0800
+From: Ye Bin <yebin10@huawei.com>
+To: <djwong@kernel.org>, <linux-xfs@vger.kernel.org>,
+	<chandan.babu@oracle.com>, <dchinner@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <yebin10@huawei.com>
+Subject: [PATCH RFC 0/2] xfs: fix potential create file failed
+Date: Fri, 19 Apr 2024 14:18:46 +0800
+Message-ID: <20240419061848.1032366-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Wander Lairson Costa <wander@redhat.com>, kunit-dev@googlegroups.com,
- linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Brendan Higgins <brendan.higgins@linux.dev>, David Gow
- <davidgow@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Matti Vaittinen <mazziesaccount@gmail.com>,
- Maxime Ripard <mripard@kernel.org>, Rae Moar <rmoar@google.com>,
- Shuah Khan <skhan@linuxfoundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240418210236.194190-3-wander@redhat.com>
-Subject: Re: [PATCH v3 2/2] kunit: avoid memory leak on device register error
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240418210236.194190-3-wander@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZP2boipMNyD0mUm2bcuILUQveBlG0LOrEz6OlCpvASrlP3tL2JY
- NcsIIynp8Eo239IN/by3VEO+uIe8DYM1TMM5mk3WVh/0jRhnAfvT6XgrY6VoKpwn980i24O
- MoW3W7z1VbvroUsD76AZdKwsFE88Z8K1MPo5OOQvnY44GFxOxe9AqpXBXDp+pt/8+KfZIG5
- s2+aW6/gzdSAHAv2T1pJg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:3TBxCb/ezkM=;2p/RewvegXEDpauwRjt8uiNch3s
- BH9X8Z6Ifc02VySwy7N/3ezTh1/yaBHXewJLwqZ3XkTONVbAtZm53zjAUKPxXk+hAlQnHkuPl
- bAa9qPs72S/lN/xINB5gpjYiDZKSuW40KY4zWPjWms1ab69T7wMJ1+d+3TGxFXBNviWzX0KHI
- ibPH+jyyroU9jgHpNL4nPiTRiNjH1o70oXhUab9dYtdxxQbJL4ehHHdBEYsv0LDKoZ+1b/WWe
- YTCzyCe30fMQeelSK4iwj7m0xgVAcWCHahDE57LH3bKIo+rotVhH1ks99nSyPpxqHcmV0OnF1
- YwtsXYy9IzLC0fJL4vSyaHiq8xo6WDkERga++NBY60Tny654I1c+DPbtHSwZ8lvstFrqlk8AR
- DrXqpO9sTtlZ61PVHmGH7dsHt81+dBeM64diTS+fHJ/Ch5Gxo2WlVgx7gl1r3nfMCXjD+iW/n
- mfQUyfvlB+T0/EfzNLYCR02OHVLTEyGGjn/1PIHj8EfDMOzXFL542fj3xbP42djJxOizxRLlc
- /Ck03GxTgyIGoLiAZI1b1vsTT1MMaoHFzk1EXtf8nNk5HvNq/kROZ1gBg/d5jjuL1MYwLXVWf
- 2mgccO115L2ARCk3npieuIVAzTMiOOEpZ+eHsd+Ed9FclhQ7EIQed92fAMtBCABOWiE0XUxNa
- JIwwTOnk3rJCzzwsq0DvYiD1To9omy6HAnfeROv+hXSejQvhuexmTGr8bvu4rMZkXo007Jtv/
- nVvO5I1t+ntMT6XEg4Y0uKIfM7QSWofLkg1SGiUSq+QjnvTP5CVLMR8qR4swN7gHW8/YrjqbT
- Rp3tRDZZ9YjYiLcDmU+zjdxNOP6+/wnPodaCdCYHuj0OQ=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-> If the device register fails, free the allocated memory before
-> returning.
+This patch set fixes two potential issues that could cause failure to
+create files.
 
-Can a description variant (like the following) be more appropriate?
+Ye Bin (2):
+  xfs: fix potential create file failed
+  xfs: avoid potenial alloc inode failed
 
-   Free the allocated memory (after a device registration failure)
-   before returning.
-   Thus add a jump target so that a bit of exception handling can be bette=
-r
-   reused at the end of this function implementation.
+ fs/xfs/libxfs/xfs_alloc.c  | 32 ++++++++++----------------------
+ fs/xfs/libxfs/xfs_ialloc.c | 13 ++-----------
+ 2 files changed, 12 insertions(+), 33 deletions(-)
 
+-- 
+2.34.1
 
-Would you like to replace the word =E2=80=9Cregister=E2=80=9D by =E2=80=9C=
-registration=E2=80=9D also
-in the summary phrase?
-
-
-=E2=80=A6
-> +++ b/lib/kunit/device.c
-=E2=80=A6
-> @@ -140,6 +138,9 @@ static struct kunit_device *kunit_device_register_in=
-ternal(struct kunit *test,
->  	kunit_add_action(test, device_unregister_wrapper, &kunit_dev->dev);
->
->  	return kunit_dev;
-> +error:
-> +	kfree(kunit_dev);
-> +	return ERR_PTR(err);
->  }
-=E2=80=A6
-
-I find it nicer to use a label like free_device.
-
-Regards,
-Markus
 
