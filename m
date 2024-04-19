@@ -1,135 +1,272 @@
-Return-Path: <linux-kernel+bounces-151613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7128D8AB125
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:57:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62F878AB127
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:57:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 018AB284955
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:57:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6D8E1F24082
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:57:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B41E12F38F;
-	Fri, 19 Apr 2024 14:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC1DA12F580;
+	Fri, 19 Apr 2024 14:57:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dPcsDq1t"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="mK8j5xNf"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A2B1E893;
-	Fri, 19 Apr 2024 14:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3383712F380
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713538615; cv=none; b=mgT9pEcx9FiLo+XzMHNqKkAjRwc4B7PDqNXTinkook63Pe4nHA3Wz5ZaoL6LCKKHJIDSu0KzGNPpQPmkx7FxYUJE+OusqSmHgHyXT+EBdmiuKdkWqMKs50Ys5VybBsOp3Ry8Wwz3gXo/7Gyz6FIPWoGtmKvfJkt8+kkbCNUpIus=
+	t=1713538645; cv=none; b=LXF2CDIsLdqK7RmessmQWe8UC1FdNJPtcHcA+J4kHUNvHC/4DXwQ5kWkIyXQHLY9S8N2c0kuRy1BiMWw6Nxd3iQsYO9wBrDBbOhce7xo2AunDv1nxMcb9FCIUKpHNpod18x8ZyagENexbmb1TDMbkFAtrshYaADIcrzEPHsvPYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713538615; c=relaxed/simple;
-	bh=/WmQL2CDxZnqxFZNdiGaGtEwcf5Tmwl5pXVCQ0Uu2Hc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LzjURNr0fQKE72ML3LLF4stBNJCc5UstXn8mqDtMvuNBamsSBgPMttbXFeclXc52IeuDyatfjmCtvp2nBUhXTGQ3AxVzC8CVgPT84Dc8W9h83qUg9ObvI4/u4UiWm7t7OxGQlJSQ753S/AUIgzcSFUTEN2lHjD4w/r/0G/I2NJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dPcsDq1t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5BFFC072AA;
-	Fri, 19 Apr 2024 14:56:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713538615;
-	bh=/WmQL2CDxZnqxFZNdiGaGtEwcf5Tmwl5pXVCQ0Uu2Hc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dPcsDq1trS8BASw+d4kQ/K+dSPKMcZyGWQqeSx+Ri5vGov1iiXelZMt3O99w7UShc
-	 +NNy1T0ryVmBNDIonizaa0RiOaCQt+tkowPgN10DZFHvacmRAbNtNUUPbPextfom3x
-	 TZe9ASy/ljgyAIKtB2brpy7lAoC4o8OzxXx81ONWGkoPwd09CVL7DE9sdiE3UwGbNs
-	 H3q6Hq3eyRzQe7bg8kOO1pnYCxgsHLepz6eyg2R/fwOPI/X0sHH4gxi9uQMPq7W5OV
-	 +GQCg+HdWhQGAPcY7dQaAARkh654jDt28iI/j9I814vXc257guO6CLrW7jLT+SS29p
-	 OkTId4sj34nlQ==
-Date: Fri, 19 Apr 2024 15:56:43 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Konstantin P." <ria.freelander@gmail.com>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Konstantin Pugin <rilian.la.te@ya.ru>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Lech Perczak <lech.perczak@camlingroup.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 2/3] dt-bindings: sc16is7xx: Add compatible line for
- XR20M1172 UART
-Message-ID: <20240419-defection-bagful-12d55d763b0f@spud>
-References: <20240419124506.1531035-1-rilian.la.te@ya.ru>
- <20240419124506.1531035-3-rilian.la.te@ya.ru>
- <20240419-glue-pyramid-584728c0076a@spud>
- <CAF1WSuy4OJVTU5VJdn23BSw4aTAq7i8UQ416V7BxveuQ+5=-1w@mail.gmail.com>
- <dc6573ba-37cb-4394-9a89-16b6f8caa7ad@kernel.org>
- <CAF1WSuzVLrsYt6+CyMHJuRbuXNEy2XnWhbHkcPHT3xXpB3Yh-Q@mail.gmail.com>
- <ZiKFNllT9tMHlH7M@smile.fi.intel.com>
+	s=arc-20240116; t=1713538645; c=relaxed/simple;
+	bh=E2/Sbo9wsFk/yubi6m+7XX4X7pYv4XkeuGVrTw/r0VI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qxqAatViskIMQIeG2tXb3CKBpGR99tE4aHVs6+coT0zXYwJnjHGY/C+S5szE391Z08hWSTizgX/vHgMoxz6XwHeOTDOZ6OGeBDbpCFvHtG1hM6NwLDaxu1Fi5m6yBe5V6VyrAqLew7XlrP+mlsX5IRvXSYMlDvzxgUmv1zzcwrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mK8j5xNf; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-de466c64163so1979803276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713538643; x=1714143443; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=anU0O+Cl/8esjZTwZGOybpvL5bNXBFd1hgsJ4evVImA=;
+        b=mK8j5xNfzIHf/dYXQOnooehI9EfYLR1KO/ti9whQoJie4dKFc36BnydXI3GCA9WaEE
+         lWbg3zQV3qfQhV+suiWCGgf05K0tFrxjS90jn/g/TcJItvIjgDujAorImgHcoeLF5TyV
+         SMJIlr0FezMzawV1y41BUmNqwudCKAmSQ6t8YVKj8VMWnmIO/tfCNZNVTBTePvYt0wc5
+         5U4LGbZfM6UcXGtCqoa0YuaV7UJcL7GRwzbJVzNxoedPNzK72KgD8emPlHiaiy3GJ+MK
+         vLKZM4vm9//8/yBKXRFdeo/TfNOKJ2wQNurQ9n/Xo50cBjmu5ufuZjg+6IA9VFmsYU2c
+         qOuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713538643; x=1714143443;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=anU0O+Cl/8esjZTwZGOybpvL5bNXBFd1hgsJ4evVImA=;
+        b=GYNUweikAEhU7P5Cj4iQquhtLpo3QjoY9SHsC4Kb8RqlyNunlU3pfUJG9PIzdHaX91
+         mTqACj9PUWu3T3aa+TwpC6cuq8IvISdtP5gzqVHFgiSnw8wfY1bh+1hKH+Mrxf+EP5HW
+         brvNxbRcxAmHd1TIhOBxksxzRqLkaAXSwsxaK7zSMKxDFNzfPjGFion7R+QOcx6YwKA0
+         dp6NwraneIN/J7tZDLt47WKQJul36voYZyeHITmO6tRTFALFyA8A8fB5PomtMvsHHev5
+         97zYgw4niKykw8PSjTBPuyyDuyeqFOFvXQWu2ibLtPpOpZR+Tm+2o3BieLEjkw+eyfbp
+         2n0w==
+X-Forwarded-Encrypted: i=1; AJvYcCXKC6UbEy4XNjCCNMTTAdDNY1YQwbNhfh+ojxoFR2fa/JRO+ytC2ZNw3/uV3064sYJqFbJI6iNRfeTKsB9KlfEedEFz9WqaqDTY9oF9
+X-Gm-Message-State: AOJu0YzvgBnkO2S6Wht1iC4lnxJ114RIcvJk+4dBGKGR3ONKw1JwNWWk
+	YNUfZpfwQp5ZMieBTvYEcimfV/ubIvMSua1kzNArUgwojP+BfI42jGBkJjNxPY9WkmseiHi2n0K
+	r9SDgxV7F2rF8PRPLzORibUufgAlRwudngqjJ
+X-Google-Smtp-Source: AGHT+IF7adSkE8wdnmiPyn4mVpG1NnzdXX/L7t8LedIMavDd8o7JUrBILI8u9VoVAMm7bza+xIeN6iKCZv+uvX8mkfQ=
+X-Received: by 2002:a25:2f87:0:b0:dc6:57d0:ac9 with SMTP id
+ v129-20020a252f87000000b00dc657d00ac9mr2225865ybv.6.1713538642865; Fri, 19
+ Apr 2024 07:57:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3QBmqN9SXTsyWoKd"
-Content-Disposition: inline
-In-Reply-To: <ZiKFNllT9tMHlH7M@smile.fi.intel.com>
-
-
---3QBmqN9SXTsyWoKd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240415163527.626541-1-jeffxu@chromium.org> <znrbeb744774vre5dkeg7kjnnt7uuifs6xw63udcyupwj3veqh@rpcqs7dmoxi6>
+ <CABi2SkU8B27O28jjTDajFpENgUHhntuRAMKFUMXr6A6AxZeyiQ@mail.gmail.com>
+ <CAJuCfpFLwJg4n7wPpT+u9vC4XHoLE_BPPZ0tDKf7W45hGky4_Q@mail.gmail.com> <CABi2SkXCC8tvuHTiZ=tYcZw0sQ2SswQqDuFuQi5bKArW9+Nbaw@mail.gmail.com>
+In-Reply-To: <CABi2SkXCC8tvuHTiZ=tYcZw0sQ2SswQqDuFuQi5bKArW9+Nbaw@mail.gmail.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 19 Apr 2024 07:57:08 -0700
+Message-ID: <CAJuCfpEM0b-_gCbMqcUVvKedqXsSE4di7oqzeQGofVNsHRAqCg@mail.gmail.com>
+Subject: Re: [PATCH v10 0/5] Introduce mseal
+To: Jeff Xu <jeffxu@chromium.org>
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, akpm@linux-foundation.org, 
+	keescook@chromium.org, jannh@google.com, sroettger@google.com, 
+	willy@infradead.org, gregkh@linuxfoundation.org, 
+	torvalds@linux-foundation.org, usama.anjum@collabora.com, corbet@lwn.net, 
+	merimus@google.com, rdunlap@infradead.org, jeffxu@google.com, 
+	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 19, 2024 at 05:52:38PM +0300, Andy Shevchenko wrote:
-> On Fri, Apr 19, 2024 at 05:34:44PM +0300, Konstantin P. wrote:
-> > On Fri, Apr 19, 2024 at 5:24=E2=80=AFPM Krzysztof Kozlowski <krzk@kerne=
-l.org> wrote:
-> > > On 19/04/2024 16:17, Konstantin P. wrote:
->=20
-> ...
->=20
-> > > Commits must stand on their own. Cover letter is not merged. This is =
-the
-> > > place where you add new hardware, so here you describe and explain the
-> > > hardware.
-> >=20
-> > It is also described in patch 3 in the series. I need to repeat this
-> > description in patch 2 too?
-> >=20
-> > Cite from patch 3:
-> >=20
-> > XR20M1172 register set is mostly compatible with SC16IS762, but it has
-> > a support for additional division rates of UART with special DLD regist=
-er.
->=20
-> The point is, if I got it correctly, to have a few words in the descripti=
-on
-> of the DT binding itself, so whoever reads the bindings (w/o even accessi=
-ng
-> the Git history of the project) may understand this.
+On Thu, Apr 18, 2024 at 6:22=E2=80=AFPM Jeff Xu <jeffxu@chromium.org> wrote=
+:
+>
+> On Thu, Apr 18, 2024 at 1:19=E2=80=AFPM Suren Baghdasaryan <surenb@google=
+com> wrote:
+> >
+> > On Tue, Apr 16, 2024 at 12:40=E2=80=AFPM Jeff Xu <jeffxu@chromium.org> =
+wrote:
+> > >
+> > > On Tue, Apr 16, 2024 at 8:13=E2=80=AFAM Liam R. Howlett <Liam.Howlett=
+@oracle.com> wrote:
+> > > >
+> > > > * jeffxu@chromium.org <jeffxu@chromium.org> [240415 12:35]:
+> > > > > From: Jeff Xu <jeffxu@chromium.org>
+> > > > >
+> > > > > This is V10 version, it rebases v9 patch to 6.9.rc3.
+> > > > > We also applied and tested mseal() in chrome and chromebook.
+> > > > >
+> > > > > -----------------------------------------------------------------=
+-
+> > > > ...
+> > > >
+> > > > > MM perf benchmarks
+> > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > This patch adds a loop in the mprotect/munmap/madvise(DONTNEED) t=
+o
+> > > > > check the VMAs=E2=80=99 sealing flag, so that no partial update c=
+an be made,
+> > > > > when any segment within the given memory range is sealed.
+> > > > >
+> > > > > To measure the performance impact of this loop, two tests are dev=
+eloped.
+> > > > > [8]
+> > > > >
+> > > > > The first is measuring the time taken for a particular system cal=
+l,
+> > > > > by using clock_gettime(CLOCK_MONOTONIC). The second is using
+> > > > > PERF_COUNT_HW_REF_CPU_CYCLES (exclude user space). Both tests hav=
+e
+> > > > > similar results.
+> > > > >
+> > > > > The tests have roughly below sequence:
+> > > > > for (i =3D 0; i < 1000, i++)
+> > > > >     create 1000 mappings (1 page per VMA)
+> > > > >     start the sampling
+> > > > >     for (j =3D 0; j < 1000, j++)
+> > > > >         mprotect one mapping
+> > > > >     stop and save the sample
+> > > > >     delete 1000 mappings
+> > > > > calculates all samples.
+> > > >
+> > > >
+> > > > Thank you for doing this performance testing.
+> > > >
+> > > > >
+> > > > > Below tests are performed on Intel(R) Pentium(R) Gold 7505 @ 2.00=
+GHz,
+> > > > > 4G memory, Chromebook.
+> > > > >
+> > > > > Based on the latest upstream code:
+> > > > > The first test (measuring time)
+> > > > > syscall__     vmas    t       t_mseal delta_ns        per_vma %
+> > > > > munmap__      1       909     944     35      35      104%
+> > > > > munmap__      2       1398    1502    104     52      107%
+> > > > > munmap__      4       2444    2594    149     37      106%
+> > > > > munmap__      8       4029    4323    293     37      107%
+> > > > > munmap__      16      6647    6935    288     18      104%
+> > > > > munmap__      32      11811   12398   587     18      105%
+> > > > > mprotect      1       439     465     26      26      106%
+> > > > > mprotect      2       1659    1745    86      43      105%
+> > > > > mprotect      4       3747    3889    142     36      104%
+> > > > > mprotect      8       6755    6969    215     27      103%
+> > > > > mprotect      16      13748   14144   396     25      103%
+> > > > > mprotect      32      27827   28969   1142    36      104%
+> > > > > madvise_      1       240     262     22      22      109%
+> > > > > madvise_      2       366     442     76      38      121%
+> > > > > madvise_      4       623     751     128     32      121%
+> > > > > madvise_      8       1110    1324    215     27      119%
+> > > > > madvise_      16      2127    2451    324     20      115%
+> > > > > madvise_      32      4109    4642    534     17      113%
+> > > > >
+> > > > > The second test (measuring cpu cycle)
+> > > > > syscall__     vmas    cpu     cmseal  delta_cpu       per_vma %
+> > > > > munmap__      1       1790    1890    100     100     106%
+> > > > > munmap__      2       2819    3033    214     107     108%
+> > > > > munmap__      4       4959    5271    312     78      106%
+> > > > > munmap__      8       8262    8745    483     60      106%
+> > > > > munmap__      16      13099   14116   1017    64      108%
+> > > > > munmap__      32      23221   24785   1565    49      107%
+> > > > > mprotect      1       906     967     62      62      107%
+> > > > > mprotect      2       3019    3203    184     92      106%
+> > > > > mprotect      4       6149    6569    420     105     107%
+> > > > > mprotect      8       9978    10524   545     68      105%
+> > > > > mprotect      16      20448   21427   979     61      105%
+> > > > > mprotect      32      40972   42935   1963    61      105%
+> > > > > madvise_      1       434     497     63      63      115%
+> > > > > madvise_      2       752     899     147     74      120%
+> > > > > madvise_      4       1313    1513    200     50      115%
+> > > > > madvise_      8       2271    2627    356     44      116%
+> > > > > madvise_      16      4312    4883    571     36      113%
+> > > > > madvise_      32      8376    9319    943     29      111%
+> > > > >
+> > > >
+> > > > If I am reading this right, madvise() is affected more than the oth=
+er
+> > > > calls?  Is that expected or do we need to have a closer look?
+> > > >
+> > > The madvise() has a bigger percentage (per_vma %), but it also has a
+> > > smaller base value (cpu).
+> >
+> > Sorry, it's unclear to me what the "vmas" column denotes. Is that how
+> > many VMAs were created before timing the syscall? If so, then 32 is
+> > the max that you show here while you seem to have tested with 1000
+> > VMAs. What is the overhead with 1000 VMAs?
+>
+> The vmas column is the number of VMA used in one call.
+>
+> For example: for 32 and mprotect(ptr,size), the memory range used in
+> mprotect has 32 VMAs.
 
-Yes, each patch must independently justify the change - although in this
-case it is about the history not people reading the bindings as I was
-talking about the commit message and not the contents of the diff.
-It's especially true when I only get sent the bindings patch, although
-=66rom other messages in this thread that may not have been intentional.
+Ok, so the 32 here denotes how many VMAs one mprotect() call spans?
 
+>
+> It also matters how many memory ranges are in-use at the time of the
+> test, This is where 1000 comes in. The test creates 1000 memory
+> ranges, each memory range has 32 vmas, then calls mprotect on the 1000
+> memory range. (the pseudocode was included in the original email)
+
+So, if each range has 32 vmas and you have 1000 ranges then you are
+creating 32000 vmas? Sorry, your pseudocode does not clarify that. My
+current understanding is this:
+
+for (i =3D 0; i < 1000, i++)
+    mmap N*1000 areas (N=3D[1-32])
+    start the sampling
+    for (j =3D 0; j < 1000, j++)
+        mprotect N areas with one syscall
+    stop and save the sample
+    munmap N*1000 areas
+calculates all samples.
+
+Is that correct?
+
+>
+> > My worry is that if the overhead grows linearly with the number of
+> > VMAs then the effects will be quite noticeable on Android where an
+> > application with a few thousand VMAs is not so unusual.
+> >
+> The overhead is likely to grow linearly with the number of VMA, since
+> it takes time to retrieve VMA's metadata.
+>
+> Let's use one data sample to look at impact:
+>
+> Test: munmap 1000 memory range, each memory range has 1 VMA
+>
+> syscall__       vmas    t       t_mseal delta_ns        per_vma %
+> munmap__        1       909     944     35      35      104%
+>
+> For those 1000 munmap calls, sealing adds 35000 ns in total, or 35 ns per=
+ call.
+>
+> The delta seems to be insignificant. e.g. it will take about 28571
+> munmap call to have 1 ms difference (1000000/35=3D28571)
+>
+> When I look at the data from 5.10 to 6.8, for the same munmap call,
+> 6.8 adds 552 ns per call, which is 15 times bigger.
+>
+> syscall__       vmas    t_5_10  t_6_8   delta_ns        per_vma %
+> munmap__        1       357     909     552     552     254%
+
+I'm not yet claiming the overhead is too high. I want to understand
+first what is being measured here.
 Thanks,
-Conor.
+Suren.
 
---3QBmqN9SXTsyWoKd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiKGKwAKCRB4tDGHoIJi
-0q0PAP44mYOzU2Bud3h4ppjoMoHflukxo0/CWv1h/ScDLfOD0gD+I57CXhw3f2IP
-bJ5AsqUviTEcb5TEYLOuvx7JV0WL7gU=
-=jgJr
------END PGP SIGNATURE-----
-
---3QBmqN9SXTsyWoKd--
+>
+>
+> > >
+> > > -Jeff
 
