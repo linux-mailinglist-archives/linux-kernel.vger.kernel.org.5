@@ -1,179 +1,112 @@
-Return-Path: <linux-kernel+bounces-151886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6932F8AB546
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:52:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0908AB548
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:52:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AEBD1C21659
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:52:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF2E61F21895
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA1813C3E4;
-	Fri, 19 Apr 2024 18:52:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3DC8139CE8;
+	Fri, 19 Apr 2024 18:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="akeL0E3X"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GIFgQKGM"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB5B22071;
-	Fri, 19 Apr 2024 18:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C973522071;
+	Fri, 19 Apr 2024 18:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713552756; cv=none; b=ID8eiULdu1zgAW1tudj2YOgTfuTLI7GiGTJpccsW2fevaZWecxKgPzGNwwXstsla+L02QuhET5CC9yFXsUXeDM+Huj6EqZ7MpKT02+1jfoOvARNp7c9+ePeEXUmY6pdGGx8K548JrZJsmrLC9LnZ2YiyORSG8aDoBsRdQyqUIoI=
+	t=1713552770; cv=none; b=hBcfy645LfwN/iHK7+eW38rzDspRY3TL83YMK3uDhnz2onzdSlcewk5SwR72qr8tah8FbGrQIaaOQP0z1QMVVq4kmUM+tHj8RcqKP4jqWn9Br6z3uMERjBGofPSZKRZu5Ps/IUvSGR6hoD4b44mVzX9DQhOhL0IHhD6jI1HReLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713552756; c=relaxed/simple;
-	bh=rdVZSny6BIgCS3vGo8EaqhW6D/kyD4McSwc8Nifxnd0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=nOVnwnsmiySHnFiR9xG5vxUKwuwmMwEpY8Y0xD6jxZfCa1hjC8RbMBzWyWnS0H2QL/afeTJn4IelO/hC2Uv/OfJ8xVJij6WexUZDSBEuGesUVIP8PgklsXnirdLF4/IV/itYm5zI4KzNXfUfFMtYGpDtGUcBcZAh74H9bxjl0yA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=akeL0E3X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13B00C072AA;
-	Fri, 19 Apr 2024 18:52:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713552755;
-	bh=rdVZSny6BIgCS3vGo8EaqhW6D/kyD4McSwc8Nifxnd0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=akeL0E3X9MKdKb+NkeF9gFpoDwSm//+rx16chpD3E/IS0lg7e/DFyQwF7g3koWXgY
-	 ea5+YLs3SiTjgyBkLUsAV4PD92t7ITrGIrCkF1KX5rp0pQnpMqpDVjb95RRQOha0DN
-	 Kds9i+BNWrkRJ7gkLxnq19/EhsP6uiTjBDpGijaZ2ZL3LADYooJIq8bkwDD3RfE75m
-	 wHmksuPbEMqD1egfznJJ2vicDv7B+B6sDxH3+F2EjPG3UA3qmbModEKHqNblCnXf5F
-	 /0CfdCM3DIar2gHArNU0zkKg5KAh0/ld6pmX1SsGiKXjuh3M5npmuoLmeBUOufu64l
-	 DHjKDFXW+FUZw==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, bpf@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf] arm32, bpf: Fix sign-extension mov instruction
-In-Reply-To: <ZhVhh3bDTQ+sks6b@shell.armlinux.org.uk>
-References: <20240409095038.26356-1-puranjay@kernel.org>
- <ZhVhh3bDTQ+sks6b@shell.armlinux.org.uk>
-Date: Fri, 19 Apr 2024 18:52:31 +0000
-Message-ID: <mb61pcyqldw28.fsf@kernel.org>
+	s=arc-20240116; t=1713552770; c=relaxed/simple;
+	bh=U09zZHjB+LeME5+ai5JqJLnKOWOODtaYa79Abej4COY=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:Subject:MIME-Version:
+	 Content-Type; b=c6dbNMso0+7d5PXSc2jz9IlebFpBTp6sKSz7THYF2IzvjcWkMRHJZ311Cr43vuoMeqgEsbXBNhUyTC7ZZZmtsJ597daE++HGTx3fCRM52WV4fnJzbx0sBj+4VuS8WxtJH5lCeolZ9QitPiNt93TG16aWGHW/DPj1dW+OXkTbpMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GIFgQKGM; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ed112c64beso2161481b3a.1;
+        Fri, 19 Apr 2024 11:52:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713552768; x=1714157568; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:in-reply-to
+         :message-id:cc:to:from:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U09zZHjB+LeME5+ai5JqJLnKOWOODtaYa79Abej4COY=;
+        b=GIFgQKGM7UZvAJxWDW5H0HV11jZ7taoOFX6bXJfUEojBq1SdIGyQcKs/CJRQgTNHow
+         gDicpbF2Qx3gBUfFq0z0+zVzA/hDoGmnMQTCbN0+vwByDXW6QVae6uA0z5jor3H6gh0I
+         yqgE6Nv1vbgwjR3J1M4K7B2gO6DWCV1en3DbbVfjG1YEVwAhiEHtZGJju8vWS+eGm65T
+         F5E88q46i2wena1Rh+4qBrawY+VQcFkTrmt43SakHYds1y4/Wcu251WyMzxVh3PncYx/
+         jCBEidmBC9ujpjjZIUEMkwYLchmxS9KEuaECPVNseJVodrTcil9VPSw/0XBI0YFHz+q+
+         dnQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713552768; x=1714157568;
+        h=content-transfer-encoding:mime-version:subject:in-reply-to
+         :message-id:cc:to:from:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=U09zZHjB+LeME5+ai5JqJLnKOWOODtaYa79Abej4COY=;
+        b=BZNAjGfj/bYpFH8OJgV0KcgXCVc5lJ9mK6ZRGzB8S62LToNcj8rmHY4MRIH2fBIS1K
+         7kDPQ3zupazmVrDRkMqGV3D2myAzAfxpgkK/olXtDetV+y5giFrSzwp1Z45Oil/5C3ec
+         ea7HW5Lw/+zSLqv43qFJ4mRc5nrfsaZiLAICjg23u4R3xnLumVM+okbqpp+GpHEw4u6R
+         z4BBvPxOYYwQbRdnjDhPD1P8xyckjURitVei9gEMrUcQqSCh80kqVkM6P9xRSP3fK1XL
+         7YhbQfx2p/pcukxSt2wzzbuaVpE/wBcz70JFwL7RtViBg1ihePuGX9VVx1MjWeDB4o93
+         Aj8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUT8pfGij4rdtD1lLjL3fO4Doe/z4hIY2I7UErI5N9xBABVYw9ZGty5bkUEbN0WoQDsbgJ8dqZzmBvjKbaOOyZUUKEYIeU5US95WFk4FfWYc/QI50IFYetbWmhkGhRxeUoItT4YlGyO81A=
+X-Gm-Message-State: AOJu0Yy0oowaCdJ5ZiWT1qSrwWMRlW3yUKpbsDst1t8CoH5Zh3IPBoP5
+	dJy4QVkLcGIO7Pb1Kj4v4QXJMUtnTnMOGsl9u0rWZQe3hFfy4+8u
+X-Google-Smtp-Source: AGHT+IHEQHOBvKuseE8etys53e1nv+ZkHGMM/0X950aYj5fjviZRpom/z8ITcLkYd++IcqbesMEaPw==
+X-Received: by 2002:a05:6a00:1794:b0:6ee:1b6e:662a with SMTP id s20-20020a056a00179400b006ee1b6e662amr4300891pfg.32.1713552767935;
+        Fri, 19 Apr 2024 11:52:47 -0700 (PDT)
+Received: from [127.0.0.1] ([106.194.121.201])
+        by smtp.gmail.com with ESMTPSA id b19-20020a056a000cd300b006f0af5bfda5sm2272744pfv.102.2024.04.19.11.52.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 11:52:47 -0700 (PDT)
+Date: Sat, 20 Apr 2024 00:22:41 +0530 (GMT+05:30)
+From: Shresth Prasad <shresthprasad7@gmail.com>
+To: daniel.thompson@linaro.org
+Cc: deller@gmx.de, dri-devel@lists.freedesktop.org,
+	javier.carrasco.cruz@gmail.com, jingoohan1@gmail.com,
+	julia.lawall@inria.fr, lee@kernel.org, linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, shresthprasad7@gmail.com,
+	skhan@linuxfoundation.org
+Message-ID: <819a56c3-bbaf-4d5e-87de-78c1312c56d1@gmail.com>
+In-Reply-To: <20240419111613.GA12884@aspen.lan>
+Subject: Re: [PATCH][next] drivers: video: Simplify device_node cleanup
+ using __free
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Correlation-ID: <819a56c3-bbaf-4d5e-87de-78c1312c56d1@gmail.com>
 
-"Russell King (Oracle)" <linux@armlinux.org.uk> writes:
 
-> On Tue, Apr 09, 2024 at 09:50:38AM +0000, Puranjay Mohan wrote:
->> The current implementation of the mov instruction with sign extension
->> clobbers the source register because it sign extends the source and then
->> moves it to the destination.
->> 
->> Fix this by moving the src to a temporary register before doing the sign
->> extension only if src is not an emulated register (on the scratch stack).
->> 
->> Also fix the emit_a32_movsx_r64() to put the register back on scratch
->> stack if that register is emulated on stack.
->
-> It would be good to include in the commit message an example or two of
-> the resulting assembly code so that it's clear what the expected
-> generation is. Instead, I'm going to have to work it out myself, but
-> I'm quite sure this is information you already have.
->
->> Fixes: fc832653fa0d ("arm32, bpf: add support for sign-extension mov instruction")
->> Reported-by: syzbot+186522670e6722692d86@syzkaller.appspotmail.com
->> Closes: https://lore.kernel.org/all/000000000000e9a8d80615163f2a@google.com/
->> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
->> ---
->>  arch/arm/net/bpf_jit_32.c | 11 +++++++++--
->>  1 file changed, 9 insertions(+), 2 deletions(-)
->> 
->> diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
->> index 1d672457d02f..8fde6ab66cb4 100644
->> --- a/arch/arm/net/bpf_jit_32.c
->> +++ b/arch/arm/net/bpf_jit_32.c
->> @@ -878,6 +878,13 @@ static inline void emit_a32_mov_r(const s8 dst, const s8 src, const u8 off,
->>  
->>  	rt = arm_bpf_get_reg32(src, tmp[0], ctx);
->>  	if (off && off != 32) {
->> +		/* If rt is not a stacked register, move it to tmp, so it doesn't get clobbered by
->> +		 * the shift operations.
->> +		 */
->> +		if (rt == src) {
->> +			emit(ARM_MOV_R(tmp[0], rt), ctx);
->> +			rt = tmp[0];
->> +		}
->
-> This change is adding inefficiency, don't we want to have the JIT
-> creating as efficient code as possible within the bounds of
-> reasonableness?
->
->>  		emit(ARM_LSL_I(rt, rt, 32 - off), ctx);
->>  		emit(ARM_ASR_I(rt, rt, 32 - off), ctx);
->
-> LSL and ASR can very easily take a different source register to the
-> destination register. All this needs to be is:
->
-> 		emit(ARM_LSL_I(tmp[0], rt, 32 - off), ctx);
-> 		emit(ARM_ASR_I(tmp[0], tmp[0], 32 - off), ctx);
-> 		rt = tmp[0];
->
-> This will generate:
->
-> 		lsl	tmp[0], src, #32-off
-> 		asr	tmp[0], tmp[0], #32-off
->
-> and then the store to the output register will occur.
->
-> What about the high-32 bits of the register pair - should that be
-> taking any value?
->
->>  	}
->
-> I notice in passing that the comments are out of sync with the
-> code - please update the comments along with code changes.
->
->> @@ -919,15 +926,15 @@ static inline void emit_a32_movsx_r64(const bool is64, const u8 off, const s8 ds
->>  	const s8 *tmp = bpf2a32[TMP_REG_1];
->>  	const s8 *rt;
->>  
->> -	rt = arm_bpf_get_reg64(dst, tmp, ctx);
->> -
->>  	emit_a32_mov_r(dst_lo, src_lo, off, ctx);
->>  	if (!is64) {
->>  		if (!ctx->prog->aux->verifier_zext)
->>  			/* Zero out high 4 bytes */
->>  			emit_a32_mov_i(dst_hi, 0, ctx);
->>  	} else {
->> +		rt = arm_bpf_get_reg64(dst, tmp, ctx);
->>  		emit(ARM_ASR_I(rt[0], rt[1], 31), ctx);
->> +		arm_bpf_put_reg64(dst, rt, ctx);
->>  	}
->>  }
->
-> Why oh why oh why are we emitting code to read the source register
-> (which may be a load), then write it to the destination (which may
-> be a store) to only then immediately reload from the destination
-> to then do the sign extension? This is madness.
->
-> Please... apply some thought to the code generation from the JIT...
-> or I will remove you from being a maintainer of this code. I spent
-> time crafting some parts of the JIT to generate efficient code and
-> I'm seeing that a lot of that work is now being thrown away by
-> someone who seemingly doesn't care about generating "good" code.
->
+> Please fix the subject line to be "backlight: <driver>: ...". I came
+> very close to deleting this patch without reading it ;-) .
 
-Sorry for this, I also like to make sure the JITs are as efficient as
-possible. I was too focused on fixing this as fast as possible and
-didn't pay attention that day.
+Really sorry about that, I'll fix it.
 
-I have reimplemented the whole thing again to make sure all bugs are
-fixed. The commit message has the generated assembly for all cases:
+> Do we need to get dev->of_node at all? The device, which we are
+> borrowing, already owns a reference to the node so I don't see
+> any point in this function taking an extra one.
+>
+> So why not simply make this:
+>
+> =C2=A0=C2=A0=C2=A0 struct device_node *np =3D dev->of_node;
 
-https://lore.kernel.org/all/20240419182832.27707-1-puranjay@kernel.org/
+Looking at it again, I'm not sure why the call to `of_node_put` is there in=
+ the first place. I think removing it will be fine.
 
-Thanks,
-Puranjay
+I'll fix both of these issues and send a patch v2.
+
+Regards,
+Shresth
 
