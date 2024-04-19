@@ -1,192 +1,141 @@
-Return-Path: <linux-kernel+bounces-152018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 239358AB77E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 01:31:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE3C8AB782
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 01:38:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A514B1F21924
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:31:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23E1FB21686
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E73813D8A5;
-	Fri, 19 Apr 2024 23:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE6313D8A7;
+	Fri, 19 Apr 2024 23:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="p6dZWNO1"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aMqJXs3a"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4408F64D;
-	Fri, 19 Apr 2024 23:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1626964D;
+	Fri, 19 Apr 2024 23:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713569498; cv=none; b=uVc244I0b5KTZuGy+pVIB+NccgsMLNbj+gncKTuf0dQim383U9OIeZGVKz9dv9howZPrXD4cbTiUDLkEGySOAgbDcv57fIoGPZxo72X+H1vosjbj4LJ25KtH6SWXuVOvne+C8bSb1vIvH8Ci0bGnfCX9x6fGIQtEE6rrw3WltYo=
+	t=1713569886; cv=none; b=BZT9061clg/7o1uCm5lb54LWNLgL4hT6Y4U/XiOkIDG0ER8MLIhM7m+fRlQRF1moydXyiGYXFJvL7w6PF4Ufd2FzAdf4Om79HPHeeDV+YN/ilzHHV0V13BGrUIT9IShhQf5+ZyjlEe+5C9gpqnSlRiwQDI4hRrKbWy3ogZrC2fQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713569498; c=relaxed/simple;
-	bh=6IGgM1ninH2UvKvYGTOhBMyMEqSh2CQFZKSqqRp6Ml4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BaPKBY0XsnfWZqv0xE72OP9PMFE4Mrvcr2zspA+auni5G8pDojVwwHqqAWFfeayHb1oUdahNHIx8/F3YTDBOhelYXv2qzAzfxzIJs8MtpgKpvF92dMiYUq1kmoFI3QcbsvAB8WFyOb4Y4/HJ030CHKgrFsA/6vGbs8zREZtsEJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=p6dZWNO1; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43JMsPNc025597;
-	Fri, 19 Apr 2024 23:31:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=7YnOs/zIN96oMB3AwWlXg
-	64tPuvFDKMPlHsSp9oJv1I=; b=p6dZWNO1tSiHG2IBHs697YnUU6PtAm4t1qJml
-	/CsthJIMrWP0pL/iukK6CKVPqKADiZ5a7v8m+mUFCw7IQM4Tc2AQtILnQQjY9L0N
-	xabs1UGVHrWYVtNOKeMairbBSR4ogrT2LbiRZ6t3Qnnant9r2Eh1iyFsURos8wm6
-	tS62m00iiCjsVOqO1oIIVTedot3sbo9u16EFIivfkNh+WF6RpNFgaUNxRySXXOh8
-	LSABk1GO4Ajley8x/kuIAzvChn5wQf2lrez7KPAG7T9IINAyTgHluFdJ7yQWzCeJ
-	B686XdG5N7wun21PfCGLIOODR9/9yeJm5PHcp7UMv0GTqLYtw==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xkkss9uc7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 23:31:19 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43JNVIsT003709
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 23:31:18 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 19 Apr 2024 16:31:17 -0700
-Date: Fri, 19 Apr 2024 16:31:17 -0700
-From: Elliot Berman <quic_eberman@quicinc.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>, Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Andy Yan
-	<andy.yan@rock-chips.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        "Mark
- Rutland" <mark.rutland@arm.com>,
-        Bartosz Golaszewski
-	<bartosz.golaszewski@linaro.org>,
-        Satya Durga Srinivasu Prabhala
-	<quic_satyap@quicinc.com>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        Shivendra Pratap <quic_spratap@quicinc.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] Implement vendor resets for PSCI SYSTEM_RESET2
-Message-ID: <20240419134542691-0700.eberman@hu-eberman-lv.qualcomm.com>
-References: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
- <Zh5GWqt2oCNHdF_h@bogus>
- <20240417140957985-0700.eberman@hu-eberman-lv.qualcomm.com>
- <20240419085345.4ovebbbmcabo3f73@bogus>
+	s=arc-20240116; t=1713569886; c=relaxed/simple;
+	bh=YASXITkV2ASgRJeSKmQR9SchGIqfz5jdQ411YQ+n2KQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XAMsUOdy31dmHplq+3x+ZFbtf7EqZ8qL/7aNZCfqz6ugPbJbQirWn9gT+97mrBxCM4z4Ql8vguNOI8vveL9kpuNGIb2MMaiJEBxeVxeJmnzQvrwpUczccBPpTZ7BC+UNw7RpMDs96RBBGn2+QlfTeAB+5xRkXuIbnSG34Ug47rE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aMqJXs3a; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so1890230a12.0;
+        Fri, 19 Apr 2024 16:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713569884; x=1714174684; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+Gwf216v3KsZJ4qYiZY7FSP0+gRY5Pp5+VIKVDcURGo=;
+        b=aMqJXs3aJCXUjSloLPP43Y8B9V/skGAWey7uaqCjERqtyLEcXNT4wKxKooa51jFG36
+         egTGvL6C2XTFF649LbY8OiY/vaFNXH80oTPhbeXNeU9X5Y+4nzCrdmm36+T5+iqMsFm6
+         FjYR8HPVw1ncqFuZNGc9u4oZ5Py7szNOpC064ufC6YAEsjcqIGSCY78zu46BSO8JcHIz
+         9tOQTWbztvYF3iUQP7q++Vf9lXx7G+gAPHOFhxnn+9OtXfi3kFhIkFjrgIeDAuMVdv9h
+         kjjYL3idwOa8JjOId1f84knb4KwhKyFsOsAfkR7BTfvImOf9TQd9JkrHUs4dXW1asJzi
+         Yazg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713569884; x=1714174684;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Gwf216v3KsZJ4qYiZY7FSP0+gRY5Pp5+VIKVDcURGo=;
+        b=dFqBcg8LS2a74xYV1lVIzdXaaACVfemPy1hZhOK2IuHSdEXmvFkyBegaAyPVplQ4kU
+         oeBZ5vAR9yq6iGhjuBWpjNMNlbjsuSu8FhjjxbQiQYDJVKZi/o9IbMsHtWsEHtyCmvKP
+         Qm2f/rFCD8qpXG3VNnUPftMefWvCCSCZG/MFqbMLt+sUTGyYmkSGeydomy5dKXnRAZlX
+         pH8/3wNBzku7W79TnhmBZe0+F84VETTE76vYAxfcHNHNLJ/wruxnfrEY3Fpk0drnsP6K
+         Hu64RrVT4m+ki1OZSbW301xG5u/lNkWH4bgZLOIevFc3/1JDB9FYJdZpV5Xc+PG8wqcF
+         +F9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWOsudlFklr1r53tPyT4IOVWz8SN+wPAcLIRLudUZ4xYRpVWyBYUDARtk1l+68sAY8Wod5bfkEHPVJ//+SIPgdkNbC2LtkMMjE4JG0mCtNfQiKfrOA2ciTeuijiKI7n2uJwG20Zhay4TDBuN6fWE8nnTI3d8egiVXqkJgfrDngnOZhiKwFYvwwabLAxJ0JxydJgnNPHZY2R6Eq6Y+vvOIGEW7uHYUM1hBKAbNDACZm9FLtOMYxXF7kWlBlUzH5tXChR1/HZIRpS
+X-Gm-Message-State: AOJu0YwvnNLQXAonkMwKSN//NFsAty+R1x8X1Jzmmq9EYY1t9rJcoqiU
+	g9t7fo2KsoBNhVceYNiwQGgeBOhWPLh091zE6QbK3KRMdiFyfgvc
+X-Google-Smtp-Source: AGHT+IEhgR3QjGKkzYQX0nCs1qVhmVHFCFFjDZfmUk9cI+PUJECL3IHXfzZjmkA8FR3ezYxS5oYc7g==
+X-Received: by 2002:a05:6a20:12ce:b0:1a9:c4ca:dc74 with SMTP id v14-20020a056a2012ce00b001a9c4cadc74mr4557459pzg.5.1713569884211;
+        Fri, 19 Apr 2024 16:38:04 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id gl17-20020a17090b121100b002a2c905158asm2438010pjb.46.2024.04.19.16.38.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 16:38:03 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Fri, 19 Apr 2024 16:38:01 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc: Brendan Higgins <brendanhiggins@google.com>,
+	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+	James Morris <jamorris@linux.microsoft.com>,
+	Kees Cook <keescook@chromium.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
+	Marco Pagani <marpagan@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Thara Gopinath <tgopinath@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Wanpeng Li <wanpengli@tencent.com>,
+	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
+	linux-um@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH v3 7/7] kunit: Add tests for fault
+Message-ID: <b70332b0-3e55-4375-935f-35ef3167a151@roeck-us.net>
+References: <20240319104857.70783-1-mic@digikod.net>
+ <20240319104857.70783-8-mic@digikod.net>
+ <928249cc-e027-4f7f-b43f-502f99a1ea63@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240419085345.4ovebbbmcabo3f73@bogus>
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ptwZxpIb3YjMjehV0iVZZt6crq1l_sl3
-X-Proofpoint-GUID: ptwZxpIb3YjMjehV0iVZZt6crq1l_sl3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-19_15,2024-04-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=949 adultscore=0 bulkscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404190183
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <928249cc-e027-4f7f-b43f-502f99a1ea63@roeck-us.net>
 
-On Fri, Apr 19, 2024 at 09:53:45AM +0100, Sudeep Holla wrote:
-> On Wed, Apr 17, 2024 at 02:54:41PM -0700, Elliot Berman wrote:
-> > On Tue, Apr 16, 2024 at 10:35:22AM +0100, Sudeep Holla wrote:
-> > > On Sun, Apr 14, 2024 at 12:30:23PM -0700, Elliot Berman wrote:
-> > > > The PSCI SYSTEM_RESET2 call allows vendor firmware to define additional
-> > > > reset types which could be mapped to the reboot argument.
-> > > >
-> > > > Setting up reboot on Qualcomm devices can be inconsistent from chipset
-> > > > to chipset.
-> > >
-> > > That doesn't sound good. Do you mean PSCI SYSTEM_RESET doesn't work as
-> > > expected ? Does it mean it is not conformant to the specification ?
-> > >
-> >
-> > I was motivating the reason for using SYSTEM_RESET2. How to set the PMIC
-> > register and IMEM cookie can change between chipsets. Using
-> > SYSTEM_RESET2 alows us to abstract how to perform the reset.
+On Fri, Apr 19, 2024 at 03:33:49PM -0700, Guenter Roeck wrote:
+> Hi,
 > 
-> Fair enough. But I assume you are not providing the details of PMIC register
-> or IMEM cookie via DT.
-
-Kernel doesn't need this info.
-
+> On Tue, Mar 19, 2024 at 11:48:57AM +0100, Mickaël Salaün wrote:
+> > Add a test case to check NULL pointer dereference and make sure it would
+> > result as a failed test.
+> > 
+> > The full kunit_fault test suite is marked as skipped when run on UML
+> > because it would result to a kernel panic.
+> > 
+> > Tested with:
+> > ./tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
+> > ./tools/testing/kunit/kunit.py run --arch arm64 \
+> >   --cross_compile=aarch64-linux-gnu- kunit_fault
+> > 
 > 
-> Anyways you did confirm if PSCI SYSTEM_RESET works as expected or not. That
-> is default and must work.
+> What is the rationale for adding those tests unconditionally whenever
+> CONFIG_KUNIT_TEST is enabled ? This completely messes up my test system
+> because it concludes that it is pointless to continue testing
+> after the "Unable to handle kernel NULL pointer dereference" backtrace.
+> At the same time, it is all or nothing, meaning I can not disable
+> it but still run other kunit tests.
 > 
 
-Yes, SYSTEM_RESET works on Quacomm firmware. The bindings disallow
-trying to override the default reboot. (reboot command = NULL or "") The
-PSCI parsing of the DT also doesn't have any of the special handling to
-deal with "mode-normal".
+Oh, never mind. I just disabled CONFIG_KUNIT_TEST in my test bed
+to "solve" the problem. I'll take that as one of those "unintended
+consequences" items: Instead of more tests, there are fewer.
 
-> > > > Generally, there is a PMIC register that gets written to
-> > > > decide the reboot type. There is also sometimes a cookie that can be
-> > > > written to indicate that the bootloader should behave differently than a
-> > > > regular boot. These knobs evolve over product generations and require
-> > > > more drivers. Qualcomm firmwares are beginning to expose vendor
-> > > > SYSTEM_RESET2 types to simplify driver requirements from Linux.
-> > > >
-> > >
-> > > Why can't this be fully userspace driven ? What is the need to keep the
-> > > cookie in the DT ?
-> >
-> > As Dmitry pointed out, this information isn't discoverable. I suppose
-> > we could technically use bootconfig or kernel command-line to convey the
-> > map although I think devicetree is the right spot for this mapping.
-> >
-> 
-> Yes and as usual DT has become dumping ground for firmware that don't
-> make things discoverable. Make crap that Qcom puts in the DT are firmware
-> related and can be make discoverable. Anyways it is sad that no efforts
-> to make it so are done as DT is always there to provide shortcuts.
-> 
-> > - Other vendor-specific bits for PSCI are described in the devicetree.
-> >   One example is the suspend param (e.g. the StateID) for cpu idle
-> >   states.
-> 
-> You are right, but that is the only example I can see and it was done
-> in very early days of PSCI. It shouldn't be example if there are better
-> ways.
-> 
-> > - Describing firmware bits in the DT isn't unprecedented, and putting
-> >   this information outside the DT means that other OSes (besides Linux)
-> >   need their own way to convey this information.
-> 
-> Correct but it can be Qcom specific firmware interface. There are so many
-> already. This splitting information between firmware and DT works well
-> for vertically integrated things which probably is the case with most of
-> Qcom SoCs but it is prone to issues if DT and firmware mismatch. Firmware
-> discovery eliminates such issues.
-> 
-
-I worry about designing interfaces both in Qualcomm firmware and in
-the PSCI driver which doesn't really suit handling the discovery. We can
-implement the dynamic discovery mechanims once there is a board which
-needs it.
-
-Thanks,
-Elliot
+Guenter
 
