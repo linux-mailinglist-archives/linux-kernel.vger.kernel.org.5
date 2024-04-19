@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-151602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49A0B8AB0FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:48:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3607B8AB101
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:48:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BB461C22D5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:48:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1A1C1F24769
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06FF12F58E;
-	Fri, 19 Apr 2024 14:48:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A5012FB21;
+	Fri, 19 Apr 2024 14:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GCYZbVvR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lwtJx5lc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB4612F38C;
-	Fri, 19 Apr 2024 14:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3DDB12F5AD;
+	Fri, 19 Apr 2024 14:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713538081; cv=none; b=h5dIQerB48b6+CnrSsCw+BRnJncsdby9+0Velvs/tuVx0WGVjmetComzKGqbaDAoU3uuNPZ5vlhlBl7EkyOSjt9a/33/bGag2WCDP+ATZgnzgzG3OPgNbs21Xj8S3bo5TBqCAjG0bLjPmRl5IbYJTIcQg/m8SHSBVHCNVx7OVj0=
+	t=1713538082; cv=none; b=YT91r6yc/8gWV/Mj4dwwGMSaONH+myNcliOXrsAx2mt7b1Q3KohEYAWF59gXoE5tAy9cdwngWObnY6n5m/cJ90MnKzCZifumm6jVmyMkv2ck2tzOyFSYqbCG89Pgwq6NA3K/xM+YIlm298WIPBmSbf2CVysQ+JCc0mRPVKFqom8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713538081; c=relaxed/simple;
-	bh=04Zb97cdbjMlae6r4F3dTKaH5KftkuQ84e3WYGNsYLs=;
+	s=arc-20240116; t=1713538082; c=relaxed/simple;
+	bh=cKfQYZQ7OTCZtL8yoh2ygg4+ioUaBLuR99Mk6YEFOhw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=EFjLoHnw+xqzcXognQS/6ohtAHMq8slCOnyilHmGxPOaSJLPcM4JZGqxIes4D+wS1YIx9msqF3j0Z1wqs7LCnwD31mbKmAna/jsdaMAWTymUZ6/R2P5IIkWgpaxCo7ELC1Uzew5jikLDiXnWg+v1Vi680mIho9yntVTXPX19Q88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GCYZbVvR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57788C3277B;
-	Fri, 19 Apr 2024 14:47:59 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=TdixRodkXn/Z35PwLuvmSeVnpz26Z3gAH2hJsTJPRmxjl8BaZZz6hlVhwwGg+TrjuMXpROZ3hbiZDrzBXTkZKoRTguOpAuludV/LwPgH++7ytVFce/iWVLuFePFfvmKjYbzqJ0F7/726Wb8A0M4obO0SB1s2sMrXD4v1eGpm65I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lwtJx5lc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3A53C072AA;
+	Fri, 19 Apr 2024 14:48:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713538080;
-	bh=04Zb97cdbjMlae6r4F3dTKaH5KftkuQ84e3WYGNsYLs=;
+	s=k20201202; t=1713538082;
+	bh=cKfQYZQ7OTCZtL8yoh2ygg4+ioUaBLuR99Mk6YEFOhw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=GCYZbVvR+1L//Icu5z8sFMdYKIR1ejBxfDJ1NZBGkulj230FA8h4+EPI8l+sRgcfo
-	 uXnel7+7nPOK8D3PPxAdFvSVwF3EhB9BqILKGtm0bORqAli2/+fRGXa3bza0ypI5gz
-	 ZAPCzJShrHit4gRUSYkocUZPhbsR9FuozJKge/7WekX7fpqtfuGIlwK9GWgUkDnJvO
-	 QXvS6XDrBOB/OUhE3d/J9Adfdm57q7dr8CKAed4Q3e6rlZyZ096ebQEAZ73UChRV4J
-	 33+lV36Xt6Gx3mNu0V0G/rmr7SrFHENrqX/Fpl6OIRZj5BldTAzK+X869Aa7c2RIz+
-	 /07EJW/fSFsjA==
+	b=lwtJx5lct1z/v7GandOVBhe3JX4czq6eIptu5ZuurO7kxie94CcbRVNHp7zc8iMct
+	 7U3mbi77qdT621CLaSt5cpBmqK1qAhZFRo1m7DCfuOVOGvjLvDoxRBwO7L4vvKnEBx
+	 6xPDbDj+tHmMQwfyah9kxoMTwtxvk1TG6+6s6VtmXuYYMNooMEbcclucYepSj3qNnU
+	 UHNLx3hfooVl0ZdN+GfRGM3ZsEO27hVajUFTz1TbC5UFhfNMN6LYYOi6JWBD4n/cfA
+	 cV1pYI3HJAXP2S7YayDW2CvHrly5NuQW/aOnZoOsgEXNPKn4JEGqna/cVD9OtMECIH
+	 OJ8lVs5Ncr5AA==
 From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Fri, 19 Apr 2024 16:47:51 +0200
-Subject: [PATCH 1/3] HID: bpf: fix a comment in a define
+Date: Fri, 19 Apr 2024 16:47:52 +0200
+Subject: [PATCH 2/3] HID: bpf: fix return value of entrypoints_*__attach()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240419-hid_bpf_lazy_skel-v1-1-9210bcd4b61c@kernel.org>
+Message-Id: <20240419-hid_bpf_lazy_skel-v1-2-9210bcd4b61c@kernel.org>
 References: <20240419-hid_bpf_lazy_skel-v1-0-9210bcd4b61c@kernel.org>
 In-Reply-To: <20240419-hid_bpf_lazy_skel-v1-0-9210bcd4b61c@kernel.org>
 To: Jiri Kosina <jikos@kernel.org>, 
@@ -59,44 +59,39 @@ To: Jiri Kosina <jikos@kernel.org>,
 Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Benjamin Tissoires <bentiss@kernel.org>, stable@vger.kernel.org
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713538077; l=1167;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713538077; l=967;
  i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=04Zb97cdbjMlae6r4F3dTKaH5KftkuQ84e3WYGNsYLs=;
- b=yLZ6mBpSWzokrza1a7v3QlUhFGuN9C1xEmWUI8JWBzWdcwBt3E4fKUw1/HRIw4va9+O7OzF8T
- fwt0eP57nY0CaR4JVgUmn/6lMaog/3V6Bck7G0WQCXtd3pPuuT3NxoB
+ bh=cKfQYZQ7OTCZtL8yoh2ygg4+ioUaBLuR99Mk6YEFOhw=;
+ b=k7MsPc8/YlVUzmV6a9ykWMJAwR3F/9Qa9SPGvai0abv0lViHFSR+8hELbHVHpQu7lVbtMi/bq
+ WGVUtChmZKeBcPUKp/xp3EpTQwndBkF7svqX3nDvUzpDdnBPMtljzwZ
 X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
  pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-It compiles fine, but my editor is troubled by this.
-Makes things clearer by putting the comment above the #define, this
-way we are sure it all goes well.
+Turns out that this function returns the attached fd, so a positive
+or null value.
+Given that we were having no other fds before, we were receiving 0,
+and the test passed.
 
 Cc: stable@vger.kernel.org
 Fixes: f5c27da4e3c8 ("HID: initial BPF implementation")
 Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 ---
- drivers/hid/bpf/hid_bpf_jmp_table.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/hid/bpf/hid_bpf_jmp_table.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/hid/bpf/hid_bpf_jmp_table.c b/drivers/hid/bpf/hid_bpf_jmp_table.c
-index aa8e1c79cdf5..89496aabbe15 100644
+index 89496aabbe15..301ac79db241 100644
 --- a/drivers/hid/bpf/hid_bpf_jmp_table.c
 +++ b/drivers/hid/bpf/hid_bpf_jmp_table.c
-@@ -19,10 +19,10 @@
- #include "hid_bpf_dispatch.h"
- #include "entrypoints/entrypoints.lskel.h"
+@@ -521,7 +521,7 @@ void hid_bpf_free_links_and_skel(void)
  
--#define HID_BPF_MAX_PROGS 1024 /* keep this in sync with preloaded bpf,
--				* needs to be a power of 2 as we use it as
--				* a circular buffer
--				*/
-+/* keep this in sync with preloaded bpf,
-+ * needs to be a power of 2 as we use it as a circular buffer
-+ */
-+#define HID_BPF_MAX_PROGS 1024
- 
- #define NEXT(idx) (((idx) + 1) & (HID_BPF_MAX_PROGS - 1))
- #define PREV(idx) (((idx) - 1) & (HID_BPF_MAX_PROGS - 1))
+ #define ATTACH_AND_STORE_LINK(__name) do {					\
+ 	err = entrypoints_bpf__##__name##__attach(skel);			\
+-	if (err)								\
++	if (err < 0)								\
+ 		goto out;							\
+ 										\
+ 	links[idx] = bpf_link_get_from_fd(skel->links.__name##_fd);		\
 
 -- 
 2.44.0
