@@ -1,107 +1,98 @@
-Return-Path: <linux-kernel+bounces-151463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C25948AAF3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:24:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E628AAF3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:25:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EB572839A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:24:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 311AC1C22216
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546F31272DC;
-	Fri, 19 Apr 2024 13:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE90E127B56;
+	Fri, 19 Apr 2024 13:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dco3AVnY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aa5bLbHd"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C3141C66;
-	Fri, 19 Apr 2024 13:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE08241C66
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713533058; cv=none; b=VkaljOBUZ6JIA4Q8aFPZi2EP1EwVCzDPp7QPBdhupzr5qvOtI3BpURxR/ldhj4n2bvq9xPAMap5VCjhh3JtpV83219xe01pl2s1BNVKNLXGgKDmQfw9X8/meSr3Q5FECKNCWlXf0GU4x1GfUDYoE0caIDfvecTl4VbYzZbsVFus=
+	t=1713533105; cv=none; b=N1F0Z0iGLdP7Oo3f97DmFhu26VSsLmnOHI2oBimCE/+GtrMWcJ4rP1hkYxQ5NbKZr0eUKO3lT8z6jkBJVKOkMPVAa806Ijr6B0YSNYW+aLRI7RjkH1Hq4gapKfgAb7Ib46Hi6w4tA5cuTYic56M2BNL5FjrEuKIb4Ka7+WaUbn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713533058; c=relaxed/simple;
-	bh=km0hypdLXwBb2Cs3HyM86DuFLSognrk/cCgNSgOGGAk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kqFmvZjEs0V9dllf4Gn644XQoDyJbCsVfe4PnIqXiiJcHqY6F6jpWGWJTZ8UsdAzIwuqUKG7745x0vpC17v+GehmkQ3q44CfFqU1zLbuSeq4sZuYfox5Zt3wYE3N2zFcG/FbaEA95DWG3uO9XK2rScKEd37JvLkM1Y8uOL1Pub8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Dco3AVnY; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713533057; x=1745069057;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=km0hypdLXwBb2Cs3HyM86DuFLSognrk/cCgNSgOGGAk=;
-  b=Dco3AVnYJfbdTybNpRdgjAm+SVQpzsIzN/jSOxf4LgWFG2+RZ2EVF6R+
-   Wni+QyNS6oaoDQWPXPifoDCz6XFG3ajkyTYAEguXVGk7mrq7z5Y5MKLdP
-   /Et6+jd88jA5tS3E4pUInemWvM8JzLnMAJCn4vSSad57PJMV0MdaEe1nu
-   9sx7RFntpkfAPV2PP2cNdTUoxAwoFYN8vGYQ4qhDxZAMoV1LNMHdfgWrJ
-   HM04TVYlpA30sR05tmsY+JAvzhWtJ6OzKYOWFRFWqJxcTrLqHWiiNN6i0
-   E23s7tC6shZ4DxYf7jt2FB75VsemC9yKVj7c3+tBgGEaVuiB2bgx0i6r7
-   w==;
-X-CSE-ConnectionGUID: X4RQQ0PaQ4q3GyMCq9VUzw==
-X-CSE-MsgGUID: z+JhTizxQrWQzYQwROHYPA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="19828830"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="19828830"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:24:16 -0700
-X-CSE-ConnectionGUID: IgoxUjZ5SsuDY6ybxc0Hag==
-X-CSE-MsgGUID: HD6Py7hGQIKPdZ/kHPL5lQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="27954946"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:24:13 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rxoDr-00000000jCZ-1pBx;
-	Fri, 19 Apr 2024 16:24:11 +0300
-Date: Fri, 19 Apr 2024 16:24:11 +0300
-From: "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>
-To: "Colberg, Peter" <peter.colberg@intel.com>
-Cc: "yilun.xu@linux.intel.com" <yilun.xu@linux.intel.com>,
-	"Xu, Yilun" <yilun.xu@intel.com>,
-	"linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-	"mdf@kernel.org" <mdf@kernel.org>, "Wu, Hao" <hao.wu@intel.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"russ.weight@linux.dev" <russ.weight@linux.dev>,
-	"Pagani, Marco" <marpagan@redhat.com>, "Rix, Tom" <trix@redhat.com>,
-	"matthew.gerlach@linux.intel.com" <matthew.gerlach@linux.intel.com>
-Subject: Re: [PATCH RESEND] fpga: dfl: omit unneeded casts of u64 values for
- dev_dbg()
-Message-ID: <ZiJwe1hgizRkWcdo@smile.fi.intel.com>
-References: <20240329000429.7493-1-peter.colberg@intel.com>
- <Zgt7fA/Jfks/iKYi@yilunxu-OptiPlex-7050>
- <61cf643fda9b983b8a78b9f66c46290becf4f537.camel@intel.com>
+	s=arc-20240116; t=1713533105; c=relaxed/simple;
+	bh=UWXTaQ82HyFtQb3TRUV4cf5MB8r08tl9SIn+hgm0d+I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Hs5Uc6KA7HAb0tdf/5ZJ/gCc4s9M1V4PdqT4nsnrTwd1Ux/5D+2QKxI6z+C82E8yjnUyCwyNE9M/Xz9AvxxiqM9JOxkklxpdGtO44FWorGgEdKhqpE6El5El6D+qfnV89JNEPwllRpw7QGDtWEFUOQsXDx/rvrDG4ET3NYgNHFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aa5bLbHd; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-de45e5c3c68so2301021276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713533103; x=1714137903; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VkrOJ4wKG+fycpys61fJmDawiloLrXFnzq3mdhSsqRc=;
+        b=aa5bLbHdbG/MRkL+K3v6q4HnJIyKyjT0PNGYQzu3xcKehSZhCBZo0Oa2STrIIHGxmI
+         NYTDDIHZoVKFVSiamSwyZc86AOfpOIsn9UzsEhWUDoei/N+k2CeqKrZONtwqmJYwFtjn
+         wGfloUa4qUl6S+LdV8pTsGWWZrfUk29P50IoEp4t9KHOcVz35KI3CWO3IqcCz7Z0kE1N
+         Oucg0qfX3gDjuPo3fPNcf+8M7igM1XtK8XVeaOy+i+rCTjKt+e9Uy9X9LMwoFFo9WSOS
+         hkT64eWbFcnhvV5hl2FFgt/1S9LdhwHvAHps+QECurjuNctvfCVrK7H5h77RkdcohOHI
+         MroQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713533103; x=1714137903;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VkrOJ4wKG+fycpys61fJmDawiloLrXFnzq3mdhSsqRc=;
+        b=FHNtupgACpEeRVJ6xEuFbhr5VzoLyHv97+mFyNM3fmUjVTOAO+9gK8+7pB/zJTBdDQ
+         APvid9dmh6+mxXXs1v1fJDm7fhVqeoJ7zJ68vvkwt4/q3v/Ss/rWKxOb3pGfnaW28hUI
+         6M4t/Rt7h9C4zVtAKVyiQKUDXQnqb96aWrml4v3Q1oZAJALiTC3btsBQqL3NSdYWpzWs
+         pK+EfNpCLQT1/2+ZJBIIhMW+UFsdAsv3VG089gfqLEvDXmK5pSOUadGLUjgCmxd/AFef
+         xAe7zWrs9EeyFBSsoGYFDF/uT+4fMPCzO+XjT56XPz9L6CjrSdPI/FxyxSggGNVD+mwj
+         KVkA==
+X-Forwarded-Encrypted: i=1; AJvYcCU0JMqqMD9bs+O6gf3tDrGS4ZC42fpHDtYDprw65wryOJjwSJhAJfTZZmzuh7r26KM8FQvr16iHc4qH4uy1ioynaFLjv61NK2kf7sGW
+X-Gm-Message-State: AOJu0YzSEuEDy3YfihdIE2C+8xpjUbxUWs/dI35anIPGmFIHCLNrblQs
+	enREl+ub+Sl7VojpngaZwwz/4n5gPLENcK43MwLR0MmHB/6QNpIDODBnO60UIN5SHlrP8YHScL8
+	AD1009G8k+zNhwbp1EMzxqSanFTT/F79HBaAO8w==
+X-Google-Smtp-Source: AGHT+IEyyp8kZfsahZ+i2TdwPhFvo3EiP8GYbc2UBm1PxE1KueAyxKWGN/Vu8bv/kI+9tRapKwazomvLnYLu8G9C8dY=
+X-Received: by 2002:a25:55:0:b0:dcc:f0a:e495 with SMTP id 82-20020a250055000000b00dcc0f0ae495mr1727089yba.3.1713533102898;
+ Fri, 19 Apr 2024 06:25:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <61cf643fda9b983b8a78b9f66c46290becf4f537.camel@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240415105328.3651441-1-zengheng4@huawei.com>
+ <Zh_rM04PspfXxlv_@smile.fi.intel.com> <d80e09d8-5f35-4865-9fe8-195b86527972@moroto.mountain>
+ <ZiAC9zzSWume8063@smile.fi.intel.com> <fe83e07f-ca28-4c00-9b1b-7d16c63bad62@moroto.mountain>
+In-Reply-To: <fe83e07f-ca28-4c00-9b1b-7d16c63bad62@moroto.mountain>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 19 Apr 2024 15:24:52 +0200
+Message-ID: <CACRpkdb2YCrG_wJtdSNhqUJt5x-fPSb4A9uaU6DmAOm3roFN0Q@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: devicetree: fix refcount leak in pinctrl_dt_to_map()
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Andy Shevchenko <andriy.shevchenko@intel.com>, Zeng Heng <zengheng4@huawei.com>, 
+	linux-kernel@vger.kernel.org, xiexiuqi@huawei.com, linux-gpio@vger.kernel.org, 
+	weiyongjun1@huawei.com, liwei391@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 09:30:48PM +0000, Colberg, Peter wrote:
-> On Tue, 2024-04-02 at 11:29 +0800, Xu Yilun wrote:
-> > On Thu, Mar 28, 2024 at 08:04:29PM -0400, Peter Colberg wrote:
+On Wed, Apr 17, 2024 at 7:49=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro=
+org> wrote:
 
-..
+> Probably we should add a comment to say:
+>
+>         /* Return -ENODEV if the property 'pinctrl-0' is not present. */
 
-> $ rg --sort=path -c dev_dbg drivers/fpga/
+Would you mind sending a oneliner on top to fix this?
 
-Side Q: is 'rg' an alias to `git grep`?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Yours,
+Linus Walleij
 
