@@ -1,209 +1,334 @@
-Return-Path: <linux-kernel+bounces-151435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 101E78AAEDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:53:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AED3A8AAEE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:56:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41C111C2193D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:53:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F200B21C4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C8A8614B;
-	Fri, 19 Apr 2024 12:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0D785C66;
+	Fri, 19 Apr 2024 12:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="g6vcS7Zh"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="ntjFvqAm"
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8642C8563B;
-	Fri, 19 Apr 2024 12:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F858529A
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 12:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713531174; cv=none; b=uZKeYNz+7uD7oUBPR8Vl4KhFxPWnWQHnhj31I4U0dvbCpilb97Q6ZmRtqNgPz8MJtLL5ovaIW8jgtdImYMjHNJIzWs/TUldPSQ81+BnjoUFNSxxyUAuobrsg/xefdR0Rom124kRehBV2fNPnQpsf890Et5YopBO372e83DCRZEg=
+	t=1713531394; cv=none; b=iPpKZ1Q/S6SydPzS39/zSCQNjcXNXAnvsIviXLzLnYaaYMhBSdioFNcn7c8nVRlVfGCAm/2rPLd3PBTM10spSZKpFNGRVoo23nW7H7L0iHBJFlnqmDVXxhxRm0+4wCWGBKK2+mNhgO3cx4g3whrvXkfQXJPlHPX0PxASsiLrPdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713531174; c=relaxed/simple;
-	bh=kAT+R3YnmcMWhcay1NNgbxYxoVw+Xu9c6mKu5iN8XdY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FPEMOOhO7eqvgXu5i5EmDRoibRTS0AZBGtY8IVlrwHtZAVHgP8FbXBwDVZf9mePZps3d2/C1+aXVlvqxl+hJBEEPpa8aVdpNlvEPzyau8aW0A1RehUPc5AQWq3an880EJP7P7p8n1jntJY39jiMnur1sKixUEhQdFJtzlpGIgGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=g6vcS7Zh; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=kAT+R3YnmcMWhcay1NNgbxYxoVw+Xu9c6mKu5iN8XdY=; b=g6vcS7Zh1AnsQuf4aCy4TIJgG4
-	QkZVkwqdMSrmE+Rp8mWWNp45hj2MRLuh1yP0IfXI6Tw5b3eww3HvJfCOLE2GdyfoE1r56lQpDRmMi
-	TvmIySlB+mhTvLf16BnOh8u0MBkbp2UsWBuc3VhTHYDWO8HVKEOjMvdm/3RYGUIFh7e4V0Hx/sDxZ
-	gTXc1Juv7RhjYG7b2lAyKNHk55KuOtJuR6xz0dkY8GVBw0+dfWYrSpPET8FzLN6GSGHLbiUpe5oQr
-	5rFewUmE4gmqEVsTgxNBOgkSXswjqlY3xO9BQzZfSH2UCtkKqCGPeYy6zb9QPyQIM+D2M+p9yGE2Z
-	EtVqLqmg==;
-Received: from [2001:8b0:10b:5:c08e:a4fc:45a2:fa90] (helo=u3832b3a9db3152.ant.amazon.com)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxnjW-00000007gEE-2EPm;
-	Fri, 19 Apr 2024 12:52:51 +0000
-Message-ID: <a6723ac9e0169839cb33e8022a47c2de213866ac.camel@infradead.org>
-Subject: Re: [RFC PATCH 0/10] Cleaning up the KVM clock mess
-From: David Woodhouse <dwmw2@infradead.org>
-To: kvm@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
- Sean Christopherson <seanjc@google.com>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,  Paul Durrant <paul@xen.org>, Shuah Khan
- <shuah@kernel.org>, linux-doc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, Oliver Upton
- <oliver.upton@linux.dev>, Marcelo Tosatti <mtosatti@redhat.com>, 
- jalliste@amazon.co.uk, sveith@amazon.de, Dongli Zhang
- <dongli.zhang@oracle.com>
-Date: Fri, 19 Apr 2024 13:52:49 +0100
-In-Reply-To: <20240418193528.41780-1-dwmw2@infradead.org>
-References: <20240418193528.41780-1-dwmw2@infradead.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-F+ZAV3X8oAmmyvjhh9O5"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1713531394; c=relaxed/simple;
+	bh=TMr4RZ19Bd7AjfjrbQ1usf3bz+QWBHzTOPk2Gqnrkm0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rt86mOREiNkYv6emjXrWTfan7C49KENcOR0X4nd8UKC9GjOycYWQH1fEdoVlK2OgsADLyWb13qXR0nczvMMPRXOzXxauFnS4I7wHgSvfBPtzfbUJvPst5cHWpzMU7iVdX+EfeOf6lHgH5lt+sqgxTInnhruYGXGtcKAqhYtwv3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=ntjFvqAm; arc=none smtp.client-ip=209.85.160.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-238e171b118so1078503fac.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 05:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1713531390; x=1714136190; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qAnQXOAIIj9oS1dVAkkGazDr3oWNNZyu5Ad+/xAUOSA=;
+        b=ntjFvqAmgQJAKfAGXMOtyQZvbezlAT8HXtIL5fYgBHKbggCEan/1WZ65sDMcjGjHNl
+         Q+6KqOqcmoTYV4qaEm4pKrkhqxG4pYFriOOXzCvpyoMxDI5mjn7VfPv2dfkcwouuc9IB
+         7N+g3HzlwhCX/uMKTlwnr41FVm5n72MHAAmLjHv0vZQJZq3MJ3TP8bUQAjSrp4LgNn1w
+         zcdKgNy5vnWgGJTubWsKyJEI1uH/9+WFQiJ2Puuu/03/e4jOvDZIdk6FujkKv9NYbEx9
+         P/eVBSMeMpb/U7pxKXS24H9SzscpHOjInIWRL1EanzluCmsJ3R6F5Zliwm7NjdPixKO5
+         ME/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713531390; x=1714136190;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qAnQXOAIIj9oS1dVAkkGazDr3oWNNZyu5Ad+/xAUOSA=;
+        b=pWfWJB6K+6+0jouT8LgZsZ0TTm0H5COGZnFC2kbS+y44oFmQTmhXYe1l3bg7lp6qLs
+         XSrKfZJ6opMZ1C78w//GK7DJ9eGUY4+DOniNaWM4yoq4sP92rwERub1j8iq75ZsEKOvq
+         sX2M+VuamCsmMcqjhzUmNQnMeh6wqoP7aeleVGk0/WEUeWultJ77nod6SC9+K9ShkZPJ
+         NM/anQj71XjWUf3m7meGxHv+AfyiufcUDHAd7LplZb14HCE78o6QW683C2vqNy2HtyLF
+         56BGSu+AvShlw3DoM/64ufYN5JyHAcf7JNS2IqtOmMJEraal/hyjJ0h1fhm/f2nlTrCJ
+         FtOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVWWRLbef+Nx9o+8M4j238kNI5idrd/lbQRrDKyZTcPjWWspvL2imJbH+18C+jFhzCJPkcZs40DVhuahmo+N02BfPeTY0J50Ieilsgt
+X-Gm-Message-State: AOJu0Yz4XaGWxYb11zLJdd/8swBDK8YSKnG6Z7DiuOekZ1uGM9U/pB5o
+	WhD9rAKqnChm4fn4s9xds1sKRI4toFgwn4uEHb/CIKALECkN+Cy3E87EJ0kZFMM=
+X-Google-Smtp-Source: AGHT+IHFfBcis79UcRir4VffHs5X6NLftoITO/91C4p4EpS7Z44Ysxagpcl0DozKM758wLJf4tJP1g==
+X-Received: by 2002:a05:6870:2d4:b0:22e:9901:ede4 with SMTP id r20-20020a05687002d400b0022e9901ede4mr2180580oaf.38.1713531389153;
+        Fri, 19 Apr 2024 05:56:29 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id t20-20020a05683014d400b006eb77e42ff5sm691060otq.26.2024.04.19.05.56.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 05:56:28 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rxnn1-00FPgO-MQ;
+	Fri, 19 Apr 2024 09:56:27 -0300
+Date: Fri, 19 Apr 2024 09:56:27 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Nick Kossifidis <mick@ics.forth.gr>,
+	Sebastien Boeuf <seb@rivosinc.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	iommu@lists.linux.dev, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux@rivosinc.com
+Subject: Re: [PATCH v2 7/7] iommu/riscv: Paging domain support
+Message-ID: <20240419125627.GD223006@ziepe.ca>
+References: <cover.1713456597.git.tjeznach@rivosinc.com>
+ <301244bc3ff5da484b46d3fecc931cdad7d2806f.1713456598.git.tjeznach@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <301244bc3ff5da484b46d3fecc931cdad7d2806f.1713456598.git.tjeznach@rivosinc.com>
 
+On Thu, Apr 18, 2024 at 09:32:25AM -0700, Tomasz Jeznach wrote:
 
---=-F+ZAV3X8oAmmyvjhh9O5
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> diff --git a/drivers/iommu/riscv/iommu.c b/drivers/iommu/riscv/iommu.c
+> index a4f74588cdc2..32ddc372432d 100644
+> --- a/drivers/iommu/riscv/iommu.c
+> +++ b/drivers/iommu/riscv/iommu.c
+> @@ -46,6 +46,10 @@ MODULE_LICENSE("GPL");
+>  #define dev_to_iommu(dev) \
+>  	container_of((dev)->iommu->iommu_dev, struct riscv_iommu_device, iommu)
+>  
+> +/* IOMMU PSCID allocation namespace. */
+> +static DEFINE_IDA(riscv_iommu_pscids);
+> +#define RISCV_IOMMU_MAX_PSCID		BIT(20)
+> +
 
-On Thu, 2024-04-18 at 20:34 +0100, David Woodhouse wrote:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 KVM: x86: Remove periodic global clock upd=
-ates
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 KVM: x86: Kill KVM_REQ_GLOBAL_CLOCK_UPDATE
+You may consider putting this IDA in the riscv_iommu_device() and move
+the pscid from the domain to the bond?
 
-Meh, I might have to put those back. They were originally introduced to
-cope with NTP frequency skew which is no longer a problem, but we now
-know there's a systemic skew even between the host CLOCK_MONOTONIC_RAW
-and the KVM clock as calculated via the guest's TSC.
+>  /* Device resource-managed allocations */
+>  struct riscv_iommu_devres {
+>  	unsigned long addr;
+> @@ -752,12 +756,77 @@ static int riscv_iommu_ddt_alloc(struct riscv_iommu_device *iommu)
+>  	return 0;
+>  }
+>  
+> +struct riscv_iommu_bond {
+> +	struct list_head list;
+> +	struct rcu_head rcu;
+> +	struct device *dev;
+> +};
+> +
+> +/* This struct contains protection domain specific IOMMU driver data. */
+> +struct riscv_iommu_domain {
+> +	struct iommu_domain domain;
+> +	struct list_head bonds;
+> +	int pscid;
+> +	int numa_node;
+> +	int amo_enabled:1;
+> +	unsigned int pgd_mode;
+> +	/* paging domain */
+> +	unsigned long pgd_root;
+> +};
 
-So at least when !ka->use_master_clock I think the forced resync does
-need to happen.
+Glad to see there is no riscv_iommu_device pointer in the domain!
 
+> +static void riscv_iommu_iotlb_inval(struct riscv_iommu_domain *domain,
+> +				    unsigned long start, unsigned long end)
+> +{
+> +	struct riscv_iommu_bond *bond;
+> +	struct riscv_iommu_device *iommu;
+> +	struct riscv_iommu_command cmd;
+> +	unsigned long len = end - start + 1;
+> +	unsigned long iova;
+> +
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(bond, &domain->bonds, list) {
+> +		iommu = dev_to_iommu(bond->dev);
 
+Pedantically this locking isn't locked right, there is technically
+nothing that prevents bond->dev and the iommu instance struct from
+being freed here. eg iommufd can hit races here if userspace can hot
+unplug devices.
 
---=-F+ZAV3X8oAmmyvjhh9O5
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+I suggest storing the iommu pointer itself in the bond instead of the
+device then add a synchronize_rcu() to the iommu unregister path.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNDE5MTI1MjQ5WjAvBgkqhkiG9w0BCQQxIgQg0u4p0DAg
-xQtdo/XAvVwUEWoxMLpfEioFmtcBRDQ8Agswgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCW0uPUxZzGgmtiBDmM6qS/BdSkbe3IYIXM
-pHeqKMd8qMpep+sklSkXLD5gN+o4dw9Cqa0xx3ZqRqKea4zM4A2SUGaujo9KAoF16oJkam8uQ97P
-vsnRABZ0I9WpzP0WXBlapUXdzSDr/wOrYCVI12H50iTH0HS3r8hTYJdyCPx6wp/lMC55BJrGQSdx
-tWlK70iV91ha0oow8p7beHKAwv1y5BX6VAzceXDLzPI3Xh3BH5wwn9pN1ee2lNAPc0UO7q+fJKfJ
-g+QZsCfGxhgp9LpYnct7a2mNTnaRZQWjzZ1l6AYCbXtUIhtib7RSpCKgMm7ZTzUXCvrlJUjTYWaG
-fMqWzbvoZUgDu+WVKbJ3xOl8DFnMRAK8Vx6i1rlIWu1T+VwS0Qpa9TTS4OUsGYI4SCD1IWBWFOdY
-H1frNScONgPRIQvmJIqqlE9OA0BzPLwp+zXprrP7LgH2f6sQUTxxlkueX+2KLJy8tEKQ9Sp0n0sL
-hu3RHFuNKY+RZbQ2UraHcrrqheRS6ANK1+059cpfI4wnoNSEnLHPqHku3dS7RM6fHcPSQBQ3sD5a
-fAayN7sIe0Bc1DAQD66AStZi5dV81EJG4FdCl3mkoV6eptO46YNbHx7FzIViKSU/Bd0C6pbGgSWy
-BwBETm2K7Zj4Hkwf5leVxN5lu9PeVTalyMePbZCsHwAAAAAAAA==
+> +		riscv_iommu_cmd_inval_vma(&cmd);
+> +		riscv_iommu_cmd_inval_set_pscid(&cmd, domain->pscid);
+> +		if (len > 0 && len < RISCV_IOMMU_IOTLB_INVAL_LIMIT) {
+> +			for (iova = start; iova < end; iova += PAGE_SIZE) {
+> +				riscv_iommu_cmd_inval_set_addr(&cmd, iova);
+> +				riscv_iommu_cmd_send(iommu, &cmd, 0);
+> +			}
+> +		} else {
+> +			riscv_iommu_cmd_send(iommu, &cmd, 0);
+> +		}
+> +	}
 
+This seems suboptimal, you probably want to copy the new design that
+Intel is doing where you allocate "bonds" that are already
+de-duplicated. Ie if I have 10 devices on the same iommu sharing the
+domain the above will invalidate the PSCID 10 times. It should only be
+done once.
 
---=-F+ZAV3X8oAmmyvjhh9O5--
+ie add a "bond" for the (iommu,pscid) and refcount that based on how
+many devices are used. Then another "bond" for the ATS stuff eventually.
+
+> +
+> +	list_for_each_entry_rcu(bond, &domain->bonds, list) {
+> +		iommu = dev_to_iommu(bond->dev);
+> +
+> +		riscv_iommu_cmd_iofence(&cmd);
+> +		riscv_iommu_cmd_send(iommu, &cmd, RISCV_IOMMU_QUEUE_TIMEOUT);
+> +	}
+> +	rcu_read_unlock();
+> +}
+> +
+
+> @@ -787,12 +870,390 @@ static int riscv_iommu_attach_domain(struct riscv_iommu_device *iommu,
+>  		xchg64(&dc->ta, ta);
+>  		xchg64(&dc->tc, tc);
+>  
+> -		/* Device context invalidation will be required. Ignoring for now. */
+> +		if (!(tc & RISCV_IOMMU_DC_TC_V))
+> +			continue;
+
+No negative caching in HW?
+
+> +		/* Invalidate device context cache */
+> +		riscv_iommu_cmd_iodir_inval_ddt(&cmd);
+> +		riscv_iommu_cmd_iodir_set_did(&cmd, fwspec->ids[i]);
+> +		riscv_iommu_cmd_send(iommu, &cmd, 0);
+> +
+> +		if (FIELD_GET(RISCV_IOMMU_PC_FSC_MODE, fsc) == RISCV_IOMMU_DC_FSC_MODE_BARE)
+> +			continue;
+> +
+> +		/* Invalidate last valid PSCID */
+> +		riscv_iommu_cmd_inval_vma(&cmd);
+> +		riscv_iommu_cmd_inval_set_pscid(&cmd, FIELD_GET(RISCV_IOMMU_DC_TA_PSCID, ta));
+> +		riscv_iommu_cmd_send(iommu, &cmd, 0);
+> +	}
+> +
+> +	/* Synchronize directory update */
+> +	riscv_iommu_cmd_iofence(&cmd);
+> +	riscv_iommu_cmd_send(iommu, &cmd, RISCV_IOMMU_IOTINVAL_TIMEOUT);
+> +
+> +	/* Track domain to devices mapping. */
+> +	if (bond)
+> +		list_add_rcu(&bond->list, &domain->bonds);
+
+This is in the wrong order, the invalidation on the pscid needs to
+start before the pscid is loaded into HW in the first place otherwise
+concurrent invalidations may miss HW updates.
+
+> +
+> +	/* Remove tracking from previous domain, if needed. */
+> +	iommu_domain = iommu_get_domain_for_dev(dev);
+> +	if (iommu_domain && !!(iommu_domain->type & __IOMMU_DOMAIN_PAGING)) {
+
+No need for !!, && is already booleanizing
+
+> +		domain = iommu_domain_to_riscv(iommu_domain);
+> +		bond = NULL;
+> +		rcu_read_lock();
+> +		list_for_each_entry_rcu(b, &domain->bonds, list) {
+> +			if (b->dev == dev) {
+> +				bond = b;
+> +				break;
+> +			}
+> +		}
+> +		rcu_read_unlock();
+> +
+> +		if (bond) {
+> +			list_del_rcu(&bond->list);
+> +			kfree_rcu(bond, rcu);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+
+> +static inline size_t get_page_size(size_t size)
+> +{
+> +	if (size >= IOMMU_PAGE_SIZE_512G)
+> +		return IOMMU_PAGE_SIZE_512G;
+> +	if (size >= IOMMU_PAGE_SIZE_1G)
+> +		return IOMMU_PAGE_SIZE_1G;
+> +	if (size >= IOMMU_PAGE_SIZE_2M)
+> +		return IOMMU_PAGE_SIZE_2M;
+> +	return IOMMU_PAGE_SIZE_4K;
+> +}
+> +
+> +#define _io_pte_present(pte)	((pte) & (_PAGE_PRESENT | _PAGE_PROT_NONE))
+> +#define _io_pte_leaf(pte)	((pte) & _PAGE_LEAF)
+> +#define _io_pte_none(pte)	((pte) == 0)
+> +#define _io_pte_entry(pn, prot)	((_PAGE_PFN_MASK & ((pn) << _PAGE_PFN_SHIFT)) | (prot))
+> +
+> +static void riscv_iommu_pte_free(struct riscv_iommu_domain *domain,
+> +				 unsigned long pte, struct list_head *freelist)
+> +{
+> +	unsigned long *ptr;
+> +	int i;
+> +
+> +	if (!_io_pte_present(pte) || _io_pte_leaf(pte))
+> +		return;
+> +
+> +	ptr = (unsigned long *)pfn_to_virt(__page_val_to_pfn(pte));
+> +
+> +	/* Recursively free all sub page table pages */
+> +	for (i = 0; i < PTRS_PER_PTE; i++) {
+> +		pte = READ_ONCE(ptr[i]);
+> +		if (!_io_pte_none(pte) && cmpxchg_relaxed(ptr + i, pte, 0) == pte)
+> +			riscv_iommu_pte_free(domain, pte, freelist);
+> +	}
+> +
+> +	if (freelist)
+> +		list_add_tail(&virt_to_page(ptr)->lru, freelist);
+> +	else
+> +		free_page((unsigned long)ptr);
+> +}
+
+Consider putting the page table handling in its own file?
+
+> +static int riscv_iommu_attach_paging_domain(struct iommu_domain *iommu_domain,
+> +					    struct device *dev)
+> +{
+> +	struct riscv_iommu_device *iommu = dev_to_iommu(dev);
+> +	struct riscv_iommu_domain *domain = iommu_domain_to_riscv(iommu_domain);
+> +	struct page *page;
+> +
+> +	if (!riscv_iommu_pt_supported(iommu, domain->pgd_mode))
+> +		return -ENODEV;
+> +
+> +	domain->numa_node = dev_to_node(iommu->dev);
+> +	domain->amo_enabled = !!(iommu->caps & RISCV_IOMMU_CAP_AMO_HWAD);
+> +
+> +	if (!domain->pgd_root) {
+> +		page = alloc_pages_node(domain->numa_node,
+> +					GFP_KERNEL_ACCOUNT | __GFP_ZERO, 0);
+> +		if (!page)
+> +			return -ENOMEM;
+> +		domain->pgd_root = (unsigned long)page_to_virt(page);
+
+The pgd_root should be allocated by the alloc_paging function, not
+during attach. There is no locking here that will protect against
+concurrent attach and also map before attach should work.
+
+You can pick up the numa affinity from the alloc paging dev pointer
+(note it may be null still in some cases)
+
+Jason
 
