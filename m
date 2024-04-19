@@ -1,252 +1,298 @@
-Return-Path: <linux-kernel+bounces-150940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15BAB8AA6F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 04:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41AA68AA6F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 04:30:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97D971F2207E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:30:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C11AE1F22066
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B18947A;
-	Fri, 19 Apr 2024 02:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C87EA4C85;
+	Fri, 19 Apr 2024 02:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E5K+SdU1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jPQnPiqG"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E42D7443D;
-	Fri, 19 Apr 2024 02:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713493802; cv=fail; b=Ih9vtMrlojZZCScpaICH9RegMiRF/Y2wJ9i+YBRTVgsaeVlu7m/nlVDGLvZxv70VgPy/s+4H5we/gsdNVxeS4GaT3Yc9dZJYqhwPj7yXPmxxwHK5SPE6kKpPNuqtXT501Yx5XGI93RfbgKdVyQPxoY5tVeVI1RJqF8wB10bJwzU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713493802; c=relaxed/simple;
-	bh=21dJcY1sG7oWqC3P4+vD7BgQWa7jfrau5WXsIFrsqKU=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=YpgOMSZ4PRV/KKC/aULR0UPAac82vMQPeNd5mqKMd8eLZnH6jcZSb0E5qmU2PSPy6ZKGHGLyozjBfKUkgHsZYpKg0mLwpSHn4C0F42UKfwhd/nR8h+/avywW/fAlg0DXQGlpYaHyVyrd16HVkYD9VEDS0W97qoHELuNUYsLBMPA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E5K+SdU1; arc=fail smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713493801; x=1745029801;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=21dJcY1sG7oWqC3P4+vD7BgQWa7jfrau5WXsIFrsqKU=;
-  b=E5K+SdU12YkrorQZyhtb6gotsimnbErsiBWKOaazxv29SG1zPqv+9i9i
-   51QruJ3uOqSvZ8+8RUjCsnjjLoDjS9oaS9DLiRDeoDJKw2NlnXSN6/IDd
-   yP8euNzU+jA6oK1TaH+uWXXuknGi2Rr0eH20kdzYFdQUoOhmUaWdR9KBH
-   jmnDzT+DgaGR2iCa7/vlxAPkAWpDzZj6mfgQmR05jmk5ct99vK/ujOcPG
-   vYx6nb+r+PwJxjdjpFeB4okA/LouqNWzb7mGgNJzCA7Fv0DydSTVUWXP+
-   fMo6mAjz1NypQ2hUExpYxvPL5cHKLdv6908cJlbT5uNPn5l6KPgZ9dMVq
-   A==;
-X-CSE-ConnectionGUID: 7AUa4Q6aSXqpY2p4Hpc1gA==
-X-CSE-MsgGUID: U+mB6YdsS++zFyDDM6ELQA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="8918106"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="8918106"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 19:30:00 -0700
-X-CSE-ConnectionGUID: 1G1jLH1PQHeGnXEmFiEm5g==
-X-CSE-MsgGUID: tGHiWs16SGicEgMeAN7GCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="23207587"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Apr 2024 19:30:00 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 18 Apr 2024 19:29:59 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 18 Apr 2024 19:29:58 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 18 Apr 2024 19:29:58 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 18 Apr 2024 19:29:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AN4iW5cgAyd99NrmqUMfU1NNyhWtf10FBQI11nGd5PN9CxYIapHJvT3+DHlJ+VELASIkEjj1+YN9IJf9Ne1SHOTMePlypzPmn1xZ6x/IdNWgzk6Mht/6hyY7thWbJEb7Qq7Zz/JEqRR0rLN2gzJ0EfrOWJi6ycEohgOtnspwfLyYsMMj/FvGcsP1YDdfMSjoO34p/Hv3O7pB4BQzAp6VhqSFIJTBE34suIYlI72cJq2HDn5ylfbwhRjBfHeWLXNoZGrbwWNuF3xSB5Ox6SkqYU2Jk5ze6O9sbnswb1yVHc5L1/E+buwDOsG8WQRmGWE0UrzQTB6ik5rOZoFCOSr3OQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hUftD060Ygd/52uNwIBKfU+NOJh2//4hcTEfMnWd5ww=;
- b=TovyNT4pK8Hg8wBYAPVv6AA0zHxzuwJPFlrO/OfFPHcxgMYSRCJM/c3EILXPFC42kzQ2bNpiqfqGMIhR6rPYjva4UEwRWdIuuSNccgllBsXRKF1+sOxhCdm5Q2FM0mguMw1s7k3iZ6GdbpaRy3nxPERPgJIjTPYaWwA6YWWCmVNMrqQVh3MHgrDcgWunI0WKCC/uUhrryCGZq3U4wLwNXOUOBZMa2OFNEvHl4dQIoC8oyE54DyTPf5U9OfN8PEtRSvPd3rGSql5wAeAZp3ZRfFeR20G+qOeZEC4ou3f50FxFt8Ivhwjl49fAX9sOTjnbLjqRLN6b0tWz40QWun+w4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ0PR11MB4831.namprd11.prod.outlook.com (2603:10b6:a03:2d2::20)
- by CH3PR11MB8752.namprd11.prod.outlook.com (2603:10b6:610:1c2::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.26; Fri, 19 Apr
- 2024 02:29:57 +0000
-Received: from SJ0PR11MB4831.namprd11.prod.outlook.com
- ([fe80::ef38:e929:a729:2089]) by SJ0PR11MB4831.namprd11.prod.outlook.com
- ([fe80::ef38:e929:a729:2089%7]) with mapi id 15.20.7452.019; Fri, 19 Apr 2024
- 02:29:57 +0000
-Message-ID: <b05cdac2-84f2-4727-af6c-3b666e6add14@intel.com>
-Date: Fri, 19 Apr 2024 10:29:44 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 05/18] mm: improve folio_likely_mapped_shared() using
- the mapcount of large folios
-To: David Hildenbrand <david@redhat.com>, <linux-kernel@vger.kernel.org>
-CC: <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-	<cgroups@vger.kernel.org>, <linux-sh@vger.kernel.org>,
-	<linux-trace-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>, Andrew
- Morton <akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)"
-	<willy@infradead.org>, Peter Xu <peterx@redhat.com>, Ryan Roberts
-	<ryan.roberts@arm.com>, Yang Shi <shy828301@gmail.com>, Zi Yan
-	<ziy@nvidia.com>, Jonathan Corbet <corbet@lwn.net>, Hugh Dickins
-	<hughd@google.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
-	<dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, "Muchun
- Song" <muchun.song@linux.dev>, Miaohe Lin <linmiaohe@huawei.com>, "Naoya
- Horiguchi" <naoya.horiguchi@nec.com>, Richard Chang <richardycc@google.com>
-References: <20240409192301.907377-1-david@redhat.com>
- <20240409192301.907377-6-david@redhat.com>
-Content-Language: en-US
-From: "Yin, Fengwei" <fengwei.yin@intel.com>
-In-Reply-To: <20240409192301.907377-6-david@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR04CA0012.apcprd04.prod.outlook.com
- (2603:1096:4:197::14) To SJ0PR11MB4831.namprd11.prod.outlook.com
- (2603:10b6:a03:2d2::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528E438D
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 02:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713493831; cv=none; b=aG2VvsaJHBKChy1H5ivwQmW0SnWb5tDKCLz+fsMi/oFrM9njkGToxdqLLh3/ZoGLs58ZTyQ1gLlgN6LNoDW3rVaW4yXM/4UKUEjVowZS6a2wtH/KGIVhmnFVaSQd33fS4Jk06HH72mIJp8QAVeiWsLGXq/UW9cYbdppwyPtbBp8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713493831; c=relaxed/simple;
+	bh=Am84cdqWSckmqHURuFlza9spRPGOczepohza8PmEVUQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OPYhzUiu9Bm7FlMT/3As+/ugykwrb31l+GZJVngUbzIgLIrrRevDWwp7lIpPMPTM53oK1lNTdHSg5erGVn8FZqu+9FW6XelorvdYtwNGjuRo9DjUbJlzLr3jxvBM0AI3aLxYRp3rXUzcCTb+q6dD/1d2mI/dy/DRx8lJvtAM/Mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jPQnPiqG; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e65b29f703so13170595ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 19:30:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713493829; x=1714098629; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OqzqLAXxjHizAsgJ8y+IU6jvWunvLzLPi/Caa0cG/nw=;
+        b=jPQnPiqG1oSkDK+r9a8cDETT5RRCUkq5ZYzYGqbmlU6egsD92JbipSynj29qS8Iuj+
+         Vfb/TAjcz+qdSNVyeQiJjovKCtRmPDEu6MxfbQiLF8dbKdUDWb3SSuUovFZ1b9IXeDt1
+         r6YssUuFjxvR8bpj/BDXTrALM2oz10N1AuvtVmMAtu6g48/pdGK3knydEFWYXJA1MhUd
+         1wW0aiQltuwV52A5yRGbRBAJewYN6Sq+j79V4Vfm8JjXe1OSONs54i3YadLdFlqnAz35
+         M+VpF4TG3qqL4occKZsfqmBYzGYsPKgMl7yaJI5hS/mDjkQ4iAS00/VIRtSNPQkFvwy0
+         yJVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713493829; x=1714098629;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OqzqLAXxjHizAsgJ8y+IU6jvWunvLzLPi/Caa0cG/nw=;
+        b=O6RDlRueo6zqE3nWChMI2GxPUsrGFSfPe3SmWsjBGZLKITmC0qc4q8N+jVctfSatnh
+         LDS4XILOr6A4Odo3cqItxkN6mSWgGIH9KIpSHOEnYFdbvguKk+6ZyY3GCW4wVPS5r3oN
+         Sh/tmZG6BG4DVlIrOMRjC7UZB10aH2Zhdv+UU+ed5ym1CEKdcnZQmZrBjmcdR1qZowR8
+         9Esf2Y1XhHmxAOPJbcPvn7LlZJ4iy+UDVsEHOVnZmGNrn3CM3A85CFJMpt95ZGx/K5rq
+         dMz6uGRGD5GtWYl46HZTDX9IOdP0HRYIwkdJtLVfT7A3JF3uzEhqjndPG/1hEifjdA7V
+         9Jzg==
+X-Forwarded-Encrypted: i=1; AJvYcCVfEKyxxLptmo0k82IUYEvag7XccQQ7XgRncfuqrxMfFPr3pKUUVwUViMQ0z3DmJV7w7GKg0LEijoO+LPWrxqEmh9Im/NjyF8vSF5hk
+X-Gm-Message-State: AOJu0Yw6gNxxCDaEJrukHa63WGxGrBBNFzV2LR22gAsahuihOzYYkBIQ
+	+3w6fO+7xCLJ9Rok1GUakcFWtpXqTW95mwQXjCksqevxkwM7gHV0
+X-Google-Smtp-Source: AGHT+IEh3AxD9eCXwyzOo2QAfwekki2w8N44Hzo9DD9m6GmzMpcAsoKGxurQ2ONhYxx0b+cmPqN60w==
+X-Received: by 2002:a17:902:7617:b0:1e2:bf94:487 with SMTP id k23-20020a170902761700b001e2bf940487mr761197pll.57.1713493829422;
+        Thu, 18 Apr 2024 19:30:29 -0700 (PDT)
+Received: from [192.168.255.10] ([43.132.141.25])
+        by smtp.gmail.com with ESMTPSA id i9-20020a17090332c900b001e3cfb853a2sm2222893plr.183.2024.04.18.19.30.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Apr 2024 19:30:29 -0700 (PDT)
+Message-ID: <ec2b110b-fb85-4af2-942b-645511a32297@gmail.com>
+Date: Fri, 19 Apr 2024 10:30:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR11MB4831:EE_|CH3PR11MB8752:EE_
-X-MS-Office365-Filtering-Correlation-Id: b058591c-ae7d-4946-34a4-08dc60189a9c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?LzFBSWl6elRiRVNveTVsL1BoZU9Xa01rQ2M5RTFINVVmeVVRQ3lEbytKcXNJ?=
- =?utf-8?B?MzEzekVBZjB3cjU4VHBJaFlsMTJpRThWUzdvSlZodG9SMGt5cWJLZ2xPMWtS?=
- =?utf-8?B?T1NkMTR1UGtZZVBKRnNSNW5nYkNEdEdGUTRuWEg4dTE1aDJXZVBacjdFaUJX?=
- =?utf-8?B?aWRnbHJJRDUxb3N0djNBSmNTOG9RVmN0NERzOVpoblYxeklRQS9KMVgxSDlZ?=
- =?utf-8?B?VGlXekVKZk1SNE5kbWlyanBFUkxjOEJ3YlV3NGZMM3pKUmJpZWZaQXl2eGhp?=
- =?utf-8?B?SlVLbGhqSmVvUWI5MlYydnA5aEVYNkkxYWJVWmVJMms5a0RWUjlLb1gzZG1W?=
- =?utf-8?B?czBZNWpKOHhSY3loZExUTVRiQjNsc3lMTWthNm94ZktYRVIrdmdTNU5kdm9s?=
- =?utf-8?B?Z0xJSUNsbVQ4MnAvTWRQbE9xa01XdWpjV1U5UWdRS0hGeFpVOS8zSHZib0hJ?=
- =?utf-8?B?cFBmNTR3RDNLajJjZUZoUHJmc1oxTVhoY2RtM0RjVUNuYldFd0xLMWJ5S1VW?=
- =?utf-8?B?Vnl0WFRzbkJDdTRMYTJRaVQzQlUwL1FvaUtydmhldVJIdjFaU1hPSC9FT0Y4?=
- =?utf-8?B?UGV0MFI5OC8vMW5YUFFISFpHUVVtNTdRR3NVN0MvSXhjWHdqSW5iTkoyaFZo?=
- =?utf-8?B?VmJtN21oaXdEZ2pDcE9xb3pIWE5lYnphNWZFemRPc2tDYUY2RitWU0h3ZHBy?=
- =?utf-8?B?eVNaQkVVUk9wOUFqSTR4WjZtbVNXWXd6b3NKdFpib0Y2Yk56a1lzVDNpcWlE?=
- =?utf-8?B?aXFXdy9TRkU0ZFh0RnhnV0YyY2hXN0NJYkxkSU0wMExFSGlOd21VUUNNYU5l?=
- =?utf-8?B?WXY0SW1VdENxTEhHU0ZITEtFY1BKbnEvYWxBSVNDcFhhaGlxbW5GR0lrNkIw?=
- =?utf-8?B?WGF2SnRvYWVxWkJQS1EzaEl3UEtPdjRZT3F1YjNJbkc2UHBZdnFIM3ExQWtV?=
- =?utf-8?B?a1RVN1RIV3FzTEVBTDBCcWF4NE43YndJZG1lUUMzUm96UUkzMkNNNjErRGQ1?=
- =?utf-8?B?bTBGYXdUVkdmSHl3RE9LUW5UYkxna3ppUjd0eXIrbnlOc2xYVjFLVXdmNy83?=
- =?utf-8?B?V0gwMHJCUVkrenVvdEhDdUVvRGRXTFVxMkM1L3VkQS9YNmJ0cnBGYUdNRFhk?=
- =?utf-8?B?eG5zQnhsM3MzV05LNmg3VGpXcW9ianJWYlZVTkpldFBVRDBRN0t6ZnM1SmVH?=
- =?utf-8?B?MWRQcVc1WU9xQ2EvYkRraFF6RmJGandXN0FDZEV2STlkQnovQWlnK1Fpc3Uz?=
- =?utf-8?B?cFhoVHNFNmZZbTJUUDZEM2s3aHhFNTVpUTJYOENwbUV3UHl6OVMzZGZKY2N0?=
- =?utf-8?B?S2xqNURRUUgzVjFCVFI4NnduSTBsLzJ4RFpQU1JDTzh5NHZYcUtad3RlQjBR?=
- =?utf-8?B?TDJLTTZ6QXhqa3dWVFBZdWxtaE95bityRnR0YjQ1RDBzbHBHb09kaFpPSzgr?=
- =?utf-8?B?WWo2dStpUVRldW9nQnEreGh1QXJTMnk3UDBFdVdUbjZTZ0srWjJ6VkxhM0ty?=
- =?utf-8?B?T0RudVJ6cW1YUTF5Uy8zcTVaSkV2SmJqL2h5VjZSOThDeklOTlRKKzlpVWRu?=
- =?utf-8?B?U3o5VDVzSVpWTGdtRHFia3BHVkwzend6cTlVc1JwRHNQUUowS0p1OUhTZUNn?=
- =?utf-8?B?QXlBVjdTUVpKMVg2RHFtbDhvVUxKdTdBZlZqeTRGNFBDNGgxNUNDQk1jSEZ4?=
- =?utf-8?B?eW5kL1MwZjd2akR2bGpuU2VFZGVpSUVYZHlMbnk1UW1MUDVhczBxMlp3PT0=?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB4831.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WDF3OVJzOURXNHpvcHpiTmVhamxLNnpWU1lMTjNSdXg5cXpPcWlMaktpWk03?=
- =?utf-8?B?VUhYUllkNWw5UVVyd3d6UnNmMjBpNFk0WllWZ2tWU1YvTUkvejFwU0N0ODAy?=
- =?utf-8?B?VFBKblFDdUlIclh0V0I5QllwaCsxMm9ySUFKcDVpZjJEMXMwS0xYdVQva0xh?=
- =?utf-8?B?SVVtMjJPZlMxMmtVYnhoYjJOZU1JSm5kQzE0WHhJL2VicjJ2Q3gxUzRBbklF?=
- =?utf-8?B?dDRaMG1WTmtSMzFJL3dZM2dQMGNrVW9YTVRucXJxakJNYjI3MXo2ZnFQRjYy?=
- =?utf-8?B?YldlaEp0OWRFdHVURHRWOUNia1phWDNkZm9nUmVJREFteTFqdmxETFZiUkNJ?=
- =?utf-8?B?djNNSEFLMzRuTkVNMHZjTVFiMWRnZm1Zb1lKciszZm5CQWtlOUI4MmZGSE9s?=
- =?utf-8?B?Vjh4czFFanJBTzdqeklDOXhqU1NsaE5sSFE0OWcvQm8yVG5zZEJnZUk1M3M4?=
- =?utf-8?B?ZHhxZml0dDEwelA3byt3eXArc0phRU11NFNJcldRbS82ZmdYSUk5SlZTNmlH?=
- =?utf-8?B?cUZhOUZ4dXV0cWlzVkNhb1g2R2hxa2doalBDR3pGWEN5NUNLZnAvUFgxMW1T?=
- =?utf-8?B?a1JqWFJCSWMzdXNDVVdIaEdqTngwdnVZY0lZdDgyZGNWUzBMdjRWRis4VEhU?=
- =?utf-8?B?bHFGT21DdlEwMFhVYzFVL0VxajNwR1JLRzdFa2hYcC9sL0ZKTVBnV2tlZ1Jn?=
- =?utf-8?B?eGVQQUZJUUwrQjZYczVZQlBML2JLL3NvRlM5cU44MTBVbkhRYVZtbWl0VFk3?=
- =?utf-8?B?MFQ2ZEVsNklmbWlKTVNCTnI4TGZaYjJsQ3FtVVlrbkJ4b1YwNGJrdnN6S29N?=
- =?utf-8?B?VU94cGRvcWx6ZVQ2NjdzY1MrQ1hLMjdKaGhYamZ5RWRtYzN0TlpjMGxxNCtN?=
- =?utf-8?B?SWh6VFZLZ3RFYmdkMTVBRkJBc0R1SkpISzA5Nk94Q3BRQ2w0azY4UnNHdmMw?=
- =?utf-8?B?REEvcFNoQUZRTFErdW05OXUydGdVY2JRNytoQ0NwT2ZiZU5nYlllQ0FoMCtt?=
- =?utf-8?B?M1JYR2lFWDQ2bG1aS2ZPZEtFdFRBRnJ4WUJGdmE5L3NhV3FEekZaNVB3MWsr?=
- =?utf-8?B?dGxoN2lzS2c5aDh5RUlneFphTVgva2c0TFMzZmtHK3c5NjRJbnNIbXg2UnIy?=
- =?utf-8?B?cm81Z2pPZ2hkRWFFWXZ2RSt2ano5d0FVZVNLY1dJWDYybHAvU1ArWWZTMmhZ?=
- =?utf-8?B?bkkyU0FGNnZhVmV0alJWaHcrbDZKWlJZdmdFRld3cGdTOWtPMEtsSDhUYWps?=
- =?utf-8?B?TWdwOGp2TmQ2U0hnOGhvQUdzQWZLRnNUMC9xT1g5Nis3UGRZeFUzWjRWK2tz?=
- =?utf-8?B?R1NXMmRHRFFDc0dRQlBzM2dXYmpMWnBiOEhTdU44NWJRNmxxWnQvMFYvOTYw?=
- =?utf-8?B?SlYwb201Ky9pUGdkMkxoR2R2UEIxU1ZqSG55K0poR2ZOUE1VR3N6OS9PYVNz?=
- =?utf-8?B?M2N2K3FpTkFuLzRtVnI5WGtiZmE2cUhocWdWeVc1dWl1d0oxN2JXb2w4NDE3?=
- =?utf-8?B?cDFDNTZzbFR5Zk9HWGNJL1BHVTJFV0cvdTM1SDVKTGNqSzNXYzRlT0FsaVIv?=
- =?utf-8?B?MEVOUzB6YTUvaER0UFJLS3hRdWdkZmZrZExRanA0eDFsSnRITzd1MzdmM3d1?=
- =?utf-8?B?RFNpOHBwS0lKK3JzRWM0cGVTWFBCT1E3VEZFSkhuM3gvSVk2N0NCN2RnemFo?=
- =?utf-8?B?ZXlJSnFnRDlxempYMk5nVUdVQndYNEJjOVJ6T0NXT0M4aEs2eE82c1FsK0ps?=
- =?utf-8?B?RVUzSjB0M2xUanUwVkQ5YXJKM0lzOU44TzBYT2VUeFJUamxmZmpwcFNDcXNX?=
- =?utf-8?B?YTFMUGNUbEp4bFZydDZ0SzBCdGRGVGp0Vk1uZyt4NlA3b0ltYXF0clc1cWc3?=
- =?utf-8?B?SDYzRW9sZ3RLS25kRTBVV05sc3NaZDJ2VFI2K3VLUHdxWXlRNEd1Zi8zeU5Z?=
- =?utf-8?B?MTZSMHpHRCtpd1dlNGlabTdzbk5pVXVOVDNPYkswTFZKZ2lZa1c4L2RqaWVj?=
- =?utf-8?B?UGNpSlFBOUNvUjZBTSsvUXFLcFRISTVyNGFRRlRIZGk5aVJkcUVvQnlLL0JQ?=
- =?utf-8?B?QjdNeVVlbnIvNHBnQ1NoWlFzcXRlcm1NYUc2T3Zqam9Wd0UvSURFeUZJbWtz?=
- =?utf-8?B?aDl3RHk2SitxQ0JEZG1ySlh6QkZFTGF4NzVuSnpLdFpDaFVsaDNHNkJkQU1P?=
- =?utf-8?B?SXc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b058591c-ae7d-4946-34a4-08dc60189a9c
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB4831.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 02:29:57.1608
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /joS9ywHRkmfJFvVwa0NveN8yyVJDvkRtA6DWn4aaTy1+RFYrG0JMBlWNaxKK4uncT/M2xZkd8IbEyyMQ2e7tQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8752
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 2/2] mm: convert mm's rss stats to use atomic mode
+To: Peng Zhang <zhangpeng362@huawei.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+Cc: akpm@linux-foundation.org, dennisszhou@gmail.com, shakeelb@google.com,
+ jack@suse.cz, surenb@google.com, kent.overstreet@linux.dev, mhocko@suse.cz,
+ vbabka@suse.cz, yuzhao@google.com, yu.ma@intel.com,
+ wangkefeng.wang@huawei.com, sunnanyong@huawei.com
+References: <20240418142008.2775308-1-zhangpeng362@huawei.com>
+ <20240418142008.2775308-3-zhangpeng362@huawei.com>
+From: Rongwei Wang <rongwei.wrw@gmail.com>
+In-Reply-To: <20240418142008.2775308-3-zhangpeng362@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
 
-On 4/10/2024 3:22 AM, David Hildenbrand wrote:
-> @@ -2200,7 +2200,22 @@ static inline size_t folio_size(struct folio *folio)
+On 2024/4/18 22:20, Peng Zhang wrote:
+> From: ZhangPeng <zhangpeng362@huawei.com>
+>
+> Since commit f1a7941243c1 ("mm: convert mm's rss stats into
+> percpu_counter"), the rss_stats have converted into percpu_counter,
+> which convert the error margin from (nr_threads * 64) to approximately
+> (nr_cpus ^ 2). However, the new percpu allocation in mm_init() causes a
+> performance regression on fork/exec/shell. Even after commit 14ef95be6f55
+> ("kernel/fork: group allocation/free of per-cpu counters for mm struct"),
+> the performance of fork/exec/shell is still poor compared to previous
+> kernel versions.
+>
+> To mitigate performance regression, we delay the allocation of percpu
+> memory for rss_stats. Therefore, we convert mm's rss stats to use
+> percpu_counter atomic mode. For single-thread processes, rss_stat is in
+> atomic mode, which reduces the memory consumption and performance
+> regression caused by using percpu. For multiple-thread processes,
+> rss_stat is switched to the percpu mode to reduce the error margin.
+> We convert rss_stats from atomic mode to percpu mode only when the
+> second thread is created.
+Hi, Zhang Peng
+
+This regression we also found it in lmbench these days. I have not test 
+your patch, but it seems will solve a lot for it.
+And I see this patch not fix the regression in multi-threads, that's 
+because of the rss_stat switched to percpu mode?
+(If I'm wrong, please correct me.) And It seems percpu_counter also has 
+a bad effect in exit_mmap().
+
+If so, I'm wondering if we can further improving it on the exit_mmap() 
+path in multi-threads scenario, e.g. to determine which CPUs the process 
+has run on (mm_cpumask()? I'm not sure).
+
+>
+> After lmbench test, we can get 2% ~ 4% performance improvement
+> for lmbench fork_proc/exec_proc/shell_proc and 6.7% performance
+> improvement for lmbench page_fault (before batch mode[1]).
+>
+> The test results are as follows:
+>
+>               base           base+revert        base+this patch
+>
+> fork_proc    416.3ms        400.0ms  (3.9%)    398.6ms  (4.2%)
+> exec_proc    2095.9ms       2061.1ms (1.7%)    2047.7ms (2.3%)
+> shell_proc   3028.2ms       2954.7ms (2.4%)    2961.2ms (2.2%)
+> page_fault   0.3603ms       0.3358ms (6.8%)    0.3361ms (6.7%)
+I think the regression will becomes more obvious if more cores. How 
+about your test machine?
+
+Thanks,
+-wrw
+>
+> [1] https://lore.kernel.org/all/20240412064751.119015-1-wangkefeng.wang@huawei.com/
+>
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>   include/linux/mm.h          | 50 +++++++++++++++++++++++++++++++------
+>   include/trace/events/kmem.h |  4 +--
+>   kernel/fork.c               | 18 +++++++------
+>   3 files changed, 56 insertions(+), 16 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index d261e45bb29b..8f1bfbd54697 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2631,30 +2631,66 @@ static inline bool get_user_page_fast_only(unsigned long addr,
 >    */
->   static inline bool folio_likely_mapped_shared(struct folio *folio)
+>   static inline unsigned long get_mm_counter(struct mm_struct *mm, int member)
 >   {
-> -	return page_mapcount(folio_page(folio, 0)) > 1;
-> +	int mapcount = folio_mapcount(folio);
+> -	return percpu_counter_read_positive(&mm->rss_stat[member]);
+> +	struct percpu_counter *fbc = &mm->rss_stat[member];
 > +
-> +	/* Only partially-mappable folios require more care. */
-> +	if (!folio_test_large(folio) || unlikely(folio_test_hugetlb(folio)))
-> +		return mapcount > 1;
-My understanding is that mapcount > folio_nr_pages(folio) can cover
-order 0 folio. And also folio_entire_mapcount() can cover hugetlb (I am
-not 100% sure for this one).  I am wondering whether we can drop above
-two lines? Thanks.
-
-
-Regards
-Yin, Fengwei
-
+> +	if (percpu_counter_initialized(fbc))
+> +		return percpu_counter_read_positive(fbc);
 > +
-> +	/* A single mapping implies "mapped exclusively". */
-> +	if (mapcount <= 1)
-> +		return false;
-> +
-> +	/* If any page is mapped more than once we treat it "mapped shared". */
-> +	if (folio_entire_mapcount(folio) || mapcount > folio_nr_pages(folio))
-> +		return true;
-> +
-> +	/* Let's guess based on the first subpage. */
-> +	return atomic_read(&folio->_mapcount) > 0;
+> +	return percpu_counter_atomic_read(fbc);
 >   }
+>   
+>   void mm_trace_rss_stat(struct mm_struct *mm, int member);
+>   
+>   static inline void add_mm_counter(struct mm_struct *mm, int member, long value)
+>   {
+> -	percpu_counter_add(&mm->rss_stat[member], value);
+> +	struct percpu_counter *fbc = &mm->rss_stat[member];
+> +
+> +	if (percpu_counter_initialized(fbc))
+> +		percpu_counter_add(fbc, value);
+> +	else
+> +		percpu_counter_atomic_add(fbc, value);
+>   
+>   	mm_trace_rss_stat(mm, member);
+>   }
+>   
+>   static inline void inc_mm_counter(struct mm_struct *mm, int member)
+>   {
+> -	percpu_counter_inc(&mm->rss_stat[member]);
+> -
+> -	mm_trace_rss_stat(mm, member);
+> +	add_mm_counter(mm, member, 1);
+>   }
+>   
+>   static inline void dec_mm_counter(struct mm_struct *mm, int member)
+>   {
+> -	percpu_counter_dec(&mm->rss_stat[member]);
+> +	add_mm_counter(mm, member, -1);
+> +}
+>   
+> -	mm_trace_rss_stat(mm, member);
+> +static inline s64 mm_counter_sum(struct mm_struct *mm, int member)
+> +{
+> +	struct percpu_counter *fbc = &mm->rss_stat[member];
+> +
+> +	if (percpu_counter_initialized(fbc))
+> +		return percpu_counter_sum(fbc);
+> +
+> +	return percpu_counter_atomic_read(fbc);
+> +}
+> +
+> +static inline s64 mm_counter_sum_positive(struct mm_struct *mm, int member)
+> +{
+> +	struct percpu_counter *fbc = &mm->rss_stat[member];
+> +
+> +	if (percpu_counter_initialized(fbc))
+> +		return percpu_counter_sum_positive(fbc);
+> +
+> +	return percpu_counter_atomic_read(fbc);
+> +}
+> +
+> +static inline int mm_counter_switch_to_pcpu_many(struct mm_struct *mm)
+> +{
+> +	return percpu_counter_switch_to_pcpu_many(mm->rss_stat, NR_MM_COUNTERS);
+> +}
+> +
+> +static inline void mm_counter_destroy_many(struct mm_struct *mm)
+> +{
+> +	percpu_counter_destroy_many(mm->rss_stat, NR_MM_COUNTERS);
+>   }
+>   
+>   /* Optimized variant when folio is already known not to be anon */
+> diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
+> index 6e62cc64cd92..a4e40ae6a8c8 100644
+> --- a/include/trace/events/kmem.h
+> +++ b/include/trace/events/kmem.h
+> @@ -399,8 +399,8 @@ TRACE_EVENT(rss_stat,
+>   		__entry->mm_id = mm_ptr_to_hash(mm);
+>   		__entry->curr = !!(current->mm == mm);
+>   		__entry->member = member;
+> -		__entry->size = (percpu_counter_sum_positive(&mm->rss_stat[member])
+> -							    << PAGE_SHIFT);
+> +		__entry->size = (mm_counter_sum_positive(mm, member)
+> +							<< PAGE_SHIFT);
+>   	),
+>   
+>   	TP_printk("mm_id=%u curr=%d type=%s size=%ldB",
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 99076dbe27d8..0214273798c5 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -823,7 +823,7 @@ static void check_mm(struct mm_struct *mm)
+>   			 "Please make sure 'struct resident_page_types[]' is updated as well");
+>   
+>   	for (i = 0; i < NR_MM_COUNTERS; i++) {
+> -		long x = percpu_counter_sum(&mm->rss_stat[i]);
+> +		long x = mm_counter_sum(mm, i);
+>   
+>   		if (unlikely(x))
+>   			pr_alert("BUG: Bad rss-counter state mm:%p type:%s val:%ld\n",
+> @@ -1301,16 +1301,10 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
+>   	if (mm_alloc_cid(mm))
+>   		goto fail_cid;
+>   
+> -	if (percpu_counter_init_many(mm->rss_stat, 0, GFP_KERNEL_ACCOUNT,
+> -				     NR_MM_COUNTERS))
+> -		goto fail_pcpu;
+> -
+>   	mm->user_ns = get_user_ns(user_ns);
+>   	lru_gen_init_mm(mm);
+>   	return mm;
+>   
+> -fail_pcpu:
+> -	mm_destroy_cid(mm);
+>   fail_cid:
+>   	destroy_context(mm);
+>   fail_nocontext:
+> @@ -1730,6 +1724,16 @@ static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
+>   	if (!oldmm)
+>   		return 0;
+>   
+> +	/*
+> +	 * For single-thread processes, rss_stat is in atomic mode, which
+> +	 * reduces the memory consumption and performance regression caused by
+> +	 * using percpu. For multiple-thread processes, rss_stat is switched to
+> +	 * the percpu mode to reduce the error margin.
+> +	 */
+> +	if (clone_flags & CLONE_THREAD)
+> +		if (mm_counter_switch_to_pcpu_many(oldmm))
+> +			return -ENOMEM;
+> +
+>   	if (clone_flags & CLONE_VM) {
+>   		mmget(oldmm);
+>   		mm = oldmm;
 
 
