@@ -1,75 +1,124 @@
-Return-Path: <linux-kernel+bounces-151541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2281C8AB044
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:08:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B647E8AB059
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:10:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5726CB25900
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:08:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D6E3B26154
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:10:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE87A13775C;
-	Fri, 19 Apr 2024 14:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="VS9F9Aml"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89ED12FF74;
+	Fri, 19 Apr 2024 14:06:56 +0000 (UTC)
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA9A136E03;
-	Fri, 19 Apr 2024 14:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D43512FB2A;
+	Fri, 19 Apr 2024 14:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713535450; cv=none; b=EcS9v+VG7ice2YGff84c9ex+6o0Eeq2XWMUWjHuzS0wWkU2CfFQUoD1kvk7pzwIBzblu4JuURwT5yb5tqF1vAHoe1FXl2AKxN6Txel4TEvgNL82UymU3mA9yKQmXVMcAqRRIk9Ei3NiO4vYqWJmqGGQB+5a35sZ4WrUpj1HsFGU=
+	t=1713535616; cv=none; b=d6XaJWuHOr9RTBGDTKm/t9NTRjEyhbOPybtaKeISyDFs2rp/ONBNPp49iJy05RS07czHQWfZwIu2BhK8KOH8KG2I/syMR76NM3da4oQjLHYsoH7gU/t0+AyRilzH5Z3eAvlx+Ied7eZ4YF6y534evsPnlvEMweBVDvly+vq0gLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713535450; c=relaxed/simple;
-	bh=zd4B2k2WaVQRixz1Zz7N9Fik5Yjb6pyjzhJ5NlvMHZ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GDHmyTfMCCAODVPFXbQnoM1mPYcCUBW26jhdB8I1qjXt+t5hhFjS//wmUsvhBlCM4VJOru0Dm3W6uaL5+t0ls3XSulQdvV5YwRPOstqPvY7iz8CcDsS7A2o7ZKQYaG+V8OYR+8ovI/QYOimiG6SF530l2K/WJaSX5WTTS4ln7ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=VS9F9Aml; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9F1DC32781;
-	Fri, 19 Apr 2024 14:04:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713535449;
-	bh=zd4B2k2WaVQRixz1Zz7N9Fik5Yjb6pyjzhJ5NlvMHZ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VS9F9AmlyXURr86YUdWYb7QN54sEF+o9/HopbQ4zfMb5YwPOAncRA6X6L4yQm8A2j
-	 9YHZPcyknj2LuFKdbF4qqLu9FEW9kN2n9SX1EBn6ftAmfEWi3Z+C7xmjhUWcE3iye3
-	 okShGGuMa+cG/4TfFhmZOH93RJzKObNz8g7O1dPQ=
-Date: Fri, 19 Apr 2024 16:04:03 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Wander Lairson Costa <wander@redhat.com>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>,
-	David Gow <davidgow@google.com>, Rae Moar <rmoar@google.com>,
-	Matti Vaittinen <mazziesaccount@gmail.com>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	"open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)" <linux-kselftest@vger.kernel.org>,
-	"open list:KERNEL UNIT TESTING FRAMEWORK (KUnit)" <kunit-dev@googlegroups.com>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 1/2] kunit: unregister the device on error
-Message-ID: <2024041955-strangely-snack-b335@gregkh>
-References: <20240419132504.9488-1-wander@redhat.com>
- <20240419132504.9488-2-wander@redhat.com>
+	s=arc-20240116; t=1713535616; c=relaxed/simple;
+	bh=oyuMKSYGoMfRz+tvPVJ/jIgvFe45ZdlNrFcZrO/Oozo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UHxNZGDmru0Q5tHuWdW5lZ5bCKemUo2p/5ALokEUSDbp8SrhXMZx35Bsh8xNWOnMHiY1BRncWEKGw5Eb/j3u6AQfzJiX2aKSO2j+Z49wadAmAllhq2Lbysro+ZFt5fMvxYZzmFxWvhTPAjJbqEtVPN951ERC/QsEj+A0vtgcB98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-69b10ead8f5so10509566d6.0;
+        Fri, 19 Apr 2024 07:06:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713535613; x=1714140413;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F8Fq3HZ/CaefZ5llRGtNvq0zZoQTpNhHnR6rkcG9Onc=;
+        b=QWRCbm0mAYrJ61AwC95b82Yn2lNQ61bnbw51PvqDLRGvtDWOC5U89LDhVOheTjx5cV
+         UCgkkbpG+ex/EGITQ2oGTf1Ts8uJZN/VLdyFuiLS7x/TSWHlbDHBnvJaJxSYz0TOKtXG
+         Ns25wbUH19sPG1XyncEwuoNHSR5djOGialmJ0vB2qcjG8DNcqh4lWhArYrNtLTwfq5ux
+         BMK4jxDWRYVEssBGL/TQqWQJCM0nL0ORYZgepu1hUZApF8c6oeO2dd6BJi8L+oc7w5hq
+         rKV4VZ1YjpjTH2b6YQdZ7fnfMwrK73X7hHzSt05FpTqnr2nHBU5a/N/4bJAeZthVINv5
+         DkQg==
+X-Forwarded-Encrypted: i=1; AJvYcCX+uEK8NrGMRuTaeyAjiMB17S/7UwJjbDaoeQHm+/JSuwmi65bBeORIJUBENNQ2BW+Qc5VKPTAWJwT2l+Q+Kutx8wOPI/rB
+X-Gm-Message-State: AOJu0YyBnigHeXnQEliNhJKFudKyvrqKKkFMkDia2+scoPdhojZcTR4c
+	AKBslfauhMaQvfqTbewRNH3UgXpBKt2PC/WUFzMRsYJdUV4GGFGH5/+AOtuD
+X-Google-Smtp-Source: AGHT+IEExWZrMFhZkzaFUZt5oFz3RthU8jjCWST9IjqMH5SnWFRL8n0X6a0aq8SFT13NmFp8XFaSHQ==
+X-Received: by 2002:a05:6214:2cd5:b0:69b:6746:7ff8 with SMTP id lf21-20020a0562142cd500b0069b67467ff8mr2309114qvb.31.1713535613102;
+        Fri, 19 Apr 2024 07:06:53 -0700 (PDT)
+Received: from hemlock.fiveisland.rocks (hlfxns014qw-156-57-186-228.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.57.186.228])
+        by smtp.gmail.com with ESMTPSA id g6-20020a0cdf06000000b0069f1c071f1csm1554335qvl.29.2024.04.19.07.06.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 07:06:52 -0700 (PDT)
+From: Marc Dionne <marc.dionne@auristor.com>
+To: David Howells <dhowells@redhat.com>,
+	netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>,
+	Eric Dumazet <edumazet@google.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jeffrey Altman <jaltman@auristor.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-afs@lists.infradead.org
+Subject: [PATCH net] rxrpc: Clients must accept conn from any address
+Date: Fri, 19 Apr 2024 11:04:51 -0300
+Message-ID: <20240419140451.4139663-1-marc.dionne@auristor.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419132504.9488-2-wander@redhat.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 19, 2024 at 10:25:01AM -0300, Wander Lairson Costa wrote:
-> kunit_init_device() should unregister the device on bus register error,
-> but mistakenly it tries to unregister the bus.
-> 
-> Unregister the device instead of the bus.
-> 
-> Signed-off-by: Wander Lairson Costa <wander@redhat.com>
-> Fixes: d03c720e03bd ("kunit: Add APIs for managing devices")
+From: Jeffrey Altman <jaltman@auristor.com>
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The find connection logic of Transarc's Rx was modified in the mid-1990s
+to support multi-homed servers which might send a response packet from
+an address other than the destination address in the received packet.
+The rules for accepting a packet by an Rx initiator (RX_CLIENT_CONNECTION)
+were altered to permit acceptance of a packet from any address provided
+that the port number was unchanged and all of the connection identifiers
+matched (Epoch, CID, SecurityClass, ...).
+
+This change applies the same rules to the Linux implementation which makes
+it consistent with IBM AFS 3.6, Arla, OpenAFS and AuriStorFS.
+
+Signed-off-by: Jeffrey E Altman <jaltman@auristor.com>
+Acked-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Marc Dionne <marc.dionne@auristor.com>
+---
+ net/rxrpc/conn_object.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/net/rxrpc/conn_object.c b/net/rxrpc/conn_object.c
+index 0af4642aeec4..1539d315afe7 100644
+--- a/net/rxrpc/conn_object.c
++++ b/net/rxrpc/conn_object.c
+@@ -119,18 +119,13 @@ struct rxrpc_connection *rxrpc_find_client_connection_rcu(struct rxrpc_local *lo
+ 	switch (srx->transport.family) {
+ 	case AF_INET:
+ 		if (peer->srx.transport.sin.sin_port !=
+-		    srx->transport.sin.sin_port ||
+-		    peer->srx.transport.sin.sin_addr.s_addr !=
+-		    srx->transport.sin.sin_addr.s_addr)
++		    srx->transport.sin.sin_port)
+ 			goto not_found;
+ 		break;
+ #ifdef CONFIG_AF_RXRPC_IPV6
+ 	case AF_INET6:
+ 		if (peer->srx.transport.sin6.sin6_port !=
+-		    srx->transport.sin6.sin6_port ||
+-		    memcmp(&peer->srx.transport.sin6.sin6_addr,
+-			   &srx->transport.sin6.sin6_addr,
+-			   sizeof(struct in6_addr)) != 0)
++		    srx->transport.sin6.sin6_port)
+ 			goto not_found;
+ 		break;
+ #endif
+-- 
+2.44.0
+
 
