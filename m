@@ -1,169 +1,179 @@
-Return-Path: <linux-kernel+bounces-151065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 310518AA889
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:42:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 256C78AA890
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:44:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 805E12831A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:42:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A880E1F21F50
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8E4381C8;
-	Fri, 19 Apr 2024 06:42:19 +0000 (UTC)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BFA381D5;
+	Fri, 19 Apr 2024 06:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PIWehuEj";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="c0EPZo5H";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PIWehuEj";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="c0EPZo5H"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 002D6C8FF;
-	Fri, 19 Apr 2024 06:42:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711AFDDCD;
+	Fri, 19 Apr 2024 06:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713508938; cv=none; b=OPykPehFEoXSvlzQNemXrLlr5TW/8AXpzacAaVmpNH8hrTtX4m66tk2y2Ain6+fzVD0lb42Xj7qZB9RVj9QgzUlO4EZG5KC19YJ6WOkzj7FOhV0VPEfKS9TdzMA0OOa0sBsKxlWgTS/yYmYLDIzqzO4m8Ik4L2Tn/YuVIjwoEGE=
+	t=1713509077; cv=none; b=CXtFJTwmgxSfgGunGrSCAj1tR2x8F8EdQgVzSm83tuASpY7kwcNyxvjQUPJwscMty4A3yaDpApmArYRO931e1zmoCQyDWDdeN7720js1a8JAnti6QCuQm3nrCy10s7q6rZ881lwX4lDhuy3nkUNFgVxJf6bDS/ENrhdN9Hki8es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713508938; c=relaxed/simple;
-	bh=4QwSAdaHJ+jSoNAFurZ4vkDf+ZSWnJ4D31nzVNVlaOA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DOtlwrKFSze1nJQ8wVPxQsSJOanyg5vfuZMNl33U+2zc2ejWIEjhflEtXetZh5M2GfnjDaoa2JRXQRw4gHYRGAZuiDnuC4OJx88Opp4M50nRvaOFNTXoZfQw3aTMmusMXqh9wZA1wQVJ0B5jcbqso90aI6AltH5Asjmpw+aoboM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a556d22fa93so194304166b.3;
-        Thu, 18 Apr 2024 23:42:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713508935; x=1714113735;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hK1cw/DjfU20qIlgWW74LMBKEyMpUlbo8nQGzacK178=;
-        b=R7aQb4ACuxqICD658Vs/0slK333mzs2MEQDzbC69pejE2RXwqCmkDYr9FjmRX9sPjX
-         ghp8FJFTXjamAZrw7DaJcIbmUt7aI6QgvuAoi5uGeRGPHBwVtzTUbXnB6jA1CbBlO+J6
-         2sIgI1a8msWCD4a3nKc0pL286OVYNjqu9BwOhXOCa0DlT0uvPLa0Zu5kzxQxKn6DmeLU
-         mselBvh9IfDcTOXJX0MzGhQP44qntsgmeuq5P7Hl4hHb67eWvKudRCrtrObjWVkgQrpc
-         x1pFni+jxEfqWjgwaSV0l3VwGkNhZpdY5fz92LWpc2CE6kLBowEasGJvcoVPKKuXIgJd
-         VcAg==
-X-Forwarded-Encrypted: i=1; AJvYcCWVnlid1/7k2DTZ8y2QtSPuDyIj3d5MIRCrwXN4k8hiTSQB/zhIqF7WqdloAJzddKaKyvrqcFe5JkbqrvYIs286q903573EFqlBYALoaK3zlmiwMm4pXiTWr19KmaDlaclK2TPrQGaInGBj
-X-Gm-Message-State: AOJu0YwVRsXuJ5Ot1uB9SAuo4ZcRQ4KiWvzNV8K1mJ67YZfQpQEskxVQ
-	R2wl7mndGxbjXMEH4aTSyq29Fx95zcp9/c09ewtYTgDv8k8A+XVC
-X-Google-Smtp-Source: AGHT+IFbyCbfWpvHU9qLiqtgo5nVS9UXGAK5AESXpOV+hQs4hM43DIJUzPk7rHnwrGdvTjKz1taeDA==
-X-Received: by 2002:a17:906:3450:b0:a52:5a23:3c2e with SMTP id d16-20020a170906345000b00a525a233c2emr747727ejb.43.1713508935023;
-        Thu, 18 Apr 2024 23:42:15 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
-        by smtp.gmail.com with ESMTPSA id n22-20020a170906119600b00a51a9d87570sm1796612eja.17.2024.04.18.23.42.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 23:42:14 -0700 (PDT)
-Message-ID: <92d2c6cb-77d5-4bf5-9d4a-ab5b03f3f044@kernel.org>
-Date: Fri, 19 Apr 2024 08:42:13 +0200
+	s=arc-20240116; t=1713509077; c=relaxed/simple;
+	bh=nZE8GP15Tpu8RoAw/K0BsUWuKsEVSKd62qJfcUEAEXw=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ut1KtWK4y9LqERPRtOXr9tKasmpMusIuxq5hQBlxHw6XevYQViYjBNTCisYSsMOCqAER7ntXLNKEkEA5XhNTLrPAfl0v9K/Gb60WsxqddcdZCMlTX+yQglNK1+pz9ds0Di0dHB5Y80IlS/UbwZkWGWMtJURa5yXbSkGxwgB1WTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=PIWehuEj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=c0EPZo5H; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=PIWehuEj; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=c0EPZo5H; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 8C9F25D3A1;
+	Fri, 19 Apr 2024 06:44:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713509068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UROJHqQVwW/+GHHAIwwIcUJ9WuKIRocbwkF9swP1GXo=;
+	b=PIWehuEjC16feTeJ8/Qm0TYOcWGEk/uFIRzimIKUVBEYRjZLo1buiKnkMRTWGFyBtWlkED
+	eSi3YhncHR5gYmFESoCK+xQ2UI4XtXB6uszcnUJlVU8c2qJtkoSW0EeNQvjbY3zkLHrlW1
+	mLPZZgExGzEbDG+g2nuqAvOBcGEWFWA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713509068;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UROJHqQVwW/+GHHAIwwIcUJ9WuKIRocbwkF9swP1GXo=;
+	b=c0EPZo5HDSDWsu1bCIdkfiiFI5aY4sF/T3JgxIfnTNMUUlYT8/mW/pT3GlIvL6FoaZtCYQ
+	ZsU/k9baZQ+279CQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713509068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UROJHqQVwW/+GHHAIwwIcUJ9WuKIRocbwkF9swP1GXo=;
+	b=PIWehuEjC16feTeJ8/Qm0TYOcWGEk/uFIRzimIKUVBEYRjZLo1buiKnkMRTWGFyBtWlkED
+	eSi3YhncHR5gYmFESoCK+xQ2UI4XtXB6uszcnUJlVU8c2qJtkoSW0EeNQvjbY3zkLHrlW1
+	mLPZZgExGzEbDG+g2nuqAvOBcGEWFWA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713509068;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UROJHqQVwW/+GHHAIwwIcUJ9WuKIRocbwkF9swP1GXo=;
+	b=c0EPZo5HDSDWsu1bCIdkfiiFI5aY4sF/T3JgxIfnTNMUUlYT8/mW/pT3GlIvL6FoaZtCYQ
+	ZsU/k9baZQ+279CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3055A13687;
+	Fri, 19 Apr 2024 06:44:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id d0WbCswSImYIRgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 19 Apr 2024 06:44:28 +0000
+Date: Fri, 19 Apr 2024 08:44:35 +0200
+Message-ID: <878r19voks.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Helge Deller <deller@gmx.de>
+Cc: Takashi Iwai <tiwai@suse.de>,
+	Nam Cao <namcao@linutronix.de>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	bigeasy@linutronix.de,
+	patrik.r.jakobsson@gmail.com,
+	LKML <linux-kernel@vger.kernel.org>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	George Kennedy <george.kennedy@oracle.com>,
+	Darren Kenny <darren.kenny@oracle.com>,
+	chuansheng.liu@intel.com
+Subject: Re: [bug-report] task info hung problem in fb_deferred_io_work()
+In-Reply-To: <a7843657-c3f6-4d2e-8c36-5541d4c52956@gmx.de>
+References: <271372d6-e665-4e7f-b088-dee5f4ab341a@oracle.com>
+	<20240418160652.68df1a86@namcao>
+	<87ttjywxv5.wl-tiwai@suse.de>
+	<a7843657-c3f6-4d2e-8c36-5541d4c52956@gmx.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] serial: sc16is7xx: add support for EXAR XR20M1172
- UART
-To: Konstantin Pugin <rilian.la.te@ya.ru>
-Cc: Konstantin Pugin <ria.freelander@gmail.com>,
- Vladimir Zapolskiy <vz@mleia.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Hugo Villeneuve <hvilleneuve@dimonoff.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Lech Perczak <lech.perczak@camlingroup.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org
-References: <20240418170610.759838-1-rilian.la.te@ya.ru>
- <20240418170610.759838-4-rilian.la.te@ya.ru>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20240418170610.759838-4-rilian.la.te@ya.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Flag: NO
+X-Spam-Score: -1.80
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TAGGED_RCPT(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FREEMAIL_TO(0.00)[gmx.de];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.de,linutronix.de,oracle.com,ffwll.ch,vger.kernel.org,lists.freedesktop.org,gmail.com,intel.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[]
 
-On 18. 04. 24, 19:06, Konstantin Pugin wrote:
-> From: Konstantin Pugin <ria.freelander@gmail.com>
+On Thu, 18 Apr 2024 21:29:57 +0200,
+Helge Deller wrote:
 > 
-> XR20M1172 register set is mostly compatible with SC16IS762, but it has
-> a support for additional division rates of UART with special DLD register.
-> So, add handling this register by appropriate devicetree bindings.
+> On 4/18/24 16:26, Takashi Iwai wrote:
+> > On Thu, 18 Apr 2024 16:06:52 +0200,
+> > Nam Cao wrote:
+> >> 
+> >> On 2024-04-18 Harshit Mogalapalli wrote:
+> >>> While fuzzing 5.15.y kernel with Syzkaller, we noticed a INFO: task hung
+> >>> bug in fb_deferred_io_work()
+> >> 
+> >> Which framebuffer device are you using exactly? It is possible that
+> >> the problem is with the device driver, not core framebuffer.
+> > 
+> > Note that it was already known that using flush_delayed_work() caused
+> > a problem.  See the thread of the fix patch:
+> >    https://lore.kernel.org/all/20230129082856.22113-1-tiwai@suse.de/
 > 
-> Reviewed-by: Vladimir Zapolskiy <vz@mleia.com>
-> Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
-> ---
->   drivers/tty/serial/sc16is7xx.c | 55 +++++++++++++++++++++++++++++++---
->   1 file changed, 51 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> index a300eebf1401..59376c637467 100644
-> --- a/drivers/tty/serial/sc16is7xx.c
-> +++ b/drivers/tty/serial/sc16is7xx.c
-..
-> @@ -556,16 +579,33 @@ static bool sc16is7xx_regmap_noinc(struct device *dev, unsigned int reg)
->   
->   static int sc16is7xx_set_baud(struct uart_port *port, int baud)
->   {
-> +	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
->   	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
-> -	u8 lcr;
-> +	unsigned long clk = port->uartclk, div, div16;
-> +	bool has_dld = s->devtype->has_dld;
-> +	u8 dld_mode = XR20M117X_DLD_16X;
->   	u8 prescaler = 0;
-> -	unsigned long clk = port->uartclk, div = clk / 16 / baud;
-> +	u8 divisor = 16;
-> +	u8 lcr;
-> +
-> +	if (has_dld && DIV_ROUND_CLOSEST(clk, baud) < 16)
-> +		divisor = 1 << (fls(DIV_ROUND_CLOSEST(clk, baud)) - 1);
+> Harshit reported the hung tasks with kernel v5.15-stable, and can even reproduce
+> that issue with kernel v6.9-rc4 although it has all of your patches from
+> that referenced mail thread applied.
+> So, what does your statement that "it was already known that it causes problems" exactly mean?
+> Can it be fixed? Is someone looking into fixing it?
 
-Do you mimic roundup_pow_of_two()?
+My original fix was intentionally with cancel_delayed_work_sync()
+because flush_delayed_work() didn't work.  We knew that it'd miss some
+last-minute queued change, but it's better than crash, so it was
+applied in that way.
 
--- 
-js
-suse labs
+Then later on, the commit 33cd6ea9c067 changed cancel_*() to
+flush_delayed_work() blindly, and the known problem resurfaced again.
 
+
+Takashi
 
