@@ -1,157 +1,189 @@
-Return-Path: <linux-kernel+bounces-151278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACD208AAC55
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:02:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48CDE8AAC58
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:02:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF5ABB227C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:02:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CD1B1C209DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:02:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774D27E0FB;
-	Fri, 19 Apr 2024 10:01:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="z6w9vO6+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="docqLR7K";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ui8Y2w+8";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="PbhhxvCh"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486DF7D08A;
+	Fri, 19 Apr 2024 10:02:38 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA24F7C0A9;
-	Fri, 19 Apr 2024 10:01:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D04C07BB06
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713520901; cv=none; b=Dv1EPgfE6LCE2CNFe91JyAi5VjP8cO3bnktLNykLqn2Vp2DDQ8DWFvvuN984DsRjEkIIArHYsUPuQ/dKfkSrUr/wVjKDAcTB/oW12UgfexoNEkKkF6XkF3NOlcB/qt5MD4FhD2dyEdx7JbaYdILF4AEq0QiKi8Gg7y2tk65OP2g=
+	t=1713520957; cv=none; b=nbe9fz91vIxxpEmFj3PEqZCtg6aHA8z5dgj0bGp0enSMeN1h4cqUXuu5KCdxkTabSaRQP6boyr1ZqeHPcH9xRA2TE0zny6Ep0q5BScXCgnIKn/7huScdJFgaspCF/Fr+3NzL7ehoIh7gVX4dq5Js1zKELfB+6Y/kJyZKQP3YSvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713520901; c=relaxed/simple;
-	bh=xHKK6J7HyB6h9onkrpVnWnSrBmbzD+Zt2PN1UgHRVAw=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H8BkPx0TBmE+T6EMrGMeY3+4p/XmnK47Ru6UNoMLoUbx82UmlHCOKTTN7qDHLQOyOBIcETjORjHIJ1WlluBqaPauQTRYlShRaBXfTJJorJq4aoxLreSIhN4hFJSKRIhU24WC46zKpNp0LNtHvZaOD8O5XtdL2LJM+FYxxtErxPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=z6w9vO6+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=docqLR7K; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ui8Y2w+8; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=PbhhxvCh; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4320E208AF;
-	Fri, 19 Apr 2024 10:01:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713520894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x5wdBG6p1xzMoT3vI2yLSnaYsmsNjk+6tdZl7RecrCo=;
-	b=z6w9vO6+54VJ47vxZXUnSMuKaoRuoyGAfL9IM6nlLl8lruLlpwHUkDse97P6vGJIHvkSG9
-	DhIngRItIAz/HIbDaoTqbAPyowTcpz0czxO1Tf64tdncshVa5GlcHsUoKqlMLZQO06pPo9
-	F6WKbkhJ++313rbxqG9+muO8kro8hY4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713520894;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x5wdBG6p1xzMoT3vI2yLSnaYsmsNjk+6tdZl7RecrCo=;
-	b=docqLR7Kn2TnqaF1QoCzHb+kIwD+5KGTFfdnlK1eKfDizktpy14Kn+kTYILcBSJWFc1gr0
-	70zBYoqIEK6uI5Dw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ui8Y2w+8;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=PbhhxvCh
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713520893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x5wdBG6p1xzMoT3vI2yLSnaYsmsNjk+6tdZl7RecrCo=;
-	b=ui8Y2w+85lyOM01fUkVy/y/lAWdwKJFHQcolXGFmoUwuPNbco+7cko8tybIsZqd0d8y+pp
-	rgBCzYX/xCEOrkGHYLXsAlW142RpEYsmUW38CX2DK4B2HBGxg1NoEBcYfBNqSo5+S5WjAV
-	aHuvg252feAGWdx4VJcVGdP6wrCJ+C8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713520893;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x5wdBG6p1xzMoT3vI2yLSnaYsmsNjk+6tdZl7RecrCo=;
-	b=PbhhxvChh2rcNp3ITYiSOtq+kEbwgv0lvziBOIFnx7YcXXwpK+5H7tZmZsJUCWH79CrjJ6
-	MIpHo2Vcer+5WQAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D5226136CF;
-	Fri, 19 Apr 2024 10:01:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Z2m0MvxAImbHDAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 19 Apr 2024 10:01:32 +0000
-Date: Fri, 19 Apr 2024 12:01:40 +0200
-Message-ID: <87r0f1u0vv.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Ai Chao <aichao@kylinos.cn>
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	kailang@realtek.com,
-	sbinding@opensource.cirrus.com,
-	luke@ljones.dev,
-	shenghao-ding@ti.com,
-	simont@opensource.cirrus.com,
-	foss@athaariq.my.id,
-	rf@opensource.cirrus.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ALSA: hda/realtek - Enable audio jacks of Haier Boyue G42 with ALC269VC
-In-Reply-To: <20240419082159.476879-1-aichao@kylinos.cn>
-References: <20240419082159.476879-1-aichao@kylinos.cn>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1713520957; c=relaxed/simple;
+	bh=Tn22zvqABpEw2xzVGlUAUm5GrhlqYp+YGZ8SBmqcoJw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HrI3Et12qxAOtRmlSn/581uqUdLOqbo5tYtCgDDWEJr7R9Bb6coIPTyU4zQPDyrgbrA8MLfMV42w8fV2WxLfts/Iefl0iVVRuLv3oSgpKC+AOFgB+jUtQ23gOpiWFsiQ/U62xTy3NzXgPds+4Wr54AmWN0JOod4MApE/Hx0MLKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d622cae9e4so209406939f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 03:02:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713520955; x=1714125755;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ynPtKylq8X+4aLPDiT4qx8aIg5ZAy8z6WAeie2jrlxE=;
+        b=ftonp2dmFgJwpbpbpjteSrM5Knjqyp46AaBD5DINILtj/+k4LLGDGSzNDDAE/+6xDh
+         c75mwcwzCRS09UP2RnoanDpBaHIL0+v5wdXgE+4wzo04EmlTbBMtOZ184u0m3rLEktD0
+         oR72+PJP8+U/Sv3E8pf5FJE9MAtvkhDJ3XtVEk2eX16tWuIxs1BYHJW2lcs3J11s48Wo
+         UXu8qcG7laMdk+oiC0ykx3e8eAjQSHHT7OFrN8t5jhyH0tQaw+hl3DfJZc3xd43w430o
+         Fpj2UMmUsVaCozIU7iHTUmfVaMeWYliSzDlXkvlc+WOtQFIlnTdKtu4btc/oO+Lj3VPC
+         kBsA==
+X-Forwarded-Encrypted: i=1; AJvYcCWEzsiZ7nPcQa3SaFK/FFBLgxgqidtbtUyipC8B9NyK52Cn6yW7jmUS+IqWe7xMuzaWAYmfn8PHpQZdEyYqgntSbj2dJl9uzy0qGWtl
+X-Gm-Message-State: AOJu0YyujFz4PlogTmsBU2zO1hzncqq5RosCjebZvcFCi+F6zRPM+jab
+	rHgggO8bW5DXaqJz1U/j8d2njAP0S5vYSiCsEl+PeS0fwFkXtVHQ4vvJ8JBidGF5ZXytttaesE8
+	ekfB4H5CQjgsWZlB/k0PeNxBCxHXmbdQV1k6P3cBKvCRQnWON80HKBnk=
+X-Google-Smtp-Source: AGHT+IGHd7JEGe67TGfzMYED7GMFT+xDRiBDq+5d4uGXSHkkfwvuvO0kElvRJkGh8gJahNVkE6H9QFN5VkYmqWeMBIHlCZAN7Gog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.44 / 50.00];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	BAYES_HAM(-0.93)[86.39%];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,kylinos.cn:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 4320E208AF
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -1.44
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:860d:b0:482:ced6:e5f5 with SMTP id
+ iu13-20020a056638860d00b00482ced6e5f5mr127743jab.1.1713520955110; Fri, 19 Apr
+ 2024 03:02:35 -0700 (PDT)
+Date: Fri, 19 Apr 2024 03:02:35 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d84c150616702f04@google.com>
+Subject: [syzbot] [bpf?] [net?] WARNING in _prb_commit
+From: syzbot <syzbot+f86f028ee75b0f7e6e5d@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 19 Apr 2024 10:21:59 +0200,
-Ai Chao wrote:
-> 
-> The Haier Boyue G42 with ALC269VC cannot detect the MIC of headset,
-> the line out and internal speaker until
-> ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS quirk applied.
-> 
-> Signed-off-by: Ai Chao <aichao@kylinos.cn>
-> ---
-> v2: Follow PCI SSID order.
+Hello,
 
-Thanks, applied now.
+syzbot found the following issue on:
+
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16834853180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1a07d5da4eb21586
+dashboard link: https://syzkaller.appspot.com/bug?extid=f86f028ee75b0f7e6e5d
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b42ab0fd4947/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b8a6e7231930/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4fbf3e4ce6f8/bzImage-fe46a7dd.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f86f028ee75b0f7e6e5d@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+------------[ cut here ]------------
+raw_local_irq_restore() called with IRQs enabled
+WARNING: CPU: 0 PID: 7777 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x29/0x30 kernel/locking/irqflag-debug.c:10
+Modules linked in:
+CPU: 0 PID: 7777 Comm: syz-executor.2 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:warn_bogus_irq_restore+0x29/0x30 kernel/locking/irqflag-debug.c:10
+Code: 90 f3 0f 1e fa 90 80 3d be b2 b5 04 00 74 06 90 e9 3c f8 03 00 c6 05 af b2 b5 04 01 90 48 c7 c7 00 c3 0c 8b e8 98 c2 7d f6 90 <0f> 0b 90 90 eb df 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc9000336f098 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffffc9000336f210 RCX: ffffc9000e40e000
+RDX: 0000000000040000 RSI: ffffffff8150f3f6 RDI: 0000000000000001
+RBP: 0000000000000200 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffffc9000336f218
+R13: 1ffff9200066de15 R14: ffffffff8d785660 R15: 00000000ffffece4
+FS:  00007f130d20e6c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b33226000 CR3: 00000000235ce000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ _prb_commit+0x280/0x2e0 kernel/printk/printk_ringbuffer.c:1727
+ prb_final_commit+0x1a/0x50 kernel/printk/printk_ringbuffer.c:1780
+ vprintk_store+0xa6a/0xb70 kernel/printk/printk.c:2289
+ vprintk_emit kernel/printk/printk.c:2323 [inline]
+ vprintk_emit+0xac/0x5a0 kernel/printk/printk.c:2297
+ vprintk+0x7f/0xa0 kernel/printk/printk_safe.c:45
+ _printk+0xc8/0x100 kernel/printk/printk.c:2367
+ __report_bug lib/bug.c:195 [inline]
+ report_bug+0x4ac/0x580 lib/bug.c:219
+ handle_bug+0x3d/0x70 arch/x86/kernel/traps.c:239
+ exc_invalid_op+0x17/0x50 arch/x86/kernel/traps.c:260
+ asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:621
+RIP: 0010:__local_bh_enable_ip+0xc3/0x120 kernel/softirq.c:362
+Code: 00 e8 b1 6c 0b 00 e8 cc 68 42 00 fb 65 8b 05 0c f1 b0 7e 85 c0 74 52 5b 5d e9 d9 44 84 09 65 8b 05 4e a5 af 7e 85 c0 75 9e 90 <0f> 0b 90 eb 98 e8 f3 66 42 00 eb 99 48 89 ef e8 29 e0 19 00 eb a2
+RSP: 0018:ffffc9000336f568 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: 0000000000000201 RCX: 1ffffffff1f3eed7
+RDX: 0000000000000000 RSI: 0000000000000201 RDI: ffffffff88cc0674
+RBP: ffffffff88cc0674 R08: 0000000000000000 R09: ffffed1002b75801
+R10: ffff888015bac00b R11: ffffffff9349a260 R12: fffffffffffffffe
+R13: ffff888015bac008 R14: ffff888015bac000 R15: 00000000049396b8
+ spin_unlock_bh include/linux/spinlock.h:396 [inline]
+ sock_hash_delete_elem+0x1f4/0x260 net/core/sock_map.c:947
+ bpf_prog_2c29ac5cdc6b1842+0x42/0x4a
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x154/0x420 kernel/trace/bpf_trace.c:2420
+ __bpf_trace_console+0xc7/0x100 include/trace/events/printk.h:10
+ __traceiter_console+0x67/0xb0 include/trace/events/printk.h:10
+ trace_console include/trace/events/printk.h:10 [inline]
+ printk_sprint+0x1e9/0x300 kernel/printk/printk.c:2178
+ vprintk_store+0x4e4/0xb70 kernel/printk/printk.c:2273
+ vprintk_emit kernel/printk/printk.c:2323 [inline]
+ vprintk_emit+0xac/0x5a0 kernel/printk/printk.c:2297
+ vprintk+0x7f/0xa0 kernel/printk/printk_safe.c:45
+ _printk+0xc8/0x100 kernel/printk/printk.c:2367
+ __ext4_warning+0x19d/0x210 fs/ext4/super.c:1031
+ ext4_group_extend+0x4d0/0x570 fs/ext4/resize.c:1860
+ __ext4_ioctl+0x3617/0x4570 fs/ext4/ioctl.c:1316
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:904 [inline]
+ __se_sys_ioctl fs/ioctl.c:890 [inline]
+ __x64_sys_ioctl+0x196/0x220 fs/ioctl.c:890
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f130c47de69
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f130d20e0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f130c5abf80 RCX: 00007f130c47de69
+RDX: 0000000020001412 RSI: 0000000040086607 RDI: 0000000000000008
+RBP: 00007f130c4ca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f130c5abf80 R15: 00007ffcc968f808
+ </TASK>
 
 
-Takashi
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
