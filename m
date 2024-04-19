@@ -1,166 +1,108 @@
-Return-Path: <linux-kernel+bounces-151062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D15F98AA880
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:39:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FFA88AA882
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:40:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7165C1F21C5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:39:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B4962828F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:40:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65196376E5;
-	Fri, 19 Apr 2024 06:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2E0376E5;
+	Fri, 19 Apr 2024 06:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="bZy9nPsb"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="flcJxh5p"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B95FC8FF
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E736031A66
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713508736; cv=none; b=mCdS8EUdUq/gxAuWbQedybANYcXfwA0PM+27vI0DXov8X0Xwk4EUUiMCun3oDpEFHlemz+nToPNJh2Afp7VAPyrZzb2+/GrE/+f9uGzgl0HLrEmSdXge8L0hiEm5Wp3CpOtkLW2YXOpTqTr6NcpUzKspQspF7V7QfA0nDUu22aM=
+	t=1713508800; cv=none; b=oNA/ApVwsy4sxULe1DlRw7VtqmnuGRGSoq0jKg1wS/EkkM2hhvgRQ83NMggWMAe6E1NhgDw1TJ2RKE6/MpInOxp3hmndaVohPXKSyAorfIKi/8higNDdmXOv0YMZek5FcbP/IRNNjErfMTQzfX6Z4RLTpxkBvVeEbFMFkT6m/LU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713508736; c=relaxed/simple;
-	bh=ELosVufvt3J8r8VoFCclmgHzRzoTIWsDwCk5v8O+W+c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ck/pyVObNFX9pPOkxK+7HVM1itsuGsQOYPkOPEhfNoBt1EizWzxM3GTEb1cNgClSxZHJAoL7VD+/SnNViYD0xVkJVPpBSVuZ6XAJ303wYgAtNVrBknwHhl0qXfpl87viXAJgFc3OK06byslaEPC/SIbgskDNh8MJrwGLK7MsSA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=bZy9nPsb; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a52582ecde4so151366966b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:38:54 -0700 (PDT)
+	s=arc-20240116; t=1713508800; c=relaxed/simple;
+	bh=KO0xtQBpQZiR18joiWf/pJcceYmytvVfGuc9Q/51F+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lAWV8MNvlFGXXSv7sm6S7ZfBn7aa9GkN33bx7tcvXQhdwAssNnAJCW4UyddwEyM+eWha/H2CkKdFXNzgAW7X3XgNUCt5hzXodFPt0QlvA+YM0yvRRmvIgc6sHVlZcsNX59QJyvWWtOXwelPd2hM9GWFCJakUN+dzqFZtoeXKb9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=flcJxh5p; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e411e339b8so13061105ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:39:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1713508733; x=1714113533; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K2Mx24L3N0RW14qQUkoJvbTo91HHgAXzvzpRIQqaSQY=;
-        b=bZy9nPsbyAcHA1xhIestMc6gaPCxk/uV59TJmeJz0ZmEy++KsWeFRBEJZDEBpp7JLr
-         zDaEtunr1q8JXQ9boF8R1hiDe28rGamk7uvJ6jvPH4YLfnNbcEBz9QJXe7j+xJXt1WoW
-         ER5cMp7lNhImD4ojv6Y8lLiIA5nofaRJj1Ns0Joc26vwE90grz6btyONUs/IxsFykp+W
-         8kqTSAqAfNuh553Acc93/cEHppnQiBout33qVrH8MmkOsXpv8ARiM1laI4eeyp2RjEn4
-         cQpMGL5ZnScAaYOdN9PViKKvtNT72u6MBfwTksVE+o0WrcyV6bLTvlko0SZTwx6oL84T
-         iZeg==
+        d=linaro.org; s=google; t=1713508798; x=1714113598; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=behcu3HpDw80Nj2+p0givcvikiqXXCDSWOXRNk2VtxQ=;
+        b=flcJxh5pTRqmt1tEeDf4ShvoK8kfFrlWV03sHvgHpD3e1G+1oVT9c2Iu+q/aJjpYox
+         dnpye0oFudh3dyqJa8twv9kBZEh39Ks3V9LMLwS3T0EOdrrnnUEncJnH8makE+s6oVb5
+         Ss3vI2Zg8bt1OYyVK33LdgQv0X/OP5V/k9DzE+Q96hPEBIBdNUBDLmXtX2m6RoG0dc/H
+         HzSWEI3QhVH1I8KGc5zudJQ0nphwdEUPd5A05TmYmfux+63Qla8j2WTQKWVUu6mVqf0G
+         WYBP6UcYgU5zji1hbKClu6JEKdCJ7Tlqa02PsYLQLWYHEaVfAKoluuoVNzEPQAJiytau
+         7PFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713508733; x=1714113533;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K2Mx24L3N0RW14qQUkoJvbTo91HHgAXzvzpRIQqaSQY=;
-        b=bUVAoSbrjG1d7bvCO/40l4T1cpt/t/WKl8FSDg5uJBevE+PzODjbjsYkIcf0SgIePd
-         Q234EYBnUqF/rAzLhpD9XVQi79LE4M8TFwbh77uuwFvWHKoK0FeiqHHo+loPSOje9Zh6
-         1BKjjy6UkdEzk2iNEHQbdPlN4d2DjhFYeRSrm7qQZu22a+GIYxY7qtab1cL3kQE35plt
-         RIh6HgNysqdlrG5Vn2x6C9AA+wPZbFAtaLR/O+s3TN3n6kUhj7sNPXKKfcF89yAm1BH9
-         3QsrjZEOYFqqC8d5r51bqNnJKTZFB6JLrzoD7IYCzEu3cxqXJscafiX/d1y5npseGtSq
-         hqXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX8igKXiSHVM0TKqavLYG1P4y5qL0GO7jkdpMyZK0s8mtgEzqOIdmdb9wO6114RBOgp8RQ3s+Hv1D/GZyEdq9hm7cuszT4+Bmj1ek3R
-X-Gm-Message-State: AOJu0YxN+kuX1DM8NEYTvnWcWH5LpW0/NrVEGNfDN2Fftlf+gKip8cdY
-	637vaN+pfF6beAnbskQmFX3CCC/wZjl7gzxz9ryI/ohRkk254CYvmfWQjpEGvVU=
-X-Google-Smtp-Source: AGHT+IEL8RYkHCjgvfJZPy2uPbkbMy44leaygK204xVTUhAcLJRhbuT13glVUZZ/p3X2kh3LZLN+Fw==
-X-Received: by 2002:a17:907:7288:b0:a54:e183:6248 with SMTP id dt8-20020a170907728800b00a54e1836248mr941953ejc.0.1713508732584;
-        Thu, 18 Apr 2024 23:38:52 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.185])
-        by smtp.gmail.com with ESMTPSA id m16-20020a1709061ed000b00a51c0c0cb86sm1797440ejj.22.2024.04.18.23.38.50
+        d=1e100.net; s=20230601; t=1713508798; x=1714113598;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=behcu3HpDw80Nj2+p0givcvikiqXXCDSWOXRNk2VtxQ=;
+        b=V20P5H75E4l4n576i5d8MBxdPn3o7flqw+cWfO0ACzF7o+f6siKvqXKCpCQk+rVUeG
+         WAn5FFtPzfuSLM8UgGfWVRIaZNMiKIuSXzFjFtjb7X87XZeoHfZ7EGixFyPiYDzNWpYK
+         v4DnU0LgMc5gnRQUpxiFxQo/Jl16KfOoOcw9SyqJzV9eMef6qsTZ/RCo7tEAJO+oIa9h
+         rTE4p/H6DuwlQ3PaeEyauR3KltT0y10ujCNVMFhCVehS+6udOnHxgVvVeFfrgL6yvaSZ
+         +l+g34qkSMuPXcLrj8Q4Q9uatjLPPe4QA2avXsDDisY9FXV00mS01ePjUgfXGlk588YZ
+         hEVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUqiB6+SXgjHIZX9DMCdQ0IhqAV71qE8ImPjziHHN8juxH4fYTFbKbuXkOCsViufm/VLbh5ObgGmZeXczC/0CARgxMK5xKvZ6SviSEU
+X-Gm-Message-State: AOJu0YyAWy+WFIwyXed7kwJu19YkqlUwRx1GinzOtbYKz4AbhOnPowVl
+	UavW0DZrFbMrhd1nKVy/fvSS24250HosT4USK1URCGBjwK38suVFjsReMJLiqSw=
+X-Google-Smtp-Source: AGHT+IFjC4SYo1RfgyjASxoVyHVH5G3r/xD7roVjnqsMZux+u6GUIuiQPmKURIcdYeJqQKak87M6Gw==
+X-Received: by 2002:a17:902:ceca:b0:1e2:a449:da15 with SMTP id d10-20020a170902ceca00b001e2a449da15mr1420976plg.15.1713508798014;
+        Thu, 18 Apr 2024 23:39:58 -0700 (PDT)
+Received: from localhost ([122.172.87.52])
+        by smtp.gmail.com with ESMTPSA id c17-20020a170903235100b001dddcfca329sm2588042plh.148.2024.04.18.23.39.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 23:38:52 -0700 (PDT)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: geert+renesas@glider.be,
-	linus.walleij@linaro.org,
-	biju.das.jz@bp.renesas.com,
-	tglx@linutronix.de
-Cc: linux-renesas-soc@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	claudiu.beznea@tuxon.dev,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH v4] pinctrl: renesas: rzg2l: Configure the interrupt type on resume
-Date: Fri, 19 Apr 2024 09:38:22 +0300
-Message-Id: <20240419063822.3467424-1-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 18 Apr 2024 23:39:57 -0700 (PDT)
+Date: Fri, 19 Apr 2024 12:09:55 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Aleksandr Mishin <amishin@t-argos.ru>
+Cc: Ionela Voinescu <ionela.voinescu@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH v2] cppc_cpufreq: Fix possible null pointer dereference
+Message-ID: <20240419063955.jzfd6pfiag7kz2i6@vireshk-i7>
+References: <20240405094005.18545-1-amishin@t-argos.ru>
+ <20240408093536.19485-1-amishin@t-argos.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240408093536.19485-1-amishin@t-argos.ru>
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On 08-04-24, 12:35, Aleksandr Mishin wrote:
+> cppc_cpufreq_get_rate() and hisi_cppc_cpufreq_get_rate() can be called from
+> different places with various parameters. So cpufreq_cpu_get() can return
+> null as 'policy' in some circumstances.
+> Fix this bug by adding null return check.
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: a28b2bfc099c ("cppc_cpufreq: replace per-cpu data array with a list")
+> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+> ---
+> v2: Fix mixed declarations
+> 
+>  drivers/cpufreq/cppc_cpufreq.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
 
-Commit dce0919c83c3 ("irqchip/renesas-rzg2l: Do not set TIEN and TINT
-source at the same time") removed the setup of TINT from
-rzg2l_irqc_irq_enable(). To address the spourious interrupt issue the setup
-of TINT has been moved in rzg2l_tint_set_edge() though
-rzg2l_disable_tint_and_set_tint_source(). With this, the interrupts are
-not properly re-configured after a suspend-to-RAM cycle. To address
-this issue and avoid spurious interrupts while resumming set the
-interrupt type before enabling it.
+Applied. Thanks.
 
-Fixes: dce0919c83c3 ("irqchip/renesas-rzg2l: Do not set TIEN and TINT source at the same time")
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
-
-Changes in v4:
-- moved dev_crit() out of critical section
-
-Changes in v3:
-- none; this patch was part of series at [1] and added in v3 of that
-  series
-
-Changes in v2:
-- none
-
-[1] https://lore.kernel.org/all/20240320104230.446400-1-claudiu.beznea.uj@bp.renesas.com/
-
- drivers/pinctrl/renesas/pinctrl-rzg2l.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-index 93916553bcc7..20425afc6b33 100644
---- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-@@ -2045,7 +2045,9 @@ static void rzg2l_gpio_irq_restore(struct rzg2l_pinctrl *pctrl)
- 
- 	for (unsigned int i = 0; i < RZG2L_TINT_MAX_INTERRUPT; i++) {
- 		struct irq_data *data;
-+		unsigned long flags;
- 		unsigned int virq;
-+		int ret;
- 
- 		if (!pctrl->hwirq[i])
- 			continue;
-@@ -2063,17 +2065,18 @@ static void rzg2l_gpio_irq_restore(struct rzg2l_pinctrl *pctrl)
- 			continue;
- 		}
- 
--		if (!irqd_irq_disabled(data)) {
--			unsigned long flags;
--
--			/*
--			 * This has to be atomically executed to protect against a concurrent
--			 * interrupt.
--			 */
--			raw_spin_lock_irqsave(&pctrl->lock.rlock, flags);
-+		/*
-+		 * This has to be atomically executed to protect against a concurrent
-+		 * interrupt.
-+		 */
-+		raw_spin_lock_irqsave(&pctrl->lock.rlock, flags);
-+		ret = rzg2l_gpio_irq_set_type(data, irqd_get_trigger_type(data));
-+		if (!ret && !irqd_irq_disabled(data))
- 			rzg2l_gpio_irq_enable(data);
--			raw_spin_unlock_irqrestore(&pctrl->lock.rlock, flags);
--		}
-+		raw_spin_unlock_irqrestore(&pctrl->lock.rlock, flags);
-+
-+		if (ret)
-+			dev_crit(pctrl->dev, "Failed to set IRQ type for virq=%u\n", virq);
- 	}
- }
- 
 -- 
-2.39.2
-
+viresh
 
