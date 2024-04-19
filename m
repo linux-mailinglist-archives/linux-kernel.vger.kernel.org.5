@@ -1,82 +1,86 @@
-Return-Path: <linux-kernel+bounces-151760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 335E58AB38D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:44:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B35D8AB390
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:45:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B548CB23B4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:44:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8964B1C20F9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:45:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF461134CF2;
-	Fri, 19 Apr 2024 16:44:14 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D2313666C;
+	Fri, 19 Apr 2024 16:45:05 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 437B7132800;
-	Fri, 19 Apr 2024 16:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA36D7E783
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713545054; cv=none; b=M2G9rsptJsNJ1Yh/LHa0jlmV6ZsDSNT25jWWDh2Sf/vRWTPE+ZggV1L2j3J2qVZJq6ZjlGwAnWHwZ3YSTJdAIgPJQAUgdHvdMnnGiE051M9FeakwAYpMJqmUVp36/QrYQSIE6o6+AX/wyvKFxdfOpIsrancGlGhXD1m3CnkqGWs=
+	t=1713545105; cv=none; b=bPjT0sTwL5yINTpeWqhRtmic5+lqBnYB45lDAvpzPEyQLuJbMVuaesIC+KCFQb92H2YZEwaz2s9V7VyHcv9HBzlFRtEQ3aTpKI3GSnpFG7/m/wTTjNhFWXS31NqYCkdr7TAP3Rp/U72/POWLHRXcdRKfW85DYSbyfRAsdGaOSt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713545054; c=relaxed/simple;
-	bh=g6dfOkD7e/Rsui1E9vwCOjhb2lg0fOpMCgFt3OAgUNw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A6djVsazQpWQmEpTTwN5fz41S2HbPYD7Qb6Pz3MWmn4H4L+5RmrlMiw9g9MVH9bq47tMeOkYea+6JjJ8Zug/fxD2ft+7SJioK+TTxv0OYAsnkhijVgb4dJ0xduarjteapV/rsrXpjWdMTfTut3inP7ClyZOO1merMeV50M/Udjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC3AEC2BD10;
-	Fri, 19 Apr 2024 16:44:10 +0000 (UTC)
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: will@kernel.org,
-	rppt@kernel.org,
-	Yaxiong Tian <tianyaxiong@kylinos.cn>
-Cc: keescook@chromium.org,
-	tony.luck@intel.com,
-	gpiccoli@igalia.com,
-	akpm@linux-foundation.org,
-	ryan.roberts@arm.com,
-	wangkefeng.wang@huawei.com,
-	ardb@kernel.org,
-	david@redhat.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	xiongxin <xiongxin@kylinos.cn>
-Subject: Re: [PATCH v3] arm64: hibernate: Fix level3 translation fault in swsusp_save()
-Date: Fri, 19 Apr 2024 17:44:08 +0100
-Message-Id: <171354500626.1387030.2608430533776260920.b4-ty@arm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240417025248.386622-1-tianyaxiong@kylinos.cn>
-References: <20240417025248.386622-1-tianyaxiong@kylinos.cn>
+	s=arc-20240116; t=1713545105; c=relaxed/simple;
+	bh=WgqeDGtJ/flOJVlMcoJaVHiIAS28lDnmvjeUgGHlj54=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=tebLAI4c51XuB3ZHtiVVKJKHRmRd1n77z6pnMaYL33ow/gesiUCyMgG2UTYKxUUCrlHDP+rkLCsQ+dMMWtMBJkE1vsQS5vlrmLWauKUjJqXgKxf0KmKsXT422rNzJomYYqxcKfuxRaLnt7UcWQNHLwCIpGL4gwKOTDjBwqTZGlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7da18a77b4eso278299539f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:45:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713545103; x=1714149903;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ETZSceMKeWmG6Z8GggV0FKkZV2BQdNu36VKqFO4Dm2c=;
+        b=kyiHlRLJndtOTGKUZqWcJ1ULm5c7R/fCk3YxbUD+I9ic3J9A1+qbTgnm3CI1Qn1QjL
+         scToQrdYAUwLVn6YsxXADiq2+/WK7+BxjlGcuOVD/gmvidLb/8ZJs98WttQqBOlinLi7
+         Mxhja/M50JxCmAN/RixxY5Sztbk7g0pJoHzNpvSKQdKQUk/lzptlh+6xukOY3aOVZflx
+         RIvYgYqzzu6yx3yViwAN5svhDX8ckmn9eNajMtV1B4eBiVPGHkpXeW5kXuKubd7B1WZc
+         KUtQC0dSqgezqb4c9pCQRdmZcq95Ph5NRHO19D6H8C0JOrVqFViVfuOXQMYQChMoZjoF
+         Lh0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV11GgGhZcr98LU0Ahn7Bi3xqfIfkBKvTLsjiSKed/Di7O6+6KSC3/2vK0vut7+0Foue7/uxA4upUtVhsju1rC+QcE/L0q1IFDyQytO
+X-Gm-Message-State: AOJu0YywQHpYKPvyXR0FRj3FwE/npqAqlpLjsMZoSOSjpsc3fYN0j9sh
+	LgGNfSB21tE0UZkqA154P61lCApl4da1NC/e6zrmNMtPaCdAheNXfYX6UmwKZ6dwq04zQTCHoZY
+	kCd4sHQouJRj+csf4jZ8RrFrx+KuGOd+mqsSBMn9vj4Gq08XlD3nZSA0=
+X-Google-Smtp-Source: AGHT+IF3yW9Fdexe92n3pRPjsK3A+lvbdipPjC1PLPNkj9cdgg7bSLwxX/lez+qW8q4KDFuX0PbB/KdPjrbM9SHfjseb3RTida0W
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:8785:b0:484:e71e:4966 with SMTP id
+ ix5-20020a056638878500b00484e71e4966mr62722jab.1.1713545103137; Fri, 19 Apr
+ 2024 09:45:03 -0700 (PDT)
+Date: Fri, 19 Apr 2024 09:45:03 -0700
+In-Reply-To: <20240419155120.15602-1-aha310510@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002ded75061675cf78@google.com>
+Subject: Re: [syzbot] [net?] KMSAN: uninit-value in hsr_get_node (3)
+From: syzbot <syzbot+a81f2759d022496b40ab@syzkaller.appspotmail.com>
+To: aha310510@gmail.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 17 Apr 2024 10:52:48 +0800, Yaxiong Tian wrote:
-> On ARM64 machines using UEFI, if can_set_direct_map() return false by
-> setting some CONFIGS in kernel build or grub,such as
-> NO CONFIG_DEBUG_PAGEALLOC_ENABLE_DEFAULT、NO CONFIG_KFENCE
-> NO CONFIG_RODATA_FULL_DEFAULT_ENABLED.Also with setting rodata=off、
-> debug_pagealloc=off in grub and NO CONFIG_KFENCE.
-> swsusp_save() will fail due to can't finding the map table under the
-> nomap memory.such as:
-> 
-> [...]
+Hello,
 
-Applied to arm64 (for-next/fixes), thanks! I tidied up the commit log a
-bit.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-[1/1] arm64: hibernate: Fix level3 translation fault in swsusp_save()
-      https://git.kernel.org/arm64/c/50449ca66cc5
+Reported-and-tested-by: syzbot+a81f2759d022496b40ab@syzkaller.appspotmail.com
 
--- 
-Catalin
+Tested on:
 
+commit:         2668e3ae Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=113f5af5180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=87a805e655619c64
+dashboard link: https://syzkaller.appspot.com/bug?extid=a81f2759d022496b40ab
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10feef00980000
+
+Note: testing is done by a robot and is best-effort only.
 
