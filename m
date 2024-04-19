@@ -1,105 +1,203 @@
-Return-Path: <linux-kernel+bounces-151322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 120D58AACE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D1EF8AACEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:35:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92B9B1C20860
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:32:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC5CE1C2133C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD53A7E794;
-	Fri, 19 Apr 2024 10:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bIVUtXVC"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8170022085;
-	Fri, 19 Apr 2024 10:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39FF7EEF3;
+	Fri, 19 Apr 2024 10:35:01 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C25C67E78F
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713522724; cv=none; b=W7KpnNZ7zoVy0k3WNm4tVzxCq2LzH1WTVw1yyir/YB6cNhrmRg2+kdIL21Kl0k1XNME/sEemcrAxTwD2ATSQX4FLT11Dsns7nJ/jH6vZtCSu+/JOli+Z+5kiJy+InbO6DTo1htcEVnB6yhXZ8eFUli8aLf47wGNcymkecXKM7rE=
+	t=1713522901; cv=none; b=ri7k50AfUncLxr2331uH8C/1NV7mqZr5go+qhsK5krSMBfyMxb22NhX7UZnlV+Ey/C8ynXEd3QL/WAS/lhz2eN+HhuTX2u6Eim+cEwpXoD81RzseZwFshpbQdSJcx7PlgQ9MEo3IEgow3qKAIHsAhqs+/oB6KR6x8TW8q9wgJ+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713522724; c=relaxed/simple;
-	bh=oMjuJg2nxzcJ7yzI/HWD4b2lVf4QtR3X0iqixF4fFGA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Lk5tEoW0MToc5nEEZfjAMbKdCZsRr4LVnoX8tGu/GjAR/Ocuql6yBXq7fh1RN2hOFG7s1ENrMtEfceiuhXGTpwE6lNzZ4zMPTT3I5ErTNg99+fHGDmWBbrQuKWdD9wF7fHmhfmTYvgvifNeS7K1A9/1lhOBpPBCTWSetclKMqM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bIVUtXVC; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516db2214e6so2450605e87.1;
-        Fri, 19 Apr 2024 03:32:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713522720; x=1714127520; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ADY1jQ3fMn8t5XRSmhrf7CXlATYEKca4dISZEI/O4I=;
-        b=bIVUtXVC8g2KdZlpiVHX9sX0By/HFkvMmBPDkT2UNAE/I4dbXt29kD/DVeS0oJJ6tf
-         xC8a3BUOMpKgO54VxmfQowdo2K6e/JyeHuTif3dsPmDokJVghrtpjJNNzSiqE1+Mn9Sh
-         j02wbgaczFOZApM+M2p1xNCmi/MKJUk8KeTrm5j7orQtF/0keCq0WlJdy26SwIgwW6pa
-         NzcLMSAD2IyxOfmEnJJX+6kn2JMbcJZR+KDKSwReS+fkExtGKkANJmUzSfCFcBM/LenH
-         dSxvDh0JJfP+iys5bhSzCTBZHcZWAUsf/tVuSX8bMYVi1so5TXFoWIIZmCbB021TBksB
-         s4bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713522720; x=1714127520;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ADY1jQ3fMn8t5XRSmhrf7CXlATYEKca4dISZEI/O4I=;
-        b=keSX9pjd7X1a0otXIrnT/qUB7dEmOmwfFFpFPmwRYpu0FqRqsGr0ywJP5EXsCfxNZ6
-         lYr+5ce7qKCq/cJ/A/mHfjY3uB1MZKKB3droc5F/mf+i86FKye2lHDuCscoC8AJt0s0f
-         6AijEUnlV68U/wcyhKYo8dnhMqWxbR6MGQ8tEdFo78lXKXXdhNLtmfVM+1OGyfR8uudc
-         Q4eAoZbUImyeVRQEa6MuESnH3oCQAyK4VFK/ofqoJztN/XF+eZ+c4LSjNjpGcgr2lKip
-         J0uIQS4bbZRoKp/LoaKo9a6+HfEsVczZXekckcBVzWit+l2xdUeVJ85Ff2ZfdC5TB/iI
-         GLcw==
-X-Forwarded-Encrypted: i=1; AJvYcCWtyA0kE4TmJgxQLUVRePYtJUe4pxOjOX6mb5cHQuZ80WIcovx4D6GuBo8M7tcZT6DPgXf98LnLCAy3517R9YkOKYFPU9gsqIWjsLwItZI60Ty2oET8Onm4oZ1D/yuXYLj0SPRx
-X-Gm-Message-State: AOJu0YyDyZpaVUMjHExiwJL7JizW8ro5eFj7dGm0NCix840i2DNaROXk
-	rpBRG+1hdrdxhY5ut1+tpW8xtzBEsSZtxDCRWsQ+8CNIC34pPZ9V
-X-Google-Smtp-Source: AGHT+IHr1f2wQScjD2nMhwXM6LKMkGtdkS3wIc4hV1dHZdV23oMwK6P2ia0+IEZA+sRulz+K2TXHOw==
-X-Received: by 2002:a05:6512:2807:b0:513:39a0:1fec with SMTP id cf7-20020a056512280700b0051339a01fecmr1166802lfb.66.1713522720278;
-        Fri, 19 Apr 2024 03:32:00 -0700 (PDT)
-Received: from localhost (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05651212c700b0051abb2bfc76sm264087lfg.304.2024.04.19.03.31.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 03:31:59 -0700 (PDT)
-From: Casper Andersson <casper.casan@gmail.com>
-To: Lukasz Majewski <lukma@denx.de>, netdev@vger.kernel.org, Paolo Abeni
- <pabeni@redhat.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>,
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Oleksij Rempel
- <o.rempel@pengutronix.de>, Tristram.Ha@microchip.com, Sebastian Andrzej
- Siewior <bigeasy@linutronix.de>, Ravi Gunasekaran <r-gunasekaran@ti.com>,
- Simon Horman <horms@kernel.org>, Nikita Zhandarovich
- <n.zhandarovich@fintech.ru>, Murali Karicheri <m-karicheri2@ti.com>, Jiri
- Pirko <jiri@resnulli.us>, Dan Carpenter <dan.carpenter@linaro.org>, Ziyang
- Xuan <william.xuanziyang@huawei.com>, Shigeru Yoshida
- <syoshida@redhat.com>, "Ricardo B. Marliere" <ricardo@marliere.net>,
- linux-kernel@vger.kernel.org, Lukasz Majewski <lukma@denx.de>
-Subject: Re: [net-next PATCH v5 1/4] net: hsr: Provide RedBox support (HSR-SAN)
-In-Reply-To: <20240415124928.1263240-2-lukma@denx.de>
-References: <20240415124928.1263240-1-lukma@denx.de>
- <20240415124928.1263240-2-lukma@denx.de>
-Date: Fri, 19 Apr 2024 12:31:59 +0200
-Message-ID: <86wmot7ie8.fsf@gmail.com>
+	s=arc-20240116; t=1713522901; c=relaxed/simple;
+	bh=rvRlki18SDdRncAv41M1U3ZfizUGuzAMxH1JRP+hygo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ETBMQT2zAl47gBz8264/HHgQU8d+CktV1Xmbr3yOVlSOpl7aVmnKbhGLWdNrvxINvGTfxFCPxkUapWiM25QdxAMY1vdM0meNcZ1yYbwjZ+tQwJZBITEZq+moxOgvtdI9v1IjFxUQUwH74TH2n3Fxt8EvE3wFy0hQ3jrOogn7mZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F63B2F;
+	Fri, 19 Apr 2024 03:35:27 -0700 (PDT)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 44F0E3F792;
+	Fri, 19 Apr 2024 03:34:58 -0700 (PDT)
+From: Mark Rutland <mark.rutland@arm.com>
+To: linux-kernel@vger.kernel.org
+Cc: keescook@chromium.org,
+	mark.rutland@arm.com,
+	paulmck@kernel.org
+Subject: [PATCH] lkdtm/bugs: add test for hung smp_call_function_single()
+Date: Fri, 19 Apr 2024 11:34:52 +0100
+Message-Id: <20240419103452.3530155-1-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
+The CONFIG_CSD_LOCK_WAIT_DEBUG option enables debugging of hung
+smp_call_function*() calls (e.g. when the target CPU gets stuck within
+the callback function). Testing this option requires triggering such
+hangs.
 
-Hi,
+This patch adds an lkdtm test with a hung smp_call_function_single()
+callbac, which can be used to test CONFIG_CSD_LOCK_WAIT_DEBUG and NMI
+backtraces (as CONFIG_CSD_LOCK_WAIT_DEBUG will attempt an NMI backtrace
+of the hung target CPU).
 
-On 2024-04-15 14:49 +0200, Lukasz Majewski wrote:
-> +void hsr_handle_san_frame(bool san, enum hsr_port_type port,
-> +			  struct hsr_node *node);
+On arm64 using pseudo-NMI, this looks like:
 
-Function declared here but never defined or used.
+| # mount -t debugfs none /sys/kernel/debug/
+| # echo CSDLOCKUP > /sys/kernel/debug/provoke-crash/DIRECT
+| lkdtm: Performing direct entry CSDLOCKUP
+| smp: csd: Detected non-responsive CSD lock (#1) on CPU#0, waiting 5000001136 ns for CPU#01 __lkdtm_CSDLOCKUP+0x0/0x8(0x0).
+| smp:     csd: CSD lock (#1) handling this request.
+| Sending NMI from CPU 0 to CPUs 1:
+| NMI backtrace for cpu 1
+| CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.9.0-rc4-00001-gda84b9dede43 #7
+| Hardware name: linux,dummy-virt (DT)
+| pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
+| pc : __lkdtm_CSDLOCKUP+0x0/0x8
+| lr : __flush_smp_call_function_queue+0x1b0/0x290
+| sp : ffff80008000bf30
+| pmr_save: 00000060
+| x29: ffff80008000bf30 x28: fff00000c02dc500 x27: 0000000000000000
+| x26: 0000000000000000 x25: fff00000c02dc500 x24: ffffa41b939aa140
+| x23: ffffa41b939aa140 x22: 0000000000000000 x21: ffff80008066bc40
+| x20: 0000000000000000 x19: 0000000000000000 x18: fff05be56bd37000
+| x17: fff05be56bd07000 x16: ffff800080008000 x15: 00005b132023e6fd
+| x14: 00005aeabb53d8c3 x13: 000000000000032e x12: 0000000000000001
+| x11: 0000000000000040 x10: fff00000c003d0a8 x9 : fff00000c003d0a0
+| x8 : fff00000c0400270 x7 : 0000000000000000 x6 : ffffa41b9251b810
+| x5 : 0000000000000000 x4 : fff05be56bd07000 x3 : ffff80008000bf30
+| x2 : fff05be56bd07000 x1 : ffffa41b939aa140 x0 : 0000000000000000
+| Call trace:
+|  __lkdtm_CSDLOCKUP+0x0/0x8
+|  generic_smp_call_function_single_interrupt+0x14/0x20
+|  ipi_handler+0xb8/0x178
+|  handle_percpu_devid_irq+0x84/0x130
+|  generic_handle_domain_irq+0x2c/0x44
+|  gic_handle_irq+0x118/0x240
+|  call_on_irq_stack+0x24/0x4c
+|  do_interrupt_handler+0x80/0x84
+|  el1_interrupt+0x44/0xc0
+|  el1h_64_irq_handler+0x18/0x24
+|  el1h_64_irq+0x78/0x7c
+|  default_idle_call+0x40/0x60
+|  do_idle+0x23c/0x2d0
+|  cpu_startup_entry+0x38/0x3c
+|  secondary_start_kernel+0x148/0x180
+|  __secondary_switched+0xb8/0xbc
+| CPU: 0 PID: 143 Comm: sh Not tainted 6.9.0-rc4-00001-gda84b9dede43 #7
+| Hardware name: linux,dummy-virt (DT)
+| Call trace:
+|  dump_backtrace+0x90/0xe8
+|  show_stack+0x18/0x24
+|  dump_stack_lvl+0xac/0xe8
+|  dump_stack+0x18/0x24
+|  csd_lock_wait_toolong+0x268/0x338
+|  smp_call_function_single+0x1dc/0x2f0
+|  lkdtm_CSDLOCKUP+0xcc/0xfc
+|  lkdtm_do_action+0x1c/0x38
+|  direct_entry+0xbc/0x14c
+|  full_proxy_write+0x60/0xb4
+|  vfs_write+0xd0/0x35c
+|  ksys_write+0x70/0x104
+|  __arm64_sys_write+0x1c/0x28
+|  invoke_syscall+0x48/0x114
+|  el0_svc_common.constprop.0+0x40/0xe0
+|  do_el0_svc+0x1c/0x28
+|  el0_svc+0x38/0x108
+|  el0t_64_sync_handler+0x120/0x12c
+|  el0t_64_sync+0x1a4/0x1a8
+| smp: csd: Continued non-responsive CSD lock (#1) on CPU#0, waiting 10000001888 ns for CPU#01 __lkdtm_CSDLOCKUP+0x0/0x8(0x0).
+| smp:     csd: CSD lock (#1) handling this request.
 
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+---
+ drivers/misc/lkdtm/bugs.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+I wrote this because I needed to guide someone through debugging a hung
+smp_call_function() call, and I needed examples with/without an NMI
+backtrace. It seems like it'd be useful for testing the CSD lockup
+detector and NMI backtrace code in future.
+
+I'm not sure about the CSDLOCKUP name, but everything else I tried
+didn't seem great either:
+
+* IPILOCKUP sounds like it's testing IPIs generally
+* SMPCALLLOCKUP and similar look weirdly long
+* SMP_CALL_LOCKUP and similar look different to {HARD,SOFT,SPIN}LOCKUP
+
+.. and I'm happy to defer to Kees for the naming. ;)
+
+Mark.
+
+diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
+index 5178c02b21eba..47cd1be09ac1f 100644
+--- a/drivers/misc/lkdtm/bugs.c
++++ b/drivers/misc/lkdtm/bugs.c
+@@ -286,6 +286,35 @@ static void lkdtm_HARDLOCKUP(void)
+ 		cpu_relax();
+ }
+ 
++static void __lkdtm_CSDLOCKUP(void *unused)
++{
++	for (;;)
++		cpu_relax();
++}
++
++static void lkdtm_CSDLOCKUP(void)
++{
++	unsigned int cpu, target;
++
++	cpus_read_lock();
++
++	cpu = get_cpu();
++	target = cpumask_any_but(cpu_online_mask, cpu);
++
++	if (target >= nr_cpu_ids) {
++		pr_err("FAIL: no other online CPUs\n");
++		goto out_put_cpus;
++	}
++
++	smp_call_function_single(target, __lkdtm_CSDLOCKUP, NULL, 1);
++
++	pr_err("FAIL: did not hang\n");
++
++out_put_cpus:
++	put_cpu();
++	cpus_read_unlock();
++}
++
+ static void lkdtm_SPINLOCKUP(void)
+ {
+ 	/* Must be called twice to trigger. */
+@@ -680,6 +709,7 @@ static struct crashtype crashtypes[] = {
+ 	CRASHTYPE(UNALIGNED_LOAD_STORE_WRITE),
+ 	CRASHTYPE(SOFTLOCKUP),
+ 	CRASHTYPE(HARDLOCKUP),
++	CRASHTYPE(CSDLOCKUP),
+ 	CRASHTYPE(SPINLOCKUP),
+ 	CRASHTYPE(HUNG_TASK),
+ 	CRASHTYPE(OVERFLOW_SIGNED),
+-- 
+2.30.2
 
 
