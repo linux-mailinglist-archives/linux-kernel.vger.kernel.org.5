@@ -1,193 +1,138 @@
-Return-Path: <linux-kernel+bounces-151722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC8868AB2BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C1318AB2C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:03:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 621A11F214DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:03:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FD321F2244B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0374A130AEB;
-	Fri, 19 Apr 2024 16:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C85130E2A;
+	Fri, 19 Apr 2024 16:03:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="yW03/0W9"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zEgQvc+N"
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA6D12FB3F;
-	Fri, 19 Apr 2024 16:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F02130AD4
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:03:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713542594; cv=none; b=WyxnBKkWdjG7zuawfoPqsETVLRftSpFuvlOkJJlvelmMUQkFPqIhN9+G8HZAL+SiHGMeZF4P1eFbMznjNRKZG1Q4QQ7XjhxXxruMRbc5vxiBEDTOdww1ALlm9YEnMmgjwXG/tG9exLxzf5p3cxsYEpGQHWm7QbLjB79th0X9pgg=
+	t=1713542615; cv=none; b=JKJVxvlBcQD12iLLW/qtAk5PDMvV/7YNwLWHNAzONAt19pPi/VpV6WI6rM5eYaRaIKQcDtiVUn79Em5bSL8KFbn9iM8NACkEoHPX/UqOAhg6qjGibE3eRYLE/PgSopMdvmMsDwdMMTpFAedGzVO/qW27oYPVgCZ5q9cKrww5WMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713542594; c=relaxed/simple;
-	bh=bzJYqm75Nty92Q/QO9EnWmJhEqlw+KyOW6BfHwHj1k0=;
+	s=arc-20240116; t=1713542615; c=relaxed/simple;
+	bh=/eXm0CTaLlshMmOpuJ+Hb0diIo+ynEWJIFTKEePjGU0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TSB7L04y9ucw20TM77TYVKE6ObtBil+b2sSWw9fKXhldqsqBL2Az79zdXsBQFWDj1Ky7VPhXhRCMKStXHyVtkNOse9xe/+ZXKXWyRPw4JziwBTlhXLZvDK7FzdWBDKSWwZHlM4jhP4XZttlSCIvbJFCV1yyiKV5AJg9mJho8Rag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=yW03/0W9; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713542585;
-	bh=bzJYqm75Nty92Q/QO9EnWmJhEqlw+KyOW6BfHwHj1k0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=yW03/0W9ckf3ZQXHVqD9Rnioq31j7y+rUfgl6WZOCWat+fIuUKU9P1ezSYxaUqeCT
-	 tZkeiwOshAvSD8a5jhgyHpgwHHZtjNrDgs1y5sHuW/61T4+pSrYth2uOLNuro+5Obp
-	 xstypApqPQObblBk244KJLFUKc47guLvO0HiJ8b1i60j0j1/pYSJtb8jqMZVOBcE6s
-	 ZdImR1sfLPJeFfjOjsepEwa+qOabMz2YB1sGozUK1wb6XdGZipSOsi9FA3bJ04VJ/f
-	 lOKYlWfCuxNwiCI+3NAWfAsQ2sVgHBGIXkxyax+Zk8KnAFj6vp2ikaoiRmOUQlm8fY
-	 z/+NszSEWnA8Q==
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 19A593780EC6;
-	Fri, 19 Apr 2024 16:03:03 +0000 (UTC)
-Date: Fri, 19 Apr 2024 12:03:02 -0400
-From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-To: Sebastian Reichel <sre@kernel.org>
-Cc: kernel@collabora.com, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Pin-yen Lin <treapking@chromium.org>,
-	Hsin-Te Yuan <yuanhsinte@chromium.org>
-Subject: Re: [PATCH v3] power: supply: sbs-battery: Handle unsupported
- PROP_TIME_TO_EMPTY_NOW
-Message-ID: <cf4d8131-4b63-4c7a-9f27-5a0847c656c4@notapiano>
-References: <20240418-sbs-time-empty-now-error-v3-1-f286e29e3fca@collabora.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q2PvDdQ4xFtYL+73/s75dH8/jvWG69NTHnrSMZ5163Ghe8BzljgKj9Xi+oeEQ92ZAbNuzDERtvlK5kOTdCEFtIEEk0Cgd5ifQu7+GXSN0Femt+R7kqCvU5OlDmP0uAzjnFlvcN7Atl7Hpz57C1JVkKJKeCgUs4KCLvTAx/v07pU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zEgQvc+N; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-418e4cd2196so16339605e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713542612; x=1714147412; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9K87eyQsJcPV+MjC9TGZ0b2ErIOF7s0I6KGHZUdEzoY=;
+        b=zEgQvc+N88bX+glGqWa/yGXwTIooRIidFGDWBPF/SrkYef0Qa+2jEggM/ajYj+ukj3
+         vLpbN4dp5Sinja6c9YNOOQiEhuW5L7NeLa1qQp3ENZVH9jQ7hkx7uOr66F5eFkeLByXi
+         CTLcEM7PwTvt1XLm7iq6H7KNNR3n5uio7mdet26R8bM7Blt0RFXMnaVUreeV0+Q9CPMb
+         lqshwqHiPAHMRGFQHQEgVRF39rQ/HoZLHfl/NFCI4hvVYRWgnxvMkORHfmYejWN9NbEO
+         nfGA+VH6cSsD+gJcIvJhaDNa+5cOZYH1lKAY3tP1Wjm0ioi4lcT89F4UIzWfCuki1oc9
+         BrAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713542612; x=1714147412;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9K87eyQsJcPV+MjC9TGZ0b2ErIOF7s0I6KGHZUdEzoY=;
+        b=Dq4Ng+6Sm1g5p9UZCDWeDCwIR4kHTk0FjqYuxt7FER0pCYjUryjyFRo4ur+uguZ6GB
+         HbAIhHYAJsKfPXj66eUc8A4aKChCzRjjWkz5h9FH62SgCt6s8V02YJcRJ4AyBdxXz7u3
+         zMAdd6UflMz/zG43aTbQ2nt8L+g1YfhzEqjjNPQo472+PE+3xQ5Ynu7BkYhrZqJnooea
+         pj3Vu5cC2WowtcYon1/GARUbiQ7LALHkxK0lI+AtemUkb9PZSE6Z9D9fHBI+00+92Hx8
+         an8JCantmUZQWX1F9tHkVMO/IyjwaxYhH/Ir+6E38w+b4DIrPPcKe0i/ouRcvCU71gbX
+         TYQg==
+X-Forwarded-Encrypted: i=1; AJvYcCVjiMuuzp/63ViJI07g+cYr+cqlsbOXs9E7cr+JZWPK9pqvs5Q8lr6Zhc8bBWnuJTGh+G3MvNcXHGZp+rJsrPrEe/SFVGOEXfaZrN+m
+X-Gm-Message-State: AOJu0Yzq8LUMRU87zE82XWhQQ71/WbiZoZToN1KZTXbv2V2Z0mPdbLNQ
+	/JdOWhsYge8DF8x41kUT24GYrXkhnvmRGWvC/jjDq5UYLhxdfIH+t2gr/hXxNa8=
+X-Google-Smtp-Source: AGHT+IF61j90FxwaOMyvxHlliptjSNEA5j4fWAYLAKVrzRuIp5qzebPKQLaE+h5oX2Q4HLOyia2QSA==
+X-Received: by 2002:a05:600c:154f:b0:417:fbc2:caf8 with SMTP id f15-20020a05600c154f00b00417fbc2caf8mr1783059wmg.23.1713542612133;
+        Fri, 19 Apr 2024 09:03:32 -0700 (PDT)
+Received: from linaro.org ([62.231.100.236])
+        by smtp.gmail.com with ESMTPSA id d20-20020a05600c34d400b00419c4e85b54sm1405965wmq.16.2024.04.19.09.03.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 09:03:31 -0700 (PDT)
+Date: Fri, 19 Apr 2024 19:03:30 +0300
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Rajendra Nayak <quic_rjendra@quicinc.com>,
+	Sibi Sankar <quic_sibis@quicinc.com>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] arm64: dts: qcom: x1e80100: Drop the
+ link-frequencies from mdss_dp3_in
+Message-ID: <ZiKV0ube6J8pXXfU@linaro.org>
+References: <20240418-x1e80100-dts-fix-mdss-dp3-v1-0-9f8420e395d4@linaro.org>
+ <20240418-x1e80100-dts-fix-mdss-dp3-v1-1-9f8420e395d4@linaro.org>
+ <ZiFC8d6cD35B+PaC@hu-bjorande-lv.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240418-sbs-time-empty-now-error-v3-1-f286e29e3fca@collabora.com>
+In-Reply-To: <ZiFC8d6cD35B+PaC@hu-bjorande-lv.qualcomm.com>
 
-On Thu, Apr 18, 2024 at 01:34:23PM -0400, Nícolas F. R. A. Prado wrote:
-> Despite the RunTimeToEmpty() (0x11) function being defined in the SBS
-> specification as required, it seems that not all batteries implement it.
-> On platforms with such batteries, reading the property will cause an
-> error to be printed:
+On 24-04-18 08:57:37, Bjorn Andersson wrote:
+> On Thu, Apr 18, 2024 at 01:22:18PM +0300, Abel Vesa wrote:
+> > The link-frequences belong in mdss_dp3_out. Display is broken because of
+> > this. Drop them from mdss_dp3_in.
+> > 
 > 
-> power_supply sbs-8-000b: driver failed to report `time_to_empty_now' property: -5
+> Why is display broken because you have this property in the wrong node?
+> Isn't it broken because you don't have it in &mdss_dp3_out and this is
+> just a cleanup of an invalid property?
 > 
-> This not only pollutes the log, distracting from real problems on the
-> device, but also prevents the uevent file from being read since it
-> contains all properties, including the faulty one.
+> Perhaps that's what you're trying to say? Would be nice to have that
+> clarified.
+
+Will drop the "Display is broken because of this." part.
+
+Thanks.
+
 > 
-> The following table summarizes the findings for a handful of platforms:
+> Regards,
+> Bjorn
 > 
-> Platform                                Status  Manufacturer    Model
-> ------------------------------------------------------------------------
-> mt8186-corsola-steelix-sku131072        OK      BYD             L22B3PG0
-> mt8195-cherry-tomato-r2                 NOT OK  PANASON         AP16L5J
-> mt8192-asurada-spherion-r0              NOT OK  PANASON         AP15O5L
-> mt8183-kukui-jacuzzi-juniper-sku16      NOT OK  LGC KT0         AP16L8J
-> mt8173-elm-hana                         OK      Sunwoda         L18D3PG1
-> sc7180-trogdor-lazor-limozeen-nots-r5   NOT OK  Murata          AP18C4K
-> sc7180-trogdor-kingoftown               NOT OK  333-AC-0D-A     GG02047XL
-> rk3399-gru-kevin                        OK      SDI             4352D51
-> 
-> Detect if this is one of the quirky batteries during presence update, so
-> that hot-plugging works as expected, and if so report -ENODATA for
-> POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW, which removes it from uevent and
-> prevents throwing errors.
-> 
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> ---
-
-Hi,
-
-I'm coming back with more information after some more testing has been done.
-
-Most importantly, in the meantime, a parallel investigation uncovered that the
-time_to_empty_now issue was actually in the EC firmware:
-https://chromium-review.googlesource.com/c/chromiumos/platform/ec/+/5465747
-
-So the other faulty properties (which I'll mention below) could also be due to
-the EC firmware. These are the EC firmware version for the platforms with
-additional issues:
-* RW version:    juniper_v2.0.2509-9101a0730
-* RW version:    lazor_v2.0.6519-9923041f79
-
-Hsin-Te, do you have information on whether it's an EC issue in this case as
-well?
-
-The following table shows all the faulty properties per platform:
-
-Platform                               Manufacturer  Model      Faulty properties
----------------------------------------------------------------------------------
-mt8186-corsola-steelix-sku131072       BYD           L22B3PG0   -
-mt8195-cherry-tomato-r2                PANASON       AP16L5J    time_to_empty_now
-mt8192-asurada-spherion-r0             PANASON       AP15O5L    time_to_empty_now
-mt8183-kukui-jacuzzi-juniper-sku16     LGC KT0       AP16L8J    time_to_empty_now
-                                                                capacity_error_margin
-								constant_charge_current_max
-								constant_charge_voltage_max
-								current_avg
-								technology
-								manufacture_year
-								manufacture_month
-								manufacture_day
-								SPEC_INFO
-mt8173-elm-hana                        Sunwoda       L18D3PG1   -
-sc7180-trogdor-lazor-limozeen-nots-r5  Murata        AP18C4K    time_to_empty_now
-                                                                capacity_error_margin
-								constant_charge_current_max
-								constant_charge_voltage_max
-								current_avg
-sc7180-trogdor-kingoftown              333-AC-0D-A   GG02047XL  time_to_empty_now
-rk3399-gru-kevin                       SDI           4352D51    -
-
-If it turns out to not be an EC issue for the properties other than the
-time_to_empty_now, then quirks will need to be added for them. As for SPEC_INFO
-it's fine to keep it the way it is, as it already fails gracefully by falling
-back to disabled PEC. However it does mean sbs_update_quirks() would need to be
-moved up in sbs_update_presence(), or it will never run when SPEC_INFO fails.
-
-Also, the battery vendor for limozeen is actually "Murata ", with a trailing
-space...
-
-While at it, I also tested whether PEC was broken on all platforms (which have
-the SBS battery behind the EC I2C tunnel) to see if it could have any relation
-with the faulty properties:
-
-					                        PEC
-Platform                               Manufacturer  Model      Status
-------------------------------------------------------------------------
-mt8186-corsola-steelix-sku131072       BYD           L22B3PG0   NOT SUPPORTED
-mt8195-cherry-tomato-r2                PANASON       AP16L5J    NOT SUPPORTED
-mt8192-asurada-spherion-r0             PANASON       AP15O5L    NOT SUPPORTED
-mt8183-kukui-jacuzzi-juniper-sku16     LGC KT0       AP16L8J    NOT SUPPORTED
-mt8173-elm-hana                        Sunwoda       L18D3PG1   BROKEN
-sc7180-trogdor-lazor-limozeen-nots-r5  Murata        AP18C4K    NOT SUPPORTED
-sc7180-trogdor-kingoftown              333-AC-0D-A   GG02047XL  NOT SUPPORTED
-rk3399-gru-kevin                       SDI           4352D51    BROKEN
-
-Where on the platforms marked BROKEN all properties would fail like so:
-power_supply sbs-9-000b: driver failed to report `status' property: -74
-
-Those platforms indeed had PEC enabled:
-<6>[   18.109211] sbs-battery 9-000b: PEC: enabled
-
-and I verified the reported SBS version was SBS_VERSION_1_1_WITH_PEC.
-
-Meanwhile, all the other platforms, marked NOT SUPPORTED, didn't actually have
-PEC enabled:
-<6>[   14.563070] sbs-battery 8-000b: PEC: disabled
-
-which I verified was due to version SBS_VERSION_1_0 being reported (except for
-jacuzzi, which fails to report a version).
-
-So all platforms that had batteries that support PEC, have broken PEC, but most
-don't support it. In any case there doesn't seem to be a correlation with the
-properties that the batteries support, so it looks to be an orthogonal issue.
-
-Thanks,
-Nícolas
+> > Fixes: 1940c25eaa63 ("arm64: dts: qcom: x1e80100: Add display nodes")
+> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/x1e80100.dtsi | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+> > index f5a3b39ae70e..0642b5e88639 100644
+> > --- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+> > @@ -4096,7 +4096,6 @@ port@0 {
+> >  						mdss_dp3_in: endpoint {
+> >  							remote-endpoint = <&mdss_intf5_out>;
+> >  
+> > -							link-frequencies = /bits/ 64 <8100000000>;
+> >  						};
+> >  					};
+> >  
+> > 
+> > -- 
+> > 2.34.1
+> > 
 
