@@ -1,528 +1,540 @@
-Return-Path: <linux-kernel+bounces-151108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A35A18AA931
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:29:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B638AA932
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:30:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 177171F21BDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:29:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7458B1C20F41
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D7D4779E;
-	Fri, 19 Apr 2024 07:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A50E43145;
+	Fri, 19 Apr 2024 07:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="GvsB4zR6"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QcRoJ/dY"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A643FBB1
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:29:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34AA73FE28
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713511767; cv=none; b=WM3ZLC2z8tmeLH31gJtNKT1mgigVGcWYeTfH8m+7druTFuPDzREk8HgNDa/p1HwT4M128fTUhn6WPzhUvNSDliW7YUjMyKjTDnpDbERjMk8FJ9N+RdnzLE70pXXktjnKGlMhYKSdLkFNRXej25lRnVFMe9RTdw2T09RmCI8EZnc=
+	t=1713511800; cv=none; b=CuLzIUa3WPIHCvhyO4egKjqPR8OxfpoKsJV4zdw8BFsQE1sJ3jLqAe8KGo7FP0c780DRCeY2fkmG854k05bkFrR6LV2k6vltbO9wOrmUFvwn/PPYsJ4Ks3GF2l2+JnFxWxNlXLw4IHHk6FgxZuS4z+cWZj+dIRFNHTLneb6pl+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713511767; c=relaxed/simple;
-	bh=S8DO2HFyYSl1dcSD9FRB2ZOM2NyN8saMkxk/luRtdwA=;
+	s=arc-20240116; t=1713511800; c=relaxed/simple;
+	bh=ahkhUdPHAMjD3VvvBXRd4BNyb3dIuhzU4miZCmxNIpE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C6B+mui539GMcNdourfNIpSLX8F1rrVNUrDHvuME5yswNg316GPNveoaE6h+ALpI6LeWnt425CqOPLnREXWPgeySvXD2BQOAxvCRpFioZ1z90ozmuTyMpd7Xi4Qen/BK4qA5VHOY3sWuPi40qZKLvnXrgsUfPYIYqbHHHVu6eCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=GvsB4zR6; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a5568bef315so305602366b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 00:29:25 -0700 (PDT)
+	 To:Cc:Content-Type; b=tFh0RT66hWVSC1VKUvrF5PzBUAjRGFoiDmbo/NnfKL4GWJeB+j5QN5FCwOFlCV3/dX8lX2AhYBKn+QV1MSFtepPbBNOsbVsKnmjpPk+hCYREsEJ5Jit3h5FCrc53Dvhvh2NuG1XMjXnUTQEml9ysY0z7ECq7/tCOyESgYngIusU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QcRoJ/dY; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ed2170d89fso1882650b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 00:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1713511764; x=1714116564; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713511797; x=1714116597; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mElcEKhuLk52w4oq9MFLR6eWNTcnGQX29vGz3K6vKu8=;
-        b=GvsB4zR6dzOQ4NYRftjFiNLlOjZ90ZLEvACK7Y+B26ugDBQGQ6VytUyLxbFrZLI4KM
-         yKvmLMyN7++ibpQrgfFobFJUJF5pzDUUkjd1Q6d8IAthHnmSE3eB17COM66si6kMLAEb
-         PZqDe70MdmNv9VRpnQXG/mTrDuhmir7NPshyw=
+        bh=U0lXq+hMvVi2VAxm5JuigBCRrlENJbnYST88LTFidjI=;
+        b=QcRoJ/dYUSCml0zFy7Ge9wU+TNQRTAfnmiUVMabvaIXmF7xyq4u2gpCM/EGCqSj2nk
+         WJ7kQNZ8RKYaiNWlyFSoY4b5b/lNI2Ndc29ilqtJCN3jDdYZ7AVFMVupeSJIJg1kO17g
+         axcGsBHk0r54vysMu81nKefOMRSUSTRasyfOGYt6Fk8WORiR0gbelfV2f2+2CTSNQXJY
+         WABlQMjPd7M0IREy+0Z38LZCTA3Au8T15CNhQZjiYWzRb0/qKcBLd24enG1YLzifLzhg
+         ipmhI+o35qycXY0fA9u76NTrB5GAkzktFyLKVYvVQA4G4cwUbl7N4+08ZwsLRLX992T1
+         aEEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713511764; x=1714116564;
+        d=1e100.net; s=20230601; t=1713511797; x=1714116597;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mElcEKhuLk52w4oq9MFLR6eWNTcnGQX29vGz3K6vKu8=;
-        b=jQ8UXJST5RRKn8SdGUcU5vL5aQpDaGAH+muQ18J/clRCTqrmo2B6zdSFQ8lW3RBK7P
-         E4F6+VmMO12rFFeMB5EgbiP0eJkk5knORzmwxAQoqWavhlw0ZTja22lXM/IK78xfIFAn
-         GVW4OiWckpWAHg2kjxYZtMxp33XqSF3nUGDcAVwVSBv1Fw+p2U1Vm5Zn0b9AZTLfT2JP
-         qsG+DRXr3/8O0QuFmUPDXAoNQMJsiB/Tg0EGbbNKuJdBo+yf+s1pzLBTN/I/zeHfMmkS
-         +hcPWJF8/STEG5EI+mkRtj9/wFHDYnbzG03N10ln5RYyvMuv2fDVuuhpytjU8hxZ8FWE
-         b8IA==
-X-Forwarded-Encrypted: i=1; AJvYcCWwRMCAqZTfVTZICAzfReNCReda3RDeDd/gbXd/nsp73iZFPUVE0QeQQh9V5Mae3k4OK2GDbjPyJ2cARsuN17DJ6ouaqsnEXIdCSoDF
-X-Gm-Message-State: AOJu0Ywfj6nO8E7Re3oVQflGEHi9lBnMcg+BDEfLojJRGiCtEp7B/SHk
-	lrZnVdwU64e3V07R5lCoqs9Qw6vGTbXNMhocZqQNLgiFAyrHOJ5nPPtx5ENjcvr3U1ryQ//lrHm
-	VpeRmKwVnkQe/sFtqw3+Hsny6rGJBLW7XnZNh6w==
-X-Google-Smtp-Source: AGHT+IFvXL5mXipH36N+6mGBKq6I3EEwZw9bJxy5jGM+9DUiRF3PSsTJCVa53BWXJrQWoHfZi4MxqLBj8Cm/a1cLdIg=
-X-Received: by 2002:a17:906:68cc:b0:a52:3451:8a18 with SMTP id
- y12-20020a17090668cc00b00a5234518a18mr1320987ejr.29.1713511763595; Fri, 19
- Apr 2024 00:29:23 -0700 (PDT)
+        bh=U0lXq+hMvVi2VAxm5JuigBCRrlENJbnYST88LTFidjI=;
+        b=BAjfJXcU/QaGK+S+IYJQMEZlY5pPphP1oNhRiBqbrjCNjeH+SgSquRIDPJncb8I1kE
+         SFDmxXvjs/xrYRA1iStg6k0TDuJz5V6Aog46tauIpf0Ll/YWyWGwGDU/OutS9Yt3uIsX
+         3hxbYfEAkhff/99LaqMl2QVWGW9j97hQ2sE+rJAdLggfFrNS0hticEPceM76BYdC1HDo
+         WPpXHqOZZi8eOCxx3i+T3cJS3WrOndxndRgYIlz6piNBVNoxB9y9nfcx9qaz85FXWWB0
+         tFRKPTBpe5aYOU+FMIobyzJWwMTJohcaBd3nHnfgK1VMXXZrhGuADqr2cc6P2qvAqwQ9
+         GiLg==
+X-Forwarded-Encrypted: i=1; AJvYcCVvY+jZ8HQYM8sVw4w6AGOtlENFcjdqtydQlq81RpiV7NJThp8umC03SyjWhF+V2LggYSC1ln5mq5mkDD7xkMsxWGEVXY0b3ejmIM54
+X-Gm-Message-State: AOJu0YzHozqxHpqe9ndDoLu7frd2mYHRO8H6QtAW45lz3WWH/F1LzSqN
+	Xezvk9i34ShQN2hnfBh6JJpDVn6dKZrybZV1hRKR//rTsR+1VTx+DOb6u0bUvje837fz6LeKVzP
+	Wn6VI08/OHe70F+vM01+arKkiKho=
+X-Google-Smtp-Source: AGHT+IF9OP0WC6ChhiWw35suxXjThJcw839blgjfTAOuU3YMlbmvj84jNJxeg/ABKMfSbeV/lVRsRKtUfjZEKkIH37s=
+X-Received: by 2002:a17:90b:4aca:b0:29b:c31:1fe1 with SMTP id
+ mh10-20020a17090b4aca00b0029b0c311fe1mr2059650pjb.10.1713511797400; Fri, 19
+ Apr 2024 00:29:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418133923.3705-1-fabio.aiuto@engicam.com> <20240418133923.3705-4-fabio.aiuto@engicam.com>
-In-Reply-To: <20240418133923.3705-4-fabio.aiuto@engicam.com>
-From: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-Date: Fri, 19 Apr 2024 09:29:12 +0200
-Message-ID: <CAOf5uwmy_3NOupkroYX=W2WJKK1sgg0r0L22fOrbbZ3Z6z1jFA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: imx93: Add Engicam i.Core MX93 EDIMM
- 2.0 Starter Kit
-To: Fabio Aiuto <fabio.aiuto@engicam.com>
-Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	Matteo Lisi <matteo.lisi@engicam.com>, Mirko Ardinghi <mirko.ardinghi@engicam.com>
+References: <000000000000b24903061520f3e9@google.com> <CALm+0cWx1kYtftE4nj7Jjgx2_bmNmSrBAgd36ksSvxJtNVhxHg@mail.gmail.com>
+ <CALm+0cWRC1kqLJvmEqda4O97PZ-n0R0UQ35=fi6oA3rLsPoUSQ@mail.gmail.com>
+ <8f281a10-b85a-4586-9586-5bbc12dc784f@paulmck-laptop> <CALm+0cWN0+cCsYddBUefya3aUw9c9Xn89GVV=Ys1_UPjS19WrQ@mail.gmail.com>
+ <4c09abb6-4f6e-42d7-9944-c5da995649cb@paulmck-laptop> <CALm+0cVaLfE2ieK9aqh9yHkPDyO7zWbMe9K6WjTUgm4t9SnSFQ@mail.gmail.com>
+ <ac7bf2c3-c752-46db-a5c8-0c55a1af8561@paulmck-laptop> <CALm+0cXGBPWxiNOkAoQG4hdnKCeVVR-APbfBPk9OGeU2RW+bKA@mail.gmail.com>
+ <9e12bfe8-a3c2-47b2-8a3f-5b61b0bd5c08@paulmck-laptop>
+In-Reply-To: <9e12bfe8-a3c2-47b2-8a3f-5b61b0bd5c08@paulmck-laptop>
+From: Z qiang <qiang.zhang1211@gmail.com>
+Date: Fri, 19 Apr 2024 15:29:45 +0800
+Message-ID: <CALm+0cX2o-o1FGvbuNLeL+Y-mWBUTYBzXYvcebgyT1N-t7or6g@mail.gmail.com>
+Subject: Re: [syzbot] [kernel?] WARNING: suspicious RCU usage in __do_softirq
+To: paulmck@kernel.org
+Cc: syzbot <syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com>, 
+	linux-kernel@vger.kernel.org, peterz@infradead.org, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Fabio
-
-On Thu, Apr 18, 2024 at 3:43=E2=80=AFPM Fabio Aiuto <fabio.aiuto@engicam.co=
-m> wrote:
+On Fri, Apr 19, 2024 at 3:12=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
 >
-> i.Core MX93 is a NXP i.MX93 based SoM by Enigcam which
-> needs to be mounted on top of Engicam baseboards.
+> On Fri, Apr 19, 2024 at 01:50:02PM +0800, Z qiang wrote:
+> > >
+> > > On Thu, Apr 18, 2024 at 05:49:38PM +0800, Z qiang wrote:
+> > > > >
+> > > > > On Wed, Apr 17, 2024 at 10:25:01AM +0800, Z qiang wrote:
+> > > > > > >
+> > > > > > > On Tue, Apr 16, 2024 at 04:44:54PM +0800, Z qiang wrote:
+> > > > > > > > On Tue, Apr 16, 2024 at 4:10=E2=80=AFPM Z qiang <qiang.zhan=
+g1211@gmail.com> wrote:
+> > > > > > > > >
+> > > > > > > > > Cc: Paul
+> > > > > > > > > >
+> > > > > > > > > > Hello,
+> > > > > > > > > >
+> > > > > > > > > > syzbot found the following issue on:
+> > > > > > > > > >
+> > > > > > > > > > HEAD commit:    c0b832517f62 Add linux-next specific fi=
+les for 20240402
+> > > > > > > > > > git tree:       linux-next
+> > > > > > > > > > console output: https://syzkaller.appspot.com/x/log.txt=
+?x=3D15f64776180000
+> > > > > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config=
+?x=3Dafcaf46d374cec8c
+> > > > > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=
+=3Ddce04ed6d1438ad69656
+> > > > > > > > > > compiler:       Debian clang version 15.0.6, GNU ld (GN=
+U Binutils for Debian) 2.40
+> > > > > > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.s=
+yz?x=3D10f00471180000
+> > > > > > > > > >
+> > > > > > > > > > Downloadable assets:
+> > > > > > > > > > disk image: https://storage.googleapis.com/syzbot-asset=
+s/0d36ec76edc7/disk-c0b83251.raw.xz
+> > > > > > > > > > vmlinux: https://storage.googleapis.com/syzbot-assets/6=
+f9bb4e37dd0/vmlinux-c0b83251.xz
+> > > > > > > > > > kernel image: https://storage.googleapis.com/syzbot-ass=
+ets/2349287b14b7/bzImage-c0b83251.xz
+> > > > > > > > > >
+> > > > > > > > > > IMPORTANT: if you fix the issue, please add the followi=
+ng tag to the commit:
+> > > > > > > > > > Reported-by: syzbot+dce04ed6d1438ad69656@syzkaller.apps=
+potmail.com
+> > > > > > > > > >
+> > > > > > > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > > > > > > WARNING: suspicious RCU usage
+> > > > > > > > > > 6.9.0-rc2-next-20240402-syzkaller #0 Not tainted
+> > > > > > > > > > -----------------------------
+> > > > > > > > > > kernel/rcu/tree.c:276 Illegal rcu_softirq_qs() in RCU r=
+ead-side critical section!
+> > > > > > > > > >
+> > > > > > > > > > other info that might help us debug this:
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > rcu_scheduler_active =3D 2, debug_locks =3D 1
+> > > > > > > > > > 1 lock held by ksoftirqd/0/16:
+> > > > > > > > > >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}=
+, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+> > > > > > > > > >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}=
+, at: rcu_read_lock_sched include/linux/rcupdate.h:933 [inline]
+> > > > > > > > > >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}=
+, at: pfn_valid include/linux/mmzone.h:2019 [inline]
+> > > > > > > > > >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}=
+, at: __virt_addr_valid+0x183/0x520 arch/x86/mm/physaddr.c:65
+> > > > > > > > > >
+> > > > > > > > > > stack backtrace:
+> > > > > > > > > > CPU: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.9.0-rc2-=
+next-20240402-syzkaller #0
+> > > > > > > > > > Hardware name: Google Google Compute Engine/Google Comp=
+ute Engine, BIOS Google 03/27/2024
+> > > > > > > > > > Call Trace:
+> > > > > > > > > >  <IRQ>
+> > > > > > > > > >  __dump_stack lib/dump_stack.c:88 [inline]
+> > > > > > > > > >  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+> > > > > > > > > >  lockdep_rcu_suspicious+0x221/0x340 kernel/locking/lock=
+dep.c:6712
+> > > > > > > > > >  rcu_softirq_qs+0xd9/0x370 kernel/rcu/tree.c:273
+> > > > > > > > > >  __do_softirq+0x5fd/0x980 kernel/softirq.c:568
+> > > > > > >
+> > > > > > > Huh.  This statement is supposed to prevent this call to __do=
+_softirq()
+> > > > > > > from interrupt exit::
+> > > > > > >
+> > > > > > >         if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> > > > > > >             __this_cpu_read(ksoftirqd) =3D=3D current)
+> > > > > > >
+> > > > > > > So was the ksoftirqd kthread interrupted at a point where it =
+happens to
+> > > > > > > have softirq enabled?
+> > > > > >
+> > > > > > It should look like this:
+> > > > > > schedule()
+> > > > > > switch_to ksoftirqd/0
+> > > > > > finish_task_switch
+> > > > >
+> > > > > So this CPU's ksoftirqd task is running.
+> > > > >
+> > > > > > ->put_task_struct_rcu_user
+> > > > > >    ->call_rcu(&task->rcu, delayed_put_task_struct)
+> > > > > >       ->__kasan_record_aux_stack
+> > > > > >          ->pfn_valid
+> > > > > >             ->rcu_read_lock_sched
+> > > > > >                 <interrupt>
+> > > > > >                  __irq_exit_rcu
+> > > > > >                  ->__do_softirq
+> > > > > >                     -> if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> > > > > >                              __this_cpu_read(ksoftirqd) =3D=3D =
+current)
+> > > > >
+> > > > > But we are also running __do_softirq() from return from interrupt=
+  While
+> > > > > running in this mode, we are not supposed to invoke rcu_softirq_q=
+s().
+> > > > > But the "__this_cpu_read(ksoftirqd) =3D=3D current" check yields =
+"true",
+> > > > > so we do call rcu_softirq_qs() anyway.  That is a bug.
+> > > > >
+> > > > > We need to upgrade or replace that check to something that return=
+s true
+> > > > > only if called at process level from ksoftirqd.
+> > > > >
+> > > > > Any thoughts on a good way to do that?  For example, would adding=
+ "&&
+> > > > > in_task()" do the trick, or are there other unfortunate corner ca=
+ses?
+> > > >
+> > > > The rcu_softirq_qs() is invoked in softirq_handle_begin/end() criti=
+cal section,
+> > > > in softirqd/0 task context,  the "in_task()" should return false, w=
+ill miss
+> > > > qs report in softirqd/0 task context.
+> > > >
+> > > > diff --git a/kernel/softirq.c b/kernel/softirq.c
+> > > > index b315b21fb28c..9b8f0c0f7675 100644
+> > > > --- a/kernel/softirq.c
+> > > > +++ b/kernel/softirq.c
+> > > > @@ -563,10 +563,6 @@ asmlinkage __visible void __softirq_entry
+> > > > __do_softirq(void)
+> > > >                 pending >>=3D softirq_bit;
+> > > >         }
+> > > >
+> > > > -       if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> > > > -           __this_cpu_read(ksoftirqd) =3D=3D current)
+> > > > -               rcu_softirq_qs();
+> > > > -
+> > > >         local_irq_disable();
+> > > >
+> > > >         pending =3D local_softirq_pending();
+> > > > @@ -915,6 +911,8 @@ static int ksoftirqd_should_run(unsigned int cp=
+u)
+> > > >
+> > > >  static void run_ksoftirqd(unsigned int cpu)
+> > > >  {
+> > > > +       unsigned long last_qs =3D jiffies;
+> > > > +
+> > > >         ksoftirqd_run_begin();
+> > > >         if (local_softirq_pending()) {
+> > > >                 /*
+> > > > @@ -923,6 +921,7 @@ static void run_ksoftirqd(unsigned int cpu)
+> > > >                  */
+> > > >                 __do_softirq();
+> > > >                 ksoftirqd_run_end();
+> > > > +               rcu_softirq_qs_periodic(last_qs);
+> > >
+> > > Unfortunately, we need the quiescent state to be within __do_softirq(=
+).
+> > >
+> > > >                 cond_resched();
+> > > >                 return;
+> > > >         }
+> > > >
+> > > > Any thoughts?
+> > >
+> > > Can we mask the return value from preempt_count(), for example, as sh=
+own
+> > > in the CONFIG_PREEMPTION=3Dn version of rcu_flavor_sched_clock_irq()?
+> > >
+> > > The trick is that we should be able to ignore SOFTIRQ_MASK because
+> > > __do_softirq() should not be invoked when softirqs are disabled.
+> > > Emphasis on "should".  ;-)
+> >
+> >
+> >
+> > Does it mean this?
+> >
+> > diff --git a/kernel/softirq.c b/kernel/softirq.c
+> > index b315b21fb28c..315b717ec944 100644
+> > --- a/kernel/softirq.c
+> > +++ b/kernel/softirq.c
+> > @@ -517,6 +517,8 @@ asmlinkage __visible void __softirq_entry __do_soft=
+irq(void)
+> >         bool in_hardirq;
+> >         __u32 pending;
+> >         int softirq_bit;
+> > +       bool preempt_enabled =3D (IS_ENABLED(CONFIG_PREEMPT_COUNT) &&
+> > +                                       !(preempt_count() & PREEMPT_MAS=
+K));
+> >
+> >         /*
+> >          * Mask out PF_MEMALLOC as the current task context is borrowed=
+ for the
+> > @@ -564,7 +566,8 @@ asmlinkage __visible void __softirq_entry __do_soft=
+irq(void)
+> >         }
+> >
+> >         if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> > -           __this_cpu_read(ksoftirqd) =3D=3D current)
+> > +           __this_cpu_read(ksoftirqd) =3D=3D current &&
+> > +           preempt_enabled && !rcu_preempt_depth())
+> >                 rcu_softirq_qs();
+> >
+> >         local_irq_disable();
+> >
+> > For built with CONFIG_PREEMPTION=3Dn and CONFIG_COUNT=3Dn kernels,
+> > the preempt_enabled is always  false.
 >
-> Add support for EDIMM 2.0 Starter Kit hosting
-> i.Core MX93.
+> Assuming that this works, it is preferred over the next one.
+
+But for built with CONFIG_PREEMPTION=3Dn and CONFIG_COUNT=3Dn kernels,
+will miss invoke rcu_softirq_qs(), even if in the ksoftirqd task context.
+
+Thanks
+Zqiang
+
 >
-> Starter Kit main features:
+>                                                         Thanx, Paul
 >
-> 2x LVDS interfaces
-> HDMI output
-> Audio out
-> Mic in
-> Micro SD card slot
-> USB 3.0 A port
-> 3x USB 2.0 A port
-> Gb Ethernet
-> 2x CAN bus, 3x UART interfaces
-> SIM card slot
-> M.2 KEY_B slot
->
-> Cc: Matteo Lisi <matteo.lisi@engicam.com>
-> Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-> Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
-> ---
->  arch/arm64/boot/dts/freescale/Makefile        |   1 +
->  .../dts/freescale/imx93-icore-mx93-edimm2.dts | 354 ++++++++++++++++++
->  2 files changed, 355 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2=
-dts
->
-> diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts=
-/freescale/Makefile
-> index 045250d0a040..d26c0a458a44 100644
-> --- a/arch/arm64/boot/dts/freescale/Makefile
-> +++ b/arch/arm64/boot/dts/freescale/Makefile
-> @@ -226,6 +226,7 @@ dtb-$(CONFIG_ARCH_MXC) +=3D imx8qxp-mek.dtb
->  dtb-$(CONFIG_ARCH_MXC) +=3D imx8qxp-tqma8xqp-mba8xx.dtb
->  dtb-$(CONFIG_ARCH_MXC) +=3D imx8ulp-evk.dtb
->  dtb-$(CONFIG_ARCH_MXC) +=3D imx93-11x11-evk.dtb
-> +dtb-$(CONFIG_ARCH_MXC) +=3D imx93-icore-mx93-edimm2.dtb
->  dtb-$(CONFIG_ARCH_MXC) +=3D imx93-phyboard-segin.dtb
->  dtb-$(CONFIG_ARCH_MXC) +=3D imx93-tqma9352-mba93xxca.dtb
->  dtb-$(CONFIG_ARCH_MXC) +=3D imx93-tqma9352-mba93xxla.dtb
-> diff --git a/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts b/=
-arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> new file mode 100644
-> index 000000000000..8d57374eebdf
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/freescale/imx93-icore-mx93-edimm2.dts
-> @@ -0,0 +1,354 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright 2022 NXP
-> + * Copyright 2024 Engicam s.r.l.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "imx93-icore-mx93.dtsi"
-> +
-> +/ {
-> +       model =3D "Engicam i.Core MX93 - EDIMM 2 Starterkit";
-> +       compatible =3D "engicam,icore-mx93-edimm2", "engicam,icore-mx93",
-> +                    "fsl,imx93";
-> +
-> +       aliases {
-> +               rtc1 =3D &bbnsm_rtc;
-> +       };
-> +
-> +       bt_reg_on: regulator-btregon {
-> +               compatible =3D "regulator-gpio";
-> +               regulator-name =3D "BT_REG_ON";
-> +               pinctrl-names =3D "default";
-> +               regulator-min-microvolt =3D <100000>;
-> +               regulator-max-microvolt =3D <3300000>;
-> +               states =3D <3300000 0x1>, <100000 0x0>;
-> +               gpios =3D <&gpio2 19 GPIO_ACTIVE_HIGH>;
-> +               regulator-always-on;
-> +       };
-> +
-
-Are you sure about regulator always on? I have seen that you broadcom
-wifi and bluetooth connected. Same comment for the other
-patches where you have almost all the regulator boot on , always on. I
-can not be sure that is really true
-
-Please take a look here
-arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-common.dtsi
-
-Michael
-
-> +       chosen {
-> +               stdout-path =3D &lpuart1;
-> +       };
-> +
-> +       reg_1v8_sgtl: regulator-1v8-sgtl {
-> +               compatible =3D "regulator-fixed";
-> +               regulator-name =3D "1v8_sgtl";
-> +               regulator-min-microvolt =3D <1800000>;
-> +               regulator-max-microvolt =3D <1800000>;
-> +               always-on;
-> +       };
-> +
-> +       reg_3v3_avdd_sgtl: regulator-3v3-avdd-sgtl {
-> +               compatible =3D "regulator-fixed";
-> +               regulator-name =3D "3v3_avdd_sgtl";
-> +               regulator-min-microvolt =3D <3300000>;
-> +               regulator-max-microvolt =3D <3300000>;
-> +               always-on;
-> +       };
-> +
-> +       reg_3v3_sgtl: regulator-3v3-sgtl {
-> +               compatible =3D "regulator-fixed";
-> +               regulator-name =3D "3v3_sgtl";
-> +               regulator-min-microvolt =3D <3300000>;
-> +               regulator-max-microvolt =3D <3300000>;
-> +               always-on;
-> +       };
-> +
-> +       reserved-memory {
-> +               #address-cells =3D <2>;
-> +               #size-cells =3D <2>;
-> +               ranges;
-> +
-> +               linux,cma {
-> +                       compatible =3D "shared-dma-pool";
-> +                       reusable;
-> +                       alloc-ranges =3D <0 0x80000000 0 0x40000000>;
-> +                       size =3D <0 0x10000000>;
-> +                       linux,cma-default;
-> +               };
-> +
-> +               rsc_table: rsc-table@2021f000 {
-> +                       reg =3D <0 0x2021f000 0 0x1000>;
-> +                       no-map;
-> +               };
-> +
-> +               vdevbuffer: vdevbuffer@a4020000 {
-> +                       compatible =3D "shared-dma-pool";
-> +                       reg =3D <0 0xa4020000 0 0x100000>;
-> +                       no-map;
-> +               };
-> +
-> +               vdev0vring0: vdev0vring0@a4000000 {
-> +                       reg =3D <0 0xa4000000 0 0x8000>;
-> +                       no-map;
-> +               };
-> +
-> +               vdev0vring1: vdev0vring1@a4008000 {
-> +                       reg =3D <0 0xa4008000 0 0x8000>;
-> +                       no-map;
-> +               };
-> +
-> +               vdev1vring0: vdev1vring0@a4000000 {
-> +                       reg =3D <0 0xa4010000 0 0x8000>;
-> +                       no-map;
-> +               };
-> +
-> +               vdev1vring1: vdev1vring1@a4018000 {
-> +                       reg =3D <0 0xa4018000 0 0x8000>;
-> +                       no-map;
-> +               };
-> +       };
-> +
-> +       sound {
-> +               compatible =3D "simple-audio-card";
-> +               simple-audio-card,name =3D "imx93-sgtl5000";
-> +               simple-audio-card,format =3D "i2s";
-> +               simple-audio-card,bitclock-master =3D <&dailink_master>;
-> +               simple-audio-card,frame-master =3D <&dailink_master>;
-> +               /*simple-audio-card,mclk-fs =3D <1>;*/
-> +               simple-audio-card,cpu {
-> +                       sound-dai =3D <&sai3>;
-> +               };
-> +
-> +               dailink_master: simple-audio-card,codec {
-> +                       sound-dai =3D <&sgtl5000>;
-> +                       clocks =3D <&clk IMX93_CLK_SAI3_IPG>;
-> +               };
-> +       };
-> +
-> +       usdhc3_pwrseq: usdhc3-pwrseq {
-> +               compatible =3D "mmc-pwrseq-simple";
-> +       };
-> +
-> +       wl_reg_on: regulator-wlregon {
-> +               compatible =3D "regulator-gpio";
-> +               pinctrl-names =3D "default";
-> +               regulator-name =3D "WL_REG_ON";
-> +               regulator-min-microvolt =3D <100000>;
-> +               regulator-max-microvolt =3D <3300000>;
-> +               states =3D <3300000 0x1>,
-> +                                <100000 0x0>;
-> +               gpios =3D <&gpio2 22 GPIO_ACTIVE_HIGH>;
-> +               enable-active-high;
-> +               vin-supply =3D <&bt_reg_on>;
-> +       };
-> +};
-> +
-> +&cm33 {
-> +       mbox-names =3D "tx", "rx", "rxdb";
-> +       mboxes =3D <&mu1 0 1>,
-> +                <&mu1 1 1>,
-> +                <&mu1 3 1>;
-> +       memory-region =3D <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>,
-> +                       <&vdev1vring0>, <&vdev1vring1>, <&rsc_table>;
-> +       status =3D "okay";
-> +};
-> +
-> +&flexcan1 {
-> +       pinctrl-names =3D "default";
-> +       pinctrl-0 =3D <&pinctrl_flexcan1>;
-> +       fsl,stop-mode =3D <&aonmix_ns_gpr 0x10 4>;
-> +       status =3D "okay";
-> +};
-> +
-> +&flexcan2 {
-> +       pinctrl-names =3D "default";
-> +       pinctrl-0 =3D <&pinctrl_flexcan2>;
-> +       fsl,stop-mode =3D <&aonmix_ns_gpr 0x10 4>;
-> +       status =3D "okay";
-> +};
-> +
-> +&lpi2c1 {
-> +       #address-cells =3D <1>;
-> +       #size-cells =3D <0>;
-> +       clock-frequency =3D <400000>;
-> +       pinctrl-names =3D "default", "sleep";
-> +       pinctrl-0 =3D <&pinctrl_lpi2c1>;
-> +       pinctrl-1 =3D <&pinctrl_lpi2c1>;
-> +       status =3D "okay";
-> +
-> +       pcf8523: rtc@68 {
-> +               compatible =3D "nxp,pcf8523";
-> +               reg =3D <0x68>;
-> +       };
-> +
-> +       sgtl5000: codec@a {
-> +               compatible =3D "fsl,sgtl5000";
-> +               status =3D "okay";
-> +               #sound-dai-cells =3D <0>;
-> +               reg =3D <0x0a>;
-> +               clocks =3D <&clk IMX93_CLK_SAI3_GATE>;
-> +               clock-names =3D "mclk";
-> +               assigned-clock-rates =3D <12000000>, <12000000>;
-> +               VDDA-supply =3D <&reg_3v3_avdd_sgtl>;
-> +               VDDIO-supply =3D <&reg_3v3_sgtl>;
-> +               VDDD-supply =3D <&reg_1v8_sgtl>;
-> +       };
-> +};
-> +
-> +&lpuart1 { /* console */
-> +       pinctrl-names =3D "default";
-> +       pinctrl-0 =3D <&pinctrl_uart1>;
-> +       status =3D "okay";
-> +};
-> +
-> +&lpuart5 { /* RS485 */
-> +       pinctrl-names =3D "default";
-> +       pinctrl-0 =3D <&pinctrl_uart5>;
-> +       status =3D "okay";
-> +};
-> +
-> +&lpuart8 { /* RS232 */
-> +       pinctrl-names =3D "default";
-> +       pinctrl-0 =3D <&pinctrl_uart8>;
-> +       status =3D "okay";
-> +};
-> +
-> +&micfil {
-> +       #sound-dai-cells =3D <0>;
-> +       pinctrl-names =3D "default";
-> +       assigned-clocks =3D <&clk IMX93_CLK_PDM>;
-> +       assigned-clock-parents =3D <&clk IMX93_CLK_AUDIO_PLL>;
-> +       assigned-clock-rates =3D <196608000>;
-> +       status =3D "okay";
-> +};
-> +
-> +&mu1 {
-> +       status =3D "okay";
-> +};
-> +
-> +&mu2 {
-> +       status =3D "okay";
-> +};
-> +
-> +&sai1 {
-> +       #sound-dai-cells =3D <0>;
-> +       pinctrl-names =3D "default";
-> +       pinctrl-0 =3D <&pinctrl_sai1>;
-> +       assigned-clocks =3D <&clk IMX93_CLK_SAI1>;
-> +       assigned-clock-parents =3D <&clk IMX93_CLK_AUDIO_PLL>;
-> +       assigned-clock-rates =3D <12288000>;
-> +       status =3D "okay";
-> +};
-> +
-> +&sai3 {
-> +       pinctrl-names =3D "default";
-> +       #sound-dai-cells =3D <0>;
-> +       pinctrl-0 =3D <&pinctrl_sai3>;
-> +       assigned-clocks =3D <&clk IMX93_CLK_SAI3>;
-> +       assigned-clock-parents =3D <&clk IMX93_CLK_AUDIO_PLL>;
-> +       assigned-clock-rates =3D <24576000>;
-> +       fsl,sai-mclk-direction-output;
-> +       status =3D "okay";
-> +};
-> +
-> +&usdhc3 { /* WiFi */
-> +       pinctrl-names =3D "default", "state_100mhz", "state_200mhz";
-> +       pinctrl-0 =3D <&pinctrl_usdhc3>, <&pinctrl_laird>;
-> +       pinctrl-1 =3D <&pinctrl_usdhc3>, <&pinctrl_laird>;
-> +       pinctrl-2 =3D <&pinctrl_usdhc3>, <&pinctrl_laird>;
-> +       vmmc-supply =3D <&wl_reg_on>;
-> +       bus-width =3D <4>;
-> +       no-1-8-v;
-> +       non-removable;
-> +       max-frequency =3D <25000000>;
-> +       status =3D "okay";
-> +
-> +       #address-cells =3D <1>;
-> +       #size-cells =3D <0>;
-> +
-> +       brcmf: bcrmf@1 {
-> +               reg =3D <1>;
-> +               compatible =3D "brcm,bcm4329-fmac";
-> +       };
-> +};
-> +
-> +&wdog3 {
-> +       status =3D "okay";
-> +};
-> +
-> +&iomuxc {
-> +
-> +       pinctrl_flexcan1: flexcan1grp {
-> +               fsl,pins =3D <
-> +                       MX93_PAD_PDM_CLK__CAN1_TX               0x139e
-> +                       MX93_PAD_PDM_BIT_STREAM0__CAN1_RX       0x139e
-> +               >;
-> +       };
-> +
-> +       pinctrl_flexcan2: flexcan2grp {
-> +               fsl,pins =3D <
-> +                       MX93_PAD_GPIO_IO25__CAN2_TX     0x139e
-> +                       MX93_PAD_GPIO_IO27__CAN2_RX     0x139e
-> +               >;
-> +       };
-> +
-> +       pinctrl_laird: lairdgrp {
-> +               fsl,pins =3D <
-> +                       MX93_PAD_GPIO_IO22__GPIO2_IO22          0x31e // =
-WL_REG_ON
-> +                       MX93_PAD_GPIO_IO19__GPIO2_IO19          0x31e // =
-BT_REG_ON
-> +               >;
-> +       };
-> +
-> +       pinctrl_lpi2c1: lpi2c1grp {
-> +               fsl,pins =3D <
-> +                       MX93_PAD_I2C1_SCL__LPI2C1_SCL           0x40000b9=
-e
-> +                       MX93_PAD_I2C1_SDA__LPI2C1_SDA           0x40000b9=
-e
-> +               >;
-> +       };
-> +
-> +       pinctrl_sai1: sai1grp {
-> +               fsl,pins =3D <
-> +                       MX93_PAD_SAI1_TXC__SAI1_TX_BCLK         0x31e
-> +                       MX93_PAD_SAI1_TXFS__SAI1_TX_SYNC        0x31e
-> +                       MX93_PAD_SAI1_TXD0__SAI1_TX_DATA00      0x31e
-> +                       MX93_PAD_SAI1_RXD0__SAI1_RX_DATA00      0x31e
-> +               >;
-> +       };
-> +
-> +       pinctrl_sai3: sai3grp {
-> +               fsl,pins =3D <
-> +                       MX93_PAD_GPIO_IO26__SAI3_TX_SYNC        0x31e
-> +                       MX93_PAD_GPIO_IO16__SAI3_TX_BCLK        0x31e
-> +                       MX93_PAD_GPIO_IO17__SAI3_MCLK           0x31e
-> +                       MX93_PAD_GPIO_IO21__SAI3_TX_DATA00      0x31e
-> +                       MX93_PAD_GPIO_IO20__SAI3_RX_DATA00      0x31e
-> +               >;
-> +       };
-> +
-> +       pinctrl_uart1: uart1grp {
-> +               fsl,pins =3D <
-> +                       MX93_PAD_UART1_RXD__LPUART1_RX          0x31e
-> +                       MX93_PAD_UART1_TXD__LPUART1_TX          0x31e
-> +               >;
-> +       };
-> +
-> +       pinctrl_uart5: uart5grp {
-> +               fsl,pins =3D <
-> +                       MX93_PAD_GPIO_IO01__LPUART5_RX          0x31e
-> +                       MX93_PAD_GPIO_IO00__LPUART5_TX          0x31e
-> +                       MX93_PAD_GPIO_IO02__LPUART5_CTS_B       0x31e
-> +                       MX93_PAD_GPIO_IO03__LPUART5_RTS_B       0x31e
-> +               >;
-> +       };
-> +
-> +       pinctrl_uart8: uart8grp {
-> +               fsl,pins =3D <
-> +                       MX93_PAD_GPIO_IO13__LPUART8_RX          0x31e
-> +                       MX93_PAD_GPIO_IO12__LPUART8_TX          0x31e
-> +               >;
-> +       };
-> +
-> +       pinctrl_usdhc3: usdhc3grp {
-> +               fsl,pins =3D <
-> +                       MX93_PAD_SD3_CLK__USDHC3_CLK            0x17fe
-> +                       MX93_PAD_SD3_CMD__USDHC3_CMD            0x13fe
-> +                       MX93_PAD_SD3_DATA0__USDHC3_DATA0        0x13fe
-> +                       MX93_PAD_SD3_DATA1__USDHC3_DATA1        0x13fe
-> +                       MX93_PAD_SD3_DATA2__USDHC3_DATA2        0x13fe
-> +                       MX93_PAD_SD3_DATA3__USDHC3_DATA3        0x13fe
-> +               >;
-> +       };
-> +};
-> --
-> 2.34.1
->
->
-
-
---=20
-Michael Nazzareno Trimarchi
-Co-Founder & Chief Executive Officer
-M. +39 347 913 2170
-michael@amarulasolutions.com
-__________________________________
-
-Amarula Solutions BV
-Joop Geesinkweg 125, 1114 AB, Amsterdam, NL
-T. +31 (0)85 111 9172
-info@amarulasolutions.com
-www.amarulasolutions.com
+> > or how about this?
+> >
+> > diff --git a/kernel/softirq.c b/kernel/softirq.c
+> > index b315b21fb28c..80b9fb4ee562 100644
+> > --- a/kernel/softirq.c
+> > +++ b/kernel/softirq.c
+> > @@ -66,6 +66,8 @@ const char * const softirq_to_name[NR_SOFTIRQS] =3D {
+> >         "TASKLET", "SCHED", "HRTIMER", "RCU"
+> >  };
+> >
+> > +static DEFINE_PER_CPU(bool, ksoftirqd_work);
+> > +
+> >  /*
+> >   * we cannot loop indefinitely here to avoid userspace starvation,
+> >   * but we also don't want to introduce a worst case 1/HZ latency
+> > @@ -404,10 +406,12 @@ static inline void softirq_handle_end(void)
+> >  static inline void ksoftirqd_run_begin(void)
+> >  {
+> >         local_irq_disable();
+> > +       per_cpu(ksoftirqd_work, smp_processor_id()) =3D true;
+> >  }
+> >
+> >  static inline void ksoftirqd_run_end(void)
+> >  {
+> > +       per_cpu(ksoftirqd_work, smp_processor_id()) =3D false;
+> >         local_irq_enable();
+> >  }
+> >
+> > @@ -564,7 +568,7 @@ asmlinkage __visible void __softirq_entry __do_soft=
+irq(void)
+> >         }
+> >
+> >         if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> > -           __this_cpu_read(ksoftirqd) =3D=3D current)
+> > +           __this_cpu_read(ksoftirqd) =3D=3D current && ksoftirqd_work=
+)
+> >                 rcu_softirq_qs();
+> >
+> >         local_irq_disable();
+> > @@ -970,6 +974,10 @@ static struct smp_hotplug_thread softirq_threads =
+=3D {
+> >
+> >  static __init int spawn_ksoftirqd(void)
+> >  {
+> > +       int cpu;
+> > +
+> > +       for_each_possible_cpu(cpu)
+> > +               per_cpu(ksoftirqd_work, cpu) =3D false;
+> >         cpuhp_setup_state_nocalls(CPUHP_SOFTIRQ_DEAD, "softirq:dead", N=
+ULL,
+> >                                   takeover_tasklets);
+> >         BUG_ON(smpboot_register_percpu_thread(&softirq_threads));
+> >
+> >
+> > Thanks
+> > Zqiang
+> >
+> >
+> >
+> > >
+> > >                                                         Thanx, Paul
+> > >
+> > > > Thanks
+> > > > Zqiang
+> > > >
+> > > >
+> > > > >
+> > > > > (And good job tracking this down, by the way!)
+> > > > >
+> > > > >                                                         Thanx, Pa=
+ul
+> > > > >
+> > > > > >                               rcu_softirq_qs
+> > > > > >                                ->
+> > > > > > RCU_LOCKDEP_WARN(lock_is_held(&rcu_sched_lock_map))
+> > > > > >
+> > > > > > Thanks
+> > > > > > Zqiang
+> > > > > >
+> > > > > >
+> > > > > > >
+> > > > > > >                                                         Thanx=
+, Paul
+> > > > > > >
+> > > > > > > > > >  invoke_softirq kernel/softirq.c:428 [inline]
+> > > > > > > > > >  __irq_exit_rcu+0xf2/0x1c0 kernel/softirq.c:633
+> > > > > > > > > >  irq_exit_rcu+0x9/0x30 kernel/softirq.c:645
+> > > > > > > > > >  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic=
+/apic.c:1043 [inline]
+> > > > > > > > > >  sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/=
+apic/apic.c:1043
+> > > > > > > > > >  </IRQ>
+> > > > > > > > > >  <TASK>
+> > > > > > > > > >  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/inc=
+lude/asm/idtentry.h:702
+> > > > > > > > > > RIP: 0010:debug_lockdep_rcu_enabled+0xd/0x40 kernel/rcu=
+/update.c:320
+> > > > > > > > > > Code: f5 90 0f 0b 90 90 90 eb c6 0f 1f 40 00 90 90 90 9=
+0 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 31 c0 83 3d c7 0f 28 04 0=
+0 <74> 1e 83 3d 26 42 28 04 00 74 15 65 48 8b 0c 25 c0 d3 03 00 31 c0
+> > > > > > > > > > RSP: 0018:ffffc90000157a50 EFLAGS: 00000202
+> > > > > > > > > > RAX: 0000000000000000 RBX: 00000000000000a0 RCX: 000000=
+0000000001
+> > > > > > > > > > RDX: dffffc0000000000 RSI: ffffffff8bcae740 RDI: ffffff=
+ff8c1f7ec0
+> > > > > > > > > > RBP: dffffc0000000000 R08: ffffffff92f3a527 R09: 1fffff=
+fff25e74a4
+> > > > > > > > > > R10: dffffc0000000000 R11: fffffbfff25e74a5 R12: 000000=
+0029373578
+> > > > > > > > > > R13: 1ffff9200002af64 R14: ffffffff814220f3 R15: ffff88=
+813fff90a0
+> > > > > > > > > >  rcu_read_lock_sched include/linux/rcupdate.h:934 [inli=
+ne]
+> > > > > > > > > >  pfn_valid include/linux/mmzone.h:2019 [inline]
+> > > > > > > > > >  __virt_addr_valid+0x1a9/0x520 arch/x86/mm/physaddr.c:6=
+5
+> > > > > > > > > >  kasan_addr_to_slab+0xd/0x80 mm/kasan/common.c:37
+> > > > > > > > > >  __kasan_record_aux_stack+0x11/0xc0 mm/kasan/generic.c:=
+526
+> > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > This should be caused by the following commit:
+> > > > > > > > > d818cc76e2b4 ("kasan: Record work creation stack trace wi=
+th interrupts enabled")
+> > > > > > > > >
+> > > > > > > > > Is it possible to make the rcu_softirq_qs() run only in k=
+softirqd task?
+> > > > > > > >
+> > > > > > > > use rcu_softirq_qs_periodic() in run_ksoftirqd().
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Thanks
+> > > > > > > > > Zqiang
+> > > > > > > > >
+> > > > > > > > > >  __call_rcu_common kernel/rcu/tree.c:3096 [inline]
+> > > > > > > > > >  call_rcu+0x167/0xa70 kernel/rcu/tree.c:3200
+> > > > > > > > > >  context_switch kernel/sched/core.c:5412 [inline]
+> > > > > > > > > >  __schedule+0x17f0/0x4a50 kernel/sched/core.c:6746
+> > > > > > > > > >  __schedule_loop kernel/sched/core.c:6823 [inline]
+> > > > > > > > > >  schedule+0x14b/0x320 kernel/sched/core.c:6838
+> > > > > > > > > >  smpboot_thread_fn+0x61e/0xa30 kernel/smpboot.c:160
+> > > > > > > > > >  kthread+0x2f0/0x390 kernel/kthread.c:388
+> > > > > > > > > >  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+> > > > > > > > > >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:=
+243
+> > > > > > > > > >  </TASK>
+> > > > > > > > > > ----------------
+> > > > > > > > > > Code disassembly (best guess):
+> > > > > > > > > >    0:   f5                      cmc
+> > > > > > > > > >    1:   90                      nop
+> > > > > > > > > >    2:   0f 0b                   ud2
+> > > > > > > > > >    4:   90                      nop
+> > > > > > > > > >    5:   90                      nop
+> > > > > > > > > >    6:   90                      nop
+> > > > > > > > > >    7:   eb c6                   jmp    0xffffffcf
+> > > > > > > > > >    9:   0f 1f 40 00             nopl   0x0(%rax)
+> > > > > > > > > >    d:   90                      nop
+> > > > > > > > > >    e:   90                      nop
+> > > > > > > > > >    f:   90                      nop
+> > > > > > > > > >   10:   90                      nop
+> > > > > > > > > >   11:   90                      nop
+> > > > > > > > > >   12:   90                      nop
+> > > > > > > > > >   13:   90                      nop
+> > > > > > > > > >   14:   90                      nop
+> > > > > > > > > >   15:   90                      nop
+> > > > > > > > > >   16:   90                      nop
+> > > > > > > > > >   17:   90                      nop
+> > > > > > > > > >   18:   90                      nop
+> > > > > > > > > >   19:   90                      nop
+> > > > > > > > > >   1a:   90                      nop
+> > > > > > > > > >   1b:   90                      nop
+> > > > > > > > > >   1c:   90                      nop
+> > > > > > > > > >   1d:   f3 0f 1e fa             endbr64
+> > > > > > > > > >   21:   31 c0                   xor    %eax,%eax
+> > > > > > > > > >   23:   83 3d c7 0f 28 04 00    cmpl   $0x0,0x4280fc7(%=
+rip)        # 0x4280ff1
+> > > > > > > > > > * 2a:   74 1e                   je     0x4a <-- trappin=
+g instruction
+> > > > > > > > > >   2c:   83 3d 26 42 28 04 00    cmpl   $0x0,0x4284226(%=
+rip)        # 0x4284259
+> > > > > > > > > >   33:   74 15                   je     0x4a
+> > > > > > > > > >   35:   65 48 8b 0c 25 c0 d3    mov    %gs:0x3d3c0,%rcx
+> > > > > > > > > >   3c:   03 00
+> > > > > > > > > >   3e:   31 c0                   xor    %eax,%eax
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > ---
+> > > > > > > > > > This report is generated by a bot. It may contain error=
+s.
+> > > > > > > > > > See https://goo.gl/tpsmEJ for more information about sy=
+zbot.
+> > > > > > > > > > syzbot engineers can be reached at syzkaller@googlegrou=
+ps.com.
+> > > > > > > > > >
+> > > > > > > > > > syzbot will keep track of this issue. See:
+> > > > > > > > > > https://goo.gl/tpsmEJ#status for how to communicate wit=
+h syzbot.
+> > > > > > > > > >
+> > > > > > > > > > If the report is already addressed, let syzbot know by =
+replying with:
+> > > > > > > > > > #syz fix: exact-commit-title
+> > > > > > > > > >
+> > > > > > > > > > If you want syzbot to run the reproducer, reply with:
+> > > > > > > > > > #syz test: git://repo/address.git branch-or-commit-hash
+> > > > > > > > > > If you attach or paste a git patch, syzbot will apply i=
+t before testing.
+> > > > > > > > > >
+> > > > > > > > > > If you want to overwrite report's subsystems, reply wit=
+h:
+> > > > > > > > > > #syz set subsystems: new-subsystem
+> > > > > > > > > > (See the list of subsystem names on the web dashboard)
+> > > > > > > > > >
+> > > > > > > > > > If the report is a duplicate of another one, reply with=
+:
+> > > > > > > > > > #syz dup: exact-subject-of-another-report
+> > > > > > > > > >
+> > > > > > > > > > If you want to undo deduplication, reply with:
+> > > > > > > > > > #syz undup
+> > > > > > > > > >
 
