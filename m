@@ -1,50 +1,73 @@
-Return-Path: <linux-kernel+bounces-151800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A0028AB402
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:59:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E52D38AB406
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:59:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E406B1F212CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:59:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 727EEB22307
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6251386C0;
-	Fri, 19 Apr 2024 16:59:24 +0000 (UTC)
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A89C4C63A;
-	Fri, 19 Apr 2024 16:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6517213AA53;
+	Fri, 19 Apr 2024 16:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="l6NJClBx"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8094C63A;
+	Fri, 19 Apr 2024 16:59:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713545964; cv=none; b=LQL5riu+q+stfSgxbFoGm8jmxHll6iubkGqy1X7GtVldx9c30Kv98U7ESqFFDJwKoDWEbgVI0T7OchJzIhWsYOe72NIiZdGcOGOqjWE5t6Dbtsvb3UHOT0Tc3cFNBqDgdg/cn/QHtRCfGWOxFl84bxCLBIj+tbBgHjMXXtZZRaM=
+	t=1713545967; cv=none; b=mLIQ+0Wcg797t/aAFWWGOUAizSaeS3teRyxRAqaxhx2w5EvQSO2mA4A6Yv/grGDqWL7wl6cb66mRmbCcPpPIQCoYWvdRqGq2xbMRGdI5mPzXiY21utD6xYD0XvWtKRm+hrGJwbPpC3gMfr751aPOs1Rynkd+2S2WSfJ6dELk6eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713545964; c=relaxed/simple;
-	bh=cCw3To0crIlEWMlxy5XePe+u1HZtbjc8kkBOUA1C/0I=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=V41cYB4/oFcn8BhlTg1NhiBojepwDynq/pBTn3u/6QDEUdOXEqEx4WjMpgSKTd5D7f2SBsmWqUJHzLxKazLoh2UZOiVvEi+LQxW2v9wmFwmlyrSG7w9/sBKCqrIWVqwUddzx2W6oEUnAsNMH3yDnY4mxvJs7lDfXJdcknjMjt/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.97.1)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rxra0-000000007Nq-26mP;
-	Fri, 19 Apr 2024 16:59:16 +0000
-Date: Fri, 19 Apr 2024 17:59:07 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH] cpufreq: mediatek: Add support for MT7988A
-Message-ID: <acf4fb446aacfbf6ce7b6e94bf3aad303e0ad4d1.1713545923.git.daniel@makrotopia.org>
+	s=arc-20240116; t=1713545967; c=relaxed/simple;
+	bh=Z7YH0CvhpgqXNh0KlZ+NJZMQQx43ZiBcsIHLxUcuADU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mvHBaKurKlRYcUpfnRA3x4/TPTNSej+La1GymcqhLb7j2OBDA4F4eH9qGZ7hH1PKDg11GT6Ir2yY5BQJYXymmb3uNr9U3D5dO1tjFeKNee4vvKEYKVTOtkF8vwYVQkR+OuBW0+FB7Op+3nQOjioyrPumKgVK6xMjTVFxxnBq144=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=l6NJClBx; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 2988A20FDAA1; Fri, 19 Apr 2024 09:59:26 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2988A20FDAA1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1713545966;
+	bh=y/qgfgGYyhPfmyF6SjIYu3rIjqvmvUNw7mws9b1MVpg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=l6NJClBxCk4a3k/YEHO3EnfhE/ohLexA50S4Hi2qR8Qzdu69a4ZZPtWL/fkQ1ll3D
+	 iHcC/QJx7eAd/vrlyRMiIoh+xHLLxlN3MeeNoiOnVI4PIQL/n2SXnvBeZUGSgL4YsK
+	 ON23nNvME5OhTSJ7q8Uq6sDmjvQS8ymfE7Jxk8fs=
+Date: Fri, 19 Apr 2024 09:59:26 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <yanjun.zhu@linux.dev>,
+	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Ajay Sharma <sharmaajay@microsoft.com>,
+	Leon Romanovsky <leon@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Konstantin Taranov <kotaranov@microsoft.com>,
+	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
+Message-ID: <20240419165926.GC506@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20240415161305.GO223006@ziepe.ca>
+ <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
+ <b34bfb11-98a3-4418-b482-14f2e50745d3@lunn.ch>
+ <20240418060108.GB13182@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20240418175059.GZ223006@ziepe.ca>
+ <f3e7ea07-2903-4f19-ba86-94bba569dae9@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,48 +76,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <f3e7ea07-2903-4f19-ba86-94bba569dae9@lunn.ch>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-From: Sam Shih <sam.shih@mediatek.com>
+On Thu, Apr 18, 2024 at 08:42:59PM +0200, Andrew Lunn wrote:
+> > >From an RDMA perspective this is all available from other APIs already
+> > at least and I wouldn't want to see new sysfs unless there is a netdev
+> > justification.
+> 
+> It is unlikely there is a netdev justification. Configuration happens
+> via netlink, not sysfs.
+> 
+>     Andrew
 
-This add cpufreq support for mediatek MT7988A SoC.
+Thanks. Sure, it makes sense to make the generic attribute configurable
+through the netdevice ops or netlink implementation. I will keep that in
+mind while adding the next set of configuration attributes for the driver.
+These attributes(from the patch) however, are hardware specific(that show
+the maximum supported values by the hardware in most cases). We want them
+to be a part of sysfs so that they are readily available in the production
+for improving debuggability. I will change the names of these attribute to
+indicate the same to avoid possible confusion.
 
-The platform data of MT7988A is different from previous MediaTek SoCs,
-so we add a new compatible and platform data for it.
-
-Signed-off-by: Sam Shih <sam.shih@mediatek.com>
----
- drivers/cpufreq/mediatek-cpufreq.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
-index a0a61919bc4c..518606adf14e 100644
---- a/drivers/cpufreq/mediatek-cpufreq.c
-+++ b/drivers/cpufreq/mediatek-cpufreq.c
-@@ -707,6 +707,15 @@ static const struct mtk_cpufreq_platform_data mt7623_platform_data = {
- 	.ccifreq_supported = false,
- };
- 
-+static const struct mtk_cpufreq_platform_data mt7988_platform_data = {
-+	.min_volt_shift = 100000,
-+	.max_volt_shift = 200000,
-+	.proc_max_volt = 900000,
-+	.sram_min_volt = 0,
-+	.sram_max_volt = 1150000,
-+	.ccifreq_supported = true,
-+};
-+
- static const struct mtk_cpufreq_platform_data mt8183_platform_data = {
- 	.min_volt_shift = 100000,
- 	.max_volt_shift = 200000,
-@@ -740,6 +749,7 @@ static const struct of_device_id mtk_cpufreq_machines[] __initconst = {
- 	{ .compatible = "mediatek,mt2712", .data = &mt2701_platform_data },
- 	{ .compatible = "mediatek,mt7622", .data = &mt7622_platform_data },
- 	{ .compatible = "mediatek,mt7623", .data = &mt7623_platform_data },
-+	{ .compatible = "mediatek,mt7988a", .data = &mt7988_platform_data },
- 	{ .compatible = "mediatek,mt8167", .data = &mt8516_platform_data },
- 	{ .compatible = "mediatek,mt817x", .data = &mt2701_platform_data },
- 	{ .compatible = "mediatek,mt8173", .data = &mt2701_platform_data },
--- 
-2.44.0
-
+Regards,
+Shradha.
 
