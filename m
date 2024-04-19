@@ -1,165 +1,160 @@
-Return-Path: <linux-kernel+bounces-151221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 938228AAB4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66A8D8AAB53
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:20:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A9F71F22811
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:17:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0E211F22809
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4BE7BB07;
-	Fri, 19 Apr 2024 09:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07E077F2D;
+	Fri, 19 Apr 2024 09:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VCjIW1I/"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B4jh+iEJ"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC1BF9CD
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:17:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE02F9CD;
+	Fri, 19 Apr 2024 09:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713518250; cv=none; b=Clr/zUPBqWjQpNrG0uAT+vLBpXd+8P1P1MB3MluE5rMczHsQGPFPQktw7tvwwSeOAHQwC5/5gys7G1DjUWbSDcjOQJOxcwwOd77blb5+H9QiWr1HP7o/nCwvaH8HiJnxhuN0UrVtd4e195cQ/SK78mmGzhJ6/IeG5xVC66vxM0s=
+	t=1713518395; cv=none; b=H5Sx31SeEU57WWf7P9EFK0sgEma5ykirj1ZNBchBP/B1fylHUlHvCs9k3mQHvWJMVF9rPIDpV4tBNA+3IhslTgwsJn1Ni7MBOPbk5tae22KDYSXerRXjeZnvYhw15JYeI1VBhB6JKpuObQOjfC82k1qc2oQWoAAiDY/Ix9ha7I0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713518250; c=relaxed/simple;
-	bh=1DtyOCucXV6riDy233DQyhMsLvk1q54yUwi06C0Gn20=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uSdhKKuh4sHm1wpF930oCnPnr1lthmHz7/AYGG7tk1SwhBDbnB/ssH6PjehBVwDLPIBUJ67rW1KSNB2fYikjBbsUr7ptc2mZnwjDSAIi1Z1Gd3ouLEk9QOaoYdbHvd7N2Qrl9O4zMRzGkeDMwXs9GLCeaRVybr0nrdp3qbWsgrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VCjIW1I/; arc=none smtp.client-ip=209.85.167.169
+	s=arc-20240116; t=1713518395; c=relaxed/simple;
+	bh=KlXQuKvGJywU3LD2CUoRhMvX72mjF+L+3E8OH1+cRzU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bLA3fsch3ryudgoS6sIszr0G5vo+InTUakt8KJrVo5FuMTOymwF1igyOCUdp0wBX/B51yLIXdYCMqz7PpANDuCTBryYGYAFdg8JXR83wTSRD8KOmj+amgeW0fgjz33ZsGIukEM1ZtmWqraEviQVFnV4l4wc5rlGvqk0hutGJzg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B4jh+iEJ; arc=none smtp.client-ip=209.85.167.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3bbbc6e51d0so1100491b6e.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 02:17:29 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-518f8a69f82so2178255e87.2;
+        Fri, 19 Apr 2024 02:19:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713518248; x=1714123048; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N35+MPuRZDcE+EQJvR0INfFRKisc0fubZM24HOhZf1I=;
-        b=VCjIW1I/FB/CZXN9F9klaSJYpCNa4+pdiT96vsfIKXoWg5OBX8vcUSmcBzhZ7xSoB5
-         MHFVwWs1LmxHTX9julM7fNaFT/jKAkQKql+VSlfh9sFwE+5P6Jw8vqeKqlL57mgxTNNR
-         38dErAaaaAAAoHEDQiwbKO0fXEazIfZZapZlAfT53XZ5qn5JHs4YmbJ6fsyTrNWFMBV3
-         5Ksru9dImxRhSW/t0+UzYrOrvDipUHFqQRi+B16Idf9UE6cagVJTDQu275sgqHaxsNfg
-         TVZ+Xxz8jamY8eaHNOJdzOlnPS7L23EpiBkdgravIBfADyAxgpAFruKLSeEXdkGhohZ5
-         pMpQ==
+        d=gmail.com; s=20230601; t=1713518391; x=1714123191; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7uRz/nxbhPgcg3DGqznEbcQEDecYnCJi73IPin9pfrE=;
+        b=B4jh+iEJHa4KbbBJTt41vTtc7Cf+rbHqSV8rhoEFCgSc+xT1ZL9GgX3U56rwNSq9l3
+         l9y7DydEZFaofOLsCmkgG0VEmf5Bauuz8ZTOQMgQYBbchHDhtlWxUDEe1vnNXbtSHl/2
+         +AqW5mwX2nuDexKYYIDjGiiAd+vP6Vm9HlySy7lYReyn2TWP4LwIkE1rF7ELdpXhNp/C
+         blVKMym9gs7oZoWQ57H9O2dS8zEd1pjXXtmgsbrPOQJXSwQAYuXqWgoWNKRHWqTL6goa
+         bbtPKRfXT653/ebf6OMqRdPhxocwVdvFQprM4Rytn9FYN2YmP1jiricjtMeJIYEG0B8p
+         w/jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713518248; x=1714123048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N35+MPuRZDcE+EQJvR0INfFRKisc0fubZM24HOhZf1I=;
-        b=nw6+xiDrdbS1ZxwdWOM/NnYVEk3xVClwpXVBawFFnmU/Og83EZsx1F7B7DJHc/2uSB
-         46clv1owJPoGXO4c/2Hc1pTQ5qd1kw6Ta9RN1gmfVwGhtfkS4O4PGZpvol3oV43lMDuW
-         CHB/JAXeFPLfG1W5WARTzbfablSZXDguwIS4+Agb9mwrVeF2cMHlCtnmhK9ZKHLyaCuz
-         ELdTORLn3A/WeWvQcnpccBlXihNgaZsgAJyiCYxvYu82TLe58bNF8DB8IWL132i1HCve
-         CG1BmyOo0lJGcmljUCDRi6CpXuEjToxMaNQ8HRP5bja7r7zdwPZHWDNNA/3tU8aAUx2T
-         Ey6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWzDTQqwX62CfL5QwnNzdafXWZswtxFzde1uJjwU5LfP65+RJpn5gLPzlGeMAKZnbCEG9AwY3G5tXJsenppl+bh4NCd2ZYFh/1JW1kC
-X-Gm-Message-State: AOJu0YyEnjLXmyqGqsuf/73N/Qy17BsWwyZXIndJ4dzz0JQMfMtLjZn2
-	LitsumoZiBLYiBzjgM4GLNUGNtqFXw7skAkG3FUP+WJtc3cGwCOKFIm+K3KS1XLOwkS20SR1m8L
-	1XNEBVPVgcFAvjpAiw+A7GPqiZhw=
-X-Google-Smtp-Source: AGHT+IFlcKwZdBrXzmMSOwwL45mmAVv+FIua6SFFiB06dHuI6A3i+P5PG7CuMpjUav36VvSdPnwp8ggMUg5NRKCIBdQ=
-X-Received: by 2002:a05:6870:1ec4:b0:22e:76c1:ddce with SMTP id
- pc4-20020a0568701ec400b0022e76c1ddcemr1903911oab.6.1713518248616; Fri, 19 Apr
- 2024 02:17:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713518391; x=1714123191;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7uRz/nxbhPgcg3DGqznEbcQEDecYnCJi73IPin9pfrE=;
+        b=aTIrauSN29zRxb3+NYNrgGP/WN6RZh2B36AKHjpIbohTvtb4nglDmgT25PnnZGE1Po
+         WL2oXjFDPAnrti2q1Vuzh1HmEY16bY0eGMbea8BIAgAHJEs3uWebhO8OkdKIRCvUd9A1
+         9/xkaeydiBh4R9lqGxy/i968m6Q8e3tPUSYqAGddxJbDGYlBbtUrPaU4vea9/ZPDB5Nn
+         rHKV1P36+1HUf68z6Gf0VQE8ZDQPyiDczfahZltC0wq4NwQWRprGXmODoE2/i0YD+7JH
+         us/d0o6Lkq/6Byvm7mKl+/bW0G+f6X+34U7bG5la54ry6ovn2SHWetLYZ28ej+L3S0a8
+         I/Vw==
+X-Forwarded-Encrypted: i=1; AJvYcCWx9FaKTeencCCRcecS6fUCBrmicC9Xtf47Ju1HHEhujZTFl9rhtq1/DCOiSFkAbIWrhKxDwDyRqoYPF1CckSOSue0QEq6TRC6YeQowqYC91IUsaQF/c8FZ3mQtwX8SEqiqWwBsFW6FRtL1fnbUx744dlE8jGLTWw6DqOCF+vuTvSSdeaSc
+X-Gm-Message-State: AOJu0YxaGPrpKzpyk/EIaR9jAAUm1SGArMzGwtK7dhl3uVh++rG33FXj
+	F3FvatAh1h/+jQGgS65KgyXjKk/l12CB3x6BxGNCVijRFdVbcUKjbra9hIXO
+X-Google-Smtp-Source: AGHT+IEE+c8XToG2LkLPH2w60EnuzxV5zLxI6Q2u6Y+2UULExfGeij1aufjjl9uW3OpE6g7MOIyzRQ==
+X-Received: by 2002:ac2:4e4a:0:b0:516:cc06:fa03 with SMTP id f10-20020ac24e4a000000b00516cc06fa03mr1033854lfr.56.1713518391302;
+        Fri, 19 Apr 2024 02:19:51 -0700 (PDT)
+Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
+        by smtp.gmail.com with ESMTPSA id p24-20020a056512329800b00519331d8b66sm626692lfe.110.2024.04.19.02.19.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 02:19:50 -0700 (PDT)
+Date: Fri, 19 Apr 2024 12:19:48 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] dmaengine: dw: Simplify prepare CTL_LO methods
+Message-ID: <oqyz6fpdxzk5x4xr5rlqwnj3frakjnz24e6bx7mxngh5gm5jom@wsm7qvubqwn3>
+References: <20240416162908.24180-1-fancer.lancer@gmail.com>
+ <20240416162908.24180-4-fancer.lancer@gmail.com>
+ <Zh7LyszPd2sNfWRm@smile.fi.intel.com>
+ <lzcgxh7trwoksd4bx2fsybellbngvpwhgq2a76ou2iufemockp@3dca4bfox2ps>
+ <ZiEIRluj-50FMIgp@smile.fi.intel.com>
+ <xfa7evanbrvdxdoq6473wpymvqogezspwkdoawu2dr6mnyxiwq@zx2schip66wj>
+ <ZiGJ-DspJq5R6Dym@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226082349.302363-1-yu.c.chen@intel.com> <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
- <20240408115833.GF21904@noisy.programming.kicks-ass.net> <ZhPtCyRmPxa0DpMe@chenyu5-mobl2>
- <20240409092104.GA2665@noisy.programming.kicks-ass.net> <ZiAWTU5xb/JMn/Hs@chenyu5-mobl2>
- <CAB8ipk-fejQ41Jgk6z52+T6CP+impwbaOAfhA9vG_-FB9BeRyw@mail.gmail.com>
- <ZiEaKOQwiNEglYtS@chenyu5-mobl2> <20240419082440.GB6345@noisy.programming.kicks-ass.net>
-In-Reply-To: <20240419082440.GB6345@noisy.programming.kicks-ass.net>
-From: Xuewen Yan <xuewen.yan94@gmail.com>
-Date: Fri, 19 Apr 2024 17:17:17 +0800
-Message-ID: <CAB8ipk_B7zsQt2wa5pda4ehN6f0yHi_mV=unVThnOYTKQz=5aw@mail.gmail.com>
-Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
- if no eligible entity is found
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Chen Yu <yu.c.chen@intel.com>, Abel Wu <wuyun.abel@bytedance.com>, 
-	Ingo Molnar <mingo@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Tim Chen <tim.c.chen@intel.com>, 
-	Tiwei Bie <tiwei.btw@antgroup.com>, Honglei Wang <wanghonglei@didichuxing.com>, 
-	Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.chen.surf@gmail.com>, 
-	Yujie Liu <yujie.liu@intel.com>, linux-kernel@vger.kernel.org, 
-	kernel test robot <oliver.sang@intel.com>, Tianchen Ding <dtcccc@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZiGJ-DspJq5R6Dym@smile.fi.intel.com>
 
-On Fri, Apr 19, 2024 at 4:24=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Thu, Apr 18, 2024 at 09:03:36PM +0800, Chen Yu wrote:
->
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 31bca05c3612..9f203012e8f5 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -696,15 +696,23 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
-> >   *
-> >   * XXX could add max_slice to the augmented data to track this.
-> >   */
-> > +
-> > +static s64 limit_entity_lag(struct sched_entity *se, s64 lag)
-> > +{
-> > +     s64 limit;
-> > +
-> > +     limit =3D calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se)=
-;
-> > +     return clamp(lag, -limit, limit);
-> > +}
->
-> Right, helper makes sense.
->
-> > @@ -3721,6 +3729,7 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq,=
- struct sched_entity *se,
-> >       if (avruntime !=3D se->vruntime) {
-> >               vlag =3D (s64)(avruntime - se->vruntime);
-> >               vlag =3D div_s64(vlag * old_weight, weight);
-> > +             vlag =3D limit_entity_lag(se, vlag);
-> >               se->vruntime =3D avruntime - vlag;
->
-> So the !on_rq case has clamping in update_entity_lag() which is before
-> scaling. And that makes more sense to me, because putting a limit on
-> vlag before the multiplication *should* ensure the multiplication itself
-> doesn't overflow.
->
-> But now you allow it to compute garbage and then clip the garbage.
->
-> >       }
-> >
-> > @@ -3768,6 +3777,9 @@ static void reweight_entity(struct cfs_rq *cfs_rq=
-, struct sched_entity *se,
-> >
-> >       update_load_set(&se->load, weight);
-> >
-> > +     if (!se->on_rq)
-> > +             se->vlag =3D limit_entity_lag(se, se->vlag);
-> > +
->
-> Except you now add clamping after scaling too, but in a really weird
-> place. Should this not go right after the div_s64() that scales?
+On Fri, Apr 19, 2024 at 12:00:40AM +0300, Andy Shevchenko wrote:
+> On Thu, Apr 18, 2024 at 10:00:02PM +0300, Serge Semin wrote:
+> > On Thu, Apr 18, 2024 at 02:47:18PM +0300, Andy Shevchenko wrote:
+> > > On Wed, Apr 17, 2024 at 11:11:46PM +0300, Serge Semin wrote:
+> > > > On Tue, Apr 16, 2024 at 10:04:42PM +0300, Andy Shevchenko wrote:
+> > > > > On Tue, Apr 16, 2024 at 07:28:57PM +0300, Serge Semin wrote:
+> 
+> ...
+> 
+> > > > > > +	if (dwc->direction == DMA_MEM_TO_DEV) {
+> > > > > > +		sms = dwc->dws.m_master;
+> > > > > > +		smsize = 0;
+> > > > > > +		dms = dwc->dws.p_master;
+> > > > > > +		dmsize = sconfig->dst_maxburst;
+> > > > 
+> > > > > I would group it differently, i.e.
+> > > > > 
+> > > > > 		sms = dwc->dws.m_master;
+> > > > > 		dms = dwc->dws.p_master;
+> > > > > 		smsize = 0;
+> > > > > 		dmsize = sconfig->dst_maxburst;
+> > > > 
+> > > > Could you please clarify, why? From my point of view it was better to
+> > > > group the source master ID and the source master burst size inits
+> > > > together.
+> > 
+> > > Sure. The point here is that when you look at the DMA channel configuration
+> > > usually you operate with the semantically tied fields for source and
+> > > destination. At least this is my experience, I always check both sides
+> > > of the transfer for the same field, e.g., master setting, hence I want to
+> > > have them coupled.
+> > 
+> > Ok. I see. Thanks for clarification. I normally do that in another
+> > order: group the functionally related fields together - all
+> > source-related configs first, then all destination-related configs.
+> > Honestly I don't have strong opinion about this part, it's just my
+> > personal preference. Am I right to think that from your experience in
+> > kernel it's normally done in the order you described?
+> 
 
-Yes, it's better to put it  after the div_s64().
+> In this driver I believe I have followed that one, yes.
 
->
-> Unlike the reweight_eevdf() case, there might be an argument for doing
-> it after scaling in this case. Namely, you can have multiple reweights
-> stacking their scale ops.
->
->
-> Also, could you put a few words in on how often these clips are hit? I
-> suspect it's fairly rare (but crucial when it does).
+Agreed then. I'll change the order to the way you ask.
 
-I think this probability may be not small, because the user space
-often modifies the task's nice value while the task is sleeping.
-I also would add logs to check it.
+-Serge(y)
 
-BR
+> 
+> > > > > > +	} else if (dwc->direction == DMA_DEV_TO_MEM) {
+> > > > > > +		sms = dwc->dws.p_master;
+> > > > > > +		smsize = sconfig->src_maxburst;
+> > > > > > +		dms = dwc->dws.m_master;
+> > > > > > +		dmsize = 0;
+> > > > > > +	} else /* DMA_MEM_TO_MEM */ {
+> > > > > > +		sms = dwc->dws.m_master;
+> > > > > > +		smsize = 0;
+> > > > > > +		dms = dwc->dws.m_master;
+> > > > > > +		dmsize = 0;
+> > > > > > +	}
+> > > > > 
+> > > > > Ditto for two above cases.
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
 
