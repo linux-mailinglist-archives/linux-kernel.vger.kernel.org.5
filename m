@@ -1,385 +1,224 @@
-Return-Path: <linux-kernel+bounces-151365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6099D8AAD9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:20:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B0C58AADAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:24:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A807FB21C14
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:20:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 531832830E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 085F681737;
-	Fri, 19 Apr 2024 11:20:49 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4F282D62;
+	Fri, 19 Apr 2024 11:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fUooDE5x"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B998D2E405
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DF980029;
+	Fri, 19 Apr 2024 11:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713525648; cv=none; b=EftNWkHTXlwWyV54a6G29MOR4O8nWEyc0YB3LQOdGpobdzCkSM5PAsMFNbFLfhRwVOvTYpivWZ/2GvwZUUnvfIm/6/+fX14RUsNJe3AGXJIruLAMdV+CqDg/PL4ajRQdg6uy4VuBx9ALk1NTZiBFDvoZzuQQShNgKfn0gSOzYuU=
+	t=1713525880; cv=none; b=cu/pZXDGLfyPbrVpefNCRo3buAfVKfsbJVOnfWHSrza4ODBz0FnxBToz3eRbwnEOn/fYrQfi0PJt8I1pB1ucC7fmRRT4BRBuTvjK4eCo4ihjLg4UF7w+JPzMqzjt8ocN9v/oAb4693k0eW6Q6M6vxxzt3iDCIZNGQcVLohEdZzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713525648; c=relaxed/simple;
-	bh=UW+G+EB/mf95u6FjjSW1ZGsuiQ+/qOYPkBJoRfMmN3U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GXpMH5OVpY3cyTAyslOQR9zt8uF9l+e+lbS8cD7/bBp9O6atgWRjceqKaWMsNDoo8JAEoyKv5zsxN2ePfseoapiUj5cLuYkMvdxutMAS7nISGvik7HRt/c53SB9ugLMUi9zMJU4ke+EAV1DrXGXGI33g9JB9KK3Dl5jxXpyShGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VLXFM53LpzNnc7;
-	Fri, 19 Apr 2024 19:18:15 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id A77391800C3;
-	Fri, 19 Apr 2024 19:20:41 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 19 Apr 2024 19:20:41 +0800
-Message-ID: <4b4fc477-5bd8-7d78-ea2c-8a14b23c4534@huawei.com>
-Date: Fri, 19 Apr 2024 19:20:40 +0800
+	s=arc-20240116; t=1713525880; c=relaxed/simple;
+	bh=seRCd4clFxTtL6vDMULl2f9q6ycCa2mn5kfveiu4RD4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bvv3ScEL4XGdZvyW1xxgkn01Mv/gzEaS/BDzJQqGN4oB6HD8R32syr5DPoW6tKAJHaD4/EBdKW8Lp6Z8NHBdf4olO3AvnP8O9srZP5xdBxNt+OyQXvgQqUPJ4474Grjs99Z5YIb0N0t930QCtQofDkINV/7y0l6lrH+0Kgi55K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fUooDE5x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7323C072AA;
+	Fri, 19 Apr 2024 11:24:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713525880;
+	bh=seRCd4clFxTtL6vDMULl2f9q6ycCa2mn5kfveiu4RD4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fUooDE5xzZcwoxp6cnIxa6nSjyz1WVMPciR6eMgeZnScdWtd6RHnirzVrYzahjF7o
+	 0Rhf5JDQK6Bbi//FiWWYsQhmxdD2E7SdEerccUuWi7NIJjAe8/oEc+JTPgi97aEKCx
+	 1qr1ylbc2JY3/PXoVlXnIjiywl20S1TiLXHN1Go61pGazmBK5iADoaJAlP4Oea0qxL
+	 4yJjj/ACTYEPqM9xhtpaqk87AOhVlC9pbpwjwCQyrrBWvF45vcjP2LjfAQa/iqIMmX
+	 0M2vJIj9IINojXoqhh6KBgTnklOD9tdz9Fd6A0k9WyLbzTHYn8x5INZivUwtKZ68Bq
+	 aiK1U7erJiBgQ==
+Date: Fri, 19 Apr 2024 12:24:32 +0100
+From: Will Deacon <will@kernel.org>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Bibo Mao <maobibo@loongson.cn>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 1/4] KVM: delete .change_pte MMU notifier callback
+Message-ID: <20240419112432.GB2972@willie-the-truck>
+References: <20240405115815.3226315-1-pbonzini@redhat.com>
+ <20240405115815.3226315-2-pbonzini@redhat.com>
+ <20240412104408.GA27645@willie-the-truck>
+ <86jzl2sovz.wl-maz@kernel.org>
+ <ZhlLHtfeSHk9gRRO@google.com>
+ <86h6g5si0m.wl-maz@kernel.org>
+ <Zh1d94Pl6gneVoDd@google.com>
+ <20240418141932.GA1855@willie-the-truck>
+ <ZiF6NgGYLSsPNEOg@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH -next] erofs: get rid of erofs_fs_context
-Content-Language: en-US
-To: Christian Brauner <brauner@kernel.org>
-CC: <linux-erofs@lists.ozlabs.org>, <xiang@kernel.org>, <chao@kernel.org>,
-	<huyue2@coolpad.com>, <jefflexu@linux.alibaba.com>,
-	<viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-	<yangerkun@huawei.com>, <houtao1@huawei.com>, Baokun Li
-	<libaokun1@huawei.com>
-References: <20240419031459.3050864-1-libaokun1@huawei.com>
- <20240419-tundra-komodowaran-5c3758d496e4@brauner>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20240419-tundra-komodowaran-5c3758d496e4@brauner>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZiF6NgGYLSsPNEOg@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 2024/4/19 18:13, Christian Brauner wrote:
-> On Fri, Apr 19, 2024 at 11:14:59AM +0800, Baokun Li wrote:
->> Instead of allocating the erofs_sb_info in get_tree() allocate it during
->> init_fs_context() and after this erofs_fs_context is no longer needed,
->> so replace ctx with sbi, no functional changes.
->>
->> Suggested-by: Jingbo Xu <jefflexu@linux.alibaba.com>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->> Hi Gao Xiang,
->> Hi Jingbo,
->>
->> I noticed that Christian's original patch has been merged into the next
->> branch, so I'm sending this patch out separately.
-> An an accident on my part as I left it in the vfs.fixes branch. I expect
-> that the erofs tree will pick it up.
+On Thu, Apr 18, 2024 at 12:53:26PM -0700, Sean Christopherson wrote:
+> On Thu, Apr 18, 2024, Will Deacon wrote:
+> > On Mon, Apr 15, 2024 at 10:03:51AM -0700, Sean Christopherson wrote:
+> > > On Sat, Apr 13, 2024, Marc Zyngier wrote:
+> > > > On Fri, 12 Apr 2024 15:54:22 +0100, Sean Christopherson <seanjc@google.com> wrote:
+> > > > > 
+> > > > > On Fri, Apr 12, 2024, Marc Zyngier wrote:
+> > > > > > On Fri, 12 Apr 2024 11:44:09 +0100, Will Deacon <will@kernel.org> wrote:
+> > > > > > > On Fri, Apr 05, 2024 at 07:58:12AM -0400, Paolo Bonzini wrote:
+> > > > > > > Also, if you're in the business of hacking the MMU notifier code, it
+> > > > > > > would be really great to change the .clear_flush_young() callback so
+> > > > > > > that the architecture could handle the TLB invalidation. At the moment,
+> > > > > > > the core KVM code invalidates the whole VMID courtesy of 'flush_on_ret'
+> > > > > > > being set by kvm_handle_hva_range(), whereas we could do a much
+> > > > > > > lighter-weight and targetted TLBI in the architecture page-table code
+> > > > > > > when we actually update the ptes for small ranges.
+> > > > > > 
+> > > > > > Indeed, and I was looking at this earlier this week as it has a pretty
+> > > > > > devastating effect with NV (it blows the shadow S2 for that VMID, with
+> > > > > > costly consequences).
+> > > > > > 
+> > > > > > In general, it feels like the TLB invalidation should stay with the
+> > > > > > code that deals with the page tables, as it has a pretty good idea of
+> > > > > > what needs to be invalidated and how -- specially on architectures
+> > > > > > that have a HW-broadcast facility like arm64.
+> > > > > 
+> > > > > Would this be roughly on par with an in-line flush on arm64?  The simpler, more
+> > > > > straightforward solution would be to let architectures override flush_on_ret,
+> > > > > but I would prefer something like the below as x86 can also utilize a range-based
+> > > > > flush when running as a nested hypervisor.
+> > > 
+> > > ...
+> > > 
+> > > > I think this works for us on HW that has range invalidation, which
+> > > > would already be a positive move.
+> > > > 
+> > > > For the lesser HW that isn't range capable, it also gives the
+> > > > opportunity to perform the iteration ourselves or go for the nuclear
+> > > > option if the range is larger than some arbitrary constant (though
+> > > > this is additional work).
+> > > > 
+> > > > But this still considers the whole range as being affected by
+> > > > range->handler(). It'd be interesting to try and see whether more
+> > > > precise tracking is (or isn't) generally beneficial.
+> > > 
+> > > I assume the idea would be to let arch code do single-page invalidations of
+> > > stage-2 entries for each gfn?
+> > 
+> > Right, as it's the only code which knows which ptes actually ended up
+> > being aged.
+> > 
+> > > Unless I'm having a brain fart, x86 can't make use of that functionality.  Intel
+> > > doesn't provide any way to do targeted invalidation of stage-2 mappings.  AMD
+> > > provides an instruction to do broadcast invalidations, but it takes a virtual
+> > > address, i.e. a stage-1 address.  I can't tell if it's a host virtual address or
+> > > a guest virtual address, but it's a moot point because KVM doen't have the guest
+> > > virtual address, and if it's a host virtual address, there would need to be valid
+> > > mappings in the host page tables for it to work, which KVM can't guarantee.
+> > 
+> > Ah, so it sounds like it would need to be an arch opt-in then.
+> 
+> Even if x86 (or some other arch code) could use the precise tracking, I think it
+> would make sense to have the behavior be arch specific.  Adding infrastructure
+> to get information from arch code, only to turn around and give it back to arch
+> code would be odd.
 
-Hi Christian,
+Sorry, yes, that's what I had in mind. Basically, a way for the arch code
+to say "I've handled the TLBI, don't worry about it."
 
-Okay, I'll send the full patch.
+> Unless arm64 can't do the invalidation immediately after aging the stage-2 PTE,
+> the best/easiest solution would be to let arm64 opt out of the common TLB flush
+> when a SPTE is made young.
+> 
+> With the range-based flushing bundled in, this?
+> 
+> ---
+>  include/linux/kvm_host.h |  2 ++
+>  virt/kvm/kvm_main.c      | 40 +++++++++++++++++++++++++---------------
+>  2 files changed, 27 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index afbc99264ffa..8fe5f5e16919 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -2010,6 +2010,8 @@ extern const struct kvm_stats_header kvm_vcpu_stats_header;
+>  extern const struct _kvm_stats_desc kvm_vcpu_stats_desc[];
+>  
+>  #ifdef CONFIG_KVM_GENERIC_MMU_NOTIFIER
+> +int kvm_arch_flush_tlb_if_young(void);
+> +
+>  static inline int mmu_invalidate_retry(struct kvm *kvm, unsigned long mmu_seq)
+>  {
+>  	if (unlikely(kvm->mmu_invalidate_in_progress))
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 38b498669ef9..5ebef8ef239c 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -595,6 +595,11 @@ static void kvm_null_fn(void)
+>  }
+>  #define IS_KVM_NULL_FN(fn) ((fn) == (void *)kvm_null_fn)
+>  
+> +int __weak kvm_arch_flush_tlb_if_young(void)
+> +{
+> +	return true;
+> +}
 
->> Regards,
->> Baokun
->>
->>   fs/erofs/internal.h |   7 ---
->>   fs/erofs/super.c    | 112 ++++++++++++++++++--------------------------
->>   2 files changed, 46 insertions(+), 73 deletions(-)
->>
->> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
->> index 116c1d5d1932..53ebba952a2f 100644
->> --- a/fs/erofs/internal.h
->> +++ b/fs/erofs/internal.h
->> @@ -84,13 +84,6 @@ struct erofs_dev_context {
->>   	bool flatdev;
->>   };
->>   
->> -struct erofs_fs_context {
->> -	struct erofs_mount_opts opt;
->> -	struct erofs_dev_context *devs;
->> -	char *fsid;
->> -	char *domain_id;
->> -};
->> -
->>   /* all filesystem-wide lz4 configurations */
->>   struct erofs_sb_lz4_info {
->>   	/* # of pages needed for EROFS lz4 rolling decompression */
->> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
->> index 4fc34b984e51..7172271290b9 100644
->> --- a/fs/erofs/super.c
->> +++ b/fs/erofs/super.c
->> @@ -370,18 +370,18 @@ static int erofs_read_superblock(struct super_block *sb)
->>   	return ret;
->>   }
->>   
->> -static void erofs_default_options(struct erofs_fs_context *ctx)
->> +static void erofs_default_options(struct erofs_sb_info *sbi)
->>   {
->>   #ifdef CONFIG_EROFS_FS_ZIP
->> -	ctx->opt.cache_strategy = EROFS_ZIP_CACHE_READAROUND;
->> -	ctx->opt.max_sync_decompress_pages = 3;
->> -	ctx->opt.sync_decompress = EROFS_SYNC_DECOMPRESS_AUTO;
->> +	sbi->opt.cache_strategy = EROFS_ZIP_CACHE_READAROUND;
->> +	sbi->opt.max_sync_decompress_pages = 3;
->> +	sbi->opt.sync_decompress = EROFS_SYNC_DECOMPRESS_AUTO;
->>   #endif
->>   #ifdef CONFIG_EROFS_FS_XATTR
->> -	set_opt(&ctx->opt, XATTR_USER);
->> +	set_opt(&sbi->opt, XATTR_USER);
->>   #endif
->>   #ifdef CONFIG_EROFS_FS_POSIX_ACL
->> -	set_opt(&ctx->opt, POSIX_ACL);
->> +	set_opt(&sbi->opt, POSIX_ACL);
->>   #endif
->>   }
->>   
->> @@ -426,16 +426,16 @@ static const struct fs_parameter_spec erofs_fs_parameters[] = {
->>   static bool erofs_fc_set_dax_mode(struct fs_context *fc, unsigned int mode)
->>   {
->>   #ifdef CONFIG_FS_DAX
->> -	struct erofs_fs_context *ctx = fc->fs_private;
->> +	struct erofs_sb_info *sbi = fc->s_fs_info;
->>   
->>   	switch (mode) {
->>   	case EROFS_MOUNT_DAX_ALWAYS:
->> -		set_opt(&ctx->opt, DAX_ALWAYS);
->> -		clear_opt(&ctx->opt, DAX_NEVER);
->> +		set_opt(&sbi->opt, DAX_ALWAYS);
->> +		clear_opt(&sbi->opt, DAX_NEVER);
->>   		return true;
->>   	case EROFS_MOUNT_DAX_NEVER:
->> -		set_opt(&ctx->opt, DAX_NEVER);
->> -		clear_opt(&ctx->opt, DAX_ALWAYS);
->> +		set_opt(&sbi->opt, DAX_NEVER);
->> +		clear_opt(&sbi->opt, DAX_ALWAYS);
->>   		return true;
->>   	default:
->>   		DBG_BUGON(1);
->> @@ -450,7 +450,7 @@ static bool erofs_fc_set_dax_mode(struct fs_context *fc, unsigned int mode)
->>   static int erofs_fc_parse_param(struct fs_context *fc,
->>   				struct fs_parameter *param)
->>   {
->> -	struct erofs_fs_context *ctx = fc->fs_private;
->> +	struct erofs_sb_info *sbi = fc->s_fs_info;
->>   	struct fs_parse_result result;
->>   	struct erofs_device_info *dif;
->>   	int opt, ret;
->> @@ -463,9 +463,9 @@ static int erofs_fc_parse_param(struct fs_context *fc,
->>   	case Opt_user_xattr:
->>   #ifdef CONFIG_EROFS_FS_XATTR
->>   		if (result.boolean)
->> -			set_opt(&ctx->opt, XATTR_USER);
->> +			set_opt(&sbi->opt, XATTR_USER);
->>   		else
->> -			clear_opt(&ctx->opt, XATTR_USER);
->> +			clear_opt(&sbi->opt, XATTR_USER);
->>   #else
->>   		errorfc(fc, "{,no}user_xattr options not supported");
->>   #endif
->> @@ -473,16 +473,16 @@ static int erofs_fc_parse_param(struct fs_context *fc,
->>   	case Opt_acl:
->>   #ifdef CONFIG_EROFS_FS_POSIX_ACL
->>   		if (result.boolean)
->> -			set_opt(&ctx->opt, POSIX_ACL);
->> +			set_opt(&sbi->opt, POSIX_ACL);
->>   		else
->> -			clear_opt(&ctx->opt, POSIX_ACL);
->> +			clear_opt(&sbi->opt, POSIX_ACL);
->>   #else
->>   		errorfc(fc, "{,no}acl options not supported");
->>   #endif
->>   		break;
->>   	case Opt_cache_strategy:
->>   #ifdef CONFIG_EROFS_FS_ZIP
->> -		ctx->opt.cache_strategy = result.uint_32;
->> +		sbi->opt.cache_strategy = result.uint_32;
->>   #else
->>   		errorfc(fc, "compression not supported, cache_strategy ignored");
->>   #endif
->> @@ -504,27 +504,27 @@ static int erofs_fc_parse_param(struct fs_context *fc,
->>   			kfree(dif);
->>   			return -ENOMEM;
->>   		}
->> -		down_write(&ctx->devs->rwsem);
->> -		ret = idr_alloc(&ctx->devs->tree, dif, 0, 0, GFP_KERNEL);
->> -		up_write(&ctx->devs->rwsem);
->> +		down_write(&sbi->devs->rwsem);
->> +		ret = idr_alloc(&sbi->devs->tree, dif, 0, 0, GFP_KERNEL);
->> +		up_write(&sbi->devs->rwsem);
->>   		if (ret < 0) {
->>   			kfree(dif->path);
->>   			kfree(dif);
->>   			return ret;
->>   		}
->> -		++ctx->devs->extra_devices;
->> +		++sbi->devs->extra_devices;
->>   		break;
->>   #ifdef CONFIG_EROFS_FS_ONDEMAND
->>   	case Opt_fsid:
->> -		kfree(ctx->fsid);
->> -		ctx->fsid = kstrdup(param->string, GFP_KERNEL);
->> -		if (!ctx->fsid)
->> +		kfree(sbi->fsid);
->> +		sbi->fsid = kstrdup(param->string, GFP_KERNEL);
->> +		if (!sbi->fsid)
->>   			return -ENOMEM;
->>   		break;
->>   	case Opt_domain_id:
->> -		kfree(ctx->domain_id);
->> -		ctx->domain_id = kstrdup(param->string, GFP_KERNEL);
->> -		if (!ctx->domain_id)
->> +		kfree(sbi->domain_id);
->> +		sbi->domain_id = kstrdup(param->string, GFP_KERNEL);
->> +		if (!sbi->domain_id)
->>   			return -ENOMEM;
->>   		break;
->>   #else
->> @@ -582,7 +582,6 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
->>   {
->>   	struct inode *inode;
->>   	struct erofs_sb_info *sbi = EROFS_SB(sb);
->> -	struct erofs_fs_context *ctx = fc->fs_private;
->>   	int err;
->>   
->>   	sb->s_magic = EROFS_SUPER_MAGIC;
->> @@ -590,14 +589,6 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
->>   	sb->s_maxbytes = MAX_LFS_FILESIZE;
->>   	sb->s_op = &erofs_sops;
->>   
->> -	sb->s_fs_info = sbi;
->> -	sbi->opt = ctx->opt;
->> -	sbi->devs = ctx->devs;
->> -	ctx->devs = NULL;
->> -	ctx->fsid = NULL;
->> -	sbi->domain_id = ctx->domain_id;
->> -	ctx->domain_id = NULL;
->> -
->>   	sbi->blkszbits = PAGE_SHIFT;
->>   	if (erofs_is_fscache_mode(sb)) {
->>   		sb->s_blocksize = PAGE_SIZE;
->> @@ -701,15 +692,8 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
->>   
->>   static int erofs_fc_get_tree(struct fs_context *fc)
->>   {
->> -	struct erofs_fs_context *ctx = fc->fs_private;
->> -	struct erofs_sb_info *sbi;
->> -
->> -	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
->> -	if (!sbi)
->> -		return -ENOMEM;
->> +	struct erofs_sb_info *sbi = fc->s_fs_info;
->>   
->> -	fc->s_fs_info = sbi;
->> -	sbi->fsid = ctx->fsid;
->>   	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && sbi->fsid)
->>   		return get_tree_nodev(fc, erofs_fc_fill_super);
->>   
->> @@ -720,19 +704,19 @@ static int erofs_fc_reconfigure(struct fs_context *fc)
->>   {
->>   	struct super_block *sb = fc->root->d_sb;
->>   	struct erofs_sb_info *sbi = EROFS_SB(sb);
->> -	struct erofs_fs_context *ctx = fc->fs_private;
->> +	struct erofs_sb_info *new_sbi = fc->s_fs_info;
->>   
->>   	DBG_BUGON(!sb_rdonly(sb));
->>   
->> -	if (ctx->fsid || ctx->domain_id)
->> +	if (new_sbi->fsid || new_sbi->domain_id)
->>   		erofs_info(sb, "ignoring reconfiguration for fsid|domain_id.");
->>   
->> -	if (test_opt(&ctx->opt, POSIX_ACL))
->> +	if (test_opt(&new_sbi->opt, POSIX_ACL))
->>   		fc->sb_flags |= SB_POSIXACL;
->>   	else
->>   		fc->sb_flags &= ~SB_POSIXACL;
->>   
->> -	sbi->opt = ctx->opt;
->> +	sbi->opt = new_sbi->opt;
->>   
->>   	fc->sb_flags |= SB_RDONLY;
->>   	return 0;
->> @@ -763,16 +747,12 @@ static void erofs_free_dev_context(struct erofs_dev_context *devs)
->>   
->>   static void erofs_fc_free(struct fs_context *fc)
->>   {
->> -	struct erofs_fs_context *ctx = fc->fs_private;
->>   	struct erofs_sb_info *sbi = fc->s_fs_info;
->>   
->> -	erofs_free_dev_context(ctx->devs);
->> -	kfree(ctx->fsid);
->> -	kfree(ctx->domain_id);
->> -	kfree(ctx);
->> -
->> -	if (sbi)
->> -		kfree(sbi);
->> +	erofs_free_dev_context(sbi->devs);
->> +	kfree(sbi->fsid);
->> +	kfree(sbi->domain_id);
->> +	kfree(sbi);
->>   }
->>   
->>   static const struct fs_context_operations erofs_context_ops = {
->> @@ -784,22 +764,22 @@ static const struct fs_context_operations erofs_context_ops = {
->>   
->>   static int erofs_init_fs_context(struct fs_context *fc)
->>   {
->> -	struct erofs_fs_context *ctx;
->> +	struct erofs_sb_info *sbi;
->>   
->> -	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
->> -	if (!ctx)
->> +	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
->> +	if (!sbi)
->>   		return -ENOMEM;
->>   
->> -	ctx->devs = kzalloc(sizeof(struct erofs_dev_context), GFP_KERNEL);
->> -	if (!ctx->devs) {
->> -		kfree(ctx);
->> +	sbi->devs = kzalloc(sizeof(struct erofs_dev_context), GFP_KERNEL);
->> +	if (!sbi->devs) {
->> +		kfree(sbi);
->>   		return -ENOMEM;
->>   	}
->> -	fc->fs_private = ctx;
->> +	fc->fs_private = sbi;
-> I don't understand how your patch is going to work. fs_private isn't
-> transfered by the generic code to sb->s_fs_info. Did you mean
-> fc->s_fs_info = sbi?
-Yes, it's fc->s_fs_info, my mistake!
+I tend to find __weak functions a little ugly, but I think the gist of the
+diff looks good to me. Thanks for putting it together!
 
-The original plan was to split into two patches, getting rid of
-erofs_fs_context in the first and fixing the problem in the second.
+> +
+>  /* Iterate over each memslot intersecting [start, last] (inclusive) range */
+>  #define kvm_for_each_memslot_in_hva_range(node, slots, start, last)	     \
+>  	for (node = interval_tree_iter_first(&slots->hva_tree, start, last); \
+> @@ -611,6 +616,7 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
+>  	struct kvm_gfn_range gfn_range;
+>  	struct kvm_memory_slot *slot;
+>  	struct kvm_memslots *slots;
+> +	bool need_flush = false;
+>  	int i, idx;
+>  
+>  	if (WARN_ON_ONCE(range->end <= range->start))
+> @@ -663,10 +669,22 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
+>  					break;
+>  			}
+>  			r.ret |= range->handler(kvm, &gfn_range);
+> +
+> +		       /*
+> +			* Use a precise gfn-based TLB flush when possible, as
+> +			* most mmu_notifier events affect a small-ish range.
+> +			* Fall back to a full TLB flush if the gfn-based flush
+> +			* fails, and don't bother trying the gfn-based flush
+> +			* if a full flush is already pending.
+> +			*/
+> +		       if (range->flush_on_ret && !need_flush && r.ret &&
+> +			   kvm_arch_flush_remote_tlbs_range(kvm, gfn_range.start,
+> +							    gfn_range.end - gfn_range.start + 1))
 
-I wrote the patch yesterday and tested it, but when I sent it out
-today after testing it, I noticed that your original patch was
-merged in, and then I made a mistake when rebasing on the
-new next branch, sorry about that. I'll send out the previous
-patch soon.
+What's that '+ 1' needed for here?
 
-Thanks for the correction!
->
->>   
->> -	idr_init(&ctx->devs->tree);
->> -	init_rwsem(&ctx->devs->rwsem);
->> -	erofs_default_options(ctx);
->> +	idr_init(&sbi->devs->tree);
->> +	init_rwsem(&sbi->devs->rwsem);
->> +	erofs_default_options(sbi);
->>   	fc->ops = &erofs_context_ops;
->>   	return 0;
->>   }
->> -- 
->> 2.31.1
->>
-Thanks again!
--- 
-With Best Regards,
-Baokun Li
+Will
 
