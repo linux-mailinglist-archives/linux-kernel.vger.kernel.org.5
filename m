@@ -1,282 +1,190 @@
-Return-Path: <linux-kernel+bounces-151097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B3898AA914
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF6898AA91E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:25:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEC981F21BD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:23:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A5D81F21B7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 561D24C3D0;
-	Fri, 19 Apr 2024 07:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AAF642ABC;
+	Fri, 19 Apr 2024 07:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YsFK3sw4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HqwFaBpA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE3F3F8EA;
-	Fri, 19 Apr 2024 07:22:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E73B53F9C2
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713511370; cv=none; b=bthv9GTG6uBDWbrlnQv3GFdx6Pn2MVBD4O5ICJjEtAjm+zFOt7FZcwOmJCA+PNvLY7yrsv9V8le6Y7uvhlh2sI+R5N10IiggeqFO8Cv21FEX6p08a57u77/PEwFelpyL+qfKCj7Ydb8RbUHh6mFy/h/hpvMq7Z94Om+BBqhvwIA=
+	t=1713511521; cv=none; b=DgZt49IPZ4l9s4VbGVix37poNJ8GKwQtBbDDBOa+nJoqswWpxqWTzirl8dZVeZqRv04OpAIe1P4BT/PE4pMdCuyKGZvPRIb+vMMo6Zvyfni8n+fy77rrqkXpWw4ekPyED/wDGwqnMS4Yp2aPtqCKc8yySqjhEuMK1kmxWVv4UiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713511370; c=relaxed/simple;
-	bh=6vKQ1YUDD97UB7gfwj/VT8OGiYLvu5Z0lBIvNse7W9s=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=a3qESUhgyDkkz95VewypxYRd4jhpdLHf2aGI84nLD3jd13y7aCSETGBFvKsQ/x0dHFMY2YO9496qFnp9BdFMieX7nXIC8lUH7LhGSHHUaMVB4INybsaZ4EACit8lAI6psjWI/YByjWLoBraZIEYYTjyOut3OT8xffo/HsR0Jyf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YsFK3sw4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 400A1C4AF12;
-	Fri, 19 Apr 2024 07:22:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713511370;
-	bh=6vKQ1YUDD97UB7gfwj/VT8OGiYLvu5Z0lBIvNse7W9s=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=YsFK3sw4Lk5H0nqLZ1B8EX62fHobvSjlpCyR7Js+d8GoyA+h1kQseiY7yQpTKxe6i
-	 pn/a2c1SK/7qwquYitWYFqcZ8jafumgnVfkhDTiKQ2lv47OpORofGSoXg4tfMX3IbS
-	 Fw/YkLMSqk/iyk9eO7/woo6kjVr6vyv/dTieX/HHiK1aM9b0jpNcVEvs98hSbg5qwh
-	 6Fb7pVGPCOreEyh60OfzpQYztv5Zi4LpQ6Xbk5bNKOIJH8n/5+ZvPLZlMlLPOV6Gns
-	 jJf3Me89txEDbuBT8rrtKsrtrIB1gIt23Shd0/xND4/ehraSdjPRPz6KKGwULyNEJU
-	 BdT+u9WbydjwQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30B52C04FF6;
-	Fri, 19 Apr 2024 07:22:50 +0000 (UTC)
-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Fri, 19 Apr 2024 10:22:51 +0300
-Subject: [PATCH v2 4/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC5300
+	s=arc-20240116; t=1713511521; c=relaxed/simple;
+	bh=0A/OCsLVNcCr/k9A/CnjgLx1zKdQMydiJIwdPLolL2M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GeziAMo6laagQUoSomr1mYTprHBGZTNUea9MsvM8kcQtFFMWiHIMtS2naAav/b1H/roSkpyGv1uN3+z+QzPP/9rsijwA+gOkIBJ3/S0f4VtndXdWZem+iBAOF/M2pZgH6DRi9QKK54IMAeQt4h2Rr/oMLHSHdXfBBIJMFDUGvoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HqwFaBpA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713511518;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uYdsES1ehEjRm91dEIYItkD42nNySUH6HTDwijrWpSM=;
+	b=HqwFaBpAUNvqAeO4gV8Ej8anQ1O5zFOcnBx8AyB4XIU2ePtrWQMz6J/A7McJX3aDHLciuG
+	l6ixGvkA8FRCa9HoPPgEMpR499vIgSYqlrxL0JfKBqbRn2JndQShwTCKM3xERKHT5A1mrh
+	830f9xsonV4uT+PLxd0m6snSws27uFM=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-214-WdssuoyKM5qAH0wq5nMWAQ-1; Fri, 19 Apr 2024 03:25:16 -0400
+X-MC-Unique: WdssuoyKM5qAH0wq5nMWAQ-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-51895074307so1170413e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 00:25:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713511515; x=1714116315;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uYdsES1ehEjRm91dEIYItkD42nNySUH6HTDwijrWpSM=;
+        b=KgBNpyWFQp8GGQVNNOIIMGttVd++KMFCuDxNrcqounYPFoZApmVnH//lovLkXY8ppu
+         KVw+y4Q9CtFk7HYQZAjx1QeqwFJ8BQNEnbtKllzFWtZkVXnI8IC0ovD+iQOO8NLPkOmy
+         hf57as7SrNDGptHXujJzxne2fobtU+g8MsNmw5U1VZdaqHYU5LjUlS1M3Rbw8/0wDqEj
+         db2U0lrPTgefn63la+xYvEr6LFyJ7nUX/Tmd4wDZstTEOz4B+pGlQt2GHEiJNDdS3BRQ
+         YmmNSidusc81nr6PSPUNElQjXt+3+wCPwZf1dgAfhWaXSjAiHDEafjhbDzb5ppQJyQP5
+         WoKw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwq9EzUc2sHnpcOB1JAupzA27rf3IdZ+7YvOGTPGP9JsIR8r+xFVhuM861vhW/9IcmEAhRYd5rlNdxkvaPMSjxOxjNXPW4sYBiZ62F
+X-Gm-Message-State: AOJu0YzAzOWndW6ZDhsigo3ABFDp1z0vZRAeOmv8ZfJDF1zh1Nf3Kgi0
+	PCSpXzJiw548RCW0a4lTuY6F/teUBCkCqwfccYdD7oLYqc99X8rB9y2TnjDajzg1scLI7Zb8WJY
+	ZIzyVdw9X35cR40o9BFzoZxPtgfMAgGj01qtpRy+ZkuSCWdkwDZnzl2JZSt8EMA==
+X-Received: by 2002:a05:6512:3f18:b0:518:6ee7:b988 with SMTP id y24-20020a0565123f1800b005186ee7b988mr820844lfa.55.1713511514835;
+        Fri, 19 Apr 2024 00:25:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG59JxcGB3Oo+tRlSNoU2exg90akfDPJmIvxkiqzU+XP0dnaRZJE0OjdyFlU7n3tJZmEdhxcw==
+X-Received: by 2002:a05:6512:3f18:b0:518:6ee7:b988 with SMTP id y24-20020a0565123f1800b005186ee7b988mr820826lfa.55.1713511514419;
+        Fri, 19 Apr 2024 00:25:14 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id u20-20020a17090657d400b00a51b403e30esm1838719ejr.90.2024.04.19.00.25.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 00:25:13 -0700 (PDT)
+Message-ID: <fa6430c7-85ed-4baf-91fe-b29e4bf39c4a@redhat.com>
+Date: Fri, 19 Apr 2024 09:25:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240419-for-soc-asus-rt-ac3200-ac5300-v2-4-f95ff50c2a4d@arinc9.com>
-References: <20240419-for-soc-asus-rt-ac3200-ac5300-v2-0-f95ff50c2a4d@arinc9.com>
-In-Reply-To: <20240419-for-soc-asus-rt-ac3200-ac5300-v2-0-f95ff50c2a4d@arinc9.com>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, 
- Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>, 
- Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713511368; l=4382;
- i=arinc.unal@arinc9.com; s=arinc9-Xeront; h=from:subject:message-id;
- bh=Hh1hFLSkYeym2L6Ley0dgoK9f6xM572VDJkCcZTPEBo=;
- b=7FuoBIJgppNlyc5ai7U1smffD/Ml0jmn+kkuuh2OdZBOVuiqsRWjWac5TV+8Ih2XUqK1h/aNN
- DALNUT9o3XEAflkHEJcvth5mluZx3RIpOKM5rVrfaxQUSw4k9sbZpQp
-X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
- pk=z49tLn29CyiL4uwBTrqH9HO1Wu3sZIuRp4DaLZvtP9M=
-X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-Xeront
- with auth_id=137
-X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Reply-To: arinc.unal@arinc9.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] x86/pci: Skip early E820 check for ECAM region
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: linux-pci@vger.kernel.org, Mateusz Kaduk <mateusz.kaduk@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Tj <linux@iam.tj>, Andy Shevchenko <andy.shevchenko@gmail.com>,
+ x86@kernel.org, linux-kernel@vger.kernel.org,
+ Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
+References: <20240418171554.GA243364@bhelgaas>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240418171554.GA243364@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+Hi Bjorn,
 
-Add the device tree for ASUS RT-AC5300 which is an AC5300 router featuring
-5 Ethernet ports over the integrated Broadcom switch.
+On 4/18/24 7:15 PM, Bjorn Helgaas wrote:
+> On Thu, Apr 18, 2024 at 10:14:21AM +0200, Hans de Goede wrote:
+>> On 4/17/24 10:40 PM, Bjorn Helgaas wrote:
+>>> From: Bjorn Helgaas <bhelgaas@google.com>
+>>>
+>>> Arul, Mateusz, Imcarneiro91, and Aman reported a regression caused by
+>>> 07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map").  On the
+>>> Lenovo Legion 9i laptop, that commit removes the area containing ECAM from
+>>> E820, which means the early E820 validation started failing, which meant we
+>>> didn't enable ECAM in the "early MCFG" path
+>>>
+>>> The lack of ECAM caused many ACPI methods to fail, resulting in the
+>>> embedded controller, PS/2, audio, trackpad, and battery devices not being
+>>> detected.  The _OSC method also failed, so Linux could not take control of
+>>> the PCIe hotplug, PME, and AER features:
+>>>
+>>>   # pci_mmcfg_early_init()
+>>>
+>>>   PCI: ECAM [mem 0xc0000000-0xce0fffff] (base 0xc0000000) for domain 0000 [bus 00-e0]
+>>>   PCI: not using ECAM ([mem 0xc0000000-0xce0fffff] not reserved)
+>>>
+>>>   ACPI Error: AE_ERROR, Returned by Handler for [PCI_Config] (20230628/evregion-300)
+>>>   ACPI: Interpreter enabled
+>>>   ACPI: Ignoring error and continuing table load
+>>>   ACPI BIOS Error (bug): Could not resolve symbol [\_SB.PC00.RP01._SB.PC00], AE_NOT_FOUND (20230628/dswload2-162)
+>>>   ACPI Error: AE_NOT_FOUND, During name lookup/catalog (20230628/psobject-220)
+>>>   ACPI: Skipping parse of AML opcode: OpcodeName unavailable (0x0010)
+>>>   ACPI BIOS Error (bug): Could not resolve symbol [\_SB.PC00.RP01._SB.PC00], AE_NOT_FOUND (20230628/dswload2-162)
+>>>   ACPI Error: AE_NOT_FOUND, During name lookup/catalog (20230628/psobject-220)
+>>>   ...
+>>>   ACPI Error: Aborting method \_SB.PC00._OSC due to previous error (AE_NOT_FOUND) (20230628/psparse-529)
+>>>   acpi PNP0A08:00: _OSC: platform retains control of PCIe features (AE_NOT_FOUND)
+>>>
+>>>   # pci_mmcfg_late_init()
+>>>
+>>>   PCI: ECAM [mem 0xc0000000-0xce0fffff] (base 0xc0000000) for domain 0000 [bus 00-e0]
+>>>   PCI: [Firmware Info]: ECAM [mem 0xc0000000-0xce0fffff] not reserved in ACPI motherboard resources
+>>>   PCI: ECAM [mem 0xc0000000-0xce0fffff] is EfiMemoryMappedIO; assuming valid
+>>>   PCI: ECAM [mem 0xc0000000-0xce0fffff] reserved to work around lack of ACPI motherboard _CRS
+>>>
+>>> Per PCI Firmware r3.3, sec 4.1.2, ECAM space must be reserved by a PNP0C02
+>>> resource, but it need not be mentioned in E820, so we shouldn't look at
+>>> E820 to validate the ECAM space described by MCFG.
+>>>
+>>> 946f2ee5c731 ("[PATCH] i386/x86-64: Check that MCFG points to an e820
+>>> reserved area") added a sanity check of E820 to work around buggy MCFG
+>>> tables, but that over-aggressive validation causes failures like this one.
+>>>
+>>> Keep the E820 validation check only for older BIOSes (pre-2016) so the
+>>> buggy 2006-era machines don't break.  Skip the early E820 check for 2016
+>>> and newer BIOSes.
+>>
+>> I know a fix for this has been long in the making so I don't want to throw
+>> a spanner into the works, but I wonder why is the is_efi_mmio() check inside
+>> the if (!early && !acpi_disabled) {} block (before this patch) ?
+>>
+>> is_efi_mmio() only relies on EFI memdescriptors and those are setup pretty
+>> early. Assuming that the EFI memdescriptors are indeed setup before
+>> pci_mmcfg_reserved(..., ..., early=true) gets called we could simply move
+>> the is_efi_mmio(&cfg->res) outside (below) the if (!early && !acpi_disabled)
+>> {} so that it always runs before the is_mmconf_reserved(e820__mapped_all, ...)
+>> check.
+>>
+>> Looking at the dmesg above the is_efi_mmio() check does succeed, so this
+>> should fix the issue without needing a BIOS year check ?
+> 
+> As far as I know there is no spec requirement that an area described
+> by MCFG appear in either the E820 map or the EFI map.
+> 
+> I would like to get away from relying on these things that the spec
+> doesn't require because they are so prone to breakage.
+> 
+> I would love to just get rid of this early usage of
+> pci_mmcfg_reserved() completely; I'm just afraid of breaking some
+> ancient 2006-era machine that still happens to be running.
 
-Hardware info:
-* Processor: Broadcom BCM4709C0 dual-core @ 1.4 GHz
-* Switch: BCM53012 in BCM4709C0
-* DDR3 RAM: 512 MB
-* Flash: 128 MB
-* 2.4GHz: BCM4366 4x4 single chip 802.11b/g/n SoC
-* 5GHz: BCM4366 4x4 two chips 802.11a/n/ac SoC
-* Ports: 4 LAN Ports, 1 WAN Port
+Ok, yes if you want to move away from the early checks at all
+then adding the BIOS year check makes sense.
 
-Co-developed-by: Tom Brautaset <tbrautaset@gmail.com>
-Signed-off-by: Tom Brautaset <tbrautaset@gmail.com>
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- arch/arm/boot/dts/broadcom/Makefile                |   1 +
- .../boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts  | 156 +++++++++++++++++++++
- 2 files changed, 157 insertions(+)
+With that clarified the patch looks good to me:
 
-diff --git a/arch/arm/boot/dts/broadcom/Makefile b/arch/arm/boot/dts/broadcom/Makefile
-index c61fca514775..5881bcc95eba 100644
---- a/arch/arm/boot/dts/broadcom/Makefile
-+++ b/arch/arm/boot/dts/broadcom/Makefile
-@@ -72,6 +72,7 @@ dtb-$(CONFIG_ARCH_BCM_5301X) += \
- 	bcm4709-netgear-r8000.dtb \
- 	bcm4709-tplink-archer-c9-v1.dtb \
- 	bcm47094-asus-rt-ac3100.dtb \
-+	bcm47094-asus-rt-ac5300.dtb \
- 	bcm47094-asus-rt-ac88u.dtb \
- 	bcm47094-dlink-dir-885l.dtb \
- 	bcm47094-dlink-dir-890l.dtb \
-diff --git a/arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts b/arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts
-new file mode 100644
-index 000000000000..b75154a9710d
---- /dev/null
-+++ b/arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts
-@@ -0,0 +1,156 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Author: Tom Brautaset <tbrautaset@gmail.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "bcm47094.dtsi"
-+#include "bcm5301x-nand-cs0-bch8.dtsi"
-+
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	compatible = "asus,rt-ac5300", "brcm,bcm47094", "brcm,bcm4708";
-+	model = "ASUS RT-AC5300";
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x00000000 0x08000000>,
-+		      <0x88000000 0x18000000>;
-+	};
-+
-+	nvram@1c080000 {
-+		compatible = "brcm,nvram";
-+		reg = <0x1c080000 0x00180000>;
-+
-+		et1macaddr: et1macaddr {
-+			#nvmem-cell-cells = <1>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-lan {
-+			color = <LED_COLOR_ID_WHITE>;
-+			function = LED_FUNCTION_LAN;
-+			gpios = <&chipcommon 21 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led-power {
-+			color = <LED_COLOR_ID_WHITE>;
-+			function = LED_FUNCTION_POWER;
-+			gpios = <&chipcommon 3 GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "default-on";
-+		};
-+
-+		led-wan-red {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_WAN;
-+			gpios = <&chipcommon 5 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		led-wps {
-+			color = <LED_COLOR_ID_WHITE>;
-+			function = LED_FUNCTION_WPS;
-+			gpios = <&chipcommon 19 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		button-reset {
-+			label = "Reset";
-+			linux,code = <KEY_RESTART>;
-+			gpios = <&chipcommon 11 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		button-wifi {
-+			label = "Wi-Fi";
-+			linux,code = <KEY_RFKILL>;
-+			gpios = <&chipcommon 20 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		button-wps {
-+			label = "WPS";
-+			linux,code = <KEY_WPS_BUTTON>;
-+			gpios = <&chipcommon 18 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+};
-+
-+&usb2 {
-+	vcc-gpio = <&chipcommon 9 GPIO_ACTIVE_HIGH>;
-+};
-+
-+&usb3_phy {
-+	status = "okay";
-+};
-+
-+&gmac0 {
-+	nvmem-cells = <&et1macaddr 0>;
-+	nvmem-cell-names = "mac-address";
-+};
-+
-+&gmac1 {
-+	nvmem-cells = <&et1macaddr 1>;
-+	nvmem-cell-names = "mac-address";
-+};
-+
-+&gmac2 {
-+	nvmem-cells = <&et1macaddr 2>;
-+	nvmem-cell-names = "mac-address";
-+};
-+
-+&srab {
-+	status = "okay";
-+
-+	ports {
-+		port@0 {
-+			label = "lan4";
-+		};
-+
-+		port@1 {
-+			label = "lan3";
-+		};
-+
-+		port@2 {
-+			label = "lan2";
-+		};
-+
-+		port@3 {
-+			label = "lan1";
-+		};
-+
-+		port@4 {
-+			label = "wan";
-+		};
-+	};
-+};
-+
-+&nandcs {
-+	partitions {
-+		compatible = "fixed-partitions";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		partition@0 {
-+			label = "boot";
-+			reg = <0x00000000 0x00080000>;
-+			read-only;
-+		};
-+
-+		partition@80000 {
-+			label = "nvram";
-+			reg = <0x00080000 0x00180000>;
-+		};
-+
-+		partition@200000 {
-+			label = "firmware";
-+			reg = <0x00200000 0x07e00000>;
-+			compatible = "brcm,trx";
-+		};
-+	};
-+};
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
--- 
-2.40.1
+Regards,
+
+Hans
+
 
 
 
