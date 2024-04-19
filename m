@@ -1,78 +1,120 @@
-Return-Path: <linux-kernel+bounces-152022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E9828AB78B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 01:44:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C0848AB7F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 01:55:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C87D3281A0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:44:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E60F1C20A54
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96C313D898;
-	Fri, 19 Apr 2024 23:44:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B7813E3FA;
+	Fri, 19 Apr 2024 23:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d7nbVH3g"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GIIIQnKG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E610810A28;
-	Fri, 19 Apr 2024 23:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD47813D88F;
+	Fri, 19 Apr 2024 23:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713570274; cv=none; b=dgYomwXKtCcOgoq9JowMg/bFTzB4rcnjTckGhV4jn4Ii5FLphq+jazE4HKbwpHa34uMksh8KasqTaevKmTICPljHM99U4QfWrAePKniqKUCAWHXayl7dUp/w41iKKW8HzzqqBnFYS/2hG3wUJsBldAQjlO5QfGiemGq9kTq2fN0=
+	t=1713570815; cv=none; b=Yn71VvVt2pAKcO81EAtPSocnDCVS49OoIG1G/JvhNfYVK5+9Glrmg4dyJ/AYcKAeUzJKXlFhwMZ1NdqV/7D3A8nyFIFjNgnO2QIklbJ7beLv4eOk1k1Xzcw13QXR2YCo4I9jjVusA8mh8xcWiOibM62nU9wfRK5aqceU3CcKiko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713570274; c=relaxed/simple;
-	bh=kDow+YoIV0JFmZ6TFlftnMo7ta+LVgBFS1WDoclcF9U=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=HT2K8jW9GgbsLI1O6U5tcoCxKqIOaxAjKfeSMJd+dZgZyopazqq1EUZ3UOT+YE5wz22A4yQGIDNr65I5by96vHZ4YHUDzwUdXewgxryBkb+WXzLR/6RS8tRQz9y8vJv2lG8l2eHgm+VZc0xgwnmUlUp+CJ/jouvNHKfusrH6aUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d7nbVH3g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BA745C072AA;
-	Fri, 19 Apr 2024 23:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713570273;
-	bh=kDow+YoIV0JFmZ6TFlftnMo7ta+LVgBFS1WDoclcF9U=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=d7nbVH3g938x0wRJA0bDw65VwDDF40uytM18FnN1eGnUYi564bu8286QK10y/1PZV
-	 3DkMgyNaUe6ALDdQlvNYOHlUz0/P6Qe0eD9uACRQM0Mdzl3f1j7ldhLgWWSfNvg8KY
-	 N39U9ZVB+dD1Iz6oSv7E8StEb88bErfo5HTnWmQpXrhVpIeOKk9Z0spIx1RHtMgRqO
-	 Ok5DdDREZzbMVK+0TLtf3rrmJ4EzzBU85hpi2hlyLa14Vzyrr18tTe9UOxLa2Uvcfy
-	 QOA+qN3toRWrs2yEzHOaq4skCAZcYf/FFo2pJNqAVqgw1dr2z8Bbk8V1s5Jq2cUJRP
-	 RQ+U5qqPOfAIg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AFDFFC43616;
-	Fri, 19 Apr 2024 23:44:33 +0000 (UTC)
-Subject: Re: [GIT PULL] perf tools fixes for v6.9
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240419211227.821832-1-namhyung@kernel.org>
-References: <20240419211227.821832-1-namhyung@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240419211227.821832-1-namhyung@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git tags/perf-tools-fixes-for-v6.9-2024-04-19
-X-PR-Tracked-Commit-Id: 1cebd7f74976455ccd89c1dfbcf00bca52d0a512
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 13a2e429f644691fca70049ea1c75f135957c788
-Message-Id: <171357027370.12915.13244194076074050483.pr-tracker-bot@kernel.org>
-Date: Fri, 19 Apr 2024 23:44:33 +0000
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+	s=arc-20240116; t=1713570815; c=relaxed/simple;
+	bh=3gbkhIO45mQhzKLsuGyPxbw/ZYuLJPO+82sN/qnNP8Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bd7hBdbwo/UokWgIKe1k2F8loeu6HDwwkMV4cvNbQ4oC1Qk4CM61K2dWva9nWe+6WLIuMRH3MKCUgQxNCCRbX8+ThIMCuqmyTKzxj7UM7G7E1HIgD7FmsL4XZEfmjz/ApLNP/Y0gKclsEcv49KaFNk/RWDR23wvjdxKQpanWYmc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GIIIQnKG; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713570814; x=1745106814;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=3gbkhIO45mQhzKLsuGyPxbw/ZYuLJPO+82sN/qnNP8Y=;
+  b=GIIIQnKGbPDTOtSB+drjpBgnkEmAFUZFdBGwMfQpUkSNpBA/OlQOV/Bj
+   NaBXbVhJJIvUPSCfmbWA5VfcXh2r1y2EFewZedDMQyUH8dGTzE+sMVopU
+   vNYynFAZX6VvIBGjss1LL/QrnA6tcEiozTHc6vn0nYPBqiYz7xGGR3ewY
+   KggamjN3X+3/wl6b4yXNcGSWENMErqCq+TMDfsw4AqF5L80jGGYG80wD1
+   hIzd7jZK2emW2g+t9uJZfSoN7KGCSQdETAxOtf43k7359wQdiWsab2XWV
+   YYK+1TNThbsCS4eqTWQ6wqooKFvkAVDCcVT+PwP+ijFA+VV8FERfjafY6
+   g==;
+X-CSE-ConnectionGUID: +z7XL0cMT9+5Kzy26LgolQ==
+X-CSE-MsgGUID: 5X0FIlt9S1q1WE1BgtzIFg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="9051093"
+X-IronPort-AV: E=Sophos;i="6.07,215,1708416000"; 
+   d="scan'208";a="9051093"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 16:53:33 -0700
+X-CSE-ConnectionGUID: 9EGboRl0SPWKp4IZ7WJR4A==
+X-CSE-MsgGUID: jATii7gCRUWuBg06ojTolg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,215,1708416000"; 
+   d="scan'208";a="23504137"
+Received: from soc-cp83kr3.jf.intel.com (HELO [10.24.10.31]) ([10.24.10.31])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 16:53:34 -0700
+Message-ID: <2e908322-faa0-4db7-bc14-f87a9d71f577@intel.com>
+Date: Fri, 19 Apr 2024 16:53:32 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] KVM: selftests: Add KVM/PV clock selftest to prove
+ timer drift correction
+To: David Woodhouse <dwmw2@infradead.org>, Jack Allister
+ <jalliste@amazon.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Jonathan Corbet <corbet@lwn.net>, Sean Christopherson <seanjc@google.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Shuah Khan <shuah@kernel.org>
+Cc: Paul Durrant <paul@xen.org>, kvm@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240408220705.7637-1-jalliste@amazon.com>
+ <20240408220705.7637-3-jalliste@amazon.com>
+ <3664e8ec-1fa1-48c0-a80d-546b7f6cd671@intel.com>
+ <FABCFBD0-4B76-4662-9F7B-7E1A856BBBB6@infradead.org>
+Content-Language: en-US
+From: "Chen, Zide" <zide.chen@intel.com>
+In-Reply-To: <FABCFBD0-4B76-4662-9F7B-7E1A856BBBB6@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The pull request you sent on Fri, 19 Apr 2024 14:12:27 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git tags/perf-tools-fixes-for-v6.9-2024-04-19
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/13a2e429f644691fca70049ea1c75f135957c788
+On 4/19/2024 12:34 PM, David Woodhouse wrote:
+> On 19 April 2024 18:13:16 BST, "Chen, Zide" <zide.chen@intel.com> wrote:
+>> I'm wondering what's the underling theory that we definitely can achieve
+>> ±1ns accuracy? I tested it on a Sapphire Rapids @2100MHz TSC frequency,
+>> and I can see delta_corrected=2 in ~2% cases.
+> 
+> Hm. Thanks for testing!
+> 
+> So the KVM clock is based on the guest TSC. Given a delta between the guest TSC T and some reference point in time R, the KVM clock is expressed as a(T-R)+r, where little r is the value of the KVM clock when the guest TSC was R, and (a) is the rate of the guest TSC.
+> 
+> When set the clock with KVM_SET_CLOCK_GUEST, we are changing the values of R and r to a new point in time. Call the new ones Q and q respectively.
+> 
+> But we calculate precisely (within 1ns at least) what the KVM clock would have been with the *old* formula, and adjust our new offset (q) so that at our new reference TSC value Q, the formulae give exactly the same result.
+> 
+> And because the *rates* are the same, they should continue to give the same results, ±1ns.
+> 
+> Or such *was* my theory, at least. 
 
-Thank you!
+Thanks for the explanation.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> 
+> Would be interesting to see it disproven with actual numbers for the old+new pvclock structs, so I can understand where the logic goes wrong.
+> 
+> Were you using frequency scaling?
+
+I can see similar ~2% failure ratio w/ or w/o commenting out
+configure_scaled_tsc().
 
