@@ -1,118 +1,137 @@
-Return-Path: <linux-kernel+bounces-151050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B8D28AA85F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9078AA856
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:19:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEB0A1F21FBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:22:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B4271F21DAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28FF410A2E;
-	Fri, 19 Apr 2024 06:22:12 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24B56D51C;
+	Fri, 19 Apr 2024 06:18:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gb+cY2GX"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3724C8E0;
-	Fri, 19 Apr 2024 06:22:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E074B667;
+	Fri, 19 Apr 2024 06:18:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713507731; cv=none; b=I2KTOvfO9+yVVqxqGSfNaHtulEWb8HBmV2toCfV2/ZDH/5puLnkUZ+e+QcQIjwA4jg4ld7v6eVNw9EEV3zfqpEfQWo1wgra6o//d5fGY6cbg4wwh98awF6xWDYlDDHxPXwzxpP1LVwa0Qp9mjXF6nqkYVFqVU0fkkJ4f8f31Vgw=
+	t=1713507534; cv=none; b=nVhwY09XbqokCYcv38eRRaqwkmX29WQPjWTP9o+upcuhFPzDsg/kQ5KrVRv2psw1kdqkR6g7L2lqceGzsvayKj5fScs9XY9PHOeM4l4YIPNEBtS0R+fYDCv1hUnbq8htEbAURFd42VTcrsQICZoM19RNZjFIrj9bN+pz537O+d0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713507731; c=relaxed/simple;
-	bh=OgtNH68QHSOCj2Q1N4piVftBi0yqKXVj2TEitr652PM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oQueyN0L16s+cHzvgUHhy6onI0lQl7vqCcXn4UPFX8uuNeQqKxoBoRaOMRi9OpVVHHh/a9sMJs695rQ/ANYM4LDBxJx58crr4bWFed61RBS/GlvTk1Xbm4VIHjwqfLWML9tCWVVxPZUisuO9cRJQpOse0wvsGxBiJfvRRy0Cj9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VLPcJ3b4nz1N87g;
-	Fri, 19 Apr 2024 14:19:12 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id 42AF4180073;
-	Fri, 19 Apr 2024 14:22:07 +0800 (CST)
-Received: from huawei.com (10.175.101.107) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 19 Apr
- 2024 14:22:06 +0800
-From: Ye Bin <yebin10@huawei.com>
-To: <djwong@kernel.org>, <linux-xfs@vger.kernel.org>,
-	<chandan.babu@oracle.com>, <dchinner@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <yebin10@huawei.com>
-Subject: [PATCH RFC 2/2] xfs: avoid potenial alloc inode failed
-Date: Fri, 19 Apr 2024 14:18:48 +0800
-Message-ID: <20240419061848.1032366-3-yebin10@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240419061848.1032366-1-yebin10@huawei.com>
-References: <20240419061848.1032366-1-yebin10@huawei.com>
+	s=arc-20240116; t=1713507534; c=relaxed/simple;
+	bh=kEsvu7vcp/eaJtdZNoGBObrUsef0VK0b5+uiY0D3hEk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fKiLjQoU3n8tgXLRLe8qJe/sTsxhyrqujsVUJMJ3owVd3/Pr+fEaoR8ZNbnmWJ1QQgm6ixkfAzxrv5lx1Tp4M5g/uY47E+I7mvjOqMzk5wVfZAwwDQqoeyawQPMcDkB9e/Nkc5sWM6eWRC7xOwF1oynVK2bQb/XKNbHSlt5pyiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gb+cY2GX; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e3f6f03594so13903775ad.0;
+        Thu, 18 Apr 2024 23:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713507532; x=1714112332; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=poWGN5JQViLc0iD9MOEsvcT5w8/SJjK3ZixJJE0DRNU=;
+        b=Gb+cY2GXM7qDryuZDXiMwhcKZ5WgonDJ6M7x5ZIPCw47CfjMItHjjUAVVehmaC8Uvv
+         Bm345C2kRSJFZR1vea8ds8Dn4rRjPfpGTFoqNWwkkNJ6Ih23opjd87YXQiIH4WMDadJm
+         3cAa2HlhMLhrZYlZaoemx3yAvhHWElZkFhWJcqs5NbeUh2f83zS+NRArefLP/sV6H3de
+         UDupBsk6mlrUYQeC9eDDQXjHF0VtZ6v/gewsxb49EDBngVTU1trDfLw4mD87PLhYipdK
+         vH2IXdzAoohAZraCHyPdhb8VcIgyoctJBFvvF3Qtt4MreDhxGqZb8apN9OzHeTDPMEol
+         k7cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713507532; x=1714112332;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=poWGN5JQViLc0iD9MOEsvcT5w8/SJjK3ZixJJE0DRNU=;
+        b=A40sxiKfg4CIoVC0LYW/ysQUvzz6lQHtd0dRQraeRDoF4Q3i5ecm/uIWqinfFKGg7d
+         HlzqmpSAHxIGv9yG2VjpDvVFyLKL4XxOsY0cmE7PddNPRVHJRqJU7LcQT4iPamsl4OXe
+         cPy7ESGUz9/BhZzL7F7RAKKpVS0pUC63fUOEFKjBZekHE/i+0R80UfFuB+4GKJkGhgBo
+         xOt++0CQnCdwdnTO9PcQPMbB+lRLm1kfI0e307cHKaooGOER8xjA48/9uIt2TJt8w965
+         zz2eTw2bqFdfW+eqvtixGNwMrtMCXXojqrIhMIzgNwikXeT9o2sHP0tk6++qfc317ybb
+         5wQA==
+X-Forwarded-Encrypted: i=1; AJvYcCXfMqd99U48Y4GDpJ2I5L1Gx014UF/2mzxPiaukBcjRUjdNlfh7YO+k2OcDLp5yGUJQazo0sik8XtARYBogw3u3JHhf3seXvao+kAE5YhMZtCpU4QrqVkNADSNrHSIMO2/W2aQliHIr+w6urKWGtQl5Bs5NW6LFvtZW4F3TWKAEHda5
+X-Gm-Message-State: AOJu0Yw8Q/GsVuDlIGiYo4e9ZGTfoIm4lD2myRleFJ0ngWQkboQw2zKB
+	uGPl8vYovx2rdU28KM4wxP/vFTAcwdP3NQyoECK2rwxtozQRx+pM
+X-Google-Smtp-Source: AGHT+IGZBO4S0Urrc41F7lSiTQp/yby76+VaES64OQoWUNWzAhzgGywbYNfVeRhAKLQylOaVLE/GiA==
+X-Received: by 2002:a17:902:b083:b0:1e4:3f6d:20f6 with SMTP id p3-20020a170902b08300b001e43f6d20f6mr1160365plr.30.1713507532384;
+        Thu, 18 Apr 2024 23:18:52 -0700 (PDT)
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::5:fbcc])
+        by smtp.gmail.com with ESMTPSA id d1-20020a170902654100b001e2a7ed52d0sm2602586pln.239.2024.04.18.23.18.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 23:18:52 -0700 (PDT)
+Date: Thu, 18 Apr 2024 23:18:48 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next 17/18] bpf: add bpf_wq_start
+Message-ID: <khz5omyjsd2iklm66bi3na4gdxw2cpwhb3c2xwu4fjxkaefi77@puck4pfltjgm>
+References: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org>
+ <20240416-bpf_wq-v1-17-c9e66092f842@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416-bpf_wq-v1-17-c9e66092f842@kernel.org>
 
-As 'pag->pagf_longest' may be temporarily set to 0. When the AGF buffer
-lock is not held, using 'pag->pagf_longest' to determine whether the space
-is available will cause misjudgment.
-When the fragmentation is not serious and the reserved space exists, using
-'pag->pagf_longest' to determine whether the space is available cannot filter
-out the space that really cannot be allocated.
-So remove judgement about 'pag->pagf_longest' in xfs_dialloc_good_ag().
+On Tue, Apr 16, 2024 at 04:08:30PM +0200, Benjamin Tissoires wrote:
+> again, copy/paste from bpf_timer_start().
+> 
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> ---
+>  kernel/bpf/helpers.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index e5c8adc44619..ed5309a37eda 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2728,6 +2728,29 @@ __bpf_kfunc int bpf_wq_init(struct bpf_wq *wq, void *map, unsigned int flags)
+>  	return __bpf_async_init(async, map, flags, BPF_ASYNC_TYPE_WQ);
+>  }
+>  
+> +__bpf_kfunc int bpf_wq_start(struct bpf_wq *wq, unsigned int flags)
+> +{
+> +	struct bpf_async_kern *async = (struct bpf_async_kern *)wq;
+> +	struct bpf_work *w;
+> +	int ret = 0;
+> +
+> +	if (in_nmi())
+> +		return -EOPNOTSUPP;
+> +	if (flags)
+> +		return -EINVAL;
+> +	__bpf_spin_lock_irqsave(&async->lock);
+> +	w = async->work;
+> +	if (!w || !w->cb.prog) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	schedule_work(&w->work);
+> +out:
+> +	__bpf_spin_unlock_irqrestore(&async->lock);
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/xfs/libxfs/xfs_ialloc.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
-
-diff --git a/fs/xfs/libxfs/xfs_ialloc.c b/fs/xfs/libxfs/xfs_ialloc.c
-index e5ac3e5430c4..bb0ce2248386 100644
---- a/fs/xfs/libxfs/xfs_ialloc.c
-+++ b/fs/xfs/libxfs/xfs_ialloc.c
-@@ -1689,7 +1689,6 @@ xfs_dialloc_good_ag(
- {
- 	struct xfs_mount	*mp = tp->t_mountp;
- 	xfs_extlen_t		ineed;
--	xfs_extlen_t		longest = 0;
- 	int			needspace;
- 	int			error;
- 
-@@ -1717,12 +1716,7 @@ xfs_dialloc_good_ag(
- 
- 	/*
- 	 * Check that there is enough free space for the file plus a chunk of
--	 * inodes if we need to allocate some. If this is the first pass across
--	 * the AGs, take into account the potential space needed for alignment
--	 * of inode chunks when checking the longest contiguous free space in
--	 * the AG - this prevents us from getting ENOSPC because we have free
--	 * space larger than ialloc_blks but alignment constraints prevent us
--	 * from using it.
-+	 * inodes if we need to allocate some.
- 	 *
- 	 * If we can't find an AG with space for full alignment slack to be
- 	 * taken into account, we must be near ENOSPC in all AGs.  Hence we
-@@ -1742,12 +1736,9 @@ xfs_dialloc_good_ag(
- 	ineed = M_IGEO(mp)->ialloc_min_blks;
- 	if (flags && ineed > 1)
- 		ineed += M_IGEO(mp)->cluster_align;
--	longest = pag->pagf_longest;
--	if (!longest)
--		longest = pag->pagf_flcount > 0;
- 	needspace = S_ISDIR(mode) || S_ISREG(mode) || S_ISLNK(mode);
- 
--	if (pag->pagf_freeblks < needspace + ineed || longest < ineed)
-+	if (pag->pagf_freeblks < needspace + ineed)
- 		return false;
- 	return true;
- }
--- 
-2.34.1
-
+Looks like you're not adding wq_cancel kfunc in this patch set and
+it's probably a good thing not to expose async cancel to bpf users,
+since it's a foot gun.
+Even when we eventually add wq_cancel_sync kfunc it will not be
+removing a callback.
+So we can drop spinlock here.
+READ_ONCE of w and cb would be enough.
+Since they cannot get back to NULL once init-ed and cb is set.
 
