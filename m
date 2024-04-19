@@ -1,282 +1,101 @@
-Return-Path: <linux-kernel+bounces-151386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5A968AADEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:53:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 370058AADEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:54:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 530181F21C26
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:53:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB8DE1F220AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2E8A83A09;
-	Fri, 19 Apr 2024 11:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="o48bywNF";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="l6oUMMqo"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E6083A09;
+	Fri, 19 Apr 2024 11:54:27 +0000 (UTC)
+Received: from mail114-241.sinamail.sina.com.cn (mail114-241.sinamail.sina.com.cn [218.30.114.241])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2BEC823D9
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:52:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E666381720
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:54:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.114.241
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713527580; cv=none; b=ZmUmFgzJa0w67TKFBmovHCEWDUy5C3YouANYFzGlZMR/qepJoMEy9dUAR4GtFbJiRNZVVtLw/BuZWJXjovBzrp4n1WVSPW3gq7bh+aFY1ZyeE6kZHkBijO6/3YcuCirEJI8RtT+qbLMyimhxGbchVHehWHUsafiUA3bLIns06bU=
+	t=1713527666; cv=none; b=tCw9P67Xe7k1INJeBTMJvS0ECxaaiP/ajyEHkdJCBqs83F5nhJ73WZFdIgz4/dKWtCmkTBeZHGVKG9tLk8HVrAA3+7GBiykBS6zk+YEyDBacJ6UaMs5aX9wUCggvj7f/uS6fhhT1juKUIWlBHrJ1Zo7olilARksuzrVL5jydrgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713527580; c=relaxed/simple;
-	bh=FxR5S6k2CvQWBPsGOHVWWk8dWMV2BoeITnL54QzvXCQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f2bBXsJ4BQTHcKGkJLtf+GQWFXDfnpmyxNKaves4lJ6SXqz0HTaMvLSyQ85x/gpXsutJn2Fmf73WFZ37G7/jz1g6duW0WbKX/FpfkuqEncx1C4GavFJ2PB4aISan98e4wyqztWHZMzQD6dfFE4m/jkErfhqGhItgeqfmI8o23AU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=o48bywNF; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=l6oUMMqo; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D9E9D5D626;
-	Fri, 19 Apr 2024 11:52:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713527577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=FxR5S6k2CvQWBPsGOHVWWk8dWMV2BoeITnL54QzvXCQ=;
-	b=o48bywNFUxuORhbarsfJbHvIyOYPqr6vAf18bl80QMUzwg+s7uMSdPD1WE8zETx7aO8h2P
-	J/I0taICUVoRI2mVug3/1ZYCaX+3Oo7ST17jM3hCWTyJ0HRxPtnM8YH9ZZTCpTYubWDt42
-	W2ZHSvTrTXS/qCkOCSSsoiA8gud9osI=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=l6oUMMqo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713527576; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=FxR5S6k2CvQWBPsGOHVWWk8dWMV2BoeITnL54QzvXCQ=;
-	b=l6oUMMqolRvtz6J5m66FOE0hVVmpX/6jx0zLKKBe49ksAw3MxxUTc9+uDdJXXWMabeZt2o
-	Mi3ngzGtKVAHXvRIvbtmy5f7f+/zNMhNx98EBBHz6IyJl9L3pJCNn8gSudR0U1U+oSZszf
-	WgcJ/Xe8SFNQ8ndPqpmuKJcre4F35G0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E86D136CF;
-	Fri, 19 Apr 2024 11:52:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FR6tIBhbImZ5NAAAD6G6ig
-	(envelope-from <jgross@suse.com>); Fri, 19 Apr 2024 11:52:56 +0000
-Message-ID: <6a0b7c20-a250-4542-b170-101c9663b2e5@suse.com>
-Date: Fri, 19 Apr 2024 13:52:55 +0200
+	s=arc-20240116; t=1713527666; c=relaxed/simple;
+	bh=8vHirs8rA35/8bWtCtEYJFllQ2Aot13NJRR6SdUiE2Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=VpOyD6NvLnveDrLce1rsBlJxIJX5rODjpCu+0Stz/QzPw1Iklp9CK3fX7dCOHQnO/M1lMegsGJJIhSjSEqMnh1LZJYLB3M1EPiatBRt5XsYSzat45vyPmyhEvHLCmrDiL18njVgJueMyp02bdEccmqoyLtdsBS5kWZewOpElKG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.114.241
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.64.253])
+	by sina.com (172.16.235.24) with ESMTP
+	id 66225B630000135A; Fri, 19 Apr 2024 19:54:13 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 8291945089467
+X-SMAIL-UIID: 02C566C14E804937B17EB28983344192-20240419-195413-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+f3f3eef1d2100200e593@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in unix_del_edges
+Date: Fri, 19 Apr 2024 19:54:10 +0800
+Message-Id: <20240419115410.2816-1-hdanton@sina.com>
+In-Reply-To: <000000000000c1fa0506166fdcfe@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] x86/cpu: fix BSP detection when running as Xen PV
- guest
-To: linux-kernel@vger.kernel.org, x86@kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>
-References: <20240405123434.24822-1-jgross@suse.com>
- <20240405123434.24822-2-jgross@suse.com>
-Content-Language: en-US
-From: Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <20240405123434.24822-2-jgross@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------pPACs40iaMEh8vw99uP5KHV6"
-X-Spam-Level: 
-X-Spamd-Result: default: False [-5.40 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SIGNED_PGP(-2.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MIME_BASE64_TEXT_BOGUS(1.00)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_UNKNOWN(0.10)[application/pgp-keys];
-	MIME_BASE64_TEXT(0.10)[];
-	XM_UA_NO_VERSION(0.01)[];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	HAS_ATTACHMENT(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: D9E9D5D626
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -5.40
+Content-Transfer-Encoding: 8bit
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------pPACs40iaMEh8vw99uP5KHV6
-Content-Type: multipart/mixed; boundary="------------C1FGQxLFNIwuwh49HS2kpRX8";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: linux-kernel@vger.kernel.org, x86@kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <6a0b7c20-a250-4542-b170-101c9663b2e5@suse.com>
-Subject: Re: [PATCH 1/2] x86/cpu: fix BSP detection when running as Xen PV
- guest
-References: <20240405123434.24822-1-jgross@suse.com>
- <20240405123434.24822-2-jgross@suse.com>
-In-Reply-To: <20240405123434.24822-2-jgross@suse.com>
+On Fri, 19 Apr 2024 02:39:21 -0700
+> syzbot found the following issue on:
+> 
+> HEAD commit:    7b4f2bc91c15 Add linux-next specific files for 20240418
+> git tree:       linux-next
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=128b1d53180000
 
---------------C1FGQxLFNIwuwh49HS2kpRX8
-Content-Type: multipart/mixed; boundary="------------QVlncrrWP4YKGvsgXJS08UHb"
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  7b4f2bc91c15
 
---------------QVlncrrWP4YKGvsgXJS08UHb
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-
-UGluZz8NCg0KT24gMDUuMDQuMjQgMTQ6MzQsIEp1ZXJnZW4gR3Jvc3Mgd3JvdGU6DQo+IFdo
-ZW4gYm9vdGluZyBhcyBhIFhlbiBQViBndWVzdCB0aGUgYm9vdCBwcm9jZXNzb3IgaXNuJ3Qg
-ZGV0ZWN0ZWQNCj4gY29ycmVjdGx5IGFuZCB0aGUgZm9sbG93aW5nIG1lc3NhZ2UgaXMgc2hv
-d246DQo+IA0KPiAgICBDUFUgdG9wbzogQm9vdCBDUFUgQVBJQyBJRCBub3QgdGhlIGZpcnN0
-IGVudW1lcmF0ZWQgQVBJQyBJRDogMCA+IDENCj4gDQo+IEFkZGl0aW9uYWxseSB0aGlzIHJl
-c3VsdHMgaW4gb25lIENQVSBiZWluZyBpZ25vcmVkLg0KPiANCj4gRml4IHRoYXQgYnkgY2Fs
-bGluZyB0aGUgQlNQIGRldGVjdGlvbiBsb2dpYyB3aGVuIHJlZ2lzdGVyaW5nIHRoZSBib290
-DQo+IENQVSdzIEFQSUMsIHRvby4NCj4gDQo+IEZpeGVzOiA1YzU2ODJiOWY4N2EgKCJ4ODYv
-Y3B1OiBEZXRlY3QgcmVhbCBCU1Agb24gY3Jhc2gga2VybmVscyIpDQo+IFNpZ25lZC1vZmYt
-Ynk6IEp1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT4NCj4gLS0tDQo+ICAgYXJjaC94
-ODYva2VybmVsL2NwdS90b3BvbG9neS5jIHwgMiArLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAx
-IGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2FyY2gv
-eDg2L2tlcm5lbC9jcHUvdG9wb2xvZ3kuYyBiL2FyY2gveDg2L2tlcm5lbC9jcHUvdG9wb2xv
-Z3kuYw0KPiBpbmRleCBhYWNhOGQyMzVkYzIuLjIzYzNkYjVlNjM5NiAxMDA2NDQNCj4gLS0t
-IGEvYXJjaC94ODYva2VybmVsL2NwdS90b3BvbG9neS5jDQo+ICsrKyBiL2FyY2gveDg2L2tl
-cm5lbC9jcHUvdG9wb2xvZ3kuYw0KPiBAQCAtMjU1LDcgKzI1NSw3IEBAIHZvaWQgX19pbml0
-IHRvcG9sb2d5X3JlZ2lzdGVyX2Jvb3RfYXBpYyh1MzIgYXBpY19pZCkNCj4gICAJV0FSTl9P
-Tl9PTkNFKHRvcG9faW5mby5ib290X2NwdV9hcGljX2lkICE9IEJBRF9BUElDSUQpOw0KPiAg
-IA0KPiAgIAl0b3BvX2luZm8uYm9vdF9jcHVfYXBpY19pZCA9IGFwaWNfaWQ7DQo+IC0JdG9w
-b19yZWdpc3Rlcl9hcGljKGFwaWNfaWQsIENQVV9BQ1BJSURfSU5WQUxJRCwgdHJ1ZSk7DQo+
-ICsJdG9wb2xvZ3lfcmVnaXN0ZXJfYXBpYyhhcGljX2lkLCBDUFVfQUNQSUlEX0lOVkFMSUQs
-IHRydWUpOw0KPiAgIH0NCj4gICANCj4gICAvKioNCg0K
---------------QVlncrrWP4YKGvsgXJS08UHb
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-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
-kt+z4drzFUyEjLM1vVvIMjkUoJs=3D
-=3DeeAB
------END PGP PUBLIC KEY BLOCK-----
-
---------------QVlncrrWP4YKGvsgXJS08UHb--
-
---------------C1FGQxLFNIwuwh49HS2kpRX8--
-
---------------pPACs40iaMEh8vw99uP5KHV6
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmYiWxgFAwAAAAAACgkQsN6d1ii/Ey85
-gAf+OHjlSfLCwkqemOhxnPyf1z93rrWL+0Aw4zORqvP4TTl/JmIwswDcV1LprezDstVZX1Twqi9y
-29uvo46KbZ4gG47BeLw/rFcHRs48G19a3UYL8hwksgPDNmgw5RSCt+aftopbdvms6WZJo7GTCMB+
-PlOmNhfgqocSHyLPNTDMDlreg5G+p/SdUKpk+Yy+ygk4bfrUSHys54NuWPL2o5GdA0RBYJofoZuj
-TMQk+SadlXmWqOQaDThfevdZa1mNhmwRE7mOtfTiFY4heyBXElbK+lRzL+XTxUj/89/2oODwIEaW
-M9RZi6Ypt9IGEC0IZLQMZodMMqUfaeysZ8VnZwiKOw==
-=3l/X
------END PGP SIGNATURE-----
-
---------------pPACs40iaMEh8vw99uP5KHV6--
+--- x/net/unix/garbage.c
++++ y/net/unix/garbage.c
+@@ -205,6 +205,7 @@ void unix_add_edges(struct scm_fp_list *
+ 		edge = fpl->edges + i++;
+ 		edge->predecessor = inflight;
+ 		edge->successor = receiver;
++		sock_hold((struct sock *)receiver);
+ 
+ 		unix_add_edge(fpl, edge);
+ 	} while (i < fpl->count_unix);
+@@ -225,6 +226,7 @@ void unix_del_edges(struct scm_fp_list *
+ {
+ 	struct unix_sock *receiver;
+ 	int i = 0;
++	int j;
+ 
+ 	spin_lock(&unix_gc_lock);
+ 
+@@ -246,6 +248,12 @@ out:
+ 	spin_unlock(&unix_gc_lock);
+ 
+ 	fpl->inflight = false;
++
++	for (j = 0; j < i; j++) {
++		struct unix_edge *edge = fpl->edges + j;
++
++		sock_put((struct sock *)(edge->successor));
++	}
+ }
+ 
+ void unix_update_edges(struct unix_sock *receiver)
+--
 
