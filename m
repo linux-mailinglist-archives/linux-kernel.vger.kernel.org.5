@@ -1,215 +1,122 @@
-Return-Path: <linux-kernel+bounces-151837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBBA58AB48C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0828E8AB491
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:56:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24658B222D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:53:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E6E4B21AF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F3DA13AD3D;
-	Fri, 19 Apr 2024 17:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4599D13AD26;
+	Fri, 19 Apr 2024 17:56:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VBtjoHLw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="IehBl+aA"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA994137C37
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24407130E5E
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713549213; cv=none; b=KwNAtj8cHRf6y/qDpdnpBHTShme8STOaMbOs4g00GFYNqiM2gxKs8izf6Y48vMTDY+YkUeNPGV5Rsz0ae3mJws0tin3tRjuqg4dJOhTEhHgJRB/48BQBzmzJyZ4+LJ2TBgdf0XGySktjMQTgt5W35QHvaowkid+KxNFublZitoA=
+	t=1713549387; cv=none; b=BesMPxqlMAzScRlIZzB18oEzNZujKJ98weUlGXNGiTavmdkUooYl2dHbMBgWW8v7tOSdi9I4QaHkFw5OEHU+dp9uwHKUecGP3mpJbKzYn7IiTaIW5Q4kocvaRE6U/C60Fs3bbNS9Dm5KebOpW/32erGudOnLs/LW8XfkhBi6+Tc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713549213; c=relaxed/simple;
-	bh=iOvCT/WvjvN0ne6jZc9fwVFe6Ol/RX862VOzAL9BN1A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IEFs83Whbs9ClUmQ7WVTqYZOMeKfwP0FlpA41DaN7jwOTfHUEAjTScVE9v0q19VYn1/AjeNQqfOwAwOQqDaFeBdy4uv8nahT3pdD4OoPe0ihEiTDLQfp8Ym9MyNSME4W/zTGISgSL9zReu6lWOdIA2Zp/Mn1c/ynvt/iG6RmFUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VBtjoHLw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25506C072AA;
-	Fri, 19 Apr 2024 17:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713549213;
-	bh=iOvCT/WvjvN0ne6jZc9fwVFe6Ol/RX862VOzAL9BN1A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VBtjoHLwKWN8PyJUUavjS656eJDpK3ndwx8vLbu9zKavIHlwlUckNNnvGQR2QCa88
-	 Wlf+Pr8enEhSNpdWhHMnXCvW4akR++qh94/hqFgGS3DeU6sAzOdnnBmJfKAT8aF2dV
-	 Cy9MD1+Pe9ZbvaQC3Y90yLFTeowxkZW3CssDcXQtUFBeUDN75JDFh/8weT8xDGx9sp
-	 ayBEnxvEqFSEAu7uH5PKKHxfwnW70aSpacGNEm1/ajw8soyfEjk69PDRH8f4E/C7kZ
-	 XYRdkcG0U+elu3/3z96LAHB+AkeUdHzhjFaZcYDTthwJTNOJ1nVkp0fD5OqnMOoLXs
-	 Lw9PVugidVzDw==
-Date: Fri, 19 Apr 2024 17:53:31 +0000
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Chao Yu <chao@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: assign the write hint per stream by
- default
-Message-ID: <ZiKvm57zbjq_ZpZj@google.com>
-References: <20240417211201.3919770-1-jaegeuk@kernel.org>
- <afe91331-92a5-4ccf-b5b3-095a2d65f0d0@kernel.org>
+	s=arc-20240116; t=1713549387; c=relaxed/simple;
+	bh=EH4oorwZc3OtqHaYGL7XKoQ4ECTvU0y/TOOoMZ+6TZU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FHFy5yT22uYOOkPs2zFWHVjk+EPt0q/voGfKa9+hVLT1TjjzHgR9fqjTaTWunnh7B8o1p45qzZwpT8xSGYyPIDa4PcmZoUDDvZttI68ow/6v8FewdqZ1aiMlVyGLrfnKWrmJ5C7LzwHu2Zku2GRAHomD21hGzExcSgjKJzoFle8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=IehBl+aA; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43JGiLv8028465;
+	Fri, 19 Apr 2024 17:56:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=sEyQAxGxkU6mSg9BlzN0eOIMTIjIcy8X5ZvmftEfrfQ=;
+ b=IehBl+aAG37co6abmxWdSg1oRCJ9zcSFM7nS3t+jq2Jk/GDd0yiatz7cGZJoIjRtOoye
+ xSnc3s9WwN2D/oHGNjtCJoio4/almODMTEX2qNAiyukL2uut++6TuJRO3DZ6j8q9Z37m
+ 8T3CzUvwnyWpBdwcec4YVP4e70nK73pLUi3zNP3sd6/Le+sMZuE8k4hFO2CotFz5cMSh
+ iQGOMI5EY0KLwlGxw3QKVhvmKK1ECg0mtOYrd8utIsZpjEICrq4PGS2Bnw3gXQfuO9kv
+ WpSWdVu/ZunKGSEKjJnixWIuWjxnuoSS/d7yTDftG7HulXdGpnxSVhTyp5KDAoTKmWhR og== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfgn2wemx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 19 Apr 2024 17:56:12 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43JH48SH005568;
+	Fri, 19 Apr 2024 17:56:12 GMT
+Received: from jfwang-mac.us.oracle.com (dhcp-10-159-230-131.vpn.oracle.com [10.159.230.131])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xkc7xd76r-1;
+	Fri, 19 Apr 2024 17:56:12 +0000
+From: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+To: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: vbabka@suse.cz, cl@linux.com, akpm@linux-foundation.org,
+        penberg@kernel.org, rientjes@google.com
+Subject: [PATCH v3 0/2] slub: introduce count_partial_free_approx()
+Date: Fri, 19 Apr 2024 10:56:09 -0700
+Message-ID: <20240419175611.47413-1-jianfeng.w.wang@oracle.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <afe91331-92a5-4ccf-b5b3-095a2d65f0d0@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-19_13,2024-04-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ malwarescore=0 suspectscore=0 spamscore=0 adultscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404190137
+X-Proofpoint-ORIG-GUID: coliv5PNpXCgK6sJJQ9zoeoB9O46W5Nq
+X-Proofpoint-GUID: coliv5PNpXCgK6sJJQ9zoeoB9O46W5Nq
 
-On 04/18, Chao Yu wrote:
-> On 2024/4/18 5:12, Jaegeuk Kim wrote:
-> > This reverts commit 930e2607638d ("f2fs: remove obsolete whint_mode"), as we
-> > decide to pass write hints to the disk.
-> > 
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > ---
-> >   Documentation/filesystems/f2fs.rst | 29 +++++++++++++++
-> >   fs/f2fs/data.c                     |  2 +
-> >   fs/f2fs/f2fs.h                     |  2 +
-> >   fs/f2fs/segment.c                  | 59 ++++++++++++++++++++++++++++++
-> >   4 files changed, 92 insertions(+)
-> > 
-> > diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> > index efc3493fd6f8..68a0885fb5e6 100644
-> > --- a/Documentation/filesystems/f2fs.rst
-> > +++ b/Documentation/filesystems/f2fs.rst
-> > @@ -774,6 +774,35 @@ In order to identify whether the data in the victim segment are valid or not,
-> >   F2FS manages a bitmap. Each bit represents the validity of a block, and the
-> >   bitmap is composed of a bit stream covering whole blocks in main area.
-> > +Write-hint Policy
-> > +-----------------
-> > +
-> > +F2FS sets the whint all the time with the below policy.
-> 
-> No user-based mode?
+This patch fixes a known issue in get_slabinfo() which relies on
+count_partial() to get the exact count of free objects in a
+kmem_cache_node's partial list. For some slubs, their partial lists
+can be extremely long. Currently, count_partial() traverses a partial
+list to get the exact count of objects. This process may take a long
+time, during which slab allocations are blocked and IRQs are disabled.
+In production, even NMI watchdog can be triggered due to this matter.
 
-Not anymore, as there's no user.
+The proposed fix is to limit the number of slabs to scan and output an
+approximated count for a long partial list. The v1 patch counts N slabs
+from the list's head and then uses it to estimate the total object
+count in the list. As suggested by Vlastimil, the v2 patch uses an
+alternative, i.e., counting N/2 from the list's head and tail, produces
+a more accurate approximation after the partial list is sorted by
+kmem_cache_shrink(). In this version, the implementation is moved to a
+new function count_partial_free_approx(). count_partial() is still used
+in sysfs for users who still want the exact object count.
 
-> 
-> Thanks,
-> 
-> > +
-> > +===================== ======================== ===================
-> > +User                  F2FS                     Block
-> > +===================== ======================== ===================
-> > +N/A                   META                     WRITE_LIFE_NONE|REQ_META
-> > +N/A                   HOT_NODE                 WRITE_LIFE_NONE
-> > +N/A                   WARM_NODE                WRITE_LIFE_MEDIUM
-> > +N/A                   COLD_NODE                WRITE_LIFE_LONG
-> > +ioctl(COLD)           COLD_DATA                WRITE_LIFE_EXTREME
-> > +extension list        "                        "
-> > +
-> > +-- buffered io
-> > +N/A                   COLD_DATA                WRITE_LIFE_EXTREME
-> > +N/A                   HOT_DATA                 WRITE_LIFE_SHORT
-> > +N/A                   WARM_DATA                WRITE_LIFE_NOT_SET
-> > +
-> > +-- direct io
-> > +WRITE_LIFE_EXTREME    COLD_DATA                WRITE_LIFE_EXTREME
-> > +WRITE_LIFE_SHORT      HOT_DATA                 WRITE_LIFE_SHORT
-> > +WRITE_LIFE_NOT_SET    WARM_DATA                WRITE_LIFE_NOT_SET
-> > +WRITE_LIFE_NONE       "                        WRITE_LIFE_NONE
-> > +WRITE_LIFE_MEDIUM     "                        WRITE_LIFE_MEDIUM
-> > +WRITE_LIFE_LONG       "                        WRITE_LIFE_LONG
-> > +===================== ======================== ===================
-> > +
-> >   Fallocate(2) Policy
-> >   -------------------
-> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > index 5d641fac02ba..ed7d08785fcf 100644
-> > --- a/fs/f2fs/data.c
-> > +++ b/fs/f2fs/data.c
-> > @@ -465,6 +465,8 @@ static struct bio *__bio_alloc(struct f2fs_io_info *fio, int npages)
-> >   	} else {
-> >   		bio->bi_end_io = f2fs_write_end_io;
-> >   		bio->bi_private = sbi;
-> > +		bio->bi_write_hint = f2fs_io_type_to_rw_hint(sbi,
-> > +						fio->type, fio->temp);
-> >   	}
-> >   	iostat_alloc_and_bind_ctx(sbi, bio, NULL);
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index dd530dc70005..b3b878acc86b 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -3745,6 +3745,8 @@ void f2fs_destroy_segment_manager(struct f2fs_sb_info *sbi);
-> >   int __init f2fs_create_segment_manager_caches(void);
-> >   void f2fs_destroy_segment_manager_caches(void);
-> >   int f2fs_rw_hint_to_seg_type(enum rw_hint hint);
-> > +enum rw_hint f2fs_io_type_to_rw_hint(struct f2fs_sb_info *sbi,
-> > +			enum page_type type, enum temp_type temp);
-> >   unsigned int f2fs_usable_segs_in_sec(struct f2fs_sb_info *sbi,
-> >   			unsigned int segno);
-> >   unsigned int f2fs_usable_blks_in_seg(struct f2fs_sb_info *sbi,
-> > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > index f0da516ba8dc..daa94669f7ee 100644
-> > --- a/fs/f2fs/segment.c
-> > +++ b/fs/f2fs/segment.c
-> > @@ -3364,6 +3364,65 @@ int f2fs_rw_hint_to_seg_type(enum rw_hint hint)
-> >   	}
-> >   }
-> > +/*
-> > + * This returns write hints for each segment type. This hints will be
-> > + * passed down to block layer as below by default.
-> > + *
-> > + * User                  F2FS                     Block
-> > + * ----                  ----                     -----
-> > + *                       META                     WRITE_LIFE_NONE|REQ_META
-> > + *                       HOT_NODE                 WRITE_LIFE_NONE
-> > + *                       WARM_NODE                WRITE_LIFE_MEDIUM
-> > + *                       COLD_NODE                WRITE_LIFE_LONG
-> > + * ioctl(COLD)           COLD_DATA                WRITE_LIFE_EXTREME
-> > + * extension list        "                        "
-> > + *
-> > + * -- buffered io
-> > + *                       COLD_DATA                WRITE_LIFE_EXTREME
-> > + *                       HOT_DATA                 WRITE_LIFE_SHORT
-> > + *                       WARM_DATA                WRITE_LIFE_NOT_SET
-> > + *
-> > + * -- direct io
-> > + * WRITE_LIFE_EXTREME    COLD_DATA                WRITE_LIFE_EXTREME
-> > + * WRITE_LIFE_SHORT      HOT_DATA                 WRITE_LIFE_SHORT
-> > + * WRITE_LIFE_NOT_SET    WARM_DATA                WRITE_LIFE_NOT_SET
-> > + * WRITE_LIFE_NONE       "                        WRITE_LIFE_NONE
-> > + * WRITE_LIFE_MEDIUM     "                        WRITE_LIFE_MEDIUM
-> > + * WRITE_LIFE_LONG       "                        WRITE_LIFE_LONG
-> > + */
-> > +enum rw_hint f2fs_io_type_to_rw_hint(struct f2fs_sb_info *sbi,
-> > +				enum page_type type, enum temp_type temp)
-> > +{
-> > +	switch (type) {
-> > +	case DATA:
-> > +		switch (temp) {
-> > +		case WARM:
-> > +			return WRITE_LIFE_NOT_SET;
-> > +		case HOT:
-> > +			return WRITE_LIFE_SHORT;
-> > +		case COLD:
-> > +			return WRITE_LIFE_EXTREME;
-> > +		default:
-> > +			return WRITE_LIFE_NONE;
-> > +		}
-> > +	case NODE:
-> > +		switch (temp) {
-> > +		case WARM:
-> > +			return WRITE_LIFE_MEDIUM;
-> > +		case HOT:
-> > +			return WRITE_LIFE_NONE;
-> > +		case COLD:
-> > +			return WRITE_LIFE_LONG;
-> > +		default:
-> > +			return WRITE_LIFE_NONE;
-> > +		}
-> > +	case META:
-> > +		return WRITE_LIFE_NONE;
-> > +	default:
-> > +		return WRITE_LIFE_NONE;
-> > +	}
-> > +}
-> > +
-> >   static int __get_segment_type_2(struct f2fs_io_info *fio)
-> >   {
-> >   	if (fio->type == DATA)
+---
+Changes since v2 [2]
+ - Introduce count_partial_free_approx() and keep count_partial()
+ - Use count_partial_free_approx() in get_slabinfo() and slab_out_of_memory()
+
+Changes since v1 [1]
+ - Update the approximation method by counting from the list's head and tail
+ - Cap the approximation by the total object count
+ - Update the commit message to add benchmark results and explain the choice
+
+[1] https://lore.kernel.org/linux-mm/20240411164023.99368-1-jianfeng.w.wang@oracle.com/
+[2] https://lore.kernel.org/linux-mm/20240417185938.5237-2-jianfeng.w.wang@oracle.com/
+
+Thanks,
+--Jianfeng
+
+Jianfeng Wang (2):
+  slub: introduce count_partial_free_approx()
+  slub: use count_partial_free_approx() in slab_out_of_memory()
+
+ mm/slub.c | 41 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 39 insertions(+), 2 deletions(-)
+
+-- 
+2.42.1
+
 
