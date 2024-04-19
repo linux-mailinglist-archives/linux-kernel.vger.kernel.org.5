@@ -1,145 +1,101 @@
-Return-Path: <linux-kernel+bounces-151831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A3C8AB486
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:45:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E9A38AB487
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:46:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEB401F228A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:45:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0124DB22880
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:46:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D49A013AD28;
-	Fri, 19 Apr 2024 17:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBC613AD28;
+	Fri, 19 Apr 2024 17:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="aCRdVpda"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zzc9w3BP"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9215D13A86B
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:45:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89D612E1ED
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713548750; cv=none; b=mEd2xWRbrKPngO47vgkXncL67g1T1etfWESbxFmn7WEir5uvfFC3Z2biXp1i/WMJymO0twnqy9qPtqWc56iYeqUdXtavXBmo86O2DR3sDo2Eo9Wi5cR6xBxCctT0P6OboulCCesF3OXS4u3waVFxDfhbjOvbmB4UcjhqtUQALjQ=
+	t=1713548811; cv=none; b=TwxNqeFkIATpuJVOGGztGjaHrD5ojm358hJZvYh5nUxXHpAfakQVoT5EzReCWMMCIFNeBokTW4lBWQ4wib0/MjAcS2NgLOxQOE8qoUI7INX30KrqzkBLegsPXsO14CIdqv8l1zNc1aojSAgOM63K9OcEoR+6wRjZxZo+HPHPqXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713548750; c=relaxed/simple;
-	bh=tg8CNjSpWN2BcBDo2ESp9bjBzlZSzMIk0QNMl4nZYbA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=boS9sBNvMx6cQeEMirIiwpZyUFS0+goeyVPCS1EvKweulKC5s73Lp9HSG1a2cr8Q7Zg+lwyS8iS8AVr41QIadlTVGCNDpS15w5tIhvI53zPgJ96PzXaLrU94Em9U4bLbKjmOeyNd6JmiFEOpIVq+BoZVz0s/WbCocxRwYCbVuQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=aCRdVpda; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713548746;
-	bh=tg8CNjSpWN2BcBDo2ESp9bjBzlZSzMIk0QNMl4nZYbA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=aCRdVpdahXIbXIWgMggkkeyMfyj00RFePkKCUXa9vvmPOryTab8WeJK1xioUerVe3
-	 3j9qCE22dAYsDJfJO8IarsnMX9631nkI/BkTBHo7Me9zzVE4WjxJX3AiAP3pJm49A3
-	 YyTsRgMbvJzIbR76votXMr/ObHPp0UHTz16W1xGXS1QPXXz8BH/8JMRsGQ6pSpO5+g
-	 S+Bl8WxsE1pcL1869tsyNzY3JN97U3G23JLPyJd5zJ5Yh57tvkvv6PZCe+FLkRyYUt
-	 aBV6PSfWhGetcgqmwBh5gVx+IGooPEDOWMzvdfaxrJ45jAZFnl5EJE80zwNqeOOxZJ
-	 rWkisKZhhNqiA==
-Received: from hermes-devbox.lan (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bbeckett)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D62E83782154;
-	Fri, 19 Apr 2024 17:45:45 +0000 (UTC)
-From: Bob Beckett <bob.beckett@collabora.com>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>
-Cc: kernel@collabora.com,
-	Robert Beckett <bob.beckett@collabora.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: fix drm lastclose ignoring closed active fbs
-Date: Fri, 19 Apr 2024 18:45:30 +0100
-Message-ID: <20240419174531.1696581-1-bob.beckett@collabora.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713548811; c=relaxed/simple;
+	bh=KjvnBO3Gqs8EFbhdDBMBxk/FXGLnq3fyHfPjQ6a66YQ=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=AhNsrq9GLb1CmabETJwANKrHh8C/w345m/dobxzWk4Pn/cZoZrz1HmXEa8C0XregSci20Ud1owZ6sCSe8e/87TJd9ewb1aOEJjQbEAwv0rRma0ylTvIiujWupwoWtT24otg1R1+enmGy/x2DVk3TnihngqWSAFnNFxvMH0F2pAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zzc9w3BP; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so1401582a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:46:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713548809; x=1714153609; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WTU4zPwpzH5hnnSlGgs786xRHV+uI0ZkSdLbqcw+BRY=;
+        b=Zzc9w3BP6YBtcnyVVmFF6YmOjTpCm9CzfCSTWo9C/HRRkrpFphtOh8RRa18LtQdaeq
+         mf88BqZOV7QMtNLA711V4U6hNSoBdFmRm4bKbc2ZGh8z6f4ipzMLPM+byl4i6nxaoatc
+         SV/qn2SIyaxnr3v136Gqz0FWBncx+uxEITIiEV3sFQzvWfRYFSV8qPgO7nNOEebu9ETZ
+         0dBmxdmVCzViHx+4m/EknC2sPod77VLeIn1ezjHT69/6VQlFnOfY6rxLgwC0Kp4hSIU9
+         g+u4IoB+smR9KVK3TV3cCxa29L/B8SKY6KR9bhq6LcM6dxPEjkEjPD1q5afz2DAcbWrZ
+         pCTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713548809; x=1714153609;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WTU4zPwpzH5hnnSlGgs786xRHV+uI0ZkSdLbqcw+BRY=;
+        b=oxwbmo/ZRaUFrawv+bjr5QwSdUlQJ8+xCxCCNC/LqRyJ+JgVhFrpC37hCq4MiRCE33
+         JtabV6FOsqyTldpycm4QIVvJDMxLqnaOC5kZD9PayaoFEi4GStNdU35TGWFKH3f37IIf
+         +QZwR6N5Lp7oK8NBPmLSqwWUGybfRYAZQ3nuLdQwWFJR199H5LpXk2mGsm/Ui4NKZJvw
+         S/pK4ekE+puTzTv8SR/H45TNLdf4IU+bjlOVE/1D+9s4dWCMwkkSvtD29ufmSQjgB9y5
+         G3mlqCoMQVsPmBZLH7btWEl0zNkVey0T0dR8Q7CIovhB0nVAeNUGL0Ot4evmt9Hh345S
+         41rw==
+X-Forwarded-Encrypted: i=1; AJvYcCX3D8P5GUDFyLr8euUfso+FAhrY8ZzuIvGpETBtlDR87NO1FWx50PVZ5H2QbmSMqxLMKT2D3n/UgBsxb4if6xh5IS67x0nA96Pmry5A
+X-Gm-Message-State: AOJu0YzUGdwVAyPq0MiBLJb2R5WTeGuWayyYV9tHl5bLSQFzfHsydbgV
+	6TPvJG5gBj+s31nH60kBMpd2PCIOln5oNKGpN4Jx3sJFMmSKRCJDvrJgsRM2sFFwon3wPJl7VL6
+	HQpP1hMwt5nrD8J0oSOZKA+I3yNI=
+X-Google-Smtp-Source: AGHT+IF9CjY3KLqE6bk9u4LeWgvLLphSfaeuyElxCLXHyI4iSQfm8I8iO4hAG0kYOMVcOjuFOMMo3nxlIbrHbiD/S28=
+X-Received: by 2002:a17:90a:fd01:b0:2a5:d313:4d3f with SMTP id
+ cv1-20020a17090afd0100b002a5d3134d3fmr3313984pjb.34.1713548808937; Fri, 19
+ Apr 2024 10:46:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Shresth Prasad <shresthprasad7@gmail.com>
+Date: Fri, 19 Apr 2024 23:16:37 +0530
+Message-ID: <CAE8VWiLErhCkD9w+Rbh8mTnRQs-4iJDBrWdVXXFFFDQ3yeTaLg@mail.gmail.com>
+Subject: Re: [PATCH] drivers: use __free attribute instead of of_node_put()
+To: vincenzo.mezzela@gmail.com
+Cc: gregkh@linuxfoundation.org, 
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>, Julia Lawall <julia.lawall@inria.fr>, 
+	linux-kernel@vger.kernel.org, rafael@kernel.org, 
+	Shuah Khan <skhan@linuxfoundation.org>, sudeep.holla@arm.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Robert Beckett <bob.beckett@collabora.com>
+> Please fix the subject line to be "backlight: <driver>: ...". I came
+> very close to deleting this patch without reading it ;-) .
 
-when fb's have been marked as closed, if there is still something active
-then don't restore fbdev during lastclose
+Really sorry about that, I'll fix it.
 
-Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
----
- drivers/gpu/drm/drm_fb_helper.c |  3 +++
- drivers/gpu/drm/drm_plane.c     | 21 +++++++++++++++++++++
- include/drm/drm_plane.h         |  2 ++
- 3 files changed, 26 insertions(+)
+> Do we need to get dev->of_node at all? The device, which we are
+> borrowing, already owns a reference to the node so I don't see
+> any point in this function taking an extra one.
+>
+> So why not simply make this:
+>
+>     struct device_node *np = dev->of_node;
 
-diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
-index d612133e2cf7e..b7509b0cd926a 100644
---- a/drivers/gpu/drm/drm_fb_helper.c
-+++ b/drivers/gpu/drm/drm_fb_helper.c
-@@ -2002,6 +2002,9 @@ EXPORT_SYMBOL(drm_fb_helper_hotplug_event);
-  */
- void drm_fb_helper_lastclose(struct drm_device *dev)
- {
-+	if (drm_has_active_plane(dev))
-+		return;
-+
- 	drm_fb_helper_restore_fbdev_mode_unlocked(dev->fb_helper);
- }
- EXPORT_SYMBOL(drm_fb_helper_lastclose);
-diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
-index 672c655c7a8e7..7eb3d06696ca7 100644
---- a/drivers/gpu/drm/drm_plane.c
-+++ b/drivers/gpu/drm/drm_plane.c
-@@ -930,6 +930,27 @@ static int __setplane_check(struct drm_plane *plane,
- 	return 0;
- }
- 
-+/**
-+ * drm_has_active_plane - check whether any planes are currently active
-+ * @dev: the DRM device
-+ *
-+ * Return true if any planes are currently active
-+ */
-+bool drm_has_active_plane(struct drm_device *dev)
-+{
-+	struct drm_plane *plane;
-+
-+	drm_for_each_plane(plane, dev) {
-+		if (plane->state && plane->state->crtc && plane->state->fb)
-+			return true;
-+		if (plane->crtc && plane->fb)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+EXPORT_SYMBOL(drm_has_active_plane);
-+
- /**
-  * drm_any_plane_has_format - Check whether any plane supports this format and modifier combination
-  * @dev: DRM device
-diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
-index 641fe298052dc..74fec8cbee8c6 100644
---- a/include/drm/drm_plane.h
-+++ b/include/drm/drm_plane.h
-@@ -965,6 +965,8 @@ static inline struct drm_plane *drm_plane_find(struct drm_device *dev,
- #define drm_for_each_plane(plane, dev) \
- 	list_for_each_entry(plane, &(dev)->mode_config.plane_list, head)
- 
-+bool drm_has_active_plane(struct drm_device *dev);
-+
- bool drm_any_plane_has_format(struct drm_device *dev,
- 			      u32 format, u64 modifier);
- 
--- 
-2.44.0
+Looking at it again, I'm not sure why the call to of_node_put is there in
+the first place. I think removing it would be fine.
 
+I'll fix both of these issues and send a patch v2.
+
+Regards,
+Shresth
 
