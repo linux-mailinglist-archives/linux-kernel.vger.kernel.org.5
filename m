@@ -1,131 +1,126 @@
-Return-Path: <linux-kernel+bounces-151716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14ECB8AB29A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:58:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 153D08AB29D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:58:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45D451C22216
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:58:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94673B21FA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9CB130A44;
-	Fri, 19 Apr 2024 15:57:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA7C130E49;
+	Fri, 19 Apr 2024 15:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NB10FGA3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NTeGaFvb"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1490512F59B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D98A7641E;
 	Fri, 19 Apr 2024 15:57:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713542272; cv=none; b=pwhcw6Q/uiJCa8EQv4tLae7NMHpeiNpFQBeHiogzNuqJBOdvE5A2ega80WwgTsDIm+Flz8TxjzS+1p4rlGiXuCVm0EJz9QcXi2BAfh5YhMjFBSZ28N+7h780E1Vaj11yCIIbcsoiToSW/0ipDAf+imQej+MHhdwQA1uptvM60HU=
+	t=1713542273; cv=none; b=Ngl0NbvpPPczeCwuJF2cMvIHLu1dAjmhrKnatX/HHlERnt9Llfjv9hjScaXXrqjF9oo9/Mezd/vWYi9qU1d4AjpHSHb45XfMx9NlbuDuRGnehMbtpI2PPA8xvQGn/AQZL9HDi80Mb406wpC7d6wEX1KhwandkFMGyzc6aZqWzds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713542272; c=relaxed/simple;
-	bh=8QEDQjOppN6rgrkwPLW/8KvmAUWYG8et7RnU5mOglu8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lzbg2gh7wJp2wxIBoMVef6n92HK66nvWzgA/GQz4jw8akbaJnE/fL5qBfQE2CU5GScvlSyDB8yafZ+5miSm77l/oqsiMoq3CsLOQIDB5XfKEy9fJ4Rof/FlMsP+iqeM+MiEm5W00Q3dzpUt+0TxjkM20z2B5T6EhcnPhE+MoYXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NB10FGA3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F5B9C072AA;
-	Fri, 19 Apr 2024 15:57:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713542271;
-	bh=8QEDQjOppN6rgrkwPLW/8KvmAUWYG8et7RnU5mOglu8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NB10FGA3HUo4FWUdWzr/7uRQFBe3lrvgTHD57CEE1hkQsdk2PFT0iRvsT6WlBsryH
-	 R9ECS0tIP+q2ePoWG3IXYHRwrC4ZbdKbm2b6WKVRbsH6kivseIWcvWn1YLLFFCjqnJ
-	 +WEiNG9+K6yDDCcarItZTLBsG6w0laG+wVvCVK6NBCvHmYuMpUV1H6260C2irK8N3s
-	 N1ICOKTf3K1upQySIskCOkv9FNsFnP6fBdzQmAOw3+O15/uvuu1Td3Jr7hm0nIo9ij
-	 ShYAEPNvj7I0A5Guge7e3pn+aQC+rO7on5RMuT9Gg8vururtjFLBW040ID3hA375Zi
-	 S69jOsJC2LEcw==
-Date: Fri, 19 Apr 2024 16:57:40 +0100
-From: Conor Dooley <conor@kernel.org>
-To: linux-riscv@lists.infradead.org
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Jamie Gibbons <jamie.gibbons@microchip.com>,
-	Valentina Fernandez <valentina.fernandezalanis@microchip.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org
-Subject: Re: [PATCH v1 4/5] dt-bindings: PCI: microchip: increase number of
- items in ranges property
-Message-ID: <20240419-batboy-mutt-4da787cffd3d@spud>
-References: <20240327-parkway-dodgy-f0fe1fa20892@spud>
- <20240327-debunk-perky-f5514ca332be@spud>
+	s=arc-20240116; t=1713542273; c=relaxed/simple;
+	bh=p0krAk1jiQxQ123SAtQWQLXKI9LtWzjzx8uLRsGhf5c=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=qe+z3OHJtgdzahLP4kVcqimmEDlyWvwmS+uHiCuhXGM63AeCe5seiRLqd6KFOGsVElQwInUz9C7y8scTLVkoS4ZqxRiFeZKHI1W3MHNygajXJQKEUI49PlR8AbhZUol3qVgFIvOn054C/dQbViSMQZduFVG71juF1WopLwc301M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NTeGaFvb; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a523524e5baso226078766b.3;
+        Fri, 19 Apr 2024 08:57:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713542270; x=1714147070; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HpXOWQj2snTMmKD9LnnQ7qsX6BXZ2LIc/4KRNqoR6Rs=;
+        b=NTeGaFvbNIoAwTqkgy/YOZWRA/SXyy2pmF9PPN1TX2jD5shC43bIrlQt+eVwHDpi5O
+         UUJEBcDHhrveB+19Gd38UXdeo8m7HJkcpiSnZLpBrQGe31HIEOkxGfLjFnordNU7e1K5
+         4DzWl3dqF7VLZ5Vm7XbZzceiSVTB9jQcw25UR6Cg1lxOrOM/Ej7Fp+0kFGv/lHpm4b4Z
+         ognPfXdeaWFE+VAiyeerqg9QcWO1lk7wGHMt65pmMQTAkOE+VYfAI+G8/1tX0DL3et3K
+         Fb+/pOpH+32ZIUEB1t6yvlXwQYDu+xto7WM1mmSWQgfvJk3ZMZz/QjDsL72zPz4K5+IV
+         URFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713542270; x=1714147070;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HpXOWQj2snTMmKD9LnnQ7qsX6BXZ2LIc/4KRNqoR6Rs=;
+        b=kq2P3p37wlCHoqnR2CUld1pT4XSjMEOo3s0ypyFSVT21iEdRLO3HY5VhXeRrx1v5cW
+         FDFm5ayaN1/sDMKUfzOuV3tK7N4Ch4y90h40pboFUeWT6PzMUaIGoOs1SlY3wDHnNd7w
+         8PJr0pAHizUV6nmwdyMTpyg3ncQF/m41Gds2jBQLRJ3OPIohXNIzjGaJhcVmlkggdthc
+         vH8LqP1j7Ec1SbHCIGxxrEL0VkCaE8kMP8tpHTPxhZRwuNRZ0uoYWB8uLQAid1Hs0CcE
+         b/FUu8hyUusGePEAP2apPjzQ/EqdR1tCrufymrXA8030Bzlnf3Wa0mjofHZHtQamV+oT
+         easA==
+X-Forwarded-Encrypted: i=1; AJvYcCVFO+UWhTCKtt1dYEOZU+U9jW923awCK1yglnIurIw6Xa81aZ/OIHRsi4JOL4yPbd5OVJhlHsu1OjPiEu3aMOxda3vliLGEsMkXW1/9j1NMwLH0u8kX7lNwGVVX3AdjcFATwYyA0vA2JklZZfGlo/c0Rq4w2NA0jnUPtwXQF4gvyCGZrebVupXsdMGVFeinMICgMaUC6QhLjQHBwIp1
+X-Gm-Message-State: AOJu0YyGDkILZqBUApncfNZ4+9Tj/2x0exgXcCsFjyNwA1EAxs4VW/sg
+	DVnlbdXt0L0X6eq9OkQCy1XCveqUbWzsVfjCA+rtsTTSv7P2Xkgr
+X-Google-Smtp-Source: AGHT+IFMnS2LQ0x5IC0rtaQ7gu7+SOitEiNCtvr3ygRrbIgIDwtV19ryHjjRz4sR35z73ejiJ/snNQ==
+X-Received: by 2002:a17:906:7fd2:b0:a52:27c6:ee67 with SMTP id r18-20020a1709067fd200b00a5227c6ee67mr2202110ejs.43.1713542269690;
+        Fri, 19 Apr 2024 08:57:49 -0700 (PDT)
+Received: from [192.168.18.253] (54-240-197-236.amazon.com. [54.240.197.236])
+        by smtp.gmail.com with ESMTPSA id u18-20020a17090657d200b00a51b26ba6c5sm2344277ejr.219.2024.04.19.08.57.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 08:57:49 -0700 (PDT)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <5c9de76b-6981-416d-a833-50264496236e@xen.org>
+Date: Fri, 19 Apr 2024 16:57:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="P5gNKGuon3/meze+"
-Content-Disposition: inline
-In-Reply-To: <20240327-debunk-perky-f5514ca332be@spud>
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH 09/10] KVM: x86: Kill KVM_REQ_GLOBAL_CLOCK_UPDATE
+To: David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Sean Christopherson <seanjc@google.com>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Oliver Upton <oliver.upton@linux.dev>, Marcelo Tosatti
+ <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
+References: <20240418193528.41780-1-dwmw2@infradead.org>
+ <20240418193528.41780-10-dwmw2@infradead.org>
+Content-Language: en-US
+Organization: Xen Project
+In-Reply-To: <20240418193528.41780-10-dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
---P5gNKGuon3/meze+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-PCI maintainers, could you please either apply this (preferred!) or give
-me an ack to take it with the dts?
-
-Thanks,
-Conor.
-
-On Wed, Mar 27, 2024 at 12:24:39PM +0000, Conor Dooley wrote:
-> From: Valentina Fernandez <valentina.fernandezalanis@microchip.com>
->=20
-> Increase the number of items in the ranges property to allow up to 3
-> ranges. For example a prefetchable range, a non-prefetchable range
-> and an IO range, depending on configuration.
->=20
-> Signed-off-by: Valentina Fernandez <valentina.fernandezalanis@microchip.c=
-om>
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+On 18/04/2024 20:34, David Woodhouse wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
+> 
+> This was introduced in commit 0061d53daf26 ("KVM: x86: limit difference
+> between kvmclock updates") to reduce cross-vCPU differences which arose
+> because the KVM clock was based on CLOCK_MONOTONIC and thus subject to
+> NTP frequency corrections.
+> 
+> However, commit 53fafdbb8b21 ("KVM: x86: switch KVMCLOCK base to
+> monotonic raw clock") switched to using CLOCK_MONOTONIC_RAW as the basis
+> for the KVM clock, avoiding the NTP frequency skew altogether.
+> 
+> So remove KVM_REQ_GLOBAL_CLOCK_UPDATE. In kvm_write_system_time(), all
+> that's needed is a single KVM_REQ_CLOCK_UPDATE for the vCPU whose KVM
+> clock is being configured.
+> 
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 > ---
->  Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/pci/microchip,pcie-host.ya=
-ml b/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
-> index f7a3c2636355..e8212a05b7b1 100644
-> --- a/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
-> +++ b/Documentation/devicetree/bindings/pci/microchip,pcie-host.yaml
-> @@ -65,7 +65,8 @@ properties:
->        - const: msi
-> =20
->    ranges:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 3
-> =20
->    dma-ranges:
->      minItems: 1
-> --=20
-> 2.43.0
->=20
+>   arch/x86/include/asm/kvm_host.h |  2 +-
+>   arch/x86/kvm/x86.c              | 57 ++-------------------------------
+>   2 files changed, 4 insertions(+), 55 deletions(-)
+> 
 
---P5gNKGuon3/meze+
-Content-Type: application/pgp-signature; name="signature.asc"
+Reviewed-by: Paul Durrant <paul@xen.org>
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiKUdAAKCRB4tDGHoIJi
-0uRiAP0V/vBz26onjgXgloeZ0gVi8i6q/SLsKfs59S/dQBZHkwEAjywPdUJikVo/
-2Y4XvNpmuSZqJZbzHcMQXcsxriJmdgQ=
-=nmUD
------END PGP SIGNATURE-----
-
---P5gNKGuon3/meze+--
 
