@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-151562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C8AB8AB07C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:14:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 002578AB07D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:15:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7DBB28155D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:14:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94A051F26A88
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:15:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F9412F38E;
-	Fri, 19 Apr 2024 14:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F14F12D76E;
+	Fri, 19 Apr 2024 14:14:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLl+bryC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="deB2QTFG"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D549212F361
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:14:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8621012F59A
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:14:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713536053; cv=none; b=ZVTrrTNXmQ/9Xm3oOK0YNdKtzF1MrWOVWSlZqM2NTg8InyPdMGlBMKV/v0bI7K8QBrZCRrFNIxaiF0pnoaSPJOVy2Bd26V3L/uIQrKG03nR86jeVzgXjih5uctBAQ+9/37ThcdGRSceBedrcFZ5tHCoRNnsfV2bWrlwZ1GHzW30=
+	t=1713536056; cv=none; b=SkCW4Lwq7wBKucYvG+CKIOvnTtiZ03m78Cz9udbHacX8L51Pp9X6pKZDGsJJmS4LfELAaeJT3/z1r6mOXf51+SqB5JzEZt99f2u2lfQjs+OLWFzXGFLyfPNTROBPnv2BmQ8N/3SvK5okdKjZLzw91Z9eaxAcbUV0+AEVk0GoXvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713536053; c=relaxed/simple;
-	bh=eu/b53uh7QEFQfeTA4Rx9Iizk5MHoafPYkrPYXyPtFA=;
+	s=arc-20240116; t=1713536056; c=relaxed/simple;
+	bh=ZiwsAW01Vo0W/LIsWonJMl/TomhMGShCbtNy1DqFzs4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=p+u3YT9Bu0gquoMQJoHu+XQ+3ZUoLtyqx1dD0e3kZwHqhuq9Qh6sfVoNQHYI9NZFhnFFbCFGY9s4uYVXg5KxNGWybD0uiZlS1mA0oVISFmfSRA+m9feHt72GcO26OJ3Nz6sBSQMk3x2pdxI1FxIcQsw8z9XmULXPVgZoWZWaYh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLl+bryC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8952C32781;
-	Fri, 19 Apr 2024 14:14:11 +0000 (UTC)
+	 MIME-Version; b=YhN5zUlR93oZmGv1bwGIU1ZJSP8/2erdF0wzoPXANPo2rXYnuHZqbRZyia4ZSNcKtkiKEDPmrOMsl4pjqP1V+D1RnwkgeUjg9DZ76ytETMcAGUqoc+EbXxAd86yULazJ9mSsXWETfjZza3LhdrkS5W2Um6CjaDoIadpldnzOILw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=deB2QTFG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 306E4C072AA;
+	Fri, 19 Apr 2024 14:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713536053;
-	bh=eu/b53uh7QEFQfeTA4Rx9Iizk5MHoafPYkrPYXyPtFA=;
+	s=k20201202; t=1713536056;
+	bh=ZiwsAW01Vo0W/LIsWonJMl/TomhMGShCbtNy1DqFzs4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MLl+bryCZObdL2ffb7sW5QC3jVBjzYkzfaV9dUxZUtCxNHCLyq/LZq4ncPugboy8f
-	 Q/599cuOFSG/hNlOFcpLRuef+Y+BnQN+h6081JDRYArHG/PNrf77TJbHmeS7iNpqgt
-	 OtFilIw1nOaIXUUWkYVV/2/CrwaQirZY+UindCrZvR615g3ailFIL4OI1bwjHE4SlI
-	 u+LU3L2mHurSnrOeKUw98PeTXBAWpUxEnnGWYyoEyf1nGAn97NqVPwxiSVc4vWKNp0
-	 cL4MyRYyX4GImZ00GH+OXje7NmqporXnlw+EHjgybGdy7f0rm1FHQnx9qSCK7ESLb4
-	 YyOUUAxa9XG8Q==
+	b=deB2QTFGDKjdUBu0Q5WELIIiO5HhzOLZ7gcHlleifYuS24mXPFrzTu6lN28JmfA6P
+	 TUw+RBKKNKoZXDLgx1b3cO3niv8S5w5oRwdiYxnVutR1KsBiwB++p5lrAjCBoBVv5J
+	 f2NedEPAOjVHxT3sj6Mz4ZXq/e607XsamxO/tOyCfvXcdPdp865QfErNOOiK9FMJhs
+	 l62w8gCcMeGFWu5/ppd7DvoLdJ8Ad770WMuSibO58MrpVOQkKtc3Yb9xB4P3x0MrgF
+	 WysT3sAN6Mw77z8sBKpZg10JcwOwOHjJSgzVpZ4dOdvaJaej7zgSficI9SDPzeMtuP
+	 +CQrT5SiL+KyA==
 From: Michael Walle <mwalle@kernel.org>
 To: Tudor Ambarus <tudor.ambarus@linaro.org>,
 	Pratyush Yadav <pratyush@kernel.org>,
@@ -50,9 +50,9 @@ Cc: Ricardo Ribalda <ribalda@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org,
 	Michael Walle <mwalle@kernel.org>
-Subject: [PATCH v2 3/6] mtd: spi-nor: remove .setup() callback
-Date: Fri, 19 Apr 2024 16:12:46 +0200
-Message-Id: <20240419141249.609534-4-mwalle@kernel.org>
+Subject: [PATCH v2 4/6] mtd: spi-nor: get rid of SPI_NOR_NO_FR
+Date: Fri, 19 Apr 2024 16:12:47 +0200
+Message-Id: <20240419141249.609534-5-mwalle@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240419141249.609534-1-mwalle@kernel.org>
 References: <20240419141249.609534-1-mwalle@kernel.org>
@@ -64,164 +64,115 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With the removal of the Xilinx flashes, there is no more flash driver
-using that hook. The original intention was to let the driver configure
-special requirements like page size an opcodes.  This is already
-possible by other means and it is unlikely a flash will overwrite the
-(more or less complex) setup function.
+The evervision FRAM devices are the only user of the NO_FR flag. Drop
+the global flag and instead use a manufacturer fixup for the evervision
+flashes to drop the fast read support.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 ---
- drivers/mtd/spi-nor/core.c | 105 ++++++++++++++++---------------------
- drivers/mtd/spi-nor/core.h |   5 --
- 2 files changed, 45 insertions(+), 65 deletions(-)
+Please note, that the fast read opcode will still be set in
+spi_nor_init_default_params(), but the selection of the read opcodes
+just depends on the mask.
+
+That is also something I want to fix soon: the opcodes can always
+be set and the drivers/SFDP will only set the mask. Opcodes then can be
+switched between 3b and 4b ones if necessary.
+---
+ drivers/mtd/spi-nor/core.c     |  9 ++-------
+ drivers/mtd/spi-nor/core.h     |  2 --
+ drivers/mtd/spi-nor/everspin.c | 19 +++++++++++++++----
+ 3 files changed, 17 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 31dfdbf96765..f4c0b5185818 100644
+index f4c0b5185818..4e2ae6642d4c 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2554,8 +2554,51 @@ static int spi_nor_select_erase(struct spi_nor *nor)
- 	return 0;
- }
+@@ -2923,15 +2923,10 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+ 	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
+ 	params->n_banks = info->n_banks ?: SPI_NOR_DEFAULT_N_BANKS;
  
--static int spi_nor_default_setup(struct spi_nor *nor,
--				 const struct spi_nor_hwcaps *hwcaps)
-+static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
-+{
-+	if (nor->params->addr_nbytes) {
-+		nor->addr_nbytes = nor->params->addr_nbytes;
-+	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
-+		/*
-+		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
-+		 * in this protocol an odd addr_nbytes cannot be used because
-+		 * then the address phase would only span a cycle and a half.
-+		 * Half a cycle would be left over. We would then have to start
-+		 * the dummy phase in the middle of a cycle and so too the data
-+		 * phase, and we will end the transaction with half a cycle left
-+		 * over.
-+		 *
-+		 * Force all 8D-8D-8D flashes to use an addr_nbytes of 4 to
-+		 * avoid this situation.
-+		 */
-+		nor->addr_nbytes = 4;
-+	} else if (nor->info->addr_nbytes) {
-+		nor->addr_nbytes = nor->info->addr_nbytes;
-+	} else {
-+		nor->addr_nbytes = 3;
-+	}
-+
-+	if (nor->addr_nbytes == 3 && nor->params->size > 0x1000000) {
-+		/* enable 4-byte addressing if the device exceeds 16MiB */
-+		nor->addr_nbytes = 4;
-+	}
-+
-+	if (nor->addr_nbytes > SPI_NOR_MAX_ADDR_NBYTES) {
-+		dev_dbg(nor->dev, "The number of address bytes is too large: %u\n",
-+			nor->addr_nbytes);
-+		return -EINVAL;
-+	}
-+
-+	/* Set 4byte opcodes when possible. */
-+	if (nor->addr_nbytes == 4 && nor->flags & SNOR_F_4B_OPCODES &&
-+	    !(nor->flags & SNOR_F_HAS_4BAIT))
-+		spi_nor_set_4byte_opcodes(nor);
-+
-+	return 0;
-+}
-+
-+static int spi_nor_setup(struct spi_nor *nor,
-+			 const struct spi_nor_hwcaps *hwcaps)
- {
- 	struct spi_nor_flash_parameter *params = nor->params;
- 	u32 ignored_mask, shared_mask;
-@@ -2612,64 +2655,6 @@ static int spi_nor_default_setup(struct spi_nor *nor,
- 		return err;
- 	}
+-	if (!(info->flags & SPI_NOR_NO_FR)) {
+-		/* Default to Fast Read for DT and non-DT platform devices. */
++	/* Default to Fast Read for non-DT and enable it if requested by DT. */
++	if (!np || of_property_read_bool(np, "m25p,fast-read"))
+ 		params->hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
  
--	return 0;
--}
--
--static int spi_nor_set_addr_nbytes(struct spi_nor *nor)
--{
--	if (nor->params->addr_nbytes) {
--		nor->addr_nbytes = nor->params->addr_nbytes;
--	} else if (nor->read_proto == SNOR_PROTO_8_8_8_DTR) {
--		/*
--		 * In 8D-8D-8D mode, one byte takes half a cycle to transfer. So
--		 * in this protocol an odd addr_nbytes cannot be used because
--		 * then the address phase would only span a cycle and a half.
--		 * Half a cycle would be left over. We would then have to start
--		 * the dummy phase in the middle of a cycle and so too the data
--		 * phase, and we will end the transaction with half a cycle left
--		 * over.
--		 *
--		 * Force all 8D-8D-8D flashes to use an addr_nbytes of 4 to
--		 * avoid this situation.
--		 */
--		nor->addr_nbytes = 4;
--	} else if (nor->info->addr_nbytes) {
--		nor->addr_nbytes = nor->info->addr_nbytes;
--	} else {
--		nor->addr_nbytes = 3;
+-		/* Mask out Fast Read if not requested at DT instantiation. */
+-		if (np && !of_property_read_bool(np, "m25p,fast-read"))
+-			params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
 -	}
 -
--	if (nor->addr_nbytes == 3 && nor->params->size > 0x1000000) {
--		/* enable 4-byte addressing if the device exceeds 16MiB */
--		nor->addr_nbytes = 4;
--	}
--
--	if (nor->addr_nbytes > SPI_NOR_MAX_ADDR_NBYTES) {
--		dev_dbg(nor->dev, "The number of address bytes is too large: %u\n",
--			nor->addr_nbytes);
--		return -EINVAL;
--	}
--
--	/* Set 4byte opcodes when possible. */
--	if (nor->addr_nbytes == 4 && nor->flags & SNOR_F_4B_OPCODES &&
--	    !(nor->flags & SNOR_F_HAS_4BAIT))
--		spi_nor_set_4byte_opcodes(nor);
--
--	return 0;
--}
--
--static int spi_nor_setup(struct spi_nor *nor,
--			 const struct spi_nor_hwcaps *hwcaps)
--{
--	int ret;
--
--	if (nor->params->setup)
--		ret = nor->params->setup(nor, hwcaps);
--	else
--		ret = spi_nor_default_setup(nor, hwcaps);
--	if (ret)
--		return ret;
--
- 	return spi_nor_set_addr_nbytes(nor);
- }
- 
+ 	/* (Fast) Read settings. */
+ 	params->hwcaps.mask |= SNOR_HWCAPS_READ;
+ 	spi_nor_set_read_settings(&params->reads[SNOR_CMD_READ],
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 3043d583eac2..497957b64906 100644
+index 497957b64906..1516b6d0dc37 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -366,10 +366,6 @@ struct spi_nor_otp {
-  * @set_octal_dtr:	enables or disables SPI NOR octal DTR mode.
-  * @quad_enable:	enables SPI NOR quad mode.
-  * @set_4byte_addr_mode: puts the SPI NOR in 4 byte addressing mode.
-- * @setup:		(optional) configures the SPI NOR memory. Useful for
-- *			SPI NOR flashes that have peculiarities to the SPI NOR
-- *			standard e.g. different opcodes, specific address
-- *			calculation, page size, etc.
-  * @ready:		(optional) flashes might use a different mechanism
-  *			than reading the status register to indicate they
-  *			are ready for a new command
-@@ -400,7 +396,6 @@ struct spi_nor_flash_parameter {
- 	int (*set_octal_dtr)(struct spi_nor *nor, bool enable);
- 	int (*quad_enable)(struct spi_nor *nor);
- 	int (*set_4byte_addr_mode)(struct spi_nor *nor, bool enable);
--	int (*setup)(struct spi_nor *nor, const struct spi_nor_hwcaps *hwcaps);
- 	int (*ready)(struct spi_nor *nor);
+@@ -470,7 +470,6 @@ struct spi_nor_id {
+  *                            Usually these will power-up in a write-protected
+  *                            state.
+  *   SPI_NOR_NO_ERASE:        no erase command needed.
+- *   SPI_NOR_NO_FR:           can't do fastread.
+  *   SPI_NOR_QUAD_PP:         flash supports Quad Input Page Program.
+  *   SPI_NOR_RWW:             flash supports reads while write.
+  *
+@@ -519,7 +518,6 @@ struct flash_info {
+ #define SPI_NOR_BP3_SR_BIT6		BIT(4)
+ #define SPI_NOR_SWP_IS_VOLATILE		BIT(5)
+ #define SPI_NOR_NO_ERASE		BIT(6)
+-#define SPI_NOR_NO_FR			BIT(7)
+ #define SPI_NOR_QUAD_PP			BIT(8)
+ #define SPI_NOR_RWW			BIT(9)
  
- 	const struct spi_nor_locking_ops *locking_ops;
+diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspin.c
+index 5f321e24ae7d..0720a61947e7 100644
+--- a/drivers/mtd/spi-nor/everspin.c
++++ b/drivers/mtd/spi-nor/everspin.c
+@@ -14,28 +14,39 @@ static const struct flash_info everspin_nor_parts[] = {
+ 		.size = SZ_16K,
+ 		.sector_size = SZ_16K,
+ 		.addr_nbytes = 2,
+-		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
++		.flags = SPI_NOR_NO_ERASE,
+ 	}, {
+ 		.name = "mr25h256",
+ 		.size = SZ_32K,
+ 		.sector_size = SZ_32K,
+ 		.addr_nbytes = 2,
+-		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
++		.flags = SPI_NOR_NO_ERASE,
+ 	}, {
+ 		.name = "mr25h10",
+ 		.size = SZ_128K,
+ 		.sector_size = SZ_128K,
+-		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
++		.flags = SPI_NOR_NO_ERASE,
+ 	}, {
+ 		.name = "mr25h40",
+ 		.size = SZ_512K,
+ 		.sector_size = SZ_512K,
+-		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
++		.flags = SPI_NOR_NO_ERASE,
+ 	}
+ };
+ 
++static void evervision_nor_default_init(struct spi_nor *nor)
++{
++	/* Everspin FRAMs don't support the fast read opcode. */
++	nor->params->hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
++}
++
++static const struct spi_nor_fixups evervision_nor_fixups = {
++	.default_init = evervision_nor_default_init,
++};
++
+ const struct spi_nor_manufacturer spi_nor_everspin = {
+ 	.name = "everspin",
+ 	.parts = everspin_nor_parts,
+ 	.nparts = ARRAY_SIZE(everspin_nor_parts),
++	.fixups = &evervision_nor_fixups,
+ };
 -- 
 2.39.2
 
