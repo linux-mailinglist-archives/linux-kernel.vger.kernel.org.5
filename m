@@ -1,169 +1,108 @@
-Return-Path: <linux-kernel+bounces-152015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D3268AB762
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:59:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D17828AB773
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 01:28:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E82DB2165A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:59:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 820CA1F21A8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:28:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE86513D639;
-	Fri, 19 Apr 2024 22:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2FC13D88F;
+	Fri, 19 Apr 2024 23:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ve1zoOjS"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="jRzCfYod"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EFD813D60C
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:59:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D9C64D;
+	Fri, 19 Apr 2024 23:27:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713567564; cv=none; b=adKtElXJBT8YteKbRrT/pfNxZ1R1Ik/h5k6xjAuBEr+Ny7P/pHJbJ17OrcMk9oLYiCWR6floO4D9PM3NEiBqXiuOIsM0wK5nmtTO6kJIpVfGUgvo2m7RhgBuEmYtKFmZlFbywJODkvXqGqiA81nEIKs/++Ij4cJVaM7PN9OttJI=
+	t=1713569273; cv=none; b=KMJ/nAYqM3R5uLkAwq2w0IZw5eOdlyZajKGios0i/HM1/GAXNq/gTRgLwkTNxmoyLW0vaqHnTjjk2Xx30TMbj2R37MrP8pMHwIqJqaWDQPxZscjHlRMf11OJOK5CE2ydddg7kZ3ZgIRD3jef6ly0RKOR2JBggheTiQxSiRMPIbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713567564; c=relaxed/simple;
-	bh=dq66rNJndbQc60lsm/BjaeR3uKnAGkQCnG7ybzMIKnQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZHSdY4SiTDK3U5nZzLG4OA3cVcFrsmsYFpY98O7ZilREcOmoZJmTSm67JIvQbdfiqhsch2CoExh81WjMLjnkGSX4C1b+/sesK6Mr+yh4kJxIc1B2/YKoq5qYNMQjxtAg6tMn0AhHgAZhwyskIA0RuWBECbxwmDkl2b9tYFILM2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ve1zoOjS; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-516db2214e6so3392959e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713567559; x=1714172359; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y/pykJ+iNZaZvxsy5yVJ+QnkNtTRNc8ccYnjEfcauKg=;
-        b=Ve1zoOjSG3xxakg5n72/UVdaXqdwP/tkldZ8KXQqaRdFWEba+Qv990rwKcTqst1Vi0
-         fSOV4RiX+nixGdu3VrVZC55daDW/HSv7rwz5nJg8eZI8r7q5aa/B4xoICw9xmQLT6rRG
-         /SPWrX1duZIjJaIBNq6Sasge0M7MJZkDFEg6fRQRlXIrrlvdASlzkeSxLqHqCcbLN9d/
-         B8vSFC7vHBpG6s6bDGUT6BRl2PFngxEzRcDikBiQwCIYEnEwIbDd1M6pK6d39s04Fgce
-         gxvd/vhNZPkouL2ojaxVkpFuW/ZWb0jW4jR7bTl7DRBZNLumNZwSEFsjoXzfZ3x5vCZu
-         kfrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713567559; x=1714172359;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y/pykJ+iNZaZvxsy5yVJ+QnkNtTRNc8ccYnjEfcauKg=;
-        b=gdntl0wkhvRTwUxK6YfCt1XCwQa9YZhzRHCZaKqg7+uKWxJ33+D36u4auGrTRg7bQq
-         8LbgC1PNQn+Uc1YYAH1306fU14qQIaOH70QceqRhzI22VPwzIChtEl2tQV3LrIQdC5w/
-         MII+umsLPXoiwZR3aPHU4Q0dqhqzSkXyX2bZpGfqhcHQDr4OBwu8ZH0evdVcW3n9hipe
-         LftqfhEt0F39wSm0vR1pMm7SjnsL3Jlofa+g6ALMaAlSGiCYxnvCvj2rsqrc6kfGNu9w
-         qgsUhSgBP9RQPiwv1zglb0B5TMcGosarpVqZk40i4o6ff5ZWGehAm/Y/mn5YDaEouacw
-         ItWw==
-X-Forwarded-Encrypted: i=1; AJvYcCWgmZWEdc8rL3O7Ou1j7IleQIh78k5q7M2okoQWbYOJBft2YKdC4F0OiXCFPXHspmT3FVBc0Z68Z/8H6Z+W6muosDYBQTbHBriC9bcw
-X-Gm-Message-State: AOJu0Yxcq1UqJvDAPT+xOexIdaWcr6suU0rZr7qdvduHuosAvONkbDJT
-	8HDMIQiv6TPPBoxgmMUDgy7TNwEiWs3c3S8NyEpz2G+FRbQtLOmuK63cdpiG0zU=
-X-Google-Smtp-Source: AGHT+IESWYEtVXjigtQ0L5bOUF7zr3weAYEinceRJ7EB6HeSNIHj7J9wJmp0cfKzhv8mnoUheJDP1A==
-X-Received: by 2002:ac2:58cd:0:b0:51a:bdd6:e718 with SMTP id u13-20020ac258cd000000b0051abdd6e718mr1877655lfo.31.1713567559098;
-        Fri, 19 Apr 2024 15:59:19 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
-        by smtp.gmail.com with ESMTPSA id s6-20020a197706000000b00518d7c38cb9sm913814lfc.284.2024.04.19.15.59.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 15:59:18 -0700 (PDT)
-Date: Sat, 20 Apr 2024 01:59:16 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Marijn Suijten <marijn.suijten@somainline.org>
-Cc: Rob Clark <robdclark@gmail.com>, 
-	Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Archit Taneja <architt@codeaurora.org>, 
-	Chandan Uddaraju <chandanu@codeaurora.org>, Vinod Koul <vkoul@kernel.org>, 
-	Sravanthi Kollukuduru <skolluku@codeaurora.org>, linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Jordan Crouse <jordan@cosmicpenguin.net>, Rajesh Yadav <ryadav@codeaurora.org>, 
-	Jeykumar Sankaran <jsanka@codeaurora.org>, ~postmarketos/upstreaming@lists.sr.ht, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Martin Botka <martin.botka@somainline.org>, Jami Kettunen <jami.kettunen@somainline.org>
-Subject: Re: [PATCH 2/7] drm/msm/dsi: Pass bonded-DSI hdisplay/2 to DSC
- timing configuration
-Message-ID: <omnlm4e6yq5u2iurxld5gwo7rma4jpfmmhvpzsddjz5aensumc@ffsolnsblmyx>
-References: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
- <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-2-78ae3ee9a697@somainline.org>
- <CAA8EJpq-1QwoM2hEyegpfKnVH+qrswjmTd_hpYs9d9B7gikHjg@mail.gmail.com>
- <7fqwkryeumkt7zxsec6va7ys22nfs3tr4rrcz323extdz3f6zv@w4uu2lk4uh7v>
+	s=arc-20240116; t=1713569273; c=relaxed/simple;
+	bh=+Qx+phbbez3nCafVJWvHw2p/4Osq43K/uQphuHmnUwQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=mDLb4QCC1OCpKhSdW8ZmnRBcHAcCMtbFOnhoSI8wul1PvvMKFtgERjRx6owDsHjmJFUGurahqd0X2HAxBbGctE9dOfLmPTn9/KgJsAPs5CVdNkt/DC8/9f6lraX7aVMwBgRB9nrd/kM8lnannijdhQSuTp55OTTpu2vj20QleO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=jRzCfYod; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1713569268;
+	bh=0COLxRjPIo77fJ3J44TSQPzwMK0xvmc5G2PIo/aN2Q8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=jRzCfYodBkOvSSB3DEIlwaJYIHkgEocozaQ66gtnmx5Gcv6SEyXG11mGfxhHYwSke
+	 WWOSHQ4aB+1bBQcWeYCAG4b09buYqx/SU3cEtl4pcEOrjy5qFSbteJsh+mrhevSvxn
+	 eX6sDRRAJTTN2fZJ5Uy9PDZF/YUOPbI4SFIogsdFCK/v4MXX8pdHgeJbEMx5Y0LjnH
+	 fPP/0ocARMSuF7TM+93Ar+IzQiu/3IzaNgE3E3diUMRA9RxmuUv/7ZvjuE8qz7Bo4T
+	 aqvOs5qIPJXQHQXCUrFvX7AAfrZi/wrUZtJbkVKni2l6MslwX2g82hcad7fASbUyd0
+	 wQboUqWmZ1ALQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VLrR66xPqz4wjF;
+	Sat, 20 Apr 2024 09:27:46 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Josh Poimboeuf <jpoimboe@kernel.org>, Sean Christopherson
+ <seanjc@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Peter Zijlstra <peterz@infradead.org>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Stephen Rothwell
+ <sfr@canb.auug.org.au>, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] cpu: Re-enable CPU mitigations by default for !X86
+ architectures
+In-Reply-To: <20240419160537.namt5yaxhhvwwa3r@treble>
+References: <20240417001507.2264512-1-seanjc@google.com>
+ <20240417001507.2264512-2-seanjc@google.com>
+ <20240419160537.namt5yaxhhvwwa3r@treble>
+Date: Sat, 20 Apr 2024 09:27:45 +1000
+Message-ID: <87mspp9bm6.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7fqwkryeumkt7zxsec6va7ys22nfs3tr4rrcz323extdz3f6zv@w4uu2lk4uh7v>
+Content-Type: text/plain
 
-On Sat, Apr 20, 2024 at 12:18:39AM +0200, Marijn Suijten wrote:
-> On 2024-04-17 14:58:25, Dmitry Baryshkov wrote:
-> > On Wed, 17 Apr 2024 at 02:57, Marijn Suijten
-> > <marijn.suijten@somainline.org> wrote:
-> > >
-> > > When configuring the timing of DSI hosts (interfaces) in
-> > > dsi_timing_setup() all values written to registers are taking bonded
-> > > DSI into account by dividing the original mode width by 2 (half the
-> > > data is sent over each of the two DSI hosts), but the full width
-> > > instead of the interface width is passed as hdisplay parameter to
-> > > dsi_update_dsc_timing().
-> > >
-> > > Currently only msm_dsc_get_slices_per_intf() is called within
-> > > dsi_update_dsc_timing() with the `hdisplay` argument which clearly
-> > > documents that it wants the width of a single interface (which, again,
-> > > in bonded DSI mode is half the total width of the mode).  Thus pass the
-> > > bonded-mode-adjusted hdisplay parameter into dsi_update_dsc_timing()
-> > > otherwise all values written to registers by this function (i.e. the
-> > > number of slices per interface or packet, and derived from this the EOL
-> > > byte number) are twice too large.
-> > >
-> > > Inversely the panel driver is expected to only set the slice width and
-> > > number of slices for half the panel, i.e. what will be sent by each
-> > > host individually, rather than fixing that up like hdisplay here.
-> > >
-> > > Fixes: 08802f515c3c ("drm/msm/dsi: Add support for DSC configuration")
-> > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > ---
-> > >  drivers/gpu/drm/msm/dsi/dsi_host.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> 
-> Thanks, it seems this patch has already been picked up for 6.10 [1] to test at
-> least, but I'd advise you to drop it until I resend it in v2, as it no longer
-> performs as written in the title.
+Josh Poimboeuf <jpoimboe@kernel.org> writes:
+> On Tue, Apr 16, 2024 at 05:15:06PM -0700, Sean Christopherson wrote:
+>> Add a generic Kconfig, CPU_MITIGATIONS, to control whether or not CPU
+>> mitigations are enabled by default, and force it on for all architectures
+>> except x86.  A recent commit to turn mitigations off by default if
+>> SPECULATION_MITIGATIONS=n kinda sorta missed that "cpu_mitigations" is
+>> completely generic, where as SPECULATION_MITIGATIONS is x86 specific.
+>> 
+>> Alternatively, SPECULATION_MITIGATIONS could simply be defined in common
+>> code, but that creates weirdness for x86 because SPECULATION_MITIGATIONS
+>> ends up being defined twice, and the default behavior would likely depend
+>> on the arbitrary include order (if the two definitions diverged).
+>> 
+>> Ideally, CPU_MITIGATIONS would be unconditionally on by default for all
+>> architectures, and manually turned off, but there is no way to unselect a
+>> Kconfig.
+>> 
+>> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+>> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+>> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> Closes: https://lkml.kernel.org/r/20240413115324.53303a68%40canb.auug.org.au
+>> Fixes: f337a6a21e2f ("x86/cpu: Actually turn off mitigations by default for SPECULATION_MITIGATIONS=n")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Sean Christopherson <seanjc@google.com>
+>
+> It seems confusing to have two config options which have very similar
+> names and similar purposes (with subtle differences depending on the
+> arch).
 
-Ok, dropping.
+I agree.
 
-> 
-> When I wrote this patch in in June 2023, commit efcbd6f9cdeb ("drm/msm/
-> dsi: Enable widebus for DSI") from August 2023 wasn't there yet.  That patch
-> updates hdisplay (because it is unused after that point) with the number
-> of compressed bytes to be sent over each interface, which is effectively
-> hdisplay (based on slice_count * slice_width, so as explained in the commit
-> message that corresponds to half the panel width), divided by a compression
-> ratio of 3 or 6 depending on widebus, thus passing a way too low value into
-> dsi_update_dsc_timing().
-> 
-> As a result this patch regresses the DSC panel on my SM8150 Sony Xperia 1, and
-> likely also explains why it was quite hard to get the porches "just right" on
-> the Xperia 1 III with its dual-DSI dual-DSC 4k@120Hz panel (that these patches
-> are specifically for).
-> 
-> I'm still thinking of how to best fix that: probably introducing a new separate
-> local variable, though dsi_update_dsc_timing() only uses it to calculate
-> the number of slices per interface, which again as written in the commit
-> description, is currently required to already be for one interface (in other
-> words, the Xperia 1 with only a single intf sets slice_count=2, but the Xperia 1
-> III with 2 bonded DSI interfaces sets slice_count=1).  Which means that this is
-> always equivalent to slice_per_intf = dsc->slice_count.
-> 
-> Let me know which approach is preferred.
-> 
-> - Marijn
-> 
-> [1]: https://gitlab.freedesktop.org/drm/msm/-/merge_requests/110
+But can we please get Sean's fix into mainline before rc5.
 
--- 
-With best wishes
-Dmitry
+cheers
 
