@@ -1,149 +1,102 @@
-Return-Path: <linux-kernel+bounces-151734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EDA88AB31A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:14:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EA3F8AB321
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:16:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 084FAB2254C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:14:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B50571F227B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:16:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 141221327EF;
-	Fri, 19 Apr 2024 16:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA14131734;
+	Fri, 19 Apr 2024 16:16:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="foe/nKju"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="neuR3b4X"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FE6131735
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E72130AFC;
+	Fri, 19 Apr 2024 16:16:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713543259; cv=none; b=sjN/fjGo20GXm4RKMzQAV1PERFj0V+K/L7zGDoiTJEE11ZwhrxrmQxMRzO/ch2TnjC9ndpgHavxIuqpxgq+4Rlq6DAJVsyGTqNbfS0Mi3Km3pm7430+54Mj23zxsICinYj5HMvIv5ZAq0DIYBNpeLbKYD02CI5avlCe+pzNGF1Y=
+	t=1713543394; cv=none; b=ew6FZPC2TNrEPLD5sYSkO7uf/Y38b2Md+TQrxaIKqumwWpnj8b8q/GxNgO3RWsTlfiE+hGmjA0wEdK2zxM7mF6sx8NzGIkPRSPPEcOA0QGfu2O/Yl3U5fsUj9D8FY8U1yJBW2GVHuf6LoAnTe5YlYk72Wanm4qycNkgKgio2X2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713543259; c=relaxed/simple;
-	bh=8Xh8vmNyR87mgMJSVkN+wh9HmeoK2/Za6ILqWbM6Rr8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=W398ySZWLnV8+K3TX71oaSqcWBUn68WWHdvV/f4fgZAXGVCZ5aQwcBfRCXgt/gqgAhntoU2rM0fI2WbBqAyhKoZsimK5ziiy4bIbGz8FQ6fpa50uC9t+ANHDmv2MCPmfAnEWbIF2y2iAn2ctvsiAPuxdGwQjldRBh+8RVyj7UuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=foe/nKju; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4187c47405aso15546905e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:14:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713543256; x=1714148056; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RQJDsa2K7SjMjp2333jgsoefmnOQnueOW+EtOnH0MSQ=;
-        b=foe/nKjuse8o+qYdfHCnDPTbEMj0PCJWtsM5DUmSZOf3G91X0D/GuapOP/npPr9xDs
-         hobKJbG9o5Pb8dJWCJG1baevKsrSgaj/fUyZBQ7tMK+AR5b8+RoVQAkhAc6p8i/FJLQr
-         KIwT8f6J4Z0IOZEqaJtuIZcqbrfyv4DeTdjMYbt7gSJb9vrg/9B+CSZwRhPNC41LeVvU
-         1VPkjmNpz0Jdt0VaQfnbCVLVWyFmH+mjmv9Cm2n6QhBubG41v5KqAa94PAvWpX3pR6eN
-         U7Yvd5+WnCnF60qpcz2zAQveY+yiplHfSmgPZDo7G41hZj/eUZO922EclRzaDmrirSHQ
-         LsRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713543256; x=1714148056;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RQJDsa2K7SjMjp2333jgsoefmnOQnueOW+EtOnH0MSQ=;
-        b=bRm2CMWpsMhCbsHXj72vWPaEgaroTaOyEHFERyHPLJBgwNhVjXyRv99j0DzsGOYxIo
-         eZ7vfBSWxE8Kcf8sh0ce/UVtCGOXac5U3JGKUxQ5a/Tyys3TCyyFyBp2K2O7/N9wxzKT
-         +N2rhkJy5XLMtVwr4nqmIyCyPExoS88/SaJsisRi8LHf8R+CA7yz87BPt7uUcXpmElBp
-         BGNCbYbw/tx2PSJv7BxoCnPWIv5Nc2p9aDF/lynVZiQQ3iwJFr9aJev5sCRH3PkBkflA
-         u29X63+tpY5UP3RsSSLpJ+VGFGvlvBRy4IYFX/0lnwsWdDmZSivFWZxemsC/wGbTtqX4
-         ZYCA==
-X-Forwarded-Encrypted: i=1; AJvYcCUGjLeIU8YFN3Kq0oiWNoPUbxpiOBs5MT43+bYPuP8O0CWE9SaGCS+d45Lq5OyYm79efgSTi/FaTo/rtklg8unxSkPVmETZFT6V36bl
-X-Gm-Message-State: AOJu0YyzYp0VQ92zdBlO9ta75PfqPQ+fZBpngpRGkYI5XHKKbuz2ZwGz
-	ixnhfzC4dSFwJHVTALWIysYdiWQrlaCTg8oivFWiKA1ctI9mwdWS6LGRt0s10sOMpluNdcfg9pe
-	S
-X-Google-Smtp-Source: AGHT+IGwo0QvsevD+bteoYe8lVewsU+L5P/HNaDAyn0ycXPLsSu7ZkQoWrlWeA5cJvSVZt+qZJcvgQ==
-X-Received: by 2002:adf:fa83:0:b0:346:200d:7b42 with SMTP id h3-20020adffa83000000b00346200d7b42mr1462688wrr.25.1713543255704;
-        Fri, 19 Apr 2024 09:14:15 -0700 (PDT)
-Received: from [127.0.1.1] ([62.231.100.236])
-        by smtp.gmail.com with ESMTPSA id d20-20020a05600c34d400b00419c4e85b54sm1448229wmq.16.2024.04.19.09.14.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 09:14:15 -0700 (PDT)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Fri, 19 Apr 2024 19:13:58 +0300
-Subject: [PATCH v2 3/3] arm64: dts: qcom: x1e80100-qcp: Add data-lanes and
- link-frequencies to DP3
+	s=arc-20240116; t=1713543394; c=relaxed/simple;
+	bh=q617qq5zMo5ijKoNGFf4Z2wYryS175yLupd0rStsqKE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MQBiIJFoRMZHhQDYX1hlt4cuFhzsgnV5D3ubzBTJEjJOWARwn7xkbELHpcjdYjpWX7ZFxcxIRZuJ/jSUIqbgfBtXC8MlECtGjjsuEfEKSZ2uyXMCHNwAzTMYBa47T9SCbHlT8pk3u31ZlquJVLWS1I8iFVRWx8qxYi3VWsQ+EtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=neuR3b4X; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=z0uJ2mNKNYe4v74CHFNt2XTUYpLXqH8JD5oBo7CvRlQ=; b=neuR3b4X9U4GAZNRluckQqraLs
+	rSH4J4D60AjfeFLroB1/JxSxV/mvVj54ic3cohagIpB8Wus8LlH2ZRgUoEPmVmSi/6XoLfuPcncYr
+	7c30ZtTANpUf5A7gMMRu8zAP1C9xRj4lofuWC+KvrjNiZhWr8GKi8q7yMiYgFpxq1UBsi3b32oVh1
+	5+XgA1NxBZu7kJEMdsnu+Jv1eZRDslJOasBhK5Ln78vPQ3OGUSLamgSHsUWJntTz9skWNuTyY1mnN
+	2hhIJPCAiLJ4lMGO4XQG5OHHVFjh98lIpn8u1y91vbu9AbtxSeYbkjKrtcQeesas6+7XgxgN9X8KE
+	bKbjoH6Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rxquJ-0000000CVet-3cRa;
+	Fri, 19 Apr 2024 16:16:15 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 83EF630043E; Fri, 19 Apr 2024 18:16:11 +0200 (CEST)
+Date: Fri, 19 Apr 2024 18:16:11 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Elizabeth Figura <zfigura@codeweavers.com>
+Cc: wine-devel@winehq.org, Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Wolfram Sang <wsa@kernel.org>, Andy Lutomirski <luto@kernel.org>,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH v4 00/30] NT synchronization primitive driver
+Message-ID: <20240419161611.GA23130@noisy.programming.kicks-ass.net>
+References: <20240416010837.333694-1-zfigura@codeweavers.com>
+ <20240416081421.GB31647@noisy.programming.kicks-ass.net>
+ <4340072.ejJDZkT8p0@terabithia>
+ <3743440.MHq7AAxBmi@terabithia>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240419-x1e80100-dts-fix-mdss-dp3-v2-3-10f4ed7a09b4@linaro.org>
-References: <20240419-x1e80100-dts-fix-mdss-dp3-v2-0-10f4ed7a09b4@linaro.org>
-In-Reply-To: <20240419-x1e80100-dts-fix-mdss-dp3-v2-0-10f4ed7a09b4@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Rajendra Nayak <quic_rjendra@quicinc.com>, 
- Sibi Sankar <quic_sibis@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1181; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=8Xh8vmNyR87mgMJSVkN+wh9HmeoK2/Za6ILqWbM6Rr8=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBmIphRTdSmCAYAWlDnC0yqxKOREzlCC3mEu5R3U
- I0Q8EJTuoKJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZiKYUQAKCRAbX0TJAJUV
- VqD4D/9fES6C4IijQSFV9APJWubnMTmdHuPz1eUJt5AARXaDe/E4Vc3sOMhbqdfxUq4rho67fxX
- Sqhp0mDSVV8BjpG18xiQ0p15Isqoy4Q68CiiIjniaK8KxrtuqLN2zFPJSnY+AE1fKrqiZSk66WC
- SLqtXSglKzcMWlnZIL/35Qq7GGaejgko3JBLBGGRkuvqMIkrfwTBa0t5KNuq03BJh/xwXemVmFu
- dG/Px1m3pS+Ua3WGOgSrc1WWGWy30+arY6uVKfGNvVWAbElWv513emULirGP2w5w0kgLFusnwVQ
- N6Sczh0kGDlmM21YoRzEpuvbXxoqdmFJbwShqC1sUYeEscRJ7BUEZAxyWxGtOUDZX4f/omKQVZq
- s8QaD9du+CWfoK7p20sA/Jt1c9uYs4ts7VyPmSJGdPYP4WXY24q6cZquXm0oFAWVGrYzj8QUIk5
- bNuUyDpt+3xO4UNfW2qbXcqWVuoPbYBkzP6/MMIGat8j9rAYVKDOor0oJmVLhsOsmkGjkkfeVXv
- J3gd+AWy1zl6pilspV6WbT/p7qupYgXWj2pDYUCWyRK+OML+2y75ZlLKQJ38mDOo+C6p5OJ5xK+
- 42iUnzvtnvost43XKBLPlx0I6gL4JEOgeDwEMihMVVeSExM1XguzowhL4ur55t/hRMelGKMmof1
- DtcH/SSGcwKb+WA==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3743440.MHq7AAxBmi@terabithia>
 
-The data-lanes are a property of the out remote endpoint, so move them
-from mdss_dp3 to the mdss_dp3_out. Also add the link-frequencies to
-mdss_dp3_out and make sure to include all frequencies.
+On Tue, Apr 16, 2024 at 05:18:56PM -0500, Elizabeth Figura wrote:
+> On Tuesday, 16 April 2024 16:18:24 CDT Elizabeth Figura wrote:
+> > On Tuesday, 16 April 2024 03:14:21 CDT Peter Zijlstra wrote:
+> > > I don't support GE has it in his builds? Last time I tried, building
+> > > Wine was a bit of a pain.
+> > 
+> > It doesn't seem so. I tried to build a GE-compatible ntsync build, uploaded
+> > here (thanks Arek for hosting):
+> > 
+> >     https://f002.backblazeb2.com/file/wine-ntsync/ntsync-wine.tar.xz
+> 
+> Oops, the initial version I uploaded had broken paths. Should be fixed now.
+> 
+> (It's also broken on an unpatched kernel unless explicitly disabled with 
+> WINE_DISABLE_FAST_SYNC=1. Not sure what I messed up there—it should fall back 
+> cleanly—but hopefully shouldn't be too important for testing.)
 
-Fixes: f9a9c11471da ("arm64: dts: qcom: x1e80100-qcp: Enable more support")
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- arch/arm64/boot/dts/qcom/x1e80100-qcp.dts | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+So I've tried using that wine build with lutris, and I can't get it to
+start EGS or anything else.
 
-diff --git a/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts b/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-index 35580ac3430d..2061fbe7b75a 100644
---- a/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-+++ b/arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
-@@ -410,8 +410,6 @@ &mdss_dp3 {
- 	compatible = "qcom,x1e80100-dp";
- 	/delete-property/ #sound-dai-cells;
- 
--	data-lanes = <0 1 2 3>;
--
- 	status = "okay";
- 
- 	aux-bus {
-@@ -431,6 +429,9 @@ ports {
- 		port@1 {
- 			reg = <1>;
- 			mdss_dp3_out: endpoint {
-+				data-lanes = <0 1 2 3>;
-+				link-frequencies = /bits/ 64 <1620000000 2700000000 5400000000 8100000000>;
-+
- 				remote-endpoint = <&edp_panel_in>;
- 			};
- 		};
-
--- 
-2.34.1
+I even added a printk to the ntsync driver for every open, to see if it
+gets that far, but I'm not even getting that :/
 
 
