@@ -1,47 +1,64 @@
-Return-Path: <linux-kernel+bounces-152003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F19068AB73D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 844C88AB73F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:28:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A782E1F2254D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:24:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A13F1F21EB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3160913D2BE;
-	Fri, 19 Apr 2024 22:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6BD213D297;
+	Fri, 19 Apr 2024 22:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJ+nSZZo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wj6U0TcV";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="F3BeEOXw"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6378313D2A1;
-	Fri, 19 Apr 2024 22:24:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 973D02A1D8
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713565485; cv=none; b=ucXaqSyNP+dyyq9EfNnB7goKP4jLvc2I28c5F6oZN3ANmYOgkvWFgm8r+u9Tp3VAQ6LpdzvDZSwUULPY78pzoR0RVOfd+AvJFEatmOCMdEHTi/UebD2cQde++O37LSL29rGkIaOpLne/SSqPUfoHZWTYu+rRJvswDKUeeMW3698=
+	t=1713565709; cv=none; b=ZBH8ILSddip/9d075dSKDHA/nrAwSIri6j0nTrZfGTDLSbBDTBO+wREsKXY6RHOl5KCtGUNG3pZ8ZL5RbCJ3d01k+Fw8Frn8ouLgY/xJ75VkILqm/YlWqg5j6YGD2SVC3nzs7CRkJ+fh0hrxCNOXhZoCwjw1OKVpqlOjvRtmCvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713565485; c=relaxed/simple;
-	bh=0pD1drXQj39EFN70jQBI3yqld3d3RmDOuileOMRvtOA=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=n9rjERSm4DljifxfOpjS61yxfcWaUe1T1ck6yM8TfevGihERsJ4G7AZVjE41JQqWcrpnGHJFmVZQ7cKXalgQd4cUmHNahEob8T73lnSStX0Oz+3sOwAA8/G1gFfwjUHr0P4BfgqTr57ZmrxBArWGMz/hhugw7Uf0wMv0KQdNZxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJ+nSZZo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B25F0C116B1;
-	Fri, 19 Apr 2024 22:24:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713565484;
-	bh=0pD1drXQj39EFN70jQBI3yqld3d3RmDOuileOMRvtOA=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=rJ+nSZZoJx3f6EJuiigZuYRjPe0R+Glwm9i+QGpOqc7TGdsye5yFeaoD736tqv9He
-	 MCSyZ4VcJFcULkULRxpuZLMiivKub3KLxbSTZNIJrcHc1BYs/oWBqcIhQi7YhpCKrd
-	 bn8BQNsVc6iHexGOxLVjtppPRXvK1+F5a506CSPqpRJ5BtS86jg5DeArHC7L7b5XyP
-	 5gJTx93tQjPKjLCNLCHee/v4Y/bD9nRTpM+BpPOilpkJliu5tpDgsCZmWtywNNOyOU
-	 X1QN7XerODRFMluOIZto5hzj6Woeqhpcq/LNa2an4nDdBL95/yr8Qpxe8g9z55eZWS
-	 UJNmsj9flPzjA==
-Message-ID: <d7ff7dd609cd1b9a50e5ffa882d05b90.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713565709; c=relaxed/simple;
+	bh=N9ubrqeMRhwqn61y1S3Ns37dwsKRexvNg/kzstQsxKw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=a+ZBQC0SQaK9mAHEN5bYT0DQYiXeep+29HjRO9aQmBNWy/3m5JCVbAx9kNOaSiAxOvDkjwDAkpqQ1zLrKUkaStZCaSNWh/oSDir6Cv3RkOHMoVK6I3OAt8XqaOU3XsDQwigbbXFT/uR20yckVl8aqXPcWy0Ju90kRhWtcKSSaBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wj6U0TcV; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=F3BeEOXw; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Nam Cao <namcao@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713565705;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=G9lsnDvMwkCFndVxVxAky0sNQfGRuRjzwSshQ0RUho8=;
+	b=wj6U0TcVE0P4Brykt9NO2ArQXXmfMhOqxLxRviizRStYnw/xPVJSDoKGAfFo1MxHHYOMHP
+	JQDNOsgW8jv6AmcsmMUAkCvFcJ99r4G2M/AOy0pBFRYRx4Lr94yHVETUf7k9FyLpVNUbgz
+	5Ft3un/R6CsJ+hR0lAxVoX3OHRAOEDJ9p+Ri6A/50dBwfPRtF7h0vlABTpCxcOw3YWroPW
+	2rGqnSIvku8nA/aw6+zryFXLY3yb+yN8ss3zCF/fSjoOwZ5A65BR6rrirQZu9mU65su+sY
+	KRNUkQoWiCMqsnEPXHwHMF9e3yDNvZqy1VaUjldml1IEV73pZSWT+O0nR/9rZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713565705;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=G9lsnDvMwkCFndVxVxAky0sNQfGRuRjzwSshQ0RUho8=;
+	b=F3BeEOXwuCrmoYsJuFoLcwd9Q/gVzytmaDpfxPZtANmHvfg7kcRUKT1UnEtKy9jfXfYQIO
+	gQCHoEKeS2LiecCg==
+To: apw@canonical.com,
+	joe@perches.com,
+	dwaipayanray1@gmail.com,
+	lukas.bulwahn@gmail.com,
+	linux-kernel@vger.kernel.org
+Cc: Nam Cao <namcao@linutronix.de>
+Subject: [PATCH v2] checkpatch: add "Reported-and-tested-by:" tag
+Date: Sat, 20 Apr 2024 00:28:18 +0200
+Message-Id: <20240419222818.50719-1-namcao@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,55 +66,39 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <3287993.aeNJFYEL58@radijator>
-References: <20240402-pxa1908-lkml-v9-0-25a003e83c6f@skole.hr> <de4c56a8-488d-4cdb-9d6c-e9d6e63b22b9@skole.hr> <58b23157c088cb4774d579cc8700de85.sboyd@kernel.org> <3287993.aeNJFYEL58@radijator>
-Subject: Re: [PATCH v9 5/9] clk: mmp: Add Marvell PXA1908 clock driver
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, Karel Balej <balejk@matfyz.cz>, David Wronek <david@mainlining.org>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-To: Catalin Marinas <catalin.marinas@arm.com>, Conor Dooley <conor+dt@kernel.org>, Duje =?utf-8?q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, Guilherme G. Piccoli <gpiccoli@igalia.com>, Haojian Zhuang <haojian.zhuang@linaro.org>, Kees Cook <keescook@chromium.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Lubomir Rintel <lkundrak@v3.sk>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>, Tony Lindgren <tony@atomide.com>, Tony Luck <tony.luck@intel.com>, Will Deacon <will@kernel.org>
-Date: Fri, 19 Apr 2024 15:24:42 -0700
-User-Agent: alot/0.10
 
-Quoting Duje Mihanovi=C4=87 (2024-04-19 07:31:14)
-> On Friday, April 12, 2024 4:57:09=E2=80=AFAM GMT+2 Stephen Boyd wrote:
-> > Quoting Duje Mihanovi=C4=87 (2024-04-11 03:15:34)
-> >=20
-> > > On 4/11/2024 10:00 AM, Stephen Boyd wrote:
-> > > > Is there a reason this file can't be a platform driver?
-> > >=20
-> > > Not that I know of, I did it like this only because the other in-tree
-> > > MMP clk drivers do so. I guess the initialization should look like any
-> > > of the qcom GCC drivers then?
-> >=20
-> > Yes.
->=20
-> With the entire clock driver code in one file this is quite messy as I al=
-so=20
-> needed to add module_init and module_exit functions to (un)register each =
+The tag "Reported-and-tested-by:" is used all the time. Add this tag.
 
-> platform driver, presumably because the module_platform_driver macro does=
-n't=20
-> work with multiple platform drivers in one module. If I split up the driv=
-er=20
-> code for each clock controller block into its own file (such as clk-of-
-> pxa1908-apbc.c) as I believe is the best option, should the commits be sp=
-lit=20
-> up accordingly as well?
+Signed-off-by: Nam Cao <namcao@linutronix.de>
+---
+v2: add missing colon
 
-Sure. Why is 'of' in the name? Maybe that is unnecessary?
+ scripts/checkpatch.pl | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->=20
-> > > While at it, do you think the other MMP clk drivers could use a=20
-> conversion?
-> >=20
-> > I'm a little wary if the conversion cannot be tested though.
->=20
-> I'd rather leave it to someone with the hardware then, especially since t=
-he=20
-> only reason I found out about the above is that the board I'm working on =
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 9c4c4a61bc83..e2034da2aeb0 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -618,6 +618,7 @@ our $signature_tags =3D qr{(?xi:
+ 	Tested-by:|
+ 	Reviewed-by:|
+ 	Reported-by:|
++	Reported-and-tested-by:|
+ 	Suggested-by:|
+ 	To:|
+ 	Cc:
+@@ -712,7 +713,7 @@ sub find_standard_signature {
+ 	my ($sign_off) =3D @_;
+ 	my @standard_signature_tags =3D (
+ 		'Signed-off-by:', 'Co-developed-by:', 'Acked-by:', 'Tested-by:',
+-		'Reviewed-by:', 'Reported-by:', 'Suggested-by:'
++		'Reviewed-by:', 'Reported-by:', 'Suggested-by:', 'Reported-and-tested-by=
+:'
+ 	);
+ 	foreach my $signature (@standard_signature_tags) {
+ 		return $signature if (get_edit_distance($sign_off, $signature) <=3D 2);
+--=20
+2.39.2
 
-> failed to boot completely without the module_init function.
->=20
-
-Ok, sounds fine.
 
