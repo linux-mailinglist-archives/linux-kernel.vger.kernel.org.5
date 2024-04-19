@@ -1,261 +1,182 @@
-Return-Path: <linux-kernel+bounces-150994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 043678AA77C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 05:51:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A623A8AA780
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 05:54:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DC3E1F230A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:51:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3F44B24FA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF667FBDD;
-	Fri, 19 Apr 2024 03:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E7D79F6;
+	Fri, 19 Apr 2024 03:54:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OIaSYVNR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SM8HsdRR"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348B67F7F3;
-	Fri, 19 Apr 2024 03:46:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D19B2F29
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 03:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713498385; cv=none; b=gReezH3LIZNu5jzaKw0LC5/Y0ZFqbTS7ZAMih1Ooz12Qri5K3osiPoqIIJqrfggygazCJHv4Z1uFVt74DJJwdKDSAUf61z99Wtv2w74d69aWu/nV/D+EvBsoaIkgb4z4AzQCUGOs/S74KBJk0X5fXMHDe/12be2N0qnDY8WeQsw=
+	t=1713498882; cv=none; b=oyGixiveI8eNFyIdndHYrG5+wX8e//bhj5LXCuprTBmvtZRTHpf5mtNjjwWu1KoBj7ELCTzCiW2nPXPe4VADpPVfQ6eoQyrkhG6LwhjR8Tsel2rho/TH60ro2q5ybaZnhcSQqz6sj2EQVR/ZMesQi7J0u34v40ZAvpjLeaP2Y9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713498385; c=relaxed/simple;
-	bh=BOCLUCvoA9G68ezGtgdPML+FLT+IPlvWgEm4jrl3wZ0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FFShIcOKZcCzAKjlKw/st5u7ReQ5gh2xOCJ/XXjnn9SO9VMHNmSuVwCp2dzt8it9knpsuE/gC+GnocuRKn4dC+G+DOGmSzIYO7IUHDkqzgru4DsBprXIaVf16nxZSSHfu6vx1PTOR+UVI1Ye1qOxeQFAuBkvT/KGYIclCeDuIBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OIaSYVNR; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1713498882; c=relaxed/simple;
+	bh=2w8qEQEOnoPJc9bCA87sZZP0Z+S/XH+87v7Ml4+FeSk=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=LVM8tgba0888sB/fisZwKUIsVnY7iSiAzmPUIc9Qdml+16MoWFa64oazTu/iWu4rc6t1zHO8+DvpwiQF6URiG2SKZQZ8d0UwDDNo6IVqfvyFrEFSpcMGy0utRmMJ/CQHYilBXIJnwvzZGfOhFoQeTybpdPclNnYJTdTQQLyy85Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SM8HsdRR; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713498384; x=1745034384;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=BOCLUCvoA9G68ezGtgdPML+FLT+IPlvWgEm4jrl3wZ0=;
-  b=OIaSYVNReAEV4ErJWbnBoj1irinwA7QDKPsE8NLhtGJfQ+MaqjuOgEm9
-   8JFyTB7WrOXaWU13sfP3BiYRpdfXRCoYxldMFa2yIKljkI14Y4f9G3afx
-   hTZRSYBIrgUUvNIAo+SSJPHS70UmMB4y44B7rR+ITuNxMeMIG17/FbBuY
-   cceo2ihB169k5T3jSio9sNpJREBzJplnc5tmxcd61DGxHUX7qw6LVUIia
-   0/Ui2O2fKJLoHOXpPE0wwDF1TW/JhOSmbbSOG+G5R6Fz6uazvNSy3OtXj
-   8BSKMSGXfHQihjQIPLG7mM73rA19eA3/Vex5jvDy2sBRSBJUslpKAdKgv
-   g==;
-X-CSE-ConnectionGUID: T6PqFqejRJypdV6FLXpTMw==
-X-CSE-MsgGUID: hULK0nvkQ9OLmC61io0snw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="31565516"
+  t=1713498881; x=1745034881;
+  h=date:from:to:cc:subject:message-id;
+  bh=2w8qEQEOnoPJc9bCA87sZZP0Z+S/XH+87v7Ml4+FeSk=;
+  b=SM8HsdRRG6ztWDtvc9eF05pyPos5DYPrAshQF330QQGFQfKonhDKwIG6
+   Quqgbq89tHyy9uJXh6wAlN3jhBlnkBMl73rFE6hItiSEQuP+K8vy4hSXd
+   WLk+8WamIs/ThsS+2dQP6hEfmJN7IYkoZVggH7+YOnrkGYoIiSi5U+QqQ
+   QWjuGMLsWstmmZa8pcoR2p9Vmj9JBQUGlWxWbWDCkjuiaRb5ihOvDmzBI
+   s35KLH6ln3XYKOaQW1fsZYcmmNTYPfPmIfH94so8AC/lOXZQfPV2wBw4L
+   Hqwt+cSGkg9Wdc6XwaggxQBAkD9un5F19a5lj+0fM7/yLAPvYHs0lB+uy
+   Q==;
+X-CSE-ConnectionGUID: JKO6MZDJStipQ9cmG1FOaw==
+X-CSE-MsgGUID: v70WW7SCQ6Kw7fUsGXgsmA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="20227630"
 X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="31565516"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 20:46:24 -0700
-X-CSE-ConnectionGUID: jlJk7cBbRPer8HCEfwmGnQ==
-X-CSE-MsgGUID: WVXnpKhDTVOGVm/e0gRkGA==
+   d="scan'208";a="20227630"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 20:54:40 -0700
+X-CSE-ConnectionGUID: VkRhSSZ7Tom8rERrUqUh/Q==
+X-CSE-MsgGUID: Z+/2Qe1QT/at21mzTGCAbw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="54410340"
-Received: from unknown (HELO dmi-pnp-i7.sh.intel.com) ([10.239.159.155])
-  by fmviesa001.fm.intel.com with ESMTP; 18 Apr 2024 20:46:21 -0700
-From: Dapeng Mi <dapeng1.mi@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jim Mattson <jmattson@google.com>,
-	Mingwei Zhang <mizhang@google.com>
-Cc: kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xiong Zhang <xiong.y.zhang@intel.com>,
-	Zhenyu Wang <zhenyuw@linux.intel.com>,
-	Like Xu <like.xu.linux@gmail.com>,
-	Jinrong Liang <cloudliang@tencent.com>,
-	Dapeng Mi <dapeng1.mi@intel.com>,
-	Dapeng Mi <dapeng1.mi@linux.intel.com>
-Subject: [kvm-unit-tests Patch v4 17/17] x86: pmu: Optimize emulated instruction validation
-Date: Fri, 19 Apr 2024 11:52:33 +0800
-Message-Id: <20240419035233.3837621-18-dapeng1.mi@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240419035233.3837621-1-dapeng1.mi@linux.intel.com>
-References: <20240419035233.3837621-1-dapeng1.mi@linux.intel.com>
+   d="scan'208";a="23063868"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by orviesa010.jf.intel.com with ESMTP; 18 Apr 2024 20:54:39 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rxfKe-0009ZJ-19;
+	Fri, 19 Apr 2024 03:54:36 +0000
+Date: Fri, 19 Apr 2024 11:53:53 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 9543f6e26634537997b6e909c20911b7bf4876de
+Message-ID: <202404191150.Ti8SYP95-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-For support CPUs supporting PERF_GLOBAL_CTRL MSR, the validation for
-emulated instruction can be improved to check against precise counts for
-instructions and branches events instead of a rough range.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: 9543f6e26634537997b6e909c20911b7bf4876de  x86/cpufeatures: Fix dependencies for GFNI, VAES, and VPCLMULQDQ
 
-Move enabling and disabling PERF_GLOBAL_CTRL MSR into kvm_fep_asm blob,
-thus instructions and branches events can be verified against precise
-counts.
+elapsed time: 736m
 
-Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
----
- x86/pmu.c | 108 ++++++++++++++++++++++++++++++++----------------------
- 1 file changed, 65 insertions(+), 43 deletions(-)
+configs tested: 90
+configs skipped: 136
 
-diff --git a/x86/pmu.c b/x86/pmu.c
-index e0da522c004b..dd83f157b35c 100644
---- a/x86/pmu.c
-+++ b/x86/pmu.c
-@@ -13,11 +13,6 @@
- 
- #define N 1000000
- 
--// These values match the number of instructions and branches in the
--// assembly block in check_emulated_instr().
--#define EXPECTED_INSTR 17
--#define EXPECTED_BRNCH 5
--
- #define IBPB_JMP_INSTRNS      7
- #define IBPB_JMP_BRANCHES     1
- #define IBPB_JMP_ASM(_wrmsr)				\
-@@ -54,6 +49,40 @@ do {								\
- 		     : "edi");					\
- } while (0)
- 
-+/* the number of instructions and branches of the kvm_fep_asm() blob */
-+#define KVM_FEP_INSTR	22
-+#define KVM_FEP_BRNCH	5
-+
-+/*
-+ * KVM_FEP is a magic prefix that forces emulation so
-+ * 'KVM_FEP "jne label\n"' just counts as a single instruction.
-+ */
-+#define kvm_fep_asm(_wrmsr)			\
-+do {						\
-+	asm volatile(				\
-+		_wrmsr "\n\t"			\
-+		"mov %%ecx, %%edi;\n\t"		\
-+		"mov $0x0, %%eax;\n\t"		\
-+		"cmp $0x0, %%eax;\n\t"		\
-+		KVM_FEP "jne 1f\n\t"		\
-+		KVM_FEP "jne 1f\n\t"		\
-+		KVM_FEP "jne 1f\n\t"		\
-+		KVM_FEP "jne 1f\n\t"		\
-+		KVM_FEP "jne 1f\n\t"		\
-+		"mov $0xa, %%eax; cpuid;\n\t"	\
-+		"mov $0xa, %%eax; cpuid;\n\t"	\
-+		"mov $0xa, %%eax; cpuid;\n\t"	\
-+		"mov $0xa, %%eax; cpuid;\n\t"	\
-+		"mov $0xa, %%eax; cpuid;\n\t"	\
-+		"1: mov %%edi, %%ecx; \n\t"	\
-+		"xor %%eax, %%eax; \n\t"	\
-+		"xor %%edx, %%edx;\n\t"		\
-+		_wrmsr "\n\t"			\
-+		:				\
-+		: "a"(eax), "d"(edx), "c"(ecx)	\
-+		: "ebx", "edi");		\
-+} while (0)
-+
- typedef struct {
- 	uint32_t ctr;
- 	uint32_t idx;
-@@ -639,6 +668,7 @@ static void check_running_counter_wrmsr(void)
- 
- static void check_emulated_instr(void)
- {
-+	u32 eax, edx, ecx;
- 	uint64_t status, instr_start, brnch_start;
- 	uint64_t gp_counter_width = (1ull << pmu.gp_counter_width) - 1;
- 	unsigned int branch_idx = pmu.is_intel ?
-@@ -646,6 +676,7 @@ static void check_emulated_instr(void)
- 	unsigned int instruction_idx = pmu.is_intel ?
- 				       INTEL_INSTRUCTIONS_IDX :
- 				       AMD_INSTRUCTIONS_IDX;
-+
- 	pmu_counter_t brnch_cnt = {
- 		.ctr = MSR_GP_COUNTERx(0),
- 		/* branch instructions */
-@@ -661,55 +692,46 @@ static void check_emulated_instr(void)
- 	if (this_cpu_has_perf_global_status())
- 		pmu_clear_global_status();
- 
--	start_event(&brnch_cnt);
--	start_event(&instr_cnt);
-+	__start_event(&brnch_cnt, 0);
-+	__start_event(&instr_cnt, 0);
- 
--	brnch_start = -EXPECTED_BRNCH;
--	instr_start = -EXPECTED_INSTR;
-+	brnch_start = -KVM_FEP_BRNCH;
-+	instr_start = -KVM_FEP_INSTR;
- 	wrmsr(MSR_GP_COUNTERx(0), brnch_start & gp_counter_width);
- 	wrmsr(MSR_GP_COUNTERx(1), instr_start & gp_counter_width);
--	// KVM_FEP is a magic prefix that forces emulation so
--	// 'KVM_FEP "jne label\n"' just counts as a single instruction.
--	asm volatile(
--		"mov $0x0, %%eax\n"
--		"cmp $0x0, %%eax\n"
--		KVM_FEP "jne label\n"
--		KVM_FEP "jne label\n"
--		KVM_FEP "jne label\n"
--		KVM_FEP "jne label\n"
--		KVM_FEP "jne label\n"
--		"mov $0xa, %%eax\n"
--		"cpuid\n"
--		"mov $0xa, %%eax\n"
--		"cpuid\n"
--		"mov $0xa, %%eax\n"
--		"cpuid\n"
--		"mov $0xa, %%eax\n"
--		"cpuid\n"
--		"mov $0xa, %%eax\n"
--		"cpuid\n"
--		"label:\n"
--		:
--		:
--		: "eax", "ebx", "ecx", "edx");
- 
--	if (this_cpu_has_perf_global_ctrl())
--		wrmsr(pmu.msr_global_ctl, 0);
-+	if (this_cpu_has_perf_global_ctrl()) {
-+		eax = BIT(0) | BIT(1);
-+		ecx = pmu.msr_global_ctl;
-+		edx = 0;
-+		kvm_fep_asm("wrmsr");
-+	} else {
-+		eax = ecx = edx = 0;
-+		kvm_fep_asm("nop");
-+	}
- 
--	stop_event(&brnch_cnt);
--	stop_event(&instr_cnt);
-+	__stop_event(&brnch_cnt);
-+	__stop_event(&instr_cnt);
- 
- 	// Check that the end count - start count is at least the expected
- 	// number of instructions and branches.
--	report(instr_cnt.count - instr_start >= EXPECTED_INSTR,
--	       "instruction count");
--	report(brnch_cnt.count - brnch_start >= EXPECTED_BRNCH,
--	       "branch count");
-+	if (this_cpu_has_perf_global_ctrl()) {
-+		report(instr_cnt.count - instr_start == KVM_FEP_INSTR,
-+		       "instruction count");
-+		report(brnch_cnt.count - brnch_start == KVM_FEP_BRNCH,
-+		       "branch count");
-+	} else {
-+		report(instr_cnt.count - instr_start >= KVM_FEP_INSTR,
-+		       "instruction count");
-+		report(brnch_cnt.count - brnch_start >= KVM_FEP_BRNCH,
-+		       "branch count");
-+	}
-+
- 	if (this_cpu_has_perf_global_status()) {
- 		// Additionally check that those counters overflowed properly.
- 		status = rdmsr(pmu.msr_global_status);
--		report(status & 1, "branch counter overflow");
--		report(status & 2, "instruction counter overflow");
-+		report(status & BIT_ULL(0), "branch counter overflow");
-+		report(status & BIT_ULL(1), "instruction counter overflow");
- 	}
- 
- 	report_prefix_pop();
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240419   gcc  
+arc                   randconfig-002-20240419   gcc  
+arm                          ixp4xx_defconfig   gcc  
+arm                   randconfig-001-20240419   gcc  
+arm                   randconfig-003-20240419   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   clang
+arm64                               defconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240419   gcc  
+csky                  randconfig-002-20240419   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240419   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240419   clang
+i386                  randconfig-002-20240419   clang
+i386                  randconfig-003-20240419   clang
+i386                  randconfig-005-20240419   clang
+i386                  randconfig-006-20240419   clang
+i386                  randconfig-012-20240419   clang
+i386                  randconfig-014-20240419   clang
+i386                  randconfig-016-20240419   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240419   gcc  
+loongarch             randconfig-002-20240419   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                       bvme6000_defconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     loongson1c_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240419   gcc  
+nios2                 randconfig-002-20240419   gcc  
+parisc                randconfig-001-20240419   gcc  
+parisc                randconfig-002-20240419   gcc  
+powerpc                          allyesconfig   clang
+powerpc                 mpc8313_rdb_defconfig   gcc  
+powerpc                     ppa8548_defconfig   gcc  
+powerpc                         ps3_defconfig   gcc  
+powerpc               randconfig-001-20240419   gcc  
+powerpc               randconfig-002-20240419   gcc  
+powerpc               randconfig-003-20240419   gcc  
+powerpc64             randconfig-001-20240419   gcc  
+powerpc64             randconfig-002-20240419   gcc  
+riscv                            allmodconfig   clang
+riscv                            allyesconfig   clang
+s390                             allyesconfig   gcc  
+s390                  randconfig-002-20240419   gcc  
+sh                               allmodconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                             espt_defconfig   gcc  
+sh                    randconfig-001-20240419   gcc  
+sh                    randconfig-002-20240419   gcc  
+sh                           se7724_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64               randconfig-001-20240419   gcc  
+sparc64               randconfig-002-20240419   gcc  
+um                               allyesconfig   gcc  
+um                    randconfig-001-20240419   gcc  
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                randconfig-001-20240419   gcc  
+xtensa                randconfig-002-20240419   gcc  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
