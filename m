@@ -1,103 +1,129 @@
-Return-Path: <linux-kernel+bounces-151961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3C118AB646
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:11:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 910368AB649
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 23:12:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27591B224A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:11:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 477E71F213C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:12:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0FC2E40C;
-	Fri, 19 Apr 2024 21:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90AF37719;
+	Fri, 19 Apr 2024 21:12:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Be69wG4e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BHsTN0Us"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9142C107B2
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 21:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240492E3F7;
+	Fri, 19 Apr 2024 21:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713561095; cv=none; b=e5vNy6clE6EhW/lkr6NBh1cU2b+yGoUQTrWe6y9ca7rJT35JcDnT/f4Ig7AS2/HHNnz7HYc8WoIwgw2dIafN3svBmj3Z9lWpOHRADICAZKfLbIl48HhbxK9rXjdG4T9fZBAhj6Ho1UOXP1By8Trz/6YHzfjCrOfdagFnNF8g6sM=
+	t=1713561150; cv=none; b=LVeCXOEGiE8G7Xc3X5YyIEKpZO7CYThPMqxybTiKEghHIU615jdl3cocBGDT4884gVeQVXHkEN31TIrQTbOx8aRNa+ZTelwnQJGDgq/ApM5CglebYpx6FDpgiYam0ZjyOUSL7rAiMSqRTH4RsopNKkWgBASusG1Xv8QaNurHsxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713561095; c=relaxed/simple;
-	bh=w8dLaSxgMuSudghS89tIqDLnH8VPQ5WVdoqYlYsDR7g=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=ZeCw0cLYAvZqDd++gyG81OYRFHKTX0PSJbh71xuqcQGUXuaO0sT+/5UGMEyxv50Xfudtb9tSvc8N4flGu7f+9mD5Z8EdM9MZ4CCpdm70bLkbf7lQBGMFfI1sal8UttRHVQ0VB6i5Xet5bZ4fqH1lBtQlWijotpVJK0LBzAEws80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Be69wG4e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D809AC072AA;
-	Fri, 19 Apr 2024 21:11:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1713561095;
-	bh=w8dLaSxgMuSudghS89tIqDLnH8VPQ5WVdoqYlYsDR7g=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Be69wG4ezgeGYP4OVW5eLAmclKIBFx6mIN91Bd7X9P65FmiY+vwfQwtX8jwtWVFBq
-	 wk60NWbmL7XNkXjTuR6i2Ezn+O40I1iXFbJuIfHZqA3HtIgt6VpUKj3Z1oqSj2aQeo
-	 KkzR3SfHpZ6ZNx9RNtxfzzxHQswatZoTiQTAwFXg=
-Date: Fri, 19 Apr 2024 14:11:34 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Miaohe Lin <linmiaohe@huawei.com>
-Cc: <muchun.song@linux.dev>, <mike.kravetz@oracle.com>, <osalvador@suse.de>,
- <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mm/hugetlb: fix DEBUG_LOCKS_WARN_ON(1) when
- dissolve_free_hugetlb_folio()
-Message-Id: <20240419141134.464ea3a1ef3d0e93c6711c93@linux-foundation.org>
-In-Reply-To: <20240419085819.1901645-1-linmiaohe@huawei.com>
-References: <20240419085819.1901645-1-linmiaohe@huawei.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713561150; c=relaxed/simple;
+	bh=bxzFISmRswtyjpJTO12vV49A879dOMn/HsvYAlNyRCw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ML3ib+tvaRJFozcjN8hP0MkqKjQ8ptthdaGzOMgG3+2XTzQgtyM8+VGNLyDUKoR8UJHLOfcf4dwy/5L6BL6TvO/IW8oDfXoNAx39NZZr+C+iTi5qzeclkfRjS4/IugHrjRLNMCxFZot0rqOgoq8JS0rTXEaTgDV9J6w48d8eocY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BHsTN0Us; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A264C072AA;
+	Fri, 19 Apr 2024 21:12:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713561149;
+	bh=bxzFISmRswtyjpJTO12vV49A879dOMn/HsvYAlNyRCw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BHsTN0UsUZDf1ugIJAbw1u2WuDnrl+Yb8K6HUfPWTWGLtyMH3XI3e0RNXX2DI6iaG
+	 ZQP8ZnD/Aijbx7DpwLHP+wRHh+y0q34YRV410CWkolQiVcZIFQl3kXlsYoOlUn6v/H
+	 5+EKLxCA50BpuNdLku6Ax/e86f44q58iXyDp8zcfOUHs2t6AcWlaY3fMMdPz47CItH
+	 7TuClbM18/VX1vON14ntR9qd8Ztf0zQe82+hMrnWStB9SHt908eug/SpdSvBJBHjYm
+	 EcHdRd2I8MozwZXWbCjD/mmVSVEoYAXiXUCeGtgQ9xFBdXCsY+fL7WFS2sF+I+atNA
+	 TRdDBf7mF27+A==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: [GIT PULL] perf tools fixes for v6.9
+Date: Fri, 19 Apr 2024 14:12:27 -0700
+Message-ID: <20240419211227.821832-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Fri, 19 Apr 2024 16:58:19 +0800 Miaohe Lin <linmiaohe@huawei.com> wrote:
+Hi Linus,
 
-> When I did memory failure tests recently, below warning occurs:
-> 
-> DEBUG_LOCKS_WARN_ON(1)
-> WARNING: CPU: 8 PID: 1011 at kernel/locking/lockdep.c:232 __lock_acquire+0xccb/0x1ca0
-> Modules linked in: mce_inject hwpoison_inject
-> CPU: 8 PID: 1011 Comm: bash Kdump: loaded Not tainted 6.9.0-rc3-next-20240410-00012-gdb69f219f4be #3
->
-> ...
->
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1773,7 +1773,7 @@ static void __update_and_free_hugetlb_folio(struct hstate *h,
->  	 * If vmemmap pages were allocated above, then we need to clear the
->  	 * hugetlb flag under the hugetlb lock.
->  	 */
-> -	if (clear_flag) {
-> +	if (folio_test_hugetlb(folio)) {
->  		spin_lock_irq(&hugetlb_lock);
->  		__folio_clear_hugetlb(folio);
->  		spin_unlock_irq(&hugetlb_lock);
+Please consider pulling the following changes in perf tools for v6.9.
 
-Please let's prepare backportable fixes against current mainline, not
-mm-unstable.  Because fixes against current -rcX and earlier will be
-upstreamed ahead of the mm-unstable and mm-stable material.
+Thanks,
+Namhyung
 
 
-I did this:
+The following changes since commit fec50db7033ea478773b159e0e2efb135270e3b7:
 
---- a/mm/hugetlb.c~mm-hugetlb-fix-debug_locks_warn_on1-when-dissolve_free_hugetlb_folio
-+++ a/mm/hugetlb.c
-@@ -1781,7 +1781,7 @@ static void __update_and_free_hugetlb_fo
- 	 * If vmemmap pages were allocated above, then we need to clear the
- 	 * hugetlb destructor under the hugetlb lock.
- 	 */
--	if (clear_dtor) {
-+	if (folio_test_hugetlb(folio)) {
- 		spin_lock_irq(&hugetlb_lock);
- 		__clear_hugetlb_destructor(h, folio);
- 		spin_unlock_irq(&hugetlb_lock);
-_
+  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git tags/perf-tools-fixes-for-v6.9-2024-04-19
+
+for you to fetch changes up to 1cebd7f74976455ccd89c1dfbcf00bca52d0a512:
+
+  tools/include: Sync arm64 asm/cputype.h with the kernel sources (2024-04-11 10:38:29 -0700)
+
+----------------------------------------------------------------
+perf tools fixes for v6.9
+
+A random set of small bug fixes:
+
+ * Fix perf annotate TUI when used with data type profiling
+ * Work around BPF verifier about sighand lock checking
+
+And a set of kernel header synchronization.
+
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+
+----------------------------------------------------------------
+Namhyung Kim (11):
+      perf annotate: Make sure to call symbol__annotate2() in TUI
+      perf lock contention: Add a missing NULL check
+      tools/include: Sync uapi/drm/i915_drm.h with the kernel sources
+      tools/include: Sync uapi/linux/fs.h with the kernel sources
+      tools/include: Sync uapi/linux/kvm.h and asm/kvm.h with the kernel sources
+      tools/include: Sync uapi/sound/asound.h with the kernel sources
+      tools/include: Sync x86 CPU feature headers with the kernel sources
+      tools/include: Sync x86 asm/irq_vectors.h with the kernel sources
+      tools/include: Sync x86 asm/msr-index.h with the kernel sources
+      tools/include: Sync asm-generic/bitops/fls.h with the kernel sources
+      tools/include: Sync arm64 asm/cputype.h with the kernel sources
+
+ tools/arch/arm64/include/asm/cputype.h         |   4 +
+ tools/arch/arm64/include/uapi/asm/kvm.h        |  15 +-
+ tools/arch/powerpc/include/uapi/asm/kvm.h      |  45 +-
+ tools/arch/s390/include/uapi/asm/kvm.h         | 315 ++++++++++-
+ tools/arch/x86/include/asm/cpufeatures.h       |  17 +-
+ tools/arch/x86/include/asm/disabled-features.h |  11 +-
+ tools/arch/x86/include/asm/irq_vectors.h       |   2 -
+ tools/arch/x86/include/asm/msr-index.h         |  74 ++-
+ tools/arch/x86/include/asm/required-features.h |   3 +-
+ tools/arch/x86/include/uapi/asm/kvm.h          | 308 ++++++++++-
+ tools/include/asm-generic/bitops/__fls.h       |   8 +-
+ tools/include/asm-generic/bitops/fls.h         |   8 +-
+ tools/include/uapi/drm/i915_drm.h              |  16 +
+ tools/include/uapi/linux/fs.h                  |  30 +-
+ tools/include/uapi/linux/kvm.h                 | 689 +------------------------
+ tools/include/uapi/sound/asound.h              |   4 +-
+ tools/perf/ui/browsers/annotate.c              |   2 +-
+ tools/perf/util/annotate.c                     |   3 +
+ tools/perf/util/bpf_skel/lock_contention.bpf.c |   5 +-
+ 19 files changed, 817 insertions(+), 742 deletions(-)
 
