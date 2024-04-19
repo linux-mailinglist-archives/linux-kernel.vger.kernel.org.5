@@ -1,364 +1,220 @@
-Return-Path: <linux-kernel+bounces-151091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC9518AA8F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:16:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CEB78AA8F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:16:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF0A81C2140D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:16:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C20AFB21CD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0703F8F0;
-	Fri, 19 Apr 2024 07:16:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72DAC3BBFE;
+	Fri, 19 Apr 2024 07:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vi5PkCly"
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com [209.85.217.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bq7OSu+Y"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A97D2E405;
-	Fri, 19 Apr 2024 07:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB67B3EA8C
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:16:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713510991; cv=none; b=DLSUTy2ecI1l9J7B0BlwUpNElF+Fp4qsfJ/DZ++kZ9y2JPggVehGnPvL/vd3vFDLTcDFqn/uRnjHzFd6z+d3LVK5OcKLhejvOG4kpeGR4ol9Mu9IIpWwTGOIVMUPdCPARdZ94WQNAThd/ssJ8GOQ68MZcS7cr7FIB07KnYMAN5Y=
+	t=1713511009; cv=none; b=qeg7/dfkISro0SGS+ZiStAeuZ33OXLVcenjPjMzxoC/FFIrUAh1FNTxL5OI0LuGFt3bqFKE0cMWKyuu2KHDQPkqnerVCIEh930iuEZE33pkER5/Gb3sl2wQxlRlShvTWiYgSYF2mmQw92QOETooNw6woWw2n9tXVL0QEYpPDVlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713510991; c=relaxed/simple;
-	bh=Y85GufN267M5q3vQNMugb4n4VfHedf2h/40lVzl2ngs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Jz9e0c1BuS21r+hpyV0l/tIjFrCs9i99pQ/BNtmsmWY2e6ODfVq04rvHSnGpg4cJni2VWwLnAIxplAhxTbLNPD3Dy70fmAPLjDkUnBQdc6iqJ6lXQFZzt7SCdsHt2yaLeLfUSK8SfJn4XUPEBP2g3j6z4bNrfvKUIM05+WKjEGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vi5PkCly; arc=none smtp.client-ip=209.85.217.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f42.google.com with SMTP id ada2fe7eead31-47a404c6decso550658137.3;
-        Fri, 19 Apr 2024 00:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713510988; x=1714115788; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HD6JFxJi0lpTHFJezgcfrmkM6oZDtRzUteVmU4chqDg=;
-        b=Vi5PkClyfQHAqvc4oTQs3BEUE/SyTnu7rlqlPX98ztLbmQt6qMjzSyLVRQBqMoMzP2
-         +GxmFmnxWqxRVubZTW3VQpy5sesOkDt5lnONFfBWmWyludonQc+oGHd59B84T5jTD2n2
-         pDazZhmb8+bPgy33rjKzkhm3WkrtnKxsFru4B7ZwVeeMUj4seSj9Kn0UyE+0FwXn0MtZ
-         WXeDc0Iz3uzrar9JyxJjZtw8HpLp0jhAKqu8RrSM7Yc4JDtTstf7NIov1V4Y9oLtKmui
-         zosmh7cnfaQ1nep8hO7QQ6O7zJoywxfTL32/rsaQic8YV1I5FlvzxXPpciU2JmxLQDge
-         FfzQ==
+	s=arc-20240116; t=1713511009; c=relaxed/simple;
+	bh=xerZNlBWOzwvaD0cTeYN+wpQI1ET37j4sqVZ9UBtwfo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CA/kIHevKWoeaZRH53LPUILCH38x3jxWkDZc7pqUbT/qz+l8t8YPkmVIQhvIxnpminlvgtQmW9MrrMCw7S8rIz3qCV3pfUJT6HZzo9MRI02rcma0jkKPDNarTGAqmGy4wtxIezAGVpxcpuFJ+pI84jWkPNg3X+5LF+U7NL9IbpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bq7OSu+Y; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713511007;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=cNdMyKJtZkJVADCLrbvfI61n/KWQQTgh0VRSN/5FL9U=;
+	b=bq7OSu+Y9tk3UM7Gb/n0jzjkAuBO3Mg2TOxyoJE2VKnXfmJ6h5UtsvW+eHYdr0xF3uxjAm
+	tfe0wYe++HzL8K6WvWAek1Sk3qUPHzWhutfFC9uL53y788M133oRafKoNOg82balnALZap
+	UN0RCp/GZ4i83sG8asGDOuAsOyb7xiI=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-540-GrMm-Ao2OHesbAY1IpPP7Q-1; Fri, 19 Apr 2024 03:16:45 -0400
+X-MC-Unique: GrMm-Ao2OHesbAY1IpPP7Q-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d884b718f1so15397531fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 00:16:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713510988; x=1714115788;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HD6JFxJi0lpTHFJezgcfrmkM6oZDtRzUteVmU4chqDg=;
-        b=N0lJOWgwAvcWsjrHZQ/9IlJEO6z8U5Ylb2sJy4WrRLgN5bf+dI+WZCmpQV8TSeTkKd
-         t8SmBrNp5MF/DW88Ok+33nSGD/ukCR5/Sf0X2lFz61BGa3RQZlXgpnmQ5VEPZe5oxWiP
-         dp/Q9zIHBaapFk4P9yKtNk6RWh0SSTY2pUCRVAvnJiEV0XvmCDmNfvnxyGrCDOdy0Ic2
-         zu2Xb7wLgMSBhTPftkOFsFMKaoPGr0N5ya17oag+2wn6CJQt2nXvPXjaBBcy6zqebrVT
-         ufUA8L6dXxwpvqKWXd7ZrKgaHJLxcdQz2eznBceE9qVluMHwBVd9jZMC7LRBFP5i9xMO
-         ZQMg==
-X-Forwarded-Encrypted: i=1; AJvYcCVUCw/4mphq/djWLEcihvX/4U2haEbYk2/7uPUxTnbq8Jyqqa8eSf6zMxnoIu1mI2iw29/jGTHjCrGeN/3mo3bBGpT8TJmOX7pXhoDZ2I/M6Bk3tQ5FkEkBGuy1/pqcVETXauOAd4V2NFOoVMEQTosLRH9VSfsenwmqe7rBhh64Ic3VzRkHLuEzWlTL
-X-Gm-Message-State: AOJu0YxGm9iO1ghxvfzzYiNuJEGj356EM0p0oVzK7y3HN369fmyHgrX3
-	HVbd7MDvfXtD0XbQtQOqikjUH+XLTFPblDLNgbT48s+jpfXKGXz0ZRljwrLeD/V30G6rwifHzlA
-	LMfyqG6uzRpIHl4gEjRbQxt7x5l8=
-X-Google-Smtp-Source: AGHT+IGCndvmseb3p3MnXDo+/i1gnW8qSw8y/flWDyPAF3EV3E87oR2svUTx8sF9W6z+xTG79i01GN3f+u1zvxe0yGc=
-X-Received: by 2002:a05:6122:1da0:b0:4d4:ef9:71b0 with SMTP id
- gg32-20020a0561221da000b004d40ef971b0mr1031044vkb.7.1713510988185; Fri, 19
- Apr 2024 00:16:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713511004; x=1714115804;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cNdMyKJtZkJVADCLrbvfI61n/KWQQTgh0VRSN/5FL9U=;
+        b=gI32ZlTtIEBe26S6tgfbmXXWPoQEU37vVIhBDKxPUHahrUeJdq0tKh3a83iSrR4lz2
+         wxA5ej8S02DODeX2mxZbBGy4QBWtPwow1FH1XbfRd05GNniiW7VaV4LxDikJay4IuxRR
+         nk5ZBEfCsex69Nazd1ulOBcRmnUu5HmPPF1V/lWrLya5c+qv6QuEV+RDgGmLJTRG8jLa
+         qCetplEoiLqmOfXYwbGU7NP9OoSnDt4Xv13uTgiLpp6EXuALJKnjRSnXhTzo7V7fqcx/
+         jrM9GmW1Q1FZe6QhTWOi/gla3RTA1dvIbIPh//R0wc966GllXVUlog1ap/K2wgGmQEbY
+         tGOw==
+X-Forwarded-Encrypted: i=1; AJvYcCXLaAtaFWs3U1Qm+gkfxR6olqbSLzsg0BIz7Ba0peRcLAMjxLxTWlweADsljQxtsSo8eBjAvN62BhUMNjAnvYazJAZcOXuLNOekUsDV
+X-Gm-Message-State: AOJu0YyDIT9bYS5A/IqZp1dh2nlafwW+JfTGKPwAtM6boGdBwoCn7nD9
+	CQAJQ3E/sZRzN4JOIkaa+kVMSxFjSIi2Zo/Rk+AQ+aJvyJhMRO92a29/056abSA5OxBLfaNXMp9
+	NMQhPzXPKTsLCd9JGea5gGmVhN/C1IeAA45bWvDjyxLTUNAjZbh1v8zrjPBJbRg==
+X-Received: by 2002:a05:651c:1031:b0:2d8:6104:f95a with SMTP id w17-20020a05651c103100b002d86104f95amr677610ljm.23.1713511004035;
+        Fri, 19 Apr 2024 00:16:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEzp6BC6iIIJU1Fu2PqXxEWL3FYmVn1VEc13lIuo690UE73CWmvjK75ugnF+s1hz50brkAD5g==
+X-Received: by 2002:a05:651c:1031:b0:2d8:6104:f95a with SMTP id w17-20020a05651c103100b002d86104f95amr677586ljm.23.1713511003506;
+        Fri, 19 Apr 2024 00:16:43 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c716:f300:c9f0:f643:6aa2:16? (p200300cbc716f300c9f0f6436aa20016.dip0.t-ipconnect.de. [2003:cb:c716:f300:c9f0:f643:6aa2:16])
+        by smtp.gmail.com with ESMTPSA id y18-20020a056000109200b00343300a4eb8sm2732998wrw.49.2024.04.19.00.16.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 00:16:43 -0700 (PDT)
+Message-ID: <10af93f8-83f2-48ce-9bc3-80fe4c60082c@redhat.com>
+Date: Fri, 19 Apr 2024 09:16:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240403203503.634465-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <OSAPR01MB1587ED05696A111612424CF6863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
- <CA+V-a8s94e9PLuLipQo+rGZ8g7UHxZJJAZZgvL3PQ4b8PKR2Xw@mail.gmail.com>
- <OSAPR01MB15878C2C2EE7905D33182CFF863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
- <CA+V-a8vjB-A+BRSpxk-dsu6XMvpG1y2f8g+LYcWV+gh2cx+6+g@mail.gmail.com> <CAMuHMdV37mtC9FpY8wAFdG-NQWdvZ=qq9egVVukGhc=5ZrOTtg@mail.gmail.com>
-In-Reply-To: <CAMuHMdV37mtC9FpY8wAFdG-NQWdvZ=qq9egVVukGhc=5ZrOTtg@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Fri, 19 Apr 2024 08:16:01 +0100
-Message-ID: <CA+V-a8vA_7hJWBO3Lr4akZAoVS1V1qB8xZ1n8Sgs1EzXQpgReg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five SoC
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Biju Das <biju.das.jz@bp.renesas.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Thomas Gleixner <tglx@linutronix.de>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, 
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
-	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
+To: Alex Elder <elder@linaro.org>, corbet@lwn.net
+Cc: gregkh@linuxfoundation.org, workflows@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240414170850.148122-1-elder@linaro.org>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240414170850.148122-1-elder@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Geert,
+On 14.04.24 19:08, Alex Elder wrote:
+> Several times recently Greg KH has admonished that variants of WARN()
+> should not be used, because when the panic_on_warn kernel option is set,
+> their use can lead to a panic. His reasoning was that the majority of
+> Linux instances (including Android and cloud systems) run with this option
+> enabled. And therefore a condition leading to a warning will frequently
+> cause an undesirable panic.
+> 
+> The "coding-style.rst" document says not to worry about this kernel
+> option.  Update it to provide a more nuanced explanation.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+>   Documentation/process/coding-style.rst | 21 +++++++++++----------
+>   1 file changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+> index 9c7cf73473943..bce43b01721cb 100644
+> --- a/Documentation/process/coding-style.rst
+> +++ b/Documentation/process/coding-style.rst
+> @@ -1235,17 +1235,18 @@ example. Again: WARN*() must not be used for a condition that is expected
+>   to trigger easily, for example, by user space actions. pr_warn_once() is a
+>   possible alternative, if you need to notify the user of a problem.
+>   
+> -Do not worry about panic_on_warn users
+> -**************************************
+> +The panic_on_warn kernel option
+> +********************************
+>   
+> -A few more words about panic_on_warn: Remember that ``panic_on_warn`` is an
+> -available kernel option, and that many users set this option. This is why
+> -there is a "Do not WARN lightly" writeup, above. However, the existence of
+> -panic_on_warn users is not a valid reason to avoid the judicious use
+> -WARN*(). That is because, whoever enables panic_on_warn has explicitly
+> -asked the kernel to crash if a WARN*() fires, and such users must be
+> -prepared to deal with the consequences of a system that is somewhat more
+> -likely to crash.
+> +Note that ``panic_on_warn`` is an available kernel option. If it is enabled,
+> +a WARN*() call whose condition holds leads to a kernel panic.  Many users
+> +(including Android and many cloud providers) set this option, and this is
+> +why there is a "Do not WARN lightly" writeup, above.
+> +
+> +The existence of this option is not a valid reason to avoid the judicious
+> +use of warnings. There are other options: ``dev_warn*()`` and ``pr_warn*()``
+> +issue warnings but do **not** cause the kernel to crash. Use these if you
+> +want to prevent such panics.
+>   
+>   Use BUILD_BUG_ON() for compile-time assertions
+>   **********************************************
 
-On Thu, Apr 18, 2024 at 4:13=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Thu, Apr 4, 2024 at 3:35=E2=80=AFPM Lad, Prabhakar
-> <prabhakar.csengg@gmail.com> wrote:
-> > On Thu, Apr 4, 2024 at 2:31=E2=80=AFPM Biju Das <biju.das.jz@bp.renesas=
-com> wrote:
-> > > > -----Original Message-----
-> > > > From: Lad, Prabhakar <prabhakar.csengg@gmail.com>
-> > > > On Thu, Apr 4, 2024 at 8:44=E2=80=AFAM Biju Das <biju.das.jz@bp.ren=
-esas.com> wrote:
-> > > > > > -----Original Message-----
-> > > > > > From: Prabhakar <prabhakar.csengg@gmail.com>
-> > > > > > The IX45 block has additional mask registers (NMSK/IMSK/TMSK) a=
-s
-> > > > > > compared to the RZ/G2L (family) SoC.
-> > > > > >
-> > > > > > Introduce masking/unmasking support for IRQ and TINT interrupts=
- in
-> > > > > > IRQC controller driver. Two new registers, IMSK and TMSK, are
-> > > > > > defined to handle masking on RZ/Five SoC. The implementation
-> > > > > > utilizes a new data structure, `struct rzg2l_irqc_data`, to det=
-ermine mask support for a
-> > > > specific controller instance.
-> > > > > >
-> > > > > > Signed-off-by: Lad Prabhakar
-> > > > > > <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > > > ---
-> > > > > > v1->v2
-> > > > > > - Added IRQCHIP_MATCH() for RZ/Five
-> > > > > > - Retaining a copy of OF data in priv
-> > > > > > - Rebased the changes
-> > > > > > ---
-> > > > > >  drivers/irqchip/irq-renesas-rzg2l.c | 137
-> > > > > > +++++++++++++++++++++++++++-
-> > > > > >  1 file changed, 132 insertions(+), 5 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/irqchip/irq-renesas-rzg2l.c
-> > > > > > b/drivers/irqchip/irq-renesas-rzg2l.c
-> > > > > > index f6484bf15e0b..6fa8d65605dc 100644
-> > > > > > --- a/drivers/irqchip/irq-renesas-rzg2l.c
-> > > > > > +++ b/drivers/irqchip/irq-renesas-rzg2l.c
-> > > > > > @@ -37,6 +37,8 @@
-> > > > > >  #define TSSEL_SHIFT(n)                       (8 * (n))
-> > > > > >  #define TSSEL_MASK                   GENMASK(7, 0)
-> > > > > >  #define IRQ_MASK                     0x3
-> > > > > > +#define IMSK                         0x10010
-> > > > > > +#define TMSK                         0x10020
-> > > > > >
-> > > > > >  #define TSSR_OFFSET(n)                       ((n) % 4)
-> > > > > >  #define TSSR_INDEX(n)                        ((n) / 4)
-> > > > > > @@ -66,15 +68,25 @@ struct rzg2l_irqc_reg_cache {
-> > > > > >       u32     titsr[2];
-> > > > > >  };
-> > > > > >
-> > > > > > +/**
-> > > > > > + * struct rzg2l_irqc_of_data - OF data structure
-> > > > > > + * @mask_supported: Indicates if mask registers are available =
- */
-> > > > > > +struct rzg2l_irqc_of_data {
-> > > > > > +     bool    mask_supported;
-> > > > > > +};
-> > > > > > +
-> > > > > >  /**
-> > > > > >   * struct rzg2l_irqc_priv - IRQ controller private data struct=
-ure
-> > > > > >   * @base:    Controller's base address
-> > > > > > + * @data:    OF data pointer
-> > > > > >   * @fwspec:  IRQ firmware specific data
-> > > > > >   * @lock:    Lock to serialize access to hardware registers
-> > > > > >   * @cache:   Registers cache for suspend/resume
-> > > > > >   */
-> > > > > >  static struct rzg2l_irqc_priv {
-> > > > > >       void __iomem                    *base;
-> > > > > > +     const struct rzg2l_irqc_of_data *data;
-> > > > > >       struct irq_fwspec               fwspec[IRQC_NUM_IRQ];
-> > > > > >       raw_spinlock_t                  lock;
-> > > > > >       struct rzg2l_irqc_reg_cache     cache;
-> > > > > > @@ -138,18 +150,102 @@ static void rzg2l_irqc_eoi(struct irq_da=
-ta *d)
-> > > > > >       irq_chip_eoi_parent(d);
-> > > > > >  }
-> > > > > >
-> > > > > > +static void rzg2l_irqc_mask_irq_interrupt(struct rzg2l_irqc_pr=
-iv *priv,
-> > > > > > +                                       unsigned int hwirq) {
-> > > > > > +     u32 imsk =3D readl_relaxed(priv->base + IMSK);
-> > > > > > +     u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
-> > > > > > +
-> > > > > > +     writel_relaxed(imsk | bit, priv->base + IMSK); }
-> > > > > > +
-> > > > > > +static void rzg2l_irqc_unmask_irq_interrupt(struct rzg2l_irqc_=
-priv *priv,
-> > > > > > +                                         unsigned int hwirq) {
-> > > > > > +     u32 imsk =3D readl_relaxed(priv->base + IMSK);
-> > > > > > +     u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
-> > > > > > +
-> > > > > > +     writel_relaxed(imsk & ~bit, priv->base + IMSK); }
-> > > > > > +
-> > > > > > +static void rzg2l_irqc_mask_tint_interrupt(struct rzg2l_irqc_p=
-riv *priv,
-> > > > > > +                                        unsigned int hwirq) {
-> > > > > > +     u32 tmsk =3D readl_relaxed(priv->base + TMSK);
-> > > > > > +     u32 bit =3D BIT(hwirq - IRQC_TINT_START);
-> > > > > > +
-> > > > > > +     writel_relaxed(tmsk | bit, priv->base + TMSK); }
-> > > > > > +
-> > > > > > +static void rzg2l_irqc_unmask_tint_interrupt(struct rzg2l_irqc=
-_priv *priv,
-> > > > > > +                                          unsigned int hwirq) =
-{
-> > > > > > +     u32 tmsk =3D readl_relaxed(priv->base + TMSK);
-> > > > > > +     u32 bit =3D BIT(hwirq - IRQC_TINT_START);
-> > > > > > +
-> > > > > > +     writel_relaxed(tmsk & ~bit, priv->base + TMSK); }
-> > > > > > +
-> > > > > > +/* Must be called while priv->lock is held */ static void
-> > > > > > +rzg2l_irqc_mask_once(struct rzg2l_irqc_priv *priv, unsigned in=
-t
-> > > > > > +hwirq) {
-> > > > > > +     if (!priv->data->mask_supported)
-> > > > > > +             return;
-> > > > > > +
-> > > > > > +     if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUN=
-T)
-> > > > > > +             rzg2l_irqc_mask_irq_interrupt(priv, hwirq);
-> > > > > > +     else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_I=
-RQ)
-> > > > > > +             rzg2l_irqc_mask_tint_interrupt(priv, hwirq); }
-> > > > > > +
-> > > > > > +static void rzg2l_irqc_mask(struct irq_data *d) {
-> > > > > > +     struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
-> > > > > > +
-> > > > > > +     raw_spin_lock(&priv->lock);
-> > > > > > +     rzg2l_irqc_mask_once(priv, irqd_to_hwirq(d));
-> > > > > > +     raw_spin_unlock(&priv->lock);
-> > > > > > +     irq_chip_mask_parent(d);
-> > > > > > +}
-> > > > > > +
-> > > > > > +/* Must be called while priv->lock is held */ static void
-> > > > > > +rzg2l_irqc_unmask_once(struct rzg2l_irqc_priv *priv, unsigned =
-int
-> > > > > > +hwirq) {
-> > > > > > +     if (!priv->data->mask_supported)
-> > > > > > +             return;
-> > > > > > +
-> > > > > > +     if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUN=
-T)
-> > > > > > +             rzg2l_irqc_unmask_irq_interrupt(priv, hwirq);
-> > > > > > +     else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_I=
-RQ)
-> > > > > > +             rzg2l_irqc_unmask_tint_interrupt(priv, hwirq); }
-> > > > > > +
-> > > > > > +static void rzg2l_irqc_unmask(struct irq_data *d) {
-> > > > > > +     struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
-> > > > > > +
-> > > > > > +     raw_spin_lock(&priv->lock);
-> > > > > > +     rzg2l_irqc_unmask_once(priv, irqd_to_hwirq(d));
-> > > > > > +     raw_spin_unlock(&priv->lock);
-> > > > > > +     irq_chip_unmask_parent(d);
-> > > > > > +}
-> > > > > > +
-> > > > > >  static void rzg2l_tint_irq_endisable(struct irq_data *d, bool
-> > > > > > enable)  {
-> > > > > > +     struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
-> > > > > >       unsigned int hw_irq =3D irqd_to_hwirq(d);
-> > > > > >
-> > > > > >       if (hw_irq >=3D IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ)=
- {
-> > > > > > -             struct rzg2l_irqc_priv *priv =3D irq_data_to_priv=
-(d);
-> > > > > >               u32 offset =3D hw_irq - IRQC_TINT_START;
-> > > > > >               u32 tssr_offset =3D TSSR_OFFSET(offset);
-> > > > > >               u8 tssr_index =3D TSSR_INDEX(offset);
-> > > > > >               u32 reg;
-> > > > > >
-> > > > > >               raw_spin_lock(&priv->lock);
-> > > > > > +             if (enable)
-> > > > > > +                     rzg2l_irqc_unmask_once(priv, hw_irq);
-> > > > > > +             else
-> > > > > > +                     rzg2l_irqc_mask_once(priv, hw_irq);
-> > > > > >               reg =3D readl_relaxed(priv->base + TSSR(tssr_inde=
-x));
-> > > > > >               if (enable)
-> > > > > >                       reg |=3D TIEN << TSSEL_SHIFT(tssr_offset)=
-; @@
-> > > > > > -157,6 +253,13 @@ static void rzg2l_tint_irq_endisable(struct i=
-rq_data *d, bool enable)
-> > > > > >                       reg &=3D ~(TIEN << TSSEL_SHIFT(tssr_offse=
-t));
-> > > > > >               writel_relaxed(reg, priv->base + TSSR(tssr_index)=
-);
-> > > > > >               raw_spin_unlock(&priv->lock);
-> > > > > > +     } else {
-> > > > > > +             raw_spin_lock(&priv->lock);
-> > > > > > +             if (enable)
-> > > > > > +                     rzg2l_irqc_unmask_once(priv, hw_irq);
-> > > > > > +             else
-> > > > > > +                     rzg2l_irqc_mask_once(priv, hw_irq);
-> > > > > > +             raw_spin_unlock(&priv->lock);
-> > > > > >       }
-> > > > > >  }
-> > > > > >
-> > > > > > @@ -324,8 +427,8 @@ static struct syscore_ops rzg2l_irqc_syscor=
-e_ops
-> > > > > > =3D {  static const struct irq_chip irqc_chip =3D {
-> > > > > >       .name                   =3D "rzg2l-irqc",
-> > > > > >       .irq_eoi                =3D rzg2l_irqc_eoi,
-> > > > > > -     .irq_mask               =3D irq_chip_mask_parent,
-> > > > > > -     .irq_unmask             =3D irq_chip_unmask_parent,
-> > > > > > +     .irq_mask               =3D rzg2l_irqc_mask,
-> > > > > > +     .irq_unmask             =3D rzg2l_irqc_unmask,
-> > > > >
-> > > > > I feel this will be clean, if we have
-> > > > >
-> > > > > static const struct irq_chip rzg2l_irqc_chip =3D {
-> > > > >         .name                   =3D "rzg2l-irqc",
-> > > > >         ...
-> > > > >         .irq_mask               =3D irq_chip_mask_parent,
-> > > > >         .irq_unmask             =3D irq_chip_unmask_parent,
-> > > > >         ....
-> > > > > };
-> > > > >
-> > > > > static const struct irq_chip rzfive_irqc_chip =3D {
-> > > > >         .name                   =3D "rzfive-irqc",
-> > > > >         ...
-> > > > >         .irq_mask               =3D rzfive_irqc_mask,
-> > > > >         .irq_unmask             =3D rzfive_irqc_unmask,
-> > > > >         ....
-> > > > > };
-> > > > >
-> > > > > And passing this in rzg2l_irqc_init() and rzfive_irqc_init(), see
-> > > > > below
-> > > > >
-> > > > > return rzg2l_irqc_init_helper(node, parent, & rzg2l_irqc_chip); r=
-eturn
-> > > > > rzg2l_irqc_init_helper(node, parent, & rzfive_irqc_chip);
-> > > > >
-> > > > If we do the above we are stuck with "struct irq_chip" as data, for=
- further upcoming SoCs (for
-> > > > example RZ/V2H) which have more features we need to pass custom dat=
-a to handle these features.
-> > >
-> > > That time device data can be extended like below
-> > >
-> > > struct rz_g2l_irq_chip {
-> > >         struct irq_chip;
-> > >         void *data; /* custom data */
-> > > }
-> > >
-> > Ok, but i'll wait for Geert to come back on this as Geert suggested to
-> > me to do it this way.
->
-> I agree with Biju.
->
-> Having separate irq_chips lets us avoid taking the spinlock on RZ/G2L.
->
-Agreed, I will add separate irq_chips.
+Did you even read the history about that? Likely not, otherwise I wouldn't
+have to learn about this patch on lwn.net.
 
+I suggest reading:
+
+commit 1cfd9d7e43d5a1cf739d1420b10b1e65feb02f88
+Author: David Hildenbrand <david@redhat.com>
+Date:   Fri Sep 23 13:34:24 2022 +0200
+
+     coding-style.rst: document BUG() and WARN() rules ("do not crash the kernel")
+
+
+which includes links to relevant discussions between me and Linus. Most
+relevant to the discussion is [1].
+
+All that's written in the document right now (use WARN_ON_ONCE() *lightly*) is precisely
+what I still think we should do. That's the case *1.5 years* after I documented that.
+
+Clear NACK from my side: "If you set 'panic_on_warn' you get to keep both
+pieces when something breaks." [1]
+
+[1] https://lore.kernel.org/all/CAHk-=wgF7K2gSSpy=m_=K3Nov4zaceUX9puQf1TjkTJLA2XC_g@mail.gmail.com/
+
+
+-- 
 Cheers,
-Prabhakar
+
+David / dhildenb
+
 
