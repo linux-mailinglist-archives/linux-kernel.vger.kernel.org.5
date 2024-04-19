@@ -1,337 +1,176 @@
-Return-Path: <linux-kernel+bounces-151224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C23028AAB5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C0368AAB5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:21:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F8B72865CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:20:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8069286F99
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A030278B49;
-	Fri, 19 Apr 2024 09:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C64787CF17;
+	Fri, 19 Apr 2024 09:20:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="m9OekeZS"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GgFNtVIn"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B7BD762F7;
-	Fri, 19 Apr 2024 09:20:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1309762E5
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:20:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713518413; cv=none; b=GcGmofzDnRaAGiW9cDwCAt4XicV4B2drrWUV+AzuTNAkAkOi/XeGuz91v/V6vbHUIeG1By8T9KQY40ruXQ8c6awXbKSoWXi0OozpgL3QdZc9pDHTDbW9VwNUzs5/VmYY7/eVikKXsfvPmx0KvX+NzJokVC/mtefcUK9PkavkiEI=
+	t=1713518433; cv=none; b=kCej9xLJQ8E3cRMrtyE1uZkHRSU40DFCk7y5K66rGV/ehAH08BHpscdxitUjHntpl7llrF2uWwJ7ylPA1L17okmNRu9lCXcl2JcsQhwNTfHqAQZtr2+muPbEu9zHyTJG/4mP9Sc6dpNgEajNck1LS2Pa6Ke+yVuptJcPt3PI6s0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713518413; c=relaxed/simple;
-	bh=QtNgxoc1T9rXhS4WykEdSd1FP7MyZIp+3XhEK2Z+L2I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=FJfw8Magff+j/gGZLbkeo9WRFzcl7H5UfuxLVmCrw68sn3BBcZ6SY7uG6cLADLeu3vuJ3A26x7f3J5aO+lINH7CYGa4SdXpT8tW8mhatktXMxA98nw7Vk32xCdYmlv0DuVizeaYw8QWEhJM9RbLvQ+rrz3KWaPN7oDtjmqrHbmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=m9OekeZS; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43J9K3su059001;
-	Fri, 19 Apr 2024 04:20:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713518403;
-	bh=QtNgxoc1T9rXhS4WykEdSd1FP7MyZIp+3XhEK2Z+L2I=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=m9OekeZSkke1/EcB/WEreIBL2geXmliaho8Ik96G74G3mRUog77UUFM/0+anwuzOG
-	 FiMYhh9FJGNND4RImPtneTYk3HAyKUehQ9EWbmfDKRRIFxsfSlTbdJkjrc4r4kdyT9
-	 XNRbHdEZ1NJJVWg3MXLaCRmF18xtSHfU8GEAAtcA=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43J9K3C6048904
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 19 Apr 2024 04:20:03 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 19
- Apr 2024 04:20:02 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 19 Apr 2024 04:20:02 -0500
-Received: from [10.249.133.115] ([10.249.133.115])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43J9JvY0009878;
-	Fri, 19 Apr 2024 04:19:58 -0500
-Message-ID: <e9e3ac5d-a048-4058-a5a1-205ded24cb8d@ti.com>
-Date: Fri, 19 Apr 2024 14:49:56 +0530
+	s=arc-20240116; t=1713518433; c=relaxed/simple;
+	bh=f/XXKW3CQGCLxHJFsZ56dca+Iom4O86+CCs87u021U4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=llbZZu78E6NuVo2sIK6St3lEfdJ3ZPxBcvxsY8P8GBBfu1Y/JAHrWwTmC0dTDn4NjzEzvYMDRVEyL3OxIczGmVVgePUNGZQpt05jEIIJCO/QV2a3ZHGw8tM56AUrEwDUu9uh/6zRL8ZxJiABm+lol3xaV1+VXsIR888n0KTfttQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GgFNtVIn; arc=none smtp.client-ip=209.85.167.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c70b652154so1132263b6e.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 02:20:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713518431; x=1714123231; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tZb5Wu31Ln+HxhQBqmF3digZI4BhULWU+f2EciYJo+E=;
+        b=GgFNtVIn2BnK2QFZEiNEg0LYSJze+fvbfDjHxDnFD8yjNChiunXyJpZyubZaSbLUkd
+         QtpaDLKO90RxtDuTs682fg0AqgXi07pEuAa9GrYtz2F0OZLLUEgyC96puc2EStzCJJoc
+         48tchDj5M6br9uSXlKAUOF+aSPCO0do0ohJxDpNAWCGXT+iXcaII4+AoLZqOvKtWbwea
+         4OWYWs6UbkQ82b464WINKNbshp+Hm+kSL/mZcvbEDZNb1BaY7NdW5bk8sFsVVu/PXHq6
+         UR8bY0BEqqzqs4IZ8rN5Mxnz/0ppaSQVqbJbxhk/86MLdTmqCwrU2LKuiKCKKpnktVaZ
+         jfTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713518431; x=1714123231;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tZb5Wu31Ln+HxhQBqmF3digZI4BhULWU+f2EciYJo+E=;
+        b=AAzlEUt2nTd56/yVCYNnqGKhg7spJ9zXOZuo1Uth14/imxDIh/DrLNo5y75xijnfBa
+         rhN1PttbR3d4NteclF8jgXwFgQuoawFkDN80DTNFwBANNrmqO8EBcixCJfJhpt2vtKnI
+         HzjzkGBLwAg3xSzImp1N2ReywZDHuydJY2C4+yFLSSLbDeOw2S//SKQa368oMfTgJfxZ
+         lWI+1CkASj4KBS/naAPYn2Am0E7cp/HKXGayB2jZ3ouAC21S8mOR/i5s5BiNX7gTk/M5
+         qxymHdJ7reDkfoLwtgslWUpY/Y7M78n41AyjRmbv1BhPLR9juNK8HFqBjZFnZhFCYs/U
+         br0A==
+X-Forwarded-Encrypted: i=1; AJvYcCV1OWNXWcOWPkEDZNCjLW/zzx4QOBgKBEsTZlEwllo5AFON2cidbZRuLWqW0mf8d8RojdLn5iKNIP7Z0QxYWJD7NCKZZWdfzwotAlyz
+X-Gm-Message-State: AOJu0Yzq/OwER0ji8GjeWLgrCNiQf4krEsf1UtOG1wYso6HmWw2ZOD9/
+	tVwPAtBMopm40ZQjFZkRVUyEa6YZ2e50FTZN2zgfxGx+QocdGC3NZKRx5qLBDoFS3KLA6M5Zkry
+	SuTi4ES/uujuDwyXXNTCDkch8vqs=
+X-Google-Smtp-Source: AGHT+IGm0855gIqDEWhOIzTvrfnoydm2uqIKhqss1bu2Uycc5lOWJg6AkXsii5Nq6BHsknzLSv5AeUGINQVv7Ckbnjg=
+X-Received: by 2002:a05:6870:2415:b0:229:f035:f5b2 with SMTP id
+ n21-20020a056870241500b00229f035f5b2mr1671752oap.17.1713518430654; Fri, 19
+ Apr 2024 02:20:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-evm: Add support for multiple
- CAN instances
-To: "Kumar, Udit" <u-kumar1@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <vigneshr@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <conor+dt@kernel.org>,
-        <krzk+dt@kernel.org>, <robh@kernel.org>, <kristo@kernel.org>,
-        <nm@ti.com>
-References: <20240411201747.18697-1-b-kapoor@ti.com>
- <85ea2b33-05ac-400f-8017-5539d21ebe32@ti.com>
- <8d9a6dc7-7590-412d-aa81-18a6cf5d09ca@ti.com>
- <9c7f0e3d-4558-4a73-bbb1-ceb7ebe02cd9@ti.com>
-Content-Language: en-US
-From: Bhavya Kapoor <b-kapoor@ti.com>
-In-Reply-To: <9c7f0e3d-4558-4a73-bbb1-ceb7ebe02cd9@ti.com>
+References: <20240226082349.302363-1-yu.c.chen@intel.com> <758ebf4e-ee84-414b-99ec-182537bcc168@bytedance.com>
+ <20240408115833.GF21904@noisy.programming.kicks-ass.net> <ZhPtCyRmPxa0DpMe@chenyu5-mobl2>
+ <20240409092104.GA2665@noisy.programming.kicks-ass.net> <ZiAWTU5xb/JMn/Hs@chenyu5-mobl2>
+ <CAB8ipk-fejQ41Jgk6z52+T6CP+impwbaOAfhA9vG_-FB9BeRyw@mail.gmail.com>
+ <ZiEaKOQwiNEglYtS@chenyu5-mobl2> <20240419082440.GB6345@noisy.programming.kicks-ass.net>
+ <20240419084520.GE12673@noisy.programming.kicks-ass.net>
+In-Reply-To: <20240419084520.GE12673@noisy.programming.kicks-ass.net>
+From: Xuewen Yan <xuewen.yan94@gmail.com>
+Date: Fri, 19 Apr 2024 17:20:19 +0800
+Message-ID: <CAB8ipk99Rv5Psu=J5TuPxVRqoW2-CfaeFWYmXDAGgL20QbMNTw@mail.gmail.com>
+Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
+ if no eligible entity is found
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Chen Yu <yu.c.chen@intel.com>, Abel Wu <wuyun.abel@bytedance.com>, 
+	Ingo Molnar <mingo@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Tim Chen <tim.c.chen@intel.com>, 
+	Tiwei Bie <tiwei.btw@antgroup.com>, Honglei Wang <wanghonglei@didichuxing.com>, 
+	Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.chen.surf@gmail.com>, 
+	Yujie Liu <yujie.liu@intel.com>, linux-kernel@vger.kernel.org, 
+	kernel test robot <oliver.sang@intel.com>, Tianchen Ding <dtcccc@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Apr 19, 2024 at 4:45=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Fri, Apr 19, 2024 at 10:24:40AM +0200, Peter Zijlstra wrote:
+> > On Thu, Apr 18, 2024 at 09:03:36PM +0800, Chen Yu wrote:
+> >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index 31bca05c3612..9f203012e8f5 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -696,15 +696,23 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
+> > >   *
+> > >   * XXX could add max_slice to the augmented data to track this.
+> > >   */
+> > > +
+> > > +static s64 limit_entity_lag(struct sched_entity *se, s64 lag)
+> > > +{
+> > > +   s64 limit;
+> > > +
+> > > +   limit =3D calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se)=
+;
+> > > +   return clamp(lag, -limit, limit);
+> > > +}
+> >
+> > Right, helper makes sense.
+>
+> A possible other helper might be the below. But that depends if we want
+> to clip after scaling too. No super strong preference.
+>
+> Please post your patch with a proper changelog and we'll get it sorted.
+
+Thanks Peter, I will send the v2 later after my local testing:)
 
 
-On 16/04/24 15:24, Kumar, Udit wrote:
-> Hello Bhavya
->
-> On 4/16/2024 2:52 PM, Bhavya Kapoor wrote:
->> On 15/04/24 10:42, Kumar, Udit wrote:
->>> Hello Bhavya,
->>>
->>> On 4/12/2024 1:47 AM, Bhavya Kapoor wrote:
->>>> CAN instances 0 and 1 in the mcu domain and 16 in the main domain are
->>>> brought on the evm through headers J42, J43 and J46 respectively. Thus,
->>>> add their respective transceiver's 0, 1 and 2 dt nodes to add support
->>>> for these CAN instances.
->>> Looking at schematic and board data sheet, it appears, board has 6 CAN interfaces.
->>>
->>> [J41--J46],  but we are enabling only 4.
->>>
->>> I understand, other interfaces might be used for other purpose.
->>>
->>> Vignesh/Nishanth,
->>>
->>> Do you think, this make sense to code all available interfaces on board and
->>>
->>> mark as reserved, if used for other purpose , similar to what is done for wkup_uart for this board.
->>>
->> Hi Udit, there is a mux that is used between audio and the signal lines of other 2 cans.
->>
->> If we turn on the other 2 cans or even mark  them as reserved, we will still have to
->>
->> alter the mux sel lines which will impact the audio.
 >
 >
-> How it will impact ?
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -696,15 +696,19 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
+>   *
+>   * XXX could add max_slice to the augmented data to track this.
+>   */
+> -static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity=
+ *se)
+> +static s64 entity_lag(u64 avruntime, struct sched_entity *se)
+>  {
+> -       s64 lag, limit;
+> -
+> -       SCHED_WARN_ON(!se->on_rq);
+> -       lag =3D avg_vruntime(cfs_rq) - se->vruntime;
+> +       s64 vlag, limit;
 >
-> Audio and CAN lines goes to 1B port of mux .
+> +       vlag =3D avruntime - se->vruntime;
+>         limit =3D calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se)=
+;
+> -       se->vlag =3D clamp(lag, -limit, limit);
+> +       return clamp(vlag, -limit, limit);
+> +}
+> +
+> +static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity=
+ *se)
+> +{
+> +       SCHED_WARN_ON(!se->on_rq);
+> +       se->vlag =3D entity_lag(avg_vruntime(cfs_rq), se);
+>  }
 >
-> IMO, even CAN or Audio does mux select they are going to select same port no ?
->
-> I refer U58 and U50 MUX of schematic, Hope we are on same page
->
->
-Hi Udit, Thanks for the clarity on muxes number otherwise we would have been in a lot of confusion
-I was referring to muxes U112 and U108.
-After U58 and UU50 , the signal will pass to U112 and U108 and in these 2 Muxes,
+>  /*
+> @@ -3760,7 +3764,7 @@ static void reweight_eevdf(struct sched_
+>          *         =3D V  - vl'
+>          */
+>         if (avruntime !=3D se->vruntime) {
+> -               vlag =3D (s64)(avruntime - se->vruntime);
+> +               vlag =3D entity_lag(avruntime, se);
+>                 vlag =3D div_s64(vlag * old_weight, weight);
+>                 se->vruntime =3D avruntime - vlag;
+>         }
 
-we will either have to select _B1 or _B2 ie from audio or the can signals. And, we
-
-are going for audio signals.
-
-Regards
-
->>
->> Thanks.
->>
->> ~B-Kapoor
->>
->>>> CAN instance 4 in the main domain is brought on the evm through header
->>>> J45. The CAN High and Low lines from the SoC are routed through a mux
->>>> on the evm. The select lines need to be set for the CAN signals to
->>>> reach to its transceiver on the evm. Therefore, add transceiver 3
->>>> dt node to add support for this CAN instance.
->>>>
->>>> Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
->>>> ---
->>>>
->>>> rebased to next-20240411
->>>>
->>>>    arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 107 +++++++++++++++++++++++
->>>>    1 file changed, 107 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
->>>> index 81fd7afac8c5..e56901973895 100644
->>>> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
->>>> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
->>>> @@ -272,6 +272,45 @@ dp0_connector_in: endpoint {
->>>>                };
->>>>            };
->>>>        };
->>>> +
->>>> +    transceiver0: can-phy0 {
->>>> +        compatible = "ti,tcan1042";
->>>> +        #phy-cells = <0>;
->>>> +        max-bitrate = <5000000>;
->>>> +        pinctrl-names = "default";
->>>> +        pinctrl-0 = <&mcu_mcan0_gpio_pins_default>;
->>>> +        standby-gpios = <&wkup_gpio0 69 GPIO_ACTIVE_HIGH>;
->>>> +    };
->>>> +
->>>> +    transceiver1: can-phy1 {
->>>> +        compatible = "ti,tcan1042";
->>>> +        #phy-cells = <0>;
->>>> +        max-bitrate = <5000000>;
->>>> +        pinctrl-names = "default";
->>>> +        pinctrl-0 = <&mcu_mcan1_gpio_pins_default>;
->>>> +        standby-gpios = <&wkup_gpio0 2 GPIO_ACTIVE_HIGH>;
->>>> +    };
->>>> +
->>>> +    transceiver2: can-phy2 {
->>>> +        /* standby pin has been grounded by default */
->>>> +        compatible = "ti,tcan1042";
->>>> +        #phy-cells = <0>;
->>>> +        max-bitrate = <5000000>;
->>>> +    };
->>>> +
->>>> +    transceiver3: can-phy3 {
->>>> +        compatible = "ti,tcan1042";
->>>> +        #phy-cells = <0>;
->>>> +        max-bitrate = <5000000>;
->>>> +        standby-gpios = <&exp2 7 GPIO_ACTIVE_HIGH>;
->>>> +        mux-states = <&mux1 1>;
->>>> +    };
->>>> +
->>>> +    mux1: mux-controller {
->>>> +        compatible = "gpio-mux";
->>>> +        #mux-state-cells = <1>;
->>>> +        mux-gpios = <&exp2 14 GPIO_ACTIVE_HIGH>;
->>> Could you help here on logic to choose pin 14
->>>
->>> As I see for this mux
->>>
->>> S0 is CANUART_MUX_SEL0 [Pin 14, which you want to control as high]
->>>
->>> S1 is Pin 15 is "CANUART_MUX2_SEL1"
->>>
->>> S2 is high
->>>
->>> So in order to get CAN on mux output
->>>
->>> All, S0, S1 and S2 should be high.
->>>
->>> IMO, you should control both S0 and S1, or just S1 and S0 with dip switch
->> Hi Udit, S0 comes at a default Active High State always. Thus, i have kept it the same.
->>
->> This was done in the same way as it was done for mux2 for  j721s2. mcan 5
->>
->> Thanks
->
-> May be i was not clear in my previous comment
->
-> Looking at schematic
->
-> S0 is CANUART_MUX_SEL0 , which is connected with DIP switch and IO expander U173
->
-> S1 is CANUART_MUX2_SEL1, which is connected only IO with expander U173
->
-> S2 is CANUART_MUX_SEL2 is pulled high by hardware itself .
->
-> Here all lines high are needed to route CAN correctly out from mux.
->
-> So this patch is controlling CANUART_MUX_SEL0 but not controlling CANUART_MUX2_SEL1.
->
-> IMO, CANUART_MUX_SEL0 can be controlled by dip switch and CANUART_MUX2_SEL1 should be controlled by driver.
-
-Hi Udit, thanks for conveying this in a much more explained way.
-
-What i am trying to say that in the  default state as well we are getting s1 signal as high itself.
-
-So, if you  want that we should specifically add gpio for that in dts, we can also go ahead with that.
-
-Regards
-
-~B-Kapoor
-
->
->
->>>> +    };
->>>>    };
->>>>      &wkup_gpio0 {
->>>> @@ -336,6 +375,20 @@ J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
->>>>                J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
->>>>            >;
->>>>        };
->>>> +
->>>> +    main_mcan4_pins_default: main-mcan4-default-pins {
->>>> +        pinctrl-single,pins = <
->>>> +            J784S4_IOPAD(0x088, PIN_INPUT, 0) /* (AF36) MCAN4_RX */
->>>> +            J784S4_IOPAD(0x084, PIN_OUTPUT, 0) /* (AG38) MCAN4_TX */
->>>> +        >;
->>>> +    };
->>>> +
->>>> +    main_mcan16_pins_default: main-mcan16-default-pins {
->>>> +        pinctrl-single,pins = <
->>>> +            J784S4_IOPAD(0x028, PIN_INPUT, 0) /* (AE33) MCAN16_RX */
->>>> +            J784S4_IOPAD(0x024, PIN_OUTPUT, 0) /* (AH34) MCAN16_TX */
->>>> +        >;
->>>> +    };
->>>>    };
->>>>      &wkup_pmx2 {
->>>> @@ -415,6 +468,32 @@ J784S4_WKUP_IOPAD(0x104, PIN_INPUT, 0) /* (U33) MCU_ADC1_AIN6 */
->>>>                J784S4_WKUP_IOPAD(0x108, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
->>>>            >;
->>>>        };
->>>> +
->>>> +    mcu_mcan0_pins_default: mcu-mcan0-default-pins {
->>>> +        pinctrl-single,pins = <
->>>> +            J784S4_WKUP_IOPAD(0x050, PIN_OUTPUT, 0) /* (K33) MCU_MCAN0_TX */
->>>> +            J784S4_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (F38) MCU_MCAN0_RX */
->>>> +        >;
->>>> +    };
->>>> +
->>>> +    mcu_mcan1_pins_default: mcu-mcan1-default-pins {
->>>> +        pinctrl-single,pins = <
->>>> +            J784S4_WKUP_IOPAD(0x068, PIN_OUTPUT, 0) /* (H35) WKUP_GPIO0_4.MCU_MCAN1_TX */
->>>> +            J784S4_WKUP_IOPAD(0x06c, PIN_INPUT, 0) /* (K36) WKUP_GPIO0_5.MCU_MCAN1_RX */
->>>> +        >;
->>>> +    };
->>>> +
->>>> +    mcu_mcan0_gpio_pins_default: mcu-mcan0-gpio-default-pins {
->>>> +        pinctrl-single,pins = <
->>>> +            J784S4_WKUP_IOPAD(0x040, PIN_INPUT, 7) /* (J38) MCU_SPI0_D1.WKUP_GPIO0_69 */
->>>> +        >;
->>>> +    };
->>>> +
->>>> +    mcu_mcan1_gpio_pins_default: mcu-mcan1-gpio-default-pins {
->>>> +        pinctrl-single,pins = <
->>>> +            J784S4_WKUP_IOPAD(0x060, PIN_INPUT, 7) /* (J35) WKUP_GPIO0_2 */
->>>> +        >;
->>>> +    };
->>>>    };
->>>>      &wkup_pmx1 {
->>>> @@ -1105,3 +1184,31 @@ dp0_out: endpoint {
->>>>            };
->>>>        };
->>>>    };
->>>> +
->>>> +&mcu_mcan0 {
->>>> +    status = "okay";
->>>> +    pinctrl-names = "default";
->>>> +    pinctrl-0 = <&mcu_mcan0_pins_default>;
->>>> +    phys = <&transceiver0>;
->>>> +};
->>>> +
->>>> +&mcu_mcan1 {
->>>> +    status = "okay";
->>>> +    pinctrl-names = "default";
->>>> +    pinctrl-0 = <&mcu_mcan1_pins_default>;
->>>> +    phys = <&transceiver1>;
->>>> +};
->>>> +
->>>> +&main_mcan16 {
->>>> +    status = "okay";
->>>> +    pinctrl-names = "default";
->>>> +    pinctrl-0 = <&main_mcan16_pins_default>;
->>>> +    phys = <&transceiver2>;
->>>> +};
->>>> +
->>>> +&main_mcan4 {
->>>> +    status = "okay";
->>>> +    pinctrl-names = "default";
->>>> +    pinctrl-0 = <&main_mcan4_pins_default>;
->>>> +    phys = <&transceiver3>;
->>>> +};
+BR
+---
+xuewen
 
