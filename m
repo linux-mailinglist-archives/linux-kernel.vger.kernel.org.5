@@ -1,109 +1,139 @@
-Return-Path: <linux-kernel+bounces-151492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBA668AAF93
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:42:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 804C78AAF92
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:41:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98EA02819D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:42:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D6681F23F8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1430012C552;
-	Fri, 19 Apr 2024 13:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9134612AAEA;
+	Fri, 19 Apr 2024 13:41:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yhS8pdkg"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YNvexn1h"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138B312A14B
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:41:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0ABD1292DC;
+	Fri, 19 Apr 2024 13:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713534110; cv=none; b=cmq+kVmqaqIU1mh6WZlEajvpqUg8sMs3DP5ES1dMbZqhbj6Y6aqvEwFC/KEWZikGOTuNT2NMryFLEbE+VCfOKsmX7i1hb9Y42Z4SAMgkh2mdCrr79EehNZpH7j1mZBxs0zmNxS2K/1z4NDLNoHSBHPufwM9rWWAuXfx1SXjwpjc=
+	t=1713534108; cv=none; b=M24e4TzJ4++OJOyGbvdQwPWOqF97ANLVnTIYhFzWzKc/5oA9NiTpdli1FjVawnph55acI0sBICIH/aP6SnqzO3KlKeofN2D171LWm/AC3c+iXVuiGzH669GZMHf2VTDrubk0f/BSu4gzmza0L3sxwuIqSVgBpDuakrELoWE01/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713534110; c=relaxed/simple;
-	bh=++wcf7Oo4HULNgJkZlzxzN8ZrDnid6G0r8PM+hd/TmA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=mfrHKfgF2N/sRzsp96HaRa3li97EBPy4Rnh+B4q9ubnfXDSW9IHpxYANwVBxHgvYIvKiRA2eUAFoVyUfyVPpewFykP8wsBDUvzVsOFr5a4N4vf+JWcYhzfPQGVQqzAFuakvHGtl7FGlFzKQKJDSqnRIvTcoERyMitEDwt50Fjx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yhS8pdkg; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-de46f4eacd3so3225155276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:41:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713534108; x=1714138908; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eIbLUE3R+om1X38nMWnrzy+JncLTgQydVTTv5mFU/to=;
-        b=yhS8pdkg5a0QmmX07joNPZJ0N4sU0obGDf6bRs3TVSq11kdwDWrV2dp0S34rlwlkN1
-         iBLI9kvtOwYSmtla4xBsqI3NgAhVW/o0WGzVGMqUdkaAVTEMQQ+u5jBuotUDBPNekhUA
-         6yDZE6n/pkcuDReGrlYG9mTy48l5Wg/VeFK8ZZZlOO0D8eMjEHpe/0N5U2aVYMKNcPP/
-         2O6ofg8VDMxwmxGSN/faxHXi9tlhY2D8JWh6BRWXrwOq3z2ogq5kPrA+NQ59lQAqYfjH
-         b/A5qWjFY9Ug+IPinjO55AorMBOcgVKn3CM8jFCvXgMz1Ma1Nigch69YJgquBIl5IOtZ
-         x/CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713534108; x=1714138908;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eIbLUE3R+om1X38nMWnrzy+JncLTgQydVTTv5mFU/to=;
-        b=dGFcyLD7ZeYBVyWFv3jUS+x1+zieC+ETY/70xHVIyim4fYc+UWgMHyBA5ZOXlhYg5c
-         00v7LP7r517RKqFcV8hFW9X51dJAe5mYhl0sGH0wgZekERZM3/Wj1+NLct40GlxLWOd3
-         RJgVMjT7mWfNJcLXhWJslgvMQu8kIlaNMZwKWIOc2H8lTpCidTCZUhxpa5ZczQ4wyb8r
-         KWeUf8gkXO4nQkQj4moRvf1fNYE5srMlWf9B2szPG4u83q8zJo0ROadPn65rF9NrYNck
-         UlLaECaaqbiG0u2sO6GYd6rKZbNlFiDUh3reFc3WxF2Ig8RIJbzgWpV904ozQUG8J9pf
-         jE3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWJxwoFEYU612MsR9UizsM/chRWrNuxzkw6Tw9hly1hpP4eJ17uW0kvgAIZvOgnfttiqk2N4FLRKdf+RV6Rn3ADSmtRM+OaPpXr5YBr
-X-Gm-Message-State: AOJu0Yx4kkRnSZiLbs3cdgs+/FfVcSmdLsYmvKItVLj1tz3dTpddlEwS
-	wrkl0umspnz8A/SRvaBHeGk3aaSq5iX+lrybayTqQJMJMvcJZtzfje9Uw7Q+7gz1g5IfsllnSNm
-	Fjw==
-X-Google-Smtp-Source: AGHT+IH4Z5T1+pfr45JTb+aarirdSILE0eG0Md04IR0SIPvit+QdVNVNsvLm+lVVA1gUCgt74a+9v16dFMI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:100e:b0:de4:c2d4:e14f with SMTP id
- w14-20020a056902100e00b00de4c2d4e14fmr404835ybt.11.1713534108121; Fri, 19 Apr
- 2024 06:41:48 -0700 (PDT)
-Date: Fri, 19 Apr 2024 06:41:46 -0700
-In-Reply-To: <20240419112952.15598-5-wei.w.wang@intel.com>
+	s=arc-20240116; t=1713534108; c=relaxed/simple;
+	bh=YWtwWwFaBIA9VlLC/ZdB22WXXGjlkyXLSpJuWuzctw4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nlOxfXAehkEOJEdGiuq/AFRXHIpasC178XFp6yf4oA+fIdv2R50Baz+aozQ4nyQtg/amTVPSdrWU6baSd/xoUGOIsZwLpujPrJfEsjKXG5m03F9M6Sarzaco/Ji/Q9bzmUEr6DBfzbITT59sShXQcge7j7uB+ONO/ZP7zJT2bA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YNvexn1h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55215C072AA;
+	Fri, 19 Apr 2024 13:41:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713534108;
+	bh=YWtwWwFaBIA9VlLC/ZdB22WXXGjlkyXLSpJuWuzctw4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=YNvexn1hyeCUgjOFwOrH6x4neJZeusd80IyEHjrXYC5693cH6khvm4zOxu/4cK64A
+	 yg0NkIEAeg8E+XV1kHQrucaj0eDLqedTtWOH2JS0MmqCblQWBiQkR4ogIwro7QyF3b
+	 KbUF/vQvFNokmVcfg+A1LxggZ5niZkCI5IhC1HbTFc5rvQsPN1JoXWpOzZn+LjziJz
+	 2cQ5ozqd1PUoYcdahN7SfmlSbCdgQl+8BugDl2Ib4Nwm8qrAw4u65e8rzKH/LTxfJB
+	 /wcTVmMocK+SFcWKvCZBCKFrSfWIhmYpN1Zws1YesfhXgKFrUHZw9mUa/EuYHON7Y5
+	 RfD024kVBMw3w==
+Message-ID: <af6316ff-78c6-4b0a-894f-6076d36ffb90@kernel.org>
+Date: Fri, 19 Apr 2024 15:41:48 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240419112952.15598-1-wei.w.wang@intel.com> <20240419112952.15598-5-wei.w.wang@intel.com>
-Message-ID: <ZiJ0mjZxlRsLwl3E@google.com>
-Subject: Re: [RFC PATCH v2 4/5] KVM: x86: Remove KVM_X86_OP_OPTIONAL
-From: Sean Christopherson <seanjc@google.com>
-To: Wei Wang <wei.w.wang@intel.com>
-Cc: pbonzini@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] regulator: pca9450: enable restart handler for I2C
+ operation
+To: Holger Assmann <h.assmann@pengutronix.de>, lgirdwood@gmail.com,
+ broonie@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, yibin.gong@nxp.com
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20240419083104.3329252-1-h.assmann@pengutronix.de>
+ <20240419083104.3329252-2-h.assmann@pengutronix.de>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240419083104.3329252-2-h.assmann@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 19, 2024, Wei Wang wrote:
-> KVM_X86_OP and KVM_X86_OP_OPTIONAL were utilized to define and execute
-> static_call_update() calls on mandatory and optional hooks, respectively.
-> Mandatory hooks were invoked via static_call() and necessitated definition
-> due to the presumption that an undefined hook (i.e., NULL) would cause
-> static_call() to fail. This assumption no longer holds true as
-> static_call() has been updated to treat a "NULL" hook as a NOP on x86.
-> Consequently, the so-called mandatory hooks are no longer required to be
-> defined, rendering them non-mandatory. 
-
-This is wrong.  They absolutely are mandatory.  The fact that static_call() doesn't
-blow up doesn't make them optional.  If a vendor neglects to implement a mandatory
-hook, KVM *will* break, just not immediately on the static_call().
-
-The static_call() behavior is actually unfortunate, as KVM at least would prefer
-that it does explode on a NULL point.  I.e. better to crash the kernel (hopefully
-before getting to production) then to have a lurking bug just waiting to cause
-problems.
-
-> This eliminates the need to differentiate between mandatory and optional
-> hooks, allowing a single KVM_X86_OP to suffice.
+On 19/04/2024 10:31, Holger Assmann wrote:
+> The NXP PCA9450 can perform various kinds of power cycles when triggered
+> by I2C-command.
+> We therefore make this functionality accessible by introducing a
+> respective restart handler. It will be used after a priority has been
+> defined within the devicetree.
 > 
-> So KVM_X86_OP_OPTIONAL and the WARN_ON() associated with KVM_X86_OP are
-> removed to simplify usage, 
 
-Just in case it isn't clear, I am very strongly opposed to removing KVM_X86_OP_OPTIONAL()
-and the WARN_ON() protection to ensure mandatory ops are implemented.
+
+..
+
+> +
+>  static int pca9450_i2c_probe(struct i2c_client *i2c)
+>  {
+>  	enum pca9450_chip_type type = (unsigned int)(uintptr_t)
+> @@ -845,12 +875,35 @@ static int pca9450_i2c_probe(struct i2c_client *i2c)
+>  		return PTR_ERR(pca9450->sd_vsel_gpio);
+>  	}
+>  
+> +	/* Register I2C restart handler if one is defined by device tree */
+> +	if (!of_property_read_u32(i2c->dev.of_node, "priority",
+> +				  &pca9450->restart_handler.priority)) {
+
+Priority property does not define whether this is or is not restart
+handler. In case of missing priority, you should use just default:
+SYS_OFF_PRIO_DEFAULT. Not skip the registering.
+
+Best regards,
+Krzysztof
+
 
