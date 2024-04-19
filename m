@@ -1,149 +1,234 @@
-Return-Path: <linux-kernel+bounces-151905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D70798AB58F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:26:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E6208AB593
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:32:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 915B1282CB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:26:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0D62B2164C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AAF813C916;
-	Fri, 19 Apr 2024 19:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA38E13C911;
+	Fri, 19 Apr 2024 19:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="KgzeKJG/"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=phytec.com header.i=@phytec.com header.b="dQnh9YaO"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2104.outbound.protection.outlook.com [40.107.102.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F8F513C3FE
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 19:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713554774; cv=none; b=svZrL25Fr9OE6aXoN9vWaO4Mq9TYMCToawUB3M9a9u+6Mwz57oUTdPMnttBWwCpc0kmcr3/fb+S+KNpSLhBMo0TL1kXnmG7D720m22/0OLp6cNuXY4uSx/hyuRtuMD3GwV+qycYVQhroh4KTe6nCVb/jWUr3UKxYC1l0RY0mnBM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713554774; c=relaxed/simple;
-	bh=EdC0cGkPp/KdKeI1Kb/6RwCL6y1AT+p3suMsbxZCaso=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jXyNOEHqBXTLbJN5brXK/iWD5EsDAAP6exetrFLVqT8Ufwjv/ybPa77XHVAqB1XVC0aRSWjjRVtN+oRUe+O2ohxvCjwfNnigDeQMcjJ2ErCuYW/k/keYtp+7N9rn3yZ5uupUIBhwmwtI/d7+mbBX9vEAaHNTNl2EHmkcsKHlc5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KgzeKJG/; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5176f217b7bso4083016e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 12:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713554771; x=1714159571; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5jD0EhyCifuBQLkCgtTMY21veWhe8WpFtZANsrLOqmw=;
-        b=KgzeKJG/+ttl3iKp6CTfLXe4CISeZ3XMk77y75QIa825gBnZx6oo9jVu5uvE9F7tut
-         MIiUb8VLbClGl/VcyzAO0bZzNmthe3/0fvTN766Kq/Cgg2TTnt2gvBUIKnLiT1SgaMAG
-         pmGM7yr7wBS+uXkSYYD8gtjfK5G2sB65AtKEeTRxJ949mxH2UDApL7iSaxW2JU6XufEW
-         50Or1Pjg0fl5hwbe9zNJSG+kHotU0efDJ9IQg8fevGkdyUSJvmSHxNfB4CfgyvoYR1AC
-         sVtLoAztoKhHZscOhowrCMFFoVKB5+/XvnbzfMt6HEFkuTJG78XX7rPEoSI8btUraBoS
-         v8Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713554771; x=1714159571;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5jD0EhyCifuBQLkCgtTMY21veWhe8WpFtZANsrLOqmw=;
-        b=Upznsj0/QjPHw6IhVlVWpKjBrBP6T1UmyXb+FrcCv4epJQmsFDXLh2xzwIb2EWjf9r
-         /0yiG4MGyqzq0uIMdKsYhLtK0M+/VmDrC/IRFTWmB3AgJ1cJuDPNe5E3tJxf07Iwa3qS
-         gSCeHtmgnvsnpop/hRhrevj8CXvGGm8+MYCuwJBvcKb9vrgZwaBG1vXIeutVoBe8MdA3
-         rwgy+LNVQSrDt6a5to0lcTGiZbQLYDcZQqiSfdaNnwnXCordVUOk91xc7evv3GEvli6Y
-         o32lSf/oG99SzGDCQISHTXuuXrabPUz/h1FyGoPLyAeLrZwsu/b3+vSXwTxI3q6CyWoW
-         BmtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXHyDdNVxc67kLspVvvXk5WZMoXtsQ3xbYJm4kRH+4aqpjr3ISAsw+dSauTmzJLEeEa1EM9RGKE7DjZz7cvUZLgLSV43z6/Ir9vFDVr
-X-Gm-Message-State: AOJu0YxIW/5PYRt6xewlGPYh8Co7PuBC7pkFnfblCEIDf3Dw5Bj/d7aR
-	RZ4WU0QzOIbHEqHzLiAAcCK+Y5vrItscXlRQ73t5Rh7VGgcELMSzWfqThha3vVSHK9Sl5pbt5q5
-	4g31zV8wveX0vUnb0Xeebkkv0kO7XgyhpPeTL
-X-Google-Smtp-Source: AGHT+IG7VL6KZ/P5UdQBTbJCd+VjQRvtNpyhd38tP7Or3vQWzXSTZExyuSTBKhBZU9qfTY773qr5ITgLc3HCzj5YcEo=
-X-Received: by 2002:a05:6512:3f18:b0:51a:dee1:d41e with SMTP id
- y24-20020a0565123f1800b0051adee1d41emr294169lfa.61.1713554771092; Fri, 19 Apr
- 2024 12:26:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED4213C3F2;
+	Fri, 19 Apr 2024 19:31:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.104
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713555115; cv=fail; b=KAdXHTJ5rxFbYSjjcSGvspfraCeHWA7SJb8COj12kKI92c0KrnN0DjZ7N/mK+4eDToknYuoneM1ybMLRG7SfZFxSodxAyMB0G2ZkBsiqxlfw89YK9U89xU6gJ+Rl2GWZ5aJ04SVWTNS3dXxxzUZ2tfAyjNjMP8xOvy3AYZ4Qnak=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713555115; c=relaxed/simple;
+	bh=bwuGiDvCG0TTDjBMIqdO0YpDATla8NWfScugTj6LNBc=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=NpwoN/xxNfOgHu31EOeXncRob4A9RthuZISgbkPWmrorIJYtqcoH9AHSLh13rD5GzT7YUzVd1vHZrO2TwXYTbmjbnB/6TzjnhD3gQ2bk1KdBcC2xc+t8ZG22r435BYRHy9b5edXTR4w08MWcvH9S6LyR8vKD+HsaQW87NCB3TRY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com; spf=pass smtp.mailfrom=phytec.com; dkim=pass (1024-bit key) header.d=phytec.com header.i=@phytec.com header.b=dQnh9YaO; arc=fail smtp.client-ip=40.107.102.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l9G0ufdAMBaG3Ihu+1Ucl/qPGMEAMu0sOBH/VsdlXuG4s/vsjogV+dhdEu41CqWWUQcT+AtB0RlO8xblJ5kSk3fSgkUmNxc4EdApuZ1IAGWl5FsuSwLJOK0NCbHBd61qA9zUfXDUQX8OSe3ZoQamsd1ydAW/KR46NTPpea20qZOF5Z8JL14/hJcQtVJ+RPPQ0AFAXyr4GH2JIZcZtfaZbj5Ej3Lw2zfVmpuY16VaQwZOaL8yBp9HSOyb7XZy54ysYUTcWBR7+UUXP2C5XHPmPG8oRNBsglo8ILw7aUIMfiJTcFwEBL5yK6hkCTBXuAWABEKq6NHDw4c7Ix4yojPtuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YZcrTmL4KPrJ+89g+72922MDii5M5ApLAXje3nSxJC8=;
+ b=BITTzWkjxt+R+YbbBVfr3D3cverLMqF6WPFHuCr2/MRrTqTSaoMvwNQ1L/vpL6CzOAKv1hVbfGeUnG9KEyGRKafBIHX96nI6xbO+YbhGxEkkcCW7WmLoKuxpHyIUp7m+On+eVfLwNPKC8fIvef7tZXgdZCiirg55wmOCNotScc4rqRaFL6YMfuNyP+kGfEmDMrMlbvGQH7IPq3X4JLnOs3ljgyzWV/b4ZNj9NlUWBv+tKQBBU9wrYzB05PMVEHWd5M5RzY4OgMm8DfbWbb7sBiX6NOh2gN7vY2jfEOxA0fcszzZ+y631+68tWh71px6H00sRTaBuP1WE2MQ79PAuzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=phytec.com; dmarc=pass action=none header.from=phytec.com;
+ dkim=pass header.d=phytec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=phytec.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YZcrTmL4KPrJ+89g+72922MDii5M5ApLAXje3nSxJC8=;
+ b=dQnh9YaOb/SQ3T6yI3fqVOGzGuWAWeNgFPlJyaN3j1LcRqFEadqe9s+QAdIpI6TNvA7593uO7qjvk2GLs9DUzMZWkx9DcRAp/wOv5QZNvQveeLTJqJIFq44QpUwCbv+yzdEnHzKE/+sHI6ARajnQ35Hf+XVjTp07kD076quqc74=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=phytec.com;
+Received: from MN0PR22MB5638.namprd22.prod.outlook.com (2603:10b6:208:4a5::17)
+ by PH0PR22MB3291.namprd22.prod.outlook.com (2603:10b6:510:122::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.43; Fri, 19 Apr
+ 2024 19:31:47 +0000
+Received: from MN0PR22MB5638.namprd22.prod.outlook.com
+ ([fe80::2041:9d22:48c3:e667]) by MN0PR22MB5638.namprd22.prod.outlook.com
+ ([fe80::2041:9d22:48c3:e667%6]) with mapi id 15.20.7472.044; Fri, 19 Apr 2024
+ 19:31:47 +0000
+From: Nathan Morrisson <nmorrisson@phytec.com>
+To: nm@ti.com,
+	vigneshr@ti.com,
+	kristo@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	upstream@lists.phytec.de,
+	w.egorov@phytec.de
+Subject: [PATCH] arm64: dts: ti: am64-phyboard-electra: Add overlay to enable a GPIO fan
+Date: Fri, 19 Apr 2024 12:31:14 -0700
+Message-Id: <20240419193114.3090084-1-nmorrisson@phytec.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: CH2PR17CA0028.namprd17.prod.outlook.com
+ (2603:10b6:610:53::38) To MN0PR22MB5638.namprd22.prod.outlook.com
+ (2603:10b6:208:4a5::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
- <171328990014.3930751.10674097155895405137.stgit@firesoul>
- <CAJD7tkbZAj3UQSHbu3kj1NG4QDowXWrohG4XM=7cX_a=QL-Shg@mail.gmail.com>
- <72e4a55e-a246-4e28-9d2e-d4f1ef5637c2@kernel.org> <CAJD7tkbNvo4nDek5HV7rpZRbARE7yc3y=ufVY5WMBkNH6oL4Mw@mail.gmail.com>
- <33295077-e969-427a-badb-3e29698f5cfb@kernel.org>
-In-Reply-To: <33295077-e969-427a-badb-3e29698f5cfb@kernel.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 19 Apr 2024 12:25:32 -0700
-Message-ID: <CAJD7tkbXgd1jHA2OYppdyfPnMR5aBtee0KxSHLBsZ=78eGG73w@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] cgroup/rstat: introduce ratelimited rstat flushing
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com, 
-	cgroups@vger.kernel.org, longman@redhat.com, netdev@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev, 
-	kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org, Wei Xu <weixugc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR22MB5638:EE_|PH0PR22MB3291:EE_
+X-MS-Office365-Filtering-Correlation-Id: 244199d9-1384-49eb-c453-08dc60a75a28
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	5TRc76UNKbDMk+JJu5VioJL0t8zm6GDEeO3jdTIUGga3ZLCNTx0UUywgm7hJgvn5mpOaFxm4d0BA7Qr2W47SL2Uih+IwNqGkldjNBAC/G2zNatn4OcaikVF6x2tcze3kXwzoB9kYkz2jDUFMOGayLSiPRbyWK0q63fQATxRHgkR1Y/LyXHLtIz3HcLQDktxqOJnZVbN9Of7ls91vp2lwmw/hwa2wOrmwCXBc1FDhZ3kUfswixXIbBK3jUSh+vqCYr04UbDGfez0mxERrR1WlimB+OaH7VCrOOuaghpEX+DLi3xGoT0jC3/9cS1o4lrqH+dY9mjA8dqs28XLPCw/1Ux867TxUbyJiySahi46bqkf/yOJy4WUew4AdfoAzstt7rkk5TKMtnOYpiZ2JZ9IsfznEcrN2HJlBdRghgZAMM1RlV42LPUm5Rk3quhYP/H47By54B4SEvZxSlTeQOBKg4nEanCK4a5MKRvknhChktuR19LMSYYHyV9vmMZrwgykYPExp9j+KDBjPEsA7vuPO1mhS+gISBve37AE4aLIYAUREtbGaotjgx1TyrD6O2eEeFwujJ0/L7YKBy2p389fbsghZP8acn7lFmWu+9wiVxMBCqSPePhowwcZ49cZ2X47aKOhPRvR7wXHhiIocD3rBQevm8EGgWTtLbQOHra6RvN06BSJE6kF6zuiphMzuIG/b0re7+YDDoCuxPq92zhyBbQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR22MB5638.namprd22.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(52116005)(376005)(1800799015)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?NHp+x8gO8dB6SxgLdbD1aD3SYea5auHPtxT+yBWRXkBQpVnRkdtHBOt+gAG6?=
+ =?us-ascii?Q?ikxCpn7c8Mg9t+lLIOJjhto8+7s+XHh4uqm1BLR9rtMEblXCV4YyevPqgxPh?=
+ =?us-ascii?Q?Cj5IfkJCVK4aFLWdateUrsadJNUhr34uoy6PwofRlbgRW8tcEICTC5Tjk4PX?=
+ =?us-ascii?Q?juFqyhT39Fy4kHZmk+4DUuh63ujLvhDDz2o0mEOmXjEAhzSM7WD39JuyCmR/?=
+ =?us-ascii?Q?wCR70hNYXzFyPHC8Wxf379x7rjqkq5yPJN8nFtSwmioJaJyv3UljDcBH591r?=
+ =?us-ascii?Q?JAj1cVOQRFLZ+49BVfeAUrZT2vwEqLdm0p8RxucbVS8Z+NDL9RAA3t3r2Rm7?=
+ =?us-ascii?Q?CNJIgxdHPOItTSDzDjo0GXI56+PDWvihuTE4egcDyoAPG9jTdkXVbuUqbQfv?=
+ =?us-ascii?Q?yqyZL5yLZnV+32GDHyO2qex2O+zxplpVOPQVUdLQ4LS5WVKB4KDzLFMKfSKr?=
+ =?us-ascii?Q?nntblfMNHJt0lz1qc3vweBJKA99CgYMcvmacJdFgE/jQXb+bbq5vp4FuOwnZ?=
+ =?us-ascii?Q?9v22Mx/BSCquYVi2kWqDewKgMteTQTWcvIVnAUXRvTB+J3X2Yrfa9yVcBRmL?=
+ =?us-ascii?Q?IsScwOLrtcxvqyzCICFaTQ3fWkIkzIpyJNVLNxLW1slfeETRBz0lDQBTR+WP?=
+ =?us-ascii?Q?PnJK/HhD5J607DmGmo4hzdn3EEvW/iK6KehGo1Lx2kUOw5BOTRrTJO4dplaG?=
+ =?us-ascii?Q?aDFmsFQd+SGkP34uwaxb9H800pqm6nKWh7KXuJflb0e71f+yv6emGgqwaGBb?=
+ =?us-ascii?Q?/uuxUHFyoL3Gsafol6psp2YNTPbDvEiS46xZCVJqFFXGYkIW7TfD0pw6XrGG?=
+ =?us-ascii?Q?aahSu5JAoN+fjyTiOP5F6rnqEVMUl5nSyyNt5h2nDFHBysmzkysnQWjTuqi6?=
+ =?us-ascii?Q?AaXGgjKELGOCoAGUE4lgl1EjOVmvFujuJ7lleiMfo5fYS9w2FxOe3zG7g2+4?=
+ =?us-ascii?Q?Uvdc7tZbujXW+44J6LHVm693Rfmpv7tHCrcuNLd+7YNqRKENf0Dw0469pE/L?=
+ =?us-ascii?Q?9UmEbJotTBOXMNLt2sPafDCuVc4AM0EVA+nZPbQix3uwkUvtTcPS6h2NP3fc?=
+ =?us-ascii?Q?gQr95PHjZFnrkaX+iZvH07pDSkMiscGfJT896cNhulCV6acdh5iFABMdjwEj?=
+ =?us-ascii?Q?lN1gY6nHqjko27tcKT+f3eynI4Ajx8uQg26jru5XTc1oN4bLPCuFruXKp9di?=
+ =?us-ascii?Q?Qd0+d4iNXbCa6l2f6ioyo5qjTBZBNYSFMS0lKkK7E934nJ7FaUorwFRnKEo6?=
+ =?us-ascii?Q?QJkZdMFLHKdAaO1nSUWdrM7BeYQ1BtVdzzppcVJB8rOa5CA5lhMpkAxm0XOM?=
+ =?us-ascii?Q?CA1Bd3i2qafMWPpu2c/i6cXU9whWRpq8QfQZHkpjZPk4wownyM96OgI93N2u?=
+ =?us-ascii?Q?mVqN6D/slb55etc7ix88EKaiWLyX8uNByMsbbvYIwem+EJwd0e4pxl5tZ66Y?=
+ =?us-ascii?Q?noNJ67IPkTZ1yckeJtGMcmZ5h56oQQBJtUkRu6VzqyhLmTUgbDIMx/jvW5Rd?=
+ =?us-ascii?Q?FD0ydVjT1oq2riOG3grvBSn9jl0Pwu0Fu5CJg8qd++GRnZH9FnvIhgaozaft?=
+ =?us-ascii?Q?wY1/W9j+xjm1PuwE7VbzcIQD+iR0tKyKueJE2PNX?=
+X-OriginatorOrg: phytec.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 244199d9-1384-49eb-c453-08dc60a75a28
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR22MB5638.namprd22.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 19:31:46.9582
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 67bcab1a-5db0-4ee8-86f4-1533d0b4b5c7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cpIFrzazUNarZWdrkWRZKk3axta7zdeK/BVx8YoX2vHqzswMxAsoVN3EqU+LDalW/53PF8rtWgY1g4gNjXTx1w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR22MB3291
 
-On Fri, Apr 19, 2024 at 3:17=E2=80=AFAM Jesper Dangaard Brouer <hawk@kernel=
-org> wrote:
->
->
-> On 18/04/2024 23.00, Yosry Ahmed wrote:
-> > On Thu, Apr 18, 2024 at 4:00=E2=80=AFAM Jesper Dangaard Brouer<hawk@ker=
-nel.org>  wrote:
-> >> On 18/04/2024 04.21, Yosry Ahmed wrote:
-> >>> On Tue, Apr 16, 2024 at 10:51=E2=80=AFAM Jesper Dangaard Brouer<hawk@=
-kernel.org>  wrote:
-> >>>> This patch aims to reduce userspace-triggered pressure on the global
-> >>>> cgroup_rstat_lock by introducing a mechanism to limit how often read=
-ing
-> >>>> stat files causes cgroup rstat flushing.
-> >>>>
-> [...]
->
-> > Taking a step back, I think this series is trying to address two
-> > issues in one go: interrupt handling latency and lock contention.
->
-> Yes, patch 2 and 3 are essentially independent and address two different
-> aspects.
->
-> > While both are related because reducing flushing reduces irq
-> > disablement, I think it would be better if we can fix that issue
-> > separately with a more fundamental solution (e.g. using a mutex or
-> > dropping the lock at each CPU boundary).
-> >
-> > After that, we can more clearly evaluate the lock contention problem
-> > with data purely about flushing latency, without taking into
-> > consideration the irq handling problem.
-> >
-> > Does this make sense to you?
->
-> Yes, make sense.
->
-> So, you are suggesting we start with the mutex change? (patch 2)
-> (which still needs some adjustments/tuning)
+The phyBOARD-Electra has a GPIO fan header. This overlay enables the fan
+header and sets the fan to turn on at 65C.
 
-Yes. Let's focus on (what I assume to be) the more important problem,
-IRQ serving latency. Once this is fixed, let's consider the tradeoffs
-for improving lock contention separately.
+Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
+---
+ arch/arm64/boot/dts/ti/Makefile               |  4 ++
+ .../k3-am642-phyboard-electra-gpio-fan.dtso   | 50 +++++++++++++++++++
+ 2 files changed, 54 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-gpio-fan.dtso
 
-Thanks!
+diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+index 9a722c2473fb..fd91cf40af6d 100644
+--- a/arch/arm64/boot/dts/ti/Makefile
++++ b/arch/arm64/boot/dts/ti/Makefile
+@@ -48,6 +48,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-pcie.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-usb3.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
++dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-gpio-fan.dtbo
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
+ dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
+@@ -131,6 +132,8 @@ k3-am62p5-sk-csi2-tevi-ov5640-dtbs := k3-am62p5-sk.dtb \
+ 	k3-am62x-sk-csi2-tevi-ov5640.dtbo
+ k3-am642-evm-icssg1-dualemac-dtbs := \
+ 	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
++k3-am642-phyboard-electra-gpio-fan-dtbs := \
++	k3-am642-phyboard-electra-rdk.dtb k3-am642-phyboard-electra-gpio-fan.dtbo
+ k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
+ 	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
+ k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
+@@ -174,6 +177,7 @@ DTC_FLAGS_k3-am62-lp-sk += -@
+ DTC_FLAGS_k3-am62a7-sk += -@
+ DTC_FLAGS_k3-am62p5-sk += -@
+ DTC_FLAGS_k3-am642-evm += -@
++DTC_FLAGS_k3-am642-phyboard-electra-rdk += -@
+ DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
+ DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
+ DTC_FLAGS_k3-am68-sk-base-board += -@
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-gpio-fan.dtso b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-gpio-fan.dtso
+new file mode 100644
+index 000000000000..5057658061b4
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-gpio-fan.dtso
+@@ -0,0 +1,50 @@
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
++/*
++ * Copyright (C) 2024 PHYTEC America LLC
++ * Author: Nathan Morrisson <nmorrisson@phytec.com>
++ */
++
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/thermal/thermal.h>
++#include "k3-pinctrl.h"
++
++&{/} {
++	fan: gpio-fan {
++		compatible = "gpio-fan";
++		gpio-fan,speed-map = <0 0 8600 1>;
++		gpios = <&main_gpio0 28 GPIO_ACTIVE_LOW>;
++		#cooling-cells = <2>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&gpio_fan_pins_default>;
++	};
++};
++
++&main_pmx0 {
++	gpio_fan_pins_default: gpio-fan-default-pins {
++		pinctrl-single,pins = <
++			AM64X_IOPAD(0x070, PIN_OUTPUT, 7) /* (V18) GPMC0_AD13.GPIO0_28 */
++		>;
++	};
++};
++
++&thermal_zones {
++	main0_thermal: main0-thermal {
++		trips {
++			main0_thermal_trip0: main0-thermal-trip {
++				temperature = <65000>;  /* millicelsius */
++				hysteresis = <2000>;    /* millicelsius */
++				type = "active";
++			};
++		};
++
++		cooling-maps {
++			map0 {
++				trip = <&main0_thermal_trip0>;
++				cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++			};
++		};
++	};
++};
+-- 
+2.25.1
 
->
-> This make sense to me, as there are likely many solutions to reducing
-> the pressure on the lock.
->
-> With the tracepoint patch in-place, I/we can measure the pressure on the
-> lock, and I plan to do this across our CF fleet.  Then we can slowly
-> work on improving lock contention and evaluate this on our fleets.
->
-> --Jesper
-> p.s.
-> Setting expectations:
->   - Going on vacation today, so will resume work after 29th April.
 
