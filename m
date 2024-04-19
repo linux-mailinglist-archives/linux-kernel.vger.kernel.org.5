@@ -1,160 +1,213 @@
-Return-Path: <linux-kernel+bounces-151991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D37738AB712
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:06:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E4CA8AB71B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:12:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89EE51F21123
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:06:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 381A61C20C03
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:11:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BCC713D277;
-	Fri, 19 Apr 2024 22:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0071E13D289;
+	Fri, 19 Apr 2024 22:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TCxnuC75"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="klmOHkgY"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525C112DD97
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:06:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA79B13D248
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:11:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713564402; cv=none; b=rsB5u7XMACVCH+wm/s7Jl5VsBxlXz6QtPGed1WMLUg6tt1nGX7vrQY44NAjNL8ulV+pR8K/Ka8njXgKtW/+zj0OCXMIaoifFOzb+kpAsOliJFOFF1a3MToRAMIIg9BPvg+ZVhwjSpq29ItYb7s3+8EufE9mvtq55gUomWTTsxzA=
+	t=1713564713; cv=none; b=Ei+u1IppNuZfTaW/MTXIh7z2QqNppkoZtT+0BKCIQjhvomq7QCBnaQiW1bOvO5bPrpdiZwH5DaxRNMSFd6oV3t790VnQFA5Lp7F1P9A9ufe8+gsPzzR12sPqc+0tgqgSYs+WqNIHXl12QOnvERPgTA1m5OQqiB7B6raXwEXv1sk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713564402; c=relaxed/simple;
-	bh=HeT9nhhIMYBtkKPJip1Kr/IHxznmegsRPe83L4lJCPY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y28Tt7Qgul/BRBgzy2buRozdmWFVL2o1LVeZCuF5RcAEFni2v9otHDktQZuhN+9Ynyca5JXin6b9M3RqARhv68dwOy9XJlvTTp1sG5PV9uzne0jxj99r6fo4riKKQOdRaFlWrGuFKR/uirsFjcAG/ApCZjuyPKOrewM1jaF50lg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TCxnuC75; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6eff9dc1821so2679253b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713564400; x=1714169200; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SnHpohGprJrLzOXpBs7R+B8zUZeUsKWVGPy1iJRIl2k=;
-        b=TCxnuC75/8Q4dyjsYeIYpQ3yCszm6WdWKkmPMFU3uTwtvro0wWICjW0RxxndDrFwgi
-         VgmSgJNT9dQhKP4MREc09lRPMk/6CmU0FTY9CnRnnlCRq/ouLb+B76QYuSm21IC0tOf6
-         CgLjRJjmchjTfL5XZ9Bv3qmplBrRa0ELaTpiY=
+	s=arc-20240116; t=1713564713; c=relaxed/simple;
+	bh=UYppbqgkb9HL8eP99TFkv4gWxzja0p1FvJqGbmTcDAs=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LXbaBcJgEiTtN39O4093fF+e7B9FU4/0SYyDrhqYsxyeIbpfMaCbWjL/vEjNPuclM6Hv/fCMY3Y/SyvmtsJH1GsTqZ5baHW0ECfEo/iz3EpwbOkh1Ks4fQZBQ6pLNu22+ncw2BJs5x7yNrXa+YXMVJmxg44ySG5Mt7QLe9f8NHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=klmOHkgY; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4C0F43F1B4
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:11:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1713564709;
+	bh=qDs1PP73Myr2habNrM7w8WokE4Tu9ltpN7loN9K/23g=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=klmOHkgYk/n2LOTPqho1MopK9AUepx8w88mJDGFGoevfHmBG6ChY/aEpcfTE1d5eU
+	 +1AXdagyxC07nx9R8BkxnL8M8kqcSWIpYDvDN4nqMcBddvcWvpyd21l+ow0K38RdeZ
+	 mcvYhz1Ba8yHyWiDhRTzSvGOldKqPCO2Oj+Tzvl354hzUTZHH1r1NCcPn/aMjTkouN
+	 /3zf6vxqEbtKDCSI7rpbpnB4p2xV+OuLxZh33Vco6HZnaLGDNpRStvs85OvNShSxUw
+	 Qf9Sn2318kp52aD19+1dhagmTWB2P+zrxIbjWk/Mugsl6mEY6RTWqWDPxpXzvoQ1G7
+	 dRnvLtMWGs45Q==
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3c709618a03so3429236b6e.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:11:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713564400; x=1714169200;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SnHpohGprJrLzOXpBs7R+B8zUZeUsKWVGPy1iJRIl2k=;
-        b=MNaLoXv8OQrNMMEcimK8+1j0q8xmbdILJWKkQ4jm2zEK1W22IKjpZHwWr3YbjSLfmx
-         P3W5z19k05HGs4AIWyn/gYXWB/4z3Gl0Baa+sskATFgRVW1yX452TSjCs74U6MBlurmk
-         4IKDPYhxZ7ihwBzgSRQ5H1bNhGzE/MJj9DvzzEt0zgdtVfDpQzy2sdn+Dl+ZDf95xeol
-         kgJpj8zmm8PZtL25LcT6yLYuSUIuVZTvqdzkI8Y0Cp/+KR3mctBxYgbg0VQ7MXIA6FuL
-         vUTzW7O02spPqhCUUHXw2q8y5g4TKMqmU0Gqk7buMbAKtwIzK8SqwOAM5gdWRl9b5LLp
-         qRaA==
-X-Forwarded-Encrypted: i=1; AJvYcCV6h6dMQLN1qMUP/F8nG5DcH52Y3nMU6rvqS2TLcAtki6RwBWPQd1EVWVrYaE+Le75iYax122iZ/07gB4i1VcIHQYZnqbVOiK3VOEst
-X-Gm-Message-State: AOJu0YwR0bUyqKZE5HIBthm3wBjd0ikRPA3QBopykfJSK4F6oFx+ocC5
-	W6AV+ohtkWo0hP9NsPeY+a6Jyt2d0TyS0qtPM/o5/BZmU0FPjNZOtR25P13Cpg==
-X-Google-Smtp-Source: AGHT+IH1Pkisx80b5t24X2ImtRqmySWcV0DaxKzxf/v+MWxsgRhyCUvPxlo3v1fniPHvqeKc00XqhA==
-X-Received: by 2002:a05:6a00:1487:b0:6ea:c04c:a899 with SMTP id v7-20020a056a00148700b006eac04ca899mr4461837pfu.20.1713564400565;
-        Fri, 19 Apr 2024 15:06:40 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id bm5-20020a056a00320500b006ecf3e302ffsm3851578pfb.174.2024.04.19.15.06.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 15:06:39 -0700 (PDT)
-Date: Fri, 19 Apr 2024 15:06:39 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/19] Enable -Wshadow=local for kernel/sched
-Message-ID: <202404191458.17308A48D4@keescook>
-References: <20220302043451.2441320-1-willy@infradead.org>
- <202404161413.8B4810C5@keescook>
- <CAHk-=wg7+dfpEvDnTnB-eR9QRZ2VySbxOEHbYqL3Ai5wwkon5Q@mail.gmail.com>
- <Zh8dTOZ_YxeGhp-L@casper.infradead.org>
+        d=1e100.net; s=20230601; t=1713564708; x=1714169508;
+        h=content-transfer-encoding:cc:to:subject:message-id:date
+         :mime-version:references:in-reply-to:from:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qDs1PP73Myr2habNrM7w8WokE4Tu9ltpN7loN9K/23g=;
+        b=Cxw9m8aP4qGHlLgTud6Im2qHIyltf5q+uyBikizcHIdXL2xrteLh8qCyx+aZTkDLC4
+         qb3vhp7ONJmiEIjKX62H4YkPIxTHNJdE0CWYKYN2HBNxGQvcD5BaGqI3m3ccFo9zNrtW
+         EVB2mefrickgaaRXFfd4glocM7uSyqPCc37bReh7AK5nsE9JNHK5E7NhvoVV2cZup4mq
+         4PIQ3L/akjzBNTrjdODH4rVk2d8b480L2EhfcS5OpIB6a7TRTgvuuR+mz4A9yseLJsjn
+         XRcoHSviY3ac2nesTmQWNUj2HnCJzlZBFNEha6qgnw2NogqibnOB0ukTtKpZLLKxkvlw
+         BSwA==
+X-Forwarded-Encrypted: i=1; AJvYcCX7YCKhj6LreYtvLzghzyb5gFGPgZe2kY5GiDGay18nkYX2N0Aurh+fd9ENVCjQnN6v+2Mb+GQECnIB3EBzQubeACcWEJXp6irStvmx
+X-Gm-Message-State: AOJu0YySTPhRD6HTvjLcN9dBMW5eyTpaD+b8ruY6Ypb/BRRHhDriaDsj
+	jy+WSF5UjtVzxA0ukX0Y9NAoC4oVEWWNXn2/ZfGoqJ8QYyFKgzxxtnnGt4ngUjp+ql+TjP3rV9f
+	XNWajmsqzDdE7OhKiYWbs2/VPYfsSBlQZ95dNaZ0BAd9g3NoYXwFIFMyn5Y5ut1jWDnTaYnYNcv
+	C/pJX+hiGbT20z4/enZi+CmZBYwEcWI+NagatkX3zycvMZpHeUvYjp
+X-Received: by 2002:a05:6808:aa4:b0:3c7:df4:8fb2 with SMTP id r4-20020a0568080aa400b003c70df48fb2mr3355965oij.33.1713564708129;
+        Fri, 19 Apr 2024 15:11:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE24uPXK76ve4p+kz9T9NLOzorCp/2i7z+OZo/ijMXuEyfIYaaX+7aIp5O26ess0IsJvcz+NdmGN13nL+4dm4U=
+X-Received: by 2002:a05:6808:aa4:b0:3c7:df4:8fb2 with SMTP id
+ r4-20020a0568080aa400b003c70df48fb2mr3355944oij.33.1713564707849; Fri, 19 Apr
+ 2024 15:11:47 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 19 Apr 2024 15:11:47 -0700
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <ZgrIXHNRTB_NeDeF@xhacker>
+References: <20240131132600.4067-1-jszhang@kernel.org> <20240131132600.4067-7-jszhang@kernel.org>
+ <20240206-magma-deem-2c88e45a545a@spud> <43918921-0d05-41d3-a19b-f137314e868d@canonical.com>
+ <ZgYn9t4akccWuHyf@xhacker> <013f6d51-7f78-4de0-945d-8902f32c850a@canonical.com>
+ <ZgrIXHNRTB_NeDeF@xhacker>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zh8dTOZ_YxeGhp-L@casper.infradead.org>
+Mime-Version: 1.0
+Date: Fri, 19 Apr 2024 15:11:47 -0700
+Message-ID: <CAJM55Z_BemQoQ8Qrcz_vYOJ3n+-3DKn_iu==58euv9HWa99dEw@mail.gmail.com>
+Subject: Re: [PATCH v3 6/6] riscv: dts: starfive: add Milkv Mars board device tree
+To: Jisheng Zhang <jszhang@kernel.org>, 
+	Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Emil Renner Berthing <kernel@esmil.dk>, linux-riscv@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Conor Dooley <conor@kernel.org>, Aurelien Jarno <aurelien@aurel32.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 17, 2024 at 01:52:28AM +0100, Matthew Wilcox wrote:
-> On Tue, Apr 16, 2024 at 05:29:02PM -0700, Linus Torvalds wrote:
-> > On Tue, 16 Apr 2024 at 14:15, Kees Cook <keescook@chromium.org> wrote:
+Jisheng Zhang wrote:
+> On Mon, Apr 01, 2024 at 03:28:33PM +0200, Heinrich Schuchardt wrote:
+> > On 3/29/24 03:31, Jisheng Zhang wrote:
+> > > On Thu, Mar 28, 2024 at 10:28:28PM +0100, Heinrich Schuchardt wrote:
+> > > > On 2/6/24 20:13, Conor Dooley wrote:
+> > > > > On Wed, Jan 31, 2024 at 09:26:00PM +0800, Jisheng Zhang wrote:
+> > > > > > The Milkv Mars is a development board based on the Starfive JH7=
+110 SoC.
+> > > > > > The board features:
+> > > > > >
+> > > > > > - JH7110 SoC
+> > > > > > - 1/2/4/8 GiB LPDDR4 DRAM
+> > > > > > - AXP15060 PMIC
+> > > > > > - 40 pin GPIO header
+> > > > > > - 3x USB 3.0 host port
+> > > > > > - 1x USB 2.0 host port
+> > > > > > - 1x M.2 E-Key
+> > > > > > - 1x eMMC slot
+> > > > > > - 1x MicroSD slot
+> > > > > > - 1x QSPI Flash
+> > > > > > - 1x 1Gbps Ethernet port
+> > > > > > - 1x HDMI port
+> > > > > > - 1x 2-lane DSI and 1x 4-lane DSI
+> > > > > > - 1x 2-lane CSI
+> > > > > >
+> > > > > > Add the devicetree file describing the currently supported feat=
+ures,
+> > > > > > namely PMIC, UART, I2C, GPIO, SD card, QSPI Flash, eMMC and Eth=
+ernet.
+> > > > > >
+> > > > > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+..
+> > > > > > +
+> > > > > > +&mmc1 {
+> > > > > > +	disable-wp;
+> > > >
+> > > > Due to which difference is 'disable-wp' necessary for the Mars boar=
+d and not
+> > > > necessary for the VisionFive 2 board?
 > > >
-> > > I was looking at -Wshadow=local again, and remembered this series. It
-> > > sounded like things were close, but a tweak was needed. What would be
-> > > next to get this working?
-> > 
-> > So what is the solution to
-> > 
-> >     #define MAX(a,b) ({ \
-> >         typeof(a) __a = (a); \
-> >         typeof(b) __b = (b); \
-> >         __a > __b ? __a : __b; \
-> >     })
-> 
-> #define __MAX(a, __a, b, __b) ({	\
-> 	typeof(a) __a = (a);		\
-> 	typeof(b) __b = (b);		\
-> 	__a > __b ? __a : __b;		\
-> })
-> 
-> #define MAX(a, b)	__MAX(a, UNIQUE_ID(a), b, UNIQUE_ID(b))
+> > > Mars doesn't have wp pin, but dunno vf2 case since I don't have a VF2
+> > > board ;)
 
-Yup, this is what we've had for a long time now. See
-include/linux/minmax.h
+The schematic is available here:
+https://doc-en.rvspace.org/VisionFive2/PDF/RV002_V1.3B_20230208.PDF
 
-> At least, I think that was the plan.  This was two years ago and I've
-> mostly forgotten.
-> 
-> >     int test(int a, int b, int c)
-> >     {
-> >         return MAX(a, MAX(b,c));
-> >     }
-> > 
-> > where -Wshadow=all causes insane warnings that are bogus garbage?
-> > 
-> > Honestly, Willy's patch-series is a hack to avoid this kind of very
-> > natural nested macro pattern.
-> > 
-> > But it's a horrible hack, and it does it by making the code actively worse.
-> > 
-> > Here's the deal: if we can't handle somethng like the above without
-> > warning, -Wshadow isn't getting enabled.
-> > 
-> > Because we don't write worse code because of bad warnings.
-> > 
-> > IOW, what is the sane way to just say "this variable can shadow the
-> > use site, and it's fine"?
-> > 
-> > Without that kind of out, I don't think -Wshadow=local is workable.
+> >
+> > If the Milk-V Mars does not have a WP GPIO, we should be able to drop t=
+his
+> > property. The VisionFive 2 does not need it either.
+>
+> Nope, dropping this property would result in RO sdcard on vf2.
+> >
+> > > >
+> > > > > > +	cd-gpios =3D <&sysgpio 41 GPIO_ACTIVE_LOW>;
+> > > >
+> > > > On my VisionFive 2 1.2B, and 1.3A boards GPIO 41 reflects if an SD-=
+card is
+> > > > inserted (as shown in U-Boot by gpio status -a). So shouldn't this =
+value be
+> > > > moved to the common include "jh7110-visionfive2-mars-common.dtsi" a=
+nd
+> > > > broken-cd removed from the VisionFive2 board?
+> > >
+> > > I tested the CD pin and can confirm it works on Mars, but I dunno whe=
+ther
+> > > this works on VF2 since I have no VF2 board.
+> > > Could you please check whether it works or not on VF2?
+> >
+> > As mentioned in my prior mail the card detect GPIO is working on the
+> > VisionFive 2. StarFive acknowledged my U-Boot patch:
+> >
+> > https://lore.kernel.org/u-boot/SHXPR01MB086314C47C281B3DDDF7BAE9E63AA@S=
+HXPR01MB0863.CHNPR01.prod.partner.outlook.cn/
+>
+> Thanks for confirmation.
 
-This isn't a hill I want to die on, but it's just another case where
-we've fought bugs more than once that would have stood out immediately
-if we had -Wshadow=local enabled, but there is basically only 1 user. In
-my bug-fighting calculus, it makes sense to deal with fixing the 1 user
-so we can gain the coverage everywhere else.
+Actually comparing the schematic for the VF2 above and the Mars board[1] I
+don't see any differences in how the SD-card is connected, so if I'm right =
+the
+mmc1 node could be fully defined in the jh7110-common.dtsi.
 
-But there are much worse bug sources, so if Willy's series isn't
-workable, I'll drop this again for now. :)
+[1]: https://github.com/milkv-mars/mars-files/blob/main/Mars_hardware_schem=
+atics/Mars_V1.11_20230821.pdf
 
--Kees
+/Emil
 
-
--- 
-Kees Cook
+>
+> >
+> > Best regards
+> >
+> > Heinrich
+> >
+> > >
+> > > >
+> > > > https://doc-en.rvspace.org/VisionFive2/PDF/SCH_RV002_V1.2A_20221216=
+pdf
+> > > > has a line
+> > > >
+> > > >      GPIO41 | SD_SDIO0_CD_GPIO41 | Micro SD=EF=BC=9AJ10
+> > > >
+> > > > Best regards
+> > > >
+> > > > Heinrich
+> > > >
+> > > > > > +};
+> > > > > > --
+> > > > > > 2.43.0
+> > > >
+> >
 
