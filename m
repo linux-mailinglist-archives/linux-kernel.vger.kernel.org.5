@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-151573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CC7B8AB093
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:18:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83A388AB090
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:17:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33AA11F21BA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:18:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11652B21E51
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C4A12F38B;
-	Fri, 19 Apr 2024 14:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A3C12E1D4;
+	Fri, 19 Apr 2024 14:17:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="OAiag4wM"
+	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="F27+akl6"
 Received: from mout.perfora.net (mout.perfora.net [74.208.4.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3ABE12CDBF;
-	Fri, 19 Apr 2024 14:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E57912CD9C;
+	Fri, 19 Apr 2024 14:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713536254; cv=none; b=mGn6IDRMxwMLd45INnUw3NPEsqfbnQK5FcCr2UjEzPXZ7NSZUWZsetNXqLHJM1hu5d1lX4m+Zcqs0e4ArnU+2031hnEBOL2pwH8HtT+aU2wifdmK+xbY2hBRxWgj39ggRm7jhPHHe1GxUaUott1yyDZ+KrdFW7BkD3J5BfYa3Ng=
+	t=1713536252; cv=none; b=bX2c3qNyyaDAc7CX/yNH4my60Dai3MYNW2FMAkKpx6PBoGg+4U8L/weSPAWT+jlzlmIOdYCQ4xpdoWsRIpCk/fOfhK+7lTI2M4rShCr6iB92AjqcNutB/drF/c5cAG2sRJsVhLuWTVtC8aefojDhlbHBiwxU+w0eMbQPIFVy0s8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713536254; c=relaxed/simple;
-	bh=6FcMwAVQ1oQ13VSGE3/gSNaKF921zwjZHklsSqpjmWk=;
+	s=arc-20240116; t=1713536252; c=relaxed/simple;
+	bh=HZJYsLSJO95Bda462oEdjVbzym3pJBr84Yzl4diz1Zo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MHciLKfAnRw2CzYbOEX0Y69J3/xtoJrmyoPRKGukud72FEpzPNDDN0JginCa/8pGIuwghk8raZPDOfxu4yJaSav319cKdvSl6X1zlUEgDX1osnfmsg82J+pZmNCd+ZQt1yabJXlJyQw8LOIa8reK/cDR1awkYgC02p9oXeNUkVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=OAiag4wM; arc=none smtp.client-ip=74.208.4.197
+	 MIME-Version; b=NKAEzUDQrYaSvSgjLW+vigImQ954GaofEcVrpFp1t4xqVIaweQTlEYi8UoZRNFugNC3OmzThhyvHwcWsW3ofZP7BiCqxc6xJgtfhRc9vzGbu2ENK03/+7uTxXU20fqNdgMUYc8Vgh0hGSrQ6eFAGw+LwwSAPiH1qkgVI+oC3WFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=F27+akl6; arc=none smtp.client-ip=74.208.4.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
 	s=s1-ionos; t=1713536244; x=1714141044; i=parker@finest.io;
-	bh=91znGsyHENCtexZoIjuZ12Bug2BwW+jFHp+nXCy9hyc=;
+	bh=YqqvPxv1B8DJWco4lgEqCKwyKGylD23VurZSNiTLfx8=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
 	 References:MIME-Version:Content-Transfer-Encoding:cc:
 	 content-transfer-encoding:content-type:date:from:message-id:
 	 mime-version:reply-to:subject:to;
-	b=OAiag4wMjp22WE+ZuM2jreH2XJ9+fjOxATJqxVt98tunp2sH9oS/d0uemwOSEZnY
-	 fzdFYu4VNhe8gq5ev1Diu28bVBgGTafR2kSnwFyxTBKv6tkDADDzlvr3JXoZvXvXc
-	 f8yobC/DKFdYrwtjM3om7cluLs80jXe9biK8VDdxRJ/VLVudZJ8/cty1LsfKKLpqV
-	 JqaIdaKSr2fW3zScF47c5ar80jl6ypbhQQ0T1oRaEXHuYEyOAUYf9FXCsTo97Pecy
-	 PDBcGHg6jy9TcfFdx7irgJFpo/HNVN/Z0NTDm8APzvPOw5hSGiC5SwYWhBDcdm62r
-	 8WGaEBeT4IPpfEr70w==
+	b=F27+akl6Altf+hlTr/3pT0wqU/+auQzcceKSHhbkFyvam7DdyBqHarvBlASC2EHA
+	 fYxezS/1oYkMWzQFJESXB28RNKWsndgggYC5/ZT+dtghKcHK73HlV/Twr7tmkSRCp
+	 oUt/J+tlfugKJ8F67ddo325a8J/QMERIQ7t/0alT2dqMpGfU3yZ2j/Fl3sVcKvvHm
+	 zjKCJKwfE3I/GMJQ011vQrwqP1Sf2YGyeHsCr1nVkyLV+uC6KUN2LFbKwY5QlN7Lg
+	 DaRkyT5HH3jI+XbEVpCRB/jmz0el/3PH9rYX/BiE3qeWgMKk2auqfVnhHDyZIB3Lt
+	 o+vwHgNWSclaDO8+tQ==
 X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
 Received: from finest.io ([98.159.241.229]) by mrelay.perfora.net (mreueus003
- [74.208.5.2]) with ESMTPSA (Nemesis) id 0LjHGD-1saAkF05Z1-00dZVz; Fri, 19 Apr
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 0LvlsI-1snWS81UMu-017SbY; Fri, 19 Apr
  2024 16:17:24 +0200
 From: Parker Newman <parker@finest.io>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -54,9 +54,9 @@ To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-serial@vger.kernel.org
 Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
 	Parker Newman <pnewman@connecttech.com>
-Subject: [PATCH v2 2/4] serial: exar: use return dev_err_probe instead of returning error code
-Date: Fri, 19 Apr 2024 10:17:02 -0400
-Message-ID: <447100ccb30be8af635fe7f07c70a7d6ddd3427f.1713533298.git.pnewman@connecttech.com>
+Subject: [PATCH v2 3/4] serial: exar: return bool from exar_ee_read_bit()
+Date: Fri, 19 Apr 2024 10:17:03 -0400
+Message-ID: <cf67865525b30f58dbc8fbbe13865f73b5377c2f.1713533298.git.pnewman@connecttech.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <cover.1713533298.git.pnewman@connecttech.com>
 References: <cover.1713533298.git.pnewman@connecttech.com>
@@ -67,64 +67,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gJ/feI4o66KI/+U//3vro5I/LLpQ9rlYQ/tXWgyYls84Gd0rbm4
- 3Ny625v458WZpo8EV9jNl5eIJ+5t8hPuNGrIlKO2erGwDSFjdmkEyMwiaFq+TFvUOgy8Ac2
- ZwmIrWW9uhQVKblGlE2o1jcJyeEE3Jp+wtvhndP59t0OLZstv6czD8p8NhejUBs6fLt6nrg
- 5r84oNtW6OC29t/bcivfg==
+X-Provags-ID: V03:K1:xzqVBhCqb/U6CtNR6GG3MzefvOY+ONp/ikI1kv8y6i8PTMvBMtq
+ fbSB1bte7QZ1aWW7jOxQox9G3ilqoVb8j4wDXph2la30vdK5XRDSR8+k8RO10YXEd61E5Zi
+ 2MXMUcXfZY/Hs/Eeq4g5fZ9sub9EiaCnviIJBN/D7F5+/ZDQu9gAVC0tfobXG6Voi2urrXd
+ gGL7nWqy3CXK8m17NFAng==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:MeJh/ngW2n0=;bulCA/JtoEuf94hMT98XK/gXUcJ
- grjoS1ec77wgEwoDX59KjTdvaYPg1FTSVsFnWWkCyYWCQZ0jiw0tmL0E61+HunUvp/bbAr2pO
- 4tBm1t3X3HjCQjm/NsjLlgWS+NXAa1O56Yb8RpJjzzKbqrbdHbpM2b5LJiAZFwYkYAOp0SbsV
- mZo+x6huGZ0LLvWAa2y7AO02+2XRllQ+VAV4XUejvU2wrecPKWNv6kGQfXJ0HohlkXk+DpfpZ
- 4Onxh3zM1+FHd6kmVERrI/Txy7PkfeoVxt28eh6pBhbuDyuqkYKWzir05ZJfziQDDrvzPcog+
- JKmQ+g42DlXerE7/vL46IvgwNjSRnz4egzyzvVKK6qwjlJJ5y6MKu1D+NHQrF6Xdz03CA5cSL
- g6kJHRupKcinc5JeknFcV1Y5IjjfZ/xI/NiusPc5mzhyLMTjRLApjjL9XpI4WK+wNepEvx0rn
- F7vaUBOk5b69P5wlY33fVtA5ENmh8OeC/PtqI6bbeEdNhvgyrYI5t+4zjCKDJpvYbPPLOyjFb
- ShAJon5wyTb8rDngRj7QutVr97O7DiE7eETSe7khR/64wFdUOac3X/G0yls4Ubp+JvbeYwzMY
- yGxisWaEqD4gg5VWs31iUzTiX175Fz2BNwE24Dpy8KAlGRSBg7nyzJLXfQpSRLJCM69S+mrgB
- jbJsE9p52Xurmx1+1eXyXLjURBXWPdHhZ8uMFnv4gp9otIP+f068X/56tmi78TXVMgLwhLT2q
- eu7mmtlYsDw5JwHcNHPhEcCuxsl4/2NDQTEinr2BhQUbxd5REyEXn0=
+UI-OutboundReport: notjunk:1;M01:P0:3/ULcuGN6sQ=;CxQJ8hjwFj2I82WMAcdKm0RXpjM
+ u6Ef/vHIpgyjvEVfGcxtEdMDx7CnYWP/hhdSFnJlGxiUETGW/lTMGu8Srxvzw0QZRzfdnBvzA
+ QotEgQS7Qjt8GFlljkyiVk7zfRNneCQUEzIK7mrHAgVIwxF+qxq7m/CW73Ug0+JytWzd2NMkA
+ 4p8py1nE9QYpx+UB7/8KzaHUpVIf9hag7xD9dZmskfa7kMuDQkdP+hCiCXBKRmoaz9NxuSrrA
+ hwnqZiq6CmHmwx5a1DHNPiYvTjX8GNFvpoon3OY/vpZPdOTfXcp0/H8bvHe75NzhpnZYpJoaX
+ HREU/ZipvResBHOkMjuZwfmXGUkWGMW7qXQ8d3AD2x+pKlli+S64KbdnW7pkGZf2mN3rDIg99
+ H1Til+E9oLQvC/n11X5NgHBKOxLA/7CN2juHvATwXFPZOIcysRcXOIlzaKD7Dg/sghn7bM12O
+ 54rld8JLinPd18OtIyAofWngQZYCiWNCSMpFeeNh3N6dAyPM23ZsYwpr3RZJDe+zC9oZaQgRI
+ oy0z4eufshZdsFFVmpOX1uew2aFNlIonevimLQk08D6DuHYYXjsRSB9EZXer2WxVCGqg68vdy
+ QdqCUILNjYF/JcUqDxWeNOjykwcDkyjkIEwQF5sJ0zhQnm8BaxXIzH6ULNmqk/IHri3jRld8v
+ NCwCzvjEo9qrwl8ANIGtV857B/qtqhyNG7vqkZPZRAtrzv0SCxM+Ov3TP4Pv1KjDUc1zDdVtW
+ 3MATxOZ/3TMBFpyK7CR+puKs8/NYsXngaR+LGWjk6ddUeKeOhZg2HA=
 
 From: Parker Newman <pnewman@connecttech.com>
 
-Change to returning dev_err_probe() instead of returning the error code
-after calling dev_err_probe().
+Change exar_ee_read_bit() to return a bool instead of u8. Removed need
+for ternary or if/else for return value.
 
 Signed-off-by: Parker Newman <pnewman@connecttech.com>
 =2D--
- drivers/tty/serial/8250/8250_exar.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Changes in v2:
+- Change exar_ee_read_bit() to return a bool
+
+ drivers/tty/serial/8250/8250_exar.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250=
 /8250_exar.c
-index a180741da634..01748ddbf729 100644
+index 01748ddbf729..8665d3b7b673 100644
 =2D-- a/drivers/tty/serial/8250/8250_exar.c
 +++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -1551,9 +1551,8 @@ exar_pci_probe(struct pci_dev *pcidev, const struct =
-pci_device_id *ent)
+@@ -300,7 +300,7 @@ static inline void exar_ee_write_bit(struct exar8250 *=
+priv, int bit)
+ 	udelay(2);
+ }
 
- 	nr_ports =3D exar_get_nr_ports(board, pcidev);
- 	if (nr_ports =3D=3D 0) {
--		dev_err_probe(&pcidev->dev, -ENODEV,
-+		return dev_err_probe(&pcidev->dev, -ENODEV,
- 				"failed to get number of ports\n");
--		return -ENODEV;
- 	}
+-static inline u8 exar_ee_read_bit(struct exar8250 *priv)
++static inline bool exar_ee_read_bit(struct exar8250 *priv)
+ {
+ 	u8 regb;
+ 	u8 value =3D UART_EXAR_REGB_EECS;
+@@ -317,7 +317,7 @@ static inline u8 exar_ee_read_bit(struct exar8250 *pri=
+v)
 
- 	priv =3D devm_kzalloc(&pcidev->dev, struct_size(priv, line, nr_ports), G=
-FP_KERNEL);
-@@ -1587,9 +1586,8 @@ exar_pci_probe(struct pci_dev *pcidev, const struct =
-pci_device_id *ent)
- 	if (board->board_init) {
- 		rc =3D board->board_init(priv, pcidev);
- 		if (rc) {
--			dev_err_probe(&pcidev->dev, rc,
-+			return dev_err_probe(&pcidev->dev, rc,
- 					"failed to init serial board\n");
--			return rc;
- 		}
- 	}
+ 	regb =3D exar_read_reg(priv, UART_EXAR_REGB);
 
+-	return (regb & UART_EXAR_REGB_EEDO ? 1 : 0);
++	return regb & UART_EXAR_REGB_EEDO;
+ }
+
+ /**
 =2D-
 2.43.2
 
