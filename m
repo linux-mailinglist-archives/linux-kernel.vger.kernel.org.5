@@ -1,204 +1,274 @@
-Return-Path: <linux-kernel+bounces-151946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B568AB622
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:47:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FC798AB627
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:48:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77E441F20F6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:47:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C34F31C218AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985BB2BAE6;
-	Fri, 19 Apr 2024 20:47:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B69B32BAE0;
+	Fri, 19 Apr 2024 20:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b="FRToPgA1"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GxjpTcA7"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897C729D08;
-	Fri, 19 Apr 2024 20:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22DE2A1CF
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 20:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713559639; cv=none; b=Z35BmIR8Hp8Oebvx2Aij9BoNQZv//Ynf8igrBji1p/FXg7Wzk1B10AIQS3iF0PO4eVdKR4Ua/qVwCnkRB24bfZ8z9mykhsr3Ll3K4GVpqg/rc7Yuht7mtlIlEW8+1097bl+ENZM6M2dJnbFYusvJ1tt8KahdLhq2w3qEZFbgt08=
+	t=1713559711; cv=none; b=QkE4SDMPMibD0fkiSerUnZuY/s3i1scjc+r7BN4UIyJdb7XHDc46sTfpVBaqfAXT22erNQf5OulGBRk7MWt/Oedk+/A6/ZJA1fppPArpD7bEjfbdZ6sUke865nmI+I00CJqZnvPildMFvr28h6rU7ugYpFjBJRBUZKm9Y73yw0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713559639; c=relaxed/simple;
-	bh=7VpAFwL+3D3ttyUaSRw3OHV7fZ9JS8/eyOEtgwtnOfI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WIMNvINCbF6xAqiIij45Rsl/OFPMZtkQPFir00ktGhglZV3WAq9aknzwFWxKwVmZPjbDFerhw4icerNUeHZJ0CQ8GWt18elSR7KQwaRvcn1zCF7Q46LLpXVWef3NcgbIvkdgZwHky85q0rrVPiwIm32cvmEtzInZ/e1ASWef1TM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b=FRToPgA1; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1713559623; x=1714164423; i=schierlm@gmx.de;
-	bh=wub6ANDd/qCXO19TYMbZqURKk23D8Fpaj/WSvGcqDJk=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=FRToPgA12HcwnFfF1hK+YB6bUmkKmPdDuZCMyrQkYkyA/xSbRp/ylQnjLAywVwE8
-	 OEDb5i9auTdPfMG8sVIydyqeJPMDQDgZ/fkkEvOIrzqln2b1KOHBjgS1NI2Z7+3so
-	 a32Pqg8dr5F4P3/RX3ISt3jSgCVguBqe50M/K2SZLbSnwzKY2XcXIoNMeR9uEsZzz
-	 eKS+TOaxP8Ql0X2UyYgMZIofzh/u2YlsY+vUSIWYS5hK6uIu0o8Xh1z0jRInUd9o8
-	 2JFdQXohKdpwYRTgpXunmlgu0bbMFxMZIK4QTV5AftKfFbPp20O2kwo2BUta6HTTj
-	 obvYDLAtazPaRWEhDQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.178.56] ([79.195.84.101]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N6KYb-1smb1i300H-016euA; Fri, 19
- Apr 2024 22:47:03 +0200
-Message-ID: <938f6eda-f62c-457f-bc42-b2d12fc6e2c7@gmx.de>
-Date: Fri, 19 Apr 2024 22:47:06 +0200
+	s=arc-20240116; t=1713559711; c=relaxed/simple;
+	bh=DvvQfQjHZvt3I094t8XIXjqIQhk2wrjAku9v1k9ONJQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HTGYdqvFa/xYGhi7SB04x3D7hg8/SxCWhRMGRdQcf1RJbCPLuRtjOWbsIIALj2PR6G4ZrNtDaz50xRg7sJTW15fJkS8zXCzrnM/K1c+sftBYmBNFCeh1FjcXp+/7JfreugMkhq0qMkgAgorfCizgJYp3+YwPdMo58HZG+8xOTfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GxjpTcA7; arc=none smtp.client-ip=209.85.160.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-436ed871225so25621cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:48:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713559709; x=1714164509; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jdwBN6tcT1rkPndt3s/q21EflrWzoZs9NJ2XL0c5/ME=;
+        b=GxjpTcA7+UbRRdnjfGsMs6aV1sdFnyRjrayiNO6R6u737NqFmpMHdsCYKUZfc1KUUE
+         Sf0PaJ6X2Vh4KvIwJhfXQnKwizT9BD3QwQeI6GkSZxP0yVhmxyAOA0ykxq9/Gl3XKVjF
+         aVZEBUohzw57DOMclt9+VfbT4CfUdxtcEQm265xrmoda2bkVsrVHVm12s517vullFr+g
+         0JUs0Vmi3SVyQ7nj3mxZvb6KpbQF6eZKR/SkozWer4KYL2f8MdKcIJONyXHNMjou2BFD
+         60dHMhkl7cf+QZj3v7izgW09a1gHPqBkm5kw0Ng9n+aHBoGHg1bQ8CtyF7WK9V0xEI3C
+         RS9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713559709; x=1714164509;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jdwBN6tcT1rkPndt3s/q21EflrWzoZs9NJ2XL0c5/ME=;
+        b=rx6Gco5VSHKO/DDgrN4e8tRgNSbc/BBvPcrX2sLIHm2vuVVcsk9KsscxsamRaGHso4
+         szmJ8jDCG9Jk0T4aCts2z5Hl7ApQjGS4mpCpq/uRYwhVKJf73SCO5PeEnIyHnf1BUddb
+         vopVcdAOVzjnWr97vVm8/1ldZqp6ei4E9pazz2jzVr+tgvvuM1v5VKhfTZQZMMBPdiiW
+         6BUn/V4jjmsquvtmHqjBdIJpuu/pF6ArT+oi7Cc6z+TU7E1Qb5kgDE5hEAngHaIDm167
+         tJes8hEJdAsCL1Z6kdRiS8G/A764fAHwNupdWDg4YKAy88CxKnkSITJoWUI/4JYDpCFc
+         noFA==
+X-Forwarded-Encrypted: i=1; AJvYcCXAiu1U1uIWq+0tZzjWgsMwyCTpIy2eJGY3toDw7O+UaZLWdIsEed9Kqlt6BIEwRH0vnU7zfKT+k7Grpve9uiJh4NgkuIkdxMqBk7zc
+X-Gm-Message-State: AOJu0YyDr6gb/zL+KCiuv5b73FyBbMtHFPcQR38N/gNXaJTEBVeC88fS
+	ecQjLjUTgGNmtymKSFrwfBkNHWAek7fcRtdQ7MTw5pbSw0GmoSE3YioEAs2IPswJjAONUpFSFrt
+	MKbtNFLsfeWhTWkorJlUPYgo7ZY3GKWLDnT/H
+X-Google-Smtp-Source: AGHT+IHnP1X/uJdeFnAFt5SWKpANerf/z+ZZ3d5hKj8mNm8Ve8tSTI9oyLDn94kRt0shtjukZWu2UUMD2xkTzRuS724=
+X-Received: by 2002:ac8:5309:0:b0:437:b985:8523 with SMTP id
+ t9-20020ac85309000000b00437b9858523mr8583qtn.25.1713559708789; Fri, 19 Apr
+ 2024 13:48:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Early kernel panic in dmi_decode when running 32-bit kernel on
- Hyper-V on Windows 11
-Content-Language: de-DE
-To: Michael Kelley <mhklinux@outlook.com>, Jean DELVARE <jdelvare@suse.com>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>
-Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <2db080ae-5e59-46e8-ac4e-13cdf26067cc@gmx.de>
- <SN6PR02MB41578C71EB900E5725231462D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
- <e416f2a0-6162-481e-9194-11101fa1224c@gmx.de>
- <SN6PR02MB41573B2FED887B1E3DCADB55D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
- <71af4abb-cffd-449e-b397-bd3134d98fb3@gmx.de>
- <SN6PR02MB4157CFEA1F504635E4B8B471D4082@SN6PR02MB4157.namprd02.prod.outlook.com>
- <dade3cd83d4957d4407470f0ea494777406b44bd.camel@suse.com>
- <3c6f9fea-6865-40da-96c5-d12bc08ba266@gmx.de>
- <SN6PR02MB4157C677FDAD6507B443A8C7D40F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <SN6PR02MB415733CB1854317C980C3F18D40D2@SN6PR02MB4157.namprd02.prod.outlook.com>
-From: Michael Schierl <schierlm@gmx.de>
-Autocrypt: addr=schierlm@gmx.de; keydata=
- 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
- uxTR60TDY/d6Kz8=
-In-Reply-To: <SN6PR02MB415733CB1854317C980C3F18D40D2@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20240401232946.1837665-1-jthoughton@google.com>
+ <20240401232946.1837665-6-jthoughton@google.com> <ZhgZHJH3c5Lb5SBs@google.com>
+ <Zhgdw8mVNYZvzgWH@google.com>
+In-Reply-To: <Zhgdw8mVNYZvzgWH@google.com>
+From: James Houghton <jthoughton@google.com>
+Date: Fri, 19 Apr 2024 13:47:52 -0700
+Message-ID: <CADrL8HUpHQQbQCxd8JGVRr=eT6e4SYyfYZ7eTDsv8PK44FYV_A@mail.gmail.com>
+Subject: Re: [PATCH v3 5/7] KVM: x86: Participate in bitmap-based PTE aging
+To: David Matlack <dmatlack@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Yu Zhao <yuzhao@google.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, Sean Christopherson <seanjc@google.com>, 
+	Jonathan Corbet <corbet@lwn.net>, James Morse <james.morse@arm.com>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Shaoqin Huang <shahuang@redhat.com>, 
+	Gavin Shan <gshan@redhat.com>, Ricardo Koller <ricarkol@google.com>, 
+	Raghavendra Rao Ananta <rananta@google.com>, Ryan Roberts <ryan.roberts@arm.com>, 
+	David Rientjes <rientjes@google.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:TGze0OYyFXfWQdPVxVUe3OPrTjUG2jhfXbvVUBet4bz6FO0uOel
- m18BzIEhxLtdBQxVhk9mCFfMYA2wTGBlSJE3FcA/PQEnGIeeMNfnU8JveqA/NXWOPJQTWjQ
- MTWfW4feC6dyuy4FuCSga7968BWdt/hluqcPQeDGpTo8FOUG/Ln7ErJAkl6bI0sMTY8PiMz
- jCeOMsVSMl3Ai2cqciXkQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:XIvjN/1++JM=;L68oaGmWlkAoSxvQdPCniZWBwBQ
- fd2upuHBEy93QVsBr3M5OkWg6YWuJNITGOv2qIExx7x5IPgAnmMloZPxkxrh8E0kRg07UNxrf
- CmzsRwgQ83cwnlABWuai3uf9FmmBCVQ/e9f5uGM1E8B3S2gj3hoWQFHLgu+Hspv7v9gOBEfGy
- o1c4lYc61Z5dFMyzGeq7aBai/r+UOO+mKC3WKHQx7G1hqJqpHG0pgu9/zMgTIGb4vqLXWmoLu
- 8cg28zHFOpF/jc9NvCL20EFZ0AxIj8XNbLlnvhT9l0Ix/skm5o1v3stnCbKDhqq57DBTfQ+FF
- NfYErhrAKZDllSNUQeLR95GuN2Ex2wHzHZT/7UktcPLEqxNjP6xq1Qxt4XDtl3k5Qi5g/a+2R
- 3hCyXFEbnPwx/CDxT7zfonenBQuk32Wais/1RzAx/j/IndVjwtvk2FwHpvtT49HscNyRALds0
- 4fzBsFm/sxXfuEGCgn/ltszZFAqMtg0pNnuaUFCCXdQM3mqHML+jBdi+1DaeV2csEgA+AjC4Q
- YiNOitEvkbhb0TXNGIrPuuYGv5y88JlqEdEhc43Y3lD2PI80gNKws51Yzppli76Oa8hBf/pin
- CKHQ89qOrHPFjr36Xgr56w6h+UKFJ9NcQO4m6oeIOvHDlENW/WJ/unefLdSUB8aBTC1aB2bw6
- c7cntg7yvVfmckFkh8Jtcx+A75IeyPCms6zoaRlAtXwpwSvIELyzHOR3hNIQd2GJbs9Im5BRw
- c8l8tXCqYL/g8eNRrRXRv7Q7J7iMdag7LEjyreAyxWyhZE0X5khpUXIGMm9TEg7f4IZxeBOM2
- yLoCCWigjX5QnCPNpOngd+tvqNRgkFZrcBohRbeTIU0dQ=
 
-Hello,
-
-
-Am 19.04.2024 um 18:36 schrieb Michael Kelley:
-
->> I still want to understand why 32-bit Linux is taking an oops during
->> boot while 64-bit Linux does not.
+On Thu, Apr 11, 2024 at 10:28=E2=80=AFAM David Matlack <dmatlack@google.com=
+> wrote:
 >
-> The difference is in this statement in dmi_save_devices():
+> On 2024-04-11 10:08 AM, David Matlack wrote:
+> > On 2024-04-01 11:29 PM, James Houghton wrote:
+> > > Only handle the TDP MMU case for now. In other cases, if a bitmap was
+> > > not provided, fallback to the slowpath that takes mmu_lock, or, if a
+> > > bitmap was provided, inform the caller that the bitmap is unreliable.
+> > >
+> > > Suggested-by: Yu Zhao <yuzhao@google.com>
+> > > Signed-off-by: James Houghton <jthoughton@google.com>
+> > > ---
+> > >  arch/x86/include/asm/kvm_host.h | 14 ++++++++++++++
+> > >  arch/x86/kvm/mmu/mmu.c          | 16 ++++++++++++++--
+> > >  arch/x86/kvm/mmu/tdp_mmu.c      | 10 +++++++++-
+> > >  3 files changed, 37 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/k=
+vm_host.h
+> > > index 3b58e2306621..c30918d0887e 100644
+> > > --- a/arch/x86/include/asm/kvm_host.h
+> > > +++ b/arch/x86/include/asm/kvm_host.h
+> > > @@ -2324,4 +2324,18 @@ int memslot_rmap_alloc(struct kvm_memory_slot =
+*slot, unsigned long npages);
+> > >   */
+> > >  #define KVM_EXIT_HYPERCALL_MBZ             GENMASK_ULL(31, 1)
+> > >
+> > > +#define kvm_arch_prepare_bitmap_age kvm_arch_prepare_bitmap_age
+> > > +static inline bool kvm_arch_prepare_bitmap_age(struct mmu_notifier *=
+mn)
+> > > +{
+> > > +   /*
+> > > +    * Indicate that we support bitmap-based aging when using the TDP=
+ MMU
+> > > +    * and the accessed bit is available in the TDP page tables.
+> > > +    *
+> > > +    * We have no other preparatory work to do here, so we do not nee=
+d to
+> > > +    * redefine kvm_arch_finish_bitmap_age().
+> > > +    */
+> > > +   return IS_ENABLED(CONFIG_X86_64) && tdp_mmu_enabled
+> > > +                                    && shadow_accessed_mask;
+> > > +}
+> > > +
+> > >  #endif /* _ASM_X86_KVM_HOST_H */
+> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > > index 992e651540e8..fae1a75750bb 100644
+> > > --- a/arch/x86/kvm/mmu/mmu.c
+> > > +++ b/arch/x86/kvm/mmu/mmu.c
+> > > @@ -1674,8 +1674,14 @@ bool kvm_age_gfn(struct kvm *kvm, struct kvm_g=
+fn_range *range)
+> > >  {
+> > >     bool young =3D false;
+> > >
+> > > -   if (kvm_memslots_have_rmaps(kvm))
+> > > +   if (kvm_memslots_have_rmaps(kvm)) {
+> > > +           if (range->lockless) {
+> > > +                   kvm_age_set_unreliable(range);
+> > > +                   return false;
+> > > +           }
+> >
+> > If a VM has TDP MMU enabled, supports A/D bits, and is using nested
+> > virtualization, MGLRU will effectively be blind to all accesses made by
+> > the VM.
+> >
+> > kvm_arch_prepare_bitmap_age() will return true indicating that the
+> > bitmap is supported. But then kvm_age_gfn() and kvm_test_age_gfn() will
+> > return false immediately and indicate the bitmap is unreliable because =
+a
+> > shadow root is allocate. The notfier will then return
+> > MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE.
+> >
+> > Looking at the callers, MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE is never
+> > consumed or used. So I think MGLRU will assume all memory is
+> > unaccessed?
+> >
+> > One way to improve the situation would be to re-order the TDP MMU
+> > function first and return young instead of false, so that way MGLRU at
+> > least has visibility into accesses made by L1 (and L2 if EPT is disable
+> > in L2). But that still means MGLRU is blind to accesses made by L2.
+> >
+> > What about grabbing the mmu_lock if there's a shadow root allocated and
+> > get rid of MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE altogether?
+> >
+> >       if (kvm_memslots_have_rmaps(kvm)) {
+> >               write_lock(&kvm->mmu_lock);
+> >               young |=3D kvm_handle_gfn_range(kvm, range, kvm_age_rmap)=
+;
+> >               write_unlock(&kvm->mmu_lock);
+> >       }
+> >
+> > The TDP MMU walk would still be lockless. KVM only has to take the
+> > mmu_lock to collect accesses made by L2.
+> >
+> > kvm_age_rmap() and kvm_test_age_rmap() will need to become bitmap-aware
+> > as well, but that seems relatively simple with the helper functions.
 >
-> 	count =3D (dm->length - sizeof(struct dmi_header)) / 2;
+> Wait, even simpler, just check kvm_memslots_have_rmaps() in
+> kvm_arch_prepare_bitmap_age() and skip the shadow MMU when processing a
+> bitmap request.
 >
-> On a 64-bit system, count is 0xFFFFFFFE.  That's seen as a
-> negative value, and the "for" loop does not do any iterations. So
-> nothing bad happens.
+> i.e.
 >
-> But on a 32-bit system, count is 0x7FFFFFFE. That's a big
-> positive number, and the "for" loop iterates to non-existent
-> memory as Michael Schierl originally described.
+> static inline bool kvm_arch_prepare_bitmap_age(struct kvm *kvm, struct mm=
+u_notifier *mn)
+> {
+>         /*
+>          * Indicate that we support bitmap-based aging when using the TDP=
+ MMU
+>          * and the accessed bit is available in the TDP page tables.
+>          *
+>          * We have no other preparatory work to do here, so we do not nee=
+d to
+>          * redefine kvm_arch_finish_bitmap_age().
+>          */
+>         return IS_ENABLED(CONFIG_X86_64)
+>                 && tdp_mmu_enabled
+>                 && shadow_accessed_mask
+>                 && !kvm_memslots_have_rmaps(kvm);
+> }
 >
-> I don't know the "C" rules for mixed signed and unsigned
-> expressions, and how they differ on 32-bit and 64-bit systems.
-> But that's the cause of the different behavior.
-
-Probably lots of implementation defined behaviour here. But when looking
-at gcc 12.2 for x86/amd64 architecture (which is the version in Debian),
-it is at least apparent from the assembly listing:
-
-https://godbolt.org/z/he7MfcWfE
-
-First of all (this gets me every time): sizeof(int) is 4 on both 32-and
-64-bit, unlike sizeof(uintptr_t), which is 8 on 64-bit.
-
-Both 32-bit and 64-bit versions zero-extend the value of dm->length from
-8 bits to 32 bits (or actually native bitlength as the upper 32 bits of
-rax get set to zero whenever eax is assigned), and then the subtraction
-and shifting (division) happen as native unsigend type, taking only the
-lowest 32 bits of the result as value for count. In the 64-bit case one
-of the extra leading 1 bits from the subtraction gets shifted into the
-MSB of the result, while in the 32-bit case it remains empty.
-
-When using long instead of int (64-bit signed integer, as I assumed when
-looking at the code for the first time), the result would be
-0x7FFF_FFFF_FFFF_FFFE on 64-bits, as no truncations happens, and the
-behavior would be the same. This clearly shows that I am mentally still
-in the 32-bit era, perhaps that explains why I like 32-bit kernels over
-64-bit ones so much :D
-
-> Regardless of the 32-bit vs. 64-bit behavior, the DMI blob is malformed,
-> almost certainly as created by Hyper-V.  I'll see if I can bring this to
-> the attention of one of my previous contacts on the Hyper-V team.
+> bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+> {
+>         bool young =3D false;
+>
+>         if (!range->arg.metadata->bitmap && kvm_memslots_have_rmaps(kvm))
+>                 young =3D kvm_handle_gfn_range(kvm, range, kvm_age_rmap);
+>
+>         if (tdp_mmu_enabled)
+>                 young |=3D kvm_tdp_mmu_age_gfn_range(kvm, range);
+>
+>         return young;
+> }
+>
+> bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+> {
+>         bool young =3D false;
+>
+>         if (!range->arg.metadata->bitmap && kvm_memslots_have_rmaps(kvm))
+>                 young =3D kvm_handle_gfn_range(kvm, range, kvm_test_age_r=
+map);
+>
+>         if (tdp_mmu_enabled)
+>                 young |=3D kvm_tdp_mmu_test_age_gfn(kvm, range);
+>
+>         return young;
 
 
-Thanks,
+Yeah I think this is the right thing to do. Given your other
+suggestions (on patch 3), I think this will look something like this
+-- let me know if I've misunderstood something:
 
+bool check_rmap =3D !bitmap && kvm_memslot_have_rmaps(kvm);
 
-Michael
+if (check_rmap)
+  KVM_MMU_LOCK(kvm);
 
+rcu_read_lock(); // perhaps only do this when we don't take the MMU lock?
+
+if (check_rmap)
+  kvm_handle_gfn_range(/* ... */ kvm_test_age_rmap)
+
+if (tdp_mmu_enabled)
+  kvm_tdp_mmu_test_age_gfn() // modified to be RCU-safe
+
+rcu_read_unlock();
+if (check_rmap)
+  KVM_MMU_UNLOCK(kvm);
+
+> }
+>
+> Sure this could race with the creation of a shadow root but so can the
+> non-bitmap code.
 
