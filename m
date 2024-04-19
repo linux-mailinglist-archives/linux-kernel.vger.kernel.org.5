@@ -1,212 +1,182 @@
-Return-Path: <linux-kernel+bounces-152012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB1188AB754
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 291ED8AB755
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:42:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90DE0282874
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:41:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB85F282955
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDBEF13E3F3;
-	Fri, 19 Apr 2024 22:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4587D13D511;
+	Fri, 19 Apr 2024 22:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="keGV/MMs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WLTX7PNr"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D2213D639;
-	Fri, 19 Apr 2024 22:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25EC32BAE0
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713566443; cv=none; b=E860/gD0bnVVZzsSnibgeAlcFs2hiFnOp+jbO1MuNVkmxXHARwOAEwlZz6p2P7elx67xwjEQ7UblIoHXz5nacnFGEE+e2Cto0GxswyRzTdcPwh5qyZpJbP4USBQPhprWBerLz0NW4Gzr3+MHujrmjjcnS1EDomI/ldRx/hrjHcU=
+	t=1713566550; cv=none; b=HHRiWVZZmSg12h1vDPKm4tTRYvdrUCEUnXgohwKb4lwkq1VQLdV35D6JcXPTdjncZml99cv4xY55yUcj0nfWBuv3580jHcZU/tTNgb2Lxb+rGcOw3RfEnU6xdHAKETCe1ZdpOB5l5yKrCFUffyPT1MH9GwZ/2mmlxIfWCclfkzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713566443; c=relaxed/simple;
-	bh=CLOSPTOvgCa1gghsKOluMZpqjOL84fE+IgjLYFTiloc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t0rOVsHILTITjz0KujELw3nuJqaj7HRkTFz/BoOzZJ/PZyDAuq55ZF5dR3blhtizgCtbcd/uTmLD/GPJwavoeUBNQcMCdsFw7bFF/hdpgnZLUexZv/ZUbpukhlI9I7bSUm+tci/Fp0XA4/qTw6hiAopDJXt+JIjPZhYttE6UFH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=keGV/MMs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65D7FC116B1;
-	Fri, 19 Apr 2024 22:40:41 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="keGV/MMs"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1713566440;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r1N6bJmpLXPntAJnUgAgfuW02Wzo9jdJftZihclYhBg=;
-	b=keGV/MMscXm++2gDXDfH7LnKkO9scwzdqrQM5xVDzkOALsrorvavAWCByBBqOL9GXpt4fb
-	ZbCmh33zf8VBF1Ht5NcBjky1dxW9M5ZhgIEW6KJHZnHZcc6mJe35doa4isiG0ztw1hZCou
-	5UCPGosTnn5vJ9kyOtN7Nmjiypl/FB8=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 455959d4 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Fri, 19 Apr 2024 22:40:39 +0000 (UTC)
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: tytso@mit.edu,
-	robh@kernel.org,
-	krzk@kernel.org,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	sudanl@amazon.com,
-	graf@amazon.com,
-	dwmw@amazon.co.uk,
-	krzysztof.kozlowski@linaro.org,
-	bchalios@amazon.es
-Cc: "Jason A . Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v8 3/3] virt: vmgenid: add support for devicetree bindings
-Date: Sat, 20 Apr 2024 00:40:00 +0200
-Message-ID: <20240419224020.780377-4-Jason@zx2c4.com>
-In-Reply-To: <20240419224020.780377-1-Jason@zx2c4.com>
-References: <20240419224020.780377-1-Jason@zx2c4.com>
+	s=arc-20240116; t=1713566550; c=relaxed/simple;
+	bh=MfpVQcZKZfxcqXnDZkBgrvdLNjb2kvU8wneTGgoLZgA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=A21eKLDKYqOTq89XMfcuCxgIVRNXkWSpLTx5ZBvnsLab1clHKdOFSCPMUiJtP+ih+nlUAPhoCe/Sdova+kAg7TDD7JwBO5g1v0q2DvzZz0Vcj8Det9Egvy0lmCqn9TJmQ/yUcVqEi6DtG19FDwEn6cdJx98ZuHSleMLZIKed5K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WLTX7PNr; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ece5eeb7c0so2702913b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713566548; x=1714171348; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iy+MJbkT751OdEUQWG0XxX91zD+CE48zRuMpRKz7zBA=;
+        b=WLTX7PNrDnlk7UpZ34IygZXakQ7i0wB6OoFRSWM3zhc60ABzrJL5XyuK1X6X2yGLMm
+         3h20ZbPbtn8ggbalzcZc9RiZnDPUgu0kDpSSqoVhC5nVPIyawnW/AsZMYREkDvT2vdMN
+         eNgYqf6jp+ATjEHJFBzRvM+rzgLF2IlFJ5s7JdRpzHZsT02nNwEWzFl63tNbXlyzq97M
+         Lekmg/dZM+BbMZEvXKxCU3aLgKLJoSt3o8lrE9twGjI7de/zOBGOF43sUYcz8Q6fZhbv
+         RB8P/nessnxaqNO3yI5REEYlUksE1vH3+DoevE2v2jkBTch8frahFQth65LKm/YKLN97
+         d01A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713566548; x=1714171348;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=iy+MJbkT751OdEUQWG0XxX91zD+CE48zRuMpRKz7zBA=;
+        b=v6B/QSVI2ovl/1qelY5YBBYzm/oP2f7PMrsm09SbKUh0nh5CORqkgPvTMxrfvu0XWs
+         UQzbdsHVAQ8WR1sCv2WFTTSdVsaeoyb3TWn0R5zpUUXkfQpE9Cikqf9Q8o5f0P2GtitI
+         nIaWsAWzwdgc5Xub286GC2fQNOIaVddfkuD/qysThmtbUh+AEjlZ6AQwmYzTDpjYYkjU
+         g0ym7f4sTMo30ds3ZNZieSPC56p3lP8iitZqJ8TvVMiX8btpp62cbbg54UDi5YLEH9JU
+         ke7f5tIMO0ZrObsc/lA9bL2iFq3v5Yg6TKyTfEYnYeV+4HEfSuLx9pdAudTAagWNxlp5
+         ZOgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEmeEbMuIRisfLFJ/7hw81oY8W/o1FDruXBXTks2iBxL6BI60LVVVvClNLEbZM1cupTUzPlyH8Tq9fX0c+QeC0KmjxS5flZUgPsJdf
+X-Gm-Message-State: AOJu0Yz6SzvNjggToTASrSfowTHknMDRBAXa8Hl+h5FcEvq10rnSlkRD
+	p2Q1khPqA9+dvVXx1+3s7F0rwk6FqvAe9Hwiq25I38HGxAotnBOX7VjqpiUG7PQJ3g==
+X-Google-Smtp-Source: AGHT+IHEbFTGGZKOj1oYxGql7quFyu9P/6RgwR2+0LCeGrTUXbIjOmu+vuCD6k+g58hhOyh2nId1a+I=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:3a0c:b0:6ea:be7b:2eda with SMTP id
+ fj12-20020a056a003a0c00b006eabe7b2edamr343604pfb.6.1713566548418; Fri, 19 Apr
+ 2024 15:42:28 -0700 (PDT)
+Date: Fri, 19 Apr 2024 15:42:26 -0700
+In-Reply-To: <CAADnVQKoPfHC_o7jSa0W-gC=fqodmNDeoRO8eaTPN_NxBuXD6w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <0000000000004792a90615a1dde0@google.com> <CAADnVQKoPfHC_o7jSa0W-gC=fqodmNDeoRO8eaTPN_NxBuXD6w@mail.gmail.com>
+Message-ID: <ZiLzUgbW6dw-FYtf@google.com>
+Subject: Re: [syzbot] [bpf?] BUG: unable to handle kernel paging request in
+ bpf_prog_ADDR (2)
+From: Stanislav Fomichev <sdf@google.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: syzbot <syzbot+838346b979830606c854@syzkaller.appspotmail.com>, 
+	"=?utf-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Eddy Z <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, Yonghong Song <yonghong.song@linux.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Sudan Landge <sudanl@amazon.com>
+On 04/19, Alexei Starovoitov wrote:
+> On Mon, Apr 8, 2024 at 8:53=E2=80=AFPM syzbot
+> <syzbot+838346b979830606c854@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.ker=
+nel..
+> > git tree:       upstream
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D12596223180=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D4d90a36f0ca=
+b495a
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D838346b979830=
+606c854
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for D=
+ebian) 2.40
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D134ecbb51=
+80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D141a8b3d180=
+000
+> >
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/f6c04726a2ae/d=
+isk-fe46a7dd.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/09c26ce901ea/vmli=
+nux-fe46a7dd.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/134acf7f5322=
+/bzImage-fe46a7dd.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the co=
+mmit:
+> > Reported-by: syzbot+838346b979830606c854@syzkaller.appspotmail.com
+> >
+> > BUG: unable to handle page fault for address: 0000001000000112
+> > #PF: supervisor read access in kernel mode
+> > #PF: error_code(0x0000) - not-present page
+> > PGD 800000002e7b1067 P4D 800000002e7b1067 PUD 0
+> > Oops: 0000 [#1] PREEMPT SMP KASAN PTI
+> > CPU: 0 PID: 5060 Comm: syz-executor351 Not tainted 6.8.0-syzkaller-0895=
+1-gfe46a7dd189e #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
+ Google 03/27/2024
+> > RIP: 0010:bpf_prog_a8e24a805b35c61b+0x19/0x1e
+> > Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc f3 0f 1e fa 0f=
+ 1f 44 00 00 66 90 55 48 89 e5 f3 0f 1e fa 31 c0 48 8b 7f 18 <8b> 7f 00 c9 =
+c3 cc cc cc cc cc cc 40 03 00 00 cc cc cc cc cc cc cc
+> > RSP: 0018:ffffc90003b07b30 EFLAGS: 00010246
+> > RAX: 0000000000000000 RBX: ffffc90000ace048 RCX: ffff88802aa89e00
+> > RDX: 0000000000000000 RSI: ffffc90000ace048 RDI: 0000001000000112
+> > RBP: ffffc90003b07b30 R08: ffffffff81bf633c R09: 1ffffffff2595ca0
+> > R10: dffffc0000000000 R11: ffffffffa000095c R12: ffffc90000ace030
+> > R13: ffff88802ac3ae28 R14: dffffc0000000000 R15: ffff88802ac3ae28
+> > FS:  000055558f759380(0000) GS:ffff8880b9400000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000001000000112 CR3: 0000000077cfa000 CR4: 00000000003506f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  <TASK>
+> >  bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+> >  __bpf_prog_run include/linux/filter.h:657 [inline]
+> >  bpf_prog_run include/linux/filter.h:664 [inline]
+> >  bpf_prog_run_array_cg kernel/bpf/cgroup.c:51 [inline]
+> >  __cgroup_bpf_run_filter_setsockopt+0x6fa/0x1040 kernel/bpf/cgroup.c:18=
+30
+> >  do_sock_setsockopt+0x6b4/0x720 net/socket.c:2293
+> >  __sys_setsockopt+0x1ae/0x250 net/socket.c:2334
+> >  __do_sys_setsockopt net/socket.c:2343 [inline]
+> >  __se_sys_setsockopt net/socket.c:2340 [inline]
+> >  __x64_sys_setsockopt+0xb5/0xd0 net/socket.c:2340
+> >  do_syscall_64+0xfb/0x240
+> >  entry_SYSCALL_64_after_hwframe+0x6d/0x75
+>=20
+> This one looks interesting.
+> But I cannot reproduce it.
+>=20
+> Bjorn or Stan,
+>=20
+> Could you take a look?
+>=20
+> Probably a race in xdp dispatcher setup or the way cgroup-lsm
+> logic is doing it.
 
-Extend the vmgenid platform driver to support devicetree bindings. With
-this support, hypervisors can send vmgenid notifications to the virtual
-machine without the need to enable ACPI. The bindings are located at:
-Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml
-
-Since this is no longer ACPI-dependent, remove the dependency from
-Kconfig and protect the ACPI code with a single ifdef.
-
-Signed-off-by: Sudan Landge <sudanl@amazon.com>
-Reviewed-by: Alexander Graf <graf@amazon.com>
-[Jason: - Small style cleanups and refactoring.
-        - Re-work ACPI conditionalization. ]
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- drivers/virt/Kconfig   |  1 -
- drivers/virt/vmgenid.c | 53 ++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 51 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
-index 40129b6f0eca..d8c848cf09a6 100644
---- a/drivers/virt/Kconfig
-+++ b/drivers/virt/Kconfig
-@@ -16,7 +16,6 @@ if VIRT_DRIVERS
- config VMGENID
- 	tristate "Virtual Machine Generation ID driver"
- 	default y
--	depends on ACPI
- 	help
- 	  Say Y here to use the hypervisor-provided Virtual Machine Generation ID
- 	  to reseed the RNG when the VM is cloned. This is highly recommended if
-diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
-index 0522107f9bee..66135eac3abf 100644
---- a/drivers/virt/vmgenid.c
-+++ b/drivers/virt/vmgenid.c
-@@ -2,12 +2,13 @@
- /*
-  * Copyright (C) 2022 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-  *
-- * The "Virtual Machine Generation ID" is exposed via ACPI and changes when a
-+ * The "Virtual Machine Generation ID" is exposed via ACPI or DT and changes when a
-  * virtual machine forks or is cloned. This driver exists for shepherding that
-  * information to random.c.
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-@@ -41,6 +42,7 @@ static void setup_vmgenid_state(struct vmgenid_state *state, void *virt_addr)
- 	add_device_randomness(state->this_id, sizeof(state->this_id));
- }
- 
-+#ifdef CONFIG_ACPI
- static void vmgenid_acpi_handler(acpi_handle __always_unused handle,
- 				 u32 __always_unused event, void *dev)
- {
-@@ -92,6 +94,43 @@ static int vmgenid_add_acpi(struct device *dev, struct vmgenid_state *state)
- 	ACPI_FREE(parsed.pointer);
- 	return ret;
- }
-+#else
-+static int vmgenid_add_acpi(struct device *dev, struct vmgenid_state *state)
-+{
-+	return -EINVAL;
-+}
-+#endif
-+
-+static irqreturn_t vmgenid_of_irq_handler(int __always_unused irq, void *dev)
-+{
-+	vmgenid_notify(dev);
-+	return IRQ_HANDLED;
-+}
-+
-+static int vmgenid_add_of(struct platform_device *pdev,
-+			  struct vmgenid_state *state)
-+{
-+	void *virt_addr;
-+	int ret;
-+
-+	virt_addr = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
-+	if (IS_ERR(virt_addr))
-+		return PTR_ERR(virt_addr);
-+
-+	setup_vmgenid_state(state, virt_addr);
-+
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = devm_request_irq(&pdev->dev, ret, vmgenid_of_irq_handler,
-+			       IRQF_SHARED, "vmgenid", &pdev->dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	pdev->dev.driver_data = state;
-+	return 0;
-+}
- 
- static int vmgenid_add(struct platform_device *pdev)
- {
-@@ -103,13 +142,22 @@ static int vmgenid_add(struct platform_device *pdev)
- 	if (!state)
- 		return -ENOMEM;
- 
--	ret = vmgenid_add_acpi(dev, state);
-+	if (dev->of_node)
-+		ret = vmgenid_add_of(pdev, state);
-+	else
-+		ret = vmgenid_add_acpi(dev, state);
- 
- 	if (ret < 0)
- 		devm_kfree(dev, state);
- 	return ret;
- }
- 
-+static const struct of_device_id vmgenid_of_ids[] = {
-+	{ .compatible = "microsoft,vmgenid", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, vmgenid_of_ids);
-+
- static const struct acpi_device_id vmgenid_acpi_ids[] = {
- 	{ "VMGENCTR", 0 },
- 	{ "VM_GEN_COUNTER", 0 },
-@@ -122,6 +170,7 @@ static struct platform_driver vmgenid_plaform_driver = {
- 	.driver     = {
- 		.name   = "vmgenid",
- 		.acpi_match_table = vmgenid_acpi_ids,
-+		.of_match_table = vmgenid_of_ids,
- 	},
- };
- 
--- 
-2.44.0
-
+Managed to repro it by hacking the C reproducer to attach bpf prog
+to /sys/fs/cgroup instead of syzkallers custom path. Will try to
+poke it a bit more..
 
