@@ -1,105 +1,98 @@
-Return-Path: <linux-kernel+bounces-151451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6469B8AAF1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:13:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18DF38AAF19
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:11:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E31062822C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:13:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 449711C20FAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:11:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5A9686634;
-	Fri, 19 Apr 2024 13:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECDD886642;
+	Fri, 19 Apr 2024 13:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SmnJbJSd"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T3ruHu/x"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB228565E;
-	Fri, 19 Apr 2024 13:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C811685C66;
+	Fri, 19 Apr 2024 13:11:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713532416; cv=none; b=fugZd+Vdj8numwfdtbwUtC2tLghU5DGGDvDtFjDS7FR8POGBNT+hnsDWuM9wEZ+stMUz9UDv3kkuId4LAG+JizX1PsMW8kEtcVUv4gb5xHehYVCR1rDMpAt0LjdXeX5f7Xp0OB+U1+r7AbeMGYbFpxOwEhN9RXqAwsFtpqPsv0A=
+	t=1713532288; cv=none; b=kE5UDEIksfhPrUkPDnzzci5R2sG8niuzFLzv5G4obdOC1h74uNgvTTtv9G7dIMUruGvyQUXpZN1Bj1X3p9g0wk7pPP+ewxSd/EDk8+nFACKc8cJnO+YdPXUV8d4TyB+MEpRyJsj8j5ZxE012QWgDnQT8HDZoUR+rv5PfvcbQMSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713532416; c=relaxed/simple;
-	bh=MJ73iTnDL63VDAaoVci/EpuuDDKiIcZS/XQoD41BgO0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ftLssyOfUmH/zA2RPwYFExzToJGKiRcwedM81dzx28Cw0MGsSaIvmGTv1AdvwzzwXStFEGjMKeCX/KI9GpGVWVj+RiLG5AxjNWQNtssjs3dzeh8JAti9gbnxe4bhn1iKNmJNJDwv+/N/TrsQmJql/TRF5NV/PkpJoZGekiLKt58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SmnJbJSd; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2da01cb187cso35517161fa.0;
-        Fri, 19 Apr 2024 06:13:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713532412; x=1714137212; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MJ73iTnDL63VDAaoVci/EpuuDDKiIcZS/XQoD41BgO0=;
-        b=SmnJbJSdI6v9/yvTO3CRSdD6LwFaQFxfHv8Dy2Xdu1o29KV9FpLE0F/m0WT6Ilqyha
-         TT0xYCk6tDb3kZ993xljOVqLmV+JyKIlPEl9S0MCMrAnlvxpFB7l/ihxu5dCnixzXnf9
-         uIvRF1AFCv1fE9xhDr+sIwoPQW5uBhOLOh258zpg1hzZMOFEDKVoFvCmyL865HR/3wC6
-         O42ObIe4WtFDxcXRAguuArf+y2250GnSUr/xj8RrDdEvzeHk8EHuidcyAgZIAxZKmpkj
-         V9hd1RsQiWvIz7ukwkWWlc09Gl7idkBaOxH5FpTLl7LoJUT4NXEM3F40ZtGDfyXsybC6
-         /3ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713532412; x=1714137212;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MJ73iTnDL63VDAaoVci/EpuuDDKiIcZS/XQoD41BgO0=;
-        b=ZWz+mR8/R9Fbc88JLuCexcJ+YYWAbdfwfWg7WROX2gCxLfjqPCqqDsoFjRCOLoLIyQ
-         abbfmZAX0LhLtvFulLQlSnHbjcFBfygn3r6+SBK20/i44+l3Hz3DMBViWC+0i9c/zlUr
-         08t4X/TaZnDWQrDuW4MOPNbaW7FJZzbSj3Do9aKEaX3y7KTHKbmck6BjdW03K+oI5tp6
-         f8VEBVFBL4IEXrd2mRx6Z1D8BPAfnafFbwEjMtfKmBs5aZpfBmEBBPwv/223v1Ubhxob
-         sTwt0MbruXfS/mLPxroF+PQwzIJJaukn/KXqM74AWvS74aKa0UFnanoXX37Q0yqzHqMF
-         9LVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXtWXw9aqb3Yc5ol0KPo5zX3qCMxH2XLLPnYVQ67e/uaUQzH0oPhskV7XJQ7mU36Do0oVtot2AUP30BRzH6gYdSgS5HmB90dgPnqniT0nuepO47v3TSqOFa58E1409bEOxSMTwABHd5Sg==
-X-Gm-Message-State: AOJu0YxffBp6oE6uSId5fGODi5kiMl26yGALcTfSOBgHCxZglBaYi3Ub
-	zBLNGidJUnwwPHTl9DRCYsgf03z+YSBAv4kJA6GZPPMPdceyKiBSAdYZtlkk2IlDRLLUIQnr6vM
-	YopgvGj9ofpZ85Jr/TIcyYEdbiHtaaaVC
-X-Google-Smtp-Source: AGHT+IG7gfxPubAP9gSOnIjknhFnPUEiFEDKljcZeaFawdJsO8HX2BiSv3dGeybyWDrlIggO9Zs8TBAZwl9Lc6qL9ik=
-X-Received: by 2002:a05:651c:a12:b0:2db:817d:834 with SMTP id
- k18-20020a05651c0a1200b002db817d0834mr2198605ljq.10.1713532412340; Fri, 19
- Apr 2024 06:13:32 -0700 (PDT)
+	s=arc-20240116; t=1713532288; c=relaxed/simple;
+	bh=5XGX/Ye8FpOuF+a1rEVVlIlT5QIHfcDllEy08pVVaDw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=J+4GtPBGqWSrNG3W6QvYzcCYH0iEJAwjw4V0WlaCvnsqjZbYCchVqt6f41HmF2RtMZyer1L62Sy/7LUB4sR62X9ajTc+8P5cgCsZp/8RSmBFweHzzgs1JSjvKa/igF/525lxIE3KlDr9iOL1VTP8rW+bBFN7uP2UoDl9Gbxv/sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T3ruHu/x; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713532287; x=1745068287;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=5XGX/Ye8FpOuF+a1rEVVlIlT5QIHfcDllEy08pVVaDw=;
+  b=T3ruHu/x9PYunZyUVswdPybpSuaa0LedY01Wm/YHuWZ8Pj7M/tVnYq36
+   5yagbxSk2jqNSTVva/UPEDfybLggVEY/vzoC2SbyltUw/48co9ZMdbF3B
+   Pdiq1uEy+ikGAudw1eP3AaVRrxo0n1ly/5xwR4CqsBLDeBV5AnrWeAERV
+   73SAXOCh5oC3f1D9FRCc04c31YsX+84iddwwVhPxETiTVwvGr6MLRmiqI
+   pTVaqR5dW5my/WlkpgiRhfzxfi4E9rQ3mBAEJI6stk4F9h4TIN9aq2714
+   deMP9wNf0UxoAuzblSSBRlzQa/Ap8Hj5dCWPi1Fblc04lIbsOKqmV/awC
+   Q==;
+X-CSE-ConnectionGUID: 2wQkTeToQzaYNp3hrMXIlA==
+X-CSE-MsgGUID: 4041bUk/RE+pQFZ4foLuZw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="20523359"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="20523359"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:11:26 -0700
+X-CSE-ConnectionGUID: uMT1LSi8QI2zQ61+kp8WmQ==
+X-CSE-MsgGUID: f4lR2tpMSlaLoliVJUp49Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="23355879"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmviesa009.fm.intel.com with ESMTP; 19 Apr 2024 06:11:24 -0700
+Message-ID: <2b704ce4-1626-1227-213c-11bce35cf7b9@linux.intel.com>
+Date: Fri, 19 Apr 2024 16:13:14 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240419080555.97343-1-aapo.vienamo@linux.intel.com>
-In-Reply-To: <20240419080555.97343-1-aapo.vienamo@linux.intel.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Fri, 19 Apr 2024 16:12:55 +0300
-Message-ID: <CAHp75Ve=TUqba0Ga23QCiP7uM==VzY6kL=3A-5k5WNJAz4gGuA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: Add Intel Granite Rapids-D vGPIO driver
-To: Aapo Vienamo <aapo.vienamo@linux.intel.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
-	Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	Mika Westerberg <mika.westerberg@linux.intel.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v1 0/2] xhci: pci: Little PCI IDs refactoring
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Niklas Neronin <niklas.neronin@intel.com>, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Mathias Nyman <mathias.nyman@intel.com>
+References: <20240418154928.3641649-1-andriy.shevchenko@linux.intel.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+In-Reply-To: <20240418154928.3641649-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 19, 2024 at 11:07=E2=80=AFAM Aapo Vienamo
-<aapo.vienamo@linux.intel.com> wrote:
->
-> This driver provides a basic GPIO driver for the Intel Granite Rapids-D
-> virtual GPIOs. On SoCs with limited physical pins on the package, the
-> physical pins controlled by this driver would be exposed on an external
-> device such as a BMC or CPLD.
->
-> Signed-off-by: Aapo Vienamo <aapo.vienamo@linux.intel.com>
-> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+On 18.4.2024 18.48, Andy Shevchenko wrote:
+> Just a couple of updates to the PCI IDs in order of better maintenance.
+> No functional change intended.
+> 
+> Andy Shevchenko (2):
+>    xhci: pci: Use full names in PCI IDs for Intel platforms
+>    xhci: pci: Group out Thunderbolt xHCI IDs
+> 
+>   drivers/usb/host/xhci-pci.c | 30 ++++++++++++++++--------------
+>   1 file changed, 16 insertions(+), 14 deletions(-)
+> 
 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Thanks, added to my for-usb-next branch
 
-Hmm... How did this happen?
-
---=20
-With Best Regards,
-Andy Shevchenko
+-Mathias
 
