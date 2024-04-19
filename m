@@ -1,125 +1,526 @@
-Return-Path: <linux-kernel+bounces-151745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B53A8AB350
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:28:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD6488AB354
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:28:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19B191F237AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:28:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 143CB1C21926
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:28:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6FA3131BD8;
-	Fri, 19 Apr 2024 16:28:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF62131BAD;
+	Fri, 19 Apr 2024 16:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GUxiIJAm"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="J6yGG/3L"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EEA313118B;
-	Fri, 19 Apr 2024 16:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAE513118B;
+	Fri, 19 Apr 2024 16:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713544096; cv=none; b=C6XazGlR/s7h5sPTkRMJKbQ+QuylALro08VEwvJ2Szvm9BG/s16SfZEo8oo1U0XuksKp1dp81oKufQIbzNhL6eUp0F5TfQyCLlzcARo3ue67voJFHnRGicnZ+p4IBVVJyy00tPg1RUVfW+yMMCCXx/yHvwd+4aohh6qWv6vtrA0=
+	t=1713544104; cv=none; b=IzYe2r5lAtL4m5dWLqskrwiLpxGY0QifZastQ3rMIus/gEG4+wnZLQFhs1DVHNcRFrQzQHT8+5DTEut7mBpB/JcmtP1eZ3sxNn+csOHi/xEzNmw9naiEuR0fUM27qtRu5o2AaHvIvLFDXWkCdHljcj1Qcp6+gPfNNGHkUAL5Yuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713544096; c=relaxed/simple;
-	bh=QvlnKcfUXd9ghJBIsUKXVa09unyUXlbufFJu5bfaDws=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fCpqYzaQoeb1Hr27sxPIEQb0EO1r73jHBgU72XX9GaKsw0msOGntVV75lQ1Tzm/QfaQiNZfpCxnF/NYqxR5+Uvgd6GU9pUOFcQMFopEciRPkHberNQXjc0WFUa/j+LLcFm0YTPaWbTEQ+31dzVODBLq8885jEdqkGxSGkKW8PE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GUxiIJAm; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-349a33a9667so329299f8f.3;
-        Fri, 19 Apr 2024 09:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713544092; x=1714148892; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NKvBaK8IulYDHeht15hMBBpdCFxjrVh7TLjc+u1RIOQ=;
-        b=GUxiIJAmU+vbLM9hbkiBDczV56cKLMu8me74VA1Lkth5jxwXjM11eCucCNUqolrsGO
-         oqpLdGdAqk4ela3IX9y7RGhHRBvRzqr1aBM5+g7NS3cbPJEcBBLkx9gmXdhLOcaACwrT
-         pHHx1k/tNLNQJDHuPbQEuriK1c0NjR3TKJyNJEpoWVzu4NF/WX2P0j/Ex/V/bWI0JEm+
-         R2eXw2FVTxBKh5WVTdLlEBY7yUePdGmyba6CGe3FTJy/HQB52l2ZO9y6/k9zIfpKI5L1
-         l2H5+MsZyRxy7Kpn6BvO5nn6pkqdn+w/DXyk2X9VUwNXCYEMMrvVx3E7XF4skvg/i5Y7
-         RUkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713544092; x=1714148892;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NKvBaK8IulYDHeht15hMBBpdCFxjrVh7TLjc+u1RIOQ=;
-        b=ubJfyrq8IxFu1nkVab49BvmrFWU1h9r+sATxZGCGvIW8eOBMZ//Arag7QJ7mepOkdM
-         Lng2LOpdaDmoMigtAwna+XhwkSgvgTGvU9rgmn9vsdrawjjbivwmmyTDPw2kg10Yxahi
-         NnfdTDT/y/iMmFdzsH5V/7cJPDyFNz/nO3bSxGnpRg2GCVRx8d1pFZ9v9kLQLrgX1Q0V
-         keO1/FKzyv5YzJDX7xZk4nkwmWv5LsHhR0Zl/WCmyI3lJv5eOuGHg4JOhS03wOc2DdfN
-         e/zuZkZvIZysLr9UEvCeWmXL9k5zlZypAus39xy9v5Py26ZTDBIOs8CI8z0Lgm/6XKe9
-         v5SA==
-X-Forwarded-Encrypted: i=1; AJvYcCWTf0FX5CJ153qiQl1yeWv5sgHTjW+oP9wEjhfr+DUxyUNY7/Y+KfKfcblKZtzaCIcJos1tZAq8+eDcGg6m2Qj2Lg8YVSpQEeT1fez/+Dlv
-X-Gm-Message-State: AOJu0YzMJW9WipI6CMZMZAp9xyfP3mdhSVnTorRqF0KkIxp6vDPb8flq
-	9vBfdrvHJQtQx9bQFVyKFbBDoDZajcBFRV+7QlusLbfpqJPhjbeeswgLhA==
-X-Google-Smtp-Source: AGHT+IGxBbMeD6JeHgbcoxTwOlr8/cHIKrumJiQ8lj5PZ20CNcGeGXoJHXDV0DoRchV6zbdmfc41sw==
-X-Received: by 2002:a05:600c:1c9c:b0:418:ef65:4b5f with SMTP id k28-20020a05600c1c9c00b00418ef654b5fmr1848314wms.3.1713544092302;
-        Fri, 19 Apr 2024 09:28:12 -0700 (PDT)
-Received: from [172.16.102.219] ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id j1-20020a05600c1c0100b0041895d1c7bfsm10900543wms.42.2024.04.19.09.28.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 09:28:11 -0700 (PDT)
-Message-ID: <cff8eeeb-ae4c-42b8-8a85-4838959c1e28@gmail.com>
-Date: Fri, 19 Apr 2024 17:28:09 +0100
+	s=arc-20240116; t=1713544104; c=relaxed/simple;
+	bh=DOmX0iOkHW2cJzuR1rPdldKVk2CxrIbKn1lcMhY+CDI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TBRpZvU5aGkf7I1we8ihYBXMWBhtZa5xBppQ0tap6X4EnGsh2bIrkIYqqUqOolrRge+1axBZdFArTR9FL6RAw1TYLQQa+cbDnaPsZBCn7QqpBxZsFWBxEzwMwoSdfM1XP9ZCrmoNXfSa+iVL4HetTg0Qrf2sAy+cRvP1Mu5gURA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=J6yGG/3L; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=3/ZWGvXqRoKz8HtRF0dXAu1mFH2qGH4fmM0vuYDhJ6k=; b=J6yGG/3La4BTYI8JjhMgOM7BQH
+	4bVt0d/koOOfAgayreGIR4vWa1RtMTXmzYkc1qNlcQ5trwiIzLagCVciUOhSDHagyXODbTLsc23rS
+	+HodFCLUZgyXFfsH+eP36bUtZxkwIujqWPjgP04weXE4krKr/fX/Cw1rUbmPQoZF3IHNXmoPQWFDW
+	FTHKP3eaE7uahB6Z8Lgb1bEeAm/Lr139fcDI4ucyQUFJIlp3WwYjNqTCCeR5e/iheOGk3yFd6YvS3
+	dCnXFADnnwkcN3754SnScOY2hJl8UL4vI3pgK7rhisrD1nQ50FfSmLhSyIey4ETj2PhmsuG9U6FZd
+	w/K4JtVg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rxr5y-0000000CVku-3Wke;
+	Fri, 19 Apr 2024 16:28:15 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 7BA8130043E; Fri, 19 Apr 2024 18:28:14 +0200 (CEST)
+Date: Fri, 19 Apr 2024 18:28:14 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Elizabeth Figura <zfigura@codeweavers.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	wine-devel@winehq.org,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Wolfram Sang <wsa@kernel.org>,
+	Arkadiusz Hiler <ahiler@codeweavers.com>,
+	Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH v4 02/27] ntsync: Introduce NTSYNC_IOC_WAIT_ALL.
+Message-ID: <20240419162814.GA39162@noisy.programming.kicks-ass.net>
+References: <20240416010837.333694-1-zfigura@codeweavers.com>
+ <20240416010837.333694-3-zfigura@codeweavers.com>
+ <20240417113703.GL30852@noisy.programming.kicks-ass.net>
+ <3479054.QJadu78ljV@camazotz>
+ <20240418093511.GQ40213@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] string: Merge separate tests into string_kunit.c
-To: Kees Cook <keescook@chromium.org>, Andy Shevchenko <andy@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20240419140017.work.012-kees@kernel.org>
-Content-Language: en-US
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-In-Reply-To: <20240419140017.work.012-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240418093511.GQ40213@noisy.programming.kicks-ass.net>
 
-On 4/19/24 15:01, Kees Cook wrote:
-> Hi,
+On Thu, Apr 18, 2024 at 11:35:11AM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 17, 2024 at 03:03:05PM -0500, Elizabeth Figura wrote:
 > 
-> We have a few lone function tests (strscpy and strcat) that are better
-> collected into the common string_kunit.c test suite. Perform various
-> renamings, merge everything, and clean up after them.
+> > Ach. I wrote this with the idea that the race isn't meaningful, but
+> > looking at it again you're right—there is a harmful race here.
+> > 
+> > I think it should be fixable by moving the atomic_read inside the lock,
+> > though.
 > 
-> -Kees
-> 
-> Kees Cook (5):
->    string: Prepare to merge strscpy_kunit.c into string_kunit.c
->    string: Merge strscpy KUnit tests into string_kunit.c
->    string: Prepare to merge strcat KUnit tests into string_kunit.c
->    string: Merge strcat KUnit tests into string_kunit.c
->    string: Convert KUnit test names to standard convention
-> 
->   MAINTAINERS         |   2 -
->   lib/Kconfig.debug   |  10 --
->   lib/Makefile        |   2 -
->   lib/strcat_kunit.c  | 104 ------------------
->   lib/string_kunit.c  | 258 +++++++++++++++++++++++++++++++++++++++-----
->   lib/strscpy_kunit.c | 142 ------------------------
->   6 files changed, 230 insertions(+), 288 deletions(-)
->   delete mode 100644 lib/strcat_kunit.c
->   delete mode 100644 lib/strscpy_kunit.c
-> 
+> Right, I've ended up with the (as yet untested) below. I'll see if I can
+> find time later to actually test things.
 
-I tested all of the patches in the series with kunit_tool, and 
-everything works correctly.
+Latest hackery... I tried testing this but I'm not having luck using the
+patched wine as per the other email.
 
-Thank you for doing this!
-
-Tested-by: Ivan Orlov <ivan.orlov0322@gmail.com>
--- 
-Kind regards,
-Ivan Orlov
-
+---
+--- a/drivers/misc/ntsync.c
++++ b/drivers/misc/ntsync.c
+@@ -18,6 +18,7 @@
+ #include <linux/sched/signal.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
++#include <linux/mutex.h>
+ #include <uapi/linux/ntsync.h>
+ 
+ #define NTSYNC_NAME	"ntsync"
+@@ -43,6 +44,7 @@ enum ntsync_type {
+ 
+ struct ntsync_obj {
+ 	spinlock_t lock;
++	int dev_locked;
+ 
+ 	enum ntsync_type type;
+ 
+@@ -132,14 +134,107 @@ struct ntsync_device {
+ 	 * wait_all_lock is taken first whenever multiple objects must be locked
+ 	 * at the same time.
+ 	 */
+-	spinlock_t wait_all_lock;
++	struct mutex wait_all_lock;
+ 
+ 	struct file *file;
+ };
+ 
++/*
++ * Single objects are locked using obj->lock.
++ *
++ * Multiple objects are 'locked' while holding dev->wait_all_lock to avoid lock
++ * order issues. In this case however, single objects are not locked by holding
++ * obj->lock, but by setting obj->dev_locked.
++ *
++ * This means that in order to lock a single object, the sequence is slightly
++ * more complicated than usual. Specifically it needs to check obj->dev_locked
++ * after acquiring obj->lock, if set, it needs to drop the lock and acquire
++ * dev->wait_all_lock in order to serialize against the multi-object operation.
++ */
++
++static void dev_lock_obj(struct ntsync_device *dev, struct ntsync_obj *obj)
++{
++	lockdep_assert_held(&dev->wait_all_lock);
++	lockdep_assert(obj->dev == dev);
++	spin_lock(&obj->lock);
++	/*
++	 * By setting obj->dev_locked inside obj->lock, it is ensured that
++	 * anyone holding obj->lock must see the value.
++	 */
++	obj->dev_locked = 1;
++	spin_unlock(&obj->lock);
++}
++
++static void dev_unlock_obj(struct ntsync_device *dev, struct ntsync_obj *obj)
++{
++	lockdep_assert_held(&dev->wait_all_lock);
++	lockdep_assert(obj->dev == dev);
++	spin_lock(&obj->lock);
++	obj->dev_locked = 0;
++	spin_unlock(&obj->lock);
++}
++
++static void obj_lock(struct ntsync_obj *obj)
++{
++	struct ntsync_device *dev = obj->dev;
++
++	for (;;) {
++		spin_lock(&obj->lock);
++		if (likely(!obj->dev_locked))
++			break;
++
++		spin_unlock(&obj->lock);
++		mutex_lock(&dev->wait_all_lock);
++		spin_lock(&obj->lock);
++		/*
++		 * obj->dev_locked should be set and released under the same
++		 * wait_all_lock section, since we now own this lock, it should
++		 * be clear.
++		 */
++		lockdep_assert(!obj->dev_locked);
++		spin_unlock(&obj->lock);
++		mutex_unlock(&dev->wait_all_lock);
++	}
++}
++
++static void obj_unlock(struct ntsync_obj *obj)
++{
++	spin_unlock(&obj->lock);
++}
++
++static bool ntsync_lock_obj(struct ntsync_device *dev, struct ntsync_obj *obj)
++{
++	bool all;
++
++	obj_lock(obj);
++	all = atomic_read(&obj->all_hint);
++	if (unlikely(all)) {
++		obj_unlock(obj);
++		mutex_lock(&dev->wait_all_lock);
++		dev_lock_obj(dev, obj);
++	}
++
++	return all;
++}
++
++static void ntsync_unlock_obj(struct ntsync_device *dev, struct ntsync_obj *obj, bool all)
++{
++	if (all) {
++		dev_unlock_obj(dev, obj);
++		mutex_unlock(&dev->wait_all_lock);
++	} else {
++		obj_unlock(obj);
++	}
++}
++
++#define ntsync_assert_held(obj) \
++	lockdep_assert((lockdep_is_held(&(obj)->lock) != LOCK_STATE_NOT_HELD) || \
++		       ((lockdep_is_held(&(obj)->dev->wait_all_lock) != LOCK_STATE_NOT_HELD) && \
++			(obj)->dev_locked))
++
+ static bool is_signaled(struct ntsync_obj *obj, __u32 owner)
+ {
+-	lockdep_assert_held(&obj->lock);
++	ntsync_assert_held(obj);
+ 
+ 	switch (obj->type) {
+ 	case NTSYNC_TYPE_SEM:
+@@ -171,11 +266,11 @@ static void try_wake_all(struct ntsync_d
+ 
+ 	lockdep_assert_held(&dev->wait_all_lock);
+ 	if (locked_obj)
+-		lockdep_assert_held(&locked_obj->lock);
++		lockdep_assert(locked_obj->dev_locked);
+ 
+ 	for (i = 0; i < count; i++) {
+ 		if (q->entries[i].obj != locked_obj)
+-			spin_lock_nest_lock(&q->entries[i].obj->lock, &dev->wait_all_lock);
++			dev_lock_obj(dev, q->entries[i].obj);
+ 	}
+ 
+ 	for (i = 0; i < count; i++) {
+@@ -211,7 +306,7 @@ static void try_wake_all(struct ntsync_d
+ 
+ 	for (i = 0; i < count; i++) {
+ 		if (q->entries[i].obj != locked_obj)
+-			spin_unlock(&q->entries[i].obj->lock);
++			dev_unlock_obj(dev, q->entries[i].obj);
+ 	}
+ }
+ 
+@@ -220,7 +315,7 @@ static void try_wake_all_obj(struct ntsy
+ 	struct ntsync_q_entry *entry;
+ 
+ 	lockdep_assert_held(&dev->wait_all_lock);
+-	lockdep_assert_held(&obj->lock);
++	lockdep_assert(obj->dev_locked);
+ 
+ 	list_for_each_entry(entry, &obj->all_waiters, node)
+ 		try_wake_all(dev, entry->q, obj);
+@@ -230,7 +325,8 @@ static void try_wake_any_sem(struct ntsy
+ {
+ 	struct ntsync_q_entry *entry;
+ 
+-	lockdep_assert_held(&sem->lock);
++	ntsync_assert_held(sem);
++	lockdep_assert(sem->type == NTSYNC_TYPE_SEM);
+ 
+ 	list_for_each_entry(entry, &sem->any_waiters, node) {
+ 		struct ntsync_q *q = entry->q;
+@@ -250,7 +346,8 @@ static void try_wake_any_mutex(struct nt
+ {
+ 	struct ntsync_q_entry *entry;
+ 
+-	lockdep_assert_held(&mutex->lock);
++	ntsync_assert_held(mutex);
++	lockdep_assert(mutex->type == NTSYNC_TYPE_MUTEX);
+ 
+ 	list_for_each_entry(entry, &mutex->any_waiters, node) {
+ 		struct ntsync_q *q = entry->q;
+@@ -276,7 +373,8 @@ static void try_wake_any_event(struct nt
+ {
+ 	struct ntsync_q_entry *entry;
+ 
+-	lockdep_assert_held(&event->lock);
++	ntsync_assert_held(event);
++	lockdep_assert(event->type == NTSYNC_TYPE_EVENT);
+ 
+ 	list_for_each_entry(entry, &event->any_waiters, node) {
+ 		struct ntsync_q *q = entry->q;
+@@ -302,6 +400,7 @@ static int post_sem_state(struct ntsync_
+ 	__u32 sum;
+ 
+ 	lockdep_assert_held(&sem->lock);
++	lockdep_assert(sem->type == NTSYNC_TYPE_SEM);
+ 
+ 	if (check_add_overflow(sem->u.sem.count, count, &sum) ||
+ 	    sum > sem->u.sem.max)
+@@ -317,6 +416,7 @@ static int ntsync_sem_post(struct ntsync
+ 	__u32 __user *user_args = argp;
+ 	__u32 prev_count;
+ 	__u32 args;
++	bool all;
+ 	int ret;
+ 
+ 	if (copy_from_user(&args, argp, sizeof(args)))
+@@ -325,30 +425,18 @@ static int ntsync_sem_post(struct ntsync
+ 	if (sem->type != NTSYNC_TYPE_SEM)
+ 		return -EINVAL;
+ 
+-	if (atomic_read(&sem->all_hint) > 0) {
+-		spin_lock(&dev->wait_all_lock);
+-		spin_lock_nest_lock(&sem->lock, &dev->wait_all_lock);
+-
+-		prev_count = sem->u.sem.count;
+-		ret = post_sem_state(sem, args);
+-		if (!ret) {
+-			try_wake_all_obj(dev, sem);
+-			try_wake_any_sem(sem);
+-		}
+-
+-		spin_unlock(&sem->lock);
+-		spin_unlock(&dev->wait_all_lock);
+-	} else {
+-		spin_lock(&sem->lock);
++	all = ntsync_lock_obj(dev, sem);
+ 
+-		prev_count = sem->u.sem.count;
+-		ret = post_sem_state(sem, args);
+-		if (!ret)
+-			try_wake_any_sem(sem);
+-
+-		spin_unlock(&sem->lock);
++	prev_count = sem->u.sem.count;
++	ret = post_sem_state(sem, args);
++	if (!ret) {
++		if (all)
++			try_wake_all_obj(dev, sem);
++		try_wake_any_sem(sem);
+ 	}
+ 
++	ntsync_unlock_obj(dev, sem, all);
++
+ 	if (!ret && put_user(prev_count, user_args))
+ 		ret = -EFAULT;
+ 
+@@ -377,6 +465,7 @@ static int ntsync_mutex_unlock(struct nt
+ 	struct ntsync_device *dev = mutex->dev;
+ 	struct ntsync_mutex_args args;
+ 	__u32 prev_count;
++	bool all;
+ 	int ret;
+ 
+ 	if (copy_from_user(&args, argp, sizeof(args)))
+@@ -387,30 +476,18 @@ static int ntsync_mutex_unlock(struct nt
+ 	if (mutex->type != NTSYNC_TYPE_MUTEX)
+ 		return -EINVAL;
+ 
+-	if (atomic_read(&mutex->all_hint) > 0) {
+-		spin_lock(&dev->wait_all_lock);
+-		spin_lock_nest_lock(&mutex->lock, &dev->wait_all_lock);
+-
+-		prev_count = mutex->u.mutex.count;
+-		ret = unlock_mutex_state(mutex, &args);
+-		if (!ret) {
+-			try_wake_all_obj(dev, mutex);
+-			try_wake_any_mutex(mutex);
+-		}
++	all = ntsync_lock_obj(dev, mutex);
+ 
+-		spin_unlock(&mutex->lock);
+-		spin_unlock(&dev->wait_all_lock);
+-	} else {
+-		spin_lock(&mutex->lock);
+-
+-		prev_count = mutex->u.mutex.count;
+-		ret = unlock_mutex_state(mutex, &args);
+-		if (!ret)
+-			try_wake_any_mutex(mutex);
+-
+-		spin_unlock(&mutex->lock);
++	prev_count = mutex->u.mutex.count;
++	ret = unlock_mutex_state(mutex, &args);
++	if (!ret) {
++		if (all)
++			try_wake_all_obj(dev, mutex);
++		try_wake_any_mutex(mutex);
+ 	}
+ 
++	ntsync_unlock_obj(dev, mutex, all);
++
+ 	if (!ret && put_user(prev_count, &user_args->count))
+ 		ret = -EFAULT;
+ 
+@@ -438,6 +515,7 @@ static int ntsync_mutex_kill(struct ntsy
+ {
+ 	struct ntsync_device *dev = mutex->dev;
+ 	__u32 owner;
++	bool all;
+ 	int ret;
+ 
+ 	if (get_user(owner, (__u32 __user *)argp))
+@@ -448,28 +526,17 @@ static int ntsync_mutex_kill(struct ntsy
+ 	if (mutex->type != NTSYNC_TYPE_MUTEX)
+ 		return -EINVAL;
+ 
+-	if (atomic_read(&mutex->all_hint) > 0) {
+-		spin_lock(&dev->wait_all_lock);
+-		spin_lock_nest_lock(&mutex->lock, &dev->wait_all_lock);
++	all = ntsync_lock_obj(dev, mutex);
+ 
+-		ret = kill_mutex_state(mutex, owner);
+-		if (!ret) {
++	ret = kill_mutex_state(mutex, owner);
++	if (!ret) {
++		if (all)
+ 			try_wake_all_obj(dev, mutex);
+-			try_wake_any_mutex(mutex);
+-		}
+-
+-		spin_unlock(&mutex->lock);
+-		spin_unlock(&dev->wait_all_lock);
+-	} else {
+-		spin_lock(&mutex->lock);
+-
+-		ret = kill_mutex_state(mutex, owner);
+-		if (!ret)
+-			try_wake_any_mutex(mutex);
+-
+-		spin_unlock(&mutex->lock);
++		try_wake_any_mutex(mutex);
+ 	}
+ 
++	ntsync_unlock_obj(dev, mutex, all);
++
+ 	return ret;
+ }
+ 
+@@ -477,34 +544,22 @@ static int ntsync_event_set(struct ntsyn
+ {
+ 	struct ntsync_device *dev = event->dev;
+ 	__u32 prev_state;
++	bool all;
+ 
+ 	if (event->type != NTSYNC_TYPE_EVENT)
+ 		return -EINVAL;
+ 
+-	if (atomic_read(&event->all_hint) > 0) {
+-		spin_lock(&dev->wait_all_lock);
+-		spin_lock_nest_lock(&event->lock, &dev->wait_all_lock);
++	all = ntsync_lock_obj(dev, event);
+ 
+-		prev_state = event->u.event.signaled;
+-		event->u.event.signaled = true;
++	prev_state = event->u.event.signaled;
++	event->u.event.signaled = true;
++	if (all)
+ 		try_wake_all_obj(dev, event);
+-		try_wake_any_event(event);
+-		if (pulse)
+-			event->u.event.signaled = false;
++	try_wake_any_event(event);
++	if (pulse)
++		event->u.event.signaled = false;
+ 
+-		spin_unlock(&event->lock);
+-		spin_unlock(&dev->wait_all_lock);
+-	} else {
+-		spin_lock(&event->lock);
+-
+-		prev_state = event->u.event.signaled;
+-		event->u.event.signaled = true;
+-		try_wake_any_event(event);
+-		if (pulse)
+-			event->u.event.signaled = false;
+-
+-		spin_unlock(&event->lock);
+-	}
++	ntsync_unlock_obj(dev, event, all);
+ 
+ 	if (put_user(prev_state, (__u32 __user *)argp))
+ 		return -EFAULT;
+@@ -984,7 +1039,7 @@ static int ntsync_wait_all(struct ntsync
+ 
+ 	/* queue ourselves */
+ 
+-	spin_lock(&dev->wait_all_lock);
++	mutex_lock(&dev->wait_all_lock);
+ 
+ 	for (i = 0; i < args.count; i++) {
+ 		struct ntsync_q_entry *entry = &q->entries[i];
+@@ -1004,7 +1059,7 @@ static int ntsync_wait_all(struct ntsync
+ 
+ 	try_wake_all(dev, q, NULL);
+ 
+-	spin_unlock(&dev->wait_all_lock);
++	mutex_unlock(&dev->wait_all_lock);
+ 
+ 	/* sleep */
+ 
+@@ -1012,7 +1067,7 @@ static int ntsync_wait_all(struct ntsync
+ 
+ 	/* and finally, unqueue */
+ 
+-	spin_lock(&dev->wait_all_lock);
++	mutex_lock(&dev->wait_all_lock);
+ 
+ 	for (i = 0; i < args.count; i++) {
+ 		struct ntsync_q_entry *entry = &q->entries[i];
+@@ -1029,7 +1084,7 @@ static int ntsync_wait_all(struct ntsync
+ 		put_obj(obj);
+ 	}
+ 
+-	spin_unlock(&dev->wait_all_lock);
++	mutex_unlock(&dev->wait_all_lock);
+ 
+ 	signaled = atomic_read(&q->signaled);
+ 	if (signaled != -1) {
+@@ -1056,7 +1111,7 @@ static int ntsync_char_open(struct inode
+ 	if (!dev)
+ 		return -ENOMEM;
+ 
+-	spin_lock_init(&dev->wait_all_lock);
++	mutex_init(&dev->wait_all_lock);
+ 
+ 	file->private_data = dev;
+ 	dev->file = file;
 
