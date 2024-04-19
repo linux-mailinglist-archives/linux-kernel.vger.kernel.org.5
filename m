@@ -1,151 +1,233 @@
-Return-Path: <linux-kernel+bounces-151567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 664A88AB084
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:15:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 095CA8AB098
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:19:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3A5FB20CCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:15:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C30A1C21212
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2A08562A;
-	Fri, 19 Apr 2024 14:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D7D12E1C4;
+	Fri, 19 Apr 2024 14:19:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eL0F9+1G"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="TiZkFHU9"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2047.outbound.protection.outlook.com [40.107.243.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6F14F214;
-	Fri, 19 Apr 2024 14:15:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713536143; cv=none; b=a/Ostu7B+wG+CLOwgYbLdH6EX1EA64E9khQ8AX+7WEvmFE7nZNyby/55CQBjYK5W+OrqN8JJQJjOA8CdXZ0mMjXrg5+lfllCCaTo2glajxy9qJ+FVaq+bvJFc2Lwkjgvtj4A/jETV4ccUyk2cHGzlJvZLwUyzG66fu5fxgolvwQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713536143; c=relaxed/simple;
-	bh=W0mdvqs2asOd11DMoCEkH+mk70+oTv/de/UTORfTO0M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p2CLh97j/PNLm7ICjHpEqjSE4a3Em+ua2RMdYzYJ6JCC6LSMPQEl0ZTqBI7AbAGQmTkFEL7Jz7zvcro7KtP/sHE4Rly9Vzxhp/7vT1oZZ8fCeXLOwTsIgbDJUKFvd3f1tf2Yy3gkG+eJv0MmG6fVDwospSw6s/q0sbWhMJdXObo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eL0F9+1G; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-518a3e0d2ecso3277417e87.3;
-        Fri, 19 Apr 2024 07:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713536139; x=1714140939; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=od1HuzfQ62qye8I9y6ria+FsgJWb4Ms5/RYXQrdJrHw=;
-        b=eL0F9+1GDvvDxXN3ndO1S3ip3Xz7Dgi//9lN2dAgAipFm8xZJl5UHELNMIse7T7ALA
-         KP2aj8NOHi+IoYGEs3dL7vwe4UTfzVu98XAI7LoXSxko4sz3QVdVzlPSvPo8/XlIrPVv
-         Rp8O96zIGT9cYa7ieWgXsKClSLKGyx0irWwCfgpYMCX45YxYFFhLWk8Xk7YgvO6ZaMMu
-         8P9JVEhYYPnuTePNSJcnXKHsTgUeGIwQqeLwjtxXVNATHtfK0H8cGFlsrcQzGD0p2ITz
-         35VoEWxZHWmHYWy9yMZ8RiHJqgK4B9ke7ld2aOiHIpMBa8j1JwIB52kVkOCnXrp74Cnm
-         47iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713536139; x=1714140939;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=od1HuzfQ62qye8I9y6ria+FsgJWb4Ms5/RYXQrdJrHw=;
-        b=hxKhZdjt7aLa7bRFM/+Ub7XqrpJQ/TvWMG8ujVSWRbGsjCH1FpUSlFwFEBKcBqN5U/
-         hz0zHDkLl39BwewD95c/6k4CS9wJPJQI6JN1go9KSA7gKxbb3UfHDOEhGT8FHlPIeuGz
-         gM19rFzDnFhIYX15Dk9dh1cPauho1wYcPHvEg4UfXmwZR/hQIlE8KjlqWt71rPeBRakF
-         g2FgeCESnGR0dGx+/fIo0kXW2qQpONlcbs65H3CBPtLlFHHCWOPAKC6rNM0TbS514wcE
-         pkzF7u3f1h2OXzXkcOocy3YD+ZstUEW1C5fn3NFmcdmaNjwXQOzeOtKoh0RFknmlWC6j
-         hQ6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUdDch2fhWB6Q+7lgk/PX2UOO05MKuAHOxN9rUqMJ/OqTIvyUH0FFBv+eAawH9HvB5KuMslarSAtD6oqeZplG/dS2F0a0CjibS7c9kRTnpF6HwScLnwOdvxltXitSfwZY6tYFp7zR1J18OuoRAdPXT+0HbhcMnelne0IFbLUTaaKvnXXA3HFA==
-X-Gm-Message-State: AOJu0Yzu9HoE6pTXmUDdSnMzzLOznSsS/EBzNkEJD4OjnFwDdj6WB6bO
-	8lygIwyEdTf8Hf0zWgrGEOrRaW2FdJVi0Qqix9mQIklPBluPoXLIfmNdRb8gA0arvuqQcByk1SG
-	X8w3ygJjzRVVlneTXIt5Gs/3xiug=
-X-Google-Smtp-Source: AGHT+IE1lEiJ+HQHyKO37TEXweZDgaRCH2dQqiCpfF+bVzG/msLkLTqXljXaNiBmiD8F6JAq7LVM4pgzv4o3VJhcgAI=
-X-Received: by 2002:a05:6512:38c1:b0:513:ca40:fafc with SMTP id
- p1-20020a05651238c100b00513ca40fafcmr1600944lft.11.1713536138669; Fri, 19 Apr
- 2024 07:15:38 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D782E40E;
+	Fri, 19 Apr 2024 14:19:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.47
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713536369; cv=fail; b=V8qhbym715BvYsq/AVNBYy5iJTQVR6GbWOpmXp1XRcaypQUSyY8yHOPCqZb6thzsAy1SMboUKmS+EQi+AsgwMPtJO9wPnGkBS8re1fOF6UXYvataoZNB93lkmBTFuHrA7M6ZLyV8z7ERECwphYqtAdxFhaxCBVFmFokcolwhtM8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713536369; c=relaxed/simple;
+	bh=gGSpfD/vCz7jYXwK4jkHC5zF/jZGN6lAxOWi4UL8tK8=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XEXK7QmRDfqgnvidRvnR8K54++Otj2ZK3AGJkoOqeNPyCvDwlsooZ3zFhwGBBqYS4clYQt6gSYi8/pwhfDL+xc8rAvayzMfYMrcFy2mBLmSFGE3j9vgs0UhAL4mAH4oVliO3CMSL3VsRO1mgPzQl0l6MS1jCwmuJGkilukcpisg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=TiZkFHU9; arc=fail smtp.client-ip=40.107.243.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lhGr1OAx9GT9BZSBS6p1yU8M8X/ja/Z8byapf2A21ymX21UX1Io45yx9NGKZIBuqgBdRqSChwzgBB5ytMMbbnkinjcMrdSOgOv0vs83ztX1yRUx1bczi271D0IBnbTcN9GMZzPKCDl+mda+GT0S0IwYPd+3xfH/Xy0eOcw9w+T7JdlbKvIGDRS98VZtXKa3lDGIlP5d2m5j8DHfx0ps0EcBDQuncahoWMquCWfcsHHTyn+S0swrXVG3ygPzYMlwM63BPW5Oyqf/WltMKNd/ZILuNb2Q5/YoiMsNo91bfmbqTEybD1S0i82PJJiiLRGGrNEphyjL2cIMK6w1H+ek/tQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xCLECH2BTckagVUfu2ZQ3LTaU6lM5yOLfu5mpophMUw=;
+ b=TPRMD5PEAuQ9/+eUpRvMuWKiZ75CrDbvb140ga7ksOnx9AoUyXucVOhBbP1agv3k+CRJ84OVP1W4daJQxhFsyZENDiYwbwPCCZerWT0P0IYb5FBZc5xXUawKcv0GgKij9q07iIKDrs1epgo9fxBIWYmjCIonkesoY9xAZoh96KIFF/PTLsIbI3LRfNggh3DxTsVVNNn6mu1Ek6sGaJhQ3DKhV1pHoQmV6kJ3XrB0dOnonC7C2ZhASK3TBEVlJs9hFwFOswITanDuK+DReiKPawyBmKSxGIfGYlkOUBGSv6iaAiUjE7ouGd9xFIAKSXo4U/2rHHJwdoi+kWAmDveZ/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xCLECH2BTckagVUfu2ZQ3LTaU6lM5yOLfu5mpophMUw=;
+ b=TiZkFHU9Ewohv0QP2wBxV4SGoD5d/+7PqtWnHMfAPP7p4b/XqO4TWlQuNg+kgH8ECeqovWH0dWXYjUJW/jRMKjkMfMADuSWVi50ObpZGo8qQYYtpJXLUwmxPFOC67ZifQ31mKEs+VI3jQ+NCxZKo4TKEFvTVM5hfcCURhC6uiaU=
+Received: from BL1PR13CA0193.namprd13.prod.outlook.com (2603:10b6:208:2be::18)
+ by PH0PR12MB7470.namprd12.prod.outlook.com (2603:10b6:510:1e9::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.43; Fri, 19 Apr
+ 2024 14:19:23 +0000
+Received: from MN1PEPF0000F0DE.namprd04.prod.outlook.com
+ (2603:10b6:208:2be:cafe::be) by BL1PR13CA0193.outlook.office365.com
+ (2603:10b6:208:2be::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.14 via Frontend
+ Transport; Fri, 19 Apr 2024 14:19:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MN1PEPF0000F0DE.mail.protection.outlook.com (10.167.242.36) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Fri, 19 Apr 2024 14:19:23 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 19 Apr
+ 2024 09:19:21 -0500
+Date: Fri, 19 Apr 2024 09:19:20 -0500
+From: Michael Roth <michael.roth@amd.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+CC: <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
+	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
+	<ardb@kernel.org>, <seanjc@google.com>, <vkuznets@redhat.com>,
+	<jmattson@google.com>, <luto@kernel.org>, <dave.hansen@linux.intel.com>,
+	<slp@redhat.com>, <pgonda@google.com>, <peterz@infradead.org>,
+	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
+	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
+	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
+	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
+	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, Brijesh Singh
+	<brijesh.singh@amd.com>
+Subject: Re: [PATCH v13 09/26] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_START command
+Message-ID: <20240419141920.2djcy6ag3peiiufn@amd.com>
+References: <20240418194133.1452059-1-michael.roth@amd.com>
+ <20240418194133.1452059-10-michael.roth@amd.com>
+ <CABgObfYztTP+qoTa-tuPC8Au-aKhwiBkcvHni4T+n6MCD-P9Dw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240419124506.1531035-1-rilian.la.te@ya.ru> <20240419124506.1531035-3-rilian.la.te@ya.ru>
- <20240419-glue-pyramid-584728c0076a@spud>
-In-Reply-To: <20240419-glue-pyramid-584728c0076a@spud>
-From: "Konstantin P." <ria.freelander@gmail.com>
-Date: Fri, 19 Apr 2024 17:17:43 +0300
-Message-ID: <CAF1WSuy4OJVTU5VJdn23BSw4aTAq7i8UQ416V7BxveuQ+5=-1w@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] dt-bindings: sc16is7xx: Add compatible line for
- XR20M1172 UART
-To: Conor Dooley <conor@kernel.org>
-Cc: Konstantin Pugin <rilian.la.te@ya.ru>, Vladimir Zapolskiy <vz@mleia.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Lech Perczak <lech.perczak@camlingroup.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, 
-	linux-serial@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABgObfYztTP+qoTa-tuPC8Au-aKhwiBkcvHni4T+n6MCD-P9Dw@mail.gmail.com>
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0DE:EE_|PH0PR12MB7470:EE_
+X-MS-Office365-Filtering-Correlation-Id: 274bf5cf-09f1-440f-9f6c-08dc607bb627
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?VGxOOXFPWWY3c2RieUNHcTVKWjRLV1RoWlVUcGNPdDlMY1ZkZzdCdzRVSzB0?=
+ =?utf-8?B?YmVqRDJsQ0U3ZzllME9Xa3AzTURjMUZKbWxhQ3d4djBoWlNKVWN3RU9PTXVQ?=
+ =?utf-8?B?OWFwaGRVSlBML2R4YTVtdGpKaEtBc3FtbVZveThMQmFnSW5RWkhxMHd2NmZr?=
+ =?utf-8?B?TmlWY3A3Y25TUlV1bkhFMGhwbnoyMWc0Z0xsT0FuM1d2Z25XclZaSXBhOXlj?=
+ =?utf-8?B?RzYzUDVKeGo4a2FsemIvcGVFaWdGcUU4Y1BpQ1ZsaXNCQ1Jnek5tOHJQeExI?=
+ =?utf-8?B?a3lKeDIwcHhMM1BsK0MzQlh1aGxJQXlmVUVYa1loZUJ5SWt2OW9KK2p1M0ZS?=
+ =?utf-8?B?ODNZUnhLOFUyN2dLMy9DdXlDTjFmVDZTS2VTRm05OFRNeFZoNndmTkhjeXpY?=
+ =?utf-8?B?OU1TbzBMeDBlMGd5c2NENlZESDBzQjhPeVhSSGhXRzRhZVBXcXFpak1YVjNS?=
+ =?utf-8?B?eUpoYWNxMkpSV3NEdUM4WEtsODdHYmpvdlFqWFNLRS84N2FFem83YUgzUEFa?=
+ =?utf-8?B?MlRZMjJSY1BQMW0vYnd5MWE4T2xTTEkreUs0VnhzTjIrRDlUZlYyVjhSVklU?=
+ =?utf-8?B?VTVlSW5uWWNmNFh1L0FqSHdUUEFMZmRlVjVrbmpscC96WkR2N084c1NvZ3Yx?=
+ =?utf-8?B?eWUwajlTWG1HQk03aWgxUXZjRDNIeGszUFlFN2V0bjU5Vk5JZzh0Ukg3eGsw?=
+ =?utf-8?B?UTNLQWxqUDdXbVFiMk92S29WTWtycExqUmQwQTB6cFliSEhqemQxcE03VDU3?=
+ =?utf-8?B?dDQ2K0Y1MDJaN3V5RU8rTmsxZEZMTWhMRTNHV3d1aG92YmpWZVIwajEvZnVa?=
+ =?utf-8?B?TjRFQmU4K1FPUFVyTUVPMVpvMWtxNkNDTk50SGhEZlE4ZnV0VGlUdUhiRU9H?=
+ =?utf-8?B?OS9qYm9FbHg2VXViYWYyUXcyb2R6ZStRVllOV0NJTzJuSVRRSHp1ZUxsTVJ5?=
+ =?utf-8?B?em1RNjNNbXA5MFNjTlVYdU5QZEYxc0ozMXlBL2YreTByTnJZTjNUbXpvZFRz?=
+ =?utf-8?B?M3JhSkxrL2V5SmtyeGo5S1hHZE1JNVR1OCsweGZZWWFWamZkWnN5SDRmY1Ra?=
+ =?utf-8?B?S3I1eUhkMzN4UTE5OXEwUnZjM3ZGNGVjb1V5T05FN3JIdHQ0cWRPWExUREJH?=
+ =?utf-8?B?a0tSVElQcVpXY3J3WGE5UFVjUUtaM0g5M1IzRzhJZUI1K0oySU8xZmlVdGdw?=
+ =?utf-8?B?NWZJaEdmclVGWWhwZlVJU3VJS1NlaEM5UHdZekxRU0NWNVdMSXFyOWRrZ01E?=
+ =?utf-8?B?bjFtanduYTR3eWYreEdDU3lhZVl4ZHBQZVJhL2xnRGxzQUR0N3U5KzJNR2NN?=
+ =?utf-8?B?VWhCL200WEw5OFM3b3FMYkN1dHcwU1FBUHk1bjlqWG80NklPOURjaE9lWTFi?=
+ =?utf-8?B?eEk4SnBIVk10Z29nNDlHbzM1RythbjhoWW1iUCtkbjF2Q05ncktVN1ZhdHBE?=
+ =?utf-8?B?cU9HNER2TmFoWDlLZHlxWWRsbWx6TmdSV2lsMlZEYlRCMzNtbkx5aDlQbHU0?=
+ =?utf-8?B?bnlUNmRXL0NoRitmY1JmQkppc1RBODVuTmFvN21VdFBKcFlMci9EVGV4Q1d4?=
+ =?utf-8?B?dm9ralJUY2libVc3eFJOdGdGM1RnQk1iZ2E4NEhOREdxZUhPS214SERTUVNu?=
+ =?utf-8?B?aE1OaU1NZDFPV1JBZ1Mrb2p4WGhyWU9NUzRJNjdTNmdVbWR0STFmMzVMMGd6?=
+ =?utf-8?B?S1d5L2dBbE85cHQ4Z0l5M2NxWlhjZENQcVN3WGR1czErRjFPS005dnlldUc3?=
+ =?utf-8?B?Vi91dWI2M3pjR2pkK2t0NzhCTUZUdEMwb2dxSWFoTkVmbGd1Z2tTckVTZE5E?=
+ =?utf-8?B?K3RWclV3NDJnckpUTDBoQ3J5Mll2YU5MbGFSR2w2ekVxLzkyc3ZNdFhHTTJq?=
+ =?utf-8?Q?cY3K7uKXv+SRv?=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(1800799015)(7416005)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 14:19:23.2280
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 274bf5cf-09f1-440f-9f6c-08dc607bb627
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MN1PEPF0000F0DE.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7470
 
-On Fri, Apr 19, 2024 at 5:08=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Fri, Apr 19, 2024 at 03:45:02PM +0300, Konstantin Pugin wrote:
-> > From: Konstantin Pugin <ria.freelander@gmail.com>
-> >
-> > Add EXAR XR20M1172 UART compatible line into devicetree documentation.
->
-> What you're doing is obvious from the diff, why this exar device is
-> related to the nxp devices is what should be mentioned here.
->
-> Thanks,
-> Conor.
+On Fri, Apr 19, 2024 at 01:52:24PM +0200, Paolo Bonzini wrote:
+> On Thu, Apr 18, 2024 at 9:42 PM Michael Roth <michael.roth@amd.com> wrote:
+> > +/* As defined by SEV-SNP Firmware ABI, under "Guest Policy". */
+> > +#define SNP_POLICY_MASK_API_MAJOR      GENMASK_ULL(15, 8)
+> > +#define SNP_POLICY_MASK_API_MINOR      GENMASK_ULL(7, 0)
+> > +
+> > +#define SNP_POLICY_MASK_VALID          (SNP_POLICY_MASK_SMT            | \
+> > +                                        SNP_POLICY_MASK_RSVD_MBO       | \
+> > +                                        SNP_POLICY_MASK_DEBUG          | \
+> > +                                        SNP_POLICY_MASK_SINGLE_SOCKET  | \
+> > +                                        SNP_POLICY_MASK_API_MAJOR      | \
+> > +                                        SNP_POLICY_MASK_API_MINOR)
+> > +
+> > +/* KVM's SNP support is compatible with 1.51 of the SEV-SNP Firmware ABI. */
+> > +#define SNP_POLICY_API_MAJOR           1
+> > +#define SNP_POLICY_API_MINOR           51
+> 
+> > +static inline bool sev_version_greater_or_equal(u8 major, u8 minor)
+> > +{
+> > +       if (major < SNP_POLICY_API_MAJOR)
+> > +               return true;
+> 
+> Should it perhaps refuse version 0.x? With something like a
+> 
+> #define SNP_POLICY_API_MAJOR_MIN    1
+> 
+> to make it a bit more future proof (and testable).
+> 
+> > +       major = (params.policy & SNP_POLICY_MASK_API_MAJOR);
+> 
+> This should be >> 8. Do the QEMU patches not set the API version? :)
 
-It is already mentioned in cover letter and in previous patches in the
-series. Do I need to repeat it in DTS patch?
-If so, I will do it.
+Argh...it does if you set it via the -object sev-snp-guest,policy=0x...
+option. I tested with reserved ranges and other flags, but not with
+non-zero major/minor API fields. =/
 
-Citation from my cover letter:
+But I'm having 2nd thoughts about trying to enforce API version via
+KVM_SEV_SNP_LAUNCH_START. In practice, the only sensible way to really
+interpret it is as "the minimum firmware version that userspace decides
+it is comfortable running a particular guest" on. And that enforcement
+is already handled as part of the SNP_LAUNCH_START firmware command in
+the SNP Firmware ABI: if the policy specifies a higher minimum version
+than what firmware is currently running then it will return as error
+that will be reported by QEMU as:
 
-EXAR XR20M1172 UART is mostly SC16IS762-compatible, but
-it has additional register which can change UART multiplier
-to 4x and 8x, similar to UPF_MAGIC_MULTIPLIER does. So, I used this
-flag to guard access to its specific DLD register. It seems than
-other EXAR SPI UART modules also have this register, but I tested
-only XR20M1172.
-Yes, in datasheet this register is called "DLD - Divisor Fractional"
-or "DLD - Divisor Fractional Register", calling depends on datasheet
-version.
+  sev_snp_launch_start: SNP_LAUNCH_START ret=-5 fw_error=7 'Policy is not allowed'
 
-Also, comparision from NXP itself:
-http://www.bdtic.com/download/nxp/75017168.pdf (pp12-13 is about XR20M1172)=
-.
+On the firmware driver side (drivers/crypto/ccp/sev-dev.c), we already
+enforce 1.51 as minimum supported SNP firmware, so that sort of already
+covers the SNP_POLICY_API_MAJOR_MIN case as well. E.g. the test surface
+KVM needs to concern itself with is already effectively 1.51+. In that
+sense, whether the user decides to be less restrictive with what minimum
+firmware version they allow is then totally up to the user, and has no
+bearing on what firmware versions KVM needs to concern itself with.
 
-> >
-> > Reviewed-by: Vladimir Zapolskiy <vz@mleia.com>
-> > Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yam=
-l b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-> > index 5dec15b7e7c3..c4bedf23368b 100644
-> > --- a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-> > +++ b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-> > @@ -12,6 +12,7 @@ maintainers:
-> >  properties:
-> >    compatible:
-> >      enum:
-> > +      - exar,xr20m1172
-> >        - nxp,sc16is740
-> >        - nxp,sc16is741
-> >        - nxp,sc16is750
-> > --
-> > 2.34.1
-> >
+Then the question of whether or not KVM fully *exposes* a particular
+user-visible feature of a newer version of the firmware/ABI would be a
+separate thing to be handled via the normal KVM capabilities/attributes
+mechanisms.
+
+So my current leaning is to send a v14 that backs out the major/minor
+policy enforcement and let firmware handle that aspect. (and also
+address your other comments).
+
+But let me know if you think that should be handled differently.
+
+Thanks!
+
+-Mike
+
+> 
+> Paolo
+> 
 
