@@ -1,222 +1,261 @@
-Return-Path: <linux-kernel+bounces-151690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D155C8AB222
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:40:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F0388AB226
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:40:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BE3E1F21969
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:40:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1DFD1C232EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BD312FF8C;
-	Fri, 19 Apr 2024 15:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D0813049F;
+	Fri, 19 Apr 2024 15:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="e1DnfH5u"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jOuv7DAV"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF337C08E;
-	Fri, 19 Apr 2024 15:40:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F54D127B72;
+	Fri, 19 Apr 2024 15:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713541201; cv=none; b=W5cUv5c9uZ1+Tkw8sgvVD7XNdf77/tEaBR5tjJeGW4Af/4CHK3Dy27luPv7YPyM9eOsX93BSYVyVb8x9YE5n/9aBUO0NuL6zAnjEUjnfJ2jVHevad8IC50qitaOg2y9nyuM89F0dr8faTj33Vj4TxWHvUIRBaw4JiUI/apQ+zP8=
+	t=1713541228; cv=none; b=gTyCkhgNZyaaMKOuw3tetApnLUinXTSKrXX74TfTUjpMrKxwRsBGI0mGRHR2KOOaEh3rJ2qtqsGEqgd765CmWT/b0GCeipDCTSDCcVMBBB+Ee7s88Gw+EnbRYeeRcURqrjhg2PXsSVVL8VkFMUJRezvuOcildMldHKieMfJc5iM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713541201; c=relaxed/simple;
-	bh=KKcG7m2UFwDjsUncP/pMfmIt/85xN4C8bvVWlm+S+IM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=E4Tm/4Oyc+p4752IH/elbrldFG0Ype2HYXSuzNyyh2Nc0iU2pVuLQlJ02vEKxETSDFqXIX4k4NfFC1+60V9Ozdpl1bxILf63l7pNB3xJGpf/n4trClbIKfCXtjjXztu7a7UP1xcfUWFZUoQraxm/tY7xGDPtBaRm0QEapo7kroA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=e1DnfH5u; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=KKcG7m2UFwDjsUncP/pMfmIt/85xN4C8bvVWlm+S+IM=; b=e1DnfH5uSiZodH3jS9p8c5hfot
-	zDSJouSP50yqG7gpHsTcdfl40NrB/3DqVZ6G7WIUoxzBq/IJkpQPpQCLog/aismmanPjqOmWKDHVC
-	/6U/zUDS8AcTuw98zb3G6hygNtd2Z7mebuXyh7VIHhoAs/zxel7Gb+s/DjhX0rKWRnWBg+OmG6iMV
-	eOTVJKxjWWDeM2L+94Z4K1IxKeCnLxcwe/rfgvJo8LDQA740MoeoQfy2EiHw6HroVNGz1XIRkkQ+L
-	7WUMszzn0bHJD04BfPs0z47NuRKsP2peZxjbFofMucDAYrQKb2mlaWlkUJvdsoTqIVT6CzSoazmK/
-	go/7JlHA==;
-Received: from [2001:8b0:10b:5:c08e:a4fc:45a2:fa90] (helo=u3832b3a9db3152.ant.amazon.com)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxqLC-00000007xSx-1kOg;
-	Fri, 19 Apr 2024 15:39:54 +0000
-Message-ID: <e0baad17a9c8c7b4df5bb9bf75e7c9b6c36ce887.camel@infradead.org>
-Subject: Re: [PATCH v2 0/2] Support clean reboot after hibernate on Arm64
-From: David Woodhouse <dwmw2@infradead.org>
-To: Will Deacon <will@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>
-Cc: kernel-team@android.com, Robert Moore <robert.moore@intel.com>, "Rafael
- J. Wysocki" <rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>,  linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,  linux-acpi@vger.kernel.org,
- acpica-devel@lists.linux.dev
-Date: Fri, 19 Apr 2024 16:39:52 +0100
-In-Reply-To: <171345345397.312430.3943582845307730698.b4-ty@kernel.org>
-References: <20240412073530.2222496-1-dwmw2@infradead.org>
-	 <171345345397.312430.3943582845307730698.b4-ty@kernel.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-bz04pfpXX7uGdndqeacs"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1713541228; c=relaxed/simple;
+	bh=AEa9Db21HYUQoGZhPwjxKDITrfhTcZ6zba7+bIZ3STk=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Xaq3/QkbQ001+Tb6I3f64n6758wkG+5WLIWwp7CPV3U5tWEpsB6BnaAZmkt6fr22lzcpzxs490oCxqrdmwwaFXaHgE8hcIZJ1NRFzBtALluPL2ejqAs7lm50+nftwFxv5sDk4sG7STQSmpuDUoPJ69YDm39ZSyz8kNv+kIlnfJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jOuv7DAV; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-418c2bf2f55so16228585e9.2;
+        Fri, 19 Apr 2024 08:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713541225; x=1714146025; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FPOI4f3jBnuy6s0MKt8vEVdK8XbKNvqKvZPjyoowk0Q=;
+        b=jOuv7DAVl9d7YLwN+rpwJiYvRwXkefZvseFxnxWt65EBdGtMfRkP8AsHKlkriYMSfx
+         0vLd9OIbQd895aVDS8dNymkll/87QHQSKblt42pl617wh4+O+UPKd2rmC/W7Yc0IBOO1
+         zNAEdT+FAsrKOmXGIyxE2RJjKZI5RnlajFWLVhE3y+835n98aPpTqcmAiAT/dWkCq5ib
+         VQMiSVFupQjnl55WmNPoLLqOpzgSiaK+WoTZ0vDLARp9YB6roUqEA3PfVxGMzB9onSbh
+         7/ojZe/CafKPNMJM4uWbSfpF5fGkfM97QwP5cYAOEowMh4q6x3HpiV8zaSvMoVdks4Ga
+         kDRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713541225; x=1714146025;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FPOI4f3jBnuy6s0MKt8vEVdK8XbKNvqKvZPjyoowk0Q=;
+        b=c98H4e+qkfvLa7cuXI70A+bQggAKhk8fIs0/s4TlFYfSxqNt/ArTsKwTUusis/oSZp
+         ak5+a+rLdCWKkUen/DHpmpI1CPNs7l2WOwVQuAvLv05OsB7K0NSZngIwllffeeApT5tJ
+         fDndfamL1MhNRJvbg5TakhdZEZDQGz1FSPY3kZ7xWIZPzt/U67QXIXcvjFJdp6bUSmGq
+         F/b20YPOROW72QaONMonl39dwXSkubWqAXWNfUXJAQqy7QIJf90C1rUigMWYXOTm+QM3
+         YbjseoiumsZ4Kyf0YLF8Rq/kwf72HT2N34XPfRG6IwFv7Nqa6sQULD3GvjGlKj+m6xQl
+         UgpA==
+X-Forwarded-Encrypted: i=1; AJvYcCXSLAYvxpO079rmBQCB+nVSCtcJ0EZ5N11qohEZOa4tTGJg8gocyqT2WV3Epp84qB1cy4f+aRlyCQn9g0QRMVHa7EzDJ+b34G/4c5GHdtDXja5w8mHFF1iifCphdt3YRKbEUsStgJza73rxmGqoUDerRhGXFfn0Nxpm+1zIfcFGwfXQG7/VuHHVSPPW6xpQQivwy6psWUzFAOoDZOGR
+X-Gm-Message-State: AOJu0YzBazFbHgZuwyLnoFgSNhE1GMhqavgG+iD9PC1H0hD7Lzmti4q3
+	kWA281ewdYHow2ZyA95oHVa2xcy5ITCfzLckyXWlXkN0dppQZ24C
+X-Google-Smtp-Source: AGHT+IEJFRsh9CvoX43K871m/lDU7m2JK6yrjHyhdC7aUpB37ShRaAvsfj1b9O46sPDf2LBsXi82uw==
+X-Received: by 2002:a05:600c:1e25:b0:419:cf15:f3af with SMTP id ay37-20020a05600c1e2500b00419cf15f3afmr361412wmb.25.1713541225326;
+        Fri, 19 Apr 2024 08:40:25 -0700 (PDT)
+Received: from [192.168.18.253] (54-240-197-236.amazon.com. [54.240.197.236])
+        by smtp.gmail.com with ESMTPSA id n2-20020a05600c4f8200b0041884b79b81sm6868526wmq.1.2024.04.19.08.40.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 08:40:25 -0700 (PDT)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <9985611d-1e0b-48f3-8eb5-fc3e1279b5a5@xen.org>
+Date: Fri, 19 Apr 2024 16:40:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH 03/10] KVM: x86: Add KVM_[GS]ET_CLOCK_GUEST for accurate
+ KVM clock migration
+To: David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Sean Christopherson <seanjc@google.com>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Oliver Upton <oliver.upton@linux.dev>, Marcelo Tosatti
+ <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
+References: <20240418193528.41780-1-dwmw2@infradead.org>
+ <20240418193528.41780-4-dwmw2@infradead.org>
+Content-Language: en-US
+Organization: Xen Project
+In-Reply-To: <20240418193528.41780-4-dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 18/04/2024 20:34, David Woodhouse wrote:
+> From: Jack Allister <jalliste@amazon.com>
+> 
+> In the common case (where kvm->arch.use_master_clock is true), the KVM
+> clock is defined as a simple arithmetic function of the guest TSC, based on
+> a reference point stored in kvm->arch.master_kernel_ns and
+> kvm->arch.master_cycle_now.
+> 
+> The existing KVM_[GS]ET_CLOCK functionality does not allow for this
+> relationship to be precisely saved and restored by userspace. All it can
+> currently do is set the KVM clock at a given UTC reference time, which is
+> necessarily imprecise.
+> 
+> So on live update, the guest TSC can remain cycle accurate at precisely the
+> same offset from the host TSC, but there is no way for userspace to restore
+> the KVM clock accurately.
+> 
+> Even on live migration to a new host, where the accuracy of the guest time-
+> keeping is fundamentally limited by the accuracy of wallclock
+> synchronization between the source and destination hosts, the clock jump
+> experienced by the guest's TSC and its KVM clock should at least be
+> *consistent*. Even when the guest TSC suffers a discontinuity, its KVM
+> clock should still remain the *same* arithmetic function of the guest TSC,
+> and not suffer an *additional* discontinuity.
+> 
+> To allow for accurate migration of the KVM clock, add per-vCPU ioctls which
+> save and restore the actual PV clock info in pvclock_vcpu_time_info.
+> 
+> The restoration in KVM_SET_CLOCK_GUEST works by creating a new reference
+> point in time just as kvm_update_masterclock() does, and calculating the
+> corresponding guest TSC value. This guest TSC value is then passed through
+> the user-provided pvclock structure to generate the *intended* KVM clock
+> value at that point in time, and through the *actual* KVM clock calculation.
+> Then kvm->arch.kvmclock_offset is adjusted to eliminate for the difference.
+> 
+> Where kvm->arch.use_master_clock is false (because the host TSC is
+> unreliable, or the guest TSCs are configured strangely), the KVM clock
+> is *not* defined as a function of the guest TSC so KVM_GET_CLOCK_GUEST
+> returns an error. In this case, as documented, userspace shall use the
+> legacy KVM_GET_CLOCK ioctl. The loss of precision is acceptable in this
+> case since the clocks are imprecise in this mode anyway.
+> 
+> On *restoration*, if kvm->arch.use_master_clock is false, an error is
+> returned for similar reasons and userspace shall fall back to using
+> KVM_SET_CLOCK. This does mean that, as documented, userspace needs to use
+> *both* KVM_GET_CLOCK_GUEST and KVM_GET_CLOCK and send both results with the
+> migration data (unless the intent is to refuse to resume on a host with bad
+> TSC).
+> 
+> (It may have been possible to make KVM_SET_CLOCK_GUEST "good enough" in the
+> non-masterclock mode, as that mode is necessarily imprecise anyway. The
+> explicit fallback allows userspace to deliberately fail migration to a host
+> with misbehaving TSC where master clock mode wouldn't be active.)
+> 
+> Co-developed-by: David Woodhouse <dwmw@amazon.co.uk>
+> Signed-off-by: Jack Allister <jalliste@amazon.com>
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> CC: Paul Durrant <paul@xen.org>
+> CC: Dongli Zhang <dongli.zhang@oracle.com>
+> ---
+>   Documentation/virt/kvm/api.rst |  37 ++++++++
+>   arch/x86/kvm/x86.c             | 156 +++++++++++++++++++++++++++++++++
+>   include/uapi/linux/kvm.h       |   3 +
+>   3 files changed, 196 insertions(+)
+> 
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index f0b76ff5030d..758f6fc08fe5 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -6352,6 +6352,43 @@ a single guest_memfd file, but the bound ranges must not overlap).
+>   
+>   See KVM_SET_USER_MEMORY_REGION2 for additional details.
+>   
+> +4.143 KVM_GET_CLOCK_GUEST
+> +----------------------------
+> +
+> +:Capability: none
+> +:Architectures: x86_64
+> +:Type: vcpu ioctl
+> +:Parameters: struct pvclock_vcpu_time_info (out)
+> +:Returns: 0 on success, <0 on error
+> +
+> +Retrieves the current time information structure used for KVM/PV clocks,
+> +in precisely the form advertised to the guest vCPU, which gives parameters
+> +for a direct conversion from a guest TSC value to nanoseconds.
+> +
+> +When the KVM clock not is in "master clock" mode, for example because the
+> +host TSC is unreliable or the guest TSCs are oddly configured, the KVM clock
+> +is actually defined by the host CLOCK_MONOTONIC_RAW instead of the guest TSC.
+> +In this case, the KVM_GET_CLOCK_GUEST ioctl returns -EINVAL.
+> +
+> +4.144 KVM_SET_CLOCK_GUEST
+> +----------------------------
+> +
+> +:Capability: none
+> +:Architectures: x86_64
+> +:Type: vcpu ioctl
+> +:Parameters: struct pvclock_vcpu_time_info (in)
+> +:Returns: 0 on success, <0 on error
+> +
+> +Sets the KVM clock (for the whole VM) in terms of the vCPU TSC, using the
+> +pvclock structure as returned by KVM_GET_CLOCK_GUEST. This allows the precise
+> +arithmetic relationship between guest TSC and KVM clock to be preserved by
+> +userspace across migration.
+> +
+> +When the KVM clock is not in "master clock" mode, and the KVM clock is actually
+> +defined by the host CLOCK_MONOTONIC_RAW, this ioctl returns -EINVAL. Userspace
+> +may choose to set the clock using the less precise KVM_SET_CLOCK ioctl, or may
+> +choose to fail, denying migration to a host whose TSC is misbehaving.
+> +
+>   5. The kvm_run structure
+>   ========================
+>   
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 23281c508c27..42abce7b4fc9 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -5868,6 +5868,154 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vcpu *vcpu,
+>   	}
+>   }
+>   
+> +#ifdef CONFIG_X86_64
+> +static int kvm_vcpu_ioctl_get_clock_guest(struct kvm_vcpu *v, void __user *argp)
+> +{
+> +	struct pvclock_vcpu_time_info *hv_clock = &v->arch.hv_clock;
+> +
+> +	/*
+> +	 * If KVM_REQ_CLOCK_UPDATE is already pending, or if the hv_clock has
+> +	 * never been generated at all, call kvm_guest_time_update() to do so.
+> +	 * Might as well use the PVCLOCK_TSC_STABLE_BIT as the check for ever
+> +	 * having been written.
+> +	 */
+> +	if (kvm_check_request(KVM_REQ_CLOCK_UPDATE, v) ||
+> +	    !(hv_clock->flags & PVCLOCK_TSC_STABLE_BIT)) {
+> +		if (kvm_guest_time_update(v))
+> +			return -EINVAL;
 
---=-bz04pfpXX7uGdndqeacs
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+nit: simple nested if, so you could use &&
 
-On Fri, 2024-04-19 at 16:32 +0100, Will Deacon wrote:
-> On Mon, 11 Mar 2024 12:19:14 +0000, David Woodhouse wrote:
-> > When the hardware signature in the ACPI FACS changes, the OS is suppose=
-d
-> > to perform a clean reboot instead of attempting to resume on a changed
-> > platform.
-> >=20
-> > Although these patches have a functional dependency, they could be merg=
-ed
-> > separately. The second patch just won't *see* a FACS table if the ACPIC=
-A
-> > fix isn't present.
-> >=20
-> > [...]
->=20
-> Applied to arm64 (for-next/acpi), thanks!
->=20
-> [1/2] ACPICA: Detect FACS even for hardware reduced platforms
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 https://git.kernel.org/arm64/c/bc5b492ac30=
-5
-> [2/2] arm64: acpi: Honour firmware_signature field of FACS, if it exists
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 https://git.kernel.org/arm64/c/fbaad243b53=
-6
+> +	}
+> +
+> +	/*
+> +	 * PVCLOCK_TSC_STABLE_BIT is set in use_master_clock mode where the
+> +	 * KVM clock is defined in terms of the guest TSC. Otherwise, it is
+> +	 * is defined by the host CLOCK_MONOTONIC_RAW, and userspace should
+> +	 * use the legacy KVM_[GS]ET_CLOCK to migrate it.
+> +	 */
+> +	if (!(hv_clock->flags & PVCLOCK_TSC_STABLE_BIT))
+> +		return -EINVAL;
+> +
+> +	if (copy_to_user(argp, hv_clock, sizeof(*hv_clock)))
+> +		return -EFAULT;
+> +
+> +	return 0;
+> +}
+> +
 
-Thanks. I've rebased the remaining SYSTEM_OFF2 patches on top of that:
-https://git.infradead.org/users/dwmw2/linux.git/shortlog/refs/heads/psci-hi=
-bernate
+Reviewed-by: Paul Durrant <paul@xen.org>
 
-I've added Rafael's Acked-by: to the last commit in that series too.
-
-Will repost them when the final version of the PSCI 1.3 spec is published.
-
-
---=-bz04pfpXX7uGdndqeacs
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNDE5MTUzOTUyWjAvBgkqhkiG9w0BCQQxIgQg92kGCDsy
-+wH3gZe3G6S4p4hzI1aMPDH/xy+NNGTT4Ykwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAGr0C8V31IWq5qcWKvC1uwFQUfPUIF5yUS
-XeL8tjWGIjlFfUsPN4TUllOvdU3RAt7yjGnTyOMzzMfox3DW9H0ihDRZxVEJQarv63C9TrUIl8qO
-S304h8nkmnLvhTehUB9aqFQNzJ4kwN5OHfmdncpbDk6Mz1h1+D9Kf2dwDc3mgYtSdrtXXJxdaoMw
-u9UcMgoTJzZdJokhQt/bR2cczpERh61VvqaNdmW/G7Z/fKp6l+dmfN1IN5oFC/xkvnEvXAO83aOn
-LW/zvfYqWf5InnSoxinIdIEkmcOOMRw8ThWXwWD04KhOemGkGIGxczverDdi6EB4E8ld4xgkYLy0
-sGr/3X/loD40chF31BfFW7/PxAP4unmNzPSd9mwGS0rMRhIvB82uFkWkltzKFUFSY9Wa5Fjy6xiC
-XYxQKo9Bs606mdcp5h3IUINDh2WJMucARYZu1BCrfuKqHGYpkNs482zS7EijU5EuGXYVOpQ6P1r+
-KCLh45pD6fzQyO4E39kQzGvA6/cUTw5P2B3kR78ZoBTNac4zwel1X6ZBthm9sUWYGsXxSPRQE6LS
-MrjKWIw4jJFvnkRCk9PiOtImuhhBN6E8+8YY+hl0CzjlxYLJjpOXqdyiaUOw36MURnW5CPt5ij//
-KYAprBB/zStCYjqeRxUs7kgl4DkceocdM0xenliX0gAAAAAAAA==
-
-
---=-bz04pfpXX7uGdndqeacs--
 
