@@ -1,165 +1,124 @@
-Return-Path: <linux-kernel+bounces-151696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4090D8AB233
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 23F5B8AB23A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:45:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC8CA2852DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:44:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D610E286165
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B23130A55;
-	Fri, 19 Apr 2024 15:44:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BDC612FF9E;
+	Fri, 19 Apr 2024 15:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OXq2LmeR"
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M/kMuUQJ"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE46012FF73;
-	Fri, 19 Apr 2024 15:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5327C4D110;
+	Fri, 19 Apr 2024 15:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713541465; cv=none; b=MC5f5xxllDugXNUMS0t0qNYJCIyvU+0etKl+TU8HNU7pKkd+Lr3exccYKRDi4uSmz4JehNhlO5GBefb5ohqox+oykOqKhp3IfVyKzTuXFwQni+3RSnXUYrynNNMPw75LBa1W0l0xft/EhLcjpM//F+4GnGTBEUsaXq8WarfxJcQ=
+	t=1713541524; cv=none; b=hhXuQcNNqrMPQBt48AG+bXZzqO27gpbJfCSU7zYo64jl66ZlunXsp6+dDVCPzPQojKI6gi0B8Lnkrx7fLwBdklb2mghdrBMVS5jn09VMTutbxFA5A/pf2LKWmACcR0D9qTwWzM+BWJaRc+d5FrKnf6ujN4ivk3m1/+fg3o/jP3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713541465; c=relaxed/simple;
-	bh=lYDUng3zyDugK8BrflMA/jnRdbV5oE26tBqySkDKEiQ=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=hR6g+oAKpRQNv2x2bWq5B53GGrfFalIVanimetGikkSeEB1aBffsqe+6c9Xg3jK4VJTt52IWY1jOB3OGEDLepl2flsQ3bs9pCrk3at7gVJubrFqK7nc88mziREe/FP4uxSFTgUbiD5ICQPMmC2zTnw4wd2nIodng9XRU96jsk0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OXq2LmeR; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1713541524; c=relaxed/simple;
+	bh=XKKxD0ModasqLkselLDWffn9KcVeA66kmTmWcUDfDso=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nd5QKpc2kKyBMhPuX7LhFkj41KJR7ogHQNQdQwCBZ/czhzoUdhiWMIKjfhQrTLvxjkoCoMWgCEhs54RMltQD1Q+gY4fDjor+b11S6A6RPc1GARgFlWSh0EhpaQwSFPKtjvZCeI1teJDTuS8yNwBGl4SM0C4EaaGM0e6gO36NPLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M/kMuUQJ; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-347c197a464so1511751f8f.2;
-        Fri, 19 Apr 2024 08:44:23 -0700 (PDT)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5d4a1e66750so1499685a12.0;
+        Fri, 19 Apr 2024 08:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713541462; x=1714146262; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iwR4/zvoUZaMVzb1AoLxvMh/sYoHHxpsQAJ6TJC4TqI=;
-        b=OXq2LmeR+4Ebc4mAsKcF5EDA0S96QS2bt+sU3iwywGeoQNjaL7d2Ed2qMajVdYdaKe
-         nMPsXo9gPiusdeLVXjsyzpIvmPO0ceuD9ki7PsVJnEIXioO7gKot4M7Lle4chkp9SzZK
-         4DeCNGacdNWRNBNnr2cq49HKDQ41S6Sr3fgawZAav0ZDnJCtYXNy6Mk4zfZRD9wLxva3
-         XAt3bhSW9T+u+XM/f6cS2zfAhbSTIChQHGyH4xtDqWz2hE2gNqqCiBXjRYsHEIyjDYcC
-         W7rJn+RguP+4CaRCZeTQ355nPfD8nqTaQCHwMlRosHfDfOIz8m2SyCUQb/SqUWVFIJRn
-         If2g==
+        d=gmail.com; s=20230601; t=1713541522; x=1714146322; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o1kinc+0DXgxna6CwZpUMHpChQRy85jYWGdTJPEU3gM=;
+        b=M/kMuUQJmn1o8nwepsPNY9+mQdsAJ4BBgI80Bq8EF8weH+fCFvqhUZRQglX8oj4WXU
+         ygIV+A/64aqZtARELG2IrJMHopW5f1Yvu3KvqAM6T5dO35CZnYE49ywi6LY8OohhVnN1
+         pSInv9C3Mcb9welZVtHaVs3rjXqLFcS53bVUIVF8L22BCC/333Lb2PGvr7dQVIUKaQkZ
+         Vlbbc5BFJelA1xATtlYSs2q7lpavDXeZYci2m9vp34WIIbE5SHweKwTx9rm2UESkl99d
+         SVXDIMSln3vaCJapcqTMVpKZkw3sn+env9TmP80mtN7nAtUJdEoJOP1D9YAyjEkPSMDs
+         THBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713541462; x=1714146262;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iwR4/zvoUZaMVzb1AoLxvMh/sYoHHxpsQAJ6TJC4TqI=;
-        b=OA6aA/Yf2IXw4BLBeEnLA1l7Bsx+ex2nENkjfxuUqL/eMNbfCdlxk/E/azsjuzK4RA
-         EV5oQcV8XE435pTd4MTKMT4FH2Z1Td9i2+iCMt4K9jNiFXEJ6HgDPz8i1fFMx8Pms5QF
-         LCAnEx2SYu963h+2hhsp3mBErzeF4+dIOu019ebmUBDQbzWIPp70W/597tpDSqQFr/dW
-         k76OPPrhi47C73OPlikHtwb62EPNaBWeM0YnJHaPJpAmi7waYwkvSo1Mv0xQmnIe3AgS
-         2oMXsWbW5yiY4ANmQDaXA9JBGC0v2g6ncGCi3XaVtzeaz9MINeQAaGrGaQwk6TsUtsKx
-         rj5A==
-X-Forwarded-Encrypted: i=1; AJvYcCVuuCVIo6zpHMFpXzwXcqoKxV8dNlPROxiWMWMs8Q9R/FFIwmkRVJjCLWhV8S/RkpPIyaxKWJQKERYtmLTxGT1gNsEc0+TLaLf92craQk0ZoR4lOt+X/JtC18WHx/GRJ4AkIxuIoh0/LWkcrpnwFhUm7kI0QVo96KltM/MCp2/JoUbsX4Yrt2r3pLmOOIIJl06So4QryKmLvbi9md8R
-X-Gm-Message-State: AOJu0YwtoToV4A96Ryd9ZvQg5LPKP5RsEFAmRe9mjgLsvQK6pMNIkaLS
-	954gb4jLrQ6rCZjXvLjZl6nrh47H2KCBtoH3fGHiS01zl7uI8oQx
-X-Google-Smtp-Source: AGHT+IFoa4JkwAbOryKRhP1sG+WC+Z1aqdpD7RZxKj3isiQJ+N1R1tBcBqjmCln8bkMKVlDA1NqtMA==
-X-Received: by 2002:a5d:4082:0:b0:343:b5f0:f511 with SMTP id o2-20020a5d4082000000b00343b5f0f511mr1431301wrp.12.1713541462144;
-        Fri, 19 Apr 2024 08:44:22 -0700 (PDT)
-Received: from [192.168.18.253] (54-240-197-236.amazon.com. [54.240.197.236])
-        by smtp.gmail.com with ESMTPSA id o12-20020a5d62cc000000b00349c42f2559sm4720095wrv.11.2024.04.19.08.44.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 08:44:21 -0700 (PDT)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <8f793f1b-5080-4b0e-a41d-5fee769c0d5a@xen.org>
-Date: Fri, 19 Apr 2024 16:44:20 +0100
+        d=1e100.net; s=20230601; t=1713541522; x=1714146322;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o1kinc+0DXgxna6CwZpUMHpChQRy85jYWGdTJPEU3gM=;
+        b=DfWIVgNjJ+8qBs5lUQTEa6uBM0fHV5OgoL8+HPFp7rmDgUKw02And4l48vRmvylsBX
+         Lk2dDbEHH/uJYjTeyDoJ+yVBYbrOrQ843NNYiNQzK42Ssru8GMyxGS/TtAgLT/9INFPS
+         o2jHvAfgZfT6GxWApsmCN7s8N3EUUj/2tBsOk/8MrjtP8gSsIGSJZUlVXs1vTuMO3gZ2
+         AxDrMxoFo9b+zaU9suTHTqUgi3Gwe4nfZoe2/NtB2A1ToEg6OgMn9T+kgdAHgPccEoTs
+         5DnsrdgXqjQ7yLTYH5jso+RlnT94Lz68T1CeS/VLydmDC695y6RwkgahOuX1xVBRp11T
+         Kg9A==
+X-Forwarded-Encrypted: i=1; AJvYcCWj18Rs1yKfRLYs/8MME2tlKD6Jj66s06WipbhMYLE6+wF61HAxz2mR069veY9XczeVS2Ytxxi0vMsYO+BaQcfMkZPAvRB9r0DOp47S1oBBqUKU38WsNzSPzPsaAJD18Bgh2e5k0A==
+X-Gm-Message-State: AOJu0YxJJSlgdqIuiE9UcoACRaWMu7+ZtQHXtoSgvl0ZP0YhaAz4GUGe
+	yfvhyZAdEnMoR+L76gDKjyR8zcDZB6E1tGbKOulm2eT2BZ0zGcq8
+X-Google-Smtp-Source: AGHT+IEfBQPPlhmZVMLuGlhV4X3aWyDqdF6cUWKVHe1RFcg8zab9BjC6lGTliyf8zH0LpZk9W8r56Q==
+X-Received: by 2002:a17:90a:fe07:b0:2ac:3c42:5839 with SMTP id ck7-20020a17090afe0700b002ac3c425839mr2441802pjb.1.1713541522442;
+        Fri, 19 Apr 2024 08:45:22 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:6f51])
+        by smtp.gmail.com with ESMTPSA id f3-20020a17090ace0300b0029bf9969afbsm4977276pju.53.2024.04.19.08.45.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 08:45:17 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 19 Apr 2024 05:45:09 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] cgroup: avoid invalid loop in cgroup_no_v1()
+Message-ID: <ZiKRheRBuSOTpSra@slm.duckdns.org>
+References: <20240419085316.957277-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH 04/10] KVM: selftests: Add KVM/PV clock selftest to prove
- timer correction
-To: David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Sean Christopherson <seanjc@google.com>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Oliver Upton <oliver.upton@linux.dev>, Marcelo Tosatti
- <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
-References: <20240418193528.41780-1-dwmw2@infradead.org>
- <20240418193528.41780-5-dwmw2@infradead.org>
-Content-Language: en-US
-Organization: Xen Project
-In-Reply-To: <20240418193528.41780-5-dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240419085316.957277-1-xiujianfeng@huawei.com>
 
-On 18/04/2024 20:34, David Woodhouse wrote:
-> From: Jack Allister <jalliste@amazon.com>
-> 
-> A VM's KVM/PV clock has an inherent relationship to its TSC (guest). When
-> either the host system live-updates or the VM is live-migrated this pairing
-> of the two clock sources should stay the same.
-> 
-> In reality this is not the case without some correction taking place. Two
-> new IOCTLs (KVM_GET_CLOCK_GUEST/KVM_SET_CLOCK_GUEST) can be utilized to
-> perform a correction on the PVTI (PV time information) structure held by
-> KVM to effectively fixup the kvmclock_offset prior to the guest VM resuming
-> in either a live-update/migration scenario.
-> 
-> This test proves that without the necessary fixup there is a perceived
-> change in the guest TSC & KVM/PV clock relationship before and after a LU/
-> LM takes place.
-> 
-> The following steps are made to verify there is a delta in the relationship
-> and that it can be corrected:
-> 
-> 1. PVTI is sampled by guest at boot (let's call this PVTI0).
-> 2. Induce a change in PVTI data (KVM_REQ_MASTERCLOCK_UPDATE).
-> 3. PVTI is sampled by guest after change (PVTI1).
-> 4. Correction is requested by usermode to KVM using PVTI0.
-> 5. PVTI is sampled by guest after correction (PVTI2).
-> 
-> The guest the records a singular TSC reference point in time and uses it to
-> calculate 3 KVM clock values utilizing the 3 recorded PVTI prior. Let's
-> call each clock value CLK[0-2].
-> 
-> In a perfect world CLK[0-2] should all be the same value if the KVM clock
-> & TSC relationship is preserved across the LU/LM (or faked in this test),
-> however it is not.
-> 
-> A delta can be observed between CLK0-CLK1 due to KVM recalculating the PVTI
-> (and the inaccuracies associated with that). A delta of ~3500ns can be
-> observed if guest TSC scaling to half host TSC frequency is also enabled,
-> where as without scaling this is observed at ~180ns.
-> 
-> With the correction it should be possible to achieve a delta of ±1ns.
-> 
-> An option to enable guest TSC scaling is available via invoking the tester
-> with -s/--scale-tsc.
-> 
-> Example of the test output below:
-> * selftests: kvm: pvclock_test
-> * scaling tsc from 2999999KHz to 1499999KHz
-> * before=5038374946 uncorrected=5038371437 corrected=5038374945
-> * delta_uncorrected=3509 delta_corrected=1
-> 
-> Signed-off-by: Jack Allister <jalliste@amazon.com>
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> CC: Paul Durrant <paul@xen.org>
-> CC: Dongli Zhang <dongli.zhang@oracle.com>
-> ---
->   tools/testing/selftests/kvm/Makefile          |   1 +
->   .../selftests/kvm/x86_64/pvclock_test.c       | 192 ++++++++++++++++++
->   2 files changed, 193 insertions(+)
->   create mode 100644 tools/testing/selftests/kvm/x86_64/pvclock_test.c
-> 
+Hello,
 
-Reviewed-by: Paul Durrant <paul@xen.org>
+Applied to cgroup/for-6.10 w/ title and commit message updates.
+
+Thanks.
+
+----- 8< -----
+From 19fc8a896565ecebb3951664fd0eeab0a80314a1 Mon Sep 17 00:00:00 2001
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
+Date: Fri, 19 Apr 2024 08:53:16 +0000
+Subject: [PATCH] cgroup: Avoid unnecessary looping in cgroup_no_v1()
+
+No need to continue the for_each_subsys loop after the token matches the
+name of subsys and cgroup_no_v1_mask is set.
+
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+ kernel/cgroup/cgroup-v1.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 520a11cb12f4..b9dbf6bf2779 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -1335,6 +1335,7 @@ static int __init cgroup_no_v1(char *str)
+ 				continue;
+ 
+ 			cgroup_no_v1_mask |= 1 << i;
++			break;
+ 		}
+ 	}
+ 	return 1;
+-- 
+2.44.0
 
 
