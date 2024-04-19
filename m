@@ -1,125 +1,147 @@
-Return-Path: <linux-kernel+bounces-151494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88F018AAF9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:42:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A7E88AAFA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:43:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4490C284BA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:42:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD0DBB243CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00ED112D747;
-	Fri, 19 Apr 2024 13:42:25 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC90712BEBE;
-	Fri, 19 Apr 2024 13:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C7612C81F;
+	Fri, 19 Apr 2024 13:43:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="m5+1eAEJ"
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32EC912B141;
+	Fri, 19 Apr 2024 13:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713534144; cv=none; b=eng2nG/D6iD+39DNu9lGmZjYhvVN34eq+rJhjsJXIHuMhUIz/oNZapnpx93q3BGzSS5dNK7abGrxe7rpoizK5e8/68Sa8HA+lKgjdrE/+/1s4UnrySLcP7LdZfy6afRABXvQvOAxXpJpA8OF9YqaJy7hs8m/NySCEd5X6RokLfw=
+	t=1713534190; cv=none; b=eIsSuVBgEHa+UlW2U4DUePTUD5j6irbgcelw9gel5YHhx4rIYDuMN8abNc+72yEvJ6/7xqgogikahmmGMo3ax1hOr70cH5kYPSIeSDdayYdt4eOnU8SAa3KBus7IdDyTrthxHBO6ANdCPV4COGgF/HG5ryOdHAcyFqNLcro0Ch8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713534144; c=relaxed/simple;
-	bh=2Th4AlJNiK8G7lYUCJU5ZRC6UwKwfk2DPXWCgGmkaZI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a74iCjzKaglIZvskSIfOUNkF8XGDJmgMKuqf86pPYCDInm8v0sNrzFmHCe1wfiCExs6Usrsyt7FAcMxkOm452ZvCj0Rl8C6S0xBf3kmNOezNN5rwAtSzjdY+BpUlEYmEd+WA/2bZ6s8eQw3Z4E3gGhy0GLn14Om3eClbRroMlGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6AAE6339;
-	Fri, 19 Apr 2024 06:42:50 -0700 (PDT)
-Received: from [10.1.30.55] (e133047.arm.com [10.1.30.55])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D05DF3F64C;
-	Fri, 19 Apr 2024 06:42:18 -0700 (PDT)
-Message-ID: <d99fd27a-dac5-4c71-b644-1213f51f2ba0@arm.com>
-Date: Fri, 19 Apr 2024 14:42:16 +0100
+	s=arc-20240116; t=1713534190; c=relaxed/simple;
+	bh=Ao+6HPE1Vskkt49HDiuaB/xLvWW49nY4+8hJXaqEBIA=;
+	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
+	 Content-Type:Subject; b=N8mQqQ9n2bLll4oVliK9E0SpQy3kdCd83nFRj498iE63C4Dbx064QQcYADcyKydfLk7/81HdZYyiIqKCNJm9t6JFbfJXcMoCokHPlDd/eqRAWixLt0zTKocIVUI9JMu7PfHv4s1Jpv5aKzHE1dYPcW+gB0NHhQJGrz40qf8vxkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=m5+1eAEJ; arc=none smtp.client-ip=162.243.120.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+	:Date:subject:date:message-id:reply-to;
+	bh=/SWo5T27HPZBjevRWtDoRJYaikHCKvINDhNye9BXHcg=; b=m5+1eAEJeajoC+i2udjQOm/4DR
+	ZNrHejjMiqEaL5Ss5yhC/p9Beuczp8gxFkNdgi7U3AsVPGmqc6QRI0qgNtxd9/y4MQJ9xPfmGjnLc
+	H6Fo0JtGvdRBvmd67EYVcnV31WUZvSTLxxwZfVa79KH0JBEKs0hA/2SzNmAXWGhYIiPE=;
+Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:48460 helo=debian-acer)
+	by mail.hugovil.com with esmtpa (Exim 4.92)
+	(envelope-from <hugo@hugovil.com>)
+	id 1rxoW3-0002rg-Qg; Fri, 19 Apr 2024 09:43:00 -0400
+Date: Fri, 19 Apr 2024 09:42:59 -0400
+From: Hugo Villeneuve <hugo@hugovil.com>
+To: Konstantin Pugin <rilian.la.te@ya.ru>
+Cc: Konstantin Pugin <ria.freelander@gmail.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Hugo
+ Villeneuve <hvilleneuve@dimonoff.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, Lech Perczak
+ <lech.perczak@camlingroup.com>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
+ <ilpo.jarvinen@linux.intel.com>, Thomas Gleixner <tglx@linutronix.de>,
+ linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Message-Id: <20240419094259.4257fefba753f6bd5962720c@hugovil.com>
+In-Reply-To: <20240419124506.1531035-1-rilian.la.te@ya.ru>
+References: <20240419124506.1531035-1-rilian.la.te@ya.ru>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/2] cpufreq/schedutil: Remove iowait boost
-To: Qais Yousef <qyousef@layalina.io>, "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: linux-kernel@vger.kernel.org, peterz@infradead.org,
- juri.lelli@redhat.com, mingo@redhat.com, dietmar.eggemann@arm.com,
- vschneid@redhat.com, vincent.guittot@linaro.org, Johannes.Thumshirn@wdc.com,
- adrian.hunter@intel.com, ulf.hansson@linaro.org, andres@anarazel.de,
- asml.silence@gmail.com, linux-pm@vger.kernel.org,
- linux-block@vger.kernel.org, io-uring@vger.kernel.org
-References: <20240304201625.100619-1-christian.loehle@arm.com>
- <20240304201625.100619-3-christian.loehle@arm.com>
- <CAJZ5v0gMni0QJTBJXoVOav=kOtQ9W--NyXAgq+dXA+m-bciG8w@mail.gmail.com>
- <5060c335-e90a-430f-bca5-c0ee46a49249@arm.com>
- <CAJZ5v0janPrWRkjcLkFeP9gmTC-nVRF-NQCh6CTET6ENy-_knQ@mail.gmail.com>
- <20240325023726.itkhlg66uo5kbljx@airbuntu>
-Content-Language: en-US
-From: Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <20240325023726.itkhlg66uo5kbljx@airbuntu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 184.161.19.61
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Level: 
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	* -2.2 NICE_REPLY_A Looks like a legit reply (A)
+Subject: Re: [PATCH v4 0/3] add support for EXAR XR20M1172 UART
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-On 25/03/2024 02:37, Qais Yousef wrote:
-> On 03/18/24 18:08, Rafael J. Wysocki wrote:
->> On Mon, Mar 18, 2024 at 5:40 PM Christian Loehle
->> <christian.loehle@arm.com> wrote:
->>>
->>> On 18/03/2024 14:07, Rafael J. Wysocki wrote:
->>>> On Mon, Mar 4, 2024 at 9:17 PM Christian Loehle
->>>> <christian.loehle@arm.com> wrote:
->>>>>
->>>>> The previous commit provides a new cpu_util_cfs_boost_io interface for
->>>>> schedutil which uses the io boosted utilization of the per-task
->>>>> tracking strategy. Schedutil iowait boosting is therefore no longer
->>>>> necessary so remove it.
->>>>
->>>> I'm wondering about the cases when schedutil is used without EAS.
->>>>
->>>> Are they still going to be handled as before after this change?
->>>
->>> Well they should still get boosted (under the new conditions) and according
->>> to my tests that does work.
->>
->> OK
->>
->>> Anything in particular you're worried about?
->>
->> It is not particularly clear to me how exactly the boost is taken into
->> account without EAS.
->>
->>> So in terms of throughput I see similar results with EAS and CAS+sugov.
->>> I'm happy including numbers in the cover letter for future versions, too.
->>> So far my intuition was that nobody would care enough to include them
->>> (as long as it generally still works).
->>
->> Well, IMV clear understanding of the changes is more important.
+On Fri, 19 Apr 2024 15:45:00 +0300
+Konstantin Pugin <rilian.la.te@ya.ru> wrote:
+
+> From: Konstantin Pugin <ria.freelander@gmail.com>
 > 
-> I think the major thing we need to be careful about is the behavior when the
-> task is sleeping. I think the boosting will be removed when the task is
-> dequeued and I can bet there will be systems out there where the BLOCK softirq
-> being boosted when the task is sleeping will matter.
+> EXAR XR20M1172 UART is mostly SC16IS762-compatible, but
+> it has additional register which can change UART multiplier
+> to 4x and 8x, similar to UPF_MAGIC_MULTIPLIER does. So, I used this
+> flag to guard access to its specific DLD register. It seems than
+> other EXAR SPI UART modules also have this register, but I tested
+> only XR20M1172.
+> Yes, in datasheet this register is called "DLD - Divisor Fractional"
+> or "DLD - Divisor Fractional Register", calling depends on datasheet
+> version.
 
-Currently I see this mainly protected by the sugov rate_limit_us.
-With the enqueue's being the dominating cpufreq updates it's not really an
-issue, the boost is expected to survive the sleep duration, during which it
-wouldn't be active.
-I did experiment with some sort of 'stickiness' of the boost to the rq, but
-it is somewhat of a pain to deal with if we want to remove it once enqueued
-on a different rq. A sugov 1ms timer is much simpler of course.
-Currently it's not necessary IMO, but for the sake of being future-proof in
-terms of more frequent freq updates I might include it in v2.
+Hi Konstantin,
+it would probably be a good idea to also add the device to the list of supported devices for this driver in the Kconfig file.
+
+Hugo.
+
 
 > 
-> FWIW I do have an implementation for per-task iowait boost where I went a step
-> further and converted intel_pstate too and like Christian didn't notice
-> a regression. But I am not sure (rather don't think) I triggered this use case.
-> I can't tell when the systems truly have per-cpu cpufreq control or just appear
-> so and they are actually shared but not visible at linux level.
+> I am sorry about too many submissions and top post reply. About second -
+> I do not know how to reply properly to this ML from GMail phone app. About first - I just
+> get very good feedback from Andy Shevchenko, and want to fix his review picks ASAP.
+> 
+> Changes in v2:
+>   - use full name in git authorship
+> 
+> Changes in v3:
+>   - change formatting of commit messages to unify width
+>   - rework commit messages according to code review
+>   - add XR20M117X namespace for EXAR-specific register
+>   - do not use UPF_MAGIC_MULTIPLIER for checking EXAR chip,
+>     use s->devtype directly
+>   - replace while loop to fls function and expanded check
+>   - sort compatibles
+>   - reformat multiline comment.
+> 
+> Changes in v4:
+>   - rebase onto tty-next branch
+>   - added Kconfig mention of the chip
+>   - used rounddown_power_of_two instead of fls and manual shift
+>   - used FIELD_PREP instead of custom macro
+>   - removed has_dld bit from common struct, replaced by check function,
+>     which checks directly by s->devtype
+>   - fixed tab count
+>   - properly apply Vladimir Zapolskiy's tag to patch 2 only
+> 
+> Konstantin Pugin (3):
+>   serial: sc16is7xx: announce support of SER_RS485_RTS_ON_SEND
+>   dt-bindings: sc16is7xx: Add compatible line for XR20M1172 UART
+>   serial: sc16is7xx: add support for EXAR XR20M1172 UART
+> 
+>  .../bindings/serial/nxp,sc16is7xx.yaml        |  1 +
+>  drivers/tty/serial/Kconfig                    | 18 +++---
+>  drivers/tty/serial/sc16is7xx.c                | 62 +++++++++++++++++--
+>  drivers/tty/serial/sc16is7xx_i2c.c            |  1 +
+>  drivers/tty/serial/sc16is7xx_spi.c            |  1 +
+>  5 files changed, 70 insertions(+), 13 deletions(-)
+> 
+> 
+> base-commit: c6795fbffc4547b40933ec368200bd4926a41b44
+> -- 
+> 2.34.1
+> 
+> 
+> 
 
-Please do share your intel_pstate proposal!
 
-Kind Regards,
-Christian
+-- 
+Hugo Villeneuve <hugo@hugovil.com>
 
