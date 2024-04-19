@@ -1,127 +1,106 @@
-Return-Path: <linux-kernel+bounces-151751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D14DA8AB369
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:33:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A62298AB366
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:32:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7357C1F234BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:33:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6372B284BBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:32:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 656F913174E;
-	Fri, 19 Apr 2024 16:33:02 +0000 (UTC)
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C62130E5C;
+	Fri, 19 Apr 2024 16:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="WQVnycxB"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486CE1DFF0;
-	Fri, 19 Apr 2024 16:33:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB5585629;
+	Fri, 19 Apr 2024 16:32:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713544382; cv=none; b=VSl1DV+9cvouIpZ81GdlSI+LCHnXasFNNYUc3R554WcIGRUIn1+9564W7MgVHt0z4PdCOw35YTqULaVfmmDZDQH4xkqDxOIwT4XjfjuXcaUu1ToyYUygyFBvFNLZv0I1zfV3Yv7KvDWcLuUZ9yZ1Nf8xiDK07whBeHIpn9XUwzs=
+	t=1713544341; cv=none; b=WbN1S88Ik5IJnWE8KueQ6iAa8Ul4dwZ5jr6ciikJ2fPLVd4WWnR2nfpDzpbo1F/LI3LEQg5ZaXogi6a/KUwbZ53fT1lBzGEHMDA8T+J1gSk18EDI8mX0gciJvd+kIzqBvDhpBQUFXkjcY+aCQ4vWCyaeV/fIZ7LliXR3W6c0gX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713544382; c=relaxed/simple;
-	bh=lrsLAInGmmwlG8t8h9BjUv8G4ES4s20nILYak8Fi+Lk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iQjzsuHl5U8Y/Q5WyKRA1cF2iJT89ZS7GVVCCEYYGiFkk9evfWMUESSKsXGtacTgLyb48ePZ8hc5w0WamLBehQYeX9E0YdEJSeJxdjmpdtvMlQcXxstqv9+gwLN4i26ulLQ+HQ5osb0R5EaFUb+zjpucP8UvpEpfVZkufm1Aj7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=auristor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4347cbdb952so9099521cf.3;
-        Fri, 19 Apr 2024 09:33:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713544379; x=1714149179;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tZt0+bvbyo27WYKm1jClLea1EE0Wu1vF3OW+kTQvhOQ=;
-        b=pOQ6ruR3bMhxnpzj+lLDL012moR1Cl8raQZxxE54SwBS5wUxf/dhDgeMF1iQ9cO6wd
-         W8CfQDutAvgLnWxPE5NIGGwuvf42HFtwZ7O6pSUAGprT+nmtPEiEZEH+ecTzzPCu3ejL
-         ItYqsoS/l1jFWgVm75JLZWCj8IG44U6uE28mTwS2Iu85joSmXnUqn6+0sVFXAfw2z68r
-         wALBfBG751leNMqdSb8thhe/YQsMYF0tumtcyaBzLN7mV3dcoIn3NxxGBfoxlL2Z7avH
-         Ckkjtwfh9ogLTJSNnzM7Z+8R8gKi/JtgByD0RabcfJylRKE1ku4YxO8r87ZH2/F/8219
-         WqFw==
-X-Forwarded-Encrypted: i=1; AJvYcCUT68sleQdlXjSz9C8pvXmjCfVZLx//BXAPoQYzXvqw1ky7u2IbXXLN+vdsjz/247fPyN+nnIMxr7+BsTIYbPCvaqsSl/1B
-X-Gm-Message-State: AOJu0YwhJI5ipG4gm1hPwNo2QAcAonjWYH/u6j43iAahr1VpO+Iuc5L1
-	NKYaUD+eJqSIVD1sPv8XrnoE6M2dV0j/7pYlHdSG27idAO08xJhD
-X-Google-Smtp-Source: AGHT+IHaukWucAcTRkaFJw/QkRj27FoPZb1ec89AIlkmvXdYGorNs9q6y9L3bto15pZ+DtfIPa4ChQ==
-X-Received: by 2002:a05:622a:1207:b0:437:bc0f:323a with SMTP id y7-20020a05622a120700b00437bc0f323amr2583923qtx.48.1713544379177;
-        Fri, 19 Apr 2024 09:32:59 -0700 (PDT)
-Received: from hemlock.fiveisland.rocks (hlfxns014qw-156-57-186-228.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.57.186.228])
-        by smtp.gmail.com with ESMTPSA id g23-20020ac84dd7000000b00436e0eb2346sm1718444qtw.55.2024.04.19.09.32.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 09:32:58 -0700 (PDT)
-From: Marc Dionne <marc.dionne@auristor.com>
-To: David Howells <dhowells@redhat.com>,
-	netdev@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>,
-	Eric Dumazet <edumazet@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jeffrey Altman <jaltman@auristor.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-afs@lists.infradead.org
-Subject: [PATCH net v2] rxrpc: Clients must accept conn from any address
-Date: Fri, 19 Apr 2024 13:30:57 -0300
-Message-ID: <20240419163057.4141728-1-marc.dionne@auristor.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713544341; c=relaxed/simple;
+	bh=eIbxWlxAN7PmEn+bwco0CingzsHowjfYYbnjMadAdbM=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=aLueTYU9pnEYhtLfu48gL98a8yyemgcY9noGNLPikQncbIKFVZ+/5n8j3Q4wR/jBLU6kALZQSuUHOX6E6SzLxx2D+rGZinjXv1e2jsX6y6EgsSJSWaeWzLoDNSS89kJd7TKkA4J4P8s+A+4lz6ah6eJzQezj3wWJGXJZaKt5BNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=WQVnycxB; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713544326; x=1714149126; i=markus.elfring@web.de;
+	bh=eIbxWlxAN7PmEn+bwco0CingzsHowjfYYbnjMadAdbM=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=WQVnycxB9+t5If4iKSq2luaQjPMqh2YTkUMSVmv08Kzykb2b8bH6AC18Rx/NYJ2n
+	 Q3uiTmYE3z0Fqj9ovZgZDSmvXUK6/oG4sllc0Voe1GUA3NECqmxPwI5SKPLJpeQ8k
+	 zsWHyfabjsO76vWYFl0WzryURrc20iBmHWXXeZRW5ODWCQ8G4X7iTJLW+vNcGdYMk
+	 vw9ddwtPAR4TQE2WfwtIOeXpT40LEfG6ufCv+7ou+CWPGBmdtAhfHEddR0wltiJb2
+	 tiaR2qPMERlAKIKR4VNTCa5Q2p6WJMyXAElmfxtXi3FxajVD/B7yGR37N2s4AnvUj
+	 nz/S8ayMqBQnzcuGvA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MG9DE-1rwlEw2bBE-00GWVB; Fri, 19
+ Apr 2024 18:32:06 +0200
+Message-ID: <bf0dc8a8-d5e9-4402-8305-5b7a954e6382@web.de>
+Date: Fri, 19 Apr 2024 18:32:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: Wander Lairson Costa <wander@redhat.com>, kunit-dev@googlegroups.com,
+ linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Brendan Higgins <brendan.higgins@linux.dev>, David Gow
+ <davidgow@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Matti Vaittinen <mazziesaccount@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, Rae Moar <rmoar@google.com>,
+ Shuah Khan <skhan@linuxfoundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <2024041955-strangely-snack-b335@gregkh>
+Subject: Re: [PATCH v4 1/2] kunit: unregister the device on error
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <2024041955-strangely-snack-b335@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:stRam5aVtIuDvHM21SJEdP2eyrk/2IhupOPWo77UJqEdZj0lMjM
+ 1kBBa93H53jLvhEicKH0EIcsnyhDgq4k/JqqZOj9b6fshRCXZaR5rJZys00OVaiA0FKlfp3
+ 7EQfm7LfrEDW79nZv5OHCkqQ3QTnxi4SEQ5+kKxY9C+hiobcb2ksKG0magbesWswLM8jISr
+ N7tyWaBMkpDPxqXb/wcNg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:dcJDmLSpQmg=;62Zr0Xznbtsg2eO6SE5TOHi9U9k
+ EIia6P4/Stl6JX5AVZ5ObMPZdBsdwQFnWufZkVILT3fH2w48svA46fi5Dbd+tV9oaWVHix27g
+ lDJksMgY9nbBWvoLHu5yEbB4ZRzNg3KgOfqKYlWV12UCLCMBDkcfHJk4wLV9TYaVPx7x9PCD0
+ rGXRAsyJWhFo08PQpg84NiIM/yu47C0KehRSgF9uDyn139bBU2D2Jiw6tzcUQCt5eyhl8WfTM
+ dURD2bzAZbnUONgtTz35Q8DarjuNUITZ71MkErUf70V9pz/EHrJw9PLQTffB1W5fv+jlTLdeE
+ Ge4zd5qaJnBJa/o33ZQbIsDvi9BJjGAvDU/87K0+h4MaK25Rbzur/QZRoHbh9RHm2zMRS7LCj
+ PAaVxz+TapnOvfqqDGZb3O3q5NEweFCnmaBHxhDpFh4XqN4+zlQczLxcd1KlzW7ZzStZUskII
+ bs8ux9W/an4L5AKeiuSUPlii0kgTRjIkzPCel16/6WsujStS21czAd0iMJ3tZugIepvloRSyP
+ znQYZI2e+PeAOtTyPmhHgqzuqAqaI0IzSsoSa45WVMnZpu+etU+7gohQWiPP7XKw3dAbGPYOa
+ Yt6dImJsu5PJPjf0v1KtxUmzHAheMEandRW65wSuIE/HEXU+8smR7xhmtPkHnaiX8x1jKc+WZ
+ zJIL3KcvIPa28jWgnxHNSd1usQShtvlPLxg758btAEM2yQ7YzENUGIQnk0UigLHxLw8loMWZM
+ WUEL2qV/CGkvcnPrHATkyjnecf6RF8lYvWViWnj7xAvHBWUf3c8OVxqM0SMcDU2EukdshvgQG
+ IXfQr2fwsjo1ifi9UYtSv0P9n1rbao2TxXvNN+Yx71bdQ=
 
-From: Jeffrey Altman <jaltman@auristor.com>
+> > kunit_init_device() should unregister the device on bus register error=
+,
+> > but mistakenly it tries to unregister the bus.
+> >
+> > Unregister the device instead of the bus.
+=E2=80=A6
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The find connection logic of Transarc's Rx was modified in the mid-1990s
-to support multi-homed servers which might send a response packet from
-an address other than the destination address in the received packet.
-The rules for accepting a packet by an Rx initiator (RX_CLIENT_CONNECTION)
-were altered to permit acceptance of a packet from any address provided
-that the port number was unchanged and all of the connection identifiers
-matched (Epoch, CID, SecurityClass, ...).
+Would you ever like to distinguish hardware register errors from
+item registration failures according to further improved commit messages?
 
-This change applies the same rules to the Linux implementation which makes
-it consistent with IBM AFS 3.6, Arla, OpenAFS and AuriStorFS.
-
-Fixes: 17926a79320a ("[AF_RXRPC]: Provide secure RxRPC sockets for use by userspace and kernel both")
-Signed-off-by: Jeffrey Altman <jaltman@auristor.com>
-Acked-by: David Howells <dhowells@redhat.com>
-Signed-off-by: Marc Dionne <marc.dionne@auristor.com>
----
-v2: Added Fixes: tag
-
- net/rxrpc/conn_object.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/net/rxrpc/conn_object.c b/net/rxrpc/conn_object.c
-index 0af4642aeec4..1539d315afe7 100644
---- a/net/rxrpc/conn_object.c
-+++ b/net/rxrpc/conn_object.c
-@@ -119,18 +119,13 @@ struct rxrpc_connection *rxrpc_find_client_connection_rcu(struct rxrpc_local *lo
- 	switch (srx->transport.family) {
- 	case AF_INET:
- 		if (peer->srx.transport.sin.sin_port !=
--		    srx->transport.sin.sin_port ||
--		    peer->srx.transport.sin.sin_addr.s_addr !=
--		    srx->transport.sin.sin_addr.s_addr)
-+		    srx->transport.sin.sin_port)
- 			goto not_found;
- 		break;
- #ifdef CONFIG_AF_RXRPC_IPV6
- 	case AF_INET6:
- 		if (peer->srx.transport.sin6.sin6_port !=
--		    srx->transport.sin6.sin6_port ||
--		    memcmp(&peer->srx.transport.sin6.sin6_addr,
--			   &srx->transport.sin6.sin6_addr,
--			   sizeof(struct in6_addr)) != 0)
-+		    srx->transport.sin6.sin6_port)
- 			goto not_found;
- 		break;
- #endif
--- 
-2.44.0
-
+Regards,
+Markus
 
