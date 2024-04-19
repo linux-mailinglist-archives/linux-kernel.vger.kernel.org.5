@@ -1,129 +1,102 @@
-Return-Path: <linux-kernel+bounces-151996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D9FF8AB727
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:18:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B41F8AB72B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:20:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D5041F22454
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:18:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2710E1F2226B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:20:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C9113D294;
-	Fri, 19 Apr 2024 22:18:46 +0000 (UTC)
-Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [5.144.164.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC4713D294;
+	Fri, 19 Apr 2024 22:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XLGFzaVQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CCB52B9B0;
-	Fri, 19 Apr 2024 22:18:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF4D13D250;
+	Fri, 19 Apr 2024 22:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713565126; cv=none; b=pefyEQIUTOGucAmSMUFjHe4SXc+1Od2SMkPsmEixQsUt85RdeMuW613Jbft669QRuglrLoFq8lT6cauQXBuhjXnpn3Xk5vGsHU7XzYAaVzcKB28c0dY3WZ+UayJlNv09PVVhf2iuc5k6gMZ9DrlOMz9CE4THui551oZ0lCZHGA4=
+	t=1713565236; cv=none; b=VP98RSdTgqBxZzI/cmqKUIO8hVAEJXvaN0cDdBfCRrC/NLt5canxSzq/fF3SsETsjpCLYj4Oi9bKdXlxmUtwENRO1qFzP2DCLdyPApKjHQXCP5qTsApjn4glsSFYSiaY5sINADSob7Y9+ivJCCDaDtASQtbjB9LrBKWwd+UO1hU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713565126; c=relaxed/simple;
-	bh=P8+UUKY91HWjdDA+iBHqRehfIIVF2NXb2s/K6A9xR5g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Tqc9aeWX+tH7y8KEBqTt3HbACFIYLnMo5nRk1Ix52iYyurw1G81kDoJCJEBM7UPdWARqGS6HoDCKYKI8pXO++JxP6wBKQQU0e8qviZWh1VWXsgyrRDZDhBdoBYEFvcg/s5UD2k/Wxo+sUQyD/X69WUzFBQZX+IAW1rDYYioF77A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 6AF05405E9;
-	Sat, 20 Apr 2024 00:18:40 +0200 (CEST)
-Date: Sat, 20 Apr 2024 00:18:39 +0200
-From: Marijn Suijten <marijn.suijten@somainline.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Rob Clark <robdclark@gmail.com>, 
-	Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Archit Taneja <architt@codeaurora.org>, 
-	Chandan Uddaraju <chandanu@codeaurora.org>, Vinod Koul <vkoul@kernel.org>, 
-	Sravanthi Kollukuduru <skolluku@codeaurora.org>, linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Jordan Crouse <jordan@cosmicpenguin.net>, Rajesh Yadav <ryadav@codeaurora.org>, 
-	Jeykumar Sankaran <jsanka@codeaurora.org>, ~postmarketos/upstreaming@lists.sr.ht, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Martin Botka <martin.botka@somainline.org>, Jami Kettunen <jami.kettunen@somainline.org>
-Subject: Re: [PATCH 2/7] drm/msm/dsi: Pass bonded-DSI hdisplay/2 to DSC
- timing configuration
-Message-ID: <7fqwkryeumkt7zxsec6va7ys22nfs3tr4rrcz323extdz3f6zv@w4uu2lk4uh7v>
-References: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
- <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-2-78ae3ee9a697@somainline.org>
- <CAA8EJpq-1QwoM2hEyegpfKnVH+qrswjmTd_hpYs9d9B7gikHjg@mail.gmail.com>
+	s=arc-20240116; t=1713565236; c=relaxed/simple;
+	bh=oTRsnAA4EcTptyTfIK6CeSWLM3KSlF4hdWKZZyS/K/M=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=nGAU2MPDtDzTcVmH2GSbo7yeKyQyC9mpqzF6Dp5zG1YEtTJc5URfQDecCx4Lzt/BAf5qbagHjNtL+TWvHwUPMNV8058pTmERsGNpqVqCCpid/2PQUKnVXEJTAgH8K1V8xkaQIAkRR8IxMy80UzdJmNqso/gV+YvnZ+n8oCqge2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XLGFzaVQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64D48C072AA;
+	Fri, 19 Apr 2024 22:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713565235;
+	bh=oTRsnAA4EcTptyTfIK6CeSWLM3KSlF4hdWKZZyS/K/M=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=XLGFzaVQvpo9LawydhkulZvZhw62K/zP6NJBYc+oeZzaoxiPrHDI/Ej+qRbqiIR5z
+	 IDiTvA9Lx9ImKP8kOIZmzMJLT99ezI+IZVA8BBXWJhbluOk4yTMseAwHhhYdiix8vL
+	 KR4GzM7BLpys2p7kOIw38T3elM17Rd7PrKhEGkvCQ0QZdiWFrpI9TcMimaypkPn/Bd
+	 5aMmnLnyckrEL4ClQhp6eJ4/zXkXzuW9ZFbX5F5Vtn+bVSclfGO1oVeHmh6bub6COC
+	 Lu3FGvJyKPLs6ydaiN1e0og4OeE8HfhrUxoUkwCYOVXE/EKSn/DyItJJZ3NCwtxViu
+	 YV9qFMtnDjr5Q==
+Message-ID: <77272c635a928f3582ce53766b20c747.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpq-1QwoM2hEyegpfKnVH+qrswjmTd_hpYs9d9B7gikHjg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <y7i7vwl7h2xop2ifh72vj5brtq7vd7tf72tst7k7r74plguhgn@cqs5fzplfk5i>
+References: <202403270305.ydvX9xq1-lkp@intel.com> <20240327073310.520950-2-u.kleine-koenig@pengutronix.de> <d95554f623f023a2f5499fa2f6f76567.sboyd@kernel.org> <xfaf22rf6gnrxpinkciybsyk4dx2bfqgozv6udwymegtcgd26i@jq5be7fm5lhi> <y7i7vwl7h2xop2ifh72vj5brtq7vd7tf72tst7k7r74plguhgn@cqs5fzplfk5i>
+Subject: Re: [PATCH] clk: Provide !COMMON_CLK dummy for devm_clk_rate_exclusive_get()
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Russell King <rmk+kernel@armlinux.org.uk>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev, kernel test robot <lkp@intel.com>, kernel@pengutronix.de
+To: Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Date: Fri, 19 Apr 2024 15:20:33 -0700
+User-Agent: alot/0.10
 
-On 2024-04-17 14:58:25, Dmitry Baryshkov wrote:
-> On Wed, 17 Apr 2024 at 02:57, Marijn Suijten
-> <marijn.suijten@somainline.org> wrote:
-> >
-> > When configuring the timing of DSI hosts (interfaces) in
-> > dsi_timing_setup() all values written to registers are taking bonded
-> > DSI into account by dividing the original mode width by 2 (half the
-> > data is sent over each of the two DSI hosts), but the full width
-> > instead of the interface width is passed as hdisplay parameter to
-> > dsi_update_dsc_timing().
-> >
-> > Currently only msm_dsc_get_slices_per_intf() is called within
-> > dsi_update_dsc_timing() with the `hdisplay` argument which clearly
-> > documents that it wants the width of a single interface (which, again,
-> > in bonded DSI mode is half the total width of the mode).  Thus pass the
-> > bonded-mode-adjusted hdisplay parameter into dsi_update_dsc_timing()
-> > otherwise all values written to registers by this function (i.e. the
-> > number of slices per interface or packet, and derived from this the EOL
-> > byte number) are twice too large.
-> >
-> > Inversely the panel driver is expected to only set the slice width and
-> > number of slices for half the panel, i.e. what will be sent by each
-> > host individually, rather than fixing that up like hdisplay here.
-> >
-> > Fixes: 08802f515c3c ("drm/msm/dsi: Add support for DSC configuration")
-> > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > ---
-> >  drivers/gpu/drm/msm/dsi/dsi_host.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Quoting Uwe Kleine-K=C3=B6nig (2024-04-19 13:00:19)
+> Hello Stephen,
+>=20
+> On Fri, Apr 12, 2024 at 10:49:35PM +0200, Uwe Kleine-K=EF=BF=BDnig wrote:
+> > On Thu, Mar 28, 2024 at 03:35:57PM -0700, Stephen Boyd wrote:
+> > > Quoting Uwe Kleine-K=EF=BF=BDnig (2024-03-27 00:33:10)
+> > > > To be able to compile drivers using devm_clk_rate_exclusive_get() a=
+lso
+> > > > on platforms without the common clk framework, add a dummy
+> > > > implementation that does the same as clk_rate_exclusive_get() in th=
+at
+> > > > case (i.e. nothing).
+> > > >=20
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > Closes: https://lore.kernel.org/oe-kbuild-all/202403270305.ydvX9xq1=
+-lkp@intel.com/
+> > > > Fixes: b0cde62e4c54 ("clk: Add a devm variant of clk_rate_exclusive=
+_get()")
+> > > > Signed-off-by: Uwe Kleine-K=EF=BF=BDnig <u.kleine-koenig@pengutroni=
+x.de>
+> > > > ---
+> > >=20
+> > > Applied to clk-fixes
+> >=20
+> > I assume that means it will be sent to Linus before 6.9? That would be
+> > great because I want to make use of this function in some drivers and
+> > the build bots nag about my for-next branch that in some configurations
+> > this function is missing.
 
-Thanks, it seems this patch has already been picked up for 6.10 [1] to test at
-least, but I'd advise you to drop it until I resend it in v2, as it no longer
-performs as written in the title.
+Yes.
 
-When I wrote this patch in in June 2023, commit efcbd6f9cdeb ("drm/msm/
-dsi: Enable widebus for DSI") from August 2023 wasn't there yet.  That patch
-updates hdisplay (because it is unused after that point) with the number
-of compressed bytes to be sent over each interface, which is effectively
-hdisplay (based on slice_count * slice_width, so as explained in the commit
-message that corresponds to half the panel width), divided by a compression
-ratio of 3 or 6 depending on widebus, thus passing a way too low value into
-dsi_update_dsc_timing().
+>=20
+> Gentle ping. I'd like to get the patches I intend to send to Linus for
+> v6.10-rc1 into shape. To have these unmodified in my for-next branch for
+> some time it would be great to know your plans for the clk-fixes branch. =
 
-As a result this patch regresses the DSC panel on my SM8150 Sony Xperia 1, and
-likely also explains why it was quite hard to get the porches "just right" on
-the Xperia 1 III with its dual-DSI dual-DSC 4k@120Hz panel (that these patches
-are specifically for).
+> Alternatively: Can I expect the commit not to be changed any more and
+> pull it into my pwm tree?
+>=20
 
-I'm still thinking of how to best fix that: probably introducing a new separate
-local variable, though dsi_update_dsc_timing() only uses it to calculate
-the number of slices per interface, which again as written in the commit
-description, is currently required to already be for one interface (in other
-words, the Xperia 1 with only a single intf sets slice_count=2, but the Xperia 1
-III with 2 bonded DSI interfaces sets slice_count=1).  Which means that this is
-always equivalent to slice_per_intf = dsc->slice_count.
-
-Let me know which approach is preferred.
-
-- Marijn
-
-[1]: https://gitlab.freedesktop.org/drm/msm/-/merge_requests/110
+clk-fixes is sent to Linus during the rc cycle. I'm sending a PR today.
 
