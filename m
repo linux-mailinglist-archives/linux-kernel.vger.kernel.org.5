@@ -1,124 +1,208 @@
-Return-Path: <linux-kernel+bounces-151860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDDA98AB4DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:13:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 970318AB4E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:15:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8741C21C30
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:13:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA2B21C20DAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18ED013BC20;
-	Fri, 19 Apr 2024 18:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08C1913BC37;
+	Fri, 19 Apr 2024 18:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ls7XD/PU"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nmJZlG+W"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB3D77F13;
-	Fri, 19 Apr 2024 18:13:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF4FB130A5B;
+	Fri, 19 Apr 2024 18:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713550398; cv=none; b=DHRcQCzAg+JoJ+dQxQ8RaPlXogMr1toljtwKz/13jyzECr5nMdXChHKIBqL8x5HHPG+Lg4s2QdE3WoV86/T37Vvn9H0rNhDw0Dq3tx/KYG4dNzFol9ybq89o7vFmoMsWcxye8PALu2qsvo/U0loklCavJIC6isPfL4dBdZ1l6Qg=
+	t=1713550522; cv=none; b=qKnZhRyworv6VzW3WT1dDQbOwaRTcQJVseNiHRW7SNRo0cbAqc3DqKgZHVQ4O1BaPMHVM9+H7ILtivSDs6QSGcyx1aUj4oKmdcYfMSOn1oyEiMJipAyprQ3Iq9d8xz+zvEqy+3dg689HzXMQzqTQ1M12jbp10khC/1+61nGflKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713550398; c=relaxed/simple;
-	bh=hOoTnHiBwf2rX2MwVUrEk0jw4KfQYDg5tOPaL5cUa0w=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=D7kSbVvoZiwVp9I7EdSi7EVL7vaeShTv6RWXjEz/NAgONStwYBPgQ70gmXpdyhd1CeMzHUWWyzd0G8XN/cy/zlM60iJWU+qjfR6QZ7y3ByK5OmC1xspe6txqwkJi6TQcPC2udp93ZDgB/YIEhpWTdyojhFTSpzijW++zlqMVmFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ls7XD/PU; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f103b541aeso180666b3a.3;
-        Fri, 19 Apr 2024 11:13:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713550396; x=1714155196; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wXuQiZ6Uxljth7h4zsRrHEZmoGaHKO2VIyJBKdyFiaI=;
-        b=ls7XD/PUuZVrS7t429gpMqgX313kAKXXk/6ul12jXoYy2E36nL8IdmthFEVJOxvaFE
-         vazT9CInI9Mn674XQd53aIa/zdKuoLRAYZPPBArrvth4mhHxdigVDuOdco52YtQ5RoqI
-         H4YkA1BmS2jbtRmLTGImPlkgAeEh2GXDcgpplsLEV+sZoY6NvWxB0t0we5jV0A/PwtdM
-         +o+0FAWVnz6ePHZKqm3I2BX+JzlhOPWmxC60OjtHgoFbu77j8OPZnTWNJnbYjZ8YBN64
-         HJ2OEcqHzqWJQXIWUSOA9uz5AS/U40rWLBTG5RKY6yoDVTXAtg8UxZIpfNrbM3XK29J+
-         sV9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713550396; x=1714155196;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wXuQiZ6Uxljth7h4zsRrHEZmoGaHKO2VIyJBKdyFiaI=;
-        b=p8b8vwGvelTQXWhgV0es+RwLkhJtkKBDRxXeCnmoevj9pnPU/OEKYWAQ5Tiaq3SLJs
-         RZWpoW4bRj02hiF2G/wItGK0b+l6x08Jse0xbhhpKue7tmuLFFEI6kRTd0hEe3ZJiTLk
-         InpTEqLPlbSx+2z/cwKXjCuS20PD71/YchSRIQXjQ6qPKNXZEaV2A0qopg7X6zE/WUij
-         vf8aHhJ0YnCEK9JP9TG/AQUKiljTaOUfDQUvRoNeypK3PIo83RyFppzR5OamAVKGyTcf
-         5iVJhsQa6Ky/mGyOjQH1ohq8Hi9cXIefRWBfeY0HfVt/BAAKpKlpXWMppuSd9+QhDFiA
-         Rknw==
-X-Forwarded-Encrypted: i=1; AJvYcCXMS/nf1bWZgE2JZjt31ZUr8fc2vrQE4mx7/r9GnK3dADuh3SRMAojDHj/UrHMICi+YNtNR8UmnM47bNVprlGe5pN/p+lD2URRu6v5vv9h2PDIULhp/pApcQ1dKkGaB4soUxcTEaV+Fc/EPkK6k8SeOR9nruuPprkXHn1nh1jMZ
-X-Gm-Message-State: AOJu0YzGGpulgb08Lzb5D910i2/daTWtsDcZvI9OhPMqlsE+H+iLrP8o
-	CX3KZ1xm2z3Lbf5WOkg1URWAoe0rigNB0r0l8UjLACRc+nsetFhWGN6ALxUZ/+I=
-X-Google-Smtp-Source: AGHT+IGNZK0ii7nuVFmi3UMPukJNc6P/XaBwLNfn739GOnYUs4dIu1Cf3G0hCJF4ek+v/drIdRnH/w==
-X-Received: by 2002:a05:6a20:96db:b0:1a9:5e63:501b with SMTP id hq27-20020a056a2096db00b001a95e63501bmr2934392pzc.44.1713550396318;
-        Fri, 19 Apr 2024 11:13:16 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id x16-20020a17090a531000b002a537abb536sm5148563pjh.57.2024.04.19.11.13.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 11:13:15 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: syzbot+393d0ef63475d9bb1f16@syzkaller.appspotmail.com
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-ppp@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	syzkaller-bugs@googlegroups.com,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: [PATCH net,v2] net: ppp: Fix deadlock caused by unsafe-irq lock in ap_get()
-Date: Sat, 20 Apr 2024 03:12:38 +0900
-Message-Id: <20240419181238.29399-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <000000000000423dd10611261d47@google.com>
-References: <000000000000423dd10611261d47@google.com>
+	s=arc-20240116; t=1713550522; c=relaxed/simple;
+	bh=1CyKF1CDwhvwSPePXcZXWSY7Imlj5i23kiKngwm8hiQ=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=RgMFd/vb9CwHlbBK4ml/JRM0df7L7a89UXwhKnaNtqAXzvYIBz51A5uSBFDp4664WfowIz4i16m17gyGeU0hM/3suOoD1oRIa5yh6rC5lf6OT/uhWDaJOnGfBCTkKW0sTv89Z1INGgGduDU5kEBny6MOo7z+U2s9uCyJ1ne0ppk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nmJZlG+W; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713550521; x=1745086521;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=1CyKF1CDwhvwSPePXcZXWSY7Imlj5i23kiKngwm8hiQ=;
+  b=nmJZlG+WUzJjvCp9vnw+oZEmGwHczXMZx/YJJvgrA5qbHPyAmn8JErXF
+   Ckud7T5DY58gFaEKJqYCUIp2KEwwLU+/3a5O2DZ2sisNP/KINRMyZUSdv
+   7EdzDjFWgSAq5Mhu2DnvIuJxQOnvEayX1KAw0m98Dkgxq3HAWdH6TVUu7
+   1vomP8Qv1FvU4Jjjl9p4QnqSb+tiv01nTTdWcy/QE9jxZwcIvhrxfnaJn
+   HWhQvNlqfOkgYY0Tlv4famw7ikm5pXTWvv7/RTuI0nX3ocfUQDLAQkH+m
+   S2XwCxyzQZp6GEZrmkzqSiyMw2j3kmh/FcOsdbNJALJVZvifqWZBMfQsJ
+   Q==;
+X-CSE-ConnectionGUID: 0SLKGfn9RB+l3luNlFwbXQ==
+X-CSE-MsgGUID: PBNnP44MTAyjeU+tHMfqRA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="9036514"
+X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
+   d="scan'208";a="9036514"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 11:15:21 -0700
+X-CSE-ConnectionGUID: 2PG7nB6VSgOCK/hIYTgz7w==
+X-CSE-MsgGUID: J22koZ0gQO+BhjwRLbK9jg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
+   d="scan'208";a="23419118"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 19 Apr 2024 11:15:17 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+ <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v12 05/14] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-6-haitao.huang@linux.intel.com>
+ <a5e009636c5144622e0a910a459cd9d05976715e.camel@intel.com>
+ <op.2mf3ykfswjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <d401e7a1-44fa-44b6-9c6e-c0abdabd5111@intel.com>
+Date: Fri, 19 Apr 2024 13:15:16 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2mhmbqapwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <d401e7a1-44fa-44b6-9c6e-c0abdabd5111@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+
+On Thu, 18 Apr 2024 18:29:53 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
 
-read_lock() present in ap_get() is interrupt-vulnerable, so the function needs to be modified.
+>>>>
+>>>> --- /dev/null
+>>>> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
+>>>> @@ -0,0 +1,72 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +#ifndef _SGX_EPC_CGROUP_H_
+>>>> +#define _SGX_EPC_CGROUP_H_
+>>>> +
+>>>> +#include <asm/sgx.h>
+>>>
+>>> I don't see why you need <asm/sgx.h> here.  Also, ...
+>>>
+>>>> +#include <linux/cgroup.h>
+>>>> +#include <linux/misc_cgroup.h>
+>>>> +
+>>>> +#include "sgx.h"
+>>>
+>>> ... "sgx.h" already includes <asm/sgx.h>
+>>>
+>>> [...]
+>>>
+>> right
+>>
+>>>>
+>>>> +static inline struct sgx_cgroup *sgx_get_current_cg(void)
+>>>> +{
+>>>> +    /* get_current_misc_cg() never returns NULL when Kconfig enabled  
+>>>> */
+>>>> +    return sgx_cgroup_from_misc_cg(get_current_misc_cg());
+>>>> +}
+>>>
+>>> I spent some time looking into this.  And yes if I was reading code
+>>> correctly the get_current_misc_cg() should never return NULL when  
+>>> Kconfig
+>>> is on.
+>>>
+>>> I typed my analysis below in [*].  And it would be helpful if any  
+>>> cgroup
+>>> expert can have a second eye on this.
+>>>
+>>> [...]
+>>>
+>> Thanks for checking this and I did similar and agree with the  
+>> conclusion. I think this is confirmed also by Michal's description  
+>> AFAICT:
+>> "
+>> The current implementation creates root css object (see cgroup_init(),
+>> cgroup_ssid_enabled() check is after cgroup_init_subsys()).
+>> I.e. it will look like all tasks are members of root cgroup wrt given
+>> controller permanently and controller attribute files won't exist."
+>
+> After looking I believe we can even disable MISC cgroup at runtime for a  
+> particular cgroup (haven't actually verified on real machine, though):
+>
+>   # echo "-misc" > /sys/fs/cgroup/my_group/cgroup.subtree_control
+>
+My test confirms this is does not cause NULL cgroup for the tasks.
+It actually works the same way as commandline disable except for that this  
+only disables misc in subtree and does not show any misc.* files or allow  
+creating such files in the subtree.
+
+> And if you look at the MISC cgroup core code, many functions actually  
+> handle a NULL css, e.g., misc_cg_try_charge():
+>
+> 	int misc_cg_try_charge(enum misc_res_type type,
+> 				struct misc_cg *cg, u64 amount)
+> 	{
+> 		...
+>
+>          	if (!(valid_type(type) && cg &&
+> 				READ_ONCE(misc_res_capacity[type])))
+>                  	return -EINVAL;
+>
+> 		...
+> 	}
+>
+> That's why I am still a little bit worried about this.  And it's better  
+> to have cgroup expert(s) to confirm here.
+>
+
+I think it's just being defensive as this function is public API called by  
+other parts of kernel. Documentation of task_get_css() says it always  
+returns a valid css. This function is used by get_current_misc_cg() to get  
+the css refernce.
 
 
-Reported-by: syzbot+393d0ef63475d9bb1f16@syzkaller.appspotmail.com
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
----
- drivers/net/ppp/ppp_async.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+/**
+  * task_get_css - find and get the css for (task, subsys)
+  * @task: the target task
+  * @subsys_id: the target subsystem ID
+  *
+  * Find the css for the (@task, @subsys_id) combination, increment a
+  * reference on and return it.  This function is guaranteed to return a
+  * valid css.  The returned css may already have been offlined.
+  */
+static inline struct cgroup_subsys_state *
+task_get_css(struct task_struct *task, int subsys_id)
 
-diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
-index c33c3db3cc08..d12b8155e839 100644
---- a/drivers/net/ppp/ppp_async.c
-+++ b/drivers/net/ppp/ppp_async.c
-@@ -134,11 +134,11 @@ static struct asyncppp *ap_get(struct tty_struct *tty)
- {
- 	struct asyncppp *ap;
- 
--	read_lock(&disc_data_lock);
-+	read_lock_irq(&disc_data_lock);
- 	ap = tty->disc_data;
- 	if (ap != NULL)
- 		refcount_inc(&ap->refcnt);
--	read_unlock(&disc_data_lock);
-+	read_unlock_irq(&disc_data_lock);
- 	return ap;
- }
- 
--- 
-2.34.1
+
+If you look at the code of this function, you will see it does not check  
+NULL either for task_css().
+
+So I think we are pretty sure here it's confirmed by this documentation  
+and testing.
+Thanks
+Haitao
 
