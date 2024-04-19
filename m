@@ -1,107 +1,96 @@
-Return-Path: <linux-kernel+bounces-151989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDFD18AB70E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:05:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13F158AB711
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:06:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4815283161
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:05:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7B261F224A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E2E713D27E;
-	Fri, 19 Apr 2024 22:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="gcbcIqn4"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B0B13D276;
+	Fri, 19 Apr 2024 22:06:23 +0000 (UTC)
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D44113D24C
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:05:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B822112DD97
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713564344; cv=none; b=iD0HbLS6+s52Qs97bapVGmo3tR4Lc6Opewq/4p2FWjEUIYnjS8Ndj4POFaxvEJeOrfH1VEoULbDnpvFdUFOCMsSsf6AwOKtmPWOgGyATZ6aPUl64yIDtKEi0+OTwHUgNGAEQNuzv+UaHULvZWqJcXbMlgDVgt2Ea8cxtAY0WejA=
+	t=1713564383; cv=none; b=Pj8mb23ct2M9XwbtG1aXRDFkoc62hRCIe0NQSd3W2Kfg18viS0p3TS0oOm5WBMDNOySLZmYhOMKcvQqttd3KeMpBtlMjNoW3jpRLjuDadoAPaeLpGU4u+MKY5xeYoNXGthbyQRTcAK+jMK3GCbSW1Pz64LPGTMAT3kziziQ3pGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713564344; c=relaxed/simple;
-	bh=iwngIHVe/4WMng29YbmuBW3l10hwsKwRmw0uFrHNG3g=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Lc3wURZXJpO2PHRzKcO5L/1hQfWiw0wc8Q/vCUp5GCoAPkTpYqsOSOBExciplnu7HYU2B85YjTKxEnUtJTYOJw9lMbdLwCh3hR4gnpwo69itfMQdIKQ+MQl3igd6/cTL3S3uSxeiZpJFk4+NBeGpLOhQ3p+vNVRI0/KRmRUJOBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=gcbcIqn4; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 817A33F182
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 22:05:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1713564341;
-	bh=iwngIHVe/4WMng29YbmuBW3l10hwsKwRmw0uFrHNG3g=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=gcbcIqn46I9Ifp2C20JlLfkg9yD1agLD2qFYOfjgOWbYFabCUkr+BJth/xJyMTzRQ
-	 QBMapU23t3ScyTTKfGCAveM1bj1r9B1HxZwuyTB7r53PmcQKTDxryh8l6URZpgPl7l
-	 ey2Q5ign10t6RdzsBNa5jnWmIhocFSMtKBCeHpD+wESgATH4XzgeGrmIBTnMyHuBK4
-	 sjDWzXnRHzr3H8aGlrauvUJZOCwcYztnqCSRCBQ7Omq0g3sAd2M4zp0U7AO6cW1arD
-	 wEXkqo3WofDfZqPERR+5FEAiMwONg8TNUruf5W2mSccyuG02htFE5pGxhzlbqRP+1a
-	 abjbvplhUhHeA==
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4386bcfd788so14119611cf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:05:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713564340; x=1714169140;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iwngIHVe/4WMng29YbmuBW3l10hwsKwRmw0uFrHNG3g=;
-        b=Ug1iOeo99ek5I+Nv+OeymKzC45LWVoZK/NvsJ9pmir8GQGwCLUGFPt1r4w/omw770x
-         HolmGiIFRVf4w0Kohmlp8Ly92WkR8OLgY8EgFny0QHEDhktTi1mbiE2JjqObFPA9sR9Y
-         WDHaFukh+vmw1r4t4tb51pgfSWnGnABBIFkseL+AXe10hiJBYaV0pLJlCZ8lre9lDaJT
-         YHiJWhcpV7uD+NuXssVZ7jMj9/4n821fEQk4f7I8svb7FanGKYmr4LIXyjP4W78o6+nn
-         JGU661GAxtym/vjwaxiztHzQ36gw4dC3WNFmSShtVjjvAqvSPZ1ReHYzuMO6kL2NOEuR
-         sMPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX/tWsbQnz8lioHFenFd2Tjfali0eqbjx/xw+wg9iawFvEIqH+Q7u/EOaucXf2RSm0YrXDr9ymtL9gtbadr/7rAZ9Wmdp4TAwaaokmu
-X-Gm-Message-State: AOJu0YzTxbdN1DfeJXWZdp7xAQQ/YXJBrgi5jI0clNcVORMc1GqC/qyn
-	KrvAZZDXGrEClkW0wBD5rbGLlHZ2lY+z7N72DFjl+bQe6QvEP3JIVQt9YoGHSkuZmefiY7tji0o
-	F9EWRPf498C/yDP5EoK1673v+HZ5LRT9pmMXbLQyJBXYlYz7Ue2P2U/84lZ2R3WpNyKSrRmQghe
-	cdGUiVBoGRCKrFYf5l7eQfpNYyJQtu16GwnlS4AWcWzqA7QkOVolWh
-X-Received: by 2002:ac8:7f49:0:b0:437:9bd0:238d with SMTP id g9-20020ac87f49000000b004379bd0238dmr4129621qtk.22.1713564340584;
-        Fri, 19 Apr 2024 15:05:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGmEg+HVg+ogQjxyJhDeGsv+9YsDoiouQKoYCIz1StpTBZ3JL+7PlHMw1o8Asrj+tWGcBMAdZHSHh3NcsI9BuU=
-X-Received: by 2002:ac8:7f49:0:b0:437:9bd0:238d with SMTP id
- g9-20020ac87f49000000b004379bd0238dmr4129599qtk.22.1713564340345; Fri, 19 Apr
- 2024 15:05:40 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 19 Apr 2024 15:05:40 -0700
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20240131132600.4067-5-jszhang@kernel.org>
-References: <20240131132600.4067-1-jszhang@kernel.org> <20240131132600.4067-5-jszhang@kernel.org>
+	s=arc-20240116; t=1713564383; c=relaxed/simple;
+	bh=bIxAvRq6L2zzjIpRx7OKVnLi7wh8LjrLZgLH8vgFTaw=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=mJqkvjDHAfmFOfTExpV/vC84Yod9pr1/+ZCN0Zv8rpqQx+fYAQA8DDYWugpoZiAXnwA0NiMWShCPN6JdgRb65I+odxnBRi+ewR2ZOgXzrsSEChBA3FdVe106Xg0CRA+JrdNpdoolmw6RVjsA8+/VH3u7Y3ZAZQ/5vBRIB5DK23A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
+Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay05.hostedemail.com (Postfix) with ESMTP id 12403402D3;
+	Fri, 19 Apr 2024 22:06:13 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 8FA018000E;
+	Fri, 19 Apr 2024 22:06:11 +0000 (UTC)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Fri, 19 Apr 2024 15:05:40 -0700
-Message-ID: <CAJM55Z96TnvHNwN5JPKLYywO7eiRh54dJSaFD6Avsy3nmM0bjA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] riscv: dts: starfive: visionfive 2: use cpus label
- for timebase freq
-To: Jisheng Zhang <jszhang@kernel.org>, Conor Dooley <conor@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Emil Renner Berthing <kernel@esmil.dk>
-Cc: linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Date: Fri, 19 Apr 2024 15:06:11 -0700
+From: Joe Perches <joe@perches.com>
+To: Nam Cao <namcao@linutronix.de>
+Cc: apw@canonical.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] checkpatch: add "Reported-and-tested-by:" tag
+In-Reply-To: <20240419191957.42396-1-namcao@linutronix.de>
+References: <20240419191957.42396-1-namcao@linutronix.de>
+Message-ID: <a8094ffbabd308752cb02cd1c1d5b67c@perches.com>
+X-Sender: joe@perches.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 8FA018000E
+X-Rspamd-Server: rspamout08
+X-Stat-Signature: 4h1jzcch15oxde4gtxjctqzeis6jwom3
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/V99VF3JUryd/wDD311w/E4pPjNqFfcv0=
+X-HE-Tag: 1713564371-530570
+X-HE-Meta: U2FsdGVkX1+wVXJq/h+He4mGv143z+UE3fbEaWqNK/PXgyCAgaeI242w2CxfjPOREbFmi4dMBImk8IpLm6FfhBzkdgdZ4mgv5pvHJrrCglWNvU3kT7ixQv+O8wBsBJCyXGKPtEOBkv6cDOnqVuo2eOLSFrWbeV4czMURwghJ5yIP4k2H09T/bgSGxQCD1plTwNiTUsTOPwa4JfSD4wwy+bmbwYWtcXBN2BliLTjir32qWXzk6RZ5X28tNu0rErXYjZTsvEhViCpbkoNrNhjXyQ==
 
-Jisheng Zhang wrote:
-> As pointed out by Krzysztof "Board should not bring new CPU nodes.
-> Override by label instead."
->
-> Suggested-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+On 2024-04-19 12:19, Nam Cao wrote:
+> The tag "Reported-and-tested-by:" is used all the time. Add this tag.
+> 
+> Signed-off-by: Nam Cao <namcao@linutronix.de>
+> ---
+>  scripts/checkpatch.pl | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 9c4c4a61bc83..ff44720fcf23 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -618,6 +618,7 @@ our $signature_tags = qr{(?xi:
+>  	Tested-by:|
+>  	Reviewed-by:|
+>  	Reported-by:|
+> +	Reported-and-tested-by:|
+>  	Suggested-by:|
+>  	To:|
+>  	Cc:
+> @@ -712,7 +713,7 @@ sub find_standard_signature {
+>  	my ($sign_off) = @_;
+>  	my @standard_signature_tags = (
+>  		'Signed-off-by:', 'Co-developed-by:', 'Acked-by:', 'Tested-by:',
+> -		'Reviewed-by:', 'Reported-by:', 'Suggested-by:'
+> +		'Reviewed-by:', 'Reported-by:', 'Suggested-by:', 
+> 'Reported-and-tested-by'
 
-Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Missing a colon
+>  	);
+>  	foreach my $signature (@standard_signature_tags) {
+>  		return $signature if (get_edit_distance($sign_off, $signature) <= 
+> 2);
 
