@@ -1,130 +1,268 @@
-Return-Path: <linux-kernel+bounces-151457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A4B8AAF31
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:20:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 457CE8AAF39
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:21:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53B5A1C22170
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:20:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFC15283956
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDEAC1272A2;
-	Fri, 19 Apr 2024 13:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE93F129A9A;
+	Fri, 19 Apr 2024 13:21:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="bWYGChA9"
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V+udUF+3"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9455F19E;
-	Fri, 19 Apr 2024 13:19:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE3486651
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713532797; cv=none; b=TR712nR2YJQ/Ip0vbMmI6XrhO105cK6CazcHNoNe8ucHBa5v5Z1J50QeDCH04ZuaAP5p/ECsU98s6K01uzqlOr4F/geijPRAaUySH3m4SMjrKpoxSZuDWH47qTWiyqLeUSwznI1iIWwhXo4BD7PCs2zeaDFvAdZnoT0gH9Hcx1k=
+	t=1713532861; cv=none; b=otrIGW/CkdGp9Tr+SI/Z6GwCyWuGWVO2aINFPYeF0cZkROguIYpe8JtYml9Q0+ZYsUCUA0KbOCr+y7nPPr/n925uLYKCQ6YC3ABEhHf3/NhnM5npMHMjetZiMcuT5I4at3dUIsmr8EVQxPFYXaC12zLdeHP/eQuTW2Pz6TfIloE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713532797; c=relaxed/simple;
-	bh=YtNxjDr6ye0tfNkDHrO8NQs2k9s6SpkWez4dpC7SRbw=;
-	h=Subject:Message-ID:Date:MIME-Version:To:References:From:
-	 In-Reply-To:Content-Type; b=CRKxhATG4SLKoMuh7P7dhjvROZ9AG3zc+O/obDFB+YjbLEUKalyPkX38XqssgsY/V7z3J/fSheqoSaXkrmMnmFdLhtQC1mmaESNL2V+VQwxhWWw6DOhT41fdn30W+ZMsCs/Z/D3b7Ny3yuHPcH5rPGc2QZWQ9vZYLpwdgUxBHx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=bWYGChA9; arc=none smtp.client-ip=99.78.197.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+	s=arc-20240116; t=1713532861; c=relaxed/simple;
+	bh=udJLDl6GZInmHgm2z6TSjUsZN2dqLcxLxX58wpxCmrE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UtPg3GkvJUFKrEXOqDNz8qMzY9VambbddexTL6S2yftq6IM4VfnL2dy+FLW1N+kTWEKMMg9UQlz8P4lwPSGAEPwBUFd9Vuwbvqv4XeYof0/Rys18bnYiaJ0ekASeoEb+XCdpNs48/qOUfeCScmv9yXiPjUP7opahBPyzPl8NreQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V+udUF+3; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a5557e3ebcaso337549866b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:20:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
-  s=amazon201209; t=1713532795; x=1745068795;
-  h=message-id:date:mime-version:to:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=ISutO2pj2s7Fy7875dgH0wvjUUVXcJi8DHrFYOiS41E=;
-  b=bWYGChA9m/E6EcTxzeWS2rXiTWdwwP6igzsHTTzpU0QvZHB+jNmLTXLW
-   d2ON7s4nlpaevVMtcQFzVhrsL8O05QhV3cqA8V5RFfehxo4KQLIxcT+uC
-   qatSGULp9FDMAS0cfQtpDsp00X9n81TqtHXVZeUQFFDDkEIJWu6peusbj
-   4=;
-X-IronPort-AV: E=Sophos;i="6.07,213,1708387200"; 
-   d="scan'208";a="82627423"
-Subject: Re: [PATCH v7 0/3] virt: vmgenid: add devicetree bindings support
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 13:19:51 +0000
-Received: from EX19MTAEUC002.ant.amazon.com [10.0.43.254:23544]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.12.189:2525] with esmtp (Farcaster)
- id 1b5b2be0-81f6-477c-a1ce-ffec33c6ea87; Fri, 19 Apr 2024 13:19:50 +0000 (UTC)
-X-Farcaster-Flow-ID: 1b5b2be0-81f6-477c-a1ce-ffec33c6ea87
-Received: from EX19D036EUC002.ant.amazon.com (10.252.61.191) by
- EX19MTAEUC002.ant.amazon.com (10.252.51.245) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 19 Apr 2024 13:19:44 +0000
-Received: from [10.95.129.79] (10.95.129.79) by EX19D036EUC002.ant.amazon.com
- (10.252.61.191) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 19 Apr
- 2024 13:19:39 +0000
-Message-ID: <3dc70f28-b2cc-44b8-93ad-c5550d8298c0@amazon.co.uk>
-Date: Fri, 19 Apr 2024 14:19:35 +0100
+        d=gmail.com; s=20230601; t=1713532856; x=1714137656; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q2T0/53+1tFUpSjtjKoF0i8GpNdHviseK2ocxRN4H8M=;
+        b=V+udUF+3mqJSFnd477mrpfTeq38a2o+kgLv/zc6GXP5i09RANAeavbjLlmsDOHPenr
+         uSFx8GwTz4dXpV3L0YRh11xct5VBcImTWaYUXLBVpg7xo2C4O72UN2wGz9tisjLnrsA1
+         0LqqVKGPyNJ7VF39NgP1dyaui4iL0jz8T2gQllPSiBJCWvX9yx+sjTXh5PAWkOYWc6oG
+         tXAZIqI/xbKeh53DW/81qDorHe2/Tio/G6DDJrV4LH7bHM5mdqKe8ujxlX07bdts5zQg
+         9Mo+Lo8VRPRwLXZKn2Xz9SMt3xtRmLQR2RFEfRrJVBKCy1nQnplRA+LmJ8THkSIkbnLo
+         Oarw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713532856; x=1714137656;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q2T0/53+1tFUpSjtjKoF0i8GpNdHviseK2ocxRN4H8M=;
+        b=Jl9UoGmmcLKQzFSx8LhYagJwtjK4nuaKJX9lGJUgegZpcT7HcvVXlsnavQDPrIHThp
+         +daOqqZ/Gyhv6+DicAqgDKHy7c5KC9jUVYNIdyPFCXm9RtwUBWQE8TO9/PXTEv8lbIO6
+         BmBb7eIAUtYLlR2JEKwIKYH8dBnkBjgJXgi/nuKn8kwTJh+NeR7JfInIPqi0Xb+6/BAf
+         5XxfP7RYTE7N53hem6bY1X/LAhw9typAnOuuZJEhc3brRgQEUcqh9sTLaV2Z24g3R6zF
+         fJdWRmM6Tz+eSd9i1Vb8nMdHUrLjo/HHCekwmxQdiMsrUdlpnE/TkixOnhkApyMxyeH5
+         W3bg==
+X-Gm-Message-State: AOJu0Ywa3BmnWFj2NB8hu8w0DLCUNpVFT0vt1SYTWxvQ7RECfveIx5bQ
+	qT1mU+8temk/FmUqhEUl13BXrbuWX/O2NWKtlFsKBROq+Zvbqf7w
+X-Google-Smtp-Source: AGHT+IFnj0+2wa3SNfR1+MPzdAagVEJwGINCZM4LE+lylbL7IGU4KQvJr5CKpzm0kShiZmSStFkBRA==
+X-Received: by 2002:a17:906:4152:b0:a52:9e:45c3 with SMTP id l18-20020a170906415200b00a52009e45c3mr4110765ejk.35.1713532856260;
+        Fri, 19 Apr 2024 06:20:56 -0700 (PDT)
+Received: from sacco-Inspiron-5559.station (net-37-182-167-227.cust.vodafonedsl.it. [37.182.167.227])
+        by smtp.gmail.com with ESMTPSA id t10-20020a1709063e4a00b00a555e515182sm2187990eji.58.2024.04.19.06.20.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 06:20:55 -0700 (PDT)
+From: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+To: sudeep.holla@arm.com,
+	gregkh@linuxfoundation.org,
+	rafael@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	julia.lawall@inria.fr,
+	javier.carrasco.cruz@gmail.com,
+	skhan@linuxfoundation.org,
+	Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+Subject: [PATCH] drivers: use __free attribute instead of of_node_put()
+Date: Fri, 19 Apr 2024 15:19:56 +0200
+Message-Id: <20240419131956.665769-1-vincenzo.mezzela@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>, <tytso@mit.edu>,
-	<robh@kernel.org>, <krzk@kernel.org>, <conor+dt@kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<sudanl@amazon.com>, <graf@amazon.com>, <dwmw@amazon.co.uk>,
-	<krzysztof.kozlowski@linaro.org>, <bchalios@amazon.es>,
-	<xmarcalx@amazon.co.uk>
-References: <20240418121249.42380-1-Jason@zx2c4.com>
-Content-Language: en-US
-From: "Landge, Sudan" <sudanl@amazon.co.uk>
-In-Reply-To: <20240418121249.42380-1-Jason@zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D031UWA001.ant.amazon.com (10.13.139.88) To
- EX19D036EUC002.ant.amazon.com (10.252.61.191)
+Content-Transfer-Encoding: 8bit
 
+Introduce the __free attribute for scope-based resource management.
+Resources allocated with __free are automatically released at the end of
+the scope. This enhancement aims to mitigate memory management issues
+associated with forgetting to release resources by utilizing __free
+instead of of_node_put().
 
+The declaration of the device_node used within the do-while loops is
+moved directly within the loop so that the resource is automatically
+freed at the end of each iteration.
 
-On 18/04/2024 13:12, Jason A. Donenfeld wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> 
-> 
-> 
-> Hi Krzysztof,
-> 
-> This is a cleanup of Sudan's OF vmgenid patches, simplified a bit, but
-> still with the same intent and mostly unchanged. I'll take this via my
-> random tree, but I would appreciate having your ack/review on it.
-> 
-> Sudan - if I've mangled something here, please let me know. I verified
-> this still works with ACPI in QEMU, but I don't know about your private
-> firecracker OF branch, so please pipe up if something is amiss. It's
-> basically the same thing, though, so I suspect it'll be fine.
-> 
-> Thanks,
-> Jason
-> 
-> Sudan Landge (3):
->    virt: vmgenid: change implementation to use a platform driver
->    dt-bindings: rng: Add vmgenid support
->    virt: vmgenid: add support for devicetree bindings
-> 
->   .../bindings/rng/microsoft,vmgenid.yaml       |  49 ++++++
->   MAINTAINERS                                   |   1 +
->   drivers/virt/Kconfig                          |   2 +-
->   drivers/virt/vmgenid.c                        | 150 ++++++++++++++----
->   4 files changed, 166 insertions(+), 36 deletions(-)
->   create mode 100644 Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml
-> 
-> --
-> 2.44.0
-> 
-Hi Jason,
+Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+---
+ drivers/base/arch_topology.c | 41 ++++++++++++++----------------------
+ 1 file changed, 16 insertions(+), 25 deletions(-)
 
-Thank you very much for helping us with the patches. I am on a personal 
-leave with very limited access to mails/system so Babis is helping me by 
-taking over the task. Looping in Babis so that he can verify the patch 
-with DT. I would also kindly request you to please loop in Babis 
-(bchalios@amazon.es) for future discussion on these patches.
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index 024b78a0cfc1..58eeb8183747 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -513,10 +513,10 @@ core_initcall(free_raw_capacity);
+  */
+ static int __init get_cpu_for_node(struct device_node *node)
+ {
+-	struct device_node *cpu_node;
+ 	int cpu;
+ 
+-	cpu_node = of_parse_phandle(node, "cpu", 0);
++	struct device_node *cpu_node __free(device_node) =
++		of_parse_phandle(node, "cpu", 0);
+ 	if (!cpu_node)
+ 		return -1;
+ 
+@@ -527,7 +527,6 @@ static int __init get_cpu_for_node(struct device_node *node)
+ 		pr_info("CPU node for %pOF exist but the possible cpu range is :%*pbl\n",
+ 			cpu_node, cpumask_pr_args(cpu_possible_mask));
+ 
+-	of_node_put(cpu_node);
+ 	return cpu;
+ }
+ 
+@@ -538,11 +537,11 @@ static int __init parse_core(struct device_node *core, int package_id,
+ 	bool leaf = true;
+ 	int i = 0;
+ 	int cpu;
+-	struct device_node *t;
+ 
+ 	do {
+ 		snprintf(name, sizeof(name), "thread%d", i);
+-		t = of_get_child_by_name(core, name);
++		struct device_node *t __free(device_node) =
++			of_get_child_by_name(core, name);
+ 		if (t) {
+ 			leaf = false;
+ 			cpu = get_cpu_for_node(t);
+@@ -553,10 +552,8 @@ static int __init parse_core(struct device_node *core, int package_id,
+ 				cpu_topology[cpu].thread_id = i;
+ 			} else if (cpu != -ENODEV) {
+ 				pr_err("%pOF: Can't get CPU for thread\n", t);
+-				of_node_put(t);
+ 				return -EINVAL;
+ 			}
+-			of_node_put(t);
+ 		}
+ 		i++;
+ 	} while (t);
+@@ -586,7 +583,6 @@ static int __init parse_cluster(struct device_node *cluster, int package_id,
+ 	char name[20];
+ 	bool leaf = true;
+ 	bool has_cores = false;
+-	struct device_node *c;
+ 	int core_id = 0;
+ 	int i, ret;
+ 
+@@ -598,13 +594,13 @@ static int __init parse_cluster(struct device_node *cluster, int package_id,
+ 	i = 0;
+ 	do {
+ 		snprintf(name, sizeof(name), "cluster%d", i);
+-		c = of_get_child_by_name(cluster, name);
++		struct device_node *c __free(device_node) =
++			of_get_child_by_name(cluster, name);
+ 		if (c) {
+ 			leaf = false;
+ 			ret = parse_cluster(c, package_id, i, depth + 1);
+ 			if (depth > 0)
+ 				pr_warn("Topology for clusters of clusters not yet supported\n");
+-			of_node_put(c);
+ 			if (ret != 0)
+ 				return ret;
+ 		}
+@@ -615,14 +611,14 @@ static int __init parse_cluster(struct device_node *cluster, int package_id,
+ 	i = 0;
+ 	do {
+ 		snprintf(name, sizeof(name), "core%d", i);
+-		c = of_get_child_by_name(cluster, name);
++		struct device_node *c __free(device_node) =
++			of_get_child_by_name(cluster, name);
+ 		if (c) {
+ 			has_cores = true;
+ 
+ 			if (depth == 0) {
+ 				pr_err("%pOF: cpu-map children should be clusters\n",
+ 				       c);
+-				of_node_put(c);
+ 				return -EINVAL;
+ 			}
+ 
+@@ -635,7 +631,6 @@ static int __init parse_cluster(struct device_node *cluster, int package_id,
+ 				ret = -EINVAL;
+ 			}
+ 
+-			of_node_put(c);
+ 			if (ret != 0)
+ 				return ret;
+ 		}
+@@ -651,17 +646,16 @@ static int __init parse_cluster(struct device_node *cluster, int package_id,
+ static int __init parse_socket(struct device_node *socket)
+ {
+ 	char name[20];
+-	struct device_node *c;
+ 	bool has_socket = false;
+ 	int package_id = 0, ret;
+ 
+ 	do {
+ 		snprintf(name, sizeof(name), "socket%d", package_id);
+-		c = of_get_child_by_name(socket, name);
++		struct device_node *c __free(device_node) =
++			of_get_child_by_name(socket, name);
+ 		if (c) {
+ 			has_socket = true;
+ 			ret = parse_cluster(c, package_id, -1, 0);
+-			of_node_put(c);
+ 			if (ret != 0)
+ 				return ret;
+ 		}
+@@ -676,11 +670,11 @@ static int __init parse_socket(struct device_node *socket)
+ 
+ static int __init parse_dt_topology(void)
+ {
+-	struct device_node *cn, *map;
+ 	int ret = 0;
+ 	int cpu;
+ 
+-	cn = of_find_node_by_path("/cpus");
++	struct device_node *cn __free(device_node) =
++		of_find_node_by_path("/cpus");
+ 	if (!cn) {
+ 		pr_err("No CPU information found in DT\n");
+ 		return 0;
+@@ -690,13 +684,14 @@ static int __init parse_dt_topology(void)
+ 	 * When topology is provided cpu-map is essentially a root
+ 	 * cluster with restricted subnodes.
+ 	 */
+-	map = of_get_child_by_name(cn, "cpu-map");
++	struct device_node *map __free(devide_node) =
++		of_get_child_by_name(cn, "cpu-map");
+ 	if (!map)
+-		goto out;
++		return ret;
+ 
+ 	ret = parse_socket(map);
+ 	if (ret != 0)
+-		goto out_map;
++		return ret;
+ 
+ 	topology_normalize_cpu_scale();
+ 
+@@ -710,10 +705,6 @@ static int __init parse_dt_topology(void)
+ 			break;
+ 		}
+ 
+-out_map:
+-	of_node_put(map);
+-out:
+-	of_node_put(cn);
+ 	return ret;
+ }
+ #endif
+-- 
+2.34.1
 
-Thanks and regards,
-Sudan
 
