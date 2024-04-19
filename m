@@ -1,160 +1,193 @@
-Return-Path: <linux-kernel+bounces-151222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66A8D8AAB53
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:20:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B4FD8AAB58
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:20:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0E211F22809
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:20:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CEFD1C21CBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07E077F2D;
-	Fri, 19 Apr 2024 09:19:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A677C080;
+	Fri, 19 Apr 2024 09:19:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B4jh+iEJ"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OKt/sl2V"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE02F9CD;
-	Fri, 19 Apr 2024 09:19:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F4A77F11
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713518395; cv=none; b=H5Sx31SeEU57WWf7P9EFK0sgEma5ykirj1ZNBchBP/B1fylHUlHvCs9k3mQHvWJMVF9rPIDpV4tBNA+3IhslTgwsJn1Ni7MBOPbk5tae22KDYSXerRXjeZnvYhw15JYeI1VBhB6JKpuObQOjfC82k1qc2oQWoAAiDY/Ix9ha7I0=
+	t=1713518397; cv=none; b=CCXS6mvq10XBKd9dvmoNnYGd1RG/l0fvjSalxQHSJ3TRJE5UvVd6isQEbVVBfhoJc080vxBy7oBcK90m3jNNBj/l8eCXsMtPqafzZz6HzAJHBMHp9va7ijTzzqPzbFj+KcfCbegU062VS1/zU/uWGA3jtOgukZwP8R7JNRZHAFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713518395; c=relaxed/simple;
-	bh=KlXQuKvGJywU3LD2CUoRhMvX72mjF+L+3E8OH1+cRzU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bLA3fsch3ryudgoS6sIszr0G5vo+InTUakt8KJrVo5FuMTOymwF1igyOCUdp0wBX/B51yLIXdYCMqz7PpANDuCTBryYGYAFdg8JXR83wTSRD8KOmj+amgeW0fgjz33ZsGIukEM1ZtmWqraEviQVFnV4l4wc5rlGvqk0hutGJzg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B4jh+iEJ; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-518f8a69f82so2178255e87.2;
-        Fri, 19 Apr 2024 02:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713518391; x=1714123191; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7uRz/nxbhPgcg3DGqznEbcQEDecYnCJi73IPin9pfrE=;
-        b=B4jh+iEJHa4KbbBJTt41vTtc7Cf+rbHqSV8rhoEFCgSc+xT1ZL9GgX3U56rwNSq9l3
-         l9y7DydEZFaofOLsCmkgG0VEmf5Bauuz8ZTOQMgQYBbchHDhtlWxUDEe1vnNXbtSHl/2
-         +AqW5mwX2nuDexKYYIDjGiiAd+vP6Vm9HlySy7lYReyn2TWP4LwIkE1rF7ELdpXhNp/C
-         blVKMym9gs7oZoWQ57H9O2dS8zEd1pjXXtmgsbrPOQJXSwQAYuXqWgoWNKRHWqTL6goa
-         bbtPKRfXT653/ebf6OMqRdPhxocwVdvFQprM4Rytn9FYN2YmP1jiricjtMeJIYEG0B8p
-         w/jA==
+	s=arc-20240116; t=1713518397; c=relaxed/simple;
+	bh=h9BYhlKg+vumdt1ARoFTJU+t44ZUoUKysyc8mq2QlNA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cJnHLlKnx9EpjUmcpp1i9Idm62Vmwr2VcSPINVWrIlJEMTJKnvNeYOmQzwBsZEjVKUdLZgJ44ZKxw0TpCC90H4w/mMT1U5u3bwxX0zzdzwd0TZ/gBXj2Unn9XIv26Ys+t8mZnqO2ZzHA4JROnCKn98RxNrtSE/xIK/8SLn8Lmao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OKt/sl2V; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713518394;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=vBx7bZBlgkTdQZODtbhF/Nyidu5C3R6hcUpumcfFwlE=;
+	b=OKt/sl2VfLGC7ii7bDAliS4tQO3lJ5/0GRXCJ1NBUW/jdtk0KV2LXd3vk+bpfTeH1hc3oO
+	2QRUXiB51r8h/NmkpUyLuDggKX5PnPs280rm5Cd96q1PQf1ZHpfFUEn7gJzX99x5n84yhI
+	6bg4Mh/K+QLFjy/TNBvtZTE7pRKciuU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-425-Q-5pjAV1ML2aUsQKX4ZiSw-1; Fri, 19 Apr 2024 05:19:52 -0400
+X-MC-Unique: Q-5pjAV1ML2aUsQKX4ZiSw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3455cbdea2cso1250327f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 02:19:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1713518391; x=1714123191;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7uRz/nxbhPgcg3DGqznEbcQEDecYnCJi73IPin9pfrE=;
-        b=aTIrauSN29zRxb3+NYNrgGP/WN6RZh2B36AKHjpIbohTvtb4nglDmgT25PnnZGE1Po
-         WL2oXjFDPAnrti2q1Vuzh1HmEY16bY0eGMbea8BIAgAHJEs3uWebhO8OkdKIRCvUd9A1
-         9/xkaeydiBh4R9lqGxy/i968m6Q8e3tPUSYqAGddxJbDGYlBbtUrPaU4vea9/ZPDB5Nn
-         rHKV1P36+1HUf68z6Gf0VQE8ZDQPyiDczfahZltC0wq4NwQWRprGXmODoE2/i0YD+7JH
-         us/d0o6Lkq/6Byvm7mKl+/bW0G+f6X+34U7bG5la54ry6ovn2SHWetLYZ28ej+L3S0a8
-         I/Vw==
-X-Forwarded-Encrypted: i=1; AJvYcCWx9FaKTeencCCRcecS6fUCBrmicC9Xtf47Ju1HHEhujZTFl9rhtq1/DCOiSFkAbIWrhKxDwDyRqoYPF1CckSOSue0QEq6TRC6YeQowqYC91IUsaQF/c8FZ3mQtwX8SEqiqWwBsFW6FRtL1fnbUx744dlE8jGLTWw6DqOCF+vuTvSSdeaSc
-X-Gm-Message-State: AOJu0YxaGPrpKzpyk/EIaR9jAAUm1SGArMzGwtK7dhl3uVh++rG33FXj
-	F3FvatAh1h/+jQGgS65KgyXjKk/l12CB3x6BxGNCVijRFdVbcUKjbra9hIXO
-X-Google-Smtp-Source: AGHT+IEE+c8XToG2LkLPH2w60EnuzxV5zLxI6Q2u6Y+2UULExfGeij1aufjjl9uW3OpE6g7MOIyzRQ==
-X-Received: by 2002:ac2:4e4a:0:b0:516:cc06:fa03 with SMTP id f10-20020ac24e4a000000b00516cc06fa03mr1033854lfr.56.1713518391302;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vBx7bZBlgkTdQZODtbhF/Nyidu5C3R6hcUpumcfFwlE=;
+        b=Who8KHUhBnqZ6q3bkSRQss+ITAbD360OIs74wQh2hbscMQLFpT5eDP3LFVDgKPScXN
+         DD4Si9PNkFv+hYGRK2IOM6gg2TJfAW8NqNSLZV4Rcylq6r8DqJSbj2TgWnlUIvvKNtTn
+         AngSuLsq2olCCRwQWtyJgSD69m2YesOQd5K0Y1OaVZ4fgc9DQwlORnAz2umS4wRHMyaW
+         tPkjRoSBEl6U1+heYnXijGlRb7QVC67G/KveLeRsS+G8Go6ysr8t6PMaxThevqW1AHsH
+         W87fkXqlVDUUVG02dQQvcx+LbPWkEdF7z3+nJ+uTaoJ78sLUvCjcS25kJKhm2Kx7fpZx
+         Vccw==
+X-Forwarded-Encrypted: i=1; AJvYcCXLA17um4AH/TeeycTRpwoXtMiWKfwkb6kxrcKTt5fnIk8uxLDyBVXwj2X/LIl+Wa3vSMNM8YqQxSmIuzDwlcVoCH3+XZvGFRTwIFJ6
+X-Gm-Message-State: AOJu0YzX+zshizs6eaMhwoqQQR3WPC9tkQ3ce/O2ji7upfpbmN7LaaC1
+	7cRe8WftxTAbDWFfEsTnZi4clWV3U9IU52uhiNKOEboq1oCyUrGcVQTZJfKoOKDhgWX8Mj66YHc
+	0vHUvnXEXYi+1s/W5f6w2Qy1k0e+Me2nRdgONFUvnL/COMS6XpBF2t6XLtGhleg==
+X-Received: by 2002:adf:f1ca:0:b0:348:cd2c:d2fe with SMTP id z10-20020adff1ca000000b00348cd2cd2femr1318281wro.13.1713518391688;
         Fri, 19 Apr 2024 02:19:51 -0700 (PDT)
-Received: from mobilestation.baikal.int (srv1.baikalchip.ru. [87.245.175.227])
-        by smtp.gmail.com with ESMTPSA id p24-20020a056512329800b00519331d8b66sm626692lfe.110.2024.04.19.02.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+X-Google-Smtp-Source: AGHT+IHdgPxrnSjfa5aRbxskK70u5lHmtIZqomcgKmujnOgZiEWjrwgS65s7JSljRGJ+B1tJFoKB3Q==
+X-Received: by 2002:adf:f1ca:0:b0:348:cd2c:d2fe with SMTP id z10-20020adff1ca000000b00348cd2cd2femr1318261wro.13.1713518391167;
+        Fri, 19 Apr 2024 02:19:51 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c716:f300:c9f0:f643:6aa2:16? (p200300cbc716f300c9f0f6436aa20016.dip0.t-ipconnect.de. [2003:cb:c716:f300:c9f0:f643:6aa2:16])
+        by smtp.gmail.com with ESMTPSA id e5-20020adfe385000000b003455e5d2569sm4015124wrm.0.2024.04.19.02.19.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Fri, 19 Apr 2024 02:19:50 -0700 (PDT)
-Date: Fri, 19 Apr 2024 12:19:48 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] dmaengine: dw: Simplify prepare CTL_LO methods
-Message-ID: <oqyz6fpdxzk5x4xr5rlqwnj3frakjnz24e6bx7mxngh5gm5jom@wsm7qvubqwn3>
-References: <20240416162908.24180-1-fancer.lancer@gmail.com>
- <20240416162908.24180-4-fancer.lancer@gmail.com>
- <Zh7LyszPd2sNfWRm@smile.fi.intel.com>
- <lzcgxh7trwoksd4bx2fsybellbngvpwhgq2a76ou2iufemockp@3dca4bfox2ps>
- <ZiEIRluj-50FMIgp@smile.fi.intel.com>
- <xfa7evanbrvdxdoq6473wpymvqogezspwkdoawu2dr6mnyxiwq@zx2schip66wj>
- <ZiGJ-DspJq5R6Dym@smile.fi.intel.com>
+Message-ID: <7a8eb8c0-35e5-4f45-bdd5-11a775ae752d@redhat.com>
+Date: Fri, 19 Apr 2024 11:19:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZiGJ-DspJq5R6Dym@smile.fi.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 05/18] mm: improve folio_likely_mapped_shared() using
+ the mapcount of large folios
+To: "Yin, Fengwei" <fengwei.yin@intel.com>, linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org, linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-sh@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>, Peter Xu
+ <peterx@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
+ Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+ Jonathan Corbet <corbet@lwn.net>, Hugh Dickins <hughd@google.com>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
+ Muchun Song <muchun.song@linux.dev>, Miaohe Lin <linmiaohe@huawei.com>,
+ Naoya Horiguchi <naoya.horiguchi@nec.com>,
+ Richard Chang <richardycc@google.com>
+References: <20240409192301.907377-1-david@redhat.com>
+ <20240409192301.907377-6-david@redhat.com>
+ <b05cdac2-84f2-4727-af6c-3b666e6add14@intel.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <b05cdac2-84f2-4727-af6c-3b666e6add14@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 19, 2024 at 12:00:40AM +0300, Andy Shevchenko wrote:
-> On Thu, Apr 18, 2024 at 10:00:02PM +0300, Serge Semin wrote:
-> > On Thu, Apr 18, 2024 at 02:47:18PM +0300, Andy Shevchenko wrote:
-> > > On Wed, Apr 17, 2024 at 11:11:46PM +0300, Serge Semin wrote:
-> > > > On Tue, Apr 16, 2024 at 10:04:42PM +0300, Andy Shevchenko wrote:
-> > > > > On Tue, Apr 16, 2024 at 07:28:57PM +0300, Serge Semin wrote:
+On 19.04.24 04:29, Yin, Fengwei wrote:
 > 
-> ...
 > 
-> > > > > > +	if (dwc->direction == DMA_MEM_TO_DEV) {
-> > > > > > +		sms = dwc->dws.m_master;
-> > > > > > +		smsize = 0;
-> > > > > > +		dms = dwc->dws.p_master;
-> > > > > > +		dmsize = sconfig->dst_maxburst;
-> > > > 
-> > > > > I would group it differently, i.e.
-> > > > > 
-> > > > > 		sms = dwc->dws.m_master;
-> > > > > 		dms = dwc->dws.p_master;
-> > > > > 		smsize = 0;
-> > > > > 		dmsize = sconfig->dst_maxburst;
-> > > > 
-> > > > Could you please clarify, why? From my point of view it was better to
-> > > > group the source master ID and the source master burst size inits
-> > > > together.
-> > 
-> > > Sure. The point here is that when you look at the DMA channel configuration
-> > > usually you operate with the semantically tied fields for source and
-> > > destination. At least this is my experience, I always check both sides
-> > > of the transfer for the same field, e.g., master setting, hence I want to
-> > > have them coupled.
-> > 
-> > Ok. I see. Thanks for clarification. I normally do that in another
-> > order: group the functionally related fields together - all
-> > source-related configs first, then all destination-related configs.
-> > Honestly I don't have strong opinion about this part, it's just my
-> > personal preference. Am I right to think that from your experience in
-> > kernel it's normally done in the order you described?
-> 
+> On 4/10/2024 3:22 AM, David Hildenbrand wrote:
+>> @@ -2200,7 +2200,22 @@ static inline size_t folio_size(struct folio *folio)
+>>     */
+>>    static inline bool folio_likely_mapped_shared(struct folio *folio)
+>>    {
+>> -	return page_mapcount(folio_page(folio, 0)) > 1;
+>> +	int mapcount = folio_mapcount(folio);
+>> +
+>> +	/* Only partially-mappable folios require more care. */
+>> +	if (!folio_test_large(folio) || unlikely(folio_test_hugetlb(folio)))
+>> +		return mapcount > 1;
+> My understanding is that mapcount > folio_nr_pages(folio) can cover
+> order 0 folio. And also folio_entire_mapcount() can cover hugetlb (I am
+> not 100% sure for this one).  I am wondering whether we can drop above
+> two lines? Thanks.
 
-> In this driver I believe I have followed that one, yes.
+folio_entire_mapcount() does not apply to small folios, so we must not 
+call that for small folios.
 
-Agreed then. I'll change the order to the way you ask.
+Regarding hugetlb, subpage mapcounts are completely unused, except 
+subpage 0 mapcount, which is now *always* negative (storing a page type) 
+-- so there is no trusting on that value at all.
 
--Serge(y)
+So in the end, it all looked cleanest when only special-casing on 
+partially-mappable folios where we know the entire mapcount exists and 
+we know that subapge mapcount 0 actually stores something reasonable 
+(not a type).
 
-> 
-> > > > > > +	} else if (dwc->direction == DMA_DEV_TO_MEM) {
-> > > > > > +		sms = dwc->dws.p_master;
-> > > > > > +		smsize = sconfig->src_maxburst;
-> > > > > > +		dms = dwc->dws.m_master;
-> > > > > > +		dmsize = 0;
-> > > > > > +	} else /* DMA_MEM_TO_MEM */ {
-> > > > > > +		sms = dwc->dws.m_master;
-> > > > > > +		smsize = 0;
-> > > > > > +		dms = dwc->dws.m_master;
-> > > > > > +		dmsize = 0;
-> > > > > > +	}
-> > > > > 
-> > > > > Ditto for two above cases.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Thanks!
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
