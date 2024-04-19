@@ -1,97 +1,104 @@
-Return-Path: <linux-kernel+bounces-151018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F5DA8AA7FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:38:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 868418AA801
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:41:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE94F285DDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 05:38:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CD6F1F211E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 05:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BCB2BA31;
-	Fri, 19 Apr 2024 05:38:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 675A6C127;
+	Fri, 19 Apr 2024 05:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CuUxRwGw";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zZag/Yfo"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="fkzF8foB"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1F87494
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 05:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 714437494;
+	Fri, 19 Apr 2024 05:41:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713505080; cv=none; b=GqLTxkrgk6TvDn54PYTCWTlkmzTDFy0pVs2PGXiP/F9ml8KZaHETIxB1Vp0CtSp9MsdDWOj4yHtRV/qwebjK/eK5LwNIpKyJoryRzux9KORdDQp3oZMrq+EmG2ejiqtSLpVBo0pEe80JpnTPzode1a53c7z0AAgQ1hY4wnxt0l4=
+	t=1713505287; cv=none; b=c5nkRRaSIauR0Om3TtCK9RBXt2ZYuYRYrdv2XfF/fT8jCIeL+xjOpZkXGwz2GsQjB7qhEpH4MQUgH4lHnFLEFRPnrI881wKrYxuoVrF39Ddvgxz+x/O0wSKZHfFGDg6cHmB41rUkkpuvsvLuiWiXtLkq8oUJz0z6E+KexqaD9PE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713505080; c=relaxed/simple;
-	bh=wjJGnRvBG6/cENtky30EtlWsPhBCQuOIcEoSJ9a/+kw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=L2V1UfuGNXzYUDkV6e9t5HzgEnITBnIcUT3P0aYfLluCbJ7aChljz+y2Rl4Oh7nvCgcg21Shjg1WWyCRZxucAr/renEL+LkWqoEwPTK5DV5STJvJosjx70oD6ymNup8aZ9jgM/2TzkG4RQAxM7emuvJVHQAcyjfzfZoG761wQL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=CuUxRwGw; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zZag/Yfo; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713505077;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XM+gwUnO4u3INiYIkgUZ3CyBTzjRI1Dkhvtpikh3TSQ=;
-	b=CuUxRwGwtsoTrrUpcxVthpT0Ku36kXOTwyuHVGEqhgCzwu+9rlCnf+8SptItWsqSNvx27R
-	rgwN2c8UtxyH5UT+VnbEyEkzN9N+v4Qesuy5vVTsfxAnJgry5gjavQsB3fjm7Kd8SatnHP
-	LSbST4hcpby/AZCQDGS2Kh2AsDcanZTuY6PY7pXMcSVPIIiCHnXFV6GxO4mnGmJlHrG0YY
-	Fmx4nTawOdUrm1VnFfz7G+G84Hi1fqOv3htVYtlBOY3tg0LbG4WFMBArjTTmYls7HiEQtx
-	w5YkQ+rpThME1phO8grVoR4oyzYIHnCTT0IDLvlzyyj4oM7uMS9ddMvR25ClBQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713505077;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XM+gwUnO4u3INiYIkgUZ3CyBTzjRI1Dkhvtpikh3TSQ=;
-	b=zZag/Yfog/R1E/Gkzx1tFpUsiWKuH08aDQStLwXi2JxB4EQI5Etvc0xKDdzTPBIaAOQ2Zk
-	hBcdaYHqeqK0KgDg==
-To: Lyude Paul <lyude@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Early boot regression from f0551af0213 ("x86/topology: Ignore
- non-present APIC IDs in a present package")
-In-Reply-To: <87plumxz4x.ffs@tglx>
-References: <3d77cb89857ee43a9c31249f4eab7196013bc4b4.camel@redhat.com>
- <20240418082703.GCZiDZVyra7qOQbyqn@fat_crate.local>
- <fd040809d95b3e12b2fdc78a2409e187716bc66f.camel@redhat.com>
- <87plumxz4x.ffs@tglx>
-Date: Fri, 19 Apr 2024 07:37:45 +0200
-Message-ID: <87y199x68m.ffs@tglx>
+	s=arc-20240116; t=1713505287; c=relaxed/simple;
+	bh=dxRSEz5EcO0H9V9Pir7Cuzg5aLS6zX2g3zh3ZnaYBRY=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=FDhiU/Ril/q3Rzlno1xxItp+s3GshaxNhrIfdi8QnblVI0hyfWH/HK63TSQ/IAA0aZeIrrkzyl5r4CgO2zetyKcI+VNaKEY9w7WnEpuy82Om+kI3mpcNrnF4XGquYLDVdIAbP5pXulWVu6QqeyvzLAG99TL/FdT5NtDJW2/ERKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=fkzF8foB; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713505263; x=1714110063; i=markus.elfring@web.de;
+	bh=kAavMo0zT0MnjGzC6Vpu4OCbYey8NotUhupnbX9R08M=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=fkzF8foBx8/grg7hI21gs11g7sfyC1ETQwpvom97YiOx2C04hSSsmcQoImtbSt6M
+	 AOHtP24pcYbyqy21KCEBFmNZrzD0O8KLIYu/OL8MAr3VE9WIjgWPOw6JLUaZHyiEl
+	 Zh0ryIyaEx2bQHQZ3aCNl4txTVPiCIzZM+zgb+zE/BMN4YGIyUYUO+74PP9ZQWOZp
+	 4R1dbbo3NqbEanaVBioc06f7b/Ihe61icF3Yo32yDr1AIzlzz19G/R74CwbzI4Poo
+	 DR9BN2Rz2FHsLrso2DvUFJPzYfI15U8OR25GtA8/GMn+b3nXyc8PqxGfHHswujuX2
+	 hHD8w/w70BDC8YOYQw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MMpCS-1sGSpX2Hrw-00Iodt; Fri, 19
+ Apr 2024 07:41:03 +0200
+Message-ID: <405247be-09e9-4a2d-9363-93b5862fc615@web.de>
+Date: Fri, 19 Apr 2024 07:40:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+To: Wander Lairson Costa <wander@redhat.com>, kunit-dev@googlegroups.com,
+ linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Brendan Higgins <brendan.higgins@linux.dev>, David Gow
+ <davidgow@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Matti Vaittinen <mazziesaccount@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, Rae Moar <rmoar@google.com>,
+ Shuah Khan <skhan@linuxfoundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240418210236.194190-2-wander@redhat.com>
+Subject: Re: [PATCH v3 1/2] kunit: unregister the device on error
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240418210236.194190-2-wander@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:/detqtdc+F1ysEKuBRbVEjDKPuYX8yypEqNgRwClaU8w5xI0iV/
+ j94OaIuGK7iIETaDob4X7ivWKE4WkMywvNC6/iAtSWE3n+PyLoVWozxq7WqegA2JC0RH7f6
+ d0JplDAUwKKv0bcpBTZHxuQo5GsJ6VU4v4lSdygq4Uu6tfgJR5kRN0jWa/zRdmIP9Gndxee
+ fwjzZghoNg0Rit17kWyYQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:faEoMuu3f2A=;uSRy3bbRQp6ZsYIBxt02ZewLhkK
+ 89AoODOOFw6GOAujBoUoyoVZoBab9gfXx+c2CQeFDymkM2021ffh3Cpg4SX12QGAt8kCn0enH
+ c6DOY9NEPrh0hDlypP4ihw3kcElJaziHg7QwS3nA1fbA82d8JuI5gbunQUwJmKQCMGSr+Vm4f
+ BL3h2yOc6gs5mhRjo6KH5Fz4oR7ShKBVQZei0RD4/YEkiee2XY3N9eZ8sWRxpyMolMt8/TwWx
+ n10TspMr0lM8FnUU3Fbit5YcN54SgTdRb7Y2HvkV1RwknR3q7tG4TM80K9QAo7vqHZvU6kuda
+ OmbJyY6QpMhUjSvuUM/OxwJEPODf4u/nXQImZi9DVwSOOL98O+AOLLy/AePV3AgIKBOrAJRLJ
+ czuRf7ANMFaX6ubQd14SovGMxf13Hq26B36nMeb8JH6zwvJ+9WfkXoNPRx7En6e74H8P2i+lN
+ DS60Aep4Gkwobj7tCvWlE2IlUJcoUf10Vk2GVPaNS/r02FoBZrYHSLPhd26F2If/+P5aNBdPZ
+ hYaLZBop4OInQ3Mw7hH9tnSfdBd4hx6lWGScJExGPtOc2+mPRFXKZ5uzlNqWUv7MttrxJj1QK
+ +880eogH4nzY3HmpycnH+ALHqPpEq3nktIAfCf+MsApQ/j2fwEI38Ir/nAMJnNQ0PQSNYgsh3
+ UV82Z+osnrOLStciSXfad2i7QDd80s+JjbpDQBxexTEmwf6SJiDlaXbL71S3toY3PWz3UeEuV
+ NRXdtfdF2R45Vms7KbwuhgovGhjrU6WQQbJIL3xQz38zfT+gcuPhyhVCMDsHSJaTYecOoE2w+
+ Khyu0eMu4k3cYQBCFBut7NX+cYiFNEwIw6axbpY97OaUY=
 
-On Thu, Apr 18 2024 at 21:13, Thomas Gleixner wrote:
-> On Thu, Apr 18 2024 at 13:20, Lyude Paul wrote:
->
->> Just gave it a try, unfortunately I'm still seeing the same result on
->> that branch.
->>
->> One more piece of information I apparently missed when reporting this
->> yesterday btw: I noticed one more kernel message that comes before the
->> panic that's probably relevant:
->>
->> ..TIMER: vector=0x30 apic1=0 pin1=2 apic2=-1 pin2=-1
->
-> Can you please apply the debug patch below which should make it boot
-> again.
+> kunit_init_device() should unregister the device on bus register error,
+> but mistakenly it tries to unregister the bus.
 
-And provide the resulting dmesg obviously.
+Would the following description variant be more appropriate?
 
-> Please also provide the output of the files underneath of
->
->        /sys/kernel/debug/x86/topo/
->
-> Thanks,
->
->         tglx
+   kunit_init_device() should unregister the device on bus registration error.
+   But it mistakenly tries to unregister the bus.
+
+
+Regards,
+Markus
 
