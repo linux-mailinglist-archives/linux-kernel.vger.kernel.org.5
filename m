@@ -1,168 +1,275 @@
-Return-Path: <linux-kernel+bounces-151833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17B498AB488
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:47:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF718AB489
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:50:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC46D1F2243C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:47:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBF2FB22B51
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:50:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA9413AD28;
-	Fri, 19 Apr 2024 17:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9A113AD26;
+	Fri, 19 Apr 2024 17:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XbODikgj"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KsaZaGFw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C14713AA49
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB914D110
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:50:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713548838; cv=none; b=mkjUbzVja2nqNhA3S3X+HVgUK/4PAaPNeD9v+rrxjzi/LVjUGLAD+6G1gNO/TlfU8qLvsYCHIRmyh/YI929c6X16QlPcF4syMN0jTer5hDe/aliQ88CkA1VAboDRAU3eD3P2txXFUfObNqluswYUhFFbajPnKSkYYKi2U+Cm94Y=
+	t=1713549038; cv=none; b=UpgROASSB8DcANgEJ3ue1SaMhdUS5+5R45YovQazm4W/KNziq5B8nazx5eV8vfY1SHNXnZh4z/Bv7ADHSHWTRphFmTGIZRsbM0VnqEoSRyTPeXnaaO7eup0UlXKhX3wzpH0CJYBF6QsbWF+rXrDKw/O+2rWq3jwgbqcQ1SfuPk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713548838; c=relaxed/simple;
-	bh=rKdIz8bODpfYXkMRjJX1iea8o8ZfdsGpCLn7v3ZMJc0=;
+	s=arc-20240116; t=1713549038; c=relaxed/simple;
+	bh=rvTw9ZrNgQLrxwznc8Svvfzom1CX7emLfaumx2oM7sM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=chQoMyMpEeDIpNyuVYMfu1CBq+Kg5Ow9Xnq1eUZ/wWHt1IXEDwMYAZbyQvbdFrrN81JFuS5EG6reeSMdSCgCZ83na++CnnVs9Gmo0f4xSVUC4VxnHAa2hX5FHfNzJy6pIT4ba+VWDPWG7AwIrMQMJEkpyg9z1oLHEbqalTCdPlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XbODikgj; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713548838; x=1745084838;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rKdIz8bODpfYXkMRjJX1iea8o8ZfdsGpCLn7v3ZMJc0=;
-  b=XbODikgjuWQIQcgHWAn2Sfd6vyL4ufHtKaTt5kL1WAx/14QXdAQP1VI2
-   H1NZvfRea9EE2YHCPvEKe01oub5T5tWffYh9eTgTpJfSPqs3t9rfRwk9O
-   kEgjoPG2Z5zQO31SdkNyHE4biN0sBYhRZj0tZx2eKkT8IPqBVj7/fcGIw
-   88FuGVVqhWormUO1G+RFvaeH4DJf6SMzySk3fM8Gh/GZ6DSNI+NYS+dYH
-   PHaRDv8U58SWNUHE9FNxr9el4rMs9YoGCWC5nbIqStU+gd+6iN5raeW8R
-   feUl0BYUdUa0NYH+a3dPz89v9pSqrDDPfCbXvZgzV7l+cT+vEdLbM4B0V
-   Q==;
-X-CSE-ConnectionGUID: THck89pvT1mB3lERmLvqQA==
-X-CSE-MsgGUID: VlUiKMyZQZe3d2+s1bc3pA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="9384581"
-X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
-   d="scan'208";a="9384581"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 10:47:17 -0700
-X-CSE-ConnectionGUID: vaTzWpgjQISFo/slmjXcVg==
-X-CSE-MsgGUID: EIUKYVtLRBK611TfljtbBw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
-   d="scan'208";a="28048284"
-Received: from jncarlic-mobl1.amr.corp.intel.com (HELO desk) ([10.209.73.101])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 10:47:16 -0700
-Date: Fri, 19 Apr 2024 10:47:09 -0700
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, dan.j.williams@intel.com, bernie.keany@intel.com,
-	charishma1.gairuboyina@intel.com, chang.seok.bae@intel.com,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	daniel.sneddon@linux.intel.com,
-	antonio.gomez.iglesias@linux.intel.com
-Subject: [PATCH 15/14] x86/gds: Lock GDS mitigation when keylocker feature is
- present
-Message-ID: <20240419-gds-lock-v1-1-adcbef6ce24b@linux.intel.com>
-X-B4-Tracking: v=1; b=H4sIAK+rImYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDE0ML3fSUYt2c/ORsXSOz1OSk5FQLCxNzAyWg8oKi1LTMCrBR0bG1tQD
- wXRdIWgAAAA==
-X-Mailer: b4 0.12.3
-References: <20240407230432.912290-1-chang.seok.bae@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qP3aWt4tBSeqq4OEmrXWvuntTo8iY5MksUfBFEw6urKLmaY/R35cL8o/LpJ3hn4TnDxOeuAi7tReTR1tJgG962Ib3UpAvqmSv5BpBjOMYpvj80k1eliNo2+eU/FYjRwv9+71YXC4x78ItgoQIquqQAJTRWApN2XgCTzkLVAqFzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KsaZaGFw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21301C072AA;
+	Fri, 19 Apr 2024 17:50:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713549038;
+	bh=rvTw9ZrNgQLrxwznc8Svvfzom1CX7emLfaumx2oM7sM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KsaZaGFwPHe2vKZa0qajwmUlD6nHyZZibR4e7m6LU3KgavQ57SBW/qLg4xjJ3RPLB
+	 Jg83FoAvguNj+ZmZyZLl0+h3tZiSwc7Jtm5kp7W1DGxHcIJVSjoXAjQyL82U2+ux6W
+	 mKt2fbRiQeyBsySecMUPuA0gGVMTMgQDMoCCaooqSDAIk1IHfV4Reoz8QymuVqe9jo
+	 ctxKxFgqmnPbcCgjei3N13cQkIMvLfZOoVyD6SUh0WVc9Zp3blPu90p3WCXV56j/Z1
+	 EL1mzJje8xXFAPGTtBmrR5xdphNnf+Kp4Secbll2QAuwDKf06MvDUG8tVooF1UYB/b
+	 WBG2YWpEigtbw==
+Date: Fri, 19 Apr 2024 17:50:36 +0000
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Juhyung Park <qkrwngud825@gmail.com>
+Cc: Chao Yu <chao@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH 3/3] f2fs: fix false alarm on invalid block
+ address
+Message-ID: <ZiKu7EKfW0kUf_NX@google.com>
+References: <20240409203411.1885121-1-jaegeuk@kernel.org>
+ <20240409203411.1885121-3-jaegeuk@kernel.org>
+ <050a93dc-d9a8-44bd-9a83-83718e95f04d@kernel.org>
+ <Zhmf4klcOr4eplin@google.com>
+ <CAD14+f0Scnc1GTjqR1izHqPerCqgHsLMR9mfKocUxw_4hyZ+Zg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240407230432.912290-1-chang.seok.bae@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD14+f0Scnc1GTjqR1izHqPerCqgHsLMR9mfKocUxw_4hyZ+Zg@mail.gmail.com>
 
-In order to safely enable Intel Keylocker feature, Gather Data Sampling
-(GDS) mitigation should be enabled and locked. Hardware provides a way to
-lock the mitigation, such that the mitigation cannot be disabled until the
-CPU is reset. Currently, GDS mitigation is enabled without the lock.
+On 04/19, Juhyung Park wrote:
+> On Sat, Apr 13, 2024 at 5:57 AM Jaegeuk Kim <jaegeuk@kernel.org> wrote:
+> >
+> > On 04/11, Chao Yu wrote:
+> > > On 2024/4/10 4:34, Jaegeuk Kim wrote:
+> > > > f2fs_ra_meta_pages can try to read ahead on invalid block address which is
+> > > > not the corruption case.
+> > >
+> > > In which case we will read ahead invalid meta pages? recovery w/ META_POR?
+> 
+> In my case, it seems like it's META_SIT, and it's triggered right after mount.
+> fsck detects invalid_blkaddr, and when the kernel mounts it, it
+> immediately flags invalid_blkaddr again:
+> 
+> [    6.333498] init: [libfs_mgr] Running /system/bin/fsck.f2fs -a -c
+> 10000 --debug-cache /dev/block/sda13
+> [    6.337671] fsck.f2fs: Info: Fix the reported corruption.
+> [    6.337947] fsck.f2fs: Info: not exist /proc/version!
+> [    6.338010] fsck.f2fs: Info: can't find /sys, assuming normal block device
+> [    6.338294] fsck.f2fs: Info: MKFS version
+> [    6.338319] fsck.f2fs:   "5.10.160-android12-9-ge5cfec41c8e2"
+> [    6.338366] fsck.f2fs: Info: FSCK version
+> [    6.338380] fsck.f2fs:   from "5.10-arter97"
+> [    6.338393] fsck.f2fs:     to "5.10-arter97"
+> [    6.338414] fsck.f2fs: Info: superblock features = 1499 :  encrypt
+> verity extra_attr project_quota quota_ino casefold
+> [    6.338429] fsck.f2fs: Info: superblock encrypt level = 0, salt =
+> 00000000000000000000000000000000
+> [    6.338442] fsck.f2fs: Info: checkpoint stop reason: shutdown(180)
+> [    6.338455] fsck.f2fs: Info: fs errors: invalid_blkaddr
+> [    6.338468] fsck.f2fs: Info: Segments per section = 1
+> [    6.338480] fsck.f2fs: Info: Sections per zone = 1
+> [    6.338492] fsck.f2fs: Info: total FS sectors = 58971571 (230357 MB)
+> [    6.340599] fsck.f2fs: Info: CKPT version = 2b7e3b29
+> [    6.340620] fsck.f2fs: Info: version timestamp cur: 19789296, prev: 18407008
+> [    6.677041] fsck.f2fs: Info: checkpoint state = 46 :  crc
+> compacted_summary orphan_inodes sudden-power-off
+> [    6.677052] fsck.f2fs: [FSCK] Check node 1 / 712937 (0.00%)
+> [    8.997922] fsck.f2fs: [FSCK] Check node 71294 / 712937 (10.00%)
+> [   10.629205] fsck.f2fs: [FSCK] Check node 142587 / 712937 (20.00%)
+> [   12.278186] fsck.f2fs: [FSCK] Check node 213880 / 712937 (30.00%)
+> [   13.768177] fsck.f2fs: [FSCK] Check node 285173 / 712937 (40.00%)
+> [   17.446971] fsck.f2fs: [FSCK] Check node 356466 / 712937 (50.00%)
+> [   19.891623] fsck.f2fs: [FSCK] Check node 427759 / 712937 (60.00%)
+> [   23.251327] fsck.f2fs: [FSCK] Check node 499052 / 712937 (70.00%)
+> [   28.493457] fsck.f2fs: [FSCK] Check node 570345 / 712937 (80.00%)
+> [   29.640800] fsck.f2fs: [FSCK] Check node 641638 / 712937 (90.00%)
+> [   30.718347] fsck.f2fs: [FSCK] Check node 712931 / 712937 (100.00%)
+> [   30.724176] fsck.f2fs:
+> [   30.737160] fsck.f2fs: [FSCK] Max image size: 167506 MB, Free space: 62850 MB
+> [   30.737164] fsck.f2fs: [FSCK] Unreachable nat entries
+>          [Ok..] [0x0]
+> [   30.737638] fsck.f2fs: [FSCK] SIT valid block bitmap checking
+>          [Ok..]
+> [   30.737640] fsck.f2fs: [FSCK] Hard link checking for regular file
+>          [Ok..] [0xd]
+> [   30.737641] fsck.f2fs: [FSCK] valid_block_count matching with CP
+>          [Ok..] [0x28b98e6]
+> [   30.737644] fsck.f2fs: [FSCK] valid_node_count matching with CP (de
+> lookup)  [Ok..] [0xae0e9]
+> [   30.737646] fsck.f2fs: [FSCK] valid_node_count matching with CP
+> (nat lookup) [Ok..] [0xae0e9]
+> [   30.737647] fsck.f2fs: [FSCK] valid_inode_count matched with CP
+>          [Ok..] [0xa74a3]
+> [   30.737649] fsck.f2fs: [FSCK] free segment_count matched with CP
+>          [Ok..] [0x7aa3]
+> [   30.737662] fsck.f2fs: [FSCK] next block offset is free
+>          [Ok..]
+> [   30.737663] fsck.f2fs: [FSCK] fixing SIT types
+> [   30.737867] fsck.f2fs: [FSCK] other corrupted bugs
+>          [Ok..]
+> [   30.737893] fsck.f2fs: [update_superblock: 765] Info: Done to
+> update superblock
+> [   30.960610] fsck.f2fs:
+> [   30.960618] fsck.f2fs: Done: 24.622956 secs
+> [   30.960620] fsck.f2fs:
+> [   30.960622] fsck.f2fs: c, u, RA, CH, CM, Repl=
+> [   30.960627] fsck.f2fs: 10000 10000 43600517 42605434 995083 985083
+> [   30.963274] F2FS-fs (sda13): Using encoding defined by superblock:
+> utf8-12.1.0 with flags 0x0
+> [   30.995360] __f2fs_is_valid_blkaddr: type=2
+> 
+> (Manually added that print ^)
+> 
+> [   30.995369] ------------[ cut here ]------------
+> [   30.995375] WARNING: CPU: 7 PID: 1 at f2fs_handle_error+0x18/0x3c
+> [   30.995378] CPU: 7 PID: 1 Comm: init Tainted: G S      W
+> 5.10.209-arter97-r15-kernelsu-g0867d0e4f1d2 #6
+> [   30.995379] Hardware name: Qualcomm Technologies, Inc. Cape QRD
+> with PM8010 (DT)
+> [   30.995380] pstate: 22400005 (nzCv daif +PAN -UAO +TCO BTYPE=--)
+> [   30.995382] pc : f2fs_handle_error+0x18/0x3c
+> [   30.995384] lr : __f2fs_is_valid_blkaddr+0x2a4/0x2b0
+> [   30.995385] sp : ffffff80209e79b0
+> [   30.995386] x29: ffffff80209e79b0 x28: 0000000000000037
+> [   30.995388] x27: 00000000000001c7 x26: 0000000020120121
+> [   30.995389] x25: 00000000000000d9 x24: 0000000000000000
+> [   30.995390] x23: ffffffff00f1a700 x22: 0000000000000828
+> [   30.995391] x21: ffffff80462aa000 x20: ffffff80462aa000
+> [   30.995392] x19: 0000000000000002 x18: ffffffffffffffff
+> [   30.995393] x17: 0000000000000000 x16: 00000000ffff0000
+> [   30.995394] x15: 0000000000000004 x14: ffffffd1675ac6d0
+> [   30.995395] x13: 0000000000000003 x12: 0000000000000003
+> [   30.995396] x11: 00000000ffffffff x10: 0000000000000000
+> [   30.995397] x9 : 0000000100000001 x8 : 0000000100000000
+> [   30.995398] x7 : 64696c61765f7369 x6 : ffffffd1681279e8
+> [   30.995399] x5 : 000000000000001f x4 : 0000000000000001
+> [   30.995400] x3 : 0000000000000000 x2 : ffffff89f03dedc8
+> [   30.995401] x1 : 0000000000000002 x0 : ffffff80462aa000
+> [   30.995403] Call trace:
+> [   30.995404] f2fs_handle_error+0x18/0x3c
+> [   30.995405] __f2fs_is_valid_blkaddr+0x2a4/0x2b0
+> [   30.995406] f2fs_is_valid_blkaddr+0x10/0x20
+> [   30.995407] f2fs_ra_meta_pages+0xe0/0x230
+> [   30.995409] build_sit_entries+0xa8/0x580
+> [   30.995411] f2fs_build_segment_manager+0x124/0x170
+> [   30.995412] f2fs_fill_super+0x78c/0xd1c
+> [   30.995415] mount_bdev+0x168/0x1ac
+> [   30.995416] f2fs_mount+0x18/0x24
+> [   30.995418] legacy_get_tree.llvm.9147845779559715083+0x30/0x5c
+> [   30.995419] vfs_get_tree+0x30/0xe0
+> [   30.995421] do_new_mount+0x140/0x358
+> [   30.995422] path_mount+0x1fc/0x4e8
+> [   30.995423] __arm64_sys_mount+0x150/0x294
+> [   30.995425] el0_svc_common.llvm.15698454952154965787+0xa8/0x138
+> [   30.995426] do_el0_svc+0x24/0x90
+> [   30.995429] el0_svc+0x10/0x1c
+> [   30.995430] el0_sync_handler+0xcc/0xe4
+> [   30.995432] el0_sync+0x1a0/0x1c0
+> [   30.995433] ---[ end trace 3b83295e0cdac94e ]---
+> [   31.005011] F2FS-fs (sda13): Mounted with checkpoint version = 2b7e3b29
+> [   31.005176] init: [libfs_mgr]
+> __mount(source=/dev/block/bootdevice/by-name/userdata,target=/data,type=f2fs)=0:
+> Success
+> [   31.007749] init: Userdata mounted using /vendor/etc/fstab.qcom result : 0
+> 
+> 
+> I was bisecting a long boot time (24 additional seconds) issue, which
+> is always reproducible, and found commit 31f85ccc84b8 ("f2fs: unify
+> the error handling of f2fs_is_valid_blkaddr") to be causing it.
+> 
+> I'll just revert that patch locally. Seems like Jaegeuk's dev branch
+> doesn't have the fix for this specifically yet.
 
-Below is the recommendation from Intel:
+I was suspecting f2fs_ra_meta_pages() could try to read out beyond the boundary
+before, but it seems you hit the case. Can you check this patch address that?
 
-  "Intel recommends that system software does not enable Key Locker (by
-  setting CR4.KL) unless the GDS mitigation is enabled (IA32_MCU_OPT_CTRL
-  [GDS_MITG_DIS] (bit 4) is 0) and locked (IA32_MCU_OPT_CTRL
-  [GDS_MITG_LOCK](bit 5) is 1). This will prevent an adversary that takes
-  control of the system from turning off the mitigation in order to infer
-  the keys behind Key Locker handles." [1]
-
-When GDS mitigation is enabled, and Keylocker feature is present, also lock
-the mitigation.
-
-[1] Gather Data Sampling (ID# 785676)
-    https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/technical-documentation/gather-data-sampling.html
-
-Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
----
-This should ideally go before the patch that enables Keylocker. It is
-only compile tested.
-
- arch/x86/kernel/cpu/bugs.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index ca295b0c1eee..2777a58110e0 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -755,8 +755,8 @@ EXPORT_SYMBOL_GPL(gds_ucode_mitigated);
- 
- void update_gds_msr(void)
- {
--	u64 mcu_ctrl_after;
--	u64 mcu_ctrl;
-+	u64 mcu_ctrl, mcu_ctrl_after;
-+	u64 gds_lock = 0;
- 
- 	switch (gds_mitigation) {
- 	case GDS_MITIGATION_OFF:
-@@ -769,6 +769,8 @@ void update_gds_msr(void)
- 		 * the same state. Make sure the mitigation is enabled on all
- 		 * CPUs.
- 		 */
-+		gds_lock = GDS_MITG_LOCKED;
-+		fallthrough;
- 	case GDS_MITIGATION_FULL:
- 		rdmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
- 		mcu_ctrl &= ~GDS_MITG_DIS;
-@@ -779,6 +781,7 @@ void update_gds_msr(void)
- 		return;
- 	}
- 
-+	mcu_ctrl |= gds_lock;
- 	wrmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
- 
- 	/*
-@@ -840,6 +843,11 @@ static void __init gds_select_mitigation(void)
- 		gds_mitigation = GDS_MITIGATION_FULL_LOCKED;
- 	}
- 
-+	/* Keylocker can only be enabled when GDS mitigation is locked */
-+	if (boot_cpu_has(X86_FEATURE_KEYLOCKER) &&
-+	    gds_mitigation == GDS_MITIGATION_FULL)
-+		gds_mitigation = GDS_MITIGATION_FULL_LOCKED;
-+
- 	update_gds_msr();
- out:
- 	pr_info("%s\n", gds_strings[gds_mitigation]);
-
----
-base-commit: 0bbac3facb5d6cc0171c45c9873a2dc96bea9680
-change-id: 20240418-gds-lock-26ecbce88470
-
-Best regards,
--- 
-Thanks,
-Pawan
-
+> 
+> Thanks.
+> 
+> >
+> > I was trying to debug another issue, but found the root cause. Let me drop this
+> > patch.
+> >
+> > >
+> > > Thanks,
+> > >
+> > > >
+> > > > Fixes: 31f85ccc84b8 ("f2fs: unify the error handling of f2fs_is_valid_blkaddr")
+> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > > > ---
+> > > >   fs/f2fs/checkpoint.c | 9 +++++----
+> > > >   1 file changed, 5 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+> > > > index eac698b8dd38..b01320502624 100644
+> > > > --- a/fs/f2fs/checkpoint.c
+> > > > +++ b/fs/f2fs/checkpoint.c
+> > > > @@ -179,22 +179,22 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+> > > >             break;
+> > > >     case META_SIT:
+> > > >             if (unlikely(blkaddr >= SIT_BLK_CNT(sbi)))
+> > > > -                   goto err;
+> > > > +                   goto check_only;
+> > > >             break;
+> > > >     case META_SSA:
+> > > >             if (unlikely(blkaddr >= MAIN_BLKADDR(sbi) ||
+> > > >                     blkaddr < SM_I(sbi)->ssa_blkaddr))
+> > > > -                   goto err;
+> > > > +                   goto check_only;
+> > > >             break;
+> > > >     case META_CP:
+> > > >             if (unlikely(blkaddr >= SIT_I(sbi)->sit_base_addr ||
+> > > >                     blkaddr < __start_cp_addr(sbi)))
+> > > > -                   goto err;
+> > > > +                   goto check_only;
+> > > >             break;
+> > > >     case META_POR:
+> > > >             if (unlikely(blkaddr >= MAX_BLKADDR(sbi) ||
+> > > >                     blkaddr < MAIN_BLKADDR(sbi)))
+> > > > -                   goto err;
+> > > > +                   goto check_only;
+> > > >             break;
+> > > >     case DATA_GENERIC:
+> > > >     case DATA_GENERIC_ENHANCE:
+> > > > @@ -228,6 +228,7 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+> > > >     return true;
+> > > >   err:
+> > > >     f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
+> > > > +check_only:
+> > > >     return false;
+> > > >   }
+> >
+> >
+> > _______________________________________________
+> > Linux-f2fs-devel mailing list
+> > Linux-f2fs-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
