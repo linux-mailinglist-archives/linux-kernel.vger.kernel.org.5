@@ -1,211 +1,185 @@
-Return-Path: <linux-kernel+bounces-151212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3359F8AAB2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:04:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 029CC8AAB21
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:03:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94A911C215A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:04:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF6F7B21E75
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9858B7C6D4;
-	Fri, 19 Apr 2024 09:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3829E757F6;
+	Fri, 19 Apr 2024 09:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NAOuEUb7"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="QXpQWEow"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6CB79949;
-	Fri, 19 Apr 2024 09:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44B3651B6
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:03:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713517451; cv=none; b=HB7JVpB61UECjp72jkqgw0AnfcePg8cDUIzoWgSYFCYm9OaKV8iHKLi44ZmSVdsb0WXPlmDh/k1IYm+03sTr8qIjlFsKPDvWA8QU+1S9TqYtpuZCz3xr1wOa2HpHHj3rnHmkeOwHUyU50VDVxj6yvfamZ84XPBwVFK7n8u2VMXM=
+	t=1713517427; cv=none; b=rUvxxXZlktSDqA6AOqOZruZq/X+hYfMdnO0wN6xR3LdvEh5qUaTC0TzyJ8/GW/7fb8gM6IgcVc//xOWdwu/j1NHCl4hby56j7i0BH1bqz34pGxweKl4SdEi38oz6czT4BFUCVC+0+Afo2JItCKfJY1J0Cv/rA9cB4XvZXHi6Qho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713517451; c=relaxed/simple;
-	bh=yYoDQShDvmrOZ9K2+7B7afIlK5+dkxlsEVPcBywafew=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Grs+LnMfkUckmP3gBGEo72evk+4qagvCCimbBZr7VGRBN2Qxj/P/rLXfovudsbfMm2vwoxfxwE3eCmHVVMN/x51c/oZPj3LXwo7GBf8r0OEKLhD2el3xuJFWpYgT2EIc4AZGEovV+Ia+wiJ0sMxXvnC80OCxTY5Nebmw4TbAEx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NAOuEUb7; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2da01cb187cso31191721fa.0;
-        Fri, 19 Apr 2024 02:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713517448; x=1714122248; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rgMQYr4oV4JNndEuD2biU5vQV/pnebRAnRkbrVejXaA=;
-        b=NAOuEUb7WgJEj8njit/zXVSz0BKrQR4AWPES9QfrV2/yjdWc8nrl4EdwHRXXxxFIXz
-         9QsB7uyD3UeUSM3IP0CJ0GUplyTlsrfkqbEf1NdzIODSkG7yD+aY6MiLBdjmJcDUVsO/
-         i0MxP/a8+P1WbBHBndeDZwOm43rGiJLn3Drmaa7y3CyqU5Z6XfuRLRTw0+wj08dYeKts
-         scDamhWSGV9hNSI4RLJsaK90gwbEotpyTg7gxEFGMjOY4N6cL4EJ5/MN0IyJPRpKQOC/
-         7KIRM+lWoUz33iz/5f6xKfW3FW7vU5p7OX9YxTAHftcCMMAp/eu699BVuHgmeh67Pq6t
-         Mxqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713517448; x=1714122248;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rgMQYr4oV4JNndEuD2biU5vQV/pnebRAnRkbrVejXaA=;
-        b=hGLoFd06nLSmTtdbdzPGtKE/nDEnjwR+0mxM1ErzqTb9Rz5rGQ70q/YykacLPVx38U
-         wEWyaH4QgiHrN+aNyHcjGzs8UboPPUrrwrncIa8yABtTH1QxVMH/j7O6w65KU13WoRXQ
-         gfWADzNf4eLDYUO8BxXRuC7TNy9lczsHOvEwi0+0iM5ti8qSJC5k0DdzVYMscrVM8pVf
-         lEw+PKlx+wOxyZAPewoCm1r/aqYdHifxRyMFxcyUM3JdPcxmuO8pnmO+hEJ4HWSdtTSh
-         eASCVFfJCxYsqsJ4K/2ZjoAQCYA3qsUiOIUAdaSn/1sMHeZGe6PBF2X8Vgu7g1tdPZVY
-         nspA==
-X-Forwarded-Encrypted: i=1; AJvYcCVvXtBrjU7QCbYIQb3UygH7d9hLqFQCIjlIQr/vs7VxiTn9egT4YLQa4/PFEheYWmNSOsLc9gFrB/EVv3ebevyjaamwn93T59jR/hd2SdXuNhLbq3wHUCCoC3XZLuzrT3OwknXZ
-X-Gm-Message-State: AOJu0YxMhJu3PlWkqXWwnI5nIqotsfsdLMeQ1YP67UPWsfLvVOhjcTAA
-	QdlyFWFkQIKjACzycdusmvJpKt8XlsjmAf2JV54UUaCQY+UCbIJg
-X-Google-Smtp-Source: AGHT+IHQi06xeUbRVNwJPi1rGkVQYXntNtrD89Vy0P8/uMlqN9zH9EDGdcfcGdRrkx/08kp0eZERLQ==
-X-Received: by 2002:a2e:2a46:0:b0:2d4:7455:89f6 with SMTP id q67-20020a2e2a46000000b002d4745589f6mr1137769ljq.40.1713517448297;
-        Fri, 19 Apr 2024 02:04:08 -0700 (PDT)
-Received: from localhost (srv1.baikalchip.ru. [87.245.175.227])
-        by smtp.gmail.com with ESMTPSA id h25-20020a2e3a19000000b002da968f03f9sm520526lja.89.2024.04.19.02.04.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 02:04:07 -0700 (PDT)
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	Romain Gantois <romain.gantois@bootlin.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Serge Semin <fancer.lancer@gmail.com>,
-	Simon Horman <horms@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND net-next v3 2/2] net: stmmac: Move MAC caps init to phylink MAC caps getter
-Date: Fri, 19 Apr 2024 12:03:06 +0300
-Message-ID: <20240419090357.5547-3-fancer.lancer@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240419090357.5547-1-fancer.lancer@gmail.com>
-References: <20240419090357.5547-1-fancer.lancer@gmail.com>
+	s=arc-20240116; t=1713517427; c=relaxed/simple;
+	bh=e4fxTG9IOEhRJ2oy+q+Z2QsiJ7pgDkrpf7Ps9FXu6MQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=jsz7+9qw6gzmmlk0Xa/xk+RNbk0LAPPxPn7dKNy0eU42ufwn9z7G3zYuXPgapSUElLyzgwYSxm0qoCfTjJUQLA7WXRvRVAQu3LQ4vaLj3MjhQdJvjPkENL0dVXKIlgzz7b33n6Ix2xNiB+9Pzhv9HEFFD7kQvWRSzOys7UmeTAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=QXpQWEow; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240419090337euoutp028afad3b3d0fa45ba09f97e525db5e25a~HowMnqGNg1247212472euoutp02x
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:03:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240419090337euoutp028afad3b3d0fa45ba09f97e525db5e25a~HowMnqGNg1247212472euoutp02x
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1713517417;
+	bh=5epo2hFNGdItoVB1/oi1I+wZXv4cgIPH4R+qqziczOI=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=QXpQWEowhE3Vyr+TulZX4n1uylvZEHaGK0d7NDRlG5CpHWuniEg3rSV5A4SQf4CLH
+	 5OWdFn9kp8tHZqZDG+yK6eqPuJQDm9bxp0DwMHLd1kCsqtof/G4b6w26KYtAIIncc+
+	 5aReWLvo+2hJKeaXG3cui2d0TNAX0oMvO7M4Y4l8=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240419090336eucas1p2090739cbb7fd29dcede241151823357a~HowMR7Sfo0628006280eucas1p2Y;
+	Fri, 19 Apr 2024 09:03:36 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id 44.F3.09624.86332266; Fri, 19
+	Apr 2024 10:03:36 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240419090336eucas1p17674ea65e993d1681fea157e46e2b059~HowL8xCMG2506225062eucas1p1A;
+	Fri, 19 Apr 2024 09:03:36 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240419090336eusmtrp18787ba7327372849526ebcc458a53dac~HowL8L-Em2605826058eusmtrp1V;
+	Fri, 19 Apr 2024 09:03:36 +0000 (GMT)
+X-AuditID: cbfec7f2-c11ff70000002598-f0-662233687f18
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 6A.CC.09010.86332266; Fri, 19
+	Apr 2024 10:03:36 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240419090336eusmtip2fe7f576e4a49e16e0fd0fdf5701fa2ff~HowLnqshL0629206292eusmtip2c;
+	Fri, 19 Apr 2024 09:03:36 +0000 (GMT)
+Message-ID: <92492ec0-bde6-46ad-a2b4-840b60c85652@samsung.com>
+Date: Fri, 19 Apr 2024 11:03:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] serial: msm: check dma_map_sg() return value properly
+To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>, gregkh@linuxfoundation.org
+Cc: linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Language: en-US
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20240419080931.30949-1-jirislaby@kernel.org>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphleLIzCtJLcpLzFFi42LZduznOd0MY6U0g5kbtS2aF69ns3g3V8bi
+	8q45bBZnFveyO7B4bFrVyeaxf+4ado/Pm+QCmKO4bFJSczLLUov07RK4Mk5e+8te8Ja/4s81
+	tQbGxzxdjJwcEgImErs/LmTqYuTiEBJYwSjxdscCNgjnC6PE+YvvGCGcz4wSDSs3scC0rFzy
+	FKpqOaPE4+bnLBDOR0aJqTM3MYJU8QrYSUzq+cQGYrMIqEp8fXSBGSIuKHFy5hOwSaIC8hL3
+	b81gB7GFBbwktk/bygRiiwDZpyY/AZvDDDRn2pOLLBC2uMStJ/PBatgEDCW63naBzecUsJJ4
+	3DeFDaJGXmL72znMIAdJCKzlkGhddZgJ4mwXiZ/dD5ghbGGJV8e3sEPYMhKnJ/ewQDS0M0os
+	+H2fCcKZAPT081uMEFXWEnfO/QJawQG0QlNi/S59iLCjROv/SywgYQkBPokbbwUhjuCTmLRt
+	OjNEmFeio00IolpNYtbxdXBrD164xDyBUWkWUrDMQvLmLCTvzELYu4CRZRWjeGppcW56arFh
+	Xmq5XnFibnFpXrpecn7uJkZgQjn97/inHYxzX33UO8TIxMF4iFGCg1lJhNeMQzFNiDclsbIq
+	tSg/vqg0J7X4EKM0B4uSOK9qinyqkEB6YklqdmpqQWoRTJaJg1Oqgakl3+9FUjovo2p9SMzs
+	M+6LOCZ07RV6of7D//7jl8eefNEs3Lxv9xfFi9wnTnv2xbC2/IyVfm69Tn32Of+Q3616dQ1L
+	gwx3/lRb9fbnQbuksK5YUzajqf/n1IoF3euRfey9lWup2uupn648eyWmscEld9PKh9rbeuKv
+	7BBRUvyxLebE7W2HvkbcEkjdcitViPV6p2JQWHuJ02nW/Z6/nrf9VtjZoP8s4q3Pvh0LStnf
+	NfYu3/as4T8T+8StElWq1z478mxwDHj4xS7cRuHmSofQCe3m6s8zg022NF8UDmaPv2o6J+ng
+	O3Yld9Mzy845m7uGT2j8PaWH847S1sdWr6oWZ6S6bY1dd9Wp5+u+Hm0lluKMREMt5qLiRADd
+	FGXflwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGIsWRmVeSWpSXmKPExsVy+t/xe7oZxkppBvsOils0L17PZvFurozF
+	5V1z2CzOLO5ld2Dx2LSqk81j/9w17B6fN8kFMEfp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZ
+	WOoZGpvHWhmZKunb2aSk5mSWpRbp2yXoZZy89pe94C1/xZ9rag2Mj3m6GDk5JARMJFYuecrW
+	xcjFISSwlFFicddbZoiEjMTJaQ2sELawxJ9rXVBF7xklbkzbAZbgFbCTmNTziQ3EZhFQlfj6
+	6AIzRFxQ4uTMJywgtqiAvMT9WzPYQWxhAS+J7dO2MoHYIkD2qclPGEFsZqA5055cZIFYcIhR
+	Yu69mSwQCXGJW0/mgzWwCRhKdL3tAlvGKWAl8bhvChtEjZlE19YuqEHyEtvfzmGewCg0C8kd
+	s5CMmoWkZRaSlgWMLKsYRVJLi3PTc4uN9IoTc4tL89L1kvNzNzECI2jbsZ9bdjCufPVR7xAj
+	Ewcj0I0czEoivGYcimlCvCmJlVWpRfnxRaU5qcWHGE2BgTGRWUo0OR8Yw3kl8YZmBqaGJmaW
+	BqaWZsZK4ryeBR2JQgLpiSWp2ampBalFMH1MHJxSDUxziv5t5L8rrc5aIqCucDMhdWdNP9Nc
+	l8C5ivVtQu1pFzcpunlOnuca2B9z98o11kiD0MBnM/9uVFXSuBkY+XRmNmuLQNYs77Tqpr4k
+	xs27T3qqrHVPe8ZmkDLP5KToeds/cXEmS1kvG/ooTt45X22hjMx5bcGVdvI7tH7MOs7+Y8uy
+	g/3t6xcEcR6tV5ujevGpKuPOZ3oytYe+rzzhdfuz4b2lu9i5DY7M4vt769UZGZljB/PiRPjn
+	H3T77V0t/jnSgfHNufiCkgds+dyPgy//+yjo+uLlrYs31WLnM6jfuRvF2fIhcW1lyOu/7jX+
+	ydF+J9cu2NfnWpbWEGJRUrD0majP0743neJ7v+7wO6bEUpyRaKjFXFScCABwQiw8KQMAAA==
+X-CMS-MailID: 20240419090336eucas1p17674ea65e993d1681fea157e46e2b059
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20240419080939eucas1p1ab74bd6b995e53135ece92bc4260d334
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240419080939eucas1p1ab74bd6b995e53135ece92bc4260d334
+References: <cbf77a8b-b37c-41d8-a7b5-a1c935571a1d@samsung.com>
+	<CGME20240419080939eucas1p1ab74bd6b995e53135ece92bc4260d334@eucas1p1.samsung.com>
+	<20240419080931.30949-1-jirislaby@kernel.org>
 
-After a set of recent fixes the stmmac_phy_setup() and
-stmmac_reinit_queues() methods have turned to having some duplicated code.
-Let's get rid from the duplication by moving the MAC-capabilities
-initialization to the PHYLINK MAC-capabilities getter. The getter is
-called during each network device interface open/close cycle. So the
-MAC-capabilities will be initialized in generic device open procedure and
-in case of the Tx/Rx queues re-initialization as the original code
-semantics implies.
+On 19.04.2024 10:09, Jiri Slaby (SUSE) wrote:
+> The -next commit f8fef2fa419f (tty: msm_serial: use
+> dmaengine_prep_slave_sg()), switched to using dma_map_sg(). But the
+> return value of dma_map_sg() is special: it returns number of elements
+> mapped. And not a standard error value.
+>
+> The commit also forgot to reset dma->tx_sg in case of this failure.
+>
+> Fix both these mistakes.
+>
+> Thanks to Marek who helped debugging this.
+>
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-Reviewed-by: Romain Gantois <romain.gantois@bootlin.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
----
+> ---
+>   drivers/tty/serial/msm_serial.c | 10 +++++++---
+>   1 file changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/tty/serial/msm_serial.c b/drivers/tty/serial/msm_serial.c
+> index ae7a8e3cf467..0a9c5219df88 100644
+> --- a/drivers/tty/serial/msm_serial.c
+> +++ b/drivers/tty/serial/msm_serial.c
+> @@ -499,15 +499,18 @@ static int msm_handle_tx_dma(struct msm_port *msm_port, unsigned int count)
+>   	struct uart_port *port = &msm_port->uart;
+>   	struct tty_port *tport = &port->state->port;
+>   	struct msm_dma *dma = &msm_port->tx_dma;
+> +	unsigned int mapped;
+>   	int ret;
+>   	u32 val;
+>   
+>   	sg_init_table(&dma->tx_sg, 1);
+>   	kfifo_dma_out_prepare(&tport->xmit_fifo, &dma->tx_sg, 1, count);
+>   
+> -	ret = dma_map_sg(port->dev, &dma->tx_sg, 1, dma->dir);
+> -	if (ret)
+> -		return ret;
+> +	mapped = dma_map_sg(port->dev, &dma->tx_sg, 1, dma->dir);
+> +	if (!mapped) {
+> +		ret = -EIO;
+> +		goto zero_sg;
+> +	}
+>   
+>   	dma->desc = dmaengine_prep_slave_sg(dma->chan, &dma->tx_sg, 1,
+>   						DMA_MEM_TO_DEV,
+> @@ -548,6 +551,7 @@ static int msm_handle_tx_dma(struct msm_port *msm_port, unsigned int count)
+>   	return 0;
+>   unmap:
+>   	dma_unmap_sg(port->dev, &dma->tx_sg, 1, dma->dir);
+> +zero_sg:
+>   	sg_init_table(&dma->tx_sg, 1);
+>   	return ret;
+>   }
 
-Link: https://lore.kernel.org/netdev/20240412180340.7965-5-fancer.lancer@gmail.com/
-Changelog v2:
-- Resubmit the patch to net-next separately from the main patchset (Paolo)
----
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 36 +++++++++----------
- 1 file changed, 17 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index b810f6b69bf5..0d6cd1704e6a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -936,6 +936,22 @@ static void stmmac_mac_flow_ctrl(struct stmmac_priv *priv, u32 duplex)
- 			priv->pause, tx_cnt);
- }
- 
-+static unsigned long stmmac_mac_get_caps(struct phylink_config *config,
-+					 phy_interface_t interface)
-+{
-+	struct stmmac_priv *priv = netdev_priv(to_net_dev(config->dev));
-+
-+	/* Refresh the MAC-specific capabilities */
-+	stmmac_mac_update_caps(priv);
-+
-+	config->mac_capabilities = priv->hw->link.caps;
-+
-+	if (priv->plat->max_speed)
-+		phylink_limit_mac_speed(config, priv->plat->max_speed);
-+
-+	return config->mac_capabilities;
-+}
-+
- static struct phylink_pcs *stmmac_mac_select_pcs(struct phylink_config *config,
- 						 phy_interface_t interface)
- {
-@@ -1105,6 +1121,7 @@ static void stmmac_mac_link_up(struct phylink_config *config,
- }
- 
- static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
-+	.mac_get_caps = stmmac_mac_get_caps,
- 	.mac_select_pcs = stmmac_mac_select_pcs,
- 	.mac_config = stmmac_mac_config,
- 	.mac_link_down = stmmac_mac_link_down,
-@@ -1204,7 +1221,6 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
- 	int mode = priv->plat->phy_interface;
- 	struct fwnode_handle *fwnode;
- 	struct phylink *phylink;
--	int max_speed;
- 
- 	priv->phylink_config.dev = &priv->dev->dev;
- 	priv->phylink_config.type = PHYLINK_NETDEV;
-@@ -1225,15 +1241,6 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
- 		xpcs_get_interfaces(priv->hw->xpcs,
- 				    priv->phylink_config.supported_interfaces);
- 
--	/* Refresh the MAC-specific capabilities */
--	stmmac_mac_update_caps(priv);
--
--	priv->phylink_config.mac_capabilities = priv->hw->link.caps;
--
--	max_speed = priv->plat->max_speed;
--	if (max_speed)
--		phylink_limit_mac_speed(&priv->phylink_config, max_speed);
--
- 	fwnode = priv->plat->port_node;
- 	if (!fwnode)
- 		fwnode = dev_fwnode(priv->device);
-@@ -7327,7 +7334,6 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
- 	int ret = 0, i;
--	int max_speed;
- 
- 	if (netif_running(dev))
- 		stmmac_release(dev);
-@@ -7341,14 +7347,6 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
- 			priv->rss.table[i] = ethtool_rxfh_indir_default(i,
- 									rx_cnt);
- 
--	stmmac_mac_update_caps(priv);
--
--	priv->phylink_config.mac_capabilities = priv->hw->link.caps;
--
--	max_speed = priv->plat->max_speed;
--	if (max_speed)
--		phylink_limit_mac_speed(&priv->phylink_config, max_speed);
--
- 	stmmac_napi_add(dev);
- 
- 	if (netif_running(dev))
+Best regards
 -- 
-2.43.0
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
 
