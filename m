@@ -1,85 +1,291 @@
-Return-Path: <linux-kernel+bounces-151016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC35C8AA7F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:36:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE538AA7F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:36:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C4F01F211D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 05:36:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE9571C21D29
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 05:36:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574B0101C5;
-	Fri, 19 Apr 2024 05:36:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37772BE66;
+	Fri, 19 Apr 2024 05:36:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="P0KvnlyH";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MtTpOt44"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DW3qNCZF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676F7D515
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 05:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F1008F5B;
+	Fri, 19 Apr 2024 05:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713504990; cv=none; b=mk5dE0IFwMs9tMXYQRqtF83LvS3VCrijrOgMXOSAL8E4bOdyw1U1Ed6lIEyK2/aghwEuaqHUdukNktxW+d4RKWqR0yNN2pUUm8/Sz3Sq5dqlq4MzI4GJsnntFiqzPEptz+dw49gD3sv/mCaHLFFSYDBZ03yarzM3daiCjq5tMGc=
+	t=1713504985; cv=none; b=TcjFwjOWo+dZnJ5i3yfaIyZEeJIEKgN5YTGusKM3NsMKX8VW6tJEegocOKrUcrqG2ybNpQJm9CsnDIZ63eUwqcRMRRKbTxDswWBh/fMpfnGNnmF7yoOls6MtRDlZtnzg4eaV52tfwe+D/Lo3pn0DUJ44X8Ox6rMmZ70QHWb1c5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713504990; c=relaxed/simple;
-	bh=WWVqZp2+30Zq4b8Ve11Pe7XNTZL8nxWZ0Ar7i6fbXRM=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:MIME-Version:
-	 Content-Type; b=pQM1psoedH/BjmLnNG0NGSVofabTpT60vg/gJRs/GkU14IRAfZiYbG9eF0SC3TOgZ09SPNPIrlotKsXRVJnZQRYX7AomVVfSKhyXjTQA9YyQFQtZIviFsTKqKM8yOv0ExW3jNMrz8bkXxnhIGQGk7A4sIcuwndS4sKgkqLzqiwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=P0KvnlyH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MtTpOt44; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713504986;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=lWzBA6aH5GojVMHZr16y2dsdvm+/ZPJut2i3UGgY3S0=;
-	b=P0KvnlyHcjiEG0T6RM4o4vUgLyYFvWP3ludf05LOCx/Fnz/Y/FJNl9ddgd9vZLv8EPnjWc
-	ldvSqUxZgtStgszT5lMCAsLFVdnKz1YVhkS5LCvJV6GAy1xLNcjBXKHX0IPshGdSvptkIk
-	Hgyobp8HM+wwBbPFlbNErHJgk7ZHVz6x31lWbexdcOE7k7l4gJig89/ox2/P6TiDcn2VCL
-	t0crriuZlEKbIsq6ZvqyBuVa4mSjRcKSocOpRSx0R3LQU1GA4EBHzPhc6oxGtfLhSDLI6V
-	l9Qf0zQ2IjT97ySdU/yxSjtaLh2p4JcZNykeOA9hF1oZ8TF5GR/4QMauA/UieQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713504986;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=lWzBA6aH5GojVMHZr16y2dsdvm+/ZPJut2i3UGgY3S0=;
-	b=MtTpOt44UWioNiohn7xGlSx0OuIPDwPUNVEDHuFnkpQb5EkE20EMUlXJEo7zxkoQG69bh1
-	sUjCDcvnOY88dPAQ==
-To: Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org
-Cc: kernel_team@skhynix.com, akpm@linux-foundation.org,
- ying.huang@intel.com, vernhao@tencent.com, mgorman@techsingularity.net,
- hughd@google.com, willy@infradead.org, david@redhat.com,
- peterz@infradead.org, luto@kernel.org, mingo@redhat.com, bp@alien8.de,
- dave.hansen@linux.intel.com, rjgolo@gmail.com
-Subject: Re: [PATCH v9 1/8] x86/tlb: add APIs manipulating tlb batch's arch
- data
-In-Reply-To: <20240417071847.29584-2-byungchul@sk.com>
-Date: Fri, 19 Apr 2024 07:36:14 +0200
-Message-ID: <871q71ykvl.ffs@tglx>
+	s=arc-20240116; t=1713504985; c=relaxed/simple;
+	bh=3TdyFA3hyHOlxjWLYHwX0SH35loWRhAXSuWeI08Kwgk=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=t54SjrjvX4yBXaAtF1Nd9TlsmFaj/iXhmvNfWb1y64ngjIsKTMGOv++hMJufemT5bOLH7ZyfYzmftt+sifc4A+riSrBTXydh1EQ2oOFfJ6bU/QBwrHw1mc1rqXw1jA+jBSBemCbGzWjhhCmDwjQffNPpRy1f6pvUguMCUie7gJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DW3qNCZF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 948B5C072AA;
+	Fri, 19 Apr 2024 05:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713504984;
+	bh=3TdyFA3hyHOlxjWLYHwX0SH35loWRhAXSuWeI08Kwgk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=DW3qNCZF0nlSMG6IrO40/xUGCFw7GlQgT8+VWYZw4BGpjADkXAbQH2uUs4f/lteky
+	 tDUiUigc+2l1tiMxg5K9X9YwUF89W5rUEros5wAEFukoPVWwiVJmv2m8Emcaw4R59F
+	 mJ41L6ioPng4hcccHPhe42akparPkrIxLTyHGJwTss5Cw3d2kkKTQfUNkvvefKwI3G
+	 dWympRDamkU2E9X6Uo+11nWiCE8J2dLqoXVlFPb01BBqsOcvMI3D7LsxO6lYrUMgy6
+	 rgk+k6bAdaA8V3+hDjKr6Z/AbeNwzX0EDbSQl0NWK5DJm+WaxXQ5n2favhgfpKmanJ
+	 KF4aqp7Z3/BUg==
+Date: Fri, 19 Apr 2024 14:36:18 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph:
+ Multi-function graph and fprobe on fgraph
+Message-Id: <20240419143618.aa5064d764094ed926b0f04e@kernel.org>
+In-Reply-To: <171318533841.254850.15841395205784342850.stgit@devnote2>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 17 2024 at 16:18, Byungchul Park wrote:
-> This is a preparation for migrc mechanism that needs to recognize
-> read-only tlb entries during migration by separating tlb batch arch data
-> into two, one is for read-only entries and the other is for writable
-> ones, and merging those two when needed.
+Hi Steve,
 
-I have no idea what migrc mechanism means. Please add enough context
-into the change log so the reviewer does not have to go through loops
-and hoops to figure out what this is about.
+Can you review this series? Especially, [07/36] and [12/36] has been changed
+a lot from your original patch.
 
-Thanks,
+Thank you,
 
-        tglx
+On Mon, 15 Apr 2024 21:48:59 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+
+> Hi,
+> 
+> Here is the 9th version of the series to re-implement the fprobe on
+> function-graph tracer. The previous version is;
+> 
+> https://lore.kernel.org/all/170887410337.564249.6360118840946697039.stgit@devnote2/
+> 
+> This version is ported on the latest kernel (v6.9-rc3 + probes/for-next)
+> and fixed some bugs + performance optimization patch[36/36].
+>  - [12/36] Fix to clear fgraph_array entry in registration failure, also
+>            return -ENOSPC when fgraph_array is full.
+>  - [28/36] Add new store_fprobe_entry_data() for fprobe.
+>  - [31/36] Remove DIV_ROUND_UP() and fix entry data address calculation.
+>  - [36/36] Add new flag to skip timestamp recording.
+> 
+> Overview
+> --------
+> This series does major 2 changes, enable multiple function-graphs on
+> the ftrace (e.g. allow function-graph on sub instances) and rewrite the
+> fprobe on this function-graph.
+> 
+> The former changes had been sent from Steven Rostedt 4 years ago (*),
+> which allows users to set different setting function-graph tracer (and
+> other tracers based on function-graph) in each trace-instances at the
+> same time.
+> 
+> (*) https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
+> 
+> The purpose of latter change are;
+> 
+>  1) Remove dependency of the rethook from fprobe so that we can reduce
+>    the return hook code and shadow stack.
+> 
+>  2) Make 'ftrace_regs' the common trace interface for the function
+>    boundary.
+> 
+> 1) Currently we have 2(or 3) different function return hook codes,
+>  the function-graph tracer and rethook (and legacy kretprobe).
+>  But since this  is redundant and needs double maintenance cost,
+>  I would like to unify those. From the user's viewpoint, function-
+>  graph tracer is very useful to grasp the execution path. For this
+>  purpose, it is hard to use the rethook in the function-graph
+>  tracer, but the opposite is possible. (Strictly speaking, kretprobe
+>  can not use it because it requires 'pt_regs' for historical reasons.)
+> 
+> 2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+>  wrong for the function entry and exit. Moreover, depending on the
+>  architecture, there is no way to accurately reproduce 'pt_regs'
+>  outside of interrupt or exception handlers. This means fprobe should
+>  not use 'pt_regs' because it does not use such exceptions.
+>  (Conversely, kprobe should use 'pt_regs' because it is an abstract
+>   interface of the software breakpoint exception.)
+> 
+> This series changes fprobe to use function-graph tracer for tracing
+> function entry and exit, instead of mixture of ftrace and rethook.
+> Unlike the rethook which is a per-task list of system-wide allocated
+> nodes, the function graph's ret_stack is a per-task shadow stack.
+> Thus it does not need to set 'nr_maxactive' (which is the number of
+> pre-allocated nodes).
+> Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+> Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+> their register interface, this changes it to convert 'ftrace_regs' to
+> 'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+> so users must access only registers for function parameters or
+> return value. 
+> 
+> Design
+> ------
+> Instead of using ftrace's function entry hook directly, the new fprobe
+> is built on top of the function-graph's entry and return callbacks
+> with 'ftrace_regs'.
+> 
+> Since the fprobe requires access to 'ftrace_regs', the architecture
+> must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS and
+> CONFIG_HAVE_FTRACE_GRAPH_FUNC, which enables to call function-graph
+> entry callback with 'ftrace_regs', and also
+> CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+> return_to_handler.
+> 
+> All fprobes share a single function-graph ops (means shares a common
+> ftrace filter) similar to the kprobe-on-ftrace. This needs another
+> layer to find corresponding fprobe in the common function-graph
+> callbacks, but has much better scalability, since the number of
+> registered function-graph ops is limited.
+> 
+> In the entry callback, the fprobe runs its entry_handler and saves the
+> address of 'fprobe' on the function-graph's shadow stack as data. The
+> return callback decodes the data to get the 'fprobe' address, and runs
+> the exit_handler.
+> 
+> The fprobe introduces two hash-tables, one is for entry callback which
+> searches fprobes related to the given function address passed by entry
+> callback. The other is for a return callback which checks if the given
+> 'fprobe' data structure pointer is still valid. Note that it is
+> possible to unregister fprobe before the return callback runs. Thus
+> the address validation must be done before using it in the return
+> callback.
+> 
+> This series can be applied against the probes/for-next branch, which
+> is based on v6.9-rc3.
+> 
+> This series can also be found below branch.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+> 
+> Thank you,
+> 
+> ---
+> 
+> Masami Hiramatsu (Google) (21):
+>       tracing: Add a comment about ftrace_regs definition
+>       tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+>       x86: tracing: Add ftrace_regs definition in the header
+>       function_graph: Use a simple LRU for fgraph_array index number
+>       ftrace: Add multiple fgraph storage selftest
+>       function_graph: Pass ftrace_regs to entryfunc
+>       function_graph: Replace fgraph_ret_regs with ftrace_regs
+>       function_graph: Pass ftrace_regs to retfunc
+>       fprobe: Use ftrace_regs in fprobe entry handler
+>       fprobe: Use ftrace_regs in fprobe exit handler
+>       tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+>       tracing: Add ftrace_fill_perf_regs() for perf event
+>       tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+>       bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+>       ftrace: Add CONFIG_HAVE_FTRACE_GRAPH_FUNC
+>       fprobe: Rewrite fprobe on function-graph tracer
+>       tracing/fprobe: Remove nr_maxactive from fprobe
+>       selftests: ftrace: Remove obsolate maxactive syntax check
+>       selftests/ftrace: Add a test case for repeating register/unregister fprobe
+>       Documentation: probes: Update fprobe on function-graph tracer
+>       fgraph: Skip recording calltime/rettime if it is not nneeded
+> 
+> Steven Rostedt (VMware) (15):
+>       function_graph: Convert ret_stack to a series of longs
+>       fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
+>       function_graph: Add an array structure that will allow multiple callbacks
+>       function_graph: Allow multiple users to attach to function graph
+>       function_graph: Remove logic around ftrace_graph_entry and return
+>       ftrace/function_graph: Pass fgraph_ops to function graph callbacks
+>       ftrace: Allow function_graph tracer to be enabled in instances
+>       ftrace: Allow ftrace startup flags exist without dynamic ftrace
+>       function_graph: Have the instances use their own ftrace_ops for filtering
+>       function_graph: Add "task variables" per task for fgraph_ops
+>       function_graph: Move set_graph_function tests to shadow stack global var
+>       function_graph: Move graph depth stored data to shadow stack global var
+>       function_graph: Move graph notrace bit to shadow stack global var
+>       function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
+>       function_graph: Add selftest for passing local variables
+> 
+> 
+>  Documentation/trace/fprobe.rst                     |   42 +
+>  arch/arm64/Kconfig                                 |    3 
+>  arch/arm64/include/asm/ftrace.h                    |   47 +
+>  arch/arm64/kernel/asm-offsets.c                    |   12 
+>  arch/arm64/kernel/entry-ftrace.S                   |   32 -
+>  arch/arm64/kernel/ftrace.c                         |   21 
+>  arch/loongarch/Kconfig                             |    4 
+>  arch/loongarch/include/asm/ftrace.h                |   32 -
+>  arch/loongarch/kernel/asm-offsets.c                |   12 
+>  arch/loongarch/kernel/ftrace_dyn.c                 |   15 
+>  arch/loongarch/kernel/mcount.S                     |   17 
+>  arch/loongarch/kernel/mcount_dyn.S                 |   14 
+>  arch/powerpc/Kconfig                               |    1 
+>  arch/powerpc/include/asm/ftrace.h                  |   15 
+>  arch/powerpc/kernel/trace/ftrace.c                 |    3 
+>  arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+>  arch/riscv/Kconfig                                 |    3 
+>  arch/riscv/include/asm/ftrace.h                    |   21 
+>  arch/riscv/kernel/ftrace.c                         |   15 
+>  arch/riscv/kernel/mcount.S                         |   24 
+>  arch/s390/Kconfig                                  |    3 
+>  arch/s390/include/asm/ftrace.h                     |   39 -
+>  arch/s390/kernel/asm-offsets.c                     |    6 
+>  arch/s390/kernel/mcount.S                          |    9 
+>  arch/x86/Kconfig                                   |    4 
+>  arch/x86/include/asm/ftrace.h                      |   43 -
+>  arch/x86/kernel/ftrace.c                           |   51 +
+>  arch/x86/kernel/ftrace_32.S                        |   15 
+>  arch/x86/kernel/ftrace_64.S                        |   17 
+>  include/linux/fprobe.h                             |   57 +
+>  include/linux/ftrace.h                             |  170 +++
+>  include/linux/sched.h                              |    2 
+>  include/linux/trace_recursion.h                    |   39 -
+>  kernel/trace/Kconfig                               |   23 
+>  kernel/trace/bpf_trace.c                           |   14 
+>  kernel/trace/fgraph.c                              | 1005 ++++++++++++++++----
+>  kernel/trace/fprobe.c                              |  637 +++++++++----
+>  kernel/trace/ftrace.c                              |   13 
+>  kernel/trace/ftrace_internal.h                     |    2 
+>  kernel/trace/trace.h                               |   96 ++
+>  kernel/trace/trace_fprobe.c                        |  147 ++-
+>  kernel/trace/trace_functions.c                     |    8 
+>  kernel/trace/trace_functions_graph.c               |   98 +-
+>  kernel/trace/trace_irqsoff.c                       |   12 
+>  kernel/trace/trace_probe_tmpl.h                    |    2 
+>  kernel/trace/trace_sched_wakeup.c                  |   12 
+>  kernel/trace/trace_selftest.c                      |  262 +++++
+>  lib/test_fprobe.c                                  |   51 -
+>  samples/fprobe/fprobe_example.c                    |    4 
+>  .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 
+>  .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+>  51 files changed, 2325 insertions(+), 882 deletions(-)
+>  create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
+> 
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
