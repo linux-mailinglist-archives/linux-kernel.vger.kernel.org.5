@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-150944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2BCA8AA6FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 04:35:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 681B88AA6FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 04:36:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D9EA1F22F08
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:35:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 287E8283B79
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 02:36:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5F653A6;
-	Fri, 19 Apr 2024 02:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B17DF7494;
+	Fri, 19 Apr 2024 02:36:23 +0000 (UTC)
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC977EC2;
-	Fri, 19 Apr 2024 02:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC2E37C;
+	Fri, 19 Apr 2024 02:36:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713494100; cv=none; b=eDCJNoVAvM+alcRqNaLlVP90p0qh5QiyqxEU/f8I4Xn+ZdUCLx7t5lxBlMXD1Y2lr5Q7MSoLk3xNaoqUYzIvI8zUyjJq05aofWTn0c6dFUG8GLM22ljzLZJNZiH7y8DYDKwmtyEp8naq7BdF5W+95mS5uRtmY4tJEphAWSqDHNA=
+	t=1713494183; cv=none; b=aLtQJRIZgbRDPkHJhJ6+BmbJzrY1Rv0enArG7qGoX1C0UPJqBBFQ9JyUQGFTBo5332iQxVOlbh5l3XvM0d1vQ3SdJJ8prJMv/FYNfsEzIMEkbeKH59yiUABImh/9SsDs5vWHtO/cSIN4F/NTw4xqS5sDs6Ru2rgFCShAgCUgKco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713494100; c=relaxed/simple;
-	bh=yvM8HF7cnA2nA+GphFhM2X2UQDN3BhWtVkoFXB7geUo=;
+	s=arc-20240116; t=1713494183; c=relaxed/simple;
+	bh=qYMQuTSjMOuc6HgYpB2N1Ti9jC+RyfAZ9XKAK6mbNRw=;
 	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=B1MuMpimCJ6z8W7oV+cClHPSww3vspK3musQyyp2dwF1YQHGxCtv4hzUhR/U38JYlXJnAbQz2/4csr/QZILIqKWmsddwHyLpeBMswFMnBEGMPL8H1Qk8yru8NVNMa7cOMqH+kopmFTjwIY1f/n1MHyAQn1XgMz/TqFAjBepa4rY=
+	 In-Reply-To:Content-Type; b=ZMVwS2QTtw7chwtWNDC+G5rhwC/5J7cnLWm4JVkZ7DEgGnrnqPLxln8Lh4Dco+o+U0lj5P3z7dN0YMnq3L1zhSgVZ03j1YfoHK57yslfCxrr6frjIAR1NmN39VrwQzOvAgfcQ1JO7BZ4/o2BuBjagJbCHVmVd9hXSVaJhoxFyaA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8Cx2uhO2CFmzJkpAA--.9058S3;
-	Fri, 19 Apr 2024 10:34:54 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8DxK+mi2CFm55kpAA--.10364S3;
+	Fri, 19 Apr 2024 10:36:18 +0800 (CST)
 Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxPs9I2CFm6sR_AA--.45636S3;
-	Fri, 19 Apr 2024 10:34:51 +0800 (CST)
-Subject: Re: [PATCH v3] perf kvm: Add kvm-stat for loongarch64
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxRMyh2CFmJcV_AA--.37543S3;
+	Fri, 19 Apr 2024 10:36:17 +0800 (CST)
+Subject: Re: [PATCH] LoongArch: KVM: Add mmio trace support
 From: maobibo <maobibo@loongson.cn>
-To: Ming Wang <wangming01@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
- Ian Rogers <irogers@google.com>
-References: <20240411121047.2005033-1-maobibo@loongson.cn>
-Message-ID: <aa343349-b04f-3b04-330e-ee1df3021690@loongson.cn>
-Date: Fri, 19 Apr 2024 10:34:48 +0800
+To: Tianrui Zhao <zhaotianrui@loongson.cn>,
+ Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>, kvm@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240409094900.1118699-1-maobibo@loongson.cn>
+Message-ID: <414a9d1d-842d-8cdd-377d-8272d753ebc8@loongson.cn>
+Date: Fri, 19 Apr 2024 10:36:17 +0800
 User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 Precedence: bulk
@@ -49,334 +49,154 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240411121047.2005033-1-maobibo@loongson.cn>
+In-Reply-To: <20240409094900.1118699-1-maobibo@loongson.cn>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8CxPs9I2CFm6sR_AA--.45636S3
+X-CM-TRANSID:AQAAf8AxRMyh2CFmJcV_AA--.37543S3
 X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxKFW5tw45WF1DAF4kJr1kJFc_yoWfZrWkpF
-	WjyrnxKr4rJF17Cwn7AFn093Z8Jw4xuFyjga47XrW7AFsxZr9rGa1IqFnxGFyayw4kJF40
-	9w1F9w40kFW8JabCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+X-Coremail-Antispam: 1Uk129KBj93XoWxWrW5ZryUKF4fuw17AF1kJFc_yoWrWr45pF
+	1DCr1DWr4kKrnFywnrXwsY9rs8ZFZ3u34kXFy7WrWIvr1xXFn5Grn2grWqkFWUK39Y9F4x
+	XF4vkasrua1DZ3XCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
 	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
 	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
 	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-	6r1DMcIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-	1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
-	JVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-	vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
-	x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-	wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8q2NtUUUUU==
+	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE
+	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
+	AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
+	rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
+	CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x02
+	67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
+	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwMKu
+	UUUUU
 
 slightly ping...
 
-On 2024/4/11 下午8:10, Bibo Mao wrote:
-> Add support for 'perf kvm stat' on loongarch64 platform, now only
-> kvm exit event is supported.
+On 2024/4/9 下午5:49, Bibo Mao wrote:
+> Add mmio trace event support, currently generic mmio events
+> KVM_TRACE_MMIO_WRITE/xxx_READ/xx_READ_UNSATISFIED are added here.
 > 
-> Here is example output about "perf kvm --host stat report" command
-> 
->     Event name   Samples   Sample%     Time (ns)   Time%   Mean Time (ns)
->      Mem store     83969    51.00%     625697070   8.00%             7451
->       Mem read     37641    22.00%     112485730   1.00%             2988
->      Interrupt     15542     9.00%      20620190   0.00%             1326
->          Iocsr     15207     9.00%      94296190   1.00%             6200
->      Hypercall      4873     2.00%      12265280   0.00%             2516
->           Idle      3713     2.00%    6322055860  87.00%          1702681
->            FPU      1819     1.00%       2750300   0.00%             1511
->         Ifecth       502     0.00%       1341740   0.00%             2672
->     Mem modify       324     0.00%        602240   0.00%             1858
->         Cpucfg        55     0.00%         77610   0.00%             1411
->            Csr        12     0.00%         19690   0.00%             1640
->           LASX         3     0.00%          4870   0.00%             1623
->            LSX         2     0.00%          2100   0.00%             1050
+> Also vcpu id field is added for all kvm trace events, since perf
+> KVM tool parses vcpu id information for kvm entry event.
 > 
 > Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 > ---
-> v2 --- v3:
->    1. Add NULL check with cpuid in function get_cpuid()
->    2. Add example output from /proc/cpuinfo before function get_cpuid()
-> v1 --- v2:
->    1. Add child_ops for kvm exit event, split kvm:kvm_exit_gspr events
-> into cpucfg/csr/iocsr/idle child events by decoding detailed gspr
-> instruction.
->    2. Remove some exception code type which does not happen in current
-> kvm implementation, such as meomry NR/NX/priviledge exception.
-> ---
->   tools/perf/arch/loongarch/Makefile        |   1 +
->   tools/perf/arch/loongarch/util/Build      |   2 +
->   tools/perf/arch/loongarch/util/header.c   |  88 ++++++++++++++
->   tools/perf/arch/loongarch/util/kvm-stat.c | 135 ++++++++++++++++++++++
->   4 files changed, 226 insertions(+)
->   create mode 100644 tools/perf/arch/loongarch/util/header.c
->   create mode 100644 tools/perf/arch/loongarch/util/kvm-stat.c
+>   arch/loongarch/kvm/exit.c  |  7 +++++++
+>   arch/loongarch/kvm/trace.h | 20 ++++++++++++++------
+>   2 files changed, 21 insertions(+), 6 deletions(-)
 > 
-> diff --git a/tools/perf/arch/loongarch/Makefile b/tools/perf/arch/loongarch/Makefile
-> index 3992a67a87d9..c89d6bb6b184 100644
-> --- a/tools/perf/arch/loongarch/Makefile
-> +++ b/tools/perf/arch/loongarch/Makefile
-> @@ -4,6 +4,7 @@ PERF_HAVE_DWARF_REGS := 1
->   endif
->   PERF_HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET := 1
->   PERF_HAVE_JITDUMP := 1
-> +HAVE_KVM_STAT_SUPPORT := 1
+> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
+> index ed1d89d53e2e..3c05aade0122 100644
+> --- a/arch/loongarch/kvm/exit.c
+> +++ b/arch/loongarch/kvm/exit.c
+> @@ -9,6 +9,7 @@
+>   #include <linux/module.h>
+>   #include <linux/preempt.h>
+>   #include <linux/vmalloc.h>
+> +#include <trace/events/kvm.h>
+>   #include <asm/fpu.h>
+>   #include <asm/inst.h>
+>   #include <asm/loongarch.h>
+> @@ -417,6 +418,8 @@ int kvm_emu_mmio_read(struct kvm_vcpu *vcpu, larch_inst inst)
+>   		vcpu->arch.io_gpr = rd;
+>   		run->mmio.is_write = 0;
+>   		vcpu->mmio_is_write = 0;
+> +		trace_kvm_mmio(KVM_TRACE_MMIO_READ_UNSATISFIED, run->mmio.len,
+> +				run->mmio.phys_addr, NULL);
+>   	} else {
+>   		kvm_err("Read not supported Inst=0x%08x @%lx BadVaddr:%#lx\n",
+>   			inst.word, vcpu->arch.pc, vcpu->arch.badv);
+> @@ -463,6 +466,8 @@ int kvm_complete_mmio_read(struct kvm_vcpu *vcpu, struct kvm_run *run)
+>   		break;
+>   	}
 >   
->   #
->   # Syscall table generation for perf
-> diff --git a/tools/perf/arch/loongarch/util/Build b/tools/perf/arch/loongarch/util/Build
-> index d776125a2d06..b12d374d7096 100644
-> --- a/tools/perf/arch/loongarch/util/Build
-> +++ b/tools/perf/arch/loongarch/util/Build
-> @@ -1,5 +1,7 @@
-> +perf-y += header.o
->   perf-y += perf_regs.o
+> +	trace_kvm_mmio(KVM_TRACE_MMIO_READ, run->mmio.len,
+> +			run->mmio.phys_addr, run->mmio.data);
+>   	return er;
+>   }
 >   
->   perf-$(CONFIG_DWARF)     += dwarf-regs.o
->   perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
->   perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
-> +perf-$(CONFIG_LIBTRACEEVENT) += kvm-stat.o
-> diff --git a/tools/perf/arch/loongarch/util/header.c b/tools/perf/arch/loongarch/util/header.c
-> new file mode 100644
-> index 000000000000..a4ed732b49c6
-> --- /dev/null
-> +++ b/tools/perf/arch/loongarch/util/header.c
-> @@ -0,0 +1,88 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Implementation of get_cpuid().
-> + *
-> + * Author: Nikita Shubin <n.shubin@yadro.com>
-> + */
-> +
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <api/fs/fs.h>
-> +#include <errno.h>
-> +#include "util/debug.h"
-> +#include "util/header.h"
-> +
-> +/*
-> + * Output example from /proc/cpuinfo
-> + *   CPU Family              : Loongson-64bit
-> + *   Model Name              : Loongson-3C5000
-> + *   CPU Revision            : 0x11
-> + */
-> +#define CPUINFO_MODEL	"Model Name"
-> +#define CPUINFO		"/proc/cpuinfo"
-> +static char *_get_field(const char *line)
-> +{
-> +	char *line2, *nl;
-> +
-> +	line2 = strrchr(line, ' ');
-> +	if (!line2)
-> +		return NULL;
-> +
-> +	line2++;
-> +	nl = strrchr(line, '\n');
-> +	if (!nl)
-> +		return NULL;
-> +
-> +	return strndup(line2, nl - line2);
-> +}
-> +
-> +static char *__get_cpuid(void)
-> +{
-> +	char *line, *model, *cpuid;
-> +	unsigned long line_sz;
-> +	FILE *file;
-> +
-> +	file = fopen(CPUINFO, "r");
-> +	if (file == NULL)
-> +		return cpuid;
-> +
-> +	line = model = cpuid = NULL;
-> +	while (getline(&line, &line_sz, file) != -1) {
-> +		if (strncmp(line, CPUINFO_MODEL, strlen(CPUINFO_MODEL)))
-> +			continue;
-> +
-> +		model = _get_field(line);
-> +		if (!model)
-> +			goto free;
-> +		break;
-> +	}
-> +
-> +	if (model && (asprintf(&cpuid, "%s", model) < 0))
-> +		cpuid = NULL;
-> +
-> +free:
-> +	fclose(file);
-> +	free(model);
-> +	return cpuid;
-> +}
-> +
-> +int get_cpuid(char *buffer, size_t sz)
-> +{
-> +	char *cpuid = __get_cpuid();
-> +	int ret = 0;
-> +
-> +	if (!cpuid)
-> +		return EINVAL;
-> +
-> +	if (sz >= strlen(cpuid))
-> +		scnprintf(buffer, sz, "%s", cpuid);
-> +	else
-> +		ret = ENOBUFS;
-> +	free(cpuid);
-> +	return ret;
-> +}
-> +
-> +char *get_cpuid_str(struct perf_pmu *pmu __maybe_unused)
-> +{
-> +	return __get_cpuid();
-> +}
-> diff --git a/tools/perf/arch/loongarch/util/kvm-stat.c b/tools/perf/arch/loongarch/util/kvm-stat.c
-> new file mode 100644
-> index 000000000000..cc50adb0835a
-> --- /dev/null
-> +++ b/tools/perf/arch/loongarch/util/kvm-stat.c
-> @@ -0,0 +1,135 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <errno.h>
-> +#include <memory.h>
-> +#include <errno.h>
-> +#include "util/kvm-stat.h"
-> +#include "util/parse-events.h"
-> +#include "util/debug.h"
-> +#include "util/evsel.h"
-> +#include "util/evlist.h"
-> +#include "util/pmus.h"
-> +
-> +#define LOONGARCH_EXCEPTION_INT		0
-> +#define LOONGARCH_EXCEPTION_PIL		1
-> +#define LOONGARCH_EXCEPTION_PIS		2
-> +#define LOONGARCH_EXCEPTION_PIF		3
-> +#define LOONGARCH_EXCEPTION_PME		4
-> +#define LOONGARCH_EXCEPTION_FPD		15
-> +#define LOONGARCH_EXCEPTION_SXD		16
-> +#define LOONGARCH_EXCEPTION_ASXD	17
-> +#define LOONGARCH_EXCEPTION_GSPR	22
-> +#define  LOONGARCH_EXCEPTION_CPUCFG	100
-> +#define  LOONGARCH_EXCEPTION_CSR	101
-> +#define  LOONGARCH_EXCEPTION_IOCSR	102
-> +#define  LOONGARCH_EXCEPTION_IDLE	103
-> +#define  LOONGARCH_EXCEPTION_OTHERS	104
-> +#define LOONGARCH_EXCEPTION_HVC		23
-> +
-> +#define loongarch_exception_type				\
-> +	{LOONGARCH_EXCEPTION_INT,  "Interrupt" },		\
-> +	{LOONGARCH_EXCEPTION_PIL,  "Mem read" },		\
-> +	{LOONGARCH_EXCEPTION_PIS,  "Mem store" },		\
-> +	{LOONGARCH_EXCEPTION_PIF,  "Ifecth" },			\
-> +	{LOONGARCH_EXCEPTION_PME,  "Mem modify" },		\
-> +	{LOONGARCH_EXCEPTION_FPD,  "FPU" },			\
-> +	{LOONGARCH_EXCEPTION_SXD,  "LSX" },			\
-> +	{LOONGARCH_EXCEPTION_ASXD, "LASX" },			\
-> +	{LOONGARCH_EXCEPTION_GSPR, "Privilege Error" },		\
-> +	{LOONGARCH_EXCEPTION_HVC,  "Hypercall" },		\
-> +	{LOONGARCH_EXCEPTION_CPUCFG, "Cpucfg" },		\
-> +	{LOONGARCH_EXCEPTION_CSR,    "Csr" },			\
-> +	{LOONGARCH_EXCEPTION_IOCSR,  "Iocsr" },			\
-> +	{LOONGARCH_EXCEPTION_IDLE,   "Idle" },			\
-> +	{LOONGARCH_EXCEPTION_OTHERS, "Others" }
-> +
-> +define_exit_reasons_table(loongarch_exit_reasons, loongarch_exception_type);
-> +
-> +const char *vcpu_id_str = "vcpu_id";
-> +const char *kvm_exit_reason = "reason";
-> +const char *kvm_entry_trace = "kvm:kvm_enter";
-> +const char *kvm_reenter_trace = "kvm:kvm_reenter";
-> +const char *kvm_exit_trace = "kvm:kvm_exit";
-> +const char *kvm_events_tp[] = {
-> +	"kvm:kvm_enter",
-> +	"kvm:kvm_reenter",
-> +	"kvm:kvm_exit",
-> +	"kvm:kvm_exit_gspr",
-> +	NULL,
-> +};
-> +
-> +static bool event_end(struct evsel *evsel,
-> +		struct perf_sample *sample __maybe_unused,
-> +		struct event_key *key __maybe_unused)
-> +{
-> +	/*
-> +	 * LoongArch kvm is different with other architectures
-> +	 *
-> +	 * There is kvm:kvm_reenter or kvm:kvm_enter event adjacent with
-> +	 * kvm:kvm_exit event.
-> +	 *   kvm:kvm_reenter means returning to guest immediately
-> +	 *   kvm:kvm_enter   means returning to vmm and then to guest
-> +	 */
-> +	return evsel__name_is(evsel, kvm_entry_trace) ||
-> +		evsel__name_is(evsel, kvm_reenter_trace);
-> +}
-> +
-> +static void event_gspr_get_key(struct evsel *evsel,
-> +			struct perf_sample *sample,
-> +			struct event_key *key)
-> +{
-> +	unsigned int insn;
-> +
-> +	key->key = LOONGARCH_EXCEPTION_OTHERS;
-> +	insn = evsel__intval(evsel, sample, "inst_word");
-> +	switch (insn >> 24) {
-> +	case 0:
-> +		/* cpucfg inst trap */
-> +		if ((insn >> 10) == 0x1b)
-> +			key->key = LOONGARCH_EXCEPTION_CPUCFG;
-> +		break;
-> +	case 4:
-> +		/* csr inst trap */
-> +		key->key = LOONGARCH_EXCEPTION_CSR;
-> +		break;
-> +	case 6:
-> +		/* iocsr inst trap */
-> +		if ((insn >> 15) == 0xc90)
-> +			key->key = LOONGARCH_EXCEPTION_IOCSR;
-> +		else if ((insn >> 15) == 0xc91)
-> +			/* idle inst trap */
-> +			key->key = LOONGARCH_EXCEPTION_IDLE;
-> +		break;
-> +	default:
-> +		key->key = LOONGARCH_EXCEPTION_OTHERS;
-> +		break;
-> +	}
-> +}
-> +
-> +static struct child_event_ops child_events[] = {
-> +	{ .name = "kvm:kvm_exit_gspr", .get_key = event_gspr_get_key },
-> +	{ NULL, NULL },
-> +};
-> +
-> +static struct kvm_events_ops exit_events = {
-> +	.is_begin_event = exit_event_begin,
-> +	.is_end_event = event_end,
-> +	.child_ops = child_events,
-> +	.decode_key = exit_event_decode_key,
-> +	.name = "VM-EXIT"
-> +};
-> +
-> +struct kvm_reg_events_ops kvm_reg_events_ops[] = {
-> +	{ .name	= "vmexit", .ops = &exit_events, },
-> +	{ NULL, NULL },
-> +};
-> +
-> +const char * const kvm_skip_events[] = {
-> +	NULL,
-> +};
-> +
-> +int cpu_isa_init(struct perf_kvm_stat *kvm, const char *cpuid __maybe_unused)
-> +{
-> +	kvm->exit_reasons_isa = "loongarch64";
-> +	kvm->exit_reasons = loongarch_exit_reasons;
-> +	return 0;
-> +}
+> @@ -564,6 +569,8 @@ int kvm_emu_mmio_write(struct kvm_vcpu *vcpu, larch_inst inst)
+>   		run->mmio.is_write = 1;
+>   		vcpu->mmio_needed = 1;
+>   		vcpu->mmio_is_write = 1;
+> +		trace_kvm_mmio(KVM_TRACE_MMIO_WRITE, run->mmio.len,
+> +				run->mmio.phys_addr, data);
+>   	} else {
+>   		vcpu->arch.pc = curr_pc;
+>   		kvm_err("Write not supported Inst=0x%08x @%lx BadVaddr:%#lx\n",
+> diff --git a/arch/loongarch/kvm/trace.h b/arch/loongarch/kvm/trace.h
+> index c2484ad4cffa..1783397b1bc8 100644
+> --- a/arch/loongarch/kvm/trace.h
+> +++ b/arch/loongarch/kvm/trace.h
+> @@ -19,14 +19,16 @@ DECLARE_EVENT_CLASS(kvm_transition,
+>   	TP_PROTO(struct kvm_vcpu *vcpu),
+>   	TP_ARGS(vcpu),
+>   	TP_STRUCT__entry(
+> +		__field(unsigned int, vcpu_id)
+>   		__field(unsigned long, pc)
+>   	),
+>   
+>   	TP_fast_assign(
+> +		__entry->vcpu_id = vcpu->vcpu_id;
+>   		__entry->pc = vcpu->arch.pc;
+>   	),
+>   
+> -	TP_printk("PC: 0x%08lx", __entry->pc)
+> +	TP_printk("vcpu %u PC: 0x%08lx", __entry->vcpu_id, __entry->pc)
+>   );
+>   
+>   DEFINE_EVENT(kvm_transition, kvm_enter,
+> @@ -54,19 +56,22 @@ DECLARE_EVENT_CLASS(kvm_exit,
+>   	    TP_PROTO(struct kvm_vcpu *vcpu, unsigned int reason),
+>   	    TP_ARGS(vcpu, reason),
+>   	    TP_STRUCT__entry(
+> +			__field(unsigned int, vcpu_id)
+>   			__field(unsigned long, pc)
+>   			__field(unsigned int, reason)
+>   	    ),
+>   
+>   	    TP_fast_assign(
+> +			__entry->vcpu_id = vcpu->vcpu_id;
+>   			__entry->pc = vcpu->arch.pc;
+>   			__entry->reason = reason;
+>   	    ),
+>   
+> -	    TP_printk("[%s]PC: 0x%08lx",
+> -		      __print_symbolic(__entry->reason,
+> -				       kvm_trace_symbol_exit_types),
+> -		      __entry->pc)
+> +	    TP_printk("vcpu %u [%s] PC: 0x%08lx",
+> +			__entry->vcpu_id,
+> +			__print_symbolic(__entry->reason,
+> +				kvm_trace_symbol_exit_types),
+> +			__entry->pc)
+>   );
+>   
+>   DEFINE_EVENT(kvm_exit, kvm_exit_idle,
+> @@ -85,14 +90,17 @@ TRACE_EVENT(kvm_exit_gspr,
+>   	    TP_PROTO(struct kvm_vcpu *vcpu, unsigned int inst_word),
+>   	    TP_ARGS(vcpu, inst_word),
+>   	    TP_STRUCT__entry(
+> +			__field(unsigned int, vcpu_id)
+>   			__field(unsigned int, inst_word)
+>   	    ),
+>   
+>   	    TP_fast_assign(
+> +			__entry->vcpu_id = vcpu->vcpu_id;
+>   			__entry->inst_word = inst_word;
+>   	    ),
+>   
+> -	    TP_printk("Inst word: 0x%08x", __entry->inst_word)
+> +	    TP_printk("vcpu %u Inst word: 0x%08x", __entry->vcpu_id,
+> +			__entry->inst_word)
+>   );
+>   
+>   #define KVM_TRACE_AUX_SAVE		0
 > 
-> base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
+> base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
 > 
 
 
