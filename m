@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-150961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C6758AA72F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 05:31:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0FA78AA731
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 05:31:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1637A1F220DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:31:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 201031C20D8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981E02629F;
-	Fri, 19 Apr 2024 03:29:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF543D515;
+	Fri, 19 Apr 2024 03:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="PEpmnfpM"
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="mgV9vpWq"
 Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2071.outbound.protection.outlook.com [40.107.6.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6761CD25;
-	Fri, 19 Apr 2024 03:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB5722301;
+	Fri, 19 Apr 2024 03:29:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.71
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713497388; cv=fail; b=NcO5STc+rvuVy08O5XuoWDNfDm3uZJ1nF4+PPSIwtROJnmzDXCScpHGU24eBHpUjU616DCBe6vufQXwQ9bVss6bnvLYgvkHmtIiRxWMaKi2pqhp0NiG9ma3ctwAKa0boc2Zy8Xem7/0Pp/JBqKP/36DOV0dSxJA3aqufPDjIqQI=
+	t=1713497390; cv=fail; b=D5KV6g4EyksuOa1y/kQCH3Nku6AM9xuxB97B+PW2mb9kigTiA5OS1lM1o6+zX3gRKfJFyzq0VRkctfB8CfT+qXvN+ZTLtb6zkXsT/tD9BsIennf4E04aueuwCWXvR4eEwYxcRD6DLDYYJKZcsSkVUcqWsnbOE5hIRKT2+gsL5Ok=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713497388; c=relaxed/simple;
-	bh=rCXQfCCspkzGniKwFuLpmzstHntuvG3bS66sT5PAxiM=;
+	s=arc-20240116; t=1713497390; c=relaxed/simple;
+	bh=G5KiBP2fYGV57i4N6Iy2S/SHJ5StjpqTeJPC2rBgcTQ=;
 	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=VVTuINQ7o7xrW/C9z+pq9fpOUO5r4UOHsR3ZSjYucKUSvSDflv/E9Th3xmvFkPvleHJ2QrlTjW6yLDbjVmFEcW4M9JMwgtGA5+yE9XzYDpKUiFIvRBSDOCw8JC82/OobbB2nueBH6TBBuwTRsx1gu1XfsHEmGVdLxtUKL2yjE0U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=PEpmnfpM; arc=fail smtp.client-ip=40.107.6.71
+	 To:Cc:MIME-Version; b=sUk8+UBahyLD8jvvgYThfUftsiBPMWFvQsyPfMHYjWJhsPm4dDBXddrTPKhB7V/98BV/R7nUBeueNE9Sc4lMbB6Sr2UFK7Y9zjF4jmjrWuKTAfEJ/Ikmt00hBQwZYPztGJKUoUY1GS8A+Hm1j5Yr6Of3YleJhSlUeKdiEBHRZjk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=mgV9vpWq; arc=fail smtp.client-ip=40.107.6.71
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ja2PYHrK0hnGOXIY6af3OI8Xah3txPOSHKMWNrz4LPb4P++hgu8MtewmQL2b13DqP/kytaDDwwLh5vDVqI64AnQ1RmZF40Ti14czFznzjH3MOdMNtwwn8Hb1hHyQ0IGL5rNaqQ+R1t+E375BW++WCmyzObTCFkJDYo1vjOGurG10eY3KPvxUtIznADTSS5dPVzjIjwdtAL2CmxMIDMjXjJ1qcrIU+OTQb37J1z6fXkyWV2ti6smGnA7YaYDNpfvFuqnLhYGwdGA/YA5Ae3Ac5NDwCj788GY26mHX+MIcT4S+67UuVnstdhwh/qH5uIY+tiuwGEylISqYNIgJ3mIadw==
+ b=bQdgwxiqaHs6XJvOdZtKR96ksj7QHY4xp/Xl8NqSb5WIaAZJ4kQg76gxmyaO9tZbnOryPmzRa2m4WKCxDy5VQe/LsSI4ROKsp38iSTUsO7uQ8EDQpUXl4hdxlzru/aGBsVxtqHrweqOn/UDUHtAPgG+lrnzvOQgMcCw7HNePe+UQyMioj8gV9Q7y0Bw2VveBKiH2VCl4e6DyBTht6fEZGpkh38YZPaWW1q7mlrZnfVu7XDGhgrTnslriUwq+d9Zi9K6NdtW4nONZw+XzUdLYInMS7Bwymvqxw0j9FGMTEoDgDiw6RYkNe2R8Z8FgFg5LXnhNx7EKnMKRntuuW96paA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h7Z1E91NTteX96MebwxrBMYq7DIWOfOT9dKPSgrWvQw=;
- b=HoVTvlak0zj7zLvDpES5tTB5EeZ78talZ+07dBsswmTOCxwLlMgW3kaYVnCm+jZ3jCpcK/atU5mdmSfQ8jSjU2uljmvuxg1BbGKfjyfJbjV/iPZqiyY6NyWu1SC21SlW6GgQas/ZuRXFnaxQHe0Jz7msd77cjsMdL7Qi7y3aNsomiKiTy+GqfUgBOft3/DQuvwbBkZWuziIPoXcc5tC5kWLR1T8uhmJZfpjT9+cduU5Q3w/U/mHRBagoUsXDvpPAPIwYnrkyMKgqTwyAg5okWI2VIiKh0TffCf91zqfWr+nYIyJ0twra+lbZfrPdIuejmlbZBQCqYTQKOLLyziqNvA==
+ bh=Utj7ItaEHtvIsv0ZHYVfFXFu+fj+P2M3yxfR5i0ip94=;
+ b=T66EnH1Rv877j4+s/dqAHBD+/IcKphtVj2sFOoecWmiRrajP4V0HiJhazjCgJfQ0I3AtOqFT7VB2Lf3D8m7DPbg29yCtnxXM2jX6LdWxO1jCrjUl2bHnsuZ8czamv6bzhIG8b7EEJyucu7uisDEje4Bo+sQiwbL6bAhMot0sJeJ9c1qdM2QhvzLiBsPWBJb1kyf4KVwNWJnZiI196I0WJ7X/knr7oiSdYeYiWgyt7FGw+n0AOiZRYlGPmnOQvA+PKvaIfzsKzVOR3ChKV2JXUeSmSkOoSm0YXaxA+imwW5C64VnIKjxvYlpv9USFU2O1mX8+biQFYsU5pQnhJTyrZQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h7Z1E91NTteX96MebwxrBMYq7DIWOfOT9dKPSgrWvQw=;
- b=PEpmnfpMbA7YmM6RySzD//+RN88n8K2ikBihzq8J+BXDB5htgD5q2YV1jNR4NGE0KCrXu5yKUvXNaUgcbHgw2nG4HdWMcarSZztJ3UW5fMpVoryA0O6Z/xuRWSq85p1xU8/vaf0IDd452fTi+AXv/W9iAo13/A8Vfq2KwZRO3uk=
+ bh=Utj7ItaEHtvIsv0ZHYVfFXFu+fj+P2M3yxfR5i0ip94=;
+ b=mgV9vpWqbAdEwKfw9Lcu4fZFlLumCg+0N7QFI9zPBs3ktK1Q6fL6mZz/f51e7Wq4uwIA3hHgpLZ+u6zmc7+cd+aQRcBo9muvO6owSC65+CLDW+O+dY6M/kCDg9aPM8CvatgM+KhEA8YNWeOvFIWRGPkFN1e13yoOlUV4gvwRsA4=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
  by AS8PR04MB8802.eurprd04.prod.outlook.com (2603:10a6:20b:42d::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.43; Fri, 19 Apr
- 2024 03:29:42 +0000
+ 2024 03:29:46 +0000
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7452.049; Fri, 19 Apr 2024
- 03:29:42 +0000
+ 03:29:46 +0000
 From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Date: Fri, 19 Apr 2024 11:37:03 +0800
-Subject: [PATCH v2 08/12] arm64: dts: imx93-11x11-evk: add sleep pinctrl
- for eqos and fec
+Date: Fri, 19 Apr 2024 11:37:04 +0800
+Subject: [PATCH v2 09/12] arm64: dts: imx93-11x11-evk: add different usdhc
+ pinctrl for different timing usage
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240419-imx93-dts-4-13-v2-8-9076e1d7d399@nxp.com>
+Message-Id: <20240419-imx93-dts-4-13-v2-9-9076e1d7d399@nxp.com>
 References: <20240419-imx93-dts-4-13-v2-0-9076e1d7d399@nxp.com>
 In-Reply-To: <20240419-imx93-dts-4-13-v2-0-9076e1d7d399@nxp.com>
 To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
@@ -72,13 +72,14 @@ To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
  Fabio Estevam <festevam@gmail.com>
 Cc: devicetree@vger.kernel.org, imx@lists.linux.dev, 
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Peng Fan <peng.fan@nxp.com>
+ Peng Fan <peng.fan@nxp.com>, Luke Wang <ziniu.wang_1@nxp.com>, 
+ Haibo Chen <haibo.chen@nxp.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713497841; l=2999;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713497841; l=4577;
  i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
- bh=nfM6Wo+VmL/ZWUcSpFUHf0VCuNybDxhQy3VHzlu51Ro=;
- b=69zHQHnyBiNGfTmNdO5DvJ5B/vcZW1QwtzpEGBQjR5jPpMMnUSV4+0+I/DYUjMYskxm5b+ycb
- 2y2TOiq41lRAvBdOPOHHuZQ6MtkZX3ACEC1FJuE3KAfkGHt28I5z6WM
+ bh=llEiY/5OnUc6shhi+Ccz28hv01yOemdhaRxTciJwC4k=;
+ b=xZX59iOVXW+b/glp/r9LsjmXa+DnLTCDtcRz5WRkry4joMT/8pvzl7RQNZItPEWHLpOXdAX28
+ 80muOt8qY53Dv1bqJA99ncMYMwA/sKM3WOIl7qhxpIVPDvyo+jNjnXQ
 X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
  pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
 X-ClientProxiedBy: SI2PR02CA0025.apcprd02.prod.outlook.com
@@ -93,152 +94,180 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB8802:EE_
-X-MS-Office365-Filtering-Correlation-Id: a937934d-59ac-484d-cf2d-08dc6020f37a
+X-MS-Office365-Filtering-Correlation-Id: 61a58b4e-3c66-48be-e434-08dc6020f608
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	CqQHaG0u3cD/FFYqjH/nVuF88lZmbvzeLduA1e7I0jE0opeenkYuRWIqy3jI5YtWXTqNoebHUz3eFHvnQUpxwVV8OLO1acRDi8uMZnqF00q+4zbUQIv1NuAmEDZIwM/PyRpJnVc9sAL/dSb+nTFp7k93x6+KNuDF8YN9MUC34kohIA8RgKO1ktA2u5T76F4mjrOjEPjKhpcEwT24Kz2s0pRfezA9YcC6oFd0wFuRSk8eropcAlz3XvYVLq+feJOXHL4b5EvJ6JHp5YYJ59NZUUcVga1ebdJswL9hBDQdF12WKH9bb+AwIJqGROJQjXeJ0cs0XH5ogBKc9/J70n7gFFfalj2yyB+THauuKO1rclQhpM9mkcvcTIWI62tA4O13YgHg9k4b8K7h6NyLLSePW8A4cC1hd+YI4HZ+8F+YAVWkHwCA6RJCdEjuSxSeB7heFm1m70cbeK+D1MwSxtH2nmGjFGxRKBrTtvv/gVIqe1dbMvL/FjghfWw124GyjZ41CuFTG2agKOfq0WEhimM0xlsuoTxfwDbRSWls1+Iobio7NAeFYRmI6Gb5v3aZFvELz0Xr9n+SVzP2SCOyl67Kj29f5s6HW1wjNfI3KGI+5ycb9eFAc8Pl45nOsJBsshhW1D3+jSDGKjy4A3sorbuOlSMNv4qR57IQnUeAgKobcXtLu1MlL61dlKNhtd8Dief3FE/r+jhTnQD8jveaCqU6nEJuG84pcZdcyTXMTmnqHg0=
+	IqzRbTVZ+qHs1E2GtPi9dURk+W98qMZ66aDGU0vKd9YesXqIxrd7IYNtdVLy6xtToNYnNhhBUeqrUY2ztCpRWnq0Bw67yEMd3eKdwnFJ1AYzRE8Un20neX5aAAo2t/XLrweUt8G53LDq50sTuwhKjNEzBBqkTcxmSdHtZR7IaRY+sLTNX44jAXHx8PJywXpwVKH2Kb2LEO7PglbBDk0FpIi5wXjKNm4f5UeLhiUrS7YCUlRGQnzWnH5UQhdI0vYLuOf2i1K7kJDiA6EZVPQCBbOGPl2gBi2dVL2gdCYw2TkJjHpCUMYHicrOvghI9/3fDwbzh1M14wAJgM63xb7FZdG0mjuKcMOK6+dp8qkPwofYZJjVPfSa+eWlKn2UafYPzCrZfTT4yFFoEYaBDtZhLNGJXTgdSiNyzzUXZFozdf7eeG9ZBxE2Mlj5G6IJXzy6oKGARk3Jx3cTy1zYLeMzf5u8a8QEYBZwTia21Pa9++de/9jNFS2yCTJ1K6aJ31h8tkmE25RY0SQBSxWR79zBN14sAAAAxBS0nUJUoWpGsYQRZwyEXxfTna9aAXFC4mD5trQIOELPABY9xfvqz06iECoc73S6G0nJawwDZ6qjUMhofLR4EunPs9rmYot1ZiIarEAFTZVc3xAXKXMi+dR9Cmq8fXmfNFjA1gWMOxi0eYpg8sSTH2+Nd3tYEQFA+OBoYZmHOhonkWqLyi3nW2xEeu9QBAFEqiA4CJyhiqEupDs=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005)(7416005)(52116005)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NE5GelZRNWJSU2JBaDZMVXRreDFFS1BGVVpQU0VvbmdkUHo1ZVJmZWtTWVRB?=
- =?utf-8?B?MFZ1MC81UUU3LzJXZGowWkdvZHlEOGR3aVo3d0FxQlJNMTloN2RwRjhEcVRq?=
- =?utf-8?B?VmhydWMrQXh6S1pqRXJzTTRxc3I4MXVJb09FNHA4R2JjQjZ2R3NvZ1plaXF3?=
- =?utf-8?B?L1dyTHN3QW9KWVppTHZpZkY3bGJ4eTFURVpEWHdKWlFMVUhKV1JzYW5ReVJq?=
- =?utf-8?B?Q3lPK1QvKys1ajdZZDhEcFBKQWdBeWlScGVmWEdIUEVTQ1BVSGVXSmtDdWJu?=
- =?utf-8?B?UW55NXBMR2ZhWDhQNHF1bEdZVTM1TTFjYnhoNW1qb05BcmtRRjk0Mk5zMmx4?=
- =?utf-8?B?bElIT2Jwclh0dUdWeW84OVl2ODd3V0xVUlI3L1NlWFk1am9lRTcwNnhqVEZ3?=
- =?utf-8?B?MzNydFk2bm5rWEhsZ1N3dTdZRjBrbDlkeGFzd0toaXJYVXg0Y0JJcnhFMU4y?=
- =?utf-8?B?SHNLNzBScVVlZ1QvQ2VoZTFjTkdmbFNoZDF5ZjVQK0hlNmdvakMwTGNWbG9w?=
- =?utf-8?B?SmtIZG42NmRrOHNjOFhMRFVVaGRacXNzMEdCZGVpd1ZxRTc4UFBtQWNDRUdq?=
- =?utf-8?B?M1FLVWRoR1FmSEZ5bnFMQkFSTWhPMEYxbVNDRkJkbmFTeVZidU1zOTZSZllX?=
- =?utf-8?B?VFdRZHMvaGdZVkFIWmkzQnYyaXVVaDgrOEZNSG1EZEJqWENlMUkvVXlMZ3B0?=
- =?utf-8?B?Q1IraTRxZmp6U05DT0VDMFN0SEM2SzhNcSs3ZWJYd0JNNW5RSW9SeHBUYnQz?=
- =?utf-8?B?NENRN3l3VTlCVVQxczhjL1FWd1Y3dXpkUG9EOFFrNnBsZWk2TWptaWJzTTFo?=
- =?utf-8?B?UU9iaWRYZ3Z3Yi9ETnB6clZaMXFwYkZKWFJ1Wk40dUY4SFY0Q0VQZ0taTDEw?=
- =?utf-8?B?ekpuOHFyQm83NkUrWDNuRm9MK3dYNy95anYySVd4cTRvVzFwMzBrVlFZNk1h?=
- =?utf-8?B?L0VZbWRYYkVLL0VOemUrei9GV2o0M2RCL2lXRFFRTXFXZWNENnk4TWdTeUtX?=
- =?utf-8?B?aGc4TnlJMGJTSmxMeGFZbGlWV2V2QkwrcjU2Vkw0UkNtYlVrOEoyS0NYUkZy?=
- =?utf-8?B?YXZicHpHeWxqNjVxT0dOZWxycklwM0pWUlVtUk1rT2QvaGwxc2xCYWh6UVMz?=
- =?utf-8?B?UEZVUnZjK2h4a2RsM2kxSFllTFp1dU1oZWlYb3IxZEl5VVdyU01hU1dZMXB4?=
- =?utf-8?B?WHlJZHBmOWRlb2xzWloyak96ajVOVTlFN3ZVS3BLaUtmRnUybWtKbU1oZ2tD?=
- =?utf-8?B?QW00RnFmZVZPajdxMEZ1UXF5eTRTQmJ1czJUSUlBU0RMWTJMekRZcnk0bXlx?=
- =?utf-8?B?RDF5R1JGS25CbnlzMi9Yek1BQ3J4OHl1VW9Hc3JENGtWT0dMajlSVUYvZjJL?=
- =?utf-8?B?ZzVDVVN3dTMzbXI2WmdmcWR1ZTExa2tIZlRkUWJ6Yy9IMCtuNE9XZS8xUGtj?=
- =?utf-8?B?MEhXVzZhMFR1WEtHcVBla1QzeWlvcVlYVGhCclVxWklKTys2VVRSYzBiSStj?=
- =?utf-8?B?VUh2TTArTDlpNjNFaWtiNzFCalg0aFAvZXJYSERmSEdIaEVwZStzdFpyQjdT?=
- =?utf-8?B?V1kxRGs3cXFHYVI3eEhqLy9ocExFanE0WUVwNEFQWEVhK1JwMW8ybUV0Mk1V?=
- =?utf-8?B?bFZhcWdRVGk3RE1Qam1KK3JOYVdMdkVsbEVjTGVqTnJBWkx2cmxhUURkNEtj?=
- =?utf-8?B?dE81NFRicGdTZWRWekJBQ3BiaDNZeThla3pscTEzK3VZZXUrRDBMaFlNM1hw?=
- =?utf-8?B?czEwaGFZZSs2UU9MUGZzcEsxZlA4Yk5GcThmeExVaGlhUytBQVU1UmE2TmNX?=
- =?utf-8?B?UytUZFEwWExOMXlHSkRmajFKeWRRaXJUbmJOOUNaM2IyYzVGZTB3bXdKeEVv?=
- =?utf-8?B?TGRFdlVMSFE5bWJoNmY0Q0g5KzN0R0NtVU56aUdmVmpNN2t4Tk55ZTE5VDE0?=
- =?utf-8?B?VDFEZjI5aWJSODJ3YktXeW1HRGtYWXBpRUhLOGtUZ2FtNjN6L3gxUWEyQ3M2?=
- =?utf-8?B?NjkwOFhBMUMrdGVHWDRzY2l2Z0JXT3g4S2hEQUFNVmZGMEliOHNLemdFUCt2?=
- =?utf-8?B?T3lvWFRjaWIwOEhWVmdNOVpEcUxCamIvbmhtN2FpLzdxUHNkd3dyZi9ldlpH?=
- =?utf-8?Q?0GsvzxrXkUx0sG94mxwg8vtlo?=
+	=?utf-8?B?M3A5bkE1eU1RRUdCQTdHcXQzOS9udGY5cFNhQXZqZ3cwRGU1aERweCsxaURk?=
+ =?utf-8?B?RTEvQ0ZYWUZzV0NkN09zZ3lLZGNBTjg5OWtYbURqYW56eTRSRTJjYWxwbld1?=
+ =?utf-8?B?cTFZMElQcDh2K091SUM2U3RsNlhZbWJ0UG1ZMHI0c1EzNVNzM1lZdDUyOXBM?=
+ =?utf-8?B?SFV2K0ZRUkt0b2ZRQm94bXQxODlKeldKRHFWdEZqUU4zbERGcU5kRTNZY3FB?=
+ =?utf-8?B?M3k3Ri96anFSMzF5YUtET2hUc2tUYzZPQ1UrNWgyNCtSRWtHalo5MmRxc3Ey?=
+ =?utf-8?B?ZkNNeUNNQVl6WHJiYUlQQnlSV0Z1aEs5UzhNeWJxYTM2TWVVRkVhN2thVWxE?=
+ =?utf-8?B?Z1FlU3Rvdmt5azRldjB3emduOHJGNlp5WU9NY0V2TGtIZklMd3M3YUNJcDcw?=
+ =?utf-8?B?SjRrNTdVQkVnU1JFOFVkV1lOMnJGU3VRUnFhbU9SQXB1S2cxMU5qMCtiUEhw?=
+ =?utf-8?B?OE81dWs3WFMzYzJmVkhEMkl6Rnk3bkZZaWNrWWRpRWZUdFFNbVloZmQvdVB0?=
+ =?utf-8?B?K3lJTjNVcjJHU0J4K3JzdVZBM2F5dVhwaTJYazMzNmxCc1JaVjhETmFOaTN5?=
+ =?utf-8?B?SUxPNThRSFJYeGtWYlppc2V0eFh1MXhNSHBnaGpNYnJPSU96REIrL20waTRW?=
+ =?utf-8?B?ajV5OXlnWWJ4QU92Yy9ETjlmWUJITmkvU25UYXFjRHdZTFRadUVoYnZKSEVx?=
+ =?utf-8?B?eW8xSkNIRzBBbDIxK0VzRUMvWldHZ0NMZjZFendBWE0veERTWnVzaU9Lcnd4?=
+ =?utf-8?B?T0xZSlk2NlVxNTcwTnNXV3g3b0xwamhKMVcvT3A5TENJM0s4ZmNZbzc5MjVT?=
+ =?utf-8?B?NUxkS3diU0VoTlp3ZDF3NkVHdExiWi9md1hDSWphdGF3Tmh4NkdwVFJEK1Vp?=
+ =?utf-8?B?WVNzS0IraTRKV2wvb2M0QUhhbWlTWFY4RnlKNWl2MEFWbTFJTGhycVV3Q01j?=
+ =?utf-8?B?VG5pMXdiQXJ0cEN1OXJoc3hlTk1IUVhaTlhXNmIrakY4MkFHWmt5UHdVR3ZM?=
+ =?utf-8?B?UTYva0QzQ1pleU9qbWdpZ1pCS2dqZitCd0lKdzdibU1QSjNYV0xHOFF0ejdW?=
+ =?utf-8?B?a0RjYWxUK3NtQ052SzVjNnFXZTdENWFRUTFhQ1J1cm5kS3c4T1NSYXlubEp4?=
+ =?utf-8?B?RnNaK0c1dU93QnVhK0prV1R2OVBPV1RVUldkQWpINERnRVBsc0tyMVVYQU9q?=
+ =?utf-8?B?WUFiUDl4MTZWNm5FZ29GaTVFUTQ3UUJXSGdaeTgwcUJCK3lEcTJwRlVucWRF?=
+ =?utf-8?B?c2R4Z2hBeEJYeTV5b3ltdE4zc0lZNG9FdHJySmlKRmZaOVV6QTB4UXVTOUJo?=
+ =?utf-8?B?V2tTYUU1a2wrNFFZT1V3SUJHbWUzK3lBeHBxYVhpc3lOWnFCcksvK3hpNFdu?=
+ =?utf-8?B?S3JMdVRiUGs0bEh5S3IxRlBmdDk2TWJDOVhHdUdHZEVURUJYdVZnUmxOYjRV?=
+ =?utf-8?B?MzM0b056OUx4TkFvOHIxdjh1SHhwdi9ZNncwdmIvRzhQV0QveWhpMndPdmt6?=
+ =?utf-8?B?Y1lMUXBkM3JjMlNoOU00Rk8rR0FZcHVnc1dSMk1MM1pMd1VqNHpjaHg1RXJE?=
+ =?utf-8?B?QTdTOEl3UHRrSytNY1EyQ1FySlBYaWdCclpKcUp0UlB6TDVlYmNQMEhibFR6?=
+ =?utf-8?B?cDNLdHJESDF6LzgxZGtuQis5clVmWnlrRGdyRXZTSzFHSUUrdTZyeUlLcFhs?=
+ =?utf-8?B?V2ZoeCtwTHV1c0xmM0F6ZEdFcmpiUkd4K2xFamZ3MFRvOVVYOXlxSy9EaHg5?=
+ =?utf-8?B?QllQUXZMcmw2REJFZFV6cTVaZEI3K1AvTFptSllsVWFTdFNHaSszQlRxMmQ2?=
+ =?utf-8?B?WlJYWTIvbEhRZ0Uyem0wdG1uQXZCeVpaQld4M3lBY204VDFnbmlqcUdYT2xD?=
+ =?utf-8?B?bGhMdjFHbmJUc0p0cW9zY2pheFFHQXhCN3JpbGhXZzI3bkRTLzhDWEcvRmFB?=
+ =?utf-8?B?bVNyZDIvbndQUUlkMWdsOHF3S0t0SjRPR3JGVTBRV2tXQTNLT1dkUDRSUkIr?=
+ =?utf-8?B?VVR3bnJFOFdCaVZpdFdocWlsZWZBMGVQVS95QWN3azNkNytBNTJYcng4RjVx?=
+ =?utf-8?B?QitqKzBDOHh6b1FSOGROTjFLRnNiYVQxNVErYzFtVm52Z1hkbXp6c1N6TjB6?=
+ =?utf-8?Q?d0O5LcHI+1oaoBB+pyXTQxqlX?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a937934d-59ac-484d-cf2d-08dc6020f37a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61a58b4e-3c66-48be-e434-08dc6020f608
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 03:29:42.0959
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 03:29:46.3798
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o4W2wmHD7Nonx8xPql0MSfIt+36pk1l8QFpWcvsRiDBunbP9iQ2bs9LLddd0BQkfDE57Ogv/2eDHJ+3ByhA3QQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: RIUCpTr3/wgYRYkexxY2E/stTSrgTH6ePIZI58a0c4SGCauO/N5M2/Kf2BrYZr84ZuXo2C8TXkDuXjxZoVfL0Q==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8802
 
-From: Peng Fan <peng.fan@nxp.com>
+From: Luke Wang <ziniu.wang_1@nxp.com>
 
-Add sleep pinctrl settings for EQoS and FEC to save power when suspend.
+imx93-11x11-evk dts use the strongest driver strength for
+default(high-speed), 100MHz(SDR50/DDR50/DDR52) and
+200MHz(SDR104/HS200/HS400) timing. To make usdhc working appropriately for
+each timing, add X1 drive strength to default timing and X3 drive
+strength to 100MHz timing.
 
+Reviewed-by: Haibo Chen <haibo.chen@nxp.com>
+Signed-off-by: Luke Wang <ziniu.wang_1@nxp.com>
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts | 44 +++++++++++++++++++++--
- 1 file changed, 42 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts | 68 +++++++++++++++++++++--
+ 1 file changed, 64 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
-index b7b52576586f..2b67724db685 100644
+index 2b67724db685..f848cb0922ef 100644
 --- a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
 +++ b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
-@@ -105,8 +105,9 @@ &mu2 {
- };
- 
- &eqos {
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "sleep";
- 	pinctrl-0 = <&pinctrl_eqos>;
-+	pinctrl-1 = <&pinctrl_eqos_sleep>;
- 	phy-mode = "rgmii-id";
- 	phy-handle = <&ethphy1>;
+@@ -161,8 +161,8 @@ &lpuart5 {
+ &usdhc1 {
+ 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+ 	pinctrl-0 = <&pinctrl_usdhc1>;
+-	pinctrl-1 = <&pinctrl_usdhc1>;
+-	pinctrl-2 = <&pinctrl_usdhc1>;
++	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
++	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
+ 	bus-width = <8>;
+ 	non-removable;
  	status = "okay";
-@@ -125,8 +126,9 @@ ethphy1: ethernet-phy@1 {
- };
+@@ -171,8 +171,8 @@ &usdhc1 {
+ &usdhc2 {
+ 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+ 	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
+-	pinctrl-1 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
+-	pinctrl-2 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
+ 	cd-gpios = <&gpio3 00 GPIO_ACTIVE_LOW>;
+ 	vmmc-supply = <&reg_usdhc2_vmmc>;
+ 	bus-width = <4>;
+@@ -391,6 +391,40 @@ MX93_PAD_CCM_CLKO2__GPIO3_IO27			0x31e
  
- &fec {
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "sleep";
- 	pinctrl-0 = <&pinctrl_fec>;
-+	pinctrl-1 = <&pinctrl_fec_sleep>;
- 	phy-mode = "rgmii-id";
- 	phy-handle = <&ethphy2>;
- 	fsl,magic-packet;
-@@ -301,6 +303,25 @@ MX93_PAD_ENET1_TX_CTL__ENET_QOS_RGMII_TX_CTL		0x57e
- 		>;
- 	};
- 
-+	pinctrl_eqos_sleep: eqossleepgrp {
+ 	/* need to config the SION for data and cmd pad, refer to ERR052021 */
+ 	pinctrl_usdhc1: usdhc1grp {
 +		fsl,pins = <
-+			MX93_PAD_ENET1_MDC__GPIO4_IO00				0x31e
-+			MX93_PAD_ENET1_MDIO__GPIO4_IO01				0x31e
-+			MX93_PAD_ENET1_RD0__GPIO4_IO10                          0x31e
-+			MX93_PAD_ENET1_RD1__GPIO4_IO11				0x31e
-+			MX93_PAD_ENET1_RD2__GPIO4_IO12				0x31e
-+			MX93_PAD_ENET1_RD3__GPIO4_IO13				0x31e
-+			MX93_PAD_ENET1_RXC__GPIO4_IO09                          0x31e
-+			MX93_PAD_ENET1_RX_CTL__GPIO4_IO08			0x31e
-+			MX93_PAD_ENET1_TD0__GPIO4_IO05                          0x31e
-+			MX93_PAD_ENET1_TD1__GPIO4_IO04                          0x31e
-+			MX93_PAD_ENET1_TD2__GPIO4_IO03				0x31e
-+			MX93_PAD_ENET1_TD3__GPIO4_IO02				0x31e
-+			MX93_PAD_ENET1_TXC__GPIO4_IO07                          0x31e
-+			MX93_PAD_ENET1_TX_CTL__GPIO4_IO06                       0x31e
++			MX93_PAD_SD1_CLK__USDHC1_CLK		0x1582
++			MX93_PAD_SD1_CMD__USDHC1_CMD		0x40001382
++			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x40001382
++			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x40001382
++			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x40001382
++			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x40001382
++			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x40001382
++			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x40001382
++			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x40001382
++			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x40001382
++			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x1582
 +		>;
 +	};
 +
- 	pinctrl_fec: fecgrp {
- 		fsl,pins = <
- 			MX93_PAD_ENET2_MDC__ENET1_MDC			0x57e
-@@ -320,6 +341,25 @@ MX93_PAD_ENET2_TX_CTL__ENET1_RGMII_TX_CTL	0x57e
- 		>;
- 	};
- 
-+	pinctrl_fec_sleep: fecsleepgrp {
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc1_100mhz: usdhc1-100mhzgrp {
 +		fsl,pins = <
-+			MX93_PAD_ENET2_MDC__GPIO4_IO14			0x51e
-+			MX93_PAD_ENET2_MDIO__GPIO4_IO15			0x51e
-+			MX93_PAD_ENET2_RD0__GPIO4_IO24			0x51e
-+			MX93_PAD_ENET2_RD1__GPIO4_IO25			0x51e
-+			MX93_PAD_ENET2_RD2__GPIO4_IO26			0x51e
-+			MX93_PAD_ENET2_RD3__GPIO4_IO27			0x51e
-+			MX93_PAD_ENET2_RXC__GPIO4_IO23                  0x51e
-+			MX93_PAD_ENET2_RX_CTL__GPIO4_IO22		0x51e
-+			MX93_PAD_ENET2_TD0__GPIO4_IO19			0x51e
-+			MX93_PAD_ENET2_TD1__GPIO4_IO18			0x51e
-+			MX93_PAD_ENET2_TD2__GPIO4_IO17			0x51e
-+			MX93_PAD_ENET2_TD3__GPIO4_IO16			0x51e
-+			MX93_PAD_ENET2_TXC__GPIO4_IO21                  0x51e
-+			MX93_PAD_ENET2_TX_CTL__GPIO4_IO20               0x51e
++			MX93_PAD_SD1_CLK__USDHC1_CLK		0x158e
++			MX93_PAD_SD1_CMD__USDHC1_CMD		0x4000138e
++			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x4000138e
++			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x4000138e
++			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x4000138e
++			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x4000138e
++			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x4000138e
++			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x4000138e
++			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x4000138e
++			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x4000138e
++			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x158e
 +		>;
 +	};
 +
- 	pinctrl_uart1: uart1grp {
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc1_200mhz: usdhc1-200mhzgrp {
  		fsl,pins = <
- 			MX93_PAD_UART1_RXD__LPUART1_RX			0x31e
+ 			MX93_PAD_SD1_CLK__USDHC1_CLK		0x15fe
+ 			MX93_PAD_SD1_CMD__USDHC1_CMD		0x400013fe
+@@ -420,6 +454,32 @@ MX93_PAD_SD2_CD_B__GPIO3_IO00		0x31e
+ 
+ 	/* need to config the SION for data and cmd pad, refer to ERR052021 */
+ 	pinctrl_usdhc2: usdhc2grp {
++		fsl,pins = <
++			MX93_PAD_SD2_CLK__USDHC2_CLK		0x1582
++			MX93_PAD_SD2_CMD__USDHC2_CMD		0x40001382
++			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x40001382
++			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x40001382
++			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x40001382
++			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x40001382
++			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
++		fsl,pins = <
++			MX93_PAD_SD2_CLK__USDHC2_CLK		0x158e
++			MX93_PAD_SD2_CMD__USDHC2_CMD		0x4000138e
++			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x4000138e
++			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x4000138e
++			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x4000138e
++			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x4000138e
++			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
+ 		fsl,pins = <
+ 			MX93_PAD_SD2_CLK__USDHC2_CLK		0x15fe
+ 			MX93_PAD_SD2_CMD__USDHC2_CMD		0x400013fe
 
 -- 
 2.37.1
