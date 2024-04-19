@@ -1,153 +1,129 @@
-Return-Path: <linux-kernel+bounces-151631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48FE28AB15C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:09:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4488D8AB160
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 072AD283394
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:09:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01263284CDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B6D912FB1B;
-	Fri, 19 Apr 2024 15:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB54D12FF83;
+	Fri, 19 Apr 2024 15:09:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GwY54oRW"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="Yb0iQ9uT"
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F7E12D76E;
-	Fri, 19 Apr 2024 15:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE8837E11E;
+	Fri, 19 Apr 2024 15:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713539380; cv=none; b=lHH5KIamlGoxx60R4NH4fCkATCdo3p1LBu55AM3FjUzDeFf2eT077BSUaI6eYA5rF0KAU/+7gsKF0MTrFn/qNBwIsKnKCkn5eC7+2tk2sOVNSuKu95fpZkOSRm/dP6axb7Np7oa/X+QR5EIr4wYsB96gvh+2Ye7OKjW4xohJWCs=
+	t=1713539386; cv=none; b=T5VXk18x46cxEfnDyvar0ZyXZ0yP5gvfwunP23OOLzWXhHbk9Wpbtv6h3t1grfzdjB6FxOYOWI5jisBWL77V91kGOzPRBFPbfsjvYQ9F36s2JkV8zNjDKS8Iz3/mcbTnSDLAAa/9165j30To8fZ+dzugIhZfVnNJuHz4Bqb2RbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713539380; c=relaxed/simple;
-	bh=Ai9vvd25xbI32P9Xuhu2sj+HcwENCVnunu370YRHYH8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XQcK65er94Bb2GOLmUo1am4mlHnb5uQn5JJH6GkfYxELcIbIv++jRmlkebYr1Mam5k7WP42qNuUOFEPHpEn9he+jGUpR1o/RoKCvfkG3C6FhdxhUZpF7Pt3faK/tlhLqdLJG80woEiYqg/Hbb86VQ8w1H63RfucmlLYjPAZYUrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GwY54oRW; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43JDggXX025508;
-	Fri, 19 Apr 2024 15:09:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=9Wo8SmDNArByT9MfsI6PAGKm5TIESVSuSSafxP6REhs=; b=Gw
-	Y54oRWvDGd22r7sN4dDr70BSS6ZuTzpeHt8tZSLRSyvB0AqgvKpVP7UWQS2RKnh6
-	zMOA8nzYNulnCtu+m1Gj/Qw3zGnUNemcUDqtZdnBsyW+cuI9nUuFH8JCvzjgC1XT
-	uJNJt3bJONyZKzkOV5V2pM5vQjgWWTRn9iR+7tLJvfxUHXRqQb1kythLwUFAZ5c9
-	b9oOVF1/6B76zSAwScJ84088I6LdIula+tngT0aGUb+WoIaNJ7XdxJXVy06MpFj7
-	Em0Y0t2yD76wlwgpvN6kCz3dtCmUu2TqZ3uwHae8uxk3tUyUeKtU0whc0UUJrwj3
-	aQL28/Ip7Onba68fL6rg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xk9s7a51f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 15:09:27 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43JF9QpM020996
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 19 Apr 2024 15:09:26 GMT
-Received: from [10.110.56.161] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 19 Apr
- 2024 08:09:25 -0700
-Message-ID: <a4c2cb8c-dd80-457f-82b5-2eb58a9b55b5@quicinc.com>
-Date: Fri, 19 Apr 2024 08:09:24 -0700
+	s=arc-20240116; t=1713539386; c=relaxed/simple;
+	bh=GkmOldRrmFVHxIp770IbU5zteXyXCmHeafYSEoFWihw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bOzwY8qwyYnY92oQZwC/AyqX/KAp/Hv7M3+a2i5A4es9Z4blwzipA4vnwat3LKMwHb2hhiANUXB4zzJxQktv5QE4+w37eW50s04YESxX6w/Nv0/GbzuusDFQKCZC64Ila7queQnAZeSzEnZLVqHcdkRtU/P9JmjZO3JHXEGVPZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=fjasle.eu; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=Yb0iQ9uT; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fjasle.eu
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fjasle.eu;
+	s=ds202307; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=ZnmSAWWYJEOgk0x27XufixVUQkAvIneONThu0c2jpJs=; b=Yb0iQ9uTHXIc8LY8Nf5v/laeV6
+	LyuUmZhC6EZRJ9tHNPfdP8Bi+YXy8BpvCmiq4Rr48/QEio29nf5ohBiRQUE7cj/OYP8KVdDHFex8a
+	owULukRTJW5fUgObp/KiB1m27RR5JX4WZHWtVDPTno/RYX8jbX6Q3teDKLHAF4gVTLXCPYX/G7erI
+	QKp7eQopshHfVISsEKhRAhTwXuqoBvaD3v+1fbnalUe8fP/18ehigcGr5HzEupLcyHxTF720e+CgH
+	HlWEtt/VYty4wUMtOBxV5Zw1UFdMAOg4xxtfZOq+Yr/sJBXrczCCzud5wODNtH8NqiYjUgb7Q73uH
+	X9iVkdjQ==;
+Received: from [2001:9e8:9f5:cc01:6f0:21ff:fe91:394] (port=35496 helo=bergen.fjasle.eu)
+	by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <nicolas@fjasle.eu>)
+	id 1rxprn-004Ad7-PX;
+	Fri, 19 Apr 2024 17:09:31 +0200
+Date: Fri, 19 Apr 2024 17:09:28 +0200
+From: Nicolas Schier <nicolas@fjasle.eu>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] kbuild: use $(obj)/ instead of $(src)/ for pattern
+ rules for %.[cS]
+Message-ID: <ZiKJKFiJ1rtJyHjM@bergen.fjasle.eu>
+References: <20240416121838.95427-1-masahiroy@kernel.org>
+ <20240416121838.95427-4-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH wireless] wifi: ath10k: Fix an error code problem in
- ath10k_dbg_sta_write_peer_debug_trigger()
-Content-Language: en-US
-To: Su Hui <suhui@nfschina.com>, <kvalo@kernel.org>, <jjohnson@kernel.org>,
-        <nathan@kernel.org>, <ndesaulniers@google.com>, <morbo@google.com>,
-        <justinstitt@google.com>
-CC: <c_mkenna@qti.qualcomm.com>, <linux-wireless@vger.kernel.org>,
-        <ath10k@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <llvm@lists.linux.dev>, <kernel-janitors@vger.kernel.org>
-References: <20240417081736.2226586-1-suhui@nfschina.com>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240417081736.2226586-1-suhui@nfschina.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rJl189pniCvvvdIHyH8iJmr6ShUY7FCy
-X-Proofpoint-ORIG-GUID: rJl189pniCvvvdIHyH8iJmr6ShUY7FCy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-19_10,2024-04-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
- phishscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0
- impostorscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
- bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404190114
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Y9/E1gHvgvc4kx9j"
+Content-Disposition: inline
+In-Reply-To: <20240416121838.95427-4-masahiroy@kernel.org>
+X-Operating-System: Debian GNU/Linux trixie/sid
+Jabber-ID: nicolas@jabber.no
 
-On 4/17/2024 1:17 AM, Su Hui wrote:
-> Clang Static Checker (scan-build) Warning:
-> drivers/net/wireless/ath/ath10k/debugfs_sta.c:line 429, column 3
-> Value stored to 'ret' is never read.
-> 
-> Return 'ret' rather than 'count' when 'ret' stores an error code.
-> By the way, remove some useless code.
-> 
-> Fixes: ee8b08a1be82 ("ath10k: add debugfs support to get per peer tids log via tracing")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
+
+--Y9/E1gHvgvc4kx9j
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue 16 Apr 2024 21:18:37 GMT, Masahiro Yamada wrote:
+> Kbuild conventionally uses $(obj)/ for generated files, and $(src)/ for
+> checked-in source files. It is merely a convention without any functional
+> difference. In fact, $(obj) and $(src) are exactly the same, as defined
+> in scripts/Makefile.build:
+>=20
+>   src :=3D $(obj)
+>=20
+> Before changing the semantics of $(src) in the next commit, this commit
+> replaces $(obj)/ with $(src)/ in pattern rules where the prerequisite
+> might be a generated file.
+
+thanks.  That's a good idea to split both steps.
+
+> C and assembly files are sometimes generated by tools, so they could
+> be either generated files or real sources. The $(obj)/ prefix works
+> for both cases with the help of VPATH.
+>=20
+> As mentioned above, $(obj) and $(src) are the same at this point, hence
+> this commit has no functional change.
+>=20
+> I did not modify scripts/Makefile.userprogs because there is no use
+> case where userspace C files are generated.
+>=20
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  drivers/net/wireless/ath/ath10k/debugfs_sta.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> index 394bf3c32abf..5525dabe390a 100644
-> --- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> +++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> @@ -415,7 +415,7 @@ ath10k_dbg_sta_write_peer_debug_trigger(struct file *file,
->  	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
->  	struct ath10k *ar = arsta->arvif->ar;
->  	u8 peer_debug_trigger;
-> -	int ret;
-> +	int ret = 0;
 
-this is unnecessary since this will be written in all paths that lead to the
-return that reads it
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
 
->  
->  	if (kstrtou8_from_user(user_buf, count, 0, &peer_debug_trigger))
->  		return -EINVAL;
-> @@ -432,14 +432,12 @@ ath10k_dbg_sta_write_peer_debug_trigger(struct file *file,
->  
->  	ret = ath10k_wmi_peer_set_param(ar, arsta->arvif->vdev_id, sta->addr,
->  					ar->wmi.peer_param->debug, peer_debug_trigger);
-> -	if (ret) {
-> +	if (ret)
->  		ath10k_warn(ar, "failed to set param to trigger peer tid logs for station ret: %d\n",
->  			    ret);
-> -		goto out;
-> -	}
->  out:
->  	mutex_unlock(&ar->conf_mutex);
-> -	return count;
-> +	return ret ?: count;
->  }
->  
->  static const struct file_operations fops_peer_debug_trigger = {
+--Y9/E1gHvgvc4kx9j
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I'd suggest as an alternate solution that this function is a good candidate
-for the the cleanup.h functionality. By scoping the mutex_lock() you can
-simply return at each error location, and remove the explicit mutex_unlock().
+-----BEGIN PGP SIGNATURE-----
 
-But I'd accept this with the initializer change removed as well since I don't
-think ath10k has any cleanup.h usages yet.
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmYiiScACgkQB1IKcBYm
+EmlXpg//YUp1X17oIcSK4w0lHCy6zwMhBi/wizM1BFDARed1bhLj2beqVnEstfN+
+VgFCPujQYP7hxyQ5UuRXMr3ddxdUPk4nGva7+oUWO4AGfosA08QvD8BwJMlwzoH7
+8tEB7WVEeQM1romvXV9mQgceL4I69mmPmO830zAaETXsy+Lqvq/GUTQm8h07lGIZ
+NTYyhk0KXWFtmJ+MVDzMnGxe3GJ8mcTUIcZbu/MPJsaf3jbrDp1QHmF7kdae7APP
+BTYwheqUMnO+yNxm5iEOJ6ykh/gXPhQp974mgOF4LhQMFUik55g1CO9T1WYwYybG
+H5d05QCbdsxprMSiZu5fxGpO84WEwjCFbYIBGvN1P/NaUTe97YAz9paJc/eUnR4p
+On4ixHn0LwH2vuN9mf0jadcLO6drBXnOD7UZOTVmdrkHSeIPgYQpdhkvKGEtvTac
+JmdBer1+2VLnXONiTK85Q49F9DpQ1y9vk8dioYbKQ2eu0RJZU8XKWX3mccxNLhb8
+Bc3ei3nkqY/adWea9DDjNFy9CrwppDNUUQVsp9B8eSwnDwUMhBx9qvuginSv3juz
+PDIQK65OpZZS1Ux3vN0p30n8rNJ0AtFE7tmDs4fXZPD/SgpJCc+YmTwqVn16rZ+V
+dCTs2a7rmtGTXJfVMdPjAozUP5dL08XjSxAnNPu/ZP5AmrjCXDo=
+=fQnb
+-----END PGP SIGNATURE-----
 
-/jeff
+--Y9/E1gHvgvc4kx9j--
 
