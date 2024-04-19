@@ -1,170 +1,119 @@
-Return-Path: <linux-kernel+bounces-151622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0857A8AB137
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:02:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 467048AB130
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:01:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0D78285C72
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:02:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0A09281BBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E37112F5BB;
-	Fri, 19 Apr 2024 15:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B285E12F584;
+	Fri, 19 Apr 2024 15:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KWTmSMIA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sGcFdBa3"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D3612F599;
-	Fri, 19 Apr 2024 15:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D169D1E893
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713538944; cv=none; b=ICmycMjkoQkNdOT9GNHs8UDAkIVxhktusfvvYpT0KDMOhbAsMUl+ktN2nG6MKL7UWw0YuEJRag9XfZuSVV1GG9plhQTwEPxqvj5XB3/oTTjfOvsV4iJcjw4mZ/JorTl3MdUuIxEYak4h9H8FAIBkCTND/o/VAIYPCXX0nJuSHR4=
+	t=1713538911; cv=none; b=XI5Q1Us5YbxaxIvZ7oZZ/AfcGdcCxbLAlKyMXOP5vwMUBddqIYSUCjckpAStgCt57vCLUN5EXKVahOvcYmGHk9q5uxGtnbP7f1L02mpb0XgLtNPN80d9qJAVrxqC2GsNg/1Qswh3RjDFz8gEpByHar1O30+HyBqq9sOoxvexGwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713538944; c=relaxed/simple;
-	bh=UA06SqKY53ZluOyFgnipAQL6i+7psWEVH9E0CMAEG4o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dbxD6ziuFD0Ad612qzq/txBXQJeonvdT8tkYpQd6kyQlCjDG94qYiIhxRU/RwTz4SaJwVBfD7pVk0UKqFuvZVgxL/ZhbHGA51TtJj/seA1kQ1SU5nfQvHK8Epjx5aGMUdI4lBQkD0A3tdcaxXIMcrl05px4TKG/L4QGwdZCWzGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KWTmSMIA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB0A2C072AA;
-	Fri, 19 Apr 2024 15:02:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713538944;
-	bh=UA06SqKY53ZluOyFgnipAQL6i+7psWEVH9E0CMAEG4o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KWTmSMIAyQ/fmJBt+lKvpMxwiAysYXpUJ3T6prpJhXUA2rwNICZUJUfFtaLtyvmWQ
-	 alxcY5Q/Sy24Cvv7KcvxIL+X3djnPGLhxZS9S6n5ymUWcsbT0uEKtMpe7Xib7kVtMF
-	 m8ptSs0i9EF2d2TAruySnOiKPgSIYDIeYeL/exIyUfjtNv3ATLcCXJ5N/e1V/VAFov
-	 A50/1kX02IU/CXZRcJshE5zuYNVvjMiTIFZCeuGY8RjQKSnF7+BgvNC9JB3HmxO7mW
-	 1+QMCfM/+ksH4uu9X/KDM10hW1LOtCv9cpApfOW5Psz21AaEEiTw1u9+tD+V46kfLU
-	 P8AT37Ym1VZ9w==
-Date: Fri, 19 Apr 2024 18:01:10 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Yaxiong Tian <tianyaxiong@kylinos.cn>
-Cc: catalin.marinas@arm.com, will@kernel.org, keescook@chromium.org,
-	tony.luck@intel.com, gpiccoli@igalia.com, akpm@linux-foundation.org,
-	ryan.roberts@arm.com, wangkefeng.wang@huawei.com, ardb@kernel.org,
-	david@redhat.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	xiongxin <xiongxin@kylinos.cn>
-Subject: Re: [PATCH v3] arm64: hibernate: Fix level3 translation fault in
- swsusp_save()
-Message-ID: <ZiKHNh0hHIAFT80N@kernel.org>
-References: <20240417025248.386622-1-tianyaxiong@kylinos.cn>
+	s=arc-20240116; t=1713538911; c=relaxed/simple;
+	bh=38u+Wt5Zc3dld0ZUNzGY4xaUgcWnqdvL6LMkBUX2jYs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uR/VNECjmX6Ps5/zOZkWWOpREfr1U4L0eCcBdjlhLVojDI+emTLtR4pPPrPoQOqjqXW8hnLKTELusXT52WoOnOgAsUDgnXDxszugHmRjyPHJz44Jpo26irznDkND2JL6uVPm7qYfvq305MgbnRBOjdC9zOA8czFXayLt6TcEUSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sGcFdBa3; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-419ca3f3ee3so2723975e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:01:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713538906; x=1714143706; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xKyNdflCXl1k1Bk34C22tLwiygb4fVA2Yaqs6+5ffr0=;
+        b=sGcFdBa32zCodzpL8gxpdE6zR7cA+9y+6g1+xoZv/yqX7GyOL26VbyIaRsy+oOsUk3
+         1Bbut2wPVPHyfLbct1j7PArq4orbBZGc9KcWIR222iSUTkL7wLnkxdZNsfuaN4AIbhdS
+         jA1dSWnqTdhVMMkmIZQS1nzg83eNC2gQ3LNs/5Db0oDdUkPIl3+8JVXNrVt6CAl+sFAr
+         Ap09js8YAFEaRtDHi/2+qmkpO/+zJ9I2Fl7t9UNAmGzN/z35tSzUst8y6um+yvnNZ9rl
+         b1EYUG1/+7G630RJ/Z69/j8/WWbEvVwovBXB90kkjCycfIoRJ8WuuoI0oR9iHKioTwAz
+         Tg5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713538906; x=1714143706;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xKyNdflCXl1k1Bk34C22tLwiygb4fVA2Yaqs6+5ffr0=;
+        b=LFDnja06zcLRpinhI26BVpyVYpSADwOUHbwyp9l/XLEq/nb+h8B15eTWLJ0XOBob93
+         vsA+zF4MDlTHAry68jdlPFx0FnTn1/wkGm3nue8C9usx/XbnL53BWX4g4hW7XlnrN2zi
+         4rErDisQLXoKzl7UWRYQ3wI8TmSbzq8E/oLBsN7SSywx+Tak3mn81/gs3206VUSPgu5/
+         GxQHbZCa7whKhMMHKUK0ssm1lOaxDy9emvHrBPLJ/nQrGmlMQl7tMlkDTzMvbpUAxemS
+         kkMc3DaPDRbFhoEZhG9YRDHRyViv1m26BIgc5j20SDqQYnn1IxVMo7jMmAYpd/kgaZ3L
+         Z+qg==
+X-Forwarded-Encrypted: i=1; AJvYcCURmdHOSF0i6UbDnS/wejob/Og116AwwMdPLIYuPI7f1fDxSuxGhCxCZFxEud8rL1d9CteGpWLVGZrMe0Ve6GIu6W16x6z2/04fv3Xo
+X-Gm-Message-State: AOJu0YyzUgpIE8kYULnsv6U1QzFt/+twmThjjDJVZAAXgF0wr0SQ9dCN
+	R6oOoqIWVLlAR6YJtCCVRR32dkID1lEKWSHnOmgq02Q84d2oIfk/r6ETgtgVzJ4=
+X-Google-Smtp-Source: AGHT+IEmv8ZU3P4FOUWe8jOOnJJzNXxiQc6qjZPMNqbl1hoINJs4ktVsOKqF99wOmcKo+yLUw+QqKA==
+X-Received: by 2002:a05:600c:4ed1:b0:418:ed13:302d with SMTP id g17-20020a05600c4ed100b00418ed13302dmr1759763wmq.26.1713538906051;
+        Fri, 19 Apr 2024 08:01:46 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id f11-20020a05600c4e8b00b00417ee886977sm10660462wmq.4.2024.04.19.08.01.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 08:01:45 -0700 (PDT)
+From: srinivas.kandagatla@linaro.org
+To: broonie@kernel.org
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	lgirdwood@gmail.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	steev@kali.org,
+	jenneron@postmarketos.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/4] ASoC: qcom: display port changes
+Date: Fri, 19 Apr 2024 16:01:36 +0100
+Message-Id: <20240419150140.92527-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240417025248.386622-1-tianyaxiong@kylinos.cn>
 
-On Wed, Apr 17, 2024 at 10:52:48AM +0800, Yaxiong Tian wrote:
-> On ARM64 machines using UEFI, if can_set_direct_map() return false by
-> setting some CONFIGS in kernel build or grub,such as
-> NO CONFIG_DEBUG_PAGEALLOC_ENABLE_DEFAULT、NO CONFIG_KFENCE
-> NO CONFIG_RODATA_FULL_DEFAULT_ENABLED.Also with setting rodata=off、
-> debug_pagealloc=off in grub and NO CONFIG_KFENCE.
-> swsusp_save() will fail due to can't finding the map table under the
-> nomap memory.such as:
-> 
-> [   48.532162] Unable to handle kernel paging request at virtual address ffffff8000000000
-> [   48.532162] Mem abort info:
-> [   48.532162]   ESR = 0x0000000096000007
-> [   48.532162]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [   48.532162]   SET = 0, FnV = 0
-> [   48.532162]   EA = 0, S1PTW = 0
-> [   48.532162]   FSC = 0x07: level 3 translation fault
-> [   48.532162] Data abort info:
-> [   48.532162]   ISV = 0, ISS = 0x00000007, ISS2 = 0x00000000
-> [   48.532162]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> [   48.532162]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> [   48.532162] swapper pgtable: 4k pages, 39-bit VAs, pgdp=00000000eeb0b000
-> [   48.532162] [ffffff8000000000] pgd=180000217fff9803, p4d=180000217fff9803, pud=180000217fff9803, pmd=180000217fff8803, pte=0000000000000000
-> [   48.532162] Internal error: Oops: 0000000096000007 [#1] SMP
-> [   48.532162] Internal error: Oops: 0000000096000007 [#1] SMP
-> [   48.532162] Modules linked in: xt_multiport ipt_REJECT nf_reject_ipv4 xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_filter bpfilter rfkill at803x snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg dwmac_generic stmmac_platform snd_hda_codec stmmac joydev pcs_xpcs snd_hda_core phylink ppdev lp parport ramoops reed_solomon ip_tables x_tables nls_iso8859_1 vfat multipath linear amdgpu amdxcp drm_exec gpu_sched drm_buddy hid_generic usbhid hid radeon video drm_suballoc_helper drm_ttm_helper ttm i2c_algo_bit drm_display_helper cec drm_kms_helper drm
-> [   48.532162] CPU: 0 PID: 3663 Comm: systemd-sleep Not tainted 6.6.2+ #76
-> [   48.532162] Source Version: 4e22ed63a0a48e7a7cff9b98b7806d8d4add7dc0
-> [   48.532162] Hardware name: Greatwall GW-XXXXXX-XXX/GW-XXXXXX-XXX, BIOS KunLun BIOS V4.0 01/19/2021
-> [   48.532162] pstate: 600003c5 (nZCv DAIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [   48.532162] pc : swsusp_save+0x280/0x538
-> [   48.532162] lr : swsusp_save+0x280/0x538
-> [   48.532162] sp : ffffffa034a3fa40
-> [   48.532162] x29: ffffffa034a3fa40 x28: ffffff8000001000 x27: 0000000000000000
-> [   48.532162] x26: ffffff8001400000 x25: ffffffc08113e248 x24: 0000000000000000
-> [   48.532162] x23: 0000000000080000 x22: ffffffc08113e280 x21: 00000000000c69f2
-> [   48.532162] x20: ffffff8000000000 x19: ffffffc081ae2500 x18: 0000000000000000
-> [   48.532162] x17: 6666662074736420 x16: 3030303030303030 x15: 3038666666666666
-> [   48.532162] x14: 0000000000000b69 x13: ffffff9f89088530 x12: 00000000ffffffea
-> [   48.532162] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffffffc08193f0d0
-> [   48.532162] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 0000000000000001
-> [   48.532162] x5 : ffffffa0fff09dc8 x4 : 0000000000000000 x3 : 0000000000000027
-> [   48.532162] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 000000000000004e
-> [   48.532162] Call trace:
-> [   48.532162]  swsusp_save+0x280/0x538
-> [   48.532162]  swsusp_arch_suspend+0x148/0x190
-> [   48.532162]  hibernation_snapshot+0x240/0x39c
-> [   48.532162]  hibernate+0xc4/0x378
-> [   48.532162]  state_store+0xf0/0x10c
-> [   48.532162]  kobj_attr_store+0x14/0x24
-> 
-> This issue can be reproduced in QEMU using UEFI when booting with
-> rodata=off、debug_pagealloc=off in grub and NO CONFIG_KFENCE.
-> 
-> This is because in swsusp_save()->copy_data_pages()->page_is_saveable(),
-> kernel_page_present() presumes that a page is present when can_set_direct_map()
-> returns false even for NOMAP ranges.So NOMAP pages will saved in after,and then
-> cause level3 translation fault in this pages.
-> 
-> Since the NOMAP regions are now marked as PageReserved(), pfn walkers
-> and the rest of core mm will treat them as unusable memory. So this
-> regions should not saved in hibernation.
-> 
-> This problem may cause by changes to pfn_valid() logic in commit
-> a7d9f306ba70 ("arm64: drop pfn_valid_within() and simplify pfn_valid()").
-> 
-> Reference ohter arch architecture,drop the !can_set_direct_map() condition
-> in kernel_page_present().So in page_is_savable(),these page will skiped.
-> 
-> Fixes: a7d9f306ba70 ("arm64: drop pfn_valid_within() and simplify pfn_valid()")
-> 
-> Suggested-by: Mike Rapoport <rppt@kernel.org>
-> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-> Co-developed-by: xiongxin <xiongxin@kylinos.cn>
-> Signed-off-by: xiongxin <xiongxin@kylinos.cn>
-> Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
+This patchset adds support for.
+	1. parse Display Port module tokens from ASoC topology
+	2. add support to DP/HDMI Jack events.
+	3. fixes a typo in function name in sm8250
 
-> ---
->  arch/arm64/mm/pageattr.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
-> index 0c4e3ecf989d..0e270a1c51e6 100644
-> --- a/arch/arm64/mm/pageattr.c
-> +++ b/arch/arm64/mm/pageattr.c
-> @@ -219,9 +219,6 @@ bool kernel_page_present(struct page *page)
->  	pte_t *ptep;
->  	unsigned long addr = (unsigned long)page_address(page);
->  
-> -	if (!can_set_direct_map())
-> -		return true;
-> -
->  	pgdp = pgd_offset_k(addr);
->  	if (pgd_none(READ_ONCE(*pgdp)))
->  		return false;
-> -- 
-> 2.34.1
-> 
+Verified these patches on X13s along with changes to tplg in 
+https://git.codelinaro.org/linaro/qcomlt/audioreach-topology/-/tree/topic/x13s-dp?ref_type=heads
+and ucm chagnes from https://github.com/Srinivas-Kandagatla/alsa-ucm-conf/tree/topic/x13s-dp
+
+Thanks,
+Srini
+
+Srinivas Kandagatla (4):
+  ASoC: qcom: q6dsp: parse Display port tokens
+  ASoC: qcom: common: add Display port Jack function
+  ASoC: qcom: sc8280xp: add Display port Jack
+  ASoC: qcom: sm8250: fix a typo in function name
+
+ sound/soc/qcom/common.c         | 30 ++++++++++++++++++++++++++++++
+ sound/soc/qcom/common.h         |  3 +++
+ sound/soc/qcom/qdsp6/topology.c | 26 ++++++++++++++++++++++++++
+ sound/soc/qcom/sc8280xp.c       | 13 +++++++++++++
+ sound/soc/qcom/sm8250.c         |  4 ++--
+ 5 files changed, 74 insertions(+), 2 deletions(-)
 
 -- 
-Sincerely yours,
-Mike.
+2.43.0
+
 
