@@ -1,130 +1,203 @@
-Return-Path: <linux-kernel+bounces-151861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C38D8AB4DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:14:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 868C48AB4BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:05:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E3631C20E84
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:14:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEE25B22AAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B0AA13B7A7;
-	Fri, 19 Apr 2024 18:14:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B8813B5A1;
+	Fri, 19 Apr 2024 18:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="mvx56pSR"
-Received: from sonic311-24.consmr.mail.ne1.yahoo.com (sonic311-24.consmr.mail.ne1.yahoo.com [66.163.188.205])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="d2HcSxa5"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AE8130A5B
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 18:14:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.188.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F9F130AC4
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 18:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713550479; cv=none; b=D6iTVuvfBL6fR6HTFNNL0lanP+ehogeYjyzSfB7QJ4dP7juh+pCYA6scN+7GTlHEKegOtpi26E7dnDg0K9V4Rr5qXE24EM//fwOQN75ywRE9q20RgEfpsHaf4qkki2QVAFNy6ijWKEAVD0b77VRux3oSENOnh3SQVOSHq0lo69k=
+	t=1713549912; cv=none; b=glGkTFwSykQI8isCqRc5qODD610mXM1hIOj4Lp43Gl9R3juc7TDDdXTfzkLHnV8AAz+TFYyVBrswTQ68UOx43JnDLUTGDaEZ9otfGq3vzeziq/Bp/qS4Vy4ADSUU0pA/wOvhV7xPEV+PA1dqqSxJozD8fZXW9JCBHAmidi53Oeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713550479; c=relaxed/simple;
-	bh=blljeHd9x0gxpn93U2C8DaW0yA8kvS6g/Q5C5nSZpfE=;
-	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version:
-	 References; b=QKck1vHKB7MS1HU8qYL85/HfypP2fmyC1xO/XV/Vcn7H9HNmvWDE4PWlPl4OCV1SzqXpExI3JGhshH87r3VmrBHhIS6Dae6MAy3Xkn16mYxBg+4/CMfjZdl4lwOkzKhVlq93WBR9s4pQd8gFsKHxkiyD4XmMlDr5K9W9nCcg4zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=mvx56pSR; arc=none smtp.client-ip=66.163.188.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1713550471; bh=RG/96UbEdQ52BT0k7TkxJ3eNd7aF8qeJn1MJEz+axZc=; h=Subject:From:To:Cc:Date:References:From:Subject:Reply-To; b=mvx56pSRocA3B3RMVerE6cY48cXcoXoZP/St2NzhNRh/sHirQnjKxcKwzvkGwXOhY36c6sKqrbnBZr1zvvtCbsV5LA1b3ipunizXyPRT7f8qPUBkBiW1XbT3Md6UwR5FkA5+V2zJFqNe5CIgYiteWj43Q+ncUhxRpu260M/EVAtZ/VoaMNw1f3l1HvEZl9TThKWHdmPCJMvTDH/q1Sz0jx/9LNdDFmm83t4/9N42ozcDFjt3VXSpndf5J//LobbixzcakBY6cug2IUopN9twKdfhxwGgHsy4qB4T9/gZHzWx2yVrb4Z36JEwUYpe7/txjJeXmcbp4k02XkX2K4NaoA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1713550471; bh=GqCDJfJ6uV6yTTZvse16TSVk35ZsiZCSzV2gOcwK+7R=; h=X-Sonic-MF:Subject:From:To:Date:From:Subject; b=kBiHAJ2iM2o/nft0rxVhAmeRUIKUr8HraZ29/lAWdbRY8Hgndkiuyy7bD65EJxHKdvFI6jx48oV/UbfkX1AH5J0ckQMMGE7tYstLcubAPBQaEiGlfjknLZ4FLazJVTXSEZaH+V/LDY8NMB8V2W9ox6H9WcLyUiRISplbU6ksiD8zG+o7o3GPb6ro3BmMKHidwdZQUsFX0AV6RvryVo+UYMPPRQFKZCNQdpiddodyHprrSb77LmPXnnDA+45yy1GdVJhrhmNYpS+nfhzDgeHDCYKsBlG8xwKdWuRhsoT7MffX2d8w4A0+bulzlIRC5O1cq5Fe+xIsS1ux87VZw83iQg==
-X-YMail-OSG: e3gt4eoVM1nSYo.FK8LfKpIhGX4b9fecFRCvCnUBSr0WQrciss7EyRTloalubBa
- evlFHT1GrinFRAOhXeHK6yXFR.q8TqByobyZ11NzOg6wwQ0FsTelCw6FtrXZKHuOh09v7T65XcXG
- c93m_oaHdaJOPm89vxLvFrAIMsYH5CbxvKnDvU44_Jl_j_jxQvnh7m37Z_fTR6m54PEkclTr9B9l
- Tw8Q48bda4f4QPNuwjgIyuAQkBd61EEx2qqjEuvCyfHLprAnbdq4KWJrkX09d1xBK1PBcNCLmVDd
- AzCxEwBSoi6y59gfRxqNcjow7Q4g9_.o1Sff4TuTE6nlmRew_kKTsAWsFqgavvtFysIF2gFzNzTC
- XLFfU0JPEw_sG0nYSTRQEv0wDbYayEiKJNnoC.Ms9DcyK5R_jqMYFYA4rHbw2OopW.1M_6JHaUrF
- U5SMAz4oRHdpWvFqdzp7I1A65IQjFOL1QeF2FQO3QeUDvy9nUfQuLFq88RCz4iJIsLl8mtIl9buT
- cE.2BAwy4V7XA1i4jcBmIUMB92KItRoTaR37dmPXoIlWStIG.EOypwwj1eYOYSZNcGBVchYUkMUe
- kDXD2tMq0c_Ho6a82R2Hor8u_CBAkwpVXUY0uVcXEcEN2ej1PGE6BN3DYh97If3nxlqzf8b4sHLc
- aRVacWi9wq7iDDiqURn5l1jcX7wXLzD3hoU5MXntdqZtk.yelaxVh5S6sEpEQdoMdiqLckqANI.f
- YAhcSoK2RMkFIrB69QYqwIdr7k9cl2wvdsznB3SiyZ1T2FVpkg6YdGVNYCjDespEdHvVe10ijW_6
- mRfuSt_IKyawsHyb5xGsOh3x7pLxmZL6iecezqknA9XMyjJzHsdZk7Ra5KcawBnSqLnXZzYpROH4
- 3h_Pzq8TK8S4i.qREWgedGl6l.LYZ2Lha_yLgXSWZnLTqp1tALivXx5nxLedBIxXhhFst4cnjSdA
- Wx6YQQt6JZTBA9QtCZtRE02WJdzw8J.5TMQOpI1DT5f847IO9GDw682jYZVs.2VasAp7E54O8In4
- PObCWFYlKVYxLgOmZ0I3rkWwtJmfsPbwsPUHeCajcl5EsU5i._nQKSbKhnDNhH2PInAAVVoo_hvg
- hgloVBRhKwHPi8uoXGWYSfqiXTHFohfNdfYYmkTf5tJOPU5d0D_FyA3W922IwfQBm3T_hBJJ4sew
- qhHbOAwRQ6T58c9lw5o3X7TxxMUJbBcdYHUMvpl1m2G_Xczg5BNyxu8oZAvudKoo7kCBFuGcETCw
- PPttj7ZQmBSLQSAhGho5BWIhKzSLGuXEU7lXp7A74.k99PG0NpKrWbzLVZPffeOtSGzSgLS51dex
- rWderropquae7ISoo51qrxjTTyolWecnHUWPhnP6_tKus_jWP5UXYvqpV2VyRSSkZ9E5eSDHhVAS
- gGFOhPFC.mCGdK671VM0S_riM3ZNY3UbgY.R2GfEx1LqAB2M.bwn068M.6ABKCXkqXQQq2c8rAYX
- GxXaiTUjvV3i_b9W.s_qE._Lh3NAKzCaSJQ.mE8oRcBHjfebbbHbE9clOXHA1QIhYUSPDMVoijyL
- llzYG8.MQv2zbJLOwRceXXJwH5flSChhkpcbKZ_yIwYf6.hQG.YJSdjSJP6EEHdu_6AOhdsiBGUG
- m63ulRslibRTGsZV3wpf.gjA_rWOfhD.nS4S5tG5pv2OAZcccg9brpbgeSI2Idy4T5Z1ufiptbv7
- 94.CjaaV7EIxzEGNedmQOn_eaHHSVu8HHNZpusGmWMRDbYSd1QK.UzZd6CFdCzorg.boPTh1bAN_
- 8nQqhyUb.MnSQ1xro31c2N2AoM_uNN3DmDEdxuQN3.Fz0fLdKRHCq78yxYI75IbXjbO8JDs1eM_G
- yvCztbZiXrCFzVRtFbZV_7DSR.Y5VN8_hSJBM4ddhFOdnEjhmSlAk_2XANNsBh.AUgmr4dPEemZW
- aK_lCKLjbIqETWwvN8QheQM2c.emmT6bBtXbY7Q4k0ZEcmQ4Vlz7g2qvEPdqS7LaU2dVo4V7O_N.
- HiCv5vUO5a0arvHwIHKlfRaLbizTTfNgx4AWFTcNcNSpZ3nyjgxBC7GdLKO0Uz930ZefL0OONtHj
- zK8Ee9qDnmseHDnodSr9i5NJpSwLUU5tpZzDnn0Yfi8BGNaFaCMD.5HNoR8tt05KuY4gXix2eS1y
- Wt.vx0U696NEOp6FCH1VTVMoGYx3HEKjayiof6oN76uWrGLGPyFNvtAGSY9M3KTz405aOstV_t5Q
- SqM9QJ_7zgjlFnON_5wka2ih2VZS7mMXe4oT4QDlPfGB01oaR9_mjS5JkhfGXEFhWfePTWuVS6MC
- _SnW3Opp0fjXXNM_iRGoMF.5LGjluVfQydZFxg99f
-X-Sonic-MF: <ashokemailat@yahoo.com>
-X-Sonic-ID: 78246457-ecc3-42ca-977f-d023cbde13c7
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Fri, 19 Apr 2024 18:14:31 +0000
-Received: by hermes--production-bf1-5cc9fc94c8-2vdn9 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID ee5c49b4a47ca886366b559aa52960a3;
-          Fri, 19 Apr 2024 18:04:23 +0000 (UTC)
-Message-ID: <452e4a2dcdc7020f75b84d787297a1d17a21ca81.camel@yahoo.com>
-Subject: [PATCH] staging:fbtft:fb_ili9320 Removed redundant Parentheses
-From: A <ashokemailat@yahoo.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	outreachy@lists.linux.dev
-Cc: ashokemailat@yahoo.com
-Date: Fri, 19 Apr 2024 11:04:21 -0700
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1713549912; c=relaxed/simple;
+	bh=F4cNOrYwM4Aq4Iiy4jYOyWYoKlDnc4rZFnYqfqmTWJk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pHMmeL/1n9InM0VnYiOCGXVYG8iw+v2ltNnZ5EMZMXoSmiwME36MtjHRvF96a+rKzycitqSzYFUS5lzgGHKfF+h5ovuQ+UgYCztBaDHqT0o9tNlXWvmgHYGNcMdUyQyf7EayB4wuA+AuE3S4DESXM0dKibEJdVhisUvwbJ8WgaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=d2HcSxa5; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-571e13cd856so2172a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:05:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713549909; x=1714154709; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HmgSdIOaBGzF1wIJwZyCqHKWiUO1epUovMBrXDSKd70=;
+        b=d2HcSxa5F65+eScAfEpAhoKksIvRGfuZBpJXIMiBC+K8a1+k0S+cqd8ygzEmehsf4n
+         ZASPZIwM0OIrSYlcj1htbfPP8tq0S48Ne/V+lVdca2+OYl12fRNDVyCJJ6Id9+Jr9Mn+
+         mC2FZDTP9LxUpjTz7PqGFcDIVbWHSC/VjQ6a889ixUFByjOEw4xt+ZzjWiTAZMV4MBCz
+         Vy4c5kzHexzU4EEy2IB6YStLSmGO5DHkripX3mxg6vok+Wzn6Mb1lzEVfF6fGrIwHzz/
+         EFkOQkmiLwau4BTUcjXYHMmuG+HVLdUYDeFIvyg89EumIaEZbCpGYfL8ezqXe0ypG92P
+         1C+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713549909; x=1714154709;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HmgSdIOaBGzF1wIJwZyCqHKWiUO1epUovMBrXDSKd70=;
+        b=HX5S3acHJgo9NQlw87E9Ugza/yis6V/MJst2bj3/1H/9xTSM+DaivZdYc/40kZewT7
+         XkNOvhCzzGiioqgVhulTcov0QGvCDZElRzyHORiPLK68s4JI3RWRZieun0oD/85XPz5g
+         A6HTAjTEdwJCw0kxJOaq3KUeozyYE8HynAqgCbDkZy6//RYV417VAhz97DyGL4C4wakh
+         vvApqgnrwTGXU1YIzl95Cshfb1Tqj8Y0HUg7ETUGOB8En5QIsrLRMCyi8Akeyblk9l5z
+         nWUHqxg1a7YEryJvfp4If9Pf5wC9JUeAss4kH8wDlQuaSNiHLdzEUL9Et10XMAkLTXis
+         QY/g==
+X-Forwarded-Encrypted: i=1; AJvYcCWoCiFDLjocaNzrAkdNos3GIGqfaXTzF6jKhyoDIqeEK8auCQrYD4mjNhLmI9KFal83N+y7T+aueMFpRJ2ItWNIlrDacymCWURClvuI
+X-Gm-Message-State: AOJu0YzjsySScS/HtR/LpsX/EKNgkKdVl6ou8chveZN5DNPzTWOMo6ZC
+	uv2Az8wirXUn672VhDxv9ceHKml5dpPdOe8r4O9peX5yyu07BTwKHmMFeBpUTfC5j27XBuL/x8+
+	9kJxqB3xU/O8YiBrslxiAVHMvRRxvU7xpD0pK
+X-Google-Smtp-Source: AGHT+IFiJwIF8NBICxhoTwIgH3tKMxmE/Jfl8ucbO0D4wydmlmbZBia7J/vwSPgO/y44rmwz5zaGNM//OJRSzziGxyg=
+X-Received: by 2002:a50:fc08:0:b0:571:b9c7:2804 with SMTP id
+ i8-20020a50fc08000000b00571b9c72804mr5894edr.5.1713549908902; Fri, 19 Apr
+ 2024 11:05:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <452e4a2dcdc7020f75b84d787297a1d17a21ca81.camel.ref@yahoo.com>
-X-Mailer: WebService/1.1.22256 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+References: <20240118181954.1415197-1-zokeefe@google.com> <20240417111001.fa2eg5gp6t2wiwco@quack3>
+ <CAAa6QmSOum_0ZhyUq1ppguLp0jpEs0u1U843GkF==xMwaMGV4A@mail.gmail.com> <20240418110434.g5bx5ntp2m4433eo@quack3>
+In-Reply-To: <20240418110434.g5bx5ntp2m4433eo@quack3>
+From: "Zach O'Keefe" <zokeefe@google.com>
+Date: Fri, 19 Apr 2024 11:04:31 -0700
+Message-ID: <CAAa6QmS-PwoR7QGr5f-yUrMsnszb=q8+wpjKrYzsv0OsgdP4jw@mail.gmail.com>
+Subject: Re: [PATCH] mm/writeback: fix possible divide-by-zero in
+ wb_dirty_limits(), again
+To: Jan Kara <jack@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Maxim Patlasov <MPatlasov@parallels.com>, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From 51e98164e314a2d1d834d2a9baea21a9823650bb Mon Sep 17 00:00:00 2001
-From: Ashok Kumar <ashokemailat@yahoo.com>
-Date: Fri, 19 Apr 2024 10:32:48 -0700
-Subject: [PATCH] staging:fbtft:fb_ili9320 Removed redundant
- Parentheses
+On Thu, Apr 18, 2024 at 4:04=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
+>
+> On Wed 17-04-24 12:33:39, Zach O'Keefe wrote:
+> > On Wed, Apr 17, 2024 at 4:10=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
+> > > > diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> > > > index cd4e4ae77c40a..02147b61712bc 100644
+> > > > --- a/mm/page-writeback.c
+> > > > +++ b/mm/page-writeback.c
+> > > > @@ -1638,7 +1638,7 @@ static inline void wb_dirty_limits(struct dir=
+ty_throttle_control *dtc)
+> > > >        */
+> > > >       dtc->wb_thresh =3D __wb_calc_thresh(dtc);
+> > > >       dtc->wb_bg_thresh =3D dtc->thresh ?
+> > > > -             div_u64((u64)dtc->wb_thresh * dtc->bg_thresh, dtc->th=
+resh) : 0;
+> > > > +             div64_u64(dtc->wb_thresh * dtc->bg_thresh, dtc->thres=
+h) : 0;
+> ...
+> > > Thirdly, if thresholds are larger than 1<<32 pages, then dirty balanc=
+ing is
+> > > going to blow up in many other spectacular ways - consider only the
+> > > multiplication on this line - it will not necessarily fit into u64 an=
+ymore.
+> > > The whole dirty limiting code is interspersed with assumptions that l=
+imits
+> > > are actually within u32 and we do our calculations in unsigned longs =
+to
+> > > avoid worrying about overflows (with occasional typing to u64 to make=
+ it
+> > > more interesting because people expected those entities to overflow 3=
+2 bits
+> > > even on 32-bit archs). Which is lame I agree but so far people don't =
+seem
+> > > to be setting limits to 16TB or more. And I'm not really worried abou=
+t
+> > > security here since this is global-root-only tunable and that has muc=
+h
+> > > better ways to DoS the system.
+> > >
+> > > So overall I'm all for cleaning up this code but in a sensible way pl=
+ease.
+> > > E.g. for these overflow issues at least do it one function at a time =
+so
+> > > that we can sensibly review it.
+> > >
+> > > Andrew, can you please revert this patch until we have a better fix? =
+So far
+> > > it does more harm than good... Thanks!
+> >
+> > Shall we just roll-forward with a suitable fix? I think all the
+> > original code actually "needed" was to cast the ternary predicate,
+> > like:
+> >
+> > ---8<---
+> > diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> > index fba324e1a010..ca1bfc0c9bdd 100644
+> > --- a/mm/page-writeback.c
+> > +++ b/mm/page-writeback.c
+> > @@ -1637,8 +1637,8 @@ static inline void wb_dirty_limits(struct
+> > dirty_throttle_control *dtc)
+> >          *   at some rate <=3D (write_bw / 2) for bringing down wb_dirt=
+y.
+> >          */
+> >         dtc->wb_thresh =3D __wb_calc_thresh(dtc);
+> > -       dtc->wb_bg_thresh =3D dtc->thresh ?
+> > -               div64_u64(dtc->wb_thresh * dtc->bg_thresh, dtc->thresh)=
+ : 0;
+> > +       dtc->wb_bg_thresh =3D (u32)dtc->thresh ?
+> > +               div_u64((u64)dtc->wb_thresh * dtc->bg_thresh, dtc->thre=
+sh) : 0;
+>
+> Well, this would fix the division by 0 but when you read the code you
+> really start wondering what's going on :) [..]
 
-Adhere to Linux kernel coding style.
-Reported by checkpatch
+Ya, this was definitely a local fix in an area of code I know very
+little abit. I stumbled across it in a rather contrived way -- made
+easier by internal patches -- and felt its existence still warranted a
+local fix.
 
-CHECK: Unnecessary parentheses around 'devcode !=3D 0x0000'
-+       if ((devcode !=3D 0x0000) && (devcode !=3D 0x9320))
+> [..] And as I wrote above when
+> thresholds pass UINT_MAX, the dirty limitting code breaks down anyway so =
+I
+> don't think the machine will be more usable after your fix. Would you be =
+up
+> for a challenge to modify mm/page-writeback.c so that such huge limits
+> cannot be set instead? That would be actually a useful fix...
 
-Signed-off-by: Ashok Kumar <ashokemailat@yahoo.com>
----
- drivers/staging/fbtft/fb_ili9320.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+:) I can't say my schedule affords me much time to take on any
+significant unplanned work. Perhaps as a Friday afternoon exercise
+I'll come back to scope this out, driven by some sense of
+responsibility garnered from starting down this path ; but ... my TODO
+list is long.
 
-diff --git a/drivers/staging/fbtft/fb_ili9320.c
-b/drivers/staging/fbtft/fb_ili9320.c
-index 0be7c2d51548..409b54cc562e 100644
---- a/drivers/staging/fbtft/fb_ili9320.c
-+++ b/drivers/staging/fbtft/fb_ili9320.c
-@@ -37,7 +37,7 @@ static int init_display(struct fbtft_par *par)
- 	devcode =3D read_devicecode(par);
- 	fbtft_par_dbg(DEBUG_INIT_DISPLAY, par, "Device code:
-0x%04X\n",
- 		      devcode);
--	if ((devcode !=3D 0x0000) && (devcode !=3D 0x9320))
-+	if (devcode !=3D 0x0000 && devcode !=3D 0x9320)
- 		dev_warn(par->info->device,
- 			 "Unrecognized Device code: 0x%04X (expected
-0x9320)\n",
- 			devcode);
---=20
-2.34.1
+Have a great rest of your day / weekend,
+Zach
 
-
+>                                                                 Honza
+>
+> >
+> >         /*
+> >          * In order to avoid the stacked BDI deadlock we need
+> > ---8<---
+> >
+> > Thanks, and apologize for the inconvenience
+> >
+> > Zach
+> >
+> > >                                                                 Honza
+> > > --
+> > > Jan Kara <jack@suse.com>
+> > > SUSE Labs, CR
+> >
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
