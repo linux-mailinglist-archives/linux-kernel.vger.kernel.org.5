@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-151768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 718568AB3A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:48:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFB148AB3AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:48:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 128981F23417
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:48:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DCC31C21D44
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:48:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D19813791C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D52313C905;
 	Fri, 19 Apr 2024 16:47:52 +0000 (UTC)
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362A913AD39;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D32013B297;
 	Fri, 19 Apr 2024 16:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713545271; cv=none; b=hDOIs3RH6vxxJcCl4OvJ9/F7zMvi4KkvGqpAMWhGcVjBJSQBsizfcMhSElqAH5f0/Kma31kJb9uSPl0AE4mlYhlXVy7+7q88lo1Ks954JHK0Lbxt2e/e7wQtPaAvR2FCTAXiu9DlmBsIS6Pf+aYchjCDnMvEkcR7xhhnYwKq1JE=
+	t=1713545271; cv=none; b=m+VoK57D3OrSpYo8sYcMaQHiC+JY0cvrz34uA2Bc3bBOI8gbycU/iGHrHB6uQnXQSALuf7QPiqBkFrd4VrxnFFwKI8Z8nLhfkKWKXQr+T/xER6F1X48BOnTyfMCe946qxqDJ8MeEvIHVFB2ihGivOfZwLDry7c4ZJ9MHfTvyl4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713545271; c=relaxed/simple;
-	bh=N/KbKABNeanEm1VOOHMlDsmLILPdeTsV4rqskWWMfv8=;
+	bh=IHhctoOcFaOxLkAqUw+9q5ii2zp+YdRGoQ4RmBmfHf0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GHqcOdE1zc4inKDTU5ygLpVrEtS4uGYmqTmHpMx1faYCn6RABJT5niTiOniHM8TdgAMUpncFNv03MuD0TCh2+tZ8gjJAG4iAsaTFzy9wjpatvSS9+r3XKChN2AqIkwwdhqEZETDvZCnrsrKi4q65UFkxIJPEJ1ypxD/q0v4qkGU=
+	 MIME-Version:Content-Type; b=a3RqJDjnzklfbNivZvJdqW82oi2Mc0s/U4mBZsLxoGvWUIVMJ9JcNfnaznKmP9mg0K+y9OkaI7dKv3ecen3p5Els+NoqLt4UbB59UWH0Htt4DF/4l03mwA/jC8O909eIVadj634cb9klYETl2m1sfs1W5ESvvyUU3HElW0elgqU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VLgWB0pdKz6JBJF;
-	Sat, 20 Apr 2024 00:45:42 +0800 (CST)
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VLgW94RMZz6K63v;
+	Sat, 20 Apr 2024 00:45:41 +0800 (CST)
 Received: from lhrpeml500006.china.huawei.com (unknown [7.191.161.198])
-	by mail.maildlp.com (Postfix) with ESMTPS id 17014140D1D;
+	by mail.maildlp.com (Postfix) with ESMTPS id 68F0C140DAF;
 	Sat, 20 Apr 2024 00:47:48 +0800 (CST)
 Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
  lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 19 Apr 2024 17:47:46 +0100
+ 15.1.2507.35; Fri, 19 Apr 2024 17:47:47 +0100
 From: <shiju.jose@huawei.com>
 To: <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
 	<linux-mm@kvack.org>, <dan.j.williams@intel.com>, <dave@stgolabs.net>,
@@ -57,9 +57,9 @@ CC: <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
 	<kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
 	<linuxarm@huawei.com>, <shiju.jose@huawei.com>
-Subject: [RFC PATCH v8 06/10] ACPICA: Add __free() based cleanup function for acpi_put_table
-Date: Sat, 20 Apr 2024 00:47:15 +0800
-Message-ID: <20240419164720.1765-7-shiju.jose@huawei.com>
+Subject: [RFC PATCH v8 07/10] platform: Add __free() based cleanup function for platform_device_put
+Date: Sat, 20 Apr 2024 00:47:16 +0800
+Message-ID: <20240419164720.1765-8-shiju.jose@huawei.com>
 X-Mailer: git-send-email 2.35.1.windows.2
 In-Reply-To: <20240419164720.1765-1-shiju.jose@huawei.com>
 References: <20240419164720.1765-1-shiju.jose@huawei.com>
@@ -76,27 +76,26 @@ X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Add __free() based cleanup function for acpi_put_table.
+Add __free() based cleanup function for platform_device_put().
 
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
 ---
- include/acpi/acpixf.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/platform_device.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/acpi/acpixf.h b/include/acpi/acpixf.h
-index 3d90716f9522..fc64d903a703 100644
---- a/include/acpi/acpixf.h
-+++ b/include/acpi/acpixf.h
-@@ -492,6 +492,8 @@ ACPI_EXTERNAL_RETURN_STATUS(acpi_status
- 					    **out_table))
- ACPI_EXTERNAL_RETURN_VOID(void acpi_put_table(struct acpi_table_header *table))
+diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+index 7a41c72c1959..1ddc35623b4c 100644
+--- a/include/linux/platform_device.h
++++ b/include/linux/platform_device.h
+@@ -232,6 +232,7 @@ extern int platform_device_add_data(struct platform_device *pdev,
+ extern int platform_device_add(struct platform_device *pdev);
+ extern void platform_device_del(struct platform_device *pdev);
+ extern void platform_device_put(struct platform_device *pdev);
++DEFINE_FREE(platform_device_put, struct platform_device *, if (_T) platform_device_put(_T))
  
-+DEFINE_FREE(acpi_put_table, struct acpi_table_header *, if (!IS_ERR_OR_NULL(_T)) acpi_put_table(_T))
-+
- ACPI_EXTERNAL_RETURN_STATUS(acpi_status
- 			    acpi_get_table_by_index(u32 table_index,
- 						    struct acpi_table_header
+ struct platform_driver {
+ 	int (*probe)(struct platform_device *);
 -- 
 2.34.1
 
