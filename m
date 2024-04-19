@@ -1,70 +1,64 @@
-Return-Path: <linux-kernel+bounces-151473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C7398AAF55
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:29:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69F648AAF57
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:30:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A99DB1F237FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:29:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D6051C22723
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6266C12AAF4;
-	Fri, 19 Apr 2024 13:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 497C1129A8E;
+	Fri, 19 Apr 2024 13:30:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G/YqfsUo"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="Fw78A8BB"
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188A18624B;
-	Fri, 19 Apr 2024 13:29:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F00085943;
+	Fri, 19 Apr 2024 13:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713533375; cv=none; b=fVToMUSWXOz8C2UPnIUxip0qajkOxukYJGLyHS5HBKX12HqayhmVL2MUNcPuFNqrtKXC5PARdHvc7A34rECAhT4FaenrwUBY/zK2xPSQ4sflZ/CqwiEjlx2IFKR6B4T2FYWlEwYjF73YKiZJhTE2zWxIugh2RXuBJ2T8AIcdeJI=
+	t=1713533401; cv=none; b=XkM8i7q4hT3s1DgEyTSv6iOAM1EkuYF+uknfu4kCircrhk+owyyBstRRVco5NWVTBRN+MYHuvxKadQFnLUs4KPdq0ybPyelRLuO/a7EoeHewspUl+/VSAD2/Ht6Sf48hazS+xQ5U+HETFX9QlezMI/qUGrZVPKbjfKYKO73VAzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713533375; c=relaxed/simple;
-	bh=xqswkRP7xC0Owgm1HP3Ch7pzBLg7hHvhZLq55WlfYmA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kF4xM79n4cYPRfveKJuyvetD3jKDMQMrn3VFuAUAdqDgg++3gaWCvjMR0YIVGjER2HNn5r6uolaLAtsdxk2ic3dgZRYdOaOYzgVR8wH3B35idC2FMg/QDVn6inSJ3tuxr51dc2dgHf8VlvR11x0YAi/KYwXn2TRWtLgXv4KuSG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=G/YqfsUo; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713533374; x=1745069374;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xqswkRP7xC0Owgm1HP3Ch7pzBLg7hHvhZLq55WlfYmA=;
-  b=G/YqfsUobzZuKErbVGvkMQL7qWJtwsgCXUFmQ7UZXtROPqJKv8Zj6uHU
-   ujR0NB6OT/elaoz5gPk6YSldABNndzP6gtk2OphUfaxDxW5lnL0CvAbUn
-   5uStNIHe5vmZf3U/wKhmyKH+qpKjmYEMd0hwbPWn6kGe0jTG1W4JX2xly
-   s9jqw2lwWAfYnkDvIjEAcjBQtOjtzAUxUIoD7yQJMgfjQO+6JQ21hZO7Z
-   ijIC0fQFhPg9EoZpDK1x36Z9ePpVuCQszTUpjm4IC951NwTikIjS83Uil
-   at+ZON89h5KBMJFTmJjj3uHVn6rKp4drDnrBD1LJ0/cfUu/f4IvP4Sq8c
-   w==;
-X-CSE-ConnectionGUID: wvmv7zS/QRqsBwevIzrJhg==
-X-CSE-MsgGUID: me4/i6M7S92W8vJeE6bNxA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="34532021"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="34532021"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:29:33 -0700
-X-CSE-ConnectionGUID: 0uQgHtY/QgmveFusb3jeJg==
-X-CSE-MsgGUID: Tld8xbNRRUC14a6jfp668A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="27986170"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:29:33 -0700
-Received: from [10.212.13.6] (dojung-mobl.amr.corp.intel.com [10.212.13.6])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 9E16F206DFDC;
-	Fri, 19 Apr 2024 06:29:30 -0700 (PDT)
-Message-ID: <7a576651-6780-41a5-ac69-46ce299367b5@linux.intel.com>
-Date: Fri, 19 Apr 2024 09:29:29 -0400
+	s=arc-20240116; t=1713533401; c=relaxed/simple;
+	bh=AnAKiky0E4gckzRxx4ZmwEsYrVI2yt9Uyhop1O8glSg=;
+	h=Subject:Message-ID:Date:MIME-Version:To:References:From:
+	 In-Reply-To:Content-Type; b=WlRQu8qeiYHjJiTp0EatdCBuPUu7tU1U+GbrdpTuge/RTguvfZwHe7zWdcNeZn2jwHyQaAf7swc71IAwElUC+6GU/VCTxcQ7K0uG7zOwIyoZ92qBL13N8wWtx0A4JaTfc9OOJUCIq71keq3WVLB/E0k39iAJWxCm6JQlWfGBvLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=Fw78A8BB; arc=none smtp.client-ip=72.21.196.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1713533400; x=1745069400;
+  h=message-id:date:mime-version:to:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=UmEBNCwEIS+XYV2c/JK9vsiDR55X/8OJx+hvdUZXHHw=;
+  b=Fw78A8BB+TtWKIWFGmLso9RTq+O4uvmiDm2FxC0PYa351gO9lMgLqf9B
+   MrpL/AYp1q/pT3bfkHllInhlsY4t2aGMI/Ra5AEUzb2ycCOQMyIznwRTC
+   6mKTA5AUhF3WhUDUEczAtg3hYmouCnlPkyfSGMSAm4NAX/o3IM6oSRhjA
+   8=;
+X-IronPort-AV: E=Sophos;i="6.07,213,1708387200"; 
+   d="scan'208";a="395803418"
+Subject: Re: [PATCH v7 3/3] virt: vmgenid: add support for devicetree bindings
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 13:29:57 +0000
+Received: from EX19MTAEUC001.ant.amazon.com [10.0.10.100:29195]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.42.106:2525] with esmtp (Farcaster)
+ id d6b4dc4e-ffee-486c-9b8f-eaba52ee8581; Fri, 19 Apr 2024 13:29:55 +0000 (UTC)
+X-Farcaster-Flow-ID: d6b4dc4e-ffee-486c-9b8f-eaba52ee8581
+Received: from EX19D036EUC002.ant.amazon.com (10.252.61.191) by
+ EX19MTAEUC001.ant.amazon.com (10.252.51.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 19 Apr 2024 13:29:53 +0000
+Received: from [10.95.129.79] (10.95.129.79) by EX19D036EUC002.ant.amazon.com
+ (10.252.61.191) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 19 Apr
+ 2024 13:29:49 +0000
+Message-ID: <e4cbb6ab-975a-4d91-9bde-6976b4d84eba@amazon.co.uk>
+Date: Fri, 19 Apr 2024 14:29:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,177 +66,176 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/16] perf parse-events: Improve error message for bad
- numbers
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org,
- Beeman Strong <beeman@rivosinc.com>
-References: <20240416061533.921723-1-irogers@google.com>
- <20240416061533.921723-12-irogers@google.com>
- <ac8835f8-0ea5-4f28-941c-aa43f0da92fd@linux.intel.com>
- <CAP-5=fXkn-nFTqGEqBYt6NUvoXU7OyLJeSCnWdD3taLHyK-xtQ@mail.gmail.com>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>, <tytso@mit.edu>,
+	<robh@kernel.org>, <krzk@kernel.org>, <conor+dt@kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<sudanl@amazon.com>, <graf@amazon.com>, <dwmw@amazon.co.uk>,
+	<krzysztof.kozlowski@linaro.org>, <bchalios@amazon.es>,
+	<xmarcalx@amazon.co.uk>
+References: <20240418121249.42380-1-Jason@zx2c4.com>
+ <20240418121249.42380-4-Jason@zx2c4.com>
 Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <CAP-5=fXkn-nFTqGEqBYt6NUvoXU7OyLJeSCnWdD3taLHyK-xtQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: "Landge, Sudan" <sudanl@amazon.co.uk>
+In-Reply-To: <20240418121249.42380-4-Jason@zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D040UWA002.ant.amazon.com (10.13.139.113) To
+ EX19D036EUC002.ant.amazon.com (10.252.61.191)
 
 
 
-On 2024-04-18 5:07 p.m., Ian Rogers wrote:
-> On Thu, Apr 18, 2024 at 1:27 PM Liang, Kan <kan.liang@linux.intel.com> wrote:
->>
->>
->>
->> On 2024-04-16 2:15 a.m., Ian Rogers wrote:
->>> Use the error handler from the parse_state to give a more informative
->>> error message.
->>>
->>> Before:
->>> ```
->>> $ perf stat -e 'cycles/period=99999999999999999999/' true
->>> event syntax error: 'cycles/period=99999999999999999999/'
->>>                                   \___ parser error
->>> Run 'perf list' for a list of valid events
->>>
->>>  Usage: perf stat [<options>] [<command>]
->>>
->>>     -e, --event <event>   event selector. use 'perf list' to list available events
->>> ```
->>>
->>> After:
->>> ```
->>> $ perf stat -e 'cycles/period=99999999999999999999/' true
->>> event syntax error: 'cycles/period=99999999999999999999/'
->>>                                   \___ parser error
->>>
->>> event syntax error: '..les/period=99999999999999999999/'
->>>                                   \___ Bad base 10 number "99999999999999999999"
->>
->>
->> It seems the patch only works for decimal?
->>
->> ./perf stat -e 'cycles/period=0xaaaaaaaaaaaaaaaaaaaaaa/' true
->> event syntax error: '..les/period=0xaaaaaaaaaaaaaaaaaaaaaa/'
->>                                    \___ parser error
->>  Run 'perf list' for a list of valid events
->>
->>   Usage: perf stat [<options>] [<command>]
->>
->>      -e, --event <event>   event selector. use 'perf list' to list
->> available events
->>
->> Thanks,
->> Kan
+On 18/04/2024 13:12, Jason A. Donenfeld wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
 > 
-> Right, for hexadecimal we say the number of digits is at most 16, so
-> when you exceed this the token is no longer recognized. It just
-> becomes input that can't be parsed, hence parser error. Doing this
-> means we can simplify other strtoull checks, but I agree having a
-> better error message for hexadecimal would be good. Let's do it as
-> follow up.
-
-OK. There is already a warning. It's fine to provide a follow-up for a
-better error message later.
-
-Thanks,
-Kan
-
 > 
-> Thanks,
-> Ian
 > 
->>> Run 'perf list' for a list of valid events
->>>
->>>  Usage: perf stat [<options>] [<command>]
->>>
->>>     -e, --event <event>   event selector. use 'perf list' to list available events
->>> ```
->>>
->>> Signed-off-by: Ian Rogers <irogers@google.com>
->>> ---
->>>  tools/perf/util/parse-events.l | 40 ++++++++++++++++++++--------------
->>>  1 file changed, 24 insertions(+), 16 deletions(-)
->>>
->>> diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
->>> index 6fe37003ab7b..0cd68c9f0d4f 100644
->>> --- a/tools/perf/util/parse-events.l
->>> +++ b/tools/perf/util/parse-events.l
->>> @@ -18,26 +18,34 @@
->>>
->>>  char *parse_events_get_text(yyscan_t yyscanner);
->>>  YYSTYPE *parse_events_get_lval(yyscan_t yyscanner);
->>> +int parse_events_get_column(yyscan_t yyscanner);
->>> +int parse_events_get_leng(yyscan_t yyscanner);
->>>
->>> -static int __value(YYSTYPE *yylval, char *str, int base, int token)
->>> +static int get_column(yyscan_t scanner)
->>>  {
->>> -     u64 num;
->>> -
->>> -     errno = 0;
->>> -     num = strtoull(str, NULL, base);
->>> -     if (errno)
->>> -             return PE_ERROR;
->>> -
->>> -     yylval->num = num;
->>> -     return token;
->>> +     return parse_events_get_column(scanner) - parse_events_get_leng(scanner);
->>>  }
->>>
->>> -static int value(yyscan_t scanner, int base)
->>> +static int value(struct parse_events_state *parse_state, yyscan_t scanner, int base)
->>>  {
->>>       YYSTYPE *yylval = parse_events_get_lval(scanner);
->>>       char *text = parse_events_get_text(scanner);
->>> +     u64 num;
->>>
->>> -     return __value(yylval, text, base, PE_VALUE);
->>> +     errno = 0;
->>> +     num = strtoull(text, NULL, base);
->>> +     if (errno) {
->>> +             struct parse_events_error *error = parse_state->error;
->>> +             char *help = NULL;
->>> +
->>> +             if (asprintf(&help, "Bad base %d number \"%s\"", base, text) > 0)
->>> +                     parse_events_error__handle(error, get_column(scanner), help , NULL);
->>> +
->>> +             return PE_ERROR;
->>> +     }
->>> +
->>> +     yylval->num = num;
->>> +     return PE_VALUE;
->>>  }
->>>
->>>  static int str(yyscan_t scanner, int token)
->>> @@ -283,8 +291,8 @@ r0x{num_raw_hex}  { return str(yyscanner, PE_RAW); }
->>>        */
->>>  "/"/{digit}          { return PE_BP_SLASH; }
->>>  "/"/{non_digit}              { BEGIN(config); return '/'; }
->>> -{num_dec}            { return value(yyscanner, 10); }
->>> -{num_hex}            { return value(yyscanner, 16); }
->>> +{num_dec}            { return value(_parse_state, yyscanner, 10); }
->>> +{num_hex}            { return value(_parse_state, yyscanner, 16); }
->>>       /*
->>>        * We need to separate 'mem:' scanner part, in order to get specific
->>>        * modifier bits parsed out. Otherwise we would need to handle PE_NAME
->>> @@ -330,8 +338,8 @@ cgroup-switches                                   { return sym(yyscanner, PERF_COUNT_SW_CGROUP_SWITCHES); }
->>>  {lc_type}-{lc_op_result}-{lc_op_result}      { return str(yyscanner, PE_LEGACY_CACHE); }
->>>  mem:                 { BEGIN(mem); return PE_PREFIX_MEM; }
->>>  r{num_raw_hex}               { return str(yyscanner, PE_RAW); }
->>> -{num_dec}            { return value(yyscanner, 10); }
->>> -{num_hex}            { return value(yyscanner, 16); }
->>> +{num_dec}            { return value(_parse_state, yyscanner, 10); }
->>> +{num_hex}            { return value(_parse_state, yyscanner, 16); }
->>>
->>>  {modifier_event}     { return str(yyscanner, PE_MODIFIER_EVENT); }
->>>  {name}                       { return str(yyscanner, PE_NAME); }
+> From: Sudan Landge <sudanl@amazon.com>
 > 
+> Extend the vmgenid platform driver to support devicetree bindings. With
+> this support, hypervisors can send vmgenid notifications to the virtual
+> machine without the need to enable ACPI. The bindings are located at:
+> Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml
+> 
+> Since this makes the driver work for both ACPI and devicetree, adjust
+> the Kconfig to include `|| OF`, which in turn means accounting for
+> !CONFIG_ACPI in the code with a short ifdef.
+> 
+> Signed-off-by: Sudan Landge <sudanl@amazon.com>
+> Reviewed-by: Alexander Graf <graf@amazon.com>
+> [Jason: - Small style cleanups and refactoring.
+>          - Fold in Kconfig OF dependency and ACPI conditionalization. ]
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+>   drivers/virt/Kconfig   |  2 +-
+>   drivers/virt/vmgenid.c | 53 ++++++++++++++++++++++++++++++++++++++++--
+>   2 files changed, 52 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
+> index 40129b6f0eca..017d6c38c3ba 100644
+> --- a/drivers/virt/Kconfig
+> +++ b/drivers/virt/Kconfig
+> @@ -16,7 +16,7 @@ if VIRT_DRIVERS
+>   config VMGENID
+>          tristate "Virtual Machine Generation ID driver"
+>          default y
+> -       depends on ACPI
+> +       depends on ACPI || OF
+
+Version 2 of the patches had these flag but were removed in version3 
+following the below review comment from Rob:
+"One of those is pretty much always enabled, so it can probably be dropped."
+reference : 
+https://lore.kernel.org/lkml/CAL_JsqJoB5CYajWuntMdQrJZir+ZA-69Q0cwvxcVZAqs-mXC+Q@mail.gmail.com/
+
+
+>          help
+>            Say Y here to use the hypervisor-provided Virtual Machine Generation ID
+>            to reseed the RNG when the VM is cloned. This is highly recommended if
+> diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
+> index aebbd24512c9..7f2d1e5656df 100644
+> --- a/drivers/virt/vmgenid.c
+> +++ b/drivers/virt/vmgenid.c
+> @@ -2,12 +2,13 @@
+>   /*
+>    * Copyright (C) 2022 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+>    *
+> - * The "Virtual Machine Generation ID" is exposed via ACPI and changes when a
+> + * The "Virtual Machine Generation ID" is exposed via ACPI or DT and changes when a
+>    * virtual machine forks or is cloned. This driver exists for shepherding that
+>    * information to random.c.
+>    */
+> 
+>   #include <linux/acpi.h>
+> +#include <linux/interrupt.h>
+>   #include <linux/kernel.h>
+>   #include <linux/module.h>
+>   #include <linux/platform_device.h>
+> @@ -41,6 +42,7 @@ static void setup_vmgenid_state(struct vmgenid_state *state, void *virt_addr)
+>          add_device_randomness(state->this_id, sizeof(state->this_id));
+>   }
+> 
+> +#ifdef CONFIG_ACPI
+>   static void vmgenid_acpi_handler(acpi_handle __always_unused handle,
+>                                   u32 __always_unused event, void *dev)
+>   {
+> @@ -92,6 +94,43 @@ static int vmgenid_add_acpi(struct device *dev, struct vmgenid_state *state)
+>          ACPI_FREE(parsed.pointer);
+>          return ret;
+>   }
+> +#else
+> +static int vmgenid_add_acpi(struct device *dev, struct vmgenid_state *state)
+> +{
+> +       return -EINVAL;
+> +}
+> +#endif
+> +
+> +static irqreturn_t vmgenid_of_irq_handler(int __always_unused irq, void *dev)
+> +{
+> +       vmgenid_notify(dev);
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static int vmgenid_add_of(struct platform_device *pdev,
+> +                         struct vmgenid_state *state)
+> +{
+> +       void *virt_addr;
+> +       int ret;
+> +
+> +       virt_addr = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+> +       if (IS_ERR(virt_addr))
+> +               return PTR_ERR(virt_addr);
+> +
+> +       setup_vmgenid_state(state, virt_addr);
+> +
+> +       ret = platform_get_irq(pdev, 0);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = devm_request_irq(&pdev->dev, ret, vmgenid_of_irq_handler,
+> +                              IRQF_SHARED, "vmgenid", &pdev->dev);
+> +       if (ret)
+> +               return ret;
+> +
+> +       pdev->dev.driver_data = state;
+> +       return 0;
+> +}
+> 
+>   static int vmgenid_add(struct platform_device *pdev)
+>   {
+> @@ -103,13 +142,22 @@ static int vmgenid_add(struct platform_device *pdev)
+>          if (!state)
+>                  return -ENOMEM;
+> 
+> -       ret = vmgenid_add_acpi(dev, state);
+> +       if (dev->of_node)
+> +               ret = vmgenid_add_of(pdev, state);
+> +       else
+> +               ret = vmgenid_add_acpi(dev, state);
+> 
+>          if (ret)
+>                  devm_kfree(dev, state);
+>          return ret;
+>   }
+> 
+> +static const struct of_device_id vmgenid_of_ids[] = {
+> +       { .compatible = "microsoft,vmgenid", },
+> +       { },
+> +};
+> +MODULE_DEVICE_TABLE(of, vmgenid_of_ids);
+> +
+>   static const struct acpi_device_id vmgenid_acpi_ids[] = {
+>          { "VMGENCTR", 0 },
+>          { "VM_GEN_COUNTER", 0 },
+> @@ -122,6 +170,7 @@ static struct platform_driver vmgenid_plaform_driver = {
+>          .driver     = {
+>                  .name   = "vmgenid",
+>                  .acpi_match_table = vmgenid_acpi_ids,
+> +               .of_match_table = vmgenid_of_ids,
+>          },
+>   };
+> 
+> --
+> 2.44.0
+> 
+Since I am on leave, looping in Babis to review/verify the patches.
 
