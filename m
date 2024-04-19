@@ -1,137 +1,162 @@
-Return-Path: <linux-kernel+bounces-151047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D9078AA856
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:19:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 045D58AA857
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:19:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B4271F21DAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:19:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEDBF281C16
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24B56D51C;
-	Fri, 19 Apr 2024 06:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF16D268;
+	Fri, 19 Apr 2024 06:19:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gb+cY2GX"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="gPhxO6vM"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E074B667;
-	Fri, 19 Apr 2024 06:18:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50BE6BE49
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713507534; cv=none; b=nVhwY09XbqokCYcv38eRRaqwkmX29WQPjWTP9o+upcuhFPzDsg/kQ5KrVRv2psw1kdqkR6g7L2lqceGzsvayKj5fScs9XY9PHOeM4l4YIPNEBtS0R+fYDCv1hUnbq8htEbAURFd42VTcrsQICZoM19RNZjFIrj9bN+pz537O+d0=
+	t=1713507581; cv=none; b=uoVDWGq5sv+1UMfjiOvNGUlGalaaSBsMP4X2HRmRANN1fHBNh4Q+hxC+P163xI9FK9aRLD4zUKMK6vbLWfBRml7XBai8e9YAy99IqGC0z6FI1uMFORQ8KzznF1bVlq0CAuwwntKDQ0gkCFy6mSeRMJBj4leCXI2RDsrbHjeysmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713507534; c=relaxed/simple;
-	bh=kEsvu7vcp/eaJtdZNoGBObrUsef0VK0b5+uiY0D3hEk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fKiLjQoU3n8tgXLRLe8qJe/sTsxhyrqujsVUJMJ3owVd3/Pr+fEaoR8ZNbnmWJ1QQgm6ixkfAzxrv5lx1Tp4M5g/uY47E+I7mvjOqMzk5wVfZAwwDQqoeyawQPMcDkB9e/Nkc5sWM6eWRC7xOwF1oynVK2bQb/XKNbHSlt5pyiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gb+cY2GX; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e3f6f03594so13903775ad.0;
-        Thu, 18 Apr 2024 23:18:52 -0700 (PDT)
+	s=arc-20240116; t=1713507581; c=relaxed/simple;
+	bh=vaoFx8rbE+/vHCI1FihLLacdyluledX4OyjZ/J1iRfE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FES+lVRUttum7gKB5Jqsy4WFdC0tGiZJ5OjFl7T3pfujpBB074rbay+VL8IlD+4lY2yM7Zm0kW8K+jJjwVXhtCXfDxHpEZ65/wANKPf1t2KjDM6IidQGRkQFlsiwccmkhdaPzXpoH6QTLFPvl3At93V7YUy7WbcWwrXtmUIdSSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=gPhxO6vM; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so2396338a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 23:19:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713507532; x=1714112332; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=poWGN5JQViLc0iD9MOEsvcT5w8/SJjK3ZixJJE0DRNU=;
-        b=Gb+cY2GXM7qDryuZDXiMwhcKZ5WgonDJ6M7x5ZIPCw47CfjMItHjjUAVVehmaC8Uvv
-         Bm345C2kRSJFZR1vea8ds8Dn4rRjPfpGTFoqNWwkkNJ6Ih23opjd87YXQiIH4WMDadJm
-         3cAa2HlhMLhrZYlZaoemx3yAvhHWElZkFhWJcqs5NbeUh2f83zS+NRArefLP/sV6H3de
-         UDupBsk6mlrUYQeC9eDDQXjHF0VtZ6v/gewsxb49EDBngVTU1trDfLw4mD87PLhYipdK
-         vH2IXdzAoohAZraCHyPdhb8VcIgyoctJBFvvF3Qtt4MreDhxGqZb8apN9OzHeTDPMEol
-         k7cQ==
+        d=tuxon.dev; s=google; t=1713507577; x=1714112377; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zChC2XDsDI5Ah8bNA8dPVgVBQVKq5xeUehrSiQnngTk=;
+        b=gPhxO6vML+PlpwaekkP8sfyvKtjzWjLOgy7s6jkYv3Gt9NBafMyQnm7JKLomxUMfAc
+         X1UvwosUSMZgsoVnFLTbyNhg/M1SZkI/NmdfPpepo+2Ep9Z9IGSMEnujiI2t7HF03k9u
+         Q6oWYCmbHsuCse1tV0CnSinKYKVz6f0qiT46YcVd066j9bFv6qZpegsXVjI+UbAH1EVl
+         qdxmMudIrHEJcXwlDcCAHTmMNy3glEhd5CfXOPiY/7de9c/M9ahFQJtc1XJBOsCgB653
+         Oa8DsdBBDdeIBxSVQCN+m3X5gW7n7FZlHdyzXAuA3PmDPxYiPCWz86yuuMi4NHv6/wqA
+         kO6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713507532; x=1714112332;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=poWGN5JQViLc0iD9MOEsvcT5w8/SJjK3ZixJJE0DRNU=;
-        b=A40sxiKfg4CIoVC0LYW/ysQUvzz6lQHtd0dRQraeRDoF4Q3i5ecm/uIWqinfFKGg7d
-         HlzqmpSAHxIGv9yG2VjpDvVFyLKL4XxOsY0cmE7PddNPRVHJRqJU7LcQT4iPamsl4OXe
-         cPy7ESGUz9/BhZzL7F7RAKKpVS0pUC63fUOEFKjBZekHE/i+0R80UfFuB+4GKJkGhgBo
-         xOt++0CQnCdwdnTO9PcQPMbB+lRLm1kfI0e307cHKaooGOER8xjA48/9uIt2TJt8w965
-         zz2eTw2bqFdfW+eqvtixGNwMrtMCXXojqrIhMIzgNwikXeT9o2sHP0tk6++qfc317ybb
-         5wQA==
-X-Forwarded-Encrypted: i=1; AJvYcCXfMqd99U48Y4GDpJ2I5L1Gx014UF/2mzxPiaukBcjRUjdNlfh7YO+k2OcDLp5yGUJQazo0sik8XtARYBogw3u3JHhf3seXvao+kAE5YhMZtCpU4QrqVkNADSNrHSIMO2/W2aQliHIr+w6urKWGtQl5Bs5NW6LFvtZW4F3TWKAEHda5
-X-Gm-Message-State: AOJu0Yw8Q/GsVuDlIGiYo4e9ZGTfoIm4lD2myRleFJ0ngWQkboQw2zKB
-	uGPl8vYovx2rdU28KM4wxP/vFTAcwdP3NQyoECK2rwxtozQRx+pM
-X-Google-Smtp-Source: AGHT+IGZBO4S0Urrc41F7lSiTQp/yby76+VaES64OQoWUNWzAhzgGywbYNfVeRhAKLQylOaVLE/GiA==
-X-Received: by 2002:a17:902:b083:b0:1e4:3f6d:20f6 with SMTP id p3-20020a170902b08300b001e43f6d20f6mr1160365plr.30.1713507532384;
-        Thu, 18 Apr 2024 23:18:52 -0700 (PDT)
-Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::5:fbcc])
-        by smtp.gmail.com with ESMTPSA id d1-20020a170902654100b001e2a7ed52d0sm2602586pln.239.2024.04.18.23.18.50
+        d=1e100.net; s=20230601; t=1713507577; x=1714112377;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zChC2XDsDI5Ah8bNA8dPVgVBQVKq5xeUehrSiQnngTk=;
+        b=LCl4nf/HiwV9D688JOViaXHNOhLmlDocczFa6LoDbyY3nn9k5gF9XHuuge597ieew3
+         6ltjA3ciVYwW4ki9XUwfqRBNCDXYGaMy5+eWiGXXAkDqtXFhtrA8DuRIuCIAOS/S50zR
+         7RNkjCZKSqVHN32pXuXUvTJb7oCLp77e+AanQwQqrXKEsN3P5CLX0ay/jkEHdLA2ppt/
+         bJklgOtzh37yKgqSr6txlZ+juEVVmxvTEYXMTOrrqN3X2lvtGoi4qQ/NNmvz7DQiuRIO
+         sl7x2hzp2mFr1Jx3i5Lmy/byABQ/yEKlw6gfz0qZtZV1CiU+9Jg1cKfIepTuxnUBjCE0
+         eR1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXptkVOx42sxZV/DkInw7lJTBZWPEeO8G0Ix2sIcKlTo1b7FUdRYytLGTCW48Ny/kpqC/MbvG8B2yX2dGWXaoJPIaQDFXLqHRGmKKfM
+X-Gm-Message-State: AOJu0Yzqen0w3/c8cS/eV4p49khItmeM5mKNb23HIZnxfzkBKt/xu5Hc
+	Y2oTFfBwNxP/ygTCBZSU1ktpx1ZB+T49BxYTW1cjWV3sNAiItCklxbhJ6j1v6RM=
+X-Google-Smtp-Source: AGHT+IHyl278IrvxXKkNFcB/lbp76vS0EdeltovBWNosOdxm88e/bktWgiecN97W3uyDlaj9aKKxiA==
+X-Received: by 2002:a50:8e0e:0:b0:56d:f78f:8747 with SMTP id 14-20020a508e0e000000b0056df78f8747mr966336edw.16.1713507577563;
+        Thu, 18 Apr 2024 23:19:37 -0700 (PDT)
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.185])
+        by smtp.gmail.com with ESMTPSA id k4-20020a50cb84000000b005705bb48307sm1721233edi.42.2024.04.18.23.19.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 23:18:52 -0700 (PDT)
-Date: Thu, 18 Apr 2024 23:18:48 -0700
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next 17/18] bpf: add bpf_wq_start
-Message-ID: <khz5omyjsd2iklm66bi3na4gdxw2cpwhb3c2xwu4fjxkaefi77@puck4pfltjgm>
-References: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org>
- <20240416-bpf_wq-v1-17-c9e66092f842@kernel.org>
+        Thu, 18 Apr 2024 23:19:37 -0700 (PDT)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: geert+renesas@glider.be,
+	linus.walleij@linaro.org,
+	biju.das.jz@bp.renesas.com,
+	tglx@linutronix.de
+Cc: linux-renesas-soc@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH v3] pinctrl: renesas: rzg2l: Configure the interrupt type on resume
+Date: Fri, 19 Apr 2024 09:19:24 +0300
+Message-Id: <20240419061924.3363667-1-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416-bpf_wq-v1-17-c9e66092f842@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 16, 2024 at 04:08:30PM +0200, Benjamin Tissoires wrote:
-> again, copy/paste from bpf_timer_start().
-> 
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> ---
->  kernel/bpf/helpers.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index e5c8adc44619..ed5309a37eda 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2728,6 +2728,29 @@ __bpf_kfunc int bpf_wq_init(struct bpf_wq *wq, void *map, unsigned int flags)
->  	return __bpf_async_init(async, map, flags, BPF_ASYNC_TYPE_WQ);
->  }
->  
-> +__bpf_kfunc int bpf_wq_start(struct bpf_wq *wq, unsigned int flags)
-> +{
-> +	struct bpf_async_kern *async = (struct bpf_async_kern *)wq;
-> +	struct bpf_work *w;
-> +	int ret = 0;
-> +
-> +	if (in_nmi())
-> +		return -EOPNOTSUPP;
-> +	if (flags)
-> +		return -EINVAL;
-> +	__bpf_spin_lock_irqsave(&async->lock);
-> +	w = async->work;
-> +	if (!w || !w->cb.prog) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	schedule_work(&w->work);
-> +out:
-> +	__bpf_spin_unlock_irqrestore(&async->lock);
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Looks like you're not adding wq_cancel kfunc in this patch set and
-it's probably a good thing not to expose async cancel to bpf users,
-since it's a foot gun.
-Even when we eventually add wq_cancel_sync kfunc it will not be
-removing a callback.
-So we can drop spinlock here.
-READ_ONCE of w and cb would be enough.
-Since they cannot get back to NULL once init-ed and cb is set.
+Commit dce0919c83c3 ("irqchip/renesas-rzg2l: Do not set TIEN and TINT
+source at the same time") removed the setup of TINT from
+rzg2l_irqc_irq_enable(). To address the spourious interrupt issue the setup
+of TINT has been moved in rzg2l_tint_set_edge() though
+rzg2l_disable_tint_and_set_tint_source(). With this, the interrupts are
+not properly re-configured after a suspend-to-RAM cycle. To address
+this issue and avoid spurious interrupts while resumming set the
+interrupt type before enabling it.
+
+Fixes: dce0919c83c3 ("irqchip/renesas-rzg2l: Do not set TIEN and TINT source at the same time")
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+---
+
+Changes in v3:
+- moved dev_crit() out of critical section
+
+Changes in v2:
+- none; this patch was part of series at [1] and added in v2 of that
+  series
+
+[1] https://lore.kernel.org/all/20240320104230.446400-1-claudiu.beznea.uj@bp.renesas.com/
+
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+index 93916553bcc7..20425afc6b33 100644
+--- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
++++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+@@ -2045,7 +2045,9 @@ static void rzg2l_gpio_irq_restore(struct rzg2l_pinctrl *pctrl)
+ 
+ 	for (unsigned int i = 0; i < RZG2L_TINT_MAX_INTERRUPT; i++) {
+ 		struct irq_data *data;
++		unsigned long flags;
+ 		unsigned int virq;
++		int ret;
+ 
+ 		if (!pctrl->hwirq[i])
+ 			continue;
+@@ -2063,17 +2065,18 @@ static void rzg2l_gpio_irq_restore(struct rzg2l_pinctrl *pctrl)
+ 			continue;
+ 		}
+ 
+-		if (!irqd_irq_disabled(data)) {
+-			unsigned long flags;
+-
+-			/*
+-			 * This has to be atomically executed to protect against a concurrent
+-			 * interrupt.
+-			 */
+-			raw_spin_lock_irqsave(&pctrl->lock.rlock, flags);
++		/*
++		 * This has to be atomically executed to protect against a concurrent
++		 * interrupt.
++		 */
++		raw_spin_lock_irqsave(&pctrl->lock.rlock, flags);
++		ret = rzg2l_gpio_irq_set_type(data, irqd_get_trigger_type(data));
++		if (!ret && !irqd_irq_disabled(data))
+ 			rzg2l_gpio_irq_enable(data);
+-			raw_spin_unlock_irqrestore(&pctrl->lock.rlock, flags);
+-		}
++		raw_spin_unlock_irqrestore(&pctrl->lock.rlock, flags);
++
++		if (ret)
++			dev_crit(pctrl->dev, "Failed to set IRQ type for virq=%u\n", virq);
+ 	}
+ }
+ 
+-- 
+2.39.2
+
 
