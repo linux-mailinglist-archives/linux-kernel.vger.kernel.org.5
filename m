@@ -1,66 +1,77 @@
-Return-Path: <linux-kernel+bounces-151673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B0498AB1E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:33:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB7428AB1E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:33:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA9371F23EF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:33:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78E3B28313E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B594612FB16;
-	Fri, 19 Apr 2024 15:33:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B950412FF9E;
+	Fri, 19 Apr 2024 15:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pCbouzFU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T0MlU2GV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0171B12AAF4;
-	Fri, 19 Apr 2024 15:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25BD12AAF4;
+	Fri, 19 Apr 2024 15:33:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713540788; cv=none; b=EoDe/Y1ANugPh1Avy4HWL+a5Z6Uy5fvAXFPDfjdyaUfOWf7ZzWN1z4YithCPJFb1rwpkQYERYL/ANi52clY1MvKfLY7O9ieITNeBIYaFi8WF9oeiM7GzmT/9uDrHJuywKM6m7zepZLul+y6Bvpa8nwAYFAhUDSceDzVIXqg4Iag=
+	t=1713540793; cv=none; b=F9Yxr3IA21v5XVuQ2PDsg7eJ4Go7yhDirtiXlqXoTqIOe0Mwj2g8vic9Jy+LqvJCR6KEJwRbQZWETAacMhIZXK7uobom3N/5wQM2REOvvlAqKCWZYtcQPOe9XOMsYStldj8vhBxgT9laL5hWUEJqrLVaHyl7QfyrSEWe4xziHf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713540788; c=relaxed/simple;
-	bh=s2YlNF511b1ugPoK8gPNXpw42GPHoGPjYZZp8GRGfW0=;
+	s=arc-20240116; t=1713540793; c=relaxed/simple;
+	bh=0O8rL07X4cRDqlk5nyVo8fbFX9mlJwFUGy/DUqJy5B8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=luzcXo07VtiLLnGdJ8Gz1X0hKZfHK++Qy7TD/UE8RFlAJEYuPS9iaYnfHRzNmhva0tQQRsq1hlUy1K984Sq5DAGJJ3ugeZ0JdtilFkRoNVfpxOj+RtQmxP7+C52RKSZdG7HNYYohIs50xXz4D0aIh2iwVdpfM9biXfB4R9wC+c8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pCbouzFU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D32B6C072AA;
-	Fri, 19 Apr 2024 15:33:04 +0000 (UTC)
+	 MIME-Version:Content-Type; b=YgqcTKEr0zi9EvW+AGth9Hb/TgmQk4z3L3z/OqAIiM+y8XglqWPBlHBwNekUopmyGKky3srw7yGfhQZC5+spy8w0J4HqGf5tGJwTcZ/C155QFutZAgdcLK8mQuSdp5Y1Rm9NuFiCZ4zMkx30kfhfGH/6oWVR8AGhP/ImR5Sh1WY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T0MlU2GV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14517C2BD10;
+	Fri, 19 Apr 2024 15:33:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713540787;
-	bh=s2YlNF511b1ugPoK8gPNXpw42GPHoGPjYZZp8GRGfW0=;
+	s=k20201202; t=1713540792;
+	bh=0O8rL07X4cRDqlk5nyVo8fbFX9mlJwFUGy/DUqJy5B8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pCbouzFUoeBBdBnn1y0uZdUe6YdPbeuxy05dOAEeC5v2BTvjkjvD5nfZfwfQOjG6V
-	 Iriq9/Yb4VNX/Lr44U8vrjrHVvhMXbPAw9k+b9hKJKjlpPIvV2gDnR4liDv89qOV5G
-	 Kbd+KbnoAbcTeQUPEoqTdAReDI1CeLT+6SQkQkO8O8A6xO009ITDeneE94aP9alYl5
-	 G95s8JZ2ejk9aUb/2vnRXGH/HrZ2On44hVbFXTbzQAOqqd9GiI0Be6mdad1+/9vl0h
-	 mHConzuXWk2VEjdwFeFiQIjUp/HTWS05Msc1WVhyCvVDxGOafId0lYzvY6u8ulT4hV
-	 X5NFqVs53MoYg==
+	b=T0MlU2GVClmAuHg76TKlYktuGHJkoM5RCSUmjrHQce6VPKYhZKcvJd/s0rHruCwbs
+	 Rm7e8VlSRUDH1O5YvHiN0Rg8IdzbOBaiZ4guzCLJtQGF9eknIXgIl80WgnGGT5P5kS
+	 Gdn/IJfTbCrPNJtthaoufwKzFGImAUd6ndpbxXPcVHTGUsFsZQ+yB6aq4d10rvbGhM
+	 +LHVlDlnJURnUcyZ8D2uNRbwTZr4RQQ1sHL2pPe7rGFfLO/Ht2fHlk84G95tVJY7Nc
+	 /EbQseko55FOgJAD94K7lsofotYa/L+xiwXDJegzgy316L/GedTGaUdNVyEyu0QinB
+	 w9yZq1gfgT4QA==
 From: Will Deacon <will@kernel.org>
-To: Aleksandr Aprelkov <aaprelkov@usergate.com>
-Cc: catalin.marinas@arm.com,
-	kernel-team@android.com,
+To: acme@redhat.com,
+	catalin.marinas@arm.com,
+	john.g.garry@oracle.com,
+	james.clark@arm.com,
+	mike.leach@linaro.org,
+	peterz@infradead.org,
+	mingo@redhat.com,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	namhyung@kernel.org,
+	irogers@google.com,
+	alisaidi@amazon.com,
+	vsethi@nvidia.com,
+	rwiley@nvidia.com,
+	ywan@nvidia.com,
+	Besar Wicaksono <bwicaksono@nvidia.com>
+Cc: kernel-team@android.com,
 	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Nicolin Chen <nicolinc@nvidia.com>,
-	Michael Shavit <mshavit@google.com>,
-	Lu Baolu <baolu.lu@linux.intel.com>,
-	Marc Zyngier <maz@kernel.org>,
+	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iommu/arm-smmu-v3: Free MSIs in case of ENOMEM
-Date: Fri, 19 Apr 2024 16:32:56 +0100
-Message-Id: <171345118104.301415.8430851318356217015.b4-ty@kernel.org>
+	linux-perf-users@vger.kernel.org,
+	linux-tegra@vger.kernel.org,
+	treding@nvidia.com,
+	jonathanh@nvidia.com
+Subject: Re: [PATCH v1 0/3] arm64: Support Neoverse-V2 for Perf Arm SPE
+Date: Fri, 19 Apr 2024 16:32:57 +0100
+Message-Id: <171353423620.13067.5339491128253092613.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240403053759.643164-1-aaprelkov@usergate.com>
-References: <20240403053759.643164-1-aaprelkov@usergate.com>
+In-Reply-To: <20240109192310.16234-1-bwicaksono@nvidia.com>
+References: <20240109192310.16234-1-bwicaksono@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,18 +81,23 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Wed, 03 Apr 2024 12:37:59 +0700, Aleksandr Aprelkov wrote:
-> If devm_add_action() returns ENOMEM, then MSIs allocated but
-> not freed on teardown.
+On Tue, 09 Jan 2024 13:23:07 -0600, Besar Wicaksono wrote:
+> This series support Neoverse-V2 CPU in Perf Arm SPE.
+> The first patch adds the Neoverse-V2 part number in kernel header.
+> The second patch syncs the kernel change to the tools header.
+> The third patch adds Neoverse-V2 into perf's Neoverse SPE data source list.
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> Besar Wicaksono (3):
+>   arm64: Add Neoverse-V2 part
+>   tools headers arm64: Add Neoverse-V2 part
+>   perf arm-spe: Add Neoverse-V2 to neoverse list
 > 
-> 
+> [...]
 
-Applied to will (for-joerg/arm-smmu/updates), thanks!
+Applied arch/arm64 part to arm64 (for-next/misc), thanks!
 
-[1/1] iommu/arm-smmu-v3: Free MSIs in case of ENOMEM
-      https://git.kernel.org/will/c/80fea979dd9d
+[1/3] arm64: Add Neoverse-V2 part
+      https://git.kernel.org/arm64/c/f4d9d9dcc70b
 
 Cheers,
 -- 
