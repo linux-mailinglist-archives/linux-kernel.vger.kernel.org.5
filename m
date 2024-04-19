@@ -1,203 +1,102 @@
-Return-Path: <linux-kernel+bounces-151323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D1EF8AACEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:35:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 905548AACED
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:36:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC5CE1C2133C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:35:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9541C21267
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39FF7EEF3;
-	Fri, 19 Apr 2024 10:35:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C25C67E78F
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3167E78F;
+	Fri, 19 Apr 2024 10:36:39 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C523D55B;
+	Fri, 19 Apr 2024 10:36:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713522901; cv=none; b=ri7k50AfUncLxr2331uH8C/1NV7mqZr5go+qhsK5krSMBfyMxb22NhX7UZnlV+Ey/C8ynXEd3QL/WAS/lhz2eN+HhuTX2u6Eim+cEwpXoD81RzseZwFshpbQdSJcx7PlgQ9MEo3IEgow3qKAIHsAhqs+/oB6KR6x8TW8q9wgJ+Q=
+	t=1713522998; cv=none; b=U3cmIw64f4HnTpxPVlh8cqgb9aDKzg/3CGjE1GLDvceES+Sd2doud9CCpALnnU57RMb337Yy5K0W0sJgHjaaKACk4nLB3MNuLUeKTTFx3DoT8f+zLcXDgQ48shhHX03m2vuM2GELtSvcMd9X2464F2E9elFSaJRlnqaLZgWBGXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713522901; c=relaxed/simple;
-	bh=rvRlki18SDdRncAv41M1U3ZfizUGuzAMxH1JRP+hygo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ETBMQT2zAl47gBz8264/HHgQU8d+CktV1Xmbr3yOVlSOpl7aVmnKbhGLWdNrvxINvGTfxFCPxkUapWiM25QdxAMY1vdM0meNcZ1yYbwjZ+tQwJZBITEZq+moxOgvtdI9v1IjFxUQUwH74TH2n3Fxt8EvE3wFy0hQ3jrOogn7mZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F63B2F;
-	Fri, 19 Apr 2024 03:35:27 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 44F0E3F792;
-	Fri, 19 Apr 2024 03:34:58 -0700 (PDT)
-From: Mark Rutland <mark.rutland@arm.com>
-To: linux-kernel@vger.kernel.org
-Cc: keescook@chromium.org,
-	mark.rutland@arm.com,
-	paulmck@kernel.org
-Subject: [PATCH] lkdtm/bugs: add test for hung smp_call_function_single()
-Date: Fri, 19 Apr 2024 11:34:52 +0100
-Message-Id: <20240419103452.3530155-1-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1713522998; c=relaxed/simple;
+	bh=YwuYrJiDpMf0xpFrF+ROIqaQPvA8R9O7wX9L8vXB5qY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AgO86g1tIKmZsddBcAqm8UKja9J8UMPoY/0MTpf5RotdGdakdcAGhblUBNTPqOXtdIwZezlXVdbE8km5LHzAZ/f1vikrBH8JfazG1ilSYvnntLV6Q1W9f5cZvv7ek9FrzxxqKPn0Y7I469RvXL+xeOzGxjxLHvPR+wE5qXtwP3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [112.20.112.218])
+	by gateway (Coremail) with SMTP id _____8DxJ+gxSSJmGcIpAA--.8776S3;
+	Fri, 19 Apr 2024 18:36:33 +0800 (CST)
+Received: from [192.168.100.8] (unknown [112.20.112.218])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx1xEvSSJmEyKAAA--.36198S3;
+	Fri, 19 Apr 2024 18:36:31 +0800 (CST)
+Message-ID: <b5d65679-a789-4cf9-b4ba-0db3c0886688@loongson.cn>
+Date: Fri, 19 Apr 2024 18:36:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] docs/zh_CN: add process/cve Chinese translation
+To: Dongliang Mu <dzm91@hust.edu.cn>, Alex Shi <alexs@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240419020114.3391933-1-dzm91@hust.edu.cn>
+Content-Language: en-US
+From: Yanteng Si <siyanteng@loongson.cn>
+In-Reply-To: <20240419020114.3391933-1-dzm91@hust.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Bx1xEvSSJmEyKAAA--.36198S3
+X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrury7JrW5WF47Jw45WrW5CFX_yoWfWFb_A3
+	97JayqkrZ7tF1xtFW8Cr43JrW8ZF4xuw1DtFn0ka98GayI9FWDWa4Uuwn3urn0vFWSvFW5
+	Cr97uryfXFnI9osvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUb3xYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6F4UJVW0owAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+	Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
+	JF1lYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+	1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_
+	JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17
+	CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0
+	I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I
+	8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
+	nUUI43ZEXa7IU8O18PUUUUU==
 
-The CONFIG_CSD_LOCK_WAIT_DEBUG option enables debugging of hung
-smp_call_function*() calls (e.g. when the target CPU gets stuck within
-the callback function). Testing this option requires triggering such
-hangs.
 
-This patch adds an lkdtm test with a hung smp_call_function_single()
-callbac, which can be used to test CONFIG_CSD_LOCK_WAIT_DEBUG and NMI
-backtraces (as CONFIG_CSD_LOCK_WAIT_DEBUG will attempt an NMI backtrace
-of the hung target CPU).
+在 2024/4/19 10:01, Dongliang Mu 写道:
+> Translate process/cve.rst into Chinese and add it to
+> Documentation/translations/zh_CN directory.
+>
+> Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
+> ---
+> v1 -> v2: add a newline at then end of cve.rst.
+>   .../translations/zh_CN/process/cve.rst        | 89 +++++++++++++++++++
+>   .../translations/zh_CN/process/index.rst      |  1 +
+>   2 files changed, 90 insertions(+)
+>   create mode 100644 Documentation/translations/zh_CN/process/cve.rst
+>
+When I apply your patch, git output:
 
-On arm64 using pseudo-NMI, this looks like:
+Applying: docs/zh_CN: add process/cve Chinese translation
+git/rebase-apply/patch:32: trailing whitespace.
+所有分配给Linux内核的CVE列表都可以在linux-cve邮件列表的存档中找到，如
+warning: 1 line adds whitespace errors.
 
-| # mount -t debugfs none /sys/kernel/debug/
-| # echo CSDLOCKUP > /sys/kernel/debug/provoke-crash/DIRECT
-| lkdtm: Performing direct entry CSDLOCKUP
-| smp: csd: Detected non-responsive CSD lock (#1) on CPU#0, waiting 5000001136 ns for CPU#01 __lkdtm_CSDLOCKUP+0x0/0x8(0x0).
-| smp:     csd: CSD lock (#1) handling this request.
-| Sending NMI from CPU 0 to CPUs 1:
-| NMI backtrace for cpu 1
-| CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.9.0-rc4-00001-gda84b9dede43 #7
-| Hardware name: linux,dummy-virt (DT)
-| pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-| pc : __lkdtm_CSDLOCKUP+0x0/0x8
-| lr : __flush_smp_call_function_queue+0x1b0/0x290
-| sp : ffff80008000bf30
-| pmr_save: 00000060
-| x29: ffff80008000bf30 x28: fff00000c02dc500 x27: 0000000000000000
-| x26: 0000000000000000 x25: fff00000c02dc500 x24: ffffa41b939aa140
-| x23: ffffa41b939aa140 x22: 0000000000000000 x21: ffff80008066bc40
-| x20: 0000000000000000 x19: 0000000000000000 x18: fff05be56bd37000
-| x17: fff05be56bd07000 x16: ffff800080008000 x15: 00005b132023e6fd
-| x14: 00005aeabb53d8c3 x13: 000000000000032e x12: 0000000000000001
-| x11: 0000000000000040 x10: fff00000c003d0a8 x9 : fff00000c003d0a0
-| x8 : fff00000c0400270 x7 : 0000000000000000 x6 : ffffa41b9251b810
-| x5 : 0000000000000000 x4 : fff05be56bd07000 x3 : ffff80008000bf30
-| x2 : fff05be56bd07000 x1 : ffffa41b939aa140 x0 : 0000000000000000
-| Call trace:
-|  __lkdtm_CSDLOCKUP+0x0/0x8
-|  generic_smp_call_function_single_interrupt+0x14/0x20
-|  ipi_handler+0xb8/0x178
-|  handle_percpu_devid_irq+0x84/0x130
-|  generic_handle_domain_irq+0x2c/0x44
-|  gic_handle_irq+0x118/0x240
-|  call_on_irq_stack+0x24/0x4c
-|  do_interrupt_handler+0x80/0x84
-|  el1_interrupt+0x44/0xc0
-|  el1h_64_irq_handler+0x18/0x24
-|  el1h_64_irq+0x78/0x7c
-|  default_idle_call+0x40/0x60
-|  do_idle+0x23c/0x2d0
-|  cpu_startup_entry+0x38/0x3c
-|  secondary_start_kernel+0x148/0x180
-|  __secondary_switched+0xb8/0xbc
-| CPU: 0 PID: 143 Comm: sh Not tainted 6.9.0-rc4-00001-gda84b9dede43 #7
-| Hardware name: linux,dummy-virt (DT)
-| Call trace:
-|  dump_backtrace+0x90/0xe8
-|  show_stack+0x18/0x24
-|  dump_stack_lvl+0xac/0xe8
-|  dump_stack+0x18/0x24
-|  csd_lock_wait_toolong+0x268/0x338
-|  smp_call_function_single+0x1dc/0x2f0
-|  lkdtm_CSDLOCKUP+0xcc/0xfc
-|  lkdtm_do_action+0x1c/0x38
-|  direct_entry+0xbc/0x14c
-|  full_proxy_write+0x60/0xb4
-|  vfs_write+0xd0/0x35c
-|  ksys_write+0x70/0x104
-|  __arm64_sys_write+0x1c/0x28
-|  invoke_syscall+0x48/0x114
-|  el0_svc_common.constprop.0+0x40/0xe0
-|  do_el0_svc+0x1c/0x28
-|  el0_svc+0x38/0x108
-|  el0t_64_sync_handler+0x120/0x12c
-|  el0t_64_sync+0x1a4/0x1a8
-| smp: csd: Continued non-responsive CSD lock (#1) on CPU#0, waiting 10000001888 ns for CPU#01 __lkdtm_CSDLOCKUP+0x0/0x8(0x0).
-| smp:     csd: CSD lock (#1) handling this request.
+checkpatch.pl also outputs associated noise.
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
----
- drivers/misc/lkdtm/bugs.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
 
-I wrote this because I needed to guide someone through debugging a hung
-smp_call_function() call, and I needed examples with/without an NMI
-backtrace. It seems like it'd be useful for testing the CSD lockup
-detector and NMI backtrace code in future.
+Thanks,
 
-I'm not sure about the CSDLOCKUP name, but everything else I tried
-didn't seem great either:
-
-* IPILOCKUP sounds like it's testing IPIs generally
-* SMPCALLLOCKUP and similar look weirdly long
-* SMP_CALL_LOCKUP and similar look different to {HARD,SOFT,SPIN}LOCKUP
-
-.. and I'm happy to defer to Kees for the naming. ;)
-
-Mark.
-
-diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-index 5178c02b21eba..47cd1be09ac1f 100644
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -286,6 +286,35 @@ static void lkdtm_HARDLOCKUP(void)
- 		cpu_relax();
- }
- 
-+static void __lkdtm_CSDLOCKUP(void *unused)
-+{
-+	for (;;)
-+		cpu_relax();
-+}
-+
-+static void lkdtm_CSDLOCKUP(void)
-+{
-+	unsigned int cpu, target;
-+
-+	cpus_read_lock();
-+
-+	cpu = get_cpu();
-+	target = cpumask_any_but(cpu_online_mask, cpu);
-+
-+	if (target >= nr_cpu_ids) {
-+		pr_err("FAIL: no other online CPUs\n");
-+		goto out_put_cpus;
-+	}
-+
-+	smp_call_function_single(target, __lkdtm_CSDLOCKUP, NULL, 1);
-+
-+	pr_err("FAIL: did not hang\n");
-+
-+out_put_cpus:
-+	put_cpu();
-+	cpus_read_unlock();
-+}
-+
- static void lkdtm_SPINLOCKUP(void)
- {
- 	/* Must be called twice to trigger. */
-@@ -680,6 +709,7 @@ static struct crashtype crashtypes[] = {
- 	CRASHTYPE(UNALIGNED_LOAD_STORE_WRITE),
- 	CRASHTYPE(SOFTLOCKUP),
- 	CRASHTYPE(HARDLOCKUP),
-+	CRASHTYPE(CSDLOCKUP),
- 	CRASHTYPE(SPINLOCKUP),
- 	CRASHTYPE(HUNG_TASK),
- 	CRASHTYPE(OVERFLOW_SIGNED),
--- 
-2.30.2
+Yanteng
 
 
