@@ -1,127 +1,170 @@
-Return-Path: <linux-kernel+bounces-151711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB198AB27B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:54:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F35308AB284
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:55:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3334B22D51
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:54:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D8A41F2318F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304C7130A4D;
-	Fri, 19 Apr 2024 15:53:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30628130AD4;
+	Fri, 19 Apr 2024 15:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BBssYoT4"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fByrY0sH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE3454D110;
-	Fri, 19 Apr 2024 15:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D32F4D110;
+	Fri, 19 Apr 2024 15:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713542034; cv=none; b=lar4/Yb8GMKH4ISYNxKt0Rzefd+rpa3W2T6Wz1f8CncMS8+wWuI9fRuPaaq70POtL/SsDT9yLi6IBzc0hrH2uQYmG9Xyce6r1GcC9BCiO/puv2qvoUaYJB1oM5+aK0osvonochJfVQHKK2077vl2Y/bStPlhKGreCtXi1rHp47w=
+	t=1713542094; cv=none; b=GZogLUkbWZcpLeaYCu7dfl1IEws30okDqJwNaU1pp7V+DgVj4YBgsqv/RPhtwYtPw5bV2b/Nn4pLREx6cc3bN+fw4xG10uJ8tnh+oOjUolqTcfQRpBgObGixqBZT6AIEKttgLE51HihqyJ00shVlAOzhmjNufP60kXBctAXZGR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713542034; c=relaxed/simple;
-	bh=cBJc/5ludq5tsm/6USaCmEXWAHt4KSBZz6I974uN9Po=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=LZ5YYWX7SSnf/Bgh/H6z/ESIj4VZLmlI+s8/FIMTyL8fyvmOFtVECWx6+Hs6F5hekQAzlGK2HSn6xwYuTlOwXxT9tTsAWjtZADN5BZ+BstGxSfrbU1TgezLOic1hGvMztFaowm5jQJNCHy23w4jQgK588/Yb3MCcVzR5M9WFFFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BBssYoT4; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a52aa665747so258645166b.2;
-        Fri, 19 Apr 2024 08:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713542031; x=1714146831; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fwQuiJSvzr8PFiUAI47KhzIHYFmwFwN2S6DtxceXDh0=;
-        b=BBssYoT4cjbf6Ev039DE21SLr+WIpAMtiN5uGJ1nIExtxVJ5Vea6jtjXnA9aCMEqNn
-         5fltdOV5WvLzOrBXNx/EaSboyNoaHODIgu2WvPqB4NTnxkPavH7ArQX0LaxXem9jh39V
-         CZ1MtuckYeqZDcdEiNYfkbZV3jTfNy2ZdouHWUyeOdfliT+2HcgcvqSX9NZVvDQYOJ7Q
-         jZTo/51E6CtyW/INwXJ+0UG30F+o6YtQQyD0paGSenoODFCv/JJfulz9iUdaKYdDECYD
-         LtF3SMj0C1GRblHC8Eo3MJGT/ErshBPjjXh1ZIXv3MEgOgYCqcweH8Bgfkz79sCAXjjq
-         YTGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713542031; x=1714146831;
-        h=content-transfer-encoding:in-reply-to:organization:content-language
-         :references:cc:to:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fwQuiJSvzr8PFiUAI47KhzIHYFmwFwN2S6DtxceXDh0=;
-        b=oBgsR6XDDjoU3kBvoApZvabWo2BI8ZOQiTVqcJVsqCfELbh8yNymHj4ntzEl7ykWbY
-         c/vuFX5xTzb+DczePUl+l4U5PQNW50PX01C8K6mlhlhOiDnFnhfJhenCfXAGWSqnVPkz
-         zQv+DxTHRUam3TT0zWDI8we/B2j6hFxw9Z9VeKWNUSZT7LtVPxqcC653mO0MF72h/Sae
-         RT7kCfjTkZmBqkknAXrl+8JCwD7IM4uFctR5qgWiyuataiioa28brkyJbthwxUjgD4ZD
-         X3xVrrc6Xd68ihXdcKv6jcUV3VfkbOQNiATIGncCSRI7B0GbFuoMhfC6r0nfpNrWgnMW
-         /XFw==
-X-Forwarded-Encrypted: i=1; AJvYcCUEo51p9RJ0GLGJve7IIBhKWc49dKqVdRGS//w0M++1bAOhSjDyJbdEOjdtAkILL47kqxYdZ27FM/BUBd5HXHVFFCAXEH9oACbHjpRGOJpA+exWgMokaquXPvutgJs74UpCiU9r8kQ2P7unWQLqHDrQ9cVorJuQYEe8RJVrBMNFp3UjSoNO8hbtRwxQXeu0R5urW0GgcO9GRTqhLc1G
-X-Gm-Message-State: AOJu0YzM74PyMmKQcw9hX/MOSIXJxM0YeJ27y6YHhxe9gu35bHrwOT/S
-	5CdJw4ZLfIzx058tIIO7O8HReuW9LgMrjeHifkIDo569mIAc3GyU
-X-Google-Smtp-Source: AGHT+IGXLJwP1kkQdWIyL4VAo03CJGrcXSsdNIvYNktqHUK6leBuGOUh95WBNddN8oRcDWn2xbsV/A==
-X-Received: by 2002:a17:906:3406:b0:a51:e5c7:55b7 with SMTP id c6-20020a170906340600b00a51e5c755b7mr1953078ejb.47.1713542031092;
-        Fri, 19 Apr 2024 08:53:51 -0700 (PDT)
-Received: from [192.168.18.253] (54-240-197-236.amazon.com. [54.240.197.236])
-        by smtp.gmail.com with ESMTPSA id p25-20020a17090635d900b00a51d8a3a632sm2308501ejb.168.2024.04.19.08.53.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 08:53:50 -0700 (PDT)
-From: Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <b668e938-a48f-4295-a9ec-e66f0abd1bb0@xen.org>
-Date: Fri, 19 Apr 2024 16:53:49 +0100
+	s=arc-20240116; t=1713542094; c=relaxed/simple;
+	bh=PNzXHy/tRctT7iPO4Hxb0l/pQDROtMOUfttALn8mdWw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NxcRdP1wmiWhup38lOTDE3rtLqTkgnEcNdlkKrxU3XlK8e7aJv4HecJH0mc8Bxx5Af4JmSE1ubVAdaZy7kCyqAIMDUtojakWCSoJoDRGu5bnxAYCdtBzFfXq11r6W0izBzshyRYr1JSWDC/WvdPZZEuDToj32vSeKp5fiA8HsEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fByrY0sH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB14EC4AF0C;
+	Fri, 19 Apr 2024 15:54:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713542093;
+	bh=PNzXHy/tRctT7iPO4Hxb0l/pQDROtMOUfttALn8mdWw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=fByrY0sH7ehrB3/T0K5Y9m7KyxBgkDIAjJKJuL060ZMwVeA4sxNa1GRVnnFs7o9P/
+	 SDdNCkMFupB33Yh4SqtQQRDg1TlSaSNl85qqrhlrbsWngFTomx7MtHK/VLSFjgeKVE
+	 WNXe0s/Zd7ZSyO8H9gkYMP5F2v3IZpievZBQF2TWpbBzXIh05HyDtTK2ztWOy1AyUk
+	 8uKc4i1XerG3TPen7GqtNdAuJI8XdGlZHRUBtPaskIQyoqsVYLmOl4HnlPuLJecHlE
+	 WlI2arE63IBCyRuPBGezgCucj+RhNyvFxP1+bhxs9GMQJQgOXAjn2wix5rZL/xXKdE
+	 HGfwsw/94YlBg==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51abd580902so740582e87.1;
+        Fri, 19 Apr 2024 08:54:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXa3apZAcErtrAYm9kCGGH7b5EHxRQGYbrJdPt05jNB+QXG51rb9gkY1tsQrNt8RIsyv415Yc2kTkhWK6mvhIfP97KTLuf4OQhlJIfy9j3E6yYK6wMTqPbXrQcJnOZa8KHbuXuaHGgvOy5ettOjdr6e+C8ZgUL4AiwpNGcL5Zk9iaH61JAultjYsHw/QYjziVYXelXMlZcu3djtASeL6kKnKJR5LpIPOYNdE+QKoeI+H7VcR+Ygx1k/5gQKkkgQ7GRCovyM+s6COMyQfaucZ48T3H+01PZVowPAZ780i598z0os5XzdDz1+MZK2s2XrfWaTlE+sNa4aMiZYbusgEBxKB9U8gByesml/d8A2CvGFWajSsp7F0FWM4zzqmiSpzPn1xpQqSYWGOPBl/tpTCVrYNpASlRZVnL9I0ucaU0BHZmwJDWnmOslBrqI=
+X-Gm-Message-State: AOJu0YwzwSIXOL1lwLx1RpSeVcmnS/tsXUdOv0hyQs698d7F4H3OCX/O
+	ZSd4XS6q9+YHuUbcrvH55H1Uk1J9BYzXCfERuBEYxgLVjoCoHEKs3DU7SnnmHu3MgsXH4FvTMln
+	XD27rqGH3DMHNgjDUSYdCoUz5GJE=
+X-Google-Smtp-Source: AGHT+IGasMltj1XTiWxWNEYkPSMxwP63y2jyTt8tLpdHn26unpYTPPkYdRp/dT6gEwD6NrNiKXUtIlL7PF9cDNubUq4=
+X-Received: by 2002:ac2:5f9b:0:b0:519:ab33:7459 with SMTP id
+ r27-20020ac25f9b000000b00519ab337459mr752898lfe.30.1713542091952; Fri, 19 Apr
+ 2024 08:54:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH 07/10] KVM: x86: Avoid NTP frequency skew for KVM clock on
- 32-bit host
-To: David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Sean Christopherson <seanjc@google.com>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Shuah Khan <shuah@kernel.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Oliver Upton <oliver.upton@linux.dev>, Marcelo Tosatti
- <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
-References: <20240418193528.41780-1-dwmw2@infradead.org>
- <20240418193528.41780-8-dwmw2@infradead.org>
-Content-Language: en-US
-Organization: Xen Project
-In-Reply-To: <20240418193528.41780-8-dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240411160051.2093261-1-rppt@kernel.org> <20240411160051.2093261-6-rppt@kernel.org>
+ <20240415075241.GF40213@noisy.programming.kicks-ass.net> <Zh1lnIdgFeM1o8S5@FVFF77S0Q05N.cambridge.arm.com>
+ <Zh4nJp8rv1qRBs8m@kernel.org> <CAPhsuW6Pbg2k_Gu4dsBx+H8H5XCHvNdtEZJBPiG_eT0qqr9D1w@mail.gmail.com>
+ <ZiE91CJcNw7gBj9g@kernel.org> <CAPhsuW4au6v8k8Ab7Ff6Yj64rGvZ7wkz=Xrgh8ZZtLyscpChqQ@mail.gmail.com>
+ <ZiFd567L4Zzm2okO@kernel.org> <CAPhsuW5SL4_=ZXdHZV8o0KS+5Vf25UMvEKhRgFQLioFtf2pgoQ@mail.gmail.com>
+ <ZiIVVBgaDN4RsroT@kernel.org>
+In-Reply-To: <ZiIVVBgaDN4RsroT@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Fri, 19 Apr 2024 08:54:40 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7WoU+a46FhqqH8f-3=ehxeD4wSgKDWegMin1pT49OSWw@mail.gmail.com>
+Message-ID: <CAPhsuW7WoU+a46FhqqH8f-3=ehxeD4wSgKDWegMin1pT49OSWw@mail.gmail.com>
+Subject: Re: [PATCH v4 05/15] mm: introduce execmem_alloc() and execmem_free()
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
+	linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Bjorn Topel <bjorn@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 18/04/2024 20:34, David Woodhouse wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> Commit 53fafdbb8b21 ("KVM: x86: switch KVMCLOCK base to monotonic raw
-> clock") did so only for 64-bit hosts, by capturing the boot offset from
-> within the existing clocksource notifier update_pvclock_gtod().
-> 
-> That notifier was added in commit 16e8d74d2da9 ("KVM: x86: notifier for
-> clocksource changes") but only on x86_64, because its original purpose
-> was just to disable the "master clock" mode which is only supported on
-> x86_64.
-> 
-> Now that the notifier is used for more than disabling master clock mode,
-> (well, OK, more than a decade later but clocks are hard), enable it for
-> the 32-bit build too so that get_kvmclock_base_ns() can be unaffected by
-> NTP sync on 32-bit too.
-> 
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
->   arch/x86/kvm/x86.c | 18 ++++++------------
->   1 file changed, 6 insertions(+), 12 deletions(-)
-> 
+On Thu, Apr 18, 2024 at 11:56=E2=80=AFPM Mike Rapoport <rppt@kernel.org> wr=
+ote:
+>
+> On Thu, Apr 18, 2024 at 02:01:22PM -0700, Song Liu wrote:
+> > On Thu, Apr 18, 2024 at 10:54=E2=80=AFAM Mike Rapoport <rppt@kernel.org=
+> wrote:
+> > >
+> > > On Thu, Apr 18, 2024 at 09:13:27AM -0700, Song Liu wrote:
+> > > > On Thu, Apr 18, 2024 at 8:37=E2=80=AFAM Mike Rapoport <rppt@kernel.=
+org> wrote:
+> > > > > > >
+> > > > > > > I'm looking at execmem_types more as definition of the consum=
+ers, maybe I
+> > > > > > > should have named the enum execmem_consumer at the first plac=
+e.
+> > > > > >
+> > > > > > I think looking at execmem_type from consumers' point of view a=
+dds
+> > > > > > unnecessary complexity. IIUC, for most (if not all) archs, ftra=
+ce, kprobe,
+> > > > > > and bpf (and maybe also module text) all have the same requirem=
+ents.
+> > > > > > Did I miss something?
+> > > > >
+> > > > > It's enough to have one architecture with different constrains fo=
+r kprobes
+> > > > > and bpf to warrant a type for each.
+> > > >
+> > > > AFAICT, some of these constraints can be changed without too much w=
+ork.
+> > >
+> > > But why?
+> > > I honestly don't understand what are you trying to optimize here. A f=
+ew
+> > > lines of initialization in execmem_info?
+> >
+> > IIUC, having separate EXECMEM_BPF and EXECMEM_KPROBE makes it
+> > harder for bpf and kprobe to share the same ROX page. In many use cases=
+,
+> > a 2MiB page (assuming x86_64) is enough for all BPF, kprobe, ftrace, an=
+d
+> > module text. It is not efficient if we have to allocate separate pages =
+for each
+> > of these use cases. If this is not a problem, the current approach work=
+s.
+>
+> The caching of large ROX pages does not need to be per type.
+>
+> In the POC I've posted for caching of large ROX pages on x86 [1], the cac=
+he is
+> global and to make kprobes and bpf use it it's enough to set a flag in
+> execmem_info.
+>
+> [1] https://lore.kernel.org/all/20240411160526.2093408-1-rppt@kernel.org
 
-Reviewed-by: Paul Durrant <paul@xen.org>
+For the ROX to work, we need different users (module text, kprobe, etc.) to=
+ have
+the same execmem_range. From [1]:
 
+static void *execmem_cache_alloc(struct execmem_range *range, size_t size)
+{
+..
+       p =3D __execmem_cache_alloc(size);
+       if (p)
+               return p;
+      err =3D execmem_cache_populate(range, size);
+..
+}
+
+We are calling __execmem_cache_alloc() without range. For this to work,
+we can only call execmem_cache_alloc() with one execmem_range.
+
+Did I miss something?
+
+Thanks,
+Song
 
