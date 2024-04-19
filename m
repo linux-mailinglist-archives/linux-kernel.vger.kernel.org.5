@@ -1,149 +1,182 @@
-Return-Path: <linux-kernel+bounces-151331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526178AAD11
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:50:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F7C8AAD14
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:50:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D18F1282906
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:50:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B958C1F21910
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDD3F80034;
-	Fri, 19 Apr 2024 10:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA82B80029;
+	Fri, 19 Apr 2024 10:50:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MAOxZKaB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rOID6TxS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5857883D
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:49:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D013B3D62;
+	Fri, 19 Apr 2024 10:50:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713523801; cv=none; b=rN26vqFoPI4lQ1fi9bN6PSBzJgLyB1PK1J4jauo59f+2C1kXoU2OiwUXV8iaVfF39s3Fnskl2/Y4CJbfFRF4BKqIc3sO8FZmdscqesDkaprUwrK2tn0k9jyyDM5h9cE8B/WNMe59ryfpoehV2K1z6ifqYi1bc7jCL0PnUMHrXJQ=
+	t=1713523818; cv=none; b=n1mrUS4Udb2Wk9zf0e6Kc8fStH4DGq7uI/KOnFUw0CdVqT/BvGqdxjyPab4anvXP1rlUyMeYAR6sL0K2jVTRZqAFejjBDw0mnrS0pbx88YULHoRQZa5t5Frai8DaqNhUsw1dVVQUHeVXEp2uA8gTjXmKZ13e9FGFt3/j3+NW1DM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713523801; c=relaxed/simple;
-	bh=hjId5g25Qv0MAFJVEGSlgl5IE0yTiV+lXkMvoweZIJc=;
-	h=From:To:Cc:Subject:Date:MIME-Version:Message-ID:In-Reply-To:
-	 References:Content-Type; b=pBOeq9yqiJYGaEFsaps6sbzQ8tpctgX5KceCehcZRnu2m5ZgoZuBJj2Mafc2KZNDs7CF0P93QkU7hFKhc8t8Bl5gE5VM3Tu82muHueneaHnAGfUp/UK7QHwY8UZBfwzaz4rY48RtqWWx4LcJrRwhPgV1svBNuVi2KGMALtKuipo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MAOxZKaB; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713523798;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EeYX0GCkCOIaHHXjBHu66M1OAJv9FbPYfe8qhd0NzCo=;
-	b=MAOxZKaBsiw14GPDKCms09K3E6i20/zff92X7I56EesLY2MoI9OBwMgyqRVEIlg3GELSu8
-	Vc9aGpGFS2XIxfhRQ7xY6mVxVu5J0yD4pRj+rGsOVETbDS3GzO97Bls8ksu8kEKqou3Vbl
-	tF+bGMDhux7Jgos1E8raxGcbG40MjeM=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-680-SsTqOgmpMbSVegwcKQrung-1; Fri, 19 Apr 2024 06:49:57 -0400
-X-MC-Unique: SsTqOgmpMbSVegwcKQrung-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2da2f30cb50so14291451fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 03:49:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713523796; x=1714128596;
-        h=content-transfer-encoding:user-agent:organization:references
-         :in-reply-to:message-id:mime-version:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EeYX0GCkCOIaHHXjBHu66M1OAJv9FbPYfe8qhd0NzCo=;
-        b=diTSSe4U0oKoG7hjqt04bncVvFqqXX07e+HemvxInHxhXCbvEkadOzzAGQGoA0QV2q
-         jfEHVW2K91AW6ceTQQfHe9U3pLA+UQZiX3M78JWjZ+M82UfGNleVJdG4NokCsE6B55Vd
-         U1VxbWYxUvJ1jTavQ4v4nFcqWEsxWuxlhBEFOhpl5ZldT9Acfx+ZFPESiaFnKna/bCOx
-         lx3cpIG3UAoIKNwe/ZjOzSfsXFHtPzpEE4PzFRhGTIfHmd8w+DqmBGXG6CpptwKU6qku
-         pM6hbPUzj5StUWZ8Mvr19+MKqRf+l6YNpg/KpnLwSwmXPtfuOdAWoCd8jPQnivF1b+mx
-         7pXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUxlgS6S8xucRf9eSeJp8NqDdImCqiYV3uuQrNq1ul2P6IlLvRXojxC5eBf/MdlR0el3VcUgrWPYyHt91ub9wG5QUCZ56ey7h6poryA
-X-Gm-Message-State: AOJu0YxobyuxMSsdmeoBXl+/LQKzTJ5kMSbWc4hIvMqkI9JuzU+jYsq5
-	xX/lEoBGNIyQPnt6WJIlLzjuw+qNrkEWivdkQng4AioZHjIS7oiS5ptdCp5VCce2u4ccLhuNaE4
-	Iq/AoOZCFB5dffZy62Qu8rxk3w9PZ6jRBWt45GNas8/mF94IlfZKUlPE2injo0A==
-X-Received: by 2002:a05:651c:ba8:b0:2da:802b:2154 with SMTP id bg40-20020a05651c0ba800b002da802b2154mr1212112ljb.16.1713523796109;
-        Fri, 19 Apr 2024 03:49:56 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEKOtccsa62gbBZd13tf2iicSZXbwVy7DIQiuVk1wQcVTSS2RHGWNvJAuAi46NFjX5Oaqwdcw==
-X-Received: by 2002:a05:651c:ba8:b0:2da:802b:2154 with SMTP id bg40-20020a05651c0ba800b002da802b2154mr1212098ljb.16.1713523795706;
-        Fri, 19 Apr 2024 03:49:55 -0700 (PDT)
-Received: from localhost (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id fm25-20020a05600c0c1900b00418e2b69e14sm5765738wmb.40.2024.04.19.03.49.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 03:49:55 -0700 (PDT)
-From: Hubert Kario <hkario@redhat.com>
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: <linux-crypto@vger.kernel.org>,
- <herbert@gondor.apana.org.au>,
- <davem@davemloft.net>,
- <linux-kernel@vger.kernel.org>,
- <jarkko@kernel.org>,
- <ardb@kernel.org>,
- <git@jvdsn.com>,
- <simo@redhat.com>
-Subject: Re: [PATCH v3 0/2] crypto: ecdh & ecc: Fix private key byte ordering =?iso-8859-1?Q?issues?=
-Date: Fri, 19 Apr 2024 12:49:54 +0200
+	s=arc-20240116; t=1713523818; c=relaxed/simple;
+	bh=eAPMP/cHU6KEqU8q+tfjHwFwP6sfACuYmS7UfdP3cxQ=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AV52X/Xj05a43+owiQVDbDg1UmM87FuieLTRB5WrlLWDMvIjnVe+cz7R7ZOmdYJ4sOs4KthiKmmOnyTd5IBeaZjhrUdaV0SuXkMOt6IZ2GCu058fBWhb2D+qeSalvwDVJ1aIF0ZduW3Dh6k5Vo50u6kod9hJPhQI7RxoQXZvaDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rOID6TxS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 926BAC072AA;
+	Fri, 19 Apr 2024 10:50:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713523817;
+	bh=eAPMP/cHU6KEqU8q+tfjHwFwP6sfACuYmS7UfdP3cxQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rOID6TxSj8ICbmG3K2hSpxaiXsYmGuiUYyl/zAQPai4WarYIPm2FfuZJIBA22F4+Z
+	 iCCLbg3aPmnn9MnnZIx8bhopueXsMx35kH0ct3PT5VRpxfz+gri19dtL11YmD9915P
+	 uTRlb9b0sesXfz8z/cpg9Qr0+2TY6ttkJmq7gESUVgQ01Qz4BV4kVKiU2nLMKmubIB
+	 3BxxJGefKXfpC+R99ZtwRgKYx760NUIzLefpMdp7l/ZBenY/Y7rIiEj8Sw0VMe+neh
+	 UHCZnmJHefmEsXIKBF0OaDwyyvsKu/HLZSPitNKNmuiB4EAl1Jd2nziXqQug2vFAr/
+	 oAuqx1ueRjjeg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rxlot-0063Xb-Ei;
+	Fri, 19 Apr 2024 11:50:15 +0100
+Date: Fri, 19 Apr 2024 11:50:14 +0100
+Message-ID: <86r0f1r5i1.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Mark Brown <broonie@kernel.org>,
+	stable@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com,
+	Yihuang Yu <yihyu@redhat.com>,
+	Gavin Shan <gshan@redhat.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Shaoqin Huang <shahuang@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: [PATCH 6.6 000/122] 6.6.28-rc1 review
+In-Reply-To: <2024041921-drown-dizzy-7481@gregkh>
+References: <20240415141953.365222063@linuxfoundation.org>
+	<Zh5UJh31PlBkpZWd@finisterre.sirena.org.uk>
+	<CA+G9fYu-AjRm-BBA=8fWS8oCbBJ5W443JHPh3uddD7ea7MY-YA@mail.gmail.com>
+	<86y19dqw74.wl-maz@kernel.org>
+	<Zh61KobDt_y1O46-@arm.com>
+	<86sezjq688.wl-maz@kernel.org>
+	<ZiECLaXHce05DSM6@arm.com>
+	<2024041921-drown-dizzy-7481@gregkh>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-ID: <15623fb6-1ecc-4e6a-872b-07172a3674aa@redhat.com>
-In-Reply-To: <20240418152445.2773042-1-stefanb@linux.ibm.com>
-References: <20240418152445.2773042-1-stefanb@linux.ibm.com>
-Organization: Red Hat
-User-Agent: Trojita/0.7-git; Qt/5.15.11; xcb; Linux; Fedora release 38 (Thirty Eight)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: gregkh@linuxfoundation.org, catalin.marinas@arm.com, naresh.kamboju@linaro.org, broonie@kernel.org, stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, yihyu@redhat.com, gshan@redhat.com, ryan.roberts@arm.com, anshuman.khandual@arm.com, shahuang@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, anders.roxell@linaro.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Both patches look good to me.
+On Fri, 19 Apr 2024 11:40:33 +0100,
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> 
+> On Thu, Apr 18, 2024 at 12:21:17PM +0100, Catalin Marinas wrote:
+> > On Thu, Apr 18, 2024 at 12:07:35PM +0100, Marc Zyngier wrote:
+> > > On Tue, 16 Apr 2024 18:28:10 +0100,
+> > > Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > > On Tue, Apr 16, 2024 at 02:22:07PM +0100, Marc Zyngier wrote:
+> > > > > On Tue, 16 Apr 2024 14:07:30 +0100,
+> > > > > Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > > > > > On Tue, 16 Apr 2024 at 16:04, Mark Brown <broonie@kernel.org> wrote:
+> > > > > > > On Mon, Apr 15, 2024 at 04:19:25PM +0200, Greg Kroah-Hartman wrote:
+> > > > > > > > This is the start of the stable review cycle for the 6.6.28 release.
+> > > > > > > > There are 122 patches in this series, all will be posted as a response
+> > > > > > > > to this one.  If anyone has any issues with these being applied, please
+> > > > > > > > let me know.
+> > > > > > >
+> > > > > > > The bisect of the boot issue that's affecting the FVP in v6.6 (only)
+> > > > > > > landed on c9ad150ed8dd988 (arm64: tlb: Fix TLBI RANGE operand),
+> > > > > > > e3ba51ab24fdd in mainline, as being the first bad commit - it's also in
+> > > > > > > the -rc for v6.8 but that seems fine.  I've done no investigation beyond
+> > > > > > > the bisect and looking at the commit log to pull out people to CC and
+> > > > > > > note that the fix was explicitly targeted at v6.6.
+> > > > > > 
+> > > > > > Anders investigated this reported issues and bisected and also found
+> > > > > > the missing commit for stable-rc 6.6 is
+> > > > > > e2768b798a19 ("arm64/mm: Modify range-based tlbi to decrement scale")
+> > > > > 
+> > > > > Which is definitely *not* stable candidate. We need to understand why
+> > > > > the invalidation goes south when the scale go up instead of down.
+> > > > 
+> > > > If you backport e3ba51ab24fd ("arm64: tlb: Fix TLBI RANGE operand")
+> > > > which fixes 117940aa6e5f ("KVM: arm64: Define
+> > > > kvm_tlb_flush_vmid_range()") but without the newer e2768b798a19
+> > > > ("arm64/mm: Modify range-based tlbi to decrement scale"), it looks like
+> > > > "scale" in __flush_tlb_range_op() goes out of range to 4. Tested on my
+> > > > CBMC model, not on the actual kernel. It may be worth adding some
+> > > > WARN_ONs in __flush_tlb_range_op() if scale is outside the 0..3 range or
+> > > > num greater than 31.
+> > > > 
+> > > > I haven't investigated properly (and I'm off tomorrow, back on Thu) but
+> > > > it's likely the original code was not very friendly to the maximum
+> > > > range, never tested. Anyway, if one figures out why it goes out of
+> > > > range, I think the solution is to also backport e2768b798a19 to stable.
+> > > 
+> > > I looked into this, and I came to the conclusion that this patch is
+> > > pretty much incompatible with the increasing scale (even if you cap
+> > > num to 30).
+> > 
+> > Thanks Marc for digging into this.
+> > 
+> > > So despite my earlier comment, it looks like picking e2768b798a19 is
+> > > the right thing to do *if* we're taking e3ba51ab24fd into 6.6-stable.
+> > > 
+> > > Otherwise, we need a separate fix, which Ryan initially advocating for
+> > > initially.
+> > 
+> > My preference would be to cherry-pick the two upstream commits than
+> > coming up with an alternative fix for 6.6.
+> 
+> To be specific, which 2 commits, and what order?
 
-On Thursday, 18 April 2024 17:24:43 CEST, Stefan Berger wrote:
-> The 1st patch fixes a byte ordering issue where ctx->private_key is
-> currently passed to ecc_is_key_valid but the key is in reverse byte order.
-> To solve this issue it introduces the variable 'priv', that is already used=
+That'd be:
 
-> throughout the ecc and ecdh code bases for a private key in proper byte
-> order, and calls ecc_is_key_valid with 'priv'. Note that ecc_gen_privkey
-> also calls __ecc_is_key_valid with 'priv' already.
->
-> The 2nd patch gets rid of the 'priv' variable wherever it is used to hold
-> a private key (byte-swapped initialized from ctx->private_key) in proper
-> byte order and uses ctx->private_key directly that is now initialized in
-> proper byte order.
->
-> Regards,
->   Stefan
->
-> v3:
->   - Added Jarkko's A-b tag
->   - Expanded on the description of changes to ecc_gen_privkey (2/2)
->
-> v2:
->   - Added missing zeroizing of priv variable (1/2)
->   - Improved patch description (2/2)
->
->
->
->
-> Stefan Berger (2):
->   crypto: ecdh - Pass private key in proper byte order to check valid
->     key
->   crypto: ecdh & ecc - Initialize ctx->private_key in proper byte order
->
->  crypto/ecc.c                  | 29 ++++++++++-------------------
->  crypto/ecdh.c                 |  9 ++++++---
->  include/crypto/internal/ecc.h |  3 ++-
->  3 files changed, 18 insertions(+), 23 deletions(-)
->
+e2768b798a19 ("arm64/mm: Modify range-based tlbi to decrement scale")
 
---=20
-Regards,
-Hubert Kario
-Principal Quality Engineer, RHEL Crypto team
-Web: www.cz.redhat.com
-Red Hat Czech s.r.o., Purky=C5=88ova 115, 612 00, Brno, Czech Republic
+followed by:
 
+e3ba51ab24fd ("arm64: tlb: Fix TLBI RANGE operand")
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
