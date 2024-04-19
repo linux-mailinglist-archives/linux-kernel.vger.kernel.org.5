@@ -1,135 +1,149 @@
-Return-Path: <linux-kernel+bounces-151890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15FDE8AB555
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:59:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 552C38AB55A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:01:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47A921C21A52
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:59:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E45BC1F21425
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D319813C3EF;
-	Fri, 19 Apr 2024 18:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D6413C3FF;
+	Fri, 19 Apr 2024 19:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="Sd1KqtwO"
-Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vhf1rzDV";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PplcsBRD"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E3ED268;
-	Fri, 19 Apr 2024 18:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4A8C8DE;
+	Fri, 19 Apr 2024 19:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713553174; cv=none; b=FrpM4YgSASJ4+Iu1tgHQOykOjn2z4EEdF/vdKgUYF/utibCwWr20ncq+/tnn6bdzH691NuCnZtZA4IRLw/OUB+J9fJDBeGi7qsHqxeqEzdn4TbmPbzf0tzgmgUzm1KhOeNA7biuQ1hQkMnzglT7ucvQ8nIE8tdXZt0F8DhhmbTU=
+	t=1713553264; cv=none; b=ZgnyGpG0Pgfs1qvvWi8Qy59YQnYvLBohIbmd8ffM3vuElDr1M9QpnE4fDD4yO66dwkIMCMgJ929EhRXyftZjyrRsXbY+HKjxW7az6+g3gk6i3tr+P8o1xuy4ZIRtd6I5SfI9Sv4XGvFsFVT8MBDec8rzYjYMnafFoMesBOrGcwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713553174; c=relaxed/simple;
-	bh=zc7hK6FmhDFh36aYZYPV5/Mr9PUKXJd7kPS4zb4mMvc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ejrSaHGlUKFsq4xjPw/yFbzHs27eFU2xryV9jgMqWnV8j8r9/xSHHdkT05xvjWbq3KchIUWn/++nYzwUOz7NBr0lwWMIGLWQCDfW7ZJKptZHmoQj9lxAz4MU6dEgLQqtNIEwn8BqaCR/iH5OkTWdEE/D7QZEttxsd/L1O5dX/Rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=Sd1KqtwO; arc=none smtp.client-ip=80.12.242.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id xtSDrOsn5GyaxxtSDrHjJe; Fri, 19 Apr 2024 20:59:22 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1713553162;
-	bh=2I3jLva1wdiI0o0x25jMo1zPcjOqTppfHxbSiAlKjg8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=Sd1KqtwO/Rb4T0qw82HGSZsYRymMWG/5jYRmGBZgv1LBFxlxicVu5Y/KiDq0UxPtA
-	 FZ3zbI5ji/wXRqwW2faLWd4iU/gBxGWhx8othrjCdlWXsjgR01nM3vjgrdopg3y1J3
-	 jVoyJTP5WyXwTxT0JmicNp80aUB2jTk4JQZOkWg4yRg+af9FnPeRKHWdyHuasH5vnt
-	 L7/peiyJJzfDMIlDJpxmIB+sk4TOmyzRZoa6UZGTgo/h+pLM/anuGSJRmMXO3pMYT3
-	 gK8ukZhFObXuVPfxBx25BWo3NjfSb3K9uUtcHGCkKaxhoBwjsHOSC9JADxF9gjS+Rj
-	 /frL5tAsu9qAw==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 19 Apr 2024 20:59:22 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <86920c17-13a7-4cc3-8603-ab6d757fef56@wanadoo.fr>
-Date: Fri, 19 Apr 2024 20:59:20 +0200
+	s=arc-20240116; t=1713553264; c=relaxed/simple;
+	bh=ugcejKN/8bnvBn8l5R62QNpOVWEX5fo+kneA8+gug5o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MGxY+ox7O7yTIQ9rP2Wu0ZZcObT/Rhw/cAQnrWu9pkFOMrDr3omYXZ3Pec2l4DDNbXgTJM/QK/kwuRD5liaZ6fNHesUwrvWofY+K3xc4e5zdgDH/bcBEpwAn4IZRuRR9749AOFkR/iw8vIVFZqpnpc7V89x8Km3lF75WZj602k8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vhf1rzDV; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PplcsBRD; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Nam Cao <namcao@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713553241;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=y/Mk5BsbEdPJv8VhsnLb8RYA6psPnj/he2tHNKR8Z40=;
+	b=vhf1rzDVQfE+/pOsWmkzBlegxqrjQuuESIAJdtotPXce6QuVJ6YaC6HifvsNYVnDhQgJa0
+	Lfr3oFEIan0WVRvty2I1nNaQXfnTx0Wmfp0aum6T8h4LMCeO/lYjQHhrn6aKCOP50LcI+u
+	YBprsuhsoxofF7tTDEWdgxI8RLR40An9nvdMPLEb1H/mgLt8KXvCj+Jx9ZWzhsRybm+UAA
+	EXwHepNbnvBxF3I0u2ryueoFrfLDW2cluNB8c0cdNntvY3qWhItvwxmvqohbBHFMU4+Y7z
+	53x9kfZQMMjT5VQq2/UKdPofyY5PT2gj8eWbMCBPyK2BLuDvbTVrR6Qwi8gqSw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713553241;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=y/Mk5BsbEdPJv8VhsnLb8RYA6psPnj/he2tHNKR8Z40=;
+	b=PplcsBRDDf6zq+QhZEMuFbhwBir7skqDABVWyD78qtxe3KSN0aak49/olGdQdBYu1n8YLM
+	te0wsKuJFRXt63BQ==
+To: Jaya Kumar <jayalk@intworks.biz>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Helge Deller <deller@gmx.de>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Cc: tiwai@suse.de,
+	namcao@linutronix.de,
+	bigeasy@linutronix.de,
+	patrik.r.jakobsson@gmail.com,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	George Kennedy <george.kennedy@oracle.com>,
+	Darren Kenny <darren.kenny@oracle.com>,
+	chuansheng.liu@intel.com,
+	Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] fbdev: fix incorrect address computation in deferred IO
+Date: Fri, 19 Apr 2024 21:00:32 +0200
+Message-Id: <20240419190032.40490-1-namcao@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] seq_file: Optimize seq_puts()
-To: Al Viro <viro@zeniv.linux.org.uk>, David Laight <David.Laight@aculab.com>
-Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-References: <5c4f7ad7b88f5026940efa9c8be36a58755ec1b3.1704374916.git.christophe.jaillet@wanadoo.fr>
- <4b1a4cc5-e057-4944-be69-d25f28645256@wanadoo.fr>
- <20240415210035.GW2118490@ZenIV>
- <ba306b2a1b5743bab79b3ebb04ece4df@AcuMS.aculab.com>
- <20240417010430.GB2118490@ZenIV>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240417010430.GB2118490@ZenIV>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-Le 17/04/2024 à 03:04, Al Viro a écrit :
-> On Tue, Apr 16, 2024 at 08:56:51PM +0000, David Laight wrote:
-> 
->>> static inline void seq_puts(struct seq_file *m, const char *s)
->>
->> That probably needs to be 'always_inline'.
-> 
-> What for?  If compiler fails to inline it (and I'd be very surprised
-> if that happened - if s is not a constant string, we get a straight call
-> of __seq_puts() and for constant strings it boils down to call of
-> seq_putc(m, constant) or seq_write(m, s, constant)), nothing bad
-> would happen; we'd still get correct behaviour.
-> 
->>> {
->>> 	if (!__builtin_constant_p(*s))
->>> 		__seq_puts(m, s);
->>> 	else if (s[0] && !s[1])
->>> 		seq_putc(m, s[0]);
->>> 	else
->>> 		seq_write(m, s, __builtin_strlen(s));
->>> }
->>
->> You missed seq_puts(m, "");
-> 
-> Where have you seen one?
+With deferred IO enabled, a page fault happens when data is written to the
+framebuffer device. Then driver determines which page is being updated by
+calculating the offset of the written virtual address within the virtual
+memory area, and uses this offset to get the updated page within the
+internal buffer. This page is later copied to hardware (thus the name
+"deferred IO").
 
-Based on results from:
-    git grep seq_puts.*\"\"
+This calculation is only correct if the virtual memory area is mapped to
+the beginning of the internal buffer. Otherwise this is wrong. For example,
+if users do:
+    mmap(ptr, 4096, PROT_WRITE, MAP_FIXED | MAP_SHARED, fd, 0xff000);
 
-there is no such cases.
+Then the virtual memory area will mapped at offset 0xff000 within the
+internal buffer. This offset 0xff000 is not accounted for, and wrong page
+is updated. This will lead to wrong pixels being updated on the device.
 
+However, it gets worse: if users do 2 mmap to the same virtual address, for
+example:
 
->  And if it gets less than optimal, who cares?
-> 
->> Could you do:
->> 	size_t len = __builtin_strlen(s);
->> 	if (!__builtin_constant_p(len))
->> 		__seq_puts(m, s);
->> 	else switch (len){
->> 	case 0: break;
->> 	case 1: seq_putc(m, s[0]);
+    int fd =3D open("/dev/fb0", O_RDWR, 0);
+    char *ptr =3D (char *) 0x20000000ul;
+    mmap(ptr, 4096, PROT_WRITE, MAP_FIXED | MAP_SHARED, fd, 0xff000);
+    *ptr =3D 0; // write #1
+    mmap(ptr, 4096, PROT_WRITE, MAP_FIXED | MAP_SHARED, fd, 0);
+    *ptr =3D 0; // write #2
 
-missing break;
+In this case, both write #1 and write #2 apply to the same virtual address
+(0x20000000ul), and the driver mistakenly thinks the same page is being
+written to. When the second write happens, the driver thinks this is the
+same page as the last time, and reuse the page from write #1. The driver
+then lock_page() an incorrect page, and returns VM_FAULT_LOCKED with the
+correct page unlocked. It is unclear what will happen with memory
+management subsystem after that, but likely something terrible.
 
->> 	default: seq_write(m, s, len);
->> 	}
-> 
-> Umm...  That's probably OK, but I wonder how useful would that
-> be...
-> 
+Fix this by taking the mapping offset into account.
 
-Thanks all for your feedback.
+Reported-and-tested-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.c=
+om>
+Closes: https://lore.kernel.org/linux-fbdev/271372d6-e665-4e7f-b088-dee5f4a=
+b341a@oracle.com
+Fixes: 56c134f7f1b5 ("fbdev: Track deferred-I/O pages in pageref struct")
+Cc: stable@vger.kernel.org
+Signed-off-by: Nam Cao <namcao@linutronix.de>
+---
+ drivers/video/fbdev/core/fb_defio.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I'll send a v2.
-
-CJ
-
-> 
+diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core=
+/fb_defio.c
+index dae96c9f61cf..d5d6cd9e8b29 100644
+--- a/drivers/video/fbdev/core/fb_defio.c
++++ b/drivers/video/fbdev/core/fb_defio.c
+@@ -196,7 +196,8 @@ static vm_fault_t fb_deferred_io_track_page(struct fb_i=
+nfo *info, unsigned long
+  */
+ static vm_fault_t fb_deferred_io_page_mkwrite(struct fb_info *info, struct=
+ vm_fault *vmf)
+ {
+-	unsigned long offset =3D vmf->address - vmf->vma->vm_start;
++	unsigned long offset =3D vmf->address - vmf->vma->vm_start
++			+ (vmf->vma->vm_pgoff << PAGE_SHIFT);
+ 	struct page *page =3D vmf->page;
+=20
+ 	file_update_time(vmf->vma->vm_file);
+--=20
+2.39.2
 
 
