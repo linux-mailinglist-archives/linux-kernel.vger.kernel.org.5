@@ -1,88 +1,205 @@
-Return-Path: <linux-kernel+bounces-151936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 620028AB605
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:33:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 670728AB607
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:34:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02FA21F21B7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:33:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A6A01C2198F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA0D764F;
-	Fri, 19 Apr 2024 20:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2D91118B;
+	Fri, 19 Apr 2024 20:34:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SJr8GvuA"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="MnyEiFVk";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="1hnXvVM2"
+Received: from mailrelay3-1.pub.mailoutpod2-cph3.one.com (mailrelay3-1.pub.mailoutpod2-cph3.one.com [46.30.211.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD9D11170D
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 20:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F406E1118A
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 20:34:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713558803; cv=none; b=f0TKJ0y3AvFbsS2W/r8pT9B82Ey9i10L7Npo6dMrD5+2qQhXYPnbd4VpKtmXL0gP9nK1bCLJ6Uakw32DRW35YRc8dV1K/C6Ln+zPlddObbVbODeMJA54BpO3UxLrQFa430tzP1Hb1BEJVd0kvlXs+qFgIRNPoaFihxX7+QOeGLw=
+	t=1713558887; cv=none; b=Qpg5BQMuIuemkrW1LZ1qiyvfivE1nI0rPXASdh3RlYwRO2V+mdm7kptZ0nypqnfKXP9cCrAClNZwDAEFSgCdBCYmgUlkTVQ/RsoPW12Gau45qK3DtnTU0szN4/2DFAUXb49d0QD4iYCkF037N072W+aYJmBuJJGskHm9OmCq5t0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713558803; c=relaxed/simple;
-	bh=+7yAnQjLOwY8eotLH3n+GRmYa/kTB7nFodBZZ3/Ch0k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K8bTtxU6Quob4U6jeGyBqX39jKV0h6rTzNm0sbdEZhCWOAYWGTcdEmbV7Bo4z+4JLCJ7VM9OrYFmjfQb88nyAX/GUKvOtk2o2kgzYpbNgdw8wSB5WPC4wKuHaJ8iK10dQ71OC6fFcqjV+TXc3TT4r9M64R+cNDApIAu85Xe70uU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SJr8GvuA; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713558801; x=1745094801;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+7yAnQjLOwY8eotLH3n+GRmYa/kTB7nFodBZZ3/Ch0k=;
-  b=SJr8GvuAUm7pgXNkQSX9ZEqgSQ6IpgkzNLoxeIsx3VLbhCwKR0Rc3c+8
-   cYS9FlM66n90+k5LcIJdnh7XMxy+8QWFrbe8wjlGRz0RXayj2tpTbgIBN
-   zc4tOLuXcOsd6qOOWpXfzlGBrejUEp7ALranSiX142M+cavJsMyy6kLxM
-   bup+54kviQPXD8ySyBhklX/ZwGrakbKavP5sfDrGO9sj3UvFCuwemSdKM
-   FeVuSE/qZRWkPtM9526l8/cKUZlEPzrIkpP27pyBvz2vQyd+2LA5bSmgQ
-   1uRf1yiJc9OZtTMBoVfenZnzAJtj1klXV4BjZpZBOv6+EhL9w9Wm60z+o
-   g==;
-X-CSE-ConnectionGUID: 31Y0WEgfT3eI18lGn5S6Gg==
-X-CSE-MsgGUID: 2PrTJCCwTLaRpm5dtrVG5A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="26694651"
-X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
-   d="scan'208";a="26694651"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 13:33:21 -0700
-X-CSE-ConnectionGUID: JDSwDXOsQ7W00BXO1srI2A==
-X-CSE-MsgGUID: C87isBRxRteH+yj/0ZGzHA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
-   d="scan'208";a="23462599"
-Received: from mmihaitx-mobl.ger.corp.intel.com (HELO [10.125.66.30]) ([10.125.66.30])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 13:33:20 -0700
-Message-ID: <b6ae9f58-c883-4d82-aeff-7f85337d9ef7@linux.intel.com>
-Date: Fri, 19 Apr 2024 13:33:18 -0700
+	s=arc-20240116; t=1713558887; c=relaxed/simple;
+	bh=jsNFyX+UqakUKLcMvkHbDUM9oTRLL9cxwzpKLZBXvD0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZlmCTzVz0sJyj40cJCB8ywubzqNBOcY/NMRF/iIolJzF972tbI64CeZOWkoUBQb/R2zy+LtVD9RuhRC1q5WgKsDPqO38G2eZX94I+BDR4/Rzqc3GQI3Mao73f1lgQjIIhRKRF7/ALTbYKYCRL3eyrXAgbbg/Oeprna4p+gb98rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=MnyEiFVk; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=1hnXvVM2; arc=none smtp.client-ip=46.30.211.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=rsa1;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=kFPdY1ZX/9aPR1Qd/Z+2kf2AETIJI1lTPV3LIR/f+NM=;
+	b=MnyEiFVkl/n7XjywrBokadxLjQDiCZpi3Av/ovKFhvKlo3YtodWHPWCKPMIa3A/m54UaAU0ImuwXK
+	 mRD1k2xl7y1DctylRMhAs8FLD3b22OuJSb2NMnOxS1xEr04HyPinYRoW5FNsloB4t0atCdhboXtDs1
+	 jT8ZV4uWECiAz8L0KzUCoyAv1WfPM32ijHjRem9LXnI3mb48qlb/EpXj/oetHHpHtnKgpzbRr40Pqq
+	 cyupaKK/XG6Z7VHMrtM6cpACnEtaRUBXUPgGr5yUQtZt2SAtpF7hK/2Pbp2ZyxuZS/ZBwEjEEv+Fg6
+	 O3ndDj8foSDpdcl7+OwihSWnUwhxfCg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed1;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=kFPdY1ZX/9aPR1Qd/Z+2kf2AETIJI1lTPV3LIR/f+NM=;
+	b=1hnXvVM2/nmmAD45sl4bQAgTkVeLkDpsmz6oB3hge+57vwHI+BgflL/qwx7bf929MgCoReHCBLdbE
+	 bX5GqO6DA==
+X-HalOne-ID: 142855b1-fe8c-11ee-a58f-79f4c2873f57
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay3.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id 142855b1-fe8c-11ee-a58f-79f4c2873f57;
+	Fri, 19 Apr 2024 20:33:32 +0000 (UTC)
+Date: Fri, 19 Apr 2024 22:33:29 +0200
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: davem@davemloft.net, andreas@gaisler.com, sparclinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org, yury.norov@gmail.com
+Subject: Re: [PATCH 0/5] Remove onstack cpumask var usage
+Message-ID: <20240419203329.GA590733@ravnborg.org>
+References: <20240418104949.3606645-1-dawei.li@shingroup.cn>
+ <20240419051350.GA558245@ravnborg.org>
+ <A60F94A9589C8589+ZiI4yj073cgmt5Qq@centos8>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/14] x86/gds: Lock GDS mitigation when keylocker feature
- is present
-To: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org, dan.j.williams@intel.com,
- bernie.keany@intel.com, charishma1.gairuboyina@intel.com,
- chang.seok.bae@intel.com, Josh Poimboeuf <jpoimboe@kernel.org>,
- antonio.gomez.iglesias@linux.intel.com
-References: <20240407230432.912290-1-chang.seok.bae@intel.com>
- <20240419-gds-lock-v1-1-adcbef6ce24b@linux.intel.com>
- <24713e0d-779f-4084-ba5c-7375d4b05955@linux.intel.com>
- <20240419201918.czmg6rq3whovhafw@desk>
-Content-Language: en-US
-From: Daniel Sneddon <daniel.sneddon@linux.intel.com>
-In-Reply-To: <20240419201918.czmg6rq3whovhafw@desk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <A60F94A9589C8589+ZiI4yj073cgmt5Qq@centos8>
 
-On 4/19/24 13:19, Pawan Gupta wrote:
-> ... mcu_ctrl is read here, it will overwrite any previous value.Ah, yep. Bummer.
+Hi Dawei,
+
+> About this case, it's kinda tricky for:
+> - dr_cpu_data() returns void, so alloc_cpumask_var() is no go.
+> 
+> - No idea of the calling context of dr_cpu_data(). IIUC,
+>   dr_cpu_data()
+>   ->dr_cpu_configure()  
+>    ->kzalloc(resp_len, GFP_KERNEL)
+>   So I guess it's in process context?
+>   If consumption above is OK, a simple but _ugly_ solution could be:
+> 
+> diff --git a/arch/sparc/kernel/ds.c b/arch/sparc/kernel/ds.c
+> index ffdc15588ac2..c9e4ebdccf49 100644
+> --- a/arch/sparc/kernel/ds.c
+> +++ b/arch/sparc/kernel/ds.c
+> @@ -634,7 +634,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
+>         struct dr_cpu_tag *tag = (struct dr_cpu_tag *) (data + 1);
+>         u32 *cpu_list = (u32 *) (tag + 1);
+>         u64 req_num = tag->req_num;
+> -       cpumask_t mask;
+> +       static DEFINE_MUTEX(mask_lock);
+> +       static cpumask_t mask;
+>         unsigned int i;
+>         int err;
+> 
+> @@ -651,6 +652,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
+> 
+>         purge_dups(cpu_list, tag->num_records);
+> 
+> +       mutex_lock(&mask_lock);
+> +
+>         cpumask_clear(&mask);
+>         for (i = 0; i < tag->num_records; i++) {
+>                 if (cpu_list[i] == CPU_SENTINEL)
+> @@ -665,6 +668,8 @@ static void dr_cpu_data(struct ds_info *dp, struct ds_cap_state *cp, void *buf,
+>         else
+>                 err = dr_cpu_unconfigure(dp, cp, req_num, &mask);
+> 
+> +       mutex_unlock(&mask_lock);
+> +
+>         if (err)
+>                 dr_cpu_send_error(dp, cp, data);
+>  }
+> 
+> How does it sound to you?
+This introduces too much complexity to solve a potential stack issue.
+If an improvement is required, then we need a simpler solution.
+
+> 
+> > kernel/leon_kernel.c:   cpumask_t mask;
+> 
+> It's in irqchip::irq_set_affinity(), which is in atomic context(raw spinlock(s) held),
+> so dynamic allocation is not a good idea.
+> 
+> My proposal(*untested*) is somewhat complicated for it introduces a new helper.
+> 
+> diff --git a/arch/sparc/kernel/leon_kernel.c b/arch/sparc/kernel/leon_kernel.c
+> index 4c61da491fee..6eced7acb8bc 100644
+> --- a/arch/sparc/kernel/leon_kernel.c
+> +++ b/arch/sparc/kernel/leon_kernel.c
+> @@ -104,15 +104,25 @@ unsigned long leon_get_irqmask(unsigned int irq)
+>  }
+> 
+>  #ifdef CONFIG_SMP
+> +
+> +static bool cpumask_include(const struct cpumask *srcp1, const struct cpumask *srcp2)
+> +{
+> +       unsigned int cpu;
+> +
+> +       for_each_cpu(cpu, srcp2) {
+> +               if (!cpumask_test_cpu(cpu, srcp1))
+> +                       return false;
+> +       }
+> +
+> +       return true;
+> +}
+> +
+>  static int irq_choose_cpu(const struct cpumask *affinity)
+>  {
+> -       cpumask_t mask;
+> +       unsigned int cpu = cpumask_first_and(affinity, cpu_online_mask);
+> 
+> -       cpumask_and(&mask, cpu_online_mask, affinity);
+> -       if (cpumask_equal(&mask, cpu_online_mask) || cpumask_empty(&mask))
+> -               return boot_cpu_id;
+> -       else
+> -               return cpumask_first(&mask);
+> +       return cpumask_include(affinity, cpu_online_mask) || cpu >= nr_cpu_ids ?
+> +              boot_cpu_id : cpu;
+>  }
+
+I think something like the following should do the trick.
+
+
+	if (cpumask_equal(affinity, cpu_online_mask))
+		return boot_cpu_id;
+
+	cpuid = cpumask_first_and(affinity, cpu_online_mask);
+	if (cpuid < nr_cpu_ids)
+		return cpuid;
+	else
+		return boot_cpu_id;
+
+If the passed affinity equals the online cpu's, then use the boot cpu.
+Else, use the first online cpu in the affinity mask.
+If none found use the boot cpu.
+
+
+
+>  #else
+>  #define irq_choose_cpu(affinity) boot_cpu_id
+> 
+> Is it OK?
+> 
+> [cc Yury for bitmap API]
+> 
+> > kernel/leon_smp.c:static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+> > kernel/sun4d_smp.c:static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+Looks simple, just pass a pointer and not by value.
+> 
+> Actually I am awared of existence of (at least some of) them, but so far I
+> have not found a _proper_ way of dealing with them(especially for case of
+> ds.c).
+> 
+> Please lemme dig into it.
+Looks forward to next iteration.
+
+	Sam
 
