@@ -1,138 +1,114 @@
-Return-Path: <linux-kernel+bounces-151879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E71048AB525
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:40:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DE028AB52B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:45:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 256761C20F04
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:40:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 786B71C21092
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEFEC2A1CA;
-	Fri, 19 Apr 2024 18:40:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E9312E1ED;
+	Fri, 19 Apr 2024 18:45:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hw57Y5jz"
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CNTgdd1M"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0AA728F1
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 18:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD50225CF;
+	Fri, 19 Apr 2024 18:45:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713552005; cv=none; b=G8mU3eM3288uCvd+i+qmReXLDtaiBR6WJbyuLYTovM1T0nYC+rV+zOav1Hh0F8woDEo+PWb2zMC3+eFPLgJ4LC/jYL8yiPnRVLJiBlK9qVpcy9OXyNgLBlWj3OANwWx60nqmO8IBbSwIkbDyN/0my2YYqlkxkjs7DEBiTkCG3is=
+	t=1713552345; cv=none; b=Bqk3fd+PQkfb900tSbCjDE5TdLkkj083tqHd/5e61p1ypxi/tkFoDJxv7E282GcoPozT7VKiKto+3SrktjQCkAHs5od4qHxver/7VTQGkbTGE4yQHestBKDaC1HDSmXGDJDh1ret6sXgZ4Es8QiuWJK0xqjNnuo2a0TrQnPp7m4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713552005; c=relaxed/simple;
-	bh=84mRXH5nKKq7zATKWocjus7qLMMvkm5k5IIZ35P4EMw=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=QYmbMBYnVpZ83ORjd95bVeBZdaH4vag+W/0Z9oiMpDVxHJeYV1B96AfPUXyUP4Zo1DygWus6m8Gm8p0UW9SFUz/tHWbI9xlVGnI6tHalea7q0mKeqJyi7QeexT5kxtFF8sEu8PXGhC2SCT8wl+3nndegNQxh4VAeM28bIeYYKCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hw57Y5jz; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6ea26393116so1457345a34.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713552003; x=1714156803; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=84mRXH5nKKq7zATKWocjus7qLMMvkm5k5IIZ35P4EMw=;
-        b=Hw57Y5jzqhGhrtcBalohevAwux7Trz431d+HWbZMz7e4YNrMoUgl1NL2kg9L8RYHI8
-         PlE+N3z2EjydK5Uq/NV76kY+0e5iYLdrp+Z0tcFLaZSoVfP4AX50CZn/AtPQnLcB96a6
-         qK/JUECbepzIh739W1hOO8vR1wIpb9l2MeOX4DytdbKzfD//s1R8R1NcYydCRdU8VYvL
-         vAD8roZVLt+wAwzzfgBo3QkZpFeUNNiJ7uD72KzN2c4vKBIeTzuGEpMPJLpUn3QvpYla
-         FOeIPwuzJmpP8ZaPvCdfMPcagyEX5paPzmhZyHUVdFy2lHnjRUVpXdr0+40QFjriAX64
-         Byww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713552003; x=1714156803;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=84mRXH5nKKq7zATKWocjus7qLMMvkm5k5IIZ35P4EMw=;
-        b=jy4Z+yC9zOmChje3tOv3iPov1tALY/J1KnbA8z8Ok1GBI1gaA/vq0ytgcnvem7T+XZ
-         VkDPdZe7vHrvjo4QJbM4K7PQQUhNn0lsAGE8Is3LQVlCWBCEgoqD6kySzDJsfIcvkG/t
-         RWMNM0xWYLCn8OLkSfYwMN/3xYXeskavCdTfxkMCSzJrJoF1iy2UfZFinYYMgH+SCBEk
-         dMxvCvTn/8rqFXO8Krdu3Ksuvhs5e2ziG7QAtW8aRjCvMTNS3rF7HMejp+luCQgivl68
-         yWArZwVFHVXEnewQIA/hUqmw6h3pLtAw7extf3pZwf10NN1NEPFvBf+zngnVl/zn/m3M
-         A+SA==
-X-Forwarded-Encrypted: i=1; AJvYcCU88HyKwMUkCGwj1a95ok7jiyTqaE2foW+qUkvluFcSvlCCVP3lM4ozjt5qx/ddrBpA8J3sNGHAmWl2OCUtyFFYyi7XWY8rhDga27ST
-X-Gm-Message-State: AOJu0YxpLOr11c0DrtiEnR6bcBm8Ys+ZA5o7vBxPCbpGRNxozqkAgrTP
-	hpKd1n31i6VhLdwQsiSJYOVzEfKS88/jSPZ+TMpU9bjQBoFsq2nG
-X-Google-Smtp-Source: AGHT+IG61CBGNpBR2TQY2OBRo2uoW+1B+2+D3/d94h4yz8WG2qoOxPMgfFalgVh5IE+Vx9XFHbSh5Q==
-X-Received: by 2002:a05:6830:2084:b0:6eb:8ccf:2a8e with SMTP id y4-20020a056830208400b006eb8ccf2a8emr3111953otq.38.1713552002968;
-        Fri, 19 Apr 2024 11:40:02 -0700 (PDT)
-Received: from [127.0.0.1] ([106.194.121.201])
-        by smtp.gmail.com with ESMTPSA id f4-20020a656284000000b005c6617b52e6sm3116408pgv.5.2024.04.19.11.39.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 11:40:02 -0700 (PDT)
-Date: Sat, 20 Apr 2024 00:09:56 +0530 (GMT+05:30)
-From: Shresth Prasad <shresthprasad7@gmail.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: vincenzo.mezzela@gmail.com, gregkh@linuxfoundation.org,
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-	Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org,
-	rafael@kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <5128b428-c26e-46ea-8289-1e7580f4fbf8@gmail.com>
-In-Reply-To: <20240419182642.b7li4mlnvryephhg@bogus>
-References: <CAE8VWiLErhCkD9w+Rbh8mTnRQs-4iJDBrWdVXXFFFDQ3yeTaLg@mail.gmail.com> <20240419182642.b7li4mlnvryephhg@bogus>
-Subject: Re: [PATCH] drivers: use __free attribute instead of of_node_put()
+	s=arc-20240116; t=1713552345; c=relaxed/simple;
+	bh=TRulkkAOvsGRfjsQewped+Ly0aSe8u9aY8qD+MMGqPI=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=reNkSt69FBGMWu1R0xiTajG18SwZp+SLm7uCnNeV93msOXgx3qe/Nm7IRTo/xy0L+4usZlO3LMaiymgtmlWu6GBZscV92XJKpoAdDTyMBR1WEToM3Ul3Jo1i+lAylHUxoxBlyLfPLCRJbcrFmxux8f2Zcd98oUbzWLgtRGWmOIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=CNTgdd1M; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
+	:Reply-To:Content-ID:Content-Description;
+	bh=TRulkkAOvsGRfjsQewped+Ly0aSe8u9aY8qD+MMGqPI=; b=CNTgdd1MuSz3QNZBgNyK++zRA8
+	IJCzl9muTPkk0MydVImRTa0dpivKn7Dbi1kcYJH3iJzoWJZBE0lG6owXlMrn99Ek6WSIT8Vhuxiwn
+	8n3toDSKggCO04GXUpRkuvZRnoKujay3W9tIqazCJTtqsiwCrYwUdEPQW8XRCDw5TTrDYD2cjfhXf
+	QLHOpGNeKBvSxoEK/VM7RHlNPAs2wkvlCCrO6pGiG8fRHUlNcT58B08uI5I6xvr52LVhiJ0ychxPy
+	9kBjqE02y5l4F6PhemUgLGn2HgJWe8BmPp21xtRCiekrbuCg2mGo8DV8OB/s/ZdQMZjYS5Yqu9VVy
+	4AMVwlag==;
+Received: from [154.49.97.68] (helo=[127.0.0.1])
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rxtEg-00000008IaG-2MiK;
+	Fri, 19 Apr 2024 18:45:23 +0000
+Date: Fri, 19 Apr 2024 19:43:43 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Chen, Zide" <zide.chen@intel.com>, Jack Allister <jalliste@amazon.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Sean Christopherson <seanjc@google.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Shuah Khan <shuah@kernel.org>
+CC: Paul Durrant <paul@xen.org>, kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_2/2=5D_KVM=3A_selftests=3A_Add_KVM/PV_c?=
+ =?US-ASCII?Q?lock_selftest_to_prove_timer_drift_correction?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <17F1A2E9-6BAD-40E7-ACDD-B110CFC124B3@infradead.org>
+References: <20240408220705.7637-1-jalliste@amazon.com> <20240408220705.7637-3-jalliste@amazon.com> <3664e8ec-1fa1-48c0-a80d-546b7f6cd671@intel.com> <17F1A2E9-6BAD-40E7-ACDD-B110CFC124B3@infradead.org>
+Message-ID: <65FF4D51-05A8-42E0-9D07-6E42913CC75E@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Correlation-ID: <5128b428-c26e-46ea-8289-1e7580f4fbf8@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
-19 Apr 2024 11:56:47 pm Sudeep Holla <sudeep.holla@arm.com>:
+On 19 April 2024 19:40:06 BST, David Woodhouse <dwmw2@infradead=2Eorg> wrot=
+e:
+>On 19 April 2024 18:13:16 BST, "Chen, Zide" <zide=2Echen@intel=2Ecom> wro=
+te:
+>>I'm wondering what's the underling theory that we definitely can achieve
+>>=C2=B11ns accuracy? I tested it on a Sapphire Rapids @2100MHz TSC freque=
+ncy,
+>>and I can see delta_corrected=3D2 in ~2% cases=2E
+>
+>Hm=2E Thanks for testing!
+>
+>So the KVM clock is based on the guest TSC=2E Given a delta between the g=
+uest TSC T and some reference point in time R, the KVM clock is expressed a=
+s a(T-R)+r, where little r is the value of the KVM clock when the guest TSC=
+ was R, and (a) is the rate of the guest TSC=2E
+>
+>When set the clock with KVM_SET_CLOCK_GUEST, we are changing the values o=
+f R and r to a new point in time=2E Call the new ones Q and q respectively=
+=2E
+>
+>But we calculate precisely (within 1ns at least) what the KVM clock would=
+ have been with the *old* formula, and adjust our new offset (q) so that at=
+ our new reference TSC value Q, the formulae give exactly the same result=
+=2E
+>
+>And because the *rates* are the same, they should continue to give the sa=
+me results, =C2=B11ns=2E
+>
+>Or such *was* my theory, at least=2E=20
+>
+>Would be interesting to see it disproven with actual numbers for the old+=
+new pvclock structs, so I can understand where the logic goes wrong=2E
+>
+>Were you using frequency scaling?
+>
 
-> On Fri, Apr 19, 2024 at 11:16:37PM +0530, Shresth Prasad wrote:
->>> Please fix the subject line to be "backlight: <driver>: ...". I came
->>> very close to deleting this patch without reading it ;-) .
->>=20
->> Really sorry about that, I'll fix it.
->>=20
->>> Do we need to get dev->of_node at all? The device, which we are
->>> borrowing, already owns a reference to the node so I don't see
->>> any point in this function taking an extra one.
->>>=20
->>> So why not simply make this:
->>>=20
->>> =C2=A0=C2=A0=C2=A0 struct device_node *np =3D dev->of_node;
->>=20
->> Looking at it again, I'm not sure why the call to of_node_put is there i=
-n
->> the first place. I think removing it would be fine.
->>=20
->> I'll fix both of these issues and send a patch v2.
->=20
-> I assume you are using lore "Reply using the --to, --cc, and..." option
-> or something similar.
->=20
-> You seem to have mixed up 2 different message ID. I was not able to make
-> any sense of this email.
->=20
-> You have wrongly used [1] but you really want [2]. I think both have
-> very similar $subject and hence the confusion. Another reason
-> why getting subject right is very important on the mailing list.
->=20
-> --=20
-> Regards,
-> Sudeep
->=20
-> [1] 20240419131956.665769-1-vincenzo.mezzela@gmail.com
-> (https://lore.kernel.org/all/20240419131956.665769-1-vincenzo.mezzela@gma=
-il.com/)
-> [2] 20240419111613.GA12884@aspen.lan
-> https://lore.kernel.org/all/20240419111613.GA12884@aspen.lan/
-I'm very new to using mailing lists, sorry for any confusion. I was indeed =
-using the reply option on lore. I'll be more careful next.
-
-Is there anyway to remove the incorrect reply from this thread?
-
-Regards,
-Shresth Prasad
+Oh, also please could you test the updated version I posted yesterday, fro=
+m https://git=2Einfradead=2Eorg/?p=3Dusers/dwmw2/linux=2Egit;a=3Dshortlog;h=
+=3Drefs/heads/clocks
 
