@@ -1,233 +1,214 @@
-Return-Path: <linux-kernel+bounces-151575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 095CA8AB098
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:19:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91A6E8AB0A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:22:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C30A1C21212
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:19:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B586F1C219E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D7D12E1C4;
-	Fri, 19 Apr 2024 14:19:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADC912D76B;
+	Fri, 19 Apr 2024 14:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="TiZkFHU9"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2047.outbound.protection.outlook.com [40.107.243.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="RPcZBAc+"
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47D782E40E;
-	Fri, 19 Apr 2024 14:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713536369; cv=fail; b=V8qhbym715BvYsq/AVNBYy5iJTQVR6GbWOpmXp1XRcaypQUSyY8yHOPCqZb6thzsAy1SMboUKmS+EQi+AsgwMPtJO9wPnGkBS8re1fOF6UXYvataoZNB93lkmBTFuHrA7M6ZLyV8z7ERECwphYqtAdxFhaxCBVFmFokcolwhtM8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713536369; c=relaxed/simple;
-	bh=gGSpfD/vCz7jYXwK4jkHC5zF/jZGN6lAxOWi4UL8tK8=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XEXK7QmRDfqgnvidRvnR8K54++Otj2ZK3AGJkoOqeNPyCvDwlsooZ3zFhwGBBqYS4clYQt6gSYi8/pwhfDL+xc8rAvayzMfYMrcFy2mBLmSFGE3j9vgs0UhAL4mAH4oVliO3CMSL3VsRO1mgPzQl0l6MS1jCwmuJGkilukcpisg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=TiZkFHU9; arc=fail smtp.client-ip=40.107.243.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lhGr1OAx9GT9BZSBS6p1yU8M8X/ja/Z8byapf2A21ymX21UX1Io45yx9NGKZIBuqgBdRqSChwzgBB5ytMMbbnkinjcMrdSOgOv0vs83ztX1yRUx1bczi271D0IBnbTcN9GMZzPKCDl+mda+GT0S0IwYPd+3xfH/Xy0eOcw9w+T7JdlbKvIGDRS98VZtXKa3lDGIlP5d2m5j8DHfx0ps0EcBDQuncahoWMquCWfcsHHTyn+S0swrXVG3ygPzYMlwM63BPW5Oyqf/WltMKNd/ZILuNb2Q5/YoiMsNo91bfmbqTEybD1S0i82PJJiiLRGGrNEphyjL2cIMK6w1H+ek/tQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xCLECH2BTckagVUfu2ZQ3LTaU6lM5yOLfu5mpophMUw=;
- b=TPRMD5PEAuQ9/+eUpRvMuWKiZ75CrDbvb140ga7ksOnx9AoUyXucVOhBbP1agv3k+CRJ84OVP1W4daJQxhFsyZENDiYwbwPCCZerWT0P0IYb5FBZc5xXUawKcv0GgKij9q07iIKDrs1epgo9fxBIWYmjCIonkesoY9xAZoh96KIFF/PTLsIbI3LRfNggh3DxTsVVNNn6mu1Ek6sGaJhQ3DKhV1pHoQmV6kJ3XrB0dOnonC7C2ZhASK3TBEVlJs9hFwFOswITanDuK+DReiKPawyBmKSxGIfGYlkOUBGSv6iaAiUjE7ouGd9xFIAKSXo4U/2rHHJwdoi+kWAmDveZ/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xCLECH2BTckagVUfu2ZQ3LTaU6lM5yOLfu5mpophMUw=;
- b=TiZkFHU9Ewohv0QP2wBxV4SGoD5d/+7PqtWnHMfAPP7p4b/XqO4TWlQuNg+kgH8ECeqovWH0dWXYjUJW/jRMKjkMfMADuSWVi50ObpZGo8qQYYtpJXLUwmxPFOC67ZifQ31mKEs+VI3jQ+NCxZKo4TKEFvTVM5hfcCURhC6uiaU=
-Received: from BL1PR13CA0193.namprd13.prod.outlook.com (2603:10b6:208:2be::18)
- by PH0PR12MB7470.namprd12.prod.outlook.com (2603:10b6:510:1e9::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.43; Fri, 19 Apr
- 2024 14:19:23 +0000
-Received: from MN1PEPF0000F0DE.namprd04.prod.outlook.com
- (2603:10b6:208:2be:cafe::be) by BL1PR13CA0193.outlook.office365.com
- (2603:10b6:208:2be::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.14 via Frontend
- Transport; Fri, 19 Apr 2024 14:19:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MN1PEPF0000F0DE.mail.protection.outlook.com (10.167.242.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Fri, 19 Apr 2024 14:19:23 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 19 Apr
- 2024 09:19:21 -0500
-Date: Fri, 19 Apr 2024 09:19:20 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-	<linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<jroedel@suse.de>, <thomas.lendacky@amd.com>, <hpa@zytor.com>,
-	<ardb@kernel.org>, <seanjc@google.com>, <vkuznets@redhat.com>,
-	<jmattson@google.com>, <luto@kernel.org>, <dave.hansen@linux.intel.com>,
-	<slp@redhat.com>, <pgonda@google.com>, <peterz@infradead.org>,
-	<srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-	<dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>, <vbabka@suse.cz>,
-	<kirill@shutemov.name>, <ak@linux.intel.com>, <tony.luck@intel.com>,
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <alpergun@google.com>,
-	<jarkko@kernel.org>, <ashish.kalra@amd.com>, <nikunj.dadhania@amd.com>,
-	<pankaj.gupta@amd.com>, <liam.merwick@oracle.com>, Brijesh Singh
-	<brijesh.singh@amd.com>
-Subject: Re: [PATCH v13 09/26] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_START command
-Message-ID: <20240419141920.2djcy6ag3peiiufn@amd.com>
-References: <20240418194133.1452059-1-michael.roth@amd.com>
- <20240418194133.1452059-10-michael.roth@amd.com>
- <CABgObfYztTP+qoTa-tuPC8Au-aKhwiBkcvHni4T+n6MCD-P9Dw@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841D21292DC
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713536562; cv=none; b=S8GRj4jFE5NhlBcENMSsJfdGtLUo3wARORmphFIgtSEErbx3MiV5GlUIJDPu4kCuuBTiku8YNmKFsyqWNROmIDUXa/xxVWhFsx99DeJmt+9BvCKJStCAhTSxqzBkEfTEWbRNchk1Bqtc4NIvdWcB62DvaOh0UVFJmIp65/jlb3g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713536562; c=relaxed/simple;
+	bh=+LiWUh2zMmA3ZvW6BiIH2guXxJ9WZ0K6RkAq9Pn05SI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kYeXFMa787/rXKN13uMN8eRH+OQNxV2DtJSm2Sp0YNh3cRuAGtiWdydABocKp3gsrktD1hBxI5n8i6wsEQhmBuhDrznDEHzM8N0cNjAC7TFzqE5EGhbQLjvrwxW56fX0mOkBibovvmYp/vUYJ+kDhlUf9vOsBIqFMhXjmgFcLlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=RPcZBAc+; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-69cb4a046dfso7270036d6.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:22:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1713536557; x=1714141357; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=LbB4KcsnZXNmzG/MHQb9mgjRPkbbsvmUawk+gcbg5EQ=;
+        b=RPcZBAc+vReJTc4kGIYjReLCAN89malZo6YbnkAaoY/KPfSS2vGRMwdBdPT9uDEJjE
+         VsLYEPiHJm0/heo1i33vvYtjGRl+6IQaiN+SGB1WZBtzoS6kDB/gdUaNCHPng7NhEvfo
+         nIcya1SsBxdbwjeWgKF2DeikK6Kc8pKqgRvxKRX+q3CDeYSNTlekLfvUU9g7ZI1YiGYT
+         YbAFHbcqJ7VZyrgNluj+uwuGklyjM4UTG7PH+M8MqtpJJTl9stVi2tL6sEdmVyWeWIfF
+         io+k8oj/mf5dBE3o6NsfJ/1bun2YPpWaMtRLIChWSbZLMhvAaB+dL2Zkrg9ZsoWOsLvV
+         GIZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713536557; x=1714141357;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LbB4KcsnZXNmzG/MHQb9mgjRPkbbsvmUawk+gcbg5EQ=;
+        b=ET8YvUuHIwQjCvcMJwEgV9QR1gokbdPAZSNKxUp6TxFbNc9FiB/btejeWs3Op+UOWv
+         VXt9dTm1r22L5M8BGjHw6fJ0qDQykqSD2jPb3jGcYnOE01qBcDfVXXBoipNHOpH8OSi5
+         Mq8yjKBoaZ3KM8ilFoOA0KeDNfY813RYjBat+y8OGkKNGwCHTpAdffbqA1bGNaeb5Cpf
+         QqVxqjBbDhbZwBsJ1dY8+5ktMn8+SDXgMW9yRADROuMdEvud+d2Zwah+Jdqh2F9MWXok
+         pL4CssbptpOz1DTAfhkumZHLZvrvTiaFasvUlcjAMAfFMKjQ86lKPHr2Eq4cYE57L3QB
+         MSww==
+X-Forwarded-Encrypted: i=1; AJvYcCWNW/6todNmAOim/vzeQG5EO6FeVcVES9+Gm2hC33lw7dTyHiBE7sX4mVUUpXGjuGBWt+zClf3kfspWaowYxLpPqlXRGxgX8OghT+ln
+X-Gm-Message-State: AOJu0Yy8/HseJ4Wz+TwGCLInbzqUOkwX8S5MSFO171Tz47nOOGXDVI/g
+	tJQhkA0TX4uR3xlWf+6/U2/0ojzKzbArsZnPRLKhn8I9JG71hcSX9U0mso91Bww=
+X-Google-Smtp-Source: AGHT+IGAI3mZDZDKIm7knl47VQHYokRRNSjt45GZvvX762bmRlykoI881JSyUDU3V8LFn5GMhKzNWA==
+X-Received: by 2002:ad4:5981:0:b0:69b:2897:4fc4 with SMTP id ek1-20020ad45981000000b0069b28974fc4mr2177086qvb.58.1713536557076;
+        Fri, 19 Apr 2024 07:22:37 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:fe4f])
+        by smtp.gmail.com with ESMTPSA id i11-20020a0cab4b000000b0069b59897310sm1582606qvb.63.2024.04.19.07.22.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 07:22:36 -0700 (PDT)
+Date: Fri, 19 Apr 2024 10:22:31 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Christian Heusel <christian@heusel.eu>,
+	Chengming Zhou <chengming.zhou@linux.dev>,
+	Nhat Pham <nphamcs@gmail.com>, Seth Jennings <sjenning@redhat.com>,
+	Dan Streetman <ddstreet@ieee.org>,
+	Vitaly Wool <vitaly.wool@konsulko.com>,
+	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, David Runge <dave@sleepmap.de>,
+	"Richard W.M. Jones" <rjones@redhat.com>,
+	Mark W <instruform@gmail.com>, regressions@lists.linux.dev
+Subject: Re: [REGRESSION] Null pointer dereference while shrinking zswap
+Message-ID: <20240419142231.GD1055428@cmpxchg.org>
+References: <3iccc6vjl5gminut3lvpl4va2lbnsgku5ei2d7ylftoofy3n2v@gcfdvtsq6dx2>
+ <CAKEwX=MZ3jTVpN4g-qrhTn2b0i0C6_M=8BtKt9KEPyFHb+4W2w@mail.gmail.com>
+ <CAKEwX=NM1y-K1-Yw=CH3cM-8odER1PZBVoWo-rs7_OdjFG_puw@mail.gmail.com>
+ <CAKEwX=MWPUf1NMGdn+1AkRdOUf25ifAbPyoP9zppPTx3U3Tv2Q@mail.gmail.com>
+ <246c1f4d-af13-40fa-b968-fbaf36b8f91f@linux.dev>
+ <20240417143324.GA1055428@cmpxchg.org>
+ <4c3ppfjxnrqx6g52qvvhqzcc4pated2q5g4mi32l22nwtrkqfq@a4lk6s5zcwvb>
+ <20240418124043.GC1055428@cmpxchg.org>
+ <CAJD7tkaPMQqQtfxcLWraz-vnbAxZKxuJRJ7vKuDOCCXtpBSF1A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfYztTP+qoTa-tuPC8Au-aKhwiBkcvHni4T+n6MCD-P9Dw@mail.gmail.com>
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0DE:EE_|PH0PR12MB7470:EE_
-X-MS-Office365-Filtering-Correlation-Id: 274bf5cf-09f1-440f-9f6c-08dc607bb627
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?VGxOOXFPWWY3c2RieUNHcTVKWjRLV1RoWlVUcGNPdDlMY1ZkZzdCdzRVSzB0?=
- =?utf-8?B?YmVqRDJsQ0U3ZzllME9Xa3AzTURjMUZKbWxhQ3d4djBoWlNKVWN3RU9PTXVQ?=
- =?utf-8?B?OWFwaGRVSlBML2R4YTVtdGpKaEtBc3FtbVZveThMQmFnSW5RWkhxMHd2NmZr?=
- =?utf-8?B?TmlWY3A3Y25TUlV1bkhFMGhwbnoyMWc0Z0xsT0FuM1d2Z25XclZaSXBhOXlj?=
- =?utf-8?B?RzYzUDVKeGo4a2FsemIvcGVFaWdGcUU4Y1BpQ1ZsaXNCQ1Jnek5tOHJQeExI?=
- =?utf-8?B?a3lKeDIwcHhMM1BsK0MzQlh1aGxJQXlmVUVYa1loZUJ5SWt2OW9KK2p1M0ZS?=
- =?utf-8?B?ODNZUnhLOFUyN2dLMy9DdXlDTjFmVDZTS2VTRm05OFRNeFZoNndmTkhjeXpY?=
- =?utf-8?B?OU1TbzBMeDBlMGd5c2NENlZESDBzQjhPeVhSSGhXRzRhZVBXcXFpak1YVjNS?=
- =?utf-8?B?eUpoYWNxMkpSV3NEdUM4WEtsODdHYmpvdlFqWFNLRS84N2FFem83YUgzUEFa?=
- =?utf-8?B?MlRZMjJSY1BQMW0vYnd5MWE4T2xTTEkreUs0VnhzTjIrRDlUZlYyVjhSVklU?=
- =?utf-8?B?VTVlSW5uWWNmNFh1L0FqSHdUUEFMZmRlVjVrbmpscC96WkR2N084c1NvZ3Yx?=
- =?utf-8?B?eWUwajlTWG1HQk03aWgxUXZjRDNIeGszUFlFN2V0bjU5Vk5JZzh0Ukg3eGsw?=
- =?utf-8?B?UTNLQWxqUDdXbVFiMk92S29WTWtycExqUmQwQTB6cFliSEhqemQxcE03VDU3?=
- =?utf-8?B?dDQ2K0Y1MDJaN3V5RU8rTmsxZEZMTWhMRTNHV3d1aG92YmpWZVIwajEvZnVa?=
- =?utf-8?B?TjRFQmU4K1FPUFVyTUVPMVpvMWtxNkNDTk50SGhEZlE4ZnV0VGlUdUhiRU9H?=
- =?utf-8?B?OS9qYm9FbHg2VXViYWYyUXcyb2R6ZStRVllOV0NJTzJuSVRRSHp1ZUxsTVJ5?=
- =?utf-8?B?em1RNjNNbXA5MFNjTlVYdU5QZEYxc0ozMXlBL2YreTByTnJZTjNUbXpvZFRz?=
- =?utf-8?B?M3JhSkxrL2V5SmtyeGo5S1hHZE1JNVR1OCsweGZZWWFWamZkWnN5SDRmY1Ra?=
- =?utf-8?B?S3I1eUhkMzN4UTE5OXEwUnZjM3ZGNGVjb1V5T05FN3JIdHQ0cWRPWExUREJH?=
- =?utf-8?B?a0tSVElQcVpXY3J3WGE5UFVjUUtaM0g5M1IzRzhJZUI1K0oySU8xZmlVdGdw?=
- =?utf-8?B?NWZJaEdmclVGWWhwZlVJU3VJS1NlaEM5UHdZekxRU0NWNVdMSXFyOWRrZ01E?=
- =?utf-8?B?bjFtanduYTR3eWYreEdDU3lhZVl4ZHBQZVJhL2xnRGxzQUR0N3U5KzJNR2NN?=
- =?utf-8?B?VWhCL200WEw5OFM3b3FMYkN1dHcwU1FBUHk1bjlqWG80NklPOURjaE9lWTFi?=
- =?utf-8?B?eEk4SnBIVk10Z29nNDlHbzM1RythbjhoWW1iUCtkbjF2Q05ncktVN1ZhdHBE?=
- =?utf-8?B?cU9HNER2TmFoWDlLZHlxWWRsbWx6TmdSV2lsMlZEYlRCMzNtbkx5aDlQbHU0?=
- =?utf-8?B?bnlUNmRXL0NoRitmY1JmQkppc1RBODVuTmFvN21VdFBKcFlMci9EVGV4Q1d4?=
- =?utf-8?B?dm9ralJUY2libVc3eFJOdGdGM1RnQk1iZ2E4NEhOREdxZUhPS214SERTUVNu?=
- =?utf-8?B?aE1OaU1NZDFPV1JBZ1Mrb2p4WGhyWU9NUzRJNjdTNmdVbWR0STFmMzVMMGd6?=
- =?utf-8?B?S1d5L2dBbE85cHQ4Z0l5M2NxWlhjZENQcVN3WGR1czErRjFPS005dnlldUc3?=
- =?utf-8?B?Vi91dWI2M3pjR2pkK2t0NzhCTUZUdEMwb2dxSWFoTkVmbGd1Z2tTckVTZE5E?=
- =?utf-8?B?K3RWclV3NDJnckpUTDBoQ3J5Mll2YU5MbGFSR2w2ekVxLzkyc3ZNdFhHTTJq?=
- =?utf-8?Q?cY3K7uKXv+SRv?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(1800799015)(7416005)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 14:19:23.2280
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 274bf5cf-09f1-440f-9f6c-08dc607bb627
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MN1PEPF0000F0DE.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7470
+In-Reply-To: <CAJD7tkaPMQqQtfxcLWraz-vnbAxZKxuJRJ7vKuDOCCXtpBSF1A@mail.gmail.com>
 
-On Fri, Apr 19, 2024 at 01:52:24PM +0200, Paolo Bonzini wrote:
-> On Thu, Apr 18, 2024 at 9:42 PM Michael Roth <michael.roth@amd.com> wrote:
-> > +/* As defined by SEV-SNP Firmware ABI, under "Guest Policy". */
-> > +#define SNP_POLICY_MASK_API_MAJOR      GENMASK_ULL(15, 8)
-> > +#define SNP_POLICY_MASK_API_MINOR      GENMASK_ULL(7, 0)
-> > +
-> > +#define SNP_POLICY_MASK_VALID          (SNP_POLICY_MASK_SMT            | \
-> > +                                        SNP_POLICY_MASK_RSVD_MBO       | \
-> > +                                        SNP_POLICY_MASK_DEBUG          | \
-> > +                                        SNP_POLICY_MASK_SINGLE_SOCKET  | \
-> > +                                        SNP_POLICY_MASK_API_MAJOR      | \
-> > +                                        SNP_POLICY_MASK_API_MINOR)
-> > +
-> > +/* KVM's SNP support is compatible with 1.51 of the SEV-SNP Firmware ABI. */
-> > +#define SNP_POLICY_API_MAJOR           1
-> > +#define SNP_POLICY_API_MINOR           51
+On Thu, Apr 18, 2024 at 01:09:22PM -0700, Yosry Ahmed wrote:
+> On Thu, Apr 18, 2024 at 5:40 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Wed, Apr 17, 2024 at 07:18:14PM +0200, Christian Heusel wrote:
+> > > On 24/04/17 10:33AM, Johannes Weiner wrote:
+> > > >
+> > > > Christian, can you please test the below patch on top of current
+> > > > upstream?
+> > > >
+> > >
+> > > Hey Johannes,
+> > >
+> > > I have applied your patch on top of 6.9-rc4 and it did solve the crash for
+> > > me, thanks for hacking together a fix so quickly! 🤗
+> > >
+> > > Tested-By: Christian Heusel <christian@heusel.eu>
+> >
+> > Thanks for confirming it, and sorry about the breakage.
+> >
+> > Andrew, can you please use the updated changelog below?
+> >
+> > ---
+> >
+> > From 52f67f5fab6a743c2aedfc8e04a582a9d1025c28 Mon Sep 17 00:00:00 2001
+> > From: Johannes Weiner <hannes@cmpxchg.org>
+> > Date: Thu, 18 Apr 2024 08:26:28 -0400
+> > Subject: [PATCH] mm: zswap: fix shrinker NULL crash with cgroup_disable=memory
+> >
+> > Christian reports a NULL deref in zswap that he bisected down to the
+> > zswap shrinker. The issue also cropped up in the bug trackers of
+> > libguestfs [1] and the Red Hat bugzilla [2].
+> >
+> > The problem is that when memcg is disabled with the boot time flag,
+> > the zswap shrinker might get called with sc->memcg == NULL. This is
+> > okay in many places, like the lruvec operations. But it crashes in
+> > memcg_page_state() - which is only used due to the non-node accounting
+> > of cgroup's the zswap memory to begin with.
+> >
+> > Nhat spotted that the memcg can be NULL in the memcg-disabled case,
+> > and I was then able to reproduce the crash locally as well.
+> >
+> > [1] https://github.com/libguestfs/libguestfs/issues/139
+> > [2] https://bugzilla.redhat.com/show_bug.cgi?id=2275252
+> >
+> > Fixes: b5ba474f3f51 ("zswap: shrink zswap pool based on memory pressure")
+> > Cc: stable@vger.kernel.org      [v6.8]
+> > Link: https://lkml.kernel.org/r/20240417143324.GA1055428@cmpxchg.org
+> > Reported-by: Christian Heusel <christian@heusel.eu>
+> > Debugged-by: Nhat Pham <nphamcs@gmail.com>
+> > Suggested-by: Nhat Pham <nphamcs@gmail.com>
+> > Tested-By: Christian Heusel <christian@heusel.eu>
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 > 
-> > +static inline bool sev_version_greater_or_equal(u8 major, u8 minor)
-> > +{
-> > +       if (major < SNP_POLICY_API_MAJOR)
-> > +               return true;
+> Thanks for fixing this. A couple of comments/questions below, but anyway LGTM:
 > 
-> Should it perhaps refuse version 0.x? With something like a
+> Acked-by: Yosry Ahmed <yosryahmed@google.com>
 > 
-> #define SNP_POLICY_API_MAJOR_MIN    1
+> > ---
+> >  mm/zswap.c | 25 ++++++++++++++++---------
+> >  1 file changed, 16 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/mm/zswap.c b/mm/zswap.c
+> > index caed028945b0..6f8850c44b61 100644
+> > --- a/mm/zswap.c
+> > +++ b/mm/zswap.c
+> > @@ -1331,15 +1331,22 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+> >         if (!gfp_has_io_fs(sc->gfp_mask))
+> >                 return 0;
+> >
+> > -#ifdef CONFIG_MEMCG_KMEM
+> > -       mem_cgroup_flush_stats(memcg);
+> > -       nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
+> > -       nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
+> > -#else
+> > -       /* use pool stats instead of memcg stats */
+> > -       nr_backing = zswap_pool_total_size >> PAGE_SHIFT;
+> > -       nr_stored = atomic_read(&zswap_nr_stored);
+> > -#endif
+> > +       /*
+> > +        * For memcg, use the cgroup-wide ZSWAP stats since we don't
+> > +        * have them per-node and thus per-lruvec. Careful if memcg is
+> > +        * runtime-disabled: we can get sc->memcg == NULL, which is ok
+> > +        * for the lruvec, but not for memcg_page_state().
+> > +        *
+> > +        * Without memcg, use the zswap pool-wide metrics.
+> > +        */
+> > +       if (!mem_cgroup_disabled()) {
 > 
-> to make it a bit more future proof (and testable).
+> With the current shrinker code, it seems like we cannot get sc->memcg
+> == NULL unless mem_cgroup_disabled() is true indeed. However, maybe
+> it's better to check if sc->memcg is not NULL directly instead?
 > 
-> > +       major = (params.policy & SNP_POLICY_MASK_API_MAJOR);
-> 
-> This should be >> 8. Do the QEMU patches not set the API version? :)
+> This would be more resilient in case the shrinker code changes and
+> passing sc->memcg == NULL becomes possible in other cases (e.g. during
+> global shrinking). It seems like other shrinkers do this, for example
+> see count_shadow_nodes() and deferred_split_count().
 
-Argh...it does if you set it via the -object sev-snp-guest,policy=0x...
-option. I tested with reserved ranges and other flags, but not with
-non-zero major/minor API fields. =/
+Eh, I'm not sure it's better or worse, so it's a bit hard to care. We
+shouldn't get NULL here when memcg is enabled, and if somebody
+introduces that bug it's better to catch it early than run into subtle
+priority inversions when the kernel is deployed to millions of hosts.
 
-But I'm having 2nd thoughts about trying to enforce API version via
-KVM_SEV_SNP_LAUNCH_START. In practice, the only sensible way to really
-interpret it is as "the minimum firmware version that userspace decides
-it is comfortable running a particular guest" on. And that enforcement
-is already handled as part of the SNP_LAUNCH_START firmware command in
-the SNP Firmware ABI: if the policy specifies a higher minimum version
-than what firmware is currently running then it will return as error
-that will be reported by QEMU as:
+> I am also wondering if we should also check !mem_cgroup_is_root()
+> here? We can avoid the expensive global flush and use the global stats
+> directly in this case. I could also send a follow up patch for this if
+> that's preferred.
 
-  sev_snp_launch_start: SNP_LAUNCH_START ret=-5 fw_error=7 'Policy is not allowed'
-
-On the firmware driver side (drivers/crypto/ccp/sev-dev.c), we already
-enforce 1.51 as minimum supported SNP firmware, so that sort of already
-covers the SNP_POLICY_API_MAJOR_MIN case as well. E.g. the test surface
-KVM needs to concern itself with is already effectively 1.51+. In that
-sense, whether the user decides to be less restrictive with what minimum
-firmware version they allow is then totally up to the user, and has no
-bearing on what firmware versions KVM needs to concern itself with.
-
-Then the question of whether or not KVM fully *exposes* a particular
-user-visible feature of a newer version of the firmware/ABI would be a
-separate thing to be handled via the normal KVM capabilities/attributes
-mechanisms.
-
-So my current leaning is to send a v14 that backs out the major/minor
-policy enforcement and let firmware handle that aspect. (and also
-address your other comments).
-
-But let me know if you think that should be handled differently.
-
-Thanks!
-
--Mike
-
-> 
-> Paolo
-> 
+I'd rather not proliferate more memcg internals in this code. If this
+is a concern, optimizing it in the flush and stat functions would make
+more sense. Reclaim already flushes the subtree before getting here,
+so odds are good this is a no-op in most cases.
 
