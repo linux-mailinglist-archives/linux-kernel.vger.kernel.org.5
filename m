@@ -1,98 +1,124 @@
-Return-Path: <linux-kernel+bounces-151111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C3B38AA93C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:33:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12CB68AA943
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:35:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD1411C20E0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:33:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FF791F21D37
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:35:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9710743AAA;
-	Fri, 19 Apr 2024 07:33:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38F534596D;
+	Fri, 19 Apr 2024 07:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HWttLJRS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="HMBWiD7o"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA00226AE7;
-	Fri, 19 Apr 2024 07:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F572BE4B;
+	Fri, 19 Apr 2024 07:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713512029; cv=none; b=L1JVw1siR8x67IRHZmfe06M2V2VJcoIAGFCd9f+NypjBJaTVrnRyEvR+lp6ZsZ20Y4LG9Hv0Q8TlBeyIqNIf8N81UrWuV4YS8uK3DFIRQ3ILArLw4wvGYich7uVL8Aicj5aI5suNYhDe7pBbkXZwdNaTi2OotewnXH/tDFdOxAM=
+	t=1713512095; cv=none; b=seOO/cH0F65/DoenV9dkWC15iH8YouqF/d8am9a+Orgx0Q3fBr9NDGgMH0Zm1IxBia89YzSrveGolg0Kn26hZNraZMUUgT/aVpKtTIwsQUEnfk652HvjqFbMFdcTK32iMCV191r3X3hJ8q4kQHXganE/NPvtYjRexP46QiR+FCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713512029; c=relaxed/simple;
-	bh=u5fYgOonRjt0u0BZvBOxYOe2u93esfHuGjTF33hwr2o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KYpT0xHJbiMhl0d7RIjl55uATfPMBARSRJgtvx1YMbCFw5/g9NiZtv37R/bVPZXxuH2HFfqKe1bD/C0oWuIovZ77DKVzIEPcb3sEBtkdErZFClWi04f6AzSCWu3cAmLa8wZaTOdgV9meL7XWAJSgjief7B7VpG/3JsvPTBMTW3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HWttLJRS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2C3EC072AA;
-	Fri, 19 Apr 2024 07:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713512028;
-	bh=u5fYgOonRjt0u0BZvBOxYOe2u93esfHuGjTF33hwr2o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HWttLJRSdTi+0/qGHKRJON9S/VpK9g7TDcrpkLbfSeYZAmKG5uC7usNC8QZfn1Z/3
-	 N3IaHmz/zlIeZhhxy9lvs6cjpmyJynOE8pPfWJh7LyABHJkm9H7TgSBVzg+Ix8/V4z
-	 HlyLvC9lSlCcn/7ZGXVB5UjSZWkrLf4H7T6eGkqtcha8AK9WRUOrHN7IKWUf6fmo/Y
-	 C0JdShsYc7BhFutS3vbzFJd5poxqAvmaUcTq0hdIVGRlKSr0MBtDQsUpNxfH+lBCr2
-	 AALPdOwWEWhqqxFzfZkoH9hXgs+g1hQ0q7Vq015cZ5uGzMK6DVaR43BGnQkn8ZZZnC
-	 uwXIiGHLEmkKA==
-Date: Fri, 19 Apr 2024 00:33:46 -0700
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: kernel test robot <yujie.liu@intel.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, linux-kernel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linus:master] [x86/syscall] 1e3ad78334:
- will-it-scale.per_process_ops 1.4% improvement
-Message-ID: <20240419073346.xlpx4qaocbo6bhip@treble>
-References: <202404191333.178a0eed-yujie.liu@intel.com>
+	s=arc-20240116; t=1713512095; c=relaxed/simple;
+	bh=DyISyQg7WS1Y2u3RPJgVFUSFFcKg59nL1uyitoy15Lc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tqumDdPAgFdQQEx2YIxnZsUe8oXc4b4VkCFh6yMqSNvB2MXU/VruY+39RzacuFw3KNOGAYEb+Vzlpt11UF2Bg1NAUTf9ROm1T3W0+OsFZhh6dhmFvmEvZdkKo3vL8Cdn1wffPSaSpKXr+SCv9xDWX1b5pHm8j46GhYftGBK0J68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=HMBWiD7o; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713512092;
+	bh=DyISyQg7WS1Y2u3RPJgVFUSFFcKg59nL1uyitoy15Lc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=HMBWiD7oXdDRH9iC8ExLKlQq5mc7XNH3+hVD1yFkSG3rGi92pQAxlxV0ccasgXLnp
+	 SrBwxTUPSiRQNmJAfGlnnJuxOK3kcnZTIm+NuKq8cJa4NQq/6NZjBBpns1SEKdc8uj
+	 2OYNu64SxBUgcE6Hd8FNDHyZcAR4vKVghsHONTo7AS9C/3vkMxJ8gbWS8s15x+Go2a
+	 HLdSyhWI7bcxmUeqq+OeCTSuQo/hvWZP0r5dN+fJ2gKB6sLkIJ8n7N+OLM54UQkih1
+	 OOM1iqEEfSv3pQeCDQuV0ospWe4XU8Bkkp1XR7VuHlmNwtPKv93G8x72S9dpq3XqCx
+	 RIJlidE3jCP7A==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 867053781104;
+	Fri, 19 Apr 2024 07:34:50 +0000 (UTC)
+Message-ID: <46549dca-95c0-48f0-acd7-e4a7725437bc@collabora.com>
+Date: Fri, 19 Apr 2024 09:34:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202404191333.178a0eed-yujie.liu@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 12/17] clk: mediatek: mt8365-mm: fix DPI0 parent
+To: Alexandre Mergnat <amergnat@baylibre.com>,
+ Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Jitao Shi <jitao.shi@mediatek.com>,
+ CK Hu <ck.hu@mediatek.com>, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>, Michael Turquette
+ <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+ Fabien Parent <fparent@baylibre.com>,
+ Markus Schneider-Pargmann <msp@baylibre.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
+ linux-clk@vger.kernel.org
+References: <20231023-display-support-v3-0-53388f3ed34b@baylibre.com>
+ <20231023-display-support-v3-12-53388f3ed34b@baylibre.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20231023-display-support-v3-12-53388f3ed34b@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 19, 2024 at 01:49:26PM +0800, kernel test robot wrote:
-> Hi Linus,
+Il 18/04/24 16:17, Alexandre Mergnat ha scritto:
+> To have a working display through DPI, a workaround has been
+> implemented downstream to add "mm_dpi0_dpi0" and "dpi0_sel" to
+> the DPI node. Shortly, that add an extra clock.
 > 
-> We noticed that commit 1e3ad78334a6 caused performance fluctuations in
-> various micro benchmarks. The perf stat metrics related with branch
-> instructions do have noticeable changes, which may be an expected
-> result of this commit. We are sending this report to provide these data
-> and hope it can be helpful for the awareness of overall impact or any
-> further investigation. Thanks.
+> It seems consistent to have the "dpi0_sel" as parent.
+> Additionnaly, "vpll_dpix" isn't used/managed.
 > 
-> kernel test robot noticed a 1.4% improvement of will-it-scale.per_process_ops on:
+> Then, set the "mm_dpi0_dpi0" parent clock to "dpi0_sel".
 > 
-> commit: 1e3ad78334a69b36e107232e337f9d693dcc9df2 ("x86/syscall: Don't force use of indirect calls for system calls")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> The new clock tree is:
+> 
+> clk26m
+>    lvdspll
+>      lvdspll_X (2, 4, 8, 16)
+>        dpi0_sel
+>          mm_dpi0_dpi0
+> 
+> Fixes: d46adccb7966 ("clk: mediatek: add driver for MT8365 SoC")
+> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-Thanks, these are significant regressions.
+I wonder what CLK_TOP_VPLL_DPIX_EN is for, but since you've ruled it out
+by removing the dependency, this clock is 100% being disabled because unused
+and the DPI interface clearly still works.
 
-Since this is on Skylake (with IBRS enabled, presumably) I'd expect that
-these regressions are fixed by my "Only harden syscalls when needed"
-patch.  I'm planning on posting a new version of that tomorrow, but v3
-[*] should be good enough to fix it.  Could you run these tests on the
-same Skylake system with my patch added?
+I also wonder if that clock is getting en/disabled by HW control mechanism...
+..because that'd make sense, as this is .. well, a DPI clock.
 
-Also it would be helpful to see the same tests on Cascade/Ice Lake, or
-some other system for which the 'spectre_v2' sysfs vulnerabilities file
-shows "BHI: SW loop".  On such a system it shouldn't matter whether my
-patch is added as it won't disable Linus' syscall change.  But it would
-be very helpful to see the performance impact of that combination.
+That's just out of curiosity though, as I'd really like to understand whenwhatwhy
+for stuff....
 
-[*] https://lkml.kernel.org/lkml/eda0ec65f4612cc66875aaf76e738643f41fbc01.1713296762.git.jpoimboe@kernel.org
+In any case, whether you have an answer or not, this commit is:
 
--- 
-Josh
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+Cheers!
 
