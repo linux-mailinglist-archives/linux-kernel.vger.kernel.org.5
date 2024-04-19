@@ -1,200 +1,197 @@
-Return-Path: <linux-kernel+bounces-151333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E60D8AAD1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:54:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E98E18AAD27
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 12:58:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65770B21CA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:54:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F7CD1F22082
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:58:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15B488002E;
-	Fri, 19 Apr 2024 10:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="QCHgXGgV"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72431199C2
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:54:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 658EB8003A;
+	Fri, 19 Apr 2024 10:58:35 +0000 (UTC)
+Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04AF77F7C3;
+	Fri, 19 Apr 2024 10:58:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.161.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713524085; cv=none; b=Iqc2N29fdMLaLoa6eIxbp+F+GI+7LPLKNIcTxidLpPoK5EE2RcrevIt1v5nu4844o5Gtl6FckdyWrMLPNuawzadBpqGFpYCY8DLA002Vaesrs9KjrURaqzHBmKTA6//JVUoKpwDc/vkXEV/9DqHd7VkWaNjCa2X17DD4o2yOaaM=
+	t=1713524314; cv=none; b=sfvGX83J1aroVbCy7bkKn2J34Ke4g6qdc0rgcAAo6vESMpLJrtb1XVi84l2wZfJl9aNVBRbf5Av7zrrRq6+F9gA2CkRlhBAO77omhrVmIk7LD/d8D1bw6gI4cBeuvPrd1AWMkBhBgvrRthbbrWvIh87Yja6UwRyywXSg44QLfHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713524085; c=relaxed/simple;
-	bh=Ft/K99/IR2Ys5mDnL97iKvS6S+FuwBB5bCqv67D0TrU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AjqNEtBntFjnVaStlrXHIVeTmETTlvzhIjaiOT5ZcUXLBI5jUVuSZH15Ecai/KZqjxygj4Ve5rMfE02nWnQjlNJ7KT43OGg2Ge58nHZ+xeE/xtdA0jBCjdUfwh8y/M9I/5BBV3GRmHrIFpN/FYMCS5xBoGbF3kAeSkIy8ksjJ+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=QCHgXGgV; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 36af5914fe3b11eeb8927bc1f75efef4-20240419
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=XRyf6fGWHw8D4kdmPwDpJvOOOJXdbXKfYmpkFqH+HqI=;
-	b=QCHgXGgV1RZzgkfVNI2C9ztyBD2RBiNYGtlYkE45aixZiX0V2ztqPcq2k6quYcz2lDr99ohTAaoTQymMfOU/oG0xw3glb5JXaTy97aZgtmnmA1DpqwplVWsWhipYnUjzUIcBZTuMV+0pl6dnKIEEuKeW2Lsekw2hzUGGemyHWVA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.38,REQID:cb090a2d-4997-4023-a756-56f4e36915a6,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:82c5f88,CLOUDID:42b1c791-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 36af5914fe3b11eeb8927bc1f75efef4-20240419
-Received: from mtkmbs09n2.mediatek.inc [(172.21.101.94)] by mailgw01.mediatek.com
-	(envelope-from <guoyong.wang@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1754755066; Fri, 19 Apr 2024 18:54:36 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 19 Apr 2024 18:54:34 +0800
-Received: from mbjsdccf07.gcn.mediatek.inc (10.15.20.246) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 19 Apr 2024 18:54:33 +0800
-From: Guoyong Wang <guoyong.wang@mediatek.com>
-To: "Jason A . Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>,
-	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, "Matthias
- Brugger" <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>, "Guoyong
- Wang" <guoyong.wang@mediatek.com>
-Subject: [PATCH v2] random: Fix the issue of '_might_sleep' function running in an atomic contex
-Date: Fri, 19 Apr 2024 18:54:53 +0800
-Message-ID: <20240419105453.5440-1-guoyong.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+	s=arc-20240116; t=1713524314; c=relaxed/simple;
+	bh=Aq/sQXCxpV3k/sBWHhD3DFX0HiAEwV7Jy1651p9TIuo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=pH7bnhinR9PdNE6+u5MdBsMAtCKy1GAJKN30jz7Pyw0rguJ1mka4LESraOXGtLOSXFNxG11Q0BhJ4UOuI55xRL/uYuvcRK8KQ+f/B40IJjbjAka6GdLAHU6va8EGGKmzX1VELqfh/YMHDb8a1+Rn4Jy3t8Lvb/pu284n102Hsjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hust.edu.cn; spf=pass smtp.mailfrom=hust.edu.cn; arc=none smtp.client-ip=162.243.161.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hust.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hust.edu.cn
+Received: from hust.edu.cn (unknown [172.16.0.52])
+	by app1 (Coremail) with SMTP id HgEQrAAH6KgUTiJmkIkwBQ--.51748S2;
+	Fri, 19 Apr 2024 18:57:24 +0800 (CST)
+Received: from pride-poweredge-r740.. (unknown [222.20.126.129])
+	by gateway (Coremail) with SMTP id _____wCXkL8MTiJmjw63AQ--.2983S2;
+	Fri, 19 Apr 2024 18:57:22 +0800 (CST)
+From: Dongliang Mu <dzm91@hust.edu.cn>
+To: Alex Shi <alexs@kernel.org>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Dongliang Mu <dzm91@hust.edu.cn>,
+	Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] docs/zh_CN: add process/cve Chinese translation
+Date: Fri, 19 Apr 2024 18:56:59 +0800
+Message-Id: <20240419105713.2427146-1-dzm91@hust.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--6.105700-8.000000
-X-TMASE-MatchedRID: 5tAkVIfDYR7hfwdYxI1fuvv+//lqU1h6+Vb3woyMZbtUjspoiX02F8UW
-	gOgXO5aL0s1bBGkyThx77384BTKUTx9J5bZqJbIJpFf2dGv7wxuy4iyjvVWToiz+5QCTrE/s+Vi
-	hXqn9xLE8VyRVdn8owK4t1/E9bzKRkg6GA5mI8yy4jAucHcCqnTGZtPrBBPZrTUobVis5Bb/Qar
-	bX+8U9GfblVnO7NB2+bkJkSezgGPCCBuHvFSrMorrbxxduc6FPNpy6NoTePCGna2UlAbZeZ8bbZ
-	brNnnQMrXd9MpcOet6voC/yQrpICgQmkMsZWj5Btw+xHnsmQjOQoBr+SFneJAZbeEWcL03Vr+Zq
-	965VgDSg0lULc/18FGjcG6LiTVmSkfRhdidsajMURSScn+QSXt0H8LFZNFG7hqz53n/yPnr6LJn
-	pB+yIaoXaBRcWuzFn9Es4it2/Eho23AywId+lCLoOfFLgUu3n
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--6.105700-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: B0059B6C039B233AA2AFDC5A0CD747C778BD8E9B9A46D7F9C68BD0AAB961230F2000:8
-X-MTK: N
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:HgEQrAAH6KgUTiJmkIkwBQ--.51748S2
+Authentication-Results: app1; spf=neutral smtp.mail=dzm91@hust.edu.cn;
+X-Coremail-Antispam: 1UD129KBjvJXoW3WF1kCF1xZrWkXr47KFWDCFg_yoW3GFy8pF
+	n7Zr97ta1Iya43ArWfKr48XF18AFsrCFW3KF1xG34fJwn5JFyktwnrXF1UWw17Cr1rCa4D
+	XF4vkFZ3ury2k3JanT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUQIb7Iv0xC_Cr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+	cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+	v20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vE
+	x4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAaw2AFwI0_JF
+	0_Jw1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF
+	0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0EF7xvrVAajcxG14v26r
+	4UJVWxJr1lYx0E74AGY7Cv6cx26r4fZr1UJr1lYx0Ec7CjxVAajcxG14v26F4j6r4UJwAm
+	72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42
+	xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uFyUJr1UMxC20s026xCaFVCjc4AY
+	6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0_uctUUUUU==
+X-CM-SenderInfo: asqsiiirqrkko6kx23oohg3hdfq/
 
-In the case that a delay is acceptable for 'crng_set_ready', it can be
-deferred to a workqueue in order to accommodate different contexts.
+Translate process/cve.rst into Chinese and add it to
+Documentation/translations/zh_CN directory.
 
-Signed-off-by: Guoyong Wang <guoyong.wang@mediatek.com>
+Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
 ---
-v2: Compared to version 1, version 2 has removed the definition of
-'execute_in_non_atomic_context' and always uses a workqueue to execute 
-'crng_set_ready'.
+v2->v3: remove a trailing space
+v1->v2: add a newline at then end of cve.rst.  
+ .../translations/zh_CN/process/cve.rst        | 89 +++++++++++++++++++
+ .../translations/zh_CN/process/index.rst      |  1 +
+ 2 files changed, 90 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/process/cve.rst
 
-  Send out the patch again for further discussion.
-
-[1]: https://patchwork.kernel.org/patch/13595066
-
----
- drivers/char/random.c     | 10 +++++-----
- include/linux/workqueue.h |  1 -
- kernel/workqueue.c        | 26 --------------------------
- 3 files changed, 5 insertions(+), 32 deletions(-)
-
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 00be9426a6fc..2597cb43f438 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -702,7 +702,7 @@ static void extract_entropy(void *buf, size_t len)
+diff --git a/Documentation/translations/zh_CN/process/cve.rst b/Documentation/translations/zh_CN/process/cve.rst
+new file mode 100644
+index 000000000000..b4e25cd52a3a
+--- /dev/null
++++ b/Documentation/translations/zh_CN/process/cve.rst
+@@ -0,0 +1,89 @@
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: Documentation/process/cve.rst
++:Translator: Dongliang Mu <dzm91@hust.edu.cn>
++
++====
++CVEs
++====
++
++Common Vulnerabilities and Exposure (CVE®) 编号是一种明确的方式来
++识别、定义和登记公开披露的安全漏洞。随着时间的推移，它们在内核项目中的实用性
++已经下降，CVE编号经常以不适当的方式和不适当的原因被分配。因此，内核开发社区
++倾向于避免使用它们。然而，分配CVE与其他形式的安全标识符的持续压力，以及内核
++社区之外的个人和公司的持续滥用，已经清楚地表明内核社区应该控制这些CVE分配。
++
++Linux内核开发团队确实有能力为潜在的Linux内核安全问题分配CVE。CVE的分配
++独立于 :doc:`安全漏洞报送流程</process/security-bugs>`。
++
++所有分配给Linux内核的CVE列表都可以在linux-cve邮件列表的存档中找到，如
++https://lore.kernel.org/linux-cve-announce/ 所示。如果想获得已分配
++CVE的通知，请“订阅”该邮件列表。要获得分配的CVE通知，请订阅该邮件列表：
++`subscribe <https://subspace.kernel.org/subscribing.html>`_。
++
++过程
++=======
++
++作为正常稳定发布过程的一部分，可能存在安全问题的内核更改由负责CVE编号分配
++的开发人员识别，并自动为其分配CVE编号。这些CVE分配会作为经常性的通告经常
++发布在linux-cve-announce邮件列表上。
++
++注意，由于Linux内核在系统中的特殊地位，几乎任何漏洞都可能被利用来危害内核
++的安全性，但是当漏洞被修复后，利用的可能性通常不明显。因此，CVE分配团队过于
++谨慎，并将CVE编号分配给他们识别的任何漏洞修复。这就解释了为什么Linux内核
++团队会发布大量的CVE。
++
++如果CVE分配团队错过了任何用户认为应该分配CVE的特定修复，请发送电子邮件到
++<cve@kernel.org>，那里的团队将与您一起工作。请注意，任何潜在的安全问题
++不应被发送到此邮箱，它仅用于为已发布的内核树中的漏洞修复分配CVE。如果你觉得
++自己发现了一个未修复的安全问题，请按照 :doc:`安全漏洞报送流程
++</process/security-bugs>` 发送到Linux内核社区。
++
++Linux内核不会给未修复的安全问题自动分配CVE；只有在安全修复可用且应用于
++稳定内核树后，CVE分配才会自动发生，并且它将通过安全修复的Git提交编号进行
++跟踪。如果有人希望在提交安全修复之前分配CVE，请联系内核CVE分配团队，从
++他们的一批保留编号中获得相应的CVE编号。
++
++对于目前没有得到稳定与长期维护内核团队积极支持的内核版本中发现的任何问题，
++都不会分配CVEs。当前支持的内核分支列表可以在 https://kernel.org/releases.html
++上找到。
++
++被分配CVE的争论
++=========================
++
++对于为特定内核修改分配的CVE，其争论或修改的权限仅属于受影响子系统的维护者。
++这一原则确保了漏洞报告的高度准确性和可问责性。只有那些具有深厚专业知识和
++对子系统深入了解的维护人员，才能有效评估内核漏洞的有效性和范围，并确定其适当的
++CVE指定策略。在此指定权限之外，任何争论或修改CVE的尝试都可能导致混乱、
++不准确的报告，并最终危及系统。
++
++无效的CVE
++============
++
++如果发现的安全问题存在于仅由某Linux发行版支持的Linux内核中，即安全问题是
++由于Linux发行版所做的更改导致，或者Linux的发行版内核版本不再是Linux内核
++社区支持的内核版本，那么Linux内核CVE团队将不能分配CVE，必须从Linux
++发行版本身请求。
++
++内核CVE分配团队以外的任何团队对Linux内核支持版本分配的CVE都不应被
++视为有效CVE。请通知内核CVE分配团队，以便他们可以通过CNA修复过程使
++这些条目失效。
++
++特定CVE的适用性
++==============================
++
++由于Linux内核可以以许多不同方式使用，外部用户可以通过许多不同方式访问它，或者
++根本没有访问，因此任何特定CVE的适用性取决于Linux用户，而不是内核CVE分配团队。
++请不要与我们联系来尝试确定任何特定CVE的适用性。
++
++此外，由于源代码树非常大，而任何一个系统都只使用源代码树的一小部分，因此任何
++Linux用户都应该意识到，大量分配的CVEs与他们的系统无关。
++
++简而言之，我们不知道您的用例，也不知道您使用的是内核的哪个部分，因此我们无法
++确定特定的CVE是否与您的系统相关。
++
++与往常一样，最好采取所有发布的内核更改，因为它们是由许多社区成员在一个统一的
++整体中一起进行测试的，而不是作为个别的精选更改。还要注意，对于许多安全问题来
++说，整体问题的解决方案并不是在单个更改中找到的，而是在彼此之上的许多修复的总
++和。理想情况下，CVE将被分配给所有问题的所有修复，但有时我们将无法注意到一些
++修复，因此某些修复可能在没有CVE的情况下被采取。
+diff --git a/Documentation/translations/zh_CN/process/index.rst b/Documentation/translations/zh_CN/process/index.rst
+index 3ca02d281be0..5c6c8ccdd50d 100644
+--- a/Documentation/translations/zh_CN/process/index.rst
++++ b/Documentation/translations/zh_CN/process/index.rst
+@@ -48,6 +48,7 @@ TODOLIST:
+    :maxdepth: 1
  
- static void __cold _credit_init_bits(size_t bits)
- {
--	static struct execute_work set_ready;
-+	static DECLARE_WORK(set_ready, crng_set_ready);
- 	unsigned int new, orig, add;
- 	unsigned long flags;
+    embargoed-hardware-issues
++   cve
  
-@@ -718,8 +718,8 @@ static void __cold _credit_init_bits(size_t bits)
+ TODOLIST:
  
- 	if (orig < POOL_READY_BITS && new >= POOL_READY_BITS) {
- 		crng_reseed(NULL); /* Sets crng_init to CRNG_READY under base_crng.lock. */
--		if (static_key_initialized)
--			execute_in_non_atomic_context(crng_set_ready, &set_ready);
-+		if (static_key_initialized && system_unbound_wq)
-+			queue_work(system_unbound_wq, &set_ready);
- 		atomic_notifier_call_chain(&random_ready_notifier, 0, NULL);
- 		wake_up_interruptible(&crng_init_wait);
- 		kill_fasync(&fasync, SIGIO, POLL_IN);
-@@ -890,8 +890,8 @@ void __init random_init(void)
- 
- 	/*
- 	 * If we were initialized by the cpu or bootloader before jump labels
--	 * are initialized, then we should enable the static branch here, where
--	 * it's guaranteed that jump labels have been initialized.
-+	 * or workqueues are initialized, then we should enable the static
-+	 * branch here, where it's guaranteed that these have been initialized.
- 	 */
- 	if (!static_branch_likely(&crng_is_ready) && crng_init >= CRNG_READY)
- 		crng_set_ready(NULL);
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index eb17c62d23aa..158784dd189a 100644
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -550,7 +550,6 @@ extern void drain_workqueue(struct workqueue_struct *wq);
- extern int schedule_on_each_cpu(work_func_t func);
- 
- int execute_in_process_context(work_func_t fn, struct execute_work *);
--int execute_in_non_atomic_context(work_func_t fn, struct execute_work *ew);
- 
- extern bool flush_work(struct work_struct *work);
- extern bool cancel_work(struct work_struct *work);
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 8f212346da7a..bf2bdac46843 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4449,32 +4449,6 @@ int execute_in_process_context(work_func_t fn, struct execute_work *ew)
- }
- EXPORT_SYMBOL_GPL(execute_in_process_context);
- 
--/**
-- * execute_in_non_atomic_context - reliably execute the routine with user context
-- * @fn:		the function to execute
-- * @ew:		guaranteed storage for the execute work structure (must
-- *		be available when the work executes)
-- *
-- * Schedules the function for delayed execution if atomic context is available,
-- * otherwise executes the function immediately .
-- *
-- * Return:	0 - function was executed
-- *		1 - function was scheduled for execution
-- */
--int execute_in_non_atomic_context(work_func_t fn, struct execute_work *ew)
--{
--	if (!in_atomic()) {
--		fn(&ew->work);
--		return 0;
--	}
--
--	INIT_WORK(&ew->work, fn);
--	schedule_work(&ew->work);
--
--	return 1;
--}
--EXPORT_SYMBOL_GPL(execute_in_non_atomic_context);
--
- /**
-  * free_workqueue_attrs - free a workqueue_attrs
-  * @attrs: workqueue_attrs to free
 -- 
-2.18.0
+2.34.1
 
 
