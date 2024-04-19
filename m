@@ -1,220 +1,235 @@
-Return-Path: <linux-kernel+bounces-150901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F9058AA683
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 23B8D8AA686
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 03:22:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A9091C21621
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:20:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 136301C215CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 01:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F046415C3;
-	Fri, 19 Apr 2024 01:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B15B15C3;
+	Fri, 19 Apr 2024 01:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Atkya+/E"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YMZOoymi"
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B7247E2;
-	Fri, 19 Apr 2024 01:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713489608; cv=fail; b=Tt9gEbT6tUWe9WgxD0+TW37cHFD1v+QIP9Cs1iV+Fg2BjPa01idZD+uICTmXR/P99Xc2hFUisS37Fj4NDwM5zJk7KzuQGHcNwgTW4PjgPNbgHFOG8DTNWCaELGToOq+UAPRrHooyxdh7ayCPs127YsM60jh0ewnqQM5qQbABZ5k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713489608; c=relaxed/simple;
-	bh=3y3sq6tnPcCZD9seVcPzPV+zTsSniUps734NaS9GsPo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=RnQF86QgF3o9WjrHtgQecUZtmI1QuS2u+uyLMeQvIW5bEsIrF82qkBYKPcLecVk4tgbOKDHUiOS/g5vR52Le9Nr3+Lb3W7Es+t09ZhtFPlx00t5/VRLdJ85H26rp+2defb9vz+f/Yb+OoHp9Go9RZP+Kr8NcAYIFSvsshVl7wzU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Atkya+/E; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713489606; x=1745025606;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=3y3sq6tnPcCZD9seVcPzPV+zTsSniUps734NaS9GsPo=;
-  b=Atkya+/EEtDDN9CAaNRxuusFbd76598oOBYvww/J+mlgzqVj1FA6Vj3b
-   8qbzy+C2nc9jvKfNjkjOqCQrFsjj/B3EwsWtEmwuNkZ8pU54C3RJZSnIt
-   STKlAODzEqOk3ZNQOM51l6BfIvj0K2h0C15NPFbrR3GD8+tXXNMi3jve1
-   G6/ipkxF70avBwQJNlc0fQ2ZNqxjVsSTeisxg+l8jHDHD05GyFofz9508
-   FItno/QpuonfJ3BK2mBtlQxjV4PwpIr5utMYm7Ny93ftPyDuV0wB4M8zf
-   c5kkvSUL1fObbaAYxkUhY+vQDUksHhCa4/qfIoLVIU4yONO5AKKaYbEzg
-   Q==;
-X-CSE-ConnectionGUID: JDS7dM8pToS/RliWsIwPIw==
-X-CSE-MsgGUID: cLQK0/7WSmO7VeerbphqYQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="12909762"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="12909762"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 18:20:05 -0700
-X-CSE-ConnectionGUID: rrym30iKQE6XiUerij14jg==
-X-CSE-MsgGUID: yiAsPvgKQDi6x5168Zd6Fg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="46461053"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Apr 2024 18:20:04 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 18 Apr 2024 18:20:04 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 18 Apr 2024 18:20:04 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 18 Apr 2024 18:20:04 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J8k0tH1ocN2Yu6Dx4gBfocGaA409cpOc70wYyzI71qlFFoVatPXfnhOzDz81KiiCWPMDMtPntwVVsAQtITPpklqjMXXhszZbATM4TI4C7MCRDrT+E//IAtnLBmT3sJ0Jwhobz//1tSwinigwuha6CUGlKUYtIDn+skODd+QdSw+Kjx+fMGITSdSzHR040nX8pZrhqeXHWGuYu5570LHZy99HiGpZl37AR7qJLaIhVLvXPUlZ0z4NM22Njb6KGT+gkXMxBhU6sRoerqZeIhf4IEpij3kvxg9Y/CQUSbkQ4ldMpqZKyz+cIoSOBOccid/H/Vqqrq76Po4lm53YPA0oyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MuMzn4/Vh4VUHst1GLhiTQLGwDtLm4tKO5lqOf9dtho=;
- b=QJVqcUkmTaHpYrZtyh6Twl7l1cgSXAiDgi3Q3sGOP9ESJtyCarLBye1dgVCjs83/zkQ2+s9+0xRWhAI81SdyRSITieooIM0T9cPOcZ/OFf16J/dHc5+tViQtJ/r+y8yX4SfTdLxXgDCSWr0EhwdPQAYiUBJP6NswC5W26kH3Xf7i2bgaq5Mf4xtEdFtI44hKdU01+Ads+PHcVEfz6OIybEvMnnk2K1CVbtLDHqqsY7c0VlwvlfyC+5tr/C5TJ976Z/LYyT+h6PXyfIL8bBdv9fHhGZoPCnLaN/g2IcbFE8r+iy8trKZTog2AxzHCOCou/8bAF+jCkaGlvrQ856bZhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- PH7PR11MB7450.namprd11.prod.outlook.com (2603:10b6:510:27e::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.12; Fri, 19 Apr
- 2024 01:20:00 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::55f1:8d0:2fa1:c7af]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::55f1:8d0:2fa1:c7af%5]) with mapi id 15.20.7472.042; Fri, 19 Apr 2024
- 01:20:00 +0000
-Date: Fri, 19 Apr 2024 09:19:29 +0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: <isaku.yamahata@intel.com>
-CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<isaku.yamahata@gmail.com>, Paolo Bonzini <pbonzini@redhat.com>,
-	<erdemaktas@google.com>, Sean Christopherson <seanjc@google.com>, Sagi Shahar
-	<sagis@google.com>, Kai Huang <kai.huang@intel.com>, <chen.bo@intel.com>,
-	<hang.yuan@intel.com>, <tina.zhang@intel.com>
-Subject: Re: [PATCH v19 010/130] KVM: x86: Pass is_private to gmem hook of
- gmem_max_level
-Message-ID: <ZiHGoUUcGlZObQvx@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <8108cc2b8ff01ec22de68f0d0758ef0671db43fc.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <8108cc2b8ff01ec22de68f0d0758ef0671db43fc.1708933498.git.isaku.yamahata@intel.com>
-X-ClientProxiedBy: SI2P153CA0015.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::21) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D69410E3
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 01:22:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713489750; cv=none; b=Ry7VgCFgds3CivdpuMTh1izVWqITeBXkdSCitN9h9iW0n70JsLrW1blbrUXa8NZ7Q5oIXxuKqD6EpoEUBxYslvI4lc2XMZ9pdT+adA4dBgwRjmcei3mmrXJpu+Kf61NstV7rR2vCHQz+lw3678L87riOWtLqrbb2bGHBf2WI/wA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713489750; c=relaxed/simple;
+	bh=1Pqd2IO38h18ms2DCwcvnLo4KlczMtlBA4Tg51+NUy8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oLhsq0iM2IyAZfUUSoK6LPIhHxbU/9UyJc7Pqe9dv2aT7XS7p4a50cjfrvlSOhYuwMFwlSyWA1C3MVsZEDlZJ9dVsI0+d1IArey5oR0DwKFsIq235/bcV2uH/c2TJaK7omr4Qim4VSbVGWMZ85GkOCJ+GSgoBl/LM0XvxXdghxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YMZOoymi; arc=none smtp.client-ip=209.85.160.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-23333ef4a02so934656fac.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 18:22:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1713489748; x=1714094548; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v9ROGqlYMf4EWKkuF17eFEGeQPXT7Cmyk3kLJypWimE=;
+        b=YMZOoymif96InqDYvEhyZ2owFZSgwVbGlfaj0tUj6o9D/gNNNwcundQXFe5IiSA+6D
+         e9OyQ1DB/goPBPbm0V2Az/h/n4IJT3Wwmm+N5T8LgD8sN1aAHWum0wpGX2ANGkLdQOMO
+         8l77pN9szYwi6kvHSpdL4pfhbRPb7jzTh/Wug=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713489748; x=1714094548;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v9ROGqlYMf4EWKkuF17eFEGeQPXT7Cmyk3kLJypWimE=;
+        b=Mq4JQcrHoKXrhLiZZudXSqel6ze18Q6zZxJLAyNbxzJtC5xJ7/dyqLCHx7CyOk4f5j
+         06bp7UFckxOAHVp2Usds+yYWUF4VYU2U5ORPlB/BS8Ky9WRuKNeuUJFL8gKDQXr6rI9t
+         dPwMb2XGEAzyIknfn3PgWzgo2L82W62Z2119lemlLmiHASjC+sgIPEkJSdhHl+omGwxa
+         ndpZaaCN45fXGvyF43mMP1F5gGCDd4v8k2pNk37wvGSRivLowYcWVUKMIRp9XDJRhA9P
+         yj9DIN8I9g0R+1mBUtSxPMuM79Y/mZyBcTDXhJL9dFqiSQojTpLKnvsQMLfslofGqzbk
+         7u0A==
+X-Forwarded-Encrypted: i=1; AJvYcCUpC+P736QYbxIG+2SRa2UQvOmlz9eg2fLBQ+D9oM+sRVTAsJYbPpuZ+5RlA3fC7C6O0XvwvsIQYbw6B+wKi6CGkVRDjmv5PUVcVxsb
+X-Gm-Message-State: AOJu0Yxi+DAonfW/BtW7VCANSRRw9xLMiK8kB1IDYib/KQZ7ujI+99uy
+	aSmwzkBtZqmRBn8MPRhgXUwWIX7FFCTQ7MhIwoYiw10IwG68OiHRzSYsX+6V3apPXkyf4YEKMqc
+	sfl3Py/nRU3gUkuaBx9bx92tFDTXB/yaxIgla
+X-Google-Smtp-Source: AGHT+IEIBWNW7I5IBkSSrZoL3bQdbE0EnKQ5DMsc2OrG+K8cpwjoWbHljs2kaRoC/Lt0/1+1WBv43RrQh4SZC/NgzxY=
+X-Received: by 2002:a05:6870:cb8e:b0:21e:a957:efef with SMTP id
+ ov14-20020a056870cb8e00b0021ea957efefmr870266oab.19.1713489748193; Thu, 18
+ Apr 2024 18:22:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|PH7PR11MB7450:EE_
-X-MS-Office365-Filtering-Correlation-Id: 82acfa71-037b-4129-4679-08dc600ed553
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|366007|376005;
-X-Microsoft-Antispam-Message-Info: MIR62ymj8A+qSuLIKIO8qrfOvzlxr7Iyz4sEoVsnJ98ml2KLHQY36PfLDoA43Gxl/BNEPT84n5XxjhnOX0YLBGrr6rZriG1v1UOBrwq/8ZC1PG6gnaDVNOYuczEase3fMHZePX3cZ/OISn4Nu+BtwaPqtqAfR1we6Oc5Ipp4q5pUmxNeUodDYV/uYWJ23FavOwFoq0x1bIY8GoSomgxAIwjM/23JS2Mtd7Az7dG7auk2tP12SaeCyfJiSIYGlALlbO+QEwm5VVeYnmYueKOVTL4bSUjJ75230aiXMn7kzSG4UVB2qCxkUp1PACxQ/I8HpXmgLu84BD/oZcx8rx1/GmjJlBOXkgBESPP4BRcHorg8BsU64qG0VUQoa9LdgKFgN4PFOB/nrxbF82t8zl2RisWmcQIzu4vKzW9SN+Uh1JqHn+rzGWS4EnvLhf9JeEdmgZmfLh3U3L8oyI/qSuNuXArkrhzpkx0eFzhclCF5mCB39EwnFaWQjOPTmgiVQq1iM40/teXbeFLMLEzmskR04EWhmXKwoK8CWx8zkfaujyLypuCWlRjkw2lLPGZgqri73pUfEv+G7WUxK9SqIUAhjKGSAjgOPD4Z/VE4gWXwb1LzH7DXBpVuNY0CDlCr8r73xuOGJDEs7nk1kcynSPQtyBwkkhzF7aO8VC1jhoVEUzg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?npuQps64/wUWKsTtgbK4SEu3fTTGfjw6HN1NMSkDobk6eOVyJoQl770EBfWj?=
- =?us-ascii?Q?XmZOZ8Ev9n5A/k4G+LI6juaubCyz1M+ByHxkNlhdo+P1XkP/yr8OPsToAgJ/?=
- =?us-ascii?Q?tZJCyDLYaXaAomUThsMVUiOHLGy/mewez7QEpKtM4mEgKh3bAflvGQ/uESI2?=
- =?us-ascii?Q?/78jGNPbijoTVJk95yuarYDTFkKUvmA7w0pbCg0PWWhL641xt8VKQqp8gbfl?=
- =?us-ascii?Q?024ncfYodtJ9EeWJyHtYczl+RlnCoD+vtyH+U5TYEBURdmjhlY9st2k7VdWZ?=
- =?us-ascii?Q?u8Okc7qT5xTfI/daPVdzE6Oml5gcH9Jeduo5IGuWTG6/v/+Ex8X1+dJn/+ER?=
- =?us-ascii?Q?rjb81zyZES2zqFVMBthx85hMvZTIB/aVuB3DwrNr2bhYG9eYF9+LmVIbEHm6?=
- =?us-ascii?Q?ivkgwED+hXTdUh7FrtjfAuUPAHJ5Ky3V9HJvZ1KuyLXTAP0ESog2+12JcONV?=
- =?us-ascii?Q?V3cnEVuiOfbXVfRbmnDsjB2taIyVBwXXeuu59BLSc54cccHqwYRyQssZKMOK?=
- =?us-ascii?Q?5JB2TFs2psoZuG8LEvsVK08BruvTvAxgtYsXKjkS0EZ5Ropxz9RGfnE6aJEH?=
- =?us-ascii?Q?wKdHqxqrRFTZMUGS0Re6ivMX7/IDVETje4rfUgEXdK2sSu+wht4lohcRv5T5?=
- =?us-ascii?Q?mLwFFWFMCYWCRM6CqChfCr0TDAQmK7A9G+2ZmMZagYV60amgl3PwKNsy6rRS?=
- =?us-ascii?Q?SYe8wuUVexcXbq2E2ZGa5FcvZo/YhPiitiwgPbamelhV8MkZBFA0MgB0ilvL?=
- =?us-ascii?Q?64J3TK3ca82zdksvLSES0GVu8PrIkuTDlx8UxK9Wupcumb+1bWlVk/uFkghr?=
- =?us-ascii?Q?iPEWRklSfoAvSjVlnnxmf4D6me4MnJtwMASfxXcIMhBkgbXb48EACF0sCGfG?=
- =?us-ascii?Q?QlwCNFkZm4DzeXe8Tyh+EfHg6AfPkBUUojCX6NN1ZnZDaGq4JvDi1BoT0k0E?=
- =?us-ascii?Q?g4e7Lqx5dQXJRbOq2DBzB4VfoB/bwvtP1KO0kLwNDrG5TQ68qV/Zq0s+Yp/Z?=
- =?us-ascii?Q?YT9pQJVM5jbQq9EWhD8t7/X+Vq3oTTHaRKUEbf2k0Y/Igko/0LfeTXwTuQGF?=
- =?us-ascii?Q?tcwpVW9L5SxUiCGpsxWTAsXdDpiKRNP7oH8tjaccWUFOFW8xIhlhDynwF0Jc?=
- =?us-ascii?Q?LE0fo28p3Y+PwZGTMcnHUf/MudpGi1Q4zyHipZM6aZBVG8IzZacO9ffOClYE?=
- =?us-ascii?Q?bm2eQBOYSX5TXyKCdJ+O74S39cmPeyUl4LYWwI1c3APDgvh+BTqNWOlLkMhp?=
- =?us-ascii?Q?gHE9GDBRlibWVafoWT0OXUA/+dzlFkH3pQFErgWIPyWBVMtafN/y9lvFd+vI?=
- =?us-ascii?Q?WUYpS4GDmazshxlAL8SL1HfsH3bUZ3o2koagw5LoKipjfM4Pedk3ZnzUhXvu?=
- =?us-ascii?Q?tOxCbuQMolELlAG4hEMT2MfUhJzc3jBzrSCI7tgGnA7leL/YjJzpRlepnuSN?=
- =?us-ascii?Q?6DFjRYVaLXl0pTZtdglkEPzszZBmD6JrpcinZsdMTqgQ604FDxi0SUWLzmPT?=
- =?us-ascii?Q?yREofitk7vxE8iUYQoaWKvW3mYOtlknUA6gtJV1/qnnbf1TDIifSBjXxPo86?=
- =?us-ascii?Q?WGXodu7n5Dhk8BwNtkDL0Zzqd0nDB+1SNl2StwTw?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82acfa71-037b-4129-4679-08dc600ed553
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 01:20:00.5796
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /JwphqgG1WDNznrxkrmYvzwedQdOuTkm74XhDyEv8N2NzZnmJdpTL5HDF4QueQ4XMO5YY69w8qd/uMSPsbHjDQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7450
-X-OriginatorOrg: intel.com
+References: <20240415163527.626541-1-jeffxu@chromium.org> <znrbeb744774vre5dkeg7kjnnt7uuifs6xw63udcyupwj3veqh@rpcqs7dmoxi6>
+ <CABi2SkU8B27O28jjTDajFpENgUHhntuRAMKFUMXr6A6AxZeyiQ@mail.gmail.com> <CAJuCfpFLwJg4n7wPpT+u9vC4XHoLE_BPPZ0tDKf7W45hGky4_Q@mail.gmail.com>
+In-Reply-To: <CAJuCfpFLwJg4n7wPpT+u9vC4XHoLE_BPPZ0tDKf7W45hGky4_Q@mail.gmail.com>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Thu, 18 Apr 2024 18:22:16 -0700
+Message-ID: <CABi2SkXCC8tvuHTiZ=tYcZw0sQ2SswQqDuFuQi5bKArW9+Nbaw@mail.gmail.com>
+Subject: Re: [PATCH v10 0/5] Introduce mseal
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, akpm@linux-foundation.org, 
+	keescook@chromium.org, jannh@google.com, sroettger@google.com, 
+	willy@infradead.org, gregkh@linuxfoundation.org, 
+	torvalds@linux-foundation.org, usama.anjum@collabora.com, corbet@lwn.net, 
+	merimus@google.com, rdunlap@infradead.org, jeffxu@google.com, 
+	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
+	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 12:25:12AM -0800, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> TDX wants to know the faulting address is shared or private so that the max
-> level is limited by Secure-EPT or not.  Because fault->gfn doesn't include
-> shared bit, gfn doesn't tell if the faulting address is shared or not.
-> Pass is_private for TDX case.
-> 
-> TDX logic will be if (!is_private) return 0; else return PG_LEVEL_4K.
-> 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->  arch/x86/include/asm/kvm_host.h | 3 ++-
->  arch/x86/kvm/mmu/mmu.c          | 3 ++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index d15f5b4b1656..57ce89fc2740 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1797,7 +1797,8 @@ struct kvm_x86_ops {
->  
->  	gva_t (*get_untagged_addr)(struct kvm_vcpu *vcpu, gva_t gva, unsigned int flags);
->  
-> -	int (*gmem_max_level)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, u8 *max_level);
-> +	int (*gmem_max_level)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn,
-> +			      bool is_private, u8 *max_level);
->  };
->  
->  struct kvm_x86_nested_ops {
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 1e5e12d2707d..22db1a9f528a 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4324,7 +4324,8 @@ static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
->  
->  	max_level = kvm_max_level_for_order(max_order);
->  	r = static_call(kvm_x86_gmem_max_level)(vcpu->kvm, fault->pfn,
-> -						fault->gfn, &max_level);
-> +						fault->gfn, fault->is_private,
-> +						&max_level);
-fault->is_private is always true in kvm_faultin_pfn_private().
-Besides, as shared page allocation will not go to kvm_faultin_pfn_private(),
-why do we need to add the "is_private" parameter ?
+On Thu, Apr 18, 2024 at 1:19=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> On Tue, Apr 16, 2024 at 12:40=E2=80=AFPM Jeff Xu <jeffxu@chromium.org> wr=
+ote:
+> >
+> > On Tue, Apr 16, 2024 at 8:13=E2=80=AFAM Liam R. Howlett <Liam.Howlett@o=
+racle.com> wrote:
+> > >
+> > > * jeffxu@chromium.org <jeffxu@chromium.org> [240415 12:35]:
+> > > > From: Jeff Xu <jeffxu@chromium.org>
+> > > >
+> > > > This is V10 version, it rebases v9 patch to 6.9.rc3.
+> > > > We also applied and tested mseal() in chrome and chromebook.
+> > > >
+> > > > ------------------------------------------------------------------
+> > > ...
+> > >
+> > > > MM perf benchmarks
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > This patch adds a loop in the mprotect/munmap/madvise(DONTNEED) to
+> > > > check the VMAs=E2=80=99 sealing flag, so that no partial update can=
+ be made,
+> > > > when any segment within the given memory range is sealed.
+> > > >
+> > > > To measure the performance impact of this loop, two tests are devel=
+oped.
+> > > > [8]
+> > > >
+> > > > The first is measuring the time taken for a particular system call,
+> > > > by using clock_gettime(CLOCK_MONOTONIC). The second is using
+> > > > PERF_COUNT_HW_REF_CPU_CYCLES (exclude user space). Both tests have
+> > > > similar results.
+> > > >
+> > > > The tests have roughly below sequence:
+> > > > for (i =3D 0; i < 1000, i++)
+> > > >     create 1000 mappings (1 page per VMA)
+> > > >     start the sampling
+> > > >     for (j =3D 0; j < 1000, j++)
+> > > >         mprotect one mapping
+> > > >     stop and save the sample
+> > > >     delete 1000 mappings
+> > > > calculates all samples.
+> > >
+> > >
+> > > Thank you for doing this performance testing.
+> > >
+> > > >
+> > > > Below tests are performed on Intel(R) Pentium(R) Gold 7505 @ 2.00GH=
+z,
+> > > > 4G memory, Chromebook.
+> > > >
+> > > > Based on the latest upstream code:
+> > > > The first test (measuring time)
+> > > > syscall__     vmas    t       t_mseal delta_ns        per_vma %
+> > > > munmap__      1       909     944     35      35      104%
+> > > > munmap__      2       1398    1502    104     52      107%
+> > > > munmap__      4       2444    2594    149     37      106%
+> > > > munmap__      8       4029    4323    293     37      107%
+> > > > munmap__      16      6647    6935    288     18      104%
+> > > > munmap__      32      11811   12398   587     18      105%
+> > > > mprotect      1       439     465     26      26      106%
+> > > > mprotect      2       1659    1745    86      43      105%
+> > > > mprotect      4       3747    3889    142     36      104%
+> > > > mprotect      8       6755    6969    215     27      103%
+> > > > mprotect      16      13748   14144   396     25      103%
+> > > > mprotect      32      27827   28969   1142    36      104%
+> > > > madvise_      1       240     262     22      22      109%
+> > > > madvise_      2       366     442     76      38      121%
+> > > > madvise_      4       623     751     128     32      121%
+> > > > madvise_      8       1110    1324    215     27      119%
+> > > > madvise_      16      2127    2451    324     20      115%
+> > > > madvise_      32      4109    4642    534     17      113%
+> > > >
+> > > > The second test (measuring cpu cycle)
+> > > > syscall__     vmas    cpu     cmseal  delta_cpu       per_vma %
+> > > > munmap__      1       1790    1890    100     100     106%
+> > > > munmap__      2       2819    3033    214     107     108%
+> > > > munmap__      4       4959    5271    312     78      106%
+> > > > munmap__      8       8262    8745    483     60      106%
+> > > > munmap__      16      13099   14116   1017    64      108%
+> > > > munmap__      32      23221   24785   1565    49      107%
+> > > > mprotect      1       906     967     62      62      107%
+> > > > mprotect      2       3019    3203    184     92      106%
+> > > > mprotect      4       6149    6569    420     105     107%
+> > > > mprotect      8       9978    10524   545     68      105%
+> > > > mprotect      16      20448   21427   979     61      105%
+> > > > mprotect      32      40972   42935   1963    61      105%
+> > > > madvise_      1       434     497     63      63      115%
+> > > > madvise_      2       752     899     147     74      120%
+> > > > madvise_      4       1313    1513    200     50      115%
+> > > > madvise_      8       2271    2627    356     44      116%
+> > > > madvise_      16      4312    4883    571     36      113%
+> > > > madvise_      32      8376    9319    943     29      111%
+> > > >
+> > >
+> > > If I am reading this right, madvise() is affected more than the other
+> > > calls?  Is that expected or do we need to have a closer look?
+> > >
+> > The madvise() has a bigger percentage (per_vma %), but it also has a
+> > smaller base value (cpu).
+>
+> Sorry, it's unclear to me what the "vmas" column denotes. Is that how
+> many VMAs were created before timing the syscall? If so, then 32 is
+> the max that you show here while you seem to have tested with 1000
+> VMAs. What is the overhead with 1000 VMAs?
 
->  	if (r) {
->  		kvm_release_pfn_clean(fault->pfn);
->  		return r;
-> -- 
-> 2.25.1
-> 
-> 
+The vmas column is the number of VMA used in one call.
+
+For example: for 32 and mprotect(ptr,size), the memory range used in
+mprotect has 32 VMAs.
+
+It also matters how many memory ranges are in-use at the time of the
+test, This is where 1000 comes in. The test creates 1000 memory
+ranges, each memory range has 32 vmas, then calls mprotect on the 1000
+memory range. (the pseudocode was included in the original email)
+
+> My worry is that if the overhead grows linearly with the number of
+> VMAs then the effects will be quite noticeable on Android where an
+> application with a few thousand VMAs is not so unusual.
+>
+The overhead is likely to grow linearly with the number of VMA, since
+it takes time to retrieve VMA's metadata.
+
+Let's use one data sample to look at impact:
+
+Test: munmap 1000 memory range, each memory range has 1 VMA
+
+syscall__       vmas    t       t_mseal delta_ns        per_vma %
+munmap__        1       909     944     35      35      104%
+
+For those 1000 munmap calls, sealing adds 35000 ns in total, or 35 ns per c=
+all.
+
+The delta seems to be insignificant. e.g. it will take about 28571
+munmap call to have 1 ms difference (1000000/35=3D28571)
+
+When I look at the data from 5.10 to 6.8, for the same munmap call,
+6.8 adds 552 ns per call, which is 15 times bigger.
+
+syscall__       vmas    t_5_10  t_6_8   delta_ns        per_vma %
+munmap__        1       357     909     552     552     254%
+
+
+> >
+> > -Jeff
 
