@@ -1,357 +1,137 @@
-Return-Path: <linux-kernel+bounces-151454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6B898AAF28
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:17:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DA718AAF2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:18:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27976B21DA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:17:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCFB31C21540
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A1D127B72;
-	Fri, 19 Apr 2024 13:17:40 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DBC885943;
-	Fri, 19 Apr 2024 13:17:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 302111272A7;
+	Fri, 19 Apr 2024 13:17:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kk5mT5I7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7206986640;
+	Fri, 19 Apr 2024 13:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713532660; cv=none; b=ma9A/cXe+ixv45fysbxFVWgIKENoqdK5YombEMHapEhHK4Yq/WGuBQ20OY2TXifgHajH7s2yXw1E5b6x6DuQXgBl2NbZ42X4zLS0JZgS6Mdaiu/e8515ij5LKkwWK9E5ne5cwBWI1t3eNp2aU0MHb8ON2poKWgFv1YQXQv2hu/k=
+	t=1713532670; cv=none; b=MDmvL97NJDHentJpbeNweluCYbCIKBwDB2u2dUGu4DQbZIqK1r3YKkjGhbXUW0aojmISoXOXY1+699TplOnuXmHUo4tG+juNRSzh4xh6lyHa5rb+eld8bphrCtc3WJvyMEKLkh0NXqLNvDl15jOm4ha0516+V2wM4qG8wr1r7iE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713532660; c=relaxed/simple;
-	bh=KNEnmnjXcdjG/45CnWUWM7KCLSgLT4ZKgUXAsuvu8Zc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bAGafpfIqa/Tlb1XwKf3k3MHwTE8i8kTVoqnIEYC/oHwZnvUNl32Qe7BCH3Tv/jDvO6tIDyFxijfDQl+baexf3pdbMLC4mmSxyP1bTtuY3iI8yjJ8lcs0pDJqhfOHt9eFdjfv5Jp0PKvjYqdC52shIGy5gRpg8u01rF0Aj27q/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23FF12F;
-	Fri, 19 Apr 2024 06:18:05 -0700 (PDT)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 410FF3F64C;
-	Fri, 19 Apr 2024 06:17:34 -0700 (PDT)
-Message-ID: <9b37b844-d3b1-4b9f-b37e-36b0c347206e@arm.com>
-Date: Fri, 19 Apr 2024 14:17:32 +0100
+	s=arc-20240116; t=1713532670; c=relaxed/simple;
+	bh=P3USWEZSPy10m4QVgX4E7XO5g3Xx+Ubf4LMQr2KdyCA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uev0AvUeS28dknOmkRo6mvl0v2gYkyLvV5BxQ7zBGRAobRD/WT3sWSgU/5Jh+GXEhOc65W3ZIhe+Xhv5KuAE9uiIlSj1N+rM0eHVGGjiIJwstwrfV+LBeyScecYgb3hd5G4UFpZkjeiM7+GuonunZQrLfuxSfq20D3WYLFw93+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kk5mT5I7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69C79C072AA;
+	Fri, 19 Apr 2024 13:17:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713532669;
+	bh=P3USWEZSPy10m4QVgX4E7XO5g3Xx+Ubf4LMQr2KdyCA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kk5mT5I7gsbHbYbsEWHu9NNp+2wXKQavfy5cllFObb5io4ETLYs1kvPmh/s4KHS4G
+	 qQ5Y8p2yVQU9b1iRl6GgjWZTsXflEnzvm6iBOmEi8hnjT5vvoU5J+O5+kpj4WbFI0w
+	 q8R8QfrLr3LHtcbPo8hV7/kBqryNZ7L6FBHFgX+rPjDj9CLZLhDNQbFncSrvnjHGdP
+	 K4wTX/u7ecsJQjfCd2lf4hf1PVGFRl7Tk0Mc5ImI7AGLl+uUi2iUWc75/YS1AAZxt1
+	 3MF2iBePRNKEbtWQqPNbn0MduFQ2Y7OvGTMB6MXL4oTLmIIDxCdR3lYu3XZTxqfIHP
+	 3HFaJYYyS94Vw==
+Date: Fri, 19 Apr 2024 14:17:44 +0100
+From: Will Deacon <will@kernel.org>
+To: Rohan McLure <rmclure@linux.ibm.com>
+Cc: linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
+	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	arnd@arndb.de, gautam@linux.ibm.com
+Subject: Re: [PATCH] asm-generic/mmiowb: Mark accesses to fix KCSAN warnings
+Message-ID: <20240419131744.GB3148@willie-the-truck>
+References: <20240404043855.640578-2-rmclure@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 20/43] arm64: RME: Allow populating initial contents
-To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
- kvmarm@lists.linux.dev
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
- <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
- Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
- Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
-References: <20240412084056.1733704-1-steven.price@arm.com>
- <20240412084309.1733783-1-steven.price@arm.com>
- <20240412084309.1733783-21-steven.price@arm.com>
-Content-Language: en-US
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20240412084309.1733783-21-steven.price@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404043855.640578-2-rmclure@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On 12/04/2024 09:42, Steven Price wrote:
-> The VMM needs to populate the realm with some data before starting (e.g.
-> a kernel and initrd). This is measured by the RMM and used as part of
-> the attestation later on.
+On Thu, Apr 04, 2024 at 03:38:53PM +1100, Rohan McLure wrote:
+> Prior to this patch, data races are detectable by KCSAN of the following
+> forms:
 > 
-> Co-developed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Steven Price <steven.price@arm.com>
+> [1] Asynchronous calls to mmiowb_set_pending() from an interrupt context
+>     or otherwise outside of a critical section
+> [2] Interrupted critical sections, where the interrupt will itself
+>     acquire a lock
+> 
+> In case [1], calling context does not need an mmiowb() call to be
+> issued, otherwise it would do so itself. Such calls to
+> mmiowb_set_pending() are either idempotent or no-ops.
+> 
+> In case [2], irrespective of when the interrupt occurs, the interrupt
+> will acquire and release its locks prior to its return, nesting_count
+> will continue balanced. In the worst case, the interrupted critical
+> section during a mmiowb_spin_unlock() call observes an mmiowb to be
+> pending and afterward is interrupted, leading to an extraneous call to
+> mmiowb(). This data race is clearly innocuous.
+> 
+> Resolve KCSAN warnings of type [1] by means of READ_ONCE, WRITE_ONCE.
+> As increments and decrements to nesting_count are balanced by interrupt
+> contexts, resolve type [2] warnings by simply revoking instrumentation,
+> with data_race() rather than READ_ONCE() and WRITE_ONCE(), the memory
+> consistency semantics of plain-accesses will still lead to correct
+> behaviour.
+> 
+> Signed-off-by: Rohan McLure <rmclure@linux.ibm.com>
+> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+> Reported-by: Gautam Menghani <gautam@linux.ibm.com>
+> Tested-by: Gautam Menghani <gautam@linux.ibm.com>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->   arch/arm64/kvm/rme.c | 234 +++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 234 insertions(+)
+> Previously discussed here:
+> https://lore.kernel.org/linuxppc-dev/20230510033117.1395895-4-rmclure@linux.ibm.com/
+> But pushed back due to affecting other architectures. Reissuing, to
+> linuxppc-dev, as it does not enact a functional change.
+> ---
+>  include/asm-generic/mmiowb.h | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
 > 
-> diff --git a/arch/arm64/kvm/rme.c b/arch/arm64/kvm/rme.c
-> index 0a3f823b2446..4aab507f896e 100644
-> --- a/arch/arm64/kvm/rme.c
-> +++ b/arch/arm64/kvm/rme.c
-> @@ -4,6 +4,7 @@
->    */
->   
->   #include <linux/kvm_host.h>
-> +#include <linux/hugetlb.h>
->   
->   #include <asm/kvm_emulate.h>
->   #include <asm/kvm_mmu.h>
-> @@ -547,6 +548,227 @@ void kvm_realm_unmap_range(struct kvm *kvm, unsigned long ipa, u64 size,
->   	realm_fold_rtt_range(realm, ipa, end);
->   }
->   
-> +static int realm_create_protected_data_page(struct realm *realm,
-> +					    unsigned long ipa,
-> +					    struct page *dst_page,
-> +					    struct page *src_page,
-> +					    unsigned long flags)
-> +{
-> +	phys_addr_t dst_phys, src_phys;
-> +	int ret;
+> diff --git a/include/asm-generic/mmiowb.h b/include/asm-generic/mmiowb.h
+> index 5698fca3bf56..f8c7c8a84e9e 100644
+> --- a/include/asm-generic/mmiowb.h
+> +++ b/include/asm-generic/mmiowb.h
+> @@ -37,25 +37,28 @@ static inline void mmiowb_set_pending(void)
+>  	struct mmiowb_state *ms = __mmiowb_state();
+>  
+>  	if (likely(ms->nesting_count))
+> -		ms->mmiowb_pending = ms->nesting_count;
+> +		WRITE_ONCE(ms->mmiowb_pending, ms->nesting_count);
+>  }
+>  
+>  static inline void mmiowb_spin_lock(void)
+>  {
+>  	struct mmiowb_state *ms = __mmiowb_state();
+> -	ms->nesting_count++;
 > +
-> +	dst_phys = page_to_phys(dst_page);
-> +	src_phys = page_to_phys(src_page);
-> +
-> +	if (rmi_granule_delegate(dst_phys))
-> +		return -ENXIO;
-> +
-> +	ret = rmi_data_create(virt_to_phys(realm->rd), dst_phys, ipa, src_phys,
-> +			      flags);
-> +
-> +	if (RMI_RETURN_STATUS(ret) == RMI_ERROR_RTT) {
-> +		/* Create missing RTTs and retry */
-> +		int level = RMI_RETURN_INDEX(ret);
-> +
-> +		ret = realm_create_rtt_levels(realm, ipa, level,
-> +					      RME_RTT_MAX_LEVEL, NULL);
-> +		if (ret)
-> +			goto err;
-> +
-> +		ret = rmi_data_create(virt_to_phys(realm->rd), dst_phys, ipa,
-> +				      src_phys, flags);
-> +	}
-> +
-> +	if (ret)
-> +		goto err;
+> +	/* Increment need not be atomic. Nestedness is balanced over interrupts. */
+> +	data_race(ms->nesting_count++);
+>  }
+>  
+>  static inline void mmiowb_spin_unlock(void)
+>  {
+>  	struct mmiowb_state *ms = __mmiowb_state();
+> +	u16 pending = READ_ONCE(ms->mmiowb_pending);
+>  
+> -	if (unlikely(ms->mmiowb_pending)) {
+> -		ms->mmiowb_pending = 0;
+> +	WRITE_ONCE(ms->mmiowb_pending, 0);
 
-ultra minor nit:
+Why are you changing this store to be unconditional?
 
-	if (!ret)
-		return 0;
-
-> +
-> +	return 0;
-> +
-> +err:
-> +	if (WARN_ON(rmi_granule_undelegate(dst_phys))) {
-> +		/* Page can't be returned to NS world so is lost */
-> +		get_page(dst_page);
-> +	}
-> +	return -ENXIO;
-> +}
-> +
-> +static int fold_rtt(struct realm *realm, unsigned long addr, int level)
-> +{
-> +	phys_addr_t rtt_addr;
-> +	int ret;
-> +
-> +	ret = realm_rtt_fold(realm, addr, level + 1, &rtt_addr);
-> +	if (ret)
-> +		return ret;
-> +
-> +	free_delegated_page(realm, rtt_addr);
-> +
-> +	return 0;
-> +}
-> +
-> +static int populate_par_region(struct kvm *kvm,
-> +			       phys_addr_t ipa_base,
-> +			       phys_addr_t ipa_end,
-> +			       u32 flags)
-> +{
-> +	struct realm *realm = &kvm->arch.realm;
-> +	struct kvm_memory_slot *memslot;
-> +	gfn_t base_gfn, end_gfn;
-> +	int idx;
-> +	phys_addr_t ipa;
-> +	int ret = 0;
-> +	struct page *tmp_page;
-> +	unsigned long data_flags = 0;
-> +
-> +	base_gfn = gpa_to_gfn(ipa_base);
-> +	end_gfn = gpa_to_gfn(ipa_end);
-> +
-> +	if (flags & KVM_ARM_RME_POPULATE_FLAGS_MEASURE)
-> +		data_flags = RMI_MEASURE_CONTENT;
-> +
-> +	idx = srcu_read_lock(&kvm->srcu);
-> +	memslot = gfn_to_memslot(kvm, base_gfn);
-> +	if (!memslot) {
-> +		ret = -EFAULT;
-> +		goto out;
-> +	}
-> +
-> +	/* We require the region to be contained within a single memslot */
-> +	if (memslot->base_gfn + memslot->npages < end_gfn) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	tmp_page = alloc_page(GFP_KERNEL);
-> +	if (!tmp_page) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	mmap_read_lock(current->mm);
-> +
-> +	ipa = ipa_base;
-> +	while (ipa < ipa_end) {
-> +		struct vm_area_struct *vma;
-> +		unsigned long map_size;
-> +		unsigned int vma_shift;
-> +		unsigned long offset;
-> +		unsigned long hva;
-> +		struct page *page;
-> +		kvm_pfn_t pfn;
-> +		int level;
-> +
-> +		hva = gfn_to_hva_memslot(memslot, gpa_to_gfn(ipa));
-> +		vma = vma_lookup(current->mm, hva);
-> +		if (!vma) {
-> +			ret = -EFAULT;
-> +			break;
-> +		}
-> +
-> +		if (is_vm_hugetlb_page(vma))
-> +			vma_shift = huge_page_shift(hstate_vma(vma));
-> +		else
-> +			vma_shift = PAGE_SHIFT;
-> +
-> +		map_size = 1 << vma_shift;
-> +
-> +		/*
-> +		 * FIXME: This causes over mapping, but there's no good
-> +		 * solution here with the ABI as it stands
-> +		 */
-> +		ipa = ALIGN_DOWN(ipa, map_size);
-> +
-> +		switch (map_size) {
-> +		case RME_L2_BLOCK_SIZE:
-> +			level = 2;
-> +			break;
-> +		case PAGE_SIZE:
-> +			level = 3;
-> +			break;
-> +		default:
-> +			WARN_ONCE(1, "Unsupport vma_shift %d", vma_shift);
-
-Do we really need this WARNing  ? Could we not fallback to the next 
-possible mapping size ? e.g: if 1G, we could at least try 2M. I guess
-this is more or less similar to what we would do on a fault and it may
-be a good idea to see if could reuse the core bits from user_mem_abort ?
-
-> +			ret = -EFAULT;
-> +			break;
-> +		}
-> +
-> +		pfn = gfn_to_pfn_memslot(memslot, gpa_to_gfn(ipa));
-> +
-> +		if (is_error_pfn(pfn)) {
-> +			ret = -EFAULT;
-> +			break;
-> +		}
-> +
-> +		if (level < RME_RTT_MAX_LEVEL) {
-> +			/*
-> +			 * A temporary RTT is needed during the map, precreate
-> +			 * it, however if there is an error (e.g. missing
-> +			 * parent tables) this will be handled in the
-> +			 * realm_create_protected_data_page() call.
-> +			 */
-> +			realm_create_rtt_levels(realm, ipa, level,
-> +						RME_RTT_MAX_LEVEL, NULL);
-> +		}
-> +
-> +		page = pfn_to_page(pfn);
-> +
-> +		for (offset = 0; offset < map_size && !ret;
-> +		     offset += PAGE_SIZE, page++) {
-> +			phys_addr_t page_ipa = ipa + offset;
-> +
-> +			ret = realm_create_protected_data_page(realm, page_ipa,
-> +							       page, tmp_page,
-> +							       data_flags);
-> +		}
-> +		if (ret)
-> +			goto err_release_pfn;
-> +
-> +		if (level == 2) {
-> +			ret = fold_rtt(realm, ipa, level);
-> +			if (ret)
-> +				goto err_release_pfn;
-
-Do we care about the FOLD error here ? Ideally we shouldn't hit an 
-error, but unable to fold is not an error case ? We could live with
-L3 mappings ?
-
-
-Suzuki
-
-
-> +		}
-> +
-> +		ipa += map_size;
-> +		kvm_release_pfn_dirty(pfn);
-> +err_release_pfn:
-> +		if (ret) {
-> +			kvm_release_pfn_clean(pfn);
-> +			break;
-> +		}
-> +	}
-> +
-> +	mmap_read_unlock(current->mm);
-> +	__free_page(tmp_page);
-> +
-> +out:
-> +	srcu_read_unlock(&kvm->srcu, idx);
-> +	return ret;
-> +}
-> +
-> +static int kvm_populate_realm(struct kvm *kvm,
-> +			      struct kvm_cap_arm_rme_populate_realm_args *args)
-> +{
-> +	phys_addr_t ipa_base, ipa_end;
-> +
-> +	if (kvm_realm_state(kvm) != REALM_STATE_NEW)
-> +		return -EINVAL;
-> +
-> +	if (!IS_ALIGNED(args->populate_ipa_base, PAGE_SIZE) ||
-> +	    !IS_ALIGNED(args->populate_ipa_size, PAGE_SIZE))
-> +		return -EINVAL;
-> +
-> +	if (args->flags & ~RMI_MEASURE_CONTENT)
-> +		return -EINVAL;
-> +
-> +	ipa_base = args->populate_ipa_base;
-> +	ipa_end = ipa_base + args->populate_ipa_size;
-> +
-> +	if (ipa_end < ipa_base)
-> +		return -EINVAL;
-> +
-> +	return populate_par_region(kvm, ipa_base, ipa_end, args->flags);
-> +}
-> +
->   static int find_map_level(struct realm *realm,
->   			  unsigned long start,
->   			  unsigned long end)
-> @@ -808,6 +1030,18 @@ int kvm_realm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
->   		r = kvm_init_ipa_range_realm(kvm, &args);
->   		break;
->   	}
-> +	case KVM_CAP_ARM_RME_POPULATE_REALM: {
-> +		struct kvm_cap_arm_rme_populate_realm_args args;
-> +		void __user *argp = u64_to_user_ptr(cap->args[1]);
-> +
-> +		if (copy_from_user(&args, argp, sizeof(args))) {
-> +			r = -EFAULT;
-> +			break;
-> +		}
-> +
-> +		r = kvm_populate_realm(kvm, &args);
-> +		break;
-> +	}
->   	default:
->   		r = -EINVAL;
->   		break;
-
+Will
 
