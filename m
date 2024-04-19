@@ -1,116 +1,222 @@
-Return-Path: <linux-kernel+bounces-151477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA8358AAF5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:31:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F01078AAF5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:32:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBEED1C22779
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:31:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A870A2819D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FD8128826;
-	Fri, 19 Apr 2024 13:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D903A128833;
+	Fri, 19 Apr 2024 13:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LXMJLVNv"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="Rb45dPPU"
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3278614B
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:31:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4368614B;
+	Fri, 19 Apr 2024 13:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713533507; cv=none; b=khNLPL95Gwbl3C+V9vJ76DoT2Kts1kvDrqVtszhoUSnXgWJvK9cxvmrf4bB9Gk8gWTWfA72FzWKs1TN5aMuRkqPZrDkFitqo37G++tFJiJOoHWJeh+NziMzu0rnqQ/QdyQoF6iOaZUAlVXgdf1VzUQK1sv51XdiTAFgF5nsfqdM=
+	t=1713533520; cv=none; b=ESOq4x0QYv0/hSTSbbsXSrb4yu2tG6eLzOYeDUQw7nLTqb07VWFyBXZ3GBUgZdfx4nMzFEaT3tEsGZeNM/GUA85r/qd3n1AhRGroOtSlOA6S6PHpQsoqlkqrRhp5qRBR3MBiP5o2tgq/Nfn9unG+2algVnu2PMTEqZgR8WHh7bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713533507; c=relaxed/simple;
-	bh=q8sLxUQXTmO+zQlO+Nq2zQY8GKJ0uOrx6YdkifWv8s8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gjl6rDNn2MO+9sC+KNUh8zeW7k6jj0JYm/DtoNfTvSex8Lxnm5YxD5mZfUw/Q0grd2EQuqHHzgBKwcYBKKo7VmCoLv3oKFOJKKZdvXhTj9AS+3IjuuPbwa9Y9oLY3H/Ww9lexOhLf3m8DeXAO5cEmMPDwGOF5m3UXyOTQ3bdQQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LXMJLVNv; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713533506; x=1745069506;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=q8sLxUQXTmO+zQlO+Nq2zQY8GKJ0uOrx6YdkifWv8s8=;
-  b=LXMJLVNvMh7kLIg+OQpGV3kIW52FsgOxk4V2z9Zj+eo63+Wvzc4hxwEh
-   DcCUGRysIJ82uybKP+4zUq9Xbjt90+A62OCQeyhmKT2QUVzuc1xMvF9gD
-   ZMlkpJsAIgYuduZTNGC3yh+N2mJUTh3DcKiIo4mAmn10SLaBnhRjVwzSP
-   s0XDpCfZdosoXZRq+ELaRLYZZO5w59wHEWnc59x9Mm8+wE7K2g1VxTqKu
-   E5oRqWgoe4M2CVtARlJ2jSZdS7L/vL20DFIV0HCOWStGQySy7PSF8auAw
-   eOo579oO/oxKfcizcMBUPL6oWIhcd+qaHTMw0Rrsz/PsW3Sex9Zs8Yt3q
-   A==;
-X-CSE-ConnectionGUID: AVVUO5QTRmqvkOo623zoqA==
-X-CSE-MsgGUID: wno5hSyyTtuRb1DDxPJzqA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="19829820"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="19829820"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:31:45 -0700
-X-CSE-ConnectionGUID: 8EhFIYEkSGmj4XmvSB/OuA==
-X-CSE-MsgGUID: 32PEEwedQ4ewi5StWKTDOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="23411447"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa008.fm.intel.com with ESMTP; 19 Apr 2024 06:31:40 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id CEE59FD; Fri, 19 Apr 2024 16:31:39 +0300 (EEST)
-Date: Fri, 19 Apr 2024 16:31:39 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, 
-	kexec@lists.infradead.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	Tao Liu <ltao@redhat.com>
-Subject: Re: [PATCHv10 03/18] cpu/hotplug: Add support for declaring CPU
- offlining not supported
-Message-ID: <rju6u37prtr5nf4upcntcy4jcnul6atqmbh6impzqdn3dlo2pj@lqodxa7elohz>
-References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
- <20240409113010.465412-4-kirill.shutemov@linux.intel.com>
- <20240418143709.GJZiEwFejGQY3jiwsp@fat_crate.local>
+	s=arc-20240116; t=1713533520; c=relaxed/simple;
+	bh=YtKnpbLT9sY4SRQfvv2LW+DsSby+9c+olA8R6cjoRRQ=;
+	h=Subject:Message-ID:Date:MIME-Version:To:References:From:
+	 In-Reply-To:Content-Type; b=VlnX1spDdJSPPsq56bEZdFgSE/MHVfPniKMD6GHQPB49dbqj87GV7Ien7HNYSkUz1W5N8zcKGsig7iLr+1QAtf5tF00cDm1Z0uWihImjDcS0fZUc0QABacoG+1NiYdUudPZcZipMhPXfX2gqhXCZ+1OtjN2zsGcXRol9QeiVNmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=Rb45dPPU; arc=none smtp.client-ip=52.119.213.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1713533519; x=1745069519;
+  h=message-id:date:mime-version:to:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=YFRKM97PL1YLV8VV/GSpTXPtzgOIR33j9rSKn7zAI8Y=;
+  b=Rb45dPPUtNs88ASpMhYdD6iy7YMzm5fubwcDIgVNxPLc9nj+TaXLHUix
+   BygAPPEpkBzPUnskvq46bxNSplu3tkDg8X8MhCVzcFT4tfDhWWhAZb3Ca
+   494WlxxE5+u2IOCxBS7WGljJYj1xv93cYLC+l+V42wGl7TM3H45Binq23
+   c=;
+X-IronPort-AV: E=Sophos;i="6.07,213,1708387200"; 
+   d="scan'208";a="648820206"
+Subject: Re: [PATCH v7 2/3] dt-bindings: rng: Add vmgenid support
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 13:31:56 +0000
+Received: from EX19MTAEUB001.ant.amazon.com [10.0.43.254:62183]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.44.210:2525] with esmtp (Farcaster)
+ id 57717580-066b-4e95-a903-589fe9f1465c; Fri, 19 Apr 2024 13:31:54 +0000 (UTC)
+X-Farcaster-Flow-ID: 57717580-066b-4e95-a903-589fe9f1465c
+Received: from EX19D036EUC002.ant.amazon.com (10.252.61.191) by
+ EX19MTAEUB001.ant.amazon.com (10.252.51.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Fri, 19 Apr 2024 13:31:54 +0000
+Received: from [10.95.129.79] (10.95.129.79) by EX19D036EUC002.ant.amazon.com
+ (10.252.61.191) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 19 Apr
+ 2024 13:31:49 +0000
+Message-ID: <bf9b59ed-a739-4a06-93db-facb0c89dab6@amazon.co.uk>
+Date: Fri, 19 Apr 2024 14:31:45 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418143709.GJZiEwFejGQY3jiwsp@fat_crate.local>
+User-Agent: Mozilla Thunderbird
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>, <tytso@mit.edu>,
+	<robh@kernel.org>, <krzk@kernel.org>, <conor+dt@kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<sudanl@amazon.com>, <graf@amazon.com>, <dwmw@amazon.co.uk>,
+	<krzysztof.kozlowski@linaro.org>, <bchalios@amazon.es>,
+	<xmarcalx@amazon.co.uk>
+References: <20240418121249.42380-1-Jason@zx2c4.com>
+ <20240418121249.42380-3-Jason@zx2c4.com>
+Content-Language: en-US
+From: "Landge, Sudan" <sudanl@amazon.co.uk>
+In-Reply-To: <20240418121249.42380-3-Jason@zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D032UWA002.ant.amazon.com (10.13.139.81) To
+ EX19D036EUC002.ant.amazon.com (10.252.61.191)
 
-On Thu, Apr 18, 2024 at 04:37:09PM +0200, Borislav Petkov wrote:
-> On Tue, Apr 09, 2024 at 02:29:55PM +0300, Kirill A. Shutemov wrote:
-> > +/* Declare CPU offlining not supported */
-> > +void cpu_hotplug_disable_offlining(void)
-> > +{
-> > +	cpu_maps_update_begin();
-> 
-> "/*
->  * The following two APIs (cpu_maps_update_begin/done) must be used when
->  * attempting to serialize the updates to cpu_online_mask & cpu_present_mask.
->  */
-> void cpu_maps_update_begin(void)
-> ..."
-> 
-> > +	cpu_hotplug_offline_disabled = true;
-> 
-> but this doesn't do that here.
-> 
-> Are we doing a one-off here for that variable or what?
 
-Yes, it is one-off. I guess we could use READ_ONCE()/WRITE_ONCE() to
-access the variable with the same result. I am not sure why it would be
-better.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+On 18/04/2024 13:12, Jason A. Donenfeld wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> 
+> 
+> 
+> From: Sudan Landge <sudanl@amazon.com>
+> 
+> Virtual Machine Generation ID driver was introduced in commit
+> af6b54e2b5ba ("virt: vmgenid: notify RNG of VM fork and supply
+> generation ID"), as an ACPI only device.
+> 
+> VMGenID specification http://go.microsoft.com/fwlink/?LinkId=260709
+> defines a mechanism for the BIOS/hypervisors to communicate to the
+> virtual machine that it is executed with a different configuration (e.g.
+> snapshot execution or creation from a template).  The guest operating
+> system can use the notification for various purposes such as
+> re-initializing its random number generator etc.
+> 
+> As per the specs, hypervisor should provide a globally unique
+> identified, or GUID via ACPI.
+> 
+> This patch tries to mimic the mechanism to provide the same
+> functionality which is for a hypervisor/BIOS to notify the virtual
+> machine when it is executed with a different configuration.
+> 
+> As part of this support the devicetree bindings requires the hypervisors
+> or BIOS to provide a memory address which holds the GUID and an IRQ
+> which is used to notify when there is a change in the GUID.  The memory
+> exposed in the DT should follow the rules defined in the vmgenid spec
+> mentioned above.
+> 
+> Reason for this change: Chosing ACPI or devicetree is an intrinsic part
+> of an hypervisor design.  Without going into details of why a hypervisor
+> would chose DT over ACPI, we would like to highlight that the
+> hypervisors that have chose devicetree and now want to make use of the
+> vmgenid functionality cannot do so today because vmgenid is an ACPI only
+> device.  This forces these hypervisors to change their design which
+> could have undesirable impacts on their use-cases, test-scenarios etc.
+> 
+> The point of vmgenid is to provide a mechanism to discover a GUID when
+> the execution state of a virtual machine changes and the simplest way to
+> do it is pass a memory location and an interrupt via devicetree.  It
+> would complicate things unnecessarily if instead of using devicetree, we
+> try to implement a new protocol or modify other protocols to somehow
+> provide the same functionility.
+> 
+> We believe that adding a devicetree binding for vmgenid is a simpler,
+> better alternative to provide the same functionality and will allow such
+> hypervisors as mentioned above to continue using devicetree.
+> 
+> More references to the vmgenid specs are found below.
+> 
+> Signed-off-by: Sudan Landge <sudanl@amazon.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Alexander Graf <graf@amazon.com>
+> Link: https://www.qemu.org/docs/master/specs/vmgenid.html
+> Link: https://learn.microsoft.com/en-us/windows/win32/hyperv_v2/virtual-machine-generation-identifier
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+>   .../bindings/rng/microsoft,vmgenid.yaml       | 49 +++++++++++++++++++
+>   MAINTAINERS                                   |  1 +
+>   2 files changed, 50 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml b/Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml
+> new file mode 100644
+> index 000000000000..8f20dee93e7e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rng/microsoft,vmgenid.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Virtual Machine Generation ID
+> +
+> +maintainers:
+> +  - Jason A. Donenfeld <Jason@zx2c4.com>
+> +
+> +description:
+> +  Firmwares or hypervisors can use this devicetree to describe an
+> +  interrupt and a shared resource to inject a Virtual Machine Generation ID.
+> +  Virtual Machine Generation ID is a globally unique identifier (GUID) and
+> +  the devicetree binding follows VMGenID specification defined in
+> +  http://go.microsoft.com/fwlink/?LinkId=260709.
+> +
+> +properties:
+> +  compatible:
+> +    const: microsoft,vmgenid
+> +
+> +  reg:
+> +    description:
+> +      Specifies a 16-byte VMGenID in endianness-agnostic hexadecimal format.
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description:
+> +      Interrupt used to notify that a new VMGenID is available.
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    rng@80000000 {
+> +      compatible = "microsoft,vmgenid";
+> +      reg = <0x80000000 0x1000>;
+> +      interrupts = <GIC_SPI 35 IRQ_TYPE_EDGE_RISING>;
+> +    };
+> +
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index aa3b947fb080..c84ac9258a48 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18463,6 +18463,7 @@ M:      "Theodore Ts'o" <tytso@mit.edu>
+>   M:     Jason A. Donenfeld <Jason@zx2c4.com>
+>   S:     Maintained
+>   T:     git https://git.kernel.org/pub/scm/linux/kernel/git/crng/random.git
+> +F:     Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml
+>   F:     drivers/char/random.c
+>   F:     drivers/virt/vmgenid.c
+> 
+> --
+> 2.44.0
+> 
+Since I am on leave, looping in Babis to review/verify the patches.
 
