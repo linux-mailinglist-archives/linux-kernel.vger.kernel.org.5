@@ -1,82 +1,81 @@
-Return-Path: <linux-kernel+bounces-151949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 289F58AB629
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:55:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED1AF8AB62B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:57:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B977283663
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:55:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52456B221BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:57:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798702BAF7;
-	Fri, 19 Apr 2024 20:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724132BB04;
+	Fri, 19 Apr 2024 20:57:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3WmKU+vS"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bIvJC1+R"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F8292837B
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 20:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B292AF01
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 20:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713560125; cv=none; b=WSm/CeeWYngDOJc6xBV+m/DdqW+QQ4qOzuM4SXeDgbgwMPb5dulczsL5birhs9gheVyOboE8HjIgWUJSs/CqMPFhOPHvpoCR9SYIaXOk5/2GhLIcst+t2bdl8dKe0b4HXdX5P+YNm43lb4IRozfH3Terpw6FXMbtvBvvQHnh0TA=
+	t=1713560261; cv=none; b=Iz1mJu250UK2yYv50TG3iXnSDA78mdPWsyteUoZ/ZQ2qCDkUUcHoC5eb3Z/e4ttwJWceCfF+7iW9e5dhpDP+ReaTiSYHpHIRUs288tlvTsyUayQozPX7dVEkpA0QVWnMx/yJ03UJ7hYy76TzjdXvmxw1SfakKbgtr+tzRU9WB6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713560125; c=relaxed/simple;
-	bh=0GvM01Qlx5wuJBtCbl0XQHDADvYPFlcLL9+gjZzeNB4=;
+	s=arc-20240116; t=1713560261; c=relaxed/simple;
+	bh=qoLj+dJYefPcd1d7d+sMJMQdz9RnEJbXZl0KVW0Sv7A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IU1+1qeEduNGIAjSOOB25MAKvgzplLgEKcIeonzM1LAwTu7To0k9krSt3fbX9Mwe5JvcmZeTZvFl0Rg6dEfqkgzREKdhLKITDUHAHnW2JVeI0deMqNV0cu3dVVhLvqelxNuBhM+aQ1NRmRcLk0aGTQX9r8SFYzAz9v1ycMlpIB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3WmKU+vS; arc=none smtp.client-ip=209.85.160.173
+	 To:Cc:Content-Type; b=rndZ6TIclX4MyHgwC4H7HPph9sosvmLxgSICptOF5VQVyX3MeayepvBikl+b4p7aKFkQvC1hLhGEPJg7GNk9r5iRIh+/tFXwPgeMXNW011VtdoFxsP6nDhm2loFuJONrSOS8lHDwvNnjKsVIw9G9prxblTQfRZC1jzEfjUfBG6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bIvJC1+R; arc=none smtp.client-ip=209.85.160.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-434b5abbb0dso89271cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:55:24 -0700 (PDT)
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-4348110e888so25801cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713560123; x=1714164923; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713560259; x=1714165059; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AnzzcopxYVakJwmdZOL+JC6KyzHciDKz/A3YbkmreBI=;
-        b=3WmKU+vSGEVMlsj7qemhhGlkU64jcdm379MU9ZmE//fK+O43qEPv+1bWIzzOV2FFUA
-         IUyLGyFs0P5xn8VrNcE5npNWMe2r8zo8BIVMa3JV+ZcCyq2hwQjCeMrUVsD0RH7EwmBJ
-         Tv1f9R7XDdDRXj+aFWFtkr27XigL8ELO3N1vGjbLcguur/XRUbTt8/MoxVI+YSdasvXh
-         di0nnxD52+b9X8zIrpwWnVTAA0bTEfhkMP4dMMaAd05wWaaYCBvE10r9Cb4u9Lq4q7l4
-         torqRnB0Ynyr9wx9ORJ+38qYRwDMjGzrnfbEF+YibFnJgTLzw0FCMeF3lbhfOnQ3q8lt
-         A0HQ==
+        bh=qoLj+dJYefPcd1d7d+sMJMQdz9RnEJbXZl0KVW0Sv7A=;
+        b=bIvJC1+R3l4JY1IjLi1i2qjIPkdcw1M0BDoDpmUnAzVDcXvFIwbYzCnjVavqScyI7E
+         ybbj7/QAn8VFcJ7O8TaTUUeNLnvnAsrasmyXbRu3++moUdatkuONWxykT6O0hFtWo1gR
+         j9BQlBwWGkckSvilPNLv/ejXeSXjUQELWU9osotAHvCtoZSyxrwxcNp89MfpsGHKUzla
+         29pY8bLfvkyD5Uqj+DXKcGuVy3m+ZsdqmLbszulu5Xxf8LoX+6mjVLky3KXbIjZnN1hX
+         md0n4Riq/dKDZUbJxOP95JK9THJ3gRcHXPUY2gh79+CzIp+/4BrsMObus80sfe6HHZDy
+         3fYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713560123; x=1714164923;
+        d=1e100.net; s=20230601; t=1713560259; x=1714165059;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AnzzcopxYVakJwmdZOL+JC6KyzHciDKz/A3YbkmreBI=;
-        b=oem+2vuT4kN/CgshgIiaD9NPo7Qhy1Dj0NdMRc/Qv/3tcBULLN3iyBfeS7dYrOuhUC
-         GGQ18BcVH2fh65L2SUL3sGKdffHyidsuW3feODtvS2vlcrsylwVfk9lwFhrHOjlmNnyj
-         tgoa/mBt3WHWB8TQ8MiF83aCrdSNPhhXlUE3dRWhF7oete6TPDVin02n/ubBsriaWnaV
-         XvmZDuBhybwj7R9J9L9569yxDt1RqXCohB+q0rTB8Y9vu3IU+bj22fwQMRgDuk37esek
-         k80Dn4frOxhLH0tO4ycsQ8TPhGPPGgrZEdHKlr++JtTqXNsJmvLGdf3TWGJHsxxnPpAb
-         XH8w==
-X-Forwarded-Encrypted: i=1; AJvYcCXDkEPiZ7Bi3jDF8L9P7/2MiUXOMFLnFcX8VW1dpf6ufyqDocEg6N3hEcSfrqwN2FwIkn47vOcFuMLbF3SXF+VWYAhqiMuaeOms5qML
-X-Gm-Message-State: AOJu0YxRn0slN3wTI3XJonhV79TzuDhKk4RSD3XOH2LiyAuS82i7wsoq
-	w0DMdE+HBq8zqryB3Q2exZcFMu6/dbLxjIqtCko7J/fYLjiAqnFc4jDK/D9HD5Rtq2KfoYXYevl
-	2IXvQ8ilZflPp87TZj3nXhz+z8UbVXie7hCTb
-X-Google-Smtp-Source: AGHT+IH9sSY76fFvumrBUCB5IOWf40dprm49al51d9C63r/bzJh0mJ4NGK5So9vqJF4lfC7MlLaL31EdoOvAUHGh1YY=
-X-Received: by 2002:ac8:7357:0:b0:437:c52f:cd6a with SMTP id
- q23-20020ac87357000000b00437c52fcd6amr69580qtp.8.1713560123419; Fri, 19 Apr
- 2024 13:55:23 -0700 (PDT)
+        bh=qoLj+dJYefPcd1d7d+sMJMQdz9RnEJbXZl0KVW0Sv7A=;
+        b=qrQE8V8ZgYDgz9r0YXIjCmWeGYtZ+jeA6BHbD5BUPdRNItKTdm17JHbosAijf0JYLe
+         3P+Qy/6sH5qKiHeE3+QftYyrVXBYEhPydCqBwUMMGuklcgjibAzDFEMeRGF3gO7IJOix
+         7VtQ2/ndPbk9ayVQEL2CS5ja2XZotA1ub6snMu3InPyXi3ESEFeJ+uKAKuolmZwkn5HM
+         FyJHLZNmyE208BzmgK3lGA9C1fN0+ubMUx6GUJUBMM4Wq19e2cJ0af6F0WDu16MRUK5r
+         vMSGhuNAiwuZ3Z2grCUSG/QWV00sxozBdf23TTg+1uxgbULV5vaRioTNDu8F70BC0Yll
+         lcwg==
+X-Forwarded-Encrypted: i=1; AJvYcCWe6fk0scPf/qcITonfQHej16w4fIfPv3y+rlpE2ytdWNpCfQdD2uGi7ZONtKg9+bj5Hi3v6g/nrEEwptAIG8UMGX1WVfwraRVRgjhQ
+X-Gm-Message-State: AOJu0YxLUB2IUmHjvDNKkeaKf8SkyKQj1wi1kQX/pChGgHdFLS/LU+yj
+	DOaFt/0MJeOl6/s/f4wVyHJ1C8UAk9E56MmFQpacM9NCLVBb+Ah7MjiDsJSVmexj/G0Z9BQjKDu
+	K0DCp8d8OqYm8nj/kPpP1Wrgvb4U87G4ed/+G
+X-Google-Smtp-Source: AGHT+IFv1QNbGHT+roZmsKKDk+4PrHigHuJTamLsAWVaJCEFFb06VO4JQpFPHTrcY52wz67cbMD5ADs0MVUpOaV74QM=
+X-Received: by 2002:ac8:729a:0:b0:437:b99c:dbf7 with SMTP id
+ v26-20020ac8729a000000b00437b99cdbf7mr13893qto.11.1713560259365; Fri, 19 Apr
+ 2024 13:57:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401232946.1837665-1-jthoughton@google.com>
- <20240401232946.1837665-6-jthoughton@google.com> <ZhmdOb7lAd3DM5Tq@google.com>
-In-Reply-To: <ZhmdOb7lAd3DM5Tq@google.com>
+References: <20240401232946.1837665-1-jthoughton@google.com> <ZhmAR1akBHjvZ9_4@google.com>
+In-Reply-To: <ZhmAR1akBHjvZ9_4@google.com>
 From: James Houghton <jthoughton@google.com>
-Date: Fri, 19 Apr 2024 13:54:47 -0700
-Message-ID: <CADrL8HWAzcq4N-triWiMvtpUKvb7C03+2mQpNBxV9Ci-F5GyBw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/7] KVM: x86: Participate in bitmap-based PTE aging
+Date: Fri, 19 Apr 2024 13:57:03 -0700
+Message-ID: <CADrL8HW+4Yq-wBr1+DzJvSwRRL_hqt5RaCCLgOQndPGUqoX+Rg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] mm/kvm: Improve parallelism for access bit harvesting
 To: David Matlack <dmatlack@google.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Paolo Bonzini <pbonzini@redhat.com>, 
 	Yu Zhao <yuzhao@google.com>, Marc Zyngier <maz@kernel.org>, 
@@ -97,34 +96,23 @@ Cc: Andrew Morton <akpm@linux-foundation.org>, Paolo Bonzini <pbonzini@redhat.co
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024 at 1:44=E2=80=AFPM David Matlack <dmatlack@google.com>=
- wrote:
+On Fri, Apr 12, 2024 at 11:41=E2=80=AFAM David Matlack <dmatlack@google.com=
+> wrote:
 >
 > On 2024-04-01 11:29 PM, James Houghton wrote:
-> > Only handle the TDP MMU case for now. In other cases, if a bitmap was
-> > not provided, fallback to the slowpath that takes mmu_lock, or, if a
-> > bitmap was provided, inform the caller that the bitmap is unreliable.
+> > This patchset adds a fast path in KVM to test and clear access bits on
+> > sptes without taking the mmu_lock. It also adds support for using a
+> > bitmap to (1) test the access bits for many sptes in a single call to
+> > mmu_notifier_test_young, and to (2) clear the access bits for many ptes
+> > in a single call to mmu_notifier_clear_young.
 >
-> I think this patch will trigger a lockdep assert in
->
->   kvm_tdp_mmu_age_gfn_range
->     kvm_tdp_mmu_handle_gfn
->       for_each_tdp_mmu_root
->         __for_each_tdp_mmu_root
->           kvm_lockdep_assert_mmu_lock_held
->
-> ... because it walks tdp_mmu_roots without holding mmu_lock.
+> How much improvement would we get if we _just_ made test/clear_young
+> lockless on x86 and hold the read-lock on arm64? And then how much
+> benefit does the bitmap look-around add on top of that?
 
-Indeed, thanks. I'll make sure to build with CONFIG_LOCKDEP for the
-future versions and check for errors.
-
->
-> Yu's patch[1] added a lockless walk to the TDP MMU. We'd need something
-> similar here and also update the comment above tdp_mmu_roots describing
-> how tdp_mmu_roots can be read locklessly.
-
-I'll add the macro / function to do the lockless walk of tdp_mmu_roots
-and explain why it is safe. Thanks for pointing out this big mistake.
-
-> [1] https://lore.kernel.org/kvmarm/ZItX64Bbx5vdjo9M@google.com/
+I don't have these results right now. For the next version I will (1)
+separate the series into the locking change and the bitmap change, and
+I will (2) have performance data for each change separately. It is
+conceivable that the bitmap change should just be considered as a
+completely separate patchset.
 
