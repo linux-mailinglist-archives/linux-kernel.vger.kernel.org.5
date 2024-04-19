@@ -1,263 +1,116 @@
-Return-Path: <linux-kernel+bounces-151476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BE548AAF5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8358AAF5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:31:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FA931C22725
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:31:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBEED1C22779
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:31:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FDB7128811;
-	Fri, 19 Apr 2024 13:31:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FD8128826;
+	Fri, 19 Apr 2024 13:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="f9F5ZjRz"
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LXMJLVNv"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC934622;
-	Fri, 19 Apr 2024 13:31:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3278614B
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 13:31:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713533476; cv=none; b=CrFsnk7h3T4BK4a8Roxm7lXZwStTCLZW2yOWBhLMkwgzKDnmzhCtdFb+AKDAbt8nD+PL/yXnQADe1VhOIzUwoxWSjWVvtmcnj+JPuJAD/uCl3ppoYq9POEXuFqld63HeHqacqn0fe4j5YUNMcn6PLxCE8RpO4G9ELt/jEZoXauM=
+	t=1713533507; cv=none; b=khNLPL95Gwbl3C+V9vJ76DoT2Kts1kvDrqVtszhoUSnXgWJvK9cxvmrf4bB9Gk8gWTWfA72FzWKs1TN5aMuRkqPZrDkFitqo37G++tFJiJOoHWJeh+NziMzu0rnqQ/QdyQoF6iOaZUAlVXgdf1VzUQK1sv51XdiTAFgF5nsfqdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713533476; c=relaxed/simple;
-	bh=MKLy1nOKTDFc8dsBKuG3R0ky9Pb5R4lWzuIXYhfRoLY=;
-	h=Subject:Message-ID:Date:MIME-Version:To:References:From:
-	 In-Reply-To:Content-Type; b=uVym4CRkq5OAapKtdHJf+8OBGdt0XRji1NIB7L24kKJy1JcJAX73XFerjPyhppiPbjUe8EBBBkC/O8oFjA6/Whwv2HuFWvpVJ4FPKkAbvJPi1LZL6Hqw4qD3AXj9hfuZHqXGwF70UdgxFucvl35i524mJ41yXfSTCsomkPfwQ9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=f9F5ZjRz; arc=none smtp.client-ip=72.21.196.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
-  s=amazon201209; t=1713533475; x=1745069475;
-  h=message-id:date:mime-version:to:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=jm5k1fRlfOALCTcLiHCS05FCjJqslPETyYkDOKsQeqA=;
-  b=f9F5ZjRzlSZduy3VRCaHBez7kcwiUpAgm4YMxOS3KVtBu2MRireZ3ufh
-   VTs5HfGeeHQgBWH6E+44W1PRJx8qPoCA3/w6K3vALqAe/4WhRFyZLAq79
-   O2p65Z3nUHEnZ4Oi/Reo7Nn9dfqcMgmCiV+Iy9DLstVN+zr1AwRY3BWSR
-   A=;
-X-IronPort-AV: E=Sophos;i="6.07,213,1708387200"; 
-   d="scan'208";a="395803630"
-Subject: Re: [PATCH v7 1/3] virt: vmgenid: change implementation to use a platform
- driver
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 13:31:14 +0000
-Received: from EX19MTAEUC001.ant.amazon.com [10.0.10.100:32866]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.10.106:2525] with esmtp (Farcaster)
- id 4a97f6b4-fb2d-4102-ac73-5f32c0f927ac; Fri, 19 Apr 2024 13:31:12 +0000 (UTC)
-X-Farcaster-Flow-ID: 4a97f6b4-fb2d-4102-ac73-5f32c0f927ac
-Received: from EX19D036EUC002.ant.amazon.com (10.252.61.191) by
- EX19MTAEUC001.ant.amazon.com (10.252.51.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 19 Apr 2024 13:31:12 +0000
-Received: from [10.95.129.79] (10.95.129.79) by EX19D036EUC002.ant.amazon.com
- (10.252.61.191) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 19 Apr
- 2024 13:31:07 +0000
-Message-ID: <3d4aa16f-ba12-4efe-bdfc-4e7ef059e09d@amazon.co.uk>
-Date: Fri, 19 Apr 2024 14:31:02 +0100
+	s=arc-20240116; t=1713533507; c=relaxed/simple;
+	bh=q8sLxUQXTmO+zQlO+Nq2zQY8GKJ0uOrx6YdkifWv8s8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gjl6rDNn2MO+9sC+KNUh8zeW7k6jj0JYm/DtoNfTvSex8Lxnm5YxD5mZfUw/Q0grd2EQuqHHzgBKwcYBKKo7VmCoLv3oKFOJKKZdvXhTj9AS+3IjuuPbwa9Y9oLY3H/Ww9lexOhLf3m8DeXAO5cEmMPDwGOF5m3UXyOTQ3bdQQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LXMJLVNv; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713533506; x=1745069506;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=q8sLxUQXTmO+zQlO+Nq2zQY8GKJ0uOrx6YdkifWv8s8=;
+  b=LXMJLVNvMh7kLIg+OQpGV3kIW52FsgOxk4V2z9Zj+eo63+Wvzc4hxwEh
+   DcCUGRysIJ82uybKP+4zUq9Xbjt90+A62OCQeyhmKT2QUVzuc1xMvF9gD
+   ZMlkpJsAIgYuduZTNGC3yh+N2mJUTh3DcKiIo4mAmn10SLaBnhRjVwzSP
+   s0XDpCfZdosoXZRq+ELaRLYZZO5w59wHEWnc59x9Mm8+wE7K2g1VxTqKu
+   E5oRqWgoe4M2CVtARlJ2jSZdS7L/vL20DFIV0HCOWStGQySy7PSF8auAw
+   eOo579oO/oxKfcizcMBUPL6oWIhcd+qaHTMw0Rrsz/PsW3Sex9Zs8Yt3q
+   A==;
+X-CSE-ConnectionGUID: AVVUO5QTRmqvkOo623zoqA==
+X-CSE-MsgGUID: wno5hSyyTtuRb1DDxPJzqA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="19829820"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="19829820"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:31:45 -0700
+X-CSE-ConnectionGUID: 8EhFIYEkSGmj4XmvSB/OuA==
+X-CSE-MsgGUID: 32PEEwedQ4ewi5StWKTDOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="23411447"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa008.fm.intel.com with ESMTP; 19 Apr 2024 06:31:40 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id CEE59FD; Fri, 19 Apr 2024 16:31:39 +0300 (EEST)
+Date: Fri, 19 Apr 2024 16:31:39 +0300
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
+	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, 
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Tao Liu <ltao@redhat.com>
+Subject: Re: [PATCHv10 03/18] cpu/hotplug: Add support for declaring CPU
+ offlining not supported
+Message-ID: <rju6u37prtr5nf4upcntcy4jcnul6atqmbh6impzqdn3dlo2pj@lqodxa7elohz>
+References: <20240409113010.465412-1-kirill.shutemov@linux.intel.com>
+ <20240409113010.465412-4-kirill.shutemov@linux.intel.com>
+ <20240418143709.GJZiEwFejGQY3jiwsp@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>, <tytso@mit.edu>,
-	<robh@kernel.org>, <krzk@kernel.org>, <conor+dt@kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<sudanl@amazon.com>, <graf@amazon.com>, <dwmw@amazon.co.uk>,
-	<krzysztof.kozlowski@linaro.org>, <bchalios@amazon.es>,
-	<xmarcalx@amazon.co.uk>
-References: <20240418121249.42380-1-Jason@zx2c4.com>
- <20240418121249.42380-2-Jason@zx2c4.com>
-Content-Language: en-US
-From: "Landge, Sudan" <sudanl@amazon.co.uk>
-In-Reply-To: <20240418121249.42380-2-Jason@zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D044UWB004.ant.amazon.com (10.13.139.134) To
- EX19D036EUC002.ant.amazon.com (10.252.61.191)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418143709.GJZiEwFejGQY3jiwsp@fat_crate.local>
 
+On Thu, Apr 18, 2024 at 04:37:09PM +0200, Borislav Petkov wrote:
+> On Tue, Apr 09, 2024 at 02:29:55PM +0300, Kirill A. Shutemov wrote:
+> > +/* Declare CPU offlining not supported */
+> > +void cpu_hotplug_disable_offlining(void)
+> > +{
+> > +	cpu_maps_update_begin();
+> 
+> "/*
+>  * The following two APIs (cpu_maps_update_begin/done) must be used when
+>  * attempting to serialize the updates to cpu_online_mask & cpu_present_mask.
+>  */
+> void cpu_maps_update_begin(void)
+> ..."
+> 
+> > +	cpu_hotplug_offline_disabled = true;
+> 
+> but this doesn't do that here.
+> 
+> Are we doing a one-off here for that variable or what?
 
+Yes, it is one-off. I guess we could use READ_ONCE()/WRITE_ONCE() to
+access the variable with the same result. I am not sure why it would be
+better.
 
-On 18/04/2024 13:12, Jason A. Donenfeld wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> 
-> 
-> 
-> From: Sudan Landge <sudanl@amazon.com>
-> 
-> Re-implement vmgenid as a platform driver in preparation for adding
-> devicetree bindings support in next commits.
-> 
-> Signed-off-by: Sudan Landge <sudanl@amazon.com>
-> Reviewed-by: Alexander Graf <graf@amazon.com>
-> [Jason: - Small style cleanups and refactoring.]
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> ---
->   drivers/virt/vmgenid.c | 99 +++++++++++++++++++++++++++---------------
->   1 file changed, 65 insertions(+), 34 deletions(-)
-> 
-> diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
-> index a1c467a0e9f7..aebbd24512c9 100644
-> --- a/drivers/virt/vmgenid.c
-> +++ b/drivers/virt/vmgenid.c
-> @@ -7,9 +7,10 @@
->    * information to random.c.
->    */
-> 
-> +#include <linux/acpi.h>
->   #include <linux/kernel.h>
->   #include <linux/module.h>
-> -#include <linux/acpi.h>
-> +#include <linux/platform_device.h>
->   #include <linux/random.h>
-> 
->   ACPI_MODULE_NAME("vmgenid");
-> @@ -21,19 +22,41 @@ struct vmgenid_state {
->          u8 this_id[VMGENID_SIZE];
->   };
-> 
-> -static int vmgenid_add(struct acpi_device *device)
-> +static void vmgenid_notify(struct device *device)
-> +{
-> +       struct vmgenid_state *state = device->driver_data;
-> +       u8 old_id[VMGENID_SIZE];
-> +
-> +       memcpy(old_id, state->this_id, sizeof(old_id));
-> +       memcpy(state->this_id, state->next_id, sizeof(state->this_id));
-> +       if (!memcmp(old_id, state->this_id, sizeof(old_id)))
-> +               return;
-> +       add_vmfork_randomness(state->this_id, sizeof(state->this_id));
-> +}
-> +
-> +static void setup_vmgenid_state(struct vmgenid_state *state, void *virt_addr)
->   {
-> +       state->next_id = virt_addr;
-> +       memcpy(state->this_id, state->next_id, sizeof(state->this_id));
-> +       add_device_randomness(state->this_id, sizeof(state->this_id));
-> +}
-> +
-> +static void vmgenid_acpi_handler(acpi_handle __always_unused handle,
-> +                                u32 __always_unused event, void *dev)
-> +{
-> +       vmgenid_notify(dev);
-> +}
-> +
-> +static int vmgenid_add_acpi(struct device *dev, struct vmgenid_state *state)
-> +{
-> +       struct acpi_device *device = ACPI_COMPANION(dev);
->          struct acpi_buffer parsed = { ACPI_ALLOCATE_BUFFER };
-> -       struct vmgenid_state *state;
->          union acpi_object *obj;
->          phys_addr_t phys_addr;
->          acpi_status status;
-> +       void *virt_addr;
->          int ret = 0;
-> 
-> -       state = devm_kmalloc(&device->dev, sizeof(*state), GFP_KERNEL);
-> -       if (!state)
-> -               return -ENOMEM;
-> -
->          status = acpi_evaluate_object(device->handle, "ADDR", NULL, &parsed);
->          if (ACPI_FAILURE(status)) {
->                  ACPI_EXCEPTION((AE_INFO, status, "Evaluating ADDR"));
-> @@ -49,53 +72,61 @@ static int vmgenid_add(struct acpi_device *device)
-> 
->          phys_addr = (obj->package.elements[0].integer.value << 0) |
->                      (obj->package.elements[1].integer.value << 32);
-> -       state->next_id = devm_memremap(&device->dev, phys_addr, VMGENID_SIZE, MEMREMAP_WB);
-> -       if (IS_ERR(state->next_id)) {
-> -               ret = PTR_ERR(state->next_id);
-> +
-> +       virt_addr = devm_memremap(&device->dev, phys_addr, VMGENID_SIZE, MEMREMAP_WB);
-> +       if (IS_ERR(virt_addr)) {
-> +               ret = PTR_ERR(virt_addr);
->                  goto out;
->          }
-> +       setup_vmgenid_state(state, virt_addr);
-> 
-> -       memcpy(state->this_id, state->next_id, sizeof(state->this_id));
-> -       add_device_randomness(state->this_id, sizeof(state->this_id));
-> -
-> -       device->driver_data = state;
-> +       status = acpi_install_notify_handler(device->handle, ACPI_DEVICE_NOTIFY,
-> +                                            vmgenid_acpi_handler, dev);
-> +       if (ACPI_FAILURE(status)) {
-> +               ret = -ENODEV;
-> +               goto out;
-> +       }
-> 
-> +       dev->driver_data = state;
->   out:
->          ACPI_FREE(parsed.pointer);
->          return ret;
->   }
-> 
-> -static void vmgenid_notify(struct acpi_device *device, u32 event)
-> +static int vmgenid_add(struct platform_device *pdev)
->   {
-> -       struct vmgenid_state *state = acpi_driver_data(device);
-> -       u8 old_id[VMGENID_SIZE];
-> +       struct vmgenid_state *state;
-> +       struct device *dev = &pdev->dev;
-> +       int ret = 0;
-> 
-> -       memcpy(old_id, state->this_id, sizeof(old_id));
-> -       memcpy(state->this_id, state->next_id, sizeof(state->this_id));
-> -       if (!memcmp(old_id, state->this_id, sizeof(old_id)))
-> -               return;
-> -       add_vmfork_randomness(state->this_id, sizeof(state->this_id));
-> +       state = devm_kmalloc(dev, sizeof(*state), GFP_KERNEL);
-> +       if (!state)
-> +               return -ENOMEM;
-> +
-> +       ret = vmgenid_add_acpi(dev, state);
-> +
-> +       if (ret)
-> +               devm_kfree(dev, state);
-> +       return ret;
->   }
-> 
-> -static const struct acpi_device_id vmgenid_ids[] = {
-> +static const struct acpi_device_id vmgenid_acpi_ids[] = {
->          { "VMGENCTR", 0 },
->          { "VM_GEN_COUNTER", 0 },
->          { }
->   };
-> -
-> -static struct acpi_driver vmgenid_driver = {
-> -       .name = "vmgenid",
-> -       .ids = vmgenid_ids,
-> -       .owner = THIS_MODULE,
-> -       .ops = {
-> -               .add = vmgenid_add,
-> -               .notify = vmgenid_notify
-> -       }
-> +MODULE_DEVICE_TABLE(acpi, vmgenid_acpi_ids);
-> +
-> +static struct platform_driver vmgenid_plaform_driver = {
-> +       .probe      = vmgenid_add,
-> +       .driver     = {
-> +               .name   = "vmgenid",
-> +               .acpi_match_table = vmgenid_acpi_ids,
-> +       },
->   };
-> 
-> -module_acpi_driver(vmgenid_driver);
-> +module_platform_driver(vmgenid_plaform_driver)
-> 
-> -MODULE_DEVICE_TABLE(acpi, vmgenid_ids);
->   MODULE_DESCRIPTION("Virtual Machine Generation ID");
->   MODULE_LICENSE("GPL v2");
->   MODULE_AUTHOR("Jason A. Donenfeld <Jason@zx2c4.com>");
-> --
-> 2.44.0
-> 
-Since I am on leave, looping in Babis to review/verify the patches.
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
