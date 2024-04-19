@@ -1,147 +1,130 @@
-Return-Path: <linux-kernel+bounces-151496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A7E88AAFA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:43:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15E9B8AAF9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:43:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD0DBB243CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:43:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C449E2814D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:43:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C7612C81F;
-	Fri, 19 Apr 2024 13:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C5112AADF;
+	Fri, 19 Apr 2024 13:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="m5+1eAEJ"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bHNO7LDC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32EC912B141;
-	Fri, 19 Apr 2024 13:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820BE129A68;
+	Fri, 19 Apr 2024 13:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713534190; cv=none; b=eIsSuVBgEHa+UlW2U4DUePTUD5j6irbgcelw9gel5YHhx4rIYDuMN8abNc+72yEvJ6/7xqgogikahmmGMo3ax1hOr70cH5kYPSIeSDdayYdt4eOnU8SAa3KBus7IdDyTrthxHBO6ANdCPV4COGgF/HG5ryOdHAcyFqNLcro0Ch8=
+	t=1713534185; cv=none; b=FNXMryBNZ7ERXNUfcIq1DjZisiZq6f5qzz5OUlhs7sbJZ7u++1A01r6Nk6WJuqy3T5/76rIxKqR31RjWRT8DhqmA3t5A7wU8RN9zHmwSu1LFOujIqi1IWuejO+FxXyzC8mlp7UcLTkQwlsI1ss/Ko40jzYesveQK47RX6RFuGpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713534190; c=relaxed/simple;
-	bh=Ao+6HPE1Vskkt49HDiuaB/xLvWW49nY4+8hJXaqEBIA=;
-	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
-	 Content-Type:Subject; b=N8mQqQ9n2bLll4oVliK9E0SpQy3kdCd83nFRj498iE63C4Dbx064QQcYADcyKydfLk7/81HdZYyiIqKCNJm9t6JFbfJXcMoCokHPlDd/eqRAWixLt0zTKocIVUI9JMu7PfHv4s1Jpv5aKzHE1dYPcW+gB0NHhQJGrz40qf8vxkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=m5+1eAEJ; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=/SWo5T27HPZBjevRWtDoRJYaikHCKvINDhNye9BXHcg=; b=m5+1eAEJeajoC+i2udjQOm/4DR
-	ZNrHejjMiqEaL5Ss5yhC/p9Beuczp8gxFkNdgi7U3AsVPGmqc6QRI0qgNtxd9/y4MQJ9xPfmGjnLc
-	H6Fo0JtGvdRBvmd67EYVcnV31WUZvSTLxxwZfVa79KH0JBEKs0hA/2SzNmAXWGhYIiPE=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:48460 helo=debian-acer)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rxoW3-0002rg-Qg; Fri, 19 Apr 2024 09:43:00 -0400
-Date: Fri, 19 Apr 2024 09:42:59 -0400
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Konstantin Pugin <rilian.la.te@ya.ru>
-Cc: Konstantin Pugin <ria.freelander@gmail.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Hugo
- Villeneuve <hvilleneuve@dimonoff.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Lech Perczak
- <lech.perczak@camlingroup.com>, Ilpo =?ISO-8859-1?Q?J=E4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, Thomas Gleixner <tglx@linutronix.de>,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Message-Id: <20240419094259.4257fefba753f6bd5962720c@hugovil.com>
-In-Reply-To: <20240419124506.1531035-1-rilian.la.te@ya.ru>
-References: <20240419124506.1531035-1-rilian.la.te@ya.ru>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713534185; c=relaxed/simple;
+	bh=SSvm0lOOrjdcH1Ke8leLSKOKpPwYFHJGZqkZJycISJg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jpZ2iZ19VUHhFxIcUhEzPeUaL6PJZMCTAs8e9qDbhOa19X71xxwrNchYISHZ15+UlYHjptM8t0Z7JbzhtfnwJxG8Stp3jhVAeO7YtF7ww4iAsVVCKsh3besK4E0XpU3ThV7rsit+MnIpgOwyzp35DrN8nJCrGaIt3AwhCDFGS1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bHNO7LDC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8DDEC072AA;
+	Fri, 19 Apr 2024 13:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713534185;
+	bh=SSvm0lOOrjdcH1Ke8leLSKOKpPwYFHJGZqkZJycISJg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=bHNO7LDCM+WM8SVhjD1Jg9w4uvK7kOGTlsPHeUUsV9h4RVqBUA1t5gPtpSQLrp6jx
+	 Dk/WMTWUXXTzR/OTUBF3IZGebVEpmeMSTu+eJXxNbdc1g9b/IpPDX1GLRW1sSqs1sA
+	 hs+naqDYL8xUnhKuFxdnvzVT9cBYo63tgBpWeBA/UHCuQbUqXR78pEfHIMqzu3ASUd
+	 az9nyXZyFr2OrqniXgO6HfO5ycXrGVg5RbbbXQEFc5lL5LLgHOw73t+CP5ilgRj3Ah
+	 npaAKhDrstdkm2SQ8IH+9n0wSRi2MjsGjmwoswjhCR8Cli9A05wZh68u4sRN5l9EaS
+	 AddBLWBiwU22g==
+Message-ID: <0dfc402a-ee31-404f-9dc2-8828d7a6b337@kernel.org>
+Date: Fri, 19 Apr 2024 15:43:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 12/12] arm64: defconfig: build in OCOTP ELE
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>
+Cc: devicetree@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Peng Fan <peng.fan@nxp.com>
+References: <20240419-imx93-dts-4-13-v2-0-9076e1d7d399@nxp.com>
+ <20240419-imx93-dts-4-13-v2-12-9076e1d7d399@nxp.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240419-imx93-dts-4-13-v2-12-9076e1d7d399@nxp.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -2.2 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH v4 0/3] add support for EXAR XR20M1172 UART
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-On Fri, 19 Apr 2024 15:45:00 +0300
-Konstantin Pugin <rilian.la.te@ya.ru> wrote:
-
-> From: Konstantin Pugin <ria.freelander@gmail.com>
+On 19/04/2024 05:37, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> EXAR XR20M1172 UART is mostly SC16IS762-compatible, but
-> it has additional register which can change UART multiplier
-> to 4x and 8x, similar to UPF_MAGIC_MULTIPLIER does. So, I used this
-> flag to guard access to its specific DLD register. It seems than
-> other EXAR SPI UART modules also have this register, but I tested
-> only XR20M1172.
-> Yes, in datasheet this register is called "DLD - Divisor Fractional"
-> or "DLD - Divisor Fractional Register", calling depends on datasheet
-> version.
+> The FEC network driver is built in, with OCOTP ELE built as module,
+> the FEC drive will defer probe because nvmem provider not ready and
+> nfsboot not work. So build in OCOTP ELE driver.
 
-Hi Konstantin,
-it would probably be a good idea to also add the device to the list of supported devices for this driver in the Kconfig file.
-
-Hugo.
+That's not an explanation. FEC can defer and probe immediately, that's
+not a problem. Just use ramdisk.
 
 
-> 
-> I am sorry about too many submissions and top post reply. About second -
-> I do not know how to reply properly to this ML from GMail phone app. About first - I just
-> get very good feedback from Andy Shevchenko, and want to fix his review picks ASAP.
-> 
-> Changes in v2:
->   - use full name in git authorship
-> 
-> Changes in v3:
->   - change formatting of commit messages to unify width
->   - rework commit messages according to code review
->   - add XR20M117X namespace for EXAR-specific register
->   - do not use UPF_MAGIC_MULTIPLIER for checking EXAR chip,
->     use s->devtype directly
->   - replace while loop to fls function and expanded check
->   - sort compatibles
->   - reformat multiline comment.
-> 
-> Changes in v4:
->   - rebase onto tty-next branch
->   - added Kconfig mention of the chip
->   - used rounddown_power_of_two instead of fls and manual shift
->   - used FIELD_PREP instead of custom macro
->   - removed has_dld bit from common struct, replaced by check function,
->     which checks directly by s->devtype
->   - fixed tab count
->   - properly apply Vladimir Zapolskiy's tag to patch 2 only
-> 
-> Konstantin Pugin (3):
->   serial: sc16is7xx: announce support of SER_RS485_RTS_ON_SEND
->   dt-bindings: sc16is7xx: Add compatible line for XR20M1172 UART
->   serial: sc16is7xx: add support for EXAR XR20M1172 UART
-> 
->  .../bindings/serial/nxp,sc16is7xx.yaml        |  1 +
->  drivers/tty/serial/Kconfig                    | 18 +++---
->  drivers/tty/serial/sc16is7xx.c                | 62 +++++++++++++++++--
->  drivers/tty/serial/sc16is7xx_i2c.c            |  1 +
->  drivers/tty/serial/sc16is7xx_spi.c            |  1 +
->  5 files changed, 70 insertions(+), 13 deletions(-)
-> 
-> 
-> base-commit: c6795fbffc4547b40933ec368200bd4926a41b44
-> -- 
-> 2.34.1
-> 
-> 
-> 
+No, this stays as module. Fix your system instead.
 
 
--- 
-Hugo Villeneuve <hugo@hugovil.com>
+Best regards,
+Krzysztof
+
 
