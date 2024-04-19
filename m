@@ -1,104 +1,89 @@
-Return-Path: <linux-kernel+bounces-151165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A7B98AAA2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:30:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A13B78AAA2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:31:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8C2E1F22F70
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:30:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D66428250F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2CC15F569;
-	Fri, 19 Apr 2024 08:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xX1nVF+L"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D361B21A0C;
+	Fri, 19 Apr 2024 08:31:29 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FE64C8A;
-	Fri, 19 Apr 2024 08:30:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0364C8A
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713515424; cv=none; b=R4ZmkGAZAVyNmWlZ2wZ1F0w59wndPaNW1dykb2bExR6aDN3sjAl4fnUcVJdNfhUuMwhFO67kdpUGFEgEP4dbgtQ8qBL+DNVzu69eS0xp5xjrh9Wnw2acIM78p/CXRYqT2NycfLhwaUIAEsf2UXS3v8fu9uF3Syhpx2z46PbCVhY=
+	t=1713515489; cv=none; b=tedOK9zHhM5dmEFcZm9VG/ZkcR/LeoPE48s5i22xsRg/WeGybDKxl9x2mxRwoVa2Ofila5qu1O9F0ePSJ2ApYUHs2LC/WpaZwmbD++r5aWXs3D2vKovpeWZtqtpoXl5/DgtR9dXhrYfR5T0KkSvRy9bUB2QHCEJAUtYWarX7bMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713515424; c=relaxed/simple;
-	bh=N0P6f1YdebBFeQkudgS8GWtA8SUMDSzGlF92Ghhx5Ps=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=bSRZeyYNsUGjoRGOXcu++tKMvrooEaroEW4JrnKqS8EkgdGmk6Dg/kOzNix2oalDuhcs6oSQ3HB0wBOVJWaYHYEXhN0pooyGkR8+fOEvEvq5DoBRTELHYo/qSc4Rbp4Ik5HfvDi6THD7S2VbjYSVtp/23TeGYenaKCkAp/yQ2TM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xX1nVF+L; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43J8U6Ip010384;
-	Fri, 19 Apr 2024 03:30:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713515406;
-	bh=Dlv+RCoAGYzLiH6HRbCslfp0qGJbdNY0vW5H/6Uf47Q=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=xX1nVF+LsoNDnB+1ati+fFwXZ/69iBNApp5dTalfNQgK7hhjQHAwYq8/LFCp0C9Jo
-	 ZvJVnMUx9WtrbKEIwylORDzefOw2a2yeFFPXwKcQvc5dayppXHOUGQZfrL+v9VeFnc
-	 5O1DylosjScbir4q6QKmZ25j2ipnvXbpHg6GpHyI=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43J8U6Rf005590
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 19 Apr 2024 03:30:06 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 19
- Apr 2024 03:30:05 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 19 Apr 2024 03:30:06 -0500
-Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43J8U0nK048008;
-	Fri, 19 Apr 2024 03:30:01 -0500
-Message-ID: <7621947e-cf0c-481c-8180-328ab2df0748@ti.com>
-Date: Fri, 19 Apr 2024 13:59:59 +0530
+	s=arc-20240116; t=1713515489; c=relaxed/simple;
+	bh=FZzw0JYnvC5nwQsmLuivT95hJ3WwR6ccoWGB4AUybQU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LzE9Y7Bn2jgV8B+uuAa11dvoK51YMkFOlOD58WCCBcE8pGI3UsoC2cQK4+KquLUnPWKJy6MZ1jZj/d6PH6fqk0R2Ia4vg1gT3pDZTdK3fU1p/c8BuuDZwM9aBFoTdSk+tihMse7bbKg3AygvOlTcEAORfW2f9HvgVcw9qCt7Xq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <has@pengutronix.de>)
+	id 1rxjeP-0006hu-VF; Fri, 19 Apr 2024 10:31:17 +0200
+Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <has@pengutronix.de>)
+	id 1rxjeP-00D7h7-Bi; Fri, 19 Apr 2024 10:31:17 +0200
+Received: from has by dude03.red.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <has@pengutronix.de>)
+	id 1rxjeP-00DyIC-0x;
+	Fri, 19 Apr 2024 10:31:17 +0200
+From: Holger Assmann <h.assmann@pengutronix.de>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	yibin.gong@nxp.com
+Cc: linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Holger Assmann <h.assmann@pengutronix.de>
+Subject: [PATCH 0/2] regulator: pca9450: enable restart handler for I2C
+Date: Fri, 19 Apr 2024 10:31:02 +0200
+Message-Id: <20240419083104.3329252-1-h.assmann@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v7 2/2] net: ethernet: ti: am65-cpsw/ethtool:
- Enable RX HW timestamp only for PTP packets
-Content-Language: en-US
-To: Jakub Kicinski <kuba@kernel.org>
-CC: Julien Panis <jpanis@baylibre.com>, Arnd Bergmann <arnd@arndb.de>,
-        Dan
- Carpenter <dan.carpenter@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>, Roger Quadros <rogerq@kernel.org>,
-        Richard Cochran
-	<richardcochran@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>, Eric Dumazet
-	<edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <s-vadapalli@ti.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-References: <20240417120913.3811519-1-c-vankar@ti.com>
- <20240417120913.3811519-3-c-vankar@ti.com>
- <20240418185146.497cb075@kernel.org>
-From: Chintan Vankar <c-vankar@ti.com>
-In-Reply-To: <20240418185146.497cb075@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: has@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
+This series introduces a restart handler for the pca9450. This is an
+optional feature and can be activated by assigning the handler priority
+in the device tree.
 
+Best regards,
+Holger
 
-On 19/04/24 07:21, Jakub Kicinski wrote:
-> On Wed, 17 Apr 2024 17:39:13 +0530 Chintan Vankar wrote:
->> Fixes: b1f66a5bee07 ("net: ethernet: ti: am65-cpsw-nuss: enable packet timestamping support")
->>
->> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
-> 
-> No empty lines between trailers, please
+Holger Assmann (2):
+  regulator: pca9450: enable restart handler for I2C operation
+  dt-bindings: regulator: pca9450: add restart handler priority
 
-I posted v8 at:
-https://lore.kernel.org/r/20240419082626.57225-1-c-vankar@ti.com/
+ .../regulator/nxp,pca9450-regulator.yaml      |  3 ++
+ drivers/regulator/pca9450-regulator.c         | 54 +++++++++++++++++++
+ include/linux/regulator/pca9450.h             |  7 +++
+ 3 files changed, 64 insertions(+)
+
+-- 
+2.39.2
+
 
