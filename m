@@ -1,106 +1,124 @@
-Return-Path: <linux-kernel+bounces-151859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A08318AB4DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:12:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDDA98AB4DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:13:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EF241F22E53
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:12:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8741C21C30
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:13:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39AD313B5BE;
-	Fri, 19 Apr 2024 18:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18ED013BC20;
+	Fri, 19 Apr 2024 18:13:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iIFwUUf1"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ls7XD/PU"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E12B13A871
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 18:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB3D77F13;
+	Fri, 19 Apr 2024 18:13:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713550368; cv=none; b=KAjgs1KihVDPmehrVSQH6Bc+Croudp1H0XuJjvE/Ycf+Iut3ul83POUXedoIx5X9Wa5JqqWk0gIPa+y8qYh1We/aEuefSUd40i6JEcpXKMz6BMm/UwgQX5KL8RXbeFSQ9SGswn+JqVBFa+XXLyR63S7KJjUK+Ke2J7wJ99K2S2w=
+	t=1713550398; cv=none; b=DHRcQCzAg+JoJ+dQxQ8RaPlXogMr1toljtwKz/13jyzECr5nMdXChHKIBqL8x5HHPG+Lg4s2QdE3WoV86/T37Vvn9H0rNhDw0Dq3tx/KYG4dNzFol9ybq89o7vFmoMsWcxye8PALu2qsvo/U0loklCavJIC6isPfL4dBdZ1l6Qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713550368; c=relaxed/simple;
-	bh=bcFICBmin4/tFtAgRJRkk8O34T3w5c4G9w2ytkNfj7s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XwKXsyt8r1fmaEBqG47hBsylOZeOJPeFE2Kvo1yVsBKjvlCnQCPfhBMeG02ktEE3wKwV5JllgGohidEObRsNaby3ZR3vd8kUbGjFgcBycsHbqHZ4DczFZ38Y33ud9AFanTwL/pkXeWk5wrkbngYHO5VidB8cR046RXr9p0HW148=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iIFwUUf1; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so3248617276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 11:12:46 -0700 (PDT)
+	s=arc-20240116; t=1713550398; c=relaxed/simple;
+	bh=hOoTnHiBwf2rX2MwVUrEk0jw4KfQYDg5tOPaL5cUa0w=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=D7kSbVvoZiwVp9I7EdSi7EVL7vaeShTv6RWXjEz/NAgONStwYBPgQ70gmXpdyhd1CeMzHUWWyzd0G8XN/cy/zlM60iJWU+qjfR6QZ7y3ByK5OmC1xspe6txqwkJi6TQcPC2udp93ZDgB/YIEhpWTdyojhFTSpzijW++zlqMVmFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ls7XD/PU; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f103b541aeso180666b3a.3;
+        Fri, 19 Apr 2024 11:13:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713550365; x=1714155165; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lGEtTj/vH2KpXzCwJtz87h7PGuGLo80xWA52Z7kyHqs=;
-        b=iIFwUUf1TiG1puFXvwyVehq5MN8pH9cyjsH2Tkz+JA/2ZU7KgpWxD/ZUsutpheseQe
-         8TmOyCxXw/9ube9usZ3hSyTV/N5W+c+7fjWg3BTtuXjqtXQ9JiKg7LuY84d45bz+pc2c
-         /FrevCRFPV9e3P064c2BZkElqWb+3O0fnkwYLkI8GgWPNxRFYdHDYkwgnTSdiomR/qsh
-         cQ5SMK4X6QeXg5+EP/LaJFkvtyk71eAr93SE2iUA2RLIw/3Nu9WAuvddgUK54xcDm8y9
-         c3Gqm90i4VWjH/Jv8ThEcMzNEAFDCOFO5YJppxNW5Yh/HGC/ou/ad6LYsNLFjXhGXDVR
-         6L4A==
+        d=gmail.com; s=20230601; t=1713550396; x=1714155196; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wXuQiZ6Uxljth7h4zsRrHEZmoGaHKO2VIyJBKdyFiaI=;
+        b=ls7XD/PUuZVrS7t429gpMqgX313kAKXXk/6ul12jXoYy2E36nL8IdmthFEVJOxvaFE
+         vazT9CInI9Mn674XQd53aIa/zdKuoLRAYZPPBArrvth4mhHxdigVDuOdco52YtQ5RoqI
+         H4YkA1BmS2jbtRmLTGImPlkgAeEh2GXDcgpplsLEV+sZoY6NvWxB0t0we5jV0A/PwtdM
+         +o+0FAWVnz6ePHZKqm3I2BX+JzlhOPWmxC60OjtHgoFbu77j8OPZnTWNJnbYjZ8YBN64
+         HJ2OEcqHzqWJQXIWUSOA9uz5AS/U40rWLBTG5RKY6yoDVTXAtg8UxZIpfNrbM3XK29J+
+         sV9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713550365; x=1714155165;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lGEtTj/vH2KpXzCwJtz87h7PGuGLo80xWA52Z7kyHqs=;
-        b=rO7ilz1b30KyU7vhr47FbUcK8Y42b9lQ2kvGQY6vHeTq1O7I9WbEzUlFO+dMqz4fAW
-         Nzd2XgagrbwkKGmwSFk1+jIK+Fv/3NqenBHrmlfaTVW1/3tcW9jNI3lsP3Q0hmGY7Ajv
-         qCNrZmRmPfI2Cv+ENU5gUM/JM8YA/KE7yQzNtKhovvUhe0PH1zqNtduDmzX9vhwn1Rcy
-         TpyBqxYZoZ+hShbd2Tg7cGVsQaL4OtC4fIeKWgirbAGGshPs2LJ5DQ6jf7Hm/+cqt4Ss
-         XJG9s8Db7K8dE0+wFZ97CZ70jRjqPMuaPMi9NTNBafQeOVL86oi7crcr6TR4MMKUEPwp
-         Uuwg==
-X-Forwarded-Encrypted: i=1; AJvYcCV0fsHNlST8jDlMgv7u2L5759t6A43M98mhEiKWMXj+AbDnJFmqEvANhWN0hybHzOZqVnL2lXOxuiDOIxuLQ1/kiKUSDKSyXD9Qlv7d
-X-Gm-Message-State: AOJu0YweGq8ZpnJnXBZNq0tHBZ8U+9ckdaCeMkqs2ncZFaH95xZvt1v0
-	FCw5d0MulrDGmg/rww+DRDL8AkauTcX29S0m9u30dTYiKvPoI/LacBbnk/wwtHCadL5txI4SAM0
-	gMCmbypWsr3uoVHbT20yd3uiJRYmNCmXnM0DsFQ==
-X-Google-Smtp-Source: AGHT+IGQ4xZAlrLZPCqIX2Z5PVXFtctMByQgz4M8JwmgU34xnfsoRSL8OUzYibOugChD+d3y0VfIk2HrGsMA0Iq2jVk=
-X-Received: by 2002:a25:8051:0:b0:dc6:f0ac:6b53 with SMTP id
- a17-20020a258051000000b00dc6f0ac6b53mr2627365ybn.15.1713550365672; Fri, 19
- Apr 2024 11:12:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713550396; x=1714155196;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wXuQiZ6Uxljth7h4zsRrHEZmoGaHKO2VIyJBKdyFiaI=;
+        b=p8b8vwGvelTQXWhgV0es+RwLkhJtkKBDRxXeCnmoevj9pnPU/OEKYWAQ5Tiaq3SLJs
+         RZWpoW4bRj02hiF2G/wItGK0b+l6x08Jse0xbhhpKue7tmuLFFEI6kRTd0hEe3ZJiTLk
+         InpTEqLPlbSx+2z/cwKXjCuS20PD71/YchSRIQXjQ6qPKNXZEaV2A0qopg7X6zE/WUij
+         vf8aHhJ0YnCEK9JP9TG/AQUKiljTaOUfDQUvRoNeypK3PIo83RyFppzR5OamAVKGyTcf
+         5iVJhsQa6Ky/mGyOjQH1ohq8Hi9cXIefRWBfeY0HfVt/BAAKpKlpXWMppuSd9+QhDFiA
+         Rknw==
+X-Forwarded-Encrypted: i=1; AJvYcCXMS/nf1bWZgE2JZjt31ZUr8fc2vrQE4mx7/r9GnK3dADuh3SRMAojDHj/UrHMICi+YNtNR8UmnM47bNVprlGe5pN/p+lD2URRu6v5vv9h2PDIULhp/pApcQ1dKkGaB4soUxcTEaV+Fc/EPkK6k8SeOR9nruuPprkXHn1nh1jMZ
+X-Gm-Message-State: AOJu0YzGGpulgb08Lzb5D910i2/daTWtsDcZvI9OhPMqlsE+H+iLrP8o
+	CX3KZ1xm2z3Lbf5WOkg1URWAoe0rigNB0r0l8UjLACRc+nsetFhWGN6ALxUZ/+I=
+X-Google-Smtp-Source: AGHT+IGNZK0ii7nuVFmi3UMPukJNc6P/XaBwLNfn739GOnYUs4dIu1Cf3G0hCJF4ek+v/drIdRnH/w==
+X-Received: by 2002:a05:6a20:96db:b0:1a9:5e63:501b with SMTP id hq27-20020a056a2096db00b001a95e63501bmr2934392pzc.44.1713550396318;
+        Fri, 19 Apr 2024 11:13:16 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id x16-20020a17090a531000b002a537abb536sm5148563pjh.57.2024.04.19.11.13.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 11:13:15 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: syzbot+393d0ef63475d9bb1f16@syzkaller.appspotmail.com
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-ppp@vger.kernel.org,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	syzkaller-bugs@googlegroups.com,
+	Jeongjun Park <aha310510@gmail.com>
+Subject: [PATCH net,v2] net: ppp: Fix deadlock caused by unsafe-irq lock in ap_get()
+Date: Sat, 20 Apr 2024 03:12:38 +0900
+Message-Id: <20240419181238.29399-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <000000000000423dd10611261d47@google.com>
+References: <000000000000423dd10611261d47@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240419-x1e80100-dts-fix-mdss-dp3-v2-0-10f4ed7a09b4@linaro.org> <20240419-x1e80100-dts-fix-mdss-dp3-v2-3-10f4ed7a09b4@linaro.org>
-In-Reply-To: <20240419-x1e80100-dts-fix-mdss-dp3-v2-3-10f4ed7a09b4@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 19 Apr 2024 21:12:35 +0300
-Message-ID: <CAA8EJppWZ0uvjHwiLkKFPsEm+0FVF8Wa7zbm=npVmkcTHvEicw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: x1e80100-qcp: Add data-lanes and
- link-frequencies to DP3
-To: Abel Vesa <abel.vesa@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Rajendra Nayak <quic_rjendra@quicinc.com>, Sibi Sankar <quic_sibis@quicinc.com>, 
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-
-On Fri, 19 Apr 2024 at 19:14, Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> The data-lanes are a property of the out remote endpoint, so move them
-> from mdss_dp3 to the mdss_dp3_out. Also add the link-frequencies to
-> mdss_dp3_out and make sure to include all frequencies.
->
-> Fixes: f9a9c11471da ("arm64: dts: qcom: x1e80100-qcp: Enable more support")
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/x1e80100-qcp.dts | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Content-Transfer-Encoding: 8bit
 
 
+read_lock() present in ap_get() is interrupt-vulnerable, so the function needs to be modified.
+
+
+Reported-by: syzbot+393d0ef63475d9bb1f16@syzkaller.appspotmail.com
+Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+---
+ drivers/net/ppp/ppp_async.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
+index c33c3db3cc08..d12b8155e839 100644
+--- a/drivers/net/ppp/ppp_async.c
++++ b/drivers/net/ppp/ppp_async.c
+@@ -134,11 +134,11 @@ static struct asyncppp *ap_get(struct tty_struct *tty)
+ {
+ 	struct asyncppp *ap;
+ 
+-	read_lock(&disc_data_lock);
++	read_lock_irq(&disc_data_lock);
+ 	ap = tty->disc_data;
+ 	if (ap != NULL)
+ 		refcount_inc(&ap->refcnt);
+-	read_unlock(&disc_data_lock);
++	read_unlock_irq(&disc_data_lock);
+ 	return ap;
+ }
+ 
 -- 
-With best wishes
-Dmitry
+2.34.1
 
