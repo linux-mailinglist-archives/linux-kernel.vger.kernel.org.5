@@ -1,122 +1,130 @@
-Return-Path: <linux-kernel+bounces-151623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9759A8AB139
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:02:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B5988AB13F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:03:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 538D428644E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:02:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E95BD1F23C1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFA112FB29;
-	Fri, 19 Apr 2024 15:02:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9961812F585;
+	Fri, 19 Apr 2024 15:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tRIAHecZ"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Y7g1iKoP"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A46812F394
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CE931E893
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 15:03:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713538949; cv=none; b=Jo7BRLiTB7s9eUAAjA/BihxGVRMcPEPA1tj4m4JjXu7kCh6TH4ayyE2quIPcc8fbvwVmlFu8T6OaF/vLnPtAi7osdJBZPQyaFLU5RW17TLvHPHCK55BAwk6sD6uwKGsNn1Xos+rVPhwUx9iyqvXRKk+mb8KLMr7LmsJL4DcQGQc=
+	t=1713539003; cv=none; b=pWUnJcsU3fW3Auk3wyWmOHyup3ww9TIDiMaC6EVU+aT7j2zwnmXkYcl3POG0r9GQk4ORWdPcjWx2RNrRM6G1MGXihvLVDqWCF2YZKH9Ec+vWcq9S7KcOA0zfGKpnMe7jZe3FbZ3TNcjLhyFhNFcoH1iUEIpitu7ANoDzTqOrAmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713538949; c=relaxed/simple;
-	bh=vs8I0n1fwkO45SFsUzTWz0UgIPjHU3Owfx+JLcvKa/4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mogTKYmy0LxNezSys4P6PnSmhitsFUCLvKgQ0wtWtfp/jLbtI8JzO18SV/Vx5xJDA7/YTEITxMPmHHrGIwk2MqazLZgrDBmznKxCABDFS4XILfTtHWELeluVF+9VwNE2R5NbZ2ZcfeaxJCNyMZwlSR9Bi2WLBqFllZ3wb2/7fS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tRIAHecZ; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51abd9fcbf6so1436686e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:02:26 -0700 (PDT)
+	s=arc-20240116; t=1713539003; c=relaxed/simple;
+	bh=LLEBG9I8LZ70UB8McPzUw3ZN2B28yG6ScIov7xzlQyw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i0iCi7+N71r73RSl6P4zwn1u5I2BJvHhlbwIsFTxllY4aBCqmXOVL/BWw1ov6OxkPnAqi80QuvK2v3MYKo6F3+ImPGRljK/7aHxpL7j7OdQOffyuMmp+nuB7QM0OvnCGeTw05b2mSpWpyRnHWGj/zQee6Do1h8/nZWR5fIiu9jU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Y7g1iKoP; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2db2f6cb312so39724831fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713538945; x=1714143745; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q5l3DrKtVmRlu1zHtwVyAGR5CrXZw06HBbbhzszuOCs=;
-        b=tRIAHecZDcDzhBSVIf3j1Q/gB7N9uYKoW7MX9PCgwy7GG3/rKTBFpaNvSiF+zGs2rB
-         l3dI+Wog7rAejrMxSJTDUubk4zHeChYNLuerBRvdkFmcFRXy+GIETeYXWegEDS2Fs1L/
-         +HqgjrKEokdTCRTX0gIFaN7SW2rEjG8pdy4uYGn1fAwIa+F63MuSMLSmbp1GZdSotzmE
-         9XtLDglnKANWi45FXJV/7YK54NI5Vooz0m83eiA6tiPkvREZfmoFBhIjAfa8OYafbzn2
-         9Ozr8Nn/kYAF3XRZpUqpj++FiPnpa8eVwH6L+2njHXYChPcvI6wEUTET7yyIB1KqxZnt
-         DYyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713538945; x=1714143745;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1713539000; x=1714143800; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Q5l3DrKtVmRlu1zHtwVyAGR5CrXZw06HBbbhzszuOCs=;
-        b=Ti6u6O+wmRe2gvgMF+uQR4Txat7vsiz3xYSqZKqHjoyHaoN9caqlDnUjGVz3mggzkb
-         PkOkWeimWWgmEDAkd2N+RRWJsJfj3T7gkL0ThNOgEjMTK6ASHqxuHuR/KzmsZBlF3Kqq
-         KxExNDxzh+Fjmu84JUCmkRdL0KLywJX5wQVoPXcUJEisT5Ll8S4WWcpBUp2og25qGMH/
-         iGEKgLdcTlh1Wz5wHXcjbrQJBFz8Yh6bgZuFxtDmw90B06OWC3s8MdWWFHSY+c7HqAkw
-         i9VFVNpPAXGTJMQoGUg5kLHuVG4OhK7tbxNKuMzI7VeRat4VCRPMQu0BKlBfZbgG3mdb
-         lpQg==
-X-Forwarded-Encrypted: i=1; AJvYcCVnaAyACopK4EMXG39YQRqjqoU96z5D8rATRWAt0zvbuxYdgikvroUTGrE5HvcfX7gt3j7Q7Pk+BeDxFBZZPGuDQFqJANI2NuA+ahBr
-X-Gm-Message-State: AOJu0YynhDhFUVRgYNwnEdXVeNp4bUDej+Hwr8YJQt+JjOEAHZXWrmcf
-	6SCrNLd5HQeVSNFhuGoZBeJWHkpRFD6AohG2TfaLJ63g67jAWFexv3ax9Jizudo=
-X-Google-Smtp-Source: AGHT+IFZjrcp1mUuV6AiLWBqjl9YPyYjAFAcHbb4bUs3L2gqHQFdPg1/mX9b9o6ObWKJe26tsbZinQ==
-X-Received: by 2002:a2e:3209:0:b0:2d8:2714:38e6 with SMTP id y9-20020a2e3209000000b002d8271438e6mr1865865ljy.25.1713538945291;
-        Fri, 19 Apr 2024 08:02:25 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
-        by smtp.gmail.com with ESMTPSA id y18-20020a05651c021200b002d9f3bed88dsm636898ljn.77.2024.04.19.08.02.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 08:02:24 -0700 (PDT)
-Date: Fri, 19 Apr 2024 18:02:23 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Aleksandr Mishin <amishin@t-argos.ru>
-Cc: Robert Foss <rfoss@kernel.org>, Swapnil Jakhade <sjakhade@cadence.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Tomi Valkeinen <tomi.valkeinen@ti.com>, 
-	Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, Nikhil Devshatwar <nikhil.nd@ti.com>, 
-	Aradhya Bhatia <a-bhatia1@ti.com>, Jani Nikula <jani.nikula@intel.com>, 
-	Rob Herring <robh@kernel.org>, Zhu Wang <wangzhu9@huawei.com>, 
-	Yuti Amonkar <yamonkar@cadence.com>, Jyri Sarha <jsarha@ti.com>, 
-	Quentin Schulz <quentin.schulz@free-electrons.com>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	lvc-project@linuxtesting.org
-Subject: Re: [PATCH] drm: bridge: cdns-mhdp8546: Fix missing mutex unlock on
- error path
-Message-ID: <4ytkvuigcxhs437rp46sawpzs6ewhgcldgvsy5c5ohpajt76vh@jg45sjwtwlgx>
-References: <20240419113637.25745-1-amishin@t-argos.ru>
+        bh=2NDGRYUeyiTR1EMXmnYw7OzWCIL0q6vZIdToFz9TtIo=;
+        b=Y7g1iKoPRbzyBR7ozhyqDFvelEKu3NJx19GbW/Q1V5ti0dqu74CYxCqQ/yNmZucivG
+         Qqo8GPjGHfwtGwuN385+8Z/O1nK8WCK4ZtuEpL7OstvkEHkAFwDY5KEg6JXA2+D7nBP6
+         zAd3c8oYGv4ielI/l8xGgAzghMW07SggziTQtSGdzU4XOkxRtF0UPwa1wNRVtwixAfzx
+         uxEtKX1cpBVmdFO9d68xtaLP7yCzb4NNvgIf7VyqWLSgH2ojCP2SCJvjzsRfky2UY3s9
+         ytfscKXIcxkTOMsKftvG11UawzuESHK/7NKvfQYzlCahIk2GwjjBXKJLUS94XPJShRmX
+         xMTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713539000; x=1714143800;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2NDGRYUeyiTR1EMXmnYw7OzWCIL0q6vZIdToFz9TtIo=;
+        b=Hk1of7lwCPSx7fjuY9kYq1OUn4Jx9dDvNyvg7NIUOnAlbL/QxnP+m+gNSxYUQupfZS
+         LSFWzbXwauDJrPmoO0QVLrSGmaMHnJhTti6euDlnvSAFKbnBf3WY0AQ5aRH6NPbvutI2
+         8eECFT9Q2/EzBpL3WCJoj0KIlxDkdPSM3spgsLY/APr/sZ+4z1VscfaCyEL0ZEkeBRjR
+         8fZHKcr4Dd8xA8wtCg5qHJDYZlmkOEgvIf4HuDIlws8XJ41BJMBBA/nV6TsVitsqM0J0
+         6j4OfmGZi+4Dug3wl4w0DdTbOprmjt1l2JpzojEnRh+qDJxDWXFJRJr8LwJMVxX581//
+         H/BA==
+X-Forwarded-Encrypted: i=1; AJvYcCUUtvA7hUdZgL1hmiS7ldFDDqEZ88NXtGNt5UHajsPJ8XTfLodw8z+3ujp12+zH0G2rO2fsuKmzwCNzxJoJEWYqZJQPK4eV5+uxYs4w
+X-Gm-Message-State: AOJu0YyEAW1c1K8hgJjhuqoPVhyUg8wWg7GI9YdgazT+eSRbwOkWDRSt
+	a5NLmWlH7sbTW0vnWrv9xRmChJgoI8DOvc6AKPxfyyi54YtOFDX8yP4YIUwN8GWtQ5ilv8Ols9e
+	v6r01cKdNj7WIfIGEj1Q3SrDaJi754vJ+p+Af
+X-Google-Smtp-Source: AGHT+IEXSNtgPNWoEBoc3JoQJIXgarCTe4GVAdmcjouLXkIWQ/vxaHbzioyhfn2q62OMP8+k5zXoKHSL/1EHYGJZZTE=
+X-Received: by 2002:a05:6512:224a:b0:519:3cbf:f734 with SMTP id
+ i10-20020a056512224a00b005193cbff734mr2234601lfu.49.1713539000038; Fri, 19
+ Apr 2024 08:03:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419113637.25745-1-amishin@t-argos.ru>
+References: <20240417211836.2742593-1-peterx@redhat.com> <20240417211836.2742593-4-peterx@redhat.com>
+In-Reply-To: <20240417211836.2742593-4-peterx@redhat.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Fri, 19 Apr 2024 08:03:08 -0700
+Message-ID: <CAHS8izPMjBMNUStsUjobbo4rUXirFtkOZVvJTFFqD4SUafQZaQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm/hugetlb: Assert hugetlb_lock in __hugetlb_cgroup_commit_charge
+To: Peter Xu <peterx@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	David Hildenbrand <david@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Muchun Song <muchun.song@linux.dev>, David Rientjes <rientjes@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 19, 2024 at 02:36:37PM +0300, Aleksandr Mishin wrote:
-> In cdns_mhdp_atomic_enable(), there is an error return on failure of
-> drm_mode_duplicate() which leads to the mutex remaining locked.
-> Add a mutex unlock call.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 935a92a1c400 ("drm: bridge: cdns-mhdp8546: Fix possible null pointer dereference")
-> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+On Wed, Apr 17, 2024 at 2:18=E2=80=AFPM Peter Xu <peterx@redhat.com> wrote:
+>
+> This is similar to __hugetlb_cgroup_uncharge_folio() where it relies on
+> holding hugetlb_lock.  Add the similar assertion like the other one, sinc=
+e
+> it looks like such things may help some day.
+>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+
+Reviewed-by: Mina Almasry <almasrymina@google.com>
+
 > ---
-> This patch is against drm-misc-next branch of drm-misc repo.
-> 
->  drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> 
+>  mm/hugetlb_cgroup.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+> index aa4486bd3904..e20339a346b9 100644
+> --- a/mm/hugetlb_cgroup.c
+> +++ b/mm/hugetlb_cgroup.c
+> @@ -308,7 +308,7 @@ static void __hugetlb_cgroup_commit_charge(int idx, u=
+nsigned long nr_pages,
+>  {
+>         if (hugetlb_cgroup_disabled() || !h_cg)
+>                 return;
+> -
+> +       lockdep_assert_held(&hugetlb_lock);
+
+Maybe also remove the comment on the top of the function:
+
+/* Should be called with hugetlb_lock held */
+
+Now that the function asserts, the comment seems redundant, but up to you.
+
+>         __set_hugetlb_cgroup(folio, h_cg, rsvd);
+>         if (!rsvd) {
+>                 unsigned long usage =3D
+> --
+> 2.44.0
+>
 
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-
--- 
-With best wishes
-Dmitry
+--=20
+Thanks,
+Mina
 
