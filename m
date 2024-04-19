@@ -1,177 +1,107 @@
-Return-Path: <linux-kernel+bounces-151136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECE578AA991
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:54:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A2EF8AA997
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:57:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51C0DB21F01
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:54:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A9331F229CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 065764AED9;
-	Fri, 19 Apr 2024 07:54:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936174CE05;
+	Fri, 19 Apr 2024 07:57:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="kgGLnf3i"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FcCA9M5S"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3D247781;
-	Fri, 19 Apr 2024 07:54:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C807EC15D;
+	Fri, 19 Apr 2024 07:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713513247; cv=none; b=i4v0n7RK7YDSKCxgBrtflcwpBe4VsgccObeby6jRi1UcVp9pVTnkTS2ZrCl/vBmz/ffwLmqkW1saGTfGrLDQ2VVFxl9uu77tWDWaXVpn51b67FXUmoIEfYWWLJJr3lhUvgoZYMyp7Huzga8R+edZoPhIwEvT4Z7o2lu/GkxV/yI=
+	t=1713513438; cv=none; b=SmCbPNh5BGCQ2gXTJLg8iYRSVdwhNw03POfDoAzeBk9dbIDpmOUUCDy8u9NMSzT+SSMgjEADIer47lnZNkTuU78Jj/BCl5ypFE23Xd4hoOqC94HvtiFgfyBqdGp1neMFC8cm+ncF8zzjLklXG7qFhsky2RMyfnxJ3BeTvzTi1v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713513247; c=relaxed/simple;
-	bh=XNjaagRG9HKGPXCD4NFNDozHtEtNCZhSQLrYfOGDUFo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EnBH6fD3GjKCundHrTtfa57KsuaTXeNNAegZLRmCTxK8mehJSw5MuWJ5853xs5E1Hp/o6ZBg23msgO+0LWrIXfFblZP2Mua+mIVoXulHbWx0vQfsbC6YTcR0zCRTrIN9RQISSdeva7W+dldOKeULOA6ydzbdKQiuSTC0rxHO3iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=kgGLnf3i; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713513243;
-	bh=XNjaagRG9HKGPXCD4NFNDozHtEtNCZhSQLrYfOGDUFo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=kgGLnf3iWCBYa2O8IuukcmY0plEAa+VQM/fi7CeRQbQwJJ0A0jEHbuJW1Xad9+oWg
-	 gqNFtRBi7mX789sr1YbjJmWCiK2VXzI1sKzO5CnCSIlwPCKyFGsqIfX+tYo6vQ3xEr
-	 Qj+rTevV7awJ7Ixa5CVLTTmwkjWPBLylCdWwdngNMLCg8aMEeKzRHnKIfri1LqzcSD
-	 dCTt2cdJX3jDtdFW1YcfLkpAPaZRwjmgnNrrZeuS8/StnTUUfpVk2cST4Dg3LY5V8R
-	 Unfe4AwiSlaHfD4NdtkmCseGZL2TMw7k2f0Cf9YFcnDjIfbNHMuFvEVgycxDoduvmV
-	 aEVQs6Zu3EtKg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A8FBE3781116;
-	Fri, 19 Apr 2024 07:54:02 +0000 (UTC)
-Message-ID: <4ca51396-3ccd-4346-b777-9b42842cb26b@collabora.com>
-Date: Fri, 19 Apr 2024 09:54:02 +0200
+	s=arc-20240116; t=1713513438; c=relaxed/simple;
+	bh=1TZ8nYeFpnXiIoNsNPAlgLqamNWJVrnDVh0XwyAvwzo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V/pz1j1VUNCBq84dDLsFtatzHqLkbZskiU/vSvf/Nal9LihCNv3C/cRLv4zMPVeXchT/6pUm59qWVJg2+Bt52qaZdcpx8UEvF94eQp5K4Al8LgOHVtoeRzjfsB/13aWJavr2fSDXqUZeDsD2WEI8C2IaxWmUgrttNKwO4bkv60k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FcCA9M5S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 593BAC2BD10;
+	Fri, 19 Apr 2024 07:57:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713513438;
+	bh=1TZ8nYeFpnXiIoNsNPAlgLqamNWJVrnDVh0XwyAvwzo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=FcCA9M5SXyan3VbSbTysHYhgiqWpiiiiUIbLTKQOchML+tqiy0o0TOXQAdauqzJZj
+	 QDHfDECqC8teTsw8Z2lkigcSQoIVLSQKkA+4jpjfnkJrrsbeBLm48RRwsVSqhz59ie
+	 I9wtwjnZmJJh3CiR0Qp+zWdd/snZid+y8bqTDibsMiRuNSS5gP6ZdExGrKhAhGgo1O
+	 2svJfDkem5U0s7ICLV4ZWb+M6JIYxnrBwkUtEOt/I2QOmDgQgItHswrjylGZPRQK9J
+	 0h6c2dKJVNwG5+pu+zjyYRb3D/Y0ZrK1LSMmt2T8gXQ91Q0mwIf73uOgpYd6/HfZ4Z
+	 i0sSrulhJg63A==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2dcc8d10d39so5607681fa.3;
+        Fri, 19 Apr 2024 00:57:18 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU/ZIu+GsHBvgKmaS5LlVWRTOzUg4+v9OtZ28izWuq9otIC+BDydoyXjXVEkLIIrNcUOfM6/8bQV2E/1zBlxEmdcsUgChB3lwgrvRx3o1T2GoWT8G0icVPLRBZyYkOTx0VGAisfY1OB4+0gUhS06KWktPgTwVeMC6j3nuDOsSDp82apNpzm4KGRhyNY01pM/C6p4Cbq3GNzPYWSBA==
+X-Gm-Message-State: AOJu0YytF6LxqyglF3zuWRhE+B9V88ZqMDZhC9evtymWIS6dIY5m7i/f
+	YhjBaVDhOQcCX7Noqt7XNV29/32fW3q3lS7ppON65HpqwZsxfm+YDa5ndZC4G/le81gMW6k7yVQ
+	lviTeGL2NftBFA2r39dzmicXBYLs=
+X-Google-Smtp-Source: AGHT+IGe0BXzWMTZhMt+wFll+Z29hCabZkKHmFp7RLlW1/LlIWEz4pzHm0vIJmiGDimQtO6B9WSAzRlWCg30klKUvqI=
+X-Received: by 2002:a05:651c:4d4:b0:2d8:34ad:7f4e with SMTP id
+ e20-20020a05651c04d400b002d834ad7f4emr930276lji.4.1713513436740; Fri, 19 Apr
+ 2024 00:57:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] dt-bindings: arm: mediatek: mmsys: Add OF graph
- support for board path
-To: Rob Herring <robh@kernel.org>
-Cc: chunkuang.hu@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
- daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, matthias.bgg@gmail.com, shawn.sung@mediatek.com,
- yu-chang.lee@mediatek.com, ck.hu@mediatek.com, jitao.shi@mediatek.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
- kernel@collabora.com
-References: <20240409120211.321153-1-angelogioacchino.delregno@collabora.com>
- <20240409120211.321153-3-angelogioacchino.delregno@collabora.com>
- <20240410191524.GA903053-robh@kernel.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240410191524.GA903053-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240415162041.2491523-5-ardb+git@google.com> <171327842741.29461.3030265084386428643.git-patchwork-notify@kernel.org>
+In-Reply-To: <171327842741.29461.3030265084386428643.git-patchwork-notify@kernel.org>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Fri, 19 Apr 2024 09:57:05 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGVRGcJGS1xuqHPeJfM797RB2UiJQfSHK+oj1JQG4YECg@mail.gmail.com>
+Message-ID: <CAMj1kXGVRGcJGS1xuqHPeJfM797RB2UiJQfSHK+oj1JQG4YECg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] kbuild: Avoid weak external linkage where possible
+To: patchwork-bot+netdevbpf@kernel.org
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, masahiroy@kernel.org, 
+	arnd@arndb.de, martin.lau@linux.dev, linux-arch@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, andrii@kernel.org, 
+	olsajiri@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-Il 10/04/24 21:15, Rob Herring ha scritto:
-> On Tue, Apr 09, 2024 at 02:02:10PM +0200, AngeloGioacchino Del Regno wrote:
->> Document OF graph on MMSYS/VDOSYS: this supports up to three DDP paths
->> per HW instance (so potentially up to six displays for multi-vdo SoCs).
->>
->> The MMSYS or VDOSYS is always the first component in the DDP pipeline,
->> so it only supports an output port with multiple endpoints - where each
->> endpoint defines the starting point for one of the (currently three)
->> possible hardware paths.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>   .../bindings/arm/mediatek/mediatek,mmsys.yaml | 23 +++++++++++++++++++
->>   1 file changed, 23 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
->> index b3c6888c1457..4e9acd966aa5 100644
->> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
->> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
->> @@ -93,6 +93,29 @@ properties:
->>     '#reset-cells':
->>       const: 1
->>   
->> +  port:
->> +    $ref: /schemas/graph.yaml#/properties/port
->> +    description:
->> +      Output port node. This port connects the MMSYS/VDOSYS output to
->> +      the first component of one display pipeline, for example one of
->> +      the available OVL or RDMA blocks.
->> +      Some MediaTek SoCs support up to three display outputs per MMSYS.
-> 
-> I'm have a hard time understanding this, but is it 3 outputs
-> simultaneously or connect mmsys to 1 of 3. Generally it's multiple ports
-> for the former and endpoints for the latter.
-> 
-
-Yes I feel you, MediaTek SoCs are a bit strange, but I do have a reason to
-use one port and multiple endpoints, instead of multiple ports and one endpoint.
-
-On MediaTek SoCs, there are multiple ports: those multiple ports are represented
-by multiple MMSYS or multiple VDOSYS (depending on the SoC), which do then have
-multiple endpoints.
-
-However, the multiple ports, at least for now, are represented by multiple MMSYS
-and/or multiple VDOSYS nodes instead of one MM/VDO node with multiple iostart for
-the multiple blocks in `reg`.
-
-The multiple iostart "thing" was the initial design by MediaTek, but there was no
-way to get them really connected the right way unless adding an iostart restriction
-in the driver itself (so that the mmsys driver would check an iostart to probe the
-mediatek-drm components for the right IP number), so, after quite many reviews and
-many series versions, they had to resort to use multiple nodes for each VDO.
-
-I think that, after this series, we could also clean that mess up (sorry for the
-strong words) and make it right - assigning the MMIO for all VDOSYS blocks to one
-node, and adding the multiple ports - however, that will require a bit of work that
-is simply too much for this series alone.
-
-Summarizing, so that you don't have to carefully proof-read all this wall of text:
-
-- MediaTek SoCs have got multiple `port` for MMSYS and VDOSYS
-   - Currently the driver implementation doesn't allow that
-     - MediaTek had to work around no OF graph support!
-   - Multiple ports are the multiple MMSYS/VDOSYS
-- One MMSYS / One VDOSYS have multiple `endpoints`
-
-That's how the HW is.
-
-Hope that's clear now?
-
-Cheers,
-Angelo
+On Tue, 16 Apr 2024 at 16:40, <patchwork-bot+netdevbpf@kernel.org> wrote:
+>
+> Hello:
+>
+> This series was applied to bpf/bpf-next.git (master)
+> by Daniel Borkmann <daniel@iogearbox.net>:
+>
+> On Mon, 15 Apr 2024 18:20:42 +0200 you wrote:
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> >
+> > Weak external linkage is intended for cases where a symbol reference
+> > can remain unsatisfied in the final link. Taking the address of such a
+> > symbol should yield NULL if the reference was not satisfied.
+> >
+> > Given that ordinary RIP or PC relative references cannot produce NULL,
+> > some kind of indirection is always needed in such cases, and in position
+> > independent code, this results in a GOT entry. In ordinary code, it is
+> > arch specific but amounts to the same thing.
+> >
+> > [...]
+>
+> Here is the summary with links:
+>   - [v4,1/3] kallsyms: Avoid weak references for kallsyms symbols
+>     (no matching commit)
+>   - [v4,2/3] vmlinux: Avoid weak reference to notes section
+>     (no matching commit)
+>   - [v4,3/3] btf: Avoid weak external references
+>     https://git.kernel.org/bpf/bpf-next/c/fc5eb4a84e4c
+>
 
 
->> +    properties:
->> +      endpoint@0:
->> +        $ref: /schemas/graph.yaml#/properties/endpoint
->> +        description: Output to the primary display pipeline
->> +
->> +      endpoint@1:
->> +        $ref: /schemas/graph.yaml#/properties/endpoint
->> +        description: Output to the secondary display pipeline
->> +
->> +      endpoint@2:
->> +        $ref: /schemas/graph.yaml#/properties/endpoint
->> +        description: Output to the tertiary display pipeline
->> +
->> +    required:
->> +      - endpoint@0
->> +
->>   required:
->>     - compatible
->>     - reg
->> -- 
->> 2.44.0
->>
+Thanks.
 
+Masahiro, could you pick up patches #1 and #2 please?
 
