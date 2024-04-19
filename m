@@ -1,115 +1,130 @@
-Return-Path: <linux-kernel+bounces-151783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21BC88AB3CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE5ED8AB3D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:55:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 532A41C214DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:54:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E04C51C21EA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C331386DA;
-	Fri, 19 Apr 2024 16:54:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="nlQyy1jL"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1FA13848D;
-	Fri, 19 Apr 2024 16:54:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73F1137927;
+	Fri, 19 Apr 2024 16:55:05 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2611C13440D;
+	Fri, 19 Apr 2024 16:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713545675; cv=none; b=AjZlOJJoTLCgdxIhQaWBJCafIusrVxnzA7gPHtvr9qnSOmOQonDkTXB1ZZO+9FT0A6Kd80JP+Rz0dAG6tK5teTGl5/Jl93uHZpiMGdCe4q6lXWwbG6fEJh8WiBaPj90ZNI5MQ8O7bXhW2ZW1QjDImJzVCGXwAMZq1CTFRnsbPiQ=
+	t=1713545705; cv=none; b=j/2sgkTewy06PPhWljVrf2uuGcIKL3UU7bq8sE2/oXeSqzZ3MF6PUkdIdFMVaySTZ72WHCZ3uIE3/nQ5NXpyjWYwRcGMQdls9THAGT1rdtce20aw3owvSjlHy6k3WU/TEIAuy+wd3A1fLNPVEuKvmuiVecRxVyvGkZQDLHPWNvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713545675; c=relaxed/simple;
-	bh=p+AhksF9UH47nFYw6ev3EzJCJllx/nP7dwMICYgHVhk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VJMx33vh6tjR5L3lvLcpOOg8FU5NIzCeIUOyiW4jS/gysNciDq3Rlu6OYyab5WcHEqBz2wNDiyVNnCDP7tXXmwIPQ0obyJ8X/F26ySjgiobD9IgTjVnzYxg+v2iIXEP79seb3GRXDP09nu0Gn1y0sn281UzSwFepjEp/Oi7n+4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=nlQyy1jL; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id C187420FDC2A; Fri, 19 Apr 2024 09:54:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C187420FDC2A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713545673;
-	bh=s8RrX6fyZ456/LIZpdM4fzLm/GVjoSvdhiXZUDPzgVk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nlQyy1jLlnLNQEOEIA6b4Dplj9u0w+B4PIHV3L2viFaJ2aZ5OSTWUzTSqqj+4qpry
-	 IDYXooy6rJ8rlXqB/QHWJGq5JjXyxShX7iionnfftDz/7k25mfjwABak38PwiJYIlw
-	 NBHoSvS17ygympnMnxLbeJdB+tO/bNtlQhB+4PTM=
-Date: Fri, 19 Apr 2024 09:54:33 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Ani Sinha <anisinha@redhat.com>
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>,
+	s=arc-20240116; t=1713545705; c=relaxed/simple;
+	bh=/Sgalow7R8qrgIOMiewpK7cg75Gx/+KiRjQFIynuSmM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cplDpYQxiTs5njmAzI6zH8ZhI1UjuCzMuAIJGpdKzUAzq7LWLy/4T64hM6YDqskMFadE8BaXIYEOLekaSdlIA8fDXpUHSc2kQB0cesVevBqyHnmTOjyl15ojIZNwjhdZpuwyxPBRTJV6Mki0A7t5hlxBU0FW8ZNhpy3baJ0UP+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C5AC2F;
+	Fri, 19 Apr 2024 09:55:30 -0700 (PDT)
+Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 931823F792;
+	Fri, 19 Apr 2024 09:54:57 -0700 (PDT)
+From: Robin Murphy <robin.murphy@arm.com>
+To: Joerg Roedel <joro@8bytes.org>,
+	Christoph Hellwig <hch@lst.de>
+Cc: Vineet Gupta <vgupta@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
 	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	eahariha@linux.microsoft.com, linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Add a header in ifcfg and nm keyfiles describing the
- owner of the files
-Message-ID: <20240419165433.GB506@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <20240418120549.59018-1-anisinha@redhat.com>
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Lu Baolu <baolu.lu@linux.intel.com>,
+	Niklas Schnelle <schnelle@linux.ibm.com>,
+	Matthew Rosato <mjrosato@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-acpi@vger.kernel.org,
+	iommu@lists.linux.dev,
+	devicetree@vger.kernel.org
+Subject: [PATCH v4 0/7] iommu, dma-mapping: Simplify arch_setup_dma_ops()
+Date: Fri, 19 Apr 2024 17:54:39 +0100
+Message-Id: <cover.1713523152.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418120549.59018-1-anisinha@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 18, 2024 at 05:35:49PM +0530, Ani Sinha wrote:
-> A comment describing the source of writing the contents of the ifcfg and
-> network manager keyfiles (hyperv kvp daemon) is useful. It is valuable both
-> for debugging as well as for preventing users from modifying them.
-> 
-> CC: shradhagupta@linux.microsoft.com
-> CC: eahariha@linux.microsoft.com
-> CC: wei.liu@kernel.org
-> Signed-off-by: Ani Sinha <anisinha@redhat.com>
-> ---
->  tools/hv/hv_kvp_daemon.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> changelog:
-> v2: simplify and fix issues with error handling.
-> 
-> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> index ae57bf69ad4a..014e45be6981 100644
-> --- a/tools/hv/hv_kvp_daemon.c
-> +++ b/tools/hv/hv_kvp_daemon.c
-> @@ -94,6 +94,8 @@ static char *lic_version = "Unknown version";
->  static char full_domain_name[HV_KVP_EXCHANGE_MAX_VALUE_SIZE];
->  static struct utsname uts_buf;
->  
-> +#define CFG_HEADER "# Generated by hyperv key-value pair daemon. Please do not modify.\n"
-> +
->  /*
->   * The location of the interface configuration file.
->   */
-> @@ -1435,6 +1437,18 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
->  		return HV_E_FAIL;
->  	}
->  
-> +	/* Write the config file headers */
-> +	error = fprintf(ifcfg_file, CFG_HEADER);
-> +	if (error < 0) {
-> +		error = HV_E_FAIL;
-> +		goto setval_error;
-> +	}
-> +	error = fprintf(nmfile, CFG_HEADER);
-> +	if (error < 0) {
-> +		error = HV_E_FAIL;
-> +		goto setval_error;
-> +	}
-> +
->  	/*
->  	 * First write out the MAC address.
->  	 */
-> -- 
-> 2.42.0
-Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+v3: https://lore.kernel.org/linux-iommu/cover.1707493264.git.robin.murphy@arm.com/
+
+Hi all,
+
+Since this ended up missing the boat for 6.9, here's a rebase and resend
+with the additional tags from v3 collected.
+
+Cheers,
+Robin.
+
+
+Robin Murphy (7):
+  OF: Retire dma-ranges mask workaround
+  OF: Simplify DMA range calculations
+  ACPI/IORT: Handle memory address size limits as limits
+  dma-mapping: Add helpers for dma_range_map bounds
+  iommu/dma: Make limit checks self-contained
+  iommu/dma: Centralise iommu_setup_dma_ops()
+  dma-mapping: Simplify arch_setup_dma_ops()
+
+ arch/arc/mm/dma.c               |  3 +--
+ arch/arm/mm/dma-mapping-nommu.c |  3 +--
+ arch/arm/mm/dma-mapping.c       | 16 +++++++------
+ arch/arm64/mm/dma-mapping.c     |  5 +---
+ arch/loongarch/kernel/dma.c     |  9 ++-----
+ arch/mips/mm/dma-noncoherent.c  |  3 +--
+ arch/riscv/mm/dma-noncoherent.c |  3 +--
+ drivers/acpi/arm64/dma.c        | 17 ++++---------
+ drivers/acpi/arm64/iort.c       | 20 ++++++++--------
+ drivers/acpi/scan.c             |  7 +-----
+ drivers/hv/hv_common.c          |  6 +----
+ drivers/iommu/amd/iommu.c       |  8 -------
+ drivers/iommu/dma-iommu.c       | 39 ++++++++++++------------------
+ drivers/iommu/dma-iommu.h       | 14 +++++------
+ drivers/iommu/intel/iommu.c     |  7 ------
+ drivers/iommu/iommu.c           | 20 ++++++----------
+ drivers/iommu/s390-iommu.c      |  6 -----
+ drivers/iommu/virtio-iommu.c    | 10 --------
+ drivers/of/device.c             | 42 ++++++---------------------------
+ include/linux/acpi_iort.h       |  4 ++--
+ include/linux/dma-direct.h      | 18 ++++++++++++++
+ include/linux/dma-map-ops.h     |  6 ++---
+ include/linux/iommu.h           |  7 ------
+ 23 files changed, 89 insertions(+), 184 deletions(-)
+
+-- 
+2.39.2.101.g768bb238c484.dirty
+
 
