@@ -1,159 +1,103 @@
-Return-Path: <linux-kernel+bounces-151480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CAAC8AAF64
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:32:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AEF28AAF66
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:33:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 943E31F22D66
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:32:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CE6C1C21F58
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE14129E6B;
-	Fri, 19 Apr 2024 13:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7932D128826;
+	Fri, 19 Apr 2024 13:32:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UCz6VcD7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lUwXN0ya"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 257F884A5E;
-	Fri, 19 Apr 2024 13:32:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80DFA622;
+	Fri, 19 Apr 2024 13:32:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713533553; cv=none; b=RvpIzXtrScOs/CQHf0BC+LxGu1Ua2xsVNaKoG1hPAUogauZALOgdEx1R18S7ztTCIQboSgguvLwBdedcYSeSzrAe2nINBCdlEr1zGul2kfHx3WmnS7jxscYEZTFISyFdnfFWda2vk2cp9e8S+8oMEdqYshpX88dc45IcZq9SK/Y=
+	t=1713533578; cv=none; b=R8vE6tQd3/bB48mTJUIQx58G8woI6AtJmNHj/Yi7lc1xt7ANnDiVTtUO5TDSvpJjy/dXwgFDeByLrFlpwna7Y/EfxO6m2BOTzsuRHqOuhHGQ6JRZO5DXC3DQgYGZSunax0fBRWMdMx7BsZuTPYsylr2xxZuuw6/LoLhmTN5XQMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713533553; c=relaxed/simple;
-	bh=qlFV2n0dp+vM+s1TtvLvw3sPeMJevEjAyruXlrxUblU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Tu910I6Y4vI4Rlt/f3GVk0rIHMEqt8XwhG4Jv2mDqaA3rWlOytlqSlZ/7G0Zy8HhevDR7oIhRDFVvxjAvjn2S0bPPbxdanPo3V9AAIgMde+4v5w+zWQCNfMSoKEuXla3b6wdnIce/hntmjiRozTTXqO8FNqSNLQKiopO/yNr4zM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UCz6VcD7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50406C072AA;
-	Fri, 19 Apr 2024 13:32:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713533552;
-	bh=qlFV2n0dp+vM+s1TtvLvw3sPeMJevEjAyruXlrxUblU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=UCz6VcD7u+pspjMh42RlBZLS9T32HlSIRHd9nN5pKa64skT0kRFGXq8kwKmIJD3YV
-	 jE8ZNdNI9O4KiZTIT3ZnOUDUbMfBr2xpQOZEOKOMtcCXwAnbS1/bqit0LMURniI6+T
-	 l4qw2QkO39hqrKODeRE/qLBH5j82KbQ3gmJ67y4ZtX3ZjM47vtnbd/LEm9j+VmbCXQ
-	 7yd4CSskoARCPPKdpj8xoLVpXSnshJA9Xt5kcQLgtaWW38rB49HHkDX1304dsGYKix
-	 cg3xTDQ37CeQ63Rl1619dKzKslM/pZycmwH0p7LNFVGCpc0OmuhcAU1f9ZFobbubXW
-	 cZIO0Zw9l9ACg==
-Message-ID: <7fc1a557-205e-481c-a1c6-3e0a37f7a7bc@kernel.org>
-Date: Fri, 19 Apr 2024 15:32:31 +0200
+	s=arc-20240116; t=1713533578; c=relaxed/simple;
+	bh=LhbTggTO/Za71U9Nzsfy3zlYZSd8CAnva/3Vl4sNSBI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J3boF+g+34kYweaLiQICjfshWtAyk1u9tZCW/MaMD9VsZ4SdqhmaMpWQcL2AaGvUjIH3DnyoKh1SFCxw03debbNcWax7rsdi6N4GZ2inFyJQzGXcqpgRdhOw+Or4nEpf2F4mrYkVRYyqKtiQ1YyLY2KNXLD0tij2iY8aAFeCHr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lUwXN0ya; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713533578; x=1745069578;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=LhbTggTO/Za71U9Nzsfy3zlYZSd8CAnva/3Vl4sNSBI=;
+  b=lUwXN0yaElnuR6AZgic2Ecb2nvu3Li7ika7JEB1M795AzqpxKVVxXY27
+   dMbhP+eLtGnJkfhPGJb2kQvvqhLfwxppZx8Ff+gdhEWA665cxXUar+L8a
+   0VkrOwfMGXFucs1UxnoWz9QD8nQaUNkFYyGleJDnIilmDrIKRV2JyXuV9
+   O0mpyzMd6mFq4oRx60DG6yb+5xEtWtn3nda/R3fkx2NviJ8TB3ynIceJ+
+   Dk3QrAoiuKneNuwa96rPzpW6i0UkxQRdMIuUJITADkJoPEKJZmaPaNtiy
+   ai8xkZFZ3somfIqhxahbfPxhGYRiCSh/EPQK8x6id/HduvzO1eCcwsCUa
+   w==;
+X-CSE-ConnectionGUID: vEkJS/1CQWK+XsxaGq4OVQ==
+X-CSE-MsgGUID: kE/xNi3TQ0O4dLtyaxv7rg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="20525319"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="20525319"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:32:57 -0700
+X-CSE-ConnectionGUID: DESZkyngQsKLazwvX7oqWw==
+X-CSE-MsgGUID: QDBZqaw2Ssm/DKzTzAemnw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="23836439"
+Received: from mpkangas-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.63.92])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:32:54 -0700
+Date: Fri, 19 Apr 2024 16:32:45 +0300
+From: Aapo Vienamo <aapo.vienamo@linux.intel.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH] gpio: Add Intel Granite Rapids-D vGPIO driver
+Message-ID: <io2megd6ymifff3ae6bqvdig5de3loczdmbnhoao3e32vuiqvh@pkqmxl4p7yy2>
+References: <20240419080555.97343-1-aapo.vienamo@linux.intel.com>
+ <CAHp75Ve=TUqba0Ga23QCiP7uM==VzY6kL=3A-5k5WNJAz4gGuA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] dt-bindings: sc16is7xx: Add compatible line for
- XR20M1172 UART
-To: Konstantin Pugin <rilian.la.te@ya.ru>
-Cc: Konstantin Pugin <ria.freelander@gmail.com>,
- Vladimir Zapolskiy <vz@mleia.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Hugo Villeneuve <hvilleneuve@dimonoff.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Lech Perczak <lech.perczak@camlingroup.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240419124506.1531035-1-rilian.la.te@ya.ru>
- <20240419124506.1531035-3-rilian.la.te@ya.ru>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240419124506.1531035-3-rilian.la.te@ya.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Ve=TUqba0Ga23QCiP7uM==VzY6kL=3A-5k5WNJAz4gGuA@mail.gmail.com>
 
-On 19/04/2024 14:45, Konstantin Pugin wrote:
-> From: Konstantin Pugin <ria.freelander@gmail.com>
+On Fri, Apr 19, 2024 at 04:12:55PM GMT, Andy Shevchenko wrote:
+> On Fri, Apr 19, 2024 at 11:07 AM Aapo Vienamo
+> <aapo.vienamo@linux.intel.com> wrote:
+> >
+> > This driver provides a basic GPIO driver for the Intel Granite Rapids-D
+> > virtual GPIOs. On SoCs with limited physical pins on the package, the
+> > physical pins controlled by this driver would be exposed on an external
+> > device such as a BMC or CPLD.
+> >
+> > Signed-off-by: Aapo Vienamo <aapo.vienamo@linux.intel.com>
+> > Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 > 
-> Add EXAR XR20M1172 UART compatible line into devicetree documentation.
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
-> Reviewed-by: Vladimir Zapolskiy <vz@mleia.com>
-> Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
-> ---
->  Documentation/devicetree/bindings/serial/nxp,sc16is7xx.ya
+> Hmm... How did this happen?
 
-This is fourth change, no cover letter, no changelog. Patch is trivial
-but you do not make it easier to understand what is happening here.
+This happened because the commits got mixed up between the internal tree
+and my own branch. Apologies for that.
 
-Please provide proper changelog under ---.
-
-(If you wrote changelog somewhere else and then decided not to send it
-to us, it is like there was no changelog. I literally do not have it in
-my inbox).
-
-
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-
----
-
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-Best regards,
-Krzysztof
-
+Sincerely,
+Aapo
 
