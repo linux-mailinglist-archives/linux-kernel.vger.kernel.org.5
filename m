@@ -1,106 +1,102 @@
-Return-Path: <linux-kernel+bounces-151214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 430888AAB30
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:07:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0302F8AAB37
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:10:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F53C1C21319
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:07:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52D71B20E34
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E681874BEC;
-	Fri, 19 Apr 2024 09:07:24 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7CC7757F7;
+	Fri, 19 Apr 2024 09:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org header.b="IyECAjlz"
+Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E324F7350E
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5AF5FBB5;
+	Fri, 19 Apr 2024 09:10:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.81.211.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713517644; cv=none; b=Sn5si78VoVJDBMZKliI0VO8qe9SEsOCyd028e3zyu8vU+k2vt4abj1spnN4b1+/tgvIopxeu74lMPeiEtwnyeddhqXiKpgb3lvUFxLUj2jwLdyXxMLInnwloEENa6qJo0EIcxZlcnoeYiR2EMbW8X47iGRNrls9SMIThiaegWQg=
+	t=1713517821; cv=none; b=Buez8dwfCMIRgevItCP3fkQgfr4UlkSoPr0QXQDlcqVsvFD5wzkhzPYXmU4Z001UqqJhp1ZZMwxuEEGGkzGSp/vjS9Ij0aCmhnE2+6hRUTNoP171YMPtaYoCPpB6EzBedgBAr47d95udnc49GUxSyPMOPtYgYojG/vdXOp1t5aQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713517644; c=relaxed/simple;
-	bh=CfnZg8r/QZUEzgHHXpfTKLfEuUrj3HYN6sGnFATCDh0=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=NEoyw2cVdspCf7uIQaSJ3b5xLHo7BZerRzQPswiikzFkBUODoeywAEVN6gxDsQqJgV3UiipQTtPTzz4CGBVq1cgEYhMSM8pfs3pJ9ELUNr4uppELIoPh90O9rPM3Y1pxNhTzhTmXJxXpCI+KVEgWKJP+WpmyOfQi8fgzCga4ZLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VLTGr4Clqz1hwlS;
-	Fri, 19 Apr 2024 17:04:20 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id 30D651A0188;
-	Fri, 19 Apr 2024 17:07:20 +0800 (CST)
-Received: from [10.173.135.154] (10.173.135.154) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 19 Apr 2024 17:07:19 +0800
-Subject: Re: [PATCH 2/2] mm/hugetlb: fix unable to handle page fault for
- address dead000000000108
-To: Andrew Morton <akpm@linux-foundation.org>
-CC: <muchun.song@linux.dev>, <david@redhat.com>, <vbabka@suse.cz>,
-	<willy@infradead.org>, <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20240418022000.3524229-1-linmiaohe@huawei.com>
- <20240418022000.3524229-3-linmiaohe@huawei.com>
- <20240418133817.afb65c8dcd11cfea7c686d25@linux-foundation.org>
-From: Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <d2cd0601-46ef-a42c-a870-f0ab6bdb1a80@huawei.com>
-Date: Fri, 19 Apr 2024 17:07:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1713517821; c=relaxed/simple;
+	bh=FUyrDkEoZkFe3j2Sa11pBqz9kStQx6lt90ArRaAHaYo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q2wzrzmSXok0JDAfWe0UZgam09UwWFrJbsfRu3NPu7DTABwkEeEj+8RywoM0qjipdXa1Sl1aUPKzvXNWegt6eNSRfyAsM2ankhZjZf2XmHCClEDQ2EIAYznlpCySM+5BsMMjbwQc5WKV8VqhjB9QYIXgqAIkAvJkNoSM3oDgmTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gnuweeb.org; spf=pass smtp.mailfrom=gnuweeb.org; dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org header.b=IyECAjlz; arc=none smtp.client-ip=51.81.211.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gnuweeb.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnuweeb.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
+	s=default; t=1713517813;
+	bh=FUyrDkEoZkFe3j2Sa11pBqz9kStQx6lt90ArRaAHaYo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=IyECAjlzs3S9RlCI58V209dKzrihrBf2qjZXpTpVQA/pl8gcbkwlPhSZ+cD/Gl3/+
+	 MNP0IcdBK2bVd4vNtIPWmFL5JXmci5q+p/GjXQr9sSwnH5yBNJoqYOOInBvyNQOpOk
+	 oeBW46fJmUdwO3+wSdIK7lDrIyHk3VGp4BR5LjHof4A0KIhCFeTBDNH3hCqa+ih/vL
+	 4mvcZ7/nysID8rjWrtzpiGZK+JTAg5EAsaiz6z17XM9zYbxl4NRY4Ev29VZC+e4VjV
+	 yPS4DnOPVjiFzsNvDxtHgIpyows6BYdf3eMCcUBeOgNYwFl7e1f7oJ7PnFTO139JCj
+	 ElyuRYd0nXhtQ==
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	by gnuweeb.org (Postfix) with ESMTPSA id 616FC24AE8F;
+	Fri, 19 Apr 2024 16:10:13 +0700 (WIB)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4347cb2bf76so3686681cf.0;
+        Fri, 19 Apr 2024 02:10:13 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUOGYho+A2nxpv0r8Eji6Ww2HtUn/Uvsg9Nrgi/55BsNF6BjZRJTiaq8AUj6exiaufe50HX9JgZySCU9ufoIlxhYGNUnmWFw2M=
+X-Gm-Message-State: AOJu0YwkR0mJpf0odweklFg+6UH+76pGD4XTCovmwMBvUiYIE+ySNttQ
+	gXU3byWMZ1bDV+Z/AeLmOrl7FY+KpmXgOr9aD6SnU+PayysxJhfKp3rsKHz4UHFSKtq+XVThoDQ
+	t4+LGK0p6UEnOawzaUChcfFI2BF8=
+X-Google-Smtp-Source: AGHT+IFj+cSkPdz2w+IhOOTokNmm/YCqjbL32GYxwRwPZRXBkNU3JOplf6dRnMwoK5oQU0GSmh//6qWnbFlYZLRnduQ=
+X-Received: by 2002:ac8:4e21:0:b0:438:d78f:66a7 with SMTP id
+ d1-20020ac84e21000000b00438d78f66a7mr310205qtw.0.1713517812443; Fri, 19 Apr
+ 2024 02:10:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240418133817.afb65c8dcd11cfea7c686d25@linux-foundation.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500002.china.huawei.com (7.192.104.244)
+References: <CGME20240418093150epcas5p31dc20cc737c72009265593f247e48262@epcas5p3.samsung.com>
+ <20240418093143.2188131-1-xue01.he@samsung.com>
+In-Reply-To: <20240418093143.2188131-1-xue01.he@samsung.com>
+From: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Date: Fri, 19 Apr 2024 16:09:56 +0700
+X-Gmail-Original-Message-ID: <CAFBCWQJAjef4AGXmVDZ-dR02zqstpXuP_mWimsF5HQCMxxeCcg@mail.gmail.com>
+Message-ID: <CAFBCWQJAjef4AGXmVDZ-dR02zqstpXuP_mWimsF5HQCMxxeCcg@mail.gmail.com>
+Subject: Re: [PATCH v2] io_uring: releasing CPU resources when polling
+To: hexue <xue01.he@samsung.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	io-uring Mailing List <io-uring@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+	Pavel Begunkov <asml.silence@gmail.com>, Kanchan Joshi <joshi.k@samsung.com>, 
+	Kundan Kumar <kundan.kumar@samsung.com>, Anuj Gupta <anuj20.g@samsung.com>, 
+	Wenwen Chen <wenwen.chen@samsung.com>, Ruyi Zhang <ruyi.zhang@samsung.com>, 
+	Xiaobing Li <xiaobing.li@samsung.com>, cliang01.li@samsung.com, peiwei.li@samsung.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/4/19 4:38, Andrew Morton wrote:
-> On Thu, 18 Apr 2024 10:20:00 +0800 Miaohe Lin <linmiaohe@huawei.com> wrote:
-> 
->> Below panic occurs when I did memory failure test:
->>
->> BUG: unable to handle page fault for address: dead000000000108
->>
->> ...
->>
->> The root cause is that list_del() is used to remove folio from list when
->> dissolve_free_hugetlb_folio(). But list_move() might be used to reenqueue
->> hugetlb folio when free_huge_folio() leading to above panic. Fix this
->> issue by using list_del_init() to remove folio.
->>
->> ...
->>
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -1642,7 +1642,7 @@ static void __remove_hugetlb_folio(struct hstate *h, struct folio *folio,
->>  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
->>  		return;
->>  
->> -	list_del(&folio->lru);
->> +	list_del_init(&folio->lru);
->>  
->>  	if (folio_test_hugetlb_freed(folio)) {
->>  		h->free_huge_pages--;
-> 
-> We should cc:stable and find a Fixes:.  This appears to predate
-> 6eb4e88a6d27022ea8aff424d47a0a5dfc9fcb34, after which I got lost.
+On Fri, Apr 19, 2024 at 3:47=E2=80=AFPM hexue wrote:
+> +void init_hybrid_poll_info(struct io_ring_ctx *ctx, struct io_kiocb *req=
+)
+> +{
+> +       u32 index;
+> +
+> +       index =3D req->file->f_inode->i_rdev;
+> +       struct iopoll_info *entry =3D xa_load(&ctx->poll_array, index);
+> +
+> +       if (!entry) {
+> +               entry =3D kmalloc(sizeof(struct iopoll_info), GFP_KERNEL)=
+;
+> +               entry->last_runtime =3D 0;
+> +               entry->last_irqtime =3D 0;
+> +               xa_store(&ctx->poll_array, index, entry, GFP_KERNEL);
+> +       }
 
-I think this series can be dropped because this didn't fix the root cause.
-Please see my v2 patch for details. So this Fixes tag isn't needed anymore.
-Thanks.
-.
+GFP_KERNEL may fail; you must check for failure. Otherwise, it could
+lead to NULL pointer dereference.
 
-> .
-> 
-
+--=20
+Ammar Faizi
 
