@@ -1,115 +1,78 @@
-Return-Path: <linux-kernel+bounces-151942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46F078AB61C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:46:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C47348AB61F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:46:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76DDB1C217B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:46:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 640111F22C07
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D8722BAE6;
-	Fri, 19 Apr 2024 20:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16F1183CC7;
+	Fri, 19 Apr 2024 20:46:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="fR9v3p+z"
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SxMzkoy8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6802229CE5;
-	Fri, 19 Apr 2024 20:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5720F2BAEC;
+	Fri, 19 Apr 2024 20:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713559581; cv=none; b=D4jite2ZiTQdsOGGx7UUM23yZYnjyOC5nLKI9WPMNeQRboxVjyCF7FwA6HbiG2/cCElJNIfuVu+eXvQwEsIF0VCVbEy81bLDXafi+sejbV4G+x3A2RwbFqhcHCxX6T0BEPteG1WmXL0VFG4mg48jd9YjIqeYl4qDoQQZTmRVPbc=
+	t=1713559594; cv=none; b=kgf3N4TM5WD6q6GNCMCO9xTJ44Q1G2q1sfRezlKEAnuYLsGF8ZJrxGW/oBWOHl9AuJyfZFD2/HHXN0M8sEE6ECOq+HsuFAsPSecD78wonL9qB0DEf8iDzVfDWGpd3YJ5IuYE5+6QyHd/EN+2hKEUEN25X33QYCLQRg1UYkFSAnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713559581; c=relaxed/simple;
-	bh=Q0n2p3Gl2XGwFRL69wM+4Pn8DrdIQvix54nl3TqcDfI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NYnhi/OzRzzfGL5LxbED5XEctWb/2+xE54e5HaTiGYk+UZBJkZPjjILic0FZSSo/YQEDV0BS3VUkWIbuyrPOenMmO7WQUSmeZJNuDmr6riBjbnMjKLywPQUtQJf9itR8/J9f3Pidz5gcAoakDjem0bFq5XKaUyz9DpwRnXtiOiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=fR9v3p+z; arc=none smtp.client-ip=4.36.192.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=5p2yQvQe15hu1/dZghXrbNWOB2J/4kqzCzCcLTivdwE=; b=fR9v3p+zjVf9sCIqkYiQdMIBvS
-	FQWQVZ71cUCDyVhziOVnArmJjPymIm2os81/0UHq/3QVttuvtt4/WXtfa2arno+JquVqpETCQzu8j
-	WEN74vvkg3kh8B+URuhpz+FpbM+nnmYSrkz5OW0/2pXVxXHgAkkcPhbb+T+jF7DkFSdA6NXxkHGb2
-	a8ZtvB9ROZMZAbLXO8w6xshaP/5lW+FZ6GPMvA+V/fP0/CXdGFYcJFAQL2RQdTIJ3p0Fu0lVgABRx
-	GMqAq0xAcPtwtt+QZBQXBARwETz2JXk+TFEI9Ip6q/TsffEH+Wpu2x5I8J6Ka3l5B306VEtmGY9Kw
-	zf83hOmQ==;
-Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.localnet)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <zfigura@codeweavers.com>)
-	id 1rxv7X-001bTU-1M;
-	Fri, 19 Apr 2024 15:46:07 -0500
-From: Elizabeth Figura <zfigura@codeweavers.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: wine-devel@winehq.org, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
- Wolfram Sang <wsa@kernel.org>, Andy Lutomirski <luto@kernel.org>,
- linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Randy Dunlap <rdunlap@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v4 00/30] NT synchronization primitive driver
-Date: Fri, 19 Apr 2024 15:46:07 -0500
-Message-ID: <4560699.LvFx2qVVIh@camazotz>
-In-Reply-To: <20240419161611.GA23130@noisy.programming.kicks-ass.net>
-References:
- <20240416010837.333694-1-zfigura@codeweavers.com>
- <3743440.MHq7AAxBmi@terabithia>
- <20240419161611.GA23130@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1713559594; c=relaxed/simple;
+	bh=KW9pVORQQdMNwNkKxWS8z1ix+MRs61AM6g6QKZYwprM=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=aXSogdiXrXiGzlBymLGKQpERWSVIzeCJTi6eVTwtV472YC/LcnKCOQZBIwzs7QjvFpP5M3ZJtmjOWSjwskgnvhGEQN2WtA7HNFUOcaq5ShSJf3fdrKPohX4EXArUFwgNtdUoUGDLWUPqpzulg1ZwTgB2V0ikkYWGD+tafJ4zEp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SxMzkoy8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E01DAC116B1;
+	Fri, 19 Apr 2024 20:46:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713559593;
+	bh=KW9pVORQQdMNwNkKxWS8z1ix+MRs61AM6g6QKZYwprM=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=SxMzkoy8QRsrUrZ6/QTTD/Gix0Ult/xG5yK4rGgEXRQ6ktKQxyIto9yGQ9KiJCQK+
+	 JCL9SXEhwInGOJUyumVtRPVwBnlZtXlEdeofzTtQRNait2opvaEM2ucwKjJUz9WsbQ
+	 uRiNS/TRxn6EfQrMe58DhzNgWpmpwI6fZFpAXJOrV/Vem8V/tCmjwetkqoabw2I3Qk
+	 LVFmG1P/SQRjLkjolatFFhm+c/w7uRZfjub/OMjZkfu/qwK35kpBMzWxbaOvFP13zX
+	 QW8uVEqsPtquCCEbiPodgoXOrL0u4aAcriPG+h4KIzzblowfTHIV/lUTPDDL/RTTLL
+	 zBNkj+lMXwQng==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CD8F5C433E9;
+	Fri, 19 Apr 2024 20:46:33 +0000 (UTC)
+Subject: Re: [GIT PULL] fs/9p fixes for 6.9-rc5
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <ZiKJ1Q7Ib6Fj6I9S@3f3e8491d9e9>
+References: <ZiKJ1Q7Ib6Fj6I9S@3f3e8491d9e9>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZiKJ1Q7Ib6Fj6I9S@3f3e8491d9e9>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ericvh/v9fs.git tags/9p-fixes-for-6.9-rc5
+X-PR-Tracked-Commit-Id: 7fd524b9bd1be210fe79035800f4bd78a41b349f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 46b28503cdf35e1c34d9d135d91da91d3649ebaf
+Message-Id: <171355959383.22865.2989568451590709170.pr-tracker-bot@kernel.org>
+Date: Fri, 19 Apr 2024 20:46:33 +0000
+To: Eric Van Hensbergen <ericvh@kernel.org>
+Cc: torvalds@linux-foundation.org, v9fs@lists.linux.dev, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
 
-On Friday, 19 April 2024 11:16:11 CDT Peter Zijlstra wrote:
-> On Tue, Apr 16, 2024 at 05:18:56PM -0500, Elizabeth Figura wrote:
-> > On Tuesday, 16 April 2024 16:18:24 CDT Elizabeth Figura wrote:
-> > > On Tuesday, 16 April 2024 03:14:21 CDT Peter Zijlstra wrote:
-> > > > I don't support GE has it in his builds? Last time I tried, building
-> > > > Wine was a bit of a pain.
-> > >=20
-> > > It doesn't seem so. I tried to build a GE-compatible ntsync build, up=
-loaded
-> > > here (thanks Arek for hosting):
-> > >=20
-> > >     https://f002.backblazeb2.com/file/wine-ntsync/ntsync-wine.tar.xz
-> >=20
-> > Oops, the initial version I uploaded had broken paths. Should be fixed =
-now.
-> >=20
-> > (It's also broken on an unpatched kernel unless explicitly disabled wit=
-h=20
-> > WINE_DISABLE_FAST_SYNC=3D1. Not sure what I messed up there=E2=80=94it =
-should fall back=20
-> > cleanly=E2=80=94but hopefully shouldn't be too important for testing.)
->=20
-> So I've tried using that wine build with lutris, and I can't get it to
-> start EGS or anything else.
->=20
-> I even added a printk to the ntsync driver for every open, to see if it
-> gets that far, but I'm not even getting that :/
+The pull request you sent on Fri, 19 Apr 2024 15:12:21 +0000:
 
-That's odd, it works for me, both as a standalone build and with
-lutris...
+> git://git.kernel.org/pub/scm/linux/kernel/git/ericvh/v9fs.git tags/9p-fixes-for-6.9-rc5
 
-Does /dev/ntsync exist (module is loaded) and have nonzero permissions?
-I forgot to mention that's necessary, sorry.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/46b28503cdf35e1c34d9d135d91da91d3649ebaf
 
-Otherwise I can try to look at an strace, or a Wine debug log. I don't
-think there's an easy way to get the latter with Lutris, but something
-like `WINEDEBUG=3D+all ./wine winecfg 2>log` should work.
+Thank you!
 
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
