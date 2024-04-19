@@ -1,147 +1,233 @@
-Return-Path: <linux-kernel+bounces-151515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB948AAFFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:01:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A82EF8AB001
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0FB91C22104
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:01:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64511284504
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE17112DD97;
-	Fri, 19 Apr 2024 14:01:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M0XFgbM2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C3312CDBF;
-	Fri, 19 Apr 2024 14:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C95212D748;
+	Fri, 19 Apr 2024 14:01:16 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7CFD12D210
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:01:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713535264; cv=none; b=i4CU7t863bkiSnB4aOgPDYGGH3OowVGEp3R6bp4TuLRGELgo1Cwg96u1ORgATeBkq+ncICuNQNk07r55vxdOsCqtL7cudkZlruPvFnuVNqrrx4kscTnLf/o7L7Nv+8lHUYPGYd7quQYB/T2djQcLWWypoaV9bKDNLdRy9yupOr8=
+	t=1713535276; cv=none; b=LbPH0DYzD4qSPBl1kIi+bKBGrCr4P+Y84DI9hCxMYQKH7n1RDsIEZ/uOGJ/C9K+jRQrzgdJLzjOmnHyT9ww+VreTsX6uELWf+6+F+YP2G3eyqRscbzUn6dXY4Chu9Lw1rp9UAYMjjGpUlANpcCiv6NQOyR1COngOU1L1koaQ6vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713535264; c=relaxed/simple;
-	bh=loqC2WPISxu1+3E1WQy76oMgMa6kGFEEv0aJHtP5GNQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lkFXTigGzPdtyEjQwWs8KXLdZMxatz8ZjymNwPf787xfe9IdCrzwq6kFEmKp/3QRXsuB86hV7ARc12MbcKKx8Vz3QthYLF7mN5uwJEhdwEaQIAd1douA+Wqm8kcSpfDxZLHSBNGNFbb4C4eu6neAW8WSPEljJYhbTdJn3DgjK2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M0XFgbM2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10B91C072AA;
-	Fri, 19 Apr 2024 14:01:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713535263;
-	bh=loqC2WPISxu1+3E1WQy76oMgMa6kGFEEv0aJHtP5GNQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=M0XFgbM2cg95x3p8HX5OgKdiz60O9y0ei6NIPfWSmTzHYAJOGDfWQ2oiXltKpIPTi
-	 N4BwdQdd2J8xux5LlaygFw6azv5f2Tfjz5IHBlbxpHENoSE90oeOEysAL0iLjiaXui
-	 qxNT86rRybiIj8fz8kz55AgnzsF8TozFuXzh8QDpuGV/CvDqf0H1MizEsxLnmASKkU
-	 SnuArSJwkOe9u/2GSNxLUpW60Zjt1yflBy13fgJ28kFSrTr4KThZkcnVbMkM3NRSij
-	 aIa4ibazLdiW4IJNzirAAVPwjggkge8wAN5a2mFDU+7L4IT1HmgmndJn2FLJWnnTDb
-	 JYq0zWhC8GM3g==
-Message-ID: <30ee43ae-60d9-49c3-b4ca-dc063446f80f@kernel.org>
-Date: Fri, 19 Apr 2024 16:01:02 +0200
+	s=arc-20240116; t=1713535276; c=relaxed/simple;
+	bh=wLOKTZFH7Cs8IOd5t8VB+zBBfgEW3A93EXYRDBrMktw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H2RALDkfAgmDuWW45GgWadiqzehqe0fOURQ7EsxnKXsc4Vwt9m8ZQh2bKsu/C+sM3GO5sOkh2LbJ87+g79BPoHZ1MlZIXnyyZBEmrcuk8C8IaPo11iBAwzzo5ZYkuu5uikISBEef6GKCFsO2GX+mj6znyqNPuvIV3WvOaILICjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 767EA339;
+	Fri, 19 Apr 2024 07:01:38 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E35893F64C;
+	Fri, 19 Apr 2024 07:01:08 -0700 (PDT)
+Date: Fri, 19 Apr 2024 15:01:06 +0100
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+Cc: gregkh@linuxfoundation.org, rafael@kernel.org,
+	Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org,
+	julia.lawall@inria.fr, javier.carrasco.cruz@gmail.com,
+	skhan@linuxfoundation.org
+Subject: Re: [PATCH] drivers: use __free attribute instead of of_node_put()
+Message-ID: <20240419140106.3mkayxriqjt2cz5i@bogus>
+References: <20240419131956.665769-1-vincenzo.mezzela@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] dt-bindings: sc16is7xx: Add compatible line for
- XR20M1172 UART
-To: "Konstantin P." <ria.freelander@gmail.com>
-Cc: Konstantin Pugin <rilian.la.te@ya.ru>, Vladimir Zapolskiy <vz@mleia.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Hugo Villeneuve <hvilleneuve@dimonoff.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Lech Perczak <lech.perczak@camlingroup.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240419124506.1531035-1-rilian.la.te@ya.ru>
- <20240419124506.1531035-3-rilian.la.te@ya.ru>
- <7fc1a557-205e-481c-a1c6-3e0a37f7a7bc@kernel.org>
- <CAF1WSuxUZCQNMAdjWUyhG=RV2a8t48NSm9ryoSpd=NTZ3rEEmA@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <CAF1WSuxUZCQNMAdjWUyhG=RV2a8t48NSm9ryoSpd=NTZ3rEEmA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240419131956.665769-1-vincenzo.mezzela@gmail.com>
 
-On 19/04/2024 15:49, Konstantin P. wrote:
->> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
->> versions, under or above your Signed-off-by tag. Tag is "received", when
->> provided in a message replied to you on the mailing list. Tools like b4
->> can help here. However, there's no need to repost patches *only* to add
->> the tags. The upstream maintainer will do that for tags received on the
->> version they apply.
->>
->> https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
->>
->> Best regards,
->> Krzysztof
->>
-> 
-> I am sorry, I used git send-email, and send all 3 patches and cover
-> letter. I do not know why it was not ended up in your mailbox.
-> Link to all patches (version 4)
-> https://lore.kernel.org/linux-serial/20240419124506.1531035-1-rilian.la.te@ya.ru/.
-> 
-> Here is a git send-email log for cover letter:
+On Fri, Apr 19, 2024 at 03:19:56PM +0200, Vincenzo Mezzela wrote:
+> Introduce the __free attribute for scope-based resource management.
+> Resources allocated with __free are automatically released at the end of
+> the scope. This enhancement aims to mitigate memory management issues
+> associated with forgetting to release resources by utilizing __free
+> instead of of_node_put().
+>
+> The declaration of the device_node used within the do-while loops is
+> moved directly within the loop so that the resource is automatically
+> freed at the end of each iteration.
+>
+> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+> Signed-off-by: Vincenzo Mezzela <vincenzo.mezzela@gmail.com>
+> ---
+>  drivers/base/arch_topology.c | 41 ++++++++++++++----------------------
+>  1 file changed, 16 insertions(+), 25 deletions(-)
+>
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index 024b78a0cfc1..58eeb8183747 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -513,10 +513,10 @@ core_initcall(free_raw_capacity);
+>   */
+>  static int __init get_cpu_for_node(struct device_node *node)
+>  {
+> -	struct device_node *cpu_node;
+>  	int cpu;
+>
+> -	cpu_node = of_parse_phandle(node, "cpu", 0);
+> +	struct device_node *cpu_node __free(device_node) =
 
-So read the log and you will see that it does not send to everyone.
-That's how cc-cmd works.
+Missing include <linux/cleanup.h> for this ?
 
-I would suggest to switch to b4 or patman.
+> +		of_parse_phandle(node, "cpu", 0);
+>  	if (!cpu_node)
+>  		return -1;
+>
+> @@ -527,7 +527,6 @@ static int __init get_cpu_for_node(struct device_node *node)
+>  		pr_info("CPU node for %pOF exist but the possible cpu range is :%*pbl\n",
+>  			cpu_node, cpumask_pr_args(cpu_possible_mask));
+>
+> -	of_node_put(cpu_node);
+>  	return cpu;
+>  }
+>
+> @@ -538,11 +537,11 @@ static int __init parse_core(struct device_node *core, int package_id,
+>  	bool leaf = true;
+>  	int i = 0;
+>  	int cpu;
+> -	struct device_node *t;
+>
+>  	do {
+>  		snprintf(name, sizeof(name), "thread%d", i);
+> -		t = of_get_child_by_name(core, name);
+> +		struct device_node *t __free(device_node) =
+> +			of_get_child_by_name(core, name);
+>  		if (t) {
+>  			leaf = false;
+>  			cpu = get_cpu_for_node(t);
+> @@ -553,10 +552,8 @@ static int __init parse_core(struct device_node *core, int package_id,
+>  				cpu_topology[cpu].thread_id = i;
+>  			} else if (cpu != -ENODEV) {
+>  				pr_err("%pOF: Can't get CPU for thread\n", t);
+> -				of_node_put(t);
+>  				return -EINVAL;
+>  			}
+> -			of_node_put(t);
 
-Best regards,
-Krzysztof
+OK you moved 't' inside the loop and this must be taken care, but...
 
+>  		}
+>  		i++;
+>  	} while (t);
+
+...now, will it even compile if 't' is not in scope ? I think you might get
+compilation here. If not, I still don't understand what is the value of
+'t' being checked there.
+
+> @@ -586,7 +583,6 @@ static int __init parse_cluster(struct device_node *cluster, int package_id,
+>  	char name[20];
+>  	bool leaf = true;
+>  	bool has_cores = false;
+> -	struct device_node *c;
+>  	int core_id = 0;
+>  	int i, ret;
+>
+> @@ -598,13 +594,13 @@ static int __init parse_cluster(struct device_node *cluster, int package_id,
+>  	i = 0;
+>  	do {
+>  		snprintf(name, sizeof(name), "cluster%d", i);
+> -		c = of_get_child_by_name(cluster, name);
+> +		struct device_node *c __free(device_node) =
+> +			of_get_child_by_name(cluster, name);
+>  		if (c) {
+>  			leaf = false;
+>  			ret = parse_cluster(c, package_id, i, depth + 1);
+>  			if (depth > 0)
+>  				pr_warn("Topology for clusters of clusters not yet supported\n");
+> -			of_node_put(c);
+>  			if (ret != 0)
+>  				return ret;
+>  		}
+> @@ -615,14 +611,14 @@ static int __init parse_cluster(struct device_node *cluster, int package_id,
+>  	i = 0;
+>  	do {
+>  		snprintf(name, sizeof(name), "core%d", i);
+> -		c = of_get_child_by_name(cluster, name);
+> +		struct device_node *c __free(device_node) =
+> +			of_get_child_by_name(cluster, name);
+>  		if (c) {
+>  			has_cores = true;
+>
+>  			if (depth == 0) {
+>  				pr_err("%pOF: cpu-map children should be clusters\n",
+>  				       c);
+> -				of_node_put(c);
+>  				return -EINVAL;
+>  			}
+>
+> @@ -635,7 +631,6 @@ static int __init parse_cluster(struct device_node *cluster, int package_id,
+>  				ret = -EINVAL;
+>  			}
+>
+> -			of_node_put(c);
+>  			if (ret != 0)
+>  				return ret;
+>  		}
+> @@ -651,17 +646,16 @@ static int __init parse_cluster(struct device_node *cluster, int package_id,
+>  static int __init parse_socket(struct device_node *socket)
+>  {
+>  	char name[20];
+> -	struct device_node *c;
+>  	bool has_socket = false;
+>  	int package_id = 0, ret;
+>
+>  	do {
+>  		snprintf(name, sizeof(name), "socket%d", package_id);
+> -		c = of_get_child_by_name(socket, name);
+> +		struct device_node *c __free(device_node) =
+> +			of_get_child_by_name(socket, name);
+>  		if (c) {
+>  			has_socket = true;
+>  			ret = parse_cluster(c, package_id, -1, 0);
+> -			of_node_put(c);
+>  			if (ret != 0)
+>  				return ret;
+>  		}
+
+Same thing applies to these while(c) loop. I don't understand how this
+could work even if it is compiling fine which I doubt.
+
+> @@ -676,11 +670,11 @@ static int __init parse_socket(struct device_node *socket)
+>
+>  static int __init parse_dt_topology(void)
+>  {
+> -	struct device_node *cn, *map;
+>  	int ret = 0;
+>  	int cpu;
+>
+> -	cn = of_find_node_by_path("/cpus");
+> +	struct device_node *cn __free(device_node) =
+> +		of_find_node_by_path("/cpus");
+>  	if (!cn) {
+>  		pr_err("No CPU information found in DT\n");
+>  		return 0;
+> @@ -690,13 +684,14 @@ static int __init parse_dt_topology(void)
+>  	 * When topology is provided cpu-map is essentially a root
+>  	 * cluster with restricted subnodes.
+>  	 */
+> -	map = of_get_child_by_name(cn, "cpu-map");
+> +	struct device_node *map __free(devide_node) =
+
+If not above ones, this must fail to compile. Perhaps s/devide_node/device_node/ ?
+I now doubt if this patch is compile tested ?
+
+--
+Regards,
+Sudeep
 
