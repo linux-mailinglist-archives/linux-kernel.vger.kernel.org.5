@@ -1,174 +1,192 @@
-Return-Path: <linux-kernel+bounces-151195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94E108AAAF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 10:56:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 078AF8AAB18
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:02:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C1A71F22C7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:56:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6153CB232B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F68F71745;
-	Fri, 19 Apr 2024 08:55:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="FLQ8+lk2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5594479949;
+	Fri, 19 Apr 2024 09:00:50 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56A9343AA1
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:55:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0FB65194
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713516953; cv=none; b=nF/AK67PNxpj51nz2loulAxlsUe/bjprAMonYFSNmiTJEReHDd+ldQVh9/EjatY1PpKmDPJ0NZcVY1AzqtgELsraoyJCQ+2wPpW1B7fO+sDhkb7ctNXlJMhEBZMYfvRfpVjSejoRymp2BzKhK5G639OKAXTf039lcigKvrdQIi4=
+	t=1713517249; cv=none; b=jkF2le5WBB08/RbWivls+AkvznEETB3lJRdBBPP/6nInfPuReuELwe0sZ0BJK9hIoGO/7UrNg+V1l1D1phJR0Gib6anUePw/c0izNUhy4HHngJhThVIzT1kgbxcLPgjqNcjeyrlkrd6fuX0e9hi9+dI0pdi2aYK+JEhfVlTKi0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713516953; c=relaxed/simple;
-	bh=o/S9eg21xMbHDMdlY6+uPWEoHgmg1lCUOWMayHX3g4I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Aq1yUbtgiHJDzB9Zm9Z6FaDU3o94zWeKiHvcVrvKhoM8/omO7mTBR/DMz9eCadq0XIm5gJyjwvWurulF9weq/kv8NlRH2GiGt5UAJrlaWMiuL/aDsXK08YVpAsdx8gzrfLfSGqYZK2E6KdfQnklD4W899C6Ql88lmeMvIwvirLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=FLQ8+lk2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A996C2BD10;
-	Fri, 19 Apr 2024 08:55:51 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="FLQ8+lk2"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1713516948;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E5KzsI1r985YbuWl9u53Q0Y08ML3MWhBVBwKzEgP884=;
-	b=FLQ8+lk2CyNtCqkfxzqO0MlHs9VO/H9k6VbdjGcBtDyvPIXLHKJpbpQdABsVbiH4ohrxAG
-	kPV3/ljiaWF8eUgMjcSRwkvNh+QjUI/NbnkOmvgla1Y8NwECBsi7bB7vfhpzV9+0HFJHEt
-	7qxiUXyYbi/VxZVfaBnNRNOpJJbWiJA=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id c9162869 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Fri, 19 Apr 2024 08:55:46 +0000 (UTC)
-Date: Fri, 19 Apr 2024 10:55:44 +0200
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Guoyong Wang <guoyong.wang@mediatek.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, Tejun Heo <tj@kernel.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
-Subject: Re: [PATCH] random: Fix the issue of '_might_sleep' function running
- in an atomic contex
-Message-ID: <ZiIxkN3uMvHhujW2@zx2c4.com>
-References: <20240417120217.3814215-2-Jason@zx2c4.com>
- <20240419084112.4089-1-guoyong.wang@mediatek.com>
+	s=arc-20240116; t=1713517249; c=relaxed/simple;
+	bh=i1geZbCak49qB4pVeuHPvkwxHT5Il3XYMjAPZf7+NTs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BGxmItTj8Hq/A7xhCbGrRseJE+iuVBiWO0MfD2zwD6PMcujIKb0Z+XW2XBMNXjbd00/YBd9V/4k1zMm0H6bbcVWOMfBogKVug2ncgAyU7mk3ZFCDA26/AQKbKQ/PT0qoqGxO5tu+TA4YAGBQvlTiDE/zdQ93EBoL5BHUdvaWlB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VLT7D5P3bz1RCg0;
+	Fri, 19 Apr 2024 16:57:44 +0800 (CST)
+Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
+	by mail.maildlp.com (Postfix) with ESMTPS id D89341A016F;
+	Fri, 19 Apr 2024 17:00:44 +0800 (CST)
+Received: from huawei.com (10.173.135.154) by canpemm500002.china.huawei.com
+ (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 19 Apr
+ 2024 17:00:44 +0800
+From: Miaohe Lin <linmiaohe@huawei.com>
+To: <akpm@linux-foundation.org>, <muchun.song@linux.dev>
+CC: <mike.kravetz@oracle.com>, <linmiaohe@huawei.com>, <osalvador@suse.de>,
+	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] mm/hugetlb: fix DEBUG_LOCKS_WARN_ON(1) when dissolve_free_hugetlb_folio()
+Date: Fri, 19 Apr 2024 16:58:19 +0800
+Message-ID: <20240419085819.1901645-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240419084112.4089-1-guoyong.wang@mediatek.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500002.china.huawei.com (7.192.104.244)
 
-On Fri, Apr 19, 2024 at 04:41:12PM +0800, Guoyong Wang wrote:
-> On Wed, 17 Apr 2024 14:01:11 +0200, Jason A. Donenfeld wrote:
-> > The entropy accounting changes a static key when the RNG has
-> > initialized, since it only ever initializes once. Static key changes,
-> > however, cannot be made from atomic context, so depending on where the
-> > last creditable entropy comes from, the static key change might need to
-> > be deferred to a worker.
-> > 
-> > Previously the code used the execute_in_process_context() helper
-> > function, which accounts for whether or not the caller is
-> > in_interrupt(). However, that doesn't account for the case where the
-> > caller is actually in process context but is holding a spinlock.
-> > 
-> > This turned out to be the case with input_handle_event() in
-> > drivers/input/input.c contributing entropy:
-> > 
-> >   [<ffffffd613025ba0>] die+0xa8/0x2fc
-> >   [<ffffffd613027428>] bug_handler+0x44/0xec
-> >   [<ffffffd613016964>] brk_handler+0x90/0x144
-> >   [<ffffffd613041e58>] do_debug_exception+0xa0/0x148
-> >   [<ffffffd61400c208>] el1_dbg+0x60/0x7c
-> >   [<ffffffd61400c000>] el1h_64_sync_handler+0x38/0x90
-> >   [<ffffffd613011294>] el1h_64_sync+0x64/0x6c
-> >   [<ffffffd613102d88>] __might_resched+0x1fc/0x2e8
-> >   [<ffffffd613102b54>] __might_sleep+0x44/0x7c
-> >   [<ffffffd6130b6eac>] cpus_read_lock+0x1c/0xec
-> >   [<ffffffd6132c2820>] static_key_enable+0x14/0x38
-> >   [<ffffffd61400ac08>] crng_set_ready+0x14/0x28
-> >   [<ffffffd6130df4dc>] execute_in_process_context+0xb8/0xf8
-> >   [<ffffffd61400ab30>] _credit_init_bits+0x118/0x1dc
-> >   [<ffffffd6138580c8>] add_timer_randomness+0x264/0x270
-> >   [<ffffffd613857e54>] add_input_randomness+0x38/0x48
-> >   [<ffffffd613a80f94>] input_handle_event+0x2b8/0x490
-> >   [<ffffffd613a81310>] input_event+0x6c/0x98
-> > 
-> > According to Guoyong, it's not really possible to refactor the various
-> > drivers to never hold a spinlock there. And in_atomic() isn't reliable.
-> > 
-> > So, rather than trying to be too fancy, just punt the change in the
-> > static key to a workqueue always. There's basically no drawback of doing
-> > this, as the code already needed to account for the static key not
-> > changing immediately, and given that it's just an optimization, there's
-> > not exactly a hurry to change the static key right away, so deferal is
-> > fine.
-> > 
-> > Reported-by: Guoyong Wang <guoyong.wang@mediatek.com>
-> > Cc: stable@vger.kernel.org
-> > Fixes: f5bda35fba61 ("random: use static branch for crng_ready()")
-> > Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> > ---
-> > Guoyong- can you test this and tell me whether it fixes the problem you
-> > were seeing? If so, I'll try to get this sent up for 6.9. -Jason
-> > 
-> >  drivers/char/random.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/char/random.c b/drivers/char/random.c
-> > index 456be28ba67c..2597cb43f438 100644
-> > --- a/drivers/char/random.c
-> > +++ b/drivers/char/random.c
-> > @@ -702,7 +702,7 @@ static void extract_entropy(void *buf, size_t len)
-> >  
-> >  static void __cold _credit_init_bits(size_t bits)
-> >  {
-> > -       static struct execute_work set_ready;
-> > +       static DECLARE_WORK(set_ready, crng_set_ready);
-> >         unsigned int new, orig, add;
-> >         unsigned long flags;
-> >  
-> > @@ -718,8 +718,8 @@ static void __cold _credit_init_bits(size_t bits)
-> >  
-> >         if (orig < POOL_READY_BITS && new >= POOL_READY_BITS) {
-> >                 crng_reseed(NULL); /* Sets crng_init to CRNG_READY under base_crng.lock. */
-> > -               if (static_key_initialized)
-> > -                       execute_in_process_context(crng_set_ready, &set_ready);
-> > +               if (static_key_initialized && system_unbound_wq)
-> > +                       queue_work(system_unbound_wq, &set_ready);
-> >                 atomic_notifier_call_chain(&random_ready_notifier, 0, NULL);
-> >                 wake_up_interruptible(&crng_init_wait);
-> >                 kill_fasync(&fasync, SIGIO, POLL_IN);
-> > @@ -890,8 +890,8 @@ void __init random_init(void)
-> >  
-> >         /*
-> >          * If we were initialized by the cpu or bootloader before jump labels
-> > -        * are initialized, then we should enable the static branch here, where
-> > -        * it's guaranteed that jump labels have been initialized.
-> > +        * or workqueues are initialized, then we should enable the static
-> > +        * branch here, where it's guaranteed that these have been initialized.
-> >          */
-> >         if (!static_branch_likely(&crng_is_ready) && crng_init >= CRNG_READY)
-> >                 crng_set_ready(NULL);
-> > -- 
-> > 2.44.0
-> 
-> Hi Jason,
-> 
-> Thanks for your feedback. We concur with the proposed change and have verified that it works well 
-> in our tests. Next, I will provide a patch v2 for the changes discussed.
+When I did memory failure tests recently, below warning occurs:
 
-No need. This is already upstream and has your Reported-by. It'll get
-backported to stable too.
+DEBUG_LOCKS_WARN_ON(1)
+WARNING: CPU: 8 PID: 1011 at kernel/locking/lockdep.c:232 __lock_acquire+0xccb/0x1ca0
+Modules linked in: mce_inject hwpoison_inject
+CPU: 8 PID: 1011 Comm: bash Kdump: loaded Not tainted 6.9.0-rc3-next-20240410-00012-gdb69f219f4be #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+RIP: 0010:__lock_acquire+0xccb/0x1ca0
+RSP: 0018:ffffa7a1c7fe3bd0 EFLAGS: 00000082
+RAX: 0000000000000000 RBX: eb851eb853975fcf RCX: ffffa1ce5fc1c9c8
+RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffffa1ce5fc1c9c0
+RBP: ffffa1c6865d3280 R08: ffffffffb0f570a8 R09: 0000000000009ffb
+R10: 0000000000000286 R11: ffffffffb0f2ad50 R12: ffffa1c6865d3d10
+R13: ffffa1c6865d3c70 R14: 0000000000000000 R15: 0000000000000004
+FS:  00007ff9f32aa740(0000) GS:ffffa1ce5fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff9f3134ba0 CR3: 00000008484e4000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ lock_acquire+0xbe/0x2d0
+ _raw_spin_lock_irqsave+0x3a/0x60
+ hugepage_subpool_put_pages.part.0+0xe/0xc0
+ free_huge_folio+0x253/0x3f0
+ dissolve_free_huge_page+0x147/0x210
+ __page_handle_poison+0x9/0x70
+ memory_failure+0x4e6/0x8c0
+ hard_offline_page_store+0x55/0xa0
+ kernfs_fop_write_iter+0x12c/0x1d0
+ vfs_write+0x380/0x540
+ ksys_write+0x64/0xe0
+ do_syscall_64+0xbc/0x1d0
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7ff9f3114887
+RSP: 002b:00007ffecbacb458 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007ff9f3114887
+RDX: 000000000000000c RSI: 0000564494164e10 RDI: 0000000000000001
+RBP: 0000564494164e10 R08: 00007ff9f31d1460 R09: 000000007fffffff
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000000c
+R13: 00007ff9f321b780 R14: 00007ff9f3217600 R15: 00007ff9f3216a00
+ </TASK>
+Kernel panic - not syncing: kernel: panic_on_warn set ...
+CPU: 8 PID: 1011 Comm: bash Kdump: loaded Not tainted 6.9.0-rc3-next-20240410-00012-gdb69f219f4be #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <TASK>
+ panic+0x326/0x350
+ check_panic_on_warn+0x4f/0x50
+ __warn+0x98/0x190
+ report_bug+0x18e/0x1a0
+ handle_bug+0x3d/0x70
+ exc_invalid_op+0x18/0x70
+ asm_exc_invalid_op+0x1a/0x20
+RIP: 0010:__lock_acquire+0xccb/0x1ca0
+RSP: 0018:ffffa7a1c7fe3bd0 EFLAGS: 00000082
+RAX: 0000000000000000 RBX: eb851eb853975fcf RCX: ffffa1ce5fc1c9c8
+RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffffa1ce5fc1c9c0
+RBP: ffffa1c6865d3280 R08: ffffffffb0f570a8 R09: 0000000000009ffb
+R10: 0000000000000286 R11: ffffffffb0f2ad50 R12: ffffa1c6865d3d10
+R13: ffffa1c6865d3c70 R14: 0000000000000000 R15: 0000000000000004
+ lock_acquire+0xbe/0x2d0
+ _raw_spin_lock_irqsave+0x3a/0x60
+ hugepage_subpool_put_pages.part.0+0xe/0xc0
+ free_huge_folio+0x253/0x3f0
+ dissolve_free_huge_page+0x147/0x210
+ __page_handle_poison+0x9/0x70
+ memory_failure+0x4e6/0x8c0
+ hard_offline_page_store+0x55/0xa0
+ kernfs_fop_write_iter+0x12c/0x1d0
+ vfs_write+0x380/0x540
+ ksys_write+0x64/0xe0
+ do_syscall_64+0xbc/0x1d0
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7ff9f3114887
+RSP: 002b:00007ffecbacb458 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007ff9f3114887
+RDX: 000000000000000c RSI: 0000564494164e10 RDI: 0000000000000001
+RBP: 0000564494164e10 R08: 00007ff9f31d1460 R09: 000000007fffffff
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000000c
+R13: 00007ff9f321b780 R14: 00007ff9f3217600 R15: 00007ff9f3216a00
+ </TASK>
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e871abcda3b67d0820b4182ebe93435624e9c6a4
+After git bisecting and digging into the code, I believe the root cause
+is that _deferred_list field of folio is unioned with _hugetlb_subpool
+field. In __update_and_free_hugetlb_folio(), folio->_deferred_list is
+initialized leading to corrupted folio->_hugetlb_subpool when folio
+is hugetlb. Later free_huge_folio() will use _hugetlb_subpool and
+above warning happens.
+
+But it is assumed hugetlb flag must have been cleared when calling
+folio_put() in update_and_free_hugetlb_folio(). This assumption is
+broken due to below race:
+
+CPU1					CPU2
+dissolve_free_huge_page			update_and_free_pages_bulk
+ update_and_free_hugetlb_folio		 hugetlb_vmemmap_restore_folios
+					  folio_clear_hugetlb_vmemmap_optimized
+  clear_flag = folio_test_hugetlb_vmemmap_optimized
+  if (clear_flag) <-- False, it's already cleared.
+   __folio_clear_hugetlb(folio) <-- Hugetlb is not cleared.
+  folio_put
+   free_huge_folio <-- free_the_page is expected.
+					 list_for_each_entry()
+					  __folio_clear_hugetlb <-- Too late.
+
+Fix this issue by checking whether folio is hugetlb directly instead
+of checking clear_flag to close the race window.
+
+Fixes: 32c877191e02 ("hugetlb: do not clear hugetlb dtor until allocating vmemmap")
+CC: stable@vger.kernel.org
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+v2:
+ The root cause should be above race, so rework the fix.
+---
+ mm/hugetlb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index d748664bb2c9..3b7d5ddc32ad 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1773,7 +1773,7 @@ static void __update_and_free_hugetlb_folio(struct hstate *h,
+ 	 * If vmemmap pages were allocated above, then we need to clear the
+ 	 * hugetlb flag under the hugetlb lock.
+ 	 */
+-	if (clear_flag) {
++	if (folio_test_hugetlb(folio)) {
+ 		spin_lock_irq(&hugetlb_lock);
+ 		__folio_clear_hugetlb(folio);
+ 		spin_unlock_irq(&hugetlb_lock);
+-- 
+2.33.0
+
 
