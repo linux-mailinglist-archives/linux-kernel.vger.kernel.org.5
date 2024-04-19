@@ -1,101 +1,230 @@
-Return-Path: <linux-kernel+bounces-151928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D5448AB5E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:06:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEFC28AB5E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 22:07:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A380282E1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:06:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9269F282900
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 20:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35C113CFA5;
-	Fri, 19 Apr 2024 20:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E078313CF9A;
+	Fri, 19 Apr 2024 20:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EWgTgCD2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QfiCvfRU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6CF82206C;
-	Fri, 19 Apr 2024 20:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0718D10A03;
+	Fri, 19 Apr 2024 20:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713557165; cv=none; b=R1zoB8+7Oe1pJxnw+IOOFiCaonafB0BpdZJYf6AZRzHOfuSf4MPSY6M5UxOrnDuyKhb9UO1smJwYzoNaq4KFW0Ug28WC7smf18Wnn1C1OSqynMxYMC60P6jTiw+DHb90/Xv/w3UUvFCyKW/8tL+SrBzTwPB8jlrxAl67S6vHq7M=
+	t=1713557241; cv=none; b=EWCfgw6IHu+P8Vqjw1DAtj2EMaQ7D08Y8jVSc0yEMlkw+jRPsu2okUhWyHKUKvXnj5SAWtFBL3lDaHC4ZXUZ1ws60qcwJ+DuQtPPHlXqO2d7ml2LH0mQXd61q5uKEaHiYL11R3yvz+kf1MzuDW85kSEpO3Ilb359dWXeolTlSpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713557165; c=relaxed/simple;
-	bh=qiBYh7Q4vs/502OF3/ovuHA+agIZHizLsd++YZi/P5A=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=r2dBQZ5mFQc4NWLNqj+/y7p4iv6TClNxtafBnCZDu/7mvSPxotTOH9/HZFkLU61CJRR6skzugrvmAbnl3EMsKOO9xgVuMTcS0q1hj2O70zOSdejZ8uz14EJoRM1+D6ULfLwHC3ez6W6+xe9+mDke/9cvOt0S51u8h261QRt3IDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EWgTgCD2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5328C072AA;
-	Fri, 19 Apr 2024 20:05:57 +0000 (UTC)
+	s=arc-20240116; t=1713557241; c=relaxed/simple;
+	bh=ycgfHMlt+UlcaG4ketR/yuNNw2hvmApeoBvZ3KPmBP4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KC5eSQxMEInqzmma7a4O3BA0Untk4pIsTRhkS1/ArH+IXfvBu/q+AC8ujkY7JSvXQQ5vVQQz6fQxXDE5ueseOTA8uFrslKZYQvVxHR0iSXikYfPCdlG97nkKRYvVVdR/n7+PZ2dZE2ButJYnaS342Cq1nf9cd/JmKSJTRBAAVSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QfiCvfRU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1759C072AA;
+	Fri, 19 Apr 2024 20:07:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713557164;
-	bh=qiBYh7Q4vs/502OF3/ovuHA+agIZHizLsd++YZi/P5A=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=EWgTgCD20cGXC2obnm+7DRzZMA2SWOgkh8x8neSq1xG/nL3Bp3eW7hGjTQM7iPzXA
-	 ld6cgcD4nAUa4/RwewmqbTEISAXlnKagvG/bJ8uE4PPy1t9lVoo/wzAOn4MRJOQRsA
-	 s4iDGy0T5VemW7vxJ0OaLUtuTQB94ADywih6ZgZafB2XuLokvxmSsOp/rwH7LCNdKD
-	 IkxT83hQQsNf30+99I5rFrKEj1KDmTVATZz9JPacceATz1VvwesUGBuZ37LOQspUhN
-	 Fymm8QpdJpJDcSmnxo/65A7umQY/1MgYimc6AZvALyr2SjAt29l8ZpJnWcbN41hgmM
-	 Y4uMybalywT9g==
+	s=k20201202; t=1713557240;
+	bh=ycgfHMlt+UlcaG4ketR/yuNNw2hvmApeoBvZ3KPmBP4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QfiCvfRU8afAJ78s4+eQn6qzBAimsQ2168PoqAIHVelV/LRVyalukWuZ6HVlfP68B
+	 FAeSC1pSGwpOwealSFcBOFuDOIU7XREj+dbocpnEGmodtiP0831dOBTYtVLkqHaFy/
+	 a6O81VtJbB5ZZVd7SYwZuKvDZnRFJ6DdxWqL9vTOVXvHFIpXlzjGeJwGjzloMikfA3
+	 8Ogdj9mHkI+ra9Ew6t8V0IiTht/NZ1wxXIy8cHyS+GUIe0JhxNXwvEBnsqo2AWnAhu
+	 RkbLosw5jKAGFaadrKUV2+dhdXWWbgbC/+XS9+imfzkke0f7phdt6hOdEbVMkhsjJi
+	 JCzeiah7YRVZA==
+Date: Fri, 19 Apr 2024 17:07:17 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>,
+	LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev,
+	Lu Baolu <baolu.lu@linux.intel.com>, kvm@vger.kernel.org,
+	Dave Hansen <dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>,
+	"H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>, Paul Luse <paul.e.luse@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Jens Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>,
+	"Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
+	seanjc@google.com, Robin Murphy <robin.murphy@arm.com>,
+	jim.harris@samsung.com, a.manzanares@samsung.com,
+	Bjorn Helgaas <helgaas@kernel.org>, guang.zeng@intel.com,
+	robert.hoo.linux@gmail.com, kan.liang@intel.com,
+	"Kleen, Andi" <andi.kleen@intel.com>
+Subject: Re: [PATCH v2 05/13] x86/irq: Reserve a per CPU IDT vector for
+ posted MSIs
+Message-ID: <ZiLO9RUdMsNlCtI_@x1>
+References: <20240415134354.67c9d1d1@jacob-builder>
+ <87jzkuxaqv.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 19 Apr 2024 23:05:55 +0300
-Message-Id: <D0ODBDZDHQ6J.ZC4UU90AZPFL@kernel.org>
-Cc: "linux-security-module" <linux-security-module@vger.kernel.org>,
- "linux-doc" <linux-doc@vger.kernel.org>, "linux-kernel"
- <linux-kernel@vger.kernel.org>, "linux-kselftest"
- <linux-kselftest@vger.kernel.org>, "bpf" <bpf@vger.kernel.org>, "zohar"
- <zohar@linux.ibm.com>, "dmitry.kasatkin" <dmitry.kasatkin@gmail.com>,
- "linux-integrity" <linux-integrity@vger.kernel.org>, "wufan"
- <wufan@linux.microsoft.com>, "pbrobinson" <pbrobinson@gmail.com>, "zbyszek"
- <zbyszek@in.waw.pl>, "hch" <hch@lst.de>, "mjg59" <mjg59@srcf.ucam.org>,
- "pmatilai" <pmatilai@redhat.com>, "jannh" <jannh@google.com>, "dhowells"
- <dhowells@redhat.com>, "jikos" <jikos@kernel.org>, "mkoutny"
- <mkoutny@suse.com>, "ppavlu" <ppavlu@suse.com>, "petr.vorel"
- <petr.vorel@gmail.com>, "mzerqung" <mzerqung@0pointer.de>, "kgold"
- <kgold@linux.ibm.com>
-Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Bagas Sanjaya" <bagasdotme@gmail.com>, "Roberto Sassu"
- <roberto.sassu@huawei.com>, "Roberto Sassu"
- <roberto.sassu@huaweicloud.com>, "corbet" <corbet@lwn.net>, "paul"
- <paul@paul-moore.com>, "jmorris" <jmorris@namei.org>, "serge"
- <serge@hallyn.com>, "akpm" <akpm@linux-foundation.org>, "shuah"
- <shuah@kernel.org>, "mcoquelin.stm32" <mcoquelin.stm32@gmail.com>,
- "alexandre.torgue" <alexandre.torgue@foss.st.com>, "mic" <mic@digikod.net>
-X-Mailer: aerc 0.17.0
-References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
- <Zh4DQ7RGxtWCam8K@archie.me>
- <66201cd2.df0a0220.a8ad5.6fbaSMTPIN_ADDED_BROKEN@mx.google.com>
- <fe361a16-1536-4c92-894a-0b24258384bf@gmail.com>
-In-Reply-To: <fe361a16-1536-4c92-894a-0b24258384bf@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87jzkuxaqv.ffs@tglx>
 
-On Fri Apr 19, 2024 at 2:18 PM EEST, Bagas Sanjaya wrote:
-> On 4/18/24 02:02, Roberto Sassu wrote:
-> >=20
-> > 72374d71c315
-> >=20
-> > Roberto
-> >=20
->
-> Still FTA (fail to apply), unfortunately.
+On Fri, Apr 19, 2024 at 06:00:24AM +0200, Thomas Gleixner wrote:
+> On Mon, Apr 15 2024 at 13:43, Jacob Pan wrote:
+> > On Mon, 15 Apr 2024 11:53:58 -0700, Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
+> >> On Thu, 11 Apr 2024 18:51:14 +0200, Thomas Gleixner <tglx@linutronix.de> wrote:
+> >> > If we really care then we do it proper for _all_ of them. Something like
+> >> > the uncompiled below. There is certainly a smarter way to do the build
+> >> > thing, but my kbuild foo is rusty.  
+> >> I too had the concern of the wasting system vectors, but did not know how
+> >> to fix it. But now your code below works well. Tested without KVM in
+> >> .config to show the gaps:
+> >> 
+> >> In VECTOR IRQ domain.
+> >> 
+> >> BEFORE:
+> >> System: 46: 0-31,50,235-236,244,246-255
+> >> 
+> >> AFTER:
+> >> System: 46: 0-31,50,241-242,245-255
+> >> 
+> >> The only gap is MANAGED_IRQ_SHUTDOWN_VECTOR(243), which is expected on a
+> >> running system.
+> >> 
+> >> Verified in irqvectors.s: .ascii "->MANAGED_IRQ_SHUTDOWN_VECTOR $243
+> >> 
+> >> POSTED MSI/first system vector moved up from 235 to 241 for this case.
+> >> 
+> >> Will try to let tools/arch/x86/include/asm/irq_vectors.h also use it
+> >> instead of manually copy over each time. Any suggestions greatly
+> >> appreciated.
+> >>
+> > On a second thought, if we make system IRQ vector determined at compile
+> > time based on different CONFIG options, will it break userspace tools such
+> > as perf? More importantly the rule of not breaking userspace.
 
-Robert, quick suggestion.
+The rule for tools/perf is "don't impose _any requirement_ on the kernel
+developers, they don't have to test if any change they do outside of
+tools/ will break something inside tools/."
+ 
+> tools/arch/x86/include/asm/irq_vectors.h is only used to generate the
+> list of system vectors for pretty output. And your change already broke
+> that.
 
-Maybe pick recent rc for the patch set, rebase on top of that and
-document that to the cover letter?
+Yeah, I even moved that from tools/arch/x86/include/asm/irq_vectors.h
+to tools/perf/trace/beauty/arch/x86/include/asm/irq_vectors.h (for next
+merge window).
 
-In git: "git rebase <version>" when on branch with the patches
-applied.
+Having it in tools/arch/x86/include/asm/irq_vectors.h was a bad decision
+as it, as you mentinoned, is only used to generate string tables:
 
-BR, Jarkko
+⬢[acme@toolbox perf-tools-next]$ tools/perf/trace/beauty/tracepoints/x86_irq_vectors.sh 
+static const char *x86_irq_vectors[] = {
+	[0x02] = "NMI",
+	[0x80] = "IA32_SYSCALL",
+	[0xec] = "LOCAL_TIMER",
+	[0xed] = "HYPERV_STIMER0",
+	[0xee] = "HYPERV_REENLIGHTENMENT",
+	[0xef] = "MANAGED_IRQ_SHUTDOWN",
+	[0xf0] = "POSTED_INTR_NESTED",
+	[0xf1] = "POSTED_INTR_WAKEUP",
+	[0xf2] = "POSTED_INTR",
+	[0xf3] = "HYPERVISOR_CALLBACK",
+	[0xf4] = "DEFERRED_ERROR",
+	[0xf6] = "IRQ_WORK",
+	[0xf7] = "X86_PLATFORM_IPI",
+	[0xf8] = "REBOOT",
+	[0xf9] = "THRESHOLD_APIC",
+	[0xfa] = "THERMAL_APIC",
+	[0xfb] = "CALL_FUNCTION_SINGLE",
+	[0xfc] = "CALL_FUNCTION",
+	[0xfd] = "RESCHEDULE",
+	[0xfe] = "ERROR_APIC",
+	[0xff] = "SPURIOUS_APIC",
+};
+
+⬢[acme@toolbox perf-tools-next]$
+
+Used in:
+
+root@number:~# perf trace -a -e irq_vectors:irq_work_entry/max-stack=32/ --max-events=1
+     0.000 kworker/u57:0-/9912 irq_vectors:irq_work_entry(vector: IRQ_WORK)
+                                       __sysvec_irq_work ([kernel.kallsyms])
+                                       __sysvec_irq_work ([kernel.kallsyms])
+                                       sysvec_irq_work ([kernel.kallsyms])
+                                       asm_sysvec_irq_work ([kernel.kallsyms])
+                                       _raw_spin_unlock_irqrestore ([kernel.kallsyms])
+                                       dma_fence_wait_timeout ([kernel.kallsyms])
+                                       intel_atomic_commit_tail ([kernel.kallsyms])
+                                       process_one_work ([kernel.kallsyms])
+                                       worker_thread ([kernel.kallsyms])
+                                       kthread ([kernel.kallsyms])
+                                       ret_from_fork ([kernel.kallsyms])
+                                       ret_from_fork_asm ([kernel.kallsyms])
+root@number:~#
+
+But as the original cset introducing this explains, these irq_vectors:
+tracepoins operate on just one of the vectors, so irq_work_entry(vector:
+IRQ_WORK), irq_vectors:reschedule_exit(vector: RESCHEDULE), etc. 
+
+> The obvious solution to that is to expose that list in sysfs for
+> consumption by perf.
+
+nah, the best thing these days is stop using 'int' for vector and use
+'enum irq_vector', then since we have BTF we can use that to do the enum
+-> string translation, like with (using /sys/kernel/btf/vmlinux, that is
+pretty much available everywhere these days):
+
+root@number:~# pahole clocksource_ids
+enum clocksource_ids {
+	CSID_GENERIC          = 0,
+	CSID_ARM_ARCH_COUNTER = 1,
+	CSID_MAX              = 2,
+};
+
+root@number:~# pahole skb_drop_reason | head
+enum skb_drop_reason {
+	SKB_NOT_DROPPED_YET                     = 0,
+	SKB_CONSUMED                            = 1,
+	SKB_DROP_REASON_NOT_SPECIFIED           = 2,
+	SKB_DROP_REASON_NO_SOCKET               = 3,
+	SKB_DROP_REASON_PKT_TOO_SMALL           = 4,
+	SKB_DROP_REASON_TCP_CSUM                = 5,
+	SKB_DROP_REASON_SOCKET_FILTER           = 6,
+	SKB_DROP_REASON_UDP_CSUM                = 7,
+	SKB_DROP_REASON_NETFILTER_DROP          = 8,
+root@number:~#
+
+Then its easy to go from 0 to CSID_GENERIC, etc.
+
+⬢[acme@toolbox pahole]$ perf stat -e cycles pahole skb_drop_reason > /dev/null
+
+ Performance counter stats for 'pahole skb_drop_reason':
+
+         6,095,427      cpu_atom/cycles:u/                                                      (2.82%)
+       103,694,633      cpu_core/cycles:u/                                                      (97.18%)
+
+       0.039031759 seconds time elapsed
+
+       0.016028000 seconds user
+       0.023007000 seconds sys
+
+
+⬢[acme@toolbox pahole]$
+
+- Arnaldo
+ 
+> But we don't have to do any of that right away. It's an orthogonal
+> issue. Just waste the extra system vector to start with and then we can
+> add the compile time dependend change on top if we really care about
+> gaining back the vectors.
+> 
+> Thanks,
+> 
+>         tglx
 
