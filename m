@@ -1,120 +1,124 @@
-Return-Path: <linux-kernel+bounces-151550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83E448AB065
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:11:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 125BF8AB06C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:12:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3FEA1C22FB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:11:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 947ABB239D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB15E12D759;
-	Fri, 19 Apr 2024 14:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC14130AD4;
+	Fri, 19 Apr 2024 14:09:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="OgRlcTBz"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="BXrL+qy7"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09BC412DD97
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BA612F378;
+	Fri, 19 Apr 2024 14:09:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713535684; cv=none; b=WvGLregIFL2W1SCQ8pzyX6t3vt0l5HCyEKRtjo+76u1NRHKqe5J4W4ora23c+xzgBiZ6c6CR91U0KJ93lVmb93OhQkYtGrHEEXEaRd6UhZayNC1OupkVeXByxFRdXjlW89CWFvx8KrzigHtUy2T9KbB9xcClhN1Jn+/pgYAuBFM=
+	t=1713535754; cv=none; b=KrZ5O5CgFf9EuGXfMIfA5FRJdYI26a4yMLo4pM+Gp4IISdZABIQ+kHvsTs3/d6d6+jmOinKCe9P2qLAper4gT5+bH6o/6a//aXY4vloSDOYcsMRsM878ip2kvbDvDsZNbH5lHk/cHJHDZsI5qHvuRlo4sXTrjZ7hkC0TRC13KGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713535684; c=relaxed/simple;
-	bh=xyu03HDQ5HqUivNlWzij0bKqi/bLZ6SmDe0+HX8RqMo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=d98yrPU8nRZJr4T5+Af+Gk6cl4DL0hVDmZsWkAxD4FuFp5wZhEt7W9MXV+FnoevjmupVR/WVO4UZyNyfuChVWYL6hem81jZ0dYDjCTpbiEMOPfPrkeuTPktDKPNqEC52NRRAdNpl4RhsfyurYlXA3AG8kDw77eDGli+dmy9LjTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=OgRlcTBz; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e45f339708so1649155ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:08:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1713535681; x=1714140481; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KSDKTiByg68gLYMeDYGEiSgE2cD3L++faVxv3kdVgt4=;
-        b=OgRlcTBzvFxJSkSv9T9WJe4Rjc1Bp014KuSuZFS5tKt6EaZdRrb7uIQrnFCKAqjDRr
-         Y6XcLiqT4hRCfnPP3hMo2vEzylfikAFg75VHOhhIlJ+QNIkYIuPwNV3gslciIPwPLFiz
-         lXacW/5XE/mcJZgP9XXWwl2nGxcvYzCw7YqR74xsPjnkNtDxO3LHmDpPAYNBJtK9w6fJ
-         vXjnKP2yLMpV9lGk1M9VolZNNi0A1TLrwyvrHTK0zPCjzjwR2f6Hm9kUF9U35yLkhV4u
-         nkhiDQ9RSAYvtYrFw5PylVndPGK/rP5SmwB66IN2zAnjx3M/MgOCsdeOgIVzaCGD1d4t
-         UV6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713535681; x=1714140481;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KSDKTiByg68gLYMeDYGEiSgE2cD3L++faVxv3kdVgt4=;
-        b=iaVcwwy3F5O7p/basUycKLURWKu/y0oTEI+OLfN6rFX4egD0aGkWS77FbEeaKV85/+
-         8osqAfmh/OigvsgQrWdDwiMsLAxk1TOqK+lTrzWPNERGO9INPUiQVxdzluNnWxJMMKw1
-         cB4Wpp4lbE/w0QWxa2LBsuOwEgFLzy/shSheDtg7EHUteJUCjfDEkDCtr2Mke1w915Xf
-         iubZJngqiGpEA7xsL61eUlTV4w3diF4s/+B7SLipWKIRzDQdflSIHX6cz8o+IH63yw1T
-         wa80xeWlzsEB4zwkYHMMcNZNvX7CzEdtO7+StHiyT+NdgCLQEvtxbrtyz1sDPWG/zfP+
-         1oew==
-X-Forwarded-Encrypted: i=1; AJvYcCVUKJsR5RIV8bLF4qlJv9cCi30kWZYWOLgMxVQerAin6ScJfz8Sdlq/0PImqYMXWqyZzcq6P4gDZWpHv8MYEfGJourmUffcu+eI5ck3
-X-Gm-Message-State: AOJu0YyArGg1CS5aoXlKk5icyVxxQsSDw17KR6+/XGXz2QVd57UASid5
-	dlfqyk90msbvhqszCEYUf9D/XyuZXoJ8qkpWPDowaKdbUN87MudxBqeMvXb+gLg=
-X-Google-Smtp-Source: AGHT+IE9KKSYVwG72VSDmoU2t2kLvppf7ICd7Pg14moTxUpcllBJ1abOnSOdZ8iLgrSUhwkRCTMeHw==
-X-Received: by 2002:a17:902:ec84:b0:1e8:4063:6ded with SMTP id x4-20020a170902ec8400b001e840636dedmr2404122plg.1.1713535681289;
-        Fri, 19 Apr 2024 07:08:01 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id jj1-20020a170903048100b001e2526a5cc3sm3365406plb.307.2024.04.19.07.07.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 07:08:00 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: tj@kernel.org, josef@toxicpanda.com, linan666@huaweicloud.com
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
- linux-kernel@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com, 
- houtao1@huawei.com, yangerkun@huawei.com
-In-Reply-To: <20240419093257.3004211-1-linan666@huaweicloud.com>
-References: <20240419093257.3004211-1-linan666@huaweicloud.com>
-Subject: Re: [PATCH v2] blk-iocost: do not WARNING if iocg has already
- offlined
-Message-Id: <171353567968.448662.8909505678465861389.b4-ty@kernel.dk>
-Date: Fri, 19 Apr 2024 08:07:59 -0600
+	s=arc-20240116; t=1713535754; c=relaxed/simple;
+	bh=lykCOLKqJjRDe+8Set3BA8BLXqNMhZRHNwizcwwY1R8=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=ubsQzStFZtMGG3SdXh1jWiYmzLexQJSPJTU/NCxmwT4yEjW6MQ3vftUfvxNZm5BxuMyuiwg4cq6ykzOrz2uMkkC6XczYRGBvwgY7oJyMXWec8SYMVMlTM2NHvCkebFPjAoVkUG0OqQ4vZ60BlGDbVxrUTgItRJjlXu6H33UFqX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=BXrL+qy7; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713535720; x=1714140520; i=markus.elfring@web.de;
+	bh=lAS9mTVpLnalSm5EePWLAsejXsUvIKNzzANCk7Zyh88=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:From:
+	 Subject:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=BXrL+qy7fKZKSy7vXMNGYc7EmhjKtAJ5OjAQginqikx1Pp94g+yz7C0WAZW9POva
+	 Phxn9z46+j3Trvz4xkZp/TchUKQBgINAmCUBTZB+BL6CUaMbReuXDBfAYww1gAvQi
+	 vikPRSBVxbCDVZ0Yo9nXMUkFSOQxukR69hLSZ1zsEzsJv6FPZKVuIs5xifpuhx1HJ
+	 8YMZ1EuE2YG1fzH0RtxH9ZAOxUW8w3MI6gy42wSOvh9a09uId+uKykhFOI2qelq65
+	 KucGTGQtZjtz/vvI6G7xgUMt/zpB1E0RvYkOoIHqnPUNmTGmFJG+xWTuUNyH6XXQl
+	 fQakCVTh9NuX0nmHNw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mo6O7-1sUcQV2IAN-00mvrD; Fri, 19
+ Apr 2024 16:08:40 +0200
+Message-ID: <4cff158d-b5ac-4dca-9fbb-626237c1eafe@web.de>
+Date: Fri, 19 Apr 2024 16:08:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.5-dev-2aabd
+User-Agent: Mozilla Thunderbird
+To: linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Haren Myneni <haren@linux.ibm.com>, Jakub Kicinski <kuba@kernel.org>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Nicholas Piggin <npiggin@gmail.com>, Nick Child <nnac123@linux.ibm.com>,
+ Paolo Abeni <pabeni@redhat.com>, Rick Lindsley <ricklind@linux.ibm.com>,
+ Thomas Falcon <tlfalcon@linux.ibm.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] ibmvnic: Use -EBUSY in __ibmvnic_reset()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wHaYprIvoklgpYvLAHaNj+zV2sUobvP/1+QGxB/jpFxwfLQ3/qn
+ 32vCTsyWO3nPL2VCwhbpCMJR8j7UPW1FscxEpo8oGbSL/aAgV/PX6Vpr+VEtuUd39Fl9Wwi
+ C04dNziBBise3+TfaEabuRF7AP8kexSpDRo+9sw4iZ7FlHoVp7pytc0thcBAO/GXLQfi2ot
+ HsTWBbbb3UTXqwH16qzxw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:J02Z7QBpCOg=;z+trVArPa8/FGsp1KNJLJcillff
+ hRcWIsH8BcyVEgycHUM44aOJtRmtzAwN6ouXaz79v3pTmbM9d7GSKWrRZ6wnWy6i+vKj0djKA
+ mU+vnmEikbKvaQBqUWsRZzp1MQxOLxf9psQ01whhYma8tGSY7u92a50OvXBn1IlRsngOvttjY
+ qBUZP7pjSVzwwhd3h5QEpCyYQjDC3yDZbs32q8+6WrY7LJcSy7MoDCugO+FpXK/445fvX0Wv5
+ 2qc1FLNzJac7LHzXbyXOSf6AC54e03yo3XF6qf0YXl1xswPXZQ9D/tt/a8upC9tzNlGm30GxY
+ zmJLGtljbL+2GCEzBazjBrhIMvYfEMhTMEury3fLz/7Cef/6VJaNEkTf1H7PfxNMwmxrCSWAN
+ SKexmvUTmcZt233uMeQcGmc5S3BroHa9QxNTKot1ydzi6RdYzJxnuv/5DJN8UFa1T3IFXTyyX
+ aksxT0fyEwkmLDaB0MRhIhhsYteo88NDd2hIJS9LER0OsRgK0J0HSy0lWELkQmF1NNmxNUSGS
+ umUOZ7XUzok6jX+BtbH7DAVIHqgy/IyLQXqBcThg6uHSizSVvXWpbqbztrVByJ1mCyz0bYHWi
+ AtAIYC8SQS5xVRj5E33RR/+BT3xkqVBZSvioSSa25LrG2MHLROt0CAPteRYW0nnZAZHDeZVzN
+ 8WfcVE+jXneHVHX9SGaL5GEHcFNxv6jK1W5TUTD8uqrFnuyRMg81483evRi2wy48cRdUjrbh7
+ NW6pVBHGE6UvKCOYRhyE6xE2mjRUg20S+N3bC0houl+NYlZy9c5Gv9/oRUIrvK/w3mR3+VXbs
+ CyioRbpVKMsnV52g2zH3aKGPSwPO3629RXSYANKTwAWbE=
 
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Fri, 19 Apr 2024 15:46:17 +0200
 
-On Fri, 19 Apr 2024 17:32:57 +0800, linan666@huaweicloud.com wrote:
-> In iocg_pay_debt(), warn is triggered if 'active_list' is empty, which
-> is intended to confirm iocg is avitve when it has debt. However, warn
-> can be triggered during a blkcg or disk is being removed, as
-> iocg_waitq_timer_fn() is awakened at that time.
-> 
->   WARNING: CPU: 0 PID: 2344971 at block/blk-iocost.c:1402 iocg_pay_debt+0x14c/0x190
->   Call trace:
->   iocg_pay_debt+0x14c/0x190
->   iocg_kick_waitq+0x438/0x4c0
->   iocg_waitq_timer_fn+0xd8/0x130
->   __run_hrtimer+0x144/0x45c
->   __hrtimer_run_queues+0x16c/0x244
->   hrtimer_interrupt+0x2cc/0x7b0
-> ps: This issue was got in linux 5.10, but it also exists in the mainline.
-> 
-> [...]
+Add a minus sign before the error code =E2=80=9CEBUSY=E2=80=9D
+so that a negative value will be used as in other cases.
 
-Applied, thanks!
+This issue was transformed by using the Coccinelle software.
 
-[1/1] blk-iocost: do not WARNING if iocg has already offlined
-      commit: 01bc4fda9ea0a6b52f12326486f07a4910666cf6
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/net/ethernet/ibm/ibmvnic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
--- 
-Jens Axboe
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm=
+/ibmvnic.c
+index 5e9a93bdb518..737ae83a836a 100644
+=2D-- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -3212,7 +3212,7 @@ static void __ibmvnic_reset(struct work_struct *work=
+)
+ 		    adapter->state =3D=3D VNIC_REMOVED) {
+ 			spin_unlock_irqrestore(&adapter->state_lock, flags);
+ 			kfree(rwi);
+-			rc =3D EBUSY;
++			rc =3D -EBUSY;
+ 			break;
+ 		}
 
-
+=2D-
+2.44.0
 
 
