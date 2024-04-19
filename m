@@ -1,242 +1,139 @@
-Return-Path: <linux-kernel+bounces-151232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F13F8AAB77
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:28:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 409CF8AABA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:42:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98221B21A95
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:28:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F08342838F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A006578676;
-	Fri, 19 Apr 2024 09:28:38 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8207BB14;
+	Fri, 19 Apr 2024 09:42:12 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFBB762F7
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134F973518;
+	Fri, 19 Apr 2024 09:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713518918; cv=none; b=luOEc4Htfom2YH3msFAsykFhoMvtl0/pGF7wHXMkzi5WwABvBIa5uRQ0zLSCsnSOOCHPCLHfe+Iw7aqVVlm7X7Zd+RgeOdEn+Dyl85L477nM5v9tQrBjk6zgy0Mh3wE9F4l+Qr/YWEhxpdxI01R6j5q96/VRVysf7zieUyBBK0M=
+	t=1713519731; cv=none; b=hpSKboYPx3uovijgJI8ycTyG+5YRmXtS73l1hQObzSFxFC8RuboDw+qL/qrdO43/hAtaxHP9WzAcPCCHNJHvQ4Hlo0QY3d2foE/akJHn45h9c1vtKlVcG164afno1KmHWq9BHCv5n0KbRP4z9tNeh6dQW8px1SnIMh8TPw/Ad0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713518918; c=relaxed/simple;
-	bh=RzsGOHqQ+PBnsoxOmJDgqk3bfw/edxPwlwpalPgjzwg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=obvSheKv3uZ0ZQEQjdlut+nrFpM10VTPhbpWwhskXqr6apVxjYUkwxgxyNgHtgJibUtRCCN2zhrF7i1K8QJ6dd3Qt2f8S+odLsMucfTrmGdA71yy7Al52Af4s66/6/NBnuZUDqsqnHcysy400jEONUIFniOZi2xgE80d58o/yls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rxkXj-0008Iw-W0; Fri, 19 Apr 2024 11:28:28 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rxkXi-00D89e-MH; Fri, 19 Apr 2024 11:28:26 +0200
-Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rxkXi-0039nT-1t;
-	Fri, 19 Apr 2024 11:28:26 +0200
-Date: Fri, 19 Apr 2024 11:28:26 +0200
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: Kamel Bouhara <kamel.bouhara@bootlin.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Henrik Rydberg <rydberg@bitmath.org>, linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	Jeff LaBundy <jeff@labundy.com>,
-	catalin.popescu@leica-geosystems.com,
-	mark.satterthwaite@touchnetix.com,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	bsp-development.geo@leica-geosystems.com
-Subject: Re: [PATCH v10 3/3] Input: Add TouchNetix axiom i2c touchscreen
- driver
-Message-ID: <20240419092826.2gq72etn4fh4q7ph@pengutronix.de>
-References: <20240419083342.61199-1-kamel.bouhara@bootlin.com>
- <20240419083342.61199-4-kamel.bouhara@bootlin.com>
+	s=arc-20240116; t=1713519731; c=relaxed/simple;
+	bh=PEwMW4CFu9H07YyRLwf9wZ/6wuK3fPveGR5w/PSbNug=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KlQBnTTIZ6/C0bgzzOZbhy1lL8B1RGCBCsadWTb4cYF+9u1bHIDo5c/lcHHtdW9IUkZvtzUyyc9uEdI/8SqYoe2a/dfVAxd/lcLvMat3qECT1KO8LAWESiDQsSHf5c4MqB82Us62U6XHQGBRrfOEu3qWZZfDh4dB1nDqDB2coxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VLV6F3FLlz4f3jJ9;
+	Fri, 19 Apr 2024 17:41:57 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id B58ED1A0179;
+	Fri, 19 Apr 2024 17:42:04 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgBHGBFfPCJmFDWMKQ--.63826S4;
+	Fri, 19 Apr 2024 17:41:52 +0800 (CST)
+From: linan666@huaweicloud.com
+To: tj@kernel.org,
+	josef@toxicpanda.com,
+	axboe@kernel.dk
+Cc: cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linan666@huaweicloud.com,
+	yukuai3@huawei.com,
+	yi.zhang@huawei.com,
+	houtao1@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v2] blk-iocost: do not WARNING if iocg has already offlined
+Date: Fri, 19 Apr 2024 17:32:57 +0800
+Message-Id: <20240419093257.3004211-1-linan666@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419083342.61199-4-kamel.bouhara@bootlin.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHGBFfPCJmFDWMKQ--.63826S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7WryxtrW3tF45tFykCFy5twb_yoW8uF13pr
+	45KwnruF1Utr12ka1Dt3Z2q3409a1rWws3J34xWrZ8Za43ur1Iq3Wv9w4FvFy0qF95CFZ5
+	ZF48trWSy3WUCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
+	648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI4
+	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+	v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
+	Y4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbSApUUUUUU==
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
-Hi Kamel,
+From: Li Nan <linan122@huawei.com>
 
-thank you for the patch. Again just a rough review.
+In iocg_pay_debt(), warn is triggered if 'active_list' is empty, which
+is intended to confirm iocg is avitve when it has debt. However, warn
+can be triggered during a blkcg or disk is being removed, as
+iocg_waitq_timer_fn() is awakened at that time.
 
-On 24-04-19, Kamel Bouhara wrote:
-> Add a new driver for the TouchNetix's axiom family of
-> touchscreen controllers. This driver only supports i2c
-> and can be later adapted for SPI and USB support.
-> 
-> Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> ---
+  WARNING: CPU: 0 PID: 2344971 at block/blk-iocost.c:1402 iocg_pay_debt+0x14c/0x190
+  Call trace:
+  iocg_pay_debt+0x14c/0x190
+  iocg_kick_waitq+0x438/0x4c0
+  iocg_waitq_timer_fn+0xd8/0x130
+  __run_hrtimer+0x144/0x45c
+  __hrtimer_run_queues+0x16c/0x244
+  hrtimer_interrupt+0x2cc/0x7b0
+ps: This issue was got in linux 5.10, but it also exists in the mainline.
 
-..
+The warn in this situation is meaningless. Since this iocg is being
+removed, the state of the 'active_list' is irrelevant, and 'waitq_timer'
+is canceled after removing 'active_list' in ioc_pd_free(), which ensure
+iocg is freed after iocg_waitq_timer_fn() returns.
 
-> +static int axiom_i2c_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	struct input_dev *input_dev;
-> +	struct axiom_data *ts;
-> +	u32 poll_interval;
-> +	int target;
-> +	int error;
-> +
-> +	ts = devm_kzalloc(dev, sizeof(*ts), GFP_KERNEL);
-> +	if (!ts)
-> +		return -ENOMEM;
-> +
-> +	i2c_set_clientdata(client, ts);
-> +	ts->client = client;
-> +	ts->dev = dev;
-> +
-> +	ts->regmap = devm_regmap_init_i2c(client, &axiom_i2c_regmap_config);
-> +	error = PTR_ERR_OR_ZERO(ts->regmap);
-> +	if (error) {
-> +		dev_err(dev, "Failed to initialize regmap: %d\n", error);
-> +		return error;
-> +	}
-> +
-> +	ts->vddi = devm_regulator_get(dev, "VDDI");
+Therefore, add the check if iocg has already offlined to avoid warn
+when removing a blkcg or disk.
 
-This does not match the dt-bindings.
+Signed-off-by: Li Nan <linan122@huawei.com>
+Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+---
+v2: 
+ - Indicate in the message that there is also an issue with deleting
+   the disk.
+ - add comment for check pd.online.
 
-> +	if (IS_ERR(ts->vddi))
-> +		return dev_err_probe(&client->dev, PTR_ERR(ts->vddi),
-> +				     "Failed to enable VDDI regulator\n");
-> +
-> +	ts->vdda = devm_regulator_get(dev, "VDDA");
+ block/blk-iocost.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Here as well.
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index baa20c85799d..690ca99dfaca 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1439,8 +1439,11 @@ static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
+ 	lockdep_assert_held(&iocg->ioc->lock);
+ 	lockdep_assert_held(&iocg->waitq.lock);
+ 
+-	/* make sure that nobody messed with @iocg */
+-	WARN_ON_ONCE(list_empty(&iocg->active_list));
++	/*
++	 * make sure that nobody messed with @iocg. Check iocg->pd.online
++	 * to avoid warn when removing blkcg or disk.
++	 */
++	WARN_ON_ONCE(list_empty(&iocg->active_list) && iocg->pd.online);
+ 	WARN_ON_ONCE(iocg->inuse > 1);
+ 
+ 	iocg->abs_vdebt -= min(abs_vpay, iocg->abs_vdebt);
+-- 
+2.39.2
 
-> +	if (IS_ERR(ts->vdda))
-> +		return dev_err_probe(&client->dev, PTR_ERR(ts->vdda),
-> +				     "Failed to enable VDDA regulator\n");
-
-Now we handle it as always but..
-
-> +	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(ts->reset_gpio))
-> +		return dev_err_probe(dev, PTR_ERR(ts->reset_gpio), "failed to get reset GPIO\n");
-> +
-> +	if (ts->reset_gpio)
-> +		axiom_reset(ts->reset_gpio);
-> +	else
-> +		msleep(AXIOM_STARTUP_TIME_MS);
-
-still the reset is useless since you never enabled the regulators. So
-either use devm_regulator_get_enable() or you do the enable/disable
-separate via regulator_enable()/disable(). If there are no strict
-enablement restrictions like orders and timings you could also make use
-of the regulator_bulk API (e.g. devm_regulator_bulk_get_enable).
-
-Regards,
-  Marco
-
-> +
-> +	error = axiom_discover(ts);
-> +	if (error)
-> +		return dev_err_probe(dev, error, "Failed touchscreen discover\n");
-> +
-> +	input_dev = devm_input_allocate_device(ts->dev);
-> +	if (!input_dev)
-> +		return -ENOMEM;
-> +
-> +	input_dev->name = "TouchNetix axiom Touchscreen";
-> +	input_dev->phys = "input/axiom_ts";
-> +
-> +	input_set_abs_params(input_dev, ABS_MT_POSITION_X, 0, 65535, 0, 0);
-> +	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, 0, 65535, 0, 0);
-> +	input_set_abs_params(input_dev, ABS_MT_TOOL_TYPE, 0, MT_TOOL_MAX, 0, 0);
-> +	input_set_abs_params(input_dev, ABS_MT_DISTANCE, 0, 127, 0, 0);
-> +	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 127, 0, 0);
-> +
-> +	touchscreen_parse_properties(input_dev, true, &ts->prop);
-> +
-> +	/* Registers the axiom device as a touchscreen instead of a mouse pointer */
-> +	error = input_mt_init_slots(input_dev, AXIOM_U41_MAX_TARGETS, INPUT_MT_DIRECT);
-> +	if (error)
-> +		return error;
-> +
-> +	/* Enables the raw data for up to 4 force channels to be sent to the input subsystem */
-> +	set_bit(EV_REL, input_dev->evbit);
-> +	set_bit(EV_MSC, input_dev->evbit);
-> +	/* Declare that we support "RAW" Miscellaneous events */
-> +	set_bit(MSC_RAW, input_dev->mscbit);
-> +
-> +	ts->input_dev = input_dev;
-> +	input_set_drvdata(ts->input_dev, ts);
-> +
-> +	/* Ensure that all reports are initialised to not be present. */
-> +	for (target = 0; target < AXIOM_U41_MAX_TARGETS; target++)
-> +		ts->targets[target].state = AXIOM_TARGET_STATE_NOT_PRESENT;
-> +
-> +	error = devm_request_threaded_irq(dev, client->irq, NULL,
-> +					  axiom_irq, IRQF_ONESHOT, dev_name(dev), ts);
-> +	if (error) {
-> +		dev_info(dev, "Request irq failed, falling back to polling mode");
-> +
-> +		error = input_setup_polling(input_dev, axiom_i2c_poll);
-> +		if (error)
-> +			return dev_err_probe(ts->dev, error, "Unable to set up polling mode\n");
-> +
-> +		if (!device_property_read_u32(ts->dev, "poll-interval", &poll_interval))
-> +			input_set_poll_interval(input_dev, poll_interval);
-> +		else
-> +			input_set_poll_interval(input_dev, POLL_INTERVAL_DEFAULT_MS);
-> +	}
-> +
-> +	return input_register_device(input_dev);
-> +}
-> +
-> +static const struct i2c_device_id axiom_i2c_id_table[] = {
-> +	{ "ax54a" },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(i2c, axiom_i2c_id_table);
-> +
-> +static const struct of_device_id axiom_i2c_of_match[] = {
-> +	{ .compatible = "touchnetix,ax54a", },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, axiom_i2c_of_match);
-> +
-> +static struct i2c_driver axiom_i2c_driver = {
-> +	.driver = {
-> +		   .name = "axiom",
-> +		   .of_match_table = axiom_i2c_of_match,
-> +	},
-> +	.id_table = axiom_i2c_id_table,
-> +	.probe = axiom_i2c_probe,
-> +};
-> +module_i2c_driver(axiom_i2c_driver);
-> +
-> +MODULE_AUTHOR("Bart Prescott <bartp@baasheep.co.uk>");
-> +MODULE_AUTHOR("Pedro Torruella <pedro.torruella@touchnetix.com>");
-> +MODULE_AUTHOR("Mark Satterthwaite <mark.satterthwaite@touchnetix.com>");
-> +MODULE_AUTHOR("Hannah Rossiter <hannah.rossiter@touchnetix.com>");
-> +MODULE_AUTHOR("Kamel Bouhara <kamel.bouhara@bootlin.com>");
-> +MODULE_DESCRIPTION("TouchNetix axiom touchscreen I2C bus driver");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.25.1
-> 
-> 
 
