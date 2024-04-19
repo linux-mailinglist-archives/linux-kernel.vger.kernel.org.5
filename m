@@ -1,46 +1,85 @@
-Return-Path: <linux-kernel+bounces-151034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C40488AA82F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:03:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11D338AA832
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 08:05:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04EE3B20D1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:03:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 891E4284086
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 06:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A663C8DD;
-	Fri, 19 Apr 2024 06:02:55 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30CAB883D
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 06:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA85FC8FF;
+	Fri, 19 Apr 2024 06:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J7adLZnY"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA1DF883D;
+	Fri, 19 Apr 2024 06:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713506574; cv=none; b=ibgfRVNV7cTLjBD6B6GsPQWzrRPFhy2OPgaZg47fOdAEd5dLj7ziW6JX75grNuA79GM1wJQ9wuBWXOD/anSWI+aEVfYAbnnkYC7fAd+8SJt2UvX9nE8VYZgV/nIyZSrEUMJJoFgJs8GZTs3EYbOd9HoW1VmBkmgQ9ySa56tNYZI=
+	t=1713506715; cv=none; b=ZVxw8lD3eJq0Sf2UIX4010TQCwaAcFTPsJGG3VhSlHhTg11aGjTG2iwxBn5ml4f3GhX0mu/gQNhWo5yNaMbSsda6LWHOrTrO2VlP+SSadRh7pcxeqfOoMZYb7g4MsGhzJ+Eys06k50T4d06DRoB5+DzKTN1m/QtjSBwH7FI/E44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713506574; c=relaxed/simple;
-	bh=vMsakpSTXaLFngsOc0z+ORPwqoABxK6u0U8Svsvb3RE=;
+	s=arc-20240116; t=1713506715; c=relaxed/simple;
+	bh=Xs4qN48j4cQd3Py06qFO9cZzzc7akLDHwk4EwSAaGw0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vDhr6ETGcqgC8nAiUaRPVY5P0Tg7X5O0VXjwynMu6RpJaqrKTYGKW0ID0gngAv5TMBeq8ovbwqxgQ/TljO+m66xpudc/w1PDUaiBR0aul3xbCd34QEFjulXTVIoDHn4pLfzp+W8RdebsxvN4tuTFqQQXyBbxyVhpwDGfkotKDpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-6c-662208ff0789
-Date: Fri, 19 Apr 2024 15:02:34 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, ying.huang@intel.com, vernhao@tencent.com,
-	mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
-	david@redhat.com, peterz@infradead.org, luto@kernel.org,
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-	dave.hansen@linux.intel.com, rjgolo@gmail.com
-Subject: Re: [PATCH v9 rebase on mm-unstable 0/8] Reduce tlb and interrupt
- numbers over 90% by improving folio migration
-Message-ID: <20240419060234.GA48027@system.software.com>
-References: <20240418061536.11645-1-byungchul@sk.com>
- <20240418131757.cd05a8e7c7e66b3e90508c11@linux-foundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rCiKBJ45nFm9i6tKDdHf7EGlqcUlq5zqe6WRFp50HihOx/pzIMVPV2mjgaSMx1TQ0t1w9qZAQL2gxjWaCflZjOfBhR3VpPLIIkPgt2RizWuZvRXOHHo513gbAALW9Ikcx/HLExl7U3FNp7Ftd5CqJ6pPtbLaE3ilBXqkOiT6+ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J7adLZnY; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e83a2a4f2cso10000675ad.1;
+        Thu, 18 Apr 2024 23:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713506713; x=1714111513; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=H8omKplIPAi499atqXdwcLykhK2vn2gCUsgEUak78Ic=;
+        b=J7adLZnYiivT3B3v++PaihU0adXmUVwi4dyHLHCgnrExiriMFcz0ulr2RwgqLg2p0n
+         8iX3fApuGd3o7KTViL3IMN4gbv4RuajMrw80yvOCzUjuXvRUpO5rybmYSM4qAcPzfOYM
+         AZaMXcswldTVP2QkvNw8C48BNgeh9eoFhIB2AB/3VNhZGMa/73DrzCGuZpKs2r1LflU+
+         6+ncnip08KtM5bGGOBm0VJ/NvKPHeYa3Lw/jft6LMPCh6f3aceWnJIriaC70ZF04V+vl
+         wMx04bSJo0AcaX7K/2XRNpHZ1+z+hQYAf1U0qxTrTj6tlT8PrnBVF1g9GIAA1d/Pz4qn
+         8heQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713506713; x=1714111513;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H8omKplIPAi499atqXdwcLykhK2vn2gCUsgEUak78Ic=;
+        b=Ey8X+QEQtPXBiPBjbQA3eDQpHDVIiwltVN9XKllaAs5/HrziL6HM/Cv2yD5kaftz3d
+         GGIt76eR+D8escVfcMEYDloKUiABX5O51ET6V/eF0opLt8wnYnSA2d05nZLzyTRoPpJ5
+         MN3PQLKJrJs3H2ddrSAkcYwR+NTlbjxDRTy6Gz4Ms3Lk+bsYkvcLYCrAGsv0/OnJGuQe
+         67e6BCOQEEO1lr5nTbnADXaiIEcTDCzawBgTxUTK1eqcKaZrv1QmFQtFQV486ICwLPgh
+         zeutVxDr3inqeZBi85SafrvO94nf+hJCObDeVTtz6J3gWQc0rZNqp5dh6Q/UynPk0Lia
+         TucQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVwtxbzHbAveOh5FO4y8Bpt1ppuOdU8hqYxidaXDfoKJ7W9buPbcV9XU62hpvnWVUICQJR0bg9V5bEInSQSTcMHCgVQ7+1rGRbVNskkpOHNtjUjAbINXtPQAbMq9QtlGODeF+BxrfLeiImE/Fb6Qsiz/NdXBE62FnXBgTNT5H/8WIwA
+X-Gm-Message-State: AOJu0YwmDCeMrwDlAMJbMeSSFpSywvlEhBE6l3d7+xXp3j7DrUYAGqG7
+	vpKtj+V1oNQt1XMhImTwRY9mMDnM7llf3SpQ5ZwCne+4QnzXIug1dTPXCQ==
+X-Google-Smtp-Source: AGHT+IFIfVBfVza+5cuWpXb6ItwjPh2irMimhA5vYrc6K6X0+e0Mmr8f3XZMvdKNkb+BsERhPo0GeA==
+X-Received: by 2002:a17:903:11c9:b0:1e1:214:1b7d with SMTP id q9-20020a17090311c900b001e102141b7dmr1140762plh.61.1713506712987;
+        Thu, 18 Apr 2024 23:05:12 -0700 (PDT)
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::5:fbcc])
+        by smtp.gmail.com with ESMTPSA id h10-20020a170902f54a00b001e61d87e4aasm2529638plf.185.2024.04.18.23.05.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Apr 2024 23:05:12 -0700 (PDT)
+Date: Thu, 18 Apr 2024 23:05:09 -0700
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next 09/18] bpf: allow struct bpf_wq to be embedded
+ in arraymaps and hashmaps
+Message-ID: <4y3abjilpoamebie7gmgn7cvs2s6m2eq3asd3huuw2xenx5fgp@lwyzs3ghxevp>
+References: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org>
+ <20240416-bpf_wq-v1-9-c9e66092f842@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,98 +88,16 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240418131757.cd05a8e7c7e66b3e90508c11@linux-foundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsXC9ZZnke5/DqU0g7+HtC3mrF/DZvF5wz82
-	ixcb2hktvq7/xWzx9FMfi8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlcOrCAyeJ47wEmi/n3PrNZ
-	bN40ldni+JSpjBa/fwAVn5w1mcVBwON7ax+Lx85Zd9k9Fmwq9di8Qstj8Z6XTB6bVnWyeWz6
-	NInd4925c+weJ2b8ZvGYdzLQ4/2+q2weW3/ZeTROvcbm8XmTXABfFJdNSmpOZllqkb5dAlfG
-	s/8rWQveCVe8mLqCvYFxEn8XIyeHhICJxOvVe1lg7EUtT9lAbBYBVYkTq2cygdhsAuoSN278
-	ZAaxRQR0JVY93wVkc3EwCzxiklj+cRVYg7BAlcS623fBbF4BC4n9s96D2UICZRI3etZAxQUl
-	Ts58AraMWUBL4sa/l0ALOIBsaYnl/zhATE4Bb4mOeTkgFaICyhIHth1nAlklIbCMXeL08n+M
-	EHdKShxccYNlAqPALCRTZyGZOgth6gJG5lWMQpl5ZbmJmTkmehmVeZkVesn5uZsYgXG4rPZP
-	9A7GTxeCDzEKcDAq8fAuiFdME2JNLCuuzD3EKMHBrCTCa8YBFOJNSaysSi3Kjy8qzUktPsQo
-	zcGiJM5r9K08RUggPbEkNTs1tSC1CCbLxMEp1cAoG3zjxz/TW1s8zrb83XH+xrynPH2hM3d9
-	6eKqlfgW+3JXxVF2lpgXZ5hjZULPe6j13IwOrvvTOC9hU/Eug/JfgqtM935+GnGhWmXj64T/
-	i18qJDS5zXTf7Xbk2nRum7Q+fbUbB1t+Wf3Z9KM1Vrrr9L2n1y/yaeyYvyUp6pN5yHu7N6Wh
-	5081KbEUZyQaajEXFScCAAADjaC/AgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMIsWRmVeSWpSXmKPExsXC5WfdrPufQynN4MYOKYs569ewWXze8I/N
-	4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfHeA0wW
-	8+99ZrPYvGkqs8XxKVMZLX7/ACo+OWsyi4Ogx/fWPhaPnbPusnss2FTqsXmFlsfiPS+ZPDat
-	6mTz2PRpErvHu3Pn2D1OzPjN4jHvZKDH+31X2TwWv/jA5LH1l51H49RrbB6fN8kF8Edx2aSk
-	5mSWpRbp2yVwZTz7v5K14J1wxYupK9gbGCfxdzFyckgImEgsannKBmKzCKhKnFg9kwnEZhNQ
-	l7hx4ycziC0ioCux6vkuIJuLg1ngEZPE8o+rwBqEBaok1t2+C2bzClhI7J/1HswWEiiTuNGz
-	BiouKHFy5hMWEJtZQEvixr+XQAs4gGxpieX/OEBMTgFviY55OSAVogLKEge2HWeawMg7C0nz
-	LCTNsxCaFzAyr2IUycwry03MzDHVK87OqMzLrNBLzs/dxAiMqmW1fybuYPxy2f0QowAHoxIP
-	74J4xTQh1sSy4srcQ4wSHMxKIrxmHEAh3pTEyqrUovz4otKc1OJDjNIcLErivF7hqQlCAumJ
-	JanZqakFqUUwWSYOTqkGxqaDf7Z4dMdJ7q5nKDX/sYxjY75vwtlw9/y5Ew9vmeUi1DLLU8HS
-	xILveAGPxoNVzxY+F2meER7r56XZyeBoITFFeopT7fO8U9ei8vNzDBj2OTl8ZlY8OH/T+Ryb
-	5F2LdqzYzB+/b238lGpvt0OqLUFPZX95mh4JUaqRXDqhUNup0Thm/qFOJZbijERDLeai4kQA
-	xvmT7KYCAAA=
-X-CFilter-Loop: Reflected
+In-Reply-To: <20240416-bpf_wq-v1-9-c9e66092f842@kernel.org>
 
-On Thu, Apr 18, 2024 at 01:17:57PM -0700, Andrew Morton wrote:
-> On Thu, 18 Apr 2024 15:15:28 +0900 Byungchul Park <byungchul@sk.com> wrote:
-> 
-> >    $ time XSBench -t 16 -p 50000000
-> > 
-> >    BEFORE
-> >    ------
-> >    Threads:     16
-> >    Runtime:     968.783 seconds
-> >    Lookups:     1,700,000,000
-> >    Lookups/s:   1,754,778
-> > 
-> >    15208.91s user 141.44s system 1564% cpu 16:20.98 total
-> > 
-> >    AFTER
-> >    -----
-> >    Threads:     16
-> >    Runtime:     913.210 seconds
-> >    Lookups:     1,700,000,000
-> >    Lookups/s:   1,861,565
-> > 
-> >    14351.69s user 138.23s system 1565% cpu 15:25.47 total
-> 
-> Well that's nice.  What exactly is XSBench doing in this situation? 
+On Tue, Apr 16, 2024 at 04:08:22PM +0200, Benjamin Tissoires wrote:
+>  			WRITE_ONCE(*(u64 *)field_ptr, 0);
+> @@ -1119,6 +1127,8 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
+>  				}
+>  				break;
+>  			case BPF_TIMER:
+> +				fallthrough;
+> +			case BPF_WORKQUEUE:
 
-As far as I know, it's frequently and continuously accessing annon areas
-with addresses ranged within 6GB, by multi threads.  Thus, it triggers a
-lot of promotions by hinting fault of numa balancing tiering and a lot
-of demotions by kswapd as well, resulting in a ton of tlb flushes.
-
-All I need is a system suffering from memory reclaim or any type of
-folio migration since migrc mechanism is one for mitigating the overhead
-of folio migration.  To see the benefits of migrc, it doesn't have to be
-XSBench but any workload suffering from reclaim.
-
-> What sort of improvements can we expect to see in useful workloads?
-
-Increase throughput(= runtime reduction of each work in the system).
-
-   1. Because migrc removes the CPU time that would've been spent in IPI
-      handler due to tlb shootdown, by skipping a lot of tlb shootdowns.
-
-   2. Becasue migrc reduces tlb misses so as to utilize tlb cache better,
-      by skipping a lof of tlb flushes.
-
-Besides, I expect overall scheduler latencies can be enhanced, the worst
-latencies measured using some tracters of ftrace showed no change though.
-
-> I see it no longer consumes an additional page flag, good.
-> 
-> The patches show no evidence of review activity and I'm not seeing much
-> on the mailing list (patchset title was changed.  Previous title
-> "Reduce TLB flushes under some specific conditions").  Perhaps a better
-
-I changed the title because it was supposed to work with only numa
-balancing tiering like promotion and demotion but, for now, migrc works
-with any type of folio migration.  Thus, I can tell migrc demonstrates
-its benefits as long as a system is under the control of reclaim and
-folio migration.
-
-	Byungchul
-
-> description of the overall benefit to our users would help to motivate
-> reviewers.
+fallthrough is unnecessary when cases are back to back.
 
