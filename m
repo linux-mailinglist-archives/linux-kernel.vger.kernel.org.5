@@ -1,256 +1,165 @@
-Return-Path: <linux-kernel+bounces-151484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAFC68AAF76
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:35:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A92F18AAF78
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A16AC284307
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:35:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C8BA1F23C9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:36:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C115B12AAF4;
-	Fri, 19 Apr 2024 13:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TpgAz0KL"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9167E129E9A;
+	Fri, 19 Apr 2024 13:35:57 +0000 (UTC)
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A336112838E;
-	Fri, 19 Apr 2024 13:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713533734; cv=fail; b=U93rCi5YE07FMCZbYMdkX24ZSXEzmEfO9SBEOq70McFfPjEIVvo6eRFmuc/ZALP8Dxajm0KNhsPJ4dOQHUZcKs8FBdd78plZKidDQ+6bcBZ2rapfFQgiRmuZ7aX/cxkiA86VhNXMfi5O+YtxZsmguT2crn3XL6eVBT6WbX/N1iU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713533734; c=relaxed/simple;
-	bh=+RP/PtArGCuOLd3VW1NvlqgUBuiW8084IWPqfMdv/n4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=oE3XWmSnv7l1Tz18EA9NWa7AdfBx0cawHlcaLWqEJNoIIqlHyPrgu97kMvK4yugtS5lyJJ+gO9mAvf/P1016tnD4oQjVKzNwiLb3FX9hzcrmElzGghPUHQBPWoC7NKFDV93MqPzNB3GQdtWh+jktO2NBqo38HzRdWH6i+ZM6Egk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TpgAz0KL; arc=fail smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713533733; x=1745069733;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=+RP/PtArGCuOLd3VW1NvlqgUBuiW8084IWPqfMdv/n4=;
-  b=TpgAz0KL82L7tpwzABpM8ia+VFoQePaWhyS/PrvoReNsgdql8L42EW3l
-   r0kgYP1aR6U7Xq2+AdxwZuPjDXqEPaimiNg6sqd0sZbkqmcSsZ/5c9DUB
-   bVwsShYWfsk38xu34ramOMdnBVcuHiaBu6rIrUYOid92y5r7fKkrwyPOX
-   gtrc0h4V2K30oAKMnptPgNQHMwQydUQQ7K+4z+ixcDVXWwm0sZTUxc8pV
-   DgLS1RGVXwTFe7n+tio8yi1UtCqBCrJtQbAbA7bsAUjr8DSG4PaEC0+HG
-   xhKNkcMVpl4mwwfZstUiDUqEVzSs7ijwiXoYnwEbXZ8MVwRVINlyezI/F
-   Q==;
-X-CSE-ConnectionGUID: zfcQylpwT6uMepONyodhQw==
-X-CSE-MsgGUID: WRa4KtOLRDaLFx+0hlqw7A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="34532896"
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="34532896"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 06:35:32 -0700
-X-CSE-ConnectionGUID: qWWx68hJQQqD0zktFF8syQ==
-X-CSE-MsgGUID: 9CgnhjPaTX65/SlXnMWN1A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
-   d="scan'208";a="23313859"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Apr 2024 06:35:31 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 19 Apr 2024 06:35:30 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 19 Apr 2024 06:35:30 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 19 Apr 2024 06:35:30 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 19 Apr 2024 06:35:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ujwz4lGsHxfPuqrGURYizqft/Vrvg6iFHOTDNx7nloJVj7Fwa8zVj5BHvAKpXdGButN8eKUgl4l472HBxXXcyw71LDRv4ZM0drTlImuagkkWnMPOLp3CtRemG03ksZDYCdW6BU5BsXP4Z0Vh20sbyAWex6pjNzIXqE+gxL95zlM9reGx2lxoEg1Souxj+pC0Iu/t7+Xi02K7AAHc5Tb7Jd/COazNusiKi9HxASC4izJzklsARPBv+AEpjthMA4i7uHE62fm4u7dK7IIQmMpA6Ax0MF3yptn4CYN36JkxDDoF2oPWm+sBs/vHuiWMMYF++OP5+ksno3OoL4vluriFAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Qs6C2LGD/GCbcJ1qHMrqk/5Wfl3vm6ihReJYsxVTVwA=;
- b=S6uXe8lhwohiKqZiKQb+UgXzi4h6F68FQUznlV9AemmhJofKanYXUxniQw75GkgR/dOzf9o4NMrTAJeMWH/3qfjyZiPH/L9SCjah3FfK2Mh8p4Gp2MmTSyoo2jKBDpO56t9nRYfDAAqv4qarUSXGOaOFhAZM2gnCNngDWCWUU9DWZ9gayg83drSTnD/Qq+Mp9XZ2z3iLcWmp2AxcptKwOt9Cg3+Z6comZ9pdQLVj0UypRI3kGK4dnFda6/SWXKVvmJ5mXfVW5sdA68emHOimeuLXRaGvZ7yRVKUeaCJB3HRSmh7CC34sDeL7GT9dB5uCULEpVTzumWe+1h4P8TWYIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
- by IA1PR11MB8099.namprd11.prod.outlook.com (2603:10b6:208:448::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.12; Fri, 19 Apr
- 2024 13:35:28 +0000
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::5135:2255:52ba:c64e%4]) with mapi id 15.20.7519.010; Fri, 19 Apr 2024
- 13:35:28 +0000
-Date: Fri, 19 Apr 2024 21:35:18 +0800
-From: Chao Gao <chao.gao@intel.com>
-To: Xin Li <xin3.li@intel.com>
-CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<seanjc@google.com>, <pbonzini@redhat.com>, <corbet@lwn.net>,
-	<tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
-	<shuah@kernel.org>, <vkuznets@redhat.com>, <peterz@infradead.org>,
-	<ravi.v.shankar@intel.com>, <xin@zytor.com>
-Subject: Re: [PATCH v2 07/25] KVM: VMX: Set intercept for FRED MSRs
-Message-ID: <ZiJzFsoHR41Sd8lE@chao-email>
-References: <20240207172646.3981-1-xin3.li@intel.com>
- <20240207172646.3981-8-xin3.li@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240207172646.3981-8-xin3.li@intel.com>
-X-ClientProxiedBy: TYCP286CA0225.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:3c5::13) To CH3PR11MB8660.namprd11.prod.outlook.com
- (2603:10b6:610:1ce::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F380128394;
+	Fri, 19 Apr 2024 13:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.241.18.167
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713533757; cv=none; b=YDoVKv7EPzN7QGWuJlFNw3mx3EIEitoaQqdmgnE6un5iU/95L/D/qEsN9/f7hRGEEsg58JPvWuQTQEdlOilBeOxQ2ru/U5KciLKV5nWJH/5i62Sy2zqqI5GwGEgSTGg4sZw4wn+GfGgWeia4JgZ58ODZZMMJH40CCPIfvCJZ8Fo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713533757; c=relaxed/simple;
+	bh=i4sIXMeaI36yZoWPvCFlp+5nI5srTw/kWQQmuEJhk0I=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uHpH4ogKSGGBMvUQma2Rocmg6dXg1k28HVtnAPIJoJky509nq4uUwFAIIJptsY0KfcuKt0aqfyCvKbc3Kx2NRBKbmfTnumgBUBfFHzj2XerRLMd/4uiYpVwPJbrCZLhjwYBUqOjwsss4yPSC/A8JShWGxHJHVRpskLhG58MSCk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com; spf=pass smtp.mailfrom=de.adit-jv.com; arc=none smtp.client-ip=93.241.18.167
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 355365204D0;
+	Fri, 19 Apr 2024 15:35:45 +0200 (CEST)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.37; Fri, 19 Apr
+ 2024 15:35:45 +0200
+Date: Fri, 19 Apr 2024 15:35:40 +0200
+From: Hardik Gajjar <hgajjar@de.adit-jv.com>
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+	<gregkh@linuxfoundation.org>
+CC: Hardik Gajjar <hgajjar@de.adit-jv.com>, <maze@google.com>,
+	<linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<guofeng.li@gm.com>, <hardik.gajjar@bosch.com>, <eugeniu.rosca@bosch.com>
+Subject: Re: [PATCH] usb: gadget: f_ncm: Fix Kernel Panic due to access of
+ invalid gadget ptr
+Message-ID: <20240419133540.GA7264@vmlxhi-118.adit-jv.com>
+References: <20240307161849.9145-1-hgajjar@de.adit-jv.com>
+ <8d116b78-9227-4e48-8d37-3a0cb0465dfd@quicinc.com>
+ <20240308115506.GA5631@vmlxhi-118.adit-jv.com>
+ <4816d981-3955-495c-8fc6-3b9b15ba1689@quicinc.com>
+ <20240311120418.GB5631@vmlxhi-118.adit-jv.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|IA1PR11MB8099:EE_
-X-MS-Office365-Filtering-Correlation-Id: 54e707e4-8fd7-4363-77da-08dc6075938a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|1800799015|7416005|366007;
-X-Microsoft-Antispam-Message-Info: vOMhDwXiGUUXtDWCfgl6ow6sllxFsDthy50vAkY3Aa8XeZFWonUUoVNk4c7T7inJlOgmaml+sc7cBg4VRuRfBUCMkuVWYrna/6i4uJz6slITt/UpXUZ/4v82uE7DZexFGNV+6Yu9mdjWJt61+W4qNAqismXJf4oQrTGqW77sXoCk6HDU+8HCV6m6mV+4JBTUtvXOjcmiglaZkd+HebHz4WM6/p9YpNML9pBvAxIoq80vWZs0Ch6lN7Yezguh3jKk+YvWeDPTuppaNrgoeTitl6X7fbV22/0If2yeHmvDT9Ct2QynTbgsaEUaxx8YtbuEA5WMxt7/w+24pumsWPkXIVcTlBjulH0L2g/n2rd/QZBuHFxdm4H9tpONy6n6O6hgAbqSXolQ+u7b4bwF3cX27qwBVkzEttCKAUdhMqvR00GowiIxTeLR1dk6lxqu+xmHQWrLpONC01ecsVD/J72/r4NiDN9tGiHaE0GnIHp/ERTI4odSKppTUp9Td4Bcq6uMPUPIoHYMc3iuUn0A+YVWpiDCz+/e7RyBtUDvdO9szvGewxQ+GpYykybc+WWephzsUvBtA8xuNOcsDLsDF1J78Qefe/jp0GD3zZuoNWDj0UXmr0Lklw8JUCt3q94IbZ71COpAnwQlEdKv71VQpkSKOgH8GRN5GLw7GtoQlYnddbo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XjeIc/nOl42JLJQEANKULSpDtZsPHcfOZYADUbbIg7GIPg4MRM/16uYwYtzT?=
- =?us-ascii?Q?IT1aRAK9pgzARLN1Y+kF1mBeY0NGMf6Nwf/Q8OKvn//FxFEPF0z0Cwav5bWG?=
- =?us-ascii?Q?GFdzSfQm96AM9S2H4yvPvJMIPImYaMtcV09j/iIyU9ORbQXp0JBLWV2OJ9co?=
- =?us-ascii?Q?0hscreJ0kpxKz3sOZuj3iBK9vBpiZjgu82Y2F1jt2pHljbKKZJJMIblVhQsG?=
- =?us-ascii?Q?x4u0D86lWZ96cVO+uXB/yDzhD7p0YeY6YLmWoDoXO0n5Xf+XO9czKPOC7KGs?=
- =?us-ascii?Q?Nf/w9Da4cX05UqwcuH8B/OXYupAcFDxAttcvOsI3Q3n5zBXntdtHxSPVC/0O?=
- =?us-ascii?Q?NJvqPrgcq8QLXmCyYJzLNmAl7oDIO03JvxRu5565eWpoRDgAu2n6XjrBWcXP?=
- =?us-ascii?Q?PkmZ0TeVo7Go0uv/FjUlGyp8s/DLVQrPVfvV7EKwOwhaRbmhnwJ9QBliBD2d?=
- =?us-ascii?Q?Vc1Hml2I7JrQqDSn5lu7GuhxdKRVAz+7XM8m/jEgwwRbfg0d4+Sv5QuFJXQC?=
- =?us-ascii?Q?6RRhbNM3iOTp84isSjnTnwt03PJEls8rcNaK5+nYLrQuA9zndWTAGjXVPTXD?=
- =?us-ascii?Q?ItAcIfcfKzQQ98es7xEdCgZvXBnOkSBO/bO+eFXf0M1yeMDDzlP/RrXh2fJe?=
- =?us-ascii?Q?++IkcMXPmPjZ8JAUxl9SrXTzFLEIBaeQ0qbUgZnnBUfE0ttSC4UPRSxzthHC?=
- =?us-ascii?Q?9g51KEDHMMOwFAmGW2xB1G6Eb8UPkZ1V47yKOaqtWNaSTBKdgDw1cQQKILLq?=
- =?us-ascii?Q?A+A5x8TFPD0ZE47V3mnYIbmmpeWBkz6W8reaCbiA9EHLk5jkuuBT4OreFBYI?=
- =?us-ascii?Q?7hl6YB2IChsho/dO968vc3pfg00LGLPITIfpKQm+Mfv9jW8JD4gMaNzi9M1+?=
- =?us-ascii?Q?TSIAxw98Bo4yMErs9WhPuL4kMpE/wNLHWgXxPiRpOHeAOiVFM2OaBq1O4N9D?=
- =?us-ascii?Q?Xrord3wUUJntmU7YsW/OByYhm0LzoyZjWOaN+I74LLOreL5+aopKuDyBzv/y?=
- =?us-ascii?Q?OV4UiNmUOwpOBh/X4BHX+E4W4eQl1X9T9bT7YUHCGlRZD0f1PAB+oq0oe0BT?=
- =?us-ascii?Q?YWI+OZ1knI/mmwTuLARZZFP07pU4bWvn4D5R475I1IvV5KHaQDqtcFkX2j4D?=
- =?us-ascii?Q?NmQQ8OFzgL5iNTefHUas+HZI96sx2pBo5o/rQ+IRYMnWubhpTSFQmtTs1sQQ?=
- =?us-ascii?Q?mi17Wim5GyIFfR9Ze0j1sjg4Og9ryVH1RPQctdHDwzHd6Lf5LmNoeNgtQ0U3?=
- =?us-ascii?Q?Nvg3FC2WgW4tIcj1f5t1HSM64U4I894gkG50ditN1jDfeSu5dfIaRU0QvV3F?=
- =?us-ascii?Q?PA7+O7pUu6nOYEmA6rOxuVH8yqOXfXrr9Xzs4WL5PR1mFr0SHvTNh81oazox?=
- =?us-ascii?Q?2NaGb9toQlFeDlQm+p6uBVvRTkCZwa3pTfZWGqIaiC0iVG8hwI421ffbcDjx?=
- =?us-ascii?Q?nPW9euoVf5eSpFFCzVxcQQFB7dDtVI6Z9MFbiYoH6q+V+7INNGhh1B1xhlGq?=
- =?us-ascii?Q?pnIwO6D2XAHuHBMClGGQksvWU7tqwS5kw8Szb1bCSkKWrI+4MFXk+nFr1h7Z?=
- =?us-ascii?Q?Dmx0bJdVowjsPmbK55zz8/BpsUpWhAZiKQldvx1M?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54e707e4-8fd7-4363-77da-08dc6075938a
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2024 13:35:28.4115
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0o3HKwfTGGCpujbHvIApQRwktDAU+SPwhJ+fzZ2w75xqsLHnP8LKwUW6aftr1TeDAQEXj4NY0dcKk2Oux3VXKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB8099
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240311120418.GB5631@vmlxhi-118.adit-jv.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
 
-On Wed, Feb 07, 2024 at 09:26:27AM -0800, Xin Li wrote:
->Add FRED MSRs to the valid passthrough MSR list and set FRED MSRs intercept
->based on FRED enumeration.
->
->Signed-off-by: Xin Li <xin3.li@intel.com>
->Tested-by: Shan Kang <shan.kang@intel.com>
-
-Reviewed-by: Chao Gao <chao.gao@intel.com>
-
-two nits below.
-
->---
->
->Change since v1:
->* Enable FRED MSRs intercept if FRED is no longer enumerated in CPUID
->  (Chao Gao).
->---
-> arch/x86/kvm/vmx/vmx.c | 17 ++++++++++++++++-
-> 1 file changed, 16 insertions(+), 1 deletion(-)
->
->diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->index 34b6676f60d8..d58ed2d3d379 100644
->--- a/arch/x86/kvm/vmx/vmx.c
->+++ b/arch/x86/kvm/vmx/vmx.c
->@@ -693,6 +693,9 @@ static bool is_valid_passthrough_msr(u32 msr)
-> 	case MSR_LBR_CORE_TO ... MSR_LBR_CORE_TO + 8:
-> 		/* LBR MSRs. These are handled in vmx_update_intercept_for_lbr_msrs() */
-> 		return true;
->+	case MSR_IA32_FRED_RSP0 ... MSR_IA32_FRED_CONFIG:
->+		/* FRED MSRs should be passthrough to FRED guests only */
-
-This comment sounds weird. It sounds like the code will be something like:
-		if guest supports FRED
-			return true
-		else
-			return false
-
-how about "FRED MSRs are pass-thru'd to guests which enumerate FRED"?
-
-Or to align with above comment for LBR MSRs, just say
-
-/* FRED MSRs. These are handled in vmx_vcpu_config_fred_after_set_cpuid() */
-
->+		return true;
-> 	}
+On Mon, Mar 11, 2024 at 01:04:18PM +0100, Hardik Gajjar wrote:
+> On Fri, Mar 08, 2024 at 05:47:37PM +0530, Krishna Kurapati PSSNV wrote:
+> > 
+> > 
+> > On 3/8/2024 5:25 PM, Hardik Gajjar wrote:
+> > > On Thu, Mar 07, 2024 at 11:12:07PM +0530, Krishna Kurapati PSSNV wrote:
+> > > > 
+> > 
+> > [...]
+> > 
+> > > 
+> > > I believe using gether_cleanup altogether may not be an optimal solution.
+> > > The creation and deletion of network interfaces should align with the behavior of each specific network driver.
+> > > 
+> > > For instance, in the case of NCM, the usb0 interface is created upon the creation of a directory
+> > > in config/usb_gadget/gX/functions/ncm.usb0, and it is removed when the corresponding directory
+> > > is deleted. This follows a standard flow observed in many network drivers, where interfaces are
+> > > created during driver loading/probing and deleted during removal.
+> > > 
+> > 
+> > Hi Hardik,
+> > 
+> >  Yeah. I observed this behavior.
+> > 
+> > > Typically, deleting the gadget on every disconnection is not considered a good practice, as it can
+> > > negatively impact the user experience when accessing the gadget.
+> > > 
+> > 
+> > Got it. I was suspecting issues might come up during fast Plug-In/ Plug-Out
+> > cases as setting and cleanup of network interface might take some time.
+> > 
+> > > In our specific scenario, retaining the usb0 network interface has proven to enhance performance
+> > > and stabilize connections. Previous attempts to remove it resulted in an observed increase in time of 300ms,
+> > > particularly at the start of Apple CarPlay sessions.
+> > > 
+> > 
+> > Thanks for this info. Makes sense to keep it in free_inst only. But my
+> > initial doubt only stemmed from the fact that actions taken during bind must
+> > be reversed during unbind.
+> > 
+> > > Furthermore, it's important to highlight that in Qualcomm products and msm kernels, the inclusion of gether_cleanup
+> > > in the unbind process was eventually reverted. While the specific reason for reverting the patch is unknown,
+> > > it suggests that the addition may not have yielded the intended or required results
+> > > 
+> > > Following is the revert patch details in msm-5.4 kernel, if you want check it.
+> > > 
+> > > Revert "usb: gadget: f_ncm: allocate/free net device upon driver bind/unbind"
+> > > 
+> > > This reverts commit 006d8adf555a8c6d34113f564ade312d68abd3b3.
+> > > 
+> > > Move back the allocation of netdevice to alloc_inst(), one-time
+> > > registration to bind(), deregistration and free to rm_inst(). The
+> > > UI update issue will be taken up with proper stakeholders.
+> > > 
+> > > Change-Id: I56448b08f6796a43ec5b0dfe0dd2d42cdc0eec14
+> > > 
+> > 
+> > Agree. This was merged first in 4.19 downstream (most probably for car play
+> > use case only) and then reverted in 5.4. But present 4.19 code in QC still
+> > keeps it in unbind path. The only reason I suspect it was reverted was to
+> > get back on to same page with upstream driver (atleast starting from 5.10,
+> > this was the reasoning to remove gether_cleanup in unbind path and put it
+> > back in free_inst).
+> > 
+> > Thanks,
+> > Krishna,
 > 
-> 	r = possible_passthrough_msr_slot(msr) != -ENOENT;
->@@ -7774,10 +7777,12 @@ static void update_intel_pt_cfg(struct kvm_vcpu *vcpu)
-> static void vmx_vcpu_config_fred_after_set_cpuid(struct kvm_vcpu *vcpu)
-> {
-> 	struct vcpu_vmx *vmx = to_vmx(vcpu);
->+	bool fred_enumerated;
+> Thanks Krinshna for your comment
+> Come to the first comment from Greg. 
 > 
-> 	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_FRED);
->+	fred_enumerated = guest_can_use(vcpu, X86_FEATURE_FRED);
+> > What commit id does this fix?
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
->-	if (guest_can_use(vcpu, X86_FEATURE_FRED)) {
->+	if (fred_enumerated) {
-> 		vm_entry_controls_setbit(vmx, VM_ENTRY_LOAD_IA32_FRED);
-> 		secondary_vm_exit_controls_setbit(vmx,
-> 						  SECONDARY_VM_EXIT_SAVE_IA32_FRED |
->@@ -7788,6 +7793,16 @@ static void vmx_vcpu_config_fred_after_set_cpuid(struct kvm_vcpu *vcpu)
-> 						    SECONDARY_VM_EXIT_SAVE_IA32_FRED |
-> 						    SECONDARY_VM_EXIT_LOAD_IA32_FRED);
-> 	}
->+
->+	vmx_set_intercept_for_msr(vcpu, MSR_IA32_FRED_RSP0, MSR_TYPE_RW, !fred_enumerated);
->+	vmx_set_intercept_for_msr(vcpu, MSR_IA32_FRED_RSP1, MSR_TYPE_RW, !fred_enumerated);
->+	vmx_set_intercept_for_msr(vcpu, MSR_IA32_FRED_RSP2, MSR_TYPE_RW, !fred_enumerated);
->+	vmx_set_intercept_for_msr(vcpu, MSR_IA32_FRED_RSP3, MSR_TYPE_RW, !fred_enumerated);
->+	vmx_set_intercept_for_msr(vcpu, MSR_IA32_FRED_STKLVLS, MSR_TYPE_RW, !fred_enumerated);
->+	vmx_set_intercept_for_msr(vcpu, MSR_IA32_FRED_SSP1, MSR_TYPE_RW, !fred_enumerated);
->+	vmx_set_intercept_for_msr(vcpu, MSR_IA32_FRED_SSP2, MSR_TYPE_RW, !fred_enumerated);
->+	vmx_set_intercept_for_msr(vcpu, MSR_IA32_FRED_SSP3, MSR_TYPE_RW, !fred_enumerated);
->+	vmx_set_intercept_for_msr(vcpu, MSR_IA32_FRED_CONFIG, MSR_TYPE_RW, !fred_enumerated);
+> >Hi Greg,
+> 
+> >The network device parent is not being properly cleaned up during unbind since the \
+> >initial commit of the driver. In that case, should I mention the First commit ID of \
+> >the driver as broken commit or would you advice to say, For example "Clean up netdev \
+> >parent in unbind".
+> 
+> >Thanks,
+> >Hardik
+> 
+> @Greg, 
+> 
+> Can you please provide guidance on how to proceed? Should I update the commit message to exclude the term 'Fix' in the title?
+> 
+> Thanks,
+> Hardik
 
-Use a for-loop here? e.g., 
-	for (i = MSR_IA32_FRED_RSP0; i <= MSR_IA32_FRED_CONFIG; i++)
-> }
-> 
-> static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->-- 
->2.43.0
->
->
+Hi Greg,
+
+Should we move forward if there are no further comments?
+
+Thanks,
+Hardik
 
