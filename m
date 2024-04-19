@@ -1,115 +1,142 @@
-Return-Path: <linux-kernel+bounces-151100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A7F48AA919
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:24:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB2D28AA906
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:21:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC4EC1C20E01
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:24:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87DBC2821F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 07:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4529405EC;
-	Fri, 19 Apr 2024 07:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="UgP8Nrlo"
-Received: from smtpdh16-2.aruba.it (smtpdh16-2.aruba.it [62.149.155.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314183F8F4;
+	Fri, 19 Apr 2024 07:21:16 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82BA3FBAF
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:23:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.155.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2AC3F8D0
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713511420; cv=none; b=QTpecPUJMVnv7u4hLhH/IwSyjY+GyLl7rQiyhs0Ru+A0DprTyhUlEOEc5+mTPY+C+RIG9zIlgBFri0BQVY6zblZ0DCcuVwAq3laGb9NMTCivupMOgwNBZeo5k/4k8iQsSF3ABYAJXBuhK/uKfiKfgZQlbEYRKGJivJQAGDztnpA=
+	t=1713511275; cv=none; b=JpmJwb94HJC65Ma5LES3qBcqFOf+eCkyzjqhLfLBEKXsoOkdbCGvwvSUycCZeXHAOF6iveypEC1Hk75okPHaqZrO0IsKAh9tW61q99fuSdxI2+p0v8f+lT+UcL7vILXrjEwon4XjlAPr7wNqCaz1nxWHDhI9uCHt/b2duPQXhcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713511420; c=relaxed/simple;
-	bh=MsoeGdQjfbrInj5eTOqBiVvaSFeUUPab3XbLCWt+Adc=;
+	s=arc-20240116; t=1713511275; c=relaxed/simple;
+	bh=mWDtogvZLAf/AlEynocjUm/6fKyp2NK1loMWsuL/Gpg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fhsutng9X3Kmrj2Hrm57L2scVTHHwBMgBM82UFVK8U+8Id1E56TB4+CU1C4ObYprbtMjMuIhlOfcMsWavoGlrPgbzSw2eZEVi2h8Uy6SOOWgOByTlx++jGA2GD3VHecHYAc0pX0prIg9sCJNdEcBXhTePaR/eYvZF8lHp5YAr/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=UgP8Nrlo; arc=none smtp.client-ip=62.149.155.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
-Received: from engicam ([146.241.22.218])
-	by Aruba Outgoing Smtp  with ESMTPSA
-	id xiXqrzu5tYt7axiXrr9Pl2; Fri, 19 Apr 2024 09:20:27 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1713511227; bh=MsoeGdQjfbrInj5eTOqBiVvaSFeUUPab3XbLCWt+Adc=;
-	h=Date:From:To:Subject:MIME-Version:Content-Type;
-	b=UgP8Nrlo2yIRiWy8UpwVIHQ2OA2X4glZI0I882a3VUGuPyt4WWNjRCK4cFvUtz+x3
-	 qvE9OJhGN2LSoDE05Ioh5xuP3YTtGS9gVa+vHZndXJKYRz2oCyGtCIY3PrtMdehV2y
-	 0u1q7KxldT6RNRw6WXAnlfHEvi1r+mqrLXLDANySVEeIjFX7G2dErSit9L8uJsPZC3
-	 TuNKaBI3W8PvYS254DQKbctuESytQxMQ35zrMVLvd5ZYQ633BBrZZOA2UCGLIRb2bE
-	 lGeXrDA58IYsAj/H0PuguZVbOMYFN5Yol4SbMh0jBVoOakRv3m0F1XrjGQ1pzSkvqx
-	 WCVQdcu5b5LJg==
-Date: Fri, 19 Apr 2024 09:20:26 +0200
-From: Fabio Aiuto <fabio.aiuto@engicam.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Matteo Lisi <matteo.lisi@engicam.com>,
-	Mirko Ardinghi <mirko.ardinghi@engicam.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: arm: fsl: add Engicam i.Core MX93
- EDIMM 2.0 Starter Kit
-Message-ID: <ZiIbOvH1hY0UKW2A@engicam>
-References: <20240418133923.3705-1-fabio.aiuto@engicam.com>
- <20240418133923.3705-2-fabio.aiuto@engicam.com>
- <20240418-lapel-monstrous-5774610c7405@spud>
- <20240418-distort-dial-c56ca175d8b0@spud>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jc1UL93AJIu2vefX1sorLuO5Ioyf9nCjyYmtYIvcCrZySrRHKwNKYbmldk7sREdIZ+LLU1yCXmteTbSlAT8MVOKFANgv5xjB3vkdHtPMrjHocq/BdelhbrK2QVXzMeXVRwftAh/5m+dt5/l2LwO/bQedao/nioC6S3ADyismrV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rxiYB-0005ps-9Y; Fri, 19 Apr 2024 09:20:47 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rxiY9-00D7BW-2B; Fri, 19 Apr 2024 09:20:45 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rxiY8-003uPa-36;
+	Fri, 19 Apr 2024 09:20:44 +0200
+Date: Fri, 19 Apr 2024 09:20:44 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: Frank Binns <frank.binns@imgtec.com>, 
+	Matt Coster <matt.coster@imgtec.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-mediatek@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, Thierry Reding <thierry.reding@gmail.com>, 
+	Mikko Perttunen <mperttunen@nvidia.com>, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH 0/4] gpu: Convert to platform remove callback returning
+ void
+Message-ID: <xqwcrxfrg3ogplh35c5etl6nbzw6zueilm4h6euh7bnpszyir4@6dtn5qdvijv3>
+References: <cover.1712681770.git.u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zqtl7cbpfineoepn"
 Content-Disposition: inline
-In-Reply-To: <20240418-distort-dial-c56ca175d8b0@spud>
-X-CMAE-Envelope: MS4xfLAlsPnftFFvbX/IYDRgo9zZ3Ssv4KAUoDvHbqsQCssjDv0qDcDkq8+N3kxJE8/g2dnBLkAvnxkgxRlAZEnR0uE67f2ClYmnaJAE+lkwGGijyLbSJRMY
- vW0C/XXVTOZYfCdov8Q5YGXB6nT2+lWBG52QSuataOeDAYMTTU3nUS7O/IhrbLtSwsxB/in55jAxbc5Rd2569aDS5tnJk7nFfRNuK4/0qY/h1zdSERFfWrfx
- RrCGpcK8qTdtC0l4/e2oAWKpxTaJXMk27VlF5q+7As+s2kdrqAo8FhyCkX3CEaQIy6ZEQQtHQyObxn/26a2ERDZ1EkPc0Za+0AheN0YyuD6LXxsICal+a2Xi
- N+JQxLvfyheOcrNkp5uzvOy+MhXlZ+Ry/Pr02l6aIC1ztWGStWgoW8sELgtkrj19BYV91yCtOJeMX3iL0aWd1n5smqnrv2gzCIOpnqDrvi/rUUj8qoPz2nGM
- aC/lTdu1Hdqv+N3B1ZokH9D2CnKjDfMVA6vTwm7nuO2lwXI+9P7/ZL6IVfTqT12H0NLdsytXWh36BZBoRS0YC+Nk/SjQkQDnWdQynbBm84OdFJ8TgrvU++QA
- 69w=
-
-Dear Conor,
-
-Il Thu, Apr 18, 2024 at 05:34:07PM +0100, Conor Dooley ha scritto:
-> On Thu, Apr 18, 2024 at 04:33:21PM +0100, Conor Dooley wrote:
-> > On Thu, Apr 18, 2024 at 03:39:21PM +0200, Fabio Aiuto wrote:
-> > > i.Core MX93 is a NXP i.MX93 based EDIMM SoM by Engicam.
-> > > 
-> > > EDIMM 2.0 Starter Kit is an EDIMM 2.0 Form Factor Capacitive
-> > > Evaluation Board by Engicam.
-> > > 
-> > > i.Core MX93 needs to be mounted on top of EDIMM 2.0 Starter Kit
-> > > to get the full i.Core MX93 EDIMM 2.0 Starter Kit board.
-> > > 
-> > > Add bindings for this board.
-> > > 
-> > > Cc: Matteo Lisi <matteo.lisi@engicam.com>
-> > > Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-> > > Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
-> > 
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> 
-> Looks like you might've already got an Ack from Krzysztof on a previous
-> version. Please make sure to pick up acks etc when you post new
-> versions.
-
-thanks for your Ack, will send a v3 including both your Ack and Krzysztof's
-one.
-
-kr,
-
-fabio
-
-> 
-> Thanks,
-> Conor.
+In-Reply-To: <cover.1712681770.git.u.kleine-koenig@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 
+--zqtl7cbpfineoepn
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+On Tue, Apr 09, 2024 at 07:02:47PM +0200, Uwe Kleine-K=F6nig wrote:
+> with some patches sent earlier[1], this series converts all platform
+> drivers below drivers/gpu to not use struct platform_device::remove()
+> any more.
+>=20
+> See commit 5c5a7680e67b ("platform: Provide a remove callback that
+> returns no value") for an extended explanation and the eventual goal.
+>=20
+> All conversations are trivial, because the driver's .remove() callbacks
+> returned zero unconditionally.
+>=20
+> There are no interdependencies between these patches. This is merge
+> window material.
+
+I wonder how this series will make it in. While I would prefer these
+patches to go in together (that I can consider this thread completed in
+one go), I think with how drm maintenace works, it's best if the patches
+are picked up by their individual maintainers. I guess that's:
+
+ - Frank Binns + Matt Coster for imagination
+
+ - Chun-Kuang Hu + Philipp Zabel for mediatek
+
+ - Thierry Reding + Mikko Perttunen for the host1x driver
+   (Note there is another patch for this driver set at
+    20240409165043.105137-2-u.kleine-koenig@pengutronix.de that is
+    relevant for the same quest.)
+
+ - Philipp Zabel for ipu-v3
+
+I plan to send a patch changing struct platform_driver::remove after the
+end of the merge window leading to 6.10-rc1 for inclusion in next via
+Greg's driver core. So please either care the patches land in 6.10-rc1
+or ack that I include them in the submission to Greg.
+
+Thanks for your cooperation,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--zqtl7cbpfineoepn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYiG0sACgkQj4D7WH0S
+/k5uYwf/bmP6h2EDhf4HeD6t6iH04mtOMqGj0P+x7unUIW9fwa+06Vtnjj0TW/DR
+WgWu8rFS3I02j3D51b14SGZRNrIEXwSkNNVQLPZbe8pu9akVVYtymL7xxNM4ksLk
+83PrwKdtdx2khdWfc7kOWM+zu2IkKTkHvRQqrx/jCrz9OpAA+2DJpqtt0CnYOMgu
+eF4ev9d7wG7VdP8jks1/anWuqbDAIVStCnA1MaCISsXl2e2ZGZfSE99Mg1h94eLd
+AX2IRPASplCkOA1L2Klfkye65Pqyfi1gnxnawcUbhkcZ4ffdg7jFAEaCXPqfHEKP
+w+LYkIVZlBBGdz0EuoGrVlGwPo7Ixg==
+=stkl
+-----END PGP SIGNATURE-----
+
+--zqtl7cbpfineoepn--
 
