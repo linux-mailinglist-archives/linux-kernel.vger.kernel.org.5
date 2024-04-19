@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-151486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7ED28AAF7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:36:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45A018AAF80
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:37:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64222284336
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:36:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC7E31F24036
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2F412A14B;
-	Fri, 19 Apr 2024 13:36:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A93129E9A;
+	Fri, 19 Apr 2024 13:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iabnmbkm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rz6nIz8G"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB579128366;
-	Fri, 19 Apr 2024 13:36:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8861E867;
+	Fri, 19 Apr 2024 13:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713533810; cv=none; b=rl/f8fFf9Inrc5j7NNqIRbPLojR2WitFmEm6yHlFt8Pk4/GI/T7OE/pw/1I4tWFYFUlpInD5gHSC7yowBHymVRl0MB+ZOHa9iGGAGH5rChHu1XE8r3tzGys5tDI7wJkagSABLyWcjAr5eHd9skMIi11E5GLElVqJMmKPoUVds5s=
+	t=1713533846; cv=none; b=HNK1RHNP3GsdVnjTtCCzm3GKlPY3D7CgwbqmUmNUJXxb5tiThFwWCqJIsZmmMfHvLGzkWTQOggw/QMAcWNITKOgdWNUNlGddTB/VPhMeeWc9Q5st+IVwkFBejKBuPcjQcCxtSzad65jpFayuKf+Yhog1W3z87bRb94OUEYB0Cto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713533810; c=relaxed/simple;
-	bh=U4aqqscz4hwYVD7/WUzWa+gb7dWeA61ua2/mMi8nDpM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=h5zLn/Sk9Xfbmqj0Y94DY3K6b03H8BTqqIrvomxQAGj6dl1rZipqY4JzMDgnLeX6fSZz9JFIQp/ftNtjJYmSpztmMwWGZiX2ABhEq3zPFbF8z9KNzmx8XiJAGbnle9AtVok+qUM5pXrqcptnAK6C7O3rN0VhgRqK/vGgoKATQUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iabnmbkm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21E26C072AA;
-	Fri, 19 Apr 2024 13:36:50 +0000 (UTC)
+	s=arc-20240116; t=1713533846; c=relaxed/simple;
+	bh=xVV5juS7Tp+XkVklQzSylMIgxjKvJ8BFWUq4yzo5IUE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MrOEN4WK8Phm3l5oK4xTbSBQnEOqM8f36p712FHVhz0uvFado4rmV8JXA06YHEphrHgi3yTqs03TwdaXO/Q6t2BiTUmG7TyGZFtSQ0V40q8TNXpsuoHEfpjZ2odd4OZUsoa3mKWtvSu8zLMJHrI/v4Bpgurd9BKH/0wIMxDZA1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rz6nIz8G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06419C072AA;
+	Fri, 19 Apr 2024 13:37:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713533810;
-	bh=U4aqqscz4hwYVD7/WUzWa+gb7dWeA61ua2/mMi8nDpM=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=iabnmbkmijCMIS27u2Zn7TNmeWwaeYDvgG1yGndZuHY1abEloEb0oOda1CPtCT9Oh
-	 IBGZRDtQHNQwU+2AMGQMdOEFb9fZgHRVFSwQSDGExUiWFVqLFiFhZRRAgVVnfdfnOO
-	 Hky/RAE7e5V6wb9hl18rLAC9UYBdfdqwgZ2cWeibY0SjHwZh2Gdh+rkrplBSlbUBMG
-	 ceAxvceynXchWT3oaooraaL4O2JwwBB8wEAxDOxMUkhdCX1Oz2QWCq2tQKzM1Ofn0R
-	 HWVzfJae+r7qqFNy6tijzRY+rakDPIrL1k0+JBu9CE8uEMc0Phj0NG5wH6/eP+mZrl
-	 VMVF/PmKcos9g==
-Message-ID: <46a9196a-aca2-413b-8f82-794c19861a51@kernel.org>
-Date: Fri, 19 Apr 2024 15:36:49 +0200
+	s=k20201202; t=1713533846;
+	bh=xVV5juS7Tp+XkVklQzSylMIgxjKvJ8BFWUq4yzo5IUE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rz6nIz8Go6JPu3CuH9x0HsKn0M2hzyQLAMVGhdstfUvU4MkevotHOKVYTir7v3imO
+	 zNLylrOMBUrpPT2cdkvjSxpZDvDZkJJxmaKFs7nQpVTeLYqxoZHUF57Rczr2Zpfxel
+	 79qhdO0mfJpGn+Z7zD0DGUnJb8MXgx1yww8UMxKFomNalvlpLysbTYpKai1pilWQr/
+	 fVEb/w0h/jOnRaRM7uKGosJEs0UmK4JeD+j4apjWrx8Ti93zDzRnwm/6b4X7rda4SV
+	 5VY04JCRh+0nU9BjzKAEQGdAf6z/SlYk0yR6MXTVNd5ch/YmJgd86wdIn1wg7zXihZ
+	 pOy8JyhTQUxQA==
+Message-ID: <87cd0bdf-9c98-4488-b38f-89ac48b09b36@kernel.org>
+Date: Fri, 19 Apr 2024 15:37:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,16 +49,22 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/3] dt-bindings: rng: Add vmgenid support
-To: "Landge, Sudan" <sudanl@amazon.co.uk>,
- "Jason A. Donenfeld" <Jason@zx2c4.com>, tytso@mit.edu, robh@kernel.org,
- conor+dt@kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, sudanl@amazon.com, graf@amazon.com,
- dwmw@amazon.co.uk, krzysztof.kozlowski@linaro.org, bchalios@amazon.es,
- xmarcalx@amazon.co.uk
-References: <20240418121249.42380-1-Jason@zx2c4.com>
- <20240418121249.42380-3-Jason@zx2c4.com>
- <bf9b59ed-a739-4a06-93db-facb0c89dab6@amazon.co.uk>
+Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: mediatek: Support MT8188
+ dual-core SCP
+To: Olivia Wen <olivia.wen@mediatek.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Tinghan Shen <tinghan.shen@mediatek.com>, linux-remoteproc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ jason-ch.chen@mediatek.com, yaya.chang@mediatek.com, teddy.chen@mediatek.com
+References: <20240419084211.31901-1-olivia.wen@mediatek.com>
+ <20240419084211.31901-2-olivia.wen@mediatek.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -104,34 +110,20 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <bf9b59ed-a739-4a06-93db-facb0c89dab6@amazon.co.uk>
+In-Reply-To: <20240419084211.31901-2-olivia.wen@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 19/04/2024 15:31, Landge, Sudan wrote:
->> +...
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index aa3b947fb080..c84ac9258a48 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -18463,6 +18463,7 @@ M:      "Theodore Ts'o" <tytso@mit.edu>
->>   M:     Jason A. Donenfeld <Jason@zx2c4.com>
->>   S:     Maintained
->>   T:     git https://git.kernel.org/pub/scm/linux/kernel/git/crng/random.git
->> +F:     Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml
->>   F:     drivers/char/random.c
->>   F:     drivers/virt/vmgenid.c
->>
->> --
->> 2.44.0
->>
-> Since I am on leave, looping in Babis to review/verify the patches.
+On 19/04/2024 10:42, Olivia Wen wrote:
+> From: "olivia.wen" <olivia.wen@mediatek.com>
+> 
+> Under different applications, the MT8188 SCP can be used as single-core
+> or dual-core.
+> 
+> Signed-off-by: olivia.wen <olivia.wen@mediatek.com>
 
-You can bounce emails to Babis. Or ask him to use lei/lore. No need to
-Cc all of us with such forward. This is just unnecessary noise in our
-mailboxes.
 
-Especially if you want to get some reviews...
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
