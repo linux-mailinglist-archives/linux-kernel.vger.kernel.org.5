@@ -1,72 +1,90 @@
-Return-Path: <linux-kernel+bounces-151202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5291D8AAB0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:00:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B05218AAB1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:02:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76CDC1C209F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:00:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E50C0B237E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 892D17E56B;
-	Fri, 19 Apr 2024 08:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E81A77C089;
+	Fri, 19 Apr 2024 09:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="URqXSyB4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7R1LdZB"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1008E7581A
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 08:59:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B427BB0C;
+	Fri, 19 Apr 2024 09:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713517176; cv=none; b=Nw6rivnWdv0uX6NvAMxVpXrW62/5/eONjm4XyF7YMBvvN16hZBfMa6jS/8cBqIIsybw7v3PCOCC1kUCGNM+FpHVGZroQ3MhFX92N5lyTGY61vDmL0sLVcxtA51JX+WzsjL8QFE8ksQZ4ELCxHolNOBR5NyaJ78PeCKLTnTP3/cM=
+	t=1713517274; cv=none; b=uFO135udfppg+pqTlKB9vdFwBlNzCArrkWd9I2HZnZkH7pnpR+sSv/RTlPywLkTUsThHMLOn2sglBCzFsNzb5hmFP+ST/R8vJNJQKXuCzz0n5Zub7LydcZzNj7He2FCiMRnOwOM/A/q5nj6Y2ygcorhRCW8Mifj1bcrXF+4MVWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713517176; c=relaxed/simple;
-	bh=2gm7deFzurYTAyrCh7iT1lNdC3GO1PyHSZi0isL2Ru8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mJZssPkbrRVwHOxyLPktpiUQMs3OtqaXUrrHkwX5XjdFwv+VIidIIzeX6PJo616r7dPv/uYyj2GQiG0mUwbZzwn7vwm78Aa1i/6DVlKQtrwK2pIIwdJMQhyxQ4eqyqhr9yI9vejpJl6xEiW2ai/mZvypnQQ6MvESn09J5s5HTVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=URqXSyB4; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713517173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=52y2schAwBprTYBvvMf3LjB6dQ9sxUly4DKTEx6UkQs=;
-	b=URqXSyB4XtjqrzB1tDhNl6FruSwRAQ0mWWVZK/xsa5lcFIcYrwq9+mw7PjuH029gnZVfO/
-	XRgc8wUIeKzif7++NL++qgx97Hp6N+nnWBIJvuIECoe33Peehec2yV+EmELLzLRU227gmE
-	RrcVhS1yQXTcwQf27BgSVGbGyAQLUN4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-650-wGI1dtL0P9GJaIuPnMU1Vg-1; Fri,
- 19 Apr 2024 04:59:30 -0400
-X-MC-Unique: wGI1dtL0P9GJaIuPnMU1Vg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DDADD3811717;
-	Fri, 19 Apr 2024 08:59:29 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id ACEB0203689B;
-	Fri, 19 Apr 2024 08:59:29 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Cc: isaku.yamahata@intel.com,
-	xiaoyao.li@intel.com,
-	binbin.wu@linux.intel.com,
-	seanjc@google.com,
-	rick.p.edgecombe@intel.com
-Subject: [PATCH 6/6] KVM: selftests: x86: Add test for KVM_PRE_FAULT_MEMORY
-Date: Fri, 19 Apr 2024 04:59:27 -0400
-Message-ID: <20240419085927.3648704-7-pbonzini@redhat.com>
-In-Reply-To: <20240419085927.3648704-1-pbonzini@redhat.com>
-References: <20240419085927.3648704-1-pbonzini@redhat.com>
+	s=arc-20240116; t=1713517274; c=relaxed/simple;
+	bh=Ur4QL3hmvjchJ6gBpcZ6tiyYHaYB5QNLGzRytFBzgds=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=cK62saj827F69o9GM1YRlqv6GCVZWfW3ppOX1il1WHcsQCdMIIB4egEt3QhYpo8FEKzx4Gk66kqPFn27VOUzjkVLj9AQrEBb8LdqzWbXruh9nIyUG7TRfEcFgsLXnaqO/GcRRCrfwvw4LBCOySmgoihWAinrFfxuSpfC2k7FdVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c7R1LdZB; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2db2f6cb312so32999131fa.2;
+        Fri, 19 Apr 2024 02:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713517270; x=1714122070; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fY44b82kD7mfs1LDuG2tX7Tq5mE2NPHq5YvIF3/RCiY=;
+        b=c7R1LdZB8HTBnbJqram9rto+PDaX0Uwni3Ku1iTx1pjzXTqo/csPDjzzHb2qxRvSEi
+         6F4lNifwkx7SrR0ymizr85BwJ1eE07WCvvBus66SsfUK6PqYdfl6Z2Pps8va+a5mOM0y
+         1nuzf4S7XNvmyFcd6f/OEbt55GKECwuTWRLTGbM0LGYp19P6388v5ZUYLifS19BNQKtz
+         e+0u2TSL/36bTS5Kp8GgoCgMXQm+FnvRkbXdEgmsk5hvz7fZCzDKsF5bjVJ1mI/h/rx+
+         sOCuUwN5UYkEtkfTob+3f9wZDORB3Xr/tCnKf4q4XaWxVzNYzKgclEeVpfJ0X5yCsx5W
+         CJzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713517270; x=1714122070;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fY44b82kD7mfs1LDuG2tX7Tq5mE2NPHq5YvIF3/RCiY=;
+        b=ffKcXvSFBJJg0s7+sXzCnc4c/36vGypdACWR5J22C68AfBTNAv76OvSNf16gsTiqcN
+         9UskkTIzOGQlrvZ2jorfj7fcWid9xwEO8SwKDmFGV/A9zr5yLnf8+GRarp9T7iNes26N
+         QijcTnG+Ufik8aIT8lz8i6DLy8RBBtPL9aMgRZJ1+dfzAPllJHaLSFrehY+h7dWna7tn
+         KeXNLBD8c/muh6Z+7zL/I+yRLX8tWHh/jBpG80eWxDdetITOyb6Ypp1LNKVvx1NZ8+gn
+         3e9BpSUT/Sin27A4KJmiQ45/preggmHTg/KYVGCnCoiknqRtYWdJiQezVj4Gy5kkfxvL
+         Eimg==
+X-Forwarded-Encrypted: i=1; AJvYcCUqHubby9MVWTWnZkwok9PoJ1pGKemOxBC22TovWo1gKlWeGEgsStNiMTc9IZA/uJ0YmiJ3abrt2JT5NGSRiQOCTQrI6IH19CrSq2CW
+X-Gm-Message-State: AOJu0YyZSwiLtkQfydw+2+0aJ1p+/Pr+ir8wJyTgJmvWS6gYaQAD9vAM
+	jlrxgpPE6b38VyXmazNv7EQzLJmsuVCNVhn4gl3XEd401c30DysH
+X-Google-Smtp-Source: AGHT+IFf+yvsgfZdAfLc7jy1W6IzirSaZRzlIIEb41A56b6n1/Ucp1XQjLo7KbVBYLfKw0jyCLIRvQ==
+X-Received: by 2002:a2e:9dd7:0:b0:2d4:676b:f591 with SMTP id x23-20020a2e9dd7000000b002d4676bf591mr1100350ljj.45.1713517269858;
+        Fri, 19 Apr 2024 02:01:09 -0700 (PDT)
+Received: from localhost (static-193-12-47-89.cust.tele2.se. [193.12.47.89])
+        by smtp.gmail.com with ESMTPSA id u24-20020a2eb818000000b002d9de64ab6csm518177ljo.35.2024.04.19.02.01.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 02:01:09 -0700 (PDT)
+From: Casper Andersson <casper.casan@gmail.com>
+To: Lukasz Majewski <lukma@denx.de>
+Cc: netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
+ <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Vladimir Oltean
+ <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>, Jakub
+ Kicinski <kuba@kernel.org>, Oleksij Rempel <o.rempel@pengutronix.de>,
+ Tristram.Ha@microchip.com, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, Ravi Gunasekaran <r-gunasekaran@ti.com>, Simon
+ Horman <horms@kernel.org>, Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+ Murali Karicheri <m-karicheri2@ti.com>, Jiri Pirko <jiri@resnulli.us>, Dan
+ Carpenter <dan.carpenter@linaro.org>, Ziyang Xuan
+ <william.xuanziyang@huawei.com>, Shigeru Yoshida <syoshida@redhat.com>,
+ "Ricardo B. Marliere" <ricardo@marliere.net>, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v5 1/4] net: hsr: Provide RedBox support (HSR-SAN)
+In-Reply-To: <20240418173706.206e6a2f@wsk>
+References: <20240415124928.1263240-1-lukma@denx.de>
+ <20240415124928.1263240-2-lukma@denx.de> <86mspt7glf.fsf@gmail.com>
+ <20240416150359.7362c762@wsk> <86bk66hjyf.fsf@gmail.com>
+ <20240418173706.206e6a2f@wsk>
+Date: Fri, 19 Apr 2024 11:01:08 +0200
+Message-ID: <86mspploa3.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,207 +92,218 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+On 2024-04-18 17:37 +0200, Lukasz Majewski wrote:
+Hi Lukasz,
 
-Add a test case to exercise KVM_PRE_FAULT_MEMORY and run the guest to access the
-pre-populated area.  It tests KVM_PRE_FAULT_MEMORY ioctl for KVM_X86_DEFAULT_VM
-and KVM_X86_SW_PROTECTED_VM.
+> Hi Casper,
+>
+>> Hi,
+>> 
+>> Sorry for the late reply, I was awaiting confirmation on what I can
+>> say about the hardware I have access to. They won't let me say the
+>> name :( but I can give some details.
+>
+> Ok, good :-)
+>
+> At least I'm not alone and there is another person who can validate the
+> code (or behaviour) on another HSR HW.
+>
+> (Some parts of the specification could be double checked on another HW
+> as well).
+>
+>> 
+>> On 2024-04-16 15:03 +0200, Lukasz Majewski wrote:
+>> >> On 2024-04-02 10:58 +0200, Lukasz Majewski wrote:  
+>> >> > Changes for v3:
+>> >> >
+>> >> > - Modify frame passed Port C (Interlink) to have RedBox's source
+>> >> > address (SA) This fixes issue with connecting L2 switch to
+>> >> > Interlink Port as switches drop frames with SA other than one
+>> >> > registered in their (internal) routing tables.    
+>> >>   
+>> >> > +	/* When HSR node is used as RedBox - the frame received
+>> >> > from HSR ring
+>> >> > +	 * requires source MAC address (SA) replacement to one
+>> >> > which can be
+>> >> > +	 * recognized by SAN devices (otherwise, frames are
+>> >> > dropped by switch)
+>> >> > +	 */
+>> >> > +	if (port->type == HSR_PT_INTERLINK)
+>> >> > +		ether_addr_copy(eth_hdr(skb)->h_source,
+>> >> > +				port->hsr->macaddress_redbox);
+>> >> >   
+>> >> 
+>> >> I'm not really understanding the reason for this change. Can you
+>> >> explain it in more detail?  
+>> >
+>> > According to the HSR standard [1] the RedBox device shall work as a
+>> > "proxy" [*] between HSR network and SAN (i.e. "normal" ethernet)
+>> > devices.
+>> >
+>> > This particular snippet handles the situation when frame from HSR
+>> > node is supposed to be sent to SAN network. In that case the SA of
+>> > HSR (SA_A) is replaced with SA of RedBox (SA_RB) as the MAC address
+>> > of RedBox is known and used by SAN devices.
+>> >
+>> >
+>> > Node A  hsr1  |======| hsr1 Node Redbox |   |
+>> > (SA_A) [**]   |	     |           eth3   |---| ethX SAN
+>> > 	      |      |        	 (SA_RB)|   |  (e.g switch)
+>> >
+>> >
+>> > (the ====== represents duplicate link - like lan1,lan2)
+>> >
+>> > If the SA_A would be passed to SAN (e.g. switch) the switch could
+>> > get confused as also RedBox MAC address would be used. Hence, all
+>> > the frames going out from "Node Redbox" have SA set to SA_RB.
+>> >
+>> > According to [1] - RedBox shall have the MAC address.
+>> > This is similar to problem from [2].  
+>> 
+>> Thanks for the explanation, but I still don't quite follow in what way
+>> the SAN gets confused. "also RedBox MAC address would be used", when
+>> does this happen? Do you mean that some frames from Node A end up
+>> using the RedBox MAC address so it's best if they all do?
+>
+> The SAN (let's say it is a switch) can communicate with RedBox or Node
+> A. In that way the DA is different for both (so SA on reply is also
+> different). On my setup I've observed frames drop (caused probably by
+> switch filtering of incoming traffic not matching the outgoing one).
+>
+> When I only use SA of RedBox on traffic going to SAN, the problem is
+> gone.
+>
+> IMHO, such separation (i.e. to use only RedBox's SA on traffic going to
+> SAN) is the "proxy" mentioned in the standard.
+>
+>> 
+>> I see there is already some address replacement going on in the HSR
+>> interface, as you pointed out in [2]. And I get your idea of being a
+>> proxy. If no one else is opposed to this then I'm fine with it too.
+>> 
+>
+> Ok.
+>
+>> >> The standard does not say to modify the
+>> >> SA. However, it also does not say to *not* modify it in HSR-SAN
+>> >> mode like it does in other places. In HSR-HSR and HSR-PRP mode
+>> >> modifying SA breaks the duplicate discard.  
+>> >
+>> > IMHO, the HSR-SAN shall be regarded as a "proxy" [*] between two
+>> > types (and not fully compatible) networks.
+>> >  
+>> >> So keeping the same behavior for all
+>> >> modes would be ideal.
+>> >> 
+>> >> I imagine any HW offloaded solutions will not modify the SA, so if
+>> >> possible the SW should also behave as such.  
+>> >
+>> > The HW offloading in most cases works with HSR-HSR setup (i.e. it
+>> > duplicates frames automatically or discards them when recived - like
+>> > ksz9477 [3]).
+>> >
+>> > I think that RedBox HW offloading would be difficult to achieve to
+>> > comply with standard. One "rough" idea would be to configure
+>> > aforementioned ksz9477 to pass all frames in its HW between SAN and
+>> > HSR network (but then it wouldn't filter them).  
+>> 
+>> I don't know anything about ksz9477. The hardware I have access to is
+>> supposed to be compliant with 2016 version in an offloaded situation
+>> for all modes (HSR-SAN, PRP-SAN, HSR-PRP, HSR-HSR).
+>
+> Hmm... Interesting.
+>
+> As fair as I know - the ksz9477 driver from Microchip for RedBox sets
+> internal (i.e. in chip) vlan for Node_A, Node_B and Interlink, so _all_
+> packets are flowing back and forth between HSR and SAN networks ....
+>
+>> Though, I haven't
+>> verified if the operation is fully according to standard.
+>
+> You may use wireshark on device connected as SAN to redbox and then see
+> if there are any frames (especially supervisory ones) passed from HSR
+> network.
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-Message-ID: <32427791ef42e5efaafb05d2ac37fa4372715f47.1712785629.git.isaku.yamahata@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- tools/include/uapi/linux/kvm.h                |   8 +
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/pre_fault_memory_test.c     | 146 ++++++++++++++++++
- 3 files changed, 155 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/pre_fault_memory_test.c
+I realized I should clarify, what I'm running is non-upstream
+software. And by offloaded I mean the redbox forwarding is
+offloaded. Supervision frames are still handled in SW and only sent on
+HSR/PRP ports, and doesn't reach any SAN nodes. Basic operation works as
+it should.
 
-diff --git a/tools/include/uapi/linux/kvm.h b/tools/include/uapi/linux/kvm.h
-index c3308536482b..4d66d8afdcd1 100644
---- a/tools/include/uapi/linux/kvm.h
-+++ b/tools/include/uapi/linux/kvm.h
-@@ -2227,4 +2227,12 @@ struct kvm_create_guest_memfd {
- 	__u64 reserved[6];
- };
- 
-+#define KVM_PRE_FAULT_MEMORY	_IOWR(KVMIO, 0xd5, struct kvm_pre_fault_memory)
-+
-+struct kvm_pre_fault_memory {
-+	__u64 gpa;
-+	__u64 size;
-+	__u64 flags;
-+};
-+
- #endif /* __LINUX_KVM_H */
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 871e2de3eb05..61d581a4bab4 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -144,6 +144,7 @@ TEST_GEN_PROGS_x86_64 += set_memory_region_test
- TEST_GEN_PROGS_x86_64 += steal_time
- TEST_GEN_PROGS_x86_64 += kvm_binary_stats_test
- TEST_GEN_PROGS_x86_64 += system_counter_offset_test
-+TEST_GEN_PROGS_x86_64 += pre_fault_memory_test
- 
- # Compiled outputs used by test targets
- TEST_GEN_PROGS_EXTENDED_x86_64 += x86_64/nx_huge_pages_test
-diff --git a/tools/testing/selftests/kvm/pre_fault_memory_test.c b/tools/testing/selftests/kvm/pre_fault_memory_test.c
-new file mode 100644
-index 000000000000..e56eed2c1f05
---- /dev/null
-+++ b/tools/testing/selftests/kvm/pre_fault_memory_test.c
-@@ -0,0 +1,146 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2024, Intel, Inc
-+ *
-+ * Author:
-+ * Isaku Yamahata <isaku.yamahata at gmail.com>
-+ */
-+#include <linux/sizes.h>
-+
-+#include <test_util.h>
-+#include <kvm_util.h>
-+#include <processor.h>
-+
-+/* Arbitrarily chosen values */
-+#define TEST_SIZE		(SZ_2M + PAGE_SIZE)
-+#define TEST_NPAGES		(TEST_SIZE / PAGE_SIZE)
-+#define TEST_SLOT		10
-+
-+static void guest_code(uint64_t base_gpa)
-+{
-+	volatile uint64_t val __used;
-+	int i;
-+
-+	for (i = 0; i < TEST_NPAGES; i++) {
-+		uint64_t *src = (uint64_t *)(base_gpa + i * PAGE_SIZE);
-+
-+		val = *src;
-+	}
-+
-+	GUEST_DONE();
-+}
-+
-+static void pre_fault_memory(struct kvm_vcpu *vcpu, u64 gpa, u64 size,
-+			     u64 left)
-+{
-+	struct kvm_pre_fault_memory range = {
-+		.gpa = gpa,
-+		.size = size,
-+		.flags = 0,
-+	};
-+	u64 prev;
-+	int ret, save_errno;
-+
-+	do {
-+		prev = range.size;
-+		ret = __vcpu_ioctl(vcpu, KVM_PRE_FAULT_MEMORY, &range);
-+		save_errno = errno;
-+		TEST_ASSERT((range.size < prev) ^ (ret < 0),
-+			    "%sexpecting range.size to change on %s",
-+			    ret < 0 ? "not " : "",
-+			    ret < 0 ? "failure" : "success");
-+	} while (ret >= 0 ? range.size : save_errno == EINTR);
-+
-+	TEST_ASSERT(range.size == left,
-+		    "Completed with %lld bytes left, expected %" PRId64,
-+		    range.size, left);
-+
-+	if (left == 0)
-+		__TEST_ASSERT_VM_VCPU_IOCTL(!ret, "KVM_PRE_FAULT_MEMORY", ret, vcpu->vm);
-+	else
-+		/* No memory slot causes RET_PF_EMULATE. it results in -ENOENT. */
-+		__TEST_ASSERT_VM_VCPU_IOCTL(ret && save_errno == ENOENT,
-+					    "KVM_PRE_FAULT_MEMORY", ret, vcpu->vm);
-+}
-+
-+static void __test_pre_fault_memory(unsigned long vm_type, bool private)
-+{
-+	const struct vm_shape shape = {
-+		.mode = VM_MODE_DEFAULT,
-+		.type = vm_type,
-+	};
-+	struct kvm_vcpu *vcpu;
-+	struct kvm_run *run;
-+	struct kvm_vm *vm;
-+	struct ucall uc;
-+
-+	uint64_t guest_test_phys_mem;
-+	uint64_t guest_test_virt_mem;
-+	uint64_t alignment, guest_page_size;
-+
-+	vm = vm_create_shape_with_one_vcpu(shape, &vcpu, guest_code);
-+
-+	alignment = guest_page_size = vm_guest_mode_params[VM_MODE_DEFAULT].page_size;
-+	guest_test_phys_mem = (vm->max_gfn - TEST_NPAGES) * guest_page_size;
-+#ifdef __s390x__
-+	alignment = max(0x100000UL, guest_page_size);
-+#else
-+	alignment = SZ_2M;
-+#endif
-+	guest_test_phys_mem = align_down(guest_test_phys_mem, alignment);
-+	guest_test_virt_mem = guest_test_phys_mem;
-+
-+	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
-+				    guest_test_phys_mem, TEST_SLOT, TEST_NPAGES,
-+				    private ? KVM_MEM_GUEST_MEMFD : 0);
-+	virt_map(vm, guest_test_virt_mem, guest_test_phys_mem, TEST_NPAGES);
-+
-+	if (private)
-+		vm_mem_set_private(vm, guest_test_phys_mem, TEST_SIZE);
-+	pre_fault_memory(vcpu, guest_test_phys_mem, SZ_2M, 0);
-+	pre_fault_memory(vcpu, guest_test_phys_mem + SZ_2M, PAGE_SIZE * 2, PAGE_SIZE);
-+	pre_fault_memory(vcpu, guest_test_phys_mem + TEST_SIZE, PAGE_SIZE, PAGE_SIZE);
-+
-+	vcpu_args_set(vcpu, 1, guest_test_virt_mem);
-+	vcpu_run(vcpu);
-+
-+	run = vcpu->run;
-+	TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
-+		    "Wanted KVM_EXIT_IO, got exit reason: %u (%s)",
-+		    run->exit_reason, exit_reason_str(run->exit_reason));
-+
-+	switch (get_ucall(vcpu, &uc)) {
-+	case UCALL_ABORT:
-+		REPORT_GUEST_ASSERT(uc);
-+		break;
-+	case UCALL_DONE:
-+		break;
-+	default:
-+		TEST_FAIL("Unknown ucall 0x%lx.", uc.cmd);
-+		break;
-+	}
-+
-+	kvm_vm_free(vm);
-+}
-+
-+static void test_pre_fault_memory(unsigned long vm_type, bool private)
-+{
-+	if (vm_type && !(kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(vm_type))) {
-+		pr_info("Skipping tests for vm_type 0x%lx\n", vm_type);
-+		return;
-+	}
-+
-+	__test_pre_fault_memory(vm_type, private);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	TEST_REQUIRE(kvm_check_cap(KVM_CAP_PRE_FAULT_MEMORY));
-+
-+	test_pre_fault_memory(0, false);
-+#ifdef __x86_64__
-+	test_pre_fault_memory(KVM_X86_SW_PROTECTED_VM, false);
-+	test_pre_fault_memory(KVM_X86_SW_PROTECTED_VM, true);
-+#endif
-+	return 0;
-+}
--- 
-2.43.0
+>> It does not
+>> modify any addresses in HW.
+>
+> By address - you mean the MAC addresses of nodes?
 
+I mean that it forwards all frames without modification (except HSR/PRP
+and VLAN tags). It does not update SMAC with the proxy MAC like your
+implementation does.
+
+>> Does the interlink port also reach the drivers?
+>
+> Could you be more specific in your question?
+
+Sorry, it was connected to the question below if it sets anything up in
+the drivers for the interlink port. And you answered it.
+
+>> Does it call
+>> port_hsr_join and try to join as an HSR port? 
+>
+> No, not yet.
+>
+> The community (IIRC Vladimir Oltean) suggested to first implement the
+> RedBox Interlink (HSR-SAN) in SW. Then, we may think about adding
+> offloading support for it.
+>
+>> Do we maybe need a
+>> separate path or setting for configuring the interlink in the
+>> different modes (SAN, HSR, PRP interlink)?
+>
+> I think that it shall be handled as an extra parameter (like we do have
+> now with 'supervision' or 'version') in ip link add.
+>
+> However, first I would like to have the "interlink" parameter added to
+> iproute2 and then we can extend it to other modes if requred.
+
+Alright, doing SW implementation first sounds good. From userspace it
+can probably be an extra parameter. But for the driver configuration
+maybe we want a port_interlink_join? (when it comes to implementing that).
+
+
+I did some testing with veth interfaces (everything in SW) with your
+patches. I tried to do a setup like yours
+                
+                  +-vethA---vethB-+
+                  |               |
+vethF---vethE---hsr0             hsr1
+                  |               |
+                  +-vethC---vethD-+
+
+Sending traffic from vethF results in 3 copies being seen on the ring
+ports. One of which ends up being forwarded back to vethF (with SMAC
+updated to the proxy address). I assume this is not intended behavior.
+
+
+Setup:
+ip link add dev vethA type veth peer name vethB
+ip link add dev vethC type veth peer name vethD
+ip link add dev vethE type veth peer name vethF
+ip link set up dev vethA
+ip link set up dev vethB
+ip link set up dev vethC
+ip link set up dev vethD
+ip link set up dev vethE
+ip link set up dev vethF
+
+ip link add name hsr0 type hsr slave1 vethA slave2 vethC interlink vethE supervision 45 version 1
+ip link add name hsr1 type hsr slave1 vethB slave2 vethD supervision 45 version 1
+ip link set dev hsr0 up
+ip link set dev hsr1 up
+
+I used Nemesis to send random UDP broadcast packets but you could use whatever:
+nemesis udp -d vethF -c 10000 -i 1 
+
+BR,
+Casper
 
