@@ -1,289 +1,151 @@
-Return-Path: <linux-kernel+bounces-151569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 690618AB08B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:17:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 664A88AB084
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:15:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1886C281B02
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:17:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3A5FB20CCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:15:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C286612DDB0;
-	Fri, 19 Apr 2024 14:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC2A08562A;
+	Fri, 19 Apr 2024 14:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eQmE/Xnr"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eL0F9+1G"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 534538562A;
-	Fri, 19 Apr 2024 14:17:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6F14F214;
+	Fri, 19 Apr 2024 14:15:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713536233; cv=none; b=CCZTdqF6TnKSS8sRBI+OltMzyNti5AeIxgiIBeCjKDhAyouXzhtdJqRO1z6V0ZeFkM6PQM9dQNUA5jkLC55tkOcH1/Xli9OceyckVYmmmD9oWGYp3AbG8G1uFMIF18Ob02NQoeoOTG+hBSahMKZO1RpxEbpQg6lHa4JIH+VNMBY=
+	t=1713536143; cv=none; b=a/Ostu7B+wG+CLOwgYbLdH6EX1EA64E9khQ8AX+7WEvmFE7nZNyby/55CQBjYK5W+OrqN8JJQJjOA8CdXZ0mMjXrg5+lfllCCaTo2glajxy9qJ+FVaq+bvJFc2Lwkjgvtj4A/jETV4ccUyk2cHGzlJvZLwUyzG66fu5fxgolvwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713536233; c=relaxed/simple;
-	bh=sJIqAxmp0MkI+0Rle3MPmTH/t6Q5u46iHaETUAfB5/s=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=i0Aq+kqtGSMsQQvifAry/wx7crMlfqgjYft8DPRW8tSuW6H1nEgZtzxrtCP0HxYKRznNvr/FAfV/tBpUX0BbwEpYu34FF9tbiI/tp9zS4et5zdOrIAs91YW8y4hP2gi6j6vJx35dP/0cJCsirsN2TztpD2xxyW6VSKmq+bgDoVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eQmE/Xnr; arc=none smtp.client-ip=209.85.219.47
+	s=arc-20240116; t=1713536143; c=relaxed/simple;
+	bh=W0mdvqs2asOd11DMoCEkH+mk70+oTv/de/UTORfTO0M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p2CLh97j/PNLm7ICjHpEqjSE4a3Em+ua2RMdYzYJ6JCC6LSMPQEl0ZTqBI7AbAGQmTkFEL7Jz7zvcro7KtP/sHE4Rly9Vzxhp/7vT1oZZ8fCeXLOwTsIgbDJUKFvd3f1tf2Yy3gkG+eJv0MmG6fVDwospSw6s/q0sbWhMJdXObo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eL0F9+1G; arc=none smtp.client-ip=209.85.167.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-69b5ece41dfso9001766d6.2;
-        Fri, 19 Apr 2024 07:17:12 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-518a3e0d2ecso3277417e87.3;
+        Fri, 19 Apr 2024 07:15:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713536231; x=1714141031; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713536139; x=1714140939; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JTXvfmS2qR6Ir1vYAUrlQKPmC+TTAVl7HcrdLRbgBYI=;
-        b=eQmE/XnrZcdmKG/rhobsYJFoDvWrig/PI9QMKAbqhQjCnbkyssQyWoOswTqqcjZTcy
-         nLLBdQu5XOEbflyQyCwn6dMcY4MisIzGcGG05iVGpDB2EpnjJq0Ct6SAgAuybW9ze5Uv
-         gC4GGMbM1omHLZZMq9ozxAt2nVW8og71xowM2fy4ljTMc3Wt0r3Lxzf1ZRO9QiyTYXSn
-         gbn4ojz8mtxqh04GXzJRrxWSZuiKKlhse3/TtCseDO9iFTSjZxMKP58a478zG1yDIX/m
-         +jt6eUZ/KRQLg5hiVeg3HhA4Cwolxqb6l0FU8T3QL/aHqzyvsLb0CuoGHd1fmaTII+aH
-         /sdg==
+        bh=od1HuzfQ62qye8I9y6ria+FsgJWb4Ms5/RYXQrdJrHw=;
+        b=eL0F9+1GDvvDxXN3ndO1S3ip3Xz7Dgi//9lN2dAgAipFm8xZJl5UHELNMIse7T7ALA
+         KP2aj8NOHi+IoYGEs3dL7vwe4UTfzVu98XAI7LoXSxko4sz3QVdVzlPSvPo8/XlIrPVv
+         Rp8O96zIGT9cYa7ieWgXsKClSLKGyx0irWwCfgpYMCX45YxYFFhLWk8Xk7YgvO6ZaMMu
+         8P9JVEhYYPnuTePNSJcnXKHsTgUeGIwQqeLwjtxXVNATHtfK0H8cGFlsrcQzGD0p2ITz
+         35VoEWxZHWmHYWy9yMZ8RiHJqgK4B9ke7ld2aOiHIpMBa8j1JwIB52kVkOCnXrp74Cnm
+         47iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713536231; x=1714141031;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=JTXvfmS2qR6Ir1vYAUrlQKPmC+TTAVl7HcrdLRbgBYI=;
-        b=g/Y4g5j0VgmUmfBuSAVtH86nOtkOJ+IR73jBPE6ABFhHGyz/mS+OnyujeKz3WE4vx/
-         PkcPFYifY8tsAg2vCaoTNCpvxo9rDBFEXxRioi4RkDlUw9FdTcffvL4mJfAorKyJdNUy
-         oYibhUZFR6zSdLiS3C+41nYAJPDQ3J1eW6t5My2azlMIAYTSgy/W5s1fN0sf1NnKRF9B
-         aFX+C7gVNQuolcrTpQYyvU0viPSDvjup7BISfkluyLtBqBoDpo4YTLEg9IOtu9kHKNOO
-         YLuQPdmN+nrT/2J08fndAvgNzAbPPaNIxZcrhKUjVX9ejTB+hhNpX1nuqfY0bwKo3+CQ
-         QEmw==
-X-Forwarded-Encrypted: i=1; AJvYcCXsIW0aJZ4ELlRJxqbN5hvVmGUyRy7CK18OiKFVEN78sYNtPvtQmiPnpIU1bLRXOR0JwAxWKfbZoks7A37nb6FCssQLyz+Bm0qHKOay9iy6UYC1/AfQd3pdiz+p
-X-Gm-Message-State: AOJu0Yxnxhp4sFJK7doVTe55ll1kzfa3uKcX8RLaxn9OIZxgv0h/Lp0H
-	v4n9DjD6rVBlVUeuNMag6Aq23uQ5ScmJd+4HkmhXhi7wKCaqhyAlkiIvhg==
-X-Google-Smtp-Source: AGHT+IFwrjRVpq0snyoB1FHwCdBCa0bAZL0wV//OlWBYxoRztrm4rVxhQFgtzOTuyKRMA/r40ls8RA==
-X-Received: by 2002:ad4:538c:0:b0:69b:fb9:9a75 with SMTP id i12-20020ad4538c000000b0069b0fb99a75mr1677835qvv.49.1713536231400;
-        Fri, 19 Apr 2024 07:17:11 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id b17-20020a0cc991000000b006a0488c5cd1sm1568268qvk.83.2024.04.19.07.17.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 07:17:11 -0700 (PDT)
-Date: Fri, 19 Apr 2024 10:17:10 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>, 
- "maze@google.com" <maze@google.com>, 
- "willemdebruijn.kernel@gmail.com" <willemdebruijn.kernel@gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
- "steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, 
- "kuba@kernel.org" <kuba@kernel.org>, 
- =?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
- "pabeni@redhat.com" <pabeni@redhat.com>, 
- "edumazet@google.com" <edumazet@google.com>, 
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, 
- "davem@davemloft.net" <davem@davemloft.net>, 
- yan@cloudflare.com
-Message-ID: <66227ce6c1898_116a9b294be@willemb.c.googlers.com.notmuch>
-In-Reply-To: <b24bc70ae2c50dc50089c45afbed34904f3ee189.camel@mediatek.com>
-References: <20240415150103.23316-1-shiming.cheng@mediatek.com>
- <661d93b4e3ec3_3010129482@willemb.c.googlers.com.notmuch>
- <65e3e88a53d466cf5bad04e5c7bc3f1648b82fd7.camel@mediatek.com>
- <CANP3RGdkxT4TjeSvv1ftXOdFQd5Z4qLK1DbzwATq_t_Dk+V8ig@mail.gmail.com>
- <661eb25eeb09e_6672129490@willemb.c.googlers.com.notmuch>
- <CANP3RGdrRDERiPFVQ1nZYVtopErjqOQ72qQ_+ijGQiL7bTtcLQ@mail.gmail.com>
- <CANP3RGd+Zd-bx6S-NzeGch_crRK2w0-u6xwSVn71M581uCp9cQ@mail.gmail.com>
- <661f066060ab4_7a39f2945d@willemb.c.googlers.com.notmuch>
- <77068ef60212e71b270281b2ccd86c8c28ee6be3.camel@mediatek.com>
- <662027965bdb1_c8647294b3@willemb.c.googlers.com.notmuch>
- <11395231f8be21718f89981ffe3703da3f829742.camel@mediatek.com>
- <CANP3RGdh24xyH2V7Sa2fs9Ca=tiZNBdKu1qQ8LFHS3sY41CxmA@mail.gmail.com>
- <b24bc70ae2c50dc50089c45afbed34904f3ee189.camel@mediatek.com>
-Subject: Re: [PATCH net] udp: fix segmentation crash for GRO packet without
- fraglist
+        d=1e100.net; s=20230601; t=1713536139; x=1714140939;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=od1HuzfQ62qye8I9y6ria+FsgJWb4Ms5/RYXQrdJrHw=;
+        b=hxKhZdjt7aLa7bRFM/+Ub7XqrpJQ/TvWMG8ujVSWRbGsjCH1FpUSlFwFEBKcBqN5U/
+         hz0zHDkLl39BwewD95c/6k4CS9wJPJQI6JN1go9KSA7gKxbb3UfHDOEhGT8FHlPIeuGz
+         gM19rFzDnFhIYX15Dk9dh1cPauho1wYcPHvEg4UfXmwZR/hQIlE8KjlqWt71rPeBRakF
+         g2FgeCESnGR0dGx+/fIo0kXW2qQpONlcbs65H3CBPtLlFHHCWOPAKC6rNM0TbS514wcE
+         pkzF7u3f1h2OXzXkcOocy3YD+ZstUEW1C5fn3NFmcdmaNjwXQOzeOtKoh0RFknmlWC6j
+         hQ6A==
+X-Forwarded-Encrypted: i=1; AJvYcCUdDch2fhWB6Q+7lgk/PX2UOO05MKuAHOxN9rUqMJ/OqTIvyUH0FFBv+eAawH9HvB5KuMslarSAtD6oqeZplG/dS2F0a0CjibS7c9kRTnpF6HwScLnwOdvxltXitSfwZY6tYFp7zR1J18OuoRAdPXT+0HbhcMnelne0IFbLUTaaKvnXXA3HFA==
+X-Gm-Message-State: AOJu0Yzu9HoE6pTXmUDdSnMzzLOznSsS/EBzNkEJD4OjnFwDdj6WB6bO
+	8lygIwyEdTf8Hf0zWgrGEOrRaW2FdJVi0Qqix9mQIklPBluPoXLIfmNdRb8gA0arvuqQcByk1SG
+	X8w3ygJjzRVVlneTXIt5Gs/3xiug=
+X-Google-Smtp-Source: AGHT+IE1lEiJ+HQHyKO37TEXweZDgaRCH2dQqiCpfF+bVzG/msLkLTqXljXaNiBmiD8F6JAq7LVM4pgzv4o3VJhcgAI=
+X-Received: by 2002:a05:6512:38c1:b0:513:ca40:fafc with SMTP id
+ p1-20020a05651238c100b00513ca40fafcmr1600944lft.11.1713536138669; Fri, 19 Apr
+ 2024 07:15:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+References: <20240419124506.1531035-1-rilian.la.te@ya.ru> <20240419124506.1531035-3-rilian.la.te@ya.ru>
+ <20240419-glue-pyramid-584728c0076a@spud>
+In-Reply-To: <20240419-glue-pyramid-584728c0076a@spud>
+From: "Konstantin P." <ria.freelander@gmail.com>
+Date: Fri, 19 Apr 2024 17:17:43 +0300
+Message-ID: <CAF1WSuy4OJVTU5VJdn23BSw4aTAq7i8UQ416V7BxveuQ+5=-1w@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] dt-bindings: sc16is7xx: Add compatible line for
+ XR20M1172 UART
+To: Conor Dooley <conor@kernel.org>
+Cc: Konstantin Pugin <rilian.la.te@ya.ru>, Vladimir Zapolskiy <vz@mleia.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+	Lech Perczak <lech.perczak@camlingroup.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Lena Wang (=E7=8E=8B=E5=A8=9C) wrote:
-> On Wed, 2024-04-17 at 21:15 -0700, Maciej =C5=BBenczykowski wrote:
-> >  	 =
+On Fri, Apr 19, 2024 at 5:08=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Fri, Apr 19, 2024 at 03:45:02PM +0300, Konstantin Pugin wrote:
+> > From: Konstantin Pugin <ria.freelander@gmail.com>
+> >
+> > Add EXAR XR20M1172 UART compatible line into devicetree documentation.
+>
+> What you're doing is obvious from the diff, why this exar device is
+> related to the nxp devices is what should be mentioned here.
+>
+> Thanks,
+> Conor.
 
-> > External email : Please do not click links or open attachments until
-> > you have verified the sender or the content.
-> >  On Wed, Apr 17, 2024 at 7:53=E2=80=AFPM Lena Wang (=E7=8E=8B=E5=A8=9C=
-) <
-> > Lena.Wang@mediatek.com> wrote:
-> > >
-> > > On Wed, 2024-04-17 at 15:48 -0400, Willem de Bruijn wrote:
-> > > >
-> > > > External email : Please do not click links or open attachments
-> > until
-> > > > you have verified the sender or the content.
-> > > >  Lena Wang (=E7=8E=8B=E5=A8=9C) wrote:
-> > > > > On Tue, 2024-04-16 at 19:14 -0400, Willem de Bruijn wrote:
-> > > > > >
-> > > > > > External email : Please do not click links or open
-> > attachments
-> > > > until
-> > > > > > you have verified the sender or the content.
-> > > > > >  > > > > Personally, I think bpf_skb_pull_data() should have
-> > > > > > automatically
-> > > > > > > > > > (ie. in kernel code) reduced how much it pulls so
-> > that it
-> > > > > > would pull
-> > > > > > > > > > headers only,
-> > > > > > > > >
-> > > > > > > > > That would be a helper that parses headers to discover
-> > > > header
-> > > > > > length.
-> > > > > > > >
-> > > > > > > > Does it actually need to?  Presumably the bpf pull
-> > function
-> > > > could
-> > > > > > > > notice that it is
-> > > > > > > > a packet flagged as being of type X (UDP GSO FRAGLIST)
-> > and
-> > > > reduce
-> > > > > > the pull
-> > > > > > > > accordingly so that it doesn't pull anything from the
-> > non-
-> > > > linear
-> > > > > > > > fraglist portion???
-> > > > > > > >
-> > > > > > > > I know only the generic overview of what udp gso is, not
-> > any
-> > > > > > details, so I am
-> > > > > > > > assuming here that there's some sort of guarantee to how
-> > > > these
-> > > > > > packets
-> > > > > > > > are structured...  But I imagine there must be or we
-> > wouldn't
-> > > > be
-> > > > > > hitting these
-> > > > > > > > issues deeper in the stack?
-> > > > > > >
-> > > > > > > Perhaps for a packet of this type we're already guaranteed
-> > the
-> > > > > > headers
-> > > > > > > are in the linear portion,
-> > > > > > > and the pull should simply be ignored?
-> > > > > > >
-> > > > > > > >
-> > > > > > > > > Parsing is better left to the BPF program.
-> > > > > >
-> > > > > > I do prefer adding sanity checks to the BPF helpers, over
-> > having
-> > > > to
-> > > > > > add then in the net hot path only to protect against
-> > dangerous
-> > > > BPF
-> > > > > > programs.
-> > > > > >
-> > > > > Is it OK to ignore or decrease pull length for udp gro fraglist=
+It is already mentioned in cover letter and in previous patches in the
+series. Do I need to repeat it in DTS patch?
+If so, I will do it.
 
-> > > > packet?
-> > > > > It could save the normal packet and sent to user correctly.
-> > > > >
-> > > > > In common/net/core/filter.c
-> > > > > static inline int __bpf_try_make_writable(struct sk_buff *skb,
-> > > > >               unsigned int write_len)
-> > > > > {
-> > > > > +if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
-> > > > > +(SKB_GSO_UDP  |SKB_GSO_UDP_L4)) {
-> > > >
-> > > > The issue is not with SKB_GSO_UDP_L4, but with SKB_GSO_FRAGLIST.
-> > > >
-> > > Current in kernel just UDP uses SKB_GSO_FRAGLIST to do GRO. In
-> > > udp_offload.c udp4_gro_complete gso_type adds "SKB_GSO_FRAGLIST|
-> > > SKB_GSO_UDP_L4". Here checking these two flags is to limit the
-> > packet
-> > > as "UDP + need GSO + fraglist".
-> > >
-> > > We could remove SKB_GSO_UDP_L4 check for more packet that may
-> > addrive
-> > > skb_segment_list.
-> > >
-> > > > > +return 0;
-> > > >
-> > > > Failing for any pull is a bit excessive. And would kill a sane
-> > > > workaround of pulling only as many bytes as needed.
-> > > >
-> > > > > +     or if (write_len > skb_headlen(skb))
-> > > > > +write_len =3D skb_headlen(skb);
-> > > >
-> > > > Truncating requests would be a surprising change of behavior
-> > > > for this function.
-> > > >
-> > > > Failing for a pull > skb_headlen is arguably reasonable, as
-> > > > the alternative is that we let it go through but have to drop
-> > > > the now malformed packets on segmentation.
-> > > >
-> > > >
-> > > Is it OK as below?
-> > >
-> > > In common/net/core/filter.c
-> > > static inline int __bpf_try_make_writable(struct sk_buff *skb,
-> > >               unsigned int write_len)
-> > > {
-> > > +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
-> > > +               SKB_GSO_FRAGLIST) && (write_len >
-> > skb_headlen(skb))) {
-> > > +               return 0;
-> > =
+Citation from my cover letter:
 
-> > please limit write_len to skb_headlen() instead of just returning 0
-> > =
+EXAR XR20M1172 UART is mostly SC16IS762-compatible, but
+it has additional register which can change UART multiplier
+to 4x and 8x, similar to UPF_MAGIC_MULTIPLIER does. So, I used this
+flag to guard access to its specific DLD register. It seems than
+other EXAR SPI UART modules also have this register, but I tested
+only XR20M1172.
+Yes, in datasheet this register is called "DLD - Divisor Fractional"
+or "DLD - Divisor Fractional Register", calling depends on datasheet
+version.
 
-> =
+Also, comparision from NXP itself:
+http://www.bdtic.com/download/nxp/75017168.pdf (pp12-13 is about XR20M1172)=
+.
 
-> Hi Maze & Willem,
-> Maze's advice is:
-> In common/net/core/filter.c
-> static inline int __bpf_try_make_writable(struct sk_buff *skb,
->               unsigned int write_len)
-> { =
-
-> +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
-> +               SKB_GSO_FRAGLIST) && (write_len > skb_headlen(skb))) {
-> +               write_len =3D skb_headlen(skb);
-> +       }
->         return skb_ensure_writable(skb, write_len);
-> }
-> =
-
-> Willem's advice is to "Failing for a pull > skb_headlen is arguably =
-
-> reasonable...". It prefers to return 0 :
-> +       if (skb_is_gso(skb) && (skb_shinfo(skb)->gso_type &
-> +               SKB_GSO_FRAGLIST) && (write_len > skb_headlen(skb))) {
-> +               return 0;
-> +       }
-> =
-
-> It seems a bit conflict. However I am not sure if my understanding is
-> right and hope to get your further guide.
-
-I did not mean to return 0. But to fail a request that would pull an
-unsafe amount. The caller must get a clear error signal.
-
-Back to the original report: the issue should already have been fixed
-by commit 876e8ca83667 ("net: fix NULL pointer in skb_segment_list").
-But that commit is in the kernel for which you report the error.
-
-Turns out that the crash is not in skb_segment_list, but later in
-__udpv4_gso_segment_list_csum. Which unconditionally dereferences
-udp_hdr(seg).
-
-The above fix also mentions skb pull as the culprit, but does not
-include a BPF program. If this can be reached in other ways, then we
-do need a stronger test in skb_segment_list, as you propose.
-
-I don't want to narrowly check whether udp_hdr is safe. Essentially,
-an SKB_GSO_FRAGLIST skb layout cannot be trusted at all if even one
-byte would get pulled.=
+> >
+> > Reviewed-by: Vladimir Zapolskiy <vz@mleia.com>
+> > Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yam=
+l b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
+> > index 5dec15b7e7c3..c4bedf23368b 100644
+> > --- a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
+> > +++ b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
+> > @@ -12,6 +12,7 @@ maintainers:
+> >  properties:
+> >    compatible:
+> >      enum:
+> > +      - exar,xr20m1172
+> >        - nxp,sc16is740
+> >        - nxp,sc16is741
+> >        - nxp,sc16is750
+> > --
+> > 2.34.1
+> >
 
