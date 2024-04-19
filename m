@@ -1,111 +1,86 @@
-Return-Path: <linux-kernel+bounces-151556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 547008AB072
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:13:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AA3B8AB075
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:13:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BF251F25A75
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:13:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86866B26FB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 14:13:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F12312D1FE;
-	Fri, 19 Apr 2024 14:11:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="UiOOSX2D"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52E012F38E;
+	Fri, 19 Apr 2024 14:12:06 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F2C12DD90
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27CA912F37B
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 14:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713535907; cv=none; b=B0EecNqgWMuUIvynCeyuuwpkpm1oX0BqBf1xLG0rmUWpB6ju/c69Faivf5JheMCwPJd8yT0ZMqiDOryZ2VsdZoipwaRlIVJDhTufLzh1hBrxsWfh0IsX46ZWzOoFv3H9VkwMLZA90OBSzxrb/LDdpApTimT50CAEuMP5RCpI7yI=
+	t=1713535926; cv=none; b=jZZDpAA0JnPqLo8WP5K9MNIfiEnNV6nsjyQIoO18ggVaPf/FQdbivL6Euqspxlfc7t/qU6KAxmA0IvJ+xCbAgtrIlGBvSXSzXE9AIYtM47SnLRbS4mYjJV58AHfnmt2mlZaaiyVlRckkvzQ5DiUKpUxP+bQcWCzTcNqM+c/yYGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713535907; c=relaxed/simple;
-	bh=lhuuhlHoSybByQn0SwSCUX4ACgq5MHGKsq4NUwZKxu4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=DN9rZppkm5ha1ZX0ALRgpUBEpyzMpoY7RduquUmoGEYzrP5C0CJAvRElvaAEJIk9OgIcBlPGG8EAAaEkCIYmh5+LW/707fSomYVJdC805M5cIJ9Ne/IszEnhZdrdOOdwrslFoUfuOKfok/HnSoKOCxGojmI1LMm/FhcvB/moQ8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=UiOOSX2D; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6f055602a7bso383196b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:11:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1713535906; x=1714140706; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wys6ZkDgxTEpvXL6YfKptglVkZTc+L3A3W2ruhO3H8E=;
-        b=UiOOSX2DlMO7U9TZ+vxC/jv1gdvL39YdO/msZ/zuGeVVDQTNOYmmWnWpUwECplo7Gz
-         eDP0TuZ/PgwFTZ4PVkZcYJw7i/apVF6uUF2EH/mWkTYnN9oobSVLgwHLf1KqwLC5G4vF
-         8BdiApGl68BKfGfeixLLymHH072rDGToHpc3d0X9roqjOlRUxpJIhpOwVMo+WyN1ptaX
-         FYM4Ngvp0ISgnYgZ5hGAAAoII8WEjfvzj7EX+nId901af/Zw+yM3FKEnCU3Pjg5ERBJB
-         Ui1PC91i3jNtKOk7Fs1DPh2Se7otXvT2LfVc4SprzDUb19t/REPx1UetJxTBqvtQU0cz
-         jA/g==
+	s=arc-20240116; t=1713535926; c=relaxed/simple;
+	bh=46y3x5EWoVuB69pyK9QfkYMfZnM7ZAdihmSrxiU/+mc=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=JyQ9IEC+RvWGQXI1kp27J6XU40h1E4EBqus8snefinbNjWpxwA4TKjhaQ3bVRovIlkDgy0TulzoHAcsiQof7beweq6i4TWbyx+lH+a9F7JyqU++mdpiVEpPVTq27eJTFFfVW50yNsIzWi0XWVSb2DaQHa9+xLf1+CD4WJ2CQjXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36b16d8e3a8so24900745ab.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 07:12:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713535906; x=1714140706;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wys6ZkDgxTEpvXL6YfKptglVkZTc+L3A3W2ruhO3H8E=;
-        b=M8e9t0Lwcc43Bsnmm0dtZiNeMDu+tKzOE+lK3/Wdr4O01VQ9eDcHm3RxG8fOipXAxx
-         5GOl87NIl9e7jgE3bH+Eh0ne2hQXz7gpcWcQrSjtPOI3B+sLYLCDSuHOSxYc+qFPRjbI
-         2KocbqbaQh719BCmwfplgmRJJJrzkjGJT/+/83e7p3KlpgStJfwnI1wlups504vEntjX
-         8xk2GpJX3lxa+WkF5jVThOlNGJKfZB2D2Fqhbx3jOnlLRbFm3FKpuY71D4ukh07q8EkL
-         hfRxtLQcLmdWxRvbXmjTTlWtpl53v/GTM4XsHSMeoi75BUdBjP7q13MkEj2t4kGieppk
-         /3Kw==
-X-Forwarded-Encrypted: i=1; AJvYcCWn8PXgKjrhy4TmbYEF4Yj1GzJkySwf+sO/J8XuKj1YsTXKRlMX+gEvnx4a69NC5QIsRBd1KJ3zEAztY8XdI8MxYCzAnYj6HbBXLwZ1
-X-Gm-Message-State: AOJu0Ywmt7efN4TO5YigbJZiO3i7WO4a4sNdMz3YLBiWbzgCJz5obKn7
-	ZTBsZ2q1Cf5vfOPVHwNoKOhVBy8lUwZEmXuTPlmZ+IpgcU16tDJkwHimuEqNoyBc+8W1bT+XXZu
-	z
-X-Google-Smtp-Source: AGHT+IFCc8KLLf1SOEMuhb+QGId8pOkh7M0fMhCUVy5hGkteY0WGoCWDclRF3oRGhPuIjxvMuKmAMw==
-X-Received: by 2002:aa7:838f:0:b0:6ea:6f18:887a with SMTP id u15-20020aa7838f000000b006ea6f18887amr2483792pfm.1.1713535905614;
-        Fri, 19 Apr 2024 07:11:45 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id fb22-20020a056a002d9600b006eceaccaec9sm3240102pfb.131.2024.04.19.07.11.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 07:11:45 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Abaci Robot <abaci@linux.alibaba.com>
-In-Reply-To: <20240419025610.34298-1-jiapeng.chong@linux.alibaba.com>
-References: <20240419025610.34298-1-jiapeng.chong@linux.alibaba.com>
-Subject: Re: [PATCH] block/mq-deadline: Remove some unused functions
-Message-Id: <171353590474.449375.12575665892825233453.b4-ty@kernel.dk>
-Date: Fri, 19 Apr 2024 08:11:44 -0600
+        d=1e100.net; s=20230601; t=1713535924; x=1714140724;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mf4pVk6DxwZlOW4odxz6a9Mou1xgG6wgb7Dnj4fE5Gk=;
+        b=CRC9NZh+nyNI745k/vWfee9Og+rTa4Yd7schUWRpwqmBVsoyqgoX23Wylp2EVEIs32
+         0jWTu90n7LBoh+UO2skXrfMP7HMXoSwxIMX/2VfrjnSJIg80mBONFN6YHNZxtyFZrmos
+         eCouVyLdCXOawBy06iEFWujKJFWeks+tTD5tFZcecn15vtzaBLt581KKGo0PeIszo0D0
+         r40eUrLlNOl2PfjZh6fBMiQDGWvE/Hv8NXixRmmObtcBkc7yrJtRhZMqdrUOfMt67uzm
+         qZxZGwln++k4qtkAtRg5CXgi2BYbpYsJDsr8FpO8iGhiD+RcaVaRLSu29WnNgF/aBa03
+         iR6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWhkh0H2f5QJdGaEFZmE6fxUPU1g3qsRBnvsX9bM15/o9y9mq22u7CBjgSSUmXPMF/2Rcj4/31XsyC652NUE05c0vy51eLokQCAksz/
+X-Gm-Message-State: AOJu0YwcO95YjZ3OVG56uKJvRKAbHo/Zr1QzfniCTox8m7/nuSRFCgUa
+	wOl5vPWMeq61uMAKevdQ6yw8NgM0lr005mFNwQ5LOl2WtWO8Nfi5nTDtkrT8dvIVHYstBtja0fT
+	U+y+BV1IiYV+jgDsYWJu1ZC63tt+6BoRVjbIcadkfUC0aXelayuUAnvg=
+X-Google-Smtp-Source: AGHT+IEBVTIGhfpnXkbYsFFjwBdZaF9jJn2BgyjdO2j+nWs49CEX6Zp+nsAeDjZeje76zPJv7ad9PRYl1mklngOi/hq4ONIs7ijn
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.5-dev-2aabd
+X-Received: by 2002:a05:6e02:216a:b0:36a:190f:1c93 with SMTP id
+ s10-20020a056e02216a00b0036a190f1c93mr134602ilv.5.1713535923682; Fri, 19 Apr
+ 2024 07:12:03 -0700 (PDT)
+Date: Fri, 19 Apr 2024 07:12:03 -0700
+In-Reply-To: <20240419104438.2747-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000a94b3061673ace4@google.com>
+Subject: Re: [syzbot] [bpf?] possible deadlock in __stack_map_get
+From: syzbot <syzbot+dddd99ae26c656485d89@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
 
-On Fri, 19 Apr 2024 10:56:10 +0800, Jiapeng Chong wrote:
-> These functions are defined in the mq-deadline.c file, but not called
-> elsewhere, so delete these unused functions.
-> 
-> block/mq-deadline.c:134:1: warning: unused function 'deadline_earlier_request'.
-> block/mq-deadline.c:148:1: warning: unused function 'deadline_latter_request'.
-> 
-> 
-> [...]
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Applied, thanks!
+Reported-and-tested-by: syzbot+dddd99ae26c656485d89@syzkaller.appspotmail.com
 
-[1/1] block/mq-deadline: Remove some unused functions
-      commit: 8294d49adbb06d7df8cfaca5a4f4eb9064a91b90
+Tested on:
 
-Best regards,
--- 
-Jens Axboe
+commit:         f99c5f56 Merge tag 'nf-24-03-21' of git://git.kernel.o..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1710ae6f180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=dddd99ae26c656485d89
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=105a7ec3180000
 
-
-
+Note: testing is done by a robot and is best-effort only.
 
