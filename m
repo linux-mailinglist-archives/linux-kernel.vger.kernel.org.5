@@ -1,82 +1,81 @@
-Return-Path: <linux-kernel+bounces-151497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0274C8AAFA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:44:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A0518AAFA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 15:45:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABF861F23C70
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:44:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C63A41F23BCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 13:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E194B12AADF;
-	Fri, 19 Apr 2024 13:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57A012A14E;
+	Fri, 19 Apr 2024 13:45:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WVS0dtwR"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hyh/ouGW"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E67E5129E9A;
-	Fri, 19 Apr 2024 13:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F30129E9A;
+	Fri, 19 Apr 2024 13:45:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713534277; cv=none; b=LObCkI6glOuH7F9QSgLZE8zXT9SziodtYOWxVdmnPYK9fVtIIgXWwPDSqYH6Uqg0eez40bJvdE+k1fEZTu/NSDSoz/RwFIcKJ37XFbCSwtJpoHrGQwQx+5vwe7fmI2A7cU9Fl3NM3zyp6jSs2p4WrQfLhRY43b02nSFh2/299Cs=
+	t=1713534314; cv=none; b=fSamcZDTiHlOKHbdyCdvsQY08b4AI55cbRWfQGzDN8o9fWoVbrYurare7tOARwkTpIE+2Cb4PHxI7+myhtGSKe7VE2K2dOYSPTzjbFmjNPL85XF56MZJc6CDG+5pWActYl9gxeWmOlvh31NcqgkK8VarDPcWVlgwmYGrLtUMCV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713534277; c=relaxed/simple;
-	bh=4adrLYRrAXCvAqs89EOsilRUUc0+XERQHAdg3MXeLX0=;
+	s=arc-20240116; t=1713534314; c=relaxed/simple;
+	bh=GA+lW5HtgYsj2a+WAq8/T30QMYc5JJ/OKGBfLyhRkqU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RxbbvnszyIhZcuqDuwrg2wat8KN6B8xqqCRL9V+XLOyFSvZ0OGWWBb0nnaJiMNMORyiTc0UeBaPbReXG4aVI3NXRZF2uiXXW4UrLuPgJDKIgNDwlkwNmn2V0ewCe0zFbsTstRQvcUlWBkjCIMTUiy6d+YEIWxG7bLE8PaaekkKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WVS0dtwR; arc=none smtp.client-ip=209.85.215.177
+	 To:Cc:Content-Type; b=cwEvzn6C30WlY9KYf5BC1NF7XVzQ5nRLodeSOc91S5c3t/8WZXaHmzzVj/ZHR1toSkHO7GuLloUzN5XjEKmtv+N+IYN9ZzGuMALjiEsEHiME36I1+qpEHqZgqBBDAbfh3L52oXbM+tUq5tuJyyqflyoQJDJxXZjr0rLyh2GvIz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hyh/ouGW; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so1582631a12.1;
-        Fri, 19 Apr 2024 06:44:35 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a526d381d2fso549132166b.0;
+        Fri, 19 Apr 2024 06:45:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713534275; x=1714139075; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713534311; x=1714139111; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DzQwYFk8dI+U3R6uoXrJRpRDjRyNGmQXT0LY/yo8guw=;
-        b=WVS0dtwR9A0eL7dWxA9SuV3crch2/BWDm4ysrfzdJ9s1GdbUPfTzVFbf9Ks8YQDujy
-         SHiTD8/Uor0PvbNAKqTcc+Cne6xthwDT/6tM6/dxUSJFLiX6sesDGhMweT2Ax02H5wL1
-         mONP+6wlmgUTWaFBCJHsR/r2QMkew3EOddSYUGEVIB6Ej51bBfSrOkHvLKC6AjEIbBZy
-         yqikfwIR4WZRcTldkbrXOPw/0cNvgIAmmWpFgT7mCWSGkYc8FXthh1YVJ/AS5m2OK033
-         7rfpFwvogQVYBQTfg5VSoYud+wiY+JTH7U6heoIwQwCqxrNKSQhnfI/lVaAzPtc4f+8e
-         GHbw==
+        bh=TRh/24YFoJxk/siZzuLpmoGSYfvWvbqBGJ8Jh2Xiye0=;
+        b=hyh/ouGWaiFjWKAbZmeKhThQQ9itbBsyusQMHGfgRr7LiIBPSCVEMnurKHztj44JRq
+         OMdJN/byVmazimXECc/zfps66Fsekk0Lg0NcfcP+bLAy0i3zFdYlPMRN6OBwkn2bRFkP
+         +sqkAolaZ0EpE0Rv8cClFUMKoSlDzyk+nMlhI32NfTUzCdJdZv02MBZws9nLHloKLyJF
+         iclJfpWxEgeUUpramtNnIDI7nqa98WCKlxgAso0xf4g6gExEVnAxluCqJv8zXSMje7E7
+         CpOru+UBe9jZuqjyEMXI2/130lZXXoaNxL5LLZ+LxiTkODURW3hLPXO7oNdQzyTIK+DL
+         Zk4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713534275; x=1714139075;
+        d=1e100.net; s=20230601; t=1713534311; x=1714139111;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DzQwYFk8dI+U3R6uoXrJRpRDjRyNGmQXT0LY/yo8guw=;
-        b=hkKe/pPXphpu/Ah4K6AbUC0isui7vBS5TIpJjbOM56JlG6CWsXWmhQXFZ+lLiVoCj3
-         1DRFy47a8IQpvkLNsn3Ubzuyyw+b/ZvEm79u18bDOZwNdn8EG06HNs68JC8VM3McCXmS
-         IktpsvwVfWSxpwAtKvencyNzt4CJ4oUXSIbf/WaUqBwKpzDxrzotcKGyvcsDpncevpI/
-         QyEDz+mRKpV7cEN9HEIOSRWGPocQHtse0iPvkG5gdUo96jK4+MvhmBRpC/b5TB0cXK71
-         qFARktbl6y0f2JINtVyTDRLv5fIKiR4eBGtVSsHdqr0wEpU4RUPfgVIlAczYdE5rOVkb
-         9Mvw==
-X-Forwarded-Encrypted: i=1; AJvYcCU9THGYFrIn5hHLzluMqntnQvVT+SeBDEqBhxcbCqcyALraToc3GZdE0qO2B0noKWjyK6Ry3pT7lNitrR6/BFdEndgOqp2/OISERv4nzB3WU9tpxjlwPGnJm21f7eTlti8G1GiS0Aosm6rP
-X-Gm-Message-State: AOJu0YzoCwRbdXzuVAd+9lS4uVxcUk4/nVsGGvIlNjM4d5YZ0jV/zBOO
-	KogLV2VkDD0zn2PaEH87VPEdz8GqTEouH3js2QFpqfTHMAasI1y6QSZsoTc5u77LRj2RDsPMGb6
-	B7EyyM38HnKdm5fdAUR3H3Md+QOzXZcvbkHQ=
-X-Google-Smtp-Source: AGHT+IFVFxnXGmrMgy2BUWNSbKSoWe8wHxGiYjArzNYvPnOJ0jl6A6hX8y1FjhATc5rCr5xfv8sg1Ps7exGl/5bBvPY=
-X-Received: by 2002:a17:90a:9905:b0:2ab:e09e:fdf6 with SMTP id
- b5-20020a17090a990500b002abe09efdf6mr2062743pjp.47.1713534275070; Fri, 19 Apr
- 2024 06:44:35 -0700 (PDT)
+        bh=TRh/24YFoJxk/siZzuLpmoGSYfvWvbqBGJ8Jh2Xiye0=;
+        b=AmKjFAVSdaxcHcebT7+PvnGKyhd2MtJci86wj/Xklptiwka94SMpt7hztvH11Cosho
+         BFqacLaNHIcsEO3Fgm/t/o6KAt5viyr47NkxQH+/ey+ARiWj8/slB2tRnFsxu7ExRa1H
+         7Bgx1iDKM1ScOER4v4P2f+wvDNU16OkaUgj0pM+9s+pyZdRmUZ2PAduWfT9xNt5gGMFa
+         84hG7Ft4CJ3R8SB4IMyq2kGi/f0Wys16+B1XWEoNTWpiXITJRAT4ucQUqDpoI4L6rpbY
+         dzWf861Zb3RUWbH3aM4w3nl4TizgPEpJGM7Hgy9e/taBCJ0IGD+d7FAjBbYmWGrFworp
+         emLg==
+X-Forwarded-Encrypted: i=1; AJvYcCXCsaBZdOaYaFSU5ObbOgwn/ky8fsX7D2cRE7BrpjLYHW1lOdvO0tqTKkBAH/lSJ6VMOf155c5AA/GKxBa3C1kB1j14ZxyBYWXLeUuD2HWuCpNc2CCtzjzg6jyhM+NY7Im05ubRi6/s2wxV
+X-Gm-Message-State: AOJu0YzUxeyCUk8mao9PRumGaZUqgz76UPZY2QjYTu80Lwd+Ywcho/E/
+	MQ3aTsUxE2UVO2iy8vUwx1GoxKH7SbkZXLcG9SWkgLRvDemM3/RMFqFLa8uIeZAdX6qhKuXXS1y
+	dMRysiNz9V/7w65W5QQ1ZZDbsFPCwvwf4
+X-Google-Smtp-Source: AGHT+IEPVSG1x1M980EqqKfJ05rBiFwtohCNujarxmSxJRm23YjwiyGGLe9iljy3bYUn4YThcIWirF56e+MiWAwfVlg=
+X-Received: by 2002:a17:906:7622:b0:a55:77fa:80d7 with SMTP id
+ c2-20020a170906762200b00a5577fa80d7mr3813958ejn.8.1713534310522; Fri, 19 Apr
+ 2024 06:45:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240419124506.1531035-1-rilian.la.te@ya.ru> <20240419124506.1531035-2-rilian.la.te@ya.ru>
- <20240419092952.e458f83d8b414b178d598c19@hugovil.com>
-In-Reply-To: <20240419092952.e458f83d8b414b178d598c19@hugovil.com>
+References: <20240419124506.1531035-1-rilian.la.te@ya.ru> <20240419094259.4257fefba753f6bd5962720c@hugovil.com>
+In-Reply-To: <20240419094259.4257fefba753f6bd5962720c@hugovil.com>
 From: "Konstantin P." <ria.freelander@gmail.com>
-Date: Fri, 19 Apr 2024 16:46:41 +0300
-Message-ID: <CAF1WSuxGr7W7XRRswPxXyS+L3KBc-Y3Dg8o8EeeL3u-TioU-Hg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] serial: sc16is7xx: announce support of SER_RS485_RTS_ON_SEND
+Date: Fri, 19 Apr 2024 16:47:14 +0300
+Message-ID: <CAF1WSuwTkM_5oz3sP9ss1aedn2kOdOP_a_ePekixL1TSpOueww@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] add support for EXAR XR20M1172 UART
 To: Hugo Villeneuve <hugo@hugovil.com>
 Cc: Konstantin Pugin <rilian.la.te@ya.ru>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
 	Jiri Slaby <jirislaby@kernel.org>, Hugo Villeneuve <hvilleneuve@dimonoff.com>, 
@@ -88,64 +87,77 @@ Cc: Konstantin Pugin <rilian.la.te@ya.ru>, Greg Kroah-Hartman <gregkh@linuxfound
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 19, 2024 at 4:29=E2=80=AFPM Hugo Villeneuve <hugo@hugovil.com> =
+On Fri, Apr 19, 2024 at 4:43=E2=80=AFPM Hugo Villeneuve <hugo@hugovil.com> =
 wrote:
 >
-> On Fri, 19 Apr 2024 15:45:01 +0300
+> On Fri, 19 Apr 2024 15:45:00 +0300
 > Konstantin Pugin <rilian.la.te@ya.ru> wrote:
 >
 > > From: Konstantin Pugin <ria.freelander@gmail.com>
 > >
-> > The hardware supports both RTS_ON_SEND and RTS_AFTER_SEND modes, but
-> > after the commit 4afeced55baa ("serial: core: fix sanitizing check for
-> > RTS settings") we always end up with SER_RS485_RTS_AFTER_SEND set and
-> > always write to the register field SC16IS7XX_EFCR_RTS_INVERT_BIT, which
-> > breaks some hardware using these chips.
+> > EXAR XR20M1172 UART is mostly SC16IS762-compatible, but
+> > it has additional register which can change UART multiplier
+> > to 4x and 8x, similar to UPF_MAGIC_MULTIPLIER does. So, I used this
+> > flag to guard access to its specific DLD register. It seems than
+> > other EXAR SPI UART modules also have this register, but I tested
+> > only XR20M1172.
+> > Yes, in datasheet this register is called "DLD - Divisor Fractional"
+> > or "DLD - Divisor Fractional Register", calling depends on datasheet
+> > version.
 >
 > Hi Konstantin,
-> I am using RS-485 mode, and currently I may need SC16IS7XX_EFCR_RTS_INVER=
-T_BIT to be set for my setup to work (not sure, must check this). Does it m=
-ean that with this patch it will be cleared? I am not sure by reading your =
-commit message...
->
-> I need to look at this in more details, and test it on my hardware, which=
- I will be able to do only next week. I will keep you posted.
+> it would probably be a good idea to also add the device to the list of su=
+pported devices for this driver in the Kconfig file.
 >
 > Hugo.
 
-Hello, Hugo. My patch's changes change behaviour in one place. Now you
-can select SC16IS7XX_EFCR_RTS_INVERT_BIT setting by passing
-SER_RS485_RTS_AFTER_SEND (in this case this bit will be set) or
-SER_RS485_RTS_ON_SEND (in this case this bit will be clear). Previous
-behaviour was always setting the bit, even if SER_RS485_RTS_ON_SEND is
-passed, so there was no way to run hardware with bit cleared, and for
-my hardware it is a requirement.
-
+It is already done in V4.
 >
 > >
-> > Fixes: 267913ecf737 ("serial: sc16is7xx: Fill in rs485_supported")
-> > Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
-> > ---
-> >  drivers/tty/serial/sc16is7xx.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > I am sorry about too many submissions and top post reply. About second =
+-
+> > I do not know how to reply properly to this ML from GMail phone app. Ab=
+out first - I just
+> > get very good feedback from Andy Shevchenko, and want to fix his review=
+ picks ASAP.
 > >
-> > diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is=
-7xx.c
-> > index 03cf30e20b75..dfcc804f558f 100644
-> > --- a/drivers/tty/serial/sc16is7xx.c
-> > +++ b/drivers/tty/serial/sc16is7xx.c
-> > @@ -1449,7 +1449,7 @@ static int sc16is7xx_setup_mctrl_ports(struct sc1=
-6is7xx_port *s,
-> >  }
+> > Changes in v2:
+> >   - use full name in git authorship
 > >
-> >  static const struct serial_rs485 sc16is7xx_rs485_supported =3D {
-> > -     .flags =3D SER_RS485_ENABLED | SER_RS485_RTS_AFTER_SEND,
-> > +     .flags =3D SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND | SER_RS485_=
-RTS_AFTER_SEND,
-> >       .delay_rts_before_send =3D 1,
-> >       .delay_rts_after_send =3D 1,      /* Not supported but keep retur=
-ning -EINVAL */
-> >  };
+> > Changes in v3:
+> >   - change formatting of commit messages to unify width
+> >   - rework commit messages according to code review
+> >   - add XR20M117X namespace for EXAR-specific register
+> >   - do not use UPF_MAGIC_MULTIPLIER for checking EXAR chip,
+> >     use s->devtype directly
+> >   - replace while loop to fls function and expanded check
+> >   - sort compatibles
+> >   - reformat multiline comment.
+> >
+> > Changes in v4:
+> >   - rebase onto tty-next branch
+> >   - added Kconfig mention of the chip
+> >   - used rounddown_power_of_two instead of fls and manual shift
+> >   - used FIELD_PREP instead of custom macro
+> >   - removed has_dld bit from common struct, replaced by check function,
+> >     which checks directly by s->devtype
+> >   - fixed tab count
+> >   - properly apply Vladimir Zapolskiy's tag to patch 2 only
+> >
+> > Konstantin Pugin (3):
+> >   serial: sc16is7xx: announce support of SER_RS485_RTS_ON_SEND
+> >   dt-bindings: sc16is7xx: Add compatible line for XR20M1172 UART
+> >   serial: sc16is7xx: add support for EXAR XR20M1172 UART
+> >
+> >  .../bindings/serial/nxp,sc16is7xx.yaml        |  1 +
+> >  drivers/tty/serial/Kconfig                    | 18 +++---
+> >  drivers/tty/serial/sc16is7xx.c                | 62 +++++++++++++++++--
+> >  drivers/tty/serial/sc16is7xx_i2c.c            |  1 +
+> >  drivers/tty/serial/sc16is7xx_spi.c            |  1 +
+> >  5 files changed, 70 insertions(+), 13 deletions(-)
+> >
+> >
+> > base-commit: c6795fbffc4547b40933ec368200bd4926a41b44
 > > --
 > > 2.34.1
 > >
