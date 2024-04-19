@@ -1,181 +1,126 @@
-Return-Path: <linux-kernel+bounces-151896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BF538AB576
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:14:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 202118AB579
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 21:15:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D894A2816EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:14:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EBFFB219EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:14:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6118113C906;
-	Fri, 19 Apr 2024 19:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C05E13C905;
+	Fri, 19 Apr 2024 19:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Phyt+OmO"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bvsnn47s"
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE7313B284
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 19:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F1E13C3F2;
+	Fri, 19 Apr 2024 19:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713554066; cv=none; b=ZmsA4fW3qWJzZ/CxO1gQz7m7qg6Rys2YGoSDbeqU6tyl+PWDUgOu9omxqa6A8b77kp2U2Y0Dq5APnsc3PdwpzwNSW8ON5LBtCAG3LumtN06toSpd6mrAoK0x2yuOF0r6mr+GKFYcv7MPPDfx9c9lWrruPjeShYz+WXb+6epTcjI=
+	t=1713554087; cv=none; b=sq0q72fBBHZjJtwi5emCTJfYiSjlWFqR2pp7eyYT9g4vVd//yzmXXHxnpXce7IojD+igE6rueaB6Ks/NO5dowytdD40FEUck9BKHB8yzJOg52eqXeY9CnnstNxITm4EQ34Fnm4MMVOl8st17kCv3X6+zyNjog9MQMBEq4FG1D2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713554066; c=relaxed/simple;
-	bh=ghHRvfsnLZoBuD+thj2tzA2nIrRJDK62IHkGCKIFt9A=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Xp/ENG26a+w2AjzLyjohdnz73C+g63Ot9/8eUsWPiugqfD2lhyUc7qGPJ+31tu7n1mclhtEiKSBlnt72NUuHzYtgzMMhifeClm1N2Z/ooR/Y8Bn/p2pf1PQpdCoa6YuBc66Yl9baTEmlRCXQfOv8t6ZSZ5ijqkhSRmM/4krCAGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Phyt+OmO; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de468af2b73so4197288276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 12:14:24 -0700 (PDT)
+	s=arc-20240116; t=1713554087; c=relaxed/simple;
+	bh=0zQd6Z1nb61jyMOofmFcMVXaTEf+oph0Kg/rxSh8nuY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=FwZYzpMRar6280PPLHoEtFqvtA+xlBsKuUH7Vk19lhhzZDbHAa86QB960uOrWTOniK6FLdDzAJ8POx3OaXyZ5po8W6mBMgEVye9rsSYxbSp1kUo6pzUrloQRwEWU0f7lG1KZBLA9Ztci4lN1pXM987AWINRtRK3L8HWPmhLFzYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bvsnn47s; arc=none smtp.client-ip=209.85.166.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-36b309dd33bso9957245ab.1;
+        Fri, 19 Apr 2024 12:14:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713554064; x=1714158864; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LxyLjfyND/X0CfR1qvIubJS+urbDCxyrK24QGGBvcRg=;
-        b=Phyt+OmOLRhTdZkGxZSe2A7lyD8q0bdQAvdmS0mUtCeCjk/hEm+PpA70c7g9yvOR+9
-         NcvK1QiLKQJJDu1IVCizbI3tFm3Ttq83m7aHboMwtXJMJUnsA/ZTXz9GY6RcCAQe1G4R
-         ltj3kBgL73AE0WbAKKB/NTeHlfZy3nWGmIViEAvV7/SJWTj7z77jzH8jdyvNqrf4YuG0
-         2aXk+90jUYDyMMMGJSM9GTFpWginoX2BH99C8G3qHT5xYkb8wSOyfscR50xbefu1Ckcx
-         3thmYxD8qDOl+Iyaah8Z2PGvMijJSwbf067mBjDmQCZz9adnirJPAcZxptWV3VkIKNn+
-         BiJA==
+        d=gmail.com; s=20230601; t=1713554085; x=1714158885; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VAPKT9XxoWrI/ZqTbx0y6wI55tS5z1hPfWNqmWG/4qc=;
+        b=Bvsnn47sAteqmNL2/7l+4d0+M21CohZtd7ZxOSGm2YbThGRWz2JojskGlexebr5Cjq
+         QTBn0Vs9IvY8HRQCaLmKliKyZdQdUUjDK6xCYPK4hNfN9owfRY32BtYcAZYq6eQgBj89
+         7l6LtUJM6bK21+L+6TYkUFR+CnHm/zaSCzLyMt85Azu+NY1d08kc2FpcHEdpCiFiQES9
+         ETgrVKUz5gizwrMjJ7NCUZYcY5cAj1BBWVajx0b+ZTwXy+RyKpDjIYkuEbUw7iARo05D
+         CHY1jDOLOhh7W6ZyrPDgMrivBrQ4lG3mw4P2FTfqDhUGCoNP5ZsosKw6xPycKvISmUtD
+         sigw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713554064; x=1714158864;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LxyLjfyND/X0CfR1qvIubJS+urbDCxyrK24QGGBvcRg=;
-        b=A2T/lxKhKbN5JYSugYHhLR7xmUkqvAEeVJRHgtdDZv+Qpud9/S4A5GE7yTIQmMXxPR
-         7XV/p2mOdSqCx2U4aXqqN4F/k6caDi+1VjS5syKCujFJo6e6ouIvCAYs8xk81DVoqINB
-         JSKB7M1jWqNmgkoEgCplbOmb7VJeslC+Xe5YfEAJPriw4P8SXSM15Gkn7+irkXYZJdRL
-         nKB0RReXGeGvq+tAqLLnfXBd9Dfv1WrtvO77ysygMPihcVy40jYgvxdDW+waZ+iFXOyk
-         DfcPNErA7z+Dl+qGzrvZ5ElBZN6LGXoQsf1OiLN3fIw2VxC8Ab24+wMbPv/BLKSnTTre
-         8vEg==
-X-Forwarded-Encrypted: i=1; AJvYcCUiXlGsRVSOPpu+OPLn+D+n+ZRLtNgxgaCir42ju/ztOW5HPlzc8504ggsckCP5xA1w+bdtXYEjZV0Tac3UuBQNuhtGgAgBzW3LONvC
-X-Gm-Message-State: AOJu0Yy71xGadjPXkZcBiR4x8awPlhN6DYYuIRKD/wB+SXH1JXTbq6Pu
-	QmQ2iwFf6IY/SUhD0hkfEiLjiQoyr0kfAf0+y9klomzZ2zgu08V949x0udE7OGGHZ55WPauICUI
-	dlQ==
-X-Google-Smtp-Source: AGHT+IGVgn8Gf0JE3BoAkURXxw8LyhcDmWzr3Q2r8XR7+A5tBJUam6WylNWXRK1YN/QeAIyjeaEID9m1Od4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:c01:b0:dcd:b431:7f5b with SMTP id
- fs1-20020a0569020c0100b00dcdb4317f5bmr824560ybb.0.1713554064161; Fri, 19 Apr
- 2024 12:14:24 -0700 (PDT)
-Date: Fri, 19 Apr 2024 12:14:22 -0700
-In-Reply-To: <ZiGGiOspm6N-vIta@google.com>
+        d=1e100.net; s=20230601; t=1713554085; x=1714158885;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VAPKT9XxoWrI/ZqTbx0y6wI55tS5z1hPfWNqmWG/4qc=;
+        b=HzZZtrpQl/hN0TvTUe/sUJ8o4/7QJXj+t2kp0ZaWbWKX3S+EENMlC/pNckR0WIgXnI
+         rDCSfSnzZHx+q2pevksSiUgPu8NwHOEAH6U+/RgTtwXAtBBZt/g0wFTmS/0XhpWwq3gF
+         s2TYRfnfuA0Ft0BMaCl/2JFhIsAbuCYevsCVya0w5OKtZJC51j0pUODuUUQTW3LbuVj4
+         KqiPHAO3S0NfZZn6Ja4e6J+NstmHFwPz6yjR07VhL0ds3v3vO4T+ehxYXbroaN7pfDpu
+         Unmo739PuIFFIKMpsg6gZX+8af1Tqqp8iz8/TL+a2omo5QDpbZ9x3Id1SnU/L6SKUyOj
+         dR7g==
+X-Forwarded-Encrypted: i=1; AJvYcCUusW7D6DxxI8PrT44fc0JxbTfqZwrBuoJTCnqR+i2y/VGQJidx4mpF7jUAR5zoancG9/o5g6HF2Fnrlt36xmrBTJ0hSHCUn7AINF6jp8EBL4i9ny2oG92KNqSabq1YiSVw1A+RShfRncErU4eXcODkw/qB75jYSpnd/cmKPRy2Cg==
+X-Gm-Message-State: AOJu0YxmnO2qqaNGDQsMD8+fAyARIUYTEJBkRiGGufmCvy+ofDulV4KY
+	SzgqcH2X/mXYm7oIJQfCpfiwmPQS2ot38Mz9jC34zXKPecEoqGux
+X-Google-Smtp-Source: AGHT+IE2fSuywdttgS08bx7aen4kWDQc2gtWFh+YU9mG7WcPz8tudbaDjYH0e/5+HCP45f045WGfdg==
+X-Received: by 2002:a05:6e02:2169:b0:369:c0a3:2ad7 with SMTP id s9-20020a056e02216900b00369c0a32ad7mr4146859ilv.12.1713554085161;
+        Fri, 19 Apr 2024 12:14:45 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id z25-20020a637e19000000b005f80aced5f3sm258846pgc.0.2024.04.19.12.14.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Apr 2024 12:14:44 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: syzbot+8e03da5d64bc85098811@syzkaller.appspotmail.com
+Cc: ajk@comnets.uni-bremen.de,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	linux-hams@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	syzkaller-bugs@googlegroups.com,
+	Jeongjun Park <aha310510@gmail.com>
+Subject: [PATCH net,v3] net: hams: Fix deadlock caused by unsafe-irq lock in sp_get()
+Date: Sat, 20 Apr 2024 04:14:38 +0900
+Message-Id: <20240419191438.30724-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <0000000000005e18f00615207de6@google.com>
+References: <0000000000005e18f00615207de6@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <ZhgX6BStTh05OfEd@google.com> <ZiGGiOspm6N-vIta@google.com>
-Message-ID: <ZiLCjutwO6XIQp5Z@google.com>
-Subject: Re: [RFC PATCH 00/41] KVM: x86/pmu: Introduce passthrough vPM
-From: Sean Christopherson <seanjc@google.com>
-To: Mingwei Zhang <mizhang@google.com>
-Cc: Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
-	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com, 
-	dapeng1.mi@linux.intel.com, jmattson@google.com, kvm@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	zhiyuan.lv@intel.com, eranian@google.com, irogers@google.com, 
-	samantha.alt@intel.com, like.xu.linux@gmail.com, chao.gao@intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 18, 2024, Mingwei Zhang wrote:
-> On Thu, Apr 11, 2024, Sean Christopherson wrote:
-> > <bikeshed>
-> > 
-> > I think we should call this a mediated PMU, not a passthrough PMU.  KVM still
-> > emulates the control plane (controls and event selectors), while the data is
-> > fully passed through (counters).
-> > 
-> > </bikeshed>
-> Sean,
-> 
-> I feel "mediated PMU" seems to be a little bit off the ..., no? In
-> KVM, almost all of features are mediated. In our specific case, the
-> legacy PMU is mediated by KVM and perf subsystem on the host. In new
-> design, it is mediated by KVM only.
 
-Currently, at a feature level, I mentally bin things into two rough categories
-in KVM:
+read_lock() present in sp_get() is interrupt-vulnerable, so the function needs to be modified.
 
- 1. Virtualized - Guest state is loaded into hardware, or hardware supports
-                  running with both host and guest state (e.g. TSC scaling), and
-                  the guest has full read/write access to its state while running.
 
- 2. Emulated    - Guest state is never loaded into hardware, and instead the 
-                  feature/state is emulated in software.
+Reported-by: syzbot+8e03da5d64bc85098811@syzkaller.appspotmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+---
+ drivers/net/hamradio/6pack.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-There is no "Passthrough" because that's (mostly) covered by my Virtualized
-definition.   And because I also think of passthrough as being about *assets*,
-not about the features themselves.
+diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+index 6ed38a3cdd73..fee583b1e59a 100644
+--- a/drivers/net/hamradio/6pack.c
++++ b/drivers/net/hamradio/6pack.c
+@@ -373,11 +373,11 @@ static struct sixpack *sp_get(struct tty_struct *tty)
+ {
+ 	struct sixpack *sp;
  
-They are far from perfect definitions, e.g. individual assets can be passed through,
-virtualized by hardware, or emulated in software.  But for the most part, I think
-classifying features as virtualized vs. emulated works well, as it helps reason
-about the expected behavior and performance of a feature.
-
-E.g. for some virtualized features, certain assets may need to be explicitly passed
-through, e.g. access to x2APIC MSRs for APICv.  But APICv itself still falls
-into the virtualized category, e.g. the "real" APIC state isn't passed through
-to the guest.
-
-If KVM didn't already have a PMU implementation to deal with, this wouldn't be
-an issue, e.g. we'd just add "enable_pmu" and I'd mentally bin it into the
-virtualized category.  But we need to distinguish between the two PMU models,
-and using "enable_virtualized_pmu" would be comically confusing for users. :-)
-
-And because this is user visible, I would like to come up with a name that (some)
-KVM users will already be familiar with, i.e. will have some chance of intuitively
-understand without having to go read docs.
-
-Which is why I proposed "mediated"; what we are proposing for the PMU is similar
-to the "mediated device" concepts in VFIO.  And I also think "mediated" is a good
-fit in general, e.g. this becomes my third classification:
-
- 3. Mediated    - Guest is context switched at VM-Enter/VM-Exit, i.e. is loaded
-                  into hardware, but the guest does NOT have full read/write access
-                  to the feature.
-
-But my main motiviation for using "mediated" really is that I hope that it will
-help KVM users grok the basic gist of the design without having to read and
-understand KVM documentation, because there is already existing terminology in
-the broader KVM space.
-
-> We intercept the control plan in current design, but the only thing
-> we do is the event filtering. No fancy code change to emulate the control
-> registers. So, it is still a passthrough logic.
-
-It's not though.  Passthrough very specifically means the guest has unfettered
-access to some asset, and/or KVM does no filtering/adjustments whatseover.
-
-"Direct" is similar, e.g. KVM's uses "direct" in MMU context to refer to addresses
-that don't require KVM to intervene and translate.  E.g. entire MMUs can be direct,
-but individual shadow pages can also be direct (no corresponding guest PTE to
-translate).
-
-For this flavor of PMU, it's not full passthrough or direct.  Some assets are
-passed through, e.g. PMCs, but others are not.  
-
-> In some (rare) business cases, I think maybe we could fully passthrough
-> the control plan as well. For instance, sole-tenant machine, or
-> full-machine VM + full offload. In case if there is a cpu errata, KVM
-> can force vmexit and dynamically intercept the selectors on all vcpus
-> with filters checked. It is not supported in current RFC, but maybe
-> doable in later versions.
-
-Heh, that's an argument for using something other than "passthrough", because if
-we ever do support such a use case, we'd end up with enable_fully_passthrough_pmu,
-or in the spirit of KVM shortlogs, really_passthrough_pmu :-)
-
-Though I think even then I would vote for "enable_dedicated_pmu", or something
-along those lines, purely to avoid overloading "passthrough", i.e. to try to use
-passhtrough strictly when talking about assets, not features.  And because unless
-we can also passthrough LVTPC, it still wouldn't be a complete passthrough of the
-PMU as KVM would be emulating PMIs.
+-	read_lock(&disc_data_lock);
++	read_lock_irq(&disc_data_lock);
+ 	sp = tty->disc_data;
+ 	if (sp)
+ 		refcount_inc(&sp->refcnt);
+-	read_unlock(&disc_data_lock);
++	read_unlock_irq(&disc_data_lock);
+ 
+ 	return sp;
+ }
+-- 
+2.34.1
 
