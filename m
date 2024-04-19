@@ -1,101 +1,168 @@
-Return-Path: <linux-kernel+bounces-151832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E9A38AB487
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:46:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17B498AB488
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 19:47:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0124DB22880
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:46:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC46D1F2243C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 17:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBC613AD28;
-	Fri, 19 Apr 2024 17:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA9413AD28;
+	Fri, 19 Apr 2024 17:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zzc9w3BP"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XbODikgj"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89D612E1ED
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C14713AA49
+	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713548811; cv=none; b=TwxNqeFkIATpuJVOGGztGjaHrD5ojm358hJZvYh5nUxXHpAfakQVoT5EzReCWMMCIFNeBokTW4lBWQ4wib0/MjAcS2NgLOxQOE8qoUI7INX30KrqzkBLegsPXsO14CIdqv8l1zNc1aojSAgOM63K9OcEoR+6wRjZxZo+HPHPqXA=
+	t=1713548838; cv=none; b=mkjUbzVja2nqNhA3S3X+HVgUK/4PAaPNeD9v+rrxjzi/LVjUGLAD+6G1gNO/TlfU8qLvsYCHIRmyh/YI929c6X16QlPcF4syMN0jTer5hDe/aliQ88CkA1VAboDRAU3eD3P2txXFUfObNqluswYUhFFbajPnKSkYYKi2U+Cm94Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713548811; c=relaxed/simple;
-	bh=KjvnBO3Gqs8EFbhdDBMBxk/FXGLnq3fyHfPjQ6a66YQ=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=AhNsrq9GLb1CmabETJwANKrHh8C/w345m/dobxzWk4Pn/cZoZrz1HmXEa8C0XregSci20Ud1owZ6sCSe8e/87TJd9ewb1aOEJjQbEAwv0rRma0ylTvIiujWupwoWtT24otg1R1+enmGy/x2DVk3TnihngqWSAFnNFxvMH0F2pAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zzc9w3BP; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so1401582a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 10:46:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713548809; x=1714153609; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WTU4zPwpzH5hnnSlGgs786xRHV+uI0ZkSdLbqcw+BRY=;
-        b=Zzc9w3BP6YBtcnyVVmFF6YmOjTpCm9CzfCSTWo9C/HRRkrpFphtOh8RRa18LtQdaeq
-         mf88BqZOV7QMtNLA711V4U6hNSoBdFmRm4bKbc2ZGh8z6f4ipzMLPM+byl4i6nxaoatc
-         SV/qn2SIyaxnr3v136Gqz0FWBncx+uxEITIiEV3sFQzvWfRYFSV8qPgO7nNOEebu9ETZ
-         0dBmxdmVCzViHx+4m/EknC2sPod77VLeIn1ezjHT69/6VQlFnOfY6rxLgwC0Kp4hSIU9
-         g+u4IoB+smR9KVK3TV3cCxa29L/B8SKY6KR9bhq6LcM6dxPEjkEjPD1q5afz2DAcbWrZ
-         pCTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713548809; x=1714153609;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WTU4zPwpzH5hnnSlGgs786xRHV+uI0ZkSdLbqcw+BRY=;
-        b=oxwbmo/ZRaUFrawv+bjr5QwSdUlQJ8+xCxCCNC/LqRyJ+JgVhFrpC37hCq4MiRCE33
-         JtabV6FOsqyTldpycm4QIVvJDMxLqnaOC5kZD9PayaoFEi4GStNdU35TGWFKH3f37IIf
-         +QZwR6N5Lp7oK8NBPmLSqwWUGybfRYAZQ3nuLdQwWFJR199H5LpXk2mGsm/Ui4NKZJvw
-         S/pK4ekE+puTzTv8SR/H45TNLdf4IU+bjlOVE/1D+9s4dWCMwkkSvtD29ufmSQjgB9y5
-         G3mlqCoMQVsPmBZLH7btWEl0zNkVey0T0dR8Q7CIovhB0nVAeNUGL0Ot4evmt9Hh345S
-         41rw==
-X-Forwarded-Encrypted: i=1; AJvYcCX3D8P5GUDFyLr8euUfso+FAhrY8ZzuIvGpETBtlDR87NO1FWx50PVZ5H2QbmSMqxLMKT2D3n/UgBsxb4if6xh5IS67x0nA96Pmry5A
-X-Gm-Message-State: AOJu0YzUGdwVAyPq0MiBLJb2R5WTeGuWayyYV9tHl5bLSQFzfHsydbgV
-	6TPvJG5gBj+s31nH60kBMpd2PCIOln5oNKGpN4Jx3sJFMmSKRCJDvrJgsRM2sFFwon3wPJl7VL6
-	HQpP1hMwt5nrD8J0oSOZKA+I3yNI=
-X-Google-Smtp-Source: AGHT+IF9CjY3KLqE6bk9u4LeWgvLLphSfaeuyElxCLXHyI4iSQfm8I8iO4hAG0kYOMVcOjuFOMMo3nxlIbrHbiD/S28=
-X-Received: by 2002:a17:90a:fd01:b0:2a5:d313:4d3f with SMTP id
- cv1-20020a17090afd0100b002a5d3134d3fmr3313984pjb.34.1713548808937; Fri, 19
- Apr 2024 10:46:48 -0700 (PDT)
+	s=arc-20240116; t=1713548838; c=relaxed/simple;
+	bh=rKdIz8bODpfYXkMRjJX1iea8o8ZfdsGpCLn7v3ZMJc0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=chQoMyMpEeDIpNyuVYMfu1CBq+Kg5Ow9Xnq1eUZ/wWHt1IXEDwMYAZbyQvbdFrrN81JFuS5EG6reeSMdSCgCZ83na++CnnVs9Gmo0f4xSVUC4VxnHAa2hX5FHfNzJy6pIT4ba+VWDPWG7AwIrMQMJEkpyg9z1oLHEbqalTCdPlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XbODikgj; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713548838; x=1745084838;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rKdIz8bODpfYXkMRjJX1iea8o8ZfdsGpCLn7v3ZMJc0=;
+  b=XbODikgjuWQIQcgHWAn2Sfd6vyL4ufHtKaTt5kL1WAx/14QXdAQP1VI2
+   H1NZvfRea9EE2YHCPvEKe01oub5T5tWffYh9eTgTpJfSPqs3t9rfRwk9O
+   kEgjoPG2Z5zQO31SdkNyHE4biN0sBYhRZj0tZx2eKkT8IPqBVj7/fcGIw
+   88FuGVVqhWormUO1G+RFvaeH4DJf6SMzySk3fM8Gh/GZ6DSNI+NYS+dYH
+   PHaRDv8U58SWNUHE9FNxr9el4rMs9YoGCWC5nbIqStU+gd+6iN5raeW8R
+   feUl0BYUdUa0NYH+a3dPz89v9pSqrDDPfCbXvZgzV7l+cT+vEdLbM4B0V
+   Q==;
+X-CSE-ConnectionGUID: THck89pvT1mB3lERmLvqQA==
+X-CSE-MsgGUID: VlUiKMyZQZe3d2+s1bc3pA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="9384581"
+X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
+   d="scan'208";a="9384581"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 10:47:17 -0700
+X-CSE-ConnectionGUID: vaTzWpgjQISFo/slmjXcVg==
+X-CSE-MsgGUID: EIUKYVtLRBK611TfljtbBw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
+   d="scan'208";a="28048284"
+Received: from jncarlic-mobl1.amr.corp.intel.com (HELO desk) ([10.209.73.101])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 10:47:16 -0700
+Date: Fri, 19 Apr 2024 10:47:09 -0700
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To: linux-kernel@vger.kernel.org
+Cc: x86@kernel.org, dan.j.williams@intel.com, bernie.keany@intel.com,
+	charishma1.gairuboyina@intel.com, chang.seok.bae@intel.com,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	daniel.sneddon@linux.intel.com,
+	antonio.gomez.iglesias@linux.intel.com
+Subject: [PATCH 15/14] x86/gds: Lock GDS mitigation when keylocker feature is
+ present
+Message-ID: <20240419-gds-lock-v1-1-adcbef6ce24b@linux.intel.com>
+X-B4-Tracking: v=1; b=H4sIAK+rImYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDE0ML3fSUYt2c/ORsXSOz1OSk5FQLCxNzAyWg8oKi1LTMCrBR0bG1tQD
+ wXRdIWgAAAA==
+X-Mailer: b4 0.12.3
+References: <20240407230432.912290-1-chang.seok.bae@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Shresth Prasad <shresthprasad7@gmail.com>
-Date: Fri, 19 Apr 2024 23:16:37 +0530
-Message-ID: <CAE8VWiLErhCkD9w+Rbh8mTnRQs-4iJDBrWdVXXFFFDQ3yeTaLg@mail.gmail.com>
-Subject: Re: [PATCH] drivers: use __free attribute instead of of_node_put()
-To: vincenzo.mezzela@gmail.com
-Cc: gregkh@linuxfoundation.org, 
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>, Julia Lawall <julia.lawall@inria.fr>, 
-	linux-kernel@vger.kernel.org, rafael@kernel.org, 
-	Shuah Khan <skhan@linuxfoundation.org>, sudeep.holla@arm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240407230432.912290-1-chang.seok.bae@intel.com>
 
-> Please fix the subject line to be "backlight: <driver>: ...". I came
-> very close to deleting this patch without reading it ;-) .
+In order to safely enable Intel Keylocker feature, Gather Data Sampling
+(GDS) mitigation should be enabled and locked. Hardware provides a way to
+lock the mitigation, such that the mitigation cannot be disabled until the
+CPU is reset. Currently, GDS mitigation is enabled without the lock.
 
-Really sorry about that, I'll fix it.
+Below is the recommendation from Intel:
 
-> Do we need to get dev->of_node at all? The device, which we are
-> borrowing, already owns a reference to the node so I don't see
-> any point in this function taking an extra one.
->
-> So why not simply make this:
->
->     struct device_node *np = dev->of_node;
+  "Intel recommends that system software does not enable Key Locker (by
+  setting CR4.KL) unless the GDS mitigation is enabled (IA32_MCU_OPT_CTRL
+  [GDS_MITG_DIS] (bit 4) is 0) and locked (IA32_MCU_OPT_CTRL
+  [GDS_MITG_LOCK](bit 5) is 1). This will prevent an adversary that takes
+  control of the system from turning off the mitigation in order to infer
+  the keys behind Key Locker handles." [1]
 
-Looking at it again, I'm not sure why the call to of_node_put is there in
-the first place. I think removing it would be fine.
+When GDS mitigation is enabled, and Keylocker feature is present, also lock
+the mitigation.
 
-I'll fix both of these issues and send a patch v2.
+[1] Gather Data Sampling (ID# 785676)
+    https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/technical-documentation/gather-data-sampling.html
 
-Regards,
-Shresth
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+---
+This should ideally go before the patch that enables Keylocker. It is
+only compile tested.
+
+ arch/x86/kernel/cpu/bugs.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index ca295b0c1eee..2777a58110e0 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -755,8 +755,8 @@ EXPORT_SYMBOL_GPL(gds_ucode_mitigated);
+ 
+ void update_gds_msr(void)
+ {
+-	u64 mcu_ctrl_after;
+-	u64 mcu_ctrl;
++	u64 mcu_ctrl, mcu_ctrl_after;
++	u64 gds_lock = 0;
+ 
+ 	switch (gds_mitigation) {
+ 	case GDS_MITIGATION_OFF:
+@@ -769,6 +769,8 @@ void update_gds_msr(void)
+ 		 * the same state. Make sure the mitigation is enabled on all
+ 		 * CPUs.
+ 		 */
++		gds_lock = GDS_MITG_LOCKED;
++		fallthrough;
+ 	case GDS_MITIGATION_FULL:
+ 		rdmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
+ 		mcu_ctrl &= ~GDS_MITG_DIS;
+@@ -779,6 +781,7 @@ void update_gds_msr(void)
+ 		return;
+ 	}
+ 
++	mcu_ctrl |= gds_lock;
+ 	wrmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
+ 
+ 	/*
+@@ -840,6 +843,11 @@ static void __init gds_select_mitigation(void)
+ 		gds_mitigation = GDS_MITIGATION_FULL_LOCKED;
+ 	}
+ 
++	/* Keylocker can only be enabled when GDS mitigation is locked */
++	if (boot_cpu_has(X86_FEATURE_KEYLOCKER) &&
++	    gds_mitigation == GDS_MITIGATION_FULL)
++		gds_mitigation = GDS_MITIGATION_FULL_LOCKED;
++
+ 	update_gds_msr();
+ out:
+ 	pr_info("%s\n", gds_strings[gds_mitigation]);
+
+---
+base-commit: 0bbac3facb5d6cc0171c45c9873a2dc96bea9680
+change-id: 20240418-gds-lock-26ecbce88470
+
+Best regards,
+-- 
+Thanks,
+Pawan
+
 
