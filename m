@@ -1,75 +1,54 @@
-Return-Path: <linux-kernel+bounces-151737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09AB28AB333
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:18:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D915A8AB33B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 18:18:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D5D61C21D26
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:18:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E01B1F23202
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 16:18:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F64130E5D;
-	Fri, 19 Apr 2024 16:18:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F863130A55;
+	Fri, 19 Apr 2024 16:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FmBaaj+9"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="O8L8D7FD"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1FE6131193
-	for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 16:17:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A92130A5B;
+	Fri, 19 Apr 2024 16:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713543484; cv=none; b=fbx/usLkzFp7dwqExJstIVapo0Ts72gw8ap+e/qeNzkwnp+B1l6ee+xsuyDeaTMsz3gPwXYP/Cs76d+L+fkEaAaDjoWjbNQJj+APK5QcwKispg6aS+/Q3xS6Aq2LrNN7Lx3u8ZtDwSvrUQ3d+ji4YaYgAGQy8qbMXA6PFPERwQs=
+	t=1713543521; cv=none; b=SkkR65gDiN8aoBPTNwMGNevkyciu/ON5A4bTAVabxPcMtLxP7nMnLdQSMhqc4sb5VeBNiUj588YpBLHru0CFJiULYQttzEtQLsTQ7QleRUReYJVVdb95x/Vj5DXpF+ElLZzOAltPAWTVwY9B9jeIbbY5PoFFl9quFcSrFiEE7FI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713543484; c=relaxed/simple;
-	bh=DOaOWqE1D7DUqa1LvsHy0ZMdH4TVB4NTyMIBeL96zao=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XxENQELhue0x4LwXK5pTjQdwjccY+lIXNB9rTIyvd+QmnXY0fw29nM9Ivh7XSEUIPz0/FGzCjXEUAMKy2k6ivbFCyOnvTCOefYryrE31YTe/ucVavaG3FP2TNhEzOrpvNHKUCDniXt442xEX8jektGx20cUHqcddZxVc56nqJjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FmBaaj+9; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6eff9dc1821so2306579b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 09:17:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713543475; x=1714148275; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=spx5J53LxWT9NZPJkLKrAhGW+607qnxyHYuW8vb0pwU=;
-        b=FmBaaj+9Bk8W+PV8FjzxWWXQl+iyauJTVcbc1AKtm9juQfIBahiUWCAfO98K8f5AWZ
-         Ym0RQ4G/DqXLwRVg33vy64McvxEAtLag5K7EKrL8TgKxocvWTaq7cCRqxlHCVK9IJ1HL
-         45Ikv9yf1QAWTW3UR1lxKxKS9u22/s7XfFFWxoUsVkAP2JhrO30eW0u0sEo1PowFM9rq
-         PdPxYdCwRAtqja4uh2/qYpUd3l3cg+Ms5U+0OCfHTCTfEDr2XIuTJ2tTvkfDZ+pE4HZS
-         i1A16Zj/aj3j+o/tTZFD9qxgJZyrZKRg572/VmVFVzDwSBwKvx/ViUdUtuBzGsbiItz0
-         V4cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713543475; x=1714148275;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=spx5J53LxWT9NZPJkLKrAhGW+607qnxyHYuW8vb0pwU=;
-        b=qWHxNv+SwpXQ5A5TGRjF8Jo8A9+4mFwf3q+VZ34XeIMgqEj3VKq/C0/0rBopoTwAMY
-         0v1Ato58JAgWeEQ/VHBC35m7it54C7zobKbms5FzhfvHShEiriL6Pbo0Di3S7RpyL0pG
-         dKZiMi4bQc9Ac2li6VzAzokDEZaFcSxjb3oK3VJkAXU7K4K2afZK/NOimF2fYrrI/qmy
-         9FQPvlMKnWPa1rWaka2MWBzxwot0MylbK8S1HFRzsRRRrv0/iu6pTmeLnjZKV1nhRDRi
-         qrNi9Hl7GAGINr3zNb2pEavRBZ/mFMr8dsyzZZ7LX1wBNoFaNKc5Da7rUpgqgtZ8XggK
-         ri0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUZct2QhN1gTrl+JyioNZeey9m5/qeVSAauZgMIwL5pkRTLiBsshwQWq7MoIrFWeD6JJtfyaiadN6F36icpEWqfy8ImaT3FjmaMwJGl
-X-Gm-Message-State: AOJu0YzrgtgqNjcSXFUYFTRMnxi2pOTCUDOpi93Lz21Xf7T8iea+9s/Q
-	4Dm6C+NoZUji7bcD74IHs9i1jxe8/IGqcB6by2gqeNh75dHuF4UD5LUxF91vm6ZySpBoxBZ5aaL
-	M0rc=
-X-Google-Smtp-Source: AGHT+IFPut/a4p0qYz4XASJQROV/eGEDhtCt9CzxlXg5cpEyLEGgpNKlQ8xCn2yZsFlhyHHI9aA0VQ==
-X-Received: by 2002:a17:902:8302:b0:1e8:b715:45bc with SMTP id bd2-20020a170902830200b001e8b71545bcmr2407965plb.29.1713543474718;
-        Fri, 19 Apr 2024 09:17:54 -0700 (PDT)
-Received: from [172.20.9.36] ([209.37.221.130])
-        by smtp.gmail.com with ESMTPSA id kh3-20020a170903064300b001e48565b40csm3531990plb.210.2024.04.19.09.17.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Apr 2024 09:17:54 -0700 (PDT)
-Message-ID: <e1afdc35-a45b-4d5b-9fcc-aaa26d2080fe@linaro.org>
-Date: Fri, 19 Apr 2024 18:17:52 +0200
+	s=arc-20240116; t=1713543521; c=relaxed/simple;
+	bh=d5n73mg0TsW5GuosMrClZ4WiLXJso87FcN0NbBIHvS4=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=bg+iT/TQzxNLGwDBbxRJFueC9gPb9GD938qV+m3MLjJL4KWG2IaHPUfZSufF6EqFIfWT1S+mt5XCHoQhCUvTRo55c6L3a8l23dmLR0hZ0WShc2PwfRp64U5VZcdmKh8TKo39/HuKzwr4fXOqH9Ij23tezOocX0JJ+zieKkNtRus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=O8L8D7FD; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713543503; x=1714148303; i=markus.elfring@web.de;
+	bh=cp7wx4staeqTlQLIoJHFIJDuZ7q4wbooJhXwZ3E13aI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=O8L8D7FDvRzDbQx8Uv7WkfIulajzVOibFPeUxPDc6Xs2LXI4t1algojKdWOz2YHy
+	 1eTWEDvYcWXwM1UCsco8RPjsUsv+9tR2X/wu0s+7XQ1sd/ZMYmoNFh5hVNcCVqeyJ
+	 s/p9VaWAyXAetjaXLMfUB0YlS44SZHk8VBcEDQLfU6S0/FRWAsFarlIL3dXfPmN/1
+	 UT3CJAbBoNAio01TVgky9ssXyl2Dxv7iO8y2VFtXP0mCTHN03SDqrOsBzIIA7nJvS
+	 PRVUTPW2F3tQEgsO6XjetSf1hvsy7/YvFb2HvsbV/guLM+y7Igz37mZZAK1BPCDHx
+	 MBqAzwXwa6TCKaEqUg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MXGOI-1sDsxt1yZS-00YjnS; Fri, 19
+ Apr 2024 18:18:23 +0200
+Message-ID: <4dd9babe-1e4d-46d9-b3dc-cc8978e74e5f@web.de>
+Date: Fri, 19 Apr 2024 18:18:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,84 +56,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] dt-bindings: usb: qcom,pmic-typec: update example to
- follow connector schema
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Luca Weiss <luca.weiss@fairphone.com>
-References: <20240418-typec-fix-example-v3-1-08f649b6f368@linaro.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240418-typec-fix-example-v3-1-08f649b6f368@linaro.org>
+To: Wander Lairson Costa <wander@redhat.com>, kunit-dev@googlegroups.com,
+ linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Brendan Higgins <brendan.higgins@linux.dev>, David Gow
+ <davidgow@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Matti Vaittinen <mazziesaccount@gmail.com>,
+ Maxime Ripard <mripard@kernel.org>, Rae Moar <rmoar@google.com>,
+ Shuah Khan <skhan@linuxfoundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240419132504.9488-1-wander@redhat.com>
+Subject: Re: [PATCH v4 0/2] kunit: fix minor error path mistakes
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240419132504.9488-1-wander@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dZ1kl0cheQ9TcwOAvAzY8L/APqrmRjRzbU5lO0gAxDHka065H8N
+ jaOTnJd72niJ6S/+s763D3sNhi3yfHXE2vALXIkKhaC6OW9GtLyA507HEEILJuDrQBnfPyH
+ WCdA25Y5nnpALcb3Xe8hxui96dWz3pqQ1xZroX+wjBQ+LDCfueLlq+gzfeSJm9RXc+n+33o
+ dFMuJ+/lPohZnkYYJq/xQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:2XhgTCe4k7s=;H2Vad0xjTrY2+MTRzxpgG+Hi6Tt
+ RukFgRsyr5MMsS/DW9DZkbkG+glCdye7rzl2Bj9T2/jGLrmIOvBRqd+3DZDRb9DxsXDutwjG6
+ 4leCNG4FwnsPGKTnkcOK9fTkYZSl/cY18Kk6GAP/cHDoSYRU7NLz9+rrPshf3hE+ZlukL0A99
+ xRZRwH1Y2KrkI2U0BkPw7yox3ae7JBiKcpbFpefuTAt0ejo67SW7Gc5FZeurCpxa+7IY7ZuSA
+ 4xxcjs5n3hspeD4a1Dv04J8rMlriYpG778RcAknu661W5gHUAYFYhosi/vvp0kP5iiKjHJ7L/
+ P0MyGUcCb+ChAB759btrRTigx3vM9QWictiymqrDKAMQ3yXMpIsntjBE/7WcZki+45NWx0hZT
+ K6GeTi/uqPBPPAQTos9yf7VZrjP5biuhlL/4Ho59KzMNIU0iXhU8tV+q0mwPstZNA1+Xl2K0N
+ JpKRxPTaE3v1VOU+beg6Xb74fAd5ms20ehEMIO13AY5CLsyAJn5o9kd7OEaSXZaZU96Hfo/aZ
+ maOStfC0x7ljsgSI88HgbKSlRS9Ephv8CANBpTsqSTocXEELgNW8c8ptAmoFwWZnTWU6mH6RP
+ zJJurdqJX52FrdKRYh5MvhaKINIuvD2A4B7aX37P4k/H0DfXfpAvWmbYdO+N8caQbzTWz53ky
+ 7ysAfGFZ9jsyOTE6lhQxx7iL9aIe/Ya4JJ8BWvnfliMh6BdiC7cb9Q/RPOPyQvFgkJm7Ms93r
+ O4c0IA5HLELgzXCnFmxR4n7onhe6/wTmDVC/3x1l3o1p5ksPYanvsIYA1eb3oRduHBaognZa1
+ u/bB0lyz03QMtDvI98B2cPNx9BD2Sdo9kHOIldYI8O4Sc=
 
-On 18/04/2024 08:38, Dmitry Baryshkov wrote:
-> Update Qualcomm PMIC Type-C examples to follow the USB-C connector
-> schema. The USB-C connector should have three ports (USB HS @0,
-> SSTX/RX @1 and SBU @2 lanes). Reorder ports accordingly and add SBU port
-> connected to the SBU mux (e.g. FSA4480).
-> 
-> Reported-by: Luca Weiss <luca.weiss@fairphone.com>
-> Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
+=E2=80=A6
+> * Remove some changes requested by Marcus Elfring,
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+I became curious how affected software components can evolve further.
 
-Best regards,
-Krzysztof
 
+>   as I was alerted he is a known troll.
+
+I would appreciate if this interpretation will be reconsidered somehow.
+
+Regards,
+Markus
 
