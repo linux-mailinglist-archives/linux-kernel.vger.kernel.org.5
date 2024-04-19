@@ -1,102 +1,103 @@
-Return-Path: <linux-kernel+bounces-151215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-151217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0302F8AAB37
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:10:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAE4F8AAB3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 11:14:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52D71B20E34
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:10:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21FD61C21EF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 09:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7CC7757F7;
-	Fri, 19 Apr 2024 09:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org header.b="IyECAjlz"
-Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02FE757F6;
+	Fri, 19 Apr 2024 09:14:03 +0000 (UTC)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5AF5FBB5;
-	Fri, 19 Apr 2024 09:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.81.211.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F0AD4D131;
+	Fri, 19 Apr 2024 09:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713517821; cv=none; b=Buez8dwfCMIRgevItCP3fkQgfr4UlkSoPr0QXQDlcqVsvFD5wzkhzPYXmU4Z001UqqJhp1ZZMwxuEEGGkzGSp/vjS9Ij0aCmhnE2+6hRUTNoP171YMPtaYoCPpB6EzBedgBAr47d95udnc49GUxSyPMOPtYgYojG/vdXOp1t5aQ=
+	t=1713518043; cv=none; b=CnkRXhTbn7WZurG9Og0z1L70UCjU01Z332ZrvwGlbpTCAiLUiqg5Fr1WwWUKacnc/yfU7uhOAUhpPBTvyLRasH2exzGVrNXFbBiXhJvnIlrUDvnHT2ZMjOZecIKYX038VZbimToTE5bcE00UI56arEqocaegc+eSajVRjdUqDAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713517821; c=relaxed/simple;
-	bh=FUyrDkEoZkFe3j2Sa11pBqz9kStQx6lt90ArRaAHaYo=;
+	s=arc-20240116; t=1713518043; c=relaxed/simple;
+	bh=H1XCE8POymxb9O0nL575s1AZcXMw7/i6tvt14CsEffo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q2wzrzmSXok0JDAfWe0UZgam09UwWFrJbsfRu3NPu7DTABwkEeEj+8RywoM0qjipdXa1Sl1aUPKzvXNWegt6eNSRfyAsM2ankhZjZf2XmHCClEDQ2EIAYznlpCySM+5BsMMjbwQc5WKV8VqhjB9QYIXgqAIkAvJkNoSM3oDgmTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gnuweeb.org; spf=pass smtp.mailfrom=gnuweeb.org; dkim=pass (2048-bit key) header.d=gnuweeb.org header.i=@gnuweeb.org header.b=IyECAjlz; arc=none smtp.client-ip=51.81.211.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gnuweeb.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnuweeb.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
-	s=default; t=1713517813;
-	bh=FUyrDkEoZkFe3j2Sa11pBqz9kStQx6lt90ArRaAHaYo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=IyECAjlzs3S9RlCI58V209dKzrihrBf2qjZXpTpVQA/pl8gcbkwlPhSZ+cD/Gl3/+
-	 MNP0IcdBK2bVd4vNtIPWmFL5JXmci5q+p/GjXQr9sSwnH5yBNJoqYOOInBvyNQOpOk
-	 oeBW46fJmUdwO3+wSdIK7lDrIyHk3VGp4BR5LjHof4A0KIhCFeTBDNH3hCqa+ih/vL
-	 4mvcZ7/nysID8rjWrtzpiGZK+JTAg5EAsaiz6z17XM9zYbxl4NRY4Ev29VZC+e4VjV
-	 yPS4DnOPVjiFzsNvDxtHgIpyows6BYdf3eMCcUBeOgNYwFl7e1f7oJ7PnFTO139JCj
-	 ElyuRYd0nXhtQ==
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	by gnuweeb.org (Postfix) with ESMTPSA id 616FC24AE8F;
-	Fri, 19 Apr 2024 16:10:13 +0700 (WIB)
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-4347cb2bf76so3686681cf.0;
-        Fri, 19 Apr 2024 02:10:13 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUOGYho+A2nxpv0r8Eji6Ww2HtUn/Uvsg9Nrgi/55BsNF6BjZRJTiaq8AUj6exiaufe50HX9JgZySCU9ufoIlxhYGNUnmWFw2M=
-X-Gm-Message-State: AOJu0YwkR0mJpf0odweklFg+6UH+76pGD4XTCovmwMBvUiYIE+ySNttQ
-	gXU3byWMZ1bDV+Z/AeLmOrl7FY+KpmXgOr9aD6SnU+PayysxJhfKp3rsKHz4UHFSKtq+XVThoDQ
-	t4+LGK0p6UEnOawzaUChcfFI2BF8=
-X-Google-Smtp-Source: AGHT+IFj+cSkPdz2w+IhOOTokNmm/YCqjbL32GYxwRwPZRXBkNU3JOplf6dRnMwoK5oQU0GSmh//6qWnbFlYZLRnduQ=
-X-Received: by 2002:ac8:4e21:0:b0:438:d78f:66a7 with SMTP id
- d1-20020ac84e21000000b00438d78f66a7mr310205qtw.0.1713517812443; Fri, 19 Apr
- 2024 02:10:12 -0700 (PDT)
+	 To:Cc:Content-Type; b=mprpwPp9mSsSHZX9kjKE/AP1wbkYhY0/vp13iZUHf2UTK/EiCQlEuzz8bX+TMz0IWnTxg4R2eGFEx6NEGkcGECKNeiC3KQ5l/v11eJ0CsyhXlPq88osUVbTVR9NfvU0CFmDK91nvtp9GcMXCVT8kmbbb5+5FCKptFAEpakD7c7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-61804067da0so18737837b3.0;
+        Fri, 19 Apr 2024 02:14:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713518040; x=1714122840;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9gVMY8E21Fl9ECgjygikdUcrBwHveHTBHkiJds8LbEk=;
+        b=IIbMmn4Dc1t1lTR5ZrUZfzqtgoV3XpmsRJZoq5uQfLpS8/G+alyayPgs6u56u9bzRN
+         IMw0PpnEOS2rz0mlG1MY0QaC/UrUui2vQ/4dLbjD1FCGaRVthpF2J0C0/1Yv3YAJC9Wf
+         vJh52/sj3De4c5/YLTB+1yp3M7/u6jAEmoekf23pP9MFPPeuHFc5dnzrbOn5PD7bZqqu
+         7ygpA3fhciZvp1b3WketftVHc6cabjedraZIl8Z7IlrgnyY+ySloBdi5tnREXYC+1fF2
+         C+5sS6TMCeMQiCmGfdtdDpVWuFywe/9RBeyP63iyxHAGlC0WwjwrbbDtZOhyr1TlIs+P
+         K/Ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUNPO9UDNE+eWBOtaaaW7mXbzPMeIUgKTkmjyOWKELNPnvRjs1aw1wkLVwzLGXF/zLeKeABzqNCx8TTfmv41Hcrsw4oTDeSC0u5eHCsXonr94qNWIh65lXKlOBVGQfNhBsERdeXA48=
+X-Gm-Message-State: AOJu0Yzlxa8tj+yQ8TgWmbszyIAYHACZgpjweoAhpUXYu7laTEPyNFzy
+	dM69gy/Zz+35JvkXBVSN99sfYgeZiIKxVmrTtzExBVNNt+YxhuqQxdNP7OR4
+X-Google-Smtp-Source: AGHT+IFEQJiC0JAJIwBOXvxzOJd8FBY8nlca64lUsWW/hoAZqj2pYbNtGfcuxfYUQKKbKpDLiXGvjw==
+X-Received: by 2002:a05:690c:c02:b0:61a:f127:34c9 with SMTP id cl2-20020a05690c0c0200b0061af12734c9mr1457465ywb.17.1713518040034;
+        Fri, 19 Apr 2024 02:14:00 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id m3-20020a0de303000000b006152af6131dsm701484ywe.119.2024.04.19.02.13.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Apr 2024 02:13:59 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-de45f3f092bso2224907276.0;
+        Fri, 19 Apr 2024 02:13:59 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXpcWiTyt/dIuBDgc5hcvgYB2Z3v8haBsRAk699AFdp6zatkvd8VvJXCrN5XfyE6i31IzOAzCpz8coVj1PyEv83hgfqwolPm5XawTp4LI0VLmCJXIN89kR6meTWkSlgxfXTTMiP6xE=
+X-Received: by 2002:a25:8185:0:b0:dd0:972b:d218 with SMTP id
+ p5-20020a258185000000b00dd0972bd218mr1282834ybk.41.1713518039110; Fri, 19 Apr
+ 2024 02:13:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CGME20240418093150epcas5p31dc20cc737c72009265593f247e48262@epcas5p3.samsung.com>
- <20240418093143.2188131-1-xue01.he@samsung.com>
-In-Reply-To: <20240418093143.2188131-1-xue01.he@samsung.com>
-From: Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Date: Fri, 19 Apr 2024 16:09:56 +0700
-X-Gmail-Original-Message-ID: <CAFBCWQJAjef4AGXmVDZ-dR02zqstpXuP_mWimsF5HQCMxxeCcg@mail.gmail.com>
-Message-ID: <CAFBCWQJAjef4AGXmVDZ-dR02zqstpXuP_mWimsF5HQCMxxeCcg@mail.gmail.com>
-Subject: Re: [PATCH v2] io_uring: releasing CPU resources when polling
-To: hexue <xue01.he@samsung.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	io-uring Mailing List <io-uring@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>, 
-	Pavel Begunkov <asml.silence@gmail.com>, Kanchan Joshi <joshi.k@samsung.com>, 
-	Kundan Kumar <kundan.kumar@samsung.com>, Anuj Gupta <anuj20.g@samsung.com>, 
-	Wenwen Chen <wenwen.chen@samsung.com>, Ruyi Zhang <ruyi.zhang@samsung.com>, 
-	Xiaobing Li <xiaobing.li@samsung.com>, cliang01.li@samsung.com, peiwei.li@samsung.com
+References: <20240419090259.39542-1-yang.lee@linux.alibaba.com>
+In-Reply-To: <20240419090259.39542-1-yang.lee@linux.alibaba.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 19 Apr 2024 11:13:46 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX-+32mM9pyh+RsH0oUrJrzvLi=x4OZ3MMy-_Xv_9_PKQ@mail.gmail.com>
+Message-ID: <CAMuHMdX-+32mM9pyh+RsH0oUrJrzvLi=x4OZ3MMy-_Xv_9_PKQ@mail.gmail.com>
+Subject: Re: [PATCH -next] dma: Add dev_id parameter description in request_dma_bycap
+To: Yang Li <yang.lee@linux.alibaba.com>
+Cc: ysato@users.sourceforge.jp, dalias@libc.org, glaubitz@physik.fu-berlin.de, 
+	linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 19, 2024 at 3:47=E2=80=AFPM hexue wrote:
-> +void init_hybrid_poll_info(struct io_ring_ctx *ctx, struct io_kiocb *req=
-)
-> +{
-> +       u32 index;
-> +
-> +       index =3D req->file->f_inode->i_rdev;
-> +       struct iopoll_info *entry =3D xa_load(&ctx->poll_array, index);
-> +
-> +       if (!entry) {
-> +               entry =3D kmalloc(sizeof(struct iopoll_info), GFP_KERNEL)=
-;
-> +               entry->last_runtime =3D 0;
-> +               entry->last_irqtime =3D 0;
-> +               xa_store(&ctx->poll_array, index, entry, GFP_KERNEL);
-> +       }
+On Fri, Apr 19, 2024 at 11:03=E2=80=AFAM Yang Li <yang.lee@linux.alibaba.co=
+m> wrote:
+> This patch adds the missing description for the dev_id parameter in the
+> kernel documentation for the request_dma_bycap function.
+>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-GFP_KERNEL may fail; you must check for failure. Otherwise, it could
-lead to NULL pointer dereference.
+Fixes: db9b99d461ddbbaa ("sh: dma-api channel capability extensions.")
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 --=20
-Ammar Faizi
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
