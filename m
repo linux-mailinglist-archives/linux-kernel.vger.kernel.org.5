@@ -1,171 +1,120 @@
-Return-Path: <linux-kernel+bounces-152168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 678928ABA27
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 09:47:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55A308ABA32
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 10:00:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D329C281402
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 07:47:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0DF2B20FE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 08:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77D5713FE7;
-	Sat, 20 Apr 2024 07:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320C114003;
+	Sat, 20 Apr 2024 08:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TWeyGbB3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="DgBUJ93W";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="7aDLeJh6"
+Received: from mailrelay5-1.pub.mailoutpod2-cph3.one.com (mailrelay5-1.pub.mailoutpod2-cph3.one.com [46.30.211.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B349C7F;
-	Sat, 20 Apr 2024 07:47:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C33EEDE
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 08:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713599247; cv=none; b=oIKMOUoL71xf/JLl51SKXK++uUUBMRtZLqebbbTuzbS9BsLkCT1lft3DH1pxsY5e//a31GvSKBDySUf0LEeblfDpgYNuxUIdE1iRhu5kwlyUp+2fSRlZG4tHLMu1YzWhEj+m/2TF2mYnIm0AXZ0PChf8EsH2rB2/PQPhCrkosSI=
+	t=1713600010; cv=none; b=qc/X93QhZiUxL/PFGRrypz9oiIrP9Q0sqq+i4IomukfPVT09HUGhMbJZ/gC64wm+qbHabexMlu8ZHKlT4QcKooF4Ayg6SM2Hw/ppV0VoPTxAGh7qxyI38qXLcStz8QF9MX7YCUHGRzGo5UClaQYxuZod51Pc9P/fJuidsKvWrP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713599247; c=relaxed/simple;
-	bh=T0osy19LzLNs6ouQOw8Zlh37fnhwMKJFVvxRQL+nhtg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hNpNbWndG+svfcv4NVf/ojguoquD3RiQadOJ/OkBMTh/RurZSPTV9aRq77HTMnbtOhMIAodhQgXdBOgEND6hwN44SXCwXAOQ5Hz6fvanCoJbWPPXY3V3D6EGRLrUuiIcgPq7Y/uvsR6qKg/PPsOFdaTLBNirJK0GmGPkSDiceAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TWeyGbB3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 339DDC072AA;
-	Sat, 20 Apr 2024 07:47:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713599247;
-	bh=T0osy19LzLNs6ouQOw8Zlh37fnhwMKJFVvxRQL+nhtg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TWeyGbB30pV/Qmy2/ofLvx6TXo/QqgSQ2ZyfK/qsBWrBeKYqgCQ2U7o/uxMkihZ56
-	 iuFW+1b0qwtWnIf+WCBJJJr3yzYSzMyAeWR5ilo064CknscEq2sGYcrS1HBT8m42kY
-	 1MWZlRtgFlrilfnHDzKEJS5PmYuynW8kmR6kWnM7j5YBqhS5nUO407pTJDqX5QKKBp
-	 2qExqRKAuP/Ufr85iQDZ4aWZOq9wk5ePd7DJwl4jl7T/gxPwwEV1wR/qMfCTjZXGfs
-	 eCRAlnjVWOn8y4lb8yEC4cccCb7GVIaprhFUqVeIia12rUqpWFd1bTsKrokxZ9aESb
-	 0nVBw5e0wERyA==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d895138d0eso22334101fa.1;
-        Sat, 20 Apr 2024 00:47:27 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVshMnaiQPrZUwunrfjtoOb09cShVcg6ns2GRKXBOtYFAoBCev+uVhUdbErthwQiX9W0VvQyPqmG3NYJrsHuC+rM1tQXDjdkgXTYXB+
-X-Gm-Message-State: AOJu0YwENKLdZaRXD3pWwSj8bibrFxIPAo9KhyJ4fKzdY2QhnjLoWA7F
-	guVKMhrTCeVC5QhZnY5i2XEm8OI8cg14g64z9+jvDKygx0UsF7ZKjbYJvtQGv0h8KyodXPNv1Z2
-	C6ghuHNgEQf+n6gEpE8D1ge/3wJw=
-X-Google-Smtp-Source: AGHT+IGPCKaRhYjHdGjuHllPeOvL5maeL8w6y1AWQZunWXnoCSUTwiEjtTKyWgmWGQvfDyXx87V3gnhw2JE1YhqYnNU=
-X-Received: by 2002:a2e:7d04:0:b0:2da:49cc:ef39 with SMTP id
- y4-20020a2e7d04000000b002da49ccef39mr2487104ljc.0.1713599245862; Sat, 20 Apr
- 2024 00:47:25 -0700 (PDT)
+	s=arc-20240116; t=1713600010; c=relaxed/simple;
+	bh=Zgce6zv1q2p3ZzIim3wBuPu7uvIRjBuJqkyxEkf1f3c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e4SbRSpz1rU3CPDvkoRIML1sbBbbn4DFeRa9n7Plq59I2ph+YNw01sXZ1jLOq9PYjSct0uxhGLIAtQNUTBdWFIx56szmNHgg2E8NorGg7N8U3IhmcsbHvBVXnsC1u0FDs47zLkVd0asy4t3uA8dpTsjgMo49SdiwMVq8ID2SLVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=DgBUJ93W; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=7aDLeJh6; arc=none smtp.client-ip=46.30.211.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=rsa1;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=0loidWV2ihloVcz5aeoH7O995WGy2I4QV0SsCN+3csU=;
+	b=DgBUJ93WY+ZlppT5tNOlP59Rjftn0Te0tB/+MFEU2hz0/VkI6iwuCM5pQiTRO7OH6oLVFRue3SRfk
+	 socPbvhEADcygyCTVwXeUN0eZ5KE1aEch6ezTptaCw5OJNZV0NNglv14t7l++Iy383iC5tOGJrdkxt
+	 Vw4AzReUbNw5+0smrdZ08XzipdMYbJ+6zYAexH4VTCDfctLkgj5ll6hu6RP6e/JzokDPwqw7KYGMui
+	 ZJF3xWq6rP1EIDjphQOzD/9Zppbf5NwnGUnGeasveMj6JZ00fMoz8FYpiSiRSLZkXUFUntK8Ff8XYm
+	 /vG255cYfjv86lgDLh1AR4DIp0PcDSw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed1;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=0loidWV2ihloVcz5aeoH7O995WGy2I4QV0SsCN+3csU=;
+	b=7aDLeJh6FyNvSeTi7QIRA+4wSdkJs7s6d40T3TJm4G1tc4yye1gQibzEtxguxPpH1jQsk6/2Fori7
+	 wXIn0iqDw==
+X-HalOne-ID: d08ee4b9-feeb-11ee-93d5-edf132814434
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay5.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id d08ee4b9-feeb-11ee-93d5-edf132814434;
+	Sat, 20 Apr 2024 07:58:55 +0000 (UTC)
+Date: Sat, 20 Apr 2024 09:58:46 +0200
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: davem@davemloft.net, andreas@gaisler.com, sparclinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] sparc/srmmu: Remove on-stack cpumask var
+Message-ID: <20240420075846.GA614130@ravnborg.org>
+References: <20240420051547.3681642-1-dawei.li@shingroup.cn>
+ <20240420051547.3681642-2-dawei.li@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416121838.95427-1-masahiroy@kernel.org> <20240416121838.95427-3-masahiroy@kernel.org>
- <ZiKIoLKtG0suO-8i@bergen.fjasle.eu>
-In-Reply-To: <ZiKIoLKtG0suO-8i@bergen.fjasle.eu>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sat, 20 Apr 2024 16:46:49 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASHW9Kh+sitS-si8kh2q_XD=1YOPREinY2QStZq=4bd1Q@mail.gmail.com>
-Message-ID: <CAK7LNASHW9Kh+sitS-si8kh2q_XD=1YOPREinY2QStZq=4bd1Q@mail.gmail.com>
-Subject: Re: [PATCH 2/4] Makefile: remove some unnecessary header include paths
-To: Nicolas Schier <nicolas@fjasle.eu>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240420051547.3681642-2-dawei.li@shingroup.cn>
 
-On Sat, Apr 20, 2024 at 12:07=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu>=
- wrote:
->
-> On Tue 16 Apr 2024 21:18:36 GMT, Masahiro Yamada wrote:
-> > The include directive with the double-quote form, #include "...",
-> > first searches for the specified header in the directory containing
-> > the source file.
-> >
-> > If all local headers are included using the double-quote form instead
-> > of the angle bracket form, there is no need to add the local directory
-> > to the header search path.
-> >
-> > drivers/gpu/drm/imagination and drivers/net/ethernet/aquantia/atlantic
-> > use only the double-quote form for including the local headers, and
-> > there are no generated sources or headers in their directories. Hence,
-> > the local header search path is unneeded.
-> >
-> > The same applies to arch/loongarch/kvm/ because TRACE_INCLUDE_PATH is
-> > relative to include/trace/.
-> >
-> > I guess there exist more Makefiles with unnecessary header inclusion
-> > paths (and more cases where it is possible to delete the header search
-> > path by replacing #include <...> with #include "..."), but I do not hav=
-e
-> > an easy way to detect it.
-> >
-> > These are unneeded inclusion paths that I happened to find.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  arch/loongarch/kvm/Makefile                     | 2 --
-> >  drivers/gpu/drm/imagination/Makefile            | 2 --
-> >  drivers/net/ethernet/aquantia/atlantic/Makefile | 2 --
-> >  3 files changed, 6 deletions(-)
-> >
-> > diff --git a/arch/loongarch/kvm/Makefile b/arch/loongarch/kvm/Makefile
-> > index 244467d7792a..7a0108a721c1 100644
-> > --- a/arch/loongarch/kvm/Makefile
-> > +++ b/arch/loongarch/kvm/Makefile
-> > @@ -3,8 +3,6 @@
-> >  # Makefile for LoongArch KVM support
-> >  #
-> >
-> > -ccflags-y +=3D -I $(srctree)/$(src)
-> > -
-> >  include $(srctree)/virt/kvm/Makefile.kvm
-> >
-> >  obj-$(CONFIG_KVM) +=3D kvm.o
-> > diff --git a/drivers/gpu/drm/imagination/Makefile b/drivers/gpu/drm/ima=
-gination/Makefile
-> > index ec6db8e9b403..3d9d4d40fb80 100644
-> > --- a/drivers/gpu/drm/imagination/Makefile
-> > +++ b/drivers/gpu/drm/imagination/Makefile
-> > @@ -1,8 +1,6 @@
-> >  # SPDX-License-Identifier: GPL-2.0-only OR MIT
-> >  # Copyright (c) 2023 Imagination Technologies Ltd.
-> >
-> > -subdir-ccflags-y :=3D -I$(srctree)/$(src)
-> > -
-> >  powervr-y :=3D \
-> >       pvr_ccb.o \
-> >       pvr_cccb.o \
-> > diff --git a/drivers/net/ethernet/aquantia/atlantic/Makefile b/drivers/=
-net/ethernet/aquantia/atlantic/Makefile
-> > index 8ebcc68e807f..268a055086c4 100644
-> > --- a/drivers/net/ethernet/aquantia/atlantic/Makefile
-> > +++ b/drivers/net/ethernet/aquantia/atlantic/Makefile
-> > @@ -8,8 +8,6 @@
-> >
-> >  obj-$(CONFIG_AQTION) +=3D atlantic.o
-> >
-> > -ccflags-y +=3D -I$(srctree)/$(src)
-> > -
-> >  atlantic-objs :=3D aq_main.o \
-> >       aq_nic.o \
-> >       aq_pci_func.o \
->
-> I'm afraid drivers/net/ethernet/aquantia/atlantic/macsec/macsec_api.c,
-> .../hw_atl2/hw_atl2.c and .../hw_atl2/hw_atl2_utills{,_fw}.[ch] need to
-> be adjusted first.
->
-> Except for the atlantic related patch diff:
-> Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+Hi Dawei,
+On Sat, Apr 20, 2024 at 01:15:41PM +0800, Dawei Li wrote:
+> In general it's preferable to avoid placing cpumasks on the stack, as
+> for large values of NR_CPUS these can consume significant amounts of
+> stack space and make stack overflows more likely.
+> 
+> Use cpumask_any_but() to avoid the need for a temporary cpumask on
+> the stack.
 
+Another good argument for this patch is the simplification of the code.
 
+> 
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> ---
+>  arch/sparc/mm/srmmu.c | 40 ++++++++++++----------------------------
+>  1 file changed, 12 insertions(+), 28 deletions(-)
+> 
+> diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
+> index 852085ada368..86fd20c878ae 100644
+> --- a/arch/sparc/mm/srmmu.c
+> +++ b/arch/sparc/mm/srmmu.c
+> @@ -1653,13 +1653,15 @@ static void smp_flush_tlb_all(void)
+>  	local_ops->tlb_all();
+>  }
+>  
+> +static bool cpumask_any_but_current(struct mm_struct *mm)
+> +{
+> +	return cpumask_any_but(mm_cpumask(mm), smp_processor_id()) < nr_cpu_ids;
+> +}
 
-Right. I got build errors for atlantic.
+This helper is not a cpumask helper - the name should reflect what it is
+used for.
 
-I will drop this because it may cause regressions.
+Something like:
+static bool any_other_mm_cpus(struct mm_struct *mm)
+{
+	return cpumask_any_but(mm_cpumask(mm), smp_processor_id()) < nr_cpu_ids;
+}
 
+The implementation is fine - it is only the naming that should be
+improve.
+With this change (or a better name):
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+	Sam
 
