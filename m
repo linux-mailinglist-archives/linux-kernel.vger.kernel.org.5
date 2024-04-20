@@ -1,118 +1,141 @@
-Return-Path: <linux-kernel+bounces-152157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B24B58AB9F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 08:15:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30F898AB9FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 08:16:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7FD1B20F6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 06:15:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6B031F214FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 06:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92EF410965;
-	Sat, 20 Apr 2024 06:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB9AF10A3E;
+	Sat, 20 Apr 2024 06:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qg8kF4Gy"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cjgS4XEX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9762D205E32
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 06:15:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD847465;
+	Sat, 20 Apr 2024 06:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713593711; cv=none; b=MloC/lroaRJe5MJNQEMwwbJKQXrHoEP81nAIojtDC60xiCSUkh2KKyPZmkau50YiiKjCPJ63l97z1BtwQLT7Qic0+QUwrhrZulv+RSDdelCaOfPXlLxPTMJkyWG5TiZa38ogmeUn8qurpk5wtyIjyblOcdIKpR+MuduvZia3u0o=
+	t=1713593762; cv=none; b=ooSsCkLwnNylHH81jZAxtLPcrxmA4OxaIcWi/2S+8mHGiKY4iCaE5JDLFS1BGEPSoahS3UenqdOLT3YSuFPWLskjZncpYZdxdyftOh6dsbGv2GU1clpK6hstqSnJ9NqTLRDqLj4Ma4/G1ojqmCA69D/7uDdLmzbvqyXzfDlBG8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713593711; c=relaxed/simple;
-	bh=ZolRI2ztsSyqYXap63TOzAtzW5UT+oyhSNBzd5uy1Ow=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n9kcEcliBmDbUDGDYNvgTW0ajR6h8y4NXeBOLXVxqgpFKeA4OWnMIsX0H1EoSDEoIN12H2Q6GeYw+4O0MickP6NnnGalxXEYSGLJmsPAOBtmdUPLNh9fS+EwW1emr8eXKxB+RazyAS1A/mHHP/RTZmWkxVjhG8Dqe/yEB1Mk250=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qg8kF4Gy; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so1797638a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 23:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713593709; x=1714198509; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YlC9FsdeF0rfQMdZj7e6J8+wbY+rNUqhDWpmqrph2kE=;
-        b=Qg8kF4GyrbMYpygolQejTAhpuMEenESv5nZe63GweDAZ/P0duR4famgxiDktUwvbIO
-         MJF3ikz6Fe+WPW00CeA8EYWl1RTDQ3LARbHjB9uu/wAd8LnVWXmvaj+PbaQwxcqtObMY
-         byUlvSR5uf8mxv5y4t6K2dS3unVxNtzj3tH9qWAj7t4N4f5RJdN06Ze8yPPsroGFP1gf
-         iniY1OGtVkMI52Jni/58aVC6dEeqtkk/wZS7xv4kYwVUvRJWqRuA7OAC0jmCOdZOTnuP
-         BMGJ6tkXqyOpO6I6rnbmJQsypF5tClfPhXX6PkSslKXdODmay1EJUwHpaWLGK3D+nlHs
-         4Jmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713593709; x=1714198509;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YlC9FsdeF0rfQMdZj7e6J8+wbY+rNUqhDWpmqrph2kE=;
-        b=wKFxmjtOFqyzFUI4VUWrOFFPqwH5+LtW4Y0eT6oZ5kry+CzgyWEGQjA6qHNECdu96Y
-         TXbA0BURPyNibOdqiQIFlLze4hLpIy68u52YXtK/yL/Tyz3Jqku4AYe1hHAFRwCFY7Mk
-         /5y0FkKPgsYbXqeoW9QN0irb1h/Y0PXEJ29xbfL7TkTlOc4hU3vVMfORdhSHZrUYiCIw
-         EKpHnKRlJGkTiU6iH6UQ0RC8t2Y32NLVuA5DKiZj8N2KS9PWf8CHH5GB9Xw2ciJYC6iX
-         IyfRbdn5Z+yByy8MU7aEmt+pUqPt1Yo6ISMVEOreIiz32GYUDQfLBEjCSvQo8vI7Bz5R
-         SUkA==
-X-Gm-Message-State: AOJu0YzLnSFsIGVVg1JWXP5QanbUK+ux0MrAEz0JZR8BsAqBXQLQu3jh
-	mZZpEASf33mRjdrfh3hrbzrNMCknFskd3kr8DHZEvbZlQoGjaNAGXQGeEd4Ymt8=
-X-Google-Smtp-Source: AGHT+IHGpfiTq24KebTzUO6zupQ0+w0WXQlTrWgBUbY7ZE+7booh5eMWYuU4wjQejiGMx8ENm6/XVA==
-X-Received: by 2002:a05:6a20:3951:b0:1aa:a473:3ee0 with SMTP id r17-20020a056a20395100b001aaa4733ee0mr5059294pzg.6.1713593708848;
-        Fri, 19 Apr 2024 23:15:08 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id jv21-20020a170903059500b001e89827e2e8sm3774338plb.305.2024.04.19.23.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 23:15:08 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: syzbot+d4c06e848a1c1f9f726f@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] possible deadlock in input_event (2)
-Date: Sat, 20 Apr 2024 15:15:05 +0900
-Message-Id: <20240420061505.62849-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <0000000000006d6f4105d2fe05ed@google.com>
-References: <0000000000006d6f4105d2fe05ed@google.com>
+	s=arc-20240116; t=1713593762; c=relaxed/simple;
+	bh=LC11vntnq2WrNJzqQ9ZGvDMLz5CIOstAK4aG/R3pSBU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HF9OP0Li0RbZK+QmHg3wqEPgjCACh9oxdDgVBFT396elENg23ippCeCQFUEQfiVJpiQUQpAN/Wt0Ye6PnaKfSbGlEbze7LmcrYeuuI73o7DIlDBBTmUT5LOUiN7TWu1VZYtfYzRczfqkTKYHfMZDt1w0ZMYu3JfVHn/GTzcnfE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=cjgS4XEX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F537C072AA;
+	Sat, 20 Apr 2024 06:16:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713593761;
+	bh=LC11vntnq2WrNJzqQ9ZGvDMLz5CIOstAK4aG/R3pSBU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cjgS4XEX+6alg89rQuIGdMNZbyIldYwl0fwxEJjT61ci/x9/px5qJhbq/BSDHym7b
+	 u6QELOgjqPGav1av8udBJHtbCEyx+ib5hX23zHGq18eA8OUQBABZ4iQXE0j31xJLhW
+	 PjhiAXhTgSZuOMVGAwTlwm66nF91OYj6GuEuaftY=
+Date: Sat, 20 Apr 2024 08:15:55 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Daniel Okazaki <dtokazaki@google.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Arnd Bergmann <arnd@arndb.de>,
+	kernel-team@android.com, linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] eeprom: at24: fix memory corruption race condition
+Message-ID: <2024042042-subarctic-frightful-670e@gregkh>
+References: <cd8ff4fc-f6bd-4834-b837-2a0d59c93648@web.de>
+ <20240419191200.219548-1-dtokazaki@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240419191200.219548-1-dtokazaki@google.com>
 
-please test deadlock in input_event
+On Fri, Apr 19, 2024 at 07:12:00PM +0000, Daniel Okazaki wrote:
+> If the eeprom is not accessible, an nvmem device will be registered, the
+> read will fail, and the device will be torn down. If another driver
+> accesses the nvmem device after the teardown, it will reference
+> invalid memory.
+> 
+> Move the failure point before registering the nvmem device.
+> 
+> Signed-off-by: Daniel Okazaki <dtokazaki@google.com>
+> Fixes: b20eb4c1f026 ("eeprom: at24: drop unnecessary label")
+> ---
+>  drivers/misc/eeprom/at24.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> index 572333ead5fb..4bd4f32bcdab 100644
+> --- a/drivers/misc/eeprom/at24.c
+> +++ b/drivers/misc/eeprom/at24.c
+> @@ -758,15 +758,6 @@ static int at24_probe(struct i2c_client *client)
+>  	}
+>  	pm_runtime_enable(dev);
+>  
+> -	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
+> -	if (IS_ERR(at24->nvmem)) {
+> -		pm_runtime_disable(dev);
+> -		if (!pm_runtime_status_suspended(dev))
+> -			regulator_disable(at24->vcc_reg);
+> -		return dev_err_probe(dev, PTR_ERR(at24->nvmem),
+> -				     "failed to register nvmem\n");
+> -	}
+> -
+>  	/*
+>  	 * Perform a one-byte test read to verify that the chip is functional,
+>  	 * unless powering on the device is to be avoided during probe (i.e.
+> @@ -782,6 +773,15 @@ static int at24_probe(struct i2c_client *client)
+>  		}
+>  	}
+>  
+> +	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
+> +	if (IS_ERR(at24->nvmem)) {
+> +		pm_runtime_disable(dev);
+> +		if (!pm_runtime_status_suspended(dev))
+> +			regulator_disable(at24->vcc_reg);
+> +		return dev_err_probe(dev, PTR_ERR(at24->nvmem),
+> +				     "failed to register nvmem\n");
+> +	}
+> +
+>  	/* If this a SPD EEPROM, probe for DDR3 thermal sensor */
+>  	if (cdata == &at24_data_spd)
+>  		at24_probe_temp_sensor(client);
+> -- 
+> 2.44.0.769.g3c40516874-goog
+> 
 
-#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+Hi,
 
----
- drivers/input/evdev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
-index 51e0c4954600..181c798b232b 100644
---- a/drivers/input/evdev.c
-+++ b/drivers/input/evdev.c
-@@ -258,7 +258,7 @@ static void evdev_pass_values(struct evdev_client *client,
- 	event.input_event_usec = ts.tv_nsec / NSEC_PER_USEC;
- 
- 	/* Interrupts are disabled, just acquire the lock. */
--	spin_lock(&client->buffer_lock);
-+	spin_lock_irq(&client->buffer_lock);
- 
- 	for (v = vals; v != vals + count; v++) {
- 		if (__evdev_is_filtered(client, v->type, v->code))
-@@ -278,7 +278,7 @@ static void evdev_pass_values(struct evdev_client *client,
- 		__pass_event(client, &event);
- 	}
- 
--	spin_unlock(&client->buffer_lock);
-+	spin_unlock_irq(&client->buffer_lock);
- 
- 	if (wakeup)
- 		wake_up_interruptible_poll(&client->wait,
--- 
-2.34.1
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
 
