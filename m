@@ -1,275 +1,143 @@
-Return-Path: <linux-kernel+bounces-152279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55CD88ABBCB
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 15:42:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 207F98ABBD2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 15:43:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 795371C208A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:42:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B53F91F213DF
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8254A20DCC;
-	Sat, 20 Apr 2024 13:42:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BD72575A;
+	Sat, 20 Apr 2024 13:43:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B2f0KWEa"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zla6rS6r"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99FF1805E
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 13:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DBFC17C72;
+	Sat, 20 Apr 2024 13:43:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713620526; cv=none; b=KDceYX4bI57Ey9mhwl/uFgSWgJsmEo0jNOpcS9bvSmwRTeA8dw6TdsaDRl0Fqb05LHYb03LNtO6WZiS2lJHYE5IVDDk5REBGCNiRCD3YFqHs1G+I+ygJzVK1jFpndSvTxQ5tOh9TtlDalzOLN5vy4lde6hh1ZJ6VIvHC0gCBBK4=
+	t=1713620590; cv=none; b=fKvukhOubESS3v/tn2yu+i9T2yz0cKjebvCZEPQnOcUTpPqoEEqE5TGzTEVngRjExvsWEDtly4DWGeZeGNvskN6V/wgeU3aJB+B0HzGzup/4nSysppOh8IkuskiKNe5hoeNnjVE96rY5Od4BivY0b90DiJNBpC57bjzKbp45Yzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713620526; c=relaxed/simple;
-	bh=5yVPPTkPVsbrCA4RAIfsb0zVwIJRa1nXSDdsJsal9UM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=O8pC9OrBf+/PKFEwJOe7lNvXCWUvtMYB2aNtnvLkgeA+QVCtKZMXk6jHYj5A0lHPRIaOhHx72iwu/Fi9r/Ku+HI5RwMF1L8TgmqgaTjZqMQ+kRn7BfynDIHAhQUC3eaUPr3QKe6vY3DaTcwOA5NAZcM2m0onMupS3Dp1j4aifMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B2f0KWEa; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-571b1434592so3088753a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 06:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713620523; x=1714225323; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xUWMQtOMtHcstc/cIjPR41dHaXRQKi9outRFsvRo7/4=;
-        b=B2f0KWEaFeytZ9jQipBU9HrWyUtNmcl7NOSNg45mq3plj6F8TAiRiYaVc36rqkoDb5
-         uHgps1CCgfVcAhhK17VyaG1+ZmdIHD1CBYa8SWA9cGsDVfqef2S0G9Pn0ObsGhDCNTfj
-         QfE1+KQd09oHMoHC1oN56IVtUtQZ5mYO+yphTTjE+3XSN8JQNTW4COocNBcIwklLvwN9
-         +ruwwZwQNMLqwm+JgN0izyIEn0o/knHhgZFxEBVZ4P7HoAhljlZgex0wYSCT4zxJ2FaV
-         M4QrnlvkD62V5xc/R5Pde3NAjqW/hBQHB9zvZxV8pdtJWhdQZP6Xk4PicNhPbc+Kmrc7
-         Z5lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713620523; x=1714225323;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xUWMQtOMtHcstc/cIjPR41dHaXRQKi9outRFsvRo7/4=;
-        b=qCW/pPSkZx57fTJufo2spZWjA00bxzLAkw1EOZQmwwFzK+1lJELnTLfGAGar519BZv
-         RDmeCPaauUnC3L+y/Mz2K2Cl1oq+qiL+CdfApERLgqhKMkDo1i9uvVGB6puODpXFocBP
-         m4dZBdS+py5WmNhC6fRIuWOnb3XxLXZ/mSam3zswr/Y7LHGAEz7uTJ7vgJRqef5i0Qq4
-         h9ESIYE5nn8GEjzv7Izb2dF9WETpZ1lDhp1LOc5BOkawo+4Vzhf1Xnma6jCh48i8XbM+
-         A0N3iKxyLok3992KY3f1FnE90edIz9N9x1YibH+tVMk1ILxuO+o5F9hIX9xgaczNCYWR
-         s3+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWiCCIVnCH+qaeSc6MdWN/xPCCx0y/Dh2VQTMBi5JUhUty0oBe6/6z95KAR8jHdW9BAIvPbvZ3cUt291RfwWNxAMI+qsTM+yyC8m1tP
-X-Gm-Message-State: AOJu0YyooA6osEbGsvDBP3s7Y5ZV7+JKNxIl9w0aFj2MirfSKdTyZ+J1
-	cxIiCkWYwM90iJLPisraTfQLUMLwZMcVwiuuzI0giuWl8QSFqlRE
-X-Google-Smtp-Source: AGHT+IHH4R60EIxELY/Wj8xRTZADYWhGrR4yjgB29K8+ermTi0DbqyVVI4gtEkMLOuV4PYDPtk0lCw==
-X-Received: by 2002:a50:d6c5:0:b0:56e:3175:6065 with SMTP id l5-20020a50d6c5000000b0056e31756065mr3067740edj.9.1713620522735;
-        Sat, 20 Apr 2024 06:42:02 -0700 (PDT)
-Received: from localhost.localdomain (80-108-76-242.cable.dynamic.surfer.at. [80.108.76.242])
-        by smtp.gmail.com with ESMTPSA id fd21-20020a056402389500b0056e2495f92esm3347042edb.59.2024.04.20.06.42.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Apr 2024 06:42:02 -0700 (PDT)
-From: Christian Gmeiner <christian.gmeiner@gmail.com>
-To: tomeu@tomeuvizoso.net,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Russell King <linux+etnaviv@armlinux.org.uk>,
-	Christian Gmeiner <christian.gmeiner@gmail.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Christian Gmeiner <cgmeiner@igalia.com>,
-	etnaviv@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] Revert "drm/etnaviv: Expose a few more chipspecs to userspace"
-Date: Sat, 20 Apr 2024 15:41:58 +0200
-Message-ID: <20240420134159.110509-1-christian.gmeiner@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713620590; c=relaxed/simple;
+	bh=L98CzF8+ryVMoo7uKsd+i7iikr53sn0mgEqJKSQLgtg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PwWishCY6ayOdmwNe+S++6h+3X4VFqw625w5U/Rx+DufXUBNq1O7lWzN3bKZceMVUXpyBcnPicjl5fYW18lxViGED6rFq/DfJurShIweVQBAz95i4HPNH96SK8LIzceDw9YFCvBq7HnykhFGBOGLsucIpkSP+fLi4S845yiS0PY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zla6rS6r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 198E7C4AF09;
+	Sat, 20 Apr 2024 13:43:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713620590;
+	bh=L98CzF8+ryVMoo7uKsd+i7iikr53sn0mgEqJKSQLgtg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Zla6rS6rzoIO8wcXkN7xCQUbBYqm1ZwIQfNyj+Z0vSVel6XpzYBJLtTDyMm0uRO4s
+	 /TZu/shfOfmwYvGarI5Lc8B7qy/MUEkPdT+7yfGs7/oyUrTBaAff0ssj8zc/+TnQTl
+	 OpEzfM9OD7Kk0SoJAM1f9kntb91wWZhTuwTTt7YiyTBKR3gDvTMYDNqkvr/fhRdKrQ
+	 SPCoGw4PHKacCdkHvyH+ELqFq69Kjz53Ik/7bMfmVOSjoH3XJDnu4w0OCuenG4a7HC
+	 rPA//ez31Nqxa+oWHz/MHHyKknZMc2RDwnOqnPZvDI9R47YNzyel/x4kw2EvOsyHzM
+	 hsry5oZ4JnzcA==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso4708018e87.2;
+        Sat, 20 Apr 2024 06:43:10 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX/3kCrvQcNBM+shbLjQLUZSK/FX/zI1WtatPNB7Gv4+hQC1onsB18Vxo0AFPZcySYgwKhKDw1QxIjdqb4LSyu35zs1HRN6XNlgs95MhhPYuDB5CEowvXTmla3c0uc2TNuTe0ooUl4dxWKeVEZk0c/7ry7b8bbmmMOPJ/DtAw==
+X-Gm-Message-State: AOJu0YwpvJS5cYCbt3igDMTzhvBeUefF+GHJ31l6KP+eCYQs9jrNPY8O
+	YsHQQm/3qha0PDlslZva4XFIwFVcEGs8cZ0QefzmLDCfPEoUJcMMAFJHLl/HjWM7Pj/vyPDivJ5
+	+cug9c34lPMnVlbwp2+llMxBPtlw=
+X-Google-Smtp-Source: AGHT+IE+SSE2pQ3+Ft8GLnh+z8jjmNx8FhR5p4+yxVCk+TUOwVnWCcxWblDVtNbjfJaxmlV+mvQOapYErRlqcOKIhK4=
+X-Received: by 2002:a05:6512:4012:b0:51a:ff87:bae with SMTP id
+ br18-20020a056512401200b0051aff870baemr16467lfb.7.1713620588825; Sat, 20 Apr
+ 2024 06:43:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240415162041.2491523-5-ardb+git@google.com> <20240415162041.2491523-7-ardb+git@google.com>
+In-Reply-To: <20240415162041.2491523-7-ardb+git@google.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 20 Apr 2024 22:42:32 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASq6ieck5Gw1sLZVp9mC3g-HhZWEhHQmG+wDB__4mX8QA@mail.gmail.com>
+Message-ID: <CAK7LNASq6ieck5Gw1sLZVp9mC3g-HhZWEhHQmG+wDB__4mX8QA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] vmlinux: Avoid weak reference to notes section
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org, 
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
+	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <olsajiri@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Christian Gmeiner <cgmeiner@igalia.com>
+On Tue, Apr 16, 2024 at 1:20=E2=80=AFAM Ard Biesheuvel <ardb+git@google.com=
+> wrote:
+>
+> From: Ard Biesheuvel <ardb@kernel.org>
+>
+> Weak references are references that are permitted to remain unsatisfied
+> in the final link. This means they cannot be implemented using place
+> relative relocations, resulting in GOT entries when using position
+> independent code generation.
+>
+> The notes section should always exist, so the weak annotations can be
+> omitted.
+>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
-This reverts commit 1dccdba084897443d116508a8ed71e0ac8a031a4.
 
-In userspace a different approach was choosen - hwdb. As a result, there
-is no need for these values.
+Applied to linux-kbuild.
+Thanks.
 
-Signed-off-by: Christian Gmeiner <cgmeiner@igalia.com>
----
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c  | 20 ---------------
- drivers/gpu/drm/etnaviv/etnaviv_gpu.h  | 12 ---------
- drivers/gpu/drm/etnaviv/etnaviv_hwdb.c | 34 --------------------------
- include/uapi/drm/etnaviv_drm.h         |  5 ----
- 4 files changed, 71 deletions(-)
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-index 734412aae94d..e47e5562535a 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -164,26 +164,6 @@ int etnaviv_gpu_get_param(struct etnaviv_gpu *gpu, u32 param, u64 *value)
- 		*value = gpu->identity.eco_id;
- 		break;
- 
--	case ETNAVIV_PARAM_GPU_NN_CORE_COUNT:
--		*value = gpu->identity.nn_core_count;
--		break;
--
--	case ETNAVIV_PARAM_GPU_NN_MAD_PER_CORE:
--		*value = gpu->identity.nn_mad_per_core;
--		break;
--
--	case ETNAVIV_PARAM_GPU_TP_CORE_COUNT:
--		*value = gpu->identity.tp_core_count;
--		break;
--
--	case ETNAVIV_PARAM_GPU_ON_CHIP_SRAM_SIZE:
--		*value = gpu->identity.on_chip_sram_size;
--		break;
--
--	case ETNAVIV_PARAM_GPU_AXI_SRAM_SIZE:
--		*value = gpu->identity.axi_sram_size;
--		break;
--
- 	default:
- 		DBG("%s: invalid param: %u", dev_name(gpu->dev), param);
- 		return -EINVAL;
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
-index 7d5e9158e13c..197e0037732e 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
-@@ -54,18 +54,6 @@ struct etnaviv_chip_identity {
- 	/* Number of Neural Network cores. */
- 	u32 nn_core_count;
- 
--	/* Number of MAD units per Neural Network core. */
--	u32 nn_mad_per_core;
--
--	/* Number of Tensor Processing cores. */
--	u32 tp_core_count;
--
--	/* Size in bytes of the SRAM inside the NPU. */
--	u32 on_chip_sram_size;
--
--	/* Size in bytes of the SRAM across the AXI bus. */
--	u32 axi_sram_size;
--
- 	/* Size of the vertex cache. */
- 	u32 vertex_cache_size;
- 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c b/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
-index d8e7334de8ce..8665f2658d51 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
-@@ -17,10 +17,6 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.thread_count = 128,
- 		.shader_core_count = 1,
- 		.nn_core_count = 0,
--		.nn_mad_per_core = 0,
--		.tp_core_count = 0,
--		.on_chip_sram_size = 0,
--		.axi_sram_size = 0,
- 		.vertex_cache_size = 8,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 1,
-@@ -52,11 +48,6 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.register_max = 64,
- 		.thread_count = 256,
- 		.shader_core_count = 1,
--		.nn_core_count = 0,
--		.nn_mad_per_core = 0,
--		.tp_core_count = 0,
--		.on_chip_sram_size = 0,
--		.axi_sram_size = 0,
- 		.vertex_cache_size = 8,
- 		.vertex_output_buffer_size = 512,
- 		.pixel_pipes = 1,
-@@ -89,10 +80,6 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.thread_count = 512,
- 		.shader_core_count = 2,
- 		.nn_core_count = 0,
--		.nn_mad_per_core = 0,
--		.tp_core_count = 0,
--		.on_chip_sram_size = 0,
--		.axi_sram_size = 0,
- 		.vertex_cache_size = 16,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 1,
-@@ -125,10 +112,6 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.thread_count = 512,
- 		.shader_core_count = 2,
- 		.nn_core_count = 0,
--		.nn_mad_per_core = 0,
--		.tp_core_count = 0,
--		.on_chip_sram_size = 0,
--		.axi_sram_size = 0,
- 		.vertex_cache_size = 16,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 1,
-@@ -160,11 +143,6 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.register_max = 64,
- 		.thread_count = 512,
- 		.shader_core_count = 2,
--		.nn_core_count = 0,
--		.nn_mad_per_core = 0,
--		.tp_core_count = 0,
--		.on_chip_sram_size = 0,
--		.axi_sram_size = 0,
- 		.vertex_cache_size = 16,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 1,
-@@ -197,10 +175,6 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.thread_count = 1024,
- 		.shader_core_count = 4,
- 		.nn_core_count = 0,
--		.nn_mad_per_core = 0,
--		.tp_core_count = 0,
--		.on_chip_sram_size = 0,
--		.axi_sram_size = 0,
- 		.vertex_cache_size = 16,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 2,
-@@ -233,10 +207,6 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.thread_count = 256,
- 		.shader_core_count = 1,
- 		.nn_core_count = 8,
--		.nn_mad_per_core = 64,
--		.tp_core_count = 4,
--		.on_chip_sram_size = 524288,
--		.axi_sram_size = 1048576,
- 		.vertex_cache_size = 16,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 1,
-@@ -269,10 +239,6 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.thread_count = 256,
- 		.shader_core_count = 1,
- 		.nn_core_count = 6,
--		.nn_mad_per_core = 64,
--		.tp_core_count = 3,
--		.on_chip_sram_size = 262144,
--		.axi_sram_size = 0,
- 		.vertex_cache_size = 16,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 1,
-diff --git a/include/uapi/drm/etnaviv_drm.h b/include/uapi/drm/etnaviv_drm.h
-index d87410a8443a..af024d90453d 100644
---- a/include/uapi/drm/etnaviv_drm.h
-+++ b/include/uapi/drm/etnaviv_drm.h
-@@ -77,11 +77,6 @@ struct drm_etnaviv_timespec {
- #define ETNAVIV_PARAM_GPU_PRODUCT_ID                0x1c
- #define ETNAVIV_PARAM_GPU_CUSTOMER_ID               0x1d
- #define ETNAVIV_PARAM_GPU_ECO_ID                    0x1e
--#define ETNAVIV_PARAM_GPU_NN_CORE_COUNT             0x1f
--#define ETNAVIV_PARAM_GPU_NN_MAD_PER_CORE           0x20
--#define ETNAVIV_PARAM_GPU_TP_CORE_COUNT             0x21
--#define ETNAVIV_PARAM_GPU_ON_CHIP_SRAM_SIZE         0x22
--#define ETNAVIV_PARAM_GPU_AXI_SRAM_SIZE             0x23
- 
- #define ETNA_MAX_PIPES 4
- 
--- 
-2.44.0
 
+
+> ---
+>  kernel/ksysfs.c | 4 ++--
+>  lib/buildid.c   | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
+> index 495b69a71a5d..07fb5987b42b 100644
+> --- a/kernel/ksysfs.c
+> +++ b/kernel/ksysfs.c
+> @@ -228,8 +228,8 @@ KERNEL_ATTR_RW(rcu_normal);
+>  /*
+>   * Make /sys/kernel/notes give the raw contents of our kernel .notes sec=
+tion.
+>   */
+> -extern const void __start_notes __weak;
+> -extern const void __stop_notes __weak;
+> +extern const void __start_notes;
+> +extern const void __stop_notes;
+>  #define        notes_size (&__stop_notes - &__start_notes)
+>
+>  static ssize_t notes_read(struct file *filp, struct kobject *kobj,
+> diff --git a/lib/buildid.c b/lib/buildid.c
+> index 898301b49eb6..7954dd92e36c 100644
+> --- a/lib/buildid.c
+> +++ b/lib/buildid.c
+> @@ -182,8 +182,8 @@ unsigned char vmlinux_build_id[BUILD_ID_SIZE_MAX] __r=
+o_after_init;
+>   */
+>  void __init init_vmlinux_build_id(void)
+>  {
+> -       extern const void __start_notes __weak;
+> -       extern const void __stop_notes __weak;
+> +       extern const void __start_notes;
+> +       extern const void __stop_notes;
+>         unsigned int size =3D &__stop_notes - &__start_notes;
+>
+>         build_id_parse_buf(&__start_notes, vmlinux_build_id, size);
+> --
+> 2.44.0.683.g7961c838ac-goog
+>
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
