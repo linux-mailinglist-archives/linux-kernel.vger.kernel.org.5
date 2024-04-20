@@ -1,105 +1,168 @@
-Return-Path: <linux-kernel+bounces-152376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F71D8ABD2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 23:46:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 326878ABD89
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 00:06:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59DDA1F211E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 21:46:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D345B20BFA
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 22:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C14C482D1;
-	Sat, 20 Apr 2024 21:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E0F4AEC7;
+	Sat, 20 Apr 2024 22:06:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W6Qo3aZn"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FiZxmcEg"
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB32C205E35;
-	Sat, 20 Apr 2024 21:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A06481DD
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 22:06:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713649582; cv=none; b=lOC8soF4IwMULEVlchXdyEDUDhLyW1s02vpJtiInLMiQv2caDgjkswG+tDTapOVOFsfnEEBaq/j14u8iba/w+LwMW0s5VVk/QH0rrxYbiYC5H3huASUDZ6qUTESa2EjSu4hc9hC6ddJRvP/n1RAAVWlcSrSRd7+4xQAT59Lu/Nk=
+	t=1713650779; cv=none; b=SrKgnVxT/2832O2Bn7Qj0bS8ov07dgHmeCNUTLpqJ4D8kN5jXqfdIYrY4WAbjlwM0Rs4Cmvmkj5DN1abpLrjFCvCruiHyRvqkDSSGJNGqJDWzyvb9s/dGpGFAQEGnL9IoqusAs1rdfwftpetE0NqblaZaRtbRZLb07bbOLR+y5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713649582; c=relaxed/simple;
-	bh=q/Yzy9jb71UhbLs10JyY7ONYcI4dKOEu3Im2kVjHUHg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tt04EtrDx9/W2aHCwgirrsmLTlxh72OA1IvUgT0AJKbvrt0xDl0sBgxkJD8muIpOFBNm/t40Cr8zWBeKT1vqfI6UWB/4i4NKUFFI46NGTJgvo1hmHKD2U4EfGzQYU07aNdjmAhozM3KV4tbwGjWaly94TTrcRXP5dALuC9o/ffs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W6Qo3aZn; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e2bbc2048eso27241415ad.3;
-        Sat, 20 Apr 2024 14:46:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713649580; x=1714254380; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PcV9o22lvrbCiGocoNoN+ENYYHxL1F3V96+s5Tsv6z4=;
-        b=W6Qo3aZncECfXNjQfVz5XCIEOIgmzJ4TQC4q8sCkV7h53yptyWLHu3zPxkItTT9l4f
-         RHUBNi+jqwm10XfP1rFMgkGezyljlxEIMIBveyAVvfm0XpRUypF5CJGVvZ0zYMZoBDp5
-         WpefAGbzGpuoYk/vb7EFmjDT6SoW+oxOKosfSAMTwV+GhIa7It4uYJCUJzZjjSMksVhB
-         d5h5sH29+0nIZEjir9q/3Y8/KmGuIKGF3qrB/AzPXSZEhZHT8F4Ku6YKr5Oo34g4szth
-         QezD+pNR80oInPKSI3yjUBGEeiaPnubISlJ4jZYtJwBu2RMg2gtG5dh9vdTAF2IU3JY9
-         oakA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713649580; x=1714254380;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PcV9o22lvrbCiGocoNoN+ENYYHxL1F3V96+s5Tsv6z4=;
-        b=Y8BFlVnWvZVKikDDrCunIYSTMk+/YtgzqmclBCEdufk0nVA6+uyITq2zqJKWXD0+Cl
-         pDM0xkbYRxr7Q9MZnInN0l4XwCfL0Hz86yleWOS8sa4734iPh6CtFkw1MdxhAgL0xjCQ
-         OgX/cvZmFrGG0hk7GBJNVaHyPKhwcYZU4Xqs7VPO80KUF1d2+DVkr49ZhSQKdm+hfGiC
-         Jp4dNj1QodNDFWNTnPtkZkYJ469PP5A7yA84KbdBaDEawBgyPJ+oWAHH5uCpy/rQPDJT
-         Ght7UQoQxBpKVVrXFlFFZY+zx6wwbYEWyjUjOvXrgmhgkfHLqC3ln7J+XzRTCMVCLOTB
-         ZFCg==
-X-Forwarded-Encrypted: i=1; AJvYcCUkQudo/MBmIMH4oAUBsd8k079ywAmZocZyPqeO4IRtYjLD2RbfB4PGcAI59jmHpia2mQqgo07qoeWW+mTEB4YN3TYfFCkG8LLyYxeDpG4HgGuLkdtiTWM4SxytpI8SZL9sE+pf33q9vHs=
-X-Gm-Message-State: AOJu0YyoXymw64U5E9DQngNLXwm0d7A+UdUFg0BZ3tRBsvIk+GQRNTYA
-	eArmF+VucyB9waFnf0ugBpCald5h4QdH30/fBUqOPnzOxwGgp9Psm4ca5Q==
-X-Google-Smtp-Source: AGHT+IHmOKv+RkYN6u/zS0vAhgvZkveZBvsqaWLTMZVHY5gNwF03jrcagZDdmMmJBmcU/YA/t84gbg==
-X-Received: by 2002:a17:903:120a:b0:1e4:70d0:9337 with SMTP id l10-20020a170903120a00b001e470d09337mr7584055plh.45.1713649580213;
-        Sat, 20 Apr 2024 14:46:20 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k17-20020a170902c41100b001e00285b727sm5454110plk.294.2024.04.20.14.46.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Apr 2024 14:46:18 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sat, 20 Apr 2024 14:46:17 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-	linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH 2/6] hwmon: Use device_show_string() helper for sysfs
- attributes
-Message-ID: <516b5760-eb81-44a8-ab95-29e8717be493@roeck-us.net>
-References: <cover.1713608122.git.lukas@wunner.de>
- <23c2031acaa64f1c02f00e817c3f7e4466d17ab2.1713608122.git.lukas@wunner.de>
+	s=arc-20240116; t=1713650779; c=relaxed/simple;
+	bh=Q3/st490ZVEV0a95obH5fbPRSiIaOiRP9188COAHvts=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eYuOqI+w/bz2Pwbu1mhjF/3CJPFYSc98pGaGgSfzACQu+6FAbjAMEBHAmWiKV8gTo8slXXgKV9/KKgwxMwFL4gepHFwLg0+eZr01NCuW9ZNxJ/+KAl2h80xMSaOTl8lfC6C7SWtGUiPnB5WVBAXwgsCbWO08QWGxL8HKXQoNCfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FiZxmcEg; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713650772;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=VoccYVdC4pUrUz867A0VVlKD6/J156Gylfus5CpWqMk=;
+	b=FiZxmcEg321RzEpIqwbCMcmGiHPhbqX4k9zyztUFJt7+THaROuP1c5rl/IWS5ka0oKoQ34
+	4QS19BGPMwGUhI/IupAxE1yRIZa1bhCe4s9t8zOADEHjxvTiMVAjQWtBx2Uq+s0SpaVLyh
+	LYCqJ5O9Jd7Y9cq50wZQxGh0KHneflM=
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH] bcachefs: idle work scheduling design doc
+Date: Sat, 20 Apr 2024 18:06:01 -0400
+Message-ID: <20240420220604.496611-1-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23c2031acaa64f1c02f00e817c3f7e4466d17ab2.1713608122.git.lukas@wunner.de>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Apr 20, 2024 at 10:00:02PM +0200, Lukas Wunner wrote:
-> Deduplicate sysfs ->show() callbacks which expose a string at a static
-> memory location.  Use the newly introduced device_show_string() helper
-> in the driver core instead by declaring those sysfs attributes with
-> DEVICE_STRING_ATTR_RO().
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Lukas Wunner <lukas@wunner.de>
+bcachefs has various background tasks that need to be scheduled to
+balance efficiency, predictability of performance, etc.
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+The design and philosophy hasn't changed too much since bcache, which
+was primarily designed for server usage, with sustained load in mind.
 
-Guenter
+These days we're seeing more desktop usage - where we really want to let
+the system idle effictively, to reduce total power usage - while also
+still balancing previous concerns, we still want to let work accumulate
+to a degree.
+
+This lays out all the requirements and starts to sketch out the
+algorithm I have in mind.
+
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+---
+ fs/bcachefs/idle.h | 80 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 fs/bcachefs/idle.h
+
+diff --git a/fs/bcachefs/idle.h b/fs/bcachefs/idle.h
+new file mode 100644
+index 000000000000..b1717635581e
+--- /dev/null
++++ b/fs/bcachefs/idle.h
+@@ -0,0 +1,80 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _BCACHEFS_IDLE_H
++#define _BCACHEFS_IDLE_H
++
++/*
++ * Idle/background work classes:
++ *
++ * We have a number of background tasks (copygc, rebalance, journal reclaim).
++ *
++ * SUSTAINED LOAD REGIME
++ * ---------------------
++ *
++ * When the system is under continuous load, we want these jobs to run
++ * continuously - this is perhaps best modelled with a P/D controller, where
++ * they'll be trying to keep a target value (i.e. fragmented disk space,
++ * available journal space) roughly in the middle of some range.
++ *
++ * The goal under sustained load is to balance our ability to handle load spikes
++ * without running out of x resource (free disk space, free space in the
++ * journal), while also letting some work accumululate to be batched (or become
++ * unnecessary).
++ *
++ * For example, we don't want to run copygc too aggressively, because then it
++ * will be evacuating buckets that would have become empty (been overwritten or
++ * deleted) anyways, and we don't want to wait until we're almost out of free
++ * space because then the system will behave unpredicably - suddenly we're doing
++ * a lot more work to service each write and the system becomes much slower.
++ *
++ * IDLE REGIME
++ * -----------
++ *
++ * Many systems are however not under sustained load - they're idle most of the
++ * time, and the goal is to let them idle as much as possible because power
++ * useage is a prime consideration. Thus, we need to detect when we've been
++ * idle - and the longer we've been idle, the more pending work we should do;
++ * the goal being to complete all of our pending work as quickly as possible so
++ * that the system can go back to sleep.
++ *
++ * But this does not mean that we should do _all_ our pending work immediately
++ * when the system is idle; remember that if we allow work to build up, much
++ * work will not need to be done.
++ *
++ * Therefore when we're idle we want to wake up and do some amount of pending
++ * work in batches; increasing both the amount of work we do and the duration of
++ * our sleeps proportional to how long we've been idle for.
++ *
++ * CLASSES OF IDLE WORK
++ * --------------------
++ *
++ * There are levels of foreground and background tasks; a foreground operation
++ * (generated from outsisde the system, i.e. userspace) will generate work for
++ * the data move class and the journal reclaim class, and the data move class
++ * will generate more work for the journal reclaim class.
++ *
++ * This complicates idle detection, because a given class wants to know if
++ * everything above it has finished or is no longer running, and will want to
++ * behave differently for work above it coming from outside the system (which we
++ * cannot schedule and can only guess at based on past behaviour), versus work
++ * above it but from inside the system (which we can schedule).
++ *
++ * That is
++ * - data moves want to wake up when foreground operations have been quiet for
++ *   a little while
++ * - journal reclaim wants to wake up when foreground operations have been quiet
++ *   for a little while, and immediately after background data moves have
++ *   finished and gone back to sleep
++ */
++
++#define BCACHEFS_IDLE_CLASSES()		\
++	x(foreground)			\
++	x(data_move)			\
++	x(journal_reclaim)
++
++enum bch_idle_class {
++#define x(n)	BCH_IDLE_##n,
++	BCACHEFS_IDLE_CLASSES()
++#undef x
++};
++
++#endif /* _BCACHEFS_IDLE_H */
+-- 
+2.43.0
+
 
