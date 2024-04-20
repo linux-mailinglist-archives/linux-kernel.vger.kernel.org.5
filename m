@@ -1,179 +1,101 @@
-Return-Path: <linux-kernel+bounces-152243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03F9D8ABB4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:19:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE0138ABB4F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:21:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 278561C20CB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:19:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D8F71F21335
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A930329425;
-	Sat, 20 Apr 2024 11:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nvtt52Jp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B299C29422;
+	Sat, 20 Apr 2024 11:21:03 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E6A179A8;
-	Sat, 20 Apr 2024 11:19:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4EB6179A8;
+	Sat, 20 Apr 2024 11:21:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713611985; cv=none; b=Q3M44pocgJrNaAAVaz7DnwkG3qarbVpGVTcZrzYNGT593q/QSaeWs4iZdDVM7TYbx/TtD9HcaFvoKu7RxwUVcZSGkPYcgupB1G7iaFa5IFkYLkCwWC7Nsy2W89cVYbSpxz0YtTHsUt/v5BrZjjGZ3TQaGnk98wWrq70ernSVGQ4=
+	t=1713612063; cv=none; b=jUaWhQ7sk9BDq6rt4ObnwMrF/CkwQZrX5z6WCdggkjw3Gfgr0nUZS+L35yZFG6dRcvWb3dC35s3RUj8nAucEuRS2IDnZRYDwuSGIdPK7l/eZdGVddLq8eeLw4NnMwiS52bohL8TgvCtdYSbWNnK2dDYHjpXSbI/WL9L/36XzxQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713611985; c=relaxed/simple;
-	bh=iBr9YZ8SOZTOAUJpTCJ44n0d905eTuzIANCWXoPwtbk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ctOAveey/Am7104pAnhPbe/c8+tWuKqtKzCueYNIMh2Wyc3pg+Jut+/EWFiifCrWIH4DdPTh0S+tAeXZ7wL2z7X0GInW3nBXRtboIYawodbXeuqbdZw4z/0IXhCG72WClEy8lgFuroGJVpjgx87eiT/lHb7f1X6vxUxqftrZLS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nvtt52Jp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C8A5C072AA;
-	Sat, 20 Apr 2024 11:19:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713611984;
-	bh=iBr9YZ8SOZTOAUJpTCJ44n0d905eTuzIANCWXoPwtbk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Nvtt52JpVsLO6yPJGc6piA5JroYfOTIHUvfEBtdNi1EW4F3LSApc2cPdSDJpiATrC
-	 GmRKzsc7mzyd0AE82E+d7FeYR67GSORtem1hFQ4hGUFgkIMxU9gTvTm6GGx3CGg6kE
-	 vY029VZfS6KE/nOJ+GcoD+kYaDQu4rYAqehiR1R9WH2H7XzdM4fDoqAADKlz3n6ORE
-	 C1VmMqr5b5/ZgyCUkj+4udM5bn5mq66D+3iecB+a71rpcbaMk4cy7qFzORUBC2JmUE
-	 OPMryCqHmQwF+D6bCXnUVLi/589scYU0EFojbsiysJshb56sO1JBvVyzGsGcWWa/MY
-	 NkP5K1NCbRswQ==
-Date: Sat, 20 Apr 2024 12:19:33 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Guillaume Stols <gstols@baylibre.com>, dlechner@baylibre.com
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
- <Michael.Hennerich@analog.com>, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org, jstephan@baylibre.com
-Subject: Re: [PATCH] iio: adc: ad7606: remove frstdata check
-Message-ID: <20240420121933.13a0e22f@jic23-huawei>
-In-Reply-To: <20240417-cleanup-ad7606-v1-1-5c2a29662c0a@baylibre.com>
-References: <20240417-cleanup-ad7606-v1-1-5c2a29662c0a@baylibre.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713612063; c=relaxed/simple;
+	bh=YYJYeIgGcTt5hjQzW0nNz8cFsId94kh4P0NQ5RLRpjE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pgi2nkgjbf2PMhaTHNiCPFOZrWR7Kqij+RExCRcO4nDiaOio/py3aiboik9rPJzXy1dJaZ21cGGZ78noHal+DVmH4qRxmVeVeqFqgy/TXwQwUeVM8inIyfOAsW2wG0LXyVu++eluDEmbMLXnXPc0TJbUBzUT/HN88npxfEJxQ4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E5F1040E02A7;
+	Sat, 20 Apr 2024 11:20:59 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id sofCnBTMsFht; Sat, 20 Apr 2024 11:20:54 +0000 (UTC)
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6FA1040E00B2;
+	Sat, 20 Apr 2024 11:20:48 +0000 (UTC)
+Date: Sat, 20 Apr 2024 13:20:42 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Ashish Kalra <Ashish.Kalra@amd.com>
+Cc: linux-tip-commits@vger.kernel.org, thomas.lendacky@amd.com,
+	michael.roth@amd.com, x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] x86/e820: Expose API to update e820 kexec and
+ firmware tables externally.
+Message-ID: <20240420112042.GMZiOlCoAguq_MHDdx@fat_crate.local>
+References: <cover.1713212104.git.ashish.kalra@amd.com>
+ <511fcdca720d26a977a427bd21c5f2d668313f65.1713212104.git.ashish.kalra@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <511fcdca720d26a977a427bd21c5f2d668313f65.1713212104.git.ashish.kalra@amd.com>
 
-On Wed, 17 Apr 2024 09:11:18 +0000
-Guillaume Stols <gstols@baylibre.com> wrote:
+On Mon, Apr 15, 2024 at 09:09:10PM +0000, Ashish Kalra wrote:
+> -static u64 __init e820__range_update_kexec(u64 start, u64 size, enum e820_type old_type, enum e820_type  new_type)
+> +u64 __init e820__range_update_firmware(u64 start, u64 size, enum e820_type old_type, enum e820_type new_type)
+> +{
+> +	return __e820__range_update(e820_table_firmware, start, size, old_type, new_type);
+> +}
+> +
+> +u64 __init e820__range_update_kexec(u64 start, u64 size, enum e820_type old_type, enum e820_type  new_type)
 
-> Frstdata pin is set high during the first sample's transmission and
-> then set low.
-> This code chunk attempts to recover from an eventual glitch in the clock
-> by checking frstdata state after reading the first channel's sample.
-> Currently, in serial mode, this check happens AFTER the 16th pulse, and if
-> frstdata is not set it resets the device and returns EINVAL.
-> According to the datasheet, "The FRSTDATA output returns to a logic low
-> following the 16th SCLK falling edge.", thus after the 16th pulse, the check
-> will always be true, and the driver will not work as expected.
-> Even if it was working, the usefulness of this check is limited, since
-> it would only detect a glitch on the first channel, but not on the
-> following ones, and the convst pulse will reset the communication sequence at
-> each new conversion.
-> 
-> Signed-off-by: Guillaume Stols <gstols@baylibre.com>
+Yah, no point in defining silly wrappers _kexec() and _firmware() if the
+actual e820 tables are already exported in asm/e820/api.h
 
-Michael, I'm sure you remember this well - it was only 13 years ago you wrote
-this...
+You need a single
 
-https://lore.kernel.org/all/1296744691-24320-1-git-send-email-michael.hennerich@analog.com/
+e820__range_update_table(struct e820_table *t, ..)
 
-Anyhow, I'd like an Ack or a statement of you have no idea any more and i should
-go with what Guillaume has worked out...
+helper and move all current and future users to it while leaving
+e820__range_update() alone which works on the e820_table.
 
-Jonathan
+As a future cleanup, e820__range_update() should be changed to use the
+new e820__range_update_table() helper and then perhaps all code should
+be converted back to a new
 
-> ---
-> This is the first commit of cleanup series. It will be followed by more
-> cleanups and support for more parts and features.
+e820__range_update()
 
-Sounds good.
+which takes a table as a first argument.
 
-> ---
->  drivers/iio/adc/ad7606.c | 30 ------------------------------
->  drivers/iio/adc/ad7606.h |  3 ---
->  2 files changed, 33 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ad7606.c b/drivers/iio/adc/ad7606.c
-> index 1928d9ae5bcf..f85eb0832703 100644
-> --- a/drivers/iio/adc/ad7606.c
-> +++ b/drivers/iio/adc/ad7606.c
-> @@ -88,31 +88,6 @@ static int ad7606_read_samples(struct ad7606_state *st)
->  {
->  	unsigned int num = st->chip_info->num_channels - 1;
->  	u16 *data = st->data;
-> -	int ret;
-> -
-> -	/*
-> -	 * The frstdata signal is set to high while and after reading the sample
-> -	 * of the first channel and low for all other channels. This can be used
-> -	 * to check that the incoming data is correctly aligned. During normal
-> -	 * operation the data should never become unaligned, but some glitch or
-> -	 * electrostatic discharge might cause an extra read or clock cycle.
-> -	 * Monitoring the frstdata signal allows to recover from such failure
-> -	 * situations.
-> -	 */
-> -
-> -	if (st->gpio_frstdata) {
-> -		ret = st->bops->read_block(st->dev, 1, data);
-> -		if (ret)
-> -			return ret;
-> -
-> -		if (!gpiod_get_value(st->gpio_frstdata)) {
-> -			ad7606_reset(st);
-> -			return -EIO;
-> -		}
-> -
-> -		data++;
-> -		num--;
-> -	}
->  
->  	return st->bops->read_block(st->dev, num, data);
->  }
-> @@ -450,11 +425,6 @@ static int ad7606_request_gpios(struct ad7606_state *st)
->  	if (IS_ERR(st->gpio_standby))
->  		return PTR_ERR(st->gpio_standby);
->  
-> -	st->gpio_frstdata = devm_gpiod_get_optional(dev, "adi,first-data",
-> -						    GPIOD_IN);
-> -	if (IS_ERR(st->gpio_frstdata))
-> -		return PTR_ERR(st->gpio_frstdata);
-> -
->  	if (!st->chip_info->oversampling_num)
->  		return 0;
->  
-> diff --git a/drivers/iio/adc/ad7606.h b/drivers/iio/adc/ad7606.h
-> index 0c6a88cc4695..eacb061de6f8 100644
-> --- a/drivers/iio/adc/ad7606.h
-> +++ b/drivers/iio/adc/ad7606.h
-> @@ -80,8 +80,6 @@ struct ad7606_chip_info {
->   * @gpio_range		GPIO descriptor for range selection
->   * @gpio_standby	GPIO descriptor for stand-by signal (STBY),
->   *			controls power-down mode of device
-> - * @gpio_frstdata	GPIO descriptor for reading from device when data
-> - *			is being read on the first channel
->   * @gpio_os		GPIO descriptors to control oversampling on the device
->   * @complete		completion to indicate end of conversion
->   * @trig		The IIO trigger associated with the device.
-> @@ -108,7 +106,6 @@ struct ad7606_state {
->  	struct gpio_desc		*gpio_reset;
->  	struct gpio_desc		*gpio_range;
->  	struct gpio_desc		*gpio_standby;
-> -	struct gpio_desc		*gpio_frstdata;
->  	struct gpio_descs		*gpio_os;
->  	struct iio_trigger		*trig;
->  	struct completion		completion;
-> 
-> ---
-> base-commit: 62d3fb9dcc091ccdf25eb3b716e90e07e3ed861f
-> change-id: 20240416-cleanup-ad7606-161e2ed9818b
-> 
-> Best regards,
+But the cleanup can go in later, after the current issue has been
+resolved.
 
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
