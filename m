@@ -1,139 +1,95 @@
-Return-Path: <linux-kernel+bounces-152158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30F898AB9FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 08:16:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ED228AB9FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 08:27:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6B031F214FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 06:16:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59B3B1C20942
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 06:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB9AF10A3E;
-	Sat, 20 Apr 2024 06:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9C3125C7;
+	Sat, 20 Apr 2024 06:27:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cjgS4XEX"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="wIQjmFR2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD847465;
-	Sat, 20 Apr 2024 06:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03898D52A;
+	Sat, 20 Apr 2024 06:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713593762; cv=none; b=ooSsCkLwnNylHH81jZAxtLPcrxmA4OxaIcWi/2S+8mHGiKY4iCaE5JDLFS1BGEPSoahS3UenqdOLT3YSuFPWLskjZncpYZdxdyftOh6dsbGv2GU1clpK6hstqSnJ9NqTLRDqLj4Ma4/G1ojqmCA69D/7uDdLmzbvqyXzfDlBG8c=
+	t=1713594448; cv=none; b=NrXwn/I4q7fjSYfuQ+fT9ANkLdARJdyi1vaswazBr7zRc9eul+ydTPLXQjIxsQhTqgerepom8+p7CYfl7ZesG1MT2A3xaFIIZ52hvONega+1gTXBoMQCzx2dBLiQTF76e65ptOvbuJdJrrNxho6fwG0sdBr9zxwQ6ErKrUZSDFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713593762; c=relaxed/simple;
-	bh=LC11vntnq2WrNJzqQ9ZGvDMLz5CIOstAK4aG/R3pSBU=;
+	s=arc-20240116; t=1713594448; c=relaxed/simple;
+	bh=3Rv9kxynFCiNH8AU1R2lEpYXFpko+0AQnoUOT+h2Jyg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HF9OP0Li0RbZK+QmHg3wqEPgjCACh9oxdDgVBFT396elENg23ippCeCQFUEQfiVJpiQUQpAN/Wt0Ye6PnaKfSbGlEbze7LmcrYeuuI73o7DIlDBBTmUT5LOUiN7TWu1VZYtfYzRczfqkTKYHfMZDt1w0ZMYu3JfVHn/GTzcnfE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=cjgS4XEX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F537C072AA;
-	Sat, 20 Apr 2024 06:16:01 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=I8VrpZ0uGfNHC4mzD0NZvtSmrhxT+dJrEGxkWpQYP89OHwbuMRZ9piUtuC1OQRmpXCVeaLxNVeqysexjVYp4hY3hFJh68oe5NuNK3qP2P4llrxJ5Gd0Fc/pgjVLpHiGCvlbm5ITzXP4zeky9bLiaHXIEjsjyMI7SpQ1FUPgauf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=wIQjmFR2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 191A9C072AA;
+	Sat, 20 Apr 2024 06:27:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713593761;
-	bh=LC11vntnq2WrNJzqQ9ZGvDMLz5CIOstAK4aG/R3pSBU=;
+	s=korg; t=1713594447;
+	bh=3Rv9kxynFCiNH8AU1R2lEpYXFpko+0AQnoUOT+h2Jyg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cjgS4XEX+6alg89rQuIGdMNZbyIldYwl0fwxEJjT61ci/x9/px5qJhbq/BSDHym7b
-	 u6QELOgjqPGav1av8udBJHtbCEyx+ib5hX23zHGq18eA8OUQBABZ4iQXE0j31xJLhW
-	 PjhiAXhTgSZuOMVGAwTlwm66nF91OYj6GuEuaftY=
-Date: Sat, 20 Apr 2024 08:15:55 +0200
+	b=wIQjmFR2eL7dfW/tf0dG3m1+HlC9GWL5lotRyARqlTiYBrZx1RfCNueYDRnfIdBnL
+	 4LGDFPndq8A3e1F6BgYEZ7s3PvWn/tkNwNRxJK2Hy+MR9Qlp9oNFt2bJ9JtfkYUa6O
+	 KCSUlwGNstX7TvRLtyzIOCjnNQLerpCnfIzvN5Kw=
+Date: Sat, 20 Apr 2024 08:27:20 +0200
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Daniel Okazaki <dtokazaki@google.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Arnd Bergmann <arnd@arndb.de>,
-	kernel-team@android.com, linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] eeprom: at24: fix memory corruption race condition
-Message-ID: <2024042042-subarctic-frightful-670e@gregkh>
-References: <cd8ff4fc-f6bd-4834-b837-2a0d59c93648@web.de>
- <20240419191200.219548-1-dtokazaki@google.com>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: Wander Lairson Costa <wander@redhat.com>, kunit-dev@googlegroups.com,
+	linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	Maxime Ripard <mripard@kernel.org>, Rae Moar <rmoar@google.com>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/2] kunit: unregister the device on error
+Message-ID: <2024042013-condition-glade-90e4@gregkh>
+References: <2024041955-strangely-snack-b335@gregkh>
+ <bf0dc8a8-d5e9-4402-8305-5b7a954e6382@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240419191200.219548-1-dtokazaki@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bf0dc8a8-d5e9-4402-8305-5b7a954e6382@web.de>
 
-On Fri, Apr 19, 2024 at 07:12:00PM +0000, Daniel Okazaki wrote:
-> If the eeprom is not accessible, an nvmem device will be registered, the
-> read will fail, and the device will be torn down. If another driver
-> accesses the nvmem device after the teardown, it will reference
-> invalid memory.
+On Fri, Apr 19, 2024 at 06:32:05PM +0200, Markus Elfring wrote:
+> > > kunit_init_device() should unregister the device on bus register error,
+> > > but mistakenly it tries to unregister the bus.
+> > >
+> > > Unregister the device instead of the bus.
+> …
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> Move the failure point before registering the nvmem device.
-> 
-> Signed-off-by: Daniel Okazaki <dtokazaki@google.com>
-> Fixes: b20eb4c1f026 ("eeprom: at24: drop unnecessary label")
-> ---
->  drivers/misc/eeprom/at24.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-> index 572333ead5fb..4bd4f32bcdab 100644
-> --- a/drivers/misc/eeprom/at24.c
-> +++ b/drivers/misc/eeprom/at24.c
-> @@ -758,15 +758,6 @@ static int at24_probe(struct i2c_client *client)
->  	}
->  	pm_runtime_enable(dev);
->  
-> -	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
-> -	if (IS_ERR(at24->nvmem)) {
-> -		pm_runtime_disable(dev);
-> -		if (!pm_runtime_status_suspended(dev))
-> -			regulator_disable(at24->vcc_reg);
-> -		return dev_err_probe(dev, PTR_ERR(at24->nvmem),
-> -				     "failed to register nvmem\n");
-> -	}
-> -
->  	/*
->  	 * Perform a one-byte test read to verify that the chip is functional,
->  	 * unless powering on the device is to be avoided during probe (i.e.
-> @@ -782,6 +773,15 @@ static int at24_probe(struct i2c_client *client)
->  		}
->  	}
->  
-> +	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
-> +	if (IS_ERR(at24->nvmem)) {
-> +		pm_runtime_disable(dev);
-> +		if (!pm_runtime_status_suspended(dev))
-> +			regulator_disable(at24->vcc_reg);
-> +		return dev_err_probe(dev, PTR_ERR(at24->nvmem),
-> +				     "failed to register nvmem\n");
-> +	}
-> +
->  	/* If this a SPD EEPROM, probe for DDR3 thermal sensor */
->  	if (cdata == &at24_data_spd)
->  		at24_probe_temp_sensor(client);
-> -- 
-> 2.44.0.769.g3c40516874-goog
-> 
+> Would you ever like to distinguish hardware register errors from
+> item registration failures according to further improved commit messages?
 
 Hi,
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+This is the semi-friendly patch-bot of Greg Kroah-Hartman.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Markus, you seem to have sent a nonsensical or otherwise pointless
+review comment to a patch submission on a Linux kernel developer mailing
+list.  I strongly suggest that you not do this anymore.  Please do not
+bother developers who are actively working to produce patches and
+features with comments that, in the end, are a waste of time.
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+Patch submitter, please ignore Markus's suggestion; you do not need to
+follow it at all.  The person/bot/AI that sent it is being ignored by
+almost all Linux kernel maintainers for having a persistent pattern of
+behavior of producing distracting and pointless commentary, and
+inability to adapt to feedback.  Please feel free to also ignore emails
+from them.
 
 thanks,
 
