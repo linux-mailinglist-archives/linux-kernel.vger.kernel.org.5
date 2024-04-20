@@ -1,190 +1,160 @@
-Return-Path: <linux-kernel+bounces-152163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDD608ABA15
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 09:29:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C4048ABA18
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 09:30:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECF61B21008
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 07:28:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D61F1C208D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 07:30:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC2313ADC;
-	Sat, 20 Apr 2024 07:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0653113AC5;
+	Sat, 20 Apr 2024 07:29:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nfwYvnR4"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XpOeeV7x"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDAD12E7F;
-	Sat, 20 Apr 2024 07:28:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B7710799;
+	Sat, 20 Apr 2024 07:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713598133; cv=none; b=OaMhKzewpm/0zeVrTKpZfuL1fUUpbWvZ6g79UmwpikMPaWI3UCdQEgRAJrtwLgAzT9ATmvBAXP87w3156Z9bKjBOd0P6ESEyGv2bYpwhSxR+8qliEwFA8fDsssaPto+pcPBrtj6VQt8hBPEdCCpzkrqRVZdH3Bx1s+Db6vGXk8k=
+	t=1713598195; cv=none; b=k0bK5UYpMtkCcwfAqgTgq+0JNnKDZ8rxWOQVw+ro7X7aoNgiINCWCZpQG48/tJKLBYoXjOfBBq4BWAzu/8AXN2m1N9TkZeZrlyshBmQgNtyZX3heZuZcTrWjIelwwqMGu8p82aev5ske2JwacRRvnCim3yIZm0Fc2vYXjyjOJB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713598133; c=relaxed/simple;
-	bh=Ap/Y7FzXBDxHQevt459EIpFLTrhDLkThFu5ixHCXtkQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LVcxhBaLmrWvw4+Ut1ow6AwSBdtADQ1dvdDgDwtDEDOg0MDdGo/FPMtdipJoOK4siZ6KBWIkTS+dp6jakgNfXkE4AmdmoXrvYvnfGeAbk5A4EXwjXraPJbWRsucnILOFpQDHecpvIqz1LNDQmJwZQLNAq/ewXrwDGpKhOKC7AEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nfwYvnR4; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713598132; x=1745134132;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ap/Y7FzXBDxHQevt459EIpFLTrhDLkThFu5ixHCXtkQ=;
-  b=nfwYvnR4+VzzXpuJ+TVSCiUCvVVAArDjg259KJOdBKW4w89n4cXonlFq
-   JuyZPweJRc6su/bBfPGc9IyMf+0BhWWDOEwxodXJSlJvosb+gPvGI/COC
-   qUPV3hbqiRtkdpEOjz9lzc8tIO4feGEtu09dTgJCdp5wrKyctiS3dOfuJ
-   CaO92klHyefbIoZn8z/T9kDY8iNFo7Ys0ppKEg7NWPMFXZKD5qd2oT5Io
-   0gZeaTmSG/ZYgMSE0+KZdUXBhMEiComjDKR0nf40xH7R7SKgveeEnwgj+
-   P//6luLOUfaOr11pNLjd8XbSM+Kb8ghQgq06lfoGhCioD4mqUs8SKj54V
-   g==;
-X-CSE-ConnectionGUID: MEDgpNSdRCyaa4WvFR5WiQ==
-X-CSE-MsgGUID: lxqkFcO7RnmcD4QVYn7bHQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="34603255"
-X-IronPort-AV: E=Sophos;i="6.07,215,1708416000"; 
-   d="scan'208";a="34603255"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2024 00:28:51 -0700
-X-CSE-ConnectionGUID: q7yocQK/QY2rb1xW4HE39A==
-X-CSE-MsgGUID: dg6dhHaOTVqBkitTllpVWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,215,1708416000"; 
-   d="scan'208";a="23412049"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by orviesa010.jf.intel.com with ESMTP; 20 Apr 2024 00:28:46 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ry59P-000Apw-1U;
-	Sat, 20 Apr 2024 07:28:43 +0000
-Date: Sat, 20 Apr 2024 15:28:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Konstantin Pugin <rilian.la.te@ya.ru>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Konstantin Pugin <ria.freelander@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Max Filippov <jcmvbkbc@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
-	Jacky Huang <ychuang3@nuvoton.com>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Manikanta Guntupalli <manikanta.guntupalli@amd.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Lech Perczak <lech.perczak@camlingroup.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] serial: sc16is7xx: add support for EXAR XR20M1172
- UART
-Message-ID: <202404201559.2eM6MALu-lkp@intel.com>
-References: <20240419124506.1531035-4-rilian.la.te@ya.ru>
+	s=arc-20240116; t=1713598195; c=relaxed/simple;
+	bh=xboYmwFAY9oYvkuW7reH8ca2FGx3OQYvrAakw41o+I0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BeKjgDpAW1UCUNRl2ma8t2lkhNvOooWQ2/yn115TrYhBf0pWAOidMSBlrFckZl59IcTRZadDZUPDwqpDUqQfQchzWvSVeh3iPCIOwcgF4U3BlV3izKC36pWvn9dkHo1a+H7JbfwWCzuQ0ehOvC1fhdJ+1yFbtXcOWh4Akx+qTck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XpOeeV7x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B935EC072AA;
+	Sat, 20 Apr 2024 07:29:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713598194;
+	bh=xboYmwFAY9oYvkuW7reH8ca2FGx3OQYvrAakw41o+I0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=XpOeeV7xdBMOKCGPP7msCiC/F1BCtbAR8WNizkFmiyzExN0V49nAY9+r1ZC9N7nNW
+	 o9uMTbWE4bNbOM1wU8OfWyR0vT0S16wb2+VIOvQRfiwcGnK3gkLst2O3utJfU2suZv
+	 i+/HFYwHK1DF5scwvp/GzGB6qq7FnLD81SSKZaJ02wFSqI9CGcG5scBojjVkQdO1/K
+	 GCQWcYm4KMq5nIwTEm1e+Y0wn1T32aXo5VqoFH8exChN4LvmeII0xJUxRmsd+bw1Np
+	 6w31koO5vPbGGFv4zQKD92GwN69lvuVr4LejeTe2kBRaKjjXHZhtTxYe2AlzVpMFQX
+	 hadiMKBe+qx8g==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5176f217b7bso4651203e87.0;
+        Sat, 20 Apr 2024 00:29:54 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUmO/wVEwZovGiWVkMaGOYhTtY4TprbAybrjCwuPQzcSRzdpSC65nQ6iHKntc3QrTsBtHsDJxOj8K9xCaYvsnK1SanlCOMvyHZNWGTkgeFcHBx+G0yZ+1JN+iVxC6XE/5x3KL3GpCsB2RXlkrHAObhzw5LSHWYs3IRfDin6QiijMZxREOpl
+X-Gm-Message-State: AOJu0YySQ88IDODuat8awixNP1lvzbzM+gpE66qmv1UayehqXf0EF0cw
+	uf+zWsoLRwrXkDHHgZ7Mn5YbqA4w5myeulObtyY5twiF/wiC2O18YX3mEf7IR2HflLGLkG8muJu
+	xJElJRBgLLKkKFUXPoRc9QIkFy+g=
+X-Google-Smtp-Source: AGHT+IF0Ojfu+/qfawWbrxQ/4x/qrMMM9Bg7P5wu1/XAmxXUdVvWrZIK6YIN9nOEFz0UCjQ6C+orZj9b8gni7o3Bckk=
+X-Received: by 2002:ac2:5188:0:b0:516:d09b:cbe4 with SMTP id
+ u8-20020ac25188000000b00516d09bcbe4mr3647779lfi.53.1713598193465; Sat, 20 Apr
+ 2024 00:29:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419124506.1531035-4-rilian.la.te@ya.ru>
+References: <20240417043654.60662-1-prathampatel@thefossguy.com>
+ <20240417144859.GA1471879@dev-arch.thelio-3990X> <D0MHQUIYGONC.3LTT2WN2885D7@thefossguy.com>
+ <20240417154750.GB1517581@dev-arch.thelio-3990X> <D0MIMX0DRNKG.21N7VHAE5MWNX@thefossguy.com>
+In-Reply-To: <D0MIMX0DRNKG.21N7VHAE5MWNX@thefossguy.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 20 Apr 2024 16:29:17 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASgtAvOfgnkq-6CJWP_8Ut195t6Z7sqRe1FHbTxtLKfkg@mail.gmail.com>
+Message-ID: <CAK7LNASgtAvOfgnkq-6CJWP_8Ut195t6Z7sqRe1FHbTxtLKfkg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Enable building of the devel RPM package from Kbuild
+To: Pratham Patel <prathampatel@thefossguy.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Jonathan Corbet <corbet@lwn.net>, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, thefirst1322@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Konstantin,
+On Thu, Apr 18, 2024 at 12:51=E2=80=AFAM Pratham Patel
+<prathampatel@thefossguy.com> wrote:
+>
+> On Wed Apr 17, 2024 at 9:17 PM IST, Nathan Chancellor wrote:
+> > On Wed, Apr 17, 2024 at 03:08:57PM +0000, Pratham Patel wrote:
+> > > On Wed Apr 17, 2024 at 8:18 PM IST, Nathan Chancellor wrote:
+> > > > On Wed, Apr 17, 2024 at 04:37:32AM +0000, Pratham Patel wrote:
+> > > > > This addresses a minor nit where I want a `-devel` RPM package to=
+ be
+> > > > > built when I build a binary RPM package with either `binrpm-pkg`
+> > > > > or `rpm-pkg` target(s).
+> > > > >
+> > > > > Pratham Patel (2):
+> > > > >   kbuild: allow toggling the `with_devel` RPM macro
+> > > > >   docs: kbuild: document KBUILD_RPM_WITH_DEVEL
+> > > > >
+> > > > >  Documentation/kbuild/kbuild.rst | 6 ++++++
+> > > > >  scripts/Makefile.package        | 5 ++++-
+> > > > >  2 files changed, 10 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > --
+> > > > > 2.42.0
+> > > > >
+> > > >
+> > > > Hmmm, when I execute
+> > > >
+> > > >   $ make -skj"$(nproc)" ARCH=3Dx86_64 O=3Dbuild mrproper defconfig =
+binrpm-pkg
+> > > >
+> > > > I end up with
+> > > >
+> > > >   $ ls -1 build/rpmbuild/RPMS/x86_64
+> > > >   kernel-6.9.0_rc4_00031_g96fca68c4fbf-1.x86_64.rpm
+> > > >   kernel-devel-6.9.0_rc4_00031_g96fca68c4fbf-1.x86_64.rpm
+> > > >   kernel-headers-6.9.0_rc4_00031_g96fca68c4fbf-1.x86_64.rpm
+> > > >
+> > > > so it seems like this is already happening?
+> > > >
+> > > > Cheers,
+> > > > Nathan
+> > >
+> > > Ah sorry, that was a typo. I meant to say the following:
+> > > "This addresses a minor nit where I **don't** want a `-devel` RPM
+> > > package to be built when I build a binary RPM package with either
+> > > `binrpm-pkg` or `rpm-pkg` target(s)."
+> > >
+> > > That is because on ARM systems where I just need to quickly test the
+> > > upstream defconfig, I don't really need the `-devel` package.
+> > >
+> > > Also, I see that in a hurry, I did the opposite of what I wanted in t=
+he
+> > > patches. This went unnoticed since I had KBUILD_RPM_WITH_DEVEL=3D0 fo=
+r me
+> > > during testing. Sorry about that!
+> > >
+> > > I'll send a v2 fixing this stupid mistake.
+> >
+> > Ah, understood! I am not sure you actually need a v2 though because I
+> > think you can already accomplish what you are looking for by adding
+> >
+> >   RPMOPTS=3D'--without devel'
+> >
+> > to your make command, at least that works for me. Commit 2a291fc315b6
+> > ("kbuild: rpm-pkg: introduce %{with_devel} switch to select devel
+> > package") introduced this.
+> >
+> > Cheers,
+> > Nathan
+>
+> Oh, didn't know that, thank you. :)
+>
+>  -- Pratham Patel
+>
 
-kernel test robot noticed the following build errors:
 
-[auto build test ERROR on c6795fbffc4547b40933ec368200bd4926a41b44]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Konstantin-Pugin/serial-sc16is7xx-announce-support-of-SER_RS485_RTS_ON_SEND/20240420-004819
-base:   c6795fbffc4547b40933ec368200bd4926a41b44
-patch link:    https://lore.kernel.org/r/20240419124506.1531035-4-rilian.la.te%40ya.ru
-patch subject: [PATCH v4 3/3] serial: sc16is7xx: add support for EXAR XR20M1172 UART
-config: hexagon-randconfig-001-20240420 (https://download.01.org/0day-ci/archive/20240420/202404201559.2eM6MALu-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 7089c359a3845323f6f30c44a47dd901f2edfe63)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240420/202404201559.2eM6MALu-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404201559.2eM6MALu-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/tty/serial/sc16is7xx_spi.c:7:
-   In file included from include/linux/regmap.h:20:
-   In file included from include/linux/iopoll.h:14:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   In file included from drivers/tty/serial/sc16is7xx_spi.c:7:
-   In file included from include/linux/regmap.h:20:
-   In file included from include/linux/iopoll.h:14:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   In file included from drivers/tty/serial/sc16is7xx_spi.c:7:
-   In file included from include/linux/regmap.h:20:
-   In file included from include/linux/iopoll.h:14:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:328:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   In file included from drivers/tty/serial/sc16is7xx_spi.c:8:
-   In file included from include/linux/spi/spi.h:17:
-   In file included from include/linux/scatterlist.h:8:
-   In file included from include/linux/mm.h:2208:
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
->> drivers/tty/serial/sc16is7xx_spi.c:72:34: error: use of undeclared identifier 'xr20m1172_devtype'
-      72 |         { "xr20m1172",  (kernel_ulong_t)&xr20m1172_devtype, },
-         |                                          ^
-   7 warnings and 1 error generated.
+As explained in the commit description of
+a55d4aee76ca72e198a657cb471d2a3b37983072
 
 
-vim +/xr20m1172_devtype +72 drivers/tty/serial/sc16is7xx_spi.c
 
-    63	
-    64	static const struct spi_device_id sc16is7xx_spi_id_table[] = {
-    65		{ "sc16is74x",	(kernel_ulong_t)&sc16is74x_devtype, },
-    66		{ "sc16is740",	(kernel_ulong_t)&sc16is74x_devtype, },
-    67		{ "sc16is741",	(kernel_ulong_t)&sc16is74x_devtype, },
-    68		{ "sc16is750",	(kernel_ulong_t)&sc16is750_devtype, },
-    69		{ "sc16is752",	(kernel_ulong_t)&sc16is752_devtype, },
-    70		{ "sc16is760",	(kernel_ulong_t)&sc16is760_devtype, },
-    71		{ "sc16is762",	(kernel_ulong_t)&sc16is762_devtype, },
-  > 72		{ "xr20m1172",	(kernel_ulong_t)&xr20m1172_devtype, },
-    73		{ }
-    74	};
-    75	MODULE_DEVICE_TABLE(spi, sc16is7xx_spi_id_table);
-    76	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+--=20
+Best Regards
+Masahiro Yamada
 
