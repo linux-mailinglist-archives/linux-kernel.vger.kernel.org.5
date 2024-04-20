@@ -1,75 +1,84 @@
-Return-Path: <linux-kernel+bounces-152304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 891E38ABC16
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 16:54:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 931858ABC18
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 16:55:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B02F0B20DD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 14:54:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C47801C20B9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 14:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFED9282FE;
-	Sat, 20 Apr 2024 14:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812502837C;
+	Sat, 20 Apr 2024 14:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Oyi4d1fo"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j5ODwT6v"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9F1B669;
-	Sat, 20 Apr 2024 14:54:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781C8B669;
+	Sat, 20 Apr 2024 14:55:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713624847; cv=none; b=Si71hZGAE07igW7NJJmyGoeY8cqjJbhu0b4olDyFUAqeKDLf9lHzuMlMy2i9PVysRW3KlROb6YENZ/0AvTpupxRJJAWQeCS6eFzoh0UOMJBbD5zRTC/FBawvH5CocSi0Qq9ywFpdTFdit7HohlOB/ZbElLXRpxl5W2bFGv1ac0U=
+	t=1713624942; cv=none; b=LhGxdRpAp9LV12GSXOks+6xJsViL5SH8t6dc3EAec64lQlxvOgot7lAQIkflDRSGtvEylEDulNiXXU3uJUd9j2uo83Z9KZVS8FVvF1K7RpuHto+5+GuJk0jHZwnDmU1Jkady13MUuZXV9AoHB+WNPtSIOaMfYfeqd3YABEGVKlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713624847; c=relaxed/simple;
-	bh=oIrb6wJ4fZuey5KYNJS/voO+opaNOiTbqtomeD0H9EQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I+Lwm7qJjQ7AGMKcjbPyRyR6xjnIHD/uRADaOO0ruQMnQRVODIfTI/bsubityQunel5j1GmNL0ZODPRnMNi2JMi0bVgTx9hq2QsM8vRZPz+KvG/Ru1tAUjPJAE8ByQidVFTYtnt52vcxPIYkluS8+X+qq/Sn4QUSmNOoaG7+9v0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Oyi4d1fo; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713624845; x=1745160845;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=oIrb6wJ4fZuey5KYNJS/voO+opaNOiTbqtomeD0H9EQ=;
-  b=Oyi4d1foWrAdT7nvDlyWcWfARTpVyOJ5KSF3hifoMSFHdLhcLY4/H29p
-   HPb5W1swFGiPZxwLEhHgjXgbcrhuLzUwP6l8sNVUucVXHejB0h/q0QQML
-   CdtHxaX2vfUTtO4i8jF0xTdbS0dFZP1QQpx/6FNtyBcGgZydxifNZhcMn
-   FymH33XrRbXdJWK8JYqYLD3gTkE7bova2uonrNj7HuabpcBLQv8Uh1yzY
-   k5hbu63Crx8JtSJkc8uyZATawjqalYu0J9PJoKsPNwuxP6szxdphCDGwf
-   qR2imr1sclzGiuJxyAUl7Mat4PGscdoTCPapW2yZoyhqNrILisKeqAg7c
-   g==;
-X-CSE-ConnectionGUID: hSyxUjwAQi+nK3QBaJQPiw==
-X-CSE-MsgGUID: JZQ1tPTiSCa1MAUw0K+DRQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11050"; a="31696851"
-X-IronPort-AV: E=Sophos;i="6.07,216,1708416000"; 
-   d="scan'208";a="31696851"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2024 07:54:04 -0700
-X-CSE-ConnectionGUID: YWHLdN4jTM2kWBYvcjtEtQ==
-X-CSE-MsgGUID: rpM0sb4sRoqDyyTYw2qWrw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,216,1708416000"; 
-   d="scan'208";a="54528949"
-Received: from test2-linux-lab.an.intel.com ([10.122.105.166])
-  by orviesa002.jf.intel.com with ESMTP; 20 Apr 2024 07:54:04 -0700
-From: matthew.gerlach@linux.intel.com
-To: bhelgaas@google.com,
-	lpieralisi@kernel.org,
-	kw@linux.com,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: [PATCH v4] dt-bindings: PCI: altera: Convert to YAML
-Date: Sat, 20 Apr 2024 09:53:42 -0500
-Message-Id: <20240420145342.118643-1-matthew.gerlach@linux.intel.com>
+	s=arc-20240116; t=1713624942; c=relaxed/simple;
+	bh=ekJW7KJXVKPQCwez4r6wuycFoYeoSEuzoVBX7feZMlE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pazBJP1a3D2P6FqZYDlT46RXo4BBGigOr3wccR8Dp4DAik6plRl8f8PH/DK9bGETt7q4PixJg6Vfd3opJjQZMmau6z+GvLqcD1bb0pcSrta/G8/yhywewedL0K41YIgtas2oD5E+re6Q8GcRSWIuGuXuKCwIsO6/A7BmfgoLMJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j5ODwT6v; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e65a1370b7so29689765ad.3;
+        Sat, 20 Apr 2024 07:55:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713624941; x=1714229741; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+6D/5brtB/j1UmXmMn650rTGCQHfQHPBfhqI0GJ/w+I=;
+        b=j5ODwT6vuvzSV4hNDeUoFNtpiXl54EyGcqCrSAiBEnEEQ4O+7D0kUpN2VwUYS0tmHb
+         Oa7p5DhK1MkssQJMQa9nPX+qExirvFewOXQOHoisd29msuVkomeVnlgHJM7f4F1TEW0K
+         HmPgK2e50EDqrOpQ52uwgsdjS4l0k1W4RF1Khz8Cc9f30jNNBA2Jm+O4jWynwAWPPzIw
+         KKYiLLuensObI+le1vKYtFecWW9a2XZLdp6GRVuTF1o6Hw5aRGUuanuYD9edE5yu9Sa0
+         6V2kpHDuycS2xL3p6rEoBte/W0N2vl4Lel+SrQyDoWsxyzTO3ZOKSvMDpscVlRsTG0xB
+         3wJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713624941; x=1714229741;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+6D/5brtB/j1UmXmMn650rTGCQHfQHPBfhqI0GJ/w+I=;
+        b=tP0vjT8UGyKYqbob5slmrVazcoa53N34jDU6swLLR3ejgKY2gfjqL0SbgkzmNkUeJM
+         YApzyUuaa5g50vB3NYyK4mBthDfYQ2fO+AHZXMc8KVZ6+VTeNqRycfcpcHOFPBijkW1L
+         xR4PzxvHMaI0TpGXRDyJUelHi3HqxWKZxpf2nIc2WXEr7bJoFVJPsuwacWC6TgL2LvwX
+         +iJ49soPuL8kZJd27FwU7oOZc1vmGkK2eqLb36KF8Uf+J2WxnqtL3beaPKgDu70JwfDO
+         6Mo3N5VpSnXA3sap+jljtt42fYqbaN/+FeAxqQIh2hNKpyt/RAAPG7Qd6AFp5Ge+6ASR
+         LG8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUqUZuwikPNwNRRilOjjT7R0Yr1jkd7yZZxoW8Cr1AlHTJomL/pf1ATeWnzURwckqWlZc4F3Zo997Xrw+6TOw2p55a+PMJx9wc7c2x4
+X-Gm-Message-State: AOJu0Yxr6HeOBpwMxG0zF9VwRBHiPuBo+U+6dF8TcFsaXBSO0HKXKgHq
+	P7O4Iu6VMnTdK8Hn2JfWHGNAOuRT4SHU526W1RL57HvptBngQrBaJFro+ott
+X-Google-Smtp-Source: AGHT+IE6xyqez7xCXfMfPO5WuyZi/RR1cQ1hxBPGo0FOR9F5KjSXo7xAIdHa9VUFnROSJ0EDf7bf7w==
+X-Received: by 2002:a17:902:d895:b0:1e4:b4f5:5cfa with SMTP id b21-20020a170902d89500b001e4b4f55cfamr5850699plz.27.1713624940741;
+        Sat, 20 Apr 2024 07:55:40 -0700 (PDT)
+Received: from kernel.. ([2402:e280:214c:86:1d7e:e04:acd5:6aba])
+        by smtp.gmail.com with ESMTPSA id j5-20020a170903024500b001e5331a0b91sm5138701plh.218.2024.04.20.07.55.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Apr 2024 07:55:40 -0700 (PDT)
+From: sundar <prosunofficial@gmail.com>
+To: heikki.krogerus@linux.intel.com,
+	gregkh@linuxfoundation.org,
+	neil.armstrong@linaro.org,
+	dmitry.baryshkov@linaro.org,
+	u.kleine-koenig@pengutronix.de,
+	christophe.jaillet@wanadoo.fr
+Cc: linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	skhan@linuxfoundation.org,
+	javier.carrasco.cruz@gmail.com,
+	sundar <prosunofficial@gmail.com>
+Subject: [PATCH] remove identation for common path
+Date: Sat, 20 Apr 2024 20:25:22 +0530
+Message-Id: <20240420145522.15018-1-prosunofficial@gmail.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -79,193 +88,95 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Added check if pointer is null and removed identation for common path
 
-Convert the device tree bindings for the Altera Root Port PCIe controller
-from text to YAML.
-
-Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: sundar <prosunofficial@gmail.com>
 ---
-v4:
- - reorder reg-names to match original binding
- - move reg and reg-names to top level with limits.
 
-v3:
- - Added years to copyright
- - Correct order in file of allOf and unevaluatedProperties
- - remove items: in compatible field
- - fix reg and reg-names constraints
- - replace deprecated pci-bus.yaml with pci-host-bridge.yaml
- - fix entries in ranges property
- - remove device_type from required
+Fixed nitpicks in code according to comments received on other patch.
 
-v2:
- - Move allOf: to bottom of file, just like example-schema is showing
- - add constraint for reg and reg-names
- - remove unneeded device_type
- - drop #address-cells and #size-cells
- - change minItems to maxItems for interrupts:
- - change msi-parent to just "msi-parent: true"
- - cleaned up required:
- - make subject consistent with other commits coverting to YAML
- - s/overt/onvert/g
----
- .../devicetree/bindings/pci/altera-pcie.txt   | 50 -----------
- .../bindings/pci/altr,pcie-root-port.yaml     | 88 +++++++++++++++++++
- 2 files changed, 88 insertions(+), 50 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/pci/altera-pcie.txt
- create mode 100644 Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
+https://lore.kernel.org/all/2024041103-doornail-professor-7c1e@gregkh/
 
-diff --git a/Documentation/devicetree/bindings/pci/altera-pcie.txt b/Documentation/devicetree/bindings/pci/altera-pcie.txt
-deleted file mode 100644
-index 816b244a221e..000000000000
---- a/Documentation/devicetree/bindings/pci/altera-pcie.txt
-+++ /dev/null
-@@ -1,50 +0,0 @@
--* Altera PCIe controller
+goal is to get rid of of_node_put,but sending this patch first to do one
+thing at a time.
+
+ drivers/usb/typec/mux/nb7vpq904m.c | 49 +++++++++++++++---------------
+ 1 file changed, 25 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/usb/typec/mux/nb7vpq904m.c b/drivers/usb/typec/mux/nb7vpq904m.c
+index b17826713753..fe0257840dd5 100644
+--- a/drivers/usb/typec/mux/nb7vpq904m.c
++++ b/drivers/usb/typec/mux/nb7vpq904m.c
+@@ -321,35 +321,37 @@ static int nb7vpq904m_parse_data_lanes_mapping(struct nb7vpq904m *nb7)
+ 
+ 	ep = of_graph_get_endpoint_by_regs(nb7->client->dev.of_node, 1, 0);
+ 
+-	if (ep) {
+-		ret = of_property_count_u32_elems(ep, "data-lanes");
+-		if (ret == -EINVAL)
+-			/* Property isn't here, consider default mapping */
+-			goto out_done;
+-		if (ret < 0)
+-			goto out_error;
 -
--Required properties:
--- compatible :	should contain "altr,pcie-root-port-1.0" or "altr,pcie-root-port-2.0"
--- reg:		a list of physical base address and length for TXS and CRA.
--		For "altr,pcie-root-port-2.0", additional HIP base address and length.
--- reg-names:	must include the following entries:
--		"Txs": TX slave port region
--		"Cra": Control register access region
--		"Hip": Hard IP region (if "altr,pcie-root-port-2.0")
--- interrupts:	specifies the interrupt source of the parent interrupt
--		controller.  The format of the interrupt specifier depends
--		on the parent interrupt controller.
--- device_type:	must be "pci"
--- #address-cells:	set to <3>
--- #size-cells:		set to <2>
--- #interrupt-cells:	set to <1>
--- ranges:	describes the translation of addresses for root ports and
--		standard PCI regions.
--- interrupt-map-mask and interrupt-map: standard PCI properties to define the
--		mapping of the PCIe interface to interrupt numbers.
--
--Optional properties:
--- msi-parent:	Link to the hardware entity that serves as the MSI controller
--		for this PCIe controller.
--- bus-range:	PCI bus numbers covered
--
--Example
--	pcie_0: pcie@c00000000 {
--		compatible = "altr,pcie-root-port-1.0";
--		reg = <0xc0000000 0x20000000>,
--			<0xff220000 0x00004000>;
--		reg-names = "Txs", "Cra";
--		interrupt-parent = <&hps_0_arm_gic_0>;
--		interrupts = <0 40 4>;
--		interrupt-controller;
--		#interrupt-cells = <1>;
--		bus-range = <0x0 0xFF>;
--		device_type = "pci";
--		msi-parent = <&msi_to_gic_gen_0>;
--		#address-cells = <3>;
--		#size-cells = <2>;
--		interrupt-map-mask = <0 0 0 7>;
--		interrupt-map = <0 0 0 1 &pcie_0 1>,
--			            <0 0 0 2 &pcie_0 2>,
--			            <0 0 0 3 &pcie_0 3>,
--			            <0 0 0 4 &pcie_0 4>;
--		ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000
--			  0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
--	};
-diff --git a/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml b/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
-new file mode 100644
-index 000000000000..5794396f0986
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
-@@ -0,0 +1,88 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright (C) 2015, 2019, 2024, Intel Corporation
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/altr,pcie-root-port.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+-		if (ret != DATA_LANES_COUNT) {
+-			dev_err(&nb7->client->dev, "expected 4 data lanes\n");
+-			ret = -EINVAL;
+-			goto out_error;
+-		}
++	if (!ep)
++		return 0;
+ 
+-		ret = of_property_read_u32_array(ep, "data-lanes", data_lanes, DATA_LANES_COUNT);
+-		if (ret)
+-			goto out_error;
++	ret = of_property_count_u32_elems(ep, "data-lanes");
++	if (ret == -EINVAL)
++		/* Property isn't here, consider default mapping */
++		goto out_done;
++	if (ret < 0)
++		goto out_error;
 +
-+title: Altera PCIe Root Port
++	if (ret != DATA_LANES_COUNT) {
++		dev_err(&nb7->client->dev, "expected 4 data lanes\n");
++		ret = -EINVAL;
++		goto out_error;
++	}
+ 
+-		for (i = 0; i < ARRAY_SIZE(supported_data_lane_mapping); i++) {
+-			for (j = 0; j < DATA_LANES_COUNT; j++) {
+-				if (data_lanes[j] != supported_data_lane_mapping[i][j])
+-					break;
+-			}
++	ret = of_property_read_u32_array(ep, "data-lanes", data_lanes, DATA_LANES_COUNT);
++	if (ret)
++		goto out_error;
+ 
+-			if (j == DATA_LANES_COUNT)
++	for (i = 0; i < ARRAY_SIZE(supported_data_lane_mapping); i++) {
++		for (j = 0; j < DATA_LANES_COUNT; j++) {
++			if (data_lanes[j] != supported_data_lane_mapping[i][j])
+ 				break;
+ 		}
+ 
+-		switch (i) {
++		if (j == DATA_LANES_COUNT)
++			break;
++	}
 +
-+maintainers:
-+  - Matthew Gerlach <matthew.gerlach@linux.intel.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - altr,pcie-root-port-1.0
-+      - altr,pcie-root-port-2.0
-+
-+  reg:
-+    items:
-+      - description: TX slave port region
-+      - description: Control register access region
-+      - description: Hard IP region
-+    minItems: 2
-+
-+  reg-names:
-+    items:
-+      - const: Txs
-+      - const: Cra
-+      - const: Hip
-+    minItems: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-map-mask:
-+    items:
-+      - const: 0
-+      - const: 0
-+      - const: 0
-+      - const: 7
-+
-+  interrupt-map:
-+    maxItems: 4
-+
-+  "#interrupt-cells":
-+    const: 1
-+
-+  msi-parent: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - interrupt-map
-+  - interrupt-map-mask
-+
-+allOf:
-+  - $ref: /schemas/pci/pci-host-bridge.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    pcie_0: pcie@c00000000 {
-+        compatible = "altr,pcie-root-port-1.0";
-+        reg = <0xc0000000 0x20000000>,
-+              <0xff220000 0x00004000>;
-+        reg-names = "Txs", "Cra";
-+        interrupt-parent = <&hps_0_arm_gic_0>;
-+        interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
-+        #interrupt-cells = <1>;
-+        bus-range = <0x0 0xff>;
-+        device_type = "pci";
-+        msi-parent = <&msi_to_gic_gen_0>;
-+        #address-cells = <3>;
-+        #size-cells = <2>;
-+        interrupt-map-mask = <0 0 0 7>;
-+        interrupt-map = <0 0 0 1 &pcie_intc 1>,
-+                        <0 0 0 2 &pcie_intc 2>,
-+                        <0 0 0 3 &pcie_intc 3>,
-+                        <0 0 0 4 &pcie_intc 4>;
-+        ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000>,
-+                 <0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
-+    };
++	switch (i) {
+ 		case NORMAL_LANE_MAPPING:
+ 			break;
+ 		case INVERT_LANE_MAPPING:
+@@ -360,7 +362,6 @@ static int nb7vpq904m_parse_data_lanes_mapping(struct nb7vpq904m *nb7)
+ 			dev_err(&nb7->client->dev, "invalid data lanes mapping\n");
+ 			ret = -EINVAL;
+ 			goto out_error;
+-		}
+ 	}
+ 
+ out_done:
 -- 
 2.34.1
 
