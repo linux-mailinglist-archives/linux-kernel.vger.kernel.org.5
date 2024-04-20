@@ -1,113 +1,110 @@
-Return-Path: <linux-kernel+bounces-152270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874588ABBAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 15:13:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59E2D8ABBB0
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 15:16:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA0931C20AAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:13:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 168C02818B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:16:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873BB1CD25;
-	Sat, 20 Apr 2024 13:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B007C20309;
+	Sat, 20 Apr 2024 13:16:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="KA7MpRmg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="b7NmpL2p"
+Received: from mout.web.de (mout.web.de [212.227.17.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B442168A9;
-	Sat, 20 Apr 2024 13:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1681D2563;
+	Sat, 20 Apr 2024 13:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713618815; cv=none; b=ACakzZgG836T0iQCM8gLfRu1tEePn3c6oPeIVkZYVO1fN+wml5XXeLvIvUwCyb1gHyFGUwmEp9lDUK9U6YJPmVubAfw0P0hy5p1/3UuGnhLqtrxw34JisbwE+fdPBMj9Z94/LikMCrz6qmbr2V9pV1hH4v1Vk6FduvjNCFAIjY8=
+	t=1713618969; cv=none; b=iJtEt68i42qwcOHnR+4dkalqEbCWuP0jOjX+AUCHh2hTPQ9I/KAhihfDQ7Mh+xhnznSlktMEexYfiel7JxCQaJOQcbwARzbWO61n2nGlvPySj+hczkGtaJ5ZzeAEwj00ezPFCecQFamj5e77AJN6FJAAeybiuzCIECsqu9IRN9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713618815; c=relaxed/simple;
-	bh=vQLq3T2E6aLzExSjC1hCZflnkVv+RfpL1PDkKwTYI2Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sZYmpdQvH4GOotpF0lA+rRI9HIBxqcmYqaIlpKTpqDhwV3WsOqTE41i4quJAGMe7tY7anj2nRy/ERM7m1hD855tC3mfhIia02plSWS92DCX45QN2AbH6ZKsuaeiRHyQgpw2TwLudHGKZ75LY8fn0CuDfXE+rcR/ZMCzSP3uYMBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=KA7MpRmg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EB5CC072AA;
-	Sat, 20 Apr 2024 13:13:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713618815;
-	bh=vQLq3T2E6aLzExSjC1hCZflnkVv+RfpL1PDkKwTYI2Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KA7MpRmgZnc0wcC/j+jD03glP8WGv/LNkQ4W6eY5qMQf5n22v1uxNfoEk2BQL7E4V
-	 8LFUhGFzDNXQUP8ABJffAJp77j8fgoAUsNhJaQRuOmzoDjDqDjimf2DL3rJ9UGkXr2
-	 VOObOIhtiNJMc3hp/pM3VZ3G0xYYvD1JQ7u7fmnM=
-Date: Sat, 20 Apr 2024 15:13:26 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Jiri Slaby <jirislaby@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Starke, Daniel" <daniel.starke@siemens.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-security-module <linux-security-module@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2] tty: n_gsm: restrict tty devices to attach
-Message-ID: <2024042031-uncoiled-sensually-7ade@gregkh>
-References: <e696e720-0cd3-4505-8469-a94815b39467@I-love.SAKURA.ne.jp>
+	s=arc-20240116; t=1713618969; c=relaxed/simple;
+	bh=FT0t9HE1rL9H9A5o8oALgJBDzziSpKtzAEmi3ZmQPQI=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=RNnWdZRSs0M9clP4p+qdzRfZGu5RyuEbf2aHLyC0NFM+Dl1DscOgnZvm15c8kThR065UPnfwHEUjb4myfKsEJopSLag+xQqwYlOGm4FDp0iOuz9kkvujBCXgs0bZuC6PL+Oi72oT5EMyfTfBwAnP0MRgr54WKk+oWjqaJRRRnXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=b7NmpL2p; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713618937; x=1714223737; i=markus.elfring@web.de;
+	bh=FT0t9HE1rL9H9A5o8oALgJBDzziSpKtzAEmi3ZmQPQI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=b7NmpL2p3KCnnc7yZjWSMP7LEmvQrWmdL/1xCLAmzm1gqzS6qBreXqlkzb0qp7BY
+	 Rad7pexfjAibdoh55HuNPGpNTHK7Up98IJgWh2Kfpk3JGjJC+JIDAlkvzmz9sctop
+	 PlwV/VgZxWEY2J4A6REZKWr/IIbthMvwkdUcBnFx++sP8vf413316i7F3p0imUWsS
+	 PZ3x0kfOqjUhMMrPvv0lgqOHXfqKMRNGcWsIl23C9ccna40zdn9EgP8WSisj3S/b3
+	 qm0BxyKgrlUdZmdiMnjdipIWEm1nDpMsOpPt8+0ujn0jyDDXPIFuA3bWXCMMNxA+P
+	 rSPFB2mS/WnWo2bkvQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MqIB7-1sRwvi06q3-00n772; Sat, 20
+ Apr 2024 15:15:37 +0200
+Message-ID: <aa12c80c-9769-424a-ba2b-8c0f68b1c1e6@web.de>
+Date: Sat, 20 Apr 2024 15:15:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e696e720-0cd3-4505-8469-a94815b39467@I-love.SAKURA.ne.jp>
+User-Agent: Mozilla Thunderbird
+To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+ linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ Jameson Thies <jthies@google.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Benson Leung <bleung@google.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Rajaram Regupathy <rajaram.regupathy@intel.com>,
+ Saranya Gopal <saranya.gopal@intel.com>
+References: <20240419211650.2657096-2-jthies@google.com>
+Subject: Re: [PATCH 1/4] usb: typec: ucsi: Fix null deref in trace
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240419211650.2657096-2-jthies@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qEkpwmTHHNClAQiyVH7IIo+1fbIub7wek8hkarYTnw/srysoz5k
+ FWCmqIdoeSWXqIduQee46hRETP3p4iClMdW7GLg12lgnSoQyYAnvKJ0a1FsaKbr7V0JqVpi
+ zrTMd2/hMewDGPEX7cqNO5UvLgCim6bR52ciBEgk8s13HR7Dl85rX2YLfAAUZTzP10ugJyf
+ 6jhjvxVYMJpfQq4kPioTQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:bQJae6an96A=;Fp4WHDmZ9c/qvFFF+YpBx6n+1b6
+ F09OD4Toyato74mg7EXqV9BEXI06hViIh00mBVxC/J+LNAnkU6ehTxAKHFuD1kl0a2AfV+Vw9
+ SjqStQFE5AUZEadHUEVFwVwFYsWuo+ZQjO023V/5Tp1NeKI72Ehm8CY41BLQsLT/XmQoxZ8+x
+ 5bpLTWHIu6OzXPxpvSp5K3iTSoVdWPvCamN5pxHCbv7kpmADb4l/CYN0cqPThuZcpmeO4Uvxf
+ 1Kbmmg+f4orcM1wzOvCr1Hbw791lmLAIfhV9Wkh1PXK9Pzr1sG1PHz9dzW5X/DvFqYT5i+fCI
+ wcFID7gcNoGEtBZOMFARHCzUnG3TxuBD0zASjtQv6KAXt1nglRcJFmGrvAYxANfxwglxXWku1
+ KeWstBdzwSVxlNVPbOB5dbjmt1ejWlJuusIOQXk+KwW3nq8U9oewnarbqWqznAxyYCgSw1JPY
+ a9U8xsQ6MJ8RdDC/BDBLde/KCEBJZtY3d0bG4uLNtvUyvjUVUsqqHP7uJDdmswYI/yJn9jPqo
+ EchINxYZdeY59i9jWZX3vCBC1r+v6HTWimVe9F/9JnMke0ouVopFfmjzffatTbvd2/SjexByc
+ ktEqoSdEFk1LH6jpNpuYRXONHyXURDsxuGFhnTRvFSok60FPKa+YuA77QR8yId1pSLf3Lf3dz
+ rSmCpSCqZ9Adppx8D6XfzexnCEtQyX8JraCoQQsnD1rqyI/CbMLgrj7eMPEbbKbMPm8yjoQrB
+ fLSCwvGHrXgWSWjBTO800ZEbRgl5Huv3YYrpf7lyp2M5YmMjnovs+fFeCu/oU8sbqRpp8246k
+ oBdu1oLYKYVugPabk5g8bdqJtowYff0UZH4N3Hpp9KbEQ=
 
-On Sat, Apr 20, 2024 at 08:12:32PM +0900, Tetsuo Handa wrote:
-> syzbot is reporting sleep in atomic context, for gsmld_write() is calling
-> con_write() with spinlock held and IRQs disabled.
-> 
-> Since n_gsm is designed to be used for serial port [1], reject attaching to
-> virtual consoles and PTY devices, by checking tty's device major/minor
-> numbers at gsmld_open().
-> 
-> Starke, Daniel commented
-> 
->   Our application of this protocol is only with specific modems to enable
->   circuit switched operation (handling calls, selecting/querying networks,
->   etc.) while doing packet switched communication (i.e. IP traffic over
->   PPP). The protocol was developed for such use cases.
-> 
-> at [2], but it seems that nobody can define allow list for device numbers
-> where this protocol should accept. Therefore, this patch defines deny list
-> for device numbers.
-> 
-> Greg Kroah-Hartman is not happy with use of hard-coded magic numbers [3],
-> but I don't think we want to update include/uapi/linux/major.h and add
-> include/uapi/linux/minor.h just for fixing this bug.
+> ucsi_register_altmode checks IS_ERR on returned pointer and treats
+> NULL as valid. This results in a null deref when
+> trace_ucsi_register_altmode is called.
 
-Sorry, but again, do it properly, nothing has changed here, so I will
-not take this patch.
+I find that the change description can be improved further.
+Is another imperative wording desirable?
 
-> Link: https://www.kernel.org/doc/html/v6.8/driver-api/tty/n_gsm.html [1]
-> Link: https://lkml.kernel.org/r/DB9PR10MB588170E923A6ED8B3D6D9613E0CBA@DB9PR10MB5881.EURPRD10.PROD.OUTLOOK.COM [2]
-> Link: https://lkml.kernel.org/r/2024020615-stir-dragster-aeb6@gregkh [3]
-> Reported-by: syzbot <syzbot+dbac96d8e73b61aa559c@syzkaller.appspotmail.com>
-> Closes: https://syzkaller.appspot.com/bug?extid=dbac96d8e73b61aa559c
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> ---
-> Adding LSM ML to CC list in order to ask for comments if Greg again
-> complained that we don't want to add sanity check on the kernel side.
-> I agree that we should fix fuzzers if fuzzers are writing random data
-> to /dev/mem or /dev/kmem . But for example
-> https://lkml.kernel.org/r/CAADnVQJQvcZOA_BbFxPqNyRbMdKTBSMnf=cKvW7NJ8LxxP54sA@mail.gmail.com
-> demonstrates that developers try to fix bugs on the kernel side rather
-> than tell fuzzers not to do artificial things.
+Can it be nicer to use the term =E2=80=9Cdereference=E2=80=9D for the fina=
+l commit message?
 
-Again, this ldisc requires root permissions to bind to it, and we have a
-very long list of known bugs in this driver, this one being only one
-very tiny minor one.  To fix it properly, do it right, as stated before,
-this type of odd bandage isn't ok as it doesn't actually fix/solve
-anything except fuzzers doing the wrong thing (i.e. no real user will
-ever do this.)
-
-thanks,
-
-greg k-h
+Regards,
+Markus
 
