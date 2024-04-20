@@ -1,107 +1,112 @@
-Return-Path: <linux-kernel+bounces-152342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B47D8ABCA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 20:06:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 757BA8ABCA6
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 20:13:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE2F01C20B7A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 18:06:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D27B7281541
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 18:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDDE93BB35;
-	Sat, 20 Apr 2024 18:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DEE63BB35;
+	Sat, 20 Apr 2024 18:13:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="X27rLDYa"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YcDURYgR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB46339B1
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 18:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F389625;
+	Sat, 20 Apr 2024 18:13:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713636372; cv=none; b=P4bEo1/l1mwc5dFqYxO9ikg8mTPa/RTdfZ376vO+Jmx0poLxs7/96hHztwG8mAx2+JUDsloJLTTYH9E3OLFisD7joYzzPPM1fzRVy0C7zMDuMpHHDu5iDSh1Uu0n50KYDiOCPQAFOo5Sp7mIN2UPfnJ2HUfZtCmd79F6/gfEP5o=
+	t=1713636822; cv=none; b=EpAvdfM19QeP/69EDm+w1pdr493Q+pGLs84mDcA4kY9Luhya0QKzDiN3mgEJe+lY66uyHpKJDNsxNYuXGaM6jSS+8GHV2ifL+YNLkxTRDdbhOJOGKWjWQKr+jGhEIz8pccFR28WEv/cJspKl25MXo1wRrlphuMCibZKFzQQ8zOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713636372; c=relaxed/simple;
-	bh=BlUmaU5cCzdfHYaIDu1dOY26l+Y9HZW2UwF8EAjxQ3I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rjI2vgZrHbOi8iBAm6gdOGfC9hG3BdffBNj74zwB4UdKIIVm13gez5kS2yHv5D/FAIGoBnc6h2dOv65SR0picS4vgsgvtKJO4htbAY2VdoB8+PWwM0+nec4lBrDkJDkVEUoG6R6IFLyD7Ihs1Sw3p0MIoLWm6w84Okb190WUCYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=X27rLDYa; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2db101c11beso35708101fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 11:06:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1713636368; x=1714241168; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9q4d+5HJT9JoCSnjfVAkQZ3NFNLdknjcESdIWM7gPdU=;
-        b=X27rLDYa9MkI5kfd5giKAReH+VMASLyHFxQ+g+BCPjTa1TnyrrR3AajEdlsbkDbHRB
-         YJr85wifJsSZuVIqQtbtCWI4ei+0rISVT4dqNWjp/nLIwZ0r0Mv0g1z5jKrfRQghUx08
-         OYvFoeWgthSazH/4wWvFpWXifxEeCFZSs1mAM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713636368; x=1714241168;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9q4d+5HJT9JoCSnjfVAkQZ3NFNLdknjcESdIWM7gPdU=;
-        b=Gq8liOpQUKuipi9y/dcjAcEROFI98HMD6L1GCqsgGQ7e33pLWgIsovdIwsR2j9y0yi
-         0GKfkHPde1nq9GXfAisWifbDuM5+VOrdAy/eGq5k15o7S+2GuOTFWNiramsk4m4dfFlz
-         LRp+akbmI/lY6RJBdJ449wuRK+v4yp8Ha//trvkRMO+De5temfs5lm9gr91nu/LGlyoT
-         1S/dMYz75alfcaJ+ZloY/h09n7pYGpjud/4jX5PRIWOoJaxoL3fSsgEw/vp2dCq5SG+q
-         hqTeDUf15IJyfU4Rx/asqCdXeLM6DXp1lCTC1Yyt24EkFjbV5o4cnMtPT8v7A2cHk6j6
-         LReA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqMa/+bxUhvibr/QYkY1tWPjYxamo2RLvTUKLEtNVvpAwOrItgtxhbxolnhECfs7yiqCyCeFBHFk7xLygurvtdn8d58Ts4AnOwDRJy
-X-Gm-Message-State: AOJu0Yzvy5giyFgsd6meWFLeGk+il36IKJe70aqbBLUeyFBMGf3R4xew
-	HtsM4dozlJPFzgBDVfSC9OMPaZaI13bbfay3qAnPpsn+5aWSMwNslxRGAxADPia4QOiFR8xKquD
-	331nNqA==
-X-Google-Smtp-Source: AGHT+IHE6ZMSCL7X2q98yJwyByoxtuXGsvSepeldjQ9OzdQquzxIJCGmutGfeG20hlw6wpo7xMc0zA==
-X-Received: by 2002:a2e:86d3:0:b0:2d4:514b:428 with SMTP id n19-20020a2e86d3000000b002d4514b0428mr3363018ljj.6.1713636368530;
-        Sat, 20 Apr 2024 11:06:08 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id v20-20020a2e9614000000b002dba279f81asm958136ljh.59.2024.04.20.11.05.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Apr 2024 11:05:52 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2db6f5977e1so41476511fa.2
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 11:05:52 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXyIBXGC6AkICU8CKKNwUfrFfTeIi+ldV9M+8+hhX+h32c0NGSitYmEF9toHl0hEUi5KW+nCRu8fBOLFbs9/nyq92BKWLfVbW2B8dGX
-X-Received: by 2002:a05:6512:78e:b0:51a:bebb:690c with SMTP id
- x14-20020a056512078e00b0051abebb690cmr2860885lfr.12.1713636351915; Sat, 20
- Apr 2024 11:05:51 -0700 (PDT)
+	s=arc-20240116; t=1713636822; c=relaxed/simple;
+	bh=LLY1ufaNAgXRjxi0qxQeE3KwJWeLbKrkAlWFeDzMeEo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=boS9a5J3FMctT8fz0f9YEK4ZiX8hSQzmv9gpzyib3XYJWVXE3M17Y3p0pmYmA/vhJ3uAHEz8wnEdNgud8iL/OAbW+4MSw2GwROn93T9qzeX9sY8binMLFw2xWYNPCC0zdpZyJxBoVrUPpqF08fF6jF/cCh+SFCIsLk965pvOS68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YcDURYgR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77F65C072AA;
+	Sat, 20 Apr 2024 18:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713636820;
+	bh=LLY1ufaNAgXRjxi0qxQeE3KwJWeLbKrkAlWFeDzMeEo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YcDURYgRbGwl2pXd4sTKLUIYHdOD3pLeZwythdxoZnP9G4f24eKBgL9r9+lZyHbcR
+	 DkaitPP2GAdDMafn11I9xN7TZfeyeOusIjDrVc3TF37WDxPlbekF5buhj5HNhED7Hq
+	 EsbWCBmJ6jdLO0si3kcMQ6jdDpcrzsgX+QvT4OiyQt3zNP8RmDQjcZYQfSukEkRoNC
+	 xTvlP46nWwN34BdrW70XlUvSw7PXgI0XPXwIfF5hsg2P/lsmgp3DvCOivgd/Vh7PIj
+	 TzV4pqS8nMM4Yo9Ey3t86Z5ec3+ycoppqmEur5BeASXNphR+S6iRtW+yiyTI8qta13
+	 N2+mxC+/xRWpw==
+Date: Sat, 20 Apr 2024 13:13:38 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] arm64: defconfig: qcom: enable X1E80100 sound card
+Message-ID: <6sfk3n65fbq444ezbuj53litc3lizuhqbmk6mwyngja3orw4fu@ez2bqiub5235>
+References: <20240403094422.15140-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e696e720-0cd3-4505-8469-a94815b39467@I-love.SAKURA.ne.jp>
- <CAHk-=wjEZvnn51dhhLqBKUd=cuFhbYA47_OyfUOPB-0zKToL7Q@mail.gmail.com> <CAHk-=wjzqaqcicTtWfBtXyytJs1nqjJNved2JFsLVsVLYgVkuQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjzqaqcicTtWfBtXyytJs1nqjJNved2JFsLVsVLYgVkuQ@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 20 Apr 2024 11:05:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjW3PdOZ7PJ+RHUKRc8SqQhcWXCACOvmwBkKUKABHKqwg@mail.gmail.com>
-Message-ID: <CAHk-=wjW3PdOZ7PJ+RHUKRc8SqQhcWXCACOvmwBkKUKABHKqwg@mail.gmail.com>
-Subject: Re: [PATCH v2] tty: n_gsm: restrict tty devices to attach
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Starke, Daniel" <daniel.starke@siemens.com>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403094422.15140-1-krzysztof.kozlowski@linaro.org>
 
-On Sat, 20 Apr 2024 at 11:02, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Most other normal tty devices just expect ->write() to be called in
-> normal process context, so if we do a line discipline flag, it would
-                                        ^^^^^^^^^^^^^^^^^^^^
-> have to be something like "I'm ok with being called with interrupts
-> disabled", and then the n_gsm ->open function would just check that.
+On Wed, Apr 03, 2024 at 11:44:22AM +0200, Krzysztof Kozlowski wrote:
+> Enable the sound machine driver for Qualcomm X1E80100 sound card, used
+> on several boards with X1E80100 (e.g. X1E80100 CRD).
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
 
-Not line discipline - it would be a 'struct tty_operations' flag
-saying 'my ->write() function is ok with atomic context".
+I'm completely lost on your strategy for these sound card drivers!
 
-             Linus
+Why is x1e a separate driver when we're shoehorning in qc*6490 into the
+sc8280xp?
+Why does Srini answer me that the compatible should contain the device
+name (qcom,qcs6490-rb3gen2-sndcard) while you're at the same time adding
+a platform-based compatible for x1e.
+ 
+PS. The only answer I get out of `diff -u sc8280xp.c x1e80100.c` is that
+we're going to blow some speakers on X1E devices. (And is this
+limitation applicable to qc?6490 devices?)
+
+
+
+Obviously unrelated to this patch, which I will pick.
+
+Regards,
+Bjorn
+
+> ---
+> 
+> The driver and bindings were posted here:
+> https://lore.kernel.org/alsa-devel/20231204100116.211898-1-krzysztof.kozlowski@linaro.org/T/#t
+> 
+> Resending because I did not Cc Bjorn/Konrad/MSM.
+> ---
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 94e677800899..4df6a724349f 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -956,6 +956,7 @@ CONFIG_SND_SOC_SM8250=m
+>  CONFIG_SND_SOC_SC8280XP=m
+>  CONFIG_SND_SOC_SC7180=m
+>  CONFIG_SND_SOC_SC7280=m
+> +CONFIG_SND_SOC_X1E80100=m
+>  CONFIG_SND_SOC_ROCKCHIP=m
+>  CONFIG_SND_SOC_ROCKCHIP_I2S_TDM=m
+>  CONFIG_SND_SOC_ROCKCHIP_SPDIF=m
+> -- 
+> 2.34.1
+> 
 
