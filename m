@@ -1,134 +1,143 @@
-Return-Path: <linux-kernel+bounces-152097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26798AB8D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 04:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2882C8AB8DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 04:47:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42E911F2158B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 02:41:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B25A81F2161F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 02:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E5ED529;
-	Sat, 20 Apr 2024 02:41:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LkGECOqH"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B521E79DD;
+	Sat, 20 Apr 2024 02:47:40 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D21F33F2
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 02:41:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D77524A;
+	Sat, 20 Apr 2024 02:47:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713580868; cv=none; b=qLGi6Kv3qwsYXssaveEqnqClce4ZfnsebUvjYCYuEA7IU7Zn8k6a5TcGo0hR9DVcdJfHIEUD9gR7Dvn4zqq5tXakzKMZ/qeBmm3hR1DDhHCawtpzhtCFg+CQNPQLlDjUmG0qXp0X+gUswtlhc+qr4tchkyZU6416GylonZkdfLs=
+	t=1713581260; cv=none; b=nBwqJMqfHvFMvQ+a7fy6IlzsKL8+uLmgG8FeLEOPVeghTgiJWsVMb4a+kL9fSI8iP3ZHrfedxS5pETE/oq5ZQbgJbxAxZBeLbddtft30nPCL8b4ATW9hsbSImt/GTuR8tlPORnhveTn5/pFG1CEpI0P1oae0L6CyXC2V1GKGM1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713580868; c=relaxed/simple;
-	bh=9SBs1y5K2hzjnYPD9Ky3KqU2SZnDlGyGsApyJDQKsvY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZJikVOMHC34tbmD8JejG3xCF9Td7IWQuskSks4LT4JKNnxCl3nF15crKDFD0QJslVu8mOtArq09I+jsTpXWMeymy1LHhJ5+DE2klLOq5kl7aLKtzqMSqZzGJ8Y/4/eqsGc44BoeGN9sI3F4lEVhC99mYINh23l2T+Ap1aKZLN+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LkGECOqH; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d68d7a8bso2498035e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 19:41:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713580865; x=1714185665; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qSmAuCxNU1y3XahseuBRK4nFztnrZzASjwN1faGf/vg=;
-        b=LkGECOqHIMIPnNQ8Pt+Kkb8Se3AjTMs660t63RPvMxLJgsBMeuZiie148P9jnVDV76
-         iQa75IXzDY/2+ipvFXKtMqCy39w7xoK3Btwlkfc/sPvMyXLSLetQ6zlKzRniUKHo5zrx
-         6NVGhNwj9sn2gHPhvA8+ZsdONFCJfc4W+n1j4j9NIcISTuA6Si+I71w2Szi4cKBA7mTb
-         iz7oo21MudP/gNIPL8Bj+BRp/KnLC7Ghe0aZDXS7qVbf2U215q+cnWQdOmGM+u2U4KSB
-         ZVOSzobkVAwFz3/+j1T/a2DvkbkJxmJDfGiBzGW1MhjdSF7obtJX6H/QttZ1TdydMymt
-         8WKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713580865; x=1714185665;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qSmAuCxNU1y3XahseuBRK4nFztnrZzASjwN1faGf/vg=;
-        b=t4yOcVK8Z9h4dS1HtkEXnSQ9uLw27GYSfVbgKakLoUo6zZhwSkRRHizt7DlohQ13bf
-         lw0TfKwcGFWMqQDtZjbaDxH/tPlxPJaMd2N2iSnXJzIfgGxNNoJFmDnVfxVAtDRGChh5
-         RIMFrtXAqbKzrtAOBQPa7t6RsSMuED9+SCz0mYpmo13qhuLiGaENX2/z3QNX8ijFt2iL
-         SOD8B1+JbarCOg/RwSp9nYYsDY3d2v+1tR+wn3lZ8tUGfqyW6GoFdzUQ4HIFaMKG3wQh
-         dWUD2bkMgZEp8tMRJgDNih72hccMOoBw30bB2Ldk4WZzLWi/D7qF0ub4vd9ToROVGwny
-         wnlw==
-X-Forwarded-Encrypted: i=1; AJvYcCXub4yykLwpYjXtmhEvmDWLUmH0jQtGhn//9AyDcJnwZPh1bHPSPqtkJwpUmxJTBejNb5wTlf+dZFaxaLIYd6JBszHSSR+xkyC9CeUN
-X-Gm-Message-State: AOJu0YxoBaD6gRWues8EAGuFZLfd3Uxao80BmPEq5mtpL6KIn0KnR0R2
-	aIu0NgAYvCvUIzq+3tsQ5fAiyE9TLOzL0UkH38xPKmz45YYHBLwRCQtlTpt9Pxw=
-X-Google-Smtp-Source: AGHT+IEgORzz5Sy7uopK88mYrNu4WR6OjysMQQsGBjGgh1ZjqLMNVs4IpmXJ343ikFhE5QjiQcON5Q==
-X-Received: by 2002:a05:6512:2353:b0:51a:c548:7257 with SMTP id p19-20020a056512235300b0051ac5487257mr1068099lfu.34.1713580864804;
-        Fri, 19 Apr 2024 19:41:04 -0700 (PDT)
-Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id p1-20020a19f001000000b00518c69b3903sm956951lfc.84.2024.04.19.19.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Apr 2024 19:41:04 -0700 (PDT)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sat, 20 Apr 2024 05:41:02 +0300
-Subject: [PATCH 2/2] drm/panel/lg-sw43408: mark sw43408_backlight_ops as
- static
+	s=arc-20240116; t=1713581260; c=relaxed/simple;
+	bh=aS7AYAhkokyxjMLIzsxuz8z0CxtgKtzwfBkoE/R0NRo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=nXmW24Hj6Lm8OkKF0y8TLX2CySRrrP4VaBnKGI1se1iN9CCJboBG2oDEg49eYlRKCyvFd91SvS+4YOf4dfJPHAYZgKJSjFYbuELqP1mqoso3XSBV6enWv5GUzLwLd0B4EqqNo08BGR97tB31Q8hX3seTyJlBeiNZRyDnHby2mLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VLwp36cVYzcdqV;
+	Sat, 20 Apr 2024 10:44:27 +0800 (CST)
+Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
+	by mail.maildlp.com (Postfix) with ESMTPS id EE61C18006C;
+	Sat, 20 Apr 2024 10:47:33 +0800 (CST)
+Received: from [10.67.110.112] (10.67.110.112) by
+ dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 20 Apr 2024 10:47:33 +0800
+Message-ID: <a7205c3c-4abe-fb43-9c18-976e22bb226e@huawei.com>
+Date: Sat, 20 Apr 2024 10:47:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240420-panel-sw43408-fix-v1-2-b282ff725242@linaro.org>
-References: <20240420-panel-sw43408-fix-v1-0-b282ff725242@linaro.org>
-In-Reply-To: <20240420-panel-sw43408-fix-v1-0-b282ff725242@linaro.org>
-To: Neil Armstrong <neil.armstrong@linaro.org>, 
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Sumit Semwal <sumit.semwal@linaro.org>, 
- Caleb Connolly <caleb.connolly@linaro.org>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- kernel test robot <lkp@intel.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=982;
- i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=9SBs1y5K2hzjnYPD9Ky3KqU2SZnDlGyGsApyJDQKsvY=;
- b=owGbwMvMwMXYbdNlx6SpcZXxtFoSQ5qyth1D4+TVMU/O7ssqkMzQcj/nXJK7mukZb+MpR3fuZ
- s4mlR+djMYsDIxcDLJiiiw+BS1TYzYlh33YMbUeZhArE9gULk4BmIjCd/Y/XAbVOztcDKU/WKt9
- Y36w3G53REaOgtqqd2tEHE+x1O66sq9ai9u5iPNrK9OzVRWpu/6sWeu5b/qF4pKssxLn1f9bRX5
- d5Sx+7cKSFx951+25U74kbHmHxJEA66SQ2gdytyMVbzY/CNnTa39Q2qLzr1JZoJ105IvT3mmOfp
- umLiy1NVP+yDlx8X6fnGpXRw+9HfuuHd3yaqFClt3/C+8OTmdS2jRbbmpQlPwxjmWvHn9/qPr2t
- JFerh+bdVIjx5dLAYL97L3fLhdaTc7aHzzZ4+zTkF1sFgdi7bMn12wPt97b3K6rwZpp9O6Wj+Ae
- aYvjS1Ki7jHGifGaMLww+3R1b93DN/uL1dJL3u3lNxAEAA==
-X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH] cgroup: make cgroups info more readable
+To: Huan Yang <11133793@vivo.com>, Huan Yang <link@vivo.com>, Tejun Heo
+	<tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner
+	<hannes@cmpxchg.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <opensource.kernel@vivo.com>
+References: <20240409021826.1171921-1-link@vivo.com>
+ <9d01ab99-bbfd-536b-a375-9c44f988aa9a@huawei.com>
+ <945d1e73-21f6-4a56-81ee-9625491f3b26@vivo.com>
+Content-Language: en-US
+From: xiujianfeng <xiujianfeng@huawei.com>
+In-Reply-To: <945d1e73-21f6-4a56-81ee-9625491f3b26@vivo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
 
-Fix sparse warning regarding symbol 'sw43408_backlight_ops' not being
-declared.
+Hi,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202404200739.hbWZvOhR-lkp@intel.com/
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/gpu/drm/panel/panel-lg-sw43408.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2024/4/19 14:25, Huan Yang wrote:
+> HI jianfeng
+> 
+> 在 2024/4/19 11:33, xiujianfeng 写道:
+>> [Some people who received this message don't often get email from
+>> xiujianfeng@huawei.com. Learn why this is important at
+>> https://aka.ms/LearnAboutSenderIdentification ]
+>>
+>> Hi,
+>>
+>> I found a discussion about this change in the email thread bellow, and
+>> hope it helps you.
+> It's helpful to know why this patch not need, thank you.
+>>
+>> https://lore.kernel.org/all/YwMwlMv%2FtK3sRXbB@slm.duckdns.org/#t
+> 
+> I have a question, that, now that only for cgroup1, when I running qemu
+> ubuntu, I got this:
+> 
+>> mount | grep cgroup
+>> cgroup2 on /sys/fs/cgroup type cgroup2
+> (rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot)
+> 
+> Only cgroup2 mount in my system, but /proc/cgroup also worked, maybe
+> better to disable this when only cgroup2 mounted?
 
-diff --git a/drivers/gpu/drm/panel/panel-lg-sw43408.c b/drivers/gpu/drm/panel/panel-lg-sw43408.c
-index 115f4702d59f..2b3a73696dce 100644
---- a/drivers/gpu/drm/panel/panel-lg-sw43408.c
-+++ b/drivers/gpu/drm/panel/panel-lg-sw43408.c
-@@ -182,7 +182,7 @@ static int sw43408_backlight_update_status(struct backlight_device *bl)
- 	return mipi_dsi_dcs_set_display_brightness_large(dsi, brightness);
- }
- 
--const struct backlight_ops sw43408_backlight_ops = {
-+static const struct backlight_ops sw43408_backlight_ops = {
- 	.update_status = sw43408_backlight_update_status,
- };
- 
+I’m not the maintainer, so the official answer to this question should
+be left to them:).
 
--- 
-2.39.2
+However, I don’t think this is the right way. Even though the
+information shown by /proc/cgroups doesn’t seem as useful for cgroup2 as
+for cgroup1 due to cgroup2 has only single hierarchy, it’s not entirely
+useless, IMHO.
 
+> 
+>> On 2024/4/9 10:18, Huan Yang wrote:
+>>> The current cgroups output format is based on tabs, which
+>>> may cause misalignment of output information.
+>>>
+>>> Using placeholder formatting can make the output information
+>>> more readable.
+>>>
+>>> Signed-off-by: Huan Yang <link@vivo.com>
+>>> ---
+>>>   kernel/cgroup/cgroup-v1.c | 7 ++++---
+>>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+>>> index 520a11cb12f4..c082a78f4c22 100644
+>>> --- a/kernel/cgroup/cgroup-v1.c
+>>> +++ b/kernel/cgroup/cgroup-v1.c
+>>> @@ -669,15 +669,16 @@ int proc_cgroupstats_show(struct seq_file *m,
+>>> void *v)
+>>>        struct cgroup_subsys *ss;
+>>>        int i;
+>>>
+>>> -     seq_puts(m, "#subsys_name\thierarchy\tnum_cgroups\tenabled\n");
+>>> +     seq_printf(m, "%16s %16s %16s %16s\n", "#subsys_name",
+>>> "hierarchy",
+>>> +                "num_cgroups", "enabled");
+>>>        /*
+>>>         * Grab the subsystems state racily. No need to add avenue to
+>>>         * cgroup_mutex contention.
+>>>         */
+>>>
+>>>        for_each_subsys(ss, i)
+>>> -             seq_printf(m, "%s\t%d\t%d\t%d\n",
+>>> -                        ss->legacy_name, ss->root->hierarchy_id,
+>>> +             seq_printf(m, "%16s %16d %16d %16d\n", ss->legacy_name,
+>>> +                        ss->root->hierarchy_id,
+>>>                           atomic_read(&ss->root->nr_cgrps),
+>>>                           cgroup_ssid_enabled(i));
+>>>
 
