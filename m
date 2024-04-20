@@ -1,167 +1,233 @@
-Return-Path: <linux-kernel+bounces-152391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 900BA8ABDC3
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 01:23:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ADC98ABDC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 01:25:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE4AAB20AF7
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 23:23:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9359B28127C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 23:25:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C9644E1D2;
-	Sat, 20 Apr 2024 23:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2FBC4CDE0;
+	Sat, 20 Apr 2024 23:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UMNw0TfY"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UrIDxFRy"
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD98495F0
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 23:23:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A6C205E35
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 23:25:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713655394; cv=none; b=WAt7Rc0W2VTWs/zigtAcgB/rKMCFYsTFr30Jt2cwjvGJplNZqCpwhBtW7DDweal2ASzBTYTG8VBdPlBltDYSzESmO3xylYtniXn6qYdsrEAaszHyf0B3UYV+UZ80azpTcqqNnKHLqZNySHgMAYMDk3o69gsztMfoQ4YaX6pN/lE=
+	t=1713655533; cv=none; b=gjwwuZd/Ml94pS2xY+Yepo39URuJx3vyL6DTBBRAbMfjkeQ0hBxZ5fabyl48ObIEhiFPFJeAa8Xws+xlPEOX4N1IZL0tiyVc76Vb1ZU8BUQOMHjEPjIltJ5g6J1a12VO7wUGVs7tZRFiujwrPx+vl7CfZiE20rsaGBM/oVaT3ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713655394; c=relaxed/simple;
-	bh=bBNbxTaDfIJVcjkaQmgCFXE6pXweSy07pk6tkP8ChP4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uo5/jCuzTshnxO4OUVPbVaA92Q78sJSdxPLtqPlaTpFtzNoFLB8oUqa5vq8NjE95HbKPZFn830br3+LIJDsAwy7gSQnu9KZdoMG1TR+84NV3j7CKdxqjl2KQqTvUS6a2svZhXoPZmwcI/5g+XEB0Tw+ZktVO0I9q5GO8jypJBQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UMNw0TfY; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56e56ee8d5cso4298566a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 16:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713655391; x=1714260191; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=G7j9WmKVfIxCtxmA5+g+ivZQajcRB8Ss1Yyb3DxCAfA=;
-        b=UMNw0TfYERYCM73Fq3Dfxfa5Nka7eEdWP9KeNxkaioU40XArRH47xzepKqoU2hhwCX
-         b+dG1RBOcQs45R3gAJUzXUzZvZub3wnRBgTjWhpaPxZIptbWaphPb5nVDFAuUvJq4jI8
-         UPZYhuWMAJSVqenLIVmJ4xR9TGXvnI1Iv92AdQHTkrW/3cOShxU+zzVaRt5aPHrMhMKi
-         RCtHNsxaOmGUuc3q8TqcuMLa3mSmTJIxlnBkb0B5AQAM+scdAVilZ9EIuvJCLh4sdCeR
-         cN3cnCp5Qks5PxR3rc7JWD825iRdublNaQcBKGnLfo+lcDRtKkH/12CqHAPTrnPJ2MjC
-         Z7Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713655391; x=1714260191;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G7j9WmKVfIxCtxmA5+g+ivZQajcRB8Ss1Yyb3DxCAfA=;
-        b=dYK5iO5AcZVLJ+Iq1e7qW6BMPu/LsUCRRtsZoWNnsNORyy6vTEJ1CvORdENDaCzc8G
-         pti7KLLjAqwXYSimZHYUgRKPH7GT4ryA9hO39LpfUmX0BT+BLZW3CmufuVEnqpQtcX7A
-         TXYAuNaHRFLnpT5j3oNXs1OTnJTqc1k5hTtREagJ/bdgp/7cvOcWOjCAAnYFOHs6/HFL
-         ocXjaaIpwp96tt6teTFt/NLjOcaH4c85p3MYwOyJGXbEKCJHtElFW6NJSnDHEd81xZ+9
-         sM5Y8NFMT1f28xSrZL5gf+LSUBBQ+uaUaH17r0lgUuLYMpwLU3q+uyoXh1AJJ3gVdJtv
-         ewjg==
-X-Forwarded-Encrypted: i=1; AJvYcCVazPrJy/u8+ZCWZPMZ9+V4nrfOT0LlPwXulGE6/ZiDlNorJHKt58x4+XqpK1hVZsZG89xizc8WT3E+uIme71ym7Crn39tTaZ0nWnFB
-X-Gm-Message-State: AOJu0YwLjgJh5YNpyDcRAUxcm9k2pvCCRUOwfHQIcu5VRFRDCvxDV5Yn
-	r3xBWAiYGQS8WhVyjEstW7m3Ad9zYJBHT5BRLGJZec76mRESzkIv9kUYl1TDJis=
-X-Google-Smtp-Source: AGHT+IHIgAHqaBHAo2tv0s9P7hAH/P161Q1ck8771gq2FLpa0nizkFWxKtOsbHWkZLUsCdT//bfy9g==
-X-Received: by 2002:a17:906:c24d:b0:a4e:5137:9969 with SMTP id bl13-20020a170906c24d00b00a4e51379969mr4156927ejb.32.1713655391076;
-        Sat, 20 Apr 2024 16:23:11 -0700 (PDT)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id v24-20020a170906339800b00a521904b548sm3889268eja.166.2024.04.20.16.23.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Apr 2024 16:23:10 -0700 (PDT)
-Message-ID: <27513574-3131-4704-9c3d-f699cc9edb9b@linaro.org>
-Date: Sun, 21 Apr 2024 00:23:08 +0100
+	s=arc-20240116; t=1713655533; c=relaxed/simple;
+	bh=TLhSsMbuwT2Yz/2MlPtFCCCHWs6N6gnMcwOfD6CpG8w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PPhqcvN+fm8P9FC1IFbE5F/1cJFYrTuVFQvPznLfBdN1BE84rbrPviFG1QSFNOPOwg/qAj6I22R/PeeerHq/1qAJH7UY/+VWd7i8eHLc9g15N+a3aKnw3MMMMYv60vMPh6l4QsO/eRKSyl/o74XOFALEqcQ0/MCiT5GfkSmP7Gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UrIDxFRy; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713655528;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9YG0Yr27rZjU0OlmRSCmu8viB0Ry44abch6JPf2G2gw=;
+	b=UrIDxFRykQOLXhTrCXQVev4LjYc/8/H9kEh1rvTsseAeBhhlphYEqRsghwbXuveza5V3lH
+	o+5T9aWRXHdAs6mJK1Bt/+nYlurFrKwr5iMKCEVxkueeO7U2zhFx6HlTUZNoC+STYR0heG
+	JtP0UgIiBasmIEeChd/jHiEA6SZVpw0=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] memcg: simple cleanup of stats update functions
+Date: Sat, 20 Apr 2024 16:25:05 -0700
+Message-ID: <20240420232505.2768428-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 09/26] media: v4l: async: refactor
- v4l2_async_create_ancillary_links
-To: Ricardo Ribalda <ribalda@chromium.org>,
- Martin Tuma <martin.tuma@digiteqautomotive.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Hugues Fruchet <hugues.fruchet@foss.st.com>,
- Alain Volmat <alain.volmat@foss.st.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen-Yu Tsai
- <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Sowjanya Komatineni <skomatineni@nvidia.com>,
- Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
- Abylay Ospan <aospan@netup.ru>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Dmitry Osipenko <digetx@gmail.com>,
- Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
- Sylvain Petinot <sylvain.petinot@foss.st.com>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
-References: <20240419-fix-cocci-v2-0-2119e692309c@chromium.org>
- <20240419-fix-cocci-v2-9-2119e692309c@chromium.org>
-Content-Language: en-US
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20240419-fix-cocci-v2-9-2119e692309c@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 19/04/2024 10:47, Ricardo Ribalda wrote:
-> Return 0 without checking IS_ERR or PTR_ERR if CONFIG_MEDIA_CONTROLLER
-> is not enabled.
-> 
-> This makes cocci happier:
-> 
-> drivers/media/v4l2-core/v4l2-async.c:331:23-30: ERROR: PTR_ERR applied after initialization to constant on line 319
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->   drivers/media/v4l2-core/v4l2-async.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-> index 4bb073587817..915a9f3ea93c 100644
-> --- a/drivers/media/v4l2-core/v4l2-async.c
-> +++ b/drivers/media/v4l2-core/v4l2-async.c
-> @@ -316,9 +316,10 @@ v4l2_async_nf_try_all_subdevs(struct v4l2_async_notifier *notifier);
->   static int v4l2_async_create_ancillary_links(struct v4l2_async_notifier *n,
->   					     struct v4l2_subdev *sd)
->   {
-> -	struct media_link *link = NULL;
-> +	struct media_link *link;
->   
-> -#if IS_ENABLED(CONFIG_MEDIA_CONTROLLER)
-> +	if (!IS_ENABLED(CONFIG_MEDIA_CONTROLLER))
-> +		return 0;
->   
->   	if (sd->entity.function != MEDIA_ENT_F_LENS &&
->   	    sd->entity.function != MEDIA_ENT_F_FLASH)
-> @@ -326,8 +327,6 @@ static int v4l2_async_create_ancillary_links(struct v4l2_async_notifier *n,
->   
->   	link = media_create_ancillary_link(&n->sd->entity, &sd->entity);
->   
-> -#endif
-> -
->   	return IS_ERR(link) ? PTR_ERR(link) : 0;
->   }
->   
-> 
+mod_memcg_lruvec_state() is never called from outside of memcontrol.c
+and with always irq disabled. So, replace it with the irq disabled
+version and add an assert that irq is disabled in the caller.
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Similarly mod_objcg_state() is not called from outside of memcontrol.c,
+so simply make it static and change it's name to __mod_objcg_state().
 
+Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
-bod
+
+Change since v1:
+- Change mod_objcg_state to __mod_objcg_state as per the naming
+  convention (suggested by Johannes).
+
+ include/linux/memcontrol.h | 17 -----------------
+ mm/memcontrol.c            | 31 +++++++++++++++----------------
+ mm/slab.h                  |  2 --
+ 3 files changed, 15 insertions(+), 35 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 8f332b4ae84c..9aba0d0462ca 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1077,8 +1077,6 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+ void mem_cgroup_flush_stats(struct mem_cgroup *memcg);
+ void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg);
+ 
+-void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+-			      int val);
+ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val);
+ 
+ static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
+@@ -1091,16 +1089,6 @@ static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
+ 	local_irq_restore(flags);
+ }
+ 
+-static inline void mod_memcg_lruvec_state(struct lruvec *lruvec,
+-					  enum node_stat_item idx, int val)
+-{
+-	unsigned long flags;
+-
+-	local_irq_save(flags);
+-	__mod_memcg_lruvec_state(lruvec, idx, val);
+-	local_irq_restore(flags);
+-}
+-
+ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
+ 			  unsigned long count);
+ 
+@@ -1594,11 +1582,6 @@ static inline void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg)
+ {
+ }
+ 
+-static inline void __mod_memcg_lruvec_state(struct lruvec *lruvec,
+-					    enum node_stat_item idx, int val)
+-{
+-}
+-
+ static inline void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
+ 					   int val)
+ {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7703ced535a3..833d09c1d523 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -837,8 +837,9 @@ static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+ 	return x;
+ }
+ 
+-void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+-			      int val)
++static void __mod_memcg_lruvec_state(struct lruvec *lruvec,
++				     enum node_stat_item idx,
++				     int val)
+ {
+ 	struct mem_cgroup_per_node *pn;
+ 	struct mem_cgroup *memcg;
+@@ -2983,21 +2984,19 @@ void mem_cgroup_commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+ 
+ #ifdef CONFIG_MEMCG_KMEM
+ 
+-/*
+- * mod_objcg_mlstate() may be called with irq enabled, so
+- * mod_memcg_lruvec_state() should be used.
+- */
+-static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
+-				     struct pglist_data *pgdat,
+-				     enum node_stat_item idx, int nr)
++static inline void __mod_objcg_mlstate(struct obj_cgroup *objcg,
++				       struct pglist_data *pgdat,
++				       enum node_stat_item idx, int nr)
+ {
+ 	struct mem_cgroup *memcg;
+ 	struct lruvec *lruvec;
+ 
++	lockdep_assert_irqs_disabled();
++
+ 	rcu_read_lock();
+ 	memcg = obj_cgroup_memcg(objcg);
+ 	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+-	mod_memcg_lruvec_state(lruvec, idx, nr);
++	__mod_memcg_lruvec_state(lruvec, idx, nr);
+ 	rcu_read_unlock();
+ }
+ 
+@@ -3317,7 +3316,7 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
+ 	obj_cgroup_put(objcg);
+ }
+ 
+-void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
++static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+ 		     enum node_stat_item idx, int nr)
+ {
+ 	struct memcg_stock_pcp *stock;
+@@ -3345,12 +3344,12 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+ 		struct pglist_data *oldpg = stock->cached_pgdat;
+ 
+ 		if (stock->nr_slab_reclaimable_b) {
+-			mod_objcg_mlstate(objcg, oldpg, NR_SLAB_RECLAIMABLE_B,
++			__mod_objcg_mlstate(objcg, oldpg, NR_SLAB_RECLAIMABLE_B,
+ 					  stock->nr_slab_reclaimable_b);
+ 			stock->nr_slab_reclaimable_b = 0;
+ 		}
+ 		if (stock->nr_slab_unreclaimable_b) {
+-			mod_objcg_mlstate(objcg, oldpg, NR_SLAB_UNRECLAIMABLE_B,
++			__mod_objcg_mlstate(objcg, oldpg, NR_SLAB_UNRECLAIMABLE_B,
+ 					  stock->nr_slab_unreclaimable_b);
+ 			stock->nr_slab_unreclaimable_b = 0;
+ 		}
+@@ -3376,7 +3375,7 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+ 		}
+ 	}
+ 	if (nr)
+-		mod_objcg_mlstate(objcg, pgdat, idx, nr);
++		__mod_objcg_mlstate(objcg, pgdat, idx, nr);
+ 
+ 	local_unlock_irqrestore(&memcg_stock.stock_lock, flags);
+ 	obj_cgroup_put(old);
+@@ -3442,13 +3441,13 @@ static struct obj_cgroup *drain_obj_stock(struct memcg_stock_pcp *stock)
+ 	 */
+ 	if (stock->nr_slab_reclaimable_b || stock->nr_slab_unreclaimable_b) {
+ 		if (stock->nr_slab_reclaimable_b) {
+-			mod_objcg_mlstate(old, stock->cached_pgdat,
++			__mod_objcg_mlstate(old, stock->cached_pgdat,
+ 					  NR_SLAB_RECLAIMABLE_B,
+ 					  stock->nr_slab_reclaimable_b);
+ 			stock->nr_slab_reclaimable_b = 0;
+ 		}
+ 		if (stock->nr_slab_unreclaimable_b) {
+-			mod_objcg_mlstate(old, stock->cached_pgdat,
++			__mod_objcg_mlstate(old, stock->cached_pgdat,
+ 					  NR_SLAB_UNRECLAIMABLE_B,
+ 					  stock->nr_slab_unreclaimable_b);
+ 			stock->nr_slab_unreclaimable_b = 0;
+diff --git a/mm/slab.h b/mm/slab.h
+index e32d9cf1077a..5f8f47c5bee0 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -578,8 +578,6 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+ 				  gfp_t flags, size_t size, void **p);
+ void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+ 			    void **p, int objects, struct slabobj_ext *obj_exts);
+-void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+-		     enum node_stat_item idx, int nr);
+ #endif
+ 
+ size_t __ksize(const void *objp);
+-- 
+2.43.0
+
 
