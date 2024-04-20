@@ -1,137 +1,213 @@
-Return-Path: <linux-kernel+bounces-152335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 839BB8ABC90
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 19:34:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1DEC8ABC94
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 19:50:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B684B20DAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 17:34:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0A1D280FB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 17:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07733A1C2;
-	Sat, 20 Apr 2024 17:34:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4223B1AA;
+	Sat, 20 Apr 2024 17:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="W6hYVprZ"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OSszIAgN"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28688DF5C
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 17:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A3FB669;
+	Sat, 20 Apr 2024 17:50:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713634479; cv=none; b=btGZEmFEvCnTkirN4yO7kGZ9YiI6eftFlCajP+eYxF+vwmMhsfYVmvPWXeC9QwgZ/OBX3ppyF4NS3FJjGbJGxJlUFPAYh53ExAPMU2FttkxILIF0i6djEPQ26vNzJ/EP7qTx6dNpd+RggOs9JzIuTfN7xMo+KVPBj1v/Wt9SlQA=
+	t=1713635426; cv=none; b=kpo1xBEUuU4fOjkoesh8y8Otk2Ct3V8/jrvlsvJekHmSXRY+siPGrt2tucPh0/zxovRQusdfR3R0iAw+9yXYAGxc8nN9lbFIbWGNy3/9R6qkxZWOhUZmcvGJm201UWVKoHS8ayE5TOC7CbngBhC7gQCwb8OHUePJJFOOOdu7r1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713634479; c=relaxed/simple;
-	bh=FZui6/jAqpSCf4l3i1TeoGcFiXdATKG0xPtGvjtat9c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jVqQeVUL0Rx3vUbsmLLGXo5CskGfjqut2a6VbpGAlBQ2ioZzb9gXPWgZyO5rBQPP33f6WLF0xB6LN4d63mFHY2bKn3HjqsuG4NXqAiph8nyGN2Ga9TT6ZnPVf3Bp5uCC/jgVu2PzTzk5QvItV3+zWVExcKRaPCJ37oBnKkL8WMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=W6hYVprZ; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e6a1edecfso4703595a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 10:34:36 -0700 (PDT)
+	s=arc-20240116; t=1713635426; c=relaxed/simple;
+	bh=bVd2eqTTQlE/lqeXUNJSYbprksBuhxAdRsI9Y4zTEvA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mB6cM9TBpxPkqH9/7nP9RxMBTmMngNmNQtkIbzf1HF0MWEj877CsKXhvREn/vW24SZpuM25q065dgkDxxQD6upqQbYPHTYa/Ea07pGcwhNsskqBksunRaUwLyow9i85Tvy+V5cIRJmLmUq8IhVzZFju9GbW9f9EiPsuPwhY87OE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OSszIAgN; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e3ca4fe4cfso23579775ad.2;
+        Sat, 20 Apr 2024 10:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1713634475; x=1714239275; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=azgKuVXWo1stoA6zH6ErzXlXBirYMEprw5yf7intLHQ=;
-        b=W6hYVprZQ1Msy2EtH4FVgc6phK9xWnkp6I8XK40hIPj7AIZ3CAtUwOBZn99XOOJttT
-         3fPqKfo/JyQec9bNJWKoE+vWTNbDF15fpcdXlecbHacj6XoFb/NtYYziqdhdHBkJtv08
-         amLQWoLYld37W0WMmI7Zanb63jPiYm/L/NAVo=
+        d=gmail.com; s=20230601; t=1713635424; x=1714240224; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KIYLQlpLMFUl3xE1BrT2UElBskzOTTw5EVqsEEuHPoM=;
+        b=OSszIAgNGaNPblVwWpAo/M46PpPOAPdFllLjWy244cngff7bEDGMEMLof7x5xJOYLt
+         4Zbe1dZ7XaIxYaQhm1woHI4WG3i22Ivn1wZTxC3uFqlFo3xMwJFT3NkAHjvxRPoLBo6s
+         YtS0Y4nbgD9VMi6TqTDa9dZzuUwkFVy4nLTJ8xVvNsCaHrxOSXT6pA8C4X6vJkJmDkt9
+         VR8NIg6iTWzezwVQTvWNuLPyfG5o3eMMdXMdjnpjIIuF1tKV79D47zHZIn8KLgqeLBUK
+         zYKzH/cWc+jYLG9Qnh8GoQFw7vpOVsB0JlbzE4XN7j1yNRoj2j8nQJamV5EKbPfbXb+5
+         htDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713634475; x=1714239275;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1713635424; x=1714240224;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=azgKuVXWo1stoA6zH6ErzXlXBirYMEprw5yf7intLHQ=;
-        b=r3zRzBIuACvEdhFZ9SWVaaFq77D6R4M+sqycpxnyn+UwEXfXdpjWviwOT512X0wcl6
-         RmIV5WSWcIkVhCq6Z9x89c/eiofx86sw3qaoQu51q817STUUfMiaYG4TwXuKQXirwElI
-         JtHwH13pQ3djdvmWJjtUe/c77aQfJ1bo4hVhykpO7QN1Ev+htMpxMi6qM8EaeVdGLxJR
-         c0OB1J6TLJdUKta+yjnxO3O/ulsT98IoPXFACTnyuDAi/zwAHT6eJfjS+Q7y/g/Syk7l
-         KHSxMjVwCQSF2Ys15fnRrs8q70pOczTXuDHJ+tNq+rN8DCvXiAYHHLxTRVIvP6uz8RTn
-         ++fw==
-X-Forwarded-Encrypted: i=1; AJvYcCVewi9wvAotjgN8P+Ppem9TglFK10mGyTxS68rvfvQU5OFv02BxtNXavWb4jr7X/ybEaZxTOBNxJ5eMyjJf+OOyycDNCQgRprX6Vk3w
-X-Gm-Message-State: AOJu0YxQG2vRyyyPDpvBECDiw2Gng9+awtU49ZOOrsxEl1BgK3h/3BVT
-	AQHrJDeiRBf2o2BgtFhZku681bsdsxkq+8r10qi4zHWt8xbE0FKXHIHKC8NSFqWG8cbWt4Mjkjf
-	gc7E=
-X-Google-Smtp-Source: AGHT+IHv9YqCBLsw0E1Pqjt7cjtf7kyc88aWfeZZkS+YTfO26huw7+v62olhVrFMLOCedHkHChzqgA==
-X-Received: by 2002:a50:8e58:0:b0:56e:2daf:1ee6 with SMTP id 24-20020a508e58000000b0056e2daf1ee6mr4143777edx.16.1713634475054;
-        Sat, 20 Apr 2024 10:34:35 -0700 (PDT)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
-        by smtp.gmail.com with ESMTPSA id p8-20020a05640243c800b00571fad0647csm302926edc.74.2024.04.20.10.34.34
-        for <linux-kernel@vger.kernel.org>
+        bh=KIYLQlpLMFUl3xE1BrT2UElBskzOTTw5EVqsEEuHPoM=;
+        b=w3DuXZ0ZTop84rITxbyEnq55wjzOXpxHU4gip8xK/gAW/lc8OsLO8YkZEUH6jUko2S
+         kW+HjA2Hm0iEm9zcp9y8Z04iaJLJZWu/2vLCsGSGEVG8s7btAJghvT4BjpisAKBKHgvH
+         A6MYDAOpgGhPS1NzSXzUJR+xWWT6eMbUfq9dNTJBYacNJoRIOxudqDiYJyqeG2YAaEah
+         Y5FtSEdEJ12YpZ0/RJKbOy2G62KQ6lcfbvWLqEWttpiHCRyS1Rdkqlx5wB51ijyFF90J
+         W/MNivbZEkIYx8HNf2W15s5ZUmfcGvtm79LdFQX5jesFeNWT7yR8GKe+R2jkLDrYSwds
+         eA2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVcJkk0ufL0ezCFcSYLeSi5BYvPp2IQOZPH1qdC111KzP7PPiOptS4EkJ0u75OQAYlSPsQA2UY0NJBUg1mnkE7sQPnrpkCvdGABTG5/d1HziaT0SQAu9ksTPoqCTx59TKh3jlYaCNygE3+GOp4OsR00sU6ITxgsgvTcjCYIDNhgEeoT5V2MvsNur5Hkiut42SUDk2+WE0oKzMdBeAnztjSZINA=
+X-Gm-Message-State: AOJu0YyLuvL2k9cNLDmQhzA/VG3aViKSXnDf6b4q0jGcMRw8SFkVbqM3
+	NUF68Cg1yU5klvXyHzSSKzncUsdXLXvjQ2x/v5QOLHDJC9biUJiw
+X-Google-Smtp-Source: AGHT+IFqChhWQ6i2C7dFaSVGjRE/tc97YyCzXmiS5MEjIM1QDSggqS3S3tgcf3dU66SY3krSEKy3pQ==
+X-Received: by 2002:a17:902:760d:b0:1e3:de79:35d1 with SMTP id k13-20020a170902760d00b001e3de7935d1mr5655350pll.23.1713635423960;
+        Sat, 20 Apr 2024 10:50:23 -0700 (PDT)
+Received: from localhost (ec2-3-111-32-5.ap-south-1.compute.amazonaws.com. [3.111.32.5])
+        by smtp.gmail.com with UTF8SMTPSA id i18-20020a170902c95200b001e0c5be4e2esm5278704pla.48.2024.04.20.10.50.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Apr 2024 10:34:34 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a44f2d894b7so287911666b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 10:34:34 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXzECgP10NDd4XmN3U3b2QBAljb5iF4ilfVgim8sNlpiS8lW6ay8EMM65eXuclXSVRvfEuo+RObufEdEE95qw9GZ/vcyFpHDSkARkGp
-X-Received: by 2002:a17:906:c0c5:b0:a55:339d:bd20 with SMTP id
- bn5-20020a170906c0c500b00a55339dbd20mr3813061ejb.51.1713634473876; Sat, 20
- Apr 2024 10:34:33 -0700 (PDT)
+        Sat, 20 Apr 2024 10:50:23 -0700 (PDT)
+From: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>
+Cc: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>,
+	Thierry Reding <treding@nvidia.com>,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dt-bindings: tegra30-i2s: convert to dt schema
+Date: Sat, 20 Apr 2024 23:20:07 +0530
+Message-ID: <20240420175008.140391-1-sheharyaar48@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e696e720-0cd3-4505-8469-a94815b39467@I-love.SAKURA.ne.jp>
-In-Reply-To: <e696e720-0cd3-4505-8469-a94815b39467@I-love.SAKURA.ne.jp>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 20 Apr 2024 10:34:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjEZvnn51dhhLqBKUd=cuFhbYA47_OyfUOPB-0zKToL7Q@mail.gmail.com>
-Message-ID: <CAHk-=wjEZvnn51dhhLqBKUd=cuFhbYA47_OyfUOPB-0zKToL7Q@mail.gmail.com>
-Subject: Re: [PATCH v2] tty: n_gsm: restrict tty devices to attach
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Starke, Daniel" <daniel.starke@siemens.com>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Sat, 20 Apr 2024 at 04:12, Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> Since n_gsm is designed to be used for serial port [1], reject attaching to
-> virtual consoles and PTY devices, by checking tty's device major/minor
-> numbers at gsmld_open().
+Convert NVIDIA Tegra30 I2S binding to DT schema.
 
-If we really just want to restrict it to serial devices, then do
-something like, this:
+Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+---
+ .../bindings/sound/nvidia,tegra30-i2s.txt     | 27 --------
+ .../bindings/sound/nvidia,tegra30-i2s.yaml    | 68 +++++++++++++++++++
+ 2 files changed, 68 insertions(+), 27 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.yaml
 
-   drivers/tty/n_gsm.c | 2 ++
-   1 file changed, 2 insertions(+)
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.txt
+deleted file mode 100644
+index 38caa936f6f8..000000000000
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-NVIDIA Tegra30 I2S controller
+-
+-Required properties:
+-- compatible : For Tegra30, must contain "nvidia,tegra30-i2s".  For Tegra124,
+-  must contain "nvidia,tegra124-i2s".  Otherwise, must contain
+-  "nvidia,<chip>-i2s" plus at least one of the above, where <chip> is
+-  tegra114 or tegra132.
+-- reg : Should contain I2S registers location and length
+-- clocks : Must contain one entry, for the module clock.
+-  See ../clocks/clock-bindings.txt for details.
+-- resets : Must contain an entry for each entry in reset-names.
+-  See ../reset/reset.txt for details.
+-- reset-names : Must include the following entries:
+-  - i2s
+-- nvidia,ahub-cif-ids : The list of AHUB CIF IDs for this port, rx (playback)
+-  first, tx (capture) second. See nvidia,tegra30-ahub.txt for values.
+-
+-Example:
+-
+-i2s@70080300 {
+-	compatible = "nvidia,tegra30-i2s";
+-	reg = <0x70080300 0x100>;
+-	nvidia,ahub-cif-ids = <4 4>;
+-	clocks = <&tegra_car 11>;
+-	resets = <&tegra_car 11>;
+-	reset-names = "i2s";
+-};
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.yaml
+new file mode 100644
+index 000000000000..3809e4049fe1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra30-i2s.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nvidia,tegra30-i2s.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NVIDIA Tegra30 I2S controller
++
++maintainers:
++  - Thierry Reding <treding@nvidia.com>
++  - Jon Hunter <jonathanh@nvidia.com>
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++          - nvidia,tegra124-i2s
++          - nvidia,tegra30-i2s
++      - items:
++          - enum:
++              - nvidia,tegra114-i2s
++              - nvidia,tegra132-i2s
++          - const: nvidia,tegra124-i2s
++          - const: nvidia,tegra30-i2s
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    const: i2s
++
++  nvidia,ahub-cif-ids:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: |
++      The list of AHUB CIF IDs for this port, rx (playback)
++      first, tx (capture) second. See nvidia,tegra30-ahub.txt for values.
++    minItems: 2
++    maxItems: 2
++    items:
++      $ref: /schemas/types.yaml#/definitions/uint32
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - resets
++  - reset-names
++  - nvidia,ahub-cif-ids
++
++additionalProperties: false
++
++examples:
++  - |
++    i2s@70080300 {
++            compatible = "nvidia,tegra30-i2s";
++            reg = <0x70080300 0x100>;
++            nvidia,ahub-cif-ids = <4 4>;
++            clocks = <&tegra_car 11>;
++            resets = <&tegra_car 11>;
++            reset-names = "i2s";
++    };
++...
+-- 
+2.44.0
 
-  diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-  index 4036566febcb..24425ef35b2b 100644
-  --- a/drivers/tty/n_gsm.c
-  +++ b/drivers/tty/n_gsm.c
-  @@ -3629,6 +3629,8 @@ static int gsmld_open(struct tty_struct *tty)
-
-        if (tty->ops->write == NULL)
-                return -EINVAL;
-  +     if (tty->ops->set_serial == NULL)
-  +             return -EINVAL;
-
-        /* Attach our ldisc data */
-        gsm = gsm_alloc_mux();
-
-which at least matches the current (largely useless) pattern of
-checking for a write function.
-
-I think all real serial sub-drivers already have that 'set_serial()'
-function, and if there are some that don't, we could just add a dummy
-for them. No?
-
-Alternatively, we could go the opposite way, and have some flag in the
-line discipline that says "I can be a console", and just check that in
-tty_set_ldisc() for the console.
-
-That would probably be a good idea regardless, but likely requires more effort.
-
-But this kind of random major number testing seems wrong. It's trying
-to deal with the _symptoms_, not some deeper truth.
-
-                  Linus
 
