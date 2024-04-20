@@ -1,124 +1,104 @@
-Return-Path: <linux-kernel+bounces-152275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5944B8ABBB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 15:23:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E89ED8ABBC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 15:33:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ABB71F211D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:23:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A56E628159C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECC91D680;
-	Sat, 20 Apr 2024 13:23:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="hw0zfWGj"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2006120B3D;
+	Sat, 20 Apr 2024 13:33:06 +0000 (UTC)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF32A1CAA9
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 13:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA6F20309;
+	Sat, 20 Apr 2024 13:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713619413; cv=none; b=gZ15kynkaePDsi7V+rPTlj6rhLd5cJqk3iDaGt9xhnrLhCQW0PJ1114RHe9tuSQnFrruFczP1QWEN2OVU/JHEFgAvqE9BMzq5AYECwCzcmR6NpJ7xqGv5oer8x6rxcdfCHFPGX7SKPph0kMUTLHHT7tB6nr1cFwACktLhokcAYU=
+	t=1713619985; cv=none; b=dO1cd16IyLApROrVU6vOAaWA3FRk1dDMY/fhrnUlferAWtK+YUpb4266BJyV7N0uw/IOr2VTiXjpDMrQKT3ZkAeDAzy1E4DE1gCBUr+p+fCv/uXczxJjNHOLQaLMQhbI72hcU/7R7eo9P275Sdyt9hETPcfz5aSRrObKO+t8rGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713619413; c=relaxed/simple;
-	bh=o+P0pKvUdXYxGkSPkossj7eoNY//UNjJDR4sSSRBtLs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YZ9/gzbiUmr9JS3xslLbFp5fX/jXDDb/Iiftth0nmGJGAg4VNKC1nYcX9LPF7tTnYrNj/MDckS4sJ4gSXneJOj+WruTZyEcjcv0cVGLQsdbv2EMHAHQ+uUbayARZeCNis5xS63AmrJp/YddaEB5CK4oBM6h2b32bH68WZUEXas4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=hw0zfWGj; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-61af74a010aso31371447b3.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 06:23:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1713619410; x=1714224210; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7E/gU/HnTfpLL2KPHG4Owb2FHQL2jemmH65c7TQSroM=;
-        b=hw0zfWGjMVOH7FKfT2TQFWo4LbjGUifOOtzfDX5zpj3QJB6/jOCQ1LweJgH6z4eBXi
-         O/O55GsnEB/uEoul3OzIMSYLTyvsnNUc/KVuP7Cfg/P77k5NkYpPZMwwwTV2orO9KVwj
-         D7vwYifpWDZBBwZ7Pt6C1ConijmOqM/OaVdc4JuuF+XA7YIl91wn0DeScC+3yKAyvv9K
-         ywyOeucw7ohGZRuI4PHgh7eM7tNcIUqWsmDIWDgmv+id2APa2ORmGTe4bcYJb2I1xEwY
-         oy5j52cO2apoRzoi1DZL8fw7DtdsgNXfDg+zonR4XZUa9b7OA79yISgw8q9ff68atkV3
-         8guQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713619410; x=1714224210;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7E/gU/HnTfpLL2KPHG4Owb2FHQL2jemmH65c7TQSroM=;
-        b=OlKItsGqo67rVLJplsvCTLmNqEQjgNc8Eq62eO63+cijtFV5IDHnPBtgIFPpgm89aZ
-         36UAnu5LoTVTkpomVip4idKsyWjnuanlk18qCqKVnvQkERLaOU4+zA3/ZvJkaZkLjnsW
-         4mp7FTNGTPnYa4kryD/YZWWpZJmA6vm59+PyJ+aqI+OUZm5UfmJ9jw1B5Fuwk2tWn07b
-         UoSSqYRrK7WxiEfVK3MUm2Oqy93wSLDlMxOxOALu/B/vbf2AiwCQ91hLQE0us1Hs599i
-         GJ4VgSOa7xMci3BL2pfec7266g+INDeF2WuEV+Kq5PPyCohhHoiyA47vwudh8WB51pMC
-         g7yA==
-X-Forwarded-Encrypted: i=1; AJvYcCWbpJvUL2S5U8AvIG5jqJ30BaqsJEZgIdgvtvybqlyB3BjRvZKwpCw5kOFeqsyMYUIJwhvOD0XwUWXuxURVwd95Rs3QdIE5MHs7S/fW
-X-Gm-Message-State: AOJu0YxPcTT0lH8GZl0e+599xyu75ozizFn6g2QuYFXFsMq9WbDATLcZ
-	lJOp2kUhlCh6XPf57K+Z7pfjldWRjF2p3AvBSiTy4GwsHlVWv0Hg+lBEa9On7MBxOiQowgYUggi
-	7
-X-Google-Smtp-Source: AGHT+IFF7WdFGx06lubZjnZEDsS7NHLyRc7J6rqOKjkDjjAr8x9U13jv0WnJ7Lmv1HVdrelM9tkBpw==
-X-Received: by 2002:a05:690c:6a10:b0:61a:b7c8:ea05 with SMTP id ih16-20020a05690c6a1000b0061ab7c8ea05mr5479226ywb.35.1713619410429;
-        Sat, 20 Apr 2024 06:23:30 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:9d5c])
-        by smtp.gmail.com with ESMTPSA id o2-20020a0c8c42000000b006a06f044a34sm653868qvb.23.2024.04.20.06.23.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Apr 2024 06:23:28 -0700 (PDT)
-Date: Sat, 20 Apr 2024 09:23:26 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: simple cleanup of stats update functions
-Message-ID: <20240420132326.GE1055428@cmpxchg.org>
-References: <20240419233949.2326100-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1713619985; c=relaxed/simple;
+	bh=PEcDp8I3M8Yr7iDTgjFDbNrl9L5ce/gSH/kcCCvROGw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EVjoi7r9RMkxDtx+JDPnGNfYMogiu4kqKXFt70Vst6m0knba6VLeSUfZaHOVvpuwMnIjr/pGI36LBn/AEUmxUFO+uMARNICCv1xQtQGMFhGSwAem8W66hGXfaZyk+bk+y7FOLfTCmcGQRrEgGUrvUGG0zmtWSuHPvAp7FJQ2fr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id CAECE8333C;
+	Sat, 20 Apr 2024 15:32:59 +0200 (CEST)
+Message-ID: <eb221864-0044-4ea5-bbee-7545d10cb130@skole.hr>
+Date: Sat, 20 Apr 2024 15:32:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419233949.2326100-1-shakeel.butt@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 5/9] clk: mmp: Add Marvell PXA1908 clock driver
+To: Stephen Boyd <sboyd@kernel.org>, Catalin Marinas
+ <catalin.marinas@arm.com>, Conor Dooley <conor+dt@kernel.org>,
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+ Haojian Zhuang <haojian.zhuang@linaro.org>, Kees Cook
+ <keescook@chromium.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Lubomir Rintel <lkundrak@v3.sk>,
+ Michael Turquette <mturquette@baylibre.com>, Rob Herring
+ <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+ Tony Lindgren <tony@atomide.com>, Tony Luck <tony.luck@intel.com>,
+ Will Deacon <will@kernel.org>
+Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+ Karel Balej <balejk@matfyz.cz>, David Wronek <david@mainlining.org>,
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240402-pxa1908-lkml-v9-0-25a003e83c6f@skole.hr>
+ <de4c56a8-488d-4cdb-9d6c-e9d6e63b22b9@skole.hr>
+ <58b23157c088cb4774d579cc8700de85.sboyd@kernel.org>
+ <3287993.aeNJFYEL58@radijator>
+ <d7ff7dd609cd1b9a50e5ffa882d05b90.sboyd@kernel.org>
+Content-Language: en-US
+From: =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+In-Reply-To: <d7ff7dd609cd1b9a50e5ffa882d05b90.sboyd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Shakeel,
+On 4/20/24 00:24, Stephen Boyd wrote:
+> Quoting Duje Mihanović (2024-04-19 07:31:14)
+>> On Friday, April 12, 2024 4:57:09 AM GMT+2 Stephen Boyd wrote:
+>>> Quoting Duje Mihanović (2024-04-11 03:15:34)
+>>>
+>>>> On 4/11/2024 10:00 AM, Stephen Boyd wrote:
+>>>>> Is there a reason this file can't be a platform driver?
+>>>>
+>>>> Not that I know of, I did it like this only because the other in-tree
+>>>> MMP clk drivers do so. I guess the initialization should look like any
+>>>> of the qcom GCC drivers then?
+>>>
+>>> Yes.
+>>
+>> With the entire clock driver code in one file this is quite messy as I also
+>> needed to add module_init and module_exit functions to (un)register each
+>> platform driver, presumably because the module_platform_driver macro doesn't
+>> work with multiple platform drivers in one module. If I split up the driver
+>> code for each clock controller block into its own file (such as clk-of-
+>> pxa1908-apbc.c) as I believe is the best option, should the commits be split
+>> up accordingly as well?
+> 
+> Sure. Why is 'of' in the name? Maybe that is unnecessary?
 
-On Fri, Apr 19, 2024 at 04:39:49PM -0700, Shakeel Butt wrote:
-> @@ -2983,10 +2984,6 @@ void mem_cgroup_commit_charge(struct folio *folio, struct mem_cgroup *memcg)
->  
->  #ifdef CONFIG_MEMCG_KMEM
->  
-> -/*
-> - * mod_objcg_mlstate() may be called with irq enabled, so
-> - * mod_memcg_lruvec_state() should be used.
-> - */
->  static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
->  				     struct pglist_data *pgdat,
->  				     enum node_stat_item idx, int nr)
-> @@ -2994,10 +2991,12 @@ static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
->  	struct mem_cgroup *memcg;
->  	struct lruvec *lruvec;
->  
-> +	lockdep_assert_irqs_disabled();
-> +
->  	rcu_read_lock();
->  	memcg = obj_cgroup_memcg(objcg);
->  	lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> -	mod_memcg_lruvec_state(lruvec, idx, nr);
-> +	__mod_memcg_lruvec_state(lruvec, idx, nr);
->  	rcu_read_unlock();
->  }
+That seems to be a historical leftover from when Marvell was just adding 
+DT support to the ARM32 MMP SoCs which Rob followed along with in the 
+PXA1928 clk driver and so have I. Should I drop it then as Marvell has 
+in the PXA1908 vendor kernel?
 
-Best to rename it to __mod_objcg_mlstate() as well to follow the
-naming pattern for whether caller or callee handles IRQ toggling?
+Regards,
+--
+Duje
 
-Otherwise, looks great to me!
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
