@@ -1,151 +1,94 @@
-Return-Path: <linux-kernel+bounces-152241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E504C8ABB49
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:17:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A490D8ABB3A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:05:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44684B2137A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:17:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 330AFB21956
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4CD2941F;
-	Sat, 20 Apr 2024 11:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VuCv8B1w"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC9D29D0B;
+	Sat, 20 Apr 2024 11:05:05 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E880D1C294
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 11:17:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA30128DCA
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 11:05:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713611866; cv=none; b=pLMXGByaei9pDxBdxjppNkavwFiSe2ZPRtC1jNsF4g/G2hBkAipK7Bdhq8A3SnHLojtylK316o+0CNGvukFMWuVsQbDzS7CyqfU0813Q2f4mc6uRTUq6aujKv+NLqveQwo1kY6tBEKfq67uaiGestuhUOX08B/1eaSBW3zEbM2c=
+	t=1713611105; cv=none; b=iWmGWbcbRIJdbvMuE+n1J2NJ8keTBBPuVicnpp/+jx6+ScFR/DB/kI1TspdrIHN5e+1nYMgahj3xxSMo/tAGHpVHS8qY58yB+akc2kPkdp/28shrrY8Sl/QC682XSOpIrPMTNt5/zZE5iJYAQLn9RkmtbhkOqXoy24hFd5T09oI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713611866; c=relaxed/simple;
-	bh=p3oWmVyGlcLLzHs5KM/jHHXQg4aBBYt9qMr0gvutLek=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N7hKCbTvuXBdZgj3yaWlSZTR1JIKkERXPeA4cxWNX8uIFQ5kq3wDnHRPhpY7kyGtDx0HNfyOhgEL3WZ6nVjvtPPdFBQ+Bs6TzWtDL8ikU/uSrDyJqxFKEjyerx2W0V6Z96fwpAnlvZRc8dZnZ2NHiDwIP1GtS1JoYEV9TQyzq/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VuCv8B1w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADA11C072AA;
-	Sat, 20 Apr 2024 11:17:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713611865;
-	bh=p3oWmVyGlcLLzHs5KM/jHHXQg4aBBYt9qMr0gvutLek=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VuCv8B1wSmn3Cb5VZNbpxNPm4YYVc8guYhcxwtgZKhau6PXoW44JSJ+5BlWHxoPOR
-	 kc7DGfQLCLG/lytqZeo7FHkPbLV3UbXXfCGAhErDpJgEQIUw9dnKduZBY5LEXrelp+
-	 TZGGVkXANV1QvflZ/e9cyVz68x9Vr1m9LlnQRqgOqC49KjEMl2XVSH5u/IMZgNby3w
-	 35XePNlBH6/InzTXd/kOc7Z7ZdNIlHBfbZa8yskolPc8T7NKQsupqpwWLHiAgIcZM6
-	 okBbyXh0KFl6SGhwKzbwkKpwTZy8SbWdaLlAXwRb+1I6jR0e+o5/n4ZQL4uDibKEng
-	 I9zJJ0BGAhWDg==
-Date: Sat, 20 Apr 2024 19:04:18 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	cleger@rivosinc.com
-Subject: Re: [PATCH v3 0/2] riscv: improve nommu and timer-clint
-Message-ID: <ZiOhMnZ1fdzj2IzE@xhacker>
-References: <20240410142347.964-1-jszhang@kernel.org>
+	s=arc-20240116; t=1713611105; c=relaxed/simple;
+	bh=s27xjU6RMPvfYBmkk7ft79miI0KqGUXUlJx7W0BFBWM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=tNKynKzvYrqHBLkbJJvADlOFDCwBxWT8oZ8N/NeOz70WEAFpzxLiHFe5EnnGfDnC50YxPOwAS7t6uga/sKmPILuXcBp1AgDeA7Z/AmB5ekjprgaKc5oJY5/xemOx12BL5uB3sEz/B8IWYIETFz5G1HkuktzsD+r3Z72kMdjzhwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36c05c86944so5649705ab.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 04:05:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713611103; x=1714215903;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e7yBwfO66aHRa1O9L8HvVyvKH1lIkd1DRxqnowucHIE=;
+        b=T/c+wan8pGABLq6kW+ejdAiv9S5j2qLGDYQPJBOpskJpAyz38jD+d+T+6fg1IQqdPU
+         Gg3/80DGZFyh/MFSDN1EdZDX+O6j02Uvdy6SNbHvwoq21khecg2RiSwyqPsAj7MQ5Tvd
+         8wCkVnNPt51L6xmCrI46M6kLyuvw+6sQxr6f9cSt/eNOAjTFHhyr+6cvHy+oSAditS8T
+         Y5GbUxhMADc3296jgfCbX5m3UDN6gAISP0IaxRiQg9m1tDp/mi2YTwdlyj4b2scLOmsZ
+         Tun9l7NFAGapz9Q3fRXqkVGguFCVvzHaUmBbdJh8n07gstlXdCV16f6kPphgj20yfQRB
+         9T+w==
+X-Forwarded-Encrypted: i=1; AJvYcCXfwJR9M0fjr9BfSl6yvfl9YJbu6BuX9RO6+nSVtctqmr7G0uy/sxWBeV0CoSVF9HKkTtQRb16TwEMGMCTkMUGwWPIWIf2CoDYd3ovb
+X-Gm-Message-State: AOJu0YzzjFYc7csOV6xTxDCMLZHqb6uZgXxGC+Jm7DQy46lKHWNbY5K+
+	dMFtz9H4ihfJnytK7h7rw/5CdgSv9JzioA8YA5T/FevOJ40cr29qjqOuJzf6ucrmuRjgDgCmPjr
+	DGtXByKq9krpyw+8u0X0tqf79O26dG0N95Cc9mWP10YyKAP7kNs2b2WQ=
+X-Google-Smtp-Source: AGHT+IGB/32niRDTyR/zhkffl/x3qMTy7ZqvWF2/VowCteX1IAeq/8/uNnmDt0iYor7nG+cfLEc0nQ6RnF5XV/gx2fSNQlSWchCP
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240410142347.964-1-jszhang@kernel.org>
+X-Received: by 2002:a05:6e02:2144:b0:36a:fa56:b0fb with SMTP id
+ d4-20020a056e02214400b0036afa56b0fbmr316784ilv.6.1713611103032; Sat, 20 Apr
+ 2024 04:05:03 -0700 (PDT)
+Date: Sat, 20 Apr 2024 04:05:03 -0700
+In-Reply-To: <00000000000089deb205ee0ddd58@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000146a6a0616852ded@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_chunk_alloc
+From: syzbot <syzbot+e8e56d5d31d38b5b47e7@syzkaller.appspotmail.com>
+To: alfredidavidson@usa.com, anamartinez@projectloan.org, 
+	anand.jain@oracle.com, brauner@kernel.org, clm@fb.com, dsterba@suse.com, 
+	dvyukov@google.com, fdmanana@kernel.org, franklinozil@usa.com, 
+	inquiry@usa.com, johannes.thumshirn@wdc.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 10, 2024 at 10:23:45PM +0800, Jisheng Zhang wrote:
-> As is known, the sophgo CV1800B contains so called little core, which
-> is C906 w/o MMU, so I want to run nommu linux on it. This series is
-> the result of the bring up. After this series, w/ proper dts, we can
-> run nommu linux on milkv duo's little core.
-> 
-> First of all, patch1 removes the PAGE_OFFSET hardcoding by introducing
-> DRAM_BASE Kconfig option.
-> 
-> Secondly, to use the T-HEAD C9xx clint in RISCV-M NOMMU env, we need
-> to take care two points:
-> 
-> 1.The mtimecmp in T-Head C9xx clint only supports 32bit read/write,
-> implement such support.
-> 
-> 2. As pointed out by commit ca7810aecdba ("lib: utils/timer: mtimer:
-> add a quirk for lacking mtime register") of opensbi:
-> 
-> "T-Head developers surely have a different understanding of time CSR and
-> CLINT's mtime register with SiFive ones, that they did not implement
-> the mtime register at all -- as shown in openC906 source code, their
-> time CSR value is just exposed at the top of their processor IP block
-> and expects an external continous counter, which makes it not
-> overrideable, and thus mtime register is not implemented, even not for
-> reading. However, if CLINTEE is not enabled in T-Head's MXSTATUS
-> extended CSR, these systems still rely on the mtimecmp registers to
-> generate timer interrupts. This makes it necessary to implement T-Head
-> C9xx CLINT support in OpenSBI MTIMER driver, which skips implementing
-> reading mtime register and falls back to default code that reads time
-> CSR."
-> 
-> So, we need to fall back to read time CSR instead of mtime register.
-> Add riscv_csr_time_available static key for this purpose.
-> 
-> The second patch adds T-Head C9xxx clint support to timer-clint driver
-> by taking care of above two points.
-> 
-> Since v2:
->   - drop CONFIG_CLINT_USE_CSR_INSTEADOF_MTIME, instead we use runtime
->     code patch to dynamically enable CSR TIME code path or MTIME code
->     path.
-> 
-> Since v1:
->   - fix c900_clint_timer_init_dt() defined but not used build warning
->   - add option CONFIG_CLINT_USE_CSR_INSTEADOF_MTIME instead of removing
->     mtime usage for all platforms, since not all platforms implement the
->     time CSR in HW in M mode.
->   - rebase on the timer-clint improvement series
-> https://lore.kernel.org/linux-riscv/20240406111757.1597-1-jszhang@kernel.org/T/#t
+syzbot suspects this issue was fixed by commit:
 
-Hi Palmer, Daniel,
+commit a1912f712188291f9d7d434fba155461f1ebef66
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Wed Nov 22 17:17:55 2023 +0000
 
-This series itself relies on the timer-clint improvement series
-https://lore.kernel.org/linux-riscv/20240406111757.1597-1-jszhang@kernel.org/T/#t
+    btrfs: remove code for inode_cache and recovery mount options
 
-But as suggested by Clément, it's better to rebase the patch1 on
-the Samuel's work which has been merged into riscv for-next,
-So I have two dependencies now, how do I handle this series then?
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=123666bf180000
+start commit:   82714078aee4 Merge tag 'pm-6.6-rc5' of git://git.kernel.or..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7a5682d32a74b423
+dashboard link: https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139f64ee680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12da37d1680000
 
-Could I leave patch1 alone and move patch2 into the timer-clint
-improvement series? Any suggestion?
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Thanks in advance
-> 
-> 
-> Jisheng Zhang (2):
->   riscv: nommu: remove PAGE_OFFSET hardcoding
->   clocksource/drivers/timer-clint: Add T-Head C9xx clint
-> 
->  arch/riscv/Kconfig                |  8 +++++-
->  arch/riscv/include/asm/clint.h    |  2 ++
->  arch/riscv/include/asm/timex.h    | 18 +++++++++---
->  drivers/clocksource/timer-clint.c | 48 +++++++++++++++++++++++++++----
->  4 files changed, 66 insertions(+), 10 deletions(-)
-> 
-> -- 
-> 2.43.0
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+#syz fix: btrfs: remove code for inode_cache and recovery mount options
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
