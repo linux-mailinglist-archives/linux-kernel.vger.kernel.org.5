@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-152138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FA558AB9BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 06:52:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 541958AB9BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 06:53:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FA1F281430
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 04:52:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3F3B1F21904
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 04:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB7F11702;
-	Sat, 20 Apr 2024 04:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A484316F;
+	Sat, 20 Apr 2024 04:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KQbGgImj"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nLuSpm4k"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 026863D96D;
-	Sat, 20 Apr 2024 04:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB673F8D6;
+	Sat, 20 Apr 2024 04:50:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713588619; cv=none; b=ifzWda8tLpJiMDXfZHj3TFsLNFIQB6E2o2xYa72p2ERFYwYw2xPyTah3nr55vX6yyaUaJyMxSU9VteHXAwn86819aA2wbAJ3qZ36j7tASNDAuMbfLq/8gRX3lBE9MlSYXfRQmYyTR9gBXgvA95hIgzTDgqF8HWc57biOmP0rG8g=
+	t=1713588622; cv=none; b=Xb9kxCSjx25lVgzYgfiv0kWeC0g1W6O29OJX4zhFJiO2V6qe0m0lJInvHCVWe0P5I6X6+UXn+JnERb/tLR3lQzsVi0G3UUFPvuN03Phi15A7eB1EBXANPbPq/Rozn7LPC1HCyo3AlefUhNAVpRSG7hUr1cJOoMDRbm40VTQ4jcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713588619; c=relaxed/simple;
-	bh=gPXQG/eq1aiSRLRJzl3Ts8UMoOw9UuhQygewl0V6szU=;
+	s=arc-20240116; t=1713588622; c=relaxed/simple;
+	bh=YVkIw7DgewVq3TVr3KbyecW8Zew7ckYFRjU2pFfUQ5Y=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WI04r0Iv3TIWSj/4AN4fym2rbPjHO0vHHW2jIjb22aQuTuJbsnJkY69lmDGVDXEx4ZTvNaX8Y1NMqObx6Rl7qhMqHFuKv7clgJQ/ej2D5HY1u66aUN5o8EhTp3edc2/WipgxA4hNx7usrrVBJ7cCRlMVk9LOIZwqlLnwE7UJoGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KQbGgImj; arc=none smtp.client-ip=205.220.168.131
+	 MIME-Version:Content-Type; b=FqqPb4AVmudr3k8YSP6gBPbZdh/TwvXtIiBVsA7peIksQGHDEnOEj+TRFvHvhWREgXx7TOPXlbgWLBl1/xC2T9lDqv5l2levT7KauX7mWZEXsVZX+qLNInDxS7hBRr2oU0cYe0bQ/Ny+t2sqO9HsCFkjpTln0SxUvaeydz+sJOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nLuSpm4k; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43K4oB4G032129;
-	Sat, 20 Apr 2024 04:50:11 GMT
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43K4ncjJ004636;
+	Sat, 20 Apr 2024 04:50:17 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=fB7NSyFc2KpLmGEfqpUvNuQGx7bpb8tvSh1B9tD8GxQ=; b=KQ
-	bGgImjyCzQl8zAAPgRClIEXV0Ov6SzDEwxbWOHF1AQdev5cKLmOXOyOcu6uxKgp9
-	qZR93K8WmvHCb8XRiti2KUB9Jp6N49y+c5jQ9YPbSE+tyyEHokMYokFqttRQDXX0
-	SEmROCHUF2xi6Z2FHK3CgNfnTAv7HdpYF3X2JxJuH2zIdhuRH6TfxJtm6E48ehLL
-	p/pYHXKMRAODiS3xnypFcTpi21LTNpFfj5n4kQYZAyMa0Ppz4/w0qAVsq2766tNX
-	xfO9B5QZVyN78lvdL6U/WU33nxqtuxe2B80lzE6gzQ0pZk/4eAPbIzO/aSGaQ6G4
-	s2HSJg9TX+g/XLcE1urQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xm5x682pn-1
+	qcppdkim1; bh=8eFsn6tci9SXWkk51b18J8sHwR83J9tUKFJVQ+MA0P0=; b=nL
+	uSpm4k4Ti76TZ9jMht4/Sb+YMJM4/6KaSjm9P4DYhVYf7utzPe+tyy6OjWNr5RLi
+	kHeGNCi2F7gCXBXM5AP6Mm2uzcCQoN7V8X4zsoc515rsCTt+lwmUdo4/i6nV/XPN
+	Kvk3jMDBcA0kslKVK5Yxv91OVUUb2Otw+WZcVmmO/GO6NHmebl5n9FtAmYZnmnEu
+	5ceTWyqlH8WuGs75SJU0O32rYYx+AzkwsNJEkMe6a3WrNd2/iqJWZ8O5EguSYTXk
+	aTOd2r6lGL2eOk+Q9iUfqHjUcmWNRSiyy6OCii5EAPLg1OQl06NXbplJUwfpR6uj
+	nAiweqNGYauuNEOdHkJQ==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xm6vr80bx-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 20 Apr 2024 04:50:10 +0000 (GMT)
+	Sat, 20 Apr 2024 04:50:16 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43K4oA22018397
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43K4oFmH001910
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 20 Apr 2024 04:50:10 GMT
+	Sat, 20 Apr 2024 04:50:15 GMT
 Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Fri, 19 Apr 2024 21:50:03 -0700
+ 15.2.1544.9; Fri, 19 Apr 2024 21:50:10 -0700
 From: Krishna Kurapati <quic_kriskura@quicinc.com>
 To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring
@@ -74,12 +74,10 @@ CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
         Krishna Kurapati
 	<quic_kriskura@quicinc.com>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        "Bjorn
- Andersson" <quic_bjorande@quicinc.com>
-Subject: [PATCH v21 8/9] usb: dwc3: qcom: Enable wakeup for applicable ports of multiport
-Date: Sat, 20 Apr 2024 10:19:00 +0530
-Message-ID: <20240420044901.884098-9-quic_kriskura@quicinc.com>
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+Subject: [PATCH v21 9/9] usb: dwc3: qcom: Add multiport suspend/resume support for wrapper
+Date: Sat, 20 Apr 2024 10:19:01 +0530
+Message-ID: <20240420044901.884098-10-quic_kriskura@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240420044901.884098-1-quic_kriskura@quicinc.com>
 References: <20240420044901.884098-1-quic_kriskura@quicinc.com>
@@ -95,167 +93,85 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: a9cEfPYDPfnh946X8KHjl2m7reu9_XPd
-X-Proofpoint-GUID: a9cEfPYDPfnh946X8KHjl2m7reu9_XPd
+X-Proofpoint-GUID: donBu3u2KTyfVvakkFL0V6vnNhkSaxxF
+X-Proofpoint-ORIG-GUID: donBu3u2KTyfVvakkFL0V6vnNhkSaxxF
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-20_03,2024-04-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
- spamscore=0 mlxscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404200033
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ malwarescore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ mlxlogscore=909 impostorscore=0 phishscore=0 clxscore=1015 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404200032
 
-DWC3 Qcom wrapper currently supports only wakeup configuration
-for single port controllers. Read speed of each port connected
-to the controller and enable wakeup for each of them accordingly.
+Power event IRQ is used for wakeup either when the controller is
+SuperSpeed capable but is missing an SuperSpeed PHY interrupt, or when
+the GIC is not capable of detecting DP/DM High-Speed PHY interrupts.
+
+The Power event IRQ stat register indicates whether the High-Speed
+phy entered and exited L2 successfully during suspend and resume.
+Indicate the same for all ports of a multiport controller.
 
 Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
 Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 ---
- drivers/usb/dwc3/dwc3-qcom.c | 71 +++++++++++++++++++++---------------
- 1 file changed, 41 insertions(+), 30 deletions(-)
+ drivers/usb/dwc3/dwc3-qcom.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-index 5ddb694dd8e7..b6f13bb14e2c 100644
+index b6f13bb14e2c..88fb6706a18d 100644
 --- a/drivers/usb/dwc3/dwc3-qcom.c
 +++ b/drivers/usb/dwc3/dwc3-qcom.c
-@@ -60,6 +60,7 @@ struct dwc3_qcom_port {
+@@ -36,7 +36,6 @@
+ #define PIPE3_PHYSTATUS_SW			BIT(3)
+ #define PIPE_UTMI_CLK_DIS			BIT(8)
+ 
+-#define PWR_EVNT_IRQ_STAT_REG			0x58
+ #define PWR_EVNT_LPM_IN_L2_MASK			BIT(4)
+ #define PWR_EVNT_LPM_OUT_L2_MASK		BIT(5)
+ 
+@@ -55,6 +54,13 @@
+ /* Qualcomm SoCs with multiport support has up to 4 ports */
+ #define DWC3_QCOM_MAX_PORTS	4
+ 
++static const u32 pwr_evnt_irq_stat_reg[DWC3_QCOM_MAX_PORTS] = {
++	0x58,
++	0x1dc,
++	0x228,
++	0x238,
++};
++
+ struct dwc3_qcom_port {
+ 	int			qusb2_phy_irq;
  	int			dp_hs_phy_irq;
- 	int			dm_hs_phy_irq;
- 	int			ss_phy_irq;
-+	enum usb_device_speed	usb2_speed;
- };
+@@ -424,9 +430,11 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
+ 	if (qcom->is_suspended)
+ 		return 0;
  
- struct dwc3_qcom {
-@@ -71,7 +72,6 @@ struct dwc3_qcom {
- 	struct reset_control	*resets;
- 	struct dwc3_qcom_port	ports[DWC3_QCOM_MAX_PORTS];
- 	u8			num_ports;
--	enum usb_device_speed	usb2_speed;
+-	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
+-	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+-		dev_err(qcom->dev, "HS-PHY not in L2\n");
++	for (i = 0; i < qcom->num_ports; i++) {
++		val = readl(qcom->qscratch_base + pwr_evnt_irq_stat_reg[i]);
++		if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
++			dev_err(qcom->dev, "port-%d HS-PHY not in L2\n", i + 1);
++	}
  
- 	struct extcon_dev	*edev;
- 	struct extcon_dev	*host_edev;
-@@ -310,7 +310,7 @@ static bool dwc3_qcom_is_host(struct dwc3_qcom *qcom)
- 	return dwc->xhci;
- }
+ 	for (i = qcom->num_clocks - 1; i >= 0; i--)
+ 		clk_disable_unprepare(qcom->clks[i]);
+@@ -475,8 +483,11 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom, bool wakeup)
+ 		dev_warn(qcom->dev, "failed to enable interconnect: %d\n", ret);
  
--static enum usb_device_speed dwc3_qcom_read_usb2_speed(struct dwc3_qcom *qcom)
-+static enum usb_device_speed dwc3_qcom_read_usb2_speed(struct dwc3_qcom *qcom, int port_index)
- {
- 	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
- 	struct usb_device *udev;
-@@ -321,14 +321,8 @@ static enum usb_device_speed dwc3_qcom_read_usb2_speed(struct dwc3_qcom *qcom)
- 	 */
- 	hcd = platform_get_drvdata(dwc->xhci);
+ 	/* Clear existing events from PHY related to L2 in/out */
+-	dwc3_qcom_setbits(qcom->qscratch_base, PWR_EVNT_IRQ_STAT_REG,
+-			  PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
++	for (i = 0; i < qcom->num_ports; i++) {
++		dwc3_qcom_setbits(qcom->qscratch_base,
++				  pwr_evnt_irq_stat_reg[i],
++				  PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
++	}
  
--	/*
--	 * It is possible to query the speed of all children of
--	 * USB2.0 root hub via usb_hub_for_each_child(). DWC3 code
--	 * currently supports only 1 port per controller. So
--	 * this is sufficient.
--	 */
- #ifdef CONFIG_USB
--	udev = usb_hub_find_child(hcd->self.root_hub, 1);
-+	udev = usb_hub_find_child(hcd->self.root_hub, port_index + 1);
- #else
- 	udev = NULL;
- #endif
-@@ -359,26 +353,26 @@ static void dwc3_qcom_disable_wakeup_irq(int irq)
- 	disable_irq_nosync(irq);
- }
- 
--static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
-+static void dwc3_qcom_disable_port_interrupts(struct dwc3_qcom_port *port)
- {
--	dwc3_qcom_disable_wakeup_irq(qcom->ports[0].qusb2_phy_irq);
-+	dwc3_qcom_disable_wakeup_irq(port->qusb2_phy_irq);
- 
--	if (qcom->usb2_speed == USB_SPEED_LOW) {
--		dwc3_qcom_disable_wakeup_irq(qcom->ports[0].dm_hs_phy_irq);
--	} else if ((qcom->usb2_speed == USB_SPEED_HIGH) ||
--			(qcom->usb2_speed == USB_SPEED_FULL)) {
--		dwc3_qcom_disable_wakeup_irq(qcom->ports[0].dp_hs_phy_irq);
-+	if (port->usb2_speed == USB_SPEED_LOW) {
-+		dwc3_qcom_disable_wakeup_irq(port->dm_hs_phy_irq);
-+	} else if ((port->usb2_speed == USB_SPEED_HIGH) ||
-+			(port->usb2_speed == USB_SPEED_FULL)) {
-+		dwc3_qcom_disable_wakeup_irq(port->dp_hs_phy_irq);
- 	} else {
--		dwc3_qcom_disable_wakeup_irq(qcom->ports[0].dp_hs_phy_irq);
--		dwc3_qcom_disable_wakeup_irq(qcom->ports[0].dm_hs_phy_irq);
-+		dwc3_qcom_disable_wakeup_irq(port->dp_hs_phy_irq);
-+		dwc3_qcom_disable_wakeup_irq(port->dm_hs_phy_irq);
- 	}
- 
--	dwc3_qcom_disable_wakeup_irq(qcom->ports[0].ss_phy_irq);
-+	dwc3_qcom_disable_wakeup_irq(port->ss_phy_irq);
- }
- 
--static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
-+static void dwc3_qcom_enable_port_interrupts(struct dwc3_qcom_port *port)
- {
--	dwc3_qcom_enable_wakeup_irq(qcom->ports[0].qusb2_phy_irq, 0);
-+	dwc3_qcom_enable_wakeup_irq(port->qusb2_phy_irq, 0);
- 
- 	/*
- 	 * Configure DP/DM line interrupts based on the USB2 device attached to
-@@ -389,21 +383,37 @@ static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
- 	 * DP and DM lines as rising edge to detect HS/HS/LS device connect scenario.
- 	 */
- 
--	if (qcom->usb2_speed == USB_SPEED_LOW) {
--		dwc3_qcom_enable_wakeup_irq(qcom->ports[0].dm_hs_phy_irq,
-+	if (port->usb2_speed == USB_SPEED_LOW) {
-+		dwc3_qcom_enable_wakeup_irq(port->dm_hs_phy_irq,
- 					    IRQ_TYPE_EDGE_FALLING);
--	} else if ((qcom->usb2_speed == USB_SPEED_HIGH) ||
--			(qcom->usb2_speed == USB_SPEED_FULL)) {
--		dwc3_qcom_enable_wakeup_irq(qcom->ports[0].dp_hs_phy_irq,
-+	} else if ((port->usb2_speed == USB_SPEED_HIGH) ||
-+			(port->usb2_speed == USB_SPEED_FULL)) {
-+		dwc3_qcom_enable_wakeup_irq(port->dp_hs_phy_irq,
- 					    IRQ_TYPE_EDGE_FALLING);
- 	} else {
--		dwc3_qcom_enable_wakeup_irq(qcom->ports[0].dp_hs_phy_irq,
-+		dwc3_qcom_enable_wakeup_irq(port->dp_hs_phy_irq,
- 					    IRQ_TYPE_EDGE_RISING);
--		dwc3_qcom_enable_wakeup_irq(qcom->ports[0].dm_hs_phy_irq,
-+		dwc3_qcom_enable_wakeup_irq(port->dm_hs_phy_irq,
- 					    IRQ_TYPE_EDGE_RISING);
- 	}
- 
--	dwc3_qcom_enable_wakeup_irq(qcom->ports[0].ss_phy_irq, 0);
-+	dwc3_qcom_enable_wakeup_irq(port->ss_phy_irq, 0);
-+}
-+
-+static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
-+{
-+	int i;
-+
-+	for (i = 0; i < qcom->num_ports; i++)
-+		dwc3_qcom_disable_port_interrupts(&qcom->ports[i]);
-+}
-+
-+static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
-+{
-+	int i;
-+
-+	for (i = 0; i < qcom->num_ports; i++)
-+		dwc3_qcom_enable_port_interrupts(&qcom->ports[i]);
- }
- 
- static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
-@@ -430,7 +440,8 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
- 	 * freezable workqueue.
- 	 */
- 	if (dwc3_qcom_is_host(qcom) && wakeup) {
--		qcom->usb2_speed = dwc3_qcom_read_usb2_speed(qcom);
-+		for (i = 0; i < qcom->num_ports; i++)
-+			qcom->ports[i].usb2_speed = dwc3_qcom_read_usb2_speed(qcom, i);
- 		dwc3_qcom_enable_interrupts(qcom);
- 	}
+ 	qcom->is_suspended = false;
  
 -- 
 2.34.1
