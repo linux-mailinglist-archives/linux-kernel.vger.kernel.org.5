@@ -1,301 +1,252 @@
-Return-Path: <linux-kernel+bounces-152149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC3868AB9D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 07:18:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B80FF8AB9DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 07:20:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 232E21F21421
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 05:18:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2EA01C2039E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 05:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B71A1401B;
-	Sat, 20 Apr 2024 05:17:09 +0000 (UTC)
-Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F51F9DF;
+	Sat, 20 Apr 2024 05:20:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UG5pbMVr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4130208A3;
-	Sat, 20 Apr 2024 05:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4CB7465
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 05:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713590228; cv=none; b=p0zd+rUEqTUCto+3s6SHn4zNCPbWFZNNr9AzRNXeD0V7cNmcwYlz3NUlQQcYlGiBknZ1FUwj8QhYlfnHp3vsrOSKz0XitT0YA3jfdftqd3pl0+NZqULguQIpJKsUX27FtrbVlxAnLgmwPSG8cZV8hJ4B/K7yFMRyYQQWCuba1wU=
+	t=1713590430; cv=none; b=cfp9AnlAh2N2xt5AeixasniWycZNtINzXMSODojISDYM33acc38J4ox/zQvu8uH/OesoBGorOUA6egpFk1NN2/LVxYBfPwGgAdITSAlbvfFga/RegMgkb/7Y3+z7DeKksEuZP3eR9JSsArD7afdmT4XRKyAOhbp/HTNiD5mauk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713590228; c=relaxed/simple;
-	bh=3dgA1lID60LmbCnzBP9JsvU5Mc4ui3cakk0foe6t9eo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=K6O9p5ZQ+GBSnSSAZcitDTgLv6/2GjjPNivPn6aG3vGna8ltJzsB9iQIBv8hpNefu1wMsg/KLYW0EHXu2ioyaLsDavhMbigqopEfo+mX5Tv/GfK5eqaBP4Q7JSLxwLAcIcNndKSKETSi/RSg6x9AMwnbFr3WgVwOfP75cbPSpXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.254.200.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp80t1713590204tn4lchfu
-X-QQ-Originating-IP: Pqo650+zqqf/lX5qSgW/Py8QatIBaphqDT9dCcdp/nQ=
-Received: from localhost ( [112.0.147.129])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Sat, 20 Apr 2024 13:16:43 +0800 (CST)
-X-QQ-SSF: 01400000000000903000000A0000000
-X-QQ-FEAT: KdN0SWBFoH5g57I01NPcKiJN+8WNEmlH9ZWI9i/KHAoU/NtBUcSfBueYbY48I
-	bq66ozRf67BXBl0nBHEL3VugORbLGVCJCxwhhkxK/8NR1K03ESv375NEEqm9W0skZuxRUMd
-	FTgkLyrTucfqEh2J/iyjx0TblCA1aoU3wk+kb+V8zFtGmDTgXDGbvLFERkMgGaXdeB1LYlS
-	rV6+lSgEYw8BQAWlNJ3TIxbm+z6q7r0RcssNufl+lIt/PDhTFVPGK9HjBVc7ZnkkpriGj34
-	rkRc8Ny3wGoN6kPwdGzI6WK9KmfKJHXFt764+oNI/P7BL472NUDBcYGLS308lXS+QRI9cS2
-	IsSRwUxuB9KkRFXfuhrRcxzEyPUX8EliiOM2Sk51HKrX0G9TqUowSBnqB1vwzVGYO3LAMF9
-	3azSv3wKN9dEjZ6+5Dvo5AK2OGL1qyA9
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 3589547492236992514
-From: Dawei Li <dawei.li@shingroup.cn>
-To: davem@davemloft.net,
-	andreas@gaisler.com
-Cc: sparclinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	sam@ravnborg.org,
-	Dawei Li <dawei.li@shingroup.cn>
-Subject: [PATCH v2 7/7] sparc/smp: Remove on-stack cpumask var
-Date: Sat, 20 Apr 2024 13:15:47 +0800
-Message-Id: <20240420051547.3681642-8-dawei.li@shingroup.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20240420051547.3681642-1-dawei.li@shingroup.cn>
-References: <20240420051547.3681642-1-dawei.li@shingroup.cn>
+	s=arc-20240116; t=1713590430; c=relaxed/simple;
+	bh=r8PsHjv5FDkq4fKjKJpaYPJrMyNuxrY3PKkCjKnZBc4=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=Y2/6FW2/vdhn/5CciFBQNri4AmlcxJEuoKhBkeZ000Gk0xpvKULGKcmgVF3cGFV8nUU71yMF3jOlUSKIFqCRRk/J7XYieUk2BOcYwFDFKoimyNehc5C5PuQ2lKGCW1g/ppwCZsNDlWtlW4ouGj6H+QvjZPskoWDDfO5tMwfj15I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UG5pbMVr; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713590428; x=1745126428;
+  h=date:from:to:cc:subject:message-id;
+  bh=r8PsHjv5FDkq4fKjKJpaYPJrMyNuxrY3PKkCjKnZBc4=;
+  b=UG5pbMVrHu0UddKqiLrM1c+SS/1IBzvHBfWVQlxIHmHO8rQDdt216+Pr
+   fh1J41PX1Uj3vEm9i5grWhWmZr7aKtUQoMJJTxXNU5fS0iO4NI58Dzo49
+   DmfEVeBKSakclLYIJ1gmQCQXAFT4qGHC9yAyX9CLrz8jExJ1gBVmnmRdV
+   w35E2pfZvy9S+C0kOLYe498KvuGAOy+2M8DdMpVEpDOHv863ZEyv9zMMg
+   H2b0S+SjBQqhMsHy7iqCyi3Xm2KE+T3/7ar5Q3waHWS3L5cu+g0rhnkYK
+   wKLmWdAW914yX/0IcQLX8Ag1lXY0DCVFw0U9LYRuJ/3bPPa+8dU28aha/
+   w==;
+X-CSE-ConnectionGUID: qoxocZVeS7O6GXaGXnwNNw==
+X-CSE-MsgGUID: i//eHM4hQf+Fbgjo7XjiFQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="31683935"
+X-IronPort-AV: E=Sophos;i="6.07,215,1708416000"; 
+   d="scan'208";a="31683935"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 22:20:28 -0700
+X-CSE-ConnectionGUID: cBHesrE6RfuhvN0SsgpvJg==
+X-CSE-MsgGUID: a+VPfWrhR3ClCNUx1wBpXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,215,1708416000"; 
+   d="scan'208";a="23584333"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by fmviesa010.fm.intel.com with ESMTP; 19 Apr 2024 22:20:26 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ry39E-000Aky-06;
+	Sat, 20 Apr 2024 05:20:24 +0000
+Date: Sat, 20 Apr 2024 13:20:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 7fcd76de8a7bc12e930ef383a157ce99d711715d
+Message-ID: <202404201320.inxN06V0-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-In general it's preferable to avoid placing cpumasks on the stack, as
-for large values of NR_CPUS these can consume significant amounts of
-stack space and make stack overflows more likely.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 7fcd76de8a7bc12e930ef383a157ce99d711715d  Merge branch into tip/master: 'x86/shstk'
 
-- Change prototype of sparc32_ipi_ops::cross_call() so that it takes
-  const cpumask * arg and all its callers accordingly.
+elapsed time: 1293m
 
-- As for all cross_call() implementations, divide cpumask_test_cpu() call
-  into several sub calls to avoid on-stack cpumask var.
+configs tested: 160
+configs skipped: 6
 
-Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
----
- arch/sparc/include/asm/smp_32.h | 12 ++++++------
- arch/sparc/kernel/kernel.h      | 11 +++++++++++
- arch/sparc/kernel/leon_smp.c    | 11 ++++-------
- arch/sparc/kernel/sun4d_smp.c   | 10 ++++------
- arch/sparc/kernel/sun4m_smp.c   | 10 ++++------
- 5 files changed, 29 insertions(+), 25 deletions(-)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-diff --git a/arch/sparc/include/asm/smp_32.h b/arch/sparc/include/asm/smp_32.h
-index 2cf7971d7f6c..9b6a166f6a57 100644
---- a/arch/sparc/include/asm/smp_32.h
-+++ b/arch/sparc/include/asm/smp_32.h
-@@ -54,7 +54,7 @@ void smp_bogo(struct seq_file *);
- void smp_info(struct seq_file *);
- 
- struct sparc32_ipi_ops {
--	void (*cross_call)(void *func, cpumask_t mask, unsigned long arg1,
-+	void (*cross_call)(void *func, const cpumask_t *mask, unsigned long arg1,
- 			   unsigned long arg2, unsigned long arg3,
- 			   unsigned long arg4);
- 	void (*resched)(int cpu);
-@@ -65,29 +65,29 @@ extern const struct sparc32_ipi_ops *sparc32_ipi_ops;
- 
- static inline void xc0(void *func)
- {
--	sparc32_ipi_ops->cross_call(func, *cpu_online_mask, 0, 0, 0, 0);
-+	sparc32_ipi_ops->cross_call(func, cpu_online_mask, 0, 0, 0, 0);
- }
- 
- static inline void xc1(void *func, unsigned long arg1)
- {
--	sparc32_ipi_ops->cross_call(func, *cpu_online_mask, arg1, 0, 0, 0);
-+	sparc32_ipi_ops->cross_call(func, cpu_online_mask, arg1, 0, 0, 0);
- }
- static inline void xc2(void *func, unsigned long arg1, unsigned long arg2)
- {
--	sparc32_ipi_ops->cross_call(func, *cpu_online_mask, arg1, arg2, 0, 0);
-+	sparc32_ipi_ops->cross_call(func, cpu_online_mask, arg1, arg2, 0, 0);
- }
- 
- static inline void xc3(void *func, unsigned long arg1, unsigned long arg2,
- 		       unsigned long arg3)
- {
--	sparc32_ipi_ops->cross_call(func, *cpu_online_mask,
-+	sparc32_ipi_ops->cross_call(func, cpu_online_mask,
- 				    arg1, arg2, arg3, 0);
- }
- 
- static inline void xc4(void *func, unsigned long arg1, unsigned long arg2,
- 		       unsigned long arg3, unsigned long arg4)
- {
--	sparc32_ipi_ops->cross_call(func, *cpu_online_mask,
-+	sparc32_ipi_ops->cross_call(func, cpu_online_mask,
- 				    arg1, arg2, arg3, arg4);
- }
- 
-diff --git a/arch/sparc/kernel/kernel.h b/arch/sparc/kernel/kernel.h
-index a8fb7c0bf053..36747e8f7e36 100644
---- a/arch/sparc/kernel/kernel.h
-+++ b/arch/sparc/kernel/kernel.h
-@@ -4,6 +4,7 @@
- 
- #include <linux/interrupt.h>
- #include <linux/ftrace.h>
-+#include <linux/smp.h>
- 
- #include <asm/traps.h>
- #include <asm/head.h>
-@@ -75,6 +76,16 @@ int sparc32_classify_syscall(unsigned int syscall);
- #endif
- 
- #ifdef CONFIG_SPARC32
-+
-+#ifdef CONFIG_SMP
-+static inline bool cpu_for_ipi(const cpumask_t *mask, unsigned int cpu)
-+{
-+	return cpumask_test_cpu(cpu, mask) &&
-+	       cpumask_test_cpu(cpu, cpu_online_mask) &&
-+	       cpu != smp_processor_id();
-+}
-+#endif /* CONFIG_SMP */
-+
- /* setup_32.c */
- struct linux_romvec;
- void sparc32_start_kernel(struct linux_romvec *rp);
-diff --git a/arch/sparc/kernel/leon_smp.c b/arch/sparc/kernel/leon_smp.c
-index 1ee393abc463..291884c8d82a 100644
---- a/arch/sparc/kernel/leon_smp.c
-+++ b/arch/sparc/kernel/leon_smp.c
-@@ -372,7 +372,7 @@ static struct smp_funcall {
- static DEFINE_SPINLOCK(cross_call_lock);
- 
- /* Cross calls must be serialized, at least currently. */
--static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
-+static void leon_cross_call(void *func, const cpumask_t *mask, unsigned long arg1,
- 			    unsigned long arg2, unsigned long arg3,
- 			    unsigned long arg4)
- {
-@@ -403,14 +403,11 @@ static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
- 		{
- 			register int i;
- 
--			cpumask_clear_cpu(smp_processor_id(), &mask);
--			cpumask_and(&mask, cpu_online_mask, &mask);
- 			for (i = 0; i <= high; i++) {
--				if (cpumask_test_cpu(i, &mask)) {
-+				if (cpu_for_ipi(mask, i)) {
- 					ccall_info.processors_in[i] = 0;
- 					ccall_info.processors_out[i] = 0;
- 					leon_send_ipi(i, LEON3_IRQ_CROSS_CALL);
--
- 				}
- 			}
- 		}
-@@ -420,7 +417,7 @@ static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
- 
- 			i = 0;
- 			do {
--				if (!cpumask_test_cpu(i, &mask))
-+				if (!cpu_for_ipi(mask, i))
- 					continue;
- 
- 				while (!ccall_info.processors_in[i])
-@@ -429,7 +426,7 @@ static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
- 
- 			i = 0;
- 			do {
--				if (!cpumask_test_cpu(i, &mask))
-+				if (!cpu_for_ipi(mask, i))
- 					continue;
- 
- 				while (!ccall_info.processors_out[i])
-diff --git a/arch/sparc/kernel/sun4d_smp.c b/arch/sparc/kernel/sun4d_smp.c
-index 9a62a5cf3337..7dc57ca05728 100644
---- a/arch/sparc/kernel/sun4d_smp.c
-+++ b/arch/sparc/kernel/sun4d_smp.c
-@@ -281,7 +281,7 @@ static struct smp_funcall {
- static DEFINE_SPINLOCK(cross_call_lock);
- 
- /* Cross calls must be serialized, at least currently. */
--static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
-+static void sun4d_cross_call(void *func, const cpumask_t *mask, unsigned long arg1,
- 			     unsigned long arg2, unsigned long arg3,
- 			     unsigned long arg4)
- {
-@@ -315,10 +315,8 @@ static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
- 		{
- 			register int i;
- 
--			cpumask_clear_cpu(smp_processor_id(), &mask);
--			cpumask_and(&mask, cpu_online_mask, &mask);
- 			for (i = 0; i <= high; i++) {
--				if (cpumask_test_cpu(i, &mask)) {
-+				if (cpu_for_ipi(mask, i)) {
- 					ccall_info.processors_in[i] = 0;
- 					ccall_info.processors_out[i] = 0;
- 					sun4d_send_ipi(i, IRQ_CROSS_CALL);
-@@ -331,7 +329,7 @@ static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
- 
- 			i = 0;
- 			do {
--				if (!cpumask_test_cpu(i, &mask))
-+				if (!cpu_for_ipi(mask, i))
- 					continue;
- 				while (!ccall_info.processors_in[i])
- 					barrier();
-@@ -339,7 +337,7 @@ static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
- 
- 			i = 0;
- 			do {
--				if (!cpumask_test_cpu(i, &mask))
-+				if (!cpu_for_ipi(mask, i))
- 					continue;
- 				while (!ccall_info.processors_out[i])
- 					barrier();
-diff --git a/arch/sparc/kernel/sun4m_smp.c b/arch/sparc/kernel/sun4m_smp.c
-index 056df034e79e..3f43f64e3489 100644
---- a/arch/sparc/kernel/sun4m_smp.c
-+++ b/arch/sparc/kernel/sun4m_smp.c
-@@ -170,7 +170,7 @@ static struct smp_funcall {
- static DEFINE_SPINLOCK(cross_call_lock);
- 
- /* Cross calls must be serialized, at least currently. */
--static void sun4m_cross_call(void *func, cpumask_t mask, unsigned long arg1,
-+static void sun4m_cross_call(void *func, const cpumask_t *mask, unsigned long arg1,
- 			     unsigned long arg2, unsigned long arg3,
- 			     unsigned long arg4)
- {
-@@ -191,10 +191,8 @@ static void sun4m_cross_call(void *func, cpumask_t mask, unsigned long arg1,
- 		{
- 			register int i;
- 
--			cpumask_clear_cpu(smp_processor_id(), &mask);
--			cpumask_and(&mask, cpu_online_mask, &mask);
- 			for (i = 0; i < ncpus; i++) {
--				if (cpumask_test_cpu(i, &mask)) {
-+				if (cpu_for_ipi(mask, i)) {
- 					ccall_info.processors_in[i] = 0;
- 					ccall_info.processors_out[i] = 0;
- 					sun4m_send_ipi(i, IRQ_CROSS_CALL);
-@@ -210,7 +208,7 @@ static void sun4m_cross_call(void *func, cpumask_t mask, unsigned long arg1,
- 
- 			i = 0;
- 			do {
--				if (!cpumask_test_cpu(i, &mask))
-+				if (!cpu_for_ipi(mask, i))
- 					continue;
- 				while (!ccall_info.processors_in[i])
- 					barrier();
-@@ -218,7 +216,7 @@ static void sun4m_cross_call(void *func, cpumask_t mask, unsigned long arg1,
- 
- 			i = 0;
- 			do {
--				if (!cpumask_test_cpu(i, &mask))
-+				if (!cpu_for_ipi(mask, i))
- 					continue;
- 				while (!ccall_info.processors_out[i])
- 					barrier();
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240419   gcc  
+arc                   randconfig-002-20240419   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240419   gcc  
+arm                   randconfig-002-20240419   clang
+arm                   randconfig-003-20240419   gcc  
+arm                   randconfig-004-20240419   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240419   clang
+arm64                 randconfig-002-20240419   clang
+arm64                 randconfig-003-20240419   clang
+arm64                 randconfig-004-20240419   clang
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240419   gcc  
+csky                  randconfig-002-20240419   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240419   clang
+hexagon               randconfig-002-20240419   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240419   clang
+i386         buildonly-randconfig-002-20240419   gcc  
+i386         buildonly-randconfig-003-20240419   gcc  
+i386         buildonly-randconfig-004-20240419   gcc  
+i386         buildonly-randconfig-005-20240419   gcc  
+i386         buildonly-randconfig-006-20240419   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240419   clang
+i386                  randconfig-002-20240419   clang
+i386                  randconfig-003-20240419   clang
+i386                  randconfig-004-20240419   gcc  
+i386                  randconfig-005-20240419   clang
+i386                  randconfig-006-20240419   clang
+i386                  randconfig-011-20240419   gcc  
+i386                  randconfig-012-20240419   clang
+i386                  randconfig-013-20240419   gcc  
+i386                  randconfig-014-20240419   clang
+i386                  randconfig-015-20240419   gcc  
+i386                  randconfig-016-20240419   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240419   gcc  
+loongarch             randconfig-002-20240419   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240419   gcc  
+nios2                 randconfig-002-20240419   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240419   gcc  
+parisc                randconfig-002-20240419   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240419   gcc  
+powerpc               randconfig-002-20240419   gcc  
+powerpc               randconfig-003-20240419   gcc  
+powerpc64             randconfig-001-20240419   gcc  
+powerpc64             randconfig-002-20240419   gcc  
+powerpc64             randconfig-003-20240419   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240419   clang
+riscv                 randconfig-002-20240419   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240419   clang
+s390                  randconfig-002-20240419   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240419   gcc  
+sh                    randconfig-002-20240419   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240419   gcc  
+sparc64               randconfig-002-20240419   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240419   gcc  
+um                    randconfig-002-20240419   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240420   gcc  
+x86_64       buildonly-randconfig-002-20240420   clang
+x86_64       buildonly-randconfig-003-20240420   gcc  
+x86_64       buildonly-randconfig-004-20240420   gcc  
+x86_64       buildonly-randconfig-005-20240420   clang
+x86_64       buildonly-randconfig-006-20240420   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240420   clang
+x86_64                randconfig-002-20240420   clang
+x86_64                randconfig-003-20240420   gcc  
+x86_64                randconfig-004-20240420   clang
+x86_64                randconfig-005-20240420   clang
+x86_64                randconfig-006-20240420   gcc  
+x86_64                randconfig-011-20240420   gcc  
+x86_64                randconfig-012-20240420   gcc  
+x86_64                randconfig-013-20240420   gcc  
+x86_64                randconfig-014-20240420   gcc  
+x86_64                randconfig-015-20240420   clang
+x86_64                randconfig-016-20240420   gcc  
+x86_64                randconfig-071-20240420   gcc  
+x86_64                randconfig-072-20240420   gcc  
+x86_64                randconfig-073-20240420   gcc  
+x86_64                randconfig-074-20240420   gcc  
+x86_64                randconfig-075-20240420   gcc  
+x86_64                randconfig-076-20240420   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240419   gcc  
+xtensa                randconfig-002-20240419   gcc  
+
 -- 
-2.27.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
