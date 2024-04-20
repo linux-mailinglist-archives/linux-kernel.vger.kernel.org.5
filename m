@@ -1,123 +1,163 @@
-Return-Path: <linux-kernel+bounces-152381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1614B8ABD9C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 00:47:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 391A18ABDA0
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 00:47:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52640B20E20
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 22:47:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 596441C20B53
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 22:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC2E7482CA;
-	Sat, 20 Apr 2024 22:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B8D482EA;
+	Sat, 20 Apr 2024 22:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bn7BtLe+"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Zn0DsYbE"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8741B3B299;
-	Sat, 20 Apr 2024 22:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D614F21D
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 22:47:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713653252; cv=none; b=P08YjNFMzzJvG/Ef6j6WiUw/LCfOV5rjfm5xx92D4MM83k/WLbq5BpDg03cm87fpRB+ncMhvUzjtIdPK4tYcDgBbrQn74UemHAE3luuJ/ZdJDOftI1w1zsPb6cbmZ1WkxFdEq++nAW8dKkubblehpgw7OExVkhgM5KlD+EQKhV0=
+	t=1713653259; cv=none; b=uEPYXsxxZ5ln6qXztrmMZmLtZ8iELEC0SGpTJ72E8mYPApbU5O9H7NMgwaZ6FS6rYUQQyY47fUKOR39bEXkAJrOWul7jsIgXYrWc9G6UEQiqBWXBE+nKa1dc4jaDDH81JC11rhnnSXOJJrQvD6HdXQOhnKKWlWwM8yUOZJo55Lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713653252; c=relaxed/simple;
-	bh=iBDsjjo7cmxVARRW7JFU5sQW7UWP1+Pu/lUCGeFS1ug=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IYLZlsQMn4CqZ9cDgw0TqqANWYkf/4mbeatfn1fWEXkToP4Wx7us+0BClpoGcsz4Z8+t1DvE5vAXk5tuN6XWE05vTtFEFAQw8WpVo7BrwrRsLvsarHXGs6Y2qD2dhHGtMHrbLot3A8jcNCI/4fGUdtitM/9jx8epW8t9VfbcMic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bn7BtLe+; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43KMdMbe007443;
-	Sat, 20 Apr 2024 22:47:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=i2oWs22vaTeTIaRZkzwbzO44O/N8MkH63JV9iHy8wuw=; b=bn
-	7BtLe+1oq8z9IlpERC/VlBd8TuykSLXqhz9+sL4YjKIO8dHdFjbOlhV0jLxKw8s9
-	ySGZbE1srLohvLYFIsCNialwjPwM+FsUuYvjrH9Npuh550pwQYAnfO3QmLvlkXZ5
-	B5q2v0FF+cxs45bkAPWykUYyK6jNw+/V0+1O165NbyGZw8jHo+ySE1AgR/gFOmeP
-	eor0qzTIrGujKjxTRu3bUmlWChNsn9BKCRGCNLGuGu2Oc7OUYc8tiAgesVHyRGXA
-	WA9DYhYU13SQjFGrZMZCCQrwsQp6f6RLgHJjS/0vjLD8KX4EHRYuu9uDG9UljNWZ
-	Lauk3hDu32aWUv8IjZJg==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xm5sx1d35-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 20 Apr 2024 22:47:20 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43KMlJ8g002136
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 20 Apr 2024 22:47:19 GMT
-Received: from [10.110.104.191] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Sat, 20 Apr
- 2024 15:47:19 -0700
-Message-ID: <95b18564-ffa9-2840-d266-1835e6e9d2bd@quicinc.com>
-Date: Sat, 20 Apr 2024 15:47:18 -0700
+	s=arc-20240116; t=1713653259; c=relaxed/simple;
+	bh=7BKUeJX9aV7FK0wwM/ed4hU8pUFUg4zU4KPvLHQ6pXU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Wj7j64aEnkujZhA0Z0cJ5POQWcu0CAUD2i6fKLasjVApQkwjm4ZgbGNnq6F50RqVvcA4/XZOYruelwu4K6GJ2aizpDRlti11RSuEOQWXvTnWV9bx7EjW3iW+OoKOPkm/SVT+S9J3ZSye6sCe5xMnhaHZrkLv1/19f0c7AS0QDbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Zn0DsYbE; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4199332c1dcso10464545e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 15:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713653255; x=1714258055; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yYrt2gNTxAC2edJd/oDyZK1JqsoIcnAtCqFK2cT4K3E=;
+        b=Zn0DsYbEnTIwwESOgoO8bNl+kRk7ZIHTdFnQcbcfA9pC3SCAl9hSeCxZbKt7V1tpaS
+         Fbw2Mq5+oPCuAkB4OYpcbQY0WFzQzenqO7M59554jHeY4cRFNojtogX94EvL1cOYAa3J
+         Pc8ARaggrXzWsp6CK2fZLFQ5hdr+s72oCSL+Bo6R51Gmqrkh84BdS59hvxvS5uffj/XL
+         DkOZyMNQj1pBCog+e3xt3D0ZvXPjFqp6lX+87sC6Bbe4HF5YVZWAKPiHBXE3kOzjaxxS
+         vjhcNS5SszgYyNp87pSYWnI94Xt0JVWcFDmaegY7T6j8ekQ/WtPDEQ2/QtHzc8KCLhJt
+         VaXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713653255; x=1714258055;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yYrt2gNTxAC2edJd/oDyZK1JqsoIcnAtCqFK2cT4K3E=;
+        b=CMeCp8Xd5ShVXPyDWWeMpuyDYojRY2ltitJgkj043oh/lLWKqfVgRg25AqfHkmAvPf
+         lJwPwQZw8h01XECGJuesJwBxSf14kg+C1PDxVyNut9xgWKidhJ6yKMS5NUIvmxkyYpvc
+         t/xqz/dUvyyuDhW2arSvC6S4QuyAAEtbL79uI2VRljo9ZHYCQ2GChzlkRu5EdTibMpGw
+         1grWaDFf0Zeqh32tY3Kn+xE+se6GeM5/Fe9bbX44q5giDANlHfHh2kIC4rcEFq1ah8yG
+         7L/BKjtgsPH/5+ovkDLpp4Mie2zEDljy9nKHAXmUcLw6K9xYtN/uf7uPr3NIGXa+t90l
+         UU/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWtqGB/LbYHzYbVOIyjx1O4Khy/0uk8VxpSRcHcvymAOXxEqgRIZ2nA9KcOW2QMeBqUACQrOoeJa1zXsdqMGkvZBibuaQQPo4kDPjda
+X-Gm-Message-State: AOJu0Yw0+hstVZ/WzCVzeZEF3XimBmKMIH/Z8wYgZZjR+5Uiyc5nTlqG
+	hht4E6ix59dkvmMlP7SedaZFTyfSNhUTfntmyE54M7PiGe3cWuBf66bZ8VdfKMg=
+X-Google-Smtp-Source: AGHT+IFbaKQ0tPQEJ9I/RpZX+4qvxduHp5ktCxUofqd2WifblrkCYfYKIpU2lWpeintNmr/h6rZQlQ==
+X-Received: by 2002:a05:600c:4e88:b0:419:87ab:f6da with SMTP id f8-20020a05600c4e8800b0041987abf6damr3268421wmq.3.1713653255313;
+        Sat, 20 Apr 2024 15:47:35 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id r13-20020a05600c458d00b00417f65f148esm15283322wmo.31.2024.04.20.15.47.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Apr 2024 15:47:35 -0700 (PDT)
+Message-ID: <6b1627ff-5135-4685-be35-adf74a456469@linaro.org>
+Date: Sat, 20 Apr 2024 23:47:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 4/9] drm/msm/dpu: pull format flag definitions to
- mdp_format.h
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 24/26] media: venus: venc: Make explicit the range of
+ us_per_frame
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Martin Tuma <martin.tuma@digiteqautomotive.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hugues Fruchet <hugues.fruchet@foss.st.com>,
+ Alain Volmat <alain.volmat@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen-Yu Tsai
+ <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Sowjanya Komatineni <skomatineni@nvidia.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
+ Abylay Ospan <aospan@netup.ru>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Dmitry Osipenko <digetx@gmail.com>,
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+ Sylvain Petinot <sylvain.petinot@foss.st.com>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20240419-fix-cocci-v2-0-2119e692309c@chromium.org>
+ <20240419-fix-cocci-v2-24-2119e692309c@chromium.org>
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark
-	<robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>
-CC: <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20240420-dpu-format-v2-0-9e93226cbffd@linaro.org>
- <20240420-dpu-format-v2-4-9e93226cbffd@linaro.org>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20240420-dpu-format-v2-4-9e93226cbffd@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240419-fix-cocci-v2-24-2119e692309c@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: KMX7nPCPczurQobBTBH8NB6sn2t9CHCr
-X-Proofpoint-GUID: KMX7nPCPczurQobBTBH8NB6sn2t9CHCr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-20_20,2024-04-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 phishscore=0 clxscore=1015 suspectscore=0 malwarescore=0
- spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
- mlxlogscore=863 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404200168
 
-
-
-On 4/19/2024 9:01 PM, Dmitry Baryshkov wrote:
-> In preparation to merger of formats databases, pull format flag
-> definitions to mdp_format.h header, so that they are visibile to both
-> dpu and mdp drivers.
+On 19/04/2024 10:48, Ricardo Ribalda wrote:
+> Unless the fps is smaller than 0.000232829 fps, this fits in a 32 bit
+> number. Make that explicit.
 > 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Found with cocci:
+> drivers/media/platform/qcom/venus/venc.c:418:1-7: WARNING: do_div() does a 64-by-32 division, please consider using div64_u64 instead.
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 > ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c | 98 ++++++++++++++---------------
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h | 31 +++------
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c |  4 +-
->   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c   |  4 +-
->   drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c  |  8 +--
->   drivers/gpu/drm/msm/disp/mdp_format.c       |  6 +-
->   drivers/gpu/drm/msm/disp/mdp_format.h       | 39 ++++++++++++
->   drivers/gpu/drm/msm/disp/mdp_kms.h          |  4 +-
->   drivers/gpu/drm/msm/msm_drv.h               |  4 --
->   9 files changed, 109 insertions(+), 89 deletions(-)
+>   drivers/media/platform/qcom/venus/venc.c | 7 ++-----
+>   1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+> index 3ec2fb8d9fab..f87e33a34610 100644
+> --- a/drivers/media/platform/qcom/venus/venc.c
+> +++ b/drivers/media/platform/qcom/venus/venc.c
+> @@ -393,7 +393,7 @@ static int venc_s_parm(struct file *file, void *fh, struct v4l2_streamparm *a)
+>   	struct venus_inst *inst = to_inst(file);
+>   	struct v4l2_outputparm *out = &a->parm.output;
+>   	struct v4l2_fract *timeperframe = &out->timeperframe;
+> -	u64 us_per_frame, fps;
+> +	u64 us_per_frame;
+>   
+>   	if (a->type != V4L2_BUF_TYPE_VIDEO_OUTPUT &&
+>   	    a->type != V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+> @@ -414,11 +414,8 @@ static int venc_s_parm(struct file *file, void *fh, struct v4l2_streamparm *a)
+>   	if (!us_per_frame)
+>   		return -EINVAL;
+>   
+> -	fps = (u64)USEC_PER_SEC;
+> -	do_div(fps, us_per_frame);
+> -
+> +	inst->fps = USEC_PER_SEC / (u32)us_per_frame;
+>   	inst->timeperframe = *timeperframe;
+> -	inst->fps = fps;
+>   
+>   	return 0;
+>   }
 > 
 
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
