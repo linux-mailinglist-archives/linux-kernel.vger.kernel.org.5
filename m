@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-152369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FE388ABD04
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 22:06:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 805258ABD06
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 22:07:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08FF71C2086B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 20:06:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36AC628160A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 20:07:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5A2645BEC;
-	Sat, 20 Apr 2024 20:06:17 +0000 (UTC)
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20CCC46439;
+	Sat, 20 Apr 2024 20:07:38 +0000 (UTC)
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442D6374F7
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 20:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.95.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550ED374F7;
+	Sat, 20 Apr 2024 20:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.242.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713643576; cv=none; b=K8R1kn7Dc8b4F+mhY53NUN+SelNxdUXjqgd/K40+sAeqO+FqLZFBuV7oF4GIRw9xGgRvSouOFiam43JXNxV233+Z/sPhoUFHQhgvld3KedspQdX8jyo97X3YgxY9PLbzJexmB+mK5NSrw8tjWiDVR/kPyjasR6yLzS7BXCnmuK8=
+	t=1713643657; cv=none; b=vDjbuslxXaL1qvoPU3wJZAIftTSAnL7UNHUtzGnUavanwbYy+xUg+DzzcPcTOJ8Qw7ZrgflZo+n/GoGMBVm3PYHTUZcEvqQTH1HEVjqNzvPJ2KHk3voLiSoeUlrBpgRrSoikkTZtYMZudgfWLf4lpMtV6vBKA6uSf3FzpQcP6EA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713643576; c=relaxed/simple;
-	bh=SJLsBVmhwlj1yVLisqQ5YBDEm+4Aq95LOI1Ys1f7Uug=;
-	h=Message-ID:In-Reply-To:References:From:Date:Subject:To:Cc; b=Gsj/k42PbHb2M0mVUtAPaf40rrUJMllMlDYqhlZNd0xaW0T6VyVGatUt8mWWb9cr9bno2u3cLCUyeGQM+InhpwkJghxZEJKbYyQjK9Rvv1MCNAqZe/qI9dqKQluMmPjPTlUf9F0JAuPD/tw4xb3jB6rRFWYR6DtN194EgTA31xU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=pass smtp.mailfrom=wunner.de; arc=none smtp.client-ip=83.223.95.100
+	s=arc-20240116; t=1713643657; c=relaxed/simple;
+	bh=N2bafYYP+b4kw+NKMOsMMvGGjOuIQlEGeTYftOJBCZI=;
+	h=Message-ID:In-Reply-To:References:From:Date:Subject:To:Cc; b=tTpcRCUH0nok4yFmBvxOBwMSjB0N0rpdhbWKJZYWyJozqPM9e2iPkCf06Pe+tfPA9b53g9KuHrJ31f/5e7+19aqYXk5ZhrRTbEBTjBWfs3yDZcqcFsxqErKC/769LqySr4Bz4pbNzo5omTk65EWmMO5UjecGX6fF+oXphM2HW0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=pass smtp.mailfrom=wunner.de; arc=none smtp.client-ip=176.9.242.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wunner.de
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
 	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
 	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout1.hostsharing.net (Postfix) with ESMTPS id 6E8F330008F1C;
-	Sat, 20 Apr 2024 22:06:12 +0200 (CEST)
+	by bmailout3.hostsharing.net (Postfix) with ESMTPS id ED4D01003D027;
+	Sat, 20 Apr 2024 22:07:32 +0200 (CEST)
 Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 6895E120701; Sat, 20 Apr 2024 22:06:12 +0200 (CEST)
-Message-ID: <3a297850312b4ecb62d6872121de04496900f502.1713608122.git.lukas@wunner.de>
+	id C669A1D3F8; Sat, 20 Apr 2024 22:07:32 +0200 (CEST)
+Message-ID: <3ae8c9a73fbb291c1c863777af175c657a2a10e9.1713608122.git.lukas@wunner.de>
 In-Reply-To: <cover.1713608122.git.lukas@wunner.de>
 References: <cover.1713608122.git.lukas@wunner.de>
 From: Lukas Wunner <lukas@wunner.de>
-Date: Sat, 20 Apr 2024 22:00:04 +0200
-Subject: [PATCH 4/6] perf: Use device_show_string() helper for sysfs
+Date: Sat, 20 Apr 2024 22:00:05 +0200
+Subject: [PATCH 5/6] platform/x86: Use device_show_string() helper for sysfs
  attributes
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org
-Cc: Shuai Xue <xueshuai@linux.alibaba.com>, Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Cameron <jonathan.cameron@huawei.com>, Yicong Yang <yangyicong@hisilicon.com>, Jijie Shao <shaojijie@huawei.com>, Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Khuong Dinh <khuong@os.amperecomputing.com>, linux-arm-kernel@lists.infradead.org
+Cc: Corentin Chary <corentin.chary@gmail.com>, "Luke D. Jones" <luke@ljones.dev>, "Henrique de Moraes Holschuh" <hmh@hmh.eng.br>, ibm-acpi-devel@lists.sourceforge.net, Azael Avalos <coproscefalo@gmail.com>, Hans de Goede <hdegoede@redhat.com>, "Ilpo Jaervinen" <ilpo.jarvinen@linux.intel.com>, platform-driver-x86@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,398 +60,210 @@ No functional change intended.
 
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
 ---
- arch/x86/events/intel/core.c             | 13 +++----------
- drivers/perf/alibaba_uncore_drw_pmu.c    | 12 ++----------
- drivers/perf/arm-cci.c                   | 12 +-----------
- drivers/perf/arm-ccn.c                   | 11 +----------
- drivers/perf/arm_cspmu/arm_cspmu.c       | 10 ----------
- drivers/perf/arm_cspmu/arm_cspmu.h       |  7 +------
- drivers/perf/arm_dsu_pmu.c               | 11 +----------
- drivers/perf/cxl_pmu.c                   | 13 +------------
- drivers/perf/hisilicon/hisi_pcie_pmu.c   | 13 +------------
- drivers/perf/hisilicon/hisi_uncore_pmu.c | 14 --------------
- drivers/perf/hisilicon/hisi_uncore_pmu.h |  4 +---
- drivers/perf/hisilicon/hns3_pmu.c        | 12 +-----------
- drivers/perf/qcom_l3_pmu.c               | 11 +----------
- drivers/perf/xgene_pmu.c                 | 11 +----------
- 14 files changed, 15 insertions(+), 139 deletions(-)
+ drivers/platform/x86/asus-wmi.c      | 62 +++++++---------------------
+ drivers/platform/x86/thinkpad_acpi.c | 10 +----
+ drivers/platform/x86/toshiba_acpi.c  |  9 +---
+ 3 files changed, 20 insertions(+), 61 deletions(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 768d1414897f..38c1b1f1deaa 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -5645,18 +5645,11 @@ lbr_is_visible(struct kobject *kobj, struct attribute *attr, int i)
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 3f07bbf809ef..78d7579b2fdd 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -915,17 +915,12 @@ static ssize_t kbd_rgb_mode_store(struct device *dev,
+ }
+ static DEVICE_ATTR_WO(kbd_rgb_mode);
  
- static char pmu_name_str[30];
- 
--static ssize_t pmu_name_show(struct device *cdev,
--			     struct device_attribute *attr,
--			     char *buf)
+-static ssize_t kbd_rgb_mode_index_show(struct device *device,
+-						 struct device_attribute *attr,
+-						 char *buf)
 -{
--	return snprintf(buf, PAGE_SIZE, "%s\n", pmu_name_str);
+-	return sysfs_emit(buf, "%s\n", "cmd mode red green blue speed");
 -}
--
--static DEVICE_ATTR_RO(pmu_name);
-+static DEVICE_STRING_ATTR_RO(pmu_name, 0444, pmu_name_str);
+-static DEVICE_ATTR_RO(kbd_rgb_mode_index);
++static DEVICE_STRING_ATTR_RO(kbd_rgb_mode_index, 0444,
++			     "cmd mode red green blue speed");
  
- static struct attribute *intel_pmu_caps_attrs[] = {
--       &dev_attr_pmu_name.attr,
--       NULL
-+	&dev_attr_pmu_name.attr.attr,
-+	NULL
+ static struct attribute *kbd_rgb_mode_attrs[] = {
+ 	&dev_attr_kbd_rgb_mode.attr,
+-	&dev_attr_kbd_rgb_mode_index.attr,
++	&dev_attr_kbd_rgb_mode_index.attr.attr,
+ 	NULL,
  };
  
- static DEVICE_ATTR(allow_tsx_force_abort, 0644,
-diff --git a/drivers/perf/alibaba_uncore_drw_pmu.c b/drivers/perf/alibaba_uncore_drw_pmu.c
-index a9277dcf90ce..a82592e131ba 100644
---- a/drivers/perf/alibaba_uncore_drw_pmu.c
-+++ b/drivers/perf/alibaba_uncore_drw_pmu.c
-@@ -236,24 +236,16 @@ static const struct attribute_group ali_drw_pmu_cpumask_attr_group = {
- 	.attrs = ali_drw_pmu_cpumask_attrs,
+@@ -967,17 +962,12 @@ static ssize_t kbd_rgb_state_store(struct device *dev,
+ }
+ static DEVICE_ATTR_WO(kbd_rgb_state);
+ 
+-static ssize_t kbd_rgb_state_index_show(struct device *device,
+-						 struct device_attribute *attr,
+-						 char *buf)
+-{
+-	return sysfs_emit(buf, "%s\n", "cmd boot awake sleep keyboard");
+-}
+-static DEVICE_ATTR_RO(kbd_rgb_state_index);
++static DEVICE_STRING_ATTR_RO(kbd_rgb_state_index, 0444,
++			     "cmd boot awake sleep keyboard");
+ 
+ static struct attribute *kbd_rgb_state_attrs[] = {
+ 	&dev_attr_kbd_rgb_state.attr,
+-	&dev_attr_kbd_rgb_state_index.attr,
++	&dev_attr_kbd_rgb_state_index.attr.attr,
+ 	NULL,
  };
  
--static ssize_t ali_drw_pmu_identifier_show(struct device *dev,
--					struct device_attribute *attr,
--					char *page)
--{
--	return sysfs_emit(page, "%s\n", "ali_drw_pmu");
--}
--
- static umode_t ali_drw_pmu_identifier_attr_visible(struct kobject *kobj,
- 						struct attribute *attr, int n)
- {
- 	return attr->mode;
+@@ -2493,13 +2483,6 @@ static ssize_t pwm1_enable_store(struct device *dev,
+ 	return count;
  }
  
--static struct device_attribute ali_drw_pmu_identifier_attr =
--	__ATTR(identifier, 0444, ali_drw_pmu_identifier_show, NULL);
-+static DEVICE_STRING_ATTR_RO(ali_drw_pmu_identifier, 0444, "ali_drw_pmu");
+-static ssize_t fan1_label_show(struct device *dev,
+-					  struct device_attribute *attr,
+-					  char *buf)
+-{
+-	return sysfs_emit(buf, "%s\n", ASUS_FAN_DESC);
+-}
+-
+ static ssize_t asus_hwmon_temp1(struct device *dev,
+ 				struct device_attribute *attr,
+ 				char *buf)
+@@ -2534,13 +2517,6 @@ static ssize_t fan2_input_show(struct device *dev,
+ 	return sysfs_emit(buf, "%d\n", value * 100);
+ }
  
- static struct attribute *ali_drw_pmu_identifier_attrs[] = {
--	&ali_drw_pmu_identifier_attr.attr,
-+	&dev_attr_ali_drw_pmu_identifier.attr.attr,
+-static ssize_t fan2_label_show(struct device *dev,
+-					  struct device_attribute *attr,
+-					  char *buf)
+-{
+-	return sysfs_emit(buf, "%s\n", ASUS_GPU_FAN_DESC);
+-}
+-
+ /* Middle/Center fan on modern ROG laptops */
+ static ssize_t fan3_input_show(struct device *dev,
+ 					struct device_attribute *attr,
+@@ -2559,13 +2535,6 @@ static ssize_t fan3_input_show(struct device *dev,
+ 	return sysfs_emit(buf, "%d\n", value * 100);
+ }
+ 
+-static ssize_t fan3_label_show(struct device *dev,
+-					  struct device_attribute *attr,
+-					  char *buf)
+-{
+-	return sysfs_emit(buf, "%s\n", ASUS_MID_FAN_DESC);
+-}
+-
+ static ssize_t pwm2_enable_show(struct device *dev,
+ 				struct device_attribute *attr,
+ 				char *buf)
+@@ -2662,15 +2631,16 @@ static ssize_t pwm3_enable_store(struct device *dev,
+ static DEVICE_ATTR_RW(pwm1);
+ static DEVICE_ATTR_RW(pwm1_enable);
+ static DEVICE_ATTR_RO(fan1_input);
+-static DEVICE_ATTR_RO(fan1_label);
++static DEVICE_STRING_ATTR_RO(fan1_label, 0444, ASUS_FAN_DESC);
++
+ /* Fan2 - GPU fan */
+ static DEVICE_ATTR_RW(pwm2_enable);
+ static DEVICE_ATTR_RO(fan2_input);
+-static DEVICE_ATTR_RO(fan2_label);
++static DEVICE_STRING_ATTR_RO(fan2_label, 0444, ASUS_GPU_FAN_DESC);
+ /* Fan3 - Middle/center fan */
+ static DEVICE_ATTR_RW(pwm3_enable);
+ static DEVICE_ATTR_RO(fan3_input);
+-static DEVICE_ATTR_RO(fan3_label);
++static DEVICE_STRING_ATTR_RO(fan3_label, 0444, ASUS_MID_FAN_DESC);
+ 
+ /* Temperature */
+ static DEVICE_ATTR(temp1_input, S_IRUGO, asus_hwmon_temp1, NULL);
+@@ -2681,11 +2651,11 @@ static struct attribute *hwmon_attributes[] = {
+ 	&dev_attr_pwm2_enable.attr,
+ 	&dev_attr_pwm3_enable.attr,
+ 	&dev_attr_fan1_input.attr,
+-	&dev_attr_fan1_label.attr,
++	&dev_attr_fan1_label.attr.attr,
+ 	&dev_attr_fan2_input.attr,
+-	&dev_attr_fan2_label.attr,
++	&dev_attr_fan2_label.attr.attr,
+ 	&dev_attr_fan3_input.attr,
+-	&dev_attr_fan3_label.attr,
++	&dev_attr_fan3_label.attr.attr,
+ 
+ 	&dev_attr_temp1_input.attr,
+ 	NULL
+@@ -2702,17 +2672,17 @@ static umode_t asus_hwmon_sysfs_is_visible(struct kobject *kobj,
+ 		if (asus->fan_type != FAN_TYPE_AGFN)
+ 			return 0;
+ 	} else if (attr == &dev_attr_fan1_input.attr
+-	    || attr == &dev_attr_fan1_label.attr
++	    || attr == &dev_attr_fan1_label.attr.attr
+ 	    || attr == &dev_attr_pwm1_enable.attr) {
+ 		if (asus->fan_type == FAN_TYPE_NONE)
+ 			return 0;
+ 	} else if (attr == &dev_attr_fan2_input.attr
+-	    || attr == &dev_attr_fan2_label.attr
++	    || attr == &dev_attr_fan2_label.attr.attr
+ 	    || attr == &dev_attr_pwm2_enable.attr) {
+ 		if (asus->gpu_fan_type == FAN_TYPE_NONE)
+ 			return 0;
+ 	} else if (attr == &dev_attr_fan3_input.attr
+-	    || attr == &dev_attr_fan3_label.attr
++	    || attr == &dev_attr_fan3_label.attr.attr
+ 	    || attr == &dev_attr_pwm3_enable.attr) {
+ 		if (asus->mid_fan_type == FAN_TYPE_NONE)
+ 			return 0;
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index 82429e59999d..47a64a213d14 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -10991,13 +10991,7 @@ static struct ibm_struct auxmac_data = {
+ 	.name = "auxmac",
+ };
+ 
+-static ssize_t auxmac_show(struct device *dev,
+-			   struct device_attribute *attr,
+-			   char *buf)
+-{
+-	return sysfs_emit(buf, "%s\n", auxmac);
+-}
+-static DEVICE_ATTR_RO(auxmac);
++static DEVICE_STRING_ATTR_RO(auxmac, 0444, auxmac);
+ 
+ static umode_t auxmac_attr_is_visible(struct kobject *kobj,
+ 				      struct attribute *attr, int n)
+@@ -11006,7 +11000,7 @@ static umode_t auxmac_attr_is_visible(struct kobject *kobj,
+ }
+ 
+ static struct attribute *auxmac_attributes[] = {
+-	&dev_attr_auxmac.attr,
++	&dev_attr_auxmac.attr.attr,
  	NULL
  };
  
-diff --git a/drivers/perf/arm-cci.c b/drivers/perf/arm-cci.c
-index 6be03f81ae5d..e516edc933f2 100644
---- a/drivers/perf/arm-cci.c
-+++ b/drivers/perf/arm-cci.c
-@@ -127,8 +127,6 @@ enum cci_models {
- 
- static void pmu_write_counters(struct cci_pmu *cci_pmu,
- 				 unsigned long *mask);
--static ssize_t __maybe_unused cci_pmu_format_show(struct device *dev,
--			struct device_attribute *attr, char *buf);
- static ssize_t __maybe_unused cci_pmu_event_show(struct device *dev,
- 			struct device_attribute *attr, char *buf);
- 
-@@ -138,7 +136,7 @@ static ssize_t __maybe_unused cci_pmu_event_show(struct device *dev,
- 	})[0].attr.attr
- 
- #define CCI_FORMAT_EXT_ATTR_ENTRY(_name, _config) \
--	CCI_EXT_ATTR_ENTRY(_name, cci_pmu_format_show, (char *)_config)
-+	CCI_EXT_ATTR_ENTRY(_name, device_show_string, _config)
- #define CCI_EVENT_EXT_ATTR_ENTRY(_name, _config) \
- 	CCI_EXT_ATTR_ENTRY(_name, cci_pmu_event_show, (unsigned long)_config)
- 
-@@ -688,14 +686,6 @@ static void __cci_pmu_disable(struct cci_pmu *cci_pmu)
- 	writel(val, cci_pmu->ctrl_base + CCI_PMCR);
- }
- 
--static ssize_t cci_pmu_format_show(struct device *dev,
--			struct device_attribute *attr, char *buf)
--{
--	struct dev_ext_attribute *eattr = container_of(attr,
--				struct dev_ext_attribute, attr);
--	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
--}
--
- static ssize_t cci_pmu_event_show(struct device *dev,
- 			struct device_attribute *attr, char *buf)
- {
-diff --git a/drivers/perf/arm-ccn.c b/drivers/perf/arm-ccn.c
-index 641471bd5eff..e4408acd4450 100644
---- a/drivers/perf/arm-ccn.c
-+++ b/drivers/perf/arm-ccn.c
-@@ -215,18 +215,9 @@ static void arm_ccn_pmu_config_set(u64 *config, u32 node_xp, u32 type, u32 port)
- 	*config |= (node_xp << 0) | (type << 8) | (port << 24);
- }
- 
--static ssize_t arm_ccn_pmu_format_show(struct device *dev,
--		struct device_attribute *attr, char *buf)
--{
--	struct dev_ext_attribute *ea = container_of(attr,
--			struct dev_ext_attribute, attr);
--
--	return sysfs_emit(buf, "%s\n", (char *)ea->var);
--}
--
- #define CCN_FORMAT_ATTR(_name, _config) \
- 	struct dev_ext_attribute arm_ccn_pmu_format_attr_##_name = \
--			{ __ATTR(_name, S_IRUGO, arm_ccn_pmu_format_show, \
-+			{ __ATTR(_name, S_IRUGO, device_show_string, \
- 			NULL), _config }
- 
- static CCN_FORMAT_ATTR(node, "config:0-7");
-diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
-index b9a252272f1e..7aff616523ec 100644
---- a/drivers/perf/arm_cspmu/arm_cspmu.c
-+++ b/drivers/perf/arm_cspmu/arm_cspmu.c
-@@ -223,16 +223,6 @@ arm_cspmu_event_attr_is_visible(struct kobject *kobj,
- 	return attr->mode;
- }
- 
--ssize_t arm_cspmu_sysfs_format_show(struct device *dev,
--				struct device_attribute *attr,
--				char *buf)
--{
--	struct dev_ext_attribute *eattr =
--		container_of(attr, struct dev_ext_attribute, attr);
--	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
--}
--EXPORT_SYMBOL_GPL(arm_cspmu_sysfs_format_show);
--
- static struct attribute *arm_cspmu_format_attrs[] = {
- 	ARM_CSPMU_FORMAT_EVENT_ATTR,
- 	ARM_CSPMU_FORMAT_FILTER_ATTR,
-diff --git a/drivers/perf/arm_cspmu/arm_cspmu.h b/drivers/perf/arm_cspmu/arm_cspmu.h
-index c9163acfe810..2621f3111148 100644
---- a/drivers/perf/arm_cspmu/arm_cspmu.h
-+++ b/drivers/perf/arm_cspmu/arm_cspmu.h
-@@ -28,7 +28,7 @@
- 	})[0].attr.attr)
- 
- #define ARM_CSPMU_FORMAT_ATTR(_name, _config)				\
--	ARM_CSPMU_EXT_ATTR(_name, arm_cspmu_sysfs_format_show, (char *)_config)
-+	ARM_CSPMU_EXT_ATTR(_name, device_show_string, _config)
- 
- #define ARM_CSPMU_EVENT_ATTR(_name, _config)				\
- 	PMU_EVENT_ATTR_ID(_name, arm_cspmu_sysfs_event_show, _config)
-@@ -167,11 +167,6 @@ ssize_t arm_cspmu_sysfs_event_show(struct device *dev,
- 				   struct device_attribute *attr,
- 				   char *buf);
- 
--/* Default function to show format attribute in sysfs. */
--ssize_t arm_cspmu_sysfs_format_show(struct device *dev,
--				    struct device_attribute *attr,
--				    char *buf);
--
- /* Register vendor backend. */
- int arm_cspmu_impl_register(const struct arm_cspmu_impl_match *impl_match);
- 
-diff --git a/drivers/perf/arm_dsu_pmu.c b/drivers/perf/arm_dsu_pmu.c
-index bae3ca37f846..4e54ce9100a6 100644
---- a/drivers/perf/arm_dsu_pmu.c
-+++ b/drivers/perf/arm_dsu_pmu.c
-@@ -85,7 +85,7 @@
- 	DSU_EXT_ATTR(_name, dsu_pmu_sysfs_event_show, (unsigned long)_config)
- 
- #define DSU_FORMAT_ATTR(_name, _config)		\
--	DSU_EXT_ATTR(_name, dsu_pmu_sysfs_format_show, (char *)_config)
-+	DSU_EXT_ATTR(_name, device_show_string, _config)
- 
- #define DSU_CPUMASK_ATTR(_name, _config)	\
- 	DSU_EXT_ATTR(_name, dsu_pmu_cpumask_show, (unsigned long)_config)
-@@ -139,15 +139,6 @@ static ssize_t dsu_pmu_sysfs_event_show(struct device *dev,
- 	return sysfs_emit(buf, "event=0x%lx\n", (unsigned long)eattr->var);
- }
- 
--static ssize_t dsu_pmu_sysfs_format_show(struct device *dev,
--					 struct device_attribute *attr,
--					 char *buf)
--{
--	struct dev_ext_attribute *eattr = container_of(attr,
--					struct dev_ext_attribute, attr);
--	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
--}
--
- static ssize_t dsu_pmu_cpumask_show(struct device *dev,
- 				    struct device_attribute *attr,
- 				    char *buf)
-diff --git a/drivers/perf/cxl_pmu.c b/drivers/perf/cxl_pmu.c
-index 308c9969642e..c41263c7fe5c 100644
---- a/drivers/perf/cxl_pmu.c
-+++ b/drivers/perf/cxl_pmu.c
-@@ -208,21 +208,10 @@ static int cxl_pmu_parse_caps(struct device *dev, struct cxl_pmu_info *info)
- 	return 0;
- }
- 
--static ssize_t cxl_pmu_format_sysfs_show(struct device *dev,
--					 struct device_attribute *attr, char *buf)
--{
--	struct dev_ext_attribute *eattr;
--
--	eattr = container_of(attr, struct dev_ext_attribute, attr);
--
--	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
--}
--
- #define CXL_PMU_FORMAT_ATTR(_name, _format)\
- 	(&((struct dev_ext_attribute[]) {					\
- 		{								\
--			.attr = __ATTR(_name, 0444,				\
--				       cxl_pmu_format_sysfs_show, NULL),	\
-+			.attr = __ATTR(_name, 0444, device_show_string, NULL),	\
- 			.var = (void *)_format					\
- 		}								\
- 		})[0].attr.attr)
-diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-index 5d1f0e9fdb08..dfd1f448f3fc 100644
---- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-@@ -99,16 +99,6 @@ HISI_PCIE_PMU_FILTER_ATTR(len_mode, config1, 11, 10);
- HISI_PCIE_PMU_FILTER_ATTR(port, config2, 15, 0);
- HISI_PCIE_PMU_FILTER_ATTR(bdf, config2, 31, 16);
- 
--static ssize_t hisi_pcie_format_sysfs_show(struct device *dev, struct device_attribute *attr,
--					   char *buf)
--{
--	struct dev_ext_attribute *eattr;
--
--	eattr = container_of(attr, struct dev_ext_attribute, attr);
--
--	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
--}
--
- static ssize_t hisi_pcie_event_sysfs_show(struct device *dev, struct device_attribute *attr,
- 					  char *buf)
- {
-@@ -120,8 +110,7 @@ static ssize_t hisi_pcie_event_sysfs_show(struct device *dev, struct device_attr
- 
- #define HISI_PCIE_PMU_FORMAT_ATTR(_name, _format)                              \
- 	(&((struct dev_ext_attribute[]){                                       \
--		{ .attr = __ATTR(_name, 0444, hisi_pcie_format_sysfs_show,     \
--				 NULL),                                        \
-+		{ .attr = __ATTR(_name, 0444, device_show_string, NULL),       \
- 		  .var = (void *)_format }                                     \
- 	})[0].attr.attr)
- 
-diff --git a/drivers/perf/hisilicon/hisi_uncore_pmu.c b/drivers/perf/hisilicon/hisi_uncore_pmu.c
-index 04031450d5fe..382c5567e4e2 100644
---- a/drivers/perf/hisilicon/hisi_uncore_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_pmu.c
-@@ -22,20 +22,6 @@
- 
- #define HISI_MAX_PERIOD(nr) (GENMASK_ULL((nr) - 1, 0))
- 
--/*
-- * PMU format attributes
-- */
--ssize_t hisi_format_sysfs_show(struct device *dev,
--			       struct device_attribute *attr, char *buf)
--{
--	struct dev_ext_attribute *eattr;
--
--	eattr = container_of(attr, struct dev_ext_attribute, attr);
--
--	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
--}
--EXPORT_SYMBOL_GPL(hisi_format_sysfs_show);
--
+diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
+index 291f14ef6702..01cf60a015bf 100644
+--- a/drivers/platform/x86/toshiba_acpi.c
++++ b/drivers/platform/x86/toshiba_acpi.c
+@@ -1814,12 +1814,7 @@ static DECLARE_WORK(kbd_bl_work, toshiba_acpi_kbd_bl_work);
  /*
-  * PMU event attributes
+  * Sysfs files
   */
-diff --git a/drivers/perf/hisilicon/hisi_uncore_pmu.h b/drivers/perf/hisilicon/hisi_uncore_pmu.h
-index 92402aa69d70..25b2d43b72bf 100644
---- a/drivers/perf/hisilicon/hisi_uncore_pmu.h
-+++ b/drivers/perf/hisilicon/hisi_uncore_pmu.h
-@@ -33,7 +33,7 @@
- 	})[0].attr.attr)
- 
- #define HISI_PMU_FORMAT_ATTR(_name, _config)		\
--	HISI_PMU_ATTR(_name, hisi_format_sysfs_show, (void *)_config)
-+	HISI_PMU_ATTR(_name, device_show_string, _config)
- #define HISI_PMU_EVENT_ATTR(_name, _config)		\
- 	HISI_PMU_ATTR(_name, hisi_event_sysfs_show, (unsigned long)_config)
- 
-@@ -122,8 +122,6 @@ void hisi_uncore_pmu_enable(struct pmu *pmu);
- void hisi_uncore_pmu_disable(struct pmu *pmu);
- ssize_t hisi_event_sysfs_show(struct device *dev,
- 			      struct device_attribute *attr, char *buf);
--ssize_t hisi_format_sysfs_show(struct device *dev,
--			       struct device_attribute *attr, char *buf);
- ssize_t hisi_cpumask_sysfs_show(struct device *dev,
- 				struct device_attribute *attr, char *buf);
- int hisi_uncore_pmu_online_cpu(unsigned int cpu, struct hlist_node *node);
-diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
-index 16869bf5bf4c..6d9725bdff83 100644
---- a/drivers/perf/hisilicon/hns3_pmu.c
-+++ b/drivers/perf/hisilicon/hns3_pmu.c
-@@ -363,16 +363,6 @@ HNS3_PMU_FILTER_ATTR(global, config1, 52, 52);
- 	HNS3_PMU_EVT_PPS_##_name##_TIME,				\
- 	HNS3_PMU_FILTER_INTR_##_name})
- 
--static ssize_t hns3_pmu_format_show(struct device *dev,
--				    struct device_attribute *attr, char *buf)
+-static ssize_t version_show(struct device *dev,
+-			    struct device_attribute *attr, char *buf)
 -{
--	struct dev_ext_attribute *eattr;
--
--	eattr = container_of(attr, struct dev_ext_attribute, attr);
--
--	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
+-	return sprintf(buf, "%s\n", TOSHIBA_ACPI_VERSION);
 -}
--
- static ssize_t hns3_pmu_event_show(struct device *dev,
- 				   struct device_attribute *attr, char *buf)
- {
-@@ -421,7 +411,7 @@ static ssize_t hns3_pmu_filter_mode_show(struct device *dev,
- 	})[0].attr.attr)
+-static DEVICE_ATTR_RO(version);
++static DEVICE_STRING_ATTR_RO(version, 0444, TOSHIBA_ACPI_VERSION);
  
- #define HNS3_PMU_FORMAT_ATTR(_name, _format) \
--	HNS3_PMU_ATTR(_name, hns3_pmu_format_show, (void *)_format)
-+	HNS3_PMU_ATTR(_name, device_show_string, _format)
- #define HNS3_PMU_EVENT_ATTR(_name, _event) \
- 	HNS3_PMU_ATTR(_name, hns3_pmu_event_show, (void *)_event)
- #define HNS3_PMU_FLT_MODE_ATTR(_name, _event) \
-diff --git a/drivers/perf/qcom_l3_pmu.c b/drivers/perf/qcom_l3_pmu.c
-index f16783d03db7..5fc53781afba 100644
---- a/drivers/perf/qcom_l3_pmu.c
-+++ b/drivers/perf/qcom_l3_pmu.c
-@@ -609,18 +609,9 @@ static void qcom_l3_cache__event_read(struct perf_event *event)
+ static ssize_t fan_store(struct device *dev,
+ 			 struct device_attribute *attr,
+@@ -2428,7 +2423,7 @@ static ssize_t cooling_method_store(struct device *dev,
+ static DEVICE_ATTR_RW(cooling_method);
  
- /* formats */
- 
--static ssize_t l3cache_pmu_format_show(struct device *dev,
--				       struct device_attribute *attr, char *buf)
--{
--	struct dev_ext_attribute *eattr;
--
--	eattr = container_of(attr, struct dev_ext_attribute, attr);
--	return sysfs_emit(buf, "%s\n", (char *) eattr->var);
--}
--
- #define L3CACHE_PMU_FORMAT_ATTR(_name, _config)				      \
- 	(&((struct dev_ext_attribute[]) {				      \
--		{ .attr = __ATTR(_name, 0444, l3cache_pmu_format_show, NULL), \
-+		{ .attr = __ATTR(_name, 0444, device_show_string, NULL),      \
- 		  .var = (void *) _config, }				      \
- 	})[0].attr.attr)
- 
-diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
-index 0d49343d704b..79279a359995 100644
---- a/drivers/perf/xgene_pmu.c
-+++ b/drivers/perf/xgene_pmu.c
-@@ -162,18 +162,9 @@ enum xgene_pmu_dev_type {
- /*
-  * sysfs format attributes
-  */
--static ssize_t xgene_pmu_format_show(struct device *dev,
--				     struct device_attribute *attr, char *buf)
--{
--	struct dev_ext_attribute *eattr;
--
--	eattr = container_of(attr, struct dev_ext_attribute, attr);
--	return sysfs_emit(buf, "%s\n", (char *) eattr->var);
--}
--
- #define XGENE_PMU_FORMAT_ATTR(_name, _config)		\
- 	(&((struct dev_ext_attribute[]) {		\
--		{ .attr = __ATTR(_name, S_IRUGO, xgene_pmu_format_show, NULL), \
-+		{ .attr = __ATTR(_name, S_IRUGO, device_show_string, NULL), \
- 		  .var = (void *) _config, }		\
- 	})[0].attr.attr)
- 
+ static struct attribute *toshiba_attributes[] = {
+-	&dev_attr_version.attr,
++	&dev_attr_version.attr.attr,
+ 	&dev_attr_fan.attr,
+ 	&dev_attr_kbd_backlight_mode.attr,
+ 	&dev_attr_kbd_type.attr,
 -- 
 2.43.0
 
