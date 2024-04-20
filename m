@@ -1,177 +1,322 @@
-Return-Path: <linux-kernel+bounces-152254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDFF78ABB6B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF6DB8ABB6F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:43:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBFA21C206A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:37:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D475C1C20965
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA9A29CF0;
-	Sat, 20 Apr 2024 11:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478702C68F;
+	Sat, 20 Apr 2024 11:43:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZSjH8xfY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="ZicOOW/V";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="l43BUJm/"
+Received: from mailrelay2-1.pub.mailoutpod3-cph3.one.com (mailrelay2-1.pub.mailoutpod3-cph3.one.com [46.30.211.241])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9CE205E3A;
-	Sat, 20 Apr 2024 11:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B4A28DCA
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 11:43:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.241
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713613051; cv=none; b=n6ZOBDaCtVBhTCqX7pPGggTJxIlzOnF5heXXO+o0OygBtl5dnfSNgfk7rnr0iaOS6m6ii0ixgOmIw0d8VyG0XdoCP9tpCm+6WAYVO+DyO96IGWp+xKN08GV3TpxfPeMuh3HlgGQLWIM6RFwACvdn3IONM4XQGxu39+Ozx8QgHco=
+	t=1713613404; cv=none; b=sUdJzMYiIpyzln0hYvYz3515Tv3YSejVW42r+RNy/TNgSF6YPABWUkbUgwG75XorXr3RMlpJycgWY1ZSpDFwZPZ0Bk+nZ6Ch3muBtY9KD2c4o+6BUcKjeCGRU+p87WpTUiDWtQGMAff1ITW15RjeLKr3FyGh37f7rdJ32mh5W1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713613051; c=relaxed/simple;
-	bh=mcbXPArX3W5bs/P2RSabEjC9+JVFSfDDDGwpIZwpHfE=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EgdwT6e3ncfY9gSGTVmLwM5yAqdB5NkBU7bI2ITaozHIOwnigiQT9Y3LCl0K/ibq5omXFUAjmqQ+fEpVbfOswbzf55UfdBZ6dVyO6dm+SHksWe66v/5WH9cr6P0P1gfgIdoOXqo4eZKYkFXf3LagtlcFTGQphK2aYKe6WI8oUl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZSjH8xfY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 132DDC072AA;
-	Sat, 20 Apr 2024 11:37:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713613051;
-	bh=mcbXPArX3W5bs/P2RSabEjC9+JVFSfDDDGwpIZwpHfE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZSjH8xfYL22lL0GdIKPSujIBpaCXmJdaf0KXyz8w4arA+m2zXxzM4Dlhjj8wwjt4y
-	 7oFP3FCxgC33lyaasVfnskXH13U4srvxM44Nng94e76byoJgy0I2r0JxZEE1CcIL3h
-	 Lf7s1UtlktES/aJ00wtJZssO3x2hJzpzR6HBJxNqUl29naxWdAvndtnKnuuPaMMUPk
-	 FvrZbOpidXJ/or8dzgpzVC4xAxDHLpKkkpDT/DwRx83hHlW9VM/ZIZhbY7vvCnohw4
-	 uOvZskWAv+qGxnK8kfPtSED6TQ/ht5W8Pq29ZmLW1bLnYn3aAttOuiU2kc1ZdVYgks
-	 8DQfrWIKfMzYA==
-Received: from 82-132-232-8.dab.02.net ([82.132.232.8] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1ry928-006LLL-2X;
-	Sat, 20 Apr 2024 12:37:28 +0100
-Date: Sat, 20 Apr 2024 12:37:25 +0100
-Message-ID: <87zftoqn7u.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Will Deacon <will@kernel.org>
-Cc: Hector Martin <marcan@marcan.st>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Zayd Qumsieh <zayd_qumsieh@apple.com>,
-	Justin Lu <ih_justin@apple.com>,
-	Ryan Houdek <Houdek.Ryan@fex-emu.org>,
-	Mark Brown <broonie@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Mateusz Guzik <mjguzik@gmail.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Miguel Luis <miguel.luis@oracle.com>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Christoph Paasch <cpaasch@apple.com>,
-	Kees Cook <keescook@chromium.org>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Baoquan He <bhe@redhat.com>,
-	Joel Granados <j.granados@samsung.com>,
-	Dawei Li <dawei.li@shingroup.cn>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Florent Revest <revest@chromium.org>,
-	David Hildenbrand <david@redhat.com>,
-	Stefan Roesch <shr@devkernel.io>,
-	Andy Chiu <andy.chiu@sifive.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Helge Deller <deller@gmx.de>,
-	Zev Weiss <zev@bewilderbeest.net>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Asahi Linux <asahi@lists.linux.dev>
-Subject: Re: [PATCH 0/4] arm64: Support the TSO memory model
-In-Reply-To: <20240419165809.GA4020@willie-the-truck>
-References: <20240411-tso-v1-0-754f11abfbff@marcan.st>
-	<20240411132853.GA26481@willie-the-truck>
-	<28ab55b3-e699-4487-b332-f1f20a6b22a1@marcan.st>
-	<20240419165809.GA4020@willie-the-truck>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1713613404; c=relaxed/simple;
+	bh=CWpb+UjIM+Wa1SyU2aZ96qljFnfJi45lXvaVXn+ZsRI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LFnxcAqTRK6UzxtQ1RqyuHwk12LbnsZ8+d0nVfKBaypsvqQ1Q8CM8jzvlPs8s+G6QCW32hhGHVvodwyrfMpF1qKxyLgfuwY/CIQEBb3XlmpESxN88cejVpe3vA/OAG6c+8D/sA3ZcOVd85NTElP8FCHBfOPdE7SXaSH0QIDcGCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=ZicOOW/V; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=l43BUJm/; arc=none smtp.client-ip=46.30.211.241
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=rsa1;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=2hAsso187noZhmI6+mlBe9QIFxiLVH0hhqShdOzAkr8=;
+	b=ZicOOW/Vsiy19+EjAWM/cagEXavTjKXmlbx3Zqd0MIdU5uuJ1WkLFI8heSLIMHRwEPozHMcYTIRzo
+	 oqTQepl0bbNnNuNaDrxzuQdKBF+llftvEcnaHKfUkmvOizM7xz72qF9wYkbIUnAzDxX0xQJOmCmf/w
+	 XLqR33UOgu0bmjICOt0ltQoL9FpJ0rhaPv2XxQr1ITzhc/fqDJxQdKgUr1uXBg1o3hcYZuADSBc+lc
+	 IgGTsHZN/nIPdB6OocY7NsYVQDDsA2Vg33bjs5E5F/HxOZbLjeW2L3A8Ejmco1ZieFzKvUGJJ7QqOV
+	 xNtWpcR+BAOI+9Y0ntSP8BgFB/Z94Qg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed1;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=2hAsso187noZhmI6+mlBe9QIFxiLVH0hhqShdOzAkr8=;
+	b=l43BUJm/WqSGjzcwU2T4TPxwjeqKffAP2tlnPEoongTNXu3JwRQQqw+VlRdEBVV4c7FmsNOQksoal
+	 I9pUDy1AA==
+X-HalOne-ID: 03526c3a-ff0b-11ee-aee7-953526d7c221
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay2.pub.mailoutpod3-cph3.one.com (Halon) with ESMTPSA
+	id 03526c3a-ff0b-11ee-aee7-953526d7c221;
+	Sat, 20 Apr 2024 11:42:09 +0000 (UTC)
+Date: Sat, 20 Apr 2024 13:42:07 +0200
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: davem@davemloft.net, andreas@gaisler.com, sparclinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 7/7] sparc/smp: Remove on-stack cpumask var
+Message-ID: <20240420114207.GG614130@ravnborg.org>
+References: <20240420051547.3681642-1-dawei.li@shingroup.cn>
+ <20240420051547.3681642-8-dawei.li@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 82.132.232.8
-X-SA-Exim-Rcpt-To: will@kernel.org, marcan@marcan.st, catalin.marinas@arm.com, mark.rutland@arm.com, zayd_qumsieh@apple.com, ih_justin@apple.com, Houdek.Ryan@fex-emu.org, broonie@kernel.org, ardb@kernel.org, mjguzik@gmail.com, anshuman.khandual@arm.com, oliver.upton@linux.dev, miguel.luis@oracle.com, joey.gouly@arm.com, cpaasch@apple.com, keescook@chromium.org, samitolvanen@google.com, bhe@redhat.com, j.granados@samsung.com, dawei.li@shingroup.cn, akpm@linux-foundation.org, revest@chromium.org, david@redhat.com, shr@devkernel.io, andy.chiu@sifive.com, josh@joshtriplett.org, oleg@redhat.com, deller@gmx.de, zev@bewilderbeest.net, omosnace@redhat.com, ojeda@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, asahi@lists.linux.dev
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240420051547.3681642-8-dawei.li@shingroup.cn>
 
-On Fri, 19 Apr 2024 17:58:09 +0100,
-Will Deacon <will@kernel.org> wrote:
+Hi Dawei
+
+On Sat, Apr 20, 2024 at 01:15:47PM +0800, Dawei Li wrote:
+> In general it's preferable to avoid placing cpumasks on the stack, as
+> for large values of NR_CPUS these can consume significant amounts of
+> stack space and make stack overflows more likely.
 > 
-> On Thu, Apr 11, 2024 at 11:19:13PM +0900, Hector Martin wrote:
-> > On 2024/04/11 22:28, Will Deacon wrote:
-> > >   * Some binaries in a distribution exhibit instability which goes away
-> > >     in TSO mode, so a taskset-like program is used to run them with TSO
-> > >     enabled.
-> > 
-> > Since the flag is cleared on execve, this third one isn't generally
-> > possible as far as I know.
+> - Change prototype of sparc32_ipi_ops::cross_call() so that it takes
+>   const cpumask * arg and all its callers accordingly.
 > 
-> Ah ok, I'd missed that. Thanks.
+> - As for all cross_call() implementations, divide cpumask_test_cpu() call
+>   into several sub calls to avoid on-stack cpumask var.
 > 
-> > > In all these cases, we end up with native arm64 applications that will
-> > > either fail to load or will crash in subtle ways on CPUs without the TSO
-> > > feature. Assuming that the application cannot be fixed, a better
-> > > approach would be to recompile using stronger instructions (e.g.
-> > > LDAR/STLR) so that at least the resulting binary is portable. Now, it's
-> > > true that some existing CPUs are TSO by design (this is a perfectly
-> > > valid implementation of the arm64 memory model), but I think there's a
-> > > big difference between quietly providing more ordering guarantees than
-> > > software may be relying on and providing a mechanism to discover,
-> > > request and ultimately rely upon the stronger behaviour.
-> > 
-> > The problem is "just" using stronger instructions is much more
-> > expensive, as emulators have demonstrated. If TSO didn't serve a
-> > practical purpose I wouldn't be submitting this, but it does. This is
-> > basically non-negotiable for x86 emulation; if this is rejected
-> > upstream, it will forever live as a downstream patch used by the entire
-> > gaming-on-Mac-Linux ecosystem (and this is an ecosystem we are very
-> > explicitly targeting, given our efforts with microVMs for 4K page size
-> > support and the upcoming Vulkan drivers).
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+
+The code changes looks ok from a quick look.
+But we have a bunch of patches pending touching or removing the same
+files. On top of this, the right approach would be to take a
+look at code from a higher level.
+
+In other words - I advise to drop this, and maybe re-visit in a few
+months after the pending patches has hit -next.
+
+Sorry for asking you to look as this.
+
+	Sam
+
+> ---
+>  arch/sparc/include/asm/smp_32.h | 12 ++++++------
+>  arch/sparc/kernel/kernel.h      | 11 +++++++++++
+>  arch/sparc/kernel/leon_smp.c    | 11 ++++-------
+>  arch/sparc/kernel/sun4d_smp.c   | 10 ++++------
+>  arch/sparc/kernel/sun4m_smp.c   | 10 ++++------
+>  5 files changed, 29 insertions(+), 25 deletions(-)
 > 
-> These microVMs sound quite interesting. What exactly are they? Are you
-> running them under KVM?
-> 
-> Ignoring the mechanism for the time being, would it solve your problem
-> if you were able to run specific microVMs in TSO mode, or do you *really*
-> need the VM to have finer-grained control than that? If the whole VM is
-> running in TSO mode, then my concerns largely disappear, as that's
-> indistinguishable from running on a hardware implementation that happens
-> to be TSO.
-
-Since KVM has been mentioned a few times, I'll give my take on this.
-
-Since day 1, it was a conscious decision for KVM/arm64 to emulate the
-architecture, and only that -- this is complicated enough. Meaning
-that no implementation-defined features should be explicitly exposed
-to the guest. So I have no plan to expose any such feature for
-userspace to configure TSO or anything else of the sort.
-
-However, that doesn't preclude VMs from running in TSO mode if the HW
-is configured as such at boot time. From what I have understood, this
-is a per translation regime setting (EL1 and EL2 have separate knobs).
-
-So it should be possible to set ACTLR_EL1.TSO=1 from firmware (using
-the non-architected ACTLR_EL12 accessor), and let things work without
-touching anything else (KVM doesn't context switch this register and
-traps accesses to it). This would keep KVM out of the loop, the host
-side would be unaffected, and only VMs would pay the overhead of TSO.
-
-I appreciate that this is not the ideal situation, and very much an
-all-or-nothing approach. But that's what we can reasonably manage from
-an upstream perspective given the variability of the arm64 ecosystem.
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+> diff --git a/arch/sparc/include/asm/smp_32.h b/arch/sparc/include/asm/smp_32.h
+> index 2cf7971d7f6c..9b6a166f6a57 100644
+> --- a/arch/sparc/include/asm/smp_32.h
+> +++ b/arch/sparc/include/asm/smp_32.h
+> @@ -54,7 +54,7 @@ void smp_bogo(struct seq_file *);
+>  void smp_info(struct seq_file *);
+>  
+>  struct sparc32_ipi_ops {
+> -	void (*cross_call)(void *func, cpumask_t mask, unsigned long arg1,
+> +	void (*cross_call)(void *func, const cpumask_t *mask, unsigned long arg1,
+>  			   unsigned long arg2, unsigned long arg3,
+>  			   unsigned long arg4);
+>  	void (*resched)(int cpu);
+> @@ -65,29 +65,29 @@ extern const struct sparc32_ipi_ops *sparc32_ipi_ops;
+>  
+>  static inline void xc0(void *func)
+>  {
+> -	sparc32_ipi_ops->cross_call(func, *cpu_online_mask, 0, 0, 0, 0);
+> +	sparc32_ipi_ops->cross_call(func, cpu_online_mask, 0, 0, 0, 0);
+>  }
+>  
+>  static inline void xc1(void *func, unsigned long arg1)
+>  {
+> -	sparc32_ipi_ops->cross_call(func, *cpu_online_mask, arg1, 0, 0, 0);
+> +	sparc32_ipi_ops->cross_call(func, cpu_online_mask, arg1, 0, 0, 0);
+>  }
+>  static inline void xc2(void *func, unsigned long arg1, unsigned long arg2)
+>  {
+> -	sparc32_ipi_ops->cross_call(func, *cpu_online_mask, arg1, arg2, 0, 0);
+> +	sparc32_ipi_ops->cross_call(func, cpu_online_mask, arg1, arg2, 0, 0);
+>  }
+>  
+>  static inline void xc3(void *func, unsigned long arg1, unsigned long arg2,
+>  		       unsigned long arg3)
+>  {
+> -	sparc32_ipi_ops->cross_call(func, *cpu_online_mask,
+> +	sparc32_ipi_ops->cross_call(func, cpu_online_mask,
+>  				    arg1, arg2, arg3, 0);
+>  }
+>  
+>  static inline void xc4(void *func, unsigned long arg1, unsigned long arg2,
+>  		       unsigned long arg3, unsigned long arg4)
+>  {
+> -	sparc32_ipi_ops->cross_call(func, *cpu_online_mask,
+> +	sparc32_ipi_ops->cross_call(func, cpu_online_mask,
+>  				    arg1, arg2, arg3, arg4);
+>  }
+>  
+> diff --git a/arch/sparc/kernel/kernel.h b/arch/sparc/kernel/kernel.h
+> index a8fb7c0bf053..36747e8f7e36 100644
+> --- a/arch/sparc/kernel/kernel.h
+> +++ b/arch/sparc/kernel/kernel.h
+> @@ -4,6 +4,7 @@
+>  
+>  #include <linux/interrupt.h>
+>  #include <linux/ftrace.h>
+> +#include <linux/smp.h>
+>  
+>  #include <asm/traps.h>
+>  #include <asm/head.h>
+> @@ -75,6 +76,16 @@ int sparc32_classify_syscall(unsigned int syscall);
+>  #endif
+>  
+>  #ifdef CONFIG_SPARC32
+> +
+> +#ifdef CONFIG_SMP
+> +static inline bool cpu_for_ipi(const cpumask_t *mask, unsigned int cpu)
+> +{
+> +	return cpumask_test_cpu(cpu, mask) &&
+> +	       cpumask_test_cpu(cpu, cpu_online_mask) &&
+> +	       cpu != smp_processor_id();
+> +}
+> +#endif /* CONFIG_SMP */
+> +
+>  /* setup_32.c */
+>  struct linux_romvec;
+>  void sparc32_start_kernel(struct linux_romvec *rp);
+> diff --git a/arch/sparc/kernel/leon_smp.c b/arch/sparc/kernel/leon_smp.c
+> index 1ee393abc463..291884c8d82a 100644
+> --- a/arch/sparc/kernel/leon_smp.c
+> +++ b/arch/sparc/kernel/leon_smp.c
+> @@ -372,7 +372,7 @@ static struct smp_funcall {
+>  static DEFINE_SPINLOCK(cross_call_lock);
+>  
+>  /* Cross calls must be serialized, at least currently. */
+> -static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+> +static void leon_cross_call(void *func, const cpumask_t *mask, unsigned long arg1,
+>  			    unsigned long arg2, unsigned long arg3,
+>  			    unsigned long arg4)
+>  {
+> @@ -403,14 +403,11 @@ static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+>  		{
+>  			register int i;
+>  
+> -			cpumask_clear_cpu(smp_processor_id(), &mask);
+> -			cpumask_and(&mask, cpu_online_mask, &mask);
+>  			for (i = 0; i <= high; i++) {
+> -				if (cpumask_test_cpu(i, &mask)) {
+> +				if (cpu_for_ipi(mask, i)) {
+>  					ccall_info.processors_in[i] = 0;
+>  					ccall_info.processors_out[i] = 0;
+>  					leon_send_ipi(i, LEON3_IRQ_CROSS_CALL);
+> -
+>  				}
+>  			}
+>  		}
+> @@ -420,7 +417,7 @@ static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+>  
+>  			i = 0;
+>  			do {
+> -				if (!cpumask_test_cpu(i, &mask))
+> +				if (!cpu_for_ipi(mask, i))
+>  					continue;
+>  
+>  				while (!ccall_info.processors_in[i])
+> @@ -429,7 +426,7 @@ static void leon_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+>  
+>  			i = 0;
+>  			do {
+> -				if (!cpumask_test_cpu(i, &mask))
+> +				if (!cpu_for_ipi(mask, i))
+>  					continue;
+>  
+>  				while (!ccall_info.processors_out[i])
+> diff --git a/arch/sparc/kernel/sun4d_smp.c b/arch/sparc/kernel/sun4d_smp.c
+> index 9a62a5cf3337..7dc57ca05728 100644
+> --- a/arch/sparc/kernel/sun4d_smp.c
+> +++ b/arch/sparc/kernel/sun4d_smp.c
+> @@ -281,7 +281,7 @@ static struct smp_funcall {
+>  static DEFINE_SPINLOCK(cross_call_lock);
+>  
+>  /* Cross calls must be serialized, at least currently. */
+> -static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+> +static void sun4d_cross_call(void *func, const cpumask_t *mask, unsigned long arg1,
+>  			     unsigned long arg2, unsigned long arg3,
+>  			     unsigned long arg4)
+>  {
+> @@ -315,10 +315,8 @@ static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+>  		{
+>  			register int i;
+>  
+> -			cpumask_clear_cpu(smp_processor_id(), &mask);
+> -			cpumask_and(&mask, cpu_online_mask, &mask);
+>  			for (i = 0; i <= high; i++) {
+> -				if (cpumask_test_cpu(i, &mask)) {
+> +				if (cpu_for_ipi(mask, i)) {
+>  					ccall_info.processors_in[i] = 0;
+>  					ccall_info.processors_out[i] = 0;
+>  					sun4d_send_ipi(i, IRQ_CROSS_CALL);
+> @@ -331,7 +329,7 @@ static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+>  
+>  			i = 0;
+>  			do {
+> -				if (!cpumask_test_cpu(i, &mask))
+> +				if (!cpu_for_ipi(mask, i))
+>  					continue;
+>  				while (!ccall_info.processors_in[i])
+>  					barrier();
+> @@ -339,7 +337,7 @@ static void sun4d_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+>  
+>  			i = 0;
+>  			do {
+> -				if (!cpumask_test_cpu(i, &mask))
+> +				if (!cpu_for_ipi(mask, i))
+>  					continue;
+>  				while (!ccall_info.processors_out[i])
+>  					barrier();
+> diff --git a/arch/sparc/kernel/sun4m_smp.c b/arch/sparc/kernel/sun4m_smp.c
+> index 056df034e79e..3f43f64e3489 100644
+> --- a/arch/sparc/kernel/sun4m_smp.c
+> +++ b/arch/sparc/kernel/sun4m_smp.c
+> @@ -170,7 +170,7 @@ static struct smp_funcall {
+>  static DEFINE_SPINLOCK(cross_call_lock);
+>  
+>  /* Cross calls must be serialized, at least currently. */
+> -static void sun4m_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+> +static void sun4m_cross_call(void *func, const cpumask_t *mask, unsigned long arg1,
+>  			     unsigned long arg2, unsigned long arg3,
+>  			     unsigned long arg4)
+>  {
+> @@ -191,10 +191,8 @@ static void sun4m_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+>  		{
+>  			register int i;
+>  
+> -			cpumask_clear_cpu(smp_processor_id(), &mask);
+> -			cpumask_and(&mask, cpu_online_mask, &mask);
+>  			for (i = 0; i < ncpus; i++) {
+> -				if (cpumask_test_cpu(i, &mask)) {
+> +				if (cpu_for_ipi(mask, i)) {
+>  					ccall_info.processors_in[i] = 0;
+>  					ccall_info.processors_out[i] = 0;
+>  					sun4m_send_ipi(i, IRQ_CROSS_CALL);
+> @@ -210,7 +208,7 @@ static void sun4m_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+>  
+>  			i = 0;
+>  			do {
+> -				if (!cpumask_test_cpu(i, &mask))
+> +				if (!cpu_for_ipi(mask, i))
+>  					continue;
+>  				while (!ccall_info.processors_in[i])
+>  					barrier();
+> @@ -218,7 +216,7 @@ static void sun4m_cross_call(void *func, cpumask_t mask, unsigned long arg1,
+>  
+>  			i = 0;
+>  			do {
+> -				if (!cpumask_test_cpu(i, &mask))
+> +				if (!cpu_for_ipi(mask, i))
+>  					continue;
+>  				while (!ccall_info.processors_out[i])
+>  					barrier();
+> -- 
+> 2.27.0
 
