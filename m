@@ -1,316 +1,244 @@
-Return-Path: <linux-kernel+bounces-152203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45A258ABAB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:14:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CD208ABA65
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 10:56:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4AEB1F22479
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 09:14:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9F44282060
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 08:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7DDD16415;
-	Sat, 20 Apr 2024 09:14:10 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2BC214F65;
+	Sat, 20 Apr 2024 08:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lcryTfEz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE0615E88
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 09:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9AAF205E31;
+	Sat, 20 Apr 2024 08:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713604450; cv=none; b=BnpEDYNRZNC1BgEDqp769He+enl/PxQ0/fLTIcgXH5DL504L4aSdxrVYtkHD2xRPRhQpZoiR9ZfoibjdkJs0MBzjdC+00e/f2B/Ym0B5e34vGS7r3rzLq1TIxPSt+Nl7ItID2f1+ngUSX1vA4Hwf9OjD9DrnRVRhU9Vz9edISMM=
+	t=1713603376; cv=none; b=UUHW3N1afV99uDJBwR7dhxh3TNUyqH67ZiG16BMnpMZPf4tXIa6lUhTCvZRXySF2yFVuQbWQtlageJ9pbp+oW5PzCIgJvEhHHAU2jT6CBp8SFptVeoprZXS9kaZy/K9VjDKGndIsilgNXS6Aud8i+Ks5RpcwafDcOia6Y+po2lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713604450; c=relaxed/simple;
-	bh=u/JrEKpD/CTyDLgORnyx5mV9c5+sehKctGwhwxhzzMA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=D+tD5GmS9/RMPEj5Ch4zhSQbdhNs4rDsuBd2AK36QBQrd+DeIhid1k5uhDIjHUWRIv+c//RLED53NgZKsxa9xdefosCpggxnxB/8kEAXSR232ydembCrf2UwCA+lpGSeXmkeHSuuaHxrOL859DcJWArCTO2SQJeviIPgsAeBTn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VM4k82YhvzwSkd;
-	Sat, 20 Apr 2024 16:41:36 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9CEB018007D;
-	Sat, 20 Apr 2024 16:44:42 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 20 Apr 2024 16:44:41 +0800
-Message-ID: <f44fa4b9-66a3-33f3-e0dc-fdc8ab451033@huawei.com>
-Date: Sat, 20 Apr 2024 16:44:40 +0800
+	s=arc-20240116; t=1713603376; c=relaxed/simple;
+	bh=L8fa1JCcLTLQ3t0dplzkwim0/hUmwGnWVEw+3TX+uqI=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=TtBeOqsNfj6YQ3SAzMpnlqNv14Q1es36Z/5M69NfdUpIj+wLd89g4MoXtF5ZMRZlaj1GtjTuP4M+fSA7/0pY3US55vCavaL/i2fvbjpSzzXYjFDraVhsUndWCJ2rxD0Iimb8t8/ZkGsxxv1l3wFLfGJ1AdklYLMuHtwyxtzwuHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lcryTfEz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D50F0C072AA;
+	Sat, 20 Apr 2024 08:56:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713603375;
+	bh=L8fa1JCcLTLQ3t0dplzkwim0/hUmwGnWVEw+3TX+uqI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lcryTfEzoez2gkwpxM9jvrF3WoyC+kL4rrG8WoS9c0ZP5ONFv0atw309ytGn16jl+
+	 XMaHYB+wLiDUNU5d1EhuAbrODm+LfiPAm1/9I4jCGVRWekR2hs0LC7URt77KEQUWQl
+	 xYKHL+TCm0GjLlAUgQkYxDX2PphwrXxedDF9xjFZVXBwFo/eiwyNfOkTjffnxDYB35
+	 KXrVZoHFY9pt67T/WJFLOqV5lHRUR5er+ZpvFrPLgjX8D9yX7cEkYET98eR/WRo2pc
+	 UeESYAEtSe0nvPZLv0/ZWhaqctyKomGd8GAzP8RYXofuM6cYLWx5rJ9oDPDdRGbicX
+	 BOZvpMsUU6T8Q==
+Date: Sat, 20 Apr 2024 17:56:08 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v9 07/36] function_graph: Allow multiple users to attach
+ to function graph
+Message-Id: <20240420175608.0e9664cbeee59c9aa2b5453d@kernel.org>
+In-Reply-To: <20240419235258.64cada90@rorschach.local.home>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+	<171318542015.254850.16655743605260166696.stgit@devnote2>
+	<20240419235258.64cada90@rorschach.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [RFC PATCH v2 2/2] mm: convert mm's rss stats to use atomic mode
-Content-Language: en-US
-To: Rongwei Wang <rongwei.wrw@gmail.com>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <akpm@linux-foundation.org>, <dennisszhou@gmail.com>,
-	<shakeelb@google.com>, <jack@suse.cz>, <surenb@google.com>,
-	<kent.overstreet@linux.dev>, <mhocko@suse.cz>, <vbabka@suse.cz>,
-	<yuzhao@google.com>, <yu.ma@intel.com>, <wangkefeng.wang@huawei.com>,
-	<sunnanyong@huawei.com>
-References: <20240418142008.2775308-1-zhangpeng362@huawei.com>
- <20240418142008.2775308-3-zhangpeng362@huawei.com>
- <ec2b110b-fb85-4af2-942b-645511a32297@gmail.com>
- <c1c79eb5-4d48-40e5-6f17-f8bc42f2d274@huawei.com>
- <6a3b8095-8f49-47e0-a347-9e4a51806bf8@gmail.com>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <6a3b8095-8f49-47e0-a347-9e4a51806bf8@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 2024/4/20 11:13, Rongwei Wang wrote:
+On Fri, 19 Apr 2024 23:52:58 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On 2024/4/19 11:32, zhangpeng (AS) wrote:
->> On 2024/4/19 10:30, Rongwei Wang wrote:
->>
->>> On 2024/4/18 22:20, Peng Zhang wrote:
->>>> From: ZhangPeng <zhangpeng362@huawei.com>
->>>>
->>>> Since commit f1a7941243c1 ("mm: convert mm's rss stats into
->>>> percpu_counter"), the rss_stats have converted into percpu_counter,
->>>> which convert the error margin from (nr_threads * 64) to approximately
->>>> (nr_cpus ^ 2). However, the new percpu allocation in mm_init() 
->>>> causes a
->>>> performance regression on fork/exec/shell. Even after commit 
->>>> 14ef95be6f55
->>>> ("kernel/fork: group allocation/free of per-cpu counters for mm 
->>>> struct"),
->>>> the performance of fork/exec/shell is still poor compared to previous
->>>> kernel versions.
->>>>
->>>> To mitigate performance regression, we delay the allocation of percpu
->>>> memory for rss_stats. Therefore, we convert mm's rss stats to use
->>>> percpu_counter atomic mode. For single-thread processes, rss_stat 
->>>> is in
->>>> atomic mode, which reduces the memory consumption and performance
->>>> regression caused by using percpu. For multiple-thread processes,
->>>> rss_stat is switched to the percpu mode to reduce the error margin.
->>>> We convert rss_stats from atomic mode to percpu mode only when the
->>>> second thread is created.
->>> Hi, Zhang Peng
->>>
->>> This regression we also found it in lmbench these days. I have not 
->>> test your patch, but it seems will solve a lot for it.
->>> And I see this patch not fix the regression in multi-threads, that's 
->>> because of the rss_stat switched to percpu mode?
->>> (If I'm wrong, please correct me.) And It seems percpu_counter also 
->>> has a bad effect in exit_mmap().
->>>
->>> If so, I'm wondering if we can further improving it on the 
->>> exit_mmap() path in multi-threads scenario, e.g. to determine which 
->>> CPUs the process has run on (mm_cpumask()? I'm not sure).
->>>
->> Hi, Rongwei,
->>
->> Yes, this patch only fixes the regression in single-thread processes. 
->> How
->> much bad effect does percpu_counter have in exit_mmap()? IMHO, the 
->> addition
-> Actually, I not sure, just found a little free percpu hotspot in 
-> exit_mmap() path when comparing 4 core vs 32 cores.
->
-> I can test more next.
+> On Mon, 15 Apr 2024 21:50:20 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > @@ -27,23 +28,157 @@
+> >  
+> >  #define FGRAPH_RET_SIZE sizeof(struct ftrace_ret_stack)
+> >  #define FGRAPH_RET_INDEX DIV_ROUND_UP(FGRAPH_RET_SIZE, sizeof(long))
+> > +
+> > +/*
+> > + * On entry to a function (via function_graph_enter()), a new ftrace_ret_stack
+> > + * is allocated on the task's ret_stack with indexes entry, then each
+> > + * fgraph_ops on the fgraph_array[]'s entryfunc is called and if that returns
+> > + * non-zero, the index into the fgraph_array[] for that fgraph_ops is recorded
+> > + * on the indexes entry as a bit flag.
+> > + * As the associated ftrace_ret_stack saved for those fgraph_ops needs to
+> > + * be found, the index to it is also added to the ret_stack along with the
+> > + * index of the fgraph_array[] to each fgraph_ops that needs their retfunc
+> > + * called.
+> > + *
+> > + * The top of the ret_stack (when not empty) will always have a reference
+> > + * to the last ftrace_ret_stack saved. All references to the
+> > + * ftrace_ret_stack has the format of:
+> > + *
+> > + * bits:  0 -  9	offset in words from the previous ftrace_ret_stack
+> > + *			(bitmap type should have FGRAPH_RET_INDEX always)
+> > + * bits: 10 - 11	Type of storage
+> > + *			  0 - reserved
+> > + *			  1 - bitmap of fgraph_array index
+> > + *
+> > + * For bitmap of fgraph_array index
+> > + *  bits: 12 - 27	The bitmap of fgraph_ops fgraph_array index
+> 
+> I really hate the terminology I came up with here, and would love to
+> get better terminology for describing what is going on. I looked it
+> over but I'm constantly getting confused. And I wrote this code!
+> 
+> Perhaps we should use:
+> 
+>  @frame : The data that represents a single function call. When a
+>           function is traced, all the data used for all the callbacks
+>           attached to it, is in a single frame. This would replace the
+>           FGRAPH_RET_SIZE as FGRAPH_FRAME_SIZE.
 
-Thanks, it would be better if there is test data.
+Agreed.
 
->> of mm counter is already in batch mode, maybe I miss something?
->>
->>>>
->>>> After lmbench test, we can get 2% ~ 4% performance improvement
->>>> for lmbench fork_proc/exec_proc/shell_proc and 6.7% performance
->>>> improvement for lmbench page_fault (before batch mode[1]).
->>>>
->>>> The test results are as follows:
->>>>
->>>>               base           base+revert        base+this patch
->>>>
->>>> fork_proc    416.3ms        400.0ms  (3.9%)    398.6ms (4.2%)
->>>> exec_proc    2095.9ms       2061.1ms (1.7%)    2047.7ms (2.3%)
->>>> shell_proc   3028.2ms       2954.7ms (2.4%)    2961.2ms (2.2%)
->>>> page_fault   0.3603ms       0.3358ms (6.8%)    0.3361ms (6.7%)
->>> I think the regression will becomes more obvious if more cores. How 
->>> about your test machine?
->>>
->> Maybe multi-core is not a factor in the performance of the lmbench 
->> test here.
->> Both of my test machines have 96 cores.
->>
->>> Thanks,
->>> -wrw
->>>>
->>>> [1] 
->>>> https://lore.kernel.org/all/20240412064751.119015-1-wangkefeng.wang@huawei.com/
->>>>
->>>> Suggested-by: Jan Kara <jack@suse.cz>
->>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>>> ---
->>>>   include/linux/mm.h          | 50 
->>>> +++++++++++++++++++++++++++++++------
->>>>   include/trace/events/kmem.h |  4 +--
->>>>   kernel/fork.c               | 18 +++++++------
->>>>   3 files changed, 56 insertions(+), 16 deletions(-)
->>>>
->>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>>> index d261e45bb29b..8f1bfbd54697 100644
->>>> --- a/include/linux/mm.h
->>>> +++ b/include/linux/mm.h
->>>> @@ -2631,30 +2631,66 @@ static inline bool 
->>>> get_user_page_fast_only(unsigned long addr,
->>>>    */
->>>>   static inline unsigned long get_mm_counter(struct mm_struct *mm, 
->>>> int member)
->>>>   {
->>>> -    return percpu_counter_read_positive(&mm->rss_stat[member]);
->>>> +    struct percpu_counter *fbc = &mm->rss_stat[member];
->>>> +
->>>> +    if (percpu_counter_initialized(fbc))
->>>> +        return percpu_counter_read_positive(fbc);
->>>> +
->>>> +    return percpu_counter_atomic_read(fbc);
->>>>   }
->>>>     void mm_trace_rss_stat(struct mm_struct *mm, int member);
->>>>     static inline void add_mm_counter(struct mm_struct *mm, int 
->>>> member, long value)
->>>>   {
->>>> -    percpu_counter_add(&mm->rss_stat[member], value);
->>>> +    struct percpu_counter *fbc = &mm->rss_stat[member];
->>>> +
->>>> +    if (percpu_counter_initialized(fbc))
->>>> +        percpu_counter_add(fbc, value);
->>>> +    else
->>>> +        percpu_counter_atomic_add(fbc, value);
->>>>         mm_trace_rss_stat(mm, member);
->>>>   }
->>>>     static inline void inc_mm_counter(struct mm_struct *mm, int 
->>>> member)
->>>>   {
->>>> -    percpu_counter_inc(&mm->rss_stat[member]);
->>>> -
->>>> -    mm_trace_rss_stat(mm, member);
->>>> +    add_mm_counter(mm, member, 1);
->>>>   }
->>>>     static inline void dec_mm_counter(struct mm_struct *mm, int 
->>>> member)
->>>>   {
->>>> -    percpu_counter_dec(&mm->rss_stat[member]);
->>>> +    add_mm_counter(mm, member, -1);
->>>> +}
->>>>   -    mm_trace_rss_stat(mm, member);
->>>> +static inline s64 mm_counter_sum(struct mm_struct *mm, int member)
->>>> +{
->>>> +    struct percpu_counter *fbc = &mm->rss_stat[member];
->>>> +
->>>> +    if (percpu_counter_initialized(fbc))
->>>> +        return percpu_counter_sum(fbc);
->>>> +
->>>> +    return percpu_counter_atomic_read(fbc);
->>>> +}
->>>> +
->>>> +static inline s64 mm_counter_sum_positive(struct mm_struct *mm, 
->>>> int member)
->>>> +{
->>>> +    struct percpu_counter *fbc = &mm->rss_stat[member];
->>>> +
->>>> +    if (percpu_counter_initialized(fbc))
->>>> +        return percpu_counter_sum_positive(fbc);
->>>> +
->>>> +    return percpu_counter_atomic_read(fbc);
->>>> +}
->>>> +
->>>> +static inline int mm_counter_switch_to_pcpu_many(struct mm_struct 
->>>> *mm)
->>>> +{
->>>> +    return percpu_counter_switch_to_pcpu_many(mm->rss_stat, 
->>>> NR_MM_COUNTERS);
->>>> +}
->>>> +
->>>> +static inline void mm_counter_destroy_many(struct mm_struct *mm)
->>>> +{
->>>> +    percpu_counter_destroy_many(mm->rss_stat, NR_MM_COUNTERS);
->>>>   }
->>>>     /* Optimized variant when folio is already known not to be anon */
->>>> diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
->>>> index 6e62cc64cd92..a4e40ae6a8c8 100644
->>>> --- a/include/trace/events/kmem.h
->>>> +++ b/include/trace/events/kmem.h
->>>> @@ -399,8 +399,8 @@ TRACE_EVENT(rss_stat,
->>>>           __entry->mm_id = mm_ptr_to_hash(mm);
->>>>           __entry->curr = !!(current->mm == mm);
->>>>           __entry->member = member;
->>>> -        __entry->size = 
->>>> (percpu_counter_sum_positive(&mm->rss_stat[member])
->>>> -                                << PAGE_SHIFT);
->>>> +        __entry->size = (mm_counter_sum_positive(mm, member)
->>>> +                            << PAGE_SHIFT);
->>>>       ),
->>>>         TP_printk("mm_id=%u curr=%d type=%s size=%ldB",
->>>> diff --git a/kernel/fork.c b/kernel/fork.c
->>>> index 99076dbe27d8..0214273798c5 100644
->>>> --- a/kernel/fork.c
->>>> +++ b/kernel/fork.c
->>>> @@ -823,7 +823,7 @@ static void check_mm(struct mm_struct *mm)
->>>>                "Please make sure 'struct resident_page_types[]' is 
->>>> updated as well");
->>>>         for (i = 0; i < NR_MM_COUNTERS; i++) {
->>>> -        long x = percpu_counter_sum(&mm->rss_stat[i]);
->>>> +        long x = mm_counter_sum(mm, i);
->>>>             if (unlikely(x))
->>>>               pr_alert("BUG: Bad rss-counter state mm:%p type:%s 
->>>> val:%ld\n",
->>>> @@ -1301,16 +1301,10 @@ static struct mm_struct *mm_init(struct 
->>>> mm_struct *mm, struct task_struct *p,
->>>>       if (mm_alloc_cid(mm))
->>>>           goto fail_cid;
->>>>   -    if (percpu_counter_init_many(mm->rss_stat, 0, 
->>>> GFP_KERNEL_ACCOUNT,
->>>> -                     NR_MM_COUNTERS))
->>>> -        goto fail_pcpu;
->>>> -
->>>>       mm->user_ns = get_user_ns(user_ns);
->>>>       lru_gen_init_mm(mm);
->>>>       return mm;
->>>>   -fail_pcpu:
->>>> -    mm_destroy_cid(mm);
->>>>   fail_cid:
->>>>       destroy_context(mm);
->>>>   fail_nocontext:
->>>> @@ -1730,6 +1724,16 @@ static int copy_mm(unsigned long 
->>>> clone_flags, struct task_struct *tsk)
->>>>       if (!oldmm)
->>>>           return 0;
->>>>   +    /*
->>>> +     * For single-thread processes, rss_stat is in atomic mode, which
->>>> +     * reduces the memory consumption and performance regression 
->>>> caused by
->>>> +     * using percpu. For multiple-thread processes, rss_stat is 
->>>> switched to
->>>> +     * the percpu mode to reduce the error margin.
->>>> +     */
->>>> +    if (clone_flags & CLONE_THREAD)
->>>> +        if (mm_counter_switch_to_pcpu_many(oldmm))
->>>> +            return -ENOMEM;
->>>> +
->>>>       if (clone_flags & CLONE_VM) {
->>>>           mmget(oldmm);
->>>>           mm = oldmm;
->>>
->>>
->
->
+> 
+>  @offset : This is the word size position on the stack. It would
+>            replace INDEX, as I think "index" is being used for more
+>            than one thing. Perhaps it should be "offset" when dealing
+>            with where it is on the shadow stack, and "pos" when dealing
+>            with which callback ops is being referenced.
+
+Indeed. @index is usually used from the index in an array. So we can use
+@index for fgraph_array[]. But inside a @frame, @offset would be better.
+
+> 
+> 
+> > + *
+> > + * That is, at the end of function_graph_enter, if the first and forth
+> > + * fgraph_ops on the fgraph_array[] (index 0 and 3) needs their retfunc called
+> > + * on the return of the function being traced, this is what will be on the
+> > + * task's shadow ret_stack: (the stack grows upward)
+> > + *
+> > + * |                                            | <- task->curr_ret_stack
+> > + * +--------------------------------------------+
+> > + * | bitmap_type(bitmap:(BIT(3)|BIT(0)),        |
+> > + * |             offset:FGRAPH_RET_INDEX)       | <- the offset is from here
+> > + * +--------------------------------------------+
+> > + * | struct ftrace_ret_stack                    |
+> > + * |   (stores the saved ret pointer)           | <- the offset points here
+> > + * +--------------------------------------------+
+> > + * |                 (X) | (N)                  | ( N words away from
+> > + * |                                            |   previous ret_stack)
+> > + *
+> > + * If a backtrace is required, and the real return pointer needs to be
+> > + * fetched, then it looks at the task's curr_ret_stack index, if it
+> > + * is greater than zero (reserved, or right before poped), it would mask
+> > + * the value by FGRAPH_RET_INDEX_MASK to get the offset index of the
+> > + * ftrace_ret_stack structure stored on the shadow stack.
+> > + */
+> > +
+> > +#define FGRAPH_RET_INDEX_SIZE	10
+> 
+> Replace SIZE with BITS.
+
+Agreed.
+
+> 
+> > +#define FGRAPH_RET_INDEX_MASK	GENMASK(FGRAPH_RET_INDEX_SIZE - 1, 0)
+> 
+>   #define FGRAPH_FRAME_SIZE_BITS	10
+>   #define FGRAPH_FRAME_SIZE_MASK	GENMASK(FGRAPH_FRAME_SIZE_BITS - 1, 0)
+> 
+> 
+> > +
+> > +#define FGRAPH_TYPE_SIZE	2
+> > +#define FGRAPH_TYPE_MASK	GENMASK(FGRAPH_TYPE_SIZE - 1, 0)
+> 
+>   #define FGRAPH_TYPE_BITS	2
+>   #define FGRAPH_TYPE_MASK	GENMASK(FGRAPH_TYPE_BITS - 1, 0)
+> 
+> 
+> > +#define FGRAPH_TYPE_SHIFT	FGRAPH_RET_INDEX_SIZE
+> > +
+> > +enum {
+> > +	FGRAPH_TYPE_RESERVED	= 0,
+> > +	FGRAPH_TYPE_BITMAP	= 1,
+> > +};
+> > +
+> > +#define FGRAPH_INDEX_SIZE	16
+> 
+> replace "INDEX" with "OPS" as it will be the indexes of ops in the
+> array.
+> 
+>   #define FGRAPH_OPS_BITS	16
+>   #define FGRAPH_OPS_MASK	GENMASK(FGRAPH_OPS_BITS - 1, 0)
+
+OK, this looks good.
+
+> 
+> > +#define FGRAPH_INDEX_MASK	GENMASK(FGRAPH_INDEX_SIZE - 1, 0)
+> > +#define FGRAPH_INDEX_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
+> > +
+> > +/* Currently the max stack index can't be more than register callers */
+> > +#define FGRAPH_MAX_INDEX	(FGRAPH_INDEX_SIZE + FGRAPH_RET_INDEX)
+> 
+> FGRAPH_MAX_INDEX isn't even used. Let's delete it.
+
+OK.
+
+> 
+> > +
+> > +#define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_SIZE
+> 
+>   #define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_BITS
+
+OK.
+
+> 
+> > +
+> >  #define SHADOW_STACK_SIZE (PAGE_SIZE)
+> >  #define SHADOW_STACK_INDEX (SHADOW_STACK_SIZE / sizeof(long))
+> >  /* Leave on a buffer at the end */
+> > -#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - FGRAPH_RET_INDEX)
+> > +#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - (FGRAPH_RET_INDEX + 1))
+> 
+> We probably should rename this is previous patches as well.
+> 
+> Unfortunately, it's getting close to the time for me to pick up my wife
+> from the airport to start our vacation. But I think we should rename a
+> lot of these variables to make things more consistent.
+
+OK, Thanks for your review!
+
+> 
+> I'll try to look more at the previous patches as well to make my
+> comments there, when I get some time. Maybe even later today.
+
+Only if you have a time. I think I also refresh the code.
+
+Thank you,
+
+> 
+> -- Steve
+> 
+
+
 -- 
-Best Regards,
-Peng
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
