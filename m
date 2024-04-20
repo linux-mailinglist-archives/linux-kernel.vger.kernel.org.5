@@ -1,98 +1,125 @@
-Return-Path: <linux-kernel+bounces-152222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 286D78ABAE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 12:04:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F4E88ABAE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 12:05:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55C5D1C20D65
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 10:04:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B06C11F21B99
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 10:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F3917C60;
-	Sat, 20 Apr 2024 10:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B34F17C67;
+	Sat, 20 Apr 2024 10:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="i168r3qq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Azbt1Y+5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C68491118A;
-	Sat, 20 Apr 2024 10:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC79C17BAE
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 10:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713607455; cv=none; b=uUOjz+YW9jJnHBnpgOgBlN9Y8H/qIs/eu/JkWYaHfRykB1LLF/0jogP0cNXImdoD3rClpQTpiFW4T7ZARbleAIVwPI2Uw4+F+bs/2IW5WfVuof3uPVnmLzLSgAJ7TpUjGfg+k6bi7exWsnVVrSl2ZKcS6ej3fXyL+DDdlS5HI5A=
+	t=1713607526; cv=none; b=UIX8vg5/yw1QsEE0xfAZ3Py7GI1KeSMtCLQFd80pIr7sHMJTu5XBSmqjlHUPo7XkGJjgg8mJe7yCgls44oDyXZ0qDZvB5JQ4kuwnhobEYZmkJIib9tYwvFuwlnXZqE1eduU7wXhiJlT1B3oQIOn8LtC3Y9kP4PkUdNiLM2Kwr2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713607455; c=relaxed/simple;
-	bh=gQ3vuVn4istjWpdMlnw4Q4aBTLHGWO/MOkIZnCPASgs=;
+	s=arc-20240116; t=1713607526; c=relaxed/simple;
+	bh=UKYeRD8/XiIyAg9qRBsvwBklh4EieGaHp8R88F3ZOck=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A6/OCaGmXmRoRUPVmZ0oKKP8y6T+0uK3w0lGsEbtxh03w+ovOQ9dulga0zxSLpDat1LqZZggaz0CKwjIHRPxSO7ibqWnbtqBD8wEMGexPeTyNeTbHh13JQHnwHox/txkfXPi5+qw/OubGAcZ8jOLjaWwxoLHUsUb8w9nTzyKje0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=i168r3qq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3A29C072AA;
-	Sat, 20 Apr 2024 10:04:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713607454;
-	bh=gQ3vuVn4istjWpdMlnw4Q4aBTLHGWO/MOkIZnCPASgs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=i168r3qqiWPRHTcg2K8sOxa+4ZgdV6FP4PkwdiFNJF8JFqUDJHOh3qvRIQF5P+Cjk
-	 +p13JMih2Bn0zIiiqm4b6QSyB9sgX9ubMLJj+pOR/6nfCNRaaSVBCaGk4G9BYD4mca
-	 ZoMTrL4ej3J1Bo1prXXP1paK3+nNFovglUHaUD9Q=
-Date: Sat, 20 Apr 2024 12:04:06 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: Daniel Okazaki <dtokazaki@google.com>, kernel-team@android.com,
-	linux-i2c@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	Arnd Bergmann <arnd@arndb.de>, Bartosz Golaszewski <brgl@bgdev.pl>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] eeprom: at24: fix memory corruption race condition
-Message-ID: <2024042055-bucked-dosage-2a8d@gregkh>
-References: <20240419191200.219548-1-dtokazaki@google.com>
- <939095cb-b9c0-4214-9429-7b45f9a31f36@web.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lC56tywpyA1mHK+hFoETan1+Sm9yvvBFo0KQ9yGavdVfuGcWy66NOqGsfhmozHAOq+CJjMV72+TYTVMzwiyYO9wQAqZ2hg+MKhMIZET0ffdKeRWP3/udG6RZTwfCldte7tdEZXXB8I9enar8EXEYnOZt1TEKk7ZUCtERIIa5XtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Azbt1Y+5; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713607523;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dupUFX22MvWJlz2LiPNASjX/H+JRFaBqC9DPNGlEAKk=;
+	b=Azbt1Y+5Bq3SR0V8qnkiI77kmtGeMvQV6hN/yh9OaYHP0XNn+S8G/mUNVQHWLmfJwgaKZX
+	Ck0ULpPrNEl5m5iM5jwQ6xNbyLSo4Vp+QPYIM5iv3pXjWRqKUrTVr3jYJw+8YFABahxBxV
+	ksTWwfPGZE8O3d4HZxeFv7PNBNxJIMs=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-126-V7-MdX0HOOymectq8NRbCg-1; Sat, 20 Apr 2024 06:05:22 -0400
+X-MC-Unique: V7-MdX0HOOymectq8NRbCg-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2d883dab079so27469371fa.3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 03:05:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713607520; x=1714212320;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dupUFX22MvWJlz2LiPNASjX/H+JRFaBqC9DPNGlEAKk=;
+        b=DsUtKlpKTIOx+/5nCw9f584xyxauO+jm/02RXbde394e1K4U8aAr3tNK0PHqqmnoMr
+         gvBfsG4Hmkp9s4carc4ZRJCUn+jZ7Y9tsFpTDVeAZkzFvz5yJZVhYTnnjsVliXDWcCsu
+         iahsmLmIyCv7He8kqHoxve+/S/F+rp1d8fwdJsoZ0fUxlU4T/+R0SlGtkf46SBtSFELX
+         rJoP+EVwIy5MHs9Pdhzi4Y5Sl1MCwnc4sWEjLCPFD33f3fSJktBjiT1IAWH42p7KPP5p
+         JL4HVk0n2mtQlbiWGej1SZsaUa2cywLtD8hBweyoUaUU1vziK/rx/e/J8+zzoQCQ7fb0
+         Tq4w==
+X-Forwarded-Encrypted: i=1; AJvYcCWge11HNRhDqYKsMYf6DCYj90BTv9a02lwZ9Hu1aP/lRwE0/Dd8oVXbsLiv36sbdJ1BYRSn0CeyZiG42EpY2ueFgjb+GSuPpm+hVN4f
+X-Gm-Message-State: AOJu0Yw5Yd5HTiRugMqmtX5X8nQzFY/myaYVrOLT9E954n/rzVKNjoIL
+	uutLliFqPpJ5LAAOz0xtpbqLJrndzdkB3A/Tql6i4KmqrEYjYPiUrOdqn+aXW4tsf7uL3IdUv6o
+	022XfC7Pj32Htk56HZpVQaQYTgE8eCFEwXIKht2pecZ74QpvPGNQ9IAoq9taX+w==
+X-Received: by 2002:a2e:9798:0:b0:2da:a73:4f29 with SMTP id y24-20020a2e9798000000b002da0a734f29mr3610193lji.30.1713607520474;
+        Sat, 20 Apr 2024 03:05:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFYBnMGeF141NDJiiAEbx9ZNUBUqnu1GBz0moT4dPDvrOwYJoOemN0dK9MgDRfLJOyGBx1O+Q==
+X-Received: by 2002:a2e:9798:0:b0:2da:a73:4f29 with SMTP id y24-20020a2e9798000000b002da0a734f29mr3610179lji.30.1713607519984;
+        Sat, 20 Apr 2024 03:05:19 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:7429:3c00:dc4a:cd5:7b1c:f7c2])
+        by smtp.gmail.com with ESMTPSA id i13-20020a05600c354d00b00419fba938d8sm973597wmq.27.2024.04.20.03.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Apr 2024 03:05:19 -0700 (PDT)
+Date: Sat, 20 Apr 2024 06:05:15 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Jeongjun Park <aha310510@gmail.com>
+Cc: syzbot+6c21aeb59d0e82eb2782@syzkaller.appspotmail.com,
+	stefanha@redhat.com, sgarzare@redhat.com, jasowang@redhat.com,
+	kvm@vger.kernel.org, virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH virt] virt: fix uninit-value in vhost_vsock_dev_open
+Message-ID: <20240420060450-mutt-send-email-mst@kernel.org>
+References: <000000000000be4e1c06166fdc85@google.com>
+ <20240420085750.64274-1-aha310510@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <939095cb-b9c0-4214-9429-7b45f9a31f36@web.de>
+In-Reply-To: <20240420085750.64274-1-aha310510@gmail.com>
 
-On Sat, Apr 20, 2024 at 11:11:05AM +0200, Markus Elfring wrote:
-> > If the eeprom is not accessible, an nvmem device will be registered, the
-> > read will fail, and the device will be torn down.
-> …
+On Sat, Apr 20, 2024 at 05:57:50PM +0900, Jeongjun Park wrote:
+> Change vhost_vsock_dev_open() to use kvzalloc() instead of kvmalloc()
+> to avoid uninit state.
 > 
-> Can it be nicer to present the introduction for failure conditions as an enumeration?
+> Reported-by: syzbot+6c21aeb59d0e82eb2782@syzkaller.appspotmail.com
+> Fixes: dcda9b04713c ("mm, tree wide: replace __GFP_REPEAT by __GFP_RETRY_MAYFAIL with more useful semantic")
+> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+
+What value exactly is used uninitialized?
+
+> ---
+>  drivers/vhost/vsock.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 
-> > Move the failure point before registering the nvmem device.
-> …
-> 
-> I would interpret the diff data more in the way that a devm_nvmem_register() call
-> should be performed a bit later in the implementation of the function “at24_probe”.
-> How do you think about to mention the affected function also in the summary phrase?
-> 
+> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+> index ec20ecff85c7..652ef97a444b 100644
+> --- a/drivers/vhost/vsock.c
+> +++ b/drivers/vhost/vsock.c
+> @@ -656,7 +656,7 @@ static int vhost_vsock_dev_open(struct inode *inode, struct file *file)
+>  	/* This struct is large and allocation could fail, fall back to vmalloc
+>  	 * if there is no other way.
+>  	 */
+> -	vsock = kvmalloc(sizeof(*vsock), GFP_KERNEL | __GFP_RETRY_MAYFAIL);
+> +	vsock = kvzalloc(sizeof(*vsock), GFP_KERNEL | __GFP_RETRY_MAYFAIL);
+>  	if (!vsock)
+>  		return -ENOMEM;
+>  
+> -- 
+> 2.34.1
 
-Hi,
-
-This is the semi-friendly patch-bot of Greg Kroah-Hartman.
-
-Markus, you seem to have sent a nonsensical or otherwise pointless
-review comment to a patch submission on a Linux kernel developer mailing
-list.  I strongly suggest that you not do this anymore.  Please do not
-bother developers who are actively working to produce patches and
-features with comments that, in the end, are a waste of time.
-
-Patch submitter, please ignore Markus's suggestion; you do not need to
-follow it at all.  The person/bot/AI that sent it is being ignored by
-almost all Linux kernel maintainers for having a persistent pattern of
-behavior of producing distracting and pointless commentary, and
-inability to adapt to feedback.  Please feel free to also ignore emails
-from them.
-
-thanks,
-
-greg k-h's patch email bot
 
