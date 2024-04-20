@@ -1,96 +1,169 @@
-Return-Path: <linux-kernel+bounces-152278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 487998ABBC7
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 15:37:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D87268ABBCE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 15:42:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F385A281529
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:36:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 153851C208A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E805C20309;
-	Sat, 20 Apr 2024 13:36:53 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADFF249F7;
+	Sat, 20 Apr 2024 13:42:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ktGpnd3q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F02361CD25
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 13:36:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653372770C;
+	Sat, 20 Apr 2024 13:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713620213; cv=none; b=Drb0PdcYDh4nSOAerXdrL392VQLzypN2xqPZ0NB4x6eLg084m2N1HcbI7t4/btP7ZHBRfVrLnUcH1eXreoojFSrNdQD7H+zgdq7SHTJC3i/BcA/yN6cZI8CgexQZwDIc1s+7PLKlUqFVzrcp4awhj7d2zPnWKhsjLMcrhztYQWE=
+	t=1713620553; cv=none; b=Bbfz+TDXa6gJ6f/zQD9e0Bi5MlOEWFGgqVbWPdbA5FibOxTeRVpnR/MNSTwcngRyK5wfNTjZCjDlEnrT6R3/UG2tRi29CxILfakOBtdORpG6O7cSQpMLeAWDEi8pyMg8VtcxggxOhpP1GKllJgOi6/ZYi+PjZC3J26SBjdELTes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713620213; c=relaxed/simple;
-	bh=0SjfUwaAeoxQoQv29i+xVwe6pgaFMFpnDXCH28PPGzI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YmFVzbZIHFvUw/9Hva03ngZER8nSn+TW2sUZaHFAMwgUv5x11WtFnR3EWVJ6HhdxJvbYE0wv/DJs5RiB6l6IgpimHSXxmU9sz6lCap14XHxJYtXUqfvKQFx3zAMd0UndwGrJrEI2Z4k53L3dxx7aw3mxgIqpZF3JJYieiPrgnq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 936FD40E00B2;
-	Sat, 20 Apr 2024 13:36:49 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id u4SVQZwpEBce; Sat, 20 Apr 2024 13:36:45 +0000 (UTC)
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D950240E016C;
-	Sat, 20 Apr 2024 13:36:31 +0000 (UTC)
-Date: Sat, 20 Apr 2024 15:36:30 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>, Will Deacon <will@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 2/2] cpu: Ignore "mitigations" kernel parameter if
- CPU_MITIGATIONS=n
-Message-ID: <20240420133630.GCZiPE3lZ3m-M1CqG_@fat_crate.local>
-References: <20240420000556.2645001-1-seanjc@google.com>
- <20240420000556.2645001-3-seanjc@google.com>
+	s=arc-20240116; t=1713620553; c=relaxed/simple;
+	bh=47mwsXX4VHJwXSjEWqXAlLw7nIvujHw8/McnUjcF3+g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UR8X5Lmlk6y/tSce4yTeumqd+19qC9R0fnY+Kscp5MtTYjp0wWveJ7Z8cB1t9/FC5IZyI4ckOnBoJ9eNE79unsr+njzF3sXh52FfkFmckvIZXcTUWJUFB4IAxOnsPrgReM7NVrz4NfS89b618ojs+ePm7LzouMv7rUaALMEC4cs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ktGpnd3q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB5FCC32782;
+	Sat, 20 Apr 2024 13:42:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713620553;
+	bh=47mwsXX4VHJwXSjEWqXAlLw7nIvujHw8/McnUjcF3+g=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ktGpnd3qlzQyRtO4dg+B/q2O18w99K7XorW5e0MMlf8MV7dTLVhOyNOiIFJ4KUQdp
+	 18SUDM0Lsr/zM6yx770xg0HMhFbJzPINYumyiO9n17BV7MnAVO7hQfZ9sOFEqX34Z6
+	 0dCzZwjHcJiJfeVGoPsnLq3zy8DJIIAQMR7wKynnfwjqM5emDNl+E+YAmRwMx/kFfa
+	 zYiMGF9Bj17yNx38KaxljsfrtLLqkHWeFcBd0EwnLhz/yck+LYzh7YZPhQWrjNZGMb
+	 xwPxNo3pkFVvqysDc3ltOrpGDCZT6LVXpMh5ws1jmCFkR6WGbk21EAfUCO7GIDqkI2
+	 VIge3UkMJrj1g==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5176f217b7bso4973742e87.0;
+        Sat, 20 Apr 2024 06:42:32 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUCLEIoWhigK1xccVSLriAE6nCHd/qYLrhvZLU74cAnj08acy3QrlK8wvNVoIugkwJjYJ+ij4C/UQH/bcfHlONuuS0lKBOn70hqNIjUaIleKJFwcPAOMDbCj7ra3ZRfEaWM25wEhd0FGAvhPncSl/PWodegbZUiCfJnt9R0hqKZwRTmxyaOXvuIYqZnx5LaVR4+5uLmcvIr22nRWw==
+X-Gm-Message-State: AOJu0YzaI63A62Wr4LOGjFNKw+P54iWNca9mOfK6Z+XfceDy05YXZ1eY
+	otBnd7wbcPDT0N5Bi6y9UFOQ/pZvZU5DAvBg17zBLdtsKrN7uOlywG0+lyHWwBD27+Sx83hgEH4
+	Yh9VX856DNZx2F1DBdAN+ooofHjs=
+X-Google-Smtp-Source: AGHT+IEDbdXhoE9nskl4dd/REKBu6i+rxqquORt8r9agggOYrOrx908OcpdLRI7RA+nY7U7RFKWMhXlwi+BEODaMKhA=
+X-Received: by 2002:a05:6512:708:b0:51a:dcf4:5b2a with SMTP id
+ b8-20020a056512070800b0051adcf45b2amr1596657lfs.56.1713620551545; Sat, 20 Apr
+ 2024 06:42:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240420000556.2645001-3-seanjc@google.com>
+References: <20240415162041.2491523-5-ardb+git@google.com> <171327842741.29461.3030265084386428643.git-patchwork-notify@kernel.org>
+ <CAMj1kXGVRGcJGS1xuqHPeJfM797RB2UiJQfSHK+oj1JQG4YECg@mail.gmail.com>
+ <CAK7LNAQ8fhKUwK_m8uGfvBUBrAdXdMYM3_AA5zo2cQzhW3jE1A@mail.gmail.com> <CAMj1kXGYdjQz5n0uuiLHu8uc-YNE8eqUQWtGjg5pANo+0speQA@mail.gmail.com>
+In-Reply-To: <CAMj1kXGYdjQz5n0uuiLHu8uc-YNE8eqUQWtGjg5pANo+0speQA@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 20 Apr 2024 22:41:54 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT9Y5C+Shr1Pq=xrL2tcBK6rpBn05iovdZ2=kMHW5UCkw@mail.gmail.com>
+Message-ID: <CAK7LNAT9Y5C+Shr1Pq=xrL2tcBK6rpBn05iovdZ2=kMHW5UCkw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] kbuild: Avoid weak external linkage where possible
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: patchwork-bot+netdevbpf@kernel.org, Ard Biesheuvel <ardb+git@google.com>, 
+	linux-kernel@vger.kernel.org, arnd@arndb.de, martin.lau@linux.dev, 
+	linux-arch@vger.kernel.org, linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
+	andrii@kernel.org, olsajiri@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 19, 2024 at 05:05:55PM -0700, Sean Christopherson wrote:
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 619a04d5c131..928820e61cb5 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -2495,9 +2495,13 @@ menuconfig CPU_MITIGATIONS
->  	help
->  	  Say Y here to enable options which enable mitigations for hardware
->  	  vulnerabilities (usually related to speculative execution).
-> +	  Mitigations can be disabled or restricted to SMT systems at runtime
-> +	  via the "mitigations" kernel parameter.
->  
-> -	  If you say N, all mitigations will be disabled. You really
-> -	  should know what you are doing to say so.
-> +	  If you say N, all mitigations will be disabled.  This CANNOT be
-> +	  overridden at runtime.
+On Sat, Apr 20, 2024 at 9:35=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> wr=
+ote:
+>
+> On Sat, 20 Apr 2024 at 14:32, Masahiro Yamada <masahiroy@kernel.org> wrot=
+e:
+> >
+> > On Fri, Apr 19, 2024 at 4:57=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org=
+> wrote:
+> > >
+> > > On Tue, 16 Apr 2024 at 16:40, <patchwork-bot+netdevbpf@kernel.org> wr=
+ote:
+> > > >
+> > > > Hello:
+> > > >
+> > > > This series was applied to bpf/bpf-next.git (master)
+> > > > by Daniel Borkmann <daniel@iogearbox.net>:
+> > > >
+> > > > On Mon, 15 Apr 2024 18:20:42 +0200 you wrote:
+> > > > > From: Ard Biesheuvel <ardb@kernel.org>
+> > > > >
+> > > > > Weak external linkage is intended for cases where a symbol refere=
+nce
+> > > > > can remain unsatisfied in the final link. Taking the address of s=
+uch a
+> > > > > symbol should yield NULL if the reference was not satisfied.
+> > > > >
+> > > > > Given that ordinary RIP or PC relative references cannot produce =
+NULL,
+> > > > > some kind of indirection is always needed in such cases, and in p=
+osition
+> > > > > independent code, this results in a GOT entry. In ordinary code, =
+it is
+> > > > > arch specific but amounts to the same thing.
+> > > > >
+> > > > > [...]
+> > > >
+> > > > Here is the summary with links:
+> > > >   - [v4,1/3] kallsyms: Avoid weak references for kallsyms symbols
+> > > >     (no matching commit)
+> > > >   - [v4,2/3] vmlinux: Avoid weak reference to notes section
+> > > >     (no matching commit)
+> > > >   - [v4,3/3] btf: Avoid weak external references
+> > > >     https://git.kernel.org/bpf/bpf-next/c/fc5eb4a84e4c
+> > > >
+> > >
+> > >
+> > > Thanks.
+> > >
+> > > Masahiro, could you pick up patches #1 and #2 please?
+> > >
+> >
+> >
+> > I do not like PROVIDE() because it potentially shifts
+> > a build error (i.e. link error) into
+> > a run-time error, which is usually more difficult to debug
+> > than build error.
+> >
+> > If someone references the kallsyms_* symbols
+> > when CONFIG_KALLSYMS=3Dn, it is likely a mistake.
+> > In general, it should be reported as a link error.
+> >
+>
+> OK, so the PROVIDE() should be conditional on CONFIG_KALLSYM=3Dy. I can f=
+ix that.
 
-You probably wanna highlight the fact here that saying N means it'll
-simply not even build in the mitigations code, leading to the physical
-inability :) to enable them later, at run time.
 
--- 
-Regards/Gruss,
-    Boris.
+You may need to take care of the dependency
+between CONFIG_KALLSYMS and CONFIG_VMCORE_INFO
+because kernel/vmcore_info.c has references
+to the kallsyms_* symbols.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+(I am still not a big fan of PROVIDE() though)
+
+
+
+
+>
+> > With PROVIDE() added, we will never detect it
+> > at a build time.
+> >
+> > Do you want me to pick up 1/3?
+> >
+>
+> ???
+
+I will apply 2/3.
+It is trivial.
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
