@@ -1,162 +1,123 @@
-Return-Path: <linux-kernel+bounces-152380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EB878ABD98
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 00:47:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1614B8ABD9C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 00:47:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BD7C28151F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 22:47:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52640B20E20
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 22:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AABFC4CDE0;
-	Sat, 20 Apr 2024 22:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC2E7482CA;
+	Sat, 20 Apr 2024 22:47:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="w1OKLciC"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bn7BtLe+"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFC7F2747D
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 22:47:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8741B3B299;
+	Sat, 20 Apr 2024 22:47:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713653230; cv=none; b=ElEJ/6zebypBpACqY638QRu8OQsb1xfBiEVwuH5PQzimxWUZqsxuk1YiT+RgBwzYyzPkBWWCM0isaySvsk1MJUHvOMiN29wWEuaIZClNuNO+QNYP/le3QHod9bQszZA9RnCOo+wcHru2ZMAck4nbkxoeoEQAqBgD0D712Dumf4A=
+	t=1713653252; cv=none; b=P08YjNFMzzJvG/Ef6j6WiUw/LCfOV5rjfm5xx92D4MM83k/WLbq5BpDg03cm87fpRB+ncMhvUzjtIdPK4tYcDgBbrQn74UemHAE3luuJ/ZdJDOftI1w1zsPb6cbmZ1WkxFdEq++nAW8dKkubblehpgw7OExVkhgM5KlD+EQKhV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713653230; c=relaxed/simple;
-	bh=7rus6XVRgap7s1soDiF1cXI8lMxTwZlFAZbG+UDBkQ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oauyqIbJclBT+4xsFqrhOup4HG23xU2knO7cpY8zs0D3u5zVDiMbMhSeLuhf3dv9o3Wi5QUMGBqH/9Y76ANpZ60Hibs7Jn4SsOlVVc43E6gFLHixLs30lW8bPsrv3poFtsjKkARj/0wRFWt07eDzmllsKNjZW2N5+N8J02CvVy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=w1OKLciC; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-343b7c015a8so2523252f8f.1
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 15:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713653226; x=1714258026; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fHqxIncYJ8egtEQrph9tKgbaWj8ag9453EB89pr+LvE=;
-        b=w1OKLciCu9wHLskM35r/KRD4m8cCCX9nB0zFYtM4gpxGvaGth/WzWe6mYRgCwIh6Pf
-         mH8HkFvcgjqqA9ysIJEN/al9xHeY/0DgKqzW/R4iHwtTCHmGlGK9QY6Hv+cmCRYIxcdU
-         vFWTKuIvYCGw7gO0/+WXb1b4Qt/YoTJGZExCLTw/Qu15jejGvfn1vnpZfhFnsZmwKIMx
-         eClwIpyPFAsHjy/XjLuhvsMmHwPtkmj+r9ZNMmWLtyC7/4ZoghhN+VPPhtnzigg1D2TM
-         t47aFq7vCdhZ9qWFxaJLSxoGc8o90gmXpZrWt+ie7VgqvFKBCsAjbjUWiegDWNZPMawm
-         bAkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713653226; x=1714258026;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fHqxIncYJ8egtEQrph9tKgbaWj8ag9453EB89pr+LvE=;
-        b=PMP/ZJP0EO6Jw4FN9fjjE1wh2Oh4ufz/rQs5pQLBXZBcTDag1AqoJ0ECtogF7PqglR
-         AOFu2LDnG8RKemDkyF6ACgG5lIic8TByAE+5KsKTefELtWj7DQyr5su4aFned0t6LvYp
-         +pPhG+dyJdTzFYvUoOtNwJ1z6U3U3nzckMM18tQOjOEVFgrSfrV9L57poahw/dGOe/Mj
-         aQIJ6HyJbLiv7J7M3ghJjvGu8jdDOtRhI8bdY72a/WxjlI3T/67Xw1GD4pcQ1iYtQRM4
-         pkoxdZbmA8feage/B/tbpVYQxAFa7NdqPzQznNnpugk7zkKFOcxgC8DaZoCKURUPyYfd
-         R57w==
-X-Forwarded-Encrypted: i=1; AJvYcCUVe1pUZ+9bWgZKSF6+pnKhvL03KNWvpkzjchA1+7lMKAHV0fPBUgmQDK8WlzutVLqhJP1WRrVFo2CNlrwaLtwh22ynW8W+90nZBsHv
-X-Gm-Message-State: AOJu0YwQjXF3F1YSNaST2OAR7hYNtzswi/WKUXTKZM/RZ0COn40r1R3I
-	OTtpL+K+xSPJUEkiWhWun1I3WPSMHOWtLzDaY0Am3UTXYO+mTJm6Rwx9X1LEEQo=
-X-Google-Smtp-Source: AGHT+IGtPzW/+9lmMVQCxqN2UztagHO9wsOjvQj41cl+HJwvySkknf0HE8sKI3A2uzyMihcZkv08Sw==
-X-Received: by 2002:a05:6000:2c2:b0:346:758e:5f29 with SMTP id o2-20020a05600002c200b00346758e5f29mr4624994wry.60.1713653226127;
-        Sat, 20 Apr 2024 15:47:06 -0700 (PDT)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id fc14-20020a05600c524e00b004161af729f4sm11399884wmb.31.2024.04.20.15.47.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Apr 2024 15:47:05 -0700 (PDT)
-Message-ID: <0b5c6091-e47c-4d24-a13a-2b5ad1b9cfb8@linaro.org>
-Date: Sat, 20 Apr 2024 23:47:01 +0100
+	s=arc-20240116; t=1713653252; c=relaxed/simple;
+	bh=iBDsjjo7cmxVARRW7JFU5sQW7UWP1+Pu/lUCGeFS1ug=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=IYLZlsQMn4CqZ9cDgw0TqqANWYkf/4mbeatfn1fWEXkToP4Wx7us+0BClpoGcsz4Z8+t1DvE5vAXk5tuN6XWE05vTtFEFAQw8WpVo7BrwrRsLvsarHXGs6Y2qD2dhHGtMHrbLot3A8jcNCI/4fGUdtitM/9jx8epW8t9VfbcMic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bn7BtLe+; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43KMdMbe007443;
+	Sat, 20 Apr 2024 22:47:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=i2oWs22vaTeTIaRZkzwbzO44O/N8MkH63JV9iHy8wuw=; b=bn
+	7BtLe+1oq8z9IlpERC/VlBd8TuykSLXqhz9+sL4YjKIO8dHdFjbOlhV0jLxKw8s9
+	ySGZbE1srLohvLYFIsCNialwjPwM+FsUuYvjrH9Npuh550pwQYAnfO3QmLvlkXZ5
+	B5q2v0FF+cxs45bkAPWykUYyK6jNw+/V0+1O165NbyGZw8jHo+ySE1AgR/gFOmeP
+	eor0qzTIrGujKjxTRu3bUmlWChNsn9BKCRGCNLGuGu2Oc7OUYc8tiAgesVHyRGXA
+	WA9DYhYU13SQjFGrZMZCCQrwsQp6f6RLgHJjS/0vjLD8KX4EHRYuu9uDG9UljNWZ
+	Lauk3hDu32aWUv8IjZJg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xm5sx1d35-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 20 Apr 2024 22:47:20 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43KMlJ8g002136
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 20 Apr 2024 22:47:19 GMT
+Received: from [10.110.104.191] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Sat, 20 Apr
+ 2024 15:47:19 -0700
+Message-ID: <95b18564-ffa9-2840-d266-1835e6e9d2bd@quicinc.com>
+Date: Sat, 20 Apr 2024 15:47:18 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 23/26] media: venus: vdec: Make explicit the range of
- us_per_frame
-To: Ricardo Ribalda <ribalda@chromium.org>,
- Martin Tuma <martin.tuma@digiteqautomotive.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Hugues Fruchet <hugues.fruchet@foss.st.com>,
- Alain Volmat <alain.volmat@foss.st.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen-Yu Tsai
- <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Sowjanya Komatineni <skomatineni@nvidia.com>,
- Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
- Abylay Ospan <aospan@netup.ru>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Dmitry Osipenko <digetx@gmail.com>,
- Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
- Sylvain Petinot <sylvain.petinot@foss.st.com>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
-References: <20240419-fix-cocci-v2-0-2119e692309c@chromium.org>
- <20240419-fix-cocci-v2-23-2119e692309c@chromium.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2 4/9] drm/msm/dpu: pull format flag definitions to
+ mdp_format.h
 Content-Language: en-US
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20240419-fix-cocci-v2-23-2119e692309c@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark
+	<robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten
+	<marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>
+CC: <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20240420-dpu-format-v2-0-9e93226cbffd@linaro.org>
+ <20240420-dpu-format-v2-4-9e93226cbffd@linaro.org>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20240420-dpu-format-v2-4-9e93226cbffd@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: KMX7nPCPczurQobBTBH8NB6sn2t9CHCr
+X-Proofpoint-GUID: KMX7nPCPczurQobBTBH8NB6sn2t9CHCr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-20_20,2024-04-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 phishscore=0 clxscore=1015 suspectscore=0 malwarescore=0
+ spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
+ mlxlogscore=863 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404200168
 
-On 19/04/2024 10:48, Ricardo Ribalda wrote:
-> Unless the fps is smaller than 0.000232829 fps, this fits in a 32 bit
-> number. Make that explicit.
+
+
+On 4/19/2024 9:01 PM, Dmitry Baryshkov wrote:
+> In preparation to merger of formats databases, pull format flag
+> definitions to mdp_format.h header, so that they are visibile to both
+> dpu and mdp drivers.
 > 
-> Found by cocci:
-> drivers/media/platform/qcom/venus/vdec.c:488:1-7: WARNING: do_div() does a 64-by-32 division, please consider using div64_u64 instead.
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
->   drivers/media/platform/qcom/venus/vdec.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-> index 29130a9441e7..2b2874aedb2d 100644
-> --- a/drivers/media/platform/qcom/venus/vdec.c
-> +++ b/drivers/media/platform/qcom/venus/vdec.c
-> @@ -464,7 +464,7 @@ static int vdec_s_parm(struct file *file, void *fh, struct v4l2_streamparm *a)
->   	struct venus_inst *inst = to_inst(file);
->   	struct v4l2_captureparm *cap = &a->parm.capture;
->   	struct v4l2_fract *timeperframe = &cap->timeperframe;
-> -	u64 us_per_frame, fps;
-> +	u64 us_per_frame;
->   
->   	if (a->type != V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE &&
->   	    a->type != V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-> @@ -484,10 +484,7 @@ static int vdec_s_parm(struct file *file, void *fh, struct v4l2_streamparm *a)
->   	if (!us_per_frame)
->   		return -EINVAL;
->   
-> -	fps = (u64)USEC_PER_SEC;
-> -	do_div(fps, us_per_frame);
-> -
-> -	inst->fps = fps;
-> +	inst->fps = USEC_PER_SEC / (u32)us_per_frame;
->   	inst->timeperframe = *timeperframe;
->   
->   	return 0;
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_formats.c | 98 ++++++++++++++---------------
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h | 31 +++------
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c |  4 +-
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c   |  4 +-
+>   drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c  |  8 +--
+>   drivers/gpu/drm/msm/disp/mdp_format.c       |  6 +-
+>   drivers/gpu/drm/msm/disp/mdp_format.h       | 39 ++++++++++++
+>   drivers/gpu/drm/msm/disp/mdp_kms.h          |  4 +-
+>   drivers/gpu/drm/msm/msm_drv.h               |  4 --
+>   9 files changed, 109 insertions(+), 89 deletions(-)
 > 
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
