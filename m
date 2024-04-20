@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-152234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40CB28ABB2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 12:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D929C8ABB2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 12:58:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2B6D1F21163
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 10:57:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 553041F21265
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 10:58:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D812941E;
-	Sat, 20 Apr 2024 10:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429391B809;
+	Sat, 20 Apr 2024 10:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="owxG409S"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Qdzu5DsL"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD8561B809
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 10:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25F629CF3
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 10:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713610669; cv=none; b=FwTkoL3mF3h19B05RMyHniBTcGt7wET1MaPh/R7lXmLMB07JOMJTSI8i6Th3X+2pYEVhykmy/sB26Zr/KLD22rL6WFRfjbEU9OZlLFqymaaxGIEYxXHtymSEFddC4GEu7Fctl4dS1tibS5JVkSi7YhkeoKP2mtaQ8PiJxEzBu7Y=
+	t=1713610673; cv=none; b=nnlEDUh6Ns5H0ucC2pfuHq0c44dKEfIzyXbKL8ZHJuXlqk2NKwzWnp1yGstZ0Ka9zZvY+wd4hmk57wRK7m4Z1JXndTxbW+gf1Dw+oCdYgPim6QAyq9Y5LRC64okwQdWk/Cuk9ttzXGWzhlFaqHVnkDJIIZi4iOCHypX3Klrtqs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713610669; c=relaxed/simple;
-	bh=23hWeEr+W84WKW10MFW2wGv1mxXeR0jauqdsZvPF0GI=;
+	s=arc-20240116; t=1713610673; c=relaxed/simple;
+	bh=/OO80MkWOvVpcqeIUdO65a0aK/m97dp/+VZg1SaV2ak=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O0TwPBcjLLLcDTJGcfq/oTHLLB1ozSj/vnvsqX5moIrmchRmkkvugotjXjsFDjbAcCWp7M8gIQ2ONvZQpsXGuH4+fSfAQohP+zZwANq/fQi4CmlyRQY2JcDrQQl9SpcnCAtvSivq2r+d0TpK1wl3y3teGzuiPsdEKHtxpPY2ZkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=owxG409S; arc=none smtp.client-ip=209.85.221.42
+	 In-Reply-To:Content-Type; b=rkq/A+HFeOtPrBNjolBKd3oRMvTBSvSYkXcvzXau/+bXk1PDIH8s4SNMr0vTeoNwqsgkAWAVbdkntysV9IAZzhif9B0jkAJPVSnoaHosbx4Ny9ksGK6n6njc0DlXphd9JL5gJcA/C9yR6/1NC/y9UCdzWRrSUzr3c9sn+yLThkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Qdzu5DsL; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-34a00533d08so1808752f8f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 03:57:47 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-344047ac7e4so2335294f8f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 03:57:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713610666; x=1714215466; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713610670; x=1714215470; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ipeqzc6ZZ02TREHla/6ToLuSgvq7MVUYfKOCJgBT6bM=;
-        b=owxG409SfEpU5cOFtgZcJEhFPcw5NUntZLZBL4vQs9lTeeDnpX62Bc7d4YGtoIdjBJ
-         Eu4ha6pi+t9LwujS2virBMeoVM05N+76ryd4eFqtWigv3cFXof2vmk2HTG7imdl8AcFr
-         TK5lgdcYMtJpiLa/obgpULqJqF9kQxd5nO0sXEGm/9JcVHRjVEiIseBvOfjctV3boKfg
-         fRubbjbs3cvZeyQBqZcPYXlCrytsAYHLv5PRcb2eLwxMDDwDp57ifaTVKIKZDdXAStLU
-         6b3ynl6ikthICRhfwC0IlIwH5c/mKHWsawyh7VPnxDJr206mqw148gF+q66XkcFR/BTg
-         +3tg==
+        bh=yIDoCCVvUMC4Rl0awqlIrDbXmIKqSnUH/F/mkEGwK7Q=;
+        b=Qdzu5DsL24KD9v58uBZjN0JVzjMVlBY3Lb/Ru/cFh9pKF5s5MYcnntVss4OJzM16e9
+         aXpXZ28EeF993gdvPr/I1ir7/jQqXLUlK6vkyec9KTgQc6zsY6XosJbyrh1p0H6zzhvL
+         JAc9a7MM8UqZc7q6BJuqCj3pGpSvhr6u3dEdRvhS/RHC1GUlfbVyctofuMrn+0A1lYhR
+         82A4naIzCdx/DHjze5EO0pf2TSUpYU+MzI0HnBkeo5NVOiZIJUqd41pZiDhXnPrag9pN
+         VpOLhEqtJiPkRw+Ux62CIS2uRddrr6sImyhZ9LNA955tVKd0Fv7ACne4SFaTCFFrl1AN
+         ibGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713610666; x=1714215466;
+        d=1e100.net; s=20230601; t=1713610670; x=1714215470;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ipeqzc6ZZ02TREHla/6ToLuSgvq7MVUYfKOCJgBT6bM=;
-        b=S3CuvjkzFF3kTuoJLXib1T5UuBShiKSc8+QxgfTFMVkKwkUp5kuZeB/0MfZWc5Rjng
-         4FbKh2MP087Wlq25M7q8/koc0KO7fETr/IUWQtFkJEPSnRxYHPO0nZJxMgBLy0OEEtx6
-         VjWu0vF9Gj09p0G7XmHyigI4zh653hNsdogye3BvrwoIhGNkSh8OjqfoYVz0muk+d9ql
-         hKq3PPSnx7k7bO2fwle9b8YA0qIg59vPwZJ22C/sOKNpQx4nvTQye4zkUoCAHd9e5kSy
-         P2ui6kgfY0ppQWbTY6JpJNwKaBml7KVTGhaSkeR88mSKsBbGQ2TzUmenyTrohxPWZe8j
-         dzxA==
-X-Forwarded-Encrypted: i=1; AJvYcCXdjRuF4HJCNsFJ0PP9QmIL1Vgf71FoyQVQFTR26rcAnbhsSGupbf/KCytJppHs3dPYy5dPO20ifzNynO5c75Yfwrzjl+LirstL9V6x
-X-Gm-Message-State: AOJu0YwS3juwd/98OlFQikvscxexIBpwioGaqhIYptjB8aEjWnPIlllA
-	qC4elRW8aniAERN257Irsztuv/xWNcvkJe3EJdlniLays9a+nizhnBlBBz6HCN8=
-X-Google-Smtp-Source: AGHT+IFkA8Y7ennaLjq8bZ4n1JCaFKc7IdLrpPRWj5rTDXNWayaiI2eIh0FoCthPJ/SBJ9VRtl2pYg==
-X-Received: by 2002:a5d:49c9:0:b0:343:44d2:3828 with SMTP id t9-20020a5d49c9000000b0034344d23828mr3230642wrs.16.1713610666016;
-        Sat, 20 Apr 2024 03:57:46 -0700 (PDT)
+        bh=yIDoCCVvUMC4Rl0awqlIrDbXmIKqSnUH/F/mkEGwK7Q=;
+        b=E5cPZqRdw5pGdv7Mgmgf+3CbfrgZkGRrbR3sTg3H4EL8VWkI6fKbPW8vxwwvqpPyIh
+         ySD+HukihNhCvDLxT1IdiCLlEY//6lyiaY31FdHWzHWo67HvTGujksC//MX57Nw06+hv
+         aQgGe4OK1wh9xtmlImQD0nUMOtktOjVsLQEdI4t7Ki7RLMUEZ99TLo9whRNAWG3HlZbJ
+         BfJD2v6dut+MklTahOqrdD4Nqv4uMxh5S9FdsoscOPyIQqrL/O+x7mEL7rO3JKheOoPx
+         6gFnOTmTTWUiefdbbjHb/o9870kSGXr3eKIzHMgMmw/DFtJIvkdSsjO4mzPkpzWI6igc
+         5U1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU3vqj483xAr/jyO95WeaQKLP5WA8QwC/fxcgqBYku1j+gigMFMERmfflFRCpQA3diUr948JQ3DiIb5pGfkuCaFkkR38p0qdJC0YWiY
+X-Gm-Message-State: AOJu0YxYEwRT8osgnnfJhDILOyL/IHKG7+fMLis7TIMzq4Th6hC0/etc
+	JFjFAboAW6cvwih1VwhKYEzFtCUYhRYv5RUHvVS/1D101jhPagqi3aSnhSV34Ts=
+X-Google-Smtp-Source: AGHT+IECd4rBHtbc2VKuJKsGIUPBTBewkbAr5ySc7MkCbrk3PNDJ+KwY2+/z13gOxLe9OyZkJ3CtwA==
+X-Received: by 2002:a5d:4584:0:b0:34a:68aa:e242 with SMTP id p4-20020a5d4584000000b0034a68aae242mr3118317wrq.0.1713610670229;
+        Sat, 20 Apr 2024 03:57:50 -0700 (PDT)
 Received: from [10.236.36.88] ([88.128.88.151])
-        by smtp.gmail.com with ESMTPSA id n17-20020a05600c501100b00419e078677csm2258995wmr.16.2024.04.20.03.57.42
+        by smtp.gmail.com with ESMTPSA id n17-20020a05600c501100b00419e078677csm2258995wmr.16.2024.04.20.03.57.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Apr 2024 03:57:45 -0700 (PDT)
-Message-ID: <19bee3e2-ea14-4fe9-ba10-497166ab791e@linaro.org>
-Date: Sat, 20 Apr 2024 02:50:26 +0200
+        Sat, 20 Apr 2024 03:57:49 -0700 (PDT)
+Message-ID: <203e49b0-db7f-4df1-bd07-695d507cd2e6@linaro.org>
+Date: Sat, 20 Apr 2024 02:56:46 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,25 +76,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] dt-bindings: power: reset: Convert mode-.*
- properties to array
-To: Elliot Berman <quic_eberman@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Sebastian Reichel
- <sre@kernel.org>, Rob Herring <robh@kernel.org>,
+Subject: Re: [PATCH v5 1/5] dt-bindings: power: Extend battery chemistry with
+ capacitor
+To: Mike Looijmans <mike.looijmans@topic.nl>, linux-pm@vger.kernel.org
+Cc: Conor Dooley <conor+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Andy Yan <andy.yan@rock-chips.com>, Lorenzo Pieralisi
- <lpieralisi@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc: Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
- Melody Olvera <quic_molvera@quicinc.com>,
- Shivendra Pratap <quic_spratap@quicinc.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Florian Fainelli <florian.fainelli@broadcom.com>, linux-pm@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
-References: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
- <20240414-arm-psci-system_reset2-vendor-reboots-v2-1-da9a055a648f@quicinc.com>
+ Rob Herring <robh@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.e2aac3eb-919a-41c3-81e9-f9030f4f80eb@emailsignatures365.codetwo.com>
+ <20240416121818.543896-1-mike.looijmans@topic.nl>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -141,45 +131,20 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240414-arm-psci-system_reset2-vendor-reboots-v2-1-da9a055a648f@quicinc.com>
+In-Reply-To: <20240416121818.543896-1-mike.looijmans@topic.nl>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 14/04/2024 21:30, Elliot Berman wrote:
-> PSCI reboot mode will map a mode name to multiple magic values instead
-> of just one. Convert the mode-.* property to an array. Users of the
-> reboot-mode schema will need to specify the maxItems of the mode-.*
-> properties. Existing users will all be 1.
+On 16/04/2024 14:18, Mike Looijmans wrote:
+> Another technology to store energy is a (super)capacitor.
 > 
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
 > ---
->  .../devicetree/bindings/power/reset/nvmem-reboot-mode.yaml   |  4 ++++
->  Documentation/devicetree/bindings/power/reset/qcom,pon.yaml  |  4 ++++
->  .../devicetree/bindings/power/reset/reboot-mode.yaml         | 12 ++++++++++--
->  .../devicetree/bindings/power/reset/syscon-reboot-mode.yaml  |  4 ++++
->  4 files changed, 22 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/power/reset/nvmem-reboot-mode.yaml b/Documentation/devicetree/bindings/power/reset/nvmem-reboot-mode.yaml
-> index 627f8a6078c2..03b3b9be36de 100644
-> --- a/Documentation/devicetree/bindings/power/reset/nvmem-reboot-mode.yaml
-> +++ b/Documentation/devicetree/bindings/power/reset/nvmem-reboot-mode.yaml
-> @@ -30,6 +30,10 @@ properties:
->  
->  allOf:
->    - $ref: reboot-mode.yaml#
-> +  - patternProperties:
-> +      "^mode-.*$":
-> +        items:
-> +          maxItems: 1
+> (no changes since v1)
 
-You still need to limit total number of items. This only defines how
-many items you have in each inner cell of the matrix. What about the
-other cell?
-
-I understood that you want something more or less equivalent, but the
-code does not look like.
-
-
+not much improved, although maybe my response came a bit too late.
+Anyway, please implement feedback from previous version.
 
 Best regards,
 Krzysztof
