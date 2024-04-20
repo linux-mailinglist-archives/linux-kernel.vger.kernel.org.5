@@ -1,66 +1,65 @@
-Return-Path: <linux-kernel+bounces-152357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A428ABCE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 21:29:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECF2E8ABCE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 21:30:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1C0528184F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 19:29:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B7871C20A5A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 19:30:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2F9E3FE54;
-	Sat, 20 Apr 2024 19:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C3C481A2;
+	Sat, 20 Apr 2024 19:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="X071cx1Z"
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="1RV3/I6t"
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB9C4205E00;
-	Sat, 20 Apr 2024 19:29:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A0740BFD;
+	Sat, 20 Apr 2024 19:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713641366; cv=none; b=A0Bm00pyeOo9FivIeel8TgOjuEEi5SaV0lsjcsMEefW++4H06y3awAbKitPELr2kwWRLjUiplIOmOTyVmbVy9TacW8azACRMKtKgZkJX4qkFDy2/GrPCe1Ah7BdUlRfBqSv8DvY601gD9IM9lmfTEdnJrATHzHTZhlwLfzVXD14=
+	t=1713641394; cv=none; b=Ig0MAbdn/lODxvrprg60AWvrJcaToLIxsNkJ6uMwYEICdsNxfdnhpPbqyw4Et05tFpYJOCi/5soNDVNrXB+t6SdeiKtsAQ+X5uMQa9xy5eK92b0tG+LaEDYxcBbbWXTLw0lqf+a5LcynNJ8LsjWRnx589z9g8hRAZPhByPL5FqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713641366; c=relaxed/simple;
-	bh=DPhpx3ogNvTeYIGyGZ1Z7G8Y4I9wQYO2ncB5m9y1fGM=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=NzoBsa8dCJJcYdvmk2eUckV1W780og5iYSZUgR1Dns0X0PA2Wx1cRGeQJLh8YjWcksnBwfRS/TxpJImkDWvdZwzblm48d2Vj7FJgDDFlqXb78PrO0pE/UY4aKB8KwfrpFhiXFoCeC4XpL53iuLX1tGahXncH96549rnuHrC8cyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=X071cx1Z; arc=none smtp.client-ip=68.232.154.123
+	s=arc-20240116; t=1713641394; c=relaxed/simple;
+	bh=ue3wSJsGvBdnw1N4bfdmEQKVEAV5JrZU9sFns46sUdU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
+	 In-Reply-To:To:CC; b=aIumqLr4KKIDJPDa4j8EdVsoa6dIpmqN9mPbWtWzR5WvRn1JKfo+X5D2oVfXWdcgle4IQkqo+f5KVsQSnOPjv8frotO/bxkkdd5e+M6NLMxyJ3v+i2HhgysO6Zy3lejvyPgabXGtwoZwBUROdQYkWZpzC3CkWFnj9FTgdKe81RM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=1RV3/I6t; arc=none smtp.client-ip=68.232.154.123
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1713641363; x=1745177363;
-  h=from:subject:date:message-id:mime-version:
-   content-transfer-encoding:to:cc;
-  bh=DPhpx3ogNvTeYIGyGZ1Z7G8Y4I9wQYO2ncB5m9y1fGM=;
-  b=X071cx1ZtLa9L1FXNxmsMrJdPjngFZ3T8QFtCt7TWI7JAPNk7+QSzPDd
-   64PDy/KlTpzkm88YIIyB5XezFQBwjiGuWQOyrIV2cwojt1TBxzoMcm4RK
-   iz76fMI4irq7jr1YVX+5R72IbpnM8EWxiGUEP7oTA24Wrv7Dj2traLOZM
-   d0YRccS+EldwwKUXhvrrRBhFg08u72iAAuac0YdE+QX1zpeBo4+hg+Q/o
-   3WxFTNZG9FO48PYYCagtPcacAJ5D4Kn6V1pt6l0aUjiji7Zy4RJ4up/26
-   y8PT151HDhCs5JW1xAlmS1KSkfK+VoyeRudvQ+V2Og2O2TxNQyrhXjGya
-   w==;
-X-CSE-ConnectionGUID: SORlnsJnTTyKwP8vKnva5A==
-X-CSE-MsgGUID: T38QHzjBSBGSmRtFYPP18g==
+  t=1713641393; x=1745177393;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:references:in-reply-to:to:cc;
+  bh=ue3wSJsGvBdnw1N4bfdmEQKVEAV5JrZU9sFns46sUdU=;
+  b=1RV3/I6t2pWUfyuHqX7lF5UXu7jMdq2bHyZo3uI87mgpPMtenS/eeQhd
+   zggKzsZ7lP5fV11PhOaVPZ2DET7WGJPJp2eqRzC+R6eIP0VdGr9Ri9jcN
+   pZ9A96nx6GiWvd6p55SIvWOB2rMNEHBaElxY9zVQkz/j34hk+X1Chwa5u
+   v3Ov/Ky5ex1P7ijvAVOPkBlO8uRuXIwcpKbUlqNsyNRwu0h+sqXCX4NaK
+   WGh7qZU0ZVA+PvaSUuGZjpRMsmAHglfX3aP+Y0kOBiQFrkPkrcb+WVNc2
+   5toxisznQE6ySeKmXItNqnib6RQVDklPVKeekegQzAWOxWIVdM4gvLBp9
+   Q==;
+X-CSE-ConnectionGUID: r3PO+GVPQoGyYBK6996e2w==
+X-CSE-MsgGUID: DyOyp7H8TBe6qpBDMhUneA==
 X-IronPort-AV: E=Sophos;i="6.07,217,1708412400"; 
-   d="scan'208";a="21911450"
+   d="scan'208";a="22513531"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Apr 2024 12:29:22 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Apr 2024 12:29:52 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 20 Apr 2024 12:29:19 -0700
+ 15.1.2507.35; Sat, 20 Apr 2024 12:29:23 -0700
 Received: from DEN-DL-M70577.microchip.com (10.10.85.11) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Sat, 20 Apr 2024 12:29:16 -0700
+ 15.1.2507.35 via Frontend Transport; Sat, 20 Apr 2024 12:29:19 -0700
 From: Daniel Machon <daniel.machon@microchip.com>
-Subject: [PATCH net-next v3 0/5] net: sparx5: add support for port
- mirroring
-Date: Sat, 20 Apr 2024 21:29:09 +0200
-Message-ID: <20240420-port-mirroring-v3-0-0fe3ac52006d@microchip.com>
+Date: Sat, 20 Apr 2024 21:29:10 +0200
+Subject: [PATCH net-next v3 1/5] net: sparx5: add new register definitions
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,11 +67,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAIUXJGYC/33NzQ6DIBAE4FcxnEvDjyjpqe/R9GDpqnsQzEKIj
- fHdS+jNQ4+TyXyzswiEENmt2RlBxojBl6AvDXPz4Cfg+C6ZKaFa0QrF10CJL0gUCP3Erey1kb0
- ENw6sjFaCEbcKPpiHxD1siT1LM2NMgT71Kcva/1Bpz2iWXHAQxmkjRO+MuS/oKLgZ16sLS+Wy+
- k+oQijRtcp29qVtdyaO4/gCS5W0pv0AAAA=
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240420-port-mirroring-v3-1-0fe3ac52006d@microchip.com>
+References: <20240420-port-mirroring-v3-0-0fe3ac52006d@microchip.com>
+In-Reply-To: <20240420-port-mirroring-v3-0-0fe3ac52006d@microchip.com>
 To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
 	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
 	<pabeni@redhat.com>, Lars Povlsen <lars.povlsen@microchip.com>, "Steen
@@ -87,65 +85,103 @@ CC: <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<daniel.machon@microchip.com>
 X-Mailer: b4 0.14-dev
 
-This series adds support for port mirroring, and port mirroring stats,
-through tc matchall action FLOW_ACTION_MIRRED.
-
-The hardware has three independent mirroring probes. Each probe can be
-configured with a separate set of filtering conditions that must be
-fulfilled before traffic is mirrored.
-
-A mirror probe can have up to 64 source ports and a single monitor port.
-The direction of a mirror probe determines if rx or tx traffic is
-mirrored from the source port to the monitor port.
-
-To: David S. Miller <davem@davemloft.net>
-To: Eric Dumazet <edumazet@google.com>
-To: Jakub Kicinski <kuba@kernel.org>
-To: Paolo Abeni <pabeni@redhat.com>
-To: Lars Povlsen <lars.povlsen@microchip.com>
-To: Steen Hegelund <Steen.Hegelund@microchip.com>
-To: UNGLinuxDriver@microchip.com
-To: Russell King <linux@armlinux.org.uk>
-Cc: netdev@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: Yue Haibing <yuehaibing@huawei.com>
+In preparation for port mirroring support through tc matchall, add the
+required register definitions.
 
 Signed-off-by: Daniel Machon <daniel.machon@microchip.com>
+Reviewed-by: Steen Hegelund <Steen.Hegelund@microchip.com>
 ---
-Changes in v3:
-- Ditch do_div() (patch #3) to fix warning on hexagon arch, reported by intel bot
-- Link to v2: https://lore.kernel.org/r/20240418-port-mirroring-v2-0-20642868b386@microchip.com
+ .../ethernet/microchip/sparx5/sparx5_main_regs.h   | 68 ++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
 
-Changes in v2:
-- Fix clang build warning about uninitialized variable 'err'
-- Link to v1: https://lore.kernel.org/r/20240418-port-mirroring-v1-0-e05c35007c55@microchip.com
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main_regs.h b/drivers/net/ethernet/microchip/sparx5/sparx5_main_regs.h
+index bd03a0a3c1da..22acc1f3380c 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_main_regs.h
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main_regs.h
+@@ -83,6 +83,64 @@ enum sparx5_target {
+ #define ANA_AC_OWN_UPSID_OWN_UPSID_GET(x)\
+ 	FIELD_GET(ANA_AC_OWN_UPSID_OWN_UPSID, x)
+ 
++/*      ANA_AC:MIRROR_PROBE:PROBE_CFG */
++#define ANA_AC_PROBE_CFG(g) \
++	__REG(TARGET_ANA_AC, 0, 1, 893696, g, 3, 32, 0, 0, 1, 4)
++
++#define ANA_AC_PROBE_CFG_PROBE_RX_CPU_AND_VD GENMASK(31, 27)
++#define ANA_AC_PROBE_CFG_PROBE_RX_CPU_AND_VD_SET(x)\
++	FIELD_PREP(ANA_AC_PROBE_CFG_PROBE_RX_CPU_AND_VD, x)
++#define ANA_AC_PROBE_CFG_PROBE_RX_CPU_AND_VD_GET(x)\
++	FIELD_GET(ANA_AC_PROBE_CFG_PROBE_RX_CPU_AND_VD, x)
++
++#define ANA_AC_PROBE_CFG_PROBE_CPU_SET      GENMASK(26, 19)
++#define ANA_AC_PROBE_CFG_PROBE_CPU_SET_SET(x)\
++	FIELD_PREP(ANA_AC_PROBE_CFG_PROBE_CPU_SET, x)
++#define ANA_AC_PROBE_CFG_PROBE_CPU_SET_GET(x)\
++	FIELD_GET(ANA_AC_PROBE_CFG_PROBE_CPU_SET, x)
++
++#define ANA_AC_PROBE_CFG_PROBE_VID          GENMASK(18, 6)
++#define ANA_AC_PROBE_CFG_PROBE_VID_SET(x)\
++	FIELD_PREP(ANA_AC_PROBE_CFG_PROBE_VID, x)
++#define ANA_AC_PROBE_CFG_PROBE_VID_GET(x)\
++	FIELD_GET(ANA_AC_PROBE_CFG_PROBE_VID, x)
++
++#define ANA_AC_PROBE_CFG_PROBE_VLAN_MODE    GENMASK(5, 4)
++#define ANA_AC_PROBE_CFG_PROBE_VLAN_MODE_SET(x)\
++	FIELD_PREP(ANA_AC_PROBE_CFG_PROBE_VLAN_MODE, x)
++#define ANA_AC_PROBE_CFG_PROBE_VLAN_MODE_GET(x)\
++	FIELD_GET(ANA_AC_PROBE_CFG_PROBE_VLAN_MODE, x)
++
++#define ANA_AC_PROBE_CFG_PROBE_MAC_MODE     GENMASK(3, 2)
++#define ANA_AC_PROBE_CFG_PROBE_MAC_MODE_SET(x)\
++	FIELD_PREP(ANA_AC_PROBE_CFG_PROBE_MAC_MODE, x)
++#define ANA_AC_PROBE_CFG_PROBE_MAC_MODE_GET(x)\
++	FIELD_GET(ANA_AC_PROBE_CFG_PROBE_MAC_MODE, x)
++
++#define ANA_AC_PROBE_CFG_PROBE_DIRECTION    GENMASK(1, 0)
++#define ANA_AC_PROBE_CFG_PROBE_DIRECTION_SET(x)\
++	FIELD_PREP(ANA_AC_PROBE_CFG_PROBE_DIRECTION, x)
++#define ANA_AC_PROBE_CFG_PROBE_DIRECTION_GET(x)\
++	FIELD_GET(ANA_AC_PROBE_CFG_PROBE_DIRECTION, x)
++
++/*      ANA_AC:MIRROR_PROBE:PROBE_PORT_CFG */
++#define ANA_AC_PROBE_PORT_CFG(g) \
++	__REG(TARGET_ANA_AC, 0, 1, 893696, g, 3, 32, 8, 0, 1, 4)
++
++/*      ANA_AC:MIRROR_PROBE:PROBE_PORT_CFG1 */
++#define ANA_AC_PROBE_PORT_CFG1(g) \
++	__REG(TARGET_ANA_AC, 0, 1, 893696, g, 3, 32, 12, 0, 1, 4)
++
++/*      ANA_AC:MIRROR_PROBE:PROBE_PORT_CFG2 */
++#define ANA_AC_PROBE_PORT_CFG2(g) \
++	__REG(TARGET_ANA_AC, 0, 1, 893696, g, 3, 32, 16, 0, 1, 4)
++
++#define ANA_AC_PROBE_PORT_CFG2_PROBE_PORT_MASK2 BIT(0)
++#define ANA_AC_PROBE_PORT_CFG2_PROBE_PORT_MASK2_SET(x)\
++	FIELD_PREP(ANA_AC_PROBE_PORT_CFG2_PROBE_PORT_MASK2, x)
++#define ANA_AC_PROBE_PORT_CFG2_PROBE_PORT_MASK2_GET(x)\
++	FIELD_GET(ANA_AC_PROBE_PORT_CFG2_PROBE_PORT_MASK2, x)
++
+ /*      ANA_AC:SRC:SRC_CFG */
+ #define ANA_AC_SRC_CFG(g)         __REG(TARGET_ANA_AC,\
+ 					0, 1, 849920, g, 102, 16, 0, 0, 1, 4)
+@@ -6203,6 +6261,16 @@ enum sparx5_target {
+ #define QFWD_SWITCH_PORT_MODE_LEARNALL_MORE_GET(x)\
+ 	FIELD_GET(QFWD_SWITCH_PORT_MODE_LEARNALL_MORE, x)
+ 
++/*      QFWD:SYSTEM:FRAME_COPY_CFG */
++#define QFWD_FRAME_COPY_CFG(r)\
++	__REG(TARGET_QFWD, 0, 1, 0, 0, 1, 340, 284, r, 12, 4)
++
++#define QFWD_FRAME_COPY_CFG_FRMC_PORT_VAL   GENMASK(12, 6)
++#define QFWD_FRAME_COPY_CFG_FRMC_PORT_VAL_SET(x)\
++	FIELD_PREP(QFWD_FRAME_COPY_CFG_FRMC_PORT_VAL, x)
++#define QFWD_FRAME_COPY_CFG_FRMC_PORT_VAL_GET(x)\
++	FIELD_GET(QFWD_FRAME_COPY_CFG_FRMC_PORT_VAL, x)
++
+ /*      QRES:RES_CTRL:RES_CFG */
+ #define QRES_RES_CFG(g)           __REG(TARGET_QRES,\
+ 					0, 1, 0, g, 5120, 16, 0, 0, 1, 4)
 
----
-Daniel Machon (5):
-      net: sparx5: add new register definitions
-      net: sparx5: add bookkeeping code for matchall rules
-      net: sparx5: add port mirroring implementation
-      net: sparx5: add the tc glue to support port mirroring
-      net: sparx5: add support for matchall mirror stats
-
- drivers/net/ethernet/microchip/sparx5/Makefile     |   3 +-
- .../net/ethernet/microchip/sparx5/sparx5_main.c    |   3 +
- .../net/ethernet/microchip/sparx5/sparx5_main.h    |  25 +++
- .../ethernet/microchip/sparx5/sparx5_main_regs.h   |  68 ++++++
- .../net/ethernet/microchip/sparx5/sparx5_mirror.c  | 235 +++++++++++++++++++++
- .../ethernet/microchip/sparx5/sparx5_tc_matchall.c | 125 ++++++++++-
- 6 files changed, 449 insertions(+), 10 deletions(-)
----
-base-commit: 1c25fe9a044d5334153a3585754b26553f8287b9
-change-id: 20240402-port-mirroring-81735171ecfa
-
-Best regards,
 -- 
-Daniel Machon <daniel.machon@microchip.com>
+2.34.1
 
 
