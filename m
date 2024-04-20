@@ -1,103 +1,149 @@
-Return-Path: <linux-kernel+bounces-152387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 213048ABDB3
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 01:06:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DC8B8ABDA8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 01:00:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A90C28150D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 23:06:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4121B20E98
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 23:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CCA44CB4A;
-	Sat, 20 Apr 2024 23:05:54 +0000 (UTC)
-Received: from out28-82.mail.aliyun.com (out28-82.mail.aliyun.com [115.124.28.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9AD54D583;
+	Sat, 20 Apr 2024 23:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yr5uPDGS"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D4E2747D;
-	Sat, 20 Apr 2024 23:05:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.28.82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89CDC495F0
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 23:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713654353; cv=none; b=s6D6zW5Ot6bnq6ql+yyvAQhgY3Z3bodv1e4Cmy8cj5ayaLk3poen0vFRvna0Be3iVe1VShV5C45h/DTTLqPxFF3ckuYFzGP67QpKO1KCFH8e4qwwUTJNLWzCOhMiCfggMd8qkp5q4hXtRSEH/Baes1F6rMl0EBXt16z3r7nwgmA=
+	t=1713654033; cv=none; b=OqmnmzPG8EaN8KUyHsw4fzs9SfwZ6xn7yMLv8J1Il0+sheInNwsO4s9DVxPn/Aum7jyyyNiPs0Aex8PcGVnKybIZUbKHhACeb839p9TQLZe/DXN5NYlwxze9ErgSyP1kEyOob/NyyxSQ9BuOP6Kcez6WcDPoSKzUov5yVMHoQok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713654353; c=relaxed/simple;
-	bh=OHtgtW8L4Duwwp/TCH/X7YkJd9k0LtJwHCy5dH/qFTQ=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:Message-Id:
-	 MIME-Version:Content-Type; b=HgLi1ZguXG/8/IJVpGtsSQm4NYjhPnkhbn546UqC9msaGzypTQsVeHERKpNtZoraNHqwPDsMz/HYUyPsrDVy/lz9mrJnTQYm1JLU8O5/t0eHA1yBWW0yTzUpuhY6GssB+0ryAz9/jcdmE7GFoL+x+iDaK1GS6hbOFYUN26R5FKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com; spf=pass smtp.mailfrom=e16-tech.com; arc=none smtp.client-ip=115.124.28.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=e16-tech.com
-X-Alimail-AntiSpam:AC=CONTINUE;BC=0.1073318|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0311914-0.00265519-0.966153;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.XHDA.xl_1713654025;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.XHDA.xl_1713654025)
-          by smtp.aliyun-inc.com;
-          Sun, 21 Apr 2024 07:00:26 +0800
-Date: Sun, 21 Apr 2024 07:00:26 +0800
-From: Wang Yugui <wangyugui@e16-tech.com>
-To: Shay Drori <shayd@nvidia.com>
-Subject: Re: Linux 6.6.28
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- <linux-kernel@vger.kernel.org>,
- <akpm@linux-foundation.org>,
- <torvalds@linux-foundation.org>,
- <stable@vger.kernel.org>,
- <lwn@lwn.net>,
- <jslaby@suse.cz>
-In-Reply-To: <220e55df-a0a2-4272-b94f-c7c4c6fbf2b7@nvidia.com>
-References: <20240420135914.2AD9.409509F4@e16-tech.com> <220e55df-a0a2-4272-b94f-c7c4c6fbf2b7@nvidia.com>
-Message-Id: <20240421070025.C32F.409509F4@e16-tech.com>
+	s=arc-20240116; t=1713654033; c=relaxed/simple;
+	bh=4W4kNBK/xrEcrUApwzCM7sLtC45HuF/KUzFjcCmXLt4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oHinww1amDT+ddUdrk7elNVhMX5heti7e7AqDB+G6Dgos2z2gP1xuHJlhxA+0ar4S5lNXDwqDzAhsVCeB4JhZs9iqv9rekri4ftwcqk2n0Tc+HQnGqvycwl8fa12IDSpCBrZmf+JjtCLFRqiu41VO8uhE97eW+ZPNm7pUX27A+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yr5uPDGS; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56e136cbcecso4482789a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 16:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713654030; x=1714258830; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gS/avcdT3uZE+/g4l+u7eNrKfkVrRBnHoxOYygE+RDE=;
+        b=yr5uPDGSisSRWg2BdtLz4v/8WoQaybLA7Pyun9XdF+c2IjnCoJEE+28J0xFgKDDFUA
+         jLy+1Ozibv+WHlOotmMQIzz7Z9UDCUBXKnvHmD+40IFh6LhkgWnkb1sUyD07WI/dK5eI
+         74ZZo9DP3bxK1rUBP+g3y+19ehWxbKCnYUZQnB/EwNq5QPEXaiRutWzZOdPjzStM7pvA
+         +x15lAWyTKucfjzbirdYgmDwy4ZLQ9i8De9vBC77mdCD3xJYXzOGrj4JhacqcTQJOBPB
+         uXsFxQ8ML2FJwIgERF7kFGec4d6/ZxJHi/FPJa0cwiwotn1wXqNSdkVOuJKN1Q5ZonZJ
+         9GOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713654030; x=1714258830;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gS/avcdT3uZE+/g4l+u7eNrKfkVrRBnHoxOYygE+RDE=;
+        b=jkZw5/uCILW5Ebuxzu/muvZ0Mno30IN18u0ulRRvCmrnPwfU4gmCsjSECioD3TbcrD
+         CZWVRlQG4wnvWMlEmA35vY5c/DDEOGj5k5DG6V3tVZ0VNkGqsRFES3ARFY3ru6EjGLv9
+         YlU7pheRGocqEPu4tftm4p3Y0VChC7niH0d7uLWvk+bpWbpO16bxapZle1aSK3yGoWmE
+         USvRMcR0eRLJwvzOofI7mJy4wrUBY4lE7JkPajCqse0eI8xT6PWvBa/9JFTFE7rc7PrC
+         rJR5dxXZfzIjN3niyiTqmuGAYA4JNticsHWXn54YAy5ndznH3OmibtfYqHyIC3Mz1P7x
+         eykw==
+X-Forwarded-Encrypted: i=1; AJvYcCWA5nH1JoD5Fz48akQ1ryFKlwOchmIVD2ek2tupRyFIN/lkNl+gWaLZvcJbyxT0nChY5fOBtuBeuNEeJ7rBnKw8gFEVB2A3mmlMPr2Z
+X-Gm-Message-State: AOJu0YzLCKSz4ttCBxGbIKoIs9IEf1w61Icxyu3YWP8kJnpNNT+l5Rs+
+	xfRuKr1+nLD+BcUsVCLvp3LrAk3qcSN7DK5vqP4V7SIS1qz2EcwSrFLxvHM+GBw=
+X-Google-Smtp-Source: AGHT+IH4lwqPioLpoIzW6dLhOLlXPP3zMShUOxH0TJXNnW3DIij9PpcqOmEnmKfQrSavTUI2UaMo9Q==
+X-Received: by 2002:a50:9ece:0:b0:570:cd6:8ef with SMTP id a72-20020a509ece000000b005700cd608efmr4297896edf.29.1713654029517;
+        Sat, 20 Apr 2024 16:00:29 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id eo9-20020a056402530900b00571ef2c1308sm913940edb.12.2024.04.20.16.00.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Apr 2024 16:00:29 -0700 (PDT)
+Message-ID: <9f44c386-4be9-4904-bf67-f0e664773baa@linaro.org>
+Date: Sun, 21 Apr 2024 00:00:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/26] media: pci: mgb4: Refactor struct resources
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Martin Tuma <martin.tuma@digiteqautomotive.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hugues Fruchet <hugues.fruchet@foss.st.com>,
+ Alain Volmat <alain.volmat@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen-Yu Tsai
+ <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Sowjanya Komatineni <skomatineni@nvidia.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
+ Abylay Ospan <aospan@netup.ru>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Dmitry Osipenko <digetx@gmail.com>,
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+ Sylvain Petinot <sylvain.petinot@foss.st.com>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20240419-fix-cocci-v2-0-2119e692309c@chromium.org>
+ <20240419-fix-cocci-v2-1-2119e692309c@chromium.org>
+Content-Language: en-US
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240419-fix-cocci-v2-1-2119e692309c@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.81.06 [en]
 
-Hi,
+On 19/04/2024 10:47, Ricardo Ribalda wrote:
+> The struct resource end field is inclusive not exclusive, this is, the
+> size is (end - start) +1.
 
-> 
-> 
-> On 20/04/2024 8:59, Wang Yugui wrote:
-> > External email: Use caution opening links or attachments
-> >
-> >
-> > Hi,
-> >
-> >> I'm announcing the release of the 6.6.28 kernel.
-> >>
-> >> All users of the 6.6 kernel series must upgrade.
-> >>
-> >> The updated 6.6.y git tree can be found at:
-> >>        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.6.y
-> >> and can be browsed at the normal kernel.org git web browser:
-> >>        https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
-> >
-> > Linux 6.6.28 failed to boot with the following panic *1 on a server with
-> > mellonax CX-6 VPI NIC, but 6.6.27/6.1.87 boot well.
-> >
-> > After reverting 'net/mlx5: Restore mistakenly dropped parts in register devlink
-> > flow', linux boot well.
-> > 
-> there is a similar discussion in net-dev ML[1].
-> In short, it seems this patch is missing from stable, which is prerequisite for the bad patch:
-> 0553e753ea9e
-> "net/mlx5: E-switch, store eswitch pointer before registering devlink_param".
-> 
-> Wang, can you test it out please?
+", this is," doesn't parse on my end
 
-After apply "net/mlx5: E-switch, store eswitch pointer before registering devlink_param"
-to 6.6.28, linux boot well here.
+"i.e" => that is, would be more appropriate I think.
 
-and  "net/mlx5: Restore mistakenly dropped parts in register devlink flow" is
-NOT applied here.
+"The struct resource end field is inclusive not exclusive of the size" 
+which I still think is a confusing statement.
 
-Thanks a lot.
+Perhaps something much easier to understand is called for
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2024/04/21
+"The struct resource end field signifies the end address not the 
+relative offset from the start field i.e size == (end - start) + 1.
 
+Amend the .end field to specify the end address not the relative size 
+from the offset as is currently given."
+
+Other than that, I think its reasonable to assume the mapping != 0 - 
+0x100 inclusive.
+
+Please consider updating your commit log and if you do add my
+
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+
+---
+bod
 
