@@ -1,186 +1,177 @@
-Return-Path: <linux-kernel+bounces-152253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CC7D8ABB68
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:31:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDFF78ABB6B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 13:37:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2F71B2138C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:31:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBFA21C206A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CACCF374C1;
-	Sat, 20 Apr 2024 11:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA9A29CF0;
+	Sat, 20 Apr 2024 11:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uVqX/oD1"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZSjH8xfY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C3A29422
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 11:31:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9CE205E3A;
+	Sat, 20 Apr 2024 11:37:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713612670; cv=none; b=atq0UiYQqkuaa+0IxwiAWNXDSsMAaphTuhwEb2QfyztuAwAtGH+n7HEmFWInBfFfWowtmhS+GgJlIlBpK5G9q4PsFlfa7dJyHLStthGcaoFuTi7PXrCTp6qrOpOfx6UctAfo96S4YgPNtgUif65u1Z5GuDDC96lawjBTkV1/Otc=
+	t=1713613051; cv=none; b=n6ZOBDaCtVBhTCqX7pPGggTJxIlzOnF5heXXO+o0OygBtl5dnfSNgfk7rnr0iaOS6m6ii0ixgOmIw0d8VyG0XdoCP9tpCm+6WAYVO+DyO96IGWp+xKN08GV3TpxfPeMuh3HlgGQLWIM6RFwACvdn3IONM4XQGxu39+Ozx8QgHco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713612670; c=relaxed/simple;
-	bh=pawPlGAegmUcbHOz9d1bltyJzb5yP4n4W4h5P5ZnyJA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L4uDBcRcikHbI+6UsNjSfO+BJAZfXU1nFOUMtELjB9p6g93fqHVq72HZ3XoaQfrdi1KwdegtO9N25qOATqp92uL6mzWm4aJinRzvPQju23Ur7rN+IL70InwCFUESNwh7+geu+XUbrtdtSiY9k0qEm1LS0qg/bNUVTCIU6D4q8Ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uVqX/oD1; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4187c47405aso19548625e9.3
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 04:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713612665; x=1714217465; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=juH++PmotbDBKPrtgNOyCREifYMeAZx5cOkMx0r15I4=;
-        b=uVqX/oD16IySV79kxGJSDp41PuJa0UmW/a/L8hS4ImoNFBNm9V9+gd0BUar32naxxn
-         WqCcv40AQcd+jdz1CBK3ORkqt1mSUrbGcwGotATJwsay1BxupUuNuJCZRiAv47hm8+TU
-         TevM6dmV2N6QSbnGgvWc9JnYhPLn5xFtaL+6FGre9NU4UToIrT91cgNayBODJeEfHt2Q
-         eiMcVCED3WF/MLOM0UBZigxH/CgC5riIIk9TeBYSQJq5g99NSjoZfOJTmLEjXqmhG9Dc
-         5WEDZ44LP+ofrafn8h6Ht4Ct9HlsOehE7AgSW8DWNn3KALt2WsO2n+xdRPES0EI0GVFw
-         H+Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713612665; x=1714217465;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=juH++PmotbDBKPrtgNOyCREifYMeAZx5cOkMx0r15I4=;
-        b=jWtEl2Z+62B/n25GCHvAfI12bwzdO0j2wgPyRKEzamwoSkp50RpgHR1yHmmoMa92X+
-         l2eDWJWOAonb+HsDZdDLH911TreCW5svWOLDVkowUBxfv6P5rBXedaPHqPSrh2BQJLD0
-         Faq+A4O5aen2bdA/HegOfHx4bxITWLCOXYXg76ptbQOK73teVs4IWWuuzHJqvO8TULEV
-         85w4j0SL19ybfGfQuLDhfVL3UdGGEwKU8ik9HFKDVM5GlhhmR7wBoYRFY7PgJJkeyxIr
-         zcHeBhfj1dES9UuEK+mbATCfOH1otae0nBcU8i4hg4qKZAiM6s+5/1TkjOmKm9E5Vgrz
-         HHdA==
-X-Forwarded-Encrypted: i=1; AJvYcCVhlopPfjmymK7du9VW5STYjkPyI/NoEjz8rr6cRYSQ5bfxc9FRcPintuDOuhoDNeqCJpUWV7YlBBOgXub5giNuQ6Glst6KNjTQqM9t
-X-Gm-Message-State: AOJu0YzMdrv6XR3pSzbMYUwjPptiuZZZPoaMTYmHBoCrqVmiG+fERzsB
-	ZA2f67um5vN7gjapTcPRIoIIwmC+mgqJ4OHUMOKiO+kLAZCCP52FhDEMv5Qj+zU=
-X-Google-Smtp-Source: AGHT+IEpQxOwPl01GAZYfLQXS5h7m+Das6WRfoys9gwq53gGo43TGH0uMgnPLs6RMT7q5Qc1Ri4NFw==
-X-Received: by 2002:a05:600c:5489:b0:419:a1c:8fe1 with SMTP id iv9-20020a05600c548900b004190a1c8fe1mr3328386wmb.38.1713612665269;
-        Sat, 20 Apr 2024 04:31:05 -0700 (PDT)
-Received: from [10.236.36.88] ([88.128.88.151])
-        by smtp.gmail.com with ESMTPSA id j10-20020adfff8a000000b0034335f13570sm6594513wrr.116.2024.04.20.04.31.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Apr 2024 04:31:04 -0700 (PDT)
-Message-ID: <3ca24a3d-e7e0-4f68-9a6f-ebaf83079ebe@linaro.org>
-Date: Sat, 20 Apr 2024 13:31:03 +0200
+	s=arc-20240116; t=1713613051; c=relaxed/simple;
+	bh=mcbXPArX3W5bs/P2RSabEjC9+JVFSfDDDGwpIZwpHfE=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EgdwT6e3ncfY9gSGTVmLwM5yAqdB5NkBU7bI2ITaozHIOwnigiQT9Y3LCl0K/ibq5omXFUAjmqQ+fEpVbfOswbzf55UfdBZ6dVyO6dm+SHksWe66v/5WH9cr6P0P1gfgIdoOXqo4eZKYkFXf3LagtlcFTGQphK2aYKe6WI8oUl4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZSjH8xfY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 132DDC072AA;
+	Sat, 20 Apr 2024 11:37:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713613051;
+	bh=mcbXPArX3W5bs/P2RSabEjC9+JVFSfDDDGwpIZwpHfE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ZSjH8xfYL22lL0GdIKPSujIBpaCXmJdaf0KXyz8w4arA+m2zXxzM4Dlhjj8wwjt4y
+	 7oFP3FCxgC33lyaasVfnskXH13U4srvxM44Nng94e76byoJgy0I2r0JxZEE1CcIL3h
+	 Lf7s1UtlktES/aJ00wtJZssO3x2hJzpzR6HBJxNqUl29naxWdAvndtnKnuuPaMMUPk
+	 FvrZbOpidXJ/or8dzgpzVC4xAxDHLpKkkpDT/DwRx83hHlW9VM/ZIZhbY7vvCnohw4
+	 uOvZskWAv+qGxnK8kfPtSED6TQ/ht5W8Pq29ZmLW1bLnYn3aAttOuiU2kc1ZdVYgks
+	 8DQfrWIKfMzYA==
+Received: from 82-132-232-8.dab.02.net ([82.132.232.8] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1ry928-006LLL-2X;
+	Sat, 20 Apr 2024 12:37:28 +0100
+Date: Sat, 20 Apr 2024 12:37:25 +0100
+Message-ID: <87zftoqn7u.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Will Deacon <will@kernel.org>
+Cc: Hector Martin <marcan@marcan.st>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Zayd Qumsieh <zayd_qumsieh@apple.com>,
+	Justin Lu <ih_justin@apple.com>,
+	Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+	Mark Brown <broonie@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Mateusz Guzik <mjguzik@gmail.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Miguel Luis <miguel.luis@oracle.com>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Christoph Paasch <cpaasch@apple.com>,
+	Kees Cook <keescook@chromium.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Baoquan He <bhe@redhat.com>,
+	Joel Granados <j.granados@samsung.com>,
+	Dawei Li <dawei.li@shingroup.cn>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Florent Revest <revest@chromium.org>,
+	David Hildenbrand <david@redhat.com>,
+	Stefan Roesch <shr@devkernel.io>,
+	Andy Chiu <andy.chiu@sifive.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Helge Deller <deller@gmx.de>,
+	Zev Weiss <zev@bewilderbeest.net>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [PATCH 0/4] arm64: Support the TSO memory model
+In-Reply-To: <20240419165809.GA4020@willie-the-truck>
+References: <20240411-tso-v1-0-754f11abfbff@marcan.st>
+	<20240411132853.GA26481@willie-the-truck>
+	<28ab55b3-e699-4487-b332-f1f20a6b22a1@marcan.st>
+	<20240419165809.GA4020@willie-the-truck>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v21 5/9] dt-bindings: usb: qcom,dwc3: Add bindings for
- SC8280 Multiport
-To: Krishna Kurapati <quic_kriskura@quicinc.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Wesley Cheng <quic_wcheng@quicinc.com>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Conor Dooley <conor+dt@kernel.org>, Thinh Nguyen
- <Thinh.Nguyen@synopsys.com>, Felipe Balbi <balbi@kernel.org>,
- Johan Hovold <johan@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
- quic_ppratap@quicinc.com, quic_jackp@quicinc.com,
- Bjorn Andersson <quic_bjorande@quicinc.com>
-References: <20240420044901.884098-1-quic_kriskura@quicinc.com>
- <20240420044901.884098-6-quic_kriskura@quicinc.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240420044901.884098-6-quic_kriskura@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 82.132.232.8
+X-SA-Exim-Rcpt-To: will@kernel.org, marcan@marcan.st, catalin.marinas@arm.com, mark.rutland@arm.com, zayd_qumsieh@apple.com, ih_justin@apple.com, Houdek.Ryan@fex-emu.org, broonie@kernel.org, ardb@kernel.org, mjguzik@gmail.com, anshuman.khandual@arm.com, oliver.upton@linux.dev, miguel.luis@oracle.com, joey.gouly@arm.com, cpaasch@apple.com, keescook@chromium.org, samitolvanen@google.com, bhe@redhat.com, j.granados@samsung.com, dawei.li@shingroup.cn, akpm@linux-foundation.org, revest@chromium.org, david@redhat.com, shr@devkernel.io, andy.chiu@sifive.com, josh@joshtriplett.org, oleg@redhat.com, deller@gmx.de, zev@bewilderbeest.net, omosnace@redhat.com, ojeda@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, asahi@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On 20/04/2024 06:48, Krishna Kurapati wrote:
-> Add the compatible string for SC8280 Multiport USB controller from
-> Qualcomm.
+On Fri, 19 Apr 2024 17:58:09 +0100,
+Will Deacon <will@kernel.org> wrote:
 > 
-> There are 4 power event interrupts supported by this controller
-> (one for each port of multiport controller). Add all the 4 as
-> non-optional interrupts for SC8280XP-MP
+> On Thu, Apr 11, 2024 at 11:19:13PM +0900, Hector Martin wrote:
+> > On 2024/04/11 22:28, Will Deacon wrote:
+> > >   * Some binaries in a distribution exhibit instability which goes away
+> > >     in TSO mode, so a taskset-like program is used to run them with TSO
+> > >     enabled.
+> > 
+> > Since the flag is cleared on execve, this third one isn't generally
+> > possible as far as I know.
 > 
-> Also each port of multiport has one DP and one DM IRQ. Add all DP/DM
-> IRQs related to 4 ports of SC8280XP Teritiary controller.
+> Ah ok, I'd missed that. Thanks.
 > 
-> Also added SuperSpeed PHY interrupt for both Superspeed ports.
+> > > In all these cases, we end up with native arm64 applications that will
+> > > either fail to load or will crash in subtle ways on CPUs without the TSO
+> > > feature. Assuming that the application cannot be fixed, a better
+> > > approach would be to recompile using stronger instructions (e.g.
+> > > LDAR/STLR) so that at least the resulting binary is portable. Now, it's
+> > > true that some existing CPUs are TSO by design (this is a perfectly
+> > > valid implementation of the arm64 memory model), but I think there's a
+> > > big difference between quietly providing more ordering guarantees than
+> > > software may be relying on and providing a mechanism to discover,
+> > > request and ultimately rely upon the stronger behaviour.
+> > 
+> > The problem is "just" using stronger instructions is much more
+> > expensive, as emulators have demonstrated. If TSO didn't serve a
+> > practical purpose I wouldn't be submitting this, but it does. This is
+> > basically non-negotiable for x86 emulation; if this is rejected
+> > upstream, it will forever live as a downstream patch used by the entire
+> > gaming-on-Mac-Linux ecosystem (and this is an ecosystem we are very
+> > explicitly targeting, given our efforts with microVMs for 4K page size
+> > support and the upcoming Vulkan drivers).
 > 
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> These microVMs sound quite interesting. What exactly are they? Are you
+> running them under KVM?
+> 
+> Ignoring the mechanism for the time being, would it solve your problem
+> if you were able to run specific microVMs in TSO mode, or do you *really*
+> need the VM to have finer-grained control than that? If the whole VM is
+> running in TSO mode, then my concerns largely disappear, as that's
+> indistinguishable from running on a hardware implementation that happens
+> to be TSO.
 
-v21 and suddenly you drop tags requiring everyone to re-review this. I
-do not think this process is working. I will not re-review this.
+Since KVM has been mentioned a few times, I'll give my take on this.
 
-This is a friendly reminder during the review process.
+Since day 1, it was a conscious decision for KVM/arm64 to emulate the
+architecture, and only that -- this is complicated enough. Meaning
+that no implementation-defined features should be explicitly exposed
+to the guest. So I have no plan to expose any such feature for
+userspace to configure TSO or anything else of the sort.
 
-It looks like you received a tag and forgot to add it.
+However, that doesn't preclude VMs from running in TSO mode if the HW
+is configured as such at boot time. From what I have understood, this
+is a per translation regime setting (EL1 and EL2 have separate knobs).
 
-If you do not know the process, here is a short explanation:
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
+So it should be possible to set ACTLR_EL1.TSO=1 from firmware (using
+the non-architected ACTLR_EL12 accessor), and let things work without
+touching anything else (KVM doesn't context switch this register and
+traps accesses to it). This would keep KVM out of the loop, the host
+side would be unaffected, and only VMs would pay the overhead of TSO.
 
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+I appreciate that this is not the ideal situation, and very much an
+all-or-nothing approach. But that's what we can reasonably manage from
+an upstream perspective given the variability of the arm64 ecosystem.
 
-If a tag was not added on purpose, please state why and what changed.
+	M.
 
-
-
-Best regards,
-Krzysztof
-
+-- 
+Without deviation from the norm, progress is not possible.
 
