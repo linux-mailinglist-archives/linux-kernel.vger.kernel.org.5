@@ -1,116 +1,148 @@
-Return-Path: <linux-kernel+bounces-152386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D3718ABDB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 01:05:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98E1D8ABDB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 01:08:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C4E62814AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 23:05:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8024DB20A72
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 23:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20124CB4A;
-	Sat, 20 Apr 2024 23:05:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560C64CDE0;
+	Sat, 20 Apr 2024 23:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="T7v3CEZq"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oPjt3rKi"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B752747D;
-	Sat, 20 Apr 2024 23:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0539F482D1
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 23:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713654310; cv=none; b=Ss7bfLpslEnMqxN/qnd6Pjq+cn5gR+wbH8AFfXhwMhO6HkBB7zPyKAdZ5/0Jx4BO/dwntOV6niomuVb4zuvFLzGJUFH7A1avV6QtHA5dvpjpBUgQIynyfkPaEzSQSzCDbw6waL3FJmMd50h1wFPhaj59EAFTCIbLNq9e9v7h+w4=
+	t=1713654480; cv=none; b=T1j3nS6Z+HGanpJXNJxrpoXJGJKM1/7lQo5by5bmQewRuajwuAwe7Fph1eI+lV1MKj4NVg+ZFo9cRbO0sr4feCV1GscWJmWXom+WeRswYWazf5dT2zwAcX99W/GG6H4LnL9LgsLdXbSwA6/jfaTDEE3Op5V1D5fW1w7lJJiL4x0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713654310; c=relaxed/simple;
-	bh=F38SKUGYWrRDuPIzs9ddCyR57T9nI2ldp5piN6FEgHk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=jbyBxaqD2RnUwY/xQ+BI7fM0tNwfbCKNvnVG0osRVBMBaY2XGMANeazYZkTWa+26xzIpInnIr7/YWGvtl8+iRX+tcTnmTT/bKINWYS8zr6L20PyeEiySrZqpAEPfGgYcA2Z1od20dQc5KncTRg+1cj+9i2vDfa8drsrfdBaowPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=T7v3CEZq; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43KMxgoo009378;
-	Sat, 20 Apr 2024 23:05:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=oDQydHjlrzqxEdjgMjatBOw7FZwCSvSCMa8qrRie8xw=; b=T7
-	v3CEZqb6g1Sk2ugA0X3pn3xuSvten/2nyM2eqLC1EtZMfFkRZxcyGYiUoH+wMHNs
-	S0VxNB0Oo8Usm2yifSuBmmgLIvcRyircGbXy+yErtBSh1fIkAM/+HV/PbTmhPIsy
-	/NAZbIBLsWen6kQ6iPgm39+gJ5cxUORojK8CokLNvnM36tM65bwpqgumCDbff/oO
-	Dzuj/3VustB5Ip/97R6BEFBtwEZHBqk4exmk95EZBqgKwdrgZ4f+XidGWMrjxrWA
-	r8Zi7Z3owVRzMBalNP3/A/lDDSfhv5kkN/sOoefj3JJC2NRz+BMoUXWAWK8XKoW7
-	yqUAZj9nhxY30r1T1dSQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xm4qd9h0f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 20 Apr 2024 23:05:02 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43KN51bc020893
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 20 Apr 2024 23:05:01 GMT
-Received: from [10.110.104.191] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Sat, 20 Apr
- 2024 16:05:00 -0700
-Message-ID: <a88fd3d3-eecb-8eff-4c27-29ff235dc338@quicinc.com>
-Date: Sat, 20 Apr 2024 16:04:59 -0700
+	s=arc-20240116; t=1713654480; c=relaxed/simple;
+	bh=z6difwhnZxEoVhqGOtYJurOynqmxvUFH5a72r0Wf1ZE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ehxukVc4mRZ+DGKGbTzfz3wKHug6/fs482Oe8W5zzcKWZ7CV5rHKBk3mEtD64EtUxI8oJRrL6Yy031hayZytoYIJkAFGiq1kXGJ5OaCe53pBgD0Jf0sFT9idh56mmaWOkhmueMjEjXBAiNxUHV7Eib7NDHWDYrQsgLFHaRvK6io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oPjt3rKi; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-346359c8785so2728861f8f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 16:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713654477; x=1714259277; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=x9hTDE+OmzSnorVJyzQcFNYmLnBIvZgvXWNavzd4DaM=;
+        b=oPjt3rKiNAhso7Wd+M0Hl6d6UB7y7ALR9tmfmQCj+b2aKTQCoEjG4/3fwH3pQI9LWb
+         A0UdjtG8hB/kfXy5JccETkfTaHPJ/WwVHCs918XQdNQfysXeDHvTHLGGyDrCBlXFLMIM
+         z+HGEBQGeTcupf6fYmqoXSfZlDVOMkoJSUiKTLDD+PGeH68lYfIgJPfAIaDe1ZZLbWrD
+         wrFadREqvkke2CDWj9rgU45oVfxX6qpNsblmw1CnAr3706AuZ9UYoa0Q/QWm82C7I2aN
+         iGo2Vg7fY6auzycLFLeeLQl5hOG0KTDdntEigaf+cem4FaxiWDbZfh3+KKDxfMEaS+vp
+         H/xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713654477; x=1714259277;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x9hTDE+OmzSnorVJyzQcFNYmLnBIvZgvXWNavzd4DaM=;
+        b=YWwUMdQ2h8LsEKVxMFajY5Wvy104jVVC/djp/3DkPJDGKm6oG2q/GRdZiV7Sa+TE6l
+         pxDg1xAQEx2uNvOzfY5ZY3q12yMuXXyiNXj1hegt0gAGDGDcF2EScFeNFB+Zogrz/inR
+         xseD8lyfldtPpg0tb7uO5DAxIaLB/gNFBDPSbkr//CTlFBtLBx+/RWnG1MuMcXaBKdnf
+         rKY4rNtM6xautM2He+EbuGHfgv6bwu+EZIJ2ShV5/SGhnzGkYlhDrH0XD94m/MuLW67A
+         KIhLYvJ7R+xaHM7/XLQt3kwcQ/o1uXUffZ5TdJ/1Q4CnrQ/gcTguCNdPJ7st+J9XfrUZ
+         LZCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUVFXCxeI78L4QlgCGnxAgbgpbJdIJYZr8F/F7+5+okSxIm1AcwfLy6zkMUeKoIRuxxYZftK6V0NJUU5pPKUKnxiF7fQguGAMAk/bwa
+X-Gm-Message-State: AOJu0YwX5IiQosOHsyIn+EhTvCtgiBEIJpE4x4WvdmKxIH4ZcIOhBUYA
+	Jin/IO54jTOTEyQScXRVMyBz6xKTDN3ErE1OFn3zBQuNnwV1OTO1NgR+l2hxZ44=
+X-Google-Smtp-Source: AGHT+IFGdOa11zFVqyC3KCcGi9RrrofVzZm8cOluppaZLRYUDrIPrVm3Gfdre6MIxYSUZ9KallR7Bw==
+X-Received: by 2002:adf:cd84:0:b0:33e:7f51:c2f8 with SMTP id q4-20020adfcd84000000b0033e7f51c2f8mr3599510wrj.36.1713654477259;
+        Sat, 20 Apr 2024 16:07:57 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id p3-20020a5d6383000000b00341b451a31asm7862874wru.36.2024.04.20.16.07.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Apr 2024 16:07:56 -0700 (PDT)
+Message-ID: <ae9b190c-3961-4704-bc93-cb1c4182672b@linaro.org>
+Date: Sun, 21 Apr 2024 00:07:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 3/3] drm/msm/mdp4: correct LCDC regulator name
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/26] media: stb0899: Simplify check
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Martin Tuma <martin.tuma@digiteqautomotive.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hugues Fruchet <hugues.fruchet@foss.st.com>,
+ Alain Volmat <alain.volmat@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen-Yu Tsai
+ <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Sowjanya Komatineni <skomatineni@nvidia.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
+ Abylay Ospan <aospan@netup.ru>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Dmitry Osipenko <digetx@gmail.com>,
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+ Sylvain Petinot <sylvain.petinot@foss.st.com>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20240419-fix-cocci-v2-0-2119e692309c@chromium.org>
+ <20240419-fix-cocci-v2-2-2119e692309c@chromium.org>
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark
-	<robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>
-CC: <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20240420-mdp4-fixes-v1-0-96a70f64fa85@linaro.org>
- <20240420-mdp4-fixes-v1-3-96a70f64fa85@linaro.org>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20240420-mdp4-fixes-v1-3-96a70f64fa85@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240419-fix-cocci-v2-2-2119e692309c@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: zE-fuUr7QqaHdCFvyPc6csMSRh5DuTKi
-X-Proofpoint-ORIG-GUID: zE-fuUr7QqaHdCFvyPc6csMSRh5DuTKi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-20_20,2024-04-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0
- mlxlogscore=941 bulkscore=0 suspectscore=0 malwarescore=0 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404200170
 
-
-
-On 4/19/2024 7:33 PM, Dmitry Baryshkov wrote:
-> Correct c&p error from the conversion of LCDC regulators to the bulk
-> API.
+On 19/04/2024 10:47, Ricardo Ribalda wrote:
+> chip_id is an unsigned number, it can never be < 0
 > 
-> Fixes: 54f1fbcb47d4 ("drm/msm/mdp4: use bulk regulators API for LCDC encoder")
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Fixes cocci check:
+> drivers/media/dvb-frontends/stb0899_drv.c:1280:8-15: WARNING: Unsigned expression compared with zero: chip_id > 0
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 > ---
->   drivers/gpu/drm/msm/disp/mdp4/mdp4_lcdc_encoder.c | 2 +-
+>   drivers/media/dvb-frontends/stb0899_drv.c | 2 +-
 >   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/media/dvb-frontends/stb0899_drv.c b/drivers/media/dvb-frontends/stb0899_drv.c
+> index 2f4d8fb400cd..35634f9a8ab5 100644
+> --- a/drivers/media/dvb-frontends/stb0899_drv.c
+> +++ b/drivers/media/dvb-frontends/stb0899_drv.c
+> @@ -1277,7 +1277,7 @@ static int stb0899_get_dev_id(struct stb0899_state *state)
+>   	dprintk(state->verbose, FE_ERROR, 1, "Demodulator Core ID=[%s], Version=[%d]", (char *) &demod_str, demod_ver);
+>   	CONVERT32(STB0899_READ_S2REG(STB0899_S2FEC, FEC_CORE_ID_REG), (char *)&fec_str);
+>   	fec_ver = STB0899_READ_S2REG(STB0899_S2FEC, FEC_VER_ID_REG);
+> -	if (! (chip_id > 0)) {
+> +	if (!chip_id) {
+>   		dprintk(state->verbose, FE_ERROR, 1, "couldn't find a STB 0899");
+>   
+>   		return -ENODEV;
+> 
 
-Indeed ! I should have caught this during review :(
-
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
