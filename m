@@ -1,66 +1,190 @@
-Return-Path: <linux-kernel+bounces-152288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3392B8ABBEC
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 16:03:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B5EC8ABBF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 16:06:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64DF01C209B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 14:03:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7877281477
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 14:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B6C22091;
-	Sat, 20 Apr 2024 14:03:40 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6735262BE;
+	Sat, 20 Apr 2024 14:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="klwwiv2I"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188C62375F
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 14:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB8AB669;
+	Sat, 20 Apr 2024 14:05:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713621820; cv=none; b=p3qy6PCq8HKkkXoFh2R+jqppclaQ8a2qD1cKJc3tzAJHsGhefQaYQmcXzB1TXGYfvXqF3OoD4wD5DZCQjzNPkMadjnnxFLkB4/GH+yPTzLtCwCjI24LbWoU+Rp16pk0PXAnFOA8Uz2R+9HyhMrCmiqnxy2YDDHzoRCcUyACPHig=
+	t=1713621951; cv=none; b=LYAwKVC69Y3kxFsrD4VC+mRkoFgyhitmO2tim+U884SAeTyxVJR1CT6BI8/9jqXCQ1tby/+rLTvbcy4/cGZbsct6qXhZg3r2RMtkKKz4sopfGhmj0KPt5rhlkHtvA72lPmA816uNriIh203LlXxFPII/mpfDixOROAaYLdMiYWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713621820; c=relaxed/simple;
-	bh=MrauLE7vTIJ56o0G5yI1/rmSGSVS4GvOYwtIC8oySNA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=JspGBanxAArVW6J9IFKo4uxRIBAs7zcYFAkxXKAfWub1DmMsmRP2+gskevGg7QpfJ0mW5Nr+oUhNKyiPPWS0ieyZSw0Fi31dNASi31E+ByITz0qT1NaDWnmQsBgMSIo3oSow9W7s4UycOWZjson5mv7cfl5iCsybXNxllPGiJqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav412.sakura.ne.jp (fsav412.sakura.ne.jp [133.242.250.111])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 43KE3SLj024714;
-	Sat, 20 Apr 2024 23:03:28 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav412.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav412.sakura.ne.jp);
- Sat, 20 Apr 2024 23:03:28 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav412.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 43KE3SAM024705
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sat, 20 Apr 2024 23:03:28 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <1031889c-a474-4797-8482-1651baa5ba57@I-love.SAKURA.ne.jp>
-Date: Sat, 20 Apr 2024 23:03:27 +0900
+	s=arc-20240116; t=1713621951; c=relaxed/simple;
+	bh=cqnb9OJE3P1VZzS2ArQ+qXik84KwiE/PGpx9+DVa4f8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BvZjlodAMqknlQd2E0IGTJlr++7sNWA9jyNQx8TrULmCtKPuvUJPmr5GgNNeF9Jr3uHAUAkKBZ5atP3GvejKQJp5QDp9PRtCXdEXYSfXBxHPZDtTofkOToEmyLm4n0t2ByefGc//BfcdvY6KKFDxiQjOceJ3cyvHVHMoyQhgewc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=klwwiv2I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5131BC072AA;
+	Sat, 20 Apr 2024 14:05:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713621950;
+	bh=cqnb9OJE3P1VZzS2ArQ+qXik84KwiE/PGpx9+DVa4f8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=klwwiv2IN3Bw2Zhip0k3i9mu8/tRn0Io6OkXzF4aR34U+3F6WlVAmoo1pPAFdHmz5
+	 OXYv2DP1r6lBPcG70Exz/lfDYDIdN0m+iL6HRB5hiVRqL7dQgX6WjgKGsMX1nKAiTn
+	 4I6Dt3Tt7ENhCWla7PTfE7k+lgam8etzK8xoB9P892TlgisT6c5KbaSscKHkq9k0mV
+	 FtCWBClXS0tVqGBjjfJX6ih8hEJg27Dvn3xGzKD1s4Kqfc/NW96Ov5LnwNwVqiQcPt
+	 Ht4hTephValjoYGwROjtCEPGzSSsakhVRWz/nOMjrAnvXGCivKBI36N0OFVg7dUD9d
+	 /M1oFVP8EwnLg==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51967f75729so3474555e87.0;
+        Sat, 20 Apr 2024 07:05:50 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX/Wyfc/V0PSW1n52DjSFYCzLwlhCnxDhY06y9F7cZf4Zb10R0gSORpgkATqPzKBVkfR7H2F34lkYamxn4PGy+TrqDnchSg06TkRDSWB2O+lQxVHI2zFTM1BtilymGXo51lpfByafxw3zJ0ScX6uCU7Bt0PHnLoCqhupNQXCvlO1W3yX7y5MFJF4TLNW+GLP3DIW1OU0BItPVwKrA==
+X-Gm-Message-State: AOJu0YxEKTXaP95ySK1kz214nqkBYIfxxSSqmeRI+NKwTmvtqiyuavH1
+	F1pY76Q2VF63CqVVlnGmP5wsxWiFzlXOSbvi58LZ6TITW6DmwqAgXhoHUqrLs90KwizdNSCLLm1
+	tq2fw29syY7VK4PcxS18VnK738jQ=
+X-Google-Smtp-Source: AGHT+IG0Ocg1AZoSs3v/LzffVF+IuMaiqTRS4giDtD5s/bJ/AESAhWEBu9R1lIxKpWn5wp61vOAlPJk5ja4Sgp0X0wY=
+X-Received: by 2002:a05:6512:3488:b0:51a:d2ea:97c3 with SMTP id
+ v8-20020a056512348800b0051ad2ea97c3mr1965074lfr.69.1713621949038; Sat, 20 Apr
+ 2024 07:05:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in tty_port_tty_get (2)
-To: syzbot <syzbot+afcf1c450aca9ec1b5f1@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000e82df406143872eb@google.com>
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <000000000000e82df406143872eb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240415162041.2491523-5-ardb+git@google.com> <171327842741.29461.3030265084386428643.git-patchwork-notify@kernel.org>
+ <CAMj1kXGVRGcJGS1xuqHPeJfM797RB2UiJQfSHK+oj1JQG4YECg@mail.gmail.com>
+ <CAK7LNAQ8fhKUwK_m8uGfvBUBrAdXdMYM3_AA5zo2cQzhW3jE1A@mail.gmail.com>
+ <CAMj1kXGYdjQz5n0uuiLHu8uc-YNE8eqUQWtGjg5pANo+0speQA@mail.gmail.com>
+ <CAK7LNAT9Y5C+Shr1Pq=xrL2tcBK6rpBn05iovdZ2=kMHW5UCkw@mail.gmail.com>
+ <CAMj1kXEbXfsNarFMbDC-Dzk6H9X9C4Ax2pWPSZhmt93mV4_Q2w@mail.gmail.com> <CAMj1kXFt5kbZ8yFgO-jU5ZP3-WZi5ZZJKKTCpEYRdUYFRj9CYQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXFt5kbZ8yFgO-jU5ZP3-WZi5ZZJKKTCpEYRdUYFRj9CYQ@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sat, 20 Apr 2024 23:05:12 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARxd4KK7Yj0ah+tFrwWrnr9P=HqXwYQE86q9v8pxmCQNw@mail.gmail.com>
+Message-ID: <CAK7LNARxd4KK7Yj0ah+tFrwWrnr9P=HqXwYQE86q9v8pxmCQNw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] kbuild: Avoid weak external linkage where possible
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: patchwork-bot+netdevbpf@kernel.org, Ard Biesheuvel <ardb+git@google.com>, 
+	linux-kernel@vger.kernel.org, arnd@arndb.de, martin.lau@linux.dev, 
+	linux-arch@vger.kernel.org, linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
+	andrii@kernel.org, olsajiri@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-#syz fix: bpf, sockmap: Prevent lock inversion deadlock in map delete elem
+On Sat, Apr 20, 2024 at 11:00=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> w=
+rote:
+>
+> On Sat, 20 Apr 2024 at 15:56, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Sat, 20 Apr 2024 at 15:42, Masahiro Yamada <masahiroy@kernel.org> wr=
+ote:
+> > >
+> > > On Sat, Apr 20, 2024 at 9:35=E2=80=AFPM Ard Biesheuvel <ardb@kernel.o=
+rg> wrote:
+> > > >
+> > > > On Sat, 20 Apr 2024 at 14:32, Masahiro Yamada <masahiroy@kernel.org=
+> wrote:
+> > > > >
+> > > > > On Fri, Apr 19, 2024 at 4:57=E2=80=AFPM Ard Biesheuvel <ardb@kern=
+el.org> wrote:
+> > > > > >
+> > > > > > On Tue, 16 Apr 2024 at 16:40, <patchwork-bot+netdevbpf@kernel.o=
+rg> wrote:
+> > > > > > >
+> > > > > > > Hello:
+> > > > > > >
+> > > > > > > This series was applied to bpf/bpf-next.git (master)
+> > > > > > > by Daniel Borkmann <daniel@iogearbox.net>:
+> > > > > > >
+> > > > > > > On Mon, 15 Apr 2024 18:20:42 +0200 you wrote:
+> > > > > > > > From: Ard Biesheuvel <ardb@kernel.org>
+> > > > > > > >
+> > > > > > > > Weak external linkage is intended for cases where a symbol =
+reference
+> > > > > > > > can remain unsatisfied in the final link. Taking the addres=
+s of such a
+> > > > > > > > symbol should yield NULL if the reference was not satisfied=
+.
+> > > > > > > >
+> > > > > > > > Given that ordinary RIP or PC relative references cannot pr=
+oduce NULL,
+> > > > > > > > some kind of indirection is always needed in such cases, an=
+d in position
+> > > > > > > > independent code, this results in a GOT entry. In ordinary =
+code, it is
+> > > > > > > > arch specific but amounts to the same thing.
+> > > > > > > >
+> > > > > > > > [...]
+> > > > > > >
+> > > > > > > Here is the summary with links:
+> > > > > > >   - [v4,1/3] kallsyms: Avoid weak references for kallsyms sym=
+bols
+> > > > > > >     (no matching commit)
+> > > > > > >   - [v4,2/3] vmlinux: Avoid weak reference to notes section
+> > > > > > >     (no matching commit)
+> > > > > > >   - [v4,3/3] btf: Avoid weak external references
+> > > > > > >     https://git.kernel.org/bpf/bpf-next/c/fc5eb4a84e4c
+> > > > > > >
+> > > > > >
+> > > > > >
+> > > > > > Thanks.
+> > > > > >
+> > > > > > Masahiro, could you pick up patches #1 and #2 please?
+> > > > > >
+> > > > >
+> > > > >
+> > > > > I do not like PROVIDE() because it potentially shifts
+> > > > > a build error (i.e. link error) into
+> > > > > a run-time error, which is usually more difficult to debug
+> > > > > than build error.
+> > > > >
+> > > > > If someone references the kallsyms_* symbols
+> > > > > when CONFIG_KALLSYMS=3Dn, it is likely a mistake.
+> > > > > In general, it should be reported as a link error.
+> > > > >
+> > > >
+> > > > OK, so the PROVIDE() should be conditional on CONFIG_KALLSYM=3Dy. I=
+ can fix that.
+> > >
+> > >
+> > > You may need to take care of the dependency
+> > > between CONFIG_KALLSYMS and CONFIG_VMCORE_INFO
+> > > because kernel/vmcore_info.c has references
+> > > to the kallsyms_* symbols.
+> > >
+> > > (I am still not a big fan of PROVIDE() though)
+> > >
+> >
+> >
+> > OK, how about we use weak definitions (as opposed to weak references)
+> > in kernel/kallsyms.c, which will get superseded by the actual ones in
+> > the second linker pass.
+> >
+> > The only difference is that we will use some space in the binary for
+> > the weak definitions that are never used in the final build.
 
+
+I am fine if that fixes the issue.
+
+
+"git grep __weak" shows a bunch of weak definitions.
+
+
+
+
+> Btw those references in kernel/vmcore_info.c are guarded by #ifdef
+> CONFIG_KALLSYMS=3Dy too.
+
+Ah, OK.
+Then, this is not an issue.
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
