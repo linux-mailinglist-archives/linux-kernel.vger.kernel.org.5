@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-152208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73E038ABAC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:22:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A87E8ABAC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:22:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A50111C20B39
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 09:22:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC3B81F21322
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 09:22:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA3D17C67;
-	Sat, 20 Apr 2024 09:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A078A175AD;
+	Sat, 20 Apr 2024 09:22:36 +0000 (UTC)
 Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8BF217BD8
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 09:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD10917592
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 09:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713604938; cv=none; b=bSGcyxD6RcYFM5qF50ZUxCAuTyblksl/3D7EcxZUT+TmkKrxTqgTuE7Rh0fXTfGKMLS/wGnDi+O+fFul8f0mS191Z1jfnH/+GhEwQT5LmkmdXwHfsO4UDdJqF/WZYlggqJd/ZBcf1CT0VQZ6CjKq2KMh90EwZ11fCwcFmZrfNu0=
+	t=1713604956; cv=none; b=HuahNWsF9zE+O37n2LzB7u5Dtds4ItdMcRmlny1iMJKwKjg1guSsqOM2y4D4ub74izvJf2K4tcOZQMlotSZmayJfvs4Kiqr1Wu8Mv5qQI0wF14sri7Bvxu/fv3SuFDgCJWhKxS3WGCJxQjJ6ilH+O8/XacnjwJj2zhV0NlS3BtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713604938; c=relaxed/simple;
+	s=arc-20240116; t=1713604956; c=relaxed/simple;
 	bh=HmvUXRk6KWF8pkj/3bMmqxGVWO5zIq4abz7LDPgnwg8=;
 	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=B8hnWReB7XCzsrH+YPZx3a19PmHMM5FKFth0UbWX2/Ou3ZBnr7lA1FnP8BsEG4wppvlnLSegDo0yzzyviARF8szwUhT5EzFK3e+vsqj6Zqz5+F8iF69B0Um4LNh3cZyNj0g0siHsr1kTx7TaHiVVtA7U8c11W/WoiYbKZdDzkdk=
+	 In-Reply-To:Content-Type; b=lXyU/pXV2D9cfGiyEXFxWisDX+NlbGkviK0MZOubmWgDEs558U7vqXAli87FY92jXoCXXMxhNSjTq0/N0fUvUCUXXVMKCcuf5nfnLDTZHEizy/3CSpSk5JyJW5cFoD4eynCqbnVXeHlp+m4JBd3RL1Dcvz6vyEJEXs8Cb9DmXoY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav120.sakura.ne.jp (fsav120.sakura.ne.jp [27.133.134.247])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 43K9MAAJ049708;
-	Sat, 20 Apr 2024 18:22:10 +0900 (JST)
+Received: from fsav412.sakura.ne.jp (fsav412.sakura.ne.jp [133.242.250.111])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 43K9MSWC049972;
+	Sat, 20 Apr 2024 18:22:28 +0900 (JST)
 	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
 Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav120.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav120.sakura.ne.jp);
- Sat, 20 Apr 2024 18:22:10 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav120.sakura.ne.jp)
+ by fsav412.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav412.sakura.ne.jp);
+ Sat, 20 Apr 2024 18:22:28 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav412.sakura.ne.jp)
 Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
 	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 43K9MAAr049703
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 43K9MSYC049968
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sat, 20 Apr 2024 18:22:10 +0900 (JST)
+	Sat, 20 Apr 2024 18:22:28 +0900 (JST)
 	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <6585d53b-106a-4673-beb6-1888567fd695@I-love.SAKURA.ne.jp>
-Date: Sat, 20 Apr 2024 18:22:10 +0900
+Message-ID: <286337d2-accc-4ea0-bbe4-a88a923c598b@I-love.SAKURA.ne.jp>
+Date: Sat, 20 Apr 2024 18:22:27 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,15 +51,15 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [virtualization?] upstream boot error: WARNING: refcount
- bug in __free_pages_ok
+Subject: Re: [syzbot] [mm?] upstream test error: WARNING: refcount bug in
+ __reset_page_owner
 From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: syzbot <syzbot+70f57d8a3ae84934c003@syzkaller.appspotmail.com>,
+To: syzbot <syzbot+ed0599ef4b473503bc7f@syzkaller.appspotmail.com>,
         linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000cfd4800613fe79b1@google.com>
- <1533d619-20c4-4f0d-a29e-7342d8f54c9c@I-love.SAKURA.ne.jp>
+References: <00000000000080c82706140b9e5d@google.com>
+ <2da018c8-23ac-4346-b038-4b04766bdcb3@I-love.SAKURA.ne.jp>
 Content-Language: en-US
-In-Reply-To: <1533d619-20c4-4f0d-a29e-7342d8f54c9c@I-love.SAKURA.ne.jp>
+In-Reply-To: <2da018c8-23ac-4346-b038-4b04766bdcb3@I-love.SAKURA.ne.jp>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
