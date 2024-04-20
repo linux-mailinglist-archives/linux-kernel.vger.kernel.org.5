@@ -1,110 +1,188 @@
-Return-Path: <linux-kernel+bounces-152061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6928D8AB832
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 02:49:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F74B8AB83B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 03:08:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6AF2B2143F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:49:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54EEF281E03
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 01:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81211205E0A;
-	Sat, 20 Apr 2024 00:48:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5099B6FB5;
+	Sat, 20 Apr 2024 01:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="xy4UOldt"
-Received: from out203-205-221-202.mail.qq.com (out203-205-221-202.mail.qq.com [203.205.221.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="TP8g5oyW"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCB3138B;
-	Sat, 20 Apr 2024 00:48:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A29A238B
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 01:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713574135; cv=none; b=IsXijn8HAGBKE8di0PQHos/IlGuPswEGUrTRgC2VD+tvZ9KEscpVV7HNPUBpIZY2wE7UFvOwhl6gQuCl71KISE8jSX21IzJO49/LZR1mvzYyVaFiIQKcsTEpyZDuD3RYWiP1ActSwvlyfcAhT+RZ/H0iNbJeOLRmF1mctFaNE5I=
+	t=1713575308; cv=none; b=PAAHH2cyA9ZOR2IXZolocCDxiqc9FqE9JOaK4u7wAf6S7gDB0vkJpxiLr0WnYOw8/lu/fL2i3czPAy6H6EoESrYw+Rh7L9GkLlG3F3bvxbr3XmGeuKrGhgdOkVjUoH9EpUOAlc0nD2AsPxMIY+A4c4fkm7mCZ1kib9fDrVzxX/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713574135; c=relaxed/simple;
-	bh=1OzfHfUjuOL8HBvY/WRL+t2/ivkZS5+gTq6FVR17Nx4=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=bGZ3DsLdGXgYnZ4Ak1061h1oCO2MVc6ecLniTsYDFTI/xxVjj6cRHT83YrvlUuEhQ1hF8jLEqFly4FyPQbE+lKj4EFLK9YSz/Sx5zgjW8JeK+xYvdMGwoiqg4rrU380WDlDOsCkNi8juRwO3EbvgbizepRnCdFJP8nWEKZlkcnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=xy4UOldt; arc=none smtp.client-ip=203.205.221.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1713574124;
-	bh=p75aEPAFI48CpfiuqQ6DlpvF/5AH+93ALLOF8JLaB2c=;
-	h=From:To:Cc:Subject:Date;
-	b=xy4UOldtwKs3CuPla/zDeQCnyGXLEbbjXUVt43zI0cTGWKp6GxuCzZesGeqONp2u7
-	 V2Aj5VS3nPnlib9P/q73GbF3VkWMOOskJ55YPBWmUWdkrY7j8QXE4LuheqfCqxXtOP
-	 lVEjlKY6EBjMetrkcK/xZMsIDc8fYncJt6+s+xu0=
-Received: from localhost.localdomain ([171.223.89.44])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id A96298CD; Sat, 20 Apr 2024 08:42:22 +0800
-X-QQ-mid: xmsmtpt1713573742t47czu8gy
-Message-ID: <tencent_78F3412B4E523FEC8F19FADAC32475318706@qq.com>
-X-QQ-XMAILINFO: N8nyCa1bmgri4t3IFtmHT5/5TiWHblYu3u4ROrTv39Az0xKwH+E4en5VHR6xU+
-	 xWtp0uTOqlvL2nRrC1vE9RZaZSed9+BjR70A/JQEbzP+zUpLHJk/zQcDspmnPXBzrTdSwvLO6Y3S
-	 oQJKxDGAeXdeZOq0KnfXKzcdJzl/wNEJ391LH68Oh851O12JtBwweaaW5RoyemEImbJ5K1tMsRfQ
-	 2FHHBTO6XkTqwcf1kHQZMfJYsEnETx5a86BkhedzlDLxWkqjjRwmZehWffeD51Hu4NUjnlLAbGK6
-	 /KHR+htkkp3bFPg4j8H1vMYrFR5yVnTZoTr6euAwmW9pWEx2Ekqc6x0HS6R6U2DEy8l4xeHuBRX4
-	 MJkJq7jfloUnPSbmMt/29WzCa0F8Y0+1/ITmyUFMJQXXnVTLGaznWOp4sulEIHeZYjGlC3rs64JE
-	 UQbSXiXycyfkUpHMy+mkyxgFAiMTu3MMLtrqXpU9FscUMA5MS7uO2Q2zUIVOwV2md4KK2Ewd6+fV
-	 I0wp9MPAd5EOugWXOG2B2e8jd2SpGgJdafpXXm/FX+YYGKh9wIj4DtIpNjl4xV5Ky3s/0POdDhlg
-	 EFeYC1+1tH5oo95Ps4FAg/CGr3rYc/U0S1bpGMYWVdkC7RS+lVcGRc5oiXnTMrkT28faA0FTBzUR
-	 7vUigA21GObhlkMrg+9RrOHIvBZRyA3FGzLGbNrpLc/emnxEETcAZRCgBRD9Op5exiJKdWYNYS4l
-	 fkpHVnB5bLK6VXAXKJH/9c9PeOvpNCo2ezpY4Rfe6LhhnulucZQR2z3jah7vGjEOEjoIIsVyyxh5
-	 xb2cHCebeSrweAnhzHApHwJu2Nexdms3W7Qx/CzHLy33/50WP4b6JmeAxDsO/WyKu1rePhlpW+PL
-	 5i14ROKhVDs01PQNS9uoiud1PEt7hcsSpnqHfIb6V7tE6lyaZfYdHy4l7CToe/YJWYM+PIBl6ip5
-	 kkszw7mmgW7MTPF6DbTVtbNRrZxXPOc/cYlRGJWcRVLsDQTke3t+V75Yt86gi+J71yVxWo/k9LMW
-	 PGOWwPuNcW6sQ1Kk4W
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: renjun wang <renjunw0@foxmail.com>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	renjun wang <renjunw0@foxmail.com>
-Subject: [PATCH] net: phy: update fields of mii_ioctl_data for transferring C45 data.
-Date: Sat, 20 Apr 2024 08:41:10 +0800
-X-OQ-MSGID: <20240420004110.39402-1-renjunw0@foxmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713575308; c=relaxed/simple;
+	bh=/v5DF/yr70RSo2cPlpFendzuWaxo1OWbch7DeiC/1po=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g1oPF95KH1hSfn0ObhOsHvKmX6uwf5xeqatV/gTm+S7cPV8Xv43ByusSNpSwOEdo2sVcjOT5nOwLV42lAvVvNwQ+8mrLW7kdDots2HDjQqNRj5V5KSlqjNejEHI+pEj3QH0I1BynO0BE+Z5P3CchS9VlFJBIKo1c42VT044vja4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=TP8g5oyW; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d1ecaf25so3396760e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 18:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713575304; x=1714180104; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FopOoJVqlKLyitM+vV+llThPHlvMlGI12SmtWJmmk/0=;
+        b=TP8g5oyWZGaFY+FIx/xBLkzBYg5ipxmpMLGeLn7b3e392q0X+8vNxbgjwMYY0nKo5W
+         RGzxXUXagCcv9Tm0VObNwoWVH34aKqX93CNzj9TiVsOcxzxGFZff0cLVYH2KXy8xWvli
+         qYXhw7wnmnD2hX4DZg/Oi9o1tDNWH2Mbj4n3eE5T9RgXZUlgWdsEyjn4uhhpfPPhSqfQ
+         HOJ/LxTGHpWUn8EqI+lC3/XxNuM3VBjUBVKVnSt8Sx6DdL3R5DESIMq4Uh/SmHuLNY0o
+         +OPwBx1Gc4N6jPc0aABYWybC8EG01gW/O8sOAw/ZnHleMfMJHUzAYdML1J/c5SBygoNX
+         v8Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713575304; x=1714180104;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FopOoJVqlKLyitM+vV+llThPHlvMlGI12SmtWJmmk/0=;
+        b=LHkYTGOpfW5PJEaL0scQzAZt729dVwJtsCmgN1NmMeHdkq0+z/9DZj/D0jvU3FIrIp
+         698e5F2VnurDzw8/a1+S2En6pyjXMNv0Y7baC3ON+wcPYYaz0c83QyhvAnV141ZLQyUg
+         AQU1Cag/q06+OAWJ+PGRR+0Edb+Q/4esAwTINR+ow81AzNBUR2QENgC0UVBO76xhTpMp
+         2Ft5uoWvhTfdY59FazZcBD9r54V8SAVhAVpDpXLxs1hcj+nlsaMsy6sxUiNEvT4JnKkW
+         GvnpNkqAQubLr+E8qvq5U3qTLrEMWj0V+d32vb7g/mEJF2SxI/mFTALWEUzkU47h3CeH
+         jbGg==
+X-Gm-Message-State: AOJu0Yww/3MWI4TuXbF3O2cB/FvgQ5jH02jrsDJcZZEufIEbfwTRVRF2
+	hTpAICQGBbgbAbusBEcAFCXo2tDjUu3IVUo2uNYx2yOB7uAXM+w20rC7zckW5diI8bRiZIRI2NE
+	fPRtWqR0VUvEklzyV7jyJjkj0/HIDAYaaJsnNgw==
+X-Google-Smtp-Source: AGHT+IEogPfnlgAs9tR0qh0PAukDsFCglg4IjcLIKZzaVYr+8YdRMjPXcvRvV/A0KI3X5O1GyN/90pSnjyS/BTYsdl8=
+X-Received: by 2002:ac2:5a1e:0:b0:519:296e:2c80 with SMTP id
+ q30-20020ac25a1e000000b00519296e2c80mr1893557lfn.15.1713575303793; Fri, 19
+ Apr 2024 18:08:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240420151741.962500-1-atishp@rivosinc.com> <20240420151741.962500-9-atishp@rivosinc.com>
+ <6fa06233-d572-48a7-a8ef-73a7c5879c06@sifive.com>
+In-Reply-To: <6fa06233-d572-48a7-a8ef-73a7c5879c06@sifive.com>
+From: Atish Kumar Patra <atishp@rivosinc.com>
+Date: Fri, 19 Apr 2024 18:08:12 -0700
+Message-ID: <CAHBxVyHZ81G7yaMkV25RBwS=ric=MA92MePaPtQaOXuR+C70YA@mail.gmail.com>
+Subject: Re: [PATCH v8 08/24] drivers/perf: riscv: Fix counter mask iteration
+ for RV32
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Jones <ajones@ventanamicro.com>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Anup Patel <anup@brainfault.org>, 
+	Conor Dooley <conor.dooley@microchip.com>, Juergen Gross <jgross@suse.com>, 
+	kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
+	Will Deacon <will@kernel.org>, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The phy_id is used as u32 type in function mdio_phy_id_is_c45()
-with the 30th bit for distinguishing C22 and C45. The reg_num is
-also used as u32 type in function mdiobus_c45_read() or someplace
-else. For more C45 information needed and data structure alignment
-consideration, change these two fields to __u32 type which can make
-user space program transferring clause 45 type information to kernel
-directly.
+On Fri, Apr 19, 2024 at 5:37=E2=80=AFPM Samuel Holland
+<samuel.holland@sifive.com> wrote:
+>
+> Hi Atish,
+>
+> On 2024-04-20 10:17 AM, Atish Patra wrote:
+> > For RV32, used_hw_ctrs can have more than 1 word if the firmware choose=
+s
+> > to interleave firmware/hardware counters indicies. Even though it's a
+> > unlikely scenario, handle that case by iterating over all the words
+> > instead of just using the first word.
+> >
+> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> > ---
+> >  drivers/perf/riscv_pmu_sbi.c | 21 ++++++++++++---------
+> >  1 file changed, 12 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.=
+c
+> > index f23501898657..4eacd89141a9 100644
+> > --- a/drivers/perf/riscv_pmu_sbi.c
+> > +++ b/drivers/perf/riscv_pmu_sbi.c
+> > @@ -652,10 +652,12 @@ static inline void pmu_sbi_stop_all(struct riscv_=
+pmu *pmu)
+> >  static inline void pmu_sbi_stop_hw_ctrs(struct riscv_pmu *pmu)
+> >  {
+> >       struct cpu_hw_events *cpu_hw_evt =3D this_cpu_ptr(pmu->hw_events)=
+;
+> > +     int i;
+> >
+> > -     /* No need to check the error here as we can't do anything about =
+the error */
+> > -     sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, 0,
+> > -               cpu_hw_evt->used_hw_ctrs[0], 0, 0, 0, 0);
+> > +     for (i =3D 0; i < BITS_TO_LONGS(RISCV_MAX_COUNTERS); i++)
+> > +             /* No need to check the error here as we can't do anythin=
+g about the error */
+> > +             sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, i * BITS=
+_PER_LONG,
+> > +                       cpu_hw_evt->used_hw_ctrs[i], 0, 0, 0, 0);
+> >  }
+> >
+> >  /*
+> > @@ -667,7 +669,7 @@ static inline void pmu_sbi_stop_hw_ctrs(struct risc=
+v_pmu *pmu)
+> >  static inline void pmu_sbi_start_overflow_mask(struct riscv_pmu *pmu,
+> >                                              unsigned long ctr_ovf_mask=
+)
+> >  {
+> > -     int idx =3D 0;
+> > +     int idx =3D 0, i;
+> >       struct cpu_hw_events *cpu_hw_evt =3D this_cpu_ptr(pmu->hw_events)=
+;
+> >       struct perf_event *event;
+> >       unsigned long flag =3D SBI_PMU_START_FLAG_SET_INIT_VALUE;
+> > @@ -676,11 +678,12 @@ static inline void pmu_sbi_start_overflow_mask(st=
+ruct riscv_pmu *pmu,
+> >       struct hw_perf_event *hwc;
+> >       u64 init_val =3D 0;
+> >
+> > -     ctr_start_mask =3D cpu_hw_evt->used_hw_ctrs[0] & ~ctr_ovf_mask;
+> > -
+> > -     /* Start all the counters that did not overflow in a single shot =
+*/
+> > -     sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_START, 0, ctr_start_ma=
+sk,
+> > -               0, 0, 0, 0);
+> > +     for (i =3D 0; i < BITS_TO_LONGS(RISCV_MAX_COUNTERS); i++) {
+> > +             ctr_start_mask =3D cpu_hw_evt->used_hw_ctrs[i] & ~ctr_ovf=
+_mask;
+>
+> This is applying the mask for the first 32 logical counters to the both s=
+ets of
+> 32 logical counters. ctr_ovf_mask needs to be 64 bits wide here, so each =
+loop
+> iteration can apply the correct half of the mask.
+>
 
-Signed-off-by: renjun wang <renjunw0@foxmail.com>
----
- include/uapi/linux/mii.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The 64bit wide support for ctr_ovf_mask is added in the next patch.
 
-diff --git a/include/uapi/linux/mii.h b/include/uapi/linux/mii.h
-index 39f7c44baf53..68c085b049de 100644
---- a/include/uapi/linux/mii.h
-+++ b/include/uapi/linux/mii.h
-@@ -176,8 +176,8 @@
- 
- /* This structure is used in all SIOCxMIIxxx ioctl calls */
- struct mii_ioctl_data {
--	__u16		phy_id;
--	__u16		reg_num;
-+	__u32		phy_id;
-+	__u32		reg_num;
- 	__u16		val_in;
- 	__u16		val_out;
- };
--- 
-2.39.2
-
+> Regards,
+> Samuel
+>
+> > +             /* Start all the counters that did not overflow in a sing=
+le shot */
+> > +             sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_START, i * BIT=
+S_PER_LONG, ctr_start_mask,
+> > +                     0, 0, 0, 0);
+> > +     }
+> >
+> >       /* Reinitialize and start all the counter that overflowed */
+> >       while (ctr_ovf_mask) {
+>
 
