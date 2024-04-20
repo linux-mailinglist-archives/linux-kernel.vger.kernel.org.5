@@ -1,209 +1,139 @@
-Return-Path: <linux-kernel+bounces-152053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B90358AB807
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 02:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96F208AB80C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 02:09:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F0CD281D39
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:06:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A3F4281BF2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 00:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98161846B;
-	Sat, 20 Apr 2024 00:06:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9546633;
+	Sat, 20 Apr 2024 00:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1jzCIeCR"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kNbQVRCp"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54A8B320A
-	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 00:06:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4A0F17C
+	for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 00:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713571567; cv=none; b=Iz2Y21UWm+7MrVELqNoaDeNpfNyfJsjqk/kXGYrW37SM46qn2TSSyvuOd2xFesa87L3TUHnmeGOaoGARtDf8iTs3anomQpC8GFj0ErGtizzCtZlVVIQ8+qz0ktcXLOjliG87lrqN1a7p2jHWu0evf5aq5jAMELQQ5NFku/leEZ4=
+	t=1713571775; cv=none; b=abjSqaXRQa8rtdrRlzJ2d2JlaR2Tgk235KtfCtAd9vdgGWhJ7oWEIFwu1ndbIZIJwoDIG+logD882z+GfPMX3MVsKUs4+dEtPbsh0x3cdR3pQ0uJufMSmhnq5rOFaDIpRBRidKfiVGFvyCfG6tUsnhKMfHgXSPd4o+89KwlTiC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713571567; c=relaxed/simple;
-	bh=hQsIpaNlyBty75DD7t5jIwQA87JdgxVtOi6IDRwsKy4=;
+	s=arc-20240116; t=1713571775; c=relaxed/simple;
+	bh=BuLz/JHVB0gV5Hb4RmtjerjifU3c/PDa9CxmoO1LMKc=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=CUfSvohAf1d4fsjkEBEL8Vfo5gBgAfAsAU/AiFFJ9Gqt3XYZZVLdx/qy0HuUgORo0QKDcpM7LKDexOqbM5doJeyvyhwosedtcZ66fZYJQFI8TgGFfN8Qq32hg+JNYvsyEPfLm70N2LIvKh8FHVXGjeTVvLjnS4cOstfb2fwU21o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1jzCIeCR; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=Yvo5HWotmbIuhODmwu/3avsnGD7MeyEVk4NPawhpDxW7gr/OLsFL3QsOgKUa5DNmSe3jQixKFwCptjVca2eHcnfIrfPTQf/xv5TezK6Qoei2kcfNS9I0nuJ5TAICTDTnoQGAesnYfnxeidJkErMNr4Tu+TmG7vFjT+KZ84G5WIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kNbQVRCp; arc=none smtp.client-ip=209.85.210.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de45d36b049so4289098276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:06:06 -0700 (PDT)
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6ed2f4e685bso2807643b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Apr 2024 17:09:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713571565; x=1714176365; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713571773; x=1714176573; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=so8727EOvkSPZlRuAoZTn7r1JdCzB1JDrFmlKMuMW0M=;
-        b=1jzCIeCRpfd+WI0zdHODEm0B1SdpfOKT5yd5ZnLLLx1abPTcQ8vGn+dhyvP32XCjl2
-         pIUOonDCNoj86ox4gS+IA87GXaOIjRaw2HVpEsnHK2ULiMvpjFRg6X/USfq3pMJuN3aB
-         hyZU8Symy9Mw0hZwqOULirL/gRG/QxemgpjhSUqgIGWjpvald1ZvKw2yRQAF7CnaV7QL
-         5m1H8G73XFfr/zCYX6a3mWELPFu3kJO0150CdtCO2nzkKDkljJLAyNmX8zo7CETUOWPv
-         jZAJqoxbiv9BkaiO1k21fm2OdNr71wrj/EI18CsjpYB16i4qmp77LOAcpeqcuxgS2FGw
-         7QQA==
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6ld8fmbXDb/pR3C8NsGTfnRCkO74P0Zyhqm1cvneZo0=;
+        b=kNbQVRCpMV5VeXgXGLSIKXBRTlwwCq9tTZR2p95Gitte9w3371hjkCD3d5aMjUFJOK
+         mW6q8gRv+qcb0ZSC8aXlyvUGL8yCEhU7aK/hP1aSxQJt7NRHOy/oisbpNhCgt77FmaBM
+         Q600Y9o16KxCx6pAw3+Nkuyu2Mo+W+G0MbCyqyfOyeHOjhSkInsm6XI8fBBfmeGnC/jN
+         eTMDeWcs8nBGBAcuQlqzEsuYF9vMusL/ER6n1fP/0NPoFnGR/o5IPW10ftZ2e21eL5Im
+         m33n7s/yjrEBq9qpxcl3epRJHwYoaFDuVWHF+hCnM8Q0sSEnUTa4gNPXP6HA5iVe//Or
+         QjoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713571565; x=1714176365;
+        d=1e100.net; s=20230601; t=1713571773; x=1714176573;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=so8727EOvkSPZlRuAoZTn7r1JdCzB1JDrFmlKMuMW0M=;
-        b=TbFXXGZqh4v6bdVCRuygvL57vW6aZ5aaSo3atANXBbPHNMVwt0+Z26buA1zvqog94e
-         ujfCKTBlLxs7eKuuf8oz9ELLyE90wcgH/fwGwmpxFme/sE1lv+2lYmKFJ9rnpELJaV5X
-         +h7WEfQO7v0UBI+Tc/fTrXQ3xoQ7GUKZewyYGUjN6ypRwWwbkReK2NL8uhZH+p4Tc9Ct
-         t7x+fDLYeY1KSzGvYy24mJH2XKVdH7MJZx9AOIXKKwU+gqmflj/686WabCfKDpx0fwEM
-         69bfCJVvZaniS40rDddy3ISNdoFHXlKkz+H+otGFX7kKhF+YJB4dmkdX6XcDNPEkmOz3
-         CNIg==
-X-Gm-Message-State: AOJu0YyYKkp9mk4ML2o7bmK6edw2YJo6nD5ldS+KnU7RFGQ5M9113zgv
-	/i7HpslH0ZHKQ5RKePYnaQ5YSv/Qrrm0u1EsEPjJCPb1da4PuxLVcF5Eq6P+vLBMMaIyIEkL70T
-	PDA==
-X-Google-Smtp-Source: AGHT+IFgLX8xvAEMDGPH8AnOUBpUl1qkxujuj6ddKlxpGhWPlfU76CDq07UHgTgXIVvSFL3qIhW2wLJ5JI8=
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6ld8fmbXDb/pR3C8NsGTfnRCkO74P0Zyhqm1cvneZo0=;
+        b=s/C97N7MCKH3piX61ptAoYgZ2eqyS9pBvHPQfdMJZVdcsKVR4Nv99683Axk4Q058GJ
+         dWEo28B+w75NzMrBPHfS4hqJkuGXmJNApMtmgl2Fddceh9k0Qy7lxo6eZoLR4ghmxtmN
+         C2EhsyHyzvD74GXXlXQd6d/KjWLJDE71+D770hM7Gcr/UMrVxd5waXVlXXa/heEIuHNt
+         aj1/lbhNlYTUQKpGuM1wE64wxoHWct+TZE+9vLA9kApmLXK6Lb54AXbejw7hfHJBFt8R
+         aTbN7DvMruvAhJEPXtg1sUTN+jX72wfsNUWuLAAo9ZI0kTdIy5zTBVp2qebft5eZuMcg
+         yhTA==
+X-Forwarded-Encrypted: i=1; AJvYcCXXYLHBEgZIz7rKCQ67B523gaLKxdqRtyiLjFq5u5w2q6OJU4aCOdsY7biEwWV4IW4xa83vI+gB/AMMkFcpBofSIHiErNMOEJ1QJkmM
+X-Gm-Message-State: AOJu0YzCMSJUmtdy1dQcxWul2/mmKjxfxbej3L6RswVa3whJOErx1de8
+	PIIt8a8gBD6UD9Y3mK/Wibo9nIemxUFkbIN6JL5uwlZ7geWTEBeGS3/nuvjspNvy9AANYw1+peW
+	/jg==
+X-Google-Smtp-Source: AGHT+IHwTv8i/Xa4qICUCSVJiPF3hjI6PjkCvwWYTaFUYjW4Iot7a/W9yROQinwM/wEEchhDdkuwgiv6J9Q=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1883:b0:de0:ecc6:4681 with SMTP id
- cj3-20020a056902188300b00de0ecc64681mr332829ybb.1.1713571565367; Fri, 19 Apr
- 2024 17:06:05 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri, 19 Apr 2024 17:05:55 -0700
-In-Reply-To: <20240420000556.2645001-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:124a:b0:6eb:1d5:a3a with SMTP id
+ u10-20020a056a00124a00b006eb01d50a3amr206560pfi.1.1713571772778; Fri, 19 Apr
+ 2024 17:09:32 -0700 (PDT)
+Date: Fri, 19 Apr 2024 17:09:31 -0700
+In-Reply-To: <9d3c997264829d0e2b28718222724ae8f9e7d8b4.1713559768.git.jpoimboe@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240420000556.2645001-1-seanjc@google.com>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240420000556.2645001-3-seanjc@google.com>
-Subject: [PATCH v2 2/2] cpu: Ignore "mitigations" kernel parameter if CPU_MITIGATIONS=n
+References: <cover.1713559768.git.jpoimboe@kernel.org> <9d3c997264829d0e2b28718222724ae8f9e7d8b4.1713559768.git.jpoimboe@kernel.org>
+Message-ID: <ZiMHu--agdvt4Rl1@google.com>
+Subject: Re: [PATCH v4 2/5] cpu/speculation: Fix CPU mitigation defaults for !x86
 From: Sean Christopherson <seanjc@google.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	Peter Zijlstra <peterz@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Will Deacon <will@kernel.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, 
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>, 
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Alexandre Chartre <alexandre.chartre@oracle.com>, 
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andrew Cooper <andrew.cooper3@citrix.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Nikolay Borisov <nik.borisov@suse.com>, 
+	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Ingo Molnar <mingo@kernel.org>, Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="us-ascii"
 
-Explicitly disallow enabling mitigations at runtime for kernels that were
-built with CONFIG_CPU_MITIGATIONS=n, as some architectures may omit code
-entirely if mitigations are disabled at compile time.
+On Fri, Apr 19, 2024, Josh Poimboeuf wrote:
+> CPU speculative execution mitigations were inadvertently disabled on
+> non-x86 arches by the following commit:
+> 
+>  f337a6a21e2f ("x86/cpu: Actually turn off mitigations by default for SPECULATION_MITIGATIONS=n")
+> 
+> Fix it by replacing CONFIG_SPECULATION_MITIGATIONS with a new generic
+> CONFIG_CPU_MITIGATIONS option and moving the x86-specific mitigations to
+> a separate menu which depends on CONFIG_CPU_MITIGATIONS.
 
-E.g. on x86, a large pile of Kconfigs are buried behind CPU_MITIGATIONS,
-and trying to provide sane behavior for retroactively enabling mitigations
-is extremely difficult, bordering on impossible.  E.g. page table isolation
-and call depth tracking requrie build-time support, BHI mitigations will
-still be off without additional kernel parameters, etc.
+Ah drat, I didn't check my mailbox until after Cc'ing Linus my own version[*].
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- Documentation/admin-guide/kernel-parameters.txt |  3 +++
- arch/x86/Kconfig                                |  8 ++++++--
- include/linux/cpu.h                             | 11 +++++++++++
- kernel/cpu.c                                    | 13 ++++++++++---
- 4 files changed, 30 insertions(+), 5 deletions(-)
+I don't have a strong preference between the two, though I do think it's worth
+nothing that this will (obvioulsy) allow disabling mitigations at compile time
+on all architectures, which may or may not be desirable.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 902ecd92a29f..213d0719e2b7 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3423,6 +3423,9 @@
- 			arch-independent options, each of which is an
- 			aggregation of existing arch-specific options.
- 
-+			Note, "mitigations" is supported if and only if the
-+			kernel was built with CPU_MITIGATIONS=y.
-+
- 			off
- 				Disable all optional CPU mitigations.  This
- 				improves system performance, but it may also
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 619a04d5c131..928820e61cb5 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2495,9 +2495,13 @@ menuconfig CPU_MITIGATIONS
- 	help
- 	  Say Y here to enable options which enable mitigations for hardware
- 	  vulnerabilities (usually related to speculative execution).
-+	  Mitigations can be disabled or restricted to SMT systems at runtime
-+	  via the "mitigations" kernel parameter.
- 
--	  If you say N, all mitigations will be disabled. You really
--	  should know what you are doing to say so.
-+	  If you say N, all mitigations will be disabled.  This CANNOT be
-+	  overridden at runtime.
-+
-+	  Say 'Y', unless you really know what you are doing.
- 
- if CPU_MITIGATIONS
- 
-diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index 272e4e79e15c..ee0a3b4e0769 100644
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -221,7 +221,18 @@ void cpuhp_report_idle_dead(void);
- static inline void cpuhp_report_idle_dead(void) { }
- #endif /* #ifdef CONFIG_HOTPLUG_CPU */
- 
-+#ifdef CONFIG_CPU_MITIGATIONS
- extern bool cpu_mitigations_off(void);
- extern bool cpu_mitigations_auto_nosmt(void);
-+#else
-+static inline bool cpu_mitigations_off(void)
-+{
-+	return false;
-+}
-+static inline bool cpu_mitigations_auto_nosmt(void)
-+{
-+	return false;
-+}
-+#endif
- 
- #endif /* _LINUX_CPU_H_ */
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index bb0ff275fb46..24235c1d6e82 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -3196,6 +3196,7 @@ void __init boot_cpu_hotplug_init(void)
- 	this_cpu_write(cpuhp_state.target, CPUHP_ONLINE);
- }
- 
-+#ifdef CONFIG_CPU_MITIGATIONS
- /*
-  * These are used for a global "mitigations=" cmdline option for toggling
-  * optional CPU mitigations.
-@@ -3207,8 +3208,7 @@ enum cpu_mitigations {
- };
- 
- static enum cpu_mitigations cpu_mitigations __ro_after_init =
--	IS_ENABLED(CONFIG_CPU_MITIGATIONS) ? CPU_MITIGATIONS_AUTO :
--					     CPU_MITIGATIONS_OFF;
-+	CPU_MITIGATIONS_AUTO;
- 
- static int __init mitigations_parse_cmdline(char *arg)
- {
-@@ -3224,7 +3224,6 @@ static int __init mitigations_parse_cmdline(char *arg)
- 
- 	return 0;
- }
--early_param("mitigations", mitigations_parse_cmdline);
- 
- /* mitigations=off */
- bool cpu_mitigations_off(void)
-@@ -3239,3 +3238,11 @@ bool cpu_mitigations_auto_nosmt(void)
- 	return cpu_mitigations == CPU_MITIGATIONS_AUTO_NOSMT;
- }
- EXPORT_SYMBOL_GPL(cpu_mitigations_auto_nosmt);
-+#else
-+static int __init mitigations_parse_cmdline(char *arg)
-+{
-+	pr_crit("Kernel compiled without mitigations, ignoring 'mitigations'; system may still be vulnerable\n");
-+	return 0;
-+}
-+#endif
-+early_param("mitigations", mitigations_parse_cmdline);
--- 
-2.44.0.769.g3c40516874-goog
+[*] https://lore.kernel.org/all/20240420000556.2645001-2-seanjc@google.com
 
+> Fixes: f337a6a21e2f ("x86/cpu: Actually turn off mitigations by default for SPECULATION_MITIGATIONS=n")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Closes: https://lkml.kernel.org/r/20240413115324.53303a68%40canb.auug.org.au
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> ---
+>  arch/Kconfig     | 10 ++++++++++
+>  arch/x86/Kconfig | 15 +++------------
+>  kernel/cpu.c     |  4 ++--
+>  3 files changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 9f066785bb71..5c96849eb957 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -11,6 +11,16 @@ source "arch/$(SRCARCH)/Kconfig"
+>  
+>  menu "General architecture-dependent options"
+>  
+> +config CPU_MITIGATIONS
+> +	bool "Mitigations for CPU speculative execution vulnerabilities"
+> +	default y
+> +	help
+> +	  Say Y here to enable mitigations for CPU speculative execution
+> +	  vulnerabilities.
+> +
+> +	  If you say N, all mitigations will be disabled. You really
+> +	  should know what you are doing to say so.
 
