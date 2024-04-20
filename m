@@ -1,216 +1,164 @@
-Return-Path: <linux-kernel+bounces-152214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2CDA8ABACC
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:35:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 862198ABAD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 11:45:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5F3A1C20954
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 09:35:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E263B2110D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 09:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42DB417732;
-	Sat, 20 Apr 2024 09:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="It4EREGH"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040CB17BC9;
+	Sat, 20 Apr 2024 09:45:22 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D155D14AA7;
-	Sat, 20 Apr 2024 09:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605BB3D9E;
+	Sat, 20 Apr 2024 09:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713605731; cv=none; b=GKjCxyg8mH/v5bg83XOL/6PWmvicbjcyPWPo3RF3c7wNSn5CbLHNkdfXM2mnta5Jrx1O7gb0NDVs2VI+XhlpATUT4OQq51hZQa5uRVBTRkEOZs9NFWiVIn6Hr6+g/CKwAvWUrax+qihZrLQgSGhzJkQb7jalCDsp63xZZ+Jo8Tc=
+	t=1713606321; cv=none; b=UqPxe1I5aQS93hpcQRx8Emq+ZXLCS6PwhBqXfhqbozFvey6ySX0JgVQjVsB3cZu6EUu6KQsVFUMH1TrtjEeaYQMwVwb5KJAQfRTDd1U8e2ePNr4JPLsuvEU09MZX3Xe6I55VHZjhmdeKQL7nzGvjJeqSltN148V/k9b1AjQ/f54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713605731; c=relaxed/simple;
-	bh=Cyk6bx1W905vRQ2nt1TBBTK1Sd34yqu3tnWShO/JSlU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=S31Yz2zIvBFpvl1uCJe/Khd6UGOP7PnGnjwB1vgK1wu928RG8V4JO4ak6HTVxgNH3/+hPMbfPxbUyoaXLcFW2P8HS8Fjy+RMpgn+iwb7tlN3m8DKblsxPPPlCv3f+o7xgLo6vDW445JTyZLj8C2kv/aKucX27yC7TDoV3aW2eJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=It4EREGH; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43K9QCvK018482;
-	Sat, 20 Apr 2024 02:35:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	pfpt0220; bh=qoGsdkFAkbW9SSvIZmokgGk0Hojar2Zg/DeBD3TkP1o=; b=It4
-	EREGH04amPKE3zDWMrsuHa5oMwehOpeqUvKkL9bOrgsXip0wHzNTJNBKGBvOGs4h
-	bZHuCzl9fxFo3OLvt5oXjzNxSfpxhGgjWh2/y/oKAjaVYnwXt5aK3d4+XSgC5A7K
-	JyYVNpsyN7e9IujUu6kfP1HefF7CvNbvGjKC2zCIvNnNh8j+EK3ls7goNJJcEEuO
-	i4OY/zZCEbwlFTa9/reZJuKuTEq1QKRFDKUvWdcMhDTCguKbsj6pWBkRPQ/mQ3pl
-	t2NKBnn3tCUqJcan1BBQIy57ZhinkC9JPZjnBFLWKSjArfYDIqUV6nGInM3fsBoZ
-	Z0ex3O3oHclITRitnTg==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3xmb2jg0ds-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 20 Apr 2024 02:35:10 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+	s=arc-20240116; t=1713606321; c=relaxed/simple;
+	bh=oopPuV8FtdZip21H5mB59w45XUfvnKOSI4OG7AJ7sl4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rpXO5e+KRQvCPGkddgW/5ATdBo6yOX1PmFasNMyVdS4Nl4hAmjnLECnmROwS9VCvCHkrWRAbelIhZxA8ZtcWhonsZm5E6Ugs0+soJ6VrxDPx7Ucl8UdHikAJOeeXhjiFFXpmimHoDaohj/Pt5uUsiZ55Ii6/jSpbqoO0c02my1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VM64138TJz1R8j7;
+	Sat, 20 Apr 2024 17:42:09 +0800 (CST)
+Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
+	by mail.maildlp.com (Postfix) with ESMTPS id AB5F5140132;
+	Sat, 20 Apr 2024 17:45:05 +0800 (CST)
+Received: from hulk-vt.huawei.com (10.67.174.26) by
+ dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Sat, 20 Apr 2024 02:35:09 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Sat, 20 Apr 2024 02:35:09 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-	by maili.marvell.com (Postfix) with ESMTP id 88A433F7044;
-	Sat, 20 Apr 2024 02:35:06 -0700 (PDT)
-From: Geetha sowjanya <gakula@marvell.com>
-To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>
-Subject: [net-next PATCH v3] octeontx2-pf: Add support for offload tc with skbedit mark action
-Date: Sat, 20 Apr 2024 15:05:05 +0530
-Message-ID: <20240420093505.31044-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+ 15.1.2507.35; Sat, 20 Apr 2024 17:45:05 +0800
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
+To: <viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <jack@suse.cz>,
+	<tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<mhocko@kernel.org>, <roman.gushchin@linux.dev>, <shakeel.butt@linux.dev>,
+	<muchun.song@linux.dev>, <akpm@linux-foundation.org>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<cgroups@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: [PATCH] cgroup: Introduce css_is_online() helper
+Date: Sat, 20 Apr 2024 09:38:37 +0000
+Message-ID: <20240420093837.1028410-1-xiujianfeng@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Up3rR0lKu92sVthr1I5iJ6WyJORLlV12
-X-Proofpoint-GUID: Up3rR0lKu92sVthr1I5iJ6WyJORLlV12
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-20_08,2024-04-19_01,2023-05-22_02
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
 
-Support offloading of skbedit mark action.
+Introduce css_is_online() helper to test if whether the specified
+css is online, avoid testing css.flags with CSS_ONLINE directly
+outside of cgroup.c.
 
-For example, to mark with 0x0008, with dest ip 60.60.60.2 on eth2
-interface:
-
- # tc qdisc add dev eth2 ingress
- # tc filter add dev eth2 ingress protocol ip flower \
-      dst_ip 60.60.60.2 action skbedit mark 0x0008 skip_sw
-
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 ---
-v1-v2:
- -Changed mark_flows data type to refcount_t
+ fs/fs-writeback.c               | 2 +-
+ include/linux/cgroup.h          | 9 +++++++++
+ include/linux/memcontrol.h      | 2 +-
+ kernel/cgroup/cgroup-internal.h | 2 +-
+ mm/memcontrol.c                 | 2 +-
+ mm/page_owner.c                 | 2 +-
+ 6 files changed, 14 insertions(+), 5 deletions(-)
 
-v2-v3:
- - Added reviewed-by.
- - Used macro instead on hardcoded value.
-
- .../net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c  |  2 ++
- .../ethernet/marvell/octeontx2/nic/otx2_common.h    |  2 ++
- .../net/ethernet/marvell/octeontx2/nic/otx2_flows.c |  1 +
- .../net/ethernet/marvell/octeontx2/nic/otx2_tc.c    | 13 +++++++++++++
- .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c  |  3 +++
- .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.h  |  3 +++
- 6 files changed, 24 insertions(+)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-index c181e7aa9eb6..150635de2bd5 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-@@ -1187,6 +1187,8 @@ static int npc_update_rx_entry(struct rvu *rvu, struct rvu_pfvf *pfvf,
- 			action.pf_func = target;
- 			action.op = NIX_RX_ACTIONOP_UCAST;
- 		}
-+		if (req->match_id)
-+			action.match_id = req->match_id;
- 	}
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 92a5b8283528..bb84c6a2fa8e 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -916,7 +916,7 @@ void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
+ 	folio = page_folio(page);
+ 	css = mem_cgroup_css_from_folio(folio);
+ 	/* dead cgroups shouldn't contribute to inode ownership arbitration */
+-	if (!(css->flags & CSS_ONLINE))
++	if (!css_is_online(css))
+ 		return;
  
- 	entry->action = *(u64 *)&action;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index c5de3ba33e2f..24fbbef265a6 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -363,6 +363,7 @@ struct otx2_flow_config {
- 	struct list_head	flow_list;
- 	u32			dmacflt_max_flows;
- 	u16                     max_flows;
-+	refcount_t		mark_flows;
- 	struct list_head	flow_list_tc;
- 	bool			ntuple;
- };
-@@ -465,6 +466,7 @@ struct otx2_nic {
- #define OTX2_FLAG_DMACFLTR_SUPPORT		BIT_ULL(14)
- #define OTX2_FLAG_PTP_ONESTEP_SYNC		BIT_ULL(15)
- #define OTX2_FLAG_ADPTV_INT_COAL_ENABLED BIT_ULL(16)
-+#define OTX2_FLAG_TC_MARK_ENABLED		BIT_ULL(17)
- 	u64			flags;
- 	u64			*cq_op_addr;
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-index 97a71e9b8563..bc5819237ed7 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-@@ -252,6 +252,7 @@ static int otx2_mcam_entry_init(struct otx2_nic *pfvf)
- 
- 	pfvf->flags |= OTX2_FLAG_TC_FLOWER_SUPPORT;
- 
-+	refcount_set(&flow_cfg->mark_flows, 1);
- 	return 0;
+ 	id = css->id;
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 2150ca60394b..e6b6f3418da8 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -346,6 +346,15 @@ static inline bool css_is_dying(struct cgroup_subsys_state *css)
+ 	return !(css->flags & CSS_NO_REF) && percpu_ref_is_dying(&css->refcnt);
  }
  
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index f4655a8c0705..6d4ce2ece8d0 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -511,7 +511,15 @@ static int otx2_tc_parse_actions(struct otx2_nic *nic,
- 			nr_police++;
- 			break;
- 		case FLOW_ACTION_MARK:
-+			if (act->mark & ~OTX2_RX_MATCH_ID_MASK) {
-+				NL_SET_ERR_MSG_MOD(extack, "Bad flow mark, only 16 bit supported");
-+				return -EOPNOTSUPP;
-+			}
- 			mark = act->mark;
-+			req->match_id = mark & OTX2_RX_MATCH_ID_MASK;
-+			req->op = NIX_RX_ACTION_DEFAULT;
-+			nic->flags |= OTX2_FLAG_TC_MARK_ENABLED;
-+			refcount_inc(&nic->flow_cfg->mark_flows);
- 			break;
- 
- 		case FLOW_ACTION_RX_QUEUE_MAPPING:
-@@ -1187,6 +1195,11 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 		return -EINVAL;
- 	}
- 
-+	/* Disable TC MARK flag if they are no rules with skbedit mark action */
-+	if (flow_node->req.match_id)
-+		if (!refcount_dec_and_test(&flow_cfg->mark_flows))
-+			nic->flags &= ~OTX2_FLAG_TC_MARK_ENABLED;
++/*
++ * css_is_online - test whether the specified css is online
++ * @css: target css
++ */
++static inline bool css_is_online(struct cgroup_subsys_state *css)
++{
++	return !!(css->flags & CSS_ONLINE);
++}
 +
- 	if (flow_node->is_act_police) {
- 		__clear_bit(flow_node->rq, &nic->rq_bmap);
+ static inline void cgroup_get(struct cgroup *cgrp)
+ {
+ 	css_get(&cgrp->self);
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 8f332b4ae84c..cd6b3bfd070f 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -939,7 +939,7 @@ static inline bool mem_cgroup_online(struct mem_cgroup *memcg)
+ {
+ 	if (mem_cgroup_disabled())
+ 		return true;
+-	return !!(memcg->css.flags & CSS_ONLINE);
++	return css_is_online(&memcg->css);
+ }
  
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index f828d32737af..a16e9f244117 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -380,6 +380,9 @@ static void otx2_rcv_pkt_handler(struct otx2_nic *pfvf,
- 	if (pfvf->netdev->features & NETIF_F_RXCSUM)
- 		skb->ip_summed = CHECKSUM_UNNECESSARY;
+ void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index 520b90dd97ec..feeaf172844d 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -183,7 +183,7 @@ extern struct list_head cgroup_roots;
  
-+	if (pfvf->flags & OTX2_FLAG_TC_MARK_ENABLED)
-+		skb->mark = parse->match_id;
-+
- 	skb_mark_for_recycle(skb);
+ static inline bool cgroup_is_dead(const struct cgroup *cgrp)
+ {
+-	return !(cgrp->self.flags & CSS_ONLINE);
++	return !css_is_online(&cgrp->self);
+ }
  
- 	napi_gro_frags(napi);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-index a82ffca8ce1b..3f1d2655ff77 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-@@ -62,6 +62,9 @@
- #define CQ_OP_STAT_OP_ERR       63
- #define CQ_OP_STAT_CQ_ERR       46
+ static inline bool notify_on_release(const struct cgroup *cgrp)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7703ced535a3..e77e9e1911e6 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -405,7 +405,7 @@ ino_t page_cgroup_ino(struct page *page)
+ 	/* page_folio() is racy here, but the entire function is racy anyway */
+ 	memcg = folio_memcg_check(page_folio(page));
  
-+/* Packet mark mask */
-+#define OTX2_RX_MATCH_ID_MASK 0x0000ffff
-+
- struct queue_stats {
- 	u64	bytes;
- 	u64	pkts;
+-	while (memcg && !(memcg->css.flags & CSS_ONLINE))
++	while (memcg && !css_is_online(&memcg->css))
+ 		memcg = parent_mem_cgroup(memcg);
+ 	if (memcg)
+ 		ino = cgroup_ino(memcg->css.cgroup);
+diff --git a/mm/page_owner.c b/mm/page_owner.c
+index 75c23302868a..7accb25e6fe6 100644
+--- a/mm/page_owner.c
++++ b/mm/page_owner.c
+@@ -523,7 +523,7 @@ static inline int print_page_owner_memcg(char *kbuf, size_t count, int ret,
+ 	if (!memcg)
+ 		goto out_unlock;
+ 
+-	online = (memcg->css.flags & CSS_ONLINE);
++	online = css_is_online(&memcg->css);
+ 	cgroup_name(memcg->css.cgroup, name, sizeof(name));
+ 	ret += scnprintf(kbuf + ret, count - ret,
+ 			"Charged %sto %smemcg %s\n",
 -- 
-2.25.1
+2.34.1
 
 
