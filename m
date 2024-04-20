@@ -1,123 +1,80 @@
-Return-Path: <linux-kernel+bounces-152263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68D568ABB97
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 14:52:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C5A38ABB9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 14:53:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24EA0281493
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 12:52:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7E86B21267
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 12:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B2318C05;
-	Sat, 20 Apr 2024 12:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C336E1A291;
+	Sat, 20 Apr 2024 12:53:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="wetB2Hmr";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="wetB2Hmr"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="jiTvJmkN"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8D91640B;
-	Sat, 20 Apr 2024 12:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D1A12E73;
+	Sat, 20 Apr 2024 12:53:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713617535; cv=none; b=iwfQHrZi5nAiy8lcS0JXmLZmrJEDHB7oFdwbD/gE1nIYy62oSW8ge21YnXKjqtI3t+HfnDkYLGIZ7N1zVG3X/DM0Wz+gbs735EEGqDrzDJnxkLZUBXD9ET79p3hBuvNCoARlcuphQMoE7pMCVTmQrUzePXI9vb/4nwTRC56fsRA=
+	t=1713617590; cv=none; b=gw0hwLMQkYsgSRQWuwGxiRoe8Hj29OXR3BCUU/ZmZbou1yYekrIkO6ARZ0A4oqJA6fFTN5+XAFjGm6U/K5QPWXLwX71O5ouP3pgXB1plID9SoPxhzbmThs99L6FEkJcE7/zz5pbuduqxv086dla9sfAemSXn7fPvhvQdue7mC/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713617535; c=relaxed/simple;
-	bh=6xED21WfVGjRF5mk9/LtGNdr0ZPGmxdCXMO/NYMDBI4=;
-	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=Z1oVCT2lYuO7y6GQNxfFrDoI8mWv8AUdACWioCYXeEMjfB6I2eTFCYYDy9Qgeh/uCmw2UWXLOgzBJl0iIS2Va83lKCr3SDLITf9CDHVr2AdHGIcQpSRX1ZUnIR/yKvWK6cNZyGZwRR3VxIcMLONQW0JvEQ0WpoZHSw36f5iHK6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=wetB2Hmr; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=wetB2Hmr; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1713617532;
-	bh=6xED21WfVGjRF5mk9/LtGNdr0ZPGmxdCXMO/NYMDBI4=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=wetB2Hmr94jyrx3lVjbJfElSvvDsFFJY9pEWcY0diT1FaQWG1iQBHeBf+FklGiFA6
-	 oGRduCRYg25pa4C67+GBIESvvrLZoBARZJEFDS7A+PtiJpALuDIf1/N1VcsSjDR19z
-	 wnsd4+DEMZn1Jm9EPlK81WBApD0PXyHRLJZliGS8=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id D0389128649A;
-	Sat, 20 Apr 2024 08:52:12 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id wXJldp-1vML9; Sat, 20 Apr 2024 08:52:12 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1713617532;
-	bh=6xED21WfVGjRF5mk9/LtGNdr0ZPGmxdCXMO/NYMDBI4=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=wetB2Hmr94jyrx3lVjbJfElSvvDsFFJY9pEWcY0diT1FaQWG1iQBHeBf+FklGiFA6
-	 oGRduCRYg25pa4C67+GBIESvvrLZoBARZJEFDS7A+PtiJpALuDIf1/N1VcsSjDR19z
-	 wnsd4+DEMZn1Jm9EPlK81WBApD0PXyHRLJZliGS8=
-Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits))
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 238EF1286027;
-	Sat, 20 Apr 2024 08:52:12 -0400 (EDT)
-Message-ID: <cfb963420b1848bc2259ae3006b49106b9ae02d6.camel@HansenPartnership.com>
-Subject: [GIT PULL] MAINTAINERS update for 6.9-rc4
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds
-	 <torvalds@linux-foundation.org>
-Cc: linux-scsi <linux-scsi@vger.kernel.org>, linux-kernel
-	 <linux-kernel@vger.kernel.org>, keyrings@vger.kernel.org
-Date: Sat, 20 Apr 2024 08:52:10 -0400
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1713617590; c=relaxed/simple;
+	bh=Ii39j1e9CG5HbIb6F+SPiZe/5HlLbwinhvOgR6qmVww=;
+	h=Content-Type:MIME-Version:In-Reply-To:References:Subject:From:Cc:
+	 To:Date:Message-ID; b=CmVmsdecljktOTPkB7mRcvB09d3wXaZf9SxbbSF66nrY3Cf1ndJqlPiGv70eo+cx1ycukjmHDEhUbaolVjNDLSv6A+90kawcNfwCexS5shVjpY4anSm/SCGC7RhbdAtidOepKFbrt61qDUN+tnm7ZKeDBYftBIrgQ+j4SreAUOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=jiTvJmkN; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust6594.18-1.cable.virginm.net [86.31.185.195])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id ACA63ABB;
+	Sat, 20 Apr 2024 14:52:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713617535;
+	bh=Ii39j1e9CG5HbIb6F+SPiZe/5HlLbwinhvOgR6qmVww=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=jiTvJmkNYYq6gv/kT6jD5Mw23YOnJlyQ8PZChjvvyQDNKk/lxi7YlR4hR0gy/0uNL
+	 wjaAOnlyt1t7esvN22C8otstTvVVubj1sSnzj1ZLZDays3vogkfwlH1F5f/SPXNBv/
+	 //T6d3KdNDV1Q8sXEMl0o5snwJZLna3Yk/bbF7Zg=
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0cb44232-3be3-47cd-9e4c-f01f2839aff3@kernel.org>
+References: <20240420011840.23148-1-zhi.mao@mediatek.com> <20240420011840.23148-2-zhi.mao@mediatek.com> <0cb44232-3be3-47cd-9e4c-f01f2839aff3@kernel.org>
+Subject: Re: [PATCH v1 1/2] media: dt-bindings: i2c: add Giantec GT97xx VCM
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Philipp Zabel <p.zabel@pengutronix.de>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, Heiko Stuebner <heiko@sntech.de>, Sakari Ailus <sakari.ailus@linux.intel.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>, Hans de Goede <hdegoede@redhat.com>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, Alain Volmat <alain.volmat@foss.st.com>, Paul Elder <paul.elder@ideasonboard.com>, Mehdi Djait <mehdi.djait@bootlin.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, shengnan.wang@mediatek.com, yaya.chang@mediatek.com, yunkec@chromium.org, 10572168@qq.com
+To: Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>, Zhi Mao <zhi.mao@mediatek.com>
+Date: Sat, 20 Apr 2024 13:53:01 +0100
+Message-ID: <171361758199.1737874.11884706323295617909@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
 
-My IBM email has stopped working, so update to a working email address.
+Quoting Krzysztof Kozlowski (2024-04-20 12:21:46)
+> On 20/04/2024 03:18, Zhi Mao wrote:
+> > Add YAML device tree binding for GT9768 & GT8769 VCM,
+> > and the relevant MAINTAINERS entries.
+> >=20
+> > Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
+> > ---
+>=20
+> Sorry, there was v1. Please do not send same versions twice. BTW, use
+> patman or b4 for your submissions if versioning is tricky.
+>=20
 
-The patch is available here:
+Whats Patman? google returns false positives for me.
+--
+Kieran
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git email
-
-The short changelog is:
-
-James Bottomley (1):
-      MAINTAINERS: update to working email address
-
-And the diffstat:
-
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-With full diff below
-
----
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c23fda1aa1f0..e5121ff5e60e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11995,7 +11995,7 @@ F:	include/keys/encrypted-type.h
- F:	security/keys/encrypted-keys/
- 
- KEYS-TRUSTED
--M:	James Bottomley <jejb@linux.ibm.com>
-+M:	James Bottomley <James.Bottomley@HansenPartnership.com>
- M:	Jarkko Sakkinen <jarkko@kernel.org>
- M:	Mimi Zohar <zohar@linux.ibm.com>
- L:	linux-integrity@vger.kernel.org
-@@ -19669,7 +19669,7 @@ F:	drivers/scsi/sg.c
- F:	include/scsi/sg.h
- 
- SCSI SUBSYSTEM
--M:	"James E.J. Bottomley" <jejb@linux.ibm.com>
-+M:	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
- M:	"Martin K. Petersen" <martin.petersen@oracle.com>
- L:	linux-scsi@vger.kernel.org
- S:	Maintained
--- 
-2.35.3
-
-
+> Best regards,
+> Krzysztof
+>
 
