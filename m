@@ -1,61 +1,55 @@
-Return-Path: <linux-kernel+bounces-152100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B20A58AB91D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 04:58:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E6CF8AB91F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 05:01:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65B411F21D1E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 02:58:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07AAE1F21A28
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 03:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB10D8BEE;
-	Sat, 20 Apr 2024 02:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82AA8F45;
+	Sat, 20 Apr 2024 03:01:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d6rI+Szc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tBd1Ual8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1826B625;
-	Sat, 20 Apr 2024 02:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F243201;
+	Sat, 20 Apr 2024 03:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713581887; cv=none; b=pOIUNHdhEb58QnRaU9cQYg1Jxu0pY6M+FzqWXtwV57S2ebFLn1bRr8+OwW+yXUqnn0RSANFUu4qtAMIY7/KLNQzSZEAktrs2+BAuJOrF8ixHJIqLIzF5FzU6gQd4NwMcledZCdZ8ocebVCr1rkpt7FrwZ/DZXq4sK1k3zp/h3Og=
+	t=1713582086; cv=none; b=CfL0oPOuCyGsKGHqKQP+M/K14j6alC0ZHdlN0CUmMMVZVWZPX/pmz3FUBHj05KGzqi5khI3NF1w5bnlSdUvSPTLao9XW03rZvh5/YPpWPO02AqlNbmWc/5V2YJ9R5SDK2K3Z+3leBYUhEusiMDLx5N8mNf4kMGP0+SJJphhqjro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713581887; c=relaxed/simple;
-	bh=dqJCgSGZDVHIYWgOCypPgASUgV3IusHHzpLEV6weCTM=;
+	s=arc-20240116; t=1713582086; c=relaxed/simple;
+	bh=/4CgFITbRMHOdV44xzuGxYYt/KHDnmu5af3/NTvQg+s=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rsq8IellLXHQqlLKIb2vepSOGKJbsj6qEXkmP+13Bs6DGgcrUaCcGZq4kUYGBXPEyMTYrkDTPl7EujMgdLiebzP4A7RyJk10THXmQ27kko7EaNKnirwtA2jl7T7SQOhkzrYPusWRWXgCBHn4cRJ+6SsG71MPv9x4b0AkGpqcSvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d6rI+Szc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05335C072AA;
-	Sat, 20 Apr 2024 02:58:03 +0000 (UTC)
+	 MIME-Version:Content-Type; b=CR/xxcfJKpG9BUZVFAoUdncXuTplLlu5tVbfEsKx253+cYVR8hH5cLGbb6RqM3W+OJVeY278Jj/b5fmDMaU3Ver+x5DgpLiivwxcSZv9NQLb7mZphgAGshMiF7/YgP/TXeGHVKy6pX5kZxaOTXYcPdxfdD3qhHKNGCDUHGJmF1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tBd1Ual8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A932C072AA;
+	Sat, 20 Apr 2024 03:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713581884;
-	bh=dqJCgSGZDVHIYWgOCypPgASUgV3IusHHzpLEV6weCTM=;
+	s=k20201202; t=1713582085;
+	bh=/4CgFITbRMHOdV44xzuGxYYt/KHDnmu5af3/NTvQg+s=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=d6rI+Szc4HoW/JpVK43LsiotzkyvpNSswsJGpoSJdOCu4Cd0fhCXFwGdLwc48XbKC
-	 619ugF7i2/HeXihWBpA2Krn1l4Pkl77Nt00XEpGF/JyV7ok2pWCSwae6pqTMxDYMw8
-	 zoxxUhuEx8KHt1gPtfNc5bIaLAtbwWpyfNgveSHBIdzbNa552tKyR5zNU71NVTHu+O
-	 KQuUZtxGsddS3L0mTxgSWGTb5a2ctfRJaZSLQs4ArvEZpVUSGjDP2ZpPz5F4UKj/4I
-	 rJkHn3NoQzmQf2e+vHeQQhV8n0pcuG9jtnt1LaNFgW8TYct4UY8AZ6thq8m4kmRsNR
-	 wn1Qnbu39rwwQ==
-Date: Fri, 19 Apr 2024 19:58:02 -0700
+	b=tBd1Ual8Tvlj6bYSGtfgNwpqM49JI90/L7xD7R3ORXK7+xwL/hPuQt0Tx2Xb5XrOo
+	 q4lNpLYdg5UYgwJh4OBQIuVtSzC6tevXHaCYwX4C2sQOb1V265aYEAV3UN5XQFPIWn
+	 e4HkvI2dp7rJKTdY6XVxSsY02Jb6afwdNSS0BafEgTR7YDjRb5MYNfWmB2osPBnpQq
+	 t1JiIaSp0JUr9y3lo/3mw4rLTYX12TctA31sTEK3enMuIKTuFbfHAJIs1orPjeZI7N
+	 O5DUBqFnG4Do5FT5Z/vAthG4RizgOU8exT7BMqr5iylvrsJljmKiHGA6DjCrYD2ewS
+	 t0U6dASnc6ocw==
+Date: Fri, 19 Apr 2024 20:01:24 -0700
 From: Jakub Kicinski <kuba@kernel.org>
-To: Richard Cochran <richardcochran@gmail.com>
-Cc: Mahesh Bandewar <maheshb@google.com>, Netdev <netdev@vger.kernel.org>,
- Linux <linux-kernel@vger.kernel.org>, David Miller <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Thomas
- Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Sagi Maimon
- <maimon.sagi@gmail.com>, Jonathan Corbet <corbet@lwn.net>, John Stultz
- <jstultz@google.com>, Mahesh Bandewar <mahesh@bandewar.net>
-Subject: Re: [PATCHv1 next] ptp: update gettimex64 to provide ts optionally
- in mono-raw base.
-Message-ID: <20240419195802.0699dc5b@kernel.org>
-In-Reply-To: <ZiIPIKM1rH7J-Pok@hoboy.vegasvil.org>
-References: <20240416215942.150202-1-maheshb@google.com>
-	<20240417182445.019fb351@kernel.org>
-	<ZiIPIKM1rH7J-Pok@hoboy.vegasvil.org>
+To: Jun Gu <jun.gu@easystack.cn>
+Cc: dev@openvswitch.org, echaudro@redhat.com, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v4] net: openvswitch: Check vport netdev name
+Message-ID: <20240419200124.701cafb0@kernel.org>
+In-Reply-To: <20240419043133.117295-1-jun.gu@easystack.cn>
+References: <20240418023242.259542-1-jun.gu@easystack.cn>
+	<20240419043133.117295-1-jun.gu@easystack.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,22 +59,21 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 18 Apr 2024 23:28:48 -0700 Richard Cochran wrote:
-> On Wed, Apr 17, 2024 at 06:24:45PM -0700, Jakub Kicinski wrote:
-> > On Tue, 16 Apr 2024 14:59:42 -0700 Mahesh Bandewar wrote:  
-> > >  		if (extoff->n_samples > PTP_MAX_SAMPLES
-> > > -		    || extoff->rsv[0] || extoff->rsv[1] || extoff->rsv[2]) {
-> > > +		    || extoff->rsv[0] || extoff->rsv[1]
-> > > +		    || (extoff->clockid != CLOCK_REALTIME
-> > > +			&& extoff->clockid != CLOCK_MONOTONIC_RAW)) {  
-> > 
-> > Since you're touching this condition it's probably a good opportunity
-> > to fox the coding style.  
+On Fri, 19 Apr 2024 12:31:33 +0800 Jun Gu wrote:
+> From: "jun.gu" <jun.gu@easystack.cn>
 > 
-> What is the CodingStyle violation?
+> Ensure that the provided netdev name is not one of its aliases to
+> prevent unnecessary creation and destruction of the vport by
+> ovs-vswitchd.
 > 
-> Is it starting a line with  ||  ?
+> Signed-off-by: jun.gu  <jun.gu@easystack.cn>
+> Acked-by: Eelco Chaudron <echaudro@redhat.com>
 
-Yup. Now that it's a mix of || and && the loss of readability 
-to a kernel-trained eye starts to be impactful.
+I said: When you repost, start a new thread, do not post new version
+in-reply-to.
+
+If you don't understand what something means - ask :|
+Now try again.
+-- 
+pw-bot: cr
 
