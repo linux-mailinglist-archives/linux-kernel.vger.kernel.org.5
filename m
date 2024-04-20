@@ -1,160 +1,156 @@
-Return-Path: <linux-kernel+bounces-152164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C4048ABA18
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 09:30:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0C4D8ABA21
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 09:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D61F1C208D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 07:30:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E48B281671
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 07:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0653113AC5;
-	Sat, 20 Apr 2024 07:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1DE14F61;
+	Sat, 20 Apr 2024 07:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XpOeeV7x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HstIwZ4k"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B7710799;
-	Sat, 20 Apr 2024 07:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D4720EB;
+	Sat, 20 Apr 2024 07:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713598195; cv=none; b=k0bK5UYpMtkCcwfAqgTgq+0JNnKDZ8rxWOQVw+ro7X7aoNgiINCWCZpQG48/tJKLBYoXjOfBBq4BWAzu/8AXN2m1N9TkZeZrlyshBmQgNtyZX3heZuZcTrWjIelwwqMGu8p82aev5ske2JwacRRvnCim3yIZm0Fc2vYXjyjOJB8=
+	t=1713598501; cv=none; b=NEJIQASP3Ux0IRBMlmLbRO1DwkcnRXowI+ccL0hzeoDZKOOfU8/RMng5REfSY15sIvPAzNlS6mvu+TCUmmUhN+BFpwP0C0eVoaEMIstQgbhVDGRD4clvXzmN0U3EWwboWhDps0TZVFWeJrUzCcWe2A99ek+g3H3KIYLKt2LVpNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713598195; c=relaxed/simple;
-	bh=xboYmwFAY9oYvkuW7reH8ca2FGx3OQYvrAakw41o+I0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BeKjgDpAW1UCUNRl2ma8t2lkhNvOooWQ2/yn115TrYhBf0pWAOidMSBlrFckZl59IcTRZadDZUPDwqpDUqQfQchzWvSVeh3iPCIOwcgF4U3BlV3izKC36pWvn9dkHo1a+H7JbfwWCzuQ0ehOvC1fhdJ+1yFbtXcOWh4Akx+qTck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XpOeeV7x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B935EC072AA;
-	Sat, 20 Apr 2024 07:29:54 +0000 (UTC)
+	s=arc-20240116; t=1713598501; c=relaxed/simple;
+	bh=YQ9KfPtm5Gq9HYepBoPJrHlxAcwZYbjakD5piFpGBCI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XLxl6jNNEst2IqF5XyMzMm82Xg8yJj4+7+iWllu0I+9/7J/iwHLHvBsh8AuzwxMOwekkExF8wcmFVqi/Cg8qyyN3l4WwEDpA1H12Ki3o1gYt2QeHg7FwgCnr1Vof9BkqkBnCwGTNYSzmQ6N+NLAkyoeBp99rBZLphCBV9icN8UQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HstIwZ4k; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FB26C113CE;
+	Sat, 20 Apr 2024 07:34:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713598194;
-	bh=xboYmwFAY9oYvkuW7reH8ca2FGx3OQYvrAakw41o+I0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XpOeeV7xdBMOKCGPP7msCiC/F1BCtbAR8WNizkFmiyzExN0V49nAY9+r1ZC9N7nNW
-	 o9uMTbWE4bNbOM1wU8OfWyR0vT0S16wb2+VIOvQRfiwcGnK3gkLst2O3utJfU2suZv
-	 i+/HFYwHK1DF5scwvp/GzGB6qq7FnLD81SSKZaJ02wFSqI9CGcG5scBojjVkQdO1/K
-	 GCQWcYm4KMq5nIwTEm1e+Y0wn1T32aXo5VqoFH8exChN4LvmeII0xJUxRmsd+bw1Np
-	 6w31koO5vPbGGFv4zQKD92GwN69lvuVr4LejeTe2kBRaKjjXHZhtTxYe2AlzVpMFQX
-	 hadiMKBe+qx8g==
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5176f217b7bso4651203e87.0;
-        Sat, 20 Apr 2024 00:29:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUmO/wVEwZovGiWVkMaGOYhTtY4TprbAybrjCwuPQzcSRzdpSC65nQ6iHKntc3QrTsBtHsDJxOj8K9xCaYvsnK1SanlCOMvyHZNWGTkgeFcHBx+G0yZ+1JN+iVxC6XE/5x3KL3GpCsB2RXlkrHAObhzw5LSHWYs3IRfDin6QiijMZxREOpl
-X-Gm-Message-State: AOJu0YySQ88IDODuat8awixNP1lvzbzM+gpE66qmv1UayehqXf0EF0cw
-	uf+zWsoLRwrXkDHHgZ7Mn5YbqA4w5myeulObtyY5twiF/wiC2O18YX3mEf7IR2HflLGLkG8muJu
-	xJElJRBgLLKkKFUXPoRc9QIkFy+g=
-X-Google-Smtp-Source: AGHT+IF0Ojfu+/qfawWbrxQ/4x/qrMMM9Bg7P5wu1/XAmxXUdVvWrZIK6YIN9nOEFz0UCjQ6C+orZj9b8gni7o3Bckk=
-X-Received: by 2002:ac2:5188:0:b0:516:d09b:cbe4 with SMTP id
- u8-20020ac25188000000b00516d09bcbe4mr3647779lfi.53.1713598193465; Sat, 20 Apr
- 2024 00:29:53 -0700 (PDT)
+	s=k20201202; t=1713598501;
+	bh=YQ9KfPtm5Gq9HYepBoPJrHlxAcwZYbjakD5piFpGBCI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HstIwZ4kXYt594F3dTAKefbjqk59LgLelJ4wfeugjHKdccg9U6QSsThvKUdOj6kpr
+	 cxBq3QX4LKiL1ekSZ4hlwHrg2Qo19wEMdjfcoqJC1hKB987QXK8Wq3oegsKl2zZTfI
+	 0ahwnVH2zTwg0WMFDB5bQY2DWepkh6sfONxxfG+SnniZiiLcfZnS8gmDD4/taXFr4a
+	 gNoyuT99b/yZU19nTHh4Wm4L6MjmbQoSYrPwuVYcHB2CCTGISZcttYnTQA36iEYp8c
+	 S1AEVNMPdbCPnyweb2c/fhVBUzL5EOQDTyFmN+U+fX6hUzHCENDjnN15hBAkD3dzc1
+	 3OfMh4fyGR7Ag==
+Date: Sat, 20 Apr 2024 10:33:38 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Masami Hiramatsu <masami.hiramatsu@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH v4 14/15] kprobes: remove dependency on CONFIG_MODULES
+Message-ID: <ZiNv0jY7Ebw75iQl@kernel.org>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+ <20240411160051.2093261-15-rppt@kernel.org>
+ <20240418061615.5fad23b954bf317c029acc4d@gmail.com>
+ <ZiKSffcTiP2c6fbs@kernel.org>
+ <321def3e-8bf1-4920-92dd-037b20f1272d@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417043654.60662-1-prathampatel@thefossguy.com>
- <20240417144859.GA1471879@dev-arch.thelio-3990X> <D0MHQUIYGONC.3LTT2WN2885D7@thefossguy.com>
- <20240417154750.GB1517581@dev-arch.thelio-3990X> <D0MIMX0DRNKG.21N7VHAE5MWNX@thefossguy.com>
-In-Reply-To: <D0MIMX0DRNKG.21N7VHAE5MWNX@thefossguy.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sat, 20 Apr 2024 16:29:17 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASgtAvOfgnkq-6CJWP_8Ut195t6Z7sqRe1FHbTxtLKfkg@mail.gmail.com>
-Message-ID: <CAK7LNASgtAvOfgnkq-6CJWP_8Ut195t6Z7sqRe1FHbTxtLKfkg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Enable building of the devel RPM package from Kbuild
-To: Pratham Patel <prathampatel@thefossguy.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
-	Jonathan Corbet <corbet@lwn.net>, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, thefirst1322@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <321def3e-8bf1-4920-92dd-037b20f1272d@csgroup.eu>
 
-On Thu, Apr 18, 2024 at 12:51=E2=80=AFAM Pratham Patel
-<prathampatel@thefossguy.com> wrote:
->
-> On Wed Apr 17, 2024 at 9:17 PM IST, Nathan Chancellor wrote:
-> > On Wed, Apr 17, 2024 at 03:08:57PM +0000, Pratham Patel wrote:
-> > > On Wed Apr 17, 2024 at 8:18 PM IST, Nathan Chancellor wrote:
-> > > > On Wed, Apr 17, 2024 at 04:37:32AM +0000, Pratham Patel wrote:
-> > > > > This addresses a minor nit where I want a `-devel` RPM package to=
- be
-> > > > > built when I build a binary RPM package with either `binrpm-pkg`
-> > > > > or `rpm-pkg` target(s).
-> > > > >
-> > > > > Pratham Patel (2):
-> > > > >   kbuild: allow toggling the `with_devel` RPM macro
-> > > > >   docs: kbuild: document KBUILD_RPM_WITH_DEVEL
-> > > > >
-> > > > >  Documentation/kbuild/kbuild.rst | 6 ++++++
-> > > > >  scripts/Makefile.package        | 5 ++++-
-> > > > >  2 files changed, 10 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > --
-> > > > > 2.42.0
-> > > > >
-> > > >
-> > > > Hmmm, when I execute
-> > > >
-> > > >   $ make -skj"$(nproc)" ARCH=3Dx86_64 O=3Dbuild mrproper defconfig =
-binrpm-pkg
-> > > >
-> > > > I end up with
-> > > >
-> > > >   $ ls -1 build/rpmbuild/RPMS/x86_64
-> > > >   kernel-6.9.0_rc4_00031_g96fca68c4fbf-1.x86_64.rpm
-> > > >   kernel-devel-6.9.0_rc4_00031_g96fca68c4fbf-1.x86_64.rpm
-> > > >   kernel-headers-6.9.0_rc4_00031_g96fca68c4fbf-1.x86_64.rpm
-> > > >
-> > > > so it seems like this is already happening?
-> > > >
-> > > > Cheers,
-> > > > Nathan
-> > >
-> > > Ah sorry, that was a typo. I meant to say the following:
-> > > "This addresses a minor nit where I **don't** want a `-devel` RPM
-> > > package to be built when I build a binary RPM package with either
-> > > `binrpm-pkg` or `rpm-pkg` target(s)."
-> > >
-> > > That is because on ARM systems where I just need to quickly test the
-> > > upstream defconfig, I don't really need the `-devel` package.
-> > >
-> > > Also, I see that in a hurry, I did the opposite of what I wanted in t=
-he
-> > > patches. This went unnoticed since I had KBUILD_RPM_WITH_DEVEL=3D0 fo=
-r me
-> > > during testing. Sorry about that!
-> > >
-> > > I'll send a v2 fixing this stupid mistake.
-> >
-> > Ah, understood! I am not sure you actually need a v2 though because I
-> > think you can already accomplish what you are looking for by adding
-> >
-> >   RPMOPTS=3D'--without devel'
-> >
-> > to your make command, at least that works for me. Commit 2a291fc315b6
-> > ("kbuild: rpm-pkg: introduce %{with_devel} switch to select devel
-> > package") introduced this.
-> >
-> > Cheers,
-> > Nathan
->
-> Oh, didn't know that, thank you. :)
->
->  -- Pratham Patel
->
+On Fri, Apr 19, 2024 at 03:59:40PM +0000, Christophe Leroy wrote:
+> 
+> 
+> Le 19/04/2024 à 17:49, Mike Rapoport a écrit :
+> > Hi Masami,
+> > 
+> > On Thu, Apr 18, 2024 at 06:16:15AM +0900, Masami Hiramatsu wrote:
+> >> Hi Mike,
+> >>
+> >> On Thu, 11 Apr 2024 19:00:50 +0300
+> >> Mike Rapoport <rppt@kernel.org> wrote:
+> >>
+> >>> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> >>>
+> >>> kprobes depended on CONFIG_MODULES because it has to allocate memory for
+> >>> code.
+> >>>
+> >>> Since code allocations are now implemented with execmem, kprobes can be
+> >>> enabled in non-modular kernels.
+> >>>
+> >>> Add #ifdef CONFIG_MODULE guards for the code dealing with kprobes inside
+> >>> modules, make CONFIG_KPROBES select CONFIG_EXECMEM and drop the
+> >>> dependency of CONFIG_KPROBES on CONFIG_MODULES.
+> >>
+> >> Thanks for this work, but this conflicts with the latest fix in v6.9-rc4.
+> >> Also, can you use IS_ENABLED(CONFIG_MODULES) instead of #ifdefs in
+> >> function body? We have enough dummy functions for that, so it should
+> >> not make a problem.
+> > 
+> > The code in check_kprobe_address_safe() that gets the module and checks for
+> > __init functions does not compile with IS_ENABLED(CONFIG_MODULES).
+> > I can pull it out to a helper or leave #ifdef in the function body,
+> > whichever you prefer.
+> 
+> As far as I can see, the only problem is MODULE_STATE_COMING.
+> Can we move 'enum module_state' out of #ifdef CONFIG_MODULES in module.h  ?
 
+There's dereference of 'struct module' there:
+ 
+		(*probed_mod)->state != MODULE_STATE_COMING) {
+			...
+		}
 
-As explained in the commit description of
-a55d4aee76ca72e198a657cb471d2a3b37983072
+so moving out 'enum module_state' won't be enough.
+ 
+> >   
+> >> -- 
+> >> Masami Hiramatsu
+> > 
 
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+-- 
+Sincerely yours,
+Mike.
 
