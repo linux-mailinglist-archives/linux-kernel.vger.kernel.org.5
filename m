@@ -1,108 +1,280 @@
-Return-Path: <linux-kernel+bounces-152261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79CA88ABB92
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 14:43:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 188FA8ABB94
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 14:51:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 360EA281606
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 12:43:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3621E1C204F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Apr 2024 12:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FB8317C72;
-	Sat, 20 Apr 2024 12:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E7B3175A4;
+	Sat, 20 Apr 2024 12:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="YdlNkD4n";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="YdlNkD4n"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZWiV0WbE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 116627EB;
-	Sat, 20 Apr 2024 12:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74DC0625;
+	Sat, 20 Apr 2024 12:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713616972; cv=none; b=jVedj7DRJz8iB72cqD/lk2tV49WhoZ4aQrLT528KJv9HmQn91FAgRCbd+sDLHzMxQdU6cULiVmascmfVr4yYuEjXMCtMuDKf/6SHwvo8KDHrMetaRT7LhemPh3pcLJJRMvPCDHRHYyQ09hnGPIyuDQkGB6vNlzDtqGetwcqYUCw=
+	t=1713617456; cv=none; b=kNOQ2QB30uCfT45LTjOOsM/mMVqDZG2zN8m545pAfMF1PJ4lXYPL/0vfnb611S1QhnwBzvEWG0C7Bfj/lfxSjOkvSASCzYc+hQizGbD0MUgr5rDJyLSW0K3H57rt3PWvWH8N18Pva+zdhSqJVX5g3i9Qk9Lqv5sFN/yUbukFL/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713616972; c=relaxed/simple;
-	bh=5/hr0Mzp7QzNVogN6AM38E/79ROQzQNR4VUsuZMoYKc=;
-	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version; b=eo6iTzqImhp23HcRxK8emBXXvbms844taTGh/wvmkedyLT3YMm4uUNAhYbTp2+0J70RF0KC8bvLsiQHyKlJISNtR5FfNAF4LPJKabOH9udcds51VDD3efFsjne6i/6WwJXPMOBaQCEX2QdeCiYf1C2kgJvwxnQebKCGR3oN/vHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=YdlNkD4n; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=YdlNkD4n; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1713616969;
-	bh=5/hr0Mzp7QzNVogN6AM38E/79ROQzQNR4VUsuZMoYKc=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=YdlNkD4nKNSuk/K2S6AOlt1Si8rUR+Hck+daJRSVy18YGxS+VQMJ3+HN40vOumyq/
-	 BvPUk0kIvI5AZ6p0S7Dx4b/Kgo02bWLEhtJwH2BOZsg1nkZ+j5ASVIPfYyr36PhYYT
-	 8Z6WeXagIYqIfdm7f8d5cs0z5ZdlL712yQbJru3s=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 511A91281C77;
-	Sat, 20 Apr 2024 08:42:49 -0400 (EDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id E69Gx8GAeK9c; Sat, 20 Apr 2024 08:42:49 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1713616969;
-	bh=5/hr0Mzp7QzNVogN6AM38E/79ROQzQNR4VUsuZMoYKc=;
-	h=Message-ID:Subject:From:To:Date:From;
-	b=YdlNkD4nKNSuk/K2S6AOlt1Si8rUR+Hck+daJRSVy18YGxS+VQMJ3+HN40vOumyq/
-	 BvPUk0kIvI5AZ6p0S7Dx4b/Kgo02bWLEhtJwH2BOZsg1nkZ+j5ASVIPfYyr36PhYYT
-	 8Z6WeXagIYqIfdm7f8d5cs0z5ZdlL712yQbJru3s=
-Received: from [IPv6:2601:5c4:4302:c21::a774] (unknown [IPv6:2601:5c4:4302:c21::a774])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id B5E3C1281C31;
-	Sat, 20 Apr 2024 08:42:48 -0400 (EDT)
-Message-ID: <31678fc9077af80a2a5648c2bb6c116053e07be7.camel@HansenPartnership.com>
-Subject: [PATCH] MAINTAINERS: update to working email address
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: keyrings@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Date: Sat, 20 Apr 2024 08:42:46 -0400
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1713617456; c=relaxed/simple;
+	bh=289IG/8ie1lhiRC5p5kwvp2q+FCe7+CmmeFkid4uKM0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=J8gBJhgreDwTr9oi8Bks1TlxKUz55AKTVjqXyTD+oOxHCj51f5/NGceEOCPnV7i7rPZSpB2YR4TOlLcQbGeiEOvxQeCaBeUU96KYIyObAbN/xYr4Uy69Emndjfh43KA7410xEGvJeqFeZuDQNNfyFa7ZDnrfwBEY7HDiW7IBo9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZWiV0WbE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52EF9C072AA;
+	Sat, 20 Apr 2024 12:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713617455;
+	bh=289IG/8ie1lhiRC5p5kwvp2q+FCe7+CmmeFkid4uKM0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ZWiV0WbEPE20fapCabZLXpoPHMdlaE5IgIOh+Ck36yRWt+qtmO+zwqLRHoAAGLSYk
+	 f+gdziBs0V+HxyWLlzPgQSBSHa+S7dHnD172p5cEka1ICZe89FiMsHP/cQ2HpSuQ2S
+	 PBz8NrHCoKV+7+TnJXCD4e6gawRah21Kww1JroVl6ORRjTllqiZbmaMmItzXdxcLGi
+	 NjArU+gR7QHSNgoQ0ZiZB9j/dpjIU16VeF74ReuvHhUXShP2+/quVK3NUDKkl9LjOr
+	 Fo4GIQJgZNZx/Rl+KuvkqG5ILIOO2+cyXGqM+rLYSYjhH9yrOomZGy1jEuttr14Mmg
+	 jWQ7PM2odQSgw==
+Date: Sat, 20 Apr 2024 21:50:52 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Beau Belgrave <beaub@linux.microsoft.com>
+Cc: rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ dcook@linux.microsoft.com
+Subject: Re: [PATCH 1/2] tracing/user_events: Fix non-spaced field matching
+Message-Id: <20240420215052.1f806c8acb5f99ec2f63945c@kernel.org>
+In-Reply-To: <20240419211334.GA7774-beaub@linux.microsoft.com>
+References: <20240416224102.734-1-beaub@linux.microsoft.com>
+	<20240416224102.734-2-beaub@linux.microsoft.com>
+	<20240419113305.7b0ae2b11395eec16b5c15b6@kernel.org>
+	<20240419211334.GA7774-beaub@linux.microsoft.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-jejb@linux.ibm.com no longer works.
+On Fri, 19 Apr 2024 14:13:34 -0700
+Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> On Fri, Apr 19, 2024 at 11:33:05AM +0900, Masami Hiramatsu wrote:
+> > On Tue, 16 Apr 2024 22:41:01 +0000
+> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> > 
+> > > When the ABI was updated to prevent same name w/different args, it
+> > > missed an important corner case when fields don't end with a space.
+> > > Typically, space is used for fields to help separate them, like
+> > > "u8 field1; u8 field2". If no spaces are used, like
+> > > "u8 field1;u8 field2", then the parsing works for the first time.
+> > > However, the match check fails on a subsequent register, leading to
+> > > confusion.
+> > > 
+> > > This is because the match check uses argv_split() and assumes that all
+> > > fields will be split upon the space. When spaces are used, we get back
+> > > { "u8", "field1;" }, without spaces we get back { "u8", "field1;u8" }.
+> > > This causes a mismatch, and the user program gets back -EADDRINUSE.
+> > > 
+> > > Add a method to detect this case before calling argv_split(). If found
+> > > force a space after the field separator character ';'. This ensures all
+> > > cases work properly for matching.
+> > > 
+> > > With this fix, the following are all treated as matching:
+> > > u8 field1;u8 field2
+> > > u8 field1; u8 field2
+> > > u8 field1;\tu8 field2
+> > > u8 field1;\nu8 field2
+> > 
+> > Sounds good to me. I just have some nits.
+> > 
+> > > 
+> > > Fixes: ba470eebc2f6 ("tracing/user_events: Prevent same name but different args event")
+> > > Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+> > > ---
+> > >  kernel/trace/trace_events_user.c | 88 +++++++++++++++++++++++++++++++-
+> > >  1 file changed, 87 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+> > > index 70d428c394b6..9184d3962b2a 100644
+> > > --- a/kernel/trace/trace_events_user.c
+> > > +++ b/kernel/trace/trace_events_user.c
+> > > @@ -1989,6 +1989,92 @@ static int user_event_set_tp_name(struct user_event *user)
+> > >  	return 0;
+> > >  }
+> > >  
+> > > +/*
+> > > + * Counts how many ';' without a trailing space are in the args.
+> > > + */
+> > > +static int count_semis_no_space(char *args)
+> > > +{
+> > > +	int count = 0;
+> > > +
+> > > +	while ((args = strchr(args, ';'))) {
+> > > +		args++;
+> > > +
+> > > +		if (!isspace(*args))
+> > > +			count++;
+> > > +	}
+> > > +
+> > > +	return count;
+> > > +}
+> > > +
+> > > +/*
+> > > + * Copies the arguments while ensuring all ';' have a trailing space.
+> > > + */
+> > > +static char *fix_semis_no_space(char *args, int count)
+> > 
+> > nit: This name does not represent what it does. 'insert_space_after_semis()'
+> > is more self-described.
+> > 
+> 
+> Sure, will fix in a v2.
+> 
+> > > +{
+> > > +	char *fixed, *pos;
+> > > +	char c, last;
+> > > +	int len;
+> > > +
+> > > +	len = strlen(args) + count;
+> > > +	fixed = kmalloc(len + 1, GFP_KERNEL);
+> > > +
+> > > +	if (!fixed)
+> > > +		return NULL;
+> > > +
+> > > +	pos = fixed;
+> > > +	last = '\0';
+> > > +
+> > > +	while (len > 0) {
+> > > +		c = *args++;
+> > > +
+> > > +		if (last == ';' && !isspace(c)) {
+> > > +			*pos++ = ' ';
+> > > +			len--;
+> > > +		}
+> > > +
+> > > +		if (len > 0) {
+> > > +			*pos++ = c;
+> > > +			len--;
+> > > +		}
+> > > +
+> > > +		last = c;
+> > > +	}
+> > 
+> > nit: This loop can be simpler, because we are sure fixed has enough length;
+> > 
+> > /* insert a space after ';' if there is no space. */
+> > while(*args) {
+> > 	*pos = *args++;
+> > 	if (*pos++ == ';' && !isspace(*args))
+> > 		*pos++ = ' ';
+> > }
+> > 
+> 
+> I was worried that if count_semis_no_space() ever had different logic
+> (maybe after this commit) that it could cause an overflow if the count
+> was wrong, etc.
+> 
+> I don't have an issue making it shorter, but I was trying to be more on
+> the safe side, since this isn't a fast path (event register).
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c23fda1aa1f0..e5121ff5e60e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11995,7 +11995,7 @@ F:	include/keys/encrypted-type.h
- F:	security/keys/encrypted-keys/
- 
- KEYS-TRUSTED
--M:	James Bottomley <jejb@linux.ibm.com>
-+M:	James Bottomley <James.Bottomley@HansenPartnership.com>
- M:	Jarkko Sakkinen <jarkko@kernel.org>
- M:	Mimi Zohar <zohar@linux.ibm.com>
- L:	linux-integrity@vger.kernel.org
-@@ -19669,7 +19669,7 @@ F:	drivers/scsi/sg.c
- F:	include/scsi/sg.h
- 
- SCSI SUBSYSTEM
--M:	"James E.J. Bottomley" <jejb@linux.ibm.com>
-+M:	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
- M:	"Martin K. Petersen" <martin.petersen@oracle.com>
- L:	linux-scsi@vger.kernel.org
- S:	Maintained
+OK, anyway current code looks correct. But note that I don't think
+"pos++; len--;" is safer, since it is not atomic. This pattern
+easily loose "len--;" in my experience. So please carefully use it ;)
+
+> 
+> > > +
+> > > +	/*
+> > > +	 * len is the length of the copy excluding the null.
+> > > +	 * This ensures we always have room for a null.
+> > > +	 */
+> > > +	*pos = '\0';
+> > > +
+> > > +	return fixed;
+> > > +}
+> > > +
+> > > +static char **user_event_argv_split(char *args, int *argc)
+> > > +{
+> > > +	/* Count how many ';' without a trailing space */
+> > > +	int count = count_semis_no_space(args);
+> > > +
+> > > +	if (count) {
+> > 
+> > nit: it is better to exit fast, so 
+> > 
+> > 	if (!count)
+> > 		return argv_split(GFP_KERNEL, args, argc);
+> > 
+> > 	...
+> 
+> Sure, will fix in a v2.
+> 
+> > 
+> > Thank you,
+> > 
+> > OT: BTW, can this also simplify synthetic events?
+> > 
+> 
+> I'm not sure, I'll check when I have some time. I want to get this fix
+> in sooner rather than later.
+
+Ah, nevermind. Synthetic event parses the field by strsep(';') first
+and argv_split(). So it does not have this issue.
+
+Thank you,
+
+> 
+> Thanks,
+> -Beau
+> 
+> > > +		/* We must fixup 'field;field' to 'field; field' */
+> > > +		char *fixed = fix_semis_no_space(args, count);
+> > > +		char **split;
+> > > +
+> > > +		if (!fixed)
+> > > +			return NULL;
+> > > +
+> > > +		/* We do a normal split afterwards */
+> > > +		split = argv_split(GFP_KERNEL, fixed, argc);
+> > > +
+> > > +		/* We can free since argv_split makes a copy */
+> > > +		kfree(fixed);
+> > > +
+> > > +		return split;
+> > > +	}
+> > > +
+> > > +	/* No fixup is required */
+> > > +	return argv_split(GFP_KERNEL, args, argc);
+> > > +}
+> > > +
+> > >  /*
+> > >   * Parses the event name, arguments and flags then registers if successful.
+> > >   * The name buffer lifetime is owned by this method for success cases only.
+> > > @@ -2012,7 +2098,7 @@ static int user_event_parse(struct user_event_group *group, char *name,
+> > >  		return -EPERM;
+> > >  
+> > >  	if (args) {
+> > > -		argv = argv_split(GFP_KERNEL, args, &argc);
+> > > +		argv = user_event_argv_split(args, &argc);
+> > >  
+> > >  		if (!argv)
+> > >  			return -ENOMEM;
+> > > -- 
+> > > 2.34.1
+> > > 
+> > 
+> > 
+> > -- 
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+
 -- 
-2.35.3
-
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
