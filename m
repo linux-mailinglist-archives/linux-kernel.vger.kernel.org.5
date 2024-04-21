@@ -1,266 +1,193 @@
-Return-Path: <linux-kernel+bounces-152612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ECE38AC12B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D68208AC131
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:20:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EA43B20BA8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 20:11:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2832CB20B4F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 20:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D71C443AC2;
-	Sun, 21 Apr 2024 20:11:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VxdGJcjn"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6EB343ADA;
+	Sun, 21 Apr 2024 20:20:46 +0000 (UTC)
+Received: from mailout12.t-online.de (mailout12.t-online.de [194.25.134.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8533B79FD;
-	Sun, 21 Apr 2024 20:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C461BF20;
+	Sun, 21 Apr 2024 20:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.25.134.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713730300; cv=none; b=kkWeRd72Xr8LbSWvmy99XtufEv4+4w7OqOd/zWlH+hmGOOPe/OqjmjIuFTg2OexfcnZ+QNpTCgRVqVyFRQjXIzSBheBxovdjz+C1O56HYPpC92z9jXfJwUU2C0ibDzWpfdbddXuPeyl3NmNIyLfyj2EiY5vJ0/cMgbEx1sMnYgE=
+	t=1713730846; cv=none; b=nyl8F9ym+YFW8O0u39hDEt6pyhbyJoX2gWjp0RiDsLRta4e8wkaChTPNKeoTOvhthrZ/VCYRdkSZUInUPe/1KMUvpQhAxRFuKXIWLCoUwvU8laQPE1yfmT7XEt2wWTRPAtoNDq0lptfxtzwzLcDq6S9jFcVH6i1Ij29B4wLMsuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713730300; c=relaxed/simple;
-	bh=t2o17rLSe++urX4SU4i5hevvE/YgLFP38Y7QNFWRusQ=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bU5EHvFF4O99GqhYRbMlv8ESMKq0UvwuwIGztLKvXc8+eZpDhrMjV7WlyykSLgxa9T8RaqM4LcnghtCctdJx/zqKGt9dTOX+JOeNDWkAU1QLIvuZw36f1XkUfuUXOOns14/gGS0w6JKCh+uOJZ2FfqZR3JdJw5g+3D0H3dPEdf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VxdGJcjn; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4196c62bb4eso15330515e9.2;
-        Sun, 21 Apr 2024 13:11:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713730297; x=1714335097; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JXVu37VABeK4P83h3UsDVma3/BTYLFUhb8L1GTMIPrw=;
-        b=VxdGJcjnmDfUG5+jKwB8g9qYbph+Wp/4z4+ZN5lRyPDPfFIfimeq/IBEzzAngabKK+
-         bvhqxtIt3SJyiuZUJnOBQ4lphc5bkWHYS91bbK3jq8yISGi5678cab0MbKlEizhy8QYD
-         /6dAg/0FG1E9YelnuENoCNuH7j8oGujurzrNipq02BUf3PiUrwwLf/Ro4RI0erAoAD8R
-         OpwD4rTFYdcdEE9IuEt8VWL3qAH3VLsXHr8kJOyEDNHIHkg4DArFJT7ydqwpRu80VlIk
-         GxHov4ETR3fy/jk0IQInZTLRmAAfcaNT2QL5Fi2rMSKnW8t2zfDMqSnGtbOBKs6gSY5k
-         ESIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713730297; x=1714335097;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JXVu37VABeK4P83h3UsDVma3/BTYLFUhb8L1GTMIPrw=;
-        b=qbnhDp/HFQsiWeWQNgpwyHx277S0HgbITm1ll7/GfFJrAtlPolICHX6pWJPJLI52I2
-         BX11bj+F/yzb78eg+6pSv+4JYVAOR5opdR4tDkIEsXRan7c8g4Z9RJ6L+fIg29pCxtKB
-         bqfGyzseyUVSNx4hLW2FCz+K2p636OxjLGizwiT3yVCG+Z3FRGnRS3KEw8G2uFG5GB+e
-         Rl84/NDpB0RutmQqIkFMDszlTLyvOMyFsqoOTtYkrhdwqr8l6xYrLG01UVCYSzGLeHXL
-         cSUTwJkReU2CcHM65FcxM3ED/z5/lm8ACrvJRg9J7Db6Lt8f0GYS1mNVYki1nIyTvJRc
-         7Deg==
-X-Forwarded-Encrypted: i=1; AJvYcCVHZG5ShZZ7x+T9T1Jgwr6Vsr5geBLRySfM03zPsiouH/pwtsbh0BvkaDCA2FlnTUOBeSQhVBIdA9w+8zgcEOk6I1SnCtjf5p//RAQKmjCXKfEm7sC/M54osXca30HELjV/CSCIKLg+zfDMig7ebNwW1uJKsB0bwawWvbS8Uvh8FqgX
-X-Gm-Message-State: AOJu0YzI7O3jKHYxjj4XnTUjt4zoXRYg8bcgqyLCtTE7SdHV7Hsc6h9Z
-	dv+SU2hSqYcx+RPHviu3HQkWK4Cuc+JTAVypXV4BpVuy4fyGRXHh
-X-Google-Smtp-Source: AGHT+IE82YXTNvlh1Eiz1wzOklKZhSo74I21CZGNQRGXTIzoskPyWkAaPXH4xF73p4G/n8DnE1GSOQ==
-X-Received: by 2002:a05:600c:310d:b0:41a:6209:aa03 with SMTP id g13-20020a05600c310d00b0041a6209aa03mr330770wmo.2.1713730296635;
-        Sun, 21 Apr 2024 13:11:36 -0700 (PDT)
-Received: from krava ([83.240.61.103])
-        by smtp.gmail.com with ESMTPSA id ay33-20020a05600c1e2100b0041a4c94db44sm1767662wmb.43.2024.04.21.13.11.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Apr 2024 13:11:36 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 21 Apr 2024 22:11:33 +0200
-To: Andrea Righi <andrea.righi@canonical.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests/bpf: Add ring_buffer__consume_n test.
-Message-ID: <ZiVy9bYrX-w24huD@krava>
-References: <20240420155904.1450768-1-andrea.righi@canonical.com>
+	s=arc-20240116; t=1713730846; c=relaxed/simple;
+	bh=7ulEOlS3JkhNXQTRzN6bH+s/Benk94+XyHnjn00QtVU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=orhREMwFudQkmRU58ZIhkyxsSc98xHtuozmFL0VK87eU9DypqbPga83QrZK3B6smg7YZwHiCDTS+ZkhPYfAZbzkXbDr8kO8eNNlansNjugGx3VqMjTDSHQlwXza5wsClOD9y7JODiHmru+5ULCbHMOPsjP3f0EZohvIMB2ylk18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-online.de; spf=pass smtp.mailfrom=t-online.de; arc=none smtp.client-ip=194.25.134.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-online.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-online.de
+Received: from fwd78.aul.t-online.de (fwd78.aul.t-online.de [10.223.144.104])
+	by mailout12.t-online.de (Postfix) with SMTP id 2E71317285;
+	Sun, 21 Apr 2024 22:15:06 +0200 (CEST)
+Received: from delle.local ([77.47.123.226]) by fwd78.t-online.de
+	with (TLSv1.3:TLS_AES_256_GCM_SHA384 encrypted)
+	esmtp id 1rydaZ-2KqNDU0; Sun, 21 Apr 2024 22:15:03 +0200
+Message-ID: <1422c0bcf359a0dcbe09c8954aa4c723511463d0.camel@t-online.de>
+Subject: Re: [PATCH v2 1/1] drivers/rtc: rtc-sun6i: AutoCal Internal OSC
+ Clock
+From: Alois Fertl <A.Fertl@t-online.de>
+To: Jernej =?UTF-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>, 
+	a.zummo@towertech.it
+Cc: alexandre.belloni@bootlin.com, wens@csie.org, samuel@sholland.org, 
+	linux-rtc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Date: Sun, 21 Apr 2024 22:14:55 +0200
+In-Reply-To: <6035510.lOV4Wx5bFT@jernej-laptop>
+References: <20240421183633.117326-1-a.fertl@t-online.de>
+	 <6035510.lOV4Wx5bFT@jernej-laptop>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240420155904.1450768-1-andrea.righi@canonical.com>
+X-TOI-EXPURGATEID: 150726::1713730503-1FFFCD4A-8CF207E9/0/0 CLEAN NORMAL
+X-TOI-MSGID: 428dd07f-58e2-4c9b-a4dc-ecb5c5a5ae97
 
-On Sat, Apr 20, 2024 at 05:59:04PM +0200, Andrea Righi wrote:
-> Add a testcase for the ring_buffer__consume_n() API.
-> 
-> The test produces multiple samples in a ring buffer, using a
-> sys_getpid() fentry prog, and consumes them from user-space in batches,
-> rather than consuming all of them greedily, like ring_buffer__consume()
-> does.
-> 
+On Sun, 2024-04-21 at 21:57 +0200, Jernej =A6krabec wrote:
+> Dne nedelja, 21. april 2024 ob 20:36:33 GMT +2 je Alois Fertl
+> napisal(a):
+> > I have a M98-8K PLUS Magcubic TV-Box based on the Allwinner H618
+> > SOC.
+> > On board is a Sp6330 wifi/bt module that requires a 32kHz clock to
+> > operate correctly. Without this change the clock from the SOC is
+> > ~29kHz and BT module does not start up. The patch enables the
+> > Internal
+> > OSC Clock Auto Calibration of the H616/H618 which than provides the
+> > necessary 32kHz and the BT module initializes successfully.
+> > Add a flag and set it for H6 AND H616. The H618 is the same as H616
+> > regarding rtc.
+> >=20
+> > v1->v2
+> > - add flag and activate for H6 AND H616
+>=20
+> Please move changelog below --- line.
+Thanks for reviewing, will move the changelog
+>=20
+> >=20
+> > Signed-off-by: Alois Fertl <a.fertl@t-online.de>
+> > ---
+> > =A0drivers/rtc/rtc-sun6i.c | 16 +++++++++++++++-
+> > =A01 file changed, 15 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
+> > index e0b85a0d5645..5d0c917b2099 100644
+> > --- a/drivers/rtc/rtc-sun6i.c
+> > +++ b/drivers/rtc/rtc-sun6i.c
+> > @@ -42,6 +42,11 @@
+> > =A0
+> > =A0#define SUN6I_LOSC_CLK_PRESCAL=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A00x0008
+> > =A0
+> > +#define SUN6I_LOSC_CLK_AUTO_CAL=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A00x000c
+> > +#define SUN6I_LOSC_CLK_AUTO_CAL_16MS=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0B=
+IT(2)
+> > +#define SUN6I_LOSC_CLK_AUTO_CAL_EANABLE=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0BIT(1)
+>=20
+> EANABLE -> ENABLE
+yes sure
+>=20
+> > +#define SUN6I_LOSC_CLK_AUTO_CAL_SEL_CAL=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0BIT(0)
+> > +
+> > =A0/* RTC */
+> > =A0#define SUN6I_RTC_YMD=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A00x0010
+> > =A0#define SUN6I_RTC_HMS=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A00x0014
+> > @@ -126,7 +131,6 @@
+> > =A0 *=A0=A0=A0=A0 registers (R40, H6)
+> > =A0 *=A0=A0 - SYS power domain controls (R40)
+> > =A0 *=A0=A0 - DCXO controls (H6)
+> > - *=A0=A0 - RC oscillator calibration (H6)
+> > =A0 *
+> > =A0 * These functions are not covered by this driver.
+> > =A0 */
+> > @@ -138,6 +142,7 @@ struct sun6i_rtc_clk_data {
+> > =A0=A0=A0=A0=A0=A0=A0=A0unsigned int has_losc_en : 1;
+> > =A0=A0=A0=A0=A0=A0=A0=A0unsigned int has_auto_swt : 1;
+> > =A0=A0=A0=A0=A0=A0=A0=A0unsigned int no_ext_losc : 1;
+> > +=A0=A0=A0=A0=A0=A0=A0unsigned int has_auto_cal : 1;
+> > =A0};
+> > =A0
+> > =A0#define RTC_LINEAR_DAY=A0BIT(0)
+> > @@ -268,6 +273,13 @@ static void __init sun6i_rtc_clk_init(struct
+> > device_node *node,
+> > =A0=A0=A0=A0=A0=A0=A0=A0}
+> > =A0=A0=A0=A0=A0=A0=A0=A0writel(reg, rtc->base + SUN6I_LOSC_CTRL);
+> > =A0
+> > +=A0=A0=A0=A0=A0=A0=A0if (rtc->data->has_auto_cal) {
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0/* Enable internal OSC cl=
+ock auto calibration */
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0reg =3D (SUN6I_LOSC_CLK_A=
+UTO_CAL_16MS |
+> > SUN6I_LOSC_CLK_AUTO_CAL_EANABLE |
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0SUN6I_LOSC_CLK_AUTO_CAL_SEL_CAL);
+>=20
+> Remove parenthesis and fix indentation. Since macro names are pretty
+> long,
+> maybe put one per line.
+will do so
+>=20
+> Is this safe to be done even on the boards with external 32k crystal?
+Can't tell for sure. I don't have a H6 board. But I would think that
+it's even required because H6 has a feature to autoswitch clock source
+if the external is detected to have failed.
+>=20
+> Best regards,
+> Jernej
+Thanks and regards,
+Alois
+>=20
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0writel(reg, rtc->base + S=
+UN6I_LOSC_CLK_AUTO_CAL);
+> > +=A0=A0=A0=A0=A0=A0=A0}
+> > +
+> > =A0=A0=A0=A0=A0=A0=A0=A0/* Yes, I know, this is ugly. */
+> > =A0=A0=A0=A0=A0=A0=A0=A0sun6i_rtc =3D rtc;
+> > =A0
+> > @@ -380,6 +392,7 @@ static const struct sun6i_rtc_clk_data
+> > sun50i_h6_rtc_data =3D {
+> > =A0=A0=A0=A0=A0=A0=A0=A0.has_out_clk =3D 1,
+> > =A0=A0=A0=A0=A0=A0=A0=A0.has_losc_en =3D 1,
+> > =A0=A0=A0=A0=A0=A0=A0=A0.has_auto_swt =3D 1,
+> > +=A0=A0=A0=A0=A0=A0=A0.has_auto_cal =3D 1,
+> > =A0};
+> > =A0
+> > =A0static void __init sun50i_h6_rtc_clk_init(struct device_node
+> > *node)
+> > @@ -395,6 +408,7 @@ static const struct sun6i_rtc_clk_data
+> > sun50i_h616_rtc_data =3D {
+> > =A0=A0=A0=A0=A0=A0=A0=A0.has_prescaler =3D 1,
+> > =A0=A0=A0=A0=A0=A0=A0=A0.has_out_clk =3D 1,
+> > =A0=A0=A0=A0=A0=A0=A0=A0.no_ext_losc =3D 1,
+> > +=A0=A0=A0=A0=A0=A0=A0.has_auto_cal =3D 1,
+> > =A0};
+> > =A0
+> > =A0static void __init sun50i_h616_rtc_clk_init(struct device_node
+> > *node)
+> >=20
+>=20
+>=20
+>=20
+>=20
 
-SNIP
-
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> index 48c5695b7abf..7e085bfce9b5 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> @@ -13,6 +13,7 @@
->  #include <linux/perf_event.h>
->  #include <linux/ring_buffer.h>
->  #include "test_ringbuf.lskel.h"
-> +#include "test_ringbuf_n.lskel.h"
->  #include "test_ringbuf_map_key.lskel.h"
->  
->  #define EDONE 7777
-> @@ -60,6 +61,7 @@ static int process_sample(void *ctx, void *data, size_t len)
->  }
->  
->  static struct test_ringbuf_map_key_lskel *skel_map_key;
-> +static struct test_ringbuf_n_lskel *skel_n;
-
-seems like there's no need for this to be static variable
-
->  static struct test_ringbuf_lskel *skel;
->  static struct ring_buffer *ringbuf;
->  
-> @@ -326,6 +328,67 @@ static void ringbuf_subtest(void)
->  	test_ringbuf_lskel__destroy(skel);
->  }
->  
-> +/*
-> + * Test ring_buffer__consume_n() by producing N_TOT_SAMPLES samples in the ring
-> + * buffer, via getpid(), and consuming them in chunks of N_SAMPLES.
-> + */
-> +#define N_TOT_SAMPLES	32
-> +#define N_SAMPLES	4
-> +
-> +/* Sample value to verify the callback validity */
-> +#define SAMPLE_VALUE	42L
-> +
-> +static int process_n_sample(void *ctx, void *data, size_t len)
-> +{
-> +	struct sample *s = data;
-> +
-> +	CHECK(s->value != SAMPLE_VALUE,
-> +	      "sample_value", "exp %ld, got %ld\n", SAMPLE_VALUE, s->value);
-
-I think we should use ASSERT macros instead in the new code
-
-> +
-> +	return 0;
-> +}
-> +
-> +static void ringbuf_n_subtest(void)
-> +{
-> +	int err, i;
-> +
-> +	skel_n = test_ringbuf_n_lskel__open();
-> +	if (!ASSERT_OK_PTR(skel_n, "test_ringbuf_n_lskel__open"))
-> +		return;
-> +
-> +	skel_n->maps.ringbuf.max_entries = getpagesize();
-> +	skel_n->bss->pid = getpid();
-> +
-> +	err = test_ringbuf_n_lskel__load(skel_n);
-> +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__load"))
-> +		goto cleanup;
-> +
-> +	ringbuf = ring_buffer__new(skel_n->maps.ringbuf.map_fd,
-> +				   process_n_sample, NULL, NULL);
-> +	if (!ASSERT_OK_PTR(ringbuf, "ring_buffer__new"))
-> +		goto cleanup;
-> +
-> +	err = test_ringbuf_n_lskel__attach(skel_n);
-> +	if (!ASSERT_OK(err, "test_ringbuf_n_lskel__attach"))
-> +		goto cleanup_ringbuf;
-> +
-> +	/* Produce N_TOT_SAMPLES samples in the ring buffer by calling getpid() */
-> +	skel->bss->value = SAMPLE_VALUE;
-
-skel_n ?
-
-> +	for (i = 0; i < N_TOT_SAMPLES; i++)
-> +		syscall(__NR_getpgid);
-> +
-> +	/* Consume all samples from the ring buffer in batches of N_SAMPLES */
-> +	for (i = 0; i < N_TOT_SAMPLES; i += err) {
-> +		err = ring_buffer__consume_n(ringbuf, N_SAMPLES);
-> +		ASSERT_EQ(err, N_SAMPLES, "rb_consume");
-> +	}
-> +
-
-SNIP
-
-> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_n.c b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
-> new file mode 100644
-> index 000000000000..b98b5bb20699
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_n.c
-> @@ -0,0 +1,52 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2024 Andrea Righi <andrea.righi@canonical.com>
-> +
-> +#include <linux/bpf.h>
-> +#include <sched.h>
-> +#include <unistd.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define TASK_COMM_LEN 16
-> +
-> +struct sample {
-> +	int pid;
-> +	int seq;
-
-seq does not seem to be checked, is it needed?
-
-jirka
-
-> +	long value;
-> +	char comm[16];
-> +};
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_RINGBUF);
-> +} ringbuf SEC(".maps");
-> +
-> +int pid = 0;
-> +long value = 0;
-> +
-> +/* inner state */
-> +long seq = 0;
-> +
-> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
-> +int test_ringbuf_n(void *ctx)
-> +{
-> +	int cur_pid = bpf_get_current_pid_tgid() >> 32;
-> +	struct sample *sample;
-> +
-> +	if (cur_pid != pid)
-> +		return 0;
-> +
-> +	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
-> +	if (!sample)
-> +		return 0;
-> +
-> +	sample->pid = pid;
-> +	sample->seq = seq++;
-> +	sample->value = value;
-> +	bpf_get_current_comm(sample->comm, sizeof(sample->comm));
-> +
-> +	bpf_ringbuf_submit(sample, 0);
-> +
-> +	return 0;
-> +}
-> -- 
-> 2.43.0
-> 
-> 
 
