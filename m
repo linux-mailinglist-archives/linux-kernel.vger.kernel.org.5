@@ -1,159 +1,107 @@
-Return-Path: <linux-kernel+bounces-152583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C25A8AC0C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 20:28:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE118AC0C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 20:33:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA8D91F21452
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 18:28:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 755831F2147C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 18:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFC193CF65;
-	Sun, 21 Apr 2024 18:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507283D0D0;
+	Sun, 21 Apr 2024 18:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="KuFHaO82"
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FVYxAKZN"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5929E2C853
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 18:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B3B810A35
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 18:33:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713724079; cv=none; b=qgeNmO9eK1Yt2/KCLSWUuwRFgTMtWONlQ7AnzGe6UGNmtVdUE9HXyrd9doTumE8Q/sQ+8L1BPOYLyIKXbvmzU1/XXocehT9B24G+3GdcbyGyyHqfWwRpmrZlABMU3BYlAEfpjrmQeeeyXDJjdluoYkEHxZd6Xq+6nzKAthez2Gs=
+	t=1713724422; cv=none; b=Ow8Am5CAFTC7r77IJZkiI2Px9cRzGmOFqE0IjUzQy9U7ydVFXk6iBfp2Gl/y18IvnlME4s7nmMHoxth5wuumQQN4yAphCe0gfzlozoCQbOyTJEhi88wD8FtQYrMe5GO073ur0PPO3MNdR1jWDl1VPC0iQ0w9V/keqNL048c8xeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713724079; c=relaxed/simple;
-	bh=gCD4yQOfks+waeEAWUR4DkrghY8gcawvHv2k4krGVsY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pLgE+zmmD7X74VBHLOHFnpC0VYzbU48SkKUwR3gSZQ6m/RpnDH14mDt5dJHXs1pAqr5MytE8kpks7L7pFHkQ8E1jFB4tL9HTJ5swpt7QCEAGn87SOrZfNhxGS3mIkhc7hAFBc0vNFHMCqo843cHHqlUbhMEKntLPJE9PPvhu4zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=KuFHaO82; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Y4ghdcKYz/aIdoJmbHC4MzRUZyGs+LvLk8N5InKcBog=; b=KuFHaO828X/KBJbg1AVCyXh6N+
-	AGAHPHLuO5lUD7ABxAB2PSPPzIj8rOdI6eRlwyLIxvSwH3GtpIjHFRtlbpIwdrRxYo/bFUJ94hH6Z
-	hw+2UmMvjhbZMY6GF1r2+ffLCyDNgYgw8fg+d9bcwpKf6emUsnIELO1Kkz23jxDqXyARikXxCPV7H
-	TwfcMzLdqtdXtcFFdHdu2vqxCSyw8OltQG4fC+qwBi1uQJ5Mo6evXTDvd4CdwjQl1UTZdSi++DgqG
-	iILNhF1R2OGE15x3vPCn2IjS1jrKsRrg9N24wk0w+9rnMFuLDFv6AQHxJ6AWzVz/9DgkowbLqTmSO
-	l2t7/WGA==;
-Received: from [187.10.139.161] (helo=[192.168.1.60])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rybuh-0070DK-NH; Sun, 21 Apr 2024 20:27:43 +0200
-Message-ID: <06eb4591-7b28-b774-01d0-eb980073d1d3@igalia.com>
-Date: Sun, 21 Apr 2024 15:27:37 -0300
+	s=arc-20240116; t=1713724422; c=relaxed/simple;
+	bh=hsd0XsngwlbXYU49bRdK/iSsfg2UjS5QGrVkSmQDT4Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sMTuNfKepUG5/oGE7hu3+eN1SIFaJY2TSsiy57+INLE/zcYeV+CUMrWXvJg/BFlI63qdtLg7FsnT2+1fZ3oFR+zpKf8EjVKef+iPDEvtR/kJXV+m1HGWheLwchs9oYvxyvKSapDgB0N8AiD99sDzVgCvBxYXOltutGwE7oR/wzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FVYxAKZN; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc742543119so3616649276.0
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 11:33:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713724420; x=1714329220; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hsd0XsngwlbXYU49bRdK/iSsfg2UjS5QGrVkSmQDT4Q=;
+        b=FVYxAKZNvxVbI1Pbq7z6uyjuRz2H8wGO22Xzf/79tmrb38tSFBLWJr0ctBt0RTEkj0
+         wEkodXUqSxLrWEDakRzq/7tnBn+lHOHuBPb8+SVLlxBrb8HqXviMT6LLRCRkQZ+R1DVS
+         yz8HIenw9ZpvmMXUue+h4hmIpsEIVeKJ2rqgtvpOmk9S5yul+sRd3EibGk/hXcexRzHa
+         tSb1QFCRMwOdH6KhMlkOSxI1Y7TNqJk8Y395IT+pXKe8q6MSYNZqHpxdHq1OyjTbSAnF
+         nCUlWlGDuXaV97r10gy+AxCOK02BpTEjWDIA+OQv59zrEtm+6x4azSiZ5IgudCdLDY5Y
+         5saQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713724420; x=1714329220;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hsd0XsngwlbXYU49bRdK/iSsfg2UjS5QGrVkSmQDT4Q=;
+        b=ns1jgymxW1tC+aV+/NK2DPXI6G9CIkAIF5i6a3Xc7YaGB218poYrAMEpuVqMqocIYA
+         Fzd96ONYs/eJQauuuDFos5VvESUItf0KXiiU5Qd+9OTBlIzjveoY9J57RN+xJ3+B6Ps9
+         /umqIRLYfp6eDcSd3rSpHIHbzdN8HDRyNBsrgct9XMGU/SbIi7cUOjx8Jb/VF0bgqjZD
+         s96mF91fB7hd0Ha8K7VRxQl/bZJuKT8HrGlMLg01mp5pzSAlpWW7k5wsFKSA1KJWhBee
+         D9eWB0zu7+wV2UaDx5IUJtxXY1TAKCVItfqgPuCzpADvw2XZB8n6aFX8F9zThVWQkYD8
+         M5yw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6s2yXPh68jU9j2ICKTet6fCvffL7vaswwRnvv7Yw4CrNBtzjaC8OVc/bCT3GubYBXye9NambRumffbj9rQZnhPnRvAtZD2BxCoXbY
+X-Gm-Message-State: AOJu0Yw40P1ZgNKhjtcAeX1nJY3ayHJOEFGXagBrNw13fz3SvGNWXTTz
+	P1L/l7RDaalmmiMrR01OyzxntxkEI6TpxCySLmIqFB6Ln150We5DFwK1qpxyBZP8OGTZ/mI+nGU
+	g4l/Jy+A07B018vusEwK1hdvzv6LBsnldOUl2MQ==
+X-Google-Smtp-Source: AGHT+IEBVUribVSY4UKaYpUkmakZRxw/KOBF8S3bALynu/ZOsk+rr2ucErnlvDBowMnVOwVfVqBQlASGwJRKpPIpzuo=
+X-Received: by 2002:a25:b222:0:b0:de4:8c46:e7f9 with SMTP id
+ i34-20020a25b222000000b00de48c46e7f9mr6363423ybj.31.1713724420140; Sun, 21
+ Apr 2024 11:33:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] x86/split_lock: fix delayed detection enabling
-Content-Language: en-US
-To: Maksim Davydov <davydov-max@yandex-team.ru>
-Cc: den-plotnikov@yandex-team.ru, x86@kernel.org,
- linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com,
- tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
-References: <20240321195522.24830-1-davydov-max@yandex-team.ru>
- <7c8c6f7c-7476-d73d-4df1-9dea0aa4ecf2@igalia.com>
- <2cd54041-253b-4e78-b8ea-dbe9b884ff9b@yandex-team.ru>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <2cd54041-253b-4e78-b8ea-dbe9b884ff9b@yandex-team.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240419080555.97343-1-aapo.vienamo@linux.intel.com>
+ <CACRpkdbSB+JTdhGXViWs-SmR3nUnm6dVXt3WzK-d4zFSz63XxQ@mail.gmail.com> <ljyjvdtzhgug7frkiwbrvobbusnzqu5gpn345n5bjsmbuw5gjd@xex3dznz5jov>
+In-Reply-To: <ljyjvdtzhgug7frkiwbrvobbusnzqu5gpn345n5bjsmbuw5gjd@xex3dznz5jov>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sun, 21 Apr 2024 20:33:28 +0200
+Message-ID: <CACRpkdYKo+HTwrm1BssJ9nm_xsGFsdRoqDkJWJMETTL2fwaP2A@mail.gmail.com>
+Subject: Re: [PATCH] gpio: Add Intel Granite Rapids-D vGPIO driver
+To: Aapo Vienamo <aapo.vienamo@linux.intel.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, Mika Westerberg <mika.westerberg@linux.intel.com>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 19/04/2024 08:26, Maksim Davydov wrote:
-> 
-> [...]
-> Some information that should be taken into account:
-> * sld_update_msr() enables/disables SLD on both CPUs on the same core
-> * schedule_delayed_work_on() internally checks WORK_STRUCT_PENDING_BIT.
->    If a work has the 'pending' status, then schedule_delayed_work_on()
->    will return an error code and, most importantly, the work will not
->    be placed in the workqueue.
-> 
-> Let's say we have a multicore system on which split_lock_mitigate=0 and
-> a multithreaded application is running that calls splitlock in multiple
-> threads. Due to the fact that sld_update_msr() affects the entire core
-> (both CPUs), we will consider 2 CPUs from different cores. Let the 2
-> threads of this application schedule to CPU0 (core 0) and to CPU 2
-> (core 1), then:
-> 
-> |                                 ||                                   |
-> |             CPU 0 (core 0)      ||          CPU 2 (core 1)           |
-> |_________________________________||___________________________________|
-> |                                 ||                                   |
-> | 1) SPLIT LOCK occured           ||                                   |
-> |                                 ||                                   |
-> | 2) split_lock_warn()            ||                                   |
-> |                                 ||                                   |
-> | 3) sysctl_sld_mitigate == 0     ||                                   |
-> |    (work = &sl_reenable)        ||                                   |
-> |                                 ||                                   |
-> | 4) schedule_delayed_work_on()   ||                                   |
-> |    (reenable will be called     ||                                   |
-> |     after 2 jiffies on CPU 0)   ||                                   |
-> |                                 ||                                   |
-> | 5) disable SLD for core 0       ||                                   |
-> |                                 ||                                   |
-> |    -------------------------    ||                                   |
-> |                                 ||                                   |
-> |                                 || 6) SPLIT LOCK occured             |
-> |                                 ||                                   |
-> |                                 || 7) split_lock_warn()              |
-> |                                 ||                                   |
-> |                                 || 8) sysctl_sld_mitigate == 0       |
-> |                                 ||    (work = &sl_reenable,          |
-> |                                 ||     the same address as in 3) )   |
-> |                                 ||                                   |
-> |            2 jiffies            || 9) schedule_delayed_work_on()     |
-> |                                 ||    fials because the work is in   | 
-> 
-> |                                 ||    the pending state since 4).    |
-> |                                 ||    The work wasn't placed to the  |
-> |                                 ||    workqueue. reenable won't be   |
-> |                                 ||    called on CPU 2                |
-> |                                 ||                                   |
-> |                                 || 10) disable SLD for core 0        |
-> |                                 ||                                   |
-> |                                 ||     From now on SLD will          |
-> |                                 ||     never be reenabled on core 1  |
-> |                                 ||                                   |
-> |    -------------------------    ||                                   |
-> |                                 ||                                   |
-> |    11) enable SLD for core 0 by ||                                   |
-> |        __split_lock_reenable    ||                                   |
-> |                                 ||                                   |
-> 
-> 
-> If the application threads can be scheduled to all processor cores,
-> then over time there will be only one core left, on which SLD will be
-> enabled and split lock will be able to be detected; and on all other
-> cores SLD will be disabled all the time.
-> Most likely, this bug has not been noticed for so long because
-> sysctl_sld_mitigate default value is 1, and in this case a semaphore
-> is used that does not allow 2 different cores to have SLD disabled at
-> the same time, that is, strictly only one work is placed in the
-> workqueue.
-> 
+On Fri, Apr 19, 2024 at 4:43=E2=80=AFPM Aapo Vienamo
+<aapo.vienamo@linux.intel.com> wrote:
 
-Hi Maksim, this is awesome! Thanks a lot for the diagram, super clear now.
+> > Can you rename this:
+> > gnr_gpio_configure_direction()?
+>
+> I do agree that the pad part of the name maybe isn't the best, though
+> this function isn't just for direction control, since it's used for
+> setting the pin output state as well in gnr_gpio_set(). The idea is that
+> locking and masking of the register accesses is factored out of the gpio
+> callbacks and implemented in this function.
+>
+> Maybe gnr_gpio_configure_pin()?
 
-Well, I think you nailed it and we should get the patch merged, right?
-I'm not sure if the diagram should be included or not in the commit
-message - it's good but big, maybe include a lore archive mentioning the
-diagram in a V2?
+gnr_gpio_configure_line() in that case, it clearly isn't a pin since it is
+virtual and for that reason called *v*GPIO, right? Pins are a very
+physical thing. It's that kind of confusion I want to avoid in naming.
 
-Cheers,
-
-
-Guilherme
+Yours,
+Linus Walleij
 
