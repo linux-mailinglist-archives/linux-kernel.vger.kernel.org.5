@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-152516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 057638ABFA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 16:36:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7DAB8ABF87
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 16:08:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDEFB1C20B4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 14:36:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94620280F27
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 14:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1CDD18037;
-	Sun, 21 Apr 2024 14:36:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DF8117C95;
+	Sun, 21 Apr 2024 14:08:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="vG8yyUS5"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="tQYCgFiD"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB8D11190
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 14:36:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9640FD29B;
+	Sun, 21 Apr 2024 14:08:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713710198; cv=none; b=dndfv2NeiGy+HkwRBdP1ObbPShtyNV6I7BxVR9XUahyTM5yTmfovc6ER3fKpfkd3/QfGmDxpesnDwDhfDSdU4lLkBWyv98vUE+IpLvGvbVdKraMiB5xxFPEimY/hVe3CwNWAPupFCuJx4Xc2Y+irYjCycp7c8oSkBqAjBcHuENQ=
+	t=1713708487; cv=none; b=P4FroR9vj9Gfg2/lqHBzJg+62Srp3xDHgqi0pmqOz8HEHYvUZPrQ0K3EfGv+HQsdJmCYPsXK8QyYnYeBjSGFbQdLWz+vrZ6c+JH7MgL2KGUoJPGnR1QG7nu6/Q+pCBICxvRGS3tIBKgzmXWoZoqqSnUNE7Xj0EG9vyF+Xm9a1Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713710198; c=relaxed/simple;
-	bh=UeiE5owkBX2h1GBlgtsYVPJ3dV1up/iK+SY3HKhopZY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tdIhVfpdT45YectsaoqD8Yh/QsGJ9RGAabOXSBw03Y6clpHG/jjUrAwTcA2wlY9qBXCZ9vIY5S4bUCZ72d6QoZ8dhID64Tn6r21miSqUt6vUMUxWPqTUIKUAoYsDK2c2qcEtKbSnGE616sRfZKB/FKwSj7jg9wQJ753G1jogBRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=vG8yyUS5; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-	(No client certificate requested)
-	(Authenticated sender: marex@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 45001881E5;
-	Sun, 21 Apr 2024 16:36:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1713710194;
-	bh=RPV0Iz8yy+LInEIx4qwiC7zvbeZKL5hgL5XRaRhSxPA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=vG8yyUS5eItl3QcJPKS9Dpaio8o/QryYvAULFuI7W7vrBY54u21latTBVHDd5DkJL
-	 3KCxJSmdg4RK0mag1Ey0XNZpsqAcVGS4OWH+s36Z8pfwSfafdzEJMCnDX8/sTIsh+3
-	 PdpIcZQCn0z24lTNWr99tBmtRFCh4oRNzAtGJe8/kBWTpNCOCY5qKvUC7dMtTlPQjk
-	 nPuN5b4aZp3wVg6eBPPbTHq1n5pb3CfIMoBZBfhA6rfOHW1aiRa2eLE3aWHVD1ZdAO
-	 D/M9oVd+XuKQbPbtpf8d2Vyyy6UMelVgh44UkwrEGlx9jEPShzHfrU0YtdlEPGDUUJ
-	 3yQ1IANnjSlng==
-Message-ID: <6111fe04-4ecb-428e-9a0c-dc02cadfe3e7@denx.de>
-Date: Sun, 21 Apr 2024 16:06:24 +0200
+	s=arc-20240116; t=1713708487; c=relaxed/simple;
+	bh=rGFEHaSAYJNx3UiIUNYR80pXYXBmvUUDb2g2ErCYGyU=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=qPUIhyLIMEZvXOupfYjDN4x3gi1t9rIWpJ5Vb3iFeJmd17TwF/kTnpFf2PQvWkyl50++9vNRRj28r0x4IODYpipCauX2DVuTcs5DI0lSCU9M1HS44mmcPjJP83TYZCg2fkKGerIOTjiF0tn8+APa+zh5PZ3cqwJRYtpe1nIXLcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=tQYCgFiD; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713708433; x=1714313233; i=markus.elfring@web.de;
+	bh=rGFEHaSAYJNx3UiIUNYR80pXYXBmvUUDb2g2ErCYGyU=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=tQYCgFiDBtzuJtaPSJ86VUUlnx3bXoxnIn1J0YHGl7VF+oYJVzcRSwD+G2zZBzgc
+	 uTB8dvnwWkDivQsAUzxLsiwv5flkheBVFHvsQiOfznxtj7fLZB3M8RFbR5o6aFner
+	 Sj1t1PzkywvlBvwKXs4Lr6JhavodozKnL0Svdq+lChYVhVirwNbPz6tS+gVYWlXqa
+	 95mVIMsrQSmRFKT9TUNwZGTilthpjTn79LrHyCd7LFaP6wfUdMG/3T6vJ4rOdi4dH
+	 iwGmCcl6aPaM0eI/pxYxleUmRrN9tSkK8x+A6S2Z4uZFiufNUmPWXhufwg8tihQys
+	 I2EGKqoXEcArn2eUPQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MIL0Q-1rt3fo3mEe-00EaEg; Sun, 21
+ Apr 2024 16:07:13 +0200
+Message-ID: <8da94316-239a-4870-a29d-02a685ac9ae5@web.de>
+Date: Sun, 21 Apr 2024 16:07:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,64 +56,72 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/2] drm/bridge: samsung-dsim: Fix porch calcalcuation
- rounding
-To: Adam Ford <aford173@gmail.com>, dri-devel@lists.freedesktop.org
-Cc: aford@beaconembedded.com, Frieder Schrempf <frieder.schrempf@kontron.de>,
- Inki Dae <inki.dae@samsung.com>, Jagan Teki <jagan@amarulasolutions.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Marco Felsch <m.felsch@pengutronix.de>,
- Michael Tretter <m.tretter@pengutronix.de>, linux-kernel@vger.kernel.org
-References: <20240211230931.188194-1-aford173@gmail.com>
- <20240211230931.188194-2-aford173@gmail.com>
-Content-Language: en-US
-From: Marek Vasut <marex@denx.de>
-In-Reply-To: <20240211230931.188194-2-aford173@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+To: Ricardo Ribalda <ribalda@chromium.org>, linux-media@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-staging@lists.linux.dev,
+ linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev,
+ linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Abylay Ospan <aospan@netup.ru>, Alain Volmat <alain.volmat@foss.st.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Angelo Gioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Chen-Yu Tsai <wens@csie.org>,
+ Dmitry Osipenko <digetx@gmail.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hans Verkuil <hverkuil@xs4all.nl>,
+ Hugues Fruchet <hugues.fruchet@foss.st.com>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Martin Tuma <martin.tuma@digiteqautomotive.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Samuel Holland <samuel@sholland.org>, Sergey Kozlov <serjk@netup.ru>,
+ Sowjanya Komatineni <skomatineni@nvidia.com>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Sylvain Petinot <sylvain.petinot@foss.st.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240419-fix-cocci-v2-26-2119e692309c@chromium.org>
+Subject: Re: [PATCH v2 26/26] media: dvb-frontends: tda10048: Make explicit
+ the range of z.
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240419-fix-cocci-v2-26-2119e692309c@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ITKldMmeWvicPfSwk1lGM7Lql2Cm3DyJ9It4EIHpN6gg859l9MR
+ aVD74QMk+LR7UI7fCic1Ij6uvX8fwvnr7wmvQM8i2QbG3+d/JBqLNeRM3I4bZa4E34XPC0i
+ SYsbUCsj7/cRMEyPRu6MKnSrI42n3gk8CvyH//Tym6kHgNuHGbXy4egSum6bjeRch61q+dN
+ e/VFoFn+HOp3S2jycBj4g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:aX93InMPE+A=;h+M1UNdgZoIAePk/gLkMPUcnWFE
+ 5gaoXXP6v2pwlnxGO6K7et1oLiL8TIAKeJnHv51y9QwquJqybP572QDhkhzEsuPTkoIRzUN/7
+ mShPYDLUIN00VsLwJwEmnundkTslk9hH7wxBTGzqOXKZ5TY5ODDTJuvlXRSs6Qt0j6Z/P7XXu
+ 15PpEI3BzQ9oSDuGd4BeLDWBmnFddw2ZuXCPSrm3HnBRmIp4rcHTseicBP7mUCsPTUTDT+3Y+
+ vWHqY5jFyqwmk7ss25eqM/46T0rHpKxI0nKyahCwXvP7DUiZ1GPEITM3E7kQt4ALfzBy8uKQ3
+ /QbGwtOhCqs5WJIPQAZqJR6XUwVGf7oZKojimwo3AaT5UA3U1JOPBrIBsYOKM154eq6cLRhb7
+ iq3PcpnWcp3XY2aFQX8MCVRIVXgd8lxxQdtn8YCerRLUuZvtUlbR4R5j/YvI2UKy7FgzUXB1x
+ 3Bhlx0CwbqmbGIefOVLAyR4cfc+nIFs51pRtQ8+ewYveJRDBdeXtJMHFEz0n4phTP8RtZsl/0
+ gBuiCYpYSSRcLDJIy3sB4G28Z9bjW/ocQDIUzqRvU2jwtnKM/PbNp1oZAjsy9Ua/wqTwFL3Yy
+ D08zYttD1lPwxETSj/WDnXQ3ihq22+OycigTle4pH0Fu9sjflBCpMtE0wevQzd9/RPzz87VXO
+ 1UKjbmrDXvCF8Uxa9dvN/3c2y+mOW1EZ9w+T50Rgk7lXX021VRrmvb28kFBahImqiPOj/VuzQ
+ kgKYpxl/BMOIFE87FcD1inozha/zbBUBsau+PpHyJL+sc7SUX97HhHV18g4SNex2a01C1nw4y
+ muG/WBbFF6tZ2iO9s0OozwYOGKNkAjvz3gnxDEJWMz9DY=
 
-On 2/12/24 12:09 AM, Adam Ford wrote:
-> When using video sync pulses, the HFP, HBP, and HSA are divided between
-> the available lanes if there is more than one lane.  For certain
-> timings and lane configurations, the HFP may not be evenly divisible.
-> If the HFP is rounded down, it ends up being too small which can cause
-> some monitors to not sync properly. In these instances, adjust htotal
-> and hsync to round the HFP up, and recalculate the htotal.
-> 
-> Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL i.MX8MM with HDMI monitor
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> ---
-> V2:  No changes
-> 
-> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-> index 8476650c477c..52939211fe93 100644
-> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
-> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-> @@ -1606,6 +1606,27 @@ static int samsung_dsim_atomic_check(struct drm_bridge *bridge,
->   		adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
->   	}
->   
-> +	/*
-> +	 * When using video sync pulses, the HFP, HBP, and HSA are divided between
-> +	 * the available lanes if there is more than one lane.  For certain
-> +	 * timings and lane configurations, the HFP may not be evenly divisible.
-> +	 * If the HFP is rounded down, it ends up being too small which can cause
-> +	 * some monitors to not sync properly. In these instances, adjust htotal
-> +	 * and hsync to round the HFP up, and recalculate the htotal. Through trial
-> +	 * and error, it appears that the HBP and HSA do not appearto need the same
-> +	 * correction that HFP does.
-> +	 */
-> +	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE && dsi->lanes > 1) {
+> We do not expect the sample_freq to be over 613MHz.
 
-Does this also apply to mode with sync events (I suspect it does), so 
-the condition here should likely be if (!...burst mode) , right ?
+Would the summary phrase =E2=80=9CMake the range of z explicit=E2=80=9D be=
+ more appropriate?
+
+Regards,
+Markus
 
