@@ -1,152 +1,169 @@
-Return-Path: <linux-kernel+bounces-152518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F19F8ABFA8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 16:54:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09C0B8ABFAC
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 16:58:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C663B2100D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 14:54:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A454BB2103F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 14:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F90182A0;
-	Sun, 21 Apr 2024 14:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="Q5hzTT/b"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6DA318628;
+	Sun, 21 Apr 2024 14:58:20 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3225610A3C
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 14:54:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD38A18050
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 14:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713711253; cv=none; b=Vn4Tpods6C+vNB2QX0WuLgLp84FMT3pSFF1A7MoZcux3wBJioMJjqCGs1jhY9+M0LdQkOXzpcqyrBlbF+tgfwr4nU//BK++OoV1/fg4y33t9sroNILndkv1+LuyxbsZAJdmwvP9cPTZl89ks0S2ShjqbF+YWWZccwPG7tMC597c=
+	t=1713711500; cv=none; b=pHKSsuCgJlPDLp3GNlDvwLeI2WnHQi7JSJ6e0sSyM8hqQs90e4w2Ov/7hvelfV+jd3mV+skYysptQ+9r92Q/xf4xFBLyml1bY/N0jjzwoDSlOmn9ChhxbosslJdS2TWOIhNruW/gJOpT4hagFvaIMYgEM8U6tk61iLcPlGttIWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713711253; c=relaxed/simple;
-	bh=DquiAy/l3EzCcC9zc5B4mjOJ1S+6pthVCA5/7nB4vTI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=soKNHqH89LX/7gH55u/WWWeTei1FIdxTkYJSIzmSWJ0qsDB6bIP9Q242ApPnYbOuvzvuYFFl8siG5b9/zkUQJb9nfEhBDcKDT61tDGR3NlXT/enQenzPWw3NEjKki71LmxMh0Z4PJ7LFwebU8QVMOUEVF2/QSgb3KLKjIiWA2iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=Q5hzTT/b; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1713711247; bh=DquiAy/l3EzCcC9zc5B4mjOJ1S+6pthVCA5/7nB4vTI=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=Q5hzTT/bFnyW6HRXRlwtJ9+jsjMfHBSOE+9lF5iqXY35r0LttRPbWTFCyMYkJloP4
-	 uXuFpEyUNp7/KgAWCnVnA8xgJPzh5/j7ofMKoxxDqLaIpPj1cVbydpOJxcPX9TEOwj
-	 cflMQBsltsfbxduKYC7RhVhQlyx8pzdMcVNVB1CQ=
-Date: Sun, 21 Apr 2024 16:54:06 +0200
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Marek Vasut <marex@denx.de>
-Cc: dri-devel@lists.freedesktop.org, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Douglas Anderson <dianders@chromium.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Liu Ying <victor.liu@nxp.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Robert Foss <rfoss@kernel.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH] drm: bridge: dw-mipi-dsi: Call modeset in modeset
- callback
-Message-ID: <iw3lj7vthckcrkxp2y5lnlx4lnoud6x3v46s4s5moye4dgsayj@6s4serjkiogp>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Douglas Anderson <dianders@chromium.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Liu Ying <victor.liu@nxp.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Robert Foss <rfoss@kernel.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20240421002330.172723-1-marex@denx.de>
- <t3dkuckbko5lmkfezhdtcwrynnbcs4yfn5mtmdyirnktellc5a@ktab3j6rvf3u>
- <4da75f3b-16a7-46f4-97d9-6f51a54fbe7e@denx.de>
+	s=arc-20240116; t=1713711500; c=relaxed/simple;
+	bh=0oJjik4wpuUNzHjJSKUChu56oAAvkAz6NbclYtNoQvQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=vCLmql6nmIPJG8n1yDV+/e91bZhexS3nJpVhRDGZAUtu6XUXPqnRCvohMJqYVjL2yN/5BOV3kYnDEhVgykw4A7/y30ThX0CjdnDRJoH56XdKd7KlCASc/uDN9f0JCe0wyU+vAGDi6eO2STrURCysP3h4kg2LkMbOKIOZKPKfHMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7da42114485so384977739f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 07:58:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713711498; x=1714316298;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JBuLxUT8scRkJshgJrnxESrUxQfDXTehWiXm5MU5oC4=;
+        b=YydTuQJTr9+mIB2vpVDkqov/uvZGZ8VxoDawagABnPeN4Q8vQFl8VZczRzepQXqZOd
+         06T9I9AZkaognU7L1upM/MaN8jgymp6cOMQVXDzFp9C6QZ3eY7uUxk/SWyBeHMvRww7c
+         DPMz45rN1ttD/o9/JzSd4C7cgofsVwnxY9l8EZgszHjkpgqXorUIhAJ30kWgUO6V033M
+         OwkjpC1TOaC4z90ps0OQ7E1ZKx61pqoQK8IXLU1qLj0eltuSoFfD06QbJK5RXVwvsdjM
+         MsR4VzUge/7wPoaP80WKSa+Z5HpDSRlwmL+mzRYYKblVGL4ugiVkibDuGJmfDjehvXYE
+         bLyw==
+X-Forwarded-Encrypted: i=1; AJvYcCWZUeReQYp4zBrhHVibT67/TX3c2nmuPyAA0IxmJVs/ttrf76NRMSbdhaObNN0RYdUh3PtUp2uR9rf8xQgr+QhyOmUb2QFFamo0G0QC
+X-Gm-Message-State: AOJu0YzO4qmlmeIAna6ZwTkGmcVQMb988moRuo+qrgJ1obOQ66OHUVXV
+	imIc2Mxw9eCeKI5HQ+JoXsPe/gH3/b1bJE1hD+sP8lCInAyh7fjLe9FJcJbaNLnLrXUnJAowE48
+	RcUROOOC2206KaH6Gr2MDu71vOLqaJ2MxmgsuRJunBDcqqc49qp1JAiA=
+X-Google-Smtp-Source: AGHT+IHlZN4DwkPSOimznCste2/NnqjATls3ifbKOSZLRmQmG3Y/nk0jCQ/QL+LEjyjIW5910PbmJYomP4Bp4JdFtS1hmXuAYIwf
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4da75f3b-16a7-46f4-97d9-6f51a54fbe7e@denx.de>
+X-Received: by 2002:a05:6638:379d:b0:485:aae:bd7b with SMTP id
+ w29-20020a056638379d00b004850aaebd7bmr302450jal.5.1713711497181; Sun, 21 Apr
+ 2024 07:58:17 -0700 (PDT)
+Date: Sun, 21 Apr 2024 07:58:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000991aa06169c8dd5@google.com>
+Subject: [syzbot] [efi?] BUG: soft lockup in sync_hw_clock
+From: syzbot <syzbot+b3dc5d82ebb394dabe43@syzkaller.appspotmail.com>
+To: ardb@kernel.org, linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Apr 21, 2024 at 04:25:34PM GMT, Marek Vasut wrote:
-> On 4/21/24 1:09 PM, Ondřej Jirman wrote:
-> > Hi,
-> 
-> Hi,
-> 
-> > On Sun, Apr 21, 2024 at 02:22:35AM GMT, Marek Vasut wrote:
-> > > Doing modeset in .atomic_pre_enable callback instead of dedicated .mode_set
-> > > callback does not seem right. Undo this change, which was added as part of
-> > 
-> > Actually no. If anything, mode_set callback should be dropped entirely:
-> > 
-> > See https://elixir.bootlin.com/linux/latest/source/include/drm/drm_bridge.h#L231
-> > 
-> > It's deprecated, and enable callback should just use adjusted_mode:
-> > 
-> >      This is deprecated, do not use! New drivers shall set their mode in the
-> >      &drm_bridge_funcs.atomic_enable operation.
-> 
-> This mentions new drivers ?
+Hello,
 
-Yes.
+syzbot found the following issue on:
 
-> > > commit 05aa61334592 ("drm: bridge: dw-mipi-dsi: Fix enable/disable of DSI
-> > > controller") as it breaks STM32MP15xx LTDC scanout (DSI)->TC358762 DSI-to-DPI
-> > > bridge->PT800480 DPI panel pipeline. The original fix for HX8394 panel likely
-> > > requires HX8394 panel side fix instead.
-> > 
-> > There's nothing wrong with the panel driver. And that commit is not fixing issue
-> > with the panel driver, just like the subject hints at. Look at the referenced
-> > commit, at "Before:" sequence specifically.
-> > 
-> > dw_mipi_dsi_mode_set may be named *_mode_set or whatever, but it's basically
-> > an enable function that turns on clocks, initalizes phy, etc. etc.
-> > 
-> > https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c#L998
-> > 
-> > And if you check "Before:" sequence, you'll see that .mode_set callback is just
-> > called once at boot and never again. And it's atomic(_pre)_enable/atomic(_post)_disable
-> > callbacks that actually are called in ballanced way to enable/disable the
-> > controller repeatedly ever after.
-> > 
-> > Function dw_mipi_dsi_bridge_post_atomic_disable is the inverse of
-> > dw_mipi_dsi_mode_set, it undoes everything that dw_mipi_dsi_mode_set does.
-> > 
-> > You need to find root cause for your issue on STM32MP15xx instead of reverting
-> > fixes for resource use bugs in this driver.
-> 
-> Actually, reverting commit 05aa61334592 ("drm: bridge: dw-mipi-dsi: Fix
-> enable/disable of DSI controller") makes the STM32MP15xx work again like it
-> used to since Linux 5.10 or so, so that commit breaks existing working use
-> case.
+HEAD commit:    b5d2afe8745b Merge branches 'for-next/kbuild', 'for-next/m..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=114b08e7180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=560f5db1d0b3f6d0
+dashboard link: https://syzkaller.appspot.com/bug?extid=b3dc5d82ebb394dabe43
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17220cc3180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=125a17b3180000
 
-It may simply be revealing bug elsewhere in the STM display stack.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/50bff35e1638/disk-b5d2afe8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4eeaa73e7ed1/vmlinux-b5d2afe8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8e796b089aa9/Image-b5d2afe8.gz.xz
 
-> It seems it is sufficient to revert only this part of the commit to make the
-> STM32MP15xx work as it used to, do you have any idea why ?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b3dc5d82ebb394dabe43@syzkaller.appspotmail.com
 
-No, I don't have any STM based board. This revert reintroduces the bug that
-causes this driver resource use failures after a simple blanking/unblnaking
-cycle done via sysfs when using Linux VT.
+watchdog: BUG: soft lockup - CPU#0 stuck for 27s! [kworker/u8:9:2072]
+Modules linked in:
+irq event stamp: 3823076
+hardirqs last  enabled at (3823075): [<ffff80008ae6ec90>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:85 [inline]
+hardirqs last  enabled at (3823075): [<ffff80008ae6ec90>] exit_to_kernel_mode+0xdc/0x10c arch/arm64/kernel/entry-common.c:95
+hardirqs last disabled at (3823076): [<ffff80008ae6c87c>] __el1_irq arch/arm64/kernel/entry-common.c:533 [inline]
+hardirqs last disabled at (3823076): [<ffff80008ae6c87c>] el1_interrupt+0x24/0x68 arch/arm64/kernel/entry-common.c:551
+softirqs last  enabled at (3823050): [<ffff8000800218e4>] softirq_handle_end kernel/softirq.c:400 [inline]
+softirqs last  enabled at (3823050): [<ffff8000800218e4>] __do_softirq+0xb10/0xd2c kernel/softirq.c:583
+softirqs last disabled at (3823039): [<ffff80008002ad34>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
+CPU: 0 PID: 2072 Comm: kworker/u8:9 Not tainted 6.9.0-rc3-syzkaller-gb5d2afe8745b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: events_freezable_pwr_efficient sync_hw_clock (events_freezable_pwr_ef)
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : finish_lock_switch+0xc0/0x1e4 kernel/sched/core.c:5164
+lr : raw_spin_rq_unlock_irq kernel/sched/sched.h:1397 [inline]
+lr : finish_lock_switch+0xbc/0x1e4 kernel/sched/core.c:5163
+sp : ffff80009c8c7290
+x29: ffff80009c8c7290 x28: 1fffe000367bc6df x27: ffff80008ee81218
+x26: ffff80008ee80664 x25: 1fffe000367bc6f1 x24: ffff80008ee80000
+x23: dfff800000000000 x22: ffff0001b3de3788 x21: ffff0001b3de2c98
+x20: 0000000000000000 x19: ffff0001b3de2c80 x18: 1fffe000367b9996
+x17: ffff80008ee7d000 x16: ffff800080333fec x15: 0000000000000001
+x14: 1fffe000367bc590 x13: 0000000000000000 x12: 0000000000000003
+x11: 0000000000000001 x10: 0000000000000003 x9 : 0000000000000000
+x8 : 00000000003a55e1 x7 : ffff8000802aabc8 x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000001 x3 : 0000000000000000
+x2 : 0000000000000006 x1 : ffff80008afdfb40 x0 : ffff800124ffb000
+Call trace:
+ __daif_local_irq_enable arch/arm64/include/asm/irqflags.h:26 [inline]
+ arch_local_irq_enable arch/arm64/include/asm/irqflags.h:48 [inline]
+ raw_spin_rq_unlock_irq kernel/sched/sched.h:1397 [inline]
+ finish_lock_switch+0xc0/0x1e4 kernel/sched/core.c:5163
+ finish_task_switch+0x120/0x614 kernel/sched/core.c:5281
+ context_switch kernel/sched/core.c:5412 [inline]
+ __schedule+0x14c0/0x24ec kernel/sched/core.c:6746
+ __schedule_loop kernel/sched/core.c:6823 [inline]
+ schedule+0xbc/0x238 kernel/sched/core.c:6838
+ schedule_timeout+0xb8/0x348 kernel/time/timer.c:2558
+ do_wait_for_common+0x30c/0x468 kernel/sched/completion.c:95
+ __wait_for_common kernel/sched/completion.c:116 [inline]
+ wait_for_common kernel/sched/completion.c:127 [inline]
+ wait_for_completion+0x48/0x60 kernel/sched/completion.c:148
+ __efi_queue_work+0x124/0x1a8 drivers/firmware/efi/runtime-wrappers.c:337
+ virt_efi_set_time+0x74/0xb4 drivers/firmware/efi/runtime-wrappers.c:364
+ efi_set_time+0x208/0x430 drivers/rtc/rtc-efi.c:184
+ rtc_set_time+0x43c/0x888 drivers/rtc/interface.c:158
+ update_rtc kernel/time/ntp.c:597 [inline]
+ sync_hw_clock+0x2e8/0x480 kernel/time/ntp.c:656
+ process_one_work+0x7b8/0x15d4 kernel/workqueue.c:3254
+ process_scheduled_works kernel/workqueue.c:3335 [inline]
+ worker_thread+0x938/0xef4 kernel/workqueue.c:3416
+ kthread+0x288/0x310 kernel/kthread.c:388
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
 
-It's quite likely reproducible on your board, too. It's pretty clear from the code
-why that happens and it will happen regardless of what panel you're using.
 
-You can't expect to call pm_runtime_get once and pm_runtime_put 5 times and have
-this driver work at all. The same thing for clk_enable_*/disable_* and so on.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-You'll need to fix the issue you're seeing differently without the revert.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-kind regards,
-	o.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
