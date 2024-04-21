@@ -1,60 +1,86 @@
-Return-Path: <linux-kernel+bounces-152910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB1A8AC601
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F2A98AC814
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:55:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 408B71C204E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:53:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EB121C20D73
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B154F615;
-	Mon, 22 Apr 2024 07:52:50 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E8F7548E5;
+	Mon, 22 Apr 2024 08:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="YNrr+oQN"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E67694D58A;
-	Mon, 22 Apr 2024 07:52:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD87E5476B
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713772369; cv=none; b=fkpTRI+IK6+N1AtHbcOVXde91qIRKRPT29LhA3ejhNV+nmSeH+B9HqNpSsdJlsqf+YglXaIZ3Yeit/Y54qwf/iPnDiuqIYBfom1NntcuS9BKJ4/kI7KNq1dPW8RHRmkIxNWBaEY5LCjVLEeJMXHx2MqzXGXYHiZnX46nc+ruQ+w=
+	t=1713775916; cv=none; b=dMjZC1PjrVEgE3m/HFEKasSRFuwYEzA7zuqXda+IUkZMn9UAQFdXNSuIIhyAC8XstY9NYvQbuw6wwtAALqARNac4t88awY0PwPQgHTMezCtorPgn7Lopu5pixlHn1SVI+wGBHA9XXm8Dw9i7gGbooTC6BPqx2U6UzX1caWCj1yE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713772369; c=relaxed/simple;
-	bh=WQ05eBBY4p5S3lvd/kNS8zDpZ4FPaOvykDTMjRgeaeY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QuAVFA/AHuwddk2kJYDY+auh2CveD939SWxMTRsDj7CzMZP3NYVFdFkspYtQTEXdbCK2b0eaeY7aQExHGLB7wIgxuszYIBVFoR40sFSyEBskNKX8c3oUxOphh2j5uSXJulPrFOdEucYQqgwdko3gPIDFe5YAgobVD+WkekXQk1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VNHXg5k5Lz4f3n5g;
-	Mon, 22 Apr 2024 15:52:35 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id E12561A016E;
-	Mon, 22 Apr 2024 15:52:44 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.101.6])
-	by APP2 (Coremail) with SMTP id Syh0CgCHqg1JFyZmCViLKw--.3978S6;
-	Mon, 22 Apr 2024 15:52:44 +0800 (CST)
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-To: akpm@linux-foundation.org,
-	willy@infradead.org,
-	jack@suse.cz,
-	bfoster@redhat.com,
-	tj@kernel.org
-Cc: dsterba@suse.com,
-	mjguzik@gmail.com,
-	dhowells@redhat.com,
+	s=arc-20240116; t=1713775916; c=relaxed/simple;
+	bh=OnecIB8JDwgB/Bk68alFDNibbe/+MkHa6aJTATPcuvg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cj1hKdc5yEoK5/ZYyI1LNc6iSkptt7y8A5mTC20KI5zwNUCU02hOWQieETuYAtFKGbLzVeHjl2YM7GUqeNk4tv9baCW8SHz8TH506wwU3grriucfnoDiWs0U1nbIC4z2xMDjQ96Sk8RdUYRRUN4nLnbZRA0Pu6FizRFbfdYqv/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=YNrr+oQN; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so4398569a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:51:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1713775913; x=1714380713; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4Rt1DqzZQHpNrcSkrbFzv1k9hIQM6x7OmI+95yCtyQs=;
+        b=YNrr+oQN81N9a8o7yjoRf6AdqL4nBcNRfWtWxL6sitgSajD9L1p/+KDdNQWyjgXI3b
+         f4Lx/XnkoUxmMKRoyabPMAREbGq1T2aevDgf06kI9/36ulBcvNbH3NFx2aDLcQZjUDR/
+         Oom6LSmgn5xMbTiLnRqxCEiHSrBtCCXPTPGN0cWjbqq5ySIdCK8Pa9Ln1KtmcId3NMwo
+         r0LD23GXg4JG8xHzgjYddnFjZLVjDyx/BMyZSX0oEhc6j88HWJL1axQ+Jq5M/ss95VQM
+         M8+hB7kxi7XbnjDnQGWdpWbRhOFUs0MNWFVzY6kf/yLLnRulFSQrD1/OpcwlaXPbbWx+
+         /qsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713775913; x=1714380713;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4Rt1DqzZQHpNrcSkrbFzv1k9hIQM6x7OmI+95yCtyQs=;
+        b=W35SkWeQhaRGpl7hf4xi4tslxPSfHM+uATv+1uyh6muJUyUOiNa2gqnzYfqQ3E1DhW
+         cljlPVc9Uzj1UYl/Am1dLOedgIbfFjIpn2/P1VZzvo50cY4fS7h5mbG3PuhWvLg1i2Rp
+         4QH9om3g4VJ9NtryzWA/eN3g8zJRUL7crT/uemgB0BHJfqFX43Xhpv/QfFMFp30DX3wQ
+         1P3KwZQCTkgs5GPJM+Njv88iaEUliLAHlTTJ9SaHpRW32TAeYJyBFwQJMQhgZJUNty0t
+         l6L8S6rt52cSW/EDiYISn5ek8Zpvkc/Bw4aGRL/eFkZUBPKweVoqnOKFpFtvV0pG75is
+         jGww==
+X-Forwarded-Encrypted: i=1; AJvYcCVQAyPK28oAZyGLZNfyDD9bOS3kfiWrpHhKEqxcTnXAQ2bgvdNdky29Ih+nnBHpezxil3jSrpo/GhMJh85ZIuZggWaD4Pji3OFUxliR
+X-Gm-Message-State: AOJu0Yyx8MPyYnnC5VG5rptWel4BombNktuIiNz4wYIF4vYxRl2+7/xK
+	udQLZs8hasM211nXN+i3kQZOaChMdS9c/YxZTgzdAVebNpGm+Z+aTBBCvPCfQEo=
+X-Google-Smtp-Source: AGHT+IF7QX6NRCV7ovrGSxFidjCjmfTcvLkiHjj27eK6dCisOE2ZdrZ0NYqSZfXRrA/2AYtLK+SrMg==
+X-Received: by 2002:a17:906:3196:b0:a52:6e3b:fcf1 with SMTP id 22-20020a170906319600b00a526e3bfcf1mr5818778ejy.17.1713775912963;
+        Mon, 22 Apr 2024 01:51:52 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id gh16-20020a170906e09000b00a5180d5b31asm5481921ejb.32.2024.04.22.01.51.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 01:51:52 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: dianders@chromium.org
+Cc: christophe.jaillet@wanadoo.fr,
+	daniel.thompson@linaro.org,
+	jason.wessel@windriver.com,
+	kgdb-bugreport@lists.sourceforge.net,
 	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH v4 4/4] writeback: rename nr_reclaimable to nr_dirty in balance_dirty_pages
-Date: Tue, 23 Apr 2024 00:48:08 +0800
-Message-Id: <20240422164808.13627-5-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240422164808.13627-1-shikemeng@huaweicloud.com>
-References: <20240422164808.13627-1-shikemeng@huaweicloud.com>
+	thorsten.blum@toblux.com,
+	yuran.pereira@hotmail.com
+Subject: [RESEND PATCH] kdb: Use str_plural() to fix Coccinelle warning
+Date: Mon, 22 Apr 2024 01:26:03 +0200
+Message-ID: <20240421232602.956049-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <CAD=FV=V3Cpo38ss1nFvPMbXadaXXpVuN5jdfUKZS4ngDLQX_wQ@mail.gmail.com>
+References: <CAD=FV=V3Cpo38ss1nFvPMbXadaXXpVuN5jdfUKZS4ngDLQX_wQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,72 +88,32 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCHqg1JFyZmCViLKw--.3978S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFyxZr1fGF17CrW8WFWkXrb_yoW8Cr15pF
-	ZrGw1jkr4xtayavrn3CFWq9rZxtw48tF43JryUCw4SvwsrWF1UKFyI9ry0vF1xAa4fJrWa
-	vws0qrykJw1vkrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmCb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-	8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
-	FVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3w
-	A2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE
-	3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr2
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
-	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7
-	CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E
-	4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-	WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-	Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj4
-	0_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_
-	Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07jVUDXUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-Commit 8d92890bd6b85 ("mm/writeback: discard NR_UNSTABLE_NFS, use
-NR_WRITEBACK instead") removed NR_UNSTABLE_NFS and nr_reclaimable
-only contains dirty page now.
-Rename nr_reclaimable to nr_dirty properly.
+Fixes the following Coccinelle/coccicheck warning reported by
+string_choices.cocci:
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
+	opportunity for str_plural(days)
+
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 ---
- mm/page-writeback.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/debug/kdb/kdb_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 3bb3bed102ef..44df5c899a33 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -1694,7 +1694,7 @@ static int balance_dirty_pages(struct bdi_writeback *wb,
- 	struct dirty_throttle_control * const mdtc = mdtc_valid(&mdtc_stor) ?
- 						     &mdtc_stor : NULL;
- 	struct dirty_throttle_control *sdtc;
--	unsigned long nr_reclaimable;	/* = file_dirty */
-+	unsigned long nr_dirty;
- 	long period;
- 	long pause;
- 	long max_pause;
-@@ -1715,9 +1715,9 @@ static int balance_dirty_pages(struct bdi_writeback *wb,
- 		unsigned long m_thresh = 0;
- 		unsigned long m_bg_thresh = 0;
- 
--		nr_reclaimable = global_node_page_state(NR_FILE_DIRTY);
-+		nr_dirty = global_node_page_state(NR_FILE_DIRTY);
- 		gdtc->avail = global_dirtyable_memory();
--		gdtc->dirty = nr_reclaimable + global_node_page_state(NR_WRITEBACK);
-+		gdtc->dirty = nr_dirty + global_node_page_state(NR_WRITEBACK);
- 
- 		domain_dirty_limits(gdtc);
- 
-@@ -1768,7 +1768,7 @@ static int balance_dirty_pages(struct bdi_writeback *wb,
- 		 * In normal mode, we start background writeout at the lower
- 		 * background_thresh, to keep the amount of dirty memory low.
- 		 */
--		if (!laptop_mode && nr_reclaimable > gdtc->bg_thresh &&
-+		if (!laptop_mode && nr_dirty > gdtc->bg_thresh &&
- 		    !writeback_in_progress(wb))
- 			wb_start_background_writeback(wb);
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index d05066cb40b2..664bae55f2c9 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -2517,7 +2517,7 @@ static int kdb_summary(int argc, const char **argv)
+ 	if (val.uptime > (24*60*60)) {
+ 		int days = val.uptime / (24*60*60);
+ 		val.uptime %= (24*60*60);
+-		kdb_printf("%d day%s ", days, days == 1 ? "" : "s");
++		kdb_printf("%d day%s ", days, str_plural(days));
+ 	}
+ 	kdb_printf("%02ld:%02ld\n", val.uptime/(60*60), (val.uptime/60)%60);
  
 -- 
-2.30.0
+2.44.0
 
 
