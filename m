@@ -1,295 +1,152 @@
-Return-Path: <linux-kernel+bounces-152514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55D988ABF9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 16:30:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F19F8ABFA8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 16:54:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D423281979
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 14:29:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C663B2100D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 14:54:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C46D517BCE;
-	Sun, 21 Apr 2024 14:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F90182A0;
+	Sun, 21 Apr 2024 14:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="GaCq3jxH"
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="Q5hzTT/b"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE335B64E
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 14:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3225610A3C
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 14:54:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713709792; cv=none; b=FVhtmzveeyjlz2BnIBEwflyreUV5rsiHcrQQUVJT3WO2xaIelPeKEI0B6cLy4quDJ7N4NTiAYebg2i/lkHEXCkFqL+vRtzazut26XqhJEDhiE9LNFReIjQZJOFYcQ+8Q6ko+lVvxQcKUC+o7j/WSe8SeBgQJG7KMamW+pMbNfvM=
+	t=1713711253; cv=none; b=Vn4Tpods6C+vNB2QX0WuLgLp84FMT3pSFF1A7MoZcux3wBJioMJjqCGs1jhY9+M0LdQkOXzpcqyrBlbF+tgfwr4nU//BK++OoV1/fg4y33t9sroNILndkv1+LuyxbsZAJdmwvP9cPTZl89ks0S2ShjqbF+YWWZccwPG7tMC597c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713709792; c=relaxed/simple;
-	bh=ZDF8wsNcQcH6GLOM6oSwZWK482FY0Az6eL6XDeob49I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aHoaOsV79h1kBaOqOVas8Bmr0dXByN/2Y+w8f9sWSwkw8TSfT3BxNqNZTJYSPdkul/DqICtYLC3GfuWJOFr6F0VLo5RK3IfUpRIkrTV7jwSnr7KNTnjrLShsXz/cMdful2KeJlzhM4Bxl4ErllMWe3H0BJJ+Fj54EExbWkVSnu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=GaCq3jxH; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-69b514d3cf4so30537986d6.0
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 07:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1713709789; x=1714314589; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a7LpaFZkm9Br//XCfOKkL+azQyEv5N/3dSKe15VqxQA=;
-        b=GaCq3jxHDflVe5Bpai4h+sVPUa89SCvkvG6QaoDveOYdBAoVJbY9j8Q5lXZgoCNMWt
-         FSgLjvzmtNrvkcRaLnXSSrdHexB3q5nqHKRvL/iPEM6HOFtTSPfcNIJPzOzAJe9hKSwP
-         1XVPZ+tIQtbjQ5B9poPjgp8ITZSDTNNGOHlqU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713709789; x=1714314589;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a7LpaFZkm9Br//XCfOKkL+azQyEv5N/3dSKe15VqxQA=;
-        b=nIbNjeo+ZiB5UeEC98Fn0ADF6WrFtqT1DoXrVoQCgV3y2odmc3J7QN31jmIdU13rZH
-         Vfci2S6UtW1dfDCa4n+aRSEjTtWyjHAERiWSiz84+CH4VVhUkC9wt5GazVOJ/3e3yIvA
-         OXT0hrPu/DfWUxYPBT2WlLG4Je0s/fSylIGbr1Nvg81M9DBFRzIZCRArUKh0gRvTJSwU
-         cfTOju9TZaVpjkmvq+gEUaNwVsHySat2O2Fta3Jfqky0KIYU3yN3ES3xajVstH9VxlCQ
-         it1F1xPuSbFhxiNQ4M+BuwEo7EbVnKESN189LfF0ZmZGc6tsXjWGOV1kaCxeB7YNMPJd
-         4meg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIAhlQj/IskpS5iL6iMzoCRHy0LiUTeboePEN+1WEFxM3ujj7AE0Xi7OcT8miWEJtbgzEApSCI9cv7unqADo6RJ1Al+eyMiwR2U+0i
-X-Gm-Message-State: AOJu0Yyc5J3Cmt7CPDC5Rb0Cp1ORn0mlS+eRVjpRzbf+a4AtYTZn+SJ4
-	H3XUXI98VxxENloqTTvYifGVY5pPgc4bf4vUl69HdUhkEfg46GJ18+4ZvggEqw==
-X-Google-Smtp-Source: AGHT+IEmilFtFEm9HQytae3OkzVU9OlPlZM5Mw8kW3/pYBmDDShIjriimzBmd8hgLnud40PUVLIaZg==
-X-Received: by 2002:ad4:4bb3:0:b0:6a0:6545:2306 with SMTP id i19-20020ad44bb3000000b006a065452306mr7041605qvw.28.1713709789526;
-        Sun, 21 Apr 2024 07:29:49 -0700 (PDT)
-Received: from [10.211.55.3] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.googlemail.com with ESMTPSA id u5-20020a0c8dc5000000b0069b412e3716sm2330418qvb.80.2024.04.21.07.29.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Apr 2024 07:29:48 -0700 (PDT)
-Message-ID: <9ba1665e-70b0-4aea-9cab-b62660953f6b@ieee.org>
-Date: Sun, 21 Apr 2024 09:29:47 -0500
+	s=arc-20240116; t=1713711253; c=relaxed/simple;
+	bh=DquiAy/l3EzCcC9zc5B4mjOJ1S+6pthVCA5/7nB4vTI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=soKNHqH89LX/7gH55u/WWWeTei1FIdxTkYJSIzmSWJ0qsDB6bIP9Q242ApPnYbOuvzvuYFFl8siG5b9/zkUQJb9nfEhBDcKDT61tDGR3NlXT/enQenzPWw3NEjKki71LmxMh0Z4PJ7LFwebU8QVMOUEVF2/QSgb3KLKjIiWA2iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=Q5hzTT/b; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1713711247; bh=DquiAy/l3EzCcC9zc5B4mjOJ1S+6pthVCA5/7nB4vTI=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=Q5hzTT/bFnyW6HRXRlwtJ9+jsjMfHBSOE+9lF5iqXY35r0LttRPbWTFCyMYkJloP4
+	 uXuFpEyUNp7/KgAWCnVnA8xgJPzh5/j7ofMKoxxDqLaIpPj1cVbydpOJxcPX9TEOwj
+	 cflMQBsltsfbxduKYC7RhVhQlyx8pzdMcVNVB1CQ=
+Date: Sun, 21 Apr 2024 16:54:06 +0200
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Marek Vasut <marex@denx.de>
+Cc: dri-devel@lists.freedesktop.org, 
+	Andrzej Hajda <andrzej.hajda@intel.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Douglas Anderson <dianders@chromium.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Jonas Karlman <jonas@kwiboo.se>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Liu Ying <victor.liu@nxp.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Robert Foss <rfoss@kernel.org>, Sam Ravnborg <sam@ravnborg.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH] drm: bridge: dw-mipi-dsi: Call modeset in modeset
+ callback
+Message-ID: <iw3lj7vthckcrkxp2y5lnlx4lnoud6x3v46s4s5moye4dgsayj@6s4serjkiogp>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org, 
+	Andrzej Hajda <andrzej.hajda@intel.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Douglas Anderson <dianders@chromium.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Jonas Karlman <jonas@kwiboo.se>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Liu Ying <victor.liu@nxp.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Rob Herring <robh@kernel.org>, Robert Foss <rfoss@kernel.org>, Sam Ravnborg <sam@ravnborg.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <20240421002330.172723-1-marex@denx.de>
+ <t3dkuckbko5lmkfezhdtcwrynnbcs4yfn5mtmdyirnktellc5a@ktab3j6rvf3u>
+ <4da75f3b-16a7-46f4-97d9-6f51a54fbe7e@denx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v2] staging: greybus: Replace gcam macros with direct dev
- log calls
-Content-Language: en-US
-To: Jackson Chui <jacksonchui.qwerty@gmail.com>
-Cc: Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <ZhRzWNiak1qOdJLL@jc-ubuntu-dev-korn-1>
-From: Alex Elder <elder@ieee.org>
-In-Reply-To: <ZhRzWNiak1qOdJLL@jc-ubuntu-dev-korn-1>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4da75f3b-16a7-46f4-97d9-6f51a54fbe7e@denx.de>
 
-On 4/8/24 5:44 PM, Jackson Chui wrote:
-> Reported by checkpatch:
+On Sun, Apr 21, 2024 at 04:25:34PM GMT, Marek Vasut wrote:
+> On 4/21/24 1:09 PM, Ondřej Jirman wrote:
+> > Hi,
 > 
-> CHECK: Macro argument 'gcam' may be better as '(gcam)' to avoid
-> precedence issues
+> Hi,
 > 
-> Inline standard calls to 'dev_*' kernel logging functions, in favor
-> of 'gcam_*' macros, to clear up gcam-related logging.
+> > On Sun, Apr 21, 2024 at 02:22:35AM GMT, Marek Vasut wrote:
+> > > Doing modeset in .atomic_pre_enable callback instead of dedicated .mode_set
+> > > callback does not seem right. Undo this change, which was added as part of
+> > 
+> > Actually no. If anything, mode_set callback should be dropped entirely:
+> > 
+> > See https://elixir.bootlin.com/linux/latest/source/include/drm/drm_bridge.h#L231
+> > 
+> > It's deprecated, and enable callback should just use adjusted_mode:
+> > 
+> >      This is deprecated, do not use! New drivers shall set their mode in the
+> >      &drm_bridge_funcs.atomic_enable operation.
 > 
-> Signed-off-by: Jackson Chui <jacksonchui.qwerty@gmail.com>
+> This mentions new drivers ?
 
-This looks good, thanks for doing this.
+Yes.
 
-Nit: for the future, on a few of the dev_err() calls, the new first
-argument makes the line even wider than before.  Lines wider than
-80 columns are acceptable--especially when they contain formatted
-output--but you could have put the format string on a new line in
-a few of the cases.  I'm old-skool and prefer making things fit
-in 80 columns unless it gets too ugly.
-
-Reviewed-by: Alex Elder <elder@linaro.org>
-
-
+> > > commit 05aa61334592 ("drm: bridge: dw-mipi-dsi: Fix enable/disable of DSI
+> > > controller") as it breaks STM32MP15xx LTDC scanout (DSI)->TC358762 DSI-to-DPI
+> > > bridge->PT800480 DPI panel pipeline. The original fix for HX8394 panel likely
+> > > requires HX8394 panel side fix instead.
+> > 
+> > There's nothing wrong with the panel driver. And that commit is not fixing issue
+> > with the panel driver, just like the subject hints at. Look at the referenced
+> > commit, at "Before:" sequence specifically.
+> > 
+> > dw_mipi_dsi_mode_set may be named *_mode_set or whatever, but it's basically
+> > an enable function that turns on clocks, initalizes phy, etc. etc.
+> > 
+> > https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c#L998
+> > 
+> > And if you check "Before:" sequence, you'll see that .mode_set callback is just
+> > called once at boot and never again. And it's atomic(_pre)_enable/atomic(_post)_disable
+> > callbacks that actually are called in ballanced way to enable/disable the
+> > controller repeatedly ever after.
+> > 
+> > Function dw_mipi_dsi_bridge_post_atomic_disable is the inverse of
+> > dw_mipi_dsi_mode_set, it undoes everything that dw_mipi_dsi_mode_set does.
+> > 
+> > You need to find root cause for your issue on STM32MP15xx instead of reverting
+> > fixes for resource use bugs in this driver.
 > 
-> ---
-> Changes in v2:
->    - Inline 'dev_*' logging functions, over wrappers and macros
->      to just use the standard call.
->    - Remove 'gcam_*' macros, since they are no longer used.
-> ---
->   drivers/staging/greybus/camera.c | 58 +++++++++++++++-----------------
->   1 file changed, 27 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
-> index a8173aa3a995..b8b2bdfa59e5 100644
-> --- a/drivers/staging/greybus/camera.c
-> +++ b/drivers/staging/greybus/camera.c
-> @@ -180,10 +180,6 @@ static const struct gb_camera_fmt_info *gb_camera_get_format_info(u16 gb_fmt)
->   
->   #define GB_CAMERA_MAX_SETTINGS_SIZE	8192
->   
-> -#define gcam_dbg(gcam, format...)	dev_dbg(&gcam->bundle->dev, format)
-> -#define gcam_info(gcam, format...)	dev_info(&gcam->bundle->dev, format)
-> -#define gcam_err(gcam, format...)	dev_err(&gcam->bundle->dev, format)
-> -
->   static int gb_camera_operation_sync_flags(struct gb_connection *connection,
->   					  int type, unsigned int flags,
->   					  void *request, size_t request_size,
-> @@ -232,8 +228,8 @@ static int gb_camera_get_max_pkt_size(struct gb_camera *gcam,
->   
->   		fmt_info = gb_camera_get_format_info(cfg->format);
->   		if (!fmt_info) {
-> -			gcam_err(gcam, "unsupported greybus image format: %d\n",
-> -				 cfg->format);
-> +			dev_err(&gcam->bundle->dev, "unsupported greybus image format: %d\n",
-> +				cfg->format);
->   			return -EIO;
->   		}
->   
-> @@ -241,18 +237,18 @@ static int gb_camera_get_max_pkt_size(struct gb_camera *gcam,
->   			pkt_size = le32_to_cpu(cfg->max_pkt_size);
->   
->   			if (pkt_size == 0) {
-> -				gcam_err(gcam,
-> -					 "Stream %u: invalid zero maximum packet size\n",
-> -					 i);
-> +				dev_err(&gcam->bundle->dev,
-> +					"Stream %u: invalid zero maximum packet size\n",
-> +					i);
->   				return -EIO;
->   			}
->   		} else {
->   			pkt_size = le16_to_cpu(cfg->width) * fmt_info->bpp / 8;
->   
->   			if (pkt_size != le32_to_cpu(cfg->max_pkt_size)) {
-> -				gcam_err(gcam,
-> -					 "Stream %u: maximum packet size mismatch (%u/%u)\n",
-> -					 i, pkt_size, cfg->max_pkt_size);
-> +				dev_err(&gcam->bundle->dev,
-> +					"Stream %u: maximum packet size mismatch (%u/%u)\n",
-> +					i, pkt_size, cfg->max_pkt_size);
->   				return -EIO;
->   			}
->   		}
-> @@ -275,13 +271,13 @@ static const int gb_camera_configure_streams_validate_response(struct gb_camera
->   
->   	/* Validate the returned response structure */
->   	if (resp->padding[0] || resp->padding[1]) {
-> -		gcam_err(gcam, "response padding != 0\n");
-> +		dev_err(&gcam->bundle->dev, "response padding != 0\n");
->   		return -EIO;
->   	}
->   
->   	if (resp->num_streams > nstreams) {
-> -		gcam_err(gcam, "got #streams %u > request %u\n",
-> -			 resp->num_streams, nstreams);
-> +		dev_err(&gcam->bundle->dev, "got #streams %u > request %u\n",
-> +			resp->num_streams, nstreams);
->   		return -EIO;
->   	}
->   
-> @@ -289,7 +285,7 @@ static const int gb_camera_configure_streams_validate_response(struct gb_camera
->   		struct gb_camera_stream_config_response *cfg = &resp->config[i];
->   
->   		if (cfg->padding) {
-> -			gcam_err(gcam, "stream #%u padding != 0\n", i);
-> +			dev_err(&gcam->bundle->dev, "stream #%u padding != 0\n", i);
->   			return -EIO;
->   		}
->   	}
-> @@ -340,16 +336,16 @@ static int gb_camera_set_power_mode(struct gb_camera *gcam, bool hs)
->   
->   	ret = gb_camera_set_intf_power_mode(gcam, intf->interface_id, hs);
->   	if (ret < 0) {
-> -		gcam_err(gcam, "failed to set module interface to %s (%d)\n",
-> -			 hs ? "HS" : "PWM", ret);
-> +		dev_err(&gcam->bundle->dev, "failed to set module interface to %s (%d)\n",
-> +			hs ? "HS" : "PWM", ret);
->   		return ret;
->   	}
->   
->   	ret = gb_camera_set_intf_power_mode(gcam, svc->ap_intf_id, hs);
->   	if (ret < 0) {
->   		gb_camera_set_intf_power_mode(gcam, intf->interface_id, !hs);
-> -		gcam_err(gcam, "failed to set AP interface to %s (%d)\n",
-> -			 hs ? "HS" : "PWM", ret);
-> +		dev_err(&gcam->bundle->dev, "failed to set AP interface to %s (%d)\n",
-> +			hs ? "HS" : "PWM", ret);
->   		return ret;
->   	}
->   
-> @@ -435,7 +431,7 @@ static int gb_camera_setup_data_connection(struct gb_camera *gcam,
->   			   sizeof(csi_cfg),
->   			   GB_APB_REQUEST_CSI_TX_CONTROL, false);
->   	if (ret < 0) {
-> -		gcam_err(gcam, "failed to start the CSI transmitter\n");
-> +		dev_err(&gcam->bundle->dev, "failed to start the CSI transmitter\n");
->   		goto error_power;
->   	}
->   
-> @@ -470,7 +466,7 @@ static void gb_camera_teardown_data_connection(struct gb_camera *gcam)
->   			   GB_APB_REQUEST_CSI_TX_CONTROL, false);
->   
->   	if (ret < 0)
-> -		gcam_err(gcam, "failed to stop the CSI transmitter\n");
-> +		dev_err(&gcam->bundle->dev, "failed to stop the CSI transmitter\n");
->   
->   	/* Set the UniPro link to low speed mode. */
->   	gb_camera_set_power_mode(gcam, false);
-> @@ -507,7 +503,7 @@ static int gb_camera_capabilities(struct gb_camera *gcam,
->   					     NULL, 0,
->   					     (void *)capabilities, size);
->   	if (ret)
-> -		gcam_err(gcam, "failed to retrieve capabilities: %d\n", ret);
-> +		dev_err(&gcam->bundle->dev, "failed to retrieve capabilities: %d\n", ret);
->   
->   done:
->   	mutex_unlock(&gcam->mutex);
-> @@ -723,22 +719,22 @@ static int gb_camera_request_handler(struct gb_operation *op)
->   	struct gb_message *request;
->   
->   	if (op->type != GB_CAMERA_TYPE_METADATA) {
-> -		gcam_err(gcam, "Unsupported unsolicited event: %u\n", op->type);
-> +		dev_err(&gcam->bundle->dev, "Unsupported unsolicited event: %u\n", op->type);
->   		return -EINVAL;
->   	}
->   
->   	request = op->request;
->   
->   	if (request->payload_size < sizeof(*payload)) {
-> -		gcam_err(gcam, "Wrong event size received (%zu < %zu)\n",
-> -			 request->payload_size, sizeof(*payload));
-> +		dev_err(&gcam->bundle->dev, "Wrong event size received (%zu < %zu)\n",
-> +			request->payload_size, sizeof(*payload));
->   		return -EINVAL;
->   	}
->   
->   	payload = request->payload;
->   
-> -	gcam_dbg(gcam, "received metadata for request %u, frame %u, stream %u\n",
-> -		 payload->request_id, payload->frame_number, payload->stream);
-> +	dev_dbg(&gcam->bundle->dev, "received metadata for request %u, frame %u, stream %u\n",
-> +		payload->request_id, payload->frame_number, payload->stream);
->   
->   	return 0;
->   }
-> @@ -1347,15 +1343,15 @@ static int gb_camera_resume(struct device *dev)
->   
->   	ret = gb_connection_enable(gcam->connection);
->   	if (ret) {
-> -		gcam_err(gcam, "failed to enable connection: %d\n", ret);
-> +		dev_err(&gcam->bundle->dev, "failed to enable connection: %d\n", ret);
->   		return ret;
->   	}
->   
->   	if (gcam->data_connection) {
->   		ret = gb_connection_enable(gcam->data_connection);
->   		if (ret) {
-> -			gcam_err(gcam,
-> -				 "failed to enable data connection: %d\n", ret);
-> +			dev_err(&gcam->bundle->dev,
-> +				"failed to enable data connection: %d\n", ret);
->   			return ret;
->   		}
->   	}
+> Actually, reverting commit 05aa61334592 ("drm: bridge: dw-mipi-dsi: Fix
+> enable/disable of DSI controller") makes the STM32MP15xx work again like it
+> used to since Linux 5.10 or so, so that commit breaks existing working use
+> case.
 
+It may simply be revealing bug elsewhere in the STM display stack.
+
+> It seems it is sufficient to revert only this part of the commit to make the
+> STM32MP15xx work as it used to, do you have any idea why ?
+
+No, I don't have any STM based board. This revert reintroduces the bug that
+causes this driver resource use failures after a simple blanking/unblnaking
+cycle done via sysfs when using Linux VT.
+
+It's quite likely reproducible on your board, too. It's pretty clear from the code
+why that happens and it will happen regardless of what panel you're using.
+
+You can't expect to call pm_runtime_get once and pm_runtime_put 5 times and have
+this driver work at all. The same thing for clk_enable_*/disable_* and so on.
+
+You'll need to fix the issue you're seeing differently without the revert.
+
+kind regards,
+	o.
 
