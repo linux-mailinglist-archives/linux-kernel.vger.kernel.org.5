@@ -1,130 +1,115 @@
-Return-Path: <linux-kernel+bounces-152483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C4138ABF18
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 13:37:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8288ABF1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 14:08:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D8DC1F2112F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:37:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD7001C208C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 12:08:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A831711733;
-	Sun, 21 Apr 2024 11:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1FA125CC;
+	Sun, 21 Apr 2024 12:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="uCwixMy5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Y+vskJxH"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE06111A2
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 11:37:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E80933D5
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 12:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713699453; cv=none; b=rR/12sDzMXbXG4wO48rrUTg2mlZCIafNKY+dBuy81RTTYLY1miypkwpLQr0fjqFjTBhRC/4hLHzWiqqlC4a795kv8K0jo+wjeA4ySGtJizEd6WlfktYjjNhv3dOHB3ZJtNYnUfiCaIis9aaSO7P9fjZzHKMdZFelygjejuDGoTY=
+	t=1713701279; cv=none; b=l1n0ZDsLEfTtx3n5Z6xxMHVtAcTb8zOTfTMXPSUQSREpKTFxvzFm9exvZT4ZbkcllXTr7SD9Y+w6GI/hHYDN57HN1ix0yJJxqwa1fglACQRzpzthD4s4Vz2DpMpQITZR1MDomvGM6Vx0grEtRknBXHnJSr8jX/iVDN1XNYONuzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713699453; c=relaxed/simple;
-	bh=i5shS/meQIR2KVS5veJuv7o07BZVwUaDmIxxq9cnvCo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=KbPO17u0LOjqx25HPYD9WlIiGqqO/zo7GJWvJ6NoDmGYZLHQMgU3lnE10mDphn911WKGXGVeuYbObO1PSBcJsm1PVcC11uWwDp2QIiydBouy8mbD5ckDmbbkLs5/2jJ12sRNJtW+Pe/R4svDWJi48mLo5NDxZ2DTwrmCHGkDA7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=uCwixMy5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21BC0C113CE;
-	Sun, 21 Apr 2024 11:37:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713699452;
-	bh=i5shS/meQIR2KVS5veJuv7o07BZVwUaDmIxxq9cnvCo=;
-	h=Date:From:To:Cc:Subject:From;
-	b=uCwixMy55xJyoiPgqiHGMgDnzraVBxldQbdEdXaSbF1ysoKLBMNDvr115Xd7f2vOq
-	 N7o7ExfV7mRBcqOJrsLXbDAEinok01qGYKxNPR+AooGD+hCAdFJzHei/hGbnE8TEQr
-	 qFqsQtf8ss5dmoGWRGt99Oz7oLYuSCEK9SV13Yyc=
-Date: Sun, 21 Apr 2024 13:37:29 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Char/Misc driver fixes for 6.9-rc5
-Message-ID: <ZiT6ed-F2vh8sCwP@kroah.com>
+	s=arc-20240116; t=1713701279; c=relaxed/simple;
+	bh=5t9i1tFwJM8WzaV17nFarWHAevNZdDbrrDX4kWOx5zk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c4GRPKJK5KBCTRuOmEY0zAsbAecKt6nU0bZOMfDYEnywDUbc+XROKI+WiKBfTusYLK3UwaF+X2kLCuUxYBw/g4tRzQVOnrC9WWFn9hHs51pcfvRfK0NBLJiV4V1mitRznsjbLXPCwtu46BqPhvMvdcDcmaM7dNTR3mJfbrhd+FA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Y+vskJxH; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7919CE1;
+	Sun, 21 Apr 2024 14:07:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713701225;
+	bh=5t9i1tFwJM8WzaV17nFarWHAevNZdDbrrDX4kWOx5zk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y+vskJxHsklch1JdwkAvvGfdOqOEugie7gpKX24QrLZBcz/YmxNuGTriSjbrnb4LQ
+	 5Mea1omWXKrqDKtwZhGodr1ge+vclhZgq53hayDJG07GFlqXcw91Xogq8zTh2m9OpH
+	 pex9KjGprVVEbnebWk0EnlMk820cf8b4lPmDbK4M=
+Date: Sun, 21 Apr 2024 15:07:47 +0300
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Adam Ford <aford173@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+	kernel test robot <lkp@intel.com>, Liu Ying <victor.liu@nxp.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	dri-devel@lists.freedesktop.org, imx@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: imx: Fix unmet depenency for
+ PHY_FSL_SAMSUNG_HDMI_PHY
+Message-ID: <20240421120747.GA19147@pendragon.ideasonboard.com>
+References: <20240420112831.5942-1-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <20240420112831.5942-1-aford173@gmail.com>
 
-The following changes since commit fec50db7033ea478773b159e0e2efb135270e3b7:
+Hi Adam,
 
-  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
+Thank you for the patch.
 
-are available in the Git repository at:
+On Sat, Apr 20, 2024 at 06:28:31AM -0500, Adam Ford wrote:
+> When enabling i.MX8MP DWC HDMI driver, it automatically selects
+> PHY_FSL_SAMSUNG_HDMI_PHY, since it wont' work without the phy.
+> This may cause some Kconfig warnings during various build tests.
+> Fix this by implying the phy instead of selecting the phy.
+> 
+> Fixes: 1f36d634670d ("drm/bridge: imx: add bridge wrapper driver for i.MX8MP DWC HDMI")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202404190103.lLm8LtuP-lkp@intel.com/
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> 
+> diff --git a/drivers/gpu/drm/bridge/imx/Kconfig b/drivers/gpu/drm/bridge/imx/Kconfig
+> index 7687ed652df5..8f125c75050d 100644
+> --- a/drivers/gpu/drm/bridge/imx/Kconfig
+> +++ b/drivers/gpu/drm/bridge/imx/Kconfig
+> @@ -9,7 +9,7 @@ config DRM_IMX8MP_DW_HDMI_BRIDGE
+>  	depends on DRM_DW_HDMI
+>  	depends on OF
+>  	select DRM_IMX8MP_HDMI_PVI
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-6.9-rc5
+This also looks wrong, even if in practice it will likely work because
+DRM_IMX8MP_HDMI_PVI has no extra dependency compared to
+DRM_IMX8MP_DW_HDMI_BRIDGE. Still, it would be good to fix it.
 
-for you to fetch changes up to ebaed6d4def877d2035786ff318379eb750044c8:
+> -	select PHY_FSL_SAMSUNG_HDMI_PHY
+> +	imply PHY_FSL_SAMSUNG_HDMI_PHY
+>  	help
+>  	  Choose this to enable support for the internal HDMI encoder found
+>  	  on the i.MX8MP SoC.
 
-  peci: linux/peci.h: fix Excess kernel-doc description warning (2024-04-11 17:06:06 +0200)
+-- 
+Regards,
 
-----------------------------------------------------------------
-Char/Misc driver fixes for 6.9-rc5
-
-Here are some small char/misc and other driver fixes for 6.9-rc5.
-Included in here are the following:
-  - binder driver fix for reported problem
-  - speakup crash fix
-  - mei driver fixes for reported problems
-  - comdei driver fix
-  - interconnect driver fixes
-  - rtsx driver fix
-  - peci.h kernel doc fix
-
-All of these have been in linux-next for over a week with no reported
-problems.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Alexander Usyskin (1):
-      mei: me: disable RPL-S on SPS and IGN firmwares
-
-Carlos Llamas (1):
-      binder: check offset alignment in binder_get_object()
-
-Greg Kroah-Hartman (1):
-      Merge tag 'icc-6.9-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc into char-work-linus
-
-Konrad Dybcio (1):
-      interconnect: qcom: x1e80100: Remove inexistent ACV_PERF BCM
-
-Mike Tipton (1):
-      interconnect: Don't access req_list while it's being manipulated
-
-Nikita Zhandarovich (1):
-      comedi: vmk80xx: fix incomplete endpoint checking
-
-Randy Dunlap (1):
-      peci: linux/peci.h: fix Excess kernel-doc description warning
-
-Ricky Wu (1):
-      misc: rtsx: Fix rts5264 driver status incorrect when card removed
-
-Sakari Ailus (2):
-      Revert "mei: vsc: Call wake_up() in the threaded IRQ handler"
-      mei: vsc: Unregister interrupt handler for system suspend
-
-Samuel Thibault (1):
-      speakup: Avoid crash on very long word
-
- drivers/accessibility/speakup/main.c |  2 +-
- drivers/android/binder.c             |  4 +-
- drivers/comedi/drivers/vmk80xx.c     | 35 ++++++---------
- drivers/interconnect/core.c          |  8 ++++
- drivers/interconnect/qcom/x1e80100.c | 26 -----------
- drivers/misc/cardreader/rtsx_pcr.c   |  2 +-
- drivers/misc/mei/pci-me.c            |  2 +-
- drivers/misc/mei/platform-vsc.c      | 17 +++++++-
- drivers/misc/mei/vsc-tp.c            | 84 +++++++++++++++++++++++++-----------
- drivers/misc/mei/vsc-tp.h            |  3 ++
- include/linux/peci.h                 |  1 -
- 11 files changed, 104 insertions(+), 80 deletions(-)
+Laurent Pinchart
 
