@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-152576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3D5E8AC0B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 20:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 69F638AC0B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 20:17:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0190E1C20B19
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 18:14:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E1311C203F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 18:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ED013BB2E;
-	Sun, 21 Apr 2024 18:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB843BBC2;
+	Sun, 21 Apr 2024 18:17:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EbSmLXIM"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hH9Aw/Tj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573CE383A5;
-	Sun, 21 Apr 2024 18:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4964518637;
+	Sun, 21 Apr 2024 18:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713723278; cv=none; b=EZdoIVjlgTIwSnUoQV3n3xoGjIERZoicl3MM3puYR65onPalHTOOUx5DiRqartLkxkLpZ7XXkmrbzv+isV/AOVJxUUhg3Ssg8gjL6Z5GxABetG2eOwlHm0yIV1k5yyChyuJ4xjbjmEcKDq4C8PjTDcHIegMf8tjGafryrcVqcZg=
+	t=1713723443; cv=none; b=NUoVQM3AYFSxBWNjBuuhAmQJOr34/uuQFNOVXxCuImPAX4UK2703D3NaCLrBJ3lTOsKM7APB9bvIVQK8T0yrjg5tF8RlB2hyWC6FUbxP45Io39SI7XpuCp2RzXYO5oFf3JwF13j5/ivPGoHcMDtgqMZs04hZ1jSgidfPAHUGNgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713723278; c=relaxed/simple;
-	bh=NZPIJ6LLpCZyFzBCf6T3HzpkPCMGo9MmvGw9KeZNOXQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qA5sv7GfGIuTM+neWYu2ieY6GyZru7Qg4B7YCzRuvI0PzESvLMqK3DObprEN45LA7ZUCrhKE+L3TkIZe9uBVLgYdpmN06LR+hEEyj8bdA0VZCRZ5Ujnvp0TS7dbeKGBE5+I5qIvoWFiettJ9lpzPetbopw86JLoW0LmLT10vZtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EbSmLXIM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB83BC113CE;
-	Sun, 21 Apr 2024 18:14:33 +0000 (UTC)
+	s=arc-20240116; t=1713723443; c=relaxed/simple;
+	bh=w85IwqQb+A5zg1qYjhWFn/BvQxCdbd79OHyQID1GX8s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=BqiGUAwwVAwrHuIK3UBKIeSvWL6ZDczXZtbQhy1Pdq6GBg9JdouhKQzCSirnEIepRmsgV2znfVFqBAwJ1PY1cRrRkpkZSjmvHF/sy2RKMGUq5d/8HDvR+icYI+Qw0KUGkgCubh4TSg1E4TEeMczgTggEFDv1sRlr2l/WcN9qOug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hH9Aw/Tj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B42C6C113CE;
+	Sun, 21 Apr 2024 18:17:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713723277;
-	bh=NZPIJ6LLpCZyFzBCf6T3HzpkPCMGo9MmvGw9KeZNOXQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=EbSmLXIMifLYsMbNn3RR9C73zMefvlh9w47fHrXdsYI6DAIQhm9RjpbyFF/qOEJFn
-	 1HZCX/Tei7NBOdJ3xyt8ds6WnYVdIwZwWtDhQ65x++OtOQRASwXQ5XFHkOqvSyoL5V
-	 ZALLaKfGrqYRCId53LUCXV78Xd0l3XyNtxmzAguNN8tlyfrPPPKuJblQB2iOQF2Mm1
-	 7ENuq4AHnC5oGxXxXeAJs8ovvTxoUTBELJIlbLyAu+llUXjy77/UP60LOXA+nFceAl
-	 C5EMvphIMqA54TiP8NxwWgVQKOnZvKV3ncCdyKqvFWf+IldZw/piEIjIRaxBeWIFNK
-	 oCFzsQGtiuhuw==
-Message-ID: <48e9f035-390b-40c9-a3ad-49880c0b972d@kernel.org>
-Date: Sun, 21 Apr 2024 20:14:30 +0200
+	s=k20201202; t=1713723442;
+	bh=w85IwqQb+A5zg1qYjhWFn/BvQxCdbd79OHyQID1GX8s=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=hH9Aw/Tjzv2tJ1JaBTt0RF75Bzcx7JignWaMhqHVBmCbTN8h6mqv6UUIa3hDtST6z
+	 eSYqVI+AhyXvrPNHF/vmv2KM1p/zoVrY3FK5PSGn3oLa5NbQ/qab9I6aOy7Qsi1Ny7
+	 BVS1Al2mW+Gxnus8xJ1NYZs9ewH/p7UUgdrVMtxzEI08FmHR6Sx23F+d78pJz7CJNR
+	 T3hoE1cpmPMCdphrOCNXDLf2aZC7QktO3Iqc9LQrY6madLF7KqJDCK9wtvdYkq+uet
+	 5QRXy8MedaSwKfWrAytZZ8O7UDrxzA31lRAlvDRYrc+c6QeVnEj9AGtJKqEkc27ypt
+	 WVp2rQGvBHYKQ==
+Message-ID: <7a3ea23d-d6a2-4036-9d0a-9b9b6582d26f@kernel.org>
+Date: Sun, 21 Apr 2024 20:17:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,12 +52,12 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH v3 4/6] dt-bindings: clock: meson: document A1 SoC
  audio clock controller driver
 To: Jan Dakinevich <jan.dakinevich@salutedevices.com>,
- Rob Herring <robh@kernel.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
  Jerome Brunet <jbrunet@baylibre.com>,
  Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
  Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
  Philipp Zabel <p.zabel@pengutronix.de>, Jiucheng Xu
  <jiucheng.xu@amlogic.com>, linux-amlogic@lists.infradead.org,
@@ -65,8 +65,10 @@ Cc: Neil Armstrong <neil.armstrong@linaro.org>,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 References: <20240419125812.983409-1-jan.dakinevich@salutedevices.com>
  <20240419125812.983409-5-jan.dakinevich@salutedevices.com>
- <20240419210949.GA3979121-robh@kernel.org>
- <b86f1058-da53-4a9c-bc12-e7297351b482@salutedevices.com>
+ <07b1ca57-49a0-4151-99bf-caac053eaa01@kernel.org>
+ <0194ddb8-6e93-4a77-9fdd-93fc79a4e03e@salutedevices.com>
+ <7746a6a8-110f-4920-9f15-8fb592e829ff@kernel.org>
+ <ca1b1263-1574-4fbe-913e-f68f6c59608e@salutedevices.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -112,97 +114,42 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <b86f1058-da53-4a9c-bc12-e7297351b482@salutedevices.com>
+In-Reply-To: <ca1b1263-1574-4fbe-913e-f68f6c59608e@salutedevices.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 20/04/2024 18:15, Jan Dakinevich wrote:
-> 
-> 
-> On 4/20/24 00:09, Rob Herring wrote:
->> On Fri, Apr 19, 2024 at 03:58:10PM +0300, Jan Dakinevich wrote:
->>> Add device tree bindings for A1 SoC audio clock and reset controllers.
+On 21/04/2024 17:35, Jan Dakinevich wrote:
+>>>>
+>>>>> +        };
+>>>>> +
+>>>>> +        clkc_audio_vad: clock-controller@fe054800 {
+>>>>
+>>>> Just keep one example. It's basically almost the same.
+>>>>
 >>>
->>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->>> ---
->>>
->>> This controller has 6 mandatory and up to 20 optional clocks. To describe
->>> this, I use 'additionalItems'. It produces correct processed-schema.json:
->>>
->>>   "clock-names": {
->>>       "maxItems": 26,
->>>       "items": [
->>>           {
->>>               "const": "pclk"
->>>           },
->>>           {
->>>               "const": "dds_in"
->>>           },
->>>           {
->>>               "const": "fclk_div2"
->>>           },
->>>           {
->>>               "const": "fclk_div3"
->>>           },
->>>           {
->>>               "const": "hifi_pll"
->>>           },
->>>           {
->>>               "const": "xtal"
->>>           }
->>>       ],
->>>       "additionalItems": {
->>>           "oneOf": [
->>>               {
->>>                   "pattern": "^slv_sclk[0-9]$"
->>>               },
->>>               {
->>>                   "pattern": "^slv_lrclk[0-9]$"
->>>               }
->>>           ]
->>>       },
->>>       "type": "array",
->>>       "minItems": 6
->>>   },
->>>
->>> and it behaves as expected. However, the checking is followed by
->>> complaints like this:
->>>
->>>   Documentation/devicetree/bindings/clock/amlogic,a1-audio-clkc.yaml: properties:clock-names:additionalItems: {'oneOf': [{'pattern': '^slv_sclk[0-9]$'}, {'pattern': '^slv_lrclk[0-9]$'}]} is not of type 'boolean'
->>>
->>> And indeed, 'additionalItems' has boolean type in meta-schema. So, how to
->>> do it right?
+>>> The worth of this duplication is to show how a clock from second
+>>> controller (<&clkc_audio_vad AUD_CLKID_VAD_AUDIOTOP>) is used by first
+>>> one. May be it would be better to keep it... What do you think?
 >>
->> The meta-schemas are written both to prevent nonsense that json-schema 
->> allows by default (e.g additionalitems (wrong case)) and constraints to 
->> follow the patterns we expect. I'm happy to loosen the latter case if 
->> there's really a need. 
+>> I don't understand what is worth here. Using clocks is kind of obvious?
+>> What's special?
 >>
->> Generally, most bindings shouldn't be using 'additionalItems' at all as 
->> all entries should be defined, but there's a few exceptions. Here, the 
->> only reasoning I see is 26 entries is a lot to write out, but that 
->> wouldn't really justify it. 
 > 
-> Writing a lot of entries don't scary me too much, but the reason is that
-> the existence of optional clock sources depends on schematics. Also, we
+> The special is that the clock "pclk" for "clkc_audio" must be
+> <&clkc_audio_vad AUD_CLKID_VAD_AUDIOTOP>. This thing is not obvious. I
 
-Aren't you documenting SoC component, not a board? So how exactly it
-depends on schematics? SoC is done or not done...
+So you want to document non-obvious SoC architecture via example, not
+via actual documentation. Plus you want to document it for purpose of
+..? Isn't this SoC component, so once you write DTSI it is done?
 
-> unable to declare dt-nodes for 'clocks' array in any generic way,
-> because their declaration would depends on that what is actually
-> connected to the SoC (dt-node could be "fixed-clock" with specific rate
-> or something else).
+I fail to see any logic in this, but maybe the binding is kind of
+special, misrepresented or hardware is different? But the subject
+clearly states it is part of SoC, so dunno...
 
-So these are clock inputs to the SoC?
+> can keep only "clkc_audio" node here, but reference to "clkc_audio_vad"
+> will be undefined in example. Is it okay?
 
-> 
-> By the way, I don't know any example (neither for A1 SoC nor for other
-> Amlogic's SoCs) where these optional clocks are used, but they are
-> allowed by hw.
-> 
-> This is my understanding of this controller. I hope, Jerome Brunet will
-> clarify how it actually works.
+Just like all phandles.
 
 Best regards,
 Krzysztof
