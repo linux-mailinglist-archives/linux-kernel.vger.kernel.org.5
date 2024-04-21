@@ -1,205 +1,97 @@
-Return-Path: <linux-kernel+bounces-152401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 675A48ABDDD
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 02:52:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F328B8ABDE5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 03:03:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB9911F21005
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 00:52:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C323A1C20CED
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 01:03:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34FC29AF;
-	Sun, 21 Apr 2024 00:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6101F1FB2;
+	Sun, 21 Apr 2024 01:03:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uutnxb2U"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DTlinpGL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F29E38C;
-	Sun, 21 Apr 2024 00:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9952F17F5
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 01:03:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713660756; cv=none; b=dXZzGDcT3bXTv0w1s6cJqfKQJsFRJrlTasrqXfS1XyKICdroArYVd8OK3PFLEhvgdu23VNDhbXHdk/Fknmam3NpJvjstXz6J/e+tweDqlPnmDAbSfj9VkSGNKF27s7oVobzdobPigBWhzvhmulb/XGpYKNMbkvSsWB33JQyiNE4=
+	t=1713661395; cv=none; b=N8h92j6Jbsroej70sWabaK+mEmA1dmPUe+oNP11QiIdhVmUhHxpyDBkgcvys20U2ik4OZf6d0FRFhuQIy7xwcZKhxBy0aPQPMMbTheNnGGPnJXt/JLLZRNr3thMzzeaTERi+UuQ/I5gE3FuoJebwEfzjh8TpOqHhCpgh0FAps0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713660756; c=relaxed/simple;
-	bh=kltL7WY9gysVRwFonfEBaD1Sdt2tE1k3lWQtkRMHR2Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ONS20y7mwG5i+5si7gRCqLcoPc52bQdTYudd+viCUeVqvs7BlDQStZ4EKKaWH1oFjpvxpILYh02FoSTDXbDmq2iP+6UISnIS5ts0pVHxDRptloe+hG58vjHKeeU59KJGCM3Hs4yBV0aFDpw4R/tx3ThmFwfPJ+T4490/ncxxQ5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uutnxb2U; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6ed112c64beso2859369b3a.1;
-        Sat, 20 Apr 2024 17:52:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713660754; x=1714265554; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mmTndY/6V+l9GSOwkbZ4WVLq9rAPWNK6WqHx8cTBU4U=;
-        b=Uutnxb2UpTPMM81WWFrba6xDaj9k4BzTyGDKUN0vH7qVA/ecTjU+CO0DdlKb+mw3Oo
-         PHSVzxyfkS1vHlwNS6jMRX3YkOTM4Yr5yiskHIFTwodoyV8o8vw9w0V0hhqPO/VpBfG1
-         aQS2BRYiL6C5i3R696wwDqzSOW+GmmsJ/TCnxby6+IdVH5FVkNrDjAq+hLVacqgTkQr0
-         2ORj8F7SmJJc90OmpWgvN6rd1Cyyd+f2kQaFW97OEYQax96JmBbKlZvfzJm9D/cYQ65J
-         FDUp4N4Fh959s7SuFU9iyUsnlxkIEefReMDcyfPAzSNRxF2B8psoKIBYvL/ODQcCkA1s
-         pulg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713660754; x=1714265554;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mmTndY/6V+l9GSOwkbZ4WVLq9rAPWNK6WqHx8cTBU4U=;
-        b=ORVFluAKTI7GQoNrR7SblzE8XcNBqZc/DIXB1KZn9wZLXGXxevoi9Lg5bBSMbD6S4h
-         JbRDwmUGXdmzFv92UzpomREPkhI6Ojdf3d0nKYVb3qCOIF93OIBlWQjh858iE/WlJYgY
-         HrnzypH/4CTjgIqggSlyMpyeaODJV+fYhYtnBFhXhM+e5qD1U4INwBCC6Q4VG/IMrWkt
-         cVK20eQWe2dtOviqeUhbbMywjRM10S5jc5pdbPEWosYH98ur/N6P2sZWMi8HJZZUeF6+
-         xztzaITbHc/ujQxB52waQXLQBf866mNMI5YatfhxHfaa0oWqKo/DYYxBOJMVNLciWkSY
-         zjUA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7oPKoGMXrgBq8K6pTumf0cXeDIbDp3wMLFWhO1TE0ke54fOa3qP0jk4FVnaN6pZ5slUaDxMmGd4Iv+GVGadLMCmrkX/5liQQKoJnXAOsTaR5vBan9KTeUUBY3jjAxXQkCURaU57Jf
-X-Gm-Message-State: AOJu0YynW/z6Y25qnfxsgA6BNHZkEkZ/VViGYINcygXt4Fhi/GY5QqO7
-	etbFLTpOeDxbMcX/l171Tdz4bUy9GTXBsEvbgk/adcsBqav37H6N
-X-Google-Smtp-Source: AGHT+IFnY0SlAhergrNWNaiebeggz3lwQN0VLm8ZAoGhgXvTRogEbANht5sjtTkC2vWdszbM5QrTbg==
-X-Received: by 2002:a05:6a00:8806:b0:6ed:de70:5ef8 with SMTP id ho6-20020a056a00880600b006edde705ef8mr4766994pfb.6.1713660754612;
-        Sat, 20 Apr 2024 17:52:34 -0700 (PDT)
-Received: from ?IPV6:2402:e280:214c:86:f91:84f5:d87e:d36d? ([2402:e280:214c:86:f91:84f5:d87e:d36d])
-        by smtp.gmail.com with ESMTPSA id 13-20020a056a00070d00b006e69a142458sm5381470pfl.213.2024.04.20.17.52.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Apr 2024 17:52:34 -0700 (PDT)
-Message-ID: <2231ae20-05ff-4292-861a-4d90a07fc50a@gmail.com>
-Date: Sun, 21 Apr 2024 06:22:29 +0530
+	s=arc-20240116; t=1713661395; c=relaxed/simple;
+	bh=xUIt8QunbZ1fuNrSmdIMkIBH7+mTjqMkriWFaVUvmPU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=qiuNu76eJFXxHJTLxYsdzsduv4COmiJvBM04pPo7vETDbfpcSRKcwPEKvoCzYfW8bU+eqyCvNFpRR6YiJGk8lle6cdbXvDIsYlvoz6afHXbC+sFywk/XrPKq51TOq3X9pCfDkpOPKnUEljaMJOE84Tr4WjhuUPuTszD/puUbyo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DTlinpGL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 844C3C113CC;
+	Sun, 21 Apr 2024 01:03:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713661395;
+	bh=xUIt8QunbZ1fuNrSmdIMkIBH7+mTjqMkriWFaVUvmPU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=DTlinpGLbEtPgsQQw1398sBovebALKqjt0mxlSKdiF1X/n94a+ZO9D/e+EBjPQOIw
+	 RbofoXTKe02dpklanETsV3VbziQNJ2MVoJi6KYtLtP4fgyVED0OVd7RaTlerzvHaaw
+	 5rX5gPVVtpNfM4v4/Spig+VQbYXEDH5FOwaXt5u8pUkXwkaZt3NQdTlqUIQaTWeMOJ
+	 9X4pg5Cwa9GIiuSS8dcFROuaRydb7VHvUsAajkHF3w8yiwETtVm1evoLx2mBrvyP9s
+	 E9KKnIYnyO+8krFcgT4QmoVtxSWdaTzw9R8/hEldgfZVsckXYDJP+DYfbYFOXzXxKn
+	 p9aFFIihalktQ==
+From: Mark Brown <broonie@kernel.org>
+To: srinivas.kandagatla@linaro.org
+Cc: perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com, 
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, steev@kali.org, 
+ jenneron@postmarketos.org
+In-Reply-To: <20240419140012.91384-1-srinivas.kandagatla@linaro.org>
+References: <20240419140012.91384-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: codecs: wsa881x: set clk_stop_mode1 flag
+Message-Id: <171366139341.1739626.17364130148301852244.b4-ty@kernel.org>
+Date: Sun, 21 Apr 2024 10:03:13 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] remove indentation for common path [linux-next]
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
- neil.armstrong@linaro.org, u.kleine-koenig@pengutronix.de,
- christophe.jaillet@wanadoo.fr, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
- javier.carrasco.cruz@gmail.com
-References: <20240420164927.15290-1-prosunofficial@gmail.com>
- <CAA8EJpqnZPVG6swW6T3YjG-ekinyYeif6SqardH0O_0puJn8Xg@mail.gmail.com>
-Content-Language: en-US
-From: sundar <prosunofficial@gmail.com>
-In-Reply-To: <CAA8EJpqnZPVG6swW6T3YjG-ekinyYeif6SqardH0O_0puJn8Xg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On 21/04/24 02:17, Dmitry Baryshkov wrote:
-> On Sat, 20 Apr 2024 at 19:49, sundar <prosunofficial@gmail.com> wrote:
->>
->> Added check if pointer is null and removed indentation for common path
->>
->> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Signed-off-by: sundar <prosunofficial@gmail.com>
->> ---
->>
->> Fixed nitpicks in code according to comments received on other patch.
->>
->> https://lore.kernel.org/all/2024041103-doornail-professor-7c1e@gregkh/
->>
->> goal is to get rid of of_node_put,but sending this patch first to do one
->> thing at a time.
->>
->> Changes since v1 - fixed the typo error for spell from identation to
->> indentation
->>
->> v1 patch link - https://lore.kernel.org/all/20240420145522.15018-1-prosunofficial@gmail.com/
->>
->>   drivers/usb/typec/mux/nb7vpq904m.c | 49 +++++++++++++++---------------
->>   1 file changed, 25 insertions(+), 24 deletions(-)
->>
->> diff --git a/drivers/usb/typec/mux/nb7vpq904m.c b/drivers/usb/typec/mux/nb7vpq904m.c
->> index b17826713753..fe0257840dd5 100644
->> --- a/drivers/usb/typec/mux/nb7vpq904m.c
->> +++ b/drivers/usb/typec/mux/nb7vpq904m.c
->> @@ -321,35 +321,37 @@ static int nb7vpq904m_parse_data_lanes_mapping(struct nb7vpq904m *nb7)
->>
->>          ep = of_graph_get_endpoint_by_regs(nb7->client->dev.of_node, 1, 0);
->>
->> -       if (ep) {
->> -               ret = of_property_count_u32_elems(ep, "data-lanes");
->> -               if (ret == -EINVAL)
->> -                       /* Property isn't here, consider default mapping */
->> -                       goto out_done;
->> -               if (ret < 0)
->> -                       goto out_error;
->> -
->> -               if (ret != DATA_LANES_COUNT) {
->> -                       dev_err(&nb7->client->dev, "expected 4 data lanes\n");
->> -                       ret = -EINVAL;
->> -                       goto out_error;
->> -               }
->> +       if (!ep)
->> +               return 0;
->>
->> -               ret = of_property_read_u32_array(ep, "data-lanes", data_lanes, DATA_LANES_COUNT);
->> -               if (ret)
->> -                       goto out_error;
->> +       ret = of_property_count_u32_elems(ep, "data-lanes");
->> +       if (ret == -EINVAL)
->> +               /* Property isn't here, consider default mapping */
->> +               goto out_done;
->> +       if (ret < 0)
->> +               goto out_error;
->> +
->> +       if (ret != DATA_LANES_COUNT) {
->> +               dev_err(&nb7->client->dev, "expected 4 data lanes\n");
->> +               ret = -EINVAL;
->> +               goto out_error;
->> +       }
->>
->> -               for (i = 0; i < ARRAY_SIZE(supported_data_lane_mapping); i++) {
->> -                       for (j = 0; j < DATA_LANES_COUNT; j++) {
->> -                               if (data_lanes[j] != supported_data_lane_mapping[i][j])
->> -                                       break;
->> -                       }
->> +       ret = of_property_read_u32_array(ep, "data-lanes", data_lanes, DATA_LANES_COUNT);
->> +       if (ret)
->> +               goto out_error;
->>
->> -                       if (j == DATA_LANES_COUNT)
->> +       for (i = 0; i < ARRAY_SIZE(supported_data_lane_mapping); i++) {
->> +               for (j = 0; j < DATA_LANES_COUNT; j++) {
->> +                       if (data_lanes[j] != supported_data_lane_mapping[i][j])
->>                                  break;
->>                  }
->>
->> -               switch (i) {
->> +               if (j == DATA_LANES_COUNT)
->> +                       break;
->> +       }
->> +
->> +       switch (i) {
->>                  case NORMAL_LANE_MAPPING:
-> 
-> switch-cases should also be shifted one level to the left, see
-> Documentation/process/coding-style.rst
-> 
->>                          break;
->>                  case INVERT_LANE_MAPPING:
->> @@ -360,7 +362,6 @@ static int nb7vpq904m_parse_data_lanes_mapping(struct nb7vpq904m *nb7)
->>                          dev_err(&nb7->client->dev, "invalid data lanes mapping\n");
->>                          ret = -EINVAL;
->>                          goto out_error;
->> -               }
->>          }
->>
->>   out_done:
->> --
->> 2.34.1
->>
+On Fri, 19 Apr 2024 15:00:12 +0100, srinivas.kandagatla@linaro.org wrote:
+> WSA881x codecs do not retain the state while clock is stopped, so mark
+> this with clk_stop_mode1 flag.
 > 
 > 
-Hi Dmitry,
 
-Thanks for the review.will fix my code.
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: codecs: wsa881x: set clk_stop_mode1 flag
+      commit: 32ac501957e5f68fe0e4bf88fb4db75cfb8f6566
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Sundar
+Mark
+
 
