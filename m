@@ -1,90 +1,135 @@
-Return-Path: <linux-kernel+bounces-152456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C86998ABEB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 09:12:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDF198ABEBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 09:18:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A56C2810F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 07:12:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A49E61F21147
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 07:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8391DD53E;
-	Sun, 21 Apr 2024 07:12:46 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B84DDA6;
+	Sun, 21 Apr 2024 07:18:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SJZPEz0O"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6CA4437
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 07:12:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100C93232;
+	Sun, 21 Apr 2024 07:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713683566; cv=none; b=ughIO/t7J/bEUY3kBwRQ/YuuBrcelTgxfa8JOVCtie6zLaPHjODdw8eof4tyl6Rwr6t7Nl5YpfNwdPGQO8zSZj2YECgeyjf1uIpkC/+1vKK6w/AmsylUORVAopc3r2ayb5GWvtgkFVAU86kggKLliHkDymzlKKNup8sut/bsnWM=
+	t=1713683910; cv=none; b=dfMAlWJJugfZJBKIrnL0kfmCdCR+Ru0z8TrtAH7+Msjb8gVcRuN6ok0h6rmVCfdGlsjz637ZTpVmRIPBgv7d+c9wf6gfN/u3T1kHqkXUIo2Tyj5BvOXiQ0xhntlFdYRO1OVh0VQyisSLVi76kSOdGAzS7Yx0X7C9SzJpiWcV5Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713683566; c=relaxed/simple;
-	bh=nWWxXOfco+rjROpQCpzO0Q5BfhYTwDjKeSNYYJlrPC4=;
+	s=arc-20240116; t=1713683910; c=relaxed/simple;
+	bh=CBgucA0S133Z5gmCgirpyuah29eI+7G7hML2D/BTkQ4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gd0P7xwew+PADfNFmFMoH9+EJVTJxcfNEpHDhRYR3dRxGwpj4Q3GERzk09ppRABS9ezlsqmkCfcJX5Jh9HGjq6tXr+bUAWZVrToT6TUxEe7CIu5XRqkPRnCONVApDyWRThrhiRs1W+jPI58lczge8vucMGg0MQ7o8r9GHBYzU9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EEE2C40E0187;
-	Sun, 21 Apr 2024 07:12:41 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id u6V1THR8SB5r; Sun, 21 Apr 2024 07:12:37 +0000 (UTC)
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 25EA040E0028;
-	Sun, 21 Apr 2024 07:12:23 +0000 (UTC)
-Date: Sun, 21 Apr 2024 09:12:22 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
-	linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Ashish Kalra <ashish.kalra@amd.com>
-Subject: Re: [PATCH v3 02/14] x86/sev: Make the VMPL0 checking function more
- generic
-Message-ID: <20240421071126.GAZiS8HoAn5sFLShnf@fat_crate.local>
-References: <cover.1711405593.git.thomas.lendacky@amd.com>
- <1b0d8ec8e671ad957a2ad888725ce24edeedf74a.1711405593.git.thomas.lendacky@amd.com>
- <20240417114658.GHZh-2sk47TZgCp4Mb@fat_crate.local>
- <505dcf34-93ff-643c-b149-8ef9ce90c023@amd.com>
- <20240417205048.GHZiA2KGbFFTQFyTAM@fat_crate.local>
- <36453f2f-3a2f-ae8b-215f-da9972f14d6d@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dXGGkcBTMfy+oc8oVG5xWpj6zzsjjuPcdiqeKZx/O7/39Z/Dcke06Q6Bw+igAlYMztKbtZrc/7cLkv9dUlI/zt3HF5YM+NoHYZvDOHH0o+7sbD4cTv/le3R/8I7lo+/Z2nfxCFahWS1O/UUnClCVuUozbdpMOi8IyD40DcHnoIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SJZPEz0O; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6f0aeee172dso1618486b3a.1;
+        Sun, 21 Apr 2024 00:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713683908; x=1714288708; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CBgucA0S133Z5gmCgirpyuah29eI+7G7hML2D/BTkQ4=;
+        b=SJZPEz0Oz1XdMzMy6iS9EwVQiuj4qvmde7J/5GpeMF6faJCZaj3ibKQOO/F2TRXpFL
+         XKzlUkkFeTA0fx+IBRb8jI/Kf6fmzJJK/0UdQwNKmLSBMhe4vpnd+JlVjAJ5tpZcYW4q
+         jcLqc2J48svJNJXlxM+/hbJXNsgVB+phN/QwcDCRdQmlOYYb53ua/Ex6sHUljm30oTsi
+         Cj38rHP9z1cTBSCMuQ1Sz1m2MIk0J2pbmPNE05Qu08Opz2SHdREBTPPJn99YPEbEhfho
+         gJv0VGmIR/WqJ3gXWDYrKwBoE0eb7OZCA1492/ze5FC+PcZqON9FN9oNsQzKPg4gogKf
+         qlLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713683908; x=1714288708;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CBgucA0S133Z5gmCgirpyuah29eI+7G7hML2D/BTkQ4=;
+        b=woW0HG69MG9YW3BuzSkdsaJT2HZmRzU0P5Asl1/xJr2jv3IiXWWfNB5lT5HW8ZEkxq
+         TFtIbjadCu99ZHHnn/bAxE3FVQJAEYcX9jAiKhxJTPxXZzSPN3a7Ga+cHn+tIOF1ahVS
+         /uEFkjUXO3UrxIA9sgD1YX5Gpf7y057KdjRCFvjditJoJ8HeZs53SSHJXkV11qOS5KbT
+         tLI082lCOQPaMVO0E7/oMVEpRWMTyRERnTUz4VK3FmyuNHvbH9CK7BzCKOsXS/FukZDe
+         gdzrgIw3f5/hyaDVrPS3CelyESQxXn/dSJ/UrLOpr7yO7VMrx0lXCxf+m/aSy6Me7EB/
+         pk8w==
+X-Forwarded-Encrypted: i=1; AJvYcCX3FekLcUhUIQitGNZ0A9iAvWSNCHOa0Tt83SkFPRFz+lB7atI+n8ry2vAodnNly6Ls8fw1UQ3AnyTjsfQBGgaWD25qnBnOK+7iMeFAADt28ToWP9Qx6c8vt9brL9jXGW3Z3ReOKibApSkGUOvpKFpKfJFUMsK+Yw1oO5MhxIp92w==
+X-Gm-Message-State: AOJu0Yz5BRWQjQUArSa/cOW7cytTbC09Jkow0WCwOmflWgrSFkORK7Lz
+	vEG+6AST4b4Mqv0CTGuWlNSG+HFT0HbreuUcsK3ws273fEd8dfTt
+X-Google-Smtp-Source: AGHT+IEaASRVGHPgzkdeZOLFI6GTrwiHLWZSYvOIfTuHOycbJtI2qEkk5kB5/B5nmVmEc9uRThWJsw==
+X-Received: by 2002:a05:6a20:72a2:b0:1a9:11e5:2915 with SMTP id o34-20020a056a2072a200b001a911e52915mr9764345pzk.27.1713683908163;
+        Sun, 21 Apr 2024 00:18:28 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id c7-20020aa78e07000000b006ed048a7323sm5762102pfr.86.2024.04.21.00.18.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Apr 2024 00:18:27 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 451161849081A; Sun, 21 Apr 2024 14:18:25 +0700 (WIB)
+Date: Sun, 21 Apr 2024 14:18:24 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org,
+	dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
+	mkoutny@suse.com, linux-kernel@vger.kernel.org,
+	linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+	sohil.mehta@intel.com, tim.c.chen@linux.intel.com
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+	zhanb@microsoft.com, anakrish@microsoft.com,
+	mikko.ylinen@linux.intel.com, yangjie@microsoft.com,
+	chrisyan@microsoft.com, Mao Zhu <zhumao001@208suo.com>,
+	Ran Sun <sunran001@208suo.com>, Xiang wangx <wangxiang@cdjrlc.com>,
+	Shaomin Deng <dengshaomin@cdjrlc.com>,
+	Charles Han <hanchunchao@inspur.com>, Josh Don <joshdon@google.com>,
+	YouHong Li <liyouhong@kylinos.cn>
+Subject: Re: [PATCH v12 13/14] Docs/x86/sgx: Add description for cgroup
+ support
+Message-ID: <ZiS9wBvfU3VH5tCI@archie.me>
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-14-haitao.huang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5ViV3SWxb5xsN/it"
+Content-Disposition: inline
+In-Reply-To: <20240416032011.58578-14-haitao.huang@linux.intel.com>
+
+
+--5ViV3SWxb5xsN/it
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <36453f2f-3a2f-ae8b-215f-da9972f14d6d@amd.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 01:38:49PM -0500, Tom Lendacky wrote:
-> I think I'll just eliminate the function then and call rmpadjust directly,
-> that should make it clear.
+On Mon, Apr 15, 2024 at 08:20:10PM -0700, Haitao Huang wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>=20
+> Add initial documentation of how to regulate the distribution of
+> SGX Enclave Page Cache (EPC) memory via the Miscellaneous cgroup
+> controller.
+>=20
 
-Your call.
+The doc LGTM, thanks!
 
-However, if we're anticipating more uses around RMPADJUST like that we
-might as well design the interface properly from the very beginning.
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
--- 
-Regards/Gruss,
-    Boris.
+--=20
+An old man doll... just what I always wanted! - Clara
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--5ViV3SWxb5xsN/it
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZiS9vQAKCRD2uYlJVVFO
+oyuaAPwOYYTsCVsQVixfmg6tl/XnRifeSpkBSqxL8IPhmEoF4gD8CjyJFVn7ZYCA
+TQBF7UTW7VlL6ie4XWBl3MfKntKw6ww=
+=VYSs
+-----END PGP SIGNATURE-----
+
+--5ViV3SWxb5xsN/it--
 
