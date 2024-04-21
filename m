@@ -1,86 +1,84 @@
-Return-Path: <linux-kernel+bounces-152657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45DC18AC228
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 01:48:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78DDA8AC22A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 01:51:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 691611C20CDF
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 23:48:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 822C7B20EF0
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 23:51:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E303B46433;
-	Sun, 21 Apr 2024 23:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8EB46436;
+	Sun, 21 Apr 2024 23:51:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="ii2p5E7X"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lzrAbT9L"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02B546426
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 23:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 361AC1BC58;
+	Sun, 21 Apr 2024 23:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713743326; cv=none; b=JxZIknMRjbgrsP2qu3+nciAurw6mtZTiuobgin7SZyvsa4h3QbAQuIy5xf1q1D/FjqXoihyrx74DcNz9DbNuUSb8g8/mFFrQlt8YAa84hSf1B3kKSkeibUySozchZSMyReZwabmGuATbupPm/0ng3kTIq7jaOEBwwnpIbD+6p3k=
+	t=1713743461; cv=none; b=eH+Zy3HCZeiAHPpRx3tVGM8JH00o355glAUpN9AC8yA00F3pSJRXvfRg8xylpXf9o6sjL2z24iwz1a/jKSaDeEf8ua56KZwX/WBUNv9Lvp/GDgGw9IbG1jvNDA7fpbIB7U0x5U0Z3xl/+B5GsHcnVtFwhSHjLiitubRbnLJJiS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713743326; c=relaxed/simple;
-	bh=y2G5uthsuVNhqW5pHUqGqg8U3yXFp7tl+IlqOZsE4FU=;
+	s=arc-20240116; t=1713743461; c=relaxed/simple;
+	bh=YdGlilwPoZmG9gKaaTLFfeBClo8PnMJTT3MPY8WJ+kQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UwaD1LiTw8Ku/BwqbA0UMkBPHXU8MNsVbGwVEWgn1USWw+s+xKgvT2msxd+7zqIuta75nLcnjzJMvADDC/5xKaga30F/mhdG8qZN270F1HDe5/G+HzmIpam2TbeNmLII+8f8bAs3H6Z+ab50E5IpQFU/zCLMC+9UlgvEnEvHQTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=ii2p5E7X; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e50a04c317so20428855ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 16:48:44 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=mkjS8Rg8fkV4dbZ93hQ71aaBzsbdtROgPRXSR42kBbXaZ3eH1/G7aQIMzxRJa9N77X3gpEoUslhrxLq8Yf1NU/4AneR3Nht4Gof4+Zuqu96dj7RhhCzAjMAJ6RpK1a57uTJZ4CyON0k4d+v+3dnRNmjeX5OO8vw4Ab2rVejyA/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lzrAbT9L; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5ce2aada130so2600287a12.1;
+        Sun, 21 Apr 2024 16:50:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1713743324; x=1714348124; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713743459; x=1714348259; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ODecTpiSDn8owcJVtYfhOYyFCmGqiEF5T0FOE0Q7pYU=;
-        b=ii2p5E7XiDriPq/nPrtwiURkEPcBn4Ku0nhX8+AknwvC2epEmW1xrMC5B5XdhxYU4y
-         o9MZgqT439mIpoGFwm7pboPLGnd0A3IYXrefI8Tu3qklIWNK+zWSkyg9HwlkbYkxIUJP
-         W3AfIWqbiaamuxaQ6XnWb0alwUQCjUtJcfFfXftZN9UPerA/5jiEUIUUOV/6eo0QYSBT
-         oDxHfEr8CGpTVcbpsaejFB0sXTbXIHyucGIQRF4+4ZI6c4dbi5TVjGECIdJ414674IS3
-         +oLp2TxMG4kaxQMzJeKrtzwgOi2oiuSxeOnBwTofwuabqjTrd+bdu7ixY9hXeJBHQole
-         DaLw==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FV20n2eOOFz2ddqTNTvIrBb81EwLpU6B113A9MmWLvE=;
+        b=lzrAbT9LZBu2zNAw6hYb3VmVbWD5AtXCVpEwyYM/gkv2TM1dJXRsvDWxAb0lYbpv76
+         nskWAOH5EZlqtWv3puTW9c/oEB8PtVVzvKM56oP2lGb2o+9xTa5XczcNvGkRvLAX0Vra
+         wNd7w+lA6SBbZ7+ze5oVSYo32xUXL5GjEeRj3yoNs/ZRmPsl8GRTusGMFZyNsBxUcuyW
+         D7spR/lK+qoQuWpTU1bucF3BTiRvmvyQFB9rI00z5x1yj8GHTHcflTjeOIiHJT7Efmf/
+         x+ojdN4iXojE7jENd/GvnVo6S1SkWHcgbK+8rtD1n7z72LYmh3ogcjz7ANeLwmrGJQhM
+         8Y4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713743324; x=1714348124;
+        d=1e100.net; s=20230601; t=1713743459; x=1714348259;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ODecTpiSDn8owcJVtYfhOYyFCmGqiEF5T0FOE0Q7pYU=;
-        b=ewmcoBOqrSUZpCgz/E9coYtaetoLOdEnDjYhId9kJfhvi3I73oQ4t4sIfZDDE7deoH
-         fvk1ApkiKScfTJyhE6mrWI4zV7Pk1j6/4h22kYdDI5kiDdjd7LL/+2f1x7VvomWZi5c6
-         GUStfYx8nkOcMgXDl8QuJABwyEK/DlVuqdl8wZpZy18nkB7LcaegCVSy45k0d9LGJfcA
-         2kGl8DX3PY3GNV+N5reeyRq9PtX+zDFYKLjjYoCd8MLuMwh4LuiUKEnfS3M8Mlx1MV51
-         JNEyrlqN5Yk7ZETjgTYhCrjJOGm7vZuZwsYvccwWWRX2n5Cz32p0UXFX7aX18ZyS+pzt
-         ZetA==
-X-Forwarded-Encrypted: i=1; AJvYcCX+lk/OivfhhTc+/UjgIHQkD7hx3Ey90S497wWKrg0Yd5ayQRyBBGFarpe66PoSqqvdqZMY+qAQAIJdMyXdsX+AN79WXOn6Owy0lCbv
-X-Gm-Message-State: AOJu0YzNGnKqvK6v77mMJK9dJ1H7mtjsfzTyVcG8d9fEt01GHftml/UR
-	+9zcToU7M3fptQmuJwnqLbABYeH8+EfOg+WAGGcPLfeotzRd4/OvFU09xtuaHEw=
-X-Google-Smtp-Source: AGHT+IHbzM9WTguvErwRH2CsBk5I52CDnC6s8ksQag1pw8ZVRDh4zwq68ajlLaHToMsn7cZSZRbijw==
-X-Received: by 2002:a17:903:2308:b0:1e2:a61d:905 with SMTP id d8-20020a170903230800b001e2a61d0905mr11379072plh.63.1713743323840;
-        Sun, 21 Apr 2024 16:48:43 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
-        by smtp.gmail.com with ESMTPSA id w17-20020a1709027b9100b001e3e222072esm6809955pll.53.2024.04.21.16.48.43
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FV20n2eOOFz2ddqTNTvIrBb81EwLpU6B113A9MmWLvE=;
+        b=bTe6hdiCA5Ly5ZPNWGOwgW6i18hJXZ941mmHmeMQ4uoV/8uQ65BDVGKHt/cM+T5t8C
+         pHTpb8YUonKX2lUgV1Ye56ugFs1Gl/z7w7IEvU/HbO8bERgJiA84DFAvF/wgTFAic8Tu
+         wt+dS194A7xjwipE700QdXwdTbtKMYmgkFs6OPEiJ6vVCny7psZVPPXi2fsG0l6A7Utd
+         TTQ36TgwccdjpNel92kAaR5plHH5iRps2gG3vhmF8b6w6oActqcBwkoCX98TAWtX4Z+y
+         DswrAi6yy8LKhjbXesEOM/uUFlxy2PsifenMAeWBIOWq793LawNTFG4+cooGP80N3qfF
+         LE7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUtwT7wTN+cPOWWfwxWGSDasCjcIbvov+gKkEw4rIyqeZPDCg5xMvcNniUjbOZRKmRN9bJET9Ydr2F6CYXcbN+/ZASYCdDM9j5Y7O1FKayZFyimZOfipriwAD3+RTN3brqT4V+lbNnyord1V+U=
+X-Gm-Message-State: AOJu0YzkN2EG3SY+IfrrrcyoPUQZHwagpUnN6s4BVZOuTk0Bk2j07/qw
+	1YYV6oY3CWdlHWjojcMoiq8UQLTQIDnEOQ0KDr7A8LsSsFH0KZjj
+X-Google-Smtp-Source: AGHT+IHSUJDEAjxkLa5CYyX1ttCtJehdT/C3gsFsDVCWLxJ79iAuS+cM2jmWlJ0WoYMAOTnESGHXEg==
+X-Received: by 2002:a05:6a20:7f8c:b0:1a7:8a02:3058 with SMTP id d12-20020a056a207f8c00b001a78a023058mr9127929pzj.12.1713743459271;
+        Sun, 21 Apr 2024 16:50:59 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 3-20020a631943000000b005df41b00ee9sm6359267pgz.68.2024.04.21.16.50.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Apr 2024 16:48:43 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rygvI-006KH8-32;
-	Mon, 22 Apr 2024 09:48:40 +1000
-Date: Mon, 22 Apr 2024 09:48:40 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Marius Fleischer <fleischermarius@gmail.com>
-Cc: Leah Rumancik <leah.rumancik@gmail.com>,
-	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, harrisonmichaelgreen@gmail.com,
-	syzkaller@googlegroups.com
-Subject: Re: KASAN: null-ptr-deref Write in xlog_cil_commit
-Message-ID: <ZiWl2MG5f0wAp7mM@dread.disaster.area>
-References: <CAJg=8jz0X=CKR1POvF41oEumrq1z=MVWPdF2ECbzV6-rhht8-g@mail.gmail.com>
- <ZiGYbJezGZg6tGgq@dread.disaster.area>
- <CAJg=8jycPX=fQskUb=48g=AS7-uUNAVKZyZ+tyAC5uGYwfpabg@mail.gmail.com>
+        Sun, 21 Apr 2024 16:50:58 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sun, 21 Apr 2024 16:50:56 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>,
+	linux-watchdog@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Tero Kristo <t-kristo@ti.com>,
+	"Su, Bao Cheng (RC-CN DF FA R&D)" <baocheng.su@siemens.com>
+Subject: Re: [RFC][PATCH] watchdog: rti-wdt: Provide set_timeout handler to
+ make existing userspace happy
+Message-ID: <e6e3f905-3de5-469c-a47e-179fe23c66df@roeck-us.net>
+References: <4d82b8ce-bc34-e4b2-c5fe-9e883b0db59d@siemens.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,76 +87,74 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJg=8jycPX=fQskUb=48g=AS7-uUNAVKZyZ+tyAC5uGYwfpabg@mail.gmail.com>
+In-Reply-To: <4d82b8ce-bc34-e4b2-c5fe-9e883b0db59d@siemens.com>
 
-On Fri, Apr 19, 2024 at 10:28:41AM -0700, Marius Fleischer wrote:
-> Hi Dave,
+On Mon, Sep 13, 2021 at 01:41:43PM +0200, Jan Kiszka wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
 > 
-> Thank you so much for your quick response to this!
+> Prominent userspace - systemd - cannot handle watchdogs without
+> WDIOF_SETTIMEOUT, even if it was configured to the same time as the
+> driver selected or was used by firmware to start the watchdog. To avoid
+> failing in this case, implement a handler that only fails if a deviating
+> set_timeout is requested.
 > 
+> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+
+NACK.
+
+This will need to be fixed in systemd. set_timeout is and will remain
+optional.
+
+Guenter
+
+> ---
 > 
-> > kernel version: 5.15.156
-> >
-> > Really old kernel.
-> >
-> >
-> I'm sorry, I was under the impression that 5.15.156 is an actively
-> maintained kernel as
-> it is one of the current LTS version. Is this not the case? I'd love your
-> insight on this.
-
-It might be maintained, but it's still a really old kernel. Lots of
-meaningful stuff has changed since 5.15.0 was release by Linus...
-
-> > > We took a very brief look at the code. Is it possible that there is a
-> > check
-> > > missing for the return value of kvmalloc at fs/xfs/xfs_log_cil.c:224?
-> > >
-> > > lv = kvmalloc(buf_size, GFP_KERNEL);
-> > > memset(lv, 0, xlog_cil_iovec_space(niovecs));
-> >
-> > I've never seen that memory allocation fail there, and that code has
-> > been using an unchecked, open coded kvmalloc() for well over a
-> > decade. We replaced it with a direct call to kvmalloc() in 5.15,
-> > but the failure semantics here never changed.
-> >
-> > But I guess it could fail if error injection is enabled,
-> > and because we used to call __vmalloc() directly it may never have
-> > had errors injected?
-> >
-> > But, regardless, that's completely irrelevant.
-> >
-> > We replaced the kvmalloc() call there with a guaranteed "no fail"
-> > open coded loop in 5.17 for performance reasons, so this open coded
-> > kvmalloc() call only existed in 5.15 and 5.16. See commit
-> > 8dc9384b7d75 ("xfs: reduce kvmalloc overhead for CIL shadow
-> > buffers").
-> >
-> >
-> I am not sure I am completely following you. If I understand you correctly
-> (and after
-> checking out the commit you linked - thanks for that!), is it correct that
-> it would be
-> better to patch this by replacing it with the same open coded kvmalloc as
-> in 5.17?
-
-What I'm saying is that the code was changed soon afterwards for
-different reasons, but hte newer code would also address the issue
-you saw.
-
-> Do you think it would make sense to backport that patch to 5.15.156 (the
-> LTS kernel)?
-
-That's up to the 5.15 LTS maintainers to decide. They also need to
-weigh up the fact that xlog_cil_kvmalloc() doesn't exist anymore in
-the upstream code base. i.e. we found other places that had the same
-kvmalloc() performance problems, and so lifted that code up further
-and used it in other places in XFS....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> See also https://github.com/systemd/systemd/issues/20683
+> 
+>  drivers/watchdog/rti_wdt.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+> index 359302f71f7e..365255b15a0d 100644
+> --- a/drivers/watchdog/rti_wdt.c
+> +++ b/drivers/watchdog/rti_wdt.c
+> @@ -173,13 +173,27 @@ static unsigned int rti_wdt_get_timeleft_ms(struct watchdog_device *wdd)
+>  	return timer_counter;
+>  }
+>  
+> +static int rti_wdt_set_timeout(struct watchdog_device *wdd,
+> +			       unsigned int timeout)
+> +{
+> +	/*
+> +	 * Updating the timeout after start is actually not supported, but
+> +	 * let's ignore requests for the already configured value. Helps
+> +	 * existing userspace such as systemd.
+> +	 */
+> +	if (timeout != heartbeat)
+> +		return -EOPNOTSUPP;
+> +
+> +	return 0;
+> +}
+> +
+>  static unsigned int rti_wdt_get_timeleft(struct watchdog_device *wdd)
+>  {
+>  	return rti_wdt_get_timeleft_ms(wdd) / 1000;
+>  }
+>  
+>  static const struct watchdog_info rti_wdt_info = {
+> -	.options = WDIOF_KEEPALIVEPING,
+> +	.options = WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT,
+>  	.identity = "K3 RTI Watchdog",
+>  };
+>  
+> @@ -187,6 +201,7 @@ static const struct watchdog_ops rti_wdt_ops = {
+>  	.owner		= THIS_MODULE,
+>  	.start		= rti_wdt_start,
+>  	.ping		= rti_wdt_ping,
+> +	.set_timeout	= rti_wdt_set_timeout,
+>  	.get_timeleft	= rti_wdt_get_timeleft,
+>  };
+>  
+> -- 
+> 2.31.1
 
