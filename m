@@ -1,58 +1,62 @@
-Return-Path: <linux-kernel+bounces-152625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70B0C8AC1B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 00:29:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AF268AC1B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 00:30:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25D141F21027
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:29:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30EDF1C2084D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC1746558;
-	Sun, 21 Apr 2024 22:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A50AE47A79;
+	Sun, 21 Apr 2024 22:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fa4Eqt0r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pUDh8C37"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC52746441;
-	Sun, 21 Apr 2024 22:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6E546BA6;
+	Sun, 21 Apr 2024 22:29:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713738576; cv=none; b=bq3KZkyNnRJb9NEtLb/6ZBclR+X7wSC5AP0NAzSJ/nDSRFC/PBG6s8Lcp5cLwuUjGER7D475UMqvbH6lIpBieStlNAhnAm9KyPOSG03WQXIxQmQsxtgMuIkDUKf8phim9XiiWLV/m6SBrYB7rY0a8rKkm611breitS/gq2WYEdI=
+	t=1713738578; cv=none; b=ggAJFWAvoGYtSEjk/st7q6Des3w+D4BvUyBioswyGLBKyefKL3uP9imuHPugXKN8FZVdfuK1Pe1R/mIgVCjCSas9UK3Oc+pDenYQApZL+YL2W8SK3TN9+gIkbqIml/XgbFTMbZbjf7k8HHk3hcHgLXc0k6CLRGVGbHpGakmvozQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713738576; c=relaxed/simple;
-	bh=6XVpcxeckTk1DXaAZ0OyOE5BP3T7lQ6rvs7nNWoOeJQ=;
+	s=arc-20240116; t=1713738578; c=relaxed/simple;
+	bh=PtClOLhWrT0at9+8rKDASrqhjdQHM+qJAfpiCXzllwc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=byay7UmNoruaLVzmEpYA0o3zPfs+qO/SjjR3uVqwE9OlcJJ8K/wvyzTFuO/qDhJ40QgV68Cki1wFPQGwv6gVVL8BOUVws/h75EcXTxaL21ssm0TuFHzG9xv96tHyD/mOFxriPV7FWFyMRxvC+XlN1c10GarkEPz5TrebxBfISjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fa4Eqt0r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6EDBC113CE;
-	Sun, 21 Apr 2024 22:29:35 +0000 (UTC)
+	 MIME-Version:Content-Type; b=nYWoPHBRHb1ZEU5sbyvo6Du20qgYHkjsay9bQzErngvMhP8DhtedPGasKHXJiFhKTTrGzqKIyV/nDDrnetF3BmYXbaRPY6bAN0XLxftZTbNJQY1LilTT/EJ3OgCarwFjbyox+oEje1sj/5xGOZSfDsoEjIm+bLtvo4foOrl6HAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pUDh8C37; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CF92C4AF08;
+	Sun, 21 Apr 2024 22:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713738576;
-	bh=6XVpcxeckTk1DXaAZ0OyOE5BP3T7lQ6rvs7nNWoOeJQ=;
+	s=k20201202; t=1713738577;
+	bh=PtClOLhWrT0at9+8rKDASrqhjdQHM+qJAfpiCXzllwc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Fa4Eqt0rTbAOHYGo6wHoe3KPTFjRUTobcSjc0zMzbuG4rKTQ3VzpvAJmzr8VhAG5F
-	 WtVU1FKJ+fijsHu4MidXUUX39Xzp8f5LCBWYSMbc6qDEVEPhdBoT4QkvdGxEp6i2PY
-	 +y4LQIPRakTRtIpmSeUHB5aLXiy3d6jG9WOliUVY9zMJ0UbkAevVrh6zJP1k4ryMzo
-	 Sfsi3pJjgRjWdZZXanQOc4xCoUV22nfzL6WjfBhJpgZ1KD+6XHcYkMToemU4pWTXjK
-	 WpvhX0n3ZO1g1WuDP+WvbBqfHBk7YG+ah1qDAAbNafrNctlMG0IEQSnT+iMeMNzowZ
-	 fq62FYtRrXIow==
+	b=pUDh8C37llJCe0N28rJTeLzyn//JumxP/ZFRPJXEO3SEyvBMX9rHnOsuHb0iOFjCg
+	 ppY28q3h1WYuDdPEjpPTj0FfkQGE2rLABHpzfZEbExBG0KBezw7yjr8ew1FqY2vmth
+	 N8WEjGrqZNhxYcWeD159YgDuVjq+XtGvlasAFS3fUW1J4Q2VvkhV1chYwC38y02AQw
+	 V+Dz1XheTmPSAwQwzbAwuxL7jweWNm2xUrqcFKsxfUkQ81TpwtOAnnOJECpH4cSbmN
+	 tTj44QCpo6/AyzBr3gupU3x2ExE7HxxokkHYu0KTNVhpO2wJnnE0Kczp34/u+LGljT
+	 w6qKwtI+zrM2A==
 From: Bjorn Andersson <andersson@kernel.org>
 To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Varadarajan Narayanan <quic_varada@quicinc.com>,
+	Sricharan R <quic_srichara@quicinc.com>,
+	Kathiravan T <quic_kathirav@quicinc.com>,
+	Gabor Juhos <j4g8y7@gmail.com>
 Cc: linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Halaney <ahalaney@redhat.com>
-Subject: Re: [PATCH v2 0/2] soc: qcom: pmic_glink: fix client handling
-Date: Sun, 21 Apr 2024 17:29:10 -0500
-Message-ID: <171373856755.1196479.15193091525751594267.b4-ty@kernel.org>
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] clk: qcom: clk-alpha-pll: Stromer register cleanup
+Date: Sun, 21 Apr 2024 17:29:11 -0500
+Message-ID: <171373856766.1196479.16635456847362240117.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240403-pmic-glink-fix-clients-v2-0-aed4e02baacc@linaro.org>
-References: <20240403-pmic-glink-fix-clients-v2-0-aed4e02baacc@linaro.org>
+In-Reply-To: <20240311-alpha-pll-stromer-cleanup-v1-0-f7c0c5607cca@gmail.com>
+References: <20240311-alpha-pll-stromer-cleanup-v1-0-f7c0c5607cca@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,19 +67,22 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Wed, 03 Apr 2024 06:10:56 +0300, Dmitry Baryshkov wrote:
-> Fix two issues with the way the pmic_glink driver handles its clients.
-> First issue is mostly theoretical, while the second issue can easily be
-> reproduced if the drivers are built as modules.
+On Mon, 11 Mar 2024 19:45:18 +0100, Gabor Juhos wrote:
+> This small set contains two patches which are intended to clean
+> up the Stromer specific register offsets in 'clk_alpha_pll_regs'
+> a bit.
+> 
+> Based on v6.8.
 > 
 > 
+> [...]
 
 Applied, thanks!
 
-[1/2] soc: qcom: pmic_glink: don't traverse clients list without a lock
-      commit: 635ce0db89567ba62f64b79e8c6664ba3eff6516
-[2/2] soc: qcom: pmic_glink: notify clients about the current state
-      commit: d6cbce2cd354c9a37a558f290a8f1dfd20584f99
+[1/2] clk: qcom: clk-alpha-pll: remove invalid Stromer register offset
+      commit: 4f2bc4acbb1916b8cd2ce4bb3ba7b1cd7cb705fa
+[2/2] clk: qcom: clk-alpha-pll: reorder Stromer register offsets
+      commit: 8c48466cd7eda9afb37f26c8c9a68f39fae5ef32
 
 Best regards,
 -- 
