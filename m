@@ -1,50 +1,49 @@
-Return-Path: <linux-kernel+bounces-152482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFECD8ABF17
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 13:37:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C4138ABF18
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 13:37:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BBAE281031
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:37:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D8DC1F2112F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6168C111A2;
-	Sun, 21 Apr 2024 11:37:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A831711733;
+	Sun, 21 Apr 2024 11:37:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="VQal100J"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="uCwixMy5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13C6DDDA
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 11:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE06111A2
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 11:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713699433; cv=none; b=e4blIBulM2CSfymGWoy2pRqnjdQUNfDI+KHngPM/zsnABv5VciEAIx3xcVjwX8JsCyKg+2U7P3G7AYH/KWX2JY20mrSsniFTx3i0f8YYtlIR9IvdqpYm4opZuK5bRTXGFQzuS6OP4ZLptDi0Kk6QNgDpPdZ/g0lGpRC1j4gT1f4=
+	t=1713699453; cv=none; b=rR/12sDzMXbXG4wO48rrUTg2mlZCIafNKY+dBuy81RTTYLY1miypkwpLQr0fjqFjTBhRC/4hLHzWiqqlC4a795kv8K0jo+wjeA4ySGtJizEd6WlfktYjjNhv3dOHB3ZJtNYnUfiCaIis9aaSO7P9fjZzHKMdZFelygjejuDGoTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713699433; c=relaxed/simple;
-	bh=oAiKP9tHaeGg6RJRZTOiQmhWjZHuzgGHctxB3Dc2V6U=;
+	s=arc-20240116; t=1713699453; c=relaxed/simple;
+	bh=i5shS/meQIR2KVS5veJuv7o07BZVwUaDmIxxq9cnvCo=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=TmTsCFIb+K7ySewBsJUM0ZtxkV9EfnQRsbMa+D6RZ1BxLN8dRI02alc5hEMq95xJNVpMixaYXDL7D+cLKDE7ghr2Wql0cDijsVolCj+7qrlv7Gl6Q0WYpmjmJc10id2uzU2TbyZTsJHW6bHo/8N7N7I2ooLPVuLR4d2TOP177qY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=VQal100J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C01C113CE;
-	Sun, 21 Apr 2024 11:37:12 +0000 (UTC)
+	 Content-Disposition; b=KbPO17u0LOjqx25HPYD9WlIiGqqO/zo7GJWvJ6NoDmGYZLHQMgU3lnE10mDphn911WKGXGVeuYbObO1PSBcJsm1PVcC11uWwDp2QIiydBouy8mbD5ckDmbbkLs5/2jJ12sRNJtW+Pe/R4svDWJi48mLo5NDxZ2DTwrmCHGkDA7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=uCwixMy5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21BC0C113CE;
+	Sun, 21 Apr 2024 11:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713699433;
-	bh=oAiKP9tHaeGg6RJRZTOiQmhWjZHuzgGHctxB3Dc2V6U=;
+	s=korg; t=1713699452;
+	bh=i5shS/meQIR2KVS5veJuv7o07BZVwUaDmIxxq9cnvCo=;
 	h=Date:From:To:Cc:Subject:From;
-	b=VQal100Jz6JSxwAFL6VEQSrkDvy8Ce2GbAEWzRgg/KIrhiSU3H2qp+HQ5YQhBXzrH
-	 3l5YuO9DIOocxjIkKgigidWE5gnc04tyYqq6HQJKhYPUN9BHsBmSX6EcfG47bQOt49
-	 Yyv+HlH5r6Z/aHHlaqPZYrm/5m3juL/73Sp0+rE0=
-Date: Sun, 21 Apr 2024 13:37:10 +0200
+	b=uCwixMy55xJyoiPgqiHGMgDnzraVBxldQbdEdXaSbF1ysoKLBMNDvr115Xd7f2vOq
+	 N7o7ExfV7mRBcqOJrsLXbDAEinok01qGYKxNPR+AooGD+hCAdFJzHei/hGbnE8TEQr
+	 qFqsQtf8ss5dmoGWRGt99Oz7oLYuSCEK9SV13Yyc=
+Date: Sun, 21 Apr 2024 13:37:29 +0200
 From: Greg KH <gregkh@linuxfoundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-	Saravana Kannan <saravanak@google.com>
-Subject: [GIT PULL] Driver core fixes for 6.9-rc5
-Message-ID: <ZiT6ZlO9fECvbipo@kroah.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Char/Misc driver fixes for 6.9-rc5
+Message-ID: <ZiT6ed-F2vh8sCwP@kroah.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,39 +53,78 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+The following changes since commit fec50db7033ea478773b159e0e2efb135270e3b7:
 
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-6.9-rc5
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-6.9-rc5
 
-for you to fetch changes up to 156539fd65019e8ed6b9fbac0583cf519cdbb227:
+for you to fetch changes up to ebaed6d4def877d2035786ff318379eb750044c8:
 
-  Documentation: embargoed-hardware-issues.rst: Add myself for Power (2024-04-11 15:21:18 +0200)
+  peci: linux/peci.h: fix Excess kernel-doc description warning (2024-04-11 17:06:06 +0200)
 
 ----------------------------------------------------------------
-Kernfs bugfix and documentation update for 6.9-rc5
+Char/Misc driver fixes for 6.9-rc5
 
-Here are 2 changes for 6.9-rc5 that deal with "driver core" stuff, that
-do the following:
-  - sysfs reference leak fix
-  - embargoed-hardware-issues.rst update for Power
+Here are some small char/misc and other driver fixes for 6.9-rc5.
+Included in here are the following:
+  - binder driver fix for reported problem
+  - speakup crash fix
+  - mei driver fixes for reported problems
+  - comdei driver fix
+  - interconnect driver fixes
+  - rtsx driver fix
+  - peci.h kernel doc fix
 
-Both of these have been in linux-next for over a week with no reported
-issues.
+All of these have been in linux-next for over a week with no reported
+problems.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Alan Stern (1):
-      fs: sysfs: Fix reference leak in sysfs_break_active_protection()
+Alexander Usyskin (1):
+      mei: me: disable RPL-S on SPS and IGN firmwares
 
-Michael Ellerman (1):
-      Documentation: embargoed-hardware-issues.rst: Add myself for Power
+Carlos Llamas (1):
+      binder: check offset alignment in binder_get_object()
 
- Documentation/process/embargoed-hardware-issues.rst | 2 +-
- fs/sysfs/file.c                                     | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+Greg Kroah-Hartman (1):
+      Merge tag 'icc-6.9-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc into char-work-linus
+
+Konrad Dybcio (1):
+      interconnect: qcom: x1e80100: Remove inexistent ACV_PERF BCM
+
+Mike Tipton (1):
+      interconnect: Don't access req_list while it's being manipulated
+
+Nikita Zhandarovich (1):
+      comedi: vmk80xx: fix incomplete endpoint checking
+
+Randy Dunlap (1):
+      peci: linux/peci.h: fix Excess kernel-doc description warning
+
+Ricky Wu (1):
+      misc: rtsx: Fix rts5264 driver status incorrect when card removed
+
+Sakari Ailus (2):
+      Revert "mei: vsc: Call wake_up() in the threaded IRQ handler"
+      mei: vsc: Unregister interrupt handler for system suspend
+
+Samuel Thibault (1):
+      speakup: Avoid crash on very long word
+
+ drivers/accessibility/speakup/main.c |  2 +-
+ drivers/android/binder.c             |  4 +-
+ drivers/comedi/drivers/vmk80xx.c     | 35 ++++++---------
+ drivers/interconnect/core.c          |  8 ++++
+ drivers/interconnect/qcom/x1e80100.c | 26 -----------
+ drivers/misc/cardreader/rtsx_pcr.c   |  2 +-
+ drivers/misc/mei/pci-me.c            |  2 +-
+ drivers/misc/mei/platform-vsc.c      | 17 +++++++-
+ drivers/misc/mei/vsc-tp.c            | 84 +++++++++++++++++++++++++-----------
+ drivers/misc/mei/vsc-tp.h            |  3 ++
+ include/linux/peci.h                 |  1 -
+ 11 files changed, 104 insertions(+), 80 deletions(-)
 
