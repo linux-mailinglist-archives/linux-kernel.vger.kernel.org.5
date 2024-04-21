@@ -1,190 +1,118 @@
-Return-Path: <linux-kernel+bounces-152650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8A558AC200
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 01:11:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2201D8AC203
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 01:18:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66E7028104E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 23:11:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53C1C1C2084D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 23:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC3C45C0C;
-	Sun, 21 Apr 2024 23:11:23 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7CAE4500C;
+	Sun, 21 Apr 2024 23:18:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="lDCQsaSe"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5305644369
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 23:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35CC1DDE9
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 23:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713741082; cv=none; b=TJ6++B9M8nPVkkNkE0cFokysh7NZQ6ufqaSt1MfOJ9r/Est7uHt0FY2A55x/rInD+T4M6+jNWWW3Uimg747NbA7ys1MyKw6heXpGV/1m9kjU1SHrqAqFmSWsQoM0B7welmJj6MCE7FqPgjpj0lpRQ8Rlcxcj4Hrl+eGWNtJ1/6s=
+	t=1713741523; cv=none; b=PqBwSWVZ7SsCbud3x8+iiBOe86hAX6GfZ5R2RliQ+aFNoI6vJsDq6G3TL79fnJlisHsK+Euc/0exNIgUA69AkB//6uZU3qahJ37Y/Mywz7j/FETYlPoLWAgqO3gcuTGTcFY871cEllfUJnF/cS2Me6rn2OKr9xTlQ8m+H64m1uM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713741082; c=relaxed/simple;
-	bh=KeJ/hkv/ADmBtwjyRjiC8mPob6I7p2+aO0XnhEs5+J4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=EG/qbCXpDyNlh2sCaD2nlVRYSD/v9ce9bz6hNzUePgEJwJPWUSKlRKd3iRgYgWJiMyUcfAUaB6BY17xud4UbnRERkKgTxeVgd0/e0xX+gXVIbxSD9uCjzDAuLj9PG4Cdc5Dsw2+xDG0zxWShiLPLur1l/lzkQLBjqnZIJqkS3lU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d667dd202cso471128939f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 16:11:21 -0700 (PDT)
+	s=arc-20240116; t=1713741523; c=relaxed/simple;
+	bh=CTyarZ1awuxFYwd99GIUJv3pxap0WzEGyctYTHZyS+8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=EJc5IOAyvcS2Z7ulX5oGTW1O5fmQoTYQU6z+OxNfZ8X+RXxiZkG7my9aFGCeJu8hq7Z3uAZ8ZA8Bm3uckZqfphLF6Ff5euqbxcYxyn9VfCk9bKDS0lt/ArB8JmesbxqSNxOxyEitF/Cvd73S/IFw+ghAgIB68wEwmAlXhkvtoaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=lDCQsaSe; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-343c891bca5so2933835f8f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 16:18:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1713741520; x=1714346320; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PWBuK7qeNlFWu7rmYrrR+LglSXjPogokNYMEE0Z/71E=;
+        b=lDCQsaSePfGgcNx03ffWdQJIBp36GYk8EF+iJvx3W3T0NZs1A5pAQ5HqnYsNBFHMW7
+         CQ3SlFROT+ehJGjU38eri2IJAJN61LxGMEl1uqZl7NkryGgcSd9R8Q6n+2G4qyRPWlWV
+         I9MXB0st6McZGOGAOn/rzRioe29MLXHPEKFmW+eUSUQRqYzQei/dGd2LjsoVLkvD151R
+         nmnAN3FmRQn5ZQv8y7bpWf4URd/84/isjcGVji/1Z9AGzBVimhmR6H4vroJQZ95z5etV
+         MwDRV/lxFWVxehNT5Y2CSVKVmbvJpa3nlmdM1E/OcsTiXZ00p5smGZ356BJdpUgYEKa1
+         Niag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713741080; x=1714345880;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=m1vHar25Ogd48V75kwe5mhigjdoQz3FAHOecQmxlZ0I=;
-        b=kPi0vUbldJKM+JXD3X+Y12hdLV43oHzjJE/Pfk8K75gV5bX1VXuuBHsQUwSjF2dvbO
-         VDMZAuszOY0Ju+VvrP2ja28A/WAV/8DVUz54y0t/bs06rKyHgq7SgYc44LTkIUrVlyLB
-         fWolOcxtdbtT056Is17JmCDlxCvKZJiMklibv0ed4SfxMIBh1ZW46ELr303u2NdlWOLG
-         9h56AaRmWkaGof6/Mc4X9xecfsxDGlqv1T9dAaVZzRpN8NkouW5uArvlvBVGRYu0OSAe
-         /G3hLNDlozjTcMd+ufFRGjwN1n3cOVmi+c9owz0Edpc4uLK5o6dewbU4+LBE7b75LuA+
-         Avuw==
-X-Forwarded-Encrypted: i=1; AJvYcCX+vmALQ9dEv31Nx+nsNtG2lOxS6M07ifVuJVMDu/9ZlDHxlLqDTjLzrC1IhFUEUBPgrQGr/3kzCcGKC43EnGSsFdjKP0eO2rdRN7gU
-X-Gm-Message-State: AOJu0YyX8MCGkKcN4jiySiC8HkVKWafh62KHBz3b12HLvpkDiItaBBMF
-	Gmbo+uiFcveZxGCc3GyA/pW/xy9ffxGDxoOrxPhGym3Mb+o/nV04L5LpTA5rUHFrHQIe1dYq0J3
-	TPh6Vyk8d6UMhnRWcb+2JGF+L3dXnabYRtKdWkpB0/0S4nOq2apn9Kpw=
-X-Google-Smtp-Source: AGHT+IFoRple7mPFvEEIYfSJNcuZ8oYmhOVat8p2dm1OioF5nSrzhC29oYHAjczu9whuWLy4Eb0hG72BktFHTiCtlpxQAMc/MVRf
+        d=1e100.net; s=20230601; t=1713741520; x=1714346320;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PWBuK7qeNlFWu7rmYrrR+LglSXjPogokNYMEE0Z/71E=;
+        b=FqTV+fHMr8nnu2lPL2WUwFt3R7giQSpCeKSB15D/Pm7beFPRLvkVDpRYIr7EGMKcOy
+         p6oUuzNh8cfZ4NV6z7xOZ1dC5sBR+HIDCeTUjpxqAwSyKJYaMrak7eZrJ1ugQ6hsP4kn
+         3e87IJTcpksO8fa0dhPaymsdy+V/28Iv2kXaVA5DlESPdFkQKI1zwITMx81nBmBVZrQg
+         oRD0nkZ2cJe98FO5aZXA0nUovNPatBQHxXv61miK+ybzVeFscMJWjDUdoqg3fC3qf7Cl
+         ZmShFtlrIwTzFAc2O69THwjgO3d1ptcmpZQ+61kPImttsN3d9uTWI5qCWplBUViA0AiF
+         XJAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXO3ASM4jo8oyIb+M5sZzFqnleEeChr3s4Itqwkdo+fFdX/BYQiJER1NL8YK426CCUDqO1D8CUrAuVz1Hoyt0j5sKv3k3cakBZzgIi0
+X-Gm-Message-State: AOJu0YzRGInv8iv1ajyUhHf0aCYlYZGznNWHMUUprvRHBXIC/iFUPIRe
+	EFfqEorjAoGRZmQIwz6gpUed+ChIPB3bUKNZNpiO6s01b4mKedKEdx2PdPVX+Zc=
+X-Google-Smtp-Source: AGHT+IFWSmfJ72X7g8dU7M8HNn9yWBaIOFg2hetvc42ZItdCPLols4PP5UoNx738YHLnSSovVIi/Gw==
+X-Received: by 2002:adf:e3cb:0:b0:33e:7f51:c2f9 with SMTP id k11-20020adfe3cb000000b0033e7f51c2f9mr7621909wrm.49.1713741520066;
+        Sun, 21 Apr 2024 16:18:40 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id v18-20020a5d43d2000000b0034a25339e47sm9549282wrr.69.2024.04.21.16.18.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Apr 2024 16:18:39 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: longman@redhat.com
+Cc: boqun.feng@gmail.com,
+	linux-kernel@vger.kernel.org,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	thorsten.blum@toblux.com,
+	will@kernel.org
+Subject: [RESEND PATCH] lockdep: Use str_plural() to fix Coccinelle warning
+Date: Mon, 22 Apr 2024 01:17:56 +0200
+Message-ID: <20240421231755.955755-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <9b15de60-b593-4b0c-bacc-ebe79de5d541@redhat.com>
+References: <9b15de60-b593-4b0c-bacc-ebe79de5d541@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8928:b0:484:e632:5b8c with SMTP id
- jc40-20020a056638892800b00484e6325b8cmr429557jab.3.1713741079704; Sun, 21 Apr
- 2024 16:11:19 -0700 (PDT)
-Date: Sun, 21 Apr 2024 16:11:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004b08ca0616a37065@google.com>
-Subject: [syzbot] [gfs2?] KMSAN: uninit-value in inode_go_dump (4)
-From: syzbot <syzbot+bec528924d6c98923e5d@syzkaller.appspotmail.com>
-To: agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Fixes the following Coccinelle/coccicheck warning reported by
+string_choices.cocci:
 
-syzbot found the following issue on:
+	opportunity for str_plural(depth)
 
-HEAD commit:    96fca68c4fbf Merge tag 'nfsd-6.9-3' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=104a186f180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=87a805e655619c64
-dashboard link: https://syzkaller.appspot.com/bug?extid=bec528924d6c98923e5d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e9cf2979b8c2/disk-96fca68c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8c31261f0d8c/vmlinux-96fca68c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/86f7ecfba229/bzImage-96fca68c.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bec528924d6c98923e5d@syzkaller.appspotmail.com
-
-gfs2: fsid=syz:syz: Trying to join cluster "lock_nolock", "syz:syz"
-gfs2: fsid=syz:syz: Now mounting FS (format 1801)...
-gfs2: fsid=syz:syz.0: fatal: filesystem consistency error
-  inode = 3 2074
-  function = gfs2_dinode_in, file = fs/gfs2/glops.c, line = 470
-gfs2: fsid=syz:syz.0: G:  s:SH n:2/81a f:qobnN t:SH d:EX/0 a:0 v:0 r:3 m:20 p:1
-gfs2: fsid=syz:syz.0:  H: s:SH f:H e:0 p:20593 [syz-executor.0] init_inodes+0x125/0x510 fs/gfs2/ops_fstype.c:884
-=====================================================
-BUG: KMSAN: uninit-value in inode_go_dump+0x475/0x4b0 fs/gfs2/glops.c:549
- inode_go_dump+0x475/0x4b0 fs/gfs2/glops.c:549
- gfs2_dump_glock+0x221c/0x2340 fs/gfs2/glock.c:2410
- gfs2_consist_inode_i+0x19f/0x230 fs/gfs2/util.c:456
- gfs2_dinode_in fs/gfs2/glops.c:470 [inline]
- gfs2_inode_refresh+0x12c7/0x1560 fs/gfs2/glops.c:490
- inode_go_instantiate+0x6e/0xc0 fs/gfs2/glops.c:509
- gfs2_instantiate+0x272/0x4c0 fs/gfs2/glock.c:454
- gfs2_glock_holder_ready fs/gfs2/glock.c:1336 [inline]
- gfs2_glock_wait+0x2a4/0x3e0 fs/gfs2/glock.c:1356
- gfs2_glock_nq+0x288b/0x3a20 fs/gfs2/glock.c:1616
- gfs2_glock_nq_init fs/gfs2/glock.h:238 [inline]
- gfs2_jindex_hold fs/gfs2/ops_fstype.c:580 [inline]
- init_journal+0x315/0x3a40 fs/gfs2/ops_fstype.c:749
- init_inodes+0x125/0x510 fs/gfs2/ops_fstype.c:884
- gfs2_fill_super+0x3c15/0x42b0 fs/gfs2/ops_fstype.c:1263
- get_tree_bdev+0x681/0x890 fs/super.c:1614
- gfs2_get_tree+0x5c/0x340 fs/gfs2/ops_fstype.c:1341
- vfs_get_tree+0xa7/0x570 fs/super.c:1779
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3875
- ia32_sys_call+0x3a9a/0x40a0 arch/x86/include/generated/asm/syscalls_32.h:22
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0xb4/0x120 arch/x86/entry/common.c:321
- do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:346
- do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-
-Uninit was created at:
- __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page mm/slub.c:2175 [inline]
- allocate_slab mm/slub.c:2338 [inline]
- new_slab+0x2de/0x1400 mm/slub.c:2391
- ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
- __slab_alloc mm/slub.c:3610 [inline]
- __slab_alloc_node mm/slub.c:3663 [inline]
- slab_alloc_node mm/slub.c:3835 [inline]
- kmem_cache_alloc_lru+0x6d7/0xbe0 mm/slub.c:3864
- alloc_inode_sb include/linux/fs.h:3091 [inline]
- gfs2_alloc_inode+0x66/0x210 fs/gfs2/super.c:1537
- alloc_inode+0x86/0x460 fs/inode.c:261
- iget5_locked+0xa9/0x210 fs/inode.c:1235
- gfs2_inode_lookup+0xbe/0x1450 fs/gfs2/inode.c:124
- gfs2_lookup_root fs/gfs2/ops_fstype.c:460 [inline]
- init_sb+0xe63/0x1880 fs/gfs2/ops_fstype.c:527
- gfs2_fill_super+0x3288/0x42b0 fs/gfs2/ops_fstype.c:1230
- get_tree_bdev+0x681/0x890 fs/super.c:1614
- gfs2_get_tree+0x5c/0x340 fs/gfs2/ops_fstype.c:1341
- vfs_get_tree+0xa7/0x570 fs/super.c:1779
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3875
- ia32_sys_call+0x3a9a/0x40a0 arch/x86/include/generated/asm/syscalls_32.h:22
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0xb4/0x120 arch/x86/entry/common.c:321
- do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:346
- do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-
-CPU: 0 PID: 20593 Comm: syz-executor.0 Tainted: G        W          6.9.0-rc4-syzkaller-00031-g96fca68c4fbf #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-=====================================================
-
-
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+Acked-by: Waiman Long <longman@redhat.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ kernel/locking/lockdep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 151bd3de5936..31d7720c9b8d 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -786,7 +786,7 @@ static void lockdep_print_held_locks(struct task_struct *p)
+ 		printk("no locks held by %s/%d.\n", p->comm, task_pid_nr(p));
+ 	else
+ 		printk("%d lock%s held by %s/%d:\n", depth,
+-		       depth > 1 ? "s" : "", p->comm, task_pid_nr(p));
++		       str_plural(depth), p->comm, task_pid_nr(p));
+ 	/*
+ 	 * It's not reliable to print a task's held locks if it's not sleeping
+ 	 * and it's not the current task.
+-- 
+2.44.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
