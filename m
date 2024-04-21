@@ -1,299 +1,190 @@
-Return-Path: <linux-kernel+bounces-152649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 638068AC1FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 00:58:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8A558AC200
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 01:11:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBAE8280CD7
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:58:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66E7028104E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 23:11:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59EA44C8F;
-	Sun, 21 Apr 2024 22:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ggv/vjcg"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC3C45C0C;
+	Sun, 21 Apr 2024 23:11:23 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06886175AB
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 22:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5305644369
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 23:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713740326; cv=none; b=uHJK5xEgTpEt7rdvtcD+Qiraz6F+c/yu7tZd1OIooTfzKwX+cHFKLLHcK8HNlVYmCLhMlpolvmnWjz98lIRhQehQjxwdbAOaviu4Zyk0p3I5ZsA+dR31FQHRyF97Z0zJMf47arZdJeOoDp0rRrwnvqbsVFBDazDPcDdihe2rN/o=
+	t=1713741082; cv=none; b=TJ6++B9M8nPVkkNkE0cFokysh7NZQ6ufqaSt1MfOJ9r/Est7uHt0FY2A55x/rInD+T4M6+jNWWW3Uimg747NbA7ys1MyKw6heXpGV/1m9kjU1SHrqAqFmSWsQoM0B7welmJj6MCE7FqPgjpj0lpRQ8Rlcxcj4Hrl+eGWNtJ1/6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713740326; c=relaxed/simple;
-	bh=FfkEvj3224K+BsB0MJupvSWk89bACoL6USvKHySPRKI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=uUDJXUqh9eb6tmt5dRQJBETEQ9eANFeIcFsZbp6OSNoJMYvjknx8gb10z+Fd9ptateIJJGw44pZB+mBAzQEPRUsQcnRGyK5kSg/AgY4827cUkhpJoDf377ZxtzbJl686qa1/Ym0GIRatr52IMrWbWfKrJr7mDf73hKuKVnct+Bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ggv/vjcg; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713740323; x=1745276323;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=FfkEvj3224K+BsB0MJupvSWk89bACoL6USvKHySPRKI=;
-  b=Ggv/vjcg2WXfAfpPu7T/KW4z/JVo1nANK7Lul55dCvD206X1WdnCViIn
-   wQ9QlXDwD+lgY4l5mjGc50/cTZQp/S+tUcqwunBNz4vPp1whXQm4Y5yyl
-   Rw9MlV5BFXHuG0c63q1DpxcEaJApHsJnImQI9RlCeHvT5T9egHURbDra2
-   jIcvXO09/Uy7rkS2j5MibPadOMMFAtn+0xo4hF7n74nBJZZeqmEv3LGJX
-   2Zi5i8iYuTFFpGtdhdB6YpI4aAYuKSwYHhv8F8RnYqCjVh6uQfiZg863l
-   0DltfOOwDuwG/6YmkkUSxQvoTkwRCjvLojY6VBOpp+N7K2105xJ6pfukd
-   A==;
-X-CSE-ConnectionGUID: seAaCcLWRMyn2xASdcjSKg==
-X-CSE-MsgGUID: JmjeNUiwTGGYLejH2HMANg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="9384115"
-X-IronPort-AV: E=Sophos;i="6.07,219,1708416000"; 
-   d="scan'208";a="9384115"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2024 15:58:42 -0700
-X-CSE-ConnectionGUID: Dl4SsmqnRRKoWM2kssW3+g==
-X-CSE-MsgGUID: qwvw5gi7S4yXR3IvgxwiRw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,219,1708416000"; 
-   d="scan'208";a="23908218"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by fmviesa007.fm.intel.com with ESMTP; 21 Apr 2024 15:58:40 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ryg8s-000CCQ-1Y;
-	Sun, 21 Apr 2024 22:58:38 +0000
-Date: Mon, 22 Apr 2024 06:58:36 +0800
-From: kernel test robot <lkp@intel.com>
-To: Max Filippov <jcmvbkbc@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: cfi_util.c:(.xiptext+0x257): dangerous relocation: windowed longcall
- crosses 1GB boundary; return may fail: __tsan_write4
-Message-ID: <202404220616.NxJhnAye-lkp@intel.com>
+	s=arc-20240116; t=1713741082; c=relaxed/simple;
+	bh=KeJ/hkv/ADmBtwjyRjiC8mPob6I7p2+aO0XnhEs5+J4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=EG/qbCXpDyNlh2sCaD2nlVRYSD/v9ce9bz6hNzUePgEJwJPWUSKlRKd3iRgYgWJiMyUcfAUaB6BY17xud4UbnRERkKgTxeVgd0/e0xX+gXVIbxSD9uCjzDAuLj9PG4Cdc5Dsw2+xDG0zxWShiLPLur1l/lzkQLBjqnZIJqkS3lU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d667dd202cso471128939f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 16:11:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713741080; x=1714345880;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m1vHar25Ogd48V75kwe5mhigjdoQz3FAHOecQmxlZ0I=;
+        b=kPi0vUbldJKM+JXD3X+Y12hdLV43oHzjJE/Pfk8K75gV5bX1VXuuBHsQUwSjF2dvbO
+         VDMZAuszOY0Ju+VvrP2ja28A/WAV/8DVUz54y0t/bs06rKyHgq7SgYc44LTkIUrVlyLB
+         fWolOcxtdbtT056Is17JmCDlxCvKZJiMklibv0ed4SfxMIBh1ZW46ELr303u2NdlWOLG
+         9h56AaRmWkaGof6/Mc4X9xecfsxDGlqv1T9dAaVZzRpN8NkouW5uArvlvBVGRYu0OSAe
+         /G3hLNDlozjTcMd+ufFRGjwN1n3cOVmi+c9owz0Edpc4uLK5o6dewbU4+LBE7b75LuA+
+         Avuw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+vmALQ9dEv31Nx+nsNtG2lOxS6M07ifVuJVMDu/9ZlDHxlLqDTjLzrC1IhFUEUBPgrQGr/3kzCcGKC43EnGSsFdjKP0eO2rdRN7gU
+X-Gm-Message-State: AOJu0YyX8MCGkKcN4jiySiC8HkVKWafh62KHBz3b12HLvpkDiItaBBMF
+	Gmbo+uiFcveZxGCc3GyA/pW/xy9ffxGDxoOrxPhGym3Mb+o/nV04L5LpTA5rUHFrHQIe1dYq0J3
+	TPh6Vyk8d6UMhnRWcb+2JGF+L3dXnabYRtKdWkpB0/0S4nOq2apn9Kpw=
+X-Google-Smtp-Source: AGHT+IFoRple7mPFvEEIYfSJNcuZ8oYmhOVat8p2dm1OioF5nSrzhC29oYHAjczu9whuWLy4Eb0hG72BktFHTiCtlpxQAMc/MVRf
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Received: by 2002:a05:6638:8928:b0:484:e632:5b8c with SMTP id
+ jc40-20020a056638892800b00484e6325b8cmr429557jab.3.1713741079704; Sun, 21 Apr
+ 2024 16:11:19 -0700 (PDT)
+Date: Sun, 21 Apr 2024 16:11:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004b08ca0616a37065@google.com>
+Subject: [syzbot] [gfs2?] KMSAN: uninit-value in inode_go_dump (4)
+From: syzbot <syzbot+bec528924d6c98923e5d@syzkaller.appspotmail.com>
+To: agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ed30a4a51bb196781c8058073ea720133a65596f
-commit: 03ce34cf8f50e4c62f9a4b62caffdba1165ca977 xtensa: add XIP-aware MTD support
-date:   8 months ago
-config: xtensa-randconfig-r015-20221109 (https://download.01.org/0day-ci/archive/20240422/202404220616.NxJhnAye-lkp@intel.com/config)
-compiler: xtensa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240422/202404220616.NxJhnAye-lkp@intel.com/reproduce)
+Hello,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404220616.NxJhnAye-lkp@intel.com/
+syzbot found the following issue on:
 
-All errors (new ones prefixed by >>):
+HEAD commit:    96fca68c4fbf Merge tag 'nfsd-6.9-3' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=104a186f180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=87a805e655619c64
+dashboard link: https://syzkaller.appspot.com/bug?extid=bec528924d6c98923e5d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-   cfi_probe.c:(.xiptext+0x1098): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x10a4): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x10b9): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x10c2): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x10d0): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x10e8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x10f0): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x10fe): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1112): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1127): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1132): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x113a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1148): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1153): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1160): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x116e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: (.text+0x18)
-   cfi_probe.c:(.xiptext+0x1177): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1182): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x118f): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x119b): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   drivers/mtd/chips/cfi_probe.o: in function `cfi_probe_chip':
-   cfi_probe.c:(.xiptext+0x1332): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _mcount
-   cfi_probe.c:(.xiptext+0x133c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1346): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1353): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x135e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x136c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1377): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1384): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x1397): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x13a2): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x13af): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x13c0): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x13cb): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x13d8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x13f3): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x13fe): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x140b): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x1429): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1434): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1442): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x1453): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x145e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x146a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1477): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x148d): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1498): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x14a6): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x14b7): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x14cd): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x14de): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_volatile_read4
-   cfi_probe.c:(.xiptext+0x14ef): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x14fa): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1506): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x1511): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1520): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x152f): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x1548): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1551): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1566): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x1595): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x159e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x15ae): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x15bf): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x15cb): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x15d8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x15e7): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1600): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x160b): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x161a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x1640): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x164b): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1658): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x1668): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1673): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1682): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x168e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x1698): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x16ae): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_probe.c:(.xiptext+0x16d6): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x16e0): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_probe.c:(.xiptext+0x16fb): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_probe.c:(.xiptext+0x1712): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   drivers/mtd/chips/cfi_util.o: in function `cfi_qry_present':
-   cfi_util.c:(.xiptext+0x146): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _mcount
-   cfi_util.c:(.xiptext+0x14c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x154): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x15f): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x170): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x184): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x19c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x1b0): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x1cb): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x1e4): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x200): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x213): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x21e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x238): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x246): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x24e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
->> cfi_util.c:(.xiptext+0x257): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x262): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x26e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x27b): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x28e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x29c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x2b4): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x2bf): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x2ce): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x2de): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x2eb): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x2f8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x303): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x313): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x322): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x32f): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x344): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x352): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x35a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x363): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x36e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x37a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x387): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x39a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x3aa): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x3b8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x3ce): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x3d7): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x3e7): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x3f4): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x402): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x415): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x422): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x42a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x433): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x43e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x44a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x457): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x46a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x478): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x487): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x490): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x49b): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x4aa): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x4b8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x4c2): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   drivers/mtd/chips/cfi_util.o: in function `cfi_qry_mode_off':
-   cfi_util.c:(.xiptext+0x536): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _mcount
-   cfi_util.c:(.xiptext+0x53c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x54a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x55c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x578): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x586): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x59c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x5a7): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x5b0): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x5be): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x5ca): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x5d7): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x5e8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x5f7): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x610): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x61c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x627): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x634): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x63e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   drivers/mtd/chips/cfi_util.o: in function `cfi_qry_mode_on':
-   cfi_util.c:(.xiptext+0x7fe): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: _mcount
-   cfi_util.c:(.xiptext+0x804): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x812): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x823): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x83a): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x854): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x862): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x880): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x88b): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x898): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x8a3): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x8b4): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x8c8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x8d8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x8f4): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x902): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x918): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x932): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x940): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x960): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x96b): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x97c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x988): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0x993): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x9a4): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_write4
-   cfi_util.c:(.xiptext+0x9b8): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0x9c7): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x9dc): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0x9f4): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: cfi_build_cmd
-   cfi_util.c:(.xiptext+0xa03): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0xa23): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0xa2e): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
-   cfi_util.c:(.xiptext+0xa3c): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __sanitizer_cov_trace_pc
-   cfi_util.c:(.xiptext+0xa47): dangerous relocation: windowed longcall crosses 1GB boundary; return may fail: __tsan_read4
+Unfortunately, I don't have any reproducer for this issue yet.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e9cf2979b8c2/disk-96fca68c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8c31261f0d8c/vmlinux-96fca68c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/86f7ecfba229/bzImage-96fca68c.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bec528924d6c98923e5d@syzkaller.appspotmail.com
+
+gfs2: fsid=syz:syz: Trying to join cluster "lock_nolock", "syz:syz"
+gfs2: fsid=syz:syz: Now mounting FS (format 1801)...
+gfs2: fsid=syz:syz.0: fatal: filesystem consistency error
+  inode = 3 2074
+  function = gfs2_dinode_in, file = fs/gfs2/glops.c, line = 470
+gfs2: fsid=syz:syz.0: G:  s:SH n:2/81a f:qobnN t:SH d:EX/0 a:0 v:0 r:3 m:20 p:1
+gfs2: fsid=syz:syz.0:  H: s:SH f:H e:0 p:20593 [syz-executor.0] init_inodes+0x125/0x510 fs/gfs2/ops_fstype.c:884
+=====================================================
+BUG: KMSAN: uninit-value in inode_go_dump+0x475/0x4b0 fs/gfs2/glops.c:549
+ inode_go_dump+0x475/0x4b0 fs/gfs2/glops.c:549
+ gfs2_dump_glock+0x221c/0x2340 fs/gfs2/glock.c:2410
+ gfs2_consist_inode_i+0x19f/0x230 fs/gfs2/util.c:456
+ gfs2_dinode_in fs/gfs2/glops.c:470 [inline]
+ gfs2_inode_refresh+0x12c7/0x1560 fs/gfs2/glops.c:490
+ inode_go_instantiate+0x6e/0xc0 fs/gfs2/glops.c:509
+ gfs2_instantiate+0x272/0x4c0 fs/gfs2/glock.c:454
+ gfs2_glock_holder_ready fs/gfs2/glock.c:1336 [inline]
+ gfs2_glock_wait+0x2a4/0x3e0 fs/gfs2/glock.c:1356
+ gfs2_glock_nq+0x288b/0x3a20 fs/gfs2/glock.c:1616
+ gfs2_glock_nq_init fs/gfs2/glock.h:238 [inline]
+ gfs2_jindex_hold fs/gfs2/ops_fstype.c:580 [inline]
+ init_journal+0x315/0x3a40 fs/gfs2/ops_fstype.c:749
+ init_inodes+0x125/0x510 fs/gfs2/ops_fstype.c:884
+ gfs2_fill_super+0x3c15/0x42b0 fs/gfs2/ops_fstype.c:1263
+ get_tree_bdev+0x681/0x890 fs/super.c:1614
+ gfs2_get_tree+0x5c/0x340 fs/gfs2/ops_fstype.c:1341
+ vfs_get_tree+0xa7/0x570 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3875
+ ia32_sys_call+0x3a9a/0x40a0 arch/x86/include/generated/asm/syscalls_32.h:22
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0xb4/0x120 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:346
+ do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+
+Uninit was created at:
+ __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2175 [inline]
+ allocate_slab mm/slub.c:2338 [inline]
+ new_slab+0x2de/0x1400 mm/slub.c:2391
+ ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
+ __slab_alloc mm/slub.c:3610 [inline]
+ __slab_alloc_node mm/slub.c:3663 [inline]
+ slab_alloc_node mm/slub.c:3835 [inline]
+ kmem_cache_alloc_lru+0x6d7/0xbe0 mm/slub.c:3864
+ alloc_inode_sb include/linux/fs.h:3091 [inline]
+ gfs2_alloc_inode+0x66/0x210 fs/gfs2/super.c:1537
+ alloc_inode+0x86/0x460 fs/inode.c:261
+ iget5_locked+0xa9/0x210 fs/inode.c:1235
+ gfs2_inode_lookup+0xbe/0x1450 fs/gfs2/inode.c:124
+ gfs2_lookup_root fs/gfs2/ops_fstype.c:460 [inline]
+ init_sb+0xe63/0x1880 fs/gfs2/ops_fstype.c:527
+ gfs2_fill_super+0x3288/0x42b0 fs/gfs2/ops_fstype.c:1230
+ get_tree_bdev+0x681/0x890 fs/super.c:1614
+ gfs2_get_tree+0x5c/0x340 fs/gfs2/ops_fstype.c:1341
+ vfs_get_tree+0xa7/0x570 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __ia32_sys_mount+0xe3/0x150 fs/namespace.c:3875
+ ia32_sys_call+0x3a9a/0x40a0 arch/x86/include/generated/asm/syscalls_32.h:22
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0xb4/0x120 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:346
+ do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+
+CPU: 0 PID: 20593 Comm: syz-executor.0 Tainted: G        W          6.9.0-rc4-syzkaller-00031-g96fca68c4fbf #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
