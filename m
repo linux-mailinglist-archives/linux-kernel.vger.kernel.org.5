@@ -1,47 +1,50 @@
-Return-Path: <linux-kernel+bounces-152469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B3778ABEE2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:37:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F9C28ABEE0
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:32:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C058C1F210D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 09:37:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0C48B20B9A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 09:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA9710979;
-	Sun, 21 Apr 2024 09:37:28 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1429C625;
-	Sun, 21 Apr 2024 09:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C669A101CE;
+	Sun, 21 Apr 2024 09:31:55 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BCA3232;
+	Sun, 21 Apr 2024 09:31:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713692248; cv=none; b=nRXqMLcUazcaHwkCieANqM0gR5VbcYKkLTEsatC780P0ji+NCnpfD4ysZG8K5Heyfw3fQQdF9m+q1jsDFBgBR53qw8DvGje2r87zU21+t+lCGDLtlZI2Es81Sy5jL5g0lkJVhVxomeJygo3NY7fJDbm/2Jt3hiF59xeNmW6Bf/w=
+	t=1713691915; cv=none; b=OIOHvsetvmtsYceWDs1nfes16WDFMvN3AgXTlOM6MEBXsAtrCOgKBzsqsuN+CdHUy7P4wUV4dYctzxx3h/XbwsC3V50Fpcq9l5I+1gwl+ODY3Q8W86s8QaaNu2g7BSJrmTBPBM7HyXM6hT+DLurJFSJh4SKknFDAnPE917h7OU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713692248; c=relaxed/simple;
-	bh=gRcDq0NrGX6/1/kSuxwyYx9WNXiEK2e2hJwS1DZI4W8=;
+	s=arc-20240116; t=1713691915; c=relaxed/simple;
+	bh=KKW2RTp1B3WeXO3e6hwdWWI5bnAKqUwrrDyXZbIeMvk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AqnG689eUA0qZwsuDfN0iNg6zJm5nuPzckzf7o0hE/LHYzUns07UWmJ42dZ0jVa05jjAX6wkZaxcCyk4WCl6rNHbLfBFDz4Jvvm/Zl4xnBF2r01XliudsecbcG0au8Ju2sbYu1dHnqlhfMI5DYlkM5kWibkbm7Yqc4Gm8uLvjYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id 715C014026B; Sun, 21 Apr 2024 11:30:17 +0200 (CEST)
-Date: Sun, 21 Apr 2024 11:30:17 +0200
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: Jameson Thies <jthies@google.com>
-Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
-	pmalani@chromium.org, bleung@google.com,
-	abhishekpandit@chromium.org, andersson@kernel.org,
-	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com,
-	gregkh@linuxfoundation.org, hdegoede@redhat.com,
-	neil.armstrong@linaro.org, rajaram.regupathy@intel.com,
-	saranya.gopal@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/4] usb: typec: ucsi: Fix null deref in trace
-Message-ID: <ZiTcqZYS53ITwNLy@cae.in-ulm.de>
-References: <20240419211650.2657096-1-jthies@google.com>
- <20240419211650.2657096-2-jthies@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HvXWxD0W/lW2akvk998i5ORFNpIyfmUBPAT68ZjDPEkspVOGNSYfsh0CHaOalrTnpbDsDcSaBNro4KxqJVhdo9UiIjmy5ehWAs/uXPTmYEnpAPbwUQfUSigt3VrO1lobzSYCH6/X8btLJ65QpACF6bJJr+dDgw37cgdSaBjO2NQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23FA9339;
+	Sun, 21 Apr 2024 02:32:20 -0700 (PDT)
+Received: from pluto (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8FBA3F792;
+	Sun, 21 Apr 2024 02:31:48 -0700 (PDT)
+Date: Sun, 21 Apr 2024 10:31:41 +0100
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Stephen Boyd <sboyd@kernel.org>, sudeep.holla@arm.com
+Cc: linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, james.quinlan@broadcom.com,
+	f.fainelli@gmail.com, vincent.guittot@linaro.org,
+	peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com,
+	quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
+	mturquette@baylibre.com
+Subject: Re: [PATCH v3 0/5] Rework SCMI Clock driver clk_ops setup procedure
+Message-ID: <ZiTc_Rbh81eFUTw1@pluto>
+References: <20240415163649.895268-1-cristian.marussi@arm.com>
+ <6b8e12767fdfaf1ba819896fbd610733.sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,48 +53,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240419211650.2657096-2-jthies@google.com>
+In-Reply-To: <6b8e12767fdfaf1ba819896fbd610733.sboyd@kernel.org>
 
-
-Hi Jameson,
-
-On Fri, Apr 19, 2024 at 09:16:47PM +0000, Jameson Thies wrote:
-> From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+On Fri, Apr 19, 2024 at 07:08:54PM -0700, Stephen Boyd wrote:
+> Quoting Cristian Marussi (2024-04-15 09:36:44)
+> > Hi,
+> > 
+> > a small series to review how the SCMI Clock driver chooses and sets up the
+> > CLK operations to associate to a clock when registering with CLK framework.
 > 
-> ucsi_register_altmode checks IS_ERR on returned pointer and treats
-> NULL as valid. This results in a null deref when
-> trace_ucsi_register_altmode is called.
-> 
-> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> ---
->  drivers/usb/typec/ucsi/ucsi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index c4d103db9d0f8..c663dce0659ee 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -496,7 +496,7 @@ ucsi_register_displayport(struct ucsi_connector *con,
->  			  bool override, int offset,
->  			  struct typec_altmode_desc *desc)
->  {
-> -	return NULL;
-> +	return ERR_PTR(-EOPNOTSUPP);
->  }
+> Did you want me to merge this through clk tree?
 
-Hm. This does not look correct to me. Ignoring trace the old code
-would have returned success if displayport is not compiled in and
-all altmodes (except for display port) would be registered.
+Up to @Sudeep really...
 
-With your code ucsi_register_altmodes will always fail and abort
-altmode registration if it finds a displayport altmode and
-CONFIG_TYPEC_DP_ALTMODE is not set. I don't think this is what we want.
-
-Maybe it is better to guard the trace call with an if?
-
-Am I missing something?
-
-Best regards,
-Christian
-
+Thanks for the reviewing this series.
+Cristian
 
