@@ -1,158 +1,125 @@
-Return-Path: <linux-kernel+bounces-152502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A46B78ABF68
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 15:49:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 702898ABF59
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 15:48:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 314261F21827
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 13:49:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90EC01C20F7B
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 13:48:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E01317BD4;
-	Sun, 21 Apr 2024 13:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EDDB17995;
+	Sun, 21 Apr 2024 13:48:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tx6zQLop"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="E2HQZsOp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D411C29F;
-	Sun, 21 Apr 2024 13:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470FE625;
+	Sun, 21 Apr 2024 13:48:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713707339; cv=none; b=HaIH67yBmeXRY/KqGy6tnDHKsBZzW6zWT/ubVefid1ChRAGJfaewdJ6hUIy6573IBqBdG5p+MefNOhyw2VQLw/xiKdbep26eaHEkm6X7DsQOXMxhMxTIDA1/TodivtND3S4dOVGWESoqtW/YgImF73f4Dr7wW3QPsVdWMwoOX6I=
+	t=1713707301; cv=none; b=b//wm8rHjM/AcJSeoV3M/o23F44GBlbYt5rjyZlFaca+GFejDok+57Ius+zF7cFyYNfHE/UL3d3utJP9VGvtwJT+cInhBv0r6UTgG6dIbBkRznB2x90A5nKgOusMRVULKetDbGJkWb00t9OFBtGH1A4NnUyQ+vozETwBkElnK3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713707339; c=relaxed/simple;
-	bh=Y9jIyElOMp31XHXfaCIVTLoMyn8wDqkA34DCh0awnvg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oinBLTiDXDSL14ka0l2Wwo3jnqvCtylnFqAL4PBSWjpu8v9kykt1SHouYi50v8PXPOnaGryhzVy0xKmaEu9SmP4OW6WWLnc67eYIXBxlYVeMJCGM37hTULXWAGTSFq2er5Jj7qImGxoUTvBZSacIhowaZV+8/S4el5/yGj73URk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tx6zQLop; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ed627829e6so4016303b3a.1;
-        Sun, 21 Apr 2024 06:48:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713707338; x=1714312138; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vAq3AHvWEQFsKDgpu//rdmbRIcBJ6dLOs4RYotedEeg=;
-        b=Tx6zQLopnJkmPQeroWlWtNHVVFP4NZSBfP+CV8kfhhmDeB5pPfh86sFz43FOO2aISl
-         XJTWhIZfwNCaOkV2JxSB/2Kp+VhB75CX9bx6BKzccB/UQIs9VbqfZqX/0kRCLZI7S7de
-         1kYvhPh7MD0zc+G0sCCoA3hTEVug8jK9sr32IderaCqZbHWQlMVKHj1+WeK5OVwqvEub
-         w/8kdSAi/gHHtRQl7pOjxM+AWWeszXFVnZxxIcZ/t9SvUAsba0Z31snoQylO1yqNJYwk
-         jEbr5W9XuDPRAkedjdSKip6agfJy6E9G/Fq9xE61GzYGSEkpV6ehzcltkglaRFpMyQ8o
-         FQWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713707338; x=1714312138;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vAq3AHvWEQFsKDgpu//rdmbRIcBJ6dLOs4RYotedEeg=;
-        b=e7WmupRFU921uCvrnLtLYigQJ76w4ESoOd539E3UsTxfLxXaF3uwMChEG6DjEVel1u
-         +7zNAyhPws//rtzlmsk08S0crhs6hm+w/cx/NCiwm6c4M/gekCNid2R9knP+LWoxFNjK
-         ONnney3Fkyrpm1TGV63XZaCQksTSkUiyZAsgTmA3i0g4c6J1PG3A3b6PTIVAYn1zOfDU
-         1Ms+8pXFNl+8RLOSgUJvhQRcgeFCytIDYsRRBFSTmR6CjQ9ECdlfYF7mM4oLGGzHefQ2
-         DEbV982YhVTkRakN2VCFzVSZvdJddNueg6VKz6wfYJW75/U8sDZjUFp7zDlMusxKhr7r
-         aFMA==
-X-Forwarded-Encrypted: i=1; AJvYcCXBoWA/ya0WcTFFIkn0PToMHCKCDmSfMcUZlCYdc8gitb9a9cltQdTNFUeeW0n2LZGrjnctEazVcXTX3k2vY4BaFLpddiahJKl9I2rN6IC8ZILkt0KUPx4atRRZg3TQx+mwo8Iof6BTgkUgRe11bk41Gv/nHKMCDZ8XKDWCPkABxqjssY6e49zRIiU=
-X-Gm-Message-State: AOJu0YyCEZsUT7bnWOzw+I5Su3m60xozxW/ku7Umyc7FMvOqv8b3BN/i
-	cjYU97miwnm2SWuS68ImMsFe0HPisaoHEj2OFFBle++cKmKtq2wn
-X-Google-Smtp-Source: AGHT+IFqFGNGrYSxduO+G3kiUy/CR5IuQrcVEgPwVltGpWh2slVvuWUY98I8IosXloAx10/SaETCIw==
-X-Received: by 2002:aa7:8883:0:b0:6ea:bf1c:9dfd with SMTP id z3-20020aa78883000000b006eabf1c9dfdmr10512702pfe.27.1713707337795;
-        Sun, 21 Apr 2024 06:48:57 -0700 (PDT)
-Received: from localhost.localdomain ([113.30.217.222])
-        by smtp.gmail.com with ESMTPSA id o13-20020a056a001b4d00b006e6c733bde9sm6175043pfv.155.2024.04.21.06.48.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Apr 2024 06:48:57 -0700 (PDT)
-From: Anand Moon <linux.amoon@gmail.com>
-To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>
-Cc: Anand Moon <linux.amoon@gmail.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Johan Hovold <johan@kernel.org>,
-	linux-usb@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 5/5] usb: dwc3: exynos: Use DEFINE_SIMPLE_DEV_PM_OPS for PM functions
-Date: Sun, 21 Apr 2024 19:17:34 +0530
-Message-ID: <20240421134752.2652-6-linux.amoon@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240421134752.2652-1-linux.amoon@gmail.com>
-References: <20240421134752.2652-1-linux.amoon@gmail.com>
+	s=arc-20240116; t=1713707301; c=relaxed/simple;
+	bh=LlUgqYs3MCsI8tfMXyODmqS8Vxzo+bhP7dqc9s6OIOs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QhoKJOAHNS55Huy4qMlLadai1Pj8Q9MhGJYVUcav1+3Umlp3ubglNpIu3pljNwItCAl/tQS8rcAaucJEsWjYBxJUapIaeVP4k2wuQUME+8ux+CeNIEcMSR6+E60wREFLHnie32XlEbSJ/9AoFILqYZ3+PLCrI74FwZCI9ChsmjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=E2HQZsOp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D77EC113CE;
+	Sun, 21 Apr 2024 13:48:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713707300;
+	bh=LlUgqYs3MCsI8tfMXyODmqS8Vxzo+bhP7dqc9s6OIOs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E2HQZsOpXkpKHudpdluczuDQnp4aiFdqJ82dLDH1II7kBwQkMvcWNiCIkeSoP5rWm
+	 m9nZ2jQglkE44ukF7sxlCBCK/PQXihvUDzufJomZBn2n9OqRQMJ6Ud/dSxNSDJpwTv
+	 Lg9wQiO5BEJ/8jDnKp9G7q+/3ehh9dAKnAX9ycsg=
+Date: Sun, 21 Apr 2024 15:48:17 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: Ricardo Ribalda <ribalda@chromium.org>, linux-media@vger.kernel.org,
+	linux-mediatek@lists.infradead.org, linux-staging@lists.linux.dev,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, Abylay Ospan <aospan@netup.ru>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Angelo Gioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Chen-Yu Tsai <wens@csie.org>, Dmitry Osipenko <digetx@gmail.com>,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Hugues Fruchet <hugues.fruchet@foss.st.com>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Martin Tuma <martin.tuma@digiteqautomotive.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Sergey Kozlov <serjk@netup.ru>,
+	Sowjanya Komatineni <skomatineni@nvidia.com>,
+	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+	Sylvain Petinot <sylvain.petinot@foss.st.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Vikash Garodia <quic_vgarodia@quicinc.com>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 24/26] media: venus: venc: Make explicit the range of
+ us_per_frame
+Message-ID: <2024042112-deferred-fantastic-5b4b@gregkh>
+References: <20240419-fix-cocci-v2-24-2119e692309c@chromium.org>
+ <0ab13de0-0fde-40e2-958f-6a0818911009@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0ab13de0-0fde-40e2-958f-6a0818911009@web.de>
 
-This macro has the advantage over SET_SYSTEM_SLEEP_PM_OPS that we
-don't have to care about when the functions are actually used.
+On Sun, Apr 21, 2024 at 03:25:31PM +0200, Markus Elfring wrote:
+> > Unless the fps is smaller than 0.000232829 fps, this fits in a 32 bit number.
+> > Make that explicit.
+> 
+> Would it be more appropriate to move the word “explicit” to the end
+> of the summary phrase?
+> 
+> Regards,
+> Markus
+> 
 
-Also make use of pm_sleep_ptr() to discard all PM_SLEEP related
-stuff if CONFIG_PM_SLEEP isn't enabled.
+Hi,
 
-Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Signed-off-by: Anand Moon <linux.amoon@gmail.com>
----
-v4 Fix typo in commit message SIMPLE_DEV_PM_OPS to
-       SET_SYSTEM_SLEEP_PM_OPS
-   Add Acked by Thinh Nguyen
+This is the semi-friendly patch-bot of Greg Kroah-Hartman.
 
-v3: fix using new DEFINE_SIMPLE_DEV_PM_OPS PM macro hence
-    change the $subject and the commit message
+Markus, you seem to have sent a nonsensical or otherwise pointless
+review comment to a patch submission on a Linux kernel developer mailing
+list.  I strongly suggest that you not do this anymore.  Please do not
+bother developers who are actively working to produce patches and
+features with comments that, in the end, are a waste of time.
 
-v2: add __maybe_unused to suspend/resume functions in case CONFIG_PM
-   is disabled.
----
- drivers/usb/dwc3/dwc3-exynos.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+Patch submitter, please ignore Markus's suggestion; you do not need to
+follow it at all.  The person/bot/AI that sent it is being ignored by
+almost all Linux kernel maintainers for having a persistent pattern of
+behavior of producing distracting and pointless commentary, and
+inability to adapt to feedback.  Please feel free to also ignore emails
+from them.
 
-diff --git a/drivers/usb/dwc3/dwc3-exynos.c b/drivers/usb/dwc3/dwc3-exynos.c
-index 5d365ca51771..3427522a7c6a 100644
---- a/drivers/usb/dwc3/dwc3-exynos.c
-+++ b/drivers/usb/dwc3/dwc3-exynos.c
-@@ -187,7 +187,6 @@ static const struct of_device_id exynos_dwc3_match[] = {
- };
- MODULE_DEVICE_TABLE(of, exynos_dwc3_match);
- 
--#ifdef CONFIG_PM_SLEEP
- static int dwc3_exynos_suspend(struct device *dev)
- {
- 	struct dwc3_exynos *exynos = dev_get_drvdata(dev);
-@@ -230,14 +229,8 @@ static int dwc3_exynos_resume(struct device *dev)
- 	return 0;
- }
- 
--static const struct dev_pm_ops dwc3_exynos_dev_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(dwc3_exynos_suspend, dwc3_exynos_resume)
--};
--
--#define DEV_PM_OPS	(&dwc3_exynos_dev_pm_ops)
--#else
--#define DEV_PM_OPS	NULL
--#endif /* CONFIG_PM_SLEEP */
-+static DEFINE_SIMPLE_DEV_PM_OPS(dwc3_exynos_dev_pm_ops,
-+				dwc3_exynos_suspend, dwc3_exynos_resume);
- 
- static struct platform_driver dwc3_exynos_driver = {
- 	.probe		= dwc3_exynos_probe,
-@@ -245,7 +238,7 @@ static struct platform_driver dwc3_exynos_driver = {
- 	.driver		= {
- 		.name	= "exynos-dwc3",
- 		.of_match_table = exynos_dwc3_match,
--		.pm	= DEV_PM_OPS,
-+		.pm	= pm_sleep_ptr(&dwc3_exynos_dev_pm_ops),
- 	},
- };
- 
--- 
-2.44.0
+thanks,
 
+greg k-h's patch email bot
 
