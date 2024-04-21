@@ -1,140 +1,159 @@
-Return-Path: <linux-kernel+bounces-152617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61D848AC137
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:41:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38B4B8AC13A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:42:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89FDD1C209B4
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 20:41:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42D7BB209E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 20:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495623A8D2;
-	Sun, 21 Apr 2024 20:40:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C118B4437D;
+	Sun, 21 Apr 2024 20:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PZOanAhF"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CNfD9/qz"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4E953A9
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 20:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 708B453A9;
+	Sun, 21 Apr 2024 20:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713732058; cv=none; b=b0yRHxSh3Pl4hIQP+3gCSiKtBheaZHzPX7U+Yt4wgIMxk09927zqUO3hHqMcsKao3HXCBGMmgS0cEVybrMIJlnCCOTF5PzORMNsWYJxyeAuGZ+VtDcq6mCL77khSkzpc132y61AToQJLWhVF/JlDc/FAuxWFd65MUhzOjDScMyU=
+	t=1713732125; cv=none; b=m3D/Pe5FSSXd+Hq7cWAQoXn/B4Ojva0s7thaniNLozuzBoP1KpL8ZjFilaXnn4piOEMQrMZVqA1dHcYE0qDkPxVFBMVJm8DEuDxgFdqaL2wxQLVbCgJENDoxmb/feXxehK8hYTI4GLaKSW3w+l71RvOe7ck8EdI63XMEsA9iqCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713732058; c=relaxed/simple;
-	bh=ILe+0JFrPZ1Gcf62zBLDYj/3a/V4IcaEUhE3Jb6hVBQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aDPDlSoEwe4lPTafCqaMtH8YUUfIS6RHnHqYeD7uBtS3LxItSFZZSMQKBZBFlC3b0Ul9YZrcS0IKvvVfQDYi+LbJsPfmrRL2Nqb1qKHIsgUWECdvSJ9oRoy/psyQ4kA3uKHp1n1Z2PZX1x/17GoSsF60XwsnwdKGBusOpisoZso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PZOanAhF; arc=none smtp.client-ip=209.85.218.47
+	s=arc-20240116; t=1713732125; c=relaxed/simple;
+	bh=z4824Ee6qqvC/GnseeCAJpGQcHhKN07+uO/XSuUiVX4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QiL1629+eDmHX8VIf1Z3PbVtsVknp+wG1KCqqMJjV+4WGtT22AqAM7ZCoGYNkfypNtDtAbGT3hUjmOwLj8Lo+slEEngVUHgeguHXBrrCctx8pQYSIgP5Qjek0B784N61hYqGLEJCv431cxgDr6F/hygYKXu1j/ysNe7PEE3Si5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CNfD9/qz; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a53f131d9deso453757666b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 13:40:56 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-343cfa6faf0so3571473f8f.0;
+        Sun, 21 Apr 2024 13:42:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713732055; x=1714336855; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1F2AYoUrX3xb+yJo1emG/8LdWHKOcDQ2imrc4GccdNA=;
-        b=PZOanAhFKCuA6I1/ciQy/taZCkNiLbFMNQPfnmLOR/JLFl3oZWzwM+OttF1xQpxHBQ
-         BZ8sX6HGZQMaACDUGukVnTQGqyU0uOkem3lte1ViTlhTHzKNMclKJadywkKT20Qy1jci
-         62ddfNBdFvu6tTCNvFLLXbwV45N3PdVADI+pglNbCcGUSsUIAsy6dI1ElVgISUrT4XZC
-         iqWrd4MurksP1WvtKpovQ1S2JrK9xYGP8A7NkBd+CgpFgVXQlrj8l9AW5apBpWngL6FI
-         QKEN6Om9HO8pOwCyK2UZfS7aA3K53/OdagVjlC5lyVTsV/1O7kz2/307yz61cNn51/xT
-         HhSA==
+        d=gmail.com; s=20230601; t=1713732122; x=1714336922; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aNPRXKeC6yyHWdrE6FYU8LBAnN64lHTdyumHo/WiS+U=;
+        b=CNfD9/qzhUxVcizi/rCwFYVfJNwXmrtpa0jupZMd3OpcBL0Qy2PG4mRzpAIwBaTFkC
+         gPZXgPhN185XVnYb0KKA4dekWsWoV7pxpATmc1eiofO+sserdehQYbOSw6ayATA4URlt
+         tzb2yjYJ0tQnOZNnmDax27zrTRMx2ocTsWwNVgXui0k16CRdReqiUVDAsGZRgyQgWy+o
+         VN6KhTvsoNXys/Kc9fvylWaO9U1dO0PE+fBVQL2sQm6bhiB4bkMOTe2W5Nzq06UmVWLI
+         xt4qK4YoS9TzwRnXNWK5eKs8SlnnuyGyX0F34Ps14hZZnvTirMGpyri67wrO61GxNpKf
+         mmkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713732055; x=1714336855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1F2AYoUrX3xb+yJo1emG/8LdWHKOcDQ2imrc4GccdNA=;
-        b=iJii060+LUjB/qbmx06N9ARz9uEe5NqQFe2mnDDIyLJv5naRacvNm7mqKUv9Y+Osws
-         qTOWY1iHe+sRq0atZQ4lIYWptQXKRRfyKmCYxRq4eQ9YRSnEyPkLsk0mtk+kkkygQiMy
-         nrZNh5GlkO6ROqj6TUCqHM8XT7zSZRHFVUUlv4GcJBgSSLGErv7MD16pqJOaNucDeuB5
-         chDWgnoqYmV3ix4Vd8pFNEdLqDFoiGO4yPQkQvgEnblygnmcdKqF+DQXNwaHfWBnId7+
-         UHu6WkydHU4KawDYEyyh5+XTNyf70SWXpJBH6b5FVGgP8YAb+2bSXDHfKJqBnFrk3opf
-         h8TA==
-X-Forwarded-Encrypted: i=1; AJvYcCWMjR/ANRU830HYCx14tPNiOE254sXRVhIMLKKRx0mAE5uTm6Diy9gGAz1KlhI58FGucukdzaGEQj/LyqW0dsUsc8XmyhVEP0MwD6Fb
-X-Gm-Message-State: AOJu0YxS77sEo6pBraTctaH/UG9ySa7qM6otA4NtAD031YsijlkdIKYF
-	c59+UlrdZJLZoGjcI+Fh8BnArwqYFeoN59MrwVQOeoG6jq6hHm5YRqvUDa2UGQ/oFjZYa2tQJ78
-	GUEHwsuecJRXJW9Di6CWavlCt72o=
-X-Google-Smtp-Source: AGHT+IFDqKTWbGxYPECU4SJWFvjVAlvnj9Oea5SE8uKG2rQVE3W/y8rbYUbbbNPpZMChszJ8sDCZ+BupiDay0nsHc78=
-X-Received: by 2002:a17:906:eb44:b0:a51:a288:5af9 with SMTP id
- mc4-20020a170906eb4400b00a51a2885af9mr4749385ejb.51.1713732055105; Sun, 21
- Apr 2024 13:40:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713732122; x=1714336922;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aNPRXKeC6yyHWdrE6FYU8LBAnN64lHTdyumHo/WiS+U=;
+        b=oDudI5/nkdAgmQ61WxmiV4SD5Xx02stwlj7vyWDxM2RXj7Y+iicCthKAI/o++5GHU7
+         il6ddLkCkBxK9KAaz6e26USB1rBMK8gzSpdgNE3Qr57S8F3c88Uttbs80+i6uUsm3E19
+         8fOq++8te77OciHWFceDQ0llSood/GJIVffOx6AcE6tP5ex8yM5fQ8UD64haDmXdpg0K
+         VFcGh3uLvUq3k6/38bWSOANSWk8TbDfc9KGWxdEVETtWv9hkGb+AMubAWvc7NOYs7MPr
+         FCR/lrU9AYLsc1XClqyu6NaBAQTPUUvWZl+e+FAWvD6OZEAO9FAKJhZjFyEFWikRIwcY
+         odFA==
+X-Forwarded-Encrypted: i=1; AJvYcCV1Ey5RnmgQWgAX+brOiKBt8xwAQsdd2qHWOuDWjuohY0PqFlX8xLtB5KTCqR5g743bWYd02eMiSJ2pg64DxycfWIXI0mebEaLeeq9KKHzeQ/Sbc+TU34U077Zz6ssIvZCaOpBOe68YdFxcZYi/BnRnOYdk+UcCV7eGzi2o3p+z
+X-Gm-Message-State: AOJu0YwwrCGkpkbXg+ZQlBHY6K8DGCHnkvVzJwCvsrv8OgY+sCB4Uw3R
+	Ww+ndyRKFToAT5FFDP8Hc2chVPjqvQeoowguw0J9oR7f6P8jvBhg9V3QhMhU
+X-Google-Smtp-Source: AGHT+IG5XSpMhWBthw2oiOgEK9uBpkPJ1mVBk29Xr2Q0Bsmq5YBrrBRZMUzwD1AikBpM/o6mx9JxJw==
+X-Received: by 2002:adf:e683:0:b0:345:605e:fa38 with SMTP id r3-20020adfe683000000b00345605efa38mr6152183wrm.60.1713732121412;
+        Sun, 21 Apr 2024 13:42:01 -0700 (PDT)
+Received: from fedora (host-79-27-41-113.retail.telecomitalia.it. [79.27.41.113])
+        by smtp.gmail.com with ESMTPSA id z13-20020a17090655cd00b00a4739efd7cesm4944632ejp.60.2024.04.21.13.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Apr 2024 13:42:01 -0700 (PDT)
+Date: Sun, 21 Apr 2024 22:41:59 +0200
+From: Francesco Valla <valla.francesco@gmail.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Vincent Mailhol <vincent.mailhol@gmail.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Simon Horman <horms@kernel.org>,
+	Bagas Sanjaya <bagasdotme@gmail.com>, fabio@redaril.me
+Subject: Re: [PATCH v2 1/1] Documentation: networking: document ISO
+ 15765-2:2016
+Message-ID: <ZiV6FwQWECidli7D@fedora>
+References: <20240329133458.323041-2-valla.francesco@gmail.com>
+ <20240329133458.323041-3-valla.francesco@gmail.com>
+ <CAMZ6RqKLaYb+8EaeoFMHofcaBT5G2-qdqSb4do73xrgMvWMZaA@mail.gmail.com>
+ <9f5ad308-f2a0-47be-85f3-d152bc98099a@hartkopp.net>
+ <CAMZ6RqKGKcYd4hAM8AVV72t78H-Kt92NXowx6Q+YCw=AuSxKuw@mail.gmail.com>
+ <64586257-3cf6-4c10-a30b-200b1ecc5e80@hartkopp.net>
+ <Zh6qiDwbEnaJtTvl@fedora>
+ <d4a55991-0ccc-4e8f-8acb-56077600c9e0@hartkopp.net>
+ <CAMZ6RqJUHJdq30CrAzT26_RqpDOH_iMP8A6SKSAYrWBe-T+Oww@mail.gmail.com>
+ <94638dbd-4768-4110-b85f-f158ced21ba0@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1713559768.git.jpoimboe@kernel.org> <3b99cb2919c88ab3d353337423b2f0f1b9173f0a.1713559768.git.jpoimboe@kernel.org>
- <0c410ba5-0e42-43b6-80b8-a69c5419a97d@paulmck-laptop> <20240421052540.w7gtahoko2qerhqq@treble>
-In-Reply-To: <20240421052540.w7gtahoko2qerhqq@treble>
-From: Paul McKenney <paulmckrcu@gmail.com>
-Date: Sun, 21 Apr 2024 13:40:43 -0700
-Message-ID: <CAJzB8QF_+51+rrJmq3iXkaAbmbbyKYVf0m_LpQCRSLS_FgHUMQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] x86/syscall: Mark exit[_group] syscall handlers __noreturn
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, 
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>, 
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Alexandre Chartre <alexandre.chartre@oracle.com>, 
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Sean Christopherson <seanjc@google.com>, 
-	Andrew Cooper <andrew.cooper3@citrix.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Nikolay Borisov <nik.borisov@suse.com>, KP Singh <kpsingh@kernel.org>, 
-	Waiman Long <longman@redhat.com>, Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <94638dbd-4768-4110-b85f-f158ced21ba0@hartkopp.net>
 
-They apply fine as is, so I have started tests with that pair of patches.
+On Sat, Apr 20, 2024 at 09:51:41PM +0200, Oliver Hartkopp wrote:
+> On 17.04.24 17:21, Vincent Mailhol wrote:
+> 
+> > If we bump the version to :2024, then I suggest to:
+> > 
+> >    - add a first patch in this series to update Kconfig.
+> >    - add your documentation as a second patch directly with the :2024 version.
+> > 
+> 
+> Ok.
+> 
+> > I can also use ISO 11898-1 as an example. Our documentation says that
+> > we support ISO 11898-1:2015. The previous version: ISO 11898-1:2003 is
+> > not mentioned a single time in the full kernel tree. Yet, I do not
+> > think that any one was ever confused that the kernel may not be
+> > compatible with ISO 11898-1:2003.
+> > 
+> > If you really think that there is a risk of confusion, then maybe just
+> > adding a sentence to say that we support ISO 15765-2:2024 and all
+> > previous versions would be enough?
+> > 
+> > But overall, I do not see the benefit to keep the older version.
+> 
+> We currently have different occurrences of the 15765-2 term:
+> 
+> $ git grep "15765-2"
+> include/uapi/linux/can.h:#define CAN_ISOTP      6 /* ISO 15765-2 Transport
+> Protocol */
+> include/uapi/linux/can/isotp.h: * Definitions for isotp CAN sockets (ISO
+> 15765-2:2016)
+> net/can/Kconfig:        tristate "ISO 15765-2:2016 CAN transport protocol"
+> net/can/Kconfig:          ISO 15765-2:2016 for 'classic' CAN and CAN FD
+> frame types.
+> net/can/isotp.c:/* isotp.c - ISO 15765-2 CAN transport protocol for protocol
+> family CAN
+> net/can/isotp.c:MODULE_DESCRIPTION("PF_CAN isotp 15765-2:2016 protocol");
+> net/can/isotp.c:/* ISO 15765-2:2016 supports more than 4095 byte per ISO PDU
+> as the FF_DL can
+> net/can/isotp.c:/* maximum PDU size before ISO 15765-2:2016 extension was
+> 4095 */
+> 
+> I've sent a patch to remove the ISO 15675-2 specification version/date where
+> possible:
+> https://lore.kernel.org/linux-can/20240420194746.4885-1-socketcan@hartkopp.net/T/#u
+> 
+> This also makes clear where the ISO 15765-2:2016 remains helpful IMHO.
+> 
+> I would be fine to remove the version/date in the documentation from
+> Francesco where possible too.
+>
 
-                                              Thanx, Paul
+Ok, I'll follow this path (first RFC for this patch was without dates).
+I'll try to send a revised v3, also with the details on the mixed
+addressing, as soon as possible.
 
-On Sat, Apr 20, 2024 at 10:25=E2=80=AFPM Josh Poimboeuf <jpoimboe@kernel.or=
-g> wrote:
->
-> On Sat, Apr 20, 2024 at 06:58:58AM -0700, Paul E. McKenney wrote:
-> > On Fri, Apr 19, 2024 at 02:09:49PM -0700, Josh Poimboeuf wrote:
-> > > The direct-call syscall dispatch functions don't know that the exit()
-> > > and exit_group() syscall handlers don't return.  As a result the call
-> > > sites aren't optimized accordingly.
-> > >
-> > > Fix that by marking those exit syscall declarations as __noreturn.
-> > >
-> > > Fixes the following warnings:
-> > >
-> > >   vmlinux.o: warning: objtool: x64_sys_call+0x2804: __x64_sys_exit() =
-is missing a __noreturn annotation
-> > >   vmlinux.o: warning: objtool: ia32_sys_call+0x29b6: __ia32_sys_exit_=
-group() is missing a __noreturn annotation
-> > >
-> > > Fixes: 7390db8aea0d ("x86/bhi: Add support for clearing branch histor=
-y at syscall entry")
-> > > Reported-by: "Paul E. McKenney" <paulmck@kernel.org>
-> > > Closes: https://lkml.kernel.org/lkml/6dba9b32-db2c-4e6d-9500-7a08852f=
-17a3@paulmck-laptop
-> > > Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> >
-> > Looks good, but it does not apply on top of current -next and I don't
-> > trust myself to hand-apply it (something about having just got off of
-> > a flight across the big pond).
-> >
-> > Could you please let me know what else do I need to pull in to be able
-> > to cleanly apply this one?
->
-> This patch has a dependency on an earlier patch in the set:
->
->   https://lkml.kernel.org/lkml/982d05a2f669140f26500bee643011896d661094.1=
-713559768.git.jpoimboe@kernel.org
->
-> Though I think it's not a hard dependency and I could reverse the order
-> of the patches if needed.
->
-> --
-> Josh
+Thank you
+
+Regards,
+Francesco
+
 
