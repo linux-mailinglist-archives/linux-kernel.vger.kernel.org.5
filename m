@@ -1,190 +1,254 @@
-Return-Path: <linux-kernel+bounces-152652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2B678AC21B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 01:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DA458AC21D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 01:25:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 517D11F2160E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 23:23:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF1121F2162C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 23:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC1146537;
-	Sun, 21 Apr 2024 23:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3771345BF1;
+	Sun, 21 Apr 2024 23:25:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="IjERKFur";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="gbeOhgDI";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="IjERKFur";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="gbeOhgDI"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="nJzEhLFS"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59544437;
-	Sun, 21 Apr 2024 23:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A80FE8825
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 23:24:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713741779; cv=none; b=VHjECJhAweST09sRyVDbYTfC2uKMIMS87tVrU7M457DFlb7c3gROOFEGHyhClnvj9GistHxTQ2zzzB17F4WY9Oywj+kshCow2gSeKDC2tg4omYQF0ov5WQLn7ImDjQQ+bCNMKRSmQB9qCt3cwbUY/KQPUK2PQGBjNrQbKCioZN4=
+	t=1713741899; cv=none; b=RI0No0PInFEF+Ws3I/2HQy0A1QKP6Xjtdj4E1ZiGHegsWldKvVR/af2/o7dx5m9vsjL+apC05S1MM/YLOaOmuDiktaB5nFuVWQznqi/AzuYcJed8sRMRtuRc2acmupcGwTgJPMiEv79LTgs0X83QYNpHYRtxCnKmJ4s4/x7MRCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713741779; c=relaxed/simple;
-	bh=x7/9k3VUkArG5pgm3qecA36nkdPnWUn28VxB8zg3sgs=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=tyKMaR3ZAWVwh6AxqwZwkDcFQzwMNbOtX6q2wh3cdiNwEUpYO+WxWncFlwH2dia4gP/m9/Id9ceq5l3A1iiArJqqR9Rq00hEx0gODmW5r/8uZaauyC/t9FPI33BglyjaI6NpjjbU7Jf8RtfbjgcTZo1pUiJUvC7ZvrcrcTZuUXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=IjERKFur; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=gbeOhgDI; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=IjERKFur; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=gbeOhgDI; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B492F3470C;
-	Sun, 21 Apr 2024 23:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713741775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=itTVdaSaWpVAwo/eRp+XlnufM44f07MOYwHHeFt+cBo=;
-	b=IjERKFurEfo0l04lIurGTVPkHlOCkl6lPkxF9FFO30jMUDg8cOfPI6XY9rl8cVahn77gHv
-	g8ly4QKY9rQkFxqbNmgmp5ht1aC6mspXRP/1LYq28jQzVqUW24M5ajthM+o7RL8KPzFcvs
-	aLCArjw/wQUL6S71p9/yy/hqMkLbDzE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713741775;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=itTVdaSaWpVAwo/eRp+XlnufM44f07MOYwHHeFt+cBo=;
-	b=gbeOhgDIjmhSRmotPdrLXo3RqSblX5SSy9WqeZrguDNV9/3Avxf/qeFAKKyZLXhH5QM+WM
-	o4AC2/uGGbOTkWAA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=IjERKFur;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=gbeOhgDI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713741775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=itTVdaSaWpVAwo/eRp+XlnufM44f07MOYwHHeFt+cBo=;
-	b=IjERKFurEfo0l04lIurGTVPkHlOCkl6lPkxF9FFO30jMUDg8cOfPI6XY9rl8cVahn77gHv
-	g8ly4QKY9rQkFxqbNmgmp5ht1aC6mspXRP/1LYq28jQzVqUW24M5ajthM+o7RL8KPzFcvs
-	aLCArjw/wQUL6S71p9/yy/hqMkLbDzE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713741775;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=itTVdaSaWpVAwo/eRp+XlnufM44f07MOYwHHeFt+cBo=;
-	b=gbeOhgDIjmhSRmotPdrLXo3RqSblX5SSy9WqeZrguDNV9/3Avxf/qeFAKKyZLXhH5QM+WM
-	o4AC2/uGGbOTkWAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F37E13687;
-	Sun, 21 Apr 2024 23:22:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ar9KAMmfJWYobAAAD6G6ig
-	(envelope-from <neilb@suse.de>); Sun, 21 Apr 2024 23:22:49 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1713741899; c=relaxed/simple;
+	bh=stzyQbPCvW41vBOOdKf6MOMnKUO/Ci6yh18Wqxf2jqg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dTHlSbI7I4pz57gIJ6avXMn5lTAPs1VYb4fyzXxp3m3DqojXtuNTdf8gprjnvq4SvevO/a24q7stIjHCgmJHxh0xVHKNDK542kUEAKFca1T404l2e+/rLYSGzxfctkvhr5NiuxJUuxE1KeHZ6GUH1dXQRvN8v1csEQqd7f7OAFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=nJzEhLFS; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2ac9e8e4e3dso1651281a91.1
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 16:24:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1713741897; x=1714346697; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rBt5D80bdpRZmFA4sfWYoN65OvXd7gwmhoDVLF1qURU=;
+        b=nJzEhLFS8EcfTuxod2CzE3Da8K9jVL3DL2/skivVhuLYGfpZJF5QFA1uijaF8Wc6Ed
+         MINAR10HT7KssehgHl8PJ1xAFqYjKxDv6S76RFXs5Lca/xVvgN5phS8BwBDMoTS3q7gU
+         2Xh515FHXoAnlgmReINErxMA5VQnTyELUlhxSEjwcZVHtDB3VJh7vW+Eb3TtQTA9sKrB
+         YvZz0k+ukoivUjAeX8lfaqSaSYH66i9Pkbatbp9DlNFjJV0fHDw/zoXAWXcC8Ud/0BvA
+         2c8ijlU8PRKm/JMFgEaruDU7JtYZaUZ0ZowbQIsVBQKPopIFaDxdITY9Hlr01hZPidS1
+         lEnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713741897; x=1714346697;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rBt5D80bdpRZmFA4sfWYoN65OvXd7gwmhoDVLF1qURU=;
+        b=DYBSyUdoFnWEsk5R3DGzXVW09klTES4ECNpHSet76xHQ/ibpGmRBvYktUamMpty1Qk
+         0FkP5zzetX0p7+tjqTiQWwv5/qr0xGGLxL5dXIVFdyZBR/IurhyWFs5VxOINDpKGOxj9
+         7Uah35478QYZFJCENq/je7QRCzIxlZiThCezRRGnLUT6Viz3n9A/fXoJ9Lw6rPBPK5O0
+         zFINmV3ZnNMbWfmblQ98AjdaFuuj2FN6dAGJKkQ7crwIO8LKFtErfq56fF4ekU6edpjw
+         9p8HS0J8HELN5so2Jv7wkLIKd/USz6nMwKZ7L+LDZrpjJnJzTWjViBmlya2IeU8cl8Gd
+         QxVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVaFEMTtZU4CegKutygcC+k70p9rAOwoAdL017ap2oSe/3EbjF4SlTA8BFusECscI37lg6U6FtkvpuTgubR+iwGaO+w8j1f22WWbv6y
+X-Gm-Message-State: AOJu0YzbR3bF2TrWMiS/tRcsIAPITPsOwKUW6PIHhnAl75Wh5GRcnIAz
+	tsCKNT+aKd3ApPEEvZzVrvq27LnxW1iPMaatJN86UXJoXCQmqo6yYnQED/iH8/Y=
+X-Google-Smtp-Source: AGHT+IGWYEuQNzxC7wnyignXRUaCr0BcGSocgEdTMCaK6NMlEnLaUFRpn8o+qAV9gN85J+RI7xj0sg==
+X-Received: by 2002:a17:90b:1b0e:b0:2a2:830a:89a4 with SMTP id nu14-20020a17090b1b0e00b002a2830a89a4mr5611163pjb.41.1713741896686;
+        Sun, 21 Apr 2024 16:24:56 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
+        by smtp.gmail.com with ESMTPSA id i14-20020a17090a7e0e00b002a78cad14a8sm6420534pjl.30.2024.04.21.16.24.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Apr 2024 16:24:55 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rygYG-006J2o-1O;
+	Mon, 22 Apr 2024 09:24:52 +1000
+Date: Mon, 22 Apr 2024 09:24:52 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Ye Bin <yebin10@huawei.com>
+Cc: djwong@kernel.org, linux-xfs@vger.kernel.org, chandan.babu@oracle.com,
+	dchinner@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 1/2] xfs: fix potential create file failed
+Message-ID: <ZiWgRGWVG4aK1165@dread.disaster.area>
+References: <20240419061848.1032366-1-yebin10@huawei.com>
+ <20240419061848.1032366-2-yebin10@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Lex Siegel" <usiegl00@gmail.com>
-Cc: "Chuck Lever" <chuck.lever@oracle.com>, "Jeff Layton" <jlayton@kernel.org>,
- "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>,
- "Trond Myklebust" <trond.myklebust@hammerspace.com>,
- "Anna Schumaker" <anna@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, linux-nfs@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] xprtsock: Fix a loop in xs_tcp_setup_socket()
-In-reply-to: <20240420104801.94701-1-usiegl00@gmail.com>
-References: <20240420104801.94701-1-usiegl00@gmail.com>
-Date: Mon, 22 Apr 2024 09:22:35 +1000
-Message-id: <171374175513.12877.8993642908082014881@noble.neil.brown.name>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.27 / 50.00];
-	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	BAYES_HAM(-0.76)[84.23%];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	R_RATELIMIT(0.00)[from(RLewrxuus8mos16izbn)];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: B492F3470C
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.27
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240419061848.1032366-2-yebin10@huawei.com>
 
-On Sat, 20 Apr 2024, Lex Siegel wrote:
-> When using a bpf on kernel_connect(), the call can return -EPERM.
-> This causes xs_tcp_setup_socket() to loop forever, filling up the
-> syslog and causing the kernel to freeze up.
->=20
-> Signed-off-by: Lex Siegel <usiegl00@gmail.com>
-> ---
->  net/sunrpc/xprtsock.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-> index bb9b747d58a1..47b254806a08 100644
-> --- a/net/sunrpc/xprtsock.c
-> +++ b/net/sunrpc/xprtsock.c
-> @@ -2446,6 +2446,8 @@ static void xs_tcp_setup_socket(struct work_struct *w=
-ork)
->  		/* Happens, for instance, if the user specified a link
->  		 * local IPv6 address without a scope-id.
->  		 */
-> +	case -EPERM:
-> +		/* Happens, for instance, if a bpf is preventing the connect */
+On Fri, Apr 19, 2024 at 02:18:47PM +0800, Ye Bin wrote:
+> In the file system expansion test and concurrent file creation and
+> writing scenarios, file creation fails occasionally.
+> The detailed test scheme is as follows:
+> 1. If the remaining space is less than 128 MB, expand the space by 1 GB;
+>    --xfs_growfs /$DEV -D $bc -m 100
+> 2. 32 processes create a file every 0.5s and write 4 KB to 4 MB data randomly.
+>    --filesize=$((RANDOM % 1024 + 1))
+>    --dd if=/dev/zero oflag=direct of=$filename bs=4K count=$filesize
 
-This will propagate -EPERM up into other layers which might not be ready
-to handle it.
-It might be safer to map EPERM to an error we would be more likely to
-expect  from the network system - such as ECONNREFUSED or ENETDOWN.
+So this is racing growfs against a heap of concurrent file creates
+and 4kB direct IO writes which are doing individual 4kb allocations?
 
-Better still would be for kernel_connect() to return a more normal error
-code - not EPERM.  If that cannot be achieved, then I think it would be
-best for the sunrpc code to map EPERM to something else at the place
-where kernel_connect() is called - catch it early.
+And because of the way growfs works, after a while all the free
+space ends up in the last AG? i.e. there is effectively only one AG
+with free space that can be allocated out of?
 
-NeilBrown
+> There is a possibility that the file fails to be created after the preceding
+> steps are performed. However, when file creation fails, there are still
+> hundreds of megabytes of free space.
+
+Ok, but the problem with having transient ENOSPC conditions reported
+to the application is ....? I mean, this is pretty much expected
+behaviour when you are racing a highly concurrent create/write
+workload against ENOSPC and growfs....
 
 
->  	case -ECONNREFUSED:
->  	case -ECONNRESET:
->  	case -ENETDOWN:
-> --=20
-> 2.39.3
->=20
->=20
+> The process of failing to create a file
+> is as follows:
+>       Direct write                            create file
+> xfs_direct_write_iomap_begin
+>  xfs_iomap_write_direct
+>    ...
+>   xfs_alloc_ag_vextent_near
+>    xfs_alloc_cur_finish
+>     xfs_alloc_fixup_trees
+>      xfs_btree_delete
+>       xfs_btree_delrec
+>        xfs_allocbt_update_lastrec
+>         case LASTREC_DELREC:
+> 	 numrecs = xfs_btree_get_numrecs(block);
+> 	 if (numrecs == 0)
+> 	  len = 0;
+> 	 pag->pagf_longest = be32_to_cpu(len);
 
+At this point, the freespace tree is -empty-.
+
+i.e. We just removed the last free space from the tree, and the
+freespace code has no idea what the caller is going to do with that
+free space it just removed from the tree. It may well be using all
+of it, and so the AG must be marked as empty at this point as there
+is no free space remaining in it.
+
+Sure, xfs_alloc_fixup_trees() may well be about to insert the unused
+part of that back into the tree (i.e. the size has changed), but the
+btree tracking code has no way of knowing this, nor does
+xfs_alloc_fixup_trees() have any way of knowing that this is
+actually the last freespace extent in the btree that it is
+manipulating....
+
+So, yeah, the lastrec update code has to do this, even for transient
+updates.
+
+> 	                                xfs_generic_create
+> 					 xfs_create
+>                                           xfs_dialloc
+> 					   for_each_perag_wrap_at
+> 					    xfs_dialloc_good_ag
+
+Did you check what this code does? It samples pag->pagf_longest
+to determine if the AG has enough space for the inode chunk
+allocation. So this check here ran before the last free space record
+was removed from the AG and said "there's enough space here!".
+
+This is how we scan AGs to find an allocation target - we do
+unlocked peeks at the freespace state and determine the best AG to
+allocate from. If this doesn't find an AG with enough space, then
+we'll declare ENOSPC here without even getting to the allocation
+code that takes AGF locks. We most certainly don't want this code
+taking locks here to avoid transient values....
+
+> 					     xfs_dialloc_try_ag  ->The last AG to alloc inode
+> 					      xfs_ialloc_ag_alloc
+> 					       ...
+> 					       xfs_alloc_vextent_prepare_ag
+> 					        xfs_alloc_fix_freelist
+> 						 xfs_alloc_space_available
+> 						  longest = xfs_alloc_longest_free_extent()
+> 	                                           ->As pag->pagf_longest is equal to zero
+> 						     longest is equal 1
+> 	                                          if (longest < alloc_len)
+> 	 						return false;
+> 						  -> will return false, no space to
+> 						     allocate for inode
+
+But at this point where we sample the AG freespace we find that it
+is at ENOSPC, so the allocation is failed and returned back to the
+for_each_perag_wrap_at() loop for it to try a different AG. If no
+AGs can be allocated from, then ENOSPC is returned to the user.
+
+Essentially, the test case is resulting in a single freespace extent
+remaining in the very last AG with space available.  This is a large
+extent because of the fact grwofs is adding contiguous 1GB freespace
+extents one at a time, and this ends up being the only free space
+available for allocation from. This is purely caused by the repeated
+growfs component of the workload, and hence when any allocation
+from the last AG fails, there is no fallback and userspace gets
+ENOSPC.
+
+> As there isn't hold AGF buffer's lock when call xfs_alloc_space_available()
+> first time in xfs_alloc_fix_freelist(). If remove the last right leaf record
+> of CNT btree will update 'pag->pagf_longest' with zero. This process is hold
+> AGF buffer's lock.
+>
+> Above test case constructs repeatedly allocate space within
+> the same AG, increasing the concurrency between the two processes.
+> To solve above issue, there's need to hold AGF buffer's lock before call
+> xfs_alloc_space_available() to judge space is available for request.
+
+Please think a little more carefully about what the code you are
+changing actually does. xfs_alloc_space_available() uses a
+"check-lock-check again" algorithm, and so moving the locking so it
+is a "lock-check-check again" makes the second set of checks
+redundant.....
+
+----
+
+Regardless, as I implied above about the AG selection scanning, I
+don't think this is the right way to fix this issue.  We don't want
+AGs at ENOSPC to require scanners to take the AGF lock to determine
+if they really are at ENOSPC or not.  This adds significant overhead
+and latency to the allocation algorithm, especially as AG count
+climbs into the thousands and allocations may have to scan hundreds
+to thousands of AGs as we near ENOSPC to find the best candidate to
+allocate from.
+
+What we actually want is for pag->pagf_longest not to change
+transiently to zero in xfs_alloc_fixup_trees(). If the delrec that
+zeroes the pagf_longest field is going to follow it up with an
+insrec that will set it back to a valid value, we really should not
+be doing the zeroing in the first place.
+
+Further, the only btree that tracks the right edge of the btree is
+the by-count allocbt. This isn't "generic" functionality, even
+though it is implemented through the generic btree code. If we lift
+->update_lastrec from the generic code and do it directly in
+xfs_alloc.c whenever we are finished with a by-count tree update
+and the cursor points to a record in the right-most leaf of the
+tree, then we run the lastrec update directly at that point. 
+By decoupling the lastrec updates from the individual record
+manipulations, we can make the transients disappear completely.
+
+This means all the unlocked AG scanning and the
+the check-lock-check again algorithm in xfs_alloc_space_available()
+would never see transients and so work reliably in these rare
+post-growfs-from-total-ENOSPC situations...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
