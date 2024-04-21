@@ -1,71 +1,100 @@
-Return-Path: <linux-kernel+bounces-152468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F9C28ABEE0
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:32:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA41C8ABEE3
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:40:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0C48B20B9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 09:32:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB8E4280FD3
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 09:40:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C669A101CE;
-	Sun, 21 Apr 2024 09:31:55 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BCA3232;
-	Sun, 21 Apr 2024 09:31:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA45101CE;
+	Sun, 21 Apr 2024 09:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RK38kFE3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB5233E8
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 09:40:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713691915; cv=none; b=OIOHvsetvmtsYceWDs1nfes16WDFMvN3AgXTlOM6MEBXsAtrCOgKBzsqsuN+CdHUy7P4wUV4dYctzxx3h/XbwsC3V50Fpcq9l5I+1gwl+ODY3Q8W86s8QaaNu2g7BSJrmTBPBM7HyXM6hT+DLurJFSJh4SKknFDAnPE917h7OU8=
+	t=1713692412; cv=none; b=Pd+9GnDKLr9q4jIlmjNACx9Rg8nsZT6OAapA+ZLQ8RcEYrNhfDU2LAPLJeMggioK4RKsAeTLeyZlEbsrk82+mtTcqkf8hhp79SUdzVR7+sb3Uw4fvYj0M60TMWBSftYOr9TJYGeFaVii55W/hZXZrFGPu+6nTbeByMEDBSy6S4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713691915; c=relaxed/simple;
-	bh=KKW2RTp1B3WeXO3e6hwdWWI5bnAKqUwrrDyXZbIeMvk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HvXWxD0W/lW2akvk998i5ORFNpIyfmUBPAT68ZjDPEkspVOGNSYfsh0CHaOalrTnpbDsDcSaBNro4KxqJVhdo9UiIjmy5ehWAs/uXPTmYEnpAPbwUQfUSigt3VrO1lobzSYCH6/X8btLJ65QpACF6bJJr+dDgw37cgdSaBjO2NQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23FA9339;
-	Sun, 21 Apr 2024 02:32:20 -0700 (PDT)
-Received: from pluto (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8FBA3F792;
-	Sun, 21 Apr 2024 02:31:48 -0700 (PDT)
-Date: Sun, 21 Apr 2024 10:31:41 +0100
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Stephen Boyd <sboyd@kernel.org>, sudeep.holla@arm.com
-Cc: linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org, james.quinlan@broadcom.com,
-	f.fainelli@gmail.com, vincent.guittot@linaro.org,
-	peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com,
-	quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
-	mturquette@baylibre.com
-Subject: Re: [PATCH v3 0/5] Rework SCMI Clock driver clk_ops setup procedure
-Message-ID: <ZiTc_Rbh81eFUTw1@pluto>
-References: <20240415163649.895268-1-cristian.marussi@arm.com>
- <6b8e12767fdfaf1ba819896fbd610733.sboyd@kernel.org>
+	s=arc-20240116; t=1713692412; c=relaxed/simple;
+	bh=A+bRmPKjoz96xGNaOFtiFcdMLMA2ZVOlTHGFWBCSG64=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gUSr4ym25Fc4P7AoYnNo0L6zUI+QmLulVFTbVNCQSKtbr7v5F6CuW7caOjRjVyOKUGom1JU7KHW5WWrBT1kFLnctEldLJtowEhMGEl23VaOmS2oB2tcugVXpZI8OrN1VT+sItEoMzZ378BocwPEFWEzS0MZ3I/X95Rh3XzeaEjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RK38kFE3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33BBDC113CE;
+	Sun, 21 Apr 2024 09:40:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713692412;
+	bh=A+bRmPKjoz96xGNaOFtiFcdMLMA2ZVOlTHGFWBCSG64=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RK38kFE3LJvSK7zCn3VlbNvu4ip84JeaPzVMnFJgBVNNUlJVPJSP8JSoT7aZIbL/2
+	 wTGtyk4tDzvh81dliviioBdZ0ntdTXF4vLviKB23XzwqUAjjwFs/aVYjUkwGr3SKxZ
+	 nVHNbQXgAEwJOW6jAzzK1YEVApVE4sz0AaR3M4q5nc46QzoxUifVj4EngekcHRCWsG
+	 YuSrp/ryVfmSGdLSdI8aaBWJCvL1A8YkWHrk4/xjMSUGO758GZtYbQfTWmA0PlaMav
+	 VqqtaQXqyetaL11nV3GOrz6aBa4WE+nsDetuZbcEzDe1a9oGDvwivaDsrS7QFk/RRs
+	 JC6GeGzA6SDYA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1ryTg9-006VoM-TW;
+	Sun, 21 Apr 2024 10:40:10 +0100
+Date: Sun, 21 Apr 2024 10:40:09 +0100
+Message-ID: <86plujqcjq.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Shiqi Liu <shiqiliu@hust.edu.cn>
+Cc: catalin.marinas@arm.com,
+	will@kernel.org,
+	broonie@kernel.org,
+	anshuman.khandual@arm.com,
+	suzuki.poulose@arm.com,
+	miguel.luis@oracle.com,
+	joey.gouly@arm.com,
+	oliver.upton@linux.dev,
+	jingzhangos@google.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/sysreg: Update PIE permission encodings
+In-Reply-To: <20240421063328.29710-1-shiqiliu@hust.edu.cn>
+References: <20240421063328.29710-1-shiqiliu@hust.edu.cn>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b8e12767fdfaf1ba819896fbd610733.sboyd@kernel.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: shiqiliu@hust.edu.cn, catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org, anshuman.khandual@arm.com, suzuki.poulose@arm.com, miguel.luis@oracle.com, joey.gouly@arm.com, oliver.upton@linux.dev, jingzhangos@google.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Fri, Apr 19, 2024 at 07:08:54PM -0700, Stephen Boyd wrote:
-> Quoting Cristian Marussi (2024-04-15 09:36:44)
-> > Hi,
-> > 
-> > a small series to review how the SCMI Clock driver chooses and sets up the
-> > CLK operations to associate to a clock when registering with CLK framework.
+On Sun, 21 Apr 2024 07:33:28 +0100,
+Shiqi Liu <shiqiliu@hust.edu.cn> wrote:
 > 
-> Did you want me to merge this through clk tree?
+> Fix left shift overflow issue when the parameter idx is greater than or
+> equal to 8 in the calculation of perm in PIRx_ELx_PERM macro.
+> 
+> Fix this by modifying the encoding to use a long integer type.
+> 
+> Signed-off-by: Shiqi Liu <shiqiliu@hust.edu.cn>
 
-Up to @Sudeep really...
+Nice catch.
 
-Thanks for the reviewing this series.
-Cristian
+Acked-by: Marc Zyngier <maz@kernel.org>
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
