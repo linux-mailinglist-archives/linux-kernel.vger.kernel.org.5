@@ -1,154 +1,197 @@
-Return-Path: <linux-kernel+bounces-152595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98CFB8AC0EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 21:23:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 779FC8AC0FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 21:42:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB4511C208BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 19:23:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDD8D1F21008
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 19:42:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C303FB8B;
-	Sun, 21 Apr 2024 19:23:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EEE40BE1;
+	Sun, 21 Apr 2024 19:42:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YJYXt8o3"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gZaB4ytO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996523D38F
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 19:23:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA3D111AD;
+	Sun, 21 Apr 2024 19:42:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713727419; cv=none; b=Su3Y9ieK71FEH9CmythN9OsSPSLSCyXC8dGgKoirtpEWJqoeuUDBkIisHlPlzduWsiPjTJP916LkPstm8+CZM81ESAkxtrW1TKI0CQzy1FyF0e8Vf2k2/SV5R8XXj1f3EnxFSP5RDu8tS3Wit3s2nDeSDefNCiN3axxuILyHZhA=
+	t=1713728534; cv=none; b=Y0iP/TnWWvS6vxVPoZ1p5h+wxd4tyBHmXE6fVEN2OnvDiP7A4cpV2O57K83gwkWKwtpgnWxTvRM8XfC4wqkV/FdPhAYEdFx0/uHlPlkklhfMZ/7UVX4XsGuv9osqjh/nEzg+Gc+xWXwTUCVzRj8c1AynBLEe2eiRIyL4TxbHIIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713727419; c=relaxed/simple;
-	bh=ko3baWa0bXarvAUBkLoisnJ87lFgJ97JsurMB9rDxfk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e8P7g/HVjfOQZLWfjgwCSoPjtP3HUhHHIJXrhDf0PFRfv80Xx4dVbqII/xXF7H94oH2Y6bwqidqEyV7iukx+5zfL6pGrEdx1yGaASaUEdJY6ItegD5GZSBbw8OS6rZcw5296VxBoey/rpgDAvoGBlz7BnW4X9G8hd9VWkmlNHzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YJYXt8o3; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-437b3f256easo18510361cf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 12:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713727416; x=1714332216; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mqhW4D4jLVsKH1utbHDn/iKJztmh2klhA7VKP20qINw=;
-        b=YJYXt8o3ISIOOewEaP0VkMBiYskRWkaijkP77qqV275dtOHf4fGO3AYekbZ2+NH9qu
-         ir2kRyADd48L3HOnKxn+logXIIFNoHhp1A10YbKNGrhXANPjHvI37n/YZ6uL7tx76YzQ
-         WE29s1Gxv8rnVw6yiiTbzOvewZ5JlqCetlyt8Pdj0UBLSq5CsNzNVcU3l/mEuGsgw1Kh
-         r3gp6K+bMoP9z4olFRBNCbmCAS7DtMS9meakHSUgVF/KOerCio3PRsCsrh1E61jGW/Z+
-         84t3TT6pTCgmCEDE3g4Bmbfj9fSQD2Vd5/5ReVYDzbolFDzDcMP/5miHVOUasFA5f+6N
-         gJrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713727416; x=1714332216;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mqhW4D4jLVsKH1utbHDn/iKJztmh2klhA7VKP20qINw=;
-        b=L86exAPKHHw8TjVxwN9nbR9IMrxjJtFV8qhdWXSLnN0u1RpbvHqt9KzHUTSeoYCumL
-         anmiVA2kQKEIaG/5ovYYz9Fxruv4SLru1uQNHEQ1rELjXtw5ngumZIrFJWWAfWFzp8Dm
-         UwGtywlINftFn+q7/3O3KX7c1Ps95ScS2shsmWSYWivkU4gqOF108RD4FlZ4ozWCLdBf
-         Eh6uM8a+kYOeM7oHgjNFnpn+dORy7eZrqvlxXAxNn6ieQhYl0ui/BlrJkZ1A3F9p/vJi
-         9uir+b/rwDCQTxzPE3ecCjSwzQtY5Z4kcjxcEL1YqJnHQw5eHC+4EV6hTuoZKAJElW3O
-         TUWA==
-X-Forwarded-Encrypted: i=1; AJvYcCXd4KIkZhI9h1l0snfZ932fk2fn5e71arDKbh5pY/c9358djXj3n1Y2VHVRgxcp/YmpR5lMEkSujFTv1KuLWOfXnap5gjzdcIrAMg1x
-X-Gm-Message-State: AOJu0YzawD+n6Zpdc1a7KdkCSwZUCdjLl2saFWNYmfkPEQ9NvorAbxZc
-	W+AQGnb+6NLeLiRFurGna9zpbqcXFqFclQfakudyIDS7TqAxRHcijJFe9CxGOcc=
-X-Google-Smtp-Source: AGHT+IFG+MgI9P5zvYhi3oK9zNce0+Wm/zV3xYro6FQoOvWRlykWswFzedE1EssCx/FegZrr7XDg8Q==
-X-Received: by 2002:a05:622a:1a02:b0:437:9f6e:81be with SMTP id f2-20020a05622a1a0200b004379f6e81bemr11102550qtb.25.1713727416517;
-        Sun, 21 Apr 2024 12:23:36 -0700 (PDT)
-Received: from [10.211.55.3] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.gmail.com with ESMTPSA id w2-20020ac84d02000000b00435163abba5sm3604873qtv.94.2024.04.21.12.23.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Apr 2024 12:23:35 -0700 (PDT)
-Message-ID: <5d580dd8-8510-4754-982a-131ea994923e@linaro.org>
-Date: Sun, 21 Apr 2024 14:23:33 -0500
+	s=arc-20240116; t=1713728534; c=relaxed/simple;
+	bh=gIKpSlxxyTXiwHNJi87AQFzch96UtGO6YnydbxDTCHc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jXR24WQttGjSbhbeja/ECtq7hZgx+Pn1TtDXwn6m8OCWstTmOOZVncWuDqOFeCirZcVK7dEae9M3UGSUnTQs4pg7xey9Kakiy/pdHQ0ZI5hzUguTWQVFvj3F/DGUxb/7sSvhJn0bdoBBjwVkBjxrbPGY4RD24CcIiWWbO3nl1Qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gZaB4ytO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3B45C113CE;
+	Sun, 21 Apr 2024 19:42:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713728533;
+	bh=gIKpSlxxyTXiwHNJi87AQFzch96UtGO6YnydbxDTCHc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gZaB4ytOauw4EDbDgzzkzYtw9H4vlC15TA4wv1npMAVnmpSBWwVGGle4ZZ4OuGcKb
+	 8gZMdv4SSAgNOiPIcFiQ7g0dwaEoic2o4RVjbBfWKuOsJEffM3iv0g3lh4f/4SIEP3
+	 0jnAtlHq5Qeb1LhU5lPBYVf1+acY4/6DXklt5tDor6obCY+Hz+DzzhZcTjspvifM4B
+	 p5Am065u4yKELu0nMn2iyEj2mjGmVTiQ6w/gfXOC1V9XADRh15aMfLMKXevDSL17M0
+	 Loqsz9NwRBPN0FvVKz/yfimG36sK/jlQTl+Ow7xSqNh47Zsn80GjLoc9XajrH42syt
+	 tQh3tdNJ1cgKQ==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	x86@kernel.org,
+	bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>
+Subject: [PATCHv3 bpf-next 0/7] uprobe: uretprobe speed up
+Date: Sun, 21 Apr 2024 21:41:59 +0200
+Message-ID: <20240421194206.1010934-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] mailmap: add entries for Alex Elder
-Content-Language: en-US
-To: Bjorn Andersson <andersson@kernel.org>, Alex Elder <elder@linaro.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, mka@chromium.org, quic_cpratapa@quicinc.com,
- quic_avuyyuru@quicinc.com, quic_jponduru@quicinc.com,
- quic_subashab@quicinc.com, elder@kernel.org, netdev@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240421151732.2203345-1-elder@linaro.org>
- <kabhsybtcfg6ky46rwry462dpql2k6mcrnb7w7xtb5d2httg7r@lg6rbbmaiggp>
-From: Alex Elder <alex.elder@linaro.org>
-In-Reply-To: <kabhsybtcfg6ky46rwry462dpql2k6mcrnb7w7xtb5d2httg7r@lg6rbbmaiggp>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/21/24 11:16 AM, Bjorn Andersson wrote:
-> On Sun, Apr 21, 2024 at 10:17:32AM -0500, Alex Elder wrote:
->> Define my kernel.org address to be the canonical one, and add mailmap
->> entries for the various addresses (including typos) that have been
->> used over the years.
->>
->> Signed-off-by: Alex Elder <elder@linaro.org>
->> ---
->>   .mailmap | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/.mailmap b/.mailmap
->> index 8284692f96107..a78cd3d300eb1 100644
->> --- a/.mailmap
->> +++ b/.mailmap
->> @@ -38,6 +38,18 @@ Alexei Starovoitov <ast@kernel.org> <alexei.starovoitov@gmail.com>
->>   Alexei Starovoitov <ast@kernel.org> <ast@fb.com>
->>   Alexei Starovoitov <ast@kernel.org> <ast@plumgrid.com>
->>   Alexey Makhalov <alexey.amakhalov@broadcom.com> <amakhalov@vmware.com>
->> +Alex Elder <elder@kernel.org>
->> +Alex Elder <elder@kernel.org> <aelder@sgi.com>
->> +Alex Elder <elder@kernel.org> <alex.elder@linaro.org>
->> +Alex Elder <elder@kernel.org> <alex.elder@linary.org>
->> +Alex Elder <elder@kernel.org> <elder@dreamhost.com>
->> +Alex Elder <elder@kernel.org> <elder@dreawmhost.com>
->> +Alex Elder <elder@kernel.org> <elder@ieee.org>
->> +Alex Elder <elder@kernel.org> <elder@inktank.com>
->> +Alex Elder <elder@kernel.org> <elder@kernel.org>
->> +Alex Elder <elder@kernel.org> <elder@linaro.org>
->> +Alex Elder <elder@kernel.org> <elder@newdream.net>
->> +Alex Elder <elder@kernel.org> Alex Elder (Linaro) <elder@linaro.org>
-> 
-> Isn't this form (with the name in the middle) when you want to be able
-> to map one email with two different names, to two different addresses?
-> 
-> As described in last example in the "gitmailmap" man page?
-> 
-> I think thereby this would be a duplicate with the entry two lines
-> above?
+hi,
+as part of the effort on speeding up the uprobes [0] coming with
+return uprobe optimization by using syscall instead of the trap
+on the uretprobe trampoline.
 
-I interpreted this form as meaning "change both the
-name and the e-mail" but I tried deleting that last
-one and it still mapped properly.  I also just noticed
-that I mapped @kernel.org to @kernel.org, which is
-dumb.
+The speed up depends on instruction type that uprobe is installed
+and depends on specific HW type, please check patch 1 for details.
 
-I'll send v2.  Thank you.
+Patches 1-6 are based on bpf-next/master, but path 1 and 2 are
+apply-able on linux-trace.git tree probes/for-next branch.
+Patch 7 is based on man-pages master.
 
-					-Alex
+v3 changes:
+  - added source ip check if the uretprobe syscall is called from
+    trampoline and sending SIGILL to process if it's not
+  - keep x86 compat process to use standard breakpoint
+  - split syscall wiring into separate change
+  - ran ltp and syzkaller locally, no issues found [Masami]
+  - building uprobe_compat binary in selftests which breaks
+    CI atm because of missing 32-bit delve packages, I will
+    need to fix that in separate changes once this is acked
+  - added man page change
+  - there were several changes so I removed acks [Oleg Andrii]
 
-> 
-> Regards,
-> Bjorn
-> 
->>   Alex Hung <alexhung@gmail.com> <alex.hung@canonical.com>
->>   Alex Shi <alexs@kernel.org> <alex.shi@intel.com>
->>   Alex Shi <alexs@kernel.org> <alex.shi@linaro.org>
->> -- 
->> 2.40.1
->>
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  uretprobe_syscall
 
+thanks,
+jirka
+
+
+Notes to check list items in Documentation/process/adding-syscalls.rst:
+
+- System Call Alternatives
+  New syscall seems like the best way in here, becase we need
+  just to quickly enter kernel with no extra arguments processing,
+  which we'd need to do if we decided to use another syscall.
+
+- Designing the API: Planning for Extension
+  The uretprobe syscall is very specific and most likely won't be
+  extended in the future.
+
+  At the moment it does not take any arguments and even if it does
+  in future, it's allowed to be called only from trampoline prepared
+  by kernel, so there'll be no broken user.
+
+- Designing the API: Other Considerations
+  N/A because uretprobe syscall does not return reference to kernel
+  object.
+
+- Proposing the API
+  Wiring up of the uretprobe system call si in separate change,
+  selftests and man page changes are part of the patchset.
+
+- Generic System Call Implementation
+  There's no CONFIG option for the new functionality because it
+  keeps the same behaviour from the user POV.
+
+- x86 System Call Implementation
+  It's 64-bit syscall only.
+
+- Compatibility System Calls (Generic)
+  N/A uretprobe syscall has no arguments and is not supported
+  for compat processes.
+
+- Compatibility System Calls (x86)
+  N/A uretprobe syscall is not supported for compat processes.
+
+- System Calls Returning Elsewhere
+  N/A.
+
+- Other Details
+  N/A.
+
+- Testing
+  Adding new bpf selftests and ran ltp on top of this change.
+
+- Man Page
+  Attached.
+
+- Do not call System Calls in the Kernel
+  N/A.
+
+
+[0] https://lore.kernel.org/bpf/ZeCXHKJ--iYYbmLj@krava/
+---
+Jiri Olsa (6):
+      uprobe: Wire up uretprobe system call
+      uprobe: Add uretprobe syscall to speed up return probe
+      selftests/bpf: Add uretprobe syscall test for regs integrity
+      selftests/bpf: Add uretprobe syscall test for regs changes
+      selftests/bpf: Add uretprobe syscall call from user space test
+      selftests/bpf: Add uretprobe compat test
+
+ arch/x86/entry/syscalls/syscall_64.tbl                    |   1 +
+ arch/x86/kernel/uprobes.c                                 | 115 ++++++++++++++++++++++++++++++
+ include/linux/syscalls.h                                  |   2 +
+ include/linux/uprobes.h                                   |   3 +
+ include/uapi/asm-generic/unistd.h                         |   5 +-
+ kernel/events/uprobes.c                                   |  24 +++++--
+ kernel/sys_ni.c                                           |   2 +
+ tools/include/linux/compiler.h                            |   4 ++
+ tools/testing/selftests/bpf/.gitignore                    |   1 +
+ tools/testing/selftests/bpf/Makefile                      |   6 +-
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c     | 123 +++++++++++++++++++++++++++++++-
+ tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c   | 362 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/uprobe_syscall.c        |  15 ++++
+ tools/testing/selftests/bpf/progs/uprobe_syscall_call.c   |  15 ++++
+ tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c |  13 ++++
+ 15 files changed, 681 insertions(+), 10 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
+ create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
+
+
+Jiri Olsa (1):
+      man2: Add uretprobe syscall page
+
+ man2/uretprobe.2 | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+ create mode 100644 man2/uretprobe.2
 
