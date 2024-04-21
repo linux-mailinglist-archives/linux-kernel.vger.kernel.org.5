@@ -1,93 +1,111 @@
-Return-Path: <linux-kernel+bounces-152446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAAC68ABE8A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 06:06:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED6FE8ABE9C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 07:25:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77182281176
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 04:06:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 167A41F211B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 05:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5B979DC;
-	Sun, 21 Apr 2024 04:06:10 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1238C07;
+	Sun, 21 Apr 2024 05:25:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fdsS0b1W"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6184C8B
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 04:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84064437
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 05:25:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713672370; cv=none; b=rj+/+PPbh2ThDk2k/XrOWdQXrSdzuwAGdIgvJ8tm7vLtOmI+rQBEgQCXHHp4Y6vKsLChguBzqk7h3ECuYiJ/2BZjfXSqY0ul3QmBlYKWmewqwpvILKfglvRoKvo8iNAvekbrVc1tDI9Qc8EFCdXVlqILopCX37RaotmTuVyHGuE=
+	t=1713677144; cv=none; b=OMi5pJJGOUsZcpq5aCgwYakCokUWGix2rUzDWrfZuUbSNOGng3p51jUHHzquBvzEux6h1wWtGTmCJy1b8NhcoEb8Esl6bfKEjwCpcAhuM15uwLh0tFrO2OosqzMd5FW6MdvkfwscwZHtJJGElSIBZBHEcDffYyJoCp+ZZ9RFEBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713672370; c=relaxed/simple;
-	bh=ivnupM3viXPGONEHVF7SgtTpM+1Bg7+RollTeSsoAcc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=S7FY8MKXRl9Tu0XGfszgDHPsHNdPxpeK24OhdjybZyUGGTdSCIQWYRbQcW/rgrTGGzfbIHAgliI3rdrA01RrSqU4Xh4mHZ6NXVQtVi5EZlrNFZMZIwPSCYaVkX3iOHAj2+HJvt6up4vuXN6t1DQT5oi9QJY380RS7sQnSdsNCMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d5f08fdba8so437852139f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 21:06:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713672364; x=1714277164;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UU7nndG2AnvwqiWCSKJ6rau9gqHABbkSdqnDcP3B6EE=;
-        b=pP9zA3FRFx809pI+VUzG4m2H75tqTbqFL4PNa776pZN9wQ0eAzjnxd67vzbaIOL7m5
-         0jj1YoA7eb8HAQXJ/c1jdPhJgHyEqOcdw4JhYvJnGfQIRStOsULoDI3FHI02qpNEsRi3
-         fn0BMYkv3PG7BfSHtbvnJeRncMc/gyrPRvfM0ChRw1lzRUk3IEHi5MSW4cW6BFt7LLdB
-         OWrvnLzA5qz5JuQqovyEp7tF1108NXP2fsSrx9xrezFb2TTtNFE+V19mfaebgi+beW00
-         xAtTm8j0JEtELk8G+HOlZ2a62fAMkN/sCMUzCUw7AjuJCE75CmK9jPmGlTWIVLPesTkb
-         71cw==
-X-Forwarded-Encrypted: i=1; AJvYcCUjrJroi/lYnCYeHUti2ikpzdrxetdJ/rq3DK07/N7YdU+tjzngk+qQPNH5hQJRIavgmTuYJaRVmby6Np21bxgZcPnuowqYTs56xFtp
-X-Gm-Message-State: AOJu0Yzgci27WCJl7+OJBAbU85yyEqOtKQDiZ9hLXLTliUOvvhEjicJn
-	WK2oOFx8DlErQlWFAkKSBSbPFAhjKtXDsMvm/pMYuLARG6HYQThX6L6soIquuT/oIYU3x6b4e6/
-	uKGC0xmSXrBrZjkKgaxtC2QFmBxfjzcEn4w4xH1pn3QS/jzDmcE19rUM=
-X-Google-Smtp-Source: AGHT+IHrmIgNYp/ns7pE6R2KqnJFtlVnW9sIUOTGXy0FKhzo9u5sqReX0dTErI4ygwlIkJAx+ytQE1wfPGIhgzhnWotOz+ClHbeG
+	s=arc-20240116; t=1713677144; c=relaxed/simple;
+	bh=8897UkikHcygbe4N3ix+irQK9I4HgjF9WNURVeDcTNs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TEEAioUryZWh8i3QltOgfaV2GFfXR3BHmqZ4JFE4emzLdmkYmoQtANSvLFty4lR12PXlcYm4eBXJ3sfpj9kckxgAPnK4uyUB8KROo89cdNDgoU1GDuSKJIed1+y40HPGoBn/PH+RNKtz9gIcqlmE+IIQNsjSBiZfOJrO7wxRFQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fdsS0b1W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA8FFC2BD10;
+	Sun, 21 Apr 2024 05:25:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713677144;
+	bh=8897UkikHcygbe4N3ix+irQK9I4HgjF9WNURVeDcTNs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fdsS0b1WJV6G/qdyQzYD9Pl8zYlOKJxpZ1Ayb/UU/a5MRpjpBgufPbw+Kt5rO+E7f
+	 tcyOGMQaTecPjubm7xtHmXAxRp6G4cj5/or209HBQ7qzrLg6oqboqSYZXsPncT9Wod
+	 FEG2cw1WFafbBJsGpc4v0n4MMxWOkqIiGGFv8Dp9Spz1IkJIOHnAKNd8fPmTJI/46j
+	 iSjJ8VgoodV2dZAYGY4NtGyudxs+8sIaYEn9QhgPefgYr8f25gbe9R5xxsAP+VdDhz
+	 7Gp+kDNQIj9qzC8jcWBl6T8bxcRu/GzlU+5WEQE/VFajSy1eSyMmcjQ9APrUQFS/uZ
+	 ZGF2IgORgQqsw==
+Date: Sat, 20 Apr 2024 22:25:40 -0700
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexandre Chartre <alexandre.chartre@oracle.com>,
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v4 3/5] x86/syscall: Mark exit[_group] syscall handlers
+ __noreturn
+Message-ID: <20240421052540.w7gtahoko2qerhqq@treble>
+References: <cover.1713559768.git.jpoimboe@kernel.org>
+ <3b99cb2919c88ab3d353337423b2f0f1b9173f0a.1713559768.git.jpoimboe@kernel.org>
+ <0c410ba5-0e42-43b6-80b8-a69c5419a97d@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4109:b0:485:30d9:5e7b with SMTP id
- ay9-20020a056638410900b0048530d95e7bmr30128jab.0.1713672364352; Sat, 20 Apr
- 2024 21:06:04 -0700 (PDT)
-Date: Sat, 20 Apr 2024 21:06:04 -0700
-In-Reply-To: <000000000000c1fa0506166fdcfe@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000089f36106169370d0@google.com>
-Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in unix_del_edges
-From: syzbot <syzbot+f3f3eef1d2100200e593@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, davem@davemloft.net, edumazet@google.com, 
-	hdanton@sina.com, kuba@kernel.org, kuni1840@gmail.com, kuniyu@amazon.com, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0c410ba5-0e42-43b6-80b8-a69c5419a97d@paulmck-laptop>
 
-syzbot has bisected this issue to:
+On Sat, Apr 20, 2024 at 06:58:58AM -0700, Paul E. McKenney wrote:
+> On Fri, Apr 19, 2024 at 02:09:49PM -0700, Josh Poimboeuf wrote:
+> > The direct-call syscall dispatch functions don't know that the exit()
+> > and exit_group() syscall handlers don't return.  As a result the call
+> > sites aren't optimized accordingly.
+> > 
+> > Fix that by marking those exit syscall declarations as __noreturn.
+> > 
+> > Fixes the following warnings:
+> > 
+> >   vmlinux.o: warning: objtool: x64_sys_call+0x2804: __x64_sys_exit() is missing a __noreturn annotation
+> >   vmlinux.o: warning: objtool: ia32_sys_call+0x29b6: __ia32_sys_exit_group() is missing a __noreturn annotation
+> > 
+> > Fixes: 7390db8aea0d ("x86/bhi: Add support for clearing branch history at syscall entry")
+> > Reported-by: "Paul E. McKenney" <paulmck@kernel.org>
+> > Closes: https://lkml.kernel.org/lkml/6dba9b32-db2c-4e6d-9500-7a08852f17a3@paulmck-laptop
+> > Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> 
+> Looks good, but it does not apply on top of current -next and I don't
+> trust myself to hand-apply it (something about having just got off of
+> a flight across the big pond).
+> 
+> Could you please let me know what else do I need to pull in to be able
+> to cleanly apply this one?
 
-commit 77e5593aebba823bcbcf2c4b58b07efcd63933b8
-Author: Kuniyuki Iwashima <kuniyu@amazon.com>
-Date:   Mon Mar 25 20:24:20 2024 +0000
+This patch has a dependency on an earlier patch in the set:
 
-    af_unix: Skip GC if no cycle exists.
+  https://lkml.kernel.org/lkml/982d05a2f669140f26500bee643011896d661094.1713559768.git.jpoimboe@kernel.org
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14bbda4f180000
-start commit:   7b4f2bc91c15 Add linux-next specific files for 20240418
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16bbda4f180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12bbda4f180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ae644165a243bf62
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3f3eef1d2100200e593
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=155e53af180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=128b1d53180000
+Though I think it's not a hard dependency and I could reverse the order
+of the patches if needed.
 
-Reported-by: syzbot+f3f3eef1d2100200e593@syzkaller.appspotmail.com
-Fixes: 77e5593aebba ("af_unix: Skip GC if no cycle exists.")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+Josh
 
