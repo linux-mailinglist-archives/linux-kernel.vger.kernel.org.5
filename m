@@ -1,125 +1,118 @@
-Return-Path: <linux-kernel+bounces-152497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 702898ABF59
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 15:48:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 038178ABF6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 15:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90EC01C20F7B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 13:48:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8636CB2163C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 13:54:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EDDB17995;
-	Sun, 21 Apr 2024 13:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC27175AB;
+	Sun, 21 Apr 2024 13:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="E2HQZsOp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="C4CWtl+D"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470FE625;
-	Sun, 21 Apr 2024 13:48:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D12D175A7;
+	Sun, 21 Apr 2024 13:54:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713707301; cv=none; b=b//wm8rHjM/AcJSeoV3M/o23F44GBlbYt5rjyZlFaca+GFejDok+57Ius+zF7cFyYNfHE/UL3d3utJP9VGvtwJT+cInhBv0r6UTgG6dIbBkRznB2x90A5nKgOusMRVULKetDbGJkWb00t9OFBtGH1A4NnUyQ+vozETwBkElnK3w=
+	t=1713707681; cv=none; b=LJ0Q13Ee55CTzuR8k/4JvaYtoXMHJUHe3DUBOck7v/R6qR5Q176+oluCab2XI0C2VRExpKgCszQU9ZarMT7Q7OGDbGJra8ncPGq2jYSLW/0hpL4XvIP/tv836LhDBybC9fhTecoKvPIvPukGAc0woutWHpj3nyFIZA/g83lWbIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713707301; c=relaxed/simple;
-	bh=LlUgqYs3MCsI8tfMXyODmqS8Vxzo+bhP7dqc9s6OIOs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QhoKJOAHNS55Huy4qMlLadai1Pj8Q9MhGJYVUcav1+3Umlp3ubglNpIu3pljNwItCAl/tQS8rcAaucJEsWjYBxJUapIaeVP4k2wuQUME+8ux+CeNIEcMSR6+E60wREFLHnie32XlEbSJ/9AoFILqYZ3+PLCrI74FwZCI9ChsmjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=E2HQZsOp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D77EC113CE;
-	Sun, 21 Apr 2024 13:48:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713707300;
-	bh=LlUgqYs3MCsI8tfMXyODmqS8Vxzo+bhP7dqc9s6OIOs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E2HQZsOpXkpKHudpdluczuDQnp4aiFdqJ82dLDH1II7kBwQkMvcWNiCIkeSoP5rWm
-	 m9nZ2jQglkE44ukF7sxlCBCK/PQXihvUDzufJomZBn2n9OqRQMJ6Ud/dSxNSDJpwTv
-	 Lg9wQiO5BEJ/8jDnKp9G7q+/3ehh9dAKnAX9ycsg=
-Date: Sun, 21 Apr 2024 15:48:17 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: Ricardo Ribalda <ribalda@chromium.org>, linux-media@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-staging@lists.linux.dev,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	kernel-janitors@vger.kernel.org, Abylay Ospan <aospan@netup.ru>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Angelo Gioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Chen-Yu Tsai <wens@csie.org>, Dmitry Osipenko <digetx@gmail.com>,
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Hugues Fruchet <hugues.fruchet@foss.st.com>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Martin Tuma <martin.tuma@digiteqautomotive.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Sergey Kozlov <serjk@netup.ru>,
-	Sowjanya Komatineni <skomatineni@nvidia.com>,
-	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-	Sylvain Petinot <sylvain.petinot@foss.st.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Vikash Garodia <quic_vgarodia@quicinc.com>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 24/26] media: venus: venc: Make explicit the range of
- us_per_frame
-Message-ID: <2024042112-deferred-fantastic-5b4b@gregkh>
-References: <20240419-fix-cocci-v2-24-2119e692309c@chromium.org>
- <0ab13de0-0fde-40e2-958f-6a0818911009@web.de>
+	s=arc-20240116; t=1713707681; c=relaxed/simple;
+	bh=NA+h1kZ4ZYosSXB9YC2ayj8s4oTUaovMwew+/FDs8yo=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=Anbk4uIzSQDhoeG1Oi1f2fX7BJ+is1SAMf5tBU33VoFxDuTrdOSzyTh1h5KJP9m3vwCIiIW5AFghJhItN1zRPUo5u2vc11LApSt0bpDyXaOOAY3gNvmWQdy6w2nAmZkrghC+XG8asUUprcSEIs+vLVU3YZo3yu1do4IvKEhOMbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=C4CWtl+D; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1713707675;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/4ooY+dJBDon3+uBiWdkfQ49raa8NLkoa8U8AjhBhvA=;
+	b=C4CWtl+DvcM0SmFngK7FHkT2L/ZMtfaY6AswksaDF51yPAlkJLOg7sc9j+mRdNRjlt4Qqp
+	IdmaYM6OJN8IGQaaHdfUybveyzIOgkjYQPTcaG46wuE2lZWRmWtxb8HmM1NGAgWJ3pM9JQ
+	wKNk6Gn+OA5IDp+jcm0Fk3f+lI/aoQAcK3eEOLZG9KSbl88ppMwjFMyfYedDFfWDrSQ9A8
+	roWBJ2bmEE3Ch2WLVybA4EBG02vYlB8Z+ajPSDL1A0Vrq/a0ngbUlL1cSJvgHHA/c8CEfm
+	lckgPzXyZyoU65b/4Pb2yAR8GuPL2rV2qBCKp/02SE7qECbYyBMywyIlizS12Q==
+Date: Sun, 21 Apr 2024 15:54:32 +0200
+From: Dragan Simic <dsimic@manjaro.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+ linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, robh+dt@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, linux-kernel@vger.kernel.org, amadeus@jmu.edu.cn,
+ FUKAUMI Naoki <naoki@radxa.com>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: Correct the descriptions
+ for Radxa boards
+In-Reply-To: <20240419-triumph-cheddar-77fc2f6948b0@spud>
+References: <1e148d6cd4486b31b5e7f3824cf6bccf536b74c0.1713457260.git.dsimic@manjaro.org>
+ <1888572.CQOukoFCf9@diego> <20240418-attach-tigress-bc2b9f844fc7@spud>
+ <c3c4a6ad48fbd62b44991c9bfd81570a@manjaro.org>
+ <20240419-triumph-cheddar-77fc2f6948b0@spud>
+Message-ID: <a3930b26634a78888c9fe3013284563c@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0ab13de0-0fde-40e2-958f-6a0818911009@web.de>
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On Sun, Apr 21, 2024 at 03:25:31PM +0200, Markus Elfring wrote:
-> > Unless the fps is smaller than 0.000232829 fps, this fits in a 32 bit number.
-> > Make that explicit.
+On 2024-04-19 16:09, Conor Dooley wrote:
+> On Thu, Apr 18, 2024 at 07:12:35PM +0200, Dragan Simic wrote:
+>> On 2024-04-18 19:04, Conor Dooley wrote:
+>> > On Thu, Apr 18, 2024 at 06:59:42PM +0200, Heiko Stübner wrote:
+>> > > Am Donnerstag, 18. April 2024, 18:26:19 CEST schrieb Dragan Simic:
+>> > > > Correct the descriptions of a few Radxa boards, according to the up-to-date
+>> > > > documentation from Radxa and the detailed explanation from Naoki. [1]  To sum
+>> > > > it up, the short naming, as specified by Radxa, is preferred.
+>> > > >
+>> > > > [1] https://lore.kernel.org/linux-rockchip/B26C732A4DCEA9B3+282b8775-601b-4d4a-a513-4924b7940076@radxa.com/
+>> > > >
+>> > > > Suggested-by: FUKAUMI Naoki <naoki@radxa.com>
+>> > > > Signed-off-by: Dragan Simic <dsimic@manjaro.org>
+>> > > > ---
+>> > > >  Documentation/devicetree/bindings/arm/rockchip.yaml | 8 ++++----
+>> > > >  1 file changed, 4 insertions(+), 4 deletions(-)
+>> > > >
+>> > > > diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+>> > > > index fcf7316ecd74..ae58e25c29ec 100644
+>> > > > --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
+>> > > > +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+>> > > > @@ -767,22 +767,22 @@ properties:
+>> > > >            - const: radxa,rockpis
+>> > > >            - const: rockchip,rk3308
+>> > > >
+>> > > > -      - description: Radxa Rock2 Square
+>> > > > +      - description: Radxa Rock 2 Square
+>> > >
+>> > > I may be just blind, but what changed here?
+>> >
+>> > There's now a space before the 2.
+>> 
+>> Exactly.  That's part of the Radxa's naming convention, which may be
+>> seen as somewhat similar to the general rule of spacing out values and
+>> their associated units, e.g. "2 MB" is in general preferred over "2MB"
+>> in nearly any kind of a formally correct document.
 > 
-> Would it be more appropriate to move the word “explicit” to the end
-> of the summary phrase?
+>> As a side note, there's even so-called "half space" as a typographical
+>> convention for spacing out the values and the associated units.  That
+>> makes formatted text with such spacing a bit nicer. :)
 > 
-> Regards,
-> Markus
-> 
+> Let's not introduce half spaces into the bindings though :)
 
-Hi,
-
-This is the semi-friendly patch-bot of Greg Kroah-Hartman.
-
-Markus, you seem to have sent a nonsensical or otherwise pointless
-review comment to a patch submission on a Linux kernel developer mailing
-list.  I strongly suggest that you not do this anymore.  Please do not
-bother developers who are actively working to produce patches and
-features with comments that, in the end, are a waste of time.
-
-Patch submitter, please ignore Markus's suggestion; you do not need to
-follow it at all.  The person/bot/AI that sent it is being ignored by
-almost all Linux kernel maintainers for having a persistent pattern of
-behavior of producing distracting and pointless commentary, and
-inability to adapt to feedback.  Please feel free to also ignore emails
-from them.
-
-thanks,
-
-greg k-h's patch email bot
+Of course. :)
 
