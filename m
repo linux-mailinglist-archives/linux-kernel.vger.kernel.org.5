@@ -1,55 +1,72 @@
-Return-Path: <linux-kernel+bounces-152465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BB018ABED8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:03:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF9378ABED9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:07:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18F0E1C20949
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 09:03:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C5E7280EE8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 09:07:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4227210A3E;
-	Sun, 21 Apr 2024 09:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D13E567;
+	Sun, 21 Apr 2024 09:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n4JmH+p8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fNcswA7A"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D87710940;
-	Sun, 21 Apr 2024 09:03:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562E2205E26
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 09:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713690180; cv=none; b=Ckjbwrg4NBD1X0pyrlwvmPVpM1kEZDxwKsCf3Zv8uuaWpakOMkWkQ/T+rAVWcZ+tE0CbFhpRGjz/F3tjyDy6eO5KQqg10LsUbHaVGatz4yWWEIJkkxZHPfUl26wbgMngoSVXPzFAA2cOYrjOyt4BBSaX1WzNEmeRuP4LOiJ8Gu0=
+	t=1713690442; cv=none; b=bam18eKmqXyuDpZz0QTpoS11K0O6YcuGDg8jxN/IQ9DCYv2rGD5peUQpmQNdvZ4Wp4nEuzx9rHe0m1OzCo+ywjOdFVfQ5LQnyb0XQ1V4MBvr+Ef6NRrNogz0OcusXO+XA3TqLivSE/uHRj3qG/4CqWPUcw+6v+vEUrfU6fwoQpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713690180; c=relaxed/simple;
-	bh=sMkrcyPFZTw4unEKDwixdGVUFlnihGpjujBV9mFCGbQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Iffr2votfDW/asOLnjk3jeMaeAAKjyyDSoh+LxdrI4SEdwGNrGbXaweyJeVGYNI56vWQqTr1SeVhbDPd8aywRBWwhf/XkIzbu34BQUPC7dxbxVlS05NnVtnXoOWbUDOnuTQ0FrWZw0cilD3hspwDiw4JZ0pUCsDlxv69C4TQB1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n4JmH+p8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC01AC32782;
-	Sun, 21 Apr 2024 09:02:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713690179;
-	bh=sMkrcyPFZTw4unEKDwixdGVUFlnihGpjujBV9mFCGbQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=n4JmH+p8TO6KXue3YwPkzv9oVhTcp8QLZPr0YdFT9HSAeFaAqun3T/ys3uMpL90tH
-	 Mwic9NsnkVnK8pQjfCcw6ouKToQ1f+lyAbnI6UouxXBvGptwKh25aHzyV6QQxmhY7x
-	 sslV/4kjAlqGDL8gKJa1EnS+VYUCrRjbsm6s22ICTvnyRNL1bIX/qL6wqc0a8ymgAn
-	 av0wFNoslOAcawwrAu4N5OV5svRiwusiouJNiHUVYNMebUfBVloDdhtl2ye3yiEwkA
-	 0wXYQOOdqQ6Ng1nTKKZpLpCAEkPkQD3D2+Oyz0c+ZPC2sGmc6Z15nCJF5n74ZoG3/V
-	 n7WxrhpYdWrQA==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 2/2] kconfig: use menu_for_each_entry() to traverse menu tree
-Date: Sun, 21 Apr 2024 18:02:52 +0900
-Message-Id: <20240421090252.2700867-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240421090252.2700867-1-masahiroy@kernel.org>
-References: <20240421090252.2700867-1-masahiroy@kernel.org>
+	s=arc-20240116; t=1713690442; c=relaxed/simple;
+	bh=3x+Eg0DhyZ2twNLDp9xQW901B/ToxhBaZkvAN23ra0k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Wm/I7uUVCpWiC6rhGUl/BsDO5xjqvl5qA9t4wZMMvAoCHu51etN3nWSTwaewNpNi02k9ydaIyMX3f5nQHsqMjNLQZoE2cjWQgtgAeIVHHGUIufmAzJgtQMdFhpv9ZSk2ZXfGE8K5jL6hnfWRIua4NwHiVzlXoIhNdp9kz8LR7tQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fNcswA7A; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713690440; x=1745226440;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3x+Eg0DhyZ2twNLDp9xQW901B/ToxhBaZkvAN23ra0k=;
+  b=fNcswA7AagN8mMVICWJxqISMuFHKtt9yZzI0dnIy0iPMi9s9JtWslmcv
+   7J9jE9rX54eHErW1T0UKKV92OAOK5R9nBBm7yRAGgZQnipLZiBqb50saI
+   ucR+sI/XovGNEzG5jpouix9haF0Ewpnb3APuR3qzjtxejXF53pIS+y5rt
+   /0TlPIfXB3nIytx6FyYmIcsZbXlgxYbV0xzPRCDs4Rc+/ma3fLKHXYMgZ
+   NS1I8+pyMgmfGs+FUQ/bTIsXPodxlV47HWXpyxC16a9WsA7CQdFM86uB1
+   R8Ubp4XpVnyN+TPI1N2/fgDqxOWPHNxzPkvv4Gyf49F7aAs2Jer/3p7hs
+   Q==;
+X-CSE-ConnectionGUID: eTOp4UrpTOinS05jnVJp4A==
+X-CSE-MsgGUID: vC9qOzt3TimRv1353p795A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11050"; a="19936884"
+X-IronPort-AV: E=Sophos;i="6.07,218,1708416000"; 
+   d="scan'208";a="19936884"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2024 02:07:19 -0700
+X-CSE-ConnectionGUID: gzbzL2rLQiqqpis0t5dnng==
+X-CSE-MsgGUID: kf31Wgc3R5Cd7EF7ZhHUYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,218,1708416000"; 
+   d="scan'208";a="23802110"
+Received: from twinkler-lnx.jer.intel.com ([10.12.231.216])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2024 02:07:17 -0700
+From: Tomas Winkler <tomas.winkler@intel.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Alexander Usyskin <alexander.usyskin@intel.com>,
+	Vitaly Lubart <vitaly.lubart@intel.com>,
+	linux-kernel@vger.kernel.org,
+	Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
+	Tomas Winkler <tomas.winkler@intel.com>
+Subject: [char-misc-next] mei: pxp: match against PCI_CLASS_DISPLAY_OTHER
+Date: Sun, 21 Apr 2024 12:07:01 +0300
+Message-ID: <20240421090701.216028-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,102 +75,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Use menu_for_each_entry() to traverse the menu tree instead of
-implementing similar logic in each function.
+From: Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+The ATS-M class is PCI_CLASS_DISPLAY_OTHER instead of
+PCI_CLASS_DISPLAY_VGA, so we need to match against that class as well.
+The matching is still restricted to Intel devices only.
+
+Fixes: ceeedd951f8a ("mei: pxp: match without driver name")
+Signed-off-by: Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
+ drivers/misc/mei/pxp/mei_pxp.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
- scripts/kconfig/confdata.c | 28 +++++-----------------------
- scripts/kconfig/parser.y   | 13 +------------
- 2 files changed, 6 insertions(+), 35 deletions(-)
-
-diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
-index 0e35c4819cf1..ce0ef417b71b 100644
---- a/scripts/kconfig/confdata.c
-+++ b/scripts/kconfig/confdata.c
-@@ -793,23 +793,19 @@ int conf_write_defconfig(const char *filename)
+diff --git a/drivers/misc/mei/pxp/mei_pxp.c b/drivers/misc/mei/pxp/mei_pxp.c
+index b1e4c23b31a32957c616f0ed..49abc95677cdac6a74d673cb 100644
+--- a/drivers/misc/mei/pxp/mei_pxp.c
++++ b/drivers/misc/mei/pxp/mei_pxp.c
+@@ -236,8 +236,11 @@ static int mei_pxp_component_match(struct device *dev, int subcomponent,
  
- 	sym_clear_all_valid();
+ 	pdev = to_pci_dev(dev);
  
--	/* Traverse all menus to find all relevant symbols */
--	menu = rootmenu.list;
--
--	while (menu != NULL)
--	{
-+	menu_for_each_entry(menu) {
- 		sym = menu->sym;
- 		if (sym && !sym_is_choice(sym)) {
- 			sym_calc_value(sym);
- 			if (!(sym->flags & SYMBOL_WRITE))
--				goto next_menu;
-+				continue;
- 			sym->flags &= ~SYMBOL_WRITE;
- 			/* If we cannot change the symbol - skip */
- 			if (!sym_is_changeable(sym))
--				goto next_menu;
-+				continue;
- 			/* If symbol equals to default value - skip */
- 			if (strcmp(sym_get_string_value(sym), sym_get_string_default(sym)) == 0)
--				goto next_menu;
-+				continue;
+-	if (pdev->class != (PCI_CLASS_DISPLAY_VGA << 8) ||
+-	    pdev->vendor != PCI_VENDOR_ID_INTEL)
++	if (pdev->vendor != PCI_VENDOR_ID_INTEL)
++		return 0;
++
++	if (pdev->class != (PCI_CLASS_DISPLAY_VGA << 8) &&
++	    pdev->class != (PCI_CLASS_DISPLAY_OTHER << 8))
+ 		return 0;
  
- 			/*
- 			 * If symbol is a choice value and equals to the
-@@ -827,25 +823,11 @@ int conf_write_defconfig(const char *filename)
- 				if (!sym_is_optional(cs) && sym == ds) {
- 					if ((sym->type == S_BOOLEAN) &&
- 					    sym_get_tristate_value(sym) == yes)
--						goto next_menu;
-+						continue;
- 				}
- 			}
- 			print_symbol_for_dotconfig(out, sym);
- 		}
--next_menu:
--		if (menu->list != NULL) {
--			menu = menu->list;
--		}
--		else if (menu->next != NULL) {
--			menu = menu->next;
--		} else {
--			while ((menu = menu->parent)) {
--				if (menu->next != NULL) {
--					menu = menu->next;
--					break;
--				}
--			}
--		}
- 	}
- 	fclose(out);
- 	return 0;
-diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
-index 7fb996612c96..8f339b47fe8d 100644
---- a/scripts/kconfig/parser.y
-+++ b/scripts/kconfig/parser.y
-@@ -517,20 +517,9 @@ void conf_parse(const char *name)
- 
- 	menu_finalize();
- 
--	menu = &rootmenu;
--	while (menu) {
-+	menu_for_each_entry(menu) {
- 		if (menu->sym && sym_check_deps(menu->sym))
- 			yynerrs++;
--
--		if (menu->list) {
--			menu = menu->list;
--			continue;
--		}
--
--		while (!menu->next && menu->parent)
--			menu = menu->parent;
--
--		menu = menu->next;
- 	}
- 
- 	if (yynerrs)
+ 	if (subcomponent != I915_COMPONENT_PXP)
 -- 
-2.40.1
+2.44.0
 
 
