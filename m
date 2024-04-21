@@ -1,111 +1,174 @@
-Return-Path: <linux-kernel+bounces-152447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED6FE8ABE9C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 07:25:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51D578ABEA1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 07:57:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 167A41F211B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 05:25:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ADFA1C2061C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 05:57:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1238C07;
-	Sun, 21 Apr 2024 05:25:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067E9D27E;
+	Sun, 21 Apr 2024 05:57:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fdsS0b1W"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="d4KjKCq+"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A84064437
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 05:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A89F205E09;
+	Sun, 21 Apr 2024 05:57:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713677144; cv=none; b=OMi5pJJGOUsZcpq5aCgwYakCokUWGix2rUzDWrfZuUbSNOGng3p51jUHHzquBvzEux6h1wWtGTmCJy1b8NhcoEb8Esl6bfKEjwCpcAhuM15uwLh0tFrO2OosqzMd5FW6MdvkfwscwZHtJJGElSIBZBHEcDffYyJoCp+ZZ9RFEBY=
+	t=1713679035; cv=none; b=FS9v7Sni7BYKfze/IPiEKxVOCQbhkx7W3imqbyRg3tYCHrD/nSN9eAnyB1/M1Da5l+PXiRG8AJc+Ng2Q8V/oACnQ/DxLxyrXVHh2V/9bA1PLJ4C4zYBnWy1HkcuQdo/oTYpLsIswQdEYZ+Lg7SH5WS9g84erhxZg51TOClSimy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713677144; c=relaxed/simple;
-	bh=8897UkikHcygbe4N3ix+irQK9I4HgjF9WNURVeDcTNs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TEEAioUryZWh8i3QltOgfaV2GFfXR3BHmqZ4JFE4emzLdmkYmoQtANSvLFty4lR12PXlcYm4eBXJ3sfpj9kckxgAPnK4uyUB8KROo89cdNDgoU1GDuSKJIed1+y40HPGoBn/PH+RNKtz9gIcqlmE+IIQNsjSBiZfOJrO7wxRFQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fdsS0b1W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA8FFC2BD10;
-	Sun, 21 Apr 2024 05:25:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713677144;
-	bh=8897UkikHcygbe4N3ix+irQK9I4HgjF9WNURVeDcTNs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fdsS0b1WJV6G/qdyQzYD9Pl8zYlOKJxpZ1Ayb/UU/a5MRpjpBgufPbw+Kt5rO+E7f
-	 tcyOGMQaTecPjubm7xtHmXAxRp6G4cj5/or209HBQ7qzrLg6oqboqSYZXsPncT9Wod
-	 FEG2cw1WFafbBJsGpc4v0n4MMxWOkqIiGGFv8Dp9Spz1IkJIOHnAKNd8fPmTJI/46j
-	 iSjJ8VgoodV2dZAYGY4NtGyudxs+8sIaYEn9QhgPefgYr8f25gbe9R5xxsAP+VdDhz
-	 7Gp+kDNQIj9qzC8jcWBl6T8bxcRu/GzlU+5WEQE/VFajSy1eSyMmcjQ9APrUQFS/uZ
-	 ZGF2IgORgQqsw==
-Date: Sat, 20 Apr 2024 22:25:40 -0700
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexandre Chartre <alexandre.chartre@oracle.com>,
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v4 3/5] x86/syscall: Mark exit[_group] syscall handlers
- __noreturn
-Message-ID: <20240421052540.w7gtahoko2qerhqq@treble>
-References: <cover.1713559768.git.jpoimboe@kernel.org>
- <3b99cb2919c88ab3d353337423b2f0f1b9173f0a.1713559768.git.jpoimboe@kernel.org>
- <0c410ba5-0e42-43b6-80b8-a69c5419a97d@paulmck-laptop>
+	s=arc-20240116; t=1713679035; c=relaxed/simple;
+	bh=HYAdyF9w3Py4palVMx8BhCLJkMMxu/UozC/oJYUDqM8=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dahMHs8H1y19ymHmPSveuKmvNJCb3tNS7dn1PqQFm/UyhIss6s2YINpBYPCZtt+skK/1FPruwo6o3ASCLEwlczPX9JCQORGcth0xC/8OoVwZe9sj/Pp2iBAK5iVQ51P01jMWv3IZzjWfdd9Zme9HnOOzMkxVOmCpZIxN53XoSvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=d4KjKCq+; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 207B540003;
+	Sun, 21 Apr 2024 05:57:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713679024;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g2Kjmtq3Ybi5b8tattuXhRtpcAjxJmV4CBtd58iYrr0=;
+	b=d4KjKCq+u+3vSraYnDy7e+yvNOQXi1W3H6Vimzr/Wo/QpqS53ewWw9HX5A1vo7ZoaTLkzE
+	SDfV/p3+7skZXNlTP29vVva5sj2qg1elJ4A3L9PSdqpxM5D1GIJdLNSIIzK1HUjqnFgJsg
+	uODQ0wUQFk2VuFI+hxhUnWP+pW3ivnvTM/ms3iGSda90JIz2HM+EFxCsGztM2RioHAdX0l
+	AnjZCADOdeNbbP3ommWGIHZuUJ3ogJWeaWyBCjZ/S6ekhIW/sAkeK78+DQIPzXZd33fUUO
+	8Nf/FzFArX94aS2PaCT+aHR72EuiTrDB3EAcKLpvA8ltAppwOnqAoIWoiCmKzg==
+Message-ID: <e457d5f6-3289-4049-b663-2ebcfe78dce4@bootlin.com>
+Date: Sun, 21 Apr 2024 07:57:01 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0c410ba5-0e42-43b6-80b8-a69c5419a97d@paulmck-laptop>
+User-Agent: Mozilla Thunderbird
+Cc: michael.opdenacker@bootlin.com, devicetree@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] riscv: dts: sophgo: add initial Milk-V Duo S board
+ support
+To: Inochi Amaoto <inochiama@outlook.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Chen Wang <unicorn_wang@outlook.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+References: <20240417065311.3881023-1-michael.opdenacker@bootlin.com>
+ <20240417065311.3881023-3-michael.opdenacker@bootlin.com>
+ <IA1PR20MB49539A380E44459ACE19DEB6BB0F2@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Language: en-US
+From: Michael Opdenacker <michael.opdenacker@bootlin.com>
+Organization: Bootlin
+In-Reply-To: <IA1PR20MB49539A380E44459ACE19DEB6BB0F2@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: michael.opdenacker@bootlin.com
 
-On Sat, Apr 20, 2024 at 06:58:58AM -0700, Paul E. McKenney wrote:
-> On Fri, Apr 19, 2024 at 02:09:49PM -0700, Josh Poimboeuf wrote:
-> > The direct-call syscall dispatch functions don't know that the exit()
-> > and exit_group() syscall handlers don't return.  As a result the call
-> > sites aren't optimized accordingly.
-> > 
-> > Fix that by marking those exit syscall declarations as __noreturn.
-> > 
-> > Fixes the following warnings:
-> > 
-> >   vmlinux.o: warning: objtool: x64_sys_call+0x2804: __x64_sys_exit() is missing a __noreturn annotation
-> >   vmlinux.o: warning: objtool: ia32_sys_call+0x29b6: __ia32_sys_exit_group() is missing a __noreturn annotation
-> > 
-> > Fixes: 7390db8aea0d ("x86/bhi: Add support for clearing branch history at syscall entry")
-> > Reported-by: "Paul E. McKenney" <paulmck@kernel.org>
-> > Closes: https://lkml.kernel.org/lkml/6dba9b32-db2c-4e6d-9500-7a08852f17a3@paulmck-laptop
-> > Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> 
-> Looks good, but it does not apply on top of current -next and I don't
-> trust myself to hand-apply it (something about having just got off of
-> a flight across the big pond).
-> 
-> Could you please let me know what else do I need to pull in to be able
-> to cleanly apply this one?
+Hi Inochi
 
-This patch has a dependency on an earlier patch in the set:
+Thanks for your advice!
 
-  https://lkml.kernel.org/lkml/982d05a2f669140f26500bee643011896d661094.1713559768.git.jpoimboe@kernel.org
+On 4/17/24 at 11:34, Inochi Amaoto wrote:
+> On Wed, Apr 17, 2024 at 08:53:11AM GMT, michael.opdenacker@bootlin.com wrote:
+>> From: Michael Opdenacker <michael.opdenacker@bootlin.com>
+>>
+>> This adds initial support for the Milk-V Duo S board
+>> (https://milkv.io/duo-s), enabling the serial port,
+>> making it possible to boot Linux to the command line.
+>>
+>> Link: https://lore.kernel.org/linux-riscv/171266958507.1032617.9460749136730849811.robh@kernel.org/T/#t
+>>
+>> Signed-off-by: Michael Opdenacker <michael.opdenacker@bootlin.com>
+>> ---
+>>   arch/riscv/boot/dts/sophgo/Makefile           |  1 +
+>>   .../boot/dts/sophgo/sg2000-milkv-duos.dts     | 34 +++++++++++++++++++
+>>   2 files changed, 35 insertions(+)
+>>   create mode 100644 arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
+>>
+>> diff --git a/arch/riscv/boot/dts/sophgo/Makefile b/arch/riscv/boot/dts/sophgo/Makefile
+>> index 57ad82a61ea6..e008acb5240f 100644
+>> --- a/arch/riscv/boot/dts/sophgo/Makefile
+>> +++ b/arch/riscv/boot/dts/sophgo/Makefile
+>> @@ -1,4 +1,5 @@
+>>   # SPDX-License-Identifier: GPL-2.0
+>>   dtb-$(CONFIG_ARCH_SOPHGO) += cv1800b-milkv-duo.dtb
+>>   dtb-$(CONFIG_ARCH_SOPHGO) += cv1812h-huashan-pi.dtb
+>> +dtb-$(CONFIG_ARCH_SOPHGO) += sg2000-milkv-duos.dtb
+>>   dtb-$(CONFIG_ARCH_SOPHGO) += sg2042-milkv-pioneer.dtb
+>> diff --git a/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts b/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
+>> new file mode 100644
+>> index 000000000000..c1ecf97d5e93
+>> --- /dev/null
+>> +++ b/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
+>> @@ -0,0 +1,34 @@
+>> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+>> +/*
+>> + * Copyright (C) 2024 Michael Opdenacker <michael.opdenacker@bootlin.com>
+>> + */
+>> +
+>> +/dts-v1/;
+>> +
+>> +#include "cv1812h.dtsi"
+>> +
+>> +/ {
+>> +	model = "Milk-V Duo S";
+>> +	compatible = "milkv,duos", "sophgo,cv1812h";
+>> +
+>> +	aliases {
+>> +		serial0 = &uart0;
+>> +	};
+>> +
+>> +	chosen {
+>> +		stdout-path = "serial0:115200n8";
+>> +	};
+>> +
+>> +	memory@80000000 {
+>> +		device_type = "memory";
+>> +		reg = <0x80000000 0x20000000>;
+>> +	};
+> Add a cpu specific file, and move this to it.
 
-Though I think it's not a hard dependency and I could reverse the order
-of the patches if needed.
+Now that I'm including "cv1812h.dtsi", which has the same structure, all 
+I need is to change the reg setting to have 512 MB of RAM instead of 
+256MB, right? See the V6 I'm sending soon.
+
+>
+>> +};
+>> +
+>> +&osc {
+>> +	clock-frequency = <25000000>;
+>> +};
+>> +
+>> +&uart0 {
+>> +	status = "okay";
+>> +};
+>> -- 
+>> 2.34.1
+>>
+> Add necessary DT node in the cpu specific file. (clint,
+> plic and clk). You also need to rebase your patch based
+> on sophgo/for-next.
+
+Same here, cv1812h.dtsi already configures &clint, &plic and &clk, so it 
+seems to me I don't need to make changes again here. At least the board 
+boots fine for me as it is.
+Cheers
+Michael.
+
 
 -- 
-Josh
+
+Michael Opdenacker, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
