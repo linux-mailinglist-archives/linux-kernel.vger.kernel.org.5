@@ -1,121 +1,84 @@
-Return-Path: <linux-kernel+bounces-152460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 658B08ABECE
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 10:47:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35A0B8ABED0
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 10:49:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E2A4B20B65
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 08:47:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 125DD28111E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 08:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306C5DDD4;
-	Sun, 21 Apr 2024 08:47:35 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE810DDDA;
+	Sun, 21 Apr 2024 08:49:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="ELKYdL7k"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F62133D5
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 08:47:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4277D33D5;
+	Sun, 21 Apr 2024 08:49:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713689254; cv=none; b=bIRFxtBSPO1K2U2wWROkTPMvmgA6Sz2c01STOIfQBF/Wflrcph91JlzmXCzsrqF9gm1F4aESQ09pAUuvZ2Dne1ZzirabF9WcTzq9fWFG37XqbNLMK6KI63O+Tesw9HM4V3BOaYhEOdqUZiuFceINE9O7obPrbynKtHLxgqzBXHU=
+	t=1713689373; cv=none; b=GNJSM7XXIgMajyaBvZzFMfDTOpfbIyKovNifRClj0kkuG9Ur97FyE1dV/PsBZdQvsLON6l61R+UfRI5RFCqQIi/6MLVdXRDBjscXiQe0arpswC8u6Sa8aHW+G64VukFTlKWv7/famBRDY9uuQLzXjjRg6+ohZUQlFNWCIGhh1ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713689254; c=relaxed/simple;
-	bh=KFf5YGAYYd6QVE91AjOLkfUno3RVYNkU9vqnyq78ghU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=mDNLWQLdCWGfm3IRcfoYzvyGuQrf0w33U0ykCO4O/Ok6lfa/S+H/GbKNQ/tbX/5rgQwSbH1oN/9pTcpZAR0aI2porpvrBgzGsFFPxVEdoBqdyC+ntQj+pDDzziMjJ/O3ezgk7TcYMW/UzIUl9CLNXnXiSjPwXv2tGl6WR0lQesE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 009C240E016C;
-	Sun, 21 Apr 2024 08:47:30 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 5kY_lu6u7Dug; Sun, 21 Apr 2024 08:47:27 +0000 (UTC)
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CCA9940E00B2;
-	Sun, 21 Apr 2024 08:47:23 +0000 (UTC)
-Date: Sun, 21 Apr 2024 10:47:22 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v6.9-rc5
-Message-ID: <20240421084149.GAZiTRTSIBCq70LBEN@fat_crate.local>
+	s=arc-20240116; t=1713689373; c=relaxed/simple;
+	bh=IzOFxcvABLw7okAaODhaFqzHvAqBYKY/wpPe2vbfCpw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=drvzZMcbs8rjiVO7jPhHtywHCCsn3kIHji29Q4d4IuGE7mQght45DN4DgN+BxfyAmx6VotBKVGpjlh6QZ/cek48KyUn/6dGenU4fQVbj7Xkgvxs98x/mc7G7DTI6XbLOsLe9wb9Gxl3jT03FmbDeGErkGNP2hufe6BWYqgfahGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=ELKYdL7k; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 093881F92F;
+	Sun, 21 Apr 2024 10:49:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1713689360;
+	bh=BpFulAQbCdhJzSEsRhzIqEy0hJxoSMYEZcUkUy44sng=; h=From:To:Subject;
+	b=ELKYdL7kDycfV2btm/G2tfgdGzxdq3yTKBM8fryRcLmWRvSfpJwGJi7cqLzWWpRxg
+	 zekP2xABKZOouiZfCYNFXkQmednQ3hsIS8gpEfbAh86/gdoqvc5J7DoVW5e+zHnXVJ
+	 fFYE4eDcUt9TKn5e5ZYoSdSekf3tkYS57mv8dtMHFG7kCegH98IEfDMbl9x86b/eHy
+	 +YqXh+5cdPCudL9ZSXRSVla7J0qK58ZbXNW34APtWPF9WJVAD8YApOXNGNLKiZBpoe
+	 Cv/08ugo+vxITYpi+Dj5KIwCRBuyDRNKIQcL1FxKzmxRe4zUfjPj7okaNWdOAp3rY2
+	 4zfmL9CLbA1+Q==
+Date: Sun, 21 Apr 2024 10:49:16 +0200
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>, linux-watchdog@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Tero Kristo <t-kristo@ti.com>,
+	"Su, Bao Cheng (RC-CN DF FA R&D)" <baocheng.su@siemens.com>
+Subject: Re: [RFC][PATCH] watchdog: rti-wdt: Provide set_timeout handler to
+ make existing userspace happy
+Message-ID: <20240421084916.GA4208@francesco-nb>
+References: <4d82b8ce-bc34-e4b2-c5fe-9e883b0db59d@siemens.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <4d82b8ce-bc34-e4b2-c5fe-9e883b0db59d@siemens.com>
 
-Hi Linus,
+Hello Jan,
 
-please pull a bunch of x86/urgent fixes for v6.9-rc5.
+On Mon, Sep 13, 2021 at 01:41:43PM +0200, Jan Kiszka wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
+> 
+> Prominent userspace - systemd - cannot handle watchdogs without
+> WDIOF_SETTIMEOUT, even if it was configured to the same time as the
+> driver selected or was used by firmware to start the watchdog. To avoid
+> failing in this case, implement a handler that only fails if a deviating
+> set_timeout is requested.
+> 
+> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
 
-Thx.
+Are you aware of this patch https://lore.kernel.org/all/20240417205700.3947408-1-jm@ti.com/ ?
 
----
+Francesco
 
-The following changes since commit 7211274fe0ee352332255e41ab5e628b86e83994:
-
-  x86/cpu/amd: Move TOPOEXT enablement into the topology parser (2024-04-12 12:05:54 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip tags/x86_urgent_for_v6.9_rc5
-
-for you to fetch changes up to 9543f6e26634537997b6e909c20911b7bf4876de:
-
-  x86/cpufeatures: Fix dependencies for GFNI, VAES, and VPCLMULQDQ (2024-04-18 17:27:52 +0200)
-
-----------------------------------------------------------------
-- Fix CPU feature dependencies of GFNI, VAES, and VPCLMULQDQ
-
-- Print the correct error code when FRED reports a bad event type
-
-- Add a FRED-specific INT80 handler without the special dances that need
-  to happen in the current one
-
-- Enable the using-the-default-return-thunk-but-you-should-not warning
-  only on configs which actually enable those special return thunks
-
-- Check the proper feature flags when selecting BHI retpoline mitigation
-
-----------------------------------------------------------------
-Borislav Petkov (AMD) (1):
-      x86/retpolines: Enable the default thunk warning only on relevant configs
-
-Eric Biggers (1):
-      x86/cpufeatures: Fix dependencies for GFNI, VAES, and VPCLMULQDQ
-
-Hou Wenlong (1):
-      x86/fred: Fix incorrect error code printout in fred_bad_type()
-
-Josh Poimboeuf (1):
-      x86/bugs: Fix BHI retpoline check
-
-Xin Li (Intel) (1):
-      x86/fred: Fix INT80 emulation for FRED
-
- arch/x86/entry/common.c          | 65 ++++++++++++++++++++++++++++++++++++++++
- arch/x86/entry/entry_fred.c      | 10 +++----
- arch/x86/kernel/cpu/bugs.c       | 11 ++++---
- arch/x86/kernel/cpu/cpuid-deps.c |  6 ++--
- arch/x86/lib/retpoline.S         |  7 +++++
- 5 files changed, 87 insertions(+), 12 deletions(-)
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
