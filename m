@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-152506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83DA88ABF76
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 16:01:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31F018ABF79
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 16:02:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 405D7281B06
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 14:01:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63C73B216F0
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 14:02:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 572F917BA2;
-	Sun, 21 Apr 2024 14:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CED1798E;
+	Sun, 21 Apr 2024 14:02:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EMTjJ+20"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yhj4s7AH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723C61798C;
-	Sun, 21 Apr 2024 14:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5048AB64E;
+	Sun, 21 Apr 2024 14:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713708071; cv=none; b=RsgTBx/AAnFuRdaSFsVo/YMKH+J7neZ7LLnYPL0Fi4cYyOFcUzFQsFLGn1UCsoIjLhLRLCFgA6m5LIuvwHj1uRF+6JOd+zk9N4JKbnUmTquh46jha/z3vpsQSTF5u//FgepjhSYCxk6u6sX44t22qT1+SEXUPAVrzAJ6BOarPGU=
+	t=1713708141; cv=none; b=qYPY9u5LFM97GH9x9rH+DkQ73BMmPvLWnnvcsPK9kN4JHjGazCAOe7aG1BKb5/Iot185eShvJUPseX9hWzTv54dvM8aH+fIdudPMGyKOwVYNQFo0QLJJfF+k0MLIZq2Uaqkt+YNIS7dS0dfcjA+YvJylhQE103Ke6wIkdNBA1Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713708071; c=relaxed/simple;
-	bh=0hbnqKabwtzz3UJmJ24LVgTLyMbSVASrLx26P2wp4mg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O76b/a2Mc9dcPS3wpwtIU09ZaN7raJ96cmzxySKOTckhsP+KUcp+QFrKbi5fkUAMVq0e8twiVEGwG3dn1A+EBzA3dkP15K+ClZTECXmP+gXmABU+5GuweciXc0A8+eqsbSJMpBomUOjT61XU+jhDHx5Xnsg8m6/koQsAb5JhpSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EMTjJ+20; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87B55C3277B;
-	Sun, 21 Apr 2024 14:01:02 +0000 (UTC)
+	s=arc-20240116; t=1713708141; c=relaxed/simple;
+	bh=GmsHQ9LW88vNFuert6h+ygNzeGSaa2DSqYQPLvwPKpM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=hd6wEGbp/eFZgb9C/kgV8Rs5MOpEBaBLosH5K0efWwunNHWBZpk1jv+SYo901HV68C5WEqH0tqk5JVoi4KKCwWtR+MkwTMCxq9bbDP6CbUrRHJFKr4uwqI8KU4BzRFKdxc9QFfwNcteonKFcu2IuBK2qSDxGblkKsEKjzT4/3ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yhj4s7AH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8946EC113CE;
+	Sun, 21 Apr 2024 14:02:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713708071;
-	bh=0hbnqKabwtzz3UJmJ24LVgTLyMbSVASrLx26P2wp4mg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=EMTjJ+20VzuLrQz62z8f8X7I4o3J5rt3WItEAjX7H1kmnYQuevJzkYL/iJwlq03bA
-	 tNzpJTvbav/1AcMfEu4BqBysVSunpZZRpFoCs3bmdaNOPytmpGhiCSIsnmLFpDmx4f
-	 TPv1gd81y4414HHJ3xYvUNzuovkzllgCUKtvkYl9ARtvgbBvuD4G11PkU8ThSh9Vdv
-	 +HPAmOuAaGKEVi4IvQltGpQUXymTWzU3wSUQzUs7EwMBqu/KxtB9qGfmuwgPJftl5W
-	 RNoZl2Z1TpwZXvfEtYNRBZKZsazwVEb1TFCzf4pzNuZ2fu0em+PlN4H3Nkb3jun/Kr
-	 YNYJmHZNUPjig==
-Message-ID: <198c5021-4347-4ac1-bf23-b98924b224ac@kernel.org>
-Date: Sun, 21 Apr 2024 16:00:59 +0200
+	s=k20201202; t=1713708140;
+	bh=GmsHQ9LW88vNFuert6h+ygNzeGSaa2DSqYQPLvwPKpM=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=Yhj4s7AH5XmJQYwEBhQdzdx2NOo1GOiuItLMSlCpB29D36P0XvwHo5UBQ78XUVbEa
+	 iklf4SuS5lT+W2zIP/p/AlNn8abJLVBmijFWYvtPZtbxz5cFqDgmBFDInVlQjyDJ9r
+	 gMqwTmAS205T4PziF9S/McLj7yRqO365Pu57fFGuOYFwlXImScErT6ctW7JMZaQiV1
+	 m/YpEz9lMn/o05dKs5QbqLCpGYFMGhFnikgZVDuwdKByioqzhzLX1ol36JR5rTFeVe
+	 8kTzBOXDKFhLnld09+wP+Uwk97FT3tyhW+tzYubMcx3eTiPBUUfSh/ErYGftvYvMyd
+	 ioZw3PAYVWLGA==
+Message-ID: <7746a6a8-110f-4920-9f15-8fb592e829ff@kernel.org>
+Date: Sun, 21 Apr 2024 16:02:13 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,33 +49,24 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] media: dt-bindings: i2c: add Giantec GT97xx VCM
-To: Kieran Bingham <kieran.bingham@ideasonboard.com>,
- Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski
- <krzk+dt@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Rob Herring <robh@kernel.org>, Zhi Mao <zhi.mao@mediatek.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Heiko Stuebner <heiko@sntech.de>, Sakari Ailus
- <sakari.ailus@linux.intel.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
- Hans de Goede <hdegoede@redhat.com>,
- Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
- Alain Volmat <alain.volmat@foss.st.com>,
- Paul Elder <paul.elder@ideasonboard.com>,
- Mehdi Djait <mehdi.djait@bootlin.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- shengnan.wang@mediatek.com, yaya.chang@mediatek.com, yunkec@chromium.org,
- 10572168@qq.com
-References: <20240420011840.23148-1-zhi.mao@mediatek.com>
- <20240420011840.23148-2-zhi.mao@mediatek.com>
- <0cb44232-3be3-47cd-9e4c-f01f2839aff3@kernel.org>
- <171361758199.1737874.11884706323295617909@ping.linuxembedded.co.uk>
- <171369930090.365791.12487523856935433191@ping.linuxembedded.co.uk>
+Subject: Re: [RFC PATCH v3 4/6] dt-bindings: clock: meson: document A1 SoC
+ audio clock controller driver
+To: Jan Dakinevich <jan.dakinevich@salutedevices.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Jiucheng Xu
+ <jiucheng.xu@amlogic.com>, linux-amlogic@lists.infradead.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240419125812.983409-1-jan.dakinevich@salutedevices.com>
+ <20240419125812.983409-5-jan.dakinevich@salutedevices.com>
+ <07b1ca57-49a0-4151-99bf-caac053eaa01@kernel.org>
+ <0194ddb8-6e93-4a77-9fdd-93fc79a4e03e@salutedevices.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -121,35 +112,39 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <171369930090.365791.12487523856935433191@ping.linuxembedded.co.uk>
+In-Reply-To: <0194ddb8-6e93-4a77-9fdd-93fc79a4e03e@salutedevices.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 21/04/2024 13:35, Kieran Bingham wrote:
-> Quoting Kieran Bingham (2024-04-20 13:53:01)
->> Quoting Krzysztof Kozlowski (2024-04-20 12:21:46)
->>> On 20/04/2024 03:18, Zhi Mao wrote:
->>>> Add YAML device tree binding for GT9768 & GT8769 VCM,
->>>> and the relevant MAINTAINERS entries.
->>>>
->>>> Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
->>>> ---
->>>
->>> Sorry, there was v1. Please do not send same versions twice. BTW, use
->>> patman or b4 for your submissions if versioning is tricky.
->>>
+On 20/04/2024 16:48, Jan Dakinevich wrote:
+>>> +                clock-names = "pclk",
+>>> +                              "dds_in",
+>>> +                              "fclk_div2",
+>>> +                              "fclk_div3",
+>>> +                              "hifi_pll",
+>>> +                              "xtal";
 >>
->> Whats Patman? google returns false positives for me.
+>> Make it complete - list all clocks.
+>>
 > 
-> Digging deeper, I've discovered patman comes from the u-boot project,
-> and is known as 'patch manager', and can work along side patchwork.
-> 
->  - https://docs.u-boot.org/en/latest/develop/patman.html
+> You mean, all optional clocks should be mentioned here. Right?
 
-Patman is the tool brought for U-boot and used a lot within some of
-Chromebook folks, quite powerful. Now most of the community uses b4, but
-for completeness I proposed patman (which has few nice features not
-present in b4). See Doug's talk from this EOSS.
+Yes.
+
+> 
+>>> +        };
+>>> +
+>>> +        clkc_audio_vad: clock-controller@fe054800 {
+>>
+>> Just keep one example. It's basically almost the same.
+>>
+> 
+> The worth of this duplication is to show how a clock from second
+> controller (<&clkc_audio_vad AUD_CLKID_VAD_AUDIOTOP>) is used by first
+> one. May be it would be better to keep it... What do you think?
+
+I don't understand what is worth here. Using clocks is kind of obvious?
+What's special?
 
 Best regards,
 Krzysztof
