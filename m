@@ -1,122 +1,168 @@
-Return-Path: <linux-kernel+bounces-152531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98E2E8AC011
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 18:08:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A882A8AC013
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 18:15:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA02D1C20A4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 16:08:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3ED91C20B72
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 16:15:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 175AB1BF20;
-	Sun, 21 Apr 2024 16:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="Bdvv0Jdp"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7111BDDF;
+	Sun, 21 Apr 2024 16:14:57 +0000 (UTC)
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66DEC1BC4B;
-	Sun, 21 Apr 2024 16:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28D1F1B977;
+	Sun, 21 Apr 2024 16:14:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713715660; cv=none; b=Hpdaf2kRNW/2KhEQPbJWcHKf98+llADePieeMB1kd0+9zlnfQirRf8YBNBJJfvLhJO/lykqCehmws+t5PRXylWbTZavJmQB8rsXtAikInGu6Lm285la+1prVcxlz/eZE4MPkFWLmX//jHGw6MGfhsaLj5qQJg/wfWIkroS2eDvg=
+	t=1713716097; cv=none; b=Z9gvS7E2JK1uTffq5YiZhxWGueBMwJ3uWXOx+bo6AyGwgJrjeoe8MDboc/e6JDwtowQploiAO6gDX/Bbkejp7lu0HJ+fJAGr3H6zCxQ0djP2AzgDF4sEI5OFwpNqF7FudtQcIfln/d4YhCAWHLDMAaxdTUHLQ90izVyuWGkJC6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713715660; c=relaxed/simple;
-	bh=Cyhx+MN4VujH/tdWm0dQNdZ3a1INmFQBlsbASGClCaY=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=oqw4WnTw7uhkTX7oakhMEKjKv1DalbCDfjPa37JbJmC5Ga31yr1rYBFE4xA5OfKeciLyT0fGiciRviwEV3U+/Z4oC9IYlH7uRmWFqCJLtocDYK7HDjOQEffw/D/AF5A3R8ZZTiGjjley5yHmih8pXEXVKB+uVgGsA40EfxELj2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=Bdvv0Jdp; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1713716097; c=relaxed/simple;
+	bh=i8asu7phueFjofz9G7cb82MiQsCYJJIdjb/+30F2E7Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=d4x1RizfRUxdDhZRN66dglE3GDTSqou8+Xek40QuhDAbHTWNjyBkUjNVPB6kEcMspcF16VacB3tYEQiyN6pdKYnK2OZbtHmNd10Hz76iuvCRbk/BjlyFd+Ij5gh6+EyOX8eSBUFfISMzdgxJM5atUyLnFsioNyj6lG9CP4g0ZEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from xmz-huawei.. (unknown [101.68.80.254])
+	by APP-01 (Coremail) with SMTP id qwCowAC3v0dXOyVmdqEDBQ--.35170S2;
+	Mon, 22 Apr 2024 00:14:18 +0800 (CST)
+From: Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+To: bhe@redhat.com
+Cc: ajones@ventanamicro.com,
+	akpm@linux-foundation.org,
+	alexghiti@rivosinc.com,
+	aou@eecs.berkeley.edu,
+	bjorn@rivosinc.com,
+	chenjiahao16@huawei.com,
+	conor.dooley@microchip.com,
+	jszhang@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	palmer@dabbelt.com,
+	palmer@rivosinc.com,
+	patchwork-bot+linux-riscv@kernel.org,
+	paul.walmsley@sifive.com,
+	robh@kernel.org,
+	thunder.leizhen@huawei.com,
+	zephray@outlook.com,
+	stable@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Subject: Re: [PATCH -next v2] riscv: kdump: fix crashkernel reserving problem on RISC-V
+Date: Mon, 22 Apr 2024 00:13:57 +0800
+Message-Id: <20240421161357.7602-1-xingmingzheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZSiQRDGLZk7lpakE@MiWiFi-R3L-srv>
+References: <ZSiQRDGLZk7lpakE@MiWiFi-R3L-srv>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1713715655;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VsbWtpJGTpVE59gMLUthsI5owfAuS8vpivZIQQQ1eIA=;
-	b=Bdvv0JdpiuYrX4w/mGLWCWpiWk0/76kKVfTbP11g+yKcyKSMt7DoVECfFRf//g1f8moZcs
-	zoUj0XNxDvp4JjNqPwYHHPCMHtc1N+2wRJnV20rCigi2zj1UQu+Eo7Oft2hGEwr39zGhQq
-	X6l4ak3NsRp9S2N1ZYxHk3BmSao95pAqBwIpiA9uom9q24Hwfazaejk8IRRUDy9T6NaXEB
-	DxECT69Kpvyu8V5ICo/ChhcwEM4+kCKxnMUo3/Ybr8Jb/6tGWSLSppykuRAaNLlxI1DB4O
-	VGgVrLNgUFF+4YXZg+Atf7LJqZPr9GBEdJvHqZHhnYtAeW2/7A9+qnAcOQ08UA==
-Date: Sun, 21 Apr 2024 18:07:34 +0200
-From: Dragan Simic <dsimic@manjaro.org>
-To: Diederik de Haas <didi.debian@cknow.org>
-Cc: Alexey Charkov <alchark@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- linux-rockchip@lists.infradead.org, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
- Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] RK3588 and Rock 5B dts additions: thermal, OPP and
- fan
-In-Reply-To: <3068718.7t0mGDVaCv@bagend>
-References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
- <66689051.MzlzmSNrL9@bagend> <9f4c7615a6685ac42dccdbe35e57c357@manjaro.org>
- <3068718.7t0mGDVaCv@bagend>
-Message-ID: <51b07f627c5e16461d9c38dc41c0b957@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:qwCowAC3v0dXOyVmdqEDBQ--.35170S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw17XF47uF15AryxGw1UGFg_yoW5trWrpF
+	43JF1j9rW8Jry8Jr1kJr15AF1kJr1UCa45Jr13Jr17J3Wjgr1qvr1UGrWUWasxA34rCr17
+	Jrn8tw4qqr4UCaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+	4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUAxh
+	LUUUUU=
+X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiBwkOCmYlHKYv6QAAs1
 
-Hello Diederik,
-
-On 2024-04-20 19:53, Diederik de Haas wrote:
-> On Wednesday, 10 April 2024 11:28:09 CEST Dragan Simic wrote:
->> > Can you rebase this patch set on Heiko's for-next branch [1]?
->> > And then also fix the ordering of the nodes and the elements within
->> > those nodes so that they match the current conventions?
+>Hi,
+>
+>On 10/12/23 at 08:40pm, patchwork-bot+linux-riscv@kernel.org wrote:
+>> Hello:
 >> 
->> Ah, thanks, this is a good reminder about the proposal for the plan
->> for moving forward, which I promised to send a while ago. :)
+>> This patch was applied to riscv/linux.git (fixes)
+>> by Palmer Dabbelt <palmer@rivosinc.com>:
+>
+>This patches fixes a regression of one risc-v patch which Andrew picked
+>into his akpm tree. Later, Andrew merged those two into one patch, now
+>it shows up in next/master as:
+>
+>39365395046f riscv: kdump: use generic interface to simplify crashkernel reservation
+>
+>Maybe it can be droppped in risv-v git tree so as not to cause conflict
+>when merging.
+>
+
+Hi,
+
+If I understand right, after commit[1] is merged into Linus's tree,
+commit[2] doesn't need to be merged in, because [1] contains [2]. This may
+not have an effect on the master branch. But commit[2] goes into the 6.6.y
+branch alone and commit[1] doesn't, which creates a trouble in the 6.6
+stable branch.
+
+commit 39365395046f ("riscv: kdump: use generic interface to simplify crashkernel reservation") [1]
+commit 1d6cd2146c2b ("riscv: kdump: fix crashkernel reserving problem on RISC-V") [2]
+
+Thanks,
+Mingzheng
+
+>Thanks
+>Baoquan
+>
 >> 
->>> [1] 
->>> https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/log/?h=for-next
-> 
-> I build a (Debian) kernel based off 6.9-rc4 + a whole bunch of patches,
-> including this patch series. I got someone on #debian-arm to try it out 
-> on a
-> Rock 5B and the dmesg output showed a number of items wrt thermal and 
-> OPP.
-> 
-> Some items that I filtered out from that dmesg output:
-> 
-> [    3.211716] hwmon hwmon0: temp1_input not attached to any thermal 
-> zone
-> [    3.908339] panthor fb000000.gpu: EM: OPP:900000 is inefficient
-> [   10.473061] cpu cpu0: EM: OPP:600000 is inefficient
-> [   10.473233] energy_model: Accessing cpu4 policy failed
-> [   10.585236] rockchip-thermal fec00000.tsadc: Missing rockchip,grf 
-> property
-> 
-> Attached is the full list of items I collected from that dmesg output 
-> which
-> seem worth investigating.
-> 
-> Maybe useful to investigate when moving forward?
+>> On Mon, 25 Sep 2023 10:43:33 +0800 you wrote:
+>> > When testing on risc-v QEMU environment with "crashkernel="
+>> > parameter enabled, a problem occurred with the following
+>> > message:
+>> > 
+>> > [    0.000000] crashkernel low memory reserved: 0xf8000000 - 0x100000000 (128 MB)
+>> > [    0.000000] crashkernel reserved: 0x0000000177e00000 - 0x0000000277e00000 (4096 MB)
+>> > [    0.000000] ------------[ cut here ]------------
+>> > [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/resource.c:779 __insert_resource+0x8e/0xd0
+>> > [    0.000000] Modules linked in:
+>> > [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 6.6.0-rc2-next-20230920 #1
+>> > [    0.000000] Hardware name: riscv-virtio,qemu (DT)
+>> > [    0.000000] epc : __insert_resource+0x8e/0xd0
+>> > [    0.000000]  ra : insert_resource+0x28/0x4e
+>> > [    0.000000] epc : ffffffff80017344 ra : ffffffff8001742e sp : ffffffff81203db0
+>> > [    0.000000]  gp : ffffffff812ece98 tp : ffffffff8120dac0 t0 : ff600001f7ff2b00
+>> > [    0.000000]  t1 : 0000000000000000 t2 : 3428203030303030 s0 : ffffffff81203dc0
+>> > [    0.000000]  s1 : ffffffff81211e18 a0 : ffffffff81211e18 a1 : ffffffff81289380
+>> > [    0.000000]  a2 : 0000000277dfffff a3 : 0000000177e00000 a4 : 0000000177e00000
+>> > [    0.000000]  a5 : ffffffff81289380 a6 : 0000000277dfffff a7 : 0000000000000078
+>> > [    0.000000]  s2 : ffffffff81289380 s3 : ffffffff80a0bac8 s4 : ff600001f7ff2880
+>> > [    0.000000]  s5 : 0000000000000280 s6 : 8000000a00006800 s7 : 000000000000007f
+>> > [    0.000000]  s8 : 0000000080017038 s9 : 0000000080038ea0 s10: 0000000000000000
+>> > [    0.000000]  s11: 0000000000000000 t3 : ffffffff80a0bc00 t4 : ffffffff80a0bc00
+>> > [    0.000000]  t5 : ffffffff80a0bbd0 t6 : ffffffff80a0bc00
+>> > [    0.000000] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
+>> > [    0.000000] [<ffffffff80017344>] __insert_resource+0x8e/0xd0
+>> > [    0.000000] ---[ end trace 0000000000000000 ]---
+>> > [    0.000000] Failed to add a Crash kernel resource at 177e00000
+>> > 
+>> > [...]
+>> 
+>> Here is the summary with links:
+>>   - [-next,v2] riscv: kdump: fix crashkernel reserving problem on RISC-V
+>>     https://git.kernel.org/riscv/c/1d6cd2146c2b
+>
+>
+>> 
+>> You are awesome, thank you!
+>> -- 
+>> Deet-doot-dot, I am a bot.
+>> https://korg.docs.kernel.org/patchwork/pwbot.html
+>> 
 
-This is a nice report, thanks!
-
-I'm not sure what's going on with the mmc2 issues.  Regarding the 
-hym8563,
-hwmon, energy_model and rockchip-spi issues, I'll have a look into them
-and come back with an update.
-
-Regarding the multiple "OPP:<frequency> is inefficient" warnings, it's
-already on my TO-DO list to perform a detailed (and repeatable) testing.
-My suspicion is that declaring the OPPs as inefficient actually isn't
-warranted, but we'll see what will be the test results.
 
