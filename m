@@ -1,143 +1,147 @@
-Return-Path: <linux-kernel+bounces-152472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2020E8ABEF7
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 12:50:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB8678ABEFD
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 13:01:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E39121C2088A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 10:50:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A7FF1F210F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F0B10A03;
-	Sun, 21 Apr 2024 10:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73DD111A2;
+	Sun, 21 Apr 2024 11:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LglZMmpd"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="Frm2YIm8"
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D46E635;
-	Sun, 21 Apr 2024 10:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99BDCFBEF;
+	Sun, 21 Apr 2024 11:01:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713696598; cv=none; b=M8+vVClmtaEjqzwY6tggx/0xbEGqpQ/uhCT/hVRVeXwzotuTIuGG25fbukX7DA4lTz3C6qQmqyuuvjW4qg1NncFQMg2BgBzzEtMwfeHFlZmALezBxiPKgbtlUQh05RfVHv2sMoSmAaKPvPPvzZXqtzKxnlJndd18y5nCFwMywyU=
+	t=1713697309; cv=none; b=ntc6D1oP6kmKQoMQpsI8S+11seHdmM+Em8i3pwT/ERQpPpPSnjZhygiUcvf/ed4RV/epFm3VTx8YuyiU/2hg8rZOEqBVP2KuAvvdacK1IbZsGiOqY0JCl7AVuV742XTdKRgE7ZXckcju0XoyJeLBHmB75dcB+9tTROyHig92dko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713696598; c=relaxed/simple;
-	bh=LVoCXclreBgtsmr5oFo4bwowtcM1xBMbzbyZzQ8OKPc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gdyvgtx4yIfu0qa2zYxN6UYtgi2XCBGkTgXPEjwKtIlsrCNDkEwq7Vry0lfTElxGPsPJRJ/Vkj4APXEF8ffnXqpQPME8z8okuy9iZ6zzDlY0vL63UwHzDAH3kBxyJP+5+iiu9s845aSvDpciaYbAD9HHWFaSgc0ZlsCfCR3kpPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LglZMmpd; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e5715a9ebdso27943875ad.2;
-        Sun, 21 Apr 2024 03:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713696596; x=1714301396; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5YMdAkat8vhxj4dx4OSt4iQjjgWZ4TG1gL8TgMmCIgQ=;
-        b=LglZMmpdmB2iNReXBceIvzKkqqAudNo47CaUwP3f5WKWf3n9Lhu2AVwc0PbHhyiaNX
-         jydX6RtpjdPmgsHjE3GXoCZdrXYd1GTZJAq4eqcEB3nI3xjPCS6QNuFjD2lfaSd69pNR
-         aIsUkIEC8c0eb+uvFajDhclgTmoQbAxCX1ZC5VG4mTsEYuJ0Ruf7N60XPqHPQ9pW7BPN
-         whivV/dkiLPX33LM/eQu/ltIHWx7RwhJc2aB2JlR0HX+nqjVETA72zmmDEtR29CBTz9L
-         3GENIyH4FfulpxCYBp+jnsEKpKnb3wgnRSDa9UL2dPg+mhjJyi5RfjFjAmdmi/wvfnO+
-         bhJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713696596; x=1714301396;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5YMdAkat8vhxj4dx4OSt4iQjjgWZ4TG1gL8TgMmCIgQ=;
-        b=l1vcsSwaeb3UiuKAbKQDMT2Y8Juratos70xdmQEfSMj5nhc9Q6J2K8R+1rK61H6evh
-         doQ35YYUkt+rtW+FeJE8qeLAmVmFlh3ZrzUlENk6NM6rb40BVKs8BghO8KVgtE16eFCa
-         qoesQ3tWbOI5iXGnulczKeG9jLVuZVoe0jE1WriktaKbmdZ6wDm+y2BkuxuECkw34pY1
-         UVsavEyxzaHoB/LD3OwfctZ3zlmntCTdBcsDUWlnlFtSP9SRG6OpSXWXUce1RrA4nFVg
-         R/FWV8alpAJzYh/bdblZgwT1MsaYvPm5qYmEnDYCEZ5y9/EJhvvWP+md2f91J5nImpht
-         EBFg==
-X-Forwarded-Encrypted: i=1; AJvYcCUWIOX842bJ+Zgn8KhtleHkp99+h3EwkksnaoYn8ht0jkk/5Qsmp/oXWJ0iiyIO26/uRnpUKVI0kmD9/gTPWZeSOV6we5UXncrCmcPfSfJge2ScWI23hIp3eVIBzK2rmBxqbN/t3BKrW/w=
-X-Gm-Message-State: AOJu0Yz7I5I9GLoWX6pYjl/udjiLkwDJGus6N50OihJqVd0ilr9Z8sTO
-	RMGMqlSmCibqLh7Pp4RIJTbtoNrjs1sOcX3ANuKxDMje8Xvpi6yFe5vv4Xdb
-X-Google-Smtp-Source: AGHT+IEQvoqu3PAcMjoIH/OZqy7yDGFXPIPisC1PaUDN4HjBqxOcFxicJw16ppg1tMDfL8/OtDH0uw==
-X-Received: by 2002:a17:902:e5d2:b0:1e4:6938:6fbd with SMTP id u18-20020a170902e5d200b001e469386fbdmr7137713plf.7.1713696596443;
-        Sun, 21 Apr 2024 03:49:56 -0700 (PDT)
-Received: from shresth-aspirea71576g.abesec.ac.in ([139.5.197.158])
-        by smtp.gmail.com with ESMTPSA id n24-20020a170902969800b001e49bedbfa0sm6133088plp.285.2024.04.21.03.49.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Apr 2024 03:49:56 -0700 (PDT)
-From: Shresth Prasad <shresthprasad7@gmail.com>
-To: lee@kernel.org,
-	daniel.thompson@linaro.org,
-	jingoohan1@gmail.com,
-	deller@gmx.de
-Cc: dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	javier.carrasco.cruz@gmail.com,
-	Shresth Prasad <shresthprasad7@gmail.com>
-Subject: [PATCH v2][next] backlight: sky81452-backlight: Remove unnecessary call to of_node_get
-Date: Sun, 21 Apr 2024 16:19:17 +0530
-Message-ID: <20240421104916.312588-2-shresthprasad7@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713697309; c=relaxed/simple;
+	bh=1FeIcTYwAU1S0raUDq2BITNq18igT++vQ66L7gX7ud4=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ibZpf+cm+2ZcgILUw82kiW7CEuh4p2xFK/BCSxY2q7mBlXXq74MiKdQmTbC61g4VD6Gr+raBWnMpcBPx7HdwgxKxlerXDLlMEMvpeP4Uth+I5egn/uPNDvKAO7PXHon69N6BEt9BzDAig9s2pZm76Luq52mLPW285U5G/ONeyrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=Frm2YIm8; arc=none smtp.client-ip=193.238.174.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+	by mg.ssi.bg (Proxmox) with ESMTP id 537FF2258B;
+	Sun, 21 Apr 2024 14:01:36 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+	by mg.ssi.bg (Proxmox) with ESMTPS;
+	Sun, 21 Apr 2024 14:01:35 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by ink.ssi.bg (Postfix) with ESMTPSA id 5300F9003A3;
+	Sun, 21 Apr 2024 14:01:30 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
+	t=1713697291; bh=1FeIcTYwAU1S0raUDq2BITNq18igT++vQ66L7gX7ud4=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References;
+	b=Frm2YIm8I/YQvMO+QzP1ECvaKyBoTFzjUIU7sR6SQU33/ae0QqMYEYMmPKf4c7AAG
+	 suYC40PeFdZOjXjIa5IhAHOBhGDnXwbfVGhOvYAMoSNS44YyjYltiO6ENb/VBkSlj7
+	 9bx0yMW/7/CP+HoWafAU4C2yyTgShFKvo5dCz+aY=
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 43LB1L8h034296;
+	Sun, 21 Apr 2024 14:01:22 +0300
+Date: Sun, 21 Apr 2024 14:01:21 +0300 (EEST)
+From: Julian Anastasov <ja@ssi.bg>
+To: Ismael Luceno <iluceno@suse.de>
+cc: linux-kernel@vger.kernel.org, Firo Yang <firo.yang@suse.com>,
+        Andreas Taschner <andreas.taschner@suse.com>,
+        =?UTF-8?Q?Michal_Kube=C4=8Dek?= <mkubecek@suse.com>,
+        Simon Horman <horms@verge.net.au>, lvs-devel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
+        coreteam@netfilter.org
+Subject: Re: [PATCH] ipvs: Fix checksumming on GSO of SCTP packets
+In-Reply-To: <20240418144434.16407-1-iluceno@suse.de>
+Message-ID: <fd234180-4d6f-313a-0edd-13c821bd4423@ssi.bg>
+References: <20240418144434.16407-1-iluceno@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="-1463811672-1861435800-1713697283=:3044"
 
-`dev->of_node` already has a reference to the device_node and calling
-of_node_get on it is unnecessary. All conresponding calls to
-of_node_put are also removed.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
----
-Changes in v2:
-    - Change commit header and body to better reflect changes
-    - Remove call to of_node_get entirely
+---1463811672-1861435800-1713697283=:3044
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
- drivers/video/backlight/sky81452-backlight.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/video/backlight/sky81452-backlight.c b/drivers/video/backlight/sky81452-backlight.c
-index eb18c6eb0ff0..e7cae32c8d96 100644
---- a/drivers/video/backlight/sky81452-backlight.c
-+++ b/drivers/video/backlight/sky81452-backlight.c
-@@ -182,7 +182,7 @@ static const struct attribute_group sky81452_bl_attr_group = {
- static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
- 							struct device *dev)
- {
--	struct device_node *np = of_node_get(dev->of_node);
-+	struct device_node *np = dev->of_node;
- 	struct sky81452_bl_platform_data *pdata;
- 	int num_entry;
- 	unsigned int sources[6];
-@@ -195,7 +195,6 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
- 
- 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
- 	if (!pdata) {
--		of_node_put(np);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-@@ -217,7 +216,6 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
- 					num_entry);
- 		if (ret < 0) {
- 			dev_err(dev, "led-sources node is invalid.\n");
--			of_node_put(np);
- 			return ERR_PTR(-EINVAL);
- 		}
- 
-@@ -237,7 +235,6 @@ static struct sky81452_bl_platform_data *sky81452_bl_parse_dt(
- 	if (ret < 0)
- 		pdata->boost_current_limit = 2750;
- 
--	of_node_put(np);
- 	return pdata;
- }
- #else
--- 
-2.44.0
+	Hello,
+
+On Thu, 18 Apr 2024, Ismael Luceno wrote:
+
+> It was observed in the wild that pairs of consecutive packets would leave
+> the IPVS with the same wrong checksum, and the issue only went away when
+> disabling GSO.
+> 
+> IPVS needs to avoid computing the SCTP checksum when using GSO.
+> 
+> Co-developed-by: Firo Yang <firo.yang@suse.com>
+> Signed-off-by: Ismael Luceno <iluceno@suse.de>
+> Tested-by: Andreas Taschner <andreas.taschner@suse.com>
+> CC: Michal Kubeček <mkubecek@suse.com>
+> CC: Simon Horman <horms@verge.net.au>
+> CC: Julian Anastasov <ja@ssi.bg>
+> CC: lvs-devel@vger.kernel.org
+> CC: netfilter-devel@vger.kernel.org
+> CC: netdev@vger.kernel.org
+> CC: coreteam@netfilter.org
+
+	Thanks for the fix, I'll accept this but skb_is_gso_sctp()
+has comment for pre-condition: skb_is_gso(skb). Can you send v2
+with it?
+
+	I'm guessing what should be the Fixes line, may be?:
+
+Fixes: 90017accff61 ("sctp: Add GSO support")
+
+	because SCTP GSO was added after the IPVS code? Or the
+more recent commit d02f51cbcf12 which adds skb_is_gso_sctp ?
+
+> ---
+>  net/netfilter/ipvs/ip_vs_proto_sctp.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_proto_sctp.c b/net/netfilter/ipvs/ip_vs_proto_sctp.c
+> index a0921adc31a9..3205b45ce161 100644
+> --- a/net/netfilter/ipvs/ip_vs_proto_sctp.c
+> +++ b/net/netfilter/ipvs/ip_vs_proto_sctp.c
+> @@ -126,7 +126,8 @@ sctp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
+>  	if (sctph->source != cp->vport || payload_csum ||
+>  	    skb->ip_summed == CHECKSUM_PARTIAL) {
+>  		sctph->source = cp->vport;
+> -		sctp_nat_csum(skb, sctph, sctphoff);
+> +		if (!skb_is_gso_sctp(skb))
+> +			sctp_nat_csum(skb, sctph, sctphoff);
+>  	} else {
+>  		skb->ip_summed = CHECKSUM_UNNECESSARY;
+>  	}
+> @@ -174,7 +175,8 @@ sctp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
+>  	    (skb->ip_summed == CHECKSUM_PARTIAL &&
+>  	     !(skb_dst(skb)->dev->features & NETIF_F_SCTP_CRC))) {
+>  		sctph->dest = cp->dport;
+> -		sctp_nat_csum(skb, sctph, sctphoff);
+> +		if (!skb_is_gso_sctp(skb))
+> +			sctp_nat_csum(skb, sctph, sctphoff);
+>  	} else if (skb->ip_summed != CHECKSUM_PARTIAL) {
+>  		skb->ip_summed = CHECKSUM_UNNECESSARY;
+>  	}
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
+---1463811672-1861435800-1713697283=:3044--
 
 
