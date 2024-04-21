@@ -1,62 +1,60 @@
-Return-Path: <linux-kernel+bounces-152638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FFC88AC1D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 00:33:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1F998AC1DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 00:33:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1D731F21004
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:33:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA964B20947
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:33:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC65753815;
-	Sun, 21 Apr 2024 22:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EA353E2C;
+	Sun, 21 Apr 2024 22:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RRkg5aiy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uWORn+21"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6AB535B8;
-	Sun, 21 Apr 2024 22:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF675380C;
+	Sun, 21 Apr 2024 22:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713738591; cv=none; b=NF3Fb9AW5C7NrGVSAODz7fHJAu0OwitzeM/CvAAMU+aMR0r/28/Nih59KbsBgWNVF04cqhryJjgjQA8UbRmQaM6g/b8UqbkS4Wv3DsXMW4bkUnPh4D29zATrLSwSXwtpKu/Q8y7xTN7qKSeC7FjgQRndFhgLJyxVLzCXU5Lt9ak=
+	t=1713738591; cv=none; b=ZfCJnUon6t7tVe7P8f/+PohCmhClwbM9NjbtGJ/pUWu4Y0NfD4J/HGlSkZpjtBua+kKH1FQTHT0LvXAVLZnJRcNrp9IhgdCIwpO1hvqcB3XtDkjfrfWPSMpk5xidjgiBTHRRUhuj3lys25yGiKvEDC53kpYTdDQYCSgx9dTfdgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713738591; c=relaxed/simple;
-	bh=EUoxTsamOCo66SH/7zQy0RIHDfmyzMqYgK3TQW0Zu3Q=;
+	bh=chwvUZAfiMuzYfDIb9EmErWtqNS1Sdj426CZM21u8hk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uJAEdLuLuFreuQjNmaaFLsV9kuroMoDcyCqVVz+k7RjcwFN20e7ok/oiMcTYoHiI45at/f4ZlqfimU6B9hUwn68Q+9zbTynWHYo59hHhnqJJF07FfehOo6rtzpgEDG9cNHxMKy8ghU3RRMulblSDiusUbsDWG2J9miMucidVLj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RRkg5aiy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE3DBC32783;
-	Sun, 21 Apr 2024 22:29:49 +0000 (UTC)
+	 MIME-Version:Content-Type; b=DkS3udLDDixXnTNGx51l0FjuARk2uGqHDUn/wad+TwhA/rOqA0xVZIj5VogwR3ZZKbEbQbndNIsbQvLsFuaKzagUDSfxUIXLGtVj5EitI3RZxH8s5YQhCXpuWy8NVC7hAWkcxXa80069UUfcZnB43TozInhrb17ojPmWt92zK5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uWORn+21; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5277C113CE;
+	Sun, 21 Apr 2024 22:29:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713738590;
-	bh=EUoxTsamOCo66SH/7zQy0RIHDfmyzMqYgK3TQW0Zu3Q=;
+	s=k20201202; t=1713738591;
+	bh=chwvUZAfiMuzYfDIb9EmErWtqNS1Sdj426CZM21u8hk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RRkg5aiyE3zufg+I35+rWLGXF4l4DsnO9VnJx2vh6IguqVXux0HxcCvOUGtWXCbMU
-	 mhZy+kLgkD768Oh6mEPgttPrGHYPlDM/JiZ4571OYyJaIjyCFLqRfnkTMUQgnOKjt+
-	 CBr1+umzcakvOwJ7T9yBAKaWcBVrFuFV5shpQ7UJysYY+QEl50Jp4e92TGMhd+Fyi4
-	 LE58bL6thuj61X4OoLdQ+RZGDVik11im6LIH6vgGzcSA2c5E/yJQbQPVZ5FvxfnBZQ
-	 9p3IcHyh5jUUk0Jm8v6gar4Av8IygLaPYt+SHQM8so3OrBJYOMcYfvGOEl6IbUyAiM
-	 GFsCN0GoA5DEw==
+	b=uWORn+21dSzg4hKPT7AJIFAtSOcfhL34eSZTpEGiocdRppcQkuxY3Bp/FxKAHfHUP
+	 iiuhr0cS4Bt6+qpd0bI/6JBFt/rgpyz6lTpaWUT9isb2ounnc+YfXYVedmzr+HAREN
+	 V8BbdvQb+bJu19SlXN1w/8+fccUaji8La3VTp6unUED9Par5DRxN159Vagq1j/bmy7
+	 BhZRvMA6b96FaxpZawlYci+JJNPhJJYWCLFxMqzJZELIJM4/xwzR2HlsZ5E6DevN74
+	 ZoC4HZSteForgxstt424meSzjfxzjbPAzkP9WVQCx3BjQmWg6i7gHxH2KR3UtQz2nY
+	 No37sJnRN6fJw==
 From: Bjorn Andersson <andersson@kernel.org>
-To: konrad.dybcio@linaro.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	Ling Xu <quic_lxu5@quicinc.com>
-Cc: quic_ekangupt@quicinc.com,
-	kernel@quicinc.com,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: dts: qcom: sm8650: Add three missing fastrpc-compute-cb nodes
-Date: Sun, 21 Apr 2024 17:29:24 -0500
-Message-ID: <171373856768.1196479.14779642234944924935.b4-ty@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Maulik Shah <quic_mkshah@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	quic_eberman@quicinc.com,
+	quic_collinsd@quicinc.com,
+	quic_lsrao@quicinc.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v4] soc: qcom: rpmh-rsc: Enhance check for VRM in-flight request
+Date: Sun, 21 Apr 2024 17:29:25 -0500
+Message-ID: <171373856763.1196479.12306109616414652379.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240319032816.27070-1-quic_lxu5@quicinc.com>
-References: <20240319032816.27070-1-quic_lxu5@quicinc.com>
+In-Reply-To: <20240215-rpmh-rsc-fixes-v4-1-9cbddfcba05b@quicinc.com>
+References: <20240215-rpmh-rsc-fixes-v4-1-9cbddfcba05b@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,15 +65,22 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 19 Mar 2024 08:58:16 +0530, Ling Xu wrote:
-> Add three missing cDSP fastrpc compute-cb nodes for the SM8650 SoC.
+On Thu, 15 Feb 2024 10:55:44 +0530, Maulik Shah wrote:
+> Each RPMh VRM accelerator resource has 3 or 4 contiguous 4-byte aligned
+> addresses associated with it. These control voltage, enable state, mode,
+> and in legacy targets, voltage headroom. The current in-flight request
+> checking logic looks for exact address matches. Requests for different
+> addresses of the same RPMh resource as thus not detected as in-flight.
 > 
+> Add new cmd-db API cmd_db_match_resource_addr() to enhance the in-flight
+> request check for VRM requests by ignoring the address offset.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: sm8650: Add three missing fastrpc-compute-cb nodes
-      commit: dae8cdb0a9e18f0cc7bda75e42d0da750e05ca77
+[1/1] soc: qcom: rpmh-rsc: Enhance check for VRM in-flight request
+      commit: f592cc5794747b81e53b53dd6e80219ee25f0611
 
 Best regards,
 -- 
