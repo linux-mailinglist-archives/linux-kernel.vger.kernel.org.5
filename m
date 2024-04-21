@@ -1,246 +1,202 @@
-Return-Path: <linux-kernel+bounces-152440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96AE08ABE75
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 05:14:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76EB58ABE7C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 05:35:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD3491C208F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 03:14:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6964B20E11
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 03:35:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA2D4C8F;
-	Sun, 21 Apr 2024 03:14:25 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD36D610B;
+	Sun, 21 Apr 2024 03:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SE6E2bew"
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C42F23C9
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 03:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB048205E22;
+	Sun, 21 Apr 2024 03:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713669264; cv=none; b=uVgmvqD5flCnl6nts/ulhdRTuJO2zkgmT1kFGbs9Y0p+1VC9x3Q5KxFDMsP+gIp8XN1u0pSsrCyG6JKGCIyhUsw8BHEqL4Z8IMlD1SkSQBD6K6Go/IhA24FpjLxDuxwcI47Fr6Z/OIxEofxXLfWRC9Xva00OS0esjNNLeni9H5k=
+	t=1713670518; cv=none; b=cIA75QptwcsBBk4RYAYGk01PXizqUcK5KGcviMaPd4LgQ9Usiv8pTygQIDUEbwSlaJMqMVEqfNOAB/bjbyitkCOT9mqVIzviZrkWUuZUpO+xevtS2jrVVcY9dQ8lilHrgn4a1JMaZe5n8j26H+45hApbzYzGKkWKfOsVP/4duco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713669264; c=relaxed/simple;
-	bh=EC/5UkuctPT22vaYV7HAx8bKIHShT4rZIulxbH31yoQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=E2le/VucuS7Cq2EZ3rWHaQ2htkw44PweE2AINobDOus9aAey2offQ2HZdQ6hZBhVa94+eC2qQ6VaPIlrG+QgiaKqWRoWDpQ8SShzz3WlfA1NeWgy/ktfp4Ynvt7m3tz9KPrHOCU49q8UcQF98oLjOQC+oXUaRYZKeVmoyVqgx80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d66a30a83aso325707739f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Apr 2024 20:14:19 -0700 (PDT)
+	s=arc-20240116; t=1713670518; c=relaxed/simple;
+	bh=w3BWd/Mb/cQJxsngUQxpZvCJqYSIFwkMtiPa2dhMohE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Cp629rCXlm6zvTLQnnWOVsxn4te0LnINF5bAZpI44H+oSwDqTdJ6a6RYcw1EmTg/RYSDMnt0bS47jzAx5065hzHIBbfQiIu26bV3ks+6GrcoHCYQhRualLo6TJec/y+3/a9bV+e/SmU8eUYsQ/ritSV/w+1SDkRqI7umczKsuCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SE6E2bew; arc=none smtp.client-ip=209.85.167.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3c5ee4ce695so1079364b6e.0;
+        Sat, 20 Apr 2024 20:35:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713670512; x=1714275312; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DqTFUStUgUgHwhHTzA1wLZlhW+xV4wEDyDdTFLtabz0=;
+        b=SE6E2bewEJBoRJy6o9B0J3nrA21kZO3PLaE8Wj8G05KO0itYF5782tm8yHUxlHg4Ot
+         e7NkC32sXu7Q3Gjb3RAgA7lIS2QxlNP1pUSrYx6M2n2ni6LUHoqJ0ITXE77PKefwHaRK
+         ox34ZWIIDGwrMRFXwvMEDhml7MD4IeOpaDFM2xmL3pE0ft7mmQvMQ80vvSr54NcUUfOj
+         jdvzUrA/CJeU22e0TxMqXnFrhWJ6PJw1mQ1E80ejU734xfkGb4MSQJfX/x4lsc4h9Mdt
+         gw7rVq7ceFh2wSPGSMayREjWp0UioGEon39gAAw3yEFyilBS94xB48nXgLY56ROd48f1
+         rGeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713669258; x=1714274058;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D0dIUOyf9BJ8NEnHNMqH1eOkFQZzFXRLnhyIEX26rYY=;
-        b=e1e/Tuzzq35pbj3XNQtjRZoRe4lmD3zP3lMBIZ5EGPKRixf6b8dFlvVqeAt6LJvtNU
-         cIuYH0R2nbUSadT7t7HpJDlJtIfAgtMdl84dJfsy1xuLrL27ntp3ru22tw2ADy4Gy3zg
-         YY3urRD605Y5pUMTFdnUteeItqzmHpzcM/HPq5yQecPk7XiQitqBPyKPLIJQyCHdgacp
-         5e34Y/0QdxmQ2h1Eg8mwiriu+2JgntwgT5VLY1zoO6/varlSGIld88QhS+Omg6Lazf2A
-         aJsWk2tm8RthCgW11HSdQbHVZZt3lwrG71gQ+8xCjfTv2rWtw0TDOEGbVRr/aEEu4Ys/
-         7AKg==
-X-Forwarded-Encrypted: i=1; AJvYcCXElaW61St4YCFWMLoM/W9w6wgTl0BGKig/pjwE9DR7nHw6xCG0I8fOYzn+oI6emnnOQCGXdv1wWiS0kLN75nvixLkFTPLuedtQTv7I
-X-Gm-Message-State: AOJu0YyLRqE716MZMCKwScDnHU+Cxs9/nA2iMqzhsuyD+nyW+BDI7Mzq
-	sXgBfTi7Gsd+Nz9tCE/JEYGa+VnnOiPG2afhrfu8OA6VHxBK++4oTBnSF8dG6dVbyASNSzDhDrt
-	Y1uj7YAklbBisG+SIoGGWGXoDnKUE41yF348TDAz6A9Ho3ORE4lRo/bM=
-X-Google-Smtp-Source: AGHT+IFaO8JHB8boo0dhjOL7kZZUE1L2ICumqaY0L5U4Ep3ddVao4LM3AQh0iH4+1cKXZ8QSujSJPcq4XvsBaAS6FleO7jR5LnQe
+        d=1e100.net; s=20230601; t=1713670512; x=1714275312;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DqTFUStUgUgHwhHTzA1wLZlhW+xV4wEDyDdTFLtabz0=;
+        b=HlcQwhms+Tf0SsJiJZ6Jjn7Ml9XqEBrB/mFoLHitg6NHWrDwRaUkjTT9D3W9CxPAPv
+         1cab49hhomSGaG5rqUpwlq549jT6JCHOdyEflvk9xq0GO069qm6qgv3+axTf9XDqZGzy
+         EX2QXhXTSxIgXgATc+qWBO60cdxXHuH2fbsv6muuiVDkxx/+nqq9Cn6zZA8Hv8EM7aBf
+         qc4c+7M7S1KdON0ZtGtUj6rTCSwEnucxbbCJwPdh97SYSrhkVaFl9jp5gnRAmFEJq9kS
+         MXdQFdyre1t/amd2vg3IeQV5O/FnRcTRImqGNRlWSzZ4YZWsmeZ1gEecueUd5PmhdCK2
+         zsPA==
+X-Forwarded-Encrypted: i=1; AJvYcCWfBpW359XUPhxMa21AcgybOH8kC/xAslqUGiohluaaSTOW5Lnsk3k3uFZZjixGUozD0oETJUmuj0Ytwx3AqzcnwwKxALXPjTFZlEfoxvlTaO9xVh+pciI0DY1SaZIa/6HqNVmKnBjlVKIQkLRr5yES8BbGGQLrqgy+YbkaUaCdWSiquIYl
+X-Gm-Message-State: AOJu0YxGExj9m9LFV5CQDIdES69stICa2RKwpvyC2c70iT7bkDvZlZ8S
+	RSdsTlcQ1oj1tBiCfLYu4mWHLbjk7pTMX4Io9MJ/5spAB/Ysj8YB
+X-Google-Smtp-Source: AGHT+IEhIi5dpao0M7bfoPbGYTuQ9jJSf6VyRPSAaGoV0oTkl8Eb5w20BzCqE9x96m8tcu3YW0MIkQ==
+X-Received: by 2002:a05:6808:6c1:b0:3c6:4d7:abf9 with SMTP id m1-20020a05680806c100b003c604d7abf9mr7562694oih.55.1713670511864;
+        Sat, 20 Apr 2024 20:35:11 -0700 (PDT)
+Received: from localhost ([117.239.226.201])
+        by smtp.gmail.com with UTF8SMTPSA id b9-20020a056a00114900b006eaaaf5e0a8sm5517386pfm.71.2024.04.20.20.35.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Apr 2024 20:35:11 -0700 (PDT)
+From: Kartik Agarwala <agarwala.kartik@gmail.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com
+Cc: Kartik Agarwala <agarwala.kartik@gmail.com>,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH v2] ASoC: dt-bindings: mt2701-wm8960: Convert to dtschema
+Date: Sun, 21 Apr 2024 09:01:31 +0530
+Message-Id: <20240421033129.13076-1-agarwala.kartik@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1405:b0:484:dd72:a148 with SMTP id
- k5-20020a056638140500b00484dd72a148mr359399jad.1.1713669258591; Sat, 20 Apr
- 2024 20:14:18 -0700 (PDT)
-Date: Sat, 20 Apr 2024 20:14:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006bca48061692b790@google.com>
-Subject: [syzbot] [mm?] possible deadlock in gup_fast_fallback
-From: syzbot <syzbot+63ba90b81c16b86379bd@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Convert mt2701-wm890 bindings from text to dtschema. This is used by
+MediaTek mt7623a/n SoC.
 
-syzbot found the following issue on:
-
-HEAD commit:    66e4190e92ce Add linux-next specific files for 20240416
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1526f44f180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c247afaa437e6409
-dashboard link: https://syzkaller.appspot.com/bug?extid=63ba90b81c16b86379bd
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/86891dae5f9c/disk-66e4190e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1ca383660bf2/vmlinux-66e4190e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/bf6ff37d3fcc/bzImage-66e4190e.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+63ba90b81c16b86379bd@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.9.0-rc4-next-20240416-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.2/9254 is trying to acquire lock:
-ffff88802c2f0b18 (&mm->mmap_lock){++++}-{3:3}, at: gup_fast_fallback+0x233/0x2b40 mm/gup.c:3442
-
-but task is already holding lock:
-ffff88806a3c3d80 (&sb->s_type->i_mutex_key#29){++++}-{3:3}, at: inode_lock include/linux/fs.h:791 [inline]
-ffff88806a3c3d80 (&sb->s_type->i_mutex_key#29){++++}-{3:3}, at: __blockdev_direct_IO+0x346/0x49b0 fs/direct-io.c:1146
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #2 (&sb->s_type->i_mutex_key#29){++++}-{3:3}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
-       inode_lock include/linux/fs.h:791 [inline]
-       exfat_page_mkwrite+0x43a/0xea0 fs/exfat/file.c:629
-       do_page_mkwrite+0x19b/0x480 mm/memory.c:3097
-       do_shared_fault mm/memory.c:4977 [inline]
-       do_fault mm/memory.c:5039 [inline]
-       do_pte_missing mm/memory.c:3881 [inline]
-       handle_pte_fault+0x1298/0x6dc0 mm/memory.c:5359
-       __handle_mm_fault mm/memory.c:5500 [inline]
-       handle_mm_fault+0x10e7/0x1bb0 mm/memory.c:5665
-       do_user_addr_fault arch/x86/mm/fault.c:1420 [inline]
-       handle_page_fault arch/x86/mm/fault.c:1512 [inline]
-       exc_page_fault+0x2b9/0x900 arch/x86/mm/fault.c:1570
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-
--> #1 (sb_pagefaults#3){.+.+}-{0:0}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       __sb_start_write include/linux/fs.h:1659 [inline]
-       sb_start_pagefault include/linux/fs.h:1824 [inline]
-       exfat_page_mkwrite+0x161/0xea0 fs/exfat/file.c:619
-       do_page_mkwrite+0x19b/0x480 mm/memory.c:3097
-       do_shared_fault mm/memory.c:4977 [inline]
-       do_fault mm/memory.c:5039 [inline]
-       do_pte_missing mm/memory.c:3881 [inline]
-       handle_pte_fault+0x1298/0x6dc0 mm/memory.c:5359
-       __handle_mm_fault mm/memory.c:5500 [inline]
-       handle_mm_fault+0x10e7/0x1bb0 mm/memory.c:5665
-       do_user_addr_fault arch/x86/mm/fault.c:1420 [inline]
-       handle_page_fault arch/x86/mm/fault.c:1512 [inline]
-       exc_page_fault+0x2b9/0x900 arch/x86/mm/fault.c:1570
-       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-
--> #0 (&mm->mmap_lock){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
-       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
-       gup_fast_fallback+0x24c/0x2b40 mm/gup.c:3442
-       pin_user_pages_fast+0xcc/0x160 mm/gup.c:3566
-       iov_iter_extract_user_pages lib/iov_iter.c:1583 [inline]
-       iov_iter_extract_pages+0x3db/0x720 lib/iov_iter.c:1646
-       dio_refill_pages fs/direct-io.c:173 [inline]
-       dio_get_page fs/direct-io.c:214 [inline]
-       do_direct_IO fs/direct-io.c:916 [inline]
-       __blockdev_direct_IO+0x150a/0x49b0 fs/direct-io.c:1249
-       blockdev_direct_IO include/linux/fs.h:3182 [inline]
-       exfat_direct_IO+0x1b4/0x3d0 fs/exfat/inode.c:526
-       generic_file_read_iter+0x231/0x430 mm/filemap.c:2783
-       aio_read+0x364/0x500 fs/aio.c:1611
-       io_submit_one+0x884/0x18b0 fs/aio.c:2061
-       __do_sys_io_submit fs/aio.c:2120 [inline]
-       __se_sys_io_submit+0x179/0x2f0 fs/aio.c:2090
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-other info that might help us debug this:
-
-Chain exists of:
-  &mm->mmap_lock --> sb_pagefaults#3 --> &sb->s_type->i_mutex_key#29
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&sb->s_type->i_mutex_key#29);
-                               lock(sb_pagefaults#3);
-                               lock(&sb->s_type->i_mutex_key#29);
-  rlock(&mm->mmap_lock);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.2/9254:
- #0: ffff88806a3c3d80 (&sb->s_type->i_mutex_key#29){++++}-{3:3}, at: inode_lock include/linux/fs.h:791 [inline]
- #0: ffff88806a3c3d80 (&sb->s_type->i_mutex_key#29){++++}-{3:3}, at: __blockdev_direct_IO+0x346/0x49b0 fs/direct-io.c:1146
-
-stack backtrace:
-CPU: 0 PID: 9254 Comm: syz-executor.2 Not tainted 6.9.0-rc4-next-20240416-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
- gup_fast_fallback+0x24c/0x2b40 mm/gup.c:3442
- pin_user_pages_fast+0xcc/0x160 mm/gup.c:3566
- iov_iter_extract_user_pages lib/iov_iter.c:1583 [inline]
- iov_iter_extract_pages+0x3db/0x720 lib/iov_iter.c:1646
- dio_refill_pages fs/direct-io.c:173 [inline]
- dio_get_page fs/direct-io.c:214 [inline]
- do_direct_IO fs/direct-io.c:916 [inline]
- __blockdev_direct_IO+0x150a/0x49b0 fs/direct-io.c:1249
- blockdev_direct_IO include/linux/fs.h:3182 [inline]
- exfat_direct_IO+0x1b4/0x3d0 fs/exfat/inode.c:526
- generic_file_read_iter+0x231/0x430 mm/filemap.c:2783
- aio_read+0x364/0x500 fs/aio.c:1611
- io_submit_one+0x884/0x18b0 fs/aio.c:2061
- __do_sys_io_submit fs/aio.c:2120 [inline]
- __se_sys_io_submit+0x179/0x2f0 fs/aio.c:2090
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f397947dea9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f397a1670c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000d1
-RAX: ffffffffffffffda RBX: 00007f39795abf80 RCX: 00007f397947dea9
-RDX: 0000000020000540 RSI: 0000000000003f0a RDI: 00007f397a13d000
-RBP: 00007f39794ca4a4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f39795abf80 R15: 00007ffd43409678
- </TASK>
-
-
+Signed-off-by: Kartik Agarwala <agarwala.kartik@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Changes for v2:
+- Do not define pinctrl properties as they are implicitly supported.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Previous versions:
+v1: https://lore.kernel.org/all/20240401043505.40972-1-agarwala.kartik@gmail.com/
+---
+ .../sound/mediatek,mt2701-wm8960.yaml         | 54 +++++++++++++++++++
+ .../bindings/sound/mt2701-wm8960.txt          | 24 ---------
+ 2 files changed, 54 insertions(+), 24 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt2701-wm8960.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/mt2701-wm8960.txt
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt2701-wm8960.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt2701-wm8960.yaml
+new file mode 100644
+index 000000000..cf985461a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mediatek,mt2701-wm8960.yaml
+@@ -0,0 +1,54 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/mediatek,mt2701-wm8960.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MediaTek MT2701 with WM8960 CODEC
++
++maintainers:
++  - Kartik Agarwala <agarwala.kartik@gmail.com>
++
++properties:
++  compatible:
++    const: mediatek,mt2701-wm8960-machine
++
++  mediatek,platform:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: The phandle of MT2701 ASoC platform.
++
++  audio-routing:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description:
++      A list of the connections between audio components. Each entry is a
++      pair of strings, the first being the connection's sink, the second
++      being the connection's source.
++
++  mediatek,audio-codec:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: The phandle of the WM8960 audio codec.
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - mediatek,platform
++  - audio-routing
++  - mediatek,audio-codec
++  - pinctrl-names
++  - pinctrl-0
++
++examples:
++  - |
++    sound {
++        compatible = "mediatek,mt2701-wm8960-machine";
++        mediatek,platform = <&afe>;
++        audio-routing =
++            "Headphone", "HP_L",
++            "Headphone", "HP_R",
++            "LINPUT1", "AMIC",
++            "RINPUT1", "AMIC";
++        mediatek,audio-codec = <&wm8960>;
++        pinctrl-names = "default";
++        pinctrl-0 = <&aud_pins_default>;
++    };
+diff --git a/Documentation/devicetree/bindings/sound/mt2701-wm8960.txt b/Documentation/devicetree/bindings/sound/mt2701-wm8960.txt
+deleted file mode 100644
+index 809b609ea..000000000
+--- a/Documentation/devicetree/bindings/sound/mt2701-wm8960.txt
++++ /dev/null
+@@ -1,24 +0,0 @@
+-MT2701 with WM8960 CODEC
+-
+-Required properties:
+-- compatible: "mediatek,mt2701-wm8960-machine"
+-- mediatek,platform: the phandle of MT2701 ASoC platform
+-- audio-routing: a list of the connections between audio
+-- mediatek,audio-codec: the phandles of wm8960 codec
+-- pinctrl-names: Should contain only one value - "default"
+-- pinctrl-0: Should specify pin control groups used for this controller.
+-
+-Example:
+-
+-	sound:sound {
+-		compatible = "mediatek,mt2701-wm8960-machine";
+-		mediatek,platform = <&afe>;
+-		audio-routing =
+-			"Headphone", "HP_L",
+-			"Headphone", "HP_R",
+-			"LINPUT1", "AMIC",
+-			"RINPUT1", "AMIC";
+-		mediatek,audio-codec = <&wm8960>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&aud_pins_default>;
+-	};
+-- 
+2.34.1
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
