@@ -1,109 +1,100 @@
-Return-Path: <linux-kernel+bounces-152453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C58A8ABEAE
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 08:37:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5338ABEB1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 08:39:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8D381F21133
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 06:37:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 876532810F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 06:39:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A828D517;
-	Sun, 21 Apr 2024 06:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40BF6D2FE;
+	Sun, 21 Apr 2024 06:39:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="w0o5Tkaz"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="PKuCF6AT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417773232;
-	Sun, 21 Apr 2024 06:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745F6205E2C;
+	Sun, 21 Apr 2024 06:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713681456; cv=none; b=p8RznX+ErWhCO8qOizSU61T0MMZFqwsa4mfIEZGb/Y3PTbIvgg+ib3HBE0AuwdCpA/IFxpV9vBoJWuciR9nuPK25IL06cODnfj8cKy81W8A06W/ev9w0bBvsZTU5pH5GU9/ljTJAo0vMIwa54RXHAOLMm/yEuccJS9nlLeD9VwQ=
+	t=1713681567; cv=none; b=d4MpIa3R2ytwtKOVfb3mva8RUR/eAmGDdrRzty3bs317t5/LZC3vUgswwR/9nm63/+4XPif0ye2uY7hj/GzaE0chMOsOr2WwCeobVaJWB3bV9pDl+byV8/EKxp7Uv8wXMu+prAVXE0PZM94bMixYJRtofZof+/vwOH9pemN/8ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713681456; c=relaxed/simple;
-	bh=wm32zSJnxIx+mTfYm0WIFmhVPlrSiGKpBbBskUNBm00=;
+	s=arc-20240116; t=1713681567; c=relaxed/simple;
+	bh=LiRB9rjFKxbX5IKYehMMYf2woCtRaCUAx0H9EFjhyJg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hgUZXz5xzEbelWsYzph8FC7tuEUd12+JE9PXAjTKsyLxZMl5wlmXDqj8wpWj/gKJQP+hfPNPSzw1TxorMXTYKvUrFIgkEXMBFRLj9phRjxHqgCuxA7M3uTcQEaoiEpB8lo4TlGrMCWMaYIKojh6qmKp8Ph7+r6TpxWIwC6LZOpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=w0o5Tkaz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32181C113CE;
-	Sun, 21 Apr 2024 06:37:34 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=E/yyYRxMpn3CurtqUPcaKBqYdNi8Bc7dbfuut/6dTiirdI+b4Aic5/tFt1QvqkqIu1nzseCfoFzEYarewz+DrPpdeS9FzNQKNIrOhcVoRd5ABWq8XUKdrekjnaIzBXlcibQiq18EvwZHkNN+ASAJO4FSGl4ja6gGn1bAHLuiQrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=PKuCF6AT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 321A7C113CE;
+	Sun, 21 Apr 2024 06:39:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713681455;
-	bh=wm32zSJnxIx+mTfYm0WIFmhVPlrSiGKpBbBskUNBm00=;
+	s=korg; t=1713681566;
+	bh=LiRB9rjFKxbX5IKYehMMYf2woCtRaCUAx0H9EFjhyJg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=w0o5Tkaz5ez7Ajvz6MN4Wxpc0CdOjLKbIcPVaAqPWpoc4eK5AJu54b3IeEFUmVaeG
-	 WgPOoVCgUSxFSYnLCZLzLmTtKiO9JbGXKG9PkeWmluBwRm4a+oVxlR2neRJJ+ePhYo
-	 w8tY0Wk75a8m1po/yPv+yh11EqjJJtOxRQgxZ0dQ=
-Date: Sun, 21 Apr 2024 08:37:31 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: sundar <prosunofficial@gmail.com>
-Cc: heikki.krogerus@linux.intel.com, neil.armstrong@linaro.org,
-	dmitry.baryshkov@linaro.org, u.kleine-koenig@pengutronix.de,
-	christophe.jaillet@wanadoo.fr, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-	javier.carrasco.cruz@gmail.com
-Subject: Re: [PATCH v3] usb: typec: mux: remove indentation for common path
- [linux-next]
-Message-ID: <2024042151-tingle-bronzing-983c@gregkh>
-References: <20240421011647.3027-1-prosunofficial@gmail.com>
+	b=PKuCF6ATamV7RPkPHWQnV/DYYpHVEonNUu1jA8+AbrwodQI+y73xqt8SEeYRPx8jw
+	 +VRPflWsy/YTSP6STp+izb0ZJVwpOGthseuF3Bzz68S3N5rKFOSF/SKuijjdfwnwuC
+	 pHVLyfDacrxG8nXoXxmndUuX7SgNnv74kgD0gZKI=
+Date: Sun, 21 Apr 2024 08:39:23 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Carlos Llamas <cmllamas@google.com>
+Cc: Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Serban Constantinescu <serban.constantinescu@arm.com>,
+	linux-kernel@vger.kernel.org, kernel-team@android.com,
+	Alice Ryhl <aliceryhl@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 4/4] binder: fix max_thread type inconsistency
+Message-ID: <2024042112-landscape-gains-1bb0@gregkh>
+References: <20240417191418.1341988-1-cmllamas@google.com>
+ <20240417191418.1341988-5-cmllamas@google.com>
+ <2024041858-unwoven-craziness-13a6@gregkh>
+ <ZiRXHs9_Uszd7xzS@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240421011647.3027-1-prosunofficial@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZiRXHs9_Uszd7xzS@google.com>
 
-On Sun, Apr 21, 2024 at 06:46:47AM +0530, sundar wrote:
-> Added check if pointer is null and removed indentation for common path
+On Sun, Apr 21, 2024 at 12:00:30AM +0000, Carlos Llamas wrote:
+> On Thu, Apr 18, 2024 at 06:40:52AM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Apr 17, 2024 at 07:13:44PM +0000, Carlos Llamas wrote:
+> > > The type defined for the BINDER_SET_MAX_THREADS ioctl was changed from
+> > > size_t to __u32 in order to avoid incompatibility issues between 32 and
+> > > 64-bit kernels. However, the internal types used to copy from user and
+> > > store the value were never updated. Use u32 to fix the inconsistency.
+> > > 
+> > > Fixes: a9350fc859ae ("staging: android: binder: fix BINDER_SET_MAX_THREADS declaration")
+> > > Reported-by: Arve Hjønnevåg <arve@android.com>
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Carlos Llamas <cmllamas@google.com>
+> > > ---
+> > >  drivers/android/binder.c          | 2 +-
+> > >  drivers/android/binder_internal.h | 2 +-
+> > >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > Why does only patch 4/4 need to go into the tree now, and as a stable
+> > backport, but the first 3 do not?  Shouldn't this be two different
+> > series of patches, one 3 long, and one 1 long, to go to the different
+> > branches (next and linus)?
 > 
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: sundar <prosunofficial@gmail.com>
-> ---
+> Yes, that is correct. Only patch 4/4 would need to be picked for linus
+> now and for stable. The others would go to next. Sorry, I was not aware
+> that sending them separately would be preferred.
 > 
+> I'll drop 4/4 patch from the series in v2. Let me know if you still need
+> me to send it again separately.
 
-Hi,
+Please do, thanks!
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what is needed in
-  order to properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what a proper
-  Subject: line should look like.
-
-- It looks like you did not use your "real" name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file,
-  Documentation/process/submitting-patches.rst for how to do this
-  correctly.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+greg k-h
 
