@@ -1,193 +1,164 @@
-Return-Path: <linux-kernel+bounces-152614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68208AC131
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:20:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFC168AC12D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 22:16:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2832CB20B4F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 20:20:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1140F1C20809
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 20:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6EB343ADA;
-	Sun, 21 Apr 2024 20:20:46 +0000 (UTC)
-Received: from mailout12.t-online.de (mailout12.t-online.de [194.25.134.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C58943169;
+	Sun, 21 Apr 2024 20:16:28 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C461BF20;
-	Sun, 21 Apr 2024 20:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.25.134.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59FF91C280
+	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 20:16:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713730846; cv=none; b=nyl8F9ym+YFW8O0u39hDEt6pyhbyJoX2gWjp0RiDsLRta4e8wkaChTPNKeoTOvhthrZ/VCYRdkSZUInUPe/1KMUvpQhAxRFuKXIWLCoUwvU8laQPE1yfmT7XEt2wWTRPAtoNDq0lptfxtzwzLcDq6S9jFcVH6i1Ij29B4wLMsuw=
+	t=1713730587; cv=none; b=ifV3/Gj0d0E0sVeXLdSXHBJ/bxI12adi/OlhLu13GI5Yr+8aAmmlwRLiCOUjEfg5w0ltBMgyhXkiNGSkxmGDDG0sQ0QxF3+0C5wycwOAtPFC5JIvqFH5WVuSUP48rp3RanbtVSFOvFeT40S/g+ZZbr9fPPl1qorTipgVnTpnhjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713730846; c=relaxed/simple;
-	bh=7ulEOlS3JkhNXQTRzN6bH+s/Benk94+XyHnjn00QtVU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=orhREMwFudQkmRU58ZIhkyxsSc98xHtuozmFL0VK87eU9DypqbPga83QrZK3B6smg7YZwHiCDTS+ZkhPYfAZbzkXbDr8kO8eNNlansNjugGx3VqMjTDSHQlwXza5wsClOD9y7JODiHmru+5ULCbHMOPsjP3f0EZohvIMB2ylk18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-online.de; spf=pass smtp.mailfrom=t-online.de; arc=none smtp.client-ip=194.25.134.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-online.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-online.de
-Received: from fwd78.aul.t-online.de (fwd78.aul.t-online.de [10.223.144.104])
-	by mailout12.t-online.de (Postfix) with SMTP id 2E71317285;
-	Sun, 21 Apr 2024 22:15:06 +0200 (CEST)
-Received: from delle.local ([77.47.123.226]) by fwd78.t-online.de
-	with (TLSv1.3:TLS_AES_256_GCM_SHA384 encrypted)
-	esmtp id 1rydaZ-2KqNDU0; Sun, 21 Apr 2024 22:15:03 +0200
-Message-ID: <1422c0bcf359a0dcbe09c8954aa4c723511463d0.camel@t-online.de>
-Subject: Re: [PATCH v2 1/1] drivers/rtc: rtc-sun6i: AutoCal Internal OSC
- Clock
-From: Alois Fertl <A.Fertl@t-online.de>
-To: Jernej =?UTF-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>, 
-	a.zummo@towertech.it
-Cc: alexandre.belloni@bootlin.com, wens@csie.org, samuel@sholland.org, 
-	linux-rtc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Date: Sun, 21 Apr 2024 22:14:55 +0200
-In-Reply-To: <6035510.lOV4Wx5bFT@jernej-laptop>
-References: <20240421183633.117326-1-a.fertl@t-online.de>
-	 <6035510.lOV4Wx5bFT@jernej-laptop>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1713730587; c=relaxed/simple;
+	bh=IAMzr3jkf0anKfnmv4d+Iu5diI38hrPTzyhhBjGfgic=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=BH0sfKAJts8Q/6U3iaKAbBMFAyQOMQW8X3U1vgPL1jBjzDzkD3t+2n0k26tqo4u1hTj8dQ5fW0LdpF2Ea18SxIL5sHX7Qmu1IVhp2ggrfy21X2MN2ajRWVW3uJzCMO+lh3vOpGDsN9Ho2EusWDhVGCWCvryGQ0kyvcow6Sr5HsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7dac7122659so21712839f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 13:16:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713730585; x=1714335385;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fd5CZmxUkwDmaWGHFeI5GNOvFM9wfzD6ylZzOmzqm2M=;
+        b=v3HhPa37tymbmU6VGEr5K4T4O/3bIR0W0/T3o8OEvmIMjtqDHqn6Xl1KGk8hBRcSfM
+         ec8wYeDXlvMW3piAcYZxD/NOLh6qMHILQ3sFFJ9GVkiBp0t2uJi3yToOkfar/gBbXOo5
+         Qx7a+3aDgBV7uHEP0Ru5QJ/e9oLSBuenYUqMaOhRXYc40hq0eYtal3N+1iLsRnK10rQz
+         f2EZgqxv+cz4MCars2LTp3DTw4xi9UkfKtO/wXSSPQkl3P+bo0TKqd1CYVN2LyddodE5
+         se+L+kGjbJu9EXG8ny5qyirCwTvu7VSZW/8899T6GrcvLx5CxxCQqKm7AAuUq/i5kHDi
+         GiDA==
+X-Forwarded-Encrypted: i=1; AJvYcCXC9885ef6GBk8rGSCKOHyZA0CA2K5TJK0/E9+iYpRXL25WSNj3n31agy7jP2de6ymNi6b23ko35Fx1UeFzs0wdqhpzZn0MSDySwDC/
+X-Gm-Message-State: AOJu0YwuYLrDYNVO1bMM+y1JvOc4XNy6v3dm03RKjUpgDP+7tl63Gwe6
+	hlVKzQ+zNYH5BH2IrS/CgDlgxjcyHK74rfcK7HCTfBnMc1iUhWKLvPTKp6HqB3GC12N3U8ICETL
+	o3gyAY3lHntcNz72T09c19UeV2iGXOblGyO49JwCoTIinZqdLMOvahVc=
+X-Google-Smtp-Source: AGHT+IFw5TV0LG6fE4Fi/9Ce6C5oop9BiaNMExfF1Mby6t849bjg9jJB3eHESjDpYvs+F0YlMfIlUTqRs5pkdhPyyV/V4199nz03
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TOI-EXPURGATEID: 150726::1713730503-1FFFCD4A-8CF207E9/0/0 CLEAN NORMAL
-X-TOI-MSGID: 428dd07f-58e2-4c9b-a4dc-ecb5c5a5ae97
+X-Received: by 2002:a5d:874f:0:b0:7c8:264d:5e98 with SMTP id
+ k15-20020a5d874f000000b007c8264d5e98mr149484iol.0.1713730585507; Sun, 21 Apr
+ 2024 13:16:25 -0700 (PDT)
+Date: Sun, 21 Apr 2024 13:16:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ca4df20616a0fe16@google.com>
+Subject: [syzbot] [mm?] WARNING in __page_table_check_ptes_set
+From: syzbot <syzbot+d8426b591c36b21c750e@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, pasha.tatashin@soleen.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 2024-04-21 at 21:57 +0200, Jernej =A6krabec wrote:
-> Dne nedelja, 21. april 2024 ob 20:36:33 GMT +2 je Alois Fertl
-> napisal(a):
-> > I have a M98-8K PLUS Magcubic TV-Box based on the Allwinner H618
-> > SOC.
-> > On board is a Sp6330 wifi/bt module that requires a 32kHz clock to
-> > operate correctly. Without this change the clock from the SOC is
-> > ~29kHz and BT module does not start up. The patch enables the
-> > Internal
-> > OSC Clock Auto Calibration of the H616/H618 which than provides the
-> > necessary 32kHz and the BT module initializes successfully.
-> > Add a flag and set it for H6 AND H616. The H618 is the same as H616
-> > regarding rtc.
-> >=20
-> > v1->v2
-> > - add flag and activate for H6 AND H616
->=20
-> Please move changelog below --- line.
-Thanks for reviewing, will move the changelog
->=20
-> >=20
-> > Signed-off-by: Alois Fertl <a.fertl@t-online.de>
-> > ---
-> > =A0drivers/rtc/rtc-sun6i.c | 16 +++++++++++++++-
-> > =A01 file changed, 15 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
-> > index e0b85a0d5645..5d0c917b2099 100644
-> > --- a/drivers/rtc/rtc-sun6i.c
-> > +++ b/drivers/rtc/rtc-sun6i.c
-> > @@ -42,6 +42,11 @@
-> > =A0
-> > =A0#define SUN6I_LOSC_CLK_PRESCAL=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A00x0008
-> > =A0
-> > +#define SUN6I_LOSC_CLK_AUTO_CAL=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A00x000c
-> > +#define SUN6I_LOSC_CLK_AUTO_CAL_16MS=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0B=
-IT(2)
-> > +#define SUN6I_LOSC_CLK_AUTO_CAL_EANABLE=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0BIT(1)
->=20
-> EANABLE -> ENABLE
-yes sure
->=20
-> > +#define SUN6I_LOSC_CLK_AUTO_CAL_SEL_CAL=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0BIT(0)
-> > +
-> > =A0/* RTC */
-> > =A0#define SUN6I_RTC_YMD=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A00x0010
-> > =A0#define SUN6I_RTC_HMS=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A00x0014
-> > @@ -126,7 +131,6 @@
-> > =A0 *=A0=A0=A0=A0 registers (R40, H6)
-> > =A0 *=A0=A0 - SYS power domain controls (R40)
-> > =A0 *=A0=A0 - DCXO controls (H6)
-> > - *=A0=A0 - RC oscillator calibration (H6)
-> > =A0 *
-> > =A0 * These functions are not covered by this driver.
-> > =A0 */
-> > @@ -138,6 +142,7 @@ struct sun6i_rtc_clk_data {
-> > =A0=A0=A0=A0=A0=A0=A0=A0unsigned int has_losc_en : 1;
-> > =A0=A0=A0=A0=A0=A0=A0=A0unsigned int has_auto_swt : 1;
-> > =A0=A0=A0=A0=A0=A0=A0=A0unsigned int no_ext_losc : 1;
-> > +=A0=A0=A0=A0=A0=A0=A0unsigned int has_auto_cal : 1;
-> > =A0};
-> > =A0
-> > =A0#define RTC_LINEAR_DAY=A0BIT(0)
-> > @@ -268,6 +273,13 @@ static void __init sun6i_rtc_clk_init(struct
-> > device_node *node,
-> > =A0=A0=A0=A0=A0=A0=A0=A0}
-> > =A0=A0=A0=A0=A0=A0=A0=A0writel(reg, rtc->base + SUN6I_LOSC_CTRL);
-> > =A0
-> > +=A0=A0=A0=A0=A0=A0=A0if (rtc->data->has_auto_cal) {
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0/* Enable internal OSC cl=
-ock auto calibration */
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0reg =3D (SUN6I_LOSC_CLK_A=
-UTO_CAL_16MS |
-> > SUN6I_LOSC_CLK_AUTO_CAL_EANABLE |
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0SUN6I_LOSC_CLK_AUTO_CAL_SEL_CAL);
->=20
-> Remove parenthesis and fix indentation. Since macro names are pretty
-> long,
-> maybe put one per line.
-will do so
->=20
-> Is this safe to be done even on the boards with external 32k crystal?
-Can't tell for sure. I don't have a H6 board. But I would think that
-it's even required because H6 has a feature to autoswitch clock source
-if the external is detected to have failed.
->=20
-> Best regards,
-> Jernej
-Thanks and regards,
-Alois
->=20
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0writel(reg, rtc->base + S=
-UN6I_LOSC_CLK_AUTO_CAL);
-> > +=A0=A0=A0=A0=A0=A0=A0}
-> > +
-> > =A0=A0=A0=A0=A0=A0=A0=A0/* Yes, I know, this is ugly. */
-> > =A0=A0=A0=A0=A0=A0=A0=A0sun6i_rtc =3D rtc;
-> > =A0
-> > @@ -380,6 +392,7 @@ static const struct sun6i_rtc_clk_data
-> > sun50i_h6_rtc_data =3D {
-> > =A0=A0=A0=A0=A0=A0=A0=A0.has_out_clk =3D 1,
-> > =A0=A0=A0=A0=A0=A0=A0=A0.has_losc_en =3D 1,
-> > =A0=A0=A0=A0=A0=A0=A0=A0.has_auto_swt =3D 1,
-> > +=A0=A0=A0=A0=A0=A0=A0.has_auto_cal =3D 1,
-> > =A0};
-> > =A0
-> > =A0static void __init sun50i_h6_rtc_clk_init(struct device_node
-> > *node)
-> > @@ -395,6 +408,7 @@ static const struct sun6i_rtc_clk_data
-> > sun50i_h616_rtc_data =3D {
-> > =A0=A0=A0=A0=A0=A0=A0=A0.has_prescaler =3D 1,
-> > =A0=A0=A0=A0=A0=A0=A0=A0.has_out_clk =3D 1,
-> > =A0=A0=A0=A0=A0=A0=A0=A0.no_ext_losc =3D 1,
-> > +=A0=A0=A0=A0=A0=A0=A0.has_auto_cal =3D 1,
-> > =A0};
-> > =A0
-> > =A0static void __init sun50i_h616_rtc_clk_init(struct device_node
-> > *node)
-> >=20
->=20
->=20
->=20
->=20
+Hello,
 
+syzbot found the following issue on:
+
+HEAD commit:    4eab35893071 Add linux-next specific files for 20240417
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1727a61b180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=27920e47287645ff
+dashboard link: https://syzkaller.appspot.com/bug?extid=d8426b591c36b21c750e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=156da22d180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=163dfec7180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/9f7d6c097fb4/disk-4eab3589.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/287b16352982/vmlinux-4eab3589.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/23839c65c573/bzImage-4eab3589.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d8426b591c36b21c750e@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5084 at mm/page_table_check.c:199 __page_table_check_pte mm/page_table_check.c:199 [inline]
+WARNING: CPU: 0 PID: 5084 at mm/page_table_check.c:199 __page_table_check_ptes_set+0x1db/0x420 mm/page_table_check.c:213
+Modules linked in:
+CPU: 0 PID: 5084 Comm: syz-executor382 Not tainted 6.9.0-rc4-next-20240417-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:__page_table_check_pte mm/page_table_check.c:199 [inline]
+RIP: 0010:__page_table_check_ptes_set+0x1db/0x420 mm/page_table_check.c:213
+Code: 48 8b 7c 24 40 48 c7 c6 80 19 46 8e e8 ee df 8e ff 41 83 fc 1d 74 18 41 83 fc 1a 75 1d e8 5d da 8e ff eb 10 e8 56 da 8e ff 90 <0f> 0b 90 eb 10 e8 4b da 8e ff 90 0f 0b 90 eb 05 e8 40 da 8e ff 48
+RSP: 0018:ffffc9000366f740 EFLAGS: 00010293
+RAX: ffffffff8207833a RBX: ffffc9000366f7c0 RCX: ffff888022af3c00
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000000
+RBP: ffffc9000366f830 R08: ffffffff820782af R09: 1ffffd40000a6a10
+R10: dffffc0000000000 R11: fffff940000a6a11 R12: 0000000000000000
+R13: 0000000014d42c67 R14: 0000000000000001 R15: 0000000000000000
+FS:  0000555567f79380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000066c7e0 CR3: 0000000078cb0000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ page_table_check_ptes_set include/linux/page_table_check.h:74 [inline]
+ set_ptes include/linux/pgtable.h:267 [inline]
+ __ptep_modify_prot_commit include/linux/pgtable.h:1269 [inline]
+ ptep_modify_prot_commit include/linux/pgtable.h:1302 [inline]
+ change_pte_range mm/mprotect.c:194 [inline]
+ change_pmd_range mm/mprotect.c:424 [inline]
+ change_pud_range mm/mprotect.c:457 [inline]
+ change_p4d_range mm/mprotect.c:480 [inline]
+ change_protection_range mm/mprotect.c:508 [inline]
+ change_protection+0x2770/0x3cc0 mm/mprotect.c:542
+ mprotect_fixup+0x740/0xa90 mm/mprotect.c:655
+ do_mprotect_pkey+0x90d/0xe00 mm/mprotect.c:820
+ __do_sys_mprotect mm/mprotect.c:841 [inline]
+ __se_sys_mprotect mm/mprotect.c:838 [inline]
+ __x64_sys_mprotect+0x80/0x90 mm/mprotect.c:838
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f45514bf429
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe52191598 EFLAGS: 00000246 ORIG_RAX: 000000000000000a
+RAX: ffffffffffffffda RBX: 00007ffe52191768 RCX: 00007f45514bf429
+RDX: 000000000000000f RSI: 0000000000004000 RDI: 0000000020ffc000
+RBP: 00007f4551532610 R08: 00007ffe52191768 R09: 00007ffe52191768
+R10: 00007ffe52191768 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffe52191758 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
