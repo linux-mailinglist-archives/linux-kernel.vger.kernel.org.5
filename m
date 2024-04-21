@@ -1,198 +1,234 @@
-Return-Path: <linux-kernel+bounces-152476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C646A8ABF08
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 13:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C82818ABF0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 13:09:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 617DC281060
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:09:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DC21281019
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 11:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3564D11198;
-	Sun, 21 Apr 2024 11:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABBB125BA;
+	Sun, 21 Apr 2024 11:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="jV1XzPuB"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ba4BUY3O"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49BA333F7
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 11:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB12205E18;
+	Sun, 21 Apr 2024 11:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713697756; cv=none; b=TzwsjMemTk7PUooY/Q/3A5Nbn7ZpefXCz3a+8BnQAzNhe7IXuvDAV8M6vj2sM3qqetLd9SXV+/bjOn6zcnsqntdkksFBSB4JIcPEClK3VnLghtSifGq4z5uMYQjmVOXi0AS5O5ZMcU8L4k4Lp3vZqbwhGvdYqqXceX8ExLacLVY=
+	t=1713697785; cv=none; b=b8P4uzLd0ec8cyP4uAJGADeycf01B3T+gRs99JiiCIpfU8RpC+/LCb31BV60O56En7bIVEODDrTCELJlxC270XPx4YEtHvtgZvKtF4tik5tF6rXt8Gf0FHOIPL+vPnBD20ZpjEIz/YIauUxjTD9k52OiwVPRloMiGUN3CmY5XK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713697756; c=relaxed/simple;
-	bh=XlRL3xJ9G/Em9+ZaN+XKFEEbHosMAvkd/LI3ZBJQGKE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZN3nLPRIhncAiVNhvMdK5PQoA2vNOaMuPrXbWQtBov5CQd9nQ+CxOuUZFknBln+1Chb6HAX2ZhwX7v/ySGPn+rBi7z4o6QjJaPB4Oj4iAiP+avVkd5DRXpeEzO2Ih2FoC85zSPpMThUifVU41HeFxRI24YEiX+Gjb6qfXV6YRBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=jV1XzPuB; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1713697745; bh=XlRL3xJ9G/Em9+ZaN+XKFEEbHosMAvkd/LI3ZBJQGKE=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=jV1XzPuBL2kSOtJ8S9bSgiRYNthIY1kuRtQVbC06emHwZNA5Ny47FMUpTuvMp6z5f
-	 oqTJHnZOdRHYokk5S2qCz8YGEems+/XxwRML/K67RpMYne55gcaGLXTucoX6TN6c2Q
-	 CG+18FhkpddKlbja8yw2Hs5bbTqzrmi28RWQQD8A=
-Date: Sun, 21 Apr 2024 13:09:04 +0200
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Marek Vasut <marex@denx.de>
-Cc: dri-devel@lists.freedesktop.org, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Douglas Anderson <dianders@chromium.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Liu Ying <victor.liu@nxp.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Robert Foss <rfoss@kernel.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH] drm: bridge: dw-mipi-dsi: Call modeset in modeset
- callback
-Message-ID: <t3dkuckbko5lmkfezhdtcwrynnbcs4yfn5mtmdyirnktellc5a@ktab3j6rvf3u>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-	Douglas Anderson <dianders@chromium.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Liu Ying <victor.liu@nxp.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Rob Herring <robh@kernel.org>, Robert Foss <rfoss@kernel.org>, Sam Ravnborg <sam@ravnborg.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20240421002330.172723-1-marex@denx.de>
+	s=arc-20240116; t=1713697785; c=relaxed/simple;
+	bh=4LIluELKsAg0RvjnTm13p6oqqf2Kl3p8f3JSIQo4YVo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cYCJEBKqlm5ktepZCDXKJus8nhjomAudpQLuN8RhAfRrIl9WC35LY/xeUm8k0GZoYosE5rQX1faW3PMeueV7iEETXlb7oTWFB6JYPHFlceBsEDYlp+ofjX+vVVI7HV8PsJpppckWVW881UpLZFr3XBBvukRZwdsYW3ox9Q0fgUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ba4BUY3O; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e4266673bbso31106995ad.2;
+        Sun, 21 Apr 2024 04:09:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713697783; x=1714302583; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gCeM9ne1R4TNu8Re+QZrgQf9jfqwpZtPiiKgFbyNlW4=;
+        b=ba4BUY3OLh2KrmlZqfTyasfhw4rBut5lVD1GhG6CHRKLLSK+yjMq2MSfEKl0HEQxCY
+         2cIfEy5GUgjEjWrtnDNsCaZ0mPwXJctCKeADHjwFa5vaqj7V9jRR2MBLHP2mh8jIsQs0
+         qJjZXObVPtTa6oBGPdi8B0QF/PVFjeO+lAb99UU1noypIePw5jXFv74Tc+D3WPnsGtRE
+         WMmYGutNsuJELyhciKjQB1PC5y2xZcC8mgc6hyT4jND3jKtDCM/tYzQgYV5Fn7CH50mn
+         gf1OQyKwnW+Qzdu0vYySDb6wkvT9wU9HhA/EGdLBiXNMVQZ3kQ4Yilr1hkr5WZpn3MHt
+         /PJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713697783; x=1714302583;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gCeM9ne1R4TNu8Re+QZrgQf9jfqwpZtPiiKgFbyNlW4=;
+        b=NfgHeBj4wAvh3RYtqmZmfxaOTEK1vRcHvTYa+xVlaHeHoqoSEF3Tgimi5zNGCP/B5i
+         2FBaDacrmbUiQrphJtiAmSTM9CQtUCAUALzfdGKTbrI2xSFmDJTTrwQDBjxZBPh41wsO
+         ynzQhNC3Elgb8YhpaUtriHjnCMSavlmYg/803zOV7zOTthiZLHBffR3AwDxVzT/uG2mA
+         WxkdOOSHOLAuesFfpS/iSxnZGX9kSIWyHqsGB2kgJICuIeCjqEzhToSDzQHDQE1Uorgo
+         uC1yZO0Oi0rMsja04b8hO8dj+KqmuqaVyajmELgJvnfoJbE+pV38Zqs/YG6+lSeqIHni
+         susg==
+X-Forwarded-Encrypted: i=1; AJvYcCXoUuk+uOTpIDbRU0hy2IE1uTocvBF9LTVXbF0m4oe4HdJrQGCqg64HlHDjHg7JpRsrxHQgmkel2UzOFhcGsJ2YHYxUbI4KUUiVuIvAaqUOf0ItGpt3VIbl1DAW3qVQ5PopEn1NNYX94bjNYxu2gHYJOV1jFW5kgdo6Sh2gTGAfAAiwHkmDaUd3KhT8eWrt3uQMC2sZHMqVyxOT6hCrountQM0=
+X-Gm-Message-State: AOJu0YyiAof1dqpH8ep4SSp/HbR7Vxf4KVwTzehYZ+XtM3V/6udV/g7D
+	qP1IkQj+PgXWy6xZyD9OapOcBo80a8MXFGy8khF/aM9yMo2Xa62Ks7UOU8hUmq4=
+X-Google-Smtp-Source: AGHT+IHyxcxKCNoIbIl6jQA5poxccSFgss/1TDc5IEDT+158XYAb96YfGxSAkztcPYCUhraYU1wpKA==
+X-Received: by 2002:a17:902:d2d0:b0:1e8:32ed:6f6d with SMTP id n16-20020a170902d2d000b001e832ed6f6dmr7851014plc.39.1713697782482;
+        Sun, 21 Apr 2024 04:09:42 -0700 (PDT)
+Received: from localhost (ec2-3-111-32-5.ap-south-1.compute.amazonaws.com. [3.111.32.5])
+        by smtp.gmail.com with UTF8SMTPSA id r11-20020a170902c60b00b001e54f250ca9sm6154435plr.212.2024.04.21.04.09.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Apr 2024 04:09:40 -0700 (PDT)
+From: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>
+Cc: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>,
+	Thierry Reding <treding@nvidia.com>,
+	linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dt-bindings: tegra20-ac97: convert to dt schema
+Date: Sun, 21 Apr 2024 16:39:25 +0530
+Message-ID: <20240421110929.139191-1-sheharyaar48@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240421002330.172723-1-marex@denx.de>
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Convert NVIDIA Tegra20 AC97 binding to DT schema.
 
-On Sun, Apr 21, 2024 at 02:22:35AM GMT, Marek Vasut wrote:
-> Doing modeset in .atomic_pre_enable callback instead of dedicated .mode_set
-> callback does not seem right. Undo this change, which was added as part of
+Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
+---
+ .../bindings/sound/nvidia,tegra20-ac97.txt    | 36 ---------
+ .../bindings/sound/nvidia,tegra20-ac97.yaml   | 80 +++++++++++++++++++
+ 2 files changed, 80 insertions(+), 36 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.yaml
 
-Actually no. If anything, mode_set callback should be dropped entirely:
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt b/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt
+deleted file mode 100644
+index eaf00102d92c..000000000000
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt
++++ /dev/null
+@@ -1,36 +0,0 @@
+-NVIDIA Tegra 20 AC97 controller
+-
+-Required properties:
+-- compatible : "nvidia,tegra20-ac97"
+-- reg : Should contain AC97 controller registers location and length
+-- interrupts : Should contain AC97 interrupt
+-- resets : Must contain an entry for each entry in reset-names.
+-  See ../reset/reset.txt for details.
+-- reset-names : Must include the following entries:
+-  - ac97
+-- dmas : Must contain an entry for each entry in clock-names.
+-  See ../dma/dma.txt for details.
+-- dma-names : Must include the following entries:
+-  - rx
+-  - tx
+-- clocks : Must contain one entry, for the module clock.
+-  See ../clocks/clock-bindings.txt for details.
+-- nvidia,codec-reset-gpio : The Tegra GPIO controller's phandle and the number
+-  of the GPIO used to reset the external AC97 codec
+-- nvidia,codec-sync-gpio : The Tegra GPIO controller's phandle and the number
+-  of the GPIO corresponding with the AC97 DAP _FS line
+-
+-Example:
+-
+-ac97@70002000 {
+-	compatible = "nvidia,tegra20-ac97";
+-	reg = <0x70002000 0x200>;
+-	interrupts = <0 81 0x04>;
+-	nvidia,codec-reset-gpio = <&gpio 170 0>;
+-	nvidia,codec-sync-gpio = <&gpio 120 0>;
+-	clocks = <&tegra_car 3>;
+-	resets = <&tegra_car 3>;
+-	reset-names = "ac97";
+-	dmas = <&apbdma 12>, <&apbdma 12>;
+-	dma-names = "rx", "tx";
+-};
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.yaml
+new file mode 100644
+index 000000000000..e7ffa93eec30
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/nvidia,tegra20-ac97.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NVIDIA Tegra20 AC97 controller
++
++maintainers:
++  - Thierry Reding <treding@nvidia.com>
++  - Jon Hunter <jonathanh@nvidia.com>
++
++properties:
++  compatible:
++    const: nvidia,tegra20-ac97
++
++  reg:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    const: ac97
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 1
++
++  dmas:
++    minItems: 2
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++  nvidia,codec-reset-gpio:
++    description: |
++      The Tegra GPIO controller's phandle and the number
++      of the GPIO used to reset the external AC97 codec
++    maxItems: 1
++
++  nvidia,codec-sync-gpio:
++    description: |
++      The Tegra GPIO controller's phandle and the number
++      of the GPIO corresponding with the AC97 DAP _FS line
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - resets
++  - reset-names
++  - interrupts
++  - clocks
++  - dmas
++  - dma-names
++  - nvidia,codec-reset-gpio
++  - nvidia,codec-sync-gpio
++
++additionalProperties: false
++
++examples:
++  - |
++    ac97@70002000 {
++            compatible = "nvidia,tegra20-ac97";
++            reg = <0x70002000 0x200>;
++            resets = <&tegra_car 3>;
++            reset-names = "ac97";
++            interrupts = <0 81 0x04>;
++            clocks = <&tegra_car 3>;
++            dmas = <&apbdma 12>, <&apbdma 12>;
++            dma-names = "rx", "tx";
++            nvidia,codec-reset-gpio = <&gpio 170 0>;
++            nvidia,codec-sync-gpio = <&gpio 120 0>;
++    };
++...
+-- 
+2.44.0
 
-See https://elixir.bootlin.com/linux/latest/source/include/drm/drm_bridge.h#L231
-
-It's deprecated, and enable callback should just use adjusted_mode:
-
-    This is deprecated, do not use! New drivers shall set their mode in the
-    &drm_bridge_funcs.atomic_enable operation.
-
-> commit 05aa61334592 ("drm: bridge: dw-mipi-dsi: Fix enable/disable of DSI
-> controller") as it breaks STM32MP15xx LTDC scanout (DSI)->TC358762 DSI-to-DPI
-> bridge->PT800480 DPI panel pipeline. The original fix for HX8394 panel likely
-> requires HX8394 panel side fix instead.
-
-There's nothing wrong with the panel driver. And that commit is not fixing issue
-with the panel driver, just like the subject hints at. Look at the referenced
-commit, at "Before:" sequence specifically.
-
-dw_mipi_dsi_mode_set may be named *_mode_set or whatever, but it's basically
-an enable function that turns on clocks, initalizes phy, etc. etc.
-
-https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c#L998
-
-And if you check "Before:" sequence, you'll see that .mode_set callback is just
-called once at boot and never again. And it's atomic(_pre)_enable/atomic(_post)_disable
-callbacks that actually are called in ballanced way to enable/disable the
-controller repeatedly ever after.
-
-Function dw_mipi_dsi_bridge_post_atomic_disable is the inverse of
-dw_mipi_dsi_mode_set, it undoes everything that dw_mipi_dsi_mode_set does.
-
-You need to find root cause for your issue on STM32MP15xx instead of reverting
-fixes for resource use bugs in this driver.
-
-kind regards,
-	o.
-
-> Fixes: 05aa61334592 ("drm: bridge: dw-mipi-dsi: Fix enable/disable of DSI controller")
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> ---
-> Cc: Andrzej Hajda <andrzej.hajda@intel.com>
-> Cc: Biju Das <biju.das.jz@bp.renesas.com>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: David Airlie <airlied@gmail.com>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-> Cc: Jonas Karlman <jonas@kwiboo.se>
-> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> Cc: Liu Ying <victor.liu@nxp.com>
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Neil Armstrong <neil.armstrong@linaro.org>
-> Cc: Ondrej Jirman <megi@xff.cz>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Robert Foss <rfoss@kernel.org>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 18 +++---------------
->  1 file changed, 3 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> index 824fb3c65742e..ca5894393dba4 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> @@ -268,7 +268,6 @@ struct dw_mipi_dsi {
->  	struct dw_mipi_dsi *master; /* dual-dsi master ptr */
->  	struct dw_mipi_dsi *slave; /* dual-dsi slave ptr */
->  
-> -	struct drm_display_mode mode;
->  	const struct dw_mipi_dsi_plat_data *plat_data;
->  };
->  
-> @@ -1016,25 +1015,15 @@ static void dw_mipi_dsi_mode_set(struct dw_mipi_dsi *dsi,
->  		phy_ops->power_on(dsi->plat_data->priv_data);
->  }
->  
-> -static void dw_mipi_dsi_bridge_atomic_pre_enable(struct drm_bridge *bridge,
-> -						 struct drm_bridge_state *old_bridge_state)
-> -{
-> -	struct dw_mipi_dsi *dsi = bridge_to_dsi(bridge);
-> -
-> -	/* Power up the dsi ctl into a command mode */
-> -	dw_mipi_dsi_mode_set(dsi, &dsi->mode);
-> -	if (dsi->slave)
-> -		dw_mipi_dsi_mode_set(dsi->slave, &dsi->mode);
-> -}
-> -
->  static void dw_mipi_dsi_bridge_mode_set(struct drm_bridge *bridge,
->  					const struct drm_display_mode *mode,
->  					const struct drm_display_mode *adjusted_mode)
->  {
->  	struct dw_mipi_dsi *dsi = bridge_to_dsi(bridge);
->  
-> -	/* Store the display mode for later use in pre_enable callback */
-> -	drm_mode_copy(&dsi->mode, adjusted_mode);
-> +	dw_mipi_dsi_mode_set(dsi, adjusted_mode);
-> +	if (dsi->slave)
-> +		dw_mipi_dsi_mode_set(dsi->slave, adjusted_mode);
->  }
->  
->  static void dw_mipi_dsi_bridge_atomic_enable(struct drm_bridge *bridge,
-> @@ -1090,7 +1079,6 @@ static const struct drm_bridge_funcs dw_mipi_dsi_bridge_funcs = {
->  	.atomic_get_input_bus_fmts = dw_mipi_dsi_bridge_atomic_get_input_bus_fmts,
->  	.atomic_check		= dw_mipi_dsi_bridge_atomic_check,
->  	.atomic_reset		= drm_atomic_helper_bridge_reset,
-> -	.atomic_pre_enable	= dw_mipi_dsi_bridge_atomic_pre_enable,
->  	.atomic_enable		= dw_mipi_dsi_bridge_atomic_enable,
->  	.atomic_post_disable	= dw_mipi_dsi_bridge_post_atomic_disable,
->  	.mode_set		= dw_mipi_dsi_bridge_mode_set,
-> -- 
-> 2.43.0
-> 
 
