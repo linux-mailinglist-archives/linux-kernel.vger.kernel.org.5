@@ -1,118 +1,190 @@
-Return-Path: <linux-kernel+bounces-152651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2201D8AC203
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 01:18:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2B678AC21B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 01:23:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53C1C1C2084D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 23:18:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 517D11F2160E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Apr 2024 23:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7CAE4500C;
-	Sun, 21 Apr 2024 23:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC1146537;
+	Sun, 21 Apr 2024 23:23:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="lDCQsaSe"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="IjERKFur";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="gbeOhgDI";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="IjERKFur";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="gbeOhgDI"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35CC1DDE9
-	for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 23:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59544437;
+	Sun, 21 Apr 2024 23:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713741523; cv=none; b=PqBwSWVZ7SsCbud3x8+iiBOe86hAX6GfZ5R2RliQ+aFNoI6vJsDq6G3TL79fnJlisHsK+Euc/0exNIgUA69AkB//6uZU3qahJ37Y/Mywz7j/FETYlPoLWAgqO3gcuTGTcFY871cEllfUJnF/cS2Me6rn2OKr9xTlQ8m+H64m1uM=
+	t=1713741779; cv=none; b=VHjECJhAweST09sRyVDbYTfC2uKMIMS87tVrU7M457DFlb7c3gROOFEGHyhClnvj9GistHxTQ2zzzB17F4WY9Oywj+kshCow2gSeKDC2tg4omYQF0ov5WQLn7ImDjQQ+bCNMKRSmQB9qCt3cwbUY/KQPUK2PQGBjNrQbKCioZN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713741523; c=relaxed/simple;
-	bh=CTyarZ1awuxFYwd99GIUJv3pxap0WzEGyctYTHZyS+8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EJc5IOAyvcS2Z7ulX5oGTW1O5fmQoTYQU6z+OxNfZ8X+RXxiZkG7my9aFGCeJu8hq7Z3uAZ8ZA8Bm3uckZqfphLF6Ff5euqbxcYxyn9VfCk9bKDS0lt/ArB8JmesbxqSNxOxyEitF/Cvd73S/IFw+ghAgIB68wEwmAlXhkvtoaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=lDCQsaSe; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-343c891bca5so2933835f8f.2
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 16:18:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1713741520; x=1714346320; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PWBuK7qeNlFWu7rmYrrR+LglSXjPogokNYMEE0Z/71E=;
-        b=lDCQsaSePfGgcNx03ffWdQJIBp36GYk8EF+iJvx3W3T0NZs1A5pAQ5HqnYsNBFHMW7
-         CQ3SlFROT+ehJGjU38eri2IJAJN61LxGMEl1uqZl7NkryGgcSd9R8Q6n+2G4qyRPWlWV
-         I9MXB0st6McZGOGAOn/rzRioe29MLXHPEKFmW+eUSUQRqYzQei/dGd2LjsoVLkvD151R
-         nmnAN3FmRQn5ZQv8y7bpWf4URd/84/isjcGVji/1Z9AGzBVimhmR6H4vroJQZ95z5etV
-         MwDRV/lxFWVxehNT5Y2CSVKVmbvJpa3nlmdM1E/OcsTiXZ00p5smGZ356BJdpUgYEKa1
-         Niag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713741520; x=1714346320;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PWBuK7qeNlFWu7rmYrrR+LglSXjPogokNYMEE0Z/71E=;
-        b=FqTV+fHMr8nnu2lPL2WUwFt3R7giQSpCeKSB15D/Pm7beFPRLvkVDpRYIr7EGMKcOy
-         p6oUuzNh8cfZ4NV6z7xOZ1dC5sBR+HIDCeTUjpxqAwSyKJYaMrak7eZrJ1ugQ6hsP4kn
-         3e87IJTcpksO8fa0dhPaymsdy+V/28Iv2kXaVA5DlESPdFkQKI1zwITMx81nBmBVZrQg
-         oRD0nkZ2cJe98FO5aZXA0nUovNPatBQHxXv61miK+ybzVeFscMJWjDUdoqg3fC3qf7Cl
-         ZmShFtlrIwTzFAc2O69THwjgO3d1ptcmpZQ+61kPImttsN3d9uTWI5qCWplBUViA0AiF
-         XJAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXO3ASM4jo8oyIb+M5sZzFqnleEeChr3s4Itqwkdo+fFdX/BYQiJER1NL8YK426CCUDqO1D8CUrAuVz1Hoyt0j5sKv3k3cakBZzgIi0
-X-Gm-Message-State: AOJu0YzRGInv8iv1ajyUhHf0aCYlYZGznNWHMUUprvRHBXIC/iFUPIRe
-	EFfqEorjAoGRZmQIwz6gpUed+ChIPB3bUKNZNpiO6s01b4mKedKEdx2PdPVX+Zc=
-X-Google-Smtp-Source: AGHT+IFWSmfJ72X7g8dU7M8HNn9yWBaIOFg2hetvc42ZItdCPLols4PP5UoNx738YHLnSSovVIi/Gw==
-X-Received: by 2002:adf:e3cb:0:b0:33e:7f51:c2f9 with SMTP id k11-20020adfe3cb000000b0033e7f51c2f9mr7621909wrm.49.1713741520066;
-        Sun, 21 Apr 2024 16:18:40 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id v18-20020a5d43d2000000b0034a25339e47sm9549282wrr.69.2024.04.21.16.18.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Apr 2024 16:18:39 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: longman@redhat.com
-Cc: boqun.feng@gmail.com,
-	linux-kernel@vger.kernel.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	thorsten.blum@toblux.com,
-	will@kernel.org
-Subject: [RESEND PATCH] lockdep: Use str_plural() to fix Coccinelle warning
-Date: Mon, 22 Apr 2024 01:17:56 +0200
-Message-ID: <20240421231755.955755-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <9b15de60-b593-4b0c-bacc-ebe79de5d541@redhat.com>
-References: <9b15de60-b593-4b0c-bacc-ebe79de5d541@redhat.com>
+	s=arc-20240116; t=1713741779; c=relaxed/simple;
+	bh=x7/9k3VUkArG5pgm3qecA36nkdPnWUn28VxB8zg3sgs=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=tyKMaR3ZAWVwh6AxqwZwkDcFQzwMNbOtX6q2wh3cdiNwEUpYO+WxWncFlwH2dia4gP/m9/Id9ceq5l3A1iiArJqqR9Rq00hEx0gODmW5r/8uZaauyC/t9FPI33BglyjaI6NpjjbU7Jf8RtfbjgcTZo1pUiJUvC7ZvrcrcTZuUXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=IjERKFur; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=gbeOhgDI; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=IjERKFur; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=gbeOhgDI; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B492F3470C;
+	Sun, 21 Apr 2024 23:22:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713741775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=itTVdaSaWpVAwo/eRp+XlnufM44f07MOYwHHeFt+cBo=;
+	b=IjERKFurEfo0l04lIurGTVPkHlOCkl6lPkxF9FFO30jMUDg8cOfPI6XY9rl8cVahn77gHv
+	g8ly4QKY9rQkFxqbNmgmp5ht1aC6mspXRP/1LYq28jQzVqUW24M5ajthM+o7RL8KPzFcvs
+	aLCArjw/wQUL6S71p9/yy/hqMkLbDzE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713741775;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=itTVdaSaWpVAwo/eRp+XlnufM44f07MOYwHHeFt+cBo=;
+	b=gbeOhgDIjmhSRmotPdrLXo3RqSblX5SSy9WqeZrguDNV9/3Avxf/qeFAKKyZLXhH5QM+WM
+	o4AC2/uGGbOTkWAA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=IjERKFur;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=gbeOhgDI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713741775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=itTVdaSaWpVAwo/eRp+XlnufM44f07MOYwHHeFt+cBo=;
+	b=IjERKFurEfo0l04lIurGTVPkHlOCkl6lPkxF9FFO30jMUDg8cOfPI6XY9rl8cVahn77gHv
+	g8ly4QKY9rQkFxqbNmgmp5ht1aC6mspXRP/1LYq28jQzVqUW24M5ajthM+o7RL8KPzFcvs
+	aLCArjw/wQUL6S71p9/yy/hqMkLbDzE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713741775;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=itTVdaSaWpVAwo/eRp+XlnufM44f07MOYwHHeFt+cBo=;
+	b=gbeOhgDIjmhSRmotPdrLXo3RqSblX5SSy9WqeZrguDNV9/3Avxf/qeFAKKyZLXhH5QM+WM
+	o4AC2/uGGbOTkWAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F37E13687;
+	Sun, 21 Apr 2024 23:22:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ar9KAMmfJWYobAAAD6G6ig
+	(envelope-from <neilb@suse.de>); Sun, 21 Apr 2024 23:22:49 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: "NeilBrown" <neilb@suse.de>
+To: "Lex Siegel" <usiegl00@gmail.com>
+Cc: "Chuck Lever" <chuck.lever@oracle.com>, "Jeff Layton" <jlayton@kernel.org>,
+ "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
+ "Tom Talpey" <tom@talpey.com>,
+ "Trond Myklebust" <trond.myklebust@hammerspace.com>,
+ "Anna Schumaker" <anna@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>, linux-nfs@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] xprtsock: Fix a loop in xs_tcp_setup_socket()
+In-reply-to: <20240420104801.94701-1-usiegl00@gmail.com>
+References: <20240420104801.94701-1-usiegl00@gmail.com>
+Date: Mon, 22 Apr 2024 09:22:35 +1000
+Message-id: <171374175513.12877.8993642908082014881@noble.neil.brown.name>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.27 / 50.00];
+	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	BAYES_HAM(-0.76)[84.23%];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	R_RATELIMIT(0.00)[from(RLewrxuus8mos16izbn)];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: B492F3470C
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.27
 
-Fixes the following Coccinelle/coccicheck warning reported by
-string_choices.cocci:
+On Sat, 20 Apr 2024, Lex Siegel wrote:
+> When using a bpf on kernel_connect(), the call can return -EPERM.
+> This causes xs_tcp_setup_socket() to loop forever, filling up the
+> syslog and causing the kernel to freeze up.
+>=20
+> Signed-off-by: Lex Siegel <usiegl00@gmail.com>
+> ---
+>  net/sunrpc/xprtsock.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
+> index bb9b747d58a1..47b254806a08 100644
+> --- a/net/sunrpc/xprtsock.c
+> +++ b/net/sunrpc/xprtsock.c
+> @@ -2446,6 +2446,8 @@ static void xs_tcp_setup_socket(struct work_struct *w=
+ork)
+>  		/* Happens, for instance, if the user specified a link
+>  		 * local IPv6 address without a scope-id.
+>  		 */
+> +	case -EPERM:
+> +		/* Happens, for instance, if a bpf is preventing the connect */
 
-	opportunity for str_plural(depth)
+This will propagate -EPERM up into other layers which might not be ready
+to handle it.
+It might be safer to map EPERM to an error we would be more likely to
+expect  from the network system - such as ECONNREFUSED or ENETDOWN.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-Acked-by: Waiman Long <longman@redhat.com>
----
- kernel/locking/lockdep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Better still would be for kernel_connect() to return a more normal error
+code - not EPERM.  If that cannot be achieved, then I think it would be
+best for the sunrpc code to map EPERM to something else at the place
+where kernel_connect() is called - catch it early.
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 151bd3de5936..31d7720c9b8d 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -786,7 +786,7 @@ static void lockdep_print_held_locks(struct task_struct *p)
- 		printk("no locks held by %s/%d.\n", p->comm, task_pid_nr(p));
- 	else
- 		printk("%d lock%s held by %s/%d:\n", depth,
--		       depth > 1 ? "s" : "", p->comm, task_pid_nr(p));
-+		       str_plural(depth), p->comm, task_pid_nr(p));
- 	/*
- 	 * It's not reliable to print a task's held locks if it's not sleeping
- 	 * and it's not the current task.
--- 
-2.44.0
+NeilBrown
+
+
+>  	case -ECONNREFUSED:
+>  	case -ECONNRESET:
+>  	case -ENETDOWN:
+> --=20
+> 2.39.3
+>=20
+>=20
 
 
