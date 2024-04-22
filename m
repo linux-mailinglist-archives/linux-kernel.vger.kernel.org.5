@@ -1,305 +1,173 @@
-Return-Path: <linux-kernel+bounces-154169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 076618AD892
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:06:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EB1D8AD898
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:07:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57964B24021
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:06:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F25F51F2149F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:07:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65661A38D2;
-	Mon, 22 Apr 2024 22:57:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA971BED81;
+	Mon, 22 Apr 2024 22:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="Eb96s0t/"
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d5lJ08Xp"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB151A0B03
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 22:57:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EBF81BED76
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 22:58:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713826648; cv=none; b=pFy87nc3t0Xz9oQHOI2MWZKfvLV9AM+pMRMVnW7fzgMDZkPa5rI6u45cY9CJbCHLVWBsEYaMcbbqrANMZwIc4cVZtPJvc9A8KH5aXPMj485ZPpZ/Eqi+A5nXovJ+qXaKwcB0sGe34gyBPbLxrHV3vEb1cVvamzjLrz+4f0Gt4+c=
+	t=1713826703; cv=none; b=sbO3hJT+VfSovM8CdZOe5hnhIPl7pQJhqq6QQhzlQH+9eP6INb5Ht1pwHY8/0LvcMjDolZib1VvYjEV2oepJkHKpe4pVMIy70cFU5kdh+PM0cGYV+Gj+4YRBtm6QNRuXSb1aWvoZghpGKba9E0qWlUOqUiSXrPEhY1E5Fx0QYmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713826648; c=relaxed/simple;
-	bh=3qvMJrIqIc2nlwUosocTCDA/Vwfsx5mP93+A7oI7OSE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=c+//3sKdH9yXv1uyiEWwG2TynKiBHnUHGD9yiheXRti8ZnWtl0WSBGILn8LTZeyqCTPgapvZkNYIaus+4/xmwo32KMhRKOcPQ68be71qSSMVkHSYMG+D5CnteI4RqYk0buzO6LsmZmAapvlu3aTTonWXL+eepKw98ZiYvOdv0vY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=Eb96s0t/; arc=none smtp.client-ip=209.85.160.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-22efc6b8dc5so3063985fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:57:27 -0700 (PDT)
+	s=arc-20240116; t=1713826703; c=relaxed/simple;
+	bh=thOoIj8H0LNVaMm+8xqbhoPN1/fKkLQssvNM5xvvzCs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qGtGr2IZJqzEDfWUhUPYk6XnhvS15dSNZ/dt0tPKf5oEaWr6MI2U1D5gGTPS/NB1cx3Cz/Zoln0GCBj4cw+Dt5FmBlFGWdYyz5yfD445dH3nktVMePzVOITlpQxFMGx59sstpGJTCvqiJXquOODYkFh8kepXI2lc0lj0Ml7j6xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=d5lJ08Xp; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5193363d255so6604933e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:58:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1713826646; x=1714431446; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8514+b4qmh7LFcxQkUfD1+echxo4Pf00IaoPqebGK24=;
-        b=Eb96s0t/DpZMlBQdZqFBD002UfIhytpq7l+JaGAHo8hBwf/DwXGZSuIakdasH1Hkh8
-         EmLXBbTxQ4aTBiNQ617l3ysC6wWtmwYSxCkrn2EVy7uNI0MnoZciQZbggcN3wMxmPdO6
-         +ktzX2snjSH0WsAARC8Jp1bWXl19PHY+9sWJQ=
+        d=linaro.org; s=google; t=1713826699; x=1714431499; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CGGnNleS6pq8ROfMjbtk13lB1tYV2wW+fjvh+BoINVM=;
+        b=d5lJ08Xpr0SkTGHTL1qmpgJfmDeGFBTPgGWiuqHg/w8wb8DSV1/8WgQHeMVm9yNnwG
+         K5E2GfZvIkSgn+WSd7U8fBkeNQHd/VmI241ffclockxN5zo1ML3wvtm82B6Jj5Erougt
+         NFlD4Mebm+Re6/fC29UBY+tINbc2MnKOtI1X/MIe+gMsAKGswoOPZb8bRXDDuPgNmnJB
+         +7Oz8MIyWgVOpbu+YVwfUaKZKxkgr3DEkYMAXeGNIKrQe3pNgc+F8a1WvnadxoIItvpW
+         mo8SWWGsq6GcX3Q6nk8pMfjMadXFKgx7+7I0V0rCdK3/g+DMD52Ssg1MQ6BDyZpBHAKN
+         ITog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713826646; x=1714431446;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8514+b4qmh7LFcxQkUfD1+echxo4Pf00IaoPqebGK24=;
-        b=N7UgnY/ijaDbY6bdob1OgqRF8pitCKVRTB1E3RvcNpbZMCxG8RhW217Iljwi9tn/It
-         ScXHMSYscHfseWY1N6jsXfSRUxzHEF1BskkrNqr3Ji5Gfjcy7g4N3Km5484bwLAUp3JI
-         AD3fu0GQywE9Effz731Tet0pZKE9rnEpoyh6s7pBR3QAT5SGWqpqYXFpwRw+7MicKvtE
-         5nvfAKSqNvfbG8pN1py9yk+qBkljlnalRIQp5Fc1d9rwJHhxHyFqQxIeUQz5XJs/M+M8
-         XYgQa8IXiLm8EFoE6HleFruFGR5BWqzFFT4pG+SG/4YXL8XCztgMcg7PTSqeVc6M/bcy
-         6Qqg==
-X-Gm-Message-State: AOJu0YyBnuXLLN551zxPkqC5KnPoGKZAb++Urx4sNZlIXVx6YJPAi0SE
-	SzYCoN5pXYSvyLMQ+IV9c4hTtsH5p1n5uhdQx0c43rJyntO+vgoyNSZQ8IkITDjVdB5omW0ouc1
-	idw+AmFTdQzT0xljXPNofeOKv2J4QZnM7dABuGZO416s+skLhyqlfbWav00/oGIwPH6fZQMYkVw
-	8oeIe7DBPKQdtQMPxTBHwp6jkj3Xiiyodr2U3ppj3zK9LEug3UH4MXxVw=
-X-Google-Smtp-Source: AGHT+IF5fjQXbWJNfdhZofaxFRGGrec9LXCSGzg30qRNl70YHJQFwgFr855dHzWv8/Ms3pBK2/gIAw==
-X-Received: by 2002:a05:6870:2114:b0:22e:7ba2:ced4 with SMTP id f20-20020a056870211400b0022e7ba2ced4mr13791986oae.18.1713826645778;
-        Mon, 22 Apr 2024 15:57:25 -0700 (PDT)
-Received: from amakhalov-build-vm.eng.vmware.com ([128.177.82.146])
-        by smtp.gmail.com with ESMTPSA id e131-20020a636989000000b005e43cce33f8sm8093597pgc.88.2024.04.22.15.57.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 15:57:25 -0700 (PDT)
-From: Alexey Makhalov <alexey.makhalov@broadcom.com>
-To: linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	bp@alien8.de,
-	hpa@zytor.com,
-	dave.hansen@linux.intel.com,
-	mingo@redhat.com,
-	tglx@linutronix.de
-Cc: x86@kernel.org,
-	netdev@vger.kernel.org,
-	richardcochran@gmail.com,
-	linux-input@vger.kernel.org,
-	dmitry.torokhov@gmail.com,
-	zackr@vmware.com,
-	linux-graphics-maintainer@vmware.com,
-	pv-drivers@vmware.com,
-	timothym@vmware.com,
-	akaher@vmware.com,
-	dri-devel@lists.freedesktop.org,
-	daniel@ffwll.ch,
-	airlied@gmail.com,
-	tzimmermann@suse.de,
-	mripard@kernel.org,
-	maarten.lankhorst@linux.intel.com,
-	horms@kernel.org,
-	kirill.shutemov@linux.intel.com,
-	Alexey Makhalov <alexey.makhalov@broadcom.com>,
-	Tim Merrifield <tim.merrifield@broadcom.com>,
-	Nadav Amit <nadav.amit@gmail.com>
-Subject: [PATCH v8 7/7] x86/vmware: Add TDX hypercall support
-Date: Mon, 22 Apr 2024 15:56:56 -0700
-Message-Id: <20240422225656.10309-8-alexey.makhalov@broadcom.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20240422225656.10309-1-alexey.makhalov@broadcom.com>
-References: <20240422225656.10309-1-alexey.makhalov@broadcom.com>
+        d=1e100.net; s=20230601; t=1713826699; x=1714431499;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CGGnNleS6pq8ROfMjbtk13lB1tYV2wW+fjvh+BoINVM=;
+        b=MK6cxJ+hUzYoBaxxkQ66cDIcqs2nmAyCljX8Lqq6hIybFOBk2fj62E8e9ABrHCTzhp
+         84/KrmqfEwIIw7w4G5V8tq4z8QTvyHRidhuvwdzSsd5FEp52420ZKdMuGrTCaTUTU+QK
+         SXGxq/2G5zy7oL31dxEPkHXXMhvWoOSQSAJclFLo4D+Z3AowBcr5EHgMsfklMv6PWr0b
+         FIHwsfCnSxNC0FpfE3D4+LS03tLxeGTvYLJPJBdiEvJjuQv0rMGfkxn9Wp4cJtuLXKW9
+         dW+L+m1yJ+ZPqBZiehZuuQgKhqyhPxcblv4wUXd7uy3AoIveyr4hVVkUTmxHbHoSVwG4
+         DHPA==
+X-Forwarded-Encrypted: i=1; AJvYcCUEKsPaal73BhLzo38QfCGTJXMaeoO/py7HACyhENqPu9SNEzzv/N8hb0uxzicjpDmmU6SJdTLD/tHa8M2flEc7uNuQcDh/wQPTH2fR
+X-Gm-Message-State: AOJu0Ywp0fMY5/qmz1ogkpQTy29o7ggjOrLutaI5qdWt6bj91uxwjNO2
+	+gXWimzeKTkpmEKIGtIUc9YQblCA4xhYWvDSXX1iQepodIU21IjsrroSNxmu56U=
+X-Google-Smtp-Source: AGHT+IE3JW5i0TZ/iw0u6mb9hzFt2DO7Qxo8mdGCoGs95SLJhdave1LdDOaJnsu2juzz/HsQwMOSnQ==
+X-Received: by 2002:ac2:455c:0:b0:51a:f362:ab2a with SMTP id j28-20020ac2455c000000b0051af362ab2amr4280647lfm.59.1713826699464;
+        Mon, 22 Apr 2024 15:58:19 -0700 (PDT)
+Received: from [172.30.204.103] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id f13-20020a056512360d00b0051ad4552454sm1217213lfs.148.2024.04.22.15.58.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 15:58:19 -0700 (PDT)
+Message-ID: <02ae9e6b-b652-433e-b36d-e6106d4fbcd1@linaro.org>
+Date: Tue, 23 Apr 2024 00:58:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] PCI: qcom: Add rx margining settings for 16GT/s
+To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>,
+ agross@kernel.org, andersson@kernel.org, mani@kernel.org
+Cc: quic_msarkar@quicinc.com, quic_kraravin@quicinc.com,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Jingoo Han <jingoohan1@gmail.com>,
+ Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Conor Dooley <conor.dooley@microchip.com>, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20240419001013.28788-1-quic_schintav@quicinc.com>
+ <20240419001013.28788-4-quic_schintav@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240419001013.28788-4-quic_schintav@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-VMware hypercalls use I/O port, VMCALL or VMMCALL instructions.
-Add __tdx_hypercall path to support TDX guests.
 
-No change in high bandwidth hypercalls, as only low bandwidth
-ones are supported for TDX guests.
 
-Co-developed-by: Tim Merrifield <tim.merrifield@broadcom.com>
-Signed-off-by: Tim Merrifield <tim.merrifield@broadcom.com>
-Signed-off-by: Alexey Makhalov <alexey.makhalov@broadcom.com>
-Reviewed-by: Nadav Amit <nadav.amit@gmail.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
----
- arch/x86/include/asm/vmware.h | 46 +++++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/vmware.c  | 52 +++++++++++++++++++++++++++++++++++
- 2 files changed, 98 insertions(+)
+On 4/19/24 02:09, Shashank Babu Chinta Venkata wrote:
+> Add rx lane margining settings for 16GT/s(GEN 4) data rate. These
+> settings improve link stability while operating at high date rates
+> and helps to improve signal quality.
+> 
+> Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
+> ---
+>   drivers/pci/controller/dwc/pcie-designware.h  | 18 ++++++++++++++
+>   drivers/pci/controller/dwc/pcie-qcom-common.c | 24 +++++++++++++++++++
+>   drivers/pci/controller/dwc/pcie-qcom-common.h |  1 +
+>   drivers/pci/controller/dwc/pcie-qcom-ep.c     |  4 +++-
+>   drivers/pci/controller/dwc/pcie-qcom.c        |  4 +++-
+>   5 files changed, 49 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> index ad771bb52d29..e8c48855143f 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -203,6 +203,24 @@
+>   
+>   #define PCIE_PL_CHK_REG_ERR_ADDR			0xB28
+>   
+> +/*
+> + * GEN4 lane margining register definitions
+> + */
+> +#define GEN4_LANE_MARGINING_1_OFF		0xb80
+> +#define MARGINING_MAX_VOLTAGE_OFFSET(n)		FIELD_PREP(GENMASK(29, 24), n)
+> +#define MARGINING_NUM_VOLTAGE_STEPS(n)		FIELD_PREP(GENMASK(22, 16), n)
+> +#define MARGINING_MAX_TIMING_OFFSET(n)		FIELD_PREP(GENMASK(13, 8), n)
+> +#define MARGINING_NUM_TIMING_STEPS(n)		FIELD_PREP(GENMASK(5, 0), n)
+> +
+> +#define GEN4_LANE_MARGINING_2_OFF		0xb84
+> +#define MARGINING_IND_ERROR_SAMPLER(n)		FIELD_PREP(BIT(28), n)
+> +#define MARGINING_SAMPLE_REPORTING_METHOD(n)	FIELD_PREP(BIT(27), n)
+> +#define MARGINING_IND_LEFT_RIGHT_TIMING(n)	FIELD_PREP(BIT(26), n)
+> +#define MARGINING_IND_UP_DOWN_VOLTAGE(n)	FIELD_PREP(BIT(25), n)
+> +#define MARGINING_VOLTAGE_SUPPORTED(n)		FIELD_PREP(BIT(24), n)
+> +#define MARGINING_MAXLANES(n)			FIELD_PREP(GENMASK(20, 16), n)
+> +#define MARGINING_SAMPLE_RATE_TIMING(n)		FIELD_PREP(GENMASK(13, 8), n)
+> +#define MARGINING_SAMPLE_RATE_VOLTAGE(n)	FIELD_PREP(GENMASK(5, 0), n)
 
-diff --git a/arch/x86/include/asm/vmware.h b/arch/x86/include/asm/vmware.h
-index 84a31f579a30..cc79c14d1ac2 100644
---- a/arch/x86/include/asm/vmware.h
-+++ b/arch/x86/include/asm/vmware.h
-@@ -18,6 +18,12 @@
-  * arg2 - Hypercall command
-  * arg3 bits [15:0] - Port number, LB and direction flags
-  *
-+ * - Low bandwidth TDX hypercalls (x86_64 only) are similar to LB
-+ * hypercalls. They also have up to 6 input and 6 output on registers
-+ * arguments, with different argument to register mapping:
-+ * %r12 (arg0), %rbx (arg1), %r13 (arg2), %rdx (arg3),
-+ * %rsi (arg4), %rdi (arg5).
-+ *
-  * - High bandwidth (HB) hypercalls are I/O port based only. They have
-  * up to 7 input and 7 output arguments passed and returned using
-  * registers: %eax (arg0), %ebx (arg1), %ecx (arg2), %edx (arg3),
-@@ -54,12 +60,28 @@
- #define VMWARE_CMD_GETHZ		45
- #define VMWARE_CMD_GETVCPU_INFO		68
- #define VMWARE_CMD_STEALCLOCK		91
-+/*
-+ * Hypercall command mask:
-+ *   bits [6:0] command, range [0, 127]
-+ *   bits [19:16] sub-command, range [0, 15]
-+ */
-+#define VMWARE_CMD_MASK			0xf007fU
- 
- #define CPUID_VMWARE_FEATURES_ECX_VMMCALL	BIT(0)
- #define CPUID_VMWARE_FEATURES_ECX_VMCALL	BIT(1)
- 
- extern u8 vmware_hypercall_mode;
- 
-+#define VMWARE_TDX_VENDOR_LEAF 0x1af7e4909ULL
-+#define VMWARE_TDX_HCALL_FUNC  1
-+
-+extern unsigned long vmware_tdx_hypercall(unsigned long cmd,
-+					  unsigned long in1, unsigned long in3,
-+					  unsigned long in4, unsigned long in5,
-+					  uint32_t *out1, uint32_t *out2,
-+					  uint32_t *out3, uint32_t *out4,
-+					  uint32_t *out5);
-+
- /*
-  * The low bandwidth call. The low word of %edx is presumed to have OUT bit
-  * set. The high word of %edx may contain input data from the caller.
-@@ -87,6 +109,10 @@ unsigned long vmware_hypercall1(unsigned long cmd, unsigned long in1)
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, 0, 0, 0,
-+					    NULL, NULL, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -105,6 +131,10 @@ unsigned long vmware_hypercall3(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, 0, 0, 0,
-+					    out1, out2, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -124,6 +154,10 @@ unsigned long vmware_hypercall4(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, 0, 0, 0,
-+					    out1, out2, out3, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2), "=d" (*out3)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -143,6 +177,10 @@ unsigned long vmware_hypercall5(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, in3, in4, in5,
-+					    NULL, out2, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=c" (*out2)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -165,6 +203,10 @@ unsigned long vmware_hypercall6(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, in3, 0, 0,
-+					    NULL, out2, out3, out4, out5);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=c" (*out2), "=d" (*out3), "=S" (*out4),
- 		  "=D" (*out5)
-@@ -186,6 +228,10 @@ unsigned long vmware_hypercall7(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, in3, in4, in5,
-+					    out1, out2, out3, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2), "=d" (*out3)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-diff --git a/arch/x86/kernel/cpu/vmware.c b/arch/x86/kernel/cpu/vmware.c
-index 3aa1adaed18f..41309f03cb94 100644
---- a/arch/x86/kernel/cpu/vmware.c
-+++ b/arch/x86/kernel/cpu/vmware.c
-@@ -428,6 +428,58 @@ static bool __init vmware_legacy_x2apic_available(void)
- 		(eax & BIT(VCPU_LEGACY_X2APIC));
- }
- 
-+#ifdef CONFIG_INTEL_TDX_GUEST
-+/*
-+ * TDCALL[TDG.VP.VMCALL] uses %rax (arg0) and %rcx (arg2). Therefore,
-+ * we remap those registers to %r12 and %r13, respectively.
-+ */
-+unsigned long vmware_tdx_hypercall(unsigned long cmd,
-+				   unsigned long in1, unsigned long in3,
-+				   unsigned long in4, unsigned long in5,
-+				   uint32_t *out1, uint32_t *out2,
-+				   uint32_t *out3, uint32_t *out4,
-+				   uint32_t *out5)
-+{
-+	struct tdx_module_args args;
-+
-+	if (!hypervisor_is_type(X86_HYPER_VMWARE)) {
-+		pr_warn_once("Incorrect usage\n");
-+		return ULONG_MAX;
-+	}
-+
-+	if (cmd & ~VMWARE_CMD_MASK) {
-+		pr_warn_once("Out of range command %lx\n", cmd);
-+		return ULONG_MAX;
-+	}
-+
-+	args.rbx = in1;
-+	args.rdx = in3;
-+	args.rsi = in4;
-+	args.rdi = in5;
-+	args.r10 = VMWARE_TDX_VENDOR_LEAF;
-+	args.r11 = VMWARE_TDX_HCALL_FUNC;
-+	args.r12 = VMWARE_HYPERVISOR_MAGIC;
-+	args.r13 = cmd;
-+	args.r15 = 0; /* CPL */
-+
-+	__tdx_hypercall(&args);
-+
-+	if (out1)
-+		*out1 = args.rbx;
-+	if (out2)
-+		*out2 = args.r13;
-+	if (out3)
-+		*out3 = args.rdx;
-+	if (out4)
-+		*out4 = args.rsi;
-+	if (out5)
-+		*out5 = args.rdi;
-+
-+	return args.r12;
-+}
-+EXPORT_SYMBOL_GPL(vmware_tdx_hypercall);
-+#endif
-+
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- static void vmware_sev_es_hcall_prepare(struct ghcb *ghcb,
- 					struct pt_regs *regs)
--- 
-2.39.0
+That's a.. rather unusual.. use of FIELD_/GENMASK.. Usually, the fields are
+defined with GENMASK and then referenced through FIELD_xyz(BITFIELD_NAME, val)
 
+That said, I'm not entirely against this if Mani is ok with it
+
+>   /*
+>    * iATU Unroll-specific register definitions
+>    * From 4.80 core version the address translation will be made by unroll
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom-common.c b/drivers/pci/controller/dwc/pcie-qcom-common.c
+> index a6f3eb4c3ee6..3279314ae78c 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom-common.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom-common.c
+> @@ -46,6 +46,30 @@ void qcom_pcie_common_set_16gt_eq_settings(struct dw_pcie *pci)
+>   }
+>   EXPORT_SYMBOL_GPL(qcom_pcie_common_set_16gt_eq_settings);
+>   
+> +void qcom_pcie_common_set_16gt_rx_margining_settings(struct dw_pcie *pci)
+> +{
+> +	u32 reg;
+> +
+> +	reg = dw_pcie_readl_dbi(pci, GEN4_LANE_MARGINING_1_OFF);
+> +	reg = MARGINING_MAX_VOLTAGE_OFFSET(0x24) |
+> +		MARGINING_NUM_VOLTAGE_STEPS(0x78) |
+> +		MARGINING_MAX_TIMING_OFFSET(0x32) |
+> +		MARGINING_NUM_TIMING_STEPS(0x10);
+> +	dw_pcie_writel_dbi(pci, GEN4_LANE_MARGINING_1_OFF, reg);
+
+Since this is DW-common, why is this inside the qcom driver?
+
+Konrad
 
