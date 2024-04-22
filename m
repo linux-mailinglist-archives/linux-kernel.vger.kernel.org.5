@@ -1,126 +1,139 @@
-Return-Path: <linux-kernel+bounces-152694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64F2E8AC2FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFFA38AC306
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:31:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 971CC1C20883
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:28:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F19421C20A1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ADCFEEA8;
-	Mon, 22 Apr 2024 03:28:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EADAB12B87;
+	Mon, 22 Apr 2024 03:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YXY9qgHI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Er5qu7FT"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55AE12579;
-	Mon, 22 Apr 2024 03:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8923DF49
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 03:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713756530; cv=none; b=hCseeMW2O9lUXj+SU71r0aQe4Zq007W6NkMMbPsgRP6dK2EWwwSOkpYFTCT48/R+y/LC0WARqJtGtDW5nmXlmfdFPmxZjXQ6v+2dGMtR+PIcKV2OokoClqMpIJASVzjK8S1hUz5yBS4kNYcMCCb1wpvLmmwRCFRKkEPKd95nQzk=
+	t=1713756683; cv=none; b=aMwTdOGUgy47NITI6DbNG70xjEUQW1g5c9nAq1MvSoQXrqL719kMti0nTcRPyD340HpB3WyyJ5KNAlL7c+5Bqz8ixPkfY1COhhEnNnqM6QSxzrW5aReJOZ8TikwaATHw1pfeZYfzdX1V6c+KOO27IrMqFCwYFa4B4Wv+viogJgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713756530; c=relaxed/simple;
-	bh=+Ktb/IsPaoqwJhfwXUUrTC6XLdOCvL/6K6NVdF2venw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KqFPsOTM12Qeh5fyzGMnkRAomTreU+5uPx8rySnhTbRlf6K2gR2+H7qaJNcqgLQIVLNiaDNkj5WnRO6U/JkV8JN4zL1CVO8CswR0zoKPzElUehAcgUOjFAW2ENfyiuuveydKBMZTlHS+MUViAhZlGtpTMDzJFZd9Uuff9FRNOPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YXY9qgHI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9C14C113CE;
-	Mon, 22 Apr 2024 03:28:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713756529;
-	bh=+Ktb/IsPaoqwJhfwXUUrTC6XLdOCvL/6K6NVdF2venw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=YXY9qgHIVKCYMuEUBfRTb1sUxePxIBrehmLXnzeSA8cTU13V66krpliIqRXZSxMrW
-	 Jcc2vEmw/9VAOC3if5ovcipCrnL9S7eN8roBgQzeisyMSKF27rUxbjkD8Jg7Rraz+h
-	 X6Op6luDblMwZNVlAwgEDIPVCfGvVpRNQp6UZSGj+jz/KrNkLDqaZSD+/sCdfcawEQ
-	 M+M9BObz0Q1kCXrTwjmgb+kZO9czGi9x2gMh3cfFSJFuUVbVHFfRK4HntT8QdkjAST
-	 tpSIf9l6Uw+vNmiosehTVdgAX3Awo+sD2Xs9xqeAnkUW8afu39aiWA2c09R8BJsEQj
-	 GTfoCywv7P2og==
-Message-ID: <9b95f926-b96c-4266-b292-3c3cd362905e@kernel.org>
-Date: Mon, 22 Apr 2024 05:28:43 +0200
+	s=arc-20240116; t=1713756683; c=relaxed/simple;
+	bh=WgJQBh8J1Waa7dt3AUnqHF0bETc6Ofj/zz3UpXYRizY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kJuvqhUOWh/Pv2HOYUMNRIKbdtgVXqdoOw5TaixDS+CF+tf+njtNescvoQKP6Id+3OTf0+YjN6TrWrGNRgDA2SGJ54LEXIv4zEVPcIceX3fRm3G5sRGNooODFX3PFii6vJYMkns288bEnMMXFHqy1ejUkiZagbI76a9OBGzj0UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Er5qu7FT; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e3ca4fe4cfso27271495ad.2
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 20:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713756681; x=1714361481; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Li3+1Ghj2slvXiv+/E7e/F9kDJtZLuXuC3BIKi+jfUc=;
+        b=Er5qu7FTKrIPEWR48uAEX1DLYS3VrpieX1PAzPUN2S1jtCYeQcEqGhZymduJGj6U+t
+         avDkS3SfYje394nnAdXeQX9DD86J8sH2kAd0D1+HfnuqL41j/NULtAJF/IOyrCTFSox2
+         ftmMIQfgnDacyeH+vaHHqdWo2A1t+bRxe5UZhG/zO8bGNRKPjMuOYpUUiZVFCD74ZFua
+         cNfatV6U+bwdYUHaTqJ6d07qjLw9/Y6X1UvoajhziCHJiemYdgFquIkaKqhzdlMcz2Me
+         z84rjr7izdmwmlucBWp7PTsmCKwHRe/mByVCEso/21+FovunMHfQa0vnyomYhkZrVOdY
+         eVLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713756681; x=1714361481;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Li3+1Ghj2slvXiv+/E7e/F9kDJtZLuXuC3BIKi+jfUc=;
+        b=UVrZEJnlpmal+dNSvh9ZPpznEGjPBLZyQcOEBt2ZF3PL6Q5EDrRMseY9IRtCKL3VFi
+         kbN2oxeEpXxvhq63uwtmv0DYrQrzDABTCTecpU/KM39f2il74CRgje/hfxKacI3EnCYO
+         xmvvjOfzrCwFg7ZsQV/JyKuobll2JNxt5T3oiyxghWVJhJkfoqiqvyVnrYAI99jBMngC
+         MS+ThNlrnunx1X6U81AGMLbe9DI9KtfqFHM9bZn9R6AQqBxpLZzT7mcgZf0ymsRWSymJ
+         NuGstp1Dz9TDAVurTi0SKoqAdDtyiY6RW5K4DGkxWiBH0/V7OZKcTOEipcP216vubQFv
+         zKpA==
+X-Forwarded-Encrypted: i=1; AJvYcCV/bgeXBAtS45wtDELaEnM1k3eVAkPS7yurk+HOK7b/rBpV1ggqUydugJuhpounEezv4z3qcoNwLnZ75MIBUEgvdM9ko6e+Vk2DCmpC
+X-Gm-Message-State: AOJu0YxNqAZRkd9CU1sOk5x53fUFbn24k2pWE277ke4Ft2JZZkKfRl9r
+	YppEARBpVo3wTUObE3tn3Iuf3eQlIeA5U/QBn9hJvh4ZphrIXdvZi6Ox8ipMUYw=
+X-Google-Smtp-Source: AGHT+IEGPELzo18c9HmsXyfk6vYoiNKnZbbOrQi5Dlekvq6DhkR5uumMN7p3RYSBJx4+oqieaxGcdQ==
+X-Received: by 2002:a17:903:244b:b0:1e5:5041:b18a with SMTP id l11-20020a170903244b00b001e55041b18amr11845236pls.40.1713756680930;
+        Sun, 21 Apr 2024 20:31:20 -0700 (PDT)
+Received: from localhost ([122.172.87.52])
+        by smtp.gmail.com with ESMTPSA id w5-20020a1709029a8500b001e435350a7bsm6981020plp.259.2024.04.21.20.31.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Apr 2024 20:31:20 -0700 (PDT)
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Yangtao Li <tiny.windzz@gmail.com>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>
+Cc: linux-pm@vger.kernel.org,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	kernel test robot <lkp@intel.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] cpufreq: sun50i: Fix build warning around snprint()
+Date: Mon, 22 Apr 2024 09:01:09 +0530
+Message-Id: <285de20a187f3e4baeb28f639b5bf55e914a3821.1713756666.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] Add adm1281 support
-To: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>,
- linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-i2c@vger.kernel.org
-Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
-References: <20240422025123.29770-1-jose.sanbuenaventura@analog.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240422025123.29770-1-jose.sanbuenaventura@analog.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 22/04/2024 04:51, Jose Ramon San Buenaventura wrote:
-> This patch removes the extra case added in the adm1275_read_byte_data
-> for STATUS_CML reads. Upon checking, the reads for the STATUS_CML register
-> is already handled in the pmbus_core. 
-> 
-> It was also clarified and agreed upon that any other actionable steps
-> involving the STATUS_CML error flags should be added in the pmbus_core
-> and not on the specific chip driver.
-> 
+The Sun50i driver generates a warning with W=1:
 
-Where is the changelog? It's v2, so what happened here?
+warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 2 [-Wformat-truncation=]
 
-Best regards,
-Krzysztof
+Fix it by allocating a big enough array to print an integer.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202404191715.LDwMm2gP-lkp@intel.com/
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/cpufreq/sun50i-cpufreq-nvmem.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+index 30e5c337611c..cd50cea16a87 100644
+--- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
++++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+@@ -19,8 +19,6 @@
+ #include <linux/pm_opp.h>
+ #include <linux/slab.h>
+ 
+-#define MAX_NAME_LEN	7
+-
+ #define NVMEM_MASK	0x7
+ #define NVMEM_SHIFT	5
+ 
+@@ -208,7 +206,7 @@ static int sun50i_cpufreq_get_efuse(void)
+ static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
+ {
+ 	int *opp_tokens;
+-	char name[MAX_NAME_LEN];
++	char name[] = "speedXXXXXXXXXXX"; /* Integers can take 11 chars max */
+ 	unsigned int cpu, supported_hw;
+ 	struct dev_pm_opp_config config = {};
+ 	int speed;
+@@ -235,7 +233,7 @@ static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
+ 		config.supported_hw_count = 1;
+ 	}
+ 
+-	snprintf(name, MAX_NAME_LEN, "speed%d", speed);
++	snprintf(name, sizeof(name), "speed%d", speed);
+ 	config.prop_name = name;
+ 
+ 	for_each_possible_cpu(cpu) {
+-- 
+2.31.1.272.g89b43f80a514
 
 
