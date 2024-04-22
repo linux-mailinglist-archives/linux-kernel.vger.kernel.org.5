@@ -1,209 +1,125 @@
-Return-Path: <linux-kernel+bounces-153484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DEB18ACE9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB248ACE99
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:45:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 143102819E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:45:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38BF62818BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9222F150984;
-	Mon, 22 Apr 2024 13:45:26 +0000 (UTC)
-Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECAA150982;
+	Mon, 22 Apr 2024 13:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jExadde+"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E0B1509B1
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.19.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB8D5028B;
+	Mon, 22 Apr 2024 13:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713793526; cv=none; b=e+A2a+pYH9Bx9HXZfXm7ondGmP9q2mRe1dNy0dp4AkNkdoLTABNttKVM0pM1o5PIlftLVe33LNhkVFs3xU+Z8gimuBFfWKPNya/RLWpD3wgsArMhWoG8D21ENX7LGPiVNS4NbMnUwBz/CDDMWqUZhTIzg5ZYmQEtYJtmxt0JCDU=
+	t=1713793516; cv=none; b=h+9bRLjK5tTm/D36VZZY56MhP18yfOY8YV7gx81bNFNlsDDXHTJnmaeFw97Boyfre8u2EIfICwUB7gvuFGXXpc19IEYlSSL1u5jFjym5V4YcFi0nr13Zzfyh8nj5O+bY6yBqkrFoB/0nWJlvRT6dAndbNFW24doqeS6iWwXY5DY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713793526; c=relaxed/simple;
-	bh=GqweGD7FEih2DKxvPXX28sIxVSB/q+RnDMyr5ddRYYA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KSvEzYuoju2cCAKRhTHtasjtefeLvEVKztZh1C4IsqMVr2m5VxV+qo1/U+kd/IODp8lk4RFandEg5WMiBB+1RkJFNx9mvoYnvSqKoE/vQTq2y+N1deEBCd5OgKe87a/K/O5HIar2J6HFdkyu8vKWZdvj1gPPMoUJpKBELp+ghxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=54.207.19.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-X-QQ-mid: bizesmtpsz6t1713793491tn5a1gu
-X-QQ-Originating-IP: 4T9vFwtcN5bxuKVyJbWNoCazsGTJce4anorEd6nw19M=
-Received: from john-PC ( [123.114.60.34])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 22 Apr 2024 21:44:48 +0800 (CST)
-X-QQ-SSF: 01400000000000E0L000000A0000000
-X-QQ-FEAT: TxLxcJtIk++bAQsC+7kYDxGgt3lLYoKlJnOLtIMzDcO0Iriok2aBG9QN2pBfi
-	LgZDfkJs6Q13EeO5ul+C1abhuuv5Cnf26b7STHZ35jLbjInDsCKgvJPRocX5o8TI3UngAdr
-	NYKQ1wdA/VFOR4QlWz/ibm7GWPGXvH6y+uoPNJq9wWcXKOrbPMh9HLHmkMBqLxxuHiX5Dk8
-	qfnDosogiJqEPf43tQN7faSqfabqkL980q6gdeSefosXjn9lKCnromtz+RnKOM+/RFJ7eIx
-	T85e4sp+VVVdOsNYLd6mT7TWa2zUfP1AlngWgLeTE+Jm/Uj9SJ6YSrzIGw8V5lLNl2/3Bpj
-	VOQNr6E1GpfR45nCdCCJDzrmw2MwgiUX4kmWRMlkYZdBOah/HuA0hGkqpZnDTnAf86DzP64
-	9C7Hw976CtmHPt88OeQEz9cBrn37R36R
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 12248589611114575822
-Date: Mon, 22 Apr 2024 21:44:47 +0800
-From: Qiang Ma <maqianga@uniontech.com>
-To: Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc: alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
- daniel@ffwll.ch, srinivasan.shanmugam@amd.com,
- Arunpravin.PaneerSelvam@amd.com, le.ma@amd.com, Felix.Kuehling@amd.com,
- mukul.joshi@amd.com, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/amdgpu: Fixup bad vram size on gmc v6 and v7
-Message-ID: <2778C515DE59A537+20240422214447.231a09de@john-PC>
-In-Reply-To: <bde48eef-4d8a-4cfa-b824-6de88c0f87fd@amd.com>
-References: <20240422052608.5297-1-maqianga@uniontech.com>
-	<68f02c5c-5591-4d6f-9926-b0fc6f9f6287@amd.com>
-	<D94775003178862D+20240422203329.49844e71@john-PC>
-	<bde48eef-4d8a-4cfa-b824-6de88c0f87fd@amd.com>
-Organization: UOS
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713793516; c=relaxed/simple;
+	bh=Xv+I/AWrnfGbuhd3Su1CfOwuNvsQXMXHzG4M4Oi9wL4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UhlHObPC87iQFSrcisNTdW6PHBKY207628Mb7LHtLyPFEjmtfVrE7mgV7tffoM2KQQbc2PtPFvPfV/956BfoaUeTlszGH/nf2DPjcl9gSf/ez13uzv7IU5D17xMR+DQtbqCVhlFWAkQ2MNxh8CfJWYHfsWYnr2CvhsTajEtllM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jExadde+; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2dd6a7ae2dcso19769761fa.1;
+        Mon, 22 Apr 2024 06:45:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713793513; x=1714398313; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hBOxLfLCI8MpZaNvMa3DGb5sURgs6UxpjUu52caJphg=;
+        b=jExadde+izGkesQ08yTaZz1t846lmLHCva0NTXwSBj/qVOJ8GBwxXvLrHgOs52PDlA
+         iaM3beF0xrfaeEdlG3SGnXVjLByeTVKilGK2IsRjUzjGFIurdcaxCGedYRGpFvCtrf59
+         o8Z03mAM85OYiopB+/QXWkBgjNFJcAPXUrujlN3NITgpGJUsKReZIxBb2mw0JqQXhMDk
+         y31Rgx5zs2rna7z2dk1flvnnV03sYP1T8QgJWPSnjyCzEoSWAQ9AzZ54ZjC7H6YOZqIq
+         AQo27zTzodiBCyUYwVtOyehtKo55/v97LAfKh9FZtsNck7/x76Ea2sTLnMhaV8jYtiUR
+         Ss7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713793513; x=1714398313;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hBOxLfLCI8MpZaNvMa3DGb5sURgs6UxpjUu52caJphg=;
+        b=lVfUjfpMhZ8+8ypGl6/7RJTN9UqRYEXI9cXLoyjNUCzQcNJ5UOG+gw868UYBvy32Dk
+         YezhlPsDTYUaESeAFB8j1knudkX5zZQveVq27gx1O8WNCMLFL04wsXj/1kiFamiwgUV6
+         b6Ap7g4tyPlDdsmXjY1TIKEwW4s58DmxZ0x04Sa8C10buzGJWRbrpLF1x/zADW4mAlMR
+         yHAsBhU2qdSBkfCmy2d0CerP6XeVCP5ojMlbacZrKapcq4SCfyHeXLyIy3F6W1H6nmel
+         bK2f7v27K6lvqf7u65lXm6PLZyI670+6ES2FDPlzF97+oN7vBQHkMwOW2OUCDPAZqR6j
+         l9AQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXmUWTvFAqlafr9SL22g4MkYVaFEINrwXASTg6LgiowiwOKtlQ9y9aunI0qnU9o0R9vIJ+FbyMOWFq2VErg1GmovpwSNPNkxqxJwZmz5QyimFOFIJpqerJ+Y+cvEIeRa0a5EuD10tOrKRd9ShQB
+X-Gm-Message-State: AOJu0Yxx/GAgWQ2Kftx9QZjVZ6tUi+H7CoSwBjgOZhn5gsm1Umh0DZdy
+	HNNvoQEHdW26QDD33SGQoEGWbrY+oyK/0BUiaA/kv30Jq8LLqrl9UFRE6hLfA48vL2vcoiTax7i
+	RlH1AEDX5NQJPBQ9+IiZ494oN/EDJTXmT
+X-Google-Smtp-Source: AGHT+IEFfGhxb6ipU7LWemFA+rw18CyH7IvwYZVUA6pAOBjmsuhMiDjp127ta1Tiw5nij2AbpaPPDx2TWU7AeL0xdak=
+X-Received: by 2002:a2e:740e:0:b0:2d8:2d0a:7b9b with SMTP id
+ p14-20020a2e740e000000b002d82d0a7b9bmr8148616ljc.14.1713793512309; Mon, 22
+ Apr 2024 06:45:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20240319154611.2492-1-johan+linaro@kernel.org>
+ <ZiZdag8fw8H1haCb@hovoldconsulting.com> <438844e9-47e8-486e-9611-ae524d6974b3@quicinc.com>
+ <ZiZkK4BAoqxNg7yG@hovoldconsulting.com>
+In-Reply-To: <ZiZkK4BAoqxNg7yG@hovoldconsulting.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Mon, 22 Apr 2024 09:44:59 -0400
+Message-ID: <CABBYNZJ1H7eEi8qsZUAxOa5HoE=xQ0wb2YFx0g7-SxxkNAS3Bg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Bluetooth: qca: fix NULL-deref on non-serdev setup
+To: Johan Hovold <johan@kernel.org>
+Cc: quic_zijuhu <quic_zijuhu@quicinc.com>, Marcel Holtmann <marcel@holtmann.org>, 
+	Zhengping Jiang <jiangzp@google.com>, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpsz:uniontech.com:qybglogicsvrsz:qybglogicsvrsz4a-0
 
-On Mon, 22 Apr 2024 14:59:36 +0200
-Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
+Hi Johan,
 
-> Am 22.04.24 um 14:33 schrieb Qiang Ma:
-> > On Mon, 22 Apr 2024 11:40:26 +0200
-> > Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
-> > =20
-> >> Am 22.04.24 um 07:26 schrieb Qiang Ma: =20
-> >>> Some boards(like Oland PRO: 0x1002:0x6613) seem to have
-> >>> garbage in the upper 16 bits of the vram size register,
-> >>> kern log as follows:
-> >>>
-> >>> [    6.000000] [drm] Detected VRAM RAM=3D2256537600M, BAR=3D256M
-> >>> [    6.007812] [drm] RAM width 64bits GDDR5
-> >>> [    6.031250] [drm] amdgpu: 2256537600M of VRAM memory ready
-> >>>
-> >>> This is obviously not true, check for this and clamp the size
-> >>> properly. Fixes boards reporting bogus amounts of vram,
-> >>> kern log as follows:
-> >>>
-> >>> [    2.789062] [drm] Probable bad vram size: 0x86800800
-> >>> [    2.789062] [drm] Detected VRAM RAM=3D2048M, BAR=3D256M
-> >>> [    2.789062] [drm] RAM width 64bits GDDR5
-> >>> [    2.789062] [drm] amdgpu: 2048M of VRAM memory ready =20
-> >> Well we had patches like this one here before and so far we always
-> >> rejected them.
-> >>
-> >> When the mmCONFIG_MEMSIZE register isn't properly initialized then
-> >> there is something wrong with your hardware.
-> >>
-> >> Working around that in the software driver is not going to fly.
-> >>
-> >> Regards,
-> >> Christian.
-> >> =20
-> > Hi Christian:
-> > I see that two patches for this issue have been merged, and the
-> > patches are as follows:
-> >
-> > 11544d77e397 drm/amdgpu: fixup bad vram size on gmc v8
-> > 0ca223b029a2 drm/radeon: fixup bad vram size on SI =20
->=20
-> Mhm, I remember that we discussed reverting those but it looks like
-> that never happened. I need to ask around internally.
->=20
-> Question is do you see any other problems with the board? E.g.
-> incorrect connector or harvesting configuration?
->=20
-> Regards,
-> Christian.
->=20
+On Mon, Apr 22, 2024 at 9:20=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
+te:
+>
+> On Mon, Apr 22, 2024 at 09:04:58PM +0800, quic_zijuhu wrote:
+> > On 4/22/2024 8:51 PM, Johan Hovold wrote:
+> > > On Tue, Mar 19, 2024 at 04:46:09PM +0100, Johan Hovold wrote:
+>
+> > >> Johan Hovold (2):
+> > >>   Bluetooth: qca: fix NULL-deref on non-serdev suspend
+> > >>   Bluetooth: qca: fix NULL-deref on non-serdev setup
+> > >
+> > > Could you pick these up for 6.9 or 6.10?
+> > >
+> > > The patches are marked for stable backport and only privileged users =
+can
+> > > set the N_HCI line discipline these days (even if I'm not sure about
+> > > pre-5.14 kernels...) so it may be fine to wait for 6.10 if you prefer=
+.
+>
+> > could you share the patch links for me to review. i can
+> > 't find them now
+>
+> Sure, but you should bookmark lore.kernel.org in your browser as you can
+> search the archives there yourself:
+>
+>         https://lore.kernel.org/lkml/20240319154611.2492-1-johan+linaro@k=
+ernel.org/
 
-At present, no other problems have been found.
-Configured as radeon driver, display is normal.=20
-But this problem is found when I switch to amdgpu driver, and the
-startup fails with black screen.
-After add the patch, the startup was successful, display is normal.
+Did you send these to linux-bluetooth? I don't see them in:
 
-Qiang Ma
+https://patchwork.kernel.org/project/bluetooth/list/
 
-> >
-> > Qiang Ma
-> > =20
-> >>> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
-> >>> ---
-> >>>    drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c | 11 +++++++++--
-> >>>    drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c | 13 ++++++++++---
-> >>>    2 files changed, 19 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
-> >>> b/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c index
-> >>> 23b478639921..3703695f7789 100644 ---
-> >>> a/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c +++
-> >>> b/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c @@ -309,8 +309,15 @@
-> >>> static int gmc_v6_0_mc_init(struct amdgpu_device *adev) }
-> >>>    	adev->gmc.vram_width =3D numchan * chansize;
-> >>>    	/* size in MB on si */
-> >>> -	adev->gmc.mc_vram_size =3D RREG32(mmCONFIG_MEMSIZE) *
-> >>> 1024ULL * 1024ULL;
-> >>> -	adev->gmc.real_vram_size =3D RREG32(mmCONFIG_MEMSIZE) *
-> >>> 1024ULL * 1024ULL;
-> >>> +	tmp =3D RREG32(mmCONFIG_MEMSIZE);
-> >>> +	/* some boards may have garbage in the upper 16 bits */
-> >>> +	if (tmp & 0xffff0000) {
-> >>> +		DRM_INFO("Probable bad vram size: 0x%08x\n",
-> >>> tmp);
-> >>> +		if (tmp & 0xffff)
-> >>> +			tmp &=3D 0xffff;
-> >>> +	}
-> >>> +	adev->gmc.mc_vram_size =3D tmp * 1024ULL * 1024ULL;
-> >>> +	adev->gmc.real_vram_size =3D adev->gmc.mc_vram_size;
-> >>>   =20
-> >>>    	if (!(adev->flags & AMD_IS_APU)) {
-> >>>    		r =3D amdgpu_device_resize_fb_bar(adev);
-> >>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
-> >>> b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c index
-> >>> 3da7b6a2b00d..1df1fc578ff6 100644 ---
-> >>> a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c +++
-> >>> b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c @@ -316,10 +316,10 @@
-> >>> static void gmc_v7_0_mc_program(struct amdgpu_device *adev) static
-> >>> int gmc_v7_0_mc_init(struct amdgpu_device *adev) {
-> >>>    	int r;
-> >>> +	u32 tmp;
-> >>>   =20
-> >>>    	adev->gmc.vram_width =3D
-> >>> amdgpu_atombios_get_vram_width(adev); if (!adev->gmc.vram_width) {
-> >>> -		u32 tmp;
-> >>>    		int chansize, numchan;
-> >>>   =20
-> >>>    		/* Get VRAM informations */
-> >>> @@ -363,8 +363,15 @@ static int gmc_v7_0_mc_init(struct
-> >>> amdgpu_device *adev) adev->gmc.vram_width =3D numchan * chansize;
-> >>>    	}
-> >>>    	/* size in MB on si */
-> >>> -	adev->gmc.mc_vram_size =3D RREG32(mmCONFIG_MEMSIZE) *
-> >>> 1024ULL * 1024ULL;
-> >>> -	adev->gmc.real_vram_size =3D RREG32(mmCONFIG_MEMSIZE) *
-> >>> 1024ULL * 1024ULL;
-> >>> +	tmp =3D RREG32(mmCONFIG_MEMSIZE);
-> >>> +	/* some boards may have garbage in the upper 16 bits */
-> >>> +	if (tmp & 0xffff0000) {
-> >>> +		DRM_INFO("Probable bad vram size: 0x%08x\n",
-> >>> tmp);
-> >>> +		if (tmp & 0xffff)
-> >>> +			tmp &=3D 0xffff;
-> >>> +	}
-> >>> +	adev->gmc.mc_vram_size =3D tmp * 1024ULL * 1024ULL;
-> >>> +	adev->gmc.real_vram_size =3D adev->gmc.mc_vram_size;
-> >>>   =20
-> >>>    	if (!(adev->flags & AMD_IS_APU)) {
-> >>>    		r =3D amdgpu_device_resize_fb_bar(adev); =20
-> >> =20
->=20
->=20
 
+--=20
+Luiz Augusto von Dentz
 
