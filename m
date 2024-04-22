@@ -1,130 +1,196 @@
-Return-Path: <linux-kernel+bounces-154161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D90A88AD86C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:03:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E6968AD875
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:04:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D76C284ADA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:03:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 909451C21217
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:04:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EFD9181BBA;
-	Mon, 22 Apr 2024 22:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90DE944C7E;
+	Mon, 22 Apr 2024 22:57:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dDLHP7bL"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="dIaTffOg"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43385181B8F
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 22:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DE6A446D9
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 22:57:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713826502; cv=none; b=Lmq3aO2k7h4cCs7Dh2ZBhLJDo5xI+JfHtDKRLVM55O75IKT3mPCliJ5vkr7LBwBWsr6G4TNUe1QImvopXIwDH9h36k/0PmNg0bmubv8UAbIQXyeWC5qzd55qrPCb79PWV/h2Gi8dwVVfqxd/kLov445ZDpPED2/zxbDMAj+m1lg=
+	t=1713826630; cv=none; b=lrna77g1cU7YLlLTR5b8SUSVicg2R5KX7MbCDUN95izaZmcwui2+E7AijLKH4NMmj+cRAFjiYaVLPNNhZexLiPvPh6+nzWCKa02/dWkqVSsDcGRYjQcCyjHZIBsRHtzZxk+sobtmt3Ojc6DCOdl80f7lyY9SU65SJIwgDJM45Ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713826502; c=relaxed/simple;
-	bh=6HogZA72dEjIUD+2dcxM4x6w3f26UzuKuHmtXyQJhYM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sBP6VZNygn+8CemBXoH2tLzCeiQZRI91t+mHJ2VoGzEUNQEDkQS/s3NPFaA3SzKFU7thSSxFFRORdYmb0/GtxT/S1EoMFacrk1r53byj9TpzLgUWnaHYSciKUsLXkTlupL4z6tKi4q6vMtU7yXFg+Eh8xXmvPvdzXDfr9pF6Zjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dDLHP7bL; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5193363d255so6602412e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:55:00 -0700 (PDT)
+	s=arc-20240116; t=1713826630; c=relaxed/simple;
+	bh=RrrYRTkkswf/gjOqFjZlaogI7ruiGe39kkmwqnMOSP4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Dx0ZXBbMFM4CP6c1BuKce6207NoJfxh97sT2A4CJGr3ZfabnOVAijwUjXwa8iLYK0Ba3YE4tvtzDy9T8Sz3BKjRbobUy199+fd13SvVz3JUOqTek2/555C8JRlsFDbJ4sqiNkVTpeMvrnjmXSMSPlF2oKeMSpkwkcNJgKd0oytA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=dIaTffOg; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ff57410ebbso1314395a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:57:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713826498; x=1714431298; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mZZenxLxXRLNUaVa8fsakmHFgHCabBfzf+FG1fzHvGg=;
-        b=dDLHP7bLr8iaFxrFy9eROta/6il280DnVVjQLUgnoFYEjjB4y9CqDrlXN6ALhi+6Bb
-         p0SVa1RNvUPd1SFplgXyaqbEd4cS9pzTAxM13e0sfvUUcqeWunsGEhXhr5bFPgB8fNRJ
-         8gzbUkTkED77qm+bfgyCWQSF+i2wGvvdxldZq3qmCOP5ijoXPfehI0znimaNzMXh2Qz8
-         wB7j8OcD5F8PGic3l6SUooGJ6zr2eveUDBY8hV+j3U12SP5Zz1nHpyvd9Qzn/0cPXtK5
-         EkmveKG1xkiblTLpebpVc8Wwb30kXR5b57kCR1o52gsIMVjWJ3vuEIM/pJl3R1yK84ky
-         TiSw==
+        d=broadcom.com; s=google; t=1713826628; x=1714431428; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uQbI2isQrIeFdi3NSj8YhWPg4Ob4QiVW/wigPh5fM2E=;
+        b=dIaTffOgc0Jx0GWZIBsoqb4F30ntqNwycbgfzn6EA/Pwpw8qwi6pJMY6KL8bakzxgp
+         sITyDJlOMpe8yDUgy3OLbU8347YEgmqxTc1Y/93ep5zS5TGAqq9HRZIsZrQBqklQGcQJ
+         EpFof2O0qxEPr5N3oYu+J2P1qXIjXKQepCjTo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713826498; x=1714431298;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mZZenxLxXRLNUaVa8fsakmHFgHCabBfzf+FG1fzHvGg=;
-        b=xMB9c0ymrbNedste+AJC07opJq8OQKrBKdfRJqYyOIjXGTiNSRTwaLebBlmll4G6HI
-         FtaPdYR/Td9k/6o5MylleIsAtE3WAjMnEFwZnXASRAeKxupazeMhmsFbZlHWem8btzfQ
-         3m+UdMrwTgztGKQdc5gMHC9cjYoz0mqVW83H5VkTy5QB/ccJhZvkg02y0VwYnwaASNxG
-         3Oawag4i/07D7AY1vaCu/bZ3wrANuzdxecayk+xHi4E5IKxIjzqEmXhS9t8dTydo4BOl
-         Zv/KUpRoujqSnyghQfBTdNemmkLxX/0uvM118PPnWCB7paCe837AtVGiy0XCOpvals+a
-         hyZA==
-X-Forwarded-Encrypted: i=1; AJvYcCV8KczQ9JmazRNyqyxKNY7Q1eR/zhmDl9d6Qq7uruZsVUezSiLfbLxfeSK95A+voP3z3B79vR8UH7NBs6lEYj4YNtD4sxDBVK+/L1Bm
-X-Gm-Message-State: AOJu0YzL1zg3aFHl4gLOf+YTYin4NazSOHgcsgONyh/M1L+HzsZXiuX6
-	wr8FA7PhwhXtz0c15fK5jJpwPgw7VJcXPma52OJ+kyBndQcc6WOBf6+hnBgOCEE=
-X-Google-Smtp-Source: AGHT+IELvYr9TnwH1ZhKLd/4NPGBCKp/hD2+vGQEykAEl5SbO2M55duobRfLF8evMAaGAmUz4pqtMg==
-X-Received: by 2002:ac2:4294:0:b0:51a:fe04:13e3 with SMTP id m20-20020ac24294000000b0051afe0413e3mr4109059lfh.8.1713826498423;
-        Mon, 22 Apr 2024 15:54:58 -0700 (PDT)
-Received: from [172.30.204.103] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id u18-20020ac24c32000000b0051b5e710366sm266474lfq.129.2024.04.22.15.54.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 15:54:58 -0700 (PDT)
-Message-ID: <3592cea4-7e5c-448a-83c0-562b4ef4e7a1@linaro.org>
-Date: Tue, 23 Apr 2024 00:54:53 +0200
+        d=1e100.net; s=20230601; t=1713826628; x=1714431428;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uQbI2isQrIeFdi3NSj8YhWPg4Ob4QiVW/wigPh5fM2E=;
+        b=dgJLymRu8XU0KGlX/cf5zaAVxXyEOArCe2b7sNW8cYpd2vsX588Bb5kVZaReP2dLzz
+         bqw39p8J0LUG3swljGxQ421YXpo7y9znSU7/+yndMWXR30aomEivYNJWnJtHIZyv5ubD
+         FQuBuYJBBmohkuGTN/bD621Vhxh5wD3vFpawBHTSShduzSa8blXiM1cWlJRNbIM618K1
+         FPy9QPy5VU4VQabsaoO8wq0+myC9Gua7VNzzoWw8+TWOMQ5O4BNp5/jl3V3JrsjWZOMW
+         2bcFRizRfFx5f47mFOV5hdZo8fkHf6TnaIEVHUU3YF+Nfh8+SVtz4TW2u7j/SoIOgrtA
+         gaYg==
+X-Gm-Message-State: AOJu0YyFxjmlrtRyRlTAlPv8230QA35OkXxVRQNASOBlZr/A4xah9QZk
+	pPDdJAONmLfdNLr7lfeHphYlrmXh7lrYiB8g7BTKLRUNQw0zurwEg05iq960a/r54AuhasWzT5f
+	39mnBoapu8SHvbOiKEXocZtSFV/d/iWbDvOj9mcGgZiLhjnyIV5WYakKlBRtLn6iA3fSy/SlM+K
+	gh2LaaK1ZhDnWm6S47oNMd8rIN+TnWFsV4gWH3E4poYFSrAdBixrUuyNY=
+X-Google-Smtp-Source: AGHT+IHoQIjxOX9Ar02IvVZtYDFrS78a9YsPclc2gjJ3AAG9FEHisboEyDHDvj6Ddco66aGsKCkrLg==
+X-Received: by 2002:a05:6300:8081:b0:1a9:5a2a:7e51 with SMTP id ap1-20020a056300808100b001a95a2a7e51mr10402501pzc.24.1713826627745;
+        Mon, 22 Apr 2024 15:57:07 -0700 (PDT)
+Received: from amakhalov-build-vm.eng.vmware.com ([128.177.82.146])
+        by smtp.gmail.com with ESMTPSA id e131-20020a636989000000b005e43cce33f8sm8093597pgc.88.2024.04.22.15.57.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 15:57:07 -0700 (PDT)
+From: Alexey Makhalov <alexey.makhalov@broadcom.com>
+To: linux-kernel@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	bp@alien8.de,
+	hpa@zytor.com,
+	dave.hansen@linux.intel.com,
+	mingo@redhat.com,
+	tglx@linutronix.de
+Cc: x86@kernel.org,
+	netdev@vger.kernel.org,
+	richardcochran@gmail.com,
+	linux-input@vger.kernel.org,
+	dmitry.torokhov@gmail.com,
+	zackr@vmware.com,
+	linux-graphics-maintainer@vmware.com,
+	pv-drivers@vmware.com,
+	timothym@vmware.com,
+	akaher@vmware.com,
+	dri-devel@lists.freedesktop.org,
+	daniel@ffwll.ch,
+	airlied@gmail.com,
+	tzimmermann@suse.de,
+	mripard@kernel.org,
+	maarten.lankhorst@linux.intel.com,
+	horms@kernel.org,
+	kirill.shutemov@linux.intel.com,
+	Alexey Makhalov <alexey.makhalov@broadcom.com>
+Subject: [PATCH v8 0/7] VMware hypercalls enhancements
+Date: Mon, 22 Apr 2024 15:56:49 -0700
+Message-Id: <20240422225656.10309-1-alexey.makhalov@broadcom.com>
+X-Mailer: git-send-email 2.39.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 RESEND 4/5] clk: qcom: Use HW_CTRL_TRIGGER flag to
- switch video GDSC to HW mode
-To: Jagadeesh Kona <quic_jkona@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>, "Rafael J . Wysocki"
- <rafael@kernel.org>, Kevin Hilman <khilman@kernel.org>,
- Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Andy Gross <agross@kernel.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Abel Vesa <abel.vesa@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- linux-pm@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>,
- Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
- Imran Shaik <quic_imrashai@quicinc.com>,
- Ajit Pandey <quic_ajipan@quicinc.com>
-References: <20240413152013.22307-1-quic_jkona@quicinc.com>
- <20240413152013.22307-5-quic_jkona@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240413152013.22307-5-quic_jkona@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+
+No functional changes from version 7. Peter please consider reviewing
+patch 7 where we addressed your comments from version 6. Thanks!
+
+VMware hypercalls invocations were all spread out across the kernel
+implementing same ABI as in-place asm-inline. With encrypted memory
+and confidential computing it became harder to maintain every changes
+in these hypercall implementations.
+
+Intention of this patchset is to introduce arch independent VMware
+hypercall API layer other subsystems such as device drivers can call
+to, while hiding architecture specific implementation behind.
+
+Second patch introduces the vmware_hypercall low and high bandwidth
+families of functions, with little enhancements there.
+Sixth patch adds tdx hypercall support
+
+arm64 implementation of vmware_hypercalls is in drivers/gpu/drm/
+vmwgfx/vmwgfx_msg_arm64.h and going to be moved to arch/arm64 with
+a separate patchset with the introduction of VMware Linux guest
+support for arm64.
+
+No functional changes in drivers/input/mouse/vmmouse.c and
+drivers/ptp/ptp_vmw.c
+
+v7->v8 no functional changes. Updated authors and reviewers emails to
+@broadcom.com
+
+v6->v7 changes (only in patch 7):
+- Addressed comments from H. Peter Anvin:
+  1. Removed vmware_tdx_hypercall_args(), moved args handling inside
+     vmware_tdx_hypercall().
+  2. Added pr_warn_once() for !hypervisor_is_type(X86_HYPER_VMWARE) case.
+- Added ack by Dave Hansen.
+
+v5->v6 change:
+- Added ack by Kirill A. Shutemov in patch 7. 
+
+v4->v5 changes:
+  [patch 2]:
+- Fixed the problem reported by Simon Horman where build fails after
+  patch 2 application. Do not undefine VMWARE_HYPERCALL for now, and
+  update vmwgfx, vmmouse and ptp_vmw code for new VMWARE_HYPERCALL macro.
+- Introduce new patch 6 to undefine VMWARE_HYPERCALL, which is safe to do
+  after patches 3 to 5.
+- [patch 7 (former patch 6)]: Add missing r15 (CPL) initialization.
+
+v3->v4 changes: (no functional changes in patches 1-5)
+  [patch 2]:
+- Added the comment with VMware hypercall ABI description.
+  [patch 6]:
+- vmware_tdx_hypercall_args remove in6/out6 arguments as excessive.
+- vmware_tdx_hypercall return ULONG_MAX on error to mimic bad hypercall
+  command error from the hypervisor.
+- Replaced pr_warn by pr_warn_once as pointed by Kirill Shutemov.
+- Fixed the warning reported by Intel's kernel test robot.
+- Added the comment describing VMware TDX hypercall ABI.
+
+v2->v3 changes: (no functional changes in patches 1-5)
+- Improved commit message in patches 1, 2 and 5 as was suggested by
+  Borislav Petkov.
+- To address Dave Hansen's concern, patch 6 was reorganized to avoid
+  exporting bare __tdx_hypercall and to make exported vmware_tdx_hypercall
+  VMWare guest specific.
+
+v1->v2 changes (no functional changes):
+- Improved commit message in patches 2 and 5.
+- Added Reviewed-by for all patches.
+- Added Ack from Dmitry Torokhov in patch 4. No fixes regarding reported
+  by Simon Horman gcc error in this patch.
 
 
+Alexey Makhalov (7):
+  x86/vmware: Move common macros to vmware.h
+  x86/vmware: Introduce VMware hypercall API
+  ptp/vmware: Use VMware hypercall API
+  input/vmmouse: Use VMware hypercall API
+  drm/vmwgfx: Use VMware hypercall API
+  x86/vmware: Undefine VMWARE_HYPERCALL
+  x86/vmware: Add TDX hypercall support
 
-On 4/13/24 17:20, Jagadeesh Kona wrote:
-> The HW_CTRL_TRIGGER flag provides flexibility to switch the GDSC
-> mode as per the consumers requirement compared to HW_CTRL flag which
-> directly switches the GDSC mode as part of gdsc enable/disable.
-> Hence use HW_CTRL_TRIGGER flag for vcodec GDSC's to allow venus driver
-> to switch the vcodec GDSC to HW/SW control modes at runtime using
-> dev_pm_genpd_set_hwmode() API.
-> 
-> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
+ arch/x86/include/asm/vmware.h             | 331 +++++++++++++++++++---
+ arch/x86/kernel/cpu/vmware.c              | 144 +++++-----
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg.c       | 173 ++++-------
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg_arm64.h | 197 +++++++++----
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg_x86.h   | 185 ------------
+ drivers/input/mouse/vmmouse.c             |  76 ++---
+ drivers/ptp/ptp_vmw.c                     |  12 +-
+ 7 files changed, 593 insertions(+), 525 deletions(-)
 
-The commit title states clk: qcom: yet the only files changed are:
+-- 
+2.39.0
 
->   drivers/clk/qcom/videocc-sc7280.c | 2 +-
->   drivers/clk/qcom/videocc-sm8250.c | 4 ++--
-
-With no explanation as to why anywhere
-
-Konrad
 
