@@ -1,128 +1,80 @@
-Return-Path: <linux-kernel+bounces-153897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BBF18AD4A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:10:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ADED8AD4A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:12:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 506FB1F21B4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:10:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D998DB20F8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCD7155346;
-	Mon, 22 Apr 2024 19:10:33 +0000 (UTC)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FBA7155314;
+	Mon, 22 Apr 2024 19:12:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="N+TAVYd5"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AE9155307;
-	Mon, 22 Apr 2024 19:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2D5154432
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713813033; cv=none; b=P4zgLNT6S7QjFL6ymFrS3BIEg3UtYcthEaarmdMr46VgYKpH0mw3EOIa7s/XrRsqFqrT3Yo0xLFo6zQ/UjmbwsUn4avE9akFnoY7YfroUo9BOqVet09tdwhuHH5WH675nQZWcgped0O8MSnTANzCS2JSS74Y1UzRK9JpYGelmuI=
+	t=1713813125; cv=none; b=VopC71v4HSo2EBN7uqJFlYDzMSoAad3RLEvF2x4rLwLegqdNzgECx28j0PXlr8Zd3r53QhUYC2qBPOFAyW3F31LkATXefhADwjW1PAgBpilUdRN50FHHFE0igVwgnRFylZ83JzC2Sn6YPZRXAMflZgxnxsRU7YPdy2Ea2exp+K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713813033; c=relaxed/simple;
-	bh=rJvNMMHsO9zI75ghumCSbMliEXPSfFf/Qdfo1bBdBNw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PwnbDGIROWp2O+aSQftOpAPFm05qQeDgVsOqW40jaXoqhuo2DezwX6SXz7PQlu5HytIZUA4ort/kIdj2kV8Wb3H0u1XzX3spsOfjOELEDJxpT/Bnp0PD+LrbZmofsX7w77LMS7CtkbJi3qwmlqZ+eCSLqPKQ1W6mOQ06ABaNHeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7e128b1ba75so980274241.3;
-        Mon, 22 Apr 2024 12:10:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713813031; x=1714417831;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FT090QG4mPbWzxLW5ioWJKU6VIVek0mS/v6uLtJKrhY=;
-        b=xLzcQ/NiGORsxb2ZPUaVv1w9ATf9uEktUoG2bo9MkpKNBoeikfk64CLDNQlPQA4wId
-         0BG15IpUArg+GWSUhHoqTyH2dOyLUOhmjSDzYAYLatU84+z1MekM2dM7Z9qfioRdyG6T
-         5oLU2iYGREdOWMQwmIMY2hcqo6QJYvLBcrlhbGDtQF6f6ZmkyFOLIob2lpYlpHMCGx2j
-         xsrBPvofsu3118myiW3c6ZFnnaC0sJFdEgxsHj34HIlUDEIXzItC39zFOgEb6PKGpgf8
-         PS3qzVcryO3wqN4CG/kJ+kMB8xLW0+uAbpX/OF9M7SPBKEqmKpa0NBWI7dmGPvztn3Db
-         OBHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVAk2SG9yeCRtVgPyA6yG/E+OVyZMd6xiR9wU/gGAjdL7VEpxf+CPnTSTWqpJK3o1N02wpo2jWTm5Jm+qjOcvLwbTLwOLUYEXRHtI+e27NyJ43lyNTWuguQYO9kAqeTMzj8mRntz2MY/a2JtO5yUA==
-X-Gm-Message-State: AOJu0YzHQABw4/gxJZseeIFaOSbDENMNr4id9k1XxcXrl/9E6vcrzLxP
-	rlLtIo9jSH8tG2ae/0U0u8fINkq+1DdO6JWd37Aw++yYGNJGXeIenf/PcWjdnsvpUGvJ9g4l1IY
-	CtO1X+UoWdrLdnMnGpFUUTkpzvXo=
-X-Google-Smtp-Source: AGHT+IHyHQTsUzROmqN6jnX/24w46La9WBiStlAq0xOe5OA9QNeAcfTayUuiYweOgOQTpr6p0ouM4uwoD4CughfZ5ak=
-X-Received: by 2002:a05:6122:318b:b0:4d4:15d2:8b3b with SMTP id
- ch11-20020a056122318b00b004d415d28b3bmr12316812vkb.9.1713813030859; Mon, 22
- Apr 2024 12:10:30 -0700 (PDT)
+	s=arc-20240116; t=1713813125; c=relaxed/simple;
+	bh=1a92759FjtnELPC2MqSXqE89WWJoExSAA6yt/yYun7g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I/mE5brzJnpj7xxkSIwqWKy+y7vY794RgIoLjeDobw/sqtms/l0DB0C0aBzsUXD63UylLrRt+TNgZKI92nIF1AQB6eAJGpLtc870dchxWCTm8G7n0pPDGU8W0njRCD3AbC4qOIFThlLDDaLP6gGCmy8rrYlQyMEGmFPTzT/GHeA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=N+TAVYd5; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Lvwto3yehD40Bt0byCkThGy+w+BpMURn1Z2lSHOmbVw=; b=N+TAVYd5w9IVNa3GMJnn30VXie
+	VSO+0vL53tVLzJT8RQf2Fpri3uH4udAiQlloJryYgSG25HZAC3hm4Df+kyyWBcDrqzYNOnr0bk4d/
+	HHn+XFc1VljWh8xDEclpEGpKCgR6i5ty95vh+p1neVki7O5VQhnNYZxyqhSihopbHL9E6abaZZcfe
+	XvzRcbjfr51GEjjHH1Mma203Gu/M8yTBkhba0c51WQiwjYu+uz/XqrvYF9AUa4HQ5czKodBkuE2JJ
+	2ymRqIRjOBeoMyrJwYcPxy6monmSfjXFe20ptd4FciXsBReNBx+WvbJm0emeuEnwcx+fN7uBpANoH
+	WKBlXnJQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ryz55-0000000EneE-1Jwh;
+	Mon, 22 Apr 2024 19:11:59 +0000
+Date: Mon, 22 Apr 2024 20:11:59 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org
+Subject: Re: [PATCH] mm: huge_memory: convert __do_huge_pmd_anonymous_page()
+ to use folios
+Message-ID: <Zia2f2EI8LWFE2XA@casper.infradead.org>
+References: <20240422181216.91938-1-jianfeng.w.wang@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402214436.1409476-1-weilin.wang@intel.com>
-In-Reply-To: <20240402214436.1409476-1-weilin.wang@intel.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 22 Apr 2024 12:10:18 -0700
-Message-ID: <CAM9d7cj2EbxWVLHU3XPf_F2OzWRVRfSV2TghNA+h8noDztrasQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v7 0/6] TPEBS counting mode support
-To: weilin.wang@intel.com
-Cc: Ian Rogers <irogers@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
-	Caleb Biggers <caleb.biggers@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240422181216.91938-1-jianfeng.w.wang@oracle.com>
 
-Hello Weilin,
+On Mon, Apr 22, 2024 at 11:12:16AM -0700, Jianfeng Wang wrote:
+> Change __do_huge_pmd_anonymous_page() to take folio as input, as its
+> caller has used folio. Save one unnecessary call to compound_head().
 
-On Tue, Apr 2, 2024 at 2:45=E2=80=AFPM <weilin.wang@intel.com> wrote:
->
-> From: Weilin Wang <weilin.wang@intel.com>
->
-> Changes in v7:
-> - Update code and comments for better code quality [Namhyung]
-> - Add a separate commit for perf data [Namhyung]
-> - Update retire latency print function to improve alignment [Namhyung]
->
-> v6: https://lore.kernel.org/all/20240329191224.1046866-1-weilin.wang@inte=
-l.com/
+I don't like this patch.  It makes the assumption that folios will never
+be larger than PMD size, and I don't think that's an assumption that's
+going to last another five years.  Look where you had to
+do &folio->page:
 
-In general, I think you need to explain what exactly TPEBS is and why
-you want to do this for TPEBS.  Maybe somewhere in the documentation.
+> +	clear_huge_page(&folio->page, vmf->address, HPAGE_PMD_NR);
 
-Thanks,
-Namhyung
+> +		entry = mk_huge_pmd(&folio->page, vma->vm_page_prot);
 
->
-> Weilin Wang (6):
->   perf stat: Parse and find tpebs events when parsing metrics to prepare
->     for perf record sampling
->   perf data: Allow to use given fd in data->file.fd
->   perf stat: Fork and launch perf record when perf stat needs to get
->     retire latency value for a metric.
->   perf stat: Add retire latency values into the expr_parse_ctx to
->     prepare for final metric calculation
->   perf stat: Add retire latency print functions to print out at the very
->     end of print out
->   perf vendor events intel: Add MTL metric json files
->
->  tools/perf/builtin-stat.c                     |  249 +-
->  .../arch/x86/meteorlake/metricgroups.json     |  127 +
->  .../arch/x86/meteorlake/mtl-metrics.json      | 2551 +++++++++++++++++
->  tools/perf/util/data.c                        |    7 +-
->  tools/perf/util/metricgroup.c                 |   87 +-
->  tools/perf/util/metricgroup.h                 |   22 +-
->  tools/perf/util/stat-display.c                |   69 +
->  tools/perf/util/stat-shadow.c                 |   19 +
->  tools/perf/util/stat.h                        |    4 +
->  9 files changed, 3115 insertions(+), 20 deletions(-)
->  create mode 100644 tools/perf/pmu-events/arch/x86/meteorlake/metricgroup=
-s.json
->  create mode 100644 tools/perf/pmu-events/arch/x86/meteorlake/mtl-metrics=
-json
->
-> --
-> 2.43.0
->
->
+For mk_huge_pmd() in particular, you need to know the precise page, and
+not just use the first page of the folio.
 
