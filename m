@@ -1,1213 +1,340 @@
-Return-Path: <linux-kernel+bounces-153238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA4878ACB45
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:53:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 388FA8ACA35
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:06:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8C3E1F20F32
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:53:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BB131C210C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B716146010;
-	Mon, 22 Apr 2024 10:53:18 +0000 (UTC)
-Received: from mail-m92235.xmail.ntesmail.com (mail-m92235.xmail.ntesmail.com [103.126.92.235])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520B413D8BA;
+	Mon, 22 Apr 2024 10:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="f6cJkofO"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2082.outbound.protection.outlook.com [40.107.255.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60006482C1;
-	Mon, 22 Apr 2024 10:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.126.92.235
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713783196; cv=none; b=Dws4e6Isy9OGmGvheXQWRrGEzpm0E0Z8KSZ3VVCg//P9CkVR6hx+V2V639WO6/EnuqVfJqnjt71bcdTW56K0M3aWOpyf3Z/pf0cAu0SbSjykWKMIgVT2xPQecZN/7dglGcbDfIPl3wnvBwUAwBSXvz4wLVqrcPzCKaesB0j88Jw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713783196; c=relaxed/simple;
-	bh=XpJ084qXAFLNdWM1twuOWiFGRFvi90via5Qtq79OCw4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rAl/tGN0e1GZha4tcBT6nwWA9qGyWxHuk+DO+5h5aoTQdlg61ZHTXZDoFBRLtZkHZJMa0EAeH6SkS3bhHkwwMhi9uUl9I0eBWmsNoWpqJj/Rkf4R4GoRkVVs+VuWOJ+nApS7iZlkq/XWgX72SDstA7gp9p1vD+Hyp7ensbqm9CU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=103.126.92.235
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
-Received: from ubuntu-22-04.. (unknown [218.94.118.90])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id BCBB486023C;
-	Mon, 22 Apr 2024 15:16:09 +0800 (CST)
-From: Dongsheng Yang <dongsheng.yang@easystack.cn>
-To: dan.j.williams@intel.com,
-	axboe@kernel.dk
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-cxl@vger.kernel.org,
-	Dongsheng Yang <dongsheng.yang.linux@gmail.com>
-Subject: [PATCH 1/7] block: Init for CBD(CXL Block Device)
-Date: Mon, 22 Apr 2024 07:16:00 +0000
-Message-Id: <20240422071606.52637-2-dongsheng.yang@easystack.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E7C13C3F4
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713780388; cv=fail; b=u6Y+MgrR5rO0TQ9XCde3X3LMU5XLR307Arzl3OmjyD2gN6LBPmSW/1orgjysAUkfij9jQc3uGsnkILKsjLa7kSnHn3/Tn+royv30V4F4NkLLRSnnUmPmEQ8oGIDazrzR4t80XqlfsytFEjUQ7j1E+fUtxE/wcYcoEYDT6qILE3I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713780388; c=relaxed/simple;
+	bh=zh8sgmiVYwsPHPzQ5BzKy0mT2GO6/gUNpR7OrkEKXmc=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=bEx6yOAA9aaAI0e4B03NLO6lCthP9Y1dv83JGXJDfAPuaS0uyFP/6PRA7p291ahp9w/wuwWrFDJ8NvJzVuMu98264f7nvBFDaSFY8q6w0lhesP2bIYnpCOqfbVsO9nyIq5yEhBEr3eOKuDWuVkFej2jggxwFbftxj07nG0M2EZs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=f6cJkofO; arc=fail smtp.client-ip=40.107.255.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RjaQyNAMu7YoIl0iM4/mXCfpz/3HIJOfBdyueqXH1qmBFgnywoQvIffxjqlWYrJJ3UjuFbm/u7ZAXtgeiLh5pcAkQzpDyu5LoG87lfNfJzJwLJNQ3wf/zvjHOxXgNKy+e3AiQlN5TserxDoELrDA0lbkKnRQBkBC6ESPJv4pjmJKtmzUEwZflNKGl9NF//HZ6Gz5FgpMUvdM6ba1xYqU7U/fTy7hUWEQrnjkWwgVJA1DFakh4lLcA3TEd/gfOb/9ox2VhWO7AFPn1dy9ib6fwBFQUhs2CqfiaEvZjm3/F6R/1K+T5jUX71NDSUdOJ+Y+rMnozbY65BXsn+AeP5n5yw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ihY3yBrqrqDnBnJCg28J+tIaZKQhbxqHnzslFW/KQOI=;
+ b=mt4J+FklPgf3LqewaOD8BqktbwMPsR2N4P47mm7q3Od3au5QZkpw2/u5fGSX9pIYL8htypMHkp5ZGYrf8uviX5xWTOo1YDrZjWSytkGBZP9202D66a9qlvCr54x25DBwSc+DNjGkcsRS3e0JJ95nY+UBpYqCfFhqKnfJNQcc0sT/JKbi+2DWDBIJ6eo0gEan+NyXfxPWUu0cfgulZlkpLIm4fZv4spHNoVuqV0z1nWxMaoAq0lTobKeDdZAL1OXD3xaIZEHWvoAbH1ndRN9o5CuJcaCRSP3+Af+EJ9D7poFs+JTT9JNlyw0VmQdzPe3MkxgGxueAGre5jb8kF1qEsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ihY3yBrqrqDnBnJCg28J+tIaZKQhbxqHnzslFW/KQOI=;
+ b=f6cJkofOzw5dMaqV81XHmuaefyxrcvJM37LMUB7HK1mFwaD+GoMpFGZErWhrSubJPUn7CrzPXLqlWKZy77dkuPX5vqs6m7I7RSBa++DubS/fCc3FYVVtkuR0R8zGF16X705+ONAZjEOqRJh3mJpB6cZl5fTYsVfT8UU7LcjtVC2pMsFxOCFmOPKUAgJ1sH+kUsmwDfqoDPXVk2MThZqyalhTFm+dMy43aKNfz+xR/HC4eqa36SfILz0HNCm46U81nVbDwmAd+pCWYVZLHmVv6wlv16BcB7VHM5ha0Wtr/D+0ptpHDrzqkcoTqmTSFofHHpuLT5oA4gxqgsj1G60tBg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from TYSPR06MB6411.apcprd06.prod.outlook.com (2603:1096:400:42a::11)
+ by SI2PR06MB5116.apcprd06.prod.outlook.com (2603:1096:4:1ab::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 22 Apr
+ 2024 10:06:19 +0000
+Received: from TYSPR06MB6411.apcprd06.prod.outlook.com
+ ([fe80::af33:ff9c:cf31:45e9]) by TYSPR06MB6411.apcprd06.prod.outlook.com
+ ([fe80::af33:ff9c:cf31:45e9%3]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
+ 10:06:19 +0000
+From: Yang Yang <yang.yang@vivo.com>
+To: Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	dm-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Yang Yang <yang.yang@vivo.com>
+Subject: [RFC PATCH] dm: Avoid sending redundant empty flush bios to the same block device
+Date: Mon, 22 Apr 2024 18:05:40 +0800
+Message-Id: <20240422100540.2213-1-yang.yang@vivo.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240422071606.52637-1-dongsheng.yang@easystack.cn>
-References: <20240422071606.52637-1-dongsheng.yang@easystack.cn>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR01CA0046.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:193::18) To TYSPR06MB6411.apcprd06.prod.outlook.com
+ (2603:1096:400:42a::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVlCSRodVhpMH0tMHkseQkxKH1UZERMWGhIXJBQOD1
-	lXWRgSC1lBWUlKQ1VCT1VKSkNVQktZV1kWGg8SFR0UWUFZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
-X-HM-Tid: 0a8f04a98687023ckunmbcbb486023c
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nio6Lxw6HDc8Pxw3MTQOCy4C
-	HRAKC1FVSlVKTEpITExLSkxKS0pIVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
-	V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBT0pPSEs3Bg++
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYSPR06MB6411:EE_|SI2PR06MB5116:EE_
+X-MS-Office365-Filtering-Correlation-Id: ad5b6b13-9915-4321-e6aa-08dc62b3daf1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?v9OpQw4Nu1jjrsAa7K+EB1CLU5519GwlsyXEfSJpdJy3BQ0FWgCe4NImXwgZ?=
+ =?us-ascii?Q?R0wRTQkU7cY0pGVnsc3SzpidNJZz/SAJWKSy75w1FL/O5lEZyGB+6DPQHHZ/?=
+ =?us-ascii?Q?0+R8Y9+Av6rugebokzNR2xGLtbv8L+Gga2RZ8MuRMnUwloUXMhj53lFzFlrG?=
+ =?us-ascii?Q?f1Ql3ltLp4gl+dda1timFABmBGUzoMhR83Cfg1zM56Z0JF7U/AJxSUhHn5iN?=
+ =?us-ascii?Q?FibgjoXJpGi53E2am/E+rYCzqq80/VeF11PgyWhCGAQrT4QftGzWK+XK/V8s?=
+ =?us-ascii?Q?RSp22vCgeVzQjnqpSBc27l870c8Paw9HPj6TJiPCF1DHkLnKj3V3DVBmNyKa?=
+ =?us-ascii?Q?Y65QHntJ8kSLmZ90sg/P9ExeUWSpmI6pCKjet+H/ny/hxi8CBq9bptzuruhu?=
+ =?us-ascii?Q?JdYloi7zc31gCOW6z3EigeVBpa+OYri3thaXA+SEitHOGudf14+VLdI6BQ9e?=
+ =?us-ascii?Q?040/2oW0IJDiZUXyWYxm/yijugzf7ZqCOpZDBmiSpboaWL7dw/lzVoKZsTHI?=
+ =?us-ascii?Q?8n6dmkL9RW4M8t5T+25VURS/rVkSa8wQasN1ncDWk6zdOkH/TcsodNMfJJSM?=
+ =?us-ascii?Q?FKXEdxexmX88ksJva+qoTOLIfGiegyy8pACmSAGCT9zceOjJ/Et4S/Fz1GN7?=
+ =?us-ascii?Q?iognsE9bGKzF4Z3jwik/nGf/vJTQgFynn4R9l19E2LLk6Qy+mqRurfHl/oII?=
+ =?us-ascii?Q?EEittmmL2Q/vbQ+sH+Y7nf4P9AWtC6qK4ej0qenfT0s8tPRoIVYPtWDqOfV0?=
+ =?us-ascii?Q?JEv7Her2KZhgJx40PCM8AsFq7tAX0pThlHhKCjMLJIFdm0fxYiaM0059Tw33?=
+ =?us-ascii?Q?WFN9E2A6jSaOaYDotk6p2fqCjznyL7tcA9N4icmj61htU4XLmcPI3Sd6iZFE?=
+ =?us-ascii?Q?uJC9L+v2hnJGx2gIWSy9sI5cQQF7XfnvE4iQkJdIndSRPXjCtR2DIFtu7ziK?=
+ =?us-ascii?Q?OdBizwv3UMYl4+wm1+Tw3o/m2zeWGa+oCJuMuMfdEdKjgL87lx3MzrJo4JJ4?=
+ =?us-ascii?Q?tj7hMU3r1XY1e0fNabZ02yxFIel4O5YCCSRocdorxgDFMxP8+bL8vX8XIuoo?=
+ =?us-ascii?Q?3j57zX3vp4rAshIi/0eMhlTdnrwtcuQb6lMk7C9m+o4FBJgljtYxjgwZthVg?=
+ =?us-ascii?Q?z+sFa4m88x7ro9dvIdVsjbwqdJ7lDC3ZVe6iyqxadBjeTypEn8R5vYwn5qM2?=
+ =?us-ascii?Q?a0E1IrCQ8LHnHywGPJR8ayJOVLMAnEJxifgWPYsCSMZBHeLevAbjvvFlrpJT?=
+ =?us-ascii?Q?FALRRwjYjSmlXbkAa/YeSUXXtvN0qMyFyuq47ZXQ8ATzpEm1UcFqgZBDcT+Y?=
+ =?us-ascii?Q?RfgV9jjVOz5osEXTV2Xl4CEVlmJERVwPOYRUQ3CQbxgZ3g=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYSPR06MB6411.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(52116005)(1800799015)(366007)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?jtCXRhi1svph1waMulrcjRAdVoqDiyFA27Gqmgi4DStVDRt9Olw3VPqrtDnl?=
+ =?us-ascii?Q?fAfqsohPEDENlFF2WZj201lkK0vhlbGiWtUi/2feHYabDa700L2FfeuZLR7W?=
+ =?us-ascii?Q?+Fl/i51MNss2tEQhRYZYtFgfa5hJeDvUIPt85UQ8zHSUQpf6vz3Xr9K9AfzF?=
+ =?us-ascii?Q?dOk3lsXptlrGZ/5a6DFnpxxQSUjJDgYAzgfQW7BN7qwxUTyNm7tsprSQ5Zng?=
+ =?us-ascii?Q?gkC682PzTKgb3BhwbReEvylBoeu0qCcSjgmJ1G8OABI6XJ+JfymHOqF0SJlb?=
+ =?us-ascii?Q?1FlfnhsgT28OOxzpS2ibjUOUcsDXZY7orXeckyHuBNZ2OTlfBY/1RIae4yYt?=
+ =?us-ascii?Q?bpFx6L8ghLo4EK4mFFJN5IDSlMJx0kpS/etgvoLRr8SPUgTvVg96rM28L9eY?=
+ =?us-ascii?Q?j8mAgzPJhnD2A9kw9PTet8ds3tqurcFZ6l2WjeJEu+x9wxMfI60uCfW46g5D?=
+ =?us-ascii?Q?IA3HEl7t3CXuHiSWxZM7tOkRkvgYc6auaqXyuWaPycYtQg4i2MCpVVriTQfa?=
+ =?us-ascii?Q?xeMf33TbbmJKgGvJfodD+Ju0T9xvz9KbLUR+URuXKORVpz8jGthZtjW4mvLj?=
+ =?us-ascii?Q?zn5pUN9D1FbzoonuNYoIDNs8D27fUkos6M905xlmgU92ptkDccECLszP8w8P?=
+ =?us-ascii?Q?py3QDk37XAWRsM/crdiiwjusGhMUuu+tGb9RE1B8LhRkvzRwzCWwHAzalsl8?=
+ =?us-ascii?Q?TgB3j7HREZwRCTaa4u4qCMGGM2y4jMq70e5Bmu+MjudSltp6hRUsXSweSMsT?=
+ =?us-ascii?Q?DNuJRjLL7KqCAypiM41sYVw4NKJvRGUYWvvPVZHX1mKbKtYCniYlu3TaYDko?=
+ =?us-ascii?Q?jO6XMyMEv46Ex6ZmM2xL0pnsKdhQeL9lX16REUY6osXfd7GeAlxliZuq29Gy?=
+ =?us-ascii?Q?QTPnOVUxz2aqdQgyRGKACYQS4DF0Rzdt6HwBb+SS7/aSj5M6tr/HukXHF1e3?=
+ =?us-ascii?Q?C38YcnsvcW0Xe7BKOHdsPB1XR3PV6NSAoqAyzvS7gxGrpO4kMStBKdDsW1Cs?=
+ =?us-ascii?Q?7Hy9M24U63hNCRUFcEgfazUXdeCdy9HiaTlsi3I3J8wcGMwNF15Eu9bFURKy?=
+ =?us-ascii?Q?k7djhUDWbMTW4e/r20EunILrYrV4Z4M9uJp1vOdK2QsCOqZdSbsD7rPJQTt5?=
+ =?us-ascii?Q?Z7h4D4x7njDrEDBIgV3U567OeK0GL0JAX/1nM4unWBzhu5V4ocLNjr06GYgJ?=
+ =?us-ascii?Q?Y7e3b2pG05xPyntClgGcThCGHy/cVr/+zKhRjtwk2dqN+fdWye8kXEt8PqvS?=
+ =?us-ascii?Q?RMvtWNjP3dA6hOUk+G/aCxGQwlz7/7i2L1Q8ljQXaU4+rfSAQU/zd2VJXHDe?=
+ =?us-ascii?Q?bvg9mqsDp5eBgsvlle1XRL/eR5t9PZLbWdtYBGmQe6NN6NgGvGDmrBhJ6Nk3?=
+ =?us-ascii?Q?vJB9+XWwOiosGFiOxShQy/2kwNZhqdzB4fgftdetI2WNyadBZJoeggosXKiY?=
+ =?us-ascii?Q?qV5AT+Mj4QonQDoyRZiliUuzW7kdQ0w1fPjURbm22qY6Kbb9BzQo7RA0e0UY?=
+ =?us-ascii?Q?ePdzq2LAFr9UJS7LY7tfFSKxKvCmPFJUOV1ajl+xNpEOW8LS1u+XGLZNZ851?=
+ =?us-ascii?Q?kxTXIw1Tn8WyHYfTXwItt8OvOCB4I98LgfWy3oxJ?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad5b6b13-9915-4321-e6aa-08dc62b3daf1
+X-MS-Exchange-CrossTenant-AuthSource: TYSPR06MB6411.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 10:06:19.3425
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: J4rCr9U+c9Y65GdfysmbIH5kEyp39oHTW+s1GG8ocWxAvLUTtf8FfrpUsJVoLUL7yp/2883GHZ6K1vIe40bmBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB5116
 
-From: Dongsheng Yang <dongsheng.yang.linux@gmail.com>
+__send_empty_flush() sends empty flush bios to every target in the
+dm_table. However, if the num_targets exceeds the number of block
+devices in the dm_table's device list, it could lead to multiple
+invocations of __send_duplicate_bios() for the same block device.
+Typically, a single thread sending numerous empty flush bios to one
+block device is redundant, as these bios are likely to be merged by the
+flush state machine. In scenarios where num_targets significantly
+outweighs the number of block devices, such behavior may result in a
+noteworthy decrease in performance.
 
-As shared memory is supported in CXL3.0 spec, we can transfer data
-via CXL shared memory. CBD means CXL block device, it use CXL shared memory
-to transfer command and data to access block device in different
-host, as shown below:
+This issue can be reproduced using this command line:
+  for i in {0..1023}; do
+    echo $((8000*$i)) 8000 linear /dev/sda2 $((16384*$i))
+  done | dmsetup create example
 
-┌───────────────────────────────┐                               ┌────────────────────────────────────┐
-│          node-1               │                               │              node-2                │
-├───────────────────────────────┤                               ├────────────────────────────────────┤
-│                               │                               │                                    │
-│                       ┌───────┤                               ├─────────┐                          │
-│                       │ cbd0  │                               │ backend0├──────────────────┐       │
-│                       ├───────┤                               ├─────────┤                  │       │
-│                       │ pmem0 │                               │ pmem0   │                  ▼       │
-│               ┌───────┴───────┤                               ├─────────┴────┐     ┌───────────────┤
-│               │    cxl driver │                               │ cxl driver   │     │ /dev/sda      │
-└───────────────┴────────┬──────┘                               └─────┬────────┴─────┴───────────────┘
-                         │                                            │
-                         │                                            │
-                         │        CXL                         CXL     │
-                         └────────────────┐               ┌───────────┘
-                                          │               │
-                                          │               │
-                                          │               │
-                                      ┌───┴───────────────┴────---------------─┐
-                                      │   shared memory device(cbd transport)  │
-                                      └──────────────────────---------------───┘
+With this fix, a random write with fsync workload executed with the
+following fio command:
 
-any read/write to cbd0 on node-1 will be transferred to node-2 /dev/sda. It works similar with
-nbd (network block device), but it transfer data via CXL shared memory rather than network.
+  fio --group_reporting --name=benchmark --filename=/dev/mapper/example \
+      --ioengine=sync --invalidate=1 --numjobs=16 --rw=randwrite \
+      --blocksize=4k --size=2G --time_based --runtime=30 --fdatasync=1
 
-Signed-off-by: Dongsheng Yang <dongsheng.yang.linux@gmail.com>
+results in an increase from 857 KB/s to 30.8 MB/s of the write
+throughput (3580% increase).
+
+Signed-off-by: Yang Yang <yang.yang@vivo.com>
 ---
- drivers/block/Kconfig            |   2 +
- drivers/block/Makefile           |   2 +
- drivers/block/cbd/Kconfig        |   4 +
- drivers/block/cbd/Makefile       |   3 +
- drivers/block/cbd/cbd_internal.h | 830 +++++++++++++++++++++++++++++++
- drivers/block/cbd/cbd_main.c     | 216 ++++++++
- 6 files changed, 1057 insertions(+)
- create mode 100644 drivers/block/cbd/Kconfig
- create mode 100644 drivers/block/cbd/Makefile
- create mode 100644 drivers/block/cbd/cbd_internal.h
- create mode 100644 drivers/block/cbd/cbd_main.c
+ drivers/md/dm-core.h          |  1 +
+ drivers/md/dm-table.c         |  7 +++++
+ drivers/md/dm.c               | 59 +++++++++++++++++++++++++++++++++++
+ include/linux/device-mapper.h |  6 ++++
+ 4 files changed, 73 insertions(+)
 
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index 5b9d4aaebb81..1f6376828af9 100644
---- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -219,6 +219,8 @@ config BLK_DEV_NBD
+diff --git a/drivers/md/dm-core.h b/drivers/md/dm-core.h
+index e6757a30dcca..7e3f2168289f 100644
+--- a/drivers/md/dm-core.h
++++ b/drivers/md/dm-core.h
+@@ -217,6 +217,7 @@ struct dm_table {
+ 	/* a list of devices used by this table */
+ 	struct list_head devices;
+ 	struct rw_semaphore devices_lock;
++	unsigned short num_devices;
  
- 	  If unsure, say N.
+ 	/* events get handed up using this callback */
+ 	void (*event_fn)(void *data);
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index 41f1d731ae5a..ddc60e498afb 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -2133,6 +2133,8 @@ void dm_table_postsuspend_targets(struct dm_table *t)
  
-+source "drivers/block/cbd/Kconfig"
-+
- config BLK_DEV_RAM
- 	tristate "RAM block device support"
- 	help
-diff --git a/drivers/block/Makefile b/drivers/block/Makefile
-index 101612cba303..8be2a39f5a7c 100644
---- a/drivers/block/Makefile
-+++ b/drivers/block/Makefile
-@@ -39,4 +39,6 @@ obj-$(CONFIG_BLK_DEV_NULL_BLK)	+= null_blk/
+ int dm_table_resume_targets(struct dm_table *t)
+ {
++	struct list_head *devices = dm_table_get_devices(t);
++	struct dm_dev_internal *dd;
+ 	unsigned int i;
+ 	int r = 0;
  
- obj-$(CONFIG_BLK_DEV_UBLK)			+= ublk_drv.o
+@@ -2159,6 +2161,11 @@ int dm_table_resume_targets(struct dm_table *t)
+ 			ti->type->resume(ti);
+ 	}
  
-+obj-$(CONFIG_BLK_DEV_CBD)	+= cbd/
++	t->num_devices = 0;
 +
- swim_mod-y	:= swim.o swim_asm.o
-diff --git a/drivers/block/cbd/Kconfig b/drivers/block/cbd/Kconfig
-new file mode 100644
-index 000000000000..98b2cbcdf895
---- /dev/null
-+++ b/drivers/block/cbd/Kconfig
-@@ -0,0 +1,4 @@
-+config BLK_DEV_CBD
-+	tristate "CXL Block Device"
-+	help
-+	  If unsure say 'm'.
-diff --git a/drivers/block/cbd/Makefile b/drivers/block/cbd/Makefile
-new file mode 100644
-index 000000000000..2765325486a2
---- /dev/null
-+++ b/drivers/block/cbd/Makefile
-@@ -0,0 +1,3 @@
-+cbd-y := cbd_main.o
++	list_for_each_entry(dd, devices, list)
++		dd->dm_dev->index = ++(t->num_devices);
 +
-+obj-$(CONFIG_BLK_DEV_CBD) += cbd.o
-diff --git a/drivers/block/cbd/cbd_internal.h b/drivers/block/cbd/cbd_internal.h
-new file mode 100644
-index 000000000000..7d9bf5b1c70d
---- /dev/null
-+++ b/drivers/block/cbd/cbd_internal.h
-@@ -0,0 +1,830 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _CBD_INTERNAL_H
-+#define _CBD_INTERNAL_H
+ 	return 0;
+ }
+ 
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 56aa2a8b9d71..7297235291f6 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -48,6 +48,8 @@
+  */
+ #define REQ_DM_POLL_LIST	REQ_DRV
+ 
++#define DM_MAX_TABLE_DEVICES	1024
 +
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/blk-mq.h>
-+#include <asm/byteorder.h>
-+#include <asm/types.h>
-+#include <linux/types.h>
-+#include <linux/delay.h>
-+#include <linux/fs.h>
-+#include <linux/dax.h>
-+#include <linux/blkdev.h>
-+#include <linux/slab.h>
-+#include <linux/parser.h>
-+#include <linux/idr.h>
-+#include <linux/workqueue.h>
-+#include <linux/uuid.h>
-+#include <linux/bitfield.h>
-+
-+/*
-+ * As shared memory is supported in CXL3.0 spec, we can transfer data via CXL shared memory.
-+ * CBD means CXL block device, it use CXL shared memory to transport command and data to
-+ * access block device in different host, as shown below:
-+ *
-+ *    ┌───────────────────────────────┐                               ┌────────────────────────────────────┐
-+ *    │          node-1               │                               │              node-2                │
-+ *    ├───────────────────────────────┤                               ├────────────────────────────────────┤
-+ *    │                               │                               │                                    │
-+ *    │                       ┌───────┤                               ├─────────┐                          │
-+ *    │                       │ cbd0  │                               │ backend0├──────────────────┐       │
-+ *    │                       ├───────┤                               ├─────────┤                  │       │
-+ *    │                       │ pmem0 │                               │ pmem0   │                  ▼       │
-+ *    │               ┌───────┴───────┤                               ├─────────┴────┐     ┌───────────────┤
-+ *    │               │    cxl driver │                               │ cxl driver   │     │  /dev/sda     │
-+ *    └───────────────┴────────┬──────┘                               └─────┬────────┴─────┴───────────────┘
-+ *                             │                                            │
-+ *                             │                                            │
-+ *                             │        CXL                         CXL     │
-+ *                             └────────────────┐               ┌───────────┘
-+ *                                              │               │
-+ *                                              │               │
-+ *                                              │               │
-+ *                                          ┌───┴───────────────┴─────┐
-+ *                                          │   shared memory device  │
-+ *                                          └─────────────────────────┘
-+ *
-+ * any read/write to cbd0 on node-1 will be transferred to node-2 /dev/sda. It works similar with
-+ * nbd (network block device), but it transfer data via CXL shared memory rather than network.
-+ */
-+
-+/* printk */
-+#define cbd_err(fmt, ...)							\
-+	pr_err("cbd: %s:%u " fmt, __func__, __LINE__, ##__VA_ARGS__)
-+#define cbd_info(fmt, ...)							\
-+	pr_info("cbd: %s:%u " fmt, __func__, __LINE__, ##__VA_ARGS__)
-+#define cbd_debug(fmt, ...)							\
-+	pr_debug("cbd: %s:%u " fmt, __func__, __LINE__, ##__VA_ARGS__)
-+
-+#define cbdt_err(transport, fmt, ...)						\
-+	cbd_err("cbd_transport%u: " fmt,					\
-+		 transport->id, ##__VA_ARGS__)
-+#define cbdt_info(transport, fmt, ...)						\
-+	cbd_info("cbd_transport%u: " fmt,					\
-+		 transport->id, ##__VA_ARGS__)
-+#define cbdt_debug(transport, fmt, ...)						\
-+	cbd_debug("cbd_transport%u: " fmt,					\
-+		 transport->id, ##__VA_ARGS__)
-+
-+#define cbd_backend_err(backend, fmt, ...)					\
-+	cbdt_err(backend->cbdt, "backend%d: " fmt,				\
-+		 backend->backend_id, ##__VA_ARGS__)
-+#define cbd_backend_info(backend, fmt, ...)					\
-+	cbdt_info(backend->cbdt, "backend%d: " fmt,				\
-+		 backend->backend_id, ##__VA_ARGS__)
-+#define cbd_backend_debug(backend, fmt, ...)					\
-+	cbdt_debug(backend->cbdt, "backend%d: " fmt,				\
-+		 backend->backend_id, ##__VA_ARGS__)
-+
-+#define cbd_handler_err(handler, fmt, ...)					\
-+	cbd_backend_err(handler->cbdb, "handler%d: " fmt,			\
-+		 handler->channel.channel_id, ##__VA_ARGS__)
-+#define cbd_handler_info(handler, fmt, ...)					\
-+	cbd_backend_info(handler->cbdb, "handler%d: " fmt,			\
-+		 handler->channel.channel_id, ##__VA_ARGS__)
-+#define cbd_handler_debug(handler, fmt, ...)					\
-+	cbd_backend_debug(handler->cbdb, "handler%d: " fmt,			\
-+		 handler->channel.channel_id, ##__VA_ARGS__)
-+
-+#define cbd_blk_err(dev, fmt, ...)						\
-+	cbdt_err(dev->cbdt, "cbd%d: " fmt,					\
-+		 dev->mapped_id, ##__VA_ARGS__)
-+#define cbd_blk_info(dev, fmt, ...)						\
-+	cbdt_info(dev->cbdt, "cbd%d: " fmt,					\
-+		 dev->mapped_id, ##__VA_ARGS__)
-+#define cbd_blk_debug(dev, fmt, ...)						\
-+	cbdt_debug(dev->cbdt, "cbd%d: " fmt,					\
-+		 dev->mapped_id, ##__VA_ARGS__)
-+
-+#define cbd_queue_err(queue, fmt, ...)						\
-+	cbd_blk_err(queue->cbd_blkdev, "queue-%d: " fmt,			\
-+		     queue->index, ##__VA_ARGS__)
-+#define cbd_queue_info(queue, fmt, ...)						\
-+	cbd_blk_info(queue->cbd_blkdev, "queue-%d: " fmt,			\
-+		     queue->index, ##__VA_ARGS__)
-+#define cbd_queue_debug(queue, fmt, ...)					\
-+	cbd_blk_debug(queue->cbd_blkdev, "queue-%d: " fmt,			\
-+		     queue->index, ##__VA_ARGS__)
-+
-+#define cbd_channel_err(channel, fmt, ...)					\
-+	cbdt_err(channel->cbdt, "channel%d: " fmt,				\
-+		 channel->channel_id, ##__VA_ARGS__)
-+#define cbd_channel_info(channel, fmt, ...)					\
-+	cbdt_info(channel->cbdt, "channel%d: " fmt,				\
-+		 channel->channel_id, ##__VA_ARGS__)
-+#define cbd_channel_debug(channel, fmt, ...)					\
-+	cbdt_debug(channel->cbdt, "channel%d: " fmt,				\
-+		 channel->channel_id, ##__VA_ARGS__)
-+
-+#define CBD_PAGE_SHIFT		12
-+#define CBD_PAGE_SIZE		(1 << CBD_PAGE_SHIFT)
-+#define CBD_PAGE_MASK		(CBD_PAGE_SIZE - 1)
-+
-+#define CBD_TRANSPORT_MAX	1024
-+#define CBD_PATH_LEN	512
-+#define CBD_NAME_LEN	32
-+
-+/* TODO support multi queue */
-+#define CBD_QUEUES_MAX		1
-+
-+#define CBD_PART_SHIFT 4
-+#define CBD_DRV_NAME "cbd"
-+#define CBD_DEV_NAME_LEN 32
-+
-+#define CBD_HB_INTERVAL		msecs_to_jiffies(5000) /* 5s */
-+#define CBD_HB_TIMEOUT		(30 * 1000) /* 30s */
-+
-+/*
-+ * CBD transport layout:
-+ *
-+ *      +-------------------------------------------------------------------------------------------------------------------------------+
-+ *      |                           cbd transport                                                                                       |
-+ *      +--------------------+-----------------------+-----------------------+----------------------+-----------------------------------+
-+ *      |                    |       hosts           |      backends         |       blkdevs        |        channels                   |
-+ *      | cbd transport info +----+----+----+--------+----+----+----+--------+----+----+----+-------+-------+-------+-------+-----------+
-+ *      |                    |    |    |    |  ...   |    |    |    |  ...   |    |    |    |  ...  |       |       |       |   ...     |
-+ *      +--------------------+----+----+----+--------+----+----+----+--------+----+----+----+-------+---+---+-------+-------+-----------+
-+ *                                                                                                      |
-+ *                                                                                                      |
-+ *                                                                                                      |
-+ *                                                                                                      |
-+ *                +-------------------------------------------------------------------------------------+
-+ *                |
-+ *                |
-+ *                v
-+ *          +-----------------------------------------------------------+
-+ *          |                     channel                               |
-+ *          +--------------------+--------------------------------------+
-+ *          |    channel meta    |              channel data            |
-+ *          +---------+----------+--------------------------------------+
-+ *                    |
-+ *                    |
-+ *                    |
-+ *                    v
-+ *          +----------------------------------------------------------+
-+ *          |                 channel meta                             |
-+ *          +-----------+--------------+-------------------------------+
-+ *          | meta ctrl |  comp ring   |       cmd ring                |
-+ *          +-----------+--------------+-------------------------------+
-+ */
-+
-+/* cbd channel */
-+#define CBD_OP_ALIGN_SIZE	sizeof(u64)
-+#define CBDC_META_SIZE		(1024 * CBD_PAGE_SIZE)
-+#define CBDC_CMDR_RESERVED	CBD_OP_ALIGN_SIZE
-+#define CBDC_CMPR_RESERVED	sizeof(struct cbd_ce)
-+
-+#define CBDC_CTRL_OFF		0
-+#define CBDC_CTRL_SIZE		CBD_PAGE_SIZE
-+#define CBDC_COMPR_OFF		(CBDC_CTRL_OFF + CBDC_CTRL_SIZE)
-+#define CBDC_COMPR_SIZE		(sizeof(struct cbd_ce) * 1024)
-+#define CBDC_CMDR_OFF		(CBDC_COMPR_OFF + CBDC_COMPR_SIZE)
-+#define CBDC_CMDR_SIZE		(CBDC_META_SIZE - CBDC_CMDR_OFF)
-+
-+#define CBDC_DATA_OFF		(CBDC_CMDR_OFF + CBDC_CMDR_SIZE)
-+#define CBDC_DATA_SIZE		(16 * 1024 * 1024)
-+#define CBDC_DATA_MASK		0xFFFFFF
-+
-+#define CBDC_UPDATE_CMDR_HEAD(head, used, size) (head = ((head % size) + used) % size)
-+#define CBDC_UPDATE_CMDR_TAIL(tail, used, size) (tail = ((tail % size) + used) % size)
-+
-+#define CBDC_UPDATE_COMPR_HEAD(head, used, size) (head = ((head % size) + used) % size)
-+#define CBDC_UPDATE_COMPR_TAIL(tail, used, size) (tail = ((tail % size) + used) % size)
-+
-+/* cbd transport */
-+#define CBD_TRANSPORT_MAGIC		0x9a6c676896C596EFULL
-+#define CBD_TRANSPORT_VERSION		1
-+
-+#define CBDT_INFO_OFF			0
-+#define CBDT_INFO_SIZE			CBD_PAGE_SIZE
-+
-+#define CBDT_HOST_AREA_OFF		(CBDT_INFO_OFF + CBDT_INFO_SIZE)
-+#define CBDT_HOST_INFO_SIZE		CBD_PAGE_SIZE
-+#define CBDT_HOST_NUM			16
-+
-+#define CBDT_BACKEND_AREA_OFF		(CBDT_HOST_AREA_OFF + (CBDT_HOST_INFO_SIZE * CBDT_HOST_NUM))
-+#define CBDT_BACKEND_INFO_SIZE		CBD_PAGE_SIZE
-+#define CBDT_BACKEND_NUM		16
-+
-+#define CBDT_BLKDEV_AREA_OFF		(CBDT_BACKEND_AREA_OFF + (CBDT_BACKEND_INFO_SIZE * CBDT_BACKEND_NUM))
-+#define CBDT_BLKDEV_INFO_SIZE		CBD_PAGE_SIZE
-+#define CBDT_BLKDEV_NUM			16
-+
-+#define CBDT_CHANNEL_AREA_OFF		(CBDT_BLKDEV_AREA_OFF + (CBDT_BLKDEV_INFO_SIZE * CBDT_BLKDEV_NUM))
-+#define CBDT_CHANNEL_SIZE		(CBDC_META_SIZE + CBDC_DATA_SIZE)
-+#define CBDT_CHANNEL_NUM		16
-+
-+#define CBD_TRASNPORT_SIZE		(CBDT_CHANNEL_AREA_OFF + CBDT_CHANNEL_SIZE * CBDT_CHANNEL_NUM)
-+
-+/*
-+ * CBD structure diagram:
-+ *
-+ *                                        +--------------+
-+ *                                        | cbd_transport|                                               +----------+
-+ *                                        +--------------+                                               | cbd_host |
-+ *                                        |              |                                               +----------+
-+ *                                        |   host       +---------------------------------------------->|          |
-+ *                   +--------------------+   backends   |                                               | hostname |
-+ *                   |                    |   devices    +------------------------------------------+    |          |
-+ *                   |                    |              |                                          |    +----------+
-+ *                   |                    +--------------+                                          |
-+ *                   |                                                                              |
-+ *                   |                                                                              |
-+ *                   |                                                                              |
-+ *                   |                                                                              |
-+ *                   |                                                                              |
-+ *                   v                                                                              v
-+ *             +------------+     +-----------+     +------+                                  +-----------+      +-----------+     +------+
-+ *             | cbd_backend+---->|cbd_backend+---->| NULL |                                  | cbd_blkdev+----->| cbd_blkdev+---->| NULL |
-+ *             +------------+     +-----------+     +------+                                  +-----------+      +-----------+     +------+
-+ *      +------+  handlers  |     |  handlers |                                        +------+  queues   |      |  queues   |
-+ *      |      +------------+     +-----------+                                        |      +-----------+      +-----------+
-+ *      |                                                                              |
-+ *      |                                                                              |
-+ *      |                                                                              |
-+ *      |                                                                              |
-+ *      |      +-------------+       +-------------+           +------+                |      +-----------+      +-----------+     +------+
-+ *      +----->| cbd_handler +------>| cbd_handler +---------->| NULL |                +----->| cbd_queue +----->| cbd_queue +---->| NULL |
-+ *             +-------------+       +-------------+           +------+                       +-----------+      +-----------+     +------+
-+ *      +------+ channel     |       |   channel   |                                   +------+  channel  |      |  channel  |
-+ *      |      +-------------+       +-------------+                                   |      +-----------+      +-----------+
-+ *      |                                                                              |
-+ *      |                                                                              |
-+ *      |                                                                              |
-+ *      |                                                                              v
-+ *      |                                                        +-----------------------+
-+ *      +------------------------------------------------------->|      cbd_channel      |
-+ *                                                               +-----------------------+
-+ *                                                               | channel_id            |
-+ *                                                               | cmdr (cmd ring)       |
-+ *                                                               | compr (complete ring) |
-+ *                                                               | data (data area)      |
-+ *                                                               |                       |
-+ *                                                               +-----------------------+
-+ */
-+
-+#define CBD_DEVICE(OBJ)					\
-+struct cbd_## OBJ ##_device {				\
-+	struct device dev;				\
-+	struct cbd_transport *cbdt;			\
-+	struct cbd_## OBJ ##_info *OBJ##_info;		\
-+};							\
-+							\
-+struct cbd_## OBJ ##s_device {				\
-+	struct device OBJ ##s_dev;			\
-+	struct cbd_## OBJ ##_device OBJ ##_devs[];	\
-+};
-+
-+
-+/* cbd_worker_cfg*/
-+struct cbd_worker_cfg {
-+	u32			busy_retry_cur;
-+	u32			busy_retry_count;
-+	u32			busy_retry_max;
-+	u32			busy_retry_min;
-+	u64			busy_retry_interval;
-+};
-+
-+static inline void cbdwc_init(struct cbd_worker_cfg *cfg)
+ static const char *_name = DM_NAME;
+ 
+ static unsigned int major;
+@@ -1543,10 +1545,38 @@ static unsigned int __send_duplicate_bios(struct clone_info *ci, struct dm_targe
+ 	return ret;
+ }
+ 
++static inline bool has_redundant_flush(struct dm_table *t,
++		unsigned long **bitmap)
 +{
-+	/* init cbd_worker_cfg with default values */
-+	cfg->busy_retry_cur = 0;
-+	cfg->busy_retry_count = 100;
-+	cfg->busy_retry_max = cfg->busy_retry_count * 2;
-+	cfg->busy_retry_min = 0;
-+	cfg->busy_retry_interval = 1;			/* 1us */
-+}
++	if (t->num_devices < t->num_targets) {
++		/* Add a limit here to prevent excessive memory usage for bitmaps */
++		if (t->num_devices >= DM_MAX_TABLE_DEVICES)
++			return false;
 +
-+/* reset retry_cur and increase busy_retry_count */
-+static inline void cbdwc_hit(struct cbd_worker_cfg *cfg)
-+{
-+	u32 delta;
-+
-+	cfg->busy_retry_cur = 0;
-+
-+	if (cfg->busy_retry_count == cfg->busy_retry_max)
-+		return;
-+
-+	/* retry_count increase by 1/16 */
-+	delta = cfg->busy_retry_count >> 4;
-+	if (!delta)
-+		delta = (cfg->busy_retry_max + cfg->busy_retry_min) >> 1;
-+
-+	cfg->busy_retry_count += delta;
-+
-+	if (cfg->busy_retry_count > cfg->busy_retry_max)
-+		cfg->busy_retry_count = cfg->busy_retry_max;
-+
-+	return;
-+}
-+
-+/* reset retry_cur and decrease busy_retry_count */
-+static inline void cbdwc_miss(struct cbd_worker_cfg *cfg)
-+{
-+	u32 delta;
-+
-+	cfg->busy_retry_cur = 0;
-+
-+	if (cfg->busy_retry_count == cfg->busy_retry_min)
-+		return;
-+
-+	/* retry_count decrease by 1/16 */
-+	delta = cfg->busy_retry_count >> 4;
-+	if (!delta)
-+		delta = cfg->busy_retry_count;
-+
-+	cfg->busy_retry_count -= delta;
-+
-+	return;
-+}
-+
-+static inline bool cbdwc_need_retry(struct cbd_worker_cfg *cfg)
-+{
-+	if (++cfg->busy_retry_cur < cfg->busy_retry_count) {
-+		cpu_relax();
-+		fsleep(cfg->busy_retry_interval);
-+		return true;
++		/* dm_dev's index starts from 1, so need plus 1 here */
++		*bitmap = bitmap_zalloc(t->num_devices + 1, GFP_KERNEL);
++		if (*bitmap)
++			return true;
 +	}
 +
 +	return false;
 +}
 +
-+/* cbd_transport */
-+#define CBDT_INFO_F_BIGENDIAN		1 << 0
-+
-+struct cbd_transport_info {
-+	__le64 magic;
-+	__le16 version;
-+	__le16 flags;
-+
-+	u64 host_area_off;
-+	u32 host_info_size;
-+	u32 host_num;
-+
-+	u64 backend_area_off;
-+	u32 backend_info_size;
-+	u32 backend_num;
-+
-+	u64 blkdev_area_off;
-+	u32 blkdev_info_size;
-+	u32 blkdev_num;
-+
-+	u64 channel_area_off;
-+	u32 channel_size;
-+	u32 channel_num;
-+};
-+
-+struct cbd_transport {
-+	u16	id;
-+	struct device device;
-+	struct mutex lock;
-+
-+	struct cbd_transport_info *transport_info;
-+
-+	struct cbd_host *host;
-+	struct list_head backends;
-+	struct list_head devices;
-+
-+	struct cbd_hosts_device *cbd_hosts_dev;
-+	struct cbd_channels_device *cbd_channels_dev;
-+	struct cbd_backends_device *cbd_backends_dev;
-+	struct cbd_blkdevs_device *cbd_blkdevs_dev;
-+
-+	struct dax_device *dax_dev;
-+	struct bdev_handle   *bdev_handle;
-+};
-+
-+struct cbdt_register_options {
-+	char hostname[CBD_NAME_LEN];
-+	char path[CBD_PATH_LEN];
-+	u16 format:1;
-+	u16 force:1;
-+	u16 unused:15;
-+};
-+
-+struct cbd_blkdev;
-+struct cbd_backend;
-+
-+int cbdt_register(struct cbdt_register_options *opts);
-+int cbdt_unregister(u32 transport_id);
-+
-+struct cbd_host_info *cbdt_get_host_info(struct cbd_transport *cbdt, u32 id);
-+struct cbd_backend_info *cbdt_get_backend_info(struct cbd_transport *cbdt, u32 id);
-+struct cbd_blkdev_info *cbdt_get_blkdev_info(struct cbd_transport *cbdt, u32 id);
-+struct cbd_channel_info *cbdt_get_channel_info(struct cbd_transport *cbdt, u32 id);
-+
-+int cbdt_get_empty_host_id(struct cbd_transport *cbdt, u32 *id);
-+int cbdt_get_empty_backend_id(struct cbd_transport *cbdt, u32 *id);
-+int cbdt_get_empty_blkdev_id(struct cbd_transport *cbdt, u32 *id);
-+int cbdt_get_empty_channel_id(struct cbd_transport *cbdt, u32 *id);
-+
-+void cbdt_add_backend(struct cbd_transport *cbdt, struct cbd_backend *cbdb);
-+void cbdt_del_backend(struct cbd_transport *cbdt, struct cbd_backend *cbdb);
-+struct cbd_backend *cbdt_get_backend(struct cbd_transport *cbdt, u32 id);
-+void cbdt_add_blkdev(struct cbd_transport *cbdt, struct cbd_blkdev *blkdev);
-+struct cbd_blkdev *cbdt_fetch_blkdev(struct cbd_transport *cbdt, u32 id);
-+
-+struct page *cbdt_page(struct cbd_transport *cbdt, u64 transport_off);
-+void cbdt_flush_range(struct cbd_transport *cbdt, void *pos, u64 size);
-+
-+/* cbd_host */
-+CBD_DEVICE(host);
-+
-+enum cbd_host_state {
-+	cbd_host_state_none	= 0,
-+	cbd_host_state_running
-+};
-+
-+struct cbd_host_info {
-+	u8	state;
-+	u64	alive_ts;
-+	char	hostname[CBD_NAME_LEN];
-+};
-+
-+struct cbd_host {
-+	u32			host_id;
-+	struct cbd_transport	*cbdt;
-+
-+	struct cbd_host_device	*dev;
-+	struct cbd_host_info	*host_info;
-+	struct delayed_work	hb_work; /* heartbeat work */
-+};
-+
-+int cbd_host_register(struct cbd_transport *cbdt, char *hostname);
-+int cbd_host_unregister(struct cbd_transport *cbdt);
-+
-+/* cbd_channel */
-+CBD_DEVICE(channel);
-+
-+enum cbdc_blkdev_state {
-+	cbdc_blkdev_state_none		= 0,
-+	cbdc_blkdev_state_running,
-+	cbdc_blkdev_state_stopped,
-+};
-+
-+enum cbdc_backend_state {
-+	cbdc_backend_state_none		= 0,
-+	cbdc_backend_state_running,
-+	cbdc_backend_state_stopped,
-+};
-+
-+enum cbd_channel_state {
-+	cbd_channel_state_none		= 0,
-+	cbd_channel_state_running,
-+};
-+
-+struct cbd_channel_info {
-+	u8	state;
-+
-+	u8	blkdev_state;
-+	u32	blkdev_id;
-+
-+	u8	backend_state;
-+	u32	backend_id;
-+
-+	u32	cmdr_off;
-+	u32 	cmdr_size;
-+	u32 	cmd_head;
-+	u32 	cmd_tail;
-+
-+	u32 	compr_head;
-+	u32 	compr_tail;
-+	u32 	compr_off;
-+	u32 	compr_size;
-+};
-+
-+struct cbd_channel {
-+	u32				channel_id;
-+	struct cbd_channel_deivce	*dev;
-+	struct cbd_channel_info		*channel_info;
-+
-+	struct cbd_transport		*cbdt;
-+
-+	struct page			*ctrl_page;
-+
-+	void				*cmdr;
-+	void				*compr;
-+	void				*data;
-+
-+	u32				data_size;
-+	u32				data_head;
-+	u32				data_tail;
-+
-+	spinlock_t			cmdr_lock;
-+	spinlock_t			compr_lock;
-+};
-+
-+void cbd_channel_init(struct cbd_channel *channel, struct cbd_transport *cbdt, u32 channel_id);
-+void cbdc_copy_from_bio(struct cbd_channel *channel,
-+		u32 data_off, u32 data_len, struct bio *bio);
-+void cbdc_copy_to_bio(struct cbd_channel *channel,
-+		u32 data_off, u32 data_len, struct bio *bio);
-+void cbdc_flush_ctrl(struct cbd_channel *channel);
-+
-+/* cbd_handler */
-+struct cbd_handler {
-+	struct cbd_backend	*cbdb;
-+	struct cbd_channel_info *channel_info;
-+
-+	struct cbd_channel	channel;
-+
-+	u32			se_to_handle;
-+
-+	struct delayed_work	handle_work;
-+	struct cbd_worker_cfg	handle_worker_cfg;
-+
-+	struct list_head	handlers_node;
-+	struct bio_set		bioset;
-+	struct workqueue_struct *handle_wq;
-+};
-+
-+void cbd_handler_destroy(struct cbd_handler *handler);
-+int cbd_handler_create(struct cbd_backend *cbdb, u32 channel_id);
-+
-+/* cbd_backend */
-+CBD_DEVICE(backend);
-+
-+enum cbd_backend_state {
-+	cbd_backend_state_none	= 0,
-+	cbd_backend_state_running,
-+};
-+
-+#define CBDB_BLKDEV_COUNT_MAX	1
-+
-+struct cbd_backend_info {
-+	u8	state;
-+	u32	host_id;
-+	u32	blkdev_count;
-+	u64	alive_ts;
-+	u64	dev_size; /* nr_sectors */
-+	char	path[CBD_PATH_LEN];
-+};
-+
-+struct cbd_backend {
-+	u32			backend_id;
-+	char			path[CBD_PATH_LEN];
-+	struct cbd_transport	*cbdt;
-+	struct cbd_backend_info *backend_info;
-+	struct mutex 		lock;
-+
-+	struct block_device	*bdev;
-+	struct bdev_handle	*bdev_handle;
-+
-+	struct workqueue_struct	*task_wq;  /* workqueue for request work */
-+	struct delayed_work	state_work;
-+	struct delayed_work	hb_work; /* heartbeat work */
-+
-+	struct list_head	node; /* cbd_transport->backends */
-+	struct list_head	handlers;
-+
-+	struct cbd_backend_device *backend_device;
-+};
-+
-+int cbd_backend_start(struct cbd_transport *cbdt, char *path);
-+int cbd_backend_stop(struct cbd_transport *cbdt, u32 backend_id);
-+void cbdb_add_handler(struct cbd_backend *cbdb, struct cbd_handler *handler);
-+void cbdb_del_handler(struct cbd_backend *cbdb, struct cbd_handler *handler);
-+
-+/* cbd_queue */
-+enum cbd_op {
-+	CBD_OP_PAD = 0,
-+	CBD_OP_WRITE,
-+	CBD_OP_READ,
-+	CBD_OP_DISCARD,
-+	CBD_OP_WRITE_ZEROS,
-+	CBD_OP_FLUSH,
-+};
-+
-+struct cbd_se_hdr {
-+	u32 len_op;
-+	u32 flags;
-+
-+};
-+
-+struct cbd_se {
-+	struct cbd_se_hdr	header;
-+	u64			priv_data;	// pointer to cbd_request
-+
-+	u64			offset;
-+	u32			len;
-+
-+	u32			data_off;
-+	u32			data_len;
-+};
-+
-+
-+struct cbd_ce {
-+	u64		priv_data;	// copied from submit entry
-+	u32		result;
-+	u32		flags;
-+};
-+
-+
-+struct cbd_request {
-+	struct cbd_queue	*cbdq;
-+
-+	struct cbd_se		*se;
-+	struct cbd_ce		*ce;
-+	struct request		*req;
-+
-+	enum cbd_op		op;
-+	u64			req_tid;
-+	struct list_head	inflight_reqs_node;
-+
-+	u32			data_off;
-+	u32			data_len;
-+
-+	struct work_struct	work;
-+};
-+
-+#define CBD_OP_MASK 0xff
-+#define CBD_OP_SHIFT 8
-+
-+static inline enum cbd_op cbd_se_hdr_get_op(__le32 len_op)
++static int dm_get_dev_index(struct dm_target *ti, struct dm_dev *dev,
++				     sector_t start, sector_t len, void *data)
 +{
-+       return (enum cbd_op)(len_op & CBD_OP_MASK);
-+}
-+
-+static inline void cbd_se_hdr_set_op(u32 *len_op, enum cbd_op op)
-+{
-+       *len_op &= ~CBD_OP_MASK;
-+       *len_op |= (op & CBD_OP_MASK);
-+}
-+
-+static inline u32 cbd_se_hdr_get_len(u32 len_op)
-+{
-+	return len_op >> CBD_OP_SHIFT;
-+}
-+
-+static inline void cbd_se_hdr_set_len(u32 *len_op, u32 len)
-+{
-+	*len_op &= CBD_OP_MASK;
-+	*len_op |= (len << CBD_OP_SHIFT);
-+}
-+
-+#define CBD_SE_HDR_DONE	1
-+
-+static inline bool cbd_se_hdr_flags_test(struct cbd_se *se, u32 bit)
-+{
-+	return (se->header.flags & bit);
-+}
-+
-+static inline void cbd_se_hdr_flags_set(struct cbd_se *se, u32 bit)
-+{
-+	se->header.flags |= bit;
-+}
-+
-+enum cbd_queue_state {
-+	cbd_queue_state_none	= 0,
-+	cbd_queue_state_running
-+};
-+
-+struct cbd_queue {
-+	struct cbd_blkdev	*cbd_blkdev;
-+
-+	bool			inited;
-+	int			index;
-+
-+	struct list_head	inflight_reqs;
-+	spinlock_t		inflight_reqs_lock;
-+	u64			req_tid;
-+
-+	u32			*released_extents;
-+
-+	u32			channel_id;
-+	struct cbd_channel_info	*channel_info;
-+	struct cbd_channel	channel;
-+	struct workqueue_struct	*task_wq;  /* workqueue for request work */
-+
-+	atomic_t		state;
-+
-+	struct delayed_work	complete_work;
-+	struct cbd_worker_cfg	complete_worker_cfg;
-+};
-+
-+int cbd_queue_start(struct cbd_queue *cbdq);
-+void cbd_queue_stop(struct cbd_queue *cbdq);
-+extern const struct blk_mq_ops cbd_mq_ops;
-+
-+/* cbd_blkdev */
-+CBD_DEVICE(blkdev);
-+
-+enum cbd_blkdev_state {
-+	cbd_blkdev_state_none	= 0,
-+	cbd_blkdev_state_running
-+};
-+
-+struct cbd_blkdev_info {
-+	u8	state;
-+	u64	alive_ts;
-+	u32	backend_id;
-+	u32	host_id;
-+	u32	mapped_id;
-+};
-+
-+struct cbd_blkdev {
-+	u32			blkdev_id; /* index in transport blkdev area */
-+	u32			backend_id;
-+	int			mapped_id; /* id in block device such as: /dev/cbd0 */
-+
-+	int			major;		/* blkdev assigned major */
-+	int			minor;
-+	struct gendisk		*disk;		/* blkdev's gendisk and rq */
-+
-+	spinlock_t		lock;		/* open_count */
-+	struct list_head	node;
-+	struct mutex		state_lock;
-+	struct delayed_work	hb_work; /* heartbeat work */
-+
-+	/* Block layer tags. */
-+	struct blk_mq_tag_set	tag_set;
-+
-+	unsigned long		open_count;	/* protected by lock */
-+
-+	uint32_t		num_queues;
-+	struct cbd_queue	*queues;
-+
-+	u64			dev_size;
-+	u64			dev_features;
-+	u32			io_timeout;
-+
-+	u8			state;
-+	u32			state_flags;
-+	struct kref		kref;
-+
-+	void			*cmdr;
-+	void			*compr;
-+	spinlock_t		cmdr_lock;
-+	spinlock_t		compr_lock;
-+	void			*data;
-+
-+	struct cbd_blkdev_device *blkdev_dev;
-+	struct cbd_blkdev_info *blkdev_info;
-+
-+	struct cbd_transport *cbdt;
-+};
-+
-+int cbd_blkdev_init(void);
-+void cbd_blkdev_exit(void);
-+int cbd_blkdev_start(struct cbd_transport *cbdt, u32 backend_id, u32 queues);
-+int cbd_blkdev_stop(struct cbd_transport *cbdt, u32 devid);
-+
-+extern struct workqueue_struct	*cbd_wq;
-+
-+#define cbd_setup_device(DEV, PARENT, TYPE, fmt, ...)		\
-+do {								\
-+	device_initialize(DEV);					\
-+	device_set_pm_not_required(DEV);			\
-+	dev_set_name(DEV, fmt, ##__VA_ARGS__);			\
-+	DEV->parent = PARENT;					\
-+	DEV->type = TYPE;					\
-+								\
-+	ret = device_add(DEV);					\
-+} while (0)
-+
-+#define CBD_OBJ_HEARTBEAT(OBJ)								\
-+static void OBJ##_hb_workfn(struct work_struct *work)					\
-+{											\
-+	struct cbd_##OBJ *obj = container_of(work, struct cbd_##OBJ, hb_work.work);	\
-+	struct cbd_##OBJ##_info *info = obj->OBJ##_info;				\
-+											\
-+	info->alive_ts = ktime_get_real();						\
-+	cbdt_flush_range(obj->cbdt, info, sizeof(*info));				\
-+											\
-+	queue_delayed_work(cbd_wq, &obj->hb_work, CBD_HB_INTERVAL);			\
-+}											\
-+											\
-+static bool OBJ##_info_is_alive(struct cbd_##OBJ##_info *info)				\
-+{											\
-+	ktime_t oldest, ts;								\
-+											\
-+	ts = info->alive_ts;								\
-+	oldest = ktime_sub_ms(ktime_get_real(), CBD_HB_TIMEOUT);			\
-+											\
-+	if (ktime_after(ts, oldest))							\
-+		return true;								\
-+											\
-+	return false;									\
-+}											\
-+											\
-+static ssize_t cbd_##OBJ##_alive_show(struct device *dev,				\
-+			       struct device_attribute *attr,				\
-+			       char *buf)						\
-+{											\
-+	struct cbd_##OBJ##_device *_dev;						\
-+											\
-+	_dev = container_of(dev, struct cbd_##OBJ##_device, dev);			\
-+											\
-+	cbdt_flush_range(_dev->cbdt, _dev->OBJ##_info, sizeof(*_dev->OBJ##_info));	\
-+	if (OBJ##_info_is_alive(_dev->OBJ##_info))					\
-+		return sprintf(buf, "true\n");						\
-+											\
-+	return sprintf(buf, "false\n");							\
-+}											\
-+											\
-+static DEVICE_ATTR(alive, 0400, cbd_##OBJ##_alive_show, NULL);				\
-+
-+#endif /* _CBD_INTERNAL_H */
-diff --git a/drivers/block/cbd/cbd_main.c b/drivers/block/cbd/cbd_main.c
-new file mode 100644
-index 000000000000..0a87c95d749d
---- /dev/null
-+++ b/drivers/block/cbd/cbd_main.c
-@@ -0,0 +1,216 @@
-+/*
-+ * Copyright(C) 2024, Dongsheng Yang <dongsheng.yang.linux@gmail.com>
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/io.h>
-+#include <linux/blk-mq.h>
-+#include <linux/blkdev.h>
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <linux/bio.h>
-+#include <linux/module.h>
-+#include <linux/blk-mq.h>
-+#include <linux/fs.h>
-+#include <linux/blkdev.h>
-+#include <linux/slab.h>
-+#include <linux/idr.h>
-+#include <linux/workqueue.h>
-+#include <linux/delay.h>
-+#include <net/genetlink.h>
-+
-+#include <linux/types.h>
-+
-+#include "cbd_internal.h"
-+
-+struct workqueue_struct	*cbd_wq;
-+
-+enum {
-+	CBDT_REG_OPT_ERR		= 0,
-+	CBDT_REG_OPT_FORCE,
-+	CBDT_REG_OPT_FORMAT,
-+	CBDT_REG_OPT_PATH,
-+	CBDT_REG_OPT_HOSTNAME,
-+};
-+
-+static const match_table_t register_opt_tokens = {
-+	{ CBDT_REG_OPT_FORCE,		"force=%u" },
-+	{ CBDT_REG_OPT_FORMAT,		"format=%u" },
-+	{ CBDT_REG_OPT_PATH,		"path=%s" },
-+	{ CBDT_REG_OPT_HOSTNAME,	"hostname=%s" },
-+	{ CBDT_REG_OPT_ERR,		NULL	}
-+};
-+
-+static int parse_register_options(
-+		char *buf,
-+		struct cbdt_register_options *opts)
-+{
-+	substring_t args[MAX_OPT_ARGS];
-+	char *o, *p;
-+	int token, ret = 0;
-+
-+	o = buf;
-+
-+	while ((p = strsep(&o, ",\n")) != NULL) {
-+		if (!*p)
-+			continue;
-+
-+		token = match_token(p, register_opt_tokens, args);
-+		switch (token) {
-+		case CBDT_REG_OPT_PATH:
-+			if (match_strlcpy(opts->path, &args[0],
-+			        CBD_PATH_LEN) == 0) {
-+			        ret = -EINVAL;
-+			        break;
-+			}
-+			break;
-+		case CBDT_REG_OPT_FORCE:
-+			if (match_uint(args, &token) || token != 1) {
-+				ret = -EINVAL;
-+				goto out;
-+			}
-+			opts->force = 1;
-+			break;
-+		case CBDT_REG_OPT_FORMAT:
-+			if (match_uint(args, &token) || token != 1) {
-+				ret = -EINVAL;
-+				goto out;
-+			}
-+			opts->format = 1;
-+			break;
-+		case CBDT_REG_OPT_HOSTNAME:
-+			if (match_strlcpy(opts->hostname, &args[0],
-+			        CBD_NAME_LEN) == 0) {
-+			        ret = -EINVAL;
-+			        break;
-+			}
-+			break;
-+		default:
-+			pr_err("unknown parameter or missing value '%s'\n", p);
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+	}
-+
-+out:
-+	return ret;
-+}
-+
-+static ssize_t transport_unregister_store(const struct bus_type *bus, const char *ubuf,
-+				      size_t size)
-+{
-+	int ret;
-+	u32 transport_id;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if (sscanf(ubuf, "transport_id=%u", &transport_id) != 1) {
-+		return -EINVAL;
-+	}
-+
-+	return size;
-+}
-+
-+static ssize_t transport_register_store(const struct bus_type *bus, const char *ubuf,
-+				      size_t size)
-+{
-+	int ret;
-+	char *buf;
-+	struct cbdt_register_options opts = { 0 };
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	buf = kmemdup(ubuf, size + 1, GFP_KERNEL);
-+	if (IS_ERR(buf)) {
-+		pr_err("failed to dup buf for adm option: %d", (int)PTR_ERR(buf));
-+		return PTR_ERR(buf);
-+	}
-+	buf[size] = '\0';
-+
-+	ret = parse_register_options(buf, &opts);
-+	if (ret < 0) {
-+		kfree(buf);
-+		return ret;
-+	}
-+	kfree(buf);
-+
-+	return size;
-+}
-+
-+static BUS_ATTR_WO(transport_unregister);
-+static BUS_ATTR_WO(transport_register);
-+
-+static struct attribute *cbd_bus_attrs[] = {
-+	&bus_attr_transport_unregister.attr,
-+	&bus_attr_transport_register.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group cbd_bus_group = {
-+	.attrs = cbd_bus_attrs,
-+};
-+__ATTRIBUTE_GROUPS(cbd_bus);
-+
-+struct bus_type cbd_bus_type = {
-+	.name		= "cbd",
-+	.bus_groups	= cbd_bus_groups,
-+};
-+
-+static void cbd_root_dev_release(struct device *dev)
-+{
-+}
-+
-+struct device cbd_root_dev = {
-+	.init_name =    "cbd",
-+	.release =      cbd_root_dev_release,
-+};
-+
-+static int __init cbd_init(void)
-+{
-+	int ret;
-+
-+	cbd_wq = alloc_workqueue(CBD_DRV_NAME, WQ_MEM_RECLAIM, 0);
-+	if (!cbd_wq) {
-+		return -ENOMEM;
-+	}
-+
-+	ret = device_register(&cbd_root_dev);
-+	if (ret < 0) {
-+		put_device(&cbd_root_dev);
-+		goto destroy_wq;
-+	}
-+
-+	ret = bus_register(&cbd_bus_type);
-+	if (ret < 0) {
-+		goto device_unregister;
-+	}
-+
++	unsigned short *index = data;
++	*index = dev->index;
 +	return 0;
-+
-+bus_unregister:
-+	bus_unregister(&cbd_bus_type);
-+device_unregister:
-+	device_unregister(&cbd_root_dev);
-+destroy_wq:
-+	destroy_workqueue(cbd_wq);
-+
-+	return ret;
 +}
 +
-+static void cbd_exit(void)
-+{
-+	bus_unregister(&cbd_bus_type);
-+	device_unregister(&cbd_root_dev);
+ static void __send_empty_flush(struct clone_info *ci)
+ {
+ 	struct dm_table *t = ci->map;
+ 	struct bio flush_bio;
++	unsigned long *handled_map;
++	unsigned int nr_handled = 0;
++	bool check = has_redundant_flush(t, &handled_map);
+ 
+ 	/*
+ 	 * Use an on-stack bio for this, it's safe since we don't
+@@ -1562,17 +1592,46 @@ static void __send_empty_flush(struct clone_info *ci)
+ 
+ 	for (unsigned int i = 0; i < t->num_targets; i++) {
+ 		unsigned int bios;
++		unsigned short index = 0;
+ 		struct dm_target *ti = dm_table_get_target(t, i);
+ 
+ 		if (unlikely(ti->num_flush_bios == 0))
+ 			continue;
+ 
++		/*
++		 * If the num_targets is greater than the number of block devices
++		 * in the dm_table's devices list, __send_empty_flush() might
++		 * invoke __send_duplicate_bios() multiple times for the same
++		 * block device. This could lead to a substantial decrease in
++		 * performance when num_targets significantly exceeds the number
++		 * of block devices.
++		 * Ensure that __send_duplicate_bios() is only called once for
++		 * each block device.
++		 */
++		if (check) {
++			if (nr_handled == t->num_devices)
++				break;
 +
-+	destroy_workqueue(cbd_wq);
++			if (ti->type->iterate_devices)
++				ti->type->iterate_devices(ti, dm_get_dev_index, &index);
 +
-+	return;
-+}
++			if (index > 0) {
++				if (__test_and_set_bit(index, handled_map))
++					continue;
++				else
++					nr_handled++;
++			}
++		}
 +
-+MODULE_AUTHOR("Dongsheng Yang <dongsheng.yang.linux@gmail.com>");
-+MODULE_DESCRIPTION("CXL(Compute Express Link) Block Device");
-+MODULE_LICENSE("GPL v2");
-+module_init(cbd_init);
-+module_exit(cbd_exit);
+ 		atomic_add(ti->num_flush_bios, &ci->io->io_count);
+ 		bios = __send_duplicate_bios(ci, ti, ti->num_flush_bios,
+ 					     NULL, GFP_NOWAIT);
+ 		atomic_sub(ti->num_flush_bios - bios, &ci->io->io_count);
+ 	}
+ 
++	if (check)
++		bitmap_free(handled_map);
++
+ 	/*
+ 	 * alloc_io() takes one extra reference for submission, so the
+ 	 * reference won't reach 0 without the following subtraction
+diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
+index 82b2195efaca..4a54b4f0a609 100644
+--- a/include/linux/device-mapper.h
++++ b/include/linux/device-mapper.h
+@@ -169,6 +169,12 @@ struct dm_dev {
+ 	struct dax_device *dax_dev;
+ 	blk_mode_t mode;
+ 	char name[16];
++
++	/*
++	 * sequential number for each dm_dev in dm_table's devices list,
++	 * start from 1
++	 */
++	unsigned short index;
+ };
+ 
+ /*
 -- 
 2.34.1
 
