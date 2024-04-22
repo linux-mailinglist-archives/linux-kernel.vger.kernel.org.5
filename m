@@ -1,168 +1,171 @@
-Return-Path: <linux-kernel+bounces-153316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89D208ACC66
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:58:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A821A8ACC6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:01:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3205B2417D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:58:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64627285C12
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B51BB146D7D;
-	Mon, 22 Apr 2024 11:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B611B146D57;
+	Mon, 22 Apr 2024 12:01:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lWRe/a2S"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WH9ul2tG"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689E61448E5;
-	Mon, 22 Apr 2024 11:58:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F189F1465A7
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:01:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713787090; cv=none; b=GTcGlX4SQtVGNg2bUJ5sEs574Lsqhaqoqb75GuQdamvXZVkqUlo1/KnU0aN+LcsfSmyiQoQ1sCSMbBWGaGtyzTgxl4ylAaThOPfPyaYxgvHxmEvLzhZYOvGs7R9agI8e0MjaxcaeK0b2Ipx//9lOEksa5Oq8qKUzw3o3DyNYUhw=
+	t=1713787267; cv=none; b=GZdqoez8jcSc/f7tZlGw3qcY/3C/JN4ARDSu92txkXt3rtlAldG7r0u1eEknlahVgiAHlKzFCYtsabSI0Zcisdsy2K7wQizcpeJJBwUgS8WdHgGv5m5VdIxsMntLIyIswuE3Dr0NN8PW+KGtMkEPJI8ei19VjuScrf9udVBrKU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713787090; c=relaxed/simple;
-	bh=VipMOGIq2wHb6Q+n91B5uUyA/cw4HteNixtQ8DSmDuM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XgxMAVeeentGNcHASrWTRCuo7bPYA9VZO+KQPRBekz6zPnmvBUDv630eNK4sxQzBnKhAvsjHQnG+7KkL5iKS3/s+kY8YYiBZLyHCAuVxxUj6hGEYsjxoT9eM+21Klxkb+BZjdoheoxy4WW5Ph5a0qTNVetWINdt47wowShTnnQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lWRe/a2S; arc=none smtp.client-ip=209.85.208.41
+	s=arc-20240116; t=1713787267; c=relaxed/simple;
+	bh=4UFUDrnZaiEppiwH3I4zA+17+x8DNbh2KbHYULiw1JE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=allMO5OgnBFZDX0ieVHZlgkDkm5z9PtUWHWwvdrHBQ6DSIyRo83L7mpk3DAJjpmEZz5oSGLtERMqHPAPGO0/CKCeSjEXyRgHaa74XohKr4I90nN3EkR2MHcE4tIQ10RC6Mu85EXzXdeofovUUmPXwwdmlcEHeLW4/F9/12rqgVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WH9ul2tG; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5720d52eb10so763871a12.0;
-        Mon, 22 Apr 2024 04:58:08 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a55bdf477e5so62686066b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 05:01:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713787087; x=1714391887; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h5cT3Mjt5mWgJ6GDMQ81DpgcDSlmFscUnCMU6YJbhCw=;
-        b=lWRe/a2SJLXKg5XPwMZRPN94utV0NNrbgoDEMY+bE2StB2PXzUE+q1rm3RNt6wr6wu
-         xCKOsBShf6Rk6g7dYhcMpcRA3V2aj4W7EFQ0BUX92vvtQiae+6Lx1RD4iSjO9xLisZ5E
-         JXbWSXA4dO425pLW+0IskFTqdjHh8gU5o7Va4zAY8/fbkbNK/sR79x4LxEkfaqCwqSD3
-         JgJAxwXXQ6Flwz4Bnxkzg2KQboWXJfgFu96cBllz9LoeyotRRz1ljEF2AacmqTT4MKop
-         qJ45RRIGzNCc51fgR71dYXqosQXU7vxUVRS5IZRpHElMJbHVqP0ahF2WFCevOEqtMl0m
-         8Whw==
+        d=gmail.com; s=20230601; t=1713787260; x=1714392060; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=h6fd5i+0JvXAyxfGeQJKy8pR12A2rl+HE+2Dsk7AGwM=;
+        b=WH9ul2tGdH7zLU11MIZOOO5frDLuOFh2b4iXnSaF8gqWLV8Bg1aNttZNNMxvxnqLKx
+         +6XbQr2ABxOjjNzsz9vImDXdwynQiFyqqWuWMJFqD1wJ0KSRIgIWop7eXsr/gaCCKkcj
+         3ssL5DK1QbOlA73s2yPpvyMncHXsuDx0VtjA/HxOXPvQlXhxNvDysbhg3jeus4PxE1Pt
+         rc3IgAb/RzdI6s27SuDi40ZzxmluMoeoy7l57auw/MC4DNqmFFxH585tdoWa4Wb4hGwk
+         NvQT+gnwTBjTWoAO+QAar7NVdvlx5PRYyPZzmmt5ovpXTomyS7pRtG3Eah+Ore6y14N4
+         Lwvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713787087; x=1714391887;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h5cT3Mjt5mWgJ6GDMQ81DpgcDSlmFscUnCMU6YJbhCw=;
-        b=Bpz3Qul2r/tEKFyIdFHNwM2ZvdEmGRYurj2kVmBmt//oxhwPwhJ0xyLudmKYC0I0il
-         tR9IrOsGsbOuUFdnQD2SA0bXSPmKAKHzkjIuSpXQQ1y50ZjR9hQzqXEEF+FzobNuuF9V
-         V7laNlYZ7qozr5rb4Jzr2m5GmkjNsfuXon5zC7IR8rcap+rV6XLzjYK1GcdzNXCio31X
-         R3cSwjsdfOoqLeqir8ZBgpk9VyU+56pEMkZiSlm+uewr9gF2eo/Ur6uSMwn9OLXcDBdE
-         Rw5W+ACEFYWzxfmj8+MgEYOp7MOlOC8PIjANOcm9zfOuKD2PI0AmVPj3Nw177fmEqlWW
-         vBgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUSAJCmItj9IPEzCM157l89nnmNNXy0nQs+JLDYxACebfwswnxpbYmW4RyBgrDXUA7XJEwDH6JIxNOfly+KhFsUI4uWMxlqVtxC/lLSuNkwW7+IBl8zwALhXieNrJTeDESnqhce/07V1y6E
-X-Gm-Message-State: AOJu0YwSFo1TPxRFhywdNeE8+2aIrCixC8Ak+gYEl7Ear2AjfeBNX6H6
-	K8Op8loQh0MjT7FMHlWRcOP7VH5v4R8mIcuqIdJUBBA0qRPOKbFCbe8Zdu3UUZ0S5q7/bbdpRz5
-	OkMhikmI39X0z/jhluaYeD+eGzSM=
-X-Google-Smtp-Source: AGHT+IEUsBi2dnNuzu0y32kfOfl7MQb1OlOBxXxk1146GEVgYYSUSd3929kgB0y5l3v8tbPK0j9N+CcfVu9zS3Fbgkw=
-X-Received: by 2002:a17:906:d972:b0:a52:65bd:a19a with SMTP id
- rp18-20020a170906d97200b00a5265bda19amr6826211ejb.57.1713787086310; Mon, 22
- Apr 2024 04:58:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713787260; x=1714392060;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h6fd5i+0JvXAyxfGeQJKy8pR12A2rl+HE+2Dsk7AGwM=;
+        b=dXb4v9M2V5HrY37lbQI+Jry0GJFU/gjVL/5kLQCVJIH8kX3iVGrGl7z8zuyz9lvZE/
+         KP2/o1h9/qzZ4RQnhRhkgccUw/xBMqK5c1eT1omy2ShoY1pTry+6VMvgv8lGVnH1qa+c
+         WQXudZUFlJ7gx17MGzHZ/QRJAXTb1LnyCIE0Z+7ck8QJovTwXJcy53JRSktwwxPlEqmZ
+         n+c/3PJ+O6xsqeAuZPdPm2ffyCUfRFaRNs8iViuPtdnc9v1WY8KmSh8ywS1H2oS62/Fp
+         bRGjdaAMWYXwB8KX3iBKqqkytjglMIoAqIeyWbOd0w+hHNV8MU+0KPghA0DeH3/vC7lh
+         bzBg==
+X-Forwarded-Encrypted: i=1; AJvYcCUt1vScxoWLk/24xEi0GOlzFtBRt/BpPF7BLUiRILQXgklCX3v0BTcxgvK8gOTei2MrY8lklDWhNHibBuwK1vKalHzDcjb+3ZeRmUUC
+X-Gm-Message-State: AOJu0YzAQg1+QDM8CedAYjtsoqAPPpHbEUOy5facQWJpej271gHuwfqd
+	Z96ehFq7voEqmc3y9H0YHY5YkufsBZ/ksy8FAHjsufFACxHPSPMm
+X-Google-Smtp-Source: AGHT+IH0eLbh0z4T48v+/R6epjAWIqIwEIZBTeL/rAT/X+8MogZu6F69KsSLjqUYUd8Gw0Uf+GHtTA==
+X-Received: by 2002:a17:906:16cb:b0:a52:6159:5064 with SMTP id t11-20020a17090616cb00b00a5261595064mr9528762ejd.52.1713787259961;
+        Mon, 22 Apr 2024 05:00:59 -0700 (PDT)
+Received: from fedora.iskraemeco.si ([193.77.86.250])
+        by smtp.gmail.com with ESMTPSA id h6-20020a170906110600b00a5827d2f6f4sm172070eja.115.2024.04.22.05.00.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 05:00:59 -0700 (PDT)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] locking/qspinlock/x86: Micro-optimize virt_spin_lock()
+Date: Mon, 22 Apr 2024 14:00:38 +0200
+Message-ID: <20240422120054.199092-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240420182223.1153195-1-rilian.la.te@ya.ru> <20240420182223.1153195-4-rilian.la.te@ya.ru>
- <7cf31245-b2a1-419c-add6-a6a50a3f3cf1@kernel.org>
-In-Reply-To: <7cf31245-b2a1-419c-add6-a6a50a3f3cf1@kernel.org>
-From: "Konstantin P." <ria.freelander@gmail.com>
-Date: Mon, 22 Apr 2024 15:00:18 +0300
-Message-ID: <CAF1WSuwCdonhyzAKX6EeyWAHNX11bV+tgCLJ4vXuEXTAceVvzA@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] serial: sc16is7xx: add support for EXAR XR20M1172 UART
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Konstantin Pugin <rilian.la.te@ya.ru>, krzk@kernel.org, conor@kernel.org, lkp@intel.com, 
-	vz@mleia.com, robh@kernel.org, jcmvbkbc@gmail.com, 
-	nicolas.ferre@microchip.com, manikanta.guntupalli@amd.com, corbet@lwn.net, 
-	ychuang3@nuvoton.com, u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Herve Codina <herve.codina@bootlin.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>, Lech Perczak <lech.perczak@camlingroup.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 22, 2024 at 9:30=E2=80=AFAM Jiri Slaby <jirislaby@kernel.org> w=
-rote:
->
-> On 20. 04. 24, 20:22, Konstantin Pugin wrote:
-> > From: Konstantin Pugin <ria.freelander@gmail.com>
-> >
-> > XR20M1172 register set is mostly compatible with SC16IS762, but it has
-> > a support for additional division rates of UART with special DLD regist=
-er.
-> > So, add handling this register by appropriate devicetree bindings.
-> ...
-> > --- a/drivers/tty/serial/sc16is7xx.c
-> > +++ b/drivers/tty/serial/sc16is7xx.c
-> ...
-> > @@ -555,18 +578,43 @@ static bool sc16is7xx_regmap_noinc(struct device =
-*dev, unsigned int reg)
-> >       return reg =3D=3D SC16IS7XX_RHR_REG;
-> >   }
-> >
-> > +static bool sc16is7xx_has_dld(struct device *dev)
-> > +{
-> > +             struct sc16is7xx_port *s =3D dev_get_drvdata(dev);
-> > +
-> > +             if (s->devtype =3D=3D &xr20m1172_devtype)
-> > +                     return true;
-> > +             return false;
->
-> :) so this should simply be:
->
-> return s->devtype =3D=3D &xr20m1172_devtype;
->
-I especially want to avoid this construction, because it will lead to
-idea than we does not have other
-DLD-capable UARTS, which is simply not true, there is, for example,
-XR20M1280 UART, which has roughly the same register set
-(https://www.alldatasheet.com/datasheet-pdf/pdf/445109/EXAR/XR20M1280.html)=
-.
-I simply do not have other devices, so I do not
-want to risk sending untested patches upstream.
+Optimize virt_spin_lock() to use simpler and faster:
 
-> ...
-> > @@ -1002,6 +1052,7 @@ static void sc16is7xx_set_termios(struct uart_por=
-t *port,
-> >                                 const struct ktermios *old)
-> >   {
-> >       struct sc16is7xx_one *one =3D to_sc16is7xx_one(port, port);
-> > +     bool has_dld =3D sc16is7xx_has_dld(port->dev);
-> >       unsigned int lcr, flow =3D 0;
-> >       int baud;
-> >       unsigned long flags;
-> > @@ -1084,7 +1135,7 @@ static void sc16is7xx_set_termios(struct uart_por=
-t *port,
-> >       /* Get baud rate generator configuration */
-> >       baud =3D uart_get_baud_rate(port, termios, old,
-> >                                 port->uartclk / 16 / 4 / 0xffff,
-> > -                               port->uartclk / 16);
-> > +                               port->uartclk / (has_dld ? 4 : 16));
->
-> Could you do this instead:
-> unsigned int divisor =3D sc16is7xx_has_dld(port->dev) ? 4 : 16;
->
-> ...
->
-> uart_get_baud_rate(..., port->uartclk / divisor);
->
->
-> I am not sure the above warrants for a new version. Just in case you are
-> sending one.
->
-> thanks,
-> --
-> js
-> suse labs
->
+  atomic_try_cmpxchg(*ptr, &val, new)
+
+instead of:
+
+  atomic_cmpxchg(*ptr, val, new) == val.
+
+The x86 CMPXCHG instruction returns success in the ZF flag, so
+this change saves a compare after the CMPXCHG.
+
+Also optimize retry loop a bit. atomic_try_cmpxchg() fails iff
+&lock->val != 0, so there is no need to load and compare the
+lock value again - cpu_relax() can be unconditinally called in
+this case. This allows us to generate optimized:
+
+  1f:	ba 01 00 00 00       	mov    $0x1,%edx
+  24:	8b 03                	mov    (%rbx),%eax
+  26:	85 c0                	test   %eax,%eax
+  28:	75 63                	jne    8d <...>
+  2a:	f0 0f b1 13          	lock cmpxchg %edx,(%rbx)
+  2e:	75 5d                	jne    8d <...>
+..
+  8d:	f3 90                	pause
+  8f:	eb 93                	jmp    24 <...>
+
+instead of:
+
+  1f:	ba 01 00 00 00       	mov    $0x1,%edx
+  24:	8b 03                	mov    (%rbx),%eax
+  26:	85 c0                	test   %eax,%eax
+  28:	75 13                	jne    3d <...>
+  2a:	f0 0f b1 13          	lock cmpxchg %edx,(%rbx)
+  2e:	85 c0                	test   %eax,%eax
+  30:	75 f2                	jne    24 <...>
+..
+  3d:	f3 90                	pause
+  3f:	eb e3                	jmp    24 <...>
+
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+---
+ arch/x86/include/asm/qspinlock.h | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/include/asm/qspinlock.h b/arch/x86/include/asm/qspinlock.h
+index cde8357bb226..a053c1293975 100644
+--- a/arch/x86/include/asm/qspinlock.h
++++ b/arch/x86/include/asm/qspinlock.h
+@@ -85,6 +85,8 @@ DECLARE_STATIC_KEY_TRUE(virt_spin_lock_key);
+ #define virt_spin_lock virt_spin_lock
+ static inline bool virt_spin_lock(struct qspinlock *lock)
+ {
++	int val;
++
+ 	if (!static_branch_likely(&virt_spin_lock_key))
+ 		return false;
+ 
+@@ -94,10 +96,13 @@ static inline bool virt_spin_lock(struct qspinlock *lock)
+ 	 * horrible lock 'holder' preemption issues.
+ 	 */
+ 
+-	do {
+-		while (atomic_read(&lock->val) != 0)
+-			cpu_relax();
+-	} while (atomic_cmpxchg(&lock->val, 0, _Q_LOCKED_VAL) != 0);
++ __retry:
++	val = atomic_read(&lock->val);
++
++	if (val || !atomic_try_cmpxchg(&lock->val, &val, _Q_LOCKED_VAL)) {
++		cpu_relax();
++		goto __retry;
++	}
+ 
+ 	return true;
+ }
+-- 
+2.44.0
+
 
