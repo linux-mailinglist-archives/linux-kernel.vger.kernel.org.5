@@ -1,264 +1,201 @@
-Return-Path: <linux-kernel+bounces-153032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B7D68AC81B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:56:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAB6C8AC825
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:56:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43ABD283E6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:56:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 966BE284296
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:56:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E1A54909;
-	Mon, 22 Apr 2024 08:53:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB29612EB;
+	Mon, 22 Apr 2024 08:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Zq86nSpI"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b="MsC1n0qI"
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2120.outbound.protection.outlook.com [40.107.105.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0000453E1E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713775990; cv=none; b=F4pA7BwUBtc8/Yke6xG0prHalQ88lNn4Ex9TbguOVn8lMVtRkmmlfTHm/9xtm0PfJdhoV6sGjlUQWDKR5HAfrO+UfXriPv27YNB/ADw/LQ7+XBFrjJgi2sX1O/iesF7aFMD2nR0O2ZGNZM+R9g6aGlWoysoTWwgvW1javNP3PU4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713775990; c=relaxed/simple;
-	bh=nleU09vurZd5AuLxgNnsP+QcvquS4B0Ob3oAXLFJzZc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ETM+mTeSr2xDXNXGvnorCv5sTEjHQOiuK6bTXYCE5CGb72gxC9tiOiNsUTy5k0OnTn1TL9SQ+FcqMziFeLC9SEdprd1wSRhUxO+1gHNBnDiqngWaOhiqsxxU/lhMM7D1Sg70oN0gNpfUOmnWgLo1t/fwW9zazt8neJHsA/AC7W0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Zq86nSpI; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-346a5dea2f4so972931f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713775986; x=1714380786; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+/fvR+HwOJPjnOfbOHG69UP92YiSjqkbM928Puj2/Go=;
-        b=Zq86nSpI55jjwJBRIYNddD+VzEJWuOhqk1Rm2LOKURki/miaj2WjRcgZrFyL/IRSAj
-         JfGEWF4V33MWATfv/PFv+mv9F8CjDCj+EfC4w2BxLGxkWh8+ZgDoA/o4OnEuSEG2fVWV
-         Id18sPk7FGHd1NQLtaQ8DJsUR5s/MLRNMTLBM5qyPf9UuKihYqJvT3UFBNoGmRWttFl1
-         POrkx1e2leTn1ELL6x0Jf8KNS5Mo8LWcar9E5RpqCv+V1ZbDJH6ngspMixoTYJClZsNa
-         OgZ3e23QXU7NipSQJ9HpWkIP85vMu22LTRo1VpzATES+Z7nmA8uCdbQKx765d/ZZhIH1
-         xjug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713775986; x=1714380786;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+/fvR+HwOJPjnOfbOHG69UP92YiSjqkbM928Puj2/Go=;
-        b=ib0mfMRCtIR6QmJWy/yLymQN/H5fHd0PJAjbsx2sayAMUUS1DSaZmt/MjGxs3Q84UQ
-         Ih0ZL6P9oZ2iiheBlFSy+vnArgWO8LyLE4P+fv6vk9iUJps9RcPRBxGmc6ZPOJkzdBNx
-         weCMYcAxqTEwMC8qe/TR+VNEhvkWZ74zvooGA9MvmCUarzGV8Vgp9jF/XM+c7jp5MGc8
-         mrwgdZxBeITff1WviUrQWEG9eFQvFjFIxa3ctY/Jt8rU81BMfFoIHZEEfMG9r7pBD2Ze
-         05pg4Z0EeapME7COr0Aqsgzzmf+iLd15csF7UavPXiRsuZtkGcENdkysgFC19D/JWVy/
-         1LHg==
-X-Forwarded-Encrypted: i=1; AJvYcCUQCvPWIsEdM3lOjKrAMHcO4oLw3KQzQOQfPvsrGwngOeKm8XJ5KZckAVO1l4Rygw1S/XF/g8Vg8iCwp3NjyJnj+SbHSpLotUTt0/Ql
-X-Gm-Message-State: AOJu0YwmqM0f834sYROnSIzgelqLfNaNe4qxWIQPi2PJdq02Yd/DVMtW
-	+/75zAPX+KHlPmPy0Lw52g2OvNMbXoihIHW0QQbyjqi9FK6tPPiW6vAyuMPVxYc=
-X-Google-Smtp-Source: AGHT+IFE4R9zCUkzHMX1ToR2kyTpvZV9gQXHpyVa4BPp1ldGkiKbLmpz+4IIFAyNc6nOuO6PT/9Ayg==
-X-Received: by 2002:a05:600c:3baa:b0:418:1303:c3d1 with SMTP id n42-20020a05600c3baa00b004181303c3d1mr7145059wms.3.1713775986113;
-        Mon, 22 Apr 2024 01:53:06 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:dc65:11af:998:225e? ([2a01:e0a:999:a3a0:dc65:11af:998:225e])
-        by smtp.gmail.com with ESMTPSA id g7-20020a05600c310700b0041a92bb0c10sm25826wmo.2.2024.04.22.01.53.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 01:53:05 -0700 (PDT)
-Message-ID: <f89c79f7-a09e-4fcf-8e16-0875202ade4a@rivosinc.com>
-Date: Mon, 22 Apr 2024 10:53:04 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 450C654FA1
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:53:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.120
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713775995; cv=fail; b=KMlppsyZcRvwKpnLFS906r92vBEXgGB3fpHr/RkjHmP8NQL7uuALdKRK8Dgxyz8pplJZAKEVGACgeC5dEKVGYvVI4ack7+AV6XzgZpXdUmHvJzh024jSQFF6bMli4h3yRAqQBVCDZRnq+erjkoA8f2enFDKHH/aVmMrCGJWm56w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713775995; c=relaxed/simple;
+	bh=Jk4NZKBLvxD50U8letd3OgpUnVVDSlIMcf6mP4/nQO4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=m0qZuUwolN1dVGOicrSeZhVj+fZMX8u6PZTIBCHGuGNQbx6XH1mehkcoqRYNR4fp0SqbqQPIiTMXKrwqr/jFQqOJeC/hwjf3DQM2+xgNNAxHufnEnp+B58/ONbikmCwut+elMkpXDoa/Rw4GYbWb6Ucka//8HltFQr9YDhof2qA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com; spf=pass smtp.mailfrom=theobroma-systems.com; dkim=pass (2048-bit key) header.d=theobroma-systems.com header.i=@theobroma-systems.com header.b=MsC1n0qI; arc=fail smtp.client-ip=40.107.105.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=theobroma-systems.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=theobroma-systems.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N2BdukaNcamcAknlLwf7Pn3NfX72QvCk6Jhs0B/qpv5kkNsp1Objyoz3whiNWMkkXI2xDDWN+o5XEoTY3FiCz98YEd0Gg90ygMCShqCMf2vtwa4CgpqhuzJPhwoZau9d/ORb2p5FB8ElKORrrr1wGrNtjgY1dduO2uMIdK3sBxYjJF5J9APJbrqpeGzcsc8sZQtImiJidIMu4gDwQyWuYv73ZFuSI14abmr3L4F3LOcr50nl0bU8m34bguHoiuKn+14btHLuwqsv2lcVhLmxCwE8mP/j80ebzN00IPMWOBMMwCBqKRGbMQ+XatZtDe2nkbqBkx/SukdY3JLAidYaaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jYsAJMq2ZVxEpdZzjNEuwDnsviCzheI/d8JGiPa0UYc=;
+ b=L4haMmWRJ1DW443j3uCtSO17JO5YLQHdEooZLAuVsBpxtIGryeUTJhniDOqsWcckL7cICWl5g0snCv1OdQPLZlT4v6soH8Xn8nIQKY3KNsWorEyM03d2atuqasc56d23erhIukkwqxMGnwB37kWXPg9cggka/YzSGdkvQ+vqge2NtPrRDet0kKocc9ctvPup56gmd2sZULgZGB1obhBiQyNaCaUck09SO7eUtMW1hcUWeCXbP1cSwuUZQLxUg3cPJ/JfmxF9L0cvspGG2xDopqX6cITWk46RoBNwHC634yYhSII5bCpHsLuLBZSFrD44BFu9ErYJmUfu92b37HRPXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
+ header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jYsAJMq2ZVxEpdZzjNEuwDnsviCzheI/d8JGiPa0UYc=;
+ b=MsC1n0qIzGuNrBuNsBgKSKVS3hz2blfIYDNH5wM5QbbsWKTySkPTnKLrkfTxgFREwG7KCS/PaiIpnfEBo1Mk96jrLjMyK+eF8il6s8qn7Lzq1kxtwXbY2Fv8rX+ilq/1wovD8K8IIngdW1G6ZrhjIAwjlvggaG/Gqjby3kjodqbq3mD8RJWy2LT7YUwau66CVo3tfUe0BT4oqFOC/sP3MgTUkVLICFvrm0di39ayI7ZWUPZH5qPreQg0AQmt4S3Yqq++LnSrbOzOqp9CsWBSF4u+oWsS419ShKHGFtL7/TG0r1ISijoG9rW77NEU3k3r/tWUQxmaL1P2k/iqxmXStA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
+Received: from DB7PR04MB4842.eurprd04.prod.outlook.com (2603:10a6:10:1b::13)
+ by VI1PR04MB9908.eurprd04.prod.outlook.com (2603:10a6:800:1d0::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 22 Apr
+ 2024 08:53:08 +0000
+Received: from DB7PR04MB4842.eurprd04.prod.outlook.com
+ ([fe80::bdc7:4b2c:e74e:1504]) by DB7PR04MB4842.eurprd04.prod.outlook.com
+ ([fe80::bdc7:4b2c:e74e:1504%7]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
+ 08:53:07 +0000
+Message-ID: <3d76df5e-7bdc-4318-8d2a-6d569cfc4752@theobroma-systems.com>
+Date: Mon, 22 Apr 2024 10:53:06 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] arm64: dts: rockchip: fix comment for upper usb3 port
+To: Heiko Stuebner <heiko@sntech.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Heiko Stuebner <heiko.stuebner@cherry.de>
+References: <20240418210332.2394871-1-heiko@sntech.de>
+ <20240418210332.2394871-2-heiko@sntech.de>
+Content-Language: en-US
+From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+In-Reply-To: <20240418210332.2394871-2-heiko@sntech.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: WA0P291CA0012.POLP291.PROD.OUTLOOK.COM (2603:10a6:1d0:1::7)
+ To DB7PR04MB4842.eurprd04.prod.outlook.com (2603:10a6:10:1b::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 03/12] dt-bindings: riscv: add Zc* extension rules
- implied by C extension
-To: Conor Dooley <conor@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
- Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, kvm@vger.kernel.org,
- kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-References: <20240418124300.1387978-1-cleger@rivosinc.com>
- <20240418124300.1387978-4-cleger@rivosinc.com>
- <20240419-blinked-timid-da722ec6ddc4@spud>
-Content-Language: en-US
-From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20240419-blinked-timid-da722ec6ddc4@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB7PR04MB4842:EE_|VI1PR04MB9908:EE_
+X-MS-Office365-Filtering-Correlation-Id: ca848c55-f08d-496d-9d7e-08dc62a9a176
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?bjBFeE4yZXgxdkJtM1hubHZNVm5FREJCQ2ZvelBtNTVFUVRybFNObFFtM09m?=
+ =?utf-8?B?aE00d1RjanJEb2FMRHF6TzFrU0NRTDFFRVdpZElvaEE3Mll5QjQ3MWtMKzdX?=
+ =?utf-8?B?Z0tLMVZhcFpqTXlvanF4VGR0MEc0eDBIaGZPbEtrYy9LV1dDQkhXeXFXc2hG?=
+ =?utf-8?B?TlNJczdiY285dkpHMkdrZEN5clRlSy9Qdm9IdzdaclFkSEtWRHE4cUF2dEdG?=
+ =?utf-8?B?Rk1CY01uZmdoMkJBalZJVCsyTFNLN1cwd3NqT3F3SGhhUVB6aUtRemFSVWRi?=
+ =?utf-8?B?TDRhT0NscmxjZWZLSWZ2eGJseUF3azRBcEZhM3pyMlBRZWtWdi9KSWdLVmtF?=
+ =?utf-8?B?LzdKSnJoYnE1Z0VtdGt2NjcwdWt0SGQ1NWowSGVFYzREUnlrMXluczZMQXN4?=
+ =?utf-8?B?azkrSFQ3ajM0OFBKd1lHaVBnRTNKUDU2SnBFZVVmUG02cWZPMm5qTFJZZjQw?=
+ =?utf-8?B?VDN6QUlLY3JvVXpjMVg5WSt2MGI1VVZCdTVjUlVqODd6b3pHNWNYci85NWVT?=
+ =?utf-8?B?UHBqSUtCT0x3VjZyTDd6VDJkVk9XUHRTWmc2YkpqQzhYWjdja2tobWRPRmd1?=
+ =?utf-8?B?UkJ4VHVVWElDMVdqWitNVHdQN292U3A5VktiR2h5akpGMUcxdUd5ZXVldzdo?=
+ =?utf-8?B?ejVtanRIajdBd1IrT3pOZFZoamR3ZXVEM25QSjFab1R3SjdmUXhvKzlHdldV?=
+ =?utf-8?B?TkVhVmhjUG44Tk05R2FuKzdsM3lseGRJTjgzRStHbW5idmZRR3ZGMFBXYXRr?=
+ =?utf-8?B?MEFKcWpiV3ExcFNSR2ZZU1NQU2dUeXRIWjBjYlJaV3o5Q2cxZG9ZNVppNGNU?=
+ =?utf-8?B?dDRiM3Qxc1lVZDBhQXhaVFJFVkZuWHhRMnRicnNLbDVDZ0tXU05GN09tSk1w?=
+ =?utf-8?B?dmJ4UTNjdUpleUJia3FraWtqcnBwSWVacGFwbkhJdit6eG4xNnk0aUcvK01C?=
+ =?utf-8?B?MGJHYjkrLzdYRlNpaUpPWWdFeE8yTlJOQTZsWHVIVys2YTJKYi9wcm44a3Vm?=
+ =?utf-8?B?UVRkbWQ3ZFVrMHU3K3pYVk9QUlRTNll5L2xSOGt1N2Y4cHpFSjlJK0tFSzc5?=
+ =?utf-8?B?SVhTNXpyMStQU1MyV0ZEQ3M1a3dEZUhOc0NOaFRhZ2tuenE1Ti8rdW9iUHg2?=
+ =?utf-8?B?a0pVRytibDdHRzc3ZmpldENQVk5zZUVsVUREYUtFSTJjQjNmK0VXYzNSdWVK?=
+ =?utf-8?B?NnFscnBQb0p6aTFaSzFYTXh5WlBKT3Z4SVlTYVJRZWxnTk5lZEViNlhPaDNN?=
+ =?utf-8?B?UDZLa3E2NmFuZ2tBUzJ1a1hOVHgwampMa2UvTGZHUS9pd0k3RnBsNHVNbE9q?=
+ =?utf-8?B?WnpwM015WkNuU1ZHSWlKVUpic2NtMDZ0eWJHUVpYS2QwZVFoa284MUY3cDFk?=
+ =?utf-8?B?bWZqT3NSZHlSNDVVRG9NQ3pkWlBqbE0ybnFwdW5VYkU2MHVBdmJPT1RHMW54?=
+ =?utf-8?B?NmRYWHBZVXZqa0VSa0NIRjMzZVBndFlJM2VBajU3aE5nVFBxcWd2SmUxbXdS?=
+ =?utf-8?B?Q2w3Q1BnRHdyVDlIVFQvdEsraEhvOWZweXZRTHJML3Fod0JVeDlKOGhEQU9v?=
+ =?utf-8?B?ZHpwcHRrSGVQdjh0V1hmbUNRTHBzajVxaVdqcmtPS2FIZDNTVTlLWThwQXll?=
+ =?utf-8?B?RXRKakFFTkc1SUdaSE01dFA1d1lrVCtyNkVWVWh6Ykp1SC9vQnBCbzZUOE9M?=
+ =?utf-8?B?eTFhaG1yY1c2NEZyQkkwRWlaY3JBVlM2dmpmTXNDbndjckVjMXFhYUJBPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB4842.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bGZsZzJpc1d2ZHl2b1BZQytuT1h0dk43V0c0OGJKVVErL1dhS1lUdXl3M0JM?=
+ =?utf-8?B?amRPK2YxT3VRNWVVK3o3enhyM3gvUkdCQ2pCUjBUWlpZTVR4Wlh1L0FOSWhY?=
+ =?utf-8?B?SnpqUmZ6OGY0VVppa205bURBQnlpZWdmalBJL3JRN1dhekNTdmF2NXVjRzIx?=
+ =?utf-8?B?ZVc2ajRZRE16V1ZMbFpFaUQvZTBZL3R0UHdhVmUxZC82VmNQaUhKdDQySEpu?=
+ =?utf-8?B?cDBGRjRHbGhqcWoveksvSElZU1lZckNWZWVSSWRRaFlXYlBpT1AvNzlKMjJr?=
+ =?utf-8?B?cHdQWlNxZm5OQUUrYi9sWFhxb2dVNnFtRWhxeEJteS8wQ3BCNHoycVJ6TGVv?=
+ =?utf-8?B?eXJ0RjR1VnJKUFc4Y3BSN1JPZGRGbS9XbHlQd0ZwVU05eGVaSldRSzZaVDFm?=
+ =?utf-8?B?K29KOTZoMkVhOTM5VzdCa2pWeUlra2dBc3cxSEFLZzZrQkdRM2VnMURzWTho?=
+ =?utf-8?B?bHR6ajRsOXVBamsyejRhN2NxVVNmYTJsNUpPa25jcGlyR1ZVemxyYVFEdlY5?=
+ =?utf-8?B?V2pMaGRiZTFRbVovbTVlbkx5U1E4S3prTUwrdis0MDYwNW9adGdnZGdMQ2FG?=
+ =?utf-8?B?WHk5N1FnQkxkZytpSElDNG9ValN0QmFuek51ZWsxM20wcFhCcnFONTJqZmF3?=
+ =?utf-8?B?WDd6ZVRqcTM3YjZEcEx3ayswQTBScFY4eitkd25oLzBydHpXTHVTSFBzSDRs?=
+ =?utf-8?B?NUREZW1JTVNoRUt3WExTaGcrMUFYR2o4UFFhekl3Wkh0MXNqblg5V04xSm9o?=
+ =?utf-8?B?UG1GbXYxUGhPRnN0amxHeW9meHdmUzMwVTFHWGxIWEZKdzZzUGNrUmsvelRu?=
+ =?utf-8?B?YVlWK0V3Mm92dUpjakF2a2lqZ0x0MHliV3FJOTl6TDhETmw3SDkxbEt1d0g1?=
+ =?utf-8?B?RThTMWZYQ1I5S1lqT2Zub3g1ZGt4b0pqMzRqUWc1d3R2dkFPS25uNXEzOVFX?=
+ =?utf-8?B?QWFkZXlENVNMcWRwLytIbThxbkc4MndUYTE4bElId1A4VVI4UG1HeGtDYzNr?=
+ =?utf-8?B?YmhzWlhIejdDeWl2b1pLdnRWdXdTRmlKQk40dUxoT1AzNTRpYzVCNVdnZ05H?=
+ =?utf-8?B?QXBMaHVvQlRzbldnMGVidFBmR0NJajUzakhPK1lFNWMzQ3RId3NZcG9qK3g5?=
+ =?utf-8?B?UERuQ2tjL1BkMUFIRmUybkxZYWc4amFCbUJiNG1BTWFnaFVnNTNlcXdMOTJE?=
+ =?utf-8?B?b0dQNDRuTUpER0JJVEQwNFVEd2loV3lQdjlTbWZPNjIrRGpTYTRZdU9FUnFw?=
+ =?utf-8?B?NlQ0MzlBQzMzQXo2bFdZTzFnUHlvRlpKWXdVaXAxdTg2YmQ4SjNxaEhFbUxu?=
+ =?utf-8?B?MzJEZTM3R0Q2SStvY0NSdkRiZWtQaFdVNW5RRUZvUm5oeHFhOXlyRmlYaW03?=
+ =?utf-8?B?UU9wS3dmUjk2bFNDYllsNGpZZ1BZdHpHbndCSVFUUmloUVVkcDlUcGNTL1BK?=
+ =?utf-8?B?VVhYdjBqbHFmbEgyUmt0VThWRzczU1lubE1acERkZWsyTk91RWlMNTVkSGVr?=
+ =?utf-8?B?UjU1clVkUTFWSEtOeDJvVEtwdTNOVlpjOTk4ME5jL0JleVprZFBmVWM2eTJ5?=
+ =?utf-8?B?am1rNW5zNTlURkJIT3pEQkU2Z2ZHN2NqNzErUE5DKzAvYXI0STllQ0syUU5h?=
+ =?utf-8?B?bmQxMUswWlBlQlNIQlBzcVF3NmlQcGVTVzB1WU5rakFVdUREUmcreEtYaTJH?=
+ =?utf-8?B?MVpNa3E2anAxQytRUUJHeTlVNlhaN2MwRXFDbDlzQURqRm1ReUdtVWx5KzdR?=
+ =?utf-8?B?MEhRZ2FVdXVQU3A1dnRrQ0dkMmNoWE5JV3F5cGhYZUNtTy9Ob25wN2ZkR3ZT?=
+ =?utf-8?B?RmFVZ3N6VVlPOWRSSEdqZlJvcHE3K3dZV0UzUUpyL2ZkNTU4TFNXdzhkM29H?=
+ =?utf-8?B?dHE3NG1melAwbGF1QldjV01hbjZIMElHQTBjMDBqUnRvLzFTb0hLUlpJa0tI?=
+ =?utf-8?B?U0gvdjhObG55WTh1akZOOVkybWE4YWdxeHdDV2owRy9PRTZGdnRhb0NHWnVl?=
+ =?utf-8?B?Qi9lYWo5dG1wUHRUaEttM3VsUWc1MktJR1FmblBqWFgwcCs4bkZxZjl4ekRP?=
+ =?utf-8?B?ZU5uRU8vQldNb3dJV0pybk9iWnd4REU1WUlKZW5WWC9Ub3ZDUDV4T2ZkT3Z5?=
+ =?utf-8?B?K0RYWFQweEJYNXNTK2FIcXN3K1orODU2Y2h3c2VKTE1Jd2xXOEVKWmRpNEZT?=
+ =?utf-8?Q?h1s/P1AVViRyEsubvOiqqUg=3D?=
+X-OriginatorOrg: theobroma-systems.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca848c55-f08d-496d-9d7e-08dc62a9a176
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB4842.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 08:53:07.9147
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dG9RuCqXd3Mm2tYuJm2dWQhjBeGQtyTYK5YOn/K5u8hKAzJvvQzMm/LhLH4vZPtylmSZLbwiSRC2VuF/oKaxFJt9IqHl7jFfgHt3U0WTVgoT5PxOIy12Y2UV0cOamkNF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB9908
 
+Hi Heiko,
 
-
-On 19/04/2024 17:49, Conor Dooley wrote:
-> On Thu, Apr 18, 2024 at 02:42:26PM +0200, Clément Léger wrote:
->> As stated by Zc* spec:
->>
->> "As C defines the same instructions as Zca, Zcf and Zcd, the rule is that:
->>  - C always implies Zca
->>  - C+F implies Zcf (RV32 only)
->>  - C+D implies Zcd"
->>
->> Add additionnal validation rules to enforce this in dts.
+On 4/18/24 23:03, Heiko Stuebner wrote:
+> From: Heiko Stuebner <heiko.stuebner@cherry.de>
 > 
-> I'll get it out of the way: NAK, and the dts patch is the perfect
-> example of why. I don't want us to have to continually update
-> devicetrees. If these are implied due to being subsets of other
-> extensions, then software should be able to enable them when that
-> other extension is present.
-
-Acked.
-
+> The comment for the host2_xhci points to the wrong port on the board.
+> The upper usb3 port is the correct one, so fix the comment to prevent
+> confusion.
 > 
-> My fear is that, and a quick look at the "add probing" commit seemed to
-> confirm it, new subsets would require updates to the dts, even though
-> the existing extension is perfectly sufficient to determine presence.
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@cherry.de>
+> ---
+>   arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dts | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I definitely want to avoid continual updates to the devicetree for churn
-> reasons whenever subsets are added, but not turning on the likes of Zca
-> when C is present because "the bindings were updated to enforce this"
-> is a complete blocker. I do concede that having two parents makes that
-> more difficult and will likely require some changes to how we probe - do
-> we need to have a "second round" type thing?
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dts b/arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dts
+> index d672198c6b64..214f8258af68 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dts
+> @@ -260,7 +260,7 @@ &usb_host1_ohci {
+>   	status = "okay";
+>   };
+>   
+> -/* host2 on Q7_USB_P2, lower usb3 port */
+> +/* host2 on Q7_USB_P2, upper usb3 port */
 
-Yeah, I understand. At first, I actually did the modifications in the
-ISA probing loop with some dependency probing (ie loop while we don't
-have a stable extension state). But I thought that it was not actually
-our problem but rather the ISA string provider. For instance, Qemu
-provides them.
+Missing the same update to the comments above &usb_host0_ohci and 
+&usb_host0_ehci.
 
-
-> Taking Zcf as an example, maybe something like making both of C and F into
-> "standard" supersets and adding a case to riscv_isa_extension_check()
-> that would mandate that Zca and F are enabled before enabling it, and we
-> would ensure that C implies Zca before it implies Zcf?
-
-I'm afraid that riscv_isa_extension_check() will become a rat nest so
-rather than going that way, I would be in favor of adding a validation
-callback for the extensions if needed.
-
-> 
-> Given we'd be relying on ordering, we have to perform the same implication
-> for both F and C and make sure that the "implies" struct has Zca before Zcf.
-> I don't really like that suggestion, hopefully there's a nicer way of doing
-> that, but I don't like the dt stuff here.
-
-I guess the "cleanest" way would be to have some "defered-like"
-mechanism in ISA probing which would allow to handle ordering as well as
-dependencies/implies for extensions. For Zca, Zcf, we actually do not
-have ordering problems but I think it would be a bit broken not to
-support that as well.
-
-I can actually revive the work mentioned above to handle that and see if
-it works ok.
-
-Clément
-
-> 
-> Thanks,
-> Conor.
-> 
->>
->> Signed-off-by: Clément Léger <cleger@rivosinc.com>
->> ---
->>  .../devicetree/bindings/riscv/cpus.yaml       |  8 +++--
->>  .../devicetree/bindings/riscv/extensions.yaml | 34 +++++++++++++++++++
->>  2 files changed, 39 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
->> index d87dd50f1a4b..c4e2c65437b1 100644
->> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
->> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
->> @@ -168,7 +168,7 @@ examples:
->>                  i-cache-size = <16384>;
->>                  reg = <0>;
->>                  riscv,isa-base = "rv64i";
->> -                riscv,isa-extensions = "i", "m", "a", "c";
->> +                riscv,isa-extensions = "i", "m", "a", "c", "zca";
->>  
->>                  cpu_intc0: interrupt-controller {
->>                          #interrupt-cells = <1>;
->> @@ -194,7 +194,8 @@ examples:
->>                  reg = <1>;
->>                  tlb-split;
->>                  riscv,isa-base = "rv64i";
->> -                riscv,isa-extensions = "i", "m", "a", "f", "d", "c";
->> +                riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zca",
->> +                                       "zcd";
->>  
->>                  cpu_intc1: interrupt-controller {
->>                          #interrupt-cells = <1>;
->> @@ -215,7 +216,8 @@ examples:
->>                  compatible = "riscv";
->>                  mmu-type = "riscv,sv48";
->>                  riscv,isa-base = "rv64i";
->> -                riscv,isa-extensions = "i", "m", "a", "f", "d", "c";
->> +                riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zca",
->> +                                       "zcd";
->>  
->>                  interrupt-controller {
->>                          #interrupt-cells = <1>;
->> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
->> index db7daf22b863..0172cbaa13ca 100644
->> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
->> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
->> @@ -549,6 +549,23 @@ properties:
->>                  const: zca
->>              - contains:
->>                  const: f
->> +      # C extension implies Zca
->> +      - if:
->> +          contains:
->> +            const: c
->> +        then:
->> +          contains:
->> +            const: zca
->> +      # C extension implies Zcd if d
->> +      - if:
->> +          allOf:
->> +            - contains:
->> +                const: c
->> +            - contains:
->> +                const: d
->> +        then:
->> +          contains:
->> +            const: zcd
->>  
->>  allOf:
->>    # Zcf extension does not exists on rv64
->> @@ -566,6 +583,23 @@ allOf:
->>            not:
->>              contains:
->>                const: zcf
->> +  # C extension implies Zcf if f on rv32 only
->> +  - if:
->> +      properties:
->> +        riscv,isa-extensions:
->> +          allOf:
->> +            - contains:
->> +                const: c
->> +            - contains:
->> +                const: f
->> +        riscv,isa-base:
->> +          contains:
->> +            const: rv32i
->> +    then:
->> +      properties:
->> +        riscv,isa-extensions:
->> +          contains:
->> +            const: zcf
->>  
->>  additionalProperties: true
->>  ...
->> -- 
->> 2.43.0
->>
+Cheers,
+Quentin
 
