@@ -1,125 +1,120 @@
-Return-Path: <linux-kernel+bounces-153087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C2CC8AC8D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E3B08AC8DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:26:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC1F2281DB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:25:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDF962819B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:26:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893C254FB8;
-	Mon, 22 Apr 2024 09:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AB555C3B;
+	Mon, 22 Apr 2024 09:25:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="KO4nUOlL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hM0X5/fq"
-Received: from wfhigh3-smtp.messagingengine.com (wfhigh3-smtp.messagingengine.com [64.147.123.154])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="twZsfRK3"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D243537F1
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3AC5490A
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713777949; cv=none; b=QRdnhnAb/ePgUShNAAuyykZBRVEBrDIW8rYwsEzEd0KWp1EQoLJejdBGSH5CyuGV7XKsOjZnp2NRtF950Sx22TdlHbtP8fNEuNuRu2wLa3k+AGFRH0BImRkt9VzHWvuLIfTsXsYoBeuOYtrX3g7QZyqYSbNpwm7h6ZDFQU04xyI=
+	t=1713777958; cv=none; b=SNNHjp45lAV3vlRsNJymp4YRE62z9z3kiflBf0VMOXv5yUwYGxtrzPxEguPo89aECN8i3dytrAO2mh1zqZt/xOx+DAfrvVeaGsBYR7QNJVoECfSP+uYyJ57Beyigaj6sEvSOrBDOfl1zrcbJ0Cuj9UfuFYZaXbA5uKnoFo5Ilag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713777949; c=relaxed/simple;
-	bh=X8BGpeU+eQ7X1ojjLda2lfTR6V29ngxLbpsjhMhmC9o=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=t2auwMUnoFfMxXQtwzYEXRQx+fsxeSv5oeF4/cTur27w7xPFKKR0QQtxcdmZi3TW3Cqc4Ej78pfPmmid70GtcuxaUy8+P4e4ru8QXOOIkAlRkDzzBj7/RvKlYlcF9JGuUxJx8qKHqNsKVDDNAT5mNFQzFQ0CnIg8RU8GxqV+pcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=KO4nUOlL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hM0X5/fq; arc=none smtp.client-ip=64.147.123.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id AD0A31800128;
-	Mon, 22 Apr 2024 05:25:46 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 22 Apr 2024 05:25:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1713777946; x=1713864346; bh=jcigpvahlt
-	MO4FU7N5bgktFn4b0XcFmmk3Vf7CUJJaQ=; b=KO4nUOlL5KxvhoHb9dtP3FehDl
-	A8Rb3uKH8Oqjt5sdrrrVOwqSLJ3wNfBPnPELNWWD/ltg3N8nbci849ComJyHs15r
-	svo7bCtPiRJWi36+9TO7s3+x5b3KRtrOJvDIR1+rWqdBXUJ32gmaHE3jTYLKYleo
-	ZOixi8R4JkhWckWaqa4lklEfH7dcG7QGNI3lfFlhxv10uK9c38LJKs6PW2HI0EFL
-	PYsPYBns+EhaoCv7fEXQ6sB0KAT/A/QwiCelbt+EUiFm2pB+9Ip3xr7iyuBrN28q
-	NT2/ucQ7v4QKDmAMLOdqGJuLedwwSP3e2hMX7eqPWxOXKBkgo5o7Hk/gdzCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1713777946; x=1713864346; bh=jcigpvahltMO4FU7N5bgktFn4b0X
-	cFmmk3Vf7CUJJaQ=; b=hM0X5/fqaJ540RwsBjAI166UEJbFyHVAVEAK8q+0qt2p
-	vl7WL7iayNoQnJs6DWfLAvORf9Y7mZDaKI1jiVuINnQENKEyYHsHA3pHtxSIHkFi
-	b6wOQSy+34IGkdHc2luwkIOf+AceFA8ppiZ9r7WpEIolFKz6TnJnoaFl0AFeGgg8
-	tLXxyw9XTbZYkDMVqMdWxg01D+1N5oG7Vr1arySxqg/NUM3TxCi89WXgnUh/03z/
-	fECjjBhsJbHe7FQc8PDBZOFRJzxjucQvoJQZOgcEdydh19O68OwBOLsAo50QPhyt
-	2mtd2c63jv1XlNyKAa/IHnwZznoheqTjPBU8fGwdSg==
-X-ME-Sender: <xms:GS0mZvmKsCZ-0TsbQxkMbfG8eaW8KX1AsS5AeLE79MtkivC8HCYcew>
-    <xme:GS0mZi3-iGkLBaMecUzZuZs_iaHaQUrADl55FpPZet0gwa440J0hvW9QgE3YhGw40
-    6GtfH8kJr-Ke0riYbg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekledgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:GS0mZlr_jFIKImxfz3VOsLoe6780aghZ3FQUGb0jqjBt5MqGiKtdqw>
-    <xmx:GS0mZnkBT4tJDxvmeWJ4k-26ATUVy5F7FcmHu7o3m-wEDnBhng8KcA>
-    <xmx:GS0mZt0axtGYGNSuF9wd0Q2gBVrN2toPqmK2eAII81slgItjg8zIPw>
-    <xmx:GS0mZmuaHjhRWrj8tW5ODSPLrRHC4AiPHiUemL2lUEKIFA35EzOZ6g>
-    <xmx:Gi0mZnxy-yTh9Nz1Bq8KydxA0v2uoZFaQtmf7f5kcJbmexnPrHaTshew>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 7E460B6008D; Mon, 22 Apr 2024 05:25:45 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	s=arc-20240116; t=1713777958; c=relaxed/simple;
+	bh=ye+YDeypngJNVRNApH4ApNOV3asObjEsmLgFOfVV0AA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Tp2a5whQswCJ7cwj4bkK6MecgY5LAJOw6mjdcVQyrWMO5Gqqk8F8ezLH8NjyPurExr17voeLSKaPdQFj3RT1itI1w2sg0sjCKevjrHIhFC8bjwtJdo1rfaqeYdiuPAU5mVBXEy1W7eOyuIRNFridVPS6x/K0hwIh4fHFFyDUKjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=twZsfRK3; arc=none smtp.client-ip=209.85.222.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7e7cf5cc1d0so3391207241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 02:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713777956; x=1714382756; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u02hciJF/25Uzt60NJ0xbu51k6rfBNzWcPBLcSlUo80=;
+        b=twZsfRK3ziG0zUb1bCJXi8C9F56uvM1GjgJNPIFDkI+Z/QqUDW+ujcsdzCaqKqm6YL
+         0mwFX8clbtzZmG6070BsZODiLVFyOvnD9XXXEFVhSNgbJa0vXnevR4Kz9VVs0QcAzSBB
+         MTJdLjhLWgnrhN6kicMs/vxU2u9W+ompDL1GQFXLDh3IWDKiAlmn4fQzxPjv8J2WyOcR
+         f1j3Q9UnrLDBTFGS/5EHfOQZiO8BfXIwB07OIpsnXNfGtRJrjuUzSR8rnLymI7Hq8I9C
+         ibyqWof0mrDVQXnYgcspRBgnNYcU+HCmfE0doCBJq3F1rejFI/Mu28ItdnoSk0oF0N0T
+         0hbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713777956; x=1714382756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u02hciJF/25Uzt60NJ0xbu51k6rfBNzWcPBLcSlUo80=;
+        b=KOLwmmAwvVtpCsebWzIToPi+pzC1bs7eRnTDcyrJjUNGGlAREAoMA8t1OiffD9XN8C
+         vixWtdkMCYKg0IX+0DECcsbuY6/w4jruNQSzXb2sFiQCtG+nji9g/44LRh0pVB+BOZui
+         6qdawtxvrsFL6KV0KDEpV2QboU8sGxmEwKUQ/5b61d+HwvkEDpoz76F/mWz+yfw63lMY
+         MBmkZ/c6Bg/FUVQd/ChMu5nwNwZvJnVFPuolzhzv7ffpKva5wNs2aucHgqabuejIjfQ/
+         mR5uIl+IvcnOacz0UYoxva+JRN45uXnZ5rNf6IvhEdXuzUrllsUdm4xxQji1BVxrekKX
+         QufA==
+X-Forwarded-Encrypted: i=1; AJvYcCVpNxfBTqdRF9gsqHukhbzyMVoxOYuq8Kj6RnmblCvflAnV3KVEE1xZYVQR0lDAEYZm+jSvuzwA2PedGkBCC4kcdgNvXD508X2HPtyU
+X-Gm-Message-State: AOJu0Yy2HlnRO3QVn2OhHpnVt2GvzBYp3lVBl7g6Cee+zVQfNVoQQQUe
+	Ku+EayLxulXeKe9orAdcHD7Wk7l8GRreaC8tAO5GHT/9hbxNPqm69brpJwGxP2mcRZfPgtD994g
+	LKSuJYCt7gQ/GL4eFayvEemkEdq8W4lNR4j8A
+X-Google-Smtp-Source: AGHT+IFzbvs5nDCKVidubFmVhCqyTJZpX1MSVwcFBpjxWlOvQIwOZ8sgogJwUEo36R0OhEd8C3NQ+lrl6rjs+COe24c=
+X-Received: by 2002:a05:6122:2008:b0:4d4:34b2:9a89 with SMTP id
+ l8-20020a056122200800b004d434b29a89mr13136946vkd.8.1713777956098; Mon, 22 Apr
+ 2024 02:25:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <cd172d05-15f6-427c-b6e3-d68fc746b940@app.fastmail.com>
-In-Reply-To: <ZiYqV-5BWmPwgqbU@FVFF77S0Q05N>
-References: 
- <CA+G9fYsCL5j-9JzqNH5X03kikL=O+BaCQQ8Ao3ADQvxDuZvqcg@mail.gmail.com>
- <ZiYqV-5BWmPwgqbU@FVFF77S0Q05N>
-Date: Mon, 22 Apr 2024 11:25:25 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Mark Rutland" <mark.rutland@arm.com>,
- "Naresh Kamboju" <naresh.kamboju@linaro.org>
-Cc: "open list" <linux-kernel@vger.kernel.org>,
- "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
- lkft-triage@lists.linaro.org,
- "Linux Regressions" <regressions@lists.linux.dev>,
- "Anders Roxell" <anders.roxell@linaro.org>, "Marc Zyngier" <maz@kernel.org>,
- joey.gouly@arm.com, "Oliver Upton" <oliver.upton@linux.dev>
-Subject: Re: gcc-8: arm64/kvm/pauth.: Error: unknown architectural extension `pauth'
-Content-Type: text/plain
+References: <20240422091215.526688-1-ojeda@kernel.org>
+In-Reply-To: <20240422091215.526688-1-ojeda@kernel.org>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Mon, 22 Apr 2024 11:25:45 +0200
+Message-ID: <CAH5fLgg=v28bFJE1izZ-WF7uBLcr7D2o6Yr2ihdPAz205MiGGw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: rust: remove unneeded `@rustc_cfg` to avoid ICE
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	David Gow <davidgow@google.com>, Brendan Higgins <brendan.higgins@linux.dev>, 
+	linux-kbuild@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 22, 2024, at 11:13, Mark Rutland wrote:
-> On Mon, Apr 22, 2024 at 02:04:43PM +0530, Naresh Kamboju wrote:
-> Given the minimum supported toolchain comes with an assembler that doesn't
-> necessarily support ARMv8.3, I reckon we'll either have to make NV pauth
-> support depend upon AS_HAS_ARMV8_3, or manually assemble the PACGA instruction.
+On Mon, Apr 22, 2024 at 11:13=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wr=
+ote:
 >
-> I suspect the latter is the better option.
+> When KUnit tests are enabled, under very big kernel configurations
+> (e.g. `allyesconfig`), we can trigger a `rustdoc` ICE [1]:
+>
+>       RUSTDOC TK rust/kernel/lib.rs
+>     error: the compiler unexpectedly panicked. this is a bug.
+>
+> The reason is that this build step has a duplicated `@rustc_cfg` argument=
+,
+> which contains the kernel configuration, and thus a lot of arguments. The
+> factor 2 happens to be enough to reach the ICE.
+>
+> Thus remove the unneeded `@rustc_cfg`. By doing so, we clean up the
+> command and workaround the ICE.
+>
+> The ICE has been fixed in the upcoming Rust 1.79 [2].
+>
+> Cc: stable@vger.kernel.org
+> Fixes: a66d733da801 ("rust: support running Rust documentation tests as K=
+Unit ones")
+> Link: https://github.com/rust-lang/rust/issues/122722 [1]
+> Link: https://github.com/rust-lang/rust/pull/122840 [2]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-The .config linked from the report shows
-
-CONFIG_AS_VERSION=23101
-CONFIG_ARM64_PTR_AUTH_KERNEL=y
-CONFIG_AS_HAS_ARMV8_3=y
-
-So it gets detected as supporting ARMv8.3. Is this the wrong
-conditional to check, or does it get misdetected for an unsupported
-assembler?
-
-     Arnd
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 
