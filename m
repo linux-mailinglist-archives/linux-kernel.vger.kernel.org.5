@@ -1,285 +1,128 @@
-Return-Path: <linux-kernel+bounces-153742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2758C8AD296
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:46:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73EDF8AD299
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:46:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8DDF1F21D4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:45:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A398F1C209E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56526153BDC;
-	Mon, 22 Apr 2024 16:43:33 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3978155386;
+	Mon, 22 Apr 2024 16:43:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kLZm4gLT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD94515381C;
-	Mon, 22 Apr 2024 16:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D7DF153BDF;
+	Mon, 22 Apr 2024 16:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713804212; cv=none; b=UzQvNZ4tKbOBUfOvT+51QDZXpVueDYaKVjAkk0/Y3ppZbFiNLRuVDJpVHNE3CQavc/WqRK6uUiby2BrMdqhcK9Dy7xxZPh8mKkMinbL4TPsuYAKhFIKEHR4aH3UJ0IBEHfSnI64IZa9dv9dznP+FP6RCiZpNq2lMqaziAOR1u4c=
+	t=1713804219; cv=none; b=E8C9QimWiyEdmL8V2qH9l2Er3zAxpnruouI2Jn2TcrF50cCxZekhmT1S+Ua//qMR63oNIe4p7k/IarHN8oCLrWRFKB5x+nP5q2WBnmrCK0zq9GLt3fW9fgYc3xQbn1xotbjKbTghYujQ5RW2hqomuMzokfsMH+DK23uis6Qofp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713804212; c=relaxed/simple;
-	bh=ApwW11imVDo3/pCqZSgrElUYpztN4ObYHpPgr4iAaXA=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Z2ycDG4OFilPrY+RRbSsyu+UEKygisoP0O+6JvLMAnb1Cj4MWvS4SkZXs3nXcZhwdbirO2bUd7oKpNkcgw0BjMbVfboQKlsyjVcVNTcXSbH/ctjYLXkE0FafvWXQAvLo22MC0UkrwFehFpCpd83NxsPMPplvAKwUeqSCLhkJjH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VNWGc2BLXz6JBRf;
-	Tue, 23 Apr 2024 00:41:12 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8E415140AB8;
-	Tue, 23 Apr 2024 00:43:26 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 22 Apr
- 2024 17:43:26 +0100
-Date: Mon, 22 Apr 2024 17:43:25 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Robert Richter <rrichter@amd.com>
-CC: "Rafael J. Wysocki" <rafael@kernel.org>, Dave Hansen
-	<dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>, <linux-acpi@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>, Len Brown
-	<lenb@kernel.org>
-Subject: Re: [PATCH v3 2/5] ACPI/NUMA: Print CXL Early Discovery Table
- (CEDT)
-Message-ID: <20240422174325.000058ba@Huawei.com>
-In-Reply-To: <20240419140203.1996635-3-rrichter@amd.com>
-References: <20240419140203.1996635-1-rrichter@amd.com>
-	<20240419140203.1996635-3-rrichter@amd.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1713804219; c=relaxed/simple;
+	bh=wHHpm/MlIMnUD56C0I+68LKr2Emf+Rz6l1nA6FA+p4s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jxLtjsYB0ZqYa5eLPD/sqFJl6BTvwcczZrzu9BBQgVNWMmveHhdTTFvsFjUN2w7zSt2IKO87zGo+VgFz7SfdNcu00eo3z5qBCpWpkuCmuiwMXTNGJiCtcPAdDNhg5kzetdNxRo+fqQuHHyUPGwspCjq2OG0sbyLzU2yAYz8uGJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kLZm4gLT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A787DC113CC;
+	Mon, 22 Apr 2024 16:43:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713804218;
+	bh=wHHpm/MlIMnUD56C0I+68LKr2Emf+Rz6l1nA6FA+p4s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=kLZm4gLTCzd79EAv67FYtqqitGs1/djNHusslR7yiiTIaKsydTJYA4EWbufUHqa5H
+	 UjHTLgDTbBnp0dTouoXG1tylA9PIeeaiITC8suHtBSQw29/ssD9MNGpaGWNc3Yhujj
+	 VsRs57ehcqWBtEajQ9GU88WaNLHV6uN+u/uV3srlUr/gBthuCfV1iU7+4kHDiLAsba
+	 /U9AMu8IEd5Yzzs2twbO5+DtdhaUCVnIaI9AEHj7Kv1B23dfAo1sg3lxtEu4M21o9a
+	 EYOx5F8k213BirWvLt+T//gk8zuHblnRunMVnTLyjyNfSCXLMM5sNNqT5TIzaN+MdR
+	 jy8TvbugD6llQ==
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6ea0a6856d7so844365a34.1;
+        Mon, 22 Apr 2024 09:43:38 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW0SoMdZYciZ1ZMujRNt2+uM8hRTau1bxIt9bfkjD6lKTGdnh8b5nbgmaeLCIOiFWCqO63ydZ1zbSzh4qFz1qYdBQ315XIzOWC95kXOyLYnie5iwb0VYlOnsxhrgPJAjNKAjrgnUDXKJ+fxx6ntpCYcOgGJcxXowUTTwMU4jInaqQ==
+X-Gm-Message-State: AOJu0YzvlETSlQe3B9Vx65F2m5ZNU+B5bqadKcRX9otOzJuZcnOOVHil
+	k7GmbMsXJhIjvJchF1/THiMaCjdGzL8oMQlnar6ch0U8SzmJaFR1dilYNllRvRMS98I7KMh/cXA
+	45UGq3p8X53DWizfczLM1eOhMuAM=
+X-Google-Smtp-Source: AGHT+IFxhkTiGWpLI37qbMnnvDoa9HCZq+l7GBMHsvYcSFiRCIGp8GKu5oJltXjmDUMrx1tmpugYn8g6AT+C8moo+Ig=
+X-Received: by 2002:a05:6820:e07:b0:5aa:14ff:4128 with SMTP id
+ el7-20020a0568200e0700b005aa14ff4128mr10710388oob.1.1713804217994; Mon, 22
+ Apr 2024 09:43:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+References: <20240409052310.3162495-1-jarredwhite@linux.microsoft.com> <soawdod6cpcc73wrc35bvnah5toubf2cv4x7c3e6p53xtvllrs@6dtpn2v5t3di>
+In-Reply-To: <soawdod6cpcc73wrc35bvnah5toubf2cv4x7c3e6p53xtvllrs@6dtpn2v5t3di>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 22 Apr 2024 18:43:26 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0imiRbheOJgEf=Ua-JRhDTh1+SJ-=CjUC7vOQYffV50FA@mail.gmail.com>
+Message-ID: <CAJZ5v0imiRbheOJgEf=Ua-JRhDTh1+SJ-=CjUC7vOQYffV50FA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: CPPC: Fix bit_offset shift in MASK_VAL macro
+To: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>, 
+	Jarred White <jarredwhite@linux.microsoft.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Easwar Hariharan <eahariha@linux.microsoft.com>, 
+	"open list:ACPI" <linux-acpi@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 19 Apr 2024 16:02:00 +0200
-Robert Richter <rrichter@amd.com> wrote:
+On Wed, Apr 17, 2024 at 7:37=E2=80=AFPM Vanshidhar Konda
+<vanshikonda@os.amperecomputing.com> wrote:
+>
+> Looks good to me.
+>
+> Reviewed-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+>
+> On Mon, Apr 08, 2024 at 10:23:09PM -0700, Jarred White wrote:
+> >Commit 2f4a4d63a193 ("ACPI: CPPC: Use access_width over bit_width for
+> >system memory accesses") neglected to properly wrap the bit_offset shift
+> >when it comes to applying the mask. This may cause incorrect values to b=
+e
+> >read and may cause the cpufreq module not be loaded.
+> >
+> >[   11.059751] cpu_capacity: CPU0 missing/invalid highest performance.
+> >[   11.066005] cpu_capacity: partial information: fallback to 1024 for a=
+ll CPUs
+> >
+> >Also, corrected the bitmask generation in GENMASK (extra bit being added=
+).
+> >
+> >Fixes: 2f4a4d63a193 ("ACPI: CPPC: Use access_width over bit_width for sy=
+stem memory accesses")
+> >Signed-off-by: Jarred White <jarredwhite@linux.microsoft.com>
+> >CC: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+> >CC: stable@vger.kernel.org #5.15+
+> >---
+> > drivers/acpi/cppc_acpi.c | 4 ++--
+> > 1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> >diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> >index 4bfbe55553f4..00a30ca35e78 100644
+> >--- a/drivers/acpi/cppc_acpi.c
+> >+++ b/drivers/acpi/cppc_acpi.c
+> >@@ -170,8 +170,8 @@ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs=
+, wraparound_time);
+> > #define GET_BIT_WIDTH(reg) ((reg)->access_width ? (8 << ((reg)->access_=
+width - 1)) : (reg)->bit_width)
+> >
+> > /* Shift and apply the mask for CPC reads/writes */
+> >-#define MASK_VAL(reg, val) ((val) >> ((reg)->bit_offset &              =
+       \
+> >-                                      GENMASK(((reg)->bit_width), 0)))
+> >+#define MASK_VAL(reg, val) (((val) >> (reg)->bit_offset) &             =
+       \
+> >+                                      GENMASK(((reg)->bit_width) - 1, 0=
+))
+> >
+> > static ssize_t show_feedback_ctrs(struct kobject *kobj,
+> >               struct kobj_attribute *attr, char *buf)
+> >--
 
-> The CEDT contains similar entries as the SRAT. For diagnostic reasons
-> print the CEDT same style as the SRAT.
-> 
-> Adding also a pr_info() when successfully adding a CFMWS memory range.
-> 
-> Suggested-by: Alison Schofield <alison.schofield@intel.com> # CEDT node info
-> Signed-off-by: Robert Richter <rrichter@amd.com>
-Hi Robert,
-
-Comments inline,
-
-Jonathan
-
-
-> ---
->  drivers/acpi/numa/srat.c | 122 ++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 121 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-> index e45e64993c50..43417b4920da 100644
-> --- a/drivers/acpi/numa/srat.c
-> +++ b/drivers/acpi/numa/srat.c
-> @@ -300,6 +300,114 @@ acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
->  	return -EINVAL;
->  }
->  
-> +static int __init
-> +__acpi_table_print_cedt_entry(union acpi_subtable_headers *__header,
-> +			      void *arg, const unsigned long table_end)
-> +{
-> +	struct acpi_cedt_header *header = (struct acpi_cedt_header *)__header;
-
-As below. There is very little shred by the different types in here, so
-I'd break it up into separate functions and just call the relevant
-one.
-
-> +
-> +	switch (header->type) {
-> +	case ACPI_CEDT_TYPE_CHBS:
-> +		{
-> +			struct acpi_cedt_chbs *p =
-> +				(struct acpi_cedt_chbs *)header;
-> +
-> +			if (header->length < sizeof(struct acpi_cedt_chbs)) {
-sizeof(*p) perhaps?
-> +				pr_warn("CEDT: unsupported CHBS entry: size %d\n",
-> +					 header->length);
-> +				break;
-> +			}
-> +
-> +			pr_debug("CEDT: CHBS (0x%llx length 0x%llx uid %lu) %s (%d)\n",
-> +				(unsigned long long)p->base,
-> +				(unsigned long long)p->length,
-> +				(unsigned long)p->uid,
-> +				(p->cxl_version == ACPI_CEDT_CHBS_VERSION_CXL11) ?
-> +				"cxl11" :
-> +				(p->cxl_version == ACPI_CEDT_CHBS_VERSION_CXL20) ?
-> +				"cxl20" :
-> +				"unsupported version",
-> +				p->cxl_version);
-> +		}
-> +		break;
-> +	case ACPI_CEDT_TYPE_CFMWS:
-> +		{
-> +			struct acpi_cedt_cfmws *p =
-> +				(struct acpi_cedt_cfmws *)header;
-> +			int eiw_to_ways[] = {1, 2, 4, 8, 16, 3, 6, 12};
-> +			int targets = -1;
-> +
-> +			if (header->length < sizeof(struct acpi_cedt_cfmws)) {
-
-sizeof(*p) perhaps?
-
-> +				pr_warn("CEDT: unsupported CFMWS entry: size %d\n",
-> +					header->length);
-> +				break;
-> +			}
-> +
-> +			if (p->interleave_ways < ARRAY_SIZE(eiw_to_ways))
-> +				targets = eiw_to_ways[p->interleave_ways];
-> +			if (header->length < struct_size(
-> +					p, interleave_targets, targets))
-> +				targets = -1;
-
-Not a warning?
-
-> +
-> +			pr_debug("CEDT: CFMWS (0x%llx length 0x%llx) with %d target%s",
-> +				(unsigned long long)p->base_hpa,
-> +				(unsigned long long)p->window_size,
-> +				targets, targets > 1 ? "s" : "");
-> +			for (int i = 0; i < targets; i++)
-> +				pr_cont("%s%lu", i ? ", " : " (",
-> +					(unsigned long)p->interleave_targets[i]);
-
-This seems odd. I don't think there is a good way to do combined pr_debug() and pr_cont()
-There was a discussion about this a few years ago...
-
-> +			pr_cont("%s%s%s%s%s%s\n",
-> +				targets > 0 ? ")" : "",
-> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2) ?
-> +				" type2" : "",
-> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3) ?
-> +				" type3" : "",
-> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE) ?
-> +				" volatile" : "",
-> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM) ?
-> +				" pmem" : "",
-> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED) ?
-> +				" fixed" : "");
-> +		}
-> +		break;
-> +	case ACPI_CEDT_TYPE_CXIMS:
-> +		{
-> +			struct acpi_cedt_cxims *p =
-> +				(struct acpi_cedt_cxims *)header;
-> +
-> +			if (header->length < sizeof(struct acpi_cedt_cxims)) {
-
-sizeof(*p) perhaps?
-
-> +				pr_warn("CEDT: unsupported CXIMS entry: size %d\n",
-> +					header->length);
-> +				break;
-
-I'd go with direct returns in these to make the code flow easier to read.
-
-> +			}
-> +
-> +			pr_debug("CEDT: CXIMS (hbig %u nr_xormaps %u)\n",
-> +				(unsigned int)p->hbig,
-> +				(unsigned int)p->nr_xormaps);
-> +		}
-> +		break;
-> +	default:
-> +		pr_warn("CEDT: Found unsupported entry (type = 0x%x)\n",
-> +			header->type);
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void __init acpi_table_print_cedt_entry(enum acpi_cedt_type id)
-> +{
-> +	acpi_table_parse_cedt(id, __acpi_table_print_cedt_entry, NULL);
-> +}
-> +
-> +static void __init acpi_table_print_cedt(void)
-> +{
-> +	/* Print only implemented CEDT types */
-> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CHBS);
-> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CFMWS);
-> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CXIMS);
-
-Would this be cleaner just breaking these up?
-
-	acpi_table_parse_cedt(ACPI_CEDT_TYPE_CHBS, print_chbs_entry, NULL);
-	acpi_table_parse_cedt(ACPI_CEDT_TYPE_CFMWS, print_cfmws_entry, NULL);
-	acpi_table_parse_cedt(ACPI_CEDT_TYPE_CXIMS, print_cxims_entry, NULL);
-
-
-> +}
-> +
->  static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
->  				   void *arg, const unsigned long table_end)
->  {
-> @@ -318,8 +426,11 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
->  	 * found for any portion of the window to cover the entire
->  	 * window.
->  	 */
-> -	if (!numa_fill_memblks(start, end))
-> +	if (!numa_fill_memblks(start, end)) {
-> +		pr_info("CEDT: memblk extended [mem %#010Lx-%#010Lx]\n",
-> +			(unsigned long long) start, (unsigned long long) end - 1);
->  		return 0;
-> +	}
->  
->  	/* No SRAT description. Create a new node. */
->  	node = acpi_map_pxm_to_node(*fake_pxm);
-> @@ -334,13 +445,19 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
->  		pr_warn("ACPI NUMA: Failed to add memblk for CFMWS node %d [mem %#llx-%#llx]\n",
->  			node, start, end);
->  	}
-> +
-
-Unrelated changed.  Best to clean this out to avoid the (really minor) noise.
-
->  	node_set(node, numa_nodes_parsed);
->  
-> +	pr_info("CEDT: Node %u PXM %u [mem %#010Lx-%#010Lx]\n",
-> +		node, *fake_pxm,
-> +		(unsigned long long) start, (unsigned long long) end - 1);
-> +
->  	/* Set the next available fake_pxm value */
->  	(*fake_pxm)++;
->  	return 0;
->  }
->  #else
-> +static inline void acpi_table_print_cedt(void) {}
->  static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
->  				   void *arg, const unsigned long table_end)
->  {
-> @@ -526,6 +643,9 @@ int __init acpi_numa_init(void)
->  	/* SLIT: System Locality Information Table */
->  	acpi_table_parse(ACPI_SIG_SLIT, acpi_parse_slit);
->  
-> +	/* CEDT: CXL Early Discovery Table */
-> +	acpi_table_print_cedt();
-> +
->  	/*
->  	 * CXL Fixed Memory Window Structures (CFMWS) must be parsed
->  	 * after the SRAT. Create NUMA Nodes for CXL memory ranges that
-
+Applied as 6.9-rc material, thanks!
 
