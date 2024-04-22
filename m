@@ -1,280 +1,242 @@
-Return-Path: <linux-kernel+bounces-153486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 447AB8ACEA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:46:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5252C8ACEA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:47:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE0151F220A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:46:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 765B51C20F75
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDCB1514E2;
-	Mon, 22 Apr 2024 13:45:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD90150981;
+	Mon, 22 Apr 2024 13:47:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QD6KP9Ge"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="ffWJzgf7"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2133.outbound.protection.outlook.com [40.107.8.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B1B1509A5
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713793540; cv=none; b=kBpVU1A02sjh16nddDcTHV/OWE+zdy02KwltqanC1rd6Bz6gXHnlkF8SMNdND7Ii3PVOI4qohzTz0JhhtCL4lSlw4doxsm6rIVRkQYQOpP7eCDQWtFDpZMAxvLTPS0+ir5+NqhqWShN/4ngghQd7wFV2wGCciOTAkLX50VJK/7k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713793540; c=relaxed/simple;
-	bh=4YMVZUICuNUnooMES/18Kn3KRTa8xUdNs/MTHLvud3Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mBtZdKq+HFgj1L1ZGMaOsO/S2gQZu64dktR7UJVj5/OtM0YKwpdm0GqvspkVVFEIDeiuMhpSBDzjPiTrBaROnjfvwzlHSSbm3L/Zv3r7Qi1J/tDA5OS66A1oJY2Qvr0tbbVWAWiL3jFHqAIx3KSxHcifoBn4qUNXFgYR0UH2igg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QD6KP9Ge; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713793537;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kwY1DtEOHqribjOyCtgFKsXBMbmg7tj+TqpASPAmvqA=;
-	b=QD6KP9GeOaKU9rwemCyMCzazup/zh5A3o14wq9e1D/enIAV3bGqVeceSqixmLOA2upHh4G
-	plmSpMDY4MwaMj+7pVcoK4UbftjaMynYZCv1gBc7j0wd8oMlJjcj4z9W83d73Ix6lYkLNm
-	iUL6UE2by7hrvGAK8eIt3A5zkXnQkrM=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-13-EFgfkw6rPDeB7Hp2cFLMGA-1; Mon, 22 Apr 2024 09:45:33 -0400
-X-MC-Unique: EFgfkw6rPDeB7Hp2cFLMGA-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-518f6868850so3401909e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:45:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713793531; x=1714398331;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kwY1DtEOHqribjOyCtgFKsXBMbmg7tj+TqpASPAmvqA=;
-        b=g9PD54d6UCBbuZczPFrYYsBWJQqhVomvH+MMmKeHRlexKn7Siwhu4OI0obQq6ae/Sn
-         vc7mTOL1eRUpmzd7LNlx2ppVckcdOt754+hEB4OTtXPOY0vTgsbnosHPzy7YVYbHNTSm
-         Zh5y94cCJF1lWmJCoD8qlKgS05IalG/VIGjteFi7ZLf5g0eVgfEbOs2WjRdveYOJVU/i
-         wj/HNHghRcl3fvKsz3Z04EgenuwRpjdkMxG2o9arhPsoflHEjfOA4rcwSOhhuRdyZ+pT
-         FxhyuMCxpRsmK7ppvzG2TMOPuWwqIFhRaEh7im3oFE/rUrb6oJrvGc1K9Y9dN0R/14I/
-         WrXw==
-X-Forwarded-Encrypted: i=1; AJvYcCUU2iUWCKwP82NyOxcbe4Kxa12cUJmqbK5Bn0G04UWhcaPon1Bmo6dprfsADQdBRgSu/RJflxG9/e+RfOFfyIC88P2YvOS2KDYxu6AR
-X-Gm-Message-State: AOJu0YwDLTtm1R9oqSZidAG0er6cIkn0sy7fHIryBQA4LdAnR364qxV9
-	aY6ppiUoAsGsXmGXJGhVpGgnVN1hmU9Xbgu03UWwq+wE/H701Hc+28cuKhRCPRJ7Vv6p6qVjB1G
-	qtrxDEiezjD0u88OzXfu7eTzU8osYDHTiinzvVeh/HsBbkbkpRSf1nlWwTF+A2A==
-X-Received: by 2002:a05:6512:60b:b0:51b:3ffa:f22d with SMTP id b11-20020a056512060b00b0051b3ffaf22dmr1621229lfe.18.1713793531031;
-        Mon, 22 Apr 2024 06:45:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEKFQpw6rKr1G9y/ZCaqi5LiAOCRXo3Yu+6uaAFYUdvzN8gHUauGRjJfN5YhPSGmG97LfhNUA==
-X-Received: by 2002:a05:6512:60b:b0:51b:3ffa:f22d with SMTP id b11-20020a056512060b00b0051b3ffaf22dmr1621212lfe.18.1713793530561;
-        Mon, 22 Apr 2024 06:45:30 -0700 (PDT)
-Received: from [10.40.98.157] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id dk17-20020a170907941100b00a55b0380a6fsm1785209ejc.10.2024.04.22.06.45.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 06:45:29 -0700 (PDT)
-Message-ID: <98b6e167-5828-41fd-ab4a-014099032d5b@redhat.com>
-Date: Mon, 22 Apr 2024 15:45:27 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D215028B;
+	Mon, 22 Apr 2024 13:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.133
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713793627; cv=fail; b=B5ZCK8afaKEVtaJkdHETqYIUy16LPHDp4+ig1T+Sk3JXcYuB8QVs3WTQtxfgs1cqskV34ye9I+5Yvkp60QohH2gRBFLPf3I1CEFn4M8LsNZw1rszXmnNnxFC+V4eCooOyOIFuXFHgROmC1Wejk5NMeWrs/lp0n0uhrtYdGEW2jw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713793627; c=relaxed/simple;
+	bh=/rPzgMUhLJxFBGL2PxT1NwJwRoh8TG9N8eEXUd1UMro=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=awHYn1tcZGGXwVEUT2w8jHOp8R7g6cVU3joqbVOOGSLs9t294LcXbTtM25Z/b+vWu4G6AAiGMGqtIYTakwR16eQW1KFZO7+o1rFyoN+Fk88cG8AZXhthYnGG8s7s/Y/hDvaE7gR77vO/XAYcT1bY7g+C0R19CkVYO76YkWvtoU0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com; spf=pass smtp.mailfrom=solid-run.com; dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b=ffWJzgf7; arc=fail smtp.client-ip=40.107.8.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CfoVCDQuH/qO3TUYpF/n/+Z3EsLR0cXmJ7Wk2bRDQ0TXsad+PRM4h4Fdv9eApZBpTIE9f8/A0hmKxy20o/Xc5Zjbcb/4nhsO1oQ8YIwf74/OiHfQV4ZXnwS1OnSumQdsYbUvXlI1tCi0FSSqjvbK4Fv1QHnNEWC6Ku2tJYPNYAV4nS+YOj8jI0LfcRj5y4/NrgegUoWAkBFgYcuZAw6aFuQbehYtZhkNcD0DqgGG1iqjGOynEL6PT3lY4Yn+QsmJwtj8e8AzILz8hldL37fmg/cvn46IJRLzfNTa1oE4H1mkfx3Cr6m8kOd3Y8uxqOGVdgwSoAFOHW/MZMSFNzNpLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/rPzgMUhLJxFBGL2PxT1NwJwRoh8TG9N8eEXUd1UMro=;
+ b=UH/hnUqFoyxb1pbw9F3qPueKcqmKlbT0321i3P7S5oNZIdxk+lIcUPOVKvMScBt+hGZwN+LYH95il28u8lZIuch01cLqvresP0biqdZUNfCZCiDV+fZw2Crn1ZBNWZ9WDc3UO/XuxkpX4f6i6gNZQovM1KrCyuzuOMvsjZcDYSFslmI60z7wfYgAYaA/ppEOAnEnp9C8QX8d2kx8ei+60J0GFjwZWbRhHDTmlhGOjZji1M3jP5vRBlJR0la2aG7aBidwIkBfksKNK218G2/E7B856rIJqK4mYWbWlwo9Vsk0MUMmuJFzmSMTT72EoDmQtqf6zJWkDmxjocBayv7gMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=solid-run.com; dmarc=pass action=none
+ header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/rPzgMUhLJxFBGL2PxT1NwJwRoh8TG9N8eEXUd1UMro=;
+ b=ffWJzgf7JI127PAgADE8AGAoWrgbwc0cW9Ujja7QRTkVEkA/mLAguKTM21dJjnSAz1/ibXSsQe3tf+eSVAZ5UEY8BPSj4m5o8yw/fB4O6EJyTkkv9t6Tm6ajkXRYEHAhJ9m73HDhtGVAFDmEMbzFulaZuz9r5yCqxYPeeKW2vhA=
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
+ by DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 22 Apr
+ 2024 13:47:01 +0000
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::c04e:8a97:516c:5529]) by AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::c04e:8a97:516c:5529%7]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
+ 13:47:01 +0000
+From: Josua Mayer <josua@solid-run.com>
+To: Andrew Lunn <andrew@lunn.ch>
+CC: Gregory Clement <gregory.clement@bootlin.com>, Sebastian Hesselbarth
+	<sebastian.hesselbarth@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Rob Herring <robh@kernel.org>, Yazan Shhady
+	<yazan.shhady@solid-run.com>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/4] arm64: dts: add description for solidrun cn9131
+ solidwan board
+Thread-Topic: [PATCH v3 4/4] arm64: dts: add description for solidrun cn9131
+ solidwan board
+Thread-Index: AQHajmt4w4zwT8gI9EGUFXDjzCdkprFnv8QAgAyX9QCAAAKKgA==
+Date: Mon, 22 Apr 2024 13:47:01 +0000
+Message-ID: <15b79794-41f4-43e0-888e-286ca1fc4321@solid-run.com>
+References: <20240414-cn9130-som-v3-0-350a67d44e0a@solid-run.com>
+ <20240414-cn9130-som-v3-4-350a67d44e0a@solid-run.com>
+ <3958052d-fc09-4c4c-a9e3-4923871cff44@solid-run.com>
+ <fd466583-3221-4b94-b66b-18840615fb71@lunn.ch>
+In-Reply-To: <fd466583-3221-4b94-b66b-18840615fb71@lunn.ch>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=solid-run.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM9PR04MB7586:EE_|DB9PR04MB9498:EE_
+x-ms-office365-filtering-correlation-id: 0d837fc9-c537-4931-e07b-08dc62d2afeb
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?Q09KaUhQMWlZVFJOZ3FEd1ZaQjJpcHpWQlI5QzlxbzFDRVJvNGVGdWRpVE51?=
+ =?utf-8?B?bCtqalVWNVBCaFJ5bGZpV1hlTUg2UUZ6TG0ycUhtWlZPQ1E0ZFhTNTEwbDRC?=
+ =?utf-8?B?a1UyK0N5UXNXOHJoTWJ1dDVyYm5jK3cvajB3MmpPaEh3Q2dnejNOVEphYUFL?=
+ =?utf-8?B?RUlUWG94VjFLeDRRQkcxN2YveXowSE0xakNXRVB0U2UwWEd1Qm1vYmg4dEFw?=
+ =?utf-8?B?c24vNUpNR3J6SHVtb01XMXQ3RlRSbTA1QS9ZaXhwVHZ3S2MwOWpVWmNSa0Za?=
+ =?utf-8?B?RUxzNC8yUHA4R01PdFB4Mm9iWElhUS8xTmE4OXBkdmVCbk9JZTFGZXRMMDkz?=
+ =?utf-8?B?Vk1lQWxPUXYwVFNqSjVMWGliZzQ2cWlCNzFZNElqZDFHYjdBWC82aEZsUTdv?=
+ =?utf-8?B?YSthZWtOclp5ZFNvN0krYzdoZW1PY25LWnFTQS9VNlhjdGpzc1hjTm14MlBl?=
+ =?utf-8?B?alp6UlFTL3ZDUnVrR3VpYVFSSmd1YnJEVDNKdm5rZmhiRld3eDVhYlNhTkhk?=
+ =?utf-8?B?VjF0akwxSVdUY0pvVm9LYzdEK2RLMW1wV0ZMWk5YN3N6SHJHeGVCa1pIb3Jm?=
+ =?utf-8?B?SW5sWlYzTW5xTk9Ubi9QbnpTT3NZQ2xMVzU4Uk5xNFBpUkpIZEQrb240S2xo?=
+ =?utf-8?B?U2w1cG1YWGxncmxQZmpTSmdRS3V3dkw4QVJsWUJ1SCsraWV6RXYzUk90U1Ux?=
+ =?utf-8?B?bGxuRlFEZ0JYUjRjSFlwMGtwLzR6dFRZZkY5UFRUcnhKTGJqNDU2blhMazBa?=
+ =?utf-8?B?bHprSGh6aGdscnFsTjJlbDk4bGpvak5UNEtycTlBWkY3QnZQZFVJS1pmSnNq?=
+ =?utf-8?B?ZWJiYmVHa3dKak1FSndIelJldUR1a0hPSk1mK1RYSUtkNlJLZitBZlJ5OXRN?=
+ =?utf-8?B?aHJEV3dWd2JiakxtV0RlRGE0SkRyOFZ6cEVuYXc3UFRBamltUEpFN3YybFhN?=
+ =?utf-8?B?V08xTHF5bTFzQnVnbkFzKy9MbnJZWFNjYUcreDUxZXNqNmFrcWVRQzVEUS9r?=
+ =?utf-8?B?VExPQjlGTHVFRjBJOG5ncEpheG83Vk5ZRWhseGxDeHlQQlNpN1o0d1luSWQ4?=
+ =?utf-8?B?MTVIdmYva3JnWFlqU3NidFdJamIxbmFwQ1d3S3lIeHJIK3V3Yk9TUXRXSDEy?=
+ =?utf-8?B?QmtvRWVpUFFnUUdwc242OWhIT2duSEh2cjNpNmNJVzBmZzFyV2cvUXgrRllw?=
+ =?utf-8?B?UkZXazlBTFhXUXh0UnNPYlNlaldkTXZueVlleWl1QTlWSGd5bVAxRXczakR1?=
+ =?utf-8?B?VUhPanorNmZmZXE3c2cxZzBMMDl5QWlHVGRaSURUd0l1Vms1YklvajJkcWZz?=
+ =?utf-8?B?SDdtbWgzdU1ydDhvL0Z2RUJNV3Y2NVhYWUNOMG1GaERzQ2lxcThpS205VUFC?=
+ =?utf-8?B?b0JsMzRmTWx4VlZnUXlyZ3BHTHR0ZEFxdjduTXdWdEo5ME53RlAwMDAwRmJK?=
+ =?utf-8?B?YmFhR3NPRlJCd3d6NGNVWTFCci9MK2VxN2NRODBybDFmLzl2a3UzK1B1ZVJp?=
+ =?utf-8?B?V3Vvc0JaSXVJZXE5Mi9vdHEyeXZtYklISnoxUzQzb24xbXFxRktvcUcrejBR?=
+ =?utf-8?B?b3NPQ0dLMjBRR2R4eXZtVVhUU0g3Sm81OSs3Q0RIdks1dWwvK0M1K0k4Y2cz?=
+ =?utf-8?B?R3htQXE2YnpKL0swUlFCcHE3TE1DTkM0VlhBV0RCb2w1Q3MyRlZZTWlSSXNC?=
+ =?utf-8?B?SndDVWUxc0JjeDk5SllXQjR5cVZDQXFLTXBHTkFtL1dpSWlwekxYY3hBajJZ?=
+ =?utf-8?B?ZHRTYU5OZmJNYlg5S3RISlloZHdIZUQzVGxkaWttTXpZYkhrZGw0NG9rSDR6?=
+ =?utf-8?B?a0xmejVpTnRaRXA2c1U0dz09?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?aUtKZmI2SU1jK3hlMGkreU1EMkV2QmJXWkJMNzJJRlJjenBMSmQxV0phdWdl?=
+ =?utf-8?B?aVovRFhQdTVManRpdm51bnY5QlNWY1pDNzMvcmJ6cERFZUtyT0xTaHlIVlVu?=
+ =?utf-8?B?NWtiQjZJZ2twM3V6MXVYbW85UWRwTkN5QXp0U2VtTkVLaExBUEQ3RnNBdTh3?=
+ =?utf-8?B?cmVib1FyQTdORE5yb0ZsRXJlcVBvdmttTnFqMEJrWlpveGVGdkFNVmxYR1kv?=
+ =?utf-8?B?elZNeFR4TUtIY3Uyd2pkSkRzNk0wZVNDOFRLNUdaUE4zMzJmRlFjcTNZc0RG?=
+ =?utf-8?B?MkZBaXIybURCMCs1dXNkUVZsNmduTVpxb3pLTFZCNlg4QkJZdnJ5M2ZEdzht?=
+ =?utf-8?B?NzIvK0pkT2s5ZHFRamg0Tm8vS3VodWpoaWdWNndjT3h0WDNaZjlUckdBdi9V?=
+ =?utf-8?B?MDFEVnN2TEd5akpSb0VuYVd1Q1JCSVBSVHBvckpRQno4bUJWWDRIZm45OU81?=
+ =?utf-8?B?Uy9kVkYvWE5hQmJNa1VTM1h6aGlZdjZoa1MzdVhwRGdWTm5KL1I0eGdQTVBQ?=
+ =?utf-8?B?SUFBUlExUGhabUxESmlIL29sTHJ3Qy8vcjBXaUhjTDBOOXN4dTQ3d1NKeXJu?=
+ =?utf-8?B?bUhHMkt5Uk1Bd0ZLenVDUjMvZWxRVmRiRGliZUFadG9reTkwRmJXUWNVY2VP?=
+ =?utf-8?B?Q1ZOMFhWcnhmL1dYSUhSMmJtM1lUY3JHL0hOazlsRzA4YzUrYTVzQnlHN1B2?=
+ =?utf-8?B?U2Q3NUhjU2JWd1VKK0FqSkN5andUczNCRlhWNWJlVGRwTDhxbDBHUDBBajcw?=
+ =?utf-8?B?aXFTcTRRMEMrempSbWZ5MFpzUDhWcDM0YjVwYXRpUTZOQVRTM2JpeVlrUjRZ?=
+ =?utf-8?B?UzBMSlpNK2lXVm84OFRkRlErUUF0OXVueXV3WCs0UXlMN2o1QzdDbzB3elY2?=
+ =?utf-8?B?U3VpUG1KaUMyT2ppTVp0K1JvM2Jham1NNFVtcS9heE9oQzcyRDUzZWlvUVJq?=
+ =?utf-8?B?VnA5SDMxOTg5ekVZU3IrNkRibDNXRTZ2M1lQdm14VklJVjF3TDNjQm1yYXh4?=
+ =?utf-8?B?YnpxVTU4QnFuQkdJTjI5YnkrZUJOWEQrajVqc24vbkNJZGdzcW9ac1ViQ0xV?=
+ =?utf-8?B?aVZuY0FkTUE2dlRKRHVVc2JFSkUwT3RGSWhIVTVpMFFNWFoxL2dObzIwZEZL?=
+ =?utf-8?B?dnRwajRkd0R1aStFREtCUDFhdFZTRVZuTHIyYTgyLzA2SFRIdUNzb0ZscU8r?=
+ =?utf-8?B?Z3lRS0JkMHZtbUtZZk0zb1FBQUpxTnFPQWtUY0xINnQyY2ZCUFlHUEp5eWx4?=
+ =?utf-8?B?TG5iVDZKcGhFbHZMNW80Qmx0YmlIeE9Sdkh0NS9TOGtVR0VsWVJYRkcyQmw1?=
+ =?utf-8?B?NHBVTEJ5UTdkd3l5UWtQNkxOWnUya0pFb0Z6d3h5YXM2ZDJxdkJ1cUhsZlhK?=
+ =?utf-8?B?Z1FzNHR0dU1vbzROK083ZzI5a3NWQWR5VGFiMkZRVnJFSGVsMVYrNXNSaEVn?=
+ =?utf-8?B?TjRzcmdxbHBFYld6SjlydDJrcmR4eTlpK1N3WWxhc3JWTzFYMTFmWlo1cjN3?=
+ =?utf-8?B?RWJmNGJNYUlyMnhBcWRMWnFFdDRBWUhmZW1QOEdsVi9PbDR0QU1NWGRmaS9Q?=
+ =?utf-8?B?NnNmTFpUT1lFaEttTlZUR3VLSnhBVVk1WFdGaXNzVGp0VDNOVWhjaTNaR0N6?=
+ =?utf-8?B?ejhRbGxUSWp6Z2djWENQSnB5dEdUZUdVUFltUEFsOTl0aGhiZ2JYZkp5eUdT?=
+ =?utf-8?B?NmI0K2VKcENiYXB0Wm5nNm9YOUpuNDVmUnRxVE5zM1ZQSEt1L2FGSXhJL3ZU?=
+ =?utf-8?B?dkEreXZoc0xMOU1wV3FwL3hRNmE4TDVPa2VYL2ZzKzIwc1FXcFBxMHBMbmJ5?=
+ =?utf-8?B?TE0yVERVTnlqQ0NkSkNFQWpXdERpMDROVnBXUHZEVmcvUFN6L0VHOERLS3B5?=
+ =?utf-8?B?K1JyQXJ5STl5dVQvV0ZZTkMwUER6dWxnK1FXS1krbTRQdzdYQ3Q5MGdsZEdN?=
+ =?utf-8?B?Z2pvNFpmTlk1OVcyVmpCN2tpZGlTUWF0RHNaMkhianIvN2xqRHZXUFhYclN4?=
+ =?utf-8?B?ZDRmOW8xY3E1Z0xBamRQWkdrcHRGZzEvbmxaTy94NWowWjVzdExsRTZIK2V0?=
+ =?utf-8?B?MnczaEtFSzdiYWhvUFd3d0MySjJrV0prMEMxRzV3dWpxSGJlKzE0d0lXNktz?=
+ =?utf-8?Q?xIpY=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F2BF5C916ECC69459B566D56EE00E418@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] platform/x86: asus-laptop: Use sysfs_emit() and
- sysfs_emit_at() to replace sprintf()
-To: yunshui <jiangyunshui@kylinos.cn>, linux-kernel@vger.kernel.org,
- platform-driver-x86@vger.kernel.org
-Cc: corentin.chary@gmail.com, luke@ljones.dev, ilpo.jarvinen@linux.intel.com,
- Ai Chao <aichao@kylinos.cn>
-References: <20240422062915.3393480-1-jiangyunshui@kylinos.cn>
-Content-Language: en-US
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240422062915.3393480-1-jiangyunshui@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: solid-run.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0d837fc9-c537-4931-e07b-08dc62d2afeb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Apr 2024 13:47:01.3689
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dGsdYfs3kej6dktYL0TgrkqRR96x+My8r6aqP7rbgzmqKF7sJAljKORAybfddohELOudrhWBsIfnU66BgMazaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9498
 
-Hi,
-
-On 4/22/24 8:29 AM, yunshui wrote:
-> As Documentation/filesystems/sysfs.rst suggested,
-> show() should only use sysfs_emit() or sysfs_emit_at() when formatting
-> the value to be returned to user space.
-> 
-> Signed-off-by: yunshui <jiangyunshui@kylinos.cn>
-> Signed-off-by: Ai Chao <aichao@kylinos.cn>
-
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-
-> ---
->  drivers/platform/x86/asus-laptop.c | 44 +++++++++++++++---------------
->  1 file changed, 22 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/asus-laptop.c b/drivers/platform/x86/asus-laptop.c
-> index 78c42767295a..ccb33d034e2a 100644
-> --- a/drivers/platform/x86/asus-laptop.c
-> +++ b/drivers/platform/x86/asus-laptop.c
-> @@ -852,8 +852,8 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
->  	 * so we don't set eof to 1
->  	 */
->  
-> -	len += sprintf(page, ASUS_LAPTOP_NAME " " ASUS_LAPTOP_VERSION "\n");
-> -	len += sprintf(page + len, "Model reference    : %s\n", asus->name);
-> +	len += sysfs_emit_at(page, len, ASUS_LAPTOP_NAME " " ASUS_LAPTOP_VERSION "\n");
-> +	len += sysfs_emit_at(page, len, "Model reference    : %s\n", asus->name);
->  	/*
->  	 * The SFUN method probably allows the original driver to get the list
->  	 * of features supported by a given model. For now, 0x0100 or 0x0800
-> @@ -862,7 +862,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
->  	 */
->  	rv = acpi_evaluate_integer(asus->handle, "SFUN", NULL, &temp);
->  	if (ACPI_SUCCESS(rv))
-> -		len += sprintf(page + len, "SFUN value         : %#x\n",
-> +		len += sysfs_emit_at(page, len, "SFUN value         : %#x\n",
->  			       (uint) temp);
->  	/*
->  	 * The HWRS method return informations about the hardware.
-> @@ -874,7 +874,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
->  	 */
->  	rv = acpi_evaluate_integer(asus->handle, "HWRS", NULL, &temp);
->  	if (ACPI_SUCCESS(rv))
-> -		len += sprintf(page + len, "HWRS value         : %#x\n",
-> +		len += sysfs_emit_at(page, len, "HWRS value         : %#x\n",
->  			       (uint) temp);
->  	/*
->  	 * Another value for userspace: the ASYM method returns 0x02 for
-> @@ -885,25 +885,25 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
->  	 */
->  	rv = acpi_evaluate_integer(asus->handle, "ASYM", NULL, &temp);
->  	if (ACPI_SUCCESS(rv))
-> -		len += sprintf(page + len, "ASYM value         : %#x\n",
-> +		len += sysfs_emit_at(page, len, "ASYM value         : %#x\n",
->  			       (uint) temp);
->  	if (asus->dsdt_info) {
->  		snprintf(buf, 16, "%d", asus->dsdt_info->length);
-> -		len += sprintf(page + len, "DSDT length        : %s\n", buf);
-> +		len += sysfs_emit_at(page, len, "DSDT length        : %s\n", buf);
->  		snprintf(buf, 16, "%d", asus->dsdt_info->checksum);
-> -		len += sprintf(page + len, "DSDT checksum      : %s\n", buf);
-> +		len += sysfs_emit_at(page, len, "DSDT checksum      : %s\n", buf);
->  		snprintf(buf, 16, "%d", asus->dsdt_info->revision);
-> -		len += sprintf(page + len, "DSDT revision      : %s\n", buf);
-> +		len += sysfs_emit_at(page, len, "DSDT revision      : %s\n", buf);
->  		snprintf(buf, 7, "%s", asus->dsdt_info->oem_id);
-> -		len += sprintf(page + len, "OEM id             : %s\n", buf);
-> +		len += sysfs_emit_at(page, len, "OEM id             : %s\n", buf);
->  		snprintf(buf, 9, "%s", asus->dsdt_info->oem_table_id);
-> -		len += sprintf(page + len, "OEM table id       : %s\n", buf);
-> +		len += sysfs_emit_at(page, len, "OEM table id       : %s\n", buf);
->  		snprintf(buf, 16, "%x", asus->dsdt_info->oem_revision);
-> -		len += sprintf(page + len, "OEM revision       : 0x%s\n", buf);
-> +		len += sysfs_emit_at(page, len, "OEM revision       : 0x%s\n", buf);
->  		snprintf(buf, 5, "%s", asus->dsdt_info->asl_compiler_id);
-> -		len += sprintf(page + len, "ASL comp vendor id : %s\n", buf);
-> +		len += sysfs_emit_at(page, len, "ASL comp vendor id : %s\n", buf);
->  		snprintf(buf, 16, "%x", asus->dsdt_info->asl_compiler_revision);
-> -		len += sprintf(page + len, "ASL comp revision  : 0x%s\n", buf);
-> +		len += sysfs_emit_at(page, len, "ASL comp revision  : 0x%s\n", buf);
->  	}
->  
->  	return len;
-> @@ -933,7 +933,7 @@ static ssize_t ledd_show(struct device *dev, struct device_attribute *attr,
->  {
->  	struct asus_laptop *asus = dev_get_drvdata(dev);
->  
-> -	return sprintf(buf, "0x%08x\n", asus->ledd_status);
-> +	return sysfs_emit(buf, "0x%08x\n", asus->ledd_status);
->  }
->  
->  static ssize_t ledd_store(struct device *dev, struct device_attribute *attr,
-> @@ -993,7 +993,7 @@ static ssize_t wlan_show(struct device *dev, struct device_attribute *attr,
->  {
->  	struct asus_laptop *asus = dev_get_drvdata(dev);
->  
-> -	return sprintf(buf, "%d\n", asus_wireless_status(asus, WL_RSTS));
-> +	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, WL_RSTS));
->  }
->  
->  static ssize_t wlan_store(struct device *dev, struct device_attribute *attr,
-> @@ -1022,7 +1022,7 @@ static ssize_t bluetooth_show(struct device *dev, struct device_attribute *attr,
->  {
->  	struct asus_laptop *asus = dev_get_drvdata(dev);
->  
-> -	return sprintf(buf, "%d\n", asus_wireless_status(asus, BT_RSTS));
-> +	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, BT_RSTS));
->  }
->  
->  static ssize_t bluetooth_store(struct device *dev,
-> @@ -1052,7 +1052,7 @@ static ssize_t wimax_show(struct device *dev, struct device_attribute *attr,
->  {
->  	struct asus_laptop *asus = dev_get_drvdata(dev);
->  
-> -	return sprintf(buf, "%d\n", asus_wireless_status(asus, WM_RSTS));
-> +	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, WM_RSTS));
->  }
->  
->  static ssize_t wimax_store(struct device *dev, struct device_attribute *attr,
-> @@ -1081,7 +1081,7 @@ static ssize_t wwan_show(struct device *dev, struct device_attribute *attr,
->  {
->  	struct asus_laptop *asus = dev_get_drvdata(dev);
->  
-> -	return sprintf(buf, "%d\n", asus_wireless_status(asus, WW_RSTS));
-> +	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, WW_RSTS));
->  }
->  
->  static ssize_t wwan_store(struct device *dev, struct device_attribute *attr,
-> @@ -1151,7 +1151,7 @@ static ssize_t ls_switch_show(struct device *dev, struct device_attribute *attr,
->  {
->  	struct asus_laptop *asus = dev_get_drvdata(dev);
->  
-> -	return sprintf(buf, "%d\n", asus->light_switch);
-> +	return sysfs_emit(buf, "%d\n", asus->light_switch);
->  }
->  
->  static ssize_t ls_switch_store(struct device *dev,
-> @@ -1182,7 +1182,7 @@ static ssize_t ls_level_show(struct device *dev, struct device_attribute *attr,
->  {
->  	struct asus_laptop *asus = dev_get_drvdata(dev);
->  
-> -	return sprintf(buf, "%d\n", asus->light_level);
-> +	return sysfs_emit(buf, "%d\n", asus->light_level);
->  }
->  
->  static ssize_t ls_level_store(struct device *dev, struct device_attribute *attr,
-> @@ -1228,7 +1228,7 @@ static ssize_t ls_value_show(struct device *dev, struct device_attribute *attr,
->  	if (!err)
->  		err = pega_int_read(asus, PEGA_READ_ALS_L, &lo);
->  	if (!err)
-> -		return sprintf(buf, "%d\n", 10 * hi + lo);
-> +		return sysfs_emit(buf, "%d\n", 10 * hi + lo);
->  	return err;
->  }
->  static DEVICE_ATTR_RO(ls_value);
-> @@ -1264,7 +1264,7 @@ static ssize_t gps_show(struct device *dev, struct device_attribute *attr,
->  {
->  	struct asus_laptop *asus = dev_get_drvdata(dev);
->  
-> -	return sprintf(buf, "%d\n", asus_gps_status(asus));
-> +	return sysfs_emit(buf, "%d\n", asus_gps_status(asus));
->  }
->  
->  static ssize_t gps_store(struct device *dev, struct device_attribute *attr,
-
+DQpBbSAyMi4wNC4yNCB1bSAxNTozNyBzY2hyaWViIEFuZHJldyBMdW5uOg0KPiBPbiBTdW4sIEFw
+ciAxNCwgMjAyNCBhdCAwMToxODo1NlBNICswMDAwLCBKb3N1YSBNYXllciB3cm90ZToNCj4+IEFt
+IDE0LjA0LjI0IHVtIDE0OjU4IHNjaHJpZWIgSm9zdWEgTWF5ZXI6DQo+Pj4gQWRkIGRlc2NyaXB0
+aW9uIGZvciB0aGUgU29saWRSdW4gQ045MTMxIFNvbGlkV0FOLCBiYXNlZCBvbiBDTjkxMzAgU29N
+DQo+Pj4gd2l0aCBhbiBleHRyYSBjb21tdW5pY2F0aW9uICBwcm9jZXNzb3Igb24gdGhlIGNhcnJp
+ZXIgYm9hcmQuDQo+Pj4NCj4+PiBUaGlzIGJvYXJkIGRpZmZlcmVudGlhdGVzIGl0c2VsZiBmcm9t
+IENOOTEzMCBDbGVhcmZvZyBieSBwcm92aWRpbmcNCj4+PiBhZGRpdGlvbmFsIFNvQyBuYXRpdmUg
+bmV0d29yayBpbnRlcmZhY2VzIGFuZCBwY2kgYnVzZXM6DQo+Pj4gMnggMTBHYnBzIFNGUCsNCj4+
+PiA0eCAxR2JwcyBSSjQ1DQo+Pj4gMXggbWluaVBDSS1FDQo+Pj4gMXggbS4yIGIta2V5IHdpdGgg
+c2F0YSwgdXNiLTIuMCBhbmQgdXNiLTMuMA0KPj4+IDF4IG0uMiBtLWtleSB3aXRoIHBjaWUgYW5k
+IHVzYi0yLjANCj4+PiAxeCBtLjIgYi1rZXkgd2l0aCBwY2llLCB1c2ItMi4wLCB1c2ItMy4wIGFu
+ZCAyeCBzaW0gc2xvdHMNCj4+PiAxeCBtcGNpZSB3aXRoIHBjaWUgb25seQ0KPj4+IDJ4IHR5cGUt
+YSB1c2ItMi4wLzMuMA0KPj4+DQo+Pj4gU2lnbmVkLW9mZi1ieTogSm9zdWEgTWF5ZXIgPGpvc3Vh
+QHNvbGlkLXJ1bi5jb20+DQo+Pj4gLS0tDQo+Pj4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWFydmVs
+bC9NYWtlZmlsZSAgICAgICAgICAgICAgIHwgICAxICsNCj4+PiAgYXJjaC9hcm02NC9ib290L2R0
+cy9tYXJ2ZWxsL2NuOTEzMS1jZi1zb2xpZHdhbi5kdHMgfCA2NTMgKysrKysrKysrKysrKysrKysr
+KysrDQo+Pj4gIDIgZmlsZXMgY2hhbmdlZCwgNjU0IGluc2VydGlvbnMoKykNCj4+Pg0KPj4+IGRp
+ZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21hcnZlbGwvTWFrZWZpbGUgYi9hcmNoL2Fy
+bTY0L2Jvb3QvZHRzL21hcnZlbGwvTWFrZWZpbGUNCj4+PiBpbmRleCAwMTlmMjI1MWQ2OTYuLjE2
+ZjlkNzE1NmQ5ZiAxMDA2NDQNCj4+PiAtLS0gYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21hcnZlbGwv
+TWFrZWZpbGUNCj4+PiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21hcnZlbGwvTWFrZWZpbGUN
+Cj4+PiBAQCAtMzAsMyArMzAsNCBAQCBkdGItJChDT05GSUdfQVJDSF9NVkVCVSkgKz0gYWM1eC1y
+ZC1jYXJyaWVyLWNuOTEzMS5kdGINCj4+PiAgZHRiLSQoQ09ORklHX0FSQ0hfTVZFQlUpICs9IGFj
+NS05OGR4MzV4eC1yZC5kdGINCj4+PiAgZHRiLSQoQ09ORklHX0FSQ0hfTVZFQlUpICs9IGNuOTEz
+MC1jZi1iYXNlLmR0Yg0KPj4+ICBkdGItJChDT05GSUdfQVJDSF9NVkVCVSkgKz0gY245MTMwLWNm
+LXByby5kdGINCj4+PiArZHRiLSQoQ09ORklHX0FSQ0hfTVZFQlUpICs9IGNuOTEzMS1jZi1zb2xp
+ZHdhbi5kdGINCj4+PiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9tYXJ2ZWxsL2Nu
+OTEzMS1jZi1zb2xpZHdhbi5kdHMgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21hcnZlbGwvY245MTMx
+LWNmLXNvbGlkd2FuLmR0cw0KPj4gY3V0DQo+Pj4gKwlsZWRzIHsNCj4+PiArCQljb21wYXRpYmxl
+ID0gImdwaW8tbGVkcyI7DQo+Pj4gKwkJcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0IjsNCj4+PiAr
+CQlwaW5jdHJsLTAgPSA8JmNwMF9sZWRfcGlucyAmY3AxX2xlZF9waW5zPjsNCj4+PiArDQo+Pj4g
+KwkJLyogZm9yIHNmcC0xIChKNDIpICovDQo+Pj4gKwkJbGVkLXNmcDEtYWN0aXZpdHkgew0KPj4+
+ICsJCQlsYWJlbCA9ICJzZnAxIjsNCj4+PiArCQkJZ3Bpb3MgPSA8JmNwMF9ncGlvMSA3IEdQSU9f
+QUNUSVZFX0hJR0g+Ow0KPj4+ICsJCQljb2xvciA9IDxMRURfQ09MT1JfSURfR1JFRU4+Ow0KPj4+
+ICsJCX07DQo+Pj4gKw0KPj4+ICsJCS8qIGZvciBzZnAtMSAoSjQyKSAqLw0KPj4+ICsJCWxlZC1z
+ZnAxLWxpbmsgew0KPj4+ICsJCQlsYWJlbCA9ICJzZnAxIjsNCj4+PiArCQkJZ3Bpb3MgPSA8JmNw
+MF9ncGlvMSA0IEdQSU9fQUNUSVZFX0hJR0g+Ow0KPj4+ICsJCQljb2xvciA9IDxMRURfQ09MT1Jf
+SURfWUVMTE9XPjsNCj4+PiArCQl9Ow0KPj4+ICsNCj4+PiArCQkvKiAoSjI4KSAqLw0KPj4+ICsJ
+CWxlZC1zZnAwLWFjdGl2aXR5IHsNCj4+PiArCQkJbGFiZWwgPSAic2ZwMCI7DQo+Pj4gKwkJCWdw
+aW9zID0gPCZjcDFfZ3BpbzIgMjIgR1BJT19BQ1RJVkVfSElHSD47DQo+Pj4gKwkJCWNvbG9yID0g
+PExFRF9DT0xPUl9JRF9HUkVFTj47DQo+Pj4gKwkJfTsNCj4+PiArDQo+Pj4gKwkJLyogKEoyOCkg
+Ki8NCj4+PiArCQlsZWQtc2ZwMC1saW5rIHsNCj4+PiArCQkJbGFiZWwgPSAic2ZwMCI7DQo+Pj4g
+KwkJCWdwaW9zID0gPCZjcDFfZ3BpbzIgMjMgR1BJT19BQ1RJVkVfSElHSD47DQo+Pj4gKwkJCWNv
+bG9yID0gPExFRF9DT0xPUl9JRF9ZRUxMT1c+Ow0KPj4+ICsJCX07DQo+Pj4gKwl9Ow0KPj4+ICsN
+Cj4+IEhlcmUgSSBhbSB1bmNlcnRhaW4gd2hhdCB0byBwdXQgaW4gdGhlIGxhYmVsLg0KPj4gRWFj
+aCBTRlAgaGFzIGEgc2luZ2xlIGR1YWwtY29sb3IgKDMgdGVybWluYWxzKSBMRUQsDQo+PiB3aXRo
+IG9uZSBncGlvIGNvbnRyb2xsaW5nIGVhY2ggY29sb3VyLg0KPj4NCj4+IENvbG91cnMgYXJlIHNp
+bWlsYXIgdG8gUko0NSBjb25uZWN0b3JzICh5ZWxsb3csIGdyZWVuKSwNCj4+IGFuZCBhcmUgaW50
+ZW5kZWQgZm9yIHRoZSBzYW1lIHB1cnBvc2U6IGxpbmssIGFjdGl2aXR5Lg0KPiBGb3IgdGhlIHN3
+aXRjaCBMRURzIHlvdSB1c2VkIGxhYmVsID0gIkxFRDEwIjsgRG9lcyB0aGUgc2lsayBzY3JlZW4N
+Cj4gaGF2ZSBzaW1pbGFyIG51bWJlcnMgZm9yIHRoZXNlIExFRHM/DQpDb3JyZWN0LCBvbiBDTjkx
+MzAgQ2xlYXJmb2cgUHJvIERTQSBzd2l0Y2gsIGFsbCBMRURzIGFyZSBsYWJlbGVkDQppbmRpdmlk
+dWFsbHkgb24gdGhlIHNpbGsgc2NyZWVuLg0KDQpUaGUgU29saWRXQU4gU0ZQIGxlZHMgYXJlIGR1
+YWwtY29sb3VyIGxlZHMgd2l0aCAzIHRlcm1pbmFsczoNCmFub2RlIHRvIDMuM1YsIDJ4IGNhdGhv
+ZGUgdG8gZ3Bpby1jb250cm9sbGVkIHRyYW5zaXN0b3JzLg0KVGhleSBhcmUgbGFiZWxlZCBvbiB0
+aGUgc2lsay1zY3JlZW4gYXMgIkxFRDkiLCAiTEVEMTAiLg0KDQpEdXBsaWNhdGUgbGFiZWxzIGFy
+ZSBub3QgZ3JlYXQsIGlzIHRoZXJlIGEgYmV0dGVyIHdheT8NCm9sZCBzdHlsZSAiTEVEOTpncmVl
+biIgZS5nLiAuLi4/DQoNCg==
 
