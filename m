@@ -1,175 +1,223 @@
-Return-Path: <linux-kernel+bounces-153987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93AC48AD5BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 150378AD592
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FBC3282D13
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:11:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF3EF281478
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306941553B8;
-	Mon, 22 Apr 2024 20:11:13 +0000 (UTC)
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B87155397;
+	Mon, 22 Apr 2024 20:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IRrLRobi"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00ADF1553A3;
-	Mon, 22 Apr 2024 20:11:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A93153837
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713816672; cv=none; b=DQdZD0y5Vma47ej85kAClt7tzea2QH11fXRKYko53BU8qSi+ZdYDjy/dzvH5EoXxh/mhHhAl4tUlI6ncWexL+j8s87Kh1cz6NThdL80mqEbcYBNteYCBJq5yok6XuRZPJ8N+rnydzaii34GgmZrBOB5sLdtbsTeoWE73hnFGW+c=
+	t=1713816316; cv=none; b=R+W/4H9nzSUqkvaFrFzy5BI6dMkyIJ0d/pYX7olHUeH4NgSzMwIHczr/2HRC//Nx1IqsbVYpTdX6l22O41cSfFyo9/SeHm3+nuo871xLdcfiwMHQ1C2SFn7pBpD/DgcZBu4kQWXEAKuQpV3NmiPngypA4tai61wefITQS214VDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713816672; c=relaxed/simple;
-	bh=eudLHhevbRgKy1GmiMEyW4Ix3pXn7T8fj586KMAXp6g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bVtKUMT7UhMgvxW/7bV+AW6wWkU0oPBHtIcK7g2hRUBU0tfiPESh9G1q6X/KQTfo1LSYXtVH7+vbTNqgAZTjFrKBxdFVFS0Czoe83VeTUbWgOnTBjV+lUq3Dstoudogtr6t05HhHOFZbagYZx1BiSck1ar5869O64goz3fNnuy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-419fc79e4dcso13699365e9.1;
-        Mon, 22 Apr 2024 13:11:10 -0700 (PDT)
+	s=arc-20240116; t=1713816316; c=relaxed/simple;
+	bh=n5uIrr770JPV6GuY2AOplyzbO/isWDPuTA3wIXzCBHg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Sq0azCw90spvhKnDUJNKJB54Mt9gggeaxlRA9E/XSF9L5Cuh0RApcA9xSa0HISwZCAueuLD2eBi3AlHsKrfq2JPpdSf5REavOg3/GKuQdrCKCIvEs9YPveJeMe75gXCfoTxQ1ydl6SW106HCQtQ4VB0IQ7pUCarKCkr/OiVJlBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IRrLRobi; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713816313;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3xwnCN3v0hOU8LktPickNEtFG3k1rFXHPQihbXeDdGs=;
+	b=IRrLRobir83iMB9ZcXabztFSvmn8S4fCthxpcIwS582LY8mH4IbLbqieY/loQZkkekUrxB
+	AuIrEj7bh53AKnxHJyJzFTXIjZOI/8GGHARFTEjJm9Oh+BF48Q25dtc2IK/2S1kn944DfB
+	WzOskATqLBTUOGtQTag4DfgAbco1IZE=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-591-HRhbvP30NBCOe-LfgZF5iQ-1; Mon, 22 Apr 2024 16:05:11 -0400
+X-MC-Unique: HRhbvP30NBCOe-LfgZF5iQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-419ec098d81so10100545e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:05:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713816669; x=1714421469;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JiZH2HuWtN2RM55UIzIoV8b21h1ck/6OdH9T0Un1VM8=;
-        b=F6diHPYUQ/Qs8FiTF+WU+szwjzQ+GNnrcj2YRgsEzb2SGBv6KTmCy51j892vmOeYxq
-         v1z5hhOFDLae2UQyMsIp2yNopEODpCfBzUgrjr8iNEUZS87sOh+oMol3eXej+9vyyZG9
-         Xs4OAVVjxlhm98zD+Ib4wTURjzupMUs33D3Nz39a3Z5M5+7ztx8NJdjhd5nTI7DJXqZg
-         toztK+1cPBnXzCohmHFE6dEEr2Uk2pzwnz9eQQCcSlf80oznRJrwSz9EKY73rLADs5Fv
-         060AA6On8CGZBx4S/pD/JRv5x7JP4UImmMzD+ws1xZVKuBJPUVjwPwPh/BnATcEeCW6c
-         rvHA==
-X-Forwarded-Encrypted: i=1; AJvYcCVWvqOUj1XDiScfZEQ+GkAfshNvtc6D3QGl1LeyIPK4fFiAfWEFP4nxe0OE8OYKjHNCL0cF0o+Yyii/yW8LGSrD0/JmzLto+phbSwjClh+hu/NkIXt8ySqezrrhIIFwnK7JXu+4AvcwWObo
-X-Gm-Message-State: AOJu0YzrP7ywhFUE04ZsYTX6B8L+S6s4c7KdVT1AO060H+shJ8R9biOz
-	T5erhjVibP5L5VSlbmiYsvr51U+Uwbu1oJWGFEg3lvtR+B43CLh2wcJEvVRlvK0=
-X-Google-Smtp-Source: AGHT+IG3Gx698bdfIKk4hJj71qjoXNK9mGtBo//5YyWkZYlcdLzvIEqNk0BTcSARnvV+z/2G+kGPjw==
-X-Received: by 2002:a05:600c:4ec6:b0:419:e25e:ef62 with SMTP id g6-20020a05600c4ec600b00419e25eef62mr4046133wmq.40.1713816669111;
-        Mon, 22 Apr 2024 13:11:09 -0700 (PDT)
-Received: from [172.16.1.217] ([80.95.105.245])
-        by smtp.gmail.com with ESMTPSA id fc14-20020a05600c524e00b004161af729f4sm17712488wmb.31.2024.04.22.13.11.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 13:11:08 -0700 (PDT)
-Message-ID: <afeae80e-d854-4f38-981e-7e9f414400b7@kernel.org>
-Date: Mon, 22 Apr 2024 19:28:54 +0200
+        d=1e100.net; s=20230601; t=1713816311; x=1714421111;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3xwnCN3v0hOU8LktPickNEtFG3k1rFXHPQihbXeDdGs=;
+        b=hLSnJfCuUMAc6ucRaBsFdggz0TVCfAoIq1Vp5EHayVIGw5Le/G9FIp9c8nAkAOsHMt
+         vm689c9Bp05MQcw659XZCDLahi7Qk8W6uotpDiHeR02cr/DX4cNT7HONgNQkhPffmiQq
+         +E9kPpSYBWtOlGDZKhBgtV5OVHjSqhlDM9DHKZFLrHi6QNPlB6XtPfWIEQktM55pDwxL
+         yHIjTgvkkGjAhq3FFMSW/RRC6FtSkudn4Rmtgv4ozAPb6OTv3kLoACuIl0NO0xWRu9EI
+         Dwaiy9ujWD791X7LVisoIpkfW+RrL7qk9pR9N8hTpUkFdh5FCTWGR79jbAWJjRL6fZM3
+         D0nA==
+X-Forwarded-Encrypted: i=1; AJvYcCWTszjWShZVllXm1+50GlZ2w2c6TwcWOE7B3eC9w2XhTZR0MtD4gkHnqihXqEz+51RvRxGzDr6vV6UZYLeqzfmMY/L31CiMuWv3IkAx
+X-Gm-Message-State: AOJu0YxKrc1s+jFjuRRJzGXLnoRM2ghBoN6OQFjHqD/7vH9irpjdtbdp
+	hsaSrxzdeUeu3EhCuuNFjybQl418Qwl60aT/pVnMbIL15I8vA+bs4MK4Nvcpil1nQiHEvADgfbA
+	e2UikeB/KvG/JJ1ilbDJ4L5R0JYtw2nuHjZtaZ8GE103Vld4K+BW+vlfBXfrYfQ==
+X-Received: by 2002:a05:600c:1554:b0:418:a620:15a1 with SMTP id f20-20020a05600c155400b00418a62015a1mr7620682wmg.30.1713816310656;
+        Mon, 22 Apr 2024 13:05:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEJrcxstD6w10mAE3B1Bou1FLczqnWqc3tQiXTtd/rag2Kfxir5RyTm6J9FFY7JxJfwChH3qQ==
+X-Received: by 2002:a05:600c:1554:b0:418:a620:15a1 with SMTP id f20-20020a05600c155400b00418a62015a1mr7620642wmg.30.1713816309507;
+        Mon, 22 Apr 2024 13:05:09 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:7429:3c00:dc4a:cd5:7b1c:f7c2])
+        by smtp.gmail.com with ESMTPSA id h16-20020adffd50000000b00346d3a626b8sm13004737wrs.3.2024.04.22.13.05.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 13:05:08 -0700 (PDT)
+Date: Mon, 22 Apr 2024 16:05:06 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: Cindy Lu <lulu@redhat.com>, linux-kernel@vger.kernel.org,
+	virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v5 3/5] vduse: Add function to get/free the pages for
+ reconnection
+Message-ID: <20240422160348-mutt-send-email-mst@kernel.org>
+References: <20240412133017.483407-1-lulu@redhat.com>
+ <20240412133017.483407-4-lulu@redhat.com>
+ <20240417052723-mutt-send-email-mst@kernel.org>
+ <CACGkMEtv56TSaA=W337hFU3VALfbrGMcEdu25O4Ecx7guUacyQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/3] serial: sc16is7xx: add support for EXAR XR20M1172
- UART
-To: "Konstantin P." <ria.freelander@gmail.com>
-Cc: Konstantin Pugin <rilian.la.te@ya.ru>, krzk@kernel.org, conor@kernel.org,
- lkp@intel.com, vz@mleia.com, robh@kernel.org, jcmvbkbc@gmail.com,
- nicolas.ferre@microchip.com, manikanta.guntupalli@amd.com, corbet@lwn.net,
- ychuang3@nuvoton.com, u.kleine-koenig@pengutronix.de,
- Maarten.Brock@sttls.nl, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Herve Codina <herve.codina@bootlin.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Hugo Villeneuve <hvilleneuve@dimonoff.com>,
- Lech Perczak <lech.perczak@camlingroup.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20240420182223.1153195-1-rilian.la.te@ya.ru>
- <20240420182223.1153195-4-rilian.la.te@ya.ru>
- <7cf31245-b2a1-419c-add6-a6a50a3f3cf1@kernel.org>
- <CAF1WSuwCdonhyzAKX6EeyWAHNX11bV+tgCLJ4vXuEXTAceVvzA@mail.gmail.com>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <CAF1WSuwCdonhyzAKX6EeyWAHNX11bV+tgCLJ4vXuEXTAceVvzA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACGkMEtv56TSaA=W337hFU3VALfbrGMcEdu25O4Ecx7guUacyQ@mail.gmail.com>
 
-On 22. 04. 24, 14:00, Konstantin P. wrote:
-> On Mon, Apr 22, 2024 at 9:30 AM Jiri Slaby <jirislaby@kernel.org> wrote:
->>
->> On 20. 04. 24, 20:22, Konstantin Pugin wrote:
->>> From: Konstantin Pugin <ria.freelander@gmail.com>
->>>
->>> XR20M1172 register set is mostly compatible with SC16IS762, but it has
->>> a support for additional division rates of UART with special DLD register.
->>> So, add handling this register by appropriate devicetree bindings.
->> ...
->>> --- a/drivers/tty/serial/sc16is7xx.c
->>> +++ b/drivers/tty/serial/sc16is7xx.c
->> ...
->>> @@ -555,18 +578,43 @@ static bool sc16is7xx_regmap_noinc(struct device *dev, unsigned int reg)
->>>        return reg == SC16IS7XX_RHR_REG;
->>>    }
->>>
->>> +static bool sc16is7xx_has_dld(struct device *dev)
->>> +{
->>> +             struct sc16is7xx_port *s = dev_get_drvdata(dev);
->>> +
->>> +             if (s->devtype == &xr20m1172_devtype)
->>> +                     return true;
->>> +             return false;
->>
->> :) so this should simply be:
->>
->> return s->devtype == &xr20m1172_devtype;
->>
-> I especially want to avoid this construction, because it will lead to
-> idea than we does not have other
-> DLD-capable UARTS, which is simply not true, there is, for example,
-> XR20M1280 UART, which has roughly the same register set
-> (https://www.alldatasheet.com/datasheet-pdf/pdf/445109/EXAR/XR20M1280.html).
-> I simply do not have other devices, so I do not
-> want to risk sending untested patches upstream.
+On Thu, Apr 18, 2024 at 08:57:51AM +0800, Jason Wang wrote:
+> On Wed, Apr 17, 2024 at 5:29 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Fri, Apr 12, 2024 at 09:28:23PM +0800, Cindy Lu wrote:
+> > > Add the function vduse_alloc_reconnnect_info_mem
+> > > and vduse_alloc_reconnnect_info_mem
+> > > These functions allow vduse to allocate and free memory for reconnection
+> > > information. The amount of memory allocated is vq_num pages.
+> > > Each VQS will map its own page where the reconnection information will be saved
+> > >
+> > > Signed-off-by: Cindy Lu <lulu@redhat.com>
+> > > ---
+> > >  drivers/vdpa/vdpa_user/vduse_dev.c | 40 ++++++++++++++++++++++++++++++
+> > >  1 file changed, 40 insertions(+)
+> > >
+> > > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > > index ef3c9681941e..2da659d5f4a8 100644
+> > > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> > > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > > @@ -65,6 +65,7 @@ struct vduse_virtqueue {
+> > >       int irq_effective_cpu;
+> > >       struct cpumask irq_affinity;
+> > >       struct kobject kobj;
+> > > +     unsigned long vdpa_reconnect_vaddr;
+> > >  };
+> > >
+> > >  struct vduse_dev;
+> > > @@ -1105,6 +1106,38 @@ static void vduse_vq_update_effective_cpu(struct vduse_virtqueue *vq)
+> > >
+> > >       vq->irq_effective_cpu = curr_cpu;
+> > >  }
+> > > +static int vduse_alloc_reconnnect_info_mem(struct vduse_dev *dev)
+> > > +{
+> > > +     unsigned long vaddr = 0;
+> > > +     struct vduse_virtqueue *vq;
+> > > +
+> > > +     for (int i = 0; i < dev->vq_num; i++) {
+> > > +             /*page 0~ vq_num save the reconnect info for vq*/
+> > > +             vq = dev->vqs[i];
+> > > +             vaddr = get_zeroed_page(GFP_KERNEL);
+> >
+> >
+> > I don't get why you insist on stealing kernel memory for something
+> > that is just used by userspace to store data for its own use.
+> > Userspace does not lack ways to persist data, for example,
+> > create a regular file anywhere in the filesystem.
+> 
+> Good point. So the motivation here is to:
+> 
+> 1) be self contained, no dependency for high speed persist data
+> storage like tmpfs
 
-Sorry, what?
+No idea what this means.
 
--- 
-js
-suse labs
+> 2) standardize the format in uAPI which allows reconnection from
+> arbitrary userspace, unfortunately, such effort was removed in new
+> versions
+
+And I don't see why that has to live in the kernel tree either.
+
+> If the above doesn't make sense, we don't need to offer those pages by VDUSE.
+> 
+> Thanks
+> 
+> 
+> >
+> >
+> >
+> > > +             if (vaddr == 0)
+> > > +                     return -ENOMEM;
+> > > +
+> > > +             vq->vdpa_reconnect_vaddr = vaddr;
+> > > +     }
+> > > +
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static int vduse_free_reconnnect_info_mem(struct vduse_dev *dev)
+> > > +{
+> > > +     struct vduse_virtqueue *vq;
+> > > +
+> > > +     for (int i = 0; i < dev->vq_num; i++) {
+> > > +             vq = dev->vqs[i];
+> > > +
+> > > +             if (vq->vdpa_reconnect_vaddr)
+> > > +                     free_page(vq->vdpa_reconnect_vaddr);
+> > > +             vq->vdpa_reconnect_vaddr = 0;
+> > > +     }
+> > > +
+> > > +     return 0;
+> > > +}
+> > >
+> > >  static long vduse_dev_ioctl(struct file *file, unsigned int cmd,
+> > >                           unsigned long arg)
+> > > @@ -1672,6 +1705,8 @@ static int vduse_destroy_dev(char *name)
+> > >               mutex_unlock(&dev->lock);
+> > >               return -EBUSY;
+> > >       }
+> > > +     vduse_free_reconnnect_info_mem(dev);
+> > > +
+> > >       dev->connected = true;
+> > >       mutex_unlock(&dev->lock);
+> > >
+> > > @@ -1855,12 +1890,17 @@ static int vduse_create_dev(struct vduse_dev_config *config,
+> > >       ret = vduse_dev_init_vqs(dev, config->vq_align, config->vq_num);
+> > >       if (ret)
+> > >               goto err_vqs;
+> > > +     ret = vduse_alloc_reconnnect_info_mem(dev);
+> > > +     if (ret < 0)
+> > > +             goto err_mem;
+> > >
+> > >       __module_get(THIS_MODULE);
+> > >
+> > >       return 0;
+> > >  err_vqs:
+> > >       device_destroy(&vduse_class, MKDEV(MAJOR(vduse_major), dev->minor));
+> > > +err_mem:
+> > > +     vduse_free_reconnnect_info_mem(dev);
+> > >  err_dev:
+> > >       idr_remove(&vduse_idr, dev->minor);
+> > >  err_idr:
+> > > --
+> > > 2.43.0
+> >
 
 
