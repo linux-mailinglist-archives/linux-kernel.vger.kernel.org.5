@@ -1,213 +1,225 @@
-Return-Path: <linux-kernel+bounces-152744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7D488AC3B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 135D38AC3B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:33:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2B7AB2129D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:31:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CE81B21F19
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C582418037;
-	Mon, 22 Apr 2024 05:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F88918645;
+	Mon, 22 Apr 2024 05:32:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hyp9YZ1L"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="o6tQD90I"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 731E41759F
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 05:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39CD511CAB
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 05:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713763906; cv=none; b=LlmrWLvZ6xqaWPHsrFbzLwgkwDstRDMBO1SB2s7U+mD4VakUa2Y/IGtC/dt260hnE9LVyWK5njZ5M/ckyNm9H1nFe3ztOobABhRhe3DnvRSz+0sUOYajLsuPWkV8qIp3Rch9pPcK0KpclVuj1kMROmtEgDUsKfrxRPknQWn8r0c=
+	t=1713763972; cv=none; b=IdCLKkmPMma1kE7Rwe4vxZ/oOmPWPw/aQv1X804GAzUevXUIqk8bG/gtRqEsANm2rVWxxAWmVO0DQmne8zKdEeskmi1Nat6eMtEJowp0Xl5Efb8qftgqX8ik/tEWoN6qerhauvnUte+Lz0ojwGcK/B56kaynNwk+/yyXoaF6h4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713763906; c=relaxed/simple;
-	bh=b35dIzQ8H1LWpzZGyNzi6AKj8qjN/T9a35X9jCsZn5k=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=stbB346kH7yVjrcNyrLuNwLyIXJIvrcMxcsDvgHs865aK7gR1BriIY9cdlTgrrs/JdHM+FivKnIqRgYW7pRRSW23JI4kknAn+0bcLUXii1icFu6F5Vdd3QcXqNWPDRPk9RKoORzwgY3EEDN3hE26WxWX8f8rLtIF/2nBjkXuFp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hyp9YZ1L; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713763904; x=1745299904;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=b35dIzQ8H1LWpzZGyNzi6AKj8qjN/T9a35X9jCsZn5k=;
-  b=hyp9YZ1LkUwiDF9Nf+qCj6zfkR04+eKfZBK+LnbFe+nk4znT2z71gDIr
-   smZcWcCFavUyF8/ZpT3DuAFeeIeXqA4xNzj1RNmWalL7Yf+Ieq9kcJZUb
-   Z6giuXb0Q1lmaToMOUkfOdAnc9e6Gz+NMjUWeqpSMUGo+dr7zo0STlnze
-   cjKMI2WmFNXySpgPmS3UtlveHjRRARYp/yW2pdfdPqkm4V//mpyDk9uvw
-   htFqKa3YdYixlq+G9pBBGXXU6K/R7RyWrl8RcFJaaSOPq9qqIsWBxk14f
-   /leYlAflqw0luke8JMaZev3ipucCZgTwMecNI7G0PZlZPpayehq9lRF6N
-   g==;
-X-CSE-ConnectionGUID: f9INaL+BSNKv+8vC5GuUOQ==
-X-CSE-MsgGUID: vSPylyDvRqq8v3HDeHHW3Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="26805136"
-X-IronPort-AV: E=Sophos;i="6.07,219,1708416000"; 
-   d="scan'208";a="26805136"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2024 22:31:43 -0700
-X-CSE-ConnectionGUID: ltzPMmlaTd27KwbEGFQI5w==
-X-CSE-MsgGUID: W5E4fW8LSdip7O2XkH9JvQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,219,1708416000"; 
-   d="scan'208";a="24347302"
-Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
-  by orviesa006.jf.intel.com with ESMTP; 21 Apr 2024 22:31:41 -0700
-Message-ID: <40c3b216-f3bb-4058-88a1-45de433432f3@linux.intel.com>
-Date: Mon, 22 Apr 2024 13:30:19 +0800
+	s=arc-20240116; t=1713763972; c=relaxed/simple;
+	bh=BwCdWcMLmgKeTy/zl1TsPBXPPuxkE/Xsmo260vkgIDo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DgnW6ZXKPbu7aAUJBxhL5PAdiEtwrkjeKGLv5naHvcOMwRAgBYoiNOQpirhNPYY2HqXgJ1xMcjT3GdqkUuAGbQx5Pf5snMaOjtpaKbP8Yz7U5ZWTXvTTu7SMEmGjrKE4VyubxDNOEag8U0e0dJCKKj/3jtFb/hAaT5kfqgVysdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=o6tQD90I; arc=none smtp.client-ip=209.85.166.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7da3ec3e044so147604639f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 22:32:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1713763970; x=1714368770; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+mSLO7qsMu9ScrRVYm3QHz5Wa7uqrp1Jo4sRqwEm41k=;
+        b=o6tQD90ICgKGUhcbrhk1jF3W+tlwQyTzOMCPEuDBKXwb7XAeo2TRjRwTAGKDHdsGBX
+         4t/GLY8tVkSf5IQ7cDbqBdQRiKlYUV2yWxdhi7+MrHdhuMP0d7kULVF61AWI+kl/ALtH
+         VmtSmgQQ/LxURYZZjf7JZxM4vSOYG2XuVWcTnzVVmvfd2OQ9T9d/M43yOF2piP9ncmBZ
+         i0/Y/WGQAV9wZON4/r+Egvl03Ma0PgSKEuvw57rs6UwMznjUI2yTi4AD9w7HrMowtZTm
+         OuVRzWteq23FoVe+983P33VvHrVz+rzc4axkuGn/HJC+MfliELkHuOxMlm8mgLps3dxL
+         z2ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713763970; x=1714368770;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+mSLO7qsMu9ScrRVYm3QHz5Wa7uqrp1Jo4sRqwEm41k=;
+        b=hH9UJrdylhz6hUj6MBO6JuZihaGccdAZGgIp4uffrIkFv+vW3GAVri82Yz21L2gYVa
+         D9p+/Cq9jGfC4ZjYIlnNyHM/Pz5XSF/nahapEM6BrRnVKdW0dTn64PBywtFcQMWiyoQS
+         77M4sZ+NUbj/+N/DTGVquhzQUAMgBlHg9+9A5xDaztPEwoohQ3qa/HdJXXt4w1iA+UTQ
+         CRhWxhinQUHk1j32otcU7Sea8HIQNpcquxioDhcVplKgYXTKusMeqlIU/L3/n6GLBP4u
+         UJU66f2YK1N6blFfE/VqpYv9ZMckFr2q7oHPVYGkt+0LxnF5xdvz8BboFjJqE/XWlgRX
+         A8FA==
+X-Gm-Message-State: AOJu0YyngzjoXx9TSyTTcsKquONeaLTYxuGEfW/dABw1xVwziQP10HZ9
+	TDykn1nFS/gDe5nQ4d7hts/piSo8pKKNoew9O5dgv86qwoNj23PtpFmqnNj/sBGez3WeuS0P4jk
+	ZK2DOXcsCo86GksWDqlqSqHZ35eVtFTAwbeUZhA==
+X-Google-Smtp-Source: AGHT+IEqy96d9EYvPfCKQbMdPNUPl6DZT781YdOhP9O47wLCNvRvtopYWldFwJankgX0sYeovuf51APBEHy0ooQ/k/Q=
+X-Received: by 2002:a05:6e02:144d:b0:36a:686:b3bf with SMTP id
+ p13-20020a056e02144d00b0036a0686b3bfmr13479495ilo.17.1713763970407; Sun, 21
+ Apr 2024 22:32:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Tina Zhang <tina.zhang@intel.com>,
- Yi Liu <yi.l.liu@intel.com>, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 02/12] iommu/vt-d: Add cache tag invalidation helpers
-To: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, Kevin Tian <kevin.tian@intel.com>,
- Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240416080656.60968-1-baolu.lu@linux.intel.com>
- <20240416080656.60968-3-baolu.lu@linux.intel.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240416080656.60968-3-baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240420151741.962500-1-atishp@rivosinc.com> <20240420151741.962500-25-atishp@rivosinc.com>
+In-Reply-To: <20240420151741.962500-25-atishp@rivosinc.com>
+From: Anup Patel <anup@brainfault.org>
+Date: Mon, 22 Apr 2024 11:02:39 +0530
+Message-ID: <CAAhSdy0Bo1+SomNva+A_Phd=gu_+wcqXTV_-ioqCCVEr1cXJBA@mail.gmail.com>
+Subject: Re: [PATCH v8 24/24] KVM: riscv: selftests: Add commandline option
+ for SBI PMU test
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Andrew Jones <ajones@ventanamicro.com>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, samuel.holland@sifive.com, 
+	Conor Dooley <conor.dooley@microchip.com>, Juergen Gross <jgross@suse.com>, 
+	kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
+	Will Deacon <will@kernel.org>, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/16/24 4:06 PM, Lu Baolu wrote:
-> Add several helpers to invalidate the caches after mappings in the
-> affected domain are changed.
-> 
-> - cache_tag_flush_range() invalidates a range of caches after mappings
->    within this range are changed. It uses the page-selective cache
->    invalidation methods.
-> 
-> - cache_tag_flush_all() invalidates all caches tagged by a domain ID.
->    It uses the domain-selective cache invalidation methods.
-> 
-> - cache_tag_flush_range_np() invalidates a range of caches when new
->    mappings are created in the domain and the corresponding page table
->    entries change from non-present to present.
-> 
-> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+On Sat, Apr 20, 2024 at 5:18=E2=80=AFAM Atish Patra <atishp@rivosinc.com> w=
+rote:
+>
+> SBI PMU test comprises of multiple tests and user may want to run
+> only a subset depending on the platform. The most common case would
+> be to run all to validate all the tests. However, some platform may
+> not support all events or all ISA extensions.
+>
+> The commandline option allows user to disable any set of tests if
+> they want to.
+>
+> Suggested-by: Andrew Jones <ajones@ventanamicro.com>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+
+LGTM.
+
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
+
 > ---
->   drivers/iommu/intel/iommu.h |  14 +++
->   drivers/iommu/intel/cache.c | 195 ++++++++++++++++++++++++++++++++++++
->   drivers/iommu/intel/iommu.c |  12 ---
->   3 files changed, 209 insertions(+), 12 deletions(-)
-
-[...]
-
+>  .../selftests/kvm/riscv/sbi_pmu_test.c        | 73 ++++++++++++++++---
+>  1 file changed, 64 insertions(+), 9 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c b/tools/tes=
+ting/selftests/kvm/riscv/sbi_pmu_test.c
+> index 0fd9b76ae838..69bb94e6b227 100644
+> --- a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+> +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+> @@ -33,6 +33,13 @@ static unsigned long counter_mask_available;
+>
+>  static bool illegal_handler_invoked;
+>
+> +#define SBI_PMU_TEST_BASIC     BIT(0)
+> +#define SBI_PMU_TEST_EVENTS    BIT(1)
+> +#define SBI_PMU_TEST_SNAPSHOT  BIT(2)
+> +#define SBI_PMU_TEST_OVERFLOW  BIT(3)
 > +
-> +/*
-> + * Invalidates a range of IOVA from @start (inclusive) to @end (inclusive)
-> + * when the memory mappings in the target domain have been modified.
-> + */
-> +void cache_tag_flush_range(struct dmar_domain *domain, unsigned long start,
-> +			   unsigned long end, int ih)
+> +static int disabled_tests;
+> +
+>  unsigned long pmu_csr_read_num(int csr_num)
+>  {
+>  #define switchcase_csr_read(__csr_num, __val)          {\
+> @@ -608,19 +615,67 @@ static void test_vm_events_overflow(void *guest_cod=
+e)
+>         test_vm_destroy(vm);
+>  }
+>
+> -int main(void)
+> +static void test_print_help(char *name)
 > +{
-> +	unsigned long pages, mask, addr;
-> +	struct cache_tag *tag;
-> +	unsigned long flags;
+> +       pr_info("Usage: %s [-h] [-d <test name>]\n", name);
+> +       pr_info("\t-d: Test to disable. Available tests are 'basic', 'eve=
+nts', 'snapshot', 'overflow'\n");
+> +       pr_info("\t-h: print this help screen\n");
+> +}
 > +
-> +	addr = calculate_psi_aligned_address(start, end, &pages, &mask);
+> +static bool parse_args(int argc, char *argv[])
+> +{
+> +       int opt;
 > +
-> +	spin_lock_irqsave(&domain->cache_lock, flags);
-> +	list_for_each_entry(tag, &domain->cache_tags, node) {
-> +		struct intel_iommu *iommu = tag->iommu;
-> +		struct device_domain_info *info;
-> +		u16 sid;
+> +       while ((opt =3D getopt(argc, argv, "hd:")) !=3D -1) {
+> +               switch (opt) {
+> +               case 'd':
+> +                       if (!strncmp("basic", optarg, 5))
+> +                               disabled_tests |=3D SBI_PMU_TEST_BASIC;
+> +                       else if (!strncmp("events", optarg, 6))
+> +                               disabled_tests |=3D SBI_PMU_TEST_EVENTS;
+> +                       else if (!strncmp("snapshot", optarg, 8))
+> +                               disabled_tests |=3D SBI_PMU_TEST_SNAPSHOT=
+;
+> +                       else if (!strncmp("overflow", optarg, 8))
+> +                               disabled_tests |=3D SBI_PMU_TEST_OVERFLOW=
+;
+> +                       else
+> +                               goto done;
+> +                       break;
+> +               case 'h':
+> +               default:
+> +                       goto done;
+> +               }
+> +       }
 > +
-> +		switch (tag->type) {
-> +		case CACHE_TAG_IOTLB:
-> +		case CACHE_TAG_NESTING_IOTLB:
-> +			if (domain->use_first_level) {
-> +				qi_flush_piotlb(iommu, tag->domain_id,
-> +						tag->pasid, addr, pages, ih);
-> +			} else {
-> +				/*
-> +				 * Fallback to domain selective flush if no
-> +				 * PSI support or the size is too big.
-> +				 */
-> +				if (!cap_pgsel_inv(iommu->cap) ||
-> +				    mask > cap_max_amask_val(iommu->cap))
-> +					iommu->flush.flush_iotlb(iommu, tag->domain_id,
-> +								 0, 0, DMA_TLB_DSI_FLUSH);
-> +				else
-> +					iommu->flush.flush_iotlb(iommu, tag->domain_id,
-> +								 addr | ih, mask,
-> +								 DMA_TLB_PSI_FLUSH);
-> +			}
-> +			break;
-> +		case CACHE_TAG_NESTING_DEVTLB:
-> +			/*
-> +			 * Address translation cache in device side caches the
-> +			 * result of nested translation. There is no easy way
-> +			 * to identify the exact set of nested translations
-> +			 * affected by a change in S2. So just flush the entire
-> +			 * device cache.
-> +			 */
-> +			addr = 0;
-> +			mask = MAX_AGAW_PFN_WIDTH;
-> +			fallthrough;
-
-I realized that the logic above is not right. Setting both @addr and
-@mask to 0 doesn't means flush all caches on the device. I will change
-it like below:
-
-diff --git a/drivers/iommu/intel/cache.c b/drivers/iommu/intel/cache.c
-index e8418cdd8331..18debb82272a 100644
---- a/drivers/iommu/intel/cache.c
-+++ b/drivers/iommu/intel/cache.c
-@@ -302,9 +302,14 @@ void cache_tag_flush_range(struct dmar_domain 
-*domain, unsigned long start,
-                          * affected by a change in S2. So just flush 
-the entire
-                          * device cache.
-                          */
--                       addr = 0;
--                       mask = MAX_AGAW_PFN_WIDTH;
--                       fallthrough;
-+                       info = dev_iommu_priv_get(tag->dev);
-+                       sid = PCI_DEVID(info->bus, info->devfn);
-+
-+                       qi_flush_dev_iotlb(iommu, sid, info->pfsid, 
-info->ats_qdep,
-+                                          0, MAX_AGAW_PFN_WIDTH);
-+                       quirk_extra_dev_tlb_flush(info, 0, 
-MAX_AGAW_PFN_WIDTH,
-+                                                 IOMMU_NO_PASID, 
-info->ats_qdep);
-+                       break;
-                 case CACHE_TAG_DEVTLB:
-                         info = dev_iommu_priv_get(tag->dev);
-                         sid = PCI_DEVID(info->bus, info->devfn);
-
-> +		case CACHE_TAG_DEVTLB:
-> +			info = dev_iommu_priv_get(tag->dev);
-> +			sid = PCI_DEVID(info->bus, info->devfn);
+> +       return true;
+> +done:
+> +       test_print_help(argv[0]);
+> +       return false;
+> +}
 > +
-> +			if (tag->pasid == IOMMU_NO_PASID)
-> +				qi_flush_dev_iotlb(iommu, sid, info->pfsid,
-> +						   info->ats_qdep, addr, mask);
-> +			else
-> +				qi_flush_dev_iotlb_pasid(iommu, sid, info->pfsid,
-> +							 tag->pasid, info->ats_qdep,
-> +							 addr, mask);
+> +int main(int argc, char *argv[])
+>  {
+> -       test_vm_basic_test(test_pmu_basic_sanity);
+> -       pr_info("SBI PMU basic test : PASS\n");
+> +       if (!parse_args(argc, argv))
+> +               exit(KSFT_SKIP);
 > +
-> +			quirk_extra_dev_tlb_flush(info, addr, mask, tag->pasid, info->ats_qdep);
-> +			break;
-> +		}
-> +	}
-> +	spin_unlock_irqrestore(&domain->cache_lock, flags);
-
-Best regards,
-baolu
+> +       if (!(disabled_tests & SBI_PMU_TEST_BASIC)) {
+> +               test_vm_basic_test(test_pmu_basic_sanity);
+> +               pr_info("SBI PMU basic test : PASS\n");
+> +       }
+>
+> -       test_vm_events_test(test_pmu_events);
+> -       pr_info("SBI PMU event verification test : PASS\n");
+> +       if (!(disabled_tests & SBI_PMU_TEST_EVENTS)) {
+> +               test_vm_events_test(test_pmu_events);
+> +               pr_info("SBI PMU event verification test : PASS\n");
+> +       }
+>
+> -       test_vm_events_snapshot_test(test_pmu_events_snaphost);
+> -       pr_info("SBI PMU event verification with snapshot test : PASS\n")=
+;
+> +       if (!(disabled_tests & SBI_PMU_TEST_SNAPSHOT)) {
+> +               test_vm_events_snapshot_test(test_pmu_events_snaphost);
+> +               pr_info("SBI PMU event verification with snapshot test : =
+PASS\n");
+> +       }
+>
+> -       test_vm_events_overflow(test_pmu_events_overflow);
+> -       pr_info("SBI PMU event verification with overflow test : PASS\n")=
+;
+> +       if (!(disabled_tests & SBI_PMU_TEST_OVERFLOW)) {
+> +               test_vm_events_overflow(test_pmu_events_overflow);
+> +               pr_info("SBI PMU event verification with overflow test : =
+PASS\n");
+> +       }
+>
+>         return 0;
+>  }
+> --
+> 2.34.1
+>
 
