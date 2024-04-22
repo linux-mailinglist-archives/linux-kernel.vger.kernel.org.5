@@ -1,57 +1,58 @@
-Return-Path: <linux-kernel+bounces-154299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9587B8ADA72
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:12:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D06ED8ADA76
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:13:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3BED1C2091D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:12:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21820B26D29
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:13:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229A317BB2F;
-	Mon, 22 Apr 2024 23:57:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C7D17F381;
+	Mon, 22 Apr 2024 23:57:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RFcajkNP"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jE1dr2q+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD5D158207;
-	Mon, 22 Apr 2024 23:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD96417F361;
+	Mon, 22 Apr 2024 23:57:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830262; cv=none; b=A8Stf7hqydcMTVayndKglyeJn0wH9uHpn82XUldWcVPOU2wxuQ3BB9+aqCxwSE5IeCazeZbvu/CbTUfagVe3031UG1dbylXPm/i0P6/LQM5g2qj24LC7YTLJkYkuoLWGcQkFJn7PDNhEFLKg4X4Q363jOCrqF3uJnqI9Zag0ky4=
+	t=1713830264; cv=none; b=r/nCKFhgXUva43ksp21oKcVd56/bjeRdhlJaSAl3I9YIhaGh+hIMT73+zE80NPjSP57Qh/O+mqw6Yl/VA4ZacHtZFHA6NdmanxVHfDM84ER3n5xD/BqC/xf7cjU5sE2Z6pv5hfLdaijjsr50qTQZjEBdHorI4dN91X0UaBlDo/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830262; c=relaxed/simple;
-	bh=Kj5+5mu6KGm/RuohPLj9U4V4Obrtte3DSQ1mPnyYH3o=;
+	s=arc-20240116; t=1713830264; c=relaxed/simple;
+	bh=eifjmGOpCVhgUnzxqdAYCzIFf1LGHVdV+fgf46BdaRs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qa2gi0beO6zxIonktHt/exvQouVAABuJPBrZFWjUDHX1pKo+MmIL4swai3adFouWD/hEsX63bOsBy2SdvRIolMIpajHWCEiuqhbbg+xe+X8qpZUMBjvC37uWoZ5bfz49lN1QdNEQvXmSLDlRboXtcc6Rav5ALroDiAOrS4mAytU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RFcajkNP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02184C2BD11;
-	Mon, 22 Apr 2024 23:57:40 +0000 (UTC)
+	 MIME-Version; b=QUpG7tiK+lHCDPQXH5x4xMh+eZlU6f2i9dyunkmsKh/HoANa7mKfSMvhIE4cRSlercZXk3+SQ5ywlLAoq1YCeRD8eQ7EV1Fk6gg1TPqgWJf/ekD6MNnhUQDRtfSjiB0I6HuSc1J9h41bT5LBjPsmDZZoxxoBD3OStWg7wWVQcjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jE1dr2q+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 612D4C4AF07;
+	Mon, 22 Apr 2024 23:57:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830261;
-	bh=Kj5+5mu6KGm/RuohPLj9U4V4Obrtte3DSQ1mPnyYH3o=;
+	s=k20201202; t=1713830263;
+	bh=eifjmGOpCVhgUnzxqdAYCzIFf1LGHVdV+fgf46BdaRs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RFcajkNPIp8cfZYWn9Rw5bgqmtjSu2rRJyfmPBriJ7AvB+imNRdHclcyK9ym7ULA3
-	 JaX/cU5BLy8cYq/OECYP75iuqR7pHI+F+ON2GM50jtOQNG9NlaQ8QtCySZo2+T2wlh
-	 tVAFB8eTMCMBbpyrBRyz7k3zeiRhvor2TfhQO53dfp8ZKmP93aB0RIgjFGKpT7bUeX
-	 xqgXpvP7sfTrZPXYFFSc39sPEawgzbm+N2WmnX4oVehvVZrXJpUSvICvqb6lQE+OIo
-	 OhPfuvC5iIst5AbpsSAwNAQxSdorYyz+hxtwcRrgiu8BIdrzNlx8jhhLCTdDcScjqV
-	 /zllP2j/jib1Q==
+	b=jE1dr2q+a/gh5RLHahBfhGGmykqTLAPEPeAbwWIYlqpdXGAyNvfsJDOYCpi/91Wja
+	 9vp9fsi75TRx2QaDxE1ne3C6TtgCwQf2EpcGj1a3AjUydiYM9DMiegQTUbsRiM8Sh8
+	 8CC6WiMrrWuEZIeuFoJBVtQOyypWMl51qSztNAB7TW23aoDZxulYs9UX9zxTdN1h+2
+	 Kb+/+UBhDF2WcltzRfTSjvX1m3pMmANYxXmiFyBftrbj6zR//gtF4sfI+X4Ed6cHV+
+	 E/nq+JeFk1OiXim1bOyzambqXIAO4GiVqkogfS34ZOPiojJWhZGg8nJ/gsFZAu0fIa
+	 2do1orPh+85dw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Maurizio Lombardi <mlombard@redhat.com>,
-	Mike Christie <michael.christie@oracle.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Rik van Riel <riel@surriel.com>,
+	Tejun Heo <tj@kernel.org>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Jens Axboe <axboe@kernel.dk>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-scsi@vger.kernel.org,
-	target-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 09/19] scsi: target: Fix SELinux error when systemd-modules loads the target module
-Date: Mon, 22 Apr 2024 19:18:23 -0400
-Message-ID: <20240422231845.1607921-9-sashal@kernel.org>
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 10/19] blk-iocost: avoid out of bounds shift
+Date: Mon, 22 Apr 2024 19:18:24 -0400
+Message-ID: <20240422231845.1607921-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231845.1607921-1-sashal@kernel.org>
 References: <20240422231845.1607921-1-sashal@kernel.org>
@@ -66,65 +67,72 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.87
 Content-Transfer-Encoding: 8bit
 
-From: Maurizio Lombardi <mlombard@redhat.com>
+From: Rik van Riel <riel@surriel.com>
 
-[ Upstream commit 97a54ef596c3fd24ec2b227ba8aaf2cf5415e779 ]
+[ Upstream commit beaa51b36012fad5a4d3c18b88a617aea7a9b96d ]
 
-If the systemd-modules service loads the target module, the credentials of
-that userspace process will be used to validate the access to the target db
-directory.  SELinux will prevent it, reporting an error like the following:
+UBSAN catches undefined behavior in blk-iocost, where sometimes
+iocg->delay is shifted right by a number that is too large,
+resulting in undefined behavior on some architectures.
 
-kernel: audit: type=1400 audit(1676301082.205:4): avc: denied  { read }
-for  pid=1020 comm="systemd-modules" name="target" dev="dm-3"
-ino=4657583 scontext=system_u:system_r:systemd_modules_load_t:s0
-tcontext=system_u:object_r:targetd_etc_rw_t:s0 tclass=dir permissive=0
+[  186.556576] ------------[ cut here ]------------
+UBSAN: shift-out-of-bounds in block/blk-iocost.c:1366:23
+shift exponent 64 is too large for 64-bit type 'u64' (aka 'unsigned long long')
+CPU: 16 PID: 0 Comm: swapper/16 Tainted: G S          E    N 6.9.0-0_fbk700_debug_rc2_kbuilder_0_gc85af715cac0 #1
+Hardware name: Quanta Twin Lakes MP/Twin Lakes Passive MP, BIOS F09_3A23 12/08/2020
+Call Trace:
+ <IRQ>
+ dump_stack_lvl+0x8f/0xe0
+ __ubsan_handle_shift_out_of_bounds+0x22c/0x280
+ iocg_kick_delay+0x30b/0x310
+ ioc_timer_fn+0x2fb/0x1f80
+ __run_timer_base+0x1b6/0x250
+..
 
-Fix the error by using the kernel credentials to access the db directory
+Avoid that undefined behavior by simply taking the
+"delay = 0" branch if the shift is too large.
 
-Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
-Link: https://lore.kernel.org/r/20240215143944.847184-2-mlombard@redhat.com
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+I am not sure what the symptoms of an undefined value
+delay will be, but I suspect it could be more than a
+little annoying to debug.
+
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Acked-by: Tejun Heo <tj@kernel.org>
+Link: https://lore.kernel.org/r/20240404123253.0f58010f@imladris.surriel.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_configfs.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ block/blk-iocost.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/target/target_core_configfs.c b/drivers/target/target_core_configfs.c
-index 416514c5c7acd..1a26dd0d56662 100644
---- a/drivers/target/target_core_configfs.c
-+++ b/drivers/target/target_core_configfs.c
-@@ -3587,6 +3587,8 @@ static int __init target_core_init_configfs(void)
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index e6557024e3da8..64b594d660b79 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1331,7 +1331,7 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
  {
- 	struct configfs_subsystem *subsys = &target_core_fabrics;
- 	struct t10_alua_lu_gp *lu_gp;
-+	struct cred *kern_cred;
-+	const struct cred *old_cred;
- 	int ret;
+ 	struct ioc *ioc = iocg->ioc;
+ 	struct blkcg_gq *blkg = iocg_to_blkg(iocg);
+-	u64 tdelta, delay, new_delay;
++	u64 tdelta, delay, new_delay, shift;
+ 	s64 vover, vover_pct;
+ 	u32 hwa;
  
- 	pr_debug("TARGET_CORE[0]: Loading Generic Kernel Storage"
-@@ -3663,11 +3665,21 @@ static int __init target_core_init_configfs(void)
- 	if (ret < 0)
- 		goto out;
+@@ -1346,8 +1346,9 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
  
-+	/* We use the kernel credentials to access the target directory */
-+	kern_cred = prepare_kernel_cred(&init_task);
-+	if (!kern_cred) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	old_cred = override_creds(kern_cred);
- 	target_init_dbroot();
-+	revert_creds(old_cred);
-+	put_cred(kern_cred);
+ 	/* calculate the current delay in effect - 1/2 every second */
+ 	tdelta = now->now - iocg->delay_at;
+-	if (iocg->delay)
+-		delay = iocg->delay >> div64_u64(tdelta, USEC_PER_SEC);
++	shift = div64_u64(tdelta, USEC_PER_SEC);
++	if (iocg->delay && shift < BITS_PER_LONG)
++		delay = iocg->delay >> shift;
+ 	else
+ 		delay = 0;
  
- 	return 0;
- 
- out:
-+	target_xcopy_release_pt();
- 	configfs_unregister_subsystem(subsys);
- 	core_dev_release_virtual_lun0();
- 	rd_module_exit();
 -- 
 2.43.0
 
