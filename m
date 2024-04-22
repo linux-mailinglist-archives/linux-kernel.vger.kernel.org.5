@@ -1,153 +1,133 @@
-Return-Path: <linux-kernel+bounces-152973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152975-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C93AD8AC6F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:27:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92A858AC6FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:29:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CA65B22346
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:27:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFF8B1C21430
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:29:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04AAB502AC;
-	Mon, 22 Apr 2024 08:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="c/S7mFL+"
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB06551C33;
-	Mon, 22 Apr 2024 08:26:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BEC5502AF;
+	Mon, 22 Apr 2024 08:29:13 +0000 (UTC)
+Received: from sgoci-sdnproxy-4.icoremail.net (sgoci-sdnproxy-4.icoremail.net [129.150.39.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A7D50246;
+	Mon, 22 Apr 2024 08:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.150.39.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713774412; cv=none; b=GCdkDiSm8XuhD/GYzPOAaIsqLb/eOFqq28VbL2kqsGHra58nN5hi8Lvky9h1NP7OMUqcGoGpn0aiZfdcrzEKcxHyojwrBRGdlunCOf8pGdrpfXNkHWKFsItAdlR31apcqW0zWmLkyKpxVF7MpToZggLQp8OXYXfg2VH2jQcNKsI=
+	t=1713774552; cv=none; b=OBvMe1u9mpJuhx40j+oK/8czlCsD0xFQG7AZZIG574nYEy6ky09VtNY4Bw3iO3wSGllkg7fEEKeErhf9diqziutk91KCawkA1AN/OyQGL0AZE0lttydRY26VEWQnZDchvjHdcVVcNdVZ+Q+9pEVV0SKcDXW3F/ba2S5CuclFTnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713774412; c=relaxed/simple;
-	bh=y37r8XxZzttygEhBfvdyYxE8grygu1uvu5+ykK8tHnk=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=TlawR0eGuNwdfni3gn+tKAxFqgEq1/al0VyzGXOK7WV+vm7vRDweMD74Wudb5Kg4Zp4jXjzuiE7XMFEsXiA554Ucw1oW/TX0ST+2+4f+AmYHcXxCIteHDxoYBPIFF90ScD3cVb8ib7J7phehBUsIrs6FlSAGGyrEbjs1/YCVwlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=c/S7mFL+; arc=none smtp.client-ip=193.238.174.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
-Received: from mg.ssi.bg (localhost [127.0.0.1])
-	by mg.ssi.bg (Proxmox) with ESMTP id DD2CA25ACE;
-	Mon, 22 Apr 2024 11:26:45 +0300 (EEST)
-Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-	by mg.ssi.bg (Proxmox) with ESMTPS;
-	Mon, 22 Apr 2024 11:26:44 +0300 (EEST)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-	by ink.ssi.bg (Postfix) with ESMTPSA id A1D67900394;
-	Mon, 22 Apr 2024 11:26:40 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
-	t=1713774401; bh=y37r8XxZzttygEhBfvdyYxE8grygu1uvu5+ykK8tHnk=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References;
-	b=c/S7mFL+JgNg1gjRTl5ehh6B7tYlTW1idzbuAX5bHSOOp9T4lyqUerFVOz4fVjNX3
-	 2iwfZDd8prnAKZ+lswrjbDUmbtFoS1c1dB4/c+nQvnHtpb9p8CdQlaeOR6yslo1IAK
-	 niJDzGzR8lbSfTQTbkUgNicTfqKQv903EsPUfSe4=
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 43M8QctX040757;
-	Mon, 22 Apr 2024 11:26:39 +0300
-Date: Mon, 22 Apr 2024 11:26:38 +0300 (EEST)
-From: Julian Anastasov <ja@ssi.bg>
-To: Ismael Luceno <iluceno@suse.de>
-cc: linux-kernel@vger.kernel.org, Firo Yang <firo.yang@suse.com>,
-        Andreas Taschner <andreas.taschner@suse.com>,
-        =?UTF-8?Q?Michal_Kube=C4=8Dek?= <mkubecek@suse.com>,
-        Simon Horman <horms@verge.net.au>, lvs-devel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        coreteam@netfilter.org
-Subject: Re: [PATCH v2] ipvs: Fix checksumming on GSO of SCTP packets
-In-Reply-To: <20240421142234.15764-1-iluceno@suse.de>
-Message-ID: <5a1b5536-a8ba-4438-9ed2-23819f1846a6@ssi.bg>
-References: <20240421142234.15764-1-iluceno@suse.de>
+	s=arc-20240116; t=1713774552; c=relaxed/simple;
+	bh=zTjKFa9ufsEGRtTe1qCOiuLYhpnykAwM1b+hG7FfP9w=;
+	h=Date:From:To:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=YNmtec46RlM7+lYdZcsZKjj8XxSZUYAvIfhsBFlax+c1/9ETdTB7T5aaPf6f404O6RUVTkHdWIaG5a9AlJLF4UF6p4cK3P7P+jooSGnMzolJz7a4geg087aLFZ7Tm60BuShyZoOH9s1+6pA8mfbBLC1L0wdAJz3Mtz9zaxQY1U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eswincomputing.com; spf=pass smtp.mailfrom=eswincomputing.com; arc=none smtp.client-ip=129.150.39.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eswincomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eswincomputing.com
+Received: from liangshenlin$eswincomputing.com ( [10.12.96.90] ) by
+ ajax-webmail-app2 (Coremail) ; Mon, 22 Apr 2024 16:27:10 +0800 (GMT+08:00)
+Date: Mon, 22 Apr 2024 16:27:10 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: "Shenlin Liang" <liangshenlin@eswincomputing.com>
+To: atishp@atishpatra.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, kvm@vger.kernel.org, 
+	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com, 
+	acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, 
+	irogers@google.com, adrian.hunter@intel.com, 
+	linux-perf-users@vger.kernel.org, atishp@rivosinc.com
+Subject: Re: [PATCH v2 0/2] perf kvm: Add kvm stat support on riscv
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT6.0.3 build 20220420(169d3f8c)
+ Copyright (c) 2002-2024 www.mailtech.cn
+ mispb-72143050-eaf5-4703-89e0-86624513b4ce-eswincomputing.com
+In-Reply-To: <aceaaeba-61cb-44fa-8639-e30a86ef8cd8@rivosinc.com>
+References: <20240415031131.23443-1-liangshenlin@eswincomputing.com>
+ <aceaaeba-61cb-44fa-8639-e30a86ef8cd8@rivosinc.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463811672-2077803110-1713774400=:25471"
+Message-ID: <35896859.387e.18f04ea87b1.Coremail.liangshenlin@eswincomputing.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:TQJkCgAnOrxeHyZmbhAIAA--.5206W
+X-CM-SenderInfo: xold0whvkh0z1lq6v25zlqu0xpsx3x1qjou0bp/1tbiAQEPDGYk3U
+	gl0wACsg
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
----1463811672-2077803110-1713774400=:25471
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-
-	Hello,
-
-On Sun, 21 Apr 2024, Ismael Luceno wrote:
-
-> It was observed in the wild that pairs of consecutive packets would leave
-> the IPVS with the same wrong checksum, and the issue only went away when
-> disabling GSO.
-> 
-> IPVS needs to avoid computing the SCTP checksum when using GSO.
-> 
-> Fixes: 90017accff61 ("sctp: Add GSO support", 2016-06-02)
-> Co-developed-by: Firo Yang <firo.yang@suse.com>
-> Signed-off-by: Ismael Luceno <iluceno@suse.de>
-> Tested-by: Andreas Taschner <andreas.taschner@suse.com>
-> CC: Michal Kubeček <mkubecek@suse.com>
-> CC: Simon Horman <horms@verge.net.au>
-> CC: Julian Anastasov <ja@ssi.bg>
-> CC: lvs-devel@vger.kernel.org
-> CC: netfilter-devel@vger.kernel.org
-> CC: netdev@vger.kernel.org
-> CC: coreteam@netfilter.org
-
-	Looks good to me, thanks!
-
-Acked-by: Julian Anastasov <ja@ssi.bg>
-
-	As scripts/checkpatch.pl --strict /tmp/file.patch complains
-about Co-developed-by and Signed-off-by lines you may want to
-send v3...
-
-> ---
-> 
-> Notes:
->     Changes since v1:
->     * Added skb_is_gso before skb_is_gso_sctp.
->     * Added "Fixes" tag.
-> 
->  net/netfilter/ipvs/ip_vs_proto_sctp.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_proto_sctp.c b/net/netfilter/ipvs/ip_vs_proto_sctp.c
-> index a0921adc31a9..1e689c714127 100644
-> --- a/net/netfilter/ipvs/ip_vs_proto_sctp.c
-> +++ b/net/netfilter/ipvs/ip_vs_proto_sctp.c
-> @@ -126,7 +126,8 @@ sctp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
->  	if (sctph->source != cp->vport || payload_csum ||
->  	    skb->ip_summed == CHECKSUM_PARTIAL) {
->  		sctph->source = cp->vport;
-> -		sctp_nat_csum(skb, sctph, sctphoff);
-> +		if (!skb_is_gso(skb) || !skb_is_gso_sctp(skb))
-> +			sctp_nat_csum(skb, sctph, sctphoff);
->  	} else {
->  		skb->ip_summed = CHECKSUM_UNNECESSARY;
->  	}
-> @@ -174,7 +175,8 @@ sctp_dnat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
->  	    (skb->ip_summed == CHECKSUM_PARTIAL &&
->  	     !(skb_dst(skb)->dev->features & NETIF_F_SCTP_CRC))) {
->  		sctph->dest = cp->dport;
-> -		sctp_nat_csum(skb, sctph, sctphoff);
-> +		if (!skb_is_gso(skb) || !skb_is_gso_sctp(skb))
-> +			sctp_nat_csum(skb, sctph, sctphoff);
->  	} else if (skb->ip_summed != CHECKSUM_PARTIAL) {
->  		skb->ip_summed = CHECKSUM_UNNECESSARY;
->  	}
-> -- 
-> 2.43.0
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
----1463811672-2077803110-1713774400=:25471--
-
+SGkgQXRpc2gsCgpJIGFzc3VtZSB0aGF0IHlvdSBhcmUgY3Jvc3MgYnVpbGRpbmcgaXQgb24gWDg2
+LiBZb3UgbmVlZCB0byBidWlsZCBhIHBrZy1jb25maWctcmlzY3Y2NCBmaXJzdC4gT3IgZ2V0IGEg
+ZGViIGZpbGUgZnJvbSBbMV0gaWYgeW91IGFyZSBidWlkaW5nIG9uIFVidW50dS4KSW5zdGVhZCBv
+ZiBjcm9zcyBidWlsZGluZywgaXQgaXMgcmVjb21tZW5kZWQgdG8gYnVpbGQgaXQgbmF0aXZlbHku
+CgpCVFcsIHBsZWFzZSB0ZXN0IHdpdGggVjMgd2hpY2ggSSBzZW50IHRvZGF5LgoKWzFdIGh0dHBz
+Oi8vYW5zd2Vycy5sYXVuY2hwYWQubmV0L35jaS10cmFpbi1wcGEtc2VydmljZS8rYXJjaGl2ZS91
+YnVudHUvMzcxOS1kZWxldGVkcHBhLytidWlsZC8xNjgyMzg2Mi8rZmlsZXMvcGtnLWNvbmZpZy1y
+aXNjdjY0LWxpbnV4LWdudV83LjQuMC0xdWJ1bnR1MS4zX2FtZDY0LmRlYgoKVGhhbmtzLgoKU2hl
+bmxpbgoKPiAKPiBPbiA0LzE0LzI0IDIwOjExLCBTaGVubGluIExpYW5nIHdyb3RlOgo+ID4gQ2hh
+bmdlcyBmcm9tIHYxLT52MjoKPiA+IC0gUmViYXNlZCBvbiBMaW51eCA2LjktcmMzLgo+ID4gCj4g
+PiAncGVyZiBrdm0gc3RhdCByZXBvcnQvcmVjb3JkJyBnZW5lcmF0ZXMgYSBzdGF0aXN0aWNhbCBh
+bmFseXNpcyBvZiBLVk0KPiA+IGV2ZW50cyBhbmQgY2FuIGJlIHVzZWQgdG8gYW5hbHl6ZSBndWVz
+dCBleGl0IHJlYXNvbnMuIFRoaXMgcGF0Y2ggdHJpZXMKPiA+IHRvIGFkZCBzdGF0IHN1cHBvcnQg
+b24gcmlzY3YuCj4gPiAKPiA+IE1hcCB0aGUgcmV0dXJuIHZhbHVlIG9mIHRyYWNlX2t2bV9leGl0
+KCkgdG8gdGhlIHNwZWNpZmljIGNhdXNlIG9mIHRoZQo+ID4gZXhjZXB0aW9uLCBhbmQgZXhwb3J0
+IGl0IHRvIHVzZXJzcGFjZS4KPiA+IAo+ID4gSXQgcmVjb3JkcyBvbiB0d28gYXZhaWxhYmxlIEtW
+TSB0cmFjZXBvaW50cyBmb3IgcmlzY3Y6ICJrdm06a3ZtX2VudHJ5Igo+ID4gYW5kICJrdm06a3Zt
+X2V4aXQiLCBhbmQgcmVwb3J0cyBzdGF0aXN0aWNhbCBkYXRhIHdoaWNoIGluY2x1ZGVzIGV2ZW50
+cwo+ID4gaGFuZGxlcyB0aW1lLCBzYW1wbGVzLCBhbmQgc28gb24uCj4gPiAKPiA+IFNpbXBsZSB0
+ZXN0cyBnbyBiZWxvdzoKPiA+IAo+ID4gIyAuL3BlcmYga3ZtIHJlY29yZCAtZSAia3ZtOmt2bV9l
+bnRyeSIgLWUgImt2bTprdm1fZXhpdCIKPiA+IExvd2VyaW5nIGRlZmF1bHQgZnJlcXVlbmN5IHJh
+dGUgZnJvbSA0MDAwIHRvIDI1MDAuCj4gPiBQbGVhc2UgY29uc2lkZXIgdHdlYWtpbmcgL3Byb2Mv
+c3lzL2tlcm5lbC9wZXJmX2V2ZW50X21heF9zYW1wbGVfcmF0ZS4KPiA+IFsgcGVyZiByZWNvcmQ6
+IFdva2VuIHVwIDE4IHRpbWVzIHRvIHdyaXRlIGRhdGEgXQo+ID4gWyBwZXJmIHJlY29yZDogQ2Fw
+dHVyZWQgYW5kIHdyb3RlIDUuNDMzIE1CIHBlcmYuZGF0YS5ndWVzdCAoNjI1MTkgc2FtcGxlcykK
+PiA+IAo+IAo+IEkgd2FudCB0byB0ZXN0IHRoZXNlIHBhdGNoZXMgYnV0IGNvdWxkbid0IGJ1aWxk
+IGEgcGVyZiBmb3IgUklTQy1WIHdpdGggCj4gbGlidHJhY2VldmVudCBlbmFibGVkLiBJdCBmYWls
+cyB3aXRoIHBrZy1jb25maWcgZGVwZW5kZW5jaWVzIHdoZW4gSSAKPiB0cmllZCB0byBidWlsZCBp
+dCAoYm90aCB2aWEgYnVpbGRyb290IGFuZCBkaXJlY3RseSBmcm9tIGtlcm5lbCBzb3VyY2UpLgo+
+IAo+ID4gIyAuL3BlcmYga3ZtIHJlcG9ydAo+ID4gMzFLIGt2bTprdm1fZW50cnkKPiA+IDMxSyBr
+dm06a3ZtX2V4aXQKPiA+IAo+ID4gIyAuL3BlcmYga3ZtIHN0YXQgcmVjb3JkIC1hCj4gPiBbIHBl
+cmYgcmVjb3JkOiBXb2tlbiB1cCAzIHRpbWVzIHRvIHdyaXRlIGRhdGEgXQo+ID4gWyBwZXJmIHJl
+Y29yZDogQ2FwdHVyZWQgYW5kIHdyb3RlIDguNTAyIE1CIHBlcmYuZGF0YS5ndWVzdCAoOTkzMzgg
+c2FtcGxlcykgXQo+ID4gCj4gPiAjIC4vcGVyZiBrdm0gc3RhdCByZXBvcnQgLS1ldmVudD12bWV4
+aXQKPiA+IEV2ZW50IG5hbWUgICAgICAgICAgICAgICAgU2FtcGxlcyAgIFNhbXBsZSUgICAgVGlt
+ZSAobnMpICAgICBUaW1lJSAgIE1heCBUaW1lIChucykgICBNaW4gVGltZSAobnMpICBNZWFuIFRp
+bWUgKG5zKQo+ID4gU1RPUkVfR1VFU1RfUEFHRV9GQVVMVCAgICAgMjY5NjggICAgIDU0LjAwJSAg
+ICAyMDAzMDMxODAwICAgIDQwLjAwJSAgICAgMzM2MTQwMCAgICAgICAgIDI3NjAwICAgICAgICAg
+IDc0Mjc0Cj4gPiBMT0FEX0dVRVNUX1BBR0VfRkFVTFQgICAgICAxNzY0NSAgICAgMzUuMDAlICAg
+IDExNTMzMzgxMDAgICAgMjMuMDAlICAgICAyNTEzNDAwICAgICAgICAgMzA4MDAgICAgICAgICAg
+NjUzNjMKPiA+IFZJUlRVQUxfSU5TVF9GQVVMVCAgICAgICAgIDEyNDcgICAgICAyLjAwJSAgICAg
+MzQwODIwODAwICAgICA2LjAwJSAgICAgIDExOTA4MDAgICAgICAgICA0MzMwMCAgICAgICAgICAy
+NzMzMTIKPiA+IElOU1RfR1VFU1RfUEFHRV9GQVVMVCAgICAgIDExMjggICAgICAyLjAwJSAgICAg
+MzQwNjQ1ODAwICAgICA2LjAwJSAgICAgIDIxMjMyMDAgICAgICAgICAzMDIwMCAgICAgICAgICAz
+MDE5OTAKPiA+IFNVUEVSVklTT1JfU1lTQ0FMTCAgICAgICAgIDEwMTkgICAgICAyLjAwJSAgICAg
+MjQ1OTg5OTAwICAgICA0LjAwJSAgICAgIDE4NTE1MDAgICAgICAgICAyOTMwMCAgICAgICAgICAy
+NDE0MDMKPiA+IExPQURfQUNDRVNTICAgICAgICAgICAgICAgIDk4NiAgICAgICAxLjAwJSAgICAg
+NjcxNTU2MjAwICAgICAxMy4wMCUgICAgIDQxODAyMDAgICAgICAgICAxMDA3MDAgICAgICAgICA2
+ODEwOTEKPiA+IElOU1RfQUNDRVNTICAgICAgICAgICAgICAgIDY1NSAgICAgICAxLjAwJSAgICAg
+MTcwMDU0ODAwICAgICAzLjAwJSAgICAgIDE4MDgzMDAgICAgICAgICA1NDYwMCAgICAgICAgICAy
+NTk2MjUKPiA+IEhZUEVSVklTT1JfU1lTQ0FMTCAgICAgICAgIDIxICAgICAgICAwLjAwJSAgICAg
+NDI3NjQwMCAgICAgICAwLjAwJSAgICAgIDcxNjUwMCAgICAgICAgICAxMTYwMDAgICAgICAgICAy
+MDM2MzgKPiA+IAo+ID4gU2hlbmxpbiBMaWFuZyAoMik6Cj4gPiAgICBSSVNDVjogS1ZNOiBhZGQg
+dHJhY2Vwb2ludHMgZm9yIGVudHJ5IGFuZCBleGl0IGV2ZW50cwo+ID4gICAgcGVyZiBrdm0vcmlz
+Y3Y6IFBvcnQgcGVyZiBrdm0gc3RhdCB0byBSSVNDLVYKPiA+IAo+ID4gICBhcmNoL3Jpc2N2L2t2
+bS90cmFjZS5oICAgICAgICAgICAgICAgICAgICAgICAgfCA2NyArKysrKysrKysrKysrKysrCj4g
+PiAgIGFyY2gvcmlzY3Yva3ZtL3ZjcHUuYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICA3ICsr
+Cj4gPiAgIHRvb2xzL3BlcmYvYXJjaC9yaXNjdi9NYWtlZmlsZSAgICAgICAgICAgICAgICB8ICAx
+ICsKPiA+ICAgdG9vbHMvcGVyZi9hcmNoL3Jpc2N2L3V0aWwvQnVpbGQgICAgICAgICAgICAgIHwg
+IDEgKwo+ID4gICB0b29scy9wZXJmL2FyY2gvcmlzY3YvdXRpbC9rdm0tc3RhdC5jICAgICAgICAg
+fCA3OCArKysrKysrKysrKysrKysrKysrCj4gPiAgIC4uLi9hcmNoL3Jpc2N2L3V0aWwvcmlzY3Zf
+ZXhjZXB0aW9uX3R5cGVzLmggICB8IDQxICsrKysrKysrKysKPiA+ICAgNiBmaWxlcyBjaGFuZ2Vk
+LCAxOTUgaW5zZXJ0aW9ucygrKQo+ID4gICBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC9yaXNjdi9r
+dm0vdHJhY2UuaAo+ID4gICBjcmVhdGUgbW9kZSAxMDA2NDQgdG9vbHMvcGVyZi9hcmNoL3Jpc2N2
+L3V0aWwva3ZtLXN0YXQuYwo+ID4gICBjcmVhdGUgbW9kZSAxMDA2NDQgdG9vbHMvcGVyZi9hcmNo
+L3Jpc2N2L3V0aWwvcmlzY3ZfZXhjZXB0aW9uX3R5cGVzLmgKPiA+IAo=
 
