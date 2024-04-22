@@ -1,136 +1,204 @@
-Return-Path: <linux-kernel+bounces-152780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EBB38AC422
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:24:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39CB28AC421
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:24:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC80D281E0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:24:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF7F81F21A0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:24:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4817A433D2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1732341231;
 	Mon, 22 Apr 2024 06:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="mZzzk5R+";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="iqFMA+Aw"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L+el3r3n"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C473FBA0;
-	Mon, 22 Apr 2024 06:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5428A1802B
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713767065; cv=none; b=n4nQg62HDgczViR6GeLlrSa1I/OQfL6/0jWwZNL+21F05+pKS2aQRW3j+Yt/+ozCrRo8xJbK+wiLXVzCN3loAQ3VsbtnhjIRRhB5oksg1zBRYbedFv59FSceKfoXxuHzh8r/AWHXRMUR36nCLNPSZqUMAFdg6yHDzwlv9dGC4Fs=
+	t=1713767065; cv=none; b=PP0McBglc77aZQHZkjzImrFL2z0UstinvoYoLB6oKlEAm1+rYrzzigjcBMl9QzcAO4MUD34Mo7r0Fyy90Rq4g1q0YABxPs6g2yBxhLdhTxyPfMTbQ6nppQ9HL1BJwkHvolylSUFSx1uhTBW45GCeyniPYV0fywwNulBds13r6wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713767065; c=relaxed/simple;
-	bh=rrOViBBJsojVDyanVvalso2iEQYg5szP2F0RIMK8g64=;
-	h=Subject:Date:From:To:Cc:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S+bATITUai9cYHquyzjzXFlJZXExHLBlc3bzROexZGEWNuOpp9dXvzHsMz1dFsPE9j5EMfLLu3FQXbAcQkJdDgdNS9SHDCz/mPzrDn3JVfL5bPOnpMBvwCOTeMCEq7uz+nt2KY9jCqpeD7OWCRWUxxL2tVscOHmi5X12a/W64xk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=mZzzk5R+; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=iqFMA+Aw reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1713767062; x=1745303062;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=r+XvQYzy6Ph8/Uv8nnwgb09heFwJUgvhjSISPDnv/24=;
-  b=mZzzk5R+T+UbaTYYgGAWY7A8QQEqBxAW8RDH1Nin5rGndHTg1bHcZu67
-   BmiHVbehyww7Sy5480Q3HNiUvm/AEggkvcdMqJHyqdBfzEx8DU6FQTqJk
-   cfnjCXMz34dvFDVBIen8fXe/wKra1ERPS+ZMG9JZ1GDgiZjdfVbKTslTM
-   NBDKTKIVIN2oeGX4262VmVCNapWF0zZsFjChESyIKcFSW/IBBGCD3wGnE
-   gnCh7snRmo2S0ddAyUjltxWthvLrrq+uk/uzHX/11kBr3v3+p9U5/CE3f
-   bA4hBLACVZx2x8r21+arxspl0ru+RmZ46GiT9vuhPupS0UTzytN9q9qsv
-   A==;
-X-IronPort-AV: E=Sophos;i="6.07,220,1708383600"; 
-   d="scan'208";a="36531127"
-Subject: Re: Re: [PATCH v2] net: phy: marvell-88q2xxx: add support for Rev B1 and B2
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 22 Apr 2024 08:24:19 +0200
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E0F62160A90;
-	Mon, 22 Apr 2024 08:24:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1713767055;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 in-reply-to:references; bh=r+XvQYzy6Ph8/Uv8nnwgb09heFwJUgvhjSISPDnv/24=;
-	b=iqFMA+AwRSrbb9lzGdRFygud48xPGcj+st02VmodWAKPX5ipz/4IPly6RraG3G70COcyNx
-	GY+tSPx4BCQLxKaMKcEepWzIsKJq+jRC9z0OkfpnvYOkNKDdpen9uiYrn9hVdlj5r9Foou
-	RqVjyeXhCLY5KoxvgD8bDsmvavka9sr5k2Z8dOaqvXFJLI3fxApH1QiyVT3EgJIv35Tryb
-	dHJBDQibamNwSm2WYR4sAhcr97cmXhux0J2Hzm0Po9OdjiHtJewz/Oew50JErj7U4AMmub
-	QtP1b3AEoHcWvc6Y7GOM9NFnvmv/OZmRSruDxByr8IWzhAHBM00077eBv36Z2A==
-Date: Mon, 22 Apr 2024 08:24:07 +0200
-From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux@ew.tq-group.com,
-	alexander.stein@ew.tq-group.com
-Message-ID: <ZiYCh4MbI9kly1mh@herburgerg-w2>
-References: <20240417-mv88q222x-revb1-b2-init-v2-1-7ef41f87722a@ew.tq-group.com>
- <20240418123155.GA248236@debian>
+	bh=2QoZ6xX4IimgOgvIRYJS2/KFiClJl3fHIS1noYBxHZI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=f2o59bQfyvNDubSx5YORof3h+ytLTnIOA4TGJY+wlHLYOQ+Ahg1JqxIIYbdutjNRRSZyYsPA8I8tuTxrhHiY5dGAniuPwRbOOpsGfAIHQ07NpLAjCmCI46FAM2iUOfLcTgMJxrowpsPqGmNlvW5taenTEK8t0P5I0Z5M51JWJlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L+el3r3n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B9FBC116B1;
+	Mon, 22 Apr 2024 06:24:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713767064;
+	bh=2QoZ6xX4IimgOgvIRYJS2/KFiClJl3fHIS1noYBxHZI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=L+el3r3nSlCtYRJogplF8kaG7cSfgKJKTO2aTkJFvJy+GTo+A20CNyJLvoFKydy9p
+	 693A20syONNQ1vqBX4aQASUamtPQT+aV05b8q8+idnZFAmc9tTlqx7cjLID/fU1c/H
+	 CJLuukhW45QnMz1MrnCPDm8P2Sb9CRkyh5AZC/d9Czz9wrE958LwUj2krxfyOvIq45
+	 kr2feC11lYEgDADb2mB91TpiBCY/KmsFHFZ5lT53LkyypFzP2mnbFO0XHVYuepSr4B
+	 hozQT0fPOLE8Fz7mOdf+JOHjt2OILnzFE85/SlVhLCiQRqX4xByk6N/tbzQLCrsyZb
+	 3CFeUGBcV2MWA==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>
+Subject: [PATCH v2 1/4] f2fs: convert f2fs_mpage_readpages() to use folio
+Date: Mon, 22 Apr 2024 14:24:14 +0800
+Message-Id: <20240422062417.2421616-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240418123155.GA248236@debian>
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 18, 2024 at 02:31:55PM +0200, Dimitri Fedrau wrote:
-> > +static const struct mmd_val mv88q222x_revb1_revb2_init_seq1[] = {
-> > +	{ MDIO_MMD_PCS, 0xFE07, 0x125A },
-> > +	{ MDIO_MMD_PCS, 0xFE09, 0x1288 },
-> > +	{ MDIO_MMD_PCS, 0xFE08, 0x2588 },
-> > +	{ MDIO_MMD_PCS, 0xFE72, 0x042C },
-> > +	{ MDIO_MMD_PCS, 0xFFE4, 0x0071 },
-> > +	{ MDIO_MMD_PCS, 0xFFE4, 0x0001 },
-> > +	{ MDIO_MMD_PCS, 0xFE1B, 0x0048 },
-> > +	{ MDIO_MMD_PMAPMD, 0x0000, 0x0000 },
-> > +	{ MDIO_MMD_PCS, 0x0000, 0x0000 },
-> > +	{ MDIO_MMD_PCS, 0xFFDB, 0xFC10 },
-> > +	{ MDIO_MMD_PCS, 0xFE1B, 0x58 },
-> > +	{ MDIO_MMD_PCS, 0xFCAD, 0x030C },
-> > +	{ MDIO_MMD_PCS, 0x8032, 0x6001 },
-> > +	{ MDIO_MMD_PCS, 0xFDFF, 0x05A5 },
-> > +	{ MDIO_MMD_PCS, 0xFDEC, 0xDBAF },
-> > +	{ MDIO_MMD_PCS, 0xFCAB, 0x1054 },
-> > +	{ MDIO_MMD_PCS, 0xFCAC, 0x1483 },
-> > +	{ MDIO_MMD_PCS, 0x8033, 0xC801 },
-> > +	{ MDIO_MMD_AN, 0x8032, 0x2020 },
-> > +	{ MDIO_MMD_AN, 0x8031, 0xA28 },
-> > +	{ MDIO_MMD_AN, 0x8031, 0xC28 },
-> > +	{ MDIO_MMD_PCS, 0xFBBA, 0x0CB2 },
-> > +	{ MDIO_MMD_PCS, 0xFBBB, 0x0C4A },
-> > +	{ MDIO_MMD_PCS, 0xFE5F, 0xE8 },
-> > +	{ MDIO_MMD_PCS, 0xFE05, 0x755C },
-> > +	{ MDIO_MMD_PCS, 0xFA20, 0x002A },
-> > +	{ MDIO_MMD_PCS, 0xFE11, 0x1105 },
-> > +};
-> > +
-> nit: use small letters for hex values.
-> 
+Convert f2fs_mpage_readpages() to use folio and related
+functionality.
 
-Ok, will update in next version.
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+v2:
+- fix compile warning w/o CONFIG_F2FS_FS_COMPRESSION reported by lkp
+ fs/f2fs/data.c | 81 +++++++++++++++++++++++++-------------------------
+ 1 file changed, 40 insertions(+), 41 deletions(-)
 
-> Hi Gregor,
-> 
-> tested it for rev. B0 and it works as expected.
-> 
-> Tested-by: Dimitri Fedrau <dima.fedrau@gmail.com>
-> 
-> Best regards,
-> Dimitri Fedrau
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index ed7d08785fcf..6419cf020327 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2345,7 +2345,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
+  * Major change was from block_size == page_size in f2fs by default.
+  */
+ static int f2fs_mpage_readpages(struct inode *inode,
+-		struct readahead_control *rac, struct page *page)
++		struct readahead_control *rac, struct folio *folio)
+ {
+ 	struct bio *bio = NULL;
+ 	sector_t last_block_in_bio = 0;
+@@ -2362,6 +2362,7 @@ static int f2fs_mpage_readpages(struct inode *inode,
+ 		.nr_cpages = 0,
+ 	};
+ 	pgoff_t nc_cluster_idx = NULL_CLUSTER;
++	pgoff_t index;
+ #endif
+ 	unsigned nr_pages = rac ? readahead_count(rac) : 1;
+ 	unsigned max_nr_pages = nr_pages;
+@@ -2378,64 +2379,62 @@ static int f2fs_mpage_readpages(struct inode *inode,
+ 
+ 	for (; nr_pages; nr_pages--) {
+ 		if (rac) {
+-			page = readahead_page(rac);
+-			prefetchw(&page->flags);
++			folio = readahead_folio(rac);
++			prefetchw(&folio->flags);
+ 		}
+ 
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+-		if (f2fs_compressed_file(inode)) {
+-			/* there are remained compressed pages, submit them */
+-			if (!f2fs_cluster_can_merge_page(&cc, page->index)) {
+-				ret = f2fs_read_multi_pages(&cc, &bio,
+-							max_nr_pages,
+-							&last_block_in_bio,
+-							rac != NULL, false);
+-				f2fs_destroy_compress_ctx(&cc, false);
+-				if (ret)
+-					goto set_error_page;
+-			}
+-			if (cc.cluster_idx == NULL_CLUSTER) {
+-				if (nc_cluster_idx ==
+-					page->index >> cc.log_cluster_size) {
+-					goto read_single_page;
+-				}
+-
+-				ret = f2fs_is_compressed_cluster(inode, page->index);
+-				if (ret < 0)
+-					goto set_error_page;
+-				else if (!ret) {
+-					nc_cluster_idx =
+-						page->index >> cc.log_cluster_size;
+-					goto read_single_page;
+-				}
+-
+-				nc_cluster_idx = NULL_CLUSTER;
+-			}
+-			ret = f2fs_init_compress_ctx(&cc);
++		index = folio_index(folio);
++
++		if (!f2fs_compressed_file(inode))
++			goto read_single_page;
++
++		/* there are remained compressed pages, submit them */
++		if (!f2fs_cluster_can_merge_page(&cc, index)) {
++			ret = f2fs_read_multi_pages(&cc, &bio,
++						max_nr_pages,
++						&last_block_in_bio,
++						rac != NULL, false);
++			f2fs_destroy_compress_ctx(&cc, false);
+ 			if (ret)
+ 				goto set_error_page;
++		}
++		if (cc.cluster_idx == NULL_CLUSTER) {
++			if (nc_cluster_idx == index >> cc.log_cluster_size)
++				goto read_single_page;
+ 
+-			f2fs_compress_ctx_add_page(&cc, page);
++			ret = f2fs_is_compressed_cluster(inode, index);
++			if (ret < 0)
++				goto set_error_page;
++			else if (!ret) {
++				nc_cluster_idx =
++					index >> cc.log_cluster_size;
++				goto read_single_page;
++			}
+ 
+-			goto next_page;
++			nc_cluster_idx = NULL_CLUSTER;
+ 		}
++		ret = f2fs_init_compress_ctx(&cc);
++		if (ret)
++			goto set_error_page;
++
++		f2fs_compress_ctx_add_page(&cc, &folio->page);
++
++		goto next_page;
+ read_single_page:
+ #endif
+-
+-		ret = f2fs_read_single_page(inode, page, max_nr_pages, &map,
++		ret = f2fs_read_single_page(inode, &folio->page, max_nr_pages, &map,
+ 					&bio, &last_block_in_bio, rac);
+ 		if (ret) {
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ set_error_page:
+ #endif
+-			zero_user_segment(page, 0, PAGE_SIZE);
+-			unlock_page(page);
++			folio_zero_segment(folio, 0, folio_size(folio));
++			folio_unlock(folio);
+ 		}
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ next_page:
+ #endif
+-		if (rac)
+-			put_page(page);
+ 
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 		if (f2fs_compressed_file(inode)) {
+@@ -2472,7 +2471,7 @@ static int f2fs_read_data_folio(struct file *file, struct folio *folio)
+ 	if (f2fs_has_inline_data(inode))
+ 		ret = f2fs_read_inline_data(inode, page);
+ 	if (ret == -EAGAIN)
+-		ret = f2fs_mpage_readpages(inode, NULL, page);
++		ret = f2fs_mpage_readpages(inode, NULL, folio);
+ 	return ret;
+ }
+ 
+-- 
+2.40.1
 
-Hi Dimitri,
-
-thanks for testing!
 
