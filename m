@@ -1,111 +1,117 @@
-Return-Path: <linux-kernel+bounces-153493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 789E48ACEB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:50:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00BFE8ACE8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:43:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECE6BB255D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:50:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322AC1C20C0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD2BB152175;
-	Mon, 22 Apr 2024 13:50:02 +0000 (UTC)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8D6150980;
+	Mon, 22 Apr 2024 13:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fzV3Dz61"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12B21514E2;
-	Mon, 22 Apr 2024 13:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629AA5028B;
+	Mon, 22 Apr 2024 13:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713793802; cv=none; b=tCYjc/e1oDSIVwGEoU1msrXCWLb4x5p72aeeFkGmbTFuGRbAc7MeqR6aQ8xuU0dV3YZKAFzUjfOpnd6OIsUsY3E/QYrT1M9A2CHNl+k/H5gL5qeZi4EL9naYQjDKXI6pqw+UevFBSlDaTPfrbZRtWRXDVxv75JDZLv4Yep3IM4w=
+	t=1713793416; cv=none; b=S608nk5fDhLTvMJqO1sSZTkuxPoJrbQErFofNLMBKtKKwJI1R+iPk5WhgZSlNvAn4StjdK5lB89+0rCeNSeVjj/vgkrf1YydTJ5XpBmaprX3aPD5Ib5irCERkSkouwKkF91XJeP9PFVK1ePXi6oWcHEuJmVkjh75AbtYoItCDfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713793802; c=relaxed/simple;
-	bh=5yvgi9mrQAF3qOurmIWeU5dX0slS7fJ6ldV2mGba9Lc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JzU4BxWJr2Xsk/4KtjelO975nY3TXsDDD5hk82jQb39wwckjmIsbGqJiASlemakL/KbLfm40RL0Hw+rDQfg/UXbwcxHTMeK/cKCXVLimvDzVtET6rTMy8eCfuQgK+sjOmQkQl1pj94EK977IIcP8MrT01gbVrJatluJLjNns5NA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VNRNy5vlqzXmCw;
-	Mon, 22 Apr 2024 21:46:26 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6D5F318007D;
-	Mon, 22 Apr 2024 21:49:53 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 22 Apr 2024 21:49:52 +0800
-From: Jijie Shao <shaojijie@huawei.com>
-To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>
-CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-	<liuyonglong@huawei.com>, <shaojijie@huawei.com>, <chenhao418@huawei.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net 7/7] net: hns3: fix kernel crash when devlink reload during vf initialization
-Date: Mon, 22 Apr 2024 21:43:27 +0800
-Message-ID: <20240422134327.3160587-8-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240422134327.3160587-1-shaojijie@huawei.com>
-References: <20240422134327.3160587-1-shaojijie@huawei.com>
+	s=arc-20240116; t=1713793416; c=relaxed/simple;
+	bh=iyUYTV5ltJ3rODQwoPpNba45yscFs+Ul9nWQU6yjDfo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mvCK0Dxyx1Me/id5te290Hx3zO3NyirCa+dNAlu2BccdH7Gw4LzkboNfUXHf1zbd/M+kf55nYht7lzqecoi9oIevExpYu23Uvd0ojqHw+LxPht0gyLyJ/CnkGVsGfXAt6VQ2U1ubct90z+rZzFvtGiIkP9uEjC0sL6X99CfTrV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fzV3Dz61; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9046C113CC;
+	Mon, 22 Apr 2024 13:43:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713793415;
+	bh=iyUYTV5ltJ3rODQwoPpNba45yscFs+Ul9nWQU6yjDfo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fzV3Dz61yBDv+hpyv23l2av+nrBuoT/+wcwF6Okuiyt584leQaLRNvqUg/uOtTqGN
+	 j4q1xECwuU+4lK9iEpRlo3epfwTkarXtWvkGA4zK95xq7WOPcRZ0KgTkWw3KVnLw/b
+	 9MzfFWqyFyW8kUdwRZDBU0WNnQuzLNBzwbLOPiNHzok2oWwl5ynyNLKl3PLsAx0/bJ
+	 5EC7vN/8U2hoxVCSwjO42ACCKpu/xK6ZCRxhI/TcrovToUGRDU+SEqFxSjJKGydc5+
+	 iBe3TbIBYjxlE7UjH6budWKE9zVFhdz5/BqX0s/V8IoIZG/HPgK8AKBYIBA2IVKITI
+	 a19zyfMtirOKA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rytxD-000000005jw-1Bm1;
+	Mon, 22 Apr 2024 15:43:31 +0200
+Date: Mon, 22 Apr 2024 15:43:31 +0200
+From: Johan Hovold <johan@kernel.org>
+To: quic_zijuhu <quic_zijuhu@quicinc.com>
+Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Zhengping Jiang <jiangzp@google.com>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Bluetooth: qca: fix NULL-deref on non-serdev setup
+Message-ID: <ZiZpg4lyp-LcpV8l@hovoldconsulting.com>
+References: <20240319154611.2492-1-johan+linaro@kernel.org>
+ <ZiZdag8fw8H1haCb@hovoldconsulting.com>
+ <438844e9-47e8-486e-9611-ae524d6974b3@quicinc.com>
+ <ZiZkK4BAoqxNg7yG@hovoldconsulting.com>
+ <472b9f60-d68e-47ee-9ca9-f71a9ba86a1a@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600007.china.huawei.com (7.193.23.208)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <472b9f60-d68e-47ee-9ca9-f71a9ba86a1a@quicinc.com>
 
-From: Yonglong Liu <liuyonglong@huawei.com>
+On Mon, Apr 22, 2024 at 09:30:28PM +0800, quic_zijuhu wrote:
+> On 4/22/2024 9:20 PM, Johan Hovold wrote:
+> > On Mon, Apr 22, 2024 at 09:04:58PM +0800, quic_zijuhu wrote:
+> >> On 4/22/2024 8:51 PM, Johan Hovold wrote:
+> >>> On Tue, Mar 19, 2024 at 04:46:09PM +0100, Johan Hovold wrote:
+> > 
+> >>>> Johan Hovold (2):
+> >>>>   Bluetooth: qca: fix NULL-deref on non-serdev suspend
+> >>>>   Bluetooth: qca: fix NULL-deref on non-serdev setup
+> >>>
+> >>> Could you pick these up for 6.9 or 6.10?
+> >>>
+> >>> The patches are marked for stable backport and only privileged users can
+> >>> set the N_HCI line discipline these days (even if I'm not sure about
+> >>> pre-5.14 kernels...) so it may be fine to wait for 6.10 if you prefer.
+> > 
+> >> could you share the patch links for me to review. i can
+> >> 't find them now
+> > 
+> > Sure, but you should bookmark lore.kernel.org in your browser as you can
+> > search the archives there yourself:
+> > 
+> > 	https://lore.kernel.org/lkml/20240319154611.2492-1-johan+linaro@kernel.org/
 
-The devlink reload process will access the hardware resources,
-but the register operation is done before the hardware is initialized.
-So, processing the devlink reload during initialization may lead to kernel
-crash. This patch fixes this by taking devl_lock during initialization.
+> NAK for your [PATCH 1/2] since the null checking is redundant with your
+> [PATCH 2/2].
 
-Fixes: cd6242991d2e ("net: hns3: add support for registering devlink for VF")
-Signed-off-by: Yonglong Liu <liuyonglong@huawei.com>
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+I explained in the cover letter why it is split up like this. If you
+don't bother reading, then we will not bother listening to you.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index 08db8e84be4e..3ee41943d15f 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -2849,6 +2849,8 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
- 	if (ret)
- 		goto err_devlink_init;
- 
-+	devl_lock(hdev->devlink);
-+
- 	ret = hclge_comm_cmd_queue_init(hdev->pdev, &hdev->hw.hw);
- 	if (ret)
- 		goto err_cmd_queue_init;
-@@ -2950,6 +2952,7 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
- 	hclgevf_task_schedule(hdev, round_jiffies_relative(HZ));
- 	timer_setup(&hdev->reset_timer, hclgevf_reset_timer, 0);
- 
-+	devl_unlock(hdev->devlink);
- 	return 0;
- 
- err_config:
-@@ -2960,6 +2963,7 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
- err_cmd_init:
- 	hclge_comm_cmd_uninit(hdev->ae_dev, &hdev->hw.hw);
- err_cmd_queue_init:
-+	devl_unlock(hdev->devlink);
- 	hclgevf_devlink_uninit(hdev);
- err_devlink_init:
- 	hclgevf_pci_uninit(hdev);
--- 
-2.30.0
+> NAK for your [PATCH 2/2], since it is same with my earlier fix
+> https://lore.kernel.org/all/1704960978-5437-1-git-send-email-quic_zijuhu@quicinc.com/
+> my new patchset for btattach tool still has this change.
 
+The fix does not depend on your btattach series, which has also been
+rejected.
+
+You clearly have some learning to do on how to interact with the kernel
+community and to write proper commit messages and patches. If you start
+listening to feedback and try not to piss everyone off perhaps you can
+even get your patches merged one day. [1][2]
+
+Johan
+
+[1] https://lore.kernel.org/linux-bluetooth/fbe5722b-1e45-4ccb-a050-20a473a823c8@quicinc.com/T/#m8e495666a71eb0e7ae54c82554dfff1fc96983e7
+[2] https://lore.kernel.org/linux-bluetooth/1713563327-19694-1-git-send-email-quic_zijuhu@quicinc.com/T/#med0610646a8fd8b3c8586abca9895b124b2d2534
 
