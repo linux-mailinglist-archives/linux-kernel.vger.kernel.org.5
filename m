@@ -1,160 +1,198 @@
-Return-Path: <linux-kernel+bounces-152718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEDD48AC35E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:10:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41BEE8AC360
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:12:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A06D281766
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 04:10:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2CD31F218E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 04:12:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0842112B71;
-	Mon, 22 Apr 2024 04:10:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NH3c9vP8"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EF7DDC3;
-	Mon, 22 Apr 2024 04:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E86125B9;
+	Mon, 22 Apr 2024 04:12:30 +0000 (UTC)
+Received: from zg8tmja5ljk3lje4ms43mwaa.icoremail.net (zg8tmja5ljk3lje4ms43mwaa.icoremail.net [209.97.181.73])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C145107A0;
+	Mon, 22 Apr 2024 04:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.97.181.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713759046; cv=none; b=r6M5RUk8JL1VWaYhSrsv3Q6svhGNVz8OW3HObpyUqIZVui4I+9fIY4t8XX9zlYdHxaXq7+uAUUfZuqW5oYt7bzJpk45fTRmFKo+TW1K5MUvu1fH1RhWbQ3GT49I5oCsfjXlu/SXaA/wew8HiZazuj7FYEKr2vJXEr9xauUSWqm0=
+	t=1713759149; cv=none; b=gaulkWZzw3nuVLY72iz3ymlI+hB+FZQZCBKRpOj4eK32eMWRnVt3O0uiWou6gfZYbrSUr6MIpa4kLjySNTeUCeQUi85a4JsMB35isGy6JfvzROu7Ty/5Fy7HNEt0kK4poV0YCQBkOF4I/oFZt2EJ8P8M3fP8OT61LSN5tT/Xq2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713759046; c=relaxed/simple;
-	bh=5NjCtgLGkoY3Wj6Pp66QEPbSYudtfJ487DFWfPIF2oo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tVSVnYNFDrVwUlE6dAmL5eRKMdYj+w6n3K5TDS5sOSC0U+oxdX7Pl27dMOPfuCq91ECE5T7n0rIjU6pQlZcj7VrcLtViVSLU3Ip9cFKQ8hKTPvh3IM552HtTN9stvKxh6HnbWhbiDw+RsjB2MmRJ/WYYI6qq6eDxplTTb+pdb+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NH3c9vP8; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f0b9f943cbso2400009b3a.0;
-        Sun, 21 Apr 2024 21:10:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713759044; x=1714363844; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Pk53pkCaqYMsqJlJXTFGI4Htbwc6vRAfCe+dNH9x0Uk=;
-        b=NH3c9vP8LzsYg2Ks0ktfwHw+MpTNOp8GzfJnjhyaTEkEhOsE7EiQ/Q/F4wnGdyi2nm
-         HcmtFAeZkTq9IkiE8O57KJ1zp6jGRCZ5lkIK/v66qkTNI8K5Xp6SKjnqAm/NrswxED4d
-         wyI6pyZRv+jL0z74m0Vdga+oRAqnbPiYJX2AwnfDdYN0VH3TaeVSMpYr83JiizA0gfAP
-         RPyXcfX7C+6+eY5yxfbJKnTx7F95zlSyxWMMUQMu/DmGT59WbTxEWI4c+3bltOXTEdY8
-         CHUGaTCl4bDuoiViEpiLwtx7m4l9mY/N2pLJ0kxiMGKRf3WhJPars6TO+9SvZ49qIQGb
-         e56Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713759044; x=1714363844;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pk53pkCaqYMsqJlJXTFGI4Htbwc6vRAfCe+dNH9x0Uk=;
-        b=LohgQ28Qya4qzY5BmXUu7ZYNzygqNFnUYrflOplatMRd6JnB7Biq4MYdtoyuFeE1BB
-         qcqFJb2Nz15p9BCiK2q3TvC94EAG0AnxvL+gu1silNWakdxDU40lLF7Nc13AYvQE+FmT
-         yX/v6D9DjVTFzihbli9/IiS9BZTikXWJrJDCDDmC5fYoURDny2Y20ujanruordRW5wL/
-         rnwDUk7jeXlzoJe0lYwYHCMW9z710tCCBWVAV5PypbnXVJuu564uNrFCNhPG+TNjVI/K
-         bDTjOa/m9s/pU8L9pLguX/DHgb/Rdxa//04qHmgj94fZUIL3POtCWbvMVZNd9vqFZfzx
-         Oe3A==
-X-Forwarded-Encrypted: i=1; AJvYcCVotnSF2qr8p4cCpbLe/SN7tVN8XPbc50Q3KtVvTb2fg72phreOZ/k5X8K36Rql1PKmEcqDZEyzCI5254bUvwZfQDvJ4YZP7MZXdG8F/iIOJNG7s3mr/AQiGx8hyWTzfeLBngOfxT1W5EuZRle/9cwRPtu8crrjXpVVgnbPPUbZ9/a9rCg=
-X-Gm-Message-State: AOJu0YwRZduyTpBNE/foP8hdG86mrFY2aFDjqFj55Yht/2wC7DvBW5Qc
-	Mne2zxZ9PPgxIHOjPqPifT5Vi1H1E1YCYmDaiWGRcByPtIrpUKXt
-X-Google-Smtp-Source: AGHT+IGFt8U7KmMFD2+/CWAl67eRHju1Lq06X2sawXRedrU19UaPukWLdszh4oIbJL97SCLd8XMg2g==
-X-Received: by 2002:a05:6a20:2d12:b0:1ad:1168:a415 with SMTP id g18-20020a056a202d1200b001ad1168a415mr3363140pzl.2.1713759044165;
-        Sun, 21 Apr 2024 21:10:44 -0700 (PDT)
-Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id g4-20020aa79f04000000b006e7324d32bbsm6854370pfr.122.2024.04.21.21.10.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Apr 2024 21:10:43 -0700 (PDT)
-Message-ID: <643a0d80-3d99-420e-9e77-acc67728fbe7@gmail.com>
-Date: Mon, 22 Apr 2024 12:10:39 +0800
+	s=arc-20240116; t=1713759149; c=relaxed/simple;
+	bh=AbBG2belqXQi6H+qT/GsiUrJuq3Gg22/bXjlcKqUMNA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=jl6DrzLDmqt1nuM82M6i8EfJlxDQaiVZsFZ64LS11fehzHovUckwgG9oMGC09NwPhXBwo3K7iH1F045HZyar+ptmTwGcMeU+38uYKf2H98QVOQHKJp0r84OIzZnPG3UAdRCjqGBRveTjB7Y0aRnMqDVWbQCyBQN0IMeY5QjrFU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hust.edu.cn; spf=pass smtp.mailfrom=hust.edu.cn; arc=none smtp.client-ip=209.97.181.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hust.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hust.edu.cn
+Received: from hust.edu.cn (unknown [172.16.0.52])
+	by app1 (Coremail) with SMTP id HgEQrADHyilu4yVmQChFBQ--.42189S2;
+	Mon, 22 Apr 2024 12:11:26 +0800 (CST)
+Received: from pride-poweredge-r740.. (unknown [222.20.126.129])
+	by gateway (Coremail) with SMTP id _____wCXnb1m4yVmz2nCAQ--.1182S2;
+	Mon, 22 Apr 2024 12:11:25 +0800 (CST)
+From: Dongliang Mu <dzm91@hust.edu.cn>
+To: Alex Shi <alexs@kernel.org>,
+	Yanteng Si <siyanteng@loongson.cn>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Dongliang Mu <dzm91@hust.edu.cn>,
+	Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4] docs/zh_CN: add process/cve Chinese translation
+Date: Mon, 22 Apr 2024 12:11:00 +0800
+Message-Id: <20240422041115.2439166-1-dzm91@hust.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 3/3] pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO
- driver
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: linus.walleij@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- p.zabel@pengutronix.de, j.neuschaefer@gmx.net,
- linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- ychuang3@nuvoton.com, schung@nuvoton.com
-References: <20240409095637.2135-1-ychuang570808@gmail.com>
- <20240409095637.2135-4-ychuang570808@gmail.com>
- <ZhZTsV3RKpuyeUr4@surfacebook.localdomain>
-Content-Language: en-US
-From: Jacky Huang <ychuang570808@gmail.com>
-In-Reply-To: <ZhZTsV3RKpuyeUr4@surfacebook.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:HgEQrADHyilu4yVmQChFBQ--.42189S2
+Authentication-Results: app1; spf=neutral smtp.mail=dzm91@hust.edu.cn;
+X-Coremail-Antispam: 1UD129KBjvJXoW3WF1kCF1xZrWkWF15Jr43Jrb_yoW3Gw4DpF
+	n7Zr97ta1Iya43ArWfKFW8XF18AFsrCFWfKF1xG34fJwn5JryvywnrJF1UWw17Cr1rCa4D
+	XF4vkFZ3ury2ka7anT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUQIb7Iv0xC_Cr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+	cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+	v20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vE
+	x4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAaw2AFwI0_JF
+	0_Jw1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF
+	0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0EF7xvrVAajcxG14v26r
+	4UJVWxJr1lYx0E74AGY7Cv6cx26r4fZr1UJr1lYx0Ec7CjxVAajcxG14v26r4UJVWxJr1l
+	Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1DMx
+	AIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFW3Jr1UJwCFx2IqxVCFs4IE7xkE
+	bVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+	k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+	xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0XVy3UUUUU==
+X-CM-SenderInfo: asqsiiirqrkko6kx23oohg3hdfq/
 
-Dear Andy,
+Translate process/cve.rst into Chinese and add it to
+Documentation/translations/zh_CN directory.
 
+Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
+---
+v3->v4: revise sentences suggested by Alex Shi
+v2->v3: remove a trailing space
+v1->v2: add a newline at then end of cve.rst.
+ .../translations/zh_CN/process/cve.rst        | 89 +++++++++++++++++++
+ .../translations/zh_CN/process/index.rst      |  1 +
+ 2 files changed, 90 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/process/cve.rst
 
-On 2024/4/10 下午 04:54, Andy Shevchenko wrote:
->> +#define MA35_GP_MODE_MASK_WIDTH              2
->> +
->> +#define MA35_GP_SLEWCTL_MASK_WIDTH   2
-> I looked at the code how you use these... Oh, please switch to FIELD_GET() /
-> FIELD_PREP() (don't forget to include bitfield.h)
->
-> ...
->
-> ...
->> +             regval &= ~GENMASK(setting->shift + MA35_MFP_BITS_PER_PORT - 1,
->> +                                setting->shift);
-> This will generate an awful code. Use respective FIELD_*() macros.
->
-> ...
->
->> +     regval &= ~GENMASK(gpio * MA35_GP_MODE_MASK_WIDTH - 1,
->> +                        gpio * MA35_GP_MODE_MASK_WIDTH);
->> +     regval |= mode << gpio * MA35_GP_MODE_MASK_WIDTH;
-> Ditto.
->
-> ...
->
->> +     regval &= GENMASK(gpio * MA35_GP_MODE_MASK_WIDTH - 1,
->> +                       gpio * MA35_GP_MODE_MASK_WIDTH);
->> +
->> +     return regval >> gpio * MA35_GP_MODE_MASK_WIDTH;
-> Ditto.
->
-> ...
->
->
-
-Allow me to remove irrelevant parts.
-
-I attempted to follow your advice and use FIELD_GET() and FIELD_PREP(), 
-but found
-it impractical. The reason is that these two macros require their 'mask' 
-argument
-to be a constant, otherwise compilation errors occur, which is the issue 
-I encountered.
-Since the mask here is calculated and not a constant, compilation errors 
-occur.
-
-Taking MA35_GP_REG_MODE as an example, within 32 bits, every 2 bits 
-represent
-the mode of a GPIO pin, and the mask is obtained by GENMASK(gpio * 2 -1, 
-gpio * 2),
-where the 'gpio' argument is a variable, not a constant, leading to 
-compilation
-errors.
-
-Due to this reason, I will leave this part unchanged, or do you have any 
-other suggestions?
-
-
-Best Regards,
-Jacky Huang
-
-
+diff --git a/Documentation/translations/zh_CN/process/cve.rst b/Documentation/translations/zh_CN/process/cve.rst
+new file mode 100644
+index 000000000000..e39b796efcec
+--- /dev/null
++++ b/Documentation/translations/zh_CN/process/cve.rst
+@@ -0,0 +1,89 @@
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: Documentation/process/cve.rst
++:Translator: Dongliang Mu <dzm91@hust.edu.cn>
++
++====
++CVEs
++====
++
++Common Vulnerabilities and Exposure (CVE®) 编号是一种明确的方式来
++识别、定义和登记公开披露的安全漏洞。随着时间的推移，它们在内核项目中的实用性
++已经下降，CVE编号经常以不适当的方式和不适当的原因被分配。因此，内核开发社区
++倾向于避免使用它们。然而，分配CVE与其他形式的安全标识符的持续压力，以及内核
++社区之外的个人和公司的持续滥用，已经清楚地表明内核社区应该控制这些CVE分配。
++
++Linux内核开发团队确实有能力为潜在的Linux内核安全问题分配CVE。CVE的分配
++独立于 :doc:`安全漏洞报送流程</process/security-bugs>`。
++
++所有分配给Linux内核的CVE列表都可以在linux-cve邮件列表的存档中找到，如
++https://lore.kernel.org/linux-cve-announce/ 所示。如果想获得已分配
++CVE的通知，请“订阅”该邮件列表。要获得分配的CVE通知，请订阅该邮件列表：
++`订阅 <https://subspace.kernel.org/subscribing.html>`_。
++
++过程
++=======
++
++作为正常稳定发布过程的一部分，可能存在安全问题的内核更改由负责CVE编号分配
++的开发人员识别，并自动为其分配CVE编号。这些CVE分配会作为经常性的通告经常
++发布在linux-cve-announce邮件列表上。
++
++注意，由于Linux内核在系统中的特殊地位，几乎任何漏洞都可能被利用来危害内核
++的安全性，但是当漏洞被修复后，利用的可能性通常不明显。因此，CVE分配团队过于
++谨慎，并将CVE编号分配给他们识别的任何漏洞修复。这就解释了为什么Linux内核
++团队会发布大量的CVE。
++
++如果CVE分配团队错过了任何用户认为应该分配CVE的特定修复，请发送电子邮件到
++<cve@kernel.org>，那里的团队将与您一起工作。请注意，任何潜在的安全问题
++不应被发送到此邮箱，它仅用于为已发布的内核树中的漏洞修复分配CVE。如果你觉得
++自己发现了一个未修复的安全问题，请按照 :doc:`安全漏洞报送流程
++</process/security-bugs>` 发送到Linux内核社区。
++
++Linux内核不会给未修复的安全问题自动分配CVE；只有在安全修复可用且应用于
++稳定内核树后，CVE分配才会自动发生，并且它将通过安全修复的Git提交编号进行
++跟踪。如果有人希望在提交安全修复之前分配CVE，请联系内核CVE分配团队，从
++他们的一批保留编号中获得相应的CVE编号。
++
++对于目前没有得到稳定与长期维护内核团队积极支持的内核版本中发现的任何问题，
++都不会分配CVEs。当前支持的内核分支列表可以在 https://kernel.org/releases.html
++上找到。
++
++被分配CVE的争论
++=========================
++
++对于为特定内核修改分配的CVE，其争论或修改的权限仅属于受影响子系统的维护者。
++这一原则确保了漏洞报告的高度准确性和可问责性。只有那些具有深厚专业知识和
++对子系统深入了解的维护人员，才能有效评估内核漏洞的有效性和范围，并确定其适当的
++CVE指定策略。在此指定权限之外，任何争论或修改CVE的尝试都可能导致混乱、
++不准确的报告，并最终危及系统。
++
++无效的CVE
++============
++
++如果发现的安全问题存在于仅由某Linux发行版支持的Linux内核中，即安全问题是
++由于Linux发行版所做的更改导致，或者Linux的发行版内核版本不再是Linux内核
++社区支持的内核版本，那么Linux内核CVE团队将不能分配CVE，必须从Linux
++发行版本身请求。
++
++内核CVE分配团队以外的任何团队对Linux内核支持版本分配的CVE都不应被
++视为有效CVE。请通知内核CVE分配团队，以便他们可以通过CNA修复措施使
++这些条目失效。
++
++特定CVE的适用性
++==============================
++
++由于Linux内核可以以许多不同方式使用，外部用户可以通过许多不同方式访问它，或者
++根本没有访问，因此任何特定CVE的适用性取决于Linux用户，而不是内核CVE分配团队。
++请不要与我们联系来尝试确定任何特定CVE的适用性。
++
++此外，由于源代码树非常大，而任何一个系统都只使用源代码树的一小部分，因此任何
++Linux用户都应该意识到，大量分配的CVEs与他们的系统无关。
++
++简而言之，我们不知道您的用例，也不知道您使用的是内核的哪个部分，因此我们无法
++确定特定的CVE是否与您的系统相关。
++
++与往常一样，最好采用所有发布的内核更改，因为它们是由许多社区成员在一个统一的
++整体中一起进行测试的，而不是作为个别的精选更改。还要注意，对于许多安全问题来
++说，整体问题的解决方案并不是在单个更改中找到的，而是在彼此之上的许多修复的总
++和。理想情况下，CVE将被分配给所有问题的所有修复，但有时我们将无法注意到一些
++修复，因此某些修复可能在没有CVE的情况下被采取。
+diff --git a/Documentation/translations/zh_CN/process/index.rst b/Documentation/translations/zh_CN/process/index.rst
+index 3ca02d281be0..5c6c8ccdd50d 100644
+--- a/Documentation/translations/zh_CN/process/index.rst
++++ b/Documentation/translations/zh_CN/process/index.rst
+@@ -48,6 +48,7 @@ TODOLIST:
+    :maxdepth: 1
+ 
+    embargoed-hardware-issues
++   cve
+ 
+ TODOLIST:
+ 
+-- 
+2.34.1
 
 
