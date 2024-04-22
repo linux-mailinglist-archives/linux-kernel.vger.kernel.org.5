@@ -1,132 +1,226 @@
-Return-Path: <linux-kernel+bounces-153801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47938AD35F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:39:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6C38AD368
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:41:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 803CC28221E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:39:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12E771F223FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:41:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0CE6153BF9;
-	Mon, 22 Apr 2024 17:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D996E154429;
+	Mon, 22 Apr 2024 17:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XHi8xcaa"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="tL9uo/+V"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B418A146A6A;
-	Mon, 22 Apr 2024 17:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E66153BEC
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 17:40:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713807582; cv=none; b=bjEjr2OtdheX3M143wXbr9yeF3bVP6RBzRmQuxPZ/FfxcQJ/R1xlBBB5gYTSgSOolaBDAiFyUJSUK2O0n1yiFo9oS1qHCdVcS1ZawU3hZyZ5Xmu7MbI7tr6w9Vl0gZ9ogeAWY1vV8ZuzBmbkVEiXb87SEgmzR5pEoUO4jkhyMtc=
+	t=1713807661; cv=none; b=gZTHooCVfxYMUUeXPU9RTDkWXjD1LxXSPLfZHRXnICLebeJS4lpbDTKdjz5dYgpcBovgvEteEzG3BovOfa0VGZ96ABnAIyg+djq7tnWsC1yBtrE138KAF++EBH9Z92j+MWi9/AsR7/Fw8ovCHrXNHW5mxR8vfY8h/7uTxsZxPi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713807582; c=relaxed/simple;
-	bh=pbO9enzFWQcbWpVyNcMF39gz0D5Bx4UfTAmhBYARJKU=;
+	s=arc-20240116; t=1713807661; c=relaxed/simple;
+	bh=p8f3mDhOFdkK6vQBSO2RmHu0Eih8xW1uX/u+4OJ4ags=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SVEGdeKzGwF6E1K+n06c4PfOYtiQV6hVGHWphD6BdOEpSCX6tIHSjWy5Cdr1Ff8JXRhZz5PpIQF7448+bMMVe8keJd5X55f26wMt74IYcuWaHyIw6ywuHAIbj7Ux1nj6ZWYM1vq90HSxZOfEl8XDeipJwybrHuWQbei5gi2JDBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XHi8xcaa; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6effe9c852eso3905841b3a.3;
-        Mon, 22 Apr 2024 10:39:40 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=DqiaMk6DQfXXqktVFP3NmJ/qh1dUCuEF+oDN9qo7ZVq19m3qjm7BSRGD6vefseUuTwUZWJ+iH9H0gmnadKnRV7qYoZDNOvVWpy2edrAwAMB0qwPy6w1+u2wrZlWzOamKsrBqg4OpqrKre+rPRm86Idha/qlpfZ9uqvEd0hycKOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=tL9uo/+V; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-61ae4743d36so50886577b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:40:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713807580; x=1714412380; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kxuAZhKShuQ4A9YR+YcBtY1x9WESatpl4z3NLeFgqH4=;
-        b=XHi8xcaazFbK28Qx0DNcZCiMjfhI536Zd1aCMaC7d59E7o8UMey087s/1lLDSF5PVu
-         ROTNEG3KW/m8lJQTZyDz9zdzvfsDqorDvMJOPuwSiS9zifRxxn5JYTQunv5SvYii6nzA
-         P2Kt1tXxOxNJMYHor3QDKMj5vMc5KVQiWugcbn+Ca4xyLvep9rwpD/w4IFxf7PDEyt1X
-         a4LJudRvCDlqL7mlOipyz29P/M5Il5p7EYs24lrAOFFp+kK/RUKnIeAMHTEiO2rzu6tn
-         CNKiSn1iFchkkjn/hPeUTksiUmpn+1WDuQPPiCE7KzY1sIm/Z/6sWHsolBiD6x7nSHVs
-         p/Ug==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713807657; x=1714412457; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8oSz86JzOY9DQvGvueAGk0oxmVKc1JpB72xgEu0TDts=;
+        b=tL9uo/+V2uI9u12Ii9xymlGAoiD2oECwTjm956XUQxxl2D8pCCLu9ZtWW/X8v7Sq2P
+         7BxAp+XaVdiBzqL/8LJiogRdbATSfn6r14GyzFu/bjZNLRr283ahd4jFW1VCjZ3xEs5s
+         IGSsw+0M2orJrQvtJXjqVQ9lRfPPGfoqlYcFA1WiRZ9lZTceFrB1ilqgG2OX8cBU9w45
+         AnzEF1VOu4dCjuj8/Ewd+GehaNAlElR2eLM7//3R0r85DMIMyd6d5Y2L+Hlu7+DzhQAu
+         V0ECdVN0H+DFzkHV6qSajV+P5Yh+XBAv7Ot+eFzF8yx/NZIIz4Yv+9zuRHenLq5tS6+J
+         4iHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713807580; x=1714412380;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kxuAZhKShuQ4A9YR+YcBtY1x9WESatpl4z3NLeFgqH4=;
-        b=pP9myBQab2TFLH0gZquJGBlmn8itbaDxxZsZ+0aM/zjMXze1T9moeH+iabUKaMXpaH
-         1IStTj1dC55+ExZhOVrnlcvdNhDqw+z9nmVaF5v/saBetktMWjB3t6lkpppNxoXaBq4e
-         7Fem13K36loFCUOwU1whlyyBJzMbBpU5XAtgKkcMnq8kSDxVi9iNvArr0NOUdSXiph+j
-         vfGUCLM1EnudYf28x/8P0q/VvNeMA62lZj4NVIo4eUKs63atze1gzG0lx1dCWIznXpJY
-         +lUu+gcBHdYMzZstP73pLX6ygjeUDGMnYiXqAi30+jOpE0APYDCOHsJUbsWWUL2Sy0nW
-         4aFw==
-X-Forwarded-Encrypted: i=1; AJvYcCVSCsPnzx8w8ZDBqHC1m8qRHaFOYOagvnNRI/bd31gMX8e4JLuTXGBzTBRHVCyyPRX6wnPQJGMemNr/6N0vFm4zsvI0RRP4Ru+LzU0U4QLsjMuKoiLPl59bzaeVUjZXA1W/SeKVCSqn+1g2EDB8rn47S7KuVoffRm3u2ikdUE3J1Ysk
-X-Gm-Message-State: AOJu0Yx2ymI4toKFa0lGQ48MdS4BCgg8XcCxvti4haor54tOxcnq51F+
-	P/tozlIS4QlKJAxiFYaWoUxQyM1iDh+c4HjrOKtszWuZdTBVCLeB
-X-Google-Smtp-Source: AGHT+IEvptDlvv43YylrzaDynUVlS/RC6xKVrkMEyyn0e/g7Y7VPkYnsR2eiZpB4ehXEwzA6+Ln4kg==
-X-Received: by 2002:a05:6a00:4b50:b0:6e8:f57d:f1ec with SMTP id kr16-20020a056a004b5000b006e8f57df1ecmr14462049pfb.17.1713807579805;
-        Mon, 22 Apr 2024 10:39:39 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id t8-20020a056a0021c800b006ecffb316ccsm8053439pfj.202.2024.04.22.10.39.38
+        d=1e100.net; s=20230601; t=1713807657; x=1714412457;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8oSz86JzOY9DQvGvueAGk0oxmVKc1JpB72xgEu0TDts=;
+        b=KzRjCcBtet6/vl3YfkjWBu2kgENQSIA5ekuQBp8Af3QA2An812MxS7THHz4bZvtbbS
+         p1YBWtZSPx53qR74aLZhYCYcs52nGEn7S5yPoEr6rJ9LhQ1kojU9/Ue/L0cjTckWv4cQ
+         CfurX83I4TrQUOwI83LWEcyvLfT/e23YNDoYSh8FEin2j4tIUoumpe7kl4OJEx/bhlVA
+         jyIpW5L44yyOhmXI9Sx6inP3r4ydPibpCHDcaqkwVweXbZySYvspDYMglgfBgZNQfl7C
+         ba835aJSJlSVj92JMAIC7kaPXa5Vqp4c331b7wj01edGpmFqLc2ed8xVOnKN3kVF44Ez
+         nDgA==
+X-Forwarded-Encrypted: i=1; AJvYcCV2XjB/lQIcmhQST2kt/Lrg0cXNZxu+6r+PJQc3yy2Zg//5bZLbAghOlSh+n06d3xJ3hivYU7lKzuQxq1OtPy9DYKwXbQ34RPo5rwc/
+X-Gm-Message-State: AOJu0YxcVYLGHNQ4aOWH0l5m1m61FbWQ22sOso+kszljXZXGVc0AmW9X
+	vnMXmfJuveirWFaUyoJ4uG8mgqTvu4X2qWjgK7R8wp1tRHzjli/FJBEE64d1LUE=
+X-Google-Smtp-Source: AGHT+IF6LQ8zdofhxJ/PNSOv5IQXexYxxfrsaWAs34RmUulyK1yyuZ4SFyNwWs4DcElioVxSqpYRPw==
+X-Received: by 2002:a05:690c:3685:b0:617:c9b0:e12c with SMTP id fu5-20020a05690c368500b00617c9b0e12cmr10651242ywb.38.1713807655898;
+        Mon, 22 Apr 2024 10:40:55 -0700 (PDT)
+Received: from ghost ([50.146.0.2])
+        by smtp.gmail.com with ESMTPSA id r29-20020a81441d000000b00608876ed731sm2060370ywa.126.2024.04.22.10.40.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 10:39:39 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 22 Apr 2024 07:39:37 -1000
-From: "tj@kernel.org" <tj@kernel.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: =?utf-8?B?5ZGo5rOw5a6H?= <zhoutaiyu@kuaishou.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"axboe@kernel.dk" <axboe@kernel.dk>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH] blk-throttle: fix repeat limit on bio with
- BIO_BPS_THROTTLED
-Message-ID: <Ziag2TL_BqmTRK5D@slm.duckdns.org>
-References: <20240419120747.38031-1-zhoutaiyu@kuaishou.com>
- <ea781ccc-c29e-894e-c54a-f44ea349edca@huaweicloud.com>
- <e2d291e6b6ed43d89930eb2a7d459ff8@kuaishou.com>
- <fbf135e8-de16-8eb4-9ade-1b979a335e33@huaweicloud.com>
+        Mon, 22 Apr 2024 10:40:55 -0700 (PDT)
+Date: Mon, 22 Apr 2024 13:40:53 -0400
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kselftest@vger.kernel.org, David Airlie <airlied@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Kees Cook <keescook@chromium.org>,
+	Daniel Diaz <daniel.diaz@linaro.org>,
+	David Gow <davidgow@google.com>,
+	Arthur Grillo <arthurgrillo@riseup.net>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, x86@kernel.org,
+	Linux Kernel Functional Testing <lkft@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v3 14/15] riscv: Add support for suppressing warning
+ backtraces
+Message-ID: <ZiahJT8MTFqAlD5A@ghost>
+References: <20240403131936.787234-1-linux@roeck-us.net>
+ <20240403131936.787234-15-linux@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fbf135e8-de16-8eb4-9ade-1b979a335e33@huaweicloud.com>
+In-Reply-To: <20240403131936.787234-15-linux@roeck-us.net>
 
-Hello, Yu Kuai.
-
-On Mon, Apr 22, 2024 at 11:47:41AM +0800, Yu Kuai wrote:
-> Hi!
+On Wed, Apr 03, 2024 at 06:19:35AM -0700, Guenter Roeck wrote:
+> Add name of functions triggering warning backtraces to the __bug_table
+> object section to enable support for suppressing WARNING backtraces.
 > 
-> 在 2024/04/22 11:33, 周泰宇 写道:
-> > What I want to do here was to set an easy to reach value to BPS_LIMIT (10M/s in this example) and an unable to reach value to IOPS_LIMIT (100000 in this example).
-> > 
-> > 
-> > Under this setting, the iostat shows that the bps is far less than 10M/s and sometimes is far larger than 10M/s.
+> To limit image size impact, the pointer to the function name is only added
+> to the __bug_table section if both CONFIG_KUNIT_SUPPRESS_BACKTRACE and
+> CONFIG_DEBUG_BUGVERBOSE are enabled. Otherwise, the __func__ assembly
+> parameter is replaced with a (dummy) NULL parameter to avoid an image size
+> increase due to unused __func__ entries (this is necessary because __func__
+> is not a define but a virtual variable).
 > 
-> Yes, I know this behaviour, and this is because blk-throttle works
-> before IO split, and io stats is accounting bps for rq-based disk after
-> IO split, if you using Q2C for bps you'll see that bps is stable as
-> limit.
->
-> Hi, Tejun！
+> To simplify the implementation, unify the __BUG_ENTRY_ADDR and
+> __BUG_ENTRY_FILE macros into a single macro named __BUG_REL() which takes
+> the address, file, or function reference as parameter.
 > 
-> Do you think this *phenomenon* need to be fixed? If so, I don't see a
-> easy way other than throttle bio after *IO split*. Perhaps ohter than
-> bio merge case, this can be another motivation to move blk-throttle to
-> rq_qos_throttle().
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Acked-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+> v2:
+> - Rebased to v6.9-rc1
+> - Added Tested-by:, Acked-by:, and Reviewed-by: tags
+> - Introduced KUNIT_SUPPRESS_BACKTRACE configuration option
+> v3:
+> - Rebased to v6.9-rc2
+> 
+>  arch/riscv/include/asm/bug.h | 38 ++++++++++++++++++++++++------------
+>  1 file changed, 26 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/bug.h b/arch/riscv/include/asm/bug.h
+> index 1aaea81fb141..79f360af4ad8 100644
+> --- a/arch/riscv/include/asm/bug.h
+> +++ b/arch/riscv/include/asm/bug.h
+> @@ -30,26 +30,39 @@
+>  typedef u32 bug_insn_t;
+>  
+>  #ifdef CONFIG_GENERIC_BUG_RELATIVE_POINTERS
+> -#define __BUG_ENTRY_ADDR	RISCV_INT " 1b - ."
+> -#define __BUG_ENTRY_FILE	RISCV_INT " %0 - ."
+> +#define __BUG_REL(val)	RISCV_INT " " __stringify(val) " - ."
+>  #else
+> -#define __BUG_ENTRY_ADDR	RISCV_PTR " 1b"
+> -#define __BUG_ENTRY_FILE	RISCV_PTR " %0"
+> +#define __BUG_REL(val)	RISCV_PTR " " __stringify(val)
+>  #endif
+>  
+>  #ifdef CONFIG_DEBUG_BUGVERBOSE
+> +
+> +#ifdef CONFIG_KUNIT_SUPPRESS_BACKTRACE
+> +# define HAVE_BUG_FUNCTION
+> +# define __BUG_FUNC_PTR	__BUG_REL(%1)
+> +#else
+> +# define __BUG_FUNC_PTR
+> +#endif /* CONFIG_KUNIT_SUPPRESS_BACKTRACE */
+> +
+>  #define __BUG_ENTRY			\
+> -	__BUG_ENTRY_ADDR "\n\t"		\
+> -	__BUG_ENTRY_FILE "\n\t"		\
+> -	RISCV_SHORT " %1\n\t"		\
+> -	RISCV_SHORT " %2"
+> +	__BUG_REL(1b) "\n\t"		\
+> +	__BUG_REL(%0) "\n\t"		\
+> +	__BUG_FUNC_PTR "\n\t"		\
+> +	RISCV_SHORT " %2\n\t"		\
+> +	RISCV_SHORT " %3"
+>  #else
+>  #define __BUG_ENTRY			\
+> -	__BUG_ENTRY_ADDR "\n\t"		\
+> -	RISCV_SHORT " %2"
+> +	__BUG_REL(1b) "\n\t"		\
+> +	RISCV_SHORT " %3"
+>  #endif
+>  
+>  #ifdef CONFIG_GENERIC_BUG
+> +#ifdef HAVE_BUG_FUNCTION
+> +# define __BUG_FUNC	__func__
+> +#else
+> +# define __BUG_FUNC	NULL
+> +#endif
+> +
+>  #define __BUG_FLAGS(flags)					\
+>  do {								\
+>  	__asm__ __volatile__ (					\
+> @@ -58,10 +71,11 @@ do {								\
+>  			".pushsection __bug_table,\"aw\"\n\t"	\
+>  		"2:\n\t"					\
+>  			__BUG_ENTRY "\n\t"			\
+> -			".org 2b + %3\n\t"                      \
+> +			".org 2b + %4\n\t"                      \
+>  			".popsection"				\
+>  		:						\
+> -		: "i" (__FILE__), "i" (__LINE__),		\
+> +		: "i" (__FILE__), "i" (__BUG_FUNC),		\
+> +		  "i" (__LINE__),				\
+>  		  "i" (flags),					\
+>  		  "i" (sizeof(struct bug_entry)));              \
+>  } while (0)
+> -- 
+> 2.39.2
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-Yeah, blk-throtl is sitting too early in the pipeline to easily track how
-the bios actually get issued. However, given that it's been available for
-bio-based drivers for a really long time, I don't think it'd be a good idea
-to move it, so iops limit is always going to be a bit unreliable w.r.t. what
-actually get issued to the device. So, IMHO, if the oddity is just about how
-IOs are counted, I don't think it's a critical problem on its own.
+Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
 
-Thanks.
+- Charlie
 
--- 
-tejun
 
