@@ -1,130 +1,94 @@
-Return-Path: <linux-kernel+bounces-153632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 580388AD0A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A03AD8AD0D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:31:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13A0C286BEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:29:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 308C628BF15
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:31:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7405D153BC6;
-	Mon, 22 Apr 2024 15:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4A4153575;
+	Mon, 22 Apr 2024 15:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TvvF3hkQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VsByQft0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A598B153833;
-	Mon, 22 Apr 2024 15:28:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1261F1534EB;
+	Mon, 22 Apr 2024 15:30:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713799687; cv=none; b=aBtLQLhcmqLT1UrX3PW5FiTq2oNpYoY11GAuyYmb+MgCEJs4jWswloUlR+rzOi8fiNbnaIJNRUtToazIV7o8dwp2/7AZ5ga4rc5lbO5eZ4LIa/wX8Z2H2+8VP7YMMRGMaRyLlZX3KBkejlYWrCzoLBE+DI1SVjdcA1ktZa8SN6g=
+	t=1713799829; cv=none; b=DV8VM0QI4KLiKswwdMiHSTC9onS5vU2cP+WX8NSV7+N3bNjdSZmEcI5pLiqwojWZc1qiMC+03Pkeh3TFQQjj0j4v0wa7F3/8cQp8MZ1YQGwXdpzMGyQVQyvgbNMW3V5nPcqr+bjIdYZfdnA4bLrMIx08USrBSDVaRY3hf4sudRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713799687; c=relaxed/simple;
-	bh=xU07OpbSq5sBF7I9UKLveBB+3+MGri17jbugWRX1SbE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NWrNrtQPowoiww8weRVtdGwtWC6Bpkz6CsYEq4uAXwLDuz2lInyszYwbZTQRQ3TPoe/je4nLgV31ypoKNqB4s/h1HjCupc1w9zEflT5XwWcBDYdZMttLn1ZRCY1zv//6cWcfwm6dZWhJimHqj3Li3FyifUztAPIEszk3qaq4r+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TvvF3hkQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C769DC113CC;
-	Mon, 22 Apr 2024 15:28:02 +0000 (UTC)
+	s=arc-20240116; t=1713799829; c=relaxed/simple;
+	bh=kBOdztBuRx3LyBj/ka6DXaMiCnKJ+c2up6OXDtfALQg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ZapLorEV7CKZCH5Ak8dgdhfcA2xRkX24Hs2wD1C1BoPzZXgi1z1+FVt3z8F8jwhVBlY1ulYodx9X/zq4vqVc7uHFqfrVCpKXOAapGpVFF7ccwfHdwI/V42KIBrT8Q5CPGbYsM7B+QqBO3adOJNlryes9YoaBS0IkBO93LJ0KqVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VsByQft0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E3D8BC4AF09;
+	Mon, 22 Apr 2024 15:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713799687;
-	bh=xU07OpbSq5sBF7I9UKLveBB+3+MGri17jbugWRX1SbE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TvvF3hkQPdsUISwIYc/f5YjULbbaEnNKJ5ZtEaUxWcBuF7OWkY1leSN4Q7Fm0R5Mk
-	 pic1Fzy7wQYYUdWlSEsp4/zqP0Vq+RFETX3gPVzdjPJE/J7qAvBN4ek0Qan/fX9VYS
-	 9ttGl89QmQxG8G4nfAQFXLiOZAwyzOt41M839Cxf66RRvxHbuaxJGBaDYrwFg6FXQO
-	 fph32jpQIU9eJBh5dOwRnWZxCUlyR1TLVrYcelkZf4iHEegO+7XVyZ6Tnv+7YuPZHP
-	 kvUsVvgPYzpH6POcHtMyFAjGxVczXVrtnqBzyWhhmhz98bazDe/vMwz+6nQlA+9Zo8
-	 BqMPu+7kePQeg==
-Date: Mon, 22 Apr 2024 16:28:00 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Konstantin Pugin <ria.freelander@gmail.com>
-Cc: krzk@kernel.org, lkp@intel.com, vz@mleia.com, robh@kernel.org,
-	jcmvbkbc@gmail.com, nicolas.ferre@microchip.com,
-	manikanta.guntupalli@amd.com, corbet@lwn.net, ychuang3@nuvoton.com,
-	u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Andy Shevchenko <andy@kernel.org>,
-	Lech Perczak <lech.perczak@camlingroup.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 2/3] dt-bindings: sc16is7xx: Add compatible line for
- XR20M1172 UART
-Message-ID: <20240422-repackage-popper-8a062acf2610@spud>
-References: <20240422133219.2710061-1-ria.freelander@gmail.com>
- <20240422133219.2710061-3-ria.freelander@gmail.com>
+	s=k20201202; t=1713799828;
+	bh=kBOdztBuRx3LyBj/ka6DXaMiCnKJ+c2up6OXDtfALQg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=VsByQft0K9J5inVAsL7BWPEW0omu/N0N2cmpV7gVRutXaO01+Bidl3LtrFceJuX8+
+	 9ysl3inBH/gCyrgoVx53EwQSWKgzUTyw6FJIh968pT6JPv5X32ICwwhb7gJI7+aKGQ
+	 s/Yu6Q3+yUOqxCx1bh5sVQO4O8HhTdcj8Ashovaui6N1AWS3u4VZZ9oJoB0eTQjBKM
+	 q3i3RQsh8p87oqFswzXV6PhDkbe8hSgS3dXdbmg7NnlMNXUqtqSIU+IOkYGnRdHLa3
+	 r666z73wyUhUFR1QpJexflj839/VV/Gl3ffHNC0Up0nvCeyfbwLCecbAvl/wVcmWad
+	 7DWL30YUTRL0g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D8678C433A2;
+	Mon, 22 Apr 2024 15:30:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3a3xIlGiZnWRdFvn"
-Content-Disposition: inline
-In-Reply-To: <20240422133219.2710061-3-ria.freelander@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH RESEND 0/2] Bluetooth: qca: fix NULL-deref on non-serdev setup
+From: patchwork-bot+bluetooth@kernel.org
+Message-Id: 
+ <171379982888.28518.5007665871256276343.git-patchwork-notify@kernel.org>
+Date: Mon, 22 Apr 2024 15:30:28 +0000
+References: <20240422135748.23081-1-johan+linaro@kernel.org>
+In-Reply-To: <20240422135748.23081-1-johan+linaro@kernel.org>
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: marcel@holtmann.org, luiz.dentz@gmail.com, jiangzp@google.com,
+ linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+
+Hello:
+
+This series was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+
+On Mon, 22 Apr 2024 15:57:46 +0200 you wrote:
+> Qualcomm Bluetooth controllers can be registered either from a serdev
+> driver or from the Bluetooth line discipline. In the latter case, the
+> HCI UART serdev pointer is NULL, something which the driver needs to
+> handle without crashing.
+> 
+> This series fixes one such issue at setup() time which incidentally
+> masked a similar crash at suspend. Fix this in two separate patches so
+> that the latter issue is addressed in pre-6.2 stable kernels.
+> 
+> [...]
+
+Here is the summary with links:
+  - [RESEND,1/2] Bluetooth: qca: fix NULL-deref on non-serdev suspend
+    https://git.kernel.org/bluetooth/bluetooth-next/c/8185331e953d
+  - [RESEND,2/2] Bluetooth: qca: fix NULL-deref on non-serdev setup
+    https://git.kernel.org/bluetooth/bluetooth-next/c/9201f29be2c9
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
---3a3xIlGiZnWRdFvn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Apr 22, 2024 at 04:32:14PM +0300, Konstantin Pugin wrote:
-> Add EXAR XR20M1172 UART compatible line into devicetree documentation.
-
-I thought I had already pointed out a need for the commit message to
-explain why this exar device belongs in this file. IIRC you said it was
-in the driver commit and cover letter, but it needs to go here too.
-
-Thanks,
-Conor.
-
->=20
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Reviewed-by: Vladimir Zapolskiy <vz@mleia.com>
-> Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
-> ---
->  Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml =
-b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-> index 5dec15b7e7c3..c4bedf23368b 100644
-> --- a/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-> +++ b/Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
-> @@ -12,6 +12,7 @@ maintainers:
->  properties:
->    compatible:
->      enum:
-> +      - exar,xr20m1172
->        - nxp,sc16is740
->        - nxp,sc16is741
->        - nxp,sc16is750
-> --=20
-> 2.34.1
->=20
-
---3a3xIlGiZnWRdFvn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiaCAAAKCRB4tDGHoIJi
-0phQAQC/0W99wp/ktlJOwwYlunbk0+RgoEpY72PHGNoxO1fm9wD/bODCDwYsKvK+
-lqJLoLK7IVrRzP5m1WAtyNoU3JWfNQs=
-=AOjT
------END PGP SIGNATURE-----
-
---3a3xIlGiZnWRdFvn--
 
