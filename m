@@ -1,566 +1,165 @@
-Return-Path: <linux-kernel+bounces-152913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DDA28AC609
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:54:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C6F18AC5E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:47:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88CF8B214C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:54:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBE71282575
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526974D11D;
-	Mon, 22 Apr 2024 07:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB554D5BD;
+	Mon, 22 Apr 2024 07:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="aUMlGhsO"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dFlBmh58"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1AC952F9E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FCD74CDEC
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:47:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713772389; cv=none; b=auwwcslFG6N7DupzPtbRo9/P9HSUxAj5vGTiE2jb/1wfhwKfrpgSyVwq7TX6zUHI7Fu9kml53rncxJPOkQ8o0r+ADPELdsymACb50xSR7lLSzhrIHJfAhZ5Sjrcdvl0kUl/zp1qUZOnG8SqdBmwONhTAqB8o2tv9HClS3t/T7aI=
+	t=1713772028; cv=none; b=EQ8vwnuLH9C9gtdwtLvvkG5OzdkhF9tY4tNdWsAuuyWl/9wFhpFmEZcoQy8BhiS5w7FOSlCdqXSRkQL/RfkAqgjJy+iN5HmtSuIaZcUo0jXF4wmUQxAd5QmCpD2kvJbriRH5REx4FRrNMnGGxgECvDdC2MbbxMXPfjurph6MEeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713772389; c=relaxed/simple;
-	bh=j9JjtyXiGRvAwgvWih4klkkaFN5qmbIzFHjMYLkFfWU=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=dQQnsUrRA3lCraJXxwcNraivW//7/OKGNKzo5+xyDOc+3hpvFdaOEK3ikZRfoh2V12Oak6pFJ5h5Svlf67nc6oFTcjavcWnpgzvdNYt1n4iq0aFBqRJAcoD6TrKXeSeKLYEt4Emi0j+h4LpeEPT60way1qocP7XAFzrvqcDcwhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=aUMlGhsO; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-41a7c7abdbbso2438335e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 00:53:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713772383; x=1714377183; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=4jGjfwgF7TyQMRv12TtcmSPfCodeSwoGNJ55HvwtMeQ=;
-        b=aUMlGhsOV0TdYNKwt3DyXhESl5w6XfWgggQ250VFviI3uTHKBCTLRL6f2gJpFujL4w
-         IBYUhNIQRHyGdIDBZQnXCc+M2j2t9n4h21C5Bl4/W3FXoDHuZxSQ/C9wsJt8jl3qPHI4
-         gkWTOGgsAn1OABdu7p4tE9kh/hdbZG+TuCRARzzQ29Iy1jzs0IICIU5cgwgwSnhk2dIc
-         Fv65sCPJx8dNQkKrRjnt6HtkWYds05ARFtlJ6idcBxOEEXa/YOM6kCSC56+ZJHc1Nz7k
-         8jVlCfCzdKK278AFxieqNp6HONOvPn2bDH91Z2EVZNlTxsCTlF6J6t5zxZQkbQRVL37D
-         2qAg==
+	s=arc-20240116; t=1713772028; c=relaxed/simple;
+	bh=A/M54EsLbdpEhtTAZGHPIjfGvTW/Os6fVYqjTxlwATg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cr/D3mSyaxdkA0Ct4RP9f0NWDG/Q2MJ7xpwjeDkBYiVklC1SXQ/sGzZisi9uA82yQENrJiGdWer9dkexzdsVuwIiMtGm7Ju6WxvLSMkw0WglM2S3M7M9M6CNmq5IG5xEOeYUI2HEkZPWX38SkU82LOm831srZQ5ddo+sn5AX0Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dFlBmh58; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713772026;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tAe+40gLKBnN7tnSK2raXsnb43veTPVq2GfkuOlipxU=;
+	b=dFlBmh58Oav49QhgdmmMAPmZmVo4mUQ29lHFsfduTIYpyknQo3Cywa1AW0XvFkh1u6AO9/
+	Chx4MegT8f6uZL+ZcYmlSDOiHDD3qJZEPcGaq1TqT81BtPrH7RKx2ORbCa4IgWXOPYisRl
+	nDb5mQQpJGf+hA3TMni+EkqjHdIJhGk=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-543-xo18L82BPbyH82ef4b6j-w-1; Mon, 22 Apr 2024 03:47:04 -0400
+X-MC-Unique: xo18L82BPbyH82ef4b6j-w-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d87d146022so34895621fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 00:47:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713772383; x=1714377183;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1713772023; x=1714376823;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4jGjfwgF7TyQMRv12TtcmSPfCodeSwoGNJ55HvwtMeQ=;
-        b=OsbqegZ8hmY4TaMiWtOMsTElTA+hY+1/WExGTkqNYAI3aJuNDxzoA4L5wotFcE4hgE
-         5r1rgRNRGXxdMQGDaTp6EwR96sYItCqydbBLd9OvswS6sPX897C8dYRY2HNpn42irVFK
-         XLXCGrv3PYVzsMkXUHRaPPQrgskV+Psmk4H8iQ6zZfbaQCGsuVurfZ060f5ZQTJ84nuu
-         eEEtZryRljF+P4p5UGcEpcwI3XTBzedgfnQ9NzkJZ7Nr1EUsEVc/0bqJ6z8vycSrNQbO
-         J/KmD+d8WzquaavSXE8O1RGaOZdAZiM9RfUIGdTS+tIcpVUPA8qP+PXb8YqyFILompgp
-         q54w==
-X-Forwarded-Encrypted: i=1; AJvYcCUknOWqjb7ysN++A2l6PcwlNX1GjqV+ElaGlYSoMLUvv2V7nJMHjxSK34XJrsJfxQai3CYDuIv0l+rXHCF9s6T48Ox5MyxOjkVEiCxQ
-X-Gm-Message-State: AOJu0YyGcqq75AIYY1yKmFfJ6aXoYMiRbduGsKcx43W+bBy+580hE/by
-	tm8OPgqguq/9LBuK0i51gPE73b78TEVA0UkcQtESXc5DOXV/zdFn92omJ0NfL7E=
-X-Google-Smtp-Source: AGHT+IHnAHq7UbeP632AWGtLrRm4Wi/yaGG11GCMmRkMCaECGE9BPz64Y0OIYfXnkIPNFYWuZajQaw==
-X-Received: by 2002:a05:600c:45ca:b0:41a:66b1:3922 with SMTP id s10-20020a05600c45ca00b0041a66b13922mr948452wmo.19.1713772382759;
-        Mon, 22 Apr 2024 00:53:02 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:a619:ccb0:5f40:262c])
-        by smtp.gmail.com with ESMTPSA id j13-20020a05600c190d00b00418a386c17bsm19450021wmq.12.2024.04.22.00.53.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 00:53:02 -0700 (PDT)
-References: <20240419125812.983409-1-jan.dakinevich@salutedevices.com>
- <20240419125812.983409-2-jan.dakinevich@salutedevices.com>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet
- <jbrunet@baylibre.com>, Michael  Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Rob  Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzk+dt@kernel.org>, Conor  Dooley <conor+dt@kernel.org>, Kevin
- Hilman <khilman@baylibre.com>, Martin  Blumenstingl
- <martin.blumenstingl@googlemail.com>, Philipp Zabel
- <p.zabel@pengutronix.de>, Jiucheng Xu <jiucheng.xu@amlogic.com>,
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH v3 1/6] reset: reset-meson-audio: introduce separate
- driver
-Date: Mon, 22 Apr 2024 09:46:50 +0200
-In-reply-to: <20240419125812.983409-2-jan.dakinevich@salutedevices.com>
-Message-ID: <1j8r15bzqa.fsf@starbuckisacylon.baylibre.com>
+        bh=tAe+40gLKBnN7tnSK2raXsnb43veTPVq2GfkuOlipxU=;
+        b=RTuP7BvWGfWYNTgPWJlAIcAsPVvvmg5bPNYUD4SAAvgedeiq7De2E3FthIn6+zhzTV
+         tEdop2T8yb67jshZrW/O8ZZhADuE4CsN7iA3m/RWt3DXE1ytUNkxreFRCvrwwqD/g1LG
+         dikTXdhwN32B/pqxGsAJYGHiw4LgncHKI6HD5sP1MXusea4xnlYo2dN/kf+rA8GZTynu
+         m5e6NnRgto3RVYj/g3cxnqtKzZO1eOLyB2mKxYHaSgmZAWmCwR0NL9Xv+eKX1uZ+NHNX
+         sSRCPkQ4QOrErZoTFrJnbjeq5b2lt7ir9EHj10EK8W/SrDE7HDNA6Memca11QrVoJYMb
+         Guhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVBVJdsk3qkCjMkdWZEDmaNBbd0l6IzP13xkNeKq71WXIvrsp+o8Y6bs+OE6niXqFURnXiYsK/K64R6yYkkqAFniaUsw84FIXTUChg/
+X-Gm-Message-State: AOJu0YzifAiClUB15ztLdILw8iD4nQ69pWQBlnZgvpLRUBTrtJaRilFC
+	AmzjeNkilCKUiWg2awKNvhcVEw7IbIQA37/oklV5gddwq0WBjfj4334VtuceOICGTOhG0fWcDIG
+	tBjOi6R0MJwjDjUhOHwkTd8JH5h9Nsh8+vyy3ueUn2V2tHW2exWkW1ChXGVxD9g==
+X-Received: by 2002:a2e:b5ac:0:b0:2dc:bd75:41ba with SMTP id f12-20020a2eb5ac000000b002dcbd7541bamr5950598ljn.27.1713772022973;
+        Mon, 22 Apr 2024 00:47:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGAo1tqA3ykY5PLpoGeei9qubge/Lf9gIc39igTsHUTz7zUKCNO9PFKrc8emn8mdTr0kj8JWA==
+X-Received: by 2002:a2e:b5ac:0:b0:2dc:bd75:41ba with SMTP id f12-20020a2eb5ac000000b002dcbd7541bamr5950582ljn.27.1713772022432;
+        Mon, 22 Apr 2024 00:47:02 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c739:600:d2fb:3a8a:9944:7910? (p200300cbc7390600d2fb3a8a99447910.dip0.t-ipconnect.de. [2003:cb:c739:600:d2fb:3a8a:9944:7910])
+        by smtp.gmail.com with ESMTPSA id j10-20020a05600c190a00b00418a9961c47sm15670401wmq.47.2024.04.22.00.47.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 00:47:01 -0700 (PDT)
+Message-ID: <6a182645-1f7f-4b7d-a16a-36e9b1684c58@redhat.com>
+Date: Mon, 22 Apr 2024 09:47:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] virtio_balloon: separate vm events into a function
+To: zhenwei pi <pizhenwei@bytedance.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, virtualization@lists.linux.dev
+Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+ akpm@linux-foundation.org
+References: <20240422074254.1440457-1-pizhenwei@bytedance.com>
+ <20240422074254.1440457-2-pizhenwei@bytedance.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240422074254.1440457-2-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 22.04.24 09:42, zhenwei pi wrote:
+> All the VM events related statistics have dependence on
+> 'CONFIG_VM_EVENT_COUNTERS', once any stack variable is required by any
+> VM events in future, we would have codes like:
+>   #ifdef CONFIG_VM_EVENT_COUNTERS
+>        unsigned long foo;
+>   #endif
+>        ...
+>   #ifdef CONFIG_VM_EVENT_COUNTERS
+>        foo = events[XXX] + events[YYY];
+>        update_stat(vb, idx++, VIRTIO_BALLOON_S_XXX, foo);
+>   #endif
+> 
+> Separate vm events into a single function, also remove
 
-On Fri 19 Apr 2024 at 15:58, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
-
-> Typically, Amlogic Meson SoCs have a couple a reset registers lost in
-> middle of audio clock controller. Reset controller on top of them was
-> implemented inside audio clock controller driver. This patch moves reset
-> functionality of this controller to auxiliary driver. There are at least
-> two reasons for this:
->
->   - architecturally it is more convenient;
->
->   - reusing the code of reset controller for new SoCs becomes easier.
->
-> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-> ---
->  drivers/clk/meson/Kconfig               |   2 +
->  drivers/clk/meson/axg-audio.c           | 106 +------------
->  drivers/reset/Kconfig                   |   7 +
->  drivers/reset/Makefile                  |   1 +
->  drivers/reset/reset-meson-audio.c       | 197 ++++++++++++++++++++++++
->  include/soc/amlogic/meson-audio-reset.h |  10 ++
-
-You must an effort to touch a single subsystem per series.
-Making a series about a single subsystem makes like a lot easier for
-maintainers. clk, reset and dt and different subsystems
-
-That constraints relaxed for RFCs but mixing subsystems within a single
-patch is a red flag, unless you really have a good reason ... and you
-don't have one here.
-
-Nothing blocks introducting support in reset, then use it in clocks.
-
-You could also have allowed a bit more time before reposting since I
-said I would look at the reset issue.
-
-I doubt introducing a separate driver for this is required since since
-the current amlogic reset driver is fairly close.
-
->  6 files changed, 224 insertions(+), 99 deletions(-)
->  create mode 100644 drivers/reset/reset-meson-audio.c
->  create mode 100644 include/soc/amlogic/meson-audio-reset.h
->
-> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
-> index 29ffd14d267b..33614f8b8cf7 100644
-> --- a/drivers/clk/meson/Kconfig
-> +++ b/drivers/clk/meson/Kconfig
-> @@ -101,6 +101,8 @@ config COMMON_CLK_AXG_AUDIO
->  	select COMMON_CLK_MESON_PHASE
->  	select COMMON_CLK_MESON_SCLK_DIV
->  	select COMMON_CLK_MESON_CLKC_UTILS
-> +	select RESET_CONTROLLER
-> +	select RESET_MESON_AUDIO
->  	select REGMAP_MMIO
->  	help
->  	  Support for the audio clock controller on AmLogic A113D devices,
-> diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
-> index ac3482960903..9cd6b5c3aa7e 100644
-> --- a/drivers/clk/meson/axg-audio.c
-> +++ b/drivers/clk/meson/axg-audio.c
-> @@ -12,9 +12,10 @@
->  #include <linux/platform_device.h>
->  #include <linux/regmap.h>
->  #include <linux/reset.h>
-> -#include <linux/reset-controller.h>
->  #include <linux/slab.h>
->  
-> +#include <soc/amlogic/meson-audio-reset.h>
-> +
->  #include "meson-clkc-utils.h"
->  #include "axg-audio.h"
->  #include "clk-regmap.h"
-> @@ -1648,84 +1649,6 @@ static struct clk_regmap *const sm1_clk_regmaps[] = {
->  	&sm1_sysclk_b_en,
->  };
->  
-> -struct axg_audio_reset_data {
-> -	struct reset_controller_dev rstc;
-> -	struct regmap *map;
-> -	unsigned int offset;
-> -};
-> -
-> -static void axg_audio_reset_reg_and_bit(struct axg_audio_reset_data *rst,
-> -					unsigned long id,
-> -					unsigned int *reg,
-> -					unsigned int *bit)
-> -{
-> -	unsigned int stride = regmap_get_reg_stride(rst->map);
-> -
-> -	*reg = (id / (stride * BITS_PER_BYTE)) * stride;
-> -	*reg += rst->offset;
-> -	*bit = id % (stride * BITS_PER_BYTE);
-> -}
-> -
-> -static int axg_audio_reset_update(struct reset_controller_dev *rcdev,
-> -				unsigned long id, bool assert)
-> -{
-> -	struct axg_audio_reset_data *rst =
-> -		container_of(rcdev, struct axg_audio_reset_data, rstc);
-> -	unsigned int offset, bit;
-> -
-> -	axg_audio_reset_reg_and_bit(rst, id, &offset, &bit);
-> -
-> -	regmap_update_bits(rst->map, offset, BIT(bit),
-> -			assert ? BIT(bit) : 0);
-> -
-> -	return 0;
-> -}
-> -
-> -static int axg_audio_reset_status(struct reset_controller_dev *rcdev,
-> -				unsigned long id)
-> -{
-> -	struct axg_audio_reset_data *rst =
-> -		container_of(rcdev, struct axg_audio_reset_data, rstc);
-> -	unsigned int val, offset, bit;
-> -
-> -	axg_audio_reset_reg_and_bit(rst, id, &offset, &bit);
-> -
-> -	regmap_read(rst->map, offset, &val);
-> -
-> -	return !!(val & BIT(bit));
-> -}
-> -
-> -static int axg_audio_reset_assert(struct reset_controller_dev *rcdev,
-> -				unsigned long id)
-> -{
-> -	return axg_audio_reset_update(rcdev, id, true);
-> -}
-> -
-> -static int axg_audio_reset_deassert(struct reset_controller_dev *rcdev,
-> -				unsigned long id)
-> -{
-> -	return axg_audio_reset_update(rcdev, id, false);
-> -}
-> -
-> -static int axg_audio_reset_toggle(struct reset_controller_dev *rcdev,
-> -				unsigned long id)
-> -{
-> -	int ret;
-> -
-> -	ret = axg_audio_reset_assert(rcdev, id);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return axg_audio_reset_deassert(rcdev, id);
-> -}
-> -
-> -static const struct reset_control_ops axg_audio_rstc_ops = {
-> -	.assert = axg_audio_reset_assert,
-> -	.deassert = axg_audio_reset_deassert,
-> -	.reset = axg_audio_reset_toggle,
-> -	.status = axg_audio_reset_status,
-> -};
-> -
->  static const struct regmap_config axg_audio_regmap_cfg = {
->  	.reg_bits	= 32,
->  	.val_bits	= 32,
-> @@ -1737,15 +1660,13 @@ struct audioclk_data {
->  	struct clk_regmap *const *regmap_clks;
->  	unsigned int regmap_clk_num;
->  	struct meson_clk_hw_data hw_clks;
-> -	unsigned int reset_offset;
-> -	unsigned int reset_num;
-> +	const char *reset_name;
->  };
->  
->  static int axg_audio_clkc_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
->  	const struct audioclk_data *data;
-> -	struct axg_audio_reset_data *rst;
->  	struct regmap *map;
->  	void __iomem *regs;
->  	struct clk_hw *hw;
-> @@ -1804,21 +1725,10 @@ static int axg_audio_clkc_probe(struct platform_device *pdev)
->  		return ret;
->  
->  	/* Stop here if there is no reset */
-> -	if (!data->reset_num)
-> +	if (!data->reset_name)
->  		return 0;
->  
-> -	rst = devm_kzalloc(dev, sizeof(*rst), GFP_KERNEL);
-> -	if (!rst)
-> -		return -ENOMEM;
-> -
-> -	rst->map = map;
-> -	rst->offset = data->reset_offset;
-> -	rst->rstc.nr_resets = data->reset_num;
-> -	rst->rstc.ops = &axg_audio_rstc_ops;
-> -	rst->rstc.of_node = dev->of_node;
-> -	rst->rstc.owner = THIS_MODULE;
-> -
-> -	return devm_reset_controller_register(dev, &rst->rstc);
-> +	return meson_audio_reset_register(dev, data->reset_name);
->  }
->  
->  static const struct audioclk_data axg_audioclk_data = {
-> @@ -1837,8 +1747,7 @@ static const struct audioclk_data g12a_audioclk_data = {
->  		.hws = g12a_audio_hw_clks,
->  		.num = ARRAY_SIZE(g12a_audio_hw_clks),
->  	},
-> -	.reset_offset = AUDIO_SW_RESET,
-> -	.reset_num = 26,
-> +	.reset_name = "g12a",
->  };
->  
->  static const struct audioclk_data sm1_audioclk_data = {
-> @@ -1848,8 +1757,7 @@ static const struct audioclk_data sm1_audioclk_data = {
->  		.hws = sm1_audio_hw_clks,
->  		.num = ARRAY_SIZE(sm1_audio_hw_clks),
->  	},
-> -	.reset_offset = AUDIO_SM1_SW_RESET0,
-> -	.reset_num = 39,
-> +	.reset_name = "sm1",
->  };
->  
->  static const struct of_device_id clkc_match_table[] = {
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index 7112f5932609..98106694566f 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -138,6 +138,13 @@ config RESET_MESON
->  	help
->  	  This enables the reset driver for Amlogic Meson SoCs.
->  
-> +config RESET_MESON_AUDIO
-> +	tristate "Meson Audio Reset Driver"
-> +	depends on ARCH_MESON || COMPILE_TEST
-> +	select AUXILIARY_BUS
-> +	help
-> +	  This enables the audio reset driver for Amlogic Meson SoCs.
-> +
->  config RESET_MESON_AUDIO_ARB
->  	tristate "Meson Audio Memory Arbiter Reset Driver"
->  	depends on ARCH_MESON || COMPILE_TEST
-> diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-> index fd8b49fa46fc..8ee7a57ccf03 100644
-> --- a/drivers/reset/Makefile
-> +++ b/drivers/reset/Makefile
-> @@ -20,6 +20,7 @@ obj-$(CONFIG_RESET_LANTIQ) += reset-lantiq.o
->  obj-$(CONFIG_RESET_LPC18XX) += reset-lpc18xx.o
->  obj-$(CONFIG_RESET_MCHP_SPARX5) += reset-microchip-sparx5.o
->  obj-$(CONFIG_RESET_MESON) += reset-meson.o
-> +obj-$(CONFIG_RESET_MESON_AUDIO) += reset-meson-audio.o
->  obj-$(CONFIG_RESET_MESON_AUDIO_ARB) += reset-meson-audio-arb.o
->  obj-$(CONFIG_RESET_NPCM) += reset-npcm.o
->  obj-$(CONFIG_RESET_NUVOTON_MA35D1) += reset-ma35d1.o
-> diff --git a/drivers/reset/reset-meson-audio.c b/drivers/reset/reset-meson-audio.c
-> new file mode 100644
-> index 000000000000..aaea9931cfe2
-> --- /dev/null
-> +++ b/drivers/reset/reset-meson-audio.c
-> @@ -0,0 +1,197 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright (c) 2018 BayLibre, SAS.
-> + * Author: Jerome Brunet <jbrunet@baylibre.com>
-> + */
-> +
-> +#include <linux/regmap.h>
-> +#include <linux/auxiliary_bus.h>
-> +#include <linux/reset-controller.h>
-> +
-> +#include <soc/amlogic/meson-audio-reset.h>
-> +
-> +struct meson_audio_reset_data {
-> +	struct reset_controller_dev rstc;
-> +	struct regmap *map;
-> +	unsigned int offset;
-> +};
-> +
-> +struct meson_audio_reset_info {
-> +	unsigned int reset_offset;
-> +	unsigned int reset_num;
-> +};
-> +
-> +static void meson_audio_reset_reg_and_bit(struct meson_audio_reset_data *rst,
-> +					  unsigned long id,
-> +					  unsigned int *reg,
-> +					  unsigned int *bit)
-> +{
-> +	unsigned int stride = regmap_get_reg_stride(rst->map);
-> +
-> +	*reg = (id / (stride * BITS_PER_BYTE)) * stride;
-> +	*reg += rst->offset;
-> +	*bit = id % (stride * BITS_PER_BYTE);
-> +}
-> +
-> +static int meson_audio_reset_update(struct reset_controller_dev *rcdev,
-> +				    unsigned long id, bool assert)
-> +{
-> +	struct meson_audio_reset_data *rst =
-> +		container_of(rcdev, struct meson_audio_reset_data, rstc);
-> +	unsigned int offset, bit;
-> +
-> +	meson_audio_reset_reg_and_bit(rst, id, &offset, &bit);
-> +
-> +	regmap_update_bits(rst->map, offset, BIT(bit),
-> +			assert ? BIT(bit) : 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static int meson_audio_reset_status(struct reset_controller_dev *rcdev,
-> +				    unsigned long id)
-> +{
-> +	struct meson_audio_reset_data *rst =
-> +		container_of(rcdev, struct meson_audio_reset_data, rstc);
-> +	unsigned int val, offset, bit;
-> +
-> +	meson_audio_reset_reg_and_bit(rst, id, &offset, &bit);
-> +
-> +	regmap_read(rst->map, offset, &val);
-> +
-> +	return !!(val & BIT(bit));
-> +}
-> +
-> +static int meson_audio_reset_assert(struct reset_controller_dev *rcdev,
-> +				    unsigned long id)
-> +{
-> +	return meson_audio_reset_update(rcdev, id, true);
-> +}
-> +
-> +static int meson_audio_reset_deassert(struct reset_controller_dev *rcdev,
-> +				      unsigned long id)
-> +{
-> +	return meson_audio_reset_update(rcdev, id, false);
-> +}
-> +
-> +static int meson_audio_reset_toggle(struct reset_controller_dev *rcdev,
-> +				    unsigned long id)
-> +{
-> +	int ret;
-> +
-> +	ret = meson_audio_reset_assert(rcdev, id);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return meson_audio_reset_deassert(rcdev, id);
-> +}
-> +
-> +static const struct reset_control_ops meson_audio_reset_ops = {
-> +	.assert = meson_audio_reset_assert,
-> +	.deassert = meson_audio_reset_deassert,
-> +	.reset = meson_audio_reset_toggle,
-> +	.status = meson_audio_reset_status,
-> +};
-> +
-> +static int meson_audio_reset_probe(struct auxiliary_device *adev,
-> +				  const struct auxiliary_device_id *id)
-> +{
-> +	struct device *dev = &adev->dev;
-> +	struct meson_audio_reset_info *info =
-> +		(struct meson_audio_reset_info *)id->driver_data;
-> +	struct meson_audio_reset_data *rst;
-> +
-> +	dev_info(dev, "%s, reset_offset = %#x, reset_num = %u", __func__,
-> +		 info->reset_offset, info->reset_num);
-> +
-> +	rst = devm_kzalloc(dev, sizeof(*rst), GFP_KERNEL);
-> +	if (!rst)
-> +		return -ENOMEM;
-> +
-> +	rst->map = dev_get_regmap(dev->parent, NULL);
-> +	if (!rst->map)
-> +		return -ENODEV;
-> +
-> +	rst->offset = info->reset_offset;
-> +	rst->rstc.ops = &meson_audio_reset_ops;
-> +	rst->rstc.of_node = dev->parent->of_node;
-> +	rst->rstc.nr_resets = info->reset_num;
-> +	rst->rstc.owner = THIS_MODULE;
-> +
-> +	return devm_reset_controller_register(dev, &rst->rstc);
-> +}
-> +
-> +static void meson_audio_reset_adev_release(struct device *dev)
-> +{
-> +	struct auxiliary_device *adev = to_auxiliary_dev(dev);
-> +
-> +	kfree(adev);
-> +}
-> +
-> +static void meson_audio_reset_adev_unregister(void *_adev)
-> +{
-> +	struct auxiliary_device *adev = _adev;
-> +
-> +	auxiliary_device_delete(adev);
-> +	auxiliary_device_uninit(adev);
-> +}
-> +
-> +static const struct meson_audio_reset_info meson_audio_reset_info_g12a = {
-> +	.reset_offset = 0x024,
-> +	.reset_num = 26,
-> +};
-> +
-> +static const struct meson_audio_reset_info meson_audio_reset_info_sm1 = {
-> +	.reset_offset = 0x028,
-> +	.reset_num = 39,
-> +};
-> +static const struct auxiliary_device_id meson_audio_reset_id[] = {
-> +	{
-> +		.name = "reset_meson_audio.g12a",
-> +		.driver_data = (kernel_ulong_t)&meson_audio_reset_info_g12a,
-> +	},
-> +	{
-> +		.name = "reset_meson_audio.sm1",
-> +		.driver_data = (kernel_ulong_t)&meson_audio_reset_info_sm1,
-> +	},
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(auxiliary, meson_audio_reset_id);
-> +
-> +static struct auxiliary_driver meson_audio_reset_driver = {
-> +	.probe = meson_audio_reset_probe,
-> +	.id_table = meson_audio_reset_id,
-> +};
-> +
-> +module_auxiliary_driver(meson_audio_reset_driver);
-> +
-> +int meson_audio_reset_register(struct device *dev, const char *name)
-> +{
-> +	struct auxiliary_device *adev;
-> +	int ret;
-> +
-> +	adev = kzalloc(sizeof(*adev), GFP_KERNEL);
-> +	if (!adev)
-> +		return -ENOMEM;
-> +
-> +	adev->name = name;
-> +	adev->dev.parent = dev;
-> +	adev->dev.release = meson_audio_reset_adev_release;
-> +	adev->id = 0;
-> +
-> +	ret = auxiliary_device_init(adev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = auxiliary_device_add(adev);
-> +	if (ret) {
-> +		auxiliary_device_uninit(adev);
-> +		return ret;
-> +	}
-> +
-> +	return devm_add_action_or_reset(dev, meson_audio_reset_adev_unregister,
-> +					adev);
-> +}
-> +EXPORT_SYMBOL_GPL(meson_audio_reset_register);
-> +
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/include/soc/amlogic/meson-audio-reset.h b/include/soc/amlogic/meson-audio-reset.h
-> new file mode 100644
-> index 000000000000..279c6a2197ec
-> --- /dev/null
-> +++ b/include/soc/amlogic/meson-audio-reset.h
-> @@ -0,0 +1,10 @@
-> +/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
-> +
-> +#ifndef __MESON_AUDIO_RESET_H
-> +#define __MESON_AUDIO_RESET_H
-> +
-> +#include <linux/device.h>
-> +
-> +int meson_audio_reset_register(struct device *dev, const char *name);
-> +
-> +#endif /* __MESON_AUDIO_RESET_H */
-
+Why not simply use __maybe_unused for that variable?
 
 -- 
-Jerome
+Cheers,
+
+David / dhildenb
+
 
