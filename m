@@ -1,62 +1,35 @@
-Return-Path: <linux-kernel+bounces-153326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DD588ACCA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:14:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DACB48ACCA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9189D1C20C88
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:14:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9227A281670
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBEEB147C7A;
-	Mon, 22 Apr 2024 12:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="eFP9Enxa"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11CB51474D8;
+	Mon, 22 Apr 2024 12:14:22 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC231474A7;
-	Mon, 22 Apr 2024 12:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D748146D61;
+	Mon, 22 Apr 2024 12:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713788044; cv=none; b=EvQ1nbRcvEHRh2fKkTQiOE1waKK7i9zFxqyvjBUXAQPTQVaDPrvzvGhr+At0q2tIJ+mUy6SaJqpQPWIvbwXkdHvo7aPsvJ9/p3XAZL397/IxVuJFL39SNKtujCM0W34D2SPHiRwCPz6QWo6MFOMxfy1KaWkobSYF7AtuI9Pz1DY=
+	t=1713788061; cv=none; b=S5gn3+6HNmkyimG7S4VLZ6VdO/FGioAr8Ar3u7bvm7CtuX78HAWrPGE47TMXu/CZp8cIVq4RxZGkUVIueyGmaEgb5gVDzl50FPVl1jshULQS+Ryu5NqK1bjctuUdxXHGxSGlOALW4CM/iP/4wha71ysrso1DedBJV4IHnOVwZSo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713788044; c=relaxed/simple;
-	bh=OLkbUzMPUszdz5K/Wphn/aPVtp5/ebUhvY8bBi1KAVs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=OOR98Af0bbCXHvN42cAPH/W6O7pBjF1mEHIio/Q+DKt7mwCWdHa/u6q/z+5gmB9WHn4C4i5tMc76cl4noMbPibqwQCD+b8Ey00usoqx52XCSQGeSq7VAhbaOpITfr1A4RF5RF2ooCUwpeRu44tV9N+7NP/QJ/vcOLoobUvLDH04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=eFP9Enxa; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43M1iUWl011793;
-	Mon, 22 Apr 2024 12:13:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=+HnL9pPF7mUoU4MDvPdVFN0atfY5XRJji9PdxeuXMqw=; b=eF
-	P9EnxadQwUcEgcSP5/TUeaNegTh4tr8rBZ98q7g+uVEBNrDpO0DPQzg+LxTFtDlh
-	CgZOiLFZNabgXRcuS5ukmkC1EaxKjn7+eVxgkXkqyL8LLw/XbReJ/Q6vXdQgyG0Z
-	QlgCbpnAkAVFNef4IHx9B4XGSkaehnd9X/VbhpRN+ojKFlU63gzSj0o+/IohWwtT
-	PiTRq4WT9RsoL3WS/fxucqGf+DK40m66iy9ebGpWNuzY9dMCI9UL0OxVxuIbmBTo
-	cBFIArsgwPs+96Sobdvy4z7Te1hIEtZ3TyqeN3aOmZHyKs8CSXPGxx+BLoRlMCE6
-	FvFMV/wwykSMmowRmL2g==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xm4qdcc8c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 12:13:57 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43MCDu9R003025
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 12:13:56 GMT
-Received: from [10.253.39.160] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 22 Apr
- 2024 05:13:54 -0700
-Message-ID: <3b583308-338b-4ac8-82c2-2b4c100c9c35@quicinc.com>
-Date: Mon, 22 Apr 2024 20:13:52 +0800
+	s=arc-20240116; t=1713788061; c=relaxed/simple;
+	bh=X1T3/xYzPELvu5Xll7A3YXl6h754gstCmtUvhhI86ko=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DoAabeYB7df4RBq9A7pZzgH5X6GRW+pZXvpFx8juUpBRZWkqjln0GqQ6P/cFKdik9A0ic5bpKkyjHdCog21MnLbTtEpdOyfSWEYXXMbsU6sjHVYQc1l/v7XWH/EZq07cepf20+95EYq3ue24cxjjAjpzf2QjxmzukVSOqJoWSHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BE78C32782;
+	Mon, 22 Apr 2024 12:14:19 +0000 (UTC)
+Message-ID: <966f5847-d007-4425-a902-1e1c05a820ae@xs4all.nl>
+Date: Mon, 22 Apr 2024 14:14:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,135 +37,180 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] bus: mhi: host: Add sysfs entry to force device to
- enter EDL
-To: Manivannan Sadhasivam <mani@kernel.org>
-CC: <quic_jhugo@quicinc.com>, <mhi@lists.linux.dev>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_cang@quicinc.com>, <quic_mrana@quicinc.com>
-References: <1713170945-44640-1-git-send-email-quic_qianyu@quicinc.com>
- <1713170945-44640-2-git-send-email-quic_qianyu@quicinc.com>
- <20240415115616.GF7537@thinkpad>
- <a62cb28a-e6ab-4f60-9210-b7aa8e0c34e0@quicinc.com>
- <20240422072446.GA9775@thinkpad>
-Content-Language: en-US
-From: Qiang Yu <quic_qianyu@quicinc.com>
-In-Reply-To: <20240422072446.GA9775@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in
+ cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
+Content-Language: en-US, nl
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Yang, Chenyuan" <cy54@illinois.edu>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "jani.nikula@intel.com" <jani.nikula@intel.com>,
+ "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
+ "mchehab@kernel.org" <mchehab@kernel.org>, "Zhao, Zijie"
+ <zijie4@illinois.edu>, "Zhang, Lingming" <lingming@illinois.edu>
+References: <PH7PR11MB57688E64ADE4FE82E658D86DA09EA@PH7PR11MB5768.namprd11.prod.outlook.com>
+ <f985d664-d907-48ed-9b3d-dc956c178b88@xs4all.nl>
+ <526380BE-57AC-493D-A7B0-B8F0ECC0FE0A@illinois.edu>
+ <f1855145-9562-4bef-800f-43bcacff6fc8@xs4all.nl>
+ <2e5f1e92-7fad-4a74-b375-1e194ff08ce6@xs4all.nl>
+ <F8D4A291-8CFB-4A25-B296-3CA07B56F459@illinois.edu>
+ <49a68c10-9549-4fd8-b929-d4c7a9c8debf@xs4all.nl>
+ <PH7PR11MB5768B0BC3C042A6EA4EC1EF0A0542@PH7PR11MB5768.namprd11.prod.outlook.com>
+ <7E36CBBD-F2AD-4D98-8D4E-F52E62C3E812@illinois.edu>
+ <87le59s8wi.wl-tiwai@suse.de>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <87le59s8wi.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: -Rb1s_NHFWl1wGrgobAdiarwOGhUMfQr
-X-Proofpoint-ORIG-GUID: -Rb1s_NHFWl1wGrgobAdiarwOGhUMfQr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-22_09,2024-04-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0
- mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404220055
 
+Hi Takashi,
 
-On 4/22/2024 3:24 PM, Manivannan Sadhasivam wrote:
-> On Tue, Apr 16, 2024 at 01:45:18PM +0800, Qiang Yu wrote:
->> On 4/15/2024 7:56 PM, Manivannan Sadhasivam wrote:
->>> On Mon, Apr 15, 2024 at 04:49:03PM +0800, Qiang Yu wrote:
->>>> Add sysfs entry to allow users of MHI bus force device to enter EDL.
->>>> Considering that the way to enter EDL mode varies from device to device and
->>>> some devices even do not support EDL. Hence, add a callback edl_trigger in
->>>> mhi controller as part of the sysfs entry to be invoked and MHI core will
->>>> only create EDL sysfs entry for mhi controller that provides edl_trigger
->>>> callback. All of the process a specific device required to enter EDL mode
->>>> can be placed in this callback.
->>>>
->>>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
->>>> ---
->>>>    Documentation/ABI/stable/sysfs-bus-mhi | 11 +++++++++++
->>>>    drivers/bus/mhi/host/init.c            | 35 ++++++++++++++++++++++++++++++++++
->>>>    include/linux/mhi.h                    |  2 ++
->>>>    3 files changed, 48 insertions(+)
->>>>
->>>> diff --git a/Documentation/ABI/stable/sysfs-bus-mhi b/Documentation/ABI/stable/sysfs-bus-mhi
->>>> index 1a47f9e..d0bf9ae 100644
->>>> --- a/Documentation/ABI/stable/sysfs-bus-mhi
->>>> +++ b/Documentation/ABI/stable/sysfs-bus-mhi
->>>> @@ -29,3 +29,14 @@ Description:	Initiates a SoC reset on the MHI controller.  A SoC reset is
->>>>                    This can be useful as a method of recovery if the device is
->>>>                    non-responsive, or as a means of loading new firmware as a
->>>>                    system administration task.
->>>> +
->>>> +What:           /sys/bus/mhi/devices/.../force_edl
->>> s/force_edl/trigger_edl
->>>
->>>> +Date:           April 2024
->>>> +KernelVersion:  6.9
->>>> +Contact:        mhi@lists.linux.dev
->>>> +Description:    Force devices to enter EDL (emergency download) mode. Only MHI
->>> How can the user trigger EDL mode? Writing to this file? If so, what is the
->>> value?
->> User can trigger EDL mode by writing a non-zero value to this file.
+On 19/04/2024 16:51, Takashi Iwai wrote:
+> On Mon, 26 Feb 2024 13:27:16 +0100,
+> Yang, Chenyuan wrote:
 >>
->>> 'Emergency Download'
->>>
->>>> +                controller that supports EDL mode and provides a mechanism for
->>>> +                manually triggering EDL contains this file. Once in EDL mode,
->>> 'This entry only exists for devices capable of entering the EDL mode using the
->>> standard EDL triggering mechanism defined in the MHI spec <insert the version>.'
->>>
->>>> +                the flash programmer image can be downloaded to the device to
->>>> +                enter the flash programmer execution environment. This can be
->>>> +                useful if user wants to update firmware.
->>> It'd be good to mention the OS tool like QDL that is used to download firmware
->>> over EDL.
->> OK, can I add an additionnal line like this
->> Users:          Any OS tools that is used to download firmware over EDL like
->> QDL.
+>> Hi Hans,
 >>
->>>> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
->>>> index 44f9349..333ac94 100644
->>>> --- a/drivers/bus/mhi/host/init.c
->>>> +++ b/drivers/bus/mhi/host/init.c
->>>> @@ -127,6 +127,32 @@ static ssize_t soc_reset_store(struct device *dev,
->>>>    }
->>>>    static DEVICE_ATTR_WO(soc_reset);
->>>> +static ssize_t force_edl_store(struct device *dev,
->>> s/force_edl/trigger_edl
->>>
->>>> +			       struct device_attribute *attr,
->>>> +			       const char *buf, size_t count)
->>>> +{
->>>> +	struct mhi_device *mhi_dev = to_mhi_device(dev);
->>>> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
->>>> +	unsigned long val;
->>>> +	int ret;
->>>> +
->>>> +	ret = kstrtoul(buf, 10, &val);
->>>> +	if (ret < 0) {
->>>> +		dev_err(dev, "Could not parse string: %d\n", ret);
->>> No need to print error.
->>>
->>>> +		return ret;
->>>> +	}
->>>> +
->>>> +	if (!val)
->>>> +		return count;
->>> What does this mean?
->> If user want to trigger EDL mode,he has to write a non-zero value to this
->> file. If he writes zero, nothing will happen.
+>> Thank you for your continued efforts in investigating this bug and implementing the new patch!
 >>
-> You need to throw -EINVAL for invalid inputs ie., <= 0.
-Thanks for pointing this out. Will also address it in next version
-patch.
+>> Regarding the two warnings, they have been addressed by this new patch and are no longer reproducible. Additionally, I conducted a 48-hour fuzzing test on the CEC driver, which has successfully eliminated the previous hanging issue.
+>>
+>> One thing to note that the system will now log timeout events:
+>> ```
+>> [ 2281.265385][ T2034] cec-vivid-001-vid-out0: transmit timed out
+>> [ 2282.994510][ T2017] cec-vivid-000-vid-cap0: transmit timed out
+>> [ 2283.063484][ T2050] cec-vivid-002-vid-out0: transmit timed out
+>> [ 2283.073468][ T2065] cec-vivid-003-vid-cap0: transmit timed out
+>> [ 2283.373518][ T2033] cec-vivid-001-vid-cap0: transmit timed out
+>> [ 2285.113544][ T2018] cec-vivid-000-vid-out0: transmit timed out
+>> [ 2285.193502][ T2050] cec-vivid-002-vid-out0: transmit timed out
+>> [ 2285.193570][ T2065] cec-vivid-003-vid-cap0: transmit timed out
+>> [ 2285.513570][ T2033] cec-vivid-001-vid-cap0: transmit timed out
 
-Thanks,
-Qiang
->> Do we need to limit the valid value to a specific value like 1?
+>> ```
 >>
-> That's not needed.
->
-> - Mani
->
+>> Best,
+>> Chenyuan
+> 
+> Hi Hans,
+> 
+> how is the current status of this bug fix?  It seems that the thread
+> stalled, and I wonder how we can go further.
+> 
+> I'm asking it because CVE-2024-23848 was assigned and we've been asked
+> about the bug fix.
+
+I missed this reply, so I will take another look at the patch. Too many emails :-(
+
+Two other patches relating to this I have just posted:
+
+https://patchwork.linuxtv.org/project/linux-media/patch/2b043325-14c0-4e63-ae9c-0d685d96fd98@xs4all.nl/
+https://patchwork.linuxtv.org/project/linux-media/patch/f17f961b-3a19-48da-941a-c8970d9e1786@xs4all.nl/
+
+Regards,
+
+	Hans
+
+> 
+> 
+> Thanks!
+> 
+> Takashi
+> 
+>>
+>> From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>> Date: Friday, February 23, 2024 at 8:44 AM
+>> To: Yang, Chenyuan <cy54@illinois.edu>, linux-media@vger.kernel.org <linux-media@vger.kernel.org>, linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+>> Cc: jani.nikula@intel.com <jani.nikula@intel.com>, syzkaller@googlegroups.com <syzkaller@googlegroups.com>, mchehab@kernel.org <mchehab@kernel.org>, Zhao, Zijie <zijie4@illinois.edu>, Zhang, Lingming <lingming@illinois.edu>
+>> Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
+>> Hi Chenyuan,
+>>
+>> Here is another patch for you to try. I think it is good for blocking CEC_ADAP_S_LOG_ADDRS
+>> ioctl calls, but if the filehandle is in non-blocking mode, I'm still not certain it
+>> is correct. But one issue at a time :-)
+>>
+>> Regards,
+>>
+>>         Hans
+>>
+>> diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
+>> index 559a172ebc6c..a493cbce2456 100644
+>> --- a/drivers/media/cec/core/cec-adap.c
+>> +++ b/drivers/media/cec/core/cec-adap.c
+>> @@ -936,8 +936,7 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+>>           */
+>>          mutex_unlock(&adap->lock);
+>>          wait_for_completion_killable(&data->c);
+>> -       if (!data->completed)
+>> -               cancel_delayed_work_sync(&data->work);
+>> +       cancel_delayed_work_sync(&data->work);
+>>          mutex_lock(&adap->lock);
+>>
+>>          /* Cancel the transmit if it was interrupted */
+>> @@ -1575,9 +1574,12 @@ static int cec_config_thread_func(void *arg)
+>>   */
+>>  static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+>>  {
+>> -       if (WARN_ON(adap->is_configuring || adap->is_configured))
+>> +       if (WARN_ON(adap->is_claiming_log_addrs ||
+>> +                   adap->is_configuring || adap->is_configured))
+>>                  return;
+>>
+>> +       adap->is_claiming_log_addrs = true;
+>> +
+>>          init_completion(&adap->config_completion);
+>>
+>>          /* Ready to kick off the thread */
+>> @@ -1592,6 +1594,7 @@ static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+>>                  wait_for_completion(&adap->config_completion);
+>>                  mutex_lock(&adap->lock);
+>>          }
+>> +       adap->is_claiming_log_addrs = false;
+>>  }
+>>
+>>  /*
+>> diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+>> index 67dc79ef1705..3ef915344304 100644
+>> --- a/drivers/media/cec/core/cec-api.c
+>> +++ b/drivers/media/cec/core/cec-api.c
+>> @@ -178,7 +178,7 @@ static long cec_adap_s_log_addrs(struct cec_adapter *adap, struct cec_fh *fh,
+>>                             CEC_LOG_ADDRS_FL_ALLOW_RC_PASSTHRU |
+>>                             CEC_LOG_ADDRS_FL_CDC_ONLY;
+>>          mutex_lock(&adap->lock);
+>> -       if (!adap->is_configuring &&
+>> +       if (!adap->is_claiming_log_addrs && !adap->is_configuring &&
+>>              (!log_addrs.num_log_addrs || !adap->is_configured) &&
+>>              !cec_is_busy(adap, fh)) {
+>>                  err = __cec_s_log_addrs(adap, &log_addrs, block);
+>> @@ -664,6 +664,8 @@ static int cec_release(struct inode *inode, struct file *filp)
+>>                  list_del_init(&data->xfer_list);
+>>          }
+>>          mutex_unlock(&adap->lock);
+>> +
+>> +       mutex_lock(&fh->lock);
+>>          while (!list_empty(&fh->msgs)) {
+>>                  struct cec_msg_entry *entry =
+>>                          list_first_entry(&fh->msgs, struct cec_msg_entry, list);
+>> @@ -681,6 +683,7 @@ static int cec_release(struct inode *inode, struct file *filp)
+>>                          kfree(entry);
+>>                  }
+>>          }
+>> +       mutex_unlock(&fh->lock);
+>>          kfree(fh);
+>>
+>>          cec_put_device(devnode);
+>> diff --git a/include/media/cec.h b/include/media/cec.h
+>> index 10c9cf6058b7..cc3fcd0496c3 100644
+>> --- a/include/media/cec.h
+>> +++ b/include/media/cec.h
+>> @@ -258,6 +258,7 @@ struct cec_adapter {
+>>          u16 phys_addr;
+>>          bool needs_hpd;
+>>          bool is_enabled;
+>> +       bool is_claiming_log_addrs;
+>>          bool is_configuring;
+>>          bool must_reconfigure;
+>>          bool is_configured;
+>>
+
 
