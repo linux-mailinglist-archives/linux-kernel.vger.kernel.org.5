@@ -1,179 +1,182 @@
-Return-Path: <linux-kernel+bounces-153293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42AE08ACC1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:37:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D41E18ACC23
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:38:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D768E1F22C59
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:37:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FC7228509C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F86146A6A;
-	Mon, 22 Apr 2024 11:37:12 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB47D1465A2;
-	Mon, 22 Apr 2024 11:37:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8869F146A93;
+	Mon, 22 Apr 2024 11:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PXc8L1p3"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A531465A2;
+	Mon, 22 Apr 2024 11:38:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713785832; cv=none; b=lORtStMAnGJ7eOBC0SDj51pD+Z5HdOPkKbuDRElNTRG5cUnVnrSg1Wsf8iF2uiyHsWBmdvbbOqai601/bYf0y0XAEWqAkpkEp79tKRLUB4xX/E0kW8RrumFV9NPFIlgiMlt8RlLi9eT9avQKvUDiw5icKe31eo4KdSdXrehh/PM=
+	t=1713785889; cv=none; b=u6KUQSqC40A+odhSSZ78zzVm37wccRNQ9a6JsHhhPDPhSgjZWSPuhDB/QXqtkb7kBedgNPHtbe2f8ay3S+4liA6TC/Fh7DtKvqpmpsD4OWk6cyJPV3GY8ZJw4af5UXCDMFTLWKtElqIgkiMtwTQAuxG0+Y9Aazxj4PAagotwla4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713785832; c=relaxed/simple;
-	bh=giz8ndf4KlmCclo1HmturdVYzZOBqqSQfzj8LZLKAiA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oOEOvIVHQDGzybp8zdf6vhHnbDFaDzSJ+AYphN1jc0y5hef7JMFjQs9pcTgdTLcQPHLKI4+3quRsyBsmT1ddTlLUKRzGcdkImn0kuuHndLDtj+Iq9hX8CIuiDMTwA5442OXNrTLwtQvv7Hqzz9i9dczR6EaxsF785NbCLPY5ito=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AD02339;
-	Mon, 22 Apr 2024 04:37:38 -0700 (PDT)
-Received: from [10.57.75.149] (unknown [10.57.75.149])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 30D6C3F7BD;
-	Mon, 22 Apr 2024 04:37:09 -0700 (PDT)
-Message-ID: <3a8f1978-c5df-40d6-91ca-276431bb01e1@arm.com>
-Date: Mon, 22 Apr 2024 12:37:18 +0100
+	s=arc-20240116; t=1713785889; c=relaxed/simple;
+	bh=EZYhNhz96eKHn2cEDh2N0ULGq94X/lfU2OLdeurzxwg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EWeT+zlf6jn+zvyoWR0eVZm41ZeAxIdfnkbPScvQ3/UQMRpdLUCSBQDex5zoWuSaCMOk/5skZB+dfejwaT/qMkbwzuX9d8vLLkEVKd0E6uzHGBpRhNLrJ7FeJAHTvdNCW6jhdK49mfrK2aZJTKDjhnKsOyKxwntWbFc4RyUWsR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PXc8L1p3; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713785888; x=1745321888;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=EZYhNhz96eKHn2cEDh2N0ULGq94X/lfU2OLdeurzxwg=;
+  b=PXc8L1p3IVK9Sv5JkLWWLNJOAO0vAiF4D/w+xLBLOW3AVOL3jwlAy6Zq
+   +JqVdXG/2+VE+Kc9RMy47DowBviHOowT7blYSh+m9HTcGU20jZwxDT+p4
+   ++0LMWcd3JvkwrlL/EunD90nGuDgEtDtEQay8qvSDzlhvRWWFcY6LFnyR
+   Ge4Rusazspa0/Sa2Pe/PN0sQhM3p4jQ8m+M9PTUjjXIHqDtHGI5WNvdXs
+   YQGo45wPRLgZn472YlO/WEMTOJOmHLeF8X+jI4V2naW+i+3ry4Th5Pr2Q
+   eLLtnLTlFuT7zw8AstPtYJvhJz6P21+bScYpF58ELYZfEIYDLU+aPkqni
+   A==;
+X-CSE-ConnectionGUID: /OOzS0u8R5yg+EfiHBxVCQ==
+X-CSE-MsgGUID: NjBFy074R+GTf63hAc8a0A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="13093187"
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="13093187"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 04:38:07 -0700
+X-CSE-ConnectionGUID: AzfJOScRSk+rvG5OBKfSNg==
+X-CSE-MsgGUID: T/dk9JejQBuZbswcv6UCQQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="28665225"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orviesa003.jf.intel.com with SMTP; 22 Apr 2024 04:38:02 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 22 Apr 2024 14:38:01 +0300
+Date: Mon, 22 Apr 2024 14:38:01 +0300
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Jameson Thies <jthies@google.com>
+Cc: linux-usb@vger.kernel.org, pmalani@chromium.org, bleung@google.com,
+	abhishekpandit@chromium.org, andersson@kernel.org,
+	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com,
+	gregkh@linuxfoundation.org, hdegoede@redhat.com,
+	neil.armstrong@linaro.org, rajaram.regupathy@intel.com,
+	saranya.gopal@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/4] usb: typec: Update sysfs when setting ops
+Message-ID: <ZiZMGZxqKDpWUSqk@kuha.fi.intel.com>
+References: <20240419211650.2657096-1-jthies@google.com>
+ <20240419211650.2657096-3-jthies@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/3] thermal/debugfs: Fix and clean up trip point
- statistics updates
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>
-References: <4918025.31r3eYUQgx@kreacher>
-Content-Language: en-US
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <4918025.31r3eYUQgx@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240419211650.2657096-3-jthies@google.com>
 
-Hi Rafael,
-
-On 4/17/24 14:07, Rafael J. Wysocki wrote:
-> Hi Everyone,
+On Fri, Apr 19, 2024 at 09:16:48PM +0000, Jameson Thies wrote:
+> From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 > 
-> The first patch in this series addresses the problem of updating trip
-> point statistics prematurely for trip points that have just been
-> crossed on the way down (please see the patch changelog for details).
+> When adding altmode ops, update the sysfs group so that visibility is
+> also recalculated.
 > 
-> The way it does that renders the following cleanup patch inapplicable:
+> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+>  drivers/usb/typec/altmodes/displayport.c |  2 +-
+>  drivers/usb/typec/class.c                | 18 +++++++++++++++++-
+>  drivers/usb/typec/ucsi/displayport.c     |  2 +-
+>  include/linux/usb/typec.h                |  3 +++
+>  4 files changed, 22 insertions(+), 3 deletions(-)
 > 
-> https://lore.kernel.org/linux-pm/2321994.ElGaqSPkdT@kreacher/
-> 
-> The remaining two patches in the series are cleanups on top of the
-> first one.
-> 
-> This series is based on an older patch series posted last week:
-> 
-> https://lore.kernel.org/linux-pm/13515747.uLZWGnKmhe@kreacher/
-> 
-> but it can be trivially rebased on top of the current linux-next.
-> 
-> Thanks!
-> 
-> 
-> 
+> diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec/altmodes/displayport.c
+> index 596cd4806018b..92cc1b1361208 100644
+> --- a/drivers/usb/typec/altmodes/displayport.c
+> +++ b/drivers/usb/typec/altmodes/displayport.c
+> @@ -746,7 +746,7 @@ int dp_altmode_probe(struct typec_altmode *alt)
+>  	dp->alt = alt;
+>  
+>  	alt->desc = "DisplayPort";
+> -	alt->ops = &dp_altmode_ops;
+> +	typec_altmode_set_ops(alt, &dp_altmode_ops);
+>  
+>  	if (plug) {
+>  		plug->desc = "Displayport";
+> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> index 9610e647a8d48..9262fcd4144f8 100644
+> --- a/drivers/usb/typec/class.c
+> +++ b/drivers/usb/typec/class.c
+> @@ -467,6 +467,22 @@ static const struct attribute_group *typec_altmode_groups[] = {
+>  	NULL
+>  };
+>  
+> +/**
+> + * typec_altmode_set_ops - Set ops for altmode
+> + * @adev: Handle to the alternate mode
+> + * @ops: Ops for the alternate mode
+> + *
+> + * After setting ops, attribute visiblity needs to be refreshed if the alternate
+> + * mode can be activated.
+> + */
+> +void typec_altmode_set_ops(struct typec_altmode *adev,
+> +			   const struct typec_altmode_ops *ops)
+> +{
+> +	adev->ops = ops;
+> +	sysfs_update_group(&adev->dev.kobj, &typec_altmode_group);
+> +}
+> +EXPORT_SYMBOL_GPL(typec_altmode_set_ops);
+> +
+>  static int altmode_id_get(struct device *dev)
+>  {
+>  	struct ida *ids;
+> @@ -2317,7 +2333,7 @@ void typec_port_register_altmodes(struct typec_port *port,
+>  			continue;
+>  		}
+>  
+> -		alt->ops = ops;
+> +		typec_altmode_set_ops(alt, ops);
+>  		typec_altmode_set_drvdata(alt, drvdata);
+>  		altmodes[index] = alt;
+>  		index++;
+> diff --git a/drivers/usb/typec/ucsi/displayport.c b/drivers/usb/typec/ucsi/displayport.c
+> index d9d3c91125ca8..eb7b8d6e47d00 100644
+> --- a/drivers/usb/typec/ucsi/displayport.c
+> +++ b/drivers/usb/typec/ucsi/displayport.c
+> @@ -337,7 +337,7 @@ struct typec_altmode *ucsi_register_displayport(struct ucsi_connector *con,
+>  	dp->con = con;
+>  	dp->alt = alt;
+>  
+> -	alt->ops = &ucsi_displayport_ops;
+> +	typec_altmode_set_ops(alt, &ucsi_displayport_ops);
+>  	typec_altmode_set_drvdata(alt, dp);
+>  
+>  	return alt;
+> diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
+> index b35b427561ab5..549275f8ac1b3 100644
+> --- a/include/linux/usb/typec.h
+> +++ b/include/linux/usb/typec.h
+> @@ -167,6 +167,9 @@ struct typec_port *typec_altmode2port(struct typec_altmode *alt);
+>  
+>  void typec_altmode_update_active(struct typec_altmode *alt, bool active);
+>  
+> +void typec_altmode_set_ops(struct typec_altmode *alt,
+> +			   const struct typec_altmode_ops *ops);
+> +
+>  enum typec_plug_index {
+>  	TYPEC_PLUG_SOP_P,
+>  	TYPEC_PLUG_SOP_PP,
+> -- 
+> 2.44.0.769.g3c40516874-goog
 
-I've checked this patch patch set on top of your bleeding-edge
-which has thermal re-work as well. The patch set looks good
-and works properly.
-
-Although, I have found some issue in this debug info files and
-I'm not sure if this is expected or not. If not I can address this
-and send some small fix for it.
-
-When I read the cooling device residency statistics, I don't
-get updates for the first time the state is used. It can only
-be counted when that state was known and finished it's usage.
-
-IMO it is not the right behavior, isn't it?
-
-Experiment:
-My trip points are 70degC and 75degC and I'm setting emulated
-temperature to cross them and get cooling states 1 then 0.
-As you can see the statistics counter only starts showing value after
-after trip crossing down.
-------------------------------------8<-----------------------------------
-
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-root@arm:~#
-root@arm:~#
-root@arm:~# echo 71000 > /sys/class/thermal/thermal_zone0/emul_temp 
-
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-root@arm:~# echo 76000 > /sys/class/thermal/thermal_zone0/emul_temp 
-
-root@arm:~#
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-0       518197
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-0       518197
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-0       518197
-root@arm:~# echo 71000 > /sys/class/thermal/thermal_zone0/emul_temp 
-
-root@arm:~#
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-0       520066
-1       17567
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-0       522653
-1       17567
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-0       526151
-1       17567
-root@arm:~# echo 66000 > /sys/class/thermal/thermal_zone0/emul_temp 
-
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-0       537366
-1       17567
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-0       544936
-1       17567
-root@arm:~# cat 
-/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
-State   Residency
-0       556694
-1       17567
-root@arm:~#
-
-------------------------------->8----------------------------------------
-
-Please let me know what do you think about that behavior.
-
-Regards,
-Lukasz
+-- 
+heikki
 
