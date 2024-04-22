@@ -1,205 +1,178 @@
-Return-Path: <linux-kernel+bounces-152987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91DCC8AC71A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:34:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7E8E8AC720
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:35:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F7601F21D6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:34:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 494BF1F21E2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C13502AF;
-	Mon, 22 Apr 2024 08:33:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6CEC4AEC1;
+	Mon, 22 Apr 2024 08:34:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CIk0DqMJ"
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="RBIm9Q5D"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA411CAA1
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:33:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEA01CAA1;
+	Mon, 22 Apr 2024 08:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713774830; cv=none; b=C86F3p/UxOyWOB4onqVHfm2colUmDBICgZ1RC8B5Ux93hxKpT8TxVSNHKOwqmP6vnTOvoqetODBYDkaCU0T41FRMl0ktVmW2baqSNlUsXGs4uC1kMnEKihNMub6D0HomZxb0dS84WoabM6Hqkpgo/l38IgmSqvQfdRtaAfgx+VM=
+	t=1713774866; cv=none; b=XJ2/CVwTZFqmLPhjSwLExzq1O/S9PbCvOWwC8NcnW9OrgR+97u5nBYoHKBzzJBHEZYBnMWvIXUnXfDSST08RGg2AyjMN0aRphX0RFvUYP3o5dixMlKWXbFT9qimQwxvhE29RJF+AazW8qUPsVTETxLasi8aAXlaT+Q/KRU+VXE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713774830; c=relaxed/simple;
-	bh=foq5ht+lMPQXu4in46rwNYOqTfbeaW4P5OvmFAJopWw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t/27PwSiu6sxyH3rpp4s8sCb1nLYwO1LZO/Oo5sw3KsgphXjW/BqevQcMfiSEiZJD12D/B3ux94/JhMNUpZ1OAATkbWuyRvVBtQWE9+uSjXMuH9BVvk72fhgKvFGghBYw/GbAOgKdCc1KeFoU9ql07TMuzjbtYnYbw5SRrIU1Wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CIk0DqMJ; arc=none smtp.client-ip=209.85.210.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6ea1a55b0c0so2198873a34.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:33:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713774828; x=1714379628; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ywcd19fDJAvHh2oKY2HtCRoc8tp9ImKib5PzcAaTuGE=;
-        b=CIk0DqMJ6jHLh16KBVwmcI1HCuz1bxE9PSxkaXM1eqkE+0/EZPTEILBmGcB1HKrNku
-         YQL8L5QghknVjpjxd27wsKg/4l02UarfZhv3zbp1Ugg6y6zsI/ekMVbGjmYk8/vzlcGQ
-         jmdqgVuhlV6oPJudrMYHZDnGJuVbdyUoAdiJ9kxVakXbOPNj1jO4UAKKsYutgBnWEOhp
-         1WivaJKSPauohcuraHOoRgmdlA60DZEGjYfAiQV46bhR3FpWyj5C2ELj+9BGOCETxOyX
-         96PcWJXYmzJCcp/dFtRuEFTxOMZett35JvIfdMhlNtXzhEO73o/jExie/H6Yabwo/7+E
-         0vIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713774828; x=1714379628;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ywcd19fDJAvHh2oKY2HtCRoc8tp9ImKib5PzcAaTuGE=;
-        b=n8em2LoJSjZHqTymvreQMy/Ix/2JlQmj79p927IFSORRhiAooQXqNDj0HeXlHtZtA3
-         FTevaNda1dHWtd/TctYzRiuCTtjGLPXDAcU5G4V4nxQfKAuQoP1tAt0Vv7swTO8kWFpI
-         /XZEpgxwKdOGvH3V5SBOjMMFqkBy/TWhqwer/y30P1ypK4mG5sSpYDk/sSaClqgBWUIZ
-         BEJzrTugquQv5wBkYRU2xndcRLgilhHpQuahqn2BEWCdW2DLkCn/nBEHnmdKeZrlo0k8
-         5/HQCgP9kXbonutc9XUw9dJSJo3wC2tIyo5reqT6PgeF60c7Q6dLX2FitV2KN5GAhCjm
-         BLvA==
-X-Forwarded-Encrypted: i=1; AJvYcCXPZEt0LYGfpnxCcQ9lJG5Hy8rvKZyyQcGlVJgU485lejrgDaF1jYy+QRDkgrjgvmAd0m/nlFzTv9ZlqnXG/Css1O7KHQ4BcH13Uvn1
-X-Gm-Message-State: AOJu0Yy+P/9bWaHFX2HvQeIThTHtbxUbG9/UfxHpUploafztUU5GJw8J
-	z2ANsPmfigBhIsuuugnrBTQKXqbpivTdMfRFCuBSDstT9cJEs+4L2wTNYdeATTTllbrgZdoThwq
-	qNgVGgSHL0Cd9oNT8gx5J2qhA4Aw=
-X-Google-Smtp-Source: AGHT+IEPJHMY8u7itxLBLQLayGMuxMOVFCMdrOZJ4tTSnqwhtm7xDeLbEZKYZ/SgcKO4gmrr6s7ixsqp9UeoKVIxDXM=
-X-Received: by 2002:a05:6870:71cf:b0:221:416:1df9 with SMTP id
- p15-20020a05687071cf00b0022104161df9mr13159216oag.23.1713774828235; Mon, 22
- Apr 2024 01:33:48 -0700 (PDT)
+	s=arc-20240116; t=1713774866; c=relaxed/simple;
+	bh=9tYDgXcyq7P+TriKyGH19JXZEg2CKTSawDilICd7Fb8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=chcfs5hLNHHemG/cTIpWAUWKbAHeSCqKvPI2xMJLZ1yQ6QV23qBxskiRNCySKz6WaCBu53ccBPQHxvcb3g/kBzAt0BrwH4ZD4lT6N2eTWtc5aki3SZ3IFpGK9gr/tv/FA2CVzjPP2OSFDPiAOaJTEqJ5tOVKJMA8/+teT/Q0OSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=RBIm9Q5D; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43M6laru010192;
+	Mon, 22 Apr 2024 08:34:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=8KSNVJCfPo3Q0D2OwqUzaly2ZpPQ4GnFjWska0qwM8c=;
+ b=RBIm9Q5DbtGs6z6bvWrkRWpQod6vrLSakl1bwABGotHzvUOC8HM59g6dpa0BhdamAjr/
+ cEKC4DEvTSwnaicvJJi4hRrCkxPY0j3rJ+ltfV+CO8u4sH+JR3bsCBI34okXTRXzyZom
+ DknFTxFzFItQcLlq7E2J3yRIqT2RCq6krFl4ZJSWUhp1kV0A0ttRQjYLiMKRBh5TAAk0
+ HFROIpGR5LX9CO6LNrGeZQJ2VnKBOMjHY2MxgSniO4mbixmgux+H1qH+MxHJCOUVbSVH
+ hmYEu6q4iW+mJ5CcmQqQ6kZja6KeZxhATvFRnMbGFeiSM/qawNFzuDMX/r547zu2eLoM Qw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xnjwxr6qd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Apr 2024 08:34:19 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43M8YJ5Z007627;
+	Mon, 22 Apr 2024 08:34:19 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xnjwxr6qb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Apr 2024 08:34:19 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43M5VxIm029854;
+	Mon, 22 Apr 2024 08:34:18 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xmr1t6uyh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Apr 2024 08:34:18 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43M8YEtW54395256
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 22 Apr 2024 08:34:17 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D933C20043;
+	Mon, 22 Apr 2024 08:34:14 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B0FBB20040;
+	Mon, 22 Apr 2024 08:34:14 +0000 (GMT)
+Received: from [9.152.212.236] (unknown [9.152.212.236])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 22 Apr 2024 08:34:14 +0000 (GMT)
+Message-ID: <26c23fb8557d806c12a246caa575e4f4fc4ea27a.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/1] video: Handle HAS_IOPORT dependencies
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Helge Deller <deller@kernel.org>
+Cc: Helge Deller <deller@gmx.de>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@kernel.org>,
+        Heiko
+ Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org
+Date: Mon, 22 Apr 2024 10:34:14 +0200
+In-Reply-To: <Zhfs8CN5XdgldKUn@carbonx1>
+References: <20240410142329.3567824-1-schnelle@linux.ibm.com>
+	 <20240410142329.3567824-2-schnelle@linux.ibm.com>
+	 <Zhfs8CN5XdgldKUn@carbonx1>
+Autocrypt: addr=schnelle@linux.ibm.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422082238.5784-1-xuewen.yan@unisoc.com>
-In-Reply-To: <20240422082238.5784-1-xuewen.yan@unisoc.com>
-From: Xuewen Yan <xuewen.yan94@gmail.com>
-Date: Mon, 22 Apr 2024 16:33:37 +0800
-Message-ID: <CAB8ipk-LhSuMsp0DdzjEJN-4XEBT1_ri6BPH_nvxSgFZONMT2Q@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/eevdf: Prevent vlag from going out of bounds
- when reweight_eevdf
-To: Xuewen Yan <xuewen.yan@unisoc.com>
-Cc: peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
-	yu.c.chen@intel.com, ke.wang@unisoc.com, di.shen@unisoc.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: I7_xuI1921fUAjpB6r34kZ4VekNAv8ct
+X-Proofpoint-GUID: VY4B59Bbm3TDeCmLimufQ0EPwWY9N0kz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-22_05,2024-04-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ suspectscore=0 bulkscore=0 clxscore=1011 malwarescore=0 spamscore=0
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404220038
 
-Hi Peter,
-
-Because the issue may be urgent for many people, I sent the patch first.
-However, when I test on the Android system, I find there still are
-vlags which exceed the limit.
-On the Android system, the nice value of a task will change very
-frequently. The limit can also be exceeded.
-Maybe the !on_rq case is still necessary.
-So I'm planning to propose another patch for !on_rq case later after
-careful testing locally.
-
-BR
-
-On Mon, Apr 22, 2024 at 4:23=E2=80=AFPM Xuewen Yan <xuewen.yan@unisoc.com> =
-wrote:
->
-> kernel encounters the following error when running workload:
->
-> BUG: kernel NULL pointer dereference, address: 0000002c
-> EIP: set_next_entity (fair.c:?)
->
-> which was caused by NULL pointer returned by pick_eevdf().
->
-> Further investigation has shown that, the entity_eligible() has an
-> false-negative issue when the entity's vruntime is far behind the
-> cfs_rq.min_vruntime that, the (vruntime - cfs_rq->min_vruntime) * load
-> caused a s64 overflow, thus every entity on the rb-tree is not
-> eligible, which results in a NULL candidate.
->
-> The reason why entity's vruntime is far behind the cfs_rq.min_vruntime
-> is because during a on_rq task group's update_cfs_group()->reweight_eevdf=
-(),
-> there is no limit on the new entity's vlag. If the new weight is much
-> smaller than the old one,
->
-> vlag =3D div_s64(vlag * old_weight, weight)
->
-> generates a huge vlag, and results in very small(negative) vruntime.
->
-> Thus limit the range of vlag accordingly.
->
-> Reported-by: Sergei Trofimovich <slyich@gmail.com>
-> Closes: https://lore.kernel.org/all/ZhuYyrh3mweP_Kd8@nz.home/
-> Reported-by: Igor Raits <igor@gooddata.com>
-> Closes: https://lore.kernel.org/all/CA+9S74ih+45M_2TPUY_mPPVDhNvyYfy1J1ft=
-Six+KjiTVxg8nw@mail.gmail.com/
-> Reported-by: Breno Leitao <leitao@debian.org>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/lkml/202401301012.2ed95df0-oliver.sang@in=
-tel.com/
-> Reported-by: Yujie Liu <yujie.liu@intel.com>
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> ---
-> changes of v2:
-> -add reported-by (suggested by <yu.c.chen@intel.com>)
-> -remork the changelog (<yu.c.chen@intel.com>)
-> -remove the judgement of fork (Peter)
-> -remove the !on_rq case. (Peter)
-> ---
-> Previous discussion link:
-> https://lore.kernel.org/lkml/20240226082349.302363-1-yu.c.chen@intel.com/
-> https://lore.kernel.org/all/20240130080643.1828-1-xuewen.yan@unisoc.com/
-> ---
-> ---
->  kernel/sched/fair.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 03be0d1330a6..64826f406d6d 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -696,15 +696,21 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
->   *
->   * XXX could add max_slice to the augmented data to track this.
->   */
-> -static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity=
- *se)
-> +static s64 entity_lag(u64 avruntime, struct sched_entity *se)
+On Thu, 2024-04-11 at 16:00 +0200, Helge Deller wrote:
+> * Niklas Schnelle <schnelle@linux.ibm.com>:
+> > In a future patch HAS_IOPORT=3Dn will disable inb()/outb() and friends =
+at
+> > compile time. We thus need to #ifdef functions and their callsites whic=
+h
+> > unconditionally use these I/O accessors. In the include/video/vga.h
+> > these are conveniently all those functions with the vga_io_* prefix.
+>=20
+> Why don't you code it like in the patch below?
+> inb_p(), outb_p() and outw() would then need to be defined externally
+> without an implementation so that they would generate link time errors
+> (instead of compile time errors).
+>=20
+> diff --git a/include/video/vga.h b/include/video/vga.h
+> index 947c0abd04ef..32c915e109fa 100644
+> --- a/include/video/vga.h
+> +++ b/include/video/vga.h
+> @@ -203,18 +203,20 @@ extern int restore_vga(struct vgastate *state);
+> =20
+>  static inline unsigned char vga_io_r (unsigned short port)
 >  {
-> -       s64 lag, limit;
-> +       s64 vlag, limit;
-> +
-> +       vlag =3D avruntime - se->vruntime;
-> +       limit =3D calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se)=
-;
-> +
-> +       return clamp(vlag, -limit, limit);
-> +}
->
-> +static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity=
- *se)
-> +{
->         SCHED_WARN_ON(!se->on_rq);
-> -       lag =3D avg_vruntime(cfs_rq) - se->vruntime;
->
-> -       limit =3D calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se)=
-;
-> -       se->vlag =3D clamp(lag, -limit, limit);
-> +       se->vlag =3D entity_lag(avg_vruntime(cfs_rq), se);
+> -	return inb_p(port);
+> +	return IS_ENABLED(CONFIG_HAS_IOPORT) ? inb_p(port) : 0;
 >  }
->
->  /*
-> @@ -3761,7 +3767,7 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, s=
-truct sched_entity *se,
->          *         =3D V  - vl'
->          */
->         if (avruntime !=3D se->vruntime) {
-> -               vlag =3D (s64)(avruntime - se->vruntime);
-> +               vlag =3D entity_lag(avruntime, se);
->                 vlag =3D div_s64(vlag * old_weight, weight);
->                 se->vruntime =3D avruntime - vlag;
->         }
-> --
-> 2.25.1
->
->
+> =20
+>  static inline void vga_io_w (unsigned short port, unsigned char val)
+>  {
+> -	outb_p(val, port);
+> +	if (IS_ENABLED(CONFIG_HAS_IOPORT))
+> +		outb_p(val, port);
+>  }
+> =20
+>  static inline void vga_io_w_fast (unsigned short port, unsigned char reg=
+,
+>  				  unsigned char val)
+>  {
+> -	outw(VGA_OUT16VAL (val, reg), port);
+> +	if (IS_ENABLED(CONFIG_HAS_IOPORT))
+> +		outw(VGA_OUT16VAL (val, reg), port);
+>  }
+> =20
+>  static inline unsigned char vga_mm_r (void __iomem *regbase, unsigned sh=
+ort port)
+>=20
+
+This may be personal preference but I feel like link time errors would
+be very late to catch a configuration that can't work. Also this would
+bypass the __compiletime_error("inb()) requires CONFIG_HAS_IOPORT");
+added instead of the in*()/out*() helpers to make it easy to spot the
+problem.
+
+
+I'm not a fan of #ifdeffery either but I think in this case it is
+simple, well enough contained and overall there aren't that many spots
+where we need to exclude just some sections of code vs entire drivers
+with vga.h probably being the worst of them all.
+
+Thanks,
+Niklas
 
