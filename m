@@ -1,173 +1,118 @@
-Return-Path: <linux-kernel+bounces-153617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B958AD06E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:17:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F4F78AD072
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:18:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F12931F216C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:16:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3BBDB22365
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:18:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF097152DEE;
-	Mon, 22 Apr 2024 15:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CD661534ED;
+	Mon, 22 Apr 2024 15:18:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DddYxD9Y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7b5Y6P6"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F8913E8B2;
-	Mon, 22 Apr 2024 15:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2EBB152E00
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713799009; cv=none; b=MbWLap5TVNrcImOYkW0H9YaFL5ivQwLKR06HG7L2K4bPzSQEerl4S4Dv7IppWHyoOdeoaLIbUclASU58ArLeGhP79qSmzjkRX856W0i7D1/6w01yQM+3ZeIIfMqygScTFlBn637PAtH/7a5MHQiyqzmfnLnnTtdzY2BqI7saj5g=
+	t=1713799086; cv=none; b=izOcTG8MBaXw3utHQMOX5iyjxZ6tkP55UbuRB/GJ0rsMHc5crfzqazzAVhi6UQNsKGUe+g2N7S/seHfOMiXxBXqp/sRsHMuGHHEE+RJy2sph1mrFk8u0scUYH6hRo18jVOAUOXq328IU6Gp5Dhbmw4ovTTh5d3mI2ByQ4NYQDjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713799009; c=relaxed/simple;
-	bh=xdss4el+V60V2ws+xgbpajq8iInRegrkoN8TP9o57z4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PW60hQyYDN30s72eA6xcvVEyhwz8hSFddXbP73h0Wl3EDc+Gg/tJucDAzWsdATNpvLyCaJvHj/VM54oPPmcH0JZAZJoRyhN0JdlyhSshzxZzXtPm9HSfvBPUAx59AqvC8m6W9GhYhg5W8kvOczJZ6PW1jxwsMRPA8HvPp9me6DE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DddYxD9Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FB90C113CC;
-	Mon, 22 Apr 2024 15:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713799009;
-	bh=xdss4el+V60V2ws+xgbpajq8iInRegrkoN8TP9o57z4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DddYxD9YcuuEidSLLrYzsRR3+SBt+y8BsJI9lzFM7Oh2dDlY4SIjUYUdFZXrjUwjg
-	 DvPq5dxVbuSrfeWu/L2fBW+txJx9AS5lKr/EBr0qaSErcEJnEA/Uyz9nT3L/92mTut
-	 o4dTFf4CJF/PezRBGIdcAs0tFvnlm46Lgl13kEeLFbvfwar4gLgyVCLc0JsR3Yj72H
-	 YdXfREIcykUKw6GlqJSMj3bWZyTMkJRB91aNXiagWco5GJ+Gwv91f+F8876d94qrJv
-	 qLC1BizS13XrI9+LTmn7L9mUPGHvfxVaIHmDqjBChimXf1+CNtM2C5oTR04gd/rFlN
-	 iOwKaftYRw7yg==
-Date: Mon, 22 Apr 2024 20:46:25 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-	quic_msarkar@quicinc.com, quic_kraravin@quicinc.com,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] PCI: qcom: Add equalization settings for 16GT/s
-Message-ID: <20240422151625.GG9775@thinkpad>
-References: <20240419001013.28788-1-quic_schintav@quicinc.com>
- <20240419001013.28788-3-quic_schintav@quicinc.com>
+	s=arc-20240116; t=1713799086; c=relaxed/simple;
+	bh=CPFR15tneOJhQk78oq0la/KY9saekh5nLt/B0kR7pgs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D8Uw49HOsGfHdrHXTW42vmNAjkLnMXfuzsaxu3LNQEdLOmDJlBiFSFZNqLqVQAA8sX0ytBArzo9YzQMlnHqsFZ29PoyLwz/hV1R1P0CZf1emifyX2JHZYhIByS9zjgObNtIA5doWGWAxcGIOxWSqc/vD1hdfYoPqPyGzYItGlj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c7b5Y6P6; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a52223e004dso427041366b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:18:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713799083; x=1714403883; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XoZ7uxBwOV+P0LIe5TJy7U0wCKeVYjyqLxxE3vM9H8g=;
+        b=c7b5Y6P6zq5PuzgwzVmE1ishKOfsVMMBWufFDtl8X8VL3g6WKxZfZC6rGm3rso9eom
+         KGY3iMbZCveQdJVouL5bCZC81T3rHntmDxLhQ7bcm5wwwBqAETaGm8tZYm6R1kIDg/qe
+         UwdpcBAx9NXeAjfz6ZGk51zibagJs6FlHcthc+X2t93nF7mhwNx0jT8WLaV9p1r9LalK
+         HXM+On7vzGc1QEkaKfxokY1o5GcgC2e5KZ7iyG50VdVYspVr5a+XLETD5KPs1BcAZBJJ
+         KEhL6/JtJ51oul+rhLKf2f/LyCLv3HM2VZ8M01wFN3BVePKzeWvipDyDHPSQ7Lll+AdS
+         PsRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713799083; x=1714403883;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XoZ7uxBwOV+P0LIe5TJy7U0wCKeVYjyqLxxE3vM9H8g=;
+        b=UdCOs5Pkw3gGIOEI6ENACQvF0OwAQT4mBmkXzh6N6XyglY+2/PHG0oqEHoIrMGLo0c
+         USoe8LlNdEbQBWfFTSW3oG/nJjRtVHYmPAu/0tRbw7FHE0k97g1fOEj8d2jbbVIOMwmt
+         XWoCtPSKKcYzvPdubl/QnqodDNSlJ101ihSP/Yw7xb6n2fTWd2i1Whj88HwkFkJGNzWS
+         zuS8QK42UQ7ezAFu2jB92okq2/LlPaO9Iywf2geq7CZPDPg2v0WH9Z6oSDcW0xxmKjhX
+         2X7LB/JEKXzEyf5p96OGoghFzW0NQ7WODLUUcfF2aAf2kpXz6w+ezCeiePRp7Q1B2HMs
+         sGWw==
+X-Forwarded-Encrypted: i=1; AJvYcCXLrHSw4CU1Ys/kuvyBPxtHcMsIVNJqZ9+DO1z3R0gccdQUgMTUSdnglYhUxxdjh5RlH7aQ1Q5sqGIOLWR32qD8Sx8vl/tau7oASyBa
+X-Gm-Message-State: AOJu0Yz1WAZSGbnbPqgf7XQfCyPeJmZtmc+Nt7Acmdng5neQ1srgJ7QX
+	WyyZhjbCtARcVB8gKOre+QOEvH1KZglbj+Np7pTfsv2mg6IGFItw
+X-Google-Smtp-Source: AGHT+IFNUoquNfec2rdeReTvl6zW7v/GVP3i0BHHhkx77exmBOIvBiAo2nTafKORGBFvhFmwwJq4lA==
+X-Received: by 2002:a17:907:8691:b0:a56:ee1:5695 with SMTP id qa17-20020a170907869100b00a560ee15695mr1967638ejc.19.1713799082877;
+        Mon, 22 Apr 2024 08:18:02 -0700 (PDT)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id u14-20020a170906b10e00b00a5534758ef7sm5932108ejy.148.2024.04.22.08.18.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 08:18:02 -0700 (PDT)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH] locking/pvqspinlock/x86: Use _Q_LOCKED_VAL in PV_UNLOCK_ASM macro
+Date: Mon, 22 Apr 2024 17:17:35 +0200
+Message-ID: <20240422151752.53997-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240419001013.28788-3-quic_schintav@quicinc.com>
 
-On Thu, Apr 18, 2024 at 05:09:35PM -0700, Shashank Babu Chinta Venkata wrote:
+Use _Q_LOCKED_VAL instead of hardcoded $0x1 in PV_UNLOCK_ASM macro.
 
-PCI: qcom: Add PCIe link equalization settings for 16 GT/s
+No functional changes intended.
 
-> GEN3_RELATED_OFFSET is being used to determine data rate of shadow
-> registers. Select data rate as 16GT/s and set appropriate equilization
-> settings to improve link stability for 16GT/s data rate.
-> 
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+---
+ arch/x86/include/asm/qspinlock_paravirt.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-How about:
-
-'To improve the PCIe link stability while running at the rate of 16 GT/s, set
-the appropriate link equalization settings for both RC and EP controllers.'
-
-However, I don't understand the statement about 'GEN3_RELATED_OFFSET' and
-'shadow registers'. Please reword it to make it understandable.
-
-> Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware.h  | 12 ++++++++
->  drivers/pci/controller/dwc/pcie-qcom-common.c | 30 +++++++++++++++++++
->  drivers/pci/controller/dwc/pcie-qcom-common.h |  1 +
->  drivers/pci/controller/dwc/pcie-qcom-ep.c     |  3 ++
->  drivers/pci/controller/dwc/pcie-qcom.c        |  3 ++
->  5 files changed, 49 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 26dae4837462..ad771bb52d29 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -122,6 +122,18 @@
->  #define GEN3_RELATED_OFF_RATE_SHADOW_SEL_SHIFT	24
->  #define GEN3_RELATED_OFF_RATE_SHADOW_SEL_MASK	GENMASK(25, 24)
->  
-> +#define GEN3_EQ_CONTROL_OFF			0x8a8
-> +#define GEN3_EQ_CONTROL_OFF_FB_MODE(n)		FIELD_PREP(GENMASK(3, 0), n)
-> +#define GEN3_EQ_CONTROL_OFF_PHASE23_EXIT_MODE(n)	FIELD_PREP(BIT(4), n)
-> +#define GEN3_EQ_CONTROL_OFF_PSET_REQ_VEC(n)	FIELD_PREP(GENMASK(23, 8), n)
-> +#define GEN3_EQ_CONTROL_OFF_FOM_INC_INITIAL_EVAL(n)	FIELD_PREP(BIT(24), n)
-> +
-> +#define GEN3_EQ_FB_MODE_DIR_CHANGE_OFF          0x8ac
-> +#define GEN3_EQ_FMDC_T_MIN_PHASE23(n)	FIELD_PREP(GENMASK(4, 0), n)
-> +#define GEN3_EQ_FMDC_N_EVALS(n)		FIELD_PREP(GENMASK(9, 5), n)
-> +#define GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA(n)	FIELD_PREP(GENMASK(13, 10), n)
-> +#define GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA(n)	FIELD_PREP(GENMASK(17, 14), n)
-> +
->  #define PCIE_PORT_MULTI_LANE_CTRL	0x8C0
->  #define PORT_MLTI_UPCFG_SUPPORT		BIT(7)
->  
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom-common.c b/drivers/pci/controller/dwc/pcie-qcom-common.c
-> index dc2120ec5fef..a6f3eb4c3ee6 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom-common.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom-common.c
-> @@ -16,6 +16,36 @@
->  #define QCOM_PCIE_LINK_SPEED_TO_BW(speed) \
->  		Mbps_to_icc(PCIE_SPEED2MBS_ENC(pcie_link_speed[speed]))
->  
-> +void qcom_pcie_common_set_16gt_eq_settings(struct dw_pcie *pci)
-> +{
-> +	u32 reg;
-> +
-> +	/*
-> +	 * GEN3_RELATED_OFF is repurposed to be used with GEN4(16GT/s) rate
-> +	 * as well based on RATE_SHADOW_SEL_MASK settings on this register.
-
-Same comment as above.
-
-> +	 */
-> +	reg = dw_pcie_readl_dbi(pci, GEN3_RELATED_OFF);
-> +	reg &= ~GEN3_RELATED_OFF_GEN3_ZRXDC_NONCOMPL;
-> +	reg &= ~GEN3_RELATED_OFF_RATE_SHADOW_SEL_MASK;
-> +	reg |= (0x1 << GEN3_RELATED_OFF_RATE_SHADOW_SEL_SHIFT);
-
-Use FIELD_PREP()
-
-> +	dw_pcie_writel_dbi(pci, GEN3_RELATED_OFF, reg);
-> +
-> +	reg = dw_pcie_readl_dbi(pci, GEN3_EQ_FB_MODE_DIR_CHANGE_OFF);
-> +	reg = GEN3_EQ_FMDC_T_MIN_PHASE23(0) |
-
-You are reading 'reg' above and then overwriting immediately.
-
-> +		GEN3_EQ_FMDC_N_EVALS(0xD) |
-
-'0xd'
-
-> +		GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA(0x5) |
-> +		GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA(0x5);
-> +	dw_pcie_writel_dbi(pci, GEN3_EQ_FB_MODE_DIR_CHANGE_OFF, reg);
-> +
-> +	reg = dw_pcie_readl_dbi(pci, GEN3_EQ_CONTROL_OFF);
-> +	reg = GEN3_EQ_CONTROL_OFF_FB_MODE(0) |
-
-Same as above.
-
-- Mani
-
+diff --git a/arch/x86/include/asm/qspinlock_paravirt.h b/arch/x86/include/asm/qspinlock_paravirt.h
+index 466af57b8ed6..0a985784be9b 100644
+--- a/arch/x86/include/asm/qspinlock_paravirt.h
++++ b/arch/x86/include/asm/qspinlock_paravirt.h
+@@ -40,7 +40,7 @@ __PV_CALLEE_SAVE_REGS_THUNK(__pv_queued_spin_unlock_slowpath, ".spinlock.text");
+ #define PV_UNLOCK_ASM							\
+ 	FRAME_BEGIN							\
+ 	"push  %rdx\n\t"						\
+-	"mov   $0x1,%eax\n\t"						\
++	"mov   $" __stringify(_Q_LOCKED_VAL) ",%eax\n\t"		\
+ 	"xor   %edx,%edx\n\t"						\
+ 	LOCK_PREFIX "cmpxchg %dl,(%rdi)\n\t"				\
+ 	"jne   .slowpath\n\t"						\
 -- 
-மணிவண்ணன் சதாசிவம்
+2.42.0
+
 
