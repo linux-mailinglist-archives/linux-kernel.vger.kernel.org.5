@@ -1,187 +1,179 @@
-Return-Path: <linux-kernel+bounces-153294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB148ACC20
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:37:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42AE08ACC1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:37:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C44EE1F24232
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:37:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D768E1F22C59
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F66146D45;
-	Mon, 22 Apr 2024 11:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="WIN6TNL0"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463D21465A2;
-	Mon, 22 Apr 2024 11:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F86146A6A;
+	Mon, 22 Apr 2024 11:37:12 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB47D1465A2;
+	Mon, 22 Apr 2024 11:37:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713785853; cv=none; b=M4KDAZmxt92HXAgeYNacJ6FJW1vr6V9PZV/F9ONGtROkmj+gcqtzTVtjEIwej0LcrE4EUluBwkih5ChUUogKD/GctVYta98hCkcq+edoeXmygTsGh8E0LrpzqBEWfvbyR8hPhnDU/1Z1pFVemEg2I3m4jFFQTcaTUbr++7DpdJI=
+	t=1713785832; cv=none; b=lORtStMAnGJ7eOBC0SDj51pD+Z5HdOPkKbuDRElNTRG5cUnVnrSg1Wsf8iF2uiyHsWBmdvbbOqai601/bYf0y0XAEWqAkpkEp79tKRLUB4xX/E0kW8RrumFV9NPFIlgiMlt8RlLi9eT9avQKvUDiw5icKe31eo4KdSdXrehh/PM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713785853; c=relaxed/simple;
-	bh=JirxwaUTPZ7gRRTADFPsE4LALCUoW+coAPWl1mh0lv4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tCDK9w44yM3rQ4iSeAzUR7SZ41WHz8dcFyEWaqyZZwOY3GFkGehUINZspsRQSbsBOx7+gIlT6X5GlrW7Rc8vypzfCPJQfBNTB9EKu1W+qZWy0oS0qYmmnlp5avs1vDJlu7KUwditiZpkr0ici+lQ7eyvpKW36QaSbajBAw/Y4AM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=WIN6TNL0; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1713785851; x=1745321851;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JirxwaUTPZ7gRRTADFPsE4LALCUoW+coAPWl1mh0lv4=;
-  b=WIN6TNL03JCsd7HKa0aw3VOEEuMCrHdC+t4+50oDi+OAczxbg4ptWVMj
-   IeT58zkDtOaLps1dtLG7t4B4RxgBjs3HgoSeZF9lLtqPbCmSLz5P8sY7x
-   fHoo1qFNrHBttf1r6QZvGABPMfRHQIlEFF1QEpsnW+2Bkd0gMMqqmfjRT
-   9vslTZO88+WMbvvrsHMA2X04y4WaHAxhdumql9cEWiNKXTDMb7HRM7KH4
-   D84ZS6R5Z8byef3xFrQh0dQ6/gDlk61smcDOSMUUZYOSNGYu+boWZIF5v
-   qEqF1S7+gZw9Z8bDiyLhcfs1lLRngr8jR+O6Id2l5UTx4ez14EVJmoOdJ
-   w==;
-X-CSE-ConnectionGUID: RWC0UfowTpGbeC6DP7jNJg==
-X-CSE-MsgGUID: E2DBmtQjS3e/5QeweITlcg==
-X-IronPort-AV: E=Sophos;i="6.07,220,1708412400"; 
-   d="asc'?scan'208";a="22099120"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Apr 2024 04:37:27 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 22 Apr 2024 04:37:01 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Mon, 22 Apr 2024 04:36:58 -0700
-Date: Mon, 22 Apr 2024 12:36:42 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
-CC: Conor Dooley <conor@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Paul
- Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Anup Patel
-	<anup@brainfault.org>, Shuah Khan <shuah@kernel.org>, Atish Patra
-	<atishp@atishpatra.org>, <linux-doc@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <kvm@vger.kernel.org>,
-	<kvm-riscv@lists.infradead.org>, <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v2 04/12] riscv: add ISA parsing for Zca, Zcf, Zcd and Zcb
-Message-ID: <20240422-matchbook-unlikable-59987a8d8b1f@wendy>
-References: <20240418124300.1387978-1-cleger@rivosinc.com>
- <20240418124300.1387978-5-cleger@rivosinc.com>
- <20240419-clinic-amusing-d23b1b6d2af2@spud>
- <6ab9e591-f2f2-4267-8bdd-169ef0243e14@rivosinc.com>
- <20240422-daylight-sassy-ff3b0d867fef@wendy>
- <032530b8-a26e-494f-bd9c-3e1661add5d4@rivosinc.com>
+	s=arc-20240116; t=1713785832; c=relaxed/simple;
+	bh=giz8ndf4KlmCclo1HmturdVYzZOBqqSQfzj8LZLKAiA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oOEOvIVHQDGzybp8zdf6vhHnbDFaDzSJ+AYphN1jc0y5hef7JMFjQs9pcTgdTLcQPHLKI4+3quRsyBsmT1ddTlLUKRzGcdkImn0kuuHndLDtj+Iq9hX8CIuiDMTwA5442OXNrTLwtQvv7Hqzz9i9dczR6EaxsF785NbCLPY5ito=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5AD02339;
+	Mon, 22 Apr 2024 04:37:38 -0700 (PDT)
+Received: from [10.57.75.149] (unknown [10.57.75.149])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 30D6C3F7BD;
+	Mon, 22 Apr 2024 04:37:09 -0700 (PDT)
+Message-ID: <3a8f1978-c5df-40d6-91ca-276431bb01e1@arm.com>
+Date: Mon, 22 Apr 2024 12:37:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BQeFG0OJOWz1hKp9"
-Content-Disposition: inline
-In-Reply-To: <032530b8-a26e-494f-bd9c-3e1661add5d4@rivosinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/3] thermal/debugfs: Fix and clean up trip point
+ statistics updates
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>
+References: <4918025.31r3eYUQgx@kreacher>
+Content-Language: en-US
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <4918025.31r3eYUQgx@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---BQeFG0OJOWz1hKp9
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Rafael,
 
-On Mon, Apr 22, 2024 at 01:14:26PM +0200, Cl=E9ment L=E9ger wrote:
-> On 22/04/2024 11:35, Conor Dooley wrote:
-> > On Mon, Apr 22, 2024 at 10:53:10AM +0200, Cl=E9ment L=E9ger wrote:
-> >> On 19/04/2024 17:51, Conor Dooley wrote:
-> >>> On Thu, Apr 18, 2024 at 02:42:27PM +0200, Cl=E9ment L=E9ger wrote:
-> >>>> The Zc* standard extension for code reduction introduces new extensi=
-ons.
-> >>>> This patch adds support for Zca, Zcf, Zcd and Zcb. Zce, Zcmt and Zcmp
-> >>>> are left out of this patch since they are targeting microcontrollers/
-> >>>> embedded CPUs instead of application processors.
-> >>>>
-> >>>> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
-> >>>> ---
-> >>>>  arch/riscv/include/asm/hwcap.h | 4 ++++
-> >>>>  arch/riscv/kernel/cpufeature.c | 4 ++++
-> >>>>  2 files changed, 8 insertions(+)
-> >>>>
-> >>>> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm=
-/hwcap.h
-> >>>> index 543e3ea2da0e..b7551bad341b 100644
-> >>>> --- a/arch/riscv/include/asm/hwcap.h
-> >>>> +++ b/arch/riscv/include/asm/hwcap.h
-> >>>> @@ -82,6 +82,10 @@
-> >>>>  #define RISCV_ISA_EXT_ZACAS		73
-> >>>>  #define RISCV_ISA_EXT_XANDESPMU		74
-> >>>>  #define RISCV_ISA_EXT_ZIMOP		75
-> >>>> +#define RISCV_ISA_EXT_ZCA		76
-> >>>> +#define RISCV_ISA_EXT_ZCB		77
-> >>>> +#define RISCV_ISA_EXT_ZCD		78
-> >>>> +#define RISCV_ISA_EXT_ZCF		79
-> >>>> =20
-> >>>>  #define RISCV_ISA_EXT_XLINUXENVCFG	127
-> >>>> =20
-> >>>> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpuf=
-eature.c
-> >>>> index 115ba001f1bc..09dee071274d 100644
-> >>>> --- a/arch/riscv/kernel/cpufeature.c
-> >>>> +++ b/arch/riscv/kernel/cpufeature.c
-> >>>> @@ -261,6 +261,10 @@ const struct riscv_isa_ext_data riscv_isa_ext[]=
- =3D {
-> >>>>  	__RISCV_ISA_EXT_DATA(zfa, RISCV_ISA_EXT_ZFA),
-> >>>>  	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
-> >>>>  	__RISCV_ISA_EXT_DATA(zfhmin, RISCV_ISA_EXT_ZFHMIN),
-> >>>> +	__RISCV_ISA_EXT_DATA(zca, RISCV_ISA_EXT_ZCA),
-> >>>> +	__RISCV_ISA_EXT_DATA(zcb, RISCV_ISA_EXT_ZCB),
-> >>>> +	__RISCV_ISA_EXT_DATA(zcd, RISCV_ISA_EXT_ZCD),
-> >>>> +	__RISCV_ISA_EXT_DATA(zcf, RISCV_ISA_EXT_ZCF),
-> >>>>  	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
-> >>>>  	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
-> >>>>  	__RISCV_ISA_EXT_DATA(zbc, RISCV_ISA_EXT_ZBC),
-> >>>
-> >>> Ye, this looks exactly like what I "feared".
-> >>
-> >> Ok but for instance, Qemu actually set Zc* based on C/F/D. So the ISA
-> >> string containing theses dependencies should actually also be allowed.
-> >> So should we simply ignore them in the ISA string and always do our own
-> >> "post-processing" based on C/F/D?
-> >=20
-> > I'm not familiar with the contents of all of these extensions, but I
-> > assume the reasoning for splitting them out is that you can implement
-> > them but not maybe not implement C (or something similar)? If that's the
-> > case, you cannot always imply.
->=20
-> Yeah, they can be implemented independently so we need to be able to
-> parse them independently.
+On 4/17/24 14:07, Rafael J. Wysocki wrote:
+> Hi Everyone,
+> 
+> The first patch in this series addresses the problem of updating trip
+> point statistics prematurely for trip points that have just been
+> crossed on the way down (please see the patch changelog for details).
+> 
+> The way it does that renders the following cleanup patch inapplicable:
+> 
+> https://lore.kernel.org/linux-pm/2321994.ElGaqSPkdT@kreacher/
+> 
+> The remaining two patches in the series are cleanups on top of the
+> first one.
+> 
+> This series is based on an older patch series posted last week:
+> 
+> https://lore.kernel.org/linux-pm/13515747.uLZWGnKmhe@kreacher/
+> 
+> but it can be trivially rebased on top of the current linux-next.
+> 
+> Thanks!
+> 
+> 
+> 
 
-> However, the kernel currently requires C
+I've checked this patch patch set on top of your bleeding-edge
+which has thermal re-work as well. The patch set looks good
+and works properly.
 
-No it doesn't!
-There's a Kconfig option that controls whether or not we build with
-compressed instructions.
+Although, I have found some issue in this debug info files and
+I'm not sure if this is expected or not. If not I can address this
+and send some small fix for it.
 
-> so we
-> should always have Zca/Zcf/Zcd. But if that changes in the future, then,
-> that won't be true anymore. Better keep it generic probably
+When I read the cooling device residency statistics, I don't
+get updates for the first time the state is used. It can only
+be counted when that state was known and finished it's usage.
 
+IMO it is not the right behavior, isn't it?
 
---BQeFG0OJOWz1hKp9
-Content-Type: application/pgp-signature; name="signature.asc"
+Experiment:
+My trip points are 70degC and 75degC and I'm setting emulated
+temperature to cross them and get cooling states 1 then 0.
+As you can see the statistics counter only starts showing value after
+after trip crossing down.
+------------------------------------8<-----------------------------------
 
------BEGIN PGP SIGNATURE-----
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+root@arm:~#
+root@arm:~#
+root@arm:~# echo 71000 > /sys/class/thermal/thermal_zone0/emul_temp 
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiZLygAKCRB4tDGHoIJi
-0rZqAPsH+rOY+xwtmy02hvEj5S0LCo5WHbH42moKe/rg2JsecQD9Efgn3/dHRehg
-SrE0p8oOablre3zPC16fRvmLyILrMAw=
-=iMqf
------END PGP SIGNATURE-----
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+root@arm:~# echo 76000 > /sys/class/thermal/thermal_zone0/emul_temp 
 
---BQeFG0OJOWz1hKp9--
+root@arm:~#
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+0       518197
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+0       518197
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+0       518197
+root@arm:~# echo 71000 > /sys/class/thermal/thermal_zone0/emul_temp 
+
+root@arm:~#
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+0       520066
+1       17567
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+0       522653
+1       17567
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+0       526151
+1       17567
+root@arm:~# echo 66000 > /sys/class/thermal/thermal_zone0/emul_temp 
+
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+0       537366
+1       17567
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+0       544936
+1       17567
+root@arm:~# cat 
+/sys/kernel/debug/thermal/cooling_devices/0/time_in_state_ms
+State   Residency
+0       556694
+1       17567
+root@arm:~#
+
+------------------------------->8----------------------------------------
+
+Please let me know what do you think about that behavior.
+
+Regards,
+Lukasz
 
