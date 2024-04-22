@@ -1,177 +1,135 @@
-Return-Path: <linux-kernel+bounces-153003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302C38AC759
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:47:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D219B8AC766
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:48:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB49C1F2057F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:47:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F8101C20D1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1F553E1B;
-	Mon, 22 Apr 2024 08:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09DE653384;
+	Mon, 22 Apr 2024 08:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DUaiycvM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BhbYt1HW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1822751C40;
-	Mon, 22 Apr 2024 08:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E81651C2B;
+	Mon, 22 Apr 2024 08:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713775596; cv=none; b=pqEiw52ytAql8mugjgmZsb0YI8vawiUeMKEDnd+qRcgbUNrgWvkImfe6APy7INX7ei6nePmQx1nJAuMJI5Tmh0jVVL6drYuvMXYYdok+MQnYuh3u1Hg519U0hEViUmX1HNYaVVLTlAcyIEJiIPaEHwIAUQ7LKLf9nBhLIIGYWx0=
+	t=1713775658; cv=none; b=fzJIXgxFAwQkitTqo9KG9DdZ7rMtLwdLVljQP4Wk4lDmvvl7wdTGEgNFJu3uU6bGvtLLdE2LWpSgKiv/O0h1tiD+3JF9lwoR5QUgy+o8l4UkA1xAK+vzVY4MSOuE9O8c30Sz01eGLedeGkVuKxo58N1IFJ7FEv6N+AOozOBv4i8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713775596; c=relaxed/simple;
-	bh=3Nvg6aLMqCpBwmchT+qiCZ4eyxtvIcAIrqVuZuISGKk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eyz+rMiLMIdGLbkFzuFqMchqaRVDZzFgtd3Cg5odG1D1ZYjFtVhi5v+yIYPV1iZ2g6Lwf4uKpJto/9q/etNcrLAyXxBy7IvqdFVNKJe9tKkwqvB9lqL3wZQoGydrEdZ7CysbvVHku3fH2gcW/dn9wGE9+D5joeiJGcqPqghH7Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DUaiycvM; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713775594; x=1745311594;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3Nvg6aLMqCpBwmchT+qiCZ4eyxtvIcAIrqVuZuISGKk=;
-  b=DUaiycvMFc56ETf2F3JbmWnAsRlz96njEib49B14ZnvVTYxqrnJIdaOJ
-   ir4+Opa1W/DF3VLGOo/ylNtsqpO2yActCDdohQ89A/XScEQO/rpcIMEzZ
-   os9RHGUf8mH6M/JvLdle5kej3OjXuTJssnc1WArB/YYgVxSsrBjObQ5Lf
-   WJeRzyJkYJ/vrIuNv9K/j43i9MWn8vIbQkeB2UkRbYcrtNzmKUpPEq03e
-   kWGUkZVCwQDF9rZraP8/pqiLC5flNG1V4qtM08N4AS2W4+WzxhNu97gv3
-   ZSg8lDJFTY1H0i1LVbRlbNy/9C/eECH5KR7CS8cxIvGOY14BB2OlRBnA9
-   Q==;
-X-CSE-ConnectionGUID: km4rVgRCRW2zO6mXyqtSrw==
-X-CSE-MsgGUID: ++PM4aAGSz+ZupZjBu8aXA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="26821752"
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="26821752"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 01:46:33 -0700
-X-CSE-ConnectionGUID: bP/TayZPTu2EylGd11+jrw==
-X-CSE-MsgGUID: skSrE0G5TfCwOfWAvC3nLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="23925338"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 01:46:30 -0700
-Message-ID: <9477c21a-4b18-4539-9f82-11046e43063c@intel.com>
-Date: Mon, 22 Apr 2024 16:46:27 +0800
+	s=arc-20240116; t=1713775658; c=relaxed/simple;
+	bh=M6QQiy27Yx7cZTOC0617KB9Ln6pKKwikPWIcgenY/bM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EgGULhX+objFR+0LYaRicRH4tBGHWFBLJtos9RhCBX+j6CqVVyMks+/KAy6d1hapkryY0SjiqCJmQrHl9NcWUimi4SFCymzdUnYPbUX7PNcZAg30zCqyyEvy+HA65HXmblqpNoerAxEWuEuouiXQximmIRf1ZEExVuqnI5bCTTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BhbYt1HW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACF34C113CC;
+	Mon, 22 Apr 2024 08:47:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713775657;
+	bh=M6QQiy27Yx7cZTOC0617KB9Ln6pKKwikPWIcgenY/bM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BhbYt1HWBZxGe8p0rpcUIVFFy0qN3mUbgGQa+T/hdJ9oQJ5iN9QXtGO+1X2Qp+kcW
+	 q3FAb85uoScj1tMh7VK/q77eXzWKZQh5pt/OPtaDAEK6NzBtA4zbpekQbS/S73OKy+
+	 S6K4J7+Gbcac0zubIdjxBgAfvUcmZPnk8iHEsua7yLLYoNI1nHquFFKokymhz1QsZ6
+	 N2kiYbBilEozrmvprYGyC8M1TxF7Os+zPOSs7cNsuEML9MeP464uktwGfCcjzApu8s
+	 tW9zR6AyO4iX4WSS4f0h6ivopKwu9ye/MDbkwrxzhFXFzoptPuD2oe+4U9VpgigchB
+	 D5isfO4sruTJQ==
+From: Mike Rapoport <rppt@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Mike Rapoport <rppt@kernel.org>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH v5 01/15] arm64: module: remove unneeded call to kasan_alloc_module_shadow()
+Date: Mon, 22 Apr 2024 11:47:09 +0300
+Message-ID: <20240422084717.3602332-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/6] KVM: x86/mmu: Extract __kvm_mmu_do_page_fault()
-To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
- kvm@vger.kernel.org
-Cc: isaku.yamahata@intel.com, binbin.wu@linux.intel.com, seanjc@google.com,
- rick.p.edgecombe@intel.com
-References: <20240419085927.3648704-1-pbonzini@redhat.com>
- <20240419085927.3648704-4-pbonzini@redhat.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240419085927.3648704-4-pbonzini@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/19/2024 4:59 PM, Paolo Bonzini wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> Extract out __kvm_mmu_do_page_fault() from kvm_mmu_do_page_fault().  The
-> inner function is to initialize struct kvm_page_fault and to call the fault
-> handler, and the outer function handles updating stats and converting
-> return code.  
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-I don't see how the outer function converts return code.
+Since commit f6f37d9320a1 ("arm64: select KASAN_VMALLOC for SW/HW_TAGS
+modes") KASAN_VMALLOC is always enabled when KASAN is on. This means
+that allocations in module_alloc() will be tracked by KASAN protection
+for vmalloc() and that kasan_alloc_module_shadow() will be always an
+empty inline and there is no point in calling it.
 
-> KVM_PRE_FAULT_MEMORY will call the KVM page fault handler.
+Drop meaningless call to kasan_alloc_module_shadow() from
+module_alloc().
 
-I assume it means the inner function will be used by KVM_PRE_FAULT_MEMORY.
+Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+---
+ arch/arm64/kernel/module.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-> This patch makes the emulation_type always set irrelevant to the return
-> code.  kvm_mmu_page_fault() is the only caller of kvm_mmu_do_page_fault(),
-> and references the value only when PF_RET_EMULATE is returned.  Therefore,
-> this adjustment doesn't affect functionality.
-
-This paragraph needs to be removed, I think. It's not true.
-
-> No functional change intended.
-> 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Message-ID: <ddf1d98420f562707b11e12c416cce8fdb986bb1.1712785629.git.isaku.yamahata@intel.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->   arch/x86/kvm/mmu/mmu_internal.h | 38 +++++++++++++++++++++------------
->   1 file changed, 24 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index e68a60974cf4..9baae6c223ee 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -287,8 +287,8 @@ static inline void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
->   				      fault->is_private);
->   }
->   
-> -static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> -					u64 err, bool prefetch, int *emulation_type)
-> +static inline int __kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> +					  u64 err, bool prefetch, int *emulation_type)
->   {
->   	struct kvm_page_fault fault = {
->   		.addr = cr2_or_gpa,
-> @@ -318,6 +318,27 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->   		fault.slot = kvm_vcpu_gfn_to_memslot(vcpu, fault.gfn);
->   	}
->   
-> +	if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) && fault.is_tdp)
-> +		r = kvm_tdp_page_fault(vcpu, &fault);
-> +	else
-> +		r = vcpu->arch.mmu->page_fault(vcpu, &fault);
-> +
-> +	if (r == RET_PF_EMULATE && fault.is_private) {
-> +		kvm_mmu_prepare_memory_fault_exit(vcpu, &fault);
-> +		r = -EFAULT;
-> +	}
-> +
-> +	if (fault.write_fault_to_shadow_pgtable && emulation_type)
-> +		*emulation_type |= EMULTYPE_WRITE_PF_TO_SP;
-> +
-> +	return r;
-> +}
-> +
-> +static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> +					u64 err, bool prefetch, int *emulation_type)
-> +{
-> +	int r;
-> +
->   	/*
->   	 * Async #PF "faults", a.k.a. prefetch faults, are not faults from the
->   	 * guest perspective and have already been counted at the time of the
-> @@ -326,18 +347,7 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->   	if (!prefetch)
->   		vcpu->stat.pf_taken++;
->   
-> -	if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) && fault.is_tdp)
-> -		r = kvm_tdp_page_fault(vcpu, &fault);
-> -	else
-> -		r = vcpu->arch.mmu->page_fault(vcpu, &fault);
-> -
-> -	if (r == RET_PF_EMULATE && fault.is_private) {
-> -		kvm_mmu_prepare_memory_fault_exit(vcpu, &fault);
-> -		return -EFAULT;
-> -	}
-> -
-> -	if (fault.write_fault_to_shadow_pgtable && emulation_type)
-> -		*emulation_type |= EMULTYPE_WRITE_PF_TO_SP;
-> +	r = __kvm_mmu_do_page_fault(vcpu, cr2_or_gpa, err, prefetch, emulation_type);
->   
->   	/*
->   	 * Similar to above, prefetch faults aren't truly spurious, and the
+diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+index 47e0be610bb6..e92da4da1b2a 100644
+--- a/arch/arm64/kernel/module.c
++++ b/arch/arm64/kernel/module.c
+@@ -141,11 +141,6 @@ void *module_alloc(unsigned long size)
+ 				    __func__);
+ 	}
+ 
+-	if (p && (kasan_alloc_module_shadow(p, size, GFP_KERNEL) < 0)) {
+-		vfree(p);
+-		return NULL;
+-	}
+-
+ 	/* Memory is intended to be executable, reset the pointer tag. */
+ 	return kasan_reset_tag(p);
+ }
+-- 
+2.43.0
 
 
