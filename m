@@ -1,57 +1,59 @@
-Return-Path: <linux-kernel+bounces-154240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C95008AD9CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:59:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F0658AD9D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:59:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 051F81C215FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:59:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57F3028509F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:59:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F126D158DBB;
-	Mon, 22 Apr 2024 23:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EAA713E418;
+	Mon, 22 Apr 2024 23:54:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SVlQFzw1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oVGkr2CQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31FD313E418;
-	Mon, 22 Apr 2024 23:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01DC158DD0;
+	Mon, 22 Apr 2024 23:54:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830089; cv=none; b=XPqDmsziKSCiDXth35+J+kRSuUzJb4Kac+yuSlVua7BMl14va4J1FxCdCuetMVzz5fhnkKJ/HAQXaiW1mjFU4v5idXz+etQf7fDnmzjLlYrWtkFYu8YqJDZgojlUbI0FJjMSOlaLlzpVkhv0FadAVjHlHGeXG6A5PvIoRppkwsk=
+	t=1713830092; cv=none; b=K0psDyYrNEtx9O20RYsS5bKENGmTMEw/fvLMMT9tUhBiCVNAEeMHezMAJNANpM3gB9rwI8TZNhY2cI5Wl2/OsQKAkHKe9KHry0OP7MesQjqkn/bJME3Rxm/p6a5EvQk6tJTmJuZhk0y/6w14FNj16WZX3b3R8KEby99Nfha2jKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830089; c=relaxed/simple;
-	bh=ltIROLwzh3NwESS782JFP356g9Ygs7Q1t/CRAXFVPoY=;
+	s=arc-20240116; t=1713830092; c=relaxed/simple;
+	bh=kvJOM7xjD44q/yAl8Oz0aNffaTe2DNveM77rzWrMYgQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qKncvk7aRRFD7JtmFbgTNIbjLeOZPKe1VKVAYjm/3XbJzQ/BmiLM5SNeLA7zFnb99u1/xiD6j2SaRvnOeMoJyL2+HB8b/DXIbA1HHU6WZSO2jOMnw5jc0im2stq/eumHouSRqPtKSSQ2H2g4ZmhPuPh01AnmRAsjUVv5n+mfTFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SVlQFzw1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D55EC32782;
-	Mon, 22 Apr 2024 23:54:48 +0000 (UTC)
+	 MIME-Version; b=NdO0mLvC0H3iYHTii8bF9NAF+ZsJbkz0qSmw/Sjfk5ggkm7o3QpeCJaE+wwkdUD6SlaL6U9J1WPTVceU97CJ5Vlv8iAEkhCTRQVvEBuY7pmxCgkbFg8llMxeapTneq1vmpl8anqpuTZaW8GsdK/QhMDl0JLA4Xblpe0xFnm1dlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oVGkr2CQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB58BC113CC;
+	Mon, 22 Apr 2024 23:54:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830089;
-	bh=ltIROLwzh3NwESS782JFP356g9Ygs7Q1t/CRAXFVPoY=;
+	s=k20201202; t=1713830091;
+	bh=kvJOM7xjD44q/yAl8Oz0aNffaTe2DNveM77rzWrMYgQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SVlQFzw1PXhleRKKRl1ZAPxbQtLQjnxAFf5oketqIfW4Wvioo5IAky/kLotchKv29
-	 RDL72C85n4nzeyFOTrYpmZAfC16MGCGJtr6FSZETq5BVXFT0OUyLCAbWWPBSIZxgv4
-	 q+VKEhJ7Cbt7bJmqrkGLFdqNydTeESfcIVVBaf4/mYcW/Wva4iLRCMGlrcS24kNY6w
-	 hx9tiFhvRPnPmGIkcqZV1lMwHQr6V0GesR7KXOPPhDvjtR1llLo/Uj/QRbYftQtbOy
-	 RSoIiv3MO2hgxugN10SALbF/n7Mu3T+8VxMbfcOIa7dKgHNa8EuLarMc2OAwgHhhpB
-	 w1K6Qk1e374fA==
+	b=oVGkr2CQMky/ycWoXRX3jnlmtzTIWoRcXvBDSg1nIZeMJ6QgQUjNi+KVYs2agHjgX
+	 IOLgrWKY3ieuzrxMgvGorH/UA+H3D3h7tTjskQnGpDP0nLsd1gAjG6pGkLQp+PZDjz
+	 Lo0LtGq+fyt3EMlV4fLIGQ3F87eWa28Xg5ZAXnbpqZG7+QW2tDEMMIFaIdZP4ofMj8
+	 nswZFFlNOP+jOPlM3AxjpahRpYLKMOYeVsheb5FjYJmIrGUINRO5um1T/LSLq5Nf3l
+	 xchhwUoR6zWMbjN/ETtwGzECzRe0GCrsLwuuZiqnbQHYPQ9D3jDfMztUkD1G+zj49k
+	 xTFO6bAgivECg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Justin Ernst <justin.ernst@hpe.com>,
-	Thomas Renninger <trenn@suse.de>,
-	Len Brown <len.brown@intel.com>,
+Cc: Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	lenb@kernel.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 23/43] tools/power/turbostat: Fix uncore frequency file string
-Date: Mon, 22 Apr 2024 19:14:09 -0400
-Message-ID: <20240422231521.1592991-23-sashal@kernel.org>
+	0x7f454c46@gmail.com,
+	davem@davemloft.net,
+	noureddine@arista.com,
+	dsahern@kernel.org,
+	fruggeri@arista.com
+Subject: [PATCH AUTOSEL 6.8 24/43] net: add copy_safe_from_sockptr() helper
+Date: Mon, 22 Apr 2024 19:14:10 -0400
+Message-ID: <20240422231521.1592991-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231521.1592991-1-sashal@kernel.org>
 References: <20240422231521.1592991-1-sashal@kernel.org>
@@ -66,51 +68,83 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.7
 Content-Transfer-Encoding: 8bit
 
-From: Justin Ernst <justin.ernst@hpe.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 60add818ab2543b7e4f2bfeaacf2504743c1eb50 ]
+[ Upstream commit 6309863b31dd80317cd7d6824820b44e254e2a9c ]
 
-Running turbostat on a 16 socket HPE Scale-up Compute 3200 (SapphireRapids) fails with:
-turbostat: /sys/devices/system/cpu/intel_uncore_frequency/package_010_die_00/current_freq_khz: open failed: No such file or directory
+copy_from_sockptr() helper is unsafe, unless callers
+did the prior check against user provided optlen.
 
-We observe the sysfs uncore frequency directories named:
-..
-package_09_die_00/
-package_10_die_00/
-package_11_die_00/
-..
-package_15_die_00/
+Too many callers get this wrong, lets add a helper to
+fix them and avoid future copy/paste bugs.
 
-The culprit is an incorrect sprintf format string "package_0%d_die_0%d" used
-with each instance of reading uncore frequency files. uncore-frequency-common.c
-creates the sysfs directory with the format "package_%02d_die_%02d". Once the
-package value reaches double digits, the formats diverge.
+Instead of :
 
-Change each instance of "package_0%d_die_0%d" to "package_%02d_die_%02d".
+   if (optlen < sizeof(opt)) {
+       err = -EINVAL;
+       break;
+   }
+   if (copy_from_sockptr(&opt, optval, sizeof(opt)) {
+       err = -EFAULT;
+       break;
+   }
 
-[lenb: deleted the probe part of this patch, as it was already fixed]
+Use :
 
-Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
-Reviewed-by: Thomas Renninger <trenn@suse.de>
-Signed-off-by: Len Brown <len.brown@intel.com>
+   err = copy_safe_from_sockptr(&opt, sizeof(opt),
+                                optval, optlen);
+   if (err)
+       break;
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20240408082845.3957374-2-edumazet@google.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/turbostat/turbostat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/sockptr.h | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 3438ad938d7e4..53b764422e804 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -2612,7 +2612,7 @@ unsigned long long get_uncore_mhz(int package, int die)
+diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
+index 307961b41541a..317200cd3a603 100644
+--- a/include/linux/sockptr.h
++++ b/include/linux/sockptr.h
+@@ -50,11 +50,36 @@ static inline int copy_from_sockptr_offset(void *dst, sockptr_t src,
+ 	return 0;
+ }
+ 
++/* Deprecated.
++ * This is unsafe, unless caller checked user provided optlen.
++ * Prefer copy_safe_from_sockptr() instead.
++ */
+ static inline int copy_from_sockptr(void *dst, sockptr_t src, size_t size)
  {
- 	char path[128];
+ 	return copy_from_sockptr_offset(dst, src, 0, size);
+ }
  
--	sprintf(path, "/sys/devices/system/cpu/intel_uncore_frequency/package_0%d_die_0%d/current_freq_khz", package,
-+	sprintf(path, "/sys/devices/system/cpu/intel_uncore_frequency/package_%02d_die_%02d/current_freq_khz", package,
- 		die);
- 
- 	return (snapshot_sysfs_counter(path) / 1000);
++/**
++ * copy_safe_from_sockptr: copy a struct from sockptr
++ * @dst:   Destination address, in kernel space. This buffer must be @ksize
++ *         bytes long.
++ * @ksize: Size of @dst struct.
++ * @optval: Source address. (in user or kernel space)
++ * @optlen: Size of @optval data.
++ *
++ * Returns:
++ *  * -EINVAL: @optlen < @ksize
++ *  * -EFAULT: access to userspace failed.
++ *  * 0 : @ksize bytes were copied
++ */
++static inline int copy_safe_from_sockptr(void *dst, size_t ksize,
++					 sockptr_t optval, unsigned int optlen)
++{
++	if (optlen < ksize)
++		return -EINVAL;
++	return copy_from_sockptr(dst, optval, ksize);
++}
++
+ static inline int copy_struct_from_sockptr(void *dst, size_t ksize,
+ 		sockptr_t src, size_t usize)
+ {
 -- 
 2.43.0
 
