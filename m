@@ -1,286 +1,189 @@
-Return-Path: <linux-kernel+bounces-153549-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49F3C8ACF82
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 163238ACF6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:31:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 759CEB26235
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:33:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 855FAB2181C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02678152169;
-	Mon, 22 Apr 2024 14:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2049541C72;
+	Mon, 22 Apr 2024 14:31:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="YOaMLEJT"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="kPlce+/D";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="WsAAiU4m"
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A6031A60;
-	Mon, 22 Apr 2024 14:33:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D8F10A24;
+	Mon, 22 Apr 2024 14:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713796419; cv=none; b=KTZLKQl9Klvg7jqL09kQrUj+x4gDuWUZ9Nlye4RS3iHKVyBDrrAC8yz45McAOcgzwWZJjrJFyeKVhw8K/A+xTVCEGw4bm+JBDBtSl9J2TL+y6f+OmN4J2RjMRJG/AldwAzFbdmeDwFr+fzjoUgqLET/ZncNQ27uRZozjgpjrwd4=
+	t=1713796295; cv=none; b=Nv7FQaPwo5t6uspKDp7AJ9tBoC4niKByB5yVf3UI31YSgfyxj/W9gVojasmWvpCqSXSTNal6RejM/A940d1sWP4jPneTo+nl06NDeJd4wqu7+YiCNQ8IxIZz4qY8gvZUkvoX4Y5EyJALPCS6gH37r1pS95MvJQs+6zk/wlhrrh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713796419; c=relaxed/simple;
-	bh=32lb28Z1lYWMZpAbjMEe1sXkQLPBbUMC5yKyb4I3/l8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=UM890dOtDHHFDrltqH1fTzdFuGv8Wb1yEKVhGVNk4haT/9m5ggkGW7xGTppoy4FFKgRX0eVxCAeItydhw+hFscUXhuIuGf7tdAsw3pw7ICv80IlP9ObfT1EbY0Xa3NYwWdbEveoCa5lEJIgOGF9cOUxq3m+zK9PJObpL74/gBrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=YOaMLEJT; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id EEAC812000E;
-	Mon, 22 Apr 2024 17:33:29 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru EEAC812000E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1713796409;
-	bh=pg3cuV5F8kgkTSzq1f+/Nqe/VS1vbp7/MOJbVVv5HY8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=YOaMLEJT20TTg+ZXgm8/NFw9WAnHbDAhFTWyUS7SFGsGckragCFd5biJ/qQ17+6m4
-	 EQp9NTBgkA9O+sYav117553xximaeyzNwJ0AqI0Mc9qVvYoG4gVgI7UcdSpHHp+CwD
-	 qOEXLHjPUy/DqAM0+cgCBPmxrgOgAFKx7Ma+mgqiYt/FJX2RqUD1Ctl+9LMCEKzZli
-	 R2PKOrgORnJrjVzq5S9tQdw93/6gRMIbGGvLdEOX8ljFa5x5Jq+l8PGx80zTlCO972
-	 KYwJlr3Oz3aeFjrdG29ggb3y+B36be74DF16MFyR7IpJx9AD5zzvIqeUMN/aOI7gwY
-	 SnuMXh0zQmLuA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Mon, 22 Apr 2024 17:33:29 +0300 (MSK)
-Received: from [172.28.225.118] (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 22 Apr 2024 17:33:29 +0300
-Message-ID: <0272deb1-5427-4805-a6f1-df223a5c14f5@salutedevices.com>
-Date: Mon, 22 Apr 2024 17:31:12 +0300
+	s=arc-20240116; t=1713796295; c=relaxed/simple;
+	bh=K7wyjRLcNUykgxF/QAusCyjr8sCsvz/O1Abzbu8bRAk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Pj0TWZ1no0R4BKY2ZlnOWrOA2b5zA/RlWwpweF+P+zxG7vIcXiHOk2KIDBgD6djD1o29RUEt0HwUE/Nd38vCn8e4nSjicDWFraXLXgV3Gq6vOJkDqVW8zHcNecZkKBO7iCXEvok0b3RYds/kqUbO8gs8xYKFRn/OCPpO90aN+4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=kPlce+/D; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=WsAAiU4m; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1713796293;
+	bh=K7wyjRLcNUykgxF/QAusCyjr8sCsvz/O1Abzbu8bRAk=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=kPlce+/DBdIm2PkNb3/TjC3aqq4tD528d1buooEpvGUHwCyeO57Muhae73VnPqmnh
+	 hY8AA1bXAuWaQKvES6D9L79ytyS+k88ewelMXVWQMRitzR8gWPTRUiFX/gwMGSM1Pv
+	 vbyjtbqvgpwAoOUOSwGM64DtDpPE9BYx3MyifrtM=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 18B201286027;
+	Mon, 22 Apr 2024 10:31:33 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id 7Q_oRP6_fizp; Mon, 22 Apr 2024 10:31:33 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1713796292;
+	bh=K7wyjRLcNUykgxF/QAusCyjr8sCsvz/O1Abzbu8bRAk=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=WsAAiU4maGb9/Xm8Xlyct31Rtt1Hel4GwRt8kpz/kf4EPfbsWneJblnewAfu3PLDQ
+	 gbkXp6dPq1pBSyBSLluMbb2qkbIBZ399WzOmogk7z6HsVHIxKsSwag+yCFuhnXRkJ4
+	 Iv8lf4qv0xHqlHdxtMDpzuxCjkfYD0Mdo1kNCFD4=
+Received: from [172.20.13.230] (wsip-184-177-54-3.hr.hr.cox.net [184.177.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 23B481285FD7;
+	Mon, 22 Apr 2024 10:31:32 -0400 (EDT)
+Message-ID: <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
+Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc: Mikko Rapeli <mikko.rapeli@linaro.org>, Ard Biesheuvel
+ <ardb@kernel.org>,  linux-efi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Lennart Poettering <lennart@poettering.net>,
+ linux-integrity@vger.kernel.org
+Date: Mon, 22 Apr 2024 10:31:30 -0400
+In-Reply-To: <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
+References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
+	 <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
+	 <ZiZhSfgeAdrbnaVL@nuoska>
+	 <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
+	 <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
+	 <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 4/6] dt-bindings: clock: meson: document A1 SoC
- audio clock controller driver
-Content-Language: en-US
-To: Jerome Brunet <jbrunet@baylibre.com>
-CC: Krzysztof Kozlowski <krzk@kernel.org>, Rob Herring <robh@kernel.org>, Neil
- Armstrong <neil.armstrong@linaro.org>, Michael Turquette
-	<mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Krzysztof
- Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Kevin
- Hilman <khilman@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-	Jiucheng Xu <jiucheng.xu@amlogic.com>, <linux-amlogic@lists.infradead.org>,
-	<linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-References: <20240419125812.983409-1-jan.dakinevich@salutedevices.com>
- <20240419125812.983409-5-jan.dakinevich@salutedevices.com>
- <20240419210949.GA3979121-robh@kernel.org>
- <b86f1058-da53-4a9c-bc12-e7297351b482@salutedevices.com>
- <48e9f035-390b-40c9-a3ad-49880c0b972d@kernel.org>
- <1jle55c0bl.fsf@starbuckisacylon.baylibre.com>
- <1jzftlakgg.fsf@starbuckisacylon.baylibre.com>
-From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-In-Reply-To: <1jzftlakgg.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184850 [Apr 22 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 18 0.3.18 b9d6ada76958f07c6a68617a7ac8df800bc4166c, {Tracking_smtp_not_equal_from}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;lore.kernel.org:7.1.1;100.64.160.123:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;sberdevices.ru:7.1.1,5.0.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/04/22 11:56:00
-X-KSMG-LinksScanning: Clean, bases: 2024/04/22 13:18:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/22 12:16:00 #24919134
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
 
-
-
-On 4/22/24 10:57, Jerome Brunet wrote:
+On Mon, 2024-04-22 at 16:54 +0300, Ilias Apalodimas wrote:
+> Hi James
 > 
-> On Mon 22 Apr 2024 at 09:16, Jerome Brunet <jbrunet@baylibre.com> wrote:
+> On Mon, 22 Apr 2024 at 16:38, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+> > 
+> > On Mon, 2024-04-22 at 16:32 +0300, Ilias Apalodimas wrote:
+> > > Hi all,
+> > > 
+> > > On Mon, 22 Apr 2024 at 16:08, Mikko Rapeli
+> > > <mikko.rapeli@linaro.org>
+> > > wrote:
+> > > > 
+> > > > Hi,
+> > > > 
+> > > > On Mon, Apr 22, 2024 at 08:42:41AM -0400, James Bottomley
+> > > > wrote:
+> > > > > On Mon, 2024-04-22 at 14:27 +0300, Mikko Rapeli wrote:
+> > > > > > Userspace needs to know if TPM kernel drivers need to be
+> > > > > > loaded and related services started early in the boot if
+> > > > > > TPM device is used and available.
+> > > > > 
+> > > > > This says what but not why.  We already have module
+> > > > > autoloading that works correctly for TPM devices, so why is
+> > > > > this needed?
+> > > > > 
+> > > > > We do have a chicken and egg problem with IMA in that the TPM
+> > > > > driver needs to be present *before* any filesystem, including
+> > > > > the one the TPM modules would be on, is mounted so executions
+> > > > > can be measured into IMA (meaning that if you use IMA the TPM
+> > > > > drivers must be built in) but this sounds to be something
+> > > > > different. However, because of the IMA problem, most
+> > > > > distributions don't end up compiling TPM drivers as modules
+> > > > > anyway.
+> > > > > 
+> > > > > Is what you want simply that tpm modules be loaded earlier?
+> > > > 
+> > > > Yes, ealier is the problem. In my specific testing case the
+> > > > machine is qemu arm64 with swtpm with EFI firmware for secure
+> > > > boot and TPM support.
+> > > > 
+> > > > Firmware uses TPM and does measurements and thus TPM event log
+> > > > is
+> > > > available on this machine and a bunch of other arm64 boards.
+> > > > Visible in early boot dmesg as TPMEventLog lines like:
+> > > > 
+> > > > [    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040
+> > > > RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb3b3040
+> > > > INITRD=0xeb3b2040 RNG=0xe5c0f040 MEMRESERVE=0xe5c0e040
+> > > > 
+> > > > Different boards use different TPM HW and drivers so compiling
+> > > > all these in is possible but a bit ugly. systemd recently
+> > > > gained support for a specific tpm2.target which makes TPM
+> > > > support modular and also works with kernel modules for some TPM
+> > > > use cases but not rootfs encryption.
+> > > > 
+> > > > In my test case we have a kernel+initramfs uki binary which is
+> > > > loaded by EFI firmware as a secure boot binary. TPM support on
+> > > > various boards is visible in devicetree but not as ACPI table
+> > > > entries. systemd currently detect TPM2 support either via ACPI
+> > > > table /sys/firmware/acpi/tables/TPM2 or TPM entry or via
+> > > > firmware measurement via
+> > > > /sys/kernel/security/tpm0/binary_bios_measurements
+> > > > .
+> > > 
+> > > One corner case worth noting here is that scanning the device
+> > > tree won't always work for non-ACPI systems... The reason is that
+> > > a firmware TPM (running in OP-TEE) might or might not have a DT
+> > > entry, since OP-TEE can discover the device dynamically and
+> > > doesn't always rely on a DT entry.
+> > > 
+> > > I don't particularly love the idea that an EventLog existence
+> > > automatically means a TPM will be there, but it seems that
+> > > systemd already relies on that and it does solve the problem we
+> > > have.
+> > 
+> > Well, quite. That's why the question I was interested in, perhaps
+> > not asked as clearly as it could be is: since all the TPM devices
+> > rely on discovery mechanisms like ACPI or DT or the like which are
+> > ready quite early, should we simply be auto loading the TPM drivers
+> > earlier?
 > 
->> On Sun 21 Apr 2024 at 20:14, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>
->>> On 20/04/2024 18:15, Jan Dakinevich wrote:
->>>>
->>>>
->>>> On 4/20/24 00:09, Rob Herring wrote:
->>>>> On Fri, Apr 19, 2024 at 03:58:10PM +0300, Jan Dakinevich wrote:
->>>>>> Add device tree bindings for A1 SoC audio clock and reset controllers.
->>>>>>
->>>>>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->>>>>> ---
->>>>>>
->>>>>> This controller has 6 mandatory and up to 20 optional clocks. To describe
->>>>>> this, I use 'additionalItems'. It produces correct processed-schema.json:
->>>>>>
->>>>>>   "clock-names": {
->>>>>>       "maxItems": 26,
->>>>>>       "items": [
->>>>>>           {
->>>>>>               "const": "pclk"
->>>>>>           },
->>>>>>           {
->>>>>>               "const": "dds_in"
->>>>>>           },
->>>>>>           {
->>>>>>               "const": "fclk_div2"
->>>>>>           },
->>>>>>           {
->>>>>>               "const": "fclk_div3"
->>>>>>           },
->>>>>>           {
->>>>>>               "const": "hifi_pll"
->>>>>>           },
->>>>>>           {
->>>>>>               "const": "xtal"
->>>>>>           }
->>>>>>       ],
->>>>>>       "additionalItems": {
->>>>>>           "oneOf": [
->>>>>>               {
->>>>>>                   "pattern": "^slv_sclk[0-9]$"
->>>>>>               },
->>>>>>               {
->>>>>>                   "pattern": "^slv_lrclk[0-9]$"
->>>>>>               }
->>>>>>           ]
->>>>>>       },
->>>>>>       "type": "array",
->>>>>>       "minItems": 6
->>>>>>   },
->>>>>>
->>>>>> and it behaves as expected. However, the checking is followed by
->>>>>> complaints like this:
->>>>>>
->>>>>>   Documentation/devicetree/bindings/clock/amlogic,a1-audio-clkc.yaml: properties:clock-names:additionalItems: {'oneOf': [{'pattern': '^slv_sclk[0-9]$'}, {'pattern': '^slv_lrclk[0-9]$'}]} is not of type 'boolean'
->>>>>>
->>>>>> And indeed, 'additionalItems' has boolean type in meta-schema. So, how to
->>>>>> do it right?
->>>>>
->>>>> The meta-schemas are written both to prevent nonsense that json-schema 
->>>>> allows by default (e.g additionalitems (wrong case)) and constraints to 
->>>>> follow the patterns we expect. I'm happy to loosen the latter case if 
->>>>> there's really a need. 
->>>>>
->>>>> Generally, most bindings shouldn't be using 'additionalItems' at all as 
->>>>> all entries should be defined, but there's a few exceptions. Here, the 
->>>>> only reasoning I see is 26 entries is a lot to write out, but that 
->>>>> wouldn't really justify it. 
->>>>
->>>> Writing a lot of entries don't scary me too much, but the reason is that
->>>> the existence of optional clock sources depends on schematics. Also, we
->>>
->>> Aren't you documenting SoC component, not a board? So how exactly it
->>> depends on schematics? SoC is done or not done...
->>>
->>>> unable to declare dt-nodes for 'clocks' array in any generic way,
->>>> because their declaration would depends on that what is actually
->>>> connected to the SoC (dt-node could be "fixed-clock" with specific rate
->>>> or something else).
->>>
->>> So these are clock inputs to the SoC?
->>>
->>
->> Yes, possibly.
->> Like an external crystal or a set clocks provided by an external codec
->> where the codec is the clock master of the link.
->>
->> This is same case as the AXG that was discussed here:
->> https://lore.kernel.org/linux-devicetree/20230808194811.113087-1-alexander.stein@mailbox.org/
->>
->> IMO, like the AXG, only the pclk is a required clock.
->> All the others - master and slave clocks - are optional.
->> The controller is designed to operate with grounded inputs
-> 
-> Looking again at the implementation of the controller, there is a clear
-> indication in patch 3 that the controller interface is the same as the
-> AXG and that the above statement is true.
-> > The AXG had 8 master clocks wired in. The A1 just has 5 - and 3 grounded
-> master clocks. This is why you to had to provide a mux input table to
-> skip the grounded inputs. You would not have to do so if the controller was
-> properly declared with the 8 master clock input, as it actually is.
-> 
+> This would be an elegant way to solve this and on top of that, we
+> have a single discovery mechanism from userspace -- e.g ls /dev/tpmX.
+> But to answer that we need more feedback from systemd. What 'earlier'
+> means? Autload it from the kernel before we go into launching the
+> initrd?
 
-For simplicity, I could make something like this in device tree:
+Right, so this is another timing problem: we can't autoload modules
+*before* they appear in the filesystem and presumably they're on the
+initrd, so auto loading must be post initrd mount (and init execution)
+but otherwise quite early?
 
-clocks = <&clk0,
-          &clk1,
-          &clk2,
-          &clk3,
-          &clk4,
-          0,
-          0,
-          0>
-clock-names = <"mst_in0",
-               "mst_in1",
-               "mst_in2"
-               "mst_in2"
-               "mst_in3"
-               "mst_in4"
-               "mst_in5"
-               "mst_in6"
-               "mst_in7">
+This might be quite a bit of work.  Logically, just moving the matching
+and loading code earlier might work, but we used to have a
+load_default_modules() at the end of init/main.c and it got removed
+(because it only eventually loaded elevator modules) everything is now
+loaded in it's various init routines, so to get, say, TPM ACPI modules
+loaded earlier, we'd have to run the ACPI device matching code earlier
+and so on for every other subsystem ...
 
-But I don't see in the doc that the last 3 clocks are grounded to
-anywhere. It will be just community's assumption about internals of the
-controller.
+James
 
-Anyway, I still don't understand what to do with external slv_* clocks.
-I can do the same as in example above: list slv_(s|lr)clk[0-9] in
-"clock-names" and fill the rest if "clocks" by "0" phandles.
-
-> It also shows that it is a bad idea to name input after what is coming
-> in (like you do with "dds_in" or "fclk_div2") instead of what they
-> actually are like in the AXG (mst0, mst1, etc ...)
-> 
-
-I agree, these are not the best names.
-
->>
->>>>
->>>> By the way, I don't know any example (neither for A1 SoC nor for other
->>>> Amlogic's SoCs) where these optional clocks are used, but they are
->>>> allowed by hw.
->>
->> Those scenario exists and have been tested. There is just no dts using
->> that upstream because they are all mostly copy of the AML ref design.
->>
->>>>
->>>> This is my understanding of this controller. I hope, Jerome Brunet will
->>>> clarify how it actually works.
->>>
->>
->> I think the simpliest way to deal with this to just list all the clocks
->> with 'minItems = 1'. It is going be hard to read with a lot of '<0>,' in
->> the DTS when do need those slave clocks but at least the binding doc
->> will be simple.
->>
->>> Best regards,
->>> Krzysztof
->>
->> If you are going ahead with this, please name the file
->> amlogic,axg-audio-clkc.yaml because this is really the first controller
->> of the type and is meant to be documented in the same file.
->>
->> You are free to handle the conversion of the AXG at the same time if
->> you'd like. It would be much appreciated if you do.
-> 
-> 
-
--- 
-Best regards
-Jan Dakinevich
 
