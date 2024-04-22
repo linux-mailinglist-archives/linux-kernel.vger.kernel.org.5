@@ -1,87 +1,119 @@
-Return-Path: <linux-kernel+bounces-153224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41FD88ACB18
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:45:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF34A8ACB23
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:45:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C261BB23F36
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:45:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AFE42829FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6E614A097;
-	Mon, 22 Apr 2024 10:41:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B42AE145FE8;
+	Mon, 22 Apr 2024 10:44:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eTEtvMCU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nLTRTpWe"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 346F114601A;
-	Mon, 22 Apr 2024 10:41:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749E31448E5;
+	Mon, 22 Apr 2024 10:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713782471; cv=none; b=hQRrq8QZ9QUqiLCV6YkZmgd6ZJ/sO4f+H6DmKcxy324Y5mP3MIOwXSTXAGnMXXDYJ3/i7Jyup9MoiCEdybdykcPoEcB88p8clIJpOcfSk+/pdZ35z5vcFETJxYnDQ6Yx7BTI0sKCgnguOY8pClkBhDXHGY3DE1JAiBxbNhpHyRs=
+	t=1713782684; cv=none; b=Gjsr/5xPgfBP4CgZ83QpuyiYE5ZJdsBuGIvT+PKSIl2Fnd7QlP9mPfaXIh6UvV4b0fxDnsPo3i/WllbksKkjQ7MauZ9xrKCueI8nxv0NlkY/UTtKBwP0r2EpLRfK8lYltYd8/PCLRJ3qZaS88yPwedK+2y/+++q/x2Up0tvy8lA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713782471; c=relaxed/simple;
-	bh=UMMhTPVp5+n0u8R/1MYYZbZJH5bo2RsgLFP6+90kcZU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n3plsA8kqh6m4zHd39PnCS6ebRJhtY/dQTs5umiNTKmYQHeiJFlQ1NH/qhNJzj9PYZvAAU2jcT8SgLrPNtQ8lnQjXreMmIm8KcKakQv4fDyNA0IfUYDV3U2m+kwFTx88+FFdhddkXuXKoDFI70jFqgwtmXZi6qlwdpulpgKNuH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eTEtvMCU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76096C113CC;
-	Mon, 22 Apr 2024 10:41:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713782470;
-	bh=UMMhTPVp5+n0u8R/1MYYZbZJH5bo2RsgLFP6+90kcZU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eTEtvMCU2BrK3aMpIPMeiBUYghzL1ra+t5NpqdGPTHw3P6pla/D5r3u4bAP4kDl6N
-	 IKchv3pOL4ENZKUgH1XtVi7NZXNaKLLluh+kb+i0q+8y4QdFtA3zQt/GNjB74Vr990
-	 9dLfz5cQ7zuPgjzu7LWsas8TCmcP/FwnryKEdRYfqpkhwl8ginFjS5oi1BFhYOls7X
-	 1pd6sgALzOkRjk4LVQypL97PIIBLjc5YOTj2aN9n5b1q5tb0uJa2bXUJJzpupB+fo7
-	 kIQ3SdTtzO2PK/519YQEotYdH2gMy0uYvogdskoRuunTcweFSie8gtH5ibYgLDXAct
-	 a9hoscm3JEYsg==
-Date: Mon, 22 Apr 2024 12:41:08 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org,
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH 08/10] rcu: Implement PCPU_RCU_PREEMPT_COUNT framework
-Message-ID: <ZiY-xItV0IMrGDQH@localhost.localdomain>
-References: <20240328075318.83039-1-jiangshanlai@gmail.com>
- <20240328075318.83039-9-jiangshanlai@gmail.com>
+	s=arc-20240116; t=1713782684; c=relaxed/simple;
+	bh=des0NWLn+6FveNqXXCBGPPrBjU5248e4NUzNOpnlZA4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=p9WWPSzvp8iLkFDdoI9WZA0qB2Ydr83hB6xlhWyxvgwWdGXPzx6RkzVEkWY+ZONTHX0e4BAT83Z0N4rY6FuLfuRlt4lV5yn/xZW7Nr9sUXM3Fbp+XaH4JBJwCSbh9AXU0pvWK9OGkIrtZ7eZ43QDLJAHytSQFPvGOpElfS0U2Jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nLTRTpWe; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713782682; x=1745318682;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=des0NWLn+6FveNqXXCBGPPrBjU5248e4NUzNOpnlZA4=;
+  b=nLTRTpWenFVeKLTeXu3Ak6Az/CeJESxib95rSSnSf55s8lv2bZsEfrYf
+   bbN/tZA6tb1Phvjj5itrIgFC4hS4oPc4DvBXsaB2MoKkx9WTfTO2jJx7E
+   v0hvgtiX49ZMptyJ+NRTkKxxz9WefEdMiippntgsUYUiBQz89azWhozTm
+   GO+ojKcMbzjb9lsnPHZXeqoD7N7rtf8KLIbveL6heCoXwe11+2IWlY0AM
+   0bBHGps4bkvU+Km+enStAZ1DXCRdS0QiH2dCcmH6Tia2TsamN2qgKy3zi
+   mHG1wU0NPhKshgOd3oZDDd+sPAcahxCSgGSrIEXYU1BmdEgOY+57kTZ5+
+   Q==;
+X-CSE-ConnectionGUID: R1BoQzNbQsKsEjzi7qtRSA==
+X-CSE-MsgGUID: RjJ+dXwSTTev91ATTIg01A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="31805099"
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="31805099"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 03:44:42 -0700
+X-CSE-ConnectionGUID: tIgN3klHTU+sqNk5aVOrkw==
+X-CSE-MsgGUID: hxbLBlsATFC8Q6tiDAT3ig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="24491113"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.217.50])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 03:44:38 -0700
+Message-ID: <d39ab4b9-ad43-4d4a-9fc6-3133d761c79b@intel.com>
+Date: Mon, 22 Apr 2024 13:44:32 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/1] mmc: sdhci-of-dwcmshc: enhance framework
+To: Chen Wang <unicorn_wang@outlook.com>, Chen Wang <unicornxw@gmail.com>,
+ ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, jszhang@kernel.org, dfustini@baylibre.com,
+ yifeng.zhao@rock-chips.com, shawn.lin@rock-chips.com, chao.wei@sophgo.com,
+ haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com, tingzhu.wang@sophgo.com,
+ guoren@kernel.org, inochiama@outlook.com
+References: <cover.1713257181.git.unicorn_wang@outlook.com>
+ <MA0P287MB28226B9C954F3DBD9B5E29A5FE122@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <MA0P287MB28226B9C954F3DBD9B5E29A5FE122@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240328075318.83039-9-jiangshanlai@gmail.com>
 
-Le Thu, Mar 28, 2024 at 03:53:16PM +0800, Lai Jiangshan a �crit :
-> From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+On 22/04/24 12:01, Chen Wang wrote:
+> hi， any comments on this patch?
 > 
-> When the arch code provides HAVE_PCPU_RCU_PREEMPT_COUNT and the
-> corresponding functions, rcu_preempt core uses the functions to
-> implement rcu_read_[un]lock, rcu_preempt_depth(), special bits,
-> switching and so on.
+> Another patch [1] has dependency on this one, so I would hope someone can review and comment this one first, thanks.
 
-The changelogs don't explain the reason for all of that. I'm guessing
-from the cover letter that the purpose is to save some instructions on
-calls to rcu_read_unlock() due to inline calls and per CPU optimized
-instructions but it's hard to guess from the actual individual patches,
-which are meants to be the actual git records.
+Does not apply.  Please re-base on mmc 'next' branch of:
 
-Thanks.
+	git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git
+
+> 
+> Link：https://lore.kernel.org/linux-riscv/cover.1713258948.git.unicorn_wang@outlook.com/ [1]
+> 
+> On 2024/4/16 17:43, Chen Wang wrote:
+>> From: Chen Wang <unicorn_wang@outlook.com>
+>>
+>> When I tried to add a new soc to sdhci-of-dwcmshc, I found that the
+>> existing driver code could be optimized to facilitate expansion for
+>> the new soc.
+>>
+>> Thanks,
+>> Chen
+>>
+>> ---
+>>
+>> Chen Wang (1):
+>>    mmc: sdhci-of-dwcmshc: add callback framework for expansion
+>>
+>>   drivers/mmc/host/sdhci-of-dwcmshc.c | 185 ++++++++++++++++------------
+>>   1 file changed, 107 insertions(+), 78 deletions(-)
+>>
+>>
+>> base-commit: 4cece764965020c22cff7665b18a012006359095
+
 
