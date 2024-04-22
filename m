@@ -1,227 +1,150 @@
-Return-Path: <linux-kernel+bounces-153257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58F108ACB95
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:00:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93D5A8ACBB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:12:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 858FA1C220BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:00:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49E631F21CDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41A314601A;
-	Mon, 22 Apr 2024 11:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 201A214659F;
+	Mon, 22 Apr 2024 11:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="n0pOiHkI"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="mqmUocXs"
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F2F145FF1;
-	Mon, 22 Apr 2024 11:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82D2481DD;
+	Mon, 22 Apr 2024 11:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713783644; cv=none; b=nvNbo7EVnW3lHhjCcpVAuPUOjT39kTsV5iTm+xnv3nHTIYPi1rnA+fsqIUQGL4t44Fwoof/kWD6RacB7FpP51g9ax70QjvhR80CfBky94kgkklcYEZ/pXBjg3B6NyqmzGvAg06kLtPiBcJavAnaIP7aXZaZebEoKiRtWNVEB8iE=
+	t=1713784325; cv=none; b=oFbM8sGy9hUBSHaSYcQzw/9qeer5nEX85sC3TTK9oAG+Tk+UQXQtAfbdXhyNicgHhdr+N/6JYUZ1VBknvm3GxZql2MCZ06jlC4VXmgPDMqVAWAw7qy2/exOZCASm8E3TduG78h3TqRnjMZ19g8zbalJOunhA6fdFeceGOfqCB7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713783644; c=relaxed/simple;
-	bh=ZZ8QMbqRyZqN/oUEY8U6N/CLMdV0E5Cb9XS5lvcKh20=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=msNh8Q0TG+3D7/maXUlt8sF3KU+3oNIKI5rNTRuZCcGSD0v8seMWu1doDOvPjcGF/N3sVNqnkayMp3KCYbi3oke1ZE25jNDKx0gkfQjYLkDYU+I/cG5vgQeXQslNzsRbWtFV/4bWkopGFWgtDoTGcmJJvDCmupPWiQP+7PNmMis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=n0pOiHkI; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43M82cWF004075;
-	Mon, 22 Apr 2024 11:00:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=oTZmNqFjasu6mkWngjJYwcaE1l2w78Wmxb36VACwtRQ=; b=n0
-	pOiHkIH5bpvFZnwBAP51bGMd4RnyNAcyfZba87wQes4554eQgdKPN4O3jjkXbqEK
-	RljCKTeiLdzA7BdFR0Q4E18HzO5cFGMY9ihiJu8ZQn8vYic0tgh1oRa8aHo7FhGP
-	jud9CHhpYHcbnpRZgbntLtQaXa/QKQ7DCzrMMXvuLpw7sEmBGkhum1pBFlMn4ZK2
-	YWayDf2iCjceZGrC8bsQsRI0EVlOfjqhsepVn6Q2MZ3CaHYH1TjX7/bVr2Jc3mED
-	W0s+5/Zngbg54XWN+0ycw4S7g0QyaFMQXXzti425QiAkUPEkD/XYDHrD7Y2aJ98o
-	9cWhTTxR4eIEyYMF+wsA==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnm1bgex5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 11:00:37 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43MB0ZaI015083
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 11:00:35 GMT
-Received: from [10.218.5.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 22 Apr
- 2024 04:00:29 -0700
-Message-ID: <73c5ffca-9275-437c-a49e-ef3251c8d313@quicinc.com>
-Date: Mon, 22 Apr 2024 16:30:26 +0530
+	s=arc-20240116; t=1713784325; c=relaxed/simple;
+	bh=dAPocxet1Oe850nbPG3d6+xiuiTaILe0wrclc0bquhQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WOwJfAi7g1qpOInmGfKF2mAOZxZnPk10zlgAW1W94PxKqQa2xVBKuM2bytiCay8uzhEYQyMESY9/NUx3rdO0OcnY48TGnjEbhvVn+9o5lmg/cvN8o0mqQFnlFCMGIIIbyC69K7nwMfstEL3RxRsdV1PF7sAiSQmq0NKVPDTLZ0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=mqmUocXs; arc=none smtp.client-ip=80.241.56.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4VNMnK3Nksz9svZ;
+	Mon, 22 Apr 2024 13:03:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1713783829;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gcKvfN037TA7hZSa4d4wVaW0uvAV7xIvSo/LgCapk+E=;
+	b=mqmUocXsR3w50nQdtWP075s0eXt8c5DeM+rfi3aUvt846NgO+qnHJo4yQ7QUkHZi+6M1XA
+	oJO0688sir/I+srkC0WLRug6oq1qkVdQAPXuW2ps6tHah0BNuNNq8jh+9+Oy68WDLOiO3o
+	H2fpseCkE5oUuy5GwzGd4m40QKDQ/6Da8cnRhlU0QX17oh6vxC18/hmPqh9nMI3Vq3nyOW
+	lvs5sKHvUnLlcjKR0ZYBIGV+xraV5tvf4//IYSXPvFSP3Sfr3X88gVh5VQBcLAPsMws0Tc
+	0EsYRbVASkL/dJ/7VA9ofv/A1nGnv3IhjqN1K+E+RQaxfTQGpL8w0sogSRT+rw==
+Date: Mon, 22 Apr 2024 13:03:45 +0200
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	gost.dev@samsung.com, chandan.babu@oracle.com, hare@suse.de, mcgrof@kernel.org, 
+	djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	david@fromorbit.com, akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH v3 05/11] readahead: allocate folios with
+ mapping_min_order in readahead
+Message-ID: <i4c6xe6jdei2to6kah4kgjehpjlanaqfulju2jzsu5ny2gmegv@2b2oh44oilnj>
+References: <20240313170253.2324812-1-kernel@pankajraghav.com>
+ <20240313170253.2324812-6-kernel@pankajraghav.com>
+ <ZgHJxiYHvN9DfD15@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 RESEND 1/6] dt-bindings: clock: qcom: Add SM8650 video
- clock controller
-To: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
-        "Satya
- Priya Kakitapalli" <quic_skakitap@quicinc.com>,
-        Ajit Pandey
-	<quic_ajipan@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
-References: <20240321092529.13362-1-quic_jkona@quicinc.com>
- <20240321092529.13362-2-quic_jkona@quicinc.com>
- <CAA8EJppsMchthssctEgUf9q45j84cSLQ78Ur+vaA0Z7GEQi8+g@mail.gmail.com>
- <725471b1-46a9-43b0-bede-33f01c953d51@quicinc.com>
- <c3ea22ed-5750-438f-89d5-e56f908ba835@linaro.org>
-Content-Language: en-US
-From: Jagadeesh Kona <quic_jkona@quicinc.com>
-In-Reply-To: <c3ea22ed-5750-438f-89d5-e56f908ba835@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: OMj_lSeiBz4lQRj4pSeQCMMgsc6dOx33
-X-Proofpoint-ORIG-GUID: OMj_lSeiBz4lQRj4pSeQCMMgsc6dOx33
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-22_09,2024-04-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- mlxscore=0 phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404220049
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZgHJxiYHvN9DfD15@casper.infradead.org>
 
-
-
-On 4/19/2024 2:31 AM, Vladimir Zapolskiy wrote:
-> Hello Jagadeesh,
+> > @@ -515,7 +562,7 @@ void page_cache_ra_order(struct readahead_control *ractl,
+> >  		if (index & ((1UL << order) - 1))
+> >  			order = __ffs(index);
+> >  		/* Don't allocate pages past EOF */
+> > -		while (index + (1UL << order) - 1 > limit)
+> > +		while (order > min_order && index + (1UL << order) - 1 > limit)
+> >  			order--;
 > 
-> On 3/25/24 08:07, Jagadeesh Kona wrote:
->>
->>
->> On 3/21/2024 6:42 PM, Dmitry Baryshkov wrote:
->>> On Thu, 21 Mar 2024 at 11:26, Jagadeesh Kona <quic_jkona@quicinc.com> 
->>> wrote:
->>>>
->>>> Extend device tree bindings of SM8450 videocc to add support
->>>> for SM8650 videocc. While it at, fix the incorrect header
->>>> include in sm8450 videocc yaml documentation.
->>>>
->>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
->>>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>> ---
->>>>    .../devicetree/bindings/clock/qcom,sm8450-videocc.yaml    | 4 +++-
->>>>    include/dt-bindings/clock/qcom,sm8450-videocc.h           | 8 
->>>> +++++++-
->>>>    2 files changed, 10 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git 
->>>> a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml 
->>>> b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
->>>> index bad8f019a8d3..79f55620eb70 100644
->>>> --- a/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
->>>> +++ b/Documentation/devicetree/bindings/clock/qcom,sm8450-videocc.yaml
->>>> @@ -8,18 +8,20 @@ title: Qualcomm Video Clock & Reset Controller on 
->>>> SM8450
->>>>
->>>>    maintainers:
->>>>      - Taniya Das <quic_tdas@quicinc.com>
->>>> +  - Jagadeesh Kona <quic_jkona@quicinc.com>
->>>>
->>>>    description: |
->>>>      Qualcomm video clock control module provides the clocks, resets 
->>>> and power
->>>>      domains on SM8450.
->>>>
->>>> -  See also:: include/dt-bindings/clock/qcom,videocc-sm8450.h
->>>> +  See also:: include/dt-bindings/clock/qcom,sm8450-videocc.h
->>>
->>> This almost pleads to go to a separate patch. Fixes generally should
->>> be separated from the rest of the changes.
->>>
->>
->> Thanks Dmitry for your review.
->>
->> Sure, will separate this into a separate patch in next series.
->>
->>>>
->>>>    properties:
->>>>      compatible:
->>>>        enum:
->>>>          - qcom,sm8450-videocc
->>>>          - qcom,sm8550-videocc
->>>> +      - qcom,sm8650-videocc
->>>>
->>>>      reg:
->>>>        maxItems: 1
->>>> diff --git a/include/dt-bindings/clock/qcom,sm8450-videocc.h 
->>>> b/include/dt-bindings/clock/qcom,sm8450-videocc.h
->>>> index 9d795adfe4eb..ecfebe52e4bb 100644
->>>> --- a/include/dt-bindings/clock/qcom,sm8450-videocc.h
->>>> +++ b/include/dt-bindings/clock/qcom,sm8450-videocc.h
->>>> @@ -1,6 +1,6 @@
->>>>    /* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
->>>>    /*
->>>> - * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights 
->>>> reserved.
->>>> + * Copyright (c) 2023-2024, Qualcomm Innovation Center, Inc. All 
->>>> rights reserved.
->>>>     */
->>>>
->>>>    #ifndef _DT_BINDINGS_CLK_QCOM_VIDEO_CC_SM8450_H
->>>> @@ -19,6 +19,11 @@
->>>>    #define 
->>>> VIDEO_CC_MVS1C_DIV2_DIV_CLK_SRC                                9
->>>>    #define VIDEO_CC_PLL0                                          10
->>>>    #define VIDEO_CC_PLL1                                          11
->>>> +#define 
->>>> VIDEO_CC_MVS0_SHIFT_CLK                                        12
->>>> +#define VIDEO_CC_MVS0C_SHIFT_CLK                               13
->>>> +#define 
->>>> VIDEO_CC_MVS1_SHIFT_CLK                                        14
->>>> +#define VIDEO_CC_MVS1C_SHIFT_CLK                               15
->>>> +#define VIDEO_CC_XO_CLK_SRC                                    16
->>>
->>> Are these values applicable to sm8450?
->>>
->>
->> No, the shift clocks above are part of SM8650 only. To reuse the
->> existing SM8550 videocc driver for SM8650 and to register these shift
->> clocks for SM8650, I added them here.
->>
+> This raises an interesting question that I don't know if we have a test
+> for.  POSIX says that if we mmap, let's say, the first 16kB of a 10kB
+> file, then we can store into offset 0-12287, but stores to offsets
+> 12288-16383 get a signal (I forget if it's SEGV or BUS).  Thus far,
+> we've declined to even create folios in the page cache that would let us
+> create PTEs for offset 12288-16383, so I haven't paid too much attention
+> to this.  Now we're going to have folios that extend into that range, so
+> we need to be sure that when we mmap(), we only create PTEs that go as
+> far as 12287.
 > 
-> In such case I'd strongly suggest to add a new qcom,sm8650-videocc.h file,
-> and do #include qcom,sm8450-videocc.h in it, thus the new header will be
-> really a short one.
-> 
-> This will add pristine clarity.
+> Can you check that we have such an fstest, and that we still pass it
+> with your patches applied and a suitably large block size?
 > 
 
-Thanks Vladimir for your suggestion. I believe adding a comment for 
-these set of clocks should be sufficient to indicate these clocks are 
-applicable only for SM8650, I can add the required comment and post the 
-next series. Please let me know if this works?
+So the mmap is giving the correct SIGBUS error when we try to do this:
+dd if=/dev/zero of=./test bs=10k count=1; 
+xfs_io -c "mmap -w 0 16384" -c "mwrite 13000 10" test
 
-Thanks,
-Jagadeesh
+Logs on bs=64k ps=4k system:
+root@debian:/media/test# dd if=/dev/zero of=./test bs=10k count=1;
+root@debian:/media/test# du -sh test 
+64K     test
+root@debian:/media/test# ls -l --block-size=k test 
+-rw-r--r-- 1 root root 10K Apr 22 10:42 test
+root@debian:/media/test# xfs_io -c "mmap  0 16384" -c "mwrite 13000 10" test
+Bus error
+
+The check in filemap_fault takes care of this:
+
+max_idx = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+if (unlikely(index >= max_idx))
+        return VM_FAULT_SIGBUS;
+
+The same operation for read should also give a bus error, but it didn't.
+Further investigation pointed out that the fault_around() does not take
+this condition into account for LBS configuration. When I set fault_around_bytes
+to 4096, things worked as expected as we skip fault_around for reads. 
+
+I have a patch that return SIGBUS also for the following read operation:
+dd if=/dev/zero of=./test bs=10k count=1; 
+xfs_io -c "mmap -r 0 16384" -c "mread 13000 10" test
+
+This is the patch I have for now that fixes fault_around() logic for LBS
+configuration:
+
+diff --git a/mm/filemap.c b/mm/filemap.c
+index f0c0cfbbd134..259531dd297b 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3600,12 +3600,15 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
+        }
+        do {
+                unsigned long end;
++               unsigned long i_size;
+ 
+                addr += (xas.xa_index - last_pgoff) << PAGE_SHIFT;
+                vmf->pte += xas.xa_index - last_pgoff;
+                last_pgoff = xas.xa_index;
+                end = folio_next_index(folio) - 1;
+-               nr_pages = min(end, end_pgoff) - xas.xa_index + 1;
++               i_size = DIV_ROUND_UP(i_size_read(mapping->host),
++                                     PAGE_SIZE) - 1;
++               nr_pages = min3(end, end_pgoff, i_size) - xas.xa_index + 1;
+ 
+                if (!folio_test_large(folio))
+                        ret |= filemap_map_order0_folio(vmf,
+
+I will send a new version of the series this week after doing some more
+testing.
 
