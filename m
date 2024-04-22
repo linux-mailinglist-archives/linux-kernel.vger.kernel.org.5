@@ -1,72 +1,45 @@
-Return-Path: <linux-kernel+bounces-152933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E4AE8AC652
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA0F08AC675
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:14:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1E1CB2128D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:08:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 557A7B221ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:14:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64CD950276;
-	Mon, 22 Apr 2024 08:08:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mVeglYmd"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4284E1D5;
-	Mon, 22 Apr 2024 08:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996C051009;
+	Mon, 22 Apr 2024 08:13:22 +0000 (UTC)
+Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB704E1D1;
+	Mon, 22 Apr 2024 08:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.161.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773302; cv=none; b=EfFYfBqYrvpli987dpBvRZx69k+WTL/wbn69UXjgDps3lvaq2ZjoSmwS9icrmxpMHEliNdHRBoumrdkfPg9/5KDfPxfcZI1A4zMOzByzIm2HqSVvZ5PZq7OYPIJXGXPm5ZXGhiY6IZ1kJeljLroKZZ4eYr8fCx48zM2L/IF184k=
+	t=1713773602; cv=none; b=EDd6eHYQj5NYvSHqxPPMc2hd/+I7yo99Yjk+2FbVYP/ojOCU1u68Ir0JCW3ICdSDdG67w0Oa4T8RiFcfA8b2TxMhwrjR8MW/BiftDvIgIM03khZRvKuP67cqBQTkbdLnop1gac0vABjBsIWKNTlxpQRVOF0nF8sZDzDCHPq+/B0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773302; c=relaxed/simple;
-	bh=PvX3UAI3pKBNO7+QP/77uw0Vs7P6rs6XY2pmKssYcYo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kUNry6D1AqZBDEq1fcxcFYGWjVP5JshXRkJcv5CGqzX9W7vnUorJk5WyiE/koWybI/HJWtQtVkZ4EVa/6wHUyR4CbJ+ApTJZswrypDmJIrFbCa3FEhztNeH86oIJomiMLEysYqD7Pwse6rBQUhr89nIUnd1/3xP7eAGalFquMH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mVeglYmd; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5e42b4bbfa4so2339799a12.1;
-        Mon, 22 Apr 2024 01:08:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713773300; x=1714378100; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=R8U35ePrc9QgPQW1W05XfxAhRzQZ8Z2BPPc+gusk8hs=;
-        b=mVeglYmdjc4e2HKuaUHRtmPa0BEyLr4el/23Yqju6hxakgS8zrxB4kU/4Z40tLLqIJ
-         8O0JaqDhUFsJ8JHAa0fynl2wd05qaVcAQItUZedu1cy7GfxODFhKiAPdftlO5CBCUYCW
-         f7/Z2iLN571kmq6BluADKhTBQyx699lcy79HMRIIyBjn1vmaivbNvQAzxYQ+/LZtHbjx
-         T70ivWBFVH5SaXAwtbnuy2T/2YB90/mFe+CTzRVDxQhZykLypkqpo+AnZ7HLqG89hDHy
-         Vehb/CivwMhmFNAFGdsxUQxP6HdEBOsOA8CyogBneF1d9WIeC/X7fcXOm3eJ1Vy9aoUr
-         723A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713773300; x=1714378100;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R8U35ePrc9QgPQW1W05XfxAhRzQZ8Z2BPPc+gusk8hs=;
-        b=QarH1McH2RBGjXeefDbu/U4pAk3y6GznOiTDOy17rPwHrMpPtrneV/MvFH27TS1Ldr
-         8ojXfQzSbb9uB4D8i/qwVTRKFLoTvoP9Ki8vxc9cTzUZLD2tXeWrWKdoARLw0g6RRCHz
-         PeNPM0cGwSZsknOq07Qum8e9D1IQRA9BmpfGJsueFOl+hRg7w11gj+nnLkVxEN2YIlbS
-         88+NdW83fTH6WYU05uHHlY4nk1Vs/x9y9RkzUBhZvRr3y+SJJomyGrtjuWy0tqDbQ1qb
-         x6zjsIWZNi0/GCS5Z8qaMeqok25TYApwlAA0rrCRaKslrvycFqMjeHu7A+oResD/MMwZ
-         IcBg==
-X-Forwarded-Encrypted: i=1; AJvYcCWhjYwcusWAaE0uJZo12Ik/yDOlv3KNfQP/i79cpMw+vNiYyj+2c3S6ITaw7qzjLTPGPPJ5mYW6puTag3Wu37MJkMD6mglqmKSgtl7LABKlbjvqPy5qygnI0oKcgG/rLvSPOEakTagNQyjS3B3IAyE0QHWmJ47lsCfuiyAsxgCW7AfR6g==
-X-Gm-Message-State: AOJu0YwvcjR9m6NjOFHk3JFoWQtyr3ZjZBq89UPhDhvr5PMpNxB31gZ4
-	7ttZdOvIEF5tIHO+IO1ds0avb/qQH8CXdaj4pKWSTG9ePeHUOPy0
-X-Google-Smtp-Source: AGHT+IG67lFmX36ufIM8YRR3lOsp7+DgbGzlYeIKQFqwShCOFjnLcAyOF/T7LDXTqsiUFwpz/9AzgQ==
-X-Received: by 2002:a05:6a20:3d8c:b0:1ab:82fe:910b with SMTP id s12-20020a056a203d8c00b001ab82fe910bmr12453549pzi.58.1713773300194;
-        Mon, 22 Apr 2024 01:08:20 -0700 (PDT)
-Received: from localhost.localdomain ([120.229.49.236])
-        by smtp.gmail.com with ESMTPSA id hi2-20020a17090b30c200b002a22ddac1a1sm7118809pjb.24.2024.04.22.01.08.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 01:08:19 -0700 (PDT)
-From: Howard Chu <howardchu95@gmail.com>
-To: peterz@infradead.org
-Cc: mingo@redhat.com,
+	s=arc-20240116; t=1713773602; c=relaxed/simple;
+	bh=Yo3CdUYWhubx1dZ2fMPbosDHiR9hiTW8Sw+icVupxOk=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=W4VyK4Chx4WJYCNbaqj6zOzisTD68nPWjNIFEfmnxZRPPj02AWqEDtBqwEL4hJWUNlopnKq9r1e639aoLQ3qWM95nC+/WtKh2XsegRHXHWy8QG7/fgsNcsgBk/8SVUBj32Al03FgNfWCdp4JPzuXqFWWQ8REXVRrJknDUmpaUZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eswincomputing.com; spf=pass smtp.mailfrom=eswincomputing.com; arc=none smtp.client-ip=162.243.161.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eswincomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eswincomputing.com
+Received: from localhost.localdomain (unknown [10.12.130.31])
+	by app1 (Coremail) with SMTP id TAJkCgBH6OSeGyZmSBIIAA--.61881S4;
+	Mon, 22 Apr 2024 16:11:11 +0800 (CST)
+From: Shenlin Liang <liangshenlin@eswincomputing.com>
+To: anup@brainfault.org,
+	atishp@atishpatra.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	peterz@infradead.org,
+	mingo@redhat.com,
 	acme@kernel.org,
 	namhyung@kernel.org,
 	mark.rutland@arm.com,
@@ -74,270 +47,100 @@ Cc: mingo@redhat.com,
 	jolsa@kernel.org,
 	irogers@google.com,
 	adrian.hunter@intel.com,
-	kan.liang@linux.intel.com,
-	yangjihong1@huawei.com,
-	zegao2021@gmail.com,
-	leo.yan@linux.dev,
-	ravi.bangoria@amd.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Howard Chu <howardchu95@gmail.com>
-Subject: [PATCH v1 1/4] perf record: Dump off-cpu samples directly
-Date: Mon, 22 Apr 2024 16:08:27 +0800
-Message-ID: <20240422080827.1918034-1-howardchu95@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	linux-perf-users@vger.kernel.org
+Cc: Shenlin Liang <liangshenlin@eswincomputing.com>
+Subject: [PATCH v3 0/2] perf kvm: Add kvm stat support on riscv
+Date: Mon, 22 Apr 2024 08:08:31 +0000
+Message-Id: <20240422080833.8745-1-liangshenlin@eswincomputing.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:TAJkCgBH6OSeGyZmSBIIAA--.61881S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr1fZF4ftF4fXF18Aw17trb_yoW5XryrpF
+	W2krn8Kw4rtFy3Kws3C3WDWrWrCw4xCry5tr1Iyryj93yj9ryDJ3Z7Kr9Fk398AF17tFWk
+	CFn8ur1rGrW3JF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+	67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+	x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+	UI43ZEXa7VUbQVy7UUUUU==
+X-CM-SenderInfo: xold0whvkh0z1lq6v25zlqu0xpsx3x1qjou0bp/
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Parse off-cpu events using parse_event(). Change the placement of
-record__config_off_cpu to after record__open because we need to write
-mmapped fds into BPF's perf_event_array map, also, write 
-sample_id/sample_type into BPF. In record__pushfn and record__aio_pushfn, 
-handle off-cpu samples using off_cpu_strip. This is because the off-cpu 
-samples that we want to write to perf.data is in off-cpu samples' raw_data 
-section:
+'perf kvm stat report/record' generates a statistical analysis of KVM
+events and can be used to analyze guest exit reasons. This patch tries
+to add stat support on riscv.
 
-regular samples:
-[sample: sample_data]
+Map the return value of trace_kvm_exit() to the specific cause of the 
+exception, and export it to userspace.
 
-off-cpu samples:
-[sample: [raw_data: sample_data]]
+It records on two available KVM tracepoints for riscv: "kvm:kvm_entry"
+and "kvm:kvm_exit", and reports statistical data which includes events
+handles time, samples, and so on.
 
-We need to extract the real useful sample data out before writing.
+Cross compiling perf in X86 environment may encounter issues with missing
+libraries and tools. Suggest compiling nativly in RISC-V environment
 
-Hooks record_done just before evlist__disable to stop BPF program from
-outputting, otherwise, we lose some samples.
+Simple tests go below:
 
-After samples are collected, change sample_type of off-cpu event to
-the OFFCPU_SAMPLE_TYPES for parsing correctly, it was PERF_SAMPLE_RAW and
-some others, because BPF can only output to a specific type of perf_event,
-which is why `evsel->core.attr.sample_type &= OFFCPU_SAMPLE_TYPES;` is
-deleted in util/evsel.c. 
+# ./perf kvm record -e "kvm:kvm_entry" -e "kvm:kvm_exit"
+Lowering default frequency rate from 4000 to 2500.
+Please consider tweaking /proc/sys/kernel/perf_event_max_sample_rate.
+[ perf record: Woken up 18 times to write data ]
+[ perf record: Captured and wrote 5.433 MB perf.data.guest (62519 samples) 
 
-Signed-off-by: Howard Chu <howardchu95@gmail.com>
----
- tools/perf/builtin-record.c | 98 ++++++++++++++++++++++++++++++++++---
- tools/perf/util/evsel.c     |  8 ---
- 2 files changed, 91 insertions(+), 15 deletions(-)
+# ./perf kvm report
+31K kvm:kvm_entry
+31K kvm:kvm_exit
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 2ff718d3e202..c31b23905f1b 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -389,6 +389,8 @@ struct record_aio {
- static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size)
- {
- 	struct record_aio *aio = to;
-+	char *bf_stripped = NULL;
-+	size_t stripped;
- 
- 	/*
- 	 * map->core.base data pointed by buf is copied into free map->aio.data[] buffer
-@@ -404,6 +406,31 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
- 	 * from the beginning of the kernel buffer till the end of the data chunk.
- 	 */
- 
-+	if (aio->rec->off_cpu) {
-+		if (size == 0)
-+			return 0;
-+
-+		map->core.start -= size;
-+		size = map->core.end - map->core.start;
-+
-+		bf_stripped = malloc(size);
-+
-+		if (bf_stripped == NULL) {
-+			pr_err("Failed to allocate off-cpu strip buffer\n");
-+			return -ENOMEM;
-+		}
-+
-+		stripped = off_cpu_strip(aio->rec->evlist, map, bf_stripped, size);
-+
-+		if (stripped < 0) {
-+			size = (int)stripped;
-+			goto out;
-+		}
-+
-+		size = stripped;
-+		buf = bf_stripped;
-+	}
-+
- 	if (record__comp_enabled(aio->rec)) {
- 		ssize_t compressed = zstd_compress(aio->rec->session, NULL, aio->data + aio->size,
- 						   mmap__mmap_len(map) - aio->size,
-@@ -432,6 +459,9 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
- 
- 	aio->size += size;
- 
-+out:
-+	free(bf_stripped);
-+
- 	return size;
- }
- 
-@@ -635,6 +665,38 @@ static int process_locked_synthesized_event(struct perf_tool *tool,
- static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
- {
- 	struct record *rec = to;
-+	int err;
-+	char *bf_stripped = NULL;
-+	size_t stripped;
-+
-+	if (rec->off_cpu) {
-+		/*
-+		 * We'll read all the events at once without masking.
-+		 * When reading the remainder from a map, the size is 0, because
-+		 * start is shifted to the end so no more data is to be read.
-+		 */
-+		if (size == 0)
-+			return 0;
-+
-+		map->core.start -= size;
-+		/* get the total size */
-+		size = map->core.end - map->core.start;
-+
-+		bf_stripped = malloc(size);
-+
-+		if (bf_stripped == NULL) {
-+			pr_err("Failed to allocate off-cpu strip buffer\n");
-+			return -ENOMEM;
-+		}
-+
-+		stripped = off_cpu_strip(rec->evlist, map, bf_stripped, size);
-+
-+		if (stripped < 0)
-+			return (int)stripped;
-+
-+		size = stripped;
-+		bf = bf_stripped;
-+	}
- 
- 	if (record__comp_enabled(rec)) {
- 		ssize_t compressed = zstd_compress(rec->session, map, map->data,
-@@ -648,7 +710,11 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
- 	}
- 
- 	thread->samples++;
--	return record__write(rec, map, bf, size);
-+	err = record__write(rec, map, bf, size);
-+
-+	free(bf_stripped);
-+
-+	return err;
- }
- 
- static volatile sig_atomic_t signr = -1;
-@@ -1790,6 +1856,7 @@ record__finish_output(struct record *rec)
- 		if (rec->buildid_all)
- 			perf_session__dsos_hit_all(rec->session);
- 	}
-+
- 	perf_session__write_header(rec->session, rec->evlist, fd, true);
- 
- 	return;
-@@ -2501,6 +2568,14 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		}
- 	}
- 
-+	if (rec->off_cpu) {
-+		err = record__config_off_cpu(rec);
-+		if (err) {
-+			pr_err("record__config_off_cpu failed, error %d\n", err);
-+			goto out_free_threads;
-+		}
-+	}
-+
- 	/*
- 	 * Normally perf_session__new would do this, but it doesn't have the
- 	 * evlist.
-@@ -2764,6 +2839,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		 * disable events in this case.
- 		 */
- 		if (done && !disabled && !target__none(&opts->target)) {
-+			perf_hooks__invoke_record_done();
- 			trigger_off(&auxtrace_snapshot_trigger);
- 			evlist__disable(rec->evlist);
- 			disabled = true;
-@@ -2827,14 +2903,17 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 	} else
- 		status = err;
- 
--	if (rec->off_cpu)
--		rec->bytes_written += off_cpu_write(rec->session);
--
- 	record__read_lost_samples(rec);
- 	record__synthesize(rec, true);
- 	/* this will be recalculated during process_buildids() */
- 	rec->samples = 0;
- 
-+	/* change to the correct sample type for parsing */
-+	if (rec->off_cpu && off_cpu_change_type(rec->evlist)) {
-+		pr_err("ERROR: Failed to change sample type for off-cpu event\n");
-+		goto out_delete_session;
-+	}
-+
- 	if (!err) {
- 		if (!rec->timestamp_filename) {
- 			record__finish_output(rec);
-@@ -3198,7 +3277,7 @@ static int switch_output_setup(struct record *rec)
- 	unsigned long val;
- 
- 	/*
--	 * If we're using --switch-output-events, then we imply its 
-+	 * If we're using --switch-output-events, then we imply its
- 	 * --switch-output=signal, as we'll send a SIGUSR2 from the side band
- 	 *  thread to its parent.
- 	 */
-@@ -4221,9 +4300,14 @@ int cmd_record(int argc, const char **argv)
- 	}
- 
- 	if (rec->off_cpu) {
--		err = record__config_off_cpu(rec);
-+		char off_cpu_event[64];
-+
-+		snprintf(off_cpu_event, sizeof(off_cpu_event),
-+			 "bpf-output/no-inherit=1,name=%s/", OFFCPU_EVENT);
-+
-+		err = parse_event(rec->evlist, off_cpu_event);
- 		if (err) {
--			pr_err("record__config_off_cpu failed, error %d\n", err);
-+			pr_err("Failed to open off-cpu event\n");
- 			goto out;
- 		}
- 	}
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 3536404e9447..c08ae6a3c8d6 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1092,11 +1092,6 @@ static void evsel__set_default_freq_period(struct record_opts *opts,
- 	}
- }
- 
--static bool evsel__is_offcpu_event(struct evsel *evsel)
--{
--	return evsel__is_bpf_output(evsel) && evsel__name_is(evsel, OFFCPU_EVENT);
--}
--
- /*
-  * The enable_on_exec/disabled value strategy:
-  *
-@@ -1363,9 +1358,6 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 	if (evsel__is_dummy_event(evsel))
- 		evsel__reset_sample_bit(evsel, BRANCH_STACK);
- 
--	if (evsel__is_offcpu_event(evsel))
--		evsel->core.attr.sample_type &= OFFCPU_SAMPLE_TYPES;
--
- 	arch__post_evsel_config(evsel, attr);
- }
- 
+# ./perf kvm stat record -a
+[ perf record: Woken up 3 times to write data ]
+[ perf record: Captured and wrote 8.502 MB perf.data.guest (99338 samples) ]
+
+# ./perf kvm stat report --event=vmexit
+Event name                Samples   Sample%    Time (ns)     Time%   Max Time (ns)   Min Time (ns)  Mean Time (ns)
+STORE_GUEST_PAGE_FAULT     26968     54.00%    2003031800    40.00%     3361400         27600          74274
+LOAD_GUEST_PAGE_FAULT      17645     35.00%    1153338100    23.00%     2513400         30800          65363
+VIRTUAL_INST_FAULT         1247      2.00%     340820800     6.00%      1190800         43300          273312
+INST_GUEST_PAGE_FAULT      1128      2.00%     340645800     6.00%      2123200         30200          301990
+SUPERVISOR_SYSCALL         1019      2.00%     245989900     4.00%      1851500         29300          241403
+LOAD_ACCESS                986       1.00%     671556200     13.00%     4180200         100700         681091
+INST_ACCESS                655       1.00%     170054800     3.00%      1808300         54600          259625
+HYPERVISOR_SYSCALL         21        0.00%     4276400       0.00%      716500          116000         203638 
+
+Changes from v1->v2:
+- Rebased on Linux 6.9-rc3.
+
+Changes from v2->v3:
+- Add the missing assignment for 'vcpu_id_str' in patch 2.
+- Remove parentheses that cause compilation errors
+
+Shenlin Liang (2):
+  RISCV: KVM: add tracepoints for entry and exit events
+  perf kvm/riscv: Port perf kvm stat to RISC-V
+
+ arch/riscv/kvm/trace.h                        | 67 ++++++++++++++++
+ arch/riscv/kvm/vcpu.c                         |  7 ++
+ tools/perf/arch/riscv/Makefile                |  1 +
+ tools/perf/arch/riscv/util/Build              |  1 +
+ tools/perf/arch/riscv/util/kvm-stat.c         | 79 +++++++++++++++++++
+ .../arch/riscv/util/riscv_exception_types.h   | 35 ++++++++
+ 6 files changed, 190 insertions(+)
+ create mode 100644 arch/riscv/kvm/trace.h
+ create mode 100644 tools/perf/arch/riscv/util/kvm-stat.c
+ create mode 100644 tools/perf/arch/riscv/util/riscv_exception_types.h
+
 -- 
-2.44.0
+2.37.2
 
 
