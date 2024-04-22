@@ -1,138 +1,178 @@
-Return-Path: <linux-kernel+bounces-152970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FB258AC6DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:25:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3A108AC6E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:26:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E9891F2108F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:25:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 589261F21125
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:26:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20AE50281;
-	Mon, 22 Apr 2024 08:24:56 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8219450286;
+	Mon, 22 Apr 2024 08:26:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uEkk1mSz"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7D4482CA
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:24:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212994CB2E
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:26:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713774296; cv=none; b=q6M0/sb0vzXd3d8PohvcJcQGOU8Wx2Pxs2+H8D854rI1vZLsXO1xvQAEcvmBxYY1TDWzpJxxM5tDj5fhHnkUsMqJ2xSCYWNSKxanNIiVBIFP3dUGTiD+XYpUynxTm6CqTt9Q+AlPah0rx7bJkml+WhC2jx1iC/6pkoC7wdfPeNY=
+	t=1713774365; cv=none; b=WTkTEw4/Rn6v3cyrw0Xn8ToamibkAOsXFRGPz91wx2dxkTlR/A7UxGBH930aPOCM3cxP+JUVOCso7gLdJNFHwyk0oULBXOOqZ1BUyF7B2H4FCByTxC/f8s6OSsTIrGfbs5wu0mbmHzL5jpr2NCq6qsIAhCirdqSsttYQNaDPpUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713774296; c=relaxed/simple;
-	bh=ipo8Tkh/OO1bi5/uYHqgJEwHcimyAW/pZY1OW6jfzvY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fa7BqiR4rPmX3KdVjplXlliuNtvmZcvlQquVH+unL4ekb5S2Uuzr8hoF1Z1JcmX3jj4rRaJKgJkKRQN/l9KV2ZvpQ8x6j3HnLxWEeP40Lu89LR5vnHHzTM8vYEhpW+NihFsSXfw+yG0aMtDyc6y6zYtBlSa2d9Gzgyyt0tJX0Bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
-	(envelope-from <h.assmann@pengutronix.de>)
-	id 1ryoyk-0006hP-10; Mon, 22 Apr 2024 10:24:46 +0200
-Message-ID: <f70d53d2-0494-461d-9cbb-086077324e03@pengutronix.de>
-Date: Mon, 22 Apr 2024 10:24:45 +0200
+	s=arc-20240116; t=1713774365; c=relaxed/simple;
+	bh=DbFpvgChbGfxdw8xDIiDIqs8RFoQ4LVzYkB5IMnBeEw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KFOdZXXbBC4Q3AKZiU9y2H1x6Z/+Uzl/iIb2sfMvGPxbTpyGhbgsNgLd35D7pecHfMPHRonoF74kZEPHHTCcUtTSDDrY/bDOIMFfxfdnPFR0P8UDOBznlc4N7s5GeRg0XkcP/SPmSxDY0izYk9RvjOQ/tTtgGoUYNiUON8lTB/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uEkk1mSz; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56e5174ffc2so8606a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:26:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713774362; x=1714379162; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dIjSpFzc6wuUUvRoNAvf010gfUriOwpE+vCiO0BYwFY=;
+        b=uEkk1mSzSpNVdzXHyFwgbuIMXRE0sy+kjwxRaIwbDUjn16p/VXiXThc+eEPwMO0yM5
+         SQyDhBOaLzD/y3R5q25jbXUC59xHCKCY0dLEmVLKIsyPSZ7en9A72kx8JHMXdAfIUam3
+         cxbRoAJw2u/x4nH/ReAryNbKIHfI6G5Tg5TzkrPmNAqyK9bgtXxAfYvhlUshhrFSiSS2
+         gHaNoDXhBnuMzuSQNHx7YW3FmBC1EHjpIYxQvwGmpeGPgkuTy2RPmgjKPhw7ziM943Fk
+         g2prbiWky23Zlv/kcSOlnlLYXh6qMt07oK3YonHGes2DB6X0Q34dEKCrKlNRqfvIgQrm
+         wlKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713774362; x=1714379162;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dIjSpFzc6wuUUvRoNAvf010gfUriOwpE+vCiO0BYwFY=;
+        b=t9EKM6JJt3QaPAd/mdYKTLE+pC6L3c0jVcAtXAsgC9ry5Jx+Ficev7hz0QWoPQjmc5
+         PfJVnwhOuw9NeANvAVjUGL2chVP1XPjQd3YG8SiTQ4PKCGNLpS35h0a7fRb9+p8EvfrD
+         AX5AmCa467H5IISANO61Sbj84iuIqL/l4Eh+aifH1R5+z5lo0aHDh678e900E6jrBcWW
+         cpfhx0Qim1xvNBRCV1QdjcYcaQea1GmHNkOsiJNdXZ671+5C+vfXjmW5O7zMD0bPX0sM
+         JPu7sGmVSd6y3mAfm5SIHcFPajOsLRFf3+V85zsxQBEAV+YMg6rJd91hfR20fMmKM6YE
+         R/hw==
+X-Forwarded-Encrypted: i=1; AJvYcCWTqYzJE8X0SQp+sAPXqlgaLCzkgtAaIVx7zXhEhLkfE3B1GRxmLFonMUdJ4GL7jMcqfw6ibNNsk7rmfdr9aBicXBPJFkBpJom6z+I0
+X-Gm-Message-State: AOJu0YwSO6dSc1mmdjanOcuDUqQo1G9qtV5e13O55CMFhwLUPeBads+R
+	UICbd9PFeRLb7Jc9MiJjg0nRWA6XgGO9K746KAhDfYe1ahwERwLvMuQUmqJmDDKcyuZSpRkXTUm
+	3kteLmQbjd6OtBAX2kGylN9bCQ3wWdaqKEv0P
+X-Google-Smtp-Source: AGHT+IE9JeQQLCu7nhMNKaiTfyP6ZF0+xEA3lJHdLbUAa1gOV9ye6P3FZco1GiciGNvgewufb05FgG/qwPJgdjvVuxg=
+X-Received: by 2002:a05:6402:430a:b0:572:10ff:50b1 with SMTP id
+ m10-20020a056402430a00b0057210ff50b1mr50373edc.2.1713774362161; Mon, 22 Apr
+ 2024 01:26:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] dt-bindings: regulator: pca9450: add restart handler
- priority
-To: Krzysztof Kozlowski <krzk@kernel.org>, lgirdwood@gmail.com,
- broonie@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, yibin.gong@nxp.com
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Pengutronix Kernel Team <kernel@pengutronix.de>
-References: <20240419083104.3329252-1-h.assmann@pengutronix.de>
- <20240419083104.3329252-3-h.assmann@pengutronix.de>
- <5c1c8632-3d8f-41b1-8027-54129d8cd62c@kernel.org>
-From: Holger Assmann <h.assmann@pengutronix.de>
-Content-Language: en-US, de-DE, de-LI
-In-Reply-To: <5c1c8632-3d8f-41b1-8027-54129d8cd62c@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: h.assmann@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20240422152413.1.Ib96985e197f3db620a127a84aa20f3f3017aaf57@changeid>
+ <687c8f6a-d5d6-4918-bfd5-93d4b04da086@molgen.mpg.de>
+In-Reply-To: <687c8f6a-d5d6-4918-bfd5-93d4b04da086@molgen.mpg.de>
+From: Archie Pusaka <apusaka@google.com>
+Date: Mon, 22 Apr 2024 16:25:49 +0800
+Message-ID: <CAJQfnxGz9dJCU2YwwKYZLpZ73L5YS6=8yac8K5BUfPBjeeM4rg@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: Populate hci_set_hw_info for Intel and Realtek
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Archie Pusaka <apusaka@chromium.org>, linux-bluetooth@vger.kernel.org, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	Marcel Holtmann <marcel@holtmann.org>, chromeos-bluetooth-upstreaming@chromium.org, 
+	Abhishek Pandit-Subedi <abhishekpandit@google.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hello Krzysztof,
+Hi Paul,
 
-also thanks for the feedback on this one.
+On Mon, 22 Apr 2024 at 15:32, Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+>
+> Dear Archie,
+>
+>
+> Thank you for your patch.
+>
+> Am 22.04.24 um 09:24 schrieb Archie Pusaka:
+> > From: Archie Pusaka <apusaka@chromium.org>
+> >
+> > The hardware information surfaced via debugfs might be usable by the
+> > userspace to set some configuration knobs. This patch sets the hw_info
+> > for Intel and Realtek chipsets.
+>
+> Could you please add an example paste to the commit message?
+>
+Sure, I will add those.
 
-Am 19.04.24 um 15:39 schrieb Krzysztof Kozlowski:
-> 
-> Please use subject prefixes matching the subsystem. You can get them for
-> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-> your patch is touching.
+> > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@google.com>
+> >
+> > ---
+> >
+> >   drivers/bluetooth/btintel.c | 9 +++++++++
+> >   drivers/bluetooth/btrtl.c   | 7 +++++++
+> >   2 files changed, 16 insertions(+)
+> >
+> > diff --git a/drivers/bluetooth/btintel.c b/drivers/bluetooth/btintel.c
+> > index a19ebe47bd951..dc48352166a52 100644
+> > --- a/drivers/bluetooth/btintel.c
+> > +++ b/drivers/bluetooth/btintel.c
+> > @@ -2956,6 +2956,11 @@ static int btintel_setup_combined(struct hci_dev *hdev)
+> >                       err = -EINVAL;
+> >               }
+> >
+> > +             hci_set_hw_info(hdev,
+> > +                             "INTEL platform=%u variant=%u revision=%u",
+> > +                             ver.hw_platform, ver.hw_variant,
+> > +                             ver.hw_revision);
+> > +
+> >               goto exit_error;
+> >       }
+> >
+> > @@ -3060,6 +3065,10 @@ static int btintel_setup_combined(struct hci_dev *hdev)
+> >               break;
+> >       }
+> >
+> > +     hci_set_hw_info(hdev, "INTEL platform=%u variant=%u",
+> > +                     INTEL_HW_PLATFORM(ver_tlv.cnvi_bt),
+> > +                     INTEL_HW_VARIANT(ver_tlv.cnvi_bt));
+> > +
+>
+> Why does it need to be added at two places?
+>
+Intel put the HW information into two structs, the "intel_version ver"
+and "intel_version_tlv ver_tlv".
+I don't know the history of the two structs, but that requires us to
+have the hw info set in two places.
+At most only one of them is executed though.
 
-Short note: I did that prior submitting, but I did it directly for the
-yaml-file and not for the directory - Those do not look the same
-regarding their prefix scheme.
+> >   exit_error:
+> >       kfree_skb(skb);
+> >
+> > diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+> > index cc50de69e8dc9..4f1e37b4f7802 100644
+> > --- a/drivers/bluetooth/btrtl.c
+> > +++ b/drivers/bluetooth/btrtl.c
+> > @@ -1339,6 +1339,13 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
+> >
+> >       btrtl_set_quirks(hdev, btrtl_dev);
+> >
+> > +     hci_set_hw_info(hdev,
+> > +                     "RTL lmp_subver=%u hci_rev=%u hci_ver=%u hci_bus=%u",
+> > +                     btrtl_dev->ic_info->lmp_subver,
+> > +                     btrtl_dev->ic_info->hci_rev,
+> > +                     btrtl_dev->ic_info->hci_ver,
+> > +                     btrtl_dev->ic_info->hci_bus);
+> > +
+> >       btrtl_free(btrtl_dev);
+> >       return ret;
+> >   }
+>
+>
+> Kind regards,
+>
+> Paul
 
-I will change it for my v2 and use a subject like for the directory.
+Thanks!
 
-
-> 
->> ---
->>  .../devicetree/bindings/regulator/nxp,pca9450-regulator.yaml   | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml b/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml
->> index 3d469b8e97748..7cc2d6636cf52 100644
->> --- a/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml
->> +++ b/Documentation/devicetree/bindings/regulator/nxp,pca9450-regulator.yaml
->> @@ -35,6 +35,9 @@ properties:
->>    interrupts:
->>      maxItems: 1
->>  
->> +  priority:
->> +    $ref: /schemas/power/reset/restart-handler.yaml#
-> 
-> You defined object, which is not explained in commit msg. This code does
-> not look correct or it does not implement what you said.
-> 
-> Please look at existing code - do you see anything like this? No, there
-> is no such code and this should raise question.
-
-I am a bit lost on that one to be honest.
-
-The only other instances where a "priority" for restart handling is
-described are "gpio-poweroff.yaml" and "syscon-reboot.yaml". These files
-are dedicated documentation for the reset bindings, so I tried to
-transfer the respective entry over for my commit.
-
-Do you suggest I should replace
-
-+  priority:
-+    $ref: /schemas/power/reset/restart-handler.yaml#
-
-with
-
-+allOf:
-+  - $ref: /schemas/power/reset/restart-handler.yaml#
-
-in order to properly include the context for the restart handling?
-Running dt_binding_check does not indicate an issue with any of those two.
-
-
-> 
-> You probably want to annotate that device is a restart handler?
-
-You mean by adding to the "description" part of the file?
-
-
-Kind regards,
-Holger
-
--- 
-Pengutronix e.K.                         | Holger Assmann              |
-Steuerwalder Str. 21                     | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686         | Fax:   +49-5121-206917-5555 |
+Archie
 
