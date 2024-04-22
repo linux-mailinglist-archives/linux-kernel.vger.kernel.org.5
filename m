@@ -1,135 +1,123 @@
-Return-Path: <linux-kernel+bounces-153902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F29A8AD4B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:17:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E1B18AD4B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:19:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0D0E1C21341
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:17:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1426C1F22650
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1F2155321;
-	Mon, 22 Apr 2024 19:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE5F155325;
+	Mon, 22 Apr 2024 19:19:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QLOKgyHG"
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y3anQZO7"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBE6415531E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE2B2EB11
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:19:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713813458; cv=none; b=Vmc+xFkgd9JH9mExN2ohO0nv+mXGTGfab2CJA7LqvccDWjylnXXsiPGOMomPyQdXPBFiky/EA6+A3U5UePq4eFQGgMJqNjqAp8xqF9D53awjeziWXhgVRzgOhZNh3veEBnmhXx1XjAvU0G3xEMh1kuYuix0wLM6aT/bV8BMOOLA=
+	t=1713813560; cv=none; b=YTgxBO+7UR6Muhv8Kd0Dm1VpqGTZ7EWdBq2jSii2/c76KnidkY5/kpfsA9TjjgG6PG72KC+MObkt5SF6oifdXQ3BdOWERc113IdGeJleGqTaL39ry+0t6aYDOBb7H6l4uBJcjXek5afkwIloblaTpRzTdWvTUTPYdta5ltYLp8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713813458; c=relaxed/simple;
-	bh=/x1SyMb4ASJVh4p8qtH5Zq8S4yTFQsv6VhQl0Ka60Eg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mpc/jbvCOkE1/T1iuuiG6K6bVoB+y3fwJga7wFG1ejH1Tk1bXzuM8prVGF1WFmXSuSJJ412rEq1GkYSuE1L1PhqjuBuHzXd9Jav2nSvb6kD1cuKkwn4vufPss/y6CQRThADF9BXbZJJX4MaBV8zjTfDME2IkJ8QV+jXzGqd1pko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QLOKgyHG; arc=none smtp.client-ip=209.85.217.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-479e857876fso1773097137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:17:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713813455; x=1714418255; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/x1SyMb4ASJVh4p8qtH5Zq8S4yTFQsv6VhQl0Ka60Eg=;
-        b=QLOKgyHG2qzS57PEqSlBYrgZIZCbBjbe9l2jhcKMbo6vnVFC0O51vGvqnNu4eGErGO
-         ORgkk6PUzxyi8n+exYagdYoO1kv94wEzNZl6MWE1XPL5Xpu803pu0zfeXVv/7S9LRiRx
-         7OnnOyd2ocl9GvyZy7j4kLeqVxAtbJD3IrC9k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713813455; x=1714418255;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/x1SyMb4ASJVh4p8qtH5Zq8S4yTFQsv6VhQl0Ka60Eg=;
-        b=umr8twX5YlWvFpRaojdgTx8Ap9r1Tp95O8AIGesA7ZEseifloShlhlb1TipkOohNwX
-         wWkBJ7Bb6Zn7my95hmSew53UcesKfoc0ROG8WN/Wzk8Pn+przsu9OI8Wg2OkaJpT5fvY
-         NJqXDW8TfdwjyoXH0yqxMATZy/S3yjqn4kG2+xnJnavuh6FEC/tECqBEInD7scigmCO6
-         wCbE4Uw+7l5Zi4cK/wA+uSJxuosnOvq/10knawqWvfk7zxZHaqpcjWm2eiVNX7HuG/Zb
-         6iFiQGUHAgp8E39SZzurTOrqWPCubvnPmgTVHuX1inGt4aZ0v2G56pewxy3Zns+NtDZ9
-         zLaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX0GxSfZo0ukIyAyynyIqcp+u+ebUrsh5cUBowom0o7hVbM7gdjIsTowcfVqnxC163XrHT3BkGJrT4Mp3d9cBWZFfENqA/i7QYbw60H
-X-Gm-Message-State: AOJu0YzIAXndIVSIQCdawhu0C1AzhMVqBEfg5sIOSx5LwPAjlgzolY1o
-	iITpa6bEEao86MDQW4CjSUMdqeuThtAhFtYhhA5UkosSIUD5teRONpz+qAO+MPy/0Aw9UrAr4IH
-	6Ph7L3OQyhBYlDwj0DbYeQFFLgqti8uswtc369SazYh7tnExHGA==
-X-Google-Smtp-Source: AGHT+IGat54NrGK6Mz3mBIecbfXww4A+FxvBErevCOh6Np31L1gqxAPJAiVFGy3UCYoqXZahijUsku6TR5cCluT6Wcc=
-X-Received: by 2002:a67:ee16:0:b0:47b:f1ae:9c77 with SMTP id
- f22-20020a67ee16000000b0047bf1ae9c77mr3331254vsp.23.1713813455682; Mon, 22
- Apr 2024 12:17:35 -0700 (PDT)
+	s=arc-20240116; t=1713813560; c=relaxed/simple;
+	bh=ALqKhQgzHPsfeffEbf7w8mqFeaMogKGIg746ZV/B0IA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UUjz25P1NSPIQ2weyjRamAuTemQ++7iVWVSdWWCBRhnGXDQqBMV9RAMEGVpIL5lJHQ4BAG7zmxqbK9tr+aPYh4owG5L58CCcwHDonjit+RJ+w3cbq9Ck09vfK/Hd2zc0EIsO6b70vM8GA4bFFHswxyBoqig5Him4pvYOHu9UxgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y3anQZO7; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713813557;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fGsjHAbYUFtiS1u1KaAmxhWdCq3KEXLTWvKx+cfURAU=;
+	b=Y3anQZO7sdEhrz4psncVP8rNbsfXyEDVRF0idXP8S2tF4kNTCG9oQ7zMG2e5TaHBQ3oz0P
+	welkurB8yGQXAbyxtQfKoSYHXcetBeWenWL3etbtJYysQRInyi73fYvRfoAkjEf84AYONj
+	WzD2BuNJILqNZoLfnAnjKr/eB3HV/DI=
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Phong LE <ple@baylibre.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Sui Jingfeng <sui.jingfeng@linux.dev>
+Subject: [PATCH v4 0/9] drm/bridge: Allow using fwnode API to get the next bridge
+Date: Tue, 23 Apr 2024 03:18:54 +0800
+Message-Id: <20240422191903.255642-1-sui.jingfeng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZalOCPrVA52wyFfv@google.com> <20240119053756.GC2543524@black.fi.intel.com>
- <20240119074829.GD2543524@black.fi.intel.com> <20240119102258.GE2543524@black.fi.intel.com>
- <03926c6c-43dc-4ec4-b5a0-eae57c17f507@amd.com> <20240123061820.GL2543524@black.fi.intel.com>
- <CA+Y6NJFMDcB7NV49r2WxFzcfgarRiWsWO0rEPwz43PKDiXk61g@mail.gmail.com>
- <CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w90jmBw@mail.gmail.com>
- <20240416050353.GI112498@black.fi.intel.com> <CA+Y6NJF6+s5zUZeaWtagpMt8Qu0a1oE+3re3c6EsppH+ZsuMRQ@mail.gmail.com>
- <20240419044945.GR112498@black.fi.intel.com>
-In-Reply-To: <20240419044945.GR112498@black.fi.intel.com>
-From: Esther Shimanovich <eshimanovich@chromium.org>
-Date: Mon, 22 Apr 2024 15:17:24 -0400
-Message-ID: <CA+Y6NJEpWpfPqHO6=Z1XFCXZDUq1+g6EFryB+Urq1=h0PhT+fg@mail.gmail.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Thanks for the explanation! I still don't fully understand how that
-would work for my use case.
+Currently, the various display bridge drivers rely on OF infrastructures
+to works very well, yet there are platforms and/or devices absence of 'OF'
+support. Such as virtual display drivers, USB display apapters and ACPI
+based systems etc.
 
-Perhaps it would be better for me to describe the case I am trying to
-protect against.
+Add fwnode based helpers to fill the niche, this allows part of the display
+bridge drivers to work across systems. As the fwnode API has wider coverage
+than DT counterpart and the fwnode graphs are compatible with the OF graph,
+so the provided helpers can be used on all systems in theory. Assumed that
+the system has valid fwnode graphs established before drm bridge drivers
+are probed, and there has fwnode assigned to involved drm bridge instance.
 
-To rehash, this quirk was written for devices with discrete
-Thunderbolt controllers.
+Tested on TI BeaglePlay board.
 
-For example,
-CometLake_CPU -> AlpineRidge_Chip -> USB-C Port
-This device has the ExternalFacingPort property in ACPI.
-My quirk relabels the Alpine Ridge chip as "fixed" and
-external-facing, so that devices attached to the USB-C port could be
-labeled as "removable"
+v1 -> v2:
+	 * Modify it66121 to switch togather
+	 * Drop the 'side-by-side' implement
+	 * Add drm_bridge_find_next_bridge_by_fwnode() helper
+	 * Add drm_bridge_set_node() helper
 
-Let's say we have a TigerLake CPU, which has integrated
-Thunderbolt/USB4 capabilities:
+v2 -> v3:
+	 * Read kernel-doc and improve function comments (Dmitry)
+	 * Drop the 'port' argument of it66121_read_bus_width() (Dmitry)
+	 * drm-bridge: sii902x get nuked
 
-TigerLake_ThunderboltCPU -> USB-C Port
-This device also has the ExternalFacingPort property in ACPI and lacks
-the usb4-host-interface property in the ACPI.
+v3 -> v4:
+	 * drm-bridge: tfp410 get nuked
+	 * Add platform module alias
+	 * Rebase and improve commit message and function comments
 
-My worry is that someone could take an Alpine Ridge Chip Thunderbolt
-Dock and attach it to the TigerLake CPU
+Sui Jingfeng (9):
+  drm/bridge: Allow using fwnode API to get the next bridge
+  drm/bridge: simple-bridge: Use fwnode API to acquire device properties
+  drm/bridge: simple-bridge: Add platform module alias
+  drm-bridge: display-connector: Use fwnode API to acquire device
+    properties
+  drm/bridge: display-connector: Add platform module alias
+  drm-bridge: sii902x: Use fwnode API to acquire device properties
+  drm-bridge: it66121: Use fwnode API to acquire device properties
+  drm/bridge: tfp410: Use fwnode API to acquire device properties
+  drm/bridge: tfp410: Add platform module alias
 
-TigerLake_ThunderboltCPU -> USB-C Port -> AlpineRidge_Dock
+ drivers/gpu/drm/bridge/display-connector.c | 25 ++++----
+ drivers/gpu/drm/bridge/ite-it66121.c       | 57 ++++++++++-------
+ drivers/gpu/drm/bridge/sii902x.c           | 43 ++++---------
+ drivers/gpu/drm/bridge/simple-bridge.c     | 23 ++++---
+ drivers/gpu/drm/bridge/ti-tfp410.c         | 42 ++++++------
+ drivers/gpu/drm/drm_bridge.c               | 74 ++++++++++++++++++++++
+ include/drm/drm_bridge.h                   | 16 +++++
+ 7 files changed, 185 insertions(+), 95 deletions(-)
 
-If that were to happen, this quirk would incorrectly label the Alpine
-Ridge Dock as "fixed" instead of "removable".
+-- 
+2.34.1
 
-My thinking was that we could prevent this scenario from occurring if
-we filtered this quirk not to apply on CPU's like Tiger Lake, with
-integrated Thunderbolt/USB4 capabilities.
-
-ExternalFacingPort is found both on the Comet Lake ACPI and also on
-the Tiger Lake ACPI. So I can't use that to distinguish between CPUs
-which don't have integrated Thunderbolt, like Comet Lake, and CPUs
-with integrated Thunderbolt, like Tiger Lake.
-
-I am looking for something that can tell me if the device's Root Port
-has the Thunderbolt controller upstream to it or not.
-Is there anything like that?
-Or perhaps should I add a check which compares the name of the
-device's CPU with a list of CPUs that this quirk can be applied to?
-Or is there some way I can identify the Thunderbolt controller, then
-determine if it's upstream or downstream from the root port?
-Or are Alpine Ridge docks not something to worry about at all?
 
