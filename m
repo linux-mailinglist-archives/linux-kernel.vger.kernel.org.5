@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-152899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6F18AC5E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:47:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 883998AC5EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:48:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBE71282575
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:47:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37BCB1F2130F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:48:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB554D5BD;
-	Mon, 22 Apr 2024 07:47:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B51D24AEDA;
+	Mon, 22 Apr 2024 07:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dFlBmh58"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h0rT1bTq"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FCD74CDEC
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7574D13F
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713772028; cv=none; b=EQ8vwnuLH9C9gtdwtLvvkG5OzdkhF9tY4tNdWsAuuyWl/9wFhpFmEZcoQy8BhiS5w7FOSlCdqXSRkQL/RfkAqgjJy+iN5HmtSuIaZcUo0jXF4wmUQxAd5QmCpD2kvJbriRH5REx4FRrNMnGGxgECvDdC2MbbxMXPfjurph6MEeA=
+	t=1713772089; cv=none; b=YU71eFMrSHzsKEMQesBBPHjWaS7Qr7hyDn8PglNnJz683Bs5PH6gLJ2NkevH+7npv33c2l/4/CHZw9sChyubkcGrEzcaQaHtcOIy0+fP7fDiweNxWK7e2DH7wjxmQyLkADyWRmWmQ5T74sleC5qbwyJ7DXkpF6LOrReUIE6AL9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713772028; c=relaxed/simple;
-	bh=A/M54EsLbdpEhtTAZGHPIjfGvTW/Os6fVYqjTxlwATg=;
+	s=arc-20240116; t=1713772089; c=relaxed/simple;
+	bh=+Le8O3y3ZF7b0Pk7d5jUqHASV/4jEPQk7MZuP9/9eyw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cr/D3mSyaxdkA0Ct4RP9f0NWDG/Q2MJ7xpwjeDkBYiVklC1SXQ/sGzZisi9uA82yQENrJiGdWer9dkexzdsVuwIiMtGm7Ju6WxvLSMkw0WglM2S3M7M9M6CNmq5IG5xEOeYUI2HEkZPWX38SkU82LOm831srZQ5ddo+sn5AX0Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dFlBmh58; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=ORi+BrQW2+F2DbrBz68qAAjBghuMI62wmjfIDoVqeUsKJit1AoOpo7N1Qg+GYWjaBd1lzRYk9z9iJpYn84Z8u4wWqiWtYY/yZ31ZeDboRUCKSp5KkQ11d8OoTCE7GXevh7WHj2qjsOVbe7hD886520dQfIirXsKHq3PYeZjQyZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h0rT1bTq; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713772026;
+	s=mimecast20190719; t=1713772086;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=tAe+40gLKBnN7tnSK2raXsnb43veTPVq2GfkuOlipxU=;
-	b=dFlBmh58Oav49QhgdmmMAPmZmVo4mUQ29lHFsfduTIYpyknQo3Cywa1AW0XvFkh1u6AO9/
-	Chx4MegT8f6uZL+ZcYmlSDOiHDD3qJZEPcGaq1TqT81BtPrH7RKx2ORbCa4IgWXOPYisRl
-	nDb5mQQpJGf+hA3TMni+EkqjHdIJhGk=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=nDhkSI5Nf0QFXxHxJ2ctMYHWbyZi+j/l4h8WJWCXrLI=;
+	b=h0rT1bTqyjVvn6qKMahLKJwT8nhglpn4jQD0A+ipA/eyNdwR2DJt2Rs7/dcEMceOsioHrw
+	O7LCojY4c18GuOWGiUk8LSetHpbCB18+5c7+Iu67OvMcW7DhUPeyhpMzz5kT8DWRR8G8It
+	pFJ1m14lx89sxh3wfkusfpZvvFpmaAo=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-543-xo18L82BPbyH82ef4b6j-w-1; Mon, 22 Apr 2024 03:47:04 -0400
-X-MC-Unique: xo18L82BPbyH82ef4b6j-w-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d87d146022so34895621fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 00:47:04 -0700 (PDT)
+ us-mta-479-SSHPz-OFOy6TlKm5uPz8rw-1; Mon, 22 Apr 2024 03:48:05 -0400
+X-MC-Unique: SSHPz-OFOy6TlKm5uPz8rw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-416542ed388so17367155e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 00:48:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713772023; x=1714376823;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tAe+40gLKBnN7tnSK2raXsnb43veTPVq2GfkuOlipxU=;
-        b=RTuP7BvWGfWYNTgPWJlAIcAsPVvvmg5bPNYUD4SAAvgedeiq7De2E3FthIn6+zhzTV
-         tEdop2T8yb67jshZrW/O8ZZhADuE4CsN7iA3m/RWt3DXE1ytUNkxreFRCvrwwqD/g1LG
-         dikTXdhwN32B/pqxGsAJYGHiw4LgncHKI6HD5sP1MXusea4xnlYo2dN/kf+rA8GZTynu
-         m5e6NnRgto3RVYj/g3cxnqtKzZO1eOLyB2mKxYHaSgmZAWmCwR0NL9Xv+eKX1uZ+NHNX
-         sSRCPkQ4QOrErZoTFrJnbjeq5b2lt7ir9EHj10EK8W/SrDE7HDNA6Memca11QrVoJYMb
-         Guhw==
-X-Forwarded-Encrypted: i=1; AJvYcCVBVJdsk3qkCjMkdWZEDmaNBbd0l6IzP13xkNeKq71WXIvrsp+o8Y6bs+OE6niXqFURnXiYsK/K64R6yYkkqAFniaUsw84FIXTUChg/
-X-Gm-Message-State: AOJu0YzifAiClUB15ztLdILw8iD4nQ69pWQBlnZgvpLRUBTrtJaRilFC
-	AmzjeNkilCKUiWg2awKNvhcVEw7IbIQA37/oklV5gddwq0WBjfj4334VtuceOICGTOhG0fWcDIG
-	tBjOi6R0MJwjDjUhOHwkTd8JH5h9Nsh8+vyy3ueUn2V2tHW2exWkW1ChXGVxD9g==
-X-Received: by 2002:a2e:b5ac:0:b0:2dc:bd75:41ba with SMTP id f12-20020a2eb5ac000000b002dcbd7541bamr5950598ljn.27.1713772022973;
-        Mon, 22 Apr 2024 00:47:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGAo1tqA3ykY5PLpoGeei9qubge/Lf9gIc39igTsHUTz7zUKCNO9PFKrc8emn8mdTr0kj8JWA==
-X-Received: by 2002:a2e:b5ac:0:b0:2dc:bd75:41ba with SMTP id f12-20020a2eb5ac000000b002dcbd7541bamr5950582ljn.27.1713772022432;
-        Mon, 22 Apr 2024 00:47:02 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713772084; x=1714376884;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nDhkSI5Nf0QFXxHxJ2ctMYHWbyZi+j/l4h8WJWCXrLI=;
+        b=myKspFPLEjqzphOZ6XLOROZEDIXDyKzkhUXyk3o0wUKWf4xVhMYgkNmjSQteJQo3NL
+         AW5h3NptgBPJX0/+LRw7Ok1KXJNbvU3cSD9zP3RbgRDdF/iJ6lNAkChrw3OpwfCNWLxj
+         gn8uWP1uvacNA1gEqoVr6SLwvKJswz9hw4D0c7E8yAsj3RXGpGSbGW7Jbu3GDXvWlA/N
+         /Sf9Nm7rK3spm1JwT7BoTq0Y5UCJNYTRuXX7nFQf+ct8BlE3GyOeSW1IxtYm1DlMkjVi
+         KmJIknLhSfAD5Y6K+0AsVEcy4wH8ChgwxA/Kb3hJR1UfIm1YbYdCXtJwy/ITSY4//ZPr
+         weIg==
+X-Forwarded-Encrypted: i=1; AJvYcCWWuYJg7BgCtQRG3H1L3wtUc0UHJbnrE7Nwlxz2ud9CVRFhpnlbOzMunsI99kaFm5ocxRH1ncpk6jGfBZ2yHMJXPUfuFOsUEh+xti3U
+X-Gm-Message-State: AOJu0YwOL4vyf3iLHgcWNXpwveffOYh9+oQ0jznQFJzYv1MgLGesagtS
+	vttrDoCcaZ4K6Nm1/6Eh/C4Ejm+Ahwn27pV+BoQL7mN4quHNO1A3OdUXJF2JpVSsd6mBbpY3O2a
+	LnUVnFB99dQ9arGHsj9GDHK5SMJbydaXVDnNVRL/ycNhsdkXOzE52xo+82zRmoA==
+X-Received: by 2002:a05:600c:a007:b0:418:d3b3:321f with SMTP id jg7-20020a05600ca00700b00418d3b3321fmr7854790wmb.18.1713772084063;
+        Mon, 22 Apr 2024 00:48:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEcznxotJCFnicrgGOoWkdICH6GLFX1EXqfpuJdH6MqUgYPST0gDx1y6PTHJy1Id/nHLXKJgA==
+X-Received: by 2002:a05:600c:a007:b0:418:d3b3:321f with SMTP id jg7-20020a05600ca00700b00418d3b3321fmr7854768wmb.18.1713772083676;
+        Mon, 22 Apr 2024 00:48:03 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c739:600:d2fb:3a8a:9944:7910? (p200300cbc7390600d2fb3a8a99447910.dip0.t-ipconnect.de. [2003:cb:c739:600:d2fb:3a8a:9944:7910])
-        by smtp.gmail.com with ESMTPSA id j10-20020a05600c190a00b00418a9961c47sm15670401wmq.47.2024.04.22.00.47.01
+        by smtp.gmail.com with ESMTPSA id l16-20020a05600c4f1000b0041a1fee2854sm5099171wmq.17.2024.04.22.00.48.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 00:47:01 -0700 (PDT)
-Message-ID: <6a182645-1f7f-4b7d-a16a-36e9b1684c58@redhat.com>
-Date: Mon, 22 Apr 2024 09:47:00 +0200
+        Mon, 22 Apr 2024 00:48:03 -0700 (PDT)
+Message-ID: <9d70583a-565f-4523-8707-325c3af9a164@redhat.com>
+Date: Mon, 22 Apr 2024 09:48:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,15 +82,16 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] virtio_balloon: separate vm events into a function
+Subject: Re: [PATCH v2 3/4] virtio_balloon: introduce memory allocation stall
+ counter
 To: zhenwei pi <pizhenwei@bytedance.com>, linux-kernel@vger.kernel.org,
  linux-mm@kvack.org, virtualization@lists.linux.dev
 Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
  akpm@linux-foundation.org
 References: <20240422074254.1440457-1-pizhenwei@bytedance.com>
- <20240422074254.1440457-2-pizhenwei@bytedance.com>
-Content-Language: en-US
+ <20240422074254.1440457-4-pizhenwei@bytedance.com>
 From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
  dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
@@ -136,26 +137,73 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20240422074254.1440457-2-pizhenwei@bytedance.com>
+In-Reply-To: <20240422074254.1440457-4-pizhenwei@bytedance.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 22.04.24 09:42, zhenwei pi wrote:
-> All the VM events related statistics have dependence on
-> 'CONFIG_VM_EVENT_COUNTERS', once any stack variable is required by any
-> VM events in future, we would have codes like:
->   #ifdef CONFIG_VM_EVENT_COUNTERS
->        unsigned long foo;
->   #endif
->        ...
->   #ifdef CONFIG_VM_EVENT_COUNTERS
->        foo = events[XXX] + events[YYY];
->        update_stat(vb, idx++, VIRTIO_BALLOON_S_XXX, foo);
->   #endif
+> Memory allocation stall counter represents the performance/latency of
+> memory allocation, expose this counter to the host side by virtio
+> balloon device via out-of-bound way.
 > 
-> Separate vm events into a single function, also remove
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+> ---
+>   drivers/virtio/virtio_balloon.c     | 8 ++++++++
+>   include/uapi/linux/virtio_balloon.h | 6 ++++--
+>   2 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 87a1d6fa77fb..ab039e83bc6f 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -323,6 +323,8 @@ static inline unsigned int update_balloon_vm_stats(struct virtio_balloon *vb,
+>   #ifdef CONFIG_VM_EVENT_COUNTERS
+>   	unsigned long events[NR_VM_EVENT_ITEMS];
+>   	unsigned int idx = start;
+> +	unsigned int zid;
+> +	unsigned long stall = 0;
+>   
+>   	all_vm_events(events);
+>   	update_stat(vb, idx++, VIRTIO_BALLOON_S_SWAP_IN,
+> @@ -333,6 +335,12 @@ static inline unsigned int update_balloon_vm_stats(struct virtio_balloon *vb,
+>   	update_stat(vb, idx++, VIRTIO_BALLOON_S_MINFLT, events[PGFAULT]);
+>   	update_stat(vb, idx++, VIRTIO_BALLOON_S_OOM_KILL, events[OOM_KILL]);
+>   
+> +	/* sum all the stall events */
+> +	for (zid = 0; zid < MAX_NR_ZONES; zid++)
+> +		stall += events[ALLOCSTALL_NORMAL - ZONE_NORMAL + zid];
+> +
+> +	update_stat(vb, idx++, VIRTIO_BALLOON_S_ALLOC_STALL, stall);
+> +
+>   #ifdef CONFIG_HUGETLB_PAGE
+>   	update_stat(vb, idx++, VIRTIO_BALLOON_S_HTLB_PGALLOC,
+>   		    events[HTLB_BUDDY_PGALLOC]);
+> diff --git a/include/uapi/linux/virtio_balloon.h b/include/uapi/linux/virtio_balloon.h
+> index b17bbe033697..487b893a160e 100644
+> --- a/include/uapi/linux/virtio_balloon.h
+> +++ b/include/uapi/linux/virtio_balloon.h
+> @@ -72,7 +72,8 @@ struct virtio_balloon_config {
+>   #define VIRTIO_BALLOON_S_HTLB_PGALLOC  8  /* Hugetlb page allocations */
+>   #define VIRTIO_BALLOON_S_HTLB_PGFAIL   9  /* Hugetlb page allocation failures */
+>   #define VIRTIO_BALLOON_S_OOM_KILL      10 /* OOM killer invocations */
+> -#define VIRTIO_BALLOON_S_NR       11
+> +#define VIRTIO_BALLOON_S_ALLOC_STALL   11 /* Stall count of memory allocatoin */
+> +#define VIRTIO_BALLOON_S_NR       12
+>   
+>   #define VIRTIO_BALLOON_S_NAMES_WITH_PREFIX(VIRTIO_BALLOON_S_NAMES_prefix) { \
+>   	VIRTIO_BALLOON_S_NAMES_prefix "swap-in", \
+> @@ -85,7 +86,8 @@ struct virtio_balloon_config {
+>   	VIRTIO_BALLOON_S_NAMES_prefix "disk-caches", \
+>   	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-allocations", \
+>   	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures", \
+> -	VIRTIO_BALLOON_S_NAMES_prefix "oom-kills" \
+> +	VIRTIO_BALLOON_S_NAMES_prefix "oom-kills", \
+> +	VIRTIO_BALLOON_S_NAMES_prefix "alloc-stalls" \
+>   }
+>   
+>   #define VIRTIO_BALLOON_S_NAMES VIRTIO_BALLOON_S_NAMES_WITH_PREFIX("")
 
-Why not simply use __maybe_unused for that variable?
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Cheers,
