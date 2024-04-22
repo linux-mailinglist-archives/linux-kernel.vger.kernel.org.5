@@ -1,55 +1,77 @@
-Return-Path: <linux-kernel+bounces-152787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FAD58AC433
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:29:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 866818AC436
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:29:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAF801F21539
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:29:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B4BFB2180E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34C85405EB;
-	Mon, 22 Apr 2024 06:29:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AgsuSRaa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8593243ADD;
+	Mon, 22 Apr 2024 06:29:28 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168E23FB1E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57BD8405F9;
+	Mon, 22 Apr 2024 06:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713767362; cv=none; b=uzE/vrf6W5jj6NY3W5sLAp63o3TACnfGECnYrP0v2DTruBYgmN8joPOjalYBirCoiNn12m8YhIquJ/eCu6ynJcfToSdmmPePXTu780XhFLAxaTdfr/lE4Vad2KxldWr8k2wlj/ZRFfxPSfEZnL1mTRUQxRRsEDudsYwtzx5PLOs=
+	t=1713767367; cv=none; b=q69LoSD7vsMMQ/7sjwOurUv6BH6LxZo8qaRZrOmB4aW5Ucls+qtPhp8RJ4KUKVWEhmH/qKDNrSJ/+CDRXVuAo7qZjNy7blmYaQbwjNWTHpuf8NEihWlRLF7SHtNny49g1FlLQ9Eg6snJjtgNhnWUGMgCBEJRB0Rg+upYzTCGCB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713767362; c=relaxed/simple;
-	bh=LCIIPIFf23sbYCB3f/82w9xqSY7YR4k+GO2xT5qhe9A=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RIIPTKmV4lwKbO4H/SDoseRA9CSO9aAXA5g2/17j4z+Ns7xRq6OxbmQvYKOUiPImZiLsSsSa9VZU8aaksQ6npZ/iHCvuzyvZHSwL4/dBXcpanJ7hUhc1KkgSSU7CfYwICcCEx3yJaBHWWqXXL+fWND8JCIK5L+H4qSQYDt9bgV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AgsuSRaa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 145F8C113CC;
-	Mon, 22 Apr 2024 06:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713767361;
-	bh=LCIIPIFf23sbYCB3f/82w9xqSY7YR4k+GO2xT5qhe9A=;
-	h=From:To:Cc:Subject:Date:From;
-	b=AgsuSRaa3toLEXAU8iNHAtTGdPj9HY1adFlIhe7N9g368a2q4UAxzk0MAPMRM+q3k
-	 VoxGOUuv7YI6q6WFfPuvzTR71YeohHsNIfs/tzY2EEYb6fCzjUiWhNt+xyNjmhLOov
-	 PBm1iUsDgdLVaNVyoRwDt+V9wodtPJRrVRLbZr9shv1x7oOeTNQAQjZrWAsgK+7KEJ
-	 UWB+VbgprsXtaoPEoIAeq936141feNoIF90sGE+n0em8ylqMk60QMlbYhHsxtsZf51
-	 DaLo+r/oSzdTEhidSrU+q32+983xfo4PQq8D8ae4i63EqmA7Wpu7OgxE6ujlOvXSdO
-	 WBgrKUlttBidg==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>,
-	Daeho Jeong <daeho43@gmail.com>,
-	Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH v5] f2fs: zone: don't block IO if there is remained open zone
-Date: Mon, 22 Apr 2024 14:29:02 +0800
-Message-Id: <20240422062902.2423227-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1713767367; c=relaxed/simple;
+	bh=HlzQh948S8sIzvNyBVPCB6monqUovoXIO4DHiPWGYRw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jYmXwQP+HKX1VN5859K5NaQSA8s/tbN/pA7oz9pzjXC3vnqLTMLoxmKxEUDq81oveZx0Lqnkgs8aE95bfjlxpu0/zoaTEuR46XCouPTZVNejCVP24PWqsmtiWPVEoytf3CIUeDqEVG4H504RndlI5PJSfTGbtQSEqo6DMAPpzgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: a51326be007111ef9305a59a3cc225df-20240422
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:d05a343c-c0ca-4f1c-8c97-b7c21f260929,IP:10,
+	URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+	TION:release,TS:-30
+X-CID-INFO: VERSION:1.1.37,REQID:d05a343c-c0ca-4f1c-8c97-b7c21f260929,IP:10,UR
+	L:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-30
+X-CID-META: VersionHash:6f543d0,CLOUDID:75c230c35f4886e2cece48bf194582e1,BulkI
+	D:240422142917Q175OXDX,BulkQuantity:0,Recheck:0,SF:66|24|17|19|44|102,TC:n
+	il,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,CO
+	L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
+	SA_EXISTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+	CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
+	GTI_C_BU, AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU
+	ABX_MISS_RDNS
+X-UUID: a51326be007111ef9305a59a3cc225df-20240422
+X-User: jiangyunshui@kylinos.cn
+Received: from kylin-pc.. [(112.64.161.44)] by mailgw.kylinos.cn
+	(envelope-from <jiangyunshui@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1917057899; Mon, 22 Apr 2024 14:29:17 +0800
+From: yunshui <jiangyunshui@kylinos.cn>
+To: linux-kernel@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org
+Cc: corentin.chary@gmail.com,
+	luke@ljones.dev,
+	ilpo.jarvinen@linux.intel.com,
+	hdegoede@redhat.com,
+	yunshui <jiangyunshui@kylinos.cn>,
+	Ai Chao <aichao@kylinos.cn>
+Subject: [PATCH v2] platform/x86: asus-laptop: Use sysfs_emit() and sysfs_emit_at() to replace sprintf()
+Date: Mon, 22 Apr 2024 14:29:15 +0800
+Message-Id: <20240422062915.3393480-1-jiangyunshui@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,405 +80,166 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-max open zone may be larger than log header number of f2fs, for
-such case, it doesn't need to wait last IO in previous zone, let's
-introduce available_open_zone semaphore, and reduce it once we
-submit first write IO in a zone, and increase it after completion
-of last IO in the zone.
+As Documentation/filesystems/sysfs.rst suggested,
+show() should only use sysfs_emit() or sysfs_emit_at() when formatting
+the value to be returned to user space.
 
-Cc: Daeho Jeong <daeho43@gmail.com>
-Signed-off-by: Chao Yu <chao@kernel.org>
-Reviewed-by: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: yunshui <jiangyunshui@kylinos.cn>
+Signed-off-by: Ai Chao <aichao@kylinos.cn>
 ---
-v5:
-- fix `openned` typo pointed out by Juhyung Park
- fs/f2fs/data.c    | 105 ++++++++++++++++++++++++++++++----------------
- fs/f2fs/f2fs.h    |  31 +++++++++++---
- fs/f2fs/iostat.c  |   7 ++++
- fs/f2fs/iostat.h  |   2 +
- fs/f2fs/segment.c |  37 +++++++++++++++-
- fs/f2fs/segment.h |   3 +-
- fs/f2fs/super.c   |   2 +
- 7 files changed, 143 insertions(+), 44 deletions(-)
+ drivers/platform/x86/asus-laptop.c | 44 +++++++++++++++---------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index d01345af5f3e..657579358498 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -373,11 +373,10 @@ static void f2fs_write_end_io(struct bio *bio)
- #ifdef CONFIG_BLK_DEV_ZONED
- static void f2fs_zone_write_end_io(struct bio *bio)
+diff --git a/drivers/platform/x86/asus-laptop.c b/drivers/platform/x86/asus-laptop.c
+index 78c42767295a..ccb33d034e2a 100644
+--- a/drivers/platform/x86/asus-laptop.c
++++ b/drivers/platform/x86/asus-laptop.c
+@@ -852,8 +852,8 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+ 	 * so we don't set eof to 1
+ 	 */
+ 
+-	len += sprintf(page, ASUS_LAPTOP_NAME " " ASUS_LAPTOP_VERSION "\n");
+-	len += sprintf(page + len, "Model reference    : %s\n", asus->name);
++	len += sysfs_emit_at(page, len, ASUS_LAPTOP_NAME " " ASUS_LAPTOP_VERSION "\n");
++	len += sysfs_emit_at(page, len, "Model reference    : %s\n", asus->name);
+ 	/*
+ 	 * The SFUN method probably allows the original driver to get the list
+ 	 * of features supported by a given model. For now, 0x0100 or 0x0800
+@@ -862,7 +862,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+ 	 */
+ 	rv = acpi_evaluate_integer(asus->handle, "SFUN", NULL, &temp);
+ 	if (ACPI_SUCCESS(rv))
+-		len += sprintf(page + len, "SFUN value         : %#x\n",
++		len += sysfs_emit_at(page, len, "SFUN value         : %#x\n",
+ 			       (uint) temp);
+ 	/*
+ 	 * The HWRS method return informations about the hardware.
+@@ -874,7 +874,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+ 	 */
+ 	rv = acpi_evaluate_integer(asus->handle, "HWRS", NULL, &temp);
+ 	if (ACPI_SUCCESS(rv))
+-		len += sprintf(page + len, "HWRS value         : %#x\n",
++		len += sysfs_emit_at(page, len, "HWRS value         : %#x\n",
+ 			       (uint) temp);
+ 	/*
+ 	 * Another value for userspace: the ASYM method returns 0x02 for
+@@ -885,25 +885,25 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+ 	 */
+ 	rv = acpi_evaluate_integer(asus->handle, "ASYM", NULL, &temp);
+ 	if (ACPI_SUCCESS(rv))
+-		len += sprintf(page + len, "ASYM value         : %#x\n",
++		len += sysfs_emit_at(page, len, "ASYM value         : %#x\n",
+ 			       (uint) temp);
+ 	if (asus->dsdt_info) {
+ 		snprintf(buf, 16, "%d", asus->dsdt_info->length);
+-		len += sprintf(page + len, "DSDT length        : %s\n", buf);
++		len += sysfs_emit_at(page, len, "DSDT length        : %s\n", buf);
+ 		snprintf(buf, 16, "%d", asus->dsdt_info->checksum);
+-		len += sprintf(page + len, "DSDT checksum      : %s\n", buf);
++		len += sysfs_emit_at(page, len, "DSDT checksum      : %s\n", buf);
+ 		snprintf(buf, 16, "%d", asus->dsdt_info->revision);
+-		len += sprintf(page + len, "DSDT revision      : %s\n", buf);
++		len += sysfs_emit_at(page, len, "DSDT revision      : %s\n", buf);
+ 		snprintf(buf, 7, "%s", asus->dsdt_info->oem_id);
+-		len += sprintf(page + len, "OEM id             : %s\n", buf);
++		len += sysfs_emit_at(page, len, "OEM id             : %s\n", buf);
+ 		snprintf(buf, 9, "%s", asus->dsdt_info->oem_table_id);
+-		len += sprintf(page + len, "OEM table id       : %s\n", buf);
++		len += sysfs_emit_at(page, len, "OEM table id       : %s\n", buf);
+ 		snprintf(buf, 16, "%x", asus->dsdt_info->oem_revision);
+-		len += sprintf(page + len, "OEM revision       : 0x%s\n", buf);
++		len += sysfs_emit_at(page, len, "OEM revision       : 0x%s\n", buf);
+ 		snprintf(buf, 5, "%s", asus->dsdt_info->asl_compiler_id);
+-		len += sprintf(page + len, "ASL comp vendor id : %s\n", buf);
++		len += sysfs_emit_at(page, len, "ASL comp vendor id : %s\n", buf);
+ 		snprintf(buf, 16, "%x", asus->dsdt_info->asl_compiler_revision);
+-		len += sprintf(page + len, "ASL comp revision  : 0x%s\n", buf);
++		len += sysfs_emit_at(page, len, "ASL comp revision  : 0x%s\n", buf);
+ 	}
+ 
+ 	return len;
+@@ -933,7 +933,7 @@ static ssize_t ledd_show(struct device *dev, struct device_attribute *attr,
  {
--	struct f2fs_bio_info *io = (struct f2fs_bio_info *)bio->bi_private;
-+	struct f2fs_sb_info *sbi = iostat_get_bio_private(bio);
+ 	struct asus_laptop *asus = dev_get_drvdata(dev);
  
--	bio->bi_private = io->bi_private;
--	complete(&io->zone_wait);
- 	f2fs_write_end_io(bio);
-+	up(&sbi->available_open_zones);
- }
- #endif
- 
-@@ -533,6 +532,24 @@ static void __submit_merged_bio(struct f2fs_bio_info *io)
- 	if (!io->bio)
- 		return;
- 
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	if (io->open_zone) {
-+		/*
-+		 * if there is no open zone, it will wait for last IO in
-+		 * previous zone before submitting new IO.
-+		 */
-+		down(&fio->sbi->available_open_zones);
-+		io->open_zone = false;
-+		io->zone_opened = true;
-+	}
-+
-+	if (io->close_zone) {
-+		io->bio->bi_end_io = f2fs_zone_write_end_io;
-+		io->zone_opened = false;
-+		io->close_zone = false;
-+	}
-+#endif
-+
- 	if (is_read_io(fio->op)) {
- 		trace_f2fs_prepare_read_bio(io->sbi->sb, fio->type, io->bio);
- 		f2fs_submit_read_bio(io->sbi, io->bio, fio->type);
-@@ -603,9 +620,9 @@ int f2fs_init_write_merge_io(struct f2fs_sb_info *sbi)
- 			INIT_LIST_HEAD(&sbi->write_io[i][j].bio_list);
- 			init_f2fs_rwsem(&sbi->write_io[i][j].bio_list_lock);
- #ifdef CONFIG_BLK_DEV_ZONED
--			init_completion(&sbi->write_io[i][j].zone_wait);
--			sbi->write_io[i][j].zone_pending_bio = NULL;
--			sbi->write_io[i][j].bi_private = NULL;
-+			sbi->write_io[i][j].open_zone = false;
-+			sbi->write_io[i][j].zone_opened = false;
-+			sbi->write_io[i][j].close_zone = false;
- #endif
- 		}
- 	}
-@@ -636,6 +653,31 @@ static void __f2fs_submit_merged_write(struct f2fs_sb_info *sbi,
- 	f2fs_up_write(&io->io_rwsem);
+-	return sprintf(buf, "0x%08x\n", asus->ledd_status);
++	return sysfs_emit(buf, "0x%08x\n", asus->ledd_status);
  }
  
-+void f2fs_blkzoned_submit_merged_write(struct f2fs_sb_info *sbi, int type)
-+{
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	struct f2fs_bio_info *io;
-+
-+	if (!f2fs_sb_has_blkzoned(sbi))
-+		return;
-+
-+	io = sbi->write_io[PAGE_TYPE(type)] + type_to_temp(type);
-+
-+	f2fs_down_write(&io->io_rwsem);
-+	if (io->zone_opened) {
-+		if (io->bio) {
-+			io->close_zone = true;
-+			__submit_merged_bio(io);
-+		} else {
-+			up(&sbi->available_open_zones);
-+			io->zone_opened = false;
-+		}
-+	}
-+	f2fs_up_write(&io->io_rwsem);
-+#endif
-+
-+}
-+
- static void __submit_merged_write_cond(struct f2fs_sb_info *sbi,
- 				struct inode *inode, struct page *page,
- 				nid_t ino, enum page_type type, bool force)
-@@ -920,22 +962,16 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
- }
- 
- #ifdef CONFIG_BLK_DEV_ZONED
--static bool is_end_zone_blkaddr(struct f2fs_sb_info *sbi, block_t blkaddr)
-+static bool is_blkaddr_zone_boundary(struct f2fs_sb_info *sbi,
-+					block_t blkaddr, bool start)
+ static ssize_t ledd_store(struct device *dev, struct device_attribute *attr,
+@@ -993,7 +993,7 @@ static ssize_t wlan_show(struct device *dev, struct device_attribute *attr,
  {
--	int devi = 0;
-+	if (!f2fs_blkaddr_in_seqzone(sbi, blkaddr))
-+		return false;
-+
-+	if (start)
-+		return (blkaddr % sbi->blocks_per_blkz) == 0;
-+	return (blkaddr % sbi->blocks_per_blkz == sbi->blocks_per_blkz - 1);
+ 	struct asus_laptop *asus = dev_get_drvdata(dev);
  
--	if (f2fs_is_multi_device(sbi)) {
--		devi = f2fs_target_device_index(sbi, blkaddr);
--		if (blkaddr < FDEV(devi).start_blk ||
--		    blkaddr > FDEV(devi).end_blk) {
--			f2fs_err(sbi, "Invalid block %x", blkaddr);
--			return false;
--		}
--		blkaddr -= FDEV(devi).start_blk;
--	}
--	return bdev_is_zoned(FDEV(devi).bdev) &&
--		f2fs_blkz_is_seq(sbi, devi, blkaddr) &&
--		(blkaddr % sbi->blocks_per_blkz == sbi->blocks_per_blkz - 1);
- }
- #endif
- 
-@@ -946,20 +982,14 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
- 	struct page *bio_page;
- 	enum count_type type;
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	bool blkzoned = f2fs_sb_has_blkzoned(sbi) && btype < META;
-+#endif
- 
- 	f2fs_bug_on(sbi, is_read_io(fio->op));
- 
- 	f2fs_down_write(&io->io_rwsem);
- next:
--#ifdef CONFIG_BLK_DEV_ZONED
--	if (f2fs_sb_has_blkzoned(sbi) && btype < META && io->zone_pending_bio) {
--		wait_for_completion_io(&io->zone_wait);
--		bio_put(io->zone_pending_bio);
--		io->zone_pending_bio = NULL;
--		io->bi_private = NULL;
--	}
--#endif
--
- 	if (fio->in_list) {
- 		spin_lock(&io->io_lock);
- 		if (list_empty(&io->io_list)) {
-@@ -987,6 +1017,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 	type = WB_DATA_TYPE(bio_page, fio->compressed_page);
- 	inc_page_count(sbi, type);
- 
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	if (blkzoned && is_blkaddr_zone_boundary(sbi, fio->new_blkaddr, true))
-+		io->open_zone = true;
-+#endif
-+
- 	if (io->bio &&
- 	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
- 			      fio->new_blkaddr) ||
-@@ -1012,15 +1047,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 	io->last_block_in_bio = fio->new_blkaddr;
- 
- 	trace_f2fs_submit_page_write(fio->page, fio);
-+
- #ifdef CONFIG_BLK_DEV_ZONED
--	if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
--			is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
--		bio_get(io->bio);
--		reinit_completion(&io->zone_wait);
--		io->bi_private = io->bio->bi_private;
--		io->bio->bi_private = io;
--		io->bio->bi_end_io = f2fs_zone_write_end_io;
--		io->zone_pending_bio = io->bio;
-+	if (blkzoned &&
-+		is_blkaddr_zone_boundary(sbi, fio->new_blkaddr, false)) {
-+		io->close_zone = true;
- 		__submit_merged_bio(io);
- 	}
- #endif
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index a0ae99bcca39..120b4002f7ca 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1232,16 +1232,16 @@ struct f2fs_bio_info {
- 	struct bio *bio;		/* bios to merge */
- 	sector_t last_block_in_bio;	/* last block number */
- 	struct f2fs_io_info fio;	/* store buffered io info. */
--#ifdef CONFIG_BLK_DEV_ZONED
--	struct completion zone_wait;	/* condition value for the previous open zone to close */
--	struct bio *zone_pending_bio;	/* pending bio for the previous zone */
--	void *bi_private;		/* previous bi_private for pending bio */
--#endif
- 	struct f2fs_rwsem io_rwsem;	/* blocking op for bio */
- 	spinlock_t io_lock;		/* serialize DATA/NODE IOs */
- 	struct list_head io_list;	/* track fios */
- 	struct list_head bio_list;	/* bio entry list head */
- 	struct f2fs_rwsem bio_list_lock;	/* lock to protect bio entry list */
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	bool open_zone;			/* open a zone */
-+	bool zone_opened;		/* zone has been opened */
-+	bool close_zone;		/* close a zone */
-+#endif
- };
- 
- #define FDEV(i)				(sbi->devs[i])
-@@ -1558,6 +1558,7 @@ struct f2fs_sb_info {
- #ifdef CONFIG_BLK_DEV_ZONED
- 	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
- 	unsigned int max_open_zones;		/* max open zone resources of the zoned device */
-+	struct semaphore available_open_zones;	/* available open zones */
- #endif
- 
- 	/* for node-related operations */
-@@ -3823,6 +3824,7 @@ void f2fs_destroy_bio_entry_cache(void);
- void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
- 			  enum page_type type);
- int f2fs_init_write_merge_io(struct f2fs_sb_info *sbi);
-+void f2fs_blkzoned_submit_merged_write(struct f2fs_sb_info *sbi, int type);
- void f2fs_submit_merged_write(struct f2fs_sb_info *sbi, enum page_type type);
- void f2fs_submit_merged_write_cond(struct f2fs_sb_info *sbi,
- 				struct inode *inode, struct page *page,
-@@ -4470,6 +4472,25 @@ static inline bool f2fs_blkz_is_seq(struct f2fs_sb_info *sbi, int devi,
- 
- 	return test_bit(zno, FDEV(devi).blkz_seq);
- }
-+
-+static inline bool f2fs_blkaddr_in_seqzone(struct f2fs_sb_info *sbi,
-+							block_t blkaddr)
-+{
-+	int devi = 0;
-+
-+	if (f2fs_is_multi_device(sbi)) {
-+		devi = f2fs_target_device_index(sbi, blkaddr);
-+		if (blkaddr < FDEV(devi).start_blk ||
-+		    blkaddr > FDEV(devi).end_blk) {
-+			f2fs_err(sbi, "Invalid block %x", blkaddr);
-+			return false;
-+		}
-+		blkaddr -= FDEV(devi).start_blk;
-+	}
-+
-+	return bdev_is_zoned(FDEV(devi).bdev) &&
-+		f2fs_blkz_is_seq(sbi, devi, blkaddr);
-+}
- #endif
- 
- static inline int f2fs_bdev_index(struct f2fs_sb_info *sbi,
-diff --git a/fs/f2fs/iostat.c b/fs/f2fs/iostat.c
-index f8703038e1d8..a8626e297876 100644
---- a/fs/f2fs/iostat.c
-+++ b/fs/f2fs/iostat.c
-@@ -237,6 +237,13 @@ static inline void __update_iostat_latency(struct bio_iostat_ctx *iostat_ctx,
- 	spin_unlock_irqrestore(&sbi->iostat_lat_lock, flags);
+-	return sprintf(buf, "%d\n", asus_wireless_status(asus, WL_RSTS));
++	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, WL_RSTS));
  }
  
-+void *iostat_get_bio_private(struct bio *bio)
-+{
-+	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
-+
-+	return iostat_ctx->sbi;
-+}
-+
- void iostat_update_and_unbind_ctx(struct bio *bio)
+ static ssize_t wlan_store(struct device *dev, struct device_attribute *attr,
+@@ -1022,7 +1022,7 @@ static ssize_t bluetooth_show(struct device *dev, struct device_attribute *attr,
  {
- 	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
-diff --git a/fs/f2fs/iostat.h b/fs/f2fs/iostat.h
-index eb99d05cf272..9006c3d41590 100644
---- a/fs/f2fs/iostat.h
-+++ b/fs/f2fs/iostat.h
-@@ -58,6 +58,7 @@ static inline struct bio_post_read_ctx *get_post_read_ctx(struct bio *bio)
- 	return iostat_ctx->post_read_ctx;
+ 	struct asus_laptop *asus = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%d\n", asus_wireless_status(asus, BT_RSTS));
++	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, BT_RSTS));
  }
  
-+extern void *iostat_get_bio_private(struct bio *bio);
- extern void iostat_update_and_unbind_ctx(struct bio *bio);
- extern void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
- 		struct bio *bio, struct bio_post_read_ctx *ctx);
-@@ -68,6 +69,7 @@ extern void f2fs_destroy_iostat(struct f2fs_sb_info *sbi);
- #else
- static inline void f2fs_update_iostat(struct f2fs_sb_info *sbi, struct inode *inode,
- 		enum iostat_type type, unsigned long long io_bytes) {}
-+static inline void *iostat_get_bio_private(struct bio *bio) { return bio->bi_private; }
- static inline void iostat_update_and_unbind_ctx(struct bio *bio) {}
- static inline void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
- 		struct bio *bio, struct bio_post_read_ctx *ctx) {}
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 0161840917c2..dc0b4c967dbf 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3148,6 +3148,9 @@ static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
- 		return err;
- 	stat_inc_seg_type(sbi, curseg);
- 	locate_dirty_segment(sbi, old_segno);
-+
-+	f2fs_blkzoned_submit_merged_write(sbi, type);
-+
- 	return 0;
+ static ssize_t bluetooth_store(struct device *dev,
+@@ -1052,7 +1052,7 @@ static ssize_t wimax_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct asus_laptop *asus = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%d\n", asus_wireless_status(asus, WM_RSTS));
++	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, WM_RSTS));
  }
  
-@@ -3538,7 +3541,6 @@ static int __get_segment_type(struct f2fs_io_info *fio)
- 	}
+ static ssize_t wimax_store(struct device *dev, struct device_attribute *attr,
+@@ -1081,7 +1081,7 @@ static ssize_t wwan_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct asus_laptop *asus = dev_get_drvdata(dev);
  
- 	fio->temp = f2fs_get_segment_temp(type);
--
- 	return type;
+-	return sprintf(buf, "%d\n", asus_wireless_status(asus, WW_RSTS));
++	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, WW_RSTS));
  }
  
-@@ -4206,6 +4208,27 @@ static int restore_curseg_summaries(struct f2fs_sb_info *sbi)
- 		return -EINVAL;
- 	}
+ static ssize_t wwan_store(struct device *dev, struct device_attribute *attr,
+@@ -1151,7 +1151,7 @@ static ssize_t ls_switch_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct asus_laptop *asus = dev_get_drvdata(dev);
  
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	if (f2fs_sb_has_blkzoned(sbi)) {
-+		for (type = 0; type < NR_PERSISTENT_LOG; type++) {
-+			struct curseg_info *curseg = CURSEG_I(sbi, type);
-+			enum page_type ptype;
-+			enum temp_type temp;
-+
-+			if (!(curseg->next_blkoff % sbi->blocks_per_blkz))
-+				continue;
-+
-+			if (!f2fs_blkaddr_in_seqzone(sbi,
-+					START_BLOCK(sbi, curseg->segno)))
-+				continue;
-+
-+			ptype = PAGE_TYPE(type);
-+			temp = type_to_temp(type);
-+			down(&sbi->available_open_zones);
-+			sbi->write_io[ptype][temp].zone_opened = true;
-+		}
-+	}
-+#endif
- 	return 0;
+-	return sprintf(buf, "%d\n", asus->light_switch);
++	return sysfs_emit(buf, "%d\n", asus->light_switch);
  }
  
-@@ -5533,6 +5556,18 @@ static void destroy_curseg(struct f2fs_sb_info *sbi)
- 		kfree(array[i].sum_blk);
- 		kfree(array[i].journal);
- 		kfree(array[i].target_map);
-+
-+#ifdef CONFIG_BLK_DEV_ZONED
-+		if (f2fs_sb_has_blkzoned(sbi)) {
-+			enum page_type ptype = PAGE_TYPE(i);
-+			enum temp_type temp = type_to_temp(i);
-+
-+			if (sbi->write_io[ptype][temp].zone_opened) {
-+				up(&sbi->available_open_zones);
-+				sbi->write_io[ptype][temp].zone_opened = false;
-+			}
-+		}
-+#endif
- 	}
- 	kfree(array);
+ static ssize_t ls_switch_store(struct device *dev,
+@@ -1182,7 +1182,7 @@ static ssize_t ls_level_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct asus_laptop *asus = dev_get_drvdata(dev);
+ 
+-	return sprintf(buf, "%d\n", asus->light_level);
++	return sysfs_emit(buf, "%d\n", asus->light_level);
  }
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index 71131a0b00d7..64a342d1c89d 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -24,7 +24,8 @@
  
- #define IS_DATASEG(t)	((t) <= CURSEG_COLD_DATA)
- #define IS_NODESEG(t)	((t) >= CURSEG_HOT_NODE && (t) <= CURSEG_COLD_NODE)
--#define SE_PAGETYPE(se)	((IS_NODESEG((se)->type) ? NODE : DATA))
-+#define PAGE_TYPE(t)	(IS_NODESEG(t) ? NODE : DATA)
-+#define SE_PAGETYPE(se)	(PAGE_TYPE((se)->type))
+ static ssize_t ls_level_store(struct device *dev, struct device_attribute *attr,
+@@ -1228,7 +1228,7 @@ static ssize_t ls_value_show(struct device *dev, struct device_attribute *attr,
+ 	if (!err)
+ 		err = pega_int_read(asus, PEGA_READ_ALS_L, &lo);
+ 	if (!err)
+-		return sprintf(buf, "%d\n", 10 * hi + lo);
++		return sysfs_emit(buf, "%d\n", 10 * hi + lo);
+ 	return err;
+ }
+ static DEVICE_ATTR_RO(ls_value);
+@@ -1264,7 +1264,7 @@ static ssize_t gps_show(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct asus_laptop *asus = dev_get_drvdata(dev);
  
- static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
- 						unsigned short seg_type)
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index ef673f853366..32aa6d6fa871 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3893,6 +3893,8 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
- 				sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
- 			return -EINVAL;
- 		}
-+
-+		sema_init(&sbi->available_open_zones, sbi->max_open_zones);
- 	}
+-	return sprintf(buf, "%d\n", asus_gps_status(asus));
++	return sysfs_emit(buf, "%d\n", asus_gps_status(asus));
+ }
  
- 	zone_sectors = bdev_zone_sectors(bdev);
+ static ssize_t gps_store(struct device *dev, struct device_attribute *attr,
 -- 
-2.40.1
+2.34.1
 
 
