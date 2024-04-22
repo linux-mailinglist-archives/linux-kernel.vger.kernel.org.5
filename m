@@ -1,307 +1,329 @@
-Return-Path: <linux-kernel+bounces-153655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DC498AD135
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:48:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D92698AD128
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:46:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8D151F21642
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:48:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AB08B21C07
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CBBE153567;
-	Mon, 22 Apr 2024 15:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D58153562;
+	Mon, 22 Apr 2024 15:46:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eqzijObR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="u6c3ebGq"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C4911534F3;
-	Mon, 22 Apr 2024 15:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059C214F10F
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713800889; cv=none; b=EABxh2EwJk1S/Wgjb/kRypky4dcoLhnVaYyy5FJzsn4r68Qf0+RV8p8f0W5otd61STKoVJHb3Z2O8OHRZsqxvV5h8EUDkLOqqvJvYVVOTzICCzv3u2rpCKR0OJcl9oYMCrMvIRKiQKLJkZNvqfnEwo0ULFezmjD2351zboN41vA=
+	t=1713800766; cv=none; b=KYWP4sx/EnxwJI3WVQs6HIiZp+/qyEgQQELGzo8Tg85HvkmCaSwisLR7ohPI/Afuk0ZcnByKkr2kwkk6fccI2YcW6mzUelf0i2Bv9TzjsR9YDlFsz2QZEoJfKr8GACa0LBR5eJxDpvl+ILVHkGCUGY2AlGTmpxiC1a5TtKkr53E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713800889; c=relaxed/simple;
-	bh=TGkCC1wb/ipHHm0xz1HjzQqToV5Sfv84Bet9nt2x64E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YZoq94HMSZPRiteVYokdohvTcljQnl+435eRB4dXTIQoxZLS8PjXNxB9PlOoL8LtFjE4MU6JgkBKEiXkXJAwMNOAgXPhp7je7jTkBeylGfmli4N3Bi56LVgsfjQ7Hxe+vQy/VZwE7OcwvwtvY+qJ93yZHxvVMjnpWNxMJTjV6lY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eqzijObR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14060C113CC;
-	Mon, 22 Apr 2024 15:48:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713800888;
-	bh=TGkCC1wb/ipHHm0xz1HjzQqToV5Sfv84Bet9nt2x64E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eqzijObRUsJ59JAHcqlBP0SQl5L5rx9qT/7vnci9gVpigjDM4nbbwfpOoOTHizdQt
-	 eNvZISlygM5uYM0hosK0Vmom9czSy3J7P3Pj72vY1r5dZDVzppKwqbB0t9rvG78wPo
-	 Ocoo829L6rUzqT/8+eIU//ta/cAI+1pPrlUlaAL6EWoweY32E7S8ewcipGnVSRinCv
-	 R6zXwDoAC1cYV36MYmO0IOQq2YdqHhvWhNpyprxnUWCeCcIyjvZ/ngRRGD2rFMfqeW
-	 AkvrVN+vANtrmgGHLXyChEiTTbxac62koeGlwjWSDiCP/K34jP6KFMzL/GsMF3z+Z6
-	 3uSrzXaBvZQrA==
-Date: Mon, 22 Apr 2024 21:15:02 +0530
-From: Naveen N Rao <naveen@kernel.org>
-To: Gautam Menghani <gautam@linux.ibm.com>
-Cc: mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu, 
-	aneesh.kumar@kernel.org, Vaibhav Jain <vaibhav@linux.ibm.com>, 
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v5 RESEND] arch/powerpc/kvm: Add support for reading VPA
- counters for pseries guests
-Message-ID: <aauzmvtbpgxbr4aa3s4k33cdi7fljs5q4ifn5x2swncz7dtvam@gclohylavkpl>
-References: <20240402070656.28441-1-gautam@linux.ibm.com>
+	s=arc-20240116; t=1713800766; c=relaxed/simple;
+	bh=Oqe94VpkGzk9aI9bTFO9lAx9HZdL+gdczyCkhmSweuM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jiQFmCoKPgfXroZHukGDuaGHZ2Sd13AcZ4cGNVryOFcL88lsC/8jsbUDtJWh3RPL9c8AiGkazxtq6vB5HsIZzSuTfDG12BtesO0ZiQva3zQwOBkSTO4p8Op8U3Lk6zoVtUIJ7KrWRc22H82jYa2ldCTH8N95AMuGchj5cf7Cz9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=u6c3ebGq; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-419fc79e4dcso11731525e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713800763; x=1714405563; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QRhycPgQpwIvlf2hP1EnQY6sOD615yvq6bGxEhUzAgA=;
+        b=u6c3ebGqOgtsxK6rj28g9DreA/No7m0C+hUwWaL2Y9cGlHyrOxqeCEy37CfpESNIcr
+         MG0Kg3XzLds+oHnF6rtmDabs7Jfa8X6TqO276QFoX2WsYAd/Yl1rvNtPL+fs/0DJBRlM
+         cnv7u8aUM8I1pVZ+g46Ho4Ktsc5NAVWAadnUodjUgcqF46JcysMdHV0DG1ctbfqvEdnZ
+         R5LQFbO2P6tPSa467NtR3gFI+EJ7NlEQDC82P+CM2KmWyZP4rH89p8iku+Ba5QhaY7rf
+         gahQRZsS18l/gc9iM/kntdrZ+5ngI7kb46Wk11IZwS3jIMXQ8eKu6Uhv9idQl8heNylc
+         ZMIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713800763; x=1714405563;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QRhycPgQpwIvlf2hP1EnQY6sOD615yvq6bGxEhUzAgA=;
+        b=TOa3rmCL5eVBPMq7mmRLwydDss7Qd4SJAoUFsXveKLACtp4giUYiaupJ7sHuWfnouy
+         /zwKFNO/BNbpMZtkZhwtZ1wA0boF73DG68iuOF7/M9jsSE43OvMrTcQ6kRvwfBFJlo6R
+         rV6gS8axQVDhaqGOcdPKGzsRCiFOE5VAe8HsYjqPpeM89eHzCINBMAyQ1MizXonUOvGY
+         oXwjhN6qxqg9l6lQ4d2tMITfpUZb8eQFkyTLxTQlEyyWap0p0KWZ2K4NhuBieeLz1kIX
+         v/UPdcsc+ZJT1CM5oxwzM56UdScYjlRKe161nXi1UTaI98iOdkbbnHcdyCHrU8tGfqUu
+         xo/w==
+X-Forwarded-Encrypted: i=1; AJvYcCUlXjUISWnx/YvpWP6kdpe4BqVrzkTc+0p/TdvNT5q3gE8Hzp8mySNrd/iFZeD3clY5Z96PnReOyBoTqrde1czdohKeYGfWbbqb4OYG
+X-Gm-Message-State: AOJu0Yxwt/pKH7D7yy7qLNYs+I/GKbukGfMa18xbap1wrGRUlrXN5B5k
+	89m3lZq73RKt6Vp+osKkTrY0cscZUSyoT7OlGllYU1r2GOTTJDRMc6nP2zrbWc8=
+X-Google-Smtp-Source: AGHT+IHCeMPLS9nliM1CTYfOFO1ec5EePI1GqVcgmrHjQqsOMOPBPCULd64+GUugUnsLHY5e6ecbqg==
+X-Received: by 2002:a05:600c:a004:b0:417:c329:b52b with SMTP id jg4-20020a05600ca00400b00417c329b52bmr6971360wmb.39.1713800763311;
+        Mon, 22 Apr 2024 08:46:03 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id n8-20020a05600c500800b0041a97870d6fsm910461wmr.2.2024.04.22.08.46.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 08:46:02 -0700 (PDT)
+Message-ID: <d8c1d7a4-60d0-4940-b604-ee62591fa3e8@linaro.org>
+Date: Mon, 22 Apr 2024 17:46:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402070656.28441-1-gautam@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] thermal: k3_j72xx_bandgap: implement suspend/resume
+ support
+Content-Language: en-US
+To: Thomas Richard <thomas.richard@bootlin.com>, rafael@kernel.org
+Cc: rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, gregory.clement@bootlin.com,
+ thomas.petazzoni@bootlin.com, theo.lebrun@bootlin.com, u-kumar1@ti.com,
+ Keerthy <j-keerthy@ti.com>
+References: <20240417120338.910769-1-thomas.richard@bootlin.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20240417120338.910769-1-thomas.richard@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 02, 2024 at 12:36:54PM +0530, Gautam Menghani wrote:
-> PAPR hypervisor has introduced three new counters in the VPA area of
-> LPAR CPUs for KVM L2 guest (see [1] for terminology) observability - 2
-> for context switches from host to guest and vice versa, and 1 counter
-> for getting the total time spent inside the KVM guest. Add a tracepoint
-> that enables reading the counters for use by ftrace/perf. Note that this
-> tracepoint is only available for nestedv2 API (i.e, KVM on PowerVM).
+On 17/04/2024 14:03, Thomas Richard wrote:
+> From: Théo Lebrun <theo.lebrun@bootlin.com>
 > 
-> Also maintain an aggregation of the context switch times in vcpu->arch.
-> This will be useful in getting the aggregate times with a pmu driver
-> which will be upstreamed in the near future.
-
-It would be better to add code to maintain aggregate times as part of 
-that pmu driver.
-
+> This add suspend-to-ram support.
 > 
-> [1] Terminology:
-> a. L1 refers to the VM (LPAR) booted on top of PAPR hypervisor
-> b. L2 refers to the KVM guest booted on top of L1.
+> The derived_table is kept-as is, so the resume is only about
+> pm_runtime_* calls and restoring the same registers as the probe.
 > 
-> Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
-> Signed-off-by: Gautam Menghani <gautam@linux.ibm.com>
+> Extract the hardware initialization procedure to a function called at
+> both probe-time & resume-time.
+> 
+> The probe-time loop is split in two to ensure doing the hardware
+> initialization before registering thermal zones. That ensures our
+> callbacks cannot be called while in bad state.
+> 
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> Acked-by: Keerthy <j-keerthy@ti.com>
+> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 > ---
-> v5 RESEND: 
-> 1. Add the changelog
 > 
-> v4 -> v5:
-> 1. Define helper functions for getting/setting the accumulation counter
-> in L2's VPA
-> 
-> v3 -> v4:
-> 1. After vcpu_run, check the VPA flag instead of checking for tracepoint
-> being enabled for disabling the cs time accumulation.
-> 
-> v2 -> v3:
-> 1. Move the counter disabling and zeroing code to a different function.
-> 2. Move the get_lppaca() inside the tracepoint_enabled() branch.
-> 3. Add the aggregation logic to maintain total context switch time.
-> 
-> v1 -> v2:
-> 1. Fix the build error due to invalid struct member reference.
-> 
->  arch/powerpc/include/asm/kvm_host.h |  5 ++++
->  arch/powerpc/include/asm/lppaca.h   | 11 +++++---
->  arch/powerpc/kvm/book3s_hv.c        | 40 +++++++++++++++++++++++++++++
->  arch/powerpc/kvm/trace_hv.h         | 25 ++++++++++++++++++
->  4 files changed, 78 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
-> index 8abac532146e..d953b32dd68a 100644
-> --- a/arch/powerpc/include/asm/kvm_host.h
-> +++ b/arch/powerpc/include/asm/kvm_host.h
-> @@ -847,6 +847,11 @@ struct kvm_vcpu_arch {
->  	gpa_t nested_io_gpr;
->  	/* For nested APIv2 guests*/
->  	struct kvmhv_nestedv2_io nestedv2_io;
-> +
-> +	/* Aggregate context switch and guest run time info (in ns) */
-> +	u64 l1_to_l2_cs_agg;
-> +	u64 l2_to_l1_cs_agg;
-> +	u64 l2_runtime_agg;
+> v3:
+>   - Remove __maybe_unused attributes and use the magic of PTR_IF()
 
-Can be dropped from this patch.
+Where are these changes ?
 
->  #endif
->  
->  #ifdef CONFIG_KVM_BOOK3S_HV_EXIT_TIMING
-> diff --git a/arch/powerpc/include/asm/lppaca.h b/arch/powerpc/include/asm/lppaca.h
-> index 61ec2447dabf..bda6b86b9f13 100644
-> --- a/arch/powerpc/include/asm/lppaca.h
-> +++ b/arch/powerpc/include/asm/lppaca.h
-> @@ -62,7 +62,8 @@ struct lppaca {
->  	u8	donate_dedicated_cpu;	/* Donate dedicated CPU cycles */
->  	u8	fpregs_in_use;
->  	u8	pmcregs_in_use;
-> -	u8	reserved8[28];
-> +	u8	l2_accumul_cntrs_enable;  /* Enable usage of counters for KVM guest */
-
-A simpler name - l2_counters_enable or such?
-
-> +	u8	reserved8[27];
->  	__be64	wait_state_cycles;	/* Wait cycles for this proc */
->  	u8	reserved9[28];
->  	__be16	slb_count;		/* # of SLBs to maintain */
-> @@ -92,9 +93,13 @@ struct lppaca {
->  	/* cacheline 4-5 */
->  
->  	__be32	page_ins;		/* CMO Hint - # page ins by OS */
-> -	u8	reserved12[148];
-> +	u8	reserved12[28];
-> +	volatile __be64 l1_to_l2_cs_tb;
-> +	volatile __be64 l2_to_l1_cs_tb;
-> +	volatile __be64 l2_runtime_tb;
-> +	u8 reserved13[96];
->  	volatile __be64 dtl_idx;	/* Dispatch Trace Log head index */
-> -	u8	reserved13[96];
-> +	u8	reserved14[96];
->  } ____cacheline_aligned;
->  
->  #define lppaca_of(cpu)	(*paca_ptrs[cpu]->lppaca_ptr)
-> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-> index 8e86eb577eb8..fea1c1429975 100644
-> --- a/arch/powerpc/kvm/book3s_hv.c
-> +++ b/arch/powerpc/kvm/book3s_hv.c
-> @@ -4108,6 +4108,37 @@ static void vcpu_vpa_increment_dispatch(struct kvm_vcpu *vcpu)
->  	}
->  }
->  
-> +static inline int kvmhv_get_l2_accumul(void)
+> v2:
+>   - Fix warnings/errors reported by kernel test robot
+> 
+>   drivers/thermal/k3_j72xx_bandgap.c | 112 ++++++++++++++++++++---------
+>   1 file changed, 79 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/thermal/k3_j72xx_bandgap.c b/drivers/thermal/k3_j72xx_bandgap.c
+> index c74094a86982..a7244e05ed5c 100644
+> --- a/drivers/thermal/k3_j72xx_bandgap.c
+> +++ b/drivers/thermal/k3_j72xx_bandgap.c
+> @@ -178,6 +178,7 @@ struct k3_j72xx_bandgap {
+>   	void __iomem *base;
+>   	void __iomem *cfg2_base;
+>   	struct k3_thermal_data *ts_data[K3_VTM_MAX_NUM_TS];
+> +	int cnt;
+>   };
+>   
+>   /* common data structures */
+> @@ -338,24 +339,53 @@ static void print_look_up_table(struct device *dev, int *ref_table)
+>   		dev_dbg(dev, "%d       %d %d\n", i, derived_table[i], ref_table[i]);
+>   }
+>   
+> +static void k3_j72xx_bandgap_init_hw(struct k3_j72xx_bandgap *bgp)
 > +{
-> +	return get_lppaca()->l2_accumul_cntrs_enable;
+> +	struct k3_thermal_data *data;
+> +	int id, high_max, low_temp;
+> +	u32 val;
+> +
+> +	for (id = 0; id < bgp->cnt; id++) {
+> +		data = bgp->ts_data[id];
+> +		val = readl(bgp->cfg2_base + data->ctrl_offset);
+> +		val |= (K3_VTM_TMPSENS_CTRL_MAXT_OUTRG_EN |
+> +			K3_VTM_TMPSENS_CTRL_SOC |
+> +			K3_VTM_TMPSENS_CTRL_CLRZ | BIT(4));
+> +		writel(val, bgp->cfg2_base + data->ctrl_offset);
+> +	}
+> +
+> +	/*
+> +	 * Program TSHUT thresholds
+> +	 * Step 1: set the thresholds to ~123C and 105C WKUP_VTM_MISC_CTRL2
+> +	 * Step 2: WKUP_VTM_TMPSENS_CTRL_j set the MAXT_OUTRG_EN  bit
+> +	 *         This is already taken care as per of init
+> +	 * Step 3: WKUP_VTM_MISC_CTRL set the ANYMAXT_OUTRG_ALERT_EN  bit
+> +	 */
+> +	high_max = k3_j72xx_bandgap_temp_to_adc_code(MAX_TEMP);
+> +	low_temp = k3_j72xx_bandgap_temp_to_adc_code(COOL_DOWN_TEMP);
+> +
+> +	writel((low_temp << 16) | high_max, bgp->cfg2_base + K3_VTM_MISC_CTRL2_OFFSET);
+> +	mdelay(100);
+
+	100ms ?
+
+Ok, I know you did not introduce this delay. But as it is a suspend / 
+resume, this delay will be called at each resume which is not acceptable 
+given its duration.
+
+Please, investigate a way to get rid of this delay
+
+
+> +	writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, bgp->cfg2_base + K3_VTM_MISC_CTRL_OFFSET);
 > +}
 > +
-> +static inline void kvmhv_set_l2_accumul(int val)
-					   ^^^
-					   bool?
+>   struct k3_j72xx_bandgap_data {
+>   	const bool has_errata_i2128;
+>   };
+>   
+>   static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+>   {
+> -	int ret = 0, cnt, val, id;
+> -	int high_max, low_temp;
+> -	struct resource *res;
+> +	const struct k3_j72xx_bandgap_data *driver_data;
+> +	struct thermal_zone_device *ti_thermal;
+>   	struct device *dev = &pdev->dev;
+> +	bool workaround_needed = false;
+>   	struct k3_j72xx_bandgap *bgp;
+>   	struct k3_thermal_data *data;
+> -	bool workaround_needed = false;
+> -	const struct k3_j72xx_bandgap_data *driver_data;
+> -	struct thermal_zone_device *ti_thermal;
+> -	int *ref_table;
+>   	struct err_values err_vals;
+>   	void __iomem *fuse_base;
+> +	int ret = 0, val, id;
+> +	struct resource *res;
+> +	int *ref_table;
 
+No related to the changes but the patch is showing signs the driver 
+needs a code cleanup AFAICT
+
+>   	const s64 golden_factors[] = {
+>   		-490019999999999936,
+> @@ -422,10 +452,10 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+>   
+>   	/* Get the sensor count in the VTM */
+>   	val = readl(bgp->base + K3_VTM_DEVINFO_PWR0_OFFSET);
+> -	cnt = val & K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK;
+> -	cnt >>= __ffs(K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK);
+> +	bgp->cnt = val & K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK;
+> +	bgp->cnt >>= __ffs(K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK);
+>   
+> -	data = devm_kcalloc(bgp->dev, cnt, sizeof(*data), GFP_KERNEL);
+> +	data = devm_kcalloc(bgp->dev, bgp->cnt, sizeof(*data), GFP_KERNEL);
+>   	if (!data) {
+>   		ret = -ENOMEM;
+>   		goto err_alloc;
+> @@ -449,8 +479,8 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+>   	else
+>   		init_table(3, ref_table, pvt_wa_factors);
+>   
+> -	/* Register the thermal sensors */
+> -	for (id = 0; id < cnt; id++) {
+> +	/* Precompute the derived table & fill each thermal sensor struct */
+> +	for (id = 0; id < bgp->cnt; id++) {
+>   		data[id].bgp = bgp;
+>   		data[id].ctrl_offset = K3_VTM_TMPSENS0_CTRL_OFFSET + id * 0x20;
+>   		data[id].stat_offset = data[id].ctrl_offset +
+> @@ -470,13 +500,13 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+>   		else if (id == 0 && !workaround_needed)
+>   			memcpy(derived_table, ref_table, TABLE_SIZE * 4);
+>   
+> -		val = readl(data[id].bgp->cfg2_base + data[id].ctrl_offset);
+> -		val |= (K3_VTM_TMPSENS_CTRL_MAXT_OUTRG_EN |
+> -			K3_VTM_TMPSENS_CTRL_SOC |
+> -			K3_VTM_TMPSENS_CTRL_CLRZ | BIT(4));
+> -		writel(val, data[id].bgp->cfg2_base + data[id].ctrl_offset);
+> -
+>   		bgp->ts_data[id] = &data[id];
+> +	}
+> +
+> +	k3_j72xx_bandgap_init_hw(bgp);
+> +
+> +	/* Register the thermal sensors */
+> +	for (id = 0; id < bgp->cnt; id++) {
+>   		ti_thermal = devm_thermal_of_zone_register(bgp->dev, id, &data[id],
+>   							   &k3_of_thermal_ops);
+>   		if (IS_ERR(ti_thermal)) {
+> @@ -486,21 +516,7 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+>   		}
+>   	}
+>   
+> -	/*
+> -	 * Program TSHUT thresholds
+> -	 * Step 1: set the thresholds to ~123C and 105C WKUP_VTM_MISC_CTRL2
+> -	 * Step 2: WKUP_VTM_TMPSENS_CTRL_j set the MAXT_OUTRG_EN  bit
+> -	 *         This is already taken care as per of init
+> -	 * Step 3: WKUP_VTM_MISC_CTRL set the ANYMAXT_OUTRG_ALERT_EN  bit
+> -	 */
+> -	high_max = k3_j72xx_bandgap_temp_to_adc_code(MAX_TEMP);
+> -	low_temp = k3_j72xx_bandgap_temp_to_adc_code(COOL_DOWN_TEMP);
+> -
+> -	writel((low_temp << 16) | high_max, data[0].bgp->cfg2_base +
+> -	       K3_VTM_MISC_CTRL2_OFFSET);
+> -	mdelay(100);
+> -	writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, data[0].bgp->cfg2_base +
+> -	       K3_VTM_MISC_CTRL_OFFSET);
+> +	platform_set_drvdata(pdev, bgp);
+>   
+>   	print_look_up_table(dev, ref_table);
+>   	/*
+> @@ -527,6 +543,35 @@ static void k3_j72xx_bandgap_remove(struct platform_device *pdev)
+>   	pm_runtime_disable(&pdev->dev);
+>   }
+>   
+> +static int k3_j72xx_bandgap_suspend(struct device *dev)
 > +{
-> +	get_lppaca()->l2_accumul_cntrs_enable = val;
+> +	pm_runtime_put_sync(dev);
+> +	pm_runtime_disable(dev);
+> +	return 0;
 > +}
 > +
-> +static void do_trace_nested_cs_time(struct kvm_vcpu *vcpu)
+> +static int k3_j72xx_bandgap_resume(struct device *dev)
 > +{
-> +	struct lppaca *lp = get_lppaca();
-> +	u64 l1_to_l2_ns, l2_to_l1_ns, l2_runtime_ns;
+> +	struct k3_j72xx_bandgap *bgp = dev_get_drvdata(dev);
+> +	int ret;
 > +
-> +	l1_to_l2_ns = tb_to_ns(be64_to_cpu(lp->l1_to_l2_cs_tb));
-> +	l2_to_l1_ns = tb_to_ns(be64_to_cpu(lp->l2_to_l1_cs_tb));
-> +	l2_runtime_ns = tb_to_ns(be64_to_cpu(lp->l2_runtime_tb));
-> +	trace_kvmppc_vcpu_exit_cs_time(vcpu, l1_to_l2_ns, l2_to_l1_ns,
-> +					l2_runtime_ns);
-> +	lp->l1_to_l2_cs_tb = 0;
-> +	lp->l2_to_l1_cs_tb = 0;
-> +	lp->l2_runtime_tb = 0;
-> +	kvmhv_set_l2_accumul(0);
+> +	pm_runtime_enable(dev);
+> +	ret = pm_runtime_get_sync(dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(dev);
+> +		pm_runtime_disable(dev);
+> +		return ret;
+> +	}
 > +
-> +	// Maintain an aggregate of context switch times
-> +	vcpu->arch.l1_to_l2_cs_agg += l1_to_l2_ns;
-> +	vcpu->arch.l2_to_l1_cs_agg += l2_to_l1_ns;
-> +	vcpu->arch.l2_runtime_agg += l2_runtime_ns;
+> +	k3_j72xx_bandgap_init_hw(bgp);
+> +
+> +	return 0;
 > +}
 > +
->  static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
->  				     unsigned long lpcr, u64 *tb)
->  {
-> @@ -4130,6 +4161,11 @@ static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
->  	kvmppc_gse_put_u64(io->vcpu_run_input, KVMPPC_GSID_LPCR, lpcr);
->  
->  	accumulate_time(vcpu, &vcpu->arch.in_guest);
+> +static DEFINE_SIMPLE_DEV_PM_OPS(k3_j72xx_bandgap_pm_ops,
+> +				k3_j72xx_bandgap_suspend,
+> +				k3_j72xx_bandgap_resume);
 > +
-> +	/* Enable the guest host context switch time tracking */
-> +	if (unlikely(trace_kvmppc_vcpu_exit_cs_time_enabled()))
-> +		kvmhv_set_l2_accumul(1);
-> +
->  	rc = plpar_guest_run_vcpu(0, vcpu->kvm->arch.lpid, vcpu->vcpu_id,
->  				  &trap, &i);
->  
-> @@ -4156,6 +4192,10 @@ static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
->  
->  	timer_rearm_host_dec(*tb);
->  
-> +	/* Record context switch and guest_run_time data */
-> +	if (kvmhv_get_l2_accumul())
-> +		do_trace_nested_cs_time(vcpu);
-> +
->  	return trap;
->  }
+>   static const struct k3_j72xx_bandgap_data k3_j72xx_bandgap_j721e_data = {
+>   	.has_errata_i2128 = true,
+>   };
+> @@ -554,6 +599,7 @@ static struct platform_driver k3_j72xx_bandgap_sensor_driver = {
+>   	.driver = {
+>   		.name = "k3-j72xx-soc-thermal",
+>   		.of_match_table	= of_k3_j72xx_bandgap_match,
+> +		.pm = pm_sleep_ptr(&k3_j72xx_bandgap_pm_ops),
+>   	},
+>   };
+>   
 
-I'm assuming the counters in VPA are cumulative, since you are zero'ing 
-them out on exit. If so, I think a better way to implement this is to 
-use TRACE_EVENT_FN() and provide tracepoint registration and 
-unregistration functions. You can then enable the counters once during 
-registration and avoid repeated writes to the VPA area. With that, you 
-also won't need to do anything before vcpu entry. If you maintain 
-previous values, you can calculate the delta and emit the trace on vcpu 
-exit. The values in VPA area can then serve as the cumulative values.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
->  
-> diff --git a/arch/powerpc/kvm/trace_hv.h b/arch/powerpc/kvm/trace_hv.h
-> index 8d57c8428531..ab19977c91b4 100644
-> --- a/arch/powerpc/kvm/trace_hv.h
-> +++ b/arch/powerpc/kvm/trace_hv.h
-> @@ -491,6 +491,31 @@ TRACE_EVENT(kvmppc_run_vcpu_enter,
->  	TP_printk("VCPU %d: tgid=%d", __entry->vcpu_id, __entry->tgid)
->  );
->  
-> +TRACE_EVENT(kvmppc_vcpu_exit_cs_time,
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
-Not sure what "exit" signifies in the tracepoint name. Can this be 
-simplified to kvmppc_vcpu_cs_time? Perhaps kvmppc_vcpu_stats, which will 
-allow more vcpu stats to be exposed in future as necessary?
-
-> +	TP_PROTO(struct kvm_vcpu *vcpu, u64 l1_to_l2_cs, u64 l2_to_l1_cs,
-> +		u64 l2_runtime),
-
-Can be on a single line, we no longer restrict lines to 80 columns. 100 
-or so is fine.
-
-> +
-> +	TP_ARGS(vcpu, l1_to_l2_cs, l2_to_l1_cs, l2_runtime),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(int,		vcpu_id)
-> +		__field(__u64,		l1_to_l2_cs_ns)
-> +		__field(__u64,		l2_to_l1_cs_ns)
-> +		__field(__u64,		l2_runtime_ns)
-
-Not sure there is a reason to use __u64 - just u64 should work.
-
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->vcpu_id  = vcpu->vcpu_id;
-> +		__entry->l1_to_l2_cs_ns = l1_to_l2_cs;
-> +		__entry->l2_to_l1_cs_ns = l2_to_l1_cs;
-> +		__entry->l2_runtime_ns = l2_runtime;
-> +	),
-> +
-> +	TP_printk("VCPU %d: l1_to_l2_cs_time=%llu-ns l2_to_l1_cs_time=%llu-ns l2_runtime=%llu-ns",
-						 ^^^
-You can drop the hyphen before "ns". Just put a space there.
-
-> +		__entry->vcpu_id,  __entry->l1_to_l2_cs_ns,
-> +		__entry->l2_to_l1_cs_ns, __entry->l2_runtime_ns)
-
-There is l1_to_l2_cs, l1_to_l2_cs_ns and l1_to_l2_cs_time - can you use 
-a single name for that?
-
-> +);
-> +
-
-As a minor nit, it will be good to put the new tracepoint after the 
-below vcpu exit tracepoint just so the entry/exit tracepoints are 
-together in the file.
-
->  TRACE_EVENT(kvmppc_run_vcpu_exit,
->  	TP_PROTO(struct kvm_vcpu *vcpu),
->  
-> -- 
-> 2.43.2
-> 
-
-
-- Naveen
 
