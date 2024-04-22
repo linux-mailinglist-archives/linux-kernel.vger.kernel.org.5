@@ -1,137 +1,176 @@
-Return-Path: <linux-kernel+bounces-153946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 668EF8AD537
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A0278AD546
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:54:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22DD6281BC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:51:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45F6D2820EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D133156878;
-	Mon, 22 Apr 2024 19:50:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB341553BB;
+	Mon, 22 Apr 2024 19:51:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="V2MQFhMa"
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zd9rBI9F"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FE7156249
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:50:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C152B15535A
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:51:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713815435; cv=none; b=QSD7HPRZKd30/jViGKauxikraK1mmfGAkEIV1s5x8CUbtOhToaG88VNL4aB7GcmziRG1quar4pCZFWCg/t7h2JFPoqhXfZh5zld/ruB0e+PJ889lnhqCNZd3+a0UuqP/uiVrMjyiNedZI+d/ZUnxH/WOqxjpD9MBYuYjoANNpa8=
+	t=1713815507; cv=none; b=mUw5p+LEfUuOWu1LKZumt7OcBUcoZN/DqLKwKinkQrdNQqyDutOqFcsJvfjiTOe1NPw36SZeMH/caKniwYFl6HuTtwnWiBkvxLtBdAXlNFYj5elmxAJfY2UHA3HjFp+ItHx575IyUGos/5peNvHRXCc1vlexB8Xf+0OWCBetjAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713815435; c=relaxed/simple;
-	bh=U+b7pU5cDdsFy0gBnEHx5mcf6OCQLyZ6PHnEwR5GEhU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=SVYFxLsdgc+V37FJWsB0w8RxhcmbvyKfaNdykHbhmWz6WV0QY8KF4Hd5drIg4iRCzx4/c83A2ILrNXumDCKn5WDieWf8EJjP2I/FUsj3muUUYESLTAD9CCCqV2OVfXhvjJAf0SlAgjWpSw4XMBMNdGn5QeXVVw9/TbLBvIubucM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=V2MQFhMa; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1e417e43c13so64311195ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:50:33 -0700 (PDT)
+	s=arc-20240116; t=1713815507; c=relaxed/simple;
+	bh=mSEfp8z6eofbu2/o66Cv2ZH7gIEi/qWNZLXM7oA1hYA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L5tPSB8HIDn55HHEs9UwNqUjU7mvlHptNtCcHEHA+78XBhjKF9jY7YE21DsLz7LxEkjZ8Kxgnzg5gbCcJ85Buc9QwG5xCj+yyQAFF1TVr50nbdRCWw22XGePmYfJ6rF5420e10+RQn61TUQBzkPG8QR5pvNGcVZuB7qwSBhTLIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zd9rBI9F; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d88a869ce6so68546881fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:51:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713815433; x=1714420233; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=40a3MchZu5mMTZq1b5V3FW0T182EE5PXteHrxGlZ8Bk=;
-        b=V2MQFhMaCT4yP/ZyTOsHDThmIJyrhKUlWB4Nlr5MM4Z7NsfmIYORdP90W1J0n52ECC
-         eb7zZL1Oe9Zezk75dwVvaOxyKwYo+suc/Tyu0zMs235iPRz53yxuZDFx/e5s8Q4Ot9rm
-         bFQiRfSrhzDhfRjR6J4NmzY8it69OCJKwXzYR9Bw1Di43GqHZLXpHwZh2hy2tXL61dH5
-         J1Cx7cwmiPUNFZJgNCI/uxtwmZ/JWRXGOxU+Lg2RMWsEYJFFk+Yv61w3iHU1nR1qsBLx
-         zh4Arw6stzauoM+aJryYZO6NaVBDPr5myUcbLxyeA4IN4zo2G54dT6ASh2Qa9kJhVs7T
-         WuBg==
+        d=linaro.org; s=google; t=1713815504; x=1714420304; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=geu7O3+m3HJ/3o9N5bHvMzVI9k+cw0GEArJbMvVCgjk=;
+        b=zd9rBI9FlIK4x5TWg2nVD5GdPP3T9ZdGGjWgccRAw9S+ye2NMccfuLMZbAoxkUqTLh
+         cypXFVGhHN3q2YIbOAxHWj3CdEEsLovPS1A/hhZnlCuWO23lulrViv8CWvmSbSfGLYPf
+         Hw7PpwG/zTPn9PL3Q/MVDcpU2EpBPJNNntqmYrp2NO01tqWNxDw4F0X6XS8IgxX7BMQS
+         VFQpIspYLU5unMcMBRCy/w4qwdzq7y9wmDsVyGrRqWtrPbNAtohHwd7n4cxrHejLL/xt
+         RPE/rd4qpxHXMVWiP63a6appKL2hLauAZiOrFtkfbdZlwKxVloBciJxLJ+LMz2jzgZtC
+         UC1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713815433; x=1714420233;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=40a3MchZu5mMTZq1b5V3FW0T182EE5PXteHrxGlZ8Bk=;
-        b=VwQfxTi/4VIrkDE7iAvyjFnK9H/IoidtSwwqLUEyBsa7rBO2D1o1btvMholtjf0xtr
-         yBp52m7Oi6XY2zkeSSlW5OpotCB8xJN3vwtykpNLnLOepUgkkBwnIsf41aMxEzknOPyD
-         3y20zLZLA8cOjOkBbNdRrGUJl8T5JMGNgogtl/qkK3lAK3PlSxG21ICJKqL69CdV33fr
-         FM/5X2c/6pAKEtGSB2lQIbnUEsuBA0KMEHsOjT2fm2CA9N3VznFO1lvuH1ULOtNaOXZ7
-         a0ZD/dbooC5gMq6QgUYGG7tTO2TTNkHvMUkcPvxChhX4PA+QRfMcqIxKK2PFOU6tl2LT
-         QAZg==
-X-Forwarded-Encrypted: i=1; AJvYcCWjZ37otLAIgcprJsAu7WQhnvbycKHFivIUGD3kFF2UuaX+ZZFYhfcrS8xde24eo27WxUQpsteyfU3IdEegi7Hslmyu2M149LimwsxT
-X-Gm-Message-State: AOJu0YypOUPnV6BPSLM20QUcY+SfT7eMyZYeRYVKKjDJzFvk1AMD1Mih
-	bvtPhYiOuQieYFMqesBPLQSQcQ+MCkX6rabcCE7Zmrw5nRbOuCNtUPG2V2oKPcf/ft9U0duwXL+
-	ECQ==
-X-Google-Smtp-Source: AGHT+IHh/tcpf6E5zcUFZo+Mo526dAuFc63v04ewJY7Y0ZelD59VrlJ39qXu3A9Q1SsovDeNEVHE0leHrSE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:d4c5:b0:1e8:6d56:b376 with SMTP id
- o5-20020a170902d4c500b001e86d56b376mr606835plg.6.1713815432988; Mon, 22 Apr
- 2024 12:50:32 -0700 (PDT)
-Date: Mon, 22 Apr 2024 12:50:31 -0700
-In-Reply-To: <ea77e297510c8f578005ad29c14246951cba8222.camel@intel.com>
+        d=1e100.net; s=20230601; t=1713815504; x=1714420304;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=geu7O3+m3HJ/3o9N5bHvMzVI9k+cw0GEArJbMvVCgjk=;
+        b=AHInhpODMAXewRpr3YNGzdVvGlmR4A7zHADP0ipCpT5cU2p8nXPEgz3oKybxGcP54N
+         d/YITUaeyA9W46Ygd8MUGHKncQac+i4oAmN8+tg7otqb6jExZ9TsiWYD8iUoGDz/6IXs
+         qZH7ng14DYs3MYFlL60K/S7XXEviQ/JMOLO6S4+KL1ZzSPbN75llDmcse5aLiXz+mJNv
+         3i2POVGCI5EJCpIT1rJKBWCgFYGLp6JJsLKzYekZn4Jhm8+cBqGNMAVcFkeXtq0vZXW1
+         scgjTg21oQE8FeVwumx1cpGP41ehDPucFVjVG5Lk0oQP/iYnFC1GwXLRHARMae/ZSauN
+         ni6A==
+X-Forwarded-Encrypted: i=1; AJvYcCWE09DGRnCqq7mfDulJoWR7vWKUKPLoTuT2E9BHnj4i5+KPV/cPSvBxIalwFuRU1aG68ZupC3FJljxMPWC0BDJ96rStaxNut1wEexgt
+X-Gm-Message-State: AOJu0YxDdX/KsBr2vLYnSG8tv5F8pjBycbyZQdByWfM9u1HGECN6/Jt/
+	ud5N2lDX+gGhw8372GqUrg+tGGJK8/sfSRnPFg1gxiU/j/lrtgbp1y5oNOfgmB0=
+X-Google-Smtp-Source: AGHT+IFBToLOpSsjPI8pjqEB5XqsvUzOWG8mujF7Bwog8+VxvvQHLSw7DikZG1Z+rLu3IV4Obwe7Jw==
+X-Received: by 2002:a2e:9ccb:0:b0:2d6:d351:78ae with SMTP id g11-20020a2e9ccb000000b002d6d35178aemr7467468ljj.29.1713815503853;
+        Mon, 22 Apr 2024 12:51:43 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
+        by smtp.gmail.com with ESMTPSA id t3-20020a2e9c43000000b002dcb831d958sm1317363ljj.56.2024.04.22.12.51.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 12:51:43 -0700 (PDT)
+Date: Mon, 22 Apr 2024 22:51:41 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
+	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Andrzej Hajda <andrzej.hajda@intel.com>, Jonas Karlman <jonas@kwiboo.se>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/9] drm/bridge: Allow using fwnode API to get the
+ next bridge
+Message-ID: <xsfrnucued63q2amv7betkvgks6bhssubhjcryghkcloytixj4@ukmak4xwyjtg>
+References: <20240422191903.255642-1-sui.jingfeng@linux.dev>
+ <20240422191903.255642-2-sui.jingfeng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <54ae3bbb-34dc-4b10-a14e-2af9e9240ef1@intel.com>
- <ZfR4UHsW_Y1xWFF-@google.com> <ay724yrnkvsuqjffsedi663iharreuu574nzc4v7fc5mqbwdyx@6ffxkqo3x5rv>
- <39e9c5606b525f1b2e915be08cc95ac3aecc658b.camel@intel.com>
- <m536wofeimei4wdronpl3xlr3ljcap3zazi3ffknpxzdfbrzsr@plk4veaz5d22>
- <ZiFlw_lInUZgv3J_@google.com> <7otbchwoxaaqxoxjfqmifma27dmxxo4wlczyee5pv2ussguwyw@uqr2jbmawg6b>
- <3290ad9f91cf94c269752ccfd8fe2f2bfe6313d1.camel@intel.com>
- <no7n57wmkm3pdkannl2m3u622icfdnof27ayukgkb7q4prnx6k@lfm5cnbie2r5> <ea77e297510c8f578005ad29c14246951cba8222.camel@intel.com>
-Message-ID: <Zia_hxSH1p_8qB8L@google.com>
-Subject: Re: [PATCH v19 007/130] x86/virt/tdx: Export SEAMCALL functions
-From: Sean Christopherson <seanjc@google.com>
-To: Rick P Edgecombe <rick.p.edgecombe@intel.com>
-Cc: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>, Tina Zhang <tina.zhang@intel.com>, 
-	Dave Hansen <dave.hansen@intel.com>, Hang Yuan <hang.yuan@intel.com>, 
-	Kai Huang <kai.huang@intel.com>, "x86@kernel.org" <x86@kernel.org>, Bo2 Chen <chen.bo@intel.com>, 
-	"sagis@google.com" <sagis@google.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Erdem Aktas <erdemaktas@google.com>, 
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	Isaku Yamahata <isaku.yamahata@intel.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240422191903.255642-2-sui.jingfeng@linux.dev>
 
-On Mon, Apr 22, 2024, Rick P Edgecombe wrote:
-> On Mon, 2024-04-22 at 14:46 +0300, kirill.shutemov@linux.intel.com wrote:
-> > On Fri, Apr 19, 2024 at 08:04:26PM +0000, Edgecombe, Rick P wrote:
-> > > On Fri, 2024-04-19 at 17:46 +0300, kirill.shutemov@linux.intel.com=C2=
-=A0wrote:
-> > > >=20
-> > > > > Side topic #3, the ud2 to induce panic should be out-of-line.
-> > > >=20
-> > > > Yeah. I switched to the inline one while debugging one section mism=
-atch
-> > > > issue and forgot to switch back.
-> > >=20
-> > > Sorry, why do we need to panic?
-> >=20
-> > It panics in cases that should never occur if the TDX module is
-> > functioning properly. For example, TDVMCALL itself should never fail,
-> > although the leaf function could.
->=20
-> Panic should normally be for desperate situations when horrible things wi=
-ll
-> likely happen if we continue, right? Why are we adding a panic when we di=
-dn't
-> have one before? Is it a second change, or a side affect of the refactor?
+On Tue, Apr 23, 2024 at 03:18:55AM +0800, Sui Jingfeng wrote:
+> Currently, the various display bridge drivers rely on OF infrastructures
+> to works very well, yet there are platforms and/or devices absence of 'OF'
+> support. Such as virtual display drivers, USB display apapters and ACPI
+> based systems etc.
+> 
+> Add fwnode based helpers to fill the niche, this allows part of the display
+> bridge drivers to work across systems. As the fwnode API has wider coverage
+> than DT counterpart and the fwnode graphs are compatible with the OF graph,
+> so the provided helpers can be used on all systems in theory. Assumed that
+> the system has valid fwnode graphs established before drm bridge drivers
+> are probed, and there has fwnode assigned to involved drm bridge instance.
+> 
+> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+> ---
+>  drivers/gpu/drm/drm_bridge.c | 74 ++++++++++++++++++++++++++++++++++++
+>  include/drm/drm_bridge.h     | 16 ++++++++
+>  2 files changed, 90 insertions(+)
+> 
 
-The kernel already does panic() if TDCALL itself fails,
+[skipped]
 
-  static inline void tdcall(u64 fn, struct tdx_module_args *args)
-  {
-	if (__tdcall_ret(fn, args))
-		panic("TDCALL %lld failed (Buggy TDX module!)\n", fn);
-  }
+> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+> index 4baca0d9107b..a3f5d12a308c 100644
+> --- a/include/drm/drm_bridge.h
+> +++ b/include/drm/drm_bridge.h
+> @@ -26,6 +26,7 @@
+>  #include <linux/ctype.h>
+>  #include <linux/list.h>
+>  #include <linux/mutex.h>
+> +#include <linux/of.h>
+>  
+>  #include <drm/drm_atomic.h>
+>  #include <drm/drm_encoder.h>
+> @@ -721,6 +722,8 @@ struct drm_bridge {
+>  	struct list_head chain_node;
+>  	/** @of_node: device node pointer to the bridge */
+>  	struct device_node *of_node;
+> +	/** @fwnode: fwnode pointer to the bridge */
+> +	struct fwnode_handle *fwnode;
 
-  /* Called from __tdx_hypercall() for unrecoverable failure */
-  noinstr void __noreturn __tdx_hypercall_failed(void)
-  {
-	instrumentation_begin();
-	panic("TDVMCALL failed. TDX module bug?");
-  }
+My comment is still the same: plese replace of_node with fwnode. It is
+more intrusive, however it will lower the possible confusion if the
+driver sets both of_node and fwnode. Also it will remove the necessity
+for helpers like drm_bridge_set_node().
 
-it's just doesn in C code via panic(), not in asm via a bare ud2.
+>  	/** @list: to keep track of all added bridges */
+>  	struct list_head list;
+>  	/**
+> @@ -788,6 +791,13 @@ int drm_bridge_attach(struct drm_encoder *encoder, struct drm_bridge *bridge,
+>  		      struct drm_bridge *previous,
+>  		      enum drm_bridge_attach_flags flags);
+>  
+> +static inline void
+> +drm_bridge_set_node(struct drm_bridge *bridge, struct fwnode_handle *fwnode)
+> +{
+> +	bridge->fwnode = fwnode;
+> +	bridge->of_node = to_of_node(fwnode);
+> +}
+> +
+>  #ifdef CONFIG_OF
+>  struct drm_bridge *of_drm_find_bridge(struct device_node *np);
+>  #else
+> @@ -797,6 +807,12 @@ static inline struct drm_bridge *of_drm_find_bridge(struct device_node *np)
+>  }
+>  #endif
+>  
+> +struct drm_bridge *
+> +drm_bridge_find_by_fwnode(struct fwnode_handle *fwnode);
+> +
+> +struct drm_bridge *
+> +drm_bridge_find_next_bridge_by_fwnode(struct fwnode_handle *fwnode, u32 port);
+> +
+>  /**
+>   * drm_bridge_get_next_bridge() - Get the next bridge in the chain
+>   * @bridge: bridge object
+> -- 
+> 2.34.1
+> 
+
+-- 
+With best wishes
+Dmitry
 
