@@ -1,153 +1,214 @@
-Return-Path: <linux-kernel+bounces-154177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62E2A8AD8DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:10:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F04898AD8DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:10:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEC811F21AD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:10:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFB7C1C2137C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA00153824;
-	Mon, 22 Apr 2024 23:03:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696E84776F;
+	Mon, 22 Apr 2024 23:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fmhVXLvL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VvVLXgNI"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D23A1C287;
-	Mon, 22 Apr 2024 23:03:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713826992; cv=none; b=oYjMH2N1CDef+0a+5yomj6uabFytMn5kzI52u7mgYPZ1TREPHN/4FcpZFwLhf8WiFWOiSVlwGAqWWmOvmXqkqTMCN+E2vngaLVfnVkeG4nFUg4WwnSTIYz7c2D8+SlkzTWEooLuKlBpnBE1fUjckdsu0oA0zWPyItzdvykon1jQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713826992; c=relaxed/simple;
-	bh=hU3tih+CYLkWcqELt+cdSLFQH3WOoHaPLUqROgE6iEQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nLBNvWLsFqSiLa5PAV/WYgZaSGjWKW4DCxq0BM3FUJXPoZ0G2cOyv9g3+oyHGnlF1Ai9Ti9BTQWq+0+DgMlASn0momEvTY/u4JJrZTPnO4LXDVDHR3HdUuq70DX7tUy1NRgJclucu1XLTKUp6bt6I4KOWMqMadoK716+XE5G7tc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fmhVXLvL; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70CF546B83;
+	Mon, 22 Apr 2024 23:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713827036; cv=fail; b=ZZzB2WbcxtMtWAtCoLmAjbLO3sLVcHtSR3RvGzsUrR6EmTaOrNGmvvJK2iF7UIvGEl1ou0PTNAhs+jSaY/79ioK4C3XcrR0oWA+pT1CmCT4SKvL4vAGl06kZpn7BAZrU/EH0FeFE5ZhLPB2GvM6Doc9oLBWHsjBfsudRo+2XSwA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713827036; c=relaxed/simple;
+	bh=7LhgiWsoI6kH21ROirULbIMD8RcUCHUD1ttjrmrO9Eo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=R7W/sfLyQIvpNCiM9u6lVecDFcp1ArY8bDSfD4HN72JDSU3wMArgwTt5nOwh6yTJawYog1MCKEphP9sgVIbZwvwie5ltWn5gFjoDHCPGVM0+LYBr3UwYNIaFeii46CtHx5gW1BsjVTAENOCCyJvix99PJeGxU32cgJEO0Izj1sA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VvVLXgNI; arc=fail smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713826990; x=1745362990;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=hU3tih+CYLkWcqELt+cdSLFQH3WOoHaPLUqROgE6iEQ=;
-  b=fmhVXLvLtnqYn9J1sZFx7bVNhiuG2NmdY+UVTv/A/jTnUuEsPRte6v9h
-   MkUrdLMoPKoWjSrLOsqeU5PuOyWa4HNEfw5Iqp//gdlFMGpuC/vbiMe7U
-   2qwR2O5BY63lXAYiV/EPoM03/Bdv4lZEfi7vU+Zj5P1r8p9etQKj6veig
-   kkwUdpLgsGqzS5TxYt7QmeW+EWHSJEitBCNZ5Gr+ucgVs4lk/Zv6KLqWM
-   eBJdhvIa/ask5lY8JwzawwMR+450kAAiaujP4drBwpNH9Cr3NZKMQbfJF
-   27djJ3SMtjc0R2mNhEj6GQqmc2z9VyfMXs9nyvvtJUBw6S030HV6Q8I5z
-   w==;
-X-CSE-ConnectionGUID: Y0s9aKHeSgGUFXHfJlDNEA==
-X-CSE-MsgGUID: qWfM14juQGKqrhLfLf+o1g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="13222252"
+  t=1713827034; x=1745363034;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=7LhgiWsoI6kH21ROirULbIMD8RcUCHUD1ttjrmrO9Eo=;
+  b=VvVLXgNIuPnmunuRAiGCX09IifCFm/WAevr9CjwZ7mufj3T2MaVN1oSP
+   +InWCtgD09RWQtcxOD0h01z31yAHiVc8EsYa2k2mUKlJRYgx8wMntylZt
+   72JpXDNefOTtCiNmF9g741O6PaZJqHkpvZMW9P4D+CNlenU8DVYkVvaJ9
+   43gLHK8ht4Hr3fUlhIGNemdFiSNB/Uov/1N0oB2wNWwt8eqjnJXt9/Mun
+   3Rq/wW/oADyRadUUqAenxd6sT6e1uIKW0rdPIva8nlYI1uydF3ePe6c4T
+   kT42sThzjyjxuAk7O+cSEDsY0N/CvhJxqdGNh9/0cNy9VH3idTGK1wYH3
+   Q==;
+X-CSE-ConnectionGUID: ZEf8RJa7TUOuRA+f7+v3DA==
+X-CSE-MsgGUID: RyF0qzuIQ2y/1bChGZ+Xrg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="13222430"
 X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="13222252"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 16:03:09 -0700
-X-CSE-ConnectionGUID: Zq8OeGzUTKSBtMCnfKTF/g==
-X-CSE-MsgGUID: veEMAIAqRbqx8I6lengsWg==
+   d="scan'208";a="13222430"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 16:03:54 -0700
+X-CSE-ConnectionGUID: RkNDLGSLTAOepD5sNscjPA==
+X-CSE-MsgGUID: djrxrXeCRTOt2zbL3IhYEg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="55102270"
-Received: from sj-4150-psse-sw-opae-dev3.sj.intel.com ([10.233.115.74])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 16:03:08 -0700
-From: Peter Colberg <peter.colberg@intel.com>
-To: Wu Hao <hao.wu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Moritz Fischer <mdf@kernel.org>,
-	Xu Yilun <yilun.xu@intel.com>,
-	linux-fpga@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Russ Weight <russ.weight@linux.dev>,
-	Marco Pagani <marpagan@redhat.com>,
-	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-	Peter Colberg <peter.colberg@intel.com>
-Subject: [PATCH] fpga: dfl-pci: add PCI subdevice ID for Intel D5005 card
-Date: Mon, 22 Apr 2024 19:02:57 -0400
-Message-ID: <20240422230257.1959-1-peter.colberg@intel.com>
-X-Mailer: git-send-email 2.44.0
+   d="scan'208";a="55379125"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Apr 2024 16:03:53 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Apr 2024 16:03:53 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 22 Apr 2024 16:03:53 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 22 Apr 2024 16:03:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GjF/W0a/WTfk+R8RQIMeYMuDsYj34w0Yh2Lhyl6wJRqCTZkrcJAfLYV0ZV2It5CvbUBwp0WL4uYo09cwjYBVafCbUMZS6iyGDqoGM8W6a8WlGMKr0F/SYtOaXVS8jRxYnuS4x/0tU01bfyy4ufwEfpS89N8YJMlSBdy07wj1APon4kPcBx9gVQE5b608dgSczAwveQLxeUF1HSYgRheoYPpOQJBKR8H53VswJ5DU4HWd5rnWC6ZdE303AYGfYm6qk5N6fL1T09jmzGn0PFhtA7ZiCTXiI9aCo8Do1oarUSI5D3YYxRoyxZ7DhaL81MWFFIFMbj/8ixOrppDKoMOtwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uZ/8b2/TEl+bX7Q7XngHzVQoKRcp4uxxtX73yuxDiPw=;
+ b=jQPR/59TMZZEdV279QVEyRREHKB7IFgbZUEBsS3ESqIPKo7b2oJLmy6RaW6re54fun5SW0G665tLTiEr38gIUH+HJAvso9a8OEUnonZYQOYGPqQuhYkEOdXg++rc/k8I/v3or79O3lKUt4QDWHSR5+8FMN/Xh6GdiivzOUqxrt99hyWmWQtTwa5zYxOPCo1cLJPWPlQg6rbH22KRfTCvMdW/cph+qKnumsGQeXyUqzUUJcSewmI5pOJC3p81DR1Q3ZMa5374oJKqmwZ4SmPyjm1950XLFaCi/rp0UD5U3s5uw3/pxmKHPVB67cJun2NST0BraZVaILpxUmcroGhJ6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by CY5PR11MB6186.namprd11.prod.outlook.com (2603:10b6:930:26::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.21; Mon, 22 Apr
+ 2024 23:03:23 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7452.046; Mon, 22 Apr 2024
+ 23:03:22 +0000
+Date: Mon, 22 Apr 2024 16:03:21 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Terry Bowman <Terry.Bowman@amd.com>, Dan Williams
+	<dan.j.williams@intel.com>, Li Ming <ming4.li@intel.com>, <rrichter@amd.com>
+CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/6] PCI/RCEC: Introduce pcie_walk_rcec_all()
+Message-ID: <6626ecb93f752_690a29483@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20240313083602.239201-1-ming4.li@intel.com>
+ <20240313083602.239201-2-ming4.li@intel.com>
+ <d69c2157-a0da-4d8c-8684-d42afd285191@amd.com>
+ <661e00eb808e4_4d56129429@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+ <84eb39a1-60dd-40cb-8c7c-dfd9a988732d@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <84eb39a1-60dd-40cb-8c7c-dfd9a988732d@amd.com>
+X-ClientProxiedBy: SJ0PR05CA0167.namprd05.prod.outlook.com
+ (2603:10b6:a03:339::22) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CY5PR11MB6186:EE_
+X-MS-Office365-Filtering-Correlation-Id: a383392e-730e-4f24-dc4d-08dc632068be
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?HlXaYJ3XMiy/DjX6d2ywXgX7ri6wP1v7oDmPsnODCvef+lcpXo3BidprU8Lu?=
+ =?us-ascii?Q?3ydqhiKJr2H/Y2MXUPE+YLJqlb1uUWoMsJ7OILqtowcMppWeCsoQDXN69TDH?=
+ =?us-ascii?Q?dfFUZKeB1nuvli6ko/ZwGhgZUkR+iL2eN/GJ1Nk3eU144gsVMZVPSGFUhNR9?=
+ =?us-ascii?Q?uDnOyPDXpjShK3pSyXrITxD1RtZa+ZjWtWbW3G92fohNYcfC42WoVkPOEjnj?=
+ =?us-ascii?Q?MRkC1eXIKv0wERnZrzIIbno5AeBJKMqut68BS+LD/Q99ces4YO8UYfHQ1APs?=
+ =?us-ascii?Q?ZMQKUL5nJcGN4nZy7pNIXGqsjXDnYfFhFypc7IymsvG9CXj4SwCd3zY+mysd?=
+ =?us-ascii?Q?7NRXlIvRqtoJZX0GofbqEBucUqBHGad0DxKcB92FBKSeUNPFKQNWGQgvzNG8?=
+ =?us-ascii?Q?Bkp+Za7Hjy9AANCte/RFVamCPhxP0pIfWihOlDSOfaVT5GF1ThUViT/wROZc?=
+ =?us-ascii?Q?THN4FEZwdm6qVDtJX9TZ7SWfVLOVuQvdcOQjLMPMlpWQYYdgOxvhqOK3bBUw?=
+ =?us-ascii?Q?6GJK5s1o4LSEZ0wGlMW5gLAdvLUeJzSlZiNYXSBKymW481gTV1jDBUDUMGE6?=
+ =?us-ascii?Q?np0mKUivsO9yPlPkoPEf2vVLZsNS59X4iNUkY+S4NINf0qFLuQEjMdxGHege?=
+ =?us-ascii?Q?9C59K3GNC/4tDbaal9Oo0qT6p5dJIsg/C8BnbIG9RzO/pdOuUxylszFXfJFr?=
+ =?us-ascii?Q?4ZB036LAcagvBUEAlzejtMxMNrUz+FqGi2/z0sc4je935EBIKbmsAHisLWfw?=
+ =?us-ascii?Q?8JwnBeysYjUxQZOmrwgTaoQXC9d4ZNExjNnc8lgWrsyDpSDWHxcfD5POq7MS?=
+ =?us-ascii?Q?TCjKjbzM1xSHZiwvDR+cXZi8vPXef9+Nxg9JpJZXLXytYvzhYo9rbDs4W4xP?=
+ =?us-ascii?Q?t/tRKo1xHAttGftp4+8EZoucCzDL27E/xWiZX753VWqZwm7G8XjJpPbp+Zs2?=
+ =?us-ascii?Q?SrVV4yYGipGj4uRQcrumYhICP+XOHbyClS08COyC613ht6+SsHOOn8XTFh9s?=
+ =?us-ascii?Q?6alh5JyzvO7SdgTVqIl6QkErsTotDbcOI85cu3Fi7cWoyFffrfJuekCum5vP?=
+ =?us-ascii?Q?7i3ZKkUhJaULRj3X8Xo+GzCT8VdQ2rsPiKl6xAjwmaRhyiasx+/TMkprYh6N?=
+ =?us-ascii?Q?EEmeu+0/4FE28CyCQ8f9xLkb/5AAxgbMY4Mk7Gj6mwwS9k/X7notzIdIWyKw?=
+ =?us-ascii?Q?4Z0Sw8oE/G2Gdb994SGjo3psX/JttS9u0Juet25GydXEwYgcGSVzeBsyDcdj?=
+ =?us-ascii?Q?pIpYERgyHEvK+3T5EuG4TfVMqjkydR+/TsLCpwOoYw=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ez0ing11tpLyacToxONX4CUg0R0nGJAIL+HnlcD71eNC/HcwgfCnUWZGcZlO?=
+ =?us-ascii?Q?ym+2pmQKGLejLWf1D4zwN8WZAK3WU1lzibFW5UxT6qtiQQvKexy2kaD/4klD?=
+ =?us-ascii?Q?ZdN6Amyy+iLOk467tU01L+D3AVIEfr1egJAua+91mrYI6AjiRxqGgj32wehl?=
+ =?us-ascii?Q?tLRaKIwy8GXUauulqdTMtH/OgULxR7BHqg00+Lufq1Filwq0Wtv4NyANsphx?=
+ =?us-ascii?Q?N/2FpMAgEV9E6+J1srlB/K1z+MLJgc05uXq3kfseShggaBsuDwIfTTKyZuOk?=
+ =?us-ascii?Q?u8f78CizxXNcmlZm2LT8uZL/jEd5Kj2x/b+3xHCp9iSe1nnzDvE4xS+PKXot?=
+ =?us-ascii?Q?BLtqLOnxyf5e2DOUB3DpyNo9ts5z1AuVMxj5LZZrEpsc/p4W566H88+TmLGm?=
+ =?us-ascii?Q?x5PDkKuuNRekK+v5+X1kfE/EquPckk6oNJoNQPqb5SdlEvVwS5n8l3mzyPB0?=
+ =?us-ascii?Q?GzX9RMtQYnUqy3M7DfgVR2RsJ3Al9T8PtcEdKhJJENG8e/fEsdci0hTYQlgh?=
+ =?us-ascii?Q?JGWfLxiBRmbeiL+WqUTVxLqVx1dGEQPur52hTOj3InNlaGBEoi0EC8TGIrDH?=
+ =?us-ascii?Q?KKbnQluZsgKGmAsHIfFFge3htOsFqZMBOZYjmYIg7IlxCuj3bcQBrZoQzcqV?=
+ =?us-ascii?Q?SLhWlLqvFCrvBS2ZGH8ly9HF8yWUJwvbCQ/JvIE/NJP8jRg5BuG5RYrxjCJ6?=
+ =?us-ascii?Q?h4xKaTp0ASQswB1h+DU0sXQzSk+SVr5gmIDT3ug9YbintM0Igk9OELKUYq3W?=
+ =?us-ascii?Q?2f6YHA0ZayWwq3E2+Lu3Wncu6rp+G8CMPQHqR18/PbsF8BcE91lo1GCV4YoD?=
+ =?us-ascii?Q?Y/dJpIM7toMnh/OWURpqrWsLCHOs1I9y4i7BEvJ6tS86PDlpD5ogLdV54iiy?=
+ =?us-ascii?Q?p8qddwXrVzbCt2BbaWNsGpbcBYCwdbWFRlJGVTVjiFPmX77hpJpk6wtc9Gzk?=
+ =?us-ascii?Q?WKcxYrErmSVhijxvYui85tV/XvHFXnTN8n5bL4VzewHykGo6QzYYRCfTglXL?=
+ =?us-ascii?Q?9W08Rts71NTfm053RbpfHKHqPU6gdNFWJeaHXggbureNL8k7UYUON2qUWdxl?=
+ =?us-ascii?Q?I1HkuH1owDu7NouYKeK4JpTJ3aAeVXhEyvFFhOuEQEgZpjI7RiBzR13csrL3?=
+ =?us-ascii?Q?mTf/u2S3Cubjc19PpzoTM/s7WIysbDpdbaK0l9L5iRqb3jliWTZegPabQIXg?=
+ =?us-ascii?Q?CwNlh58XZCCK3OF8EL04vCBUGJrbpAe1HHKHp8CrHzRHK4srh+W/F5X072rV?=
+ =?us-ascii?Q?B3y9ng6gdQUFM1XjC5AueEdRwK6V5uvwYppwCjxa25OrsVtfsz8saNBtPAKE?=
+ =?us-ascii?Q?C01iyo7hk4OvXzP1ceiAY1qy64Ub98QUABMd6ba3Mh+WSwmNfl7vrZ5uZPLg?=
+ =?us-ascii?Q?EZAVw3bAt+iK/uU1ubRhy4p9/B7jArx2EKCyg45b7qDOMftEdbL/wlm7Yq1i?=
+ =?us-ascii?Q?pLRDeCtNmcP1Bh90e5jOPA0oMeuudRjTJuM0d32+m/fBTvo2TEG2MXbrNibn?=
+ =?us-ascii?Q?ASc9KRu4bVQa7RLIcpcAIwxypBDAIQ8ZuHpBOEmNBcqvRyCnxplVHeSGNdKl?=
+ =?us-ascii?Q?WvSyrHgWDapX6J7Q1BE2K1/rO9pfaZdZ9O/KqkpxNHRvFeD9eQcMJ6wH7uUA?=
+ =?us-ascii?Q?LQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a383392e-730e-4f24-dc4d-08dc632068be
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 23:03:22.8367
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5nU1JltS/+LTiBb4gzAzSCYhySJi98stZn7RpU19s+LLPA3h/c3XueFDN977Fw715M0+RFUJXuiEBokHoHkaGAhM2sRcEOpFp+qxK8gXOU8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6186
+X-OriginatorOrg: intel.com
 
-Add PCI subdevice ID for the Intel D5005 Stratix 10 FPGA card as
-used with the Open FPGA Stack (OFS) FPGA Interface Manager (FIM).
+Terry Bowman wrote:
+[..]
+> > Hi Terry,
+> > 
+> > This patchset is responding to the implications of the implementation
+> > note in 9.18.1.5 RCEC Downstream Port Association Structure (RDPAS).
+> > That says that CXL.io and CXL.cachemem errors in Root Ports may indeed
+> > be signaled to an RCEC. Do you expect that implementation note to cause
+> > any issues on platforms that do not follow that CXL spec behavior?
+> > 
+> > My expectation is that it may just cause extra polling for errors, but
+> > not cause any harm.
+> 
+> AMD platforms in RCH/RCD mode consume protocol errors in the RCEC's AER driver. AMD 
+> platforms in VH mode consume protocol errors (including root port errors) in the 
+> root port's AER driver. The exception is the VH mode host with CXL1.1 endpoint and 
+> RCH downstream errors. CXL1.1 endpoint and RCH downstream errors in a VH host are 
+> consumed in the RCEC.
 
-Unlike the Intel D5005 PAC FIM which exposed a separate PCI device ID,
-the OFS FIM reuses the same device ID for all DFL-based FPGA cards
-and differentiates on the subdevice ID. The subdevice ID values were
-chosen as the numeric part of the FPGA card names in hexadecimal.
+I agree that's the most compatible path for existing software.
 
-Link: https://github.com/OFS/dfl-feature-id/pull/4
-Signed-off-by: Peter Colberg <peter.colberg@intel.com>
-Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
----
-This patch was applied to Linux v6.9-rc5 and tested on an Intel D5005
-card flashed with the latest released OFS 2024.1-1 D5005 FIM.
+> I don't believe these patchset changes would affect this behavior. But, I will need 
+> to test to confirm.
 
-# fpgainfo fme D8:00.0
-Intel FPGA Programmable Acceleration Card D5005
-Board Management Controller, MAX10 NIOS FW version: 2.0.12 
-Board Management Controller, MAX10 Build version: 2.0.8 
-//****** FME ******//
-Interface                        : DFL
-Object Id                        : 0xED00002
-PCIe s:b:d.f                     : 0000:D8:00.0
-Vendor Id                        : 0x8086
-Device Id                        : 0xBCCE
-SubVendor Id                     : 0x8086
-SubDevice Id                     : 0x138D
-Socket Id                        : 0x00
-Ports Num                        : 01
-Bitstream Id                     : 0x4010002183C88A9
-Bitstream Version                : 4.0.1
-Pr Interface Id                  : a195b6f7-cf23-5a2b-8ef9-1161e184ec4e
-Boot Page                        : user
-
-Link: https://github.com/OFS/ofs-d5005/releases/tag/ofs-2024.1-1
----
-The missing subdevice ID 0x138d was noticed while testing the patch
-series "fpga: dfl: fix kernel warning on port release/assign for SRIOV"
-applied to v6.9-rc4 on an Intel D5005 card. The absence of the subdevice
-ID was shadowed by an internal patch in the downstream Linux DFL kernel
-("fpga: dfl: Add wildcard sub-device ID for intel DFL devs").
-
-Link: https://github.com/OFS/linux-dfl/commit/27d3d71824f086acae86e41a87b591838b7fa9d1
----
- drivers/fpga/dfl-pci.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-index 98b8fd16183e..80cac3a5f976 100644
---- a/drivers/fpga/dfl-pci.c
-+++ b/drivers/fpga/dfl-pci.c
-@@ -78,6 +78,7 @@ static void cci_pci_free_irq(struct pci_dev *pcidev)
- #define PCIE_DEVICE_ID_SILICOM_PAC_N5011	0x1001
- #define PCIE_DEVICE_ID_INTEL_DFL		0xbcce
- /* PCI Subdevice ID for PCIE_DEVICE_ID_INTEL_DFL */
-+#define PCIE_SUBDEVICE_ID_INTEL_D5005		0x138d
- #define PCIE_SUBDEVICE_ID_INTEL_N6000		0x1770
- #define PCIE_SUBDEVICE_ID_INTEL_N6001		0x1771
- #define PCIE_SUBDEVICE_ID_INTEL_C6100		0x17d4
-@@ -101,6 +102,8 @@ static struct pci_device_id cci_pcie_id_tbl[] = {
- 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_PAC_D5005_VF),},
- 	{PCI_DEVICE(PCI_VENDOR_ID_SILICOM_DENMARK, PCIE_DEVICE_ID_SILICOM_PAC_N5010),},
- 	{PCI_DEVICE(PCI_VENDOR_ID_SILICOM_DENMARK, PCIE_DEVICE_ID_SILICOM_PAC_N5011),},
-+	{PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_DFL,
-+			PCI_VENDOR_ID_INTEL, PCIE_SUBDEVICE_ID_INTEL_D5005),},
- 	{PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_DFL,
- 			PCI_VENDOR_ID_INTEL, PCIE_SUBDEVICE_ID_INTEL_N6000),},
- 	{PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_DFL_VF,
--- 
-2.44.0
-
+As I wrote to Li Ming, I think any potential conflict can further be
+limited by the fact that this extra scanning is limited to CXL.cachemem,
+not typical PCI AER flows.
 
