@@ -1,123 +1,264 @@
-Return-Path: <linux-kernel+bounces-153101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D70B8AC920
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:40:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 112528AC922
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:41:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EE641C20F6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:40:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED2D1C21202
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:41:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBDF6131BAE;
-	Mon, 22 Apr 2024 09:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8364CB55;
+	Mon, 22 Apr 2024 09:40:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="S+pNIIbd"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="GPgJ0SAk"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2055.outbound.protection.outlook.com [40.107.220.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539BD64A98;
-	Mon, 22 Apr 2024 09:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713778814; cv=none; b=POy5crvRabNoKCrkc1Voha1pYx2eJWvn/hjsu/eS8IQFSjoaIWvzMxeUBnliVGBgeGlAF0jBpWC+A0pgBztybxLv7NwA5+SxcUQyDNN+Sp71yvA788vdLMb9U79tusNgyQjM2bmYY11GXe8Gvf6bw5nXHsqhJiKrCs/YQID+J2s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713778814; c=relaxed/simple;
-	bh=GlLSRRIiVc809HVRdBjHwu3wV54d3OJygCGFqUwLYpw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Lhf4dilDdl2lEDfzjGz3f32hS5CI1skF5NB8zAcrA0VkrD8dGZ98S0DWNPIanYXIxjU2tCq7Kl2681f20HD6y2yt+2TXk7PGr6TGmgA9cZNDz4jqNy+YGMFB1t7u21IagwpkNFHrDtO2S+9UV8xMpSrsEbETU6vEdGTmb1zp8Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=S+pNIIbd; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7ADA6240007;
-	Mon, 22 Apr 2024 09:40:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713778803;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RwTZz+QOuJFhVcfuZG7WHposSII0qZDyi7L1Xxt7bUA=;
-	b=S+pNIIbddjv1f/2u29qA50eSn2u78IHQoN/yeXQn9kXAkAxKzudzCKTzUBwh806OYKshiC
-	XGYhR4UsoJ0QlB3O0AUh1LU1fBv9Y3UF6JuutBlAfd/g6+gu+4UwRgFn2ib0YSsJgcmyCG
-	/lnMkpE8r8xkMCye4NTD0jiU49Wjlf3MFmEcL3mVdAcR5gD9sJcM5/uqBb+tdlL8wkj/Yx
-	ro+vEj/ipMhhHRpGzc+o8gn5YOKRaRb41slSwYMfQVbvK/vhNFZcNmVT9JwX0RLnisKXtu
-	0FAMl2TB1Pr0wTlhu5nFkiJpL2ffcyqpdkWVLP3IVvuD6KXXm8p33rFygEY6VQ==
-Message-ID: <cd5d0aa5-ca0c-47a5-8e40-4742bc939cfa@bootlin.com>
-Date: Mon, 22 Apr 2024 11:40:02 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A51666F067
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713778840; cv=fail; b=FEopzbSSTcOmGtJVXnc/rzP4c9r66wr79s63sLQXoqh5qFPCtHR/OBreu7L6jCT1gmt2geSPuUmAm/c65uQEV5B/0RsOck2sCoLSRKR+RkXIjNyreLtZT060YmdrQvQZtigN6JOA8g2L4A65x5i3GRwrjxRVIg0lhvyEzUHL3bo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713778840; c=relaxed/simple;
+	bh=Gf6Vt4WoVVbMuen0rKc64pE4o9aVdJ1e4iLfvONT1HE=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=lXsP3qMXxRFzcmO4PnH2psv1fI19FsiLKNstPe+/P+PUWcTIvNjMqgoRFg9pV0eO+92qizGch3AKCLgNGkmy79Wgec8/E8CzYLNMq6I8TK417v/rJ/hLQmKZgkx21WlkdhYmGcA61AP4UMq37f+l7LblXyqE5EDeGUadydoBEDk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=GPgJ0SAk; arc=fail smtp.client-ip=40.107.220.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l9cfghiiWF62LcLFtasvo2QNnpvSDEmdPraivESQwVbqNFRpfYdj468pc5C2Ks/ZeuJaBMi/YX6l9VsrF0Ieywh5jdNjfI8Pt701+XEteU21rkNtMurm1SkxtkxC4maNtk28SLzh4SkbAYA2oE0Q49jZWxbDKA3RFLHrEuvmrj48AzeU8dMoo4p8EgjA6eEfQdpSSC4U2QqF5k6qWOoPCIzfdpZOjz2ZEt0i/fViSW0/+pPaFf9+EKVs0ofDUpMiUwtcaLiJMkwstqyZtHdQjGqNvNj8ACgElGL6qIDJcHisLlAsKXy8wxMj+WxZGE5Up69KhGKbUgGVmXoPmxrKDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=q7FfXNpOZkkBRwPP6eyREo12+AJDXI4SGosEdM/55yM=;
+ b=JB8CbZfe6ej0mfZ8DDPERAcYrrT8dM4f0LWBTJXg29ncSfWFWNJDs00NQOkabii49nlQzjLvtE0y4faFZuRzKV9Vkwan7SnmcWgH07PEcxV6b4RlOi1Iaj6zv/laZ0eFierbVnxVcUOKYbypHAdt4OueDgBWU/atsShoJINbYhiI6luvspdfH4OZaeGAvHzSKWwN2p8txJlYKGCS2HX2djBCrZVzgK2U8rFHFBMyB0QgNhtcHn/vYbbGxih9KyB5Cne7YsRSJNZ1uE+pLMEzh08o6jRgAl3jZ4uLVoPVFK8cFQD8ajNwc+VZMAIkfhsG4em9abnCeJ41RY8bcL5EeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q7FfXNpOZkkBRwPP6eyREo12+AJDXI4SGosEdM/55yM=;
+ b=GPgJ0SAk6NmL8J4HoYFPn19omHT5VOfm3ncK5U4JCQkC3ZTgGNLcHss42pINHWxTGXaFk7j8F0jy3ZIE4I/eAAJt84SAf0eizAnYFSXb0V/6l40PjW0nRmAVLKzD3IM1u/FJqpYDjHB6RsJgDqb498GimVUjU8NlEUPq5GC5KQo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by IA0PR12MB7577.namprd12.prod.outlook.com (2603:10b6:208:43e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 22 Apr
+ 2024 09:40:35 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
+ 09:40:35 +0000
+Message-ID: <68f02c5c-5591-4d6f-9926-b0fc6f9f6287@amd.com>
+Date: Mon, 22 Apr 2024 11:40:26 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amdgpu: Fixup bad vram size on gmc v6 and v7
+To: Qiang Ma <maqianga@uniontech.com>, alexander.deucher@amd.com,
+ Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+ srinivasan.shanmugam@amd.com, Arunpravin.PaneerSelvam@amd.com,
+ le.ma@amd.com, Felix.Kuehling@amd.com, mukul.joshi@amd.com
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240422052608.5297-1-maqianga@uniontech.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20240422052608.5297-1-maqianga@uniontech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR5P281CA0009.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f2::8) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 02/11] i2c: omap: wakeup the controller during
- suspend() callback
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Vignesh R <vigneshr@ti.com>,
- Peter Rosin <peda@axentia.se>, Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Siddharth Vadapalli <s-vadapalli@ti.com>, linux-gpio@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com,
- Wolfram Sang <wsa+renesas@sang-engineering.com>
-References: <20240102-j7200-pcie-s2r-v5-0-4b8c46711ded@bootlin.com>
- <20240102-j7200-pcie-s2r-v5-2-4b8c46711ded@bootlin.com>
- <eld637v3jvgqrjubwqlsxkafgqiqcfpukfwpcd5qoyvyrhubff@n6gzrwzr2klh>
-Content-Language: en-US
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <eld637v3jvgqrjubwqlsxkafgqiqcfpukfwpcd5qoyvyrhubff@n6gzrwzr2klh>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: thomas.richard@bootlin.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|IA0PR12MB7577:EE_
+X-MS-Office365-Filtering-Correlation-Id: 57757a7c-bda0-4709-59ac-08dc62b042b2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?Y1E3REdPU05RMGtNVmsrVVBQOVo0NG1yZzN6V2lJTEowQjJFbENTeTVGZGFL?=
+ =?utf-8?B?VmtldTcvZ3Zocm91VjRzZzNTcFBKRU9GUGNOalVCMlp6c2k3dzZIQjc0cGNr?=
+ =?utf-8?B?NXYyU1lWVkQxSHBtZThhbHAyemt5V1FScUdnTCtsWHVoUWs5d21BeXROQlpL?=
+ =?utf-8?B?ZWxwNzlnSnl5N3FYUGRueVhmdDZwUlcydm85T0E4NGdLT3hraE1XcGJPUFNu?=
+ =?utf-8?B?ajFrNHAwTkdUc2lEK0xDNTFEMVJNc3dpeVhnY0duQ01wK2dRZHc4dGdFN3hm?=
+ =?utf-8?B?dnRCOHh4WDdJcDJWUVBnc3MxaVVTVkt3RlhSd2NveXZIcjdyQmczYXRnRnNw?=
+ =?utf-8?B?Z1lHcnpXOUZCZTNmY2lUREhXbHA0a2xDT1BLajJDR1VVaFZMWHpPUkJ5ZCtO?=
+ =?utf-8?B?RmRqZkxDaWdCeElzSDRyYjR5Q0dBZjU5NHJzRjN5RHBTcnd3T0pVcmQ1aXlD?=
+ =?utf-8?B?N3kwaUdNWjJZOUdLM0o0M2lzckJsZXR2WGJ2UHBwRVY3VzNrUG9DeFg2Vnor?=
+ =?utf-8?B?S2FKSklwSFRmYlMxbkdCbFRXYXNPTGwraThVRU1QSTVWblVlNm1FUmJHSlZ6?=
+ =?utf-8?B?b0lQb2lhZm1Icms3RHI5dis0WE9UMW8zWUtIWERleVY0OVZzb29UcW1YOGdO?=
+ =?utf-8?B?V1YzUFEreFFxT0dHQVpQYjZVTTlDUnM1MVZFRVpVcWg3eklpZXdTTXJwdWRP?=
+ =?utf-8?B?Z0llUjNSYnMxNkxqTVliUHRnSXg3M1IzTmhIWTNDcUJYRkpGNnUva2F0SVF4?=
+ =?utf-8?B?VUcrSmxXSm9yTmxxTGx3akhzTzRXempXZHovdVJjVnM4bHdFL2h5VWV4dUdz?=
+ =?utf-8?B?ZlZlS3VDQlpMaDJaYlMyVkpXeitja1pBc1ZIWElVUVUxZXVXUlN5VDF6M1dI?=
+ =?utf-8?B?MHk5QUk3bG0vaWxqREJCN0lvV3hnc2NPR2UxLzJsODdBUllNYko1dWgvZ1Ir?=
+ =?utf-8?B?enA1TnhicU43eGpQU01SaVI2MWZlczNoR2x5TWJkbnB5UTd6UjRZTjZraTJV?=
+ =?utf-8?B?MGU2ZWRWRVowZ3NXeUM3ckZmbnNGRkZvQzZ1NGhNdFROR25PYnJ5djg4QlQy?=
+ =?utf-8?B?SVMyY21FdmhDbzRIWVl2ai8zTkcxcUFuM1N0TjZJZ0NSRktwZjlHQXdtQXRE?=
+ =?utf-8?B?TUkwS29IUXU5WEdvVDFHNTVGQ3FGdCtDKzhEKzdNUDVhS2MvVmhMQmM3WXZn?=
+ =?utf-8?B?aW1pRE50dkdVRVd4MmVudUZsZmdIR3o2eURaOVFKR2c0cWk0WkFCRFNJWXEy?=
+ =?utf-8?B?eGl5WFE1SjViNnpBNXJFRjNVQ2JHanNtRXFicmN4emovM21xRW8yTVVRa3JV?=
+ =?utf-8?B?VTlCZDMzb1R1TWp0TWNoWHo0RmhhWVEybFVjM0xSWnF2T3c5RVJ1eVhYbk5S?=
+ =?utf-8?B?TmlVYnBSUjh2VWZjcExvaTNXTTFLbUxOWlp6UmQrenNqdHA5S2NLM01VdHhD?=
+ =?utf-8?B?WnNFbXkwcis1SU90TG1PMG9xM21WZnVlNksxeXZHdVZuQWl5QkJGdXZMTVIy?=
+ =?utf-8?B?ZGhyM1YvL0ZYdHFUcEI4QVhGbHhKTFVtajdsTjRnaVNLb3FhWFEwVnZxYzds?=
+ =?utf-8?B?bFlwcW1sT1AyQlJ0b1RoU1R4MkdUKytNbTRLN2NPajh2QTVhVlhzSXZJaXRx?=
+ =?utf-8?B?Vlh6RUJaRXhQMUVZdmIrMFpBNkxkNlpMamJ5VmNjcm52bHN1Ym1PSlJqS29s?=
+ =?utf-8?B?OFhLdmJzenhyNHRveGhjZHZQYTZKZjNMREZDNHRFZHlJZ1N2WmF0eUJhUmhN?=
+ =?utf-8?Q?VjBMbRicNw06xqQRuSbr2IiEnQkj4ylu2Ml8LQw?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NmphTVpoaktxcm5uTk1wcDhmRVNqTDdRWHVQVW4wZnlCVzNrbFdkMjc3T1Z4?=
+ =?utf-8?B?M3p2NmpLa0ZqNFFxL09mMkk3MEhjODZYUmlTaHFabnVwNWNsNUY2ME1VYmtX?=
+ =?utf-8?B?WG1zNHB3MUFaVlN5ajJIdXRKNUhTSFIwWEZCd3NMdDdwZnVZVy85REdlODg2?=
+ =?utf-8?B?bDN2Z0s4TGlhVU8yREtXcU1NTjVrcXNZbWpUOWhnKzdzTkpyUFc3cytDd2U4?=
+ =?utf-8?B?K3didmhWNCtmZWZBMEdGaHpRYW94MFhSSVM5SHEvbXNlOHNQenE0aW9Nek5J?=
+ =?utf-8?B?UUE2RE1EY2diVmU2eDRFSkw2aWNxZkZGWHphOGIzSXdzbHY4TEZhSjlVYUlL?=
+ =?utf-8?B?SXlaeGRNNGU3Z282MHhxeUJIclNRd3p0TG9tNHpQVng0My9EK2ptdUFpMXN5?=
+ =?utf-8?B?eWgwa3ZLQ1dqaWtEeWNrQnZWZFJoQkV4K1A4dXM4a3lkMDFLOUVnbHlrTnRG?=
+ =?utf-8?B?TEMvazZWaVVxbTZlMHhTYkpLUXpmbU1oaGEwRFpSVFFRTWdicmFuMk0xTlhw?=
+ =?utf-8?B?dzVHbnI5R3UwcFVOVGRWYlp4ZlpGUUVpKy81aFp1aUtPYTZHclR4VXFZZ1NB?=
+ =?utf-8?B?cS9GNGJPdW1YVkd3cVVMSWdEWlplTGFzb1dLNzZudHdkZ2hnNFFaOUJXSTly?=
+ =?utf-8?B?TERWNnhUZVIyd2IveU5PdGxudng4Y3lpZ2dTZ2RwaFg5eHpFcTQ3UmpWb2xx?=
+ =?utf-8?B?bSs2ODNSNUZMejBHRHl1UmNKWThqM0FYeml4REZnYnplalJCUEVwbDBEbG45?=
+ =?utf-8?B?UzlLaWtZdDBqSmx1cGsvSVM2K0drY1ppSGkzUmhVK0lKWHNyRDdTb1NMWDYv?=
+ =?utf-8?B?aDVHc2tnUkt6d0k0akdRSVBGSzZhNisyRG0wdlJlZU9LWUZlTjZIYitVNHdy?=
+ =?utf-8?B?UFVmTngxRHJPQlIrUk5WN0I0UlU4bFdpdDZsQjZReWJFYTZnRDZDdDRXZ3R6?=
+ =?utf-8?B?WlZWZmdBVDlhNEVGVmxXaVNjRmY0OFBMdFFRUlpxcEYzRGxxdkprK1lQUEt2?=
+ =?utf-8?B?RlBOQXpRVFZkUmdhVTlwQVllSFVsdzkzc0ZNZGU1TFZOT0kwMisxbGNOZEt0?=
+ =?utf-8?B?Q0RmUjFvTG5FdTM1MXE3MVJmR0Y1aG1TMGNmYVcwRVdRMG9IbEJvR2dWT1R1?=
+ =?utf-8?B?YTVRbHJCRGJaU1ZLTFhBNEJmSU1wdUFab3lHVlJHaXNIckZWUll4blRIMm5J?=
+ =?utf-8?B?aVZXb2xtRk4yMGxqdklLNWlmczMrdk5ad2NhM0lmQ3NqV3A3dnQ4a09ib25Y?=
+ =?utf-8?B?Ti9wZU5lS1VLcEpyMU1aYkMwUzl2M1k1QVBXS2ZvQzBXZWM5c1dUOVg1NnMx?=
+ =?utf-8?B?Tk9LaXVBOEVZSFFYMlBHS3U1eTBtR3VLTG9kUXlzWFJ6b1FCR1paVytYd21N?=
+ =?utf-8?B?cFZWQ2JyeWcydWxWYXZrcWF4U1lqbDNad2V4c2FjVzJ5TVdVUFBxQWNra3ZQ?=
+ =?utf-8?B?RHZSeFBuNERNdkt4anBGcHpvemxESDdOY1NjNG1WeTBHMGhwSDhENXB5NU4w?=
+ =?utf-8?B?TFJGQUIyOURTRlFXTWRSZzh6Y3NlOHdYbmJWUll5WUx5Yk1lSXZMUU55cGF6?=
+ =?utf-8?B?eDAzT1BnSWp2WkQyMENGVG9pL1gyQmFWelJ6cDBzRGFZM0dHNWVmMEpYQ1hD?=
+ =?utf-8?B?YkFrTllHcjVGQ1Q4VkM4dnNwK290dUNFQUo2WHV5SVlGOFhXUEs0M3VKMVox?=
+ =?utf-8?B?TTFUaEs3M1ArRnpyQW53c1lrSGNQTEsvN3doeTFCNGlud1kvZWhFc1hacjE4?=
+ =?utf-8?B?aWR6YXAyRDlRUTAzNWV4YSs4V1ROQTlFUk1VeUtlVUlTb2dWV2IyVC9YS3kz?=
+ =?utf-8?B?c3JtMElXeEJzbG1PTG9INURtdWg0ZENSYThBOVpUSTBua2ZETnFYN3h0V0JO?=
+ =?utf-8?B?VjUxSzlwRXJKOW9OTW5wbWIzWGJYeTE0aVdzUkJkRXVMNnEzL1ROOHhsWFhQ?=
+ =?utf-8?B?T1FHMnBmUU5SMDN6M2VnNjc4VnpTTVk3c05peDlobnJBNU0veWJkem84S2tP?=
+ =?utf-8?B?UXBTamNobDRMV0kxMi8yWVdsRkx0TlgzcTBqYU1jMXlTSWMwYnNIYzNCOGhM?=
+ =?utf-8?B?bGRvZ0c3a2hmRWkwbENDOTVYNEVNQkhMMTRrQUJ4bzloZFZIWGZkQmtnQjJM?=
+ =?utf-8?Q?1Rzc/0KsfxgaB4FvRLw4Tk+9L?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57757a7c-bda0-4709-59ac-08dc62b042b2
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 09:40:35.4014
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KEeB1BCfo3AfWPZTTUvbU1cayYIn+LoCOWtt1VaUsBgFGZWKleOHH6BGpS6ry4J+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7577
 
-On 4/19/24 10:47, Andi Shyti wrote:
-> Hi Thomas,
-> 
->> +static int omap_i2c_suspend(struct device *dev)
->> +{
->> +	/*
->> +	 * If the controller is autosuspended, there is no way to wakeup it once
->> +	 * runtime pm is disabled (in suspend_late()).
->> +	 * But a device may need the controller up during suspend_noirq() or
->> +	 * resume_noirq().
->> +	 * Wakeup the controller while runtime pm is enabled, so it is available
->> +	 * until its suspend_noirq(), and from resume_noirq().
->> +	 */
->> +	return pm_runtime_resume_and_get(dev);
->> +}
->> +
->> +static int omap_i2c_resume(struct device *dev)
->> +{
->> +	pm_runtime_mark_last_busy(dev);
->> +	pm_runtime_put_autosuspend(dev);
->> +
->> +	return 0;
->> +}
->> +
->>  static const struct dev_pm_ops omap_i2c_pm_ops = {
->>  	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
->>  				      pm_runtime_force_resume)
->> +	SET_SYSTEM_SLEEP_PM_OPS(omap_i2c_suspend, omap_i2c_resume)
-> 
-> If you don't have CONFIG_PM_SLEEP, though, this doesn't compile.
+Am 22.04.24 um 07:26 schrieb Qiang Ma:
+> Some boards(like Oland PRO: 0x1002:0x6613) seem to have
+> garbage in the upper 16 bits of the vram size register,
+> kern log as follows:
+>
+> [    6.000000] [drm] Detected VRAM RAM=2256537600M, BAR=256M
+> [    6.007812] [drm] RAM width 64bits GDDR5
+> [    6.031250] [drm] amdgpu: 2256537600M of VRAM memory ready
+>
+> This is obviously not true, check for this and clamp the size
+> properly. Fixes boards reporting bogus amounts of vram,
+> kern log as follows:
+>
+> [    2.789062] [drm] Probable bad vram size: 0x86800800
+> [    2.789062] [drm] Detected VRAM RAM=2048M, BAR=256M
+> [    2.789062] [drm] RAM width 64bits GDDR5
+> [    2.789062] [drm] amdgpu: 2048M of VRAM memory ready
 
-Hello Andi,
+Well we had patches like this one here before and so far we always 
+rejected them.
 
-Yes indeed, the __maybe_unused attribute is missing for
-omap_i2c_suspend() and omap_i2c_resume().
+When the mmCONFIG_MEMSIZE register isn't properly initialized then there 
+is something wrong with your hardware.
 
--- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Working around that in the software driver is not going to fly.
+
+Regards,
+Christian.
+
+> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c | 11 +++++++++--
+>   drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c | 13 ++++++++++---
+>   2 files changed, 19 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
+> index 23b478639921..3703695f7789 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
+> @@ -309,8 +309,15 @@ static int gmc_v6_0_mc_init(struct amdgpu_device *adev)
+>   	}
+>   	adev->gmc.vram_width = numchan * chansize;
+>   	/* size in MB on si */
+> -	adev->gmc.mc_vram_size = RREG32(mmCONFIG_MEMSIZE) * 1024ULL * 1024ULL;
+> -	adev->gmc.real_vram_size = RREG32(mmCONFIG_MEMSIZE) * 1024ULL * 1024ULL;
+> +	tmp = RREG32(mmCONFIG_MEMSIZE);
+> +	/* some boards may have garbage in the upper 16 bits */
+> +	if (tmp & 0xffff0000) {
+> +		DRM_INFO("Probable bad vram size: 0x%08x\n", tmp);
+> +		if (tmp & 0xffff)
+> +			tmp &= 0xffff;
+> +	}
+> +	adev->gmc.mc_vram_size = tmp * 1024ULL * 1024ULL;
+> +	adev->gmc.real_vram_size = adev->gmc.mc_vram_size;
+>   
+>   	if (!(adev->flags & AMD_IS_APU)) {
+>   		r = amdgpu_device_resize_fb_bar(adev);
+> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
+> index 3da7b6a2b00d..1df1fc578ff6 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
+> @@ -316,10 +316,10 @@ static void gmc_v7_0_mc_program(struct amdgpu_device *adev)
+>   static int gmc_v7_0_mc_init(struct amdgpu_device *adev)
+>   {
+>   	int r;
+> +	u32 tmp;
+>   
+>   	adev->gmc.vram_width = amdgpu_atombios_get_vram_width(adev);
+>   	if (!adev->gmc.vram_width) {
+> -		u32 tmp;
+>   		int chansize, numchan;
+>   
+>   		/* Get VRAM informations */
+> @@ -363,8 +363,15 @@ static int gmc_v7_0_mc_init(struct amdgpu_device *adev)
+>   		adev->gmc.vram_width = numchan * chansize;
+>   	}
+>   	/* size in MB on si */
+> -	adev->gmc.mc_vram_size = RREG32(mmCONFIG_MEMSIZE) * 1024ULL * 1024ULL;
+> -	adev->gmc.real_vram_size = RREG32(mmCONFIG_MEMSIZE) * 1024ULL * 1024ULL;
+> +	tmp = RREG32(mmCONFIG_MEMSIZE);
+> +	/* some boards may have garbage in the upper 16 bits */
+> +	if (tmp & 0xffff0000) {
+> +		DRM_INFO("Probable bad vram size: 0x%08x\n", tmp);
+> +		if (tmp & 0xffff)
+> +			tmp &= 0xffff;
+> +	}
+> +	adev->gmc.mc_vram_size = tmp * 1024ULL * 1024ULL;
+> +	adev->gmc.real_vram_size = adev->gmc.mc_vram_size;
+>   
+>   	if (!(adev->flags & AMD_IS_APU)) {
+>   		r = amdgpu_device_resize_fb_bar(adev);
 
 
