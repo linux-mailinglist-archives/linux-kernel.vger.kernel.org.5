@@ -1,143 +1,177 @@
-Return-Path: <linux-kernel+bounces-153004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C273D8AC75B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:47:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 302C38AC759
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:47:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EE8C283089
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:47:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB49C1F2057F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:47:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9983B54645;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1F553E1B;
 	Mon, 22 Apr 2024 08:46:37 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DUaiycvM"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CA4482C1
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:46:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1822751C40;
+	Mon, 22 Apr 2024 08:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713775597; cv=none; b=HKF9JjjD8V8TJpS7yVGGWL+vW9ScI6aV7RGYVwhXR8QCGkRBjMg7g7f1tlQGdOeRy45EEjpaYnMvyysFs9IBWuS/5sUajMn04WtwqxCTG2DSMspSV4GFsmy3RDyKWQaVMOu5ocB+FCCqDvn7Taa6d+bBAdxvhzcmhN0/TJPkZM8=
+	t=1713775596; cv=none; b=pqEiw52ytAql8mugjgmZsb0YI8vawiUeMKEDnd+qRcgbUNrgWvkImfe6APy7INX7ei6nePmQx1nJAuMJI5Tmh0jVVL6drYuvMXYYdok+MQnYuh3u1Hg519U0hEViUmX1HNYaVVLTlAcyIEJiIPaEHwIAUQ7LKLf9nBhLIIGYWx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713775597; c=relaxed/simple;
-	bh=hbWncv3O5p+eXPs67WyDuajeTIZwF1P/8g1gar0nJUo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=QaP6IhtArjiWEePOBp0BkB59QoG/TEKudKXNMJ3Tls3TIBxZr1wfyk3SF0R1zWNpVMiqunKQ76p0BtpFJAD7loGpe+iQjur5GZrN6o87061boBnjUFXHrD2QRjMfguPGd7jP+z/dn4WNzD1AcHuB6nSvnMV4GfhIWs50SPBz0H4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=ratatoskr.trumtrar.info)
-	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
-	(envelope-from <s.trumtrar@pengutronix.de>)
-	id 1rypJg-0000ML-DO; Mon, 22 Apr 2024 10:46:24 +0200
-From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Date: Mon, 22 Apr 2024 10:46:19 +0200
-Subject: [PATCH 3/3] net: stmicro: imx: set TX_CLK direction in RMII mode
+	s=arc-20240116; t=1713775596; c=relaxed/simple;
+	bh=3Nvg6aLMqCpBwmchT+qiCZ4eyxtvIcAIrqVuZuISGKk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eyz+rMiLMIdGLbkFzuFqMchqaRVDZzFgtd3Cg5odG1D1ZYjFtVhi5v+yIYPV1iZ2g6Lwf4uKpJto/9q/etNcrLAyXxBy7IvqdFVNKJe9tKkwqvB9lqL3wZQoGydrEdZ7CysbvVHku3fH2gcW/dn9wGE9+D5joeiJGcqPqghH7Zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DUaiycvM; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713775594; x=1745311594;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=3Nvg6aLMqCpBwmchT+qiCZ4eyxtvIcAIrqVuZuISGKk=;
+  b=DUaiycvMFc56ETf2F3JbmWnAsRlz96njEib49B14ZnvVTYxqrnJIdaOJ
+   ir4+Opa1W/DF3VLGOo/ylNtsqpO2yActCDdohQ89A/XScEQO/rpcIMEzZ
+   os9RHGUf8mH6M/JvLdle5kej3OjXuTJssnc1WArB/YYgVxSsrBjObQ5Lf
+   WJeRzyJkYJ/vrIuNv9K/j43i9MWn8vIbQkeB2UkRbYcrtNzmKUpPEq03e
+   kWGUkZVCwQDF9rZraP8/pqiLC5flNG1V4qtM08N4AS2W4+WzxhNu97gv3
+   ZSg8lDJFTY1H0i1LVbRlbNy/9C/eECH5KR7CS8cxIvGOY14BB2OlRBnA9
+   Q==;
+X-CSE-ConnectionGUID: km4rVgRCRW2zO6mXyqtSrw==
+X-CSE-MsgGUID: ++PM4aAGSz+ZupZjBu8aXA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="26821752"
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="26821752"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 01:46:33 -0700
+X-CSE-ConnectionGUID: bP/TayZPTu2EylGd11+jrw==
+X-CSE-MsgGUID: skSrE0G5TfCwOfWAvC3nLg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="23925338"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 01:46:30 -0700
+Message-ID: <9477c21a-4b18-4539-9f82-11046e43063c@intel.com>
+Date: Mon, 22 Apr 2024 16:46:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/6] KVM: x86/mmu: Extract __kvm_mmu_do_page_fault()
+To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org
+Cc: isaku.yamahata@intel.com, binbin.wu@linux.intel.com, seanjc@google.com,
+ rick.p.edgecombe@intel.com
+References: <20240419085927.3648704-1-pbonzini@redhat.com>
+ <20240419085927.3648704-4-pbonzini@redhat.com>
+Content-Language: en-US
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <20240419085927.3648704-4-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240422-v6-9-topic-imx93-eqos-rmii-v1-3-30151fca43d2@pengutronix.de>
-References: <20240422-v6-9-topic-imx93-eqos-rmii-v1-0-30151fca43d2@pengutronix.de>
-In-Reply-To: <20240422-v6-9-topic-imx93-eqos-rmii-v1-0-30151fca43d2@pengutronix.de>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, Clark Wang <xiaoning.wang@nxp.com>, 
- Linux Team <linux-imx@nxp.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Jose Abreu <joabreu@synopsys.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org, imx@lists.linux.dev, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com
-X-Mailer: b4 0.13.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: s.trumtrar@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-In case of RMII connection, the TX_CLK must be set to output direction.
-Parse the register and offset from the devicetree and set the direction
-of the TX_CLK when the property was provided.
+On 4/19/2024 4:59 PM, Paolo Bonzini wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> Extract out __kvm_mmu_do_page_fault() from kvm_mmu_do_page_fault().  The
+> inner function is to initialize struct kvm_page_fault and to call the fault
+> handler, and the outer function handles updating stats and converting
+> return code.  
 
-Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c | 27 +++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+I don't see how the outer function converts return code.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-index 6b65420e11b5c..0fc81a626a664 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-@@ -37,6 +37,9 @@
- #define MX93_GPR_ENET_QOS_INTF_SEL_RGMII	(0x1 << 1)
- #define MX93_GPR_ENET_QOS_CLK_GEN_EN		(0x1 << 0)
- 
-+#define MX93_GPR_ENET_QOS_TX_CLK_SEL_MASK	GENMASK(1, 1)
-+#define MX93_GPR_ENET_QOS_TX_CLK_SEL		(0x1 << 1)
-+
- #define DMA_BUS_MODE			0x00001000
- #define DMA_BUS_MODE_SFT_RESET		(0x1 << 0)
- #define RMII_RESET_SPEED		(0x3 << 14)
-@@ -57,7 +60,9 @@ struct imx_priv_data {
- 	struct clk *clk_tx;
- 	struct clk *clk_mem;
- 	struct regmap *intf_regmap;
-+	struct regmap *enet_clk_regmap;
- 	u32 intf_reg_off;
-+	u32 enet_clk_reg_off;
- 	bool rmii_refclk_ext;
- 	void __iomem *base_addr;
- 
-@@ -116,6 +121,18 @@ static int imx93_set_intf_mode(struct plat_stmmacenet_data *plat_dat)
- 		break;
- 	case PHY_INTERFACE_MODE_RMII:
- 		val = MX93_GPR_ENET_QOS_INTF_SEL_RMII;
-+
-+		/* According to NXP AN14149, the direction of the
-+		 * TX_CLK must be set to output in RMII mode.
-+		 */
-+		if (dwmac->enet_clk_regmap)
-+			regmap_update_bits(dwmac->enet_clk_regmap,
-+					   dwmac->enet_clk_reg_off,
-+					   MX93_GPR_ENET_QOS_TX_CLK_SEL_MASK,
-+					   MX93_GPR_ENET_QOS_TX_CLK_SEL);
-+		else
-+			dev_warn(dwmac->dev, "TX_CLK can't be set to output mode.\n");
-+
- 		break;
- 	case PHY_INTERFACE_MODE_RGMII:
- 	case PHY_INTERFACE_MODE_RGMII_ID:
-@@ -310,6 +327,16 @@ imx_dwmac_parse_dt(struct imx_priv_data *dwmac, struct device *dev)
- 			dev_err(dev, "Can't get intf mode reg offset (%d)\n", err);
- 			return err;
- 		}
-+
-+		dwmac->enet_clk_regmap = syscon_regmap_lookup_by_phandle(np, "enet_clk_sel");
-+		if (IS_ERR(dwmac->enet_clk_regmap))
-+			return PTR_ERR(dwmac->enet_clk_regmap);
-+
-+		err = of_property_read_u32_index(np, "enet_clk_sel", 1, &dwmac->enet_clk_reg_off);
-+		if (err) {
-+			dev_err(dev, "Can't get enet clk sel reg offset (%d)\n", err);
-+			return err;
-+		}
- 	}
- 
- 	return err;
+> KVM_PRE_FAULT_MEMORY will call the KVM page fault handler.
 
--- 
-2.43.2
+I assume it means the inner function will be used by KVM_PRE_FAULT_MEMORY.
+
+> This patch makes the emulation_type always set irrelevant to the return
+> code.  kvm_mmu_page_fault() is the only caller of kvm_mmu_do_page_fault(),
+> and references the value only when PF_RET_EMULATE is returned.  Therefore,
+> this adjustment doesn't affect functionality.
+
+This paragraph needs to be removed, I think. It's not true.
+
+> No functional change intended.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Message-ID: <ddf1d98420f562707b11e12c416cce8fdb986bb1.1712785629.git.isaku.yamahata@intel.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>   arch/x86/kvm/mmu/mmu_internal.h | 38 +++++++++++++++++++++------------
+>   1 file changed, 24 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+> index e68a60974cf4..9baae6c223ee 100644
+> --- a/arch/x86/kvm/mmu/mmu_internal.h
+> +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> @@ -287,8 +287,8 @@ static inline void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
+>   				      fault->is_private);
+>   }
+>   
+> -static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+> -					u64 err, bool prefetch, int *emulation_type)
+> +static inline int __kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+> +					  u64 err, bool prefetch, int *emulation_type)
+>   {
+>   	struct kvm_page_fault fault = {
+>   		.addr = cr2_or_gpa,
+> @@ -318,6 +318,27 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>   		fault.slot = kvm_vcpu_gfn_to_memslot(vcpu, fault.gfn);
+>   	}
+>   
+> +	if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) && fault.is_tdp)
+> +		r = kvm_tdp_page_fault(vcpu, &fault);
+> +	else
+> +		r = vcpu->arch.mmu->page_fault(vcpu, &fault);
+> +
+> +	if (r == RET_PF_EMULATE && fault.is_private) {
+> +		kvm_mmu_prepare_memory_fault_exit(vcpu, &fault);
+> +		r = -EFAULT;
+> +	}
+> +
+> +	if (fault.write_fault_to_shadow_pgtable && emulation_type)
+> +		*emulation_type |= EMULTYPE_WRITE_PF_TO_SP;
+> +
+> +	return r;
+> +}
+> +
+> +static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+> +					u64 err, bool prefetch, int *emulation_type)
+> +{
+> +	int r;
+> +
+>   	/*
+>   	 * Async #PF "faults", a.k.a. prefetch faults, are not faults from the
+>   	 * guest perspective and have already been counted at the time of the
+> @@ -326,18 +347,7 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>   	if (!prefetch)
+>   		vcpu->stat.pf_taken++;
+>   
+> -	if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) && fault.is_tdp)
+> -		r = kvm_tdp_page_fault(vcpu, &fault);
+> -	else
+> -		r = vcpu->arch.mmu->page_fault(vcpu, &fault);
+> -
+> -	if (r == RET_PF_EMULATE && fault.is_private) {
+> -		kvm_mmu_prepare_memory_fault_exit(vcpu, &fault);
+> -		return -EFAULT;
+> -	}
+> -
+> -	if (fault.write_fault_to_shadow_pgtable && emulation_type)
+> -		*emulation_type |= EMULTYPE_WRITE_PF_TO_SP;
+> +	r = __kvm_mmu_do_page_fault(vcpu, cr2_or_gpa, err, prefetch, emulation_type);
+>   
+>   	/*
+>   	 * Similar to above, prefetch faults aren't truly spurious, and the
 
 
