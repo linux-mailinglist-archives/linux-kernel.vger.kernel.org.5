@@ -1,108 +1,117 @@
-Return-Path: <linux-kernel+bounces-153072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DEDE8AC8A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:14:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 496688AC8A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:15:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AEC0280E3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:14:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0938280D7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759BE5101A;
-	Mon, 22 Apr 2024 09:14:09 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5134753E12
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:14:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FF453814;
+	Mon, 22 Apr 2024 09:15:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="RDqBOJtW"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4BC4C66
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:15:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713777249; cv=none; b=VQ1sxQmP3Jcx3UmjQRZ5GI6H5FhCgLjTVBN73xj/A+reS3xjJpronM059Wb4YXjiG+ai6rH9MfFCY4qt3kVkjK7pCGpghNbHLD18McJadTs9SXv0hUQcOvMhM3pc7iyRLI7UXp2Rm0ojCBi9jxf0qjNzKmUCIAdYGoyjI4jL9ZY=
+	t=1713777333; cv=none; b=d8V1ElPK2AyyNFp6mTGwlpcheljsvyOhHlSkL97oyE2qHY4t5YCArQcXyLIOF6oUpSZpOM2zjS4BOY46akR6JXyy67QEQI4FisxBfh2ubFVGcbMCBEReMp6V/o2tTwJgphv32xEmfLLNMFUjqKbWw9EnCEHgDVkRc9eYmuBXVLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713777249; c=relaxed/simple;
-	bh=bSB47jiEPbjn+2RJwxgCUv2A6TZ3BEAuszXFpzjGwdE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XqHJDSxWp5RXb2ep/q7894ubxLj6OqmO7m+xaDV6rHykdwMdnQzoodt86rrpSkQTnpnZIVqDmvG6yX5uCY4DettFp/zBmROIzfHk01oAUPohaaQ0godWOuN6Htbj9qb6CsKhBfrSe7X4pIoqfh8wWwLjZNdF3An/huZIgf2X6jU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19D1F339;
-	Mon, 22 Apr 2024 02:14:35 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.21.63])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE2253F64C;
-	Mon, 22 Apr 2024 02:14:04 -0700 (PDT)
-Date: Mon, 22 Apr 2024 10:13:59 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: open list <linux-kernel@vger.kernel.org>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	lkft-triage@lists.linaro.org,
-	Linux Regressions <regressions@lists.linux.dev>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Anders Roxell <anders.roxell@linaro.org>,
-	Marc Zyngier <maz@kernel.org>, joey.gouly@arm.com,
-	Oliver Upton <oliver.upton@linux.dev>
-Subject: Re: gcc-8: arm64/kvm/pauth.: Error: unknown architectural extension
- `pauth'
-Message-ID: <ZiYqV-5BWmPwgqbU@FVFF77S0Q05N>
-References: <CA+G9fYsCL5j-9JzqNH5X03kikL=O+BaCQQ8Ao3ADQvxDuZvqcg@mail.gmail.com>
+	s=arc-20240116; t=1713777333; c=relaxed/simple;
+	bh=b/wu88jA9YdxZN0vncf57S6bbFuU12MW/xuCRw6CPIc=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=BF9CrdF8KJTESys/qwIacht9GBGadeL2h8VY0PANT2/atldIviMRPhdKuAaVbxdvv838looIa2/0jWK1yJyMtpNxj746j0HjnUhylboPK8mgIarxPAned6X73ZLJ+GhYS8FNsVNLZ8kJTCVYr1t5JRaBY7Sj28rTwiw7yBz7gBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=RDqBOJtW; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-571e3f40e31so1548775a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 02:15:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1713777330; x=1714382130; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b/wu88jA9YdxZN0vncf57S6bbFuU12MW/xuCRw6CPIc=;
+        b=RDqBOJtWr2Pk57ZFfNBWbGabCvsULDnIVFKz8TBjvCza5XhRAhTKRPgVYfDKuVmw7+
+         d8GIePLCp8VIUmk52U2gCUf6BP8Po0KkEPogiy9+0AreI3r0DE7dJjtMFvEjD1tAZsZQ
+         5fYkjW8XR2sLJNCRj6glJJ3Crut7rGUc4FefaHVCqME2uSnraPVGUjdkwm+66il7UZL8
+         U7DmsyU1dl2lY9jpYuDux9eC88IcIOzGmZ0+ViVuOfk+wKbQE0Owbc6V1Oa2uFW4EqDB
+         Ldz8p1VMyXb2b7pnDsnq7dCY88JOfe+wsSGxz8B0EYBy1X+zj13XiTNHdHud1pYT2XDR
+         e4Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713777330; x=1714382130;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b/wu88jA9YdxZN0vncf57S6bbFuU12MW/xuCRw6CPIc=;
+        b=CMw44m1rat1h0XRCbB2OeHx3uaK/k6R8Z+Vdl6XkV1QKlhDWChbnRLbSYrMzPx7sad
+         OETjKmtPtHZRxpAi78E54lFeGtuSv3Y90gNKL5i68duJAn27v/UV034VhvzXVV212xSl
+         HYcSJ08WXpDkw5KxfiHt7Lpx82JcjDcoyU4Ydnxzpej8tA+pWI17C5pzZBh+cbGEghVn
+         trtE0YF1qPBXn2IwCEVyBn7iN78vznp2Z0VlGtNzhoef60fmNX5BUxtdtzRRhV4jUXTX
+         04gPyfzFsvGO0eGZUsCQXd1yHErwgmFYPhITYAIaZyPclONH8Orsfq2xzlxCUBzQCU7H
+         eNJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVhiIvNGl2WH+od4Zi6bdH0sIJwqzBunRPLZ5L8UTLwHwCZbr7m6dq5kZ8VcLytMJ/EqEzeLDRLQM52gms06ttgpLFcIEETLcBqrRPX
+X-Gm-Message-State: AOJu0YzJ2mRdt2xsnH7MITIhSjM5QEyRCI540r5NOu5xWmv5fZqU/eTF
+	ZINxYsi9UY77Z0YpQMAOtBy9ls6lejUH69JePURX/c9Hn0FAd8jLJYJ9mtHslPQ=
+X-Google-Smtp-Source: AGHT+IFdfwf81v1W+wySpJ76jOG5eIUy0V2oEYWpmvSKm4+/wZYK5usVUsAOja/4SZhQfVLrh1xfHA==
+X-Received: by 2002:a50:cd12:0:b0:56e:2c1d:1174 with SMTP id z18-20020a50cd12000000b0056e2c1d1174mr6653782edi.4.1713777330577;
+        Mon, 22 Apr 2024 02:15:30 -0700 (PDT)
+Received: from smtpclient.apple ([2001:a61:10c6:ce01:7d:af2:ac50:1252])
+        by smtp.gmail.com with ESMTPSA id f11-20020a056402194b00b005720cefe0d2sm931590edz.52.2024.04.22.02.15.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Apr 2024 02:15:30 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYsCL5j-9JzqNH5X03kikL=O+BaCQQ8Ao3ADQvxDuZvqcg@mail.gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH] bitops: Change function return types from long to int
+From: Thorsten Blum <thorsten.blum@toblux.com>
+In-Reply-To: <DM8PR11MB5751439B2053D1AD07BB8AD9B8122@DM8PR11MB5751.namprd11.prod.outlook.com>
+Date: Mon, 22 Apr 2024 11:15:18 +0200
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Palmer Dabbelt <palmer@rivosinc.com>,
+ Charlie Jenkins <charlie@rivosinc.com>,
+ Namhyung Kim <namhyung@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>,
+ Youling Tang <tangyouling@loongson.cn>,
+ Tiezhu Yang <yangtiezhu@loongson.cn>,
+ Jinyang He <hejinyang@loongson.cn>,
+ "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4BD934DC-5657-41E1-A9D6-226886D2AA8B@toblux.com>
+References: <20240420223836.241472-1-thorsten.blum@toblux.com>
+ <DM8PR11MB5751439B2053D1AD07BB8AD9B8122@DM8PR11MB5751.namprd11.prod.outlook.com>
+To: "Wang, Xiao W" <xiao.w.wang@intel.com>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-On Mon, Apr 22, 2024 at 02:04:43PM +0530, Naresh Kamboju wrote:
-> The arm64 defconfig build failed with gcc-8 and passed with gcc-13.
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Build log:
-> ---
-> /tmp/ccSUNNZy.s: Assembler messages:
-> /tmp/ccSUNNZy.s:3159: Error: unknown architectural extension `pauth'
-> make[5]: *** [scripts/Makefile.build:244: arch/arm64/kvm/pauth.o] Error 1
-> 
-> Steps to reproduce:
-> ---
-> # tuxmake --runtime podman --target-arch arm64 --toolchain gcc-8
-> --kconfig defconfig
+On 22. Apr 2024, at 07:24, Wang, Xiao W <xiao.w.wang@intel.com> wrote:
+>=20
+> Could we change the return types to "int", instead of "unsigned int"?
+> https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html says that these =
+__builtin_*
+> functions return "int".
 
-I think the key thing here is GCC 8; the associated assembler won't necessarily
-have ARMv8.3-A support, since all the relevant bits got added around GCC 9.
+We could, but changing the signedness breaks assertions in other modules =
+and=20
+drivers (e.g., where min() and max() are used) and has quite a few side =
+effects.
 
-Looking at the commits, I think this is broken since its introduction in commit:
+>> With GCC 13 and defconfig, these changes reduced the size of a test
+>> kernel image by 5,432 bytes on arm64 and by 248 bytes on riscv; there
+>> were no changes in size on x86_64, powerpc, or m68k.
+>=20
+> I guess your test is based on 64bit arch, right?
 
-  6ccc971ee2c61a1f  ("KVM: arm64: nv: Add emulation for ERETAx instructions")
-
-.. where the pauth.c file only depends on ARM64_PTR_AUTH (which doesn't imply
-AS_HAS_ARMV8_3), but in the file we do:
-
-  asm volatile(ARM64_ASM_PREAMBLE ".arch_extension pauth\n"
-               "pacga %0, %1, %2" : "=r" (pac) : "r" (ptr), "r" (mod));
-
-Given the minimum supported toolchain comes with an assembler that doesn't
-necessarily support ARMv8.3, I reckon we'll either have to make NV pauth
-support depend upon AS_HAS_ARMV8_3, or manually assemble the PACGA instruction.
-
-I suspect the latter is the better option.
-
-Mark.
-
-
-> 
-> Links:
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240422/testrun/23551634/suite/build/test/gcc-8-defconfig/details/
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240422/testrun/23551634/suite/build/test/gcc-8-defconfig/log
->   - https://storage.tuxsuite.com/public/linaro/lkft/builds/2fRe0ZWWmise7cetIz0aXdnq4jJ/
-> 
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
-> 
+Yes, except for m68k.=
 
