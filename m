@@ -1,164 +1,149 @@
-Return-Path: <linux-kernel+bounces-153788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ADFA8AD326
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:11:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EBD98AD332
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:15:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EA8F1F21E8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:11:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B57E42838A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:15:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B39153BD5;
-	Mon, 22 Apr 2024 17:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94DF153BDD;
+	Mon, 22 Apr 2024 17:15:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="ym1zpgnf"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jt/+8w9i"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43BDB153BC6;
-	Mon, 22 Apr 2024 17:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C586115218D;
+	Mon, 22 Apr 2024 17:15:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713805863; cv=none; b=HOoAzkoF9T8QfDY1nPLxbzfAu8D/0yW48Qd6MzJWADxJ3fFzFWjJ5NfpwSxY9iCNDKpVmMkhgqBKDkqSjmuRa8s7pbSdyFIsLr612rm5gX55wu9ao7inzoZX5/26DSIL42MNUwAuMIgMnPQqtgmlx7FpCM4w5Lj5+oSP4IvvPmY=
+	t=1713806103; cv=none; b=m2Z+7lwNxHbJOB94WLGKjnpeVddMVTKH68QjXi2brwgDGSBzIvjlYa4yFQVLADScEFpBTM7E7PBHUIOcgEIWWVvWbjARVkP5LiX3GktG9c3y+UGU1k9tYcJjsSriGEOQj/BF8p4ymGVpocAlJ81D0swZCt2Xr9xEmuviIAnat2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713805863; c=relaxed/simple;
-	bh=LwjGFpqMPE7/isFyix1F6hQ3BlY9L4xSAYUXU2nXEO0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nhTA48qAYsfkx25RUIiPbApVTQQQb6S84/JgEjhVyVsvDvSpQXUuuYhqduWnf4Yebouq8BBOCss98zf/xRJHHyYfwnZODqw7QFWZBI9BNGM5jMinaG1nZHb2W5/3kXBVR7QOOFlxqaQuHnuy5iT9pUBKgXVZVdXr938qZZExZik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=ym1zpgnf; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:Reply-To:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=o+rHFy1a1QfA8CSXaqess65zqT0THwLSLU62WTJDzAQ=;
-	t=1713805861; x=1714237861; b=ym1zpgnf321E/uM2vmV+7bzcIuRhgRe9JY7WxBwaMD9pG6e
-	my6DZ2Mvhjf3YjyQhXVjDiBZEWW7lH3xPL1tfxpTXFS7RMR1zT7Owzn0qn9A1YtIsHZaAMeeqEtmm
-	90i0h+eBTRlp3uqFY5HPBvVAqP6HSl7p2yQKi4UYOAVrGqHgpYobhRI/va27LqAGAepHmJSDVHJh6
-	Pw6MCccIhaH9JwERmGrRDb9Z9ALGQuPINfcKsXupQjlLrFZ5178hLo+mj+5p9GehSVqkbdz14zsag
-	T7NzuOxoY3saz4tsBKe8vwacvOeU4bJ9lTSb1V1mcmn6VClHI7encPvsBZUGVWCA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1ryxBx-0003Vp-JQ; Mon, 22 Apr 2024 19:10:57 +0200
-Message-ID: <14d1b38e-0f11-4852-9c52-92b4bedb0a77@leemhuis.info>
-Date: Mon, 22 Apr 2024 19:10:56 +0200
+	s=arc-20240116; t=1713806103; c=relaxed/simple;
+	bh=BrpU3LoTLXHcoM8ORoBD8hzIx4TTKfnlR5i0LAc22wE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=IhEnqTpUYYpaqhkNY+ToIbvdmk+XaAosvZoZ2KKgzy3bdmKEvZa7SYKioqVZw9iV8ufoj27qs3o8Cuk5B2pVJqJYUSy1Wq1f7QF/AqOCOkAzc3uzDRjewUCFq0g/wMXYcksSIgYCVHFzuX86sekrhVj5/E+Y9SbPq5YYQHY4QOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jt/+8w9i; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713806101; x=1745342101;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=BrpU3LoTLXHcoM8ORoBD8hzIx4TTKfnlR5i0LAc22wE=;
+  b=jt/+8w9i5nHinYghB/xEV2L6aa9nacOFt9AzROrE7LbGnDkLcGjtOi7U
+   EocJWKaQ4AWtDQ5TcDtcDMzPAB5QWAPMIztzWkaB4wk5sbKU6u3S5UBXH
+   q7B+ng3osd1mE0dMIzEJeUr2S71SYarALKSzMsaELfTKallmnHi1qzxM+
+   feHlZbWF/JuJLc0zhMTzn2b/+Cukn/uWnDdwn+4ZELBmY7i8Y0FjjK9qv
+   MDIYG5L2ElBW8ZZn5jQ8KUnryf7KyBmk7wibCVQwjDnEExKUAUNf+SXT1
+   GZzJUhu81DclI0Az9NANauq+ROQL70Jmu2C6ZTAD7amQJt2FANLnaN6kv
+   A==;
+X-CSE-ConnectionGUID: zBUy2dtyTfSC2NNijh02NQ==
+X-CSE-MsgGUID: TEy1MCXDRTypx9n9T3CyVA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="13191428"
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="13191428"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 10:15:01 -0700
+X-CSE-ConnectionGUID: OBS6r4f7Q26O3NNuaAsTEw==
+X-CSE-MsgGUID: ccl8swbfSOSg+0+wvS8rXw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="23955593"
+Received: from ralbanes-mobl.ger.corp.intel.com (HELO localhost) ([10.252.63.128])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 10:14:55 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Dave Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Linux-Renesas
+ <linux-renesas-soc@vger.kernel.org>, Masahiro Yamada
+ <masahiroy@kernel.org>, linux-kbuild <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH 00/11] drm: Restore helper usability
+In-Reply-To: <CAMuHMdXCL-gbKr6mUBPWONtRjz=X0vZQgiS=02WXXSFf67yBww@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <cover.1713780345.git.geert+renesas@glider.be>
+ <87il09ty4u.fsf@intel.com>
+ <ff4f9e8f-0825-4421-adf9-e3914b108da7@app.fastmail.com>
+ <875xw9ttl6.fsf@intel.com>
+ <af6e26d1-1402-4ed2-a650-b58eae77273e@app.fastmail.com>
+ <CAMuHMdXCL-gbKr6mUBPWONtRjz=X0vZQgiS=02WXXSFf67yBww@mail.gmail.com>
+Date: Mon, 22 Apr 2024 20:14:53 +0300
+Message-ID: <87ttjts4j6.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: [PATCH v2] HID: i2c-hid: Revert to await reset ACK before reading
- report descriptor
-To: Jiri Kosina <jikos@kernel.org>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Douglas Anderson <dianders@chromium.org>,
- Hans de Goede <hdegoede@redhat.com>, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Linux kernel regressions list <regressions@lists.linux.dev>,
- Kenny Levinsen <kl@kl.wtf>
-References: <20240331182440.14477-1-kl@kl.wtf>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-In-Reply-To: <20240331182440.14477-1-kl@kl.wtf>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713805861;d4d60d74;
-X-HE-SMSGID: 1ryxBx-0003Vp-JQ
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 31.03.24 20:24, Kenny Levinsen wrote:
-> In af93a167eda9, i2c_hid_parse was changed to continue with reading the
-> report descriptor before waiting for reset to be acknowledged.
-> 
-> This has lead to two regressions:
+On Mon, 22 Apr 2024, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> Hi Arnd,
+>
+> CC kbuild
+>
+> On Mon, Apr 22, 2024 at 3:55=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wro=
+te:
+>> I'm not sure where this misunderstanding comes from, as you
+>> seem to be repeating the same incorrect assumption about
+>> how select works that Maxime wrote in his changelog. To clarify,
+>> this works exactly as one would expect:
+>>
+>> config HELPER_A
+>>        tristate
+>>
+>> config HELPER_B
+>>        tristate
+>>        select HELPER_A
+>>
+>> config DRIVER
+>>        tristate "Turn on the driver and the helpers it uses"
+>>        select HELPER_B # this recursively selects HELPER_A
+>>
+>> Whereas this one is broken:
+>>
+>> config FEATURE_A
+>>        tristate "user visible if I2C is enabled"
+>>        depends on I2C
+>>
+>> config HELPER_B
+>>        tristate # hidden
+>>        select FEATURE_A
+>>
+>> config DRIVER
+>>        tristate "This driver is broken if I2C is disabled"
+>>        select HELPER_B
+>
+> So the DRIVER section should gain a "depends on I2C" statement.
 
-Lo! Jiri, Benjamin, quick question: is there a reason why this fix for a
-6.8-rc1 regression after more than two and half weeks is not yet
-mainlined? Or is there some good reason why we should be should be extra
-cautious?
+Why should DRIVER have to care that HELPER_B needs either FEATURE_A or
+I2C? It should only have to care about HELPER_B. And if the dependencies
+of FEATURE_A or HELPER_B later change, that's their business, not
+DRIVER's.
 
-Side note: I noticed this due to the tracking today, but I also saw a
-user that recently ran into the problem the quoted fix is supposed to
-resolve: https://social.lol/@major/112294923280815017
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+BR,
+Jani.
 
-#regzbot poke
+>
+> Yamada-san: would it be difficult to modify Kconfig to ignore symbols
+> like DRIVER that select other symbols with unmet dependencies?
+> Currently it already warns about that.
+>
+> Handling this implicitly (instead of the current explict "depends
+> on") would have the disadvantage though: a user who is not aware of
+> the implicit dependency may wonder why DRIVER is invisible in his
+> config interface.
 
-> 1. We fail to handle reset acknowledgement if it happens while reading
->    the report descriptor. The transfer sets I2C_HID_READ_PENDING, which
->    causes the IRQ handler to return without doing anything.
-> 
->    This affects both a Wacom touchscreen and a Sensel touchpad.
-> 
-> 2. On a Sensel touchpad, reading the report descriptor this quickly
->    after reset results in all zeroes or partial zeroes.
-> 
-> The issues were observed on the Lenovo Thinkpad Z16 Gen 2.
-> 
-> The change in question was made based on a Microsoft article[0] stating
-> that Windows 8 *may* read the report descriptor in parallel with
-> awaiting reset acknowledgement, intended as a slight reset performance
-> optimization. Perhaps they only do this if reset is not completing
-> quickly enough for their tastes?
-> 
-> As the code is not currently ready to read registers in parallel with a
-> pending reset acknowledgement, and as reading quickly breaks the report
-> descriptor on the Sensel touchpad, revert to waiting for reset
-> acknowledgement before proceeding to read the report descriptor.
-> 
-> [0]: https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/plug-and-play-support-and-power-management
-> 
-> Fixes: af93a167eda9 ("HID: i2c-hid: Move i2c_hid_finish_hwreset() to after reading the report-descriptor")
-> Signed-off-by: Kenny Levinsen <kl@kl.wtf>
-> ---
->  drivers/hid/i2c-hid/i2c-hid-core.c | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-> index 2df1ab3c31cc..72d2bccf5621 100644
-> --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> @@ -735,9 +735,12 @@ static int i2c_hid_parse(struct hid_device *hid)
->  	mutex_lock(&ihid->reset_lock);
->  	do {
->  		ret = i2c_hid_start_hwreset(ihid);
-> -		if (ret)
-> +		if (ret == 0)
-> +			ret = i2c_hid_finish_hwreset(ihid);
-> +		else
->  			msleep(1000);
->  	} while (tries-- > 0 && ret);
-> +	mutex_unlock(&ihid->reset_lock);
->  
->  	if (ret)
->  		goto abort_reset;
-> @@ -767,16 +770,8 @@ static int i2c_hid_parse(struct hid_device *hid)
->  		}
->  	}
->  
-> -	/*
-> -	 * Windows directly reads the report-descriptor after sending reset
-> -	 * and then waits for resets completion afterwards. Some touchpads
-> -	 * actually wait for the report-descriptor to be read before signalling
-> -	 * reset completion.
-> -	 */
-> -	ret = i2c_hid_finish_hwreset(ihid);
->  abort_reset:
->  	clear_bit(I2C_HID_RESET_PENDING, &ihid->flags);
-> -	mutex_unlock(&ihid->reset_lock);
->  	if (ret)
->  		goto out;
->  
+--=20
+Jani Nikula, Intel
 
