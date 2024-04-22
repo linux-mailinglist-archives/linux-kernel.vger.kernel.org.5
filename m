@@ -1,146 +1,136 @@
-Return-Path: <linux-kernel+bounces-153878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 515478AD467
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F8DB8AD3A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:07:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DD0F1C20999
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:53:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C083D1C20BFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:07:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F40E2154C12;
-	Mon, 22 Apr 2024 18:53:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12FEB154431;
+	Mon, 22 Apr 2024 18:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FF+OoRLd"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ckEjR+Qm"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA611154430;
-	Mon, 22 Apr 2024 18:53:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D25153BC6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 18:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713812027; cv=none; b=CSmEUoh0wgtbamWYcXAK8eKQsqXTtsl4qqnbFWQRMiQqv+oaL9o/cRALXpNVV1UOdawJovO1cUu7GSd1JmZOpHfj3heT0KBqvdr69LQ8Ug8MRZhUtKSpqAki5baDZH7Z0cttxSDt/CcILQr+Lzef4R0qcNZWF2MKilcfCAqfkDM=
+	t=1713809255; cv=none; b=ebHj6YCJ4x37hdPQqVP8+xk7Cyo1Z814y4YUFafqFd3pBEY+abCjkLBCI7Pj6CU4sW/JTXMmYorkVWeXIvt7zaPU0uGNr+upD0qm6DB+Xk/7s/V7Tp6XocTWX2MwZlTKG523OG7gA8KgsFYN+e8vN/zwNFSLqXTJw1Ffz/UVqZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713812027; c=relaxed/simple;
-	bh=KdeYjdGtcF1JNqWj59Djb+4HReLocTqors5w6qaChgk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bndTInB1gttlnzPkeMY9b10AYVK+huf1aDzgmhVxmO4gB7HL9vx93mrYxzeXVCOH/dxMLftVTeNthXftPaGrZQcf6KRzz9NWjZU9uHiR8JMorE+NULuM/OxlMfE+R7/yAkkWYFIh7obESGnjIM8folcwZpyNlEdWV+HDwsqBeB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FF+OoRLd; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713812026; x=1745348026;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=KdeYjdGtcF1JNqWj59Djb+4HReLocTqors5w6qaChgk=;
-  b=FF+OoRLd1cwzMOBvP9UouXojG9MOaIF24OceqMWfiEdps6gz3MEX+VJb
-   ip1Sb8ZTPtYMLBtaWen4xQYvlvEJNQxvW53/nf/6lgxGPn8aWgQ8nUQ7f
-   4r3308M6EEAohSJzxw9LoALVeSOZmhs89zqsSTSIrjzSdAsXNkWYDML1d
-   PKhIeusoV+eMZObEaj7ehaqNqA9NoijMHNF66nMwFptzkO6jECaqHgAah
-   irHhZzt1i9bY3BtJezvmYLCRrSGIH2o3fmbIfYNE7JbFSAdHcW3M3iVhH
-   wAKgIHt6nYzXYEie0SvZLCWv9kK0++kPXJZsyOgQmoMZ0X84GAwr+Hm+f
-   A==;
-X-CSE-ConnectionGUID: 6In1p2+MQcSRvkzw3d1WKA==
-X-CSE-MsgGUID: EkAYlep3TrWxFBXQTC3jFA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="19977729"
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="19977729"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 11:53:45 -0700
-X-CSE-ConnectionGUID: tFsgZtNdQGydqYsVjb23aA==
-X-CSE-MsgGUID: /jA5vIZxQ96OJPcbpGXLLQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="24621373"
-Received: from leozhang-mobl.amr.corp.intel.com (HELO [10.212.37.174]) ([10.212.37.174])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 11:53:44 -0700
-Message-ID: <d046d195-6fa3-4c52-bc5f-3e5e763bc692@linux.intel.com>
-Date: Mon, 22 Apr 2024 10:52:17 -0500
+	s=arc-20240116; t=1713809255; c=relaxed/simple;
+	bh=mp5nOahML70hB9ODfs6Ll0+q3JEa0PXvH3k7986kQnk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XAOBZkUxDWb5ZCXEk9lbnYqNuamzvTSn9GHbVk1G9gpg84ifvPeGfkjA+nRweaYj2qurAeztT0My/IuHhhBKT8G8AtYdISDQpURGYqCsK/3JzQSFtXJ8bvQtX6ra88tfCCpBSX3K3aRsvc56m5Wuqt/3U72oyzeh4tzx4Warezw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ckEjR+Qm; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5721221b0d5so1338803a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:07:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713809252; x=1714414052; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jWiUOjQt4xoCGElSGzu3IzSt3boCV/cDK6apkE0DR0k=;
+        b=ckEjR+QmXMKtmHupgZJcb8NyFLlGwEZKrZAfqqhsA7Cl+zAyGdHEEknrWpbD1XNs+2
+         XtM+H1ajmr7OIB0+FycurJ9Jw9ohphx/GXMK2iwEckzvYNYim2U1Gs+BldIcsrSZiJvw
+         XKTnDYObjwLGtas/odTWR72sYV9WjT8VixzE3N9mT1zm8ho1vek/WULIkzWySUxRH31e
+         DtlXQAnhy05dQ1TifFd227U29p4oW/0vrniVLeClB2sy7J9pk5yx9Npp3rzQoJVVH5BU
+         lD6zi9z/TDv5zpQRU7oNENNBl2NNjh7HUzizfoQSi6eiu8YFzVtRO02dBN1TZ1b6vMfg
+         G4YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713809252; x=1714414052;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jWiUOjQt4xoCGElSGzu3IzSt3boCV/cDK6apkE0DR0k=;
+        b=kgaFmPBGmeUbt+YFzFmBeE+26fRRdiM+Hv0j3bfZUQ+NWnnJ75sQb6YJLkizQeLJJH
+         lhvie4dx1oJPGEVthNwgc2bikhy5eakBceNf7asfViA9AS7RfXDz66V43B7sG6HxOjnM
+         oV2oKduKMjC8w1YOk6TnBZ3pn+GzYDvqJXyQTMv9HtGLWTzgdKoxHbuICQEQvLhxDZyY
+         NB56DkfzLKURnZ0y6x8VGFn17J7dlLaMfTZICwCL/WHCWOsgk9pXK/xTe/xrvfAMO+HN
+         A3qm7+xbq84zBUuTDdK5IUWEB+grVgTY08prdSwKfsyaiJywYFASO0yMFjqcmxxGkSJI
+         GcbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWhrQ9eONHVs+oOzu42qDVDbIAz0Nhq6guw3OZq57FFyku8b1r5WlZKZSmkno/GXEmviUniNJMp+36sbBDhDT6MEAZYJUNo18GQxTXV
+X-Gm-Message-State: AOJu0Yw7SOEOU7XrQimRll3/kOwpL7rSOuNirXJoexS7+ZMyo8wzHkEs
+	iySP9lqPEnO7GOpElcBUxk9CsKUf/ETd45wz5Ye4sTEER0WjaOyy7sN8OYIF1Za7Khz/9hHow+x
+	KlHPZmwF0/kDayaF37RbbLKJsLDV9+lSczXI=
+X-Google-Smtp-Source: AGHT+IGAe1lHopBDKrGiT79eAqKkzD8Cl6oGORZoZpBxdojv9WzH+0MrCLBw68jY1jif1fS/eS0HUyU3s0ZWpGtxeRk=
+X-Received: by 2002:aa7:d04e:0:b0:571:badc:203d with SMTP id
+ n14-20020aa7d04e000000b00571badc203dmr441218edo.16.1713809252013; Mon, 22 Apr
+ 2024 11:07:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/14] ASoC: Constify local snd_sof_dsp_ops
-To: Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
- <89f8f0be-2534-46c8-9058-cabea4f68568@linux.intel.com>
- <9d1eda85-32a0-4e53-86ca-ce3137439bd7@kernel.org>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <9d1eda85-32a0-4e53-86ca-ce3137439bd7@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CAJg=8jyuSxDL6XvqEXY_66M20psRK2J53oBTP+fjV5xpW2-R6w@mail.gmail.com>
+ <uekqafv4wx5axijnnfybnxixui3ruzy3mkxirflv7tb3ovrtbk@ounqurycykuv>
+ <CAJg=8jzRT=oA9g6AGd1KmAY3GBkKkczj1rCqQ+pik5LmUQYd_A@mail.gmail.com>
+ <7jhx44ynje54wfcq3bkaui5w6oox7ypd7cgg4u5zhue6rf5tok@nj6jaxppzq2b> <usubtr2bibcnwca3rk3ytbd2jbpvshgu44faujrrrcnidnrr25@ttdhvhrz34vs>
+In-Reply-To: <usubtr2bibcnwca3rk3ytbd2jbpvshgu44faujrrrcnidnrr25@ttdhvhrz34vs>
+From: Marius Fleischer <fleischermarius@gmail.com>
+Date: Mon, 22 Apr 2024 11:07:20 -0700
+Message-ID: <CAJg=8jyaV20PannVxVQrqasmo3RCTAjOWfmkdm3ehviMoc=V-w@mail.gmail.com>
+Subject: Re: general protection fault in mas_empty_area_rev
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, maple-tree@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
+	harrisonmichaelgreen@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Liam,
 
+On Mon, 22 Apr 2024 at 10:05, Liam R. Howlett <Liam.Howlett@oracle.com> wrote:
+> * Liam R. Howlett <Liam.Howlett@oracle.com> [240422 11:25]:
+> > * Marius Fleischer <fleischermarius@gmail.com> [240422 11:11]:
+> > > Hi Liam,
+> > >
+> > > Thank you so much for the response!
+> > >
+> > > > >
+> > > > > Crash log:
+> > > > >
+> > > > > general protection fault, probably for non-canonical address
+> > > > > 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> > > > >
+> > > > > KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+> > > > >
+> > > > > CPU: 0 PID: 79545 Comm: syz-executor.0 Not tainted 6.9.0-rc4-dirty #3
+> > > >
+> > > > This indicates that you built with your own patches.  Could you test an
+> > > > unmodified 6.9.0-rc4 with your setup?
+> > > >
+> > >
+> > > I'm very sorry for this oversight. I had applied the patches for another bug
+> > > from this conversation
+> > > (https://lore.kernel.org/all/20240404070702.2744-3-osalvador@suse.de/T/#m480f21ab850996395082d0faab7f624f45b83781)
+> > > I will test the reproducer without these patches and get back to you!
+> >
+> > After testing with your config, I can see that those fixes are needed to
+> > boot.
+> >
+> > I am going to try 6.9-rc5 with your configuration and see if I can
+> > trigger the issue there.
+> >
+>
+> The reproducer does not trigger for me with your configuration and
+> reproducer.
+>
+> Does it still happen for you in 6.9-rc5?
+>
+You are right, indeed, I was not able to boot v6.9-rc4 without the fixes.
 
-On 4/22/24 00:43, Krzysztof Kozlowski wrote:
-> On 15/04/2024 16:19, Pierre-Louis Bossart wrote:
->>
->>> The core code does not modify the 'struct snd_sof_dsp_ops' passed via
->>> pointer in various places, so this can be made pointer to const.
->>
->> The structure itself is NOT always const - the initialization itself
->> does have platform-specific changes, so what do we really gain from all
->> this?
-> 
-> In the context of these patches, the structure is *always* const. In
-> other drivers, it is not, but they are not really relevant here.
-> 
->>
->> some commit messages say the code is "a bit safer", but I personally
->> find the 'const' more confusing since the information that the structure
->> can be modified during initialization is lost.
-> 
-> Functions which take some data and do not modify it are easier to read
-> if the pointed data is marked as const. Then it is obvious that
-> functions for example is re-entrant. Or that it does not affect the
-> state of other devices/core structures.
-> 
-> Additionally, the static data is safer when is const, because it cannot
-> be used in some attacks.
+I tested the reproducer on 6.9-rc5 (ed30a4a51bb196781c8058073ea720133a65596f)
+and it still triggers the crash in my setup. How can I help you
+further troubleshoot
+this issue?
 
-agree, but here you are marking as 'const' non-static data.
-
-> I really do not understand which information you lost here? Core does
-> not change the ops, so the data should be passed as const as often as
-> possible. If anyone wants to write a driver which does not use static
-> ops, but somehow dynamically allocated and changed, nothing stops him.
-> This patch did not make it less readable/doable.
-> 
-> The point is that these ops do not differ from other ops or some other
-> driver-passed structures, which we have around 100 already in checkpatch.
-
-I am so old that I remember times where we had to put things in ROM.
-That's what 'const' means to me: a dedicated memory space for immutable
-values.
-
-that's a different interpretation to the 'software' view you're
-describing. "this structure will not modified by this function" is not
-the same thing as "this structure CANNOT be modified".
-
-I am not going to lay on the tracks, if Mark wants to apply the patches
-that's fine. I just wanted to highlight that the reason we did not use
-'const' was that the data is dynamically allocated/modified and not
-constant at all.
+Thanks,
+Marius
 
