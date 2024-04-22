@@ -1,117 +1,149 @@
-Return-Path: <linux-kernel+bounces-152813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 621B28AC4A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:01:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EB498AC4BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:08:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF05B2810FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:01:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D1F41F22002
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF3448787;
-	Mon, 22 Apr 2024 07:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de header.b="A6TNrzvi"
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC7C448CCC;
+	Mon, 22 Apr 2024 07:08:33 +0000 (UTC)
+Received: from mail-m17240.xmail.ntesmail.com (mail-m17240.xmail.ntesmail.com [45.195.17.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11568482ED
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37779482D7;
+	Mon, 22 Apr 2024 07:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.195.17.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713769273; cv=none; b=geQkh8f83PcLDsI27JParjp2lTzrTHqHksmmoQvA7YV1dV7Mrx56oi9RGyCqaOal7vCTU7UaPSv1ndU5enuZTMbyqVEgJp57FHq0ZQHkrhxd0Dc++5OU1V026eZl1fWliIuEUukf8WxYtb1eDiUjaS5i0vMy9TxEINrq9N0BCHs=
+	t=1713769713; cv=none; b=GfqWcyx/08OQH5XTzc2usxxNF7JvfQ2QfTWUy1wauVYep+LeodyRUUR1tSus4zoieH/GdKtWCGVhTMyZvfGtU/wCeAts/1q0ElvEZFgdGI98sB3nc+H4Q7DFrvnp+PVgq6E/Y7E26q9XpFsSHQH9p6JGJEQVyWeR5hQkED/a9nk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713769273; c=relaxed/simple;
-	bh=XNuK4qbKnADfMXviTzs6nnvQDFLAwer8iqIgdbyp8hU=;
-	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
-	 References:Message-ID; b=fm24h0W1uQhT86qf12qHk/uW+a5ByacHPQxcDcf3tTfqyK8Lnh9eiyvdmMfpF8alSGICOlY9dV+2tC3HH8OREftJIeGjxJ6OfmYcJSQECSN3+DNSrWgNx3oAcy1pAeswk0fuoWBykrBScL7eQzgfuNAgmlBd32zKF40KHAGMvzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.de; spf=pass smtp.mailfrom=posteo.de; dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de header.b=A6TNrzvi; arc=none smtp.client-ip=185.67.36.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.de
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id 4E3E6240104
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:01:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-	t=1713769264; bh=XNuK4qbKnADfMXviTzs6nnvQDFLAwer8iqIgdbyp8hU=;
-	h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:
-	 Cc:Subject:Message-ID:From;
-	b=A6TNrzviFhHFrYszwgREJ5iTO94EMYzAXNLzJdxNHfYsP2tXLcSvIjYoBs2lFWMxP
-	 /uROVMewqcHGK9ZMgZ2H+7qS0+K9LUpgMgI3267ZYFUfOQhcE6sApHpHajgkx5s5uA
-	 MXNUZj2Iqg8l5DATZRVRlpHMZnaCrV+OTbqZ8tUXtDZNKtX/BGKnH/g1PXeUF9HvCy
-	 +mB/3nBKzSH9S9OWXN4sDLZnd4ndMB+WN+GxbZjiOIOXwgWOOjNFC/r6oUf7Nni8k7
-	 3uwNQRv7f3LJplC4qBbIA8qfbG8W5IcmK/UY/hqkxrEdtbNi4Lzcjzqcr2zdg/jACb
-	 CUez8t9gnZNsg==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4VNGPB6MLPz6tsf;
-	Mon, 22 Apr 2024 09:01:02 +0200 (CEST)
+	s=arc-20240116; t=1713769713; c=relaxed/simple;
+	bh=rO9wuLUfiR4E6XZ84kDSGhF4Q7qepug3oReICZiQTPs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=aGpzXxb51xeiyrjT0sB/DFez3FPufAxJHSV+cbACJWMtceCY52ex9WdpZ98I/s0y1tp51KTlGHK9ZZebnKxUMDhF5W3aKm+N1rrnntlVPjE3vSx/5THEUxkQ8vTaA5mgp/ud7lZjCGlEOP2KkrqpwWA9wPOomKyawzskf18iaAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=45.195.17.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
+Received: from ubuntu-22-04.. (unknown [218.94.118.90])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 12BB186026B;
+	Mon, 22 Apr 2024 15:01:33 +0800 (CST)
+From: Dongsheng Yang <dongsheng.yang@easystack.cn>
+To: dan.j.williams@intel.com,
+	axboe@kernel.dk
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org,
+	David Gow <davidgow@google.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] drivers: base: Free devm resources when unregistering a device
+Date: Mon, 22 Apr 2024 07:01:23 +0000
+Message-Id: <20240422070125.52519-3-dongsheng.yang@easystack.cn>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240422070125.52519-1-dongsheng.yang@easystack.cn>
+References: <20240422070125.52519-1-dongsheng.yang@easystack.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Mon, 22 Apr 2024 07:01:02 +0000
-From: a-development@posteo.de
-To: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
- David.Kaplan@amd.com, Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
- gregkh@linuxfoundation.org
-Subject: Re: [RFC][PATCH 00/17] Fix up the recent SRSO patches
-In-Reply-To: <20240417091200.GAZh-SYOGABCnsqpKj@fat_crate.local>
-References: <cbad6acb30e33e8dd387080e5936cc38@posteo.net>
- <20240127191942.GEZbVXTtDNzLB9hTpr@fat_crate.local>
- <181005cf4a78a4c3c5e1de77498f6c23@posteo.net>
- <20240127194139.GFZbVcc2RxhNtO3ZHD@fat_crate.local>
- <6170a3f60cd1ca68bca5829db4a8568a@posteo.net>
- <20240326222134.GNZgNKbgdBUsAU98RV@fat_crate.local>
- <d0dfa77ba8231652554c4e6088f985d1@posteo.net>
- <20240416084544.GAZh46uKW6ijAfftmI@fat_crate.local>
- <a49e7560f982f00ef1c5452483459b26@posteo.net>
- <0065fda592b2652d1a2730ddbc81cea6@posteo.net>
- <20240417091200.GAZh-SYOGABCnsqpKj@fat_crate.local>
-Message-ID: <98d6c53b244c579b7c7e28872d5cb665@posteo.net>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVlCGkhKVkgeGUseSkpJGUIdSlUZERMWGhIXJBQOD1
+	lXWRgSC1lBWUlKQ1VCT1VKSkNVQktZV1kWGg8SFR0UWUFZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
+X-HM-Tid: 0a8f049c2630023ckunm12bb186026b
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mgw6Tgw*Czc9LxwBMhELGU8O
+	NygKCQ5VSlVKTEpITE1CSUJIQ01MVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
+	V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBT0NPQjcG
 
-Hello. I have installed the kernel through 
-https://aur.archlinux.org/packages/linux-mainline and noticed that SRSO 
-is disabled. "Speculative Return Stack Overflow: IBPB-extending 
-microcode not applied!"
+From: David Gow <davidgow@google.com>
 
-cat /sys/devices/system/cpu/vulnerabilities/spec_rstack_overflow
-Vulnerable: Safe RET, no microcode
+In the current code, devres_release_all() only gets called if the device
+has a bus and has been probed.
 
-So far, I have been succesfully suspending the one night I used it.
+This leads to issues when using bus-less or driver-less devices where
+the device might never get freed if a managed resource holds a reference
+to the device. This is happening in the DRM framework for example.
 
-Assuming this is per-default, I've installed the kernel module for my 
-PCIe Capture card and testing it.
+We should thus call devres_release_all() in the device_del() function to
+make sure that the device-managed actions are properly executed when the
+device is unregistered, even if it has neither a bus nor a driver.
 
-Any new instructions?
+This is effectively the same change than commit 2f8d16a996da ("devres:
+release resources on device_del()") that got reverted by commit
+a525a3ddeaca ("driver core: free devres in device_release") over
+memory leaks concerns.
 
-Thanks
+This patch effectively combines the two commits mentioned above to
+release the resources both on device_del() and device_release() and get
+the best of both worlds.
 
-On 17.04.2024 11:12, Borislav Petkov wrote:
-> On Wed, Apr 17, 2024 at 08:08:53AM +0000, a-development@posteo.de 
-> wrote:
->> Today I failed to suspend, and the spec_rstack thing was off.
->> 
->> https://up.tail.ws/txt/non-working-suspend-2.txt
-> 
-> Ok, but please do not top-post. Put your reply underneath the next
-> you're replying to and remove the rest of the quoted text like I just
-> did.
-> 
-> So this could be caused by the proprietary module or something else.
-> 
-> If you want this debugged, you'd have to try to reproduce it with the
-> latest upstream kernel from here:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> 
-> after having removed the propietary module.
-> 
-> HTH.
+Fixes: a525a3ddeaca ("driver core: free devres in device_release")
+Signed-off-by: David Gow <davidgow@google.com>
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
+Link: https://lore.kernel.org/r/20230720-kunit-devm-inconsistencies-test-v3-3-6aa7e074f373@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/base/core.c                      | 11 +++++++++++
+ drivers/base/test/platform-device-test.c |  2 --
+ drivers/base/test/root-device-test.c     |  2 --
+ 3 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 3dff5037943e..6ceaf50f5a67 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -3817,6 +3817,17 @@ void device_del(struct device *dev)
+ 	device_platform_notify_remove(dev);
+ 	device_links_purge(dev);
+ 
++	/*
++	 * If a device does not have a driver attached, we need to clean
++	 * up any managed resources. We do this in device_release(), but
++	 * it's never called (and we leak the device) if a managed
++	 * resource holds a reference to the device. So release all
++	 * managed resources here, like we do in driver_detach(). We
++	 * still need to do so again in device_release() in case someone
++	 * adds a new resource after this point, though.
++	 */
++	devres_release_all(dev);
++
+ 	bus_notify(dev, BUS_NOTIFY_REMOVED_DEVICE);
+ 	kobject_uevent(&dev->kobj, KOBJ_REMOVE);
+ 	glue_dir = get_glue_dir(dev);
+diff --git a/drivers/base/test/platform-device-test.c b/drivers/base/test/platform-device-test.c
+index b6ebf1dcdffb..1ae5ce8bd366 100644
+--- a/drivers/base/test/platform-device-test.c
++++ b/drivers/base/test/platform-device-test.c
+@@ -87,8 +87,6 @@ static void platform_device_devm_register_get_unregister_with_devm_test(struct k
+ 	struct test_priv *priv = test->priv;
+ 	int ret;
+ 
+-	kunit_skip(test, "This needs to be fixed in the core.");
+-
+ 	pdev = platform_device_alloc(DEVICE_NAME, PLATFORM_DEVID_NONE);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, pdev);
+ 
+diff --git a/drivers/base/test/root-device-test.c b/drivers/base/test/root-device-test.c
+index 9a3e6cccae13..780d07455f57 100644
+--- a/drivers/base/test/root-device-test.c
++++ b/drivers/base/test/root-device-test.c
+@@ -78,8 +78,6 @@ static void root_device_devm_register_get_unregister_with_devm_test(struct kunit
+ 	struct test_priv *priv = test->priv;
+ 	int ret;
+ 
+-	kunit_skip(test, "This needs to be fixed in the core.");
+-
+ 	priv->dev = root_device_register(DEVICE_NAME);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->dev);
+ 
+-- 
+2.34.1
+
 
