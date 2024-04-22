@@ -1,115 +1,173 @@
-Return-Path: <linux-kernel+bounces-153404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E75F58ACDBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:04:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0C218ACDBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:04:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3B282827FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:04:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AECC1F21211
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:04:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E0E14EC7D;
-	Mon, 22 Apr 2024 13:04:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374AF14E2FC;
+	Mon, 22 Apr 2024 13:04:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hZ+Lb0SE"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jLUUp6Bg"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3748114A0B6
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:04:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16BE414A4C6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713791061; cv=none; b=IZSSIynDfcmWz/NAu7nztjZTsTUo3rLzT1v5jgJ2KJkGnDILdRCRfEu89pfhewhZ/5wVwDP2JiDJP3qUeZadHHrFQYdLbVW1BPRY0ocsvRluiSjJOBdnp35gWmCvCt3Don+2Hf7J4k0jlFwYeTzdFdbMmt5YM9toStwLlXlI7h0=
+	t=1713791082; cv=none; b=exarKI3c9OB5JbTOlVei/5RpwgC2QMK3hCdGWSpBgrwFd5xLnEm3XkZQK42ETJsb2ez2gPQVzq9fh7JQoDhwWJqQzDXbt34R1eKtnKh0N6JZxe8rUuwS1RlRuRE6NPOk5SWCK//oO/G95sVk3t/yhLfh1uLBFbw/uHYAuYPXkTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713791061; c=relaxed/simple;
-	bh=VbbA/s7KLCnQE7xa2XBEGfbJUh5YoqTO5XwvThu3xgQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lz2ptpErZASeaFjhYow8jpU81C9qeuzHWufVW82+BVHlNX69HcEW90P3JnGoaQYJk6cLKRbD96ZowNaozduAtlo0n6JO/lLovOG9gnPUn67f1t/vLV9nRCN9f0vIkj8Xn8pHkqV+2+Wh9WaN5nWx1doqSZylzVLBEIbQgPYDfQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hZ+Lb0SE; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e56ee8d5cso5508029a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:04:19 -0700 (PDT)
+	s=arc-20240116; t=1713791082; c=relaxed/simple;
+	bh=A8rWCJ755aK/NQ0pCWuBPXg8gWo13fRFIsVRFtZBxOY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=owbZVdYuZvpyQZA9M0YNzYDJMAVpTazy+B80GAAHsekSvp0RziSnstVb9dOCbHBF6iN6klWz6rVzsGxYAIKfhyjo4Qt4loWiu7BsV8v6PY6qxmpYKd+5mO/5D1Scpw9FJNgV5kjCoW4bi/KnITv+vodAWxk8IWCWxAeSQN41yRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jLUUp6Bg; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2adce8f7814so823398a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:04:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713791058; x=1714395858; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iuMzujqDw2WAwNF9pTgdRvBBLCvmBGw54AkHaxIpYMI=;
-        b=hZ+Lb0SE7tkQlz6u+OnS3zg9Oa4R8WUSVYTBZyrjcFMWdTsm4U2j9VdcfYnILYMCae
-         G/SKkMNaRi9THp2Zs0rF4O47blFGMKVI4SXT9gc8ueY9kkf97IzkLFGIdEmLQ5o4QNmd
-         I3anbaC8rpD7cBMzwLDHv51xy+Ki3AAYl8gddJhu81jIKVHLPj6GrwFgPp8YjHhFd7le
-         Y27GaXTL5bbT9hz6AnqqYWWme87vqjQl50nbM5TvEKniVBJ9iVwFl7DtgP7ABpxXauqa
-         iScMWPQDdCvs+of3V60zEOTa3+KrRUUMo/ERlpi3riuzs9WFjOSuFXKWieh4+uwNZ13K
-         LfdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713791058; x=1714395858;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713791077; x=1714395877; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iuMzujqDw2WAwNF9pTgdRvBBLCvmBGw54AkHaxIpYMI=;
-        b=HgbO7VHEcEKOUGtEScqjkwh8eI6NLT7hsMJjAEaxj32KjkwWU1kIhepdl4SNcdcrO2
-         kPH++Sgphcu0Xg9gysK2aOVkiJx0fWVji8WqE60ImaXN1XqWhf+Go4S9Iu9aeWac2fzZ
-         cQCXQywldJ2j2oCsutn0kGw24tKuIekpuU7bEuEXc2ovh/Nf92aHFrDK3EMorrRLHiSa
-         TmGEVQroow5ElJTsxSXj5//STektJ/B/+vO5Yi2Cse3BLQ7pqBqS908AIBDbNDC4LMek
-         4V+crdvKOyhHfn2PYY6MpZtWBNWHZuSMuAySXq50pYYQfQUFj9PgjtMdoq5+w4vIYYAp
-         JiFA==
-X-Forwarded-Encrypted: i=1; AJvYcCWz7hm6BA2Zh28hYxleY00BN4UnFJIQ6GLSZdP3WU4pil+OtyWdKyY0ZQSSEGerw8XNnyHtUV+2AokdTh4pqCmNNx/MyR+ZYsuaIy3o
-X-Gm-Message-State: AOJu0Yyr/fnKt8TVjrwHPWigCy0ISrvr+OSv/LUnGNtJoZkCcDtQqNa7
-	zO/57FCLz9CcSXviTBdmHpBJuuW3r8j2HFJhiYd+a84ZqmNsvtDGB2WOKPldqI8=
-X-Google-Smtp-Source: AGHT+IGAY3RPH2holTfD/QmJVlRaWK48fjTfI7XRh+HsNXpa4kzD5+b1fGhQBgzKyYCndtXlCIEmNw==
-X-Received: by 2002:a17:906:1692:b0:a55:beab:cbed with SMTP id s18-20020a170906169200b00a55beabcbedmr1118197ejd.5.1713791058248;
-        Mon, 22 Apr 2024 06:04:18 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id a10-20020a1709066d4a00b00a52567ca1b6sm5738274ejt.94.2024.04.22.06.04.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 06:04:17 -0700 (PDT)
-Date: Mon, 22 Apr 2024 16:04:13 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Jeongjun Park <aha310510@gmail.com>
-Cc: kuba@kernel.org, linux-hams@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzbot+8e03da5d64bc85098811@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH net,v3] net: hams: Fix deadlock caused by unsafe-irq lock
- in sp_get()
-Message-ID: <7d690606-7abe-42db-80d4-2ef979e8303b@moroto.mountain>
-References: <20240419200453.13301f29@kernel.org>
- <20240420082102.63841-1-aha310510@gmail.com>
+        bh=rssIs5Z4PDRLHwlKnxXtcDFwbhBTkpedIgqO4pjxlBA=;
+        b=jLUUp6BgMI9h3fG1w62tlzG4bjAscgFo8ReVrapw0+R1sG61k48gvvatwasw+WZW9K
+         NC0U1ci2FkuJZlgxeWsBZecT/2Pq5VO6nYZXk4pghl5a4FIkfYSwWrQU/3jCA+s03Q9G
+         hUxMfmXRs0Vvky+zEAoK/QwJj/RNADK25VogF/t9TCWWQb8q5gpk9dPkwqkDAmUiF6Pg
+         2hcaGlxM574YRuPpyI1PoyaFejJfYLJeFK1Qbrh76Jn9CjNt/9GVZwPgDQiP53CZZHTd
+         9x236uDqbDPuDVs4vtUlZKYH2d2pbZ0IMaJ47ft64rlKeQYYFZNFLTXhLBZg+RPGIvnn
+         ArXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713791077; x=1714395877;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rssIs5Z4PDRLHwlKnxXtcDFwbhBTkpedIgqO4pjxlBA=;
+        b=iRYT3O8wCcF4PnedQNxfACESm3pAUGzixZLVCpCLrMmN7xffsmJ8fhfWU8IqDYb1ry
+         1/07uvCUXLM8XlesS4vXwwSVpv/qq71UVwi2VX48M1BsjB61x7UgC0+OETN1H1Q9afrm
+         6nibf7FHI5MJasx5GsKEY2Fnu1GyZ6D36ulKaSyO2Wu9EgdOHWxoOjBY3McQYPF3FvJs
+         +fdlLrvXr2ikR6pw86LLS6W06JdmFCJATwnDZtqkHSZm7znTfANu8xe2rp5IScNjUyrr
+         Tdkpq1oaS7RPs3drP+oIeUwKRhIUcjWEXeTEfxsvtfWb1yETT2esI61adHfCcZ+yQ9zj
+         EQuA==
+X-Forwarded-Encrypted: i=1; AJvYcCXDg7UZ0C2i5VW9woeg6YQJiCUf5WMZmlJeJgn/FZajNxiTjZhV2/a1k3TROyCvNGBMjQSRoi6tXdoeoHv36/y+d7HJDzuGJ3IX3QS2
+X-Gm-Message-State: AOJu0YzhbGG7D6+6bZcmASZ0NseJkiANlniqWwl+bKGwp1vllTseYoi9
+	cfRQcIi1LZrduaMYvc4/eUzK0TBxrm5wDDqUdBE6+oOJToeIxq+QTOyNdFgs5xfISUt9dqLy3gv
+	qU/Q8xBvmTal3Y45oKLP/wb9jNoPdoZ+h
+X-Google-Smtp-Source: AGHT+IF1ksQignCW8zAnmCOI9fglM8+zEJqk8wCkLDa2hG4T31IAsm25alnnLSKjWG2VHZKc0xg72Ht8S/v613xvPiI=
+X-Received: by 2002:a17:90a:cc15:b0:2a4:7133:7e02 with SMTP id
+ b21-20020a17090acc1500b002a471337e02mr8467438pju.35.1713791077126; Mon, 22
+ Apr 2024 06:04:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240420082102.63841-1-aha310510@gmail.com>
+References: <20240211230931.188194-1-aford173@gmail.com> <20240211230931.188194-2-aford173@gmail.com>
+ <6111fe04-4ecb-428e-9a0c-dc02cadfe3e7@denx.de> <CAHCN7x+DwSSabhGYZ1dnZzwRe+BJfz2H-AXbxjUQWytrq3OMpQ@mail.gmail.com>
+ <47b26a19-9aba-4380-9d05-f06bd8bc20b1@denx.de>
+In-Reply-To: <47b26a19-9aba-4380-9d05-f06bd8bc20b1@denx.de>
+From: Adam Ford <aford173@gmail.com>
+Date: Mon, 22 Apr 2024 08:04:25 -0500
+Message-ID: <CAHCN7x+R5t5o13tFrQ1trH1LTPshSOOvuerDpUTY++Umqwr=WA@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] drm/bridge: samsung-dsim: Fix porch calcalcuation rounding
+To: Marek Vasut <marex@denx.de>
+Cc: dri-devel@lists.freedesktop.org, aford@beaconembedded.com, 
+	Frieder Schrempf <frieder.schrempf@kontron.de>, Inki Dae <inki.dae@samsung.com>, 
+	Jagan Teki <jagan@amarulasolutions.com>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Marco Felsch <m.felsch@pengutronix.de>, Michael Tretter <m.tretter@pengutronix.de>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The ealier versions didn't build.  I feel like switching from _irqsave()
-to _irq() was wrong but you just did it because you couldn't figure out
-how to make _irqsave() compile...
+On Mon, Apr 22, 2024 at 8:01=E2=80=AFAM Marek Vasut <marex@denx.de> wrote:
+>
+> On 4/22/24 2:09 PM, Adam Ford wrote:
+> > On Sun, Apr 21, 2024 at 9:36=E2=80=AFAM Marek Vasut <marex@denx.de> wro=
+te:
+> >>
+> >> On 2/12/24 12:09 AM, Adam Ford wrote:
+> >>> When using video sync pulses, the HFP, HBP, and HSA are divided betwe=
+en
+> >>> the available lanes if there is more than one lane.  For certain
+> >>> timings and lane configurations, the HFP may not be evenly divisible.
+> >>> If the HFP is rounded down, it ends up being too small which can caus=
+e
+> >>> some monitors to not sync properly. In these instances, adjust htotal
+> >>> and hsync to round the HFP up, and recalculate the htotal.
+> >>>
+> >>> Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron B=
+L i.MX8MM with HDMI monitor
+> >>> Signed-off-by: Adam Ford <aford173@gmail.com>
+> >>> ---
+> >>> V2:  No changes
+> >>>
+> >>> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/=
+bridge/samsung-dsim.c
+> >>> index 8476650c477c..52939211fe93 100644
+> >>> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> >>> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> >>> @@ -1606,6 +1606,27 @@ static int samsung_dsim_atomic_check(struct dr=
+m_bridge *bridge,
+> >>>                adjusted_mode->flags |=3D (DRM_MODE_FLAG_PHSYNC | DRM_=
+MODE_FLAG_PVSYNC);
+> >>>        }
+> >>>
+> >>> +     /*
+> >>> +      * When using video sync pulses, the HFP, HBP, and HSA are divi=
+ded between
+> >>> +      * the available lanes if there is more than one lane.  For cer=
+tain
+> >>> +      * timings and lane configurations, the HFP may not be evenly d=
+ivisible.
+> >>> +      * If the HFP is rounded down, it ends up being too small which=
+ can cause
+> >>> +      * some monitors to not sync properly. In these instances, adju=
+st htotal
+> >>> +      * and hsync to round the HFP up, and recalculate the htotal. T=
+hrough trial
+> >>> +      * and error, it appears that the HBP and HSA do not appearto n=
+eed the same
+> >>> +      * correction that HFP does.
+> >>> +      */
+> >>> +     if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE && dsi->la=
+nes > 1) {
+> >>
+> >> Does this also apply to mode with sync events (I suspect it does), so
+> >> the condition here should likely be if (!...burst mode) , right ?
+> >
+> > Thanks for the review!
+> >
+> > I was only able to test it with the DSI->ADV6535 bridge, and I'll
+> > admit I don't know a lot about DSI interface since I don't have a copy
+> > of the spec to read.
+> >
+> > Are you proposing this should be:
+> >
+> >   if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST) && dsi->lanes > 1)=
+ {
+> >
+> > I just want to make sure I understand what you're requesting.
+>
+> Yes, exactly this.
 
-On Sat, Apr 20, 2024 at 05:21:02PM +0900, Jeongjun Park wrote:
-> After looking at this email and testing everything, I have confirmed
-> that both patches are running without any problems in my environment,
-> and the patchwork test outputs an unknown error in the patch
-> in ap_get().
+Do you think it should also include checks for
+MIPI_DSI_MODE_VIDEO_NO_HFP, MIPI_DSI_MODE_VIDEO_NO_HBP or
+MIPI_DSI_MODE_VIDEO_NO_HSA?
 
-What does "the patchwork test outputs an unknown error in the patch in
-ap_get()" mean?
+It seems like if any of these are set, we should skip this rounding stuff.
 
-> 
-> But the patch for sp_get() is confirmed to have no problem,
-> can you tell me more about the problem?
-> 
-> Thanks.
-
-You say that it was tested but syzbot says that it doesn't have a
-reproducer for this warning.
-
-regards,
-dan carpenter
-
+adam
 
