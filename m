@@ -1,127 +1,209 @@
-Return-Path: <linux-kernel+bounces-153481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873898ACE94
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:44:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DEB18ACE9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:45:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B90171C20AA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:44:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 143102819E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C83314F9F8;
-	Mon, 22 Apr 2024 13:44:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EbkRXTtu"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9222F150984;
+	Mon, 22 Apr 2024 13:45:26 +0000 (UTC)
+Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE711514C0
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E0B1509B1
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.19.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713793448; cv=none; b=D92aKBEhuM0+KZ1/uiQHSMpVhtJZ/sVp+inkTTZbsw09K6xkJmxGRGe4InSgXS7S3JKsg9V0OU5TERhF1UlaVyGHt+njUnDkX1fGYRAuGkdNfnHEU7NolP3vjx6gpX3c2eKOud7SJQHKQRUtJSr0H4O4DT6bA6XZUlEjZmp8+ts=
+	t=1713793526; cv=none; b=e+A2a+pYH9Bx9HXZfXm7ondGmP9q2mRe1dNy0dp4AkNkdoLTABNttKVM0pM1o5PIlftLVe33LNhkVFs3xU+Z8gimuBFfWKPNya/RLWpD3wgsArMhWoG8D21ENX7LGPiVNS4NbMnUwBz/CDDMWqUZhTIzg5ZYmQEtYJtmxt0JCDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713793448; c=relaxed/simple;
-	bh=bLGXgpxnbSKLkCQguZ5XOqrsE1dxN3y9EhIB6LMNF4g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=B007MhQQYph3YfQc047fTcLs3ujjAmL2xpsfMVycJbBgf5uHg4mpQSY+ZjKvlNgDKASuoPbTT4jlMzqik97ix5RERZpOtb5GWrXiiHYVnncGd3HLGaKXN/6QxRw+grvlq/Nv51lu2q2Ic5Egb0PCuzMCmXI8DQk0TGT3s6HhOOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EbkRXTtu; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-419fc79e4dcso10423275e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713793445; x=1714398245; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7kwADMk5cdAVshWhjo8kiL5c8AnuAMycon0bxlwOriw=;
-        b=EbkRXTtuBFcB5ir4wLkOKCiA1onqCV/vpsABL8+jW5BD0E3EKpN6OkM36CD50hmhTo
-         H83ZYbWKwdhFTM/v+9RTFi9+FmK7M2mOjrx1ZN1IKU7EUioGV8uwbptDSzumgPTi4WDn
-         Si7GFQ0ieuT4yJu7TEiK6O8T6SAJt3MSe6TxNAT2ov0+PNpnKnMaOhLlglM4xJ2R0TH9
-         34hGHtd1tB/+s0jx2dmTSkTeb527R4P+zQYVWjn42PVZOhbgbqBQJ9hhnB2i3SphZXzs
-         tTs7VcLWTZrSN1v4BipsDsbRdZC46GfaRvmyUU1x8IukbzNaRxgECOj5GdhsfTicvjad
-         lxNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713793445; x=1714398245;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7kwADMk5cdAVshWhjo8kiL5c8AnuAMycon0bxlwOriw=;
-        b=RjrHkpU1Q98+5JhLxPN4AdAkP6QNFVu5Aroyy6/+70roZYX871kXJFJ0YzVEclYeUw
-         bYgKcyf0HB2sl6jFWwVh8qS1+U8CQAzRDDx3QAkXPI/wEXTAZMCHRpK5lNr/asa9chN3
-         X1CuY96eXQwsfccFjFklhq8+ZxveI4i4Nlmlpp/rYwqjAC4kHrnr+HzQE6hl/GOlOlww
-         Jj+HAA7UbZzO8RsTAC/EKRxQrwy8441hj3UXYX+mkBh6MOwR8+smnhksumAjxYqH58XC
-         v4UkxCVo5STgM1NvZXDuWoesB0GLvbB/c4niLyflL8l7XGpNlAtHCBTX5gSCbtDlfawE
-         GNww==
-X-Forwarded-Encrypted: i=1; AJvYcCU2vxEmyUsHXNuiyRjHV3z8bIQWnGjwCiM8Kng/xw6EQwGDGO3CsimW3+4gDlhu0yKt1gb88nwDPDk+s9GU/4uRpeys2dcCX818FevG
-X-Gm-Message-State: AOJu0YyMGN20a+CwNbcpHdStUbPi96+XgILkADZTs0ruq5Lxiz8S30nF
-	VrQZLyqADth1deewcha48apAodDVLtQFmwu2pCVcRxmFnDPjc8DwqwF5Jr+3Rm8v8YbG0qBNsh5
-	Y
-X-Google-Smtp-Source: AGHT+IG4kwKfyMpRuWXlxFeKbxQWHJY+DwiUbTneZBOl7/zDE6gyAXrGAyk7QNgJ9pYfFQ1pPWWLuA==
-X-Received: by 2002:a05:600c:4688:b0:418:a2ce:77ae with SMTP id p8-20020a05600c468800b00418a2ce77aemr7466632wmo.27.1713793445132;
-        Mon, 22 Apr 2024 06:44:05 -0700 (PDT)
-Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id g18-20020a05600c4ed200b00417d624cffbsm20731069wmq.6.2024.04.22.06.44.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 06:44:04 -0700 (PDT)
-From: srinivas.kandagatla@linaro.org
-To: broonie@kernel.org
-Cc: perex@perex.cz,
-	tiwai@suse.com,
-	lgirdwood@gmail.com,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 4/4] ASoC: qcom: sm8250: fix a typo in function name
-Date: Mon, 22 Apr 2024 14:43:54 +0100
-Message-Id: <20240422134354.89291-5-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
-References: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
+	s=arc-20240116; t=1713793526; c=relaxed/simple;
+	bh=GqweGD7FEih2DKxvPXX28sIxVSB/q+RnDMyr5ddRYYA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KSvEzYuoju2cCAKRhTHtasjtefeLvEVKztZh1C4IsqMVr2m5VxV+qo1/U+kd/IODp8lk4RFandEg5WMiBB+1RkJFNx9mvoYnvSqKoE/vQTq2y+N1deEBCd5OgKe87a/K/O5HIar2J6HFdkyu8vKWZdvj1gPPMoUJpKBELp+ghxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=54.207.19.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+X-QQ-mid: bizesmtpsz6t1713793491tn5a1gu
+X-QQ-Originating-IP: 4T9vFwtcN5bxuKVyJbWNoCazsGTJce4anorEd6nw19M=
+Received: from john-PC ( [123.114.60.34])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 22 Apr 2024 21:44:48 +0800 (CST)
+X-QQ-SSF: 01400000000000E0L000000A0000000
+X-QQ-FEAT: TxLxcJtIk++bAQsC+7kYDxGgt3lLYoKlJnOLtIMzDcO0Iriok2aBG9QN2pBfi
+	LgZDfkJs6Q13EeO5ul+C1abhuuv5Cnf26b7STHZ35jLbjInDsCKgvJPRocX5o8TI3UngAdr
+	NYKQ1wdA/VFOR4QlWz/ibm7GWPGXvH6y+uoPNJq9wWcXKOrbPMh9HLHmkMBqLxxuHiX5Dk8
+	qfnDosogiJqEPf43tQN7faSqfabqkL980q6gdeSefosXjn9lKCnromtz+RnKOM+/RFJ7eIx
+	T85e4sp+VVVdOsNYLd6mT7TWa2zUfP1AlngWgLeTE+Jm/Uj9SJ6YSrzIGw8V5lLNl2/3Bpj
+	VOQNr6E1GpfR45nCdCCJDzrmw2MwgiUX4kmWRMlkYZdBOah/HuA0hGkqpZnDTnAf86DzP64
+	9C7Hw976CtmHPt88OeQEz9cBrn37R36R
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 12248589611114575822
+Date: Mon, 22 Apr 2024 21:44:47 +0800
+From: Qiang Ma <maqianga@uniontech.com>
+To: Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc: alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+ daniel@ffwll.ch, srinivasan.shanmugam@amd.com,
+ Arunpravin.PaneerSelvam@amd.com, le.ma@amd.com, Felix.Kuehling@amd.com,
+ mukul.joshi@amd.com, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/amdgpu: Fixup bad vram size on gmc v6 and v7
+Message-ID: <2778C515DE59A537+20240422214447.231a09de@john-PC>
+In-Reply-To: <bde48eef-4d8a-4cfa-b824-6de88c0f87fd@amd.com>
+References: <20240422052608.5297-1-maqianga@uniontech.com>
+	<68f02c5c-5591-4d6f-9926-b0fc6f9f6287@amd.com>
+	<D94775003178862D+20240422203329.49844e71@john-PC>
+	<bde48eef-4d8a-4cfa-b824-6de88c0f87fd@amd.com>
+Organization: UOS
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:uniontech.com:qybglogicsvrsz:qybglogicsvrsz4a-0
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+On Mon, 22 Apr 2024 14:59:36 +0200
+Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
 
-Fix a small type in the function name as its confusing to see a SoC name
-that does not exist.
+> Am 22.04.24 um 14:33 schrieb Qiang Ma:
+> > On Mon, 22 Apr 2024 11:40:26 +0200
+> > Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
+> > =20
+> >> Am 22.04.24 um 07:26 schrieb Qiang Ma: =20
+> >>> Some boards(like Oland PRO: 0x1002:0x6613) seem to have
+> >>> garbage in the upper 16 bits of the vram size register,
+> >>> kern log as follows:
+> >>>
+> >>> [    6.000000] [drm] Detected VRAM RAM=3D2256537600M, BAR=3D256M
+> >>> [    6.007812] [drm] RAM width 64bits GDDR5
+> >>> [    6.031250] [drm] amdgpu: 2256537600M of VRAM memory ready
+> >>>
+> >>> This is obviously not true, check for this and clamp the size
+> >>> properly. Fixes boards reporting bogus amounts of vram,
+> >>> kern log as follows:
+> >>>
+> >>> [    2.789062] [drm] Probable bad vram size: 0x86800800
+> >>> [    2.789062] [drm] Detected VRAM RAM=3D2048M, BAR=3D256M
+> >>> [    2.789062] [drm] RAM width 64bits GDDR5
+> >>> [    2.789062] [drm] amdgpu: 2048M of VRAM memory ready =20
+> >> Well we had patches like this one here before and so far we always
+> >> rejected them.
+> >>
+> >> When the mmCONFIG_MEMSIZE register isn't properly initialized then
+> >> there is something wrong with your hardware.
+> >>
+> >> Working around that in the software driver is not going to fly.
+> >>
+> >> Regards,
+> >> Christian.
+> >> =20
+> > Hi Christian:
+> > I see that two patches for this issue have been merged, and the
+> > patches are as follows:
+> >
+> > 11544d77e397 drm/amdgpu: fixup bad vram size on gmc v8
+> > 0ca223b029a2 drm/radeon: fixup bad vram size on SI =20
+>=20
+> Mhm, I remember that we discussed reverting those but it looks like
+> that never happened. I need to ask around internally.
+>=20
+> Question is do you see any other problems with the board? E.g.
+> incorrect connector or harvesting configuration?
+>=20
+> Regards,
+> Christian.
+>=20
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/sm8250.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+At present, no other problems have been found.
+Configured as radeon driver, display is normal.=20
+But this problem is found when I switch to amdgpu driver, and the
+startup fails with black screen.
+After add the patch, the startup was successful, display is normal.
 
-diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index d70df72c0160..9bd159b81d69 100644
---- a/sound/soc/qcom/sm8250.c
-+++ b/sound/soc/qcom/sm8250.c
-@@ -70,7 +70,7 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
- 	return qcom_snd_sdw_startup(substream);
- }
- 
--static void sm2450_snd_shutdown(struct snd_pcm_substream *substream)
-+static void sm8250_snd_shutdown(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
-@@ -115,7 +115,7 @@ static int sm8250_snd_hw_free(struct snd_pcm_substream *substream)
- 
- static const struct snd_soc_ops sm8250_be_ops = {
- 	.startup = sm8250_snd_startup,
--	.shutdown = sm2450_snd_shutdown,
-+	.shutdown = sm8250_snd_shutdown,
- 	.hw_params = sm8250_snd_hw_params,
- 	.hw_free = sm8250_snd_hw_free,
- 	.prepare = sm8250_snd_prepare,
--- 
-2.25.1
+Qiang Ma
+
+> >
+> > Qiang Ma
+> > =20
+> >>> Signed-off-by: Qiang Ma <maqianga@uniontech.com>
+> >>> ---
+> >>>    drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c | 11 +++++++++--
+> >>>    drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c | 13 ++++++++++---
+> >>>    2 files changed, 19 insertions(+), 5 deletions(-)
+> >>>
+> >>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
+> >>> b/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c index
+> >>> 23b478639921..3703695f7789 100644 ---
+> >>> a/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c +++
+> >>> b/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c @@ -309,8 +309,15 @@
+> >>> static int gmc_v6_0_mc_init(struct amdgpu_device *adev) }
+> >>>    	adev->gmc.vram_width =3D numchan * chansize;
+> >>>    	/* size in MB on si */
+> >>> -	adev->gmc.mc_vram_size =3D RREG32(mmCONFIG_MEMSIZE) *
+> >>> 1024ULL * 1024ULL;
+> >>> -	adev->gmc.real_vram_size =3D RREG32(mmCONFIG_MEMSIZE) *
+> >>> 1024ULL * 1024ULL;
+> >>> +	tmp =3D RREG32(mmCONFIG_MEMSIZE);
+> >>> +	/* some boards may have garbage in the upper 16 bits */
+> >>> +	if (tmp & 0xffff0000) {
+> >>> +		DRM_INFO("Probable bad vram size: 0x%08x\n",
+> >>> tmp);
+> >>> +		if (tmp & 0xffff)
+> >>> +			tmp &=3D 0xffff;
+> >>> +	}
+> >>> +	adev->gmc.mc_vram_size =3D tmp * 1024ULL * 1024ULL;
+> >>> +	adev->gmc.real_vram_size =3D adev->gmc.mc_vram_size;
+> >>>   =20
+> >>>    	if (!(adev->flags & AMD_IS_APU)) {
+> >>>    		r =3D amdgpu_device_resize_fb_bar(adev);
+> >>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
+> >>> b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c index
+> >>> 3da7b6a2b00d..1df1fc578ff6 100644 ---
+> >>> a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c +++
+> >>> b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c @@ -316,10 +316,10 @@
+> >>> static void gmc_v7_0_mc_program(struct amdgpu_device *adev) static
+> >>> int gmc_v7_0_mc_init(struct amdgpu_device *adev) {
+> >>>    	int r;
+> >>> +	u32 tmp;
+> >>>   =20
+> >>>    	adev->gmc.vram_width =3D
+> >>> amdgpu_atombios_get_vram_width(adev); if (!adev->gmc.vram_width) {
+> >>> -		u32 tmp;
+> >>>    		int chansize, numchan;
+> >>>   =20
+> >>>    		/* Get VRAM informations */
+> >>> @@ -363,8 +363,15 @@ static int gmc_v7_0_mc_init(struct
+> >>> amdgpu_device *adev) adev->gmc.vram_width =3D numchan * chansize;
+> >>>    	}
+> >>>    	/* size in MB on si */
+> >>> -	adev->gmc.mc_vram_size =3D RREG32(mmCONFIG_MEMSIZE) *
+> >>> 1024ULL * 1024ULL;
+> >>> -	adev->gmc.real_vram_size =3D RREG32(mmCONFIG_MEMSIZE) *
+> >>> 1024ULL * 1024ULL;
+> >>> +	tmp =3D RREG32(mmCONFIG_MEMSIZE);
+> >>> +	/* some boards may have garbage in the upper 16 bits */
+> >>> +	if (tmp & 0xffff0000) {
+> >>> +		DRM_INFO("Probable bad vram size: 0x%08x\n",
+> >>> tmp);
+> >>> +		if (tmp & 0xffff)
+> >>> +			tmp &=3D 0xffff;
+> >>> +	}
+> >>> +	adev->gmc.mc_vram_size =3D tmp * 1024ULL * 1024ULL;
+> >>> +	adev->gmc.real_vram_size =3D adev->gmc.mc_vram_size;
+> >>>   =20
+> >>>    	if (!(adev->flags & AMD_IS_APU)) {
+> >>>    		r =3D amdgpu_device_resize_fb_bar(adev); =20
+> >> =20
+>=20
+>=20
 
 
