@@ -1,244 +1,224 @@
-Return-Path: <linux-kernel+bounces-153582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CB148ACFE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:50:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 805868ACFD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:45:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6E981F22447
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:50:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BB531F213CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B011C152519;
-	Mon, 22 Apr 2024 14:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2185515250C;
+	Mon, 22 Apr 2024 14:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DCA5iY34"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lhu3AVpL"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369B8152195;
-	Mon, 22 Apr 2024 14:49:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA918145FEC
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 14:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713797388; cv=none; b=p3CsfTzFkfvqpiZuNkLBRrR1qqPKr7wjGy/KiwMvJaKDmwhzGhR8/vGiBQNqkCRGTS+2vUQ2CfuoQhKRVS1v0fjNYZ7fD8v10IbmcmyIW3p6DK42NAxKFTET/WydP6ZNFcKWIvOp53cLggn2gGV4ttKvhsN/+c7f2EO6GIvPI5A=
+	t=1713797085; cv=none; b=YPXpxDSKBTlIVxVi9GVjhmNKQZKUiyY1zcEv5QIxWDR4A/YdePXzwnryiIgLggMiTivgNRienSyGfkJY5dni9knvqyHIvgzH6pVeLttP1ps4EQh72yYRENjlHfLYLPBPpbfFh1fWrONMdEkIfucOk8EeZ2zhJ0IYyUNpc1SdbpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713797388; c=relaxed/simple;
-	bh=hSW6/00CexkAj4yr/ss/j1zrPQ6JrexwJDPsR17Ywmc=;
+	s=arc-20240116; t=1713797085; c=relaxed/simple;
+	bh=uWsKl1wAe7kVcGq6U6naQwvSk15aE/AV9VCmlH9NuAE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hd6/mXnyNh4RH4Ql773mXSYWYFtonXKRX/eQTgHfQQDttAnS07gKny5N1HTeCasGmdM+QvX1cuV1Aj4AG1MfE42JbCfNSgtROaQBdhgh/HalXmmtrI2C4l3G3DBwyKaEnkBCsOG1Rc6ZYm9qPgaXXR4e9rwA4BuKZ2mk70SjqbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DCA5iY34; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713797387; x=1745333387;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hSW6/00CexkAj4yr/ss/j1zrPQ6JrexwJDPsR17Ywmc=;
-  b=DCA5iY34ZxfJGABPA1vitXsleRT4kdVTa00CtKvrI8+0VRCzKpXylCPd
-   IHh3BE0Hx7B8W0T5muQjNzTcwrS0fo0yzzge0kZWj4fFUjU068efeaLHh
-   49JAjxmLJjgOukWA50TCfuawRMw8n2Kwz8ptjEBE4jO7KRUelnHMvNZ5s
-   y2lzibYiSzqWLd1wNnHY8ZhmE6PjD9Y258I0G8zoWNZJvUn5orkeBB40p
-   5NoWbF/0xryL2br5NvADj4DagH7dY3dfBAuEUFeBxg3qfRt4vbJXhHvYD
-   Yz1CkKN/U6VDKpyOHEi2oyVFbnGGXQTconLjrLiwd29cF9MSEYbutNRKS
-   Q==;
-X-CSE-ConnectionGUID: NDamN9LWT3K4PM+mTX2VuA==
-X-CSE-MsgGUID: dYszhE4iS8GB9LgFbBuBDw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="20033641"
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="20033641"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 07:49:45 -0700
-X-CSE-ConnectionGUID: Hz+KqllpRdmDG/nq7k5yuw==
-X-CSE-MsgGUID: F/ISxkcXQFCr4hBb59nOEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="24067383"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa009.fm.intel.com with ESMTP; 22 Apr 2024 07:49:44 -0700
-Date: Mon, 22 Apr 2024 22:44:24 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
-	michael.roth@amd.com, isaku.yamahata@intel.com
-Subject: Re: [PATCH 09/11] KVM: guest_memfd: Add interface for populating
- gmem pages with user data
-Message-ID: <ZiZ3yDxEX+n6Za9b@yilunxu-OptiPlex-7050>
-References: <20240404185034.3184582-1-pbonzini@redhat.com>
- <20240404185034.3184582-10-pbonzini@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YgYiXSdy9D3lwU5RrxqDxIMbeQxKgsdMXG/Uyyn3HElecp+6aTIIjH4sSdN9nZ30JzQd2DprW8Xukkl3GhZvtn2A5Xpzp06LFkg28P8W6eBJgeajAoA+QshfneATKkHjrzQcmwO5dqYyNdcrO/PEjgZOFchdwPR8c/Ho4XhZsv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lhu3AVpL; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e4c4fb6af3so29785075ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713797082; x=1714401882; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=LVRNChhXa7FZ9k90/6TDVi7/XDV6ST4jrfTPlduROb4=;
+        b=lhu3AVpLMOqAeeqq2ozi6/Puu3pZhvDMoarqfG2GKHmJuzNQ30EBCebevlcCVbmFGF
+         O3rz7Jq9sykVtDQ9C6ZfdJjEmZvm7LqROI+HDMhgce0EwXZd4prynwGlI99qK/ZniTG/
+         caRVrpqM6kLWBZbzWGDnsYf4rvFzazcjCUtMQ9iJu8giUISVtfRHAhNlhNQaU6IiNzVE
+         dD3Qp64WAli3yVKgzAienVIfX+STTTo9hbxKJ1GpLBKteESvBoNz38NU5NSvgm1Nvpcj
+         njle/hkn3TH0Ziyjl9eP25HGYXre6qkYTxL0BhDpPYu8YnbKmP5ekrr2YBaMEmRXwfPu
+         zFCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713797082; x=1714401882;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LVRNChhXa7FZ9k90/6TDVi7/XDV6ST4jrfTPlduROb4=;
+        b=PryGdqHZuH7zF2cTLuEL+V9iNS7GU0Y/NntNq2Hsot8asatjc4KhsHq9wapoZayYtb
+         hcgz64B75fmh6vbEk8Vmy8uXnaVg0hOCFcBgxnac4yM+kfSG93D88b1fQig8IVZH6u3G
+         nEBAvOPZjQTHU3rnykuN9QPtgM2nN/Ao+49JYQt3+Gs1bPTX71uE9v7W3N7Ln8d1lP7P
+         +ZqcNXnoDRCGrEI3HHWBE/kLV2sMOCwcGPpq6Y7Zg1oOoZNlX9/aLvdnOVcTHru/e4tl
+         VDlnGrCpp8iXn6VLrtaymezA3CuvHlpPKmv4YzDyal0Em+uOgkIoqP0TJD2yve1qKSQ/
+         vvNw==
+X-Forwarded-Encrypted: i=1; AJvYcCUcf5Idz/1f386riRZcdk73vuC8FM6PB2TdGrQmptt47lUsRW5/iir/Wm9JiYEo47URFi/3EQkzLbCJ6LKK5WJsxWWpW31jwH17ShsG
+X-Gm-Message-State: AOJu0Yyn7dlXORGnJj33D19p/Ax39pLVZqh3+QI8bq0P5FkfXe7CR2/W
+	S4H2qdvGeMwtc00JLVg8APhkICQ7EyrjqoNaIn5O+Vv+5qb0TAfpUBBnaS/LLQ==
+X-Google-Smtp-Source: AGHT+IG6t5wD268CJ9WM36yr69Ky8Cqce1xxt3gCjMhfQP8IBUnGiHqPiYx8GUUBwnRLDr0gdFewlg==
+X-Received: by 2002:a17:903:2308:b0:1ea:147:d4fd with SMTP id d8-20020a170903230800b001ea0147d4fdmr243785plh.32.1713797081973;
+        Mon, 22 Apr 2024 07:44:41 -0700 (PDT)
+Received: from thinkpad ([120.60.70.118])
+        by smtp.gmail.com with ESMTPSA id w19-20020a170902c79300b001e0c956f0dcsm8215015pla.213.2024.04.22.07.44.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 07:44:41 -0700 (PDT)
+Date: Mon, 22 Apr 2024 20:14:31 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, johan+linaro@kernel.org,
+	bmasney@redhat.com, djakov@kernel.org,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	vireshk@kernel.org, quic_vbadigan@quicinc.com,
+	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
+	quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org
+Subject: Re: [PATCH v10 4/6] arm64: dts: qcom: sm8450: Add OPP table support
+ to PCIe
+Message-ID: <20240422144431.GE9775@thinkpad>
+References: <20240409-opp_support-v10-0-1956e6be343f@quicinc.com>
+ <20240409-opp_support-v10-4-1956e6be343f@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240404185034.3184582-10-pbonzini@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240409-opp_support-v10-4-1956e6be343f@quicinc.com>
 
-On Thu, Apr 04, 2024 at 02:50:31PM -0400, Paolo Bonzini wrote:
-> During guest run-time, kvm_arch_gmem_prepare() is issued as needed to
-> prepare newly-allocated gmem pages prior to mapping them into the guest.
-> In the case of SEV-SNP, this mainly involves setting the pages to
-> private in the RMP table.
+On Tue, Apr 09, 2024 at 03:43:22PM +0530, Krishna chaitanya chundru wrote:
+> PCIe needs to choose the appropriate performance state of RPMh power
+
+'PCIe host controller driver'
+
+> domain and interconnect bandwidth based up on the PCIe data rate.
+
+'based on the PCIe data rate'
+
 > 
-> However, for the GPA ranges comprising the initial guest payload, which
-> are encrypted/measured prior to starting the guest, the gmem pages need
-> to be accessed prior to setting them to private in the RMP table so they
-> can be initialized with the userspace-provided data. Additionally, an
-> SNP firmware call is needed afterward to encrypt them in-place and
-> measure the contents into the guest's launch digest.
+> Add the OPP table support to specify RPMh performance states and
+
+'Hence, add...'
+
+> interconnect peak bandwidth.
 > 
-> While it is possible to bypass the kvm_arch_gmem_prepare() hooks so that
-> this handling can be done in an open-coded/vendor-specific manner, this
-> may expose more gmem-internal state/dependencies to external callers
-> than necessary. Try to avoid this by implementing an interface that
-> tries to handle as much of the common functionality inside gmem as
-> possible, while also making it generic enough to potentially be
-> usable/extensible for TDX as well.
+> Different link configurations may share the same aggregate bandwidth,
+
+'It should be noted that the different...'
+
+> e.g., a 2.5 GT/s x2 link and a 5.0 GT/s x1 link have the same bandwidth
+> and share the same OPP entry.
 > 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> Co-developed-by: Michael Roth <michael.roth@amd.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 > ---
->  include/linux/kvm_host.h | 26 ++++++++++++++
->  virt/kvm/guest_memfd.c   | 78 ++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 104 insertions(+)
+>  arch/arm64/boot/dts/qcom/sm8450.dtsi | 77 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 77 insertions(+)
 > 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 33ed3b884a6b..97d57ec59789 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -2450,4 +2450,30 @@ int kvm_arch_gmem_prepare(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn, int max_ord
->  bool kvm_arch_gmem_prepare_needed(struct kvm *kvm);
->  #endif
+> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> index 615296e13c43..9dfe16012726 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> @@ -1855,7 +1855,35 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
+>  			pinctrl-names = "default";
+>  			pinctrl-0 = <&pcie0_default_state>;
 >  
-> +/**
-> + * kvm_gmem_populate() - Populate/prepare a GPA range with guest data
-> + *
-> + * @kvm: KVM instance
-> + * @gfn: starting GFN to be populated
-> + * @src: userspace-provided buffer containing data to copy into GFN range
-> + *       (passed to @post_populate, and incremented on each iteration
-> + *       if not NULL)
-> + * @npages: number of pages to copy from userspace-buffer
-> + * @post_populate: callback to issue for each gmem page that backs the GPA
-> + *                 range
-> + * @opaque: opaque data to pass to @post_populate callback
-> + *
-> + * This is primarily intended for cases where a gmem-backed GPA range needs
-> + * to be initialized with userspace-provided data prior to being mapped into
-> + * the guest as a private page. This should be called with the slots->lock
-> + * held so that caller-enforced invariants regarding the expected memory
-> + * attributes of the GPA range do not race with KVM_SET_MEMORY_ATTRIBUTES.
-> + *
-> + * Returns the number of pages that were populated.
-> + */
-> +long kvm_gmem_populate(struct kvm *kvm, gfn_t gfn, void __user *src, long npages,
-> +		       int (*post_populate)(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn,
-> +					    void __user *src, int order, void *opaque),
-> +		       void *opaque);
+> +			operating-points-v2 = <&pcie0_opp_table>;
 > +
->  #endif
-> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-> index 51c99667690a..e7de97382a67 100644
-> --- a/virt/kvm/guest_memfd.c
-> +++ b/virt/kvm/guest_memfd.c
-> @@ -602,3 +602,81 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
->  	return r;
->  }
->  EXPORT_SYMBOL_GPL(kvm_gmem_get_pfn);
+>  			status = "disabled";
 > +
-> +static int kvm_gmem_undo_get_pfn(struct file *file, struct kvm_memory_slot *slot,
-> +				 gfn_t gfn, int order)
-> +{
-> +	pgoff_t index = gfn - slot->base_gfn + slot->gmem.pgoff;
-> +	struct kvm_gmem *gmem = file->private_data;
+> +			pcie0_opp_table: opp-table {
+> +				compatible = "operating-points-v2";
 > +
-> +	/*
-> +	 * Races with kvm_gmem_unbind() must have been detected by
-> +	 * __kvm_gmem_get_gfn(), because the invalidate_lock is
-> +	 * taken between __kvm_gmem_get_gfn() and kvm_gmem_undo_get_pfn().
-> +	 */
-> +	if (WARN_ON_ONCE(xa_load(&gmem->bindings, index) != slot))
-> +		return -EIO;
+> +				/* GEN 1 x1 */
+> +				opp-2500000 {
+> +					opp-hz = /bits/ 64 <2500000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <250000 1>;
+> +				};
 > +
-> +	return __kvm_gmem_punch_hole(file_inode(file), index << PAGE_SHIFT, PAGE_SIZE << order);
-> +}
+> +				/* GEN 2 x1 */
+> +				opp-5000000 {
+> +					opp-hz = /bits/ 64 <5000000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <500000 1>;
+> +				};
 > +
-> +long kvm_gmem_populate(struct kvm *kvm, gfn_t gfn, void __user *src, long npages,
-> +		       int (*post_populate)(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn,
-> +					    void __user *src, int order, void *opaque),
-> +		       void *opaque)
-> +{
-> +	struct file *file;
-> +	struct kvm_memory_slot *slot;
-> +
-> +	int ret = 0, max_order;
-> +	long i;
-> +
-> +	lockdep_assert_held(&kvm->slots_lock);
-> +	if (npages < 0)
-> +		return -EINVAL;
-> +
-> +	slot = gfn_to_memslot(kvm, gfn);
-> +	if (!kvm_slot_can_be_private(slot))
-> +		return -EINVAL;
-> +
-> +	file = kvm_gmem_get_file(slot);
-> +	if (!file)
-> +		return -EFAULT;
-> +
-> +	filemap_invalidate_lock(file->f_mapping);
-> +
-> +	npages = min_t(ulong, slot->npages - (gfn - slot->base_gfn), npages);
-> +	for (i = 0; i < npages; i += (1 << max_order)) {
-> +		gfn_t this_gfn = gfn + i;
-> +		kvm_pfn_t pfn;
-> +
-> +		ret = __kvm_gmem_get_pfn(file, slot, this_gfn, &pfn, &max_order, false);
-> +		if (ret)
-> +			break;
-> +
-> +		if (!IS_ALIGNED(this_gfn, (1 << max_order)) ||
-> +		    (npages - i) < (1 << max_order))
-> +			max_order = 0;
-> +
-> +		if (post_populate) {
-> +			void __user *p = src ? src + i * PAGE_SIZE : NULL;
-> +			ret = post_populate(kvm, this_gfn, pfn, p, max_order, opaque);
+> +				/* GEN 3 x1 */
+> +				opp-8000000 {
+> +					opp-hz = /bits/ 64 <8000000>;
 
-I don't see the main difference between gmem_prepare() and post_populate()
-from gmem's point of view.  They are all vendor callbacks invoked after
-__filemap_get_folio(). Is it possible gmem choose to call gmem_prepare()
-or post_populate() outside __kvm_gmem_get_pfn()? Or even pass all
-parameters to a single gmem_prepare() and let vendor code decide what to
-do.
+I doubt this value. See below...
 
-> +		}
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +					opp-peak-kBps = <984500 1>;
+> +				};
+> +			};
 > +
-> +		put_page(pfn_to_page(pfn));
-> +		if (ret) {
-> +			/*
-> +			 * Punch a hole so that FGP_CREAT_ONLY can succeed
-> +			 * again.
-> +			 */
-> +			kvm_gmem_undo_get_pfn(file, slot, this_gfn, max_order);
-> +			break;
-> +		}
-> +	}
+>  		};
+>  
+>  		pcie0_phy: phy@1c06000 {
+> @@ -1982,7 +2010,56 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
+>  			pinctrl-names = "default";
+>  			pinctrl-0 = <&pcie1_default_state>;
+>  
+> +			operating-points-v2 = <&pcie1_opp_table>;
 > +
-> +	filemap_invalidate_unlock(file->f_mapping);
+>  			status = "disabled";
 > +
-> +	fput(file);
-> +	return ret && !i ? ret : i;
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_gmem_populate);
-> -- 
-> 2.43.0
-> 
-> 
-> 
+> +			pcie1_opp_table: opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				/* GEN 1 x1 */
+> +				opp-2500000 {
+> +					opp-hz = /bits/ 64 <2500000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <250000 1>;
+> +				};
+> +
+> +				/* GEN 1 x2 GEN 2 x1 */
+> +				opp-5000000 {
+> +					opp-hz = /bits/ 64 <5000000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <500000 1>;
+> +				};
+> +
+> +				/* GEN 2 x2 */
+> +				opp-10000000 {
+> +					opp-hz = /bits/ 64 <10000000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <1000000 1>;
+> +				};
+> +
+> +				/* GEN 3 x1 */
+> +				opp-8000000 {
+> +					opp-hz = /bits/ 64 <8000000>;
+
+GEN 3 x1 frequency is lower than GEN 2 x2? This looks strange. Both should be of
+same frequency.
+
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +					opp-peak-kBps = <984500 1>;
+> +				};
+> +
+> +				/* GEN 3 x2 GEN 4 x1 */
+
+'GEN 3 x2 and GEN 4 x1'
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
