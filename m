@@ -1,144 +1,209 @@
-Return-Path: <linux-kernel+bounces-153640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4B558AD0FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:34:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 172F98AD0FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:34:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A031C28CF7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:34:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C31B128CF90
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:34:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7014A1534F4;
-	Mon, 22 Apr 2024 15:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E392153514;
+	Mon, 22 Apr 2024 15:34:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mYJmCzPc"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BqEjHHG5"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E56F152523
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5686815350D
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:34:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713800069; cv=none; b=AtCXk90OjVQgVxR5Z4tGlB3IphL6OJFoIXixpSxUYSjPFAZC7G5gyGxA0CtezOzwxCtk34ZGdSqRFGYb+XpcZWEFu8M6rh8vF3QBtfX2iUZekv5fHd7mfoKeTCdQwYedYxBWdAuK9BLM4Dqtg+645oJdR4Ly+MpgVMtXl2AjqnI=
+	t=1713800076; cv=none; b=nWc0XwhUxcnPEt0PPEC9/eR/SJfxfaK29/KfYbSSIPmYmCGGbLGRwM/coFrPu00H65M5z9x+ZMmOeDZQR7qkDW14WcgJlrVUi6Gyea3rZ0Vxz1xR8I3OQ/qtd4D146fLkR75Rk0oTiGl+UJCb169gcwRMJxPnSYhctZzG5t7+NA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713800069; c=relaxed/simple;
-	bh=rFLnY69caO6DCxXEt1GspAQ7lGhSrz3Q5rZCzd4arF0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VTZE5pdMvdlUgnYZIrl64kYPic82gHP600Orb5SQ7GL8M1WMAFLNMco1Uk5pTqXeiSaUfxS31GTZt7uCRmOYSg/mAJuoWVKMYB5CLppczcDrM+NEho3iQKZPljRWtxF8LsUMntwBfnLWKduUUIHgKe0PRRhEEGDrDrsA2WEvDis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mYJmCzPc; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1713800076; c=relaxed/simple;
+	bh=7rDy8l0sDwyBXfHsO2TUrRhK/INejU/rzcZpBVr/SuE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tG65HYmNDv1aD5aodSznO/pnD6W6tQGGdnVn2v/3PPtagP0NsNjgfTbGKgYLHIJqQmMvE0j2Loty9eV54v9aoBJ03u3ykaCpUCZPFWANVbqMpEPBc2AIjGayq9SqiAuiy3JKkmWivV3E4hh8ZSH1XND3Zrh2+0PQMvPFUVc45sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BqEjHHG5; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41a7820620dso5885005e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:34:27 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e3ca4fe4cfso32492225ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713800066; x=1714404866; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Lz4BLGLppaJS4RUqiGyn4/E8WuIMdCWJat0A3CWxGLU=;
-        b=mYJmCzPcf6rf5bwAx4Zgc+8pn22SZbgC4TQaH7WsmXqgCmyx4BJAJ72m2dCbvLuoh1
-         8eOsL0xOxLEzQwHQruKutD0JR8AQHUfvozd/PL0XWqeq+YKlR9FNODyNXNNbYg10XyjI
-         ys52rVnGkVQ7CZezvVzi0Wm5jL0vR0Cdf/hDoTtOdQisKilrwM3Zw2ARMoit2t+HyKnU
-         SMOlwipg/ybpKPO8CApTVJxCX34eVtcKfdbscLNyIGIhQcIM1Xm61sW8NQecygE0MjaV
-         EMuLORbtZK3GVUX4iQXOhYfJtQGk5kPKrFbjLmHlzS0xjFWun5GwCM+2uFpySRazQhrd
-         dagA==
+        d=linaro.org; s=google; t=1713800075; x=1714404875; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=337wBwclmpc6tEt1+i4HX8mw2rCsniBI2t8I+UU3Arc=;
+        b=BqEjHHG5uqcOa68JJZfN4kB1DlLzkTymvk7fOpaGwQ/O2SRjvfBVyEMvJ64uj7/JyN
+         7PwhFG98P0KAJYZiOrSGb6/X8GtiO1U9/e3t60jdGpBEyGamTiei1HgzoXOQOX9zfiRj
+         0hpmNmWoloZsmkGl6I60DG2gKbaMleObLm/w38F7MT0BCfnwNvBDUDiFvNQ6iuGrx5jt
+         YZ97NGV++jjMY6wSPBEqkOx5bb8Hd/GxYi5PEKewylMB6itsZhrt+iYD/00pkrok3UaO
+         wHuPo3migHuCeNEes25vBV5BFLhDNFMInqDifkJ45XbFvgEV7sEZ9JTNuv6niIBQ1V8+
+         Lz3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713800066; x=1714404866;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lz4BLGLppaJS4RUqiGyn4/E8WuIMdCWJat0A3CWxGLU=;
-        b=IscrnI+we3R3wHpHRTEC4zo8GefnJSKa5pO3uTmyldxXkaVVt4BBHVVZns191gHrr9
-         c3ibvXS2S6PYscq5M49WZJcA0VrLuW+SqkVyIw4b20NIq3co1tNZ5/Glmo6tQ/JCNCE6
-         415Zg1fQG7AR7o8Qiy8aiawjoH9G0cwhMy7ehoQFOWoMVeIgdJjiMMSs0vsKkMpELjfL
-         6yTUd93iJBtu3F4qbMk0wW83JAflOQYmbQMVlrQgSLa7dbqsjorpuYNQGk+1l2USoS2b
-         34Rtb8kN/XgXHzVUNdZ7WXGXqvDrTPN2EI8n7GE0ZX0bSrxgGHoJNGgKmmTOnqMzqbeY
-         qWXQ==
-X-Gm-Message-State: AOJu0YyXqSjR9B1QJso2GkoNjme6yo83AEcrIQxgjMAABatEBpfxAxRO
-	IKGrOY5emn7xmE7tsbVFt5W4dy2dL88dQ0MF6s1H2UMdgAANMjkXwII6aQ0p/WE=
-X-Google-Smtp-Source: AGHT+IH5rX73xaS6keYkyu8tgA9v9NkmtE5lmRGsiDlfEoHkzUAXtqPcF25Q3kCt+0u5ccN57FtUfw==
-X-Received: by 2002:a05:600c:470b:b0:418:e0cf:dbfe with SMTP id v11-20020a05600c470b00b00418e0cfdbfemr7951667wmo.15.1713800066519;
-        Mon, 22 Apr 2024 08:34:26 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id p8-20020a5d48c8000000b0034af40b2efdsm4198955wrs.108.2024.04.22.08.34.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 08:34:26 -0700 (PDT)
-Message-ID: <e8193798-4c02-423a-a9d8-63d29ebd7faa@linaro.org>
-Date: Mon, 22 Apr 2024 17:34:25 +0200
+        d=1e100.net; s=20230601; t=1713800075; x=1714404875;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=337wBwclmpc6tEt1+i4HX8mw2rCsniBI2t8I+UU3Arc=;
+        b=fy3IENq5Ex/RA/UmO7zvw7ddpCIEmgPkmyWi0D4vkViyp/IwOjnFirqfMppyAbn2w0
+         bNtlymo1Q+fkpJ+7Xn9bFn1GQQyrM+XedAKXMXD2bZ05L7ESDgBXD4YYtW0Z1oCLBStW
+         OWrr22RgtqVUYdQox0yn4X0xbKb5L37+AQI9VQL0th8jaWEqHIIR03yKkXu7BCXNQKFP
+         BgSwC7ZFG6SMGdF0aT52IM8Uffhy7MAFyXbADBHZ6GTOemsSsXk4V0vCywjzBwnNyBWT
+         u6gCvLcdhDw0Vh2+wXTI+HD78hXmrKZWhqUs0TSTTmpmV+MNDGYZeUacBL5A4kUPsnop
+         2fBw==
+X-Forwarded-Encrypted: i=1; AJvYcCX5R9LQQn0xbyZz8RtTkb2l9LKoYfw/7iBMyLd3+vluhwxCXRk9KkhnN7bMGQeJCNVkGFY5JBNJOJWrA+vbGLgGC8fW3nfcJNJr5sX/
+X-Gm-Message-State: AOJu0YwC8otQyFqbpoBOnSKOjnHsgwI5d+d5elWRzoZiJSNs4NYDVojL
+	TbTY4gwZ5lyRVvPMzVJHfVOTI3B8sibxIiaaxGjvnia3b9ynvIZaR/0ADGpIsM34MidpdVgvquq
+	j
+X-Google-Smtp-Source: AGHT+IHe1PTjpEIZG7kkFQ9aDxKVX/PgGZxcewaa3UBNjLsLZf2wJj5hQf8t0zLc6uCo7e7GYLuCKA==
+X-Received: by 2002:a17:902:b18e:b0:1e9:668d:a446 with SMTP id s14-20020a170902b18e00b001e9668da446mr5566962plr.20.1713800074608;
+        Mon, 22 Apr 2024 08:34:34 -0700 (PDT)
+Received: from p14s ([2604:3d09:148c:c800:b2a0:f51d:b8f7:33f5])
+        by smtp.gmail.com with ESMTPSA id w3-20020a170902e88300b001e2bbe87912sm8273478plg.11.2024.04.22.08.34.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 08:34:34 -0700 (PDT)
+Date: Mon, 22 Apr 2024 09:34:31 -0600
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: Tanmay Shah <tanmay.shah@amd.com>
+Cc: andersson@kernel.org, linux-remoteproc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: remoteproc: xlnx: Add Versal and Versal-NET
+ support
+Message-ID: <ZiaDh7kRnK+qkaZn@p14s>
+References: <20240418220125.744322-1-tanmay.shah@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/3] thermal/debugfs: Fix and clean up trip point
- statistics updates
-Content-Language: en-US
-To: Lukasz Luba <lukasz.luba@arm.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-References: <4918025.31r3eYUQgx@kreacher>
- <3a8f1978-c5df-40d6-91ca-276431bb01e1@arm.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <3a8f1978-c5df-40d6-91ca-276431bb01e1@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418220125.744322-1-tanmay.shah@amd.com>
 
-On 22/04/2024 13:37, Lukasz Luba wrote:
-> Hi Rafael,
+On Thu, Apr 18, 2024 at 03:01:25PM -0700, Tanmay Shah wrote:
+> AMD-Xilinx Versal platform is successor of ZynqMP platform.
+> Real-time Processing Unit R5 cluster IP on Versal is same as
+> of ZynqMP Platform. Power-domains ids for Versal platform is
+> different than ZynqMP.
 > 
-> On 4/17/24 14:07, Rafael J. Wysocki wrote:
->> Hi Everyone,
->>
->> The first patch in this series addresses the problem of updating trip
->> point statistics prematurely for trip points that have just been
->> crossed on the way down (please see the patch changelog for details).
->>
->> The way it does that renders the following cleanup patch inapplicable:
->>
->> https://lore.kernel.org/linux-pm/2321994.ElGaqSPkdT@kreacher/
->>
->> The remaining two patches in the series are cleanups on top of the
->> first one.
->>
->> This series is based on an older patch series posted last week:
->>
->> https://lore.kernel.org/linux-pm/13515747.uLZWGnKmhe@kreacher/
->>
->> but it can be trivially rebased on top of the current linux-next.
->>
->> Thanks!
->>
->>
->>
+> AMD-Xilinx Versal-NET platform is successor of Versal platform.
+> Versal-NET Real-Time Processing Unit has two clusters and each
+> cluster contains dual core ARM Cortex-R52 processors. Each R52
+> core is assigned 128KB of TCM memory.
 > 
-> I've checked this patch patch set on top of your bleeding-edge
-> which has thermal re-work as well. The patch set looks good
-> and works properly.
+> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+> ---
+>  drivers/remoteproc/xlnx_r5_remoteproc.c | 53 ++++++++-----------------
+>  1 file changed, 17 insertions(+), 36 deletions(-)
+>
+
+Applied.
+
+Thanks,
+Mathieu
+
+> diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
+> index 7b1c12108bff..a6d8ac7394e7 100644
+> --- a/drivers/remoteproc/xlnx_r5_remoteproc.c
+> +++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
+> @@ -300,36 +300,6 @@ static void zynqmp_r5_rproc_kick(struct rproc *rproc, int vqid)
+>  		dev_warn(dev, "failed to send message\n");
+>  }
+>  
+> -/*
+> - * zynqmp_r5_set_mode()
+> - *
+> - * set RPU cluster and TCM operation mode
+> - *
+> - * @r5_core: pointer to zynqmp_r5_core type object
+> - * @fw_reg_val: value expected by firmware to configure RPU cluster mode
+> - * @tcm_mode: value expected by fw to configure TCM mode (lockstep or split)
+> - *
+> - * Return: 0 for success and < 0 for failure
+> - */
+> -static int zynqmp_r5_set_mode(struct zynqmp_r5_core *r5_core,
+> -			      enum rpu_oper_mode fw_reg_val,
+> -			      enum rpu_tcm_comb tcm_mode)
+> -{
+> -	int ret;
+> -
+> -	ret = zynqmp_pm_set_rpu_mode(r5_core->pm_domain_id, fw_reg_val);
+> -	if (ret < 0) {
+> -		dev_err(r5_core->dev, "failed to set RPU mode\n");
+> -		return ret;
+> -	}
+> -
+> -	ret = zynqmp_pm_set_tcm_config(r5_core->pm_domain_id, tcm_mode);
+> -	if (ret < 0)
+> -		dev_err(r5_core->dev, "failed to configure TCM\n");
+> -
+> -	return ret;
+> -}
+> -
+>  /*
+>   * zynqmp_r5_rproc_start()
+>   * @rproc: single R5 core's corresponding rproc instance
+> @@ -941,7 +911,7 @@ static int zynqmp_r5_core_init(struct zynqmp_r5_cluster *cluster,
+>  	/* Maintain backward compatibility for zynqmp by using hardcode TCM address. */
+>  	if (of_find_property(r5_core->np, "reg", NULL))
+>  		ret = zynqmp_r5_get_tcm_node_from_dt(cluster);
+> -	else
+> +	else if (device_is_compatible(dev, "xlnx,zynqmp-r5fss"))
+>  		ret = zynqmp_r5_get_tcm_node(cluster);
+>  
+>  	if (ret) {
+> @@ -960,12 +930,21 @@ static int zynqmp_r5_core_init(struct zynqmp_r5_cluster *cluster,
+>  			return ret;
+>  		}
+>  
+> -		ret = zynqmp_r5_set_mode(r5_core, fw_reg_val, tcm_mode);
+> -		if (ret) {
+> -			dev_err(dev, "failed to set r5 cluster mode %d, err %d\n",
+> -				cluster->mode, ret);
+> +		ret = zynqmp_pm_set_rpu_mode(r5_core->pm_domain_id, fw_reg_val);
+> +		if (ret < 0) {
+> +			dev_err(r5_core->dev, "failed to set RPU mode\n");
+>  			return ret;
+>  		}
+> +
+> +		if (of_find_property(dev_of_node(dev), "xlnx,tcm-mode", NULL) ||
+> +		    device_is_compatible(dev, "xlnx,zynqmp-r5fss")) {
+> +			ret = zynqmp_pm_set_tcm_config(r5_core->pm_domain_id,
+> +						       tcm_mode);
+> +			if (ret < 0) {
+> +				dev_err(r5_core->dev, "failed to configure TCM\n");
+> +				return ret;
+> +			}
+> +		}
+>  	}
+>  
+>  	return 0;
+> @@ -1022,7 +1001,7 @@ static int zynqmp_r5_cluster_init(struct zynqmp_r5_cluster *cluster)
+>  		ret = of_property_read_u32(dev_node, "xlnx,tcm-mode", (u32 *)&tcm_mode);
+>  		if (ret)
+>  			return ret;
+> -	} else {
+> +	} else if (device_is_compatible(dev, "xlnx,zynqmp-r5fss")) {
+>  		if (cluster_mode == LOCKSTEP_MODE)
+>  			tcm_mode = PM_RPU_TCM_COMB;
+>  		else
+> @@ -1212,6 +1191,8 @@ static int zynqmp_r5_remoteproc_probe(struct platform_device *pdev)
+>  
+>  /* Match table for OF platform binding */
+>  static const struct of_device_id zynqmp_r5_remoteproc_match[] = {
+> +	{ .compatible = "xlnx,versal-net-r52fss", },
+> +	{ .compatible = "xlnx,versal-r5fss", },
+>  	{ .compatible = "xlnx,zynqmp-r5fss", },
+>  	{ /* end of list */ },
+>  };
 > 
-> Although, I have found some issue in this debug info files and
-> I'm not sure if this is expected or not. If not I can address this
-> and send some small fix for it.
+> base-commit: 912ebe48bec5927e2049e91b0e8a9cc682a709d2
+> -- 
+> 2.25.1
 > 
-> When I read the cooling device residency statistics, I don't
-> get updates for the first time the state is used. It can only
-> be counted when that state was known and finished it's usage.
-> 
-> IMO it is not the right behavior, isn't it?
-
-Do you mean the right behavior is a regression or we should expect at 
-least the residency to be showed even if the mitigation state is not 
-closed ?
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
 
