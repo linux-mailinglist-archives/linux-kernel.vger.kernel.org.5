@@ -1,224 +1,168 @@
-Return-Path: <linux-kernel+bounces-153275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 853108ACBCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:14:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2746E8ACBCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:14:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3ADC1C2134E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:14:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 959DF1F240F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF9DF1465B5;
-	Mon, 22 Apr 2024 11:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D48B145FFF;
+	Mon, 22 Apr 2024 11:14:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="NIne9CeN"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="pNXhE4qy"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC97145FEE;
-	Mon, 22 Apr 2024 11:14:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA45014659F
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713784484; cv=none; b=qOm5ErGn1jT1d3is0G1lBg+ymGLzdEaSfstfC1uVJjJ9StpQ6BMu9t2FG4U3l+/AezDz9Z/QbBs6fyQfpii14b3fFAOWljYtAFLuglO2AQjXgpqRQAEO7sq25jFO/rgfsmRFEZ/VNFCzdtRwUaaDoS+Cj+46EuiI2Ah/FTepHMA=
+	t=1713784471; cv=none; b=NETzTwFkMtD6znO8Yiwwh3ZoRVtsKVumiYC9qlmEgYnVNv2Xz4IzPFP7lH5RznfdkTLd7GWzPWl9ieUvix4FI8uyKuAqCIjcJ39Kjbi87AxM8zkcbuliBh5Nh6bgD/eY0+o0ejawRFCjh/ESFEaM3YmQan9HIzoHBmwe6dMuTNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713784484; c=relaxed/simple;
-	bh=FXfIV83VVaJ0iL2g9EUYsAMxdoqWaYsdzgRWn2e/4fI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sgq/oBL7UitElEpA0p2D0dwcORXIofiR3I7czuVDVn9uB+35iMg+Bbow6r6+LSvQYcIiu2qFBNpnyqIHnojG4Yx01Z0fAXajOqOqpp+hkpoFIJnFUrOAIztZFlzVakyBvYbP9OxDAddhO6m93afzlKw72hJXHTnVw44muCDDmJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=NIne9CeN; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Ps4xwJmPltrMDsDtm0ARPbw6o3LbHGD6iblKXCQrbew=; b=NIne9CeNIBp1lr6ZQwrVefLVq9
-	xmUD/7ZveMf1rNC0ttJNfGiW5RiQOKHMKo+V5fHaIX5N9KnMBwFSBqNjSRJCkocn6s6DbWVGWGX41
-	tlGpRNOMie77NGsXOfZnAqL2vUOZHn/18xtBnVSLacqKMuVpOTvtDWyyo/51E1Y2kt+Yh742hTp5J
-	9GYEmC0qSUpz6HzymNzsIIjenub9CEt6KuRWWYzsqmovipWq7gVSarZ6Wax7o5MK0wwSZ/J8Nob8o
-	7Yy7+z0laWtpFODH3EjMCv5e10xr07q9tEXj7M4ynUmb950onbtVi4Wr8poR54X66htQeVFqBXyYY
-	Z+qaUg6A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33624)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1ryrcj-00032A-2j;
-	Mon, 22 Apr 2024 12:14:13 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1ryrcj-0002PU-O7; Mon, 22 Apr 2024 12:14:13 +0100
-Date: Mon, 22 Apr 2024 12:14:13 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, puranjay12@gmail.com
-Subject: Re: [PATCH bpf] arm32, bpf: reimplement sign-extension mov
- instruction
-Message-ID: <ZiZGhVQx2ei/7Xlx@shell.armlinux.org.uk>
-References: <20240419182832.27707-1-puranjay@kernel.org>
+	s=arc-20240116; t=1713784471; c=relaxed/simple;
+	bh=zZ5Qg5WxBAkfsgf85z6RtZBesdjrnTKjsOr6tnZ/Cqc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ILBWGd+7x2JCSOwrkiTNbEqovK0YjRTWu5rOSVHT13kGPXgNd2q3kWKGoC92s3zllWMbE+4Mnf5jOxOJ9Ele9biTkHiq/g/a63LQJyE7K54NLY+/JG6NTtGFpziF1opphCCy9pnCtzye0KPHSqcOtMj3BHd1kM4uN8v7aeYsdsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=pNXhE4qy; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-349bd110614so750454f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 04:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713784468; x=1714389268; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=txTWpp1pw11cuzo3l6Yv3qVL9j61JY83c5SyuufTWno=;
+        b=pNXhE4qyq+5L68XkpJZ9k4DIYLY5EVhHt8ZpX4UksINZRYugQIOX0/CQSHWTTBdJOL
+         NYLxEpKS9Ju3q+ASPY0odC9Jad8Q83Ji//dxiXqvCuZjqngtJWZghJ0bgdtH9vNetCTT
+         lYMRqRVqx20tnMFK2/S86T8Qq+iXx1dEtfFLPdZ89mTISoGQ5achtG5x/0Qs73XKHgli
+         6OI7rEJfRyUxL3rDi7G8zDjCo0TuKbJwgBFkkPSOE13kQvr0222+0MFg9i9EJtziApRD
+         Zlgj8MT9SLGc4t273aKWYLwgmNjOC8QjiEerI4Q/wq4PKn5z0oWF+W+/EJZFxfbqylq7
+         LqHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713784468; x=1714389268;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=txTWpp1pw11cuzo3l6Yv3qVL9j61JY83c5SyuufTWno=;
+        b=cl3YYgRKjkcd1rfZ28sMdE1aBcaAQKARumnuG6TUUd2y2k8OGsum4APsCRW5gvFQsq
+         aJTx1S7jsbdURMnt6YgWhjX+xGizAhrSaCdGGDjUvN4mP+6spq6VP3y9Bnd2qt7S3Sh1
+         jOd3L60TezZyHJMVJzcMV7o29C/fj/Vl58nrjCxcta0DAPbHlDMse/NRxuMDmR55fuGr
+         rhX90nmaNXvUbGIxgayNJWAm+3ulOZ9nq0SSw0yM0pwN4a6fnAoD3IKGs43zKpxXY+6l
+         0Amha3mfOrYcRs06C+pLNVZ5AQmaCINSVa4FNaRTM2clA1Qjc4b8SEMMlGRvqzGO3I8L
+         HE4A==
+X-Forwarded-Encrypted: i=1; AJvYcCWx5586uYpi9zECGEQbmlsrDP8OSfDPEVO2NsDUM+c/8gWkQaylRtQCcZBfBBHJdpYxeWnFDzU5UFglu96BWHAFYJJfFSiF9xq7TPMX
+X-Gm-Message-State: AOJu0YzDM9P6+hK+suP/FmlRI3POd6Qm7+JgwAh8giDXY4l/lt4SabO0
+	mKfR5FOZGvNabxtWSUMpzTOZoAhEF11imb4E3jZEbOfJZ4SMtpxwldZKSS7O5uM=
+X-Google-Smtp-Source: AGHT+IFg50yN4QrZNx2LlD1EJ2tT/EI9hFZ2bUjcoiDOKnV7sj3JlUWpq/52eyPbnKALbKb6A7dtxw==
+X-Received: by 2002:a5d:6511:0:b0:34a:f759:271d with SMTP id x17-20020a5d6511000000b0034af759271dmr2082090wru.6.1713784467909;
+        Mon, 22 Apr 2024 04:14:27 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:9f43:3ca4:162c:d540? ([2a01:e0a:999:a3a0:9f43:3ca4:162c:d540])
+        by smtp.gmail.com with ESMTPSA id cg3-20020a5d5cc3000000b00349bd105089sm11706450wrb.47.2024.04.22.04.14.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 04:14:27 -0700 (PDT)
+Message-ID: <032530b8-a26e-494f-bd9c-3e1661add5d4@rivosinc.com>
+Date: Mon, 22 Apr 2024 13:14:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419182832.27707-1-puranjay@kernel.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 04/12] riscv: add ISA parsing for Zca, Zcf, Zcd and Zcb
+To: Conor Dooley <conor.dooley@microchip.com>
+Cc: Conor Dooley <conor@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
+ Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, kvm@vger.kernel.org,
+ kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+References: <20240418124300.1387978-1-cleger@rivosinc.com>
+ <20240418124300.1387978-5-cleger@rivosinc.com>
+ <20240419-clinic-amusing-d23b1b6d2af2@spud>
+ <6ab9e591-f2f2-4267-8bdd-169ef0243e14@rivosinc.com>
+ <20240422-daylight-sassy-ff3b0d867fef@wendy>
+Content-Language: en-US
+From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20240422-daylight-sassy-ff3b0d867fef@wendy>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 19, 2024 at 06:28:32PM +0000, Puranjay Mohan wrote:
-> The current implementation of the mov instruction with sign extension
-> has the following problems:
-> 
->   1. It clobbers the source register if it is not stacked because it
->      sign extends the source and then moves it to the destination.
->   2. If the dst_reg is stacked, the current code doesn't write the value
->      back in case of 64-bit mov.
->   3. There is room for improvement by emitting fewer instructions.
-> 
-> The steps for fixing this and the instructions emitted by the JIT are
-> explained below with examples in all combinations:
-> 
-> Case A: offset == 32:
-> =====================
->   Case A.1: src and dst are stacked registers:
->   --------------------------------------------
->     1. Load src_lo into tmp_lo
->     2. Store tmp_lo into dst_lo
->     3. Sign extend tmp_lo into tmp_hi
->     4. Store tmp_hi to dst_hi
-> 
->     Example: r3 = (s32)r3
-> 	r3 is a stacked register
-> 
-> 	ldr     r6, [r11, #-16]	// Load r3_lo into tmp_lo
-> 	// str to dst_lo is not emitted because src_lo == dst_lo
-> 	asr     r7, r6, #31	// Sign extend tmp_lo into tmp_hi
-> 	str     r7, [r11, #-12] // Store tmp_hi into r3_hi
-> 
->   Case A.2: src is stacked but dst is not:
->   ----------------------------------------
->     1. Load src_lo into dst_lo
->     2. Sign extend dst_lo into dst_hi
-> 
->     Example: r6 = (s32)r3
-> 	r6 maps to {ARM_R5, ARM_R4} and r3 is stacked
-> 
-> 	ldr     r4, [r11, #-16] // Load r3_lo into r6_lo
-> 	asr     r5, r4, #31	// Sign extend r6_lo into r6_hi
-> 
->   Case A.3: src is not stacked but dst is stacked:
->   ------------------------------------------------
->     1. Store src_lo into dst_lo
->     2. Sign extend src_lo into tmp_hi
->     3. Store tmp_hi to dst_hi
-> 
->     Example: r3 = (s32)r6
-> 	r3 is stacked and r6 maps to {ARM_R5, ARM_R4}
-> 
-> 	str     r4, [r11, #-16] // Store r6_lo to r3_lo
-> 	asr     r7, r4, #31	// Sign extend r6_lo into tmp_hi
-> 	str     r7, [r11, #-12]	// Store tmp_hi to dest_hi
-> 
->   Case A.4: Both src and dst are not stacked:
->   -------------------------------------------
->     1. Mov src_lo into dst_lo
->     2. Sign extend src_lo into dst_hi
-> 
->     Example: (bf) r6 = (s32)r6
-> 	r6 maps to {ARM_R5, ARM_R4}
-> 
-> 	// Mov not emitted because dst == src
-> 	asr     r5, r4, #31 // Sign extend r6_lo into r6_hi
-> 
-> Case B: offset != 32:
-> =====================
->   Case B.1: src and dst are stacked registers:
->   --------------------------------------------
->     1. Load src_lo into tmp_lo
->     2. Sign extend tmp_lo according to offset.
->     3. Store tmp_lo into dst_lo
->     4. Sign extend tmp_lo into tmp_hi
->     5. Store tmp_hi to dst_hi
-> 
->     Example: r9 = (s8)r3
-> 	r9 and r3 are both stacked registers
-> 
-> 	ldr     r6, [r11, #-16] // Load r3_lo into tmp_lo
-> 	lsl     r6, r6, #24	// Sign extend tmp_lo
-> 	asr     r6, r6, #24	// ..
-> 	str     r6, [r11, #-56] // Store tmp_lo to r9_lo
-> 	asr     r7, r6, #31	// Sign extend tmp_lo to tmp_hi
-> 	str     r7, [r11, #-52] // Store tmp_hi to r9_hi
-> 
->   Case B.2: src is stacked but dst is not:
->   ----------------------------------------
->     1. Load src_lo into dst_lo
->     2. Sign extend dst_lo according to offset.
->     3. Sign extend tmp_lo into dst_hi
-> 
->     Example: r6 = (s8)r3
-> 	r6 maps to {ARM_R5, ARM_R4} and r3 is stacked
-> 
-> 	ldr     r4, [r11, #-16] // Load r3_lo to r6_lo
-> 	lsl     r4, r4, #24	// Sign extend r6_lo
-> 	asr     r4, r4, #24	// ..
-> 	asr     r5, r4, #31	// Sign extend r6_lo into r6_hi
-> 
->   Case B.3: src is not stacked but dst is stacked:
->   ------------------------------------------------
->     1. Sign extend src_lo into tmp_lo according to offset.
->     2. Store tmp_lo into dst_lo.
->     3. Sign extend src_lo into tmp_hi.
->     4. Store tmp_hi to dst_hi.
-> 
->     Example: r3 = (s8)r1
-> 	r3 is stacked and r1 maps to {ARM_R3, ARM_R2}
-> 
-> 	lsl     r6, r2, #24 	// Sign extend r1_lo to tmp_lo
-> 	asr     r6, r6, #24	// ..
-> 	str     r6, [r11, #-16] // Store tmp_lo to r3_lo
-> 	asr     r7, r6, #31	// Sign extend tmp_lo to tmp_hi
-> 	str     r7, [r11, #-12] // Store tmp_hi to r3_hi
-> 
->   Case B.4: Both src and dst are not stacked:
->   -------------------------------------------
->     1. Sign extend src_lo into dst_lo according to offset.
->     2. Sign extend dst_lo into dst_hi.
-> 
->     Example: r6 = (s8)r1
-> 	r6 maps to {ARM_R5, ARM_R4} and r1 maps to {ARM_R3, ARM_R2}
-> 
-> 	lsl     r4, r2, #24	// Sign extend r1_lo to r6_lo
-> 	asr     r4, r4, #24	// ..
-> 	asr     r5, r4, #31	// Sign extend r6_lo to r6_hi
-> 
-> Fixes: fc832653fa0d ("arm32, bpf: add support for sign-extension mov instruction")
-> Reported-by: syzbot+186522670e6722692d86@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/all/000000000000e9a8d80615163f2a@google.com/
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
-This looks really great, thanks for putting in the extra effort!
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+On 22/04/2024 11:35, Conor Dooley wrote:
+> On Mon, Apr 22, 2024 at 10:53:10AM +0200, Clément Léger wrote:
+>> On 19/04/2024 17:51, Conor Dooley wrote:
+>>> On Thu, Apr 18, 2024 at 02:42:27PM +0200, Clément Léger wrote:
+>>>> The Zc* standard extension for code reduction introduces new extensions.
+>>>> This patch adds support for Zca, Zcf, Zcd and Zcb. Zce, Zcmt and Zcmp
+>>>> are left out of this patch since they are targeting microcontrollers/
+>>>> embedded CPUs instead of application processors.
+>>>>
+>>>> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+>>>> ---
+>>>>  arch/riscv/include/asm/hwcap.h | 4 ++++
+>>>>  arch/riscv/kernel/cpufeature.c | 4 ++++
+>>>>  2 files changed, 8 insertions(+)
+>>>>
+>>>> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+>>>> index 543e3ea2da0e..b7551bad341b 100644
+>>>> --- a/arch/riscv/include/asm/hwcap.h
+>>>> +++ b/arch/riscv/include/asm/hwcap.h
+>>>> @@ -82,6 +82,10 @@
+>>>>  #define RISCV_ISA_EXT_ZACAS		73
+>>>>  #define RISCV_ISA_EXT_XANDESPMU		74
+>>>>  #define RISCV_ISA_EXT_ZIMOP		75
+>>>> +#define RISCV_ISA_EXT_ZCA		76
+>>>> +#define RISCV_ISA_EXT_ZCB		77
+>>>> +#define RISCV_ISA_EXT_ZCD		78
+>>>> +#define RISCV_ISA_EXT_ZCF		79
+>>>>  
+>>>>  #define RISCV_ISA_EXT_XLINUXENVCFG	127
+>>>>  
+>>>> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+>>>> index 115ba001f1bc..09dee071274d 100644
+>>>> --- a/arch/riscv/kernel/cpufeature.c
+>>>> +++ b/arch/riscv/kernel/cpufeature.c
+>>>> @@ -261,6 +261,10 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+>>>>  	__RISCV_ISA_EXT_DATA(zfa, RISCV_ISA_EXT_ZFA),
+>>>>  	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
+>>>>  	__RISCV_ISA_EXT_DATA(zfhmin, RISCV_ISA_EXT_ZFHMIN),
+>>>> +	__RISCV_ISA_EXT_DATA(zca, RISCV_ISA_EXT_ZCA),
+>>>> +	__RISCV_ISA_EXT_DATA(zcb, RISCV_ISA_EXT_ZCB),
+>>>> +	__RISCV_ISA_EXT_DATA(zcd, RISCV_ISA_EXT_ZCD),
+>>>> +	__RISCV_ISA_EXT_DATA(zcf, RISCV_ISA_EXT_ZCF),
+>>>>  	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
+>>>>  	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
+>>>>  	__RISCV_ISA_EXT_DATA(zbc, RISCV_ISA_EXT_ZBC),
+>>>
+>>> Ye, this looks exactly like what I "feared".
+>>
+>> Ok but for instance, Qemu actually set Zc* based on C/F/D. So the ISA
+>> string containing theses dependencies should actually also be allowed.
+>> So should we simply ignore them in the ISA string and always do our own
+>> "post-processing" based on C/F/D?
+> 
+> I'm not familiar with the contents of all of these extensions, but I
+> assume the reasoning for splitting them out is that you can implement
+> them but not maybe not implement C (or something similar)? If that's the
+> case, you cannot always imply.
 
-Thanks!
+Yeah, they can be implemented independently so we need to be able to
+parse them independently. However, the kernel currently requires C so we
+should always have Zca/Zcf/Zcd. But if that changes in the future, then,
+that won't be true anymore. Better keep it generic probably
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Clément
+
 
