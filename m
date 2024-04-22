@@ -1,47 +1,79 @@
-Return-Path: <linux-kernel+bounces-153485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D90D58ACEA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:46:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 447AB8ACEA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:46:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 684151F21FCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:46:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE0151F220A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:46:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9AD2150996;
-	Mon, 22 Apr 2024 13:45:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDCB1514E2;
+	Mon, 22 Apr 2024 13:45:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GF5NHarO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QD6KP9Ge"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9B24150989;
-	Mon, 22 Apr 2024 13:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B1B1509A5
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713793534; cv=none; b=naw434LIlAYJXnlLa9Ef/0KsZbFSteLJ/o9EilWKX1Hl57DWJgHJAKsvxkX7QGyPFCVTgqGonc5O4kvex3VANy1ImfU8BZaqWOe2KVO9pjRtoiaNKeNz8Ic/AcXkqXqEas4r2uafLoGphW4A59jUkEUbZ3a96HeKfGX7T4mYSW4=
+	t=1713793540; cv=none; b=kBpVU1A02sjh16nddDcTHV/OWE+zdy02KwltqanC1rd6Bz6gXHnlkF8SMNdND7Ii3PVOI4qohzTz0JhhtCL4lSlw4doxsm6rIVRkQYQOpP7eCDQWtFDpZMAxvLTPS0+ir5+NqhqWShN/4ngghQd7wFV2wGCciOTAkLX50VJK/7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713793534; c=relaxed/simple;
-	bh=PK/1+99HtkJnMs8Ur+YHDGey4Az6Hfqq6sXIMfUaOfo=;
+	s=arc-20240116; t=1713793540; c=relaxed/simple;
+	bh=4YMVZUICuNUnooMES/18Kn3KRTa8xUdNs/MTHLvud3Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZcJ1MVZVHasEddmUazkTtjklLEvrSNl+1olzSOhnGKSSyK+oV41OIPwMbGDa+SMvcPrXdLb3F6AXJdBg3kFWbtxq0egc6xAf7tYL/bTOrzq19huhIUMIFeGAMs/dAKzmiGj8FwdI9PEvEyqHnVy/M5DMr+ahuXTNx8DqubJdRDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GF5NHarO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7978C32782;
-	Mon, 22 Apr 2024 13:45:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713793534;
-	bh=PK/1+99HtkJnMs8Ur+YHDGey4Az6Hfqq6sXIMfUaOfo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=GF5NHarOSO2RHJZI/JO8qZkQGS4oY5uh3nrhn8Y+VWHZQN0vBLQ4eRfVOj7bYJ3Mj
-	 8PaG5ptt/Etu0EkcHjU42wxOmDCDgUa68oOURaLloPnN/g9xoH64HlCUO0RwgEKUnf
-	 NhwyOJxHG9LkarfD6dNLfxYMxJy2GDfmBa7dzIsR3BXPPVK1f/tY7fkGwfOA3NyWPP
-	 gcjrR+ytG4PaMlKB2tH5JIhO6/JNoB9bobg+ZndCc+UONXkRc+gUjkV11XPFPl2/d9
-	 97S8pvwkDEyscBkiyigm5h8EHIyA/r9Abte2ezZysRGkaS6CDBFA51AadzGrjXdCoq
-	 IfZgpCBAJz42g==
-Message-ID: <e2989aa1-7f2b-4ac3-8fd8-822c87d61a1e@kernel.org>
-Date: Mon, 22 Apr 2024 15:45:26 +0200
+	 In-Reply-To:Content-Type; b=mBtZdKq+HFgj1L1ZGMaOsO/S2gQZu64dktR7UJVj5/OtM0YKwpdm0GqvspkVVFEIDeiuMhpSBDzjPiTrBaROnjfvwzlHSSbm3L/Zv3r7Qi1J/tDA5OS66A1oJY2Qvr0tbbVWAWiL3jFHqAIx3KSxHcifoBn4qUNXFgYR0UH2igg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QD6KP9Ge; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713793537;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kwY1DtEOHqribjOyCtgFKsXBMbmg7tj+TqpASPAmvqA=;
+	b=QD6KP9GeOaKU9rwemCyMCzazup/zh5A3o14wq9e1D/enIAV3bGqVeceSqixmLOA2upHh4G
+	plmSpMDY4MwaMj+7pVcoK4UbftjaMynYZCv1gBc7j0wd8oMlJjcj4z9W83d73Ix6lYkLNm
+	iUL6UE2by7hrvGAK8eIt3A5zkXnQkrM=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-13-EFgfkw6rPDeB7Hp2cFLMGA-1; Mon, 22 Apr 2024 09:45:33 -0400
+X-MC-Unique: EFgfkw6rPDeB7Hp2cFLMGA-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-518f6868850so3401909e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:45:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713793531; x=1714398331;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kwY1DtEOHqribjOyCtgFKsXBMbmg7tj+TqpASPAmvqA=;
+        b=g9PD54d6UCBbuZczPFrYYsBWJQqhVomvH+MMmKeHRlexKn7Siwhu4OI0obQq6ae/Sn
+         vc7mTOL1eRUpmzd7LNlx2ppVckcdOt754+hEB4OTtXPOY0vTgsbnosHPzy7YVYbHNTSm
+         Zh5y94cCJF1lWmJCoD8qlKgS05IalG/VIGjteFi7ZLf5g0eVgfEbOs2WjRdveYOJVU/i
+         wj/HNHghRcl3fvKsz3Z04EgenuwRpjdkMxG2o9arhPsoflHEjfOA4rcwSOhhuRdyZ+pT
+         FxhyuMCxpRsmK7ppvzG2TMOPuWwqIFhRaEh7im3oFE/rUrb6oJrvGc1K9Y9dN0R/14I/
+         WrXw==
+X-Forwarded-Encrypted: i=1; AJvYcCUU2iUWCKwP82NyOxcbe4Kxa12cUJmqbK5Bn0G04UWhcaPon1Bmo6dprfsADQdBRgSu/RJflxG9/e+RfOFfyIC88P2YvOS2KDYxu6AR
+X-Gm-Message-State: AOJu0YwDLTtm1R9oqSZidAG0er6cIkn0sy7fHIryBQA4LdAnR364qxV9
+	aY6ppiUoAsGsXmGXJGhVpGgnVN1hmU9Xbgu03UWwq+wE/H701Hc+28cuKhRCPRJ7Vv6p6qVjB1G
+	qtrxDEiezjD0u88OzXfu7eTzU8osYDHTiinzvVeh/HsBbkbkpRSf1nlWwTF+A2A==
+X-Received: by 2002:a05:6512:60b:b0:51b:3ffa:f22d with SMTP id b11-20020a056512060b00b0051b3ffaf22dmr1621229lfe.18.1713793531031;
+        Mon, 22 Apr 2024 06:45:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEKFQpw6rKr1G9y/ZCaqi5LiAOCRXo3Yu+6uaAFYUdvzN8gHUauGRjJfN5YhPSGmG97LfhNUA==
+X-Received: by 2002:a05:6512:60b:b0:51b:3ffa:f22d with SMTP id b11-20020a056512060b00b0051b3ffaf22dmr1621212lfe.18.1713793530561;
+        Mon, 22 Apr 2024 06:45:30 -0700 (PDT)
+Received: from [10.40.98.157] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id dk17-20020a170907941100b00a55b0380a6fsm1785209ejc.10.2024.04.22.06.45.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 06:45:29 -0700 (PDT)
+Message-ID: <98b6e167-5828-41fd-ab4a-014099032d5b@redhat.com>
+Date: Mon, 22 Apr 2024 15:45:27 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,107 +81,200 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 0/3] add support for EXAR XR20M1172 UART
-To: Konstantin Pugin <ria.freelander@gmail.com>
-Cc: conor@kernel.org, lkp@intel.com, vz@mleia.com, robh@kernel.org,
- jcmvbkbc@gmail.com, nicolas.ferre@microchip.com,
- manikanta.guntupalli@amd.com, corbet@lwn.net, ychuang3@nuvoton.com,
- u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>, Andy Shevchenko <andy@kernel.org>,
- Lech Perczak <lech.perczak@camlingroup.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20240422133219.2710061-1-ria.freelander@gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2] platform/x86: asus-laptop: Use sysfs_emit() and
+ sysfs_emit_at() to replace sprintf()
+To: yunshui <jiangyunshui@kylinos.cn>, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org
+Cc: corentin.chary@gmail.com, luke@ljones.dev, ilpo.jarvinen@linux.intel.com,
+ Ai Chao <aichao@kylinos.cn>
+References: <20240422062915.3393480-1-jiangyunshui@kylinos.cn>
 Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240422133219.2710061-1-ria.freelander@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240422062915.3393480-1-jiangyunshui@kylinos.cn>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 22/04/2024 15:32, Konstantin Pugin wrote:
-> EXAR XR20M1172 UART is mostly SC16IS762-compatible, but
-> it has additional register which can change UART multiplier
-> to 4x and 8x, similar to UPF_MAGIC_MULTIPLIER does. So, I used this
-> flag to guard access to its specific DLD register. It seems than
-> other EXAR SPI UART modules also have this register, but I tested
-> only XR20M1172.
-> Yes, in datasheet this register is called "DLD - Divisor Fractional"
-> or "DLD - Divisor Fractional Register", calling depends on datasheet
-> version.
+Hi,
+
+On 4/22/24 8:29 AM, yunshui wrote:
+> As Documentation/filesystems/sysfs.rst suggested,
+> show() should only use sysfs_emit() or sysfs_emit_at() when formatting
+> the value to be returned to user space.
 > 
-> I am sorry about too many submissions and top post reply. About second -
-> I do not know how to reply properly to this ML from GMail phone app. About first - I just
-> get very good feedback from Andy Shevchenko, and want to fix his review picks ASAP.
+> Signed-off-by: yunshui <jiangyunshui@kylinos.cn>
+> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+
+> ---
+>  drivers/platform/x86/asus-laptop.c | 44 +++++++++++++++---------------
+>  1 file changed, 22 insertions(+), 22 deletions(-)
 > 
-
-One patchset per 24h.
-
-Plus, you already got such review comment:
-
-This is a friendly reminder during the review process.
-
-It looks like you received a tag and forgot to add it.
-
-If you do not know the process, here is a short explanation:
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-If a tag was not added on purpose, please state why and what changed.
-
-Just start using b4.
-
-Best regards,
-Krzysztof
+> diff --git a/drivers/platform/x86/asus-laptop.c b/drivers/platform/x86/asus-laptop.c
+> index 78c42767295a..ccb33d034e2a 100644
+> --- a/drivers/platform/x86/asus-laptop.c
+> +++ b/drivers/platform/x86/asus-laptop.c
+> @@ -852,8 +852,8 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+>  	 * so we don't set eof to 1
+>  	 */
+>  
+> -	len += sprintf(page, ASUS_LAPTOP_NAME " " ASUS_LAPTOP_VERSION "\n");
+> -	len += sprintf(page + len, "Model reference    : %s\n", asus->name);
+> +	len += sysfs_emit_at(page, len, ASUS_LAPTOP_NAME " " ASUS_LAPTOP_VERSION "\n");
+> +	len += sysfs_emit_at(page, len, "Model reference    : %s\n", asus->name);
+>  	/*
+>  	 * The SFUN method probably allows the original driver to get the list
+>  	 * of features supported by a given model. For now, 0x0100 or 0x0800
+> @@ -862,7 +862,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+>  	 */
+>  	rv = acpi_evaluate_integer(asus->handle, "SFUN", NULL, &temp);
+>  	if (ACPI_SUCCESS(rv))
+> -		len += sprintf(page + len, "SFUN value         : %#x\n",
+> +		len += sysfs_emit_at(page, len, "SFUN value         : %#x\n",
+>  			       (uint) temp);
+>  	/*
+>  	 * The HWRS method return informations about the hardware.
+> @@ -874,7 +874,7 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+>  	 */
+>  	rv = acpi_evaluate_integer(asus->handle, "HWRS", NULL, &temp);
+>  	if (ACPI_SUCCESS(rv))
+> -		len += sprintf(page + len, "HWRS value         : %#x\n",
+> +		len += sysfs_emit_at(page, len, "HWRS value         : %#x\n",
+>  			       (uint) temp);
+>  	/*
+>  	 * Another value for userspace: the ASYM method returns 0x02 for
+> @@ -885,25 +885,25 @@ static ssize_t infos_show(struct device *dev, struct device_attribute *attr,
+>  	 */
+>  	rv = acpi_evaluate_integer(asus->handle, "ASYM", NULL, &temp);
+>  	if (ACPI_SUCCESS(rv))
+> -		len += sprintf(page + len, "ASYM value         : %#x\n",
+> +		len += sysfs_emit_at(page, len, "ASYM value         : %#x\n",
+>  			       (uint) temp);
+>  	if (asus->dsdt_info) {
+>  		snprintf(buf, 16, "%d", asus->dsdt_info->length);
+> -		len += sprintf(page + len, "DSDT length        : %s\n", buf);
+> +		len += sysfs_emit_at(page, len, "DSDT length        : %s\n", buf);
+>  		snprintf(buf, 16, "%d", asus->dsdt_info->checksum);
+> -		len += sprintf(page + len, "DSDT checksum      : %s\n", buf);
+> +		len += sysfs_emit_at(page, len, "DSDT checksum      : %s\n", buf);
+>  		snprintf(buf, 16, "%d", asus->dsdt_info->revision);
+> -		len += sprintf(page + len, "DSDT revision      : %s\n", buf);
+> +		len += sysfs_emit_at(page, len, "DSDT revision      : %s\n", buf);
+>  		snprintf(buf, 7, "%s", asus->dsdt_info->oem_id);
+> -		len += sprintf(page + len, "OEM id             : %s\n", buf);
+> +		len += sysfs_emit_at(page, len, "OEM id             : %s\n", buf);
+>  		snprintf(buf, 9, "%s", asus->dsdt_info->oem_table_id);
+> -		len += sprintf(page + len, "OEM table id       : %s\n", buf);
+> +		len += sysfs_emit_at(page, len, "OEM table id       : %s\n", buf);
+>  		snprintf(buf, 16, "%x", asus->dsdt_info->oem_revision);
+> -		len += sprintf(page + len, "OEM revision       : 0x%s\n", buf);
+> +		len += sysfs_emit_at(page, len, "OEM revision       : 0x%s\n", buf);
+>  		snprintf(buf, 5, "%s", asus->dsdt_info->asl_compiler_id);
+> -		len += sprintf(page + len, "ASL comp vendor id : %s\n", buf);
+> +		len += sysfs_emit_at(page, len, "ASL comp vendor id : %s\n", buf);
+>  		snprintf(buf, 16, "%x", asus->dsdt_info->asl_compiler_revision);
+> -		len += sprintf(page + len, "ASL comp revision  : 0x%s\n", buf);
+> +		len += sysfs_emit_at(page, len, "ASL comp revision  : 0x%s\n", buf);
+>  	}
+>  
+>  	return len;
+> @@ -933,7 +933,7 @@ static ssize_t ledd_show(struct device *dev, struct device_attribute *attr,
+>  {
+>  	struct asus_laptop *asus = dev_get_drvdata(dev);
+>  
+> -	return sprintf(buf, "0x%08x\n", asus->ledd_status);
+> +	return sysfs_emit(buf, "0x%08x\n", asus->ledd_status);
+>  }
+>  
+>  static ssize_t ledd_store(struct device *dev, struct device_attribute *attr,
+> @@ -993,7 +993,7 @@ static ssize_t wlan_show(struct device *dev, struct device_attribute *attr,
+>  {
+>  	struct asus_laptop *asus = dev_get_drvdata(dev);
+>  
+> -	return sprintf(buf, "%d\n", asus_wireless_status(asus, WL_RSTS));
+> +	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, WL_RSTS));
+>  }
+>  
+>  static ssize_t wlan_store(struct device *dev, struct device_attribute *attr,
+> @@ -1022,7 +1022,7 @@ static ssize_t bluetooth_show(struct device *dev, struct device_attribute *attr,
+>  {
+>  	struct asus_laptop *asus = dev_get_drvdata(dev);
+>  
+> -	return sprintf(buf, "%d\n", asus_wireless_status(asus, BT_RSTS));
+> +	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, BT_RSTS));
+>  }
+>  
+>  static ssize_t bluetooth_store(struct device *dev,
+> @@ -1052,7 +1052,7 @@ static ssize_t wimax_show(struct device *dev, struct device_attribute *attr,
+>  {
+>  	struct asus_laptop *asus = dev_get_drvdata(dev);
+>  
+> -	return sprintf(buf, "%d\n", asus_wireless_status(asus, WM_RSTS));
+> +	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, WM_RSTS));
+>  }
+>  
+>  static ssize_t wimax_store(struct device *dev, struct device_attribute *attr,
+> @@ -1081,7 +1081,7 @@ static ssize_t wwan_show(struct device *dev, struct device_attribute *attr,
+>  {
+>  	struct asus_laptop *asus = dev_get_drvdata(dev);
+>  
+> -	return sprintf(buf, "%d\n", asus_wireless_status(asus, WW_RSTS));
+> +	return sysfs_emit(buf, "%d\n", asus_wireless_status(asus, WW_RSTS));
+>  }
+>  
+>  static ssize_t wwan_store(struct device *dev, struct device_attribute *attr,
+> @@ -1151,7 +1151,7 @@ static ssize_t ls_switch_show(struct device *dev, struct device_attribute *attr,
+>  {
+>  	struct asus_laptop *asus = dev_get_drvdata(dev);
+>  
+> -	return sprintf(buf, "%d\n", asus->light_switch);
+> +	return sysfs_emit(buf, "%d\n", asus->light_switch);
+>  }
+>  
+>  static ssize_t ls_switch_store(struct device *dev,
+> @@ -1182,7 +1182,7 @@ static ssize_t ls_level_show(struct device *dev, struct device_attribute *attr,
+>  {
+>  	struct asus_laptop *asus = dev_get_drvdata(dev);
+>  
+> -	return sprintf(buf, "%d\n", asus->light_level);
+> +	return sysfs_emit(buf, "%d\n", asus->light_level);
+>  }
+>  
+>  static ssize_t ls_level_store(struct device *dev, struct device_attribute *attr,
+> @@ -1228,7 +1228,7 @@ static ssize_t ls_value_show(struct device *dev, struct device_attribute *attr,
+>  	if (!err)
+>  		err = pega_int_read(asus, PEGA_READ_ALS_L, &lo);
+>  	if (!err)
+> -		return sprintf(buf, "%d\n", 10 * hi + lo);
+> +		return sysfs_emit(buf, "%d\n", 10 * hi + lo);
+>  	return err;
+>  }
+>  static DEVICE_ATTR_RO(ls_value);
+> @@ -1264,7 +1264,7 @@ static ssize_t gps_show(struct device *dev, struct device_attribute *attr,
+>  {
+>  	struct asus_laptop *asus = dev_get_drvdata(dev);
+>  
+> -	return sprintf(buf, "%d\n", asus_gps_status(asus));
+> +	return sysfs_emit(buf, "%d\n", asus_gps_status(asus));
+>  }
+>  
+>  static ssize_t gps_store(struct device *dev, struct device_attribute *attr,
 
 
