@@ -1,190 +1,137 @@
-Return-Path: <linux-kernel+bounces-153928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01E1B8AD501
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:43:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA9EB8AD4FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:42:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FA30B21BEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:42:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC5C61C2157C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E675015534E;
-	Mon, 22 Apr 2024 19:42:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E621C155346;
+	Mon, 22 Apr 2024 19:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HFO2Ppps"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zz99ZMEZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C2F15533B;
-	Mon, 22 Apr 2024 19:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97C2153837
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713814971; cv=none; b=uOGXwXNV8WjZZePLzD4I+XcLUTyxbsEkCIxZP8WdC9OXT0fMNDQZFNUY21tBM1eMiSKM/uUCDjATiKxJNs1g/6Brc6uTovKNoYVZPR3cbNM1RR4eNGg7LE1fEPIOtwt7ttgjdswsyg7EUP6ijvx8oY/W60+GXF+eHC8a/ZoLmEg=
+	t=1713814948; cv=none; b=taGOhwaFbON+9Da47oaQNmZ4aOTNJSY3Lkp7byhWUU+t/v/rT0120+CAB4HlF5HBJ6lfOfjvzZ5c+RYLlp4xfODOxvihVouMjErtBMGPEh0iunSVWtR72nBg/ihlj3AF/kRF/xTziadmrbjT/MMqhRYouvHgjNZ8EbXf6NB3L9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713814971; c=relaxed/simple;
-	bh=X5NGLyhlmkWiEztUhkG/dYmbEnrBjLWsUuPd6etmt3g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GZNIAt+Ac1KKYdL+MD7QBCBsmejJc9ZcBpu0JuAE5jIf+1BpC61zcsmmQYjlFOndY7XIN7Ww0SFHxmgMvYt5Wsvk9UgS7Rv9uHWfrrdzmwnDaegcWxmaMXJ6J87UtP0Yc/3Ujn2LOAyGfwWRtXrpzbjN7+bnB0NEDlz/aQD8Gi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HFO2Ppps; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A770AC113CC;
-	Mon, 22 Apr 2024 19:42:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713814970;
-	bh=X5NGLyhlmkWiEztUhkG/dYmbEnrBjLWsUuPd6etmt3g=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=HFO2Ppps/oZr9UBPkLMNSFWLF8JT0mQUjb6KEmKTavUYAzUBfRay7wviM9/lYJ1ox
-	 VGD9BugBnxpekoWlFpo267NnDA//Jp5Q03vIdUlgWRdD5s8i+dVQ9wvKVAa/kA+Lf7
-	 rcg23e19F5+xrsUNWPs6AGzRt2dud8+yPRn9eWr+QBAVHGly6fogMw1Dyv/kknlIiX
-	 p9k2P5UGa39I2lZ1fXX16QOFEj+llvJVWZp/i64mCSjL875AMlg1avpPvOhxsKBeCj
-	 8wfk/8dB14dU5dPWZ/HfY//p4xmc1x/tuJsCKA8Vq8GFKQwH/ROYrfcbP1V7YQH6F9
-	 UWocTlyMx3Vfg==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-518a3e0d2ecso7204500e87.3;
-        Mon, 22 Apr 2024 12:42:50 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWAQNQ7y5T3lz9L/YRm5AWQoC5SfuYnyLnC+bff5XFGwuxLyX5EW4413M7bbYFrSdPlH/8hYbb9722d95gxQ++IMw6rQtmqbijH2dWHi/vu0Rh3buyDfBwrWWlwEiq703BTeQRofDBQX+Hlyx33oGT7Qp2TH27bdIGGPbRtQySvj3hvHkMm27PnKclprWI=
-X-Gm-Message-State: AOJu0YzON+bKAQ8zAl58vXnkOXWcncY0UiKhbx6H7K6dmZXYmgMSYRji
-	hjossPd6MQdju+mCOORn70SE25f7R0bVdUUr9jdSVmpLUkgS/wWXGGVR3If1vOmDRBf9Ajir5Yz
-	sfjVEVoeOIiaoY2X+HJRWmEXCZi0=
-X-Google-Smtp-Source: AGHT+IFUc94RfCXq+iQAJz7qjewz+jSCFsONec3F2z9I3xwsiexX4d/Q6fXVP4Y2744DYOS3241u2oWO23s5CFrO6bQ=
-X-Received: by 2002:ac2:46f6:0:b0:513:d5ec:afb with SMTP id
- q22-20020ac246f6000000b00513d5ec0afbmr8808090lfo.40.1713814969390; Mon, 22
- Apr 2024 12:42:49 -0700 (PDT)
+	s=arc-20240116; t=1713814948; c=relaxed/simple;
+	bh=hVJxRhMiKvmJgAmPeGobX/MJeoNE6UnGxtAnC2NjbKw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Uu2lvebNe5dxnE6SW4LVVhWiBDOYYkMFv3YlIjdmQhI4lbrEQO6Vg1ASY69RwOM4S7z4je+ZgwgOr2eiHiVUJJZdBu1gmIg8JNepRwmPfO3d24EwXz/J8iLVqWDIj4GSWiz1xmdBQczakcuL4lC8cR/Ir3nPa5IMEprjUSgex7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zz99ZMEZ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713814945;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ucWdKV158GrYn1kO4pc3kHGoGPk+vBTZiotaaItH/pY=;
+	b=Zz99ZMEZyTj20FQEuApCI/mOt5Z+qlP2CKAQdckGSXVhVuovH7gYre0nfI8ED5RXGgoUZs
+	ply/x0qU4L7rrzcv0+FY9YKx/bqC/9h/KsLirccGC32XaGeoNhUAFO9HZYCq8f2L+qwZyK
+	Urs4h8n/MYB6OgikcK+P01eXL24KeZk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-526-wSKHFJSgNk-g6QeCqelw5Q-1; Mon,
+ 22 Apr 2024 15:42:22 -0400
+X-MC-Unique: wSKHFJSgNk-g6QeCqelw5Q-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CD7BC29ABA16;
+	Mon, 22 Apr 2024 19:42:21 +0000 (UTC)
+Received: from t14s.fritz.box (unknown [10.39.192.9])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 86E1C40C5C2;
+	Mon, 22 Apr 2024 19:42:18 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Zi Yan <ziy@nvidia.com>,
+	John Hubbard <jhubbard@nvidia.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: [PATCH v2] mm/huge_memory: improve split_huge_page_to_list_to_order() return value documentation
+Date: Mon, 22 Apr 2024 21:42:17 +0200
+Message-ID: <20240422194217.442933-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1713780345.git.geert+renesas@glider.be> <87il09ty4u.fsf@intel.com>
- <ff4f9e8f-0825-4421-adf9-e3914b108da7@app.fastmail.com> <875xw9ttl6.fsf@intel.com>
- <af6e26d1-1402-4ed2-a650-b58eae77273e@app.fastmail.com> <CAMuHMdXCL-gbKr6mUBPWONtRjz=X0vZQgiS=02WXXSFf67yBww@mail.gmail.com>
- <d3f406ed-1b93-4fcf-850a-743d27f20dc2@app.fastmail.com>
-In-Reply-To: <d3f406ed-1b93-4fcf-850a-743d27f20dc2@app.fastmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Tue, 23 Apr 2024 04:42:12 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARNb0kB=cytOmJn+K59vQ8ekESqY-=1SFDOQox-B3GJrQ@mail.gmail.com>
-Message-ID: <CAK7LNARNb0kB=cytOmJn+K59vQ8ekESqY-=1SFDOQox-B3GJrQ@mail.gmail.com>
-Subject: Re: [PATCH 00/11] drm: Restore helper usability
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Jani Nikula <jani.nikula@linux.intel.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Dave Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	Linux-Renesas <linux-renesas-soc@vger.kernel.org>, 
-	linux-kbuild <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Tue, Apr 23, 2024 at 3:24=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote=
-:
->
-> On Mon, Apr 22, 2024, at 18:58, Geert Uytterhoeven wrote:
-> > On Mon, Apr 22, 2024 at 3:55=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> w=
-rote:
-> >> On Mon, Apr 22, 2024, at 15:28, Jani Nikula wrote:
-> >> Whereas this one is broken:
-> >>
-> >> config FEATURE_A
-> >>        tristate "user visible if I2C is enabled"
-> >>        depends on I2C
-> >>
-> >> config HELPER_B
-> >>        tristate # hidden
-> >>        select FEATURE_A
-> >>
-> >> config DRIVER
-> >>        tristate "This driver is broken if I2C is disabled"
-> >>        select HELPER_B
-> >
-> > So the DRIVER section should gain a "depends on I2C" statement.
->
-> That is of course the common workaround, but my point was
-> that nothing should ever 'select I2C' or any of the other
-> subsystems that are user visible.
->
-> > Yamada-san: would it be difficult to modify Kconfig to ignore symbols
-> > like DRIVER that select other symbols with unmet dependencies?
-> > Currently it already warns about that.
-> >
-> > Handling this implicitly (instead of the current explict "depends
-> > on") would have the disadvantage though: a user who is not aware of
-> > the implicit dependency may wonder why DRIVER is invisible in his
-> > config interface.
->
-> I think hiding this would make it much harder to get anything
-> right. The symbols in question are almost all ones that should
-> be enabled in normal configs, and the 'make menuconfig' help
-> doesn't make it too hard to figure things out normally, we just
-> have to find a way to avoid regressions when converting things
-> to 'depends on' that used an incorrect 'select'.
->
->      Arnd
+The documentation is wrong and relying on it almost resulted in BUGs in
+new callers: ever since fd4a7ac32918 ("mm: migrate: try again
+if THP split is failed due to page refcnt") we return -EAGAIN on
+unexpected folio references, not -EBUSY.
 
+Let's fix that and also document which other return values we can
+currently see and why they could happen.
 
+Reviewed-by: Zi Yan <ziy@nvidia.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
 
-I am confused because you repeatedly discussed
-the missing I2C dependency.
+v1 -> v2:
+* Also document concurrent removal from the page cache (likely we should
+  return -EBUSY -- but likely it doesn't really matter).
+* Reference fd4a7ac32918 in patch description
 
+---
+ mm/huge_memory.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-Are you talking about DRM drivers,
-or is it just "an example" in general?
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index ee12726291f1b..a7406267323ed 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2956,7 +2956,7 @@ bool can_split_folio(struct folio *folio, int *pextra_pins)
+  *
+  * 3) The folio must not be pinned. Any unexpected folio references, including
+  *    GUP pins, will result in the folio not getting split; instead, the caller
+- *    will receive an -EBUSY.
++ *    will receive an -EAGAIN.
+  *
+  * 4) @new_order > 1, usually. Splitting to order-1 anonymous folios is not
+  *    supported for non-file-backed folios, because folio->_deferred_list, which
+@@ -2975,8 +2975,16 @@ bool can_split_folio(struct folio *folio, int *pextra_pins)
+  *
+  * Returns 0 if the huge page was split successfully.
+  *
+- * Returns -EBUSY if @page's folio is pinned, or if the anon_vma disappeared
+- * from under us.
++ * Returns -EAGAIN if the folio has unexpected reference (e.g., GUP) or if
++ * the folio was concurrently removed from the page cache.
++ *
++ * Returns -EBUSY when trying to split the huge zeropage, if the folio is
++ * under writeback, if fs-specific folio metadata cannot currently be
++ * released, or if some unexpected race happened (e.g., anon VMA disappeared,
++ * truncation).
++ *
++ * Returns -EINVAL when trying to split to an order that is incompatible
++ * with the folio. Splitting to order 0 is compatible with all folios.
+  */
+ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+ 				     unsigned int new_order)
+-- 
+2.44.0
 
-
-
-DRM selects I2C.
-
-https://github.com/torvalds/linux/blob/v6.9-rc4/drivers/gpu/drm/Kconfig#L16
-
-
-
-If you make sure individual DRM drivers depend on DRM,
-none of them can be enabled without I2C.
-
-
-
-Currently, this is not guaranteed just because
-DRM folks do not know how to use the "menuconfig" syntax.
-
-
-
-The "menuconfig" makes sense only when it is
-followed by "if".
-
-
-
-
-diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 5a0c476361c3..6984b3fea271 100644
---- a/drivers/gpu/drm/Kconfig
-+++ b/drivers/gpu/drm/Kconfig
-@@ -29,6 +29,8 @@ menuconfig DRM
-          details.  You should also select and configure AGP
-          (/dev/agpgart) support if it is available for your platform.
-
-+if DRM
-+
- config DRM_MIPI_DBI
-        tristate
-        depends on DRM
-@@ -414,3 +416,5 @@ config DRM_LIB_RANDOM
- config DRM_PRIVACY_SCREEN
-        bool
-        default n
-+
-+endif
-
-
-
-
-
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
 
