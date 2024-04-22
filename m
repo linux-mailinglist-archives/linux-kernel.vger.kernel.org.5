@@ -1,354 +1,207 @@
-Return-Path: <linux-kernel+bounces-153646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 089168AD116
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:40:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E558AD11F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:42:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87BE61F2328A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:40:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ECBA1F230D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6537B153567;
-	Mon, 22 Apr 2024 15:39:37 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFCCC152509;
-	Mon, 22 Apr 2024 15:39:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4559D1534E2;
+	Mon, 22 Apr 2024 15:42:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="PPYY8eI1"
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0792C1534EB
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713800376; cv=none; b=bjU3Oa2Xvp2w9RUKQqe8efnIN0lQugsbPgD/nDqXhLsvLasA/FOIFmtTSHzuJDfXQOHFYIxJX6DhLjESefs5TWX1tk6SO9NHYbe/K1I0hwPT2p5o6DoZ4hquEgvcyjQ6ZoodVWAFyFLeoB59uc222wACaq0IMaQ6qat/L4sThqM=
+	t=1713800553; cv=none; b=ZpqXNJYo+Rb6ua1BLBaI/brn6ZteG1TCFDFBkTambf19Hvkv/ArcwLuMzaHcwX1lEo79WvwJkLDOp0TyHvvH2VIGa+q3FAzDSULCi2yLOoswAaRa62mNmTmgKB8RvkNbVqfQFXAM0kwgywRzOIoqOA9UY5broKR/CfeTjTjsdjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713800376; c=relaxed/simple;
-	bh=9kWRDlDUp1fbs+ibn7ve6at8EXhA8n8p/Aw1Tp1tINM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Vi05D94F98fdbO1jnrepD4lNyKWdiPWbwuyQINEhJ7QVzNo2e3dBoE+Ea5o3HAKk2POH09U5WDzScYda2ftP48c5kGuacK+0/ULVXo2xgRMHwl9/ewZlSMiUN2eaFQ66jYt4FV9ajLZGFC/1fpjj8VfyhpyT3qJ/WShHqOmCFIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B6AC339;
-	Mon, 22 Apr 2024 08:40:02 -0700 (PDT)
-Received: from [10.57.54.223] (unknown [10.57.54.223])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0E533F73F;
-	Mon, 22 Apr 2024 08:39:30 -0700 (PDT)
-Message-ID: <dde9be17-eeb9-4819-93e0-21ed479187e2@arm.com>
-Date: Mon, 22 Apr 2024 16:39:32 +0100
+	s=arc-20240116; t=1713800553; c=relaxed/simple;
+	bh=tXjSwVBeGb/Eb0FtFwqpwFwRnMr6GKOhM4c8ow2qQ9Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hRyBg2VgscKLavQaWsWixHN67ETipLRr64qnUiq3abEjOaJcuaKHSDslxvirPPnFsGDzAMp+M74q979cTjWBiyU+3gMIeLLqfy1DTR+z96uZ0fGNzRyuCw/9Qoi7r8lfqjstH5BRjkSpLI2raHzAdzyWC0paYObtgRsUGZ5CHnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PPYY8eI1; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-436ed871225so538951cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:42:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713800550; x=1714405350; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5LWWbUhCinHZ4pRRDKlPFXeIrr7YidOY2PqyCtNwxyA=;
+        b=PPYY8eI1S3O8scbt6x/Zx50IcR/bxB1i8qTziTZ2FJwijamJTwQNKWJSkXCi2HglH0
+         Lsk5sAAXOxKDVhZ/cGjPpGv3iIMbDYjQXsKziJX5ZySsBwe/wpIddI1L8qovi63gJpLQ
+         EmC9eJXp+yVA8SVwth+RhQNDuFZqWMHU5MiYpiv391y8mGeEgmJSAibPA6CRHd+DQxJY
+         zA0Thf1llvmHvZB2gXZRKGnwTG6Tq37zby+kd71UYqG4C2f56PujYbsln1b4tzR1ojBt
+         VhKREBjN/LeepQpNl8RFpoobhiW7i6K7JH8q+sramtnacV1xK/1X6V3pVq1C2dsePtAn
+         oXCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713800550; x=1714405350;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5LWWbUhCinHZ4pRRDKlPFXeIrr7YidOY2PqyCtNwxyA=;
+        b=XzC11KCPPAf2JlbBdSZYE44gCff7+aDUqxSWpz53ctqH+kkYzlTekR2kM46EHHH1j7
+         ld5fwI4v3Ij441AnmREIa4rhQ48h8sgEtbenD5sfZL2/e22VGs+W6LCf1gY2lX4dkUHE
+         ofNPHtxgYSZpJFDImnvRfrQPQmDn2waAoruF+ItB+fJDvwmROQCj/Mif8Do4AARXTATC
+         HroNddjDC4gfhvYBAFzfWSaLJ7H/vFimbtWpyombKQ+QUculR0z6ps4Nqy9UmTfMgk30
+         lB3AM1zVTIzyV6JUkyWUGrm0cMz3e6s+sFIiGbE8DCn2CsMJk/oNyZKUyyLiwhodXm6U
+         6Wow==
+X-Forwarded-Encrypted: i=1; AJvYcCUwcqx43mNfIgf5ZNOufHmkd7Egoe6oN79vtsDiMruzck4/ZYHiMeeMFd1x6p1zBVcJmnH/q5LgL0mMVm3ciIQfI2+VAWD0CYFM0GRV
+X-Gm-Message-State: AOJu0YwxdZB1daLeryZmRBeXydTLMrZwUEhQLhW9D8sB6jAkrp5p2JCz
+	Fmul+3QGGPPzUzNCbSxrGR/6iduIECtSJ6+iOhpu08n/a5RNPWTmOL+kAPa73fR94VEsVQCt7MP
+	hXFUIOX+2TCrbUTQ4xq0PibZm1mLXPBtaaWB3
+X-Google-Smtp-Source: AGHT+IGqGSjYwcJiVDgalrNn9TAUZdU5fgYKsr64wzHajwJV8/cKH1NAZTOsWkwmjf3FzaLTTq7w5Jmo5xwj/l8huMk=
+X-Received: by 2002:ac8:5885:0:b0:437:c4ae:f3b4 with SMTP id
+ t5-20020ac85885000000b00437c4aef3b4mr542257qta.26.1713800549734; Mon, 22 Apr
+ 2024 08:42:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 07/43] arm64: RME: Check for RME support at KVM init
-To: Suzuki K Poulose <suzuki.poulose@arm.com>, kvm@vger.kernel.org,
- kvmarm@lists.linux.dev
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
- <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
- Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
- Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
-References: <20240412084056.1733704-1-steven.price@arm.com>
- <20240412084309.1733783-1-steven.price@arm.com>
- <20240412084309.1733783-8-steven.price@arm.com>
- <37fa1ff5-9e94-4def-afd6-fb9ea9356977@arm.com>
-From: Steven Price <steven.price@arm.com>
-Content-Language: en-GB
-In-Reply-To: <37fa1ff5-9e94-4def-afd6-fb9ea9356977@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240403164818.3431325-1-irogers@google.com> <CAGa8GX5MhP3FUhafN5QivHaE3Fg+p5MgvTq3SW6MQy4NeZ1sYQ@mail.gmail.com>
+In-Reply-To: <CAGa8GX5MhP3FUhafN5QivHaE3Fg+p5MgvTq3SW6MQy4NeZ1sYQ@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 22 Apr 2024 08:42:17 -0700
+Message-ID: <CAP-5=fU_EvN-bSjwbWMP8R+WyG-jeAQ1p4ziyejy2FCH0kgYig@mail.gmail.com>
+Subject: Re: [PATCH v1] perf test: Be more tolerant of metricgroup failures
+To: Veronika Molnarova <vmolnaro@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 16/04/2024 14:30, Suzuki K Poulose wrote:
-> Hi Steven
-> 
-> On 12/04/2024 09:42, Steven Price wrote:
->> Query the RMI version number and check if it is a compatible version. A
->> static key is also provided to signal that a supported RMM is available.
+On Mon, Apr 22, 2024 at 4:51=E2=80=AFAM Veronika Molnarova <vmolnaro@redhat=
+com> wrote:
+>
+> Hi Ian,
+>
+> On Wed, Apr 3, 2024 at 6:48=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
 >>
->> Functions are provided to query if a VM or VCPU is a realm (or rec)
->> which currently will always return false.
+>> Previously "set -e" meant any non-zero exit code from perf stat would
+>> cause a test failure. As a non-zero exit happens when there aren't
+>> sufficient permissions, check for this case and make the exit code
+>> 2/skip for it.
 >>
->> Signed-off-by: Steven Price <steven.price@arm.com>
+>> Signed-off-by: Ian Rogers <irogers@google.com>
 >> ---
->>   arch/arm64/include/asm/kvm_emulate.h | 18 +++++++++
->>   arch/arm64/include/asm/kvm_host.h    |  4 ++
->>   arch/arm64/include/asm/kvm_rme.h     | 56 ++++++++++++++++++++++++++++
->>   arch/arm64/include/asm/virt.h        |  1 +
->>   arch/arm64/kvm/Makefile              |  3 +-
->>   arch/arm64/kvm/arm.c                 |  9 +++++
->>   arch/arm64/kvm/rme.c                 | 52 ++++++++++++++++++++++++++
->>   7 files changed, 142 insertions(+), 1 deletion(-)
->>   create mode 100644 arch/arm64/include/asm/kvm_rme.h
->>   create mode 100644 arch/arm64/kvm/rme.c
+>>  .../perf/tests/shell/stat_all_metricgroups.sh | 28 +++++++++++++++----
+>>  1 file changed, 22 insertions(+), 6 deletions(-)
 >>
->> diff --git a/arch/arm64/include/asm/kvm_emulate.h
->> b/arch/arm64/include/asm/kvm_emulate.h
->> index 975af30af31f..6f08398537e2 100644
->> --- a/arch/arm64/include/asm/kvm_emulate.h
->> +++ b/arch/arm64/include/asm/kvm_emulate.h
->> @@ -611,4 +611,22 @@ static __always_inline void
->> kvm_reset_cptr_el2(struct kvm_vcpu *vcpu)
->>         kvm_write_cptr_el2(val);
->>   }
->> +
->> +static inline bool kvm_is_realm(struct kvm *kvm)
->> +{
->> +    if (static_branch_unlikely(&kvm_rme_is_available))
->> +        return kvm->arch.is_realm;
->> +    return false;
->> +}
->> +
->> +static inline enum realm_state kvm_realm_state(struct kvm *kvm)
->> +{
->> +    return READ_ONCE(kvm->arch.realm.state);
->> +}
->> +
->> +static inline bool vcpu_is_rec(struct kvm_vcpu *vcpu)
->> +{
->> +    return false;
->> +}
->> +
->>   #endif /* __ARM64_KVM_EMULATE_H__ */
->> diff --git a/arch/arm64/include/asm/kvm_host.h
->> b/arch/arm64/include/asm/kvm_host.h
->> index 9e8a496fb284..63b68b85db3f 100644
->> --- a/arch/arm64/include/asm/kvm_host.h
->> +++ b/arch/arm64/include/asm/kvm_host.h
->> @@ -27,6 +27,7 @@
->>   #include <asm/fpsimd.h>
->>   #include <asm/kvm.h>
->>   #include <asm/kvm_asm.h>
->> +#include <asm/kvm_rme.h>
->>   #include <asm/vncr_mapping.h>
->>     #define __KVM_HAVE_ARCH_INTC_INITIALIZED
->> @@ -348,6 +349,9 @@ struct kvm_arch {
->>        * the associated pKVM instance in the hypervisor.
->>        */
->>       struct kvm_protected_vm pkvm;
->> +
->> +    bool is_realm;
->> +    struct realm realm;
->>   };
->>     struct kvm_vcpu_fault_info {
->> diff --git a/arch/arm64/include/asm/kvm_rme.h
->> b/arch/arm64/include/asm/kvm_rme.h
->> new file mode 100644
->> index 000000000000..922da3f47227
->> --- /dev/null
->> +++ b/arch/arm64/include/asm/kvm_rme.h
->> @@ -0,0 +1,56 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Copyright (C) 2023 ARM Ltd.
->> + */
->> +
->> +#ifndef __ASM_KVM_RME_H
->> +#define __ASM_KVM_RME_H
->> +
->> +/**
->> + * enum realm_state - State of a Realm
->> + */
->> +enum realm_state {
->> +    /**
->> +     * @REALM_STATE_NONE:
->> +     *      Realm has not yet been created. rmi_realm_create() may be
->> +     *      called to create the realm.
->> +     */
->> +    REALM_STATE_NONE,
->> +    /**
->> +     * @REALM_STATE_NEW:
->> +     *      Realm is under construction, not eligible for execution.
->> Pages
->> +     *      may be populated with rmi_data_create().
->> +     */
->> +    REALM_STATE_NEW,
->> +    /**
->> +     * @REALM_STATE_ACTIVE:
->> +     *      Realm has been created and is eligible for execution with
->> +     *      rmi_rec_enter(). Pages may no longer be populated with
->> +     *      rmi_data_create().
->> +     */
->> +    REALM_STATE_ACTIVE,
->> +    /**
->> +     * @REALM_STATE_DYING:
->> +     *      Realm is in the process of being destroyed or has already
->> been
->> +     *      destroyed.
->> +     */
->> +    REALM_STATE_DYING,
->> +    /**
->> +     * @REALM_STATE_DEAD:
->> +     *      Realm has been destroyed.
->> +     */
->> +    REALM_STATE_DEAD
->> +};
->> +
->> +/**
->> + * struct realm - Additional per VM data for a Realm
->> + *
->> + * @state: The lifetime state machine for the realm
->> + */
->> +struct realm {
->> +    enum realm_state state;
->> +};
->> +
->> +int kvm_init_rme(void);
->> +
->> +#endif
->> diff --git a/arch/arm64/include/asm/virt.h
->> b/arch/arm64/include/asm/virt.h
->> index 261d6e9df2e1..12cf36c38189 100644
->> --- a/arch/arm64/include/asm/virt.h
->> +++ b/arch/arm64/include/asm/virt.h
->> @@ -81,6 +81,7 @@ void __hyp_reset_vectors(void);
->>   bool is_kvm_arm_initialised(void);
->>     DECLARE_STATIC_KEY_FALSE(kvm_protected_mode_initialized);
->> +DECLARE_STATIC_KEY_FALSE(kvm_rme_is_available);
->>     /* Reports the availability of HYP mode */
->>   static inline bool is_hyp_mode_available(void)
->> diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
->> index c0c050e53157..1c1d8cdf381f 100644
->> --- a/arch/arm64/kvm/Makefile
->> +++ b/arch/arm64/kvm/Makefile
->> @@ -20,7 +20,8 @@ kvm-y += arm.o mmu.o mmio.o psci.o hypercalls.o
->> pvtime.o \
->>        vgic/vgic-v3.o vgic/vgic-v4.o \
->>        vgic/vgic-mmio.o vgic/vgic-mmio-v2.o \
->>        vgic/vgic-mmio-v3.o vgic/vgic-kvm-device.o \
->> -     vgic/vgic-its.o vgic/vgic-debug.o
->> +     vgic/vgic-its.o vgic/vgic-debug.o \
->> +     rme.o
->>     kvm-$(CONFIG_HW_PERF_EVENTS)  += pmu-emul.o pmu.o
->>   diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->> index 3dee5490eea9..2056c660c5ee 100644
->> --- a/arch/arm64/kvm/arm.c
->> +++ b/arch/arm64/kvm/arm.c
->> @@ -38,6 +38,7 @@
->>   #include <asm/kvm_mmu.h>
->>   #include <asm/kvm_nested.h>
->>   #include <asm/kvm_pkvm.h>
->> +#include <asm/kvm_rme.h>
->>   #include <asm/kvm_emulate.h>
->>   #include <asm/sections.h>
->>   @@ -47,6 +48,8 @@
->>     static enum kvm_mode kvm_mode = KVM_MODE_DEFAULT;
->>   +DEFINE_STATIC_KEY_FALSE(kvm_rme_is_available);
->> +
->>   DECLARE_KVM_HYP_PER_CPU(unsigned long, kvm_hyp_vector);
->>     DEFINE_PER_CPU(unsigned long, kvm_arm_hyp_stack_page);
->> @@ -2562,6 +2565,12 @@ static __init int kvm_arm_init(void)
->>         in_hyp_mode = is_kernel_in_hyp_mode();
->>   +    if (in_hyp_mode) {
->> +        err = kvm_init_rme();
->> +        if (err)
->> +            return err;
->> +    }
->> +
->>       if (cpus_have_final_cap(ARM64_WORKAROUND_DEVICE_LOAD_ACQUIRE) ||
->>           cpus_have_final_cap(ARM64_WORKAROUND_1508412))
->>           kvm_info("Guests without required CPU erratum workarounds
->> can deadlock system!\n" \
->> diff --git a/arch/arm64/kvm/rme.c b/arch/arm64/kvm/rme.c
->> new file mode 100644
->> index 000000000000..3dbbf9d046bf
->> --- /dev/null
->> +++ b/arch/arm64/kvm/rme.c
->> @@ -0,0 +1,52 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (C) 2023 ARM Ltd.
->> + */
->> +
->> +#include <linux/kvm_host.h>
->> +
->> +#include <asm/rmi_cmds.h>
->> +#include <asm/virt.h>
->> +
->> +static int rmi_check_version(void)
->> +{
->> +    struct arm_smccc_res res;
->> +    int version_major, version_minor;
->> +    unsigned long host_version = RMI_ABI_VERSION(RMI_ABI_MAJOR_VERSION,
->> +                             RMI_ABI_MINOR_VERSION);
->> +
->> +    arm_smccc_1_1_invoke(SMC_RMI_VERSION, host_version, &res);
->> +
->> +    if (res.a0 == SMCCC_RET_NOT_SUPPORTED)
->> +        return -ENXIO;
->> +
->> +    version_major = RMI_ABI_VERSION_GET_MAJOR(res.a1);
->> +    version_minor = RMI_ABI_VERSION_GET_MINOR(res.a1);
->> +
-> 
-> We don't seem to be using the res.a0 to determin if the RMM supports our
-> requested version. As per RMM spec, section B4.3.23 :
-> 
-> "
-> The status code and lower revision output values indicate which of the
-> following is true, in order of precedence:
->  a) The RMM supports an interface revision which is compatible with the
->     requested revision.
->      • The status code is RMI_SUCCESS.
->      • The lower revision is equal to the requested revision.
->  b) The RMM does not support an interface revision which is compatible
->     with the requested revision The RMM supports an interface revision
->     which is incompatible with and less than the requested revision.
->      • The status code is RMI_ERROR_INPUT.
->      • The lower revision is the highest interface revision which is
->        both less than the requested revision and supported by the RMM.
-> 
->  c) The RMM does not support an interface revision which is compatible
->     with the requested revision The RMM supports an interface revision
->     which is incompatible with and greater than the requested revision.
->      • The status code is RMI_ERROR_INPUT.
->      • The lower revision is equal to the higher revision.
-> 
-> So, we could simply check the res.a0 for RMI_SUCCESS and proceed with
-> marking RMM available.
+>> diff --git a/tools/perf/tests/shell/stat_all_metricgroups.sh b/tools/per=
+f/tests/shell/stat_all_metricgroups.sh
+>> index 55ef9c9ded2d..d6db192b9f18 100755
+>> --- a/tools/perf/tests/shell/stat_all_metricgroups.sh
+>> +++ b/tools/perf/tests/shell/stat_all_metricgroups.sh
+>> @@ -1,9 +1,7 @@
+>> -#!/bin/sh
+>> +#!/bin/bash
+>>  # perf all metricgroups test
+>>  # SPDX-License-Identifier: GPL-2.0
+>>
+>> -set -e
+>> -
+>>  ParanoidAndNotRoot()
+>>  {
+>>    [ "$(id -u)" !=3D 0 ] && [ "$(cat /proc/sys/kernel/perf_event_paranoi=
+d)" -gt $1 ]
+>> @@ -14,11 +12,29 @@ if ParanoidAndNotRoot 0
+>>  then
+>>    system_wide_flag=3D""
+>>  fi
+>> -
+>> +err=3D0
+>>  for m in $(perf list --raw-dump metricgroups)
+>>  do
+>>    echo "Testing $m"
+>> -  perf stat -M "$m" $system_wide_flag sleep 0.01
+>> +  result=3D$(perf stat -M "$m" $system_wide_flag sleep 0.01 2>&1)
+>> +  result_err=3D$?
+>> +  if [[ $result_err -gt 0 ]]
+>> +  then
+>> +    if [[ "$result" =3D~ \
+>> +          "Access to performance monitoring and observability operation=
+s is limited" ]]
+>> +    then
+>> +      echo "Permission failure"
+>> +      echo $result
+>> +      if [[ $err -eq 0 ]]
+>> +      then
+>> +        err=3D2 # Skip
+>> +      fi
+>> +    else
+>> +      echo "Metric group $m failed"
+>> +      echo $result
+>> +      err=3D1 # Fail
+>> +    fi
+>> +  fi
+>>  done
+>>
+>> -exit 0
+>> +exit $err
+>> --
+>> 2.44.0.478.gd926399ef9-goog
+>>
+>>
+>
+> The patch looks good and thanks for taking care of it.
+>
+> Just wanted to check what is the desired outcome for metric groups
+> with events that are invalid in per-thread mode causing the test to fail.
+>
+> ```
+> $ ./stat_all_metricgroups.sh
+> Testing smi
+> Metric group smi failed
+> Error: Invalid event (msr/smi/u) in per-thread mode, enable system wide w=
+ith '-a'.
+> ```
+>
+> Wouldn't it be better if in these cases the test would result in skip ins=
+tead of fail?
 
-Good point - this didn't work in a previous version of the spec, but we
-should be able to rely on the return value now.
+Hi Veronika,
 
->> +    if (version_major != RMI_ABI_MAJOR_VERSION) {
->> +        kvm_err("Unsupported RMI ABI (v%d.%d) host supports v%d.%d\n",
->> +            version_major, version_minor,
->> +            RMI_ABI_MAJOR_VERSION,
->> +            RMI_ABI_MINOR_VERSION);
->> +        return -ENXIO;
->> +    }
->> +
->> +    kvm_info("RMI ABI version %d.%d\n", version_major, version_minor);
->> +
->> +    return 0;
->> +}
->> +
->> +int kvm_init_rme(void)
->> +{
->> +    if (PAGE_SIZE != SZ_4K)
->> +        /* Only 4k page size on the host is supported */
->> +        return 0;
->> +
->> +    if (rmi_check_version())
->> +        /* Continue without realm support */
->> +        return 0;
->> +
->> +    /* Future patch will enable static branch kvm_rme_is_available */
->> +
->> +    return 0;
-> 
-> Do we ever expect this to fail the kvm initialisation ? Otherwise, we
-> could leave it as a void ?
+I agree that fail isn't best here. I'm wondering:
 
-Technically in a later patch the return from rme_vmid_init() can cause
-such a failure. But it's not clear that it makes any sense to completely
-kill KVM because of that. So I'll change this to a void return.
+ - why doesn't msr/smi/ support per-thread mode? Can't we save/restore
+the count on a context switch? The implementation is here:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/arch/x86/events/msr.c?h=3Dperf-tools-next#n234
+There's clearly something going on as pperf appears to have other restricti=
+ons:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/arch/x86/events/msr.c?h=3Dperf-tools-next#n115
+I'm wondering if aggregation is working right if these counters are
+more than per hyperthread (I'm guessing why the restrictions exist).
+
+ - the tool error message is doing pretty good. In the test I guess we
+can spot the per-thread error and turn the fail to a skip. It's a
+shame to bucket things as skip, but it seems easier than listing
+metrics in the test or spotting particular events.
+
+I can do a v2 to add this.
 
 Thanks,
+Ian
 
-Steve
-
+> Thanks,
+> Veronika
+>
 
