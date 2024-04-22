@@ -1,255 +1,112 @@
-Return-Path: <linux-kernel+bounces-152955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 001798AC697
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:18:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BDD28AC702
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:30:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EA5C282985
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:18:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E4C11C20EF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:30:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AFEE502B6;
-	Mon, 22 Apr 2024 08:18:13 +0000 (UTC)
-Received: from mail-m11877.qiye.163.com (mail-m11877.qiye.163.com [115.236.118.77])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8B572A1D5;
+	Mon, 22 Apr 2024 08:30:41 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2956AD27D;
-	Mon, 22 Apr 2024 08:18:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.236.118.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 790D8205E0E
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:30:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773892; cv=none; b=eVR//xp3xXjY3V+Mk6+aZNt3gnBL1XyoZ2FPG/nodJ/yYGTLehK27afKoFzRbU8GczV7R7MO17mgAYuWPa3JPmcD2jPe4cBAKdcYaiqZyxAyw0X1/dQdb8VvCKcqeUfRYI41v0OxLRSTYz+Crgm5yJM/ZQNDQOnKxv0eHIpsV/Q=
+	t=1713774641; cv=none; b=rRoH/W43EcGoPO4HYdqX7/1ADGNkVOwofhln+SJLJxt2MbwVMJUqB6UnF4da1+KXTbXaVsPuGkqjb/pXVE8WsZCqbuUeV6Dxf2zM/c3GSVPnnPcYnvEdzV5+NXoqwu9baupHTVKue5Ja2UHAR3TL4AoVwptSzc8DDUP3FQ7kEck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773892; c=relaxed/simple;
-	bh=+uhCAuMBch6NqAg0S0WaqlwhFKvYJe1RVreC07HCrK8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=D16+GPLr5O//ULilXIYBIPMLj9RwmdPnwDOWnvVXABkI97sMCx8kndzWfhlk6tWcOZk3cQ+XukbNrJ/rvnqnhLKxXHDwqr/OXZwPnsv7kwo5g2C8njQqr3Wwh80pkCIMyL8CInXmbd8DUivRzwyVrJKKkL6lBa9woXTrF8C/gtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=115.236.118.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
-Received: from ubuntu-22-04.. (unknown [218.94.118.90])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id B1F8886025A;
-	Mon, 22 Apr 2024 15:01:34 +0800 (CST)
-From: Dongsheng Yang <dongsheng.yang@easystack.cn>
-To: dan.j.williams@intel.com,
-	axboe@kernel.dk
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-cxl@vger.kernel.org,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>
-Subject: [PATCH 3/3] cxl/memdev: Only show sanitize sysfs files when supported
-Date: Mon, 22 Apr 2024 07:01:25 +0000
-Message-Id: <20240422070125.52519-5-dongsheng.yang@easystack.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240422070125.52519-1-dongsheng.yang@easystack.cn>
-References: <20240422070125.52519-1-dongsheng.yang@easystack.cn>
+	s=arc-20240116; t=1713774641; c=relaxed/simple;
+	bh=EK+dqgsbNtopGk47Jcbq9GlupmjarL1gVr2btr6y34s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OmdAjcSEcPzuPnxT66AOmQ6rPSW5v2m5ucIGHzFDRGtEQb0VCdjHbDdFR2CatlCf/7Gz8UuV7OaZ8y2Odfvpb5x7hNI1YICJXg28HlgxvxpH/S7dEypXR6J5AWH7tU5P3aYD3PSTKBsV8kpH4SsuaLHLpzOqguEvyTpZfy1m0is=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i5e861d85.versanet.de ([94.134.29.133] helo=diego.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1ryp4H-0000f8-Cv; Mon, 22 Apr 2024 10:30:29 +0200
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: Rob Herring <robh@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, quentin.schulz@theobroma-systems.com
+Subject:
+ Re: [PATCH 0/2] Add support for the dual-role dwc3 controllers on
+ rk3588-tiger
+Date: Mon, 22 Apr 2024 09:43:12 +0200
+Message-ID: <2108948.KlZ2vcFHjT@diego>
+In-Reply-To: <171356537191.48026.7238978785873260892.robh@kernel.org>
+References:
+ <20240418210332.2394871-1-heiko@sntech.de>
+ <171356537191.48026.7238978785873260892.robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVlDSk9KVh0eTU5NS0xIGUIfQlUZERMWGhIXJBQOD1
-	lXWRgSC1lBWUlKQ1VCT1VKSkNVQktZV1kWGg8SFR0UWUFZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
-X-HM-Tid: 0a8f049c2c96023ckunmb1f8886025a
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Njo6PRw6CDcxARw0IhFKGQIa
-	Fi9PCkhVSlVKTEpITE1CSUJOT0JDVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
-	V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBTEJJSTcG
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-From: Davidlohr Bueso <dave@stgolabs.net>
+Hi Rob,
 
-If the device does not support Sanitize or Secure Erase commands,
-hide the respective sysfs interfaces such that the operation can
-never be attempted.
+Am Samstag, 20. April 2024, 00:24:23 CEST schrieb Rob Herring:
+> On Thu, 18 Apr 2024 23:03:30 +0200, Heiko Stuebner wrote:
+> > A comment fix and then the addition of the nodes for the dwc3 controllers
+> > using the newly merged usbdp phys.
+> > 
+> > Heiko Stuebner (2):
+> >   arm64: dts: rockchip: fix comment for upper usb3 port
+> >   arm64: dts: rockchip: add dual-role usb3 hosts to rk3588 Tiger-Haikou
+> > 
+> >  .../boot/dts/rockchip/rk3588-tiger-haikou.dts | 60 ++++++++++++++++++-
+> >  .../arm64/boot/dts/rockchip/rk3588-tiger.dtsi | 15 +++++
+> >  2 files changed, 74 insertions(+), 1 deletion(-)
+> > 
+> > --
+> > 2.39.2
+> > 
+> > 
+> > 
+> 
+> 
+> My bot found new DTB warnings on the .dts files added or changed in this
+> series.
+> 
+> Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+> are fixed by another series. Ultimately, it is up to the platform
+> maintainer whether these warnings are acceptable or not. No need to reply
+> unless the platform maintainer has comments.
+> 
+> If you already ran DT checks and didn't see these error(s), then
+> make sure dt-schema is up to date:
+> 
+>   pip3 install dtschema --upgrade
+> 
+> 
+> New warnings running 'make CHECK_DTBS=y rockchip/rk3588-tiger-haikou.dtb' for 20240418210332.2394871-1-heiko@sntech.de:
+> 
+> arch/arm64/boot/dts/rockchip/rk3588-tiger-haikou.dtb: /extcon-usb3: failed to match any schema with compatible: ['linux,extcon-usb-gpio']
 
-In order to be generic, keep track of the enabled security commands
-found in the CEL - the driver does not support Security Passthrough.
+This follows the txt-binding from
+	https://www.kernel.org/doc/Documentation/devicetree/bindings/extcon/extcon-usb-gpio.txt
+so in mainline there is no yaml binding yet for the usb-id-extcon.
 
-Signed-off-by: Davidlohr Bueso <dave@stgolabs.net>
-Link: https://lore.kernel.org/r/20230726051940.3570-4-dave@stgolabs.net
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
----
- Documentation/ABI/testing/sysfs-bus-cxl |  6 ++--
- drivers/cxl/core/mbox.c                 | 45 ++++++++++++++++++++++++-
- drivers/cxl/core/memdev.c               | 19 +++++++++++
- drivers/cxl/cxlmem.h                    | 15 +++++++++
- 4 files changed, 82 insertions(+), 3 deletions(-)
+Though I did find a still pending yaml conversion for it in
+	https://lore.kernel.org/linux-arm-kernel/20240215093214.796821-1-alexander.stein@ew.tq-group.com/T/
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
-index c4c4acb1f3b3..087f762ebfd5 100644
---- a/Documentation/ABI/testing/sysfs-bus-cxl
-+++ b/Documentation/ABI/testing/sysfs-bus-cxl
-@@ -86,7 +86,8 @@ Description:
- 		HPA ranges. This permits avoiding explicit global CPU cache
- 		management, relying instead for it to be done when a region
- 		transitions between software programmed and hardware committed
--		states.
-+		states. If this file is not present, then there is no hardware
-+		support for the operation.
- 
- 
- What            /sys/bus/cxl/devices/memX/security/erase
-@@ -101,7 +102,8 @@ Description:
- 		HPA ranges. This permits avoiding explicit global CPU cache
- 		management, relying instead for it to be done when a region
- 		transitions between software programmed and hardware committed
--		states.
-+		states. If this file is not present, then there is no hardware
-+		support for the operation.
- 
- 
- What:		/sys/bus/cxl/devices/memX/firmware/
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index d6d067fbee97..ca60bb8114f2 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -121,6 +121,45 @@ static bool cxl_is_security_command(u16 opcode)
- 	return false;
- }
- 
-+static void cxl_set_security_cmd_enabled(struct cxl_security_state *security,
-+					 u16 opcode)
-+{
-+	switch (opcode) {
-+	case CXL_MBOX_OP_SANITIZE:
-+		set_bit(CXL_SEC_ENABLED_SANITIZE, security->enabled_cmds);
-+		break;
-+	case CXL_MBOX_OP_SECURE_ERASE:
-+		set_bit(CXL_SEC_ENABLED_SECURE_ERASE,
-+			security->enabled_cmds);
-+		break;
-+	case CXL_MBOX_OP_GET_SECURITY_STATE:
-+		set_bit(CXL_SEC_ENABLED_GET_SECURITY_STATE,
-+			security->enabled_cmds);
-+		break;
-+	case CXL_MBOX_OP_SET_PASSPHRASE:
-+		set_bit(CXL_SEC_ENABLED_SET_PASSPHRASE,
-+			security->enabled_cmds);
-+		break;
-+	case CXL_MBOX_OP_DISABLE_PASSPHRASE:
-+		set_bit(CXL_SEC_ENABLED_DISABLE_PASSPHRASE,
-+			security->enabled_cmds);
-+		break;
-+	case CXL_MBOX_OP_UNLOCK:
-+		set_bit(CXL_SEC_ENABLED_UNLOCK, security->enabled_cmds);
-+		break;
-+	case CXL_MBOX_OP_FREEZE_SECURITY:
-+		set_bit(CXL_SEC_ENABLED_FREEZE_SECURITY,
-+			security->enabled_cmds);
-+		break;
-+	case CXL_MBOX_OP_PASSPHRASE_SECURE_ERASE:
-+		set_bit(CXL_SEC_ENABLED_PASSPHRASE_SECURE_ERASE,
-+			security->enabled_cmds);
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
- static bool cxl_is_poison_command(u16 opcode)
- {
- #define CXL_MBOX_OP_POISON_CMDS 0x43
-@@ -677,7 +716,8 @@ static void cxl_walk_cel(struct cxl_memdev_state *mds, size_t size, u8 *cel)
- 		u16 opcode = le16_to_cpu(cel_entry[i].opcode);
- 		struct cxl_mem_command *cmd = cxl_mem_find_command(opcode);
- 
--		if (!cmd && !cxl_is_poison_command(opcode)) {
-+		if (!cmd && (!cxl_is_poison_command(opcode) ||
-+			     !cxl_is_security_command(opcode))) {
- 			dev_dbg(dev,
- 				"Opcode 0x%04x unsupported by driver\n", opcode);
- 			continue;
-@@ -689,6 +729,9 @@ static void cxl_walk_cel(struct cxl_memdev_state *mds, size_t size, u8 *cel)
- 		if (cxl_is_poison_command(opcode))
- 			cxl_set_poison_cmd_enabled(&mds->poison, opcode);
- 
-+		if (cxl_is_security_command(opcode))
-+			cxl_set_security_cmd_enabled(&mds->security, opcode);
-+
- 		dev_dbg(dev, "Opcode 0x%04x enabled\n", opcode);
- 	}
- }
-diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
-index f99e7ec3cc40..14b547c07f54 100644
---- a/drivers/cxl/core/memdev.c
-+++ b/drivers/cxl/core/memdev.c
-@@ -477,9 +477,28 @@ static struct attribute_group cxl_memdev_pmem_attribute_group = {
- 	.attrs = cxl_memdev_pmem_attributes,
- };
- 
-+static umode_t cxl_memdev_security_visible(struct kobject *kobj,
-+					   struct attribute *a, int n)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-+	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
-+
-+	if (a == &dev_attr_security_sanitize.attr &&
-+	    !test_bit(CXL_SEC_ENABLED_SANITIZE, mds->security.enabled_cmds))
-+		return 0;
-+
-+	if (a == &dev_attr_security_erase.attr &&
-+	    !test_bit(CXL_SEC_ENABLED_SECURE_ERASE, mds->security.enabled_cmds))
-+		return 0;
-+
-+	return a->mode;
-+}
-+
- static struct attribute_group cxl_memdev_security_attribute_group = {
- 	.name = "security",
- 	.attrs = cxl_memdev_security_attributes,
-+	.is_visible = cxl_memdev_security_visible,
- };
- 
- static const struct attribute_group *cxl_memdev_attribute_groups[] = {
-diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-index f3aca828fbec..706f8a6d1ef4 100644
---- a/drivers/cxl/cxlmem.h
-+++ b/drivers/cxl/cxlmem.h
-@@ -244,6 +244,19 @@ enum poison_cmd_enabled_bits {
- 	CXL_POISON_ENABLED_MAX
- };
- 
-+/* Device enabled security commands */
-+enum security_cmd_enabled_bits {
-+	CXL_SEC_ENABLED_SANITIZE,
-+	CXL_SEC_ENABLED_SECURE_ERASE,
-+	CXL_SEC_ENABLED_GET_SECURITY_STATE,
-+	CXL_SEC_ENABLED_SET_PASSPHRASE,
-+	CXL_SEC_ENABLED_DISABLE_PASSPHRASE,
-+	CXL_SEC_ENABLED_UNLOCK,
-+	CXL_SEC_ENABLED_FREEZE_SECURITY,
-+	CXL_SEC_ENABLED_PASSPHRASE_SECURE_ERASE,
-+	CXL_SEC_ENABLED_MAX
-+};
-+
- /**
-  * struct cxl_poison_state - Driver poison state info
-  *
-@@ -346,6 +359,7 @@ struct cxl_fw_state {
-  * struct cxl_security_state - Device security state
-  *
-  * @state: state of last security operation
-+ * @enabled_cmds: All security commands enabled in the CEL
-  * @poll: polling for sanitization is enabled, device has no mbox irq support
-  * @poll_tmo_secs: polling timeout
-  * @poll_dwork: polling work item
-@@ -353,6 +367,7 @@ struct cxl_fw_state {
-  */
- struct cxl_security_state {
- 	unsigned long state;
-+	DECLARE_BITMAP(enabled_cmds, CXL_SEC_ENABLED_MAX);
- 	bool poll;
- 	int poll_tmo_secs;
- 	struct delayed_work poll_dwork;
--- 
-2.34.1
+Though not sure what the holdup is there as it got a Review from you?
+Can you just pick this for the main dt-tree?
+
+
+Heiko
+
 
 
