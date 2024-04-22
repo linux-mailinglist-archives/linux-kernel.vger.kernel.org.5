@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-154104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10D238AD76C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:45:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B9348AD76D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:45:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 328991C208A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:45:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79A0F1C20E3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EF472E3EF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2BD5374F7;
 	Mon, 22 Apr 2024 22:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HANMH1SH";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uGkRH+ni"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gTHixTav";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OU4b50UA"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0662110B;
-	Mon, 22 Apr 2024 22:45:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7001F94D;
+	Mon, 22 Apr 2024 22:45:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713825911; cv=none; b=KaTQPnODNNAzTIyeSUgijoa1QOB919Jv9hOfWAmvw9ANgQ0T9MR0Br+O+Ar+hnFfzdBU43P1nhc/FGDnJrkyLfhtcrfdoDA5Yln68K3wiBEWuiQm09V6RyuapQAdwdWZUs/3p+6+PKl4havbMmyU23ekvOrQn+dMQG8gIUU8v0Q=
+	t=1713825912; cv=none; b=E2FeQgdAKZ64exzq1rWtLwb2uDo7ZC06i13p97hI/T2cIKux9TDrMHH5bXCJJYcMkVcw3HqNJtiNad45b02Ufrt2wy/ZR18f7ioX4Os9cixzS9bs0NwxzviMevL3Pxjsd8scmKRLv7A8YKlZIhMlzPBD7HTKQNxq8hJbK8i1EjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713825911; c=relaxed/simple;
-	bh=XmVDurSz7CzJEEwsk4gQwZ9HBbdVzFzvwBJQqIl+a80=;
+	s=arc-20240116; t=1713825912; c=relaxed/simple;
+	bh=AKVmnA3nU7E2udoGSs+iwhvY3DADmq/+jp9AdJow9hU=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=dDWMw9WGfT8ipae262Ks5MvZBBnFpfUZU5uBYTnilScUuPZvaPVSQAZvpnbH9sHnEZnKED6BnYJdmCeDiSVMz59sOoL3BxJ6ov6e6N/lVSEbxT5YcCmZtGyjZIWleeRwQZTRg08U7Gm0h06datgnL7fCpSfIBDypydF/a/dDAKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HANMH1SH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uGkRH+ni; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=hQe95DKO6ZA4c0H7t32lfFuf9OKDm/ujISURPgXann8GBCt1zxlLchFykZ8vbM+PPbt7nyja97nYplldkeK+0zDEEupx5SGaRVTYDXGWBq0EkoREYtj3/8EA3UQldbiqND/Nj1M0KDv8h1k/iij6R24Hf44yBHCVXNYsfLBCOs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gTHixTav; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OU4b50UA; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 22 Apr 2024 22:45:06 -0000
+Date: Mon, 22 Apr 2024 22:45:07 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713825907;
+	s=2020; t=1713825908;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kfrjJYABQC1nNFqKy4OHehj2GmJUunAajiOBXrLdbGU=;
-	b=HANMH1SHHVgqGERZ+CfCuy3N/By1G6fywVTRZ/Vob127VrB1XMt8nhOm2vJB3SMJGOW9ZC
-	D/0ueXtMKxN0WcZUxZq4EsB3P9EqGauFfmBgp4cXM34BWAuHeefimXWzyKV0QCVdLYWAnV
-	ZdZR7p6CHoh5XWNXcNnZvl9eBNGAAAdX5kuRlQRVlkV0rg3lGBw3JHYS7KBxCtSGIgxdLf
-	9ByIWUngtl4Pb6LKNmSld/dX7noHTkowYZMyx819mSoLJqpYtjh0EP/VvG+2d6EVlSFIrQ
-	zBSBQxpzIaW/Mkrrapf3X16WZKbK/54ACNqNpW4ynCLO9q+wA94GpTMP6tkb8g==
+	bh=F1eBPDeJPst0YCwhIioubgVKl6zQZ23B8p+6/wiQ9f4=;
+	b=gTHixTavDkoAWRuG/8Dl8MIjZZGwhtnw+m9fyXYyqwGcIfQgAJF+bI7LgMUc2FIHcb9Cb6
+	8Mhq4S+kDBPOFzGO7DBojFoc/cFewU25woT7dnoE5G+8aSTubn7qb6eiz6I2vPizaCg/UW
+	55b69Mq61hlOnTPeYUmbe8xka866B+DqSQg9wuQ99FHU278o2AVjfYpY8n1anP4merCE+d
+	+j09yJouQH7u5XwtjYK+yhz3ClKkKrSaRJQdfUTjU6UKRGXOsuD4XdQR63TC7GVKiKAu3Z
+	YPcJyG4gbff56rZJFQXdmTA7mHPB+aY1GRKlu0ZNeHbUC2t9VmIeMXI3jt8MZQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713825907;
+	s=2020e; t=1713825908;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kfrjJYABQC1nNFqKy4OHehj2GmJUunAajiOBXrLdbGU=;
-	b=uGkRH+nijyGH05MUl4vwDgVqmWEBtNYR8UO6vaPnC9xUd/4c4PkkAx+sbDGPMYdV7xqCDA
-	CTS3M8evY41vqhAg==
+	bh=F1eBPDeJPst0YCwhIioubgVKl6zQZ23B8p+6/wiQ9f4=;
+	b=OU4b50UAI2CDi8Hwd6whE34CBH2Qwqb2BiLBXD38SM0KwS2+Nqs9yfAIFqjG9zT6OE3TYP
+	yl2JKkDxlGVYdACw==
 From: "tip-bot2 for Antonio Borneo" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
 Subject:
- [tip: irq/core] arm64: dts: st: Add exti1 and exti2 nodes on stm32mp251
+ [tip: irq/core] ARM: dts: stm32: List exti parent interrupts on stm32mp131
 Cc: Antonio Borneo <antonio.borneo@foss.st.com>,
  Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
  linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20240415134926.1254428-11-antonio.borneo@foss.st.com>
-References: <20240415134926.1254428-11-antonio.borneo@foss.st.com>
+In-Reply-To: <20240415134926.1254428-10-antonio.borneo@foss.st.com>
+References: <20240415134926.1254428-10-antonio.borneo@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171382590648.10875.9276311797493248650.tip-bot2@tip-bot2>
+Message-ID: <171382590753.10875.2152269232797137612.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -82,195 +82,107 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     fbc3facb0b5c607eb80974e33cd155556075cca4
-Gitweb:        https://git.kernel.org/tip/fbc3facb0b5c607eb80974e33cd155556075cca4
+Commit-ID:     283f86483f45724aaf80ea84712f02e2402b2b90
+Gitweb:        https://git.kernel.org/tip/283f86483f45724aaf80ea84712f02e2402b2b90
 Author:        Antonio Borneo <antonio.borneo@foss.st.com>
-AuthorDate:    Mon, 15 Apr 2024 15:49:25 +02:00
+AuthorDate:    Mon, 15 Apr 2024 15:49:24 +02:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 23 Apr 2024 00:28:15 +02:00
 
-arm64: dts: st: Add exti1 and exti2 nodes on stm32mp251
+ARM: dts: stm32: List exti parent interrupts on stm32mp131
 
-Update the device-tree stm32mp251.dtsi by adding the nodes for exti1 and
-exti2 interrupt controllers.
+Stop using the table inside the EXTI driver and list in DT the mapping
+between EXTI events and its parent interrupts.
+
+By switching away from using the internal table, there is no need anymore
+to use the specific compatible "st,stm32mp13-exti", which was introduced to
+select the proper internal table.
+
+Convert the driver's table for stm32mp131 to the DT property
+interrupts-extended.
+
+Switch the compatible string to the generic "st,stm32mp1-exti", in place of
+the specific "st,stm32mp13-exti".
+
+Older DT using compatible "st,stm32mp13-exti" will still work as the driver
+remains backward compatible.
 
 Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240415134926.1254428-11-antonio.borneo@foss.st.com
+Link: https://lore.kernel.org/r/20240415134926.1254428-10-antonio.borneo@foss.st.com
 
 ---
- arch/arm64/boot/dts/st/stm32mp251.dtsi | 172 ++++++++++++++++++++++++-
- 1 file changed, 172 insertions(+)
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 74 ++++++++++++++++++++++++++-
+ 1 file changed, 73 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 5dd4f35..1426446 100644
---- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
-+++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -168,6 +168,99 @@
- 			};
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 3900f32..c432fe1 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1093,10 +1093,82 @@
  		};
  
-+		exti1: interrupt-controller@44220000 {
+ 		exti: interrupt-controller@5000d000 {
+-			compatible = "st,stm32mp13-exti", "syscon";
 +			compatible = "st,stm32mp1-exti", "syscon";
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
-+			reg = <0x44220000 0x400>;
+ 			interrupt-controller;
+ 			#interrupt-cells = <2>;
+ 			reg = <0x5000d000 0x400>;
 +			interrupts-extended =
-+				<&intc GIC_SPI 268 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_0 */
-+				<&intc GIC_SPI 269 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 270 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 271 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 273 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 274 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 275 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 276 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 277 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 278 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_10 */
-+				<&intc GIC_SPI 279 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 280 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 281 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 0   IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 1   IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 260 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 259 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,						/* EXTI_20 */
-+				<&intc GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 181 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 126 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_30 */
-+				<&intc GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 150 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<&intc GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 153 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_40 */
-+				<&intc GIC_SPI 154 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 155 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 169 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 209 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 229 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 166 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 210 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_50 */
-+				<0>,
-+				<0>,
-+				<0>,
-+				<0>,
-+				<0>,
-+				<0>,
-+				<0>,
-+				<0>,
-+				<&intc GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,						/* EXTI_60 */
-+				<&intc GIC_SPI 173 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<0>,
-+				<&intc GIC_SPI 220 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<0>,
-+				<&intc GIC_SPI 10  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<&intc GIC_SPI 134 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_70 */
-+				<0>,
-+				<&intc GIC_SPI 224 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 202 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 253 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,						/* EXTI_80 */
-+				<0>,
-+				<0>,
-+				<&intc GIC_SPI 257 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 258 IRQ_TYPE_LEVEL_HIGH>;
-+		};
-+
- 		syscfg: syscon@44230000 {
- 			compatible = "st,stm32mp25-syscfg", "syscon";
- 			reg = <0x44230000 0x10000>;
-@@ -322,5 +415,84 @@
- 			};
- 
- 		};
-+
-+		exti2: interrupt-controller@46230000 {
-+			compatible = "st,stm32mp1-exti", "syscon";
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
-+			reg = <0x46230000 0x400>;
-+			interrupts-extended =
-+				<&intc GIC_SPI 17  IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_0 */
-+				<&intc GIC_SPI 18  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 19  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 20  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 21  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 22  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 23  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 24  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 25  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 26  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 27  IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_10 */
-+				<&intc GIC_SPI 28  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 29  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 30  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 31  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 32  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 12  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 13  IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<0>,
-+				<0>,						/* EXTI_20 */
-+				<&intc GIC_SPI 14  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 15  IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<0>,
-+				<&intc GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 151 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<&intc GIC_SPI 216 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 217 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_30 */
-+				<&intc GIC_SPI 218 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<&intc GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 175 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<0>,
-+				<&intc GIC_SPI 177 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<0>,
-+				<&intc GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_40 */
-+				<0>,
-+				<0>,
-+				<&intc GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<0>,
-+				<&intc GIC_SPI 11  IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<&intc GIC_SPI 5   IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 4   IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 6   IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_50 */
++				<&intc GIC_SPI 6   IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_0 */
 +				<&intc GIC_SPI 7   IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 2   IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 8   IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 9   IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 10  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 24  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 65  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 66  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 67  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 68  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 41  IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_10 */
++				<&intc GIC_SPI 43  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 77  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 78  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 1   IRQ_TYPE_LEVEL_HIGH>,
++				<0>,
++				<0>,
 +				<&intc GIC_SPI 3   IRQ_TYPE_LEVEL_HIGH>,
++				<0>,						/* EXTI_20 */
++				<&intc GIC_SPI 32  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 34  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 73  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 93  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 38  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 39  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 40  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 72  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 53  IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_30 */
++				<&intc GIC_SPI 54  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 83  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 84  IRQ_TYPE_LEVEL_HIGH>,
++				<0>,
++				<0>,
++				<0>,
++				<0>,
++				<0>,
++				<0>,
++				<0>,						/* EXTI_40 */
++				<0>,
++				<0>,
++				<0>,
++				<&intc GIC_SPI 96  IRQ_TYPE_LEVEL_HIGH>,
++				<0>,
++				<0>,
++				<&intc GIC_SPI 92  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
++				<0>,
++				<&intc GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_50 */
++				<0>,
++				<&intc GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>,
 +				<0>,
 +				<0>,
 +				<0>,
@@ -278,17 +190,17 @@ index 5dd4f35..1426446 100644
 +				<0>,
 +				<0>,
 +				<0>,						/* EXTI_60 */
-+				<&intc GIC_SPI 221 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<&intc GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>,
 +				<0>,
 +				<0>,
-+				<&intc GIC_SPI 213 IRQ_TYPE_LEVEL_HIGH>;	/* EXTI_70 */
-+		};
- 	};
- };
++				<0>,
++				<0>,
++				<0>,
++				<0>,
++				<0>,
++				<&intc GIC_SPI 63  IRQ_TYPE_LEVEL_HIGH>,
++				<0>,
++				<&intc GIC_SPI 98  IRQ_TYPE_LEVEL_HIGH>;	/* EXTI_70 */
+ 		};
+ 
+ 		syscfg: syscon@50020000 {
 
