@@ -1,276 +1,168 @@
-Return-Path: <linux-kernel+bounces-153300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 172398ACC2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:40:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F198ACC28
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:39:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A4921C20FA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:40:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB25D282486
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDB114A097;
-	Mon, 22 Apr 2024 11:39:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6453F146D57;
+	Mon, 22 Apr 2024 11:39:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CgEvNY8/"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HKBQ0eWY";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iemcLrRV"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9500C146A67;
-	Mon, 22 Apr 2024 11:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E6BC146595;
+	Mon, 22 Apr 2024 11:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713785979; cv=none; b=rS0nsBz0X1MHccL53It/MOsRekoCFVC+KTsHoAgQzRFZWahAFOFLTCjygagUhrmDOvcU2vCGmeBIyI8fowWzps39LxDgJNLmDtlUcCmkldyCd9JLd+vH/20grSSPcH0nY/j6+/H/G92ASpUTIed4/nepwQQTv/8LiLdlI3oH8NU=
+	t=1713785977; cv=none; b=pOO2J9xCMjyPDTBOh6lM5+Jl3Odail3z0dlJzbJyoKLUZzv7cCiWP0FqrpO25qnaCBPvDQnGMrD6W6AFtuOUK8w55s07mKBCfpwxkRmf94LwwMkZvDzusM4My85cDgFumNDw0UU6FLFQj/agm+5r3QI3xOhcgwrBDFei3PwWVYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713785979; c=relaxed/simple;
-	bh=ulsfSAEl7LBwePnfRAal8I6cQlsR0G+iMdbsnGnkwM8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j/ajusAnHHX1NXqQyJ57Sf1MuYb0oSyrWJ1eSeOLus9fMC47iLF8W9RtuwJ2yQYLfsKLRSpYV5Rr+iP5ZOZ/pJpObCRtpYKcZCE9TmrCKDXHzsrZBGdNRpNMtAhFLyjvJTzrRZD+naySNvgVvLPR9zZKeJNXniS4YwPkQtt8AI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CgEvNY8/; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-34b1e35155aso702983f8f.3;
-        Mon, 22 Apr 2024 04:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713785976; x=1714390776; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=aJ9yQshLsZ6lvoWpjUZb+c8ATqrhPEYy3PtHw/SC4co=;
-        b=CgEvNY8//ZyAveamdUFJ90Nus3p2L+j2AdeFGfHuCtDvbsgT4pKOUGFqadYmTL3TXQ
-         jEXb/mUu2NSVU48k9SUd/CEvGlZ+UJtRfedFICsqsY9ZgJsmq65A47qreebe6u16PFJa
-         dMPOtCiw48ZfubIzupe3ulr+wWazryE+Q9zw2ZxRUe4kgOpEm5wBvQEersC3SQjZ90bo
-         KidDt9uRKOujqSL+gvVJXhnUKirrljqgUgqQ5rvu3zeLCkg8jFJyDHbjS1mhTwwrntnE
-         koz7yO0CoIo7GmJM7C7JXy2r+gQfU8dY2s9sfk20tbihmse4JdN6PQcc7DZSMTRsAcB9
-         qSDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713785976; x=1714390776;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aJ9yQshLsZ6lvoWpjUZb+c8ATqrhPEYy3PtHw/SC4co=;
-        b=DjQVPYfPKiBlxDkKWQTkfyhv3V1r/+cm2r5IrQSKihd+UQ/gQDYBS38+Q/lMC0Lg/M
-         kJmvbWhpnLIqzKFDrk+sfb7tUxM1EuWOCbccU8bJcaTXpFBS4iQXLlMZgtbSNewIrcPh
-         yP74qyr/Fu1N06ajR132k0unI50Wb2t4YJPerz+6rHdUdLhEtn7xZKCOVa/a5OQ02UiL
-         UuUcnjfIWcSQjpsoYQP8hfPUPt3gBhl1+QYhpyVtXafF9rYDrxmCWkisxdqB/VG5zFqa
-         94SOI5PnPzKrhG7rHZgf0KTjhJiU3IFWdEsLBhcncJoQq35gQJPGfortE6NsV7WIJUdm
-         oKlg==
-X-Forwarded-Encrypted: i=1; AJvYcCXK2vscBsDTI24S58gA3Tu9UsPB1RZqZwSGNx3vTkJZDElPuYg+tnD+sRtRtlXVV1D5eSStmzlq+RrJto7Iy10Ac2F0ECHJm6E3Beuepi5gqPeR5MCIYPAxJ6vS58k2Ao0Jv7Fr5F/w5iVwaVKZNZyXVOo1sOfjC58UHaSTHE0xU4fw1Q==
-X-Gm-Message-State: AOJu0Yw1cUqyHpJLzLRufe+GZQR0c0E/KkHyGVfhAwuTSXeb+uH6yii0
-	h51U0M/hv2JpIDzPT4ZOTodvk1/3QOplOLKtfqaWVINihSbEub7B
-X-Google-Smtp-Source: AGHT+IETX/3Lo779iTOd02lH4mu0GSF9AVTJKi6GM6wHxnVUA3usTw72yxk2ggywg7ebJStbnepGCg==
-X-Received: by 2002:a5d:4ec1:0:b0:34a:e798:29fc with SMTP id s1-20020a5d4ec1000000b0034ae79829fcmr3474651wrv.52.1713785975586;
-        Mon, 22 Apr 2024 04:39:35 -0700 (PDT)
-Received: from krava (ip4-95-82-160-96.cust.nbox.cz. [95.82.160.96])
-        by smtp.gmail.com with ESMTPSA id h1-20020a5d5481000000b003437a76565asm11759544wrv.25.2024.04.22.04.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 04:39:35 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 22 Apr 2024 13:39:32 +0200
-To: Jonathan Haslam <jonathan.haslam@gmail.com>
-Cc: linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-	andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] uprobes: reduce contention on uprobes_tree access
-Message-ID: <ZiZMdLIK55q3EvMP@krava>
-References: <20240422102306.6026-1-jonathan.haslam@gmail.com>
+	s=arc-20240116; t=1713785977; c=relaxed/simple;
+	bh=3Jj/c1cCZ8LZ1ZiYFS/nZqqixLhQs9fwYUj2qRY5U8A=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=EyoKPAKTeWkuXbJckjNNzk9CXMuG9eYGd56Ut1Mm+hdiSLsTzwLFDgHFLOctZPBEme/gk/ST3ZzXs2nQ5kMoFq8u94c1fYqESYkYUvoAqBFEZkfAO/Te4Zusj1K68w5z68SlB50LN5YGuQYP3bB8WDVvEZP/39+lFemfABPrHWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HKBQ0eWY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iemcLrRV; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 22 Apr 2024 11:39:33 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713785974;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0L/UHlsbVd+gToDyonI7mK1brNQDAcFaIqmp6QuP5uc=;
+	b=HKBQ0eWYT/jCSqwpwghaEm7wCrVUMx+Dyswg6wf1lryrM1xfxNWUNm57z4gTI4bhCZp6IK
+	/G7vSJ1XgxyWuRon0ewAwIwaF3i9+RUINAORDAZfVAhhweVbXMt+l7fFR2ZtbD7oL2J9mb
+	SbOpZNb1dx40eN3032/EF05q8oumixsX9mvFg60FEo/bwMfEXc43UwvGqk7Q8oVAYzHFB4
+	RJVtZxkuJyyngrv3Q2T74ryFqoCIx70IIr+kS+5gAwltCuoXEtCTqyfHaDXOhDOd6jLZVG
+	NjEAKr33rb28YzQfJ8TLd/4PRfZk7HTZhHW8HFoLJTzGfTDm7tOBr/yiH170Rw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713785974;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0L/UHlsbVd+gToDyonI7mK1brNQDAcFaIqmp6QuP5uc=;
+	b=iemcLrRVFrn6Wm/FTUnGnX9Q5rLbuKu4DpNX/hnh7Cxygohoqvps9liSKbBRZBsJPzL3Bd
+	6PqSjoXC+uHa0iBg==
+From: "tip-bot2 for Xuewen Yan" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/eevdf: Prevent vlag from going out of
+ bounds in reweight_eevdf()
+Cc: Sergei Trofimovich <slyich@gmail.com>, Igor Raits <igor@gooddata.com>,
+ Breno Leitao <leitao@debian.org>, kernel test robot <oliver.sang@intel.com>,
+ Yujie Liu <yujie.liu@intel.com>, Xuewen Yan <xuewen.yan@unisoc.com>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240422082238.5784-1-xuewen.yan@unisoc.com>
+References: <20240422082238.5784-1-xuewen.yan@unisoc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240422102306.6026-1-jonathan.haslam@gmail.com>
+Message-ID: <171378597305.10875.4472178784042238372.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 22, 2024 at 03:23:05AM -0700, Jonathan Haslam wrote:
-> Active uprobes are stored in an RB tree and accesses to this tree are
-> dominated by read operations. Currently these accesses are serialized by
-> a spinlock but this leads to enormous contention when large numbers of
-> threads are executing active probes.
-> 
-> This patch converts the spinlock used to serialize access to the
-> uprobes_tree RB tree into a reader-writer spinlock. This lock type
-> aligns naturally with the overwhelmingly read-only nature of the tree
-> usage here. Although the addition of reader-writer spinlocks are
-> discouraged [0], this fix is proposed as an interim solution while an
-> RCU based approach is implemented (that work is in a nascent form). This
-> fix also has the benefit of being trivial, self contained and therefore
-> simple to backport.
-> 
-> We have used a uprobe benchmark from the BPF selftests [1] to estimate
-> the improvements. Each block of results below show 1 line per execution
-> of the benchmark ("the "Summary" line) and each line is a run with one
-> more thread added - a thread is a "producer". The lines are edited to
-> remove extraneous output.
-> 
-> The tests were executed with this driver script:
-> 
-> for num_threads in {1..20}
-> do
->   sudo ./bench -a -p $num_threads trig-uprobe-nop | grep Summary
-> done
-> 
-> SPINLOCK (BEFORE)
-> ==================
-> Summary: hits    1.396 ± 0.007M/s (  1.396M/prod)
-> Summary: hits    1.656 ± 0.016M/s (  0.828M/prod)
-> Summary: hits    2.246 ± 0.008M/s (  0.749M/prod)
-> Summary: hits    2.114 ± 0.010M/s (  0.529M/prod)
-> Summary: hits    2.013 ± 0.009M/s (  0.403M/prod)
-> Summary: hits    1.753 ± 0.008M/s (  0.292M/prod)
-> Summary: hits    1.847 ± 0.001M/s (  0.264M/prod)
-> Summary: hits    1.889 ± 0.001M/s (  0.236M/prod)
-> Summary: hits    1.833 ± 0.006M/s (  0.204M/prod)
-> Summary: hits    1.900 ± 0.003M/s (  0.190M/prod)
-> Summary: hits    1.918 ± 0.006M/s (  0.174M/prod)
-> Summary: hits    1.925 ± 0.002M/s (  0.160M/prod)
-> Summary: hits    1.837 ± 0.001M/s (  0.141M/prod)
-> Summary: hits    1.898 ± 0.001M/s (  0.136M/prod)
-> Summary: hits    1.799 ± 0.016M/s (  0.120M/prod)
-> Summary: hits    1.850 ± 0.005M/s (  0.109M/prod)
-> Summary: hits    1.816 ± 0.002M/s (  0.101M/prod)
-> Summary: hits    1.787 ± 0.001M/s (  0.094M/prod)
-> Summary: hits    1.764 ± 0.002M/s (  0.088M/prod)
-> 
-> RW SPINLOCK (AFTER)
-> ===================
-> Summary: hits    1.444 ± 0.020M/s (  1.444M/prod)
-> Summary: hits    2.279 ± 0.011M/s (  1.139M/prod)
-> Summary: hits    3.422 ± 0.014M/s (  1.141M/prod)
-> Summary: hits    3.565 ± 0.017M/s (  0.891M/prod)
-> Summary: hits    2.671 ± 0.013M/s (  0.534M/prod)
-> Summary: hits    2.409 ± 0.005M/s (  0.401M/prod)
-> Summary: hits    2.485 ± 0.008M/s (  0.355M/prod)
-> Summary: hits    2.496 ± 0.003M/s (  0.312M/prod)
-> Summary: hits    2.585 ± 0.002M/s (  0.287M/prod)
-> Summary: hits    2.908 ± 0.011M/s (  0.291M/prod)
-> Summary: hits    2.346 ± 0.016M/s (  0.213M/prod)
-> Summary: hits    2.804 ± 0.004M/s (  0.234M/prod)
-> Summary: hits    2.556 ± 0.001M/s (  0.197M/prod)
-> Summary: hits    2.754 ± 0.004M/s (  0.197M/prod)
-> Summary: hits    2.482 ± 0.002M/s (  0.165M/prod)
-> Summary: hits    2.412 ± 0.005M/s (  0.151M/prod)
-> Summary: hits    2.710 ± 0.003M/s (  0.159M/prod)
-> Summary: hits    2.826 ± 0.005M/s (  0.157M/prod)
-> Summary: hits    2.718 ± 0.001M/s (  0.143M/prod)
-> Summary: hits    2.844 ± 0.006M/s (  0.142M/prod)
+The following commit has been merged into the sched/urgent branch of tip:
 
-nice, I'm assuming Masami will take this one.. in any case:
+Commit-ID:     1560d1f6eb6b398bddd80c16676776c0325fe5fe
+Gitweb:        https://git.kernel.org/tip/1560d1f6eb6b398bddd80c16676776c0325fe5fe
+Author:        Xuewen Yan <xuewen.yan@unisoc.com>
+AuthorDate:    Mon, 22 Apr 2024 16:22:38 +08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Mon, 22 Apr 2024 13:01:27 +02:00
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+sched/eevdf: Prevent vlag from going out of bounds in reweight_eevdf()
 
-thanks,
-jirka
+It was possible to have pick_eevdf() return NULL, which then causes a
+NULL-deref. This turned out to be due to entity_eligible() returning
+falsely negative because of a s64 multiplcation overflow.
 
-> 
-> The numbers in parenthesis give averaged throughput per thread which is
-> of greatest interest here as a measure of scalability. Improvements are
-> in the order of 22 - 68% with this particular benchmark (mean = 43%).
-> 
-> V2:
->  - Updated commit message to include benchmark results.
-> 
-> [0] https://docs.kernel.org/locking/spinlocks.html
-> [1] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/benchs/bench_trigger.c
-> 
-> Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
-> ---
->  kernel/events/uprobes.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index e4834d23e1d1..8ae0eefc3a34 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
->   */
->  #define no_uprobe_events()	RB_EMPTY_ROOT(&uprobes_tree)
->  
-> -static DEFINE_SPINLOCK(uprobes_treelock);	/* serialize rbtree access */
-> +static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
->  
->  #define UPROBES_HASH_SZ	13
->  /* serialize uprobe->pending_list */
-> @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
->  {
->  	struct uprobe *uprobe;
->  
-> -	spin_lock(&uprobes_treelock);
-> +	read_lock(&uprobes_treelock);
->  	uprobe = __find_uprobe(inode, offset);
-> -	spin_unlock(&uprobes_treelock);
-> +	read_unlock(&uprobes_treelock);
->  
->  	return uprobe;
->  }
-> @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
->  {
->  	struct uprobe *u;
->  
-> -	spin_lock(&uprobes_treelock);
-> +	write_lock(&uprobes_treelock);
->  	u = __insert_uprobe(uprobe);
-> -	spin_unlock(&uprobes_treelock);
-> +	write_unlock(&uprobes_treelock);
->  
->  	return u;
->  }
-> @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
->  	if (WARN_ON(!uprobe_is_active(uprobe)))
->  		return;
->  
-> -	spin_lock(&uprobes_treelock);
-> +	write_lock(&uprobes_treelock);
->  	rb_erase(&uprobe->rb_node, &uprobes_tree);
-> -	spin_unlock(&uprobes_treelock);
-> +	write_unlock(&uprobes_treelock);
->  	RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
->  	put_uprobe(uprobe);
->  }
-> @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
->  	min = vaddr_to_offset(vma, start);
->  	max = min + (end - start) - 1;
->  
-> -	spin_lock(&uprobes_treelock);
-> +	read_lock(&uprobes_treelock);
->  	n = find_node_in_range(inode, min, max);
->  	if (n) {
->  		for (t = n; t; t = rb_prev(t)) {
-> @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
->  			get_uprobe(u);
->  		}
->  	}
-> -	spin_unlock(&uprobes_treelock);
-> +	read_unlock(&uprobes_treelock);
->  }
->  
->  /* @vma contains reference counter, not the probed instruction. */
-> @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
->  	min = vaddr_to_offset(vma, start);
->  	max = min + (end - start) - 1;
->  
-> -	spin_lock(&uprobes_treelock);
-> +	read_lock(&uprobes_treelock);
->  	n = find_node_in_range(inode, min, max);
-> -	spin_unlock(&uprobes_treelock);
-> +	read_unlock(&uprobes_treelock);
->  
->  	return !!n;
->  }
-> -- 
-> 2.43.0
-> 
+Specifically, reweight_eevdf() computes the vlag without considering
+the limit placed upon vlag as update_entity_lag() does, and then the
+scaling multiplication (remember that weight is 20bit fixed point) can
+overflow. This then leads to the new vruntime being weird which then
+causes the above entity_eligible() to go side-ways and claim nothing
+is eligible.
+
+Thus limit the range of vlag accordingly.
+
+All this was quite rare, but fatal when it does happen.
+
+Closes: https://lore.kernel.org/all/ZhuYyrh3mweP_Kd8@nz.home/
+Closes: https://lore.kernel.org/all/CA+9S74ih+45M_2TPUY_mPPVDhNvyYfy1J1ftSix+KjiTVxg8nw@mail.gmail.com/
+Closes: https://lore.kernel.org/lkml/202401301012.2ed95df0-oliver.sang@intel.com/
+Fixes: eab03c23c2a1 ("sched/eevdf: Fix vruntime adjustment on reweight")
+Reported-by: Sergei Trofimovich <slyich@gmail.com>
+Reported-by: Igor Raits <igor@gooddata.com>
+Reported-by: Breno Leitao <leitao@debian.org>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Reported-by: Yujie Liu <yujie.liu@intel.com>
+Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+Reviewed-and-tested-by: Chen Yu <yu.c.chen@intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20240422082238.5784-1-xuewen.yan@unisoc.com
+---
+ kernel/sched/fair.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6d26691..c62805d 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -696,15 +696,21 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
+  *
+  * XXX could add max_slice to the augmented data to track this.
+  */
+-static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
++static s64 entity_lag(u64 avruntime, struct sched_entity *se)
+ {
+-	s64 lag, limit;
++	s64 vlag, limit;
++
++	vlag = avruntime - se->vruntime;
++	limit = calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se);
++
++	return clamp(vlag, -limit, limit);
++}
+ 
++static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
++{
+ 	SCHED_WARN_ON(!se->on_rq);
+-	lag = avg_vruntime(cfs_rq) - se->vruntime;
+ 
+-	limit = calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se);
+-	se->vlag = clamp(lag, -limit, limit);
++	se->vlag = entity_lag(avg_vruntime(cfs_rq), se);
+ }
+ 
+ /*
+@@ -3760,7 +3766,7 @@ static void reweight_eevdf(struct sched_entity *se, u64 avruntime,
+ 	 *	   = V  - vl'
+ 	 */
+ 	if (avruntime != se->vruntime) {
+-		vlag = (s64)(avruntime - se->vruntime);
++		vlag = entity_lag(avruntime, se);
+ 		vlag = div_s64(vlag * old_weight, weight);
+ 		se->vruntime = avruntime - vlag;
+ 	}
 
