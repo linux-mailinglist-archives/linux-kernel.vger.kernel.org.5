@@ -1,150 +1,107 @@
-Return-Path: <linux-kernel+bounces-154263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C0638ADA09
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:04:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 939918AD8F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:17:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4ED01F21236
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:04:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF1C01C21250
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09360156C50;
-	Mon, 22 Apr 2024 23:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE2443D577;
+	Mon, 22 Apr 2024 23:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xy44T6xl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Ei5jxWzT"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C73B15697B;
-	Mon, 22 Apr 2024 23:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6641E38DF7;
+	Mon, 22 Apr 2024 23:17:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830175; cv=none; b=B/zU0BeFXbMWE//UCu8O3sMoxT4evV2jdFCtF++NSKDsXfKqQ3QqZLpZr8ke4vaBMPv2B/K8ujB1Ke5Jy83rknblIoE3wPELatAfNsMMBeif/X89yzbUT6waqQ9VV+Gc4peR29t2AVwZk6aB59aaa9cB9Gf5VdLx7Z/+7y3o+m4=
+	t=1713827856; cv=none; b=ZyH4Upzb4C519kapICt/XzHAL90AUVd1ySmNximB8Ugq8DGsBDBjvNdruMdfnphXHtlSXJ2bK1QVa36gf4+87FxyJ3SUIZ2czHYtkn2P1P/+AbPXu8DqGv1QEHxwst/X/Rd/pGX+obz94Mk4XlT8BYtxIgB6FtcU6auTlmllZoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830175; c=relaxed/simple;
-	bh=PZLI6Ctn6JAqMqnprUr1zu+R4p1OMYr6Q9P8KfbrKKU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iCso06rmmgsu8WI+g3Vwo8xGwDbMfk7Y+79lW2VWhw6NAMNaenUG7QIjH9qflsckcBluvrQ+eskjpl+LPZB+JNH9OV5+UTmIz33llpI1DNjSuTINPLOy/f9r0SOWOHgalhd2Px38+55n9qkJ+eLYc7lEsxXhby8zzsHtfO6uvKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xy44T6xl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8904C3277B;
-	Mon, 22 Apr 2024 23:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830174;
-	bh=PZLI6Ctn6JAqMqnprUr1zu+R4p1OMYr6Q9P8KfbrKKU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Xy44T6xlOKrhJeq5p84ZowjqYHZ9FbSwKQyFhb6eofKjmKLZimVFfUyhnmOHtuQzP
-	 s4Bb3jSheCYB8hJLcucNjWz5hjl47SD0wMGIvE3HAVRzd6L28k+mKqBNQoNL3wQxyE
-	 PiH8L68+Lnpcdg7tpM5ZcB/TuGiwCha6NNFcC5I5+FMkBNV76PTiiG6EmGOt5K5zWv
-	 co695VYhKxcwyh/iMNui1yTlfOHaxwZrXG947zXeRiSs/vsphqk++ncELi2jvUGL5v
-	 hQ963C3Wi8fB8la59l8uGJH6ZgxyFI5Tax9idQ/d90onTNSSNLVAqrrE5AqEWbMlLH
-	 UN9G1zuxg08mQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Wyes Karny <wyes.karny@amd.com>,
-	Doug Smythies <dsmythies@telus.net>,
-	Len Brown <len.brown@intel.com>,
-	Sasha Levin <sashal@kernel.org>,
-	lenb@kernel.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 02/29] tools/power turbostat: Increase the limit for fd opened
-Date: Mon, 22 Apr 2024 19:16:43 -0400
-Message-ID: <20240422231730.1601976-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240422231730.1601976-1-sashal@kernel.org>
-References: <20240422231730.1601976-1-sashal@kernel.org>
+	s=arc-20240116; t=1713827856; c=relaxed/simple;
+	bh=8nJpvhbrcJJpbAUqrHVZxYMJJ/a4d5maIfPCRG/1m04=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tgK3pqvtDtkJNpha/02buO4ec0pabn/Nzi6DCgZwYWNJFyKdW1eys6B0qmOd4/NzblQe+vuHbwqwy7nf/XsyrmgTnjlYIusas4B0jE64mEeRSNM8wsg5euJr+5xQyXhu1BkRq+VVcV4XPSDIdhd6l0aFzAcZSQCEhbBPoBR6Jqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Ei5jxWzT; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1713827849;
+	bh=dM7iOGA9UgN3baBPbxQ5HGaKpvKJP8/LN7oUAZBCCog=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ei5jxWzTlHGbV4ARjGsTa4pfGnZbeBTP6nyG6gFGzBPS5HFf8EjFYBXZPtxCDBwRd
+	 rgtTHG5Ed0c1bgHsgNq1wLfW8hBrbjiZ2d2WtT+fv2KI/YMiIaTZlkoBXotm63Un+P
+	 Jv5r+tnEqzgCqgYZPzcg3cViZcCnkZdEzkgoCDdE2mOTMYOGCTakFLW2tIiJ9G22Jg
+	 aqv9IkvWwAc/Koe69mcjqTM6Pq2UvA9+AoqxXteHYyic9X0KlWGzcyRb1bxSNwUcpH
+	 zR77j0KE0BXoymXm8ZfMBIpqYw7pPZwEnz0nQ27e88gzhN2M7eNsFAI+X3FfStep3s
+	 mVecOeFpDxshQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VNh3r6mJ2z4wyw;
+	Tue, 23 Apr 2024 09:17:28 +1000 (AEST)
+Date: Tue, 23 Apr 2024 09:17:28 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andi Shyti <andi.shyti@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the
+ i2c-host-fixes tree
+Message-ID: <20240423091728.06d9ad30@canb.auug.org.au>
+In-Reply-To: <20240423083145.771dddf5@canb.auug.org.au>
+References: <20240423083145.771dddf5@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.28
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/TAZ9T7NAtKue6ZV6mKyBPQH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-From: Wyes Karny <wyes.karny@amd.com>
+--Sig_/TAZ9T7NAtKue6ZV6mKyBPQH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[ Upstream commit 3ac1d14d0583a2de75d49a5234d767e2590384dd ]
+Hi all,
 
-When running turbostat, a system with 512 cpus reaches the limit for
-maximum number of file descriptors that can be opened. To solve this
-problem, the limit is raised to 2^15, which is a large enough number.
+On Tue, 23 Apr 2024 08:31:45 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Commit
+>=20
+>   86eb98127332 ("gpio: pca953x: move suspend()/resume() to suspend_noirq(=
+)/resume_noirq()")
+>=20
+> is missing a Signed-off-by from its committer.
 
-Below data is collected from AMD server systems while running turbostat:
+That commit is also (still) in the i2c-host tree.
 
-|-----------+-------------------------------|
-| # of cpus | # of opened fds for turbostat |
-|-----------+-------------------------------|
-| 128       | 260                           |
-|-----------+-------------------------------|
-| 192       | 388                           |
-|-----------+-------------------------------|
-| 512       | 1028                          |
-|-----------+-------------------------------|
+--=20
+Cheers,
+Stephen Rothwell
 
-So, the new max limit would be sufficient up to 2^14 cpus (but this
-also depends on how many counters are enabled).
+--Sig_/TAZ9T7NAtKue6ZV6mKyBPQH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Reviewed-by: Doug Smythies <dsmythies@telus.net>
-Tested-by: Doug Smythies <dsmythies@telus.net>
-Signed-off-by: Wyes Karny <wyes.karny@amd.com>
-Signed-off-by: Len Brown <len.brown@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/power/x86/turbostat/turbostat.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 9602a4798f383..5b892c53fc2c2 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -53,6 +53,8 @@
- #define	NAME_BYTES 20
- #define PATH_BYTES 128
- 
-+#define MAX_NOFILE 0x8000
-+
- enum counter_scope { SCOPE_CPU, SCOPE_CORE, SCOPE_PACKAGE };
- enum counter_type { COUNTER_ITEMS, COUNTER_CYCLES, COUNTER_SECONDS, COUNTER_USEC };
- enum counter_format { FORMAT_RAW, FORMAT_DELTA, FORMAT_PERCENT };
-@@ -6719,6 +6721,22 @@ void cmdline(int argc, char **argv)
- 	}
- }
- 
-+void set_rlimit(void)
-+{
-+	struct rlimit limit;
-+
-+	if (getrlimit(RLIMIT_NOFILE, &limit) < 0)
-+		err(1, "Failed to get rlimit");
-+
-+	if (limit.rlim_max < MAX_NOFILE)
-+		limit.rlim_max = MAX_NOFILE;
-+	if (limit.rlim_cur < MAX_NOFILE)
-+		limit.rlim_cur = MAX_NOFILE;
-+
-+	if (setrlimit(RLIMIT_NOFILE, &limit) < 0)
-+		err(1, "Failed to set rlimit");
-+}
-+
- int main(int argc, char **argv)
- {
- 	outf = stderr;
-@@ -6731,6 +6749,9 @@ int main(int argc, char **argv)
- 
- 	probe_sysfs();
- 
-+	if (!getuid())
-+		set_rlimit();
-+
- 	turbostat_init();
- 
- 	msr_sum_record();
--- 
-2.43.0
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYm8AgACgkQAVBC80lX
+0GwWTgf+K8o9FRkHsOcgdaU4c6BUJ1rxTU7TY9M3tqxaUz72tPF+hTzq76p4PDOE
+2P5azOyDcHojFSz1d6ty3KK294JLG1d4avnHvhiy8+G/xXWDpOjdyw9cYDry+zly
+0UD1ITMp75+KzL4Pv4T8mV4XAkbqUMavn5faLI5Ui+G2mBkvz4ETEjYRhxLu0kKm
+Wu2RlHkEvxg3Z66+CLwyC+b9EmWzcdImrqKfO7b20A0d/6gIRAPUb1o3LbWaUHlA
+VLfzNSlwsZwgl688/Ak4B8KezqtB2xtifUz/vWOQZ9bpJIYuOgTZ85XbSQiEoEob
+/CpLNGfOeG/+GGjjM+n+cM1RI5bm9Q==
+=m9XF
+-----END PGP SIGNATURE-----
 
+--Sig_/TAZ9T7NAtKue6ZV6mKyBPQH--
 
