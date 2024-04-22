@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-152946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 074BB8AC679
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:14:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9A808AC67B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:14:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFA841F214EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:14:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 685C8B22758
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B2E4F1E5;
-	Mon, 22 Apr 2024 08:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27480535BA;
+	Mon, 22 Apr 2024 08:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zfsV8M9Y"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="R7/eS2Wb"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0492352F9B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:13:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D217E53362
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:13:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773608; cv=none; b=UVFMVOfB1OiVN1WSuDoNtEvkmYgIdnErmnHl7ZNjX+cMX6Hs/io3ZGGS3jg5lJcFXQO7/jvDAOTUSNcA30WZdnKo2hSO2EFaHDvjNAjhXBA6R6mSKJB7H0ritbET/rGpvC4mNF6PG1sT+FafT8iF3vNIYWQKI400iZkVjw6wETM=
+	t=1713773609; cv=none; b=N8S8Vky2huF/ZRRj2Fdv8zwk2FZqaLDpZLoAzmHFUVu4SQZr2BmotRCWPsiwmHu4UEG+dbSL1BLkLGVLJ4WuGbU4dnLYTpHd3XjpbSubyd/iYhUD82Wr54e7TyZ+scvu6tc2r5eq0HT/8QKjYDJOxja2+igOAFnFc7TDdQHGkIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773608; c=relaxed/simple;
-	bh=FxkEBziKtQxhWojrucgf/WGamgoTlWr+LUFLjNsCl9s=;
+	s=arc-20240116; t=1713773609; c=relaxed/simple;
+	bh=KQ7C/RlPe2nyPMn98EMHW78mX3O7mG8DtqL8vkGG53E=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=P0J0MGWZrslh3jHOx8WwxVgvcAioWFUVCOQUDkq5je/HBxypvr8nJcBUXhtG+eq7m6oJJggLYOiUI6/u8qMmI5BkaVLBeJwVuMDGqLItvaLplj1EEHePSWhexzx+7jpeg49DkXl+rwMMi9TKtEPDA3QgCnOZw59bOFudrp6pTfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zfsV8M9Y; arc=none smtp.client-ip=209.85.128.49
+	 MIME-Version:Content-Type; b=pUg6w6Df8SGQzl6oC59IWynMnepSPyS/soIJ0SGrIZu4uulnzPivaZiR/XNLiXwWgjyuzlm6QzRGoWns/SdyxpYXJLhQFyppDydRb+KXVxA/qaaa8rNBO5A3ezkXYT1y55uT4s1N1Adfak7gc+WlZoqbMgPRC0ujZsMVdlaCdUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=R7/eS2Wb; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41a5958d7c2so4138005e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:13:26 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4196c62bb4eso17774715e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:13:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713773605; x=1714378405; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713773606; x=1714378406; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SS3mxjJZGylPMQWrV6fjHJvytyShfSYEN+VKk+SCWTk=;
-        b=zfsV8M9Y15XQoTkCI46CIw+QrNcIbc9v8nztBFW83vYHLcQLfS+c0luHVs/6fvmH9z
-         KDKE4F47VXEnxfA3r+aFMznif2560zr3N279qvFNbMdO7onun327KFsnxzNGm4eKVj0r
-         3ngAUrGxRavZIc7IOA4/mTj2zxdjC/vEECtMZMnFadpqJdypIhX2Llaj0v6QWgqIrhxo
-         p/TCeTH0S8gy+D5bI0Rnlw/swRw81k4q81RuLBb4B61YwIhHPQfeHPuple/lbnDWmKKd
-         DoplkS1yufStngZgLN+QSkXyLf695kE3wqjuxJH1sXf6BVbey0lKXnoAnjkHwtASv+Z/
-         vuKg==
+        bh=VJA4a5dlfNiF/Mn+2ESih5PJW4UfTetDxjsJggty4nU=;
+        b=R7/eS2Wb9pDQ7ob2o7kfviNmCMb37h7rwtjqQDoPeI7e7s5NMtEn7nype3GwDaSfek
+         7I0/nIy78Ost361dTueeoRTN7EybmTNu3tQ2pnV7t681+y3oAO8zqY/TjscGBe8TrbFR
+         QhqQ9Olcr/jTSRCZMmenly95cBANBfx1+z5BWmbv+TLMtT5XKlZ6BTUxHyiBexranOzK
+         Jaj9bbey6aEE4p/9jWUjwwytmWvuR6y6yZKXBJRPtLTA452dg3KP1op28YIEIX0l0vuD
+         gxRr5I+kbOJXaDcpx6AVgZFxPZcMrc63zG0BfLO2O+o5LeDQ+dSyzYe/KkLcPgfjlJJA
+         J7pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713773605; x=1714378405;
+        d=1e100.net; s=20230601; t=1713773606; x=1714378406;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SS3mxjJZGylPMQWrV6fjHJvytyShfSYEN+VKk+SCWTk=;
-        b=Aj+H2HpelUfVpmbxKPP7waUfTrsUemAWqKJilN5NJb4pT7UE4RgbeOdLmspILpjntI
-         6OACQy6cUgbcJPG/Qn5x9Z3ve74LDHAjSqYYtXTZJgK/hfmnWlb4tMwCkSx4xpoET3be
-         ApBqZ1vpzUGymttUTAc3C7c4tjbHuVJuYpmN36KmbJp0KQFySCVjiFfEF64K/TYcoykq
-         vWfqQNo4hHWIgS4Ym1dXJ7Ar/JJm398ne0h2jTk3xdhYf39vX8Ijz2iCY6jkWZBlYWn9
-         Dp6zrWMDoaZgmCBK4AYjkaPS9X+s+MWA7xFrRPfiWTYNZbGv5yXdHHeBPKyfGxaPxvnA
-         H2Gw==
-X-Forwarded-Encrypted: i=1; AJvYcCUvTkd7soFv+EfpXtz0q/82nL4PBgrR8WUceWkGxYNkl78NamVTj/54tDK+QUd/s1ucQ8+uBJytmFChb0PyB4EfoelGhstOSEHJtkCU
-X-Gm-Message-State: AOJu0Yw30LolITVOxapYQm/TxNugiiwqGk2ZQOsp6nQ1cg2rm7w/Rs+G
-	PkDys64ufgtOTSVgd+oMi0Wfb7MONSKvKWeN0qLSiG+FKnZulEUTgZOtvegxjgA=
-X-Google-Smtp-Source: AGHT+IGPrO7v5/lKn4DROPvyQytV03lXmW3pR62NbGJT8AmgPph9yPGqucSHM/Ijoe+qpMFYe5TATA==
-X-Received: by 2002:a05:600c:1394:b0:418:e6a1:c0e8 with SMTP id u20-20020a05600c139400b00418e6a1c0e8mr5978703wmf.7.1713773604900;
-        Mon, 22 Apr 2024 01:13:24 -0700 (PDT)
+        bh=VJA4a5dlfNiF/Mn+2ESih5PJW4UfTetDxjsJggty4nU=;
+        b=RlPG702I7V4wptALzoltwqoiYKRZstkiGGEm7wNHvJLtKEu6iaT2ss2hgzqdSd4qZB
+         3aqcSsDupzK+cwzGJYxHPLyoIflFIZLMtkpNLX4472qcemg0Oo5TXW5/5EWX4Xr9zftI
+         YvswktlgxPUXNhCoJ8yJkPV9y+3NTitmE5wB0RNI0ymNjVgLIG7+gd3P8QrXwBdz4P/t
+         Uq+S5U0zg5NbsgmG/8oVlaoSU0ceZpTXOVxZLh1OhhcjQTMCabDiMMNTR3n0i5IvQPF3
+         s6iY7W0SJTinG20+qrOZDHD2ibuhywn7YIcXtY3IFm0FtS0jxlGo1m5XYBuYBcLSzYgD
+         /9UQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVnu2K+DA/YFJKLfDnw9DU3eCdgAY0w6ZAYtCtu1roUIq/9gdhR0oKfi5aY0rUBeOkI7rVHgCSOD2Ajq24omrFBrbTxDGnEl9vhR2HF
+X-Gm-Message-State: AOJu0Yzm4Xh3R3Sngv9RQVJLKwR3TEFumfYk4Xsasy7ZdHlh4UpzQvho
+	GLXisQkC4aicoDcr5ZLBvfVt5iBqT/jTi63XsVhe4a7K8NdUz/lu68LM+9GfSb8=
+X-Google-Smtp-Source: AGHT+IF4cU+n70iM9aZ/bhIOf7ej4TQDcYHB1Zobb6c1Ifw1HLzoA9501M1WkvFgE4TgcpsQDdtYTQ==
+X-Received: by 2002:a05:600c:b85:b0:41a:5de5:85f2 with SMTP id fl5-20020a05600c0b8500b0041a5de585f2mr1356294wmb.39.1713773605856;
+        Mon, 22 Apr 2024 01:13:25 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id r7-20020a05600c35c700b0041638a085d3sm19437504wmq.15.2024.04.22.01.13.24
+        by smtp.gmail.com with ESMTPSA id r7-20020a05600c35c700b0041638a085d3sm19437504wmq.15.2024.04.22.01.13.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 01:13:24 -0700 (PDT)
+        Mon, 22 Apr 2024 01:13:25 -0700 (PDT)
 From: Neil Armstrong <neil.armstrong@linaro.org>
 To: airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, 
  mripard@kernel.org, tzimmermann@suse.de, robh@kernel.org, 
@@ -75,11 +75,11 @@ Cc: nick@khadas.com, linux-amlogic@lists.infradead.org,
  quic_jesszhan@quicinc.com, sam@ravnborg.org, thierry.reding@gmail.com, 
  dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org
-In-Reply-To: <20240415031408.8150-1-jacobe.zang@wesion.com>
-References: <20240415031408.8150-1-jacobe.zang@wesion.com>
-Subject: Re: [PATCH v2 0/2] drm/panel: add Khadas TS050 V2 panel support
-Message-Id: <171377360401.3418456.5122435310463743780.b4-ty@linaro.org>
-Date: Mon, 22 Apr 2024 10:13:24 +0200
+In-Reply-To: <20240419014852.715125-1-jacobe.zang@wesion.com>
+References: <20240419014852.715125-1-jacobe.zang@wesion.com>
+Subject: Re: [PATCH v3 0/2] drm/panel: add Khadas TS050 V2 panel support
+Message-Id: <171377360500.3418456.9021702656512233742.b4-ty@linaro.org>
+Date: Mon, 22 Apr 2024 10:13:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,23 +92,16 @@ X-Mailer: b4 0.12.4
 
 Hi,
 
-On Mon, 15 Apr 2024 11:14:06 +0800, Jacobe Zang wrote:
-> Changes from v1 at [1]:
-> - Fix name from "newts050" to "ts050v2"
-> - Add specific description about controller change
+On Fri, 19 Apr 2024 09:48:50 +0800, Jacobe Zang wrote:
+> Khadas has update its TS050 panel, the only different between the newer and
+> older is timing squence. In patches, add new TS050 panel named "ts050v2" as
+> make it compatible with the old one.
 > 
-> [1]https://patchwork.kernel.org/project/linux-amlogic/list/?series=842707
-> 
-> Jacobe Zang (2):
->   dt-bindings: panel-simple-dsi: add Khadas TS050 V2 panel bindings
->   drm/panel: add Khadas TS050 V2 panel support
-> 
-> [...]
 
 Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-next)
 
-[1/2] dt-bindings: panel-simple-dsi: add Khadas TS050 V2 panel bindings
-      (no commit info)
+[1/2] dt-bindings: panel-simple-dsi: add Khadas TS050 V2 panel
+      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/0546e01d5a0269f02b4aa227f44b30a5a5558792
 [2/2] drm/panel: add Khadas TS050 V2 panel support
       https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/26f9339212db569310d4b0ef4284efcbb462a86f
 
