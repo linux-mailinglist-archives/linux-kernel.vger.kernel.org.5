@@ -1,166 +1,124 @@
-Return-Path: <linux-kernel+bounces-153808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B517E8AD381
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:51:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6C5A8AD37C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:50:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A8F0285F54
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:51:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C6FC1F21C95
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:50:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D6E153BFB;
-	Mon, 22 Apr 2024 17:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E58154425;
+	Mon, 22 Apr 2024 17:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="CFpzyBya"
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZipYcwWS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2745152197
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 17:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E221152197;
+	Mon, 22 Apr 2024 17:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713808275; cv=none; b=SQyQGTuprLHbPDx+wO1fehjEimm9mMuqy8afnCPm+KJwY6iiyeyGk+ImHodhOCTeD5ll3kZ5HWcejpB1VrLaON7X7bpdAp++2tAFM6KWsvjq3taVE5+hyqF72+I54EKNCbeAUM7TjV1gzoFNQJCw5+VuJZ9SQ+SpKnO15e0l5+E=
+	t=1713808238; cv=none; b=R+Zn/kE4wVMONVMk5jkB/+NkZUXWVSubYxiOXXBvf6iTwxTm+LBc2cYiywDt1YcryeP0mxuw/CD0ElkpuD/+AACQ8PWwGMi9IVfD0lIMQ/fPkkXuXURJtymcFaIy5OZWS/O26J7LPDQpZXRwxhxYw2MSjG2A7SQ9JvDbOpl7ibs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713808275; c=relaxed/simple;
-	bh=PedKjQ4IchNk0puiU4eLptdz+f6auezzylZJfV3vp0I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ze/y3BPiuC7V3MIUIkU4iEfVgLeZnbM/+v3DtpaFJRxddfchX/27xfc2tV40GxVsxYyhA2pyNwKtlydduR/hYtR3PTsoVHCE3+EAAp7LPJ3xMdPy9jM2HW2qx4+1wq9NqF/yfCfLnxV/0T2KN5BfOXvfFl9tp9En5rPnz6OBlAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=CFpzyBya; arc=none smtp.client-ip=209.85.210.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6eb7ee5a776so2745849a34.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:51:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713808272; x=1714413072; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IPoRNKoBlgwzxEWzxuaC/lQKyisFmyEGkELxXi0f2xY=;
-        b=CFpzyByaQ4enHWZ7mNQ5SoSnz/2p9dVNMFhefPawWcrYhKeS3+6aS87/5X7jSsf2VZ
-         mYXxmtroFrFtjwj9CqqVujUQHGeP18OGcWoXh6McoYt0m07Wt1lXvmPfMtX5PbBIWNb4
-         A+IcghMhOMPjwfJkBcsAhZR2266sovTMJ7jFc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713808272; x=1714413072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IPoRNKoBlgwzxEWzxuaC/lQKyisFmyEGkELxXi0f2xY=;
-        b=rA4FAbfjJWokz7Gchk8o/HFpwYVgUti/ztSiEb++VmiyF7rGEMee6qRucxZUtIkkbn
-         ArjHjU2kFyhu/GQBoRSgdHHMk3Fb/JMHPiIdJhPmJlRTkykbLoHOIb3xjkAJNvwdpgad
-         IOcqxpCFb7khpU2+F8insWR0dpE9h92vOWRci+LGkoFpS7y1AFpFjx6Uub0oOc5Gbi1M
-         D3Y3/2xD+qaeDVaj36rX6uvrnapmof9My/BVrJtgsxYnl0SrxVG31NcGhERFaVJTXh+A
-         IfO8yTFCyyR+TFq8RM9Rz4lZOHD0UfbbTre5oFlzAp/bmCJdkZbhnkmEUG5mAJPvtvDR
-         FxSw==
-X-Forwarded-Encrypted: i=1; AJvYcCX0KTZVw0k0NEO70LTsFPj5/0QhXkqLm7gg4oGW9SVqGZ1XswyCBCjl2VRn1sEMr+KPbffYgU8rH9n4obCNPPd9+rGzgOPpR1C2faUn
-X-Gm-Message-State: AOJu0YwtEnToZvWlWyU9E5zlMgLm03zCJ9qQaZwGAkv+7ceYXIBIrB5l
-	+clZzDzP87Jb9gj4WgLH9X8FqzbnBRgmz7pl3yZdJ2a2fkXo7vSosa3ItkHPGs+Nwrem0YRi50c
-	=
-X-Google-Smtp-Source: AGHT+IHeCW5lrsUK45iesEqzr6ZDGPRcWZSUwVIG9viocmtNccQBAqY81JuXNXqO4cekzAm+OfxBlg==
-X-Received: by 2002:a05:6830:6b87:b0:6eb:7d54:3584 with SMTP id dd7-20020a0568306b8700b006eb7d543584mr12999904otb.18.1713808272194;
-        Mon, 22 Apr 2024 10:51:12 -0700 (PDT)
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com. [209.85.160.175])
-        by smtp.gmail.com with ESMTPSA id m2-20020ae9f202000000b0078d5d9cdc9esm4507427qkg.21.2024.04.22.10.50.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 10:50:51 -0700 (PDT)
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-439b1c72676so43141cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:50:50 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU2B+nEZYSNHqEtVKUOrfIzgK7g2lhTcf+ARsbI+8pSe//xSdRp/XnPe2osOu3vmzFJpz7qNjlmp0EHXXr7Nk6j68ztew+HSJcr24hQ
-X-Received: by 2002:a05:622a:a097:b0:437:75be:9111 with SMTP id
- jv23-20020a05622aa09700b0043775be9111mr9752qtb.1.1713808250395; Mon, 22 Apr
- 2024 10:50:50 -0700 (PDT)
+	s=arc-20240116; t=1713808238; c=relaxed/simple;
+	bh=Qw/XTx7VLmthJ54XYfaELgIcf7RnZMS2pyeRWr1PD90=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RaWslKgrLngLFKEg6bXXtGjQodBUCoxVR1LZyBbIYu6riQWMxhrOvGGKOrmsSfhlJj5n7pz6n/FBUy3ipBK78C38GzcrgNksdL4nCOSGwDFNKQ++1UWcfgHT0prbS/xCfwkmmdLckCfpYQodPopWDtUPf0WZoYWcsHmz0rqWzOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZipYcwWS; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713808235; x=1745344235;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Qw/XTx7VLmthJ54XYfaELgIcf7RnZMS2pyeRWr1PD90=;
+  b=ZipYcwWSDnUvQ+p3thVKxnR0KgjG7Pn9TfPbbjD2m3bVSRrxfNKaupgG
+   nHfmPl3pEf0dqBGtLYgfMhGP8doEpwGr5Acah+5cJZeRAMT8j8B7mgC6p
+   eXgp5ubuwgDUBLH97he+pcY2zYlKzkdXZMLcBpvR/ymMJKEO/+PMm441B
+   JPgvslgfZJ/86IXhkhjkg9AAm1PPPEP3Nkd1UBSNLooENgd5jyw7NFw/x
+   4JNbpt41/cEAXLmNsL67hVXm1kHYglRn55SDqVl+/sVd4OwXjugtk5Z4N
+   ynb+T8wJxC1ozsS6pVTiPs+tCXGdH8ydXiq92JJUPbx/dAohBn2uJpu7A
+   Q==;
+X-CSE-ConnectionGUID: XL1wmoxjRmyAW3OEyojiJg==
+X-CSE-MsgGUID: RCTNhaV7QOGEeklY9JGJVw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9191158"
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="9191158"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 10:50:35 -0700
+X-CSE-ConnectionGUID: IeyaIZ5ORR+2ySyY7QiO9g==
+X-CSE-MsgGUID: zwNY0vCbQoS3GTyZeOJhfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="24142083"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 10:50:34 -0700
+Date: Mon, 22 Apr 2024 10:50:33 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+	isaku.yamahata@intel.com, xiaoyao.li@intel.com,
+	binbin.wu@linux.intel.com, seanjc@google.com,
+	rick.p.edgecombe@intel.com, isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH 6/6] KVM: selftests: x86: Add test for
+ KVM_PRE_FAULT_MEMORY
+Message-ID: <20240422175033.GL3596705@ls.amr.corp.intel.com>
+References: <20240419085927.3648704-1-pbonzini@redhat.com>
+ <20240419085927.3648704-7-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416091509.19995-1-johan+linaro@kernel.org>
-In-Reply-To: <20240416091509.19995-1-johan+linaro@kernel.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 22 Apr 2024 10:50:33 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UBHvz2S5bd8eso030-E=rhbAypz_BnO-vmB1vNo+4Uvw@mail.gmail.com>
-Message-ID: <CAD=FV=UBHvz2S5bd8eso030-E=rhbAypz_BnO-vmB1vNo+4Uvw@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: qca: fix invalid device address check
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Matthias Kaehlcke <mka@chromium.org>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Janaki Ramaiah Thota <quic_janathot@quicinc.com>, stable@vger.kernel.org, 
-	Stephen Boyd <swboyd@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240419085927.3648704-7-pbonzini@redhat.com>
 
-Hi,
+On Fri, Apr 19, 2024 at 04:59:27AM -0400,
+Paolo Bonzini <pbonzini@redhat.com> wrote:
 
-On Tue, Apr 16, 2024 at 2:17=E2=80=AFAM Johan Hovold <johan+linaro@kernel.o=
-rg> wrote:
->
-> Qualcomm Bluetooth controllers may not have been provisioned with a
-> valid device address and instead end up using the default address
-> 00:00:00:00:5a:ad.
->
-> This was previously believed to be due to lack of persistent storage for
-> the address but it may also be due to integrators opting to not use the
-> on-chip OTP memory and instead store the address elsewhere (e.g. in
-> storage managed by secure world firmware).
->
-> According to Qualcomm, at least WCN6750, WCN6855 and WCN7850 have
-> on-chip OTP storage for the address.
->
-> As the device type alone cannot be used to determine when the address is
-> valid, instead read back the address during setup() and only set the
-> HCI_QUIRK_USE_BDADDR_PROPERTY flag when needed.
->
-> This specifically makes sure that controllers that have been provisioned
-> with an address do not start as unconfigured.
->
-> Reported-by: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
-> Link: https://lore.kernel.org/r/124a7d54-5a18-4be7-9a76-a12017f6cce5@quic=
-inc.com/
-> Fixes: 5971752de44c ("Bluetooth: hci_qca: Set HCI_QUIRK_USE_BDADDR_PROPER=
-TY for wcn3990")
-> Fixes: e668eb1e1578 ("Bluetooth: hci_core: Don't stop BT if the BD addres=
-s missing in dts")
-> Fixes: 6945795bc81a ("Bluetooth: fix use-bdaddr-property quirk")
-> Cc: stable@vger.kernel.org      # 6.5
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> Add a test case to exercise KVM_PRE_FAULT_MEMORY and run the guest to access the
+> pre-populated area.  It tests KVM_PRE_FAULT_MEMORY ioctl for KVM_X86_DEFAULT_VM
+> and KVM_X86_SW_PROTECTED_VM.
+> 
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Message-ID: <32427791ef42e5efaafb05d2ac37fa4372715f47.1712785629.git.isaku.yamahata@intel.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
->  drivers/bluetooth/btqca.c   | 38 +++++++++++++++++++++++++++++++++++++
->  drivers/bluetooth/hci_qca.c |  2 --
->  2 files changed, 38 insertions(+), 2 deletions(-)
->
->
-> Matthias and Doug,
->
-> As Chromium is the only known user of the 'local-bd-address' property,
-> could you please confirm that your controllers use the 00:00:00:00:5a:ad
-> address by default so that the quirk continues to be set as intended?
+>  tools/include/uapi/linux/kvm.h                |   8 +
+>  tools/testing/selftests/kvm/Makefile          |   1 +
+>  .../selftests/kvm/pre_fault_memory_test.c     | 146 ++++++++++++++++++
+>  3 files changed, 155 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/pre_fault_memory_test.c
+> 
+> diff --git a/tools/include/uapi/linux/kvm.h b/tools/include/uapi/linux/kvm.h
+> index c3308536482b..4d66d8afdcd1 100644
+> --- a/tools/include/uapi/linux/kvm.h
+> +++ b/tools/include/uapi/linux/kvm.h
+> @@ -2227,4 +2227,12 @@ struct kvm_create_guest_memfd {
+>  	__u64 reserved[6];
+>  };
+>  
+> +#define KVM_PRE_FAULT_MEMORY	_IOWR(KVMIO, 0xd5, struct kvm_pre_fault_memory)
+> +
+> +struct kvm_pre_fault_memory {
+> +	__u64 gpa;
+> +	__u64 size;
+> +	__u64 flags;
 
-I was at EOSS last week so didn't get a chance to test this, but I
-just tested it now and I can confirm that it breaks trogdor. It
-appears that trogdor devices seem to have a variant of your "default"
-address. Instead of:
+nitpick: catch up for struct update.
++       __u64 padding[5];
 
-00:00:00:00:5a:ad
-
-We seem to have a default of this:
-
-39:98:00:00:5a:ad
-
-..so almost the same, but not enough the same to make it work with
-your code. I checked 3 different trogdor boards and they were all the
-same, though I can't 100% commit to saying that every trogdor device
-out there has that same default address...
-
-Given that this breaks devices and also that it's already landed and
-tagged for stable, what's the plan here? Do we revert? Do we add the
-second address in and hope that there aren't trogdor devices out in
-the wild that somehow have a different default?
-
-
--Doug
+> +};
+> +
+>  #endif /* __LINUX_KVM_H */
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
