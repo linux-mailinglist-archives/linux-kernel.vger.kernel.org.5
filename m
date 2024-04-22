@@ -1,210 +1,282 @@
-Return-Path: <linux-kernel+bounces-153461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 875B48ACE61
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:36:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B8AC8ACE9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:45:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAF051C213BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:36:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28CB91F21F67
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2738150982;
-	Mon, 22 Apr 2024 13:36:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WcFwPDSb"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59930746E;
-	Mon, 22 Apr 2024 13:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05AB1509A6;
+	Mon, 22 Apr 2024 13:45:20 +0000 (UTC)
+Received: from localhost.localdomain (unknown [165.204.184.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B637A15099A;
+	Mon, 22 Apr 2024 13:45:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=165.204.184.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713792964; cv=none; b=KRXtp1Aaio7lT+9RNuMGJzAPpl48as0mzPSrzx0pDIpzcX+k+DH+usmeLCJjLdsTsbQ3/uTb7T9h2oYzdlnQ227lnuyQWzUsCHO2Va8V4LMJWmjY0T7Fte7T9AlULdbISKG03Je6X/DrxunP431/LycQHpJ/z9k9soE7BRZboog=
+	t=1713793520; cv=none; b=BdK+VNIJ5qKzRmLx4bZspQoNg5JaGvZw9y5CUskoLoJxwO33MHuV+abvAdH4rSzU6EUBxz2mWJnkL2fzM12PxNWh6KKs3ufpSKFb+PChJ93cnkSMex8TPWgH1Eju9SengKFMuMjPNGn+r/ab63YyC3EJmToA5XSvTsqwCzsNfhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713792964; c=relaxed/simple;
-	bh=kMa6cSAh5Y/d/P1SN45wemhSQFT9pfHTDqo3Qn/WhPU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FTPuaMVW0H6Ny9PhCcG5rwj15qjd8r4OgvQxqsGi5H/OrQoJ3mo/dHB+Gpg6t5C7dfTvMPoXFUNL358TgJov+PdeNv2Yu2phmOE2/HRisgL8icTOYqLf6Z9uUVyafDEBCYGh3iF1yw1zgU2FhwC4HAY4ineUrmKta+mDcUZePEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WcFwPDSb; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e411e339b8so33305535ad.3;
-        Mon, 22 Apr 2024 06:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713792962; x=1714397762; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=KkBtQ14FO+0NGu2+k0AcqXPVmwhs5oyX89ZVVK1/Ay4=;
-        b=WcFwPDSbQqsyOcM+eolkD3cWs2sgolbzizSrKPLZ5vrzOcFEb8FA9/a3JoCFwo3qV2
-         I9jSG9Z1MZnT/0QpiGK9//qLRBhJSPnnSRmp+vi7akvuaSroCdUw2BlyAU9H+KZ+Xa2W
-         iL8nUZqYa64cIPC7/l2XlOYn2ei1y68GA+A11m6oM78Wq/BM45XsKB4dphJ7+U4KEl87
-         preE4f+jXhbFZznNj2WiR+ZHAsttcfpFxdPx4ggWm37XeShtFvWvD+jSwg3NalbucTFC
-         mIFpyhz7Mi5I25VgwCMO3IaMA4cyCpoDezcb+3UH/17sR1ymvEPChpk9mgoUkKqQnOpL
-         aA3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713792962; x=1714397762;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KkBtQ14FO+0NGu2+k0AcqXPVmwhs5oyX89ZVVK1/Ay4=;
-        b=RP5SkfFoGv+4zyz99cicNweh3LBZtLw+slFg6Tgp+VltUiVSEl+QYI6Na+BZDKiu4q
-         zOORtiTgt9lRQsnO21b/OJGkWDzrR5+mnzgpmoeaIoESk44/eRap1Dur9YmgVzJj1pNg
-         DXYNEDeL1hyWh+cc+l0ZX8s7ypnEZ1BjyoF17dXlZOV9M8+vHDLby1wbfuoAwswf2Ru9
-         JYWxbSByYWMDB2PpEdJWtMkmcBGPLglpWkHO9MqGCxJnI+s6K12WGMO3fjfS+acmxCQC
-         CumSDi1AmVpgZDKWDJwfkUSr5FekwR1/S3d8CqFswTojspBlDHW2pj81r9QXCw4R1JPV
-         dphA==
-X-Forwarded-Encrypted: i=1; AJvYcCV8ORev3WhAzH7CES9/LepcywcD3fERO+0OfYv3X7x5N+doqbOZIB6265tSrc1UanTrqDIlTPIVBkOjhklnDpZ31gnhk5d/TBBEUbVZWFFaFHeN8jT8EEZ9yNLzKuig5ji/a/ak3PGcR3Cr5m8/INP79JYjC2RMyoWlktEg1kdDphqx9kGmsAWmso1EB2mutj49HTK2NauBlq9TFwZM3JLP5fwK5g5HNGO+90NBsoA/S5h0LZniQJzyguN42nnnI32BVTqeALTA
-X-Gm-Message-State: AOJu0YyoKCAyDsYg7d/VQu9EAhGGv9bUw5ts0OSZF6GjWMRu1jrIdd7g
-	fiylpyiRhgOq7rVX7HsMw1u21QYcufAjuP0KEPO+25o1V+IVRbcF
-X-Google-Smtp-Source: AGHT+IHkfetYNQjtXgJOGuSH2tF757po7WuioKhZ1WKUmUVhuKFeVc+0OLJzUKRopydwbd5Qo+FIMw==
-X-Received: by 2002:a17:902:ccc6:b0:1e2:d4da:6c72 with SMTP id z6-20020a170902ccc600b001e2d4da6c72mr14625676ple.0.1713792962514;
-        Mon, 22 Apr 2024 06:36:02 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f12-20020a170902684c00b001e284b9b28asm8230382pln.129.2024.04.22.06.35.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 06:36:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <a0179848-99a2-4169-b7b2-1a8cddb27615@roeck-us.net>
-Date: Mon, 22 Apr 2024 06:35:58 -0700
+	s=arc-20240116; t=1713793520; c=relaxed/simple;
+	bh=KJtLJ1PiXTSiUhXEI+u8c8gH/+X5sjYmBdrsu7oo7NE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=M1BV4IuUGMrTJR+HTLPA7Q9Pe0kjcsIUpf/8y0o5Ll+GNU5j8zcFw0JRjVDAkpaeCUQFiHpZjEhyDio5490h3hlOte+94Ur+mNkCdlTUz5Pg/MCsMGI6y80/+SRxf1YKCKhcfr6hU7nKfCODO2weIHeb1EHqfml/7nffRR/symI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=165.204.184.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
+Received: by localhost.localdomain (Postfix, from userid 1000)
+	id 1A8EC137EF; Mon, 22 Apr 2024 08:37:31 -0500 (CDT)
+From: Carlos Bilbao <carlos.bilbao@amd.com>
+To: corbet@lwn.net,
+	elena.reshetova@intel.com
+Cc: cabilbao@amd.com,
+	bilbao@vt.edu,
+	avadhut.naik@amd.com,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Carlos Bilbao <carlos.bilbao@amd.com>
+Subject: [PATCH] docs/MAINTAINERS: Update my email address
+Date: Mon, 22 Apr 2024 08:37:23 -0500
+Message-ID: <20240422133726.129074-1-carlos.bilbao@amd.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/7] kunit: Add tests for fault
-To: =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- David Gow <davidgow@google.com>
-Cc: Brendan Higgins <brendanhiggins@google.com>, Rae Moar <rmoar@google.com>,
- Shuah Khan <skhan@linuxfoundation.org>,
- Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin"
- <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
- James Morris <jamorris@linux.microsoft.com>,
- Kees Cook <keescook@chromium.org>, Luis Chamberlain <mcgrof@kernel.org>,
- "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
- Marco Pagani <marpagan@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>,
- Thara Gopinath <tgopinath@microsoft.com>,
- Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov
- <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
- Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-um@lists.infradead.org, x86@kernel.org
-References: <20240319104857.70783-1-mic@digikod.net>
- <20240319104857.70783-8-mic@digikod.net>
- <928249cc-e027-4f7f-b43f-502f99a1ea63@roeck-us.net>
- <b70332b0-3e55-4375-935f-35ef3167a151@roeck-us.net>
- <20240422.thesh7quoo0U@digikod.net>
-Content-Language: en-US
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240422.thesh7quoo0U@digikod.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 4/22/24 06:08, Mickaël Salaün wrote:
-> On Fri, Apr 19, 2024 at 04:38:01PM -0700, Guenter Roeck wrote:
->> On Fri, Apr 19, 2024 at 03:33:49PM -0700, Guenter Roeck wrote:
->>> Hi,
->>>
->>> On Tue, Mar 19, 2024 at 11:48:57AM +0100, Mickaël Salaün wrote:
->>>> Add a test case to check NULL pointer dereference and make sure it would
->>>> result as a failed test.
->>>>
->>>> The full kunit_fault test suite is marked as skipped when run on UML
->>>> because it would result to a kernel panic.
->>>>
->>>> Tested with:
->>>> ./tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
->>>> ./tools/testing/kunit/kunit.py run --arch arm64 \
->>>>    --cross_compile=aarch64-linux-gnu- kunit_fault
->>>>
->>>
->>> What is the rationale for adding those tests unconditionally whenever
->>> CONFIG_KUNIT_TEST is enabled ? This completely messes up my test system
->>> because it concludes that it is pointless to continue testing
->>> after the "Unable to handle kernel NULL pointer dereference" backtrace.
->>> At the same time, it is all or nothing, meaning I can not disable
->>> it but still run other kunit tests.
->>>
-> 
-> CONFIG_KUNIT_TEST is to test KUnit itself.  Why does this messes up your
-> test system, and what is your test system?  Is it related to the kernel
-> warning and then the message you previously sent?
+In the near future, I will not have access to the email address I used as
+maintainer of a number of things, mostly in the documentation. Update that
+address to my personal email address (see Link) so I can continue
+contributing.
 
-It is not a warning, it is a BUG which terminates the affected kernel thread.
-NULL pointer dereferences are normally fatal, which is why I abort tests
-if one is encountered. I am not going to start introducing code into my
-scripts to ignore such warnings (or BUG messages) on a case by case basis;
-this would be unmaintainable.
+Link: https://lore.kernel.org/all/BL1PR12MB58749FF2BFEDB817DE1FE6CBF82A2@BL1PR12MB5874.namprd12.prod.outlook.com/
+Signed-off-by: Carlos Bilbao <carlos.bilbao@amd.com>
+---
+ Documentation/security/snp-tdx-threat-model.rst           | 2 +-
+ Documentation/translations/sp_SP/index.rst                | 2 +-
+ Documentation/translations/sp_SP/memory-barriers.txt      | 4 ++--
+ .../translations/sp_SP/process/code-of-conduct.rst        | 2 +-
+ Documentation/translations/sp_SP/process/coding-style.rst | 2 +-
+ .../translations/sp_SP/process/email-clients.rst          | 2 +-
+ Documentation/translations/sp_SP/process/howto.rst        | 2 +-
+ Documentation/translations/sp_SP/process/kernel-docs.rst  | 2 +-
+ .../sp_SP/process/kernel-enforcement-statement.rst        | 2 +-
+ Documentation/translations/sp_SP/process/magic-number.rst | 2 +-
+ .../translations/sp_SP/process/programming-language.rst   | 2 +-
+ .../translations/sp_SP/process/submitting-patches.rst     | 2 +-
+ MAINTAINERS                                               | 8 ++++----
+ 13 files changed, 17 insertions(+), 17 deletions(-)
 
-> https://lore.kernel.org/r/fd604ae0-5630-4745-acf2-1e51c69cf0c0@roeck-us.net
-> It seems David has a solution to suppress such warning.
-> 
-
-I don't think so. My series tried to suppress warning backtraces, not BUG
-messages. BUG messages can not easily be suppressed since the reaction is
-architecture specific and typically fatal.
-
-As I said below, never mind, I just disabled CONFIG_KUNIT_TEST in my testing.
-
-Guenter
-
->>
->> Oh, never mind. I just disabled CONFIG_KUNIT_TEST in my test bed
->> to "solve" the problem. I'll take that as one of those "unintended
->> consequences" items: Instead of more tests, there are fewer.
->>
->> Guenter
->>
+diff --git a/Documentation/security/snp-tdx-threat-model.rst b/Documentation/security/snp-tdx-threat-model.rst
+index ec66f2ed80c9..3a2d41d2e645 100644
+--- a/Documentation/security/snp-tdx-threat-model.rst
++++ b/Documentation/security/snp-tdx-threat-model.rst
+@@ -4,7 +4,7 @@ Confidential Computing in Linux for x86 virtualization
+ 
+ .. contents:: :local:
+ 
+-By: Elena Reshetova <elena.reshetova@intel.com> and Carlos Bilbao <carlos.bilbao@amd.com>
++By: Elena Reshetova <elena.reshetova@intel.com> and Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ Motivation
+ ==========
+diff --git a/Documentation/translations/sp_SP/index.rst b/Documentation/translations/sp_SP/index.rst
+index c543b495c042..274ef4ad96b9 100644
+--- a/Documentation/translations/sp_SP/index.rst
++++ b/Documentation/translations/sp_SP/index.rst
+@@ -7,7 +7,7 @@ Traducción al español
+ 
+ 	\kerneldocCJKoff
+ 
+-:maintainer: Carlos Bilbao <carlos.bilbao@amd.com>
++:maintainer: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_disclaimer:
+ 
+diff --git a/Documentation/translations/sp_SP/memory-barriers.txt b/Documentation/translations/sp_SP/memory-barriers.txt
+index 27097a808c88..153e57130775 100644
+--- a/Documentation/translations/sp_SP/memory-barriers.txt
++++ b/Documentation/translations/sp_SP/memory-barriers.txt
+@@ -1,6 +1,6 @@
+ NOTE:
+ This is a version of Documentation/memory-barriers.txt translated into
+-Spanish by Carlos Bilbao <carlos.bilbao@amd.com>. If you find any
++Spanish by Carlos Bilbao <carlos.bilbao.osdev@gmail.com>. If you find any
+ difference between this document and the original file or a problem with
+ the translation, please contact the maintainer of this file. Please also
+ note that the purpose of this file is to be easier to read for non English
+@@ -18,7 +18,7 @@ Documento original: David Howells <dhowells@redhat.com>
+     Will Deacon <will.deacon@arm.com>
+     Peter Zijlstra <peterz@infradead.org>
+ 
+-Traducido por: Carlos Bilbao <carlos.bilbao@amd.com>
++Traducido por: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ Nota: Si tiene alguna duda sobre la exactitud del contenido de esta
+ traducción, la única referencia válida es la documentación oficial en
+ inglés.
+diff --git a/Documentation/translations/sp_SP/process/code-of-conduct.rst b/Documentation/translations/sp_SP/process/code-of-conduct.rst
+index adc6c770cc37..a6c08613aefc 100644
+--- a/Documentation/translations/sp_SP/process/code-of-conduct.rst
++++ b/Documentation/translations/sp_SP/process/code-of-conduct.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/code-of-conduct.rst <code_of_conduct>`
+-:Translator: Contributor Covenant and Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Contributor Covenant and Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_code_of_conduct:
+ 
+diff --git a/Documentation/translations/sp_SP/process/coding-style.rst b/Documentation/translations/sp_SP/process/coding-style.rst
+index a37274764371..b5a84df44cea 100644
+--- a/Documentation/translations/sp_SP/process/coding-style.rst
++++ b/Documentation/translations/sp_SP/process/coding-style.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/coding-style.rst <submittingpatches>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_codingstyle:
+ 
+diff --git a/Documentation/translations/sp_SP/process/email-clients.rst b/Documentation/translations/sp_SP/process/email-clients.rst
+index fdf1e51b84e4..55d5803daf41 100644
+--- a/Documentation/translations/sp_SP/process/email-clients.rst
++++ b/Documentation/translations/sp_SP/process/email-clients.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/email-clients.rst <email_clients>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_email_clients:
+ 
+diff --git a/Documentation/translations/sp_SP/process/howto.rst b/Documentation/translations/sp_SP/process/howto.rst
+index dd793c0f8574..72ea855ac9dc 100644
+--- a/Documentation/translations/sp_SP/process/howto.rst
++++ b/Documentation/translations/sp_SP/process/howto.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/howto.rst <process_howto>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_process_howto:
+ 
+diff --git a/Documentation/translations/sp_SP/process/kernel-docs.rst b/Documentation/translations/sp_SP/process/kernel-docs.rst
+index 2f9b3df8f8fa..a62c6854f59b 100644
+--- a/Documentation/translations/sp_SP/process/kernel-docs.rst
++++ b/Documentation/translations/sp_SP/process/kernel-docs.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/kernel-docs.rst <kernel_docs>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_kernel_docs:
+ 
+diff --git a/Documentation/translations/sp_SP/process/kernel-enforcement-statement.rst b/Documentation/translations/sp_SP/process/kernel-enforcement-statement.rst
+index d66902694089..d47a1c154610 100644
+--- a/Documentation/translations/sp_SP/process/kernel-enforcement-statement.rst
++++ b/Documentation/translations/sp_SP/process/kernel-enforcement-statement.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/kernel-enforcement-statement.rst <process_statement_kernel>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_process_statement_kernel:
+ 
+diff --git a/Documentation/translations/sp_SP/process/magic-number.rst b/Documentation/translations/sp_SP/process/magic-number.rst
+index 7c7dfb4ba80b..32a99aac2f6c 100644
+--- a/Documentation/translations/sp_SP/process/magic-number.rst
++++ b/Documentation/translations/sp_SP/process/magic-number.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/magic-number.rst <magicnumbers>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_magicnumbers:
+ 
+diff --git a/Documentation/translations/sp_SP/process/programming-language.rst b/Documentation/translations/sp_SP/process/programming-language.rst
+index 301f525372d8..ba2164057f45 100644
+--- a/Documentation/translations/sp_SP/process/programming-language.rst
++++ b/Documentation/translations/sp_SP/process/programming-language.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/programming-language.rst <programming_language>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_programming_language:
+ 
+diff --git a/Documentation/translations/sp_SP/process/submitting-patches.rst b/Documentation/translations/sp_SP/process/submitting-patches.rst
+index c2757d9ab216..18bb3413c3ca 100644
+--- a/Documentation/translations/sp_SP/process/submitting-patches.rst
++++ b/Documentation/translations/sp_SP/process/submitting-patches.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/submitting-patches.rst <submittingpatches>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_submittingpatches:
+ 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d818866d6d73..8e9c2fd7a8a0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -987,7 +987,7 @@ F:	drivers/video/fbdev/geode/
+ 
+ AMD HSMP DRIVER
+ M:	Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>
+-R:	Carlos Bilbao <carlos.bilbao@amd.com>
++R:	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/arch/x86/amd_hsmp.rst
+@@ -5325,7 +5325,7 @@ F:	drivers/usb/atm/cxacru.c
+ 
+ CONFIDENTIAL COMPUTING THREAT MODEL FOR X86 VIRTUALIZATION (SNP/TDX)
+ M:	Elena Reshetova <elena.reshetova@intel.com>
+-M:	Carlos Bilbao <carlos.bilbao@amd.com>
++M:	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ S:	Maintained
+ F:	Documentation/security/snp-tdx-threat-model.rst
+ 
+@@ -10549,7 +10549,7 @@ S:	Orphan
+ F:	drivers/video/fbdev/imsttfb.c
+ 
+ INDEX OF FURTHER KERNEL DOCUMENTATION
+-M:	Carlos Bilbao <carlos.bilbao@amd.com>
++M:	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ S:	Maintained
+ F:	Documentation/process/kernel-docs.rst
+ 
+@@ -20549,7 +20549,7 @@ Q:	http://patchwork.linuxtv.org/project/linux-media/list/
+ F:	drivers/media/dvb-frontends/sp2*
+ 
+ SPANISH DOCUMENTATION
+-M:	Carlos Bilbao <carlos.bilbao@amd.com>
++M:	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ R:	Avadhut Naik <avadhut.naik@amd.com>
+ S:	Maintained
+ F:	Documentation/translations/sp_SP/
+-- 
+2.41.0
 
 
