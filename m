@@ -1,83 +1,155 @@
-Return-Path: <linux-kernel+bounces-153894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2084F8AD499
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:05:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5DC08AD49E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:06:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B40D41F25295
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:05:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0405F1C2144C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A3015532F;
-	Mon, 22 Apr 2024 19:04:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FBC6155322;
+	Mon, 22 Apr 2024 19:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qu7dq74U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uDXCxd3s"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0468D155307;
-	Mon, 22 Apr 2024 19:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639071552F2;
+	Mon, 22 Apr 2024 19:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713812669; cv=none; b=VD6z8BZGSBqPNX95QnomxubkEeOSEnXR1N4mTXSPL0dNTwgOsTMwo29XUO11iCncwLYwhTINl/fN7usq5CJ/s8Rt/lEmOJ0oHyC45Nt1ikcs4XXM5mU89NN+Q3DS2lSBN9F+Mm2Hk1h1FREeKvkCi0Wlh303U48UUE8TAbdaN0I=
+	t=1713812757; cv=none; b=gQfLiKHGyLThQkCLQqcyZX8rwdCgTP+NYlTNafLcejP+mjKxH2WqwZo3dmTuAQulUzqDdd/XJrnJx1HTMPi2qxl3j1cYraTWjVU6htvg5ByZATK0xgnPUvsgu39RApRlC94qVK0OW6p6YdSRhLEu1b2CwVMePqGtY51Hm8bf5hY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713812669; c=relaxed/simple;
-	bh=olqP1aRLAAfEcgb84p5a52kKbYDcwdtnUJC4C6mq74U=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=cN7CurwVTVx6w91lK2ckpkpT6u6UKHLn7O728LhWUxUVXy1YwsdeGQOXdCK8rSzpi5kspMtKQnz7Hzo+On5sfUL4eQsfbO8XZ/onVya2ogouRHReO+VEA1ETJegMSlTl7Tt0i1JcO3p1BRIjD72t9RHeZ+sZ01OULkhHJSRvwkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qu7dq74U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78F84C113CC;
-	Mon, 22 Apr 2024 19:04:28 +0000 (UTC)
+	s=arc-20240116; t=1713812757; c=relaxed/simple;
+	bh=olqbjtMO2lYQFKdnW9FhBNUoQLhAMSlCx3EdoK7BvxQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BnPOPqmX1bBviROfsGh/Lrf9hNfkwooEZRorfMbOQ30E9qH5nhJkq8qTlVZILnPp9HWruHKwEcXphafGN9FKSdmy7de9cBqfj6P19Sxpd2K0bfMbn+R510e5oTnOuR1IJyZAgWYuMtw1ZW0JkxhKsXwIXrYpZ9jgY64swWJ/BfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uDXCxd3s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2C49C4AF0C;
+	Mon, 22 Apr 2024 19:05:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713812668;
-	bh=olqP1aRLAAfEcgb84p5a52kKbYDcwdtnUJC4C6mq74U=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=Qu7dq74UxvzbpEN3NpAX3ogMta4JCap/1wpPrkerB8vdXOcq3jU7dzY1XAyipzaSu
-	 xNYzBS4P/lmp31Ga5B21ulSGTtZ40gJpA01IwI0X31rmkewrXOoDbsA5ygWdTjEkPJ
-	 zwAVJR2eqgsbjbmP/YBsx5PFq1URqBAB3Tr8DV6cqFxzbJQ+Mpxoi5JhSHYeh+qXL2
-	 tAvLWYCPMr/rFyjGB8W27PsxkbKSVjQQov988OGfbDn9cPDHUQ3gayxBj5ug9bYWEo
-	 PJBZSKbmsUtj5Ctkp5HVxqqrW93vYiewLgx+kG/21xDvSE25N9IU9aPIwIiGZJgIWQ
-	 MXf5LjXgbSVTw==
-Message-ID: <3a7c286f269246ea0138ddc960d1fac1.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1713812757;
+	bh=olqbjtMO2lYQFKdnW9FhBNUoQLhAMSlCx3EdoK7BvxQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=uDXCxd3sZnTu0YXjlb27OMBo2Ww2PBVIwA+q8lUNvApEq/PWHI1QUkVnqx5Ydl+j3
+	 1FjK1hRE44LaOBxQDRMXqtuoal3S/5FElxlVHf9ogy7p/ZycNb/RIsXvkUXdQwMsgH
+	 bXarTEys6i+IEP2d/uWh3ep3Ka9wJjL3OT95V4VfT2+IHY2cGsvcMsAjiZ91945MkB
+	 lZlu0/ba4iregoy927lvLlmniSLuG0+IYbHNX1JXlUwm7besyDoAHgOi1UI/tQo7iL
+	 7p1RJcHEg/MuH0jb5LtTG964ydw10G2NUg1ov9MYBCCVDmuIJEgbNOkuCvwi4ymjQe
+	 1Q0y51v50ZUaw==
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5aca32d3f78so935099eaf.1;
+        Mon, 22 Apr 2024 12:05:56 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXsRhF5ErfgVVyaHznnvTO2DC9VuN0BiemfKZWysoVkGxfAlJays5ddFvWFNuKFNxDYLuyDhyfbekjcdx6ydgVboeCWHFCjjc9Qa2oVllkXDgKal1GI1TcNj5JLTSXOUid6ST2vSB6wFgGME8YFi3tfe/xqLi4qMNdxDK3VzvYv7Wnj467n04yx9WmjCT9GuTWIZne7CB0OLso+RTs0Qg==
+X-Gm-Message-State: AOJu0Yx3H2P72KE05BNTXqLnHjdss0hthhYpCaMI7ugUFNfDq8DRyn0K
+	WWAa0iMulpaZgLYxLtm9jrqLa79npQxNq30qEc/99z4t8sFMLp+jcwPQ337w/nrOL4VXa4Jl425
+	HdbD7WSZEyT9675+YP3f5TvihxiM=
+X-Google-Smtp-Source: AGHT+IFQupzOqLQf3rypOOXDX+7ylfjySYUjvK8/UL2sIHZWqWZ3BDV9Q5+/PQPXaF+OFzkdf7PFFmoR2i+wYA/uyXY=
+X-Received: by 2002:a4a:5581:0:b0:5aa:3e4f:f01e with SMTP id
+ e123-20020a4a5581000000b005aa3e4ff01emr12662466oob.1.1713812756200; Mon, 22
+ Apr 2024 12:05:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com> <20240418135412.14730-8-Jonathan.Cameron@huawei.com>
+In-Reply-To: <20240418135412.14730-8-Jonathan.Cameron@huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 22 Apr 2024 21:05:44 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0jOoH7nP-5uaK9XVL_zf7Uh5SZnoupRyxK1qxwUdwq_dA@mail.gmail.com>
+Message-ID: <CAJZ5v0jOoH7nP-5uaK9XVL_zf7Uh5SZnoupRyxK1qxwUdwq_dA@mail.gmail.com>
+Subject: Re: [PATCH v7 07/16] ACPI: scan: switch to flags for acpi_scan_check_and_detach()
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, linux-pm@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
+	Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, 
+	Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, 
+	Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com, justin.he@arm.com, 
+	jianyong.wu@arm.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240415163649.895268-2-cristian.marussi@arm.com>
-References: <20240415163649.895268-1-cristian.marussi@arm.com> <20240415163649.895268-2-cristian.marussi@arm.com>
-Subject: Re: [PATCH v3 1/5] clk: scmi: Allocate CLK operations dynamically
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: sudeep.holla@arm.com, james.quinlan@broadcom.com, f.fainelli@gmail.com, vincent.guittot@linaro.org, peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com, quic_nkela@quicinc.com, souvik.chakravarty@arm.com, mturquette@baylibre.com, Cristian Marussi <cristian.marussi@arm.com>
-To: Cristian Marussi <cristian.marussi@arm.com>, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Mon, 22 Apr 2024 12:04:26 -0700
-User-Agent: alot/0.10
 
-Quoting Cristian Marussi (2024-04-15 09:36:45)
-> SCMI Clocks descriptors expose an increasing number of properties, thing
-> which, in turn, leads to a varying set of supported CLK operations to be
-> associated with each clock.
->=20
-> Providing statically pre-defined CLK operations structs for all the
-> possible combinations of allowed clock features is becoming cumbersome and
-> error-prone.
->=20
-> Allocate the per-clock operations descriptors dynamically and populate it
-> with the strictly needed set of operations depending on the advertised
-> clock properties: one descriptor is created for each distinct combination
-> of clock operations, so minimizing the number of clk_ops structures to the
-> strictly minimum needed.
->=20
-> CC: Michael Turquette <mturquette@baylibre.com>
-> CC: Stephen Boyd <sboyd@kernel.org>
-> CC: linux-clk@vger.kernel.org
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+On Thu, Apr 18, 2024 at 3:57=E2=80=AFPM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> Precursor patch adds the ability to pass a uintptr_t of flags into
+> acpi_scan_check_and detach() so that additional flags can be
+> added to indicate whether to defer portions of the eject flow.
+> The new flag follows in the next patch.
+>
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+I have no specific heartburn related to this, so
+
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
 > ---
-
-Applied to clk-next
+> v7: No change
+> v6: Based on internal feedback switch to less invasive change
+>     to using flags rather than a struct.
+> ---
+>  drivers/acpi/scan.c | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index d1464324de95..1ec9677e6c2d 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -244,13 +244,16 @@ static int acpi_scan_try_to_offline(struct acpi_dev=
+ice *device)
+>         return 0;
+>  }
+>
+> -static int acpi_scan_check_and_detach(struct acpi_device *adev, void *ch=
+eck)
+> +#define ACPI_SCAN_CHECK_FLAG_STATUS    BIT(0)
+> +
+> +static int acpi_scan_check_and_detach(struct acpi_device *adev, void *p)
+>  {
+>         struct acpi_scan_handler *handler =3D adev->handler;
+> +       uintptr_t flags =3D (uintptr_t)p;
+>
+> -       acpi_dev_for_each_child_reverse(adev, acpi_scan_check_and_detach,=
+ check);
+> +       acpi_dev_for_each_child_reverse(adev, acpi_scan_check_and_detach,=
+ p);
+>
+> -       if (check) {
+> +       if (flags & ACPI_SCAN_CHECK_FLAG_STATUS) {
+>                 acpi_bus_get_status(adev);
+>                 /*
+>                  * Skip devices that are still there and take the enabled
+> @@ -288,7 +291,9 @@ static int acpi_scan_check_and_detach(struct acpi_dev=
+ice *adev, void *check)
+>
+>  static void acpi_scan_check_subtree(struct acpi_device *adev)
+>  {
+> -       acpi_scan_check_and_detach(adev, (void *)true);
+> +       uintptr_t flags =3D ACPI_SCAN_CHECK_FLAG_STATUS;
+> +
+> +       acpi_scan_check_and_detach(adev, (void *)flags);
+>  }
+>
+>  static int acpi_scan_hot_remove(struct acpi_device *device)
+> @@ -2601,7 +2606,9 @@ EXPORT_SYMBOL(acpi_bus_scan);
+>   */
+>  void acpi_bus_trim(struct acpi_device *adev)
+>  {
+> -       acpi_scan_check_and_detach(adev, NULL);
+> +       uintptr_t flags =3D 0;
+> +
+> +       acpi_scan_check_and_detach(adev, (void *)flags);
+>  }
+>  EXPORT_SYMBOL_GPL(acpi_bus_trim);
+>
+> --
 
