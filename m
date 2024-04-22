@@ -1,71 +1,61 @@
-Return-Path: <linux-kernel+bounces-153252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5650C8ACB81
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1DD08ACB46
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:54:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C168B1F23580
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:58:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3585B1F215D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE8B146597;
-	Mon, 22 Apr 2024 10:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ASXSqTH4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D0B1448E5;
+	Mon, 22 Apr 2024 10:53:59 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9061D482C1;
-	Mon, 22 Apr 2024 10:58:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E63A482C1
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:53:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713783506; cv=none; b=iGqdEPG8U0HLXvtI3JtnO7a38WAzrIsgDGsZbYolCm1BEXjiDO3L4Q4M6wJM6zdofFTxxJsM7WiEvVcOtwwegSdJusN1trWtoYCqjTFjWbvufDU3cxf6vK50MzcVLAj38ntlV7yjkW8VJjxnEqab0SPHnZ6WaMcV3ipQi8ZITyk=
+	t=1713783239; cv=none; b=RwPhAra6+AgKHmpvSRLt10psjgJF1X4tlvMV2+I18UWzsq/dqrLz/zhqHqE+k6JR+mrfYSMKJw3b191l0g5QoPkdWs3Hq+Hhm+ZteanzkMX/7gdrdiXfGu6spgqqRk9rhl4hj3+RfH5Y1QzGt9+qHSid5ooYqeYKglSLnXGWMqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713783506; c=relaxed/simple;
-	bh=lPATZdfC4lvu1dgYEE2BFqtfBxeTwRg2JFrdpCPXZMs=;
+	s=arc-20240116; t=1713783239; c=relaxed/simple;
+	bh=vNKjdmuiOzLKbsLCCEUPR4Vbo0Q1bX4ZBAFYmy8vwfI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rUlS8RkBBRU762cIpp/jTxH6heOUB/X5oimK381yBnjEWYaFKV0kCXS4+OZ7E92r4VzGHUaTDlnQmMJkp14a4of4t0yvJ65D1zavWTo3crutxDIgThygRMxpC+Y51mq16CLZYmIi6sIxoxJLABntjJ8mwj5RSbxO5x+18hR/VFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ASXSqTH4; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713783504; x=1745319504;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lPATZdfC4lvu1dgYEE2BFqtfBxeTwRg2JFrdpCPXZMs=;
-  b=ASXSqTH4jAXmykN3u03L8Arf+wT62uGC5n7SxrAZ6RMttYFzoHSDgqEF
-   LQvr/xnYurI7T1q8gdThfTD8jXZjOu/Nqr5zitV5i1T0PAYCN7t6+2qQt
-   7UC3EvNUsysGClSrbDLoa5SnhOQEgG521vnOoE/fiKUFCMkFICs5jdAo2
-   qgV1DGhWMQQtjir3jWVg772xY/19rCxWZmLShUUJRbsD3dY7DWBlNxRR/
-   xbeLYrJrY4Ts7PvjP4uKLJBXKx84EFJCKqJvvUFIe8xYj6sYB91NDq3pi
-   VS+d+AwmgKPTjNDf/5UZVb7PNASSTdWk5BftrBgqUUaxQDYoY7ZRNnqcK
-   A==;
-X-CSE-ConnectionGUID: Wm5bgdjzQVy1kUrOsJMJMg==
-X-CSE-MsgGUID: jnRm82qnSFC8qkjf7BYPaQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="20453682"
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="20453682"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 03:58:23 -0700
-X-CSE-ConnectionGUID: yrgtAYVYS1SH1HzMkvUDxQ==
-X-CSE-MsgGUID: fQWUNgQ4SXmCgHFcx2AAxw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="24017009"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa010.fm.intel.com with ESMTP; 22 Apr 2024 03:58:21 -0700
-Date: Mon, 22 Apr 2024 18:53:02 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
-	michael.roth@amd.com, isaku.yamahata@intel.com
-Subject: Re: [PATCH 06/11] KVM: guest_memfd: Add hook for initializing memory
-Message-ID: <ZiZBjtQvUuuqqKNF@yilunxu-OptiPlex-7050>
-References: <20240404185034.3184582-1-pbonzini@redhat.com>
- <20240404185034.3184582-7-pbonzini@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nxXHeo1wvDnjjh5FkORbUZReBiMG8uAvDdG5FMlG6X2j+iXIGMbogb2ZpEJSJ0t1d0pQs6LO3cYA+/HV4G86iRKHRfBSg/H0aygnJZr8NGEJoJy02RUzRJalujUVSAfH/Or0ny/cICYuZ9Yy4PI5N/gVnLBE4vPFMjYf0v7v2HY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1ryrIp-00007D-G9; Mon, 22 Apr 2024 12:53:39 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1ryrIo-00DftO-7q; Mon, 22 Apr 2024 12:53:38 +0200
+Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <sha@pengutronix.de>)
+	id 1ryrIo-0086s5-0V;
+	Mon, 22 Apr 2024 12:53:38 +0200
+Date: Mon, 22 Apr 2024 12:53:38 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] mtd: nand: mxc_nand: disable subpage reads
+Message-ID: <ZiZBsjtDDhDe7x8f@pengutronix.de>
+References: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
+ <20240417-mtd-nand-mxc-nand-exec-op-v1-4-d12564fe54e9@pengutronix.de>
+ <ZiDCKGlG4MZ23Tqo@pengutronix.de>
+ <20240418113244.6e535d3f@xps-13>
+ <ZiEHUz3wicDJscGP@pengutronix.de>
+ <20240419114507.5d25d8cd@xps-13>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,245 +64,127 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240404185034.3184582-7-pbonzini@redhat.com>
+In-Reply-To: <20240419114507.5d25d8cd@xps-13>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Thu, Apr 04, 2024 at 02:50:28PM -0400, Paolo Bonzini wrote:
-> guest_memfd pages are generally expected to be in some arch-defined
-> initial state prior to using them for guest memory. For SEV-SNP this
-> initial state is 'private', or 'guest-owned', and requires additional
-> operations to move these pages into a 'private' state by updating the
-> corresponding entries the RMP table.
+On Fri, Apr 19, 2024 at 11:46:57AM +0200, Miquel Raynal wrote:
+> Hi Sascha,
 > 
-> Allow for an arch-defined hook to handle updates of this sort, and go
-> ahead and implement one for x86 so KVM implementations like AMD SVM can
-> register a kvm_x86_ops callback to handle these updates for SEV-SNP
-> guests.
+> s.hauer@pengutronix.de wrote on Thu, 18 Apr 2024 13:43:15 +0200:
 > 
-> The preparation callback is always called when allocating/grabbing
-> folios via gmem, and it is up to the architecture to keep track of
-> whether or not the pages are already in the expected state (e.g. the RMP
-> table in the case of SEV-SNP).
+> > On Thu, Apr 18, 2024 at 11:32:44AM +0200, Miquel Raynal wrote:
+> > > Hi Sascha,
+> > > 
+> > > s.hauer@pengutronix.de wrote on Thu, 18 Apr 2024 08:48:08 +0200:
+> > >   
+> > > > On Wed, Apr 17, 2024 at 09:13:31AM +0200, Sascha Hauer wrote:  
+> > > > > The NAND core enabled subpage reads when a largepage NAND is used with
+> > > > > SOFT_ECC. The i.MX NAND controller doesn't support subpage reads, so
+> > > > > clear the flag again.
+> > > > > 
+> > > > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > > > > ---
+> > > > >  drivers/mtd/nand/raw/mxc_nand.c | 2 ++
+> > > > >  1 file changed, 2 insertions(+)
+> > > > > 
+> > > > > diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+> > > > > index f44c130dca18d..19b46210bd194 100644
+> > > > > --- a/drivers/mtd/nand/raw/mxc_nand.c
+> > > > > +++ b/drivers/mtd/nand/raw/mxc_nand.c
+> > > > > @@ -1667,6 +1667,8 @@ static int mxcnd_probe(struct platform_device *pdev)
+> > > > >  	if (err)
+> > > > >  		goto escan;
+> > > > >  
+> > > > > +	this->options &= ~NAND_SUBPAGE_READ;
+> > > > > +    
+> > > > 
+> > > > Nah, it doesn't work like this. It turns out the BBT is read using
+> > > > subpage reads before we can disable them here.
+> > > >
+> > > > This is the code in nand_scan_tail() we stumble upon:
+> > > > 
+> > > > 	/* Large page NAND with SOFT_ECC should support subpage reads */
+> > > > 	switch (ecc->engine_type) {
+> > > > 	case NAND_ECC_ENGINE_TYPE_SOFT:
+> > > > 		if (chip->page_shift > 9)
+> > > > 			chip->options |= NAND_SUBPAGE_READ;
+> > > > 		break;
+> > > > 
+> > > > 	default:
+> > > > 		break;
+> > > > 	}
+> > > > 
+> > > > So the code assumes subpage reads are ok when SOFT_ECC is in use, which
+> > > > in my case is not true. I guess some drivers depend on the
+> > > > NAND_SUBPAGE_READ bit magically be set, so simply removing this code is
+> > > > likely not an option.  Any ideas what to do?  
+> > > 
+> > > Can you elaborate why subpage reads are not an option in your
+> > > situation? While subpage writes depend on chip capabilities, reads
+> > > however should always work: it's just the controller selecting the
+> > > column where to start and then reading less data than it could from the
+> > > NAND cache. It's a very basic NAND controller feature, and I remember
+> > > this was working on eg. an i.MX27.  
+> > 
+> > On the i.MX27 reading a full 2k page means triggering one read operation
+> > per 512 bytes in the NAND controller, so it would be possible to read
+> > subpages by triggering only one read operation instead of four in a row.
+> > 
+> > The newer SoCs like i.MX25 always read a full page with a single read
+> > operation. We could likely read subpages by temporarily configuring the
+> > controller for a 512b page size NAND.
+> > 
+> > I just realized the real problem comes with reading the OOB data. With
+> > software BCH the NAND layer hardcodes the read_subpage hook to
+> > nand_read_subpage() which uses nand_change_read_column_op() to read the
+> > OOB data. This uses NAND_CMD_RNDOUT and I have now idea if/how this can
+> > be implemented in the i.MX NAND driver. Right now the controller indeed
+> > reads some data and then the SRAM buffer really contains part of the
+> > desired OOB data, but also part of the user data.
 > 
-> In some cases, it is necessary to defer the preparation of the pages to
-> handle things like in-place encryption of initial guest memory payloads
-> before marking these pages as 'private'/'guest-owned'.  Add an argument
-> (always true for now) to kvm_gmem_get_folio() that allows for the
-> preparation callback to be bypassed.  To detect possible issues in
+> NAND_CMD_RNDOUT is impossible to avoid,
 
-IIUC, we have 2 dedicated flows.
-1 kvm_gmem_get_pfn() or kvm_gmem_allocate()
-  a. kvm_gmem_get_folio()
-  b. gmem_prepare() for RMP
+Apparently it has been possible until now. NAND_CMD_RNDOUT has never
+been used with this driver and it also doesn't work like expected.
 
-2 in-place encryption or whatever
-  a. kvm_gmem_get_folio(FGP_CREAT_ONLY)
-  b. in-place encryption
-  c. gmem_prepare() for RMP
+One problem is that the read_page_raw() and write_page_raw() are not
+implemented like supposed by the NAND layer. The i.MX NAND controller
+uses a syndrome type ECC layout, meaning that the user data and OOB data
+is interleaved, so the raw r/w functions should normally pass/expect the
+page data in interleaved format. Unfortunately the raw functions are not
+implemented like that, instead they detangle the data themselves. This
+also means that setting the cursor using NAND_CMD_RNDOUT will not put
+the cursor at a meaningful place, as the raw functions are not really
+exect/return the raw page data.
 
-Could we move gmem_prepare() out of kvm_gmem_get_folio(), then we could
-have straightforward flow for each case, and don't have to have an
-argument to pospone gmem_prepare().
+This could be fixed, but the raw operations are also exposed to
+userspace, so fixing these would mean that we might break some userspace
+applications.
 
-> the way userspace initializes memory, it is only possible to add an
-> unprepared page if it is not already included in the filemap.
-> 
-> Link: https://lore.kernel.org/lkml/ZLqVdvsF11Ddo7Dq@google.com/
-> Co-developed-by: Michael Roth <michael.roth@amd.com>
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> Message-Id: <20231230172351.574091-5-michael.roth@amd.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/include/asm/kvm-x86-ops.h |  1 +
->  arch/x86/include/asm/kvm_host.h    |  1 +
->  arch/x86/kvm/x86.c                 |  6 +++
->  include/linux/kvm_host.h           |  5 +++
->  virt/kvm/Kconfig                   |  4 ++
->  virt/kvm/guest_memfd.c             | 65 ++++++++++++++++++++++++++++--
->  6 files changed, 78 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-> index 5187fcf4b610..d26fcad13e36 100644
-> --- a/arch/x86/include/asm/kvm-x86-ops.h
-> +++ b/arch/x86/include/asm/kvm-x86-ops.h
-> @@ -139,6 +139,7 @@ KVM_X86_OP(vcpu_deliver_sipi_vector)
->  KVM_X86_OP_OPTIONAL_RET0(vcpu_get_apicv_inhibit_reasons);
->  KVM_X86_OP_OPTIONAL(get_untagged_addr)
->  KVM_X86_OP_OPTIONAL(alloc_apic_backing_page)
-> +KVM_X86_OP_OPTIONAL_RET0(gmem_prepare)
->  
->  #undef KVM_X86_OP
->  #undef KVM_X86_OP_OPTIONAL
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 01c69840647e..f101fab0040e 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1809,6 +1809,7 @@ struct kvm_x86_ops {
->  
->  	gva_t (*get_untagged_addr)(struct kvm_vcpu *vcpu, gva_t gva, unsigned int flags);
->  	void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
-> +	int (*gmem_prepare)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order);
->  };
->  
->  struct kvm_x86_nested_ops {
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 2d2619d3eee4..972524ddcfdb 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -13598,6 +13598,12 @@ bool kvm_arch_no_poll(struct kvm_vcpu *vcpu)
->  }
->  EXPORT_SYMBOL_GPL(kvm_arch_no_poll);
->  
-> +#ifdef CONFIG_HAVE_KVM_GMEM_PREPARE
-> +int kvm_arch_gmem_prepare(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn, int max_order)
-> +{
-> +	return static_call(kvm_x86_gmem_prepare)(kvm, pfn, gfn, max_order);
-> +}
-> +#endif
->  
->  int kvm_spec_ctrl_test_value(u64 value)
->  {
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 48f31dcd318a..33ed3b884a6b 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -2445,4 +2445,9 @@ static inline int kvm_gmem_get_pfn(struct kvm *kvm,
->  }
->  #endif /* CONFIG_KVM_PRIVATE_MEM */
->  
-> +#ifdef CONFIG_HAVE_KVM_GMEM_PREPARE
-> +int kvm_arch_gmem_prepare(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn, int max_order);
-> +bool kvm_arch_gmem_prepare_needed(struct kvm *kvm);
-> +#endif
-> +
->  #endif
-> diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-> index 29b73eedfe74..ca870157b2ed 100644
-> --- a/virt/kvm/Kconfig
-> +++ b/virt/kvm/Kconfig
-> @@ -109,3 +109,7 @@ config KVM_GENERIC_PRIVATE_MEM
->         select KVM_GENERIC_MEMORY_ATTRIBUTES
->         select KVM_PRIVATE_MEM
->         bool
-> +
-> +config HAVE_KVM_GMEM_PREPARE
-> +       bool
-> +       depends on KVM_PRIVATE_MEM
-> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-> index e5b3cd02b651..486748e65f36 100644
-> --- a/virt/kvm/guest_memfd.c
-> +++ b/virt/kvm/guest_memfd.c
-> @@ -13,12 +13,60 @@ struct kvm_gmem {
->  	struct list_head entry;
->  };
->  
-> -static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index)
-> +#ifdef CONFIG_HAVE_KVM_GMEM_PREPARE
-> +bool __weak kvm_arch_gmem_prepare_needed(struct kvm *kvm)
-> +{
-> +	return false;
-> +}
-> +#endif
+The other point is that with using software BCH ecc the NAND layer
+requests me to read 7 bytes at offset 0x824. This can't be really
+implemented in the i.MX NAND driver. It only allows us to read a full
+512 byte subpage, so whenever the NAND layer requests me to read a few
+bytes the controller will always transfer 512 bytes from which I then
+ignore most of it (and possibly trigger another 512 bytes transfer when
+reading the ECC for the next subpage).
 
-In which case HAVE_KVM_GMEM_PREPARE is selected but
-gmem_prepare_needed() is never implemented?  Then all gmem_prepare stuff
-are actually dead code.  Maybe we don't need this weak stub?
+I think these issues can all be handled somehow, but this comes at a
+rather high price, both in effort and the risk of breaking userspace.
+It would be far easier to tell the NAND layer not to do subpage reads.
 
-> +
-> +static int kvm_gmem_prepare_folio(struct inode *inode, pgoff_t index, struct folio *folio)
-> +{
-> +#ifdef CONFIG_HAVE_KVM_GMEM_PREPARE
-> +	struct list_head *gmem_list = &inode->i_mapping->i_private_list;
-> +	struct kvm_gmem *gmem;
-> +
-> +	list_for_each_entry(gmem, gmem_list, entry) {
-> +		struct kvm_memory_slot *slot;
-> +		struct kvm *kvm = gmem->kvm;
-> +		struct page *page;
-> +		kvm_pfn_t pfn;
-> +		gfn_t gfn;
-> +		int rc;
-> +
-> +		if (!kvm_arch_gmem_prepare_needed(kvm))
-> +			continue;
-> +
-> +		slot = xa_load(&gmem->bindings, index);
-> +		if (!slot)
-> +			continue;
-> +
-> +		page = folio_file_page(folio, index);
-> +		pfn = page_to_pfn(page);
-> +		gfn = slot->base_gfn + index - slot->gmem.pgoff;
-> +		rc = kvm_arch_gmem_prepare(kvm, gfn, pfn, compound_order(compound_head(page)));
-> +		if (rc) {
-> +			pr_warn_ratelimited("gmem: Failed to prepare folio for index %lx, error %d.\n",
-> +					    index, rc);
-> +			return rc;
-> +		}
-> +	}
-> +
-> +#endif
-> +	return 0;
-> +}
-> +
-> +static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index, bool prepare)
->  {
->  	struct folio *folio;
-> +	fgf_t fgp_flags = FGP_LOCK | FGP_ACCESSED | FGP_CREAT;
-> +
-> +	if (!prepare)
-> +		fgp_flags |= FGP_CREAT_ONLY;
->  
->  	/* TODO: Support huge pages. */
-> -	folio = filemap_grab_folio(inode->i_mapping, index);
-> +	folio = __filemap_get_folio(inode->i_mapping, index, fgp_flags,
-> +				    mapping_gfp_mask(inode->i_mapping));
->  	if (IS_ERR_OR_NULL(folio))
->  		return folio;
->  
-> @@ -41,6 +89,15 @@ static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index)
->  		folio_mark_uptodate(folio);
->  	}
->  
-> +	if (prepare) {
-> +		int r =	kvm_gmem_prepare_folio(inode, index, folio);
-> +		if (r < 0) {
-> +			folio_unlock(folio);
-> +			folio_put(folio);
-> +			return ERR_PTR(r);
-> +		}
-> +	}
-> +
+Sascha
 
-Do we still need to prepare the page if it is hwpoisoned? I see the
-hwpoisoned check is outside, in kvm_gmem_get_pfn().
-
-Thanks,
-Yilun
-
->  	/*
->  	 * Ignore accessed, referenced, and dirty flags.  The memory is
->  	 * unevictable and there is no storage to write back to.
-> @@ -145,7 +202,7 @@ static long kvm_gmem_allocate(struct inode *inode, loff_t offset, loff_t len)
->  			break;
->  		}
->  
-> -		folio = kvm_gmem_get_folio(inode, index);
-> +		folio = kvm_gmem_get_folio(inode, index, true);
->  		if (IS_ERR_OR_NULL(folio)) {
->  			r = folio ? PTR_ERR(folio) : -ENOMEM;
->  			break;
-> @@ -505,7 +562,7 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
->  		goto out_fput;
->  	}
->  
-> -	folio = kvm_gmem_get_folio(file_inode(file), index);
-> +	folio = kvm_gmem_get_folio(file_inode(file), index, true);
->  	if (!folio) {
->  		r = -ENOMEM;
->  		goto out_fput;
-> -- 
-> 2.43.0
-> 
-> 
-> 
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
