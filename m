@@ -1,64 +1,60 @@
-Return-Path: <linux-kernel+bounces-154304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 405B28ADA81
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:14:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD1468ADA83
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:14:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 596C41C20A12
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:14:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92D981F21A3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2FA2180A80;
-	Mon, 22 Apr 2024 23:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C6B180A9E;
+	Mon, 22 Apr 2024 23:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W0o37QWh"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bOT5ekKu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415AB180A6F;
-	Mon, 22 Apr 2024 23:57:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D88180A86;
+	Mon, 22 Apr 2024 23:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830275; cv=none; b=jCEe2ZRww5zSjIX+pJ+UkDgX2fOf3FdNDcuv2mY4W8F8DCMIHVXEAIrrDhd/NW288rm+/FoMhJ0EiJW8euF2u4YYC3JFv1EGYMvGtSzts6CLcLzFTNzJSMArPqKCBP32xraj8ggmkFHqURbmfRL+CN7iz/f4hIfPs904m6X+w1E=
+	t=1713830276; cv=none; b=Vm1BSCtqo01baVxeJ7vomwKNP+44v6xEpVgeTDYcnXjcfiEECOW2RxnhZC7UxBrcillvqWOyW8KrvoqsZehm2nZKZMq2tjHzuF0Psouux14FIVVJfN8AW23xVfk6UmHSPeN+doTvhpcbIIDdePtbB0KZ+g1ritUHP1ZBEZrnfxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830275; c=relaxed/simple;
-	bh=olWAD/AHfkUfx+xA4BMO+g6lwzQlr5Y47Z07jul84sY=;
+	s=arc-20240116; t=1713830276; c=relaxed/simple;
+	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fVVNKl5RDYbLwV9k1Wo+WHTrHFnI5UTsmfekyDWTRsS5nfUwCX2ST/Er9egbJQY9W32+cxru13UkNVH7ZTN3P4YrLypSTAwFXIT64UaxxUlfs7OT4K+/Dg899WJeT2aTCuz4a/Ao3kLOJv+Ho4dn+ZSxQdPtTdoX80S54+ATgTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W0o37QWh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93EFCC2BD11;
-	Mon, 22 Apr 2024 23:57:53 +0000 (UTC)
+	 MIME-Version; b=O8k1Bn/HMaAiVe4iGbEzEL5w/YzExW6Yuaqtzin7q2AkLA9lD54Se+/vFns1fTYw1J2LsRMjRVNuWkVV7rT0SuTody1Sd16d5G7qN6Ltf8HK986EvbkfRhqhyn7Mhac4zDhjtVAKz9W4duUcJ5X3u3rdk9Ge9F/c1iESz4iYUWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bOT5ekKu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 928EBC2BD11;
+	Mon, 22 Apr 2024 23:57:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830275;
-	bh=olWAD/AHfkUfx+xA4BMO+g6lwzQlr5Y47Z07jul84sY=;
+	s=k20201202; t=1713830276;
+	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=W0o37QWhPsUGsMY86tFU6Ld3ObtM4OodHSTnm6hG8tRV8oNFOlZR4nXbHwR+JJ+Tg
-	 wolFmc4vqf/GBvPTiOo5T0NNzNYmoER6sfARIJVOxmmRUlTNNIoA/k17cdxpFJYkc6
-	 iIUuXoeHeRAqEd8lsFzY/wpRCPbxym1v///151uFp2xWcKzg1KMH2vyaLCa61Hmu9Y
-	 ZJRGVOYj9KzyL/vZBfwl0ycs1M6hub4gojbq/WUp72eNWzLGDsi9B72jFlpw6ZN6Tx
-	 HqvwEM4GhfcHIcz5KMoklskXmf6X6FcMDr/EgtJRfIcbOHp8xhCCj6xNgJ/G171Vu9
-	 63+/BsFm0oTvQ==
+	b=bOT5ekKu5fwwj+vs8Z4v/tITmfNQ31fGh6z+OxUScf2guRAelWe4viEG6lODPt5dz
+	 ayCaJogTn+TEIIkH9D2Zz5BaFY8VU6wCo4leV7Rk4lQNKSpiwIE7lkpe6ltCZOOUUd
+	 h2uqZgRYPCahxwI5hUwavTXupaWYXwIlk6bu8rsxVU8VFTrDsQ4TAKUAG5K65vdv2P
+	 CDbCNIXOE7yfga7reyrlBRvm1PGW2Qn9nrJmkYa+t/guSZLPaGTQZhV1QZuc+RrIxx
+	 UUVTB5+xTEJK5g2oMMfpZNpKRZwPmmrW3ja910scz1B7Gl8n+WDpkiN111jdf89xvD
+	 pEzDbf4PKq91g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Lijo Lazar <lijo.lazar@amd.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	Asad Kamal <asad.kamal@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: John Stultz <jstultz@google.com>,
+	Lee Jones <joneslee@google.com>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
 	Sasha Levin <sashal@kernel.org>,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	ltuikov89@gmail.com,
-	dakr@redhat.com,
-	zhenguo.yin@amd.com,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.1 14/19] drm/amdgpu: Refine IB schedule error logging
-Date: Mon, 22 Apr 2024 19:18:28 -0400
-Message-ID: <20240422231845.1607921-14-sashal@kernel.org>
+	shuah@kernel.org,
+	nathan@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.1 15/19] selftests: timers: Fix valid-adjtimex signed left-shift undefined behavior
+Date: Mon, 22 Apr 2024 19:18:29 -0400
+Message-ID: <20240422231845.1607921-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231845.1607921-1-sashal@kernel.org>
 References: <20240422231845.1607921-1-sashal@kernel.org>
@@ -68,50 +64,141 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.87
 Content-Transfer-Encoding: 8bit
 
-From: Lijo Lazar <lijo.lazar@amd.com>
+From: John Stultz <jstultz@google.com>
 
-[ Upstream commit 4b18a91faf1752f9bd69a4ed3aed2c8f6e5b0528 ]
+[ Upstream commit 076361362122a6d8a4c45f172ced5576b2d4a50d ]
 
-Downgrade to debug information when IBs are skipped. Also, use dev_* to
-identify the device.
+The struct adjtimex freq field takes a signed value who's units are in
+shifted (<<16) parts-per-million.
 
-Signed-off-by: Lijo Lazar <lijo.lazar@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Reviewed-by: Asad Kamal <asad.kamal@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Unfortunately for negative adjustments, the straightforward use of:
+
+  freq = ppm << 16 trips undefined behavior warnings with clang:
+
+valid-adjtimex.c:66:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
+        -499<<16,
+        ~~~~^
+valid-adjtimex.c:67:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
+        -450<<16,
+        ~~~~^
+.
+
+Fix it by using a multiply by (1 << 16) instead of shifting negative values
+in the valid-adjtimex test case. Align the values for better readability.
+
+Reported-by: Lee Jones <joneslee@google.com>
+Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Signed-off-by: John Stultz <jstultz@google.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Link: https://lore.kernel.org/r/20240409202222.2830476-1-jstultz@google.com
+Link: https://lore.kernel.org/lkml/0c6d4f0d-2064-4444-986b-1d1ed782135f@collabora.com/
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_job.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ .../testing/selftests/timers/valid-adjtimex.c | 73 +++++++++----------
+ 1 file changed, 36 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
-index 3bf0e893c07df..f34bc9bb7045a 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
-@@ -301,12 +301,15 @@ static struct dma_fence *amdgpu_job_run(struct drm_sched_job *sched_job)
- 		dma_fence_set_error(finished, -ECANCELED);
+diff --git a/tools/testing/selftests/timers/valid-adjtimex.c b/tools/testing/selftests/timers/valid-adjtimex.c
+index 48b9a803235a8..d13ebde203221 100644
+--- a/tools/testing/selftests/timers/valid-adjtimex.c
++++ b/tools/testing/selftests/timers/valid-adjtimex.c
+@@ -21,9 +21,6 @@
+  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  *   GNU General Public License for more details.
+  */
+-
+-
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <time.h>
+@@ -62,45 +59,47 @@ int clear_time_state(void)
+ #define NUM_FREQ_OUTOFRANGE 4
+ #define NUM_FREQ_INVALID 2
  
- 	if (finished->error < 0) {
--		DRM_INFO("Skip scheduling IBs!\n");
-+		dev_dbg(adev->dev, "Skip scheduling IBs in ring(%s)",
-+			ring->name);
- 	} else {
- 		r = amdgpu_ib_schedule(ring, job->num_ibs, job->ibs, job,
- 				       &fence);
- 		if (r)
--			DRM_ERROR("Error scheduling IBs (%d)\n", r);
-+			dev_err(adev->dev,
-+				"Error scheduling IBs (%d) in ring(%s)", r,
-+				ring->name);
- 	}
++#define SHIFTED_PPM (1 << 16)
++
+ long valid_freq[NUM_FREQ_VALID] = {
+-	-499<<16,
+-	-450<<16,
+-	-400<<16,
+-	-350<<16,
+-	-300<<16,
+-	-250<<16,
+-	-200<<16,
+-	-150<<16,
+-	-100<<16,
+-	-75<<16,
+-	-50<<16,
+-	-25<<16,
+-	-10<<16,
+-	-5<<16,
+-	-1<<16,
++	 -499 * SHIFTED_PPM,
++	 -450 * SHIFTED_PPM,
++	 -400 * SHIFTED_PPM,
++	 -350 * SHIFTED_PPM,
++	 -300 * SHIFTED_PPM,
++	 -250 * SHIFTED_PPM,
++	 -200 * SHIFTED_PPM,
++	 -150 * SHIFTED_PPM,
++	 -100 * SHIFTED_PPM,
++	  -75 * SHIFTED_PPM,
++	  -50 * SHIFTED_PPM,
++	  -25 * SHIFTED_PPM,
++	  -10 * SHIFTED_PPM,
++	   -5 * SHIFTED_PPM,
++	   -1 * SHIFTED_PPM,
+ 	-1000,
+-	1<<16,
+-	5<<16,
+-	10<<16,
+-	25<<16,
+-	50<<16,
+-	75<<16,
+-	100<<16,
+-	150<<16,
+-	200<<16,
+-	250<<16,
+-	300<<16,
+-	350<<16,
+-	400<<16,
+-	450<<16,
+-	499<<16,
++	    1 * SHIFTED_PPM,
++	    5 * SHIFTED_PPM,
++	   10 * SHIFTED_PPM,
++	   25 * SHIFTED_PPM,
++	   50 * SHIFTED_PPM,
++	   75 * SHIFTED_PPM,
++	  100 * SHIFTED_PPM,
++	  150 * SHIFTED_PPM,
++	  200 * SHIFTED_PPM,
++	  250 * SHIFTED_PPM,
++	  300 * SHIFTED_PPM,
++	  350 * SHIFTED_PPM,
++	  400 * SHIFTED_PPM,
++	  450 * SHIFTED_PPM,
++	  499 * SHIFTED_PPM,
+ };
  
- 	job->job_run_counter++;
+ long outofrange_freq[NUM_FREQ_OUTOFRANGE] = {
+-	-1000<<16,
+-	-550<<16,
+-	550<<16,
+-	1000<<16,
++	-1000 * SHIFTED_PPM,
++	 -550 * SHIFTED_PPM,
++	  550 * SHIFTED_PPM,
++	 1000 * SHIFTED_PPM,
+ };
+ 
+ #define LONG_MAX (~0UL>>1)
 -- 
 2.43.0
 
