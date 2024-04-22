@@ -1,269 +1,191 @@
-Return-Path: <linux-kernel+bounces-153778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DCBC8AD2FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:02:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93AD48AD303
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:03:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C49CB2517A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:02:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD44DB25625
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E29154BE3;
-	Mon, 22 Apr 2024 17:00:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0707915383C;
+	Mon, 22 Apr 2024 17:01:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p9PBXRja"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="KY1xfZkb"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7770A154442;
-	Mon, 22 Apr 2024 17:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1E15153BC3
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 17:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713805227; cv=none; b=plkWCBKSXObYZFz3VdvPaFHDQamrRwOJqKmwSUS+Ki1gR6t1rJAerYouSPL/6YaFtPlR1HV+ODIDLPvLGdTkyUjDM2Q0BUb+2TEWNNllhJQ4qHMeJbizzpGrhPp3uIDH5DYvW/63cFsl+jl5lYrDqVMNqt7ZJyqMX09FvU3mJBs=
+	t=1713805281; cv=none; b=i6xBGcF5dDUaBUmIZA7D2HYBlnichHrqbTM9FW9O3mmJnRqiFfvpSFo/iXAzWeedOjTPAH3heWRVdeD6lWzzkSOl1zpRKn20zqr/+r6yBA4Q9z94yMvXzMAdkQ458LFyIZ2OgU4qosYMw1DO+bCw54W/pNzwrUNK5iGfqDUg8Vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713805227; c=relaxed/simple;
-	bh=s1zKSecfH6FRmGi1pXDaj0RBdLhVWJQvZjaTL6GhU6w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L4d18EPEWCppw6PUW2CJZDL6gH8KZvOw8QhbWjDNhstP66apzLzU54mUuIH0eoqbFKj/meaPCt8foWEgiDt8qBHnGpPjw+c4djBZAeSk/0b8FcDTDnETbpqlpBH2RUycaYmnnd5QZXkr6RmFdzR66MIIuYLKlRqpeQu/Pd+TfVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p9PBXRja; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 126ECC32781;
-	Mon, 22 Apr 2024 17:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713805227;
-	bh=s1zKSecfH6FRmGi1pXDaj0RBdLhVWJQvZjaTL6GhU6w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=p9PBXRja5DrqjaANoj45wR5oqP3bp+/4UZDr1Idi/pLcG6u6YCY7FQhylKRY0i125
-	 kClvfu45zFNxa5WHWWHfqk7f/H4ByJ2mVfLXyS8OXgMz6lMzzWe5iiONFsDoroeaK3
-	 8e0VRnM7RK0K1859HlwfIYg1co1IyxnAIzrP/5svFF/7Gk8aruqarQSxc94Zu6/WI3
-	 /nFx4hS6NeiEMBvTU5AMc7JRicRL6HQo6b7FTbNI0mF/NL3YzEJVnCJHFdkCeVpZqT
-	 xx2fNaYCm7HsoiynuVCUKahyTtvxXCwNT29/7eFRLqcG0DcJaeRz5jQZOFdJTIV5No
-	 l3CFRC+yCqbLQ==
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5acdbfa6e94so1233146eaf.2;
-        Mon, 22 Apr 2024 10:00:27 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX5GrzzTpBDChVugSAsOQAOLapXrrvJN5AxH673EV53/L4/ZLkpmPmW5/imqKtpxjWXzndv+f5ZkggCalbm68BObWrXT0YNSoqvnoquNCgiXKbJbhOqQRJgL1zk718+DiJ0xbhuw05Bq19dISt7F0OoSdKr9551zIlaJgaS4rMe3A==
-X-Gm-Message-State: AOJu0YwierBbOMy2hwz9wpaJRoMFBTqqNCWEPwJMRISs9l77nP8aoFo8
-	iEPLlI1/C/TuIg8MmIK5xmpJnyNBtdvayXX2hHPcO9EnVTamwMHc8ouqAps+u2QC18MnUdoz7hZ
-	HFbGb+aDM2QjNwyuTnBy95WGqaeY=
-X-Google-Smtp-Source: AGHT+IG5C8aadvjW5yhvWe50p/4WPry2PTf7i+PbfLKWECNBaTQZTZ7wgjS/5Q9vQx4/cCAOWukQ58biWD8awJFIDC0=
-X-Received: by 2002:a4a:de19:0:b0:5a7:db56:915c with SMTP id
- y25-20020a4ade19000000b005a7db56915cmr11975023oot.1.1713805226331; Mon, 22
- Apr 2024 10:00:26 -0700 (PDT)
+	s=arc-20240116; t=1713805281; c=relaxed/simple;
+	bh=tFtTqcaa3UL3gUHgYz3SnGVDhY1APQClW8vbGEb5RYA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=gpqznC3YO4LwWQ5vN2OUkk1f9M3p6xyA7W/U4bKpbwrSjkPW754kGs4+T5fuRd1nws+hE/uPAEFZxeRLigAksXUtv/4DlO0+cJe9FWtaPcuW5GBv3y/d2cuLH/b659wWXTlA726/ebiM4yhN6z2MELr+HArRfyTyZ6UbYdW7sf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KY1xfZkb; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61ab19438a3so86619907b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:01:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713805278; x=1714410078; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FZ7fYvxgvMd9WAE1xHWyeLUfwlp+MDVvS9r+qsqhFSI=;
+        b=KY1xfZkbOljrZD701zOJWld9owj3vpNIVLtoK3jsx4R6QSEOFXSA+3Fm19KCPKkuAl
+         yFSSQHFoTQdM0WFL7D3/dtZqkm9hxOuYSJteP66JtE8GNllyI2zwF+m1kd9KFIdbPTQY
+         YXRcuYFU8i1+k9vefruTbjuDmKrH1QvaT4FxKq0z+8+8KUW25apnuNfFw0rtJAsHK6Hz
+         kKZ+gSanAGB1ZJ4YH/R44wluLCgC18bGpB6o72MNTMcaL+vi1AMvT+P0WB9eJOCR63BG
+         dj08DB8VJ8tKKY37Wnt4U8DphFvdzA6ADMHa0Mz+rMcQEIb/Lf/kUOon2ciex1cUGaK+
+         XzfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713805278; x=1714410078;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FZ7fYvxgvMd9WAE1xHWyeLUfwlp+MDVvS9r+qsqhFSI=;
+        b=pj+ObHdrQC77rgv82K+qQX9OgjRStrIiXlWJDq1ZwPvySS2ur+VNYjv6XPIDGxmeAc
+         17yzVkbkIvLRA4b/ptGIOhCR4RB8QR2xTzqCxpsNM0KC3nDrOb0FbvvzF0ca86pVitbN
+         HCjxFlcGAMNpnlolGCQrjKXROLPmAs95dYT8Ay5vohlzWIObksMtaUEnaT/BXRPzO+7t
+         7c1j0S9Is6IQVUCryJSUkm38Ytn3Y3WmgMx/QciOuVeo3gxU1McHiwyIXewkXAcly3bm
+         rJeyXIdLeWs3HL51mqTOOuke+yDu/Fh7lqC7wVmBWEa2Rdi56PPI61B293J+DWN3ae8l
+         F4Wg==
+X-Forwarded-Encrypted: i=1; AJvYcCW5Z/w8msdoq/tQWFSoflceXz55gP81zcBxdbm0GtBrajwI1/jdZbHv8OqYKpZt2vDBxN33DELFfdzOJUEt5yjxQH2+7cBUeplzJWNj
+X-Gm-Message-State: AOJu0Yz2iJi3F/KB1WeCfY0E5ysLDhLGzoKEjqPdXVcZgV3Yjv7FICdC
+	7RB7Mu+4xXjs9hvN5bDCM/Fxf7pyahJXYy4KMz1dCW9xew/FkLLIU6RtLk+9n8yug5auBkl81P+
+	fkQ==
+X-Google-Smtp-Source: AGHT+IHxPMIKb+cXXFc3JSk+qqDotC8cWUwgp6OnLCVbJKSb7mac0sVKwo0ojDibXTLNBvO5Jg4rAs0+vxA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d649:0:b0:615:80c8:94eb with SMTP id
+ y70-20020a0dd649000000b0061580c894ebmr2287195ywd.10.1713805278077; Mon, 22
+ Apr 2024 10:01:18 -0700 (PDT)
+Date: Mon, 22 Apr 2024 10:01:16 -0700
+In-Reply-To: <4d60384a-11e0-2f2b-a568-517b40c91b25@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240411231844.3306037-1-vanshikonda@os.amperecomputing.com>
-In-Reply-To: <20240411231844.3306037-1-vanshikonda@os.amperecomputing.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 22 Apr 2024 19:00:15 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hHbnVb8jnqd+o-GMS+Pw=UMq-7LQekBWWpNqTkBNfUWA@mail.gmail.com>
-Message-ID: <CAJZ5v0hHbnVb8jnqd+o-GMS+Pw=UMq-7LQekBWWpNqTkBNfUWA@mail.gmail.com>
-Subject: Re: [PATCH v3] ACPI: CPPC: Fix access width used for PCC registers
-To: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-Cc: Jarred White <jarredwhite@linux.microsoft.com>, 
-	Easwar Hariharan <eahariha@linux.microsoft.com>, 
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, "5 . 15+" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com>
+ <Zhn9TGOiXxcV5Epx@google.com> <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com>
+ <CAL715WJXWQgfzgh8KqL+pAzeqL+dkF6imfRM37nQ6PkZd09mhQ@mail.gmail.com>
+ <737f0c66-2237-4ed3-8999-19fe9cca9ecc@linux.intel.com> <CAL715W+RKCLsByfM3-0uKBWdbYgyk_hou9oC+mC9H61yR_9tyw@mail.gmail.com>
+ <Zh1mKoHJcj22rKy8@google.com> <CAL715WJf6RdM3DQt995y4skw8LzTMk36Q2hDE34n3tVkkdtMMw@mail.gmail.com>
+ <Zh2uFkfH8BA23lm0@google.com> <4d60384a-11e0-2f2b-a568-517b40c91b25@loongson.cn>
+Message-ID: <ZiaX3H3YfrVh50cs@google.com>
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+From: Sean Christopherson <seanjc@google.com>
+To: maobibo <maobibo@loongson.cn>
+Cc: Mingwei Zhang <mizhang@google.com>, Dapeng Mi <dapeng1.mi@linux.intel.com>, 
+	Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, peterz@infradead.org, 
+	kan.liang@intel.com, zhenyuw@linux.intel.com, jmattson@google.com, 
+	kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024 at 1:18=E2=80=AFAM Vanshidhar Konda
-<vanshikonda@os.amperecomputing.com> wrote:
->
-> commit 2f4a4d63a193be6fd530d180bb13c3592052904c modified
-> cpc_read/cpc_write to use access_width to read CPC registers. For PCC
-> registers the access width field in the ACPI register macro specifies
-> the PCC subspace id. For non-zero PCC subspace id the access width is
-> incorrectly treated as access width. This causes errors when reading
-> from PCC registers in the CPPC driver.
->
-> For PCC registers base the size of read/write on the bit width field.
-> The debug message in cpc_read/cpc_write is updated to print relevant
-> information for the address space type used to read the register.
->
-> Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-> Tested-by: Jarred White <jarredwhite@linux.microsoft.com>
-> Reviewed-by: Jarred White <jarredwhite@linux.microsoft.com>
-> Reviewed-by: Easwar Hariharan <eahariha@linux.microsoft.com>
-> Cc: 5.15+ <stable@vger.kernel.org> # 5.15+
-> ---
->
-> When testing v6.9-rc1 kernel on AmpereOne system dmesg showed that
-> cpufreq policy had failed to initialize on some cores during boot because
-> cpufreq->get() always returned 0. On this system CPPC registers are in PC=
-C
-> subspace index 2 that are 32 bits wide. With this patch the CPPC driver
-> interpreted the access width field as 16 bits, causing the register read
-> to roll over too quickly to provide valid values during frequency
-> computation.
->
-> v2:
-> - Use size variable in debug print message
-> - Use size instead of reg->bit_width for acpi_os_read_memory and
->   acpi_os_write_memory
->
-> v3:
-> - Fix language in error messages in cpc_read/cpc_write
->
->  drivers/acpi/cppc_acpi.c | 53 ++++++++++++++++++++++++++++------------
->  1 file changed, 37 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 4bfbe55553f4..7d476988fae3 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -1002,14 +1002,14 @@ static int cpc_read(int cpu, struct cpc_register_=
-resource *reg_res, u64 *val)
->         }
->
->         *val =3D 0;
-> +       size =3D GET_BIT_WIDTH(reg);
->
->         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_IO) {
-> -               u32 width =3D GET_BIT_WIDTH(reg);
->                 u32 val_u32;
->                 acpi_status status;
->
->                 status =3D acpi_os_read_port((acpi_io_address)reg->addres=
-s,
-> -                                          &val_u32, width);
-> +                                          &val_u32, size);
->                 if (ACPI_FAILURE(status)) {
->                         pr_debug("Error: Failed to read SystemIO port %ll=
-x\n",
->                                  reg->address);
-> @@ -1018,17 +1018,22 @@ static int cpc_read(int cpu, struct cpc_register_=
-resource *reg_res, u64 *val)
->
->                 *val =3D val_u32;
->                 return 0;
-> -       } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM && p=
-cc_ss_id >=3D 0)
-> +       } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM && p=
-cc_ss_id >=3D 0) {
-> +               /*
-> +                * For registers in PCC space, the register size is deter=
-mined
-> +                * by the bit width field; the access size is used to ind=
-icate
-> +                * the PCC subspace id.
-> +                */
-> +               size =3D reg->bit_width;
->                 vaddr =3D GET_PCC_VADDR(reg->address, pcc_ss_id);
-> +       }
->         else if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
->                 vaddr =3D reg_res->sys_mem_vaddr;
->         else if (reg->space_id =3D=3D ACPI_ADR_SPACE_FIXED_HARDWARE)
->                 return cpc_read_ffh(cpu, reg, val);
->         else
->                 return acpi_os_read_memory((acpi_physical_address)reg->ad=
-dress,
-> -                               val, reg->bit_width);
-> -
-> -       size =3D GET_BIT_WIDTH(reg);
-> +                               val, size);
->
->         switch (size) {
->         case 8:
-> @@ -1044,8 +1049,13 @@ static int cpc_read(int cpu, struct cpc_register_r=
-esource *reg_res, u64 *val)
->                 *val =3D readq_relaxed(vaddr);
->                 break;
->         default:
-> -               pr_debug("Error: Cannot read %u bit width from PCC for ss=
-: %d\n",
-> -                        reg->bit_width, pcc_ss_id);
-> +               if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
-> +                       pr_debug("Error: Cannot read %u bit width from sy=
-stem memory: 0x%llx\n",
-> +                               size, reg->address);
-> +               } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_C=
-OMM) {
-> +                       pr_debug("Error: Cannot read %u bit width from PC=
-C for ss: %d\n",
-> +                               size, pcc_ss_id);
-> +               }
->                 return -EFAULT;
->         }
->
-> @@ -1063,12 +1073,13 @@ static int cpc_write(int cpu, struct cpc_register=
-_resource *reg_res, u64 val)
->         int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
->         struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
->
-> +       size =3D GET_BIT_WIDTH(reg);
-> +
->         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_IO) {
-> -               u32 width =3D GET_BIT_WIDTH(reg);
->                 acpi_status status;
->
->                 status =3D acpi_os_write_port((acpi_io_address)reg->addre=
-ss,
-> -                                           (u32)val, width);
-> +                                           (u32)val, size);
->                 if (ACPI_FAILURE(status)) {
->                         pr_debug("Error: Failed to write SystemIO port %l=
-lx\n",
->                                  reg->address);
-> @@ -1076,17 +1087,22 @@ static int cpc_write(int cpu, struct cpc_register=
-_resource *reg_res, u64 val)
->                 }
->
->                 return 0;
-> -       } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM && p=
-cc_ss_id >=3D 0)
-> +       } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM && p=
-cc_ss_id >=3D 0) {
-> +               /*
-> +                * For registers in PCC space, the register size is deter=
-mined
-> +                * by the bit width field; the access size is used to ind=
-icate
-> +                * the PCC subspace id.
-> +                */
-> +               size =3D reg->bit_width;
->                 vaddr =3D GET_PCC_VADDR(reg->address, pcc_ss_id);
-> +       }
->         else if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
->                 vaddr =3D reg_res->sys_mem_vaddr;
->         else if (reg->space_id =3D=3D ACPI_ADR_SPACE_FIXED_HARDWARE)
->                 return cpc_write_ffh(cpu, reg, val);
->         else
->                 return acpi_os_write_memory((acpi_physical_address)reg->a=
-ddress,
-> -                               val, reg->bit_width);
-> -
-> -       size =3D GET_BIT_WIDTH(reg);
-> +                               val, size);
->
->         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
->                 val =3D MASK_VAL(reg, val);
-> @@ -1105,8 +1121,13 @@ static int cpc_write(int cpu, struct cpc_register_=
-resource *reg_res, u64 val)
->                 writeq_relaxed(val, vaddr);
->                 break;
->         default:
-> -               pr_debug("Error: Cannot write %u bit width to PCC for ss:=
- %d\n",
-> -                        reg->bit_width, pcc_ss_id);
-> +               if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
-> +                       pr_debug("Error: Cannot write %u bit width to sys=
-tem memory: 0x%llx\n",
-> +                               size, reg->address);
-> +               } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_C=
-OMM) {
-> +                       pr_debug("Error: Cannot write %u bit width to PCC=
- for ss: %d\n",
-> +                               size, pcc_ss_id);
-> +               }
->                 ret_val =3D -EFAULT;
->                 break;
->         }
-> --
+On Mon, Apr 22, 2024, maobibo wrote:
+> On 2024/4/16 =E4=B8=8A=E5=8D=886:45, Sean Christopherson wrote:
+> > On Mon, Apr 15, 2024, Mingwei Zhang wrote:
+> > > On Mon, Apr 15, 2024 at 10:38=E2=80=AFAM Sean Christopherson <seanjc@=
+google.com> wrote:
+> > > > One my biggest complaints with the current vPMU code is that the ro=
+les and
+> > > > responsibilities between KVM and perf are poorly defined, which lea=
+ds to suboptimal
+> > > > and hard to maintain code.
+> > > >=20
+> > > > Case in point, I'm pretty sure leaving guest values in PMCs _would_=
+ leak guest
+> > > > state to userspace processes that have RDPMC permissions, as the PM=
+Cs might not
+> > > > be dirty from perf's perspective (see perf_clear_dirty_counters()).
+> > > >=20
+> > > > Blindly clearing PMCs in KVM "solves" that problem, but in doing so=
+ makes the
+> > > > overall code brittle because it's not clear whether KVM _needs_ to =
+clear PMCs,
+> > > > or if KVM is just being paranoid.
+> > >=20
+> > > So once this rolls out, perf and vPMU are clients directly to PMU HW.
+> >=20
+> > I don't think this is a statement we want to make, as it opens a discus=
+sion
+> > that we won't win.  Nor do I think it's one we *need* to make.  KVM doe=
+sn't need
+> > to be on equal footing with perf in terms of owning/managing PMU hardwa=
+re, KVM
+> > just needs a few APIs to allow faithfully and accurately virtualizing a=
+ guest PMU.
+> >=20
+> > > Faithful cleaning (blind cleaning) has to be the baseline
+> > > implementation, until both clients agree to a "deal" between them.
+> > > Currently, there is no such deal, but I believe we could have one via
+> > > future discussion.
+> >=20
+> > What I am saying is that there needs to be a "deal" in place before thi=
+s code
+> > is merged.  It doesn't need to be anything fancy, e.g. perf can still p=
+ave over
+> > PMCs it doesn't immediately load, as opposed to using cpu_hw_events.dir=
+ty to lazily
+> > do the clearing.  But perf and KVM need to work together from the get g=
+o, ie. I
+> > don't want KVM doing something without regard to what perf does, and vi=
+ce versa.
+> >=20
+> There is similar issue on LoongArch vPMU where vm can directly pmu hardwa=
+re
+> and pmu hw is shard with guest and host. Besides context switch there are
+> other places where perf core will access pmu hw, such as tick
+> timer/hrtimer/ipi function call, and KVM can only intercept context switc=
+h.
 
-Applied as 6.9-rc material, thanks!
+Two questions:
+
+ 1) Can KVM prevent the guest from accessing the PMU?
+
+ 2) If so, KVM can grant partial access to the PMU, or is it all or nothing=
+?
+
+If the answer to both questions is "yes", then it sounds like LoongArch *re=
+quires*
+mediated/passthrough support in order to virtualize its PMU.
+
+> Can we add callback handler in structure kvm_guest_cbs?  just like this:
+> @@ -6403,6 +6403,7 @@ static struct perf_guest_info_callbacks kvm_guest_c=
+bs
+> =3D {
+>         .state                  =3D kvm_guest_state,
+>         .get_ip                 =3D kvm_guest_get_ip,
+>         .handle_intel_pt_intr   =3D NULL,
+> +       .lose_pmu               =3D kvm_guest_lose_pmu,
+>  };
+>=20
+> By the way, I do not know should the callback handler be triggered in per=
+f
+> core or detailed pmu hw driver. From ARM pmu hw driver, it is triggered i=
+n
+> pmu hw driver such as function kvm_vcpu_pmu_resync_el0,
+> but I think it will be better if it is done in perf core.
+
+I don't think we want to take the approach of perf and KVM guests "fighting=
+" over
+the PMU.  That's effectively what we have today, and it's a mess for KVM be=
+cause
+it's impossible to provide consistent, deterministic behavior for the guest=
+  And
+it's just as messy for perf, which ends up having wierd, cumbersome flows t=
+hat
+exists purely to try to play nice with KVM.
 
