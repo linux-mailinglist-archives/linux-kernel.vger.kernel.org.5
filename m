@@ -1,117 +1,115 @@
-Return-Path: <linux-kernel+bounces-153073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 496688AC8A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:15:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E2B48AC8BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:20:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0938280D7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:15:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 905D51C20D27
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:20:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FF453814;
-	Mon, 22 Apr 2024 09:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B35254FA1;
+	Mon, 22 Apr 2024 09:20:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="RDqBOJtW"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dnXjpYmU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4BC4C66
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9E913D297;
+	Mon, 22 Apr 2024 09:20:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713777333; cv=none; b=d8V1ElPK2AyyNFp6mTGwlpcheljsvyOhHlSkL97oyE2qHY4t5YCArQcXyLIOF6oUpSZpOM2zjS4BOY46akR6JXyy67QEQI4FisxBfh2ubFVGcbMCBEReMp6V/o2tTwJgphv32xEmfLLNMFUjqKbWw9EnCEHgDVkRc9eYmuBXVLo=
+	t=1713777604; cv=none; b=Oy5WSjBKOhXBj5d7kNr1YKLwoCo9amfoRcgk31b/V8r68AQ5N937amDvcCK2aRgEH62M4MdIrrqWyUuDjCJ4gMogZ0aPBfxlYlkQNxcIAqjH74f3sMbWyAf1gNKeXENBfjyx60AaU8NKU4zYzceNabL63QEaTG6tBZcguZHQrQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713777333; c=relaxed/simple;
-	bh=b/wu88jA9YdxZN0vncf57S6bbFuU12MW/xuCRw6CPIc=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=BF9CrdF8KJTESys/qwIacht9GBGadeL2h8VY0PANT2/atldIviMRPhdKuAaVbxdvv838looIa2/0jWK1yJyMtpNxj746j0HjnUhylboPK8mgIarxPAned6X73ZLJ+GhYS8FNsVNLZ8kJTCVYr1t5JRaBY7Sj28rTwiw7yBz7gBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=RDqBOJtW; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-571e3f40e31so1548775a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 02:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1713777330; x=1714382130; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b/wu88jA9YdxZN0vncf57S6bbFuU12MW/xuCRw6CPIc=;
-        b=RDqBOJtWr2Pk57ZFfNBWbGabCvsULDnIVFKz8TBjvCza5XhRAhTKRPgVYfDKuVmw7+
-         d8GIePLCp8VIUmk52U2gCUf6BP8Po0KkEPogiy9+0AreI3r0DE7dJjtMFvEjD1tAZsZQ
-         5fYkjW8XR2sLJNCRj6glJJ3Crut7rGUc4FefaHVCqME2uSnraPVGUjdkwm+66il7UZL8
-         U7DmsyU1dl2lY9jpYuDux9eC88IcIOzGmZ0+ViVuOfk+wKbQE0Owbc6V1Oa2uFW4EqDB
-         Ldz8p1VMyXb2b7pnDsnq7dCY88JOfe+wsSGxz8B0EYBy1X+zj13XiTNHdHud1pYT2XDR
-         e4Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713777330; x=1714382130;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b/wu88jA9YdxZN0vncf57S6bbFuU12MW/xuCRw6CPIc=;
-        b=CMw44m1rat1h0XRCbB2OeHx3uaK/k6R8Z+Vdl6XkV1QKlhDWChbnRLbSYrMzPx7sad
-         OETjKmtPtHZRxpAi78E54lFeGtuSv3Y90gNKL5i68duJAn27v/UV034VhvzXVV212xSl
-         HYcSJ08WXpDkw5KxfiHt7Lpx82JcjDcoyU4Ydnxzpej8tA+pWI17C5pzZBh+cbGEghVn
-         trtE0YF1qPBXn2IwCEVyBn7iN78vznp2Z0VlGtNzhoef60fmNX5BUxtdtzRRhV4jUXTX
-         04gPyfzFsvGO0eGZUsCQXd1yHErwgmFYPhITYAIaZyPclONH8Orsfq2xzlxCUBzQCU7H
-         eNJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVhiIvNGl2WH+od4Zi6bdH0sIJwqzBunRPLZ5L8UTLwHwCZbr7m6dq5kZ8VcLytMJ/EqEzeLDRLQM52gms06ttgpLFcIEETLcBqrRPX
-X-Gm-Message-State: AOJu0YzJ2mRdt2xsnH7MITIhSjM5QEyRCI540r5NOu5xWmv5fZqU/eTF
-	ZINxYsi9UY77Z0YpQMAOtBy9ls6lejUH69JePURX/c9Hn0FAd8jLJYJ9mtHslPQ=
-X-Google-Smtp-Source: AGHT+IFdfwf81v1W+wySpJ76jOG5eIUy0V2oEYWpmvSKm4+/wZYK5usVUsAOja/4SZhQfVLrh1xfHA==
-X-Received: by 2002:a50:cd12:0:b0:56e:2c1d:1174 with SMTP id z18-20020a50cd12000000b0056e2c1d1174mr6653782edi.4.1713777330577;
-        Mon, 22 Apr 2024 02:15:30 -0700 (PDT)
-Received: from smtpclient.apple ([2001:a61:10c6:ce01:7d:af2:ac50:1252])
-        by smtp.gmail.com with ESMTPSA id f11-20020a056402194b00b005720cefe0d2sm931590edz.52.2024.04.22.02.15.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Apr 2024 02:15:30 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1713777604; c=relaxed/simple;
+	bh=nZb1WqOKzpgix7JF8C81SkQWvG7tYsydr8OknjFa2/s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JAbpt1SHVX5g/wnb3i6EhVeeZbDwL/a+A3thMc+LhBu2VsDOxCuuGkDDfePBJ5CA+LN2i5HM+z6/AsNbcpj/FXB1WJUJZg7lyARmkqcy+eKto159kHG1zpWmtKTtxNsWgZRh/ExpXHVgBCsQ5ItXtMwoXGACWXOlRzCZ1EP/ox0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dnXjpYmU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA1DEC113CC;
+	Mon, 22 Apr 2024 09:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713777604;
+	bh=nZb1WqOKzpgix7JF8C81SkQWvG7tYsydr8OknjFa2/s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dnXjpYmUkjd+sbGilXiYyKMgQijrPvrQxNUMTxQ3sCteoQlQ9gwJrU+mjHtH7VFLF
+	 vI0fWmNdDFGFUTO2uSdbQAgCsgN0TYLHBv4GgxGsDt6Tdjnkf+8BcV5YTK9dKjJi42
+	 xMqJTi+n5IaSYLNCgyWiOBX+FOWNPapwGiYEXWHNQmKNx56SORlAmAAxDM9WAG/8yj
+	 77Z4zt/izUVens3e3PVA4u2ldSvZTEREiEa0FvNE5L4i+Ic8IuJgTuE6mQw4ANKMfT
+	 0h4kVTKQiijNjfUmYt3wyWUFmZ2XZhi6UqafkbOuSAiKbM+MTIgMAhPnIMMXcfw3dd
+	 iRITs0SPZNKOQ==
+Date: Mon, 22 Apr 2024 12:18:46 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Nam Cao <namcao@linutronix.de>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, Linux Memory Management List <linux-mm@kvack.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Andreas Dilger <adilger@dilger.ca>, Arnd Bergmann <arnd@arndb.de>,
+	Changbin Du <changbin.du@huawei.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Ingo Molnar <mingo@kernel.org>,
+	Krister Johansen <kjlx@templeofstupid.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>, Tejun Heo <tj@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [linux-next:master] [init]  b8de39bd1b:
+ BUG:kernel_failed_in_early-boot_stage,last_printk:early_console_in_setup_code
+Message-ID: <ZiYrdnbw5z1ajeRw@kernel.org>
+References: <202404221524.4954a009-oliver.sang@intel.com>
+ <20240422082942.B750cniQ@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH] bitops: Change function return types from long to int
-From: Thorsten Blum <thorsten.blum@toblux.com>
-In-Reply-To: <DM8PR11MB5751439B2053D1AD07BB8AD9B8122@DM8PR11MB5751.namprd11.prod.outlook.com>
-Date: Mon, 22 Apr 2024 11:15:18 +0200
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Palmer Dabbelt <palmer@rivosinc.com>,
- Charlie Jenkins <charlie@rivosinc.com>,
- Namhyung Kim <namhyung@kernel.org>,
- Huacai Chen <chenhuacai@kernel.org>,
- Youling Tang <tangyouling@loongson.cn>,
- Tiezhu Yang <yangtiezhu@loongson.cn>,
- Jinyang He <hejinyang@loongson.cn>,
- "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <4BD934DC-5657-41E1-A9D6-226886D2AA8B@toblux.com>
-References: <20240420223836.241472-1-thorsten.blum@toblux.com>
- <DM8PR11MB5751439B2053D1AD07BB8AD9B8122@DM8PR11MB5751.namprd11.prod.outlook.com>
-To: "Wang, Xiao W" <xiao.w.wang@intel.com>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240422082942.B750cniQ@linutronix.de>
 
-On 22. Apr 2024, at 07:24, Wang, Xiao W <xiao.w.wang@intel.com> wrote:
->=20
-> Could we change the return types to "int", instead of "unsigned int"?
-> https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html says that these =
-__builtin_*
-> functions return "int".
+On Mon, Apr 22, 2024 at 10:29:42AM +0200, Nam Cao wrote:
+> On Mon, Apr 22, 2024 at 03:45:00PM +0800, kernel test robot wrote:
+> > kernel test robot noticed "BUG:kernel_failed_in_early-boot_stage,last_printk:early_console_in_setup_code" on:
+> > 
+> > commit: b8de39bd1b76faffe7cd91e148a6d7d9bf4e38f7 ("init: fix allocated page overlapping with PTR_ERR")
+> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> 
+> I can reproduce the problem. I rebased this commit onto v6.8.7, I can still
+> observe the problem.
+> 
+> No immediate idea what is the problem. Backtrace from gdb goes crazy:
+> 
+> (gdb) bt
+> #0  0xffffffffb2074ded in ?? ()
+> #1  0x00000000000000a1 in ?? ()
+> #2  0x00000000000000a1 in ?? ()
+> #3  0x000000007ffff000 in ?? ()
+> #4  0x00000000543ff000 in ?? ()
+> #5  0x0000000000000000 in ?? ()
 
-We could, but changing the signedness breaks assertions in other modules =
-and=20
-drivers (e.g., where min() and max() are used) and has quite a few side =
-effects.
+The kernel config here has CONFIG_DEBUG_VIRTUAL=y, so __pa translates to
+__phys_addr() in arch/x86/mm/physaddr.c and __pa(-PAGE_SIZE) triggers
 
->> With GCC 13 and defconfig, these changes reduced the size of a test
->> kernel image by 5,432 bytes on arm64 and by 248 bytes on riscv; there
->> were no changes in size on x86_64, powerpc, or m68k.
->=20
-> I guess your test is based on 64bit arch, right?
+		VIRTUAL_BUG_ON(y >= KERNEL_IMAGE_SIZE);
 
-Yes, except for m68k.=
+x86 has __pa_nodebug() that does not do bounds check, but it cannot be used
+in generic code because no other arch except s390 define it.
+
+For now I don't have ideas how to make this work in the general case, so
+probably we should only fix riscv for now.
+ 
+> @akpm: drop this commit until this is figured out?
+> 
+> Best regards,
+> Nam
+> 
+
+-- 
+Sincerely yours,
+Mike.
 
