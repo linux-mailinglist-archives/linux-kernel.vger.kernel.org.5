@@ -1,196 +1,205 @@
-Return-Path: <linux-kernel+bounces-152984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E1DA8AC714
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91DCC8AC71A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:34:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B843F1F21CA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:33:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F7601F21D6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3252C524B4;
-	Mon, 22 Apr 2024 08:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76C13502AF;
+	Mon, 22 Apr 2024 08:33:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lE5pImXM"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CIk0DqMJ"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDDE1433CF
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA411CAA1
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:33:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713774800; cv=none; b=ICwpwHT/eqGhcV+UmLsDcm9UYBBt3lkiQTAA/CisIBN/Rx7DFM2dUX65NslevSp9chiuQMUVx/AoFhAP2/u7AC3WziT5teABiG1ZFTOUQIu+o1fKy4+cIu+It6Wm1XPfof3f7FWNse7zwJzaAGbGYnW7t1Bzvo8+/hwXDapghVY=
+	t=1713774830; cv=none; b=C86F3p/UxOyWOB4onqVHfm2colUmDBICgZ1RC8B5Ux93hxKpT8TxVSNHKOwqmP6vnTOvoqetODBYDkaCU0T41FRMl0ktVmW2baqSNlUsXGs4uC1kMnEKihNMub6D0HomZxb0dS84WoabM6Hqkpgo/l38IgmSqvQfdRtaAfgx+VM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713774800; c=relaxed/simple;
-	bh=zQpxV0djrOiwPxhRvSgIUZn7ViHWbqTnSNjH4kOd7u8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mf9kcrdfz8XD4Bb3BS9aXmKtXIa0laYSPc3dKrY/fSfXBj0jizpCEZsRmc5IEnysmG0SXjmDfhuFAShqnJtsP/fw6mCb2FJD3ZEI4/MHfKWUuSNeRziOt03IngvptCKsqQK2gSSwZ+wC4TSfe5Dpd92Hr0P61ZHeDBWLwXse1G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lE5pImXM; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4196c62bb4eso17917745e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:33:18 -0700 (PDT)
+	s=arc-20240116; t=1713774830; c=relaxed/simple;
+	bh=foq5ht+lMPQXu4in46rwNYOqTfbeaW4P5OvmFAJopWw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t/27PwSiu6sxyH3rpp4s8sCb1nLYwO1LZO/Oo5sw3KsgphXjW/BqevQcMfiSEiZJD12D/B3ux94/JhMNUpZ1OAATkbWuyRvVBtQWE9+uSjXMuH9BVvk72fhgKvFGghBYw/GbAOgKdCc1KeFoU9ql07TMuzjbtYnYbw5SRrIU1Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CIk0DqMJ; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6ea1a55b0c0so2198873a34.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:33:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713774797; x=1714379597; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cLRaymjKldV5Ae25ez2pVEwmOtAjv9LTg0zkuha6uuU=;
-        b=lE5pImXMGTo1z3vo5l15XtNZZI26+ITwo5KUIxqgme1uMfSi0F4IWWh0h5MCdaZQ+P
-         Pvleu4k9cZD8PIS8xz/Ed69HZz4GcpvkghBChSRJPisPQ1411sEmMnNWqxl3NjofgF6X
-         odSp481+xX+miUfz6sN8D7Mg3a5NR1urcEon0A1kRWTbqY2ZLVHlsDLvexKZGo1ifAuf
-         2xMwVX2B/Pt76KzJvKdU8JGFgaozjhbzumq4kfFgmZARAT3/UDp0IbxqOz584MXh+8ON
-         9BzI7ClWclHi8S5xZuR5iWSdlg9IppP7NYkUn5o4pKUEDTFKKJqNI1cfZpSd3QpjtrUa
-         O+4g==
+        d=gmail.com; s=20230601; t=1713774828; x=1714379628; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ywcd19fDJAvHh2oKY2HtCRoc8tp9ImKib5PzcAaTuGE=;
+        b=CIk0DqMJ6jHLh16KBVwmcI1HCuz1bxE9PSxkaXM1eqkE+0/EZPTEILBmGcB1HKrNku
+         YQL8L5QghknVjpjxd27wsKg/4l02UarfZhv3zbp1Ugg6y6zsI/ekMVbGjmYk8/vzlcGQ
+         jmdqgVuhlV6oPJudrMYHZDnGJuVbdyUoAdiJ9kxVakXbOPNj1jO4UAKKsYutgBnWEOhp
+         1WivaJKSPauohcuraHOoRgmdlA60DZEGjYfAiQV46bhR3FpWyj5C2ELj+9BGOCETxOyX
+         96PcWJXYmzJCcp/dFtRuEFTxOMZett35JvIfdMhlNtXzhEO73o/jExie/H6Yabwo/7+E
+         0vIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713774797; x=1714379597;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713774828; x=1714379628;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cLRaymjKldV5Ae25ez2pVEwmOtAjv9LTg0zkuha6uuU=;
-        b=BPdMNEcFEhAkL4p64UYhVlx2DPL9CFm5LD01a+TBgiHX25mGh9EEUW2mcIT8GqK4kk
-         S5097EpklWXtxLI9qa8fhj7arRHi6Hd16ghBoE7iWKuqNXRh22nypLoeGzdhOEWHLG+Y
-         z5VMnNpVZ8+1oX35X5sKG/ohIR3ITM8ku23K+GP4D7bRCUGqrs+R4144fVwvR5jZBaMx
-         Yl82cFJIqwzD9FqJ6540+pdfm6IETcvSo2J0cHY/aMwQu/hO0XstwKEXaGcNFb7YTDCh
-         ZWzVWR2juw1h/DgYhtQzWorVvJwHYc7har+5R4eNjrXnSwN2xEQS0Hb8MUcTcP+Bt0Eg
-         NgSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV3vJqDzOE4yxWpzN1TuBjwiAO31EnB1/9fpi52/QgTI8xE0BLVgdX+Cw2FcFWWiZXD8Jnlmz+Gz7upovsKWNBhw07abPGtLmDC5xkJ
-X-Gm-Message-State: AOJu0YzeblPyP5YTxP8b2fwkP2A3eYJ40Q7wNuJTFx1x85j5OctzX69L
-	xtZKGAtZX3k6wB5VuWtFaReGgZ3SUAxe7VIwjO4mJRHTaQA/PO8Y+SZLi4M5kX/TL2/po4/wIL5
-	7Zphnig==
-X-Google-Smtp-Source: AGHT+IFHAw4FMhpEGmtTQ4MMTPUbnYOSy9z5mJuHiv3zra6VJEyRQ6AFD+8qUVa54j5166hugk0F9w==
-X-Received: by 2002:a05:600c:c1a:b0:41a:68a5:b2c8 with SMTP id fm26-20020a05600c0c1a00b0041a68a5b2c8mr943929wmb.35.1713774797226;
-        Mon, 22 Apr 2024 01:33:17 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id j19-20020a05600c1c1300b004161bffa48csm15978786wms.40.2024.04.22.01.33.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 01:33:16 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Mon, 22 Apr 2024 10:33:13 +0200
-Subject: [PATCH v3 3/3] arm64: dts: qcom: sm8650: remove pcie-1-phy-aux-clk
- and add pcie1_phy pcie1_phy_aux_clk
+        bh=ywcd19fDJAvHh2oKY2HtCRoc8tp9ImKib5PzcAaTuGE=;
+        b=n8em2LoJSjZHqTymvreQMy/Ix/2JlQmj79p927IFSORRhiAooQXqNDj0HeXlHtZtA3
+         FTevaNda1dHWtd/TctYzRiuCTtjGLPXDAcU5G4V4nxQfKAuQoP1tAt0Vv7swTO8kWFpI
+         /XZEpgxwKdOGvH3V5SBOjMMFqkBy/TWhqwer/y30P1ypK4mG5sSpYDk/sSaClqgBWUIZ
+         BEJzrTugquQv5wBkYRU2xndcRLgilhHpQuahqn2BEWCdW2DLkCn/nBEHnmdKeZrlo0k8
+         5/HQCgP9kXbonutc9XUw9dJSJo3wC2tIyo5reqT6PgeF60c7Q6dLX2FitV2KN5GAhCjm
+         BLvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXPZEt0LYGfpnxCcQ9lJG5Hy8rvKZyyQcGlVJgU485lejrgDaF1jYy+QRDkgrjgvmAd0m/nlFzTv9ZlqnXG/Css1O7KHQ4BcH13Uvn1
+X-Gm-Message-State: AOJu0Yy+P/9bWaHFX2HvQeIThTHtbxUbG9/UfxHpUploafztUU5GJw8J
+	z2ANsPmfigBhIsuuugnrBTQKXqbpivTdMfRFCuBSDstT9cJEs+4L2wTNYdeATTTllbrgZdoThwq
+	qNgVGgSHL0Cd9oNT8gx5J2qhA4Aw=
+X-Google-Smtp-Source: AGHT+IEPJHMY8u7itxLBLQLayGMuxMOVFCMdrOZJ4tTSnqwhtm7xDeLbEZKYZ/SgcKO4gmrr6s7ixsqp9UeoKVIxDXM=
+X-Received: by 2002:a05:6870:71cf:b0:221:416:1df9 with SMTP id
+ p15-20020a05687071cf00b0022104161df9mr13159216oag.23.1713774828235; Mon, 22
+ Apr 2024 01:33:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v3-3-799475a27cce@linaro.org>
-References: <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v3-0-799475a27cce@linaro.org>
-In-Reply-To: <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v3-0-799475a27cce@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2488;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=zQpxV0djrOiwPxhRvSgIUZn7ViHWbqTnSNjH4kOd7u8=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBmJiDJ9xmje0GQO+nI5+7LeLoATi+T2Zb/zhTy4IU2
- sGW6a++JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZiYgyQAKCRB33NvayMhJ0X8BD/
- 9yQh5mmI6X23M/e5p+c8PjwJeVfqTbT/t6SwpivBvytndYSZ5J4914WV5BC+c3zegKWfNTmpICsrEX
- 9p6wC4liG1cUo3Y25/lH8rvUMiKMLSlK01g6dd5gkNds+e54dTsa1Ca8EahAm+pxQF5jOxbssl/VTB
- +JWwgUIA5jdN1RnO+5ZPbaMF+blg+uJVk8lXAb8axKd3TfLiVtZ+ReUQtsHmw641U/ZT/lG6fZXu6A
- 34YJmKKD/u+Z18DmTVOCcb0TAkYkylPizUGsY5s1KW7GNtPldbg3vbinHgEe6OgCInkvcxqPrNh2Xx
- G1F3t8JFKIeBjFZWE2VSIMlUXb5kcfmnmpxRvHVfXqn2Y4lta1lV5BvbIRZKvucx6ffqyVB+aKEjMA
- 7cQYR7PSFbDyUW7ULg0s5L4IuYoZTIYf7lAohQSRgAlqxBoe+5QmVG/fbHj2YwGpzBcz26241ziaQl
- YABQD/wF8l6xo8maf/Vl/jNhdO3rgukn9R5awTQG788ccmEAMayprgsJbxl0zWNOUOve++wByjlLT4
- wH4V2gdz4yR3nvnzqWTN2Pt+DxpcdEak2cnALMO0c8L4NhlS96AtrmvPcPKD8/LkuHZKWYchp1RgO0
- bGbXVL0LXslZ+uwP48mJaHFOVkQQVIlVNYhmSEpDUxB6TpT1I9sNvCQEShNw==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+References: <20240422082238.5784-1-xuewen.yan@unisoc.com>
+In-Reply-To: <20240422082238.5784-1-xuewen.yan@unisoc.com>
+From: Xuewen Yan <xuewen.yan94@gmail.com>
+Date: Mon, 22 Apr 2024 16:33:37 +0800
+Message-ID: <CAB8ipk-LhSuMsp0DdzjEJN-4XEBT1_ri6BPH_nvxSgFZONMT2Q@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/eevdf: Prevent vlag from going out of bounds
+ when reweight_eevdf
+To: Xuewen Yan <xuewen.yan@unisoc.com>
+Cc: peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	yu.c.chen@intel.com, ke.wang@unisoc.com, di.shen@unisoc.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Remove the dummy pcie-1-phy-aux-clk clock and replace with the pcie1_phy
-provided QMP_PCIE_PHY_AUX_CLK.
+Hi Peter,
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8650-mtp.dts |  4 ----
- arch/arm64/boot/dts/qcom/sm8650-qrd.dts |  4 ----
- arch/arm64/boot/dts/qcom/sm8650.dtsi    | 13 ++++---------
- 3 files changed, 4 insertions(+), 17 deletions(-)
+Because the issue may be urgent for many people, I sent the patch first.
+However, when I test on the Android system, I find there still are
+vlags which exceed the limit.
+On the Android system, the nice value of a task will change very
+frequently. The limit can also be exceeded.
+Maybe the !on_rq case is still necessary.
+So I'm planning to propose another patch for !on_rq case later after
+careful testing locally.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650-mtp.dts b/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-index d04ceaa73c2b..ea092f532e5a 100644
---- a/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-@@ -641,10 +641,6 @@ &mdss_dsi0_phy {
- 	status = "okay";
- };
- 
--&pcie_1_phy_aux_clk {
--	clock-frequency = <1000>;
--};
--
- &pcie0 {
- 	wake-gpios = <&tlmm 96 GPIO_ACTIVE_HIGH>;
- 	perst-gpios = <&tlmm 94 GPIO_ACTIVE_LOW>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-index 4e94f7fe4d2d..bd87aa3aa548 100644
---- a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-@@ -835,10 +835,6 @@ &mdss_dp0_out {
- 	remote-endpoint = <&usb_dp_qmpphy_dp_in>;
- };
- 
--&pcie_1_phy_aux_clk {
--	clock-frequency = <1000>;
--};
--
- &pcie0 {
- 	wake-gpios = <&tlmm 96 GPIO_ACTIVE_HIGH>;
- 	perst-gpios = <&tlmm 94 GPIO_ACTIVE_LOW>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index 8e0c1841f748..658ad2b41c5a 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -60,11 +60,6 @@ bi_tcxo_ao_div2: bi-tcxo-ao-div2-clk {
- 			clock-mult = <1>;
- 			clock-div = <2>;
- 		};
--
--		pcie_1_phy_aux_clk: pcie-1-phy-aux-clk {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--		};
- 	};
- 
- 	cpus {
-@@ -758,8 +753,8 @@ gcc: clock-controller@100000 {
- 				 <&bi_tcxo_ao_div2>,
- 				 <&sleep_clk>,
- 				 <&pcie0_phy>,
--				 <&pcie1_phy>,
--				 <&pcie_1_phy_aux_clk>,
-+				 <&pcie1_phy QMP_PCIE_PIPE_CLK>,
-+				 <&pcie1_phy QMP_PCIE_PHY_AUX_CLK>,
- 				 <&ufs_mem_phy 0>,
- 				 <&ufs_mem_phy 1>,
- 				 <&ufs_mem_phy 2>,
-@@ -2467,8 +2462,8 @@ pcie1_phy: phy@1c0e000 {
- 
- 			power-domains = <&gcc PCIE_1_PHY_GDSC>;
- 
--			#clock-cells = <0>;
--			clock-output-names = "pcie1_pipe_clk";
-+			#clock-cells = <1>;
-+			clock-output-names = "pcie1_pipe_clk", "pcie1_phy_aux_clk";
- 
- 			#phy-cells = <0>;
- 
+BR
 
--- 
-2.34.1
-
+On Mon, Apr 22, 2024 at 4:23=E2=80=AFPM Xuewen Yan <xuewen.yan@unisoc.com> =
+wrote:
+>
+> kernel encounters the following error when running workload:
+>
+> BUG: kernel NULL pointer dereference, address: 0000002c
+> EIP: set_next_entity (fair.c:?)
+>
+> which was caused by NULL pointer returned by pick_eevdf().
+>
+> Further investigation has shown that, the entity_eligible() has an
+> false-negative issue when the entity's vruntime is far behind the
+> cfs_rq.min_vruntime that, the (vruntime - cfs_rq->min_vruntime) * load
+> caused a s64 overflow, thus every entity on the rb-tree is not
+> eligible, which results in a NULL candidate.
+>
+> The reason why entity's vruntime is far behind the cfs_rq.min_vruntime
+> is because during a on_rq task group's update_cfs_group()->reweight_eevdf=
+(),
+> there is no limit on the new entity's vlag. If the new weight is much
+> smaller than the old one,
+>
+> vlag =3D div_s64(vlag * old_weight, weight)
+>
+> generates a huge vlag, and results in very small(negative) vruntime.
+>
+> Thus limit the range of vlag accordingly.
+>
+> Reported-by: Sergei Trofimovich <slyich@gmail.com>
+> Closes: https://lore.kernel.org/all/ZhuYyrh3mweP_Kd8@nz.home/
+> Reported-by: Igor Raits <igor@gooddata.com>
+> Closes: https://lore.kernel.org/all/CA+9S74ih+45M_2TPUY_mPPVDhNvyYfy1J1ft=
+Six+KjiTVxg8nw@mail.gmail.com/
+> Reported-by: Breno Leitao <leitao@debian.org>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/lkml/202401301012.2ed95df0-oliver.sang@in=
+tel.com/
+> Reported-by: Yujie Liu <yujie.liu@intel.com>
+> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> ---
+> changes of v2:
+> -add reported-by (suggested by <yu.c.chen@intel.com>)
+> -remork the changelog (<yu.c.chen@intel.com>)
+> -remove the judgement of fork (Peter)
+> -remove the !on_rq case. (Peter)
+> ---
+> Previous discussion link:
+> https://lore.kernel.org/lkml/20240226082349.302363-1-yu.c.chen@intel.com/
+> https://lore.kernel.org/all/20240130080643.1828-1-xuewen.yan@unisoc.com/
+> ---
+> ---
+>  kernel/sched/fair.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 03be0d1330a6..64826f406d6d 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -696,15 +696,21 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
+>   *
+>   * XXX could add max_slice to the augmented data to track this.
+>   */
+> -static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity=
+ *se)
+> +static s64 entity_lag(u64 avruntime, struct sched_entity *se)
+>  {
+> -       s64 lag, limit;
+> +       s64 vlag, limit;
+> +
+> +       vlag =3D avruntime - se->vruntime;
+> +       limit =3D calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se)=
+;
+> +
+> +       return clamp(vlag, -limit, limit);
+> +}
+>
+> +static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity=
+ *se)
+> +{
+>         SCHED_WARN_ON(!se->on_rq);
+> -       lag =3D avg_vruntime(cfs_rq) - se->vruntime;
+>
+> -       limit =3D calc_delta_fair(max_t(u64, 2*se->slice, TICK_NSEC), se)=
+;
+> -       se->vlag =3D clamp(lag, -limit, limit);
+> +       se->vlag =3D entity_lag(avg_vruntime(cfs_rq), se);
+>  }
+>
+>  /*
+> @@ -3761,7 +3767,7 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, s=
+truct sched_entity *se,
+>          *         =3D V  - vl'
+>          */
+>         if (avruntime !=3D se->vruntime) {
+> -               vlag =3D (s64)(avruntime - se->vruntime);
+> +               vlag =3D entity_lag(avruntime, se);
+>                 vlag =3D div_s64(vlag * old_weight, weight);
+>                 se->vruntime =3D avruntime - vlag;
+>         }
+> --
+> 2.25.1
+>
+>
 
