@@ -1,113 +1,133 @@
-Return-Path: <linux-kernel+bounces-153425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 295FC8ACDF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:15:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7AEF8ACE00
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:17:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D37001F21416
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:15:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 870BC1F2176C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834B814F13C;
-	Mon, 22 Apr 2024 13:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C87114F136;
+	Mon, 22 Apr 2024 13:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="NKdxfYzU"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NN2NYGgW"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45FE14F120;
-	Mon, 22 Apr 2024 13:15:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49E714A4E5;
+	Mon, 22 Apr 2024 13:17:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713791726; cv=none; b=d2UnFOHGpeeb1r8mAwP/LaAaCsD6cCCrWcjqV5S0fcAK3xymNurmrxwyL4nFHmKc/Te5GBcnKyr00yQ0lrb5d+uPGGaZzDcFCsKKDT+yvb17ns3Mjrsb3Aj9MvRTKaMMhSLC59Eb1BlYl25Z8E/325PKG2b+ICoJKXQ2tjxMKIo=
+	t=1713791826; cv=none; b=f1J0ZtfmIwfURHx6V0YCMDp7Lsi00qlyFDqT7kSIAMnU2q9g/OOAcHvxmCnkkrcIUfSoiS3XGV0RFYdxXwaeJGgmag9fTTQk7PKqts83ldLvnyOeKy+W/0qGhf+o3etKBMgM+4MCqgk3Zi9d3V22pY/1PgVteaPqnOzasr4cvXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713791726; c=relaxed/simple;
-	bh=Bsi2yrP9GspUNdvxo00t0OABd9LalWnEPytFUjRckpI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZHqJhSGPg1sP9jY1FnEV91J6hT9fYa1RyvVaY0ogSWHWbuifE4k6W9ZcJHp3ef/utyvXLnEd8F5q9GaTLTSnIM9kcJbCo3OV+1cW4DPYu+cenwtrAPo1n1Jf6ClMzlslj9Bb5A9Q1CBksk6TqzpmHM7hRojIsbqN+nnG5LA8Jpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=NKdxfYzU; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5659840E00B2;
-	Mon, 22 Apr 2024 13:15:22 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id tSmzaJxpVIeN; Mon, 22 Apr 2024 13:15:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1713791717; bh=6GcGWsNB6KQVPHBxhsurkToAwd7K4BfgUopftbZCrT4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NKdxfYzUGlllLZtmk5Dvimol6pTVI2TXeBwm/NuJOg8amoKGgPjr78IyU9JNKaGG8
-	 KNBjIOxe7l2o5M+WNQivj6fygOzNcvEMDyTsvmYIbL54WK4RIZcYyAaszWrINh1IjI
-	 kGtlnZFBrV+nx8CFeX7EGe3m1QeOJAoLWRk7icQWefFOJRuPKvvVmJdzd2HcxQSVTM
-	 bnWpisSQ0LHcFNWTyM4g7zxipoTJH1O499dXrFAse3ifbgzXufai5f2in6PEiH5C0s
-	 44p5eZDX9+DKFEHmcO+GOv4/o+2pDzJaB+8gByQpXetS0Hi4lbXEWVaR48BdDjmFlt
-	 TLmbGxumfn2uJ0IgXxv1FlsOZ6byrxICz6a9lwv5QWs7zEYVKUvRzj0Q8gHh0i3ZzN
-	 Q44+c0rmBeQFm2EAh5bhgCmL6OJOZblTEV9O01VAN2dGHcTJxb4ITqlqBwKxM15Xga
-	 tSmlBkxjwxzm4CgS1E1W5FbvXSFdpAP9wu+JUqJiIWaJB7oCvvd34YHRD7T/5YetP/
-	 UyVuIJmeZoWD6OkwSU0LW/THbdhCVV0frlrxj0TNbUmU1qUADCmfHuhkswigWq6iXI
-	 SebUNfU6pM7QKoTALRcofguRwMFkTIcDPT81mHdfazBzeLTrCRnxngdBFYGUFJv6LF
-	 VgNpZFYLYFZkuSwxbelKphCI=
-Received: from nazgul.tnic (unknown [IPv6:2a02:3038:209:d596:9e4e:36ff:fe9e:77ac])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C464140E016C;
-	Mon, 22 Apr 2024 13:15:05 +0000 (UTC)
-Date: Mon, 22 Apr 2024 15:14:59 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Nikunj A Dadhania <nikunj@amd.com>
-Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
-	kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-	dave.hansen@linux.intel.com, pgonda@google.com, seanjc@google.com,
-	pbonzini@redhat.com
-Subject: Re: [PATCH v8 07/16] x86/sev: Move and reorganize sev guest request
- api
-Message-ID: <20240422131459.GAZiZi0wUtpx2r0M6-@fat_crate.local>
-References: <20240215113128.275608-1-nikunj@amd.com>
- <20240215113128.275608-8-nikunj@amd.com>
+	s=arc-20240116; t=1713791826; c=relaxed/simple;
+	bh=bIu3jv7wbFitFgCSSAIH5zSJzALudmrLAp7H2HUq9VE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kh9DAJ9SDHYg03S2DO7rUHugJcF19HDSxnMjkT4KE4rZw7PSnutThAm5GZZL278a/9JY+iKvwXDDDWImrM93rrvZAdLBbbqoaeylJKGfs+hCS5j32il4+/UbWgK3mSCCUCOz6BoGscv3znDU++lB3PXU+yD51f+nNleKZ94acmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NN2NYGgW; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2db17e8767cso58122391fa.3;
+        Mon, 22 Apr 2024 06:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713791822; x=1714396622; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rC5Q3TsmbK89CYxlmTZK9bHoQvR58XmOMQv8g8W4/aI=;
+        b=NN2NYGgWCHO6Xsi5Z65W6qo19ybkXMWKpRpbeM8X72xK+RD4lfuHoz5T0C6EKROoDK
+         Y5C3UbE5+c5y9tvkKR5+NlkgNlfzXVRI+Wd3oncLAgm4VHQ2+0Q0SUhQ0eorvDMIQLcn
+         SfBKNj9qO25bXP5TPVXliyE8HXB0QMZ4ytcH9jxnjFE0QWZ2aDTClmeheIV4LZ3SYOmW
+         bTZUNlsr93kxxG3kC4u1nKjmWdKlIjRsVl7PJ4fww1qGYGBhMLEOtT/M53voPXy+4ZXr
+         XOxMU2JDOvH7gRYH9xta0BYje2qC75duhIweJotfxIivjQXFGNCx54jM8OrJGSqLvhCt
+         mSkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713791822; x=1714396622;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rC5Q3TsmbK89CYxlmTZK9bHoQvR58XmOMQv8g8W4/aI=;
+        b=v9TvxqvkbU5u6xIJCHXI23n1Y9IAp/jSiHix42pYjinnLiuy4Fmu14wdhPOiFLrzkh
+         MKneazBaAErg95moq6jhI72SjOuW6/xdtKEZz/JsxKxQZCLnV1jMEpARyZURFHMGAPVL
+         H3tNJhDz8+p4w2N9U4U6m1gfT4vdotcdUn37niVLWGoeysNt6kvdBxm3VjdcZFnrJhFK
+         mL11V4YOtfIdzJ1fg1695Xv3KfFDkJphPMMt3hB/GNbjVISCQ1jnZirCInID4us/MBpu
+         uGwBqRAukGI81sBck+cLx7/x19NaVRV9zEOmHNbP/tCDt1Zl4Fv+CDizOxObJ2XAlH+D
+         Sj1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVpmwSoQN41iu8Zx3l0KgWLdc1rs1XV4WnpOb0s2RZ/9ftKks8eVNtNK7glhtsU2p6HIC5YumcVq3UFZmsX35r9wuYauBp3lcgKfj0ZmBTj+OGoIGYJ1MKOMGoL4XmqiShQPiSFxhQD0U+p2RFr
+X-Gm-Message-State: AOJu0YxXm1pgv1StFMhNJA5/0FwxgLpmVnG57k+dziuGQc2VAl0rOPK7
+	uLpgf1wIonnhzavmsJULdPFwmyDrg+sIsYx450NNpZZqu9Rieb8s
+X-Google-Smtp-Source: AGHT+IEZYgvUslSm4eH9mo9Iqq9wum0lqnNiW2nb2vsWtTcF6qcwIIy2TK+M2PClLWiKTUoJLwZIQw==
+X-Received: by 2002:a2e:9384:0:b0:2db:348f:5c33 with SMTP id g4-20020a2e9384000000b002db348f5c33mr5485742ljh.16.1713791821576;
+        Mon, 22 Apr 2024 06:17:01 -0700 (PDT)
+Received: from localhost ([185.204.1.218])
+        by smtp.gmail.com with ESMTPSA id w2-20020a05651c102200b002dcb67e5716sm1273768ljm.22.2024.04.22.06.17.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 06:17:01 -0700 (PDT)
+From: Amer Al Shanawany <amer.shanawany@gmail.com>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Miklos Szeredi <mszeredi@redhat.com>,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH v2] selftests: filesystems: add missing stddef header
+Date: Mon, 22 Apr 2024 15:16:59 +0200
+Message-Id: <20240422131659.30222-1-amer.shanawany@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <df1df586-188e-4290-9986-7b7cd31710e3@collabora.com>
+References: <df1df586-188e-4290-9986-7b7cd31710e3@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240215113128.275608-8-nikunj@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 15, 2024 at 05:01:19PM +0530, Nikunj A Dadhania wrote:
-> Subject: Re: [PATCH v8 07/16] x86/sev: Move and reorganize sev guest request api
+fix compiler warning and errors when compiling statmount test.
 
-s/api/API/g
+gcc 12.3 (Ubuntu 12.3.0-1ubuntu1~22.04)
 
-Please check your whole patchset for proper naming/abbreviations
-spelling, etc.
+statmount_test.c:572:24: warning: implicit declaration of function
+‘offsetof’ [-Wimplicit-function-declaration]
+  572 | #define str_off(memb) (offsetof(struct statmount, memb) /
+sizeof(uint32_t))
+      |                        ^~~~~~~~
+statmount_test.c:598:51: note: in expansion of macro ‘str_off’
+  598 |         test_statmount_string(STATMOUNT_MNT_ROOT,
+str_off(mnt_root), "mount root");
+      |
+^~~~~~~
+statmount_test.c:18:1: note: ‘offsetof’ is defined in header
+‘<stddef.h>’; did you forget to ‘#include <stddef.h>’?
+   17 | #include "../../kselftest.h"
+  +++ |+#include <stddef.h>
 
-Another one: s/sev/SEV/g and so on. You should know the drill by now.
+Signed-off-by: Amer Al Shanawany <amer.shanawany@gmail.com>
+---
+V1 -> V2 added compiler warning in the patch message
 
-> For enabling Secure TSC, SEV-SNP guests need to communicate with the
-> AMD Security Processor early during boot. Many of the required
-> functions are implemented in the sev-guest driver and therefore not
-> available at early boot. Move the required functions and provide
-> API to the sev guest driver for sending guest message and vmpck
-> routines.
+ tools/testing/selftests/filesystems/statmount/statmount_test.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Patches which move and reorganize must always be split: first patch(es):
-you do *purely* *mechanical* move without any code changes. Then you do
-the code changes ontop so that a reviewer can have a chance of seeing
-what you're doing.
-
-Thx.
-
+diff --git a/tools/testing/selftests/filesystems/statmount/statmount_test.c b/tools/testing/selftests/filesystems/statmount/statmount_test.c
+index 3eafd7da58e2..e6d7c4f1c85b 100644
+--- a/tools/testing/selftests/filesystems/statmount/statmount_test.c
++++ b/tools/testing/selftests/filesystems/statmount/statmount_test.c
+@@ -3,6 +3,7 @@
+ #define _GNU_SOURCE
+ 
+ #include <assert.h>
++#include <stddef.h>
+ #include <stdint.h>
+ #include <sched.h>
+ #include <fcntl.h>
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
