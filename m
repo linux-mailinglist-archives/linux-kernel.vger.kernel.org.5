@@ -1,129 +1,109 @@
-Return-Path: <linux-kernel+bounces-152708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 765788AC334
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:46:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293E58AC337
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:48:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3239F280CBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:46:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB6C6280D4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD85FBFC;
-	Mon, 22 Apr 2024 03:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WnZ8uJkp"
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAAF10940;
+	Mon, 22 Apr 2024 03:47:56 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C4483234
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 03:46:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EEA7819;
+	Mon, 22 Apr 2024 03:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713757600; cv=none; b=MTOMlRf8cte8sg6VoqQQC8DwcSMeeJPKAYV8EIonTQcGXipdbyEPXxYhZU0n/lc6zkDFEIeqrJoXi1EJN+2t4nHP+lbKOfaLFCs6Wg5nJLDwl+z+PeG/6f/tmeQwYajVtXoXclT/jzx0XaD9fm32sbfEPAIBYWDHZbZZkDw7qNg=
+	t=1713757675; cv=none; b=m+li5cOijLiNBY10Ae70qj8s8tH8ukCGfWY0N7qTThZ2mPsd5tCtsNkOewggPI4bETQGiXJ3/K+5bU9cl2wfDeahhcbSbKpUKShJVIHX+L2hd+p5OHm2Re4T7Fq8xBcSqAXfvMuJ1WHNNwyu4VS+aRQdHcJHLKbEAaaOTGIL60E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713757600; c=relaxed/simple;
-	bh=c6HRCsksVRPLJjiT9UI6pfGIoW0YjE5oXgE1QpL2YJU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SmqRmsZgno3UoMOfPMh6mYK92n6kJ9FUxOjhp5LFpFsTjHvI89NmPKRzbWpVYs9EWtcRVikNkyOxCsC4FUhD/9ibdgBSqYBxBJfE8EZFv5KxGa5NVHJ9/5f3vkBk8umtypEhDSQq/sO5AQN2bCkAyPJ0d0zEfd/PSHOZQOc4IMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WnZ8uJkp; arc=none smtp.client-ip=209.85.217.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-479dbcdba2dso1673084137.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 20:46:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713757598; x=1714362398; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uF+1DYovCBZQoynvQ2g2R4mxJuXf8rUbM7cLDdzJiIE=;
-        b=WnZ8uJkpXUoTmJl/04/4YZ2go/PuJN/v/BurwnvvkaAbNt+FsY24W049GJJKzoptCY
-         N61yDuuxA8id6mIYczKlR3CrCbztaFPAHdC5ReUcX8cJncjyqi/kB4BYNtvwG433cQqI
-         BINhWj89/N34s2dYk0POy7mvnE/QEySx4lsG3IXRcxt/AFr5Z4GpWqbUpFq9sVBQuHkf
-         XUDWaNzHfo4oPBbj9bLviBnNyevwY52FL1hwiC981VaqRnj0NlzjFy2VNjT3P+T2k0JK
-         VhMWiIfT7THHh2DHZEwu71EYgUvRfrDuEJQsHl34REIIkSzuaE9QBvYF7KO7yoytGNly
-         z6aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713757598; x=1714362398;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uF+1DYovCBZQoynvQ2g2R4mxJuXf8rUbM7cLDdzJiIE=;
-        b=G723gfqc5WfMH3OhiZKmNGPx++6oMaC9RGJwPxgzVBS2p4ufOpX79p4EcNj5rAVpiS
-         ld7/9/HYqDwUS7k4ufyJ4ucZN22WBOAW7Ri6QHCpcQepyNyIfP5FojX4SxUCbvgsZMTx
-         co4NXdydzmYQY4kvuoNaPAc0NvTTAp5dSqzMLAxmOEuYcsvtG/hGgqy5o91JaOJEOefi
-         hChLFdkZ/X9PRAtLl6sseSHDSaFNjfYTUMmh3+17ShskijpKK6+Fh/4dEh4qPE9MQyH0
-         XafqmL55r36mlx6fI6zE5iTeP3EpoQY26xUbcoTniViMtNi4jhTj8nuGyrWT8gkRwu6h
-         wv0A==
-X-Forwarded-Encrypted: i=1; AJvYcCW7WvG4abldvIdVDwKYLMc9nxmZf4xDvtRUN8uen2azHBiMdFrHkS1RE49onYqoj1B6+fzG5h3bt9YqoNqfDhTuoHeNg/CfizQYNlby
-X-Gm-Message-State: AOJu0Yzc7pkhVSGnJMGqbCSa/N2zYZsHNt4UdyfIII/aRlUlelPlEf2c
-	gLsO1VU21rFRM9OLkd6VEUJszqwSDC7fG6L5tkz1WvvrBjMZ6jZDE2JWx/JuRRUtC1XcBWyXJUs
-	MePK3Dm0eWgdBnhEGTjLQC1eQBRo=
-X-Google-Smtp-Source: AGHT+IERpXWMynjY5c+mYROntV+AfnygzyfXC9gvLtE/N6YT9dvcT3QsqIo12Vlu52TTkYxN5OYRdCpq/AD39wn14SE=
-X-Received: by 2002:a05:6102:c90:b0:47b:bac2:259e with SMTP id
- f16-20020a0561020c9000b0047bbac2259emr14152627vst.34.1713757597564; Sun, 21
- Apr 2024 20:46:37 -0700 (PDT)
+	s=arc-20240116; t=1713757675; c=relaxed/simple;
+	bh=dKCOsWmsgjfFo6IO8R3M57gvMEH3lYVCacgWynXwjn8=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=XHUnpvW3DLWAPwc6UDImbDywZrUf2R9eI9Y/Bil5gd7E8oxo8gRjtEXmq+IdUvPKSS63aVuo2jFFw6ROUqRVCmVRYulcUIITKp/nEmSNR1HL7NmiapKtpsGtBK44K+aq7X5ozYgOF9gxpcx7a54jlJqnRvOWwDMYGioQvof6LRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VNB602sM9z4f3khV;
+	Mon, 22 Apr 2024 11:47:36 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id CC0A71A0D93;
+	Mon, 22 Apr 2024 11:47:43 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBHe3SVm89mEKg--.58781S3;
+	Mon, 22 Apr 2024 11:47:43 +0800 (CST)
+Subject: Re: [PATCH] blk-throttle: fix repeat limit on bio with
+ BIO_BPS_THROTTLED
+To: =?UTF-8?B?5ZGo5rOw5a6H?= <zhoutaiyu@kuaishou.com>,
+ Yu Kuai <yukuai1@huaweicloud.com>, "tj@kernel.org" <tj@kernel.org>
+Cc: "josef@toxicpanda.com" <josef@toxicpanda.com>,
+ "axboe@kernel.dk" <axboe@kernel.dk>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240419120747.38031-1-zhoutaiyu@kuaishou.com>
+ <ea781ccc-c29e-894e-c54a-f44ea349edca@huaweicloud.com>
+ <e2d291e6b6ed43d89930eb2a7d459ff8@kuaishou.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <fbf135e8-de16-8eb4-9ade-1b979a335e33@huaweicloud.com>
+Date: Mon, 22 Apr 2024 11:47:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240419101643.11534-1-hailong.liu@oppo.com>
-In-Reply-To: <20240419101643.11534-1-hailong.liu@oppo.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Mon, 22 Apr 2024 11:46:26 +0800
-Message-ID: <CAGsJ_4zUhnAAUb77ktJxDvAQpZhGrs00+8iQU3dhwpy=C_CjDA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] mm/vmalloc: fix return value of vb_alloc if size
- is 0.
-To: hailong.liu@oppo.com
-Cc: akpm@linux-foundation.org, urezki@gmail.com, hch@infradead.org, 
-	lstoakes@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <e2d291e6b6ed43d89930eb2a7d459ff8@kuaishou.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgCXaBHe3SVm89mEKg--.58781S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZw4xZr13tw4xXry5Gry3Jwb_yoW3ZrX_uF
+	s8Ar1xKrn5Jw4xtr9xKr1Y93ykK3sxuw1qq3ykZF1kX34v9F4kGFW7KFZ7AF1fZanYqws7
+	Ar4UtayFgay7WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb4kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+	Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+	UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Fri, Apr 19, 2024 at 6:17=E2=80=AFPM <hailong.liu@oppo.com> wrote:
->
-> From: "Hailong.Liu" <hailong.liu@oppo.com>
->
-> vm_map_ram check return value of vb_alloc by IS_ERR. if
-> vm_map_ram(page, 0, 0) , vb_alloc(0, GFP_KERNEL) would return NULL
-> which cause kernel panic by vmap_pages_range_noflush=E3=80=82fix this by
-> return ERR_PTR(-EINVAL) if size is 0.
->
-> Signed-off-by: Hailong.Liu <hailong.liu@oppo.com>
-> ---
-> Changes since v1 [1]:
-> - Return ERR_PTR(-EINVAL) or not check IS_ERR_OR_NULL
->
-> BTW,  Barry suggests me that if count is 0, return directly, in my
-> opinion, change return value is more resonable.
->
-> [1] https://lore.kernel.org/all/84d7cd03-1cf8-401a-8edf-2524db0bd6d5@oppo=
-com/
->
->  mm/vmalloc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index a3fedb3ee0db..c430a999805b 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2173,7 +2173,7 @@ static void *vb_alloc(unsigned long size, gfp_t gfp=
-_mask)
->                  * get_order(0) returns funny result. Just warn and termi=
-nate
->                  * early.
->                  */
-> -               return NULL;
-> +               return ERR_PTR(-EINVAL);
+Hi!
 
-might be ZERO_SIZE_PTR.
+在 2024/04/22 11:33, 周泰宇 写道:
+> What I want to do here was to set an easy to reach value to BPS_LIMIT (10M/s in this example) and an unable to reach value to IOPS_LIMIT (100000 in this example).
+> 
+> 
+> Under this setting, the iostat shows that the bps is far less than 10M/s and sometimes is far larger than 10M/s.
 
->         }
->         order =3D get_order(size);
->
-> --
-> 2.34.1
+Yes, I know this behaviour, and this is because blk-throttle works
+before IO split, and io stats is accounting bps for rq-based disk after
+IO split, if you using Q2C for bps you'll see that bps is stable as
+limit.
+
+Hi, Tejun！
+
+Do you think this *phenomenon* need to be fixed? If so, I don't see a
+easy way other than throttle bio after *IO split*. Perhaps ohter than
+bio merge case, this can be another motivation to move blk-throttle to
+rq_qos_throttle().
+
+Thanks,
+Kuai
+
 
