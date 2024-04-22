@@ -1,80 +1,59 @@
-Return-Path: <linux-kernel+bounces-154059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A19128AD6B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:39:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A7F78AD6BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:43:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FE9F1F226AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:39:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E67AB281D78
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B9F1CD20;
-	Mon, 22 Apr 2024 21:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B231D54F;
+	Mon, 22 Apr 2024 21:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jqz6wLAS"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sq0vL3B/"
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A4B1CD02
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 21:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448461CD2E
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 21:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713821982; cv=none; b=EKwngw4NOn3mDIzHunVogCn9Yyh0rrRHvxKLic7VLGfNcxapsOfuWt92RHQV18cyF3bMt5PMRFiNTT4PJNj0KF+ff3qPKauEfpTr2nTZXxj9IFCeBygbSSW2y30WgRP+oqhuerG56/6KoL7Ni2gq23AoYeyq7yOU8qLS9eu4zCk=
+	t=1713822224; cv=none; b=L8Co+y83avCdXBdOQ0Nx/M8+GgCbW+8iqMAiXKCms6TCwQZCLiVXPd32dHBfV4vH5dCEYMsX08P6Xi0f3iCM+aAukDd3HqjYACDw5maO4H+r6ErAY4HeeOb+Nza6Lm2ot2J4zJAjQAyLIr7sEaoXdQz4m/jXa33NS9Ljeqj0SEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713821982; c=relaxed/simple;
-	bh=66aXJAodZhmTK5ING/dIffFtFy1STros7jqfpnfisqM=;
+	s=arc-20240116; t=1713822224; c=relaxed/simple;
+	bh=xLZE5bqjy1mPJu01bI1nilRUwIDr5ANAP981riTJIB8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UokEjcOVoHRWrB3+mg7vPTfkvDBV6KDKXVLkTqXEyLIcw5Nlk4Vxbbvhy0fRhTkIkVBttRpbYUdIDTmVjw6uuexF97X2Be6VwRsW6KOh6XXEmrZvnfxsYKUKnOvysolc6RCEomg2GMmLfuRQsyEpHz206kRezamjDPqBBDzLBos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jqz6wLAS; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36b146836d7so18947805ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 14:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713821980; x=1714426780; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BEYoYZ4ojQsxz1tZuFjfEBTZaCuwMjE7Y0TzNKxEghA=;
-        b=jqz6wLASQ2wvafirmszCPYiWL+NAG77FOGk8YAydJHokOotHMwLo9dAocUoWcykl/p
-         /6FcdpKow5YuxZ+o7JPsw9Q+qh7XU7o9GGZ2gzoyTjSNeOBFU8iI673YXnIdmg5GSU5K
-         at9yU5IUwPhPTK2ApI/Z/Cmsm3upkXXDWdEggxGWpU6NmlW2NUneXKqcaSgSU9apIO4f
-         iwB0wsz7qm1FnIMQGW11aaGluuAMoLoxKzz8AaYqZykHs/n84ItKe0VFWAznZea6yF4X
-         g47HRHhc+B7i3decS0d6xb7ZPBwSh6XQXc9E+rvHV0AZ3GJsYMrHeL/lf32rkZWkSyW9
-         jFow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713821980; x=1714426780;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BEYoYZ4ojQsxz1tZuFjfEBTZaCuwMjE7Y0TzNKxEghA=;
-        b=BLpE1yKCIHqOZQhpRRlfoD5SOXR7BtWBWMwvZFsug7m3NutWMAKsdK16icojSbzjQY
-         LkjUL2MKdkTMswFh99CzzggpxXZeakdRYknBJbr1wwve9pNBK0pn1+eGda36KNzyX83z
-         WL2nsjn86ejCY6x9s0mjqYX/0kQqs9vDEpYalXSAMlSus/zztiPWPGZ7vWU3GJb6HaYk
-         1BZyZfdiZw4O60/OfEKONGFmb9AXA6Y+R2ptZxar9W9H3mGiZodWlr438EWgwpQyxVgm
-         tp/iL+30wsEKQKtBm7k51cKG8jCbieXqjB7CylxoBJOQDyVTZoAHa45RgqP2DnDhqlBv
-         S8Lg==
-X-Forwarded-Encrypted: i=1; AJvYcCVhADuZieGW+tplAUO177k93+7Y3xFxkcnKWb8uU6b1zNPkutZ2hK+mExmOvdK5PmD3+UrO7/p5cqC7MFvp70egcTq2EuHNAyNck3C3
-X-Gm-Message-State: AOJu0YzFYIj2hwNkvJ56NKZGAP5xYjOqrh+NSRn+IgT/Et9SA/LH/l4V
-	LZ5wUqJF74lUQfsB8Ooi0PZmtGXOUNOQRGkyl1B3kTOYOwq9QNw82NNvC4liMw==
-X-Google-Smtp-Source: AGHT+IH4fX/ZDpdX4q2CepXFgoagZzam0TlmHHrE8pLQ1KlDc3g+s75zHppnlpujcosjpbFrowmbCQ==
-X-Received: by 2002:a05:6e02:20c8:b0:36a:3f20:8cb with SMTP id 8-20020a056e0220c800b0036a3f2008cbmr16186840ilq.18.1713821979828;
-        Mon, 22 Apr 2024 14:39:39 -0700 (PDT)
-Received: from google.com (195.121.66.34.bc.googleusercontent.com. [34.66.121.195])
-        by smtp.gmail.com with ESMTPSA id e99-20020a02866c000000b004830fd34ce6sm3135897jai.74.2024.04.22.14.39.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 14:39:39 -0700 (PDT)
-Date: Mon, 22 Apr 2024 21:39:34 +0000
-From: Justin Stitt <justinstitt@google.com>
-To: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: Jason Wessel <jason.wessel@windriver.com>, 
-	Douglas Anderson <dianders@chromium.org>, kgdb-bugreport@lists.sourceforge.net, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] kdb: Fix buffer overflow during tab-complete
-Message-ID: <kyvcojgj2hgkxrv6a56dyfpxarc4cdcsb3kscchytlfx52ggfu@nx64h62xmqv7>
-References: <20240422-kgdb_read_refactor-v2-0-ed51f7d145fe@linaro.org>
- <20240422-kgdb_read_refactor-v2-1-ed51f7d145fe@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zf3u+bidU9D22MKwz1NYhFqwv0ATGsGpP8oHR1Hkz9WiVNBHgwJWbSLuVQXaookEltwyBv+VZ24DlSAL5oLtwxvZCOBd3XhxNN8GeK1JYTn3r58qKG1jXp/nrN4sK9Y0tXH/TF5JdGeMC8R2GxL1m2fbF2j8R6U204HPuCSTLyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sq0vL3B/; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 22 Apr 2024 14:43:32 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713822220;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qOHBnIZ60BpbamfCcbp9FtjSsLepjsFEyHBNJJNk5kc=;
+	b=sq0vL3B/aLECcKUV52U/A2xmzSWt//LFJPQqNNQrrJLnJUbHK1iMaDovIXJv3A6PKtVAcN
+	sokyh40MNRsXUvgLEDA0qW01nHjv8RIFNbfk362lxy5L8Aar/Q4zkPm21veaeC4kPPRW8k
+	YkKhT4CwEp5Kykcx61b3dkDcwHSgrSI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Colton Lewis <coltonlewis@google.com>
+Cc: kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev
+Subject: Re: [PATCH v4] KVM: arm64: Add early_param to control WFx trapping
+Message-ID: <ZibaBKCFMz-dJNM4@linux.dev>
+References: <20240422181716.237284-1-coltonlewis@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,75 +62,255 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240422-kgdb_read_refactor-v2-1-ed51f7d145fe@linaro.org>
+In-Reply-To: <20240422181716.237284-1-coltonlewis@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
+Hi Colton,
 
-On Mon, Apr 22, 2024 at 05:35:54PM +0100, Daniel Thompson wrote:
-> Currently, when the user attempts symbol completion with the Tab key, kdb
-> will use strncpy() to insert the completed symbol into the command buffer.
-> Unfortunately it passes the size of the source buffer rather than the
-> destination to strncpy() with predictably horrible results. Most obviously
-> if the command buffer is already full but cp, the cursor position, is in
-> the middle of the buffer, then we will write past the end of the supplied
-> buffer.
+On Mon, Apr 22, 2024 at 06:17:16PM +0000, Colton Lewis wrote:
+> Add an early_params to control WFI and WFE trapping. This is to
+> control the degree guests can wait for interrupts on their own without
+> being trapped by KVM. Options for each param are trap, notrap, and
+> default. trap enables the trap. notrap disables the trap. default
+> preserves current behavior, disabling the trap if only a single task
+> is running and enabling otherwise.
 > 
-> Fix this by replacing the dubious strncpy() calls with memmove()/memcpy()
-> calls plus explicit boundary checks to make sure we have enough space
-> before we start moving characters around.
-> 
-> Reported-by: Justin Stitt <justinstitt@google.com>
-> Closes: https://lore.kernel.org/all/CAFhGd8qESuuifuHsNjFPR-Va3P80bxrw+LqvC8deA8GziUJLpw@mail.gmail.com/
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-Nice! This is better than the conversions I tried to make earlier.
-
-Your patch helps with https://github.com/KSPP/linux/issues/90
-
-Reviewed-by: Justin Stitt <justinstitt@google.com>
+> Signed-off-by: Colton Lewis <coltonlewis@google.com>
 > ---
->  kernel/debug/kdb/kdb_io.c | 21 +++++++++++++--------
->  1 file changed, 13 insertions(+), 8 deletions(-)
+> v4:
 > 
-> diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
-> index 9443bc63c5a24..06dfbccb10336 100644
-> --- a/kernel/debug/kdb/kdb_io.c
-> +++ b/kernel/debug/kdb/kdb_io.c
-> @@ -367,14 +367,19 @@ static char *kdb_read(char *buffer, size_t bufsize)
->  			kdb_printf(kdb_prompt_str);
->  			kdb_printf("%s", buffer);
->  		} else if (tab != 2 && count > 0) {
-> -			len_tmp = strlen(p_tmp);
-> -			strncpy(p_tmp+len_tmp, cp, lastchar-cp+1);
-> -			len_tmp = strlen(p_tmp);
-> -			strncpy(cp, p_tmp+len, len_tmp-len + 1);
-> -			len = len_tmp - len;
-> -			kdb_printf("%s", cp);
-> -			cp += len;
-> -			lastchar += len;
-> +			/* How many new characters do we want from tmpbuffer? */
-> +			len_tmp = strlen(p_tmp) - len;
-> +			if (lastchar + len_tmp >= bufend)
-> +				len_tmp = bufend - lastchar;
-> +
-> +			if (len_tmp) {
-> +				/* + 1 ensures the '\0' is memmove'd */
-> +				memmove(cp+len_tmp, cp, (lastchar-cp) + 1);
-> +				memcpy(cp, p_tmp+len, len_tmp);
-> +				kdb_printf("%s", cp);
-> +				cp += len_tmp;
-> +				lastchar += len_tmp;
-> +			}
->  		}
->  		kdb_nextline = 1; /* reset output line number */
->  		break;
+> * Fixed inaccurate names that incorrectly implied this controls interrupts
+>   themselves instead of instructions waiting for interrupts and events
+> * Split into two separate params as interrupts (WFI) and events (WFE) do
+>   different things and may warrant separate controls.
+> * Document new params in Documentation/admin-guide/kernel-parameters.txt
 > 
-> -- 
-> 2.43.0
 > 
->
+> v3:
+> https://lore.kernel.org/kvmarm/20240410175437.793508-1-coltonlewis@google.com/
+> 
+> v2:
+> https://lore.kernel.org/kvmarm/20240319164341.1674863-1-coltonlewis@google.com/
+> 
+> v1:
+> https://lore.kernel.org/kvmarm/20240129213918.3124494-1-coltonlewis@google.com/
+> 
+>  .../admin-guide/kernel-parameters.txt         | 22 +++++++-
+>  arch/arm64/include/asm/kvm_emulate.h          | 24 ++++++++-
+>  arch/arm64/include/asm/kvm_host.h             |  7 +++
+>  arch/arm64/kvm/arm.c                          | 54 +++++++++++++++++--
+>  4 files changed, 101 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 31b3a25680d0..f8d16c792e66 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2653,6 +2653,27 @@
+>  			[KVM,ARM] Allow use of GICv4 for direct injection of
+>  			LPIs.
+> 
+> +	kvm-arm.wfe_trap_policy=
+> +			[KVM,ARM] Control when to set wfe instruction trap.
 
-Thanks
-Justin
+nitpick: when referring to the instruction, please capitalize it.
+
+Also, it doesn't hurt to be verbose here and say this cmdline option
+"Controls the WFE instruction trap behavior for KVM VMs"
+
+I say this because there is a separate set of trap controls that allow
+WFE or WFI to execute in EL0 (i.e. host userspace).
+
+> +			trap: set wfe instruction trap
+> +
+> +			notrap: clear wfe instruction trap
+> +
+> +			default: set wfe instruction trap only if multiple
+> +				 tasks are running on the CPU
+
+I would strongly prefer we not make any default behavior user-visible.
+The default KVM behavior can (and will) change in the future.
+
+Only the absence of an explicit trap / notrap policy should fall back to
+KVM's default heuristics.
+
+> +	kvm-arm.wfi_trap_policy=
+> +			[KVM,ARM] Control when to set wfi instruction trap.
+> +
+> +			trap: set wfi instruction trap
+> +
+> +			notrap: clear wfi instruction trap
+> +
+> +			default: set wfi instruction trap only if multiple
+> +				 tasks are running on the CPU
+> +
+> +
+>  	kvm_cma_resv_ratio=n [PPC]
+>  			Reserves given percentage from system memory area for
+>  			contiguous memory allocation for KVM hash pagetable
+> @@ -7394,4 +7415,3 @@
+>  				memory, and other data can't be written using
+>  				xmon commands.
+>  			off	xmon is disabled.
+> -
+> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+> index b804fe832184..efd0a3fb6f00 100644
+> --- a/arch/arm64/include/asm/kvm_emulate.h
+> +++ b/arch/arm64/include/asm/kvm_emulate.h
+> @@ -109,9 +109,13 @@ static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
+>  	return (unsigned long *)&vcpu->arch.hcr_el2;
+>  }
+> 
+> -static inline void vcpu_clear_wfx_traps(struct kvm_vcpu *vcpu)
+> +static inline void vcpu_clear_wfe_trap(struct kvm_vcpu *vcpu)
+>  {
+>  	vcpu->arch.hcr_el2 &= ~HCR_TWE;
+> +}
+> +
+> +static inline void vcpu_clear_wfi_trap(struct kvm_vcpu *vcpu)
+> +{
+>  	if (atomic_read(&vcpu->arch.vgic_cpu.vgic_v3.its_vpe.vlpi_count) ||
+>  	    vcpu->kvm->arch.vgic.nassgireq)
+>  		vcpu->arch.hcr_el2 &= ~HCR_TWI;
+> @@ -119,12 +123,28 @@ static inline void vcpu_clear_wfx_traps(struct kvm_vcpu *vcpu)
+>  		vcpu->arch.hcr_el2 |= HCR_TWI;
+>  }
+
+This helper definitely does not do as it says on the tin. It ignores the
+policy requested on the command line and conditionally *sets* TWI. If
+the operator believes they know best and ask for a particular trap policy
+KVM should uphold it unconditionally. Even if they've managed to shoot
+themselves in the foot.
+
+> -static inline void vcpu_set_wfx_traps(struct kvm_vcpu *vcpu)
+> +static inline void vcpu_clear_wfx_traps(struct kvm_vcpu *vcpu)
+> +{
+> +	vcpu_clear_wfe_trap(vcpu);
+> +	vcpu_clear_wfi_trap(vcpu);
+> +}
+> +
+> +static inline void vcpu_set_wfe_trap(struct kvm_vcpu *vcpu)
+>  {
+>  	vcpu->arch.hcr_el2 |= HCR_TWE;
+> +}
+> +
+> +static inline void vcpu_set_wfi_trap(struct kvm_vcpu *vcpu)
+> +{
+>  	vcpu->arch.hcr_el2 |= HCR_TWI;
+>  }
+> 
+> +static inline void vcpu_set_wfx_traps(struct kvm_vcpu *vcpu)
+> +{
+> +	vcpu_set_wfe_trap(vcpu);
+> +	vcpu_set_wfi_trap(vcpu);
+> +}
+> +
+>  static inline void vcpu_ptrauth_enable(struct kvm_vcpu *vcpu)
+>  {
+>  	vcpu->arch.hcr_el2 |= (HCR_API | HCR_APK);
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 21c57b812569..315ee7bfc1cb 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -67,6 +67,13 @@ enum kvm_mode {
+>  	KVM_MODE_NV,
+>  	KVM_MODE_NONE,
+>  };
+> +
+> +enum kvm_wfx_trap_policy {
+> +	KVM_WFX_NOTRAP_SINGLE_TASK, /* Default option */
+> +	KVM_WFX_NOTRAP,
+> +	KVM_WFX_TRAP,
+> +};
+> +
+>  #ifdef CONFIG_KVM
+>  enum kvm_mode kvm_get_mode(void);
+>  #else
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index a25265aca432..5106ba5a8a39 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -46,6 +46,8 @@
+>  #include <kvm/arm_psci.h>
+> 
+>  static enum kvm_mode kvm_mode = KVM_MODE_DEFAULT;
+> +static enum kvm_wfx_trap_policy kvm_wfi_trap_policy = KVM_WFX_NOTRAP_SINGLE_TASK;
+> +static enum kvm_wfx_trap_policy kvm_wfe_trap_policy = KVM_WFX_NOTRAP_SINGLE_TASK;
+> 
+>  DECLARE_KVM_HYP_PER_CPU(unsigned long, kvm_hyp_vector);
+> 
+> @@ -423,6 +425,12 @@ void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)
+> 
+>  }
+> 
+> +static bool kvm_should_clear_wfx_trap(enum kvm_wfx_trap_policy p)
+> +{
+> +	return (p == KVM_WFX_NOTRAP && kvm_vgic_global_state.has_gicv4)
+> +		|| (p == KVM_WFX_NOTRAP_SINGLE_TASK && single_task_running());
+> +}
+
+style nitpick: operators should always go on the preceding line for a
+multi-line statement.
+
+>  void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+>  {
+>  	struct kvm_s2_mmu *mmu;
+> @@ -456,10 +464,15 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+>  	if (kvm_arm_is_pvtime_enabled(&vcpu->arch))
+>  		kvm_make_request(KVM_REQ_RECORD_STEAL, vcpu);
+> 
+> -	if (single_task_running())
+> -		vcpu_clear_wfx_traps(vcpu);
+> +	if (kvm_should_clear_wfx_trap(kvm_wfi_trap_policy))
+> +		vcpu_clear_wfi_trap(vcpu);
+>  	else
+> -		vcpu_set_wfx_traps(vcpu);
+> +		vcpu_set_wfi_trap(vcpu);
+> +
+> +	if (kvm_should_clear_wfx_trap(kvm_wfe_trap_policy))
+> +		vcpu_clear_wfe_trap(vcpu);
+> +	else
+> +		vcpu_set_wfe_trap(vcpu);
+> 
+>  	if (vcpu_has_ptrauth(vcpu))
+>  		vcpu_ptrauth_disable(vcpu);
+
+I find all of the layering rather hard to follow; we don't need
+accessors for doing simple bit manipulation.
+
+Rough sketch:
+
+static bool kvm_vcpu_should_clear_twi(struct kvm_vcpu *vcpu)
+{
+	if (unlikely(kvm_wfi_trap != KVM_WFX_DEFAULT))
+		return kvm_wfi_trap == KVM_WFX_NOTRAP;
+
+	return single_task_running() &&
+	       (atomic_read(&vcpu->arch.vgic_cpu.vgic_v3.its_vpe.vlpi_count) ||
+	        vcpu->kvm->arch.vgic.nassgireq);
+}
+
+static bool kvm_vcpu_should_clear_twe(struct kvm_vcpu *vcpu)
+{
+	if (unlikely(kvm_wfe_trap != KVM_WFX_DEFAULT))
+		return kvm_wfe_trap == KVM_WFX_NOTRAP;
+
+	return single_task_running();
+}
+
+static void kvm_vcpu_load_compute_hcr(struct kvm_vcpu *vcpu)
+{
+	vcpu->arch.hcr_el2 |= HCR_TWE | HCR_TWI;
+
+	if (kvm_vcpu_should_clear_twe(vcpu))
+		vcpu->arch.hcr_el2 &= ~HCR_TWE;
+	if (kvm_vcpu_should_clear_twi(vcpu))
+		vcpu->arch.hcr_el2 &= ~HCR_TWI;
+}
+
+And if we really wanted to, the non-default trap configuration could be
+moved to vcpu_reset_hcr() if we cared.
+
+-- 
+Thanks,
+Oliver
 
