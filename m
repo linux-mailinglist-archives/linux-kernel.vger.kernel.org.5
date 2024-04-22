@@ -1,65 +1,76 @@
-Return-Path: <linux-kernel+bounces-153265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93D5A8ACBB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:12:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D7478ACB98
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:04:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49E631F21CDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:12:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDEBC28433C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 201A214659F;
-	Mon, 22 Apr 2024 11:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022BA14600D;
+	Mon, 22 Apr 2024 11:04:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="mqmUocXs"
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F+SkKYwI"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82D2481DD;
-	Mon, 22 Apr 2024 11:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2113482C1;
+	Mon, 22 Apr 2024 11:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713784325; cv=none; b=oFbM8sGy9hUBSHaSYcQzw/9qeer5nEX85sC3TTK9oAG+Tk+UQXQtAfbdXhyNicgHhdr+N/6JYUZ1VBknvm3GxZql2MCZ06jlC4VXmgPDMqVAWAw7qy2/exOZCASm8E3TduG78h3TqRnjMZ19g8zbalJOunhA6fdFeceGOfqCB7E=
+	t=1713783870; cv=none; b=dsYcLd1UFsTe3D42ydLOyU5TQAcG+AoalFmTJ5gyfl5rSPTCD6SlSeUiyhPUpmpu/CSE6IeBxBGvxB1+EZm3/1LuOjOfDVEgkWs3W5Va8dYQs4d9x/Geq2Qm4Osgv7DBgSFRLezhaCMWFIfldUkeXhFnCqFUfhTqziQtng9tEAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713784325; c=relaxed/simple;
-	bh=dAPocxet1Oe850nbPG3d6+xiuiTaILe0wrclc0bquhQ=;
+	s=arc-20240116; t=1713783870; c=relaxed/simple;
+	bh=0qlN9vG0iaCszP2AoQIzr57wHGNRrf1FM24tkAd7IRY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WOwJfAi7g1qpOInmGfKF2mAOZxZnPk10zlgAW1W94PxKqQa2xVBKuM2bytiCay8uzhEYQyMESY9/NUx3rdO0OcnY48TGnjEbhvVn+9o5lmg/cvN8o0mqQFnlFCMGIIIbyC69K7nwMfstEL3RxRsdV1PF7sAiSQmq0NKVPDTLZ0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=mqmUocXs; arc=none smtp.client-ip=80.241.56.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4VNMnK3Nksz9svZ;
-	Mon, 22 Apr 2024 13:03:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1713783829;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gcKvfN037TA7hZSa4d4wVaW0uvAV7xIvSo/LgCapk+E=;
-	b=mqmUocXsR3w50nQdtWP075s0eXt8c5DeM+rfi3aUvt846NgO+qnHJo4yQ7QUkHZi+6M1XA
-	oJO0688sir/I+srkC0WLRug6oq1qkVdQAPXuW2ps6tHah0BNuNNq8jh+9+Oy68WDLOiO3o
-	H2fpseCkE5oUuy5GwzGd4m40QKDQ/6Da8cnRhlU0QX17oh6vxC18/hmPqh9nMI3Vq3nyOW
-	lvs5sKHvUnLlcjKR0ZYBIGV+xraV5tvf4//IYSXPvFSP3Sfr3X88gVh5VQBcLAPsMws0Tc
-	0EsYRbVASkL/dJ/7VA9ofv/A1nGnv3IhjqN1K+E+RQaxfTQGpL8w0sogSRT+rw==
-Date: Mon, 22 Apr 2024 13:03:45 +0200
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	gost.dev@samsung.com, chandan.babu@oracle.com, hare@suse.de, mcgrof@kernel.org, 
-	djwong@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	david@fromorbit.com, akpm@linux-foundation.org, Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH v3 05/11] readahead: allocate folios with
- mapping_min_order in readahead
-Message-ID: <i4c6xe6jdei2to6kah4kgjehpjlanaqfulju2jzsu5ny2gmegv@2b2oh44oilnj>
-References: <20240313170253.2324812-1-kernel@pankajraghav.com>
- <20240313170253.2324812-6-kernel@pankajraghav.com>
- <ZgHJxiYHvN9DfD15@casper.infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FqQkVjLn9OvRZmeegE+4AhTAMcxojZN7oE9+ma/jPQo3rsNrrtBVG/ZQ5k1/Vc9aa3Y5mj9AqD9wZzkG7++TEFfDhVpymr2TPMKCf+aTZAnIgBYDb4s7ZNbjsZ4KUiER8lTUrIfNK/BrBKVL76yErZfhX3U2ihbECsPnTfoiObE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F+SkKYwI; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713783869; x=1745319869;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0qlN9vG0iaCszP2AoQIzr57wHGNRrf1FM24tkAd7IRY=;
+  b=F+SkKYwIp4OdQzFcK2Kl84KhbP6dihGNS5zGRq/nu77/u4xj9/D4e/cA
+   dMAH3Ol1LjBMQVupH2Wjxnrqy93roWsPCcpfZkGukwuXzIHPzU2IuHuAg
+   T0hDDSHA0GVnUku/oZcVL/wivK8z+v9xJHwI9XVZMtAKbKsoeJJQSRJjA
+   T6DLhrJPtzTR81yxmuiaDE+YEWZ1M0N/kgj5ETDwsVrNz6aG4VCX9s8UC
+   R3qruQFmTP4BMAZqbabsOMj+yWVvq7v7apeKZe/2QQXknuq4mEsr/0t5J
+   /XuYcb83WwGUIyyDA1K9q7s7XYM5qt0vnKx9pRsgfbfGwHd6QDtxutbvS
+   w==;
+X-CSE-ConnectionGUID: +3CC1+JVQo2DJhymooNqxQ==
+X-CSE-MsgGUID: qB6BQ0OwQBSrdHxMKo9IvA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="9180365"
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="9180365"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 04:04:28 -0700
+X-CSE-ConnectionGUID: iOdMmI+KQuWJRUNvSvioWQ==
+X-CSE-MsgGUID: 9RIS8QI/SHyq02jcEbaGsA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="24582798"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 04:04:27 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1ryrTD-00000001czC-43QQ;
+	Mon, 22 Apr 2024 14:04:23 +0300
+Date: Mon, 22 Apr 2024 14:04:23 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Martijn Braam <martijn@brixit.nl>
+Subject: Re: [PATCH v1 1/1] iio: light: stk3310: Drop most likely fake ACPI ID
+Message-ID: <ZiZEN807oywU-MAx@smile.fi.intel.com>
+References: <20240415141852.853490-1-andriy.shevchenko@linux.intel.com>
+ <20240420122633.79b4185b@jic23-huawei>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,83 +79,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZgHJxiYHvN9DfD15@casper.infradead.org>
+In-Reply-To: <20240420122633.79b4185b@jic23-huawei>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-> > @@ -515,7 +562,7 @@ void page_cache_ra_order(struct readahead_control *ractl,
-> >  		if (index & ((1UL << order) - 1))
-> >  			order = __ffs(index);
-> >  		/* Don't allocate pages past EOF */
-> > -		while (index + (1UL << order) - 1 > limit)
-> > +		while (order > min_order && index + (1UL << order) - 1 > limit)
-> >  			order--;
+On Sat, Apr 20, 2024 at 12:26:33PM +0100, Jonathan Cameron wrote:
+> On Mon, 15 Apr 2024 17:18:52 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 > 
-> This raises an interesting question that I don't know if we have a test
-> for.  POSIX says that if we mmap, let's say, the first 16kB of a 10kB
-> file, then we can store into offset 0-12287, but stores to offsets
-> 12288-16383 get a signal (I forget if it's SEGV or BUS).  Thus far,
-> we've declined to even create folios in the page cache that would let us
-> create PTEs for offset 12288-16383, so I haven't paid too much attention
-> to this.  Now we're going to have folios that extend into that range, so
-> we need to be sure that when we mmap(), we only create PTEs that go as
-> far as 12287.
+> > The commit in question does not proove that ACPI ID exists.
+> > Quite likely it was a cargo cult addition while doint that
+> > for DT-based enumeration.  Drop most likely fake ACPI ID.
+> > 
+> > Googling for STK3335 gives no useful results in regard to DSDT.
+> > 
+> > Fixes: 677f16813a92 ("iio: light: stk3310: Add support for stk3335")
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Hi Andy,
 > 
-> Can you check that we have such an fstest, and that we still pass it
-> with your patches applied and a suitably large block size?
+> It's been there quite a while (5 years) so whilst I agree it should
+> never have gone in without a known DSDT in the wild, I'm not sure we
+> should remove it at this point.
 > 
+> Definitely not with a fixes tag as I don't want to see this picked up
+> for stable and breaking some old consumer device we don't know about.
+> 
+> If there is a good maintenance reason to scrap these I'm in favour,
+> but if it's just tidying up errors from the past that have no
+> real impact then I'm not so sure.
+> 
+> Maybe we need a 'deprecated' marking for acpi ids that always prints
+> a message telling people not to make them up.  Mind you what would that
+> do beyond make us feel better?
 
-So the mmap is giving the correct SIGBUS error when we try to do this:
-dd if=/dev/zero of=./test bs=10k count=1; 
-xfs_io -c "mmap -w 0 16384" -c "mwrite 13000 10" test
+I prefer to find the actual users by removing these IDs. It's the best approach
+to limiting the presence of wrong ID in time and at the same time harvesting
+the actual (ab)users of it. Warning or other "soft" approaches makes rottening
+just longer and _increases_ the chance of mis-use/abuse of these fake IDs.
 
-Logs on bs=64k ps=4k system:
-root@debian:/media/test# dd if=/dev/zero of=./test bs=10k count=1;
-root@debian:/media/test# du -sh test 
-64K     test
-root@debian:/media/test# ls -l --block-size=k test 
--rw-r--r-- 1 root root 10K Apr 22 10:42 test
-root@debian:/media/test# xfs_io -c "mmap  0 16384" -c "mwrite 13000 10" test
-Bus error
+I understand your position as a maintainer who can be blamed by mere user in
+case we are (I am) mistaken, but I consider it the least harm than by
+continuing "supporting" them. Feel free to NAK this patch, but for the record
+I won't like this :-)
 
-The check in filemap_fault takes care of this:
+TL;DR: I do not buy 5 / 10 / etc years in the Linux kernel as an argument,
+sorry.
 
-max_idx = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-if (unlikely(index >= max_idx))
-        return VM_FAULT_SIGBUS;
+-- 
+With Best Regards,
+Andy Shevchenko
 
-The same operation for read should also give a bus error, but it didn't.
-Further investigation pointed out that the fault_around() does not take
-this condition into account for LBS configuration. When I set fault_around_bytes
-to 4096, things worked as expected as we skip fault_around for reads. 
 
-I have a patch that return SIGBUS also for the following read operation:
-dd if=/dev/zero of=./test bs=10k count=1; 
-xfs_io -c "mmap -r 0 16384" -c "mread 13000 10" test
-
-This is the patch I have for now that fixes fault_around() logic for LBS
-configuration:
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index f0c0cfbbd134..259531dd297b 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3600,12 +3600,15 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
-        }
-        do {
-                unsigned long end;
-+               unsigned long i_size;
- 
-                addr += (xas.xa_index - last_pgoff) << PAGE_SHIFT;
-                vmf->pte += xas.xa_index - last_pgoff;
-                last_pgoff = xas.xa_index;
-                end = folio_next_index(folio) - 1;
--               nr_pages = min(end, end_pgoff) - xas.xa_index + 1;
-+               i_size = DIV_ROUND_UP(i_size_read(mapping->host),
-+                                     PAGE_SIZE) - 1;
-+               nr_pages = min3(end, end_pgoff, i_size) - xas.xa_index + 1;
- 
-                if (!folio_test_large(folio))
-                        ret |= filemap_map_order0_folio(vmf,
-
-I will send a new version of the series this week after doing some more
-testing.
 
