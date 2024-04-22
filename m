@@ -1,75 +1,82 @@
-Return-Path: <linux-kernel+bounces-153090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C4698AC8E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:30:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 584398AC8EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:30:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58728282C52
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:30:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 770D41C20E5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB91464CF2;
-	Mon, 22 Apr 2024 09:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0D5131191;
+	Mon, 22 Apr 2024 09:30:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GJzhJEIE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uwoDz0hg"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49B35029A;
-	Mon, 22 Apr 2024 09:30:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B69A12DD98
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:30:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713778217; cv=none; b=mr+PARSRvO02FRc4iE+3rzVBRMf2iO5QnETFRouGeXnQhmhOT+TL/TYq6Y6ZpfcDEOO8arjCXrlGwR60v5UU2x7YhREbT7Aknf+rk4o56k67bvl2Su0quGuDN4h1eXwqjyodQK0jDgIuVlxlFEuituKIwZ4Gt+JwXWzwchfTfHw=
+	t=1713778221; cv=none; b=OopFpRTNe1g5FEvM4s8SyxcOYs4a5HGtIt1rlNpv2HuHPnAhJ020jD1xWvo6zk8h2plklyp4IfawaqnrtcSqdhhKvRc0S4XC02li+e7zeGuJuJ1kYMBME9oi5dWWva7d0YlqJcZlXLNlMwezcIzDUQkzCwBf6qote7KaWEoy5VQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713778217; c=relaxed/simple;
-	bh=EESYxXe371fcWRXjGI9bPSFEjgmbWU9a8XVa2tbzFQE=;
+	s=arc-20240116; t=1713778221; c=relaxed/simple;
+	bh=yDvYw01yiHc7nujH8Xjx48EXH2L2OGKkcsQS/tBq8PY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kCzuRWycpLn+yDlxfZ8UeXiyTPtKEHutfqIIlLNXR3FLcMEUpDgfNgCMIsSZ/kNZVe16gAGUIfjEq1GkvN3E7Bg65idbfSfkxE0hTp2lSFZ2uCRvX4OQUhCOfH8v8UNIcCRndIhCXoGGM/GL/xQNHuc82FxEIEsi1x2SKFMJGCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GJzhJEIE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F17BC113CC;
-	Mon, 22 Apr 2024 09:30:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713778216;
-	bh=EESYxXe371fcWRXjGI9bPSFEjgmbWU9a8XVa2tbzFQE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GJzhJEIEdrVn3UR5wDwmgtXyJ3D1hYmqDK9ZCaV5oHq0LHAWy77vYsB5zGSsc24Ti
-	 BUEtAfqwYUlUffVIrbiGfyCWudcRomRqBKmg5sSoIL4lCpPH9a/1WVLDSZUzi2oCoo
-	 CcZjP+LCBcwW2t7PhVhXRj7ote5xbSuEN9JyQggWdxgB0LWQnggJ7tlIbQ9rvg5LPc
-	 M8lULz/DFG+nHfCzuBHecDLJ5AWL9mZ29tmDG8rE/oUOzRIy/jyime52EqZjgetPBf
-	 0iSDy5zZmctguF+py2v5ixATr2R404SpElNFrls7KAaGaoLc+Pmaix5wOHQMbYNXIJ
-	 xxZ6gFl/6iVbw==
-Date: Mon, 22 Apr 2024 11:30:09 +0200
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <mani@kernel.org>
-Cc: Vinod Koul <vkoul@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
-	linux-tegra@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>,
-	Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH 05/11] PCI: epf-{mhi/test}: Move DMA initialization to
- EPC init callback
-Message-ID: <ZiYuIaX7ZV0exKMt@ryzen>
-References: <20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org>
- <20240314-pci-epf-rework-v1-5-6134e6c1d491@linaro.org>
- <Zf2tXgKo-gc3qy1D@ryzen>
- <20240326082636.GG9565@thinkpad>
- <ZgKsBoTvPWWhPO9e@ryzen>
- <20240327055457.GA2742@thinkpad>
- <ZgQFXsgqpeLbXMTb@ryzen>
- <ZgW6KB73Wh1X6911@matsya>
- <Zg5oeDzq5u3jmKIu@ryzen>
- <20240422075521.GB9775@thinkpad>
+	 Content-Type:Content-Disposition:In-Reply-To; b=j7dxjg48vTYWUtN3eHMitHPKrPKjYY9Ud3mpWSwx+4I2PV074GP18SX6GCndF0coLTkQBiU19Mix5zmJmd4UyRBeY2xZTI4ZIBDD8b2C4olVmOrwqaKbcFcNdS9p7x7NN9Ws3mGPFZrSwUA7h+X1Lziepli9mdSYbqd39M1nfSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uwoDz0hg; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a51a7d4466bso440983566b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 02:30:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713778218; x=1714383018; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=K8YSYfmq2ar9LNSgI84bvOXDhp3dJ/k4bhfd8YT4V9Q=;
+        b=uwoDz0hgD4HGZHf911YzeFUv7iy3MclHBfgkb8QpPUUrWg2/1Dh7Df9u47QWvqbpWu
+         ywqBdPRnNeqKV8Bq4p45Q72AEya92MD/Ky+20APs71C7KcV4fqNlpA3O3KxkuBy0AB41
+         oJyMbevl0LBOMjYRqi9e40t8dH/QbllVJr+YPbM0FY83EzkwUjXTXhEysRVJ0/SEDUY4
+         7c/CSLXAPdQEwsIx9g7mb2mkd5MrBiymX1S6WQQqviGvbVK0B4Abu6Z+9zMsb0HoaRLe
+         8D/2J8lZgKFlQJ8wogKNIfoiINljPN8h+hEmGh/sX3209Hb0ebkAO/QZeWMmI0luBDAL
+         FmUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713778218; x=1714383018;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K8YSYfmq2ar9LNSgI84bvOXDhp3dJ/k4bhfd8YT4V9Q=;
+        b=kNnLU8BOU39AJk/BFRoY4EBWlqDnB4pUBxq36uuw11Px9FrC87e2jG3c1sOVMuERp8
+         SVdxcCR0vA7mzS+E3yj6Qf8u9RCrdgTWdqwBZys8BSwIUsYOzwXZVY0yhCVn53njzv6Q
+         nrnjICVv0IZV9iHQ8+Ti7mttn3gmrbKyeS4BO6+EOA4VqtWrGEEkymZMXQdoBvUEiQ4T
+         y6KwZ7UVQ069p7Ag9ANc7aWD0UIYJdA3FfBnbjFVVjJ3GkwM8qEe1A0BCxcn0m06zJWL
+         5csYfn1C2EMLQoA80oPJQv2uZ8VJkvXNBlKn4nDUz8qn6xUQOQGnjgZ9/N02ht8ez1CT
+         6YiA==
+X-Forwarded-Encrypted: i=1; AJvYcCXcVbHYsUCs1cRL71XFbwe7f/3nPDzmKPS2F/eJmujIe6X6ayFGjMCM5hP+lAd3QXO+Bc/roomLwCOWh/5dGJkqb8AvEwPO5viHdbMG
+X-Gm-Message-State: AOJu0YxdhqMM/wJ6fHkAimG7fP51sqBmKgtNifpBjgQVMWzfsO48SBvb
+	YLl9La3YTOYf8b6cHIWiP5Cidj6P7DCiICqsXRvZ7zam0HfgSvdBZ9Cpgew9RB0=
+X-Google-Smtp-Source: AGHT+IFKo514P5vAAaJrUKnUxzQU7bYY8q+k1QwRXeF9G870dQzPUOmYTAUZIMgfxW22F+xHzZeOUA==
+X-Received: by 2002:a17:907:7714:b0:a52:5a02:2432 with SMTP id kw20-20020a170907771400b00a525a022432mr5237564ejc.50.1713778217567;
+        Mon, 22 Apr 2024 02:30:17 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id 17-20020a170906311100b00a5599f3a057sm2868731ejx.107.2024.04.22.02.30.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 02:30:16 -0700 (PDT)
+Date: Mon, 22 Apr 2024 12:30:12 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Ezequiel =?iso-8859-1?Q?Garc=EDa?= <elezegarcia@gmail.com>,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: stk1160: fix some bounds checking in
+ stk1160_copy_video()
+Message-ID: <f17042fd-890a-4a1e-b51e-6aead9986128@moroto.mountain>
+References: <ab56c444-418a-423d-8528-cf04d5d458ef@moroto.mountain>
+ <CANiDSCvGc2hv-6+THH28vE6uaTL+go7144hSYafkhp21uaM1Cg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,68 +85,81 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240422075521.GB9775@thinkpad>
+In-Reply-To: <CANiDSCvGc2hv-6+THH28vE6uaTL+go7144hSYafkhp21uaM1Cg@mail.gmail.com>
 
-On Mon, Apr 22, 2024 at 01:25:21PM +0530, Manivannan Sadhasivam wrote:
-> > 
-> > What I would like is more consistency between the EPF drivers.
-> > 
-> > I guess an if-statement that skips the pci_epc_map_addr() in pci-epf-test
-> > if using eDMA would make pci-epf-mhi and pci-epf-test most consistent.
-> > 
+On Wed, Apr 17, 2024 at 08:48:23PM +0200, Ricardo Ribalda wrote:
+> Hi Dan
 > 
-> Agree.
-
-
-> > 1) Do we want to rely on the fact that hopefully none of the iATUs in the DWC
-> > controller has configured a mapping that might mess things up for us?
-> > I don't see why the PCI/DMA address of the remote buffer, supplied to
-> > pci-epf-test via test_reg BAR, might not fall within the physical iATU window
-> > on the local EP system. (As long as the PCI EPF driver has mapped any address
-> > using pci_epc_map_addr().)
-> > 
-> > This is a big argument that EPF drivers running on a DWC-based EPC should
-> > definitely NOT call pci_epc_map_addr() needlessly when using eDMA, as it
-> > can be catastrophic. (pci-epf-test needs to be patched.)
-> > 
+> On Wed, 17 Apr 2024 at 19:51, Dan Carpenter <dan.carpenter@linaro.org> wrote:
+> >
+> > The subtract in this condition is reversed.  The ->length is the length
+> > of the buffer.  The ->bytesused is how many bytes we have copied thus
+> > far.  When the condition is reversed that means the result of the
+> > subtraction is always negative but since it's unsigned then the result
+> > is a very high positive value.  That means the overflow check is never
+> > true.
+> >
+> > Fixes: 9cb2173e6ea8 ("[media] media: Add stk1160 new driver (easycap replacement)")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > ---
+> > This patch is untested, I just spotted it in review.
+> >
+> > When this bug is fixed, the two checks for negative values of "lencopy"
+> > could be removed.  I wrote a version of this patch which removed the
+> > checks, but in the end I decided to leave the checks.  They're harmless.
+> >
+> >  drivers/media/usb/stk1160/stk1160-video.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
+> > index 366f0e4a5dc0..bfb97ea352e7 100644
+> > --- a/drivers/media/usb/stk1160/stk1160-video.c
+> > +++ b/drivers/media/usb/stk1160/stk1160-video.c
+> > @@ -139,8 +139,8 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
+> >          * Check if we have enough space left in the buffer.
+> >          * In that case, we force loop exit after copy.
+> >          */
+> > -       if (lencopy > buf->bytesused - buf->length) {
+> > -               lencopy = buf->bytesused - buf->length;
+> > +       if (lencopy > buf->length - buf->bytesused) {
+> > +               lencopy = buf->length - buf->bytesused;
+> >                 remain = lencopy;
+> >         }
 > 
-> Right. There is no need to do iATU translation for DMA. I avoid that in MHI
-> driver.
-
-There is no need for pci_epc_map_addr() when using DMA_SLAVE *for DWC-based
-controllers*.
-
-Are we certain that this will not break pci-epf-test for non DWC-based
-controllers?
-
-
-> > 2) Can we really assume that both pci-epf-test and pci-epf-mhi does not need
-> > to call pci_epc_map_addr() when using a DMA_SLAVE DMA controller?
-> > This seems to be designed only with DWC in mind. Other PCIe endpoint
-> > controllers might require this.
-> > (Yes, for DWC-based controllers, this definitely should be skipped, but EPF
-> > drivers are supposed to be independent from a specific EPC.)
-> > 
+> I think it is a bit more complicated than bytesused.
 > 
-> For TEST yes, but for MHI, no. In MHI, I kind of mix both iATU and DMA to ripe
-> most of the performance (small vs big transactions). But for the TEST driver, it
-> is fair to not call pci_epc_map_addr() when DMA_SLAVE is supported.
+> bytesused does not take into consideration the actual position where
+> it is going to write.
+> 
+> What we really want to check is if
+> 
+> offset = dst - buf->mem;
+> if (offset + lencopy > buf->length) {
+>   lencopy = buf->length - offset;
+>   remain = lencopy;
+> }
+> 
 
-I agree that we should definitely skip pci_epc_map_addr() in pci-epf-test when
-using DMA_SLAVE on DWC-based controllers, but I don't feel comfortable in
-submitting a patch that does this unconditionally for pci-epf-test.c,
-as I don't know how the DMA hardware in:
-drivers/pci/controller/cadence/pcie-cadence-ep.c
-drivers/pci/controller/pcie-rcar-ep.c
-drivers/pci/controller/pcie-rockchip-ep.c
+You're right...  There is a comment explaining why we multiply the
+number of lines written by two, but it doesn't really clarify anything
+for me:
 
-works, and I do not want to regress them.
+	/* Multiply linesdone by two, to take account of the other field */
 
-I did suggest that DWC-based drivers could set a DMA_SLAVE_SKIP_MEM_MAP flag
-or similar when registering the eDMA, which pci-epf-test then could check,
-but I got no response if anoyone else thought that this was a good idea.
+What's the "other field"?
 
+I kind of suspect that the stk1160_buffer_done() might be wrong as well.
 
-Kind regards,
-Niklas
+	vb2_set_plane_payload(&buf->vb.vb2_buf, 0, buf->bytesused);
+                                                   ^^^^^^^^^^^^^^
+
+We're calculating the space left based on ->pos which can be reset to
+zero in stk1160_process_isoc().  But ->bytesused isn't reset, so
+potentially we could end up in a situation where ->bytesused is greater
+than the ->length of the buffer.  Should stk1160_process_isoc() set
+->bytesused to zero as well?
+
+regards,
+dan carpenter
+
 
