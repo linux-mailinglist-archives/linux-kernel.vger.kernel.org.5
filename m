@@ -1,101 +1,136 @@
-Return-Path: <linux-kernel+bounces-153438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8178ACE19
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:25:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8063A8ACE1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:26:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAD8B282075
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:25:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2B641C21235
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:25:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8216414F9CA;
-	Mon, 22 Apr 2024 13:25:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE58314F9C6;
+	Mon, 22 Apr 2024 13:25:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="LpxCAOKJ"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BsOYc8kK"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1AE14F13B;
-	Mon, 22 Apr 2024 13:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38C7914F13B
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:25:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713792337; cv=none; b=cJuwjyXu1zgVf4ZD36JH+xLwd1eKQb0/s9JImYtfIvvst8Q5gPYyxLe20aWLFTc7CycoY6GTArbvODfJQ0WVLPdDed6seAQhofI3We69MKbh+R7Y1tGgEoXp47nL/obmgkxYDucatnAN1JoE/y4popFvnV/3qYsFtUsTMvwc4p4=
+	t=1713792347; cv=none; b=tiyqtHL4USeRJBOhuYavtfmeve/H36VZ036PqpjRkfIH13qIeuaYEUq2u5qRigjm8CdSdr2ivjBcYB5Oz8pRbxeAg9JyPRfCg98/reHpCBFC0IsLFxgILbwz319YL5btplbwgADce7qM/dml6pzPmDrTxuYx1EG/aMiSLrlVCeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713792337; c=relaxed/simple;
-	bh=5DvoennQmckQFIaYiAoIASFU7DEMjeJ/9hYgo86JV4Q=;
+	s=arc-20240116; t=1713792347; c=relaxed/simple;
+	bh=p71XPOYccBTrK5vNtFphHMc7xrNQr0V9gF4p0adc0z8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BDu9EOg4ufIum4zP28HRnlz8o/QqEMXl684TWkwF+AN6nZe5cUwqHXpZBLWG2byT+xJ8YI+ge+XDU/7DbxnUxlKkS6i92i4u5HWrNWVsNA4Pa8Cwt71v1HMkt1Yvgvmiwov6nn2QHEjjWJzieGoX2lwQFL7mABP1jM/VpqrY8bM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=LpxCAOKJ; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3852D40E0249;
-	Mon, 22 Apr 2024 13:25:34 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id BwRWVbxTdVd4; Mon, 22 Apr 2024 13:25:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1713792330; bh=qmP5qyvqIWfUfyAhEfkmOf7gu8DbOspWfu7561GReo0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LpxCAOKJ21rdSnLNOzU4D1RYdLRCcOX2VTRJl+WnZAAJER9BSoDoOoFUwSAfg0rXi
-	 LQ+lejeMqvQcilsI/ysnlsXOJP4uGjrMIkMwBsJMCr2rxofLa0EltkVaG7Fnf8WWkg
-	 w6KMQDlV+bD1NVWOBdw/azhFpCZsvLURHi9CjTuEvhk2J8p81+tcJYDN7kZK+5r+ax
-	 xzLmPYU9OyD2uiQ+foh31Rlgb5BbacfVfrpU2Kg22MTMW39XfMawcUsMi21aihT4ow
-	 zbc0SDszmzKIkjX2CNBx21Ju8LjXTA9BvyUyo6Io5IlBaI0V2ZdcfbAR9Hwzws0wsy
-	 tPDP4efGU9staHn0IL70Dg1qSC5y7BAgxJAaPbzWXHnnmcMcNLkzVgH55b9kfdT5ME
-	 OocJt1YeHp9iEgO3PZnZYGVL8/gZnpixfnUAjuj2AsWjzIdM/aid3/9csPHhn0jBAT
-	 6tnNt90ARUBsFTsdBCYH0Wi7VXhXmOH6t8U1Tgpk2VeCUclKQ5ilNTeoeoCug+Ymi2
-	 mUWMVb9ffqqFX7ObfNR4a/Xv8dd55f5dlDGI1RxaH00UPXmF6eqk05oTrpHQox9rVf
-	 X46/BwuskG8km0gvd0nn19nqJLPdkSDM+plKwrWyHENf6UkmzjtO1D8CjkXAq61GDP
-	 f0+C1kFv+sAnbpSE2WtU0gMI=
-Received: from nazgul.tnic (unknown [IPv6:2a02:3038:209:d596:9e4e:36ff:fe9e:77ac])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 523A140E0240;
-	Mon, 22 Apr 2024 13:25:19 +0000 (UTC)
-Date: Mon, 22 Apr 2024 15:25:21 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Nikunj A Dadhania <nikunj@amd.com>
-Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
-	kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-	dave.hansen@linux.intel.com, pgonda@google.com, seanjc@google.com,
-	pbonzini@redhat.com
-Subject: Re: [PATCH v8 09/16] x86/cpufeatures: Add synthetic Secure TSC bit
-Message-ID: <20240422132521.GCZiZlQfpu1nQliyYs@fat_crate.local>
-References: <20240215113128.275608-1-nikunj@amd.com>
- <20240215113128.275608-10-nikunj@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PhJoDuOSkDrxjzeA0ACsvQbZa5ok45dCeV1Au8KhzBA/bwaArtgWl/sHqWmoJkok3MoGY9KGpp6JNi1yZiEScKP7ldowJcUxvf/fJBQIZMBmFZVfOgnMaYlSGPKGuPzMKN0Acb7C+i68xFTlQ4CHchlUbq6Tbb4IDM1UG7/8mUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BsOYc8kK; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2dd19c29c41so23068661fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713792342; x=1714397142; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/kyPaZIZyrkWqjj0WFiDLbAxvb7aRYR+HuKJ6/NuUGw=;
+        b=BsOYc8kKt4Q6uNuwgGExl66dXM2B7nHDi9znqKlCDM1xhyaY4GGq+rOS6yzCDIotqL
+         ftlx2KiA30tjV22Ru1eKbG0OKrLeJtCm+kei7BUh/BG3oscuBDl/TRr706tHK0ZplkDj
+         PRzKs31GOkjZ32RDjU8k4YaIfM/QGEqCkaQ3iUjY8eTsuPJ84m/eTzebnxB8mDvz4cH9
+         m6ItnrkWIwxuVkprcKBqtFMFqzCHFyHfCmjaiT+h1lkMt8i27mLPVCQBLEi8qS+rbeuB
+         S/1mL2ta1j+EhvrzY0yLQmLXWJmfJYPQkjdG49py3a/0wMBMUf0GRBEKl2OFsi7s1ABH
+         Babw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713792342; x=1714397142;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/kyPaZIZyrkWqjj0WFiDLbAxvb7aRYR+HuKJ6/NuUGw=;
+        b=Y2T+EGzfkX+afKgZPasH9vcSbLgXzYPXDWwljKvmHhUNPvngpOymJvcUrs4mDaBVz1
+         ctGHVuT1ke3VSNVMc/jxOHUUac81Q1M/kRPVj+c8mLKhaJkmEUZNjN61INk4tRvzFJFa
+         p1zUpsnUaTPumGEx7wPnOqVsYAwQf2eMQI731o+PuvVLVKS6dhigQA5Bws3Oo5EvHbH8
+         wubKG8oZOK0W4iDPkeP1wm1gIGaUmxqhpAMnVvkM84ynUjV6AfkqNAjEUqW9RzNLKfL6
+         GHscvkqUFC4YzgwnOIHTiXfxkkXJHuc7l2UIbK5JIjGKkuzc6E5LpnoXfpDgccrdUjFT
+         kxPA==
+X-Forwarded-Encrypted: i=1; AJvYcCVkiUiQp5afKkyHPm496NwObaGkg1ogvXDpliu++3AAha4IdOTbvbQEUtr8tipV7lNJEYG57sW4WLK+7NWE0AI93Sk61jjtMb/zbi4b
+X-Gm-Message-State: AOJu0YxFyJjsGT5nqKymLb8a+MBWbm6zkE14me4XlQJiuYORErTIm3yL
+	fH9CZ32crvScEYptUO6CABrnnV0SsYCuEKL+Hq0LyYaFw1UMoOveU9Mv6pSXI+A=
+X-Google-Smtp-Source: AGHT+IHWET/ZymKfhlPZrQHfC2dJ8JbIntynRS8qE8Jm7h5ARJyaDMzXxiK//kI7R+cm7SauaT3FVQ==
+X-Received: by 2002:a2e:9d43:0:b0:2d4:6f33:2e59 with SMTP id y3-20020a2e9d43000000b002d46f332e59mr5822818ljj.30.1713792342161;
+        Mon, 22 Apr 2024 06:25:42 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id ef9-20020a05640228c900b00571bde3b0a4sm5246522edb.34.2024.04.22.06.25.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 06:25:41 -0700 (PDT)
+Date: Mon, 22 Apr 2024 16:25:36 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: A <ashokemailat@yahoo.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+	outreachy@lists.linux.dev
+Subject: Re: [PATCH] staging:fbtft:fb_ili9320 Removed redundant Parentheses
+Message-ID: <9baed766-a2d2-4b94-ae2b-d16ffbea3f67@moroto.mountain>
+References: <452e4a2dcdc7020f75b84d787297a1d17a21ca81.camel.ref@yahoo.com>
+ <452e4a2dcdc7020f75b84d787297a1d17a21ca81.camel@yahoo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240215113128.275608-10-nikunj@amd.com>
+In-Reply-To: <452e4a2dcdc7020f75b84d787297a1d17a21ca81.camel@yahoo.com>
 
-On Thu, Feb 15, 2024 at 05:01:21PM +0530, Nikunj A Dadhania wrote:
-> Add support for the synthetic CPUID flag which indicates that the SNP
-> guest is running with secure tsc enabled (MSR_AMD64_SEV Bit 11 -
+0) Fix your From address.
 
-"TSC"
+1) Look at how other people write subjects.
+   git log --oneline drivers/staging/fbtft/fb_ili9320.c
 
-> SecureTsc_Enabled) . This flag is there so that this capability in the
-> guests can be detected easily without reading MSRs every time accessors.
+On Fri, Apr 19, 2024 at 11:04:21AM -0700, A wrote:
+> >From 51e98164e314a2d1d834d2a9baea21a9823650bb Mon Sep 17 00:00:00 2001
+> From: Ashok Kumar <ashokemailat@yahoo.com>
+> Date: Fri, 19 Apr 2024 10:32:48 -0700
+> Subject: [PATCH] staging:fbtft:fb_ili9320 Removed redundant
+>  Parentheses
 
-Why?
+2) This should not be part of the email.
 
-What's wrong with cc_platform_has(CC_ATTR_GUEST_SECURE_TSC) or so?
+> 
+> Adhere to Linux kernel coding style.
+> Reported by checkpatch
+> 
+> CHECK: Unnecessary parentheses around 'devcode != 0x0000'
+> +       if ((devcode != 0x0000) && (devcode != 0x9320))
+> 
 
--- 
-Regards/Gruss,
-    Boris.
+3) Just leave this as-is.  Ignore checkpatch in this case.  Greg likes
+   parens.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> Signed-off-by: Ashok Kumar <ashokemailat@yahoo.com>
+> ---
+>  drivers/staging/fbtft/fb_ili9320.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/fbtft/fb_ili9320.c
+> b/drivers/staging/fbtft/fb_ili9320.c
+> index 0be7c2d51548..409b54cc562e 100644
+> --- a/drivers/staging/fbtft/fb_ili9320.c
+> +++ b/drivers/staging/fbtft/fb_ili9320.c
+> @@ -37,7 +37,7 @@ static int init_display(struct fbtft_par *par)
+>  	devcode = read_devicecode(par);
+>  	fbtft_par_dbg(DEBUG_INIT_DISPLAY, par, "Device code:
+> 0x%04X\n",
+
+4) This patch is corrupt and will not apply.  Read the first two
+paragraphs of Documentation/process/email-clients.rst.
+
+regards,
+dan carpenter
+
+
 
