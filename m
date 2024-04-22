@@ -1,122 +1,94 @@
-Return-Path: <linux-kernel+bounces-153082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 489CB8AC8C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:21:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DEDC8AC8C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:21:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F23F71F21002
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:21:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1CA81F218DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD50513D53F;
-	Mon, 22 Apr 2024 09:20:26 +0000 (UTC)
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21AF513DDBF;
+	Mon, 22 Apr 2024 09:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LvSEagxl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A00131BAE;
-	Mon, 22 Apr 2024 09:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6080B13D62B;
+	Mon, 22 Apr 2024 09:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713777626; cv=none; b=bC+cl7QpBFjrIDxDPMVdEmt+2/FEMRALdM1JNChYQ4KFTVoMFqApSCaBJBlrvil1q0eTvi0V4ktPjRL35rDw3HUwRD35zGLpwc+TEHGBQHI3bSXnWfQHNZagNFGcbOQGjyX/WT+n+oBFm4J9Kkw60TjVZmbcxJ2lADwzuO0sxCQ=
+	t=1713777627; cv=none; b=Vu5jnyBGgPtAjP3Z1UAa5mK5V/4vJispzU2n9wiVSI2nSWM/FgMDGNSbZDAScEG4yg8lXUplV0GhWurLz8Bsnn6EBHfSbxziUU4zan0ltuFxp/9BK4hYBeHWXMMhr/YN5dA0SVViDcvUkDipeYNgBISGsE+dVZn6WvAn6DAGKX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713777626; c=relaxed/simple;
-	bh=T5tRASABoyAmF4/TwmiQdb4aSxJ5IjEe6kgVUHlghnY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T1J9NVUEboMegjPA5eL2FD5jIY+vGAjX97VuS6NdsiEX/P21C0H4YOLuuUn7JVByy2iFm2gYBvN14aUnT1+dRbxt9ega9DyQvSwZsVQbONTXO5m2QNYF/UUBbzZ6CIo4FzVjuLxEIiLOgQByikl4Ao9bYElQQESCaQcDG9rbysA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 2EF4A280108A8;
-	Mon, 22 Apr 2024 11:20:16 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 03FB34D34A; Mon, 22 Apr 2024 11:20:15 +0200 (CEST)
-Date: Mon, 22 Apr 2024 11:20:15 +0200
-From: Lukas Wunner <lukas@wunner.de>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: gregkh@linuxfoundation.org,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Marc Herbert <marc.herbert@intel.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-coco@lists.linux.dev, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 1/3] sysfs: Fix crash on empty group attributes array
-Message-ID: <ZiYrzzk9Me1aksmE@wunner.de>
-References: <170863444851.1479840.10249410842428140526.stgit@dwillia2-xfh.jf.intel.com>
- <170863445442.1479840.1818801787239831650.stgit@dwillia2-xfh.jf.intel.com>
+	s=arc-20240116; t=1713777627; c=relaxed/simple;
+	bh=UmuAIDX0d6WavQjMlvxXSE1qRDZVx10f8/lRg63pIpw=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=bXFPI3eOIelIdL+MOiG2d8fvilnsZwfzEhGFPiaAT0Dd/c/kXyugQQIc2R9FB70i3Jm62KnWKmvbZ8YY70cpw1uC6XyYVM1WcManTEHXGDMwXINoepOokPYBdCiudCrTIKIGVdWJr8zevF6oTQOfCbq5ssW5NZ95Gohr5y5yuuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LvSEagxl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E3ED2C32786;
+	Mon, 22 Apr 2024 09:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713777627;
+	bh=UmuAIDX0d6WavQjMlvxXSE1qRDZVx10f8/lRg63pIpw=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=LvSEagxlzaeeP8MBfVxl1R5NncafmIBG+R84qxZiazcb8Jr/CZ9MWS2B5o/K9Y3VD
+	 QARn9h6PkcpNyJR20u5IT01l2FkgeSqK+KNYj7w8x3OHxbih/61ItaqBGP34My8tC/
+	 U761/60ZdarDjJG/4T0PF6N5lZ3VDqX51zl8qPJ2tUuryB9N2juDv06Hng8N0LjMR5
+	 rr9umqvPkI3LcRKAWBS/3VaLY7JWF8gQ0fRnxs3bkWwtqb2fGNSz41df3KXRpcMDS8
+	 2q5u9+hCxYJ2AAWCUbUZpVqp/+MOsR8lVpmA9Kt8A2CD4dmaAmPvHp4uYSPEo6Pf8N
+	 1o7ra8A7dr96Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D26A0C43440;
+	Mon, 22 Apr 2024 09:20:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170863445442.1479840.1818801787239831650.stgit@dwillia2-xfh.jf.intel.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next PATCH v3] octeontx2-pf: Add support for offload tc with
+ skbedit mark action
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171377762685.9875.10684047694830185564.git-patchwork-notify@kernel.org>
+Date: Mon, 22 Apr 2024 09:20:26 +0000
+References: <20240420093505.31044-1-gakula@marvell.com>
+In-Reply-To: <20240420093505.31044-1-gakula@marvell.com>
+To: Geetha sowjanya <gakula@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
+ davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
+ sgoutham@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
 
-On Thu, Feb 22, 2024 at 12:40:54PM -0800, Dan Williams wrote:
-> It turns out that arch/x86/events/intel/core.c makes use of "empty"
-> attributes.
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Sat, 20 Apr 2024 15:05:05 +0530 you wrote:
+> Support offloading of skbedit mark action.
 > 
-> 	static struct attribute *empty_attrs;
+> For example, to mark with 0x0008, with dest ip 60.60.60.2 on eth2
+> interface:
 > 
-> 	__init int intel_pmu_init(void)
-> 	{
-> 	        struct attribute **extra_skl_attr = &empty_attrs;
-> 	        struct attribute **extra_attr = &empty_attrs;
-> 	        struct attribute **td_attr    = &empty_attrs;
-> 	        struct attribute **mem_attr   = &empty_attrs;
-> 	        struct attribute **tsx_attr   = &empty_attrs;
-> 		...
+>  # tc qdisc add dev eth2 ingress
+>  # tc filter add dev eth2 ingress protocol ip flower \
+>       dst_ip 60.60.60.2 action skbedit mark 0x0008 skip_sw
 > 
-> That breaks the assumption __first_visible() that expects that if
-> grp->attrs is set then grp->attrs[0] must also be set and results in
-> backtraces like:
-> 
->     BUG: kernel NULL pointer dereference, address: 00rnel mode
->     #PF: error_code(0x0000) - not-present ] PREEMPT SMP NOPTI
->     CPU: 1 PID: 1 Comm: swapper/IP: 0010:exra_is_visible+0x14/0x20
->      ? exc_page_fault+0x68/0x190
->      internal_create_groups+0x42/0xa0
->      pmu_dev_alloc+0xc0/0xe0
->      perf_event_sysfs_init+0x580000000000 ]---
->     RIP: 0010:exra_is_visible+0x14/0
-> 
-> Check for non-empty attributes array before calling is_visible().
-[...]
-> --- a/fs/sysfs/group.c
-> +++ b/fs/sysfs/group.c
-> @@ -33,10 +33,10 @@ static void remove_files(struct kernfs_node *parent,
->  
->  static umode_t __first_visible(const struct attribute_group *grp, struct kobject *kobj)
->  {
-> -	if (grp->attrs && grp->is_visible)
-> +	if (grp->attrs && grp->attrs[0] && grp->is_visible)
->  		return grp->is_visible(kobj, grp->attrs[0], 0);
->  
-> -	if (grp->bin_attrs && grp->is_bin_visible)
-> +	if (grp->bin_attrs && grp->bin_attrs[0] && grp->is_bin_visible)
->  		return grp->is_bin_visible(kobj, grp->bin_attrs[0], 0);
->  
->  	return 0;
+> [...]
 
-I'm wondering why 0 is returned by default and not SYSFS_GROUP_INVISIBLE.
+Here is the summary with links:
+  - [net-next,v3] octeontx2-pf: Add support for offload tc with skbedit mark action
+    https://git.kernel.org/netdev/net-next/c/6a57f091622a
 
-An empty attribute list (containing just the NULL sentinel) will now
-result in the attribute group being visible as an empty directory.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I thought the whole point was to hide such empty directories.
 
-Was it a conscious decision to return 0?
-Did you expect breakage if SYSFS_GROUP_INVISIBLE is returned?
-
-Thanks,
-
-Lukas
 
