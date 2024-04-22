@@ -1,230 +1,152 @@
-Return-Path: <linux-kernel+bounces-152918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C5E88AC61D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:56:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27F278AC624
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:58:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1560E2815CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:56:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A3231C202ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:58:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 857694DA13;
-	Mon, 22 Apr 2024 07:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CEC24D9FC;
+	Mon, 22 Apr 2024 07:58:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="I+VfQH3i";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8Pl/kUb2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qYPWxJdw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wrC8BUmt"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SfRmzDgx"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E069B4DA0C
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:56:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFBE0482EB
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713772585; cv=none; b=Pw10i/jdycOSVIk0gxj45WOOLMOBUc6N8EQhYKQMSXslsuK8TYApN6p1CJA6XfZSbvcbaKYNTrQjlVut5Xm2EXcwWb6ugH22yz9gpwfNl1N4lvZlE6hV6iX5mE2RnrqGG2fa8gyShi1BclynrUVsnjhhoTE0XCyY6epmZJjc9As=
+	t=1713772698; cv=none; b=TqKXTKIpCjC0fAn1qMk7dazxiZQIycWBe0ES1wJFeyd7xb8gsgty/0xTm86mI4v7pBo5Spor51DPmA38fwDMgjuU0BQfLP3s4eamMus9KJ9zJ8MY21VaFmQ0nM41Cp6J0S/wrXCjMksm6rqDroKg+ycrFlqH/8WMp7BABQkxdts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713772585; c=relaxed/simple;
-	bh=eH5YBZDLZb+IHC6BdYl7rNXZipeAzNT0dR2BGwzIvA0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jsq4TmiiUyO2NGVyjcT8aXD/DBfP9Tn8wOx2rJ9qEfQHmsGFfDFl8vvobZa8GgDuVbWjIvrPzgHIsHWS0ke8ERc2Zt78r7P9Rqjs1w4oF3bvkjxqi9v70PBfe/qZ9wlJeVOPo/I5yTLBN7AOhmMrzfGKD4EWRzJzc0hC+fbaCD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=I+VfQH3i; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8Pl/kUb2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qYPWxJdw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wrC8BUmt; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D529A5CC24;
-	Mon, 22 Apr 2024 07:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713772582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ujRma/fKgO5i3zhhNhcoTNztHiCwY7JpOFiOdQTKLnc=;
-	b=I+VfQH3iAVKq7dLqU6Yk2o19yoS0f6YBux0E3GT4lWTpKjRq+EVsWQymGV8gc5ElL5RETc
-	XNhNRUP9fqEQPhHc7BViB6J2w49ObmDtZdCf+hemJewl+HPDTwQtEUBpzNhyTqkeM6HViT
-	Hna0pcARVsdxGjANco3VxSGRGJzplPY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713772582;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ujRma/fKgO5i3zhhNhcoTNztHiCwY7JpOFiOdQTKLnc=;
-	b=8Pl/kUb241oL5Ucztb8aC2ENFvrw1krs7IFUagzoA35AJ0Cm2nbkNQtSKaDvKAWvXAC1gr
-	w80knI39i9bZfTDg==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=qYPWxJdw;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wrC8BUmt
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713772580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ujRma/fKgO5i3zhhNhcoTNztHiCwY7JpOFiOdQTKLnc=;
-	b=qYPWxJdw2mCwNPqsR1cuh71L5dUX+3YbymAOOBGD28tbQnVwsoGhznxuaN2Xv1dLClVT2l
-	DqoPAPu3LKwIMf2krXtR+bpxf+0P+drvTlXximZenuzCT1ICWKAoCPftbGIInrh1tOr8cv
-	QOYHQqsOGdU2a5i0A+DZVVaO7AKADqk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713772580;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ujRma/fKgO5i3zhhNhcoTNztHiCwY7JpOFiOdQTKLnc=;
-	b=wrC8BUmt9oEgC2AN7H540tRgYj8RULdx8Q/dnPg+QUVH3nsMvNT32VvoOPyGlxJliaqoFy
-	18zGcdDOTF2i+hAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C56D9136ED;
-	Mon, 22 Apr 2024 07:56:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +NSwLyQYJmb/cgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 22 Apr 2024 07:56:20 +0000
-Message-ID: <1d795e22-cbcd-4107-978e-96bb459629a4@suse.cz>
-Date: Mon, 22 Apr 2024 09:56:20 +0200
+	s=arc-20240116; t=1713772698; c=relaxed/simple;
+	bh=T+YNP4kKfVO10XpruaTmkA8hvrYIjbTqVQPTPFlIpa8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fNpRYSi3OrPGY936EdUk1BWoi84LlQZ6A0Ov987o65yKZnrTsaBxWzkWdURACf0i9gVYDs1HtVT2pCgo1TlClN4I49xIMNXoWHek85pIuogR7LP55xUm+IipWUW1WZhdyX2fu7et4M8ao6EdWeXzGupuKeTrjLWkwK8/Zgov2ZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SfRmzDgx; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56e1baf0380so4737914a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 00:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713772695; x=1714377495; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tEhcavnEs1V/XX4IMzhM7uRhg/YxgKJQGKXZTm7j7AQ=;
+        b=SfRmzDgxqZdVu40xsELam2fTAhxUso5tqbaBCYDzcqoi2H+JpR3PG5UNmkMTR0o+KO
+         AliwFqwn2Q9M/Al7HxigA4g8I0Lo+CF/w/zqFl3XDBC1S3uRORNvTGzCUETXTj8G+SVy
+         YelyeFxs/Za8HtzRmkgBx3hIufFLYEY0FBlENLwETDd+vG9f7rFTJ/svnO0h6hzThNj9
+         A7hVNkMiSjJ/IkByhnng8c3X5WHvmE9NYMgsdHXBsVjBSxARWUbZODF0Rz6Fa1AehJF+
+         76Jh9NhRPchEse2kYEPguNWuqZiS0KP6E2pCkV3SFt8hbcBPTS/qcu+WDuFiewVdYaVS
+         QyEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713772695; x=1714377495;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tEhcavnEs1V/XX4IMzhM7uRhg/YxgKJQGKXZTm7j7AQ=;
+        b=qa+2MkYL8tz4OqyiUB0fm2NLyDrAGCiMfNiUDuvsYbYfTaNmMu4nJ2Ytl0HDEfejNd
+         GcIqdLkDD0pBe/sYHJ8hy0ErUVkvo5N0llMUryQLsu6ze2swaCTiRHUfYrd0cttmfURN
+         rW42iz+/piT1+YZAOcYwe8fYuQySCz7c2soMLdN20CupesfPUfFn0929VvtbTBz+HZ2x
+         OsdEd2khofZE484zE+ZoPpz5VZYuxUMf6r1ip68FSmXkinalmklpW5AGZ7L4VTAhF7zO
+         rA5pwy1qjFj1xbJopAeX7WTy1b56N+F6UMwLDglNAoPE1ynx+QHMgX6m6f1YJeqEEwqp
+         fatA==
+X-Forwarded-Encrypted: i=1; AJvYcCU0H9J7T2Cv3Ehe07GjHdZOCk5TFwC0rLEphfWYy+2WjFBK1a738o5vyTVF87HOuvwpmlEuFWe24309/QTAebSljyHCtlP5pMY3EdKu
+X-Gm-Message-State: AOJu0YwESqe1cXD5Do9iUFCVy00iW2n7RHBc2TPp3qWX3QrO3U0S8LcH
+	VOoi+ZU57aWobOUctWTQtRa0Bp19kIkodXDEj2C06npv/5YB9pG6ngB2SInVMxBogvNWufffjBM
+	V377uHtdG3TC+F2M4FlpUflC53PslQ1xo9G4=
+X-Google-Smtp-Source: AGHT+IGxwVPXLiHmh1PX6RRP1ezJ6rlKaVTjnjihHxnN3YeAlcNfpVKkXNFb38kD6EVITHaDd0/T3TDoUkk18MWhDQ0=
+X-Received: by 2002:a50:9342:0:b0:56c:5a7b:5dbd with SMTP id
+ n2-20020a509342000000b0056c5a7b5dbdmr5253627eda.15.1713772694530; Mon, 22 Apr
+ 2024 00:58:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/2] slub: introduce count_partial_free_approx()
-Content-Language: en-US
-To: Jianfeng Wang <jianfeng.w.wang@oracle.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-Cc: cl@linux.com, akpm@linux-foundation.org, penberg@kernel.org,
- rientjes@google.com
-References: <20240419175611.47413-1-jianfeng.w.wang@oracle.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <20240419175611.47413-1-jianfeng.w.wang@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	XM_UA_NO_VERSION(0.01)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: D529A5CC24
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.50
+References: <b99f8cb14bc85fdb6ab43721d1331cb5ebed2581.1713771041.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <b99f8cb14bc85fdb6ab43721d1331cb5ebed2581.1713771041.git.baolin.wang@linux.alibaba.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Mon, 22 Apr 2024 15:58:03 +0800
+Message-ID: <CAK1f24kwVP2SG2B5WFcHpRkA8fa_fdcEMD8i3N3e-vw9YPabEg@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: huge_memory: add the missing folio_test_pmd_mappable()
+ for THP split statistics
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/19/24 7:56 PM, Jianfeng Wang wrote:
-> This patch fixes a known issue in get_slabinfo() which relies on
-> count_partial() to get the exact count of free objects in a
-> kmem_cache_node's partial list. For some slubs, their partial lists
-> can be extremely long. Currently, count_partial() traverses a partial
-> list to get the exact count of objects. This process may take a long
-> time, during which slab allocations are blocked and IRQs are disabled.
-> In production, even NMI watchdog can be triggered due to this matter.
-> 
-> The proposed fix is to limit the number of slabs to scan and output an
-> approximated count for a long partial list. The v1 patch counts N slabs
-> from the list's head and then uses it to estimate the total object
-> count in the list. As suggested by Vlastimil, the v2 patch uses an
-> alternative, i.e., counting N/2 from the list's head and tail, produces
-> a more accurate approximation after the partial list is sorted by
-> kmem_cache_shrink(). In this version, the implementation is moved to a
-> new function count_partial_free_approx(). count_partial() is still used
-> in sysfs for users who still want the exact object count.
+On Mon, Apr 22, 2024 at 3:33=E2=80=AFPM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+> Now the mTHP can also be split or added into the deferred list, so add
+> folio_test_pmd_mappable() validation for PMD mapped THP, to avoid confusi=
+on
+> with PMD mapped THP related statistics.
+>
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> Acked-by: David Hildenbrand <david@redhat.com>
 
-Added to slab/for-next, thanks!
+LGTM!
 
-> 
+Reviewed-by: Lance Yang <ioworker0@gmail.com>
+
+Thanks,
+Lance
+
 > ---
-> Changes since v2 [2]
->  - Introduce count_partial_free_approx() and keep count_partial()
->  - Use count_partial_free_approx() in get_slabinfo() and slab_out_of_memory()
-> 
-> Changes since v1 [1]
->  - Update the approximation method by counting from the list's head and tail
->  - Cap the approximation by the total object count
->  - Update the commit message to add benchmark results and explain the choice
-> 
-> [1] https://lore.kernel.org/linux-mm/20240411164023.99368-1-jianfeng.w.wang@oracle.com/
-> [2] https://lore.kernel.org/linux-mm/20240417185938.5237-2-jianfeng.w.wang@oracle.com/
-> 
-> Thanks,
-> --Jianfeng
-> 
-> Jianfeng Wang (2):
->   slub: introduce count_partial_free_approx()
->   slub: use count_partial_free_approx() in slab_out_of_memory()
-> 
->  mm/slub.c | 41 +++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 39 insertions(+), 2 deletions(-)
-> 
-
+> Changes from v1:
+>  - Add acked tag from David.
+>  - Check the THP earlier in case the folio is split per Lance.
+> ---
+>  mm/huge_memory.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 716d29c21b6e..a9789ca823bc 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2994,6 +2994,7 @@ int split_huge_page_to_list_to_order(struct page *p=
+age, struct list_head *list,
+>         XA_STATE_ORDER(xas, &folio->mapping->i_pages, folio->index, new_o=
+rder);
+>         struct anon_vma *anon_vma =3D NULL;
+>         struct address_space *mapping =3D NULL;
+> +       bool is_thp =3D folio_test_pmd_mappable(folio);
+>         int extra_pins, ret;
+>         pgoff_t end;
+>         bool is_hzp;
+> @@ -3172,7 +3173,8 @@ int split_huge_page_to_list_to_order(struct page *p=
+age, struct list_head *list,
+>                 i_mmap_unlock_read(mapping);
+>  out:
+>         xas_destroy(&xas);
+> -       count_vm_event(!ret ? THP_SPLIT_PAGE : THP_SPLIT_PAGE_FAILED);
+> +       if (is_thp)
+> +               count_vm_event(!ret ? THP_SPLIT_PAGE : THP_SPLIT_PAGE_FAI=
+LED);
+>         return ret;
+>  }
+>
+> @@ -3234,7 +3236,8 @@ void deferred_split_folio(struct folio *folio)
+>
+>         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+>         if (list_empty(&folio->_deferred_list)) {
+> -               count_vm_event(THP_DEFERRED_SPLIT_PAGE);
+> +               if (folio_test_pmd_mappable(folio))
+> +                       count_vm_event(THP_DEFERRED_SPLIT_PAGE);
+>                 list_add_tail(&folio->_deferred_list, &ds_queue->split_qu=
+eue);
+>                 ds_queue->split_queue_len++;
+>  #ifdef CONFIG_MEMCG
+> --
+> 2.39.3
+>
 
