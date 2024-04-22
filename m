@@ -1,137 +1,152 @@
-Return-Path: <linux-kernel+bounces-153927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA9EB8AD4FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:42:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D453E8AD524
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:48:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC5C61C2157C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:42:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F9B728233D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E621C155346;
-	Mon, 22 Apr 2024 19:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D975155355;
+	Mon, 22 Apr 2024 19:48:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zz99ZMEZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="FAgAEY2V"
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97C2153837
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7AC154453
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713814948; cv=none; b=taGOhwaFbON+9Da47oaQNmZ4aOTNJSY3Lkp7byhWUU+t/v/rT0120+CAB4HlF5HBJ6lfOfjvzZ5c+RYLlp4xfODOxvihVouMjErtBMGPEh0iunSVWtR72nBg/ihlj3AF/kRF/xTziadmrbjT/MMqhRYouvHgjNZ8EbXf6NB3L9Y=
+	t=1713815316; cv=none; b=Jp2EHT97RUoskZSwPextT2R7sUxIoeMQ6xJ9BbUSiBXzbnnpi7JgRbm+nEJ95biSkdeNzHB/YSK0CwYtfJfCCeI5/clrQL2OlVKrtq6Jm7CW1TFgP3MqXL0Nyrd0MqmrzesseusPhA9PLRyjyE4HUzE3uzleADWNDhJq6VB6GQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713814948; c=relaxed/simple;
-	bh=hVJxRhMiKvmJgAmPeGobX/MJeoNE6UnGxtAnC2NjbKw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Uu2lvebNe5dxnE6SW4LVVhWiBDOYYkMFv3YlIjdmQhI4lbrEQO6Vg1ASY69RwOM4S7z4je+ZgwgOr2eiHiVUJJZdBu1gmIg8JNepRwmPfO3d24EwXz/J8iLVqWDIj4GSWiz1xmdBQczakcuL4lC8cR/Ir3nPa5IMEprjUSgex7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zz99ZMEZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713814945;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ucWdKV158GrYn1kO4pc3kHGoGPk+vBTZiotaaItH/pY=;
-	b=Zz99ZMEZyTj20FQEuApCI/mOt5Z+qlP2CKAQdckGSXVhVuovH7gYre0nfI8ED5RXGgoUZs
-	ply/x0qU4L7rrzcv0+FY9YKx/bqC/9h/KsLirccGC32XaGeoNhUAFO9HZYCq8f2L+qwZyK
-	Urs4h8n/MYB6OgikcK+P01eXL24KeZk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-526-wSKHFJSgNk-g6QeCqelw5Q-1; Mon,
- 22 Apr 2024 15:42:22 -0400
-X-MC-Unique: wSKHFJSgNk-g6QeCqelw5Q-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	s=arc-20240116; t=1713815316; c=relaxed/simple;
+	bh=tJsTWMos/KbnhOL3mT5W+BoEa4DAfoSFZEU1tL6Mmqg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MvVXyw+6m6xiWe98KgKNl67Uy82Uf0YVglIhX0V2DSu/vaJwnIoAZbGQHn9/SrE4qDA5c1Y0yobRQfm4am6C+09Au26VXn4wg6BEU0yu+SZ5KapBYfZ/rVDmyF80GI70xBBBb8tZrO+yc9rf/8lB92sVZXoh4hXDUhAszVGmObA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=FAgAEY2V; arc=none smtp.client-ip=85.214.62.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CD7BC29ABA16;
-	Mon, 22 Apr 2024 19:42:21 +0000 (UTC)
-Received: from t14s.fritz.box (unknown [10.39.192.9])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 86E1C40C5C2;
-	Mon, 22 Apr 2024 19:42:18 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	David Hildenbrand <david@redhat.com>,
-	Zi Yan <ziy@nvidia.com>,
-	John Hubbard <jhubbard@nvidia.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>
-Subject: [PATCH v2] mm/huge_memory: improve split_huge_page_to_list_to_order() return value documentation
-Date: Mon, 22 Apr 2024 21:42:17 +0200
-Message-ID: <20240422194217.442933-1-david@redhat.com>
+	(Authenticated sender: marex@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 264E2889CE;
+	Mon, 22 Apr 2024 21:48:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1713815313;
+	bh=d6DTcCkviDP0v1O7ttuxDHJ02Adt5DLSxBw0N/2grEc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=FAgAEY2V9WPgM2z1fh7FrcvgPCb7VGCTa6eJqNa6fO4umeCVtnVEYMFKXllD9mzjT
+	 1py8nC1swpmWJl3FZ8NfACOdoCgrNAFfsbtkdphoXIUl3aLyZutfCwluwTHplJY1kD
+	 bmP3nOF43K1ZCn4/p5NfS8TpG8udK/uqVMTiZgz95jRy7xWxCCAONny6AHG7iq3e+Q
+	 WdWFOec2qMBMXieCwlVrr3npE5SQTo4+VRDm2JegwnOnXHGbu9liZQq72bbSEUN78H
+	 xGBLsYNapWiH7rbSkSFRnFxDENRf7O6nbsr6bX1PvLxuLydpQDWovUuFGC8Md0L5nX
+	 9oVYktCpH9sYA==
+Message-ID: <75006c7a-34e4-40a6-9336-b1e2e2d966d4@denx.de>
+Date: Mon, 22 Apr 2024 21:43:13 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 2/2] drm/bridge: samsung-dsim: Fix porch calcalcuation
+ rounding
+To: Adam Ford <aford173@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, aford@beaconembedded.com,
+ Frieder Schrempf <frieder.schrempf@kontron.de>,
+ Inki Dae <inki.dae@samsung.com>, Jagan Teki <jagan@amarulasolutions.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Marco Felsch <m.felsch@pengutronix.de>,
+ Michael Tretter <m.tretter@pengutronix.de>, linux-kernel@vger.kernel.org
+References: <20240211230931.188194-1-aford173@gmail.com>
+ <20240211230931.188194-2-aford173@gmail.com>
+ <6111fe04-4ecb-428e-9a0c-dc02cadfe3e7@denx.de>
+ <CAHCN7x+DwSSabhGYZ1dnZzwRe+BJfz2H-AXbxjUQWytrq3OMpQ@mail.gmail.com>
+ <47b26a19-9aba-4380-9d05-f06bd8bc20b1@denx.de>
+ <CAHCN7x+R5t5o13tFrQ1trH1LTPshSOOvuerDpUTY++Umqwr=WA@mail.gmail.com>
+Content-Language: en-US
+From: Marek Vasut <marex@denx.de>
+In-Reply-To: <CAHCN7x+R5t5o13tFrQ1trH1LTPshSOOvuerDpUTY++Umqwr=WA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 
-The documentation is wrong and relying on it almost resulted in BUGs in
-new callers: ever since fd4a7ac32918 ("mm: migrate: try again
-if THP split is failed due to page refcnt") we return -EAGAIN on
-unexpected folio references, not -EBUSY.
+On 4/22/24 3:04 PM, Adam Ford wrote:
+> On Mon, Apr 22, 2024 at 8:01 AM Marek Vasut <marex@denx.de> wrote:
+>>
+>> On 4/22/24 2:09 PM, Adam Ford wrote:
+>>> On Sun, Apr 21, 2024 at 9:36 AM Marek Vasut <marex@denx.de> wrote:
+>>>>
+>>>> On 2/12/24 12:09 AM, Adam Ford wrote:
+>>>>> When using video sync pulses, the HFP, HBP, and HSA are divided between
+>>>>> the available lanes if there is more than one lane.  For certain
+>>>>> timings and lane configurations, the HFP may not be evenly divisible.
+>>>>> If the HFP is rounded down, it ends up being too small which can cause
+>>>>> some monitors to not sync properly. In these instances, adjust htotal
+>>>>> and hsync to round the HFP up, and recalculate the htotal.
+>>>>>
+>>>>> Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL i.MX8MM with HDMI monitor
+>>>>> Signed-off-by: Adam Ford <aford173@gmail.com>
+>>>>> ---
+>>>>> V2:  No changes
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
+>>>>> index 8476650c477c..52939211fe93 100644
+>>>>> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+>>>>> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+>>>>> @@ -1606,6 +1606,27 @@ static int samsung_dsim_atomic_check(struct drm_bridge *bridge,
+>>>>>                 adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
+>>>>>         }
+>>>>>
+>>>>> +     /*
+>>>>> +      * When using video sync pulses, the HFP, HBP, and HSA are divided between
+>>>>> +      * the available lanes if there is more than one lane.  For certain
+>>>>> +      * timings and lane configurations, the HFP may not be evenly divisible.
+>>>>> +      * If the HFP is rounded down, it ends up being too small which can cause
+>>>>> +      * some monitors to not sync properly. In these instances, adjust htotal
+>>>>> +      * and hsync to round the HFP up, and recalculate the htotal. Through trial
+>>>>> +      * and error, it appears that the HBP and HSA do not appearto need the same
+>>>>> +      * correction that HFP does.
+>>>>> +      */
+>>>>> +     if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE && dsi->lanes > 1) {
+>>>>
+>>>> Does this also apply to mode with sync events (I suspect it does), so
+>>>> the condition here should likely be if (!...burst mode) , right ?
+>>>
+>>> Thanks for the review!
+>>>
+>>> I was only able to test it with the DSI->ADV6535 bridge, and I'll
+>>> admit I don't know a lot about DSI interface since I don't have a copy
+>>> of the spec to read.
+>>>
+>>> Are you proposing this should be:
+>>>
+>>>    if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST) && dsi->lanes > 1) {
+>>>
+>>> I just want to make sure I understand what you're requesting.
+>>
+>> Yes, exactly this.
+> 
+> Do you think it should also include checks for
+> MIPI_DSI_MODE_VIDEO_NO_HFP, MIPI_DSI_MODE_VIDEO_NO_HBP or
+> MIPI_DSI_MODE_VIDEO_NO_HSA?
+> 
+> It seems like if any of these are set, we should skip this rounding stuff.
 
-Let's fix that and also document which other return values we can
-currently see and why they could happen.
-
-Reviewed-by: Zi Yan <ziy@nvidia.com>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
-
-v1 -> v2:
-* Also document concurrent removal from the page cache (likely we should
-  return -EBUSY -- but likely it doesn't really matter).
-* Reference fd4a7ac32918 in patch description
-
----
- mm/huge_memory.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index ee12726291f1b..a7406267323ed 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2956,7 +2956,7 @@ bool can_split_folio(struct folio *folio, int *pextra_pins)
-  *
-  * 3) The folio must not be pinned. Any unexpected folio references, including
-  *    GUP pins, will result in the folio not getting split; instead, the caller
-- *    will receive an -EBUSY.
-+ *    will receive an -EAGAIN.
-  *
-  * 4) @new_order > 1, usually. Splitting to order-1 anonymous folios is not
-  *    supported for non-file-backed folios, because folio->_deferred_list, which
-@@ -2975,8 +2975,16 @@ bool can_split_folio(struct folio *folio, int *pextra_pins)
-  *
-  * Returns 0 if the huge page was split successfully.
-  *
-- * Returns -EBUSY if @page's folio is pinned, or if the anon_vma disappeared
-- * from under us.
-+ * Returns -EAGAIN if the folio has unexpected reference (e.g., GUP) or if
-+ * the folio was concurrently removed from the page cache.
-+ *
-+ * Returns -EBUSY when trying to split the huge zeropage, if the folio is
-+ * under writeback, if fs-specific folio metadata cannot currently be
-+ * released, or if some unexpected race happened (e.g., anon VMA disappeared,
-+ * truncation).
-+ *
-+ * Returns -EINVAL when trying to split to an order that is incompatible
-+ * with the folio. Splitting to order 0 is compatible with all folios.
-  */
- int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
- 				     unsigned int new_order)
--- 
-2.44.0
-
+Now that you ask this question, shouldn't this actually apply 
+unconditionally , no matter which mode is in use ?
 
