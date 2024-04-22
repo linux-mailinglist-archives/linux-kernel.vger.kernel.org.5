@@ -1,184 +1,154 @@
-Return-Path: <linux-kernel+bounces-153614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E89D8AD064
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:14:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C178AD067
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:15:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FBB41C21B1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:14:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 761C01C21D30
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8591715252F;
-	Mon, 22 Apr 2024 15:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B889115252F;
+	Mon, 22 Apr 2024 15:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hbLfiK2u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XMotJ4d7"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C637A13E8B2;
-	Mon, 22 Apr 2024 15:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB1A13E8B2;
+	Mon, 22 Apr 2024 15:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713798867; cv=none; b=Czlg5O4GbVm9/rWAWxkwL0sSzU/IlLwrs61Lyc/5JOviXjHAsEHumheJfxdWKOnMujyywC+vPFAXODQAwzxkxCyQFrl/8uBjlX0tG/L6Z7lZxuuPim1GjgrretpMUPxG6hC616g5RL8PC5eWUaLtb+osiHo6loWh+izd4vrgs9Y=
+	t=1713798922; cv=none; b=CnbpmaWzPmakHBCHp7OFNaaYnueoFNFt5kV0nHSP0Es/ZqyhM8GsRg/qkx9gIkOFDX+f80dgExEZXC54ghCe+9hnXYzrsUke780hNzA+b4rhyR1j2yRMAW9oCw5sOgaiyoBXoRKgXqVuaZVYSy2p6pSuih1hLygWCq+sUK0D8Ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713798867; c=relaxed/simple;
-	bh=jnc8O2OGDn/sskDkfr8kRfCzr/w39Wo4NtWiEW/JWM8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CHR3FRw/gQwQJw99t67/Yb+R7PLV49Njq8lavbvPHbCskggvUDxgwLaHrqOkxSX5A5x9+GbvFx0sk91G1DPzj6hduuoSidDFVj+4IS2ZLVivEj9HOYgoDlirT/b2YGjL02HcFzj8F9/fUHp485hcJcE6sE3DnDHQ8/Qk6lgcJog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hbLfiK2u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C6B3C113CC;
-	Mon, 22 Apr 2024 15:14:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713798867;
-	bh=jnc8O2OGDn/sskDkfr8kRfCzr/w39Wo4NtWiEW/JWM8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hbLfiK2ufzKxA6jCwnKjq433CsonhZ0Ilo5x0049M1HyXqulkL8q/0V93hQ9+B3o4
-	 tL6PIoI/CHaQR6hcmn534Fc8yhmcXcIbyRrciLKyx+EFioKfkr5vnzgqFXe1RQytAe
-	 K3Rlg3uw39b4QRM7FeyFSWAwT/+JW4/PAT6FHjHoKHhayBjUIC7OvhaGnIjM2MH9y/
-	 GyfRUDB7IPeiWlyccDj98BIr8Es2A6hvdlSglgtOqeLGqyP0P6K5uWDVmna2lIrjge
-	 n1FsoHDD/W4w5E8z/uBz7qoLRiwIVuavumTN9FYiLbx0+osUjZLuAvbJhHmQ8kcaI5
-	 wW0UGuhsMDtiA==
-Date: Mon, 22 Apr 2024 10:14:24 -0500
-From: Rob Herring <robh@kernel.org>
-To: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
-Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch,
-	dianders@chromium.org, linus.walleij@linaro.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	airlied@gmail.com, dri-devel@lists.freedesktop.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	xuxinxiong@huaqin.corp-partner.google.com
-Subject: Re: [PATCH v2 1/7] dt-bindings: display: panel: Add himax hx83102
- panel bindings
-Message-ID: <20240422151424.GA1273350-robh@kernel.org>
-References: <20240422090310.3311429-1-yangcong5@huaqin.corp-partner.google.com>
- <20240422090310.3311429-2-yangcong5@huaqin.corp-partner.google.com>
+	s=arc-20240116; t=1713798922; c=relaxed/simple;
+	bh=QvCJ68qrNmktK+1RElI+xrQxhN3qOPjuTTX6hAZbtIc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YGYrST4q2QqMbt7rJKaz4fNiC+LBx9QYl+n3bPE0ZN268USuS40Mt4/kVqU8FMU3JpY1HT8Lz+8iQLdv8fHLB4VFePdcE+XQcjeGysvSesMN5iWjTvF058CBFg9kdLmCsmH63GotHK/2Qrr/zEOAqkqBy0H8kC9qBiscz2gHG0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XMotJ4d7; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713798921; x=1745334921;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QvCJ68qrNmktK+1RElI+xrQxhN3qOPjuTTX6hAZbtIc=;
+  b=XMotJ4d7OQwcQptNwhmsU2NmhsVrQd/47hcp6rISL8sWFbrE5KE2NV9k
+   8yxHvpZe58DpEgyQCEmfj+VjwA/Snq2uOcawBc7g1GIlBwwm2MVrWaI1s
+   JuuR333xVzeKmJmngMzrtNGIdwFWboGGZOeq3s5n1LRjbrgP1GCAPBylc
+   8JkTHpwhAZnpA28J5mKdgUl0zc0wu+jRFMDlPJITBakCwYD2alrvie5D/
+   kOly4w6Q6hRSUcXXc6w4R+AOIOkKX67iHgR4P7RE/qOhPglH+hffqIUwm
+   sJga83un30hUmhO18DRpLI2LJ7ytblfEPdK9MdZh8ETU2s8UrAIfv6oa9
+   Q==;
+X-CSE-ConnectionGUID: l2dC6HRuTPCEizZdXeP4gQ==
+X-CSE-MsgGUID: z5DZh7k4RDKXMrdoH7W1FA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="13178098"
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="13178098"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 08:15:20 -0700
+X-CSE-ConnectionGUID: jLkbddDbQwinK0r2Q6A8kA==
+X-CSE-MsgGUID: o6MKjEI3QuKxDklZzuuzJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="23926265"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa010.jf.intel.com with ESMTP; 22 Apr 2024 08:15:17 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id E24ACFD; Mon, 22 Apr 2024 18:15:15 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] ASoC: soc.h: Don't use "proxy" headers
+Date: Mon, 22 Apr 2024 18:15:13 +0300
+Message-ID: <20240422151513.2052167-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240422090310.3311429-2-yangcong5@huaqin.corp-partner.google.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 22, 2024 at 05:03:04PM +0800, Cong Yang wrote:
-> In V1, discussed with Doug and Linus [1], we need break out as separate
-> driver for the himax83102-j02 controller. So add new documentation for
-> "starry,himax83102-j02" panel.
-> 
-> [1]: https://lore.kernel.org/all/CACRpkdbzYZAS0=zBQJUC4CB2wj4s1h6n6aSAZQvdMV95r3zRUw@mail.gmail.com
+Update header inclusions to follow IWYU (Include What You Use)
+principle.
 
-Please summarize this in the commit message rather than referring to a 
-link to understand "why" you doing this.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/sound/soc.h | 32 +++++++++++++++++++++-----------
+ 1 file changed, 21 insertions(+), 11 deletions(-)
 
-> 
-> Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
-> ---
->  .../display/panel/boe,tv101wum-nl6.yaml       |  2 -
->  .../bindings/display/panel/himax,hx83102.yaml | 73 +++++++++++++++++++
->  2 files changed, 73 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/himax,hx83102.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-> index 906ef62709b8..53fb35f5c9de 100644
-> --- a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml
-> @@ -32,8 +32,6 @@ properties:
->        - innolux,hj110iz-01a
->          # STARRY 2081101QFH032011-53G 10.1" WUXGA TFT LCD panel
->        - starry,2081101qfh032011-53g
-> -        # STARRY himax83102-j02 10.51" WUXGA TFT LCD panel
-> -      - starry,himax83102-j02
->          # STARRY ili9882t 10.51" WUXGA TFT LCD panel
->        - starry,ili9882t
->  
-> diff --git a/Documentation/devicetree/bindings/display/panel/himax,hx83102.yaml b/Documentation/devicetree/bindings/display/panel/himax,hx83102.yaml
-> new file mode 100644
-> index 000000000000..2e0cd6998ba8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/himax,hx83102.yaml
-> @@ -0,0 +1,73 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/panel/himax,hx83102.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Himax HX83102 MIPI-DSI LCD panel controller
-> +
-> +maintainers:
-> +  - Cong Yang <yangcong5@huaqin.corp-partner.google.com>
-> +
-> +allOf:
-> +  - $ref: panel-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +        # STARRY himax83102-j02 10.51" WUXGA TFT LCD panel
-> +      - starry,himax83102-j02
-> +
-> +  reg:
-> +    description: the virtual channel number of a DSI peripheral
-> +
-> +  enable-gpios:
-> +    description: a GPIO spec for the enable pin
-> +
-> +  pp1800-supply:
-> +    description: core voltage supply
-> +
-> +  avdd-supply:
-> +    description: phandle of the regulator that provides positive voltage
-> +
-> +  avee-supply:
-> +    description: phandle of the regulator that provides negative voltage
-> +
-> +  backlight:
-> +    description: phandle of the backlight device attached to the panel
-> +
-> +  port: true
-> +  rotation: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - enable-gpios
-> +  - pp1800-supply
-> +  - avdd-supply
-> +  - avee-supply
-> +
-> +additionalProperties: false
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 0376f7e4c15d..2a1b6c198547 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -11,20 +11,30 @@
+ #define __LINUX_SND_SOC_H
+ 
+ #include <linux/args.h>
+-#include <linux/of.h>
+-#include <linux/platform_device.h>
+-#include <linux/types.h>
+-#include <linux/notifier.h>
+-#include <linux/workqueue.h>
++#include <linux/array_size.h>
++#include <linux/device.h>
++#include <linux/errno.h>
+ #include <linux/interrupt.h>
+-#include <linux/kernel.h>
+-#include <linux/regmap.h>
++#include <linux/lockdep.h>
+ #include <linux/log2.h>
+-#include <sound/core.h>
+-#include <sound/pcm.h>
++#include <linux/mutex.h>
++#include <linux/notifier.h>
++#include <linux/of.h>
++#include <linux/types.h>
++#include <linux/workqueue.h>
++
++#include <sound/ac97_codec.h>
+ #include <sound/compress_driver.h>
+ #include <sound/control.h>
+-#include <sound/ac97_codec.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++
++struct module;
++struct platform_device;
++
++/* For the current users of sound/soc.h to avoid build issues */
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
+ 
+ /*
+  * Convenience kcontrol builders
+@@ -412,7 +422,6 @@
+ #define SOC_ENUM_SINGLE_VIRT_DECL(name, xtexts) \
+ 	const struct soc_enum name = SOC_ENUM_SINGLE_VIRT(ARRAY_SIZE(xtexts), xtexts)
+ 
+-struct device_node;
+ struct snd_jack;
+ struct snd_soc_card;
+ struct snd_soc_pcm_stream;
+@@ -427,6 +436,7 @@ struct soc_enum;
+ struct snd_soc_jack;
+ struct snd_soc_jack_zone;
+ struct snd_soc_jack_pin;
++
+ #include <sound/soc-dapm.h>
+ #include <sound/soc-dpcm.h>
+ #include <sound/soc-topology.h>
+-- 
+2.43.0.rc1.1336.g36b5255a03ac
 
-Perhaps 'unevaluatedProperties' instead. Don't you want to support 
-standard properties such as width-mm/height-mm?
-
-> +
-> +examples:
-> +  - |
-> +    dsi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        panel@0 {
-> +            compatible = "starry,himax83102-j02";
-> +            reg = <0>;
-> +            enable-gpios = <&pio 45 0>;
-> +            avdd-supply = <&ppvarn_lcd>;
-> +            avee-supply = <&ppvarp_lcd>;
-> +            pp1800-supply = <&pp1800_lcd>;
-> +            backlight = <&backlight_lcd0>;
-> +            port {
-> +                panel_in: endpoint {
-> +                    remote-endpoint = <&dsi_out>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.25.1
-> 
 
