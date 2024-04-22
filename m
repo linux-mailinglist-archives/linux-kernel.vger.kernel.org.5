@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-154220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC4B68AD96F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:54:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37A748AD976
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:54:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60FA71F21A85
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:54:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA039287C76
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39625502A5;
-	Mon, 22 Apr 2024 23:54:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2316481B4;
+	Mon, 22 Apr 2024 23:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YONnhphh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fGQJrr4K"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F24747A76;
-	Mon, 22 Apr 2024 23:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE25E56773;
+	Mon, 22 Apr 2024 23:54:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830047; cv=none; b=iUqA/GsOw7SA1oXRfKl9DgsXydJRXWeHqWjqJCdFjFk8S4mpjn71rZOAGUPg+CoK0TbuMoFuMpK10mc9wc1fbMEWzK7gvz3n8rYP7JnjTnAFAVfCvHa8C3DVJrifKgggSxJe43O8vvBSjbmoolJxOidNj2abiDZrnym1NVY7QqE=
+	t=1713830048; cv=none; b=pKUlQLBnwbiJG3/g/LmQxADHmZYFyr7DBjifIOXJPXtu3IiqPLJ4z0N8oyEjTYHxuABpNJSWdNLV/JYGXsHbazmt1q7AwQ16uECWOkTjKI0ll7cktsTZh3pF2yc8bMSzK6VnbCy+ewCyqycwpDWKfm1UpssDzUR7L+YeQxeSOYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830047; c=relaxed/simple;
-	bh=bStklwwtNdltoD12r8eJEawIcHIsh/UnVk0kuaeICpk=;
+	s=arc-20240116; t=1713830048; c=relaxed/simple;
+	bh=HsJlB+Hafl/hvYqta9XybwgvVOcL81ZQ/hTmB8WeD+g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CzhiyluwoPZBX6lBDK4X3qCAt3CZMdUSUuzgWe7TNaznoYselxw82ZBC4+9szE0DQmGKpWvhLB6ZyLaqTwNRnTAMPs5vvDRdbFCCnUe9saK/5saxwHcF1HHHk4AO4JsGkNawLW2/5ggUdWcTW87symcPk2ASFDLkH4ktFqM+CHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YONnhphh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FA2FC2BD11;
-	Mon, 22 Apr 2024 23:54:06 +0000 (UTC)
+	 MIME-Version; b=R9TfiPMiJNIiSvj01unW7tFmEjrH3GK3++Lf9JwVVe+8rmWNzMt1z77W6lK61lIH3/oCA5Ww710B3I4cfK6skzVDapnpgyXnRgddLGnT0TSTM621j29k/Fo5DhQNptyXmQcoZ7gFcp2QGRp+9zloevKqzhnYs1ASick/l01j4mE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fGQJrr4K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EDBDC32783;
+	Mon, 22 Apr 2024 23:54:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830047;
-	bh=bStklwwtNdltoD12r8eJEawIcHIsh/UnVk0kuaeICpk=;
+	s=k20201202; t=1713830048;
+	bh=HsJlB+Hafl/hvYqta9XybwgvVOcL81ZQ/hTmB8WeD+g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YONnhphhT17RXnGNGYa33pqjuJ3wAjsebY+AGzmgFHqMXEQvjmPfviX3PqGxoIXYc
-	 bheO1OxLP64sGWvzAosUktgPr16a5ZB9q3448GlpQCL/Xe3cS/ehT4y90R2tnZ/281
-	 1WXVur/4yxnbnHqXO4c2au73Il6s/RdRrAvthpVU54tcJfGpSuwl3uyDiZpcizyLL2
-	 UaDSDJRixl7XYPRZt13/qAR0vlxK689cPcJSW5OSOmUj3Ltvg3IsgpZkcEqFW8BAiE
-	 oh5T90qXPuLTC0VBzMr31qizlsoWtBmkLfjkSpzD7WscMMi/pJauOek+UCjCjR/1JV
-	 HWp0afNI9HIpQ==
+	b=fGQJrr4KqMSXez+hJht4qg8JfX25k5ndRQI670jHIVnrHsvSH2U7LDb+e+fpxFzkA
+	 meQupQiA4+n65+bt7JMSI80xq+qLmdhB4NSv6jhxOj7U0/Bs4rCj4xUhIs7PdjplpK
+	 oeCe/DhLHlZH59UtaUk8KlmrdPCye6Uw8U/3w+AZ79ju8o7LrzKyQqrnN3UXh22UPr
+	 4RtZ6sYrgwKbYlEhRpY7AE3B7Pvs7mD/P0R4U/HBNckdVRifKKQ3EibJDY+uDnArYL
+	 X4d3WyIDEd4GD60jnMz8MffIjLfajAeo79c88J9SDAdnjYREdGddI+sZNSyW/OXuDL
+	 +J16ZAVMJRrIQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Peng Liu <liupeng17@lenovo.com>,
+Cc: Chen Yu <yu.c.chen@intel.com>,
+	Todd Brandt <todd.e.brandt@intel.com>,
 	Len Brown <len.brown@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	lenb@kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 03/43] tools/power turbostat: Fix Bzy_MHz documentation typo
-Date: Mon, 22 Apr 2024 19:13:49 -0400
-Message-ID: <20240422231521.1592991-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 04/43] tools/power turbostat: Do not print negative LPI residency
+Date: Mon, 22 Apr 2024 19:13:50 -0400
+Message-ID: <20240422231521.1592991-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231521.1592991-1-sashal@kernel.org>
 References: <20240422231521.1592991-1-sashal@kernel.org>
@@ -65,33 +66,96 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.7
 Content-Transfer-Encoding: 8bit
 
-From: Peng Liu <liupeng17@lenovo.com>
+From: Chen Yu <yu.c.chen@intel.com>
 
-[ Upstream commit 0b13410b52c4636aacb6964a4253a797c0fa0d16 ]
+[ Upstream commit 227ed18f456a68bbb69807294a9089208663a6d3 ]
 
-The code calculates Bzy_MHz by multiplying TSC_delta * APERF_delta/MPERF_delta
-The man page erroneously showed that TSC_delta was divided.
+turbostat prints the abnormal SYS%LPI across suspend-to-idle:
+SYS%LPI = 114479815993277.50
 
-Signed-off-by: Peng Liu <liupeng17@lenovo.com>
+This is reproduced by:
+Run a freeze cycle, e.g. "sleepgraph -m freeze -rtcwake 15".
+Then do a reboot. After boot up, launch the suspend-idle-idle
+and check the SYS%LPI field.
+
+The slp_so residence counter is in LPIT table, and BIOS does not
+clears this register across reset. The PMC expects the OS to calculate
+the LPI residency based on the delta. However, there is an firmware
+issue that the LPIT gets cleared to 0 during the second suspend
+to idle after the reboot, which brings negative delta value.
+
+[lenb: updated to print "neg" upon this BIOS failure]
+
+Reported-by: Todd Brandt <todd.e.brandt@intel.com>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
 Signed-off-by: Len Brown <len.brown@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/turbostat/turbostat.8 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/power/x86/turbostat/turbostat.c | 30 +++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/tools/power/x86/turbostat/turbostat.8 b/tools/power/x86/turbostat/turbostat.8
-index 8f08c3fd498d5..1ba6340d3b3da 100644
---- a/tools/power/x86/turbostat/turbostat.8
-+++ b/tools/power/x86/turbostat/turbostat.8
-@@ -370,7 +370,7 @@ below the processor's base frequency.
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index 2550a0e35914f..c23703dd54aa1 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -991,8 +991,8 @@ struct pkg_data {
+ 	unsigned long long pc8;
+ 	unsigned long long pc9;
+ 	unsigned long long pc10;
+-	unsigned long long cpu_lpi;
+-	unsigned long long sys_lpi;
++	long long cpu_lpi;
++	long long sys_lpi;
+ 	unsigned long long pkg_wtd_core_c0;
+ 	unsigned long long pkg_any_core_c0;
+ 	unsigned long long pkg_any_gfxe_c0;
+@@ -1978,12 +1978,22 @@ int format_counters(struct thread_data *t, struct core_data *c, struct pkg_data
+ 	if (DO_BIC(BIC_Pkgpc10))
+ 		outp += sprintf(outp, "%s%.2f", (printed++ ? delim : ""), 100.0 * p->pc10 / tsc);
  
- Busy% = MPERF_delta/TSC_delta
+-	if (DO_BIC(BIC_CPU_LPI))
+-		outp +=
+-		    sprintf(outp, "%s%.2f", (printed++ ? delim : ""), 100.0 * p->cpu_lpi / 1000000.0 / interval_float);
+-	if (DO_BIC(BIC_SYS_LPI))
+-		outp +=
+-		    sprintf(outp, "%s%.2f", (printed++ ? delim : ""), 100.0 * p->sys_lpi / 1000000.0 / interval_float);
++	if (DO_BIC(BIC_CPU_LPI)) {
++		if (p->cpu_lpi >= 0)
++			outp +=
++			    sprintf(outp, "%s%.2f", (printed++ ? delim : ""),
++				    100.0 * p->cpu_lpi / 1000000.0 / interval_float);
++		else
++			outp += sprintf(outp, "%s(neg)", (printed++ ? delim : ""));
++	}
++	if (DO_BIC(BIC_SYS_LPI)) {
++		if (p->sys_lpi >= 0)
++			outp +=
++			    sprintf(outp, "%s%.2f", (printed++ ? delim : ""),
++				    100.0 * p->sys_lpi / 1000000.0 / interval_float);
++		else
++			outp += sprintf(outp, "%s(neg)", (printed++ ? delim : ""));
++	}
  
--Bzy_MHz = TSC_delta/APERF_delta/MPERF_delta/measurement_interval
-+Bzy_MHz = TSC_delta*APERF_delta/MPERF_delta/measurement_interval
+ 	if (DO_BIC(BIC_PkgWatt))
+ 		outp +=
+@@ -3832,7 +3842,8 @@ void re_initialize(void)
+ {
+ 	free_all_buffers();
+ 	setup_all_buffers(false);
+-	fprintf(outf, "turbostat: re-initialized with num_cpus %d, allowed_cpus %d\n", topo.num_cpus, topo.allowed_cpus);
++	fprintf(outf, "turbostat: re-initialized with num_cpus %d, allowed_cpus %d\n", topo.num_cpus,
++		topo.allowed_cpus);
+ }
  
- Note that these calculations depend on TSC_delta, so they
- are not reliable during intervals when TSC_MHz is not running at the base frequency.
+ void set_max_cpu_num(void)
+@@ -6145,6 +6156,7 @@ void topology_update(void)
+ 	topo.allowed_packages = 0;
+ 	for_all_cpus(update_topo, ODD_COUNTERS);
+ }
++
+ void setup_all_buffers(bool startup)
+ {
+ 	topology_probe(startup);
 -- 
 2.43.0
 
