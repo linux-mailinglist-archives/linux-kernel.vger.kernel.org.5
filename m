@@ -1,56 +1,60 @@
-Return-Path: <linux-kernel+bounces-154291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCA518ADA5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:11:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF1FD8ADA5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:11:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22F36B264F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:11:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72B7F2870A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416F6157E93;
-	Mon, 22 Apr 2024 23:57:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B874176FCE;
+	Mon, 22 Apr 2024 23:57:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tlz34Vk6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M+9Ha9ea"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC33157489;
-	Mon, 22 Apr 2024 23:57:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9896E157E9B;
+	Mon, 22 Apr 2024 23:57:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830248; cv=none; b=Efj5CJDAKIRF1fTkk689ZiBrEN1JkRhc/l/fipSQkfJWW83yXAUAPsXtDInLLexpO0ZwHE6CyiaVf7FLZthTzz+y9uoQpL3DjxxiBkBhmqXIDyfdiz6hmXcTDGGKudxdFbPp1O/xD6Aqnl/BN86mW/OrZFbYtYHTkIHyMb8k2vo=
+	t=1713830249; cv=none; b=ss0cFiR5g0fVxgPynioj84OAEH6mrd3OJoq8L2sJBYCUIk8qiEit5VmaYoj/cWEQEDLO4sRRNWFS33eHfNx9fkIDmX4QM8PdnG8V8S0DUDXbt1QA/qg4OrUQXhE0Ww9AC25NM/kWWMNjXRDQFW/WRMLJf7P30cPcLbDCvcGbP9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830248; c=relaxed/simple;
-	bh=ynd68FfoGoDgOmwBlrtjFoqdjo1T/tOT2UNnBJDvNMc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P0LoWgVB7tVLfKRw3Ms4AsyBQgytGypbg2xbd1U4+vWCV8p3GMebKMW5jSKII0erkg5I6I4IMsg2iF3YZcsLZQVVSmWoDFB+biBN3SG4VbzYE0ksQ0pMw1kHm7c8p2xZZ3LlJtagaBYg2Li6YoCM2gQKC3/eopAcyDEjM/GG6a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tlz34Vk6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54EE2C3277B;
-	Mon, 22 Apr 2024 23:57:27 +0000 (UTC)
+	s=arc-20240116; t=1713830249; c=relaxed/simple;
+	bh=5GS/Z3Tgsa0cjyrLYwN0H/LZhhfFDN3jxDUuto4jli0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=OI3rMai6U8U/tv6/UaGbNMQvnCKgreaU9mdYc1tOef0Z2bNXDfftEETuvDatZ/8YT9OV+66VbEVk0LuSM0keZhmALtZUCefkXwHXSdaoBls3YC6fy7jd4uXTdcTaxy1N4esNei3UwoCK6bEzmvgnes+oIclT4hLxTK1caRhaxks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M+9Ha9ea; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98033C113CC;
+	Mon, 22 Apr 2024 23:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830248;
-	bh=ynd68FfoGoDgOmwBlrtjFoqdjo1T/tOT2UNnBJDvNMc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Tlz34Vk6NP9Q4B+TB2zoSusIWZLYG+7bCzjGysS325iY7eZMGXZFUvJSgGNi41Xpu
-	 V+eBPV4wMiZkNlkxI3RJq1ObnBNpVRBRvzAb01mmN6Sz9Vh3h0bkDmlaFrLQUtsgDg
-	 cJGjWA/YcMu1ErdQnGOhHbC02cCR7WjU3aY90XtB253lmWVU+vUIXWHkPTmseD5YFC
-	 MtOq8nyEG4GaZHwysckyDrAdBDf7un01nFEzja3hoLM556a+y8+xq3v2LgWvN55nVx
-	 QpYnyKtV/zr+/91KTTPN3RIbjcVCC5ucAUPKNqfxLM6VMis+7eEnDMyuQZmROff9pw
-	 IQkkpr3yYQppQ==
+	s=k20201202; t=1713830249;
+	bh=5GS/Z3Tgsa0cjyrLYwN0H/LZhhfFDN3jxDUuto4jli0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=M+9Ha9eaX4/gfhELtxOOT0Erwz86w13pj6Hi6DBP23sDNzRZCOErcxcLqexnMaiO7
+	 0SAyqMNc/tD13zQiZPR1MBmtDiEDsH1GADfTsJKAxPxp39rldDUBrvuy2j62MuX8vD
+	 kDVpZt4i9uAJH+jCW08rxmRh/fijiPFUUJ1mvmOH+aL9NA9cSS4zo0ZdpGL/L2buxY
+	 Rl2yijJVhbpAsn/WxnUgRdAqi1UmNN9OM2kEeRNhZmEFD4VZV0QtH5dZc1xvWi4JWY
+	 j1GULAkPxiINy9kKIEUuK2CdMH/CnrobTPGJYg0DqoIK8xLlhaw2KjiMqWvyfDDZtM
+	 sArMMv+tgKf7A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Doug Smythies <dsmythies@telus.net>,
+Cc: Wyes Karny <wyes.karny@amd.com>,
+	Doug Smythies <dsmythies@telus.net>,
 	Len Brown <len.brown@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	lenb@kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 01/19] tools/power turbostat: Fix added raw MSR output
-Date: Mon, 22 Apr 2024 19:18:15 -0400
-Message-ID: <20240422231845.1607921-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 02/19] tools/power turbostat: Increase the limit for fd opened
+Date: Mon, 22 Apr 2024 19:18:16 -0400
+Message-ID: <20240422231845.1607921-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240422231845.1607921-1-sashal@kernel.org>
+References: <20240422231845.1607921-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,85 +66,84 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.87
 Content-Transfer-Encoding: 8bit
 
-From: Doug Smythies <dsmythies@telus.net>
+From: Wyes Karny <wyes.karny@amd.com>
 
-[ Upstream commit e5f4e68eed85fa8495d78cd966eecc2b27bb9e53 ]
+[ Upstream commit 3ac1d14d0583a2de75d49a5234d767e2590384dd ]
 
-When using --Summary mode, added MSRs in raw mode always
-print zeros. Print the actual register contents.
+When running turbostat, a system with 512 cpus reaches the limit for
+maximum number of file descriptors that can be opened. To solve this
+problem, the limit is raised to 2^15, which is a large enough number.
 
-Example, with patch:
+Below data is collected from AMD server systems while running turbostat:
 
-note the added column:
---add msr0x64f,u32,package,raw,REASON
+|-----------+-------------------------------|
+| # of cpus | # of opened fds for turbostat |
+|-----------+-------------------------------|
+| 128       | 260                           |
+|-----------+-------------------------------|
+| 192       | 388                           |
+|-----------+-------------------------------|
+| 512       | 1028                          |
+|-----------+-------------------------------|
 
-Where:
+So, the new max limit would be sufficient up to 2^14 cpus (but this
+also depends on how many counters are enabled).
 
-0x64F is MSR_CORE_PERF_LIMIT_REASONS
-
-Busy%   Bzy_MHz PkgTmp  PkgWatt CorWatt     REASON
-0.00    4800    35      1.42    0.76    0x00000000
-0.00    4801    34      1.42    0.76    0x00000000
-80.08   4531    66      108.17  107.52  0x08000000
-98.69   4530    66      133.21  132.54  0x08000000
-99.28   4505    66      128.26  127.60  0x0c000400
-99.65   4486    68      124.91  124.25  0x0c000400
-99.63   4483    68      124.90  124.25  0x0c000400
-79.34   4481    41      99.80   99.13   0x0c000000
-0.00    4801    41      1.40    0.73    0x0c000000
-
-Where, for the test processor (i5-10600K):
-
-PKG Limit #1: 125.000 Watts, 8.000000 sec
-MSR bit 26 = log; bit 10 = status
-
-PKG Limit #2: 136.000 Watts, 0.002441 sec
-MSR bit 27 = log; bit 11 = status
-
-Example, without patch:
-
-Busy%   Bzy_MHz PkgTmp  PkgWatt CorWatt     REASON
-0.01    4800    35      1.43    0.77    0x00000000
-0.00    4801    35      1.39    0.73    0x00000000
-83.49   4531    66      112.71  112.06  0x00000000
-98.69   4530    68      133.35  132.69  0x00000000
-99.31   4500    67      127.96  127.30  0x00000000
-99.63   4483    69      124.91  124.25  0x00000000
-99.61   4481    69      124.90  124.25  0x00000000
-99.61   4481    71      124.92  124.25  0x00000000
-59.35   4479    42      75.03   74.37   0x00000000
-0.00    4800    42      1.39    0.73    0x00000000
-0.00    4801    42      1.42    0.76    0x00000000
-
-c000000
-
-[lenb: simplified patch to apply only to package scope]
-
-Signed-off-by: Doug Smythies <dsmythies@telus.net>
+Reviewed-by: Doug Smythies <dsmythies@telus.net>
+Tested-by: Doug Smythies <dsmythies@telus.net>
+Signed-off-by: Wyes Karny <wyes.karny@amd.com>
 Signed-off-by: Len Brown <len.brown@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/turbostat/turbostat.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/power/x86/turbostat/turbostat.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index b113900d94879..9018e47e0bc26 100644
+index 9018e47e0bc26..a674500e7e63d 100644
 --- a/tools/power/x86/turbostat/turbostat.c
 +++ b/tools/power/x86/turbostat/turbostat.c
-@@ -1811,9 +1811,10 @@ int sum_counters(struct thread_data *t, struct core_data *c, struct pkg_data *p)
- 	average.packages.rapl_dram_perf_status += p->rapl_dram_perf_status;
+@@ -53,6 +53,8 @@
+ #define	NAME_BYTES 20
+ #define PATH_BYTES 128
  
- 	for (i = 0, mp = sys.pp; mp; i++, mp = mp->next) {
--		if (mp->format == FORMAT_RAW)
--			continue;
--		average.packages.counter[i] += p->counter[i];
-+		if ((mp->format == FORMAT_RAW) && (topo.num_packages == 0))
-+			average.packages.counter[i] = p->counter[i];
-+		else
-+			average.packages.counter[i] += p->counter[i];
++#define MAX_NOFILE 0x8000
++
+ enum counter_scope { SCOPE_CPU, SCOPE_CORE, SCOPE_PACKAGE };
+ enum counter_type { COUNTER_ITEMS, COUNTER_CYCLES, COUNTER_SECONDS, COUNTER_USEC };
+ enum counter_format { FORMAT_RAW, FORMAT_DELTA, FORMAT_PERCENT };
+@@ -6719,6 +6721,22 @@ void cmdline(int argc, char **argv)
  	}
- 	return 0;
  }
+ 
++void set_rlimit(void)
++{
++	struct rlimit limit;
++
++	if (getrlimit(RLIMIT_NOFILE, &limit) < 0)
++		err(1, "Failed to get rlimit");
++
++	if (limit.rlim_max < MAX_NOFILE)
++		limit.rlim_max = MAX_NOFILE;
++	if (limit.rlim_cur < MAX_NOFILE)
++		limit.rlim_cur = MAX_NOFILE;
++
++	if (setrlimit(RLIMIT_NOFILE, &limit) < 0)
++		err(1, "Failed to set rlimit");
++}
++
+ int main(int argc, char **argv)
+ {
+ 	outf = stderr;
+@@ -6731,6 +6749,9 @@ int main(int argc, char **argv)
+ 
+ 	probe_sysfs();
+ 
++	if (!getuid())
++		set_rlimit();
++
+ 	turbostat_init();
+ 
+ 	msr_sum_record();
 -- 
 2.43.0
 
