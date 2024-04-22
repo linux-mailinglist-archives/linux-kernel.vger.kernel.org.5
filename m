@@ -1,85 +1,92 @@
-Return-Path: <linux-kernel+bounces-153978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0721C8AD595
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:06:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 053EF8AD597
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:06:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0E3F28147C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:06:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 714B71F222D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4029155399;
-	Mon, 22 Apr 2024 20:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229741553A6;
+	Mon, 22 Apr 2024 20:06:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tr16WMNX"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eUR+HEre"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F0FC153837
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 962B6153BCC
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:06:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713816391; cv=none; b=STpJzG0HuyFkX/omDAyiawN01r8migIFg+4wzIm77fR0aVlSqNHxrE1LClbCKld7yL+NkkkkolLI6HrDmWZU23Ndf40/f5hBwncPVOmX8cjbDDeItYdNhSkX0y1FmAq/T8fZ7Q3+PFOcpXow+2MltMMpu8sMgagr1MaqZ/Ap4Cg=
+	t=1713816401; cv=none; b=PFPtO/sgCnEvrqKfXR1q7ncrHcyzNL4rDiTy0Lj7/+p2GfQ9WGuXS+xBjExJrlRKAOXYPzpQhgXQqYEWBEVVMaTwnbThTjUyhjKlzZxaU8PkmHALIbM7y41uRzzCECCjR06xKQFI4PsmoeGuMEF+3p2NHExqDLHHFb/6kAjcmgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713816391; c=relaxed/simple;
-	bh=SP5KZGIELHpwCMjC7ZHrdbZjZqPQKAEg2qTG93os1Ig=;
+	s=arc-20240116; t=1713816401; c=relaxed/simple;
+	bh=2/7JJY4Qu5L4+OdjNSuo6CjRPPVe2dKcAMrnefj0VM8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RMkZ8nKFmI7NTbpMOTkB4o6mgCg+Rboo0L4dd8TEHBnjxv0JNy/H/coSOAGnY/OgYc39fUjoebsE1WSCM9BzZS7u/mPZYLg39w7H81yzF6/0Xm/+erJ07xdBc0RurE83LI2M5VrSStNLaasr2NXkUW3TZq7TwaA0Vkfd5KLJDRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tr16WMNX; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51abd580902so3153589e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:06:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713816387; x=1714421187; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qxag7ElmBq2J0SNGaZ2Jsj7zD9XRYmia0SkaU81ZBXo=;
-        b=tr16WMNXHwXr3AFt2hRbwIsEFPnGiTtr8PjzNIA8nS55RtRirbzLKoa43KsX3QQ4So
-         ZqFgc3EViW+JicBh6ND3m4epJualebVji9nMB9BUlSgW+euDqUECeETJQj1Or5+ujS6I
-         ZCAfqw1g+U56NIII8FovZ8rWdwQ0CbC4QrSasvLUVcysT1+COtzckxaHKuYZxDwSjov5
-         TY61+/pHfLwUYOTgQp+mRt/Rm6jEDUZ7+NQFbbyPsHEZ4wjiOKmi8rAN+8MVbWN4te+Q
-         8rd6BIInjTk7JX5y9fQxcTVUorMq2zNw7JvdR7hCVHMB4CgJeenV3/LQ4b+wLl3Qqqgy
-         Dnkw==
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gl4wSuARU/I10SwMhSCRVE/S/oPLRwGx4z9RUzk9VY5SwZql+ZkHiDvTijUn3wnzYPcnhNvTm5cGRCOPGlM1Ptadz5xco5UdEFTX1uSBzikwFqiZXlzYgLghmu2ZcKkGVo5l5NyWD0dea11znnCsmorYsp64WgxsqpItRML0vEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eUR+HEre; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713816398;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0lIPjvLLe8W5yhs9jb7Hopq3RJaIntEtybS+M9hbeM8=;
+	b=eUR+HEreYKRM6Vargnu6s5flzQRXB7Y6qFtXwUu7xQeSwWYrz7xnraO0jrG6/trlAmjspv
+	5uw9CEpzjSiepF72JSs3zKa/fvwSNSJUlhcsY4KWOumvHFCi20NdQjaZU4r0U3PAgdoipT
+	VseuqedxYXXmyJ1qwnni8cehHYgvPsw=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-548--cw3sK5SOxCvFz0XADr3Hw-1; Mon, 22 Apr 2024 16:06:37 -0400
+X-MC-Unique: -cw3sK5SOxCvFz0XADr3Hw-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-345c686ba9bso3368826f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:06:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713816387; x=1714421187;
+        d=1e100.net; s=20230601; t=1713816396; x=1714421196;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qxag7ElmBq2J0SNGaZ2Jsj7zD9XRYmia0SkaU81ZBXo=;
-        b=a2bQn0c2qiGy2ka8I9cL6TZ8Uq5jIJ541i2Mhv+KTGNawAfF6H2jUg8hOwcvWeIKPI
-         rcNk+uR2FIF06t7OK7huE5frlnS8EfpGHAb7+4yJpzg86NKWlbjfHagYkZUNztRHikFy
-         8zcKA//RvDHRtxqdNDmnD6XS70DpmBRKgOnZ/JgrRWVJcwZeplJy8nvUXtqrMraaWOzN
-         mRahwitmJBuLwpU1CxZ2CPsqtwhltGu1OWrC92B3O13+Otr8MI1Q8Ona4jeF7wqUvq/J
-         0WN0p4f5lztbIsTqwb5w+dpAikHP4u5+KXCv5FJfPUC42uGWdNziEd9p80G6PLUlS5FV
-         v2mg==
-X-Forwarded-Encrypted: i=1; AJvYcCVU4KckXa7uqjUAT7wugs0rNNPYry3+kuXdNqRKNyP2kmwo6DkXBU6Kr5OrFf8T1CR7C99Crh3aahLCdhY54/mXH8mepJJ0x6kkSYID
-X-Gm-Message-State: AOJu0YxRWcWbrUN6AT/tSfRUrmsDwrDB468wGAHtj4u9MJ5T8d6XtPU2
-	FYJJjTCaXiirTuk8z33zYK8e3cje0Ox0PUcOQvh1dvg88r9KnzYrcK6RCFX7qow=
-X-Google-Smtp-Source: AGHT+IFKRzJn5Y3fbci6M+062EmnXK4HLaS55hTHZT1r8HiXQ0ASlDALlzJt1N9v8o3vICMLlO6Cow==
-X-Received: by 2002:a19:ca08:0:b0:519:2470:b1c5 with SMTP id a8-20020a19ca08000000b005192470b1c5mr204233lfg.10.1713816387326;
-        Mon, 22 Apr 2024 13:06:27 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
-        by smtp.gmail.com with ESMTPSA id k8-20020a05651239c800b00517746176ebsm1811680lfu.49.2024.04.22.13.06.26
+        bh=0lIPjvLLe8W5yhs9jb7Hopq3RJaIntEtybS+M9hbeM8=;
+        b=J+rUPCBhbZ5OTAWSK0JaauPDtSQzuV2alHGproYnkxU94wPlWIeqUI5xDKfCTGafML
+         Ek8OOZFjzpRXU8UxcPsG0/QuA95R2Cs+vVDGGij/ImVQXc1zcRc7XIAXESq8mvPhsjWZ
+         AEO4hQn0qbDbQOM2FThWGAwMUeD1fQM33/IcB8ZUz0TnnKTCHFOZejt5AsRKX14pz2Gu
+         6UC1uydwS3+d5/HjknYLqcggfn4GpFVFX42jcKXVcy8QQsVTG9T6nUGhKMyyk5+WxI1r
+         g9LFD0hKVkcKZSrzfuSBWTyRGRE7ann0uygrFsJcqzNXxIKBa5/PP2ciSuZBll9Ie8w7
+         1Utg==
+X-Forwarded-Encrypted: i=1; AJvYcCWDb5oWvV5WiZS5vtdBDemKhCf+ZsaXOmWcbAkFWaPkyF+NtYcMfAvfpyomtBsla6tshmmXpvY+/wl6MVlhHIQxNXH9ly9KhWytobRO
+X-Gm-Message-State: AOJu0YwJERBc2/Ll7tLBCfRYSEc7frepPj+CFDnzAyHHe6gYwB3cZal/
+	XiVb4zuMSB+qnmFlFEaQYH05JdFy37dWk9QHgUY+hn1QJPWjgOOp28dietrNNxlP6jR8y5JnfMV
+	/ufvVMSE1fmqtigM3rYcldqWCvSC+NKdnBKfIVxgWF2ifaGB6NO0HMLQ+kBXhiw==
+X-Received: by 2002:adf:f18b:0:b0:34a:1a7a:9d60 with SMTP id h11-20020adff18b000000b0034a1a7a9d60mr7640302wro.62.1713816395861;
+        Mon, 22 Apr 2024 13:06:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHND6Vh2XDHMA3jWgmPOvHXsu3zVgYNWXES4lL4e0odswgf6F1OyS6srhg0vHCgMCGs6pJ3TA==
+X-Received: by 2002:adf:f18b:0:b0:34a:1a7a:9d60 with SMTP id h11-20020adff18b000000b0034a1a7a9d60mr7640282wro.62.1713816395286;
+        Mon, 22 Apr 2024 13:06:35 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:7429:3c00:dc4a:cd5:7b1c:f7c2])
+        by smtp.gmail.com with ESMTPSA id o12-20020a5d62cc000000b00349c42f2559sm12839263wrv.11.2024.04.22.13.06.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 13:06:26 -0700 (PDT)
-Date: Mon, 22 Apr 2024 23:06:25 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 7/9] drm-bridge: it66121: Use fwnode API to acquire
- device properties
-Message-ID: <ugo62mcrvo5csp7umzvn3jhffh625agnjr3rtujnbgm7gxvgtr@re4q2xg46iqn>
-References: <20240422191903.255642-1-sui.jingfeng@linux.dev>
- <20240422191903.255642-8-sui.jingfeng@linux.dev>
+        Mon, 22 Apr 2024 13:06:34 -0700 (PDT)
+Date: Mon, 22 Apr 2024 16:06:31 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: linux-fsdevel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+	Vivek Goyal <vgoyal@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Bernd Schubert <bernd.schubert@fastmail.fm>,
+	Matthew Wilcox <willy@infradead.org>,
+	Benjamin Coddington <bcodding@redhat.com>,
+	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+	houtao1@huawei.com
+Subject: Re: [PATCH v2 0/6] virtiofs: fix the warning for ITER_KVEC dio
+Message-ID: <20240422160615-mutt-send-email-mst@kernel.org>
+References: <20240228144126.2864064-1-houtao@huaweicloud.com>
+ <20240408034514-mutt-send-email-mst@kernel.org>
+ <413bd868-a16b-f024-0098-3c70f7808d3c@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,139 +95,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240422191903.255642-8-sui.jingfeng@linux.dev>
+In-Reply-To: <413bd868-a16b-f024-0098-3c70f7808d3c@huaweicloud.com>
 
-On Tue, Apr 23, 2024 at 03:19:01AM +0800, Sui Jingfeng wrote:
-> Make this driver DT-independent by calling the freshly created helpers,
-> which reduce boilerplate and open the door for otherwise use cases. No
-> functional changes for DT based systems.
+On Tue, Apr 09, 2024 at 09:48:08AM +0800, Hou Tao wrote:
+> Hi,
 > 
-> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
-> ---
->  drivers/gpu/drm/bridge/ite-it66121.c | 57 +++++++++++++++++-----------
->  1 file changed, 35 insertions(+), 22 deletions(-)
+> On 4/8/2024 3:45 PM, Michael S. Tsirkin wrote:
+> > On Wed, Feb 28, 2024 at 10:41:20PM +0800, Hou Tao wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> Hi,
+> >>
+> >> The patch set aims to fix the warning related to an abnormal size
+> >> parameter of kmalloc() in virtiofs. The warning occurred when attempting
+> >> to insert a 10MB sized kernel module kept in a virtiofs with cache
+> >> disabled. As analyzed in patch #1, the root cause is that the length of
+> >> the read buffer is no limited, and the read buffer is passed directly to
+> >> virtiofs through out_args[0].value. Therefore patch #1 limits the
+> >> length of the read buffer passed to virtiofs by using max_pages. However
+> >> it is not enough, because now the maximal value of max_pages is 256.
+> >> Consequently, when reading a 10MB-sized kernel module, the length of the
+> >> bounce buffer in virtiofs will be 40 + (256 * 4096), and kmalloc will
+> >> try to allocate 2MB from memory subsystem. The request for 2MB of
+> >> physically contiguous memory significantly stress the memory subsystem
+> >> and may fail indefinitely on hosts with fragmented memory. To address
+> >> this, patch #2~#5 use scattered pages in a bio_vec to replace the
+> >> kmalloc-allocated bounce buffer when the length of the bounce buffer for
+> >> KVEC_ITER dio is larger than PAGE_SIZE. The final issue with the
+> >> allocation of the bounce buffer and sg array in virtiofs is that
+> >> GFP_ATOMIC is used even when the allocation occurs in a kworker context.
+> >> Therefore the last patch uses GFP_NOFS for the allocation of both sg
+> >> array and bounce buffer when initiated by the kworker. For more details,
+> >> please check the individual patches.
+> >>
+> >> As usual, comments are always welcome.
+> >>
+> >> Change Log:
+> > Bernd should I just merge the patchset as is?
+> > It seems to fix a real problem and no one has the
+> > time to work on a better fix .... WDYT?
 > 
-> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-> index 925e42f46cd8..688dc1830654 100644
-> --- a/drivers/gpu/drm/bridge/ite-it66121.c
-> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
-> @@ -15,7 +15,6 @@
->  #include <linux/bitfield.h>
->  #include <linux/property.h>
->  #include <linux/regmap.h>
-> -#include <linux/of_graph.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/pinctrl/consumer.h>
->  #include <linux/regulator/consumer.h>
-> @@ -1480,7 +1479,7 @@ static int it66121_audio_codec_init(struct it66121_ctx *ctx, struct device *dev)
->  
->  	dev_dbg(dev, "%s\n", __func__);
->  
-> -	if (!of_property_read_bool(dev->of_node, "#sound-dai-cells")) {
-> +	if (!fwnode_property_present(dev_fwnode(dev), "#sound-dai-cells")) {
->  		dev_info(dev, "No \"#sound-dai-cells\", no audio\n");
->  		return 0;
->  	}
-> @@ -1503,13 +1502,36 @@ static const char * const it66121_supplies[] = {
->  	"vcn33", "vcn18", "vrf12"
->  };
->  
-> +static int it66121_read_bus_width(struct fwnode_handle *fwnode, u32 *bus_width)
-> +{
-> +	struct fwnode_handle *endpoint;
-> +	u32 val;
-> +	int ret;
-> +
-> +	endpoint = fwnode_graph_get_endpoint_by_id(fwnode, 0, 0, 0);
-> +	if (!endpoint)
-> +		return -EINVAL;
-> +
-> +	ret = fwnode_property_read_u32(endpoint, "bus-width", &val);
-> +	fwnode_handle_put(endpoint);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (val != 12 && val != 24)
-> +		return -EINVAL;
-> +
-> +	*bus_width = val;
-> +
-> +	return 0;
-> +}
+> Sorry for the long delay. I am just start to prepare for v3. In v3, I
+> plan to avoid the unnecessary memory copy between fuse args and bio_vec.
+> Will post it before next week.
 
-Ideally this should come as two patches. First patch extracts the
-function, second patch changes the driver to use fwnode / property API.
+Didn't happen before this week apparently.
 
-> +
->  static int it66121_probe(struct i2c_client *client)
->  {
->  	u32 revision_id, vendor_ids[2] = { 0 }, device_ids[2] = { 0 };
-> -	struct device_node *ep;
->  	int ret;
->  	struct it66121_ctx *ctx;
->  	struct device *dev = &client->dev;
-> +	struct fwnode_handle *fwnode = dev_fwnode(dev);
->  
->  	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
->  		dev_err(dev, "I2C check functionality failed.\n");
-> @@ -1520,29 +1542,20 @@ static int it66121_probe(struct i2c_client *client)
->  	if (!ctx)
->  		return -ENOMEM;
->  
-> -	ep = of_graph_get_endpoint_by_regs(dev->of_node, 0, 0);
-> -	if (!ep)
-> -		return -EINVAL;
-> -
->  	ctx->dev = dev;
->  	ctx->client = client;
->  	ctx->info = i2c_get_match_data(client);
->  
-> -	of_property_read_u32(ep, "bus-width", &ctx->bus_width);
-> -	of_node_put(ep);
-> -
-> -	if (ctx->bus_width != 12 && ctx->bus_width != 24)
-> -		return -EINVAL;
-> -
-> -	ep = of_graph_get_remote_node(dev->of_node, 1, -1);
-> -	if (!ep) {
-> -		dev_err(ctx->dev, "The endpoint is unconnected\n");
-> -		return -EINVAL;
-> -	}
-> +	ret = it66121_read_bus_width(fwnode, &ctx->bus_width);
-> +	if (ret)
-> +		return ret;
->  
-> -	ctx->next_bridge = of_drm_find_bridge(ep);
-> -	of_node_put(ep);
-> -	if (!ctx->next_bridge) {
-> +	ctx->next_bridge = drm_bridge_find_next_bridge_by_fwnode(fwnode, 1);
-> +	if (IS_ERR(ctx->next_bridge)) {
-> +		ret = PTR_ERR(ctx->next_bridge);
-> +		dev_err(dev, "Error in founding the next bridge: %d\n", ret);
-> +		return ret;
+> >
+> >
+> >> v2:
+> >>   * limit the length of ITER_KVEC dio by max_pages instead of the
+> >>     newly-introduced max_nopage_rw. Using max_pages make the ITER_KVEC
+> >>     dio being consistent with other rw operations.
+> >>   * replace kmalloc-allocated bounce buffer by using a bounce buffer
+> >>     backed by scattered pages when the length of the bounce buffer for
+> >>     KVEC_ITER dio is larger than PAG_SIZE, so even on hosts with
+> >>     fragmented memory, the KVEC_ITER dio can be handled normally by
+> >>     virtiofs. (Bernd Schubert)
+> >>   * merge the GFP_NOFS patch [1] into this patch-set and use
+> >>     memalloc_nofs_{save|restore}+GFP_KERNEL instead of GFP_NOFS
+> >>     (Benjamin Coddington)
+> >>
+> >> v1: https://lore.kernel.org/linux-fsdevel/20240103105929.1902658-1-houtao@huaweicloud.com/
+> >>
+> >> [1]: https://lore.kernel.org/linux-fsdevel/20240105105305.4052672-1-houtao@huaweicloud.com/
+> >>
+> >> Hou Tao (6):
+> >>   fuse: limit the length of ITER_KVEC dio by max_pages
+> >>   virtiofs: move alloc/free of argbuf into separated helpers
+> >>   virtiofs: factor out more common methods for argbuf
+> >>   virtiofs: support bounce buffer backed by scattered pages
+> >>   virtiofs: use scattered bounce buffer for ITER_KVEC dio
+> >>   virtiofs: use GFP_NOFS when enqueuing request through kworker
+> >>
+> >>  fs/fuse/file.c      |  12 +-
+> >>  fs/fuse/virtio_fs.c | 336 +++++++++++++++++++++++++++++++++++++-------
+> >>  2 files changed, 296 insertions(+), 52 deletions(-)
+> >>
+> >> -- 
+> >> 2.29.2
 
-return dev_err_probe(dev, ret, "msg"), if your function doesn't do this.
-If it does, just return ret.
-
-> +	} else if (!ctx->next_bridge) {
->  		dev_dbg(ctx->dev, "Next bridge not found, deferring probe\n");
->  		return -EPROBE_DEFER;
->  	}
-> @@ -1577,8 +1590,8 @@ static int it66121_probe(struct i2c_client *client)
->  		return -ENODEV;
->  	}
->  
-> +	drm_bridge_set_node(&ctx->bridge, fwnode);
->  	ctx->bridge.funcs = &it66121_bridge_funcs;
-> -	ctx->bridge.of_node = dev->of_node;
->  	ctx->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
->  	ctx->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID;
->  	if (client->irq > 0) {
-> -- 
-> 2.34.1
-> 
-
--- 
-With best wishes
-Dmitry
 
