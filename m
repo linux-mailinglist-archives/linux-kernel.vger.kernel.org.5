@@ -1,154 +1,100 @@
-Return-Path: <linux-kernel+bounces-153034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B858F8AC823
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:56:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBDA08AC827
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:57:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB36F1C21170
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:56:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97EE3283770
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D28C65578A;
-	Mon, 22 Apr 2024 08:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79ABA535D2;
+	Mon, 22 Apr 2024 08:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="CEMHhUch"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LJPvJdYf"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FDF454FA0
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB5352F70
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:54:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713775995; cv=none; b=RU/ZT27JI627SF06L5JDDy/jV0AYoCxjhG0HHmkHfiaYan/3vOL7ZKTWCFxlrkYLmQkp8/l9cmLIEQJ+E3EMMwBozLeGyRY0i+gRVv1vrq9b0E7lQRziEk8Ce6IY/MxTfnicSHJnpXSxfo64YPHL/M1R6YMlhN4Z4eaAJf306a0=
+	t=1713776072; cv=none; b=ggbp3j5TB3fN3w7DOEl9hbb5XviRk80aHANGIHS3mCnVlMALF7S8U2gUiSDnobnEbkyLwGEmREQ1cRJnIN4cHwerJoxR+j8GZoRhkYz2oh3DmNgjqF13ej2y8uOu5ct3AJcL7GOOTLOa/kMofG6kUGNwrP+nqpyFq9m4H6Fu8QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713775995; c=relaxed/simple;
-	bh=knFRrVHv/hXP0hrnXxi3FsPJj1U2CbJeo94T4pn0sEs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uVwiutFZ03BH0kXgVHEcpFRSLEjFZpd3fIpMCCwWZrPb5gONzrW0XxAaWogTIn8AZ3IqOD34ImCRkjAg51olb7mYizRVoDXiuEurrLMlWG5zmpOpv7VyM0lFXr5QDR7hZkF5Wm0In9GrXQ+CZzcou/GiSm3IpWLXQB0ue1JpAPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=CEMHhUch; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-34b39ecbcccso53132f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:53:13 -0700 (PDT)
+	s=arc-20240116; t=1713776072; c=relaxed/simple;
+	bh=Ojlb8Qt0GEEE4R5EwrEjmiMm5jfeRBt1cc/0bYnuMEU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HREX6RtOvsXlMKRMuWPwUCu/hiGx8VMHwjawBDY2CJ5Otytfccrx6wiUhzdZll5DdciorI+04ljl0osihs+UyND77zchsxb97rsckcP+veMga9s/+hSj4vzzdqdCMzvBxgT6GxteQ/bCaSL4Vq6IjLyDC9Hh+yUWKzVvb88KKjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LJPvJdYf; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41a523e2888so4517985e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:54:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713775992; x=1714380792; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BSJifQLOOtjWe2caLguw5JxOp3zY6VKsL2huHk/+dLw=;
-        b=CEMHhUchJNQvjTBZSnWxa7JlW45AdnicxGM+sHRNdpG1+LKLOPYb4xITd0rL0jIdHe
-         S4pxZqdrFFzKGeGJib+2edypzIEAjo/0g3CDY1AhJUBklADPmPp6Jzh06Awlx65aDdjM
-         XWGDJUW7MzDHZXbutnNghNLiyyjxxgZbrlqka6XzPcGVNXJ3J+vDQ9ImGQa033nDfE4x
-         VUnDi2xDFhXEYq5EbhNg6uNixK5eBsiB/iNT2K8Qa2bTwp6sh5ao7QHTXhDiNK464lA0
-         nlYs81raAp67lAo8YoA1e7ysTStznB7LSv597bPrlFWjE3zj0k7m6lOJ78E6Tuocs2JB
-         KSWw==
+        d=linaro.org; s=google; t=1713776069; x=1714380869; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ojlb8Qt0GEEE4R5EwrEjmiMm5jfeRBt1cc/0bYnuMEU=;
+        b=LJPvJdYfzCOidJJq73BMPDAC8MQv0mpbRbL6XNN/KyQyssMb6hl4aspFxewZsgCVPK
+         tXoG2vlqumypH7N8F7/fva8Mm7LmzK8/5qcOU9mpX25/4XrA5iPv8qViXE7Rk9zDLlqs
+         yluEothypDf3RpGU4vl41PbGGe3P+NXXPIUtp8nT58OtjjOhh4oC+QOZIMVl+MDw45Y4
+         WBrIBYnEuCI2CRaiHAsg9FAK/XNmmRPtKNG3r/Jmw6xuvXSzfaWwR143F7tOE5jxF627
+         M4NMqW/c55JA+ThSG9N5v81iHwSkcI5huLdvV6N/TwFFDLsPXmdbYGdqrpmxEyFk/EUh
+         BQQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713775992; x=1714380792;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BSJifQLOOtjWe2caLguw5JxOp3zY6VKsL2huHk/+dLw=;
-        b=lHN+aGyMQW+csb4T6vbXmYjjSFwl4X/Ay6MXKeDs2xdQHwQf+4/MJaS1mOMm3GbfXn
-         7xoJZ8ie1IQqq5nFzSit5ZFW/WBmfZcpqwZLpajQI056FS3Et3sznbd00E1su3M1YhPm
-         KZ2FZckzwYwJSPijHYcWTRrSvQJw8DJriHOIT5TpBJFzRyKSszP8oMqdR9q46L+gz6uN
-         92C9D7Qe+vKdoB7QzA0xiS/rqeRPFTz3ge4zb/j69w4bVmtwjmEKNKEloO3v/y1uEu/H
-         Vve7UHePFIdj7dRVEBUuouGN43BXgpeeKYXHAzZQKM2OMEQWSWbb1qMOguCcwzv8JKRD
-         /CTA==
-X-Forwarded-Encrypted: i=1; AJvYcCXZhq5fTODV0pVaIJy29qqEEU7eQjrjAGWivhv8F5pjScPr+1BrzvvXnLeb3gRlhnWxiE5pLZ4rEx7A7KAcfMH2BYpdaYXjQ4w8iqmP
-X-Gm-Message-State: AOJu0Yw2u2VaSpGYcgiiDGOlsIBH2ifXs7++sFz/ItlkvFCZYLe5SC3B
-	5OuloHbVYl1ru2bjw+xhM7Nt4Mmi3hRcSrcnu5bPTppotvrBEVh4/pGe7/gQ8Wc=
-X-Google-Smtp-Source: AGHT+IHRas3l39C/N5OldWvLjh8/Ocyg0dgZzgEEfR5deo9HXajPzyL+wuWZHMyf6dRNz3xpRu97wA==
-X-Received: by 2002:a05:600c:3b09:b0:418:ef65:4b11 with SMTP id m9-20020a05600c3b0900b00418ef654b11mr7146190wms.2.1713775991653;
-        Mon, 22 Apr 2024 01:53:11 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:dc65:11af:998:225e? ([2a01:e0a:999:a3a0:dc65:11af:998:225e])
-        by smtp.gmail.com with ESMTPSA id g7-20020a05600c310700b0041a92bb0c10sm25826wmo.2.2024.04.22.01.53.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 01:53:11 -0700 (PDT)
-Message-ID: <6ab9e591-f2f2-4267-8bdd-169ef0243e14@rivosinc.com>
-Date: Mon, 22 Apr 2024 10:53:10 +0200
+        d=1e100.net; s=20230601; t=1713776069; x=1714380869;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ojlb8Qt0GEEE4R5EwrEjmiMm5jfeRBt1cc/0bYnuMEU=;
+        b=Vcqw8htIogP0ERWILz5OYF9URHGjXJC3/U8y1WzaPQQ3T6J3kPO0Za0X+Tx3TYjAWN
+         vhS5IMyMVFjwfi/We/F4NAtv6FLUA6cIossVTMVgFhGdmbcetfuB7Yctf8MfUsWfVp2S
+         OAe8g+WmY9Hkbx7MsGABKGMEPgyQtWys9arNiWMOvpjAMHbLB25e5E4Xq/TSL2Q56ekU
+         lGJJnXOESaKApDoHholV4ZKBRyguw7a/mDweAq5Igbk3MUVc+8OkKUp5k7xT5108fl1P
+         VHZx+Ii6Wv/CrysBVv1rteUZZ9qbKiOrDGsNXMZ2CSLK6jOE3Mrzs2cltcO82YcROpVI
+         GznA==
+X-Forwarded-Encrypted: i=1; AJvYcCWT6fnpbwunp1kVIMarl5PPyp7XVsP2ZSP+7ouzAyhj4pxFGInRDAZpEjBzbDhzAnyHqd+tKrQo2J7PbIywBifBuS4vhxYU3UfR0wb5
+X-Gm-Message-State: AOJu0YzRY7443ul+22aOHhMy521c/daLggaPAKB3mG3XtFoCxBvEbnAj
+	YhQijt7Ko9itz8jaLxWBGkBxyodZ9FYxDfHLINHthor/IRMuMQ26cLoGNKR06QI=
+X-Google-Smtp-Source: AGHT+IE7k4brxBhxy5f7GNJIFfsaxDyj1gLwlLlyGFa1Xx9lcO7UuR/zgUeMyHEzAhs2lPsesXwQ/g==
+X-Received: by 2002:a05:600c:3586:b0:419:f447:c323 with SMTP id p6-20020a05600c358600b00419f447c323mr5006365wmq.27.1713776069623;
+        Mon, 22 Apr 2024 01:54:29 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id jx12-20020a05600c578c00b0041674bf7d4csm19372412wmb.48.2024.04.22.01.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 01:54:29 -0700 (PDT)
+Date: Mon, 22 Apr 2024 09:54:27 +0100
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Shresth Prasad <shresthprasad7@gmail.com>
+Cc: lee@kernel.org, jingoohan1@gmail.com, deller@gmx.de,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+	javier.carrasco.cruz@gmail.com
+Subject: Re: [PATCH v2][next] backlight: sky81452-backlight: Remove
+ unnecessary call to of_node_get
+Message-ID: <20240422085427.GA1290623@aspen.lan>
+References: <20240421104916.312588-2-shresthprasad7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 04/12] riscv: add ISA parsing for Zca, Zcf, Zcd and Zcb
-To: Conor Dooley <conor@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
- Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, kvm@vger.kernel.org,
- kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-References: <20240418124300.1387978-1-cleger@rivosinc.com>
- <20240418124300.1387978-5-cleger@rivosinc.com>
- <20240419-clinic-amusing-d23b1b6d2af2@spud>
-Content-Language: en-US
-From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20240419-clinic-amusing-d23b1b6d2af2@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240421104916.312588-2-shresthprasad7@gmail.com>
+
+On Sun, Apr 21, 2024 at 04:19:17PM +0530, Shresth Prasad wrote:
+> `dev->of_node` already has a reference to the device_node and calling
+> of_node_get on it is unnecessary. All conresponding calls to
+> of_node_put are also removed.
+>
+> Signed-off-by: Shresth Prasad <shresthprasad7@gmail.com>
+
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
 
-
-On 19/04/2024 17:51, Conor Dooley wrote:
-> On Thu, Apr 18, 2024 at 02:42:27PM +0200, Clément Léger wrote:
->> The Zc* standard extension for code reduction introduces new extensions.
->> This patch adds support for Zca, Zcf, Zcd and Zcb. Zce, Zcmt and Zcmp
->> are left out of this patch since they are targeting microcontrollers/
->> embedded CPUs instead of application processors.
->>
->> Signed-off-by: Clément Léger <cleger@rivosinc.com>
->> ---
->>  arch/riscv/include/asm/hwcap.h | 4 ++++
->>  arch/riscv/kernel/cpufeature.c | 4 ++++
->>  2 files changed, 8 insertions(+)
->>
->> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
->> index 543e3ea2da0e..b7551bad341b 100644
->> --- a/arch/riscv/include/asm/hwcap.h
->> +++ b/arch/riscv/include/asm/hwcap.h
->> @@ -82,6 +82,10 @@
->>  #define RISCV_ISA_EXT_ZACAS		73
->>  #define RISCV_ISA_EXT_XANDESPMU		74
->>  #define RISCV_ISA_EXT_ZIMOP		75
->> +#define RISCV_ISA_EXT_ZCA		76
->> +#define RISCV_ISA_EXT_ZCB		77
->> +#define RISCV_ISA_EXT_ZCD		78
->> +#define RISCV_ISA_EXT_ZCF		79
->>  
->>  #define RISCV_ISA_EXT_XLINUXENVCFG	127
->>  
->> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
->> index 115ba001f1bc..09dee071274d 100644
->> --- a/arch/riscv/kernel/cpufeature.c
->> +++ b/arch/riscv/kernel/cpufeature.c
->> @@ -261,6 +261,10 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->>  	__RISCV_ISA_EXT_DATA(zfa, RISCV_ISA_EXT_ZFA),
->>  	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
->>  	__RISCV_ISA_EXT_DATA(zfhmin, RISCV_ISA_EXT_ZFHMIN),
->> +	__RISCV_ISA_EXT_DATA(zca, RISCV_ISA_EXT_ZCA),
->> +	__RISCV_ISA_EXT_DATA(zcb, RISCV_ISA_EXT_ZCB),
->> +	__RISCV_ISA_EXT_DATA(zcd, RISCV_ISA_EXT_ZCD),
->> +	__RISCV_ISA_EXT_DATA(zcf, RISCV_ISA_EXT_ZCF),
->>  	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
->>  	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
->>  	__RISCV_ISA_EXT_DATA(zbc, RISCV_ISA_EXT_ZBC),
-> 
-> Ye, this looks exactly like what I "feared".
-
-Ok but for instance, Qemu actually set Zc* based on C/F/D. So the ISA
-string containing theses dependencies should actually also be allowed.
-So should we simply ignore them in the ISA string and always do our own
-"post-processing" based on C/F/D ?
-
-Thanks,
-
-Clément
+Daniel.
 
