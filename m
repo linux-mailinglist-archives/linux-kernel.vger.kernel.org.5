@@ -1,168 +1,171 @@
-Return-Path: <linux-kernel+bounces-152837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D28AE8AC4EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:13:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 214FA8AC513
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:15:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69693280AAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:13:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA45E2828A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:15:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B17482F6;
-	Mon, 22 Apr 2024 07:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DE353362;
+	Mon, 22 Apr 2024 07:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iGojFyue"
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rbWN7Rf5"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95AF4E1D9
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E2752F9A
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713769927; cv=none; b=HuQ7ISYRFhqOnsQyzjJBLtGbMNUO5XRvtmSOV+dqf+S7atubTFHGeZmq/CjgBB03Zmm9oFu6Zg1tTmNeAEL7icpv0DRTZngqj42NQJFbI2NzFrxmQRw3mX1aQrJGp2FhJj+HjiL99zqCzC1mycV+bNWJD66PNjvikDt1W0CTcVI=
+	t=1713769963; cv=none; b=BnzQ8rQpU3A/rtqYyfLBX6SdoRcCQKbs23B1zI/E6mMjPTZCRnc4h1IzWjOq2tGVsMn+8BrrumSnTEO16eVXMIP5n/ka076DxHqiw4ousj7bnNTNr2tBILoX9PiLX+T29fatiPJm/m8A4gKax/Ym2uY7pBYhqg47Vc/gaqWtDpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713769927; c=relaxed/simple;
-	bh=uPH6Y67fwbijcJ63Bx9ZgEyKOxdB9i7MlDXsKbFIr70=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OLnjxHb0QeftwxFZhhcD5Gx5ABAtLr0pFu6xcISRpjWYk3wZzAr8coaEtP5/nITC5lNfeUSiUaEmOIi8yfssv7sMbfONbjE2R2NqT86Fv5/xxZlpepTL/cBkOXyozBQUDKEPOzUxn/+7pRKuyR5kvz2yGW7R/62LxTxw4WQ1yWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iGojFyue; arc=none smtp.client-ip=209.85.160.51
+	s=arc-20240116; t=1713769963; c=relaxed/simple;
+	bh=aRqEUrFEJmID2QuQWe/9GlShp/t6+nLnG14uB1W1OFo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ih5FcouiiBQ6aegpo8qe9DfZjKi7K8bfDIGhbgJUNY+5Q3tKWxrBoUQRSLqlyUI6ZtP8yJ7MI2+hxj3eqz+9IIZQQ/JRUf+HrYedSOviJJJkzbIoINjevCSxcbqIZcKXZnhgUAu5o1SCi36NcMBtn6l6BHJC9WrwITEfIEXM5lA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rbWN7Rf5; arc=none smtp.client-ip=209.85.167.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-22efc6b8dc5so2549354fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 00:12:04 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-516d2b9cd69so4808634e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 00:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713769924; x=1714374724; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4Cg+LkkJAMIn0twUnN3DDfZ/IhwvjeNrn5o075GoKwo=;
-        b=iGojFyueUeaKUwnFwkF3iz+55T6H2EJ1Zq3N967psrLO+xUoi3J769DSbN+8siT2eM
-         qr18WcnOnqmdUUfx4yvh8hW6fLjKmoyO/RiosIkQsdGTDa2Di1rtah+Yjwzq7zUDdeVF
-         fN/49XzJzr3co0eLp+l52s3Y+0I4rq8ckqNSFOn7M8M2+Ad/ImWnOUowGoLzLeRdrhV9
-         siu+HDe+lpEonH+j0chy8zhREYqHZbHLSMBBoCvW6RZeQGg2zpdJX0YjXlUkxTQVUdAI
-         U/OjTtXyk12zR7j50H2NnKWw/nK8mdH7b5dVyy4A1b7iM2YTMCaBgKzDZFEb5/nG6dA1
-         kuWA==
+        d=linaro.org; s=google; t=1713769960; x=1714374760; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=rRGzg1mxBq+CFCWV96AB3N5t2SvS0X4IvMc+xGdy7O4=;
+        b=rbWN7Rf5tDhA9KTx0Co0RrX0XgTL6HJfMiqULC/A0mjmBHXAG1FEhe8HWEWJEhDwZg
+         IrQfQuzBUBb98HP/AuqxyGBm6wcusp/l5Eml8SyOKPlWx5iHvWNa0RzMUHF1pTB9H9Rh
+         tbVk7XGpBfVtCGuxPqnKwjpl4XE6dn67QGAB+lCW8PIo6tNLeHoo5zkC8UDv6Y03rJga
+         Z8q/NQfV+A5oz+lI+KbpaMnOBJqge0BYLCyE6zAjYpHKgwoeaYvKVEmFwGYhDjd6hhUX
+         BZAZdWUYJeeXNIqAQTNYeqmvPtMQE6MADzn9iFdgMnCiZTNeqsuSa2rGBruEnQk7cR1s
+         67dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713769924; x=1714374724;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Cg+LkkJAMIn0twUnN3DDfZ/IhwvjeNrn5o075GoKwo=;
-        b=L1ANxbnssJSWkvnfbx4XL4JqEuFLBZBPUJDy1Q4Z1CG6HwuO5z/xxk+Q+CylFw+T8W
-         REl5k0AuwKnVaEFbqJhEE9FxmHOD4q6e7A585yOdffYO0xZJQecy1vAd/ATYoB9vvCb5
-         9JTCL9Ur6uDTiIBDqk328IhYBlA9rkSexoCxBFfFDCLP0tS58ZVnQlkmmPifJBSl5TKQ
-         1PfDB6v4tubzB0LHkeBTRZv4X3ix6coiRwBKPSTEupbRqfAgc7uKZd+4lqYlfz9Bvqwm
-         4UHLpB9Xq/frxbPnmo4yfdlGYAT7H8x6iSANbl43gczx1B9pvEzGOQPlQeph+Y0MG3OX
-         i+Ew==
-X-Forwarded-Encrypted: i=1; AJvYcCVkN/UsECBn5LIG6ZZrLAlgqiJdQYmnHpgcnGDsf3WvCiwoEDj8JTyH+9QKsv3M9TvOPZYEEFyESQsY1YlWpCcCPg5yZGHc5z/7w9WT
-X-Gm-Message-State: AOJu0Yw1l5zdkzwd8NRg7snG6e9joasvo9t2XeH6NIJyZG1XLva3ONr6
-	WoFDPRRfGJwljVUNpPfFI7dPzPDs+mJVSuNOmYG7aS6Vt8FPGaUQ6eN1Z0KpVw==
-X-Google-Smtp-Source: AGHT+IGsAnvtXsNNVTtGLGsnDwgTZNcM5E8iRPZJhaMeCx1yHucYJ64i8pt6jXG7TTPYe25ap1BMcw==
-X-Received: by 2002:a05:6870:82a6:b0:22a:4c05:2efd with SMTP id q38-20020a05687082a600b0022a4c052efdmr11720065oae.10.1713769923903;
-        Mon, 22 Apr 2024 00:12:03 -0700 (PDT)
-Received: from thinkpad ([120.60.70.118])
-        by smtp.gmail.com with ESMTPSA id fe8-20020a056a002f0800b006ed00ea504asm7189292pfb.159.2024.04.22.00.11.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 00:12:03 -0700 (PDT)
-Date: Mon, 22 Apr 2024 12:41:56 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: mr.nuke.me@gmail.com
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-clk@vger.kernel.org
-Subject: Re: [PATCH v3 4/7] PCI: qcom: Add support for IPQ9574
-Message-ID: <20240422071156.GB9522@thinkpad>
-References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
- <20240415182052.374494-5-mr.nuke.me@gmail.com>
- <CAA8EJpqKWJBqDUacE0xTLzxny32ZTStiRgXsd2LBD=Hou_CRBw@mail.gmail.com>
- <3cfc26e6-5587-d4a2-f217-1a30169ad1a0@gmail.com>
- <20240417070616.GB3894@thinkpad>
- <102f209c-3367-86ac-c583-73103d5510a9@gmail.com>
+        d=1e100.net; s=20230601; t=1713769960; x=1714374760;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rRGzg1mxBq+CFCWV96AB3N5t2SvS0X4IvMc+xGdy7O4=;
+        b=pHdk2y6SkOIpW7jewOZ0WK568sU4mOH9Z67Dmrunmc5i/nr1xPDbM51QllQHn9Thb1
+         9RwYkPI9khBs68fMs9LIqoyjQ4WJEcDLM1cg2omNQvRn/3dOdICLOCjHMC+uV5iteJz8
+         X98pv3U87oL1qDLyfoODajbKxbpn65wYlntkAGctnay6Y+rmhoBldWkdny7yJuRzAETg
+         ksKjOFKy3EDLkn7szOzhV9Dera/qoDETAK9MMtqFgX/8lIcau5BjpDapp6GCEqqM6kuN
+         PRrWx5iCLAliaRQESr8zVD7ZNBV/8oTkxVl+0CIo2xW2KfzVpkEge6dy1sqlx7TqEa+d
+         0uXg==
+X-Forwarded-Encrypted: i=1; AJvYcCXNehmoF5gC5GFNGylp3xvtu6uzEU+XHdPhGNLK+pwu33Z+O7CU8TREy+MWjyumljjoBQYx4LrhCN5i6qfpXIorif1pTvv82Uxwa+4T
+X-Gm-Message-State: AOJu0YxXticeR5KV9tQt4L55JPKDYyE9IBk0arnGSorhv6ldWopQueoL
+	TAULZaZXMKf2af8ualwWnSxQraC9ZZkdNCy4O50/hKZGJZtrZHNQYTyvWPOPruE=
+X-Google-Smtp-Source: AGHT+IEvNCyMIj+qcecYZC5sou/NVzJVjlCrtXyFnnxP8pEweLxuWMc2+xr5zAiwCeQEe3d38cEqkw==
+X-Received: by 2002:ac2:4c46:0:b0:51b:223f:ac49 with SMTP id o6-20020ac24c46000000b0051b223fac49mr2316959lfk.38.1713769959838;
+        Mon, 22 Apr 2024 00:12:39 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id qs29-20020a170906459d00b00a5197fa2970sm5388361ejc.25.2024.04.22.00.12.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 00:12:39 -0700 (PDT)
+Message-ID: <06849796-f896-4cff-842c-118d86e94a6b@linaro.org>
+Date: Mon, 22 Apr 2024 09:12:37 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <102f209c-3367-86ac-c583-73103d5510a9@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Patch v3 2/2] memory: tegra: make sid and broadcast regions
+ optional
+To: Sumit Gupta <sumitg@nvidia.com>, robh@kernel.org, conor+dt@kernel.org,
+ maz@kernel.org, mark.rutland@arm.com, treding@nvidia.com,
+ jonathanh@nvidia.com
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-tegra@vger.kernel.org, amhetre@nvidia.com, bbasu@nvidia.com
+References: <20240412130540.28447-1-sumitg@nvidia.com>
+ <20240412130540.28447-3-sumitg@nvidia.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240412130540.28447-3-sumitg@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 19, 2024 at 02:44:36PM -0500, mr.nuke.me@gmail.com wrote:
-> Hi Mani.
+On 12/04/2024 15:05, Sumit Gupta wrote:
+> MC SID and Broadbast channel register access is restricted for Guest VM.
+
+Same typo
+
+> In Tegra MC driver, consider both the regions as optional and skip
+> access to restricted registers from Guest if a region is not present
+> in Guest DT.
 > 
-> On 4/17/24 02:06, Manivannan Sadhasivam wrote:
-> > On Mon, Apr 15, 2024 at 03:07:02PM -0500, mr.nuke.me@gmail.com wrote:
-> > > 
-> > > 
-> > > On 4/15/24 15:04, Dmitry Baryshkov wrote:
-> > > > On Mon, 15 Apr 2024 at 21:22, Alexandru Gagniuc <mr.nuke.me@gmail.com> wrote:
-> > > > > 
-> > > > > Add support for the PCIe on IPQ9574. The main difference from ipq6018
-> > > > > is that the "iface" clock is not necessarry. Add a special case in
-> > > > > qcom_pcie_get_resources_2_9_0() to handle this.
-> > > > > 
-> > > > > Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
-> > > > > ---
-> > > > >    drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++----
-> > > > >    1 file changed, 9 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > > index 14772edcf0d3..10560d6d6336 100644
-> > > > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > > > @@ -1101,15 +1101,19 @@ static int qcom_pcie_get_resources_2_9_0(struct qcom_pcie *pcie)
-> > > > >           struct qcom_pcie_resources_2_9_0 *res = &pcie->res.v2_9_0;
-> > > > >           struct dw_pcie *pci = pcie->pci;
-> > > > >           struct device *dev = pci->dev;
-> > > > > -       int ret;
-> > > > > +       int ret, num_clks = ARRAY_SIZE(res->clks) - 1;
-> > > > > 
-> > > > > -       res->clks[0].id = "iface";
-> > > > > +       res->clks[0].id = "rchng";
-> > > > >           res->clks[1].id = "axi_m";
-> > > > >           res->clks[2].id = "axi_s";
-> > > > >           res->clks[3].id = "axi_bridge";
-> > > > > -       res->clks[4].id = "rchng";
-> > > > > 
-> > > > > -       ret = devm_clk_bulk_get(dev, ARRAY_SIZE(res->clks), res->clks);
-> > > > > +       if (!of_device_is_compatible(dev->of_node, "qcom,pcie-ipq9574")) {
-> > > > > +               res->clks[4].id = "iface";
-> > > > > +               num_clks++;
-> > > > > +       }
-> > > > > +
-> > > > > +       ret = devm_clk_bulk_get(dev, num_clks, res->clks);
-> > > > 
-> > > > Just use devm_clk_bulk_get_optional() here.
-> > > 
-> > > Thank you! I wasn't sure if this was the correct solution here. I will get
-> > > this updated in v4.
-> > > 
-> > 
-> > Please rebase on top of [1] and mention the dependency in cover letter.
-> 
-> I am very hesitant to depend on another patch series. Is it okay if I
-> include your patch in v4 of this series?
-> 
 
-Feel free to.
+..
 
-- Mani
+>  
+>  static inline u32 mc_readl(const struct tegra_mc *mc, unsigned long offset)
+> diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
+> index 1b3183951bfe..716582255eeb 100644
+> --- a/drivers/memory/tegra/tegra186.c
+> +++ b/drivers/memory/tegra/tegra186.c
+> @@ -26,20 +26,16 @@
+>  static int tegra186_mc_probe(struct tegra_mc *mc)
+>  {
+>  	struct platform_device *pdev = to_platform_device(mc->dev);
+> +	struct resource *res;
+>  	unsigned int i;
+> -	char name[8];
+> +	char name[14];
 
--- 
-மணிவண்ணன் சதாசிவம்
+How is it relevant? I don't see this being used in your diff.
+
+
+Best regards,
+Krzysztof
+
 
