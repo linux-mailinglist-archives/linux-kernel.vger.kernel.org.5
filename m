@@ -1,120 +1,99 @@
-Return-Path: <linux-kernel+bounces-154187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5904C8AD8F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:20:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 732198AD8FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:23:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E69B21F21353
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:20:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35941281742
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F8E44393;
-	Mon, 22 Apr 2024 23:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7461E4502B;
+	Mon, 22 Apr 2024 23:23:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RejDHZEP"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="m7MwPPQ8"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECBF93D556;
-	Mon, 22 Apr 2024 23:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E1553D556;
+	Mon, 22 Apr 2024 23:23:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713828046; cv=none; b=nK+2re1JKjBzKXcSK7HYb/iSnOpUdUdZf9F/HgU9UbNQbPaad4sy2vkYZB55kHix0bLtNDrinqeCi7BBq3VN6ytg3m8j94dUm7YJtN0Qjhd5ga7yruVrJK6ie0/enu4INIeNSMMOtKw1rjjB4RxIUDEhpfcpAvJIA64yZUiJ38E=
+	t=1713828198; cv=none; b=X0Yj3rtnUwxCsriP1QXLgmC7FuJispgFDYFt93PAXcNiIKcoYDvClqfXGVYQ9MWO7RJmO9/OYwmhP/PEFS3hH3pKDUnTBEg0FNT2LXJAssLCBJT3pEeY3eJLTXrA1m3DuRus1721buljkuZ1eOR/K9UE861OsL7LeFocspIf+HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713828046; c=relaxed/simple;
-	bh=oj/jDjK3V5yRVW0Ym1lVsrvMUhzgj+h+qucbTcRuJMU=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=t+tV202BQWgHjTbUPcGtSh357mvLFL9RX4fEE2J1FMYqx/VysfGfgpAXeJ5gzYbiw9J7Z1sbzd53T/PEjLIZfFmQnB4KSiP9r/p1/WxDeJ3fo2Gv/rLKv0gNUwRkswrloSr0Uo9upI3aU+DaTVi+nZSglX0TLCXMlq7dp0N4ycA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RejDHZEP; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2dd6a7ae2dcso29338141fa.1;
-        Mon, 22 Apr 2024 16:20:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713828043; x=1714432843; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/C4ZKdvHLh97H7STf6xCInhQe9bGeawo6BaxTH4MasM=;
-        b=RejDHZEPhM+fEan6LyKWXAv5GavI5NR8O4Wu2eBUvjG78jSj1kWF3JhSocVKrgXt/i
-         DZAF1rDdkvMPVoID5O84B7NLc8PAn6Av9lf/ERVaAzmkh7ckG9ICBUDZzzY3jP0jsBqC
-         eCDzeQD0Y74Sgc9ybJCpBn4gw2T0nzPTerwQAnBhX612YxCRQtqjOV7V4uxejZZf/8+p
-         eCXtg8qarcbStiG3PCGGGMvXe1Mhs/HEl8Z4SYNvJkxJ7/lOaciCCnEMUjFUfEKClUnY
-         k3S77AzpF/iERlWiGVPS/b3mR9j5fcvuOBVTjZ5WelRIbPZG5D5uzeJHSqDTIJyRRZOn
-         vj7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713828043; x=1714432843;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/C4ZKdvHLh97H7STf6xCInhQe9bGeawo6BaxTH4MasM=;
-        b=ZKC8zcvWSj7RSYV2P60xYIy48yRiL4+6fIp6P5mnMAljF3RXe5k9XqP2lJmba46T2j
-         jOFPohHLbp7184EW71Iu9UDcDfPfRRPvKa0c21DPFr6R0aeIeDU2ZdbMwmgTNLId5iKZ
-         N7nkpD5zfi4HoE7QIxj9tGnjs1VkMdHWs4OxHb0nA6dPC9aDqiLpISA1Finb/sRuOI88
-         kGf1RQ+YZrTv+ZfjiIVhiHPlUl8SiHYkZbZ7sc6HicVDQAQWOLguzqeCNs3k9YLljHO4
-         +HyfK4csu7D2uMfTx0woVCYh5uuhn34YaYekoLyGaXKCiInazAZn1cVnQ7Ob31mDL9Ht
-         iIuA==
-X-Forwarded-Encrypted: i=1; AJvYcCXK5HA2pkjPuVsPfW/4Ve7KpeLuJ0vlik8KD/wVrFPRnNZjKTDyKWxzORJskMu1tWr2HhoLE+J3Cr7/UzsEY7vJ+2zYimZ/FPNGxg==
-X-Gm-Message-State: AOJu0YzP5Rd73xV2xJ5b8v/taUgVlmYWvayU3iChoEA6YFNFoSlwLy9k
-	Z+Ov1ZLV/kfhh31S+9EVGpK1Ze4/os/0oOfNQ+slpnQem710s+nJ/J7sfs+JX/ahOgZtGU8d3Ng
-	a3hpbJXoX3ECQ2X97+ZegPbG2fGGjfGYl
-X-Google-Smtp-Source: AGHT+IGaATWXxm54U52r2l7bs7whal15Jl96TdQJ+uO4Ct9/JAw5VwRxdhOHm+JbWX96oWX+haITAEbREAZIwagvcHs=
-X-Received: by 2002:a2e:a988:0:b0:2d6:c749:17bc with SMTP id
- x8-20020a2ea988000000b002d6c74917bcmr10136033ljq.31.1713828042866; Mon, 22
- Apr 2024 16:20:42 -0700 (PDT)
+	s=arc-20240116; t=1713828198; c=relaxed/simple;
+	bh=tGAT0/KqXPZ7vFH5lIixRoGblBIPTLyL1oM6f4j2m8Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pc3QJ1MVfxYxmIZmIRYigLhV2gG0+SkmCjf5hI9h3GpWLOzdzEBGpDBIvDSBS6DBSxgvaXULgjvoaS7tkAE8l6kSeVWvTyNiKG8Szok4DrOlKrThwEZhrsKyGxT1Mj3NhT1g8cfICBxTA5BcT/YOVkInIUFk98DCeGqY+pdYpuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=m7MwPPQ8; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=w34AumCooKNrepQz/ik6t7UXw9d+51JDT8B8iDo0sjE=; b=m7MwPPQ8WIdS0lTbrJdaFt9Qyn
+	voDDkEXLUa8uQwIeHR7B3sSC6U3+FOHni4V5XfS/x9ynl40WeWnAX93xU6bhH6E7xhae1XQ5e4TTn
+	T2125yHuHHdHOjNu/+YEqc60mZrQpdrcbjn9iWrBaKXEiO9qWLrEZ/Nb1Iz1MoXpl0Zw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rz301-00Desf-Dp; Tue, 23 Apr 2024 01:23:01 +0200
+Date: Tue, 23 Apr 2024 01:23:01 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v4 00/12] Add support for OPEN Alliance
+ 10BASE-T1x MACPHY Serial Interface
+Message-ID: <32160a96-c031-4e5a-bf32-fd5d4dee727e@lunn.ch>
+References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
+ <5f73edc0-1a25-4d03-be21-5b1aa9e933b2@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Steve French <smfrench@gmail.com>
-Date: Mon, 22 Apr 2024 18:20:31 -0500
-Message-ID: <CAH2r5mt+jm0-X-zx18QgJ+Q2DX9pCkf+TQH=Cb809xTjVJVGQQ@mail.gmail.com>
-Subject: [GIT PULL] ksmbd server fixes
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Namjae Jeon <linkinjeon@kernel.org>, 
-	CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f73edc0-1a25-4d03-be21-5b1aa9e933b2@lunn.ch>
 
-Please pull the following changes since commit
-0bbac3facb5d6cc0171c45c9873a2dc96bea9680:
+On Mon, Apr 22, 2024 at 10:08:23PM +0200, Andrew Lunn wrote:
+> > Testing Details:
+> > ----------------
+> > The driver performance was tested using iperf3 in the below two setups
+> > separately.
+> > 
+> > Setup 1:
+> > --------
+> > Node 0 - Raspberry Pi 4 with LAN8650 MAC-PHY 
+> > Node 1 - Raspberry Pi 4 with EVB-LAN8670-USB USB Stick
+> > 
+> > Setup 2:
+> > --------
+> > Node 0 - SAMA7G54-EK with LAN8650 MAC-PHY 
+> > Node 1 - Raspberry Pi 4 with EVB-LAN8670-USB USB Stick
+> 
+> Would it be possible to chain these two setups together by adding two
+> USB dongles to one of the Ri 4s? If i remember correctly, there were
+> reports of issues when two devices were using the framework at once.
 
-  Linux 6.9-rc4 (2024-04-14 13:38:39 -0700)
+Sorry, that makes no sense. Your USB device is unlikely to be doing
+USB->SPI->MAC-PHY. Do you have two LAN8650 MAC-PHY you can connect to
+one host?
 
-are available in the Git repository at:
-
-  git://git.samba.org/ksmbd.git tags/6.9-rc5-ksmbd-fixes
-
-for you to fetch changes up to e9d8c2f95ab8acaf3f4d4a53682a4afa3c263692:
-
-  ksmbd: add continuous availability share parameter (2024-04-19 20:48:47 -0500)
-
-----------------------------------------------------------------
-Five ksmbd server fixes, most also for stable
-- rename fix
-- fix for two potential out of bounds
-- fix for connections from MacOS (padding in close response)
-- fix for when to enable persistent handles
-----------------------------------------------------------------
-Marios Makassikis (1):
-      ksmbd: clear RENAME_NOREPLACE before calling vfs_rename
-
-Namjae Jeon (4):
-      ksmbd: fix slab-out-of-bounds in smb2_allocate_rsp_buf
-      ksmbd: validate request buffer size in smb2_allocate_rsp_buf()
-      ksmbd: common: use struct_group_attr instead of struct_group for
-network_open_info
-      ksmbd: add continuous availability share parameter
-
- fs/smb/common/smb2pdu.h       |  2 +-
- fs/smb/server/ksmbd_netlink.h | 35 ++++++++++++++++++-----------------
- fs/smb/server/server.c        | 13 +++++--------
- fs/smb/server/smb2pdu.c       | 15 +++++++++++++--
- fs/smb/server/vfs.c           |  5 +++++
- 5 files changed, 42 insertions(+), 28 deletions(-)
-
--- 
-Thanks,
-
-Steve
+    Andrew
 
