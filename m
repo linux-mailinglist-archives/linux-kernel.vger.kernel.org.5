@@ -1,101 +1,163 @@
-Return-Path: <linux-kernel+bounces-153660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3E598AD145
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:51:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43D838AD153
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:55:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 827D71F2327B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:51:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 384051C2229B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C5115357F;
-	Mon, 22 Apr 2024 15:50:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9716153583;
+	Mon, 22 Apr 2024 15:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DYe8ZdHK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MAyHFqjR"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D728415351B;
-	Mon, 22 Apr 2024 15:50:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82A1153560
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713801051; cv=none; b=blhvrP9mdkXLEbhl65OruMSMgiCLrF0WWjsCpN0k9msR/RL6kuBHm5kc14Y+X2wR53Otn7bitqjQQeD1Yvrgq4JmZxDTmhKN9gyE5EyXHMzv+1wRY3PZidYmHDIkrPRT53vm5ZPS6xG8Gnb/bcr3Y4FcLTwsQcFh9a71eKN4IbU=
+	t=1713801302; cv=none; b=RubNGHIObxc0yIpi+uN0jkFVQJ+r5G/a5DB3t8r2KxrbuvTXDCCmEMgNFQsSwOCJKBlizSNiO+hCvVafJmRcJLSvpbKf1Smr+TGQCn5uenQmr3kNpWmjrttMgykkDmVLxO+kVEvO1lCMlP4udq0ToLaDDB9MHV8P62jdLwTwvEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713801051; c=relaxed/simple;
-	bh=wzD5FJqyLbvetXi2p0Mj7eEu1Rvd1yeTzfQasvtc1os=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tKk16yX5Uf3tFBe/tSzBryaAG++NdmGgmaMBVK/s/2tJGjpfb+ldiUqUD9DPLImHVggrDK/RP7mY10vvEjPat1Gm9/J9ieipoJ5IAv5Levxy24p9ucFkbACp1kfZWdu7PPxSXBvFoNR8zbXE4tkrImQ6A01GELPdWgXGYLWfNyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DYe8ZdHK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AC42C113CC;
-	Mon, 22 Apr 2024 15:50:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713801050;
-	bh=wzD5FJqyLbvetXi2p0Mj7eEu1Rvd1yeTzfQasvtc1os=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DYe8ZdHK0RmNCkmjV/DITUcuuGq81cN95EdnPQEicoYAfN+IFnn6VbLLJi/FS1gt/
-	 gHA2uqN6tblylT/fJjbkfiprBcKrsPzusOhfHlWAyyfv4Cz5UuO3W83S8VYlRujMlF
-	 N1ehMUwb0F4LkL1BoJqUl5MybdKDp6DX6qQjzlYf5nlI19j2ZSY9rPo5qxUArHdxqj
-	 I688+E4bbUguTVr+edoCe3y5q0pZ9oqOQq+EsspiWE/QmHFcc3ETbYw6yfTHsTXWMI
-	 59JLOAyTq+YoSorK7oTgb/oBTRKQTm9aw/fXPeAIeRxSrzD23mEcNYi32ffdHiao9L
-	 KaeDXu4RFS+gA==
-Date: Mon, 22 Apr 2024 16:50:43 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Parthiban.Veerasooran@microchip.com
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, andrew@lunn.ch, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, Horatiu.Vultur@microchip.com,
-	ruanjinjie@huawei.com, Steen.Hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v4 12/12] dt-bindings: net: add Microchip's
- LAN865X 10BASE-T1S MACPHY
-Message-ID: <20240422-duty-skedaddle-37e21a76f3f2@spud>
-References: <20240418125648.372526-1-Parthiban.Veerasooran@microchip.com>
- <20240418125648.372526-13-Parthiban.Veerasooran@microchip.com>
- <20240418-hypnosis-oblong-028c107e6c3f@spud>
- <a2c2d5ae-f709-42bf-9b60-c4428da4197d@microchip.com>
+	s=arc-20240116; t=1713801302; c=relaxed/simple;
+	bh=S24f1FSrq1sF+m6JW8GkCEgWL3cQbwVEjd5KUt/45t8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=StQttCPJNlYVpRrdi9ASoK3NYI508iNh1ZWlUp6rQPdGR9T5P/9HDfSmvkZQRsEPIYzQTXcn9AteVVMCk+9vABjCrYJGRcE+0h0tLuXGdpZ7uPiGHtc321nBLh8sRNOTXhCxt99PgH56GUQUBqAqpurtt5x0YG4lNY1m5vYSxTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MAyHFqjR; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713801299;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vrXScvRqVTWx0cmSFbg2HprZNqV52P7w+MYqkVyqleM=;
+	b=MAyHFqjRT3btFGyAKdg5aXwm1dWDe7vvo3A115VjWSMB6kfBJVbzqNBg85a9PTNMrS6LjH
+	v6Eqh353oyU99f6J/HL574K+y07Mg4aSzQBUPy2NWq1+Z/lql4Du8hvRspQeKRlBDcbNh/
+	eS+/tuPAdhEYiUsLK7daHMzisJ83k9U=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-117-7nSj5R_UMQmNv2DD5WNXbg-1; Mon, 22 Apr 2024 11:54:57 -0400
+X-MC-Unique: 7nSj5R_UMQmNv2DD5WNXbg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4183d08093bso27287075e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:54:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713801296; x=1714406096;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vrXScvRqVTWx0cmSFbg2HprZNqV52P7w+MYqkVyqleM=;
+        b=jQ/rzApK4YYBZKYd1QmHeJ1r5BoJzGmOTYZKH6yaBsbP8C/O3LMdW377/iyCqNNT5t
+         4iF5finy6RJLit9MpiJf6d/BBGNOqpxmACdjdZUkTYgvaBoDxks/Avf4dK6Cf1maSbea
+         r8mMmapEONRHUUK5wuOoJ9MRIKyQe/NcIkHDP1k5S/9Np5F4cPylFcATOMh5y2L5MMMO
+         5hrajSQdqOpnFZJlyhXQghz8U382nDUyFJDHt6ssMXaGJyfws4UCM4QZD7V1WKric6fq
+         z2ablQdQTBj4nTyYcGDzOy16vEOy+Acu/IB8Hmg9oCPFtUaGQLuhe6UxUNm8bywgYt3C
+         1+rA==
+X-Forwarded-Encrypted: i=1; AJvYcCXxT1ZyGekwa+j+mJyc4dDNVl7M79PLaBA4Sxa9vAfvc4dP4UHC52Fv2qzGBk5q2v4Pig2QWNtsNmSh0dcwL9/6RZrfpAiSCiiEs96s
+X-Gm-Message-State: AOJu0YwD/wJURXPivReaH1dXUqe6YbY9Y6x4TkdWKN2FXus23U649V7G
+	/ssSuSeH6g8Rgk4IIhYhgwm7rhZfUQCf6Mg3edmWzR7whPHstKTlYXJfLKXDPIKGq4j/0DNIMAu
+	/rTIrpsZuMN3AAnbxlelrP+dGdJyB1C8u8/5mG1Y1qfNwzZvQ+yrg3hWyZm/1PifOm6QbMWjusW
+	4Gc1SGuVf4wPTen4Os7EUXezPCVa2xjXOR6vf2
+X-Received: by 2002:a05:600c:4e0d:b0:41a:8b39:803b with SMTP id b13-20020a05600c4e0d00b0041a8b39803bmr1369172wmq.1.1713801296720;
+        Mon, 22 Apr 2024 08:54:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGkTcPyCSPPQtSYlQR7uDVxnB1gDryj1kgIix0MnGUIXw/SBKRVw/tNcQ3IV5cqzNp+/Ot6ubPK0sZ96Qu3ayI=
+X-Received: by 2002:a05:600c:4e0d:b0:41a:8b39:803b with SMTP id
+ b13-20020a05600c4e0d00b0041a8b39803bmr1369141wmq.1.1713801296335; Mon, 22 Apr
+ 2024 08:54:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jHF5bh9/3sCMMvxg"
-Content-Disposition: inline
-In-Reply-To: <a2c2d5ae-f709-42bf-9b60-c4428da4197d@microchip.com>
-
-
---jHF5bh9/3sCMMvxg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240418193528.41780-1-dwmw2@infradead.org> <20240418193528.41780-3-dwmw2@infradead.org>
+ <CABgObfa0j34iEh81hhd7-t7ZM1GKAsvJb5xP6EoD2-c-8TnPqQ@mail.gmail.com> <a35e69e07b9cd297dac9993c886667add144e833.camel@infradead.org>
+In-Reply-To: <a35e69e07b9cd297dac9993c886667add144e833.camel@infradead.org>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Mon, 22 Apr 2024 17:54:44 +0200
+Message-ID: <CABgObfbK0aqqmAz7Z2efX4hNf7WRBYpoJ1a07oKMZdFXS2r0+g@mail.gmail.com>
+Subject: Re: [PATCH 02/10] KVM: x86: Improve accuracy of KVM clock when TSC
+ scaling is in force
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, 
+	Sean Christopherson <seanjc@google.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Paul Durrant <paul@xen.org>, Shuah Khan <shuah@kernel.org>, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>, 
+	Marcelo Tosatti <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 22, 2024 at 03:59:31AM +0000, Parthiban.Veerasooran@microchip.c=
-om wrote:
-> OK. If you agree with the above changes that you expected then I will=20
-> add the tag in the next version with the proposed changes.
+On Mon, Apr 22, 2024 at 5:39=E2=80=AFPM David Woodhouse <dwmw2@infradead.or=
+g> wrote:
 
-ye, they seem good, you can retain it.
+> > ... especially considering that you did use a 64-bit integer here
+> > (though---please use u64 not uint64_t; and BTW if you want to add a
+> > patch to change kvm_get_time_scale() to u64, please do.
+>
+> Meh, I'm used to programming in C. Yes, I *am* old enough to have been
+> doing this since the last decade of the 1900s, but it *has* been a long
+> time since 1999, and my fingers have learned :)
 
---jHF5bh9/3sCMMvxg
-Content-Type: application/pgp-signature; name="signature.asc"
+Oh, I am on the same page (working on both QEMU and Linux, adapting my
+muscle memory to the context sucks) but u64/s64 is the preferred
+spelling and I have been asked to use them before.
 
------BEGIN PGP SIGNATURE-----
+> Heh, looks like it was you who made it uint64_t, in 2016. In a commit
+> (3ae13faac) which said "Prepare for improving the precision in the next
+> patch"... which never came, AFAICT?
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiaHUwAKCRB4tDGHoIJi
-0qlQAQD+/Mk2cqJkGSomIBljWVHfvybJ1BbBqr8Zovd0f4H6lgEAk7HtayJGwyal
-B2E5xye0s+uHC10UMcvElUPAu7nigA8=
-=arr8
------END PGP SIGNATURE-----
+Yes, it was posted as
+https://lore.kernel.org/lkml/1454944711-33022-5-git-send-email-pbonzini@red=
+hat.com/
+but not committed.
 
---jHF5bh9/3sCMMvxg--
+As an aside, we discovered later that the patch you list as "Fixes"
+fixed another tricky bug: before, kvmclock could jump if the TSC is
+set within the 250 ppm tolerance that does not activate TSC scaling.
+This is possible after a first live migration, and then the second
+live migration used the guest TSC frequency *that userspace desired*
+instead of the *actual* TSC frequency.
+
+Before:
+
+        this_tsc_khz =3D __this_cpu_read(cpu_tsc_khz);
+        if (unlikely(vcpu->hw_tsc_khz !=3D this_tsc_khz)) {
+                tgt_tsc_khz =3D vcpu->virtual_tsc_khz;
+                kvm_get_time_scale(NSEC_PER_SEC / 1000, tgt_tsc_khz,
+                        &vcpu->hv_clock.tsc_shift,
+                        &vcpu->hv_clock.tsc_to_system_mul);
+                vcpu->hw_tsc_khz =3D this_tsc_khz;
+
+After:
+
+        tgt_tsc_khz =3D __this_cpu_read(cpu_tsc_khz);
+
+        // tgt_tsc_khz unchanged because TSC scaling was not enabled
+        tgt_tsc_khz =3D kvm_scale_tsc(v, tgt_tsc_khz);
+
+        if (unlikely(vcpu->hw_tsc_khz !=3D tgt_tsc_khz)) {
+                kvm_get_time_scale(NSEC_PER_SEC / 1000, tgt_tsc_khz,
+                        &vcpu->hv_clock.tsc_shift,
+                        &vcpu->hv_clock.tsc_to_system_mul);
+                vcpu->hw_tsc_khz =3D tgt_tsc_khz;
+
+So in the first case kvm_get_time_scale uses vcpu->virtual_tsc_khz, in
+the second case it uses __this_cpu_read(cpu_tsc_khz).
+
+This then caused a mismatch between the actual guest frequency and
+what is used by kvm_guest_time_update, which only becomes visible when
+migration resets the clock with KVM_GET/SET_CLOCK. KVM_GET_CLOCK
+returns what _should have been_ the same value read by the guest, but
+it's wrong.
+
+Paolo
+
 
