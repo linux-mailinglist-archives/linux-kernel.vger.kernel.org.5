@@ -1,105 +1,172 @@
-Return-Path: <linux-kernel+bounces-152699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2676B8AC311
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:33:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D095A8AC314
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:34:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB18F1F21044
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:33:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 000681C2088F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142B6101D5;
-	Mon, 22 Apr 2024 03:33:31 +0000 (UTC)
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 3E4984C97;
-	Mon, 22 Apr 2024 03:33:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=42.101.60.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 183FE101D5;
+	Mon, 22 Apr 2024 03:34:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=kuaishou.com header.i=@kuaishou.com header.b="J6R5/7+i"
+Received: from bjm7-spam02.kuaishou.com (smtpcn03.kuaishou.com [103.107.217.217])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD73EAEB;
+	Mon, 22 Apr 2024 03:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.107.217.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713756810; cv=none; b=oj9ZsHgOZzJqnP9CobZnMP2vaaGehDpX/CdR49kuAKQmBsriEGT36DEF7Ay8QKFnSpwXi9MzCWAVd1GP66nIL+epHx8vnfBnZLaoIH7X0RsGwxqNArKPxW3tmfAwBLAjJFa7AqN+BY+HphHkx6ndkUbsGymqjH9yUc/+BUsUUhQ=
+	t=1713756843; cv=none; b=h/PdwA+eUMHKTOE12Zw8yjip6VgmPF7ixLI9sTs0sYYGGd8ffIq2SFGspY9FjKbUxaXuadllY7SyIqk0iRyxnd8AQtfSntcci5+f0CGiOIAdw1cjpEDLt62VZ3/LtWx91BFIQnrcGrgEtze/r5FVR8ibexPPI74uwVVitCDushk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713756810; c=relaxed/simple;
-	bh=zI6AXceJfEK/L8fmn63vHcXTweS/N0utaLuM9iw/3cc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type; b=g7cdl5usLabn9l1TlgG0xlL+r79iQvT6WMEb386A5uucdp1Z28leWV9bYgd/iPgEGkvLMvfP9SndsNGMNnGGetsnysfh6c2eAo4XQs3z+nCnTXwUqpMWZAUmvGZlK7UMWWwLYqH3jXXYRjkcwJUkVYDGdaqVdsWokZlSNNWDa8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com; spf=pass smtp.mailfrom=nfschina.com; arc=none smtp.client-ip=42.101.60.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nfschina.com
-Received: from [172.30.11.106] (unknown [180.167.10.98])
-	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id 0B5136068094E;
-	Mon, 22 Apr 2024 11:32:43 +0800 (CST)
-Message-ID: <6d311a40-05b9-3958-673d-e4c4d154ce4f@nfschina.com>
-Date: Mon, 22 Apr 2024 11:32:43 +0800
+	s=arc-20240116; t=1713756843; c=relaxed/simple;
+	bh=m3wCcorDdfuWrYb4gwnoehhK7CJGhnMKiK00/jZbyqk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ujDQx7qmfJ+KFqx/HoB5BN0TOcOaNfUJ00rovpKTMjjC6Y8o95svQIo6R50kz3mRXzgLTbI5oU/QkMT7UojNPd70+iO9S3gOsJkPwTptBydI+kWQgfsEBC6E1hyXyFKm8msBniM0iLy4yy4HuAc6G2C8P0FzGD2o8iPHrj76Hvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kuaishou.com; spf=pass smtp.mailfrom=kuaishou.com; dkim=pass (1024-bit key) header.d=kuaishou.com header.i=@kuaishou.com header.b=J6R5/7+i; arc=none smtp.client-ip=103.107.217.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kuaishou.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kuaishou.com
+Received: from bjm7-pm-mail02.kuaishou.com (unknown [172.28.1.2])
+	by bjm7-spam02.kuaishou.com (Postfix) with ESMTPS id CF7AA1841C815;
+	Mon, 22 Apr 2024 11:33:59 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; d=kuaishou.com; s=dkim; c=relaxed/relaxed;
+	t=1713756839; h=from:subject:to:date:message-id;
+	bh=m3wCcorDdfuWrYb4gwnoehhK7CJGhnMKiK00/jZbyqk=;
+	b=J6R5/7+iJz4GA13wmR2/SaEvAG12S9MKiDmoJkJk+3R1O2VH6vSYFtHfGTarauQH7GYfB6tfsuF
+	ZQuKA1LHc4Krm5LUBTyFpssMlLm8V+akayT6Mf+bDocZfY9r6s7+P/Ge967BRQCGeSrZ+sW3skEXJ
+	OR8EnUS/0f0OsFA40z8=
+Received: from bjm7-pm-mail01.kuaishou.com (172.28.1.1) by
+ bjm7-pm-mail02.kuaishou.com (172.28.1.2) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.20; Mon, 22 Apr 2024 11:33:59 +0800
+Received: from bjm7-pm-mail01.kuaishou.com ([fe80::90df:c4ca:7789:1e31]) by
+ bjm7-pm-mail01.kuaishou.com ([fe80::90df:c4ca:7789:1e31%16]) with mapi id
+ 15.02.1118.020; Mon, 22 Apr 2024 11:33:59 +0800
+From: =?utf-8?B?5ZGo5rOw5a6H?= <zhoutaiyu@kuaishou.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>, "tj@kernel.org" <tj@kernel.org>
+CC: "josef@toxicpanda.com" <josef@toxicpanda.com>, "axboe@kernel.dk"
+	<axboe@kernel.dk>, "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "yukuai (C)"
+	<yukuai3@huawei.com>
+Subject: Re: Re: [PATCH] blk-throttle: fix repeat limit on bio with
+ BIO_BPS_THROTTLED
+Thread-Topic: Re: [PATCH] blk-throttle: fix repeat limit on bio with
+ BIO_BPS_THROTTLED
+Thread-Index: AQHalGXpPdZ+bcNQlEWA99FUOKdkZQ==
+Date: Mon, 22 Apr 2024 03:33:58 +0000
+Message-ID: <e2d291e6b6ed43d89930eb2a7d459ff8@kuaishou.com>
+References: <20240419120747.38031-1-zhoutaiyu@kuaishou.com>,<ea781ccc-c29e-894e-c54a-f44ea349edca@huaweicloud.com>
+In-Reply-To: <ea781ccc-c29e-894e-c54a-f44ea349edca@huaweicloud.com>
+Accept-Language: en-AS, zh-CN, en-US
+Content-Language: aa
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH wireless] wifi: ath10k: Fix an error code problem in
- ath10k_dbg_sta_write_peer_debug_trigger()
-Content-Language: en-US
-To: Jeff Johnson <quic_jjohnson@quicinc.com>, kvalo@kernel.org,
- jjohnson@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
- morbo@google.com, justinstitt@google.com
-Cc: c_mkenna@qti.qualcomm.com, linux-wireless@vger.kernel.org,
- ath10k@lists.infradead.org, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From: Su Hui <suhui@nfschina.com>
-In-Reply-To: <a4c2cb8c-dd80-457f-82b5-2eb58a9b55b5@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-On 2024/4/19 23:09, Jeff Johnson wrote:
-> On 4/17/2024 1:17 AM, Su Hui wrote:
->>   	u8 peer_debug_trigger;
->> -	int ret;
->> +	int ret = 0;
-> this is unnecessary since this will be written in all paths that lead to the
-> return that reads it
-Yes, this is my fault. I will remove this in v2 patch.
->>   
->>   	if (kstrtou8_from_user(user_buf, count, 0, &peer_debug_trigger))
->>   		return -EINVAL;
->> @@ -432,14 +432,12 @@ ath10k_dbg_sta_write_peer_debug_trigger(struct file *file,
->>   
->>   	ret = ath10k_wmi_peer_set_param(ar, arsta->arvif->vdev_id, sta->addr,
->>   					ar->wmi.peer_param->debug, peer_debug_trigger);
->> -	if (ret) {
->> +	if (ret)
->>   		ath10k_warn(ar, "failed to set param to trigger peer tid logs for station ret: %d\n",
->>   			    ret);
->> -		goto out;
->> -	}
->>   out:
->>   	mutex_unlock(&ar->conf_mutex);
->> -	return count;
->> +	return ret ?: count;
->>   }
->>   
->>   static const struct file_operations fops_peer_debug_trigger = {
-> I'd suggest as an alternate solution that this function is a good candidate
-> for the the cleanup.h functionality. By scoping the mutex_lock() you can
-> simply return at each error location, and remove the explicit mutex_unlock().
-
-like guard(mutex)(&ar->conf_mutex)?
-
-Maybe I can send a separate patch for this,  because there are more than 
-one candidates
-
-for the cleanup.h functionality.
-
-> But I'd accept this with the initializer change removed as well since I don't
-> think ath10k has any cleanup.h usages yet.
-
-I will send v2 patch soon , thanks for your reply!
-
-Su Hui
-
-
+SGksDQoNCj4+IFRlc3Qgc2NyaXBzOg0KPj4gY2dwYXRoPS9zeXMvZnMvY2dyb3VwL2Jsa2lvL3Rl
+c3QwDQo+PiBta2RpciAtcCAkY2dwYXRoDQo+PiBlY2hvICI4OjAgMTA0ODU3NjAiID4gJGNncGF0
+aC9ibGtpby50aHJvdHRsZS53cml0ZV9icHNfZGV2aWNlDQo+PiBlY2hvICI4OjE2IDEwMDAwMCIg
+PiAkY2dwYXRoL2Jsa2lvLnRocm90dGxlLndyaXRlX2lvcHNfZGV2aWNlDQoNCj7CoFdoYXQ/IDg6
+MCBhbmQgODoxNj8NCg0KDQpNeSBiYWQswqBJIG1hZGUgYSB0eXBvcyBoZXJlLiBJdCBzaG91bGQg
+YmUgYWxsIDg6MCBvciA4OjE2LsKgDQpXaGF0IEkgd2FudCB0byBkbyBoZXJlIHdhcyB0byBzZXQg
+YW4gZWFzeSB0byByZWFjaMKgdmFsdWXCoHRvIEJQU19MSU1JVCAoMTBNL3MgaW4gdGhpcyBleGFt
+cGxlKcKgYW5kwqBhbiB1bmFibGUgdG8gcmVhY2jCoHZhbHVlIHRvIElPUFNfTElNSVQgKDEwMDAw
+MCBpbiB0aGlzIGV4YW1wbGUpLg0KDQoNClVuZGVyIHRoaXMgc2V0dGluZywgdGhlIGlvc3RhdCBz
+aG93cyB0aGF0IHRoZSBicHMgaXMgZmFyIGxlc3MgdGhhbiAxME0vcyBhbmQgc29tZXRpbWVzIGlz
+wqBmYXIgbGFyZ2VyIHRoYW4gMTBNL3MuDQoNCg0KT25jZSBJIGNhbmNlbCB0aGUgSU9QU19MSU1J
+VCwgaS5lLizCoGVjaG8gMCB0byB0aGXCoHdyaXRlX2lvcHNfZGV2aWNlLCB0aGUgYnBzIHN0YWJp
+bGl6ZXMgYXQgYXJvdW5kIDEwTS9zLg0KDQoNClRoZSByb290IGNhdXNlIG9mIHRoaXMgaXMgdGhh
+dMKgdGhlIHNwbGl0IGJpbyB3aWxsIGJlIHRocm90dGxlZCBhZ2FpbiBldmVuIHRob3VnaCBhIHRn
+IGlzIHVuZGVywqB0aGUgSU9QU19MSU1JVMKgd2hlbsKgdGhlIHRnJ3PCoHNxLT5xdWV1ZSBpcyBu
+b3QgZW1wdHkuDQoNCg0KTGV0IG1lIGV4cGxhaW4gaXQgd2l0aCB0aGUgY29kZS4NCg0KDQpJZiB3
+ZSBvbmx5IHNldCBCUFNfTElNSVQgYW5kIHRoZSBiaW8gaXMgZmxhZ2dlZCB3aXRowqBCSU9fQlBT
+X1RIUk9UVExFRCwgdGhlwqBibGtfc2hvdWxkX3Rocm90bCgpIHdpbGwgYWx3YXlzIHJldHVybiBm
+YWxzZSBhbmQgdGhlwqBfX2Jsa190aHJvdGxfYmlvKCkgd2lsbCBub3QgYmUgY2FsbGVkLsKgIFNv
+LCB0aGUgYmlvwqBmbGFnZ2VkIHdpdGjCoEJJT19CUFNfVEhST1RUTEVEIHdpbGwgbm90IGJlIHRo
+cm90dGxlZCBpbiBhbnkgY2FzZXMuDQoNCg0KSG93ZXZlciwgaWYgd2Ugc2V0IGJvdGggQlBTX0xJ
+TUlUIGFuZCBJT1BTX0xJTUlULCB0aGXCoGJsa19zaG91bGRfdGhyb3RsKCkgd2lsbCBhbHdheXPC
+oHJldHVybiB0cnVlwqBubyBtYXR0ZXIgd2hhdCB0aGUgdmFsdWUgdGhlwqBJT1BTX0xJTUlUIGlz
+wqBiZWNhdXNlwqB0Zy0+aGFzX3J1bGVzX2lvcHNbcnddIGlzIGFsd2F5cyB0cnVlLg0KDQoNCkFm
+dGVyIHRoYXQsIHRoZSBiaW8gd2lsbCBiZSBwYXNzZWQgdG/CoF9fYmxrX3Rocm90bF9iaW8oKS4N
+Cg0KDQpJZiB0aGUgdGcncyBzcS0+cXVldWUgaXMgZW1wdHksIGJsa3Rocm90dGxlIHdpbGwgY2Fs
+Y3VsYXRlIGlmIHRoZSB0ZyBpcyBhYm92ZSBsaW1pdCB3aXRoIHRoZSBiaW8uwqANClNpbmNlIHRo
+ZSBiaW8gaXMgZmxhZ2dlZCB3aXRowqBCSU9fQlBTX1RIUk9UVExFRCwgYmxrdGhyb3R0bGUgd2ls
+bCBvbmx5IGNhbGN1bGF0ZSB0aGUgSU9QUyBsaW1pdCBmb3IgdGhlIHRnLg0KSWYgdGcgaXMgdW5k
+ZXLCoGlvcHPCoGxpbWl0IHdpdGggdGhlIGJpbywgdGhlIGJpbyB3aWxsIG5vdCBiZSB0aHJvdHRs
+ZWQuwqANCk90aGVyd2lzZSwgdGhlIGJpb8Kgd2lsbCBiZcKgdGhyb3R0bGVkIGJlY2F1c2Ugb2Yg
+dGhlwqBpb3BzwqBsaW1pdC4NCg0KDQpIb3dldmVyLMKgSWYgdGhlIHRnJ3Mgc3EtPnF1ZXVlIGlz
+IG5vdCBlbXB0eSwgdGhlIGJpbyB3aWxsIGJlIHRocm90dGxlZCBkaXJlY3RseSB3aXRob3V0IGFu
+eSBpb3BzIG9yIGJwcyBsaW1pdGF0aW9uIGNhbGN1bGF0aW9ucy4NCg0KDQpUaGXCoCByZWxhdGVk
+wqBjb2RlIHNuaXBwZXQgaXMgOg0KDQpib29sIF9fYmxrX3Rocm90bF9iaW8oc3RydWN0IGJpbyAq
+YmlvKSANCnsNCi4uLi4uLi4NCg0Kd2hpbGUgKHRydWUpIHsNCi4uLi4uLg0KwqAgwqAgLyogdGhy
+b3RsIGlzIEZJRk8gLSBpZiBiaW9zIGFyZSBhbHJlYWR5IHF1ZXVlZCwgc2hvdWxkIHF1ZXVlICov
+DQrCoCDCoCBpZiAoc3EtPm5yX3F1ZXVlZFtyd10pDQrCoCDCoCDCoCDCoCBicmVhazvCoCAvL8Kg
+LS0tLS0+wqDCoHRoZSBiaW8gd2lsbCBiZcKgdGhyb3R0bGVkIGluIGFueSBjYXNlcw0KDQrCoCDC
+oCAvKiBpZiBhYm92ZSBsaW1pdHMsIGJyZWFrIHRvIHF1ZXVlICovDQrCoCDCoCBpZiAoIXRnX21h
+eV9kaXNwYXRjaCh0ZywgYmlvLCBOVUxMKSkgeyAvLyAtLS0tPiBkbyBpb3BzIGFuZCBicHMgY2Fs
+Y3VsYXRpb25zDQrCoCDCoCDCoCDCoCBicmVhazvCoCAvL8KgLS0tPsKgwqB0aGUgYmlvIHdpbGwg
+YmXCoHRocm90dGxlZCBpZiB0aGUgdGcgaXPCoGFib3ZlIGJwcyBvciBpb3BzIGxpbWl0cw0KDQou
+Li4uLi4NCsKgIMKgwqANCsKgIMKgIGlmICghdGcpIHvCoA0KwqAgwqAgwqAgwqAgYmlvX3NldF9m
+bGFnKGJpbywgQklPX0JQU19USFJPVFRMRUQpOw0KwqAgwqAgwqAgwqAgZ290byBvdXRfdW5sb2Nr
+OyAvL8KgLS0tLT4gcGFzcywgbm/CoHRocm90dGxlDQrCoCDCoCB9DQoNCi4uLi4uLi4NCn0NCn0N
+Cg0KDQpTbyBldmVuIHRoZSBiaW8gaXMgZmxhZ2dlZCB3aXRowqBCSU9fQlBTX1RIUk9UVExFRCBh
+bmQgdGhlIHRnIGlzIGZhciBtb3JlIGJlaGluZCBJT1BTX0xJTUlULCB0aGUgYmlvIHdpbGwgYmUg
+dGhyb3R0bGVkIGlmIHRoZSBzcS0+cXVldWUgaXMgbm90IGVtcHR5Lg0KDQoNClRoaXMgcHJvYmxl
+bSBjYW4gYmUgcmVwcm9kdWNlZCBieSBydW5uaW5nIGZvbGxvd2luZyBzY3JpcHRzIGFuZCBjb21w
+YXJpbmcgdGhlIG91dHB1dHMgb2YgaW9zdGF0Lg0KMSnCoA0KUE5VTT01MCAjIGxhcmdlIGVub3Vn
+aCB0byBzYXR1cmF0ZSB0aGUgc3EtPnF1ZXVlDQoNCmNncGF0aD0vc3lzL2ZzL2Nncm91cC9ibGtp
+by90ZXN0MA0KbWtkaXIgLXAgJGNncGF0aA0KZWNobyAiODowIDEwNDg1NzYwIiA+ICRjZ3BhdGgv
+YmxraW8udGhyb3R0bGUud3JpdGVfYnBzX2RldmljZQ0KZWNobyAiODowIDEwMDAwMCIgPiAkY2dw
+YXRoL2Jsa2lvLnRocm90dGxlLndyaXRlX2lvcHNfZGV2aWNlwqAgI8KgbGFyZ2UgZW5vdWdoIHRv
+IG1ha2UgaXQgdW5yZWFjaGFibGUNCmZvciAoKGk9MDtpPDskUFVNO8KgaSsrKSk7ZG8NCsKgIGZp
+byAtcnc9d3JpdGUgLWRpcmVjdD0xIC1icz00TSAtaW9kZXB0aD04IC1zaXplPTIwME0gLW51bWpv
+YnM9MSBcDQotdGltZV9iYXNlZD0xIC1ydW50aW1lPTMwwqAgLW5hbWU9dGVzdHRfJGkgLWZpbGVu
+YW1lPXRlc3RmXyRpID4gL2Rldi9udWxsICYNCsKgIGVjaG8gJCEgPiAkY2dwYXRoL3Rhc2tzDQpk
+b25lDQoNCjIpDQoNClBOVU09NTAgIyBsYXJnZSBlbm91Z2ggdG8gc2F0dXJhdGUgdGhlIHNxLT5x
+dWV1ZQ0KDQpjZ3BhdGg9L3N5cy9mcy9jZ3JvdXAvYmxraW8vdGVzdDANCm1rZGlyIC1wICRjZ3Bh
+dGgNCmVjaG8gIjg6MCAxMDQ4NTc2MCIgPiAkY2dwYXRoL2Jsa2lvLnRocm90dGxlLndyaXRlX2Jw
+c19kZXZpY2UNCmVjaG8gIjg6MMKgMCIgPiAkY2dwYXRoL2Jsa2lvLnRocm90dGxlLndyaXRlX2lv
+cHNfZGV2aWNlwqAgI8KgZG8gbm90IHNldCBpb3BzIGxpbWl0DQpmb3IgKChpPTA7aTw7JFBVTTvC
+oGkrKykpO2RvDQrCoCBmaW8gLXJ3PXdyaXRlIC1kaXJlY3Q9MSAtYnM9NE0gLWlvZGVwdGg9OCAt
+c2l6ZT0yMDBNIC1udW1qb2JzPTEgXA0KLXRpbWVfYmFzZWQ9MSAtcnVudGltZT0zMMKgIC1uYW1l
+PXRlc3R0XyRpIC1maWxlbmFtZT10ZXN0Zl8kaSA+IC9kZXYvbnVsbCAmDQrCoCBlY2hvICQhID4g
+JGNncGF0aC90YXNrcw0KZG9uZQ0KDQo+PiBTaWduZWQtb2ZmLWJ5OiB6aG91dGFpeXUgPHpob3V0
+YWl5dUBrdWFpc2hvdS5jb20+DQo+PiAtLS0NCj4+wqDCoCBibG9jay9ibGstdGhyb3R0bGUuYyB8
+IDUgKysrLS0NCj4+wqDCoCAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0
+aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9ibG9jay9ibGstdGhyb3R0bGUuYyBiL2Jsb2Nr
+L2Jsay10aHJvdHRsZS5jDQo+PiBpbmRleCBmNDg1MGE2Li40OTljMDA2IDEwMDY0NA0KPj4gLS0t
+IGEvYmxvY2svYmxrLXRocm90dGxlLmMNCj4+ICsrKyBiL2Jsb2NrL2Jsay10aHJvdHRsZS5jDQo+
+PiBAQCAtOTEzLDcgKzkxMyw4IEBAIHN0YXRpYyBib29sIHRnX21heV9kaXNwYXRjaChzdHJ1Y3Qg
+dGhyb3RsX2dycCAqdGcsIHN0cnVjdCBiaW8gKmJpbywNCj4+wqDCoMKgwqDCoMKgwqAgKiBxdWV1
+ZWQuDQo+PsKgwqDCoMKgwqDCoMKgICovDQo+PsKgwqDCoMKgwqDCoCBCVUdfT04odGctPnNlcnZp
+Y2VfcXVldWUubnJfcXVldWVkW3J3XSAmJg0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYmlv
+ICE9IHRocm90bF9wZWVrX3F1ZXVlZCgmdGctPnNlcnZpY2VfcXVldWUucXVldWVkW3J3XSkpOw0K
+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYmlvICE9IHRocm90bF9wZWVrX3F1ZXVlZCgmdGct
+PnNlcnZpY2VfcXVldWUucXVldWVkW3J3XSkgJiYNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ICFiaW9fZmxhZ2dlZChiaW8sIEJJT19CUFNfVEhST1RUTEVEKSk7DQo+Pg0KPj7CoMKgwqDCoMKg
+wqAgLyogSWYgdGctPmJwcyA9IC0xLCB0aGVuIEJXIGlzIHVubGltaXRlZCAqLw0KPj7CoMKgwqDC
+oMKgwqAgaWYgKChicHNfbGltaXQgPT0gVTY0X01BWCAmJiBpb3BzX2xpbWl0ID09IFVJTlRfTUFY
+KSB8fA0KPj4gQEAgLTIyMDEsNyArMjIwMiw3IEBAIGJvb2wgX19ibGtfdGhyb3RsX2JpbyhzdHJ1
+Y3QgYmlvICpiaW8pDQo+PsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdGhyb3RsX2Rvd25n
+cmFkZV9jaGVjayh0Zyk7DQo+PsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdGhyb3RsX3Vw
+Z3JhZGVfY2hlY2sodGcpOw0KPj7CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8qIHRocm90
+bCBpcyBGSUZPIC0gaWYgYmlvcyBhcmUgYWxyZWFkeSBxdWV1ZWQsIHNob3VsZCBxdWV1ZSAqLw0K
+Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoc3EtPm5yX3F1ZXVlZFtyd10pDQo+PiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChzcS0+bnJfcXVldWVkW3J3XSAmJiAhYmlvX2Zs
+YWdnZWQoYmlvLCBCSU9fQlBTX1RIUk9UVExFRCkpDQoNCj7CoE5vLCB0aGlzIGNoYW5nZSBpcyB3
+cm9uZy4gU3BsaXQgSU8gd2lsbCBub3QgYmUgdGhyb3R0bGVkIGJ5IGlvcHMgbGltaXQNCmFueW1v
+cmUuDQoNCkFmdGVyIHRoaXMgY2hhbmdlLCB0aGUgc3BsaXQgSU8gd2lsbCBiZSB0aHJvdHRsZWQg
+YnkgaW9wcyBsaW1pdCBhZ2FpbsKgaWYgaXQgcmVhY2hlcyBhIHRnJ3MgaW9wcyBsaW1pdCBhbmQg
+d2lsbCBub3QgYmUgdGhyb3R0bGVkIGluIGFueSBjYXNlcyBpZiB0aGUgc3EtPnF1ZXVlIGlzIG5v
+dCBlbXB0eS4=
 
