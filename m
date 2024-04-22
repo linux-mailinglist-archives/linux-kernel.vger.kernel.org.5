@@ -1,190 +1,187 @@
-Return-Path: <linux-kernel+bounces-153240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1DD08ACB46
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:54:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8EF78ACB48
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:54:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3585B1F215D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:54:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A916AB22503
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D0B1448E5;
-	Mon, 22 Apr 2024 10:53:59 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D243A1465A4;
+	Mon, 22 Apr 2024 10:54:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="m5YXdNGM"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E63A482C1
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3607A145FFF
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713783239; cv=none; b=RwPhAra6+AgKHmpvSRLt10psjgJF1X4tlvMV2+I18UWzsq/dqrLz/zhqHqE+k6JR+mrfYSMKJw3b191l0g5QoPkdWs3Hq+Hhm+ZteanzkMX/7gdrdiXfGu6spgqqRk9rhl4hj3+RfH5Y1QzGt9+qHSid5ooYqeYKglSLnXGWMqY=
+	t=1713783243; cv=none; b=UXD6Q3gwPzEwPipRccDhZ+2R656da97hYt4ko3nDBfTFgbxEQ2vJ5oWHAkPYoE+9Az3qnoJBU1tfu+QT8+ZlbcYYu0zm4zvCUCbt42v5bjJfpCjQuNvZKDs524iTv++HnEAhB7TIHXjZYTxixiNwT6Vi9iWRF8YgzQal/xLNGdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713783239; c=relaxed/simple;
-	bh=vNKjdmuiOzLKbsLCCEUPR4Vbo0Q1bX4ZBAFYmy8vwfI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nxXHeo1wvDnjjh5FkORbUZReBiMG8uAvDdG5FMlG6X2j+iXIGMbogb2ZpEJSJ0t1d0pQs6LO3cYA+/HV4G86iRKHRfBSg/H0aygnJZr8NGEJoJy02RUzRJalujUVSAfH/Or0ny/cICYuZ9Yy4PI5N/gVnLBE4vPFMjYf0v7v2HY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <sha@pengutronix.de>)
-	id 1ryrIp-00007D-G9; Mon, 22 Apr 2024 12:53:39 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <sha@pengutronix.de>)
-	id 1ryrIo-00DftO-7q; Mon, 22 Apr 2024 12:53:38 +0200
-Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <sha@pengutronix.de>)
-	id 1ryrIo-0086s5-0V;
-	Mon, 22 Apr 2024 12:53:38 +0200
-Date: Mon, 22 Apr 2024 12:53:38 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mtd: nand: mxc_nand: disable subpage reads
-Message-ID: <ZiZBsjtDDhDe7x8f@pengutronix.de>
-References: <20240417-mtd-nand-mxc-nand-exec-op-v1-0-d12564fe54e9@pengutronix.de>
- <20240417-mtd-nand-mxc-nand-exec-op-v1-4-d12564fe54e9@pengutronix.de>
- <ZiDCKGlG4MZ23Tqo@pengutronix.de>
- <20240418113244.6e535d3f@xps-13>
- <ZiEHUz3wicDJscGP@pengutronix.de>
- <20240419114507.5d25d8cd@xps-13>
+	s=arc-20240116; t=1713783243; c=relaxed/simple;
+	bh=qE5Vwmtp9Qv3JNLaDibUL1/hbZOmTstWoD1DhaLuYLI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LgpSekeyOxP8Ex2Vvgp+xMaUBErf2rbKeGDfWUjqzklMUFvgDgDzBFpXpYQFlZxTRCLT74kk13/+b9MKQvOWp4UvEm5Nkuet5AoWKSxPd/M0ba4y2sDuril9zEl45gJj/j3piAXkcuv0NGj2y4KWXXTVACY3VUKtcB4Cp2uIjLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=m5YXdNGM; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-343b7c015a8so3623411f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 03:54:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1713783239; x=1714388039; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kyXgtdlSsX9JbCqrqT1KpAPo69/BzSus4iMQG/5X7PE=;
+        b=m5YXdNGM8jOgkhQiDFF/wFnN3bFfOxHqz+15kBreooLUytilfyoAzjd79KONgFkzux
+         dHW9EybhBm1v14ECaydUF2WareSnWNbRZZn3nST/ZLDJwv7SSAQqd2kw0ueCXU0O3ctZ
+         7n4Ev6kJkh5IG3oLpF73AJaLQHehZBGZId8Yzfg7HxAtxOVOhrVC8VDBp1qkQqcTmgyd
+         PAi4p2TqmREgM2UwFbT0uXu0ikcw9TYI0ttmpnuPeZuM12/cSB8Clfyq/OX73X3phhRe
+         a/BlKZ8UbZoPo8/CGFm6pzqWd+XkjM0tAGakeKWEBVoCJ1PCsurp0PPJAZ4mc/6JglZT
+         hSBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713783239; x=1714388039;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kyXgtdlSsX9JbCqrqT1KpAPo69/BzSus4iMQG/5X7PE=;
+        b=HIN/r8JIeGqJM4YJcpXaQafmdbwQ4pYfJe5lj9pjpS/Adqg/f1ApSano6UxWBQES/h
+         W3jU0P62Xbs9C6oV+Ku8fTdzyDeQH2G5uubVWU0daDc2BNhI8Yd6NaF5D/rARMvuI1Fu
+         bbwwMun5S0b5LTVJd5JpNkaZpgYlOWu5U1cXLkg6RBnSt0/inWhGhK4LR8vzGib29MOB
+         RCChPqARKpyAOOfPC5hMptshBqQapCZVmU/wNcfJD069szi0bW3JyvD2UxjGxjPkvVKw
+         FyEcSxIjkqJzwBwhF1C4Gqq7DklZehBCWneOBUWF4fDhzTSugImW6jQ1mG8MPFnIyTbE
+         iDVw==
+X-Forwarded-Encrypted: i=1; AJvYcCXgyzmVGtPDXSZxbxEXIeg2eP04Z2bHUUJ1gOVKRsrMaMJp7xaukls8qQ1cwsfxk2FFDPJSqT7t23+6JpJ71W/f5Yqad5u2leIqD8QH
+X-Gm-Message-State: AOJu0Yyw1YMqWPg2EGEYLiKDfw5TfqdIoZwV0Aw7UdEFJcLT9+b6+M8a
+	mCktiN4mC2grLRlrLAf6Kt0oONhhTSikkP9fFtprw+r/EwWNzUH0jpq5HUic+UA=
+X-Google-Smtp-Source: AGHT+IE2HFhfOY3a7coK7WBeBu9s0c6ROdImq1nPtwwG99XgO1IXvZsqHnwGsmXXQujjgOBA5sQxiQ==
+X-Received: by 2002:a5d:56ce:0:b0:349:8ba8:e26d with SMTP id m14-20020a5d56ce000000b003498ba8e26dmr6552380wrw.13.1713783239258;
+        Mon, 22 Apr 2024 03:53:59 -0700 (PDT)
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.53])
+        by smtp.gmail.com with ESMTPSA id v13-20020a05600c444d00b0041a3f700ccesm4321037wmn.40.2024.04.22.03.53.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 03:53:58 -0700 (PDT)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: geert+renesas@glider.be,
+	mturquette@baylibre.com,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	magnus.damm@gmail.com,
+	ulf.hansson@linaro.org
+Cc: linux-renesas-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH v4 0/8] clk: renesas: rzg2l: Add support for power domains
+Date: Mon, 22 Apr 2024 13:53:47 +0300
+Message-Id: <20240422105355.1622177-1-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419114507.5d25d8cd@xps-13>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 19, 2024 at 11:46:57AM +0200, Miquel Raynal wrote:
-> Hi Sascha,
-> 
-> s.hauer@pengutronix.de wrote on Thu, 18 Apr 2024 13:43:15 +0200:
-> 
-> > On Thu, Apr 18, 2024 at 11:32:44AM +0200, Miquel Raynal wrote:
-> > > Hi Sascha,
-> > > 
-> > > s.hauer@pengutronix.de wrote on Thu, 18 Apr 2024 08:48:08 +0200:
-> > >   
-> > > > On Wed, Apr 17, 2024 at 09:13:31AM +0200, Sascha Hauer wrote:  
-> > > > > The NAND core enabled subpage reads when a largepage NAND is used with
-> > > > > SOFT_ECC. The i.MX NAND controller doesn't support subpage reads, so
-> > > > > clear the flag again.
-> > > > > 
-> > > > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > > > > ---
-> > > > >  drivers/mtd/nand/raw/mxc_nand.c | 2 ++
-> > > > >  1 file changed, 2 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-> > > > > index f44c130dca18d..19b46210bd194 100644
-> > > > > --- a/drivers/mtd/nand/raw/mxc_nand.c
-> > > > > +++ b/drivers/mtd/nand/raw/mxc_nand.c
-> > > > > @@ -1667,6 +1667,8 @@ static int mxcnd_probe(struct platform_device *pdev)
-> > > > >  	if (err)
-> > > > >  		goto escan;
-> > > > >  
-> > > > > +	this->options &= ~NAND_SUBPAGE_READ;
-> > > > > +    
-> > > > 
-> > > > Nah, it doesn't work like this. It turns out the BBT is read using
-> > > > subpage reads before we can disable them here.
-> > > >
-> > > > This is the code in nand_scan_tail() we stumble upon:
-> > > > 
-> > > > 	/* Large page NAND with SOFT_ECC should support subpage reads */
-> > > > 	switch (ecc->engine_type) {
-> > > > 	case NAND_ECC_ENGINE_TYPE_SOFT:
-> > > > 		if (chip->page_shift > 9)
-> > > > 			chip->options |= NAND_SUBPAGE_READ;
-> > > > 		break;
-> > > > 
-> > > > 	default:
-> > > > 		break;
-> > > > 	}
-> > > > 
-> > > > So the code assumes subpage reads are ok when SOFT_ECC is in use, which
-> > > > in my case is not true. I guess some drivers depend on the
-> > > > NAND_SUBPAGE_READ bit magically be set, so simply removing this code is
-> > > > likely not an option.  Any ideas what to do?  
-> > > 
-> > > Can you elaborate why subpage reads are not an option in your
-> > > situation? While subpage writes depend on chip capabilities, reads
-> > > however should always work: it's just the controller selecting the
-> > > column where to start and then reading less data than it could from the
-> > > NAND cache. It's a very basic NAND controller feature, and I remember
-> > > this was working on eg. an i.MX27.  
-> > 
-> > On the i.MX27 reading a full 2k page means triggering one read operation
-> > per 512 bytes in the NAND controller, so it would be possible to read
-> > subpages by triggering only one read operation instead of four in a row.
-> > 
-> > The newer SoCs like i.MX25 always read a full page with a single read
-> > operation. We could likely read subpages by temporarily configuring the
-> > controller for a 512b page size NAND.
-> > 
-> > I just realized the real problem comes with reading the OOB data. With
-> > software BCH the NAND layer hardcodes the read_subpage hook to
-> > nand_read_subpage() which uses nand_change_read_column_op() to read the
-> > OOB data. This uses NAND_CMD_RNDOUT and I have now idea if/how this can
-> > be implemented in the i.MX NAND driver. Right now the controller indeed
-> > reads some data and then the SRAM buffer really contains part of the
-> > desired OOB data, but also part of the user data.
-> 
-> NAND_CMD_RNDOUT is impossible to avoid,
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Apparently it has been possible until now. NAND_CMD_RNDOUT has never
-been used with this driver and it also doesn't work like expected.
+Hi,
 
-One problem is that the read_page_raw() and write_page_raw() are not
-implemented like supposed by the NAND layer. The i.MX NAND controller
-uses a syndrome type ECC layout, meaning that the user data and OOB data
-is interleaved, so the raw r/w functions should normally pass/expect the
-page data in interleaved format. Unfortunately the raw functions are not
-implemented like that, instead they detangle the data themselves. This
-also means that setting the cursor using NAND_CMD_RNDOUT will not put
-the cursor at a meaningful place, as the raw functions are not really
-exect/return the raw page data.
+Series adds support for power domains on rzg2l driver.
 
-This could be fixed, but the raw operations are also exposed to
-userspace, so fixing these would mean that we might break some userspace
-applications.
+RZ/G2L kind of devices support a functionality called MSTOP (module
+stop/standby). According to hardware manual the module could be switch
+to standby after its clocks are disabled. The reverse order of operation
+should be done when enabling a module (get the module out of standby,
+enable its clocks etc).
 
-The other point is that with using software BCH ecc the NAND layer
-requests me to read 7 bytes at offset 0x824. This can't be really
-implemented in the i.MX NAND driver. It only allows us to read a full
-512 byte subpage, so whenever the NAND layer requests me to read a few
-bytes the controller will always transfer 512 bytes from which I then
-ignore most of it (and possibly trigger another 512 bytes transfer when
-reading the ECC for the next subpage).
+In [1] the MSTOP settings were implemented by adding code in driver
+to attach the MSTOP state to the IP clocks. But it has been proposed
+to implement it as power domain. The result is this series.
 
-I think these issues can all be handled somehow, but this comes at a
-rather high price, both in effort and the risk of breaking userspace.
-It would be far easier to tell the NAND layer not to do subpage reads.
+The DT bindings were updated with power domain IDs (plain integers
+that matches the DT with driver data structures). The current DT
+bindings were updated with module IDs for the modules listed in tables
+with name "Registers for Module Standby Mode" (see HW manual) exception
+being RZ/G3S where, due to the power down functionality, the DDR,
+TZCDDR, OTFDE_DDR were also added.
 
-Sascha
+Domain IDs were added to all SoC specific bindings.
+
+Thank you,
+Claudiu Beznea 
+
+Changes in v4:
+- dropped the pwrdn functionality until it is better understanded
+- dropped patch "clk: renesas: rzg2l-cpg: Add suspend/resume
+  support for power domains" from v3; this will be replaced
+  by propertly calling device_set_wakup_path() in serial console
+  driver
+- instantiated the watchdog domain in r8a08g045 clock driver; this
+  allow applying r9a08g045 clock patch w/o affecting watchdog and later,
+  after all good with watchdog patches series at [2], only patch
+  "arm64: dts: renesas: r9a08g045: Update #power-domain-cells = <1>"
+  will need to be applied
+
+Changes in v3:
+- collected tags
+- dinamically detect if a SCIF is serial console and populate
+  pd->suspend_check
+- dropped patch 09/10 from v2
+
+Changes in v2:
+- addressed review comments
+- dropped:
+    - dt-bindings: clock: r9a09g011-cpg: Add always-on power domain IDs
+    - clk: renesas: r9a07g043: Add initial support for power domains
+    - clk: renesas: r9a07g044: Add initial support for power domains
+    - clk: renesas: r9a09g011: Add initial support for power domains
+    - clk: renesas: r9a09g011: Add initial support for power domains
+    - arm64: dts: renesas: r9a07g043: Update #power-domain-cells = <1>
+    - arm64: dts: renesas: r9a07g044: Update #power-domain-cells = <1>
+    - arm64: dts: renesas: r9a07g054: Update #power-domain-cells = <1>
+    - arm64: dts: renesas: r9a09g011: Update #power-domain-cells = <1>
+  as suggested in the review process
+- dropped "arm64: dts: renesas: rzg3s-smarc-som: Guard the ethernet IRQ
+  GPIOs with proper flags" patch as it was integrated
+- added suspend to RAM support
+- collected tag
+
+[1] https://lore.kernel.org/all/20231120070024.4079344-4-claudiu.beznea.uj@bp.renesas.com/
+[2] https://lore.kernel.org/all/20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com/
+
+Claudiu Beznea (8):
+  dt-bindings: clock: r9a07g043-cpg: Add power domain IDs
+  dt-bindings: clock: r9a07g044-cpg: Add power domain IDs
+  dt-bindings: clock: r9a07g054-cpg: Add power domain IDs
+  dt-bindings: clock: r9a08g045-cpg: Add power domain IDs
+  dt-bindings: clock: renesas,rzg2l-cpg: Update #power-domain-cells =
+    <1> for RZ/G3S
+  clk: renesas: rzg2l: Extend power domain support
+  clk: renesas: r9a08g045: Add support for power domains
+  arm64: dts: renesas: r9a08g045: Update #power-domain-cells = <1>
+
+ .../bindings/clock/renesas,rzg2l-cpg.yaml     |  18 +-
+ arch/arm64/boot/dts/renesas/r9a08g045.dtsi    |  20 +-
+ drivers/clk/renesas/r9a08g045-cpg.c           |  41 ++++
+ drivers/clk/renesas/rzg2l-cpg.c               | 199 ++++++++++++++++--
+ drivers/clk/renesas/rzg2l-cpg.h               |  67 ++++++
+ include/dt-bindings/clock/r9a07g043-cpg.h     |  52 +++++
+ include/dt-bindings/clock/r9a07g044-cpg.h     |  58 +++++
+ include/dt-bindings/clock/r9a07g054-cpg.h     |  58 +++++
+ include/dt-bindings/clock/r9a08g045-cpg.h     |  70 ++++++
+ 9 files changed, 558 insertions(+), 25 deletions(-)
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.39.2
+
 
