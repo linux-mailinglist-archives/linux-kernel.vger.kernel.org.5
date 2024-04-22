@@ -1,116 +1,204 @@
-Return-Path: <linux-kernel+bounces-154000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FA3F8AD5FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:40:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4EF18AD5FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:40:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51DD21C20C9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:40:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AA07282D9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26EF51BC2A;
-	Mon, 22 Apr 2024 20:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 400771C6B2;
+	Mon, 22 Apr 2024 20:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CF7UODGd"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q/a8o4xX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F24AD1B949
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:40:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73961B27D;
+	Mon, 22 Apr 2024 20:40:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713818410; cv=none; b=sarHfk4yLLSVFoCtHdwGlalWVKyyw7Wt1s7bElp/2STT4inX94xpuGPKHuN7ZCVAD3aOHgV1mka6RkelWptCHrJbiGO/O7IoRAAoPdKhuJTcQ0Nm7C1dNZVtlPbjhJuMS+3Qrm8+7GGJJgJHdPWuZcwgQCmAzVGk9TU9f0twQC0=
+	t=1713818412; cv=none; b=LaRHG6W1+fNuwfPaNBndyelQ1LqxICVedFyaPYphE3a5IF/cU/TymelMTbDB5S/T4u5TRPecHbFUF8F6EDK1zz2qNe2nEOPqHiLb7DoWQijK0XH1DrEW3pVNg3UDCpjhByHP9eTQiGZBR2d2klbST1WdvPAfUdrD/U9C5jHGY40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713818410; c=relaxed/simple;
-	bh=s9Rtmcw81GSG9zCbjUh61wEXkhKo/qPRbnRkT6JvNhg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CGHXLuUWZmVp9rdu3GPQ0xDyUBq54Q4TXaWGQj+fIT0VAFXqzCcAIH+Wqush/vFsZnYYNQO+UWRDFKhC09/ELOBEV2N9xkXTBZ+PGsgYwMagLMnwJZFQdYFfn1H0MoDLdHSgswEyjSEVMEWw6JYyKFwBnicIlcybt+xcKkKPvx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CF7UODGd; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-344047ac7e4so3458822f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713818407; x=1714423207; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s9Rtmcw81GSG9zCbjUh61wEXkhKo/qPRbnRkT6JvNhg=;
-        b=CF7UODGdJq4G8nS+2bbjoW8HN6gtIRyIF17nwbgAhfri55vggwO2ykyTDUYDNu6bYc
-         KbShJRwfgPxXqF4/lZjWYDvpUr5N38IJ5GWW7toYQVb+oCDqmLsdLHFhea+fZO6vo2mF
-         LG0U6eLLJRu8bZlgcuahu2AJ7K0PQPUeRE9IWjByPEF/1MgyCtOrWquC4ESl++4bIrXb
-         ORNoXP53dqi2Q5TIhvLaEKsvboyBNv+tLg1LzdyUO2OhxKVCYIz5TfO1en/dhupdBgki
-         IjRSH0pvNiU+WRWyD1dndxIfMNZP25+x0Mn5PZf2H5oSJtz7QL5EvFAiyB06+aXHVDQn
-         Vm4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713818407; x=1714423207;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s9Rtmcw81GSG9zCbjUh61wEXkhKo/qPRbnRkT6JvNhg=;
-        b=G2qku8zN0KvjoQ1zFy8TtGWdVjC2OWJrpRJZL8+ZfKBYFtj5ejsFvK5wwLw8NBSKDr
-         IwJs4YUwXwsRLBFP98fZAcDCpkrLaTMKMHzd/dykVkkFpzt2DX6dfOj20DU7y8/N4b/f
-         av1hsZa6oR3G/AB/xFxSBUSlhzrmjLscU5/ytiwoVpgdk+Rl+9X9yroYQH75zauCTHxj
-         n2nzp8ZqAhEfFubfXgbcXAas+wWeLOTY+mY27smIJK1yEsqCjsrDR5ueLXn6PymkWFLD
-         tt8tCWYleo5v3T8xjpcyPIPVFCuSDfwN70+vMS59tuTucRxbeSovDcT8D5NrSmfhk+7K
-         S5YA==
-X-Forwarded-Encrypted: i=1; AJvYcCUUYsVIIsG39P0X27gBgZ3aiIKNEI2yJQm8rRzLoFM2FjjNZGDgPGfFAFBLGLERjpHWOWuVC4S63hZnuNX4xug5aCUYeke5jNwBzi46
-X-Gm-Message-State: AOJu0YwYxUrwarUhUYNc9XjqV46E2f81sALpdLjctwNwsAN20sBEEIYa
-	3d52vMdNertLrMOKjMSk7xuGrOQfjXBH9EIHO3TXYE4+/c1sKxSIN/UdDacOn8RPDLRau8Xx8oK
-	Ti/v9SGIZRQ4DJ80aq4vl25+INLnYoW3Bm69K02BrXybSLRnNWJBN
-X-Google-Smtp-Source: AGHT+IF7rFm9mITo1Vmn1L9OtqNa4/FBUTwSXrEKXV+NRexmqy2sVD4twe62Ho8ckMl9s4IIedPmaRUcauWYnCOdQWM=
-X-Received: by 2002:a5d:5985:0:b0:34a:4b4b:7f4b with SMTP id
- n5-20020a5d5985000000b0034a4b4b7f4bmr573264wri.19.1713818407006; Mon, 22 Apr
- 2024 13:40:07 -0700 (PDT)
+	s=arc-20240116; t=1713818412; c=relaxed/simple;
+	bh=B7l0/65vO7+DjY80lOHywR958KdsAp0VxS0wq8JSYD8=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=VXaK/ao9nDALEh1OcXEywBpuBrtnwlLDrd1CubxDqlIy7T/SlMjUJVATYVBT6L5APuWy7hGVW0QLILszHB3u3FsRyF1D30GeWuHd85KOLCcn5b0//uQGRqt2+bF9C/NQzJk4OGxjgwP0lFcZtJNwr+3YSlhUcuLjmp4R/RkeI0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q/a8o4xX; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713818411; x=1745354411;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=B7l0/65vO7+DjY80lOHywR958KdsAp0VxS0wq8JSYD8=;
+  b=Q/a8o4xXZBx6Y/WfbgeO4C9MZioeEKqNzF/umbT9FxRATrF++KFY00VH
+   KVUz3c8hsenyp9fI8e+YBhSr+ADat+cef8Qj6lMb9zXWN48hhXYwC72Kl
+   QhrL2BuUAYT5KXkHw+EjraF9Ysz1sUYUugbwLfmwm6EDqtJL1kgjbUn12
+   4LvshE22gxoIGbfc05jvvUfWy1NFy1pzv4ovgTponj1T9o+drbRl29iv0
+   cMDfFwZs/igD3WQ3kik2iNTq094pc9v+rVLGRlsRV6DU+HP9zlJkW6czW
+   5+tmFfm9u48F8BynEnmcduaxQF2ZEqY5ax43NLUzO8nl1qtendWlzEa3N
+   g==;
+X-CSE-ConnectionGUID: aYke8BjJRGePVDAxTygung==
+X-CSE-MsgGUID: nZuVrdMYR5iZ9fYo+hHMmw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9548813"
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="9548813"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:40:10 -0700
+X-CSE-ConnectionGUID: 9bgKImlkQS+/6twUl2Iprg==
+X-CSE-MsgGUID: bGG3c9YUR261z1tgCG1Uhg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="28804520"
+Received: from sj-4150-psse-sw-opae-dev2.sj.intel.com ([10.233.115.162])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:40:09 -0700
+Date: Mon, 22 Apr 2024 13:40:00 -0700 (PDT)
+From: matthew.gerlach@linux.intel.com
+X-X-Sender: mgerlach@sj-4150-psse-sw-opae-dev2
+To: Rob Herring <robh@kernel.org>
+cc: bhelgaas@google.com, lpieralisi@kernel.org, kw@linux.com, 
+    krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+    linux-pci@vger.kernel.org, devicetree@vger.kernel.org, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] dt-bindings: PCI: altera: Convert to YAML
+In-Reply-To: <20240422145855.GA1242711-robh@kernel.org>
+Message-ID: <alpine.DEB.2.22.394.2404221320270.442026@sj-4150-psse-sw-opae-dev2>
+References: <20240420145342.118643-1-matthew.gerlach@linux.intel.com> <20240422145855.GA1242711-robh@kernel.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240326073750.726636-1-surenb@google.com> <95819052.15033.1713816660761.JavaMail.zimbra@nod.at>
- <CAJuCfpHnM6L-7s8cd90XKiawhw9LZaRfMfeDm54OshLQdV5YmA@mail.gmail.com> <1375034928.15114.1713817899712.JavaMail.zimbra@nod.at>
-In-Reply-To: <1375034928.15114.1713817899712.JavaMail.zimbra@nod.at>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 22 Apr 2024 13:39:52 -0700
-Message-ID: <CAJuCfpFsrQxa2CX66xQtxp=Y-=R5_YkJMMX9VQ-g32rdCrukeg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] arch/um: fix forward declaration for vmalloc
-To: Richard Weinberger <richard@nod.at>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	kent overstreet <kent.overstreet@linux.dev>, SeongJae Park <sj@kernel.org>, 
-	anton ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	linux-mm <linux-mm@kvack.org>, linux-um <linux-um@lists.infradead.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-On Mon, Apr 22, 2024 at 1:31=E2=80=AFPM Richard Weinberger <richard@nod.at>=
- wrote:
->
-> ----- Urspr=C3=BCngliche Mail -----
-> > Von: "Suren Baghdasaryan" <surenb@google.com>
-> >> > Fixes: 576477564ede ("mm: vmalloc: enable memory allocation profilin=
-g")
-> >>
-> >> This commit id is not in Linus tree.
-> >> Do I miss something?
-> >
-> > It's in mm-unstable under dc26c7e79daf2fc11169b23c150862f0e878ee5a. I
-> > think it just didn't reach Linus' tree yet.
->
-> Hmm, so we better postpone this path until said commit hits Linus tree,
-> or you carry it together with the commit in mm-unstable.
 
-Oh, sorry, I didn't realize you were talking about the `Fixes:
-576477564ede` part... Yeah, unfortunately SHAs in mm-unstable are
-unstable, so the change being fixed is under
-edf0a25633bda1e5b7844478dd13b4326a3d5d09 now. I think Andrew placed
-this fix right after the change it fixes with intention to merge them
-together later on.
+
+On Mon, 22 Apr 2024, Rob Herring wrote:
+
+> On Sat, Apr 20, 2024 at 09:53:42AM -0500, matthew.gerlach@linux.intel.com wrote:
+>> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>>
+>> Convert the device tree bindings for the Altera Root Port PCIe controller
+>> from text to YAML.
+>>
+>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+>> ---
+>> v4:
+>>  - reorder reg-names to match original binding
+>>  - move reg and reg-names to top level with limits.
+>>
+>> v3:
+>>  - Added years to copyright
+>>  - Correct order in file of allOf and unevaluatedProperties
+>>  - remove items: in compatible field
+>>  - fix reg and reg-names constraints
+>>  - replace deprecated pci-bus.yaml with pci-host-bridge.yaml
+>>  - fix entries in ranges property
+>>  - remove device_type from required
+>>
+>> v2:
+>>  - Move allOf: to bottom of file, just like example-schema is showing
+>>  - add constraint for reg and reg-names
+>>  - remove unneeded device_type
+>>  - drop #address-cells and #size-cells
+>>  - change minItems to maxItems for interrupts:
+>>  - change msi-parent to just "msi-parent: true"
+>>  - cleaned up required:
+>>  - make subject consistent with other commits coverting to YAML
+>>  - s/overt/onvert/g
+>> ---
+>>  .../devicetree/bindings/pci/altera-pcie.txt   | 50 -----------
+>>  .../bindings/pci/altr,pcie-root-port.yaml     | 88 +++++++++++++++++++
+>>  2 files changed, 88 insertions(+), 50 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/pci/altera-pcie.txt
+>>  create mode 100644 Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/pci/altera-pcie.txt b/Documentation/devicetree/bindings/pci/altera-pcie.txt
+>> deleted file mode 100644
+>> index 816b244a221e..000000000000
+>> --- a/Documentation/devicetree/bindings/pci/altera-pcie.txt
+>> +++ /dev/null
+>> @@ -1,50 +0,0 @@
+>> -* Altera PCIe controller
+>> -
+>> -Required properties:
+>> -- compatible :	should contain "altr,pcie-root-port-1.0" or "altr,pcie-root-port-2.0"
+>> -- reg:		a list of physical base address and length for TXS and CRA.
+>> -		For "altr,pcie-root-port-2.0", additional HIP base address and length.
+>> -- reg-names:	must include the following entries:
+>> -		"Txs": TX slave port region
+>> -		"Cra": Control register access region
+>> -		"Hip": Hard IP region (if "altr,pcie-root-port-2.0")
+>> -- interrupts:	specifies the interrupt source of the parent interrupt
+>> -		controller.  The format of the interrupt specifier depends
+>> -		on the parent interrupt controller.
+>> -- device_type:	must be "pci"
+>> -- #address-cells:	set to <3>
+>> -- #size-cells:		set to <2>
+>> -- #interrupt-cells:	set to <1>
+>> -- ranges:	describes the translation of addresses for root ports and
+>> -		standard PCI regions.
+>> -- interrupt-map-mask and interrupt-map: standard PCI properties to define the
+>> -		mapping of the PCIe interface to interrupt numbers.
+>> -
+>> -Optional properties:
+>> -- msi-parent:	Link to the hardware entity that serves as the MSI controller
+>> -		for this PCIe controller.
+>> -- bus-range:	PCI bus numbers covered
+>> -
+>> -Example
+>> -	pcie_0: pcie@c00000000 {
+>> -		compatible = "altr,pcie-root-port-1.0";
+>> -		reg = <0xc0000000 0x20000000>,
+>> -			<0xff220000 0x00004000>;
+>> -		reg-names = "Txs", "Cra";
+>> -		interrupt-parent = <&hps_0_arm_gic_0>;
+>> -		interrupts = <0 40 4>;
+>> -		interrupt-controller;
+>
+> What happened to this? It is clearly needed since the interrupt-map
+> below points back to this node. Note that that didn't work at one point
+> in time, but I think we fixed it.
+
+I think the DTs I was using test were created during the point in time 
+when this did not work. The interrupt-controller boolean and 
+#interrupt-cells property were in a sub node, and the interrupt-map 
+pointed to the sub-node. Keeping everything in the base node maintains 
+compatiblity. I will fix this for v5.
 
 >
-> Thanks,
-> //richard
+> It doesn't seem you are testing the binding against an actual DT.
+> Please do that.
+
+I need to fix the DTs I'm using for test :)
+
+Thanks for the feedback,
+
+Matthew Gerlach
+
+>
+> Rob
+>
+>> -		#interrupt-cells = <1>;
+>> -		bus-range = <0x0 0xFF>;
+>> -		device_type = "pci";
+>> -		msi-parent = <&msi_to_gic_gen_0>;
+>> -		#address-cells = <3>;
+>> -		#size-cells = <2>;
+>> -		interrupt-map-mask = <0 0 0 7>;
+>> -		interrupt-map = <0 0 0 1 &pcie_0 1>,
+>> -			            <0 0 0 2 &pcie_0 2>,
+>> -			            <0 0 0 3 &pcie_0 3>,
+>> -			            <0 0 0 4 &pcie_0 4>;
+>> -		ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000
+>> -			  0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
+>> -	};
+>
 
