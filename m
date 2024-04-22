@@ -1,87 +1,187 @@
-Return-Path: <linux-kernel+bounces-152692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ADB68AC2F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:26:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B468AC2F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:26:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0240C2812C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:26:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82587B20D0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C23DF49;
-	Mon, 22 Apr 2024 03:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A92CDEAEB;
+	Mon, 22 Apr 2024 03:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="nhKOL9P2"
-Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C474C65;
-	Mon, 22 Apr 2024 03:25:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q4abCtbD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C85161078B;
+	Mon, 22 Apr 2024 03:26:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713756361; cv=none; b=ja4b7sZh0oygrYitZE/zQ753Y4QrRbYL06h4NSnEo4c9jylSmZLaECb5JZUx3PSMFSPlhvktUEVc2PpfkBynzF9hvsufmxSu9lJi6V0IBcCHIAxw5lpXZVhX2uBW0CMQ4FHp8MxfmyiOuSx7p95474udnsKJqWzrAB0Q4e6TE4I=
+	t=1713756371; cv=none; b=OQNuGdnl0IY6Od2EvL8K7L0rXLTT8+dPVmY/Tu/ATw/dGWQhUtAz10pSSQOej2KdqpG9OBnuhzAB8YysjmZzz03662JdfYDwLU4wdL3drcgdh3sVDf90sql/v/1Ce+4ec2DVeNAtRTf50TPo4ugN+X3VzdvCmKflIr23NlbU4FE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713756361; c=relaxed/simple;
-	bh=Jo/907Tz+KrXlk7i/V8O/ousZUUkLKQWOor9Si88iro=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZoBnly2nbCkGj5FZqFu3wnbi1NQ+NK0pWbfWrj9jNP+ZETcnPIAgztSATPMoKQabnDvXXvU1HbB5YbRLHOesHGC2+hn3U2UPO6QR1FnGgTnJIYd0wa6IFKKBjFEnNp/KwKo0UbmHnjqfRecIKPFz8JlD4cp12mMqnWOj972PYIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=nhKOL9P2; arc=none smtp.client-ip=123.58.177.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=Sx06mjddR7zFEtdIz8pMTSg4vPpM/8R8plT2pGon44w=;
-	b=nhKOL9P26k+uCbh+73sGqqQcsCRk+0iCfT1jmuK5Ea7oqa1v2U3U0sdSGGVwot
-	mKitEbrw0hnAqtloUlsTXJMWhm6JVi0goeJHRkk32cdnJaog583eATFZBPDFiCPY
-	jJfYRqXJPNK1dX8tI20/3o7mTorI8PNwTHTcAiLQYG3RU=
-Received: from dragon (unknown [223.68.79.243])
-	by smtp1 (Coremail) with SMTP id ClUQrAD3n1aJ2CVm7DMrAw--.50234S3;
-	Mon, 22 Apr 2024 11:24:59 +0800 (CST)
-Date: Mon, 22 Apr 2024 11:24:57 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: Hiago De Franco <hiagofranco@gmail.com>
-Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hiago De Franco <hiago.franco@toradex.com>, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/4] arm64: dts: freescale: Add Toradex Colibri iMX8DX
-Message-ID: <ZiXYiVnEwBUIWLCj@dragon>
-References: <20240402193512.240417-1-hiagofranco@gmail.com>
+	s=arc-20240116; t=1713756371; c=relaxed/simple;
+	bh=n8OeoVzXBkCF7d/h9/+hrU0DlS4s1TrGHvMrJDN7uxk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ac3v/3q/kmZwDNZq7kKR+cIEHVlEFUxqdeXCR6J++6Y0Bbia/mQasyoyE57wrgfR0sVs8Kp2BUTolxiTfO/nMFpnFp0FwJZnwLUFLkNOH/6+mfrtEHnpYANQU6DV2zzPQhX/xf2nU7T2DHNrGeGWtVH0Yt9mrE0W7ehGORWjMwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q4abCtbD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84757C3277B;
+	Mon, 22 Apr 2024 03:26:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713756371;
+	bh=n8OeoVzXBkCF7d/h9/+hrU0DlS4s1TrGHvMrJDN7uxk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=q4abCtbDz68wMU7XVvgNs7tYVtJdvzJLNQBrqKlNyAgncuvftXKBj+EN5U4Nyakhh
+	 2ypUgtZUTJJQ3AaOP66h5QXQLrFYNtT1KbwJaCez/tCrh41kF0ruKkBOPz7igZmnzN
+	 G00/nOm1uW59OMYelc5B/ZvzTv+eMX7C4HqY6dMysRwH7/qMnlY1p3ULg+8G5ZWjJ5
+	 ogOpMSMYG8yQsl0mdMg/8a5wqVbc6v/OBIdyttEoL/5gGhuEGc0xEZ6nq/nchaLT2a
+	 xGIZTgjMdDtbXgUxdIDlqcSh5lRCwLF0YVjfdUWvo3521bPqorv40hIxeZADmHfZ54
+	 DzlSC3b/sYUmg==
+Message-ID: <ce03bc0c-b113-44c3-8243-0fa22b8a95bf@kernel.org>
+Date: Mon, 22 Apr 2024 05:26:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402193512.240417-1-hiagofranco@gmail.com>
-X-CM-TRANSID:ClUQrAD3n1aJ2CVm7DMrAw--.50234S3
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKF4UZr1rKrWDuF1UuF1rZwb_yoW3Grg_ur
-	W0yF1DA3y8XrZrtw1Yg3W3G39rGa45Cw1Yqa4DJr1SyrW7Arn8ZFZIv3s3GFy5CFZ7GFyx
-	tr15J39Yvr4S9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8DDG5UUUUU==
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiFQvIZV6NnFLpQwAAsE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] media: dt-bindings: i2c: add Giantec GT97xx VCM
+To: Zhi Mao <zhi.mao@mediatek.com>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+ Heiko Stuebner <heiko@sntech.de>, Sakari Ailus
+ <sakari.ailus@linux.intel.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+ Alain Volmat <alain.volmat@foss.st.com>,
+ Paul Elder <paul.elder@ideasonboard.com>,
+ Mehdi Djait <mehdi.djait@bootlin.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ shengnan.wang@mediatek.com, yaya.chang@mediatek.com, yunkec@chromium.org,
+ 10572168@qq.com
+References: <20240420011840.23148-1-zhi.mao@mediatek.com>
+ <20240420011840.23148-2-zhi.mao@mediatek.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240420011840.23148-2-zhi.mao@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 02, 2024 at 04:35:08PM -0300, Hiago De Franco wrote:
-> From: Hiago De Franco <hiago.franco@toradex.com>
+On 20/04/2024 03:18, Zhi Mao wrote:
+> Add YAML device tree binding for GT9768 & GT8769 VCM,
+> and the relevant MAINTAINERS entries.
 > 
-> This patch series introduces support for Colibri iMX8DX SoM and its
-> carrier boards, where the board can be mated with: Aster, Evaluation Board
-> v3, Iris v2, and Iris v1. This SoM is a variant of the already supported
-> Colibri iMX8QXP, utilizing an NXP i.MX8DX SoC instead of i.MX8QXP.
-> Therefore, this patch series also adds support for the i.MX8DX processor.
-> 
-> Hiago De Franco (4):
->   arm64: dts: freescale: Add i.MX8DX dtsi
->   dt-bindings: arm: fsl: remove reduntant toradex,colibri-imx8x
->   dt-bindings: arm: fsl: Add Colibri iMX8DX
->   arm64: dts: freescale: Add Toradex Colibri iMX8DX
+> Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
+> ---
 
-Applied all, thanks!
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+If there is going to be any new version, then:
+
+>  .../bindings/media/i2c/giantec,gt9769.yaml    | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+
+> +title: Giantec Semiconductor, Crop. GT9768 & GT9769 Voice Coil Motor (VCM)
+> +
+> +maintainers:
+> +  - Zhi Mao <zhi.mao@mediatek.com>
+> +
+> +description: |-
+
+Drop |-
+
+> +  The Giantec GT9768 & GT9768 is a 10-bit DAC with current sink capability.
+> +  The DAC is controlled via I2C bus that operates at clock rates up to 1MHz.
+> +  This chip integrates Advanced Actuator Control (AAC) technology
+> +  and is intended for driving voice coil lens in camera modules.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - giantec,gt9768
+> +      - giantec,gt9769
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  vin-supply: true
+> +
+> +  vdd-supply: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - vin-supply
+> +  - vdd-supply
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +
+
+Drop blank line
+
+> +    i2c {
+
+
+
+Best regards,
+Krzysztof
 
 
