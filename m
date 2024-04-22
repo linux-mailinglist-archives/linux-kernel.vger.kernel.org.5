@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-154343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFDB68ADAFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:24:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 257568ADB00
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:25:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DC0D2875A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:24:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D10671F23EB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D50620124A;
-	Mon, 22 Apr 2024 23:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67BF3201267;
+	Mon, 22 Apr 2024 23:59:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PUalQGtV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eWKfYzqP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFDD5200135;
-	Mon, 22 Apr 2024 23:59:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A674D201257;
+	Mon, 22 Apr 2024 23:59:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830370; cv=none; b=oSQvABPcztkzyMK3xQHKJOVBsJxo/WIBD21NUHlZazK/w53OL+OknVnHmXKLHjTcC/QMYDkUY4z/eC70GFLE9SMg1NDvxTFeSYHy3idpms57D77pzKEs7QEMSvp9VKAGMc6gk/nY1UfKXf4b3m8JTB3zbm1n1kYFjO4FUICnr54=
+	t=1713830372; cv=none; b=SIdcdKcOguGNGiqdcV1vsEu0Zf1wKqJlKWgBsfrwF37pFYj+7W6BaLqCRGhm193GYioB12FrwXeZ9+iC6JdP53Sj9EHdvC5WaDDOxRLjESRUUGaVKkaj+NfRvDG7lHhSxK+WpQ5T7/iQ86NsPzz0lSnydBSXzcrfsOMWs9Ht84Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830370; c=relaxed/simple;
-	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
+	s=arc-20240116; t=1713830372; c=relaxed/simple;
+	bh=h1CmKPJ1Sae/CFF9eC+XbaOrI2RMfb8SzeJvTVCkKG4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ov6i21VRcwJjWzMSFiVu2GBVzNH3tFHE9SCAICRoyfv7mgFWB9oustzLo+XRnFv7+C+GGEoV9v9k14u9JmUZajBCt1iCIJTzQwft0QeiWLck7DS2IBgy6ZI/+A7eizuiKD41xPLUxy2ItIrVW56CMgeVI77yamWMhLPCBPC5/QQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PUalQGtV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76B93C2BD11;
-	Mon, 22 Apr 2024 23:59:29 +0000 (UTC)
+	 MIME-Version; b=mh0Yh/+7gc3g6djSxf879/46nhJX3LDlGw8s1jyXliCQBseFW/y0AKm0miucNGYAgafpWHfjxwQTxq7Sgeq5FeJXxa6VVJHgFcq6yPn/J7QWpo+r7SjXUqYGkoglcQ2cOaAC/h7S16kZk9pQIg9pH5On4azEYURuy2RUWuz16Lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eWKfYzqP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27049C4AF0A;
+	Mon, 22 Apr 2024 23:59:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830370;
-	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
+	s=k20201202; t=1713830372;
+	bh=h1CmKPJ1Sae/CFF9eC+XbaOrI2RMfb8SzeJvTVCkKG4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PUalQGtVZ2p8HusG8Yvl6SWn9N0nLNr42bA3qV2NGCm6PS09Qik3oJbM55l2RcVvb
-	 IWdtE5IyO7T1BTaLiVhPMAYc+U3LfBDhhOE58sYJLFeb5IRUW6paFBFKaVuRXXhYAL
-	 kiCYQFsqG4nczWlrv380KAeoyte+zbekMKi/WZN+s1K34rQSa37LDs4WqTi/hiUvVY
-	 1favd+A4g39Nzw/kX21QEkY2ZxXLWs8TgFRBJHIPVFYDa3C+GOSalaztmd1AJqoMJZ
-	 z5S7VSq4/hMGPa4rlgobl3lo+mEvnCIH47lA+/l4AtE9CApBK6JtN8F6SUcC2HITEs
-	 mhHrdCS/oR9XA==
+	b=eWKfYzqPH46fKf9bM+TB3ZDCUy9602NXtm2u+5AaqsDu6D6YBMOpwM5Wuw/9LStPx
+	 uv1OKU3JmIKH5laPyoOrxXJtoZDIW+5PEvVsOUHpnh5fjCHGKxt8/e6Sddlw7Qwsjw
+	 Yygc7TvKFKwniaPBnhXXTNBEU2mETW3Avx9ErMMPLGoxd7F6cUfVGbdKgOEMNQmtFp
+	 3NU1M0CtEzQmRdctiekyKExVT1+3a7/3pc1zrlMqeIbmdxgL0hRciPR3QLP3T87YH+
+	 r2AAF1Cs/Q2iupYhR/9U+6VhTxXiEFPWMbuTbloe/hOC7KbmQtvDKCIS3FHFJ6Ep8t
+	 zw0TvQ6+LH9Aw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: John Stultz <jstultz@google.com>,
-	Lee Jones <joneslee@google.com>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
+Cc: Krzysztof Kozlowski <krzk@kernel.org>,
+	Joerg Roedel <jroedel@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	shuah@kernel.org,
-	nathan@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 4.19 6/7] selftests: timers: Fix valid-adjtimex signed left-shift undefined behavior
-Date: Mon, 22 Apr 2024 19:20:38 -0400
-Message-ID: <20240422232040.1616527-6-sashal@kernel.org>
+	yong.wu@mediatek.com,
+	joro@8bytes.org,
+	will@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	iommu@lists.linux.dev,
+	linux-mediatek@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 7/7] iommu: mtk: fix module autoloading
+Date: Mon, 22 Apr 2024 19:20:39 -0400
+Message-ID: <20240422232040.1616527-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422232040.1616527-1-sashal@kernel.org>
 References: <20240422232040.1616527-1-sashal@kernel.org>
@@ -69,136 +71,46 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.312
 Content-Transfer-Encoding: 8bit
 
-From: John Stultz <jstultz@google.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 076361362122a6d8a4c45f172ced5576b2d4a50d ]
+[ Upstream commit 7537e31df80cb58c27f3b6fef702534ea87a5957 ]
 
-The struct adjtimex freq field takes a signed value who's units are in
-shifted (<<16) parts-per-million.
+Add MODULE_DEVICE_TABLE(), so modules could be properly autoloaded
+based on the alias from of_device_id table.
 
-Unfortunately for negative adjustments, the straightforward use of:
-
-  freq = ppm << 16 trips undefined behavior warnings with clang:
-
-valid-adjtimex.c:66:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
-        -499<<16,
-        ~~~~^
-valid-adjtimex.c:67:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
-        -450<<16,
-        ~~~~^
-.
-
-Fix it by using a multiply by (1 << 16) instead of shifting negative values
-in the valid-adjtimex test case. Align the values for better readability.
-
-Reported-by: Lee Jones <joneslee@google.com>
-Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Signed-off-by: John Stultz <jstultz@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Link: https://lore.kernel.org/r/20240409202222.2830476-1-jstultz@google.com
-Link: https://lore.kernel.org/lkml/0c6d4f0d-2064-4444-986b-1d1ed782135f@collabora.com/
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20240410164109.233308-1-krzk@kernel.org
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../testing/selftests/timers/valid-adjtimex.c | 73 +++++++++----------
- 1 file changed, 36 insertions(+), 37 deletions(-)
+ drivers/iommu/mtk_iommu.c    | 1 +
+ drivers/iommu/mtk_iommu_v1.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/timers/valid-adjtimex.c b/tools/testing/selftests/timers/valid-adjtimex.c
-index 48b9a803235a8..d13ebde203221 100644
---- a/tools/testing/selftests/timers/valid-adjtimex.c
-+++ b/tools/testing/selftests/timers/valid-adjtimex.c
-@@ -21,9 +21,6 @@
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *   GNU General Public License for more details.
-  */
--
--
--
- #include <stdio.h>
- #include <stdlib.h>
- #include <time.h>
-@@ -62,45 +59,47 @@ int clear_time_state(void)
- #define NUM_FREQ_OUTOFRANGE 4
- #define NUM_FREQ_INVALID 2
- 
-+#define SHIFTED_PPM (1 << 16)
-+
- long valid_freq[NUM_FREQ_VALID] = {
--	-499<<16,
--	-450<<16,
--	-400<<16,
--	-350<<16,
--	-300<<16,
--	-250<<16,
--	-200<<16,
--	-150<<16,
--	-100<<16,
--	-75<<16,
--	-50<<16,
--	-25<<16,
--	-10<<16,
--	-5<<16,
--	-1<<16,
-+	 -499 * SHIFTED_PPM,
-+	 -450 * SHIFTED_PPM,
-+	 -400 * SHIFTED_PPM,
-+	 -350 * SHIFTED_PPM,
-+	 -300 * SHIFTED_PPM,
-+	 -250 * SHIFTED_PPM,
-+	 -200 * SHIFTED_PPM,
-+	 -150 * SHIFTED_PPM,
-+	 -100 * SHIFTED_PPM,
-+	  -75 * SHIFTED_PPM,
-+	  -50 * SHIFTED_PPM,
-+	  -25 * SHIFTED_PPM,
-+	  -10 * SHIFTED_PPM,
-+	   -5 * SHIFTED_PPM,
-+	   -1 * SHIFTED_PPM,
- 	-1000,
--	1<<16,
--	5<<16,
--	10<<16,
--	25<<16,
--	50<<16,
--	75<<16,
--	100<<16,
--	150<<16,
--	200<<16,
--	250<<16,
--	300<<16,
--	350<<16,
--	400<<16,
--	450<<16,
--	499<<16,
-+	    1 * SHIFTED_PPM,
-+	    5 * SHIFTED_PPM,
-+	   10 * SHIFTED_PPM,
-+	   25 * SHIFTED_PPM,
-+	   50 * SHIFTED_PPM,
-+	   75 * SHIFTED_PPM,
-+	  100 * SHIFTED_PPM,
-+	  150 * SHIFTED_PPM,
-+	  200 * SHIFTED_PPM,
-+	  250 * SHIFTED_PPM,
-+	  300 * SHIFTED_PPM,
-+	  350 * SHIFTED_PPM,
-+	  400 * SHIFTED_PPM,
-+	  450 * SHIFTED_PPM,
-+	  499 * SHIFTED_PPM,
+diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+index 7304ad88f1263..93a47302d6cfc 100644
+--- a/drivers/iommu/mtk_iommu.c
++++ b/drivers/iommu/mtk_iommu.c
+@@ -761,6 +761,7 @@ static const struct of_device_id mtk_iommu_of_ids[] = {
+ 	{ .compatible = "mediatek,mt8173-m4u", .data = (void *)M4U_MT8173},
+ 	{}
  };
++MODULE_DEVICE_TABLE(of, mtk_iommu_of_ids);
  
- long outofrange_freq[NUM_FREQ_OUTOFRANGE] = {
--	-1000<<16,
--	-550<<16,
--	550<<16,
--	1000<<16,
-+	-1000 * SHIFTED_PPM,
-+	 -550 * SHIFTED_PPM,
-+	  550 * SHIFTED_PPM,
-+	 1000 * SHIFTED_PPM,
+ static struct platform_driver mtk_iommu_driver = {
+ 	.probe	= mtk_iommu_probe,
+diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
+index 94b16cacb80fc..709a2ab1d4cf7 100644
+--- a/drivers/iommu/mtk_iommu_v1.c
++++ b/drivers/iommu/mtk_iommu_v1.c
+@@ -541,6 +541,7 @@ static const struct of_device_id mtk_iommu_of_ids[] = {
+ 	{ .compatible = "mediatek,mt2701-m4u", },
+ 	{}
  };
++MODULE_DEVICE_TABLE(of, mtk_iommu_v1_of_ids);
  
- #define LONG_MAX (~0UL>>1)
+ static const struct component_master_ops mtk_iommu_com_ops = {
+ 	.bind		= mtk_iommu_bind,
 -- 
 2.43.0
 
