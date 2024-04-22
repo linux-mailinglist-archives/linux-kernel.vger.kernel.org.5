@@ -1,213 +1,250 @@
-Return-Path: <linux-kernel+bounces-153624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 737EE8AD083
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:23:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A03F8AD080
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:22:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D280B1F22DE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:23:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2FE628A6E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:22:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C7B153511;
-	Mon, 22 Apr 2024 15:22:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FB8D1534EF;
+	Mon, 22 Apr 2024 15:22:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Rv/fe9Jv"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t4Y9gaGb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3B11534E2
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:22:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFBE152180;
+	Mon, 22 Apr 2024 15:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713799363; cv=none; b=eWI5ZNU9tYBlWs2NIGJ6xmPyGFyUCc5DpdcoEl0bJ6xfa1xGYgsGesmcHmca78saqwP5P735u/ErHmNj3lxxitiuJS4vfqGLlO0PJpjEvipfKzTdp2d+tR0L+JUqajgQ/dtLZqXqgKdCveNvsQ5wUL/u3QSCwug9FAsYMQUEQUA=
+	t=1713799361; cv=none; b=BVuc+cTNms2lOpHRe1TjvFAzobvCXMtvCANZMQ99pMuUR8/hoyGGFVqOLmRh2252kGJ0ZCJIONIfgIQBIJk90NExcQlLyqOjQcuQDi0JBGTDXoj994eWCwrAqopi0ZLubaSNpZWgSnVllruqcwfW8Kb6Ca/p4YplDTahyO2o1cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713799363; c=relaxed/simple;
-	bh=Ci2yuDBlgoa8ozNJQ5jJq2jE33en1qoK9mqBxDfTgV4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QB0GrDMb5Whwi+hR2OLPM5LkxDwt88Ai5sH2L7PlyAIUZ9FTDKSnYeApFACYeAi011cTjGjT1SIA2eMtIwQ8NEzqexO8fVnhm2vd5UCsOG0eQ5CWhfTcnjEC2PVJM1cEuwlkxSwNFa3yARZ+qiR87aaxY2Y9qcSGjjWzKbEhkOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Rv/fe9Jv; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a55b481cf0fso149846366b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:22:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713799360; x=1714404160; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=U1Ry9k3u4r/ZH6YfxckAiW911VK5SE+gAAnPQnrkQA8=;
-        b=Rv/fe9Jv6vm4YT8PeA+StwjzA8/uv4dfyooe3dihDRDxbvy1w373RmCh5LXT6upceI
-         a6jzh/+w5wNSeiWM0C85ate9+nMDNJUiBY4YLqo3ezNYjIui0zgiNGPwAcnTrnqZzG4R
-         TRH2MOYl/9IED5Mhll1lE7KMhBS8yLr6qcms+OQMD8Jm0TeaC3hPOphmp6V9+k1K9Zyy
-         pwVicE0WuQrr5FAy/rDgGEOfC57Ee+eCHqLMBhOZkEs1v26oklsT2Nb3DRIkygt+b8gl
-         i/pT3hy9k1w1GC5WuApJsOUiDJo8TZt8GfNkwci/vhqo9FgOh9AtDi5KyRVnCc+w1XO5
-         29Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713799360; x=1714404160;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U1Ry9k3u4r/ZH6YfxckAiW911VK5SE+gAAnPQnrkQA8=;
-        b=daXVX3Kr6M6i4gAyGtyuUSgrYKqB4SUD/ouHcNWPiyaJDPB2TJ2cvKonqA1cVnYgLa
-         eESB+B8ucAGBxYbOozhNTiQjb5rw6Mx6k/ovPELUL7SeC0Sgt8YlVhPJUocOHOjZntoh
-         5VxsA7mc7B5a0h8alaWX3SXwtl9dCIpxWGTitOLerTtcwWctslqiJ7/xycAuENzd9/8X
-         h/wWVV5nhfcc+reUub/Nl9REB/wF+f0yhfhAv5WxobcXEGjEu6zR5f+i9STdkY7J9THs
-         m+Jna6A2Dq9V6BeB6PROAC3VnYFq+n6eDKM2dDYU2HTDCKswigX0Yer1dejtJNNC6cNK
-         uQzA==
-X-Forwarded-Encrypted: i=1; AJvYcCXLan+fTnDuCfAsJvrXyGjSx/l1hBOmkwG8rTjvySfD2Skt9/q+3f6jn7qnD70cDgpVxNOfkXnu5jeaIyzwG6kBRl/CvmNJAL8oW8na
-X-Gm-Message-State: AOJu0Yz7QSVSsSyBh1xr9sHRwtzb5z3Gm7EpOlhgur5oXNSf/dYeupQv
-	3iPyV00IL+BCzlys2RzP3et6XYBug0B/N1QB4Xcufx72De79L3LvtVwDaqkK7qyFj97NdrNXuIF
-	KTL1udNgJOKxhrEkf8aPk4h+vKpCYYySetSqviQ==
-X-Google-Smtp-Source: AGHT+IF7tlD0zygVG9NWdr4X2DqIV3+l7wtVQTW7JN1Fu86rCV2xydnxXx4bO+KERuw/RRypbzRNGaCUDPBeYj269Ho=
-X-Received: by 2002:a17:906:f74b:b0:a58:7470:21f3 with SMTP id
- jp11-20020a170906f74b00b00a58747021f3mr183241ejb.28.1713799359973; Mon, 22
- Apr 2024 08:22:39 -0700 (PDT)
+	s=arc-20240116; t=1713799361; c=relaxed/simple;
+	bh=//8KcpjpbvYDgi/6QOo9g1ClZ/5OAjmHm3CIAJSIR9w=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Jv1HrTsSu3nCVhbKnfkoMG0tYiPWOv+S+Ih19fQlyoo/Xt8as2ZB9jvqRWOqGvOPIC2Q7QmLVrT/foytkrk1b8j1rluK9sRseKxPIxN5AsgEAYih7nctWiRmDUMnQWv99ysXQ6kXjTvgi9/42D5oQn2KdCgzauFcLGz9jeiYgz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t4Y9gaGb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE60CC113CC;
+	Mon, 22 Apr 2024 15:22:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713799360;
+	bh=//8KcpjpbvYDgi/6QOo9g1ClZ/5OAjmHm3CIAJSIR9w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=t4Y9gaGbcPig7Mdz+LEqNoPlC4cnjArOJwRu5PaTXNJM863eIgFwMZcNkZH2wD+xf
+	 kANHiNvsMwpyRee3B8kJFco0aLqPEj9cnwQ7bvQnl+Onc9cuuTAlN0EBqoYqG4GD1K
+	 Uq06fxqySyGqrw4bTCBBz3lxoCwSwvQ+w/Moka8jk6OisDm8TCmV1HFjPVLnqP3mM2
+	 m4DDvLwuDzyNTM3J4scNNiWJPH+u8HOSTYu7nSEa5MMiqTWBXnRO0Jt6kvr5vllvh8
+	 IiXT6yl9ZpmaE5gviSwAwoRJg9AYQFB9plw4gCzSY3pG/zlcO4UnIqAWMR7XdTop3i
+	 7X6EKYTKe0ZfQ==
+Date: Tue, 23 Apr 2024 00:22:34 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jonathan Haslam <jonathan.haslam@gmail.com>
+Cc: linux-trace-kernel@vger.kernel.org, andrii@kernel.org,
+ bpf@vger.kernel.org, rostedt@goodmis.org, Peter Zijlstra
+ <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
+ Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Ian
+ Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] uprobes: reduce contention on uprobes_tree access
+Message-Id: <20240423002234.6104df82cb3f96c9d485d5b1@kernel.org>
+In-Reply-To: <20240422102306.6026-1-jonathan.haslam@gmail.com>
+References: <20240422102306.6026-1-jonathan.haslam@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
- <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
- <ZiZhSfgeAdrbnaVL@nuoska> <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
- <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
- <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com> <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
-In-Reply-To: <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
-From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date: Mon, 22 Apr 2024 18:22:03 +0300
-Message-ID: <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
-Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
-To: James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc: Mikko Rapeli <mikko.rapeli@linaro.org>, Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Lennart Poettering <lennart@poettering.net>, 
-	linux-integrity@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, 22 Apr 2024 at 17:31, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> On Mon, 2024-04-22 at 16:54 +0300, Ilias Apalodimas wrote:
-> > Hi James
-> >
-> > On Mon, 22 Apr 2024 at 16:38, James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
-> > >
-> > > On Mon, 2024-04-22 at 16:32 +0300, Ilias Apalodimas wrote:
-> > > > Hi all,
-> > > >
-> > > > On Mon, 22 Apr 2024 at 16:08, Mikko Rapeli
-> > > > <mikko.rapeli@linaro.org>
-> > > > wrote:
-> > > > >
-> > > > > Hi,
-> > > > >
-> > > > > On Mon, Apr 22, 2024 at 08:42:41AM -0400, James Bottomley
-> > > > > wrote:
-> > > > > > On Mon, 2024-04-22 at 14:27 +0300, Mikko Rapeli wrote:
-> > > > > > > Userspace needs to know if TPM kernel drivers need to be
-> > > > > > > loaded and related services started early in the boot if
-> > > > > > > TPM device is used and available.
-> > > > > >
-> > > > > > This says what but not why.  We already have module
-> > > > > > autoloading that works correctly for TPM devices, so why is
-> > > > > > this needed?
-> > > > > >
-> > > > > > We do have a chicken and egg problem with IMA in that the TPM
-> > > > > > driver needs to be present *before* any filesystem, including
-> > > > > > the one the TPM modules would be on, is mounted so executions
-> > > > > > can be measured into IMA (meaning that if you use IMA the TPM
-> > > > > > drivers must be built in) but this sounds to be something
-> > > > > > different. However, because of the IMA problem, most
-> > > > > > distributions don't end up compiling TPM drivers as modules
-> > > > > > anyway.
-> > > > > >
-> > > > > > Is what you want simply that tpm modules be loaded earlier?
-> > > > >
-> > > > > Yes, ealier is the problem. In my specific testing case the
-> > > > > machine is qemu arm64 with swtpm with EFI firmware for secure
-> > > > > boot and TPM support.
-> > > > >
-> > > > > Firmware uses TPM and does measurements and thus TPM event log
-> > > > > is
-> > > > > available on this machine and a bunch of other arm64 boards.
-> > > > > Visible in early boot dmesg as TPMEventLog lines like:
-> > > > >
-> > > > > [    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040
-> > > > > RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb3b3040
-> > > > > INITRD=0xeb3b2040 RNG=0xe5c0f040 MEMRESERVE=0xe5c0e040
-> > > > >
-> > > > > Different boards use different TPM HW and drivers so compiling
-> > > > > all these in is possible but a bit ugly. systemd recently
-> > > > > gained support for a specific tpm2.target which makes TPM
-> > > > > support modular and also works with kernel modules for some TPM
-> > > > > use cases but not rootfs encryption.
-> > > > >
-> > > > > In my test case we have a kernel+initramfs uki binary which is
-> > > > > loaded by EFI firmware as a secure boot binary. TPM support on
-> > > > > various boards is visible in devicetree but not as ACPI table
-> > > > > entries. systemd currently detect TPM2 support either via ACPI
-> > > > > table /sys/firmware/acpi/tables/TPM2 or TPM entry or via
-> > > > > firmware measurement via
-> > > > > /sys/kernel/security/tpm0/binary_bios_measurements
-> > > > > .
-> > > >
-> > > > One corner case worth noting here is that scanning the device
-> > > > tree won't always work for non-ACPI systems... The reason is that
-> > > > a firmware TPM (running in OP-TEE) might or might not have a DT
-> > > > entry, since OP-TEE can discover the device dynamically and
-> > > > doesn't always rely on a DT entry.
-> > > >
-> > > > I don't particularly love the idea that an EventLog existence
-> > > > automatically means a TPM will be there, but it seems that
-> > > > systemd already relies on that and it does solve the problem we
-> > > > have.
-> > >
-> > > Well, quite. That's why the question I was interested in, perhaps
-> > > not asked as clearly as it could be is: since all the TPM devices
-> > > rely on discovery mechanisms like ACPI or DT or the like which are
-> > > ready quite early, should we simply be auto loading the TPM drivers
-> > > earlier?
-> >
-> > This would be an elegant way to solve this and on top of that, we
-> > have a single discovery mechanism from userspace -- e.g ls /dev/tpmX.
-> > But to answer that we need more feedback from systemd. What 'earlier'
-> > means? Autload it from the kernel before we go into launching the
-> > initrd?
->
-> Right, so this is another timing problem: we can't autoload modules
-> *before* they appear in the filesystem and presumably they're on the
-> initrd, so auto loading must be post initrd mount (and init execution)
-> but otherwise quite early?
+On Mon, 22 Apr 2024 03:23:05 -0700
+Jonathan Haslam <jonathan.haslam@gmail.com> wrote:
 
-Exactly. But is that enough?
+> Active uprobes are stored in an RB tree and accesses to this tree are
+> dominated by read operations. Currently these accesses are serialized by
+> a spinlock but this leads to enormous contention when large numbers of
+> threads are executing active probes.
+> 
+> This patch converts the spinlock used to serialize access to the
+> uprobes_tree RB tree into a reader-writer spinlock. This lock type
+> aligns naturally with the overwhelmingly read-only nature of the tree
+> usage here. Although the addition of reader-writer spinlocks are
+> discouraged [0], this fix is proposed as an interim solution while an
+> RCU based approach is implemented (that work is in a nascent form). This
+> fix also has the benefit of being trivial, self contained and therefore
+> simple to backport.
+> 
+> We have used a uprobe benchmark from the BPF selftests [1] to estimate
+> the improvements. Each block of results below show 1 line per execution
+> of the benchmark ("the "Summary" line) and each line is a run with one
+> more thread added - a thread is a "producer". The lines are edited to
+> remove extraneous output.
+> 
+> The tests were executed with this driver script:
+> 
+> for num_threads in {1..20}
+> do
+>   sudo ./bench -a -p $num_threads trig-uprobe-nop | grep Summary
+> done
+> 
+> SPINLOCK (BEFORE)
+> ==================
+> Summary: hits    1.396 ± 0.007M/s (  1.396M/prod)
+> Summary: hits    1.656 ± 0.016M/s (  0.828M/prod)
+> Summary: hits    2.246 ± 0.008M/s (  0.749M/prod)
+> Summary: hits    2.114 ± 0.010M/s (  0.529M/prod)
+> Summary: hits    2.013 ± 0.009M/s (  0.403M/prod)
+> Summary: hits    1.753 ± 0.008M/s (  0.292M/prod)
+> Summary: hits    1.847 ± 0.001M/s (  0.264M/prod)
+> Summary: hits    1.889 ± 0.001M/s (  0.236M/prod)
+> Summary: hits    1.833 ± 0.006M/s (  0.204M/prod)
+> Summary: hits    1.900 ± 0.003M/s (  0.190M/prod)
+> Summary: hits    1.918 ± 0.006M/s (  0.174M/prod)
+> Summary: hits    1.925 ± 0.002M/s (  0.160M/prod)
+> Summary: hits    1.837 ± 0.001M/s (  0.141M/prod)
+> Summary: hits    1.898 ± 0.001M/s (  0.136M/prod)
+> Summary: hits    1.799 ± 0.016M/s (  0.120M/prod)
+> Summary: hits    1.850 ± 0.005M/s (  0.109M/prod)
+> Summary: hits    1.816 ± 0.002M/s (  0.101M/prod)
+> Summary: hits    1.787 ± 0.001M/s (  0.094M/prod)
+> Summary: hits    1.764 ± 0.002M/s (  0.088M/prod)
+> 
+> RW SPINLOCK (AFTER)
+> ===================
+> Summary: hits    1.444 ± 0.020M/s (  1.444M/prod)
+> Summary: hits    2.279 ± 0.011M/s (  1.139M/prod)
+> Summary: hits    3.422 ± 0.014M/s (  1.141M/prod)
+> Summary: hits    3.565 ± 0.017M/s (  0.891M/prod)
+> Summary: hits    2.671 ± 0.013M/s (  0.534M/prod)
+> Summary: hits    2.409 ± 0.005M/s (  0.401M/prod)
+> Summary: hits    2.485 ± 0.008M/s (  0.355M/prod)
+> Summary: hits    2.496 ± 0.003M/s (  0.312M/prod)
+> Summary: hits    2.585 ± 0.002M/s (  0.287M/prod)
+> Summary: hits    2.908 ± 0.011M/s (  0.291M/prod)
+> Summary: hits    2.346 ± 0.016M/s (  0.213M/prod)
+> Summary: hits    2.804 ± 0.004M/s (  0.234M/prod)
+> Summary: hits    2.556 ± 0.001M/s (  0.197M/prod)
+> Summary: hits    2.754 ± 0.004M/s (  0.197M/prod)
+> Summary: hits    2.482 ± 0.002M/s (  0.165M/prod)
+> Summary: hits    2.412 ± 0.005M/s (  0.151M/prod)
+> Summary: hits    2.710 ± 0.003M/s (  0.159M/prod)
+> Summary: hits    2.826 ± 0.005M/s (  0.157M/prod)
+> Summary: hits    2.718 ± 0.001M/s (  0.143M/prod)
+> Summary: hits    2.844 ± 0.006M/s (  0.142M/prod)
+> 
+> The numbers in parenthesis give averaged throughput per thread which is
+> of greatest interest here as a measure of scalability. Improvements are
+> in the order of 22 - 68% with this particular benchmark (mean = 43%).
+> 
+> V2:
+>  - Updated commit message to include benchmark results.
+> 
+> [0] https://docs.kernel.org/locking/spinlocks.html
+> [1] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/benchs/bench_trigger.c
 
->
-> This might be quite a bit of work.  Logically, just moving the matching
-> and loading code earlier might work, but we used to have a
-> load_default_modules() at the end of init/main.c and it got removed
-> (because it only eventually loaded elevator modules) everything is now
-> loaded in it's various init routines, so to get, say, TPM ACPI modules
-> loaded earlier, we'd have to run the ACPI device matching code earlier
-> and so on for every other subsystem ...
+Thanks for update! This looks good to me.
+Let me pick this for probes/for-next.
 
-Being the devil's advocate here and as I stated I don't love this but ...
-The kernel isn't technically doing anything wrong. We just expose an
-*existing* EFI config table. The kernel also exposes filesystems so
-people are free to do rm -rf *.
-The fact that applications might use it as a means of "oh there's
-probably a TPM" shouldn't be the end of the world. On top of that,
-since it's an EFI config table we can keep it around and never break
-any ABIs we create to userspace. If in the future we find a better
-way, userspace can use that?
+Thank you,
 
-So perhaps this is ok as long as make sure we understand why systemd
-needs it that early?
+> 
+> Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
+> ---
+>  kernel/events/uprobes.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index e4834d23e1d1..8ae0eefc3a34 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
+>   */
+>  #define no_uprobe_events()	RB_EMPTY_ROOT(&uprobes_tree)
+>  
+> -static DEFINE_SPINLOCK(uprobes_treelock);	/* serialize rbtree access */
+> +static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
+>  
+>  #define UPROBES_HASH_SZ	13
+>  /* serialize uprobe->pending_list */
+> @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
+>  {
+>  	struct uprobe *uprobe;
+>  
+> -	spin_lock(&uprobes_treelock);
+> +	read_lock(&uprobes_treelock);
+>  	uprobe = __find_uprobe(inode, offset);
+> -	spin_unlock(&uprobes_treelock);
+> +	read_unlock(&uprobes_treelock);
+>  
+>  	return uprobe;
+>  }
+> @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
+>  {
+>  	struct uprobe *u;
+>  
+> -	spin_lock(&uprobes_treelock);
+> +	write_lock(&uprobes_treelock);
+>  	u = __insert_uprobe(uprobe);
+> -	spin_unlock(&uprobes_treelock);
+> +	write_unlock(&uprobes_treelock);
+>  
+>  	return u;
+>  }
+> @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
+>  	if (WARN_ON(!uprobe_is_active(uprobe)))
+>  		return;
+>  
+> -	spin_lock(&uprobes_treelock);
+> +	write_lock(&uprobes_treelock);
+>  	rb_erase(&uprobe->rb_node, &uprobes_tree);
+> -	spin_unlock(&uprobes_treelock);
+> +	write_unlock(&uprobes_treelock);
+>  	RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
+>  	put_uprobe(uprobe);
+>  }
+> @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
+>  	min = vaddr_to_offset(vma, start);
+>  	max = min + (end - start) - 1;
+>  
+> -	spin_lock(&uprobes_treelock);
+> +	read_lock(&uprobes_treelock);
+>  	n = find_node_in_range(inode, min, max);
+>  	if (n) {
+>  		for (t = n; t; t = rb_prev(t)) {
+> @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
+>  			get_uprobe(u);
+>  		}
+>  	}
+> -	spin_unlock(&uprobes_treelock);
+> +	read_unlock(&uprobes_treelock);
+>  }
+>  
+>  /* @vma contains reference counter, not the probed instruction. */
+> @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
+>  	min = vaddr_to_offset(vma, start);
+>  	max = min + (end - start) - 1;
+>  
+> -	spin_lock(&uprobes_treelock);
+> +	read_lock(&uprobes_treelock);
+>  	n = find_node_in_range(inode, min, max);
+> -	spin_unlock(&uprobes_treelock);
+> +	read_unlock(&uprobes_treelock);
+>  
+>  	return !!n;
+>  }
+> -- 
+> 2.43.0
+> 
 
-Thanks
-/Ilias
->
-> James
->
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
