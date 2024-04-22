@@ -1,217 +1,277 @@
-Return-Path: <linux-kernel+bounces-152950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D3558AC686
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:16:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1541A8AC665
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:11:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91DB01C219C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:16:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DC11B207C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E383750283;
-	Mon, 22 Apr 2024 08:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 001264F207;
+	Mon, 22 Apr 2024 08:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jzB27XhI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="eZU3Z+wU"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D47150281
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773778; cv=fail; b=KUXSMv0+Oe05lX5aTX84jalS9Cj6T4KTVpBFpmVfok0T0wtJTSmORinexFCT7DHh85fT2nbWd8BDoQIEm4UYs9GpMUdm9G7VH0tmXHK7POEx51w+Y+Ug0oxdui6xDMhDN8CKZEwthf6gPnHzpUjlDTAgO1bx3KMjMopeUn8Gexw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773778; c=relaxed/simple;
-	bh=IXZemTx2SLOnCdRF1L/5SSy45tdMpJ89vOIu8AzjjNM=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=JnFTuXsX6MM/qiKz19uQL9RkAmmDE7fCgcBI9xhgrtAH7Whl06QVoX0QuJE+3gTexKKpnzjz5OWbAqbrMmrE7tbM0zwkl8J//psm4WNue2+ca7Mk6RYHKECEmCXhlLDRvJbvkKD3moKVOgc+2hxFl7ECZCPQJkTglTF+4X8BK14=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jzB27XhI; arc=fail smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713773776; x=1745309776;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=IXZemTx2SLOnCdRF1L/5SSy45tdMpJ89vOIu8AzjjNM=;
-  b=jzB27XhIEgdeXh4unuYpib2+mmXU1imeQhnICICBu5vaFW9Ih5yN3DvV
-   7hK+XRmTN8rwdFpcP6HLWND+rHWaPKpJOLBmBVXeR4CjArEZEBv3+hDlP
-   DUjmCEyaGa7/lVMlhVqLyZ6zlHV+dF+5pBkBzVcfoGBy1PZjWGr4+vwF5
-   1WmFeulXFOCCwHpX3ahDdtN5IZv+MY6s213ip02AGvXSDq1nxjMRtppgd
-   dmZgeXAXz96GUqpv5UvJaqsxLnSPKNHbdKlI71wMgjhNlZea3yDZ/0AcH
-   1Pe3n1GsWJzZlPaFpTXawOFLDOUai5pNnprMmOpD1NVHPIxtaehtInRHP
-   w==;
-X-CSE-ConnectionGUID: O/8oZsY7RCqnbOCfiWXFsg==
-X-CSE-MsgGUID: fRTr7ckLQeahCg025DX9dA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="9164621"
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="9164621"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 01:16:15 -0700
-X-CSE-ConnectionGUID: CzkLpnCiSNyCQqWU3nz1dQ==
-X-CSE-MsgGUID: tIESjtAZRsSPU8ljI+N00A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="28452267"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Apr 2024 01:16:15 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 22 Apr 2024 01:16:14 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 22 Apr 2024 01:16:14 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 22 Apr 2024 01:16:14 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.170)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 22 Apr 2024 01:16:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j5j75vUT5NaGvrZiHxWox9s66NHWbMvk2EqZZUSmVfV7oIMu0Rh5oW+4IRYvfcymchl0fH6Sp0gQKuL06qTNminGBKK5JzwfIt1BZcD3bDfQXTFiCJ/skrQpGpHD/6m7LggGLod3B+KYFYi+qy0PPAaZmpeliNyGpA6m4Y2OrzFG6dBYNi50PIZBZ7w0bIUR+KPWlt29ZwbFPCtw/pt5wYz4ygDkfb4dvaxt0LMHcAVbwG9V4fCXcscgTTQTs/urBgj3Z1rCxrHUC5Dt0sqLGGTVtsDrIbz7x9GFjZ99BmwKwWsc/nbuvCa2M1Ivyd0qBqzbrQxcfon/Kl62pxe8jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=34/JwktTS6/bnV52wjk0jr64eFrjCRRD36bDkLowUg8=;
- b=U9EhAaT1i3sZ6/D+IIJY8ZD8QHD/crP2A4nS2jZKCb2bphQhEO7uMpqWtL1CAxSkGEIqMa0aHkefb6N+PIT1TF9eIXSXMT7mcldObGHLmjaz/+k4L0XLInVJWIHXd/UnpUUktjzOdcqE3DJFJ79mX5HaoBDQKq3j95fLg8o//FHjxgJWuSE6hY882tK3AsP38855Ex2zQAx/qgSPLDm0sR2Vf+XkZqW77RgDZEMJRGTtzEg08KsSNWSIKLWOmMotHSHv5Xs8jmJbCGFDhoLJ3Y3eAqF9xsGBBGKIXE9zKF2pKLEOL6k0lUC20EEUz5dKVXVHRUAp5ZBjzQxkKVfNVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB8393.namprd11.prod.outlook.com (2603:10b6:806:373::21)
- by DS0PR11MB7559.namprd11.prod.outlook.com (2603:10b6:8:146::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.20; Mon, 22 Apr
- 2024 08:16:11 +0000
-Received: from SA1PR11MB8393.namprd11.prod.outlook.com
- ([fe80::c0cf:689c:129c:4bcd]) by SA1PR11MB8393.namprd11.prod.outlook.com
- ([fe80::c0cf:689c:129c:4bcd%6]) with mapi id 15.20.7519.018; Mon, 22 Apr 2024
- 08:16:11 +0000
-Date: Mon, 22 Apr 2024 16:09:33 +0800
-From: Yujie Liu <yujie.liu@intel.com>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-CC: <x86@kernel.org>, <linux-kernel@vger.kernel.org>, Linus Torvalds
-	<torvalds@linux-foundation.org>, Daniel Sneddon
-	<daniel.sneddon@linux.intel.com>, Pawan Gupta
-	<pawan.kumar.gupta@linux.intel.com>, Thomas Gleixner <tglx@linutronix.de>,
-	Alexandre Chartre <alexandre.chartre@oracle.com>, Konrad Rzeszutek Wilk
-	<konrad.wilk@oracle.com>, Peter Zijlstra <peterz@infradead.org>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, Sean Christopherson
-	<seanjc@google.com>, Andrew Cooper <andrew.cooper3@citrix.com>, Dave Hansen
-	<dave.hansen@linux.intel.com>, Nikolay Borisov <nik.borisov@suse.com>, "KP
- Singh" <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>, "Borislav
- Petkov" <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v4 1/5] x86/bugs: Only harden syscalls when needed
-Message-ID: <ZiYbPZ1biNCEndKZ@yujie-X299>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <982d05a2f669140f26500bee643011896d661094.1713559768.git.jpoimboe@kernel.org>
-X-ClientProxiedBy: SGAP274CA0022.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::34)
- To SA1PR11MB8393.namprd11.prod.outlook.com (2603:10b6:806:373::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF1C4DA11
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713773465; cv=none; b=jpvRA7E5qZqp/HH+enPIi+tAGWcUChv/STZpBJ5ZGzTY13Tw/IbFn/fDcaJQ7c+TqQ6l0A3rcuDIMKY8G8GAoBaFqe+2M94Eae8uqCHFCXpqJJnsYhOgzvzKHbGQV8koEphZ4CQ1gUTFq0mBV1EXzZ1jzwnT/b0T0xXUthPXNQ8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713773465; c=relaxed/simple;
+	bh=e9GKbiHtBRjjqYKrxUrMGm5SH2rgrO2zZWgczq/P31k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G2CBXMTwVfeoE2PQqLqWj5wymBZxpTMD1K4hiFhn8jl/xY0L+BlKUiPLdalxLTYmFQmWDj2TH3EAJLR8HYSzzINbBXI1AKJiZa7DTh1VBYAbamHkZ/iuiBor0n5aaNKHkEM+xpDQNBZ64JhybJfBHl90QfRiXXHgE9fJ2OvnqgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=eZU3Z+wU; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a55e17f5d8dso27901366b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:11:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1713773461; x=1714378261; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p9QX8CooDHp78Imo/EPyC0WcDTvF78Bq5sAeBhgkAFM=;
+        b=eZU3Z+wUST+x1NdU+N9jwhw5DEPr7jaBRmYNKmbnPqO77XLTo1tVwVXCu9IZdhhPiR
+         tV0nYJvyiDZIhUiwQyy0iiqHi7t546xJPPixTXJob4MnyEVoo03ksp9hyEX2fBD4wyPf
+         +Pra6zyvHPHTKTgPmLoqQ5EDYNqrzMA8/FTq0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713773461; x=1714378261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p9QX8CooDHp78Imo/EPyC0WcDTvF78Bq5sAeBhgkAFM=;
+        b=hphhVCLYYAYD+nG5OXSYXBSkTH60y+6M8bHPQtbR6gpPZy/xsR5WwzvN0kOY070HeR
+         85NJiTKObrk97vl7qsOr1Y7I3VZnQHxnrhHv+/4zSlv4idvHfrov/7HCisib7PlLt7nc
+         BRlTw1Vkrcm0UTmTU3IsoVfIVhFUfsi91OHQNV0ISV4DJbHauoagUnV0jyiq4t+jAJTN
+         wfG73GpvN1b69zVbwnfVZwBC1mMPJDoJbkTwmbssI8Hw//ATesKWL1VSWnjJAkdQYoXK
+         1HF5GxVYiq9II4w3Z6LVDJFKSaf1NoneDh1PCZrxUDKoFWbxqH1fDmP/rW2OrR44OlJc
+         E+wQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWIQ3/6Xh7A71YjpuGBM3g8Nf/tm8fUwcECxyjAlr7NzCMJyVdd2gEx2laEkpDAjyvo3Cv4lBZQ7q8oSA9mbRis4SXTesekfck/wyk0
+X-Gm-Message-State: AOJu0YzfHf6SmJU1ujKFteQ/17Ao+RDxeOOyJSbaZiSNPmPBPZIob4yr
+	0W/ZuTBfFbyOjduX+3mkVjiUlQR8RdK/hT53162JC5WyR6svJxinbt5/XcKbA743IHuv5MH1PEg
+	=
+X-Google-Smtp-Source: AGHT+IHPspeNQJIiwHM3NLMc55KG0SX5SILqVlxSYpJQylHW9qNRSv59K+OeJS5EqZpevYKax3LLew==
+X-Received: by 2002:a17:907:2d9f:b0:a56:cb24:fbb9 with SMTP id gt31-20020a1709072d9f00b00a56cb24fbb9mr374370ejc.20.1713773461025;
+        Mon, 22 Apr 2024 01:11:01 -0700 (PDT)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id t8-20020a170906a10800b00a4e253c8735sm5456829ejy.52.2024.04.22.01.11.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 01:11:00 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a4702457ccbso454722866b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:11:00 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWIZDvUafywQQrEnKnkAv6KA9BfK+OO9Ox0M153V1anEpHVaAF/Imleh20k9Vjr1IK3/3gItu5Mq4WRLRnPu2k6+Vhvw7YXC/ZdBORs
+X-Received: by 2002:a17:907:9624:b0:a52:2a36:38bf with SMTP id
+ gb36-20020a170907962400b00a522a3638bfmr6898017ejc.55.1713773460150; Mon, 22
+ Apr 2024 01:11:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB8393:EE_|DS0PR11MB7559:EE_
-X-MS-Office365-Filtering-Correlation-Id: 00cab06a-3af6-46a6-3b44-08dc62a47885
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|1800799015|7416005|366007;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?zAtrfKKtvk6QJSTO+MKkpDvosOOBmuaciARkL57eRjM3upvoW8TxJhcgEj24?=
- =?us-ascii?Q?TrmAlMYPx4Tjroo5oiuG98llZnnXx9Xw/pPDCeYrdtT48k4N+aKzC5j4g28S?=
- =?us-ascii?Q?uEXUCqj7BXYCvNNqENXF0RjDefDsexhSrCzycoiX3L/ZNb3iaZJEswbQRVsY?=
- =?us-ascii?Q?iAf+Gs8m2enmQPDlj/ghGMxkWDLJujnpnGwejjFfE3RNvJe+0MlbUZdZ5j/O?=
- =?us-ascii?Q?tqEV1/zd46GOQJ0PNgijCzwFF7zbHYO53G+ljSCuJh/Dq5r0xlH+mNgPrBj4?=
- =?us-ascii?Q?eos5HattmUFZTDA80tS/UXJh8AtvINcuusKyHEWwOMUlVRoOm4ylo6xaCnL4?=
- =?us-ascii?Q?BeaxAZnBllaBcxyhfS6beC9cRieHei9WgbKCWxxsxtbPwjeYD/RKET7NCkvF?=
- =?us-ascii?Q?uSZVLaB85YjeH/+73Kn5iLdr6JMsS99qIKhZsMfmPM4+GrgjL4K3uW9gaJl4?=
- =?us-ascii?Q?/UtCgsgeZIIdO0Wn4j6HJrxUt15k4Ix16vYwxXBIyVanaHOosi9/WXjaaPoo?=
- =?us-ascii?Q?Y+DyujX0udhx94audetjIq44CIgAMh3S1xow74aSw2G3oGd0d7QcUs+N/eZr?=
- =?us-ascii?Q?jhz0CdNS1hWwjMwG4wD4NbGf3vkI7QFwsibAQzi0FV9XskYYVFVYLMnr/IDa?=
- =?us-ascii?Q?hCE2I1lGlYb9dfRpH6aHMJcBRJtSUVmn7+XDdrQ1GdSAkVPJpGrmzpk3UUHt?=
- =?us-ascii?Q?ZZnxvlDB73bndMYOKVZGqkMJdSsL/OLmwSISLHCQBKewmCCvZpB2d3U8hct4?=
- =?us-ascii?Q?3Fg4zVWNmzgJqhLuOUtAaV7J266ghLel+OdwS7dMlPFfasCWGQn7nYgEUEpN?=
- =?us-ascii?Q?lU6VmwQguzOXbgIS59tm5GrtJsfVtpEZErLNZh8JQZ23VK2/zRAxckn6dr94?=
- =?us-ascii?Q?3iz0WGlU6gTrJ6Xh1M40KfCXGTMNY8Sz+bvPZre+CVHzwD1H79IXoSShibDG?=
- =?us-ascii?Q?zm8oWSqBtuaN5gjLeX0pFmCCzSmRD4RWsluqSpqp384ga3N7cLYIeOBXSenc?=
- =?us-ascii?Q?GLGQ+B/H1Og6VAJsruulzNiZZqvuvZRlWkTZ8bG4VjNaDEuUyUZru2u8pRv5?=
- =?us-ascii?Q?Dr265w8N7HaOj+9w6hYiu+j1uR7x5l3SA0HRzJFuzvPW/FhNR3d/Vt78eWRO?=
- =?us-ascii?Q?NcvLirdGPVCMicxKhVWzGrCr4QXzKgGk/lPvnMcmDiXWZog2goDjarMtWkye?=
- =?us-ascii?Q?Rcq5litWCbnEVq4Ra31M9FwSMePMN3eg9N6Vmf+bPtfMUc4WmwZDDCBqfhAc?=
- =?us-ascii?Q?pP9VVttH+TmLt8FSbN06CcO8lAvc9TKYYlSNlNay4g=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB8393.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FZzSqId8q/Nu1b7Ials9mue7N44OzFnhbeCjwRfiar0Q1ZnTFfJ6J69o8ee0?=
- =?us-ascii?Q?tPrqK5nSFJvqP9OsIgdoZjZHQApalMTmseHxR7QdVPnv57spFQ0vyQvS8ugI?=
- =?us-ascii?Q?djq++w3ubVztX/Fg4lBw7MUcEX7bh69ATK/NOt3tcEiK29ExAWwqPRXxP20k?=
- =?us-ascii?Q?4K5fmLzdEbvUPqPPoD2iO/rWIbr1NgpVku5pqX15KisPEn+pYl7/pEB7KbgO?=
- =?us-ascii?Q?RvxQYdfMO83wT+tqxc70itF3N42ktO82+Fwo6No/e8hCi6s3iYt3RBFLZTwi?=
- =?us-ascii?Q?BklLy4oUnLNJkLC4FbCccRzyGnTRDNv8XKEfGNYtrKxob6rlueqG6qHhW+y9?=
- =?us-ascii?Q?56mqe41PsZs0EDrh4YisXB32gs5+Q3l+OjFpHcJ+h+zqYjvquJm2cFFpDXQJ?=
- =?us-ascii?Q?9OhKYYPvqrjBQfsVuyOx5u+BcLSRXx3W3bbcfsQIlC6osLvYrWK4A5NsmrNF?=
- =?us-ascii?Q?woA2WzOAjEeW9d0Ut21fWc3dY/1jN5/GyrHTPURn/APMvDlVVB+JFRPYq/Ij?=
- =?us-ascii?Q?VJz6pxYtAGILG+ZqBJ+asAvzhxkqoQQM7/9WV+70Pd/88uTm3tCh6Q7ZTmr3?=
- =?us-ascii?Q?tS8TnjGhAgKy+dnAhAhJJf3lZMjhag2GZi/uErqBDY73af5+nrRSCTNk1trR?=
- =?us-ascii?Q?UBKvR683UnvjevswH9UoAroU5vLTV1MPh910K4VfnDIbTN11zZ0XSNl0d0PE?=
- =?us-ascii?Q?+db0by7bij+MVQKSMR3mBIbY4F/x90M/08CiRkT03f5CTlzsZJTf941Ut4aE?=
- =?us-ascii?Q?JZESokxPQJBnUmhjrJ3P9rRXyvQuSZO5Am0qXPUYLtMA9ZBmEEMoIXhLcOm+?=
- =?us-ascii?Q?B75lUwvlj3WTBVqEGQPyVLaYHYtXLQH4dbG6quglH3HdhJGTltI977likDqa?=
- =?us-ascii?Q?druxsnwf7tVkrEv/wp9ZFmh0DbtCTuaWinW8b0WMkb1QylGyicokHISM4oFF?=
- =?us-ascii?Q?K9tgsu2QzjtLnGc+TZoJqjQXdzw02RTDCPCYWLXBU4txZjus5CO/m2dWuEB2?=
- =?us-ascii?Q?cCQvw670soFUX90OtePRjV4HIkIWgUslNgvykxooCKBYjlihOjgtkKZyB+9U?=
- =?us-ascii?Q?SiMFJrnnIkeDZSlqATb8+j1x0Uy1rSv8/cFTidSQUDJIcv8z/ZdJFQiu7TKw?=
- =?us-ascii?Q?WP8hEEpnXZIGaOP4KbymGCZ39OHN9c/cKy7Br1GdNmQ+z/Ubltzbpa/lC7Up?=
- =?us-ascii?Q?i4ldXtsDXXmlXCgaRp77S8itT6FGjZ3Riar5qpqZHRGtllp6L0WvOQ7ARy84?=
- =?us-ascii?Q?XtLksdWbpoYRwQB/vEektMa7SanFUdHsYf4+sWDqB2X0C2h8+SgED14pguT6?=
- =?us-ascii?Q?IJfg6Qon6Lvf/X8m7/9RoyxTZypF8tX7B6NfRXH60/EHEh+BvzWk2tmJVGrD?=
- =?us-ascii?Q?yQ2v98oVS+YgctJ1l4j/3/FJ4Ww+7ljQpqH1KviJwL9Pm46Sa2/motM4KbaQ?=
- =?us-ascii?Q?Sec86yFo1WIxGeDBwuYO9j+ixwPNPoExKpu5sMkEvSoXQAu7AecOup4MYC13?=
- =?us-ascii?Q?pEu+kcfkvgvnlynFd1kgKwj1R21zmJKqCGXbp32C8qInXXFJyoLaAx45byat?=
- =?us-ascii?Q?jxTJldWanCrUJ9Tk18pUkjZT/KXAlOWxiCCq/xYe?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00cab06a-3af6-46a6-3b44-08dc62a47885
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB8393.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 08:16:11.7631
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a8X+fDTJx0fP/ZkLMO3OXZA268YMnhEe7BewkcdlbjU/60qlZ87D/befk+DB0ULivHFRMATDy0pf45EFSaxZTg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7559
-X-OriginatorOrg: intel.com
+References: <20240418-sbs-time-empty-now-error-v3-1-f286e29e3fca@collabora.com>
+ <cf4d8131-4b63-4c7a-9f27-5a0847c656c4@notapiano>
+In-Reply-To: <cf4d8131-4b63-4c7a-9f27-5a0847c656c4@notapiano>
+From: Hsin-Te Yuan <yuanhsinte@chromium.org>
+Date: Mon, 22 Apr 2024 16:10:23 +0800
+X-Gmail-Original-Message-ID: <CAHc4DNJ0prAQOw89Hvw8n9KhY+8xB3D77pJvoPfU-X7ZFDYu7Q@mail.gmail.com>
+Message-ID: <CAHc4DNJ0prAQOw89Hvw8n9KhY+8xB3D77pJvoPfU-X7ZFDYu7Q@mail.gmail.com>
+Subject: Re: [PATCH v3] power: supply: sbs-battery: Handle unsupported PROP_TIME_TO_EMPTY_NOW
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>
+Cc: Sebastian Reichel <sre@kernel.org>, kernel@collabora.com, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Pin-yen Lin <treapking@chromium.org>, 
+	Hsin-Te Yuan <yuanhsinte@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 19, 2024 at 02:09:47PM -0700, Josh Poimboeuf wrote:
-> Syscall hardening (converting the syscall indirect branch to a series of
-> direct branches) has shown some performance regressions:
+On Sat, Apr 20, 2024 at 12:03=E2=80=AFAM N=C3=ADcolas F. R. A. Prado
+<nfraprado@collabora.com> wrote:
 >
-> - Red Hat internal testing showed up to 12% slowdowns in database
->   benchmark testing on Sapphire Rapids when the DB was stressed with 80+
->   users to cause contention.
+> On Thu, Apr 18, 2024 at 01:34:23PM -0400, N=C3=ADcolas F. R. A. Prado wro=
+te:
+> > Despite the RunTimeToEmpty() (0x11) function being defined in the SBS
+> > specification as required, it seems that not all batteries implement it=
+.
+> > On platforms with such batteries, reading the property will cause an
+> > error to be printed:
+> >
+> > power_supply sbs-8-000b: driver failed to report `time_to_empty_now' pr=
+operty: -5
+> >
+> > This not only pollutes the log, distracting from real problems on the
+> > device, but also prevents the uevent file from being read since it
+> > contains all properties, including the faulty one.
+> >
+> > The following table summarizes the findings for a handful of platforms:
+> >
+> > Platform                                Status  Manufacturer    Model
+> > -----------------------------------------------------------------------=
+-
+> > mt8186-corsola-steelix-sku131072        OK      BYD             L22B3PG=
+0
+> > mt8195-cherry-tomato-r2                 NOT OK  PANASON         AP16L5J
+> > mt8192-asurada-spherion-r0              NOT OK  PANASON         AP15O5L
+> > mt8183-kukui-jacuzzi-juniper-sku16      NOT OK  LGC KT0         AP16L8J
+> > mt8173-elm-hana                         OK      Sunwoda         L18D3PG=
+1
+> > sc7180-trogdor-lazor-limozeen-nots-r5   NOT OK  Murata          AP18C4K
+> > sc7180-trogdor-kingoftown               NOT OK  333-AC-0D-A     GG02047=
+XL
+> > rk3399-gru-kevin                        OK      SDI             4352D51
+> >
+> > Detect if this is one of the quirky batteries during presence update, s=
+o
+> > that hot-plugging works as expected, and if so report -ENODATA for
+> > POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW, which removes it from uevent and
+> > prevents throwing errors.
+> >
+> > Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
+> > ---
 >
-> - The kernel test robot's will-it-scale benchmarks showed significant
->   regressions on Skylake with IBRS:
->   https://lkml.kernel.org/lkml/202404191333.178a0eed-yujie.liu@intel.com
-
-To clarify, we reported a +1.4% improvement (not regression) of
-will-it-scale futex4 benchmark on Skylake. Meanwhile we did observe some
-regressions by running other benchmarks on Ice Lake, such as:
-
-    stress-ng.null.ops_per_sec -4.0% regression on Intel Xeon Gold 6346 (Ice Lake)
-    unixbench.fsbuffer.throughput -1.4% regression on Intel Xeon Gold 6346 (Ice Lake)
-
+> Hi,
 >
-> To fix those slowdowns, only use the syscall direct branches when
-> indirect branches are considered to be "not OK": meaning Spectre v2+BHI
-> isn't mitigated by HW and the user hasn't disabled mitigations.
+> I'm coming back with more information after some more testing has been do=
+ne.
+>
+> Most importantly, in the meantime, a parallel investigation uncovered tha=
+t the
+> time_to_empty_now issue was actually in the EC firmware:
+> https://chromium-review.googlesource.com/c/chromiumos/platform/ec/+/54657=
+47
+>
+> So the other faulty properties (which I'll mention below) could also be d=
+ue to
+> the EC firmware. These are the EC firmware version for the platforms with
+> additional issues:
+> * RW version:    juniper_v2.0.2509-9101a0730
+> * RW version:    lazor_v2.0.6519-9923041f79
+>
+> Hsin-Te, do you have information on whether it's an EC issue in this case=
+ as
+> well?
+>
+> The following table shows all the faulty properties per platform:
+>
+> Platform                               Manufacturer  Model      Faulty pr=
+operties
+> -------------------------------------------------------------------------=
+--------
+> mt8186-corsola-steelix-sku131072       BYD           L22B3PG0   -
+> mt8195-cherry-tomato-r2                PANASON       AP16L5J    time_to_e=
+mpty_now
+> mt8192-asurada-spherion-r0             PANASON       AP15O5L    time_to_e=
+mpty_now
+> mt8183-kukui-jacuzzi-juniper-sku16     LGC KT0       AP16L8J    time_to_e=
+mpty_now
+>                                                                 capacity_=
+error_margin
+>                                                                 constant_=
+charge_current_max
+>                                                                 constant_=
+charge_voltage_max
+>                                                                 current_a=
+vg
+>                                                                 technolog=
+y
+>                                                                 manufactu=
+re_year
+>                                                                 manufactu=
+re_month
+>                                                                 manufactu=
+re_day
+>                                                                 SPEC_INFO
+> mt8173-elm-hana                        Sunwoda       L18D3PG1   -
+> sc7180-trogdor-lazor-limozeen-nots-r5  Murata        AP18C4K    time_to_e=
+mpty_now
+>                                                                 capacity_=
+error_margin
+>                                                                 constant_=
+charge_current_max
+>                                                                 constant_=
+charge_voltage_max
+>                                                                 current_a=
+vg
+> sc7180-trogdor-kingoftown              333-AC-0D-A   GG02047XL  time_to_e=
+mpty_now
+> rk3399-gru-kevin                       SDI           4352D51    -
+>
+> If it turns out to not be an EC issue for the properties other than the
+> time_to_empty_now, then quirks will need to be added for them. As for SPE=
+C_INFO
+> it's fine to keep it the way it is, as it already fails gracefully by fal=
+ling
+> back to disabled PEC. However it does mean sbs_update_quirks() would need=
+ to be
+> moved up in sbs_update_presence(), or it will never run when SPEC_INFO fa=
+ils.
+>
+> Also, the battery vendor for limozeen is actually "Murata ", with a trail=
+ing
+> space...
+>
+> While at it, I also tested whether PEC was broken on all platforms (which=
+ have
+> the SBS battery behind the EC I2C tunnel) to see if it could have any rel=
+ation
+> with the faulty properties:
+>
+>                                                                 PEC
+> Platform                               Manufacturer  Model      Status
+> ------------------------------------------------------------------------
+> mt8186-corsola-steelix-sku131072       BYD           L22B3PG0   NOT SUPPO=
+RTED
+> mt8195-cherry-tomato-r2                PANASON       AP16L5J    NOT SUPPO=
+RTED
+> mt8192-asurada-spherion-r0             PANASON       AP15O5L    NOT SUPPO=
+RTED
+> mt8183-kukui-jacuzzi-juniper-sku16     LGC KT0       AP16L8J    NOT SUPPO=
+RTED
+> mt8173-elm-hana                        Sunwoda       L18D3PG1   BROKEN
+> sc7180-trogdor-lazor-limozeen-nots-r5  Murata        AP18C4K    NOT SUPPO=
+RTED
+> sc7180-trogdor-kingoftown              333-AC-0D-A   GG02047XL  NOT SUPPO=
+RTED
+> rk3399-gru-kevin                       SDI           4352D51    BROKEN
+>
+> Where on the platforms marked BROKEN all properties would fail like so:
+> power_supply sbs-9-000b: driver failed to report `status' property: -74
+>
+> Those platforms indeed had PEC enabled:
+> <6>[   18.109211] sbs-battery 9-000b: PEC: enabled
+>
+> and I verified the reported SBS version was SBS_VERSION_1_1_WITH_PEC.
+>
+> Meanwhile, all the other platforms, marked NOT SUPPORTED, didn't actually=
+ have
+> PEC enabled:
+> <6>[   14.563070] sbs-battery 8-000b: PEC: disabled
+>
+> which I verified was due to version SBS_VERSION_1_0 being reported (excep=
+t for
+> jacuzzi, which fails to report a version).
+>
+> So all platforms that had batteries that support PEC, have broken PEC, bu=
+t most
+> don't support it. In any case there doesn't seem to be a correlation with=
+ the
+> properties that the batteries support, so it looks to be an orthogonal is=
+sue.
+>
+> Thanks,
+> N=C3=ADcolas
+
+It looks like the firmware version of juniper is too old. Could you
+update the firmware and test it again?
+Also, Could you provide the error you get from lazor?
+
+Regards,
+Hsin-Te
 
