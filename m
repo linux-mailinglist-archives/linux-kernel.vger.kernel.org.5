@@ -1,85 +1,51 @@
-Return-Path: <linux-kernel+bounces-153953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0278AD546
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:54:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1000A8AD548
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:54:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45F6D2820EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:54:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A38A7B24466
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:54:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB341553BB;
-	Mon, 22 Apr 2024 19:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA18155A23;
+	Mon, 22 Apr 2024 19:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zd9rBI9F"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NsfrRM7n"
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C152B15535A
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F32B155752
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713815507; cv=none; b=mUw5p+LEfUuOWu1LKZumt7OcBUcoZN/DqLKwKinkQrdNQqyDutOqFcsJvfjiTOe1NPw36SZeMH/caKniwYFl6HuTtwnWiBkvxLtBdAXlNFYj5elmxAJfY2UHA3HjFp+ItHx575IyUGos/5peNvHRXCc1vlexB8Xf+0OWCBetjAY=
+	t=1713815537; cv=none; b=myAVNrQCNUJlIp0Eeqx49RVexB8FNlzllUmmhqMA4nWgk6gGcXYm9F4VV4svZH56KPG3whRrtBJ9NIlJDfJXrklVUzr55nxGSmBoRzjh0nGlJp87+aZYQyfwTUybK4poHwOXRXVKt/GN4jIAdMRdGh1fjcEfoxkp0wKUlavy5JM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713815507; c=relaxed/simple;
-	bh=mSEfp8z6eofbu2/o66Cv2ZH7gIEi/qWNZLXM7oA1hYA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L5tPSB8HIDn55HHEs9UwNqUjU7mvlHptNtCcHEHA+78XBhjKF9jY7YE21DsLz7LxEkjZ8Kxgnzg5gbCcJ85Buc9QwG5xCj+yyQAFF1TVr50nbdRCWw22XGePmYfJ6rF5420e10+RQn61TUQBzkPG8QR5pvNGcVZuB7qwSBhTLIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zd9rBI9F; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d88a869ce6so68546881fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:51:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713815504; x=1714420304; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=geu7O3+m3HJ/3o9N5bHvMzVI9k+cw0GEArJbMvVCgjk=;
-        b=zd9rBI9FlIK4x5TWg2nVD5GdPP3T9ZdGGjWgccRAw9S+ye2NMccfuLMZbAoxkUqTLh
-         cypXFVGhHN3q2YIbOAxHWj3CdEEsLovPS1A/hhZnlCuWO23lulrViv8CWvmSbSfGLYPf
-         Hw7PpwG/zTPn9PL3Q/MVDcpU2EpBPJNNntqmYrp2NO01tqWNxDw4F0X6XS8IgxX7BMQS
-         VFQpIspYLU5unMcMBRCy/w4qwdzq7y9wmDsVyGrRqWtrPbNAtohHwd7n4cxrHejLL/xt
-         RPE/rd4qpxHXMVWiP63a6appKL2hLauAZiOrFtkfbdZlwKxVloBciJxLJ+LMz2jzgZtC
-         UC1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713815504; x=1714420304;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=geu7O3+m3HJ/3o9N5bHvMzVI9k+cw0GEArJbMvVCgjk=;
-        b=AHInhpODMAXewRpr3YNGzdVvGlmR4A7zHADP0ipCpT5cU2p8nXPEgz3oKybxGcP54N
-         d/YITUaeyA9W46Ygd8MUGHKncQac+i4oAmN8+tg7otqb6jExZ9TsiWYD8iUoGDz/6IXs
-         qZH7ng14DYs3MYFlL60K/S7XXEviQ/JMOLO6S4+KL1ZzSPbN75llDmcse5aLiXz+mJNv
-         3i2POVGCI5EJCpIT1rJKBWCgFYGLp6JJsLKzYekZn4Jhm8+cBqGNMAVcFkeXtq0vZXW1
-         scgjTg21oQE8FeVwumx1cpGP41ehDPucFVjVG5Lk0oQP/iYnFC1GwXLRHARMae/ZSauN
-         ni6A==
-X-Forwarded-Encrypted: i=1; AJvYcCWE09DGRnCqq7mfDulJoWR7vWKUKPLoTuT2E9BHnj4i5+KPV/cPSvBxIalwFuRU1aG68ZupC3FJljxMPWC0BDJ96rStaxNut1wEexgt
-X-Gm-Message-State: AOJu0YxDdX/KsBr2vLYnSG8tv5F8pjBycbyZQdByWfM9u1HGECN6/Jt/
-	ud5N2lDX+gGhw8372GqUrg+tGGJK8/sfSRnPFg1gxiU/j/lrtgbp1y5oNOfgmB0=
-X-Google-Smtp-Source: AGHT+IFBToLOpSsjPI8pjqEB5XqsvUzOWG8mujF7Bwog8+VxvvQHLSw7DikZG1Z+rLu3IV4Obwe7Jw==
-X-Received: by 2002:a2e:9ccb:0:b0:2d6:d351:78ae with SMTP id g11-20020a2e9ccb000000b002d6d35178aemr7467468ljj.29.1713815503853;
-        Mon, 22 Apr 2024 12:51:43 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
-        by smtp.gmail.com with ESMTPSA id t3-20020a2e9c43000000b002dcb831d958sm1317363ljj.56.2024.04.22.12.51.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 12:51:43 -0700 (PDT)
-Date: Mon, 22 Apr 2024 22:51:41 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org, 
+	s=arc-20240116; t=1713815537; c=relaxed/simple;
+	bh=EK1EZzGAtYGUjl2hyFST+YG4uALloruxlOHlWlLPKhM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=VRnbIOxIM+G3JYqCCZq+wbcQK7IxtJETp8k2uWj1YSQW6VFnhHDm+Stjwzu1amD2jTXl7j++IAfZMnrX1UfmRUj2x/MXAP8g4H2R7Qf1s8UeHdJNP1j1QmQNvATQ+L79RtBemNYJe9Zuob8JK++YSowA01eyPryAhyf6O0ou/aU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NsfrRM7n; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 22 Apr 2024 15:52:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713815530;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=2GMQSjZim3LKV3Y1Miu61pAhsMImS7IiK2sA4UPpM/Y=;
+	b=NsfrRM7nU9HcXCA9rhNE6cw8+Nm43qOk5NEEv9VJ6pcm7wkWDZjt6x+7OD39iaf8Y8NGLG
+	lO1cosqkssc9MdPNzsuCxWmz/tMGMlCsHG/b6xrUoO2VD9+JmA1AM/EmUtL6psJxQjxmGV
+	LdQUnp/p5S+G1SwReSTd8gIvncywGLI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/9] drm/bridge: Allow using fwnode API to get the
- next bridge
-Message-ID: <xsfrnucued63q2amv7betkvgks6bhssubhjcryghkcloytixj4@ukmak4xwyjtg>
-References: <20240422191903.255642-1-sui.jingfeng@linux.dev>
- <20240422191903.255642-2-sui.jingfeng@linux.dev>
+Subject: [GIT PULL] bcachefs fixes fro 6.9-rc6
+Message-ID: <fwtvoxp2ktrhst5rm2yk4uk5atjuvnfpg7wjrozg2zd5p7tqzo@mca5izehz5fx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,89 +54,82 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240422191903.255642-2-sui.jingfeng@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Apr 23, 2024 at 03:18:55AM +0800, Sui Jingfeng wrote:
-> Currently, the various display bridge drivers rely on OF infrastructures
-> to works very well, yet there are platforms and/or devices absence of 'OF'
-> support. Such as virtual display drivers, USB display apapters and ACPI
-> based systems etc.
-> 
-> Add fwnode based helpers to fill the niche, this allows part of the display
-> bridge drivers to work across systems. As the fwnode API has wider coverage
-> than DT counterpart and the fwnode graphs are compatible with the OF graph,
-> so the provided helpers can be used on all systems in theory. Assumed that
-> the system has valid fwnode graphs established before drm bridge drivers
-> are probed, and there has fwnode assigned to involved drm bridge instance.
-> 
-> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
-> ---
->  drivers/gpu/drm/drm_bridge.c | 74 ++++++++++++++++++++++++++++++++++++
->  include/drm/drm_bridge.h     | 16 ++++++++
->  2 files changed, 90 insertions(+)
-> 
+Hi Linus, another batch of bcachefs fixes.
 
-[skipped]
+Nothing too crazy in this one, and it looks like (fingers crossed) the
+recovery and repair issues are settling down - although there's going to
+be a long tail there, as we've still yet to really ramp up on error
+injection or syzbot.
 
-> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
-> index 4baca0d9107b..a3f5d12a308c 100644
-> --- a/include/drm/drm_bridge.h
-> +++ b/include/drm/drm_bridge.h
-> @@ -26,6 +26,7 @@
->  #include <linux/ctype.h>
->  #include <linux/list.h>
->  #include <linux/mutex.h>
-> +#include <linux/of.h>
->  
->  #include <drm/drm_atomic.h>
->  #include <drm/drm_encoder.h>
-> @@ -721,6 +722,8 @@ struct drm_bridge {
->  	struct list_head chain_node;
->  	/** @of_node: device node pointer to the bridge */
->  	struct device_node *of_node;
-> +	/** @fwnode: fwnode pointer to the bridge */
-> +	struct fwnode_handle *fwnode;
+For users - if anyone is seeing bugs that impact filesystem
+availability, make sure you're reporting those and be noisy about it;
+all the non critical stuff should be reported too, but are lower
+priority for now.
 
-My comment is still the same: plese replace of_node with fwnode. It is
-more intrusive, however it will lower the possible confusion if the
-driver sets both of_node and fwnode. Also it will remove the necessity
-for helpers like drm_bridge_set_node().
+Cheers,
+Kent
 
->  	/** @list: to keep track of all added bridges */
->  	struct list_head list;
->  	/**
-> @@ -788,6 +791,13 @@ int drm_bridge_attach(struct drm_encoder *encoder, struct drm_bridge *bridge,
->  		      struct drm_bridge *previous,
->  		      enum drm_bridge_attach_flags flags);
->  
-> +static inline void
-> +drm_bridge_set_node(struct drm_bridge *bridge, struct fwnode_handle *fwnode)
-> +{
-> +	bridge->fwnode = fwnode;
-> +	bridge->of_node = to_of_node(fwnode);
-> +}
-> +
->  #ifdef CONFIG_OF
->  struct drm_bridge *of_drm_find_bridge(struct device_node *np);
->  #else
-> @@ -797,6 +807,12 @@ static inline struct drm_bridge *of_drm_find_bridge(struct device_node *np)
->  }
->  #endif
->  
-> +struct drm_bridge *
-> +drm_bridge_find_by_fwnode(struct fwnode_handle *fwnode);
-> +
-> +struct drm_bridge *
-> +drm_bridge_find_next_bridge_by_fwnode(struct fwnode_handle *fwnode, u32 port);
-> +
->  /**
->   * drm_bridge_get_next_bridge() - Get the next bridge in the chain
->   * @bridge: bridge object
-> -- 
-> 2.34.1
-> 
+The following changes since commit ad29cf999a9161e7849aa229d2028854f90728c2:
 
--- 
-With best wishes
-Dmitry
+  bcachefs: set_btree_iter_dontneed also clears should_be_locked (2024-04-15 13:31:15 -0400)
+
+are available in the Git repository at:
+
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-04-22
+
+for you to fetch changes up to e858beeddfa3a400844c0e22d2118b3b52f1ea5e:
+
+  bcachefs: If we run merges at a lower watermark, they must be nonblocking (2024-04-22 01:26:51 -0400)
+
+----------------------------------------------------------------
+bcachefs fixes for 6.9-rc6
+
+- fix a few more deadlocks in recovery
+- fix u32/u64 issues in mi_btree_bitmap
+- btree key cache shrinker now actually frees, with more instrumentation
+  coming so we can verify that it's working correctly more easily in the
+  future
+
+----------------------------------------------------------------
+Kent Overstreet (14):
+      bcachefs: Fix null ptr deref in twf from BCH_IOCTL_FSCK_OFFLINE
+      bcachefs: node scan: ignore multiple nodes with same seq if interior
+      bcachefs: make sure to release last journal pin in replay
+      bcachefs: Fix bch2_dev_btree_bitmap_marked_sectors() shift
+      bcachefs: KEY_TYPE_error is allowed for reflink
+      bcachefs: fix leak in bch2_gc_write_reflink_key
+      bcachefs: Fix bio alloc in check_extent_checksum()
+      bcachefs: Check for journal entries overruning end of sb clean section
+      bcachefs: Fix missing call to bch2_fs_allocator_background_exit()
+      bcachefs: bkey_cached.btree_trans_barrier_seq needs to be a ulong
+      bcachefs: Tweak btree key cache shrinker so it actually frees
+      bcachefs: Fix deadlock in journal write path
+      bcachefs: Fix inode early destruction path
+      bcachefs: If we run merges at a lower watermark, they must be nonblocking
+
+Nathan Chancellor (1):
+      bcachefs: Fix format specifier in validate_bset_keys()
+
+ fs/bcachefs/backpointers.c          |  2 +-
+ fs/bcachefs/bcachefs_format.h       |  3 +-
+ fs/bcachefs/btree_gc.c              |  3 +-
+ fs/bcachefs/btree_io.c              |  2 +-
+ fs/bcachefs/btree_key_cache.c       | 19 +++---------
+ fs/bcachefs/btree_node_scan.c       |  2 ++
+ fs/bcachefs/btree_types.h           |  2 +-
+ fs/bcachefs/btree_update_interior.c |  6 +++-
+ fs/bcachefs/chardev.c               |  4 ++-
+ fs/bcachefs/fs.c                    |  9 ++++--
+ fs/bcachefs/journal_io.c            | 60 ++++++++++++++++++++++++++-----------
+ fs/bcachefs/recovery.c              |  5 +++-
+ fs/bcachefs/sb-clean.c              |  8 +++++
+ fs/bcachefs/sb-errors_types.h       |  3 +-
+ fs/bcachefs/sb-members.c            |  4 +--
+ fs/bcachefs/sb-members.h            |  6 ++--
+ fs/bcachefs/super.c                 |  1 +
+ fs/bcachefs/thread_with_file.c      | 15 ++++++++--
+ fs/bcachefs/thread_with_file.h      |  3 ++
+ 19 files changed, 105 insertions(+), 52 deletions(-)
 
