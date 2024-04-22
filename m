@@ -1,195 +1,224 @@
-Return-Path: <linux-kernel+bounces-153589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 086B68AD006
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:58:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F3078AD009
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:58:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4EE52859AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:58:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 910F11C20C82
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:58:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CEF115250B;
-	Mon, 22 Apr 2024 14:57:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0466015219C;
+	Mon, 22 Apr 2024 14:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xVUZcvki"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="on2WQfzX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACCDB152189
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 14:57:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 297151E49F;
+	Mon, 22 Apr 2024 14:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713797868; cv=none; b=B0YNjQcXEfVfxnKkBo4rDTeAnjvGnssKiASJ5QCcUiQqhuCQRkpbu5NqwTnTyzKMmGWq7G6dpy38KX/YnyGCPAy4vmT7V+l4s7PhQgl0hceXXj/Ty5VAbnFUnn8YlsMzf7BOtP9BC/PxNq7r1SQNeuLExFS1fxJyiz4IK39By6M=
+	t=1713797910; cv=none; b=OFFmMI65DuGw/LQotW3ITgIWXRAAJ4fWDds+d45B+IAc+bMnnSkmcZAoIpbhrr0eQlyqyXaNQ+YmGt+wPAcY/VqRJx4+lK0e0hiMivsnRoSE5oMFx9fjoaRT7cksoKmmv+Id9phdiLktWf6VOSq+3IPTMDcrTwUvZ1LR8cYlmn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713797868; c=relaxed/simple;
-	bh=3QukAxF9x8keggcmZ5JAuzjKsHOe0olr9mzjfn/llzI=;
+	s=arc-20240116; t=1713797910; c=relaxed/simple;
+	bh=Hnua4xCH7jRrOiIHSR0dvdKvoajbxDPeeOvhhIlqF+k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fczwntZaKfvXT7xlH9A55X7SAxW9E9EhmPfe9nePq4SII9aN0pDXjXvGPDVmexUkHihXAP/ASHpKhQHpDMQP1UTeRkYQx35BGXO1BJANzdrr0UTWdAf4qIIAgDz7GtjcIBURmJche6TbhPD646/VqY+h4Bp2qm344ojgCOTKd80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xVUZcvki; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51acc258075so3451396e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:57:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713797865; x=1714402665; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O7LF7mBQJYuNlCsuT9TW9nCR6m2MZVtuZsBkk99+oIw=;
-        b=xVUZcvki08f2NL9yp6+QU9OsQ7te4ID17/Dnm75BpMZn/zSskt6To3DIChWOX3B1OH
-         ho7dZPxgvywoOquhYOFwmoelyJostLA8r57l8GRLQeVcrvrrnJJqplS5+6DbNX9BSk3h
-         QFu4Y1ObswuwlArFLFX5KHAWitgRv3o7faByvfPWOTcO4QgH9q1wNBs/mqLy7ZWuGzKQ
-         JxYAvq50w2hyfkiJphQPk6FWlOMf4l8VQAohEX++5gY/f1GmE6T1saTLjAP3govExoiJ
-         JKHbvUSO8DsLthNnlxxcNP5PPPGpj2BMuWqmaTEu+YfW3bpKHzWKR0a1a1IaI0ezF71n
-         l8uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713797865; x=1714402665;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O7LF7mBQJYuNlCsuT9TW9nCR6m2MZVtuZsBkk99+oIw=;
-        b=ooWu/G2gcNzCtZ91vjWpjQdqMVhWXPGJwYGttE31z0HvoOJ0tRNV3cliRZrygdwUBU
-         HPc0xMC0noUpTE7We2hPZnMzRZj6+RQpBX/f3MP4OHG8sG+rPurMcgzhSIAYzWRZrr8f
-         8U+SK+I4PNmeIK8bexjsX6QHRdzIZbE/eWONy3XkuNPLavxe7rZ4OPlXrmFHT6f6QSnP
-         oQIha+ygKuOpc1cgNy6fJTKvCbHzGW4ToInG2w2I4Ff5m7VMLPYeFNWzRI+HUUCen1df
-         tOvZVwk7wiwsIQRs5MxFF5ddj09mPuqbe9gVPs5p/TcV/HeniR1BhZ8CgYzcuUqXWbJy
-         muIA==
-X-Forwarded-Encrypted: i=1; AJvYcCWM77gKVYemwYxwXN0t2gHW/YKHyF3uG/ajDlAMo+O3Y2sCt1iBGI5AHLvoKgzj/IGL+vtvRaoLhSCx5BiDpZ37BbJO7oVNN2R/iPLI
-X-Gm-Message-State: AOJu0Yyou46hnRGXL9bwNS2VkHJxrUke6dhxFA9O+BCxu0YH62bE1dMP
-	1R0maoM/IxSsFnrPZwrEwffPTwVv/eXRExye3gPnhwShevnxqO6vVOVb/qYJOZDgZYz4jddwapT
-	c8vs=
-X-Google-Smtp-Source: AGHT+IGyLLZrNulj0xRkuSIpQWr5bZVAAgmHvz84R+mSTI2YxA6Fg1grf9bNCHLRK7MCUJYHh4p7+w==
-X-Received: by 2002:a05:6512:908:b0:519:5a3c:e468 with SMTP id e8-20020a056512090800b005195a3ce468mr5350547lft.12.1713797864753;
-        Mon, 22 Apr 2024 07:57:44 -0700 (PDT)
-Received: from nuoska (87-100-245-199.bb.dnainternet.fi. [87.100.245.199])
-        by smtp.gmail.com with ESMTPSA id k8-20020a192d08000000b0051ac9a297aasm1262211lfj.141.2024.04.22.07.57.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 07:57:44 -0700 (PDT)
-Date: Mon, 22 Apr 2024 17:57:42 +0300
-From: Mikko Rapeli <mikko.rapeli@linaro.org>
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>,
-	Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lennart Poettering <lennart@poettering.net>,
-	linux-integrity@vger.kernel.org
-Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
-Message-ID: <ZiZ65rEN8b9Ufmlr@nuoska>
-References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
- <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
- <ZiZhSfgeAdrbnaVL@nuoska>
- <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
- <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
- <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ba2b/TxRYSbg1e5koIGa7kmKRLpzOBE/3Jt2yO6iGmVWhPFGUCPbEQmGOgGFHAKuYmfWLyfIIHqK3LKSvCZ6rr9DGziTSyfCuxFoBS6cyszMr2aaJKWBSd5fETuWu1vSMkxnCXOu4Z01zgzF8+NCg/RmYKrqKM6AeFKlUqvQnTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=on2WQfzX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D660C113CC;
+	Mon, 22 Apr 2024 14:58:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713797909;
+	bh=Hnua4xCH7jRrOiIHSR0dvdKvoajbxDPeeOvhhIlqF+k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=on2WQfzXFwtAj6/BDOEjM2NhOBlHQAc3BaXxJAkYrMsEivJpgt4vUHxi81fVlOiH/
+	 M//TZlW6sBgOTPPh3crrotNtNC9lp+a8JrvZgd/lKtcifxR6WlAmiCbx9vwIIGCQnQ
+	 tZveRR+5lW67TwLaYO9bQWUXKc+bnGuar/cI7+/bx1Pn5Ap0DkFi4D9kH2OhLambbV
+	 ok939lrJqZPulpRY+2ppygMq1AvdcwKPrquZuCI8E/nUvVhTkgsb1NRtRCoNiMv3Qp
+	 Tk0KcS8Q4ixV7KYkhWXMN5z3um30bkCSxRoVGeXSlGNwxO02jPSoVUmI/bhndcMnhf
+	 yh7Gp3ByNR4nw==
+Date: Mon, 22 Apr 2024 20:28:14 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
+Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+	quic_msarkar@quicinc.com, quic_kraravin@quicinc.com,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] PCI: qcom: Refactor common code
+Message-ID: <20240422145814.GF9775@thinkpad>
+References: <20240419001013.28788-1-quic_schintav@quicinc.com>
+ <20240419001013.28788-2-quic_schintav@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240419001013.28788-2-quic_schintav@quicinc.com>
 
-Hi,
-
-On Mon, Apr 22, 2024 at 04:54:26PM +0300, Ilias Apalodimas wrote:
-> Hi James
+On Thu, Apr 18, 2024 at 05:09:34PM -0700, Shashank Babu Chinta Venkata wrote:
+> Refactor common code from RC(Root Complex) and EP(End Point)
+> drivers and move them to a common driver. This acts as placeholder
+> for common source code for both drivers, thus avoiding duplication.
 > 
-> On Mon, 22 Apr 2024 at 16:38, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> >
-> > On Mon, 2024-04-22 at 16:32 +0300, Ilias Apalodimas wrote:
-> > > Hi all,
-> > >
-> > > On Mon, 22 Apr 2024 at 16:08, Mikko Rapeli <mikko.rapeli@linaro.org>
-> > > wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > On Mon, Apr 22, 2024 at 08:42:41AM -0400, James Bottomley wrote:
-> > > > > On Mon, 2024-04-22 at 14:27 +0300, Mikko Rapeli wrote:
-> > > > > > Userspace needs to know if TPM kernel drivers need to be loaded
-> > > > > > and related services started early in the boot if TPM device
-> > > > > > is used and available.
-> > > > >
-> > > > > This says what but not why.  We already have module autoloading
-> > > > > that works correctly for TPM devices, so why is this needed?
-> > > > >
-> > > > > We do have a chicken and egg problem with IMA in that the TPM
-> > > > > driver needs to be present *before* any filesystem, including the
-> > > > > one the TPM modules would be on, is mounted so executions can be
-> > > > > measured into IMA (meaning that if you use IMA the TPM drivers
-> > > > > must be built in) but this sounds to be something different.
-> > > > > However, because of the IMA problem, most distributions don't end
-> > > > > up compiling TPM drivers as modules anyway.
-> > > > >
-> > > > > Is what you want simply that tpm modules be loaded earlier?
-> > > >
-> > > > Yes, ealier is the problem. In my specific testing case the machine
-> > > > is qemu arm64 with swtpm with EFI firmware for secure boot and TPM
-> > > > support.
-> > > >
-> > > > Firmware uses TPM and does measurements and thus TPM event log is
-> > > > available on this machine and a bunch of other arm64 boards.
-> > > > Visible in early boot dmesg as TPMEventLog lines like:
-> > > >
-> > > > [    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040
-> > > > RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb3b3040
-> > > > INITRD=0xeb3b2040 RNG=0xe5c0f040 MEMRESERVE=0xe5c0e040
-> > > >
-> > > > Different boards use different TPM HW and drivers so compiling all
-> > > > these in is possible but a bit ugly. systemd recently gained
-> > > > support for a specific tpm2.target which makes TPM support modular
-> > > > and also works with kernel modules for some TPM use cases but not
-> > > > rootfs encryption.
-> > > >
-> > > > In my test case we have a kernel+initramfs uki binary which is
-> > > > loaded by EFI firmware as a secure boot binary. TPM support on
-> > > > various boards is visible in devicetree but not as ACPI table
-> > > > entries. systemd currently detect TPM2 support either via ACPI
-> > > > table /sys/firmware/acpi/tables/TPM2 or TPM entry or via firmware
-> > > > measurement via /sys/kernel/security/tpm0/binary_bios_measurements
-> > > > .
-> > >
-> > > One corner case worth noting here is that scanning the device tree
-> > > won't always work for non-ACPI systems... The reason is that a
-> > > firmware TPM (running in OP-TEE) might or might not have a DT entry,
-> > > since OP-TEE can discover the device dynamically and doesn't always
-> > > rely on a DT entry.
-> > >
-> > > I don't particularly love the idea that an EventLog existence
-> > > automatically means a TPM will be there, but it seems that systemd
-> > > already relies on that and it does solve the problem we have.
-> >
-> > Well, quite. That's why the question I was interested in, perhaps not
-> > asked as clearly as it could be is: since all the TPM devices rely on
-> > discovery mechanisms like ACPI or DT or the like which are ready quite
-> > early, should we simply be auto loading the TPM drivers earlier?
+> Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
+> ---
+>  drivers/pci/controller/dwc/Kconfig            |  5 ++
+>  drivers/pci/controller/dwc/Makefile           |  1 +
+>  drivers/pci/controller/dwc/pcie-qcom-common.c | 75 +++++++++++++++++++
+>  drivers/pci/controller/dwc/pcie-qcom-common.h | 12 +++
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c     | 39 +---------
+>  drivers/pci/controller/dwc/pcie-qcom.c        | 67 ++---------------
+>  6 files changed, 105 insertions(+), 94 deletions(-)
+>  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-common.c
+>  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-common.h
 > 
-> This would be an elegant way to solve this and on top of that, we have
-> a single discovery mechanism from userspace -- e.g ls /dev/tpmX.
-> But to answer that we need more feedback from systemd. What 'earlier'
-> means? Autload it from the kernel before we go into launching the
-> initrd?
+> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+> index 8afacc90c63b..1599550cd628 100644
+> --- a/drivers/pci/controller/dwc/Kconfig
+> +++ b/drivers/pci/controller/dwc/Kconfig
+> @@ -265,12 +265,16 @@ config PCIE_DW_PLAT_EP
+>  	  order to enable device-specific features PCI_DW_PLAT_EP must be
+>  	  selected.
+>  
+> +config PCIE_QCOM_COMMON
+> +	bool
+> +
+>  config PCIE_QCOM
+>  	bool "Qualcomm PCIe controller (host mode)"
+>  	depends on OF && (ARCH_QCOM || COMPILE_TEST)
+>  	depends on PCI_MSI
+>  	select PCIE_DW_HOST
+>  	select CRC8
+> +	select PCIE_QCOM_COMMON
+>  	help
+>  	  Say Y here to enable PCIe controller support on Qualcomm SoCs. The
+>  	  PCIe controller uses the DesignWare core plus Qualcomm-specific
+> @@ -281,6 +285,7 @@ config PCIE_QCOM_EP
+>  	depends on OF && (ARCH_QCOM || COMPILE_TEST)
+>  	depends on PCI_ENDPOINT
+>  	select PCIE_DW_EP
+> +	select PCIE_QCOM_COMMON
+>  	help
+>  	  Say Y here to enable support for the PCIe controllers on Qualcomm SoCs
+>  	  to work in endpoint mode. The PCIe controller uses the DesignWare core
+> diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
+> index bac103faa523..3f557dd60c38 100644
+> --- a/drivers/pci/controller/dwc/Makefile
+> +++ b/drivers/pci/controller/dwc/Makefile
+> @@ -14,6 +14,7 @@ obj-$(CONFIG_PCI_LAYERSCAPE) += pci-layerscape.o
+>  obj-$(CONFIG_PCI_LAYERSCAPE_EP) += pci-layerscape-ep.o
+>  obj-$(CONFIG_PCIE_QCOM) += pcie-qcom.o
+>  obj-$(CONFIG_PCIE_QCOM_EP) += pcie-qcom-ep.o
+> +obj-$(CONFIG_PCIE_QCOM_COMMON) += pcie-qcom-common.o
+>  obj-$(CONFIG_PCIE_ARMADA_8K) += pcie-armada8k.o
+>  obj-$(CONFIG_PCIE_ARTPEC6) += pcie-artpec6.o
+>  obj-$(CONFIG_PCIE_ROCKCHIP_DW_HOST) += pcie-dw-rockchip.o
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom-common.c b/drivers/pci/controller/dwc/pcie-qcom-common.c
+> new file mode 100644
+> index 000000000000..dc2120ec5fef
+> --- /dev/null
+> +++ b/drivers/pci/controller/dwc/pcie-qcom-common.c
+> @@ -0,0 +1,75 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2014-2015, 2020 The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2015, 2021 Linaro Limited.
+> + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
+> + *
+> + */
+> +
+> +#include <linux/pci.h>
+> +#include <linux/interconnect.h>
 
-This is sort of what already happens, but the question is when
-does init/systemd wait for the TPM device discovery and setup
-of related service so that rootfs can be mounted?
+Sort these alphabetically.
 
-Currently the answer is, for device auto discover: when ACPI TPM2 table
-exists or TPM kernel driver interface for firmware measurement is available.
+> +
+> +#include "../../pci.h"
+> +#include "pcie-designware.h"
+> +#include "pcie-qcom-common.h"
+> +
+> +#define QCOM_PCIE_LINK_SPEED_TO_BW(speed) \
+> +		Mbps_to_icc(PCIE_SPEED2MBS_ENC(pcie_link_speed[speed]))
+> +
+> +int qcom_pcie_common_icc_get_resource(struct dw_pcie *pci, struct icc_path **icc_mem_p)
 
-Or as policy, when the kernel command line includes something or services
-in initramfs are hard coded.
+This API can be used for other paths also in the future (like CPU-PCIe). So it
+should accept the path name and directly return the 'struct icc_path' pointer.
 
-Parsing devicetree is really hard in userspace but it may contain the TPM details.
-But the TPM can also be on some other discoverable bus, firmware TPM optee trusted
-application. These both get discovered via the TPM Event Log if firmware
-has TPM support on the arm64 boards we have.
+> +{
+> +	*icc_mem_p = devm_of_icc_get(pci->dev, "pcie-mem");
+> +	if (IS_ERR_OR_NULL(icc_mem_p))
+> +		return PTR_ERR(icc_mem_p);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_pcie_common_icc_get_resource);
+> +
+> +int qcom_pcie_common_icc_init(struct dw_pcie *pci, struct icc_path *icc_mem)
+> +{
+> +	int ret;
+> +
+> +	/*
+> +	 * Some Qualcomm platforms require interconnect bandwidth constraints
+> +	 * to be set before enabling interconnect clocks.
+> +	 *
+> +	 * Set an initial peak bandwidth corresponding to single-lane Gen 1
+> +	 * for the pcie-mem path.
+> +	 */
+> +	ret = icc_set_bw(icc_mem, 0, QCOM_PCIE_LINK_SPEED_TO_BW(1));
+> +	if (ret) {
+> +		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_pcie_common_icc_init);
+> +
+> +void qcom_pcie_common_icc_update(struct dw_pcie *pci, struct icc_path *icc_mem)
+> +{
+> +	u32 offset, status;
+> +	int speed, width;
+> +	int ret;
+> +
+> +	if (!icc_mem)
+> +		return;
+> +
+> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> +	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
+> +
+> +	/* Only update constraints if link is up. */
+> +	if (!(status & PCI_EXP_LNKSTA_DLLLA))
+> +		return;
+> +
+> +	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+> +	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
+> +
+> +	ret = icc_set_bw(icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
+> +	if (ret)
+> +		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
 
-Cheers,
+'Failed to set bandwidth for PCIe-MEM interconnect path: %d\n'
 
--Mikko
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
