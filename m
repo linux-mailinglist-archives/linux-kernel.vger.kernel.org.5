@@ -1,243 +1,221 @@
-Return-Path: <linux-kernel+bounces-152932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FEB18AC650
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:08:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38A568AC640
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:05:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACDB6283127
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:08:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 110961C219AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 565224DA11;
-	Mon, 22 Apr 2024 08:08:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7722F4F1E5;
+	Mon, 22 Apr 2024 08:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="AQyLaJgP"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70AB61F61C
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:08:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	dkim=pass (1024-bit key) header.d=buaa.edu.cn header.i=@buaa.edu.cn header.b="qK5UI8z4"
+Received: from zg8tmtu5ljy1ljeznc42.icoremail.net (zg8tmtu5ljy1ljeznc42.icoremail.net [159.65.134.6])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E9D04DA11;
+	Mon, 22 Apr 2024 08:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.65.134.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773300; cv=none; b=g6QQvpveREQGRjs8DawMA3mVbB7j7iMpEKHx/JE7JCtGlqCJIqJcJbs/szXkJTBMcduWXSpLHPOIQt9CjYw4JlOHIg3AXBhtSRJGcM6acAmhH9Fj/gxKUOjFoFFAzMR0ke3OofhhjNyh5PjNa5uupWG+ayrno8bOE1J8gzz9PFU=
+	t=1713773113; cv=none; b=DaUf4Wj+6WQLgAXg+Vy0Pze+gHFRwh5Ge7TaGn8XjiZpeM7QaK1akPcxsASq73SLzaIKGodTp17O4IU5cUInqqxxyMsB+DtYq85v4qRv2OUVmUgXJz8lIrOL9jxcYmjFz3YmL74zhJjcwPoWUE62hwt1qBAdaQ+lNIHHXM91F08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773300; c=relaxed/simple;
-	bh=Ahn2JAm7PvRk3ZbDFq42tpWOMZqsvRcRgTtmXMtFetA=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=tzA0cCc7Ol29YG27LMGER1OSCgWWB4fi8LohJMmDtKyfZFDC4qo+69k30HHJX1IjC0kPtTZpmASRFDY6hFljGAPaoSgaw/fLqJG8aOH6sTSEmCVzWsdwhVVqfsiGjCmxVOeEuyxNVgdqOtmwU5XNFPQvkC7rnPlIU3fPEeG9Ir0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=AQyLaJgP; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4155819f710so33831125e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:08:18 -0700 (PDT)
+	s=arc-20240116; t=1713773113; c=relaxed/simple;
+	bh=SYEGs9jZ5P4cgW1+ep3f+NoBU/Z8Gl0nqwx4n305HY0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=riaaZ26WGfJN/lylMmceW+c2S+bmQjwkiDM8y0jMdElbNLSY9aUNEMevsW4i39bATv5M9tjOaMvgQgk2b/3301EDcMW/aE5+aBGtdhEbV+CBBQSDCD2nYAXZlo8tcbqV1pfGe79aX+BRQP6eU3zCgF2QsfARl93gw/gIcm+ASyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=buaa.edu.cn; spf=pass smtp.mailfrom=buaa.edu.cn; dkim=pass (1024-bit key) header.d=buaa.edu.cn header.i=@buaa.edu.cn header.b=qK5UI8z4; arc=none smtp.client-ip=159.65.134.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=buaa.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=buaa.edu.cn
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713773297; x=1714378097; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=8C4BLckR86w7PgEOSZT9fU6K8kU4TqYHyw+2yRDa35Q=;
-        b=AQyLaJgPZtXvB20N9OZ9fIDh8mV6zsfWQLrGpM4oxxmHn5MrYANTgc3F4NLBnC6KLz
-         OrhAKns6+RjjXScSHL1F+aJVVHcimFd+OWk7ya0dQSRz5orkbWy0KYuCScz4cPrEW2Lm
-         4mJbrdHqa8j+FDRrpJgaf5auyL/Og7t+yGefRgD142XfASwPdot2GbuQxs73dNJ2kFmP
-         AeUdPFtVS2k9ZDGFe9YWsMOloW6BBC5OIObyOp+sOOsx/zxWOmnM7/5W4lmGWRyDij7i
-         Vx6oLSrRgzDMmwovj/0Y6hNnzdwhPvmfVEeKh+4Fmz2wsppWPbSjP65iQ+2zCUd/4IZ5
-         13fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713773297; x=1714378097;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8C4BLckR86w7PgEOSZT9fU6K8kU4TqYHyw+2yRDa35Q=;
-        b=drbZGIA56DGyPyxW0VzS3Yzz0O0h44xG3mfcT/nPtaX1F1UrLBdGoP6I75KMtaSQdx
-         Et3e5xTDDSiGyaMaZYVBgLrG2HacauI7Hlkk2RIA+7lar1/jdRpV9o+Ek+6PYkt2K3ht
-         5NhetEVqq/vZ6I0dFCvNMAojPm/J2X8YO+geg9EXAQMEjRGvDti2MoMW0RiFbbV7xMpr
-         6wnnPG7COfiieFHtADD+v20lDaldiJ8pVQRevMp9CoyEvns+mS8v9fO0CWVQImIOP7PU
-         U/esdjyYpqgFfW+ilkIEvCPbP/PnobzZFUaA1APICbCjStWXLXYqmEQgzbSB4u+VtcCp
-         i00w==
-X-Forwarded-Encrypted: i=1; AJvYcCXp75QoTZZQ4K6rNaP2+9y0Y1ToJu9Un+ecUzh1ALyPyk3slDdj4IAowCsZN28cv+9NmAKNxHtUK3kOhWglLaGiRKsBdsvl4Bcu2iCC
-X-Gm-Message-State: AOJu0Yye7TD8FV10QzYw2Qb049EAjhyLy0e2r/NHjo3WpP0Iw6jy/20u
-	kJrfFCK4EcyWXVYrgbHCfbKAApajdj0wbn+EXWdtWrbzgZa+y5sQ/eb1kCgrNB8=
-X-Google-Smtp-Source: AGHT+IHBRDMQwKvOZxdsZviBHLEtcpsSuo2S70D3ioZlID4dj7ckRfnd2O9nFp1K9jnxFnj/vmplIg==
-X-Received: by 2002:a05:600c:a11:b0:418:f86a:5468 with SMTP id z17-20020a05600c0a1100b00418f86a5468mr8001096wmp.21.1713773296725;
-        Mon, 22 Apr 2024 01:08:16 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:a619:ccb0:5f40:262c])
-        by smtp.gmail.com with ESMTPSA id u18-20020a05600c19d200b0041896d2a05fsm15566259wmq.5.2024.04.22.01.08.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 01:08:16 -0700 (PDT)
-References: <20240419125812.983409-1-jan.dakinevich@salutedevices.com>
- <20240419125812.983409-5-jan.dakinevich@salutedevices.com>
- <20240419210949.GA3979121-robh@kernel.org>
- <b86f1058-da53-4a9c-bc12-e7297351b482@salutedevices.com>
- <48e9f035-390b-40c9-a3ad-49880c0b972d@kernel.org>
- <1jle55c0bl.fsf@starbuckisacylon.baylibre.com>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Jan Dakinevich
- <jan.dakinevich@salutedevices.com>, Rob Herring <robh@kernel.org>, Neil
- Armstrong <neil.armstrong@linaro.org>, Michael Turquette
- <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Krzysztof
-  Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Kevin
-  Hilman <khilman@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Philipp Zabel
- <p.zabel@pengutronix.de>, Jiucheng Xu <jiucheng.xu@amlogic.com>,
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH v3 4/6] dt-bindings: clock: meson: document A1 SoC
- audio clock controller driver
-Date: Mon, 22 Apr 2024 09:57:30 +0200
-In-reply-to: <1jle55c0bl.fsf@starbuckisacylon.baylibre.com>
-Message-ID: <1jzftlakgg.fsf@starbuckisacylon.baylibre.com>
+	d=buaa.edu.cn; s=buaa; h=Received:From:To:Cc:Subject:Date:
+	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=/zsuHTl/et
+	TQRPUZY0mAHUYsD3Tqv7TKYKGXjfgTngs=; b=qK5UI8z4l4dMViUjHnTHwNltTq
+	/J3KXt5CmjAh49pp2QuhatLErJYuhMFbVvS1N5mYxET4dmooQy5+c6chTMGYvMsP
+	Bic1wWSf7crIxjb/MzB2VrzkfvTGkl88xD7JZqMPQR6OujmF1diaeUrL/JvZSjOU
+	y6JFY8+IbEhQhH0aU=
+Received: from lxy.lan (unknown [106.39.42.164])
+	by coremail-app1 (Coremail) with SMTP id OCz+CgD3x9IaGiZmi+EhAA--.18352S2;
+	Mon, 22 Apr 2024 16:04:44 +0800 (CST)
+From: Yuxuan Hu <20373622@buaa.edu.cn>
+To: krzk@kernel.org,
+	gregkh@linuxfoundation.org,
+	johan@kernel.org,
+	davem@davemloft.net,
+	u.kleine-koenig@pengutronix.de,
+	Jonathan.Cameron@huawei.com,
+	francesco.dolcini@toradex.com,
+	jirislaby@kernel.org
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	baijiaju1990@gmail.com,
+	sy2239101@buaa.edu.cn,
+	Yuxuan Hu <yuxuanhu@buaa.edu.cn>
+Subject: [PATCH] nfc: pn533: Fix null-ptr-deref in pn533_recv_frame()
+Date: Mon, 22 Apr 2024 16:04:08 +0800
+Message-Id: <20240422080408.1639247-1-20373622@buaa.edu.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:OCz+CgD3x9IaGiZmi+EhAA--.18352S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gw48Jw4rAr1xur13WF4fuFg_yoWxGF48p3
+	9rtrW5Cr4ktr1UAa1UCw48X345JFsrAFW7JFW29rySq3W5G3WDJrW8KFWUurykXr4qy3W7
+	CrWDXr48tFyDtaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBIb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+	cIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2
+	AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v2
+	6r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI
+	0_GcCE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628v
+	n2kIc2xKxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8V
+	WrXryUJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
+	xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42
+	IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY
+	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
+	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5pnQ5UUUUU==
+X-CM-SenderInfo: ysqtljawssquxxddhvlgxou0/
 
+From: Yuxuan Hu <yuxuanhu@buaa.edu.cn>
 
-On Mon 22 Apr 2024 at 09:16, Jerome Brunet <jbrunet@baylibre.com> wrote:
+Our fuzzing tool found a null-ptr-deref in function pn533_recv_frame 
+(/drivers/nfc/pn533/pn533.c) in kernel 6.8.
 
-> On Sun 21 Apr 2024 at 20:14, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
->> On 20/04/2024 18:15, Jan Dakinevich wrote:
->>> 
->>> 
->>> On 4/20/24 00:09, Rob Herring wrote:
->>>> On Fri, Apr 19, 2024 at 03:58:10PM +0300, Jan Dakinevich wrote:
->>>>> Add device tree bindings for A1 SoC audio clock and reset controllers.
->>>>>
->>>>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->>>>> ---
->>>>>
->>>>> This controller has 6 mandatory and up to 20 optional clocks. To describe
->>>>> this, I use 'additionalItems'. It produces correct processed-schema.json:
->>>>>
->>>>>   "clock-names": {
->>>>>       "maxItems": 26,
->>>>>       "items": [
->>>>>           {
->>>>>               "const": "pclk"
->>>>>           },
->>>>>           {
->>>>>               "const": "dds_in"
->>>>>           },
->>>>>           {
->>>>>               "const": "fclk_div2"
->>>>>           },
->>>>>           {
->>>>>               "const": "fclk_div3"
->>>>>           },
->>>>>           {
->>>>>               "const": "hifi_pll"
->>>>>           },
->>>>>           {
->>>>>               "const": "xtal"
->>>>>           }
->>>>>       ],
->>>>>       "additionalItems": {
->>>>>           "oneOf": [
->>>>>               {
->>>>>                   "pattern": "^slv_sclk[0-9]$"
->>>>>               },
->>>>>               {
->>>>>                   "pattern": "^slv_lrclk[0-9]$"
->>>>>               }
->>>>>           ]
->>>>>       },
->>>>>       "type": "array",
->>>>>       "minItems": 6
->>>>>   },
->>>>>
->>>>> and it behaves as expected. However, the checking is followed by
->>>>> complaints like this:
->>>>>
->>>>>   Documentation/devicetree/bindings/clock/amlogic,a1-audio-clkc.yaml: properties:clock-names:additionalItems: {'oneOf': [{'pattern': '^slv_sclk[0-9]$'}, {'pattern': '^slv_lrclk[0-9]$'}]} is not of type 'boolean'
->>>>>
->>>>> And indeed, 'additionalItems' has boolean type in meta-schema. So, how to
->>>>> do it right?
->>>>
->>>> The meta-schemas are written both to prevent nonsense that json-schema 
->>>> allows by default (e.g additionalitems (wrong case)) and constraints to 
->>>> follow the patterns we expect. I'm happy to loosen the latter case if 
->>>> there's really a need. 
->>>>
->>>> Generally, most bindings shouldn't be using 'additionalItems' at all as 
->>>> all entries should be defined, but there's a few exceptions. Here, the 
->>>> only reasoning I see is 26 entries is a lot to write out, but that 
->>>> wouldn't really justify it. 
->>> 
->>> Writing a lot of entries don't scary me too much, but the reason is that
->>> the existence of optional clock sources depends on schematics. Also, we
->>
->> Aren't you documenting SoC component, not a board? So how exactly it
->> depends on schematics? SoC is done or not done...
->>
->>> unable to declare dt-nodes for 'clocks' array in any generic way,
->>> because their declaration would depends on that what is actually
->>> connected to the SoC (dt-node could be "fixed-clock" with specific rate
->>> or something else).
->>
->> So these are clock inputs to the SoC?
->>
->
-> Yes, possibly.
-> Like an external crystal or a set clocks provided by an external codec
-> where the codec is the clock master of the link.
->
-> This is same case as the AXG that was discussed here:
-> https://lore.kernel.org/linux-devicetree/20230808194811.113087-1-alexander.stein@mailbox.org/
->
-> IMO, like the AXG, only the pclk is a required clock.
-> All the others - master and slave clocks - are optional.
-> The controller is designed to operate with grounded inputs
+(1.1) When execute the NFC_CMD_START_POLL command via netlink, the 
+pn533_send_cmd_async function (/drivers/nfc/pn533/pn533.c: 1714) is 
+called, which sends the PN533_CMD_IN_AUTOPOLL command packet.
 
-Looking again at the implementation of the controller, there is a clear
-indication in patch 3 that the controller interface is the same as the
-AXG and that the above statement is true.
+(2.1) If a pn533 response frame that does not match the command is 
+received, the following call sequence is executed:
+pn533_recv_frame (/drivers/nfc/pn533/pn533.c: 2165)
+    pn533_rx_frame_is_cmd_response (/drivers/nfc/pn533/pn533.c: 2194)
+    pn533_wq_cmd_complete (/drivers/nfc/pn533/pn533.c: 2022)
+        pn533_send_async_complete (/drivers/nfc/pn533/pn533.c: 547)
+            pn533_autopoll_complete (/drivers/nfc/pn533/pn533.c: 414)
 
-The AXG had 8 master clocks wired in. The A1 just has 5 - and 3 grounded
-master clocks. This is why you to had to provide a mux input table to
-skip the grounded inputs. You would not have to do so if the controller was
-properly declared with the 8 master clock input, as it actually is.
+(2.2) After completing (2.1), dev->cmd is freed and set to null 
+(/drivers/nfc/pn533/pn533.c: 432-433).
 
-It also shows that it is a bad idea to name input after what is coming
-in (like you do with "dds_in" or "fclk_div2") instead of what they
-actually are like in the AXG (mst0, mst1, etc ...)
+(3.1) If another incorrect pn533 response frame is received during 
+the above process, (2.1) and (2.2) will be executed concurrently, and 
+the initial process setting dev->cmd to null causes the concurrent 
+process to trigger a null-ptr-deref in pn533_recv_frame.
 
->
->>> 
->>> By the way, I don't know any example (neither for A1 SoC nor for other
->>> Amlogic's SoCs) where these optional clocks are used, but they are
->>> allowed by hw.
->
-> Those scenario exists and have been tested. There is just no dts using
-> that upstream because they are all mostly copy of the AML ref design.
->
->>> 
->>> This is my understanding of this controller. I hope, Jerome Brunet will
->>> clarify how it actually works.
->>
->
-> I think the simpliest way to deal with this to just list all the clocks
-> with 'minItems = 1'. It is going be hard to read with a lot of '<0>,' in
-> the DTS when do need those slave clocks but at least the binding doc
-> will be simple.
->
->> Best regards,
->> Krzysztof
->
-> If you are going ahead with this, please name the file
-> amlogic,axg-audio-clkc.yaml because this is really the first controller
-> of the type and is meant to be documented in the same file.
->
-> You are free to handle the conversion of the AXG at the same time if
-> you'd like. It would be much appreciated if you do.
+Although pn533_recv_frame checks for dev->cmd at the beginning, it is 
+possible that dev->cmd is set to null after the check.
 
+Through our verification, this concurrent vulnerability has a high 
+probability of occurrence and needs to be fixed.
 
+Kernel print messages when null-ptr-deref is triggered (including PN533 
+packets, PN533 module errors, and KASAN reports) are as follows.
+We added printk of the data packets, and printk before the relevant steps 
+in pn533_send_async_complete and pn533_recv_frame.
+
+  -> 00 00 FF 08 F8 D4 60 FF 03 00 11 12 04 A3 00 
+  <- 00 00 FF 00 FF 00 
+  <- 00 00 FF 0E F2 D5 86 01 10 09 01 00 20 08 04 9B 2C EE 9F 0A 00 
+  tty tty60: NFC: It it not the response to the last command
+  arted polling nfc device
+  <- 00 00 FF 03 FD D5 41 00 EA 00 
+  tty tty60: NFC: pn533_autopoll_complete  autopoll complete error -5
+  tty tty60: NFC: It it not the response to the last command
+  tty tty60: NFC: Error -5 when running autopoll
+  tty tty60: NFC: autopoll operation has been stopped
+  pn533_send_async_complete: set dev->cmd to null!!!
+  pn533_recv_frame: dev->cmd is null!!!
+  BUG: kernel NULL pointer dereference, address: 0000000000000014
+  #PF: supervisor write access in kernel mode
+  #PF: error_code(0x0002) - not-present page
+  PGD 0 P4D 0 
+  Oops: 0002 [#1] PREEMPT SMP KASAN PTI
+  CPU: 0 PID: 5541 Comm: kworker/0:0 Tainted: G           O       6.8.0 #1
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+  Workqueue: events nfcvirt_recv_work [nfcvirt]
+  RIP: 0010:pn533_recv_frame+0x18a/0x1e0 [pn533]
+  Code: 43 ff ff ff 48 8b bb 80 02 00 00 48 c7 c6 0b 02 46 c0 31 c0 e8 97 64 4f c4 48 83 bb b0 01 00 00 00 74 3f 48 8b 83 b0 01 00 00 <c7> 40 14 fb ff ff ff 48 8b 83 b0 01 00 00 48 85 c0 0f 85 3b ff ff
+  RSP: 0018:ffff88802665fc68 EFLAGS: 00010246
+  RAX: 0000000000000000 RBX: ffff88804a13b800 RCX: ad381de3b3cd5e00
+  RDX: 1ffff11004ccbf38 RSI: 0000000000000008 RDI: ffff88802665f9e0
+  RBP: ffff88804fb25000 R08: ffff88802665f9e7 R09: 1ffff11004ccbf3c
+  R10: dffffc0000000000 R11: ffffed1004ccbf3d R12: 0000000000001950
+  R13: ffff88804ab80000 R14: ffff888021d22640 R15: ffff88802665fcb0
+  FS:  0000000000000000(0000) GS:ffff88806d200000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000000000014 CR3: 0000000004ebc000 CR4: 00000000000006f0
+  Call Trace:
+   <TASK>
+   ? __die_body+0x62/0xb0
+   ? page_fault_oops+0x421/0x740
+   ? kernelmode_fixup_or_oops+0x1d0/0x1d0
+   ? asan.module_ctor+0x10/0x10
+   ? vprintk_emit+0x3f0/0x3f0
+   ? kernelmode_fixup_or_oops+0x163/0x1d0
+   ? do_user_addr_fault+0xb6c/0xde0
+   ? irq_work_queue+0x54/0xa0
+   ? do_kern_addr_fault+0x160/0x160
+   ? __call_rcu_common+0x518/0xc30
+   ? _dev_err+0x106/0x150
+   ? exc_page_fault+0x66/0x1a0
+   ? asm_exc_page_fault+0x22/0x30
+   ? pn533_recv_frame+0x18a/0x1e0 [pn533]
+   ? pn533_recv_frame+0x1d7/0x1e0 [pn533]
+   nfcvirt_recv_work+0x24e/0x320 [nfcvirt]
+   ? wake_bit_function+0x230/0x230
+   process_one_work+0x4f0/0xab0
+   worker_thread+0x8af/0xee0
+   ? process_one_work+0xab0/0xab0
+   kthread+0x275/0x300
+   ? process_one_work+0xab0/0xab0
+   ? kthread_blkcg+0xa0/0xa0
+   ret_from_fork+0x30/0x60
+   ? kthread_blkcg+0xa0/0xa0
+   ret_from_fork_asm+0x11/0x20
+   </TASK>
+  Modules linked in: nfcvirt(O) pn533(O) nfc(O) ki_coverage(O) [last unloaded: pn533(O)]
+  CR2: 0000000000000014
+  ---[ end trace 0000000000000000 ]---
+  RIP: 0010:pn533_recv_frame+0x18a/0x1e0 [pn533]
+  Code: 43 ff ff ff 48 8b bb 80 02 00 00 48 c7 c6 0b 02 46 c0 31 c0 e8 97 64 4f c4 48 83 bb b0 01 00 00 00 74 3f 48 8b 83 b0 01 00 00 <c7> 40 14 fb ff ff ff 48 8b 83 b0 01 00 00 48 85 c0 0f 85 3b ff ff
+  RSP: 0018:ffff88802665fc68 EFLAGS: 00010246
+  RAX: 0000000000000000 RBX: ffff88804a13b800 RCX: ad381de3b3cd5e00
+  RDX: 1ffff11004ccbf38 RSI: 0000000000000008 RDI: ffff88802665f9e0
+  RBP: ffff88804fb25000 R08: ffff88802665f9e7 R09: 1ffff11004ccbf3c
+  R10: dffffc0000000000 R11: ffffed1004ccbf3d R12: 0000000000001950
+  R13: ffff88804ab80000 R14: ffff888021d22640 R15: ffff88802665fcb0
+  FS:  0000000000000000(0000) GS:ffff88806d200000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000000000014 CR3: 0000000004ebc000 CR4: 00000000000006f0
+
+Signed-off-by: Yuxuan Hu <yuxuanhu@buaa.edu.cn>
+---
+ drivers/nfc/pn533/pn533.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
+index b19c39dcfbd9..a80a23332f59 100644
+--- a/drivers/nfc/pn533/pn533.c
++++ b/drivers/nfc/pn533/pn533.c
+@@ -2190,9 +2190,13 @@ void pn533_recv_frame(struct pn533 *dev, struct sk_buff *skb, int status)
+ 
+ 	if (!dev->ops->rx_is_frame_valid(skb->data, dev)) {
+ 		nfc_err(dev->dev, "Received an invalid frame\n");
++		if (!dev->cmd)
++			goto sched_wq;
+ 		dev->cmd->status = -EIO;
+ 	} else if (!pn533_rx_frame_is_cmd_response(dev, skb->data)) {
+ 		nfc_err(dev->dev, "It it not the response to the last command\n");
++		if (!dev->cmd)
++			goto sched_wq;
+ 		dev->cmd->status = -EIO;
+ 	}
+ 
 -- 
-Jerome
+2.25.1
+
 
