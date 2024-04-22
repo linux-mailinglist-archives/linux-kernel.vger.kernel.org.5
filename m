@@ -1,347 +1,131 @@
-Return-Path: <linux-kernel+bounces-153817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 695F68AD3B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:12:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B10438AD3B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:12:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C29BB28155A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:12:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5069A1F219AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:12:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A5F154437;
-	Mon, 22 Apr 2024 18:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F14154433;
+	Mon, 22 Apr 2024 18:12:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="s5E9Z7KZ"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="LOBzOifv"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CFE7154425
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 18:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 922B2153BC6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 18:12:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713809526; cv=none; b=PtsSEC1Y2sf482OtgNW2jRNQsKNiUsIXiwEe5euLxLdnaDoIo5aBKuMfWgrL9Ll6ndUzfKMegiV42XrWHzctz/wg10PhjQKc/t9yVrgxU9JORxywvDMg12PJ3v9S73ZfPmcLHJXVfW7U7krZ7A9pxjLYnoP6BdsgLcgCh+6JyOM=
+	t=1713809551; cv=none; b=FCJbeCKzse5XbLf/o4uPKZ4CnezUo6MvZpxF8SIcnG5a+/7eO6ImDOew2U99yf88cBvtE9BqUTzy87QeFiiybc2oX18sD+1eUCh7ffCX75DvIL9Gk2EfOCO6jIwrVXQ4SZXTxedngnVqfbLR2hE3LdAj7oZ7WxZz8WY9yE2oGcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713809526; c=relaxed/simple;
-	bh=+bmT5ZSnz6cgrFnjIOgO/GAMoJUGwoT1BGZQE6EcDOk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BCYdcP4+TcLDUlHiNUQDs6lO+IPR/yW2Id3STUmkUYXRqXXJ7K67VqXxGOPMEJAVCxRBu84mPHwi7hfL6mSCBxMF29aQmL1VmdzCn6ebEFybQTtcmpCY2BTfShr8l6gj6BwcbomakWe4+EUCU+ChkM39ltCjgYh3Tn0go1TV104=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=s5E9Z7KZ; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36bf8b564ecso1418835ab.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:12:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1713809521; x=1714414321; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TmGShFWoRVktvJFqOt7PH3+a0ik/WNiKdXQiHlHb8Zs=;
-        b=s5E9Z7KZcCpWQUJt0yEtbSktV7+SMh7KWfg5uwM8eDiHs9MXR87hz7NDa9xnW6EwKo
-         JNQbxyefKa36K0BQGsBK0LK0ukcO/50P2PRw3wQzOrnTtrGjanCF1ShMcdBkeVgoYkWQ
-         KtqIHoFwPOwssBw8l51KkxyNvL0kAmcLpTCk74wEMLenkvGP/dz950EcaWRYbiuY807L
-         IhnjgCRDF4fZXCo0P2G0jOlKrMDaNGx7s9Tl2OACupc5hHiW4RPRDVXlkfjbWxvCNEXp
-         13Rb3HqFzb4J0JDomys3YNIwNWLX9vEmOEh+D1N65ObNq7WA51v5TAUxM7pI6VAEK3LX
-         ELdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713809521; x=1714414321;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TmGShFWoRVktvJFqOt7PH3+a0ik/WNiKdXQiHlHb8Zs=;
-        b=IPY1zDzXO44g2RvLnohtinRF9E0Pwqi2PLqtGf0I4LjbsgQ5zQGn/TO67wHKAN6Ckx
-         hl3bPhr+Zb0TatlR1CqSDUEHuF6g29QVF/hqr3LEKqhTZk9BfeHZGbC6bnEiyEv3fNm8
-         zhsurmNdTwMspfq7bvRl9VqIF132n1rImHS8RNocWkLO10XAcEibZmeR+7TaqKdCCqHn
-         Te9RTD4kEpaahT74z9e2K5oEOnsvut9282/F+Cz+fmtmDgroP4x7eDo2v3AGqHMUdu43
-         7Z0RSxhWGJQOytftwWI3eq2e4SAXGPLGfpymREePuGXfaX8Vp9ZPNVfhpaHOS6ykFBAI
-         4dDA==
-X-Forwarded-Encrypted: i=1; AJvYcCWjREo31i7GYtUbvUt6b9lA7LtdglyT8sXBaVh1hdi8koAeqyvZ4KeZl76AcX/Fht9mP0Slb5shVT79CUNq/gg9qK5/lBkKLMVNc0TY
-X-Gm-Message-State: AOJu0YwgftaPvJe+waxf8MRRpsEhMT6Cn+pJzLKWig3iQ1+8qF7MpLzD
-	G0NWMtnLUZDLaxxVUWUp1p4+Yz/VMIPujM22rvA5RL3Q+ZQwZSnX0ivLdDREzJM=
-X-Google-Smtp-Source: AGHT+IEM9WSFapHFfE2legEY6Pjtc4qT2dZMs0/BLF/YWrO5XJsdpSDaFVp69Tt8NORqNaoNOQVwhw==
-X-Received: by 2002:a5d:9282:0:b0:7da:d6ff:7f53 with SMTP id s2-20020a5d9282000000b007dad6ff7f53mr2625378iom.0.1713809521264;
-        Mon, 22 Apr 2024 11:12:01 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id he8-20020a0566386d0800b004852c9c9c24sm1055587jab.95.2024.04.22.11.12.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 11:12:00 -0700 (PDT)
-Message-ID: <e8c28f87-ff8a-4f30-b252-46e2260357c9@kernel.dk>
-Date: Mon, 22 Apr 2024 12:11:59 -0600
+	s=arc-20240116; t=1713809551; c=relaxed/simple;
+	bh=BX/CX5XLOQ7qLBjg4NryO5+WrBzTpVcRIi7GaHqSMLU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rTBEesdN1nv9+CGordW48w2CJt61h//ffOsSGkAT9+skWdxFkoDpIOHLTSs72SKPYuVD72gHsCB1fpjmqPKObjHU/eb1y2+dJkeHlrbkZFyMAU+1QXeH9HmCLQ6UUzAhGp2FusttRVlga+4yGrT4QoCuekVzQPK69BRjgu3EquI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=LOBzOifv; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43MHmkbB017430;
+	Mon, 22 Apr 2024 18:12:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=h2aJVJArUJppOuNUB8MhAiy4kIo6wvRJzEmWmrN+uiw=;
+ b=LOBzOifvSAOoTq37KKqiDF2zhcN9iBBTXvRPcM4xnr5CbIZ0xBn9ZKiTlwwGhahUl3PZ
+ jiljWwQBoklLhkU2sPjd32TnVNqwx+75VxvR0dAmtUON4wxGmuI5B+jyHGOHeOrEOkFa
+ G9ZTobbQ+mChfY1QUdtUdq/0tiYiVQhj4ZL0a4PqM37SmPXXqfnXfhEFzhZhxogm9Gke
+ tNRk5A1BxF0KdC9YaoI/Z98rTsajp5mtx9a906HKebDXEpALzOyrX/UBK4XaQ+aAAiiq
+ cRazZFHcVdonbotEm+DPr72ZfpyDVsWPKILz31rN3ls8KCba+UlOPtgZG5TCGIx+TG8Q /g== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm4g4bcaf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 22 Apr 2024 18:12:18 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43MGdmcF010840;
+	Mon, 22 Apr 2024 18:12:17 GMT
+Received: from jfwang-mac.us.oracle.com (dhcp-10-65-139-207.vpn.oracle.com [10.65.139.207])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xm456e85c-1;
+	Mon, 22 Apr 2024 18:12:17 +0000
+From: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+To: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: akpm@linux-foundation.org, willy@infradead.org
+Subject: [PATCH] mm: huge_memory: convert __do_huge_pmd_anonymous_page() to use folios
+Date: Mon, 22 Apr 2024 11:12:16 -0700
+Message-ID: <20240422181216.91938-1-jianfeng.w.wang@oracle.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] io_uring: releasing CPU resources when polling
-Content-Language: en-US
-To: hexue <xue01.he@samsung.com>
-Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
- io-uring@vger.kernel.org, peiwei.li@samsung.com, joshi.k@samsung.com,
- kundan.kumar@samsung.com, anuj20.g@samsung.com, wenwen.chen@samsung.com,
- ruyi.zhang@samsung.com, xiaobing.li@samsung.com, cliang01.li@samsung.com
-References: <CGME20240418093150epcas5p31dc20cc737c72009265593f247e48262@epcas5p3.samsung.com>
- <20240418093143.2188131-1-xue01.he@samsung.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240418093143.2188131-1-xue01.he@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-22_13,2024-04-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404220076
+X-Proofpoint-GUID: NHWZ67OHThxTLmE0aMPA4vFcqYmuu8KF
+X-Proofpoint-ORIG-GUID: NHWZ67OHThxTLmE0aMPA4vFcqYmuu8KF
 
-On 4/18/24 3:31 AM, hexue wrote:
-> This patch is intended to release the CPU resources of io_uring in
-> polling mode. When IO is issued, the program immediately polls for
-> check completion, which is a waste of CPU resources when IO commands
-> are executed on the disk.
-> 
-> I add the hybrid polling feature in io_uring, enables polling to
-> release a portion of CPU resources without affecting block layer.
-> 
-> - Record the running time and context switching time of each
->   IO, and use these time to determine whether a process continue
->   to schedule.
-> 
-> - Adaptive adjustment to different devices. Due to the real-time
->   nature of time recording, each device's IO processing speed is
->   different, so the CPU optimization effect will vary.
-> 
-> - Set a interface (ctx->flag) enables application to choose whether
->   or not to use this feature.
-> 
-> The CPU optimization in peak workload of patch is tested as follows:
->   all CPU utilization of original polling is 100% for per CPU, after
->   optimization, the CPU utilization drop a lot (per CPU);
-> 
->    read(128k, QD64, 1Job)     37%   write(128k, QD64, 1Job)     40%
->    randread(4k, QD64, 16Job)  52%   randwrite(4k, QD64, 16Job)  12%
-> 
->   Compared to original polling, the optimised performance reduction
->   with peak workload within 1%.
-> 
->    read  0.29%     write  0.51%    randread  0.09%    randwrite  0%
+Change __do_huge_pmd_anonymous_page() to take folio as input, as its
+caller has used folio. Save one unnecessary call to compound_head().
 
-As mentioned, this is like a reworked version of the old hybrid polling
-we had. The feature itself may make sense, but there's a slew of things
-in this patch that aren't really acceptable. More below.
+Signed-off-by: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+---
+ mm/huge_memory.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-> diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_types.h
-> index 854ad67a5f70..7607fd8de91c 100644
-> --- a/include/linux/io_uring_types.h
-> +++ b/include/linux/io_uring_types.h
-> @@ -224,6 +224,11 @@ struct io_alloc_cache {
->  	size_t			elem_size;
->  };
->  
-> +struct iopoll_info {
-> +	long		last_runtime;
-> +	long		last_irqtime;
-> +};
-> +
->  struct io_ring_ctx {
->  	/* const or read-mostly hot data */
->  	struct {
-> @@ -421,6 +426,7 @@ struct io_ring_ctx {
->  	unsigned short			n_sqe_pages;
->  	struct page			**ring_pages;
->  	struct page			**sqe_pages;
-> +	struct xarray		poll_array;
->  };
->  
->  struct io_tw_state {
-> @@ -641,6 +647,10 @@ struct io_kiocb {
->  		u64			extra1;
->  		u64			extra2;
->  	} big_cqe;
-> +	/* for hybrid iopoll */
-> +	int				poll_flag;
-> +	struct timespec64		iopoll_start;
-> +	struct timespec64		iopoll_end;
->  };
-
-This is adding 4/8 + 16 + 16 bytes to the io_kiocb - or in other ways to
-look at it, growing it by ~17% in size. That does not seem appropriate,
-given the limited scope of the feature.
-
-> @@ -1875,10 +1878,28 @@ static bool io_assign_file(struct io_kiocb *req, const struct io_issue_def *def,
->  	return !!req->file;
->  }
->  
-> +void init_hybrid_poll_info(struct io_ring_ctx *ctx, struct io_kiocb *req)
-> +{
-> +	u32 index;
-> +
-> +	index = req->file->f_inode->i_rdev;
-> +	struct iopoll_info *entry = xa_load(&ctx->poll_array, index);
-
-Mixing code and declarations, that's a no go. This should look like:
-
-
-	u32 index = req->file->f_inode->i_rdev;
-	struct iopoll_info *entry = xa_load(&ctx->poll_array, index);
-
-Outside of that, this is now dipping into the inode from the hot path.
-You could probably make do with f_inode here, as this is just a lookup
-key?
-
-It's also doing an extra lookup per polled IO. I guess the overhead is
-fine as it's just for the hybrid setup, though not ideal.
-
-> +
-> +	if (!entry) {
-> +		entry = kmalloc(sizeof(struct iopoll_info), GFP_KERNEL);
-
-As also brought up, you need error checking on allocations.
-
-> +		entry->last_runtime = 0;
-> +		entry->last_irqtime = 0;
-> +		xa_store(&ctx->poll_array, index, entry, GFP_KERNEL);
-> +	}
-> +
-> +	ktime_get_ts64(&req->iopoll_start);
-> +}
-
-Time retrieval per IO is not cheap.
-
->  static int io_issue_sqe(struct io_kiocb *req, unsigned int issue_flags)
->  {
->  	const struct io_issue_def *def = &io_issue_defs[req->opcode];
->  	const struct cred *creds = NULL;
-> +	struct io_ring_ctx *ctx = req->ctx;
->  	int ret;
->  
->  	if (unlikely(!io_assign_file(req, def, issue_flags)))
-> @@ -1890,6 +1911,9 @@ static int io_issue_sqe(struct io_kiocb *req, unsigned int issue_flags)
->  	if (!def->audit_skip)
->  		audit_uring_entry(req->opcode);
->  
-> +	if (ctx->flags & IORING_SETUP_HY_POLL)
-> +		init_hybrid_poll_info(ctx, req);
-> +
->  	ret = def->issue(req, issue_flags);
-
-Would probably be better to have this in the path of the opcodes that
-actually support iopoll, rather than add a branch for any kind of IO.
-
-> diff --git a/io_uring/io_uring.h b/io_uring/io_uring.h
-> index d5495710c178..d5b175826adb 100644
-> --- a/io_uring/io_uring.h
-> +++ b/io_uring/io_uring.h
-> @@ -125,6 +125,8 @@ static inline void io_req_task_work_add(struct io_kiocb *req)
->  	__io_req_task_work_add(req, 0);
->  }
->  
-> +#define LEFT_TIME 1000
-
-This badly needs a comment and a better name...
-
-> diff --git a/io_uring/rw.c b/io_uring/rw.c
-> index d5e79d9bdc71..ac73121030ee 100644
-> --- a/io_uring/rw.c
-> +++ b/io_uring/rw.c
-> @@ -1118,6 +1118,69 @@ void io_rw_fail(struct io_kiocb *req)
->  	io_req_set_res(req, res, req->cqe.flags);
->  }
->  
-> +void io_delay(struct io_kiocb *req, struct iopoll_info *entry)
-> +{
-> +	struct hrtimer_sleeper timer;
-> +	ktime_t kt;
-> +	struct timespec64 tc, oldtc;
-> +	enum hrtimer_mode mode;
-> +	long sleep_ti;
-> +
-> +	if (req->poll_flag == 1)
-> +		return;
-> +
-> +	if (entry->last_runtime <= entry->last_irqtime)
-> +		return;
-> +
-> +	/*
-> +	 * Avoid excessive scheduling time affecting performance
-> +	 * by using only 25 per cent of the remaining time
-> +	 */
-> +	sleep_ti = (entry->last_runtime - entry->last_irqtime) / 4;
-> +	if (sleep_ti < LEFT_TIME)
-> +		return;
-> +
-> +	ktime_get_ts64(&oldtc);
-> +	kt = ktime_set(0, sleep_ti);
-> +	req->poll_flag = 1;
-> +
-> +	mode = HRTIMER_MODE_REL;
-> +	hrtimer_init_sleeper_on_stack(&timer, CLOCK_MONOTONIC, mode);
-> +	hrtimer_set_expires(&timer.timer, kt);
-> +
-> +	set_current_state(TASK_UNINTERRUPTIBLE);
-> +	hrtimer_sleeper_start_expires(&timer, mode);
-> +	if (timer.task) {
-> +		io_schedule();
-> +	}
-
-Redundant braces.
-
-> +	hrtimer_cancel(&timer.timer);
-> +	mode = HRTIMER_MODE_ABS;
-> +
-> +	__set_current_state(TASK_RUNNING);
-> +	destroy_hrtimer_on_stack(&timer.timer);
-> +
-> +	ktime_get_ts64(&tc);
-> +	entry->last_irqtime = tc.tv_nsec - oldtc.tv_nsec - sleep_ti;
-> +}
-> +
-> +int iouring_hybrid_poll(struct io_kiocb *req, struct io_comp_batch *iob, unsigned int poll_flags)
-
-Overly long line.
-
-> +	struct io_rw *rw = io_kiocb_to_cmd(req, struct io_rw);
-> +	struct io_ring_ctx *ctx = req->ctx;
-> +	struct iopoll_info *entry;
-> +	int ret;
-> +	u32 index;
-> +
-> +	index = req->file->f_inode->i_rdev;
-
-Ditto here on i_rdev vs inode.
-
-> +	entry = xa_load(&ctx->poll_array, index);
-> +	io_delay(req, entry);
-> +	ret = req->file->f_op->iopoll(&rw->kiocb, iob, poll_flags);
-> +
-> +	ktime_get_ts64(&req->iopoll_end);
-> +	entry->last_runtime = req->iopoll_end.tv_nsec - req->iopoll_start.tv_nsec;
-> +	return ret;
-> +}
-> +
->  int io_do_iopoll(struct io_ring_ctx *ctx, bool force_nonspin)
->  {
->  	struct io_wq_work_node *pos, *start, *prev;
-> @@ -1145,6 +1208,11 @@ int io_do_iopoll(struct io_ring_ctx *ctx, bool force_nonspin)
->  		if (READ_ONCE(req->iopoll_completed))
->  			break;
->  
-> +		if (ctx->flags & IORING_SETUP_HY_POLL) {
-> +			ret = iouring_hybrid_poll(req, &iob, poll_flags);
-> +			goto comb;
-> +		}
-
-comb?
-
-> +
->  		if (req->opcode == IORING_OP_URING_CMD) {
->  			struct io_uring_cmd *ioucmd;
->  
-> @@ -1156,6 +1224,7 @@ int io_do_iopoll(struct io_ring_ctx *ctx, bool force_nonspin)
->  
->  			ret = file->f_op->iopoll(&rw->kiocb, &iob, poll_flags);
->  		}
-> +comb:
->  		if (unlikely(ret < 0))
->  			return ret;
->  		else if (ret)
-
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 89f58c7603b2..83566ee738e0 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -866,10 +866,9 @@ unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
+ EXPORT_SYMBOL_GPL(thp_get_unmapped_area);
+ 
+ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+-			struct page *page, gfp_t gfp)
++			struct folio *folio, gfp_t gfp)
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
+-	struct folio *folio = page_folio(page);
+ 	pgtable_t pgtable;
+ 	unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
+ 	vm_fault_t ret = 0;
+@@ -890,7 +889,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+ 		goto release;
+ 	}
+ 
+-	clear_huge_page(page, vmf->address, HPAGE_PMD_NR);
++	clear_huge_page(&folio->page, vmf->address, HPAGE_PMD_NR);
+ 	/*
+ 	 * The memory barrier inside __folio_mark_uptodate makes sure that
+ 	 * clear_huge_page writes become visible before the set_pmd_at()
+@@ -918,7 +917,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+ 			return ret;
+ 		}
+ 
+-		entry = mk_huge_pmd(page, vma->vm_page_prot);
++		entry = mk_huge_pmd(&folio->page, vma->vm_page_prot);
+ 		entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
+ 		folio_add_new_anon_rmap(folio, vma, haddr);
+ 		folio_add_lru_vma(folio, vma);
+@@ -1051,7 +1050,7 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
+ 		count_vm_event(THP_FAULT_FALLBACK);
+ 		return VM_FAULT_FALLBACK;
+ 	}
+-	return __do_huge_pmd_anonymous_page(vmf, &folio->page, gfp);
++	return __do_huge_pmd_anonymous_page(vmf, folio, gfp);
+ }
+ 
+ static void insert_pfn_pmd(struct vm_area_struct *vma, unsigned long addr,
 -- 
-Jens Axboe
+2.42.1
 
 
