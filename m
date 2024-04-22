@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-153910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 380638AD4C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:21:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C574D8AD4C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:21:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B71D51F2371B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:21:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 621681F239B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926FC155326;
-	Mon, 22 Apr 2024 19:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34031DFFB;
+	Mon, 22 Apr 2024 19:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tkeZhKjV"
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WNQpfCw0"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60725155A50
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A08156232
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:19:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713813593; cv=none; b=gsAXTBQaMinxDteRdC7FCYL16z+xLTY7fuNaVSY2jZTazSAnSHgUMHe2UO+9kv4XhCmfyk56D+9HrI6AVDt38s1fl+HXvyS5E/gxPxOx6Wsu69WRk+ULPIO+rojAFDvftKCRXumjTG9KZschki4dwNNPfii0cJWuEN9U0OovAjo=
+	t=1713813598; cv=none; b=g4/4N/566SFcmjRyWe/zvkv9zWOoBO1njOIHdG3jqzSv9WQq0NLdMk+fKOJ7bvrujjvuCpjH4to6Kh/oN8ry0gUjwhGcMZOnhzXc8jE7bi58MbaKi/HL2mczjP+ZLDDk/shVjPYy288xPnmafbCI6SViDqSbLJu8uacXZugVpHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713813593; c=relaxed/simple;
-	bh=lmbOAIR4fhp7i68dhNsChCkO1KTe82Jsg7qFc9Zk+Zk=;
+	s=arc-20240116; t=1713813598; c=relaxed/simple;
+	bh=ITseei08H8ZFFvxsoTmsaLOG228vUI8k9CUYqIYQLvA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cj/yd6x9BS5Crn5l4s4ckzEjsbgTmfRKHABOvwHa4A0a2wqWjQfwP8/Ez6NvtHC2SKcFqTUDEsODVOZLZt4aQpWZJpX1WmMYUd4zVSeINl/qiIOz/hhgaSiSmvxFog1qKW2S/n81kXyfA7jWTdif59+zCJpbRwN6cWViaIjxkdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tkeZhKjV; arc=none smtp.client-ip=95.215.58.171
+	 MIME-Version; b=Xn8mEw+9UiJ1dSXHFiK/zTeaPrpirENnlS9ijOXIdsxn/RYNvoldWD9jM/IbaEwq+k1sTkUt2R0B9RhdYjP0viKHHLnpM14TFERSbQ0RfYRePtmtn9eVtQoOYCicalSlqp9X4ES1CQ081qBfZGyHJhN64e0FIygeuNmwIYEocx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WNQpfCw0; arc=none smtp.client-ip=95.215.58.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713813590;
+	t=1713813595;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gqEhBcfnv9rUbWN96BkVZjg/A8+GnWYlmO3Ge72EuvE=;
-	b=tkeZhKjVLuvfh6Foyzk3MbB2uAvEY5upHeSRQ+blEYlElqGcK63pkFZY0N3cCd3XH2JdF/
-	huv7OpW7uxnTL+qtFVG+Isu7CoTzn8Exnttl2egWGTj0p3+3+NVSO6UbTvV0MLeRO0z4/u
-	o2sk53FsT3BzwQVRuUBUpra9pTTgNjM=
+	bh=+DZUEgRYcSmSCNpMFRJJvZshOZpL7UP9Hp7JpDo8EBk=;
+	b=WNQpfCw0v1uvB9h2ZJSD+dj+lnnhqUm+1gVbOkZzc2oW2Fkw/rdZBScxAR1DOusgGtnPFm
+	dVZu5KNFE4x6mlu8to6KL6BOeVgK9f0mtO7I431jdViOfu9sYTL8CLfddgRsHXPTPJQM33
+	Iy2ayO65CrR2X7OmdHhfo8CV+qkNnkQ=
 From: Sui Jingfeng <sui.jingfeng@linux.dev>
 To: Neil Armstrong <neil.armstrong@linaro.org>
 Cc: Robert Foss <rfoss@kernel.org>,
@@ -56,9 +56,9 @@ Cc: Robert Foss <rfoss@kernel.org>,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org,
 	Sui Jingfeng <sui.jingfeng@linux.dev>
-Subject: [PATCH v4 7/9] drm-bridge: it66121: Use fwnode API to acquire device properties
-Date: Tue, 23 Apr 2024 03:19:01 +0800
-Message-Id: <20240422191903.255642-8-sui.jingfeng@linux.dev>
+Subject: [PATCH v4 8/9] drm/bridge: tfp410: Use fwnode API to acquire device properties
+Date: Tue, 23 Apr 2024 03:19:02 +0800
+Message-Id: <20240422191903.255642-9-sui.jingfeng@linux.dev>
 In-Reply-To: <20240422191903.255642-1-sui.jingfeng@linux.dev>
 References: <20240422191903.255642-1-sui.jingfeng@linux.dev>
 Precedence: bulk
@@ -76,117 +76,115 @@ functional changes for DT based systems.
 
 Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
 ---
- drivers/gpu/drm/bridge/ite-it66121.c | 57 +++++++++++++++++-----------
- 1 file changed, 35 insertions(+), 22 deletions(-)
+ drivers/gpu/drm/bridge/ti-tfp410.c | 41 +++++++++++++++---------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-index 925e42f46cd8..688dc1830654 100644
---- a/drivers/gpu/drm/bridge/ite-it66121.c
-+++ b/drivers/gpu/drm/bridge/ite-it66121.c
-@@ -15,7 +15,6 @@
- #include <linux/bitfield.h>
- #include <linux/property.h>
- #include <linux/regmap.h>
--#include <linux/of_graph.h>
- #include <linux/gpio/consumer.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/regulator/consumer.h>
-@@ -1480,7 +1479,7 @@ static int it66121_audio_codec_init(struct it66121_ctx *ctx, struct device *dev)
+diff --git a/drivers/gpu/drm/bridge/ti-tfp410.c b/drivers/gpu/drm/bridge/ti-tfp410.c
+index c7bef5c23927..58dc7492844f 100644
+--- a/drivers/gpu/drm/bridge/ti-tfp410.c
++++ b/drivers/gpu/drm/bridge/ti-tfp410.c
+@@ -266,8 +266,9 @@ static const struct drm_bridge_timings tfp410_default_timings = {
  
- 	dev_dbg(dev, "%s\n", __func__);
- 
--	if (!of_property_read_bool(dev->of_node, "#sound-dai-cells")) {
-+	if (!fwnode_property_present(dev_fwnode(dev), "#sound-dai-cells")) {
- 		dev_info(dev, "No \"#sound-dai-cells\", no audio\n");
- 		return 0;
- 	}
-@@ -1503,13 +1502,36 @@ static const char * const it66121_supplies[] = {
- 	"vcn33", "vcn18", "vrf12"
- };
- 
-+static int it66121_read_bus_width(struct fwnode_handle *fwnode, u32 *bus_width)
-+{
-+	struct fwnode_handle *endpoint;
-+	u32 val;
-+	int ret;
-+
-+	endpoint = fwnode_graph_get_endpoint_by_id(fwnode, 0, 0, 0);
-+	if (!endpoint)
-+		return -EINVAL;
-+
-+	ret = fwnode_property_read_u32(endpoint, "bus-width", &val);
-+	fwnode_handle_put(endpoint);
-+	if (ret)
-+		return ret;
-+
-+	if (val != 12 && val != 24)
-+		return -EINVAL;
-+
-+	*bus_width = val;
-+
-+	return 0;
-+}
-+
- static int it66121_probe(struct i2c_client *client)
+ static int tfp410_parse_timings(struct tfp410 *dvi, bool i2c)
  {
- 	u32 revision_id, vendor_ids[2] = { 0 }, device_ids[2] = { 0 };
++	struct fwnode_handle *fwnode = dev_fwnode(dvi->dev);
+ 	struct drm_bridge_timings *timings = &dvi->timings;
 -	struct device_node *ep;
- 	int ret;
- 	struct it66121_ctx *ctx;
- 	struct device *dev = &client->dev;
++	struct fwnode_handle *ep;
+ 	u32 pclk_sample = 0;
+ 	u32 bus_width = 24;
+ 	u32 deskew = 0;
+@@ -288,14 +289,14 @@ static int tfp410_parse_timings(struct tfp410 *dvi, bool i2c)
+ 	 * and EDGE pins. They are specified in DT through endpoint properties
+ 	 * and vendor-specific properties.
+ 	 */
+-	ep = of_graph_get_endpoint_by_regs(dvi->dev->of_node, 0, 0);
++	ep = fwnode_graph_get_endpoint_by_id(fwnode, 0, 0, 0);
+ 	if (!ep)
+ 		return -EINVAL;
+ 
+ 	/* Get the sampling edge from the endpoint. */
+-	of_property_read_u32(ep, "pclk-sample", &pclk_sample);
+-	of_property_read_u32(ep, "bus-width", &bus_width);
+-	of_node_put(ep);
++	fwnode_property_read_u32(ep, "pclk-sample", &pclk_sample);
++	fwnode_property_read_u32(ep, "bus-width", &bus_width);
++	fwnode_handle_put(ep);
+ 
+ 	timings->input_bus_flags = DRM_BUS_FLAG_DE_HIGH;
+ 
+@@ -324,7 +325,7 @@ static int tfp410_parse_timings(struct tfp410 *dvi, bool i2c)
+ 	}
+ 
+ 	/* Get the setup and hold time from vendor-specific properties. */
+-	of_property_read_u32(dvi->dev->of_node, "ti,deskew", &deskew);
++	fwnode_property_read_u32(fwnode, "ti,deskew", &deskew);
+ 	if (deskew > 7)
+ 		return -EINVAL;
+ 
+@@ -336,12 +337,12 @@ static int tfp410_parse_timings(struct tfp410 *dvi, bool i2c)
+ 
+ static int tfp410_init(struct device *dev, bool i2c)
+ {
+-	struct device_node *node;
 +	struct fwnode_handle *fwnode = dev_fwnode(dev);
+ 	struct tfp410 *dvi;
+ 	int ret;
  
- 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
- 		dev_err(dev, "I2C check functionality failed.\n");
-@@ -1520,29 +1542,20 @@ static int it66121_probe(struct i2c_client *client)
- 	if (!ctx)
- 		return -ENOMEM;
+-	if (!dev->of_node) {
+-		dev_err(dev, "device-tree data is missing\n");
++	if (!fwnode) {
++		dev_err(dev, "firmware data is missing\n");
+ 		return -ENXIO;
+ 	}
  
--	ep = of_graph_get_endpoint_by_regs(dev->of_node, 0, 0);
--	if (!ep)
--		return -EINVAL;
+@@ -352,8 +353,8 @@ static int tfp410_init(struct device *dev, bool i2c)
+ 	dvi->dev = dev;
+ 	dev_set_drvdata(dev, dvi);
+ 
++	drm_bridge_set_node(&dvi->bridge, fwnode);
+ 	dvi->bridge.funcs = &tfp410_bridge_funcs;
+-	dvi->bridge.of_node = dev->of_node;
+ 	dvi->bridge.timings = &dvi->timings;
+ 	dvi->bridge.type = DRM_MODE_CONNECTOR_DVID;
+ 
+@@ -362,15 +363,15 @@ static int tfp410_init(struct device *dev, bool i2c)
+ 		return ret;
+ 
+ 	/* Get the next bridge, connected to port@1. */
+-	node = of_graph_get_remote_node(dev->of_node, 1, -1);
+-	if (!node)
+-		return -ENODEV;
 -
- 	ctx->dev = dev;
- 	ctx->client = client;
- 	ctx->info = i2c_get_match_data(client);
- 
--	of_property_read_u32(ep, "bus-width", &ctx->bus_width);
--	of_node_put(ep);
+-	dvi->next_bridge = of_drm_find_bridge(node);
+-	of_node_put(node);
 -
--	if (ctx->bus_width != 12 && ctx->bus_width != 24)
--		return -EINVAL;
--
--	ep = of_graph_get_remote_node(dev->of_node, 1, -1);
--	if (!ep) {
--		dev_err(ctx->dev, "The endpoint is unconnected\n");
--		return -EINVAL;
--	}
-+	ret = it66121_read_bus_width(fwnode, &ctx->bus_width);
-+	if (ret)
-+		return ret;
- 
--	ctx->next_bridge = of_drm_find_bridge(ep);
--	of_node_put(ep);
--	if (!ctx->next_bridge) {
-+	ctx->next_bridge = drm_bridge_find_next_bridge_by_fwnode(fwnode, 1);
-+	if (IS_ERR(ctx->next_bridge)) {
-+		ret = PTR_ERR(ctx->next_bridge);
+-	if (!dvi->next_bridge)
++	dvi->next_bridge = drm_bridge_find_next_bridge_by_fwnode(fwnode, 1);
++	if (IS_ERR(dvi->next_bridge)) {
++		ret = PTR_ERR(dvi->next_bridge);
 +		dev_err(dev, "Error in founding the next bridge: %d\n", ret);
 +		return ret;
-+	} else if (!ctx->next_bridge) {
- 		dev_dbg(ctx->dev, "Next bridge not found, deferring probe\n");
++	} else if (!dvi->next_bridge) {
++		dev_dbg(dev, "Next bridge not found, deferring probe\n");
  		return -EPROBE_DEFER;
- 	}
-@@ -1577,8 +1590,8 @@ static int it66121_probe(struct i2c_client *client)
- 		return -ENODEV;
- 	}
++	}
  
-+	drm_bridge_set_node(&ctx->bridge, fwnode);
- 	ctx->bridge.funcs = &it66121_bridge_funcs;
--	ctx->bridge.of_node = dev->of_node;
- 	ctx->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
- 	ctx->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID;
- 	if (client->irq > 0) {
+ 	/* Get the powerdown GPIO. */
+ 	dvi->powerdown = devm_gpiod_get_optional(dev, "powerdown",
+@@ -422,10 +423,10 @@ static struct platform_driver tfp410_platform_driver = {
+ /* There is currently no i2c functionality. */
+ static int tfp410_i2c_probe(struct i2c_client *client)
+ {
++	struct fwnode_handle *fwnode = dev_fwnode(&client->dev);
+ 	int reg;
+ 
+-	if (!client->dev.of_node ||
+-	    of_property_read_u32(client->dev.of_node, "reg", &reg)) {
++	if (!fwnode || fwnode_property_read_u32(fwnode, "reg", &reg)) {
+ 		dev_err(&client->dev,
+ 			"Can't get i2c reg property from device-tree\n");
+ 		return -ENXIO;
 -- 
 2.34.1
 
