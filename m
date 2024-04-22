@@ -1,97 +1,97 @@
-Return-Path: <linux-kernel+bounces-154012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 864EC8AD61A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AA8F8AD61C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:50:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86E961C20B76
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:50:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CCA01C21679
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036601BC53;
-	Mon, 22 Apr 2024 20:50:06 +0000 (UTC)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0EB31BF24;
+	Mon, 22 Apr 2024 20:50:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="krLcnxpe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 708FA1B964;
-	Mon, 22 Apr 2024 20:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.40.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8811BC30;
+	Mon, 22 Apr 2024 20:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713819005; cv=none; b=O3eYnWTCkh01Bk3p8wOhZxDYXwEgDZaPYRtC8EXRLyOl5oiWx9llEx4H49bpIdd7ZRjuEaOerEpFS3xAAM88eYMVbykUEy/VfCNoNKo8WT3O5bueGYIfsUuyHfTNKP5NR9Aq+Hz5EBBwH8W7/mx99AbwG3X5yaSbvCRDQ/hX0Ns=
+	t=1713819028; cv=none; b=l9CIJt/Xr6dWZu4JdoP68aqWdFmMsm4u7WYxrQfkHIKMI9D7AiuatWQvqoXYHApgaPZLsPUkby6EsLWIA1Ow4dLcAWSgcKq1vo9yq/q9Ggotj1hs+EoVT+wQoavl4MMPPcRrlNT+80uFxwkN8iqY9oqvlcxIZF/9l+79TFlJaEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713819005; c=relaxed/simple;
-	bh=i6bdLCbDlUXhfBU62pSTidBdeKEWGuacTmR/v6dTwFc=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=ZmCH117n61gqP4jVfTj6BEB5TUeDQfylE845nHhKfZd29sRgwo/XS9WsSpfoQOg05k4kIhT3uf1jIZAHrpcvKptqV4jINkZ9fUPw0GEuYLoqKMKXnFNvllodxbrZ1YInPLZ4gpTG8N4wCAojdxPffqu11UgZZuiOt/vZNfk4OGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at; spf=fail smtp.mailfrom=nod.at; arc=none smtp.client-ip=195.201.40.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nod.at
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 78689608F445;
-	Mon, 22 Apr 2024 22:50:01 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id aLFQ3ulMU7v4; Mon, 22 Apr 2024 22:50:00 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id CDCF6609B3C4;
-	Mon, 22 Apr 2024 22:50:00 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id gIB3UWmMAyCg; Mon, 22 Apr 2024 22:50:00 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 9E120608F445;
-	Mon, 22 Apr 2024 22:50:00 +0200 (CEST)
-Date: Mon, 22 Apr 2024 22:50:00 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Stephen Rothwell <sfr@canb.auug.org.au>, 
-	kent overstreet <kent.overstreet@linux.dev>, 
-	SeongJae Park <sj@kernel.org>, 
-	anton ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	linux-mm <linux-mm@kvack.org>, 
-	linux-um <linux-um@lists.infradead.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <714170984.15180.1713819000411.JavaMail.zimbra@nod.at>
-In-Reply-To: <CAJuCfpFsrQxa2CX66xQtxp=Y-=R5_YkJMMX9VQ-g32rdCrukeg@mail.gmail.com>
-References: <20240326073750.726636-1-surenb@google.com> <95819052.15033.1713816660761.JavaMail.zimbra@nod.at> <CAJuCfpHnM6L-7s8cd90XKiawhw9LZaRfMfeDm54OshLQdV5YmA@mail.gmail.com> <1375034928.15114.1713817899712.JavaMail.zimbra@nod.at> <CAJuCfpFsrQxa2CX66xQtxp=Y-=R5_YkJMMX9VQ-g32rdCrukeg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] arch/um: fix forward declaration for vmalloc
+	s=arc-20240116; t=1713819028; c=relaxed/simple;
+	bh=9DYgO8wYupT0QH7+jRJ6N9SDSP6xXF8Q2+hPl5QnCPc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=t6N/7nZj1aIsdCPINytkZytycDiQr2TkWmHvi6rILm71O0ftvgBqvsF6NE6X38b16oNcIYDLkKvBU1wY8y8Qb8m7KiauT/WpNHEF23gxW8nWXizkGV8p/SqVui/cbPer6fpjwMPqSNcTRHDYJKIqevMey8aIscszEKwKIcD7EL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=krLcnxpe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 70A3DC3277B;
+	Mon, 22 Apr 2024 20:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713819027;
+	bh=9DYgO8wYupT0QH7+jRJ6N9SDSP6xXF8Q2+hPl5QnCPc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=krLcnxpex9izlLPRauXEQ1kz7zE9HBdNc/XxnINmxXWSs/sRqzDCbVdK6aD8aJgUZ
+	 yRASmHsN8MpAVumKZ1GZqDrzC4DrLyzCPEjQphUZg1RudddpY0TYP00Kdbb9UAghaX
+	 VSZDhvujUEzI9Ey/Q182TN3XcbptBJlIvuxWl4MY9GTq/aq/KLL8YN4QLuwg37HjuE
+	 t1HSrhnRkDG/7TI1P5PXeRmjtrrXVHwMTygaImpuaAtQnRuedbQbapx3nIgW5X/itS
+	 JcQsfaWEA23qh+lewnjSh3Prpk9d2f+PcIEsS8rm3qXxublHAlQm/KaE4Z8dCvfVsD
+	 w6NIgwjkxJYAg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5902FC43440;
+	Mon, 22 Apr 2024 20:50:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: arch/um: fix forward declaration for vmalloc
-Thread-Index: UBGj77MW+AtEVaScQFoqg8K21PqsYg==
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v2] net: dsa: mv88e6xx: fix supported_interfaces setup in
+ mv88e6250_phylink_get_caps()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171381902735.11970.5485641059317378577.git-patchwork-notify@kernel.org>
+Date: Mon, 22 Apr 2024 20:50:27 +0000
+References: <20240417103737.166651-1-matthias.schiffer@ew.tq-group.com>
+In-Reply-To: <20240417103737.166651-1-matthias.schiffer@ew.tq-group.com>
+To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc: andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ linux@armlinux.org.uk, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux@ew.tq-group.com
 
------ Urspr=C3=BCngliche Mail -----
-> Von: "Suren Baghdasaryan" <surenb@google.com>
->> > It's in mm-unstable under dc26c7e79daf2fc11169b23c150862f0e878ee5a. I
->> > think it just didn't reach Linus' tree yet.
->>
->> Hmm, so we better postpone this path until said commit hits Linus tree,
->> or you carry it together with the commit in mm-unstable.
->=20
-> Oh, sorry, I didn't realize you were talking about the `Fixes:
-> 576477564ede` part... Yeah, unfortunately SHAs in mm-unstable are
-> unstable, so the change being fixed is under
-> edf0a25633bda1e5b7844478dd13b4326a3d5d09 now. I think Andrew placed
-> this fix right after the change it fixes with intention to merge them
-> together later on.
+Hello:
 
-Ah, the patch itself goes via Andrew's tree, works for me!
-Let me note this in the uml patchwork system.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Acked-by: Richard Weinberger <richard@nod.at>
+On Wed, 17 Apr 2024 12:37:37 +0200 you wrote:
+> With the recent PHYLINK changes requiring supported_interfaces to be set,
+> MV88E6250 family switches like the 88E6020 fail to probe - cmode is
+> never initialized on these devices, so mv88e6250_phylink_get_caps() does
+> not set any supported_interfaces flags.
+> 
+> Instead of a cmode, on 88E6250 we have a read-only port mode value that
+> encodes similar information. There is no reason to bother mapping port
+> mode to the cmodes of other switch models; instead we introduce a
+> mv88e6250_setup_supported_interfaces() that is called directly from
+> mv88e6250_phylink_get_caps().
+> 
+> [...]
 
-Thanks,
-//richard
+Here is the summary with links:
+  - [net,v2] net: dsa: mv88e6xx: fix supported_interfaces setup in mv88e6250_phylink_get_caps()
+    https://git.kernel.org/netdev/net/c/a4e3899065ff
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
