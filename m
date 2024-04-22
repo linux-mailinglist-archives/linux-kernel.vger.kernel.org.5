@@ -1,204 +1,133 @@
-Return-Path: <linux-kernel+bounces-154001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4EF18AD5FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B56178AD5FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:42:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AA07282D9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:40:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F3C6282047
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 400771C6B2;
-	Mon, 22 Apr 2024 20:40:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B95D1BC41;
+	Mon, 22 Apr 2024 20:42:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q/a8o4xX"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="itm6atDQ"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73961B27D;
-	Mon, 22 Apr 2024 20:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC53F1B947
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713818412; cv=none; b=LaRHG6W1+fNuwfPaNBndyelQ1LqxICVedFyaPYphE3a5IF/cU/TymelMTbDB5S/T4u5TRPecHbFUF8F6EDK1zz2qNe2nEOPqHiLb7DoWQijK0XH1DrEW3pVNg3UDCpjhByHP9eTQiGZBR2d2klbST1WdvPAfUdrD/U9C5jHGY40=
+	t=1713818530; cv=none; b=H5z73baIJAmhzpezlWR2R3NsOKbRpcG0V44dFwLlPerdABTrIXq/yeDOJDoEhuHCR2eq2lV/KaV1oZW029DuaG1c/aZJeI8aUf83GENI33hkV0XqNFJCnZ7hyNhR7DAoFpcBajDJLbJuEy1QkH7mjqrq48xD12fpuk+Z4TdDgXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713818412; c=relaxed/simple;
-	bh=B7l0/65vO7+DjY80lOHywR958KdsAp0VxS0wq8JSYD8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=VXaK/ao9nDALEh1OcXEywBpuBrtnwlLDrd1CubxDqlIy7T/SlMjUJVATYVBT6L5APuWy7hGVW0QLILszHB3u3FsRyF1D30GeWuHd85KOLCcn5b0//uQGRqt2+bF9C/NQzJk4OGxjgwP0lFcZtJNwr+3YSlhUcuLjmp4R/RkeI0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q/a8o4xX; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713818411; x=1745354411;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=B7l0/65vO7+DjY80lOHywR958KdsAp0VxS0wq8JSYD8=;
-  b=Q/a8o4xXZBx6Y/WfbgeO4C9MZioeEKqNzF/umbT9FxRATrF++KFY00VH
-   KVUz3c8hsenyp9fI8e+YBhSr+ADat+cef8Qj6lMb9zXWN48hhXYwC72Kl
-   QhrL2BuUAYT5KXkHw+EjraF9Ysz1sUYUugbwLfmwm6EDqtJL1kgjbUn12
-   4LvshE22gxoIGbfc05jvvUfWy1NFy1pzv4ovgTponj1T9o+drbRl29iv0
-   cMDfFwZs/igD3WQ3kik2iNTq094pc9v+rVLGRlsRV6DU+HP9zlJkW6czW
-   5+tmFfm9u48F8BynEnmcduaxQF2ZEqY5ax43NLUzO8nl1qtendWlzEa3N
-   g==;
-X-CSE-ConnectionGUID: aYke8BjJRGePVDAxTygung==
-X-CSE-MsgGUID: nZuVrdMYR5iZ9fYo+hHMmw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9548813"
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="9548813"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:40:10 -0700
-X-CSE-ConnectionGUID: 9bgKImlkQS+/6twUl2Iprg==
-X-CSE-MsgGUID: bGG3c9YUR261z1tgCG1Uhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="28804520"
-Received: from sj-4150-psse-sw-opae-dev2.sj.intel.com ([10.233.115.162])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:40:09 -0700
-Date: Mon, 22 Apr 2024 13:40:00 -0700 (PDT)
-From: matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@sj-4150-psse-sw-opae-dev2
-To: Rob Herring <robh@kernel.org>
-cc: bhelgaas@google.com, lpieralisi@kernel.org, kw@linux.com, 
-    krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-    linux-pci@vger.kernel.org, devicetree@vger.kernel.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] dt-bindings: PCI: altera: Convert to YAML
-In-Reply-To: <20240422145855.GA1242711-robh@kernel.org>
-Message-ID: <alpine.DEB.2.22.394.2404221320270.442026@sj-4150-psse-sw-opae-dev2>
-References: <20240420145342.118643-1-matthew.gerlach@linux.intel.com> <20240422145855.GA1242711-robh@kernel.org>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+	s=arc-20240116; t=1713818530; c=relaxed/simple;
+	bh=51xIj97O9lQ9Y9TaGc9pJwYMYuzv07feAOfehZkC93U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LxsSbHE5EMXuZ9AI2pJ0mEp+OTM2miodh4B3uJj3zRrQ8GWvG+NV9NxYOYHfTPDwFHAS/STr7ylaxgf/RNEkKyAGbStMBsc/5F7IHWK58F4OFVikZiPyaVfWMrrbe1clv4W1xQiRcX79OUAl/0C+gCPD/yGI/53KuIrBE/jXPCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=itm6atDQ; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 021E040E0240;
+	Mon, 22 Apr 2024 20:42:05 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Ml7F_4ndxso4; Mon, 22 Apr 2024 20:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1713818521; bh=OlkiVCvteYN4pxgphraaSRuyPSDJ4D5rYH0N0OYe2js=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=itm6atDQjc+oW7a6N5Ron8h+aHooV2kdwWEFi8HBx/+i4P3bT3uqGvHMHRFP7PM+m
+	 u1Y70F15Dqpuf1C8Y3sOYHclM55/rCpDES7XF2noYyq70s3HpAKQkxNatL4E9iEaRO
+	 3yGOYwBr6FbkCeAnPLFkeaPhcAevdvUuNhvR6wVfrlccAPcKantz8EzLh/bS6XOeeH
+	 RBSaaOWLjHG76k9nrZIqv8O36ByTz9wPUyQKY2F8ANKLUH5kdYZKjhO9Zi6Todw6uZ
+	 /wUHnVFLAtgLN4tKjc+83flYHHwnPxhhkoU8ekZr3JKb2jT3lm+Urt5IlMFlj43k3t
+	 2yRGTbn1dbat1yt1ZJS+69LgPTFizYbHvlIou9o/w1tep1cYr9fNJugye4oWgsrXXT
+	 7fiSzAZWyXmb7N7Y2WiZ68N7oRB3kWY1t/SZFsjNSLV6qgPm3kS/nzrXeRsAS6Oo4/
+	 pPuA5RUf0blCD1gEuSBPmmRSLHyLqAFtFEsmgARvKie62v7/gbsSxzCDDGuxu7c4m9
+	 yVJDFzWQv3hwbDTpQWse9+8dCnDUXl02qpQXEAj+TY7NWDllfVRdb5VWGUtdvUXeir
+	 12r4CmYerySbiv1bDKSPVTgP6LnrACV83xJtnylYHABI5XqNbkorK+CmGC7JCkrhqG
+	 TiZeoRuK2SDt/MbF1aEgk+b0=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DA14640E00B2;
+	Mon, 22 Apr 2024 20:41:51 +0000 (UTC)
+Date: Mon, 22 Apr 2024 22:41:46 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Robert Richter <rrichter@amd.com>
+Cc: Dave Hansen <dave.hansen@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	linux-kernel@vger.kernel.org, jgross@suse.com, tglx@linutronix.de,
+	x86@kernel.org, Kim Phillips <kim.phillips@amd.com>,
+	Robert Richter <rric@kernel.org>
+Subject: Re: [PATCH 2/4] perf/x86/ibs: Use CPUID region helper
+Message-ID: <20240422204146.GCZibLiqZhbY1J4qFJ@fat_crate.local>
+References: <20240403153508.7328E749@davehans-spike.ostc.intel.com>
+ <20240403153511.75CB9DA0@davehans-spike.ostc.intel.com>
+ <20240416151242.GGZh6VaiO2gC4ej2BT@fat_crate.local>
+ <f142e9c4-4829-4ace-8757-485246ad3572@intel.com>
+ <20240416174850.GEZh66AmnDjrLxoXaw@fat_crate.local>
+ <ZiEMnWaHkn99_oyW@rric.localdomain>
+ <20240422172055.GAZiacdxkQU0XAbybW@fat_crate.local>
+ <ZibEFZ6DoxDeBxxp@rric.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZibEFZ6DoxDeBxxp@rric.localdomain>
 
+On Mon, Apr 22, 2024 at 10:09:57PM +0200, Robert Richter wrote:
+> Since we check get_cpuid_region_leaf()'s return code here we know if
+> the cpud leaf exists and return IBS_CAPS_DEFAULT if not. That would
+> not change the refB behaviour.
 
+Yes.
 
-On Mon, 22 Apr 2024, Rob Herring wrote:
+> Though I think that case is rare or even not existing, I would just
+> keep the implementation like that and as it was for for years.
 
-> On Sat, Apr 20, 2024 at 09:53:42AM -0500, matthew.gerlach@linux.intel.com wrote:
->> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->>
->> Convert the device tree bindings for the Altera Root Port PCIe controller
->> from text to YAML.
->>
->> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
->> ---
->> v4:
->>  - reorder reg-names to match original binding
->>  - move reg and reg-names to top level with limits.
->>
->> v3:
->>  - Added years to copyright
->>  - Correct order in file of allOf and unevaluatedProperties
->>  - remove items: in compatible field
->>  - fix reg and reg-names constraints
->>  - replace deprecated pci-bus.yaml with pci-host-bridge.yaml
->>  - fix entries in ranges property
->>  - remove device_type from required
->>
->> v2:
->>  - Move allOf: to bottom of file, just like example-schema is showing
->>  - add constraint for reg and reg-names
->>  - remove unneeded device_type
->>  - drop #address-cells and #size-cells
->>  - change minItems to maxItems for interrupts:
->>  - change msi-parent to just "msi-parent: true"
->>  - cleaned up required:
->>  - make subject consistent with other commits coverting to YAML
->>  - s/overt/onvert/g
->> ---
->>  .../devicetree/bindings/pci/altera-pcie.txt   | 50 -----------
->>  .../bindings/pci/altr,pcie-root-port.yaml     | 88 +++++++++++++++++++
->>  2 files changed, 88 insertions(+), 50 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/pci/altera-pcie.txt
->>  create mode 100644 Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/pci/altera-pcie.txt b/Documentation/devicetree/bindings/pci/altera-pcie.txt
->> deleted file mode 100644
->> index 816b244a221e..000000000000
->> --- a/Documentation/devicetree/bindings/pci/altera-pcie.txt
->> +++ /dev/null
->> @@ -1,50 +0,0 @@
->> -* Altera PCIe controller
->> -
->> -Required properties:
->> -- compatible :	should contain "altr,pcie-root-port-1.0" or "altr,pcie-root-port-2.0"
->> -- reg:		a list of physical base address and length for TXS and CRA.
->> -		For "altr,pcie-root-port-2.0", additional HIP base address and length.
->> -- reg-names:	must include the following entries:
->> -		"Txs": TX slave port region
->> -		"Cra": Control register access region
->> -		"Hip": Hard IP region (if "altr,pcie-root-port-2.0")
->> -- interrupts:	specifies the interrupt source of the parent interrupt
->> -		controller.  The format of the interrupt specifier depends
->> -		on the parent interrupt controller.
->> -- device_type:	must be "pci"
->> -- #address-cells:	set to <3>
->> -- #size-cells:		set to <2>
->> -- #interrupt-cells:	set to <1>
->> -- ranges:	describes the translation of addresses for root ports and
->> -		standard PCI regions.
->> -- interrupt-map-mask and interrupt-map: standard PCI properties to define the
->> -		mapping of the PCIe interface to interrupt numbers.
->> -
->> -Optional properties:
->> -- msi-parent:	Link to the hardware entity that serves as the MSI controller
->> -		for this PCIe controller.
->> -- bus-range:	PCI bus numbers covered
->> -
->> -Example
->> -	pcie_0: pcie@c00000000 {
->> -		compatible = "altr,pcie-root-port-1.0";
->> -		reg = <0xc0000000 0x20000000>,
->> -			<0xff220000 0x00004000>;
->> -		reg-names = "Txs", "Cra";
->> -		interrupt-parent = <&hps_0_arm_gic_0>;
->> -		interrupts = <0 40 4>;
->> -		interrupt-controller;
->
-> What happened to this? It is clearly needed since the interrupt-map
-> below points back to this node. Note that that didn't work at one point
-> in time, but I think we fixed it.
+Yes.
 
-I think the DTs I was using test were created during the point in time 
-when this did not work. The interrupt-controller boolean and 
-#interrupt-cells property were in a sub node, and the interrupt-map 
-pointed to the sub-node. Keeping everything in the base node maintains 
-compatiblity. I will fix this for v5.
+> > > This slightly modifies the functionality so that 0 is return if
+> > > !IBS_CAPS_AVAIL (instead of IBS_CAPS_DEFAULT).
+> > 
+> > If !IBS_CAPS_AVAIL, then this is revB. But then you want to return
+> > IBS_CAPS_DEFAULT there.
+> 
+> No, on a rebB get_cpuid_region_leaf() would be false, meaning the
+> cpuid leaf is missing, function returns with IBS_CAPS_DEFAULT then.
 
->
-> It doesn't seem you are testing the binding against an actual DT.
-> Please do that.
+So what functionality modification do you mean then?
 
-I need to fix the DTs I'm using for test :)
+When will IBS_CAPS_AVAIL be not set?
 
-Thanks for the feedback,
+GH BKDG says about that bit:
 
-Matthew Gerlach
+"IBSFFV. IBS feature flags valid. Revision B = 0. Revision C = 1."
 
->
-> Rob
->
->> -		#interrupt-cells = <1>;
->> -		bus-range = <0x0 0xFF>;
->> -		device_type = "pci";
->> -		msi-parent = <&msi_to_gic_gen_0>;
->> -		#address-cells = <3>;
->> -		#size-cells = <2>;
->> -		interrupt-map-mask = <0 0 0 7>;
->> -		interrupt-map = <0 0 0 1 &pcie_0 1>,
->> -			            <0 0 0 2 &pcie_0 2>,
->> -			            <0 0 0 3 &pcie_0 3>,
->> -			            <0 0 0 4 &pcie_0 4>;
->> -		ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000
->> -			  0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
->> -	};
->
+so that has been set ever since on >= revC.
+
+And on revB we'll return IBS_CAPS_DEFAULT which has IBS_CAPS_AVAIL.
+
+IOW, I don't see how we'll return 0 if !IBS_CAPS_AVAIL because latter
+doesn't happen practically with that flow.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
