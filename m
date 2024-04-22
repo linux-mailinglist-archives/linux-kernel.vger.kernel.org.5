@@ -1,187 +1,187 @@
-Return-Path: <linux-kernel+bounces-153292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A87B48ACC1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CB148ACC20
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:37:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F0061F21696
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:36:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C44EE1F24232
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F07A1465A2;
-	Mon, 22 Apr 2024 11:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F66146D45;
+	Mon, 22 Apr 2024 11:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="P4aoMHOs";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="jPo7Kp3i"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="WIN6TNL0"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E31D1465B3;
-	Mon, 22 Apr 2024 11:36:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463D21465A2;
+	Mon, 22 Apr 2024 11:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713785800; cv=none; b=uN6uq6hb2t49KFUWW4Nsu/dNKct1Cq2USL4BvBW5OeKl/5ietR+GTpPGtqrqksLRybdlwxBrEqDm7kB4kL67pTMmVCUWrG6Yx6h+gxBR3Mvv/OSDQWMbPVzR6Tj+X+D9shzDMeXblaasqaTWcLJ77SX9stQKftErKJzvqD25Nag=
+	t=1713785853; cv=none; b=M4KDAZmxt92HXAgeYNacJ6FJW1vr6V9PZV/F9ONGtROkmj+gcqtzTVtjEIwej0LcrE4EUluBwkih5ChUUogKD/GctVYta98hCkcq+edoeXmygTsGh8E0LrpzqBEWfvbyR8hPhnDU/1Z1pFVemEg2I3m4jFFQTcaTUbr++7DpdJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713785800; c=relaxed/simple;
-	bh=ItdicYmLWZdbJ4/E+0SqxN1tOW9mkHu6tubEIWymiTo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ql4Y1mkxB/ni/ghVv5u2pZdDQNVq9IGseEehOgpNjHiDSFEvkNN45DaSNsWwKdPXD4ezpDk/8V/rOPCG5TbO506estdf2i/vKYKZESNOW25S+A3y2jp6g/a60z0QZbeMDi3Ef7l0/HsuNu3a+F+QJeNUC5jJgixSNrY+Td6j1p0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=P4aoMHOs; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=jPo7Kp3i reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1713785797; x=1745321797;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=a8tmUfcLbDKINV4lHr1PNpryxyZNz/7RC/mYXxPwibE=;
-  b=P4aoMHOs3qnnOcMnTAupO0DLpd8FLXQZBzVcNORzQnFBGH8CNHfuOoPc
-   Ka0IP6KH29rHY6Nr9lCdfGVLPLZRk2FfTgYybi8N73Vc4uEsQd7XTCPur
-   P/6olANW891IhEI0SHZMX7aQ7JLUoCvQuPBejYWh59rhNnwAfjoXN0FWa
-   yY9w19HSmp0ndwBQWB6AcZb9XbfhDzhQAVxVfj9yFQOK9xhYFpmxRfVGw
-   By+CEUBkJAK8vlte1bNiBTbMqtX9OjenOCzCnYUJlTHrW3YLy8Scw1KT2
-   qMVIDKzSb4zm7BXh1krly1RpJMmWzTAzWJl5h/XoAgEsQtRbGew6wuGlp
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.07,220,1708383600"; 
-   d="scan'208";a="36541302"
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 22 Apr 2024 13:36:34 +0200
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E08EE160AEF;
-	Mon, 22 Apr 2024 13:36:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1713785790;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding; bh=a8tmUfcLbDKINV4lHr1PNpryxyZNz/7RC/mYXxPwibE=;
-	b=jPo7Kp3ibDT+vTxxqzArMmj6CmwpJ7g3V7e3im9iqmjqM1dBgGoVXLfeMQ+uQNyHiV16+F
-	Xh6Kujzotm/mBwjLTyI5q54L+4dAW8h+PyoZWqezTsuogWqKX/DWVtfuLxsfklbNUHL/bu
-	NAcczu1W2rejJjDZsapvY8zyjzGbyz/VINKkZKVB1fWM1BlZGQN6raq2fdOS2sOjRrC8rv
-	0ai1XFjyWlX9k4jEK5QsGV2pYc4U+g9BlxIdjFiCk9UUdIYw0+sUdMK3TzQA4EJ6uvh/iP
-	Vb3YKvXUX/ayvFAGxqVZHg3dJ3Sg1gFYHIYb9PQFd3kQwimWvSpzrCIy5KbuQg==
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Dong Aisheng <aisheng.dong@nxp.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-i2c@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	imx@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/1] i2c: lpi2c: Avoid calling clk_get_rate during transfer
-Date: Mon, 22 Apr 2024 13:36:29 +0200
-Message-Id: <20240422113629.1629891-1-alexander.stein@ew.tq-group.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713785853; c=relaxed/simple;
+	bh=JirxwaUTPZ7gRRTADFPsE4LALCUoW+coAPWl1mh0lv4=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tCDK9w44yM3rQ4iSeAzUR7SZ41WHz8dcFyEWaqyZZwOY3GFkGehUINZspsRQSbsBOx7+gIlT6X5GlrW7Rc8vypzfCPJQfBNTB9EKu1W+qZWy0oS0qYmmnlp5avs1vDJlu7KUwditiZpkr0ici+lQ7eyvpKW36QaSbajBAw/Y4AM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=WIN6TNL0; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1713785851; x=1745321851;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JirxwaUTPZ7gRRTADFPsE4LALCUoW+coAPWl1mh0lv4=;
+  b=WIN6TNL03JCsd7HKa0aw3VOEEuMCrHdC+t4+50oDi+OAczxbg4ptWVMj
+   IeT58zkDtOaLps1dtLG7t4B4RxgBjs3HgoSeZF9lLtqPbCmSLz5P8sY7x
+   fHoo1qFNrHBttf1r6QZvGABPMfRHQIlEFF1QEpsnW+2Bkd0gMMqqmfjRT
+   9vslTZO88+WMbvvrsHMA2X04y4WaHAxhdumql9cEWiNKXTDMb7HRM7KH4
+   D84ZS6R5Z8byef3xFrQh0dQ6/gDlk61smcDOSMUUZYOSNGYu+boWZIF5v
+   qEqF1S7+gZw9Z8bDiyLhcfs1lLRngr8jR+O6Id2l5UTx4ez14EVJmoOdJ
+   w==;
+X-CSE-ConnectionGUID: RWC0UfowTpGbeC6DP7jNJg==
+X-CSE-MsgGUID: E2DBmtQjS3e/5QeweITlcg==
+X-IronPort-AV: E=Sophos;i="6.07,220,1708412400"; 
+   d="asc'?scan'208";a="22099120"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Apr 2024 04:37:27 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Apr 2024 04:37:01 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Mon, 22 Apr 2024 04:36:58 -0700
+Date: Mon, 22 Apr 2024 12:36:42 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+CC: Conor Dooley <conor@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Anup Patel
+	<anup@brainfault.org>, Shuah Khan <shuah@kernel.org>, Atish Patra
+	<atishp@atishpatra.org>, <linux-doc@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <kvm@vger.kernel.org>,
+	<kvm-riscv@lists.infradead.org>, <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH v2 04/12] riscv: add ISA parsing for Zca, Zcf, Zcd and Zcb
+Message-ID: <20240422-matchbook-unlikable-59987a8d8b1f@wendy>
+References: <20240418124300.1387978-1-cleger@rivosinc.com>
+ <20240418124300.1387978-5-cleger@rivosinc.com>
+ <20240419-clinic-amusing-d23b1b6d2af2@spud>
+ <6ab9e591-f2f2-4267-8bdd-169ef0243e14@rivosinc.com>
+ <20240422-daylight-sassy-ff3b0d867fef@wendy>
+ <032530b8-a26e-494f-bd9c-3e1661add5d4@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="BQeFG0OJOWz1hKp9"
+Content-Disposition: inline
+In-Reply-To: <032530b8-a26e-494f-bd9c-3e1661add5d4@rivosinc.com>
 
-Instead of repeatedly calling clk_get_rate for each transfer, lock
-the clock rate and cache the value.
-A deadlock has been observed while adding tlv320aic32x4 audio codec to
-the system. When this clock provider adds its clock, the clk mutex is
-locked already, it needs to access i2c, which in return needs the mutex
-for clk_get_rate as well.
+--BQeFG0OJOWz1hKp9
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
----
-This is an alternative, lightweight approach replacing the patch [1].
-The issue to address is still removing the call to clk_get_rate() during each
-transfer, which might reuslt in a deadlock. lockdep also complains about this
-call chain.
-The dependency from v2 has already been merged in commit b0cde62e4c548
-("clk: Add a devm variant of clk_rate_exclusive_get()").
+On Mon, Apr 22, 2024 at 01:14:26PM +0200, Cl=E9ment L=E9ger wrote:
+> On 22/04/2024 11:35, Conor Dooley wrote:
+> > On Mon, Apr 22, 2024 at 10:53:10AM +0200, Cl=E9ment L=E9ger wrote:
+> >> On 19/04/2024 17:51, Conor Dooley wrote:
+> >>> On Thu, Apr 18, 2024 at 02:42:27PM +0200, Cl=E9ment L=E9ger wrote:
+> >>>> The Zc* standard extension for code reduction introduces new extensi=
+ons.
+> >>>> This patch adds support for Zca, Zcf, Zcd and Zcb. Zce, Zcmt and Zcmp
+> >>>> are left out of this patch since they are targeting microcontrollers/
+> >>>> embedded CPUs instead of application processors.
+> >>>>
+> >>>> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
+> >>>> ---
+> >>>>  arch/riscv/include/asm/hwcap.h | 4 ++++
+> >>>>  arch/riscv/kernel/cpufeature.c | 4 ++++
+> >>>>  2 files changed, 8 insertions(+)
+> >>>>
+> >>>> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm=
+/hwcap.h
+> >>>> index 543e3ea2da0e..b7551bad341b 100644
+> >>>> --- a/arch/riscv/include/asm/hwcap.h
+> >>>> +++ b/arch/riscv/include/asm/hwcap.h
+> >>>> @@ -82,6 +82,10 @@
+> >>>>  #define RISCV_ISA_EXT_ZACAS		73
+> >>>>  #define RISCV_ISA_EXT_XANDESPMU		74
+> >>>>  #define RISCV_ISA_EXT_ZIMOP		75
+> >>>> +#define RISCV_ISA_EXT_ZCA		76
+> >>>> +#define RISCV_ISA_EXT_ZCB		77
+> >>>> +#define RISCV_ISA_EXT_ZCD		78
+> >>>> +#define RISCV_ISA_EXT_ZCF		79
+> >>>> =20
+> >>>>  #define RISCV_ISA_EXT_XLINUXENVCFG	127
+> >>>> =20
+> >>>> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpuf=
+eature.c
+> >>>> index 115ba001f1bc..09dee071274d 100644
+> >>>> --- a/arch/riscv/kernel/cpufeature.c
+> >>>> +++ b/arch/riscv/kernel/cpufeature.c
+> >>>> @@ -261,6 +261,10 @@ const struct riscv_isa_ext_data riscv_isa_ext[]=
+ =3D {
+> >>>>  	__RISCV_ISA_EXT_DATA(zfa, RISCV_ISA_EXT_ZFA),
+> >>>>  	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
+> >>>>  	__RISCV_ISA_EXT_DATA(zfhmin, RISCV_ISA_EXT_ZFHMIN),
+> >>>> +	__RISCV_ISA_EXT_DATA(zca, RISCV_ISA_EXT_ZCA),
+> >>>> +	__RISCV_ISA_EXT_DATA(zcb, RISCV_ISA_EXT_ZCB),
+> >>>> +	__RISCV_ISA_EXT_DATA(zcd, RISCV_ISA_EXT_ZCD),
+> >>>> +	__RISCV_ISA_EXT_DATA(zcf, RISCV_ISA_EXT_ZCF),
+> >>>>  	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
+> >>>>  	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
+> >>>>  	__RISCV_ISA_EXT_DATA(zbc, RISCV_ISA_EXT_ZBC),
+> >>>
+> >>> Ye, this looks exactly like what I "feared".
+> >>
+> >> Ok but for instance, Qemu actually set Zc* based on C/F/D. So the ISA
+> >> string containing theses dependencies should actually also be allowed.
+> >> So should we simply ignore them in the ISA string and always do our own
+> >> "post-processing" based on C/F/D?
+> >=20
+> > I'm not familiar with the contents of all of these extensions, but I
+> > assume the reasoning for splitting them out is that you can implement
+> > them but not maybe not implement C (or something similar)? If that's the
+> > case, you cannot always imply.
+>=20
+> Yeah, they can be implemented independently so we need to be able to
+> parse them independently.
 
-Instead of adding a clock notifier, lock the peripheral clock rate and cache
-the peripheral clock rate.
-Currently LPI2C is available in the following SoC:
-* i.MX7ULP
-* i.MX8ULP
-* i.MX8DXL
-* i.MX8X
-* i.MX8
-* i.MX93
+> However, the kernel currently requires C
 
-Additionally I expect both i.MX91 and i.MX95 to also use this driver.
+No it doesn't!
+There's a Kconfig option that controls whether or not we build with
+compressed instructions.
 
-This patch assumes the parent clock rate never changes. This is apparently true
-for i.MX93 as each I2C has it's own lpi2c*_root clock. On i.MX8 and i.MX8X
-clocks are managed by SCU with it's own dedicated firmware. I can't say if the
-clock never changes though. I have no idea about the other SoC.
+> so we
+> should always have Zca/Zcf/Zcd. But if that changes in the future, then,
+> that won't be true anymore. Better keep it generic probably
 
-Changes in v3:
-* Rebased to next-20240422
 
-Changes in v2:
-* Removed redundent clk_rate check in lpi2c_imx_config (I opted to keep
-  the local variable to not extent the calculation code lines)
-* Collected R-b
+--BQeFG0OJOWz1hKp9
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Best regards,
-Alexander
+-----BEGIN PGP SIGNATURE-----
 
-[1] https://lore.kernel.org/all/20240110120556.519800-1-alexander.stein@ew.tq-group.com/
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiZLygAKCRB4tDGHoIJi
+0rZqAPsH+rOY+xwtmy02hvEj5S0LCo5WHbH42moKe/rg2JsecQD9Efgn3/dHRehg
+SrE0p8oOablre3zPC16fRvmLyILrMAw=
+=iMqf
+-----END PGP SIGNATURE-----
 
- drivers/i2c/busses/i2c-imx-lpi2c.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
-index 6d72e4e126dde..36e8f6196a87b 100644
---- a/drivers/i2c/busses/i2c-imx-lpi2c.c
-+++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
-@@ -99,6 +99,7 @@ struct lpi2c_imx_struct {
- 	__u8			*rx_buf;
- 	__u8			*tx_buf;
- 	struct completion	complete;
-+	unsigned long		rate_per;
- 	unsigned int		msglen;
- 	unsigned int		delivered;
- 	unsigned int		block_data;
-@@ -212,9 +213,7 @@ static int lpi2c_imx_config(struct lpi2c_imx_struct *lpi2c_imx)
- 
- 	lpi2c_imx_set_mode(lpi2c_imx);
- 
--	clk_rate = clk_get_rate(lpi2c_imx->clks[0].clk);
--	if (!clk_rate)
--		return -EINVAL;
-+	clk_rate = lpi2c_imx->rate_per;
- 
- 	if (lpi2c_imx->mode == HS || lpi2c_imx->mode == ULTRA_FAST)
- 		filt = 0;
-@@ -611,6 +610,20 @@ static int lpi2c_imx_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	/*
-+	 * Lock the parent clock rate to avoid getting parent clock upon
-+	 * each transfer
-+	 */
-+	ret = devm_clk_rate_exclusive_get(&pdev->dev, lpi2c_imx->clks[0].clk);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "can't lock I2C peripheral clock rate\n");
-+
-+	lpi2c_imx->rate_per = clk_get_rate(lpi2c_imx->clks[0].clk);
-+	if (!lpi2c_imx->rate_per)
-+		return dev_err_probe(&pdev->dev, -EINVAL,
-+				     "can't get I2C peripheral clock rate\n");
-+
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, I2C_PM_TIMEOUT);
- 	pm_runtime_use_autosuspend(&pdev->dev);
- 	pm_runtime_get_noresume(&pdev->dev);
--- 
-2.34.1
-
+--BQeFG0OJOWz1hKp9--
 
