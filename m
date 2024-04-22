@@ -1,163 +1,129 @@
-Return-Path: <linux-kernel+bounces-153661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43D838AD153
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:55:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D22F48AD156
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:56:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 384051C2229B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:55:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87D191F228D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9716153583;
-	Mon, 22 Apr 2024 15:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B6AC153573;
+	Mon, 22 Apr 2024 15:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MAyHFqjR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="ALn6xlHG";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YUVxInp6"
+Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82A1153560
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E696153514;
+	Mon, 22 Apr 2024 15:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713801302; cv=none; b=RubNGHIObxc0yIpi+uN0jkFVQJ+r5G/a5DB3t8r2KxrbuvTXDCCmEMgNFQsSwOCJKBlizSNiO+hCvVafJmRcJLSvpbKf1Smr+TGQCn5uenQmr3kNpWmjrttMgykkDmVLxO+kVEvO1lCMlP4udq0ToLaDDB9MHV8P62jdLwTwvEM=
+	t=1713801359; cv=none; b=KYz0CWffLy9Qf8KdIF26+OMCcTkKbULf8Pq6iooBBZKZbvronG9K8x88+LQ3A3aQ7imYqy3s8R49L2imorNSNbYjaHfJO5LP1KKJLvwly2EhS3ckYK1vsH0uJzIT0fJvoYFeRiuB26g5bp03XZxFFbon2JIdEWSOHqykJB4qTZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713801302; c=relaxed/simple;
-	bh=S24f1FSrq1sF+m6JW8GkCEgWL3cQbwVEjd5KUt/45t8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=StQttCPJNlYVpRrdi9ASoK3NYI508iNh1ZWlUp6rQPdGR9T5P/9HDfSmvkZQRsEPIYzQTXcn9AteVVMCk+9vABjCrYJGRcE+0h0tLuXGdpZ7uPiGHtc321nBLh8sRNOTXhCxt99PgH56GUQUBqAqpurtt5x0YG4lNY1m5vYSxTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MAyHFqjR; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713801299;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vrXScvRqVTWx0cmSFbg2HprZNqV52P7w+MYqkVyqleM=;
-	b=MAyHFqjRT3btFGyAKdg5aXwm1dWDe7vvo3A115VjWSMB6kfBJVbzqNBg85a9PTNMrS6LjH
-	v6Eqh353oyU99f6J/HL574K+y07Mg4aSzQBUPy2NWq1+Z/lql4Du8hvRspQeKRlBDcbNh/
-	eS+/tuPAdhEYiUsLK7daHMzisJ83k9U=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-117-7nSj5R_UMQmNv2DD5WNXbg-1; Mon, 22 Apr 2024 11:54:57 -0400
-X-MC-Unique: 7nSj5R_UMQmNv2DD5WNXbg-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4183d08093bso27287075e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:54:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713801296; x=1714406096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vrXScvRqVTWx0cmSFbg2HprZNqV52P7w+MYqkVyqleM=;
-        b=jQ/rzApK4YYBZKYd1QmHeJ1r5BoJzGmOTYZKH6yaBsbP8C/O3LMdW377/iyCqNNT5t
-         4iF5finy6RJLit9MpiJf6d/BBGNOqpxmACdjdZUkTYgvaBoDxks/Avf4dK6Cf1maSbea
-         r8mMmapEONRHUUK5wuOoJ9MRIKyQe/NcIkHDP1k5S/9Np5F4cPylFcATOMh5y2L5MMMO
-         5hrajSQdqOpnFZJlyhXQghz8U382nDUyFJDHt6ssMXaGJyfws4UCM4QZD7V1WKric6fq
-         z2ablQdQTBj4nTyYcGDzOy16vEOy+Acu/IB8Hmg9oCPFtUaGQLuhe6UxUNm8bywgYt3C
-         1+rA==
-X-Forwarded-Encrypted: i=1; AJvYcCXxT1ZyGekwa+j+mJyc4dDNVl7M79PLaBA4Sxa9vAfvc4dP4UHC52Fv2qzGBk5q2v4Pig2QWNtsNmSh0dcwL9/6RZrfpAiSCiiEs96s
-X-Gm-Message-State: AOJu0YwD/wJURXPivReaH1dXUqe6YbY9Y6x4TkdWKN2FXus23U649V7G
-	/ssSuSeH6g8Rgk4IIhYhgwm7rhZfUQCf6Mg3edmWzR7whPHstKTlYXJfLKXDPIKGq4j/0DNIMAu
-	/rTIrpsZuMN3AAnbxlelrP+dGdJyB1C8u8/5mG1Y1qfNwzZvQ+yrg3hWyZm/1PifOm6QbMWjusW
-	4Gc1SGuVf4wPTen4Os7EUXezPCVa2xjXOR6vf2
-X-Received: by 2002:a05:600c:4e0d:b0:41a:8b39:803b with SMTP id b13-20020a05600c4e0d00b0041a8b39803bmr1369172wmq.1.1713801296720;
-        Mon, 22 Apr 2024 08:54:56 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGkTcPyCSPPQtSYlQR7uDVxnB1gDryj1kgIix0MnGUIXw/SBKRVw/tNcQ3IV5cqzNp+/Ot6ubPK0sZ96Qu3ayI=
-X-Received: by 2002:a05:600c:4e0d:b0:41a:8b39:803b with SMTP id
- b13-20020a05600c4e0d00b0041a8b39803bmr1369141wmq.1.1713801296335; Mon, 22 Apr
- 2024 08:54:56 -0700 (PDT)
+	s=arc-20240116; t=1713801359; c=relaxed/simple;
+	bh=9I4+qB+/XalnNvDY0Lu/NgvbWxoEth7z2LMxfahexxM=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=PsUbFQtQDjSWePcuBmjIFw5m0OuqnqPQnPU5aZcprQ2ZxI25RbL2cc+QjtqNgEBOqZ4QmEJMo/SGVDxsWaAY/nch61dmaK4bfbFkn5y1JBpeNhRQvkJpUV+HkjT4SJDaVumA/N2DBD8gzpxGJ3x04ZqvQxnWb8CLW9y8sjS/V6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=ALn6xlHG; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YUVxInp6; arc=none smtp.client-ip=64.147.123.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 683021C0014E;
+	Mon, 22 Apr 2024 11:55:55 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 22 Apr 2024 11:55:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1713801354;
+	 x=1713887754; bh=ZSHrYyPgFLrQZ8O8HWVsVt4/XQWCMDmHcdcpgfWAfj8=; b=
+	ALn6xlHGM1zKqXALbMu8nurp7ObkDdTDr79lIpJQRXrl9RL8H+/aOA73xDHPkqCh
+	Pfgseg5+ifMjLhwb40HuiCebbQMl64OqK14DW5HYBcjbrD9ZkF7mCJBGEvnxJjgS
+	gDnSbgkReW+uRas/Nkydik+BYZ53ZaNIXsq8AR16cC1nSk51jJJsuzx1GulFB4VN
+	ZMnaGGUKdvEdUiDFIk4LF5+SvN0/plTlyiasY7WKGXRcD4OXOx2C2RWFk3M7KO83
+	rHacifNdWyMCx5KFGv9cPvBjx3FAHkR6PIP7FXkBT+OcvEDDOcCgUegpD6LzPXkc
+	Nj9PjctdvJ2Xq2SZwisR1w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1713801354; x=
+	1713887754; bh=ZSHrYyPgFLrQZ8O8HWVsVt4/XQWCMDmHcdcpgfWAfj8=; b=Y
+	UVxInp6tITMe9D6C4O+4b5n3ddou/qOf16eMckhAMiFfJ7EsErSDPm511oy0jtt2
+	ZvvwTbziLgXeYZoce7iY6LMHgaYrbFM1Gw3m6EXBaN3OfufgwkbVHz5NhdDXM3tZ
+	GjW9Cz0dGzTj9DHd6/zUoSZKBRO7a9V7ds6XBsZPFsh9kr7jmu6F8zKcL8lrH8eF
+	2nUiLmfCXkla9S6hUdmvWUO72qlF1v+PJc0YIb19cQyX0VKUq7nfWzIKpmGR9w/3
+	20NrSumJfEppCWuc32kFHe4jDn40t8ZEGHHmNH5KyodI+8hyG05buLW19JWg07DW
+	LIiGtDevaGAFxafNvuCbQ==
+X-ME-Sender: <xms:iYgmZueyyuiVCA5bgohQCU3Y4BCG_62evA1bQleiEJ9A4HzfRnP3Ww>
+    <xme:iYgmZoPS88FCDfhWx8XKwmECqNsGVDrsDVWBZUExCC7hef9nLpwhu7xThQe20UPQJ
+    AbB8P8PoTbxZABNRkE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekledgleehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:iYgmZvirFkZCQF2wjMuOd4-5mHzIvjWoJVLTUc0-PvkSAljkSaBntw>
+    <xmx:iYgmZr90qxPSserCN03KK4YndHJ5OWuEeVzBwbg0lQdGqRHPSyIb7g>
+    <xmx:iYgmZqsTPOkpBEQ9u7_v0qaHmVzXc0JTuipmKrtuHKwzR6xKoBshwA>
+    <xmx:iYgmZiGeyjQEP9Gj4-R2__Zt86wStoqzA0bwgB-oyZnspljnWxqtVg>
+    <xmx:iogmZiF7OEI55XW0pncz7go-rvrEpFKVYCzU-ZBapq4TlWEVwv4ZdnbP>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id C7E95B6008D; Mon, 22 Apr 2024 11:55:53 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-386-g4cb8e397f9-fm-20240415.001-g4cb8e397
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418193528.41780-1-dwmw2@infradead.org> <20240418193528.41780-3-dwmw2@infradead.org>
- <CABgObfa0j34iEh81hhd7-t7ZM1GKAsvJb5xP6EoD2-c-8TnPqQ@mail.gmail.com> <a35e69e07b9cd297dac9993c886667add144e833.camel@infradead.org>
-In-Reply-To: <a35e69e07b9cd297dac9993c886667add144e833.camel@infradead.org>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Mon, 22 Apr 2024 17:54:44 +0200
-Message-ID: <CABgObfbK0aqqmAz7Z2efX4hNf7WRBYpoJ1a07oKMZdFXS2r0+g@mail.gmail.com>
-Subject: Re: [PATCH 02/10] KVM: x86: Improve accuracy of KVM clock when TSC
- scaling is in force
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, 
-	Sean Christopherson <seanjc@google.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Paul Durrant <paul@xen.org>, Shuah Khan <shuah@kernel.org>, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>, 
-	Marcelo Tosatti <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <e7e4ff27-ebb3-4ed6-a7cc-36c36ab90a36@app.fastmail.com>
+In-Reply-To: <C0856D2E-53FF-45EB-B0F9-D4F836C7222C@toblux.com>
+References: <20240420223836.241472-1-thorsten.blum@toblux.com>
+ <42e6a510-9000-44a4-b6bf-2bca9cf74d5e@linux.intel.com>
+ <C0856D2E-53FF-45EB-B0F9-D4F836C7222C@toblux.com>
+Date: Mon, 22 Apr 2024 17:55:33 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Thorsten Blum" <thorsten.blum@toblux.com>,
+ =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?= <amadeuszx.slawinski@linux.intel.com>
+Cc: "Xiao W Wang" <xiao.w.wang@intel.com>,
+ "Palmer Dabbelt" <palmer@rivosinc.com>,
+ "Charlie Jenkins" <charlie@rivosinc.com>,
+ "Namhyung Kim" <namhyung@kernel.org>, "Huacai Chen" <chenhuacai@kernel.org>,
+ "Youling Tang" <tangyouling@loongson.cn>,
+ "Tiezhu Yang" <yangtiezhu@loongson.cn>, "Jinyang He" <hejinyang@loongson.cn>,
+ Linux-Arch <linux-arch@vger.kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bitops: Change function return types from long to int
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 22, 2024 at 5:39=E2=80=AFPM David Woodhouse <dwmw2@infradead.or=
-g> wrote:
-
-> > ... especially considering that you did use a 64-bit integer here
-> > (though---please use u64 not uint64_t; and BTW if you want to add a
-> > patch to change kvm_get_time_scale() to u64, please do.
+On Mon, Apr 22, 2024, at 16:30, Thorsten Blum wrote:
+> On 22. Apr 2024, at 09:44, Amadeusz S=C5=82awi=C5=84ski=20
+> <amadeuszx.slawinski@linux.intel.com> wrote:
+>>=20
+>> I don't mind the idea, but in the past I've send some patches trying =
+to align some arch specific implementations with asm-generic ones. Now y=
+ou are changing only asm-generic implementation and leaving arch specifi=
+c ones untouched (that's probably why you see no size change on some of =
+them).
 >
-> Meh, I'm used to programming in C. Yes, I *am* old enough to have been
-> doing this since the last decade of the 1900s, but it *has* been a long
-> time since 1999, and my fingers have learned :)
+> I would submit architecture-specific changes in another patch set to k=
+eep it
+> simple and to be able to review each arch separately.
 
-Oh, I am on the same page (working on both QEMU and Linux, adapting my
-muscle memory to the context sucks) but u64/s64 is the preferred
-spelling and I have been asked to use them before.
+I can generally merge such a series with architecture specific
+changes through the asm-generic tree, with the appropriate Acks
+from the maintainers.
 
-> Heh, looks like it was you who made it uint64_t, in 2016. In a commit
-> (3ae13faac) which said "Prepare for improving the precision in the next
-> patch"... which never came, AFAICT?
-
-Yes, it was posted as
-https://lore.kernel.org/lkml/1454944711-33022-5-git-send-email-pbonzini@red=
-hat.com/
-but not committed.
-
-As an aside, we discovered later that the patch you list as "Fixes"
-fixed another tricky bug: before, kvmclock could jump if the TSC is
-set within the 250 ppm tolerance that does not activate TSC scaling.
-This is possible after a first live migration, and then the second
-live migration used the guest TSC frequency *that userspace desired*
-instead of the *actual* TSC frequency.
-
-Before:
-
-        this_tsc_khz =3D __this_cpu_read(cpu_tsc_khz);
-        if (unlikely(vcpu->hw_tsc_khz !=3D this_tsc_khz)) {
-                tgt_tsc_khz =3D vcpu->virtual_tsc_khz;
-                kvm_get_time_scale(NSEC_PER_SEC / 1000, tgt_tsc_khz,
-                        &vcpu->hv_clock.tsc_shift,
-                        &vcpu->hv_clock.tsc_to_system_mul);
-                vcpu->hw_tsc_khz =3D this_tsc_khz;
-
-After:
-
-        tgt_tsc_khz =3D __this_cpu_read(cpu_tsc_khz);
-
-        // tgt_tsc_khz unchanged because TSC scaling was not enabled
-        tgt_tsc_khz =3D kvm_scale_tsc(v, tgt_tsc_khz);
-
-        if (unlikely(vcpu->hw_tsc_khz !=3D tgt_tsc_khz)) {
-                kvm_get_time_scale(NSEC_PER_SEC / 1000, tgt_tsc_khz,
-                        &vcpu->hv_clock.tsc_shift,
-                        &vcpu->hv_clock.tsc_to_system_mul);
-                vcpu->hw_tsc_khz =3D tgt_tsc_khz;
-
-So in the first case kvm_get_time_scale uses vcpu->virtual_tsc_khz, in
-the second case it uses __this_cpu_read(cpu_tsc_khz).
-
-This then caused a mismatch between the actual guest frequency and
-what is used by kvm_guest_time_update, which only becomes visible when
-migration resets the clock with KVM_GET/SET_CLOCK. KVM_GET_CLOCK
-returns what _should have been_ the same value read by the guest, but
-it's wrong.
-
-Paolo
-
+     Arnd
 
