@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-154222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E2598AD97C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:55:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A15CD8AD986
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:55:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5ADAB23D91
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:55:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 416361F21E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:55:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8032D5103D;
-	Mon, 22 Apr 2024 23:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D8446542;
+	Mon, 22 Apr 2024 23:54:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A4HPjKq9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rPXkEuGh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD1745BE6;
-	Mon, 22 Apr 2024 23:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE01154424;
+	Mon, 22 Apr 2024 23:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830049; cv=none; b=ThHroU6E6d5HgARdfSZHmXzo7SUl2WXbomM86riW1gaVue1DACvAcljsQ7DaSNl+7brVCEaUAxJVVk55eqnriro1pcOX7wbf56xVMROIIc10aPx2MMK5GjbnYW85Ua7/FdmEX6lB5dyz9YlUxElh8amAbtoC6JqY03kTl2IXis0=
+	t=1713830051; cv=none; b=Qui5Ky8z47lL3HZ3k2FUsg9Eqexy9twmuQa+ySD5TtkAB9uQmlxcPmosJnPKIqIAE5v9jM4XRGUeGU273PEgyPVg1NEjPJe7Qj78xp9xZgkZLzabPJHcnnFpuuXL2ilSYtGeGkzc595LV5PQlaUVpsZD7owiSCKRXPh1TOI9bzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830049; c=relaxed/simple;
-	bh=qnDKUlHMSb5MO6Fab/lvnAJUlwxF6Ou6HrkWgUUcltE=;
+	s=arc-20240116; t=1713830051; c=relaxed/simple;
+	bh=EvRZrqba3Q+AZgYdNABoOZHEG8Gy2QrMm6KwKTSN9mY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JIhzw/7USGGAQQ/OX2YzLbbiqq6ff+eLlcDF+tMj0VXeUhEEJMI/jQsBuL4NJn2dn/JCVFTHfIoweidNEe2GPpLtCYdPD9GAlP9L72u2GYT+OJtF4eaRx2ALW2YBnFAUlSl3No82DuKy7P+SjwFf0+h9Yc5rWqjhc5EBQuv+mpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A4HPjKq9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCFB0C4AF07;
-	Mon, 22 Apr 2024 23:54:08 +0000 (UTC)
+	 MIME-Version; b=EM4xk7jInNH52YYi1WZkXBNpthQ8IRcrw/q2DgxGsj3MQ311HGv+ZzMZ9KivXAKr5C14M2EL/1Rz5gm3blp/1G0oFdug1oD60auKw7VHtKQdyEQYpU7J6gaIt4lDMgLLBFIyJIq+vo6jpZufFtjUF9s007ZM1iJSX4sx56fRMDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rPXkEuGh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0F79C3277B;
+	Mon, 22 Apr 2024 23:54:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830049;
-	bh=qnDKUlHMSb5MO6Fab/lvnAJUlwxF6Ou6HrkWgUUcltE=;
+	s=k20201202; t=1713830050;
+	bh=EvRZrqba3Q+AZgYdNABoOZHEG8Gy2QrMm6KwKTSN9mY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A4HPjKq9qPGA35ctPq9GUZ/0TYkmbtujyINGCDr8W107YAwXFI9mS53/WAhE2sA9W
-	 0zjdzEOcBAWrnCViQsN2fYGNYPTwUj/fxsW1MYZN+E18gXZf1rLiS1AIC1N3wFKRGp
-	 pehR3+I7YQSrygN9y1Wx3iCKNp+AtqRdW77xsOzzxOPog1JW62Ikj77y1fnr6OuPca
-	 A/pWFqjqhVsocThqvF/eOpLF4n0xZfuvYoA0JI4perAtHBoQ4+mVlt6lF3y0tATtxm
-	 OvlzwaB4Pi+SZS1qgXzQATTk5PIiK5/MSxNvZo9wKRjNMgwnm45yN2rb6soKxDxzu5
-	 vEGhv7F3fKfoA==
+	b=rPXkEuGhmWxGPc3Sa8mb6VEXLYjveh4V6cqYrbJ2Y5+1ll/4xfPoqge79t48nDGds
+	 FbtvQruouhiXMyBBcIqrxzeBH/TTeLEoSNxVcYk8RWoru06XAXHfR0hwz+SQqv6Pgo
+	 CFTx4XU3QbmuAgxl9reDMKYnPozpa4gQ8SKTXpKhnfI/hPoPDsb5ENzGGNNsmleG6m
+	 GeiB44fDb9dSan3mOQ0cmPQR/F9J/iEvKoCs4MiEGsODnCoPRCb+I3t9a1s3iN+H/v
+	 bmdV5OOytGehruAJd7N+OsOyHMcgHypO2Q+0PFAETCeFtMZkJqfLju0ekeKSfocHQu
+	 LLc1eLqBU3hSA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Len Brown <len.brown@intel.com>,
+Cc: Patryk Wlazlyn <patryk.wlazlyn@linux.intel.com>,
+	Len Brown <len.brown@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	lenb@kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 05/43] tools/power turbostat: Expand probe_intel_uncore_frequency()
-Date: Mon, 22 Apr 2024 19:13:51 -0400
-Message-ID: <20240422231521.1592991-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 06/43] tools/power turbostat: Print ucode revision only if valid
+Date: Mon, 22 Apr 2024 19:13:52 -0400
+Message-ID: <20240422231521.1592991-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231521.1592991-1-sashal@kernel.org>
 References: <20240422231521.1592991-1-sashal@kernel.org>
@@ -64,135 +65,57 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.7
 Content-Transfer-Encoding: 8bit
 
-From: Len Brown <len.brown@intel.com>
+From: Patryk Wlazlyn <patryk.wlazlyn@linux.intel.com>
 
-[ Upstream commit bb6181fa6bc942aac3f7f2fa8e3831952a2ef118 ]
+[ Upstream commit fb5ceca046efc84f69fcf9779a013f8a0e63bbff ]
 
-Print current frequency along with the current (and initial) limits
+If the MSR read were to fail, turbostat would print "microcode 0x0"
 
-Probe and print uncore config also for machines using the new cluster API
-
+Signed-off-by: Patryk Wlazlyn <patryk.wlazlyn@linux.intel.com>
+Reviewed-by: Len Brown <len.brown@intel.com>
 Signed-off-by: Len Brown <len.brown@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/turbostat/turbostat.c | 84 ++++++++++++++++++++-------
- 1 file changed, 63 insertions(+), 21 deletions(-)
+ tools/power/x86/turbostat/turbostat.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index c23703dd54aa1..bbd2e0edadfae 100644
+index bbd2e0edadfae..a4a40a6e1b957 100644
 --- a/tools/power/x86/turbostat/turbostat.c
 +++ b/tools/power/x86/turbostat/turbostat.c
-@@ -4581,20 +4581,15 @@ static void dump_sysfs_file(char *path)
- static void probe_intel_uncore_frequency(void)
- {
- 	int i, j;
--	char path[128];
-+	char path[256];
+@@ -5679,6 +5679,7 @@ void process_cpuid()
+ 	unsigned int eax, ebx, ecx, edx;
+ 	unsigned int fms, family, model, stepping, ecx_flags, edx_flags;
+ 	unsigned long long ucode_patch = 0;
++	bool ucode_patch_valid = false;
  
- 	if (!genuine_intel)
- 		return;
+ 	eax = ebx = ecx = edx = 0;
  
--	if (access("/sys/devices/system/cpu/intel_uncore_frequency/package_00_die_00", R_OK))
--		return;
--
--	/* Cluster level sysfs not supported yet. */
--	if (!access("/sys/devices/system/cpu/intel_uncore_frequency/uncore00", R_OK))
--		return;
-+	if (access("/sys/devices/system/cpu/intel_uncore_frequency/package_00_die_00/current_freq_khz", R_OK))
-+		goto probe_cluster;
+@@ -5708,6 +5709,8 @@ void process_cpuid()
  
--	if (!access("/sys/devices/system/cpu/intel_uncore_frequency/package_00_die_00/current_freq_khz", R_OK))
--		BIC_PRESENT(BIC_UNCORE_MHZ);
-+	BIC_PRESENT(BIC_UNCORE_MHZ);
+ 	if (get_msr(sched_getcpu(), MSR_IA32_UCODE_REV, &ucode_patch))
+ 		warnx("get_msr(UCODE)");
++	else
++		ucode_patch_valid = true;
  
- 	if (quiet)
- 		return;
-@@ -4602,26 +4597,73 @@ static void probe_intel_uncore_frequency(void)
- 	for (i = 0; i < topo.num_packages; ++i) {
- 		for (j = 0; j < topo.num_die; ++j) {
- 			int k, l;
-+			char path_base[128];
-+
-+			sprintf(path_base, "/sys/devices/system/cpu/intel_uncore_frequency/package_%02d_die_%02d", i,
-+				j);
+ 	/*
+ 	 * check max extended function levels of CPUID.
+@@ -5718,9 +5721,12 @@ void process_cpuid()
+ 	__cpuid(0x80000000, max_extended_level, ebx, ecx, edx);
  
--			sprintf(path, "/sys/devices/system/cpu/intel_uncore_frequency/package_0%d_die_0%d/min_freq_khz",
--				i, j);
-+			sprintf(path, "%s/min_freq_khz", path_base);
- 			k = read_sysfs_int(path);
--			sprintf(path, "/sys/devices/system/cpu/intel_uncore_frequency/package_0%d_die_0%d/max_freq_khz",
--				i, j);
-+			sprintf(path, "%s/max_freq_khz", path_base);
- 			l = read_sysfs_int(path);
--			fprintf(outf, "Uncore Frequency pkg%d die%d: %d - %d MHz ", i, j, k / 1000, l / 1000);
-+			fprintf(outf, "Uncore Frequency package%d die%d: %d - %d MHz ", i, j, k / 1000, l / 1000);
- 
--			sprintf(path,
--				"/sys/devices/system/cpu/intel_uncore_frequency/package_0%d_die_0%d/initial_min_freq_khz",
--				i, j);
-+			sprintf(path, "%s/initial_min_freq_khz", path_base);
- 			k = read_sysfs_int(path);
--			sprintf(path,
--				"/sys/devices/system/cpu/intel_uncore_frequency/package_0%d_die_0%d/initial_max_freq_khz",
--				i, j);
-+			sprintf(path, "%s/initial_max_freq_khz", path_base);
- 			l = read_sysfs_int(path);
--			fprintf(outf, "(%d - %d MHz)\n", k / 1000, l / 1000);
-+			fprintf(outf, "(%d - %d MHz)", k / 1000, l / 1000);
+ 	if (!quiet) {
+-		fprintf(outf, "CPUID(1): family:model:stepping 0x%x:%x:%x (%d:%d:%d) microcode 0x%x\n",
+-			family, model, stepping, family, model, stepping,
+-			(unsigned int)((ucode_patch >> 32) & 0xFFFFFFFF));
++		fprintf(outf, "CPUID(1): family:model:stepping 0x%x:%x:%x (%d:%d:%d)",
++			family, model, stepping, family, model, stepping);
++		if (ucode_patch_valid)
++			fprintf(outf, " microcode 0x%x", (unsigned int)((ucode_patch >> 32) & 0xFFFFFFFF));
++		fputc('\n', outf);
 +
-+			sprintf(path, "%s/current_freq_khz", path_base);
-+			k = read_sysfs_int(path);
-+			fprintf(outf, " %d MHz\n", k / 1000);
- 		}
- 	}
-+	return;
-+
-+probe_cluster:
-+	if (access("/sys/devices/system/cpu/intel_uncore_frequency/uncore00/current_freq_khz", R_OK))
-+		return;
-+
-+	if (quiet)
-+		return;
-+
-+	for (i = 0;; ++i) {
-+		int k, l;
-+		char path_base[128];
-+		int package_id, domain_id, cluster_id;
-+
-+		sprintf(path_base, "/sys/devices/system/cpu/intel_uncore_frequency/uncore%02d", i);
-+
-+		if (access(path_base, R_OK))
-+			break;
-+
-+		sprintf(path, "%s/package_id", path_base);
-+		package_id = read_sysfs_int(path);
-+
-+		sprintf(path, "%s/domain_id", path_base);
-+		domain_id = read_sysfs_int(path);
-+
-+		sprintf(path, "%s/fabric_cluster_id", path_base);
-+		cluster_id = read_sysfs_int(path);
-+
-+		sprintf(path, "%s/min_freq_khz", path_base);
-+		k = read_sysfs_int(path);
-+		sprintf(path, "%s/max_freq_khz", path_base);
-+		l = read_sysfs_int(path);
-+		fprintf(outf, "Uncore Frequency package%d domain%d cluster%d: %d - %d MHz ", package_id, domain_id,
-+			cluster_id, k / 1000, l / 1000);
-+
-+		sprintf(path, "%s/initial_min_freq_khz", path_base);
-+		k = read_sysfs_int(path);
-+		sprintf(path, "%s/initial_max_freq_khz", path_base);
-+		l = read_sysfs_int(path);
-+		fprintf(outf, "(%d - %d MHz)", k / 1000, l / 1000);
-+
-+		sprintf(path, "%s/current_freq_khz", path_base);
-+		k = read_sysfs_int(path);
-+		fprintf(outf, " %d MHz\n", k / 1000);
-+	}
- }
- 
- static void probe_graphics(void)
+ 		fprintf(outf, "CPUID(0x80000000): max_extended_levels: 0x%x\n", max_extended_level);
+ 		fprintf(outf, "CPUID(1): %s %s %s %s %s %s %s %s %s %s\n",
+ 			ecx_flags & (1 << 0) ? "SSE3" : "-",
 -- 
 2.43.0
 
