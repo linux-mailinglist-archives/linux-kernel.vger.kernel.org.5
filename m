@@ -1,128 +1,131 @@
-Return-Path: <linux-kernel+bounces-153596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E928AD024
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:04:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 727A78AD010
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:02:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 706081F22C7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:04:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1749E2820DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28D915251C;
-	Mon, 22 Apr 2024 15:03:56 +0000 (UTC)
-Received: from mail.schimsalabim.eu (vps01.schimsalabim.eu [85.214.219.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA4315219D;
+	Mon, 22 Apr 2024 15:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="DmMqnutF"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABDA3136988;
-	Mon, 22 Apr 2024 15:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1B6136988
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:02:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713798236; cv=none; b=S2o/oSvX7r81lt5MCD1l0sgKi7OwQLH2RVjvpHEYtu+EPmQXIHDXLNL6W+3C6WV0DkAifrHB6dBW/SBhiUv7t+YZ1TE22VxFmQoVpXzxgJVlKQMcZR4abysDfPJb1PJxWzVDLj+uTav52dGWU/dH31s0MxQJNGALCX+hTKn5YvQ=
+	t=1713798146; cv=none; b=iM7LMOiKpOfM3jVMxF8iBKopLYVQA2Mr7lGiBXOYd8MC0mRsjNswIstOg84bOuReRd+0cV3OxVnDdgurNsyImeOFUFfSfPes6/kqeZSNurDIUu/G+ecRxSq6pUwnChjA/Um+XF2c1jrsUK1P2fo63seve7h6DL8CwYBl5hbc/jY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713798236; c=relaxed/simple;
-	bh=F/+y69IMWZmu8UjWDvp6UxTy1wPIZeZF1pVBGeoqVHM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WtBmlfUX5gp5dAGuKreQqMoXbj8h528ugxemmR1KWefmGe0jeTeYKUvvMe64PFkC3YO+UFFVFyPXhH+2SwLH4kp6dLceQhFl/pd+DBwMp5zUydsruk3OCLQ4dRTFd9icPHiiFKSjgBR1EeJDj552gF+IkWGAB3wQcLAQEdwnhGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=schimsalabim.eu; spf=pass smtp.mailfrom=schimsalabim.eu; arc=none smtp.client-ip=85.214.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=schimsalabim.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=schimsalabim.eu
-Received: from localhost.localdomain (82-217-109-137.cable.dynamic.v4.ziggo.nl [82.217.109.137])
-	(authenticated bits=0)
-	by h2374449.stratoserver.net (8.14.7/8.14.7) with ESMTP id 43MF2Io9001087
-	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Mon, 22 Apr 2024 17:02:24 +0200
-From: Joao Schim <joao@schimsalabim.eu>
-To: Ban Tao <fengzheng923@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: sunxi: DMIC: Add controls for adjusting the mic gains
-Date: Mon, 22 Apr 2024 17:02:13 +0200
-Message-Id: <20240422150213.4040734-1-joao@schimsalabim.eu>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1713798146; c=relaxed/simple;
+	bh=uC7c7kYqSmVQGZp+YTPHZbbns+rkpE7UQYVX9hYf4mw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sVBvQ3IihuVSVrx4cx/+cRwnlJKHv9pdWqj1zYYVRm9KuHnMBjYohBrTkazPUjP2gQpoGReDfT+f9yuJQWKmyvi2aif1rzQ6fQ2CXFbqnaejJyh1F4J3t7GAHMfgsBrjzE3vXc+h2//3RG8NwTZKxCcgzVGjHDtSP89OQn0wdLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=DmMqnutF; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a55bdf477e5so87907866b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:02:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1713798141; x=1714402941; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LAekVfGSUIYeilrCxStRbd53k4+SbtJAs1TjJ6PPZkc=;
+        b=DmMqnutFFEh4xUj5lKI7xGsFfLxGvvnKM6KNWmkwyJax5Hesh2N7vblaeQyW/tsd7m
+         ws5emYdL3VGdWhYphxF9HVyUA0NKT313Vzwt5axw9qQFkCZdYGuFHP4IVzY2lsqTMA81
+         kDvOCXsNkkM5RcLqUPSba2OMPkI/0VMc0KzI/nZ45804Gf1R7DnAwnM/18t5guT4QN6w
+         cpMM5s5owTll0qGRcssqQqdtseFiUbVwydVPJzQBRnqxnoQ9oYFtQWVPkpb9tChslu0I
+         4b/HEZPVLm04nuIB9nropcd/wkkfRaBqhHPjiaIi6HltwFZ1iHxsyoZ1fy/fuqN7ftaU
+         aEkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713798141; x=1714402941;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LAekVfGSUIYeilrCxStRbd53k4+SbtJAs1TjJ6PPZkc=;
+        b=k23PqQEctS3XEqUBDoIPOCsKG4vilVPmmUEIN/D/UDTyHFQGvNU45WLxGf5nJpCyC3
+         uWYR3OsyGOxEfzWHw1Ljz7Y9eoRdVxfg/+5HYvICWhV9bvgZSodE9YZA7p8wGYeSOtLo
+         PsStpKV7s24aD0dw04JrpCHStlmzG7tgzQR+4UbG81jPFOqLGNqama9gHQQmTUHp3hBw
+         8i6CHPIG4tkyh7uDahD0hw9/R9yh9PI/WipFvTVcxijj+VgIg3AgvoqpK0zge2PgEnpv
+         s98/RdHipAkbtmZGws/S4YB8+wzpXZ/0UxbDuyhp8efw1/MZOcA3Wk1qWF5F7vu0HKC/
+         eixQ==
+X-Forwarded-Encrypted: i=1; AJvYcCULPjttbkgw0Q5f8qwlp8OrnUvYeXx57b6s3GnYGIGimFXJahqhel4YBtvgTp6lpyWBkS4/Fz/O3PwzDLk4uKumGstQ16BDKfhlS/1q
+X-Gm-Message-State: AOJu0Yw/oRExTmi+HeApi8DFhONQGs6gXISrY7Pf3XBw4T2zzx5+G5XF
+	z2x0E3qQVVA9cBMdNlwSTBesT8LqVDGVu2UheXLJmi6ilu7Bu7Du0FSFjZtr9bM=
+X-Google-Smtp-Source: AGHT+IHS6BZ9qlEluvP//9IwElLogHji7WqEThNxj1fC3U2GxC+dWUDgoMi5vcDNYySA8T2tWjoPlg==
+X-Received: by 2002:a17:906:830f:b0:a52:3b6a:ab43 with SMTP id j15-20020a170906830f00b00a523b6aab43mr8149446ejx.67.1713798140345;
+        Mon, 22 Apr 2024 08:02:20 -0700 (PDT)
+Received: from localhost (78-80-105-131.customers.tmcz.cz. [78.80.105.131])
+        by smtp.gmail.com with ESMTPSA id h5-20020a170906590500b00a4a396ba54asm5866471ejq.93.2024.04.22.08.02.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 08:02:19 -0700 (PDT)
+Date: Mon, 22 Apr 2024 17:02:18 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: "Kory Maincent (Dent Project)" <kory.maincent@bootlin.com>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kyle Swenson <kyle.swenson@est.tech>
+Subject: Re: [PATCH net-next v2 2/3] net: pse-pd: pse_core: Fix pse regulator
+ type
+Message-ID: <ZiZ7-n5q3COmPRx6@nanopsycho>
+References: <20240422-fix_poe-v2-0-e58325950f07@bootlin.com>
+ <20240422-fix_poe-v2-2-e58325950f07@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240422-fix_poe-v2-2-e58325950f07@bootlin.com>
 
-The AllWinner H6 and later SoCs that sport a DMIC block contain a set of registers to control
-the gain (left + right) of each of the four supported channels.
+Mon, Apr 22, 2024 at 03:35:47PM CEST, kory.maincent@bootlin.com wrote:
+>From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
+>
+>Clarify PSE regulator as voltage regulator, not current.
+>The PSE (Power Sourcing Equipment) regulator is defined as a voltage
+>regulator, maintaining fixed voltage while accommodating varying current.
+>
+>Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+>Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-Add ASoC controls for changing each of the stereo channel gains using alsamixer and alike
----
- sound/soc/sunxi/sun50i-dmic.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+This looks like a fix. Can you provide "Fixes" tag please and perhaps
+send this to -net tree?
 
-diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
-index c76628bc86c6..f8613d8c3462 100644
---- a/sound/soc/sunxi/sun50i-dmic.c
-+++ b/sound/soc/sunxi/sun50i-dmic.c
-@@ -14,6 +14,7 @@
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-+#include <sound/tlv.h>
- 
- #define SUN50I_DMIC_EN_CTL			(0x00)
- 	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
-@@ -43,6 +44,17 @@
- 	#define SUN50I_DMIC_CH_NUM_N_MASK			GENMASK(2, 0)
- #define SUN50I_DMIC_CNT				(0x2c)
- 	#define SUN50I_DMIC_CNT_N				(1 << 0)
-+#define SUN50I_DMIC_D0D1_VOL_CTR		(0x30)
-+	#define SUN50I_DMIC_D0D1_VOL_CTR_0R			(0)
-+	#define SUN50I_DMIC_D0D1_VOL_CTR_0L			(8)
-+	#define SUN50I_DMIC_D0D1_VOL_CTR_1R			(16)
-+	#define SUN50I_DMIC_D0D1_VOL_CTR_1L			(24)
-+#define SUN50I_DMIC_D2D3_VOL_CTR                (0x34)
-+        #define SUN50I_DMIC_D2D3_VOL_CTR_2R                     (0)
-+        #define SUN50I_DMIC_D2D3_VOL_CTR_2L                     (8)
-+        #define SUN50I_DMIC_D2D3_VOL_CTR_3R                     (16)
-+        #define SUN50I_DMIC_D2D3_VOL_CTR_3L                     (24)
-+
- #define SUN50I_DMIC_HPF_CTRL			(0x38)
- #define SUN50I_DMIC_VERSION			(0x50)
- 
-@@ -273,8 +285,30 @@ static const struct of_device_id sun50i_dmic_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
- 
-+static const DECLARE_TLV_DB_SCALE(sun50i_dmic_vol_scale, -12000, 75, 1);
-+
-+static const struct snd_kcontrol_new sun50i_dmic_controls[] = {
-+
-+        SOC_DOUBLE_TLV("DMIC Channel 0 Capture Volume", SUN50I_DMIC_D0D1_VOL_CTR,
-+                       SUN50I_DMIC_D0D1_VOL_CTR_0L, SUN50I_DMIC_D0D1_VOL_CTR_0R,
-+                       0xFF, 0, sun50i_dmic_vol_scale),
-+        SOC_DOUBLE_TLV("DMIC Channel 1 Capture Volume", SUN50I_DMIC_D0D1_VOL_CTR,
-+                       SUN50I_DMIC_D0D1_VOL_CTR_1L, SUN50I_DMIC_D0D1_VOL_CTR_1R,
-+                       0xFF, 0, sun50i_dmic_vol_scale),
-+        SOC_DOUBLE_TLV("DMIC Channel 2 Capture Volume", SUN50I_DMIC_D2D3_VOL_CTR,
-+                       SUN50I_DMIC_D2D3_VOL_CTR_2L, SUN50I_DMIC_D2D3_VOL_CTR_2R,
-+                       0xFF, 0, sun50i_dmic_vol_scale),
-+        SOC_DOUBLE_TLV("DMIC Channel 3 Capture Volume", SUN50I_DMIC_D2D3_VOL_CTR,
-+                       SUN50I_DMIC_D2D3_VOL_CTR_3L, SUN50I_DMIC_D2D3_VOL_CTR_3R,
-+                       0xFF, 0, sun50i_dmic_vol_scale),
-+
-+
-+};
-+
- static const struct snd_soc_component_driver sun50i_dmic_component = {
- 	.name           = "sun50i-dmic",
-+	.controls	= sun50i_dmic_controls,
-+	.num_controls	= ARRAY_SIZE(sun50i_dmic_controls),
- };
- 
- static int sun50i_dmic_runtime_suspend(struct device *dev)
--- 
-2.25.1
+Thanks!
 
+>---
+> drivers/net/pse-pd/pse_core.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/drivers/net/pse-pd/pse_core.c b/drivers/net/pse-pd/pse_core.c
+>index bad29eaa4d01..795ab264eaf2 100644
+>--- a/drivers/net/pse-pd/pse_core.c
+>+++ b/drivers/net/pse-pd/pse_core.c
+>@@ -294,7 +294,7 @@ devm_pse_pi_regulator_register(struct pse_controller_dev *pcdev,
+> 	 */
+> 	rdesc->id = id;
+> 	rdesc->name = name;
+>-	rdesc->type = REGULATOR_CURRENT;
+>+	rdesc->type = REGULATOR_VOLTAGE;
+> 	rdesc->ops = &pse_pi_ops;
+> 	rdesc->owner = pcdev->owner;
+> 
+>
+>-- 
+>2.34.1
+>
+>
 
