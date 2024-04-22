@@ -1,131 +1,255 @@
-Return-Path: <linux-kernel+bounces-153592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 727A78AD010
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:02:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 454CF8AD016
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:03:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1749E2820DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:02:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C63461F2280A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA4315219D;
-	Mon, 22 Apr 2024 15:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9DE152184;
+	Mon, 22 Apr 2024 15:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="DmMqnutF"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tHdt8JWA"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1B6136988
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5EA6136988;
+	Mon, 22 Apr 2024 15:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713798146; cv=none; b=iM7LMOiKpOfM3jVMxF8iBKopLYVQA2Mr7lGiBXOYd8MC0mRsjNswIstOg84bOuReRd+0cV3OxVnDdgurNsyImeOFUFfSfPes6/kqeZSNurDIUu/G+ecRxSq6pUwnChjA/Um+XF2c1jrsUK1P2fo63seve7h6DL8CwYBl5hbc/jY=
+	t=1713798167; cv=none; b=qHB6/T21LhGg9oveOslSibWx9dxJcGqfR7bPsJZGZsoVW4gpf8tkSZSMxSoehlCaYcxG7DR6OC2zmcvG68zz1NHFnXGPlK9nhmrsi7u60u4aycNMf1idV4tCwM7mMMnKtzDEA5S0K/Gkd/r8ph8ya5xGaBL0lHkfELK88r/xSqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713798146; c=relaxed/simple;
-	bh=uC7c7kYqSmVQGZp+YTPHZbbns+rkpE7UQYVX9hYf4mw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sVBvQ3IihuVSVrx4cx/+cRwnlJKHv9pdWqj1zYYVRm9KuHnMBjYohBrTkazPUjP2gQpoGReDfT+f9yuJQWKmyvi2aif1rzQ6fQ2CXFbqnaejJyh1F4J3t7GAHMfgsBrjzE3vXc+h2//3RG8NwTZKxCcgzVGjHDtSP89OQn0wdLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=DmMqnutF; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a55bdf477e5so87907866b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:02:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1713798141; x=1714402941; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LAekVfGSUIYeilrCxStRbd53k4+SbtJAs1TjJ6PPZkc=;
-        b=DmMqnutFFEh4xUj5lKI7xGsFfLxGvvnKM6KNWmkwyJax5Hesh2N7vblaeQyW/tsd7m
-         ws5emYdL3VGdWhYphxF9HVyUA0NKT313Vzwt5axw9qQFkCZdYGuFHP4IVzY2lsqTMA81
-         kDvOCXsNkkM5RcLqUPSba2OMPkI/0VMc0KzI/nZ45804Gf1R7DnAwnM/18t5guT4QN6w
-         cpMM5s5owTll0qGRcssqQqdtseFiUbVwydVPJzQBRnqxnoQ9oYFtQWVPkpb9tChslu0I
-         4b/HEZPVLm04nuIB9nropcd/wkkfRaBqhHPjiaIi6HltwFZ1iHxsyoZ1fy/fuqN7ftaU
-         aEkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713798141; x=1714402941;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LAekVfGSUIYeilrCxStRbd53k4+SbtJAs1TjJ6PPZkc=;
-        b=k23PqQEctS3XEqUBDoIPOCsKG4vilVPmmUEIN/D/UDTyHFQGvNU45WLxGf5nJpCyC3
-         uWYR3OsyGOxEfzWHw1Ljz7Y9eoRdVxfg/+5HYvICWhV9bvgZSodE9YZA7p8wGYeSOtLo
-         PsStpKV7s24aD0dw04JrpCHStlmzG7tgzQR+4UbG81jPFOqLGNqama9gHQQmTUHp3hBw
-         8i6CHPIG4tkyh7uDahD0hw9/R9yh9PI/WipFvTVcxijj+VgIg3AgvoqpK0zge2PgEnpv
-         s98/RdHipAkbtmZGws/S4YB8+wzpXZ/0UxbDuyhp8efw1/MZOcA3Wk1qWF5F7vu0HKC/
-         eixQ==
-X-Forwarded-Encrypted: i=1; AJvYcCULPjttbkgw0Q5f8qwlp8OrnUvYeXx57b6s3GnYGIGimFXJahqhel4YBtvgTp6lpyWBkS4/Fz/O3PwzDLk4uKumGstQ16BDKfhlS/1q
-X-Gm-Message-State: AOJu0Yw/oRExTmi+HeApi8DFhONQGs6gXISrY7Pf3XBw4T2zzx5+G5XF
-	z2x0E3qQVVA9cBMdNlwSTBesT8LqVDGVu2UheXLJmi6ilu7Bu7Du0FSFjZtr9bM=
-X-Google-Smtp-Source: AGHT+IHS6BZ9qlEluvP//9IwElLogHji7WqEThNxj1fC3U2GxC+dWUDgoMi5vcDNYySA8T2tWjoPlg==
-X-Received: by 2002:a17:906:830f:b0:a52:3b6a:ab43 with SMTP id j15-20020a170906830f00b00a523b6aab43mr8149446ejx.67.1713798140345;
-        Mon, 22 Apr 2024 08:02:20 -0700 (PDT)
-Received: from localhost (78-80-105-131.customers.tmcz.cz. [78.80.105.131])
-        by smtp.gmail.com with ESMTPSA id h5-20020a170906590500b00a4a396ba54asm5866471ejq.93.2024.04.22.08.02.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 08:02:19 -0700 (PDT)
-Date: Mon, 22 Apr 2024 17:02:18 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: "Kory Maincent (Dent Project)" <kory.maincent@bootlin.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Kyle Swenson <kyle.swenson@est.tech>
-Subject: Re: [PATCH net-next v2 2/3] net: pse-pd: pse_core: Fix pse regulator
- type
-Message-ID: <ZiZ7-n5q3COmPRx6@nanopsycho>
-References: <20240422-fix_poe-v2-0-e58325950f07@bootlin.com>
- <20240422-fix_poe-v2-2-e58325950f07@bootlin.com>
+	s=arc-20240116; t=1713798167; c=relaxed/simple;
+	bh=GLHPV+NGmqvMIo1ax8guaMHG4ZjcnRDghHfkrfFCic0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=iy043O8gGsfyQ7L9ejbn+GRvZo7WRbzEbult4sP/2F9hr8EeGPMMl3Nxw+7Qnbsdnu6hXLgiaZ3/iR4Hl2k9H9r2uLdRmWnkWr1G5th2/kydUHv7teWh+iel8G1wpS7ae2fM2PA7MOZfUl8COMjbdZLZarpBwmkaDj4QXAeZFeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=tHdt8JWA; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=GLHPV+NGmqvMIo1ax8guaMHG4ZjcnRDghHfkrfFCic0=; b=tHdt8JWA8oMD8WLjEUfFjbTgl+
+	1TfLOANfClMhies31GRYbbSobli9dTQp06sUtBAeOm6koBFWuodfDcCrXtKddOick5PzqlJaKlg7Y
+	l0PE7be3OQzMyVkKypp2OEmwPpXfh/vHoNMfwHRtdqUdTgBbgegK38zEqXDCbcIyOPnWoGBIox0Uz
+	kgfn6FhWScR4H6bijcK6EJkCoSg/OtGSoG4qJYHwX21eyTwLSZrxTxG4xpP1FDL6vz1JFKUtLSyIX
+	GtyyZIpRefN3dVs2ZTzCi0WbQUgnD4yhIOcr/A1bi2z2YuLentNjcODU7GfOy236fBWOid3jXMtvZ
+	z1FH6pKg==;
+Received: from [2001:8b0:10b:5:8814:318f:1e06:e78] (helo=u3832b3a9db3152.ant.amazon.com)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ryvBf-0000000ERMc-19Yz;
+	Mon, 22 Apr 2024 15:02:31 +0000
+Message-ID: <407848df35a81366d7d6b8cc1f282e4f93a32f6e.camel@infradead.org>
+Subject: Re: [PATCH 03/10] KVM: x86: Add KVM_[GS]ET_CLOCK_GUEST for accurate
+ KVM clock migration
+From: David Woodhouse <dwmw2@infradead.org>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Sean
+ Christopherson <seanjc@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>,  Paul Durrant <paul@xen.org>, Shuah Khan
+ <shuah@kernel.org>, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, Oliver Upton
+ <oliver.upton@linux.dev>, Marcelo Tosatti <mtosatti@redhat.com>, 
+ jalliste@amazon.co.uk, sveith@amazon.de
+Date: Mon, 22 Apr 2024 16:02:30 +0100
+In-Reply-To: <CABgObfYvwjAz0cbRGbBP1nc9eA47azrGOnKuXqWwpZP=UpV3UQ@mail.gmail.com>
+References: <20240418193528.41780-1-dwmw2@infradead.org>
+	 <20240418193528.41780-4-dwmw2@infradead.org>
+	 <CABgObfYvwjAz0cbRGbBP1nc9eA47azrGOnKuXqWwpZP=UpV3UQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+	boundary="=-WeggmX1u2+hk4ZuyuQiW"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240422-fix_poe-v2-2-e58325950f07@bootlin.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
-Mon, Apr 22, 2024 at 03:35:47PM CEST, kory.maincent@bootlin.com wrote:
->From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
->
->Clarify PSE regulator as voltage regulator, not current.
->The PSE (Power Sourcing Equipment) regulator is defined as a voltage
->regulator, maintaining fixed voltage while accommodating varying current.
->
->Reviewed-by: Andrew Lunn <andrew@lunn.ch>
->Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-This looks like a fix. Can you provide "Fixes" tag please and perhaps
-send this to -net tree?
+--=-WeggmX1u2+hk4ZuyuQiW
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+On Mon, 2024-04-22 at 16:11 +0200, Paolo Bonzini wrote:
+> On Thu, Apr 18, 2024 at 9:46=E2=80=AFPM David Woodhouse <dwmw2@infradead.=
+org> wrote:
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 curr_tsc_hz =3D get_cpu_tsc_khz()=
+ * 1000LL;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(curr_tsc_hz =3D=3D 0=
+)) {
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 rc =3D -EINVAL;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 goto out;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (kvm_caps.has_tsc_control)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 curr_tsc_hz =3D kvm_scale_tsc(curr_tsc_hz,
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 v->arch.l1_tsc_scaling_ratio);
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The scaling factors in th=
+e hv_clock do not depend solely on the
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * TSC frequency *requested*=
+ by userspace. They actually use the
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * host TSC frequency that w=
+as measured/detected by the host kernel,
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * scaled by kvm_scale_tsc()=
+ with the vCPU's l1_tsc_scaling_ratio.
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * So a sanity check that th=
+ey *precisely* match would have false
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * negatives. Allow for a di=
+screpancy of 1 kHz either way.
+>=20
+> This is not very clear - if kvm_caps.has_tsc_control, cur_tsc_hz is
+> exactly the "host TSC frequency [...] scaled by kvm_scale_tsc() with
+> the vCPU's l1_tsc_scaling_ratio". But even in that case there is a
+> double rounding issue, I guess.
 
->---
-> drivers/net/pse-pd/pse_core.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/drivers/net/pse-pd/pse_core.c b/drivers/net/pse-pd/pse_core.c
->index bad29eaa4d01..795ab264eaf2 100644
->--- a/drivers/net/pse-pd/pse_core.c
->+++ b/drivers/net/pse-pd/pse_core.c
->@@ -294,7 +294,7 @@ devm_pse_pi_regulator_register(struct pse_controller_dev *pcdev,
-> 	 */
-> 	rdesc->id = id;
-> 	rdesc->name = name;
->-	rdesc->type = REGULATOR_CURRENT;
->+	rdesc->type = REGULATOR_VOLTAGE;
-> 	rdesc->ops = &pse_pi_ops;
-> 	rdesc->owner = pcdev->owner;
-> 
->
->-- 
->2.34.1
->
->
+That's exactly what I'm saying, isn't it?
+
+Perhaps the issue is clearer if I say "that was measured/detected by
+*each* host kernel"?
+
+The point is that if I boot on a kernel which measured its TSC against
+the PIT and came up with a value of 3002MHz, and then migrate to an
+"identical" host which measured against *its* PIT and decided its TSC
+frequency was 2999MHz.... then migrate a guest with an explicit TSC
+frequency of 2500MHz from one host to the other... their effective
+tsc_to_system_mul and tsc_shift in the pvclock are *different*
+because...
+
+"The scaling factors in the hv_clock do not depend solely on the
+TSC frequency *requested* by userspace. They actually use the
+host TSC frequency that was measured/detected by each host kernel,
+scaled by kvm_scale_tsc() with the vCPU's l1_tsc_scaling_ratio."
+
+Or did I misunderstand your objection?
+
+--=-WeggmX1u2+hk4ZuyuQiW
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwNDIyMTUwMjMwWjAvBgkqhkiG9w0BCQQxIgQg1pV0Oh/A
+2AuzGyIyDnOn2uqtjglVIg8pcM+1GR9pvl0wgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBh3DpRe7C9Gg6mPxmC/pM4RUh9NsQXqa2+
+7rf+KUy+3JJ7J9+xvAlU2/jwcnR8NUDNgAhZp63bfdzkZ3TWbK42+2aQZBXfjdYwPkvVMytBwjmQ
+GBDDuH8XOsVoSN4MiylMMS5tyJmK9cYEHCnpPwK8bs2RCCeEOFVEcQ/PavhD8RjqNjnRp+K0lQjf
+VfXO/8DsI7tupWlqsoWgLlsgtKIu4oMy+GGSGlga/gEh7+ZOfBHz2Q9mbBhI07jLnn/LpQrjRK+G
+ZnA4/UAMgbJ44slVSGJo1aguulnCWLZuuoKtD2gcXLM/BByFD0nQ2Pk6r5VmL+3Vf7c1slKpU7tw
+FP33WePxnDTnGs8CaRR1GYxBd3bp4WNLpAzrzBMQgG0i7idyus6vRIPfn76DMDFJXOvlb+M8Pqlo
+LGiKSPwTFCXNhwgnKzutHzJAOp29bfF3A4vBwf3yNCwhEuilSojYGeD0YT2yRxKM836kRvVzGnmn
+kWPOrA2BShPnmgJJ7Uf3B+qRTy5ZSju45dgceITk3TKYQYiWRH4dsFj+Jrc/W3L9rUxMzdwQ0h0u
+Mo/qQgsmW+jibCoSRhjPECkrGSh/tQVq8ZNXidxeXhKM6maZNAMWP0efvU5WNwv7O5InP512yJfM
+75pDIY2N29an1mRiBuJNd0OfKT78XB+MdmRPbWA9EgAAAAAAAA==
+
+
+--=-WeggmX1u2+hk4ZuyuQiW--
 
