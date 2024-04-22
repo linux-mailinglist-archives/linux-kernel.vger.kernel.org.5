@@ -1,595 +1,971 @@
-Return-Path: <linux-kernel+bounces-153823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A09158AD3CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:21:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9AD38AD3D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:23:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E1711F21A1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:21:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E770B21EA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420E3153BFF;
-	Mon, 22 Apr 2024 18:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D1D154BEA;
+	Mon, 22 Apr 2024 18:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J1qEoAq2"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ktDxJyYp"
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 939FB50271
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 18:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8DC15443B
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 18:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713810056; cv=none; b=JBBPSf3Dom4jWYkMz4XVMTvYuFxGDY0EXfIQy/kulsAAMkv7hYeNNEjnQe5Ck+Ca0muO8rk57NuHM/FjBBnZsHqz04X6BzQuO2G1D2QAdYc+lhLfIg6QaqLQLWvGFoLNxy1MzXTh9WM97QmioAO4YbA3+BghbghL+jd7Ge3uGk4=
+	t=1713810204; cv=none; b=fXIL3xPQUvMJpDQ0ulT0yXHFwkExY7CmnHlMi/dIyDDuy0si6CMT2R03slV5G+XffojgAcZbqFK3q8Z07T9EZRE2QClTT2uevfYTXCrKVrpmz7MiO0xO0Kcmd1zNFvSN1EjqwYBPkL3frJTV4L/Da9BEz9QBR28rcrQcRflLZWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713810056; c=relaxed/simple;
-	bh=/OlYd1BdXRj0OH7ZJ9bzg53Eu7yIMWR2EuOQzOePrkM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NkVOpjosgRfWGkKn086H0lU/I4rSnSKPYbXaXjoBElXHKNEtY8x/w7K0vST2hYPyHS2fhcYf2bMPQTRUxurl9YI7DVEPZhnqZ1InieICpqEdlBRHM4te3NdWLkpQRKxKBxe3zuR0Y3kuhO0i0LHqEDi+CRgSF+KI1pB5Lrl/hxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=J1qEoAq2; arc=none smtp.client-ip=209.85.128.47
+	s=arc-20240116; t=1713810204; c=relaxed/simple;
+	bh=AZl5RxK9YcNk0IKvN2iaaPKO5nk4m92L4med83DUpX4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=WTrdQxQqKG4zHsjouEyzKSoVVNS4LGEYtaWg1IsiFGNvsDHS/PRKYYGyqAQnvyEz0OjmBpEKsg1d5BgDnW6QiOaFZqQW27BaCfEcd4HGK4zzq2rW00m/KW/5QUBULO8SFkowakyj2VzN8ERhugiXt8D1eJPevUbPdNHRqrApEUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ktDxJyYp; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41a5b68eceeso9031115e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:20:54 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ae0abc0b41so1136602a91.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:23:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713810053; x=1714414853; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wZjtUG1a/GbcMMV+5gh6qXmWbPxih3XxuMfN7gw2rBM=;
-        b=J1qEoAq2XUNVhG+23/0U4NQIISWPUBBbQIHK74M5sRNGuqbel7XfQX9mih7zEuy+5U
-         rcCvIiCEtDM7mnrHIPpcy4Ij5y3lHH0Bq1O29KdYLgbxLyXIQ61UeHSKTbD0OUhH8wrH
-         IM5vPxPMbF/7sETxRdY4RWJ8piDIhoqIneaDEZgs0EEI/zGMC+pp1BmJ2TK1B7UT0r8d
-         /uX59ugbuyepOsCtLrloDmWF/UZEt/6EXE6w0DRQJPqX8k4i1P0t1jScuNIuS5Qr1okn
-         YqJjaXJMwJiXqho9FJywytdDqfvtn0Ub80sOWytL8PAchZMt12LM3aRfs1SaCXm8Kovr
-         73Vw==
+        d=google.com; s=20230601; t=1713810200; x=1714415000; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iVO+imZpifbLHaeEuxAYMXBjbbRFP4GDOOLoCMHfR6k=;
+        b=ktDxJyYp1nO0QZmNx32RjXEamnsbyrI1vqFoXUol/0CfNraikTpKp2EPSHD/ye+P6n
+         0Q8tbbDKHeVVPR4rD2/lE4EnGG6jAFa4URjzqdAgJqTQdQtDhOYOAmyEARE6lmelxRgS
+         RXNX5itzPO0qIeB8OmOcR/aRjySQrKvQPgupUHloMGf4vbLlhlr1fo519kmkaMCwjhLs
+         nbYkg+ACzzXr2F9wVkh4qSF1jwmUS6AW/5Yh7l2t+cmQiBCD4fcYzDudUupySCV7m8OB
+         5zrGb6nVucWO1M9+jJ4o6J4KPlE4GbqpmlyW0E74PP9cCJtCBsX9wE/Zr8SG54LXSrKH
+         SKrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713810053; x=1714414853;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wZjtUG1a/GbcMMV+5gh6qXmWbPxih3XxuMfN7gw2rBM=;
-        b=MgzqnM0Xso+o58yn6kIDE4bcfr3cEKHq8qeRw71l3lCRr6xw88tmIOXQdbvKDmPQ+P
-         Du/fiYm4tSR3sqHr7RBZYL6iMVCdeZIBJO5b4PJtZ4flHuywGQFuNJlzEgOZoqrY+PqK
-         nTJIG9xzQAchoP0eD8nikyoqlODuFIBUI7fU5Vthsija+FuqYN39QtJoJWLM88MuKSfl
-         E2slLpucFqHvdl7+XHwoiiU1F2QlU2fOiYKardbU4PGLr8cqGngbxkQIslS5KogYux2o
-         XKbO3Bs+v19MYIwtz7LifTQDE6DDaaU/HX6tzMOUyoCxcwA49+8ssVGXxzEW5tSD7ITd
-         gNUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV70wwhAM9p4tBBQCoivbdl3Dds8ZSsRGkuNDiAR7o8Eo0NfK2lvJX0SwzRKDJdV298O0ivzawRyBnMt42lQ9CuSofOZFXSg0DYjHNE
-X-Gm-Message-State: AOJu0YxZSuMXH+4P0/wJAHAGnf/VQjzt9ypG5olriKVZjMAazMBdUeyx
-	MFufdeXf0OoZKDIE4rgFg6bK8Qf1Mzgn3Cpd+9PcYOiSWsQMQ1bO5kY3jIOW4w==
-X-Google-Smtp-Source: AGHT+IFigyt7KOsWRb7b2XYfKCpySPBXaDuxvFhCB5q8z7NpeV7MdkMOxGA/MzqqiUk+HpelgcScvQ==
-X-Received: by 2002:a05:600c:1988:b0:418:bbb6:95b3 with SMTP id t8-20020a05600c198800b00418bbb695b3mr8286466wmq.0.1713810052535;
-        Mon, 22 Apr 2024 11:20:52 -0700 (PDT)
-Received: from google.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id e15-20020a05600c218f00b004146e58cc35sm20744546wme.46.2024.04.22.11.20.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 11:20:52 -0700 (PDT)
-Date: Mon, 22 Apr 2024 19:20:48 +0100
-From: Vincent Donnefort <vdonnefort@google.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-	kernel-team@android.com, rdunlap@infradead.org, linux-mm@kvack.org
-Subject: Re: [PATCH v20 2/5] ring-buffer: Introducing ring-buffer mapping
- functions
-Message-ID: <ZiaqgNFLOwimE2Me@google.com>
-References: <20240406173649.3210836-1-vdonnefort@google.com>
- <20240406173649.3210836-3-vdonnefort@google.com>
- <9c553dae-5395-4ec9-b41c-a4decc37acf2@redhat.com>
- <06c6b023-6cdc-430d-be0b-086fd6453aeb@redhat.com>
+        d=1e100.net; s=20230601; t=1713810200; x=1714415000;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iVO+imZpifbLHaeEuxAYMXBjbbRFP4GDOOLoCMHfR6k=;
+        b=VH9OjxVxgd+I6OwN8X90meKs+FgvFOqfFWGd2LchrgYdfd+cx1ebdO7lQgbl+GLld1
+         VhPzdrnEIonfgNiwpeY92jZdUS3FL9aRNFBdtwOl7rbBDJ8SGYWf50lmZXFrsI4elgJF
+         rkpL/XKacPrQirYDRfrqR1qO3RundXnT1q1C7vsFAmC+8G6fNe9rjqRbUNF9dhJePntA
+         g3Xa73l6S4of3DHEursrhHZOwrdU3EqpD2TYpenGdwklIKtzqoR8kqogGydMB5hn1k/i
+         rxCFulFLDl+zy5WMwpnh4PIPUgthleYh+ee/OsxzplPJYpbHEeVao15bcY2MVBK3+HpE
+         Ik2g==
+X-Forwarded-Encrypted: i=1; AJvYcCUq/p77of6ciNMM0XQDqPyVmGwGHqE4H6OJfZf2WUiVAPSms3azwW1f/yqd+mkBuIwjZltR/JnG4/QFV69irzVUg18QEtsjf2Qhxgw4
+X-Gm-Message-State: AOJu0YwKAWYyWvLKYrfraWz0rQpKW3qBATPhHBzvZ3YXJsAGP0fMrM57
+	ILMwA/GMlwHYKQAXPw1HL/TekgrxyzgUyMynSmEY5eIOKPI9tZdRcxOFpRjvja4qZ4z5LTBV28W
+	Jlg==
+X-Google-Smtp-Source: AGHT+IH8En3k8Zrt0zKZ4iL2xf0AtDbxnu/0y9oasQCODyJ3lQKGpbyMNvu6LDy7gvzMdSGgRGNm+ULIEYw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:3145:b0:2ae:6e94:b02b with SMTP id
+ ip5-20020a17090b314500b002ae6e94b02bmr3372pjb.4.1713810199705; Mon, 22 Apr
+ 2024 11:23:19 -0700 (PDT)
+Date: Mon, 22 Apr 2024 11:23:18 -0700
+In-Reply-To: <20240422170842.2073979-1-usama.anjum@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <06c6b023-6cdc-430d-be0b-086fd6453aeb@redhat.com>
+Mime-Version: 1.0
+References: <20240422170842.2073979-1-usama.anjum@collabora.com>
+Message-ID: <ZiarFpdLZFusHCO1@google.com>
+Subject: Re: [PATCH] selftests: kvm: fix undeclared function error
+From: Sean Christopherson <seanjc@google.com>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, kernel@collabora.com, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="us-ascii"
 
-Hi David,
-
-Thanks for having a look, very much appreciated!
-
-On Mon, Apr 22, 2024 at 11:27:11AM +0200, David Hildenbrand wrote:
-> On 19.04.24 20:25, David Hildenbrand wrote:
-> > On 06.04.24 19:36, Vincent Donnefort wrote:
-> > > In preparation for allowing the user-space to map a ring-buffer, add
-> > > a set of mapping functions:
-> > > 
-> > >     ring_buffer_{map,unmap}()
-> > > 
-> > > And controls on the ring-buffer:
-> > > 
-> > >     ring_buffer_map_get_reader()  /* swap reader and head */
-> > > 
-> > > Mapping the ring-buffer also involves:
-> > > 
-> > >     A unique ID for each subbuf of the ring-buffer, currently they are
-> > >     only identified through their in-kernel VA.
-> > > 
-> > >     A meta-page, where are stored ring-buffer statistics and a
-> > >     description for the current reader
-> > > 
-> > > The linear mapping exposes the meta-page, and each subbuf of the
-> > > ring-buffer, ordered following their unique ID, assigned during the
-> > > first mapping.
-> > > 
-> > > Once mapped, no subbuf can get in or out of the ring-buffer: the buffer
-> > > size will remain unmodified and the splice enabling functions will in
-> > > reality simply memcpy the data instead of swapping subbufs.
-> > > 
-> > > CC: <linux-mm@kvack.org>
-> > > Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
-> > > 
-> > > diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-> > > index dc5ae4e96aee..96d2140b471e 100644
-> > > --- a/include/linux/ring_buffer.h
-> > > +++ b/include/linux/ring_buffer.h
-> > > @@ -6,6 +6,8 @@
-> > >    #include <linux/seq_file.h>
-> > >    #include <linux/poll.h>
-> > > +#include <uapi/linux/trace_mmap.h>
-> > > +
-> > >    struct trace_buffer;
-> > >    struct ring_buffer_iter;
-> > > @@ -223,4 +225,8 @@ int trace_rb_cpu_prepare(unsigned int cpu, struct hlist_node *node);
-> > >    #define trace_rb_cpu_prepare	NULL
-> > >    #endif
-> > > +int ring_buffer_map(struct trace_buffer *buffer, int cpu,
-> > > +		    struct vm_area_struct *vma);
-> > > +int ring_buffer_unmap(struct trace_buffer *buffer, int cpu);
-> > > +int ring_buffer_map_get_reader(struct trace_buffer *buffer, int cpu);
-> > >    #endif /* _LINUX_RING_BUFFER_H */
-> > > diff --git a/include/uapi/linux/trace_mmap.h b/include/uapi/linux/trace_mmap.h
-> > > new file mode 100644
-> > > index 000000000000..ffcd8dfcaa4f
-> > > --- /dev/null
-> > > +++ b/include/uapi/linux/trace_mmap.h
-> > > @@ -0,0 +1,46 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > +#ifndef _TRACE_MMAP_H_
-> > > +#define _TRACE_MMAP_H_
-> > > +
-> > > +#include <linux/types.h>
-> > > +
-> > > +/**
-> > > + * struct trace_buffer_meta - Ring-buffer Meta-page description
-> > > + * @meta_page_size:	Size of this meta-page.
-> > > + * @meta_struct_len:	Size of this structure.
-> > > + * @subbuf_size:	Size of each sub-buffer.
-> > > + * @nr_subbufs:		Number of subbfs in the ring-buffer, including the reader.
-> > > + * @reader.lost_events:	Number of events lost at the time of the reader swap.
-> > > + * @reader.id:		subbuf ID of the current reader. ID range [0 : @nr_subbufs - 1]
-> > > + * @reader.read:	Number of bytes read on the reader subbuf.
-> > > + * @flags:		Placeholder for now, 0 until new features are supported.
-> > > + * @entries:		Number of entries in the ring-buffer.
-> > > + * @overrun:		Number of entries lost in the ring-buffer.
-> > > + * @read:		Number of entries that have been read.
-> > > + * @Reserved1:		Reserved for future use.
-> > > + * @Reserved2:		Reserved for future use.
-> > > + */
-> > > +struct trace_buffer_meta {
-> > > +	__u32		meta_page_size;
-> > > +	__u32		meta_struct_len;
-> > > +
-> > > +	__u32		subbuf_size;
-> > > +	__u32		nr_subbufs;
-> > > +
-> > > +	struct {
-> > > +		__u64	lost_events;
-> > > +		__u32	id;
-> > > +		__u32	read;
-> > > +	} reader;
-> > > +
-> > > +	__u64	flags;
-> > > +
-> > > +	__u64	entries;
-> > > +	__u64	overrun;
-> > > +	__u64	read;
-> > > +
-> > > +	__u64	Reserved1;
-> > > +	__u64	Reserved2;
-> > > +};
-> > > +
-> > > +#endif /* _TRACE_MMAP_H_ */
-> > > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> > > index cc9ebe593571..793ecc454039 100644
-> > > --- a/kernel/trace/ring_buffer.c
-> > > +++ b/kernel/trace/ring_buffer.c
-> > > @@ -9,6 +9,7 @@
-> > >    #include <linux/ring_buffer.h>
-> > >    #include <linux/trace_clock.h>
-> > >    #include <linux/sched/clock.h>
-> > > +#include <linux/cacheflush.h>
-> > >    #include <linux/trace_seq.h>
-> > >    #include <linux/spinlock.h>
-> > >    #include <linux/irq_work.h>
-> > > @@ -26,6 +27,7 @@
-> > >    #include <linux/list.h>
-> > >    #include <linux/cpu.h>
-> > >    #include <linux/oom.h>
-> > > +#include <linux/mm.h>
-> > >    #include <asm/local64.h>
-> > >    #include <asm/local.h>
-> > > @@ -338,6 +340,7 @@ struct buffer_page {
-> > >    	local_t		 entries;	/* entries on this page */
-> > >    	unsigned long	 real_end;	/* real end of data */
-> > >    	unsigned	 order;		/* order of the page */
-> > > +	u32		 id;		/* ID for external mapping */
-> > >    	struct buffer_data_page *page;	/* Actual data page */
-> > >    };
-> > > @@ -484,6 +487,12 @@ struct ring_buffer_per_cpu {
-> > >    	u64				read_stamp;
-> > >    	/* pages removed since last reset */
-> > >    	unsigned long			pages_removed;
-> > > +
-> > > +	unsigned int			mapped;
-> > > +	struct mutex			mapping_lock;
-> > > +	unsigned long			*subbuf_ids;	/* ID to subbuf VA */
-> > > +	struct trace_buffer_meta	*meta_page;
-> > > +
-> > >    	/* ring buffer pages to update, > 0 to add, < 0 to remove */
-> > >    	long				nr_pages_to_update;
-> > >    	struct list_head		new_pages; /* new pages to add */
-> > > @@ -1599,6 +1608,7 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
-> > >    	init_irq_work(&cpu_buffer->irq_work.work, rb_wake_up_waiters);
-> > >    	init_waitqueue_head(&cpu_buffer->irq_work.waiters);
-> > >    	init_waitqueue_head(&cpu_buffer->irq_work.full_waiters);
-> > > +	mutex_init(&cpu_buffer->mapping_lock);
-> > >    	bpage = kzalloc_node(ALIGN(sizeof(*bpage), cache_line_size()),
-> > >    			    GFP_KERNEL, cpu_to_node(cpu));
-> > > @@ -1789,8 +1799,6 @@ bool ring_buffer_time_stamp_abs(struct trace_buffer *buffer)
-> > >    	return buffer->time_stamp_abs;
-> > >    }
-> > > -static void rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer);
-> > > -
-> > >    static inline unsigned long rb_page_entries(struct buffer_page *bpage)
-> > >    {
-> > >    	return local_read(&bpage->entries) & RB_WRITE_MASK;
-> > > @@ -5211,6 +5219,22 @@ static void rb_clear_buffer_page(struct buffer_page *page)
-> > >    	page->read = 0;
-> > >    }
-> > > +static void rb_update_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-> > > +{
-> > > +	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
-> > > +
-> > > +	meta->reader.read = cpu_buffer->reader_page->read;
-> > > +	meta->reader.id = cpu_buffer->reader_page->id;
-> > > +	meta->reader.lost_events = cpu_buffer->lost_events;
-> > > +
-> > > +	meta->entries = local_read(&cpu_buffer->entries);
-> > > +	meta->overrun = local_read(&cpu_buffer->overrun);
-> > > +	meta->read = cpu_buffer->read;
-> > > +
-> > > +	/* Some archs do not have data cache coherency between kernel and user-space */
-> > > +	flush_dcache_folio(virt_to_folio(cpu_buffer->meta_page));
-> > > +}
-> > > +
-> > >    static void
-> > >    rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
-> > >    {
-> > > @@ -5255,6 +5279,9 @@ rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
-> > >    	cpu_buffer->lost_events = 0;
-> > >    	cpu_buffer->last_overrun = 0;
-> > > +	if (cpu_buffer->mapped)
-> > > +		rb_update_meta_page(cpu_buffer);
-> > > +
-> > >    	rb_head_page_activate(cpu_buffer);
-> > >    	cpu_buffer->pages_removed = 0;
-> > >    }
-> > > @@ -5469,6 +5496,12 @@ int ring_buffer_swap_cpu(struct trace_buffer *buffer_a,
-> > >    	cpu_buffer_a = buffer_a->buffers[cpu];
-> > >    	cpu_buffer_b = buffer_b->buffers[cpu];
-> > > +	/* It's up to the callers to not try to swap mapped buffers */
-> > > +	if (WARN_ON_ONCE(cpu_buffer_a->mapped || cpu_buffer_b->mapped)) {
-> > > +		ret = -EBUSY;
-> > > +		goto out;
-> > > +	}
-> > > +
-> > >    	/* At least make sure the two buffers are somewhat the same */
-> > >    	if (cpu_buffer_a->nr_pages != cpu_buffer_b->nr_pages)
-> > >    		goto out;
-> > > @@ -5733,7 +5766,8 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
-> > >    	 * Otherwise, we can simply swap the page with the one passed in.
-> > >    	 */
-> > >    	if (read || (len < (commit - read)) ||
-> > > -	    cpu_buffer->reader_page == cpu_buffer->commit_page) {
-> > > +	    cpu_buffer->reader_page == cpu_buffer->commit_page ||
-> > > +	    cpu_buffer->mapped) {
-> > >    		struct buffer_data_page *rpage = cpu_buffer->reader_page->page;
-> > >    		unsigned int rpos = read;
-> > >    		unsigned int pos = 0;
-> > > @@ -5956,6 +5990,11 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
-> > >    		cpu_buffer = buffer->buffers[cpu];
-> > > +		if (cpu_buffer->mapped) {
-> > > +			err = -EBUSY;
-> > > +			goto error;
-> > > +		}
-> > > +
-> > >    		/* Update the number of pages to match the new size */
-> > >    		nr_pages = old_size * buffer->buffers[cpu]->nr_pages;
-> > >    		nr_pages = DIV_ROUND_UP(nr_pages, buffer->subbuf_size);
-> > > @@ -6057,6 +6096,358 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
-> > >    }
-> > >    EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_set);
-> > > +static int rb_alloc_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-> > > +{
-> > > +	struct page *page;
-> > > +
-> > > +	if (cpu_buffer->meta_page)
-> > > +		return 0;
-> > > +
-> > > +	page = alloc_page(GFP_USER | __GFP_ZERO);
-> > > +	if (!page)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	cpu_buffer->meta_page = page_to_virt(page);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static void rb_free_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-> > > +{
-> > > +	unsigned long addr = (unsigned long)cpu_buffer->meta_page;
-> > > +
-> > > +	free_page(addr);
-> > > +	cpu_buffer->meta_page = NULL;
-> > > +}
-> > > +
-> > > +static void rb_setup_ids_meta_page(struct ring_buffer_per_cpu *cpu_buffer,
-> > > +				   unsigned long *subbuf_ids)
-> > > +{
-> > > +	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
-> > > +	unsigned int nr_subbufs = cpu_buffer->nr_pages + 1;
-> > > +	struct buffer_page *first_subbuf, *subbuf;
-> > > +	int id = 0;
-> > > +
-> > > +	subbuf_ids[id] = (unsigned long)cpu_buffer->reader_page->page;
-> > > +	cpu_buffer->reader_page->id = id++;
-> > > +
-> > > +	first_subbuf = subbuf = rb_set_head_page(cpu_buffer);
-> > > +	do {
-> > > +		if (WARN_ON(id >= nr_subbufs))
-> > > +			break;
-> > > +
-> > > +		subbuf_ids[id] = (unsigned long)subbuf->page;
-> > > +		subbuf->id = id;
-> > > +
-> > > +		rb_inc_page(&subbuf);
-> > > +		id++;
-> > > +	} while (subbuf != first_subbuf);
-> > > +
-> > > +	/* install subbuf ID to kern VA translation */
-> > > +	cpu_buffer->subbuf_ids = subbuf_ids;
-> > > +
-> > > +	/* __rb_map_vma() pads the meta-page to align it with the sub-buffers */
-> > > +	meta->meta_page_size = PAGE_SIZE << cpu_buffer->buffer->subbuf_order;
-> > > +	meta->meta_struct_len = sizeof(*meta);
-> > > +	meta->nr_subbufs = nr_subbufs;
-> > > +	meta->subbuf_size = cpu_buffer->buffer->subbuf_size + BUF_PAGE_HDR_SIZE;
-> > > +
-> > > +	rb_update_meta_page(cpu_buffer);
-> > > +}
-> > > +
-> > > +static struct ring_buffer_per_cpu *
-> > > +rb_get_mapped_buffer(struct trace_buffer *buffer, int cpu)
-> > > +{
-> > > +	struct ring_buffer_per_cpu *cpu_buffer;
-> > > +
-> > > +	if (!cpumask_test_cpu(cpu, buffer->cpumask))
-> > > +		return ERR_PTR(-EINVAL);
-> > > +
-> > > +	cpu_buffer = buffer->buffers[cpu];
-> > > +
-> > > +	mutex_lock(&cpu_buffer->mapping_lock);
-> > > +
-> > > +	if (!cpu_buffer->mapped) {
-> > > +		mutex_unlock(&cpu_buffer->mapping_lock);
-> > > +		return ERR_PTR(-ENODEV);
-> > > +	}
-> > > +
-> > > +	return cpu_buffer;
-> > > +}
-> > > +
-> > > +static void rb_put_mapped_buffer(struct ring_buffer_per_cpu *cpu_buffer)
-> > > +{
-> > > +	mutex_unlock(&cpu_buffer->mapping_lock);
-> > > +}
-> > > +
-> > > +/*
-> > > + * Fast-path for rb_buffer_(un)map(). Called whenever the meta-page doesn't need
-> > > + * to be set-up or torn-down.
-> > > + */
-> > > +static int __rb_inc_dec_mapped(struct ring_buffer_per_cpu *cpu_buffer,
-> > > +			       bool inc)
-> > > +{
-> > > +	unsigned long flags;
-> > > +
-> > > +	lockdep_assert_held(&cpu_buffer->mapping_lock);
-> > > +
-> > > +	if (inc && cpu_buffer->mapped == UINT_MAX)
-> > > +		return -EBUSY;
-> > > +
-> > > +	if (WARN_ON(!inc && cpu_buffer->mapped == 0))
-> > > +		return -EINVAL;
-> > > +
-> > > +	mutex_lock(&cpu_buffer->buffer->mutex);
-> > > +	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-> > > +
-> > > +	if (inc)
-> > > +		cpu_buffer->mapped++;
-> > > +	else
-> > > +		cpu_buffer->mapped--;
-> > > +
-> > > +	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-> > > +	mutex_unlock(&cpu_buffer->buffer->mutex);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +#define subbuf_page(off, start) \
-> > > +	virt_to_page((void *)((start) + ((off) << PAGE_SHIFT)))
-> > > +
-> > > +#define foreach_subbuf_page(sub_order, start, page)		\
-> > > +	page = subbuf_page(0, (start));				\
-> > > +	for (int __off = 0; __off < (1 << (sub_order));		\
-> > > +	     __off++, page = subbuf_page(__off, (start)))
-> > > +
-> > > +/*
-> > > + *   +--------------+  pgoff == 0
-> > > + *   |   meta page  |
-> > > + *   +--------------+  pgoff == 1
-> > > + *   |   000000000  |
-> > > + *   +--------------+  pgoff == (1 << subbuf_order)
-> > > + *   | subbuffer 0  |
-> > > + *   |              |
-> > > + *   +--------------+  pgoff == (2 * (1 << subbuf_order))
-> > > + *   | subbuffer 1  |
-> > > + *   |              |
-> > > + *         ...
-> > > + */
-> > > +static int __rb_map_vma(struct ring_buffer_per_cpu *cpu_buffer,
-> > > +			struct vm_area_struct *vma)
-> > > +{
-> > > +	unsigned long nr_subbufs, nr_pages, vma_pages, pgoff = vma->vm_pgoff;
-> > > +	unsigned int subbuf_pages, subbuf_order;
-> > > +	struct page **pages;
-> > > +	int p = 0, s = 0;
-> > > +	int err;
-> > > +
-> > > +	lockdep_assert_held(&cpu_buffer->mapping_lock);
-> > > +
-> > > +	subbuf_order = cpu_buffer->buffer->subbuf_order;
-> > > +	subbuf_pages = 1 << subbuf_order;
-> > > +
-> > > +	if (subbuf_order && pgoff % subbuf_pages)
-> > > +		return -EINVAL;
-> > > +
-> > > +	nr_subbufs = cpu_buffer->nr_pages + 1;
-> > > +	nr_pages = ((nr_subbufs + 1) << subbuf_order) - pgoff;
-> > > +
-> > > +	vma_pages = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
-> > > +	if (!vma_pages || vma_pages > nr_pages)
-> > > +		return -EINVAL;
-> > > +
-> > > +	nr_pages = vma_pages;
-> > > +
-> > > +	pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
-> > > +	if (!pages)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	if (!pgoff) {
-> > > +		unsigned long meta_page_padding;
-> > > +
-> > > +		pages[p++] = virt_to_page(cpu_buffer->meta_page);
-> > > +
-> > > +		/*
-> > > +		 * Pad with the zero-page to align the meta-page with the
-> > > +		 * sub-buffers.
-> > > +		 */
-> > > +		meta_page_padding = subbuf_pages - 1;
-> > > +		while (meta_page_padding-- && p < nr_pages)
-> > > +			pages[p++] = ZERO_PAGE(0);
-> > 
-> > Using the shared zeropage in a MAP_SHARED mapping that is neither VM_IO
-> > nor VM_PFNMAP can be problematic. So we really need patch #3 logic to
-> > use VM_PFNMAP.
-> > 
-> > It would be cleaner/more obvious if these VMA flag setting would reside
-
-tracing_buffers_mmap() sets both VM_IO and VM_PFNMAP. But, yeah as vma is
-already passed to ring_buffer_map(). The flags could be set here as this
-function is what sets the requirements really.
-
-> > here, if possible.
-> > 
-> > > +	} else {
-> > > +		/* Skip the meta-page */
-> > > +		pgoff -= subbuf_pages;
-> > > +
-> > > +		s += pgoff / subbuf_pages;
-> > > +	}
-> > > +
-> > > +	while (s < nr_subbufs && p < nr_pages) {
-> > > +		struct page *page;
-> > > +
-> > > +		foreach_subbuf_page(subbuf_order, cpu_buffer->subbuf_ids[s], page) {
-> > > +			if (p >= nr_pages)
-> > > +				break;
-> > > +
-> > > +			pages[p++] = page;
-> > > +		}
-> > > +		s++;
-> > > +	}
-> > > +
-> > > +	err = vm_insert_pages(vma, vma->vm_start, pages, &nr_pages);
-> > 
-> > I think Linus suggested it ("avoid all the sub-page ref-counts entirely
-> > by using VM_PFNMAP, and use vm_insert_pages()"), but ...
-> > vm_insert_pages() will:
-> > * Mess with mapcounts
-> > * Mess with refcounts
-> > 
-> > See
-> > insert_pages()->insert_page_in_batch_locked()->insert_page_into_pte_locked().
-> > 
-> > So we'll mess with the mapcount and refcount of the shared zeropage ...
-> > hmmmm
-> > 
-> > If I am not wrong, vm_normal_page() would not return the shared zeropage
-> > in case we don't have CONFIG_ARCH_HAS_PTE_SPECIAL ... so
-> > unmap()->...->zap_present_ptes() would not decrement the refcount and we
-> > could overflow it. ... we also shouldn't ever mess with the mapcount of
-> > the shared zeropage in the first place.
-> > 
-> > vm_insert_page() is clearer on that: "This allows drivers to insert
-> > individual pages they've allocated into a user vma". You didn't allocate
-> > the shared zeropage.
-> > 
-> > I'm wondering if we even expect VM_MIXEDMAP and VM_PFNMAP to be set at
-> > the same time? vm_insert_pages() would BUG_ON in case VM_PFNMAP is
-> > already set and it would set VM_MIXEDMAP ... similarly
-> > vmf_insert_pfn_prot() would not be happy about that at all ...
-> > 
-> > BUG_ON((vma->vm_flags & (VM_PFNMAP|VM_MIXEDMAP)) ==
-> > (VM_PFNMAP|VM_MIXEDMAP));
-> > 
-> > ... remap_pfn_range() is used by io_uring_mmap for a similar purpose.
-> > But it only supports a single PFN range at a time and requires the
-> > caller to handle refcounting of pages.
-> > 
-> > It's getting late in Germany, so I might be missing something; but using
-> > the shared zeropage here might be a problem.
-> > 
+On Mon, Apr 22, 2024, Muhammad Usama Anjum wrote:
+> Include kvm_test_harness.h first which will include kselftest_harness.h
+> for _GNU_SOURCE to get defined first before inclusion of stdio.h. It
+> is required for declaration of asprintf(). It removes the following
+> build error caught by clang-17:
 > 
-> I was just about to write code to cleanly support vm_insert_pages() to
-> consume zeropages ... when I started to wonder about something else:
+> In file included from x86_64/fix_hypercall_test.c:12:
+> In file included from include/kvm_test_harness.h:11:
+> ../kselftest_harness.h:1169:2: error: call to undeclared function
+> 'asprintf'; ISO C99 and later do not support implicit function declarations
+> [-Wimplicit-function-declaration]
+>  1169 |         asprintf(&test_name, "%s%s%s.%s", f->name,
+>       |         ^
+> 
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+>  tools/testing/selftests/kvm/x86_64/fix_hypercall_test.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/x86_64/fix_hypercall_test.c b/tools/testing/selftests/kvm/x86_64/fix_hypercall_test.c
+> index f3c2239228b10..75306dcfaad6c 100644
+> --- a/tools/testing/selftests/kvm/x86_64/fix_hypercall_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/fix_hypercall_test.c
+> @@ -4,12 +4,12 @@
+>   *
+>   * Tests for KVM paravirtual feature disablement
+>   */
+> +#include "kvm_test_harness.h"
+>  #include <asm/kvm_para.h>
+>  #include <linux/kvm_para.h>
+>  #include <linux/stringify.h>
+>  #include <stdint.h>
+>  
+> -#include "kvm_test_harness.h"
 
-Alternatively, we could at the moment allocate a meta-page of the same size than
-the subbufs? (of course the downside is to waste a bit of memory)
+Oof, that's ugly.  We should fix this by doing what we should have done a long
+time ago: define _GNU_SOURCE in CFLAGS for all selftests.  I'll post the below
+formally once I've smoke tested to make sure it doesn't break in weird ways.
 
-> 
-> 
-> +	if (vma->vm_flags & VM_WRITE || vma->vm_flags & VM_EXEC ||
-> +	    !(vma->vm_flags & VM_MAYSHARE))
-> +		return -EPERM;
-> +
-> 
-> You disallow writable mappings. But what about using mprotect() afterwards
-> to allow for write permissions?
-> 
-> Likely you'd want to remove VM_MAYWRITE from the flags, otherwise mprotect()
-> might alter succeed.
+--
+Subject: [PATCH] KVM: selftest: Define _GNU_SOURCE for all selftests code
 
-The vm_flags_mod below is clearing VM_MAYWRITE already. Isn't it enough? 
+Define _GNU_SOURCE is the base CFLAGS instead of relying on selftests to
+manually #define _GNU_SOURCE, which is repetitive and error prone.  E.g.
+kselftest_harness.h requres _GNU_SOURCE for asprintf(), but if a selftest
+includes kvm_test_harness.h after stdio.h, the include guards result in
+the effective version of stdio.h consumed by kvm_test_harness.h not
+defining asprintf():
 
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
+  In file included from x86_64/fix_hypercall_test.c:12:
+  In file included from include/kvm_test_harness.h:11:
+ ../kselftest_harness.h:1169:2: error: call to undeclared function
+  'asprintf'; ISO C99 and later do not support implicit function declarations
+  [-Wimplicit-function-declaration]
+   1169 |         asprintf(&test_name, "%s%s%s.%s", f->name,
+        |         ^
+
+When including the rseq selftest's "library" code, #undef _GNU_SOURCE so
+that rseq.c controls whether or not it wants to build with _GNU_SOURCE.
+
+Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ tools/testing/selftests/kvm/Makefile                 |  4 ++--
+ tools/testing/selftests/kvm/aarch64/arch_timer.c     |  2 --
+ .../testing/selftests/kvm/aarch64/page_fault_test.c  |  1 -
+ tools/testing/selftests/kvm/aarch64/psci_test.c      |  3 ---
+ tools/testing/selftests/kvm/aarch64/vgic_init.c      |  1 -
+ tools/testing/selftests/kvm/arch_timer.c             |  3 ---
+ tools/testing/selftests/kvm/demand_paging_test.c     |  3 ---
+ tools/testing/selftests/kvm/dirty_log_test.c         |  3 ---
+ tools/testing/selftests/kvm/guest_memfd_test.c       |  2 --
+ tools/testing/selftests/kvm/hardware_disable_test.c  |  3 ---
+ tools/testing/selftests/kvm/include/kvm_util_base.h  | 12 ++++++------
+ .../testing/selftests/kvm/include/userfaultfd_util.h |  3 ---
+ tools/testing/selftests/kvm/kvm_binary_stats_test.c  |  2 --
+ tools/testing/selftests/kvm/kvm_create_max_vcpus.c   |  2 --
+ tools/testing/selftests/kvm/kvm_page_table_test.c    |  3 ---
+ tools/testing/selftests/kvm/lib/assert.c             |  3 ---
+ tools/testing/selftests/kvm/lib/kvm_util.c           |  2 --
+ tools/testing/selftests/kvm/lib/memstress.c          |  2 --
+ tools/testing/selftests/kvm/lib/test_util.c          |  2 --
+ tools/testing/selftests/kvm/lib/userfaultfd_util.c   |  3 ---
+ tools/testing/selftests/kvm/lib/x86_64/sev.c         |  1 -
+ tools/testing/selftests/kvm/max_guest_memory_test.c  |  2 --
+ .../selftests/kvm/memslot_modification_stress_test.c |  3 ---
+ tools/testing/selftests/kvm/riscv/arch_timer.c       |  3 ---
+ tools/testing/selftests/kvm/rseq_test.c              | 12 +++++++++---
+ tools/testing/selftests/kvm/s390x/cmma_test.c        |  2 --
+ tools/testing/selftests/kvm/s390x/sync_regs_test.c   |  2 --
+ tools/testing/selftests/kvm/set_memory_region_test.c |  1 -
+ tools/testing/selftests/kvm/steal_time.c             |  1 -
+ tools/testing/selftests/kvm/x86_64/amx_test.c        |  2 --
+ .../kvm/x86_64/exit_on_emulation_failure_test.c      |  3 ---
+ tools/testing/selftests/kvm/x86_64/hwcr_msr_test.c   |  2 --
+ tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c    |  2 --
+ tools/testing/selftests/kvm/x86_64/hyperv_evmcs.c    |  1 -
+ tools/testing/selftests/kvm/x86_64/hyperv_ipi.c      |  2 --
+ tools/testing/selftests/kvm/x86_64/hyperv_svm_test.c |  1 -
+ .../testing/selftests/kvm/x86_64/hyperv_tlb_flush.c  |  2 --
+ .../selftests/kvm/x86_64/nested_exceptions_test.c    |  2 --
+ .../selftests/kvm/x86_64/nx_huge_pages_test.c        |  3 ---
+ .../selftests/kvm/x86_64/platform_info_test.c        |  2 --
+ .../testing/selftests/kvm/x86_64/pmu_counters_test.c |  2 --
+ .../selftests/kvm/x86_64/pmu_event_filter_test.c     |  3 ---
+ .../kvm/x86_64/private_mem_conversions_test.c        |  1 -
+ tools/testing/selftests/kvm/x86_64/set_boot_cpu_id.c |  1 -
+ tools/testing/selftests/kvm/x86_64/set_sregs_test.c  |  1 -
+ .../kvm/x86_64/smaller_maxphyaddr_emulation_test.c   |  3 ---
+ tools/testing/selftests/kvm/x86_64/smm_test.c        |  1 -
+ tools/testing/selftests/kvm/x86_64/state_test.c      |  1 -
+ tools/testing/selftests/kvm/x86_64/sync_regs_test.c  |  2 --
+ .../selftests/kvm/x86_64/ucna_injection_test.c       |  2 --
+ .../selftests/kvm/x86_64/userspace_msr_exit_test.c   |  2 --
+ .../selftests/kvm/x86_64/vmx_dirty_log_test.c        |  3 ---
+ .../testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c |  1 -
+ .../selftests/kvm/x86_64/vmx_preemption_timer_test.c |  1 -
+ tools/testing/selftests/kvm/x86_64/xapic_ipi_test.c  |  2 --
+ .../testing/selftests/kvm/x86_64/xapic_state_test.c  |  1 -
+ tools/testing/selftests/kvm/x86_64/xss_msr_test.c    |  2 --
+ 57 files changed, 17 insertions(+), 120 deletions(-)
+
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index 741c7dc16afc..4f30296e0bbb 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -225,8 +225,8 @@ LINUX_TOOL_ARCH_INCLUDE = $(top_srcdir)/tools/arch/$(ARCH)/include
+ endif
+ CFLAGS += -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99 \
+ 	-Wno-gnu-variable-sized-type-not-at-end -MD -MP -DCONFIG_64BIT \
+-	-fno-builtin-memcmp -fno-builtin-memcpy -fno-builtin-memset \
+-	-fno-builtin-strnlen \
++	-D_GNU_SOURCE -fno-builtin-memcmp -fno-builtin-memcpy \
++	-fno-builtin-memset -fno-builtin-strnlen \
+ 	-fno-stack-protector -fno-PIE -I$(LINUX_TOOL_INCLUDE) \
+ 	-I$(LINUX_TOOL_ARCH_INCLUDE) -I$(LINUX_HDR_PATH) -Iinclude \
+ 	-I$(<D) -Iinclude/$(ARCH_DIR) -I ../rseq -I.. $(EXTRA_CFLAGS) \
+diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+index 4eaba83cdcf3..5369959e9fc2 100644
+--- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
++++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+@@ -5,8 +5,6 @@
+  *
+  * Copyright (c) 2021, Google LLC.
+  */
+-#define _GNU_SOURCE
+-
+ #include "arch_timer.h"
+ #include "delay.h"
+ #include "gic.h"
+diff --git a/tools/testing/selftests/kvm/aarch64/page_fault_test.c b/tools/testing/selftests/kvm/aarch64/page_fault_test.c
+index a2a158e2c0b8..d29b08198b42 100644
+--- a/tools/testing/selftests/kvm/aarch64/page_fault_test.c
++++ b/tools/testing/selftests/kvm/aarch64/page_fault_test.c
+@@ -7,7 +7,6 @@
+  * hugetlbfs with a hole). It checks that the expected handling method is
+  * called (e.g., uffd faults with the right address and write/read flag).
+  */
+-#define _GNU_SOURCE
+ #include <linux/bitmap.h>
+ #include <fcntl.h>
+ #include <test_util.h>
+diff --git a/tools/testing/selftests/kvm/aarch64/psci_test.c b/tools/testing/selftests/kvm/aarch64/psci_test.c
+index 9b004905d1d3..1c8c6f0c1ca3 100644
+--- a/tools/testing/selftests/kvm/aarch64/psci_test.c
++++ b/tools/testing/selftests/kvm/aarch64/psci_test.c
+@@ -10,9 +10,6 @@
+  *  - A test for KVM's handling of PSCI SYSTEM_SUSPEND and the associated
+  *    KVM_SYSTEM_EVENT_SUSPEND UAPI.
+  */
+-
+-#define _GNU_SOURCE
+-
+ #include <linux/psci.h>
+ 
+ #include "kvm_util.h"
+diff --git a/tools/testing/selftests/kvm/aarch64/vgic_init.c b/tools/testing/selftests/kvm/aarch64/vgic_init.c
+index eef816b80993..e93022870cac 100644
+--- a/tools/testing/selftests/kvm/aarch64/vgic_init.c
++++ b/tools/testing/selftests/kvm/aarch64/vgic_init.c
+@@ -4,7 +4,6 @@
+  *
+  * Copyright (C) 2020, Red Hat, Inc.
+  */
+-#define _GNU_SOURCE
+ #include <linux/kernel.h>
+ #include <sys/syscall.h>
+ #include <asm/kvm.h>
+diff --git a/tools/testing/selftests/kvm/arch_timer.c b/tools/testing/selftests/kvm/arch_timer.c
+index ae1f1a6d8312..fcebd8d81ce4 100644
+--- a/tools/testing/selftests/kvm/arch_timer.c
++++ b/tools/testing/selftests/kvm/arch_timer.c
+@@ -19,9 +19,6 @@
+  *
+  * Copyright (c) 2021, Google LLC.
+  */
+-
+-#define _GNU_SOURCE
+-
+ #include <stdlib.h>
+ #include <pthread.h>
+ #include <linux/sizes.h>
+diff --git a/tools/testing/selftests/kvm/demand_paging_test.c b/tools/testing/selftests/kvm/demand_paging_test.c
+index 056ff1c87345..bc5c4ada5f0d 100644
+--- a/tools/testing/selftests/kvm/demand_paging_test.c
++++ b/tools/testing/selftests/kvm/demand_paging_test.c
+@@ -6,9 +6,6 @@
+  * Copyright (C) 2018, Red Hat, Inc.
+  * Copyright (C) 2019, Google, Inc.
+  */
+-
+-#define _GNU_SOURCE /* for pipe2 */
+-
+ #include <inttypes.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+index eaad5b20854c..bf1ebc29f22a 100644
+--- a/tools/testing/selftests/kvm/dirty_log_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_test.c
+@@ -4,9 +4,6 @@
+  *
+  * Copyright (C) 2018, Red Hat, Inc.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_name */
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <pthread.h>
+diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
+index 92eae206baa6..309fe84b84ad 100644
+--- a/tools/testing/selftests/kvm/guest_memfd_test.c
++++ b/tools/testing/selftests/kvm/guest_memfd_test.c
+@@ -4,8 +4,6 @@
+  *
+  * Author: Chao Peng <chao.p.peng@linux.intel.com>
+  */
+-
+-#define _GNU_SOURCE
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+diff --git a/tools/testing/selftests/kvm/hardware_disable_test.c b/tools/testing/selftests/kvm/hardware_disable_test.c
+index decc521fc760..bce73bcb973c 100644
+--- a/tools/testing/selftests/kvm/hardware_disable_test.c
++++ b/tools/testing/selftests/kvm/hardware_disable_test.c
+@@ -4,9 +4,6 @@
+  * kvm_arch_hardware_disable is called and it attempts to unregister the user
+  * return notifiers.
+  */
+-
+-#define _GNU_SOURCE
+-
+ #include <fcntl.h>
+ #include <pthread.h>
+ #include <semaphore.h>
+diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+index 3e0db283a46a..0c004036309d 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util_base.h
++++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+@@ -27,12 +27,12 @@
+ 
+ /*
+  * Provide a version of static_assert() that is guaranteed to have an optional
+- * message param.  If _ISOC11_SOURCE is defined, glibc (/usr/include/assert.h)
+- * #undefs and #defines static_assert() as a direct alias to _Static_assert(),
+- * i.e. effectively makes the message mandatory.  Many KVM selftests #define
+- * _GNU_SOURCE for various reasons, and _GNU_SOURCE implies _ISOC11_SOURCE.  As
+- * a result, static_assert() behavior is non-deterministic and may or may not
+- * require a message depending on #include order.
++ * message param.  _GNU_SOURCE is defined for all KVM selftests, _GNU_SOURCE
++ * implies _ISOC11_SOURCE, and if _ISOC11_SOURCE is defined, glibc #undefs and
++ * #defines static_assert() as a direct alias to _Static_assert() (see
++ * usr/include/assert.h).  Define a custom macro instead of redefining
++ * static_assert() to avoid creating non-deterministic behavior that is
++ * dependent on include order.
+  */
+ #define __kvm_static_assert(expr, msg, ...) _Static_assert(expr, msg)
+ #define kvm_static_assert(expr, ...) __kvm_static_assert(expr, ##__VA_ARGS__, #expr)
+diff --git a/tools/testing/selftests/kvm/include/userfaultfd_util.h b/tools/testing/selftests/kvm/include/userfaultfd_util.h
+index 24f2cc5f4292..60f7f9d435dc 100644
+--- a/tools/testing/selftests/kvm/include/userfaultfd_util.h
++++ b/tools/testing/selftests/kvm/include/userfaultfd_util.h
+@@ -5,9 +5,6 @@
+  * Copyright (C) 2018, Red Hat, Inc.
+  * Copyright (C) 2019-2022 Google LLC
+  */
+-
+-#define _GNU_SOURCE /* for pipe2 */
+-
+ #include <inttypes.h>
+ #include <time.h>
+ #include <pthread.h>
+diff --git a/tools/testing/selftests/kvm/kvm_binary_stats_test.c b/tools/testing/selftests/kvm/kvm_binary_stats_test.c
+index 698c1cfa3111..f02355c3c4c2 100644
+--- a/tools/testing/selftests/kvm/kvm_binary_stats_test.c
++++ b/tools/testing/selftests/kvm/kvm_binary_stats_test.c
+@@ -6,8 +6,6 @@
+  *
+  * Test the fd-based interface for KVM statistics.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
+index b9e23265e4b3..c78f34699f73 100644
+--- a/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
++++ b/tools/testing/selftests/kvm/kvm_create_max_vcpus.c
+@@ -6,8 +6,6 @@
+  *
+  * Test for KVM_CAP_MAX_VCPUS and KVM_CAP_MAX_VCPU_ID.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/kvm_page_table_test.c b/tools/testing/selftests/kvm/kvm_page_table_test.c
+index e0ba97ac1c56..7759c685086b 100644
+--- a/tools/testing/selftests/kvm/kvm_page_table_test.c
++++ b/tools/testing/selftests/kvm/kvm_page_table_test.c
+@@ -8,9 +8,6 @@
+  * page size have been pre-allocated on your system, if you are planning to
+  * use hugepages to back the guest memory for testing.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_name */
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <time.h>
+diff --git a/tools/testing/selftests/kvm/lib/assert.c b/tools/testing/selftests/kvm/lib/assert.c
+index 2bd25b191d15..b49690658c60 100644
+--- a/tools/testing/selftests/kvm/lib/assert.c
++++ b/tools/testing/selftests/kvm/lib/assert.c
+@@ -4,9 +4,6 @@
+  *
+  * Copyright (C) 2018, Google LLC.
+  */
+-
+-#define _GNU_SOURCE /* for getline(3) and strchrnul(3)*/
+-
+ #include "test_util.h"
+ 
+ #include <execinfo.h>
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index b2262b5fad9e..1eaf001d0ad4 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -4,8 +4,6 @@
+  *
+  * Copyright (C) 2018, Google LLC.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_name */
+ #include "test_util.h"
+ #include "kvm_util.h"
+ #include "processor.h"
+diff --git a/tools/testing/selftests/kvm/lib/memstress.c b/tools/testing/selftests/kvm/lib/memstress.c
+index cf2c73971308..555e3932e529 100644
+--- a/tools/testing/selftests/kvm/lib/memstress.c
++++ b/tools/testing/selftests/kvm/lib/memstress.c
+@@ -2,8 +2,6 @@
+ /*
+  * Copyright (C) 2020, Google LLC.
+  */
+-#define _GNU_SOURCE
+-
+ #include <inttypes.h>
+ #include <linux/bitmap.h>
+ 
+diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+index 5a8f8becb129..8ed0b74ae837 100644
+--- a/tools/testing/selftests/kvm/lib/test_util.c
++++ b/tools/testing/selftests/kvm/lib/test_util.c
+@@ -4,8 +4,6 @@
+  *
+  * Copyright (C) 2020, Google LLC.
+  */
+-
+-#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <stdarg.h>
+ #include <assert.h>
+diff --git a/tools/testing/selftests/kvm/lib/userfaultfd_util.c b/tools/testing/selftests/kvm/lib/userfaultfd_util.c
+index 0ba866c4af69..7c9de8414462 100644
+--- a/tools/testing/selftests/kvm/lib/userfaultfd_util.c
++++ b/tools/testing/selftests/kvm/lib/userfaultfd_util.c
+@@ -6,9 +6,6 @@
+  * Copyright (C) 2018, Red Hat, Inc.
+  * Copyright (C) 2019-2022 Google LLC
+  */
+-
+-#define _GNU_SOURCE /* for pipe2 */
+-
+ #include <inttypes.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/sev.c b/tools/testing/selftests/kvm/lib/x86_64/sev.c
+index e248d3364b9c..e83809febae1 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/sev.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/sev.c
+@@ -1,5 +1,4 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <stdint.h>
+ #include <stdbool.h>
+ 
+diff --git a/tools/testing/selftests/kvm/max_guest_memory_test.c b/tools/testing/selftests/kvm/max_guest_memory_test.c
+index 6628dc4dda89..9b7fc3908be6 100644
+--- a/tools/testing/selftests/kvm/max_guest_memory_test.c
++++ b/tools/testing/selftests/kvm/max_guest_memory_test.c
+@@ -1,6 +1,4 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#define _GNU_SOURCE
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <pthread.h>
+diff --git a/tools/testing/selftests/kvm/memslot_modification_stress_test.c b/tools/testing/selftests/kvm/memslot_modification_stress_test.c
+index 156361966612..05fcf902e067 100644
+--- a/tools/testing/selftests/kvm/memslot_modification_stress_test.c
++++ b/tools/testing/selftests/kvm/memslot_modification_stress_test.c
+@@ -6,9 +6,6 @@
+  * Copyright (C) 2018, Red Hat, Inc.
+  * Copyright (C) 2020, Google, Inc.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_name */
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <sys/syscall.h>
+diff --git a/tools/testing/selftests/kvm/riscv/arch_timer.c b/tools/testing/selftests/kvm/riscv/arch_timer.c
+index 0f9cabd99fd4..4b5004ef9c6b 100644
+--- a/tools/testing/selftests/kvm/riscv/arch_timer.c
++++ b/tools/testing/selftests/kvm/riscv/arch_timer.c
+@@ -7,9 +7,6 @@
+  *
+  * Copyright (c) 2024, Intel Corporation.
+  */
+-
+-#define _GNU_SOURCE
+-
+ #include "arch_timer.h"
+ #include "kvm_util.h"
+ #include "processor.h"
+diff --git a/tools/testing/selftests/kvm/rseq_test.c b/tools/testing/selftests/kvm/rseq_test.c
+index 28f97fb52044..0728b15b5d3a 100644
+--- a/tools/testing/selftests/kvm/rseq_test.c
++++ b/tools/testing/selftests/kvm/rseq_test.c
+@@ -1,5 +1,13 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-#define _GNU_SOURCE /* for program_invocation_short_name */
++
++/*
++ * Include rseq.c without _GNU_SOURCE defined, before including any headers, so
++ * that rseq.c is compiled with its configuration, not KVM selftests' config.
++ */
++#undef _GNU_SOURCE
++#include "../rseq/rseq.c"
++#define _GNU_SOURCE
++
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <pthread.h>
+@@ -20,8 +28,6 @@
+ #include "processor.h"
+ #include "test_util.h"
+ 
+-#include "../rseq/rseq.c"
+-
+ /*
+  * Any bug related to task migration is likely to be timing-dependent; perform
+  * a large number of migrations to reduce the odds of a false negative.
+diff --git a/tools/testing/selftests/kvm/s390x/cmma_test.c b/tools/testing/selftests/kvm/s390x/cmma_test.c
+index 626a2b8a2037..84ba79c42ab1 100644
+--- a/tools/testing/selftests/kvm/s390x/cmma_test.c
++++ b/tools/testing/selftests/kvm/s390x/cmma_test.c
+@@ -7,8 +7,6 @@
+  * Authors:
+  *  Nico Boehr <nrb@linux.ibm.com>
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/s390x/sync_regs_test.c b/tools/testing/selftests/kvm/s390x/sync_regs_test.c
+index 43fb25ddc3ec..53def355ccba 100644
+--- a/tools/testing/selftests/kvm/s390x/sync_regs_test.c
++++ b/tools/testing/selftests/kvm/s390x/sync_regs_test.c
+@@ -10,8 +10,6 @@
+  *
+  * Test expected behavior of the KVM_CAP_SYNC_REGS functionality.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+index 06b43ed23580..4a436a40e4b0 100644
+--- a/tools/testing/selftests/kvm/set_memory_region_test.c
++++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+@@ -1,5 +1,4 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <pthread.h>
+ #include <sched.h>
+diff --git a/tools/testing/selftests/kvm/steal_time.c b/tools/testing/selftests/kvm/steal_time.c
+index 4be5a1ffa06a..b6938bd2442c 100644
+--- a/tools/testing/selftests/kvm/steal_time.c
++++ b/tools/testing/selftests/kvm/steal_time.c
+@@ -4,7 +4,6 @@
+  *
+  * Copyright (C) 2020, Red Hat, Inc.
+  */
+-#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <time.h>
+ #include <sched.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/amx_test.c b/tools/testing/selftests/kvm/x86_64/amx_test.c
+index eae521f050e0..8e5713e36d4b 100644
+--- a/tools/testing/selftests/kvm/x86_64/amx_test.c
++++ b/tools/testing/selftests/kvm/x86_64/amx_test.c
+@@ -6,8 +6,6 @@
+  *
+  * Tests for amx #NM exception and save/restore.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/exit_on_emulation_failure_test.c b/tools/testing/selftests/kvm/x86_64/exit_on_emulation_failure_test.c
+index 6c2e5e0ceb1f..9c21b6bccc38 100644
+--- a/tools/testing/selftests/kvm/x86_64/exit_on_emulation_failure_test.c
++++ b/tools/testing/selftests/kvm/x86_64/exit_on_emulation_failure_test.c
+@@ -4,9 +4,6 @@
+  *
+  * Test for KVM_CAP_EXIT_ON_EMULATION_FAILURE.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+-
+ #include "flds_emulation.h"
+ 
+ #include "test_util.h"
+diff --git a/tools/testing/selftests/kvm/x86_64/hwcr_msr_test.c b/tools/testing/selftests/kvm/x86_64/hwcr_msr_test.c
+index df351ae17029..10b1b0ba374e 100644
+--- a/tools/testing/selftests/kvm/x86_64/hwcr_msr_test.c
++++ b/tools/testing/selftests/kvm/x86_64/hwcr_msr_test.c
+@@ -2,8 +2,6 @@
+ /*
+  * Copyright (C) 2023, Google LLC.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <sys/ioctl.h>
+ 
+ #include "test_util.h"
+diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c b/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c
+index 5c27efbf405e..4f5881d4ef66 100644
+--- a/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c
++++ b/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c
+@@ -7,8 +7,6 @@
+  * This work is licensed under the terms of the GNU GPL, version 2.
+  *
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_evmcs.c b/tools/testing/selftests/kvm/x86_64/hyperv_evmcs.c
+index 4c7257ecd2a6..4f3f3a9b038b 100644
+--- a/tools/testing/selftests/kvm/x86_64/hyperv_evmcs.c
++++ b/tools/testing/selftests/kvm/x86_64/hyperv_evmcs.c
+@@ -4,7 +4,6 @@
+  *
+  * Tests for Enlightened VMCS, including nested guest state.
+  */
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_ipi.c b/tools/testing/selftests/kvm/x86_64/hyperv_ipi.c
+index f1617762c22f..8206f5ef42dd 100644
+--- a/tools/testing/selftests/kvm/x86_64/hyperv_ipi.c
++++ b/tools/testing/selftests/kvm/x86_64/hyperv_ipi.c
+@@ -5,8 +5,6 @@
+  * Copyright (C) 2022, Red Hat, Inc.
+  *
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <pthread.h>
+ #include <inttypes.h>
+ 
+diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_svm_test.c b/tools/testing/selftests/kvm/x86_64/hyperv_svm_test.c
+index c9b18707edc0..b987a3d79715 100644
+--- a/tools/testing/selftests/kvm/x86_64/hyperv_svm_test.c
++++ b/tools/testing/selftests/kvm/x86_64/hyperv_svm_test.c
+@@ -4,7 +4,6 @@
+  *
+  * Tests for Hyper-V extensions to SVM.
+  */
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_tlb_flush.c b/tools/testing/selftests/kvm/x86_64/hyperv_tlb_flush.c
+index 05b56095cf76..077cd0ec3040 100644
+--- a/tools/testing/selftests/kvm/x86_64/hyperv_tlb_flush.c
++++ b/tools/testing/selftests/kvm/x86_64/hyperv_tlb_flush.c
+@@ -5,8 +5,6 @@
+  * Copyright (C) 2022, Red Hat, Inc.
+  *
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <asm/barrier.h>
+ #include <pthread.h>
+ #include <inttypes.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/nested_exceptions_test.c b/tools/testing/selftests/kvm/x86_64/nested_exceptions_test.c
+index 3670331adf21..3eb0313ffa39 100644
+--- a/tools/testing/selftests/kvm/x86_64/nested_exceptions_test.c
++++ b/tools/testing/selftests/kvm/x86_64/nested_exceptions_test.c
+@@ -1,6 +1,4 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+-
+ #include "test_util.h"
+ #include "kvm_util.h"
+ #include "processor.h"
+diff --git a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c
+index 17bbb96fc4df..e7efb2b35f8b 100644
+--- a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c
++++ b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c
+@@ -5,9 +5,6 @@
+  *
+  * Copyright (C) 2022, Google LLC.
+  */
+-
+-#define _GNU_SOURCE
+-
+ #include <fcntl.h>
+ #include <stdint.h>
+ #include <time.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/platform_info_test.c b/tools/testing/selftests/kvm/x86_64/platform_info_test.c
+index 87011965dc41..2165b1ad8b38 100644
+--- a/tools/testing/selftests/kvm/x86_64/platform_info_test.c
++++ b/tools/testing/selftests/kvm/x86_64/platform_info_test.c
+@@ -9,8 +9,6 @@
+  * Verifies expected behavior of controlling guest access to
+  * MSR_PLATFORM_INFO.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+index 29609b52f8fa..842d87c8d6b6 100644
+--- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
++++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+@@ -2,8 +2,6 @@
+ /*
+  * Copyright (C) 2023, Tencent, Inc.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <x86intrin.h>
+ 
+ #include "pmu.h"
+diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+index 3c85d1ae9893..5ce53b8c46e0 100644
+--- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
++++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+@@ -9,9 +9,6 @@
+  * Verifies the expected behavior of allow lists and deny lists for
+  * virtual PMU events.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+-
+ #include "kvm_util.h"
+ #include "pmu.h"
+ #include "processor.h"
+diff --git a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+index e0f642d2a3c4..82a8d88b5338 100644
+--- a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
++++ b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+@@ -2,7 +2,6 @@
+ /*
+  * Copyright (C) 2022, Google LLC.
+  */
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <limits.h>
+ #include <pthread.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/set_boot_cpu_id.c b/tools/testing/selftests/kvm/x86_64/set_boot_cpu_id.c
+index 366cf18600bc..d691d86e5bc3 100644
+--- a/tools/testing/selftests/kvm/x86_64/set_boot_cpu_id.c
++++ b/tools/testing/selftests/kvm/x86_64/set_boot_cpu_id.c
+@@ -4,7 +4,6 @@
+  *
+  * Copyright (C) 2020, Red Hat, Inc.
+  */
+-#define _GNU_SOURCE /* for program_invocation_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/set_sregs_test.c b/tools/testing/selftests/kvm/x86_64/set_sregs_test.c
+index 3610981d9162..c021c0795a96 100644
+--- a/tools/testing/selftests/kvm/x86_64/set_sregs_test.c
++++ b/tools/testing/selftests/kvm/x86_64/set_sregs_test.c
+@@ -10,7 +10,6 @@
+  * That bug allowed a user-mode program that called the KVM_SET_SREGS
+  * ioctl to put a VCPU's local APIC into an invalid state.
+  */
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c b/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c
+index 416207c38a17..362be40fc00d 100644
+--- a/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c
++++ b/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c
+@@ -5,9 +5,6 @@
+  * Test that KVM emulates instructions in response to EPT violations when
+  * allow_smaller_maxphyaddr is enabled and guest.MAXPHYADDR < host.MAXPHYADDR.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+-
+ #include "flds_emulation.h"
+ 
+ #include "test_util.h"
+diff --git a/tools/testing/selftests/kvm/x86_64/smm_test.c b/tools/testing/selftests/kvm/x86_64/smm_test.c
+index e18b86666e1f..55c88d664a94 100644
+--- a/tools/testing/selftests/kvm/x86_64/smm_test.c
++++ b/tools/testing/selftests/kvm/x86_64/smm_test.c
+@@ -4,7 +4,6 @@
+  *
+  * Tests for SMM.
+  */
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/state_test.c b/tools/testing/selftests/kvm/x86_64/state_test.c
+index 88b58aab7207..1c756db329e5 100644
+--- a/tools/testing/selftests/kvm/x86_64/state_test.c
++++ b/tools/testing/selftests/kvm/x86_64/state_test.c
+@@ -6,7 +6,6 @@
+  *
+  * Tests for vCPU state save/restore, including nested guest state.
+  */
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/sync_regs_test.c b/tools/testing/selftests/kvm/x86_64/sync_regs_test.c
+index adb5593daf48..8fa3948b0170 100644
+--- a/tools/testing/selftests/kvm/x86_64/sync_regs_test.c
++++ b/tools/testing/selftests/kvm/x86_64/sync_regs_test.c
+@@ -8,8 +8,6 @@
+  * including requesting an invalid register set, updates to/from values
+  * in kvm_run.s.regs when kvm_valid_regs and kvm_dirty_regs are toggled.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/ucna_injection_test.c b/tools/testing/selftests/kvm/x86_64/ucna_injection_test.c
+index dcbb3c29fb8e..abe71946941f 100644
+--- a/tools/testing/selftests/kvm/x86_64/ucna_injection_test.c
++++ b/tools/testing/selftests/kvm/x86_64/ucna_injection_test.c
+@@ -17,8 +17,6 @@
+  * delivered into the guest or not.
+  *
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <pthread.h>
+ #include <inttypes.h>
+ #include <string.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
+index f4f61a2d2464..53afbea4df88 100644
+--- a/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
++++ b/tools/testing/selftests/kvm/x86_64/userspace_msr_exit_test.c
+@@ -4,8 +4,6 @@
+  *
+  * Tests for exiting into userspace on registered MSRs
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <sys/ioctl.h>
+ 
+ #include "kvm_test_harness.h"
+diff --git a/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c b/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c
+index 7f6f5f23fb9b..a39cba19c058 100644
+--- a/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c
++++ b/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c
+@@ -4,9 +4,6 @@
+  *
+  * Copyright (C) 2018, Red Hat, Inc.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_name */
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <linux/bitmap.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c b/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c
+index ea0cb3cae0f7..3b93f262b797 100644
+--- a/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c
++++ b/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c
+@@ -10,7 +10,6 @@
+  * and check it can be retrieved with KVM_GET_MSR, also test
+  * the invalid LBR formats are rejected.
+  */
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <sys/ioctl.h>
+ 
+ #include <linux/bitmap.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/vmx_preemption_timer_test.c b/tools/testing/selftests/kvm/x86_64/vmx_preemption_timer_test.c
+index affc32800158..00dd2ac07a61 100644
+--- a/tools/testing/selftests/kvm/x86_64/vmx_preemption_timer_test.c
++++ b/tools/testing/selftests/kvm/x86_64/vmx_preemption_timer_test.c
+@@ -9,7 +9,6 @@
+  * value instead of partially decayed timer value
+  *
+  */
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/xapic_ipi_test.c b/tools/testing/selftests/kvm/x86_64/xapic_ipi_test.c
+index 725c206ba0b9..c78e5f755116 100644
+--- a/tools/testing/selftests/kvm/x86_64/xapic_ipi_test.c
++++ b/tools/testing/selftests/kvm/x86_64/xapic_ipi_test.c
+@@ -19,8 +19,6 @@
+  * Migration is a command line option. When used on non-numa machines will 
+  * exit with error. Test is still usefull on non-numa for testing IPIs.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <getopt.h>
+ #include <pthread.h>
+ #include <inttypes.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/xapic_state_test.c b/tools/testing/selftests/kvm/x86_64/xapic_state_test.c
+index ab75b873a4ad..69849acd95b0 100644
+--- a/tools/testing/selftests/kvm/x86_64/xapic_state_test.c
++++ b/tools/testing/selftests/kvm/x86_64/xapic_state_test.c
+@@ -1,5 +1,4 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/xss_msr_test.c b/tools/testing/selftests/kvm/x86_64/xss_msr_test.c
+index 167c97abff1b..f331a4e9bae3 100644
+--- a/tools/testing/selftests/kvm/x86_64/xss_msr_test.c
++++ b/tools/testing/selftests/kvm/x86_64/xss_msr_test.c
+@@ -4,8 +4,6 @@
+  *
+  * Tests for the IA32_XSS MSR.
+  */
+-
+-#define _GNU_SOURCE /* for program_invocation_short_name */
+ #include <sys/ioctl.h>
+ 
+ #include "test_util.h"
+
+base-commit: 9f92c06e184074930174e469205f4e78338651f8
+-- 
 
 
