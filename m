@@ -1,401 +1,232 @@
-Return-Path: <linux-kernel+bounces-152767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 430B18AC3FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:06:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C98638AC46D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:41:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AF6F282909
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:06:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EF29282E79
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F7218B09;
-	Mon, 22 Apr 2024 06:06:50 +0000 (UTC)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A236481CE;
+	Mon, 22 Apr 2024 06:41:51 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF2CF18E1F;
-	Mon, 22 Apr 2024 06:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79B11802B;
+	Mon, 22 Apr 2024 06:41:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713766009; cv=none; b=gWUMO7sJOnv/o1jlpqz646fzOInFSwT2LpCo6n5X4YDYGK15gzDTbX3876e0XiTFTTzPJcrMcYQbV82cgIeL7OhQRcI6CHC4IIUXAd53UZo5WizuAhdBDOVPsXWJxJgWc8f2GacVBCGz0kTUJXzx1RscFTPMsl2TFo3aUvQ2LC0=
+	t=1713768110; cv=none; b=tdM/0hJjHZjHLP+U8cTRofd9R2luzEGF7biMwcyXt5H91mp/e4v4K1DkNEgJ7PFyCGMTUjjQRwkbQTWvfWlMK6M7GEc1d29L64tcLdN4Ygf+YnTptUcDWfbOmT7MNXIrlgLTmoGM8xodP4FtX5QKrtsnBSD2ZfHnEA81rO9AzcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713766009; c=relaxed/simple;
-	bh=rmxyxn4B9gVXz/arMlcC2tueI2ySWua3sGqMAigv280=;
-	h=From:To:Subject:Date:Message-Id; b=ftTmWVoCLDcvzrvQBsMicFw3NWkk2cwtT5+1diaTxDOvusOX6vLg96SN2ikago3NtrU9l+JlYMZt/KYi3iJtn7tV+FJ4D/ZzdGN8ha/IAeAjDGiqs7qWvaTLIGJSckEulZ/qPVvxapHjfQOwOfElPhvtRY23py+nwNlGu9v25HA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 074281A10E0;
-	Mon, 22 Apr 2024 08:06:40 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C11D31A0423;
-	Mon, 22 Apr 2024 08:06:38 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 00EB9180222C;
-	Mon, 22 Apr 2024 14:06:31 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shengjiu.wang@gmail.com,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2] ASoC: dt-bindings: fsl,ssi: Convert to YAML
-Date: Mon, 22 Apr 2024 13:48:14 +0800
-Message-Id: <1713764894-11870-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+	s=arc-20240116; t=1713768110; c=relaxed/simple;
+	bh=TPhYuiSP/OJP9QjGkWctk7DF63PrcaSrVMus/ROLepY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QMyLL8iH5tYG/Bp42757sFq1KdyRPYkBK8qWixDLgsK0QcRezzStEyJLuIXe3pxeVqVy2yu3l8Rs97ytyiMLV2zBm4iBTSZQGV37LrdZw46tmOPMIuEJIpzkTmRUnszXjA7K1nuUAnjFUmluGfQ4t81O/3mL+LvGSGy03hgTvw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VNFvV0WXVztXZp;
+	Mon, 22 Apr 2024 14:38:46 +0800 (CST)
+Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
+	by mail.maildlp.com (Postfix) with ESMTPS id E77A914035F;
+	Mon, 22 Apr 2024 14:41:44 +0800 (CST)
+Received: from huawei.com (10.67.174.76) by dggpemd100004.china.huawei.com
+ (7.185.36.20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Mon, 22 Apr
+ 2024 14:41:44 +0800
+From: Yuntao Liu <liuyuntao12@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <linux-kbuild@vger.kernel.org>
+CC: <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+	<dave.hansen@linux.intel.com>, <hpa@zytor.com>, <masahiroy@kernel.org>,
+	<nathan@kernel.org>, <nicolas@fjasle.eu>, <peterz@infradead.org>,
+	<jpoimboe@kernel.org>, <leitao@debian.org>, <petr.pavlu@suse.com>,
+	<richard.weiyang@gmail.com>, <ruanjinjie@huawei.com>,
+	<ndesaulniers@google.com>, <jgross@suse.com>, <liuyuntao12@huawei.com>
+Subject: [PATCH] x86: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Date: Mon, 22 Apr 2024 06:05:56 +0000
+Message-ID: <20240422060556.1226848-1-liuyuntao12@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemd100004.china.huawei.com (7.185.36.20)
 
-Convert the fsl,ssi binding to YAML.
+The current x86 architecture does not yet support the
+HAVE_LD_DEAD_CODE_DATA_ELIMINATION feature. x86 is widely used in
+embedded scenarios, and enabling this feature would be beneficial for
+reducing the size of the kernel image.
 
-Add below compatible strings which were not listed
-in document:
+In order to make this work, we keep the necessary tables by annotating
+them with KEEP, also it requires further changes to linker script to KEEP
+some tables and wildcard compiler generated sections into the right place.
 
-fsl,imx50-ssi
-fsl,imx53-ssi
-fsl,imx25-ssi
-fsl,imx27-ssi
-fsl,imx6q-ssi
-fsl,imx6sl-ssi
-fsl,imx6sx-ssi
+Enabling CONFIG_UNWINDER_ORC or CONFIG_MITIGATION_RETPOLINE will enable
+the objtool's --orc and --retpoline parameters, which will alter the
+layout of the binary file, thereby preventing gc-sections from functioning
+properly. Therefore, HAVE_LD_DEAD_CODE_DATA_ELIMINATION should only be
+selected when they are not enabled.
 
-Add below fsl,mode strings which were not listed.
+Enabling CONFIG_LTO_CLANG or CONFIG_X86_KERNEL_IBT will use vmlinux.o
+instead of performing the slow LTO link again. This can also prevent
+gc-sections from functioning properly. Therefore, using this optimization
+when CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is not enabled.
 
-i2s-slave
-i2s-master
-lj-slave
-lj-master
-rj-slave
-rj-master
+The size comparison of zImage is as follows:
+x86_def_defconfig  i386_defconfig    tinyconfig
+10892288           10826240          607232          no dce
+10748928           10719744          529408          dce
+1.3%               0.98%             12.8%           shrink
 
-Add 'ac97-gpios' property which were not listed.
-Then dtbs_check can pass.
-
-And remove the 'codec' description which should be
-in the 'codec' binding doc.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+When using smaller config file, there is a significant reduction in the
+size of the zImage.
 ---
-changes in v2:
-- change fallback string to const.
-- add dai-common.yaml
-- add ac97-gpios property
+ arch/x86/Kconfig              |  1 +
+ arch/x86/kernel/vmlinux.lds.S | 24 ++++++++++++------------
+ scripts/link-vmlinux.sh       |  2 +-
+ 3 files changed, 14 insertions(+), 13 deletions(-)
 
- .../devicetree/bindings/sound/fsl,ssi.txt     |  87 --------
- .../devicetree/bindings/sound/fsl,ssi.yaml    | 192 ++++++++++++++++++
- 2 files changed, 192 insertions(+), 87 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/fsl,ssi.txt
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,ssi.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-deleted file mode 100644
-index 7e15a85cecd2..000000000000
---- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-+++ /dev/null
-@@ -1,87 +0,0 @@
--Freescale Synchronous Serial Interface
--
--The SSI is a serial device that communicates with audio codecs.  It can
--be programmed in AC97, I2S, left-justified, or right-justified modes.
--
--Required properties:
--- compatible:       Compatible list, should contain one of the following
--                    compatibles:
--                      fsl,mpc8610-ssi
--                      fsl,imx51-ssi
--                      fsl,imx35-ssi
--                      fsl,imx21-ssi
--- cell-index:       The SSI, <0> = SSI1, <1> = SSI2, and so on.
--- reg:              Offset and length of the register set for the device.
--- interrupts:       <a b> where a is the interrupt number and b is a
--                    field that represents an encoding of the sense and
--                    level information for the interrupt.  This should be
--                    encoded based on the information in section 2)
--                    depending on the type of interrupt controller you
--                    have.
--- fsl,fifo-depth:   The number of elements in the transmit and receive FIFOs.
--                    This number is the maximum allowed value for SFCSR[TFWM0].
-- - clocks:          "ipg" - Required clock for the SSI unit
--                    "baud" - Required clock for SSI master mode. Otherwise this
--		      clock is not used
--
--Required are also ac97 link bindings if ac97 is used. See
--Documentation/devicetree/bindings/sound/soc-ac97link.txt for the necessary
--bindings.
--
--Optional properties:
--- codec-handle:     Phandle to a 'codec' node that defines an audio
--                    codec connected to this SSI.  This node is typically
--                    a child of an I2C or other control node.
--- fsl,fiq-stream-filter: Bool property. Disabled DMA and use FIQ instead to
--		    filter the codec stream. This is necessary for some boards
--		    where an incompatible codec is connected to this SSI, e.g.
--		    on pca100 and pcm043.
--- dmas:		    Generic dma devicetree binding as described in
--		    Documentation/devicetree/bindings/dma/dma.txt.
--- dma-names:	    Two dmas have to be defined, "tx" and "rx", if fsl,imx-fiq
--		    is not defined.
--- fsl,mode:         The operating mode for the AC97 interface only.
--                    "ac97-slave" - AC97 mode, SSI is clock slave
--                    "ac97-master" - AC97 mode, SSI is clock master
--- fsl,ssi-asynchronous:
--                    If specified, the SSI is to be programmed in asynchronous
--                    mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
--                    all be connected to valid signals.  In synchronous mode,
--                    SRCK and SRFS are ignored.  Asynchronous mode allows
--                    playback and capture to use different sample sizes and
--                    sample rates.  Some drivers may require that SRCK and STCK
--                    be connected together, and SRFS and STFS be connected
--                    together.  This would still allow different sample sizes,
--                    but not different sample rates.
--- fsl,playback-dma: Phandle to a node for the DMA channel to use for
--                    playback of audio.  This is typically dictated by SOC
--                    design.  See the notes below.
--                    Only used on Power Architecture.
--- fsl,capture-dma:  Phandle to a node for the DMA channel to use for
--                    capture (recording) of audio.  This is typically dictated
--                    by SOC design.  See the notes below.
--                    Only used on Power Architecture.
--
--Child 'codec' node required properties:
--- compatible:       Compatible list, contains the name of the codec
--
--Child 'codec' node optional properties:
--- clock-frequency:  The frequency of the input clock, which typically comes
--                    from an on-board dedicated oscillator.
--
--Notes on fsl,playback-dma and fsl,capture-dma:
--
--On SOCs that have an SSI, specific DMA channels are hard-wired for playback
--and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
--playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
--playback and DMA channel 3 for capture.  The developer can choose which
--DMA controller to use, but the channels themselves are hard-wired.  The
--purpose of these two properties is to represent this hardware design.
--
--The device tree nodes for the DMA channels that are referenced by
--"fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
--"fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
--"fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
--"fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
--drivers (fsldma) will attempt to use them, and it will conflict with the
--sound drivers.
-diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.yaml b/Documentation/devicetree/bindings/sound/fsl,ssi.yaml
-new file mode 100644
-index 000000000000..d22911b0e9ef
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl,ssi.yaml
-@@ -0,0 +1,192 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/fsl,ssi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale Synchronous Serial Interface
-+
-+maintainers:
-+  - Shengjiu Wang <shengjiu.wang@nxp.com>
-+
-+description:
-+  Notes on fsl,playback-dma and fsl,capture-dma
-+  On SOCs that have an SSI, specific DMA channels are hard-wired for playback
-+  and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
-+  playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
-+  playback and DMA channel 3 for capture.  The developer can choose which
-+  DMA controller to use, but the channels themselves are hard-wired.  The
-+  purpose of these two properties is to represent this hardware design.
-+
-+  The device tree nodes for the DMA channels that are referenced by
-+  "fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
-+  "fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
-+  "fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
-+  "fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
-+  drivers (fsldma) will attempt to use them, and it will conflict with the
-+  sound drivers.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - fsl,imx50-ssi
-+              - fsl,imx53-ssi
-+          - enum:
-+              - fsl,imx51-ssi
-+          - const: fsl,imx21-ssi
-+      - items:
-+          - enum:
-+              - fsl,imx25-ssi
-+              - fsl,imx27-ssi
-+              - fsl,imx35-ssi
-+              - fsl,imx51-ssi
-+              - fsl,imx6q-ssi
-+              - fsl,imx6sl-ssi
-+              - fsl,imx6sx-ssi
-+          - enum:
-+              - fsl,imx21-ssi
-+              - fsl,imx51-ssi
-+      - items:
-+          - const: fsl,mpc8610-ssi
-+
-+  cell-index:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1, 2]
-+    description: The SSI index
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  fsl,fifo-depth:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      The number of elements in the transmit and receive FIFOs.
-+      This number is the maximum allowed value for SFCSR[TFWM0].
-+
-+  clocks:
-+    items:
-+      - description: The ipg clock for register access
-+      - description: clock for SSI master mode
-+    minItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: baud
-+    minItems: 1
-+
-+  dmas:
-+    oneOf:
-+      - items:
-+          - description: DMA controller phandle and request line for RX
-+          - description: DMA controller phandle and request line for TX
-+      - items:
-+          - description: DMA controller phandle and request line for RX0
-+          - description: DMA controller phandle and request line for TX0
-+          - description: DMA controller phandle and request line for RX1
-+          - description: DMA controller phandle and request line for TX1
-+
-+  dma-names:
-+    oneOf:
-+      - items:
-+          - const: rx
-+          - const: tx
-+      - items:
-+          - const: rx0
-+          - const: tx0
-+          - const: rx1
-+          - const: tx1
-+
-+  codec-handle:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to a 'codec' node that defines an audio
-+      codec connected to this SSI.  This node is typically
-+      a child of an I2C or other control node.
-+
-+  fsl,fiq-stream-filter:
-+    type: boolean
-+    description:
-+      Disabled DMA and use FIQ instead to filter the codec stream.
-+      This is necessary for some boards where an incompatible codec
-+      is connected to this SSI, e.g. on pca100 and pcm043.
-+
-+  fsl,mode:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    enum: [ ac97-slave, ac97-master, i2s-slave, i2s-master,
-+            lj-slave, lj-master, rj-slave, rj-master ]
-+    description: |
-+      "ac97-slave" - AC97 mode, SSI is clock slave
-+      "ac97-master" - AC97 mode, SSI is clock master
-+      "i2s-slave" - I2S mode, SSI is clock slave
-+      "i2s-master" - I2S mode, SSI is clock master
-+      "lj-slave" - Left justified mode, SSI is clock slave
-+      "lj-master" - Left justified mode, SSI is clock master
-+      "rj-slave" - Right justified mode, SSI is clock slave
-+      "rj-master" - Right justified mode, SSI is clock master
-+
-+  fsl,ssi-asynchronous:
-+    type: boolean
-+    description: If specified, the SSI is to be programmed in asynchronous
-+      mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
-+      all be connected to valid signals.  In synchronous mode,
-+      SRCK and SRFS are ignored.  Asynchronous mode allows
-+      playback and capture to use different sample sizes and
-+      sample rates.  Some drivers may require that SRCK and STCK
-+      be connected together, and SRFS and STFS be connected
-+      together.  This would still allow different sample sizes,
-+      but not different sample rates.
-+
-+  fsl,playback-dma:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: Phandle to a node for the DMA channel to use for
-+      playback of audio.  This is typically dictated by SOC
-+      design. Only used on Power Architecture.
-+
-+  fsl,capture-dma:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: Phandle to a node for the DMA channel to use for
-+      capture (recording) of audio.  This is typically dictated
-+      by SOC design. Only used on Power Architecture.
-+
-+  ac97-gpios:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description: Please refer to soc-ac97link.txt
-+
-+  "#sound-dai-cells":
-+    const: 0
-+    description: optional, some dts node didn't add it.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - fsl,fifo-depth
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/imx6qdl-clock.h>
-+    ssi1: ssi@2028000 {
-+        compatible = "fsl,imx6q-ssi",
-+                     "fsl,imx51-ssi";
-+        reg = <0x02028000 0x4000>;
-+        interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&clks IMX6QDL_CLK_SSI1_IPG>,
-+                 <&clks IMX6QDL_CLK_SSI1>;
-+        clock-names = "ipg", "baud";
-+        dmas = <&sdma 37 1 0>, <&sdma 38 1 0>;
-+        dma-names = "rx", "tx";
-+        #sound-dai-cells = <0>;
-+        fsl,fifo-depth = <15>;
-+    };
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index a902680b6537..92dfbc8ee4e7 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -247,6 +247,7 @@ config X86
+ 	select HAVE_FUNCTION_ERROR_INJECTION
+ 	select HAVE_KRETPROBES
+ 	select HAVE_RETHOOK
++	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !CONFIG_UNWINDER_ORC && !CONFIG_MITIGATION_RETPOLINE
+ 	select HAVE_LIVEPATCH			if X86_64
+ 	select HAVE_MIXED_BREAKPOINTS_REGS
+ 	select HAVE_MOD_ARCH_SPECIFIC
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 3509afc6a672..aeee2b9b6a6a 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -253,7 +253,7 @@ SECTIONS
+ 
+ 	.x86_cpu_dev.init : AT(ADDR(.x86_cpu_dev.init) - LOAD_OFFSET) {
+ 		__x86_cpu_dev_start = .;
+-		*(.x86_cpu_dev.init)
++		KEEP(*(.x86_cpu_dev.init))
+ 		__x86_cpu_dev_end = .;
+ 	}
+ 
+@@ -261,7 +261,7 @@ SECTIONS
+ 	.x86_intel_mid_dev.init : AT(ADDR(.x86_intel_mid_dev.init) - \
+ 								LOAD_OFFSET) {
+ 		__x86_intel_mid_dev_start = .;
+-		*(.x86_intel_mid_dev.init)
++		KEEP(*(.x86_intel_mid_dev.init))
+ 		__x86_intel_mid_dev_end = .;
+ 	}
+ #endif
+@@ -275,21 +275,21 @@ SECTIONS
+ 	. = ALIGN(8);
+ 	.retpoline_sites : AT(ADDR(.retpoline_sites) - LOAD_OFFSET) {
+ 		__retpoline_sites = .;
+-		*(.retpoline_sites)
++		KEEP(*(.retpoline_sites))
+ 		__retpoline_sites_end = .;
+ 	}
+ 
+ 	. = ALIGN(8);
+ 	.return_sites : AT(ADDR(.return_sites) - LOAD_OFFSET) {
+ 		__return_sites = .;
+-		*(.return_sites)
++		KEEP(*(.return_sites))
+ 		__return_sites_end = .;
+ 	}
+ 
+ 	. = ALIGN(8);
+ 	.call_sites : AT(ADDR(.call_sites) - LOAD_OFFSET) {
+ 		__call_sites = .;
+-		*(.call_sites)
++		KEEP(*(.call_sites))
+ 		__call_sites_end = .;
+ 	}
+ #endif
+@@ -298,7 +298,7 @@ SECTIONS
+ 	. = ALIGN(8);
+ 	.ibt_endbr_seal : AT(ADDR(.ibt_endbr_seal) - LOAD_OFFSET) {
+ 		__ibt_endbr_seal = .;
+-		*(.ibt_endbr_seal)
++		KEEP(*(.ibt_endbr_seal))
+ 		__ibt_endbr_seal_end = .;
+ 	}
+ #endif
+@@ -307,7 +307,7 @@ SECTIONS
+ 	. = ALIGN(8);
+ 	.cfi_sites : AT(ADDR(.cfi_sites) - LOAD_OFFSET) {
+ 		__cfi_sites = .;
+-		*(.cfi_sites)
++		KEEP(*(.cfi_sites))
+ 		__cfi_sites_end = .;
+ 	}
+ #endif
+@@ -320,7 +320,7 @@ SECTIONS
+ 	. = ALIGN(8);
+ 	.altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
+ 		__alt_instructions = .;
+-		*(.altinstructions)
++		KEEP(*(.altinstructions))
+ 		__alt_instructions_end = .;
+ 	}
+ 
+@@ -330,13 +330,13 @@ SECTIONS
+ 	 * get the address and the length of them to patch the kernel safely.
+ 	 */
+ 	.altinstr_replacement : AT(ADDR(.altinstr_replacement) - LOAD_OFFSET) {
+-		*(.altinstr_replacement)
++		KEEP(*(.altinstr_replacement))
+ 	}
+ 
+ 	. = ALIGN(8);
+ 	.apicdrivers : AT(ADDR(.apicdrivers) - LOAD_OFFSET) {
+ 		__apicdrivers = .;
+-		*(.apicdrivers);
++		KEEP(*(.apicdrivers));
+ 		__apicdrivers_end = .;
+ 	}
+ 
+@@ -406,7 +406,7 @@ SECTIONS
+ 	.brk : AT(ADDR(.brk) - LOAD_OFFSET) {
+ 		__brk_base = .;
+ 		. += 64 * 1024;		/* 64k alignment slop space */
+-		*(.bss..brk)		/* areas brk users have reserved */
++		KEEP(*(.bss..brk))	/* areas brk users have reserved */
+ 		__brk_limit = .;
+ 	}
+ 
+@@ -432,7 +432,7 @@ SECTIONS
+ 	. = ALIGN(HPAGE_SIZE);
+ 	.init.scratch : AT(ADDR(.init.scratch) - LOAD_OFFSET) {
+ 		__init_scratch_begin = .;
+-		*(.init.scratch)
++		KEEP(*(.init.scratch))
+ 		. = ALIGN(HPAGE_SIZE);
+ 		__init_scratch_end = .;
+ 	}
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 7862a8101747..7287b5a9f17d 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -60,7 +60,7 @@ vmlinux_link()
+ 	# skip output file argument
+ 	shift
+ 
+-	if is_enabled CONFIG_LTO_CLANG || is_enabled CONFIG_X86_KERNEL_IBT; then
++	if [ is_enabled CONFIG_LTO_CLANG || is_enabled CONFIG_X86_KERNEL_IBT ] && [ ! is_enabled CONFIG_LD_DEAD_CODE_DATA_ELIMINATION ]; then
+ 		# Use vmlinux.o instead of performing the slow LTO link again.
+ 		objs=vmlinux.o
+ 		libs=
 -- 
 2.34.1
 
