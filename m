@@ -1,63 +1,56 @@
-Return-Path: <linux-kernel+bounces-154328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F2518ADAC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:21:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13EF08ADACC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:21:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0207828279C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:21:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F7441C214AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A861C0DE2;
-	Mon, 22 Apr 2024 23:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34AC81C2304;
+	Mon, 22 Apr 2024 23:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fxv5pDOm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fRiEFvho"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDB41C0DCE;
-	Mon, 22 Apr 2024 23:58:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 709EC5B02B;
+	Mon, 22 Apr 2024 23:59:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830335; cv=none; b=n3nK72hsG4swTg4yoA0t4GI/GQkhBu8RsvaWC8EmHuX3LXNtaVgACLFW7NmKcLJlHLnVl+EnpUIQk6rDfbbiQm3wCQLATf7DggaVGKDYYnSdm9ZEU2JXpooX7C6mKZhC/l5AbHVx1Vfg1m1CX1h0WFgO5+9OfPtQb/vavOg0K94=
+	t=1713830343; cv=none; b=FTSUu1mIgs999EcFTfmCwc3yjvXYOkYV+SHf5MZgkJFSJnlUKThpghp6tnYgOGy54uhwKYSgSPO7rn9izKdvX+uBh/C/BU4cQkW35C51b2XYf+YYSgNPK7wBy71xuyMUwKXra+ahU53r/tGQj5TXJpbe0FDO7YypbvG6bmiUURY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830335; c=relaxed/simple;
-	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j9EI77hmcYIqU7dl+6T8au6QO241Kaa+e7dLoXUsURM1mVeXlyHO1miaS8d//U8/Z1bppNeUkdyqrL9UWkGp9Rxjw1StmA4fr5bgVOmIdpqK80c23tG4kDTo4lpG6HFdhD+TKNCRZtaWM7sWEMPdu9u8Cp6qqsIxsiqlfPadJis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fxv5pDOm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53CA5C32782;
-	Mon, 22 Apr 2024 23:58:53 +0000 (UTC)
+	s=arc-20240116; t=1713830343; c=relaxed/simple;
+	bh=7q8Ndj+GfxSNX+6VPpYacCTj/lL9PLmiAcPrgQu6LK0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bpLqj6AmtMg1mPLO0UH+MjGL7yqZjwl5yC601Qj0MUekuRP9HoNDiC54TKLRAfEIfmXmZbdC6+2dy8wD+bcy0BIhObH8CupFekap281Og7jmtXe35CLGts3GwVTuxH4GJvTyFuirN1Ub/ZiyFQaPsfiHHwsSmlERJm3v/UuydwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fRiEFvho; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 298F1C113CC;
+	Mon, 22 Apr 2024 23:59:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830334;
-	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fxv5pDOmuuNRXWS0h2WilA+Xzp3xZ4sS6lVOp4B2IaXMJ/tOyRxUpkUcoRPQSKVug
-	 kSLcLJM8AiI6C/v9I48T+W+KabrCezdyW6nBRs7ljti0+EywJ+M4z7NL9fgIuGl/pr
-	 4S8n3mS97Wi80OD1tTSxg/A9K06akqCzppRYalZz0CszX/zaySX4qDplXkvsigV7AD
-	 AbyRTyyBc15ea7Le4UHTM/m5EpNpkEsVS7zUaWQ+FPO2QPXGIpRC4MhlNvGRjhWpZj
-	 Jf9JMb6mgalcwc0EaRqWsTDbohY2qGqYUhBSUfWIjzGRrYEYqWZR9wOPrZq97peqEU
-	 UzODJfvj/+m9g==
+	s=k20201202; t=1713830343;
+	bh=7q8Ndj+GfxSNX+6VPpYacCTj/lL9PLmiAcPrgQu6LK0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fRiEFvho8JdRl7eymK3mXamVh6vR9i9jNHd8fnSuWAHe6+gs2Vm7RNW3VcK77mrOG
+	 CxMsHtjtDDocqVImrBbzONIPmInj5T41+F9r7tvZCEgZy8QeNYO57+elc1aBkt55px
+	 Ikoc6j1xc5dp85hE5TCVudJ1VEAKn/nTxoHMkuoF69w/z0MU/wsn7kkK/yahGCsiaJ
+	 aaCH2GCS7YJAQkgA938Az3S7Qz+yRR7Uwz1sxVEZSiHHZug7TGk7MAEC0LxQDm2Clo
+	 jWWQAlKVZJOhb2wA4pDArHvoloUoF0/lSXEjq6yamqDSQD4P24pWWLrnCpbQB6ALue
+	 NdoV63/KDXurg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: John Stultz <jstultz@google.com>,
-	Lee Jones <joneslee@google.com>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
+Cc: Doug Smythies <dsmythies@telus.net>,
+	Len Brown <len.brown@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	shuah@kernel.org,
-	nathan@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.10 9/9] selftests: timers: Fix valid-adjtimex signed left-shift undefined behavior
-Date: Mon, 22 Apr 2024 19:19:50 -0400
-Message-ID: <20240422231955.1613650-9-sashal@kernel.org>
+	lenb@kernel.org,
+	linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 1/9] tools/power turbostat: Fix added raw MSR output
+Date: Mon, 22 Apr 2024 19:20:06 -0400
+Message-ID: <20240422232020.1615476-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240422231955.1613650-1-sashal@kernel.org>
-References: <20240422231955.1613650-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,139 +59,88 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.215
+X-stable-base: Linux 5.4.274
 Content-Transfer-Encoding: 8bit
 
-From: John Stultz <jstultz@google.com>
+From: Doug Smythies <dsmythies@telus.net>
 
-[ Upstream commit 076361362122a6d8a4c45f172ced5576b2d4a50d ]
+[ Upstream commit e5f4e68eed85fa8495d78cd966eecc2b27bb9e53 ]
 
-The struct adjtimex freq field takes a signed value who's units are in
-shifted (<<16) parts-per-million.
+When using --Summary mode, added MSRs in raw mode always
+print zeros. Print the actual register contents.
 
-Unfortunately for negative adjustments, the straightforward use of:
+Example, with patch:
 
-  freq = ppm << 16 trips undefined behavior warnings with clang:
+note the added column:
+--add msr0x64f,u32,package,raw,REASON
 
-valid-adjtimex.c:66:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
-        -499<<16,
-        ~~~~^
-valid-adjtimex.c:67:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
-        -450<<16,
-        ~~~~^
-.
+Where:
 
-Fix it by using a multiply by (1 << 16) instead of shifting negative values
-in the valid-adjtimex test case. Align the values for better readability.
+0x64F is MSR_CORE_PERF_LIMIT_REASONS
 
-Reported-by: Lee Jones <joneslee@google.com>
-Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Signed-off-by: John Stultz <jstultz@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Link: https://lore.kernel.org/r/20240409202222.2830476-1-jstultz@google.com
-Link: https://lore.kernel.org/lkml/0c6d4f0d-2064-4444-986b-1d1ed782135f@collabora.com/
+Busy%   Bzy_MHz PkgTmp  PkgWatt CorWatt     REASON
+0.00    4800    35      1.42    0.76    0x00000000
+0.00    4801    34      1.42    0.76    0x00000000
+80.08   4531    66      108.17  107.52  0x08000000
+98.69   4530    66      133.21  132.54  0x08000000
+99.28   4505    66      128.26  127.60  0x0c000400
+99.65   4486    68      124.91  124.25  0x0c000400
+99.63   4483    68      124.90  124.25  0x0c000400
+79.34   4481    41      99.80   99.13   0x0c000000
+0.00    4801    41      1.40    0.73    0x0c000000
+
+Where, for the test processor (i5-10600K):
+
+PKG Limit #1: 125.000 Watts, 8.000000 sec
+MSR bit 26 = log; bit 10 = status
+
+PKG Limit #2: 136.000 Watts, 0.002441 sec
+MSR bit 27 = log; bit 11 = status
+
+Example, without patch:
+
+Busy%   Bzy_MHz PkgTmp  PkgWatt CorWatt     REASON
+0.01    4800    35      1.43    0.77    0x00000000
+0.00    4801    35      1.39    0.73    0x00000000
+83.49   4531    66      112.71  112.06  0x00000000
+98.69   4530    68      133.35  132.69  0x00000000
+99.31   4500    67      127.96  127.30  0x00000000
+99.63   4483    69      124.91  124.25  0x00000000
+99.61   4481    69      124.90  124.25  0x00000000
+99.61   4481    71      124.92  124.25  0x00000000
+59.35   4479    42      75.03   74.37   0x00000000
+0.00    4800    42      1.39    0.73    0x00000000
+0.00    4801    42      1.42    0.76    0x00000000
+
+c000000
+
+[lenb: simplified patch to apply only to package scope]
+
+Signed-off-by: Doug Smythies <dsmythies@telus.net>
+Signed-off-by: Len Brown <len.brown@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../testing/selftests/timers/valid-adjtimex.c | 73 +++++++++----------
- 1 file changed, 36 insertions(+), 37 deletions(-)
+ tools/power/x86/turbostat/turbostat.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/timers/valid-adjtimex.c b/tools/testing/selftests/timers/valid-adjtimex.c
-index 48b9a803235a8..d13ebde203221 100644
---- a/tools/testing/selftests/timers/valid-adjtimex.c
-+++ b/tools/testing/selftests/timers/valid-adjtimex.c
-@@ -21,9 +21,6 @@
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *   GNU General Public License for more details.
-  */
--
--
--
- #include <stdio.h>
- #include <stdlib.h>
- #include <time.h>
-@@ -62,45 +59,47 @@ int clear_time_state(void)
- #define NUM_FREQ_OUTOFRANGE 4
- #define NUM_FREQ_INVALID 2
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index d4235d1ab912c..8a366b1d1dd91 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -1571,9 +1571,10 @@ int sum_counters(struct thread_data *t, struct core_data *c,
+ 	average.packages.rapl_dram_perf_status += p->rapl_dram_perf_status;
  
-+#define SHIFTED_PPM (1 << 16)
-+
- long valid_freq[NUM_FREQ_VALID] = {
--	-499<<16,
--	-450<<16,
--	-400<<16,
--	-350<<16,
--	-300<<16,
--	-250<<16,
--	-200<<16,
--	-150<<16,
--	-100<<16,
--	-75<<16,
--	-50<<16,
--	-25<<16,
--	-10<<16,
--	-5<<16,
--	-1<<16,
-+	 -499 * SHIFTED_PPM,
-+	 -450 * SHIFTED_PPM,
-+	 -400 * SHIFTED_PPM,
-+	 -350 * SHIFTED_PPM,
-+	 -300 * SHIFTED_PPM,
-+	 -250 * SHIFTED_PPM,
-+	 -200 * SHIFTED_PPM,
-+	 -150 * SHIFTED_PPM,
-+	 -100 * SHIFTED_PPM,
-+	  -75 * SHIFTED_PPM,
-+	  -50 * SHIFTED_PPM,
-+	  -25 * SHIFTED_PPM,
-+	  -10 * SHIFTED_PPM,
-+	   -5 * SHIFTED_PPM,
-+	   -1 * SHIFTED_PPM,
- 	-1000,
--	1<<16,
--	5<<16,
--	10<<16,
--	25<<16,
--	50<<16,
--	75<<16,
--	100<<16,
--	150<<16,
--	200<<16,
--	250<<16,
--	300<<16,
--	350<<16,
--	400<<16,
--	450<<16,
--	499<<16,
-+	    1 * SHIFTED_PPM,
-+	    5 * SHIFTED_PPM,
-+	   10 * SHIFTED_PPM,
-+	   25 * SHIFTED_PPM,
-+	   50 * SHIFTED_PPM,
-+	   75 * SHIFTED_PPM,
-+	  100 * SHIFTED_PPM,
-+	  150 * SHIFTED_PPM,
-+	  200 * SHIFTED_PPM,
-+	  250 * SHIFTED_PPM,
-+	  300 * SHIFTED_PPM,
-+	  350 * SHIFTED_PPM,
-+	  400 * SHIFTED_PPM,
-+	  450 * SHIFTED_PPM,
-+	  499 * SHIFTED_PPM,
- };
- 
- long outofrange_freq[NUM_FREQ_OUTOFRANGE] = {
--	-1000<<16,
--	-550<<16,
--	550<<16,
--	1000<<16,
-+	-1000 * SHIFTED_PPM,
-+	 -550 * SHIFTED_PPM,
-+	  550 * SHIFTED_PPM,
-+	 1000 * SHIFTED_PPM,
- };
- 
- #define LONG_MAX (~0UL>>1)
+ 	for (i = 0, mp = sys.pp; mp; i++, mp = mp->next) {
+-		if (mp->format == FORMAT_RAW)
+-			continue;
+-		average.packages.counter[i] += p->counter[i];
++		if ((mp->format == FORMAT_RAW) && (topo.num_packages == 0))
++			average.packages.counter[i] = p->counter[i];
++		else
++			average.packages.counter[i] += p->counter[i];
+ 	}
+ 	return 0;
+ }
 -- 
 2.43.0
 
