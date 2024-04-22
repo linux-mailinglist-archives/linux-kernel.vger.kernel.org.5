@@ -1,111 +1,173 @@
-Return-Path: <linux-kernel+bounces-153579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 870648ACFE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:49:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EC448ACFE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:49:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 208FB1F219EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:49:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B5B2843A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB25152185;
-	Mon, 22 Apr 2024 14:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22AEF15217B;
+	Mon, 22 Apr 2024 14:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aZzmHV9k"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="LIT12U2Z"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907952AD2D;
-	Mon, 22 Apr 2024 14:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009B8152169
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 14:49:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713797337; cv=none; b=Z/a4fvIlbEf1msh/IdiBf+Zq6Kh+DgZ0In3eFs0v4CVlImwUUKWxkDnHem9qMOaI/drKdGqrp9kyjohEAXHAwDsFn2jkrTf5LLhFIPrbVzgM4xdjYry8lxqgIRTXz96tXiB/ZxoLDYPEyR7jerrk3q22t2Nv92BKLET1G5bOm6w=
+	t=1713797369; cv=none; b=mQ6o00S+JAlhzncj156sTk/c/N8EkQ4xo/9n719T11TEumrukHuOB4fW5u+grds6RRMQ/Nl+HIltexo/b+Odt0O1GKAuGes9CuVN2eTQl4gTx14vKjsHsgqMGS9jDsCWbjBJmru+ROqvJcrXScs1VXbh30qbp+mASBIf7tDA0C8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713797337; c=relaxed/simple;
-	bh=W0/vq9qtcjPxo0uoUtv2gjN3ISjDFylw8KGlut7SjSk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RuhBMSqA/Gk2J69B9LLOmZlQdPnwyWM1EhYK8P6u6tiKhZdcwLLG24jIMWqtV5MfIb9pbVhgGjnQ9tBftxSjwxFpaqIfJWrYp1ZRNCCyp+0pCIq8jQM70MiEx576JBGiFyy6pbZG7f6H3gT4tNHs8oSHIoI8TXZFHhfWwgc+pdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aZzmHV9k; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713797335; x=1745333335;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=W0/vq9qtcjPxo0uoUtv2gjN3ISjDFylw8KGlut7SjSk=;
-  b=aZzmHV9kxLu5vHFHDOyXiNezsghCmKsQX/8EIY5EcAxZdZUMy+Sz/Spg
-   J3CpbAe6iBAMRFtyHPD7yMbcqLj36Jc8LVHu33gnh9cJYDXLj1mk5fGPP
-   GJPEb9AeDKISmZ7LiKczkigNJ+jj6CJ7gxNENN/yJqYxa+cuSDjM5YaEb
-   fHHp26de0Qc9yLyI53472iE8WjXOIRhaWXb+hqNz3BpVd5i0jILmwCNw3
-   DPQn74HXY4nUT4I78kMNT54yUpveoVIH6Q77DSKfYHqi2Wu83BPsIbsAU
-   MKo3R+gEt7N7oB2rR+SOpDkV30evSXfaPv602mlVybeX7If7xNfI1stYI
-   w==;
-X-CSE-ConnectionGUID: qS1EeBZJTG2WpJj/eo0Mww==
-X-CSE-MsgGUID: QZ8k6x8QSdqqt0CJa+OHzw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="20742235"
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="20742235"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 07:48:54 -0700
-X-CSE-ConnectionGUID: h3EvbzcyQ06Kp8+pDHllhQ==
-X-CSE-MsgGUID: +jk++k7NT+6OdTTXG75tMA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="24493084"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa006.jf.intel.com with ESMTP; 22 Apr 2024 07:48:53 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id BCF33FD; Mon, 22 Apr 2024 17:48:51 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: William Breathitt Gray <william.gray@linaro.org>,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: William Breathitt Gray <wbg@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] counter: Don't use "proxy" headers
-Date: Mon, 22 Apr 2024 17:48:50 +0300
-Message-ID: <20240422144850.2031076-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+	s=arc-20240116; t=1713797369; c=relaxed/simple;
+	bh=ANj2lwCdF1e5x2y4t0N/qQl7GamrLnoXCuiQ6qmUnRY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LgTf6fI6m7Z34Nq1ai/C+dPmdqm0pGejRG3394z7Y8RtGpgnB0H441iyv8BmAulMr9eIKxu7A5EyqwxbbqaTlbK94RAGNKuflHM96vefESJ11VfdGU93BQLH9bncJjieC6LNRcJuHi8pTt/VgWMWTUs4KrgjjLp9Xiz4AaZpk5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=LIT12U2Z; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713797365;
+	bh=ANj2lwCdF1e5x2y4t0N/qQl7GamrLnoXCuiQ6qmUnRY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LIT12U2Zq14xHhLBBEFLI3q7TtVSuT5LClXc3jRoXLYcGysNofNq+4bVb7DGFVdW5
+	 gmkl/GC4N8wLiF7FZam1KRR2JU5Xdgq22S0DN26y+yqLI0BSlli+QJLAaUTpBYwPlX
+	 Od0bl5TEOTS5ssCX7zEZ34xMuqqeRSlj3wWXDx9ny7zjCTAXxi+dWX40ZyY7X/1iVW
+	 DHiWjAqvavUKVCKNgJAPHm2rA7+zgpTv/7FC2t+2y1t/Shho2at5p3wyl71gKFDXT2
+	 /4vRYPTecym8dYkA/ICimmg0B2LduSRBnqVBP6PYTTH1MgudjyOQLhvtyi7Zcf6oEl
+	 UOt2zg26FYf0g==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8888E3782123;
+	Mon, 22 Apr 2024 14:49:24 +0000 (UTC)
+Date: Mon, 22 Apr 2024 17:49:22 +0300
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
+ <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ rdunlap@infradead.org, arthurgrillo@riseup.net, Jonathan Corbet
+ <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
+ miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
+ seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
+Subject: Re: [PATCH v6 13/17] drm/vkms: Add range and encoding properties to
+ the plane
+Message-ID: <20240422174922.6bac5683.pekka.paalanen@collabora.com>
+In-Reply-To: <20240409-yuv-v6-13-de1c5728fd70@bootlin.com>
+References: <20240409-yuv-v6-0-de1c5728fd70@bootlin.com>
+	<20240409-yuv-v6-13-de1c5728fd70@bootlin.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/4k48lEW_QdEbCmFp+XKPuuC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Update header inclusions to follow IWYU (Include What You Use)
-principle.
+--Sig_/4k48lEW_QdEbCmFp+XKPuuC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/counter.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Tue, 09 Apr 2024 15:25:31 +0200
+Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 
-diff --git a/include/linux/counter.h b/include/linux/counter.h
-index cd35d8574ee2..426b7d58a438 100644
---- a/include/linux/counter.h
-+++ b/include/linux/counter.h
-@@ -6,14 +6,15 @@
- #ifndef _COUNTER_H_
- #define _COUNTER_H_
- 
-+#include <linux/array_size.h>
- #include <linux/cdev.h>
- #include <linux/device.h>
--#include <linux/kernel.h>
- #include <linux/kfifo.h>
- #include <linux/mutex.h>
- #include <linux/spinlock_types.h>
- #include <linux/types.h>
- #include <linux/wait.h>
-+
- #include <uapi/linux/counter.h>
- 
- struct counter_device;
--- 
-2.43.0.rc1.1336.g36b5255a03ac
+> From: Arthur Grillo <arthurgrillo@riseup.net>
+>=20
+> Now that the driver internally handles these quantization ranges and YUV
+> encoding matrices, expose the UAPI for setting them.
+>=20
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> [Louis Chauvet: retained only relevant parts, updated the commit message]
+> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> ---
+>  drivers/gpu/drm/vkms/vkms_formats.c | 2 +-
+>  drivers/gpu/drm/vkms/vkms_plane.c   | 9 +++++++++
+>  2 files changed, 10 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
+kms_formats.c
+> index 2d7445a3de93..a294744d29d6 100644
+> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+> @@ -238,7 +238,7 @@ static struct pixel_argb_u16 argb_u16_from_RGB565(con=
+st u16 *pixel)
+>  static struct pixel_argb_u16 argb_u16_from_yuv888(u8 y, u8 channel_1, u8=
+ channel_2,
+>  						  const struct conversion_matrix *matrix)
+>  {
+> -	u8 r, g, b;
+> +	u16 r, g, b;
+>  	s64 fp_y, fp_channel_1, fp_channel_2;
+>  	s64 fp_r, fp_g, fp_b;
 
+This part belongs in the previous patch.
+
+Otherwise,
+
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+
+
+Thanks,
+pq
+
+> =20
+> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkm=
+s_plane.c
+> index d4e375913122..8f764a108b00 100644
+> --- a/drivers/gpu/drm/vkms/vkms_plane.c
+> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
+> @@ -218,5 +218,14 @@ struct vkms_plane *vkms_plane_init(struct vkms_devic=
+e *vkmsdev,
+>  	drm_plane_create_rotation_property(&plane->base, DRM_MODE_ROTATE_0,
+>  					   DRM_MODE_ROTATE_MASK | DRM_MODE_REFLECT_MASK);
+> =20
+> +	drm_plane_create_color_properties(&plane->base,
+> +					  BIT(DRM_COLOR_YCBCR_BT601) |
+> +					  BIT(DRM_COLOR_YCBCR_BT709) |
+> +					  BIT(DRM_COLOR_YCBCR_BT2020),
+> +					  BIT(DRM_COLOR_YCBCR_LIMITED_RANGE) |
+> +					  BIT(DRM_COLOR_YCBCR_FULL_RANGE),
+> +					  DRM_COLOR_YCBCR_BT601,
+> +					  DRM_COLOR_YCBCR_FULL_RANGE);
+> +
+>  	return plane;
+>  }
+>=20
+
+
+--Sig_/4k48lEW_QdEbCmFp+XKPuuC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYmePMACgkQI1/ltBGq
+qqePdxAAl9TTUVJlL6mpTRB9D+p6M0JTBNIqCo7ZbrR/n8GcWTvxguqpClJgxXIy
+AXd/N5WYaKqf0Rrs5JefeD8inQ2yFWIv5lwjw4Kph0QzsBstnUGrSoONLG9aLQNq
+SxUyE24TFz1jRH6H7Frthvv/8QebFoyaAMP9YBFDC6R7/8DJIoEAJPAoe/0F3oQw
+Z5Lje7gyIaNNHDUjHxmJMCp3eSnW3N6nzA9hc0lynnkj3YdP3pjFYLkujGJ7kKPU
+LOsxer8hzVOMu+5BkBIfHnqrHB/a3klSA0ar77ylJ+I4aEiFz9q4ESoVIVV2ya1P
+iuvhZN1AVM9owHTrxoLOZBSzo0zuEOS7xoTZKGBH55i++DTm8yE+1fOfKQmjMioM
++NIDmHQNvtF2wV95+T0htxqJ6HnsIE56XqZPSzjmISHzrhLY3Ve2JgMp8uFoO0ZG
+ty9ScqQRHdLDr3g60T4v4nWV3T72WRrile48VQ+lwtg0Tqo68Y0LzKgxbg94DU2D
+rmIDNuSK+AeUySRP8xQ+dIij7NBQ7BqHCx+ZVpnvF+oSI4Pd/+51I9iVKcfkCO4b
+vfezyqJwGERRo4W8nJZ0lH3cyQEzVmBQcsIxQZkfVIo5jqwE+XefAJtVkM3uudWv
+jy7rswGSNevz/hZ55S0mIy/Vs279I65kvCWyP/63oBGzvlLKKDI=
+=db9e
+-----END PGP SIGNATURE-----
+
+--Sig_/4k48lEW_QdEbCmFp+XKPuuC--
 
