@@ -1,177 +1,164 @@
-Return-Path: <linux-kernel+bounces-154042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6948AD680
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:24:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 620128AD681
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:24:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 931641F21E85
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:24:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1663D1F21E69
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE70D1CD2A;
-	Mon, 22 Apr 2024 21:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8D71CD0C;
+	Mon, 22 Apr 2024 21:24:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b5OdWMtw"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gc3VZ3EH"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908AF1CAAE
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 21:23:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34EEB18EA1;
+	Mon, 22 Apr 2024 21:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713821041; cv=none; b=XGJASs2zfvtyK3CJtgLxOMecs5TYiY2PtT/U3f6AQZ2+7iYVoKZLwkuTyNhlm0hJVR9njcz5xpN24halcmV0hPlxRhse2SagRLtMfX+9IvOb+H9sw/ot+p6ojzwjscPeJ9r3jEzZLzszd76LOauB99DICNZsytJ00job4DVcJ3Q=
+	t=1713821081; cv=none; b=nQGtMBwfJje025ZdIwuHA3Gbj71zGfOMpXqcwvLLg7G7+kS0ynUjSxiOH2OSYL07l0/IkSHPgZH6bxmTs/TAhoZGV7bFf3IGL8hnU6goquTPDxqLhYlIk0owoTrmmhwpJ3im3WwyvSvU3QtawOAkEH3dG7lUCP/MpPj8i8SDM/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713821041; c=relaxed/simple;
-	bh=IKLpE47qOBMBz0cAqZg5lsOAv2Lseafvdp0sCBMbxdA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=U7oy/XgqaacpxWRoXut3Pmc47C1lyrwg+Oku+YZ+CgbnYI6PlZn0Cyu3YHNn+0plSW+gYKF41vuJJx10lIWWciKl+TWne3w5uH6V9w2kiHAiDhk804RysVOzatbroAg9josT34jEuh4klKV+FB+jQCr1TSKh6T+h2VBjb4Juvqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b5OdWMtw; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61afa79081dso85249847b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 14:23:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713821038; x=1714425838; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5uVx/t9/onkYc8i256VPb5hdTG5OQAkMTur1j7RQo/Y=;
-        b=b5OdWMtwdKVXMDE2I4Du0g5UBvi8jdS4PAmeDFdpmP3tG/guCHTvf6iDFJupZOkTDO
-         QHvEjBvnB+h4Gr9VTSigi95/oUF8GjwLXTU4/S706eb+iqur5g0Cnbwuj8csiOkVyLvt
-         ukHsJFBYl2hO4HrJBGoT0O7eKNZgfmeq80ECMyqSgmil9uKqV9IIt3yVCA33hcOeT8Ud
-         eJ6C7sxiLnVaR/QZLupHaMBO2dLpcirDxDT/S6M+SWuXkUmKkTuWsS2H8PRrM6bubp3Y
-         XL2eK1Ynib5vKpg/b6JUIjBeop0i6i0CgUqMgAJ4u9i8SPn8RMyD7R84zoZTBmTt5jAl
-         /ENA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713821038; x=1714425838;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5uVx/t9/onkYc8i256VPb5hdTG5OQAkMTur1j7RQo/Y=;
-        b=NfHMnc53o6W/xgHRa0MRb9Gllixjnvmxdi8/evTyi2l8C2CSqJoyjfeAPQni5pTd/Z
-         xRkcG64h9g1TOop0e3wKYX0MRUQuX27CTjnYkvCJUJ21eznA6vPa1X0mwv/A91MnTb73
-         tIreB8oXz1AZCyeP2DdB1Rzcfi5e2wJJueUTh/47BbEkmpEGAS0ZJAwQDfxHwWmNrTxn
-         koeedVG2dp9NOpR1aiLM6yX8yl9Tuv8zP1OxLS9XQwFVNKXgJSF8ZkoggEjgYrXNZCyr
-         EVSNEYwqqplF3c2F9ss9zmRcVXa9Y5xEu2WzdycYntFxZ+x/j5YeEsteA8V/rz6Akpv+
-         /Pgw==
-X-Forwarded-Encrypted: i=1; AJvYcCUhyfNWiYY1YnEjCvoJgyU41Yoip97XpWbrpeXwQUwMsv6ZPV6jnEKm6ZMWbHzNNT/ySG5OTe2/loYlYwrPUiTLdPpgsrqHoWatcRGK
-X-Gm-Message-State: AOJu0YxtjNiuzoga5d/XKkzQssE2BkmDXaHFx1tP5rzVEFaGqLP5Z0eZ
-	kY6klWKcbSm7eaa7qnKOLCip28WqsecZttwI7NHS9OJFVZKQ0UEeyOsOSjVf1dhvhlTKsg1Jps3
-	J8A==
-X-Google-Smtp-Source: AGHT+IFB76IZsBj/WkAnr4URUhjuMUZMHRKzmaQ2M773fcwMt+w+XUH9UmMi/TJMMkVL4AKbrxpXlaHYu+U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:13:b0:61b:3a8:3360 with SMTP id
- bc19-20020a05690c001300b0061b03a83360mr2745903ywb.1.1713821038654; Mon, 22
- Apr 2024 14:23:58 -0700 (PDT)
-Date: Mon, 22 Apr 2024 14:23:57 -0700
-In-Reply-To: <ZiBP/j6Ic7hGrbxN@yzhao56-desk.sh.intel.com>
+	s=arc-20240116; t=1713821081; c=relaxed/simple;
+	bh=KeQhQEZ8pRcakTBQ9PKDBftDt52xxSsucNhl6xG9XeA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=S5AQUTFnRs6wC5HPKEhOHSd+se99J1SianRBhX0Z52VbBLCnJvp58hQsAoFjDNM4fRJKgqXqkQgu4cX1327yxlOh9lwOz9p+MQ9vR4NPzSD1rsRxXhcgW7Vir09HgFyADhLM0bzPTsojocveDbu6sJZIl9IG0GCSpyQ68Zbk7XU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gc3VZ3EH; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713821080; x=1745357080;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=KeQhQEZ8pRcakTBQ9PKDBftDt52xxSsucNhl6xG9XeA=;
+  b=gc3VZ3EHil+uqRi111FQRIHbchAgKAkUTtdUrQ8w7vo2fwdnRvYAbrvt
+   vOD+cbP1bYa7W/WonbHxmvXrpizdb/WGT9o5ESN8OsP/CAYIoWzQ0eRY5
+   9QYub9CbGy2NjOvAfCUMzL3Nr5sHYfdV1+6Gp84BxHVsktVAGOtYBRjwp
+   Q8HY4rf8dr2g/8M0HRNlVNGnfTehaDrrfaRkiZ9mQxCiDfKhMFhxjwiiT
+   P4btRI77ic95a8cE7oqVbKQ1n4zRxrSQjk89Xva9DIMSbNAeq1bnSIAOg
+   SKGBrCbCZddiHnF5K98XQUHZr4Y7HL/JaOkr5sXUBAw7lwTw0fayfw1kn
+   w==;
+X-CSE-ConnectionGUID: 4wS88JDaS/Kf2/VEkscUCQ==
+X-CSE-MsgGUID: Y3Wfka8TQbKC6zLHtFyRFg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9491469"
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="9491469"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 14:24:39 -0700
+X-CSE-ConnectionGUID: wTTDihldRN6BR80zwReOvg==
+X-CSE-MsgGUID: fSmU2ufDRNW71eOumkykEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="24764444"
+Received: from leozhang-mobl.amr.corp.intel.com (HELO [10.212.37.174]) ([10.212.37.174])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 14:24:37 -0700
+Message-ID: <eaa0c99a-3b41-4444-906c-d2f005d326b9@linux.intel.com>
+Date: Mon, 22 Apr 2024 16:24:36 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ZhkhvtijbhxKKAEk@yzhao56-desk.sh.intel.com> <diqzr0f7jbj6.fsf@ctop-sg.c.googlers.com>
- <Zhz8xNpQoi0wCQgL@yzhao56-desk.sh.intel.com> <Zh7Iay40VQgNvsFW@google.com> <ZiBP/j6Ic7hGrbxN@yzhao56-desk.sh.intel.com>
-Message-ID: <ZibVbYawGJFcJqd1@google.com>
-Subject: Re: [RFC PATCH v5 09/29] KVM: selftests: TDX: Add report_fatal_error test
-From: Sean Christopherson <seanjc@google.com>
-To: Yan Zhao <yan.y.zhao@intel.com>
-Cc: Ackerley Tng <ackerleytng@google.com>, sagis@google.com, 
-	linux-kselftest@vger.kernel.org, afranji@google.com, erdemaktas@google.com, 
-	isaku.yamahata@intel.com, pbonzini@redhat.com, shuah@kernel.org, 
-	pgonda@google.com, haibo1.xu@intel.com, chao.p.peng@linux.intel.com, 
-	vannapurve@google.com, runanwang@google.com, vipinsh@google.com, 
-	jmattson@google.com, dmatlack@google.com, linux-kernel@vger.kernel.org, 
-	kvm@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/14] ASoC: Constify local snd_sof_dsp_ops
+To: Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
+ <89f8f0be-2534-46c8-9058-cabea4f68568@linux.intel.com>
+ <9d1eda85-32a0-4e53-86ca-ce3137439bd7@kernel.org>
+ <d046d195-6fa3-4c52-bc5f-3e5e763bc692@linux.intel.com>
+ <138ac465-1576-4e86-a05d-63f8acc6fb70@kernel.org>
+ <3acfbe3c-8b83-4c40-83c2-437f963fd25a@linux.intel.com>
+ <7490bce3-3bd6-4beb-b8be-d47a6b0a30f0@kernel.org>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <7490bce3-3bd6-4beb-b8be-d47a6b0a30f0@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 18, 2024, Yan Zhao wrote:
-> On Tue, Apr 16, 2024 at 11:50:19AM -0700, Sean Christopherson wrote:
-> > On Mon, Apr 15, 2024, Yan Zhao wrote:
-> > > On Mon, Apr 15, 2024 at 08:05:49AM +0000, Ackerley Tng wrote:
-> > > > >> The Intel GHCI Spec says in R12, bit 63 is set if the GPA is valid. As a
-> > > > > But above "__LINE__" is obviously not a valid GPA.
-> > > > >
-> > > > > Do you think it's better to check "data_gpa" is with shared bit on and
-> > > > > aligned in 4K before setting bit 63?
-> > > > >
-> > > > 
-> > > > I read "valid" in the spec to mean that the value in R13 "should be
-> > > > considered as useful" or "should be passed on to the host VMM via the
-> > > > TDX module", and not so much as in "validated".
-> > > > 
-> > > > We could validate the data_gpa as you suggested to check alignment and
-> > > > shared bit, but perhaps that could be a higher-level function that calls
-> > > > tdg_vp_vmcall_report_fatal_error()?
-> > > > 
-> > > > If it helps, shall we rename "data_gpa" to "data" for this lower-level,
-> > > > generic helper function and remove these two lines
-> > > > 
-> > > > if (data_gpa)
-> > > > 	error_code |= 0x8000000000000000;
-> > > > 
-> > > > A higher-level function could perhaps do the validation as you suggested
-> > > > and then set bit 63.
-> > > This could be all right. But I'm not sure if it would be a burden for
-> > > higher-level function to set bit 63 which is of GHCI details.
-> > > 
-> > > What about adding another "data_gpa_valid" parameter and then test
-> > > "data_gpa_valid" rather than test "data_gpa" to set bit 63?
-> > 
-> > Who cares what the GHCI says about validity?  The GHCI is a spec for getting
-> > random guests to play nice with random hosts.  Selftests own both, and the goal
-> > of selftests is to test that KVM (and KVM's dependencies) adhere to their relevant
-> > specs.  And more importantly, KVM is NOT inheriting the GHCI ABI verbatim[*].
-> > 
-> > So except for the bits and bobs that *KVM* (or the TDX module) gets involved in,
-> > just ignore the GHCI (or even deliberately abuse it).  To put it differently, use
-> > selftests verify *KVM's* ABI and functionality.
-> > 
-> > As it pertains to this thread, while I haven't looked at any of this in detail,
-> > I'm guessing that whether or not bit 63 is set is a complete "don't care", i.e.
-> > KVM and the TDX Module should pass it through as-is.
-> > 
-> > [*] https://lore.kernel.org/all/Zg18ul8Q4PGQMWam@google.com
-> Ok. It makes sense to KVM_EXIT_TDX.
-> But what if the TDVMCALL is handled in TDX specific code in kernel in future?
-> (not possible?)
 
-KVM will "handle" ReportFatalError, and will do so before this code lands[*], but
-I *highly* doubt KVM will ever do anything but forward the information to userspace,
-e.g. as KVM_SYSTEM_EVENT_CRASH with data[] filled in with the raw register information.  
 
-> Should guest set bits correctly according to GHCI?
+>>> There are multiple reasons and benefits for const, like compiler
+>>> optimization, code readability (meaning) up to security improvements,
+>>> e.g. by some GCC plugins or marking rodata as really non-writeable, so
+>>> closing some ways of exploits. There are many opportunities here, even
+>>> if they are not yet enabled.
+>>
+>> Possibly, but the SOF core does not know if the structure it uses is
+>> rodata or not. Using the 'const' identifier would be misleading.
+> 
+> How so? If core does not modify structure, it should take it via ops,
+> just like 100 other widely known structures (see checkpatch). Why is
+> this different?
 
-No.  Selftests exist first and foremost to verify KVM behavior, not to verify
-firmware behavior.  We can and should use selftests to verify that *KVM* doesn't
-*violate* the GHCI, but that doesn't mean that selftests themselves can't ignore
-and/or abuse the GCHI, especially since the GHCI definition for ReportFatalError
-is frankly awful.
+I don't understand "it should take it via ops"
 
-E.g. the GHCI prescibes actual behavior for R13, but then doesn't say *anything*
-about what's in the data page.  Why!?!?!  If the format in the data page is
-completely undefined, what's the point of restricting R13 to only be allowed to
-hold a GPA?
+We are already fetching the structure with private_data.
 
-And the wording is just as awful:
+>>>> that's a different interpretation to the 'software' view you're
+>>>> describing. "this structure will not modified by this function" is not
+>>>> the same thing as "this structure CANNOT be modified".
+>>>
+>>> Yes, but can we please discuss specific patchset then? Patches which
+>>> change pointers to const have one "interpretation". Patches which modify
+>>> static or global data have another.
+>>
+>> Just look at sound/soc/sof/intel/mtl.c... The core will sometimes use a
+> 
+> That's a driver (or specific implementation), not core.
 
-  The VMM must validate that this GPA has the Shared bit set. In other words,
-  that a shared-mapping is used, and that this is a valid mapping for the TD.
+You are making an assumption on what the SOF core is. The core is used
+by ACPI or PCI drivers as a library. The structures are all allocated in
+ACPI/PCI drivers and passed to the core library.
 
-I'm pretty sure it's just saying that the TDX module isn't going to verify the
-operate, i.e. that the VMM needs to protect itself, but it would be so much
-better to simply state "The TDX Module does not verify this GPA", because saying
-the VMM "must" do something leads to pointless discussions like this one, where
-we're debating over whether or *our* VMM should inject an error into *our* guest.
+>> constant structure and sometimes not, depending on the PCI ID reported
+>> by hardware. This was intentional to override common defaults and make
+>> the differences limited in scope between hardware generations.
+> 
+> 
+>>
+>> int sof_mtl_ops_init(struct snd_sof_dev *sdev)
+>> {
+>> 	struct sof_ipc4_fw_data *ipc4_data;
+>>
+>> 	/* common defaults */
+>> 	memcpy(&sof_mtl_ops, &sof_hda_common_ops, sizeof(struct
+>> snd_sof_dsp_ops)); <<<< THE BASELINE IS CONSTANT
+> 
+> Yes, I saw it and such users are not changed. They won't receive any
+> safety. But all others are getting safer.
 
-Anyways, we should do what makes sense for selftests and ignore the stupidity of
-the GHCI when doing so yields better code.  If that means abusing R13, go for it.
-If it's a sticking point for anyone, just use one of the "optional" registers.
 
-Whatever we do, bury the host and guest side of selftests behind #defines or helpers
-so that there are at most two pieces of code that care which register holds which
-piece of information. 
+Maybe there's a misunderstanding on what the 'SOF core' is. This is just
+a helper library that are used by the PCI drivers. The core has zero
+knowledge on anything really.
 
-[*] https://lore.kernel.org/all/20240404230247.GU2444378@ls.amr.corp.intel.com
+> I really do not understand what is the problem here. In entire Linux all
+> of such changes are welcomed with open arms. So what is different here?
+Adding 'const' at the SOF core level does not mean that we can treat
+structures as rodata. It only means that the structure is not modified
+by the core library. Not the same thing.
+
+
+
 
