@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-153733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E69738AD276
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:43:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14F998AD27A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:43:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E317287819
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:43:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97B8E1F2192A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:43:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C677C155393;
-	Mon, 22 Apr 2024 16:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCD91553B3;
+	Mon, 22 Apr 2024 16:41:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cTKQcXLD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KG3qyRVj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B897A153BE3;
-	Mon, 22 Apr 2024 16:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6238C1553A0;
+	Mon, 22 Apr 2024 16:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713804104; cv=none; b=SKpUVMODrILH9nmAOabsqibj7yGQc83XeKkkWkcqrZRdijfxpQtjTHlX+lk2WUChXjcd1c6yUMmArhA/RaQFMkH+sDVDTWB4aiTTfnGitUOAjO093z0923/Mndt2T9pi6qF7qS9Bp+R5M0STxMqA3mGm49jwXK5dZSLVJFIDPa4=
+	t=1713804107; cv=none; b=CEdZuGycmAI5NPaFvMEVBD7ulspDwuSSMJKP9EMiYSI08+CO2KKsFhh5ZoeTYl5NN+2p34CgSWiPxDQ7l8kO1r5TUkwWSPJSp44+JxgDRHyX2x6qVuTrYR2mQ2WWwzjxr0nYRv9jp9W7ybc4gitUCjxUepSIPfx5G8sgW4J39Yg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713804104; c=relaxed/simple;
-	bh=NqIy7nf1sAoPqh0OTVgs/yJzIPXNWGrpgiGYO8owuME=;
+	s=arc-20240116; t=1713804107; c=relaxed/simple;
+	bh=aLMgorrcW40RVzVvllm4FOYmrHM8scWu8d1COpH26k8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NssyE+mDuLT3/hDdZYPQOffpsmyY63MShljso3pmuKiuwmpdi7Rgvff3Ig4AnSLdnV62xuuMG5tgCQcrULlEY245RYKgnoFeICuzcIsUpZqM81Ns0SW/+WY66htiBwLfDHaqnxMMME4O9r3hO5vWxUpxDQ2vXUYW1J2ydiViDU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cTKQcXLD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63A67C32783;
-	Mon, 22 Apr 2024 16:41:43 +0000 (UTC)
+	 MIME-Version; b=GasQQ4NMdRR4VPShuEbLqf/Yd/DHmbzrHyCUtNuqvqquZxegnn9xU4avUt0+04XVo1xWQz+GBiwX10fzhwy4ZHxA5W5BfBREGQADRUd1uY6QCMxWwfUhii12Nd3Kcjr3b7Fc0t3YKOgDuVNdzDpJpyQstk15nAJyG9Si8OtoOdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KG3qyRVj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BA50C113CC;
+	Mon, 22 Apr 2024 16:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713804104;
-	bh=NqIy7nf1sAoPqh0OTVgs/yJzIPXNWGrpgiGYO8owuME=;
+	s=k20201202; t=1713804106;
+	bh=aLMgorrcW40RVzVvllm4FOYmrHM8scWu8d1COpH26k8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cTKQcXLDQE9J3x8VKak+jgkINdMoxQdlwcCM8/UR+QiTyn3bsdkRvX+pAP6WJhLzh
-	 PkkGVLPJi84dWtvhc3joZOfgVXki0G3/gw2AsAOCqVKyAUrdhIknE8ZkeFc0kN9FiM
-	 weoqon4Q2XHknwDoz+vj6l++x/ozfFw9sbK7WTbqKI4QNoNrchOOSJjlISFMxnXxbn
-	 yHfrqSArW/dz96gakqVjOfrVpl8SbVVWJh7ntuVPkq5EXHz0J+/7rvjgEmzfSHiTGD
-	 q156mdJCRMzjD32aaKmmv3ZclExi2xV4kcSZbfEJHjksmmC4tR4vAA8nur3eFISGXP
-	 6XdIP9th+XZvQ==
+	b=KG3qyRVj1GKua/qaF0dfEBcslZEPH4barypozfh2dYM8abiFcBhi/DoKUncIgpTVV
+	 G1yJ1Xela6CUb5Dcfc4jsBEkEbIxp2i92Cx+3FB9P4NmH+VD/ED6aOJClkUS1y+urF
+	 QG/X5mQSEVYYLcJ/bPytewkm5b0PLBj51IeM2nz7aNhpZnTGWr4YLil8v64MegxKPk
+	 yamWx8eW4sp5+64I66WDVozKvTIMd/MWee/1ASn7pCnUR19XPlT0EoO5D77C6LBxDF
+	 WoUXqCnmNsMV5OaDX14bkMDCod6PbKvZ5AlPWDFpryYzxPXwc3w9/JAY2cxo2MiCDp
+	 urFg1fQdtDhOQ==
 From: Masahiro Yamada <masahiroy@kernel.org>
 To: linux-kbuild@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -47,10 +47,14 @@ Cc: linux-kernel@vger.kernel.org,
 	Rich Felker <dalias@libc.org>,
 	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
 	linux-sh@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v2 1/2] sh: Convert the last use of 'optional' property in Kconfig
-Date: Tue, 23 Apr 2024 01:41:03 +0900
-Message-Id: <20240422164104.2869507-2-masahiroy@kernel.org>
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-doc@vger.kernel.org
+Subject: [PATCH v2 2/2] kconfig: remove 'optional' property support
+Date: Tue, 23 Apr 2024 01:41:04 +0900
+Message-Id: <20240422164104.2869507-3-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240422164104.2869507-1-masahiroy@kernel.org>
 References: <20240422164104.2869507-1-masahiroy@kernel.org>
@@ -65,303 +69,358 @@ Content-Transfer-Encoding: 8bit
 The 'choice' statement is primarily used to exclusively select one
 option, but the 'optional' property allows all entries to be disabled.
 
-This feature is rarely used. In fact, it is only used in arch/sh/Kconfig
-because the equivalent outcome can be achieved by inserting one more
-entry as a place-holder.
+In the following example, both A and B can be disabled simultaneously:
 
-The 'optional' property support will be removed from Kconfig.
+    choice
+            prompt "choose A, B, or nothing"
+            optional
 
-This commit replaces the 'optional' property with a dummy option,
-CMDLINE_FROM_BOOTLOADER, as seen in some other architectures.
+    config A
+            bool "A"
 
-Note:
- The 'default CMDLINE_OVERWRITE' statement does not work as intended
- in combination with 'optional'. If neither CONFIG_CMDLINE_OVERWRITE
- nor CONFIG_CMDLINE_EXTEND is specified in a defconfig file, both of
- them are disabled. This is a bug. To maintain the current behavior,
- I added CONFIG_CMDLINE_FROM_BOOTLOADER=y to those defconfig files.
+    config B
+            bool "B"
+
+    endchoice
+
+You can achieve the equivalent outcome by other means.
+
+A common solution is to add another option to guard the choice block.
+In the following example, you can set ENABLE_A_B_CHOICE=n to disable
+the entire choice block:
+
+    choice
+            prompt "choose A or B"
+            depends on ENABLE_A_B_CHOICE
+
+    config A
+            bool "A"
+
+    config B
+            bool "B"
+
+    endchoice
+
+Another approach is to insert one more entry as a place-holder:
+
+    choice
+            prompt "choose A, B, or disable both"
+
+    config A
+            bool "A"
+
+    config B
+            bool "B"
+
+    config DISABLE_A_AND_B
+            bool "choose this to disable both A and B"
+
+    endchoice
+
+Some real examples are DEBUG_INFO_NONE, INITRAMFS_COMPRESSION_NONE,
+LTO_NONE, etc.
+
+The 'optional' property is even more unnecessary for a tristate choice.
+
+Without the 'optional' property, you can disable A and B; you can set
+'m' in the choice prompt, and disable A and B individually:
+
+    choice
+            prompt "choose one built-in or make them modular"
+
+    config A
+            tristate "A"
+
+    config B
+            tristate "B"
+
+    endchoice
+
+In conclusion, the 'optional' property was unneeded.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
-Changes in v2:
- - Rename CONFIG_CMDLINE_NO_MODIFY to CONFIG_CMDLINE_FROM_BOOTLOADER
- - Capitalize the first work of the subject
+(no changes since v1)
 
- arch/sh/Kconfig                           | 6 +++++-
- arch/sh/configs/apsh4a3a_defconfig        | 1 +
- arch/sh/configs/apsh4ad0a_defconfig       | 1 +
- arch/sh/configs/edosk7705_defconfig       | 1 +
- arch/sh/configs/hp6xx_defconfig           | 1 +
- arch/sh/configs/landisk_defconfig         | 1 +
- arch/sh/configs/magicpanelr2_defconfig    | 1 +
- arch/sh/configs/rsk7264_defconfig         | 1 +
- arch/sh/configs/rsk7269_defconfig         | 1 +
- arch/sh/configs/se7619_defconfig          | 1 +
- arch/sh/configs/se7705_defconfig          | 1 +
- arch/sh/configs/se7722_defconfig          | 1 +
- arch/sh/configs/se7750_defconfig          | 1 +
- arch/sh/configs/secureedge5410_defconfig  | 1 +
- arch/sh/configs/sh7710voipgw_defconfig    | 1 +
- arch/sh/configs/sh7724_generic_defconfig  | 1 +
- arch/sh/configs/sh7770_generic_defconfig  | 1 +
- arch/sh/configs/sh7785lcr_32bit_defconfig | 1 +
- arch/sh/configs/sh7785lcr_defconfig       | 1 +
- arch/sh/configs/urquell_defconfig         | 1 +
- 20 files changed, 24 insertions(+), 1 deletion(-)
+ Documentation/kbuild/kconfig-language.rst     |  3 ---
+ scripts/kconfig/confdata.c                    |  5 +---
+ scripts/kconfig/expr.h                        |  1 -
+ scripts/kconfig/gconf.c                       |  2 --
+ scripts/kconfig/lexer.l                       |  1 -
+ scripts/kconfig/lkc.h                         |  5 ----
+ scripts/kconfig/menu.c                        | 12 +++------
+ scripts/kconfig/parser.y                      |  9 -------
+ scripts/kconfig/tests/choice/Kconfig          | 26 -------------------
+ .../tests/choice/allmod_expected_config       |  4 ---
+ .../tests/choice/allyes_expected_config       |  4 ---
+ .../tests/choice/oldask0_expected_stdout      |  2 --
+ scripts/kconfig/tests/choice/oldask1_config   |  1 -
+ .../tests/choice/oldask1_expected_stdout      |  6 -----
+ 14 files changed, 5 insertions(+), 76 deletions(-)
 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 2ad3e29f0ebe..8b64ca76aa4b 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -709,7 +709,6 @@ config ROMIMAGE_MMCIF
+diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
+index 79ac2e8184f6..555c2f839969 100644
+--- a/Documentation/kbuild/kconfig-language.rst
++++ b/Documentation/kbuild/kconfig-language.rst
+@@ -410,9 +410,6 @@ to be set to 'm'. This can be used if multiple drivers for a single
+ hardware exists and only a single driver can be compiled/loaded into
+ the kernel, but all drivers can be compiled as modules.
  
- choice
- 	prompt "Kernel command line"
--	optional
- 	default CMDLINE_OVERWRITE
- 	help
- 	  Setting this option allows the kernel command line arguments
-@@ -727,6 +726,11 @@ config CMDLINE_EXTEND
- 	  Given string will be concatenated with arguments passed in
- 	  by a bootloader.
+-A choice accepts another option "optional", which allows to set the
+-choice to 'n' and no entry needs to be selected.
+-
+ comment::
  
-+config CMDLINE_FROM_BOOTLOADER
-+	bool "Use bootloader kernel arguments"
-+	help
-+	  Uses the command-line options passed by the boot loader.
-+
+ 	"comment" <prompt>
+diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+index a86e71bab5fa..bcce87658998 100644
+--- a/scripts/kconfig/confdata.c
++++ b/scripts/kconfig/confdata.c
+@@ -810,9 +810,6 @@ int conf_write_defconfig(const char *filename)
+ 			/*
+ 			 * If symbol is a choice value and equals to the
+ 			 * default for a choice - skip.
+-			 * But only if value is bool and equal to "y" and
+-			 * choice is not "optional".
+-			 * (If choice is "optional" then all values can be "n")
+ 			 */
+ 			if (sym_is_choice_value(sym)) {
+ 				struct symbol *cs;
+@@ -820,7 +817,7 @@ int conf_write_defconfig(const char *filename)
+ 
+ 				cs = prop_get_symbol(sym_get_choice_prop(sym));
+ 				ds = sym_choice_default(cs);
+-				if (!sym_is_optional(cs) && sym == ds) {
++				if (sym == ds) {
+ 					if ((sym->type == S_BOOLEAN) &&
+ 					    sym_get_tristate_value(sym) == yes)
+ 						continue;
+diff --git a/scripts/kconfig/expr.h b/scripts/kconfig/expr.h
+index 68b3dd65cb08..f646a98de006 100644
+--- a/scripts/kconfig/expr.h
++++ b/scripts/kconfig/expr.h
+@@ -132,7 +132,6 @@ struct symbol {
+ #define SYMBOL_CHECK      0x0008  /* used during dependency checking */
+ #define SYMBOL_CHOICEVAL  0x0020  /* used as a value in a choice block */
+ #define SYMBOL_VALID      0x0080  /* set when symbol.curr is calculated */
+-#define SYMBOL_OPTIONAL   0x0100  /* choice is optional - values can be 'n' */
+ #define SYMBOL_WRITE      0x0200  /* write symbol to file (KCONFIG_CONFIG) */
+ #define SYMBOL_CHANGED    0x0400  /* ? */
+ #define SYMBOL_WRITTEN    0x0800  /* track info to avoid double-write to .config */
+diff --git a/scripts/kconfig/gconf.c b/scripts/kconfig/gconf.c
+index 74f193272a00..13e2449ac83f 100644
+--- a/scripts/kconfig/gconf.c
++++ b/scripts/kconfig/gconf.c
+@@ -87,8 +87,6 @@ static const char *dbg_sym_flags(int val)
+ 		strcat(buf, "choiceval/");
+ 	if (val & SYMBOL_VALID)
+ 		strcat(buf, "valid/");
+-	if (val & SYMBOL_OPTIONAL)
+-		strcat(buf, "optional/");
+ 	if (val & SYMBOL_WRITE)
+ 		strcat(buf, "write/");
+ 	if (val & SYMBOL_CHANGED)
+diff --git a/scripts/kconfig/lexer.l b/scripts/kconfig/lexer.l
+index 89544c3a1a29..8dd597c4710d 100644
+--- a/scripts/kconfig/lexer.l
++++ b/scripts/kconfig/lexer.l
+@@ -120,7 +120,6 @@ n	[A-Za-z0-9_-]
+ "menuconfig"		return T_MENUCONFIG;
+ "modules"		return T_MODULES;
+ "on"			return T_ON;
+-"optional"		return T_OPTIONAL;
+ "prompt"		return T_PROMPT;
+ "range"			return T_RANGE;
+ "select"		return T_SELECT;
+diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
+index 5e27432e4939..64dfc354dd5c 100644
+--- a/scripts/kconfig/lkc.h
++++ b/scripts/kconfig/lkc.h
+@@ -138,11 +138,6 @@ static inline bool sym_is_choice_value(struct symbol *sym)
+ 	return sym->flags & SYMBOL_CHOICEVAL ? true : false;
+ }
+ 
+-static inline bool sym_is_optional(struct symbol *sym)
+-{
+-	return sym->flags & SYMBOL_OPTIONAL ? true : false;
+-}
+-
+ static inline bool sym_has_value(struct symbol *sym)
+ {
+ 	return sym->flags & SYMBOL_DEF_USER ? true : false;
+diff --git a/scripts/kconfig/menu.c b/scripts/kconfig/menu.c
+index fe6af8700622..e01b9ee87c05 100644
+--- a/scripts/kconfig/menu.c
++++ b/scripts/kconfig/menu.c
+@@ -593,15 +593,11 @@ static void _menu_finalize(struct menu *parent, bool inside_choice)
+ 	}
+ 
+ 	/*
+-	 * For non-optional choices, add a reverse dependency (corresponding to
+-	 * a select) of '<visibility> && m'. This prevents the user from
+-	 * setting the choice mode to 'n' when the choice is visible.
+-	 *
+-	 * This would also work for non-choice symbols, but only non-optional
+-	 * choices clear SYMBOL_OPTIONAL as of writing. Choices are implemented
+-	 * as a type of symbol.
++	 * For choices, add a reverse dependency (corresponding to a select) of
++	 * '<visibility> && m'. This prevents the user from setting the choice
++	 * mode to 'n' when the choice is visible.
+ 	 */
+-	if (sym && !sym_is_optional(sym) && parent->prompt) {
++	if (sym && sym_is_choice(sym) && parent->prompt) {
+ 		sym->rev_dep.expr = expr_alloc_or(sym->rev_dep.expr,
+ 				expr_alloc_and(parent->prompt->visible.expr,
+ 					expr_alloc_symbol(&symbol_mod)));
+diff --git a/scripts/kconfig/parser.y b/scripts/kconfig/parser.y
+index b95993ff3837..69dc0c098acb 100644
+--- a/scripts/kconfig/parser.y
++++ b/scripts/kconfig/parser.y
+@@ -69,7 +69,6 @@ struct menu *current_menu, *current_entry;
+ %token T_MODULES
+ %token T_ON
+ %token T_OPEN_PAREN
+-%token T_OPTIONAL
+ %token T_PLUS_EQUAL
+ %token T_PROMPT
+ %token T_RANGE
+@@ -140,7 +139,6 @@ stmt_list_in_choice:
+ 
+ config_entry_start: T_CONFIG nonconst_symbol T_EOL
+ {
+-	$2->flags |= SYMBOL_OPTIONAL;
+ 	menu_add_entry($2);
+ 	printd(DEBUG_PARSE, "%s:%d:config %s\n", cur_filename, cur_lineno, $2->name);
+ };
+@@ -152,7 +150,6 @@ config_stmt: config_entry_start config_option_list
+ 
+ menuconfig_entry_start: T_MENUCONFIG nonconst_symbol T_EOL
+ {
+-	$2->flags |= SYMBOL_OPTIONAL;
+ 	menu_add_entry($2);
+ 	printd(DEBUG_PARSE, "%s:%d:menuconfig %s\n", cur_filename, cur_lineno, $2->name);
+ };
+@@ -272,12 +269,6 @@ choice_option: logic_type prompt_stmt_opt T_EOL
+ 	printd(DEBUG_PARSE, "%s:%d:type(%u)\n", cur_filename, cur_lineno, $1);
+ };
+ 
+-choice_option: T_OPTIONAL T_EOL
+-{
+-	current_entry->sym->flags |= SYMBOL_OPTIONAL;
+-	printd(DEBUG_PARSE, "%s:%d:optional\n", cur_filename, cur_lineno);
+-};
+-
+ choice_option: T_DEFAULT nonconst_symbol if_expr T_EOL
+ {
+ 	menu_add_symbol(P_DEFAULT, $2, $3);
+diff --git a/scripts/kconfig/tests/choice/Kconfig b/scripts/kconfig/tests/choice/Kconfig
+index 0930eb65e932..8cdda40868a1 100644
+--- a/scripts/kconfig/tests/choice/Kconfig
++++ b/scripts/kconfig/tests/choice/Kconfig
+@@ -17,19 +17,6 @@ config BOOL_CHOICE1
+ 
  endchoice
  
- config CMDLINE
-diff --git a/arch/sh/configs/apsh4a3a_defconfig b/arch/sh/configs/apsh4a3a_defconfig
-index cc909f347877..9c2644443c4d 100644
---- a/arch/sh/configs/apsh4a3a_defconfig
-+++ b/arch/sh/configs/apsh4a3a_defconfig
-@@ -15,6 +15,7 @@ CONFIG_MEMORY_START=0x0C000000
- CONFIG_FLATMEM_MANUAL=y
- CONFIG_SH_STORE_QUEUES=y
- CONFIG_SH_APSH4A3A=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_HIGH_RES_TIMERS=y
- CONFIG_KEXEC=y
- CONFIG_PREEMPT=y
-diff --git a/arch/sh/configs/apsh4ad0a_defconfig b/arch/sh/configs/apsh4ad0a_defconfig
-index 64558bf60e10..05d21d91f41d 100644
---- a/arch/sh/configs/apsh4ad0a_defconfig
-+++ b/arch/sh/configs/apsh4ad0a_defconfig
-@@ -42,6 +42,7 @@ CONFIG_SECCOMP=y
- CONFIG_PREEMPT=y
- # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
- CONFIG_BINFMT_MISC=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_PM=y
- CONFIG_PM_DEBUG=y
- CONFIG_PM=y
-diff --git a/arch/sh/configs/edosk7705_defconfig b/arch/sh/configs/edosk7705_defconfig
-index 9ee35269bee2..57c79da1ff8e 100644
---- a/arch/sh/configs/edosk7705_defconfig
-+++ b/arch/sh/configs/edosk7705_defconfig
-@@ -19,6 +19,7 @@
- CONFIG_CPU_SUBTYPE_SH7705=y
- CONFIG_SH_EDOSK7705=y
- CONFIG_SH_PCLK_FREQ=31250000
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- # CONFIG_PREVENT_FIRMWARE_BUILD is not set
- # CONFIG_INPUT is not set
- # CONFIG_SERIO is not set
-diff --git a/arch/sh/configs/hp6xx_defconfig b/arch/sh/configs/hp6xx_defconfig
-index 0c45f2a0f9bd..77e3185f63e4 100644
---- a/arch/sh/configs/hp6xx_defconfig
-+++ b/arch/sh/configs/hp6xx_defconfig
-@@ -15,6 +15,7 @@ CONFIG_SH_DMA_API=y
- CONFIG_HD64461_ENABLER=y
- CONFIG_PCCARD=y
- CONFIG_PM=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_APM_EMULATION=y
- # CONFIG_STANDALONE is not set
- CONFIG_BLK_DEV_SD=y
-diff --git a/arch/sh/configs/landisk_defconfig b/arch/sh/configs/landisk_defconfig
-index 541082090918..0311380160f4 100644
---- a/arch/sh/configs/landisk_defconfig
-+++ b/arch/sh/configs/landisk_defconfig
-@@ -15,6 +15,7 @@ CONFIG_KEXEC=y
- CONFIG_PCI=y
- CONFIG_PCCARD=y
- CONFIG_YENTA=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
-diff --git a/arch/sh/configs/magicpanelr2_defconfig b/arch/sh/configs/magicpanelr2_defconfig
-index 52937f9cc2ab..8d443749550e 100644
---- a/arch/sh/configs/magicpanelr2_defconfig
-+++ b/arch/sh/configs/magicpanelr2_defconfig
-@@ -22,6 +22,7 @@ CONFIG_SH_PCLK_FREQ=24000000
- CONFIG_SH_DMA=y
- CONFIG_SH_DMA_API=y
- CONFIG_HEARTBEAT=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
-diff --git a/arch/sh/configs/rsk7264_defconfig b/arch/sh/configs/rsk7264_defconfig
-index a88cb3b77957..e4ef259425c4 100644
---- a/arch/sh/configs/rsk7264_defconfig
-+++ b/arch/sh/configs/rsk7264_defconfig
-@@ -21,6 +21,7 @@ CONFIG_MEMORY_START=0x0c000000
- CONFIG_FLATMEM_MANUAL=y
- CONFIG_CPU_BIG_ENDIAN=y
- CONFIG_SH_RSK=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- # CONFIG_SH_TIMER_MTU2 is not set
- CONFIG_BINFMT_FLAT=y
- CONFIG_NET=y
-diff --git a/arch/sh/configs/rsk7269_defconfig b/arch/sh/configs/rsk7269_defconfig
-index d9a7ce783c9b..e0d1560b2bfd 100644
---- a/arch/sh/configs/rsk7269_defconfig
-+++ b/arch/sh/configs/rsk7269_defconfig
-@@ -10,6 +10,7 @@ CONFIG_MEMORY_SIZE=0x02000000
- CONFIG_FLATMEM_MANUAL=y
- CONFIG_CPU_BIG_ENDIAN=y
- CONFIG_SH_RSK=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- # CONFIG_SH_TIMER_MTU2 is not set
- CONFIG_SH_PCLK_FREQ=66700000
- CONFIG_BINFMT_FLAT=y
-diff --git a/arch/sh/configs/se7619_defconfig b/arch/sh/configs/se7619_defconfig
-index 14d0f5ead502..6b25e9713e77 100644
---- a/arch/sh/configs/se7619_defconfig
-+++ b/arch/sh/configs/se7619_defconfig
-@@ -14,6 +14,7 @@ CONFIG_FLATMEM_MANUAL=y
- CONFIG_CPU_BIG_ENDIAN=y
- CONFIG_SH_7619_SOLUTION_ENGINE=y
- CONFIG_HZ_100=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_BINFMT_FLAT=y
- CONFIG_BINFMT_ZFLAT=y
- # CONFIG_STANDALONE is not set
-diff --git a/arch/sh/configs/se7705_defconfig b/arch/sh/configs/se7705_defconfig
-index 16a0f72f0822..1752ddc2694a 100644
---- a/arch/sh/configs/se7705_defconfig
-+++ b/arch/sh/configs/se7705_defconfig
-@@ -13,6 +13,7 @@ CONFIG_FLATMEM_MANUAL=y
- # CONFIG_SH_ADC is not set
- CONFIG_SH_SOLUTION_ENGINE=y
- CONFIG_HEARTBEAT=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_PREEMPT=y
- CONFIG_NET=y
- CONFIG_PACKET=y
-diff --git a/arch/sh/configs/se7722_defconfig b/arch/sh/configs/se7722_defconfig
-index 09e455817447..5327a2f70980 100644
---- a/arch/sh/configs/se7722_defconfig
-+++ b/arch/sh/configs/se7722_defconfig
-@@ -17,6 +17,7 @@ CONFIG_SH_7722_SOLUTION_ENGINE=y
- CONFIG_NO_HZ=y
- CONFIG_HIGH_RES_TIMERS=y
- CONFIG_HEARTBEAT=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_KEXEC=y
- CONFIG_PREEMPT=y
- CONFIG_NET=y
-diff --git a/arch/sh/configs/se7750_defconfig b/arch/sh/configs/se7750_defconfig
-index 5fa6239ae4ea..a1e25d7de8a6 100644
---- a/arch/sh/configs/se7750_defconfig
-+++ b/arch/sh/configs/se7750_defconfig
-@@ -15,6 +15,7 @@ CONFIG_FLATMEM_MANUAL=y
- CONFIG_SH_SOLUTION_ENGINE=y
- CONFIG_SH_PCLK_FREQ=33333333
- CONFIG_HEARTBEAT=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
-diff --git a/arch/sh/configs/secureedge5410_defconfig b/arch/sh/configs/secureedge5410_defconfig
-index 120176afe3f6..2f77b60e9540 100644
---- a/arch/sh/configs/secureedge5410_defconfig
-+++ b/arch/sh/configs/secureedge5410_defconfig
-@@ -10,6 +10,7 @@ CONFIG_SH_SECUREEDGE5410=y
- CONFIG_SH_DMA=y
- CONFIG_SH_DMA_API=y
- CONFIG_PCI=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_NET=y
- CONFIG_INET=y
- # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
-diff --git a/arch/sh/configs/sh7710voipgw_defconfig b/arch/sh/configs/sh7710voipgw_defconfig
-index 7f742729df69..99a5d0760532 100644
---- a/arch/sh/configs/sh7710voipgw_defconfig
-+++ b/arch/sh/configs/sh7710voipgw_defconfig
-@@ -15,6 +15,7 @@ CONFIG_MEMORY_SIZE=0x00800000
- CONFIG_FLATMEM_MANUAL=y
- # CONFIG_SH_ADC is not set
- CONFIG_SH_PCLK_FREQ=32768000
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
-diff --git a/arch/sh/configs/sh7724_generic_defconfig b/arch/sh/configs/sh7724_generic_defconfig
-index cbc9389a89a8..5440bd0ca4ed 100644
---- a/arch/sh/configs/sh7724_generic_defconfig
-+++ b/arch/sh/configs/sh7724_generic_defconfig
-@@ -12,6 +12,7 @@ CONFIG_CPU_FREQ=y
- CONFIG_SH_CPU_FREQ=y
- CONFIG_KEXEC=y
- CONFIG_KEXEC_JUMP=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_HIBERNATION=y
- CONFIG_CPU_IDLE=y
- # CONFIG_PREVENT_FIRMWARE_BUILD is not set
-diff --git a/arch/sh/configs/sh7770_generic_defconfig b/arch/sh/configs/sh7770_generic_defconfig
-index ee2357deba0f..4338af8d02d0 100644
---- a/arch/sh/configs/sh7770_generic_defconfig
-+++ b/arch/sh/configs/sh7770_generic_defconfig
-@@ -14,6 +14,7 @@ CONFIG_SH_CPU_FREQ=y
- CONFIG_KEXEC=y
- CONFIG_KEXEC_JUMP=y
- CONFIG_PM=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_HIBERNATION=y
- CONFIG_CPU_IDLE=y
- # CONFIG_PREVENT_FIRMWARE_BUILD is not set
-diff --git a/arch/sh/configs/sh7785lcr_32bit_defconfig b/arch/sh/configs/sh7785lcr_32bit_defconfig
-index 59262f42abe6..44f9b2317f09 100644
---- a/arch/sh/configs/sh7785lcr_32bit_defconfig
-+++ b/arch/sh/configs/sh7785lcr_32bit_defconfig
-@@ -32,6 +32,7 @@ CONFIG_PREEMPT=y
- CONFIG_INTC_USERIMASK=y
- CONFIG_PCI=y
- CONFIG_PCI_DEBUG=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_PM=y
- CONFIG_CPU_IDLE=y
- CONFIG_NET=y
-diff --git a/arch/sh/configs/sh7785lcr_defconfig b/arch/sh/configs/sh7785lcr_defconfig
-index 94381f8268ff..aec74b0e7003 100644
---- a/arch/sh/configs/sh7785lcr_defconfig
-+++ b/arch/sh/configs/sh7785lcr_defconfig
-@@ -17,6 +17,7 @@ CONFIG_HEARTBEAT=y
- CONFIG_KEXEC=y
- CONFIG_PREEMPT=y
- CONFIG_PCI=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
-diff --git a/arch/sh/configs/urquell_defconfig b/arch/sh/configs/urquell_defconfig
-index 445bb451a5ec..00ef62133b04 100644
---- a/arch/sh/configs/urquell_defconfig
-+++ b/arch/sh/configs/urquell_defconfig
-@@ -34,6 +34,7 @@ CONFIG_PCIEPORTBUS=y
- CONFIG_PCIEASPM_DEBUG=y
- CONFIG_PCI_DEBUG=y
- CONFIG_BINFMT_MISC=y
-+CONFIG_CMDLINE_FROM_BOOTLOADER=y
- CONFIG_PM=y
- CONFIG_CPU_IDLE=y
- CONFIG_NET=y
+-choice
+-	prompt "optional boolean choice"
+-	optional
+-	default OPT_BOOL_CHOICE1
+-
+-config OPT_BOOL_CHOICE0
+-	bool "choice 0"
+-
+-config OPT_BOOL_CHOICE1
+-	bool "choice 1"
+-
+-endchoice
+-
+ choice
+ 	prompt "tristate choice"
+ 	default TRI_CHOICE1
+@@ -41,16 +28,3 @@ config TRI_CHOICE1
+ 	tristate "choice 1"
+ 
+ endchoice
+-
+-choice
+-	prompt "optional tristate choice"
+-	optional
+-	default OPT_TRI_CHOICE1
+-
+-config OPT_TRI_CHOICE0
+-	tristate "choice 0"
+-
+-config OPT_TRI_CHOICE1
+-	tristate "choice 1"
+-
+-endchoice
+diff --git a/scripts/kconfig/tests/choice/allmod_expected_config b/scripts/kconfig/tests/choice/allmod_expected_config
+index f1f5dcdb7923..d1f51651740c 100644
+--- a/scripts/kconfig/tests/choice/allmod_expected_config
++++ b/scripts/kconfig/tests/choice/allmod_expected_config
+@@ -1,9 +1,5 @@
+ CONFIG_MODULES=y
+ # CONFIG_BOOL_CHOICE0 is not set
+ CONFIG_BOOL_CHOICE1=y
+-# CONFIG_OPT_BOOL_CHOICE0 is not set
+-CONFIG_OPT_BOOL_CHOICE1=y
+ CONFIG_TRI_CHOICE0=m
+ CONFIG_TRI_CHOICE1=m
+-CONFIG_OPT_TRI_CHOICE0=m
+-CONFIG_OPT_TRI_CHOICE1=m
+diff --git a/scripts/kconfig/tests/choice/allyes_expected_config b/scripts/kconfig/tests/choice/allyes_expected_config
+index e5a062a1157c..8a76c1816893 100644
+--- a/scripts/kconfig/tests/choice/allyes_expected_config
++++ b/scripts/kconfig/tests/choice/allyes_expected_config
+@@ -1,9 +1,5 @@
+ CONFIG_MODULES=y
+ # CONFIG_BOOL_CHOICE0 is not set
+ CONFIG_BOOL_CHOICE1=y
+-# CONFIG_OPT_BOOL_CHOICE0 is not set
+-CONFIG_OPT_BOOL_CHOICE1=y
+ # CONFIG_TRI_CHOICE0 is not set
+ CONFIG_TRI_CHOICE1=y
+-# CONFIG_OPT_TRI_CHOICE0 is not set
+-CONFIG_OPT_TRI_CHOICE1=y
+diff --git a/scripts/kconfig/tests/choice/oldask0_expected_stdout b/scripts/kconfig/tests/choice/oldask0_expected_stdout
+index b251bba9698b..d2257db46423 100644
+--- a/scripts/kconfig/tests/choice/oldask0_expected_stdout
++++ b/scripts/kconfig/tests/choice/oldask0_expected_stdout
+@@ -3,8 +3,6 @@ boolean choice
+   1. choice 0 (BOOL_CHOICE0) (NEW)
+ > 2. choice 1 (BOOL_CHOICE1) (NEW)
+ choice[1-2?]: 
+-optional boolean choice [N/y/?] (NEW) 
+ tristate choice [M/y/?] (NEW) 
+   choice 0 (TRI_CHOICE0) [N/m/?] (NEW) 
+   choice 1 (TRI_CHOICE1) [N/m/?] (NEW) 
+-optional tristate choice [N/m/y/?] (NEW) 
+diff --git a/scripts/kconfig/tests/choice/oldask1_config b/scripts/kconfig/tests/choice/oldask1_config
+index b67bfe3c641f..0f417856c81c 100644
+--- a/scripts/kconfig/tests/choice/oldask1_config
++++ b/scripts/kconfig/tests/choice/oldask1_config
+@@ -1,2 +1 @@
+ # CONFIG_MODULES is not set
+-CONFIG_OPT_BOOL_CHOICE0=y
+diff --git a/scripts/kconfig/tests/choice/oldask1_expected_stdout b/scripts/kconfig/tests/choice/oldask1_expected_stdout
+index c2125e9bf96a..ffa20ad7f38e 100644
+--- a/scripts/kconfig/tests/choice/oldask1_expected_stdout
++++ b/scripts/kconfig/tests/choice/oldask1_expected_stdout
+@@ -3,13 +3,7 @@ boolean choice
+   1. choice 0 (BOOL_CHOICE0) (NEW)
+ > 2. choice 1 (BOOL_CHOICE1) (NEW)
+ choice[1-2?]: 
+-optional boolean choice [Y/n/?] (NEW) 
+-optional boolean choice
+-> 1. choice 0 (OPT_BOOL_CHOICE0)
+-  2. choice 1 (OPT_BOOL_CHOICE1) (NEW)
+-choice[1-2?]: 
+ tristate choice
+   1. choice 0 (TRI_CHOICE0) (NEW)
+ > 2. choice 1 (TRI_CHOICE1) (NEW)
+ choice[1-2?]: 
+-optional tristate choice [N/y/?] 
 -- 
 2.40.1
 
