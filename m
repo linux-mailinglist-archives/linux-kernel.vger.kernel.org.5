@@ -1,123 +1,193 @@
-Return-Path: <linux-kernel+bounces-153598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A0318AD02A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:04:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBD988AD02D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:05:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C1C11C21D2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:04:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 189F6B251D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C468F152DFC;
-	Mon, 22 Apr 2024 15:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L6oTyXj5"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDF615252E;
+	Mon, 22 Apr 2024 15:04:48 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70154152DEE;
-	Mon, 22 Apr 2024 15:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2FE15217D;
+	Mon, 22 Apr 2024 15:04:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713798269; cv=none; b=fFKHW225T1FhwsweJ0LgPzfe3gcra84ZJmx8aw3C3+Jefm5SN5c/Bk62YbiUT64T+Rzps6MT4OyUHZo9ydaqzFHvzThW0BI/l4MmTSE/fV9ZU/5lqOrHoPEqtWEdG4MbZty5RxIeo59omZfs8fiGrfP4JSoNHA5zFl9jFOkKTLo=
+	t=1713798287; cv=none; b=m5tRTjbGiS2SkahlpXi27334WHa1MwwkEiAkDBUdjAU9nIwz43aji0e3Mov7u0dXsQzIWqa//Z0Kg6ak+C3XQOkGMk1F7wHvEJAU2waJjYXgOFFEgmNg7V7uml8u+ETSmyvtTEk9Zg/R2tviRFh/WSmysBWmo4nzSXzWZexVqvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713798269; c=relaxed/simple;
-	bh=gY/Fi+RRBpIEtt4g2iWf4ZHqsFPkeoWVasKLGqMuD/g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GLHnnVvn2UiRRfyq78lSbxfiLp2y9TUeMMmWi7PjPE05L1niMBWnPjLUT2Jdei4QOyqDuN2/SxflsWr4tG4RgtHgFuAaWq9zYHVfrLqFkDmQlJZVb7mHGGl7A47d0yUmFuDQmZp4Cmcyp+S3I+J0IQpe1Gi2HLCZICQQ0R79lLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L6oTyXj5; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56c5d05128dso4111276a12.0;
-        Mon, 22 Apr 2024 08:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713798266; x=1714403066; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gY/Fi+RRBpIEtt4g2iWf4ZHqsFPkeoWVasKLGqMuD/g=;
-        b=L6oTyXj51vKPEeiEMXkPtGzLwNOYhILnNZLSa+ymMCu5L9kTnOo8UE8Iq0/zbAtMSu
-         5rtD9KnU+xFrTaVDM7ZdU5RWYIx9bShMTiHMHTb5ZoAuvS2abKP3ox8sR4wXDz20K49R
-         sKNJXoLvtrkeBrQNKyXZxrid4AI1d9GmnFPFtZ0ankeOqt7GQ68DBZBtH/EhAmeSd5zv
-         5zVr8NGo8ABO1FM80/KxU0oi5QkZ00wUAplGX9k9sN8PkX23vcodSvqjBml3FXfNcrgJ
-         LyMUP6Y1tV2cJ+PEFUBJ0gP6azCSv7eIcJFGVXfALc9+kZqveYEakMmLpc53DHIavoue
-         sjUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713798266; x=1714403066;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gY/Fi+RRBpIEtt4g2iWf4ZHqsFPkeoWVasKLGqMuD/g=;
-        b=AwGjMiORdJ57OHQJgDnbOJd8KQDQhs3NCWemuXJCZX/GxdBthKT6UTR7vwWRbgfNp8
-         YXwmV+1OiS2Q4M8r1ckagKNCCcyIkrKh8ulUzzzyHk2mvKC7Tx4XygFSagBbpoSG3Zpy
-         hSzYaWMtkx0praCgML4kyfgUZlBcofpRNVZrEqbYXfql9mOWMPgUYWm7cZJQFZl4RLlQ
-         EeJWBYjYRTEjO2yYtmW/D8Dcd8q3vSKUoxqZRNamXBjUefTpkwsS69FcAl8QImGPHluy
-         pS7/5YYIlnVSeE+jqjn//PVCuBPtg6Fn/s2K3rrDDFuhjtqMgZFeGrpuc2t8UD9xYI83
-         H7IA==
-X-Forwarded-Encrypted: i=1; AJvYcCUmlbor7o9ST7iVSr/z7wU+n0t2WATbCDqJSS3Zw0Vw84LedXXQL2C0CrQG5QpEedNuXt+/8TEWUjIoTQZEaZa6kb1LMmvOeQgDtv2x7u4mbbN6VIZ3UX5C2NUcInBYs64ExSYb7gMTLd4=
-X-Gm-Message-State: AOJu0YxfBhAjDhzSeSikHlPqpy4xSQG/OXyofxGXCaHwWE93c+VjrXXT
-	zU6HfawXJykcAzj4ls1PzrR8vSqfvw3f0xOj5y8hqHwMvyMlE1PmbSh85ykngW6rfIJxSfSB4fz
-	yeTpJMxOzpQGrkA/WZT8N6dMtLFk=
-X-Google-Smtp-Source: AGHT+IFjdK0F6Mzl4xHNa8qxjJqTkNZkhrQiips+tPOEjhjdY1XsbD081mImRM2z5k2J0XZ09hqyu8Rz8Tifkr3lZFs=
-X-Received: by 2002:a50:c010:0:b0:56e:e76:6478 with SMTP id
- r16-20020a50c010000000b0056e0e766478mr6177689edb.31.1713798265473; Mon, 22
- Apr 2024 08:04:25 -0700 (PDT)
+	s=arc-20240116; t=1713798287; c=relaxed/simple;
+	bh=5JG6CEJSC/3L87Wa3KY55TPd29wx7na1hq4gOaYVRe0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Bi6F135X01vki+TOUOSaxQBzeAtQUkUxK4s1d1cOf/r0TObHQqeB2Fkg5IVwg4h779Z5I5xCOuVlO0HAKyyRThQFJZUKSM66OudfWtq8J1vQUg4LAvTkBihzupI+XDnRgLCQgr+xOCNEsDBQjudsHxKo7is6wXG0HU70huce8hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8FDFC113CC;
+	Mon, 22 Apr 2024 15:04:45 +0000 (UTC)
+Message-ID: <f196c736-dbfe-4ca0-995b-1720bf530edf@xs4all.nl>
+Date: Mon, 22 Apr 2024 17:04:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJg=8jyC1+s80etZgWteps0Q0yEsR2NE23+Bf+Daa7zgJ2qKBA@mail.gmail.com>
- <ZiYDaN7fDzzEyVQr@infradead.org> <ZiYDiptCPKDNwE-J@infradead.org>
-In-Reply-To: <ZiYDiptCPKDNwE-J@infradead.org>
-From: Marius Fleischer <fleischermarius@gmail.com>
-Date: Mon, 22 Apr 2024 08:04:14 -0700
-Message-ID: <CAJg=8jwM30ui5zZuFW9d33oAdKk4uk1i26aoKQ2TrQcv6PGsdw@mail.gmail.com>
-Subject: Re: INFO: task hung in bdev_open
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
-	harrisonmichaelgreen@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in
+ cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
+Content-Language: en-US, nl
+To: "Yang, Chenyuan" <cy54@illinois.edu>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "jani.nikula@intel.com" <jani.nikula@intel.com>,
+ "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
+ "mchehab@kernel.org" <mchehab@kernel.org>, "Zhao, Zijie"
+ <zijie4@illinois.edu>, "Zhang, Lingming" <lingming@illinois.edu>
+References: <PH7PR11MB57688E64ADE4FE82E658D86DA09EA@PH7PR11MB5768.namprd11.prod.outlook.com>
+ <f985d664-d907-48ed-9b3d-dc956c178b88@xs4all.nl>
+ <526380BE-57AC-493D-A7B0-B8F0ECC0FE0A@illinois.edu>
+ <f1855145-9562-4bef-800f-43bcacff6fc8@xs4all.nl>
+ <2e5f1e92-7fad-4a74-b375-1e194ff08ce6@xs4all.nl>
+ <F8D4A291-8CFB-4A25-B296-3CA07B56F459@illinois.edu>
+ <49a68c10-9549-4fd8-b929-d4c7a9c8debf@xs4all.nl>
+ <PH7PR11MB5768B0BC3C042A6EA4EC1EF0A0542@PH7PR11MB5768.namprd11.prod.outlook.com>
+ <7E36CBBD-F2AD-4D98-8D4E-F52E62C3E812@illinois.edu>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <7E36CBBD-F2AD-4D98-8D4E-F52E62C3E812@illinois.edu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Christoph,
+Hi Chenyuan,
 
-Thank you so much for your responsel!
+My apologies for the delay, I missed your email.
 
-On Sun, 21 Apr 2024 at 23:28, Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Sun, Apr 21, 2024 at 11:27:52PM -0700, Christoph Hellwig wrote:
-> > On Sat, Apr 20, 2024 at 06:19:01PM -0700, Marius Fleischer wrote:
-> > > Hi,
-> > >
-> > > We would like to report the following bug which has been found by our
-> > > modified version of syzkaller.
-> >
-> > For your reports to be useful please make sure your szybot actually
-> > provides the same features as the real one, that is link to the
-> > reproducer, mention the exact git commit reproducing it, provide a way
-> > to submit fixes.
->
-> .. or just feed your modifications to the original one so that
-> everything just works..
->
+On 26/02/2024 13:27, Yang, Chenyuan wrote:
+> Hi Hans,
+> 
+> Thank you for your continued efforts in investigating this bug and implementing the new patch!
+> 
+> Regarding the two warnings, they have been addressed by this new patch and are no longer reproducible. Additionally, I conducted a 48-hour fuzzing test on the CEC driver, which has successfully eliminated the previous hanging issue.
+> 
+> One thing to note that the system will now log timeout events:
+> ```
+> [ 2281.265385][ T2034] cec-vivid-001-vid-out0: transmit timed out
+> [ 2282.994510][ T2017] cec-vivid-000-vid-cap0: transmit timed out
+> [ 2283.063484][ T2050] cec-vivid-002-vid-out0: transmit timed out
+> [ 2283.073468][ T2065] cec-vivid-003-vid-cap0: transmit timed out
+> [ 2283.373518][ T2033] cec-vivid-001-vid-cap0: transmit timed out
+> [ 2285.113544][ T2018] cec-vivid-000-vid-out0: transmit timed out
+> [ 2285.193502][ T2050] cec-vivid-002-vid-out0: transmit timed out
+> [ 2285.193570][ T2065] cec-vivid-003-vid-cap0: transmit timed out
+> [ 2285.513570][ T2033] cec-vivid-001-vid-cap0: transmit timed out
+> ```
 
-Please note that the original email does have a reproducer and kernel config
-attached, and specifies the exact git commit of the kernel version on which we
-found this crash. I am happy to manually test any patch attempts. Unfortunately,
-I do not have the infrastructure to host an automated system similar to syzbot.
-Please let me know if there is any additional information in regards
-to this report
-that would be helpful for you!
+Is this happening all the time, or just once in a (long?) while?
 
-As of right now, we are not yet ready to approach the team around syzkaller
-to see if they are interested in our modifications as our work is still ongoing
-research. We are certainly hoping to do this at a later stage!
+Regards,
 
-Wishing you a nice start to the week!
+	Hans
 
-Best,
-Marius
+> 
+> Best,
+> Chenyuan
+> 
+> From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Date: Friday, February 23, 2024 at 8:44 AM
+> To: Yang, Chenyuan <cy54@illinois.edu>, linux-media@vger.kernel.org <linux-media@vger.kernel.org>, linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+> Cc: jani.nikula@intel.com <jani.nikula@intel.com>, syzkaller@googlegroups.com <syzkaller@googlegroups.com>, mchehab@kernel.org <mchehab@kernel.org>, Zhao, Zijie <zijie4@illinois.edu>, Zhang, Lingming <lingming@illinois.edu>
+> Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
+> Hi Chenyuan,
+> 
+> Here is another patch for you to try. I think it is good for blocking CEC_ADAP_S_LOG_ADDRS
+> ioctl calls, but if the filehandle is in non-blocking mode, I'm still not certain it
+> is correct. But one issue at a time :-)
+> 
+> Regards,
+> 
+>         Hans
+> 
+> diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
+> index 559a172ebc6c..a493cbce2456 100644
+> --- a/drivers/media/cec/core/cec-adap.c
+> +++ b/drivers/media/cec/core/cec-adap.c
+> @@ -936,8 +936,7 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+>           */
+>          mutex_unlock(&adap->lock);
+>          wait_for_completion_killable(&data->c);
+> -       if (!data->completed)
+> -               cancel_delayed_work_sync(&data->work);
+> +       cancel_delayed_work_sync(&data->work);
+>          mutex_lock(&adap->lock);
+> 
+>          /* Cancel the transmit if it was interrupted */
+> @@ -1575,9 +1574,12 @@ static int cec_config_thread_func(void *arg)
+>   */
+>  static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+>  {
+> -       if (WARN_ON(adap->is_configuring || adap->is_configured))
+> +       if (WARN_ON(adap->is_claiming_log_addrs ||
+> +                   adap->is_configuring || adap->is_configured))
+>                  return;
+> 
+> +       adap->is_claiming_log_addrs = true;
+> +
+>          init_completion(&adap->config_completion);
+> 
+>          /* Ready to kick off the thread */
+> @@ -1592,6 +1594,7 @@ static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+>                  wait_for_completion(&adap->config_completion);
+>                  mutex_lock(&adap->lock);
+>          }
+> +       adap->is_claiming_log_addrs = false;
+>  }
+> 
+>  /*
+> diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+> index 67dc79ef1705..3ef915344304 100644
+> --- a/drivers/media/cec/core/cec-api.c
+> +++ b/drivers/media/cec/core/cec-api.c
+> @@ -178,7 +178,7 @@ static long cec_adap_s_log_addrs(struct cec_adapter *adap, struct cec_fh *fh,
+>                             CEC_LOG_ADDRS_FL_ALLOW_RC_PASSTHRU |
+>                             CEC_LOG_ADDRS_FL_CDC_ONLY;
+>          mutex_lock(&adap->lock);
+> -       if (!adap->is_configuring &&
+> +       if (!adap->is_claiming_log_addrs && !adap->is_configuring &&
+>              (!log_addrs.num_log_addrs || !adap->is_configured) &&
+>              !cec_is_busy(adap, fh)) {
+>                  err = __cec_s_log_addrs(adap, &log_addrs, block);
+> @@ -664,6 +664,8 @@ static int cec_release(struct inode *inode, struct file *filp)
+>                  list_del_init(&data->xfer_list);
+>          }
+>          mutex_unlock(&adap->lock);
+> +
+> +       mutex_lock(&fh->lock);
+>          while (!list_empty(&fh->msgs)) {
+>                  struct cec_msg_entry *entry =
+>                          list_first_entry(&fh->msgs, struct cec_msg_entry, list);
+> @@ -681,6 +683,7 @@ static int cec_release(struct inode *inode, struct file *filp)
+>                          kfree(entry);
+>                  }
+>          }
+> +       mutex_unlock(&fh->lock);
+>          kfree(fh);
+> 
+>          cec_put_device(devnode);
+> diff --git a/include/media/cec.h b/include/media/cec.h
+> index 10c9cf6058b7..cc3fcd0496c3 100644
+> --- a/include/media/cec.h
+> +++ b/include/media/cec.h
+> @@ -258,6 +258,7 @@ struct cec_adapter {
+>          u16 phys_addr;
+>          bool needs_hpd;
+>          bool is_enabled;
+> +       bool is_claiming_log_addrs;
+>          bool is_configuring;
+>          bool must_reconfigure;
+>          bool is_configured;
+> 
+
 
