@@ -1,129 +1,229 @@
-Return-Path: <linux-kernel+bounces-153782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C00328AD30B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:05:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 674248AD30C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:05:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 698DDB25C64
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:05:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D24431F2219A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBEC0153BC9;
-	Mon, 22 Apr 2024 17:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A518815383C;
+	Mon, 22 Apr 2024 17:05:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PevJ4Nul"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="HDPHYwNc";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="T4VslB1f"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F85153514
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 17:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713805517; cv=none; b=Pybw+NJb1Q56CO0WUlRGStIYv1c6obs738KgKPJSHCftzCA9cBSKbnp1LWjDPQK4j9wzvvsI/RjSeJ8v3NAd0TAvPiba1yIUePDO57F/NJcHdrrfQk93klZ9RK7fCHcaXLnAOktjK48XHqpGnl2jQwyNsL6Z4MzevzP5+Dqd0+s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713805517; c=relaxed/simple;
-	bh=AHu9d6uPryR7QNpvwYORlSRuVIiALc6iKXvSYf0HmQM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QVcvNRhbsyqpnH7UE6z/yjSCT3PTAmfz7QUYQMz8LWGklWARzPnjXEcqwoftRU5XPZJwvvykhWWVR/Nijo6/9al73FIbjFndgMcsp8nA/gMrYJFCL9jaJbF02tCIGxYx7KCZ5PvFVjDBiz9ydzvcdA9sL5KvTv07/e1gOk8l2Ug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PevJ4Nul; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6eddff25e4eso3934549b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:05:14 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A311514E2
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 17:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713805530; cv=fail; b=dVHAaa36thTytKiO8TUGFWiMVC8oIFMdmUpohV+Mb6UnJXMvx571gVY3Ji/rp8syiHXyJdK2CIGyLVMaGqVtJ2RiLzcEZpHWkH78krIiDHlD210y8Kqd44cuRkVSb5G3cq5Up6JWRan2nzd3xu7BCVUOPu8rZw/tReehTDls8AE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713805530; c=relaxed/simple;
+	bh=mljtB6PHiiT3Pl61FkEtpytnejZcy1hUSw4twkChswo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Gjb1XM5Ixl1Qls6xIMVhmjCtu5UloPJJXsDwAUSV1jaS8/dvBW9s7bBfDFDrCVIP5mCsdf7Rujb5ZX7ztXPvacSZGnOjLnHbnPoUqTbTrJzeaBzWAVw/c5Qny/R6T7ZeyGHipd/jonbEw9adM1NOAR5m5TY7EGFjrAvE7UUB5O8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=HDPHYwNc; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=T4VslB1f; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43MGXeZg004904;
+	Mon, 22 Apr 2024 17:05:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-11-20;
+ bh=NFwATdcY1ibmgjo+G4RY4WY1dEH2u6oAgSf7sj2NF7A=;
+ b=HDPHYwNcIgwuZzCrFOwLCKmcRV1u/2HnejrxV1+E0d09XuC/S2sIhBeHBTlbzM2+DmC2
+ KGo5pb5DCeS0WG+WUfR1s3Je7qnRLh3GRW+S4w2j4oaBuB2ZgDBGPL6vYj9cDhnTCvEc
+ Y93EgK6U7WdHKmDddHwiPo2NOv/4QCtthhhOpppl91D1QVWiY0z3onj3hLo1C+6sSW7+
+ bLJ0KSu9AU9YETrrKotJc/FDmSqc7vAO1ciEgJmPLlFSirVx1KrhHLljQ4a2qNvuHY1b
+ sULrCPKOE2l8w92kyeKD4XGVnJWU4YDo01FxedfQwkfkuJWTgPApcy/YK5cAvOYtoADP xw== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm4a2b889-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 22 Apr 2024 17:05:20 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43MH0uq4010203;
+	Mon, 22 Apr 2024 17:05:19 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xm456babr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 22 Apr 2024 17:05:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CsXBw/wWcQk4Odxaoe0oXyW2J0f9iwamCW9H+IzC05HwI1mx44m8fvaXM3GerVL4pbWyL4D4QuT3QB5un8Dm0jqp1J5WZgsVb/lHclWlft0NWMloSoVsGH+4KgQI/P033lykQe7Za4j51uT6E1irrZ7u/tzAc/8D8/MNkmzi7xdJGiBVhlNuR8oBT6D09I2qOt6L7U/8wZfYG8IZpnf9vVTNKYb7MWymvfctcrVVNsRwGLNyRULSOo57VMoLuO0Ms5xcQPq7Jf+wxeLbC8bnvLDgMeqJ8Is5LCdG1SG6qwYaf7wT3GA4Yjbhe+bG4wtwCIMZ0HZa7FwcZ/rSoX+q1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NFwATdcY1ibmgjo+G4RY4WY1dEH2u6oAgSf7sj2NF7A=;
+ b=PLy0L8ZJ7GKJu4XSZYSbANBKRVTXcJM/z8Gd1JPB2tCw3sgGrV13Uowdg0InMMXOi2iMEJNLJj1JdD3So3hy1qBcCANcdOmv0ry1naj2ltoxmORu+AXbwfsvhPw9z6eMAaL5a+UIB0UATwbmM2OSIQHm4035SGHC7DCGszE1vsuJisuC/NuCNQpBVk6mmbyJS+YMP8oWt3QwjSBU1To3RCstQG0CnMWak5M0GN66ek3b8aY2xRY5CSBoSepkGsF2beL74l2rlfUxdRPYu7VxH1SZEcJbP6hByzTBTrNlCnu4V2CvvjGDC8DMp3mH5IYt76xaW+k/q1gNoeaRQfx8bg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713805514; x=1714410314; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tSkyOzxUcdbMqzp03KnrhjrfOdlW3TL2PUxe3CYy+uU=;
-        b=PevJ4NulAiOYVbA8mciWxEHev11PduHd/oYest7x9tK2CVHr6/B7olAHtulLtr8epI
-         04OFtpL3lbl3Fh7ZoIN4grRWoFEAVj05sXGWIapK5oFVTAZjhx4V4QJG44ThmLGpg5sm
-         4mCQbmQ6Ra1wVfu4OaUA4puUk0w13NswduPik=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713805514; x=1714410314;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tSkyOzxUcdbMqzp03KnrhjrfOdlW3TL2PUxe3CYy+uU=;
-        b=rqSsPCwNU9LWNbqNPXecZC8vgmFnYRNtMXI7sojcrolYFCB+VIJZWeF7awe3/MJ+Mk
-         ovcRX4ldHjxxVr9fHro6v8S+sBRRuqQ79g75q/PHE+S59Ry3Y1nY0uSSnpw2r8n7zCTI
-         586MNPy6TBVRzjlqTiws4dCKX9wap1facWbgdJFwt+7VWmRDcXbLCu62zRmck2ZPD0Ya
-         O9j9VIdifX956KUHHzgwEN1Dc1K1a5hakG5t3BQtI9iEnhYkoCBVSPL9+Jc1lcyFVEdm
-         WpC0abymDN2TOhglL3roW4WVt77rH9ccZFga4hiAabmcAe8mX55Tnt+YoJTJBYC8x3gF
-         /Oqg==
-X-Forwarded-Encrypted: i=1; AJvYcCU92meZIiFaHYitXTfNcemJzNxlyn5QxZdYAr8EF+aH8thVNE/RdWKss0A6NyhK5uJcz8qJWXjIWPlNRY0bDmemKrCfudEcchgah0vB
-X-Gm-Message-State: AOJu0Yy/nN0CJQQWg/3cBwMcQB7P33Q3n70Nij9TGCd2EXpJhEUgiOw+
-	w7pj15oT3uIkZconyQQkJKDXdqh+aWkOIpJbhKZDy6byMAzQPdsfmcPwOI7IZw==
-X-Google-Smtp-Source: AGHT+IFxJFeMPcL8ytCxc2u5zPDcX0TiDfN/BOFVsXaXujFuR9MAhpYnZXK32l63JffeuOssUsOYXw==
-X-Received: by 2002:a05:6a00:1407:b0:6ed:2f2:a8e with SMTP id l7-20020a056a00140700b006ed02f20a8emr11839710pfu.30.1713805514163;
-        Mon, 22 Apr 2024 10:05:14 -0700 (PDT)
-Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:843d:b423:30f9:2b2])
-        by smtp.gmail.com with ESMTPSA id fa34-20020a056a002d2200b006e5571be110sm7997617pfb.214.2024.04.22.10.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 10:05:13 -0700 (PDT)
-From: Douglas Anderson <dianders@chromium.org>
-To: Tiffany Lin <tiffany.lin@mediatek.com>,
-	Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-	Yunfei Dong <yunfei.dong@mediatek.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Wei-Shun Chang <weishunc@google.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-	=?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
-	Rob Herring <robh@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH] media: mediatek: vcodec: Alloc DMA memory with DMA_ATTR_ALLOC_SINGLE_PAGES
-Date: Mon, 22 Apr 2024 10:03:59 -0700
-Message-ID: <20240422100354.1.I58b4456c014a4d678455a4ec09b908b1c71c3017@changeid>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NFwATdcY1ibmgjo+G4RY4WY1dEH2u6oAgSf7sj2NF7A=;
+ b=T4VslB1fPla5Uw3YuzpOoDa1koJD8nK8CLYAyrv08OZ+/elNswIuHqcDZcIZJB87+ic5aG98TP5E6v5d/LMkQ1z4N8dGjZyCA2tfTb3umomXL+yb/Xy0IJ7yigZTz3VG/EYRIIo/x8EYrHGRqnuBwjKPviM3H9dPSKMH1elLDdU=
+Received: from DS0PR10MB7933.namprd10.prod.outlook.com (2603:10b6:8:1b8::15)
+ by SN7PR10MB6643.namprd10.prod.outlook.com (2603:10b6:806:2ae::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 22 Apr
+ 2024 17:05:17 +0000
+Received: from DS0PR10MB7933.namprd10.prod.outlook.com
+ ([fe80::2561:85b0:ae8f:9490]) by DS0PR10MB7933.namprd10.prod.outlook.com
+ ([fe80::2561:85b0:ae8f:9490%6]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
+ 17:05:17 +0000
+Date: Mon, 22 Apr 2024 13:05:15 -0400
+From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+To: Marius Fleischer <fleischermarius@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, maple-tree@lists.infradead.org,
+        linux-kernel@vger.kernel.org, syzkaller@googlegroups.com,
+        harrisonmichaelgreen@gmail.com
+Subject: Re: general protection fault in mas_empty_area_rev
+Message-ID: <usubtr2bibcnwca3rk3ytbd2jbpvshgu44faujrrrcnidnrr25@ttdhvhrz34vs>
+References: <CAJg=8jyuSxDL6XvqEXY_66M20psRK2J53oBTP+fjV5xpW2-R6w@mail.gmail.com>
+ <uekqafv4wx5axijnnfybnxixui3ruzy3mkxirflv7tb3ovrtbk@ounqurycykuv>
+ <CAJg=8jzRT=oA9g6AGd1KmAY3GBkKkczj1rCqQ+pik5LmUQYd_A@mail.gmail.com>
+ <7jhx44ynje54wfcq3bkaui5w6oox7ypd7cgg4u5zhue6rf5tok@nj6jaxppzq2b>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7jhx44ynje54wfcq3bkaui5w6oox7ypd7cgg4u5zhue6rf5tok@nj6jaxppzq2b>
+User-Agent: NeoMutt/20231103
+X-ClientProxiedBy: YT4PR01CA0232.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:eb::7) To DS0PR10MB7933.namprd10.prod.outlook.com
+ (2603:10b6:8:1b8::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR10MB7933:EE_|SN7PR10MB6643:EE_
+X-MS-Office365-Filtering-Correlation-Id: eafa59c2-478e-4878-5c79-08dc62ee624e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	=?us-ascii?Q?pEhhOODNW3J2iHGCcWS9k6TgaXQe60oE3MM4hTIhJuhnc52Kcolz+ygPY/Co?=
+ =?us-ascii?Q?Y0QhIfK7T6PWEP/XfaaGKdPX4vsJC2v/O6ZyS8hTGX4VNQ6TAR3dCrCSHh9A?=
+ =?us-ascii?Q?DxP5M35QyRJt0EvePr9AudscER5Dhd8dE0QY7LRM4xLqbEwOlhH8gQmxmOlk?=
+ =?us-ascii?Q?OZOulgcKm5sjKlL48r5ILg/MVWXMYCftSY2COL4kbNjXFVXqo714A/tiSfac?=
+ =?us-ascii?Q?L4VC+M2OUTuahZbJxp5Ka2306w/x1t6bBchvXvleHiOYroE/wIutNstcFyxg?=
+ =?us-ascii?Q?/HLrNdkcST4N7NkPaFVc1ISxuOLW511HLLNqlspxO7VLQL73hqiT2gh8VpMc?=
+ =?us-ascii?Q?ZLCJBDcBEdmuvaWK/c7uaPOnqQFefqHBhG2ZF4cCd/mWZNv3IR4790dNwt9w?=
+ =?us-ascii?Q?EXKL26wuYnIkqzW8z50SGDe/K+SDR3bG1KIY5xTS6i3C8cENz+OWwiMaFZ0/?=
+ =?us-ascii?Q?ErjZcYUNLjLFyPc8UAe3yOWcfWoP/ivtJ3fe6T/KJrqslOlWbvC1C1OARHAM?=
+ =?us-ascii?Q?bFh2DJes+5i4XL5/oUxDlTKIENDAOeuXeBDEy40GyQfrNqrkdL2oQ47iS/Ri?=
+ =?us-ascii?Q?EizPjF7vkPRomPrWeZ0bX32en94JEZvEYVJacwNSC0kutjsrClOb75n3vqVc?=
+ =?us-ascii?Q?dcgcMjMka3f9gnvQRGiHpqnDd1xAwMB2uCGzOTfrY10PJkOmDX6zzNBYVPm+?=
+ =?us-ascii?Q?TJtpfBJOhaAVwN/jKCMgsdpbINwsGREj553fumARIFkhCTWehSOEOHxOrTxz?=
+ =?us-ascii?Q?h6R0TaY2V/boU0oN8N+qMH/Otxn2X9KOmxCeCdvluJnRCrM/YZ0iS0G/fa0y?=
+ =?us-ascii?Q?gUpZd90rG2MvG+duYyl3lpsv83D/BfPwecW5CY40I1f+yzJU7tKs30ogXcIR?=
+ =?us-ascii?Q?5DVppLSvE2DUW42bf4V7Kubx1zTA+1s42IHXYILuucOCDQ44VSf304PKMkVk?=
+ =?us-ascii?Q?isgD1vbmc9cNgTcxXf7Nvl/rLAjwPf1PcJfI6NgrAW/fYpOqkW/Xunfyz9XH?=
+ =?us-ascii?Q?YOW5ykFtUPQrunoUXvNdhy2bNGUyFhtXVOOzvjHpjGCRsLMj2nO8XSEw8zvJ?=
+ =?us-ascii?Q?4mYtrDTKn2WzShC/SmOJw+yS5rKt5o5uHoBHsaK+nh5uMjNVfhU4lHTtVTlp?=
+ =?us-ascii?Q?jTraRJfhrzX+YOApI8rxOhF+kWKpHVaWUgKMF78eh3ZsFEXvjKZeZz8dpZF+?=
+ =?us-ascii?Q?CAsyUI/GmTGUfBLBoCNxaHs6aaq2Ha0P8uI4xiUheTBvsE0+i7PoBq6xglI?=
+ =?us-ascii?Q?=3D?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7933.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?O+03a+vMUH8/pzKD5q5XufCGwE8utKAqwZhEBHR52FxLtD9Y7XMgMZNk1Fel?=
+ =?us-ascii?Q?o7cOWnZIhm9RqJwGyuuGjA5pjP5NNr9j80Dbpzo3/O9CzKjrgUmtx3o4IOel?=
+ =?us-ascii?Q?Cid3m189zfROQPuRPQ4CEvCtJmMpucJj2GsctdlwyOQ28MTVE49PGHGTSRbM?=
+ =?us-ascii?Q?5jYSWKxSTzJsj2ZILl1DhYepiUw4MXRNbJXQ3erB76VmxK6vRC4V/vBi6eAH?=
+ =?us-ascii?Q?28zlhlpZiTpW/qxpu5Vds3EE5ubnyzKc+3HNI0VAfU9Peq5n52DlwjXeOLdw?=
+ =?us-ascii?Q?0HYyZvuO5peht+qaY5hGb9UlSe8MRpdV4ZgBUCB0iaNZQAalUK037lm/kc4t?=
+ =?us-ascii?Q?wfBufW4pedNgkZEoOptxTTLlroW650nKt3F3i/+TykO956qq04QoAP/tRfQm?=
+ =?us-ascii?Q?d9GyFAGgton4ykcI3NHz1IlF8OMPgYu4CHkwQLOIrO76Ll6yDTLNUZi+Ih7K?=
+ =?us-ascii?Q?MNWu8CSUyrVUNw16LQTDX/KSPQE5w2NAcu52T276GNzi7b4tTlFlQVIb98mH?=
+ =?us-ascii?Q?F9qEOwvb3xW0BsfnIdu0ePSO8oj7klM+Qs8S4aP/hg7Nfl42HXhUiTkX/mXe?=
+ =?us-ascii?Q?QuVcuF4xSvlNE2j4SlGbA7lM8bQm8+LvNHZO0g6nYDrOnPwKA+zaVzvXHovU?=
+ =?us-ascii?Q?tiK3uGldwGuRJpT4PuSX9VeRwMHS5rJRLgaCNxpZsdqx5NfSwdEH+vRNJVEL?=
+ =?us-ascii?Q?lBPxp8/tpVvypVmWK33hw9xZNEy6Sy7zpf9d3yMXPLTT4FxK/tM9BPhLplro?=
+ =?us-ascii?Q?3IaCyK5Q+ke1p67lA4iaK7u1g5rRXVFIquopHbHcuIBVUUnvAUT94jkxnpOj?=
+ =?us-ascii?Q?CG6CxDyLCWM7V7xkSUgQu8vL+BdjcH82EiKR+0dYl0WCm/9uPnpfgWPpJ8C1?=
+ =?us-ascii?Q?Jiek3SmPgWdh+Bar2Peii6zuhUOFmV3esPb3880bxtkOIMIRTx6/i7a9L4yW?=
+ =?us-ascii?Q?DX9PfAf68O1SxoumCqfkdCpgRGYtyKZeU8fSL7E8UUnE85BSyunJfi2twiMB?=
+ =?us-ascii?Q?hqTEukemjtJH79qG/WqmTuXODLvTcYf5gsY+r7OrZvKOn5Y/G6FyfWLY/UEc?=
+ =?us-ascii?Q?0EIC0JKz9kkc9bXEWIoRLikyMidErcx4xjSnqY+sAVR89Z12p+ZZneV75RHk?=
+ =?us-ascii?Q?EmWe1qfZkHdxLNebaxmNZfnAgkEuE4kFPqxeuCcoDvsIXCHdoHxeaZ9ZzRb4?=
+ =?us-ascii?Q?6dcjdA4psCRiRXDGiD62ORU7lZ9oj1IDF6QDjMAfWVUFG3ktRjqdeYL18clu?=
+ =?us-ascii?Q?mSz6LtSsLPP+8/Y9hynI5pml/W20MdTxL0v3UZOkGTUIsWxo0CdT27sAxdAh?=
+ =?us-ascii?Q?rODQUQp4kb733FIK1EMMkCDzCP/nayu9mzwJpjWsJWMaZf3Gwq0dZx55E0Jj?=
+ =?us-ascii?Q?vyFpaBo8XNuiYaq/UeOFXoqVoY0sKgshZm4LPZqXJBF1GOvztbhZQ/jn+ZxV?=
+ =?us-ascii?Q?bngQv0tYnEZ9adm0b6qN1uCs7Lja6RK4MXnvh0i1YhWzRcyq/roQT7TTRb9z?=
+ =?us-ascii?Q?9l4RmE3JT9DROG7LPt1wZH+6AWE5jJijYn+0kO/JPoWHTQ8o7E/0Ho2c3ZCd?=
+ =?us-ascii?Q?DHh+VPovojUYh/MyhXCZ42nhBMO3KjnjT8MSGcSi?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	uhEPRrx7TawheeoTSsJzKYdYAfoplHqc90wvx/HBNyV+e2tLoxaODzAE3KFnD/DQQEuoJawqeGovECR+XadQiiNO02ArIZh3lKrTYlAXlEdWLU6Qxb8OdL3A+NJmy3hAmzq4NfSAKVq2NvgEOJ87e0Ka6SlCvFcXZJEM5GmQ1bRpydtCgYL8mnkiQoLrEnu4epr5qint16IwTvRLIJGiZEXV0TWSlssAS9YlYdnwvHmZEcWPwx1C1PbRoaFfe/eS61xufRfh35L8YS+QaKFU3yhKZ6KU4VHmFtYmFIZ2K6O9VF17orsluS21M0zsM4ZWhmgrKjYFvQG4rvex2C1T2i5+s1tCz3v3brLriRh7jCxquOysO89k4V/p4A1wQ/pLTEt9I+eQvu1bRH2A++/iKfvJ43L6HcGDsbnsRbfzez/TBzFeugJFfPduSi3wo0Oq/Cl7T+g/kEtajO529UiJ3nZGHDktZiMvMJKLLLBwiTBadRthyuX7JJht6eWGygyQ3NiD/STj+k+m1LNCwSt2hcZ2jpqYOLPw9ln/jfiDRQVMJLu9G+Gf0Vftln4XvQTX9hRqJI7mhQrYoHkPxGkwooFnmQAAbWG5ZiEGdOZz9rc=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eafa59c2-478e-4878-5c79-08dc62ee624e
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB7933.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 17:05:17.1991
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cCdVSEypmeslhQwo8dAORiX1/7hQkyik7ZlpbdcyifBR4l3E4KpbWP4ac4OfZ3SCBAUJ1454J1WoFCjm4e0Iow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6643
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-22_09,2024-04-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 bulkscore=0
+ mlxlogscore=865 spamscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404220071
+X-Proofpoint-GUID: jodYTVwg48pOOIv_tiAanpeaS2G8v4dB
+X-Proofpoint-ORIG-GUID: jodYTVwg48pOOIv_tiAanpeaS2G8v4dB
 
-As talked about in commit 14d3ae2efeed ("ARM: 8507/1: dma-mapping: Use
-DMA_ATTR_ALLOC_SINGLE_PAGES hint to optimize alloc"), it doesn't
-really make sense to try to allocate contiguous chunks of memory for
-video encoding/decoding. Let's switch the Mediatek vcodec driver to
-pass DMA_ATTR_ALLOC_SINGLE_PAGES and take some of the stress off the
-memory subsystem.
+* Liam R. Howlett <Liam.Howlett@oracle.com> [240422 11:25]:
+> * Marius Fleischer <fleischermarius@gmail.com> [240422 11:11]:
+> > Hi Liam,
+> > 
+> > Thank you so much for the response!
+> > 
+> > > >
+> > > > Crash log:
+> > > >
+> > > > general protection fault, probably for non-canonical address
+> > > > 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> > > >
+> > > > KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+> > > >
+> > > > CPU: 0 PID: 79545 Comm: syz-executor.0 Not tainted 6.9.0-rc4-dirty #3
+> > >
+> > > This indicates that you built with your own patches.  Could you test an
+> > > unmodified 6.9.0-rc4 with your setup?
+> > >
+> > 
+> > I'm very sorry for this oversight. I had applied the patches for another bug
+> > from this conversation
+> > (https://lore.kernel.org/all/20240404070702.2744-3-osalvador@suse.de/T/#m480f21ab850996395082d0faab7f624f45b83781)
+> > I will test the reproducer without these patches and get back to you!
+> 
+> After testing with your config, I can see that those fixes are needed to
+> boot.
+> 
+> I am going to try 6.9-rc5 with your configuration and see if I can
+> trigger the issue there.
+> 
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-NOTE: I haven't personally done massive amounts of testing with this
-change, but I originally added the DMA_ATTR_ALLOC_SINGLE_PAGES flag
-specifically for the video encoding / decoding cases and I know it
-helped avoid memory problems in the past on other systems. Colleagues
-of mine have told me that with this change memory problems are harder
-to reproduce, so it seems like we should consider doing it.
+The reproducer does not trigger for me with your configuration and
+reproducer.
 
- .../media/platform/mediatek/vcodec/common/mtk_vcodec_util.c    | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Does it still happen for you in 6.9-rc5?
 
-diff --git a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c
-index 9ce34a3b5ee6..3fb1d48c3e15 100644
---- a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c
-+++ b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c
-@@ -64,7 +64,8 @@ int mtk_vcodec_mem_alloc(void *priv, struct mtk_vcodec_mem *mem)
- 		id = dec_ctx->id;
- 	}
- 
--	mem->va = dma_alloc_coherent(&plat_dev->dev, size, &mem->dma_addr, GFP_KERNEL);
-+	mem->va = dma_alloc_attrs(&plat_dev->dev, size, &mem->dma_addr,
-+				  GFP_KERNEL, DMA_ATTR_ALLOC_SINGLE_PAGES);
- 	if (!mem->va) {
- 		mtk_v4l2_err(plat_dev, "%s dma_alloc size=%ld failed!",
- 			     dev_name(&plat_dev->dev), size);
--- 
-2.44.0.769.g3c40516874-goog
-
+Thanks,
+Liam
 
