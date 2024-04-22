@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-153769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E90D8AD2E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:00:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13ECE8AD2EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:00:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1EEC1F2191A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:00:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 928A2B2611F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73CF61552F9;
-	Mon, 22 Apr 2024 16:59:00 +0000 (UTC)
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7601D155317;
+	Mon, 22 Apr 2024 16:59:02 +0000 (UTC)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CDFB154C12
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 16:58:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5BB1552F8
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 16:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713805140; cv=none; b=mqHBwB2ECECBURLax9TGEWnDzAymAGPy1zP9rlBG3Y11SbIPctlwNa8WNVV0+mG49cza9xCYsh3ib8qTw/5vs9yaj6zQlqV+67Sb4iOtZbSG1NZUHsbQifUv/2Mh0b7b53n28rIo08xZAfuvKD1ZwZM/04fMKeEVjWQAKy2AwWI=
+	t=1713805142; cv=none; b=dwX8vsASCOQ4nRbRXg+xT51XpRfTQpXcvUmI/WHWXVpUItmYJhbU0VWvvB3gusyNuIoemDwtarsHZA6tklVk5x/piS1MesxCYHvvItGc4kr9et59FqomvTIcMqonj8ah1br9qWL/emFo3ZdRl1sXu9Aok2MSXnCD5R8hpe3Lrt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713805140; c=relaxed/simple;
-	bh=Fjjwd9JMyXBtYEIPinJUKp5+nS7NszZndg1YDzHArOo=;
+	s=arc-20240116; t=1713805142; c=relaxed/simple;
+	bh=YgvAz9KHnENdbdQSX+/hzGCPyOv+Dc9oxXqawLxd/M8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rgPeMWrEbpKxodE01uXT7+lE1GP1ZIHP1Ituecvwl49ExfPFZUP8n/x+zHTEkeH9ZSFlJ5qdjKNrg1BikBc8JpxFlBzCxDP1+/NSkafBa8uK0F3ADXzLSYEvmguSqCT/Z23q+oyRU0riokcXHgY6yyBezo//56TPBDkTe2t/4eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.52
+	 MIME-Version; b=oAoFP4A9Q8Mer/JcS8Zj1o61mvFzTaGJzUmQe7quPtUOj2BsS0AQb2zbbYPBROpmbBDlLdQhmBoW1KeXXg8u0tBHMhnp+634Tx1ToQOdXAepQym93PqRoUTM6detHYB5X+Us5/S0vuOnPM9/PCK584Obi/txcjjb6OTRbIGaWmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-34665dd7744so3539565f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:58:58 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56e56ee8d5cso5870913a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:59:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713805137; x=1714409937;
+        d=1e100.net; s=20230601; t=1713805139; x=1714409939;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RcxZMik0TKevJdYhFoU/PQpjeiPff+g7faQ8eEohWOM=;
-        b=DpqUhgxNAKxqw0WOjyhFje6iaJ6GnMSAPXiZXS6SVxix4m/OSUjFHX4MB+ohdw39J6
-         LljkQ0i3zrMaxu5EDgpqZVgZL7UMirL9bH/6pPtzgIfcYNZ6Rz9KURpq2s2u+0qPR2wF
-         hOjMPj1gi1oQBVRF5L5ewZyo90EWPCaajinQ0Lc7qTeWZZWc55EAKyJlccr5y0f74CoO
-         Tt+Wrz8k5Siu5YBt/DnGM6PhrRyqIYjnQjEobLakm+NMPrVje7gynBhzj/lyNmWIe788
-         NHsovbFkFGOzlsEoOGs63erhyyO4CB5qqYBiXD63d2JD5pbNWoogoWGRPg8anAyx4kI6
-         ygjg==
-X-Gm-Message-State: AOJu0YzPO7cyH2naCq+ZnnUeb6CuRmx9zLWOs1h3gDiMJJDP+/MJbJc9
-	6XvF4vkKuUh30xPMKeM9ONA6xPlNU/dmmBzmxF4HCEuYPjlfvW5T
-X-Google-Smtp-Source: AGHT+IFqbwGIM5IHp0KMW3LoQg1VfO9D2TyJ2R2GVaZE4/ZnvqlBuYGGKO/fTTHY3crNhp52NwKRhw==
-X-Received: by 2002:a05:6000:1212:b0:349:c76f:c737 with SMTP id e18-20020a056000121200b00349c76fc737mr6751728wrx.47.1713805136761;
-        Mon, 22 Apr 2024 09:58:56 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-008.fbsv.net. [2a03:2880:30ff:8::face:b00c])
-        by smtp.gmail.com with ESMTPSA id l9-20020a17090615c900b00a555be38aaasm5941202ejd.164.2024.04.22.09.58.56
+        bh=K16+OPsEQjJ9rybaX0bQn7NDfdzmf1VzGQpkmeZBSqE=;
+        b=Dq4zBNUr7ibGoEx/KORlxCsbIawRLDvi/eMFQS6rsDNR4TelIFeJmTx60QMrpGTF1R
+         sG1qRXIrNQjc2ZQ8bVxNygsl5wuRahai55xJ3zlhG4N0K2rHMvnQKYzFLUDU0K4+xBo4
+         U/3NAsWdrlqFQx6IcWf2Qg9U3lCOkuqkUeBfZTX34eVduHk6SthHBEjho74LeWyqyf2m
+         GWr1fOPzP9m//3xVRtWQLKkJEH8L1/h5M8Rq7JphyZU/b9I/wKhUAy0APnYf9ZMeSLqQ
+         EE3xusN3MlRbwTm58jFiwvJTFvKfmBzvAT+FDNBwmtTnPwibTy97rdByDIjyZyzjBGl+
+         N7HQ==
+X-Gm-Message-State: AOJu0YwHR+eODBbKEfH5BUoP93ZFMdABwEPChmAGLR71uTCZ6ETXouQW
+	bJKn2AfuF2/ctxcSnk9A87Ou0DCiVYCmNi2KzmCMHgLoV9cXVoe/
+X-Google-Smtp-Source: AGHT+IE0xJW8Rzq3oCU66PJ2lSgR3MaWR/hRHFKcjHzpZsazbT/2HB+jEN/vkyl4Fb4qe/SdgA4U8A==
+X-Received: by 2002:a50:9e66:0:b0:56d:b687:5a45 with SMTP id z93-20020a509e66000000b0056db6875a45mr6908036ede.1.1713805138567;
+        Mon, 22 Apr 2024 09:58:58 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id k4-20020a50cb84000000b005705bb48307sm5729767edi.42.2024.04.22.09.58.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 09:58:56 -0700 (PDT)
+        Mon, 22 Apr 2024 09:58:58 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: jpoimboe@kernel.org,
 	mingo@redhat.com,
@@ -62,9 +62,9 @@ To: jpoimboe@kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
 Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH v3 05/10] x86/bugs: Add a separate config for L1TF
-Date: Mon, 22 Apr 2024 09:58:19 -0700
-Message-ID: <20240422165830.2142904-6-leitao@debian.org>
+Subject: [PATCH v3 06/10] x86/bugs: Add a separate config for RETBLEED
+Date: Mon, 22 Apr 2024 09:58:20 -0700
+Message-ID: <20240422165830.2142904-7-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422165830.2142904-1-leitao@debian.org>
 References: <20240422165830.2142904-1-leitao@debian.org>
@@ -81,52 +81,54 @@ where some mitigations have entries in Kconfig, and they could be
 modified, while others mitigations do not have Kconfig entries, and
 could not be controlled at build time.
 
-Create an entry for the L1TF CPU mitigation under
+Create an entry for the RETBLEED CPU mitigation under
 CONFIG_SPECULATION_MITIGATIONS. This allow users to enable or disable
 it at compilation time.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- arch/x86/Kconfig           | 10 ++++++++++
- arch/x86/kernel/cpu/bugs.c |  3 ++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ arch/x86/Kconfig           | 13 +++++++++++++
+ arch/x86/kernel/cpu/bugs.c |  2 +-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index bba5b65034dc..192d20348b41 100644
+index 192d20348b41..f5c941a0a837 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -2685,6 +2685,16 @@ config MITIGATION_MMIO_STALE_DATA
- 	  attacker to have access to MMIO.
- 	  See also
- 	  <file:Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst>
+@@ -2695,6 +2695,19 @@ config MITIGATION_L1TF
+ 	  hardware vulnerability which allows unprivileged speculative access to data
+ 	  available in the Level 1 Data Cache.
+ 	  See <file:Documentation/admin-guide/hw-vuln/l1tf.rst
 +
-+config MITIGATION_L1TF
-+	bool "Mitigate L1 Terminal Fault (L1TF) hardware bug"
-+	depends on CPU_SUP_INTEL
++config MITIGATION_RETBLEED
++	bool "Mitigate RETBleed hardware bug"
++	depends on (CPU_SUP_INTEL && MITIGATION_SPECTRE_V2) || MITIGATION_UNRET_ENTRY || MITIGATION_IBPB_ENTRY
 +	default y
 +	help
-+	  Mitigate L1 Terminal Fault (L1TF) hardware bug. L1 Terminal Fault is a
-+	  hardware vulnerability which allows unprivileged speculative access to data
-+	  available in the Level 1 Data Cache.
-+	  See <file:Documentation/admin-guide/hw-vuln/l1tf.rst
++	  Enable mitigation for RETBleed (Arbitrary Speculative Code Execution
++	  with Return Instructions) vulnerability.  RETBleed is a speculative
++	  execution attack which takes advantage of microarchitectural behavior
++	  in many modern microprocessors, similar to Spectre v2. An
++	  unprivileged attacker can use these flaws to bypass conventional
++	  memory security restrictions to gain read access to privileged memory
++	  that would otherwise be inaccessible.
  endif
  
  config ARCH_HAS_ADD_PAGES
 diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 21daaf202b7f..d20299b350d7 100644
+index d20299b350d7..c6c404b1c6ac 100644
 --- a/arch/x86/kernel/cpu/bugs.c
 +++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2373,7 +2373,8 @@ EXPORT_SYMBOL_GPL(itlb_multihit_kvm_mitigation);
- #define pr_fmt(fmt)	"L1TF: " fmt
+@@ -990,7 +990,7 @@ static const char * const retbleed_strings[] = {
+ static enum retbleed_mitigation retbleed_mitigation __ro_after_init =
+ 	RETBLEED_MITIGATION_NONE;
+ static enum retbleed_mitigation_cmd retbleed_cmd __ro_after_init =
+-	RETBLEED_CMD_AUTO;
++	IS_ENABLED(CONFIG_MITIGATION_RETBLEED) ? RETBLEED_CMD_AUTO : RETBLEED_CMD_OFF;
  
- /* Default mitigation for L1TF-affected CPUs */
--enum l1tf_mitigations l1tf_mitigation __ro_after_init = L1TF_MITIGATION_FLUSH;
-+enum l1tf_mitigations l1tf_mitigation __ro_after_init =
-+	IS_ENABLED(CONFIG_MITIGATION_L1TF) ? L1TF_MITIGATION_FLUSH : L1TF_MITIGATION_OFF;
- #if IS_ENABLED(CONFIG_KVM_INTEL)
- EXPORT_SYMBOL_GPL(l1tf_mitigation);
- #endif
+ static int __ro_after_init retbleed_nosmt = false;
+ 
 -- 
 2.43.0
 
