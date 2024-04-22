@@ -1,132 +1,101 @@
-Return-Path: <linux-kernel+bounces-153437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FD218ACE18
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:25:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF8178ACE19
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:25:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E29AB23AB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:25:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAD8B282075
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:25:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441B414F9C6;
-	Mon, 22 Apr 2024 13:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8216414F9CA;
+	Mon, 22 Apr 2024 13:25:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="iw8KWIwF"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="LpxCAOKJ"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236BE3399F;
-	Mon, 22 Apr 2024 13:25:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1AE14F13B;
+	Mon, 22 Apr 2024 13:25:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713792309; cv=none; b=aP95UZbV9VBcbm877DKjJbvCaXW9AgMoE0nrgvCqwzXp5WZF6d9M4AEtW4sGo74l8AOfYr676CG2+N/lPCMx0NAJe0DVFGy4y9fObbXngDAox1ZmDuRzf91cHtjnYmhjNn4dibTW9gQq+XxL0x+vB+hl+7Ooy7H8oFT2nPcel38=
+	t=1713792337; cv=none; b=cJuwjyXu1zgVf4ZD36JH+xLwd1eKQb0/s9JImYtfIvvst8Q5gPYyxLe20aWLFTc7CycoY6GTArbvODfJQ0WVLPdDed6seAQhofI3We69MKbh+R7Y1tGgEoXp47nL/obmgkxYDucatnAN1JoE/y4popFvnV/3qYsFtUsTMvwc4p4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713792309; c=relaxed/simple;
-	bh=VWGI9GXE4lgncvIzKvofxzKz5i2T0i+YqDK2/rYg0sc=;
+	s=arc-20240116; t=1713792337; c=relaxed/simple;
+	bh=5DvoennQmckQFIaYiAoIASFU7DEMjeJ/9hYgo86JV4Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B6WlZg8OPsXj7+r3Kajs8ZrT4VAFECruW1HxJeTWY6pcILhKtq3YZQ4OyIX++wy0Bc7xwDpR+X9N69kWK7bhXrPqIbzwotTh3qy9tKQlEqzlLVNgzqpV7XrW2gSLmSU4j+162HIfbjFf51+p0zUR91JqsaiuDjJNmbxh/0a7M8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=iw8KWIwF; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=1KzoEvybAcB20CSkmMpu9Ekd3/KUeHN6agkm2+FPdKc=; b=iw8KWIwF0YVHdoF9CDF/grPXt0
-	pZJTtK5TGtgyriFwitf+ue9HsP/WEHM1EYX5CogAV0gXvj4PEiTmyqUKlLN6IdynOmphKmrG0lE5w
-	KF0tBI+Z6LUndPh86SMAKx5O9MlNhi6g8Mk1pH/tw29RDMfOojRKJ1xly1yQCSVKrj+o=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rytfI-00DcTf-Ag; Mon, 22 Apr 2024 15:25:00 +0200
-Date: Mon, 22 Apr 2024 15:25:00 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Fabio Estevam <festevam@denx.de>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux@ew.tq-group.com
-Subject: Re: [PATCH net 1/2] net: dsa: mv88e6xxx: Add support for
- model-specific pre- and post-reset handlers
-Message-ID: <719d12fd-d720-40af-870a-6571be4fe06d@lunn.ch>
-References: <2b924dcdf8adfe2c0b6b5998e47e836dd8f9e1b1.1713442039.git.matthias.schiffer@ew.tq-group.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BDu9EOg4ufIum4zP28HRnlz8o/QqEMXl684TWkwF+AN6nZe5cUwqHXpZBLWG2byT+xJ8YI+ge+XDU/7DbxnUxlKkS6i92i4u5HWrNWVsNA4Pa8Cwt71v1HMkt1Yvgvmiwov6nn2QHEjjWJzieGoX2lwQFL7mABP1jM/VpqrY8bM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=LpxCAOKJ; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3852D40E0249;
+	Mon, 22 Apr 2024 13:25:34 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id BwRWVbxTdVd4; Mon, 22 Apr 2024 13:25:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1713792330; bh=qmP5qyvqIWfUfyAhEfkmOf7gu8DbOspWfu7561GReo0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LpxCAOKJ21rdSnLNOzU4D1RYdLRCcOX2VTRJl+WnZAAJER9BSoDoOoFUwSAfg0rXi
+	 LQ+lejeMqvQcilsI/ysnlsXOJP4uGjrMIkMwBsJMCr2rxofLa0EltkVaG7Fnf8WWkg
+	 w6KMQDlV+bD1NVWOBdw/azhFpCZsvLURHi9CjTuEvhk2J8p81+tcJYDN7kZK+5r+ax
+	 xzLmPYU9OyD2uiQ+foh31Rlgb5BbacfVfrpU2Kg22MTMW39XfMawcUsMi21aihT4ow
+	 zbc0SDszmzKIkjX2CNBx21Ju8LjXTA9BvyUyo6Io5IlBaI0V2ZdcfbAR9Hwzws0wsy
+	 tPDP4efGU9staHn0IL70Dg1qSC5y7BAgxJAaPbzWXHnnmcMcNLkzVgH55b9kfdT5ME
+	 OocJt1YeHp9iEgO3PZnZYGVL8/gZnpixfnUAjuj2AsWjzIdM/aid3/9csPHhn0jBAT
+	 6tnNt90ARUBsFTsdBCYH0Wi7VXhXmOH6t8U1Tgpk2VeCUclKQ5ilNTeoeoCug+Ymi2
+	 mUWMVb9ffqqFX7ObfNR4a/Xv8dd55f5dlDGI1RxaH00UPXmF6eqk05oTrpHQox9rVf
+	 X46/BwuskG8km0gvd0nn19nqJLPdkSDM+plKwrWyHENf6UkmzjtO1D8CjkXAq61GDP
+	 f0+C1kFv+sAnbpSE2WtU0gMI=
+Received: from nazgul.tnic (unknown [IPv6:2a02:3038:209:d596:9e4e:36ff:fe9e:77ac])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 523A140E0240;
+	Mon, 22 Apr 2024 13:25:19 +0000 (UTC)
+Date: Mon, 22 Apr 2024 15:25:21 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Nikunj A Dadhania <nikunj@amd.com>
+Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
+	kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+	dave.hansen@linux.intel.com, pgonda@google.com, seanjc@google.com,
+	pbonzini@redhat.com
+Subject: Re: [PATCH v8 09/16] x86/cpufeatures: Add synthetic Secure TSC bit
+Message-ID: <20240422132521.GCZiZlQfpu1nQliyYs@fat_crate.local>
+References: <20240215113128.275608-1-nikunj@amd.com>
+ <20240215113128.275608-10-nikunj@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2b924dcdf8adfe2c0b6b5998e47e836dd8f9e1b1.1713442039.git.matthias.schiffer@ew.tq-group.com>
+In-Reply-To: <20240215113128.275608-10-nikunj@amd.com>
 
-On Thu, Apr 18, 2024 at 02:16:07PM +0200, Matthias Schiffer wrote:
-> Instead of calling mv88e6xxx_g2_eeprom_wait() directly from
-> mv88e6xxx_hardware_reset(), add configurable pre- and post-reset hard
-> reset handlers. Initially, the handlers are set to
-> mv88e6xxx_g2_eeprom_wait() for all families that have get/set_eeprom()
-> to match the existing behavior. No functional change intended (except
-> for additional error messages on failure).
-> 
-> Fixes: 6ccf50d4d474 ("net: dsa: mv88e6xxx: Avoid EEPROM timeout when EEPROM is absent")
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-> ---
-> 
-> One other thing I noticed about the patch referenced in the Fixes tag:
-> It completely removed the wait for switches without a get_eeprom() op.
-> Are there any switches that do load their configuration from an EEPROM,
-> but don't provide read/write access, and thus don't have
-> get/set_eeprom() ops, but that still need their config load to be
-> completed before/after reset?
+On Thu, Feb 15, 2024 at 05:01:21PM +0530, Nikunj A Dadhania wrote:
+> Add support for the synthetic CPUID flag which indicates that the SNP
+> guest is running with secure tsc enabled (MSR_AMD64_SEV Bit 11 -
 
-I _think_ we implement read/write support for all devices which have
-the needed registers. Given the large number of ops structures, it is
-possible we are missing entries, but nobody has reported any issues.
+"TSC"
 
-> I've left that behavior unchanged in this series, as I currently don't
-> have access to other switch manuals and no way to test their behavior.
-> 
-> 
->  drivers/net/dsa/mv88e6xxx/chip.c | 53 ++++++++++++++++++++++++++------
->  drivers/net/dsa/mv88e6xxx/chip.h | 13 ++++++++
->  2 files changed, 56 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-> index c95787cb90867..8650d8646120a 100644
-> --- a/drivers/net/dsa/mv88e6xxx/chip.c
-> +++ b/drivers/net/dsa/mv88e6xxx/chip.c
-> @@ -3075,25 +3075,26 @@ static int mv88e6xxx_software_reset(struct mv88e6xxx_chip *chip)
->  static void mv88e6xxx_hardware_reset(struct mv88e6xxx_chip *chip)
->  {
->  	struct gpio_desc *gpiod = chip->reset;
-> +	int err;
->  
->  	/* If there is a GPIO connected to the reset pin, toggle it */
->  	if (gpiod) {
-> -		/* If the switch has just been reset and not yet completed
-> -		 * loading EEPROM, the reset may interrupt the I2C transaction
-> -		 * mid-byte, causing the first EEPROM read after the reset
-> -		 * from the wrong location resulting in the switch booting
-> -		 * to wrong mode and inoperable.
-> -		 */
+> SecureTsc_Enabled) . This flag is there so that this capability in the
+> guests can be detected easily without reading MSRs every time accessors.
 
-I prefer having the comment here, where it is visible.
+Why?
 
->  	int (*ppu_enable)(struct mv88e6xxx_chip *chip);
->  	int (*ppu_disable)(struct mv88e6xxx_chip *chip);
->  
-> +	/* Additional handlers to run before and after hard reset, to make sure
-> +	 * that the switch and EEPROM are in a good state.
+What's wrong with cc_platform_has(CC_ATTR_GUEST_SECURE_TSC) or so?
 
-I would keep this sentence here.
+-- 
+Regards/Gruss,
+    Boris.
 
-    Andrew
-
----
-pw-bot: cr
+https://people.kernel.org/tglx/notes-about-netiquette
 
