@@ -1,181 +1,318 @@
-Return-Path: <linux-kernel+bounces-153236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDCC68ACB40
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:52:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5650C8ACB81
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:58:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94E47281C6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:52:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C168B1F23580
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA792145342;
-	Mon, 22 Apr 2024 10:52:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE8B146597;
+	Mon, 22 Apr 2024 10:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QcqiBEIr"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ASXSqTH4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76EA2482C1;
-	Mon, 22 Apr 2024 10:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9061D482C1;
+	Mon, 22 Apr 2024 10:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713783154; cv=none; b=DFwOcZAeExRWMw6YIA1f3IvQvHoUrTHgZHYgw7EFVHy1vnEoG4fkWtcM0rqH5o/WjiUOTS5I7GEhMUmTdMwobq3cgWzCeZRbwJZEnko4l4wXVv1AhnCaHp5MJf44ugjlxvGAh9aOZ9XGPvTCCVdVdW9vuEC4bAOAqvwRW6OW9Mk=
+	t=1713783506; cv=none; b=iGqdEPG8U0HLXvtI3JtnO7a38WAzrIsgDGsZbYolCm1BEXjiDO3L4Q4M6wJM6zdofFTxxJsM7WiEvVcOtwwegSdJusN1trWtoYCqjTFjWbvufDU3cxf6vK50MzcVLAj38ntlV7yjkW8VJjxnEqab0SPHnZ6WaMcV3ipQi8ZITyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713783154; c=relaxed/simple;
-	bh=0KlyZbYLtPzoaO0C9rWrtsHQkri9Vg0zakhGtHwYeko=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=AL+2fy6M+dLIVy3KwhHj9N9acwDcGaJAqX9xLmjLx5+cFLlXY8lKmpm8CJgrdoPumOM1A2snqBK8mfUZp9atQpM3EBYDDC5eSsmbnkNM2Us6UoqRz8QCWinVNCb2I7Vi1vmKq+7RbNRI1N1Vmj/+KE9zDaNhJXReK02hFKa4Nv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QcqiBEIr; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso6575908e87.2;
-        Mon, 22 Apr 2024 03:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713783150; x=1714387950; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XB9rFLfMWN1g7ihRLHwOUgZ6Nm1LwOP8sZGJRcsldyE=;
-        b=QcqiBEIrDdfB2wRJu8SJ4XUlcj7/V+wF/e64LNSS/BwV7wqLh+3FgprSGbhFmYs/RX
-         Q2DD7GRioJ1VjI4zN2YFp5oRfKpNFs4VeEqvlQGi6wGeK69m9W/O6OY+MxVe9mKEOAjx
-         YQDZSDSpqJKuEBnGslw7uceOBDE/eVz5Jotm/r192Pt3WZEs8vKomEuF1jDcKr08CLIu
-         nxwsWrV6uc55lvUnZno6s09QQyQ0prTpcuMMUwZO/Y9uPukI90909IkLcoMGXg576jIS
-         If7+USLHSv2R0f7mnkNEw5Fm8RSLNtgF6/RjILYhBWr/jSn2zrye0jqdF+dKaLBCLG3B
-         LXdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713783150; x=1714387950;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XB9rFLfMWN1g7ihRLHwOUgZ6Nm1LwOP8sZGJRcsldyE=;
-        b=VMHpXjuaTtxcKNfmjzsWlxl967h/HeJ3Udn5H5wD2k+0IWAi1/nCqVV0E8AlJs0QfU
-         PmTyX/KDcq1zk0Ear5nVL+E58G2RdOX/PkuTwaOJFusFTNoTZh9gCJCTS0tNwHLbjolU
-         1OXhwu8Iap+O/4tTiNrXH4U5YaolIjdjyJUzx+ZgZXULYgl8DEl01Be4YWRzoVW1agf4
-         95KlQ2ISwuRNs1R6MZgZA0jcBlNEFrRcY3PSZtMJFH40ofL4XKZ0s9e/MUpjag0EQ71C
-         3HnBBUtES7/8dJRM+R38fzEEcMnaEaSthaB+fC53htctNqC7uCIYv3ogeBNgQnwYIEwf
-         iXsg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3WGgIHLHCGjcadOBKyfElzqB+tiaEutYRoy3eGMXXXwMwki0I++V8iIDuZXc/Uq3ZSkYlVKB07rXppU8Aehg3rSuGC1rrTewvpOQt3sPXGwf+ym9EcPWN4tlggLhxwfiqDy4R+pUrygztrhrB1Yptp1MUgZoxOGSFKizoLIKbI6j11ZrF2N2A
-X-Gm-Message-State: AOJu0Yy0h1hAcsQq/kla0/N2mX+G23LsAqUeaKC3fAatET063+Hm83NF
-	QB0RMwXJAhSi4NLbzebkrPfxY/FUnf0Hwjru8jW0mSDSShUnJTpSWIQOVg==
-X-Google-Smtp-Source: AGHT+IE2Fra+D9O2RmKL2tYXLgjMiLcbqzqK/4+uP5rJNuLIq6LRSJ0NyrdFpn1hET47c94bt7nfdQ==
-X-Received: by 2002:a05:6512:398b:b0:51b:214c:5231 with SMTP id j11-20020a056512398b00b0051b214c5231mr3320962lfu.15.1713783150279;
-        Mon, 22 Apr 2024 03:52:30 -0700 (PDT)
-Received: from [172.16.183.82] ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id w8-20020ac24428000000b0051b627770ecsm111901lfl.237.2024.04.22.03.52.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 03:52:29 -0700 (PDT)
-Message-ID: <b6ded975-1d16-46ea-84a2-8799b36e1270@gmail.com>
-Date: Mon, 22 Apr 2024 13:52:27 +0300
+	s=arc-20240116; t=1713783506; c=relaxed/simple;
+	bh=lPATZdfC4lvu1dgYEE2BFqtfBxeTwRg2JFrdpCPXZMs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rUlS8RkBBRU762cIpp/jTxH6heOUB/X5oimK381yBnjEWYaFKV0kCXS4+OZ7E92r4VzGHUaTDlnQmMJkp14a4of4t0yvJ65D1zavWTo3crutxDIgThygRMxpC+Y51mq16CLZYmIi6sIxoxJLABntjJ8mwj5RSbxO5x+18hR/VFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ASXSqTH4; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713783504; x=1745319504;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lPATZdfC4lvu1dgYEE2BFqtfBxeTwRg2JFrdpCPXZMs=;
+  b=ASXSqTH4jAXmykN3u03L8Arf+wT62uGC5n7SxrAZ6RMttYFzoHSDgqEF
+   LQvr/xnYurI7T1q8gdThfTD8jXZjOu/Nqr5zitV5i1T0PAYCN7t6+2qQt
+   7UC3EvNUsysGClSrbDLoa5SnhOQEgG521vnOoE/fiKUFCMkFICs5jdAo2
+   qgV1DGhWMQQtjir3jWVg772xY/19rCxWZmLShUUJRbsD3dY7DWBlNxRR/
+   xbeLYrJrY4Ts7PvjP4uKLJBXKx84EFJCKqJvvUFIe8xYj6sYB91NDq3pi
+   VS+d+AwmgKPTjNDf/5UZVb7PNASSTdWk5BftrBgqUUaxQDYoY7ZRNnqcK
+   A==;
+X-CSE-ConnectionGUID: Wm5bgdjzQVy1kUrOsJMJMg==
+X-CSE-MsgGUID: jnRm82qnSFC8qkjf7BYPaQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="20453682"
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="20453682"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 03:58:23 -0700
+X-CSE-ConnectionGUID: yrgtAYVYS1SH1HzMkvUDxQ==
+X-CSE-MsgGUID: fQWUNgQ4SXmCgHFcx2AAxw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="24017009"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa010.fm.intel.com with ESMTP; 22 Apr 2024 03:58:21 -0700
+Date: Mon, 22 Apr 2024 18:53:02 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
+	michael.roth@amd.com, isaku.yamahata@intel.com
+Subject: Re: [PATCH 06/11] KVM: guest_memfd: Add hook for initializing memory
+Message-ID: <ZiZBjtQvUuuqqKNF@yilunxu-OptiPlex-7050>
+References: <20240404185034.3184582-1-pbonzini@redhat.com>
+ <20240404185034.3184582-7-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/6] Support ROHM BD96801 scalable PMIC
-Content-Language: en-US, en-GB
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
- Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck
- <linux@roeck-us.net>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
- Thomas Gleixner <tglx@linutronix.de>
-References: <cover.1712058690.git.mazziesaccount@gmail.com>
- <f7d454ac-6ecb-4431-a1de-c9b5d1240969@gmail.com>
- <eb03ec33-0627-4986-be04-8e35da390d6b@sirena.org.uk>
- <b6279be8-cf7d-4608-b556-3c01587f0d43@gmail.com>
- <f1e3d31d-8c24-4cdc-ae26-747f383a937b@gmail.com>
-In-Reply-To: <f1e3d31d-8c24-4cdc-ae26-747f383a937b@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404185034.3184582-7-pbonzini@redhat.com>
 
-Hi dee Ho peeps,
-
-On 4/5/24 12:19, Matti Vaittinen wrote:
-> On 4/4/24 16:15, Matti Vaittinen wrote:
->> Hi Mark,
->>
->> On 4/4/24 15:09, Mark Brown wrote:
->>> On Thu, Apr 04, 2024 at 10:26:34AM +0300, Matti Vaittinen wrote:
->>>
->>>> 1. Should we be able to have more than 1 IRQ domain / device?
->>>> 2. Should regmap_irq support having more than 1 HWIRQ
->>>
->>> I would expect each parent interrupt to show up as a separate remap_irq.
-
-..
->>> So if we arrange to supply a name when we register multiple domains
->>> things should work fine?
+On Thu, Apr 04, 2024 at 02:50:28PM -0400, Paolo Bonzini wrote:
+> guest_memfd pages are generally expected to be in some arch-defined
+> initial state prior to using them for guest memory. For SEV-SNP this
+> initial state is 'private', or 'guest-owned', and requires additional
+> operations to move these pages into a 'private' state by updating the
+> corresponding entries the RMP table.
 > 
-> After my latest findings, yes, I think so. How to do this correctly is 
-> beyond me though. The __irq_domain_create() seems to me that the name is 
-> meant to be the dt-node name when the controller is backed by a real 
-> dt-node. Naming of the irq_domain_alloc_named_fwnode() sounds to me like 
-> it is only intended to be used when there is no real fwnode. All 
-> suggestions appreciated. Using the:
-> irq_domain_update_bus_token(intb_domain, DOMAIN_BUS_WIRED);
-> feels like a dirty hack, and won't scale if there is more HWIRQs.
+> Allow for an arch-defined hook to handle updates of this sort, and go
+> ahead and implement one for x86 so KVM implementations like AMD SVM can
+> register a kvm_x86_ops callback to handle these updates for SEV-SNP
+> guests.
+> 
+> The preparation callback is always called when allocating/grabbing
+> folios via gmem, and it is up to the architecture to keep track of
+> whether or not the pages are already in the expected state (e.g. the RMP
+> table in the case of SEV-SNP).
+> 
+> In some cases, it is necessary to defer the preparation of the pages to
+> handle things like in-place encryption of initial guest memory payloads
+> before marking these pages as 'private'/'guest-owned'.  Add an argument
+> (always true for now) to kvm_gmem_get_folio() that allows for the
+> preparation callback to be bypassed.  To detect possible issues in
 
-I tried taking a look at this again.
+IIUC, we have 2 dedicated flows.
+1 kvm_gmem_get_pfn() or kvm_gmem_allocate()
+  a. kvm_gmem_get_folio()
+  b. gmem_prepare() for RMP
 
-If we wanted to support multiple HWIRQs / regmap-IRQ controller, it 
-would require us to duplicate almost everything in the struct 
-regmap_irq_chip for every new parent IRQ. The status/mask register 
-information, IRQ type, etc. Naturally, it would require also duplicating 
-lot of the data contained in the struct regmap_irq_chip_data. I am not 
-sure if this could be done so the change is not reflected in the 
-existing IRQ data initialization macros etc. Furthermore, some API 
-changes would be required like changes to regmap_irq_get_domain().
+2 in-place encryption or whatever
+  a. kvm_gmem_get_folio(FGP_CREAT_ONLY)
+  b. in-place encryption
+  c. gmem_prepare() for RMP
 
-I am a bit afraid this change, if implemented in regmap-IRQ, would be 
-very intrusive and potentially impact large amount of callers. But more 
-importantly, looking the amount of data that should be duplicated per 
-new HWIRQ makes me think that an IRQ controller is really a product of a 
-parent IRQ, not product of the device. Hence, assuming there is only one 
-IRQ controller instance / device does not feel any more correct than 
-assuming there is an IRQ controller instance / parent IRQ. Same thinking 
-applies to IRQ domains.
+Could we move gmem_prepare() out of kvm_gmem_get_folio(), then we could
+have straightforward flow for each case, and don't have to have an
+argument to pospone gmem_prepare().
 
-Thus, forcing the regmap-IRQ to support multiple parents instead of 
-having own regmap-IRQ instance / parent IRQ feels like fitting square 
-item to a round hole. I am sure fixing all the bugs I caused would give 
-donate a lot of EXP-points though :rolleyes:
+> the way userspace initializes memory, it is only possible to add an
+> unprepared page if it is not already included in the filemap.
+> 
+> Link: https://lore.kernel.org/lkml/ZLqVdvsF11Ddo7Dq@google.com/
+> Co-developed-by: Michael Roth <michael.roth@amd.com>
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> Message-Id: <20231230172351.574091-5-michael.roth@amd.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+>  arch/x86/include/asm/kvm_host.h    |  1 +
+>  arch/x86/kvm/x86.c                 |  6 +++
+>  include/linux/kvm_host.h           |  5 +++
+>  virt/kvm/Kconfig                   |  4 ++
+>  virt/kvm/guest_memfd.c             | 65 ++++++++++++++++++++++++++++--
+>  6 files changed, 78 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index 5187fcf4b610..d26fcad13e36 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -139,6 +139,7 @@ KVM_X86_OP(vcpu_deliver_sipi_vector)
+>  KVM_X86_OP_OPTIONAL_RET0(vcpu_get_apicv_inhibit_reasons);
+>  KVM_X86_OP_OPTIONAL(get_untagged_addr)
+>  KVM_X86_OP_OPTIONAL(alloc_apic_backing_page)
+> +KVM_X86_OP_OPTIONAL_RET0(gmem_prepare)
+>  
+>  #undef KVM_X86_OP
+>  #undef KVM_X86_OP_OPTIONAL
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 01c69840647e..f101fab0040e 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1809,6 +1809,7 @@ struct kvm_x86_ops {
+>  
+>  	gva_t (*get_untagged_addr)(struct kvm_vcpu *vcpu, gva_t gva, unsigned int flags);
+>  	void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
+> +	int (*gmem_prepare)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order);
+>  };
+>  
+>  struct kvm_x86_nested_ops {
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 2d2619d3eee4..972524ddcfdb 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -13598,6 +13598,12 @@ bool kvm_arch_no_poll(struct kvm_vcpu *vcpu)
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_arch_no_poll);
+>  
+> +#ifdef CONFIG_HAVE_KVM_GMEM_PREPARE
+> +int kvm_arch_gmem_prepare(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn, int max_order)
+> +{
+> +	return static_call(kvm_x86_gmem_prepare)(kvm, pfn, gfn, max_order);
+> +}
+> +#endif
+>  
+>  int kvm_spec_ctrl_test_value(u64 value)
+>  {
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 48f31dcd318a..33ed3b884a6b 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -2445,4 +2445,9 @@ static inline int kvm_gmem_get_pfn(struct kvm *kvm,
+>  }
+>  #endif /* CONFIG_KVM_PRIVATE_MEM */
+>  
+> +#ifdef CONFIG_HAVE_KVM_GMEM_PREPARE
+> +int kvm_arch_gmem_prepare(struct kvm *kvm, gfn_t gfn, kvm_pfn_t pfn, int max_order);
+> +bool kvm_arch_gmem_prepare_needed(struct kvm *kvm);
+> +#endif
+> +
+>  #endif
+> diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
+> index 29b73eedfe74..ca870157b2ed 100644
+> --- a/virt/kvm/Kconfig
+> +++ b/virt/kvm/Kconfig
+> @@ -109,3 +109,7 @@ config KVM_GENERIC_PRIVATE_MEM
+>         select KVM_GENERIC_MEMORY_ATTRIBUTES
+>         select KVM_PRIVATE_MEM
+>         bool
+> +
+> +config HAVE_KVM_GMEM_PREPARE
+> +       bool
+> +       depends on KVM_PRIVATE_MEM
+> diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+> index e5b3cd02b651..486748e65f36 100644
+> --- a/virt/kvm/guest_memfd.c
+> +++ b/virt/kvm/guest_memfd.c
+> @@ -13,12 +13,60 @@ struct kvm_gmem {
+>  	struct list_head entry;
+>  };
+>  
+> -static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index)
+> +#ifdef CONFIG_HAVE_KVM_GMEM_PREPARE
+> +bool __weak kvm_arch_gmem_prepare_needed(struct kvm *kvm)
+> +{
+> +	return false;
+> +}
+> +#endif
 
-Question is, should I still try?
+In which case HAVE_KVM_GMEM_PREPARE is selected but
+gmem_prepare_needed() is never implemented?  Then all gmem_prepare stuff
+are actually dead code.  Maybe we don't need this weak stub?
 
-Another option I see, is trying to think if irq-domain name could be 
-changed. (This is what the RFC v3 does, [ab]using the 
-irq_domain_update_bus_token()). I was a bit put off by the idea of 
-'instantiating' multiple domains (or regmap-IRQ controllers) from a 
-single node, but more I think of this, more I lean towards it. Besides, 
-this is not something completely odd, I think MFD devices do this 
-anyways. (Instantiate multiple [sub]devices from single DT-node). I 
-would love to get an opinion from someone who knows the 'fundamentals' 
-of the IRQ domains, and possibly some pointer for the right approach.
+> +
+> +static int kvm_gmem_prepare_folio(struct inode *inode, pgoff_t index, struct folio *folio)
+> +{
+> +#ifdef CONFIG_HAVE_KVM_GMEM_PREPARE
+> +	struct list_head *gmem_list = &inode->i_mapping->i_private_list;
+> +	struct kvm_gmem *gmem;
+> +
+> +	list_for_each_entry(gmem, gmem_list, entry) {
+> +		struct kvm_memory_slot *slot;
+> +		struct kvm *kvm = gmem->kvm;
+> +		struct page *page;
+> +		kvm_pfn_t pfn;
+> +		gfn_t gfn;
+> +		int rc;
+> +
+> +		if (!kvm_arch_gmem_prepare_needed(kvm))
+> +			continue;
+> +
+> +		slot = xa_load(&gmem->bindings, index);
+> +		if (!slot)
+> +			continue;
+> +
+> +		page = folio_file_page(folio, index);
+> +		pfn = page_to_pfn(page);
+> +		gfn = slot->base_gfn + index - slot->gmem.pgoff;
+> +		rc = kvm_arch_gmem_prepare(kvm, gfn, pfn, compound_order(compound_head(page)));
+> +		if (rc) {
+> +			pr_warn_ratelimited("gmem: Failed to prepare folio for index %lx, error %d.\n",
+> +					    index, rc);
+> +			return rc;
+> +		}
+> +	}
+> +
+> +#endif
+> +	return 0;
+> +}
+> +
+> +static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index, bool prepare)
+>  {
+>  	struct folio *folio;
+> +	fgf_t fgp_flags = FGP_LOCK | FGP_ACCESSED | FGP_CREAT;
+> +
+> +	if (!prepare)
+> +		fgp_flags |= FGP_CREAT_ONLY;
+>  
+>  	/* TODO: Support huge pages. */
+> -	folio = filemap_grab_folio(inode->i_mapping, index);
+> +	folio = __filemap_get_folio(inode->i_mapping, index, fgp_flags,
+> +				    mapping_gfp_mask(inode->i_mapping));
+>  	if (IS_ERR_OR_NULL(folio))
+>  		return folio;
+>  
+> @@ -41,6 +89,15 @@ static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index)
+>  		folio_mark_uptodate(folio);
+>  	}
+>  
+> +	if (prepare) {
+> +		int r =	kvm_gmem_prepare_folio(inode, index, folio);
+> +		if (r < 0) {
+> +			folio_unlock(folio);
+> +			folio_put(folio);
+> +			return ERR_PTR(r);
+> +		}
+> +	}
+> +
 
-Finally we might also consider adding own sub-node in DT for each parent 
-IRQ - but this feels very wrong to me.
+Do we still need to prepare the page if it is hwpoisoned? I see the
+hwpoisoned check is outside, in kvm_gmem_get_pfn().
 
-All in all, I am having very hard time trying to think how to proceed. 
-The last option for me is to skip support for the ERRB IRQ from the 
-BD96801 driver, which would leave this problem to the next person 
-working with a device providing multiple physical IRQs.
+Thanks,
+Yilun
 
-Yours,
-	-- Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+>  	/*
+>  	 * Ignore accessed, referenced, and dirty flags.  The memory is
+>  	 * unevictable and there is no storage to write back to.
+> @@ -145,7 +202,7 @@ static long kvm_gmem_allocate(struct inode *inode, loff_t offset, loff_t len)
+>  			break;
+>  		}
+>  
+> -		folio = kvm_gmem_get_folio(inode, index);
+> +		folio = kvm_gmem_get_folio(inode, index, true);
+>  		if (IS_ERR_OR_NULL(folio)) {
+>  			r = folio ? PTR_ERR(folio) : -ENOMEM;
+>  			break;
+> @@ -505,7 +562,7 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+>  		goto out_fput;
+>  	}
+>  
+> -	folio = kvm_gmem_get_folio(file_inode(file), index);
+> +	folio = kvm_gmem_get_folio(file_inode(file), index, true);
+>  	if (!folio) {
+>  		r = -ENOMEM;
+>  		goto out_fput;
+> -- 
+> 2.43.0
+> 
+> 
+> 
 
