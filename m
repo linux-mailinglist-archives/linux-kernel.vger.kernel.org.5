@@ -1,101 +1,151 @@
-Return-Path: <linux-kernel+bounces-154048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B32C18AD68E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A9DF8AD6B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:33:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB7BE1C2186A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:30:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CB801C2176F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5835A1DFF8;
-	Mon, 22 Apr 2024 21:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E371CF8B;
+	Mon, 22 Apr 2024 21:32:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tm1b9YqI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="glYgGSXA"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961591CAB9;
-	Mon, 22 Apr 2024 21:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239E21CD37
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 21:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713821429; cv=none; b=Q7bRPxh8yEwYIVECJ13bnQDMFS4cs5PvEnpJF+lv/AZ0N1hAZcaLgElxx9/VEDqPa688HhytXq7PesZL2fnR4+HSMpI40eJ+2QxPdZMswfgqpKzezGU2c+MnFGvWqM1Du0XNREiBvSo8nezqP7mVwNK7C46x9o7b0U6oK5hd3a0=
+	t=1713821544; cv=none; b=FDBsnwDw+DVZv1l7PO75OsnmPyKecyxXkmo3W1XmdXvSSMJWkO8iguWG4ICw9jfP3NAGb6aMEbiOoTwJZyPrltby9BJh6P/Q9hHNf++ZK37nL2F89RKXXt1V1blH88dfOoIeJTELQykhqBA291ygWTtKV/iokv5FnHKk7UOHORc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713821429; c=relaxed/simple;
-	bh=+MWDh4eam1mec7YkpjYmojj0wm6twFqAbTY7wxEKGxg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=EMxK2clQ7f3ZsfDDuDPZKD2oliKh3C77GrYr95VaV9+G5Codb1WwpJALFjm9tumyYcDSqOIdQL9imZ2sApoV234truk78Yijzl65siWisZSxhSetJFimTiC5zFKgL012TUB8R2dzgolLUnEoD3Cr84SDHNAT6yxAb6VRPl5hdI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tm1b9YqI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 30031C2BD11;
-	Mon, 22 Apr 2024 21:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713821429;
-	bh=+MWDh4eam1mec7YkpjYmojj0wm6twFqAbTY7wxEKGxg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Tm1b9YqI/m5bnQY6lWhSzYJqnahgKyXaRTYJAdahs40lAMMcmZhgH775gKe+DIguq
-	 Go2jiXbEF0DkDQvOq2qRaMORMMN9XjNw628K02fygYwi3e8gXMyT0Bw6/WfWoAEjpJ
-	 UbyL50WZBtmqCr2Hoc3cYEEQn5AzaR+7qlcIosuPstYVvkl17sLxD5pDoUcUZ3+SeS
-	 ud5KhudroduD/fuzsDJxOgfxxUa0ECrfoCMA9MxR3J2a5gJkJK+MJbIXxpPunbbMWB
-	 oYoL1tgszcTV+se6YkvV/SaDch6DtaEdtNT4XCn3CYbnZGA0Tv++aKAyTsJ4Rf1Z9P
-	 bVIRODx5CrgvQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1319CC43443;
-	Mon, 22 Apr 2024 21:30:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713821544; c=relaxed/simple;
+	bh=IRsFuwn6dQzU9I5rLPauWk/unA6s6gPNbq/SefNksJs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tMYVJcREjHTdXpUUtqieYHTyenAOXwci8V/7H++mCpis8tabdFjV52GcD3YwOnnH8u2NZJbOGcUy6e6m0PvLhk4JabaVV3bme/1TvbI32Y/thFbJEqYpAcmjEdWKSez8jyP0sQln/59ZOmY9MLfMu3XnQLPWpo21dZB6iHhy7qQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=glYgGSXA; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713821543; x=1745357543;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IRsFuwn6dQzU9I5rLPauWk/unA6s6gPNbq/SefNksJs=;
+  b=glYgGSXAtIh8hAcB3X4l92SdOiTePzTMWsw2Yesn0eIKLVs8OkhPE9ZH
+   fwPfsXCxXiPbYFzZJ4i1QFuz0bIbH5rRELR59n2hy0AgzOP9jNv7AN22z
+   8AfloMzD9UZuEbLN5b27Xf6GlBVHz3EiS7Mpqv0I/zYT8XOv1aagquEyD
+   34AvQBmc+0MlM0t60GhmUztAYO02u83krO2Ii4uMdNs7qGtA6cAqpyau6
+   52wYmuy/lqBOSXc8ROqWMMQTZxL6QKLTzF8V8ACWZl5X3bP30rW0uw/8J
+   GZ9oomvZli+iA8O9OLygneOF5rZpzw4YJl5Usf9gAaBAMkHSUlQgQmCyi
+   g==;
+X-CSE-ConnectionGUID: oTpSlzzSR8SVYJBC9p00rQ==
+X-CSE-MsgGUID: ys5XZwZgQFCV/sG3dQvIVw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="26898367"
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="26898367"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 14:32:22 -0700
+X-CSE-ConnectionGUID: HZ0B6eXYSA6zky5jPtNC3w==
+X-CSE-MsgGUID: G/20tqFXTKeF4lKFG5yfJg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="24652505"
+Received: from mhknutso-mobl.amr.corp.intel.com (HELO desk) ([10.209.121.126])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 14:32:22 -0700
+Date: Mon, 22 Apr 2024 14:32:13 -0700
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To: "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org, dan.j.williams@intel.com,
+	bernie.keany@intel.com, charishma1.gairuboyina@intel.com,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	daniel.sneddon@linux.intel.com,
+	antonio.gomez.iglesias@linux.intel.com
+Subject: Re: [PATCH 15/14] x86/gds: Lock GDS mitigation when keylocker
+ feature is present
+Message-ID: <20240422213213.7og6adib7zcbpnys@desk>
+References: <20240407230432.912290-1-chang.seok.bae@intel.com>
+ <20240419-gds-lock-v1-1-adcbef6ce24b@linux.intel.com>
+ <142380d5-27bd-4ddc-8c33-03a2f8701fa2@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/5] net: dsa: vsc73xx: convert to PHYLINK and do
- some cleanup
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171382142907.1995.10883580544289239545.git-patchwork-notify@kernel.org>
-Date: Mon, 22 Apr 2024 21:30:29 +0000
-References: <20240417205048.3542839-1-paweldembicki@gmail.com>
-In-Reply-To: <20240417205048.3542839-1-paweldembicki@gmail.com>
-To: Pawel Dembicki <paweldembicki@gmail.com>
-Cc: netdev@vger.kernel.org, andrew@lunn.ch, f.fainelli@gmail.com,
- olteanv@gmail.com, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, linux@armlinux.org.uk, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <142380d5-27bd-4ddc-8c33-03a2f8701fa2@intel.com>
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Wed, 17 Apr 2024 22:50:43 +0200 you wrote:
-> This patch series is a result of splitting a larger patch series [0],
-> where some parts needed to be refactored.
+On Mon, Apr 22, 2024 at 12:35:45AM -0700, Chang S. Bae wrote:
+> On 4/19/2024 10:47 AM, Pawan Gupta wrote:
+> >   	/*
+> > @@ -840,6 +843,11 @@ static void __init gds_select_mitigation(void)
+> >   		gds_mitigation = GDS_MITIGATION_FULL_LOCKED;
+> >   	}
+> > +	/* Keylocker can only be enabled when GDS mitigation is locked */
+> > +	if (boot_cpu_has(X86_FEATURE_KEYLOCKER) &&
+> > +	    gds_mitigation == GDS_MITIGATION_FULL)
+> > +		gds_mitigation = GDS_MITIGATION_FULL_LOCKED;
+> > +
 > 
-> The first patch switches from a poll loop to read_poll_timeout.
+> I'm having trouble understanding this change:
 > 
-> The second patch is a simple conversion to phylink because adjust_link
-> won't work anymore.
+> gds_select_mitigation()
+> {
+> 	...
+> 	if (gds_mitigation == GDS_MITIGATION_FORCE)
+> 		gds_mitigation = GDS_MITIGATION_FULL;
 > 
-> [...]
+> 	rdmsrl(MSR_IA32_MCU_OPT_CTRL, mcu_ctrl);
+> 	if (mcu_ctrl & GDS_MITG_LOCKED) {
+> 		...
+> 		gds_mitigation = GDS_MITIGATION_FULL_LOCKED;
+> 	}
+> 
+> 	if (boot_cpu_has(X86_FEATURE_KEYLOCKER) &&
+> 	    gds_mitigation == GDS_MITIGATION_FULL)
+> 		gds_mitigation = GDS_MITIGATION_FULL_LOCKED;
+> 
+> As I understand it, gds_mitigation is set to GDS_MITIGATION_FULL only if the
+> gds force option is enabled but IA32_MCU_OPT_CTRL[GDS_MITG_LOCK] is not set.
 
-Here is the summary with links:
-  - [net-next,v2,1/5] net: dsa: vsc73xx: use read_poll_timeout instead delay loop
-    https://git.kernel.org/netdev/net-next/c/eb7e33d01db3
-  - [net-next,v2,2/5] net: dsa: vsc73xx: convert to PHYLINK
-    https://git.kernel.org/netdev/net-next/c/21fc3416ea11
-  - [net-next,v2,3/5] net: dsa: vsc73xx: use macros for rgmii recognition
-    https://git.kernel.org/netdev/net-next/c/12af94b2955f
-  - [net-next,v2,4/5] net: dsa: vsc73xx: Add define for max num of ports
-    https://git.kernel.org/netdev/net-next/c/6cc5280a0889
-  - [net-next,v2,5/5] net: dsa: vsc73xx: add structure descriptions
-    https://git.kernel.org/netdev/net-next/c/96944aafaaa6
+Not true, GDS_MITIGATION_FULL is the default. Cmdline
+gather_data_sampling=force deploys a software fallback mitigation when
+the microcode mitigation is not present. But, when microcode mitigation
+is present, mitigation is set to GDS_MITIGATION_FULL.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Then, if the CPU has Key Locker, this code sets gds_mitigation to
+> GDS_MITIGATION_FULL_LOCKED, which seems contradictory. I'm not sure why this
+> change is necessary.
+>
+> I'm also not convinced that the Key Locker series needs to modify this
+> function. The Key Locker setup code should simply check the current
+> mitigation status and enable the feature only if proper mitigation is in
+> place. Am I missing something here?
 
+To enable Key Locker feature, "proper mitigation" is microcode mitigation
+enabled and the GDS_MITG_LOCK bit set in MSR_IA32_MCU_OPT_CTRL. Do you
+agree?
 
+If not via this patch, how is GDS_MITG_LOCK going to be set?
+
+Below is from Intel's documentation:
+
+  "Intel recommends that system software does not enable Key Locker (by
+  setting CR4.KL) unless the GDS mitigation is enabled (IA32_MCU_OPT_CTRL
+  [GDS_MITG_DIS] (bit 4) is 0) and locked (IA32_MCU_OPT_CTRL
+  [GDS_MITG_LOCK](bit 5) is 1). This will prevent an adversary that takes
+  control of the system from turning off the mitigation in order to infer
+  the keys behind Key Locker handles.
+
+  To support GDS mitigation locking for Key Locker, microcode updates
+  for Tiger Lake systems enable the following model-specific behavior
+  for GDS_MITG_LOCK. On these systems, a write to IA32_MCU_OPT_CTRL MSR
+  with GDS_MITG_DIS (bit 4) value 0 and GDS_MITG_LOCK (bit 5) value 1
+  will lock both bits at these values until reset."
 
