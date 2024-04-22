@@ -1,256 +1,100 @@
-Return-Path: <linux-kernel+bounces-152783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2688AC42A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EEFD8AC42F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:28:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 993461F222F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:25:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2F3A1F210AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:28:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487CE46557;
-	Mon, 22 Apr 2024 06:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fOhzCanV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 160ED41231;
+	Mon, 22 Apr 2024 06:28:07 +0000 (UTC)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D8B46450
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:24:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E642BAEB;
+	Mon, 22 Apr 2024 06:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713767071; cv=none; b=Q3ZvSkGzS8ODfPGVgEeBpW8bSCOPrtM5oNnLOcTpVVrWsRaqMBjUExbKbctr4XYldYdWaUFnJKCjGDVNAiTn6KPF2HcuCa6nWaeJZ7QnyHnkZJUNCcJTCjkysSZhkl94ff4AOWBs7aepoUxBX8l5uyYBrHCHgzxAwCo/2kksCyM=
+	t=1713767286; cv=none; b=OvOMs0KMz/+k/1tPVNNCDgDLmXtdV8n46Pk7EPmLDu9yYQw9gr3lzIyyLfNRahGY5nhe444G1qmWyaewpbDF15PDH5S3N4ScBA/fyFSfo9SW0YRo6Zcm9OxYQWMqJIzp8z8JE0i2NnPKRZPNpOroRlQmsC1q/jC06MEtzUv6DxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713767071; c=relaxed/simple;
-	bh=HuVjVZ6RRiLFQGFS0GihV94ntmz3batSIusPOiVW4t4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R8OtFZbD/xOPKSlq9jKGkXDnDAW+ZzcDwauB+r/FaqKrxQx/zF+pPCp6HkGiZT2UXn2/u2JUR+0NRYPpeImvtScLrZolJHcNbCm0IugCTdnjSHDWQ8FM2a2IcbW4mcqrWi31kdo+ZzcgmqPDeIZ/o90mZzfRhTXcXpBbzSU9j4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fOhzCanV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E93ABC2BD11;
-	Mon, 22 Apr 2024 06:24:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713767070;
-	bh=HuVjVZ6RRiLFQGFS0GihV94ntmz3batSIusPOiVW4t4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fOhzCanV+6czMu++OWThyb2BTreGgvNYbvY3iaw6oRWSINrjZVmr8apXaVRhiwbSh
-	 sfmhC/k6l+QrBWkvLyTNku2s0FT6xzXAG8lMmn3vijbSAWEqfPui1Fhlh1xHqhn3Vl
-	 1qy+eM5resmmwPp8JZlrA60nc05zqdlWPbcJ5vsVWBKFzA2h7TNKFJJAUudbLFxwhE
-	 5Or+x22l8mEOUrqP4cCTVGKDEqO8lccNZOvRvH3tKhrhpiJqP8LH0BVZtiyUu8urWE
-	 cJtmfu+MslzOK/bxusEogKhrtyKeE3rpFlhYozZYY0LJ5xjLYn4rTlihgOpW5z10iK
-	 2OC0RkyPnLIIw==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH v2 4/4] f2fs: convert f2fs__page tracepoint class to use folio
-Date: Mon, 22 Apr 2024 14:24:17 +0800
-Message-Id: <20240422062417.2421616-4-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240422062417.2421616-1-chao@kernel.org>
-References: <20240422062417.2421616-1-chao@kernel.org>
+	s=arc-20240116; t=1713767286; c=relaxed/simple;
+	bh=3nJxs6KDCzEvXDgS/hhsIWpVpzHE7gksU4iMi6yQ1hk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t4dmNAmKlgGzuQZI79cM6ihlASdbOpVg16IJvQpNX3+colh8IU46OCkNU6pci+AbLvpOTv5GJ9saxNqJV5+NP0VKz1J2+iyRobJQpXH18a3TMcSZrObiAGRnGOwI+9fHidYKPtulmaa84i54/xDY1Ks9wZgm7BZDp/BcLGieWao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51aff651083so1362089e87.0;
+        Sun, 21 Apr 2024 23:28:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713767282; x=1714372082;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3nJxs6KDCzEvXDgS/hhsIWpVpzHE7gksU4iMi6yQ1hk=;
+        b=MLVhyW+t5RuTPk8rdyC4iVp8KCnZRE3eIHbG0dCEkel4H/RiLh0IUggs17xUVnmwsg
+         UF0Szpwjc2JLCz9+vePot4p6UsAOnODQMPGp/RvNRj65XJcBevzr3Y4lPueGMOyT2516
+         k1PyJi2OAWU4Ztn5P30ifZe/kprSLpJJ5E1SgS6VyPh86Sxjc8lQVhKTKe/KHyL9qDqk
+         fwE7TgL9Qm6y8TaJAyrPNM69Mve3G/xYQpsEEOl4T+7Bv+9b2Av4RyV1aScEfoEQUyWq
+         6fo/OqKyFor6SxpjfkA6g6CxIBAdIXu5nBvZsEcSOubPMoZ3yrwPso0yz32SohQsdcXq
+         vTqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXqOkrdZ6RGJQimd8xlem3EJ5tcbW7/hC4JHwQoP4LYSW9AtlFy/hAQnmJVW56K4PmMb4ZnnTS21SHthalBe4ZCwBn9tP+TBr+4m45MLU9/ZFLAgCU+Eew12umcD+MD3Xzl7RBelW0=
+X-Gm-Message-State: AOJu0Yx49Zj8SCC94daFSY8KCQNGQ6/Y2IBYwD3S7UPMCsCkz4zg6Lxi
+	ST0dSb+KjY+acXGEKwu0l3+QrOhVfUayGy8zLyCxilPZA2EMp9IDZ/y+UVJcQ+Y=
+X-Google-Smtp-Source: AGHT+IEt5yS0ewKc7shXUG97ACf+yNKsqItvuEFDXLMLDhmn/DX4qA8eS3MNFUWRTsEWxMneBsXMhA==
+X-Received: by 2002:a2e:988c:0:b0:2dc:d7a6:1e53 with SMTP id b12-20020a2e988c000000b002dcd7a61e53mr5225067ljj.18.1713767281985;
+        Sun, 21 Apr 2024 23:28:01 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id w25-20020a2e9599000000b002d9fd8b0670sm1379958ljh.123.2024.04.21.23.28.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Apr 2024 23:28:01 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d895e2c6efso60507361fa.0;
+        Sun, 21 Apr 2024 23:28:01 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUh1g9yP3eRttwc3gRzkeLno00F7C498HUgTq0yFaa81DEebeNDO4R/O+0husHxhYyGE40ADkbaamiF1+4WxaUxkfGTiBVovKa03KE4cA/ACa/V9gbuRAiXaJ4vcQExhb1UG10MyN0=
+X-Received: by 2002:a05:651c:608:b0:2dd:97e:3481 with SMTP id
+ k8-20020a05651c060800b002dd097e3481mr3120608lje.51.1713767281436; Sun, 21 Apr
+ 2024 23:28:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <285de20a187f3e4baeb28f639b5bf55e914a3821.1713756666.git.viresh.kumar@linaro.org>
+In-Reply-To: <285de20a187f3e4baeb28f639b5bf55e914a3821.1713756666.git.viresh.kumar@linaro.org>
+Reply-To: wens@csie.org
+From: Chen-Yu Tsai <wens@csie.org>
+Date: Sun, 21 Apr 2024 23:27:50 -0700
+X-Gmail-Original-Message-ID: <CAGb2v66X94Y0zkHxNLb1KCoCR+q+z-mCm_21eUJ_C7D_srhDkw@mail.gmail.com>
+Message-ID: <CAGb2v66X94Y0zkHxNLb1KCoCR+q+z-mCm_21eUJ_C7D_srhDkw@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: sun50i: Fix build warning around snprint()
+To: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Yangtao Li <tiny.windzz@gmail.com>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, linux-pm@vger.kernel.org, 
+	Vincent Guittot <vincent.guittot@linaro.org>, kernel test robot <lkp@intel.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Convert f2fs__page tracepoint class() and its instances to use folio
-and related functionality, and rename it to f2fs__folio().
+On Sun, Apr 21, 2024 at 8:31=E2=80=AFPM Viresh Kumar <viresh.kumar@linaro.o=
+rg> wrote:
+>
+> The Sun50i driver generates a warning with W=3D1:
+>
+> warning: '%d' directive output may be truncated writing between 1 and 10 =
+bytes into a region of size 2 [-Wformat-truncation=3D]
+>
+> Fix it by allocating a big enough array to print an integer.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202404191715.LDwMm2gP-lkp@i=
+ntel.com/
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v2:
-- no change.
- fs/f2fs/checkpoint.c        |  4 ++--
- fs/f2fs/data.c              | 10 ++++-----
- fs/f2fs/node.c              |  4 ++--
- include/trace/events/f2fs.h | 42 ++++++++++++++++++-------------------
- 4 files changed, 30 insertions(+), 30 deletions(-)
-
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index eac698b8dd38..5d05a413f451 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -345,7 +345,7 @@ static int __f2fs_write_meta_page(struct page *page,
- {
- 	struct f2fs_sb_info *sbi = F2FS_P_SB(page);
- 
--	trace_f2fs_writepage(page, META);
-+	trace_f2fs_writepage(page_folio(page), META);
- 
- 	if (unlikely(f2fs_cp_error(sbi))) {
- 		if (is_sbi_flag_set(sbi, SBI_IS_CLOSE)) {
-@@ -492,7 +492,7 @@ long f2fs_sync_meta_pages(struct f2fs_sb_info *sbi, enum page_type type,
- static bool f2fs_dirty_meta_folio(struct address_space *mapping,
- 		struct folio *folio)
- {
--	trace_f2fs_set_page_dirty(&folio->page, META);
-+	trace_f2fs_set_page_dirty(folio, META);
- 
- 	if (!folio_test_uptodate(folio))
- 		folio_mark_uptodate(folio);
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 24f9a39ffd56..21d4c1c9b25b 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2460,7 +2460,7 @@ static int f2fs_read_data_folio(struct file *file, struct folio *folio)
- 	struct inode *inode = folio_file_mapping(folio)->host;
- 	int ret = -EAGAIN;
- 
--	trace_f2fs_readpage(&folio->page, DATA);
-+	trace_f2fs_readpage(folio, DATA);
- 
- 	if (!f2fs_is_compress_backend_ready(inode)) {
- 		folio_unlock(folio);
-@@ -2709,7 +2709,7 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
- 		} else {
- 			set_inode_flag(inode, FI_UPDATE_WRITE);
- 		}
--		trace_f2fs_do_write_data_page(fio->page, IPU);
-+		trace_f2fs_do_write_data_page(page_folio(page), IPU);
- 		return err;
- 	}
- 
-@@ -2738,7 +2738,7 @@ int f2fs_do_write_data_page(struct f2fs_io_info *fio)
- 
- 	/* LFS mode write path */
- 	f2fs_outplace_write_data(&dn, fio);
--	trace_f2fs_do_write_data_page(page, OPU);
-+	trace_f2fs_do_write_data_page(page_folio(page), OPU);
- 	set_inode_flag(inode, FI_APPEND_WRITE);
- out_writepage:
- 	f2fs_put_dnode(&dn);
-@@ -2785,7 +2785,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
- 		.last_block = last_block,
- 	};
- 
--	trace_f2fs_writepage(page, DATA);
-+	trace_f2fs_writepage(page_folio(page), DATA);
- 
- 	/* we should bypass data pages to proceed the kworker jobs */
- 	if (unlikely(f2fs_cp_error(sbi))) {
-@@ -3759,7 +3759,7 @@ static bool f2fs_dirty_data_folio(struct address_space *mapping,
- {
- 	struct inode *inode = mapping->host;
- 
--	trace_f2fs_set_page_dirty(&folio->page, DATA);
-+	trace_f2fs_set_page_dirty(folio, DATA);
- 
- 	if (!folio_test_uptodate(folio))
- 		folio_mark_uptodate(folio);
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index 3b9eb5693683..95cecf08cb37 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -1624,7 +1624,7 @@ static int __write_node_page(struct page *page, bool atomic, bool *submitted,
- 	};
- 	unsigned int seq;
- 
--	trace_f2fs_writepage(page, NODE);
-+	trace_f2fs_writepage(page_folio(page), NODE);
- 
- 	if (unlikely(f2fs_cp_error(sbi))) {
- 		/* keep node pages in remount-ro mode */
-@@ -2171,7 +2171,7 @@ static int f2fs_write_node_pages(struct address_space *mapping,
- static bool f2fs_dirty_node_folio(struct address_space *mapping,
- 		struct folio *folio)
- {
--	trace_f2fs_set_page_dirty(&folio->page, NODE);
-+	trace_f2fs_set_page_dirty(folio, NODE);
- 
- 	if (!folio_test_uptodate(folio))
- 		folio_mark_uptodate(folio);
-diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index 7ed0fc430dc6..371ba28415f5 100644
---- a/include/trace/events/f2fs.h
-+++ b/include/trace/events/f2fs.h
-@@ -1304,11 +1304,11 @@ TRACE_EVENT(f2fs_write_end,
- 		__entry->copied)
- );
- 
--DECLARE_EVENT_CLASS(f2fs__page,
-+DECLARE_EVENT_CLASS(f2fs__folio,
- 
--	TP_PROTO(struct page *page, int type),
-+	TP_PROTO(struct folio *folio, int type),
- 
--	TP_ARGS(page, type),
-+	TP_ARGS(folio, type),
- 
- 	TP_STRUCT__entry(
- 		__field(dev_t,	dev)
-@@ -1321,14 +1321,14 @@ DECLARE_EVENT_CLASS(f2fs__page,
- 	),
- 
- 	TP_fast_assign(
--		__entry->dev	= page_file_mapping(page)->host->i_sb->s_dev;
--		__entry->ino	= page_file_mapping(page)->host->i_ino;
-+		__entry->dev	= folio_file_mapping(folio)->host->i_sb->s_dev;
-+		__entry->ino	= folio_file_mapping(folio)->host->i_ino;
- 		__entry->type	= type;
- 		__entry->dir	=
--			S_ISDIR(page_file_mapping(page)->host->i_mode);
--		__entry->index	= page->index;
--		__entry->dirty	= PageDirty(page);
--		__entry->uptodate = PageUptodate(page);
-+			S_ISDIR(folio_file_mapping(folio)->host->i_mode);
-+		__entry->index	= folio_index(folio);
-+		__entry->dirty	= folio_test_dirty(folio);
-+		__entry->uptodate = folio_test_uptodate(folio);
- 	),
- 
- 	TP_printk("dev = (%d,%d), ino = %lu, %s, %s, index = %lu, "
-@@ -1341,32 +1341,32 @@ DECLARE_EVENT_CLASS(f2fs__page,
- 		__entry->uptodate)
- );
- 
--DEFINE_EVENT(f2fs__page, f2fs_writepage,
-+DEFINE_EVENT(f2fs__folio, f2fs_writepage,
- 
--	TP_PROTO(struct page *page, int type),
-+	TP_PROTO(struct folio *folio, int type),
- 
--	TP_ARGS(page, type)
-+	TP_ARGS(folio, type)
- );
- 
--DEFINE_EVENT(f2fs__page, f2fs_do_write_data_page,
-+DEFINE_EVENT(f2fs__folio, f2fs_do_write_data_page,
- 
--	TP_PROTO(struct page *page, int type),
-+	TP_PROTO(struct folio *folio, int type),
- 
--	TP_ARGS(page, type)
-+	TP_ARGS(folio, type)
- );
- 
--DEFINE_EVENT(f2fs__page, f2fs_readpage,
-+DEFINE_EVENT(f2fs__folio, f2fs_readpage,
- 
--	TP_PROTO(struct page *page, int type),
-+	TP_PROTO(struct folio *folio, int type),
- 
--	TP_ARGS(page, type)
-+	TP_ARGS(folio, type)
- );
- 
--DEFINE_EVENT(f2fs__page, f2fs_set_page_dirty,
-+DEFINE_EVENT(f2fs__folio, f2fs_set_page_dirty,
- 
--	TP_PROTO(struct page *page, int type),
-+	TP_PROTO(struct folio *folio, int type),
- 
--	TP_ARGS(page, type)
-+	TP_ARGS(folio, type)
- );
- 
- TRACE_EVENT(f2fs_replace_atomic_write_block,
--- 
-2.40.1
-
+Acked-by: Chen-Yu Tsai <wens@csie.org>
 
