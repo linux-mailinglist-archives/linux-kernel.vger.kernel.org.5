@@ -1,129 +1,160 @@
-Return-Path: <linux-kernel+bounces-153656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 240958AD137
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:48:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55C908AD13B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:48:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9917FB258FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:48:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B5CB2864BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:48:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46252153563;
-	Mon, 22 Apr 2024 15:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D289A15381B;
+	Mon, 22 Apr 2024 15:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eQtkKAfi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RgjCnklg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B6E502A8;
-	Mon, 22 Apr 2024 15:48:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20753153593;
+	Mon, 22 Apr 2024 15:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713800899; cv=none; b=WMIdrDuCTYloUrdwqgX/KeQBc8b+dqKm0JUbTvteAQ5zMBvYLgXnzkVScuul+zzeqVurlzhMJ2w69m1fAHYNDAGoPuOHruHIabTwYI12kXgtZcfBOg8dvJCA4ktuybKigxmdb3e4ustrnUploKJMZtryVG4cLTtDcHMGiBQIiuw=
+	t=1713800904; cv=none; b=NhVkRQGbQLSA1dZbqnN+2f1AzGFWhTjs0b5Sx29voVmohjB4wW+zMNHLTky5QGigVrogn+TWPXc61+6s/lHJ87XbVrzqDPwAYvnu6G3vdOQ4l4EFJKEM4Ffj1NyzMto6mucVSb9d4BPoWEQJ/+ESD28VJoYil3w5GsTYQf3NP9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713800899; c=relaxed/simple;
-	bh=qhx0qzJ6eh/Piwu61s3SOfrpixoraj8h9WKEC68zkvE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rTLY//LY6eDvddaIk3uq3aMaTFcRp+6mMnAq61ywLZC7CGcsd+BtNyIJn2AyyPupPwJW4u5m4BeneNGTzsZkSiXqy8MeEqnh4zymZ6e5pu905vXE+Uj/GHJVIGFVVhRbZRUHrFS410eTg9+7sDiUADbxrVRsAJ1KnN7+cD6cQr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eQtkKAfi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0339EC113CC;
-	Mon, 22 Apr 2024 15:48:19 +0000 (UTC)
+	s=arc-20240116; t=1713800904; c=relaxed/simple;
+	bh=yS3et5KtSE2K7X6n3Q2wjbu/zRQrV/F4KQrzw6b31u4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HxD63a0lvugATnjwKm/CmTOSNllYP4jTBIqvoeyIDzv51X42DEJt741kZHMQT+Bj6mhSNDZrrHL2Nh340aSLy4jl7QgJJO7rUizjdbYCzocp4+xg1ISqjupBs0/Kjv6FZVCkbz8f+dFZhVIwLWqhrpib1H7e7tTYYZ28510WClQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RgjCnklg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B62FC32781;
+	Mon, 22 Apr 2024 15:48:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713800899;
-	bh=qhx0qzJ6eh/Piwu61s3SOfrpixoraj8h9WKEC68zkvE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=eQtkKAfiwdsuq9XsDA3nQk4XOR+nL7theGHHVtmfJBKxJX4cx+ryozk04IpE1d1Wi
-	 4dGU2YB7VPTSm4ZXmDPlWuxqTvh8aYhXx1rrh+Tnh+oCtaCKzSe9uJUYHqw3EpC6hz
-	 0YVJztgRg9qW8BY0PW+eGHvEXL8NMUegwRx2nuGlcUfBByvKRIqZpLJiOZ2zkjjARj
-	 Vmu9XUGdTXA0XLtUspNjPiHBQgO0yU11bQpoaYg5CKawps1PW/QTGtg2s/fCOSfsOT
-	 6tHBdpl+8WDjtLJdUnnTGOAqE9Tecz5dbtgVyDRfytUdL1jhWFluqwD9eOpE7DpC98
-	 v2UZVkiXiELbw==
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5acf5723325so1073148eaf.0;
-        Mon, 22 Apr 2024 08:48:18 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV3Iis48cDCO715Mr1axJd3r7G16lw/lbV2HxS94x9lSsd3/MteLHp1SaMdG7ZgmtvxEtZsRMQtQdXY4hriJGkDxVYXf8d1qYw8zHoNcxTZP/C9PhV1tvBYCsWva5b8HTegO4sPCu0=
-X-Gm-Message-State: AOJu0YyyL9/0geVn2VZKr7EZMZnTC+IgMHJCi11BJkZGZ0rLe3RxVFXG
-	OAPZq8zroF9ilj7z3lM24EBNMr/Bgih5yDHzCBfB7yxa847lCk1gC1EwB7IrqJ83FodqxOg5uz/
-	vrJcgsD4QsTdj1Ml/yUDKXOEH6ZQ=
-X-Google-Smtp-Source: AGHT+IEejy7ZrxkOXryq/C/rtyhD6+Fy0SmQNR3iAw9VjlGe2eFjqyjYSJMQRgsNHyrgaAjcIJHaXgJ5j1bzdRA9xgM=
-X-Received: by 2002:a4a:de19:0:b0:5a7:db56:915c with SMTP id
- y25-20020a4ade19000000b005a7db56915cmr11719433oot.1.1713800898393; Mon, 22
- Apr 2024 08:48:18 -0700 (PDT)
+	s=k20201202; t=1713800904;
+	bh=yS3et5KtSE2K7X6n3Q2wjbu/zRQrV/F4KQrzw6b31u4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RgjCnklgYaSbKbvGcc2cCK8DHnWlqiPeF1QeUNGG3vwTDEk/UafMgGpR35Bx7w7QQ
+	 52Wza4+zfYqKmLEKpArYD9tN0zIUyZwLGSa1eyidcgaLa4MmbxIhET0T2yeZ92Lt3d
+	 BFXg3PpotmcFegtlYeIoX1jthUKSeYT86LIu0ZDny+MsQ+R0wvjb6o7VLu/HZ0/3Zg
+	 IC/xX5mLxXDPOYzuyrsx2MqDN6g1mKdtk687dSxBlW63aC+0sqf7itPPWCjG/PgcJo
+	 jsy0vZq3bi6rGClbCxjDjJPWY/xxT/omeYWt3FGoe6FWPfO/OsZxyGeBCW7pXgaMrT
+	 EolRNmoAjBbaQ==
+Date: Mon, 22 Apr 2024 16:48:20 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lucas Stach <l.stach@pengutronix.de>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] dt-bindings: interrupt-controller: fsl,irqsteer:
+ Add imx8qxp support
+Message-ID: <20240422-channel-emission-d485dee6ae48@spud>
+References: <20240422064949.70778-1-alexander.stein@ew.tq-group.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <4918025.31r3eYUQgx@kreacher> <3a8f1978-c5df-40d6-91ca-276431bb01e1@arm.com>
- <e8193798-4c02-423a-a9d8-63d29ebd7faa@linaro.org>
-In-Reply-To: <e8193798-4c02-423a-a9d8-63d29ebd7faa@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 22 Apr 2024 17:48:02 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0i2pvTLwj7jTzwhoQMap_cvjvNnK2Beuje2COo+F4hBzA@mail.gmail.com>
-Message-ID: <CAJZ5v0i2pvTLwj7jTzwhoQMap_cvjvNnK2Beuje2COo+F4hBzA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] thermal/debugfs: Fix and clean up trip point
- statistics updates
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Lukasz Luba <lukasz.luba@arm.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
-	LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="cwoDUL3Q+X8/OOYa"
+Content-Disposition: inline
+In-Reply-To: <20240422064949.70778-1-alexander.stein@ew.tq-group.com>
+
+
+--cwoDUL3Q+X8/OOYa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 22, 2024 at 5:34=E2=80=AFPM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> On 22/04/2024 13:37, Lukasz Luba wrote:
-> > Hi Rafael,
-> >
-> > On 4/17/24 14:07, Rafael J. Wysocki wrote:
-> >> Hi Everyone,
-> >>
-> >> The first patch in this series addresses the problem of updating trip
-> >> point statistics prematurely for trip points that have just been
-> >> crossed on the way down (please see the patch changelog for details).
-> >>
-> >> The way it does that renders the following cleanup patch inapplicable:
-> >>
-> >> https://lore.kernel.org/linux-pm/2321994.ElGaqSPkdT@kreacher/
-> >>
-> >> The remaining two patches in the series are cleanups on top of the
-> >> first one.
-> >>
-> >> This series is based on an older patch series posted last week:
-> >>
-> >> https://lore.kernel.org/linux-pm/13515747.uLZWGnKmhe@kreacher/
-> >>
-> >> but it can be trivially rebased on top of the current linux-next.
-> >>
-> >> Thanks!
-> >>
-> >>
-> >>
-> >
-> > I've checked this patch patch set on top of your bleeding-edge
-> > which has thermal re-work as well. The patch set looks good
-> > and works properly.
-> >
-> > Although, I have found some issue in this debug info files and
-> > I'm not sure if this is expected or not. If not I can address this
-> > and send some small fix for it.
-> >
-> > When I read the cooling device residency statistics, I don't
-> > get updates for the first time the state is used. It can only
-> > be counted when that state was known and finished it's usage.
-> >
-> > IMO it is not the right behavior, isn't it?
->
-> Do you mean the right behavior is a regression
+On Mon, Apr 22, 2024 at 08:49:49AM +0200, Alexander Stein wrote:
+> Some SoC like i.MX8QXP use a power-domain for this IP. Add a SoC-specific
+> compatible, which also requires a power-domain.
+>=20
+> Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> ---
+> Thanks for the feedback.
+>=20
+> Changes in v3:
+> * Move 'allOf' before 'additionalProperties'
+> * Remove superfluous 'minItems: 1'
+>=20
+>  .../interrupt-controller/fsl,irqsteer.yaml      | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,i=
+rqsteer.yaml b/Documentation/devicetree/bindings/interrupt-controller/fsl,i=
+rqsteer.yaml
+> index 20ad4ad82ad64..3d33b75d6ecfa 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer=
+=2Eyaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer=
+=2Eyaml
+> @@ -14,7 +14,9 @@ properties:
+>      oneOf:
+>        - const: fsl,imx-irqsteer
+>        - items:
+> -          - const: fsl,imx8m-irqsteer
+> +          - enum:
+> +              - fsl,imx8m-irqsteer
+> +              - fsl,imx8qxp-irqsteer
+>            - const: fsl,imx-irqsteer
+> =20
+>    reg:
+> @@ -42,6 +44,9 @@ properties:
+>    clock-names:
+>      const: ipg
+> =20
+> +  power-domains:
+> +    maxItems: 1
+> +
+>    interrupt-controller: true
+> =20
+>    "#interrupt-cells":
+> @@ -70,6 +75,16 @@ required:
+>    - fsl,channel
+>    - fsl,num-irqs
+> =20
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: fsl,imx8qxp-irqsteer
+> +    then:
+> +      required:
+> +        - power-domains
 
-It has not changed AFAICS.
+Provided the power domains are optional on the existing platforms,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+otherwise,
+else:
+  properties:
+    power-domains: false
 
-> or we should expect at least the residency to be showed even if the
-> mitigation state is not closed ?
+Cheers,
+Conor.
 
-Well, in fact the device has already been in that state for some time
-and the mitigation can continue for a while.
+> +
+>  additionalProperties: false
+> =20
+>  examples:
+> --=20
+> 2.34.1
+>=20
+
+--cwoDUL3Q+X8/OOYa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZiaGxAAKCRB4tDGHoIJi
+0ljpAQCpp9Iw3VLIDdfXFjPlSOS7/ujkW6weU98urQDmwD9FZwD/Q9aTwbKunV32
+4LDLeaO+00Gg4CG//YU92oFBHMiXaA4=
+=4im4
+-----END PGP SIGNATURE-----
+
+--cwoDUL3Q+X8/OOYa--
 
