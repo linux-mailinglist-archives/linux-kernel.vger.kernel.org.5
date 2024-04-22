@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-153478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80248ACE90
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:44:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC0798ACE91
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:44:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C05E01C20CB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:44:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 975CA281A2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:44:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F013B15099A;
-	Mon, 22 Apr 2024 13:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540E31509BA;
+	Mon, 22 Apr 2024 13:44:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PQpsTJA3"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Au0Qv3by"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB7C5028B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:44:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDB9E150981
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:44:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713793444; cv=none; b=QDquoM9mf4y4q49GkeOQIavNLeg3SAF4tSlBAmDxYirYDqx2NR+nQACLkb88cldinuh3+INNnl/EDcPGrepUbylVG5aOnV3z3ZjNvcUj7XD+1iojwIwwCbzl5ol8al8/BzL/j5fVfrMwtc3f4YWple+RVIdc5O+OKtvKbHzdOvk=
+	t=1713793445; cv=none; b=MIWQUtLo5WR5BBnavpw3OkoJzYRU7sqzop8HNPimzcecUR6LLiUU7MN8WY9rJbf44UbmwXU0mWc3tGdAuClhFEViWdJ7Trp5wk/ebj8u5+CnwN1DUOPxR6w3S9pzBgNINsikTGcLbQxHx91svbg2Vct2L1py7A0EnJtzR1avnG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713793444; c=relaxed/simple;
-	bh=rPldZ9H/ghc6AHkcMuyq2S8TeCvPuuLZe494dCfPxzU=;
+	s=arc-20240116; t=1713793445; c=relaxed/simple;
+	bh=QPGkywHhxJwbRVmkKg4yvrDXLaFojPp13JVOp7ayaxM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kSMlVFcc8ieNoaDAUoEVPQSDhswKIMdBycyJCvY+8r2gTFwWOLv+qayam9SxgRokhjbessaCcx2F/VWtVxWzDcItyFSPDBDbFEQvGdO3kjXiUr3GCIAJyCw3o2Muyl+yi6yN6cY27oAKG5GeePyqDxv9yOM47bcuRzA4J2A9rtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PQpsTJA3; arc=none smtp.client-ip=209.85.128.50
+	 MIME-Version; b=OQ6RkoDdP59HXpQTzf9VYFf5Xh2QVe/eXfWPMRsNFynzJs4aoRRvC6F2xcRaqEKZlHj6dV7k7z4V6i1WiAWpind5sBi0j0QnWMPNc/G67lLb9Vcjmku6ayxmEQkePgRI9yWRzDa4demQAxXuevVZkl8JDAoi7ic+eRd/xzYKbr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Au0Qv3by; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41a5b68ed5cso9409785e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:44:02 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-3465921600dso3960418f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:44:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713793441; x=1714398241; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713793442; x=1714398242; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=C68a3MzfkPxx0ofANoAgzKhNox/WCcxWh7hhMFfdoBw=;
-        b=PQpsTJA3yBZYkh64TrBA3t4lqyw3BwuJ0G6Rewxwp27G1VSXsOd8gc69ZKm0WratS8
-         Z/TMMi6k7EtTL8PC6QvkuwzwromLINSAVHIwhydhHZiuQVafnnzPYCnhvrJ06gnqEN4w
-         NyJSPkU/IbKh/Ck/zk2NtytZJWNoqJfpoleYxcL1WxeCy6a88aSiQC1c8THOcqXBUcRv
-         rLfpNPYaM1j2Lq1C0YdSadwtHWzkfw+SSydoZtmX80rQ/e+UriE5C1SawIu8Z2t3wJmu
-         FTK/wmlL8IBcPzvNDs1YC3QsBqOi2YqSqlRQ6+Jed/c+T8maGlmMF8iIceXqvKBULHvF
-         ubNA==
+        bh=4DCZ+LurAPUpbkstxc4dh5F2TeDg5m/lAZJCQ3k7AMU=;
+        b=Au0Qv3byobwaaub26oFA22SLu1mNmnRAIhpclfeKZDMCuHpSu0dUqgwZklL7A6UjWL
+         7AULhuWnB7G2H82jDUIvxfy0gGYQwJZSiV1fzG/onONiCydn1ZLod5QnJ+JxmzUAmSz7
+         YNio+FttIDmhhVqPBa5Tdi9J0xbKk700DvfSexPpJu4BYGxIS8bO3Nh+M3M2j86Fa6ag
+         A0/VsVkC4H1Fu3zSp/0VQTAPvfWfg/5tDtAN56nB8N1Tff2SZgXttSOpMSId168NW9oI
+         yfqXe6fPPPOxYuyw6Ua6hYVD7j15DD47SYCfC7tK0Kz7Q+5xkfRVmV6SZMI7GvT/mrZG
+         cfsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713793441; x=1714398241;
+        d=1e100.net; s=20230601; t=1713793442; x=1714398242;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=C68a3MzfkPxx0ofANoAgzKhNox/WCcxWh7hhMFfdoBw=;
-        b=G2DD4rw9Z0qE+IXUOareUSrsHcYpK6TeQ8xQfT1t17xQXAXMs3XdvXKV0BSm4iDJdb
-         qMysrvohPyJhtmxCkzHUtik9ebyJ4eHaLLSdE57YCOGSGa2jZH5ZcRGDouddizoBhZ/R
-         2XQzwqBceSEqioJxlplwxgd2v4LsEdCF6M/aZe0zK69z5DPgylt+bauPgJPWJW+mzGTL
-         /BoUcmMu1Jkudw0580E0BHsjQVaAzxY8y48y1EoOQOzfaochyu2274HPTW9R6LjvLcJu
-         1/PmBU44tN5niSlAuWH87JnVqBIu5oXF4GzdVV3uMp/faZPIO6hTieSZOL1fBlsoBHtI
-         OwBw==
-X-Forwarded-Encrypted: i=1; AJvYcCX2bgDGbx4orcI3bCtuM+b6uKtqJxEQF7iZjN9vznpv7H2Ivea1VWTYuaZU2wC2PhZyJw9MWWiKARMzwATQpLKUSEchYzHk0QIC4yzV
-X-Gm-Message-State: AOJu0YycAOFoK5afl4BRkKjj0C56cHqar/aNj/WYw/6GiyjIpNhyF5ii
-	Rt2mZdTFEymx8tk73jPAr7UUKtrq/O06A5ZVnGfXJngl+EvGcw3P9FHq6F0NRW8=
-X-Google-Smtp-Source: AGHT+IF69zomYFFe3gyx0JQZWSWnA/EuT1tmDcqnUqTrWCK1PAfUVruv7UpMnVLeTSrBE1kQSTUlSg==
-X-Received: by 2002:a05:600c:3b1a:b0:418:a706:3209 with SMTP id m26-20020a05600c3b1a00b00418a7063209mr8005525wms.31.1713793441064;
-        Mon, 22 Apr 2024 06:44:01 -0700 (PDT)
+        bh=4DCZ+LurAPUpbkstxc4dh5F2TeDg5m/lAZJCQ3k7AMU=;
+        b=jP+ZlEROdoFZJ0s4hPMn3a7h0nBUilXOxZuJJ2UgVkcd3Gdyin8IIVmx37ByCN0gXA
+         oZB9+g36OfiPolXT7+PgRZipbpBXiA9Gm8AM9LGG4LZR8BYUbaIjRPM0JZ4gyScFrgPt
+         DthDZ4bml4dSAnx9A2b+Z8y/ZqQYScEITr+lUxnh26AV+WlfQ8/43xm3xO/utcfQOupW
+         XCHl3LdeDSGGSID7vnvX9iU6Is0sHE9mOs6QYy9358c0gASExl7HdU/CgaZjad0VMK5b
+         7IaBEM0mtxE3Vyd++8cr9u7iokvTnvlwwCpRYHy8fEhyqBca6TT67y7lcdFYiLD7jPsh
+         Rhow==
+X-Forwarded-Encrypted: i=1; AJvYcCXDWhPlYvl40QEfCABw/VEomf88J0LCYDcVy6H61+DnH4TulkKCT+egxlqjYQ7i5e77NIl8W6bOWKRvrP9y3lTdoaob7sbJzsYMmaD+
+X-Gm-Message-State: AOJu0YzrrviijmeCjyBMk69/5YknK6SQUCHESvEuPbNPQJlD1iqjQZOf
+	wP8dSscDD4YCQiLX2XiERM9NRDHfowHzGYd2/q9jOcoGJfytAk/3fp3HzsQVuzo=
+X-Google-Smtp-Source: AGHT+IEq1VrIPR3upvHPe1XfDjkR/T391HRzjxsXogocBrP/QBTphSY+BSVPlcXSaBcwT4MucQNb0w==
+X-Received: by 2002:a5d:6a07:0:b0:343:77f4:e663 with SMTP id m7-20020a5d6a07000000b0034377f4e663mr6457055wru.18.1713793442317;
+        Mon, 22 Apr 2024 06:44:02 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id g18-20020a05600c4ed200b00417d624cffbsm20731069wmq.6.2024.04.22.06.43.59
+        by smtp.gmail.com with ESMTPSA id g18-20020a05600c4ed200b00417d624cffbsm20731069wmq.6.2024.04.22.06.44.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 06:44:00 -0700 (PDT)
+        Mon, 22 Apr 2024 06:44:01 -0700 (PDT)
 From: srinivas.kandagatla@linaro.org
 To: broonie@kernel.org
 Cc: perex@perex.cz,
@@ -74,9 +74,9 @@ Cc: perex@perex.cz,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org,
 	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 1/4] ASoC: qcom: q6dsp: parse Display port tokens
-Date: Mon, 22 Apr 2024 14:43:51 +0100
-Message-Id: <20240422134354.89291-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 2/4] ASoC: qcom: common: add Display port Jack function
+Date: Mon, 22 Apr 2024 14:43:52 +0100
+Message-Id: <20240422134354.89291-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
 References: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
@@ -90,58 +90,77 @@ Content-Transfer-Encoding: 8bit
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-DP Module needs to know the data format type which is specified in the
-tplg file, parse that info before setting up the module.
+Add a common function to add Display port jack, this can be used by
+multiple board files and avoid any code duplication.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/topology.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ sound/soc/qcom/common.c | 29 +++++++++++++++++++++++++++++
+ sound/soc/qcom/common.h |  3 +++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/topology.c b/sound/soc/qcom/qdsp6/topology.c
-index 70572c83e101..27a5adb201c3 100644
---- a/sound/soc/qcom/qdsp6/topology.c
-+++ b/sound/soc/qcom/qdsp6/topology.c
-@@ -730,6 +730,29 @@ static int audioreach_widget_i2s_module_load(struct audioreach_module *mod,
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index 747041fa7866..3bfe618e7bd7 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -7,10 +7,14 @@
+ #include <sound/jack.h>
+ #include <linux/input-event-codes.h>
+ #include "common.h"
++#define NAME_SIZE	32
+ 
+ static const struct snd_soc_dapm_widget qcom_jack_snd_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
++	SND_SOC_DAPM_SPK("HDMI/DP0 Jack", NULL),
++	SND_SOC_DAPM_SPK("HDMI/DP1 Jack", NULL),
++	SND_SOC_DAPM_SPK("HDMI/DP2 Jack", NULL),
+ };
+ 
+ int qcom_snd_parse_of(struct snd_soc_card *card)
+@@ -239,4 +243,29 @@ int qcom_snd_wcd_jack_setup(struct snd_soc_pcm_runtime *rtd,
  	return 0;
  }
- 
-+static int audioreach_widget_dp_module_load(struct audioreach_module *mod,
-+					struct snd_soc_tplg_vendor_array *mod_array)
+ EXPORT_SYMBOL_GPL(qcom_snd_wcd_jack_setup);
++
++int qcom_snd_dp_jack_setup(struct snd_soc_pcm_runtime *rtd,
++			   struct snd_soc_jack *hdmi_jack, int hdmi_pcm_id)
 +{
-+	struct snd_soc_tplg_vendor_value_elem *mod_elem;
-+	int tkn_count = 0;
++	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
++	struct snd_soc_card *card = rtd->card;
++	char jack_name[NAME_SIZE];
++	int rval, i;
 +
-+	mod_elem = mod_array->value;
++	snprintf(jack_name, sizeof(jack_name), "HDMI/DP%d Jack", hdmi_pcm_id);
++	rval = snd_soc_card_jack_new(card, jack_name, SND_JACK_AVOUT, hdmi_jack);
++	if (rval)
++		return rval;
 +
-+	while (tkn_count <= (le32_to_cpu(mod_array->num_elems) - 1)) {
-+		switch (le32_to_cpu(mod_elem->token)) {
-+		case AR_TKN_U32_MODULE_FMT_DATA:
-+			mod->data_format = le32_to_cpu(mod_elem->value);
-+			break;
-+		default:
-+			break;
++	for_each_rtd_codec_dais(rtd, i, codec_dai) {
++		rval = snd_soc_component_set_jack(codec_dai->component, hdmi_jack, NULL);
++		if (rval != 0 && rval != -ENOTSUPP) {
++			dev_warn(card->dev, "Failed to set jack: %d\n", rval);
++			return rval;
 +		}
-+		tkn_count++;
-+		mod_elem++;
 +	}
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(qcom_snd_dp_jack_setup);
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/qcom/common.h b/sound/soc/qcom/common.h
+index d7f80ee5ae26..3675d72c5285 100644
+--- a/sound/soc/qcom/common.h
++++ b/sound/soc/qcom/common.h
+@@ -9,5 +9,8 @@
+ int qcom_snd_parse_of(struct snd_soc_card *card);
+ int qcom_snd_wcd_jack_setup(struct snd_soc_pcm_runtime *rtd,
+ 			    struct snd_soc_jack *jack, bool *jack_setup);
++int qcom_snd_dp_jack_setup(struct snd_soc_pcm_runtime *rtd,
++			   struct snd_soc_jack *jack, int id);
 +
- static int audioreach_widget_load_buffer(struct snd_soc_component *component,
- 					 int index, struct snd_soc_dapm_widget *w,
- 					 struct snd_soc_tplg_dapm_widget *tplg_w)
-@@ -760,6 +783,9 @@ static int audioreach_widget_load_buffer(struct snd_soc_component *component,
- 	case MODULE_ID_I2S_SOURCE:
- 		audioreach_widget_i2s_module_load(mod, mod_array);
- 		break;
-+	case MODULE_ID_DISPLAY_PORT_SINK:
-+		audioreach_widget_dp_module_load(mod, mod_array);
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
+ 
+ #endif
 -- 
 2.25.1
 
