@@ -1,140 +1,138 @@
-Return-Path: <linux-kernel+bounces-153754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6D688AD2BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:52:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AA828AD2C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:53:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D74AB25240
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:52:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18601283948
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4C81DDE9;
-	Mon, 22 Apr 2024 16:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE39153839;
+	Mon, 22 Apr 2024 16:52:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T4I54mjy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SVbbHamD"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ACFD15380C;
-	Mon, 22 Apr 2024 16:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19221DDE9;
+	Mon, 22 Apr 2024 16:52:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713804721; cv=none; b=HpAMKeiLiZd6sNgA70W4aoQ9WfdYvphbjcVoGc6TS+0fWx9kvWFXjmCCspJU2DHc8iox6MbAebhOZWwww/Sh+SqU5Pa9cUb90RGMPXFKmWr6qSc8BoSW/prX618dVFv2r/wTiKmFE6uilfR3IjxG4mbVmm42To/Sll6o47/bnmM=
+	t=1713804773; cv=none; b=QIjOchrkQOaU1Vq+MMm2IcHW8xhhPuAheCZZ8PS88B0cz9rXknVw9bStuJgvMReptvWNmve2O/KG6O8x00aGCe6Jdo86OQSHE1ZiE0mDJvhbbgIEjT8Bd8AOwDtzXrMyw17tC2G+YAZg2US8q6xKOd/cYKUTourIRQBEi6uQs7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713804721; c=relaxed/simple;
-	bh=h8F8EuYbd7584tEXjUGiNOmKoWLUFleWwMYlcYorZjc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sfAMShxZp1zM7BfR5al+YNDJWbwKfZmR1oQo7NGE31+ZohQNTM6wOVD6qa+30anDD+CRe2cnMK5KFiV3dVMM/1BD9vVHMYRiLfWVeaolUYel8I80qIl6cW097EPXkNBeejhIwgUcZrPvScjHeiUPRCspmC56u4RIJdz5ApaJMU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T4I54mjy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3279C113CC;
-	Mon, 22 Apr 2024 16:51:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713804721;
-	bh=h8F8EuYbd7584tEXjUGiNOmKoWLUFleWwMYlcYorZjc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=T4I54mjy3CF/KJobgFwnl6Tz3ZPF2zTZrMBkZQYDrK5PAFniIBGn9Z7mypad214pG
-	 hkc5jwBf/5LcpMsPJQ9eqm08syVLqsmLLZLvm5N5lVcdBcRrRktO2AD7521w7wFaOH
-	 wmqZnqdNoBFc8D2AQCuApqk8/+rFBFciuxJUMaR+L90ccOUcNG+DpdD3+O1S0WpZfI
-	 x9o5Y46czy4qAGmwnvz/YNMcSplOWrh8YfKb7KfUdTFJZBEO2ef/ffjZlPqkFGgu2w
-	 mturPN2laKyBDHwoMZcv5qsBwisfxJBVQ2kvq8zAlYo7mMD5j1x/N1Y5vqyulo5xwB
-	 y8PCwIDI4mSHw==
-Date: Mon, 22 Apr 2024 17:51:53 +0100
-From: Will Deacon <will@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Xu Yang <xu.yang_2@nxp.com>, mark.rutland@arm.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, john.g.garry@oracle.com, jolsa@kernel.org,
-	namhyung@kernel.org, irogers@google.com, mike.leach@linaro.org,
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-	alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	imx@lists.linux.dev
-Subject: Re: [PATCH v10 3/8] perf: imx_perf: let the driver manage the
- counter usage rather the user
-Message-ID: <20240422165153.GA6223@willie-the-truck>
-References: <20240415061320.3948707-1-xu.yang_2@nxp.com>
- <20240415061320.3948707-3-xu.yang_2@nxp.com>
- <20240419154913.GA3983@willie-the-truck>
- <ZiK6G3aM+K92lq0w@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1713804773; c=relaxed/simple;
+	bh=3/GWBoMvjgEOep+U+PUV0wTmJjwtNpbj6ntfK4jNUks=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:From:Subject:Cc:
+	 References:In-Reply-To; b=a4BhoqZ8XyZnH487v7gkhUgiszZUxVWFf3z2YGqHiKoAnk77JZnoVYH1TAJuLJsAFfNl9vgHIkl9Pf7dzZk+MY+hPT4dmG8U50j75NaYLPqtmAEYJ0DSsccUtCnWTQVunvUIUCee/4NFZdLddS0Sk7qDmYtkWK4I354xWlGHWIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SVbbHamD; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 59D60240005;
+	Mon, 22 Apr 2024 16:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713804768;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/bdZjyK+cz4gPmCanhUjDaq4XaZFBYb3A0dLn9Cm1x8=;
+	b=SVbbHamDIX+Ww/Itls8kkhQCUnzjTqVQ3QYkJRK+jmV7MbWq/nwSJmjoE2pFg6c8O13//U
+	e0UxUzw/pR/hQrHzqzX4add5r8vrS35AwF04slxe2FMpy81QpXwnpiXIC9SLMYu46y1FUO
+	zdNc6FhULzaP0VRMdTqgUuY3kzlwygFf9QQkxv8GcllV++vPNsZ1EWabZXKoMTpd9U8JFw
+	gwO7Z2fZwBDI1jjKs+wbGSADSKTsjWLpHaBZeZj2JKDtqkUu+t6JrM+zlOVHyrAjwApYvo
+	PI3UDOXquh2kgrLGavBOssYoNyPl7MnuBM4HUZqueLSpxCq+x3yyhC5rcgo8sA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZiK6G3aM+K92lq0w@lizhi-Precision-Tower-5810>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 22 Apr 2024 18:52:47 +0200
+Message-Id: <D0QT350IJHFH.36EXE1UT9QM10@bootlin.com>
+To: "Mark Brown" <broonie@kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Vaishnav Achath" <vaishnav.a@ti.com>, "Thomas
+ Bogendoerfer" <tsbogend@alpha.franken.de>, "Rob Herring" <robh@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: (subset) [PATCH v3 0/9] spi: cadence-qspi: add Mobileye EyeQ5
+ support
+Cc: <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mips@vger.kernel.org>, "Vladimir
+ Kondratiev" <vladimir.kondratiev@mobileye.com>, "Gregory CLEMENT"
+ <gregory.clement@bootlin.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski@linaro.org>
+X-Mailer: aerc 0.17.0
+References: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
+ <171283699002.32012.7629247540689477794.b4-ty@kernel.org>
+In-Reply-To: <171283699002.32012.7629247540689477794.b4-ty@kernel.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Fri, Apr 19, 2024 at 02:38:19PM -0400, Frank Li wrote:
-> On Fri, Apr 19, 2024 at 04:49:13PM +0100, Will Deacon wrote:
-> > On Mon, Apr 15, 2024 at 02:13:15PM +0800, Xu Yang wrote:
-> > > In current design, the user of perf app needs to input counter ID to count
-> > > events. However, this is not user-friendly since the user needs to lookup
-> > > the map table to find the counter. Instead of letting the user to input
-> > > the counter, let this driver to manage the counters in this patch.
-> > > 
-> > > This will be implemented by:
-> > >  1. allocate counter 0 for cycle event.
-> > >  2. find unused counter from 1-10 for reference events.
-> > >  3. allocate specific counter for counter-specific events.
-> > > 
-> > > In this patch, counter attr will be kept for back-compatible but all the
-> > > value passed down by counter=<n> will be ignored. To mark counter-specific
-> > > events, counter ID will be encoded into perf_pmu_events_attr.id.
-> > > 
-> > > Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> > > Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
-> > > 
-> > > ---
-> > > Changes in v6:
-> > >  - new patch
-> > > Changes in v7:
-> > >  - no changes
-> > > Changes in v8:
-> > >  - add Rb tag
-> > > Changes in v9:
-> > >  - keep 'counter' attr for back-compatible
-> > > Changes in v10:
-> > >  - add some explanation about 'counter' attr in commit message
-> > > ---
-> > >  drivers/perf/fsl_imx9_ddr_perf.c | 168 ++++++++++++++++++-------------
-> > >  1 file changed, 100 insertions(+), 68 deletions(-)
-> > 
+Hello Mark,
+
+On Thu Apr 11, 2024 at 2:03 PM CEST, Mark Brown wrote:
+> On Wed, 10 Apr 2024 11:29:03 +0200, Th=C3=A9o Lebrun wrote:
+> > V3 of this series adding octal SPI-NOR support to Mobileye EyeQ5
+> > platform. It has been tested on EyeQ5 hardware successfully.
+> > V1 cover letter [5] contains a brief summary of what gets added.
+> >=20
+> > There is no dependency except if you want zero errors in devicetree:
+> > system-controller series [3] for <&clocks> phandle.
+> >=20
 > > [...]
-> > 
-> > > @@ -245,8 +249,8 @@ static const struct attribute_group ddr_perf_events_attr_group = {
-> > >  	.attrs = ddr_perf_events_attrs,
-> > >  };
-> > >  
-> > > -PMU_FORMAT_ATTR(event, "config:0-7");
-> > > -PMU_FORMAT_ATTR(counter, "config:8-15");
-> > > +PMU_FORMAT_ATTR(event, "config:0-15");
-> > > +PMU_FORMAT_ATTR(counter, "config:16-23");
-> > 
-> > Although these mappings are advertised in sysfs, I don't think we can
-> > change them because userspace could be relying on them. I also can't
-> > find any examples of other PMU drivers in the kernel changing these
-> > mappings after being merged, so please keep tthem the same.
-> > 
-> > If you need to expand the properties to be 16-bit, then you'll need to
-> > split them into 2x8-bit fields.
-> 
-> I just see tools/perf/tests/pmu.c: { "krava01", "config:0-1,62-63\n", }
-> So I supposed "config:" supported below format
-> 
-> PMU_FORMAT_ATTR(event, "config:0-7,16-19");
-> 
-> I just want to confim with you because I have not found other perf driver
-> using such format yet.
+>
+> Applied to
+>
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-ne=
+xt
+>
+> Thanks!
+>
+> [1/9] spi: dt-bindings: cdns,qspi-nor: sort compatibles alphabetically
+>       commit: 002514d91fccde2adbe750c9ec5c6207d56c890b
+> [2/9] spi: dt-bindings: cdns,qspi-nor: add mobileye,eyeq5-ospi compatible
+>       commit: 52826aee484b3ebb6ed94c1ae89c0944110ed8b1
+> [3/9] spi: dt-bindings: cdns,qspi-nor: make cdns,fifo-depth optional
+>       commit: eb4fdb4bf46f875eac3c093f7ff43a223985f7b8
+> [4/9] spi: cadence-qspi: allow FIFO depth detection
+>       (no commit info)
+> [5/9] spi: cadence-qspi: add no-IRQ mode to indirect reads
+>       (no commit info)
+> [6/9] spi: cadence-qspi: add early busywait to cqspi_wait_for_bit()
+>       (no commit info)
+> [7/9] spi: cadence-qspi: add mobileye,eyeq5-ospi compatible
+>       (no commit info)
 
-Oh, wow, that's new syntax for me too! Does the perf tool parse it
-properly? (and what happens if an older tool sees the new syntax?)
+All commits tagged "(no commit info)" do not show up in your for-next
+branch. Is that expected and is there anything I can do? There was one
+pending -Wunused-variable compiler warning to be addressed for
+example, see [0].
 
-Will
+=E2=9F=A9 git log --oneline --author theo.lebrun v6.9-rc1..spi/for-next
+eb4fdb4bf46f spi: dt-bindings: cdns,qspi-nor: make cdns,fifo-depth optional
+52826aee484b spi: dt-bindings: cdns,qspi-nor: add mobileye,eyeq5-ospi compa=
+tible
+002514d91fcc spi: dt-bindings: cdns,qspi-nor: sort compatibles alphabetical=
+ly
+563f8598cbc2 spi: cadence-qspi: minimise register accesses on each op if !D=
+TR
+dcc594aef1bf spi: cadence-qspi: store device data pointer in private struct
+708eafeba9ee spi: cadence-qspi: allow building for MIPS
+
+[0]: https://lore.kernel.org/lkml/161eebc1-9417-4ab0-ad8c-c1b17be119b4@sire=
+na.org.uk/
+
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
