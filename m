@@ -1,214 +1,214 @@
-Return-Path: <linux-kernel+bounces-153269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 223988ACBBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:13:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB0AE8ACBBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:13:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD3E7285A78
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:13:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 553751F23DC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19EF61465A8;
-	Mon, 22 Apr 2024 11:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75619146A6A;
+	Mon, 22 Apr 2024 11:12:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Qf5XJ0TK"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="QNYkCh1K"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2053.outbound.protection.outlook.com [40.107.93.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A1B14658E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:12:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713784357; cv=none; b=sJFj/DLwHnOd4TwwrsmkCt99F6ufx+Khp/hRbmLxWj/0vnqB806JR1sFXMhpHn7aYySBo0HGcR4BdRF1VMcpuTrZatzgPxPmcKCULS7Shkqh5zh1L52SmIOF6fxlSXty8WYXE+SfgI/f3Lp5ICy8V9ij83nWl1kerDscj+fsg50=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713784357; c=relaxed/simple;
-	bh=sb6w0vBf+6w8wloCIXWMQDH8YFgEFapAm0WcSvhGHi0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jvP/TSgPE/FdMKu2FfCSyFnbrID38qxFXsaWiNeE0AzqyfEQNPL/cW5EbX5IH6LJ9ZDsV38KlJxe8eaAG//PHqa90E7S9w5W9iGA7OM7309ia/DO/0gCq+QRcgTL8+2Uq1NNPe16CMCLk9ZuFGUQcKwzPumk3/f8T2uF9CB9b5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Qf5XJ0TK; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713784353;
-	bh=sb6w0vBf+6w8wloCIXWMQDH8YFgEFapAm0WcSvhGHi0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Qf5XJ0TKLw6WYYYr8gS7cx2GGUcA6gs50t3CpBOJtsT/dXJmT3hAaMoiQG6BwRz62
-	 WjENUi1cKpJbaXfMKAHVKLXNIXrhHhvx9IagaYHksbrcpqTJWTVR5y5NKypGDJ5o3h
-	 6gKFAMj4pIg6cFfMTMQd2Q8h7fNX5hBIOaUoqCnHlfdBVTH9P58U6aI+fkZu5QbXJT
-	 Dnv8SzChM6sFFSDgeoAdvqe6HxsfnaJef4nkVvBGFgjQHXNMOYDiebB9JWPu67Q7//
-	 IBkJV5nUFUD8AD4iewbRqVgJw4zcWbufYuZsuA1rbClA2VuBao1ZnrIocTSkiWfg5v
-	 rrTbZPhsD1jSg==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A4D663780C22;
-	Mon, 22 Apr 2024 11:12:32 +0000 (UTC)
-Date: Mon, 22 Apr 2024 14:12:31 +0300
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- rdunlap@infradead.org, arthurgrillo@riseup.net, Jonathan Corbet
- <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
- miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
- seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
-Subject: Re: [PATCH v6 08/17] drm/vkms: Avoid computing blending limits
- inside pre_mul_alpha_blend
-Message-ID: <20240422141231.513f0295.pekka.paalanen@collabora.com>
-In-Reply-To: <20240409-yuv-v6-8-de1c5728fd70@bootlin.com>
-References: <20240409-yuv-v6-0-de1c5728fd70@bootlin.com>
-	<20240409-yuv-v6-8-de1c5728fd70@bootlin.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC818146595
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:12:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713784372; cv=fail; b=PHlhxRclLqwQ9+2mf0ItTFhm8HMosqrHMT4WMwRTOJKN0hVAoeAz6kLFytIqjRXLqDwT7zG1BmyhoHrKuCbZ+dPhrhRm3o1rxJR1cfmeQIiFVqE9mEi5p6nzy8gtVXbQwkhmPkgVJymYReD+rgCHDNkGQyOFKtauxuR9D2Lrxww=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713784372; c=relaxed/simple;
+	bh=gKtX1IeuDHkUs08IB7Ewt9AJUTvLIE4UY3ph5MAc45A=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=IZyWMxVYsKyusQAgz+8nyEWiK6MVIDoCykig/8Pk2ycwovubkgXTZulB0oM/qnRPmXmozwD6Q8VPR5lAnaakOeKH72Wdv4A44XXAwz8ZkeP/+Umd0VadZ7Xnft4TBEvs1r+UBiLtsL4UxJfsYNFUTbOlghdDxhMdtkP3TyMA2Is=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=QNYkCh1K; arc=fail smtp.client-ip=40.107.93.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IJBXBpg1goIAEhpZwh5Jgbe3MbDXH3WetYOj+9Xhhuqm/gbs0x5oIUKNreEHOIOlsp3M7AxkYaUKgMjLVWLrvbCgGFWHtqx5o3LLeZE4VqYSd6hQ/RBLIx85znBcoqe44f0lOg682lbCvA0UvFWB0ZqGPYTXrIWeXH6YLf+Ls5G9B9LLtMs/clznXef26dxq3Lx38NHpDQjY0a//otYX8gpGEnGWNxA9Keb6kMU3EyfEqnVUVHoFbfnGFo3gAgO/Ft+qZM6CqFebIxMJP+q1B9wvIrEp8O1uiG8oallxi1n3L2PNMGXKpnFc02tzPLQmNvhYiL3RW9UHYoVmLuzQDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6MTvp06jxtzi1WRyS3xoZptryBmNi49z7+otECgqVqc=;
+ b=Z/U2f8QzceDLPZHBJ0AdnKMWkONH/hvCg/JQH8StoAUadgOjHLnSW6FBuId/CeqyHsQ+Isbhgod9zH+I1p2qBsJi3Dt6mGXqe4ekRN31n2zOM7cro8rvBIAP8XMXCTM+WRG1xPihNY7nodvssxwaylgXQRQ/r6farKyOfC+6tHdg78rIqPo2D5/wRdval+zFIV32Jj5Kc1AzLDx3OLtz+L3jT88F7ItwfpVVAik57Nv9fhR98blXMsHrLPAcdW7yob2oCIOOA4V7RdyKDMndCYYPZ9VWkWXq6isfP2hhuX7aomGIl/ZahA9+xH7fsa76NvX67HEv1SGKz1JlLJrVcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6MTvp06jxtzi1WRyS3xoZptryBmNi49z7+otECgqVqc=;
+ b=QNYkCh1KGwml+4dO8hcUUt/EqAWWKTuk4R5G0UOLoeJmB0TbAsq8l3OOdqR/tlo7x0yn9u1RmgpOSQbQqZkx0jFBipX+h80vr4my7SP5nP3VPA3kHb8ALuWWf4Eb58hXoiWjpPfdq9uGkO1Q9ooUSsr3odl2eN2ipPqLwKaZleI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB6165.namprd12.prod.outlook.com (2603:10b6:8:9a::21) by
+ SJ2PR12MB8978.namprd12.prod.outlook.com (2603:10b6:a03:545::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7472.44; Mon, 22 Apr 2024 11:12:48 +0000
+Received: from DS7PR12MB6165.namprd12.prod.outlook.com
+ ([fe80::66b:8d4f:3f1c:6454]) by DS7PR12MB6165.namprd12.prod.outlook.com
+ ([fe80::66b:8d4f:3f1c:6454%3]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
+ 11:12:48 +0000
+Message-ID: <68372695-78d9-4036-8d59-fbf1d1261470@amd.com>
+Date: Mon, 22 Apr 2024 16:42:36 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/1] Fix lb_imbalance reporting in /proc/schedstat
+To: linux-kernel@vger.kernel.org, mingo@redhat.com
+Cc: peterz@infradead.org, torvalds@linux-foundation.org,
+ juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+ vincent.guittot@linaro.org, gautham.shenoy@amd.com, sshegde@linux.ibm.com,
+ kprateek.nayak@amd.com
+References: <20240318092433.1791798-1-swapnil.sapkal@amd.com>
+Content-Language: en-US
+From: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+In-Reply-To: <20240318092433.1791798-1-swapnil.sapkal@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0011.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:25::16) To DS7PR12MB6165.namprd12.prod.outlook.com
+ (2603:10b6:8:9a::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ftYzuClzH53oySJ+T+t4LAa";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6165:EE_|SJ2PR12MB8978:EE_
+X-MS-Office365-Filtering-Correlation-Id: bd6433f8-8801-43e7-5004-08dc62bd2456
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?YzRFQWZ5TEczblhVRkJjZXdYWXF4ZWQ3QVBMSHg4cmxTUDZqR0FTZ1BUNmZw?=
+ =?utf-8?B?bGVRSDRWa0VCRlBKQk1leitKdy9zamJqVlNaYzM0ZVN0clFoM3A3eUZMaFNW?=
+ =?utf-8?B?TUM4N2djZkJxb1pEekJLanJ4RkoxNHRVclZDR2J5YUZsYmRFWmVmN1VwSG1s?=
+ =?utf-8?B?c1M4VFlSTlp1NVhTWmtWR25aWkFCT09UQWo4K3hZcU13bWJ1UFlsQ0ZZdkN0?=
+ =?utf-8?B?VEMzTUxWQ3RaUWRLWFUybFNQMlQwSUxKQlJTbFk1bzdVY3BFUUlMYnZOWmRs?=
+ =?utf-8?B?MnRPRGFwMEZNSXNaTTI1Y0w0SEx0TmRWeFhuRzV1bGpvUjE1bWhyMFdtdFh4?=
+ =?utf-8?B?MnlycCtDTzc2eVU1U1NhaGVSNUJLeVJnV0ZrWHBFbkRYY3VUVEY4YzczWEZB?=
+ =?utf-8?B?NkFSb2JXT0x6SDdMVU8yb2w0eTRMNnQ0MDUxYUdDSlpxYWRMeHh0YitUM0Fl?=
+ =?utf-8?B?THpzVm9haVdLZmdybmUwVnNrb0JFcFBSdGJXZHRtVmVSQjdyM0hjVmUyM0Vs?=
+ =?utf-8?B?UENPZzFjdHpNcCtickJBTWpuM0pwcHZuYmVaRXIzS1pQR003UnJHVGc4Z0kv?=
+ =?utf-8?B?TDhjMHJsYTZobmRVMGxGei9QTUwwVUoxMjVxR3h0R3JtelNlWlRiMkMxbXdm?=
+ =?utf-8?B?Y0svTkRFU01pOWlIcFBsbGIrRHRoSHpZMllvN05reUhoZzRBbWN6UyttWVJh?=
+ =?utf-8?B?NWF5UHJ0Rmh6bERlQnVXMnhtQzlORnB3M2RQeVpLZjZFSmhJSVRHUU1UZnZr?=
+ =?utf-8?B?SXhmNUllTFhSS3JuVzh2QmgxS29YLzMyeUt4aWpaNnh1UTlwNTBUMWFheFdq?=
+ =?utf-8?B?Vll2Vjd3N0lmR1kwby9pSHJONDNUK0JEVVNiNWo0bE9YNURySEhYV3RNQTh6?=
+ =?utf-8?B?TTVhNEd3MU9PWmliWi9UM2ZKalZHUVFrMkQxL3hGREpIdUlIcUszYXB2K0tV?=
+ =?utf-8?B?dDM2NDVHV3U0SE10bXpibTZZSkF2SnRxRUJHYVZ0SitlWmRmMXUxYXIzd1dS?=
+ =?utf-8?B?bFVraXhlVWc3V3RHSUcrQ0FjR284YjBZVWpJOTVXZUlkRmcxTkpUMmtaRlAr?=
+ =?utf-8?B?aTNVajM3cy9ONWEwT01GRXI4RUI5SEQ5Nkh1OWtwZEFpWTY3QThjVjEydEdi?=
+ =?utf-8?B?WldJajROVk00aVF3Uy8yOWpYdm5ESk9qN0hkT1NJc2dwdTlGSmFxMnV2MmlY?=
+ =?utf-8?B?VUZWQWtoRFUvK3lBaVlUcDZYSHJWSjhLSURQMUFqVmpVUHplVmlWRGtpR0VR?=
+ =?utf-8?B?N2JiTEdBQWZNWS8xekUxVGs2SlFIS1ZnUFNwQjRZL3p3YWRPem00S2lUWlEx?=
+ =?utf-8?B?MkFMWHRadU11MEF1N0F0eTFtL0p0aitCaTN5K2thd1Z5SGoyYTBjVzZvZkYz?=
+ =?utf-8?B?RTljaFpLbnQwRTJEK0tjMVoyRFMzQ2E2RGp2SFgzR2NvUVc5TW9ndllZa0xk?=
+ =?utf-8?B?NkNERE9GcjZiS1VQRVl0MEdwYlZyaklwMXFlM2E5aHF3cmNiU3lTS0xIbHFV?=
+ =?utf-8?B?VDg4K3BiNGV4cmxtWnNpSFJFcVNmVWpOYVlTN2pSUmtId1pZenZzbmRvcnNi?=
+ =?utf-8?B?enpCMXpIL2hsRzdSZ2VqUDM3eDNSSjdoWmhpYWw1d29PQWZaaVo1WFhPbFhi?=
+ =?utf-8?B?aTdsZm9BbTd4NmpYWGNiWE1mQktoSWt2WEl3UFRETmZsV09xTWcyZjg4QjNG?=
+ =?utf-8?B?bE5pK3pyUVJlTkVaTG53ZThab1hPV2dyUGQ1WGJDdUMxZVp3bWdnRnVRPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6165.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?K05JMkdZRTBVV1BsS2F1c2o4TUJ0bjdnaEJrZ24rTGVHeWRNVjNPM2FROEU2?=
+ =?utf-8?B?NVRtQkdOT2FaNFBacE1EcnNVNi8zemZVOGR1RVl6dHE3SnZJWTc0ak9jT3I2?=
+ =?utf-8?B?NkVMUWFNR2F6M3g3cUJtUnllemF4dFhRME9zUkpyVEEyTzBobm1qKzNjYmJX?=
+ =?utf-8?B?UEtTTVYzYmE1aDFHMDlvZ2dlczNBRnZRSitoWnZ6ZjAzTG1QR0NwbDhSbDdt?=
+ =?utf-8?B?MHBzTlptZWR3OE8zZG1zMytjY0NsSDM0MmRFMXdkeFpqLzRsTUtzdSt1ZVRQ?=
+ =?utf-8?B?RkorV2lvV1N6QUp1UmNXNldobmlyMHdQTUI4aG5BRmo4V3pyb1VFMVBFTktX?=
+ =?utf-8?B?Y0JhVjVTSWFWTUZncFphb0l0WXdzZkdPc3pMd3drK1cwaENaalVsWjFLNDIw?=
+ =?utf-8?B?SXNVS083Vi9PZUZjRVVNNFdHQjlGVW9DQjZrOW5lSlM1UUE3Qm1nYjlnSEFU?=
+ =?utf-8?B?ekpPalY1S0Z6endGekRNQ3ZtNHZ2SjJzdFFQK0lpNzd3RDJzeUtnSEZ0bS9F?=
+ =?utf-8?B?dkN6dFlTaDBtUDRId3o0bUhSNEFKL1l3STRCRTFJTUs2dlc2ZjRud2JQWk9i?=
+ =?utf-8?B?TllIQWt2UjVVVHV5cGxuQ21zMkphUytjZHJjNlpaa2F5eGdrVDNUaGV2dGdv?=
+ =?utf-8?B?V1hTY2NPRW8yZXh3M01NMWpDUEp3ZTRIWTE0SkNrYWZRVTExU0hQV3Fqd2hU?=
+ =?utf-8?B?bzl3NDR1cENxaWdVTmkzZDFxdFZWc1p5ZzR0cTRkZDdVK2R4S1JQMFpvdDNV?=
+ =?utf-8?B?MHJMbFhLOCtjVFJhblo3Vis1SWdhSHZ5aW41T2tjQ2QvamV5cjUxSmFkTWg3?=
+ =?utf-8?B?dFZEZndMNENSYTVEeEg3RHRqbVc1NXh3MWMxTW1ISEFXT0ZKbHdzNXRzaXdT?=
+ =?utf-8?B?S3RORDlkMlpaUFgrdDFGYUY0K2kzOVJFV0dpZ2xpaWdsRE5oMkxLdXRWdWJR?=
+ =?utf-8?B?V29WUlRIOEVyVm1zQ01wQ2RjWjdyUjhTTFJWNnlCVWZCZERrbFhzRzVSOHR4?=
+ =?utf-8?B?VnV3cldtaS8yY1YxdlVsSURtU0I1b0dHOElhZWtmWkFqTHBOb25oeUJNbDBN?=
+ =?utf-8?B?TjdESFIrTnZRZUdOTDdzTUNaVzBZdDhkRlE4ZlRVNlZhNmpxUFBpT3VmZ2s0?=
+ =?utf-8?B?NXowZDc4VVB4Wmd6OFJZK3ZYRE9zM0RmSFBIL2FQR0Q3WWlLOGNTRUxBZW5T?=
+ =?utf-8?B?aktwbFlObWZhT0o3UTBjZWNGanYwYzJXMlV3aERGZTZKdXgrOEFvYnlLS083?=
+ =?utf-8?B?VFlaSWtmSEcrM2QyK3N5OGJQOWlxVnEybnE1WDFlVndqa3lvdXBNNzRIYzkv?=
+ =?utf-8?B?enljWHJJOEJQRERRK3NmMmgzQUNaMHBaWlB6NFVpVnhuYnBncXVabktObnBv?=
+ =?utf-8?B?RnluNUFuRWdEdDkxaUVJTHl5WjZmdkFpWHIrQUV6Wk95Wk5yamIxT05QeUxj?=
+ =?utf-8?B?T2VPN0NsaVRiVHNKaUJpWDlGMmhOQWxML3Q4bHU3ditEVU42NGcwalNJUU9Q?=
+ =?utf-8?B?bk1XclN4VWcxT2p0NUFXTG4rUGFEN1FwNjNQN2JBenV0RHNTRURUeUl3Z3ZZ?=
+ =?utf-8?B?SE8zVmpxSXovN3ZrUFYycldwcmVYQVlJT01jUjBla0dVajBuNnlZM1QvV3FL?=
+ =?utf-8?B?TjFkU2d0MFRoQ3pzYXhBQ1ZhZTFHMUdLdS92TEswcEc1dXBjRkpmUzBieGdW?=
+ =?utf-8?B?Z1daN1VHZWRqRGZwajNLaXcrNW1rUzVFWDBKZ1llRjErZkVjUWdNUDVLcUJW?=
+ =?utf-8?B?TnJyTjBhMFNicmszaUZ6MUFHTERjYmc3dHJNMVVVQVNNb1grSkxCSjV1cmtG?=
+ =?utf-8?B?ajZneUFqVzhRREhiNTNOSnQ4M3FFaGZBMFNxcE5KaC9QOWJ1aVZVVWNvdmJt?=
+ =?utf-8?B?OUpBOVp6enFaelBrem9iYWF1NE5jdlBsS3hxMTJ2d3JmYk92bTBZaytSNzlx?=
+ =?utf-8?B?RnBhR0thTDg1RWZIVjNqdm1WMTd0NVlZOVA0bXpVcVY0eERqTTB3M1l1aFNj?=
+ =?utf-8?B?bUNzeUlmZGdNNU5iWUtqc3VOUWlLSWxCTXVJS0NCL3dpK0hCYlF2N1JKT2ZX?=
+ =?utf-8?B?OWNwQ2RmWm5OQkRhbldUY1VEOEQvbjhmLyszMm9LdVczekxRd1NNU2ZaaTE2?=
+ =?utf-8?Q?ttzsiKFx8gnh5CGMuFOj454II?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd6433f8-8801-43e7-5004-08dc62bd2456
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6165.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 11:12:48.2255
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5VzC0W75pXwU49oVNRZ3HbkY+e3Dse7K1sICzf0MlWFLMkIjIXPHoiOtn3DgXoBn9KKB7oeQaqJz1apn3uJl0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8978
 
---Sig_/ftYzuClzH53oySJ+T+t4LAa
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello Ingo,
 
-On Tue, 09 Apr 2024 15:25:26 +0200
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+On 3/18/2024 2:54 PM, Swapnil Sapkal wrote:
+> This patch adds new fields to /proc/schdstat. First version of
+> the patch is sent here [1]. This patch goes on top of the
+> commit d72cf62438d6 ("sched/balancing: Fix a couple of outdated function names in comments")
+> from tip/sched/core. This change is intended to be a part of v16 of
+> /proc/schedstat.
+> 
+> v2 --> v3 change:
+>    - Incorporated review comment by Shrikanth Hegde
+>    - Added reviewed by.
+> 
+> v1 --> v2 change:
+>    - Added links to previous schedstat documentation
+>    - Incorporated review comments by Shrikanth Hegde
+> 
+> Motivation:
+> 
+> In /proc/schedstat, lb_imbalance reports the sum of imbalances
+> discovered in sched domains with each call to sched_balance_rq(), which is
+> not very useful because lb_imbalance does not mention whether the imbalance
+> is due to load, utilization, nr_tasks or misfit_tasks. Remove this field
+> from /proc/schedstat.
+> 
+> Currently there is no field in /proc/schedstat to report different types
+> of imbalances. Introduce new fields in /proc/schedstat to report the
+> total imbalances in load, utilization, nr_tasks or misfit_tasks.
+> 
+> [1] https://lore.kernel.org/lkml/66f1e42c-9035-4f9b-8c77-976ab50638bd@amd.com/
+> 
+> Swapnil Sapkal (1):
+>    sched: Report the different kinds of imbalances in /proc/schedstat
+> 
+>   Documentation/scheduler/sched-stats.rst | 121 ++++++++++++++----------
+>   include/linux/sched/topology.h          |   5 +-
+>   kernel/sched/fair.c                     |  21 +++-
+>   kernel/sched/stats.c                    |   7 +-
+>   4 files changed, 99 insertions(+), 55 deletions(-)
+> 
+Gentle ping. Can you please consider this for v6.10? If anything needs to be changed please let me know.
 
-> The pre_mul_alpha_blend is dedicated to blending, so to avoid mixing
-> different concepts (coordinate calculation and color management), extract
-> the x_limit and x_dst computation outside of this helper.
-> It also increases the maintainability by grouping the computation related
-> to coordinates in the same place: the loop in `blend`.
->=20
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> ---
->  drivers/gpu/drm/vkms/vkms_composer.c | 40 +++++++++++++++++-------------=
-------
->  1 file changed, 19 insertions(+), 21 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/=
-vkms_composer.c
-> index da0651a94c9b..45b111c74884 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -24,34 +24,30 @@ static u16 pre_mul_blend_channel(u16 src, u16 dst, u1=
-6 alpha)
-> =20
->  /**
->   * pre_mul_alpha_blend - alpha blending equation
-> - * @frame_info: Source framebuffer's metadata
->   * @stage_buffer: The line with the pixels from src_plane
->   * @output_buffer: A line buffer that receives all the blends output
-> + * @x_start: The start offset
-> + * @pixel_count: The number of pixels to blend
->   *
-> - * Using the information from the `frame_info`, this blends only the
-> - * necessary pixels from the `stage_buffer` to the `output_buffer`
-> - * using premultiplied blend formula.
-> + * The pixels 0..@pixel_count in stage_buffer are blended at @x_start..@=
-x_start+@pixel_count in
-> + * output_buffer.
->   *
->   * The current DRM assumption is that pixel color values have been alrea=
-dy
->   * pre-multiplied with the alpha channel values. See more
->   * drm_plane_create_blend_mode_property(). Also, this formula assumes a
->   * completely opaque background.
->   */
-> -static void pre_mul_alpha_blend(struct vkms_frame_info *frame_info,
-> -				struct line_buffer *stage_buffer,
-> -				struct line_buffer *output_buffer)
-> +static void pre_mul_alpha_blend(const struct line_buffer *stage_buffer,
-> +				struct line_buffer *output_buffer, int x_start, int pixel_count)
->  {
-> -	int x_dst =3D frame_info->dst.x1;
-> -	struct pixel_argb_u16 *out =3D output_buffer->pixels + x_dst;
-> -	struct pixel_argb_u16 *in =3D stage_buffer->pixels;
-> -	int x_limit =3D min_t(size_t, drm_rect_width(&frame_info->dst),
-> -			    stage_buffer->n_pixels);
-> -
-> -	for (int x =3D 0; x < x_limit; x++) {
-> -		out[x].a =3D (u16)0xffff;
-> -		out[x].r =3D pre_mul_blend_channel(in[x].r, out[x].r, in[x].a);
-> -		out[x].g =3D pre_mul_blend_channel(in[x].g, out[x].g, in[x].a);
-> -		out[x].b =3D pre_mul_blend_channel(in[x].b, out[x].b, in[x].a);
-> +	struct pixel_argb_u16 *out =3D &output_buffer->pixels[x_start];
-> +	const struct pixel_argb_u16 *in =3D stage_buffer->pixels;
-> +
-> +	for (int i =3D 0; i < pixel_count; i++) {
-> +		out[i].a =3D (u16)0xffff;
-> +		out[i].r =3D pre_mul_blend_channel(in[i].r, out[i].r, in[i].a);
-> +		out[i].g =3D pre_mul_blend_channel(in[i].g, out[i].g, in[i].a);
-> +		out[i].b =3D pre_mul_blend_channel(in[i].b, out[i].b, in[i].a);
->  	}
->  }
-> =20
-> @@ -183,7 +179,7 @@ static void blend(struct vkms_writeback_job *wb,
->  {
->  	struct vkms_plane_state **plane =3D crtc_state->active_planes;
->  	u32 n_active_planes =3D crtc_state->num_active_planes;
-> -	int y_pos;
-> +	int y_pos, x_dst, pixel_count;
-> =20
->  	const struct pixel_argb_u16 background_color =3D { .a =3D 0xffff };
-> =20
-> @@ -201,14 +197,16 @@ static void blend(struct vkms_writeback_job *wb,
-> =20
->  		/* The active planes are composed associatively in z-order. */
->  		for (size_t i =3D 0; i < n_active_planes; i++) {
-> +			x_dst =3D plane[i]->frame_info->dst.x1;
-> +			pixel_count =3D min_t(int, drm_rect_width(&plane[i]->frame_info->dst),
-> +					    (int)stage_buffer->n_pixels);
->  			y_pos =3D get_y_pos(plane[i]->frame_info, y);
-> =20
->  			if (!check_limit(plane[i]->frame_info, y_pos))
->  				continue;
-> =20
->  			vkms_compose_row(stage_buffer, plane[i], y_pos);
-> -			pre_mul_alpha_blend(plane[i]->frame_info, stage_buffer,
-> -					    output_buffer);
-> +			pre_mul_alpha_blend(stage_buffer, output_buffer, x_dst, pixel_count);
->  		}
-> =20
->  		apply_lut(crtc_state, output_buffer);
->=20
-
-Reviewed-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-
-
-Thanks,
-pq
-
---Sig_/ftYzuClzH53oySJ+T+t4LAa
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYmRh8ACgkQI1/ltBGq
-qqebhA/+LR0l18Yb4oNKfeOta5o/H/STbogfZP1N+Gfpq5ecs69Nb4QGQVuXDC//
-W4858UmVBCwLruUqjeehzTe1Hvt+LIGVKbIJXpTC4qIawi7QFFOZXNlX/QRrGnHN
-PfXk5PnL00NWyYlz6Fg1uGFM1M4aOzLWEjYxIFSQAa14WNXTS/bnknx2PQayjGpb
-HXv4sU749qSy4AC8BWm6Z47n3nBggyojIrG7/jACrkrQueFVUGyCarlwXNLgVr4z
-6cImLh5e7WzLW9NGNDjOujzaGUBmO+Cg2YB/Tg4fLCwT6HKcqeL2suFMXycNLCsc
-oInHiWU2oD9MtdmGdR1NUhvAqI++F5Nc8CsC6dlpddJbBfFzoy7uR3UUhL39a5lI
-PlkSGh9CqQaIZ8NmzhJtwRy+o0UdYKiXEH1MLX0Xn5A3UADdvnS21vDil8YLIehv
-D1XW1PRYK70BBrM5TZ7Nbo/qt9jDqbyZJmiSF082IFb409kK8eh8b1khaeDi0sRX
-uI1p7hrl/DWq38bA1Y7wUFK2kGNC7+GdmoyV9pUSXiXwHhYBE4/JHAUbblojvHre
-MyWGv5vsa0D7OWfQpetyDNpeytKR9Ntwuab5tCmG09kPWqAGEiFKGc+WOy2hWr3D
-djcu5dbzLDu5aQvcwW8V4hnC5Hn1B0UHfipWGHZhWa0JiF1z3M8=
-=AQK4
------END PGP SIGNATURE-----
-
---Sig_/ftYzuClzH53oySJ+T+t4LAa--
+Thanks and Regards,
+Swapnil
 
