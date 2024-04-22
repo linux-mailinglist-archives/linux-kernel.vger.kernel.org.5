@@ -1,146 +1,172 @@
-Return-Path: <linux-kernel+bounces-154004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1A78AD602
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BFE98AD601
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:42:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F8FF1F21F45
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:43:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5EC11F22090
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6931BC44;
-	Mon, 22 Apr 2024 20:42:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B082C1BF24;
+	Mon, 22 Apr 2024 20:42:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Xq5vzR8u"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u8NIHaco"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775441B947;
-	Mon, 22 Apr 2024 20:42:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F681BC41;
+	Mon, 22 Apr 2024 20:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713818578; cv=none; b=rOLR3zJhA3rSGMnbH0Uk2JCvrJ1nqxLm7lwk+HFl9UIDJDCYZaJio/Z3R2Iu01KhPsctLyydLRKQY9/Rt1si2emVfNqhieY5StNCkfNzcKl0/tB6+MCIOxj9YeNr/6jy64nHyUasVCmfUfaXvbNyNbWTv3UNsPDuoG9nPFQLsyo=
+	t=1713818547; cv=none; b=UVx3E0MoBBlbMiX10qBJRBtTIiwUd6MWkYtHvDHqLQ34r5ootuUFIxqMlnqyvkfAQC4tBJzYWCrAxssOfmyIyN3sZ/C1vnLXlDP0X/LeCX/Oe3MCbdwrlWpgR7m2EnWT6KbyZmYCt9TjvNFF40s5X0NSGKAvTE4yPrC+5+HwVWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713818578; c=relaxed/simple;
-	bh=21plNlwF84LiSmR/a7cPmVx+DowVztKcBCbH9tBCfs0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j3+m7L9Jcsrp2yQpfezJd/H8+v7e5B9gq3rU46l4QBx0upu0lfDoiAy/hqJduHd3NXFsDWiOPS7L0npZY/yWasBtSi/DJ+Zkl/GPF629s1S4/Gg9Dsg5QEkSOthVVxkAASB0/TvM8+e5vU9yg++gSDyhco76ne6RumMIO7QLTBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Xq5vzR8u; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713818577; x=1745354577;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=21plNlwF84LiSmR/a7cPmVx+DowVztKcBCbH9tBCfs0=;
-  b=Xq5vzR8u1honqPqn70ycQYQYUOd5fS5ZqNI11He8dUtkh0hg4f984R4u
-   04jIuB18JF+oSsR0c6Rdf9GWwweVNWKGqqPHsuvGZaLicQIDnohrrjWi+
-   1BPqOSNT2FpRHeBrChxVVwOfqSlFOjG09TLjRHf6yfMDGU4LbhfOwq5ue
-   dF+DPM8uqwT2YcoW1i4Csupc4qXTTjdKX9LlxTfBjGQ2EpJ9jEGviQbNg
-   nhewM5J28/IDKt4FlP8JHvs57lhtau8M9S1Pot3RilDlJGv0iB+Zzc4On
-   hNEb7ngZM6UchaGJRDq1nVu4dzTUw5hdxUOzNXfmFM6McVQmKEOjqDSae
-   g==;
-X-CSE-ConnectionGUID: HWDZ7qzzSCGSn9M11rOLsQ==
-X-CSE-MsgGUID: LDXiWKJVR9ybxckOj1TcfQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9234754"
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="9234754"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:42:03 -0700
-X-CSE-ConnectionGUID: nHk9q7c0QZK4QyNVPsdbgQ==
-X-CSE-MsgGUID: g0m2gNKLQIu8zJeDlFQ+BQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="24747792"
-Received: from leozhang-mobl.amr.corp.intel.com (HELO [10.212.37.174]) ([10.212.37.174])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:42:00 -0700
-Message-ID: <3acfbe3c-8b83-4c40-83c2-437f963fd25a@linux.intel.com>
-Date: Mon, 22 Apr 2024 15:42:00 -0500
+	s=arc-20240116; t=1713818547; c=relaxed/simple;
+	bh=qhK/xyI0znuaULfWmCQs605RLjIK84N6jBnKTLXgc9E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=khVBTBYbZ+dJz4G+wflpC7QOzyvAqNZZRTSp1YmsSxMlkfuTrAseHAXJbBUuZ5+fF5KsDwAJODQB5XmY8NarxS7Os7BR2tIALZKX6veKyLiXKPBGgzCkli0Diw9z2Y9q/3tjR5RRcXnLjEBCi6oO4WiXn3hTuinqZulVNnqI+OE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u8NIHaco; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F6D3C113CC;
+	Mon, 22 Apr 2024 20:42:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713818546;
+	bh=qhK/xyI0znuaULfWmCQs605RLjIK84N6jBnKTLXgc9E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=u8NIHaco8Lh+wWUK53bG85Cl7txTWMyWoo8o4kEpZemgV96kdOgSOOvlFHpUCvZN2
+	 9zWha28gPiHGE1Jks74qG0oOYpJGyhGrnsbcPtDqdg+SyWlHoJW+tYLM3BUr8WWEwY
+	 JXgSvmUze9igyfEQyqINKNkSFGc9h6D6time6KCE9/uJSeChzOzrpzKN9AYCJovVm5
+	 uJCFOOuoXlL5MvcDNwy15jCfdVZ7g1862Y4JVzqirsP6gf5kFpFbOHmIGuBvuojS7y
+	 YoUI8lumh7Th/36frzx0j4//sKOHB7eXXwyvFA16WFE/Vw+p5ZEF/+UHZUr4/EzFIz
+	 zx0lUkN8zx3zw==
+Date: Mon, 22 Apr 2024 13:42:24 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc: ntfs3@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
+	Linux-fsdevel <linux-fsdevel@vger.kernel.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH 10/11] fs/ntfs3: Remove cached label from sbi
+Message-ID: <20240422204224.GA770800@dev-arch.thelio-3990X>
+References: <6c99c1bd-448d-4301-8404-50df34e8df8e@paragon-software.com>
+ <890cc224-fdb8-4c5e-a22e-b96dc86e6908@paragon-software.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/14] ASoC: Constify local snd_sof_dsp_ops
-To: Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
- <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
- <89f8f0be-2534-46c8-9058-cabea4f68568@linux.intel.com>
- <9d1eda85-32a0-4e53-86ca-ce3137439bd7@kernel.org>
- <d046d195-6fa3-4c52-bc5f-3e5e763bc692@linux.intel.com>
- <138ac465-1576-4e86-a05d-63f8acc6fb70@kernel.org>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <138ac465-1576-4e86-a05d-63f8acc6fb70@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <890cc224-fdb8-4c5e-a22e-b96dc86e6908@paragon-software.com>
 
+Hi Konstantin,
 
-> There are multiple reasons and benefits for const, like compiler
-> optimization, code readability (meaning) up to security improvements,
-> e.g. by some GCC plugins or marking rodata as really non-writeable, so
-> closing some ways of exploits. There are many opportunities here, even
-> if they are not yet enabled.
-
-Possibly, but the SOF core does not know if the structure it uses is
-rodata or not. Using the 'const' identifier would be misleading.
-
->> that's a different interpretation to the 'software' view you're
->> describing. "this structure will not modified by this function" is not
->> the same thing as "this structure CANNOT be modified".
+On Wed, Apr 17, 2024 at 04:09:00PM +0300, Konstantin Komarov wrote:
+> Add more checks using $AttrDef.
 > 
-> Yes, but can we please discuss specific patchset then? Patches which
-> change pointers to const have one "interpretation". Patches which modify
-> static or global data have another.
+> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
 
-Just look at sound/soc/sof/intel/mtl.c... The core will sometimes use a
-constant structure and sometimes not, depending on the PCI ID reported
-by hardware. This was intentional to override common defaults and make
-the differences limited in scope between hardware generations.
+<snip>
 
-int sof_mtl_ops_init(struct snd_sof_dev *sdev)
-{
-	struct sof_ipc4_fw_data *ipc4_data;
+> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> index 8beefbca5769..dae961d2d6f8 100644
+> --- a/fs/ntfs3/super.c
+> +++ b/fs/ntfs3/super.c
+> @@ -481,11 +481,39 @@ static int ntfs3_volinfo_open(struct inode *inode,
+> struct file *file)
+>  /* read /proc/fs/ntfs3/<dev>/label */
+>  static int ntfs3_label_show(struct seq_file *m, void *o)
+>  {
+> +    int len;
+>      struct super_block *sb = m->private;
+>      struct ntfs_sb_info *sbi = sb->s_fs_info;
+> +    struct ATTRIB *attr;
+> +    u8 *label = kmalloc(PAGE_SIZE, GFP_NOFS);
+> +
+> +    if (!label)
+> +        return -ENOMEM;
+> +
+> +    attr = ni_find_attr(sbi->volume.ni, NULL, NULL, ATTR_LABEL, NULL, 0,
+> +                NULL, NULL);
+> +
+> +    if (!attr) {
+> +        /* It is ok if no ATTR_LABEL */
+> +        label[0] = 0;
+> +        len = 0;
+> +    } else if (!attr_check(attr, sbi, sbi->volume.ni)) {
+> +        len = sprintf(label, "%pg: failed to get label", sb->s_bdev);
+> +    } else {
+> +        len = ntfs_utf16_to_nls(sbi, resident_data(attr),
+> +                    le32_to_cpu(attr->res.data_size) >> 1,
+> +                    label, PAGE_SIZE);
+> +        if (len < 0) {
+> +            label[0] = 0;
+> +            len = 0;
+> +        } else if (len >= PAGE_SIZE) {
+> +            len = PAGE_SIZE - 1;
+> +        }
+> +    }
+> 
+> -    seq_printf(m, "%s\n", sbi->volume.label);
+> +    seq_printf(m, "%.*s\n", len, label);
+> 
+> +    kfree(label);
+>      return 0;
+>  }
+> 
+> @@ -1210,25 +1238,6 @@ static int ntfs_fill_super(struct super_block *sb,
+> struct fs_context *fc)
+> 
+>      ni = ntfs_i(inode);
+> 
+> -    /* Load and save label (not necessary). */
+> -    attr = ni_find_attr(ni, NULL, NULL, ATTR_LABEL, NULL, 0, NULL, NULL);
+> -
+> -    if (!attr) {
+> -        /* It is ok if no ATTR_LABEL */
+> -    } else if (!attr->non_res && !is_attr_ext(attr)) {
+> -        /* $AttrDef allows labels to be up to 128 symbols. */
+> -        err = utf16s_to_utf8s(resident_data(attr),
+> -                      le32_to_cpu(attr->res.data_size) >> 1,
+> -                      UTF16_LITTLE_ENDIAN, sbi->volume.label,
+> -                      sizeof(sbi->volume.label));
+> -        if (err < 0)
+> -            sbi->volume.label[0] = 0;
+> -    } else {
+> -        /* Should we break mounting here? */
+> -        //err = -EINVAL;
+> -        //goto put_inode_out;
+> -    }
+> -
 
-	/* common defaults */
-	memcpy(&sof_mtl_ops, &sof_hda_common_ops, sizeof(struct
-snd_sof_dsp_ops)); <<<< THE BASELINE IS CONSTANT
+The attr initialization above causes the use in the ni_find_attr() to be
+uninitialized, which results in the following clang warning (or error
+when CONFIG_WERROR is enabled):
 
-        <<< THE REST ISN'T.
+  fs/ntfs3/super.c:1247:26: error: variable 'attr' is uninitialized when used here [-Werror,-Wuninitialized]
+   1247 |         attr = ni_find_attr(ni, attr, NULL, ATTR_VOL_INFO, NULL, 0, NULL, NULL);
+        |                                 ^~~~
+  fs/ntfs3/super.c:1192:21: note: initialize the variable 'attr' to silence this warning
+   1192 |         struct ATTRIB *attr;
+        |                            ^
+        |                             = NULL
+  1 error generated.
 
-	/* shutdown */
-	sof_mtl_ops.shutdown = hda_dsp_shutdown;
+Please either fix this quickly (as this isn't the first time an ntfs3
+change has broken us for some time in -next for a similar reason [1]) or
+remove this series from -next. Given the issues that Johan has brought
+up in other comments in this thread, I feel like the latter may be
+better, as this series is clearly not ready for Linus (which is one of
+-next's general requirements AFAIUI).
 
-	/* doorbell */
-	sof_mtl_ops.irq_thread = mtl_ipc_irq_thread;
+>      attr = ni_find_attr(ni, attr, NULL, ATTR_VOL_INFO, NULL, 0, NULL,
+> NULL);
+>      if (!attr || is_attr_ext(attr) ||
+>          !(info = resident_data_ex(attr, SIZEOF_ATTRIBUTE_VOLUME_INFO))) {
 
-	/* ipc */
-	sof_mtl_ops.send_msg = mtl_ipc_send_msg;
-	sof_mtl_ops.get_mailbox_offset = mtl_dsp_ipc_get_mailbox_offset;
-	sof_mtl_ops.get_window_offset = mtl_dsp_ipc_get_window_offset;
+[1]: https://github.com/ClangBuiltLinux/linux/issues/1729
 
-	/* debug */
-	sof_mtl_ops.debug_map = mtl_dsp_debugfs;
-	sof_mtl_ops.debug_map_count = ARRAY_SIZE(mtl_dsp_debugfs);
-	sof_mtl_ops.dbg_dump = mtl_dsp_dump;
-	sof_mtl_ops.ipc_dump = mtl_ipc_dump;
+Cheers,
+Nathan
 
