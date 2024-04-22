@@ -1,267 +1,230 @@
-Return-Path: <linux-kernel+bounces-153168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B2488ACA83
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:23:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8F0A8ACA90
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:25:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8772B1F21A3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:23:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50CA11F21364
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359BC13FD7A;
-	Mon, 22 Apr 2024 10:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6AF51411CF;
+	Mon, 22 Apr 2024 10:25:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JtOTQ4X1"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="kaQ9gEiM"
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D47C502B4;
-	Mon, 22 Apr 2024 10:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7869613E3E5;
+	Mon, 22 Apr 2024 10:25:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713781393; cv=none; b=ALMW5MdE6V19A6BXC0gQ+ndVh26Gq3z8H/Exme6q5UhkiEUL5npz/AbtAUNGilJmPQb/Z4wd3M+/iJAbVU/RhyRxyVdJlsNTzIdnr6F9cRGi8Lj9qeNwPx/Hnvx4TcdnkJC4fzRSJaXgENFonCee5PQ5teOAszpysBeBXP0M5+E=
+	t=1713781531; cv=none; b=ibzXr+AwBO1RYVjD+YeuoNYlED7fgME/OcafyxqVm0ko9o9Nzo4c17C1BXCv6r4cCn8kB6d8aSVGFZDfw7CnWGWDC7tEfIaqG1rO+0fCOufVKSLUww91SUy8ATrloDE6t28ToG4qmf4C1H3VTRLZMc9tRRTCr+5C3qT+m0OP7gU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713781393; c=relaxed/simple;
-	bh=QACik+ECjepFvlXsO5FWqcRtqhT4t/QMq9LNj2MY5lU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QvPCkv0BncL10Z5JIlFyiz9GrgFGJHohtxJOzfneGP4ePmuMKsKqpmHjDVJs6LUt9hsIRh34ZP7x8eOeaz60DDakDis3EG69OP6ED9FF0kWKz6KJprjRMgkq9S8RKtrpJ4lSTjFbteQ2f6Sg+BVUbqhMWXJGBbUdAr0s65WDb1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JtOTQ4X1; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56e78970853so8406672a12.0;
-        Mon, 22 Apr 2024 03:23:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713781389; x=1714386189; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+TuEnSNBvG4LALxdWczKP5/WDkU6BbBaAYrjVgiYqpE=;
-        b=JtOTQ4X1xBnCU7oL4BvI80XZa0dXGgVzEeP80BDCejlmCVpg6SdOB7+oowgA9TswOU
-         2T9dOLQhu9sw0E63kUvn2i3T22v/uN2nFtvaSIVwEsipY2gzuyzCYOiVey8el8QKBhBd
-         b1NDut8bQtL/36LqogrOzfD6okZjIZOO45//gnvWOj4VHht2+pVkHEZ8o0c76kNpNSx1
-         GCEavhBdUfxlMbI0PPjGEh2PqPdGRnWuXGcpylwe0/HYgU4j7mhZf3WDROAB+5ItisRN
-         OtmBkrty93LVbXs/UmyKdafZ7p3QclzpGWgaUnJcE6LWAjVCWhhbJxxP/sQByxOzch0G
-         gjlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713781389; x=1714386189;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+TuEnSNBvG4LALxdWczKP5/WDkU6BbBaAYrjVgiYqpE=;
-        b=l8JwsmBMvGGZQVxQLFKEqg/xyc9CAIwE/onOALJGk03Se414bpoCh4R8/xovsjhZHJ
-         8+kEmNT2ehiqnQIeEcXTSl7xDYibH3rRubgrKqLs4JgR8eS/CQpLxpE8XhwzxCczGM9K
-         /Hdpfq6YU0n5Fwo8KIAOzrvbxqnwsXzCKJXz5TcdmDLFzJgyx25nPXTfCOfVrflzUgb5
-         16ZmwAIhI02LCssk9s9DjUbxOxRnYDWrgfZ1LWUgUYVW/y7BjBeAxwwEIpqWil+0+qaN
-         iGpePsR8J/PJkPDVkCPTSHIQg4WBahK6IlvwIFzBkCj5Z3m4sLwkJvJqT0MBRHyFJLgT
-         N3/g==
-X-Forwarded-Encrypted: i=1; AJvYcCWVqhXzhxz1SjG1oecXO7JNJ39NtrkveodYNT2j82wApaziWGdHAFmptzMT262slSVB0xkXsCnYA6e7eEb4Xqp4oq4/fWIOyujnhDkYInqjKtCRRTjT9y2UEWZlzhXIPi+VSDZVogNtb0KfSTCe0nc9Q22ZNVr5TdObTpCj48/+Tm7k4w==
-X-Gm-Message-State: AOJu0YzycUoD1YZtZiHkHFfcRgiVvBXTjh6tW7/uw4JHKFghLe+BiuSP
-	Xro8WbX9bUy2rCYMLdvnZmOHXcq1elEvME0EQYYKdgfo4YWjX3mZzN9EUC/z
-X-Google-Smtp-Source: AGHT+IF7rbqhx80I4EcakWBm7ROU4Kg4/+HimK9++ICv5C+Ejf5itzhFGpIaBsywmcfeJlXae9yA8g==
-X-Received: by 2002:a17:907:7d9f:b0:a55:b2c1:7eba with SMTP id oz31-20020a1709077d9f00b00a55b2c17ebamr3054896ejc.18.1713781389250;
-        Mon, 22 Apr 2024 03:23:09 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
-        by smtp.gmail.com with ESMTPSA id v16-20020a170906b01000b00a522c69f28asm5575548ejy.216.2024.04.22.03.23.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 03:23:08 -0700 (PDT)
-From: Jonathan Haslam <jonathan.haslam@gmail.com>
-To: linux-trace-kernel@vger.kernel.org,
-	mhiramat@kernel.org
-Cc: jonathan.haslam@gmail.com,
-	andrii@kernel.org,
-	bpf@vger.kernel.org,
-	rostedt@goodmis.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] uprobes: reduce contention on uprobes_tree access
-Date: Mon, 22 Apr 2024 03:23:05 -0700
-Message-ID: <20240422102306.6026-1-jonathan.haslam@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1713781531; c=relaxed/simple;
+	bh=PEe4CtOIrKOA5J/Q+3pJlXyDw+pimrK40GN8HRR88Cs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ga4KxYfVisOteTzu4ky3FGJ6y2V0EWYdGGNC4DfFXQ0StfmImdTta/HKyDFT0pU6KMnCFWjRNZdQADbsW8PkowDfI10FxJ1VOL2z5PgG3DtDp8pXhxTetvvFz4liBOHeaGRNX/N5g7kvlLhMnZrIPzM+GQ6QGR9VViMotpua6zM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=kaQ9gEiM; arc=none smtp.client-ip=80.12.242.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id yqqPr8npHhQSByqqPrJn2k; Mon, 22 Apr 2024 12:24:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1713781458;
+	bh=WDS/cJIF3u/b8hKGhrIR45S+kJmGLDvRuuuBC4I4XyY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=kaQ9gEiMqMz2fUPdb+cygTCdJytCqki5fJpgw8E/zgZZfy5hc6+RBYeHtX9LMYzie
+	 0kn0DwUKqBwFgbA0DwkQBf9JkRHVGrq3z7ypX+hquI7Gu6yhU5Q16ZdmNvAHUmcoJ0
+	 6rs/y47hUKC6w4EKdBR9Oa1BaergyneOdGsQk0cX5njFtod7RsiMk3F/OSNIQshhzh
+	 at0DKr6ME9bQ4nGZI4K8vNPtUbxDaFBSX3EYuWRC2mBYk4FqTv/xszsxUrI4G2/14l
+	 WjEb2MwDgQXFuZhDTDbA8lGX0S7CqBGS3HxkAqf2Xp8XEWJUojGiSXbUDtZc4mFBRl
+	 pU5P603po9jbQ==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 22 Apr 2024 12:24:18 +0200
+X-ME-IP: 86.243.17.157
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: David.Laight@ACULAB.COM,
+	rasmus.villemoes@prevas.dk,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH v2 1/2] seq_file: Optimize seq_puts()
+Date: Mon, 22 Apr 2024 12:24:06 +0200
+Message-ID: <a8589bffe4830dafcb9111e22acf06603fea7132.1713781332.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Active uprobes are stored in an RB tree and accesses to this tree are
-dominated by read operations. Currently these accesses are serialized by
-a spinlock but this leads to enormous contention when large numbers of
-threads are executing active probes.
+Most of seq_puts() usages are done with a string literal. In such cases,
+the length of the string car be computed at compile time in order to save
+a strlen() call at run-time. seq_putc() or seq_write() can then be used
+instead.
 
-This patch converts the spinlock used to serialize access to the
-uprobes_tree RB tree into a reader-writer spinlock. This lock type
-aligns naturally with the overwhelmingly read-only nature of the tree
-usage here. Although the addition of reader-writer spinlocks are
-discouraged [0], this fix is proposed as an interim solution while an
-RCU based approach is implemented (that work is in a nascent form). This
-fix also has the benefit of being trivial, self contained and therefore
-simple to backport.
+This saves a few cycles.
 
-We have used a uprobe benchmark from the BPF selftests [1] to estimate
-the improvements. Each block of results below show 1 line per execution
-of the benchmark ("the "Summary" line) and each line is a run with one
-more thread added - a thread is a "producer". The lines are edited to
-remove extraneous output.
+To have an estimation of how often this optimization triggers:
+   $ git grep seq_puts.*\" | wc -l
+   3436
 
-The tests were executed with this driver script:
+   $ git grep seq_puts.*\".\" | wc -l
+   84
 
-for num_threads in {1..20}
-do
-  sudo ./bench -a -p $num_threads trig-uprobe-nop | grep Summary
-done
-
-SPINLOCK (BEFORE)
-==================
-Summary: hits    1.396 ± 0.007M/s (  1.396M/prod)
-Summary: hits    1.656 ± 0.016M/s (  0.828M/prod)
-Summary: hits    2.246 ± 0.008M/s (  0.749M/prod)
-Summary: hits    2.114 ± 0.010M/s (  0.529M/prod)
-Summary: hits    2.013 ± 0.009M/s (  0.403M/prod)
-Summary: hits    1.753 ± 0.008M/s (  0.292M/prod)
-Summary: hits    1.847 ± 0.001M/s (  0.264M/prod)
-Summary: hits    1.889 ± 0.001M/s (  0.236M/prod)
-Summary: hits    1.833 ± 0.006M/s (  0.204M/prod)
-Summary: hits    1.900 ± 0.003M/s (  0.190M/prod)
-Summary: hits    1.918 ± 0.006M/s (  0.174M/prod)
-Summary: hits    1.925 ± 0.002M/s (  0.160M/prod)
-Summary: hits    1.837 ± 0.001M/s (  0.141M/prod)
-Summary: hits    1.898 ± 0.001M/s (  0.136M/prod)
-Summary: hits    1.799 ± 0.016M/s (  0.120M/prod)
-Summary: hits    1.850 ± 0.005M/s (  0.109M/prod)
-Summary: hits    1.816 ± 0.002M/s (  0.101M/prod)
-Summary: hits    1.787 ± 0.001M/s (  0.094M/prod)
-Summary: hits    1.764 ± 0.002M/s (  0.088M/prod)
-
-RW SPINLOCK (AFTER)
-===================
-Summary: hits    1.444 ± 0.020M/s (  1.444M/prod)
-Summary: hits    2.279 ± 0.011M/s (  1.139M/prod)
-Summary: hits    3.422 ± 0.014M/s (  1.141M/prod)
-Summary: hits    3.565 ± 0.017M/s (  0.891M/prod)
-Summary: hits    2.671 ± 0.013M/s (  0.534M/prod)
-Summary: hits    2.409 ± 0.005M/s (  0.401M/prod)
-Summary: hits    2.485 ± 0.008M/s (  0.355M/prod)
-Summary: hits    2.496 ± 0.003M/s (  0.312M/prod)
-Summary: hits    2.585 ± 0.002M/s (  0.287M/prod)
-Summary: hits    2.908 ± 0.011M/s (  0.291M/prod)
-Summary: hits    2.346 ± 0.016M/s (  0.213M/prod)
-Summary: hits    2.804 ± 0.004M/s (  0.234M/prod)
-Summary: hits    2.556 ± 0.001M/s (  0.197M/prod)
-Summary: hits    2.754 ± 0.004M/s (  0.197M/prod)
-Summary: hits    2.482 ± 0.002M/s (  0.165M/prod)
-Summary: hits    2.412 ± 0.005M/s (  0.151M/prod)
-Summary: hits    2.710 ± 0.003M/s (  0.159M/prod)
-Summary: hits    2.826 ± 0.005M/s (  0.157M/prod)
-Summary: hits    2.718 ± 0.001M/s (  0.143M/prod)
-Summary: hits    2.844 ± 0.006M/s (  0.142M/prod)
-
-The numbers in parenthesis give averaged throughput per thread which is
-of greatest interest here as a measure of scalability. Improvements are
-in the order of 22 - 68% with this particular benchmark (mean = 43%).
-
-V2:
- - Updated commit message to include benchmark results.
-
-[0] https://docs.kernel.org/locking/spinlocks.html
-[1] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/benchs/bench_trigger.c
-
-Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- kernel/events/uprobes.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+Changes in v2:
+   - Use a function, instead of a macro   [Al Viro]
+   - Handle the case of 1 char only strings, in order to use seq_putc()   [Al Viro]
+   - Use __always_inline   [David Laight]
 
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index e4834d23e1d1..8ae0eefc3a34 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
-  */
- #define no_uprobe_events()	RB_EMPTY_ROOT(&uprobes_tree)
+V1: https://lore.kernel.org/all/5c4f7ad7b88f5026940efa9c8be36a58755ec1b3.1704374916.git.christophe.jaillet@wanadoo.fr/
+
+
+Checked by comparing the output of a few .s files.
+Here is one of these outputs:
+
+$ diff -u drivers/clk/clk.s.old drivers/clk/clk.s | grep -C6 seq_w
+
+ .L2918:
+@@ -46072,10 +46073,11 @@
+ 	call	clk_prepare_unlock	#
+ # drivers/clk/clk.c:3438: 	clk_pm_runtime_put_all();
+ 	call	clk_pm_runtime_put_all	#
+-# drivers/clk/clk.c:3440: 	seq_puts(s, "}\n");
++# ./include/linux/seq_file.h:130: 		seq_write(m, s, __builtin_strlen(s));
++	movl	$2, %edx	#,
+ 	movq	$.LC94, %rsi	#,
+ 	movq	%rbp, %rdi	# s,
+-	call	seq_puts	#
++	call	seq_write	#
+ # drivers/clk/clk.c:3441: 	return 0;
+ 	jmp	.L2917	#
+ 	.size	clk_dump_show, .-clk_dump_show
+@@ -46200,7 +46202,7 @@
+ 	leaq	128(%rbx), %r15	#, _97
+ 	movq	%r15, %rdi	# _97,
+--
+ # drivers/clk/clk.c:1987: 		__clk_recalc_rates(core, false, 0);
+@@ -46480,15 +46482,17 @@
+ 	call	seq_printf	#
+ 	jmp	.L2950	#
+ .L2946:
+-# drivers/clk/clk.c:3315: 		seq_puts(s, "-----");
++# ./include/linux/seq_file.h:130: 		seq_write(m, s, __builtin_strlen(s));
+ 	call	__sanitizer_cov_trace_pc	#
++	movl	$5, %edx	#,
+ 	movq	$.LC100, %rsi	#,
+ 	movq	%rbp, %rdi	# s,
+-	call	seq_puts	#
++	call	seq_write	#
++# ./include/linux/seq_file.h:131: }
+ 	jmp	.L2947	#
+ .L2957:
+ # drivers/clk/clk.c:1903: 	return clk_core_get_accuracy_no_lock(core);
+-	xorl	%r14d, %r14d	# _34
++	xorl	%r14d, %r14d	# _35
+--
+@@ -46736,21 +46740,22 @@
+ 	call	__sanitizer_cov_trace_pc	#
+ 	leaq	240(%r12), %rdi	#, tmp101
+ 	call	__tsan_read8	#
+-# drivers/clk/clk.c:3355: 	seq_puts(s, "                                 enable  prepare  protect                                duty  hardware                            connection\n");
+-	movq	$.LC104, %rsi	#,
++# ./include/linux/seq_file.h:130: 		seq_write(m, s, __builtin_strlen(s));
++	movl	$142, %edx	#,
+ 	movq	%r12, %rdi	# s,
++	movq	$.LC104, %rsi	#,
+ # drivers/clk/clk.c:3352: 	struct hlist_head **lists = s->private;
+ 	movq	240(%r12), %r13	# s_10(D)->private, lists
+-# drivers/clk/clk.c:3355: 	seq_puts(s, "                                 enable  prepare  protect                                duty  hardware                            connection\n");
+-	call	seq_puts	#
+-# drivers/clk/clk.c:3356: 	seq_puts(s, "   clock                          count    count    count        rate   accuracy phase  cycle    enable   consumer                         id\n");
++# ./include/linux/seq_file.h:130: 		seq_write(m, s, __builtin_strlen(s));
++	call	seq_write	#
++	movl	$142, %edx	#,
+ 	movq	$.LC105, %rsi	#,
+ 	movq	%r12, %rdi	# s,
+-	call	seq_puts	#
+-# drivers/clk/clk.c:3357: 	seq_puts(s, "---------------------------------------------------------------------------------------------------------------------------------------------\n");
++	call	seq_write	#
+ 	movq	$.LC106, %rsi	#,
+ 	movq	%r12, %rdi	# s,
+-	call	seq_puts	#
++	movl	$142, %edx	#,
++	call	seq_write	#
+ # drivers/clk/clk.c:3359: 	ret = clk_pm_runtime_get_all();
+ 	call	clk_pm_runtime_get_all	#
+ # drivers/clk/clk.c:3360: 	if (ret)
+@@ -57943,7 +57948,7 @@
+ 	subq	$88, %rsp	#,
+ # drivers/clk/clk.c:5338: {
+
+
+The output for seq_putc() generation has also be checked and works.
+---
+ fs/seq_file.c            |  4 ++--
+ include/linux/seq_file.h | 13 ++++++++++++-
+ 2 files changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index f5fdaf3b1572..8ef0a07033ca 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -669,7 +669,7 @@ void seq_putc(struct seq_file *m, char c)
+ }
+ EXPORT_SYMBOL(seq_putc);
  
--static DEFINE_SPINLOCK(uprobes_treelock);	/* serialize rbtree access */
-+static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
- 
- #define UPROBES_HASH_SZ	13
- /* serialize uprobe->pending_list */
-@@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
+-void seq_puts(struct seq_file *m, const char *s)
++void __seq_puts(struct seq_file *m, const char *s)
  {
- 	struct uprobe *uprobe;
+ 	int len = strlen(s);
  
--	spin_lock(&uprobes_treelock);
-+	read_lock(&uprobes_treelock);
- 	uprobe = __find_uprobe(inode, offset);
--	spin_unlock(&uprobes_treelock);
-+	read_unlock(&uprobes_treelock);
- 
- 	return uprobe;
+@@ -680,7 +680,7 @@ void seq_puts(struct seq_file *m, const char *s)
+ 	memcpy(m->buf + m->count, s, len);
+ 	m->count += len;
  }
-@@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
- {
- 	struct uprobe *u;
+-EXPORT_SYMBOL(seq_puts);
++EXPORT_SYMBOL(__seq_puts);
  
--	spin_lock(&uprobes_treelock);
-+	write_lock(&uprobes_treelock);
- 	u = __insert_uprobe(uprobe);
--	spin_unlock(&uprobes_treelock);
-+	write_unlock(&uprobes_treelock);
- 
- 	return u;
- }
-@@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
- 	if (WARN_ON(!uprobe_is_active(uprobe)))
- 		return;
- 
--	spin_lock(&uprobes_treelock);
-+	write_lock(&uprobes_treelock);
- 	rb_erase(&uprobe->rb_node, &uprobes_tree);
--	spin_unlock(&uprobes_treelock);
-+	write_unlock(&uprobes_treelock);
- 	RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
- 	put_uprobe(uprobe);
- }
-@@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
- 	min = vaddr_to_offset(vma, start);
- 	max = min + (end - start) - 1;
- 
--	spin_lock(&uprobes_treelock);
-+	read_lock(&uprobes_treelock);
- 	n = find_node_in_range(inode, min, max);
- 	if (n) {
- 		for (t = n; t; t = rb_prev(t)) {
-@@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
- 			get_uprobe(u);
- 		}
- 	}
--	spin_unlock(&uprobes_treelock);
-+	read_unlock(&uprobes_treelock);
- }
- 
- /* @vma contains reference counter, not the probed instruction. */
-@@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
- 	min = vaddr_to_offset(vma, start);
- 	max = min + (end - start) - 1;
- 
--	spin_lock(&uprobes_treelock);
-+	read_lock(&uprobes_treelock);
- 	n = find_node_in_range(inode, min, max);
--	spin_unlock(&uprobes_treelock);
-+	read_unlock(&uprobes_treelock);
- 
- 	return !!n;
- }
+ /**
+  * seq_put_decimal_ull_width - A helper routine for putting decimal numbers
+diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+index 234bcdb1fba4..8bd4fda6e027 100644
+--- a/include/linux/seq_file.h
++++ b/include/linux/seq_file.h
+@@ -118,7 +118,18 @@ void seq_vprintf(struct seq_file *m, const char *fmt, va_list args);
+ __printf(2, 3)
+ void seq_printf(struct seq_file *m, const char *fmt, ...);
+ void seq_putc(struct seq_file *m, char c);
+-void seq_puts(struct seq_file *m, const char *s);
++void __seq_puts(struct seq_file *m, const char *s);
++
++static __always_inline void seq_puts(struct seq_file *m, const char *s)
++{
++	if (!__builtin_constant_p(*s))
++		__seq_puts(m, s);
++	else if (s[0] && !s[1])
++		seq_putc(m, s[0]);
++	else
++		seq_write(m, s, __builtin_strlen(s));
++}
++
+ void seq_put_decimal_ull_width(struct seq_file *m, const char *delimiter,
+ 			       unsigned long long num, unsigned int width);
+ void seq_put_decimal_ull(struct seq_file *m, const char *delimiter,
 -- 
-2.43.0
+2.44.0
 
 
