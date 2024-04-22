@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-153422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA04A8ACDEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:14:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3869B8ACDF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:14:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 754E22821E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:14:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94F27B2563A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF9914F136;
-	Mon, 22 Apr 2024 13:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDF1514F9DD;
+	Mon, 22 Apr 2024 13:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Cm0hEvLG"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="tjDw6cTo"
 Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02F5514658A;
-	Mon, 22 Apr 2024 13:13:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4DFA14F123;
+	Mon, 22 Apr 2024 13:14:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713791633; cv=none; b=hjRaUStNoFP8a44myOL3EkMbHqQlOHHLVP/XjomwCNYLNXk1j9h8YkU8Fnhpnnejv3JFOCjM0qWruW2GcKSU2kuU7U3oeOxNp4uR40LA5i2cHxbCnOvbvpIaVEhtjULfkfQA4cugjcsh6ks3M4WpdAyZ4lNONlbm/9FQgBcD9tI=
+	t=1713791660; cv=none; b=n6GQiohbIpOqptbOJphUzIJyAeWWoij7pK3GMrbD7Hde+Mfhb1+FVDIr9s2ioFJUSoKa9/ratUHeToQGwxnhLvfTKBOQGMwhySF0OKz2xuARFA48YdeQv2JBHnwQ4xW/BY3lD7CrMZlsDqik6iAhkQgToB/jxrs+wPxoCPAeEy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713791633; c=relaxed/simple;
-	bh=TJQh1ADD/TSrkcvnzZ7emzpjU95BZJD0dcxvuRp3blU=;
+	s=arc-20240116; t=1713791660; c=relaxed/simple;
+	bh=hPRmFIFYiJN/6bf0YcOYo5UrScKhMIeu5BKYFrgEz+U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a9SucA9ow4AXlrCbE+YX04xggtZfjJWyhiWkzHiemk/a/d3tE5abpaHbPgL6pgme1p+udRHwinNECDQAkgpALbeJDTCwiFUNGK5T4D+PoQCx5mu6x0t/5dhfEVdWX+m93M0MywYre5fPqRXayGDEc1tKclA2cCnbCuSPlsOdZ+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Cm0hEvLG; arc=none smtp.client-ip=156.67.10.101
+	 Content-Type:Content-Disposition:In-Reply-To; b=TfaEcutdfaqivknHM4CVEcGroOoy5L9YPVfNk92pUCUVP78Nv6OZUNFRQ9JGc9qqWE8skSCJf+586WkCx0QS6ISeCX7WbyE8yQ3dHH6wQkOOcQ5YSUZDyJ9tLrpwLm3wUV8qCl70Vd8UjePjTvpHqeepimXjdBuqpmMKjkiitYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=tjDw6cTo; arc=none smtp.client-ip=156.67.10.101
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
@@ -35,13 +35,13 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
 	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
 	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=lqh3lXxat5JOwnSVIY/snEUX8+W3d9tAXaIgm8E4lbo=; b=Cm0hEvLG2ypeXAORhOA9NzpDqX
-	6x0tKb/MQiOVS1N63AnNu9EvUgti59UAbmqpiTXqgU3YdZMuiueyooE+vrZNiteIJqFR71cyR+GSJ
-	9YevbPv0+q9XcVL9Z8s7ge0XuVY9g3kH4ym05S0A1weASH0eH6DopDO30afbSUcXQiUo=;
+	bh=7m/NEnQbMSmAGNLxJ0CrFAMWF7x2McYRy+y8URj23QA=; b=tjDw6cToW6Slo/C3OouTVirmOX
+	f3rHzTyiQ8odCj8AuKV2tXlJVOUzYQ14Rkif6HZsXmjW36Br6iVYETbapEvL1rvBNMZEWwIQrK5yj
+	yJ4IRApUIkuazCVKeHZB28GIbtb7EV1mVGQfOnyC9+Fino+GzWv+RDCkeIP2GP593hpg=;
 Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
 	(envelope-from <andrew@lunn.ch>)
-	id 1rytUP-00DcPY-7u; Mon, 22 Apr 2024 15:13:45 +0200
-Date: Mon, 22 Apr 2024 15:13:45 +0200
+	id 1rytUq-00DcQI-4z; Mon, 22 Apr 2024 15:14:12 +0200
+Date: Mon, 22 Apr 2024 15:14:12 +0200
 From: Andrew Lunn <andrew@lunn.ch>
 To: "Kory Maincent (Dent Project)" <kory.maincent@bootlin.com>
 Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
@@ -51,11 +51,11 @@ Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Kyle Swenson <kyle.swenson@est.tech>
-Subject: Re: [PATCH net-next 1/3] net: pse-pd: pse_core: Add missing kdoc
- return description
-Message-ID: <bd88df2b-0e7b-48fd-8f5b-701df58458b4@lunn.ch>
+Subject: Re: [PATCH net-next 2/3] net: pse-pd: pse_core: Fix pse regulator
+ type
+Message-ID: <a5991b1a-a669-4c47-8918-60c4c12a1505@lunn.ch>
 References: <20240422-fix_poe-v1-0-811c8c0b9da7@bootlin.com>
- <20240422-fix_poe-v1-1-811c8c0b9da7@bootlin.com>
+ <20240422-fix_poe-v1-2-811c8c0b9da7@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,13 +64,14 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240422-fix_poe-v1-1-811c8c0b9da7@bootlin.com>
+In-Reply-To: <20240422-fix_poe-v1-2-811c8c0b9da7@bootlin.com>
 
-On Mon, Apr 22, 2024 at 02:50:48PM +0200, Kory Maincent (Dent Project) wrote:
+On Mon, Apr 22, 2024 at 02:50:49PM +0200, Kory Maincent (Dent Project) wrote:
 > From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
 > 
-> Add missing kernel documentation return description.
-> This allows to remove all warning from kernel-doc test script.
+> Clarify PSE regulator as voltage regulator, not current.
+> The PSE (Power Sourcing Equipment) regulator is defined as a voltage
+> regulator, maintaining fixed voltage while accommodating varying current.
 > 
 > Signed-off-by: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
 
