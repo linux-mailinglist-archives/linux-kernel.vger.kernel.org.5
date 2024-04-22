@@ -1,105 +1,101 @@
-Return-Path: <linux-kernel+bounces-153414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 716A28ACDD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 610908ACDDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:09:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2D9EB24D6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:09:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1C82B24FA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6685214F13A;
-	Mon, 22 Apr 2024 13:08:40 +0000 (UTC)
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE4715099B;
+	Mon, 22 Apr 2024 13:08:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tKj1Ev0s"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC29314EC67
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:08:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4369614F9D4;
+	Mon, 22 Apr 2024 13:08:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713791320; cv=none; b=rpugemHNwgAMdeoVociIcwWFrTcePVgJyauAldNTI73HkXOjkAGzcSxfM6YXbGziVju22zjUBJgvCZLyLum72EqDq2ECC/8tI+4Z4nca1vGtDlcO1tcsip+8AetZfQJQGOKOImGvV07b9RmTlVzedhyctJO0mU6tV10VrTbH/ag=
+	t=1713791332; cv=none; b=W0qgamwXqdH2d4JSE/PyvI8FgP1KVl5T34iG/GSxED0S3N29RLjhbdYsIzD2QhX4dI5dk9wv7UVDBToFZTRoys5Kgns6Qj5ITmye+wvj2wM9YczezleK4ZcW+4SXu1ALkvL7mSWOaqNzOUzegEddSDLfp8Yn0LC1HqTWJnt8ETU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713791320; c=relaxed/simple;
-	bh=Fe/jLU7y8EjYZ1hI0fi5WolQe+f8y52gdZ7hpKDSrhY=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=hMfQowloMDJiUF+RxYAqoc0Hw8vGCHDdVFX82FfUenj3xeCamAM3SE9Ezu3YfZOpS4H9A+G+29koEUwuFx8Czbg/EzGGyRf1SGd01KIlXTqZFazSIUZbEjR2QX8DWn+qnbp7znkHuoiDAno+6ebaUXWPfELIqJk7CMdfra874W4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed80:76d0:2bff:fec8:549])
-	by andre.telenet-ops.be with bizsmtp
-	id ED8U2C00M0SSLxL01D8UkT; Mon, 22 Apr 2024 15:08:28 +0200
-Received: from geert (helo=localhost)
-	by ramsan.of.borg with local-esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rytPI-001wmi-Gr;
-	Mon, 22 Apr 2024 15:08:28 +0200
-Date: Mon, 22 Apr 2024 15:08:28 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-kernel@vger.kernel.org
-cc: Kent Overstreet <kent.overstreet@linux.dev>, 
-    Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org
-Subject: Re: Build regressions/improvements in v6.9-rc5
-In-Reply-To: <20240422124533.1363483-1-geert@linux-m68k.org>
-Message-ID: <34dec962-474b-353-a33f-de147cffa06c@linux-m68k.org>
-References: <CAHk-=wgfck-6-2YcD3Bzhjo0E0L0g2HGSZksB9pzRCah=Y4HBw@mail.gmail.com> <20240422124533.1363483-1-geert@linux-m68k.org>
+	s=arc-20240116; t=1713791332; c=relaxed/simple;
+	bh=J+i9N1KjmFk35PLTmY7h40rPANVS4NetGv5XWCcgOzg=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=ti2U64yyM1TK1C7ZulpHO/BoSuDDCnWs941m21Milfm7hgR19V4V23jBRJbn5aG71hrK+TGED18uFRZcWvW2z78us8WmpKlyNYLNw+rpyrFp5Jgae6DefiUvhwIsabtVHzPfVZYIBJ9Iu5fNpzwGtQvmqT5v2KCySD560YnQMXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tKj1Ev0s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19101C2BD11;
+	Mon, 22 Apr 2024 13:08:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713791331;
+	bh=J+i9N1KjmFk35PLTmY7h40rPANVS4NetGv5XWCcgOzg=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=tKj1Ev0sDkQi5+KEiB5LhY1YrapyhqPWj1xhNyldEFOrjYMdLC2NQNywPIpM2oCn9
+	 KKR+ldrGnJ0vgDJG4XgwKBgLI5FgxOu432nBCICrmXQSH+gCWW0UTDdlAhAQBILxdo
+	 xqF/R3vnu4jpugzmTn/hkZBf7SpnConYhE6huJdhyTx4EfL7nhXiFev8vfEpfZp+Lw
+	 L0pJcnsCn5VjnI/vxE0yT7hls74KwUcZ1ud9MZJyYKzX2kxFcFbVphu8ZJaYeFhTzP
+	 hCEBR8kB/Bdhv+iVxYObXPLD8tw+6rMlMYtLli9sAXUXAWh2sYW2PburZIAgpw4TBX
+	 ODeXWH+Ch2/IQ==
+From: Kalle Valo <kvalo@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: aleksander.lobakin@intel.com,  kuba@kernel.org,  davem@davemloft.net,
+  pabeni@redhat.com,  edumazet@google.com,  elder@kernel.org,
+  linux-arm-kernel@lists.infradead.org,
+  linux-mediatek@lists.infradead.org,  nbd@nbd.name,
+  sean.wang@mediatek.com,  Mark-MC.Lee@mediatek.com,  lorenzo@kernel.org,
+  taras.chornyi@plvision.eu,  ath11k@lists.infradead.org,
+  ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org,
+  geomatsi@gmail.com,  Jeff Johnson <jjohnson@kernel.org>,
+  quic_jjohnson@quicinc.com,  leon@kernel.org,
+  dennis.dalessandro@cornelisnetworks.com,  linux-kernel@vger.kernel.org,
+  netdev@vger.kernel.org,  bpf@vger.kernel.org,  idosch@idosch.org,
+  angelogioacchino.delregno@collabora.com,  matthias.bgg@gmail.com
+Subject: Re: [PATCH net-next v7 10/10] wifi: ath11k: allocate dummy
+ net_device dynamically
+References: <20240422123921.854943-1-leitao@debian.org>
+	<20240422123921.854943-11-leitao@debian.org>
+Date: Mon, 22 Apr 2024 16:08:44 +0300
+In-Reply-To: <20240422123921.854943-11-leitao@debian.org> (Breno Leitao's
+	message of "Mon, 22 Apr 2024 05:39:03 -0700")
+Message-ID: <87le55v92b.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain
 
-On Mon, 22 Apr 2024, Geert Uytterhoeven wrote:
-> JFYI, when comparing v6.9-rc5[1] to v6.9-rc4[3], the summaries are:
->  - build errors: +6/-5
+Breno Leitao <leitao@debian.org> writes:
 
-   + /kisskb/src/arch/sparc/kernel/setup_64.c: error: no previous prototype for 'alloc_irqstack_bootmem' [-Werror=missing-prototypes]:  => 602:13
-   + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_clock_gettime' [-Werror=missing-prototypes]:  => 254:1
-   + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_clock_gettime_stick' [-Werror=missing-prototypes]:  => 282:1
-   + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_gettimeofday' [-Werror=missing-prototypes]:  => 307:1
-   + /kisskb/src/arch/sparc/vdso/vclock_gettime.c: error: no previous prototype for '__vdso_gettimeofday_stick' [-Werror=missing-prototypes]:  => 343:1
+> Embedding net_device into structures prohibits the usage of flexible
+> arrays in the net_device structure. For more details, see the discussion
+> at [1].
+>
+> Un-embed the net_device from struct ath11k_ext_irq_grp by converting it
+> into a pointer. Then use the leverage alloc_netdev() to allocate the
+> net_device object at ath11k_ahb_config_ext_irq() for ahb, and
+> ath11k_pcic_ext_irq_config() for pcic.
+>
+> The free of the device occurs at ath11k_ahb_free_ext_irq() for the ahb
+> case, and ath11k_pcic_free_ext_irq() for the pcic case.
+>
+> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> Tested-by: Kalle Valo <kvalo@kernel.org>
 
-sparc64-gcc13/sparc64-allmodconfig (seen before in other configs)
+I assume this goes via net-next:
 
-   + /kisskb/src/fs/bcachefs/btree_io.c: error: format '%lu' expects argument of type 'long unsigned int', but argument 12 has type 'unsigned int' [-Werror=format=]:  => 891:34, 891:6
+Acked-by: Kalle Valo <kvalo@kernel.org>
 
-m68k-gcc8/m68k-allmodconfig
-m68k-gcc8/m68k-defconfig
-m68k-gcc8/sun3_defconfig
-m68k-gcc11/m68k-allmodconfig
-m68k-gcc11/m68k-defconfig
-m68k-gcc11/sun3_defconfig
-m68k-gcc13/m68k-allmodconfig
-m68k-gcc13/m68k-defconfig
-m68k-gcc13/sun3_defconfig
-mips-gcc8/mips-allmodconfig
-mips-gcc13/mips-allmodconfig
-parisc-gcc13/parisc-allmodconfig
-powerpc-gcc5/ppc32_allmodconfig
-powerpc-gcc13/ppc32_allmodconfig
-sh4-gcc13/sh-allmodconfig
-sh4-gcc13/sh-allyesconfig
-sparc64-gcc5/sparc-allmodconfig
-sparc64-gcc13/sparc-allmodconfig
-xtensa-gcc13/xtensa-allmodconfig
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-(Multiple) fixes available
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ed30a4a51bb196781c8058073ea720133a65596f/ (all 138 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/0bbac3facb5d6cc0171c45c9873a2dc96bea9680/ (all 138 configs)
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
