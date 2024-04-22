@@ -1,153 +1,162 @@
-Return-Path: <linux-kernel+bounces-152664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B3F78AC26C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 02:31:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 836358AC279
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 02:56:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F9831C20915
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 00:31:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38FE51F2155E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 00:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94DA717C8;
-	Mon, 22 Apr 2024 00:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216A92F2D;
+	Mon, 22 Apr 2024 00:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="eq2uVjLl"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2028.outbound.protection.outlook.com [40.92.42.28])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ceCPMWlZ"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F225E81E;
-	Mon, 22 Apr 2024 00:31:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.42.28
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713745884; cv=fail; b=QF1h5Vayt5BP34FkXM1uLV1Iu8XZdqAXptxL8p7EacyNIfmscky99RAWyjQfBgrutggyGFHBYnCBD9dY0Gpeh3JR07boYr0T/pDogWVVci4OWhdkOGIg+NM25muoiliVWO9MkBs+ODM8YZLjbAdPoHmBY9/e7ROVpBEcfo6AG1c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713745884; c=relaxed/simple;
-	bh=Y8u64ortopvaBGepSVmWocUjhzy6+9apJo0ZB4hoxkg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=shNNKD47p84igNQccOJTO5K5uTh03WN3GP15IQk3JtoNSHT8INjdujUosUntYmUqOf7ExrvTLO9GIwfO3OjYdfIP6eaiudoBt32FnxsaulW0ecSH8AOlMIFWPNTJmB7y11yT6P9vltSyDMgX705o+Mb0cv2oVZDeIWtpnIoNNWo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=eq2uVjLl; arc=fail smtp.client-ip=40.92.42.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q36mW1YPwwI4VIo5HtB7bJ9jOqwiiZg6l/PjwZUAEF3IwDS5JG+aaVdnWt5Mc7SFJrelG6KEb51XjRLzt52QKh2N/TX4QLyBXMc+HrmMxQoWlCcwKZyoEXLNlDqR6Wx3r/eHTY+KxhKjabcHSU4eyyOa5M15GB1YoAxrwpffn0Lk3px5XGxaKFXJ41fGQyTO3moN6lmhjBLJuVeu7rkO+QGjVIgO2Ka6bWCHWRw86Mb66W6NKtvmXQVXKnb0iok/UhGtZT3laQT0+YrlMtk41cbxEX+PMWujkvS1p8Uyrha8q6allKvjFhfSpl20ajKBWuXDo9jWp43eBKVSI4hI4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=F0xRZ8BrmlGVbFeid+npKTTGEYGC/q84JSmTeCULW4o=;
- b=R+1zTv2qEJ/mVo0NYJ2xg1YNlsv07E8P5bBEHXAzSHfOjTsDOWpdqysxwm2wQB+eOc5lc8O0dnHVsY492y2RRSF8AiDWRR3GIC2hF2P5LBwfgnDB3LB7WDQSQmuEVw4NVyKZQODcVMB8Rjzl5CzL0B/MCz8dj9Sh75JnqAbohSuehgSqDpKsSI7JcyScc2gEQQuNH0UrZJvZ1lSGDup4IxKe1/PGnfw4WVPXbj9lfYgkw2DGO7UJ+eBYCNfFyN/v6sRWYaQDJETobJeoKMuwQnuGE1bBIrMe5Hz96Klk4LQn9jRcZNAJP8H+cGK4Q+5PeBENoCCpYU5NdjE0NKQtVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F0xRZ8BrmlGVbFeid+npKTTGEYGC/q84JSmTeCULW4o=;
- b=eq2uVjLlMwQW4WGHbSUzhPbmLJH/4OLcPAEbeXEKLvhk15IE8x3wCf4VHfOflYDcH8hCySryqSGhOarXkHevd0WAFBH/O6s8bLGrFUCgJVwuBV4Br0LTFSJdJC3DxXwv0sq0zCE0vWXwZ7DMkWpdd6hLl83qhdn1kqw6vMLGb6AuL7Mnfj1guZBMetsHumLpGbm4+7aw/iNmxpfg9lUyUDbAuVsv2rink01T+Af/Jywhf3/hKufg22cG+EK2f15ZgSiooxzFNioeXKOY/2JEyaJPwM+0brJA4F5rTiujEi3feM+7zEtg72YULjhnD2OLe+F15H0emDH0rwsYHt4wyQ==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by CY5PR20MB4974.namprd20.prod.outlook.com (2603:10b6:930:3a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 22 Apr
- 2024 00:31:21 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
- 00:31:20 +0000
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chen Wang <unicorn_wang@outlook.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Inochi Amaoto <inochiama@outlook.com>
-Cc: devicetree@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: dts: sophgo: use real clock for sdhci
-Date: Mon, 22 Apr 2024 08:31:46 +0800
-Message-ID:
- <IA1PR20MB49530361A95A5CF2453BFFE1BB122@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <IA1PR20MB4953CA5D46EA8913B130D502BB052@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <IA1PR20MB4953CA5D46EA8913B130D502BB052@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-TMN: [9s/7bB0ZkuNDwtK0GIDZXSuMGur5nXkdn2eL0OfR0tI=]
-X-ClientProxiedBy: TYCP286CA0192.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:382::18) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <171374587875.63774.10181712288386461900.b4-ty@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D75481E;
+	Mon, 22 Apr 2024 00:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713747391; cv=none; b=qehBZ8V0kEKSXG+JsrLPOGHmCVVo/sIBRqPKSYFHO9URDz6iBE/wdAeupMocjVqcslQt+NhZKsvD8ZfLVrWNRuvC45PJKQTnLoy/P8oK16S85BJBpFEujzrG2Z+e/6ZCslQzkNNZEtBfeO3w6fSnfEUVi6mpDDkEAm+MmRZ2Abk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713747391; c=relaxed/simple;
+	bh=371jyJprDRfHOmCH/Fxpr8y4E1O0YN2AgmEBCXGdqEQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=iaL9FKynvJYw0Eq5CFMdQfJIx8QyrSivTjeMuo/+U07kKIuXDQb4UKFrJp37m5DLyDZ+ZXFGYVaeO8pvCvOIVm92WRRC52gpLHOztPfRybkhtqGgNekUSMIP+wYmr4X22CpstcEdzB78++J3E0//L7Indb/eYNwJn/U+LhAcxhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=ceCPMWlZ; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1713747385;
+	bh=o2iiRfsgDlxie7Sw96O890/W7qDYXB9sJMVK0j1DSqY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ceCPMWlZI1hKoou3tOvDZFlglDWoeB2cC2dgP9246mKnjDagMNCCjyMKQi5izduYl
+	 nyQ3VxLupN1H4LqyS5Cq0a0OunCZKzW0g0veL+COrgECXh5/BkvQyYJQHtW/RJ74vX
+	 Q11LLYY4T9/t+H+d3zU9nBnoNRayPIC1vtcF4FH/dHmcfVByXSkS4pDz+dHV7FxMcZ
+	 K94WcPJwCMxOYt7MTP2vpoacgN5ai9ahqRw06SilNrnWvV3qUmJ+N6rPxsaUfRgYVs
+	 qp6JoHL9vOk7jv3CKogKYWDrppFvfBS3A9H/Gs03D70fQCNROakJn8/iNi4Mfy9jgi
+	 C6yENISOEWJVQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VN6JS24rfz4wcb;
+	Mon, 22 Apr 2024 10:56:24 +1000 (AEST)
+Date: Mon, 22 Apr 2024 10:56:23 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Kalle Valo <kvalo@kernel.org>, Johannes Berg <johannes@sipsolutions.net>
+Cc: Wireless <linux-wireless@vger.kernel.org>, Johannes Berg
+ <johannes.berg@intel.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the wireless-next tree with the
+ wireless tree
+Message-ID: <20240422105623.7b1fbda2@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|CY5PR20MB4974:EE_
-X-MS-Office365-Filtering-Correlation-Id: 861b1e34-c6a3-40ae-1da7-08dc62638841
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4GjASG+DoXl0dNrMNeXyB0J8ymOCkj3d10UYBDqPPkCd1+cH2dLcAyXApuOerQQtncCA617o9xhlKe7X9U7piZwQOJHBxl1XGkPF1TovIBdRB3KVbFho7wOdWiaeqIJrLpVUarWDGbhyleK+SllJOMCxAtYy+o5rLUr+vvVde6A9l7C1ObvtPyZyWxgyzGjggDXgwHqGC0zaC+RZo64f5YY/am+jOwc8Z/rYbNH5my/aKTpkzVTYGu+nvPdJKJIlsMi6miqtTLeB1rvrMwNL3D/XDoZ8p0tvDjRhst34k7JHF0/R6lwZmH9O9sTdyQc6Van74f/nOldq5NVac/8fnr+3W+7dKKJlOKZM2rBbtspV4w1plHi5dvu9U3wGLaiQcvvNxs4mYbdEz847ADSndRXSgfT0CLFLbVp2s+i/8oeXaNlOVBECFEeERHAyTzwnVzErhjSdG2eUaUVwIWvefJ3w5EKj1De/Hja3EQOZ+86nXSL0mmBe22cmZUjW9T567mIgmnG7OWQwoYbSbIKX80KW9T5FbKJ/IcVZ/L3Kf7b47IYzlMJc8SPBJ+1AogeHAcWVRWTbFTSII0A0nFF+IRS9jE7DM3rOCqvaWxKVo/8MtcyrN94oZrDyiLJrbLhMqYSpyFB/8zZGMIsl7/nwU56pXBNVI2gJjRzsfaDv7+s/VIDkRFnVlkcj8MjEoqXn
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?SU5mOUdGbk9JTDFXR1BOSW5PSFJsT3ZHMGhlYkxhWFZOL0lRZkNWQ1k4Mi9n?=
- =?utf-8?B?V0dWR3hVWVlndElPRVpwM3NzZ080QkJRdzd5dWdlUytuTG9JSk5RVzR1Tjlu?=
- =?utf-8?B?NzV3Nm5HdXlQQWxkU1EyakdFcUxJWWs5VVE0NERjOW5POG1mdGxndGIyRDky?=
- =?utf-8?B?ZFpwbituS3E2RmIzKzRHa3FCM2IrZjdOSXV1Rm1HUjVscHlibHorOC90Y0dP?=
- =?utf-8?B?blc1bzNNcEZQdlhaUXpjbVJxeXRXZTJ6UzdvM25yNHVjbmNPVVR3Y3Aycm50?=
- =?utf-8?B?ckZVcnNHVHFXcmJQcGdwenNpeFlPTmR5cGluM0FRN0VKMEJ0VFp2L3hqeWpt?=
- =?utf-8?B?Y1NFTktITUl5czZYUGpWdHQ3NHZpNHpZbG8wdnBaeldEN0hrTi8wM1VKdFdw?=
- =?utf-8?B?aURYdDUyWkRHMmF4L1FSTVpud2FwMDhENlVlQzJDeG9HOGY3VG0wVGcwUHFP?=
- =?utf-8?B?b3c1NnFBM240UGttUTZNajdVZy9rMUp0eWY2RVRqOUtXOW9aVjZZcGRZd0Zu?=
- =?utf-8?B?cmRualBmL3l4ZlRkRHVaNnAxOU5DZFBoWXRldi9xR014KzgyR1NHenhNNC9q?=
- =?utf-8?B?SCsreElMWDRBTUd0MzFsZ0lJNnVheVM5R2xSbEtubEw3RjZzRFp0bGpRUjJB?=
- =?utf-8?B?RkN6QkNhM1hoQk1GclplNTRHQlZUQUJIRWZnSkExeUhPQ1YzdVlaSzRCc2tK?=
- =?utf-8?B?LzBCa25JNkdXVmZ0dDF0QW14M1FoWHF1VUdLSkNrbVBtMFh3RHgrcEJpTmZq?=
- =?utf-8?B?d0YzdytrY21VZXRjK0tWdllWcWVDaUVnbmJJZFFoVk5VblBKMkppT1R3Ykh1?=
- =?utf-8?B?Y3FCNnI3dEdXNkUvL0hDdGJHM2Q5VWdMUTB2VnhMT1lRaEc0dGlIZ2JlQ3M0?=
- =?utf-8?B?UHk3d2Zib0s3akJUSEVTalFxRlN1WEFhbEtNa0lVZmhzaE4zRGl5K0k1Q0V1?=
- =?utf-8?B?bEdPQXJnUnFYckdRSWRFaDNGczArK2xJeDhhRFRvaExIQnVYd1NSZUVtdHYy?=
- =?utf-8?B?S3dSRkZwdTJZd0pRRWJlNnNtMUk0MDAvWlhRLzdadTdWa1Z6L0JOM0V3WDNK?=
- =?utf-8?B?cU1XS09ndnUxOHJ3UEkvUlpoS2JTQmJKcFlzTXJlZW1mUVJiVHp4a2tqdVVG?=
- =?utf-8?B?ck81R00ydjdXL25COW82anl0WWJiQmZGTkI5NmxqY05hbHlpQjE5TXJNbk05?=
- =?utf-8?B?Q0ZOcGt6TFgwMkE5R2x2MUErSU5MTFA3L294QWxPcWZNWFRBSTF0Sjd2bWo3?=
- =?utf-8?B?ME9Ga0NnVThhKzQ5eTJVS2lUSWlhRGZnNHVpaXJoUE9Demk5ZXArb3NNMHgw?=
- =?utf-8?B?SVJDNy83cUtUZy9MUHh1ajFyWXpUaFczUkVjay9lbmp2K0VUWnZIKzFLRDlm?=
- =?utf-8?B?L2tUQWhJT0QzdXU2NGhGZUx6SU5Ja1g4eEZZaGpwUHErWWhTalJHNkttUFpQ?=
- =?utf-8?B?VWlLdFd3enZaV3JvRllQRmRDSWRpTCtKVWc5NURtZVhhUmhTUFJlMU1YMFZt?=
- =?utf-8?B?NXB0TVJKRFAxL3lOT2xjeGx5MFFabVZQckM3YlpJVFJCZ25icW5IVVhJU1E5?=
- =?utf-8?B?VVFiTmpSOTlwNy80RVJUdzZGZit4eTNkNDc1ZXVuYjYzczdXOW9KL3MvOXlH?=
- =?utf-8?B?V09wQ3l2bGJhc0hyaEJ4ZVV4MmR3aTVBTkdENUZRTjNyM1pWekNRVVhzaTRv?=
- =?utf-8?Q?pGoPQXWOwgT07J5q0GVb?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 861b1e34-c6a3-40ae-1da7-08dc62638841
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 00:31:20.9000
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR20MB4974
+Content-Type: multipart/signed; boundary="Sig_/P0JkuJR6=UOwV3U=MCBrQxx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Thu, 11 Apr 2024 20:21:35 +0800, Inochi Amaoto wrote:
-> As the clk patch is merged, Use real clocks for sdhci0.
-> 
-> 
+--Sig_/P0JkuJR6=UOwV3U=MCBrQxx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied to sophgo/for-next, thanks!
+Hi all,
 
-[1/1] riscv: dts: sophgo: use real clock for sdhci
-      https://github.com/sophgo/linux/commit/886776ca23f2433eb69c0f95e0abadb7dfffd789
+Today's linux-next merge of the wireless-next tree got a conflict in:
 
-Thanks,
-Inochi
+  net/mac80211/chan.c
 
+between commit:
+
+  89884459a0b9 ("wifi: mac80211: fix idle calculation with multi-link")
+
+from the wireless tree and commit:
+
+  87f5500285fb ("wifi: mac80211: simplify ieee80211_assign_link_chanctx()")
+
+from the wireless-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc net/mac80211/chan.c
+index 4e0c1a6e509f,dedf11eeb43c..380695fdc32f
+--- a/net/mac80211/chan.c
++++ b/net/mac80211/chan.c
+@@@ -800,8 -819,7 +819,8 @@@ static int ieee80211_assign_link_chanct
+  	struct ieee80211_local *local =3D sdata->local;
+  	struct ieee80211_chanctx_conf *conf;
+  	struct ieee80211_chanctx *curr_ctx =3D NULL;
+ +	bool new_idle;
+- 	int ret =3D 0;
++ 	int ret;
+ =20
+  	if (WARN_ON(sdata->vif.type =3D=3D NL80211_IFTYPE_NAN))
+  		return -EOPNOTSUPP;
+@@@ -822,17 -840,24 +841,22 @@@
+  		ieee80211_recalc_chanctx_min_def(local, new_ctx, link);
+ =20
+  		ret =3D drv_assign_vif_chanctx(local, sdata, link->conf, new_ctx);
+- 		if (ret)
+- 			goto out;
+-=20
+- 		conf =3D &new_ctx->conf;
+- 		list_add(&link->assigned_chanctx_list,
+- 			 &new_ctx->assigned_links);
++ 		if (assign_on_failure || !ret) {
++ 			/* Need to continue, see _ieee80211_set_active_links */
++ 			WARN_ON_ONCE(ret && !local->in_reconfig);
++ 			ret =3D 0;
++=20
++ 			/* succeeded, so commit it to the data structures */
++ 			conf =3D &new_ctx->conf;
++ 			list_add(&link->assigned_chanctx_list,
++ 				 &new_ctx->assigned_links);
++ 		}
++ 	} else {
++ 		ret =3D 0;
+  	}
+ =20
+- out:
+  	rcu_assign_pointer(link->conf->chanctx_conf, conf);
+ =20
+ -	sdata->vif.cfg.idle =3D !conf;
+ -
+  	if (curr_ctx && ieee80211_chanctx_num_assigned(local, curr_ctx) > 0) {
+  		ieee80211_recalc_chanctx_chantype(local, curr_ctx);
+  		ieee80211_recalc_smps_chanctx(local, curr_ctx);
+
+--Sig_/P0JkuJR6=UOwV3U=MCBrQxx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYltbcACgkQAVBC80lX
+0GxfBAf/TGFiNoDJ4g3bno2FzMVTWyL/dQDogND/PFuxrVZLDHZcFn8sHXOclrfn
+I5PRAXTs6J7X3zYtrmoQyJN/BuhkAocmDtHPgFTx1BAnrO42/GmbKC1/SpWdG47V
+JxwX/s16So6O2sGNKCDFpyVcjAAFkeZvRX4td6XJNkLA6zH0LIABVzWYzsw3Bg//
+R3Vi8wsjkcrqGD8DEdheyw54bSKnNSxIFan4/1ivIsmvDWDpEkwGof2fKTbY/3XJ
+KgVjOFmrzC071pmhplBzmQDA0f5AaTV3wTuB3GeY/89aajf6lvN+/QNGXZXWbo3o
+kk+ON7Ib/KGj/+z/RAlmEuNvUBaekQ==
+=aLjw
+-----END PGP SIGNATURE-----
+
+--Sig_/P0JkuJR6=UOwV3U=MCBrQxx--
 
