@@ -1,178 +1,160 @@
-Return-Path: <linux-kernel+bounces-153308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1DFC8ACC49
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:49:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBF558ACC4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:50:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DA6E1F21585
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:49:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED24B1C215FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F991474AD;
-	Mon, 22 Apr 2024 11:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C40E146A85;
+	Mon, 22 Apr 2024 11:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m8qcjZiV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k02c+1bR"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9D614430B;
-	Mon, 22 Apr 2024 11:49:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D746314430B;
+	Mon, 22 Apr 2024 11:50:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713786563; cv=none; b=CjYmcppY28vweXztc8FW3qFeKQB5K3/4+UvDxiJlmkCq9mlNLzSNE1u8qW/j3ouBJjcM7CvzSr444fnWB6iQiVwb+7eeIa5XfFsBK6gYEp/QHon7CH/G2mQsmWMsIughkdjKbABVgYc6+fe/bCK9zaKK+mKbqepfUh4zyPpLz40=
+	t=1713786618; cv=none; b=LLuTDUTAMfR3yXbrSTvSo2i/v1vaHjzI5m+Uas4vOi4T7pYV5ceyNMK6Z34mfLDOMDhzPvt4gB2WGjiwvL+fFtHSzlIDDyQnFVs3lZ9MEOAuYEKL0652zrhOgf3M7hTbQdmAjc0q11XyyJtBwUSd0l9UcZjRo1VW3bXwhBnW67U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713786563; c=relaxed/simple;
-	bh=oa565rT+yJwur5f64+QWMUWJjWDSTlu51r9yAsnO/cQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=abXfnzhG+LxQePJoFI+srhBUmSjcylVrA/YFTPJXZ9P0srBgMhenDhxruYUkP86fpeXtAFnm2MDpyf+q9dnfWV13cGfw0hk3kwwfkfTKLpdeEVgQEs9K54j4CJc4UpzGVUuUBqZYyBC/nBxtB6VV1Mfba/K/wJXel/3vP3Z+iOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m8qcjZiV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D9FFC113CC;
-	Mon, 22 Apr 2024 11:49:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713786562;
-	bh=oa565rT+yJwur5f64+QWMUWJjWDSTlu51r9yAsnO/cQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=m8qcjZiVMZwPzvsf/mGXDqRPN4LEorVGqL4g0TIW9H14oLT4yTLWqhN9QnS9O1nHp
-	 508wVaDH45H+yaJPYmRBjOljKpuNDFWMtr9bvWFSvznl6wTTnwGRDi0EtMYiiwokO3
-	 9NF4lkONdtckxwDw1RPHwEuS2YOr3ZsrRZ8zy1Kkjw2sHvr97EQPK9PUX9lO6LuWQH
-	 Ak07BoSkLMkB/16OIhGgc8OYNF86v08Pnk4m0K9Hracf9EyBUjd0yVdLwD1Msd5RTw
-	 kbtvA6u3nSrqI+e5f55Dasuhc6tzvEX0HFYEahZKknuWPaf4ALDx1qklxXlV+JC4QD
-	 3bUCdEwxXJtVA==
-Message-ID: <0b6bf7b9-f9c6-40c4-a166-7bdd4984b023@kernel.org>
-Date: Mon, 22 Apr 2024 13:49:17 +0200
+	s=arc-20240116; t=1713786618; c=relaxed/simple;
+	bh=Gd76lsOo4VGGSyfVLdRqHseFbsa9HDkzoH11UyZQ6eI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=R8KKAxHqHYijFvzCz/bJ/clcfRH69+ZIFguz0W0TuxY/p5sNY6y5J3LmFsOC7dGkyq/vWelcYzHlo7YrERMMbTRe5mt5tNhT2RGCR2DlHU4XvkvJof5WkAxwLlhAyciewrT8uMwTjdzykyURKK5zhcqV31qQvQPRldpVGpHkfDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k02c+1bR; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713786616; x=1745322616;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=Gd76lsOo4VGGSyfVLdRqHseFbsa9HDkzoH11UyZQ6eI=;
+  b=k02c+1bR1AwwnYXD2Bx6YaoGLP3gX0qQC5imjXLVI8JAxgca1Ig0j6Ca
+   DX0oLr9XJIOp71gHASgBlkf7JgAdFr49encfXXFsRWZX0aXbzbTgIUaqp
+   jaHLwBGtdZO7kvu8cq43WCfwHZqKml5mMBWwFNsGJRt/EBF8tg7yceTyi
+   RzrGv9RxESjBeVvLCi55xtoduwBWijrccmP6BckuUNYre3PkbnHlki4HE
+   bSlw8GuOLwr+JFnXlGUezngqSd5Kbh4vem2V19vGmgyti2PKa+CQZRpPP
+   21zFlikf5GvX6NQCfSPu3YF7uhxVI/sdpsty1Z7YJp+txAeEwzVhXV/NF
+   w==;
+X-CSE-ConnectionGUID: WjbBLBOjTUipXiKfRLfhaw==
+X-CSE-MsgGUID: 9Bj/l9ZxTTOHPleKOLZY/A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="19871596"
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="19871596"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 04:50:16 -0700
+X-CSE-ConnectionGUID: ClJyYI3LQfiTqjN1U6lXYw==
+X-CSE-MsgGUID: KltWatPSRn+GzrwENKC0qQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="61438122"
+Received: from ralbanes-mobl.ger.corp.intel.com (HELO localhost) ([10.252.63.128])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 04:50:12 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Arnd Bergmann <arnd@arndb.de>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, Geert Uytterhoeven
+ <geert+renesas@glider.be>
+Subject: Re: [PATCH 00/11] drm: Restore helper usability
+In-Reply-To: <cover.1713780345.git.geert+renesas@glider.be>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <cover.1713780345.git.geert+renesas@glider.be>
+Date: Mon, 22 Apr 2024 14:50:09 +0300
+Message-ID: <87il09ty4u.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bindings: usb: uhci: convert to dt schema
-To: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240422093706.324115-1-sheharyaar48@gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
- FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
- QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
- gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
- /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
- iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
- VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
- 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
- xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
- eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
- AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
- MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
- Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
- MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
- OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
- GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
- 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
- YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
- 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
- BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
- JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
- 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
- YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
- Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
- ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
- vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
- oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
- lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
- t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
- uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
- 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
- 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240422093706.324115-1-sheharyaar48@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 22/04/2024 11:37, Mohammad Shehar Yaar Tausif wrote:
-> Convert USB UHCI bindings to DT schema.
+On Mon, 22 Apr 2024, Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+> 	Hi all,
+>
+> As discussed on IRC with Maxime and Arnd, this series reverts the
+> conversion of select to depends for various DRM helpers in series
+> "[PATCH v3 00/13] drm/display: Convert helpers Kconfig symbols to
+> depends on"[1], and various fixes for it.  This conversion introduced a
+> big usability issue when configuring a kernel and enabling DRM drivers
+> that use DRM helper code: as drivers now depend on helpers, the user
+> needs to know which helpers to enable, before the driver he is
+> interested even becomes visible.  The user should not need to know that,
+> and drivers should select the helpers they need.
+>
+> Hence revert back to what we had before, where drivers selected the
+> helpers (and any of their dependencies, if they can be met) they need.
+> In general, when a symbol selects another symbol, it should just make
+> sure the dependencies of the target symbol are met, which may mean
+> adding dependencies to the source symbol.
 
-Please mention changes from pure conversion, so documenting aspeed
-compatibles and missing properties.
+I still disagree with this, because fundamentally the source symbol
+really should not have to care about the dependencies of the target
+symbol.
 
-> 
-> Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
-> ---
-
-..
-
-..
-
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +if:
-
-This should be under allOf
-
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        const: generic-uhci
-> +then:
-> +  allOf:
-> +    - $ref: usb-hcd.yaml
-
-This is confusing. Aspeed is not different here.
-
-> +  if:
-> +    properties:
-> +      compatible:
-> +        contains:
-> +          enum:
-> +            - aspeed,ast2400-uhci
-> +            - aspeed,ast2500-uhci
-> +            - aspeed,ast2600-uhci
-> +  then:
-> +    properties:
-> +      '#ports':
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-
-And the #ports property looks valid for generic-ahci. Why do you think
-it is not valid?
+That said, I'm not going to keep arguing against this. Whatever.
 
 
-> +      clocks:
-> +        maxItems: 1
-
-Define properties top-level.
-
-> +    required:
-> +      - clocks
-
-This looks required for generic-uhci as well. Why did you put it only
-for aspeed?
+BR,
+Jani.
 
 
-Best regards,
-Krzysztof
+>
+> Thanks for applying!
+>
+> [1] https://lore.kernel.org/r/20240327-kms-kconfig-helpers-v3-0-eafee11b84b3@kernel.org/
+>
+> Geert Uytterhoeven (11):
+>   Revert "drm: fix DRM_DISPLAY_DP_HELPER dependencies, part 2"
+>   Revert "drm/display: Select DRM_KMS_HELPER for DP helpers"
+>   Revert "drm/bridge: dw-hdmi: Make DRM_DW_HDMI selectable"
+>   Revert "drm: fix DRM_DISPLAY_DP_HELPER dependencies"
+>   Revert "drm: Switch DRM_DISPLAY_HDMI_HELPER to depends on"
+>   Revert "drm: Switch DRM_DISPLAY_HDCP_HELPER to depends on"
+>   Revert "drm: Switch DRM_DISPLAY_DP_HELPER to depends on"
+>   Revert "drm: Switch DRM_DISPLAY_DP_AUX_BUS to depends on"
+>   Revert "drm: Switch DRM_DISPLAY_HELPER to depends on"
+>   Revert "drm: Make drivers depends on DRM_DW_HDMI"
+>   Revert "drm/display: Make all helpers visible and switch to depends
+>     on"
+>
+>  drivers/gpu/drm/Kconfig                 |  8 +++----
+>  drivers/gpu/drm/amd/amdgpu/Kconfig      | 12 ++++------
+>  drivers/gpu/drm/bridge/Kconfig          | 28 +++++++++++-----------
+>  drivers/gpu/drm/bridge/analogix/Kconfig | 18 +++++++-------
+>  drivers/gpu/drm/bridge/cadence/Kconfig  |  8 +++----
+>  drivers/gpu/drm/bridge/imx/Kconfig      |  4 ++--
+>  drivers/gpu/drm/bridge/synopsys/Kconfig |  6 ++---
+>  drivers/gpu/drm/display/Kconfig         | 32 ++++++++++---------------
+>  drivers/gpu/drm/exynos/Kconfig          |  4 ++--
+>  drivers/gpu/drm/i915/Kconfig            |  8 +++----
+>  drivers/gpu/drm/imx/ipuv3/Kconfig       |  5 ++--
+>  drivers/gpu/drm/ingenic/Kconfig         |  2 +-
+>  drivers/gpu/drm/mediatek/Kconfig        |  6 ++---
+>  drivers/gpu/drm/meson/Kconfig           |  2 +-
+>  drivers/gpu/drm/msm/Kconfig             |  8 +++----
+>  drivers/gpu/drm/nouveau/Kconfig         | 10 ++++----
+>  drivers/gpu/drm/panel/Kconfig           | 32 ++++++++++++-------------
+>  drivers/gpu/drm/radeon/Kconfig          |  8 +++----
+>  drivers/gpu/drm/renesas/rcar-du/Kconfig |  2 +-
+>  drivers/gpu/drm/rockchip/Kconfig        | 10 ++++----
+>  drivers/gpu/drm/sun4i/Kconfig           |  2 +-
+>  drivers/gpu/drm/tegra/Kconfig           |  8 +++----
+>  drivers/gpu/drm/vc4/Kconfig             | 10 ++++----
+>  drivers/gpu/drm/xe/Kconfig              | 13 ++++------
+>  drivers/gpu/drm/xlnx/Kconfig            |  8 +++----
+>  25 files changed, 116 insertions(+), 138 deletions(-)
 
+-- 
+Jani Nikula, Intel
 
