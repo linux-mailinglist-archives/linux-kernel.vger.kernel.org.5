@@ -1,147 +1,119 @@
-Return-Path: <linux-kernel+bounces-154175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4AE58AD8A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:08:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 935F38AD754
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:37:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CC682834FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:08:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45CBE281B13
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6B51C0DF1;
-	Mon, 22 Apr 2024 23:01:31 +0000 (UTC)
-Received: from akranes.kaiser.cx (akranes.kaiser.cx [152.53.16.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E36B20DFC;
+	Mon, 22 Apr 2024 22:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jC0Se1Au"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E4D51CF9B;
-	Mon, 22 Apr 2024 23:01:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=152.53.16.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D325C1C287
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 22:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713826891; cv=none; b=DDatGKEw7uAXEIVtrybmQMckoTWGDzihixYS/v/yGc9TSvd7fnId5ylHNe0tES6PlLYvPYeJfAFkJDFQ9TK2tV4UWDZXhoLaCX9mx7A/qNQN+GXN0vNS7DcRxsurZK8N1ZIdC0if0RAgtG8J1rukKqT/Iz+VVpbkCWInIkNF/+E=
+	t=1713825433; cv=none; b=j3U1vlrbNAUWByQBwdkdPILe9ufdnwxR4uDOJzQ7OQU1TdsfFhWA3hRGHza3irNejm6KhktRS5hnN+A+orhLhoAdb7wrqiRgrkFSQ2Zsn+tZKPkqk/WznhYu7XnJFmhyQVz94hIYftqiMZnhuS3LTysiFQjoLnlhSsmFrWBu7oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713826891; c=relaxed/simple;
-	bh=Kn/X7LXt1iZwCxzFJZ37XYQ5DBemw1641eh3Gy1yxh4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RNL/r37CzvumY7/JasIFynS8r5GOYkBQ7Hi4hDyrRIbWTbvBLv9zs+ZKE/5dPsEK02XsLtkg+o7qQ5UUIapAyalgCunax6svzN00iV1EX26dfro+U6CVxYB8lPe4/9adwq6rU1oPbnYAAjN902f0Hl9D+NPZ60MKX1k0jzd0BrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx; spf=pass smtp.mailfrom=kaiser.cx; arc=none smtp.client-ip=152.53.16.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kaiser.cx
-Received: from martin by akranes.kaiser.cx with local (Exim 4.96)
-	(envelope-from <martin@akranes.kaiser.cx>)
-	id 1rz2ER-000ZXO-02;
-	Tue, 23 Apr 2024 00:33:51 +0200
-Date: Tue, 23 Apr 2024 00:33:50 +0200
-From: Martin Kaiser <martin@kaiser.cx>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Anna Schumaker <Anna.Schumaker@netapp.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	David Howells <dhowells@redhat.com>, NeilBrown <neilb@suse.de>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] nfs: keep server info for remounts
-Message-ID: <ZiblzgAJ5M38dPh8@akranes.kaiser.cx>
-References: <20240414170109.137696-1-martin@kaiser.cx>
- <d12c4998028014829713093ceccdbb521e34f05c.camel@kernel.org>
+	s=arc-20240116; t=1713825433; c=relaxed/simple;
+	bh=JsxZ38XdkNgp9UD9W21uEmvYgPFSGAp83NClI4k5JWg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=EkQtXDanhXY1lKs9S2kmASyQfDoprH/YRiLzA4B2lQkdXrpKz9fOaWVmp456LkO3S5RWxGjP5wzhtsuPJTCfXAejsrwa3cAJzr8TyrupZ2pirmJaDKTq7jedHZioohVoCqMMS+/htpNxF1DgeqbedM2PtZB+dsqvALSxn4tNTlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jC0Se1Au; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51aff651083so2589551e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:37:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713825430; x=1714430230; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ohFmgglIcQlxE3MPNy1+YrogD02CaIJJKPILpDHEK2E=;
+        b=jC0Se1AuSIXi6m1zu9rYPo9813c1QcqMMGb1u2IEdG4WNHdlD3rF0J4y1eYFJfC3+z
+         rnGv8jhl3ksmyr8TC4W0Teh621nqMfJDBlxZyk5ObPmjALhwGGTNjZALZODb++D7kygW
+         dFFp+WSWUGBF6EKM3nMma3jaXgaISJHi58XZY/8iD3/uT117i3PAQSETOUjtiGwDTBMX
+         3POqQ39aiPHoOf4pRq4KTd4TsKLIp3UsW51lJn6nfCYHcCLLLT4BsEBiQtsuEXLMvWHr
+         QEawIjWvugtYxI/kWgIyDOgZQ338yS5Uj8KZQDIFcphnbnZCOElxuC3vHsRhNjblcITd
+         69zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713825430; x=1714430230;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ohFmgglIcQlxE3MPNy1+YrogD02CaIJJKPILpDHEK2E=;
+        b=OuuqOYv4Jw1WK0hWynjaWLVEHLS7TxrBqIlSksPgi1R3xC5NJdSX4QShP9Y16RCPec
+         k45eT2MxD9ukMYtn7SFiHXSwOX0xgh8I9SM680HlBXLg+QCdPT4Urx2CfsPYZl7aWrUo
+         3vit8ZwWs+Ak59Gwj5TM29F0y6B0Su8ovIv3qKryRVnsfIyqsDIkRCBQwv+safcVO8KM
+         ohNfP5ZC2W/Fa6XjYS4b7ElNOOx8YDjP+CzlNzFo7Lr4Khhx20h4T+wv2vziG0US5dTx
+         B/9lrB1gSVYtrcc9uWhexd/ugZniK2tFxQLVByWEiDaw1vJ2xjHqf6/qAB8XLPNVBbkW
+         dHiA==
+X-Forwarded-Encrypted: i=1; AJvYcCVvtNDywf4HlwDSqcNID5X5e2/YxQiS9L48VrND2HHyQMQmvoTWvqQKka3hozyYKrybEnuPELfwa3za1nG6/rN+SO94TyxXHCVEaiA2
+X-Gm-Message-State: AOJu0YwnMybk7VjrGIW8gqtpfABx+fpIDOXTgT04f3v6TWtHBs3a3J0k
+	Jq1jaj/5QP0+LmXjUQ3JLV39NMYId/PMlXwm17dXbaokyVwxRsL1FHMF01dCTzs=
+X-Google-Smtp-Source: AGHT+IE3m5uOC+ZmUmnZKf0riA6458/IhT/zPbv8SmhhSaid1ucuuBTYN37T3Pzrf8uaJHQYmrV0OA==
+X-Received: by 2002:a19:381a:0:b0:515:cfaf:737 with SMTP id f26-20020a19381a000000b00515cfaf0737mr6928150lfa.9.1713825429819;
+        Mon, 22 Apr 2024 15:37:09 -0700 (PDT)
+Received: from [127.0.1.1] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id r3-20020ac25f83000000b00513c4e41140sm1841271lfe.204.2024.04.22.15.37.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 15:37:09 -0700 (PDT)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/2] Remove more useless wrappers
+Date: Tue, 23 Apr 2024 00:36:58 +0200
+Message-Id: <20240423-topic-msm_cleanup-v1-0-b30f39f43b90@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d12c4998028014829713093ceccdbb521e34f05c.camel@kernel.org>
-Sender: "Martin Kaiser,,," <martin@akranes.kaiser.cx>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIvmJmYC/x3MWwqAIBBA0a3EfCfkA4q2EhFpUw3kA60Iwr0nf
+ Z6Pe19IGAkT9NULEW9K5F0Brysw++w2ZLQUg2iEapSQ7PSBDLPJTubA2V2BaYmq1aZTnC9QuhB
+ xped/DmPOH+Q0mQBjAAAA
+To: Rob Clark <robdclark@gmail.com>, 
+ Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+ freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.14-dev
 
-Thus wrote Jeff Layton (jlayton@kernel.org):
+Shaving off some cruft
 
-> On Sun, 2024-04-14 at 19:01 +0200, Martin Kaiser wrote:
-> > With newer kernels that use fs_context for nfs mounts, remounts fail with
-> > -EINVAL.
+obj files seem to be identical pre and post cleanup which is always
+a good sign
 
-> > $ mount -t nfs -o nolock 10.0.0.1:/tmp/test /mnt/test/
-> > $ mount -t nfs -o remount /mnt/test/
-> > mount: mounting 10.0.0.1:/tmp/test on /mnt/test failed: Invalid argument
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (2):
+      drm/msm/dsi: Remove dsi_phy_read/write()
+      drm/msm/dsi: Remove dsi_phy_write_[un]delay()
 
-> > For remounts, the nfs server address and port are populated by
-> > nfs_init_fs_context and later overwritten with 0x00 bytes by
-> > nfs23_parse_monolithic. The remount then fails as the server address is
-> > invalid.
-
-> > Fix this by not overwriting nfs server info in nfs23_parse_monolithic if
-> > we're doing a remount.
-
-> > Fixes: f2aedb713c28 ("NFS: Add fs_context support.")
-> > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> > ---
-> >  v3:
-> >  - rebased against linux-next from 12th April 2024
-
-> >  v2:
-> >  - rebased against linux-next from 26th February 2024
-
-> > Dear all,
-> > I'm resending this patch again. The problem that I'm trying to fix is still
-> > present in linux-next. Thanks in advance for any reviews and comments.
-
-> > I guess that we're taking this path for remounts
-
-> > do_remount
-> >     fs_context_for_reconfigure
-> >         alloc_fs_context
-> >             init_fs_context == nfs_init_fs_context
-> >                fc->root is set for remounts
-> >                ctx->nfs_server is populated
-> >     parse_monolithic_mount_data
-> >         nfs_fs_context_parse_monolithic
-> >             nfs23_parse_monolithic
-> >                ctx->nfs_server is overwritten with data from mount request
-
-> > An alternative to checking for !is_remount_fc(fc) would be to check
-> > if (ctx->nfs_server.addrlen == 0)
-
-> > fs/nfs/fs_context.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-
-> > diff --git a/fs/nfs/fs_context.c b/fs/nfs/fs_context.c
-> > index d0a0956f8a13..cac1157be2c2 100644
-> > --- a/fs/nfs/fs_context.c
-> > +++ b/fs/nfs/fs_context.c
-> > @@ -1112,9 +1112,12 @@ static int nfs23_parse_monolithic(struct fs_context *fc,
-> >  		ctx->acdirmax	= data->acdirmax;
-> >  		ctx->need_mount	= false;
-
-> > -		memcpy(sap, &data->addr, sizeof(data->addr));
-> > -		ctx->nfs_server.addrlen = sizeof(data->addr);
-> > -		ctx->nfs_server.port = ntohs(data->addr.sin_port);
-> > +		if (!is_remount_fc(fc)) {
-> > +			memcpy(sap, &data->addr, sizeof(data->addr));
-> > +			ctx->nfs_server.addrlen = sizeof(data->addr);
-> > +			ctx->nfs_server.port = ntohs(data->addr.sin_port);
-> > +		}
-> > +
-> >  		if (sap->ss_family != AF_INET ||
-> >  		    !nfs_verify_server_address(sap))
-> >  			goto out_no_address;
-
-> Doesn't nfs4_parse_monolithic need the same fix? 
-
-Sorry for the delayed response. It took me a moment to set up a test with nfs4
-(busybox mount has no nfs4 support).
-
-The nfs4 remounts do not fail for me. The mount syscall goes into
-nfs4_parse_monolithic and 
-
-   if (data->version != 1)                                                                                             
-      return generic_parse_monolithic(fc, data);                                                                       
-
-branches off into generic_parse_monolithic before the server address is
-overwritten (this is what breaks nfs23).
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy.h           |   5 -
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c      | 273 +++++++++-----------
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c      | 218 ++++++++--------
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c      | 109 ++++----
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm.c      | 305 +++++++++++-----------
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_28nm_8960.c | 205 +++++++--------
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c       | 320 ++++++++++++------------
+ 7 files changed, 699 insertions(+), 736 deletions(-)
+---
+base-commit: 33edc5592466996fe9610efc712da0a3539027ae
+change-id: 20240423-topic-msm_cleanup-b3e47bc8411d
 
 Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
-   Martin
 
