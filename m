@@ -1,116 +1,190 @@
-Return-Path: <linux-kernel+bounces-153587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8AD88AD001
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:57:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6D98ACFF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:55:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FE3F1F223E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:57:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CD8328549B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:55:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC9015250D;
-	Mon, 22 Apr 2024 14:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5AAB152190;
+	Mon, 22 Apr 2024 14:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="erWA+QCB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RWAt1XMc"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DBB2152190;
-	Mon, 22 Apr 2024 14:57:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619931E49F;
+	Mon, 22 Apr 2024 14:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713797845; cv=none; b=aIjhA3PpHViGc0RNfAWE+1XdLii0xbpXSu/51PWYG/Py0tXTMW+3o0vv7jkzrHQMQz8l5q/cM9ZUwgJEjORB79Yr/ntxlbtyu5kuho4J3NMF7Z+o+7PLLE3QmfiS5rlHWUY0WRaI5VwtPpx1nmWehsJSvoiKNxnl3KbLVN0sTY4=
+	t=1713797726; cv=none; b=RCgRTQYEMJpxlQod8MUz8vAJfvyh1EjIgRAttTgYj4nhaEWw0OC/tr8zOIzl8Ptlal8V6YrR1JqU8Wn7KKRvc/ko8qjsC1XfoaLXfkPKpk0m3HptuLfzFRFemT2Bne22R4gYi98Uif7eTZzII5zcS4OfmAsjRCNXa6QvrKqO0Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713797845; c=relaxed/simple;
-	bh=/ys6Pzra7IEywMh4hBfA5xJtu9C9b7qcLANvkfE5cJk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=riGM8UWfDPLCZnJ2v7QQNU3mO5f/vIKZ5eJNOf4cIXNdGPkSv5BUv3yIHPs9xZ3Sx1IOw1Mgoa1f0HQnBljnNHsxj8gsl+cIlgf19ql8LEsOS7G4pSJVIba/B15mI7TWtmmBhEVCZd6geNsx8sELihVJBuaoBa1zuJRpIEtUjmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=erWA+QCB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4B11C113CC;
-	Mon, 22 Apr 2024 14:57:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713797844;
-	bh=/ys6Pzra7IEywMh4hBfA5xJtu9C9b7qcLANvkfE5cJk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=erWA+QCBdHASSENTMbmbCLszQVLSQvPHDCWgfW4TwFE/GVWL7ruM5SR//WtQ1W6QM
-	 d12zJ3HocPCG90okjpoCMBPNiZ4C2wMBghXJf7jiZrH+0zwnbBY2X6rvcNM+wESAuT
-	 kBqxDZqGDGm1bi25Y/5iM9IhfADZv/lx70kLTU88=
-Date: Mon, 22 Apr 2024 10:57:23 -0400
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Joel Granados <j.granados@samsung.com>, Luis Chamberlain <mcgrof@kernel.org>, josh@joshtriplett.org, 
-	Kees Cook <keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>, 
-	Iurii Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>, 
-	Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, 
-	Petr Mladek <pmladek@suse.com>, John Ogness <john.ogness@linutronix.de>, 
-	Sergey Senozhatsky <senozhatsky@chromium.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>, 
-	Balbir Singh <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org, kexec@lists.infradead.org, 
-	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	tools@kernel.org
-Subject: Re: [PATCH v3 00/10] sysctl: Remove sentinel elements from kernel dir
-Message-ID: <20240422-sensible-sambar-of-plenty-ae8afc@lemur>
-References: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-0-285d273912fe@samsung.com>
- <36a1ea2f-92c2-4183-a892-00c5b48c419b@linaro.org>
- <311c8b64-be13-4740-a659-3a14cf68774a@kernel.org>
+	s=arc-20240116; t=1713797726; c=relaxed/simple;
+	bh=LJ4OGj/G3ocPwE6LJjXahrtiiWDhc9Z7GXZHiYK1IZ0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EX3mMZp0eCNEAvavilTbKkZQZqV306lhYbZ32VuZ0G7Dz2VOmIi/Lu0xQrti3Lop41pPbMqgwOgHHVFE7nX40vUsV4QxhVQffVE2sdj+1snlhW/YiIGoDCJoVjKRjt5x1WcIV2N/iuYSkhQSptvTbr93NIfUG3u5KDz/fkLxcXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RWAt1XMc; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-572146dd1c8so663146a12.3;
+        Mon, 22 Apr 2024 07:55:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713797722; x=1714402522; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LJ4OGj/G3ocPwE6LJjXahrtiiWDhc9Z7GXZHiYK1IZ0=;
+        b=RWAt1XMcvURv1LC8ZP4yeM0zrTR3a89J0uainZzA8sQnVwRxoisVlvl18OxDGgR3pN
+         7B60nwVLbDR2jToGdiMUJDnwsr7XdymyVwGfdLsnjjwgdrXZFvjisuzQDBnospbEVPKQ
+         qmoYewgFoMU8uGqqT/vCVZfCwbMJ0erJhIYxklYA11pUWirEBil1lfeaUpfMIVFqOTz1
+         Urtl6zoG44y9FaqRo+3SNoS6Om1jYkieqbQDHoao8jDjdO/27cDrtAm1xfOXgdL8Usji
+         WKuVrclkr9CJsztDddPXmaV65hqMyIQCLAQsMlQ1rYf7J53iywPDJh3AoFKC1Oz0r9du
+         UIhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713797722; x=1714402522;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LJ4OGj/G3ocPwE6LJjXahrtiiWDhc9Z7GXZHiYK1IZ0=;
+        b=Yb2OqVJ+TbgYLUq3B3U7dC9YMfHBAXbEZG3tiaOPJuMV3Fgj6uMi1T1/aIDuk6ACFQ
+         +sLB19ZbPZ8T/HmbCdIp5fJndbiiGKi8dNVUm5rWd1v0u2R38me0BqoAj1uB663xza70
+         kZdYticIhWcXlmgLVt6UaUKZWo84y92iN9wDE1Ocsx6AQ73ajLCl1IjNGO26faV9HgDr
+         PVYg59aJEHzT2+CVLS0AFSbDlmIRaofKMi6bcTRwIiXYR5ICuYwd1qJkeuqqedyTTQpa
+         FIGvWk/h92xA6tGH+lMZOpaKwsenoRt2U7EVtK5jCAUMA91IY3AuY4oGVuM9eQxMT1u0
+         wGiA==
+X-Forwarded-Encrypted: i=1; AJvYcCWnLLlNP6pQxur7dAC0Crx2PbVP1hawVm3Kf8/Ind9J34lCejVkIIyye5enGXlaZIdfROUj9hMzZTFcgfdzyWAUo2qKzRVg+M9z2A3pR5D3uGXOjRXq3Rnksp4iaLu7fbGievJ0EVjkUOQR
+X-Gm-Message-State: AOJu0YzvqUr932Iv2DCqno/XLlnLiv7aNw7xu7+shT/Fcq+qjQm+pcyh
+	RUVtC4li5zuWwX9Q6CEB7+JAar1TUWsAuxfotHWFO8Q9ZTyNM73Zh3ocQz1oal40m9oHMno3V9F
+	a0TknDOCmz9BcqoHkSn1SJprADks=
+X-Google-Smtp-Source: AGHT+IGKeGoNS13fdl+AITowdhp/mZEru+IxeqNOh0ZgzxIisIX8SfoKgQ9i/2+abfEEERa+T9URmJOHPpnXkcl4lZ4=
+X-Received: by 2002:a17:907:9447:b0:a55:c021:e3b6 with SMTP id
+ dl7-20020a170907944700b00a55c021e3b6mr1894841ejc.11.1713797722551; Mon, 22
+ Apr 2024 07:55:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <311c8b64-be13-4740-a659-3a14cf68774a@kernel.org>
+References: <20240422133219.2710061-1-ria.freelander@gmail.com>
+ <e2989aa1-7f2b-4ac3-8fd8-822c87d61a1e@kernel.org> <CAF1WSuzqLxpxwYuNYfHyvXLDMBE-ZU69YLXwBdQokZzhs49xzw@mail.gmail.com>
+ <c5fdfc26-b8c7-4e0e-bd15-1299ec052833@kernel.org> <CAF1WSuzzzG_vm5b55zb_ha-Vj7H+i3ZbmPyN1F-EQxS3GLaurg@mail.gmail.com>
+ <ZiZ3p8XVjolnzR4U@smile.fi.intel.com>
+In-Reply-To: <ZiZ3p8XVjolnzR4U@smile.fi.intel.com>
+From: "Konstantin P." <ria.freelander@gmail.com>
+Date: Mon, 22 Apr 2024 17:57:31 +0300
+Message-ID: <CAF1WSuyfsjgwnum0SLsCeYVv44w_02JmRYxpe9THgtgff3VXMg@mail.gmail.com>
+Subject: Re: [PATCH v7 0/3] add support for EXAR XR20M1172 UART
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Conor Dooley <conor@kernel.org>, lkp@intel.com, 
+	Vladimir Zapolskiy <vz@mleia.com>, Rob Herring <robh@kernel.org>, jcmvbkbc@gmail.com, 
+	nicolas.ferre@microchip.com, manikanta.guntupalli@amd.com, corbet@lwn.net, 
+	ychuang3@nuvoton.com, u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>, Lech Perczak <lech.perczak@camlingroup.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 22, 2024 at 04:49:27PM +0200, Krzysztof Kozlowski wrote:
-> >> These commits remove the sentinel element (last empty element) from 
-> >> the
-> >> sysctl arrays of all the files under the "kernel/" directory that use a
-> >> sysctl array for registration. The merging of the preparation patches
-> >> [1] to mainline allows us to remove sentinel elements without changing
-> >> behavior. This is safe because the sysctl registration code
-> >> (register_sysctl() and friends) use the array size in addition to
-> >> checking for a sentinel [2].
-> > 
-> > Hi,
-> > 
-> > looks like *this* "patch" made it to the sysctl tree [1], breaking b4
-> > for everyone else (as there's a "--- b4-submit-tracking ---" magic in
-> > the tree history now) on next-20240422
-> > 
-> > Please drop it (again, I'm only talking about this empty cover letter).
-> 
-> Just to clarify, in case it is not obvious:
-> Please *do not merge your own trees* into kernel.org repos. Instead use
-> b4 shazam to pick up entire patchset, even if it is yours. b4 allows to
-> merge/apply also the cover letter, if this is your intention.
-> 
-> With b4 shazam you would get proper Link tags and not break everyone's
-> b4 workflow on next. :/
+On Mon, Apr 22, 2024 at 5:45=E2=80=AFPM Andy Shevchenko <andy@kernel.org> w=
+rote:
+>
+> On Mon, Apr 22, 2024 at 05:30:13PM +0300, Konstantin P. wrote:
+> > I do not skip it, it added to patch 2, as you requested.
+>
+> You still continue top-posting!
+> It's not good.
+>
+> You missed _my_ tag.
+>
+> But please, please, wait a bit, you really need to slow down.
+>
+> > On Mon, Apr 22, 2024, 16:51 Krzysztof Kozlowski <krzk@kernel.org> wrote=
+:
+> > > On 22/04/2024 15:50, Konstantin P. wrote:
+> > > > On Mon, Apr 22, 2024 at 4:45=E2=80=AFPM Krzysztof Kozlowski <krzk@k=
+ernel.org>
+> > > wrote:
+> > > >> On 22/04/2024 15:32, Konstantin Pugin wrote:
+>
+> > > >>> EXAR XR20M1172 UART is mostly SC16IS762-compatible, but
+> > > >>> it has additional register which can change UART multiplier
+> > > >>> to 4x and 8x, similar to UPF_MAGIC_MULTIPLIER does. So, I used th=
+is
+> > > >>> flag to guard access to its specific DLD register. It seems than
+> > > >>> other EXAR SPI UART modules also have this register, but I tested
+> > > >>> only XR20M1172.
+> > > >>> Yes, in datasheet this register is called "DLD - Divisor Fraction=
+al"
+> > > >>> or "DLD - Divisor Fractional Register", calling depends on datash=
+eet
+> > > >>> version.
+> > > >>>
+> > > >>> I am sorry about too many submissions and top post reply. About s=
+econd
+> > > -
+> > > >>> I do not know how to reply properly to this ML from GMail phone a=
+pp.
+> > > About first - I just
+> > > >>> get very good feedback from Andy Shevchenko, and want to fix his
+> > > review picks ASAP.
+> > > >>>
+> > > >>
+> > > >> One patchset per 24h.
+> > > >>
+> > > >> Plus, you already got such review comment:
+> > > >>
+> > > >> This is a friendly reminder during the review process.
+> > > >>
+> > > >> It looks like you received a tag and forgot to add it.
+> > > >>
+> > > >> If you do not know the process, here is a short explanation:
+> > > >> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+> > > >> versions, under or above your Signed-off-by tag. Tag is "received"=
+, when
+> > > >> provided in a message replied to you on the mailing list. Tools li=
+ke b4
+> > > >> can help here. However, there's no need to repost patches *only* t=
+o add
+> > > >> the tags. The upstream maintainer will do that for tags received o=
+n the
+> > > >> version they apply.
+> > > >>
+> > > >>
+> > > https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/proces=
+s/submitting-patches.rst#L577
+> > > >>
+> > > >> If a tag was not added on purpose, please state why and what chang=
+ed.
+> > > >>
+> > > >> Just start using b4.
+> > > >
+> > > > There is not only for tag. I submit fixes for version 4 by mistake,
+> > > > so, repost to 7 was necessary, because v6 was not work (as v4). But=
+ v7
+> > > > should be based on v5, and v5 is tested better around tty-next.
+> > >
+> > > ???
+> > >
+> > > You got tag, didn't you? Then explain why you decided to skip it. In =
+the
+> > > changelog of patchset which ignores/skips the tag.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
-I was expecting this to happen at some point. :/
+I am sorry about your tag, I did not notice it, if I do new version, I
+will for sure add it. About top-posting - I do not know, how not to
+top-post from GMail phone app(
 
-Note, that you can still use b4 and merge your own trees, but you need 
-to switch to using a different cover letter strategy:
-
-  [b4]
-  prep-cover-strategy = branch-description
-
--K
+Also, I added a linux-serial mailing list into all my mail, I do not
+know why my emails are missing.
 
