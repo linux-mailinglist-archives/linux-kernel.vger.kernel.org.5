@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-153726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECC828AD260
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:42:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 716098AD263
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:42:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BE701C21228
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:42:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D2D52812F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF3BF154438;
-	Mon, 22 Apr 2024 16:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B724154BEF;
+	Mon, 22 Apr 2024 16:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="S84wX8FJ"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="K2n8Ee13"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E3B6A039;
-	Mon, 22 Apr 2024 16:41:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6246815443D;
+	Mon, 22 Apr 2024 16:41:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713804068; cv=none; b=VbZm8s2qiKi3Fj9rCnN/JHNQYxKewdPjUulfFl3qCng5Njy7lZotekaGfJbFkQnxP4I1emNZ2+jXWicyuoEJUZb7OCnYWiZCg51d31MH1nDBKmiM4m1S3EekGlociO99C6DJIy0hWirSeU4PW+pbUFKKUGWzq/ITuiu4aBmjoNw=
+	t=1713804071; cv=none; b=DNDQfBcULxhcKbq1p6uB+S98hrIIVcPLURhz15lp8iz9Umro1SbB8ztpoKVl/9Y4BF32pTS5gUxcKpjFWz7iSkO5arbR8i2dWh6tpH2rxtPbZJBX3EmptQNZW1OFf07orOWk//ozeCJ704gPf9wJR706jEe4WlNMSd7ZeIGREAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713804068; c=relaxed/simple;
-	bh=GRJhH4yFri7nEDKCf75SdVhX/QLfLKQemLE+tUiqSrY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f5VKx6PrwSWzfmgRH0gbtSRi0fzK8Mv3GG9Z7feoa7mpBVXMQz//D0KbFkrTxWlzMlu0il+6QYTsYMiKoOTcwsBanzat98AvaYc9XkEyAn6uzpmYeszDtTDAaHYqWHz+NtfWl3AM0WKRINfXIyX8hq3djwlZzPmpqaan+uuMTQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=S84wX8FJ; arc=none smtp.client-ip=205.220.168.131
+	s=arc-20240116; t=1713804071; c=relaxed/simple;
+	bh=iTfNBj3uL4RNmKUnsi79+r5SzUOp/Hu08RvAp3Hv/54=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ghUqI9sS8w/rk62B0ZaWZOnYTwolBwGyyfHzOtsOH5rS4kWro6dJQqC/a0GGwqMsfoErhLEGCz12RA64mU5uV9aGPG1pBHJ6o4tua5zHEWq6n0T2W9wmqxHZ3BS8wL2i3Acd1GdBqbkHjpHxoUYwT40kjqEh6Vym85Zo3AV1Lbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=K2n8Ee13; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43M9vSNd006264;
-	Mon, 22 Apr 2024 16:40:56 GMT
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43MCYPwR015091;
+	Mon, 22 Apr 2024 16:41:02 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=sTWR3Nk
-	9D0p72sg0Ndf28rPM6luo5VBfzjM7fZfXFl4=; b=S84wX8FJ2Hy05HVkyNRDIOj
-	wUAbHR8UbFWpUV5NTLLpPp82Lw50cNiUijqRkXAOtp8LnDFAyW2SVVya1wNPGBM1
-	yQEeQ4CvIND8mXZs77LQNl15eHkPwgvl1+q1Km3wxsbn6pwOBPoxdaj/UshJzDiw
-	gxyVADSitBljY/hVRT+bQK3UU2XbxgBNZxS3NJf2zOyjc37OQt0mh8T2MI/GOdAt
-	4J3oVcU9VQPacK4Q9VG4sxokTRBet/i8SQEykDC2GQBIgwo6wqT3LHmVfjhlMDaz
-	ofp5ru3MWJ6/LM138dD0aa2iK0klsFgW6I7cKnXhfq0Pyx8mb64EbVfrUTlA+Ig=
-	=
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnet79v98-1
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=AbqKrw6rrHqD2r/1Dqide2ViI3fNtYxSpf2Z+0H5Hqo=; b=K2
+	n8Ee13xCgxuCQ6Vt2qRM0LebGgv1Z7ZHUo3P9eVtdznunqRlOf99JWvoufmelfq0
+	5XB2paaVUg/+R4Aianz9wHj5bCriSzu+JRc7cSg9CUn1VnsKw1VJCcuXfJl78Fjb
+	JDyEGKXSUV+p0YB4A2FJVPkckv1cbX6r1zgX9Ij2WRfgSrOl6L5w8sdHe+dbGx/O
+	WfNRNiaU2/OltDBGnv5s84ehW6L0YT5d8owNLjSsdKMDvsz95UJwbn1lrarnxaRX
+	FDZXN9S4PJiMHt3tfd3XDXkIyNVBGt89fMU/Sdkrfy2pviSqtvNJnP8m8nHeLji2
+	ggbBiqWTE/RHxjfSog5Q==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnr0mgkj9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 16:40:56 +0000 (GMT)
+	Mon, 22 Apr 2024 16:41:02 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43MGetYv025858
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43MGf19o008027
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 16:40:55 GMT
+	Mon, 22 Apr 2024 16:41:01 GMT
 Received: from hu-sibis-blr.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Mon, 22 Apr 2024 09:40:49 -0700
+ 15.2.1544.9; Mon, 22 Apr 2024 09:40:55 -0700
 From: Sibi Sankar <quic_sibis@quicinc.com>
 To: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <jassisinghbrar@gmail.com>,
@@ -64,11 +65,14 @@ CC: <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <quic_kshivnan@quicinc.com>, <quic_sibis@quicinc.com>,
         <conor+dt@kernel.org>, <quic_gkohli@quicinc.com>,
         <quic_nkela@quicinc.com>, <quic_psodagud@quicinc.com>,
-        <abel.vesa@linaro.org>
-Subject: [PATCH V4 0/5] qcom: x1e80100: Enable CPUFreq
-Date: Mon, 22 Apr 2024 22:10:30 +0530
-Message-ID: <20240422164035.1045501-1-quic_sibis@quicinc.com>
+        <abel.vesa@linaro.org>, Rob Herring
+	<robh@kernel.org>
+Subject: [PATCH V4 1/5] dt-bindings: mailbox: qcom: Add CPUCP mailbox controller bindings
+Date: Mon, 22 Apr 2024 22:10:31 +0530
+Message-ID: <20240422164035.1045501-2-quic_sibis@quicinc.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240422164035.1045501-1-quic_sibis@quicinc.com>
+References: <20240422164035.1045501-1-quic_sibis@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,83 +85,86 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: it1jMnWhTDP92oXwP3i50BmS5WUq7bzY
-X-Proofpoint-ORIG-GUID: it1jMnWhTDP92oXwP3i50BmS5WUq7bzY
+X-Proofpoint-GUID: RgYMC1r_-dNER4jl_Hd3yG10-_pY5Veu
+X-Proofpoint-ORIG-GUID: RgYMC1r_-dNER4jl_Hd3yG10-_pY5Veu
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-22_09,2024-04-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- bulkscore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0 priorityscore=1501
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
+ adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2404010003 definitions=main-2404220070
 
-This series enables CPUFreq support on the X1E SoC using the SCMI perf
-protocol. This was originally part of the RFC: firmware: arm_scmi:
-Qualcomm Vendor Protocol [1]. I've split it up so that this part can
-land earlier.
+Add devicetree binding for CPUSS Control Processor (CPUCP) mailbox
+controller.
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+---
 
 V3:
 * Fix Maintainer info in cpucp mbox bindings. [Bjorn]
-* Fix copyright info in cpucp driver. [Bjorn]
-* Drop unused APSS_CPUCP_TX_MBOX_IDR, value init and drv_data. [Bjorn/Dmitry]
-* Convert to lower case hex. [Bjorn]
-* Convert irq and dev to local variables. [Bjorn]
-* Replace for and if with for_each_set_bit. [Bjorn]
-* Document the need for spinlock. [Bjorn]
-* Add space after " for aesthetics. [Bjorn]
-* Fix err in calc and add fixes tag. [Bjorn]
-* Include io.h and re-order platform_device.h
-* Use GENMASK_ULL to generate APSS_CPUCP_RX_MBOX_CMD_MASK.
 
-V2:
-* Fix series version number [Rob]
-* Pickup Rbs from Dimitry and Rob.
-* Use power-domain instead of clocks. [Sudeep/Ulf]
-* Rename sram sub-nodes according to schema. [Dmitry]
-* Use BIT() instead of manual shift. [Dmitry]
-* Define RX_MBOX_CMD to account for chan calculation. [Dmitry]
-* Clear the bit instead of the entire status within the spinlock. [Dmitry]
-* Use dev_err_probe instead. [Dmitry]
-* Drop superfluous error message while handling errors from get_irq. [Dmitry]
-* Use devm_mbox_controller_register and drop remove path. [Dmitry]
-* Define TX_MBOX_CMD to account for chan calculation.
-* Use cpucp->dev in probe path for conformity.
-
-RFC V1:
-* Use x1e80100 as the fallback for future SoCs using the cpucp-mbox
-  controller. [Krzysztoff/Konrad/Rob]
-* Use chan->lock and chan->cl to detect if the channel is no longer
-  Available. [Dmitry]
-* Use BIT() instead of using manual shifts. [Dmitry]
-* Don't use integer as a pointer value. [Dmitry]
-* Allow it to default to of_mbox_index_xlate. [Dmitry]
-* Use devm_of_iomap. [Dmitry]
-* Use module_platform_driver instead of module init/exit. [Dmitry]
-* Get channel number using mailbox core (like other drivers) and
-  further simplify the driver by dropping setup_mbox func.
-
-[1]: https://lore.kernel.org/lkml/20240117173458.2312669-1-quic_sibis@quicinc.com/#r
-
-Other relevant Links:
-https://lore.kernel.org/lkml/be2e475a-349f-4e98-b238-262dd7117a4e@linaro.org/
-
-Sibi Sankar (5):
-  dt-bindings: mailbox: qcom: Add CPUCP mailbox controller bindings
-  mailbox: Add support for QTI CPUCP mailbox controller
-  arm64: dts: qcom: x1e80100: Resize GIC Redistributor register region
-  arm64: dts: qcom: x1e80100: Add cpucp mailbox and sram nodes
-  arm64: dts: qcom: x1e80100: Enable cpufreq
-
- .../bindings/mailbox/qcom,cpucp-mbox.yaml     |  49 +++++
- arch/arm64/boot/dts/qcom/x1e80100.dtsi        |  91 ++++++---
- drivers/mailbox/Kconfig                       |   8 +
- drivers/mailbox/Makefile                      |   2 +
- drivers/mailbox/qcom-cpucp-mbox.c             | 179 ++++++++++++++++++
- 5 files changed, 304 insertions(+), 25 deletions(-)
+ .../bindings/mailbox/qcom,cpucp-mbox.yaml     | 49 +++++++++++++++++++
+ 1 file changed, 49 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
- create mode 100644 drivers/mailbox/qcom-cpucp-mbox.c
 
+diff --git a/Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml b/Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
+new file mode 100644
+index 000000000000..f7342d04beec
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mailbox/qcom,cpucp-mbox.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mailbox/qcom,cpucp-mbox.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies, Inc. CPUCP Mailbox Controller
++
++maintainers:
++  - Sibi Sankar <quic_sibis@quicinc.com>
++
++description:
++  The CPUSS Control Processor (CPUCP) mailbox controller enables communication
++  between AP and CPUCP by acting as a doorbell between them.
++
++properties:
++  compatible:
++    items:
++      - const: qcom,x1e80100-cpucp-mbox
++
++  reg:
++    items:
++      - description: CPUCP rx register region
++      - description: CPUCP tx register region
++
++  interrupts:
++    maxItems: 1
++
++  "#mbox-cells":
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - "#mbox-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    mailbox@17430000 {
++        compatible = "qcom,x1e80100-cpucp-mbox";
++        reg = <0x17430000 0x10000>, <0x18830000 0x10000>;
++        interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
++        #mbox-cells = <1>;
++    };
 -- 
 2.34.1
 
