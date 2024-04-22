@@ -1,154 +1,76 @@
-Return-Path: <linux-kernel+bounces-153615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72C178AD067
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:15:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9EEC8AD06B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:16:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 761C01C21D30
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:15:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95D1128956C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B889115252F;
-	Mon, 22 Apr 2024 15:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C6A152531;
+	Mon, 22 Apr 2024 15:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XMotJ4d7"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="enGF0Iz9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB1A13E8B2;
-	Mon, 22 Apr 2024 15:15:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D259B1514E2;
+	Mon, 22 Apr 2024 15:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713798922; cv=none; b=CnbpmaWzPmakHBCHp7OFNaaYnueoFNFt5kV0nHSP0Es/ZqyhM8GsRg/qkx9gIkOFDX+f80dgExEZXC54ghCe+9hnXYzrsUke780hNzA+b4rhyR1j2yRMAW9oCw5sOgaiyoBXoRKgXqVuaZVYSy2p6pSuih1hLygWCq+sUK0D8Ag=
+	t=1713798969; cv=none; b=pJIT4NVafNW0FZ4aLDiGBb72jmQ9D+f0n2Em4ukhZ86HBxEAIyK1QHKtiShaZ5CxqBLLPTXGQRWC7PHXHRZuYF6x3F+2yHiSq0dAg+WxbQN04l7o857k85M8tss0IWEgEIj6J+3Z8/JKZfkXv1/SA1rLRUbz64uvanwYFuW9MY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713798922; c=relaxed/simple;
-	bh=QvCJ68qrNmktK+1RElI+xrQxhN3qOPjuTTX6hAZbtIc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YGYrST4q2QqMbt7rJKaz4fNiC+LBx9QYl+n3bPE0ZN268USuS40Mt4/kVqU8FMU3JpY1HT8Lz+8iQLdv8fHLB4VFePdcE+XQcjeGysvSesMN5iWjTvF058CBFg9kdLmCsmH63GotHK/2Qrr/zEOAqkqBy0H8kC9qBiscz2gHG0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XMotJ4d7; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713798921; x=1745334921;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=QvCJ68qrNmktK+1RElI+xrQxhN3qOPjuTTX6hAZbtIc=;
-  b=XMotJ4d7OQwcQptNwhmsU2NmhsVrQd/47hcp6rISL8sWFbrE5KE2NV9k
-   8yxHvpZe58DpEgyQCEmfj+VjwA/Snq2uOcawBc7g1GIlBwwm2MVrWaI1s
-   JuuR333xVzeKmJmngMzrtNGIdwFWboGGZOeq3s5n1LRjbrgP1GCAPBylc
-   8JkTHpwhAZnpA28J5mKdgUl0zc0wu+jRFMDlPJITBakCwYD2alrvie5D/
-   kOly4w6Q6hRSUcXXc6w4R+AOIOkKX67iHgR4P7RE/qOhPglH+hffqIUwm
-   sJga83un30hUmhO18DRpLI2LJ7ytblfEPdK9MdZh8ETU2s8UrAIfv6oa9
-   Q==;
-X-CSE-ConnectionGUID: l2dC6HRuTPCEizZdXeP4gQ==
-X-CSE-MsgGUID: z5DZh7k4RDKXMrdoH7W1FA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="13178098"
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="13178098"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 08:15:20 -0700
-X-CSE-ConnectionGUID: jLkbddDbQwinK0r2Q6A8kA==
-X-CSE-MsgGUID: o6MKjEI3QuKxDklZzuuzJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="23926265"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa010.jf.intel.com with ESMTP; 22 Apr 2024 08:15:17 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id E24ACFD; Mon, 22 Apr 2024 18:15:15 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] ASoC: soc.h: Don't use "proxy" headers
-Date: Mon, 22 Apr 2024 18:15:13 +0300
-Message-ID: <20240422151513.2052167-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+	s=arc-20240116; t=1713798969; c=relaxed/simple;
+	bh=oWN+0l+LEe/3h6Zg53QjSZjOcE/lb11ML3Q3pZFIQO8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ugH9M8+wFeCt0unlBhJJJ/gBV9S6WMtEuWvhSmU8tx1MDxvt2L2TVSki0BynFnop4aloo7HnDCpSgiTPCIo18UZxeAYnO0hJtpzRYfpxyZN0KWYqHASl/cZQIS7d9qEgfkxv7LI6X20iL+1AJR87uS59+Pf4mguLlDF9h+89o88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=enGF0Iz9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EEB5C113CC;
+	Mon, 22 Apr 2024 15:16:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713798969;
+	bh=oWN+0l+LEe/3h6Zg53QjSZjOcE/lb11ML3Q3pZFIQO8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=enGF0Iz9HE1C83Y3grLgXU2NPX2wxn0mVkwplwWYhK8cJ24odwWSmBDwRG/3V+Isy
+	 by11fSso2EUDP7CCfxSgeVKNlid1joON1Sq6FCjtXwF6bdrcEBo5FJMz3/MbwIjqJf
+	 h+jny/CxbHG35d2B2DUE32xwXNkmBk0XYixF2ewz5QINZlNBpLuw6fylGvW7Ct1oiW
+	 G955ZWI1eARiDKCWdkEedl2f6d2SboDZmn1c4PtqTcQqejKy+iJSWmaviB5Xkccfbk
+	 OQkb/Eravs+V+hMome5F4k1ZmbQEmhYL/J0pqg+ecOrWoy7aYTe9K9fPghQpY/60dQ
+	 1nGsHaYmSz97w==
+Date: Mon, 22 Apr 2024 10:16:07 -0500
+From: Rob Herring <robh@kernel.org>
+To: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch,
+	dianders@chromium.org, linus.walleij@linaro.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	airlied@gmail.com, dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	xuxinxiong@huaqin.corp-partner.google.com
+Subject: Re: [PATCH v2 4/7] dt-bindings: display: panel: Add compatible for
+ BOE nv110wum-l60
+Message-ID: <20240422151607.GA1277508-robh@kernel.org>
+References: <20240422090310.3311429-1-yangcong5@huaqin.corp-partner.google.com>
+ <20240422090310.3311429-5-yangcong5@huaqin.corp-partner.google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240422090310.3311429-5-yangcong5@huaqin.corp-partner.google.com>
 
-Update header inclusions to follow IWYU (Include What You Use)
-principle.
+On Mon, Apr 22, 2024 at 05:03:07PM +0800, Cong Yang wrote:
+> The BOE nv110wum-l60 is a 11.0" WUXGA TFT LCD panel, which fits in nicely
+> with the existing himax-hx83102 driver. 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/sound/soc.h | 32 +++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 11 deletions(-)
+From a h/w perspective, the reason to share the binding is the same 
+underlying controller, himax hx83102, is used, not that it is the same 
+driver.
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 0376f7e4c15d..2a1b6c198547 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -11,20 +11,30 @@
- #define __LINUX_SND_SOC_H
- 
- #include <linux/args.h>
--#include <linux/of.h>
--#include <linux/platform_device.h>
--#include <linux/types.h>
--#include <linux/notifier.h>
--#include <linux/workqueue.h>
-+#include <linux/array_size.h>
-+#include <linux/device.h>
-+#include <linux/errno.h>
- #include <linux/interrupt.h>
--#include <linux/kernel.h>
--#include <linux/regmap.h>
-+#include <linux/lockdep.h>
- #include <linux/log2.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
-+#include <linux/mutex.h>
-+#include <linux/notifier.h>
-+#include <linux/of.h>
-+#include <linux/types.h>
-+#include <linux/workqueue.h>
-+
-+#include <sound/ac97_codec.h>
- #include <sound/compress_driver.h>
- #include <sound/control.h>
--#include <sound/ac97_codec.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+
-+struct module;
-+struct platform_device;
-+
-+/* For the current users of sound/soc.h to avoid build issues */
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
- 
- /*
-  * Convenience kcontrol builders
-@@ -412,7 +422,6 @@
- #define SOC_ENUM_SINGLE_VIRT_DECL(name, xtexts) \
- 	const struct soc_enum name = SOC_ENUM_SINGLE_VIRT(ARRAY_SIZE(xtexts), xtexts)
- 
--struct device_node;
- struct snd_jack;
- struct snd_soc_card;
- struct snd_soc_pcm_stream;
-@@ -427,6 +436,7 @@ struct soc_enum;
- struct snd_soc_jack;
- struct snd_soc_jack_zone;
- struct snd_soc_jack_pin;
-+
- #include <sound/soc-dapm.h>
- #include <sound/soc-dpcm.h>
- #include <sound/soc-topology.h>
--- 
-2.43.0.rc1.1336.g36b5255a03ac
-
+Rob
 
