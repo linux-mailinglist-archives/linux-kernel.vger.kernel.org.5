@@ -1,173 +1,93 @@
-Return-Path: <linux-kernel+bounces-153075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D0ED8AC8B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:19:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 311FB8AC8C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:21:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FCA91C20CA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:19:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C546D1F2170E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E9454FB8;
-	Mon, 22 Apr 2024 09:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BB7+TtK2"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B49A12BF3D;
+	Mon, 22 Apr 2024 09:20:18 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9709B52F96;
-	Mon, 22 Apr 2024 09:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0325490E;
+	Mon, 22 Apr 2024 09:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713777561; cv=none; b=BG7AFpvL2GnPql6rXIXKl+5KOGPzZRl0rH3mefEE8jDoUJIIv7/zb6GYKjcT0/Ob2mDkKgxDXUQvTPK6Ta7Pi+hpPDZ2+GV3CJhqJMW2QjJoXOW6L4ldrcINrJcox/Qjpww6iK4/KxACteEJYpRWoVyRe2oGHH0QENWFTlNdBc8=
+	t=1713777618; cv=none; b=QEOCYZrvGOYuoa3BlKNPh2WPx4ramBd3vUCGkSU3U/Ounsw6I/k9MXYB818sFeFPuMQz0WKR/cHHwfKeRrZ4GwWoLaCDKUr5M6kGUjsr+YA/QSfKTmvRuXL9XeCL25v09HGjNgppzVLfY47CZkPLLxV+AZhiCmbT4DpcAgOUXs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713777561; c=relaxed/simple;
-	bh=0SzAzbO9mizr1+31aiP0iXs3Mw2nXgbrlKRbnEyHEV0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rheRBvpvKkL5nSLZAbNkdlmGBhEJKbubAPd6jk973SZTYXdhzFvoEy84r6ilM/yG+CdJiqlbZitT9j8MzkK66NC5UV9x8b/3yj35aoZye/Zs+z3F4RGdWDJv/kaNS9JYs6HvEQXRyYltts+Pl8jRkAdkZ36wOFfB9dPQGVjnxN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BB7+TtK2; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed3cafd766so3355823b3a.0;
-        Mon, 22 Apr 2024 02:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713777560; x=1714382360; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/Ep3MhmTtFiF+uEKgR3YsV/c0mK0RSR4QMExWC1N258=;
-        b=BB7+TtK2f+1fzz655IBMEY4ZiVKijlzOuw1U/AG1taNme8BQQ8nqit8YPF3wT8zN+x
-         Bcl6QaDiRy2UYCfwTP2ESJyFfR7M7H52KK0WOqlzarUZQ4xtL/S47dfPmV60iKc3ZVXW
-         ycy2lvcGZ0747q00IoAsd59CUN3ZqkHTUPA6FmvFgpFfMgSae8LJt7JA3KgWkHZCOZXh
-         soK2v5DwqPgj1Flc2xsKjJ8nm8UKRyqRCGYikPpzyWmL/uRLdcj8FPkw8Kfw3bRh5zxX
-         zzJBrTvOXMtb1rXNAajhEvHEwschzndG2Gkfe/siHU/gtgfxvcYEPVp5JVw6Nc4cBk6Z
-         swCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713777560; x=1714382360;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Ep3MhmTtFiF+uEKgR3YsV/c0mK0RSR4QMExWC1N258=;
-        b=pwe8D8OsAVutTDB1e5n7L4wmYnQQMFNJ7vj3zdnWrooak8V5Hl/1z/bsTFXLKlqlMJ
-         XRcWLZQ5Q9tBs3UpDrViPvfgBvSrhdBFy1n8X+KF3FcDPMsjk9Jeqestogrk8ilnH6W7
-         QfYqlYJXKyChQUExkhC7mYerEXaBFkMKlHq9X1E3pcXiE5cN1wonNJgsPn9U/gy+ngTV
-         PoORWAtB9DnpaWMtrADXDP+lIDcCtOawRo/9mhvNzt6idBz1zbJiwmBiCvS67x2Xfvba
-         6M6/8pI6v7jBVF54q8oQDM/rzMFsPrFf59M915beB2rJBRqaQKRxoN3rCGPAok+Uaklu
-         y2jQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUuCWQS/tYmXbXVR5hssVBMudQGy2ZO0VH4MHinKpq4aAxd4v93g4hv+dTQ9BX+8bSYpupj/QuK+gRDnASI3v8QzrCEMIS584arS+dJICbiWZBp0I/3H5mKR+eMw8ImMe7SwJKTF8LHaI1uKpfN/ICg/iAGqN6q6QGS+3YQTiwAqEMd1+c=
-X-Gm-Message-State: AOJu0YymS7G+OD4b72Pc97UZIVBPOjYlMQ8G6oVS9CXA5D1ffddzhJ22
-	Pa42sdGqWZ93CSbgdoR9own2jm0Fw3rI3uaLiHPea1/SaukyBXel
-X-Google-Smtp-Source: AGHT+IEXrDILus4aNiNBVg1PEwpG5j2RHHDlxnvL7ic9sqQK7z3m47SHTbboBcgfTF53l9Ffs1/HzA==
-X-Received: by 2002:a05:6a00:10c3:b0:6ed:2fb8:467b with SMTP id d3-20020a056a0010c300b006ed2fb8467bmr9424598pfu.26.1713777559764;
-        Mon, 22 Apr 2024 02:19:19 -0700 (PDT)
-Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id y8-20020aa78048000000b006f2e10b00d6sm1283814pfm.41.2024.04.22.02.19.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 02:19:19 -0700 (PDT)
-Message-ID: <843c3c2a-2f46-4d49-aed4-ad07ebcb7b27@gmail.com>
-Date: Mon, 22 Apr 2024 17:19:15 +0800
+	s=arc-20240116; t=1713777618; c=relaxed/simple;
+	bh=mQQw5lMBFpwd1ib2VzuyorFSwtH397b/MvRxcKg2qkE=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=q1SmGkMnwjdaY3DVXKvxYSfTKHHtUhZ0XchSVW7arOJE2RQNJxBwl5aehAF3qNhoNcph8crVaVZB/JzZqW0ACRjWRnP7FswFEMDZNDOZk0W9PgZvmkhwJX5z6CzaoCO6NyUQjkYyEMi6OFyUD+db8OiAUmwUGKIqT7ZYcklTbX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VNKQ772jWz1RCjQ;
+	Mon, 22 Apr 2024 17:17:03 +0800 (CST)
+Received: from dggpemd500003.china.huawei.com (unknown [7.185.36.29])
+	by mail.maildlp.com (Postfix) with ESMTPS id B842C1403D2;
+	Mon, 22 Apr 2024 17:20:06 +0800 (CST)
+Received: from localhost.localdomain (10.175.101.6) by
+ dggpemd500003.china.huawei.com (7.185.36.29) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Mon, 22 Apr 2024 17:20:06 +0800
+From: gaoxingwang <gaoxingwang1@huawei.com>
+To: <gaoxingwang1@huawei.com>
+CC: <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
+	<kuba@kernel.org>, <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<pabeni@redhat.com>, <yanan@huawei.com>
+Subject: [PATCH v2] net: ipv6: fix wrong start position when receive hop-by-hop fragment
+Date: Mon, 22 Apr 2024 17:19:17 +0800
+Message-ID: <20240422091917.3221601-1-gaoxingwang1@huawei.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20240422011052.2932165-1-gaoxingwang1@huawei.com>
+References: <20240422011052.2932165-1-gaoxingwang1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 3/3] pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO
- driver
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: linus.walleij@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- p.zabel@pengutronix.de, j.neuschaefer@gmx.net,
- linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- ychuang3@nuvoton.com, schung@nuvoton.com
-References: <20240409095637.2135-1-ychuang570808@gmail.com>
- <20240409095637.2135-4-ychuang570808@gmail.com>
- <ZhZTsV3RKpuyeUr4@surfacebook.localdomain>
- <643a0d80-3d99-420e-9e77-acc67728fbe7@gmail.com>
- <CAHp75VfMb_=XKoQNbbVphLg-eQgc6eJbZOW36g_hU=-iK2bSOQ@mail.gmail.com>
-Content-Language: en-US
-From: Jacky Huang <ychuang570808@gmail.com>
-In-Reply-To: <CAHp75VfMb_=XKoQNbbVphLg-eQgc6eJbZOW36g_hU=-iK2bSOQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemd500003.china.huawei.com (7.185.36.29)
 
-Dear Andy,
+In IPv6, ipv6_rcv_core will parse the hop-by-hop type extension header and increase skb->transport_header by one extension header length.
+But if there are more other extension headers like fragment header at this time, the skb->transport_header points to the second extension header,
+not the transport layer header or the first extension header.
 
+This will result in the start and nexthdrp variable not pointing to the same position in ipv6frag_thdr_trunced,
+and ipv6_skip_exthdr returning incorrect offset and frag_off.Sometimes,the length of the last sharded packet is smaller than the calculated incorrect offset, resulting in packet loss.
+We can use network header to offset and calculate the correct position to solve this problem.
 
-On 2024/4/22 下午 04:16, Andy Shevchenko wrote:
-> On Mon, Apr 22, 2024 at 7:10 AM Jacky Huang <ychuang570808@gmail.com> wrote:
->> On 2024/4/10 下午 04:54, Andy Shevchenko wrote:
-> ...
->
->>>> +#define MA35_GP_MODE_MASK_WIDTH              2
->>>> +
->>>> +#define MA35_GP_SLEWCTL_MASK_WIDTH   2
->>> I looked at the code how you use these... Oh, please switch to FIELD_GET() /
->>> FIELD_PREP() (don't forget to include bitfield.h)
->>>
->>> ...
->>>
->>> ...
->>>> +             regval &= ~GENMASK(setting->shift + MA35_MFP_BITS_PER_PORT - 1,
->>>> +                                setting->shift);
->>> This will generate an awful code. Use respective FIELD_*() macros.
->>>
->>> ...
->>>
->>>> +     regval &= ~GENMASK(gpio * MA35_GP_MODE_MASK_WIDTH - 1,
->>>> +                        gpio * MA35_GP_MODE_MASK_WIDTH);
->>>> +     regval |= mode << gpio * MA35_GP_MODE_MASK_WIDTH;
->>> Ditto.
->>>
->>> ...
->>>
->>>> +     regval &= GENMASK(gpio * MA35_GP_MODE_MASK_WIDTH - 1,
->>>> +                       gpio * MA35_GP_MODE_MASK_WIDTH);
->>>> +
->>>> +     return regval >> gpio * MA35_GP_MODE_MASK_WIDTH;
->>> Ditto.
-> ...
->
->> Allow me to remove irrelevant parts.
->>
->> I attempted to follow your advice and use FIELD_GET() and FIELD_PREP(),
->> but found
->> it impractical. The reason is that these two macros require their 'mask'
->> argument
->> to be a constant, otherwise compilation errors occur, which is the issue
->> I encountered.
->> Since the mask here is calculated and not a constant, compilation errors
->> occur.
->>
->> Taking MA35_GP_REG_MODE as an example, within 32 bits, every 2 bits
->> represent
->> the mode of a GPIO pin, and the mask is obtained by GENMASK(gpio * 2 -1,
->> gpio * 2),
-> This is not good for the compiler, it can't figure out (at least in
-> some _supported_ by Linux kernel versions on some architectures) that
-> GENMASK can be constant here just left-shifted by arbitrary bits.
->
->> where the 'gpio' argument is a variable, not a constant, leading to
->> compilation
->> errors.
->>
->> Due to this reason, I will leave this part unchanged, or do you have any
->> other suggestions?
-> If you need non-constant field_get()/field_prep(), add a new patch
-> that moves them from drivers/iio/temperature/mlx90614.c (and there are
-> more custom implementations:
-> https://elixir.bootlin.com/linux/latest/A/ident/field_get) to the
-> bitfield.h and use them in your code.
->
+Fixes: 9d9e937b1c8b (ipv6/netfilter: Discard first fragment not including all headers)
+Signed-off-by: Gao Xingwang <gaoxingwang1@huawei.com>
+---
+ net/ipv6/reassembly.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you. It works for me. I will adopt the approach used in mlx90614.c.
-
-
-Best Regards,
-Jacky Huang
+diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
+index 5ebc47da1000..2af98edef87e 100644
+--- a/net/ipv6/reassembly.c
++++ b/net/ipv6/reassembly.c
+@@ -369,7 +369,7 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
+ 	 * the source of the fragment, with the Pointer field set to zero.
+ 	 */
+ 	nexthdr = hdr->nexthdr;
+-	if (ipv6frag_thdr_truncated(skb, skb_transport_offset(skb), &nexthdr)) {
++	if (ipv6frag_thdr_truncated(skb, skb_network_offset(skb) + sizeof(struct ipv6hdr), &nexthdr)) {
+ 		__IP6_INC_STATS(net, __in6_dev_get_safely(skb->dev),
+ 				IPSTATS_MIB_INHDRERRORS);
+ 		icmpv6_param_prob(skb, ICMPV6_HDR_INCOMP, 0);
+-- 
+2.27.0
 
 
