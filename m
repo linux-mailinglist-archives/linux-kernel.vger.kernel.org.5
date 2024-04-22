@@ -1,221 +1,131 @@
-Return-Path: <linux-kernel+bounces-152858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 220328AC54E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:22:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51F178AC54C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:22:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FDD41F21FFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:22:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0991282CA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE83B4D5B0;
-	Mon, 22 Apr 2024 07:16:46 +0000 (UTC)
-Received: from mail-m3293.qiye.163.com (mail-m3293.qiye.163.com [220.197.32.93])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6360153395;
+	Mon, 22 Apr 2024 07:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DHn3HXH2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D09252F9A;
-	Mon, 22 Apr 2024 07:16:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.32.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7DEF4B5CD;
+	Mon, 22 Apr 2024 07:16:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713770206; cv=none; b=X09yOVSe4UroAE1C6lcybbD6V68ucmbUtrNSxHZy/wWAf7Y774VdUlUAGUQW+LfGs2BP4yhauGAw+OCEhMroLKz1bsOH+gI6RdOGiRN0LybQ2ytYbUFgQctcEx3oQzm5QZMLQlO7u0dPvpU1Atm+hZkP/Nmovr1wXD1UBKowtCw=
+	t=1713770195; cv=none; b=MpgbN9UH022/U8Y0etB/hRIxWZKDa7lXhcHbnWLfdtxCrQ5lFQ5aTynpdJj2x5fPcpPWP67iygHrKIVusmoXG+7G0S6JPYgVpwqoWTA0GhqggIiih+C3n8BtiGHClxHXf1KDDARG14XhQNXTLMuBIOE5RS8+izFO209hM8ZB/88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713770206; c=relaxed/simple;
-	bh=TUHE9KihomjQT+4gHHlt9TTtEQswCTrpD973kNSu7jk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kmY89WGkZUTsF/pjh3AFCZjfmxPUafqp+s8dkWFI4uoIH5jibg2pqep2bl4E7rl7RrSBqhoRG6UgSL5sIrV1uzr123OgXQyQp4PE5jpVykgqWXEcqMqKATZcd4On2qEKYMB5MbyTEt6R7jDWBvHWAL22CS11PTEOYsROFEqoKXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=220.197.32.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
-Received: from ubuntu-22-04.. (unknown [218.94.118.90])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id C5801860221;
-	Mon, 22 Apr 2024 15:16:15 +0800 (CST)
-From: Dongsheng Yang <dongsheng.yang@easystack.cn>
-To: dan.j.williams@intel.com,
-	axboe@kernel.dk
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-cxl@vger.kernel.org,
-	Dongsheng Yang <dongsheng.yang.linux@gmail.com>
-Subject: [PATCH 7/7] cbd: add related sysfs files in transport register
-Date: Mon, 22 Apr 2024 07:16:06 +0000
-Message-Id: <20240422071606.52637-8-dongsheng.yang@easystack.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240422071606.52637-1-dongsheng.yang@easystack.cn>
-References: <20240422071606.52637-1-dongsheng.yang@easystack.cn>
+	s=arc-20240116; t=1713770195; c=relaxed/simple;
+	bh=NfAfxY4XqZehCfrVo6N7fe6sz8Rh1GXdjQSYW+wwx44=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Ld6RmEiBhx1AVGw7rtMB+tp9+wj+MGLyjYQ3dX0pDoDTFuPTLTMr3nH8fIEEpm/ZxRE1epK8DCxusBKO2kl6iyBD2X4f7ACGIWz7UgpzEp+LrtmsLRCeaot6jKOPuLeWUvy0Km1vq5r6AC8/9fPzCK+xkgj3u7cQSuXPU72i/o8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DHn3HXH2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40A6AC113CC;
+	Mon, 22 Apr 2024 07:16:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713770195;
+	bh=NfAfxY4XqZehCfrVo6N7fe6sz8Rh1GXdjQSYW+wwx44=;
+	h=From:Date:Subject:To:Cc:From;
+	b=DHn3HXH2eCN2Mb4w2HpzvQHTeCkLsaR/+ccsCUzukakQ4Tq82aKmoFrqyui3aEsdi
+	 tvm+AmP4HXZpsCiZLs4Bv/xzQ1EYRcFF0grrqjysrb528ZfaUQ5dQpM0ca0InUsY9Y
+	 j4h1Xe28vB7M1l7Fz7RCmMR4bSIU+Zf+zbfS9s37g+jh/5HzDUZul17XGJamEmOw6+
+	 ib+TGfN2Bv4JpQO6QLPze5WOWj/VnJ+5vpjeRtTb0mh+Oz3WZeaTFxEJFbBOl0GGX2
+	 COfNVMUDcIF5ypOY+aIXByE6TeSdkQV/zQN/IMQ8GYkhVLTsEq4wWPt71WQROb5Jy0
+	 AhjPz237m8Bdw==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Date: Mon, 22 Apr 2024 09:16:28 +0200
+Subject: [PATCH] bpf: verifier: allow arrays of progs to be used in
+ sleepable context
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVlCSUseVk5LSUMdSEtCTUMYTlUZERMWGhIXJBQOD1
-	lXWRgSC1lBWUlKQ1VCT1VKSkNVQktZV1kWGg8SFR0UWUFZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
-X-HM-Tid: 0a8f04a99e1c023ckunmc5801860221
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NiI6Mhw4Lzc0ShwQITYRCy0j
-	CDUKCjlVSlVKTEpITExLSkxNTk5DVTMWGhIXVR8UFRwIEx4VHFUCGhUcOx4aCAIIDxoYEFUYFUVZ
-	V1kSC1lBWUlKQ1VCT1VKSkNVQktZV1kIAVlBTUlLQjcG
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240422-sleepable_array_progs-v1-1-7c46ccbaa6e2@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAMsOJmYC/x3MQQqDMBBG4avIrBuIISB4lVJkkv6NA6JhBsQiu
+ XtDl9/ivZsMKjCah5sUp5gce8f4GCivvBc4eXdT8CH6GIKzDaicNiysyt+l6lHMwWc/pXHKnBL
+ 1tio+cv2/z1drP7hSVYdnAAAA
+To: Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Benjamin Tissoires <bentiss@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713770191; l=1344;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=NfAfxY4XqZehCfrVo6N7fe6sz8Rh1GXdjQSYW+wwx44=;
+ b=BOoh+3TwqNJ3VgIIKuFS0X05BWosUogOThOQNNnoxXo2ZDKy2YK8wSwezXl2YpCCvtTMDFrbv
+ nV7g17D1owCCy/3fLmUPTxsHFWWflmCJJ5mxb/Lhwb5Vqj5dSIfPKc1
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-From: Dongsheng Yang <dongsheng.yang.linux@gmail.com>
+Arrays of progs are underlying using regular arrays, but they can only
+be updated from a syscall.
+Therefore, they should be safe to use while in a sleepable context.
 
-When a transport is registered, a corresponding file is created for each
-area within the transport in the sysfs, including "cbd_hosts",
-"cbd_backends", "cbd_blkdevs", and "cbd_channels".
+This is required to be able to call bpf_tail_call() from a sleepable
+tracing bpf program.
 
-Through these sysfs files, we can examine the information of each entity
-and thereby understand the relationships between them. This allows us to
-further understand the current operational status of the transport.
-
-For example, by examining "cbd_hosts", we can find all the hosts
-currently using the transport. We can also determine which host each
-backend is running on by looking at the "host_id" in "cbd_backends".
-Similarly, by examining "cbd_blkdevs", we can determine which host each
-blkdev is running on, and through the "mapped_id", we can know the name
-of the cbd device to which the blkdev is mapped. Additionally, by
-looking at "cbd_channels", we can determine which blkdev and backend are
-connected through each channel by examining the "blkdev_id" and
-"backend_id".
-
-Signed-off-by: Dongsheng Yang <dongsheng.yang.linux@gmail.com>
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 ---
- drivers/block/cbd/cbd_transport.c | 101 +++++++++++++++++++++++++++++-
- 1 file changed, 100 insertions(+), 1 deletion(-)
+Hi,
 
-diff --git a/drivers/block/cbd/cbd_transport.c b/drivers/block/cbd/cbd_transport.c
-index 75b9d34218fc..0e917d72b209 100644
---- a/drivers/block/cbd/cbd_transport.c
-+++ b/drivers/block/cbd/cbd_transport.c
-@@ -1,8 +1,91 @@
- #include <linux/pfn_t.h>
--
- #include "cbd_internal.h"
- 
- #define CBDT_OBJ(OBJ, OBJ_SIZE)							\
-+extern struct device_type cbd_##OBJ##_type;					\
-+extern struct device_type cbd_##OBJ##s_type;					\
-+										\
-+static int cbd_##OBJ##s_init(struct cbd_transport *cbdt) 			\
-+{ 										\
-+	struct cbd_##OBJ##s_device *devs; 					\
-+	struct cbd_##OBJ##_device *cbd_dev;					\
-+	struct device *dev;							\
-+	int i; 									\
-+	int ret;								\
-+										\
-+	u32 memsize = struct_size(devs, OBJ##_devs,				\
-+			cbdt->transport_info->OBJ##_num);			\
-+	devs = kzalloc(memsize, GFP_KERNEL);					\
-+	if (!devs) {								\
-+	    return -ENOMEM;							\
-+	}									\
-+										\
-+	dev = &devs->OBJ##s_dev;						\
-+	device_initialize(dev);							\
-+	device_set_pm_not_required(dev);					\
-+	dev_set_name(dev, "cbd_" #OBJ "s");					\
-+	dev->parent = &cbdt->device;						\
-+	dev->type = &cbd_##OBJ##s_type;						\
-+	ret = device_add(dev);							\
-+	if (ret) {								\
-+		goto devs_free;							\
-+	}									\
-+										\
-+	for (i = 0; i < cbdt->transport_info->OBJ##_num; i++) {			\
-+		cbd_dev = &devs->OBJ##_devs[i];					\
-+		dev = &cbd_dev->dev;						\
-+										\
-+		cbd_dev->cbdt = cbdt;						\
-+		cbd_dev->OBJ##_info = cbdt_get_##OBJ##_info(cbdt, i);		\
-+		device_initialize(dev);						\
-+		device_set_pm_not_required(dev);				\
-+		dev_set_name(dev, #OBJ "%u", i);				\
-+		dev->parent = &devs->OBJ##s_dev;				\
-+		dev->type = &cbd_##OBJ##_type;					\
-+										\
-+		ret = device_add(dev);						\
-+		if (ret) {							\
-+			i--;							\
-+			goto del_device;					\
-+		}								\
-+	}									\
-+	cbdt->cbd_##OBJ##s_dev = devs;						\
-+										\
-+    	return 0;								\
-+del_device:									\
-+	for (; i >= 0; i--) {							\
-+		cbd_dev = &devs->OBJ##_devs[i];					\
-+		dev = &cbd_dev->dev;						\
-+		device_del(dev);						\
-+	}									\
-+devs_free:									\
-+	kfree(devs);								\
-+	return ret;								\
-+}										\
-+										\
-+static void cbd_##OBJ##s_exit(struct cbd_transport *cbdt)			\
-+{										\
-+	struct cbd_##OBJ##s_device *devs = cbdt->cbd_##OBJ##s_dev;		\
-+	struct device *dev;							\
-+	int i;									\
-+										\
-+	if (!devs)								\
-+		return;								\
-+										\
-+	for (i = 0; i < cbdt->transport_info->OBJ##_num; i++) {			\
-+		struct cbd_##OBJ##_device *cbd_dev = &devs->OBJ##_devs[i];	\
-+		dev = &cbd_dev->dev;						\
-+										\
-+		device_del(dev);						\
-+	}									\
-+										\
-+	device_del(&devs->OBJ##s_dev);						\
-+										\
-+	kfree(devs);								\
-+	cbdt->cbd_##OBJ##s_dev = NULL;						\
-+										\
-+	return;									\
-+}										\
- 										\
- static inline struct cbd_##OBJ##_info						\
- *__get_##OBJ##_info(struct cbd_transport *cbdt, u32 id)				\
-@@ -588,6 +671,11 @@ int cbdt_unregister(u32 tid)
- 	}
- 	mutex_unlock(&cbdt->lock);
- 
-+	cbd_blkdevs_exit(cbdt);
-+	cbd_channels_exit(cbdt);
-+	cbd_backends_exit(cbdt);
-+	cbd_hosts_exit(cbdt);
-+
- 	cbd_host_unregister(cbdt);
- 	device_unregister(&cbdt->device);
- 	cbdt_dax_release(cbdt);
-@@ -647,9 +735,20 @@ int cbdt_register(struct cbdt_register_options *opts)
- 		goto dev_unregister;
- 	}
- 
-+	if (cbd_hosts_init(cbdt) || cbd_backends_init(cbdt) ||
-+	    cbd_channels_init(cbdt) || cbd_blkdevs_init(cbdt)) {
-+		ret = -ENOMEM;
-+		goto devs_exit;
-+	}
-+
- 	return 0;
- 
- devs_exit:
-+	cbd_blkdevs_exit(cbdt);
-+	cbd_channels_exit(cbdt);
-+	cbd_backends_exit(cbdt);
-+	cbd_hosts_exit(cbdt);
-+
- 	cbd_host_unregister(cbdt);
- dev_unregister:
- 	device_unregister(&cbdt->device);
+a small patch to allow to have:
+
+```
+SEC("fmod_ret.s/__hid_bpf_tail_call_sleepable")
+int BPF_PROG(hid_tail_call_sleepable, struct hid_bpf_ctx *hctx)
+{
+	bpf_tail_call(ctx, &hid_jmp_table, hctx->index);
+
+	return 0;
+}
+```
+
+This should allow me to add bpf hooks to functions that communicate with
+the hardware.
+
+Cheers,
+Benjamin
+---
+ kernel/bpf/verifier.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 68cfd6fc6ad4..880b32795136 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -18171,6 +18171,7 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 		case BPF_MAP_TYPE_QUEUE:
+ 		case BPF_MAP_TYPE_STACK:
+ 		case BPF_MAP_TYPE_ARENA:
++		case BPF_MAP_TYPE_PROG_ARRAY:
+ 			break;
+ 		default:
+ 			verbose(env,
+
+---
+base-commit: 735f5b8a7ccf383e50d76f7d1c25769eee474812
+change-id: 20240422-sleepable_array_progs-e0c07b17cabb
+
+Best regards,
 -- 
-2.34.1
+Benjamin Tissoires <bentiss@kernel.org>
 
 
