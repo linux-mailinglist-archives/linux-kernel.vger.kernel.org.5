@@ -1,142 +1,111 @@
-Return-Path: <linux-kernel+bounces-152941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6A578AC661
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7122C8AC65B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:10:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71468283387
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:10:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01E49283216
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8175D53803;
-	Mon, 22 Apr 2024 08:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE540482EB;
+	Mon, 22 Apr 2024 08:09:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="rNa/imUB"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ntu66SdQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C92C535D4
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0704351C42;
+	Mon, 22 Apr 2024 08:09:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773366; cv=none; b=NdTOdBqgOpOTJKjq+v0hBuUGOEw79OawFGozFUIbNXdUNFRtlzbbu6b8d54UXMeyLY07IYXM2m28SsG8v3B92MJjf6LjAnpLFoPdnEx8FHX/yFeiPmi+9hEB1CzSgK+8g+cay4hgpIbxX+lc6kjyh8KD8L0LGmUcx8Hn9bPh7/U=
+	t=1713773352; cv=none; b=H1dOrGTgMiouEmdQ/69sSfekd/Lr94QrpiaE+5ONt2sh0/NMTuZH716Eijqm49R1QL55oxCQfL6DC7D06Fp0jQ7gFy5CKE+XgtJ7mEOubBOTZEzO5NUfDBfUy3YnG2SSVYO6a7sRBahuziApDsrt79m0DtsVYDr9CgOsbytmfbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773366; c=relaxed/simple;
-	bh=YIO8cDM25qQNZ4cv/ubwGqUQhUGYfoqZi8Ig4uTr/Sk=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=cOtWL9Aj3Fc0EKr2a3irQuJDLOQKRlFqdoIXmHa7PdBwf6s58C4iQ90+Ip7WnqJU+JGblZ0WQ2aCeudt0vtLxI8FQiifAvKnpy8++bUF36YvcnL0hxXkx3hlSN2nxEp7s1VpHe6TmvzbfNMK5226KtBT+VzSs67vVcIdupZjcwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=rNa/imUB; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41a70466b77so2556625e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713773363; x=1714378163; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=G8Z1W9cBwZwFr+xw5xhgBlfEeDfYZ9v69oNkjrxgbOY=;
-        b=rNa/imUBVTrJ1RpiBMNOyDhyno+kdSij38C3WhN3YthESsBc7q1ejUCThwaSIyEA8M
-         3jxxiiKSuHzbzLHrqIOJJWAY+GLZYruemAFPOpjojPSRZzliDUjTqOrWJLl14cPyHePk
-         y0zxyyM1eq32qzYzgTXxTGfF2twiTDgwY68ri5ImEmreWgaT+FqnLfwRUBtQhFVoteLE
-         PfsH33517L17ISJl/wFOZx34R/HuhIERhKKF2NZb2Kn3NmQnlo9ibqdVcQtqVObrLyqU
-         RjkCJQ7RKfbUgNRsCvh2Jyn3xx0e7g8U8nQJzXTy7sNFmKOgbWWf6elrzMGf8PupZge/
-         69Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713773363; x=1714378163;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G8Z1W9cBwZwFr+xw5xhgBlfEeDfYZ9v69oNkjrxgbOY=;
-        b=Wd0nLNFphEluQI3Uideh57aD7Z7VX1SPrfolhMrIpS2p/sILjdLeInrWViVvaOVT89
-         bWB7ubukSxamKUBosu9+svrWU0227EwUrya5+1dEHkX0bbe9vVOzzpbD+Gvv6c3rxMVh
-         0WFcf+E/oP+dwWWtIALTrOwFBkpAXrYaLYlOPAktQ8+oMozD3EX8Qpcvv/Lxw6LU0qhR
-         7OAJbBVjRk1SwpqFRFA1pj2uhMBwARpY1mjbHeRSTg0Rt/ZbQUoc/6BtvkiuzqAqOvQJ
-         F2WS86NkdmYhZate0+RG8ibt2DKdf/eV5AirJ1qJVT2mQ2DaRtbGPHAGZ5MOTQQvVxYo
-         eOKw==
-X-Forwarded-Encrypted: i=1; AJvYcCW/O688rFzlnAXkd99wL/TCcgTo2mbS4CLTOAUhTkyW3FBX3mdI0r/TVliWqo53SfQiZ06oc84YGs5xJSD8m+IQ9ZHR058MO08Is9Vz
-X-Gm-Message-State: AOJu0YxvTZm+MVw1ZAeWv/CHOXIO3A2VPTXSbou8ZKAzF1a2eY9J/c/p
-	ZtcQFmBPdu3aDCIurlFsxC85TvjeXUZGE4LCWirUgHPjeu7qVSXpE7wlb5yjX8I=
-X-Google-Smtp-Source: AGHT+IFcBHuQrYYsaNLbUg30qmwUhwRzvle0l0p4jwsnHIaO8PpRDz4ckky8oOJr2gRpkpQzb3NY4A==
-X-Received: by 2002:a05:600c:3587:b0:419:5c4:b430 with SMTP id p7-20020a05600c358700b0041905c4b430mr8846265wmq.14.1713773363290;
-        Mon, 22 Apr 2024 01:09:23 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:a619:ccb0:5f40:262c])
-        by smtp.gmail.com with ESMTPSA id d5-20020a5d6445000000b0034659d971a6sm11274074wrw.26.2024.04.22.01.09.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 01:09:22 -0700 (PDT)
-References: <20240419125812.983409-1-jan.dakinevich@salutedevices.com>
- <20240419125812.983409-4-jan.dakinevich@salutedevices.com>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet
- <jbrunet@baylibre.com>, Michael  Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Rob  Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzk+dt@kernel.org>, Conor  Dooley <conor+dt@kernel.org>, Kevin
- Hilman <khilman@baylibre.com>, Martin  Blumenstingl
- <martin.blumenstingl@googlemail.com>, Philipp Zabel
- <p.zabel@pengutronix.de>, Jiucheng Xu <jiucheng.xu@amlogic.com>,
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH v3 3/6] clk: meson: axg: introduce AUD_MUX_TABLE()
- helper macro
-Date: Mon, 22 Apr 2024 10:09:04 +0200
-In-reply-to: <20240419125812.983409-4-jan.dakinevich@salutedevices.com>
-Message-ID: <1jv849akel.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1713773352; c=relaxed/simple;
+	bh=Shr409Fk8aEVa1W7Kl+fmJiGHlAFeZeAP4p3RS6tk+k=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=fpalE4d3pBPIfWn9ImoncaRbEJckIeVtGtlSpYNjybHT8GyXy/f0PY1YG2egJEDRPEBU5UO1VEVElRoUf+LGGEpN6QV+cVkezUP1ZXCNIA8XZfDWwzbu8t+8CZt29csiBXcJORWNAHQlfkcDJAMDWm5KiPpfPMO0LVGgJEvAX48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ntu66SdQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3678CC113CC;
+	Mon, 22 Apr 2024 08:09:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713773351;
+	bh=Shr409Fk8aEVa1W7Kl+fmJiGHlAFeZeAP4p3RS6tk+k=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Ntu66SdQY/fxepIQGiULkIM/vnCJuFEZgXRKcLlbWOObmyGJDeWBVrhv98ZJ1rqgF
+	 JfhUCU4XSCQs5ZQfS90Yt0tA4l30XfYnhkb9ja98o0MLiD3Or7tivevOUN1E+KVs2s
+	 0qNMZWHMMhDj3P3Ao6pPkDLhvCvVA7ZYvwyaEln/gOX+KhE//xEqnmPs2VAvwOfd4d
+	 zHOX86WljvHcKf5PaKY+6Gk8NQh7IBXW1FsL2qxNKDfLBhiXBZ7YtHdYA34moxE0ir
+	 iYvDdmU4GIj89s9ARUlL0zctmsXyC7pE/1Z4F2wT4h8TKCiHc07IHJFzySqfEtLVBh
+	 mW+2nkzHIeFUw==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, 
+ Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
+ Mihai Serban <mihai.serban@gmail.com>, linux-sound@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240416-vizdapm-ng-v1-0-5d33c0b57bc5@bootlin.com>
+References: <20240416-vizdapm-ng-v1-0-5d33c0b57bc5@bootlin.com>
+Subject: Re: [PATCH 0/3] ASoC: dapm: improve debugfs output and introduce
+ dapm-graph
+Message-Id: <171377334868.1755143.5418794002755398989.b4-ty@kernel.org>
+Date: Mon, 22 Apr 2024 17:09:08 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
+On Tue, 16 Apr 2024 08:00:23 +0200, Luca Ceresoli wrote:
+> This patch series improves the tools available to understand and debug
+> DAPM.
+> 
+> Patches 1-2 add more information to the widget files exposed in debugfs.
+> 
+> Patch 3 introduces dapm-graph, a script to generate a picture of the DAPM
+> state inspired to vizdapm.
+> 
+> [...]
 
-On Fri 19 Apr 2024 at 15:58, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+Applied to
 
-> This macro takes into account ->table property of
-> 'struct clk_regmap_mux_data'.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Useless if the interface of controller is fixed.
+Thanks!
 
->
-> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-> ---
->  drivers/clk/meson/meson-audio.h | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/meson/meson-audio.h b/drivers/clk/meson/meson-audio.h
-> index cbcdbd487d4a..1947c6cbf233 100644
-> --- a/drivers/clk/meson/meson-audio.h
-> +++ b/drivers/clk/meson/meson-audio.h
-> @@ -17,9 +17,11 @@
->  	},								\
->  }
->  
-> -#define AUD_MUX(_name, _reg, _mask, _shift, _dflags, _pdata, _iflags) {	\
-> +#define AUD_MUX_TABLE(_name, _reg, _table, _mask, _shift, _dflags,	\
-> +		      _pdata, _iflags) {				\
->  	.data = &(struct clk_regmap_mux_data){				\
->  		.offset = (_reg),					\
-> +		.table = (_table),					\
->  		.mask = (_mask),					\
->  		.shift = (_shift),					\
->  		.flags = (_dflags),					\
-> @@ -33,6 +35,10 @@
->  	},								\
->  }
->  
-> +#define AUD_MUX(_name, _reg, _mask, _shift, _dflags, _pdata, _iflags)	\
-> +	AUD_MUX_TABLE(_name, (_reg), NULL, (_mask), (_shift),		\
-> +		      (_dflags), (_pdata), (_iflags))
-> +
->  #define AUD_DIV(_name, _reg, _shift, _width, _dflags, _pname, _iflags) { \
->  	.data = &(struct clk_regmap_div_data){				\
->  		.offset = (_reg),					\
+[1/3] ASoC: dapm: debugfs: add component to route lines
+      commit: cbd9eed87107bb6d6e537e79aeea65399898ca41
+[2/3] ASoC: dapm: debugfs: show the widget type
+      commit: 5b1047dcf80b35bafcacbd10b57342d1a96139c0
+[3/3] tools/sound/dapm-graph: new tool to visualize DAPM state
+      commit: e7bb43898bcf54da7ffb4819a04c8428f7db24db
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
--- 
-Jerome
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
