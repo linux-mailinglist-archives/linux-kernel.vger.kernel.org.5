@@ -1,148 +1,78 @@
-Return-Path: <linux-kernel+bounces-153881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BB808AD470
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:57:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18C198AD472
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:58:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08940281DC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:57:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1E1A1F23801
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:58:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715C91552FD;
-	Mon, 22 Apr 2024 18:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD19C154C16;
+	Mon, 22 Apr 2024 18:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MA8qqOZ7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BUUNOJ2g"
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F424154BFF;
-	Mon, 22 Apr 2024 18:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E54C219E0
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 18:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713812227; cv=none; b=JpD6kCJ0CO2gwhyy/pMHZ1cEQeYUcR6tNgp2F/I8mByEpss2QMl4Z/qH1T4BnIlhtUfL8eK30OalbGN94wRUr9H1cAfK9v4G7pVdtR7D5XM8KcUDw2h3PkIa1DIxqrDj3t2Gdma45xl89llvLV+9dwB94n3A8vXuGfLhNqOsmt4=
+	t=1713812293; cv=none; b=P7oNcfbD+WpEEptm65DvyvUw2O1Cq9ovR+qOODwf1uu3rUaTs3pi4yh4NoLvKd5gZETtzESSMp2MDkkb78XO9mWFYIAMFvUKYfx0M9D1QWkRy/DGHqEeGiP0FOq7y09yrX6trjfpOnA5X52usdxAeJ/CPX518i0vYMAkEaCHmDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713812227; c=relaxed/simple;
-	bh=vUwFolvpY3txp2GkdU+PBaQbFE6hq0Faqzym3NAaAao=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dpC+L+XE43QsXupVcPwlLEYRNJsvHMnq3EKHWM+NdhYOOpiNjv0MnLLbPgHMorXDoNat/imrdBTsKKDRYuWOFCH4uMslA/2oWYsbKkLDEv8IbGWyB7ms3WDs2QB5xffHGMzZ4ukau0cI5YLMMZ9GLYWXr7zFd/oGZWFB6mGleZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MA8qqOZ7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 255D6C113CC;
-	Mon, 22 Apr 2024 18:57:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713812227;
-	bh=vUwFolvpY3txp2GkdU+PBaQbFE6hq0Faqzym3NAaAao=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MA8qqOZ74UviRkAJdioSgr48hye9xY6Bj4MF2wTrP34K/4KX719GV3qOMJw/OULIr
-	 e68+T+c7rxKVttGfYwgxNo9pMVrRkiLt7w8Hzn9oLQRAzXGYNsWa/veejvUxSXSYrN
-	 eSeONtLNO3MeUJWyID4rXzchILd32anjOPcj4m9KD0BpKDZ1cqV/badFtrvfJBBoPY
-	 ZCqPl/1fsXmFuIDbFXKZipwydtGK4iyvTYE9LA/2j7K434ls0BvRUBBFcpsq+L7WTb
-	 8F2uVFKVU3cOW9CwRfumqc802CzAiJAmVR9oBZUTbvoI5HcVL/2TB7wFb9Yj96mykE
-	 ZN0jV1DjbLnZQ==
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5aa17bf8cf0so70185eaf.1;
-        Mon, 22 Apr 2024 11:57:07 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXuEfaHYvrFVCPIpAwH3gAKRuQQ+Yacn5SljF3GzVo7HNWTOzW8PGylgmCUjSJN2ZzV1og/zTp+j3HG/mBOBTxV2oQAKBNJmo7bmZDekwH39JIDBJbzuAVoUnpDiJxiraPqhX5+HIs1gAEePkAKoun3M9lU1x12CUFWsVTMNj4axWfHeGcVPZPmPTDIGyIBRnnRhnPx2wMFcc58ioBvbQ==
-X-Gm-Message-State: AOJu0YxBC+2GddD3DeMsS9lhmQlBcf4u+wnfo5CTmlxnx2+uzax/oHs+
-	6M8+uawaXZnTl9BIMLEsXnEN+sFNuhVFon7gcxmyRfCGQ0oBoV2QnYtDI1EVC8jzfOfu1pahkwa
-	4BWhh9fN9nGavVOdkzGH+4P9aOBI=
-X-Google-Smtp-Source: AGHT+IHdOuYnQY1CU66WbXlCKS17koH5x+YSdGsMQyGjmqhvjXEPNtgXBP9uB5fZms+F+MbZ3xDE7g2+MTu9xtvX/vE=
-X-Received: by 2002:a05:6871:821:b0:22e:8800:b8bc with SMTP id
- q33-20020a056871082100b0022e8800b8bcmr13965106oap.5.1713812226509; Mon, 22
- Apr 2024 11:57:06 -0700 (PDT)
+	s=arc-20240116; t=1713812293; c=relaxed/simple;
+	bh=gHUamq3eksIIe3LlnAfb/+E/e1qIFHSRh60rqNVc0sE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AYDuWiigbdun5tNQvPHoPXfWnou+mcVQA8z/DAWHoU30m2AUpRR4to1VxXy0YL5KsSw+FziJXMLvt8/rTQFQi/M44M7aBlovHsVLNy+20Jc5i2a9lEVWY3uw/k0vlZ3DuiBncEw7N7gCAN8aS66YQn3kXYVhbJhclBU5Z6W8/Io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BUUNOJ2g; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713812289;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fTsWgzpR6TAFHUYP8yaObyYUy4tJKcjjHquOtGRhIDc=;
+	b=BUUNOJ2gG5/4rEOCTq4iXCuV97JgHgZIBDl35crxeE+omMZhigOem8X8X0FNH5MQBILOCd
+	LV9mENZITwhBRMJFIn9RsCPDDQcbZdeDg94by3/e320qsvOIwhuBznt6m0RFiBx53WwCJN
+	515Kk+fLzmt9qHv0C4yU1BiJ9ak5sso=
+From: Sean Anderson <sean.anderson@linux.dev>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	linux-phy@lists.infradead.org
+Cc: Vinod Koul <vkoul@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Michal Simek <michal.simek@amd.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Sean Anderson <sean.anderson@linux.dev>
+Subject: [PATCH 0/3] phy: zynqmp: A PCIe fix and debugfs support
+Date: Mon, 22 Apr 2024 14:58:00 -0400
+Message-Id: <20240422185803.3575319-1-sean.anderson@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com> <20240418135412.14730-5-Jonathan.Cameron@huawei.com>
-In-Reply-To: <20240418135412.14730-5-Jonathan.Cameron@huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 22 Apr 2024 20:56:55 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0igyOYnqAWRVeC0JrsFSDaZAaia8SLnWi0LV2OS2z9-DQ@mail.gmail.com>
-Message-ID: <CAJZ5v0igyOYnqAWRVeC0JrsFSDaZAaia8SLnWi0LV2OS2z9-DQ@mail.gmail.com>
-Subject: Re: [PATCH v7 04/16] ACPI: processor: Move checks and availability of
- acpi_processor earlier
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, linux-pm@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, 
-	Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, 
-	Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com, justin.he@arm.com, 
-	jianyong.wu@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 18, 2024 at 3:56=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> Make the per_cpu(processors, cpu) entries available earlier so that
-> they are available in arch_register_cpu() as ARM64 will need access
-> to the acpi_handle to distinguish between acpi_processor_add()
-> and earlier registration attempts (which will fail as _STA cannot
-> be checked).
->
-> Reorder the remove flow to clear this per_cpu() after
-> arch_unregister_cpu() has completed, allowing it to be used in
-> there as well.
->
-> Note that on x86 for the CPU hotplug case, the pr->id prior to
-> acpi_map_cpu() may be invalid. Thus the per_cpu() structures
-> must be initialized after that call or after checking the ID
-> is valid (not hotplug path).
->
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> ---
-> v7: Swap order with acpi_unmap_cpu() in acpi_processor_remove()
->     to keep it in reverse order of the setup path. (thanks Salil)
->     Fix an issue with placement of CONFIG_ACPI_HOTPLUG_CPU guards.
-> v6: As per discussion in v5 thread, don't use the cpu->dev and
->     make this data available earlier by moving the assignment checks
->     int acpi_processor_get_info().
-> ---
->  drivers/acpi/acpi_processor.c | 78 +++++++++++++++++++++--------------
->  1 file changed, 46 insertions(+), 32 deletions(-)
->
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.=
-c
-> index ba0a6f0ac841..ac7ddb30f10e 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -183,8 +183,36 @@ static void __init acpi_pcc_cpufreq_init(void) {}
->  #endif /* CONFIG_X86 */
->
->  /* Initialization */
-> +static DEFINE_PER_CPU(void *, processor_device_array);
-> +
-> +static void acpi_processor_set_per_cpu(struct acpi_processor *pr,
-> +                                      struct acpi_device *device)
-> +{
-> +       BUG_ON(pr->id >=3D nr_cpu_ids);
-> +       /*
-> +        * Buggy BIOS check.
-> +        * ACPI id of processors can be reported wrongly by the BIOS.
-> +        * Don't trust it blindly
-> +        */
-> +       if (per_cpu(processor_device_array, pr->id) !=3D NULL &&
-> +           per_cpu(processor_device_array, pr->id) !=3D device) {
-> +               dev_warn(&device->dev,
-> +                        "BIOS reported wrong ACPI id %d for the processo=
-r\n",
-> +                        pr->id);
-> +               /* Give up, but do not abort the namespace scan. */
-> +               return;
+This has a few small patches cleaning up the driver, adding a fix for
+PCIe, and adding some useful debugfs info.
 
-In this case the caller should make acpi_pricessor_add() return 0, I
-think, because otherwise it will attempt to acpi_bind_one() "pr" to
-"device" which will confuse things.
 
-So I would make this return false to indicate that.
+Sean Anderson (3):
+  phy: zynqmp: Store instance instead of type
+  phy: zynqmp: Don't wait for PLL lock on nonzero PCIe lanes
+  phy: zynqmp: Add debugfs support
 
-Or just fold it into the caller and do the error handling there.
+ drivers/phy/xilinx/phy-zynqmp.c | 169 ++++++++++++++++----------------
+ 1 file changed, 83 insertions(+), 86 deletions(-)
+
+-- 
+2.35.1.1320.gc452695387.dirty
+
 
