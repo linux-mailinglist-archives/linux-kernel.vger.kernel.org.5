@@ -1,81 +1,91 @@
-Return-Path: <linux-kernel+bounces-153989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 417438AD5B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:13:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE2F18AD5B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:15:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6B01B23C38
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:13:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5BBA281064
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C221553B6;
-	Mon, 22 Apr 2024 20:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C7E3155739;
+	Mon, 22 Apr 2024 20:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nIuQVWze"
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BtAz2R+n"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CEA153BE4;
-	Mon, 22 Apr 2024 20:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB77A15539E;
+	Mon, 22 Apr 2024 20:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713816788; cv=none; b=UPyCGjQe4B/jJ+hW0VjVXl31pfopDWef3HjlQQE4PEAPPbhkzFBf0vIOs1vdjZBaFhapNqaiaZUNUN0OEqSNw9j28UQE95r+UdmcrD2+UnkVcjLLIrf6MATRmvioRrYicnBgIPN6nhErd5eRmWRan0LeqSGXeVX3TpfwccmnApk=
+	t=1713816921; cv=none; b=YibNI7v8yMmrkUu1p2AMZkuR9vbyk3oFeO8frSE0YJR8yLCn8OaYRgWOSluySWnFEOSuCGtuU8ULa0P415vx85yY7XMXQtiyX9feailvsHnfVpcddTphL3YTwtZevQuS5rsZsuSp93SH8rCBMQEAuTTcpIrxhOq4ROWQC046OB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713816788; c=relaxed/simple;
-	bh=9trJzoqp1C/EU6tuf4Zc2+jsosJ7oNQe6+hk5tkn1EY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E82fncUUiwvp8Nsew3l0mLLdTFhYU2wrprjkN37z2ozBQt08zpZQS33/oTJBUBr6XOhzgZjgOJaFaCLxQY5UPB5ftNHpcgZkwGAQRIdOgbJaU6iReOe4VnwWE5RrzEA7DVQ7ZYY0TRMUjI/6BMUz0sIa37KK2FEcCFTxVvyC81k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nIuQVWze; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1713816921; c=relaxed/simple;
+	bh=CO9sWn4TGwS+F6HGsjPCnompyAUQtRvkshYYjb0v0KM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ux4Ny+e8eMdT1draNTl/NLYZ70vW7PDLtrqhP6Iv3DondZnpzykuJ/meVXhkMQ9pnKyIc4bQYCfKWy2SPzlYuOH9T2SYMNNd2UMAyHp4vajcBQxIS+7JE92ZR1b9p/T2o2h8gGRxp18TW54Cr7PBxiwYf6miVSVQ3f2Thkd/Em0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BtAz2R+n; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5f034b4dcecso3096355a12.1;
-        Mon, 22 Apr 2024 13:13:06 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41aa2f6ff00so3741005e9.3;
+        Mon, 22 Apr 2024 13:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713816786; x=1714421586; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713816918; x=1714421718; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OH0RmiRnNNLPVffIpwhztH1e1woOXWUMr/11m8+KJYw=;
-        b=nIuQVWzeWD3SzK6aHsRePPnWIgtgGiusx+gkRkWEVJm/KNXJi5yM3EyevPIFDU0O1G
-         Qmcw3bvHJrcyey6gyDbWEbi3q3RpY2lReEZJcPUtTYVvH/iZ758mPMKn1y4lrFui12ya
-         VIHs3SuNzrCI3seI4xm8G6FDgj7RZ5XLUQSrqKBafoRp3UacNMzM8nEtSHoKr6ZwX7Zm
-         JgnHzGU7cHyzNBRGyO+8+AWmqIKfIPo4cQKmeDUDSqbEK0Ol5VBMUCgN1pwZzCP1NSYc
-         zJKGYNU/gEY2CaayKTrR/atBcU1MIqwvJWE+bP+zawKvl0As8xty2h24RjXRmG5zzpK2
-         780g==
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Eu3JFTPdyU8Z03j2EuYpTwgYH2/Fv3qtXMU2BdFdug=;
+        b=BtAz2R+nC/KvxGa5WfpGt90866DOXerVcmJiaX/5SXuSwWEfX6gQcoy6hLy4PIQyvF
+         ST1qFFp5RQyTeHJfzKTaerj60GjYW2SL4c3Vp/VCtFol7WSFrxyb1h71S3V3eFN3yHxt
+         03q/3c8BX7kKxpk86DDMPh7iRTzAN/cQhn88tiIPWSY1Xealwiww+CdVeL4SuykdWPD1
+         yeJv57RtZb3oYq/xhtkwr2IbAD8lPUn2ZrtDOL7H2W9xYx/Yp2UCdwbZHvODTpkyHVQv
+         fv1nSh8luw978+b8PTt/qdASrEPoeQmgpY0TTSh5DtCdt4TjNE2uTOPwRnmp0YmvvDlh
+         6vHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713816786; x=1714421586;
+        d=1e100.net; s=20230601; t=1713816918; x=1714421718;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OH0RmiRnNNLPVffIpwhztH1e1woOXWUMr/11m8+KJYw=;
-        b=NK3Pevq4QMmkpcOP2q905ssn1vGr1rcx2PTQP2zbS6Nnru5WlDW6OINhdoX3sNjhbU
-         0OlB7iFBxPki8AA4U6aD3UVHKCUjDpOJm086f+koQorhAPq7d5WiQgUbb5LDUcxAop/E
-         XEvU1E9xWSc1lcHtXQJBJ94OlcgUHFgGIIl4yXoND6f21PnDP/O+cQe5Z/h3nWdhGffo
-         gOglkrGfhZ+Exxb2YzRiZNKavoZRPNeckO+W4l9H/OalMrjXUabExDoUnnD++svGXbUw
-         SlECh5NaL4ez3BrKLp4izBJfjDaIPqk3GXa5t7fAln1t0pUEr9VV7XTLUG3jGrHUZEyA
-         4mAA==
-X-Forwarded-Encrypted: i=1; AJvYcCWMLfH90awRSYPeVCiP+btyPu0ZkYxK1VUVXZq4XZEUEmYvBIV/CEXAv87ZHFVmHJmRFjxSfgsh1XG2ZnmESZIQ+j6kLChETgo84Q==
-X-Gm-Message-State: AOJu0YxSEwesbKjnOnWd2h77moW9gNRPUkWHUKE+a4OjCF/qMOqC6K7c
-	uOCiHurkVpnPNUvL5iywBQsiE2r0E/vwoel/QcnrIlcaLcx75d3I5W9QG7RX
-X-Google-Smtp-Source: AGHT+IE/DQ0Znq3NPjPU6VifnotEYnZC10pQXDRij8KJ2HgbkrrBbdCK66nj003TpyJAGilgVR+YeQ==
-X-Received: by 2002:a17:902:ce8d:b0:1e8:7906:5be3 with SMTP id f13-20020a170902ce8d00b001e879065be3mr905431plg.18.1713816786052;
-        Mon, 22 Apr 2024 13:13:06 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id d10-20020a170903230a00b001e8b81de172sm6937448plh.262.2024.04.22.13.13.05
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/Eu3JFTPdyU8Z03j2EuYpTwgYH2/Fv3qtXMU2BdFdug=;
+        b=Q5Ey15UaTcIEhLGyAkyrOgwtMRNXwYuAVxXVbYPrb/VEmz5981P/C/on5DseIEBw16
+         iW2d1PvJGd8BK80LcbHupWWe5ZiNGFGNai6ujuZxPJlaY1mFjR47mGLL2cjcHxV1k5R8
+         yvqcQaiiEjcEtHlHCa6psNgGZ9GXY416aCsNf3fIqlBa+m7x/chkm+YkNt3uRWSIsnos
+         SQ/gbOsjQeb8L6IaLU9OZDUvJ1Q0+ugkyshWfpk+pz222ymGhj+GK8060H8IVyx+AvWA
+         TeolA4GH5pHzBNntkAXqSamq2l0cwOVBK6HHHdlG5zNPxd/D8h5tT4+dojlo/uDKMFt6
+         2LVA==
+X-Forwarded-Encrypted: i=1; AJvYcCWixELHkYf1yCqVR0QGmOdcm8+9eSSzWppsVnCaYmdxL7MZXZr1S3jJ4HRIoC6VJt9oULuVE9V7ykOMbsNev4iqY572k9Wu1MxWEeXzYmUKlxha/9M26NLsKvnxGAXE0O3o0bddzWGU0XLhxg1P6CENavVKI3WBvKeFXJlwzxGtH/C2kGlLg6GfIu4Mp/+482x1GA+GHha085pnScvw/Ktc
+X-Gm-Message-State: AOJu0YyC6uQLx/VIcBb/eHeBDqn058dIrshsNdeyr0w4BrSC66QQrxnS
+	k3+55PDqGVuEy1O7+R0j5IgoW/KKUHA0kyIygs+1iXfw//APIywyBMXt4d1n
+X-Google-Smtp-Source: AGHT+IEThdBxdECz8bVPhQn5PHEhOkpePD5RpVqY08kUXP0btFQF0IfQfHbI4K1uwo6S0T0C5e1Dbw==
+X-Received: by 2002:a05:600c:1c21:b0:418:ee1e:3445 with SMTP id j33-20020a05600c1c2100b00418ee1e3445mr10483617wms.26.1713816917679;
+        Mon, 22 Apr 2024 13:15:17 -0700 (PDT)
+Received: from krava ([83.240.62.18])
+        by smtp.gmail.com with ESMTPSA id s6-20020a05600c45c600b00418244d459esm17861156wmo.4.2024.04.22.13.15.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 13:13:05 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 22 Apr 2024 10:13:04 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the workqueues tree
-Message-ID: <ZibE0ORQaDK7RUzU@slm.duckdns.org>
-References: <20240130133748.7c30d71f@canb.auug.org.au>
- <20240422094816.09cbdcc2@canb.auug.org.au>
+        Mon, 22 Apr 2024 13:15:17 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 22 Apr 2024 22:15:14 +0200
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	x86@kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH 7/7] man2: Add uretprobe syscall page
+Message-ID: <ZibFUqtwELfVTHfq@krava>
+References: <20240421194206.1010934-1-jolsa@kernel.org>
+ <20240421194206.1010934-8-jolsa@kernel.org>
+ <20240423000729.f1d58443100c3994afca0a7f@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,47 +94,94 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240422094816.09cbdcc2@canb.auug.org.au>
+In-Reply-To: <20240423000729.f1d58443100c3994afca0a7f@kernel.org>
 
-Hello,
+On Tue, Apr 23, 2024 at 12:07:29AM +0900, Masami Hiramatsu wrote:
+> On Sun, 21 Apr 2024 21:42:06 +0200
+> Jiri Olsa <jolsa@kernel.org> wrote:
+> 
+> > Adding man page for new uretprobe syscall.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  man2/uretprobe.2 | 40 ++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 40 insertions(+)
+> >  create mode 100644 man2/uretprobe.2
+> > 
+> > diff --git a/man2/uretprobe.2 b/man2/uretprobe.2
+> > new file mode 100644
+> > index 000000000000..c0343a88bb57
+> > --- /dev/null
+> > +++ b/man2/uretprobe.2
+> > @@ -0,0 +1,40 @@
+> > +.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
+> > +.\"
+> > +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+> > +.\"
+> > +.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
+> > +.SH NAME
+> > +uretprobe \- execute pending return uprobes
+> > +.SH SYNOPSIS
+> > +.nf
+> > +.B int uretprobe(void)
+> > +.fi
+> > +.SH DESCRIPTION
+> > +On x86_64 architecture the kernel is using uretprobe syscall to trigger
+> > +uprobe return probe consumers instead of using standard breakpoint instruction.
+> > +The reason is that it's much faster to do syscall than breakpoint trap
+> > +on x86_64 architecture.
+> 
+> Do we specify the supported architecture as this? Currently it is supported
+> only on x86-64, but it could be extended later, right?
 
-I applied the following patch to wq/for-6.10.
+yes, that's the idea, but I can't really speak other than x86 ;-)
+so not sure abour other archs details
 
-The offending line wasn't introduced recently tho. It goes way back.
-5797b1c18919 just touches the surrounding lines. Maybe that triggered
-something?
+> 
+> This should be just noted as NOTES. Something like "This syscall is initially
+> introduced on x86-64 because a syscall is faster than a breakpoint trap on it.
+> But this will be extended to the architectures whose syscall is faster than
+> breakpoint trap."
 
-Thanks.
------- 8< ------
-From 51da7f68edae38e81543d57fd71811f7481c0472 Mon Sep 17 00:00:00 2001
-From: Tejun Heo <tj@kernel.org>
-Date: Mon, 22 Apr 2024 10:03:13 -1000
-Subject: [PATCH] workqueue: Use "@..." in function comment to describe
- variable length argument
+'s/will be extended/might be will be extended/' seems better to me,
+other than that it looks ok
 
-Previously, it was using "remaining args" without leading "@" which isn't
-valid. Let's follow snprintf()'s example and use "@...".
+thanks,
+jirka
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- include/linux/workqueue.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index 2df1188c0f96..fb3993894536 100644
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -473,7 +473,7 @@ void workqueue_softirq_dead(unsigned int cpu);
-  * @fmt: printf format for the name of the workqueue
-  * @flags: WQ_* flags
-  * @max_active: max in-flight work items, 0 for default
-- * remaining args: args for @fmt
-+ * @...: args for @fmt
-  *
-  * For a per-cpu workqueue, @max_active limits the number of in-flight work
-  * items for each CPU. e.g. @max_active of 1 indicates that each CPU can be
--- 
-2.44.0
-
+> 
+> Thank you,
+> 
+> > +
+> > +The uretprobe syscall is not supposed to be called directly by user, it's allowed
+> > +to be invoked only through user space trampoline provided by kernel.
+> > +When called from outside of this trampoline, the calling process will receive
+> > +.BR SIGILL .
+> > +
+> > +.SH RETURN VALUE
+> > +.BR uretprobe()
+> > +return value is specific for given architecture.
+> > +
+> > +.SH VERSIONS
+> > +This syscall is not specified in POSIX,
+> > +and details of its behavior vary across systems.
+> > +.SH STANDARDS
+> > +None.
+> > +.SH NOTES
+> > +.BR uretprobe()
+> > +exists only to allow the invocation of return uprobe consumers.
+> > +It should
+> > +.B never
+> > +be called directly.
+> > +Details of the arguments (if any) passed to
+> > +.BR uretprobe ()
+> > +and the return value are specific for given architecture.
+> > -- 
+> > 2.44.0
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
