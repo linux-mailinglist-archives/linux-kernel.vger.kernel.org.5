@@ -1,106 +1,85 @@
-Return-Path: <linux-kernel+bounces-152806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1B68AC483
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:53:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A311E8AC487
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:54:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC78D1C20C4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:53:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F65E28284C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 06:54:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 745A64AED1;
-	Mon, 22 Apr 2024 06:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA55482FF;
+	Mon, 22 Apr 2024 06:54:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cui0MaRt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vBFvV+1y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4DB23BBCC;
-	Mon, 22 Apr 2024 06:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C28593BBCC;
+	Mon, 22 Apr 2024 06:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713768811; cv=none; b=KcJlMJCu1LsocF2HiDdtAkBHMSw+lJuutQq9qCNI6GBuQGwrUovvqfcgrDxrxCIEUyp6FJuKrYeHkZusyx3Iz5TFZbs7GoPTLER3MnPxql6edtAKGGbjfBU7/ocFAFs20ul8z75xGT15oCGUgUW+hruowuKSgb/m/ytzMh9n+Eo=
+	t=1713768855; cv=none; b=ZB8q2B7GvHRvnvLz8HisaiD23cb3kH0ziswf968XiIKRI5Y0lQP3aObbKQXsYeyfVMz86VxBIYKxMhlmqjv4BzbxeKy923ji3k0yAPV/UBx66CUzgm+0CgrJdd5mMxOvEkzgH0Ue9iEphuxeCu6X47uYHrtnkP9ujCRSqrb8c3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713768811; c=relaxed/simple;
-	bh=BQ5lv0ySOhngt6oiBldECYAUh+70HIqFEVh7ZrhT2SU=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=J1D5ORC2uPtrk8PDmBcgBUYh4mEtKiyag31WWD38JhllUdzcLyumqSEAUdeb6PJ5jkkyFCp8CLEBAMaDMetkSJO1iz5PLWd4VQ8jiwcE1FD8atXDlrMDnrzQwKpZdIPgDkqRGHdjtgrLA4yzXdw8dNRzTLw9gmwR2ze7SE3+cpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cui0MaRt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF79BC116B1;
-	Mon, 22 Apr 2024 06:53:27 +0000 (UTC)
+	s=arc-20240116; t=1713768855; c=relaxed/simple;
+	bh=om/RR4Mv4KFVIf8LALOHYcGYguNPcr07JI674dheUTw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i0fEA2I7hpJHkGOHHB93yIaP1+TPGGHdBNW/3I53sXKJxqZi+UHOLjz+7lya3HrJ9wsKtuofGx+RrIILrCrGZpQBp7GQIk9jR1yqePVp1GcbT52xw9UYJ1dHvFKRCxMlGGc6cB0+Lg5IsT1amBHmUcAXu57/wN+QoZfUkh4Vw5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vBFvV+1y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41B89C113CC;
+	Mon, 22 Apr 2024 06:54:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713768810;
-	bh=BQ5lv0ySOhngt6oiBldECYAUh+70HIqFEVh7ZrhT2SU=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=Cui0MaRtDe2xqQ3NEwHoiaqNEPh9QZrdEiUYskHiBgjzUxclmHsmCP6ag5nGU84bM
-	 3b5x6NxZdfPeMvegaO7mkU3QgMxZobmAm2oln8xkQM/Oy8/+Oucf2IgnmG/TyB/Wn7
-	 iQdcRWT2PJLWTmUDU6bWMGk2/fV7G6TSzKe1IoWdNnlo3yMEBweewQVG1KrgHX1Sf7
-	 td471aBOw8drLYvbX6PKTOaVitHwsw9ADZoAa5l91FQdSWkWxrU3MP5yynDhnSBkIW
-	 O8yLZoEwnTC68ASfkWblx7Spb7MGUF+NSjqs1Yv/Qw45PpGMdE8ky27RWo8/FkcZUT
-	 on4t2PTh/wcSQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Su Hui <suhui@nfschina.com>
-Cc: quic_jjohnson@quicinc.com,  jjohnson@kernel.org,  nathan@kernel.org,
-  ndesaulniers@google.com,  morbo@google.com,  justinstitt@google.com,
-  c_mkenna@qti.qualcomm.com,  linux-wireless@vger.kernel.org,
-  ath10k@lists.infradead.org,  linux-kernel@vger.kernel.org,
-  llvm@lists.linux.dev,  kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH wireless v2] wifi: ath10k: Fix an error code problem in
- ath10k_dbg_sta_write_peer_debug_trigger()
-References: <20240422034243.938962-1-suhui@nfschina.com>
-Date: Mon, 22 Apr 2024 09:53:26 +0300
-In-Reply-To: <20240422034243.938962-1-suhui@nfschina.com> (Su Hui's message of
-	"Mon, 22 Apr 2024 11:42:44 +0800")
-Message-ID: <878r15j3bt.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=k20201202; t=1713768855;
+	bh=om/RR4Mv4KFVIf8LALOHYcGYguNPcr07JI674dheUTw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vBFvV+1yQh00Vx/LHsR4reOehBHTiTDJcg9qynascIzl1CNxaWmpcgtJH+6wN9yku
+	 HseWj341tKzq+w0oyrwF9Bk7EXiKTKIeK/DmtpQgICS8BcxdunU+UlLR05d7NeABEr
+	 taYHPhT2UPKq21mkjWHGym4IXPBNjpCB8FwWdhlOdpPnQBDY/0eOKSkJpzeRXQDBrH
+	 r9oFcbq4VJpVfrPt3QKwgmbf0S0+5Z5MMpLPaTQu8E/EKqflbfWPPrKfhS9b2Qxehx
+	 dc02yKsxE0PD2Vzso6XY6p8EBYs9h9gh7ClOXi2NRL7k0si4VgmMfu1MXp/WIjGRkf
+	 H1rZgTd2WGHyA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rynZ2-000000002MZ-1DRU;
+	Mon, 22 Apr 2024 08:54:09 +0200
+Date: Mon, 22 Apr 2024 08:54:08 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Wesley Cheng <quic_wcheng@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+	Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
+	quic_jackp@quicinc.com, Bjorn Andersson <quic_bjorande@quicinc.com>
+Subject: Re: [PATCH v21 1/9] dt-bindings: usb: Add bindings for multiport
+ properties on DWC3 controller
+Message-ID: <ZiYJkJsYEdzz_WPO@hovoldconsulting.com>
+References: <20240420044901.884098-1-quic_kriskura@quicinc.com>
+ <20240420044901.884098-2-quic_kriskura@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240420044901.884098-2-quic_kriskura@quicinc.com>
 
-Su Hui <suhui@nfschina.com> writes:
+On Sat, Apr 20, 2024 at 10:18:53AM +0530, Krishna Kurapati wrote:
+> Add bindings to indicate properties required to support multiport
+> on Synopsys DWC3 controller.
+> 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-> Clang Static Checker (scan-build) Warning:
-> drivers/net/wireless/ath/ath10k/debugfs_sta.c:line 429, column 3
-> Value stored to 'ret' is never read.
->
-> Return 'ret' rather than 'count' when 'ret' stores an error code.
-> By the way, remove some useless code.
->
-> Fixes: ee8b08a1be82 ("ath10k: add debugfs support to get per peer tids log via tracing")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> ---
-> v2:
->  - remove the initializer change.
->
->  drivers/net/wireless/ath/ath10k/debugfs_sta.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> index 394bf3c32abf..c1198e9027ae 100644
-> --- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> +++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> @@ -432,14 +432,12 @@ ath10k_dbg_sta_write_peer_debug_trigger(struct file *file,
->  
->  	ret = ath10k_wmi_peer_set_param(ar, arsta->arvif->vdev_id, sta->addr,
->  					ar->wmi.peer_param->debug, peer_debug_trigger);
-> -	if (ret) {
-> +	if (ret)
->  		ath10k_warn(ar, "failed to set param to trigger peer tid logs for station ret: %d\n",
->  			    ret);
-> -		goto out;
-> -	}
-
-Minimal changes with one logical change per patch, please. I'll remove
-this part in the pending branch.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
 
