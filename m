@@ -1,136 +1,206 @@
-Return-Path: <linux-kernel+bounces-152953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AE5D8AC691
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:17:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F5E08AC716
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:34:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB7612832FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:17:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 086E72848C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922F150281;
-	Mon, 22 Apr 2024 08:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C8153E18;
+	Mon, 22 Apr 2024 08:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="kQDUuizb"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="TVymIE84"
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B2534E1CE;
-	Mon, 22 Apr 2024 08:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEEC2502B1
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:33:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773848; cv=none; b=CsSDM1EVp30al+iS0rszHziTjJKPAvFSIJVVVZmoijG8u1y1aYLTRTtXRiQstOxuAymmYGt9lAvi4Lyjr/g4CDeOfnvaAcysGjgmTP15iiV4Lvt6aocJ0AKPJFJtIeCfT5x2uUB1cx73nJGQnZkI1DM7YXCK7sLazTnNmtscBTo=
+	t=1713774802; cv=none; b=iFEEvSj7MOni8ITlez73nyOUqV1drM2h4DEuO9owJEBNxduR9OTSAzbhyEWoD4GtEdra3iFWsjN6728lMNctmXZFZn/g649KmfzlV7cIcHDReSc0FSpqwm71gYf+s3NznCtHy11r6XAcCFXfhJvGj6JdBzUKbiwg1WBKQGkEjD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773848; c=relaxed/simple;
-	bh=cMADH+A0BEOfb9WplRUCFQe3Bk4HECT83QRWAChad4s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H4V8MRvf6pLIOvT6AeNDY/ictaptQ0yZnCe+y4ue7xCuGG8hmZzo+uCYt6YVwOduHfHW/d/NO8cZly4Dim8w6T/nLK1D8PYGnF9OiEaQXsK4VUglg0bAwv+rULlImkQ0ou28r3BcOCU1d0YHqMBuRaONn8YNPFCHC8stThJAeZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=kQDUuizb; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713773843;
-	bh=cMADH+A0BEOfb9WplRUCFQe3Bk4HECT83QRWAChad4s=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=kQDUuizbICE+dtRmPyWNhnQaQqWsly3CTdmXZmQrBbWqMvB4KYhIm9TjyFLQaQvv7
-	 52gMxKdhvRxWOMgnu++PlsNC33neV4h4xV0XVSaCkTadM80fdgKRV+YQYA8/KzpWGc
-	 W/i+SvV1PDMhdCk15lQ9M+ajjgJoShpWK4idgagBaoKvojfAPsp4MP5pmC8KoGEP1f
-	 5qEgTCpION7rZaFrJQCfNLlYc/lrAjLDZIjYyv0gK2+cI7L9nLgn6q54Odohgl4KQ6
-	 WlA6cTROjamnUl81P6OR1aKAinYlUxC9QDYjFF0/OKmdA4gzP8E8KvEQHSdqYq3xqh
-	 ygokbn2sabT5Q==
-Received: from [100.109.49.129] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dmitry.osipenko)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A8F85378001E;
-	Mon, 22 Apr 2024 08:17:21 +0000 (UTC)
-Message-ID: <6066f6f0-49c6-4607-9c33-88e166ccae86@collabora.com>
-Date: Mon, 22 Apr 2024 11:17:18 +0300
+	s=arc-20240116; t=1713774802; c=relaxed/simple;
+	bh=4h4630NBcffFLd43owEzq3/6Wwj2iMy/33KJfwU0EQ0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
+	 Content-Type:References; b=oPRFtKQxSb4byboTOFO5m1YDq9WhzNhkdM9tghql+NMeqgkVyssIxkaQXQiUPVWjaI9h64S/1B8ffy0qAYxJz2fafnZPdTrVc4x1hzLopaSK+fsEiN49T++6R8n25/11Wj4GI4U4gt6YVmGNY1s2tRnVFQRcrmXEMzqS9Ik701A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=TVymIE84; arc=none smtp.client-ip=203.254.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20240422083312epoutp04c862bc9132b31de99e457150a5dbc1c7~IjRfsHzB_0043900439epoutp04a
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:33:12 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20240422083312epoutp04c862bc9132b31de99e457150a5dbc1c7~IjRfsHzB_0043900439epoutp04a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1713774792;
+	bh=BOEbA516Jm64T4WqID42LxQKCDujqnFQ2P/+LMNsxW0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=TVymIE848Y96fu29wd+CR0aHOzA05zFU01q+xZ5oIzx5UhAe2UAxIBHw4WoNtrgUy
+	 z1lYuYNpIS2YeyyC62iu/3ELlmXDTTKQ7viecSEjP4XzZONxtV1Qz9cRHLxp/yHxqh
+	 K4yBTzGF4tTtofH2cWnAiDJlyIvV/5MwV7L8GIas=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+	20240422083311epcas5p3dd871c8501c9c3bd1cc7aa2fc5f91da5~IjRfSYeJr1257312573epcas5p3g;
+	Mon, 22 Apr 2024 08:33:11 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.38.182]) by
+	epsnrtp1.localdomain (Postfix) with ESMTP id 4VNJRV4J6Cz4x9QJ; Mon, 22 Apr
+	2024 08:33:10 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+	epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	91.84.09665.7B026266; Mon, 22 Apr 2024 17:32:55 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240422081827epcas5p21ba3154cfcaa7520d7db412f5d3a15d2~IjEnpVCpk2667726677epcas5p2O;
+	Mon, 22 Apr 2024 08:18:27 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240422081827epsmtrp1cef82adf44c3f2c9fdfec058da8b330d~IjEnonSTg0981409814epsmtrp1C;
+	Mon, 22 Apr 2024 08:18:27 +0000 (GMT)
+X-AuditID: b6c32a4b-5cdff700000025c1-ae-662620b78d6e
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	CD.6D.08390.35D16266; Mon, 22 Apr 2024 17:18:27 +0900 (KST)
+Received: from testpc11818.samsungds.net (unknown [109.105.118.18]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240422081825epsmtip28adab640203b0fb84c1425d09984348c~IjEmI9bIQ1697016970epsmtip2p;
+	Mon, 22 Apr 2024 08:18:25 +0000 (GMT)
+From: hexue <xue01.he@samsung.com>
+To: asml.silence@gmail.com
+Cc: anuj20.g@samsung.com, axboe@kernel.dk, cliang01.li@samsung.com,
+	io-uring@vger.kernel.org, joshi.k@samsung.com, kundan.kumar@samsung.com,
+	linux-kernel@vger.kernel.org, peiwei.li@samsung.com, ruyi.zhang@samsung.com,
+	wenwen.chen@samsung.com, xiaobing.li@samsung.com, xue01.he@samsung.com
+Subject: Re: Re: io_uring: io_uring: releasing CPU resources when polling
+Date: Mon, 22 Apr 2024 16:18:16 +0800
+Message-Id: <20240422081816.2486247-1-xue01.he@samsung.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <26e38785-4f48-4801-a8c1-895bf8d78f7a@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panfrost: Fix dma_resv deadlock at drm object pin
- time
-To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Zack Rusin <zack.rusin@broadcom.com>
-Cc: kernel@collabora.com, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- linaro-mm-sig@lists.linaro.org
-References: <20240421163951.3398622-1-adrian.larumbe@collabora.com>
-Content-Language: en-US
-From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20240421163951.3398622-1-adrian.larumbe@collabora.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0xTZxTfd29pb8mqlwLbZzdcufERu4CtlO4yqDFITBeckrGZjCWrN/QC
+	DX2tD6pkWxpecwVHFVgm4zEFFKtSw4pUEGSoc9BgjHVxNalzjpmImysKsrQCa7l187/fd/J7
+	nHO+g6F8F1uAqXVm2qijNAQ7nnXu0iZR2qBwQ4n4Qvh1ssqxiJJtznOAPBVoZJPexd9Z5KPa
+	ayzyyvJfbDJUHwDkwNx8HOkbamOT90e45NylBQ455QjGkS1uD0IeqPEB0n59kr1tteJ8a4Cj
+	8E1ZFF+5nUDxpH9tAauoPKeMplS0UUjrivUqta5UTuQXKrcrM2ViSZoki3yLEOooLS0n8nYW
+	pO1QayJ9EsIKSmOJlAook4nYvDXHqLeYaWGZ3mSWE7RBpTFIDekmSmuy6ErTdbT5bYlYvCUz
+	QtxbXtbT60QM1Wv2Dc4+4NjAZKIdcDGIS2GLtw3YQTzGx4cB/HHxSw7zeAxg/69dcVEWH38K
+	oGd6rx1gK4quw6kMZwTAZVtnTPAPgNXtfjQqYOMEvOgOgqggCRfAcACLclD8OAKHT3WwopxE
+	/B04a1viRDELXw+HloIrWh6eDS87x+KY9t6AfvtFNOrDxeVwOpTLUBLgxJHpFRs0Qqke+BaN
+	+kP8CAadgTsIo82Dd91P2QxOhDNX3RwGC+CDxroY1sOmBRdg8Kew7/tHLAZnw6WbF1jRXBTf
+	BF1Dm5lyCmyZ7EOY3FXwYHg6FsWDno7nmIDdl3tjlhCGHcdioyhguLcntmkHgLcb5xEHELa+
+	ME/rC/O0/h/9HUCdYA1tMGlLaVOmIUNHW//742K9th+sXK4o3wPu3Q2mjwMEA+MAYiiRxAs9
+	W1fC56mo/ZW0Ua80WjS0aRxkRvZ9CBUkF+sjp68zKyXSLLFUJpNJszJkEuJV3sPadhUfL6XM
+	dDlNG2jjcx2CcQU2ZObzH4JtW5qd3SkjiN/z2cZUjnK6uOZ0Hj5f85F/Ys9C5ei+taKTtXO/
+	TX0wm8zVWqeenbnfJ/lwI/CO+vRJgxWHYdFgjiBU0Vz5kqwF53Np14nOoYaM966a6723S/5Y
+	1dgVUN8YiQ8cvYanKhMEPi51YPgVTd3ZW+9rC1dv3TnW3W4Q85b8RSdHZVxw7N3UATr553Vn
+	nhxdvyE3DUtpmrmREaIfxqnvJOQQiubFx2/eug7+3k1kN9ULd91cqtux2N/wyydfDO15LZ9r
+	7fi46sSyy4a159YctH6zS2eVV/UcOv3nTy97Ebm/SXH2/PL+7WNf94oa7vVNFAa3WXqudKZk
+	EyxTGSURoUYT9S/dg+XpQgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGLMWRmVeSWpSXmKPExsWy7bCSvG6wrFqawZMDnBZNE/4yW8xZtY3R
+	YvXdfjaL038fs1i8az3HYnH0/1s2i1/ddxkttn75ympxedccNotnezktvhz+zm5xdsIHVoup
+	W3YwWXS0XGa06Lpwis2B32PnrLvsHpfPlnr0bVnF6PF5k1wASxSXTUpqTmZZapG+XQJXxtIV
+	q5gKmiUrtn98yd7AeEq4i5GDQ0LARGLxJMUuRi4OIYHdjBLzr0xk72LkBIpLSOx49IcVwhaW
+	WPnvOTtE0TdGieU/JjCDJNgElCT2b/nACDJIREBK4vddDpAaZoFtTBL7Hq5jAakRFvCU+Njw
+	D2woi4CqxK5/H8B6eQWsJY6sOgC1QF7iZtd+ZpA5nAK2Ek9+OYGEhQRsJC6sW8oIUS4ocXLm
+	E7CRzEDlzVtnM09gFJiFJDULSWoBI9MqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzg
+	qNDS2sG4Z9UHvUOMTByMhxglOJiVRHh//VFJE+JNSaysSi3Kjy8qzUktPsQozcGiJM777XVv
+	ipBAemJJanZqakFqEUyWiYNTqoEppUFeOdvWztlQZAIj91s+FsmLE4t1zq/3Ll+UL62p3V88
+	b9LzV8VeNbPfr0gwPP7ixOkZh+/062rq3FsjkD0lIexkqlFu9KawspOT6u4EPvT1u277aAW/
+	qFn38w+1tVr9+s6zOdPuL99pZp+Yw2jrK7+ItbTlzFzTOgPWWaJfJ0mbr+QVfvXsUfKXR9vc
+	GFadNc5f3NwZuuX8lJ/eF9+cOmPltWd/J5u2VWL2WvWSIlvxLeuumc9l0f56uPV7x1QOJ2f5
+	WaI2fcsaZc7ytVmelrGwErFnmrWuuSvbsXejep5UH/fC7xxck19m9TdFz56XwKS15fTWbW2/
+	YkQOp4eZ7K7XTOh5e1Ltu+2et0osxRmJhlrMRcWJAJFl7er5AgAA
+X-CMS-MailID: 20240422081827epcas5p21ba3154cfcaa7520d7db412f5d3a15d2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240422081827epcas5p21ba3154cfcaa7520d7db412f5d3a15d2
+References: <26e38785-4f48-4801-a8c1-895bf8d78f7a@gmail.com>
+	<CGME20240422081827epcas5p21ba3154cfcaa7520d7db412f5d3a15d2@epcas5p2.samsung.com>
 
-On 4/21/24 19:39, Adrián Larumbe wrote:
-> When Panfrost must pin an object that is being prepared a dma-buf
-> attachment for on behalf of another driver, the core drm gem object pinning
-> code already takes a lock on the object's dma reservation.
-> 
-> However, Panfrost GEM object's pinning callback would eventually try taking
-> the lock on the same dma reservation when delegating pinning of the object
-> onto the shmem subsystem, which led to a deadlock.
-> 
-> This can be shown by enabling CONFIG_DEBUG_WW_MUTEX_SLOWPATH, which throws
-> the following recursive locking situation:
-> 
-> weston/3440 is trying to acquire lock:
-> ffff000000e235a0 (reservation_ww_class_mutex){+.+.}-{3:3}, at: drm_gem_shmem_pin+0x34/0xb8 [drm_shmem_helper]
-> but task is already holding lock:
-> ffff000000e235a0 (reservation_ww_class_mutex){+.+.}-{3:3}, at: drm_gem_pin+0x2c/0x80 [drm]
-> 
-> Fix it by assuming the object's reservation had already been locked by the
-> time we reach panfrost_gem_pin.
-> 
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> Cc: Boris Brezillon <boris.brezillon@collabora.com>
-> Cc: Steven Price <steven.price@arm.com>
-> Fixes: a78027847226 ("drm/gem: Acquire reservation lock in drm_gem_{pin/unpin}()")
-> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
-> ---
->  drivers/gpu/drm/panfrost/panfrost_gem.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
-> index d47b40b82b0b..6c26652d425d 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
-> @@ -192,7 +192,12 @@ static int panfrost_gem_pin(struct drm_gem_object *obj)
->  	if (bo->is_heap)
->  		return -EINVAL;
->  
-> -	return drm_gem_shmem_pin(&bo->base);
-> +	/*
-> +	 * Pinning can only happen in response to a prime attachment request from
-> +	 * another driver, but that's already being handled by drm_gem_pin
-> +	 */
-> +	drm_WARN_ON(obj->dev, obj->import_attach);
-> +	return drm_gem_shmem_pin_locked(&bo->base);
->  }
+On 4/19/24 13:27, Pavel Begunkov wrote:
+>On 4/18/24 10:31, hexue wrote:
+>> This patch is intended to release the CPU resources of io_uring in
+>> polling mode. When IO is issued, the program immediately polls for
+>> check completion, which is a waste of CPU resources when IO commands
+>> are executed on the disk.
+>> 
+>> I add the hybrid polling feature in io_uring, enables polling to
+>> release a portion of CPU resources without affecting block layer.
+>
+>So that's basically the block layer hybrid polling, which, to
+>remind, was removed not that long ago, but moved into io_uring.
 
-Will be better to use drm_gem_shmem_object_pin() to avoid such problem
-in future
+The idea is based on the previous blcok layer hybrid poll, but
+it's not just for single IO. I think hybrid poll is still an effective
+CPU-saving solution, and I've tested it with good results on both PCIe
+Gen4 and Gen5 nvme devices.
 
-Please also fix the Lima driver
+>> - Record the running time and context switching time of each
+>>    IO, and use these time to determine whether a process continue
+>>    to schedule.
+>> 
+>> - Adaptive adjustment to different devices. Due to the real-time
+>>    nature of time recording, each device's IO processing speed is
+>>    different, so the CPU optimization effect will vary.
+>> 
+>> - Set a interface (ctx->flag) enables application to choose whether
+>>    or not to use this feature.
+>> 
+>> The CPU optimization in peak workload of patch is tested as follows:
+>>    all CPU utilization of original polling is 100% for per CPU, after
+>>    optimization, the CPU utilization drop a lot (per CPU);
+>
+>The first version was about cases that don't have iopoll queues.
+>How many IO poll queues did you have to get these numbers?
 
--- 
-Best regards,
-Dmitry
+The test enviroment has 8 CPU 16G mem, and I set 8 poll queues this case.
+These data of the test from Gen4 disk.
 
+>>     read(128k, QD64, 1Job)     37%   write(128k, QD64, 1Job)     40%
+>>     randread(4k, QD64, 16Job)  52%   randwrite(4k, QD64, 16Job)  12%
+>> 
+>>    Compared to original polling, the optimised performance reduction
+>>    with peak workload within 1%.
+>> 
+>>     read  0.29%     write  0.51%    randread  0.09%    randwrite  0%
+>> 
+>> Reviewed-by: KANCHAN JOSHI <joshi.k@samsung.com>
+>
+>Kanchan, did you _really_ take a look at the patch?
+>
+
+sorry I misunderstood the meaning of "reviewed", I've had some discussions
+with Kanchan based on the test results, he just give some suggestions and
+possible approach for changes but haven't reviewed the implementation yet.
+This is my mistake, please ignore this "reviewed" message.
+
+>> Signed-off-by: hexue <xue01.he@samsung.com>
+>> ---
+>>   include/linux/io_uring_types.h | 10 +++++
+>>   include/uapi/linux/io_uring.h  |  1 +
+>>   io_uring/io_uring.c            | 28 +++++++++++++-
+>>   io_uring/io_uring.h            |  2 +
+>>   io_uring/rw.c                  | 69 ++++++++++++++++++++++++++++++++++
+>>   5 files changed, 109 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/include/linux/io_uring_types.h b/include/linux/io_uring_types.h
+>> index 854ad67a5f70..7607fd8de91c 100644
+>> --- a/include/linux/io_uring_types.h
+>> +++ b/include/linux/io_uring_types.h
+>> @@ -224,6 +224,11 @@ struct io_alloc_cache {
+>>   	size_t			elem_size;
+>>   };
+>
 
