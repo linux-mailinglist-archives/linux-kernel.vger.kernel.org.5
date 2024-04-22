@@ -1,87 +1,134 @@
-Return-Path: <linux-kernel+bounces-153358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153324-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 358458ACD18
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:44:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAF468ACC95
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:12:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5E92285170
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:44:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 946B1285B5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:12:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B088F14F133;
-	Mon, 22 Apr 2024 12:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6916F1474D2;
+	Mon, 22 Apr 2024 12:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sendemailfast77.com header.i=@sendemailfast77.com header.b="WnFq1Zhm"
-Received: from sendemailfast77.com (sendemailfast77.com [144.217.241.62])
+	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="l1EPz2U5"
+Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B810149C6C
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.217.241.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13135146D68;
+	Mon, 22 Apr 2024 12:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713789661; cv=none; b=DuGh/xUHAZFlklGBV2oCTC8JOi6K64PNobkRtQVgT+0vUPrf9lqag5bzEZGs/zki/Kto9WLSn5vbNUtwEOzPAEACq/hGcn4Z+4nV2JAAZn/5jFVz9T/4ztm0Guf3zPkzZqSYfdIXHEDBbEEpxbMKCBLniEXWJZxa1eH5/V1jahY=
+	t=1713787910; cv=none; b=W/UutojJxgFaSW/OXfEPdM414KB9GF5krqMSSQLR9Lhy3/5KHJqeEiSXGdJ4q31I6Oc+943ERzEbwEMHf5CD1nKRGZOG40mscfH9BakNe2ZjyTQJVqks4RdK9zq6Bv/TqTjuaFDljYUxhVewuLTJOk9QrcT8n9RO/8IwaD1J23o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713789661; c=relaxed/simple;
-	bh=zDEe5rGq4RUs51Fes9UeTv4jjGsR2LHXqDLxJvD7x1Q=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=oECDRwcrviYqT9HVjpXddvFrHHEdnEmbZHJOEurwAAJhbBTgySfaOhHJy0sLi9n4/w1XaWETDMe1jo0wEJepdyRpbuPZr3peQ/uhm3NtI0uFrGYuM5PUoNU+WOY6WXpBX6XohTxY9sp7dcbo7T72KYtnxGof5inw5DsofhX4CSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sendemailfast77.com; spf=pass smtp.mailfrom=sendemailfast77.com; dkim=pass (2048-bit key) header.d=sendemailfast77.com header.i=@sendemailfast77.com header.b=WnFq1Zhm; arc=none smtp.client-ip=144.217.241.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sendemailfast77.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sendemailfast77.com
-Received: from sendemailfast77.com (unknown [103.96.83.38])
-	by sendemailfast77.com (Postfix) with ESMTPSA id 05862634FF
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:58:30 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 sendemailfast77.com 05862634FF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendemailfast77.com;
-	s=default; t=1713787112;
-	bh=zDEe5rGq4RUs51Fes9UeTv4jjGsR2LHXqDLxJvD7x1Q=;
-	h=Reply-To:From:To:Subject:Date:From;
-	b=WnFq1Zhm6mf6/ZRP2tJpzmfRTsjkq9HmxN4Nakskefqc26+eakEElnpL4ZmuEadIF
-	 bZnLX4VdFNdRqOqenPwedG+xc5jZY4osEE3EtkKlBv6Rrp02lXMylWbbIP2UwGETuU
-	 kTX2ISEC/t2FU+Z1iPoMBabO6HlRf2Tiv7W9ThpdPVWuSypdTPzPgSRCOFQsuWyAK0
-	 UM3S/+eROiXL+R5StDUAqRefBSQAd0dEAo4UOAllMqXv34Pe3WVw/H7ZQl7Tj+NNii
-	 SPIYBt8FzK/93+QgNFoTq8SMgfzES2zHbYV/CKei1aU1xNFox5E4a2WZ9rDlT2ta96
-	 VJw+NgSX7ZgKA==
-Reply-To: stern.arnlund@gogreenwalter-se.com
-From: sale@sendemailfast77.com
-To: linux-kernel@vger.kernel.org
-Subject: New inquiry from sweden
-Date: 22 Apr 2024 21:58:30 +1000
-Message-ID: <20240422215829.20A8D4449CFF4049@sendemailfast77.com>
+	s=arc-20240116; t=1713787910; c=relaxed/simple;
+	bh=0RqZ8KagO4Q/Xy/eMr+HE9uqmC9LKNkqCfOaFm6Rg1E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=bRcA6/P2e5uR46Ag9qduCmTYg1+uYe//zveQ1v6WmT2DoqJ/KZOhdQA8+3xFJ04824lLijjpvIFJxrIGP63EEEaAE1VqCtopKxvBpSHxSSdFBrFv8xd3zGuWu+9JgRrlFUZyG5QtfdusOIM+443lh3pOZtAN2+wi55qMK5oXb7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=l1EPz2U5; arc=none smtp.client-ip=94.231.106.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4VNP8x3wp5z682J;
+	Mon, 22 Apr 2024 14:05:53 +0200 (CEST)
+Received: from [10.10.15.10] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by smtp.simply.com (Simply.com) with ESMTPSA id 4VNP8x1jvGz6825;
+	Mon, 22 Apr 2024 14:05:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=unoeuro; t=1713787553;
+	bh=u0bxJB2sYnBuzK5oog8Kn+uP3uWEoY8hqnJZITNxRRQ=;
+	h=Date:Subject:To:References:From:In-Reply-To;
+	b=l1EPz2U54XXKmoSbQzYsa6dHV9IKDZ+Bh6zW8A1n6GJsmWWlTMQUT0IXJCItH9vdt
+	 Io3j5ZZfwELaTrGdHgkHR8Uwm1s/LeVZ45l3c/fWgEgLxKy3pfQuH6dtAo5cZCJ4rA
+	 oKQ5FH4LvOQG6JlRjCjlfdjSfd9Pedr3W/lva9wg=
+Message-ID: <13d29637-4208-42b4-b377-1ffe0c1c4ec6@gaisler.com>
+Date: Mon, 22 Apr 2024 14:05:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sparc: move struct termio to asm/termios.h
+To: Mike Gilbert <floppym@gentoo.org>, "David S. Miller"
+ <davem@davemloft.net>, sparclinux@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240306171149.3843481-1-floppym@gentoo.org>
+Content-Language: en-US
+From: Andreas Larsson <andreas@gaisler.com>
+In-Reply-To: <20240306171149.3843481-1-floppym@gentoo.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 2024-03-06 18:11, Mike Gilbert wrote:
+> Every other arch declares struct termio in asm/termios.h, so make sparc
+> match them.
+> 
+> Resolves a build failure in the PPP software package, which includes
+> both bits/ioctl-types.h via sys/ioctl.h (glibc) and asm/termbits.h.
+> 
+> Closes: https://bugs.gentoo.org/918992
+> Signed-off-by: Mike Gilbert <floppym@gentoo.org>
+> Cc: stable@vger.kernel.org
+> ---
+>  arch/sparc/include/uapi/asm/termbits.h | 10 ----------
+>  arch/sparc/include/uapi/asm/termios.h  |  9 +++++++++
+>  2 files changed, 9 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/sparc/include/uapi/asm/termbits.h b/arch/sparc/include/uapi/asm/termbits.h
+> index 4321322701fc..0da2b1adc0f5 100644
+> --- a/arch/sparc/include/uapi/asm/termbits.h
+> +++ b/arch/sparc/include/uapi/asm/termbits.h
+> @@ -10,16 +10,6 @@ typedef unsigned int	tcflag_t;
+>  typedef unsigned long	tcflag_t;
+>  #endif
+>  
+> -#define NCC 8
+> -struct termio {
+> -	unsigned short c_iflag;		/* input mode flags */
+> -	unsigned short c_oflag;		/* output mode flags */
+> -	unsigned short c_cflag;		/* control mode flags */
+> -	unsigned short c_lflag;		/* local mode flags */
+> -	unsigned char c_line;		/* line discipline */
+> -	unsigned char c_cc[NCC];	/* control characters */
+> -};
+> -
+>  #define NCCS 17
+>  struct termios {
+>  	tcflag_t c_iflag;		/* input mode flags */
+> diff --git a/arch/sparc/include/uapi/asm/termios.h b/arch/sparc/include/uapi/asm/termios.h
+> index ee86f4093d83..cceb32260881 100644
+> --- a/arch/sparc/include/uapi/asm/termios.h
+> +++ b/arch/sparc/include/uapi/asm/termios.h
+> @@ -40,5 +40,14 @@ struct winsize {
+>  	unsigned short ws_ypixel;
+>  };
+>  
+> +#define NCC 8
+> +struct termio {
+> +	unsigned short c_iflag;		/* input mode flags */
+> +	unsigned short c_oflag;		/* output mode flags */
+> +	unsigned short c_cflag;		/* control mode flags */
+> +	unsigned short c_lflag;		/* local mode flags */
+> +	unsigned char c_line;		/* line discipline */
+> +	unsigned char c_cc[NCC];	/* control characters */
+> +};
+>  
+>  #endif /* _UAPI_SPARC_TERMIOS_H */
 
-My name is stern Arrnlund Head of Department, purchase. We would=20
-like to know if you export to Sweden, as we need some of your=20
-products for our client, kindly gives us a reply so we can send=20
-you the full specifications and details of what we would like to=20
-purchase.
+Reviewed-by: Andreas Larsson <andreas@gaisler.com>
+Tested-by: Andreas Larsson <andreas@gaisler.com>
 
+Picking this up to my for-next.
 
-We would appreciate your prompt attention to this request, as we=20
-should begin a cooperation as soon as possible.
+Sorry for the wait. I did not have time to vet it enough for the last
+cycle.
 
-
-thanks & best regards.
-
-
-Sten Arnlund
-
-Purchase Manager
-
-
-stern.arnlund@gogreenwalter-se.com
-
-
-a: Veddige by 2, Holmerskulle, 432 68 Sweden.
+Thanks,
+Andreas
 
