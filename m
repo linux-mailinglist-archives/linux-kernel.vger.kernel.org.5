@@ -1,121 +1,180 @@
-Return-Path: <linux-kernel+bounces-153534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CC178ACF49
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 35C6A8ACF4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:25:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A439B21A63
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:23:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D565B2241D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B70E1514E0;
-	Mon, 22 Apr 2024 14:23:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7AA71514C9;
+	Mon, 22 Apr 2024 14:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Z4jnXm2G";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ugqN3RXe"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E9iRwFZc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 255711514C5;
-	Mon, 22 Apr 2024 14:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E331E136988;
+	Mon, 22 Apr 2024 14:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713795815; cv=none; b=TEx+2m+/+Bp43BQCeVlDrhs2Ufpabz0bcFQ2lFz8gMBIdnOkCYdKvtxEJVTiNXFHufuzxixCo7lnffoY8Hufneuh5/WI61WaIusyMG+5Rzj9oA60fZqUi6Xla8bql0qQmVtHAN+EiUGsnqNT8g2hdmNhHd46He0uXHOZQsPpVlI=
+	t=1713795892; cv=none; b=pDOaQXyvMQ61NF7JHsqTJEBSEC12pdmQiSi58REh0jBWu6VEnh1BlzkTIkAfJZn/r/uZY8cUC8x91YBTiC5n4rzwPXZGsKRlUEITmar6kewVKpNwEkh8vvPZLEXaP6JI7i3I+DF8JiCGsaxpgQzDfb9vo6spjZoyg6oE6WWjxv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713795815; c=relaxed/simple;
-	bh=+BuURfxGxMz3GbuEuqp9spY3hzzXwXiq1MEUK1mgqFw=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=upi96cG8kLELJL6dknZJy80HIXwcCEgAfgFQmex7kgOadmailMLDOlpIS3OqxRO8K3TJhTT9xJiimhHbzMvlXhKY6FpxBekkYjlMcP1cOK/Zteoq3uyzKBJclxbP1EYykZuoi6cEiMyImEreeNnCKyWE5Zf5/NbGHCtojR5Gods=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Z4jnXm2G; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ugqN3RXe; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 22 Apr 2024 14:23:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713795812;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fGuAe5YFLwRdXqKvx58BMlfhcKVyHBnb55A3Anb3oDo=;
-	b=Z4jnXm2GtohbdPSq77m9oR5zRlwr/JqXocsEwaY5l+2K0j5bn5hT0EalNCp7zBJ88sJ9PF
-	SOcjvu3gLTpV881mDsmhOB2K6PgcqZWeDFma6qcz9Mzc/wNhPo6zwaF/kg0KfbCMEgBerz
-	q1DG4t3PH5/0JcpcIdMyjU8S+m1a8R6TXkZd3EooYkzrRFe0gD6/0ScXHMaP18BhVAHp0Q
-	LN/WUUvRFeY43Z7C8Q56m96phXiHwacV5HpB6snNu7/Qf3p9p6w8iawbg5on8FmyIpu/x3
-	9KBNHe2IjyLBsDn5Ywp+UmJr7TAOCN5uqAlWMMxeGHzMebnEZl3sEQ+o2Nepyg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713795812;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fGuAe5YFLwRdXqKvx58BMlfhcKVyHBnb55A3Anb3oDo=;
-	b=ugqN3RXeIYTZnVo1/ms4BT9/uumbYuLGrgGKa3A6UNRllFa1T/CLsi6KmUjP1kL9Rqg6+W
-	OqkOrIGUZGaLNkAQ==
-From: "tip-bot2 for Anna-Maria Behnsen" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] timerqueue: Remove never used function
- timerqueue_node_expires()
-Cc: "Anna-Maria Behnsen" <anna-maria@linutronix.de>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240417140229.19633-1-anna-maria@linutronix.de>
-References: <20240417140229.19633-1-anna-maria@linutronix.de>
+	s=arc-20240116; t=1713795892; c=relaxed/simple;
+	bh=UixV5EidYwsxFua1xIDYV6JAjWIOm875jhs6D2+QN/I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CAfjdDpaX1649SiRedq8Ho5zcZ43YPmQHWnsEW5MA/kZMQM5GbQxENGWLJaolMHouNGa30/iT1pw/aW6knCgX/gXME0pKnlYaFvFrAHBKV4C91Q6b7SCNnzn/DoIGyvvGgOH3c6v7VbVzsuYKRCk/JBGuibh9Cs0UQQ3mYuaND8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E9iRwFZc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB09C113CC;
+	Mon, 22 Apr 2024 14:24:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713795891;
+	bh=UixV5EidYwsxFua1xIDYV6JAjWIOm875jhs6D2+QN/I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E9iRwFZc4nm5fJqxtHjuvWOp6mjRA8LzvnLCX1H5Kv+Qys2M5FqKiFeGJBRuIWJBS
+	 JPAr1jWogxMWhbaJhjVRyXWysKBnVc2PQYw9tW9hqh98DfKqEcEH8FWqvabhGp2FZ5
+	 /M4PtM6QNLFmw9wjM3qV+yCuVjLHejweLDgrA3++au6lThe/KEFSRGi226PQxOyElm
+	 G8j1FH8MEy0zpK9l9HfXilWaGxLEpnuX/Pwj5dMvpEO5rJpy0ccwwHnqQvf0WW/oAV
+	 qL08LZxijyPSQ+fLwJIUSai2pzR0CoX+eYEz+e/WT4Vi1HgtR9tM0B9YdwWHXYZgev
+	 yVZpdDmrNACsA==
+Date: Mon, 22 Apr 2024 09:24:49 -0500
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Laurentiu Mihalcea <laurentiumihalcea111@gmail.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>,
+	Liu Ying <victor.liu@nxp.com>,
+	Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>,
+	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] dt-bindings: dsp: support imx8ulp dsp clocks
+Message-ID: <20240422142449.GA1186917-robh@kernel.org>
+References: <20240418203720.8492-1-laurentiumihalcea111@gmail.com>
+ <20240418203720.8492-2-laurentiumihalcea111@gmail.com>
+ <ZiGLxBa8CMsaRSTc@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171379581122.10875.5495404543407022276.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZiGLxBa8CMsaRSTc@lizhi-Precision-Tower-5810>
 
-The following commit has been merged into the timers/core branch of tip:
+On Thu, Apr 18, 2024 at 05:08:20PM -0400, Frank Li wrote:
+> On Thu, Apr 18, 2024 at 11:37:18PM +0300, Laurentiu Mihalcea wrote:
+> > From: Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>
+> > 
+> > i.MX8ULP DSP node needs a MU clock, but doesn't need
+> > a debug clock. Change "clocks" and "clock-names" properties
+> > to allow for this case.
+> > 
+> > Signed-off-by: Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>
+> > ---
+> >  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 51 ++++++++++++++-----
+> >  1 file changed, 39 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > index 9af40da5688e..4a39d57b1cc6 100644
+> > --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > @@ -30,22 +30,12 @@ properties:
+> >      maxItems: 1
+> >  
+> >    clocks:
+> > -    items:
+> > -      - description: ipg clock
+> > -      - description: ocram clock
+> > -      - description: core clock
+> > -      - description: debug interface clock
+> > -      - description: message unit clock
+> >      minItems: 3
+> > +    maxItems: 5
+> >  
+> >    clock-names:
+> > -    items:
+> > -      - const: ipg
+> > -      - const: ocram
+> > -      - const: core
+> > -      - const: debug
+> > -      - const: mu
+> >      minItems: 3
+> > +    maxItems: 5
+> >  
+> >    power-domains:
+> >      description:
+> > @@ -93,6 +83,43 @@ required:
+> >    - memory-region
+> >  
+> >  allOf:
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: fsl,imx8ulp-hifi4
+> > +    then:
+> > +      properties:
+> > +        clocks:
+> > +          items:
+> > +            - description: ipg clock
+> > +            - description: ocram clock
+> > +            - description: core clock
+> > +            - description: message unit clock
+> > +        clock-names:
+> > +          items:
+> > +            - const: ipg
+> > +            - const: ocram
+> > +            - const: core
+> > +            - const: mu
+> > +    else:
+> > +      properties:
+> > +        clocks:
+> > +          items:
+> > +            - description: ipg clock
+> > +            - description: ocram clock
+> > +            - description: core clock
+> > +            - description: debug interface clock
+> > +            - description: message unit clock
+> > +          minItems: 3
+> > +        clock-names:
+> > +          items:
+> > +            - const: ipg
+> > +            - const: ocram
+> > +            - const: core
+> > +            - const: debug
+> > +            - const: mu
+> > +          minItems: 3
+> 
+> According to your descript, look like only clk "debug" is difference.
+> 
+> How about
+> 
+>   clocks:                                                               
+>     items:                                                              
+>       - description: ipg clock                                          
+>       - description: ocram clock                                        
+>       - description: core clock                                         
+>       - description: message unit clock                                 
+>       - description: debug interface clock
+> 
+>    clock-names:                                                          
+>       items:                                                              
+>         - const: ipg                                                      
+>         - const: ocram                                                    
+>         - const: core
+> 	- const: mu                                                     
+>         - const: debug                                                    
 
-Commit-ID:     e84c60032a39e3267f0b46175d5368da33e214a6
-Gitweb:        https://git.kernel.org/tip/e84c60032a39e3267f0b46175d5368da33e214a6
-Author:        Anna-Maria Behnsen <anna-maria@linutronix.de>
-AuthorDate:    Wed, 17 Apr 2024 16:02:29 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 22 Apr 2024 16:13:06 +02:00
+You can't change the existing order, so this does not work.
 
-timerqueue: Remove never used function timerqueue_node_expires()
-
-This function was introduced with commit 60bda037f1dd ("posix-cpu-timers:
-Utilize timerqueue for storage") but never used. Remove it.
-
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240417140229.19633-1-anna-maria@linutronix.de
-
----
- include/linux/timerqueue.h | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/include/linux/timerqueue.h b/include/linux/timerqueue.h
-index 62973f7..d306d9d 100644
---- a/include/linux/timerqueue.h
-+++ b/include/linux/timerqueue.h
-@@ -37,11 +37,6 @@ static inline bool timerqueue_node_queued(struct timerqueue_node *node)
- 	return !RB_EMPTY_NODE(&node->node);
- }
- 
--static inline bool timerqueue_node_expires(struct timerqueue_node *node)
--{
--	return node->expires;
--}
--
- static inline void timerqueue_init_head(struct timerqueue_head *head)
- {
- 	head->rb_root = RB_ROOT_CACHED;
+Rob
 
