@@ -1,94 +1,115 @@
-Return-Path: <linux-kernel+bounces-153402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F38D88ACDB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:02:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E75F58ACDBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:04:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9448F1F21881
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:02:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3B282827FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D81AF14EC6E;
-	Mon, 22 Apr 2024 13:02:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E0E14EC7D;
+	Mon, 22 Apr 2024 13:04:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hSpp75hS"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hZ+Lb0SE"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12D6E746E;
-	Mon, 22 Apr 2024 13:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3748114A0B6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:04:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713790964; cv=none; b=YHOgNZSVNwGgl0WepwPNEIt50LwE++A13wQcvtOymfC9bQ3YJGEAxEPVXRpwBgaD0L60g3XItmvAHdT1S9mnbDu+sB/TH7kDj8Lr0LS/6tvJ9i53lg2VPpt4zgXLnb3RoksUGyeergTGytGr6CnMQeEXJ0MQ+tLr7ALsfaVHCoc=
+	t=1713791061; cv=none; b=IZSSIynDfcmWz/NAu7nztjZTsTUo3rLzT1v5jgJ2KJkGnDILdRCRfEu89pfhewhZ/5wVwDP2JiDJP3qUeZadHHrFQYdLbVW1BPRY0ocsvRluiSjJOBdnp35gWmCvCt3Don+2Hf7J4k0jlFwYeTzdFdbMmt5YM9toStwLlXlI7h0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713790964; c=relaxed/simple;
-	bh=mjvoOzaTFjWROlqsoo/N+O/73K5m1NYdZJQC+IKoWcg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HVwy61f3Szo/rDY7V9e7au1+eSFtqjsD2gAPkFpd5veQWqVLZ9w3JT+SJSd2R9HiRICJjvOdCcZbV764NZlCgKl4TZ9WzZ8adlRvg6VjsEmZ+ikleQQb71HGq4UmONfA/sbayeRyWl3fsc6OEmM47TEy31rKN8qhFUJVD15kvnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hSpp75hS; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 39F811BF210;
-	Mon, 22 Apr 2024 13:02:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713790956;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mjvoOzaTFjWROlqsoo/N+O/73K5m1NYdZJQC+IKoWcg=;
-	b=hSpp75hSW2gl+9p/T6r8yIn09H6zspYCJQz5ZjpoCYj7dAdGceijGtARjWgSLi0GbVFCxp
-	/47HqIvC8qqvRb4H6EYfod6Ig1stdF1Y8iWfjeKg2qm3TwCZPavYD8kcV1hI/kDG7IklI+
-	56xOLIxj29B7wDKQZrZ52+DFwOS9kEDylPhcMdWpnb5wzoJjVk5lEQ/dgxjkJ20Doon/mE
-	YeYLDRNxX/HdI+x6pv53zMChGAzCRD7ymA7+mk3WvZC4bpOXG2HqhkouUQFOFdvFDPLYFB
-	k3519rEZ5+q+hoPkXpniJAwEloSfvkTIWWi7BSd90cjmGufz2yYVb3yE+FzErA==
-Date: Mon, 22 Apr 2024 15:02:34 +0200
-From: Kory Maincent <kory.maincent@bootlin.com>
-To: Oleksij Rempel <o.rempel@pengutronix.de>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn
- <andrew@lunn.ch>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Kyle Swenson <kyle.swenson@est.tech>, kernel
- test robot <lkp@intel.com>
-Subject: Re: [PATCH net-next 0/3] net: pse-pd: Fixes for few small issues
-Message-ID: <20240422150234.49d98b73@kmaincent-XPS-13-7390>
-In-Reply-To: <20240422-fix_poe-v1-0-811c8c0b9da7@bootlin.com>
-References: <20240422-fix_poe-v1-0-811c8c0b9da7@bootlin.com>
-Organization: bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713791061; c=relaxed/simple;
+	bh=VbbA/s7KLCnQE7xa2XBEGfbJUh5YoqTO5XwvThu3xgQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lz2ptpErZASeaFjhYow8jpU81C9qeuzHWufVW82+BVHlNX69HcEW90P3JnGoaQYJk6cLKRbD96ZowNaozduAtlo0n6JO/lLovOG9gnPUn67f1t/vLV9nRCN9f0vIkj8Xn8pHkqV+2+Wh9WaN5nWx1doqSZylzVLBEIbQgPYDfQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hZ+Lb0SE; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e56ee8d5cso5508029a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713791058; x=1714395858; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iuMzujqDw2WAwNF9pTgdRvBBLCvmBGw54AkHaxIpYMI=;
+        b=hZ+Lb0SE7tkQlz6u+OnS3zg9Oa4R8WUSVYTBZyrjcFMWdTsm4U2j9VdcfYnILYMCae
+         G/SKkMNaRi9THp2Zs0rF4O47blFGMKVI4SXT9gc8ueY9kkf97IzkLFGIdEmLQ5o4QNmd
+         I3anbaC8rpD7cBMzwLDHv51xy+Ki3AAYl8gddJhu81jIKVHLPj6GrwFgPp8YjHhFd7le
+         Y27GaXTL5bbT9hz6AnqqYWWme87vqjQl50nbM5TvEKniVBJ9iVwFl7DtgP7ABpxXauqa
+         iScMWPQDdCvs+of3V60zEOTa3+KrRUUMo/ERlpi3riuzs9WFjOSuFXKWieh4+uwNZ13K
+         LfdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713791058; x=1714395858;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iuMzujqDw2WAwNF9pTgdRvBBLCvmBGw54AkHaxIpYMI=;
+        b=HgbO7VHEcEKOUGtEScqjkwh8eI6NLT7hsMJjAEaxj32KjkwWU1kIhepdl4SNcdcrO2
+         kPH++Sgphcu0Xg9gysK2aOVkiJx0fWVji8WqE60ImaXN1XqWhf+Go4S9Iu9aeWac2fzZ
+         cQCXQywldJ2j2oCsutn0kGw24tKuIekpuU7bEuEXc2ovh/Nf92aHFrDK3EMorrRLHiSa
+         TmGEVQroow5ElJTsxSXj5//STektJ/B/+vO5Yi2Cse3BLQ7pqBqS908AIBDbNDC4LMek
+         4V+crdvKOyhHfn2PYY6MpZtWBNWHZuSMuAySXq50pYYQfQUFj9PgjtMdoq5+w4vIYYAp
+         JiFA==
+X-Forwarded-Encrypted: i=1; AJvYcCWz7hm6BA2Zh28hYxleY00BN4UnFJIQ6GLSZdP3WU4pil+OtyWdKyY0ZQSSEGerw8XNnyHtUV+2AokdTh4pqCmNNx/MyR+ZYsuaIy3o
+X-Gm-Message-State: AOJu0Yyr/fnKt8TVjrwHPWigCy0ISrvr+OSv/LUnGNtJoZkCcDtQqNa7
+	zO/57FCLz9CcSXviTBdmHpBJuuW3r8j2HFJhiYd+a84ZqmNsvtDGB2WOKPldqI8=
+X-Google-Smtp-Source: AGHT+IGAY3RPH2holTfD/QmJVlRaWK48fjTfI7XRh+HsNXpa4kzD5+b1fGhQBgzKyYCndtXlCIEmNw==
+X-Received: by 2002:a17:906:1692:b0:a55:beab:cbed with SMTP id s18-20020a170906169200b00a55beabcbedmr1118197ejd.5.1713791058248;
+        Mon, 22 Apr 2024 06:04:18 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id a10-20020a1709066d4a00b00a52567ca1b6sm5738274ejt.94.2024.04.22.06.04.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 06:04:17 -0700 (PDT)
+Date: Mon, 22 Apr 2024 16:04:13 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Jeongjun Park <aha310510@gmail.com>
+Cc: kuba@kernel.org, linux-hams@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+8e03da5d64bc85098811@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH net,v3] net: hams: Fix deadlock caused by unsafe-irq lock
+ in sp_get()
+Message-ID: <7d690606-7abe-42db-80d4-2ef979e8303b@moroto.mountain>
+References: <20240419200453.13301f29@kernel.org>
+ <20240420082102.63841-1-aha310510@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240420082102.63841-1-aha310510@gmail.com>
 
-On Mon, 22 Apr 2024 14:50:47 +0200
-"Kory Maincent (Dent Project)" <kory.maincent@bootlin.com> wrote:
+The ealier versions didn't build.  I feel like switching from _irqsave()
+to _irq() was wrong but you just did it because you couldn't figure out
+how to make _irqsave() compile...
 
-> From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
->=20
-> This patch series fix few issues in PSE net subsystem like Regulator
-> dependency, PSE regulator type and kernel Documentation.
->=20
-> Signed-off-by: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
+On Sat, Apr 20, 2024 at 05:21:02PM +0900, Jeongjun Park wrote:
+> After looking at this email and testing everything, I have confirmed
+> that both patches are running without any problems in my environment,
+> and the patchwork test outputs an unknown error in the patch
+> in ap_get().
 
-Found out I had a git configuration that adds "Dent Project" to my sob. I d=
-on't
-want that, and will send a v2 without it.=20
-I will wait a week for review before the v2, so please do not merge this
-version.
-Sorry for the noise.
+What does "the patchwork test outputs an unknown error in the patch in
+ap_get()" mean?
 
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+> 
+> But the patch for sp_get() is confirmed to have no problem,
+> can you tell me more about the problem?
+> 
+> Thanks.
+
+You say that it was tested but syzbot says that it doesn't have a
+reproducer for this warning.
+
+regards,
+dan carpenter
+
 
