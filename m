@@ -1,142 +1,200 @@
-Return-Path: <linux-kernel+bounces-152926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A18568AC63A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:04:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B94C08AC4D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:11:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3228CB20D2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:04:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA10E1C20DAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39884E1CE;
-	Mon, 22 Apr 2024 08:04:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="B4OMW+gZ"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F314E1D9;
+	Mon, 22 Apr 2024 07:10:22 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD864D58A
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB76487A7;
+	Mon, 22 Apr 2024 07:10:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773050; cv=none; b=I9ugQnrZ6/iS5/AbLb9SFuQ7FCEUvB05NSzM1RRiMdN+tu3R1ofqOIICgoWRbfqIQw10+jb8os/orN/5IiPcTe6zxUgNIxhksWc5XDsL0I6zetsxkrJK1UAXOk3G1y8+j79zYNwgarnsPu8MWrXJyv03tHqnjDgH3Wd9+EIZTA0=
+	t=1713769821; cv=none; b=W54IBnj/8yYTPJF8X2Foj19SI53vzvilOo1eu7n1+naBb5tdDHJDAcYof5TL2/qJnMm53kBf9zx0YNffoahqe7AK4E7Ch1vyJIQMo7NPNSjXV8yj5VXA1jhuTE45yjd3yzo3qszj+scDmQIqSeDv8zx5kNFKq+skxbvbGsjU85Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773050; c=relaxed/simple;
-	bh=Ft0UmClN6RCBfY+eiYChyiMKhrK/KxVHCaG8g5v3cME=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mFlzRe5Kj41vVx+rXZeUuQsI8AQub8U/2UXjej2hfza1cM+9t1YKl6L2kqHePEMvIumLwwkTFEGWcxDFk9erpE80yI/ZEiZKvb4IqsMoNImX6h6q0rM4H1FNtapgD5a6mxLYXXVVFdqij20oOj1h37Hranyrbg+4klzxG4Ll6q0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=B4OMW+gZ; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso2348007a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:04:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1713773048; x=1714377848; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jxIY4mlELkDh2GdwIVzSWRDbRXxeN/G/HA7ttNCrEzA=;
-        b=B4OMW+gZxaQ/dZwItGhmDzVTO3m3EqoNNUhHerHfs3/jOyLbQYtCmAr8q4Bt6caBwl
-         gmK6CQe68TCPOmKbFMAXpOqJrpioIeatTOJTisbqYcT3qtRtfIhrZFLeuWBJ4nq9D9P6
-         234Ak5ikaONNvos3HBeKRxwPWs+nBcGUYdhLL2BhRyZiH2CJozP/8o5i5KL7lvECI6jd
-         MQ1JRJ70wYlG9jbP2mSRZsnLs6p94mdXrHW6afNjCDjjTkgjXfrUxyHym0oQK8w62oiu
-         zSQfoccaUmyD6AwI/hFgjNBY18mFY7An3BMEkExFFmQn1UN/giU95zW4ydWpCoLp0WnY
-         iiGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713773048; x=1714377848;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jxIY4mlELkDh2GdwIVzSWRDbRXxeN/G/HA7ttNCrEzA=;
-        b=MpvtBD9JafRdacF2at+NtYZAkiAk+QfrZgI7uzC3aHqrL56FitM4DFwPk/0mtR4Zux
-         hY3K5cKe0zoX0k3H2XM76HmdoKvorE76uufFpmQ5J3Gxjn7P+yYmp/O5cb3GtsBWM1U3
-         82/pFeM89uqNuNAdKKK3SYOOgvL9KQ+gLof3gEn1W5SIb6sOvCEDBO2ukZPjQo4nLoMY
-         ONxf/FzGrbW17LbORFjyKX7EpSXJcgs3SesiFoAGhW+Swh+ovBqq1+LTFjlQ9N0hczch
-         5JNQftipoNAXfClyo7AY4p4pkhFCrGyFZ68NNtoiogf87p5FDwvQ/Sxrq7Awy9aOpNf/
-         6NzA==
-X-Forwarded-Encrypted: i=1; AJvYcCWa2NLJHWQXX3RmnqmeFyeg29/F/swFzCevJG+nB4rqOzDXnRArRQUuhLjPEh2Ck+sX/W64m7qvHtZDx6iy3G5Ybna/90Q9veBF3qEN
-X-Gm-Message-State: AOJu0YzbgkKOjwI537AIpmy9RP7dcQdF/sRwz5zZNbAolR5cvdGT117N
-	CSvx3r2xxnfaYKtbN4QiqQY68krMIVmbXkWBUxLgAR+SskOA9yxmmXE7yCKbdDQ=
-X-Google-Smtp-Source: AGHT+IFL0Rf3zkoXQFjWYIOXV3r1BoXk390Ly+Mv2Fk8sW4e8qQRWGncvCiivj8SXzXosAJVSi3mow==
-X-Received: by 2002:a05:6a20:96db:b0:1a9:5e63:501b with SMTP id hq27-20020a056a2096db00b001a95e63501bmr7600090pzc.44.1713773047975;
-        Mon, 22 Apr 2024 01:04:07 -0700 (PDT)
-Received: from [10.3.43.196] ([61.213.176.14])
-        by smtp.gmail.com with ESMTPSA id t10-20020a170902e84a00b001e5a5ea5287sm7483531plg.208.2024.04.22.01.04.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 01:04:07 -0700 (PDT)
-Message-ID: <537ac244-74b2-42ad-97a7-475ec27f2134@bytedance.com>
-Date: Mon, 22 Apr 2024 16:04:03 +0800
+	s=arc-20240116; t=1713769821; c=relaxed/simple;
+	bh=XowVtGgelGFc4QmiSD5yQB6xMeJZKd1nfm7oDiLP2Yw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tbVSztaCadJdE+9SYzrS8qqJUD9USMQcCe+CnXPDCe8RmxJvj9LwK4H/UDx/az9wZttfatG/S1fgOtrUjzHxHphTG2Yp+WuhleXmgUBeYaGtjXEVv8CnGNd97WNnKbx0cCwzKcZKWI+sOPRnopAQXFnQ0/KIWXWJDF9BhN3K4w0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VNGbf2SnYz4f3jYC;
+	Mon, 22 Apr 2024 15:10:06 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id C0E8E1A016E;
+	Mon, 22 Apr 2024 15:10:13 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.101.6])
+	by APP2 (Coremail) with SMTP id Syh0CgAHdwpTDSZmt5eIKw--.7343S2;
+	Mon, 22 Apr 2024 15:10:13 +0800 (CST)
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+To: akpm@linux-foundation.org,
+	willy@infradead.org,
+	jack@suse.cz,
+	bfoster@redhat.com,
+	tj@kernel.org
+Cc: dsterba@suse.com,
+	mjguzik@gmail.com,
+	dhowells@redhat.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org
+Subject: [ATCH v3 0/4] Improve visibility of writeback
+Date: Tue, 23 Apr 2024 00:05:35 +0800
+Message-Id: <20240422160539.3340-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH v2 1/4] virtio_balloon: separate vm events into a
- function
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, virtualization@lists.linux.dev
-Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
- akpm@linux-foundation.org
-References: <20240422074254.1440457-1-pizhenwei@bytedance.com>
- <20240422074254.1440457-2-pizhenwei@bytedance.com>
- <6a182645-1f7f-4b7d-a16a-36e9b1684c58@redhat.com>
-Content-Language: en-US
-From: zhenwei pi <pizhenwei@bytedance.com>
-In-Reply-To: <6a182645-1f7f-4b7d-a16a-36e9b1684c58@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgAHdwpTDSZmt5eIKw--.7343S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFy5ur1UAF43ZrWUAw47urg_yoW5uw4rpF
+	Z5Aw15tr1UZw1xAFn3Ca42gry5K3y8tFy7Xr9xZrW2q3Z0qr1Dtr95Wa4rAr15C3sayFy3
+	JFsxZry8Gr4v9F7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvvb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+	8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E
+	3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r
+	xl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv
+	0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z2
+	80aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v
+	6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+	8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+	xVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+	8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E
+	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+	IFyTuYvjxUIf-PUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
+v2->v3:
+-Drop patches to protect non-exist race and to define GDTC_INIT_NO_WB to
+null.
+-Add wb_tryget to wb from which we collect stats to bdi stats.
+-Create wb_stats when CONFIG_CGROUP_WRITEBACK is no enabled.
+-Add a blank line between two wb stats in wb_stats.
 
+v1->v2:
+-Send cleanup to wq_monitor.py separately.
+-Add patch to avoid use after free of bdi.
+-Rename wb_calc_cg_thresh to cgwb_calc_thresh as Tejun suggested.
+-Use rcu walk to avoid use after free.
+-Add debug output to each related patches.
 
-On 4/22/24 15:47, David Hildenbrand wrote:
-> On 22.04.24 09:42, zhenwei pi wrote:
->> All the VM events related statistics have dependence on
->> 'CONFIG_VM_EVENT_COUNTERS', once any stack variable is required by any
->> VM events in future, we would have codes like:
->>   #ifdef CONFIG_VM_EVENT_COUNTERS
->>        unsigned long foo;
->>   #endif
->>        ...
->>   #ifdef CONFIG_VM_EVENT_COUNTERS
->>        foo = events[XXX] + events[YYY];
->>        update_stat(vb, idx++, VIRTIO_BALLOON_S_XXX, foo);
->>   #endif
->>
->> Separate vm events into a single function, also remove
-> 
-> Why not simply use __maybe_unused for that variable?
-> 
+This series tries to improve visilibity of writeback. Patch 1 make
+/sys/kernel/debug/bdi/xxx/stats show writeback info of whole bdi
+instead of only writeback info in root cgroup. Patch 2 add a new
+debug file /sys/kernel/debug/bdi/xxx/wb_stats to show per wb writeback
+info. Patch 3 add wb_monitor.py to monitor basic writeback info
+of running system, more info could be added on demand. Patch 4
+is a random cleanup. More details can be found in respective
+patches. Thanks!
 
-1>
-static unsigned int update_balloon_stats()
-{
-     unsigned __maybe_unused long foo;
+Following domain hierarchy is tested:
+                global domain (320G)
+                /                 \
+        cgroup domain1(10G)     cgroup domain2(10G)
+                |                 |
+bdi            wb1               wb2
 
-     ...
-#ifdef CONFIG_VM_EVENT_COUNTERS
-     foo = events[XXX] + events[YYY];
-     update_stat(vb, idx++, VIRTIO_BALLOON_S_XXX, foo);
-#endif
-}
+/* all writeback info of bdi is successfully collected */
+cat stats
+BdiWriteback:             4704 kB
+BdiReclaimable:        1294496 kB
+BdiDirtyThresh:      204208088 kB
+DirtyThresh:         195259944 kB
+BackgroundThresh:     32503588 kB
+BdiDirtied:           48519296 kB
+BdiWritten:           47225696 kB
+BdiWriteBandwidth:     1173892 kBps
+b_dirty:                     1
+b_io:                        0
+b_more_io:                   1
+b_dirty_time:                0
+bdi_list:                    1
+state:                       1
 
-2>
-static inline unsigned int update_balloon_vm_stats()
-{
-#ifdef CONFIG_VM_EVENT_COUNTERS
-     unsigned long foo;
+/* per wb writeback info of bdi is collected */
+cat /sys/kernel/debug/bdi/252:16/wb_stats
+WbCgIno:                    1
+WbWriteback:                0 kB
+WbReclaimable:              0 kB
+WbDirtyThresh:              0 kB
+WbDirtied:                  0 kB
+WbWritten:                  0 kB
+WbWriteBandwidth:      102400 kBps
+b_dirty:                    0
+b_io:                       0
+b_more_io:                  0
+b_dirty_time:               0
+state:                      1
 
-     foo = events[XXX] + events[YYY];
-     update_stat(vb, idx++, VIRTIO_BALLOON_S_XXX, foo);
-#endif
-}
+WbCgIno:                 4208
+WbWriteback:            59808 kB
+WbReclaimable:         676480 kB
+WbDirtyThresh:        6004624 kB
+WbDirtied:           23348192 kB
+WbWritten:           22614592 kB
+WbWriteBandwidth:      593204 kBps
+b_dirty:                    1
+b_io:                       1
+b_more_io:                  0
+b_dirty_time:               0
+state:                      7
 
- From the point of my view, I don't need to compile code in my brain 
-when reading codes for case 2. :)
+WbCgIno:                 4249
+WbWriteback:           144256 kB
+WbReclaimable:         432096 kB
+WbDirtyThresh:        6004344 kB
+WbDirtied:           25727744 kB
+WbWritten:           25154752 kB
+WbWriteBandwidth:      577904 kBps
+b_dirty:                    0
+b_io:                       1
+b_more_io:                  0
+b_dirty_time:               0
+state:                      7
+
+The wb_monitor.py script output is as following:
+/wb_monitor.py 252:16 -c
+                  writeback  reclaimable   dirtied   written    avg_bw
+252:16_1                  0            0         0         0    102400
+252:16_4284             672       820064   9230368   8410304    685612
+252:16_4325             896       819840  10491264   9671648    652348
+252:16                 1568      1639904  19721632  18081952   1440360
+
+                  writeback  reclaimable   dirtied   written    avg_bw
+252:16_1                  0            0         0         0    102400
+252:16_4284             672       820064   9230368   8410304    685612
+252:16_4325             896       819840  10491264   9671648    652348
+252:16                 1568      1639904  19721632  18081952   1440360
+..
+
+Kemeng Shi (4):
+  writeback: collect stats of all wb of bdi in bdi_debug_stats_show
+  writeback: support retrieving per group debug writeback stats of bdi
+  writeback: add wb_monitor.py script to monitor writeback info on bdi
+  writeback: rename nr_reclaimable to nr_dirty in balance_dirty_pages
+
+ include/linux/writeback.h     |   1 +
+ mm/backing-dev.c              | 174 +++++++++++++++++++++++++++++-----
+ mm/page-writeback.c           |  27 +++++-
+ tools/writeback/wb_monitor.py | 172 +++++++++++++++++++++++++++++++++
+ 4 files changed, 345 insertions(+), 29 deletions(-)
+ create mode 100644 tools/writeback/wb_monitor.py
 
 -- 
-zhenwei pi
+2.30.0
+
 
