@@ -1,114 +1,187 @@
-Return-Path: <linux-kernel+bounces-153291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D01E8ACC11
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:32:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A87B48ACC1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:36:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3300D1F2252E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:32:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F0061F21696
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:36:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D384A1465B7;
-	Mon, 22 Apr 2024 11:32:00 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F07A1465A2;
+	Mon, 22 Apr 2024 11:36:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="P4aoMHOs";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="jPo7Kp3i"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D498C1465A8
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E31D1465B3;
+	Mon, 22 Apr 2024 11:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713785520; cv=none; b=NZW0rxm3nX0mcXy3Nc5uHiD+eIA9U5CvO7RTgCLvbgGbw5TzgF+3ffLngtrLHWQJsWT3hNUHEqv/uOGUMdX3R2n4yze6/Claf9QR0ZsolE91C3s9RZLXDA47wpNy7udfFXCMQXqt2wL/Wa/8YE4zLpzKtEiXqfr19XrTP/Fob5w=
+	t=1713785800; cv=none; b=uN6uq6hb2t49KFUWW4Nsu/dNKct1Cq2USL4BvBW5OeKl/5ietR+GTpPGtqrqksLRybdlwxBrEqDm7kB4kL67pTMmVCUWrG6Yx6h+gxBR3Mvv/OSDQWMbPVzR6Tj+X+D9shzDMeXblaasqaTWcLJ77SX9stQKftErKJzvqD25Nag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713785520; c=relaxed/simple;
-	bh=w3c2+u/vab98P6eyQA0WaxMSkXQUA8JtKNQ43t22moY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HxN/E3hwPzD8sTHDcs3eh+mJ1K8+/uPdjAXvNcJcWQQfCFYrDUkR3uxc2BUxHHI4z49IJcbvdxfsNzMmZ6N1WtheIRck7s6pi2A/Q6saZyZXMSZxWsEQuieBIhrQu5NBqsoxyyKIwhOVDrfmIzFP9r+RaUW3ZkocXrZXN1wTfIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VNNNS6w6Tz1HBkv;
-	Mon, 22 Apr 2024 19:30:48 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 34B421403D1;
-	Mon, 22 Apr 2024 19:31:48 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 22 Apr 2024 19:31:47 +0800
-Message-ID: <4e8dd4f5-29dc-9459-6ba2-f399258952dc@huawei.com>
-Date: Mon, 22 Apr 2024 19:31:47 +0800
+	s=arc-20240116; t=1713785800; c=relaxed/simple;
+	bh=ItdicYmLWZdbJ4/E+0SqxN1tOW9mkHu6tubEIWymiTo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ql4Y1mkxB/ni/ghVv5u2pZdDQNVq9IGseEehOgpNjHiDSFEvkNN45DaSNsWwKdPXD4ezpDk/8V/rOPCG5TbO506estdf2i/vKYKZESNOW25S+A3y2jp6g/a60z0QZbeMDi3Ef7l0/HsuNu3a+F+QJeNUC5jJgixSNrY+Td6j1p0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=P4aoMHOs; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=jPo7Kp3i reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1713785797; x=1745321797;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=a8tmUfcLbDKINV4lHr1PNpryxyZNz/7RC/mYXxPwibE=;
+  b=P4aoMHOs3qnnOcMnTAupO0DLpd8FLXQZBzVcNORzQnFBGH8CNHfuOoPc
+   Ka0IP6KH29rHY6Nr9lCdfGVLPLZRk2FfTgYybi8N73Vc4uEsQd7XTCPur
+   P/6olANW891IhEI0SHZMX7aQ7JLUoCvQuPBejYWh59rhNnwAfjoXN0FWa
+   yY9w19HSmp0ndwBQWB6AcZb9XbfhDzhQAVxVfj9yFQOK9xhYFpmxRfVGw
+   By+CEUBkJAK8vlte1bNiBTbMqtX9OjenOCzCnYUJlTHrW3YLy8Scw1KT2
+   qMVIDKzSb4zm7BXh1krly1RpJMmWzTAzWJl5h/XoAgEsQtRbGew6wuGlp
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.07,220,1708383600"; 
+   d="scan'208";a="36541302"
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 22 Apr 2024 13:36:34 +0200
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E08EE160AEF;
+	Mon, 22 Apr 2024 13:36:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1713785790;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=a8tmUfcLbDKINV4lHr1PNpryxyZNz/7RC/mYXxPwibE=;
+	b=jPo7Kp3ibDT+vTxxqzArMmj6CmwpJ7g3V7e3im9iqmjqM1dBgGoVXLfeMQ+uQNyHiV16+F
+	Xh6Kujzotm/mBwjLTyI5q54L+4dAW8h+PyoZWqezTsuogWqKX/DWVtfuLxsfklbNUHL/bu
+	NAcczu1W2rejJjDZsapvY8zyjzGbyz/VINKkZKVB1fWM1BlZGQN6raq2fdOS2sOjRrC8rv
+	0ai1XFjyWlX9k4jEK5QsGV2pYc4U+g9BlxIdjFiCk9UUdIYw0+sUdMK3TzQA4EJ6uvh/iP
+	Vb3YKvXUX/ayvFAGxqVZHg3dJ3Sg1gFYHIYb9PQFd3kQwimWvSpzrCIy5KbuQg==
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Dong Aisheng <aisheng.dong@nxp.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-i2c@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	imx@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/1] i2c: lpi2c: Avoid calling clk_get_rate during transfer
+Date: Mon, 22 Apr 2024 13:36:29 +0200
+Message-Id: <20240422113629.1629891-1-alexander.stein@ew.tq-group.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH -next v3 1/2] erofs: get rid of erofs_fs_context
-Content-Language: en-US
-To: Jingbo Xu <jefflexu@linux.alibaba.com>, <linux-erofs@lists.ozlabs.org>
-CC: <xiang@kernel.org>, <chao@kernel.org>, <huyue2@coolpad.com>,
-	<viro@zeniv.linux.org.uk>, <brauner@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <yangerkun@huawei.com>, <houtao1@huawei.com>,
-	Baokun Li <libaokun1@huawei.com>
-References: <20240419123611.947084-1-libaokun1@huawei.com>
- <20240419123611.947084-2-libaokun1@huawei.com>
- <8d751a33-af11-4aa8-8fad-cc24e825bde7@linux.alibaba.com>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <8d751a33-af11-4aa8-8fad-cc24e825bde7@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+X-Last-TLS-Session-Version: TLSv1.3
 
-Hi Jingbo,
+Instead of repeatedly calling clk_get_rate for each transfer, lock
+the clock rate and cache the value.
+A deadlock has been observed while adding tlv320aic32x4 audio codec to
+the system. When this clock provider adds its clock, the clk mutex is
+locked already, it needs to access i2c, which in return needs the mutex
+for clk_get_rate as well.
 
-On 2024/4/22 18:25, Jingbo Xu wrote:
->
-> On 4/19/24 8:36 PM, Baokun Li wrote:
->
->> @@ -761,12 +747,15 @@ static void erofs_free_dev_context(struct erofs_dev_context *devs)
->>   
->>   static void erofs_fc_free(struct fs_context *fc)
->>   {
->> -	struct erofs_fs_context *ctx = fc->fs_private;
->> +	struct erofs_sb_info *sbi = fc->s_fs_info;
->> +
->> +	if (!sbi)
->> +		return;
->
-> This is the only difference comparing to the original code literally.
-> Is there any chance that fc->s_fs_info can be NULL when erofs_fc_free()
-> is called?
->
-> Otherwise looks good to me.
->
-When sget_fc() executes successfully, fc->s_fs_info is set to NULL,
-so the following NULL pointer dereference may occur:
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+---
+This is an alternative, lightweight approach replacing the patch [1].
+The issue to address is still removing the call to clk_get_rate() during each
+transfer, which might reuslt in a deadlock. lockdep also complains about this
+call chain.
+The dependency from v2 has already been merged in commit b0cde62e4c548
+("clk: Add a devm variant of clk_rate_exclusive_get()").
 
-do_new_mount
-   vfs_get_tree
-     erofs_fc_get_tree
-       get_tree_bdev
-         sget_dev
-           sget_fc
-             s = alloc_super
-             s->s_fs_info = fc->s_fs_info;
-             fc->s_fs_info = NULL;
-         fill_super
-         // return error
-         deactivate_locked_super
-           kfree(sbi);
-   put_fs_context
-     sbi = fc->s_fs_info
-     kfree(sbi->fsid)
+Instead of adding a clock notifier, lock the peripheral clock rate and cache
+the peripheral clock rate.
+Currently LPI2C is available in the following SoC:
+* i.MX7ULP
+* i.MX8ULP
+* i.MX8DXL
+* i.MX8X
+* i.MX8
+* i.MX93
 
-Thank you very much for the review!
+Additionally I expect both i.MX91 and i.MX95 to also use this driver.
+
+This patch assumes the parent clock rate never changes. This is apparently true
+for i.MX93 as each I2C has it's own lpi2c*_root clock. On i.MX8 and i.MX8X
+clocks are managed by SCU with it's own dedicated firmware. I can't say if the
+clock never changes though. I have no idea about the other SoC.
+
+Changes in v3:
+* Rebased to next-20240422
+
+Changes in v2:
+* Removed redundent clk_rate check in lpi2c_imx_config (I opted to keep
+  the local variable to not extent the calculation code lines)
+* Collected R-b
+
+Best regards,
+Alexander
+
+[1] https://lore.kernel.org/all/20240110120556.519800-1-alexander.stein@ew.tq-group.com/
+
+ drivers/i2c/busses/i2c-imx-lpi2c.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-imx-lpi2c.c b/drivers/i2c/busses/i2c-imx-lpi2c.c
+index 6d72e4e126dde..36e8f6196a87b 100644
+--- a/drivers/i2c/busses/i2c-imx-lpi2c.c
++++ b/drivers/i2c/busses/i2c-imx-lpi2c.c
+@@ -99,6 +99,7 @@ struct lpi2c_imx_struct {
+ 	__u8			*rx_buf;
+ 	__u8			*tx_buf;
+ 	struct completion	complete;
++	unsigned long		rate_per;
+ 	unsigned int		msglen;
+ 	unsigned int		delivered;
+ 	unsigned int		block_data;
+@@ -212,9 +213,7 @@ static int lpi2c_imx_config(struct lpi2c_imx_struct *lpi2c_imx)
+ 
+ 	lpi2c_imx_set_mode(lpi2c_imx);
+ 
+-	clk_rate = clk_get_rate(lpi2c_imx->clks[0].clk);
+-	if (!clk_rate)
+-		return -EINVAL;
++	clk_rate = lpi2c_imx->rate_per;
+ 
+ 	if (lpi2c_imx->mode == HS || lpi2c_imx->mode == ULTRA_FAST)
+ 		filt = 0;
+@@ -611,6 +610,20 @@ static int lpi2c_imx_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Lock the parent clock rate to avoid getting parent clock upon
++	 * each transfer
++	 */
++	ret = devm_clk_rate_exclusive_get(&pdev->dev, lpi2c_imx->clks[0].clk);
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret,
++				     "can't lock I2C peripheral clock rate\n");
++
++	lpi2c_imx->rate_per = clk_get_rate(lpi2c_imx->clks[0].clk);
++	if (!lpi2c_imx->rate_per)
++		return dev_err_probe(&pdev->dev, -EINVAL,
++				     "can't get I2C peripheral clock rate\n");
++
+ 	pm_runtime_set_autosuspend_delay(&pdev->dev, I2C_PM_TIMEOUT);
+ 	pm_runtime_use_autosuspend(&pdev->dev);
+ 	pm_runtime_get_noresume(&pdev->dev);
 -- 
-With Best Regards,
-Baokun Li
+2.34.1
+
 
