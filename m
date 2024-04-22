@@ -1,125 +1,166 @@
-Return-Path: <linux-kernel+bounces-153929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321DE8AD502
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:43:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74FB08AD506
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:44:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1B3E2841E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:43:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BBD91F226E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1683155349;
-	Mon, 22 Apr 2024 19:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B220155349;
+	Mon, 22 Apr 2024 19:43:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IbmlU1jN"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="goZuQyMj"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D766A155310
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0B8155346
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:43:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713815014; cv=none; b=aeVna1NiShJGEVOSc94Uh3iq5Qt9aLmefGxKwL+UhEbO2wmNpaGV6dDNa7zKfrGEWR+4k7BK6N+pjc+gVqpP/q1FBhMoXuUBcJTT87txtAqJq6Hs/ssO3tj78V1CmCmNrSFZMjIBfn8wfehHWHi0yxeYi9RVtlhbSHCaL4Tdae4=
+	t=1713815031; cv=none; b=aDp0GZlTyMPyY6TPeO2In2HZdd3wmdTuFaQvcnyjnzXle89jpetsyxiFAyUYzOveafTre73NqJzMiAguq9TEx4fBIlgbetaMTiRiM7VRpPy6TvwA8qOtJwXudgw0ilgbrixxxEqkzK09+s9Zeob7wN0FIpDHeWYELZaNmoOedY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713815014; c=relaxed/simple;
-	bh=rqo5kZsuhsjRzcG6r7op5qGRZLLQPYMPvIRMLhlGAEE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ss1mbYwj9l5fs+MTfcGb+ddd47C9wT6oyYMIl83E4Hc0qUyE+DV+rzpYWE3ocN95Z09tcKb+vdRsydod410Dnfw6+ja7NedsLD5FGYSSnXX8JLCqYUlRYC9HN+OG98r/6QgRtRAW9Nzm8z0G2rENQNE0vmQQaGJ8egKM/avuV9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IbmlU1jN; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc647f65573so10260688276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:43:32 -0700 (PDT)
+	s=arc-20240116; t=1713815031; c=relaxed/simple;
+	bh=VJ5gsQjKohl4OTel83tK1x5fN8lYDcKtYI/XPbA72XA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NkRVJodMTmJtbEt5qdh9BQh1ocaS/BkxS2lONmM/bn5QtCjQgoWx5mWg3uRyehGV0JeNGjiBlYBQw+tPfunCQXI759IIjZmtkr+ynruT8NBoyCPjEkQ4qH/AfHEPur3+MhrWdsh7LMyikGjmc+RzWZTm//WYvqK8JLs/1bQ2m0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=goZuQyMj; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-516d3a470d5so5907428e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:43:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713815012; x=1714419812; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JyzTdSdQlZjPTKTajFwL+PTG8n8RFsaCQ17y36xG4qs=;
-        b=IbmlU1jNa25HgJG7LFHg/CU7wk5LcFKccUL8gSqZqnW2DNdF4xak+i8F/DGBy9cYqC
-         inskTDcvuoqCG9pSqB2uIxlXoCLUr7xUSFHNANlviS44qAeYK9vWiDR6Fnr6RSlBNyjV
-         HmzGCppHmz+wIObLpAAt+QnbfzKev3q3eioqNkHGTyjp9L8bmo4PGSNeiC47XxATdEqA
-         XfncL4Lywu9+NlWPykewxxVJnBRKKpmSfSJrH6K4bNTkF1ABFSbIjZjTGqw352RsUDtj
-         BfA6iD73ZtGCF5Qlo4lKmKWxnhYGpPm6glk+8POwC/vKmgZEbwMRYDKTATB2WgGJC+5D
-         Fi5A==
+        d=linaro.org; s=google; t=1713815028; x=1714419828; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h1ey6L2csyRt+gTq+IESmLKOnnLpd2+PnL3t5tu0kbA=;
+        b=goZuQyMjSRunTdWGcATyGIF/FHDPslxTk3LR+nMyIVsZhi3yaCoFcDgWOqUw9M5XBN
+         4GvqllmtYa+APDgCzW96HFDFGDg/a7irwR7LNLXoB1IjLT4ZWvO6/6DI6fH67HjqcfeR
+         qGOP5Nrgu9dRdnl9naRJ3SUJ1beUklopWNcdItcpZ5/KZtuamoaqkrffdFoYMqwDNXkL
+         6PSHdCG4s4xakdQ/REqszmI6h69DuaAA/R2Xjn1eOSOv1PbgO611w2eW4MKNHu6yrwNT
+         xQMkdifX/T3dTfkKbXrRdISDd/FjVg3f+35+S30xyI00OoHonPYc6AOankhV9hFEQLi5
+         HH+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713815012; x=1714419812;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JyzTdSdQlZjPTKTajFwL+PTG8n8RFsaCQ17y36xG4qs=;
-        b=Aa8pIgz+SpeTSnf6bW+LUknSvA3T6plwju+1DMS4/0Ae5/EHWX0Bd/XnZ0GV6A+eXE
-         D3dcl5/d5T+dqzxUrvk0gNYAWGr90bor4ZEeSpOgh0S78UJ1Ij2x1byQksQrrl035Lmk
-         ljH/R2LvYCl3vV3RYaqRDz4b4laYmRz7k2SRQoZWz2Jqw/c9XtkjRpB140h8gLWMLySN
-         2pmZsKVzBuNJ1Og7inyqSPWYFFMJ+nhtdt1liegBts6W7nezHfN/sMZ5+JPXIbiYvYlW
-         WbAL94/ibN3XkwmbnFOKF8Y/LbBIFQHpFGXRJOIgrTYVKgY2bZ8hrp9IOR6uLEgw8qcl
-         T1qw==
-X-Forwarded-Encrypted: i=1; AJvYcCVUwAIg9wG/yAZtVzAuT6ZtX93of2cgFC4DL9ZgE/VCeUyEob7nkuWbwDM4rPmQ6fcQ+g0HMnuj6C1MtjM+eRqILf48ULkGjejDdLkD
-X-Gm-Message-State: AOJu0YyO5Dw5IF37nLqH4zY8YKmHOvXrgDWvuVKiu4j7PcorLhizoXyT
-	UFnmkdV3SQPyrMvuqjPKae5edyRUfQeiL2mu5o8PN6zydR7vsmvNWXp/tU7UWWChft2C/L0FVcw
-	+Kw==
-X-Google-Smtp-Source: AGHT+IEBAZmsWiF9Oef4bJqyhQc/VsZSMs3v5FKxK9dwBp2DXeyyqSS3hoEpcVGzDdsfeq32Lj2jvxWrGM8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:10c3:b0:de5:2325:72a1 with SMTP id
- w3-20020a05690210c300b00de5232572a1mr1265614ybu.4.1713815011856; Mon, 22 Apr
- 2024 12:43:31 -0700 (PDT)
-Date: Mon, 22 Apr 2024 12:43:30 -0700
-In-Reply-To: <20240422130558.86965-1-wei.w.wang@intel.com>
+        d=1e100.net; s=20230601; t=1713815028; x=1714419828;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h1ey6L2csyRt+gTq+IESmLKOnnLpd2+PnL3t5tu0kbA=;
+        b=MaQ7fvvzfetu1NH4gwKH74ZdGCwu93jYX9wUlFbcbdBkToEak0lRcOATVGnhnxcVkZ
+         BWsNNM4ob8ywMItfQ4C8RtHNnzjsLqQlbUEn7CKrJUFF2y1OdLRUIJn8yN5I+3v7EmpV
+         lT5j2/pIggsqcape9845E0/8bGQhagfsFRx+Cj8OTm4qNOKlmT5ywmw2oV3dF3Si1OO3
+         rj2NEC7TL+7FG6CZyv5dw20s+EGaMpm+I79WpRBMGTUY5MRJdzMt3+IKcdQA88dTHU+s
+         NxudgC1f9Jws+NmWhT2PUMFtZkNSIoKYPdj6F+jXVVR7ewUR2O0q9GPYgO+psYhn8eYu
+         WGOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTgBkDKc1XmxFpqWCf7dYYwwbmW8kSplZDbjnCni3YwTqTiQoVjQOFOFNAPMQvFQ8jTKGt6wsdnE4QzG4neMdyTqmQAGuxkq+uy6UQ
+X-Gm-Message-State: AOJu0YwccbcMxJrebu9M1UtnfYkjduUPSdtM5VNsIs9v+bB6QYf+9V5g
+	VsqHkJF2zgKs45Q4PwgR4nV92cCab7iKR8xX1yPvGEKv1ToZ6sMtpkT2UtN1yiM=
+X-Google-Smtp-Source: AGHT+IG9ElrH/duOxvqcTOK0AesyJ0VjegSyv6v2IqW2JOwhgaQv9K0zAcHZGc9ZxELyif0HeSN2WQ==
+X-Received: by 2002:a05:6512:ba0:b0:51a:b955:4014 with SMTP id b32-20020a0565120ba000b0051ab9554014mr9729079lfv.18.1713815027508;
+        Mon, 22 Apr 2024 12:43:47 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::8a5])
+        by smtp.gmail.com with ESMTPSA id v14-20020ac2558e000000b0051891b7578esm1802167lfg.198.2024.04.22.12.43.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 12:43:47 -0700 (PDT)
+Date: Mon, 22 Apr 2024 22:43:45 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Johan Adolfsson <Johan.Adolfsson@axis.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, 
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, kernel <kernel@axis.com>
+Subject: Re: [PATCH 1/2] drm/panel: panel-simple: Add generic panel-dsi driver
+Message-ID: <dn33u6orierkw3skh3mymkc3u77wn2cbpqs7rznyndnku7txr7@2lvvxudsvda7>
+References: <20240418-foo-fix-v1-0-461bcc8f5976@axis.com>
+ <20240418-foo-fix-v1-1-461bcc8f5976@axis.com>
+ <76b46467-6a27-4f07-8a3e-cdd51e2e28bb@linaro.org>
+ <PAWPR02MB9281557BDDA960812412E0D59B122@PAWPR02MB9281.eurprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240422130558.86965-1-wei.w.wang@intel.com>
-Message-ID: <Zia94vbLD-DF1GEw@google.com>
-Subject: Re: [PATCH v1] KVM: x86: Validate values set to guest's MSR_IA32_ARCH_CAPABILITIES
-From: Sean Christopherson <seanjc@google.com>
-To: Wei Wang <wei.w.wang@intel.com>
-Cc: pbonzini@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PAWPR02MB9281557BDDA960812412E0D59B122@PAWPR02MB9281.eurprd02.prod.outlook.com>
 
-On Mon, Apr 22, 2024, Wei Wang wrote:
-> If the bits set by userspace to the guest's MSR_IA32_ARCH_CAPABILITIES
-> are not supported by KVM, fails the write. This safeguards against the
-> launch of a guest with a feature set, enumerated via
-> MSR_IA32_ARCH_CAPABILITIES, that surpasses the capabilities supported by
-> KVM.
-
-I'm not entirely certain KVM cares.  Similar to guest CPUID, advertising features
-to the guest that are unbeknownst may actually make sense in some scenarios, e.g.
-if userspace learns of yet another "NO" bit that says a CPU isn't vulnerable to
-some flaw.
-
-ARCH_CAPABILITIES is read-only, i.e. KVM _can't_ shove it into hardware.  So as
-long as KVM treats the value as "untrusted", like KVM does for guest CPUID, I
-think the current behavior is actually ok.
-
-> Fixes: 0cf9135b773b ("KVM: x86: Emulate MSR_IA32_ARCH_CAPABILITIES on AMD hosts")
-
-This goes all the way back to:
-
-  28c1c9fabf48 ("KVM/VMX: Emulate MSR_IA32_ARCH_CAPABILITIES")
-
-the above just moved the logic from vmx.c to x86.c.
-
-> Signed-off-by: Wei Wang <wei.w.wang@intel.com>
-> ---
->  arch/x86/kvm/x86.c | 3 +++
->  1 file changed, 3 insertions(+)
+On Mon, Apr 22, 2024 at 02:05:01PM +0000, Johan Adolfsson wrote:
+> Hi,
+> Sorry for delayed response, still investigating why these mails didn't reach my inbox as expected..
 > 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index ebcc12d1e1de..21d476e8e4b0 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3808,6 +3808,9 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  	case MSR_IA32_ARCH_CAPABILITIES:
->  		if (!msr_info->host_initiated)
->  			return 1;
-> +		if (data & ~kvm_get_arch_capabilities())
-> +			return 1;
-> +
->  		vcpu->arch.arch_capabilities = data;
->  		break;
->  	case MSR_IA32_PERF_CAPABILITIES:
+> -----Original Message-----
+> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> 
+> Sent: den 19 april 2024 01:06
+> To: Johan Adolfsson <Johan.Adolfsson@axis.com>; Neil Armstrong <neil.armstrong@linaro.org>; Jessica Zhang <quic_jesszhan@quicinc.com>; Sam Ravnborg <sam@ravnborg.org>; Maarten Lankhorst <maarten.lankhorst@linux.intel.com>; Maxime Ripard <mripard@kernel.org>; Thomas Zimmermann <tzimmermann@suse.de>; David Airlie <airlied@gmail.com>; Daniel Vetter <daniel@ffwll.ch>; Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>; Thierry Reding <thierry.reding@gmail.com>
+> Cc: dri-devel@lists.freedesktop.org; linux-kernel@vger.kernel.org; devicetree@vger.kernel.org; kernel <kernel@axis.com>
+> Subject: Re: [PATCH 1/2] drm/panel: panel-simple: Add generic panel-dsi driver
+> 
+> On 18/04/2024 16:01, Johan Adolfsson wrote:
+> > Add generic panel-dsi panel, similar to panel-dpi that can have it's 
+> > timing, lanes and flags overridden by devicetree.
+> > Add some dev_err() and dev_warn() calls.
+> > 
+> 
+> ...
+> 
+> >>  		/* sentinel */
+> >>  	}
+> >> @@ -4992,17 +5051,28 @@ static int panel_simple_dsi_probe(struct mipi_dsi_device *dsi)
+> >>  		return -ENODEV;
+> >>  
+> >>  	err = panel_simple_probe(&dsi->dev, &desc->desc);
+> >> +	if (err)
+> >> +		dev_err(&dsi->dev, "%s: err %i\n", __func__, err);
+> 
+> >This looks like debugging code.
+> I added it since you don't really get any good hints on where things fails if they do it.
+> Debugging code or not depends on the definition I guess - it helps the user track down a faulty devicetree,
+> or as in the case below mismatch with the DSI driver.
+> 
+> ...
+> >>  	dsi->format = desc->format;
+> >>  	dsi->lanes = desc->lanes;
+> >> +	of_property_read_u32(dsi->dev.of_node, "lanes", &dsi->lanes);
+> >
+> >Is this defined in the binding?
+> 
+> Apparently not which I assumed. Other bindings mentions dsi-lanes, but I guess "num-dsi-lanes" would be more correct.
+
+Please use drm_of_get_data_lanes_count() and corresponding property from
+the bindings.
+> 
+> >>  	err = mipi_dsi_attach(dsi);
+> >>  	if (err) {
+> >>  		struct panel_simple *panel = mipi_dsi_get_drvdata(dsi);
+> >>  
+> >> +		dev_err(&dsi->dev, "probe attach err: %i", err);
+> >
+> >Do not introduce unrelated code changes.
+> 
+> As before, it helps the user who has a messed up devicetree find out, since we now gets some more configurability using devicetree.
+> Would it be acceptable as a separate commit, or should I simply skip this?
+> 
+> 
+> >Best regards,
+> >Krzysztof
+> 
+> Thanks!
+> 
+> Best regards
+> /Johan
+> 
+> 
+
+-- 
+With best wishes
+Dmitry
 
