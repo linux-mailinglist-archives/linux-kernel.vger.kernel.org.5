@@ -1,260 +1,269 @@
-Return-Path: <linux-kernel+bounces-153777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F40E88AD2FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:02:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DCBC8AD2FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:02:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC07C284204
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:02:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C49CB2517A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3117153BD0;
-	Mon, 22 Apr 2024 17:00:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E29154BE3;
+	Mon, 22 Apr 2024 17:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nVIUgDmM"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p9PBXRja"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B2D152197;
-	Mon, 22 Apr 2024 17:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7770A154442;
+	Mon, 22 Apr 2024 17:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713805216; cv=none; b=lx7CYKzgSmOXwGK8tOAUxSI8vzQ8TBem4+53+zNGFGCoCJGoonhXSCkkBsS8GysGkk/j34kdoojgdAlpkP5ZtocVNwK65FHPkAJlRCj9ApKkW89ICLHv/750uOwNHwz5Ivbqts+G5lV7yHMGBV7AGdUXfYP5F6tBf9k4h2d8ORA=
+	t=1713805227; cv=none; b=plkWCBKSXObYZFz3VdvPaFHDQamrRwOJqKmwSUS+Ki1gR6t1rJAerYouSPL/6YaFtPlR1HV+ODIDLPvLGdTkyUjDM2Q0BUb+2TEWNNllhJQ4qHMeJbizzpGrhPp3uIDH5DYvW/63cFsl+jl5lYrDqVMNqt7ZJyqMX09FvU3mJBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713805216; c=relaxed/simple;
-	bh=xAOKVOl8L9bgXPssCvU9ysQILCCCOchkHGoJuRkb7/k=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mRPyZ/4xPWV70iEGOSjdlsEjWlu1+FPv9LvjgdOyUppe/3ylNmtt1pDtGCBx89bdzsw8K1qZ2QLOzKuqhcoRlodZ8o+SNdvt3Q7lKw9Z+9IMF1IE4ctsjZOUrPXyVKe3KOxUmkWCzzaIuDqRiRL/GaNeKf8JpwnherocrEwFpD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nVIUgDmM; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713805214; x=1745341214;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=xAOKVOl8L9bgXPssCvU9ysQILCCCOchkHGoJuRkb7/k=;
-  b=nVIUgDmMWgH/10eZ0/kkZr4/Cxgg0cB+X7YR+R2dWPEl7vnZ92LpXSL1
-   +eq+Hg64a7c2w6HLp+/he31PLxkC7SnD7KJ25UDbtLl2TMAQfcBIE/EOW
-   5U5NeyZYiZmsKYZZFBiK/zk997ffoRsD52KHsfI5+m1BeXMK9rZe+ns10
-   i+YqtDx3REuNZI3soD+n9YGWeD8ZLyQZ+mXVVT9Z9z851qKFcDS1d4e/F
-   YSmDwwbKuoIxrb89Iw+eRnn5zQq/KXyIH8JYdVHAiqPtW2BVR+Z/5eCa1
-   TFjR7I8t6gh9GRZYaFy0affCZmiGJyrL1soXjhcQBC3PL8YwJVWIZfZuS
-   Q==;
-X-CSE-ConnectionGUID: ID55QCg5Q2Gsgg/NxT1cng==
-X-CSE-MsgGUID: tWFRuV3/TWClPHb2z12Tsg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="20502405"
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="20502405"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 10:00:13 -0700
-X-CSE-ConnectionGUID: W0R16tSASjShcIHwqgyPlg==
-X-CSE-MsgGUID: OW6KzNTESxqrC5nGq+YBPg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="23953716"
-Received: from ralbanes-mobl.ger.corp.intel.com (HELO localhost) ([10.252.63.128])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 10:00:10 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven
- <geert+renesas@glider.be>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, Dave Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH 00/11] drm: Restore helper usability
-In-Reply-To: <af6e26d1-1402-4ed2-a650-b58eae77273e@app.fastmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <cover.1713780345.git.geert+renesas@glider.be>
- <87il09ty4u.fsf@intel.com>
- <ff4f9e8f-0825-4421-adf9-e3914b108da7@app.fastmail.com>
- <875xw9ttl6.fsf@intel.com>
- <af6e26d1-1402-4ed2-a650-b58eae77273e@app.fastmail.com>
-Date: Mon, 22 Apr 2024 20:00:07 +0300
-Message-ID: <87wmops57s.fsf@intel.com>
+	s=arc-20240116; t=1713805227; c=relaxed/simple;
+	bh=s1zKSecfH6FRmGi1pXDaj0RBdLhVWJQvZjaTL6GhU6w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L4d18EPEWCppw6PUW2CJZDL6gH8KZvOw8QhbWjDNhstP66apzLzU54mUuIH0eoqbFKj/meaPCt8foWEgiDt8qBHnGpPjw+c4djBZAeSk/0b8FcDTDnETbpqlpBH2RUycaYmnnd5QZXkr6RmFdzR66MIIuYLKlRqpeQu/Pd+TfVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p9PBXRja; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 126ECC32781;
+	Mon, 22 Apr 2024 17:00:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713805227;
+	bh=s1zKSecfH6FRmGi1pXDaj0RBdLhVWJQvZjaTL6GhU6w=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=p9PBXRja5DrqjaANoj45wR5oqP3bp+/4UZDr1Idi/pLcG6u6YCY7FQhylKRY0i125
+	 kClvfu45zFNxa5WHWWHfqk7f/H4ByJ2mVfLXyS8OXgMz6lMzzWe5iiONFsDoroeaK3
+	 8e0VRnM7RK0K1859HlwfIYg1co1IyxnAIzrP/5svFF/7Gk8aruqarQSxc94Zu6/WI3
+	 /nFx4hS6NeiEMBvTU5AMc7JRicRL6HQo6b7FTbNI0mF/NL3YzEJVnCJHFdkCeVpZqT
+	 xx2fNaYCm7HsoiynuVCUKahyTtvxXCwNT29/7eFRLqcG0DcJaeRz5jQZOFdJTIV5No
+	 l3CFRC+yCqbLQ==
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5acdbfa6e94so1233146eaf.2;
+        Mon, 22 Apr 2024 10:00:27 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX5GrzzTpBDChVugSAsOQAOLapXrrvJN5AxH673EV53/L4/ZLkpmPmW5/imqKtpxjWXzndv+f5ZkggCalbm68BObWrXT0YNSoqvnoquNCgiXKbJbhOqQRJgL1zk718+DiJ0xbhuw05Bq19dISt7F0OoSdKr9551zIlaJgaS4rMe3A==
+X-Gm-Message-State: AOJu0YwierBbOMy2hwz9wpaJRoMFBTqqNCWEPwJMRISs9l77nP8aoFo8
+	iEPLlI1/C/TuIg8MmIK5xmpJnyNBtdvayXX2hHPcO9EnVTamwMHc8ouqAps+u2QC18MnUdoz7hZ
+	HFbGb+aDM2QjNwyuTnBy95WGqaeY=
+X-Google-Smtp-Source: AGHT+IG5C8aadvjW5yhvWe50p/4WPry2PTf7i+PbfLKWECNBaTQZTZ7wgjS/5Q9vQx4/cCAOWukQ58biWD8awJFIDC0=
+X-Received: by 2002:a4a:de19:0:b0:5a7:db56:915c with SMTP id
+ y25-20020a4ade19000000b005a7db56915cmr11975023oot.1.1713805226331; Mon, 22
+ Apr 2024 10:00:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240411231844.3306037-1-vanshikonda@os.amperecomputing.com>
+In-Reply-To: <20240411231844.3306037-1-vanshikonda@os.amperecomputing.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 22 Apr 2024 19:00:15 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hHbnVb8jnqd+o-GMS+Pw=UMq-7LQekBWWpNqTkBNfUWA@mail.gmail.com>
+Message-ID: <CAJZ5v0hHbnVb8jnqd+o-GMS+Pw=UMq-7LQekBWWpNqTkBNfUWA@mail.gmail.com>
+Subject: Re: [PATCH v3] ACPI: CPPC: Fix access width used for PCC registers
+To: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+Cc: Jarred White <jarredwhite@linux.microsoft.com>, 
+	Easwar Hariharan <eahariha@linux.microsoft.com>, 
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, "5 . 15+" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 22 Apr 2024, "Arnd Bergmann" <arnd@arndb.de> wrote:
-> On Mon, Apr 22, 2024, at 15:28, Jani Nikula wrote:
->> On Mon, 22 Apr 2024, "Arnd Bergmann" <arnd@arndb.de> wrote:
->>> On Mon, Apr 22, 2024, at 13:50, Jani Nikula wrote:
->>>
->>>> I still disagree with this, because fundamentally the source symbol
->>>> really should not have to care about the dependencies of the target
->>>> symbol.
->>>
->>> Sorry you missed the IRC discussion on #armlinux, we should have
->>> included you as well since you applied the original patch.
->>>
->>> I think the reason for this revert is a bit more nuanced than
->>> just the usability problem. Sorry if I'm dragging this out too
->>> much, but I want to be sure that two points come across:
->>>
->>> 1. There is a semantic problem that is mostly subjective, but
->>>    with the naming as "helper", I generally expect it as a hidden
->>>    symbol that gets selected by its users, while calling same module
->>>    "feature" would be something that is user-enabled and that
->>>    other modules depend on. Both ways are commonly used in the
->>>    kernel and are not mistakes on their own.
->>
->> Fair enough. I believe for (optional) "feature" the common pattern would
->> then be depends on FEATURE || FEATURE=n.
->>
->>> 2. Using "select" on user visible symbols that have dependencies
->>>    is a common source for bugs, and this is is a problem in
->>>    drivers/gpu/drm more than elsewhere in the kernel, as these
->>>    drivers traditionally select entire subsystems or drivers
->>>    (I2C, VIRTIO, INPUT, ACPI_WMI, BACKLIGHT_CLASS_DEVICE,
->>>    POWER_SUPPLY, SND_PCM, INTERCONNECT, ...). This regularly
->>>    leads to circular dependencies and we should fix all of them.
->>
->> What annoys me is that the fixes tend to fall in two categories:
->>
->> - Play catch with selecting the dependencies of the selected
->>   symbols. "depends on" handles this recursively, while select does
->>   not.
+On Fri, Apr 12, 2024 at 1:18=E2=80=AFAM Vanshidhar Konda
+<vanshikonda@os.amperecomputing.com> wrote:
 >
-> I'm not sure where this misunderstanding comes from, as you
-> seem to be repeating the same incorrect assumption about
-> how select works that Maxime wrote in his changelog. To clarify,
-> this works exactly as one would expect:
+> commit 2f4a4d63a193be6fd530d180bb13c3592052904c modified
+> cpc_read/cpc_write to use access_width to read CPC registers. For PCC
+> registers the access width field in the ACPI register macro specifies
+> the PCC subspace id. For non-zero PCC subspace id the access width is
+> incorrectly treated as access width. This causes errors when reading
+> from PCC registers in the CPPC driver.
 >
-> config HELPER_A
->        tristate
+> For PCC registers base the size of read/write on the bit width field.
+> The debug message in cpc_read/cpc_write is updated to print relevant
+> information for the address space type used to read the register.
 >
-> config HELPER_B
->        tristate
->        select HELPER_A
+> Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+> Tested-by: Jarred White <jarredwhite@linux.microsoft.com>
+> Reviewed-by: Jarred White <jarredwhite@linux.microsoft.com>
+> Reviewed-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+> Cc: 5.15+ <stable@vger.kernel.org> # 5.15+
+> ---
 >
-> config DRIVER
->        tristate "Turn on the driver and the helpers it uses"
->        select HELPER_B # this recursively selects HELPER_A
+> When testing v6.9-rc1 kernel on AmpereOne system dmesg showed that
+> cpufreq policy had failed to initialize on some cores during boot because
+> cpufreq->get() always returned 0. On this system CPPC registers are in PC=
+C
+> subspace index 2 that are 32 bits wide. With this patch the CPPC driver
+> interpreted the access width field as 16 bits, causing the register read
+> to roll over too quickly to provide valid values during frequency
+> computation.
 >
-> Whereas this one is broken:
+> v2:
+> - Use size variable in debug print message
+> - Use size instead of reg->bit_width for acpi_os_read_memory and
+>   acpi_os_write_memory
 >
-> config FEATURE_A
->        tristate "user visible if I2C is enabled"
->        depends on I2C
+> v3:
+> - Fix language in error messages in cpc_read/cpc_write
 >
-> config HELPER_B
->        tristate # hidden
->        select FEATURE_A
+>  drivers/acpi/cppc_acpi.c | 53 ++++++++++++++++++++++++++++------------
+>  1 file changed, 37 insertions(+), 16 deletions(-)
 >
-> config DRIVER
->        tristate "This driver is broken if I2C is disabled"
->        select HELPER_B
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index 4bfbe55553f4..7d476988fae3 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -1002,14 +1002,14 @@ static int cpc_read(int cpu, struct cpc_register_=
+resource *reg_res, u64 *val)
+>         }
+>
+>         *val =3D 0;
+> +       size =3D GET_BIT_WIDTH(reg);
+>
+>         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_IO) {
+> -               u32 width =3D GET_BIT_WIDTH(reg);
+>                 u32 val_u32;
+>                 acpi_status status;
+>
+>                 status =3D acpi_os_read_port((acpi_io_address)reg->addres=
+s,
+> -                                          &val_u32, width);
+> +                                          &val_u32, size);
+>                 if (ACPI_FAILURE(status)) {
+>                         pr_debug("Error: Failed to read SystemIO port %ll=
+x\n",
+>                                  reg->address);
+> @@ -1018,17 +1018,22 @@ static int cpc_read(int cpu, struct cpc_register_=
+resource *reg_res, u64 *val)
+>
+>                 *val =3D val_u32;
+>                 return 0;
+> -       } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM && p=
+cc_ss_id >=3D 0)
+> +       } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM && p=
+cc_ss_id >=3D 0) {
+> +               /*
+> +                * For registers in PCC space, the register size is deter=
+mined
+> +                * by the bit width field; the access size is used to ind=
+icate
+> +                * the PCC subspace id.
+> +                */
+> +               size =3D reg->bit_width;
+>                 vaddr =3D GET_PCC_VADDR(reg->address, pcc_ss_id);
+> +       }
+>         else if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
+>                 vaddr =3D reg_res->sys_mem_vaddr;
+>         else if (reg->space_id =3D=3D ACPI_ADR_SPACE_FIXED_HARDWARE)
+>                 return cpc_read_ffh(cpu, reg, val);
+>         else
+>                 return acpi_os_read_memory((acpi_physical_address)reg->ad=
+dress,
+> -                               val, reg->bit_width);
+> -
+> -       size =3D GET_BIT_WIDTH(reg);
+> +                               val, size);
+>
+>         switch (size) {
+>         case 8:
+> @@ -1044,8 +1049,13 @@ static int cpc_read(int cpu, struct cpc_register_r=
+esource *reg_res, u64 *val)
+>                 *val =3D readq_relaxed(vaddr);
+>                 break;
+>         default:
+> -               pr_debug("Error: Cannot read %u bit width from PCC for ss=
+: %d\n",
+> -                        reg->bit_width, pcc_ss_id);
+> +               if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
+> +                       pr_debug("Error: Cannot read %u bit width from sy=
+stem memory: 0x%llx\n",
+> +                               size, reg->address);
+> +               } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_C=
+OMM) {
+> +                       pr_debug("Error: Cannot read %u bit width from PC=
+C for ss: %d\n",
+> +                               size, pcc_ss_id);
+> +               }
+>                 return -EFAULT;
+>         }
+>
+> @@ -1063,12 +1073,13 @@ static int cpc_write(int cpu, struct cpc_register=
+_resource *reg_res, u64 val)
+>         int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpu);
+>         struct cpc_reg *reg =3D &reg_res->cpc_entry.reg;
+>
+> +       size =3D GET_BIT_WIDTH(reg);
+> +
+>         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_IO) {
+> -               u32 width =3D GET_BIT_WIDTH(reg);
+>                 acpi_status status;
+>
+>                 status =3D acpi_os_write_port((acpi_io_address)reg->addre=
+ss,
+> -                                           (u32)val, width);
+> +                                           (u32)val, size);
+>                 if (ACPI_FAILURE(status)) {
+>                         pr_debug("Error: Failed to write SystemIO port %l=
+lx\n",
+>                                  reg->address);
+> @@ -1076,17 +1087,22 @@ static int cpc_write(int cpu, struct cpc_register=
+_resource *reg_res, u64 val)
+>                 }
+>
+>                 return 0;
+> -       } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM && p=
+cc_ss_id >=3D 0)
+> +       } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_COMM && p=
+cc_ss_id >=3D 0) {
+> +               /*
+> +                * For registers in PCC space, the register size is deter=
+mined
+> +                * by the bit width field; the access size is used to ind=
+icate
+> +                * the PCC subspace id.
+> +                */
+> +               size =3D reg->bit_width;
+>                 vaddr =3D GET_PCC_VADDR(reg->address, pcc_ss_id);
+> +       }
+>         else if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
+>                 vaddr =3D reg_res->sys_mem_vaddr;
+>         else if (reg->space_id =3D=3D ACPI_ADR_SPACE_FIXED_HARDWARE)
+>                 return cpc_write_ffh(cpu, reg, val);
+>         else
+>                 return acpi_os_write_memory((acpi_physical_address)reg->a=
+ddress,
+> -                               val, reg->bit_width);
+> -
+> -       size =3D GET_BIT_WIDTH(reg);
+> +                               val, size);
+>
+>         if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY)
+>                 val =3D MASK_VAL(reg, val);
+> @@ -1105,8 +1121,13 @@ static int cpc_write(int cpu, struct cpc_register_=
+resource *reg_res, u64 val)
+>                 writeq_relaxed(val, vaddr);
+>                 break;
+>         default:
+> -               pr_debug("Error: Cannot write %u bit width to PCC for ss:=
+ %d\n",
+> -                        reg->bit_width, pcc_ss_id);
+> +               if (reg->space_id =3D=3D ACPI_ADR_SPACE_SYSTEM_MEMORY) {
+> +                       pr_debug("Error: Cannot write %u bit width to sys=
+tem memory: 0x%llx\n",
+> +                               size, reg->address);
+> +               } else if (reg->space_id =3D=3D ACPI_ADR_SPACE_PLATFORM_C=
+OMM) {
+> +                       pr_debug("Error: Cannot write %u bit width to PCC=
+ for ss: %d\n",
+> +                               size, pcc_ss_id);
+> +               }
+>                 ret_val =3D -EFAULT;
+>                 break;
+>         }
+> --
 
-This case is really what I was referring to, although I was sloppy with
-words there. I understand that select does work recursively for selects.
-
->>   There is no end to this, it just goes on and on, as the
->>   dependencies of the selected symbols change over time. Often the
->>   selects require unintuitive if patterns that are about the
->>   implementation details of the symbol being selected.
->
-> Agreed, that is the problem I frequently face with drivers/gpu/drm,
-> and most of the time it can only be solved by rewriting the whole
-> system to not select user-visible symbol at all.
->
-> Using 'depends on' by itself is unfortunately not enough to
-> avoid /all/ the problems. See e.g. today's failure
->
-> config DRM_DISPLAY_HELPER
->        tristate "DRM Display Helpers"
->        default y
->
-> config DRM_DISPLAY_DP_HELPER
->        bool "DRM DisplayPort Helpers"
->        depends on DRM_DISPLAY_HELPER
->
-> config DRM_PANEL_LG_SW43408
->        tristate "LG SW43408 panel"
->        depends on DRM_DISPLAY_DP_HELPER
->
-> This version is still broken for DRM_DISPLAY_HELPER=m,
-> DRM_DISPLAY_DP_HELPER=m, DRM_PANEL_LG_SW43408=y because
-> the dependency on the bool symbol is not enough to
-> ensure that DRM_DISPLAY_HELPER is also built-in, so you
-> still need explicit dependencies on both
-> DRM_DISPLAY_HELPER and DRM_DISPLAY_DP_HELPER in the users.
->
-> This can be solved by making DRM_DISPLAY_DP_HELPER a
-> tristate symbol and adjusting the #ifdef checks and
-> Makefile logic accordingly, which is exactly what you'd
-> need to do to make it work with 'select' as well.
-
-So bool is kind of problematic for depends on and select even when it's
-not really used for describing builtin vs. no, but rather yes vs. no?
-
->> - Brush the invalid configs under the rug by using IS_REACHABLE(),
->>   switching from a loud link time failure to a silent runtime
->>   failure. (I regularly reject patches adding IS_REACHABLE() to i915,
->>   because from my pov e.g. i915=y backlight=m is an invalid
->>   configuration that the user shouldn't have to debug at runtime. But I
->>   can't express that in kconfig while everyone selects backlight.)
->
-> Thanks a lot for rejecting the IS_REACHABLE() patches, it is
-> indeed the worst way to handle those (I know, as I introduced
-> IS_REACHABLE() only to replace open-coded versions of the same,
-> not to have it as a feature or to use it in new code).
->
->> If you have other ideas how these should be fixed, I'm all ears.
->>
->>>    The display helpers however don't have this problem because
->>>    they do not have any dependencies outside of drivers/gpu/
->>
->> Fair enough, though I think they still suffer from some of them having
->> dependencies. (Wasn't this how the original patches and the debate all
->> got started?)
->
-> I believe that Maxime said on IRC that he only did the patches
-> originally because he expected problems with them based on his
-> understanding on how Kconfig works. I'm not aware of any
-> particular problem here.
->
-> Let me know if you see a problem with any of the symbols that
-> Geert has proposed for reverting, and I'll try to find a solution.
-
-I think there will still be some things that select and some other
-things that depends on DRM_DISPLAY_HELPER, for example. Usually that's a
-recipe for kconfig failures down the line. (Is it ever a good idea?)
-
-For example, after this series, we'll (again) have:
-
-config DRM_DISPLAY_DP_AUX_CEC
-	bool "Enable DisplayPort CEC-Tunneling-over-AUX HDMI support"
-	depends on DRM && DRM_DISPLAY_HELPER
-	select DRM_DISPLAY_DP_HELPER
-	select CEC_CORE
-
-Should we now also drop the help from DRM_DISPLAY_HELPER, and select it
-everywhere, including here, and in DRM_DISPLAY_HDCP_HELPER and
-DRM_DISPLAY_HDMI_HELPER?
-
-> In my randconfig test environment, I have several patches that
-> I sent in the past to clean up the ACPI_VIDEO, I2C, BACKLIGHT and
-> LED dependencies to stop using 'select' as I could not otherwise
-> get nouveau, i915 and xe to build reliably, but that means I
-> may be missing some of the other problems.
-
-Yeah, these seem to be the really problematic ones. I admit I may have
-been misguided in insisting the same approach to the helpers that should
-be used here; at least the helpers should be easier to fix without
-selecting the target symbol dependencies in the source symbols.
-
-BR,
-Jani.
-
-
--- 
-Jani Nikula, Intel
+Applied as 6.9-rc material, thanks!
 
