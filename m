@@ -1,173 +1,167 @@
-Return-Path: <linux-kernel+bounces-153580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EC448ACFE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:49:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5648C8ACFE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:49:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B5B2843A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:49:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BD5D1F22434
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22AEF15217B;
-	Mon, 22 Apr 2024 14:49:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC9E152509;
+	Mon, 22 Apr 2024 14:49:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="LIT12U2Z"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OUT9a+ux"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009B8152169
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 14:49:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88FEA2AD2D;
+	Mon, 22 Apr 2024 14:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713797369; cv=none; b=mQ6o00S+JAlhzncj156sTk/c/N8EkQ4xo/9n719T11TEumrukHuOB4fW5u+grds6RRMQ/Nl+HIltexo/b+Odt0O1GKAuGes9CuVN2eTQl4gTx14vKjsHsgqMGS9jDsCWbjBJmru+ROqvJcrXScs1VXbh30qbp+mASBIf7tDA0C8=
+	t=1713797380; cv=none; b=DmBft5u7ny3+FFPhmgN+Q1Ie+w3R0C7niuYKnLH7ndDnEBQI2+ZjYSzoI1q1Bht30LDdvrfWQpwQx3hFgzYS+PGO7y8xRJ2+Q5KJBtfOx6rnHXZyOFnsNyTlrB33CcbeJxgMp7X4+maWf7Lo4aHWOyUy67E5Jp63BxuOlDdYoic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713797369; c=relaxed/simple;
-	bh=ANj2lwCdF1e5x2y4t0N/qQl7GamrLnoXCuiQ6qmUnRY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LgTf6fI6m7Z34Nq1ai/C+dPmdqm0pGejRG3394z7Y8RtGpgnB0H441iyv8BmAulMr9eIKxu7A5EyqwxbbqaTlbK94RAGNKuflHM96vefESJ11VfdGU93BQLH9bncJjieC6LNRcJuHi8pTt/VgWMWTUs4KrgjjLp9Xiz4AaZpk5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=LIT12U2Z; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713797365;
-	bh=ANj2lwCdF1e5x2y4t0N/qQl7GamrLnoXCuiQ6qmUnRY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LIT12U2Zq14xHhLBBEFLI3q7TtVSuT5LClXc3jRoXLYcGysNofNq+4bVb7DGFVdW5
-	 gmkl/GC4N8wLiF7FZam1KRR2JU5Xdgq22S0DN26y+yqLI0BSlli+QJLAaUTpBYwPlX
-	 Od0bl5TEOTS5ssCX7zEZ34xMuqqeRSlj3wWXDx9ny7zjCTAXxi+dWX40ZyY7X/1iVW
-	 DHiWjAqvavUKVCKNgJAPHm2rA7+zgpTv/7FC2t+2y1t/Shho2at5p3wyl71gKFDXT2
-	 /4vRYPTecym8dYkA/ICimmg0B2LduSRBnqVBP6PYTTH1MgudjyOQLhvtyi7Zcf6oEl
-	 UOt2zg26FYf0g==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8888E3782123;
-	Mon, 22 Apr 2024 14:49:24 +0000 (UTC)
-Date: Mon, 22 Apr 2024 17:49:22 +0300
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- rdunlap@infradead.org, arthurgrillo@riseup.net, Jonathan Corbet
- <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
- miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
- seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
-Subject: Re: [PATCH v6 13/17] drm/vkms: Add range and encoding properties to
- the plane
-Message-ID: <20240422174922.6bac5683.pekka.paalanen@collabora.com>
-In-Reply-To: <20240409-yuv-v6-13-de1c5728fd70@bootlin.com>
-References: <20240409-yuv-v6-0-de1c5728fd70@bootlin.com>
-	<20240409-yuv-v6-13-de1c5728fd70@bootlin.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713797380; c=relaxed/simple;
+	bh=W1EiwE9ebnO+fWvv7xjX1fGRlVmYlkU71qMkrB1ko1Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Nrf0FPV1flPbJcQmc4pESAnC0aH3ja1ocPRn0nG0Dop7ePlRGLXzdhVzxg4bXxi1B+X6N3Z0/8YZ6Qn49OKEUNUdr/Ws5taRcWwpwkEKihxEDYnwtlL3VwGcXHIh08yVP0d+aTgd806D7ztWceqgBnNDqJtxikgHueNnzYit3Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OUT9a+ux; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7725C113CC;
+	Mon, 22 Apr 2024 14:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713797380;
+	bh=W1EiwE9ebnO+fWvv7xjX1fGRlVmYlkU71qMkrB1ko1Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OUT9a+uxzdAupPFPcsZjuKXNDC6WwK74ZB4UV/AWLqjhBNW3o0uQ1u7+sadwpTqMO
+	 wkPGem+umIM8vIlJvUCaTORjMhfBU9b3EbXyTwjs3Gx977LBB7enFgfOxLa0gLU6n0
+	 5u6AA5zjHgZraz7iZiVTj8c//mu8FIkZJL4RCAwkgetxRHZLA9tLIIdsVXKHh4waHL
+	 WTUse+Fax2pOV1gtMJzeOGvTUErV/6HSsAKluCsa9mkqPyl+I2COgbQtD63kkK3mv+
+	 wJTQniGe9U9dYJx7A5LWK4d3M0agc+/v4k40wTnHS1aur3yWQ22accOgKVP1McrICj
+	 ZLBQInAQ4fRzw==
+Message-ID: <311c8b64-be13-4740-a659-3a14cf68774a@kernel.org>
+Date: Mon, 22 Apr 2024 16:49:27 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4k48lEW_QdEbCmFp+XKPuuC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/10] sysctl: Remove sentinel elements from kernel dir
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Joel Granados <j.granados@samsung.com>, Luis Chamberlain
+ <mcgrof@kernel.org>, josh@joshtriplett.org, Kees Cook
+ <keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>,
+ Iurii Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>,
+ Stephen Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>,
+ Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
+ <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Valentin Schneider <vschneid@redhat.com>, Petr Mladek <pmladek@suse.com>,
+ John Ogness <john.ogness@linutronix.de>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Balbir Singh
+ <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>
+Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, tools@kernel.org
+References: <20240328-jag-sysctl_remove_empty_elem_kernel-v3-0-285d273912fe@samsung.com>
+ <36a1ea2f-92c2-4183-a892-00c5b48c419b@linaro.org>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <36a1ea2f-92c2-4183-a892-00c5b48c419b@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---Sig_/4k48lEW_QdEbCmFp+XKPuuC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 22/04/2024 16:27, Konrad Dybcio wrote:
+> 
+> 
+> On 3/28/24 16:44, Joel Granados wrote:
+>> What?
+>> These commits remove the sentinel element (last empty element) from the
+>> sysctl arrays of all the files under the "kernel/" directory that use a
+>> sysctl array for registration. The merging of the preparation patches
+>> [1] to mainline allows us to remove sentinel elements without changing
+>> behavior. This is safe because the sysctl registration code
+>> (register_sysctl() and friends) use the array size in addition to
+>> checking for a sentinel [2].
+> 
+> Hi,
+> 
+> looks like *this* "patch" made it to the sysctl tree [1], breaking b4
+> for everyone else (as there's a "--- b4-submit-tracking ---" magic in
+> the tree history now) on next-20240422
+> 
+> Please drop it (again, I'm only talking about this empty cover letter).
 
-On Tue, 09 Apr 2024 15:25:31 +0200
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+Just to clarify, in case it is not obvious:
+Please *do not merge your own trees* into kernel.org repos. Instead use
+b4 shazam to pick up entire patchset, even if it is yours. b4 allows to
+merge/apply also the cover letter, if this is your intention.
 
-> From: Arthur Grillo <arthurgrillo@riseup.net>
->=20
-> Now that the driver internally handles these quantization ranges and YUV
-> encoding matrices, expose the UAPI for setting them.
->=20
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> [Louis Chauvet: retained only relevant parts, updated the commit message]
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> ---
->  drivers/gpu/drm/vkms/vkms_formats.c | 2 +-
->  drivers/gpu/drm/vkms/vkms_plane.c   | 9 +++++++++
->  2 files changed, 10 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
-kms_formats.c
-> index 2d7445a3de93..a294744d29d6 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -238,7 +238,7 @@ static struct pixel_argb_u16 argb_u16_from_RGB565(con=
-st u16 *pixel)
->  static struct pixel_argb_u16 argb_u16_from_yuv888(u8 y, u8 channel_1, u8=
- channel_2,
->  						  const struct conversion_matrix *matrix)
->  {
-> -	u8 r, g, b;
-> +	u16 r, g, b;
->  	s64 fp_y, fp_channel_1, fp_channel_2;
->  	s64 fp_r, fp_g, fp_b;
+With b4 shazam you would get proper Link tags and not break everyone's
+b4 workflow on next. :/
 
-This part belongs in the previous patch.
+Best regards,
+Krzysztof
 
-Otherwise,
-
-Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-
-
-Thanks,
-pq
-
-> =20
-> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkm=
-s_plane.c
-> index d4e375913122..8f764a108b00 100644
-> --- a/drivers/gpu/drm/vkms/vkms_plane.c
-> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
-> @@ -218,5 +218,14 @@ struct vkms_plane *vkms_plane_init(struct vkms_devic=
-e *vkmsdev,
->  	drm_plane_create_rotation_property(&plane->base, DRM_MODE_ROTATE_0,
->  					   DRM_MODE_ROTATE_MASK | DRM_MODE_REFLECT_MASK);
-> =20
-> +	drm_plane_create_color_properties(&plane->base,
-> +					  BIT(DRM_COLOR_YCBCR_BT601) |
-> +					  BIT(DRM_COLOR_YCBCR_BT709) |
-> +					  BIT(DRM_COLOR_YCBCR_BT2020),
-> +					  BIT(DRM_COLOR_YCBCR_LIMITED_RANGE) |
-> +					  BIT(DRM_COLOR_YCBCR_FULL_RANGE),
-> +					  DRM_COLOR_YCBCR_BT601,
-> +					  DRM_COLOR_YCBCR_FULL_RANGE);
-> +
->  	return plane;
->  }
->=20
-
-
---Sig_/4k48lEW_QdEbCmFp+XKPuuC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYmePMACgkQI1/ltBGq
-qqePdxAAl9TTUVJlL6mpTRB9D+p6M0JTBNIqCo7ZbrR/n8GcWTvxguqpClJgxXIy
-AXd/N5WYaKqf0Rrs5JefeD8inQ2yFWIv5lwjw4Kph0QzsBstnUGrSoONLG9aLQNq
-SxUyE24TFz1jRH6H7Frthvv/8QebFoyaAMP9YBFDC6R7/8DJIoEAJPAoe/0F3oQw
-Z5Lje7gyIaNNHDUjHxmJMCp3eSnW3N6nzA9hc0lynnkj3YdP3pjFYLkujGJ7kKPU
-LOsxer8hzVOMu+5BkBIfHnqrHB/a3klSA0ar77ylJ+I4aEiFz9q4ESoVIVV2ya1P
-iuvhZN1AVM9owHTrxoLOZBSzo0zuEOS7xoTZKGBH55i++DTm8yE+1fOfKQmjMioM
-+NIDmHQNvtF2wV95+T0htxqJ6HnsIE56XqZPSzjmISHzrhLY3Ve2JgMp8uFoO0ZG
-ty9ScqQRHdLDr3g60T4v4nWV3T72WRrile48VQ+lwtg0Tqo68Y0LzKgxbg94DU2D
-rmIDNuSK+AeUySRP8xQ+dIij7NBQ7BqHCx+ZVpnvF+oSI4Pd/+51I9iVKcfkCO4b
-vfezyqJwGERRo4W8nJZ0lH3cyQEzVmBQcsIxQZkfVIo5jqwE+XefAJtVkM3uudWv
-jy7rswGSNevz/hZ55S0mIy/Vs279I65kvCWyP/63oBGzvlLKKDI=
-=db9e
------END PGP SIGNATURE-----
-
---Sig_/4k48lEW_QdEbCmFp+XKPuuC--
 
