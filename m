@@ -1,152 +1,125 @@
-Return-Path: <linux-kernel+bounces-153940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D453E8AD524
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:48:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 321DE8AD502
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:43:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F9B728233D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:48:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1B3E2841E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D975155355;
-	Mon, 22 Apr 2024 19:48:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1683155349;
+	Mon, 22 Apr 2024 19:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="FAgAEY2V"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IbmlU1jN"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7AC154453
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:48:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D766A155310
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713815316; cv=none; b=Jp2EHT97RUoskZSwPextT2R7sUxIoeMQ6xJ9BbUSiBXzbnnpi7JgRbm+nEJ95biSkdeNzHB/YSK0CwYtfJfCCeI5/clrQL2OlVKrtq6Jm7CW1TFgP3MqXL0Nyrd0MqmrzesseusPhA9PLRyjyE4HUzE3uzleADWNDhJq6VB6GQM=
+	t=1713815014; cv=none; b=aeVna1NiShJGEVOSc94Uh3iq5Qt9aLmefGxKwL+UhEbO2wmNpaGV6dDNa7zKfrGEWR+4k7BK6N+pjc+gVqpP/q1FBhMoXuUBcJTT87txtAqJq6Hs/ssO3tj78V1CmCmNrSFZMjIBfn8wfehHWHi0yxeYi9RVtlhbSHCaL4Tdae4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713815316; c=relaxed/simple;
-	bh=tJsTWMos/KbnhOL3mT5W+BoEa4DAfoSFZEU1tL6Mmqg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MvVXyw+6m6xiWe98KgKNl67Uy82Uf0YVglIhX0V2DSu/vaJwnIoAZbGQHn9/SrE4qDA5c1Y0yobRQfm4am6C+09Au26VXn4wg6BEU0yu+SZ5KapBYfZ/rVDmyF80GI70xBBBb8tZrO+yc9rf/8lB92sVZXoh4hXDUhAszVGmObA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=FAgAEY2V; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-	(No client certificate requested)
-	(Authenticated sender: marex@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 264E2889CE;
-	Mon, 22 Apr 2024 21:48:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1713815313;
-	bh=d6DTcCkviDP0v1O7ttuxDHJ02Adt5DLSxBw0N/2grEc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=FAgAEY2V9WPgM2z1fh7FrcvgPCb7VGCTa6eJqNa6fO4umeCVtnVEYMFKXllD9mzjT
-	 1py8nC1swpmWJl3FZ8NfACOdoCgrNAFfsbtkdphoXIUl3aLyZutfCwluwTHplJY1kD
-	 bmP3nOF43K1ZCn4/p5NfS8TpG8udK/uqVMTiZgz95jRy7xWxCCAONny6AHG7iq3e+Q
-	 WdWFOec2qMBMXieCwlVrr3npE5SQTo4+VRDm2JegwnOnXHGbu9liZQq72bbSEUN78H
-	 xGBLsYNapWiH7rbSkSFRnFxDENRf7O6nbsr6bX1PvLxuLydpQDWovUuFGC8Md0L5nX
-	 9oVYktCpH9sYA==
-Message-ID: <75006c7a-34e4-40a6-9336-b1e2e2d966d4@denx.de>
-Date: Mon, 22 Apr 2024 21:43:13 +0200
+	s=arc-20240116; t=1713815014; c=relaxed/simple;
+	bh=rqo5kZsuhsjRzcG6r7op5qGRZLLQPYMPvIRMLhlGAEE=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ss1mbYwj9l5fs+MTfcGb+ddd47C9wT6oyYMIl83E4Hc0qUyE+DV+rzpYWE3ocN95Z09tcKb+vdRsydod410Dnfw6+ja7NedsLD5FGYSSnXX8JLCqYUlRYC9HN+OG98r/6QgRtRAW9Nzm8z0G2rENQNE0vmQQaGJ8egKM/avuV9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IbmlU1jN; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc647f65573so10260688276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:43:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713815012; x=1714419812; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JyzTdSdQlZjPTKTajFwL+PTG8n8RFsaCQ17y36xG4qs=;
+        b=IbmlU1jNa25HgJG7LFHg/CU7wk5LcFKccUL8gSqZqnW2DNdF4xak+i8F/DGBy9cYqC
+         inskTDcvuoqCG9pSqB2uIxlXoCLUr7xUSFHNANlviS44qAeYK9vWiDR6Fnr6RSlBNyjV
+         HmzGCppHmz+wIObLpAAt+QnbfzKev3q3eioqNkHGTyjp9L8bmo4PGSNeiC47XxATdEqA
+         XfncL4Lywu9+NlWPykewxxVJnBRKKpmSfSJrH6K4bNTkF1ABFSbIjZjTGqw352RsUDtj
+         BfA6iD73ZtGCF5Qlo4lKmKWxnhYGpPm6glk+8POwC/vKmgZEbwMRYDKTATB2WgGJC+5D
+         Fi5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713815012; x=1714419812;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JyzTdSdQlZjPTKTajFwL+PTG8n8RFsaCQ17y36xG4qs=;
+        b=Aa8pIgz+SpeTSnf6bW+LUknSvA3T6plwju+1DMS4/0Ae5/EHWX0Bd/XnZ0GV6A+eXE
+         D3dcl5/d5T+dqzxUrvk0gNYAWGr90bor4ZEeSpOgh0S78UJ1Ij2x1byQksQrrl035Lmk
+         ljH/R2LvYCl3vV3RYaqRDz4b4laYmRz7k2SRQoZWz2Jqw/c9XtkjRpB140h8gLWMLySN
+         2pmZsKVzBuNJ1Og7inyqSPWYFFMJ+nhtdt1liegBts6W7nezHfN/sMZ5+JPXIbiYvYlW
+         WbAL94/ibN3XkwmbnFOKF8Y/LbBIFQHpFGXRJOIgrTYVKgY2bZ8hrp9IOR6uLEgw8qcl
+         T1qw==
+X-Forwarded-Encrypted: i=1; AJvYcCVUwAIg9wG/yAZtVzAuT6ZtX93of2cgFC4DL9ZgE/VCeUyEob7nkuWbwDM4rPmQ6fcQ+g0HMnuj6C1MtjM+eRqILf48ULkGjejDdLkD
+X-Gm-Message-State: AOJu0YyO5Dw5IF37nLqH4zY8YKmHOvXrgDWvuVKiu4j7PcorLhizoXyT
+	UFnmkdV3SQPyrMvuqjPKae5edyRUfQeiL2mu5o8PN6zydR7vsmvNWXp/tU7UWWChft2C/L0FVcw
+	+Kw==
+X-Google-Smtp-Source: AGHT+IEBAZmsWiF9Oef4bJqyhQc/VsZSMs3v5FKxK9dwBp2DXeyyqSS3hoEpcVGzDdsfeq32Lj2jvxWrGM8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:10c3:b0:de5:2325:72a1 with SMTP id
+ w3-20020a05690210c300b00de5232572a1mr1265614ybu.4.1713815011856; Mon, 22 Apr
+ 2024 12:43:31 -0700 (PDT)
+Date: Mon, 22 Apr 2024 12:43:30 -0700
+In-Reply-To: <20240422130558.86965-1-wei.w.wang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/2] drm/bridge: samsung-dsim: Fix porch calcalcuation
- rounding
-To: Adam Ford <aford173@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, aford@beaconembedded.com,
- Frieder Schrempf <frieder.schrempf@kontron.de>,
- Inki Dae <inki.dae@samsung.com>, Jagan Teki <jagan@amarulasolutions.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Marco Felsch <m.felsch@pengutronix.de>,
- Michael Tretter <m.tretter@pengutronix.de>, linux-kernel@vger.kernel.org
-References: <20240211230931.188194-1-aford173@gmail.com>
- <20240211230931.188194-2-aford173@gmail.com>
- <6111fe04-4ecb-428e-9a0c-dc02cadfe3e7@denx.de>
- <CAHCN7x+DwSSabhGYZ1dnZzwRe+BJfz2H-AXbxjUQWytrq3OMpQ@mail.gmail.com>
- <47b26a19-9aba-4380-9d05-f06bd8bc20b1@denx.de>
- <CAHCN7x+R5t5o13tFrQ1trH1LTPshSOOvuerDpUTY++Umqwr=WA@mail.gmail.com>
-Content-Language: en-US
-From: Marek Vasut <marex@denx.de>
-In-Reply-To: <CAHCN7x+R5t5o13tFrQ1trH1LTPshSOOvuerDpUTY++Umqwr=WA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+Mime-Version: 1.0
+References: <20240422130558.86965-1-wei.w.wang@intel.com>
+Message-ID: <Zia94vbLD-DF1GEw@google.com>
+Subject: Re: [PATCH v1] KVM: x86: Validate values set to guest's MSR_IA32_ARCH_CAPABILITIES
+From: Sean Christopherson <seanjc@google.com>
+To: Wei Wang <wei.w.wang@intel.com>
+Cc: pbonzini@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On 4/22/24 3:04 PM, Adam Ford wrote:
-> On Mon, Apr 22, 2024 at 8:01 AM Marek Vasut <marex@denx.de> wrote:
->>
->> On 4/22/24 2:09 PM, Adam Ford wrote:
->>> On Sun, Apr 21, 2024 at 9:36 AM Marek Vasut <marex@denx.de> wrote:
->>>>
->>>> On 2/12/24 12:09 AM, Adam Ford wrote:
->>>>> When using video sync pulses, the HFP, HBP, and HSA are divided between
->>>>> the available lanes if there is more than one lane.  For certain
->>>>> timings and lane configurations, the HFP may not be evenly divisible.
->>>>> If the HFP is rounded down, it ends up being too small which can cause
->>>>> some monitors to not sync properly. In these instances, adjust htotal
->>>>> and hsync to round the HFP up, and recalculate the htotal.
->>>>>
->>>>> Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> # Kontron BL i.MX8MM with HDMI monitor
->>>>> Signed-off-by: Adam Ford <aford173@gmail.com>
->>>>> ---
->>>>> V2:  No changes
->>>>>
->>>>> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
->>>>> index 8476650c477c..52939211fe93 100644
->>>>> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
->>>>> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
->>>>> @@ -1606,6 +1606,27 @@ static int samsung_dsim_atomic_check(struct drm_bridge *bridge,
->>>>>                 adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
->>>>>         }
->>>>>
->>>>> +     /*
->>>>> +      * When using video sync pulses, the HFP, HBP, and HSA are divided between
->>>>> +      * the available lanes if there is more than one lane.  For certain
->>>>> +      * timings and lane configurations, the HFP may not be evenly divisible.
->>>>> +      * If the HFP is rounded down, it ends up being too small which can cause
->>>>> +      * some monitors to not sync properly. In these instances, adjust htotal
->>>>> +      * and hsync to round the HFP up, and recalculate the htotal. Through trial
->>>>> +      * and error, it appears that the HBP and HSA do not appearto need the same
->>>>> +      * correction that HFP does.
->>>>> +      */
->>>>> +     if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE && dsi->lanes > 1) {
->>>>
->>>> Does this also apply to mode with sync events (I suspect it does), so
->>>> the condition here should likely be if (!...burst mode) , right ?
->>>
->>> Thanks for the review!
->>>
->>> I was only able to test it with the DSI->ADV6535 bridge, and I'll
->>> admit I don't know a lot about DSI interface since I don't have a copy
->>> of the spec to read.
->>>
->>> Are you proposing this should be:
->>>
->>>    if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST) && dsi->lanes > 1) {
->>>
->>> I just want to make sure I understand what you're requesting.
->>
->> Yes, exactly this.
-> 
-> Do you think it should also include checks for
-> MIPI_DSI_MODE_VIDEO_NO_HFP, MIPI_DSI_MODE_VIDEO_NO_HBP or
-> MIPI_DSI_MODE_VIDEO_NO_HSA?
-> 
-> It seems like if any of these are set, we should skip this rounding stuff.
+On Mon, Apr 22, 2024, Wei Wang wrote:
+> If the bits set by userspace to the guest's MSR_IA32_ARCH_CAPABILITIES
+> are not supported by KVM, fails the write. This safeguards against the
+> launch of a guest with a feature set, enumerated via
+> MSR_IA32_ARCH_CAPABILITIES, that surpasses the capabilities supported by
+> KVM.
 
-Now that you ask this question, shouldn't this actually apply 
-unconditionally , no matter which mode is in use ?
+I'm not entirely certain KVM cares.  Similar to guest CPUID, advertising features
+to the guest that are unbeknownst may actually make sense in some scenarios, e.g.
+if userspace learns of yet another "NO" bit that says a CPU isn't vulnerable to
+some flaw.
+
+ARCH_CAPABILITIES is read-only, i.e. KVM _can't_ shove it into hardware.  So as
+long as KVM treats the value as "untrusted", like KVM does for guest CPUID, I
+think the current behavior is actually ok.
+
+> Fixes: 0cf9135b773b ("KVM: x86: Emulate MSR_IA32_ARCH_CAPABILITIES on AMD hosts")
+
+This goes all the way back to:
+
+  28c1c9fabf48 ("KVM/VMX: Emulate MSR_IA32_ARCH_CAPABILITIES")
+
+the above just moved the logic from vmx.c to x86.c.
+
+> Signed-off-by: Wei Wang <wei.w.wang@intel.com>
+> ---
+>  arch/x86/kvm/x86.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index ebcc12d1e1de..21d476e8e4b0 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3808,6 +3808,9 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  	case MSR_IA32_ARCH_CAPABILITIES:
+>  		if (!msr_info->host_initiated)
+>  			return 1;
+> +		if (data & ~kvm_get_arch_capabilities())
+> +			return 1;
+> +
+>  		vcpu->arch.arch_capabilities = data;
+>  		break;
+>  	case MSR_IA32_PERF_CAPABILITIES:
 
