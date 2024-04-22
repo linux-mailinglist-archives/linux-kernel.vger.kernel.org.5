@@ -1,297 +1,95 @@
-Return-Path: <linux-kernel+bounces-152829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4460C8AC4C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:10:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 105D68AC4D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:12:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39A86B20816
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:09:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06321B2187B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB12D4DA0F;
-	Mon, 22 Apr 2024 07:09:08 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753F34AEE0;
-	Mon, 22 Apr 2024 07:09:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE2650284;
+	Mon, 22 Apr 2024 07:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jj1BMdGR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CAC148CF2;
+	Mon, 22 Apr 2024 07:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713769748; cv=none; b=Zcr3Fo3etY1vYCUwDWpZFpCgMqDwFb+Iq0oPkTM0upHJ9yCNG+IW1RBtzULwJK9TATh32oNswAaf2NsSHDvFFCTZF7X7EvyGz7hh7/bVqE3zUas+4HX0hP98T2Lrg21r4nN9PwmEaRan8tsI3DfHGpcMgJ0yxmXGmivqv50bb6E=
+	t=1713769839; cv=none; b=IWhwdpJNULj9w/ah0jtWxy3ziRMdAVhvf9csFef7nTWPxswC2ttDr7fu5NmxX1IlLNpd0scMAE1rdd2Lhkx+HG9z/q9v7DQY5DZ1X3hFlZsgGfyWdjdMZO/WlTmQi/YYlh50u1quWy2f8bbCiENpc6xpCsIR1QDzepdHdwt2/kI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713769748; c=relaxed/simple;
-	bh=28b+Uc5vS3cu/g0Cy9Nux8bRU5W6BmMuyGIHQvZIBjc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Xhclm5pHm5dKyrwmyfuj2qOTztn9zdFwKTLLZi7SM+z/ebvMh28fehaZ8+b6aO6hP2fwsCyrL+rx8/+k52I7aWZvfbaq4PG8PX7qRFFvnBAvwl2u7mPDi2eFH7xxmSAkOOECtvHLJEFc7V+L1yZYtqOsNQT8zp5LzjYeQsHF1TU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33D641476;
-	Mon, 22 Apr 2024 00:09:34 -0700 (PDT)
-Received: from e116581.blr.arm.com (e116581.arm.com [10.162.41.8])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 24BCB3F7BD;
-	Mon, 22 Apr 2024 00:09:00 -0700 (PDT)
-From: Dev Jain <dev.jain@arm.com>
-To: shuah@kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Anshuman.Khandual@arm.com,
-	suzuki.poulose@arm.com,
-	ryan.roberts@arm.com,
-	rob.herring@arm.com,
-	Catalin.Marinas@arm.com,
-	broonie@kernel.org,
-	will@kernel.org,
-	mark.rutland@arm.com,
-	linux@armlinux.org.uk,
-	Dev Jain <dev.jain@arm.com>
-Subject: [PATCH v2 4/4] selftests: Add build infrastructure along with README
-Date: Mon, 22 Apr 2024 12:37:17 +0530
-Message-Id: <20240422070717.2194201-5-dev.jain@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240422070717.2194201-1-dev.jain@arm.com>
-References: <20240422070717.2194201-1-dev.jain@arm.com>
+	s=arc-20240116; t=1713769839; c=relaxed/simple;
+	bh=KFsVNGLXwmalWCExiI1bfO6IRb+bF09aXGJFizeOp2o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e3+EB1+Yf8NPTqpYcJsIRLAdAp7G1ljprXLthk8sglgKDVI2OfMGtwWydfSQH9nelbRAFF58bemN6eh+e7nZrz4GAHwGTbuR3r0jfrNoHad5CNMx0ZRTKxocm3Kt4Mr2ppfTVOqP5ZfBV7iwIGr/jQHmoKMsrLyJHAqMu8vKSnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jj1BMdGR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DABEEC113CC;
+	Mon, 22 Apr 2024 07:10:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713769838;
+	bh=KFsVNGLXwmalWCExiI1bfO6IRb+bF09aXGJFizeOp2o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Jj1BMdGR1FrmoIsUKIUW9iBgDUt/xXxF3tllfdOwY4sI5jrPEPE0EuKLsTJNY1/jI
+	 qqaKK2dCBfFrh2ZouMdmvsjTywEhjw0Tp1aXnj2Vba1EE94AlTZCeto2KdMcs7iuta
+	 3OY8E4UWjGeqyCIt12BnUZnwhRbVOhp/WGwDg8VeeIRz2QOSiXcsznprm6s9Fugo/L
+	 Tv4sVXFifVn33gtoI68Mbj6hKIq32j313P2GTUzUOm4uHUHKkIivrM5oqvkzVhQXOp
+	 3berZULi6Zi+BjfzP3t/AwguZ9e7uvjBCuLScNG2KzAoifIjhvZCiHquglQ2bfVcav
+	 JQX8QH/ZKIjgQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rynou-000000002ZM-3EbG;
+	Mon, 22 Apr 2024 09:10:33 +0200
+Date: Mon, 22 Apr 2024 09:10:32 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Wesley Cheng <quic_wcheng@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+	Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
+	quic_jackp@quicinc.com, Bjorn Andersson <quic_bjorande@quicinc.com>
+Subject: Re: [PATCH v21 4/9] usb: dwc3: core: Refactor PHY logic to support
+ Multiport Controller
+Message-ID: <ZiYNaJ8rwz6DXUGT@hovoldconsulting.com>
+References: <20240420044901.884098-1-quic_kriskura@quicinc.com>
+ <20240420044901.884098-5-quic_kriskura@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240420044901.884098-5-quic_kriskura@quicinc.com>
 
-Add arm target, individual Makefile targets, and instructions to build the
-tests, along with .gitignore files and a config file.
+On Sat, Apr 20, 2024 at 10:18:56AM +0530, Krishna Kurapati wrote:
+> Currently the DWC3 driver supports only single port controller
+> which requires at least one HS PHY and at most one SS PHY.
+> 
+> But the DWC3 USB controller can be connected to multiple ports and
+> each port can have their own PHYs. Each port of the multiport
+> controller can either be HS+SS capable or HS only capable
+> Proper quantification of them is required to modify GUSB2PHYCFG
+> and GUSB3PIPECTL registers appropriately.
+> 
+> DWC3 multiport controllers are capable to service at most 15 High Speed
+> PHYs and 4 Supser Speed PHYs. Add support for detecting, obtaining and
+> configuring PHYs supported by a multiport controller.
+> 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-Signed-off-by: Dev Jain <dev.jain@arm.com>
----
- tools/testing/selftests/Makefile              |  1 +
- tools/testing/selftests/arm/Makefile          | 57 +++++++++++++++++++
- tools/testing/selftests/arm/README            | 31 ++++++++++
- tools/testing/selftests/arm/config            |  1 +
- tools/testing/selftests/arm/elf/.gitignore    |  2 +
- tools/testing/selftests/arm/elf/Makefile      |  6 ++
- tools/testing/selftests/arm/mm/.gitignore     |  2 +
- tools/testing/selftests/arm/mm/Makefile       |  6 ++
- tools/testing/selftests/arm/signal/.gitignore |  3 +
- tools/testing/selftests/arm/signal/Makefile   | 30 ++++++++++
- 10 files changed, 139 insertions(+)
- create mode 100644 tools/testing/selftests/arm/Makefile
- create mode 100644 tools/testing/selftests/arm/README
- create mode 100644 tools/testing/selftests/arm/config
- create mode 100644 tools/testing/selftests/arm/elf/.gitignore
- create mode 100644 tools/testing/selftests/arm/elf/Makefile
- create mode 100644 tools/testing/selftests/arm/mm/.gitignore
- create mode 100644 tools/testing/selftests/arm/mm/Makefile
- create mode 100644 tools/testing/selftests/arm/signal/.gitignore
- create mode 100644 tools/testing/selftests/arm/signal/Makefile
-
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index e1504833654d..3966d2541ef7 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- TARGETS += alsa
- TARGETS += amd-pstate
-+TARGETS += arm
- TARGETS += arm64
- TARGETS += bpf
- TARGETS += breakpoints
-diff --git a/tools/testing/selftests/arm/Makefile b/tools/testing/selftests/arm/Makefile
-new file mode 100644
-index 000000000000..039224bc006e
---- /dev/null
-+++ b/tools/testing/selftests/arm/Makefile
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# When ARCH not overridden for crosscompiling, lookup machine
-+ARCH ?= $(shell uname -m 2>/dev/null || echo not)
-+
-+ifneq (,$(filter $(ARCH),aarch64 arm64 arm armv7l armv8l))
-+ARM_SUBTARGETS ?= mm signal elf
-+else
-+ARM_SUBTARGETS :=
-+endif
-+
-+CFLAGS := -Wall -O2 -g -static
-+
-+# A proper top_srcdir is needed by KSFT(lib.mk)
-+top_srcdir = $(realpath ../../../../)
-+
-+# Additional include paths needed by kselftest.h and local headers
-+CFLAGS += -I$(top_srcdir)/tools/testing/selftests/
-+
-+CFLAGS += -I$(top_srcdir)/tools/include
-+
-+export CFLAGS
-+export top_srcdir
-+
-+all:
-+	@for DIR in $(ARM_SUBTARGETS); do				\
-+		BUILD_TARGET=$(OUTPUT)/$$DIR;			\
-+		mkdir -p $$BUILD_TARGET;			\
-+		make OUTPUT=$$BUILD_TARGET -C $$DIR $@;		\
-+	done
-+
-+install: all
-+	@for DIR in $(ARM_SUBTARGETS); do				\
-+		BUILD_TARGET=$(OUTPUT)/$$DIR;			\
-+		make OUTPUT=$$BUILD_TARGET -C $$DIR $@;		\
-+	done
-+
-+run_tests: all
-+	@for DIR in $(ARM_SUBTARGETS); do				\
-+		BUILD_TARGET=$(OUTPUT)/$$DIR;			\
-+		make OUTPUT=$$BUILD_TARGET -C $$DIR $@;		\
-+	done
-+
-+# Avoid any output on non arm on emit_tests
-+emit_tests:
-+	@for DIR in $(ARM_SUBTARGETS); do				\
-+		BUILD_TARGET=$(OUTPUT)/$$DIR;			\
-+		make OUTPUT=$$BUILD_TARGET -C $$DIR $@;		\
-+	done
-+
-+clean:
-+	@for DIR in $(ARM_SUBTARGETS); do				\
-+		BUILD_TARGET=$(OUTPUT)/$$DIR;			\
-+		make OUTPUT=$$BUILD_TARGET -C $$DIR $@;		\
-+	done
-+
-+.PHONY: all clean install run_tests emit_tests
-diff --git a/tools/testing/selftests/arm/README b/tools/testing/selftests/arm/README
-new file mode 100644
-index 000000000000..1a05c043d7ee
---- /dev/null
-+++ b/tools/testing/selftests/arm/README
-@@ -0,0 +1,31 @@
-+KSelfTest ARM
-+===============
-+
-+- This is a series of compatibility tests, wherein the source files are
-+  built statically into a 32 bit ELF; they should pass on both 32 and 64
-+  bit kernels. They are not built or run but just skipped completely when
-+  env-variable ARCH is found to be different than 'arm64' or 'arm' and
-+  `uname -m` reports other than 'aarch64', 'armv7l' or 'armv8l'.
-+
-+- Please ensure that the test kernel is built with CONFIG_COMPAT enabled.
-+
-+- Holding true the above, ARM KSFT tests can be run within the KSelfTest
-+  framework using standard Linux top-level-makefile targets. Please set
-+  $(CROSS_COMPILE) to 'arm-linux-gnueabi-' or 'arm-linux-gnueabihf-'.
-+
-+      $ make TARGETS=arm kselftest-clean
-+      $ make $(CROSS_COMPILE) TARGETS=arm kselftest
-+
-+      or
-+
-+      $ make $(CROSS_COMPILE) -C tools/testing/selftests TARGETS=arm \
-+		INSTALL_PATH=<your-installation-path> install
-+
-+      or, alternatively, only specific arm/ subtargets can be picked:
-+
-+      $ make $(CROSS_COMPILE) -C tools/testing/selftests TARGETS=arm \
-+		ARM_SUBTARGETS="signal" INSTALL_PATH=<your-installation-path> \
-+			install
-+
-+   Further details on building and running KFST can be found in:
-+     Documentation/dev-tools/kselftest.rst
-diff --git a/tools/testing/selftests/arm/config b/tools/testing/selftests/arm/config
-new file mode 100644
-index 000000000000..9b072bae787e
---- /dev/null
-+++ b/tools/testing/selftests/arm/config
-@@ -0,0 +1 @@
-+CONFIG_COMPAT=y
-diff --git a/tools/testing/selftests/arm/elf/.gitignore b/tools/testing/selftests/arm/elf/.gitignore
-new file mode 100644
-index 000000000000..41458ecbcd72
---- /dev/null
-+++ b/tools/testing/selftests/arm/elf/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+parse_elf
-diff --git a/tools/testing/selftests/arm/elf/Makefile b/tools/testing/selftests/arm/elf/Makefile
-new file mode 100644
-index 000000000000..86636fe02994
---- /dev/null
-+++ b/tools/testing/selftests/arm/elf/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2024 ARM Limited
-+
-+TEST_GEN_PROGS := parse_elf
-+
-+include ../../lib.mk
-diff --git a/tools/testing/selftests/arm/mm/.gitignore b/tools/testing/selftests/arm/mm/.gitignore
-new file mode 100644
-index 000000000000..eb28169bb1b5
---- /dev/null
-+++ b/tools/testing/selftests/arm/mm/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+compat_va
-diff --git a/tools/testing/selftests/arm/mm/Makefile b/tools/testing/selftests/arm/mm/Makefile
-new file mode 100644
-index 000000000000..d8bfa45df98c
---- /dev/null
-+++ b/tools/testing/selftests/arm/mm/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2024 ARM Limited
-+
-+TEST_GEN_PROGS := compat_va
-+
-+include ../../lib.mk
-diff --git a/tools/testing/selftests/arm/signal/.gitignore b/tools/testing/selftests/arm/signal/.gitignore
-new file mode 100644
-index 000000000000..26929e3c20ea
---- /dev/null
-+++ b/tools/testing/selftests/arm/signal/.gitignore
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+mangle_cpsr_aif_bits
-+mangle_cpsr_invalid_compat_toggle
-diff --git a/tools/testing/selftests/arm/signal/Makefile b/tools/testing/selftests/arm/signal/Makefile
-new file mode 100644
-index 000000000000..3540a25de75a
---- /dev/null
-+++ b/tools/testing/selftests/arm/signal/Makefile
-@@ -0,0 +1,30 @@
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2024 ARM Limited
-+
-+# Additional include paths needed by kselftest.h and local headers
-+CFLAGS += -D_GNU_SOURCE -std=gnu99 -I.
-+
-+SRCS := $(filter-out testcases/testcases.c,$(wildcard testcases/*.c))
-+PROGS := $(patsubst %.c,%,$(SRCS))
-+
-+# Generated binaries to be installed by top KSFT script
-+TEST_GEN_PROGS := $(notdir $(PROGS))
-+
-+# Get Kernel headers installed and use them.
-+
-+# Including KSFT lib.mk here will also mangle the TEST_GEN_PROGS list
-+# to account for any OUTPUT target-dirs optionally provided by
-+# the toplevel makefile
-+include ../../lib.mk
-+
-+$(TEST_GEN_PROGS): $(PROGS)
-+	cp $(PROGS) $(OUTPUT)/
-+
-+# Common test-unit targets to build common-layout test-cases executables
-+# Needs secondary expansion to properly include the testcase c-file in pre-reqs
-+COMMON_SOURCES := test_signals.c test_signals_utils.c
-+COMMON_HEADERS := test_signals.h test_signals_utils.h
-+
-+.SECONDEXPANSION:
-+$(PROGS): $$@.c ${COMMON_SOURCES} ${COMMON_HEADERS}
-+	$(CC) $(CFLAGS) ${@}.c ${COMMON_SOURCES} -o $@
--- 
-2.39.2
-
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
 
