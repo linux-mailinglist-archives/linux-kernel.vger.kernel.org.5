@@ -1,114 +1,101 @@
-Return-Path: <linux-kernel+bounces-153609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC4758AD05A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A2AF98AD05C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:12:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED8E31C21771
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:11:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5ABF1C2214C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:12:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10D59152516;
-	Mon, 22 Apr 2024 15:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C0815251B;
+	Mon, 22 Apr 2024 15:12:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OGpcVcff"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="iiNJ4ti9"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF38E13E8B2
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAFAF152168;
+	Mon, 22 Apr 2024 15:12:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713798707; cv=none; b=YISnqRQr/A3SCq4/6J6UCBHCG7yOJwX5JCDbVbl5SyCEsmsgj+MalLkjjkhPhVKxf+h8gXLVUKsI9U2svSBas15gv5U8dPS8SqB/7T+VjdjFdRVrEIRj70DwQ/yojiSm5STdFFPwAJy2CH2TkiUe+Us9mlLOD6gsEkb+W4V4ids=
+	t=1713798751; cv=none; b=V784d7dNEpzuncGBpKvefv/lBaNIVL7EKK1dC5LTE0xLQOrP/wmlv44+3+Wt2tfncEV1Nn4vc5x0rhmI7IrP5N7qFSUBWm9zLJoluP56YiHvlE28g5ERb0ebpnVG6jI0M8hm8JD3Vilyl23s5SQWWVW+apmDlHIhgxQLLsSRzaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713798707; c=relaxed/simple;
-	bh=p54kIRAzaODe6wUquUv5sKINcmN5+ASrjgui2vl9nbo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BvWS5AXpA7Fq0UtvVJzJp6BFYRp9pjN1QBDApOOiehC2yk9qGpfPPzl2zvThDNoOWbqLolj0j5l5SU3jz7crNftjofRm/Umo6NNhL0nrMW1NLcpyKvSTZ9rzaLf+9uBNWq5IHm14ajycxIS09fdWZZVfyj82fz2FyrmUU2s28EU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OGpcVcff; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-571c22d9de4so6021280a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713798704; x=1714403504; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZVITbEQ69WrdRCplMyU1YjsnhDBFhFV+4YLUj7UPkFc=;
-        b=OGpcVcffKlK3/ril0w9FQIZM5ort2Oq4HPF5gewgAU8U0XMsGDj7j2woC/Iq6TOkmX
-         mL8ZzwGDROKo/pAjBCht71epAIyLCQGyYPl8N5X6jiW4NTy1UhkRGzHpaRx0cRsKMwwl
-         l5vAanwe5+IRzx2w92/2Ax176JXFxBWpK/e+Jr9b+T9y4o8BIQsaDpFb3Egw0n5ywBaF
-         zIz1hijHT2mZalX+YqhLOVpmSaioIdgq/VJFjssDgYdo4/dJjNpzarKK6QWFBo80RbrA
-         VzxFKygFmzYHhXzzZEoytkEilibVDB5wLfiXX1DTlG5DPT4VWNps/QWC+CVrORU+pv9s
-         eUYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713798704; x=1714403504;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZVITbEQ69WrdRCplMyU1YjsnhDBFhFV+4YLUj7UPkFc=;
-        b=n7lw1C/mo0CHNgxay6SM+gcW4JsrAZSRVWdsxVWKLpnlUtAfHQPLU6kJjYKDDDknD6
-         vIkt3jqvPH46+V/EyU+ybinrlYv7XrincSabJAui2Wf6FuhVxtIhb5jlDD+fv38zUp7S
-         a0NF8jddqqSgwOXVBlUUzQ4RoF5MFgXiXftFzX3bibv9RHYIpVtNtJSWVS+jogSObYQ1
-         lH9ylH1x/unBvsv2PyGpLm8Hf/NAqe+NPrVbatIaltFLBz8pjIiceHd4bz4qShrZO242
-         x2xI0kSZ5Grg/d7OgbIiRw1qE7IJ4D8dJ3t+D0whWr0UZ0D5Hd0/1BUWDg5M1Wa1sdR+
-         XTLA==
-X-Forwarded-Encrypted: i=1; AJvYcCXiXydWqElaTiMFIana0mmxAAH7cjRTnpajQzur0/4mudYU4c4WRx1JqSxsTMGWmFmsT4RtuQkPVzVVOVn9txAiAPRaegv8C9qAl4AV
-X-Gm-Message-State: AOJu0Yz+ofNm3mRMo4blfhpqZTUeRX8Di5FNjCZvJBwZWGdaAsyxSGFw
-	i0uM1Okm6QU887RtMCP85tbVvRSniAP14R6+MED/jgDQ033MbV8oftLBiFISUr1lX8/e6UCFU4S
-	t/gCeEwsBadNv22fgXZXW2aqQp9KtceDHyZA=
-X-Google-Smtp-Source: AGHT+IF0RAOTKc0Ne90DEw7v8X52QNp6kNAWxjGyWQNxLN5JErTtJO+d1iN6BBL9lCuHLsLBP/o/88fZ7/AHXO/6ZVs=
-X-Received: by 2002:a50:c355:0:b0:566:2f24:b063 with SMTP id
- q21-20020a50c355000000b005662f24b063mr6572940edb.23.1713798704099; Mon, 22
- Apr 2024 08:11:44 -0700 (PDT)
+	s=arc-20240116; t=1713798751; c=relaxed/simple;
+	bh=n2QljjJIxPxXYwFqyVO0pm8jMVl5uWaqpEKlS07dSKc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aBDb+bazNnbULdvWqxqZyD0ETl2KIatLnGOWWPX5hzqEvNcgbketnRUox2FyXKKHwPR9K4L60HFJY6bW2tOygLmc+9TTBiGiBDWrr23JkhPhPmO25uUiJ55NU7BsoKb8xdCnW8HEjDnDU0WRJyuiHR2RTRKHZhzECyo+n25jGSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=iiNJ4ti9; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=55qjHqIZitfTw5V8j2PoWpsRdoXOQTx60fjmhVXBN3o=; b=iiNJ4ti90zPQUh9KK7F1pVBY9W
+	Z4ifwzEOGTd2q+GwBf/Gh4kjLs9PKJ4hBMJb7oiRAJqpAe39gYL7uUkF+50XgrcXeFvYAop0WGspi
+	MrSWkPyI48x4tIVb85jXCNl4DeLYXuSRi7bUnfGvG44t0VMKY7ogFKZ4UFt0fg2mXGWa9SjMIrnId
+	L2CCnpGej3nH0PNiVgXWtzLw39G8huLiE0SzQONbfsA442oq9lrxARCNMDkcDGR/QvQNq1CHnR1pC
+	ZxFvhjd/wbGMoSOQoon6OomaS4pIfLRVVtTMykwkQDo368KUg79gmy357hiFT5p9yA7XKcfrmiJgL
+	Ks+zOQ5g==;
+Received: from [50.53.4.147] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ryvLH-0000000E4Pf-1m44;
+	Mon, 22 Apr 2024 15:12:27 +0000
+Message-ID: <7aa0e3ca-ec2c-4da7-a6f3-94163edb54c9@infradead.org>
+Date: Mon, 22 Apr 2024 08:12:23 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJg=8jyuSxDL6XvqEXY_66M20psRK2J53oBTP+fjV5xpW2-R6w@mail.gmail.com>
- <uekqafv4wx5axijnnfybnxixui3ruzy3mkxirflv7tb3ovrtbk@ounqurycykuv>
-In-Reply-To: <uekqafv4wx5axijnnfybnxixui3ruzy3mkxirflv7tb3ovrtbk@ounqurycykuv>
-From: Marius Fleischer <fleischermarius@gmail.com>
-Date: Mon, 22 Apr 2024 08:11:32 -0700
-Message-ID: <CAJg=8jzRT=oA9g6AGd1KmAY3GBkKkczj1rCqQ+pik5LmUQYd_A@mail.gmail.com>
-Subject: Re: general protection fault in mas_empty_area_rev
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, maple-tree@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
-	harrisonmichaelgreen@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] docs/MAINTAINERS: Update my email address
+To: Carlos Bilbao <carlos.bilbao@amd.com>, corbet@lwn.net,
+ elena.reshetova@intel.com
+Cc: cabilbao@amd.com, bilbao@vt.edu, avadhut.naik@amd.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240422133726.129074-1-carlos.bilbao@amd.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240422133726.129074-1-carlos.bilbao@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Liam,
 
-Thank you so much for the response!
 
-> >
-> > Crash log:
-> >
-> > general protection fault, probably for non-canonical address
-> > 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> >
-> > KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-> >
-> > CPU: 0 PID: 79545 Comm: syz-executor.0 Not tainted 6.9.0-rc4-dirty #3
->
-> This indicates that you built with your own patches.  Could you test an
-> unmodified 6.9.0-rc4 with your setup?
->
+On 4/22/24 6:37 AM, Carlos Bilbao wrote:
+> In the near future, I will not have access to the email address I used as
+> maintainer of a number of things, mostly in the documentation. Update that
+> address to my personal email address (see Link) so I can continue
+> contributing.
+> 
+> Link: https://lore.kernel.org/all/BL1PR12MB58749FF2BFEDB817DE1FE6CBF82A2@BL1PR12MB5874.namprd12.prod.outlook.com/
+> Signed-off-by: Carlos Bilbao <carlos.bilbao@amd.com>
+> ---
+>  Documentation/security/snp-tdx-threat-model.rst           | 2 +-
+>  Documentation/translations/sp_SP/index.rst                | 2 +-
+>  Documentation/translations/sp_SP/memory-barriers.txt      | 4 ++--
+>  .../translations/sp_SP/process/code-of-conduct.rst        | 2 +-
+>  Documentation/translations/sp_SP/process/coding-style.rst | 2 +-
+>  .../translations/sp_SP/process/email-clients.rst          | 2 +-
+>  Documentation/translations/sp_SP/process/howto.rst        | 2 +-
+>  Documentation/translations/sp_SP/process/kernel-docs.rst  | 2 +-
+>  .../sp_SP/process/kernel-enforcement-statement.rst        | 2 +-
+>  Documentation/translations/sp_SP/process/magic-number.rst | 2 +-
+>  .../translations/sp_SP/process/programming-language.rst   | 2 +-
+>  .../translations/sp_SP/process/submitting-patches.rst     | 2 +-
+>  MAINTAINERS                                               | 8 ++++----
+>  13 files changed, 17 insertions(+), 17 deletions(-)
 
-I'm very sorry for this oversight. I had applied the patches for another bug
-from this conversation
-(https://lore.kernel.org/all/20240404070702.2744-3-osalvador@suse.de/T/#m480f21ab850996395082d0faab7f624f45b83781)
-I will test the reproducer without these patches and get back to you!
+Maybe also update .mailmap ?
 
-If there is any other information I can provide to help you, please let me know!
-
-Wishing you a lovely start to the week!
-
-Best,
-Marius
+thanks.
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
