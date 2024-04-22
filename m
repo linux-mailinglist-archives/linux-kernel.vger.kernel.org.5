@@ -1,94 +1,154 @@
-Return-Path: <linux-kernel+bounces-153083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DEDC8AC8C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:21:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E81CC8AC8CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:22:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1CA81F218DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:21:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75D41B232E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21AF513DDBF;
-	Mon, 22 Apr 2024 09:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA10813C9A2;
+	Mon, 22 Apr 2024 09:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LvSEagxl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MJLnY2NP"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6080B13D62B;
-	Mon, 22 Apr 2024 09:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C59113BAFC
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713777627; cv=none; b=Vu5jnyBGgPtAjP3Z1UAa5mK5V/4vJispzU2n9wiVSI2nSWM/FgMDGNSbZDAScEG4yg8lXUplV0GhWurLz8Bsnn6EBHfSbxziUU4zan0ltuFxp/9BK4hYBeHWXMMhr/YN5dA0SVViDcvUkDipeYNgBISGsE+dVZn6WvAn6DAGKX8=
+	t=1713777651; cv=none; b=rueGGLShV3s2kOzH3Ev4tkThSr4mVA7Zhgk7RzEVvbthz+roFXrpYRouibCk1yCUdUW2soxjYHBCN4sxwR0s0ZQgb3IxhpYtLmTudx+vhIJqWmICAs2LjvvLwWW2lEkjNoU+LaCcdA1B2uRTLbbMQ+8Llfht0wDhl8wbNvvvsJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713777627; c=relaxed/simple;
-	bh=UmuAIDX0d6WavQjMlvxXSE1qRDZVx10f8/lRg63pIpw=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=bXFPI3eOIelIdL+MOiG2d8fvilnsZwfzEhGFPiaAT0Dd/c/kXyugQQIc2R9FB70i3Jm62KnWKmvbZ8YY70cpw1uC6XyYVM1WcManTEHXGDMwXINoepOokPYBdCiudCrTIKIGVdWJr8zevF6oTQOfCbq5ssW5NZ95Gohr5y5yuuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LvSEagxl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E3ED2C32786;
-	Mon, 22 Apr 2024 09:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713777627;
-	bh=UmuAIDX0d6WavQjMlvxXSE1qRDZVx10f8/lRg63pIpw=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=LvSEagxlzaeeP8MBfVxl1R5NncafmIBG+R84qxZiazcb8Jr/CZ9MWS2B5o/K9Y3VD
-	 QARn9h6PkcpNyJR20u5IT01l2FkgeSqK+KNYj7w8x3OHxbih/61ItaqBGP34My8tC/
-	 U761/60ZdarDjJG/4T0PF6N5lZ3VDqX51zl8qPJ2tUuryB9N2juDv06Hng8N0LjMR5
-	 rr9umqvPkI3LcRKAWBS/3VaLY7JWF8gQ0fRnxs3bkWwtqb2fGNSz41df3KXRpcMDS8
-	 2q5u9+hCxYJ2AAWCUbUZpVqp/+MOsR8lVpmA9Kt8A2CD4dmaAmPvHp4uYSPEo6Pf8N
-	 1o7ra8A7dr96Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D26A0C43440;
-	Mon, 22 Apr 2024 09:20:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713777651; c=relaxed/simple;
+	bh=cRkXSaUBI+idwTIFfGgPlG6dgV5xmDVnjyDMXCOApoA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=BG5XyKrrqny7KlRClBsyZ6jCRVDod9ZKcrcVYkABCsnESyOJNVAF/pKSfFrIK1FLa8xBOLOdqczvtAfLcbQjpxaOmfh5rsBY2YmFhMdI5vzeSF8EtsxGuRjSbnHDjmSegDNmxugn6bwFe4g+OW8PP12t2Mnsqt5xI48cV1boqCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--apusaka.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MJLnY2NP; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--apusaka.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6dbdcfd39so8619796276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 02:20:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713777648; x=1714382448; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kXNn2oCStDkLWi9zDGUPVO6qkGiMAPrsXwlwOtBRK+g=;
+        b=MJLnY2NPQLR08vvwtKOdHLQ/2FElariZ5KJG28OT6clXnORXJTaJA+Cdjd6dSeXQZm
+         8I0qrDL8wzOfRqIvyUm9BsTgW8iHs+O+1k2kDgeivpA0fCvLutLIUF+ctFAVKoJYmZS0
+         WmnQvaWFmPe+L1M9KAFTfHlC5hoVquwMFqubkAIa2X2aZR0TM5fh1tpuW4+Lmcw3cUk8
+         8jpt9g+M++otcsb2+0jexnstqYfSCaqgBgOTMcYisr8cz9eFs/xcrzFrHhZrbkYA1m8r
+         4Ctq8kSEXfGKtNnXzSBFXTNeq8fOHnKN+yP0u6TJLn/Dj/w9Ko4nFhJBb/Nju2Zok4f9
+         siOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713777648; x=1714382448;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kXNn2oCStDkLWi9zDGUPVO6qkGiMAPrsXwlwOtBRK+g=;
+        b=uW5NDyhE0XLEh+IlbobiXCbWfpAr0az+3svxteb4hMBEdEW3X7a6vqPREiwvOSSm3g
+         iko8MZJpKncNZVtaVBQEFph8mfmxViJCoMDH/Pa08UiMr9NbcsV83+rR5Jh5k2blWpY3
+         W86cquj5np9UlmkL64TMtffN/W2+i/FItpaxlGBalVTEFAJDqnw6eFONrU0ebK+utBZd
+         cro8Su3juJU1DDu2gy9v66ShWWp1ZItPOgcuLZLU782MOWaM9U6k+xV5/bt1unzRdO1F
+         QQ4W36N/I1RM2ytCzHQqz7Dngs1F9E31CPCAp29Giq8fA9k/AY8DEuq3OQSgtlkw/Yg/
+         +LOA==
+X-Forwarded-Encrypted: i=1; AJvYcCWOoKzmrMrbC6HmcnpzaDu5OnCCDbVBEdM93rOE9udne1CYAasLePqm0CQcoJ211/9uYdsABP3JgJRBLc1wItCzFeW12YWYb6KtYegg
+X-Gm-Message-State: AOJu0Yz95s/vp1/UKLgxcB+yi/DW6Wiblgu5n9VcUYMRNkHN7szCYMDD
+	vZiPOjc7scHn3Blr1b1SrlVz3PULY1xEc0MKJsj6by2vsuQY1LjZFsKOxF2LaNNcJmMAl6ubvuy
+	tagTE7w==
+X-Google-Smtp-Source: AGHT+IE1kkiDKTCBuFzJnRyFWU0DZ0GmYJcdvmXUZI5xBSsgaPPCUbilRPm6wkB/KjKdt9GMzt/3svbCqmdn
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:17:59d7:73d5:a990:d869])
+ (user=apusaka job=sendgmr) by 2002:a05:6902:1548:b0:dc2:398d:a671 with SMTP
+ id r8-20020a056902154800b00dc2398da671mr3042773ybu.10.1713777648659; Mon, 22
+ Apr 2024 02:20:48 -0700 (PDT)
+Date: Mon, 22 Apr 2024 17:20:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [net-next PATCH v3] octeontx2-pf: Add support for offload tc with
- skbedit mark action
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171377762685.9875.10684047694830185564.git-patchwork-notify@kernel.org>
-Date: Mon, 22 Apr 2024 09:20:26 +0000
-References: <20240420093505.31044-1-gakula@marvell.com>
-In-Reply-To: <20240420093505.31044-1-gakula@marvell.com>
-To: Geetha sowjanya <gakula@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
- davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
- sgoutham@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240422172027.v2.1.Ib96985e197f3db620a127a84aa20f3f3017aaf57@changeid>
+Subject: [PATCH v2] Bluetooth: Populate hci_set_hw_info for Intel and Realtek
+From: Archie Pusaka <apusaka@google.com>
+To: linux-bluetooth <linux-bluetooth@vger.kernel.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, Johan Hedberg <johan.hedberg@gmail.com>, 
+	Marcel Holtmann <marcel@holtmann.org>
+Cc: CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>, 
+	Archie Pusaka <apusaka@chromium.org>, Abhishek Pandit-Subedi <abhishekpandit@google.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hello:
+From: Archie Pusaka <apusaka@chromium.org>
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+The hardware information surfaced via debugfs might be usable by the
+userspace to set some configuration knobs. This patch sets the hw_info
+for Intel and Realtek chipsets.
 
-On Sat, 20 Apr 2024 15:05:05 +0530 you wrote:
-> Support offloading of skbedit mark action.
-> 
-> For example, to mark with 0x0008, with dest ip 60.60.60.2 on eth2
-> interface:
-> 
->  # tc qdisc add dev eth2 ingress
->  # tc filter add dev eth2 ingress protocol ip flower \
->       dst_ip 60.60.60.2 action skbedit mark 0x0008 skip_sw
-> 
-> [...]
+Below are some possible output of the hardware_info debugfs file.
+INTEL platform=55 variant=24
+RTL lmp_subver=34898 hci_rev=10 hci_ver=11 hci_bus=1
 
-Here is the summary with links:
-  - [net-next,v3] octeontx2-pf: Add support for offload tc with skbedit mark action
-    https://git.kernel.org/netdev/net-next/c/6a57f091622a
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@google.com>
 
-You are awesome, thank you!
+---
+
+Changes in v2:
+* Add some sample output to the commit message
+
+ drivers/bluetooth/btintel.c | 9 +++++++++
+ drivers/bluetooth/btrtl.c   | 7 +++++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/drivers/bluetooth/btintel.c b/drivers/bluetooth/btintel.c
+index a19ebe47bd951..dc48352166a52 100644
+--- a/drivers/bluetooth/btintel.c
++++ b/drivers/bluetooth/btintel.c
+@@ -2956,6 +2956,11 @@ static int btintel_setup_combined(struct hci_dev *hdev)
+ 			err = -EINVAL;
+ 		}
+ 
++		hci_set_hw_info(hdev,
++				"INTEL platform=%u variant=%u revision=%u",
++				ver.hw_platform, ver.hw_variant,
++				ver.hw_revision);
++
+ 		goto exit_error;
+ 	}
+ 
+@@ -3060,6 +3065,10 @@ static int btintel_setup_combined(struct hci_dev *hdev)
+ 		break;
+ 	}
+ 
++	hci_set_hw_info(hdev, "INTEL platform=%u variant=%u",
++			INTEL_HW_PLATFORM(ver_tlv.cnvi_bt),
++			INTEL_HW_VARIANT(ver_tlv.cnvi_bt));
++
+ exit_error:
+ 	kfree_skb(skb);
+ 
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index cc50de69e8dc9..4f1e37b4f7802 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -1339,6 +1339,13 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
+ 
+ 	btrtl_set_quirks(hdev, btrtl_dev);
+ 
++	hci_set_hw_info(hdev,
++			"RTL lmp_subver=%u hci_rev=%u hci_ver=%u hci_bus=%u",
++			btrtl_dev->ic_info->lmp_subver,
++			btrtl_dev->ic_info->hci_rev,
++			btrtl_dev->ic_info->hci_ver,
++			btrtl_dev->ic_info->hci_bus);
++
+ 	btrtl_free(btrtl_dev);
+ 	return ret;
+ }
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.44.0.769.g3c40516874-goog
 
 
