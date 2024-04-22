@@ -1,149 +1,129 @@
-Return-Path: <linux-kernel+bounces-153653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BD2B8AD130
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:46:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 240958AD137
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:48:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F8111C21CDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:46:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9917FB258FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:48:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BB0153592;
-	Mon, 22 Apr 2024 15:46:28 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46252153563;
+	Mon, 22 Apr 2024 15:48:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eQtkKAfi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8513515351B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:46:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B6E502A8;
+	Mon, 22 Apr 2024 15:48:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713800787; cv=none; b=nRaRhtun/2av4VwB2bVknfILbJtuzws8iq4Fqnbi4u4wtm3FKh34Q0mQ7u885Knc5v16CNSjjl4+FjcCvWhMaIAnC22EgcTAYtLl+s9Ri5Sy5jtkrsuufTFl3AtwQYw4ma61o4R3QVW6r/7lW+NhBsYHA01baiqDhva13FXhW2w=
+	t=1713800899; cv=none; b=WMIdrDuCTYloUrdwqgX/KeQBc8b+dqKm0JUbTvteAQ5zMBvYLgXnzkVScuul+zzeqVurlzhMJ2w69m1fAHYNDAGoPuOHruHIabTwYI12kXgtZcfBOg8dvJCA4ktuybKigxmdb3e4ustrnUploKJMZtryVG4cLTtDcHMGiBQIiuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713800787; c=relaxed/simple;
-	bh=99jWSURdElXqjltBDycI0VysY0rM88Y/35jVpXhh56Q=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=CL9LisjnSSYIj/LhXRZDNcJt1iCEetQHo5Zl6l42wxz1ZKDMrQhh45dH4JycElFOptHgTnP6W1boyhWUBeeW3uTJHi7EEEcM7hDskZbTMgkxdIgaHO9BZwOIInnQvEW+vbhnllVuhU+CAsR+OXfHi4DIsrf5MMX6fDIxF9LmLRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7da7d4ccb67so307610939f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:46:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713800785; x=1714405585;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HgSoz0wJSTmNhqMe2ut0HiEScT+ZiSLQfXLEB96LFJk=;
-        b=Szw6EXaUf4HfCvBPKEioZ/r1s6pvd/0Jun0b4LNHgZdlMz5nN6Hyd6Gf/b8GVarZy/
-         lIMmEvDYfonbXLm2nn3WOZIj8TGmJ7Y7BRxaT+H3B6pr6wVoHeep3VnCT0hAJfDKphhA
-         CCT3JHF6WSOuLxeomDrg8QaPKatY4JPyyWuCxOUjPf3djBandpJfmuQasrWw6DADKRXt
-         uAEWOZkF9gTQJgevqpplCUz3EM6WsYsn3B0gGiRSgMQACYdB3sZb3UApHB0AgKOnz4Ju
-         ftElckiep6q4hZQj0Oe9Q/dpx7u7zI5kVK7wvJG7YTN18QiYHtPbyP8aWdAuH2ETuHWo
-         Z7/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUArjdPuEK/1KwKRbKGIOzl4aOCpyf7lX0nGZfWT/Kae5wRVj2tIxPZZUPxPUUOaPpK6TgEqBdl11wKLTslnIYW/JfaKGCJY4Xvuuuv
-X-Gm-Message-State: AOJu0YylLwjkmonaBw15ghswtX/828579wcbyPvqCZB49FcbgJDasj+u
-	0tx270eY12STgR5dQ+qFGAR76CYq6fheKcacJLbC2kMavaIPZRA1BnWvzZGPpWvrqTPyVyQqpxf
-	bKoXC+6QbLxLYsrUbAD9cdJuIVQMOVlOV85dZTh8q09sTbiR8uq7A/9g=
-X-Google-Smtp-Source: AGHT+IEvso29/YmG0tiGf7AAZJ58PHPb0owoJoqLxqQ2dtUfR7uhw83Q2jRn4tzrRpzK4h/BF3jLY6wbWa1fhAYLt7lrM3U0roFk
+	s=arc-20240116; t=1713800899; c=relaxed/simple;
+	bh=qhx0qzJ6eh/Piwu61s3SOfrpixoraj8h9WKEC68zkvE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rTLY//LY6eDvddaIk3uq3aMaTFcRp+6mMnAq61ywLZC7CGcsd+BtNyIJn2AyyPupPwJW4u5m4BeneNGTzsZkSiXqy8MeEqnh4zymZ6e5pu905vXE+Uj/GHJVIGFVVhRbZRUHrFS410eTg9+7sDiUADbxrVRsAJ1KnN7+cD6cQr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eQtkKAfi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0339EC113CC;
+	Mon, 22 Apr 2024 15:48:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713800899;
+	bh=qhx0qzJ6eh/Piwu61s3SOfrpixoraj8h9WKEC68zkvE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=eQtkKAfiwdsuq9XsDA3nQk4XOR+nL7theGHHVtmfJBKxJX4cx+ryozk04IpE1d1Wi
+	 4dGU2YB7VPTSm4ZXmDPlWuxqTvh8aYhXx1rrh+Tnh+oCtaCKzSe9uJUYHqw3EpC6hz
+	 0YVJztgRg9qW8BY0PW+eGHvEXL8NMUegwRx2nuGlcUfBByvKRIqZpLJiOZ2zkjjARj
+	 Vmu9XUGdTXA0XLtUspNjPiHBQgO0yU11bQpoaYg5CKawps1PW/QTGtg2s/fCOSfsOT
+	 6tHBdpl+8WDjtLJdUnnTGOAqE9Tecz5dbtgVyDRfytUdL1jhWFluqwD9eOpE7DpC98
+	 v2UZVkiXiELbw==
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5acf5723325so1073148eaf.0;
+        Mon, 22 Apr 2024 08:48:18 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV3Iis48cDCO715Mr1axJd3r7G16lw/lbV2HxS94x9lSsd3/MteLHp1SaMdG7ZgmtvxEtZsRMQtQdXY4hriJGkDxVYXf8d1qYw8zHoNcxTZP/C9PhV1tvBYCsWva5b8HTegO4sPCu0=
+X-Gm-Message-State: AOJu0YyyL9/0geVn2VZKr7EZMZnTC+IgMHJCi11BJkZGZ0rLe3RxVFXG
+	OAPZq8zroF9ilj7z3lM24EBNMr/Bgih5yDHzCBfB7yxa847lCk1gC1EwB7IrqJ83FodqxOg5uz/
+	vrJcgsD4QsTdj1Ml/yUDKXOEH6ZQ=
+X-Google-Smtp-Source: AGHT+IEejy7ZrxkOXryq/C/rtyhD6+Fy0SmQNR3iAw9VjlGe2eFjqyjYSJMQRgsNHyrgaAjcIJHaXgJ5j1bzdRA9xgM=
+X-Received: by 2002:a4a:de19:0:b0:5a7:db56:915c with SMTP id
+ y25-20020a4ade19000000b005a7db56915cmr11719433oot.1.1713800898393; Mon, 22
+ Apr 2024 08:48:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:238b:b0:485:67be:97d0 with SMTP id
- q11-20020a056638238b00b0048567be97d0mr64340jat.1.1713800785766; Mon, 22 Apr
- 2024 08:46:25 -0700 (PDT)
-Date: Mon, 22 Apr 2024 08:46:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000d3cfa0616b1576a@google.com>
-Subject: [syzbot] [fs?] WARNING in netdev_queue_update_kobjects (2)
-From: syzbot <syzbot+41cf3f847df2c5f600a3@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, rafael@kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <4918025.31r3eYUQgx@kreacher> <3a8f1978-c5df-40d6-91ca-276431bb01e1@arm.com>
+ <e8193798-4c02-423a-a9d8-63d29ebd7faa@linaro.org>
+In-Reply-To: <e8193798-4c02-423a-a9d8-63d29ebd7faa@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 22 Apr 2024 17:48:02 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0i2pvTLwj7jTzwhoQMap_cvjvNnK2Beuje2COo+F4hBzA@mail.gmail.com>
+Message-ID: <CAJZ5v0i2pvTLwj7jTzwhoQMap_cvjvNnK2Beuje2COo+F4hBzA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] thermal/debugfs: Fix and clean up trip point
+ statistics updates
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Lukasz Luba <lukasz.luba@arm.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, 
+	LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Mon, Apr 22, 2024 at 5:34=E2=80=AFPM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 22/04/2024 13:37, Lukasz Luba wrote:
+> > Hi Rafael,
+> >
+> > On 4/17/24 14:07, Rafael J. Wysocki wrote:
+> >> Hi Everyone,
+> >>
+> >> The first patch in this series addresses the problem of updating trip
+> >> point statistics prematurely for trip points that have just been
+> >> crossed on the way down (please see the patch changelog for details).
+> >>
+> >> The way it does that renders the following cleanup patch inapplicable:
+> >>
+> >> https://lore.kernel.org/linux-pm/2321994.ElGaqSPkdT@kreacher/
+> >>
+> >> The remaining two patches in the series are cleanups on top of the
+> >> first one.
+> >>
+> >> This series is based on an older patch series posted last week:
+> >>
+> >> https://lore.kernel.org/linux-pm/13515747.uLZWGnKmhe@kreacher/
+> >>
+> >> but it can be trivially rebased on top of the current linux-next.
+> >>
+> >> Thanks!
+> >>
+> >>
+> >>
+> >
+> > I've checked this patch patch set on top of your bleeding-edge
+> > which has thermal re-work as well. The patch set looks good
+> > and works properly.
+> >
+> > Although, I have found some issue in this debug info files and
+> > I'm not sure if this is expected or not. If not I can address this
+> > and send some small fix for it.
+> >
+> > When I read the cooling device residency statistics, I don't
+> > get updates for the first time the state is used. It can only
+> > be counted when that state was known and finished it's usage.
+> >
+> > IMO it is not the right behavior, isn't it?
+>
+> Do you mean the right behavior is a regression
 
-syzbot found the following issue on:
+It has not changed AFAICS.
 
-HEAD commit:    f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.o..
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=152c0d20980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=41cf3f847df2c5f600a3
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d3d1fd180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141dd66f180000
+> or we should expect at least the residency to be showed even if the
+> mitigation state is not closed ?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/65d3f3eb786e/disk-f99c5f56.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/799cf7f28ff8/vmlinux-f99c5f56.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ab26c60c3845/bzImage-f99c5f56.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+41cf3f847df2c5f600a3@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-sysfs group 'byte_queue_limits' not found for kobject 'tx-0'
-WARNING: CPU: 0 PID: 5073 at fs/sysfs/group.c:284 sysfs_remove_group+0x17f/0x2b0 fs/sysfs/group.c:282
-Modules linked in:
-CPU: 0 PID: 5073 Comm: kbnepd bnep0 Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:sysfs_remove_group+0x17f/0x2b0 fs/sysfs/group.c:282
-Code: 36 4c 89 e0 48 c1 e8 03 80 3c 28 00 74 08 4c 89 e7 e8 b5 f4 c2 ff 49 8b 14 24 48 c7 c7 c0 33 bb 8b 4c 89 f6 e8 b2 87 22 ff 90 <0f> 0b 90 90 48 83 c4 08 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc
-RSP: 0018:ffffc90003a3f8a0 EFLAGS: 00010246
-RAX: 665251c6ceee3200 RBX: ffff888076fb7050 RCX: ffff88802254bc00
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: dffffc0000000000 R08: ffffffff8157cc12 R09: 1ffff92000747e68
-R10: dffffc0000000000 R11: fffff52000747e69 R12: ffff888076fb7020
-R13: 1ffffffff1941fac R14: ffffffff8ca10560 R15: ffff88802d2fc740
-FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffdbcd9e8a8 CR3: 000000002bf2a000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- netdev_queue_update_kobjects+0x532/0x5f0 net/core/net-sysfs.c:1852
- remove_queue_kobjects net/core/net-sysfs.c:1951 [inline]
- netdev_unregister_kobject+0x110/0x250 net/core/net-sysfs.c:2104
- unregister_netdevice_many_notify+0x11d4/0x16d0 net/core/dev.c:11129
- unregister_netdevice_many net/core/dev.c:11157 [inline]
- unregister_netdevice_queue+0x303/0x370 net/core/dev.c:11036
- unregister_netdevice include/linux/netdevice.h:3115 [inline]
- unregister_netdev+0x1c/0x30 net/core/dev.c:11175
- bnep_session+0x2e09/0x3000 net/bluetooth/bnep/core.c:525
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Well, in fact the device has already been in that state for some time
+and the mitigation can continue for a while.
 
