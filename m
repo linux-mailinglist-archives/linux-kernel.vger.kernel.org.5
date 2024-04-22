@@ -1,133 +1,146 @@
-Return-Path: <linux-kernel+bounces-154002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B56178AD5FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:42:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A1A78AD602
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:43:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F3C6282047
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:42:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F8FF1F21F45
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B95D1BC41;
-	Mon, 22 Apr 2024 20:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6931BC44;
+	Mon, 22 Apr 2024 20:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="itm6atDQ"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Xq5vzR8u"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC53F1B947
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775441B947;
+	Mon, 22 Apr 2024 20:42:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713818530; cv=none; b=H5z73baIJAmhzpezlWR2R3NsOKbRpcG0V44dFwLlPerdABTrIXq/yeDOJDoEhuHCR2eq2lV/KaV1oZW029DuaG1c/aZJeI8aUf83GENI33hkV0XqNFJCnZ7hyNhR7DAoFpcBajDJLbJuEy1QkH7mjqrq48xD12fpuk+Z4TdDgXI=
+	t=1713818578; cv=none; b=rOLR3zJhA3rSGMnbH0Uk2JCvrJ1nqxLm7lwk+HFl9UIDJDCYZaJio/Z3R2Iu01KhPsctLyydLRKQY9/Rt1si2emVfNqhieY5StNCkfNzcKl0/tB6+MCIOxj9YeNr/6jy64nHyUasVCmfUfaXvbNyNbWTv3UNsPDuoG9nPFQLsyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713818530; c=relaxed/simple;
-	bh=51xIj97O9lQ9Y9TaGc9pJwYMYuzv07feAOfehZkC93U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LxsSbHE5EMXuZ9AI2pJ0mEp+OTM2miodh4B3uJj3zRrQ8GWvG+NV9NxYOYHfTPDwFHAS/STr7ylaxgf/RNEkKyAGbStMBsc/5F7IHWK58F4OFVikZiPyaVfWMrrbe1clv4W1xQiRcX79OUAl/0C+gCPD/yGI/53KuIrBE/jXPCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=itm6atDQ; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 021E040E0240;
-	Mon, 22 Apr 2024 20:42:05 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Ml7F_4ndxso4; Mon, 22 Apr 2024 20:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1713818521; bh=OlkiVCvteYN4pxgphraaSRuyPSDJ4D5rYH0N0OYe2js=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=itm6atDQjc+oW7a6N5Ron8h+aHooV2kdwWEFi8HBx/+i4P3bT3uqGvHMHRFP7PM+m
-	 u1Y70F15Dqpuf1C8Y3sOYHclM55/rCpDES7XF2noYyq70s3HpAKQkxNatL4E9iEaRO
-	 3yGOYwBr6FbkCeAnPLFkeaPhcAevdvUuNhvR6wVfrlccAPcKantz8EzLh/bS6XOeeH
-	 RBSaaOWLjHG76k9nrZIqv8O36ByTz9wPUyQKY2F8ANKLUH5kdYZKjhO9Zi6Todw6uZ
-	 /wUHnVFLAtgLN4tKjc+83flYHHwnPxhhkoU8ekZr3JKb2jT3lm+Urt5IlMFlj43k3t
-	 2yRGTbn1dbat1yt1ZJS+69LgPTFizYbHvlIou9o/w1tep1cYr9fNJugye4oWgsrXXT
-	 7fiSzAZWyXmb7N7Y2WiZ68N7oRB3kWY1t/SZFsjNSLV6qgPm3kS/nzrXeRsAS6Oo4/
-	 pPuA5RUf0blCD1gEuSBPmmRSLHyLqAFtFEsmgARvKie62v7/gbsSxzCDDGuxu7c4m9
-	 yVJDFzWQv3hwbDTpQWse9+8dCnDUXl02qpQXEAj+TY7NWDllfVRdb5VWGUtdvUXeir
-	 12r4CmYerySbiv1bDKSPVTgP6LnrACV83xJtnylYHABI5XqNbkorK+CmGC7JCkrhqG
-	 TiZeoRuK2SDt/MbF1aEgk+b0=
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DA14640E00B2;
-	Mon, 22 Apr 2024 20:41:51 +0000 (UTC)
-Date: Mon, 22 Apr 2024 22:41:46 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Robert Richter <rrichter@amd.com>
-Cc: Dave Hansen <dave.hansen@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	linux-kernel@vger.kernel.org, jgross@suse.com, tglx@linutronix.de,
-	x86@kernel.org, Kim Phillips <kim.phillips@amd.com>,
-	Robert Richter <rric@kernel.org>
-Subject: Re: [PATCH 2/4] perf/x86/ibs: Use CPUID region helper
-Message-ID: <20240422204146.GCZibLiqZhbY1J4qFJ@fat_crate.local>
-References: <20240403153508.7328E749@davehans-spike.ostc.intel.com>
- <20240403153511.75CB9DA0@davehans-spike.ostc.intel.com>
- <20240416151242.GGZh6VaiO2gC4ej2BT@fat_crate.local>
- <f142e9c4-4829-4ace-8757-485246ad3572@intel.com>
- <20240416174850.GEZh66AmnDjrLxoXaw@fat_crate.local>
- <ZiEMnWaHkn99_oyW@rric.localdomain>
- <20240422172055.GAZiacdxkQU0XAbybW@fat_crate.local>
- <ZibEFZ6DoxDeBxxp@rric.localdomain>
+	s=arc-20240116; t=1713818578; c=relaxed/simple;
+	bh=21plNlwF84LiSmR/a7cPmVx+DowVztKcBCbH9tBCfs0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j3+m7L9Jcsrp2yQpfezJd/H8+v7e5B9gq3rU46l4QBx0upu0lfDoiAy/hqJduHd3NXFsDWiOPS7L0npZY/yWasBtSi/DJ+Zkl/GPF629s1S4/Gg9Dsg5QEkSOthVVxkAASB0/TvM8+e5vU9yg++gSDyhco76ne6RumMIO7QLTBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Xq5vzR8u; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713818577; x=1745354577;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=21plNlwF84LiSmR/a7cPmVx+DowVztKcBCbH9tBCfs0=;
+  b=Xq5vzR8u1honqPqn70ycQYQYUOd5fS5ZqNI11He8dUtkh0hg4f984R4u
+   04jIuB18JF+oSsR0c6Rdf9GWwweVNWKGqqPHsuvGZaLicQIDnohrrjWi+
+   1BPqOSNT2FpRHeBrChxVVwOfqSlFOjG09TLjRHf6yfMDGU4LbhfOwq5ue
+   dF+DPM8uqwT2YcoW1i4Csupc4qXTTjdKX9LlxTfBjGQ2EpJ9jEGviQbNg
+   nhewM5J28/IDKt4FlP8JHvs57lhtau8M9S1Pot3RilDlJGv0iB+Zzc4On
+   hNEb7ngZM6UchaGJRDq1nVu4dzTUw5hdxUOzNXfmFM6McVQmKEOjqDSae
+   g==;
+X-CSE-ConnectionGUID: HWDZ7qzzSCGSn9M11rOLsQ==
+X-CSE-MsgGUID: LDXiWKJVR9ybxckOj1TcfQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9234754"
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="9234754"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:42:03 -0700
+X-CSE-ConnectionGUID: nHk9q7c0QZK4QyNVPsdbgQ==
+X-CSE-MsgGUID: g0m2gNKLQIu8zJeDlFQ+BQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="24747792"
+Received: from leozhang-mobl.amr.corp.intel.com (HELO [10.212.37.174]) ([10.212.37.174])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:42:00 -0700
+Message-ID: <3acfbe3c-8b83-4c40-83c2-437f963fd25a@linux.intel.com>
+Date: Mon, 22 Apr 2024 15:42:00 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZibEFZ6DoxDeBxxp@rric.localdomain>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/14] ASoC: Constify local snd_sof_dsp_ops
+To: Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
+ <89f8f0be-2534-46c8-9058-cabea4f68568@linux.intel.com>
+ <9d1eda85-32a0-4e53-86ca-ce3137439bd7@kernel.org>
+ <d046d195-6fa3-4c52-bc5f-3e5e763bc692@linux.intel.com>
+ <138ac465-1576-4e86-a05d-63f8acc6fb70@kernel.org>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <138ac465-1576-4e86-a05d-63f8acc6fb70@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 22, 2024 at 10:09:57PM +0200, Robert Richter wrote:
-> Since we check get_cpuid_region_leaf()'s return code here we know if
-> the cpud leaf exists and return IBS_CAPS_DEFAULT if not. That would
-> not change the refB behaviour.
 
-Yes.
+> There are multiple reasons and benefits for const, like compiler
+> optimization, code readability (meaning) up to security improvements,
+> e.g. by some GCC plugins or marking rodata as really non-writeable, so
+> closing some ways of exploits. There are many opportunities here, even
+> if they are not yet enabled.
 
-> Though I think that case is rare or even not existing, I would just
-> keep the implementation like that and as it was for for years.
+Possibly, but the SOF core does not know if the structure it uses is
+rodata or not. Using the 'const' identifier would be misleading.
 
-Yes.
-
-> > > This slightly modifies the functionality so that 0 is return if
-> > > !IBS_CAPS_AVAIL (instead of IBS_CAPS_DEFAULT).
-> > 
-> > If !IBS_CAPS_AVAIL, then this is revB. But then you want to return
-> > IBS_CAPS_DEFAULT there.
+>> that's a different interpretation to the 'software' view you're
+>> describing. "this structure will not modified by this function" is not
+>> the same thing as "this structure CANNOT be modified".
 > 
-> No, on a rebB get_cpuid_region_leaf() would be false, meaning the
-> cpuid leaf is missing, function returns with IBS_CAPS_DEFAULT then.
+> Yes, but can we please discuss specific patchset then? Patches which
+> change pointers to const have one "interpretation". Patches which modify
+> static or global data have another.
 
-So what functionality modification do you mean then?
+Just look at sound/soc/sof/intel/mtl.c... The core will sometimes use a
+constant structure and sometimes not, depending on the PCI ID reported
+by hardware. This was intentional to override common defaults and make
+the differences limited in scope between hardware generations.
 
-When will IBS_CAPS_AVAIL be not set?
+int sof_mtl_ops_init(struct snd_sof_dev *sdev)
+{
+	struct sof_ipc4_fw_data *ipc4_data;
 
-GH BKDG says about that bit:
+	/* common defaults */
+	memcpy(&sof_mtl_ops, &sof_hda_common_ops, sizeof(struct
+snd_sof_dsp_ops)); <<<< THE BASELINE IS CONSTANT
 
-"IBSFFV. IBS feature flags valid. Revision B = 0. Revision C = 1."
+        <<< THE REST ISN'T.
 
-so that has been set ever since on >= revC.
+	/* shutdown */
+	sof_mtl_ops.shutdown = hda_dsp_shutdown;
 
-And on revB we'll return IBS_CAPS_DEFAULT which has IBS_CAPS_AVAIL.
+	/* doorbell */
+	sof_mtl_ops.irq_thread = mtl_ipc_irq_thread;
 
-IOW, I don't see how we'll return 0 if !IBS_CAPS_AVAIL because latter
-doesn't happen practically with that flow.
+	/* ipc */
+	sof_mtl_ops.send_msg = mtl_ipc_send_msg;
+	sof_mtl_ops.get_mailbox_offset = mtl_dsp_ipc_get_mailbox_offset;
+	sof_mtl_ops.get_window_offset = mtl_dsp_ipc_get_window_offset;
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+	/* debug */
+	sof_mtl_ops.debug_map = mtl_dsp_debugfs;
+	sof_mtl_ops.debug_map_count = ARRAY_SIZE(mtl_dsp_debugfs);
+	sof_mtl_ops.dbg_dump = mtl_dsp_dump;
+	sof_mtl_ops.ipc_dump = mtl_ipc_dump;
 
