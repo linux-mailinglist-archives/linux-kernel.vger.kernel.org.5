@@ -1,121 +1,188 @@
-Return-Path: <linux-kernel+bounces-153367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48C038ACD32
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:47:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DAB88ACD28
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:46:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A1D71C20A6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:47:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9C57285417
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC7C14F9F5;
-	Mon, 22 Apr 2024 12:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="HuLAXIjL"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D166214EC69;
+	Mon, 22 Apr 2024 12:45:23 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3637A14F9DF;
-	Mon, 22 Apr 2024 12:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8BF147C82
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713789937; cv=none; b=OZy91iGdIKnd2voNLQSbazYVjmOpD48cOYVV0/TfcwETrM/oli9N2sc6zwOqRJYos/r+3YimxvU1JCnaXGH4Tlh5ypU3WUKozxAuj4sEo20Cxq7p2hJleYuUi2n9FXMLt3NpqB+1D4p6p/Z21Nqkvxx7N3wMGEfR+Pv2SScEBBw=
+	t=1713789923; cv=none; b=EW414pRk2VSfX7/sSNr3Kiidb66p0fLwdwr8SPt2HVghYQWzD/Aj33x5y+SB7rhMPS+9Cxt9s4Je4NGKw2+esExBg/hv+IdXVDpOhIbcJMkb+MFQtrDVbnv9CiYzg2HK+KUyZRtfFvsQtrJVm5VI1+ZgJiJMdlUK2YGr6C4yH+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713789937; c=relaxed/simple;
-	bh=tEH78XBPBsQYvQQOOnNYvIjBBy52gko0P2Kv0tpiHZk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pyGf2lDM4paijiNQIgO+soeBk5T/wppLt9AJr+r4jOdeca1oDZ8JxRWKn1czlynY6OXWZZmjXm97tRGr00vbxyi9Doiap8N9BsW4MKx/UsUyYK9bFdLm/gVEhpvtxvZNck4Ka1D7cZRxA6PopI4lW/2km/78N+umJlNSf1AjOTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=HuLAXIjL; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43MCjIXN026642;
-	Mon, 22 Apr 2024 07:45:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713789918;
-	bh=0QmxLrkimtptQPll3jysQXKo8ee+qL2NGBb1Scl3kBg=;
-	h=From:To:CC:Subject:Date;
-	b=HuLAXIjLaWauusSRGgJtwmeq0rhYmy/7LdRibVgEru4t42L8tm8PafTQdi0k8f6ER
-	 QGMUrh57ktrxKBJ2p+HenYmho9ZGvXsuh4YbK4f1sDWnfo5/89ZzN5+GLYX5dUcInl
-	 fFYGrhYTTjm2PU9+zBFQQG0SF9+7tXUQeh0WP7Ew=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43MCjIAK065786
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 22 Apr 2024 07:45:18 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 22
- Apr 2024 07:45:17 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 22 Apr 2024 07:45:17 -0500
-Received: from localhost (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43MCjHhE009598;
-	Mon, 22 Apr 2024 07:45:17 -0500
-From: Chintan Vankar <c-vankar@ti.com>
-To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Ronald Wahl <ronald.wahl@raritan.com>,
-        Dan Carpenter
-	<dan.carpenter@linaro.org>,
-        Roger Quadros <rogerq@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
-	<edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <s-vadapalli@ti.com>
-CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Chintan Vankar
-	<c-vankar@ti.com>
-Subject: [PATCH net-next v2] net: ethernet: ti: am65-cpsw-nuss: Enable SGMII mode for J784S4 CPSW9G
-Date: Mon, 22 Apr 2024 18:15:15 +0530
-Message-ID: <20240422124515.887511-1-c-vankar@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713789923; c=relaxed/simple;
+	bh=28tsV9yK+rJVV2f4/tt4XKo2L2mQDul5ibAHe5ClVqE=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Q7waTZRHiqk/imKaRSWBp1sCj8Td1UYglUdE2MP8QlUYQraAjeo2rMTpCrxJ5mA8MtwDNchUlMnphUycil/dYSdR3ahd28FXINrX3BGMxgl/gQpIvDdTlTljGyQZ1EyfadWGFybo79+9kp5OUIJ3igqOTXLelhoul7xp+7z3ePs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d9d0936d6aso621305639f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 05:45:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713789921; x=1714394721;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mXCEoZO/gbntGb+lYVcV7jprHWP+gposqiw1cE9Ugg0=;
+        b=NjuMrBGPhiYYTKTj9atlfnvQNWO8JI/luwGEddmwcUE7Q0jreUmhYEWbF4oEv1vZid
+         QzfcK0Ci9zME1GYvE3YOUCF010fmK17QNKI1Xt/L/lCO2IfV10hZ8TJydkZk5bIwVgLr
+         d7jAgRogEkYKcVShs2ljaT31XUXra/hE6li8M598XJnIQyrxWk8kKUrZ2B2H+wnRgaFY
+         u8WtIugTkkaGgjDPjRr6AlqSm48tc8NOlR7A/0hKNO68BJcrPOUTU3XuU/Fs/Wat9O4r
+         STRB3SHyVdRrw4oh05kuhkvedOt0qYbjLn6UiD0H30u6y8OeJnCfSXoI9H0TZD7dmlch
+         EmLw==
+X-Forwarded-Encrypted: i=1; AJvYcCW+5lSL5+dVGTls+3IjHi8hpLEFNUhYU1j/gOteiYEVddDFcwvMYLdqDdc4f6lPsZcQgQ2d35MHS04C1Iedeu9ysUAK4WtYIDNk/Wb1
+X-Gm-Message-State: AOJu0Yz1LNYyU8ciSj0Q08YtGTMGZUdehd8WgCNDCIATrD7510mjYZVP
+	ezarn9QQ2/nHtJkX4gFq3wXglgjU7jic7UkjUPOUsIouKdWZZ6a0KGuzsXOCGdP4uH0lu4x5IWM
+	WBs8imYdXkdU8pMrl/qGoFsGU5/IG9sW748sB/KDWjDlkoMzgo2m3jyU=
+X-Google-Smtp-Source: AGHT+IEd6ydCVlgwvNsCSNXitHad/0D6z+alp68HaQM7eQz8Gz8i827PZAeMM28UOuXCTQZDdvWODsGoBiFU2aA7OPF/bRGlJX6z
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Received: by 2002:a05:6638:8791:b0:485:654b:2857 with SMTP id
+ ix17-20020a056638879100b00485654b2857mr47413jab.4.1713789920967; Mon, 22 Apr
+ 2024 05:45:20 -0700 (PDT)
+Date: Mon, 22 Apr 2024 05:45:20 -0700
+In-Reply-To: <000000000000bafb9f06160bc800@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000758c1c0616aecf58@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in __sock_map_delete
+From: syzbot <syzbot+a4ed4041b9bea8177ac3@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-TI's J784S4 SoC supports SGMII mode with CPSW9G instance of the CPSW
-Ethernet Switch. Thus, enable it by adding SGMII mode to the
-extra_modes member of the "j784s4_cpswxg_pdata" SoC data.
+syzbot has found a reproducer for the following issue on:
 
-Reviewed-by: Roger Quadros <rogerq@kernel.org>
-Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+HEAD commit:    ed30a4a51bb1 Linux 6.9-rc5
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15124c3b180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=545d4b3e07d6ccbc
+dashboard link: https://syzkaller.appspot.com/bug?extid=a4ed4041b9bea8177ac3
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102d66bf180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10107f67180000
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-ed30a4a5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c62dd6fbdae1/vmlinux-ed30a4a5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2ee0879390c1/bzImage-ed30a4a5.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a4ed4041b9bea8177ac3@syzkaller.appspotmail.com
+
+============================================
+WARNING: possible recursive locking detected
+6.9.0-rc5-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor381/5177 is trying to acquire lock:
+ffff888027aca200 (&stab->lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff888027aca200 (&stab->lock){+...}-{2:2}, at: __sock_map_delete+0x43/0xe0 net/core/sock_map.c:417
+
+but task is already holding lock:
+ffff888027acaa00 (&stab->lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff888027acaa00 (&stab->lock){+...}-{2:2}, at: sock_map_update_common+0x197/0x870 net/core/sock_map.c:493
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&stab->lock);
+  lock(&stab->lock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+5 locks held by syz-executor381/5177:
+ #0: ffff88802f6ad258 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1671 [inline]
+ #0: ffff88802f6ad258 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: sock_map_sk_acquire net/core/sock_map.c:117 [inline]
+ #0: ffff88802f6ad258 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: sock_map_update_elem_sys+0x1b6/0x570 net/core/sock_map.c:578
+ #1: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #1: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #1: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: sock_map_sk_acquire net/core/sock_map.c:118 [inline]
+ #1: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: sock_map_update_elem_sys+0x1d8/0x570 net/core/sock_map.c:578
+ #2: ffff888027acaa00 (&stab->lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ #2: ffff888027acaa00 (&stab->lock){+...}-{2:2}, at: sock_map_update_common+0x197/0x870 net/core/sock_map.c:493
+ #3: ffff88801a940290 (&psock->link_lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ #3: ffff88801a940290 (&psock->link_lock){+...}-{2:2}, at: sock_map_del_link net/core/sock_map.c:145 [inline]
+ #3: ffff88801a940290 (&psock->link_lock){+...}-{2:2}, at: sock_map_unref+0xbf/0x6e0 net/core/sock_map.c:180
+ #4: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #4: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #4: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+ #4: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0xe4/0x420 kernel/trace/bpf_trace.c:2420
+
+stack backtrace:
+CPU: 3 PID: 5177 Comm: syz-executor381 Not tainted 6.9.0-rc5-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ check_deadlock kernel/locking/lockdep.c:3062 [inline]
+ validate_chain kernel/locking/lockdep.c:3856 [inline]
+ __lock_acquire+0x20e6/0x3b30 kernel/locking/lockdep.c:5137
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+ _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
+ spin_lock_bh include/linux/spinlock.h:356 [inline]
+ __sock_map_delete+0x43/0xe0 net/core/sock_map.c:417
+ sock_map_delete_elem+0xb5/0x100 net/core/sock_map.c:449
+ ___bpf_prog_run+0x3e51/0xabd0 kernel/bpf/core.c:1997
+ __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x151/0x420 kernel/trace/bpf_trace.c:2420
+ trace_kfree include/trace/events/kmem.h:94 [inline]
+ kfree+0x225/0x390 mm/slub.c:4377
+ sk_psock_free_link include/linux/skmsg.h:421 [inline]
+ sock_map_del_link net/core/sock_map.c:158 [inline]
+ sock_map_unref+0x392/0x6e0 net/core/sock_map.c:180
+ sock_map_update_common+0x4f3/0x870 net/core/sock_map.c:506
+ sock_map_update_elem_sys+0x3bb/0x570 net/core/sock_map.c:582
+ bpf_map_update_value+0x36c/0x6c0 kernel/bpf/syscall.c:172
+ map_update_elem+0x623/0x910 kernel/bpf/syscall.c:1641
+ __sys_bpf+0xab9/0x4b40 kernel/bpf/syscall.c:5648
+ __do_sys_bpf kernel/bpf/syscall.c:5767 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5765 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5765
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f6bcc5b7729
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff751f0718 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007fff751f08e8 RCX: 00007f6bcc5b7729
+RDX: 0000000000000020 RSI: 0000000020000680 RDI: 0000000000000002
+RBP: 00007f6bcc62a610 R08: 00007fff751f08e8 R09: 00007fff751f08e8
+R10: 00007fff751f08e8 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fff751f08d8 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+
+
 ---
-
-This patch is based on net-next tagged v6.9-rc4.
-
-Link to v1:
-https://lore.kernel.org/all/20231221111046.761843-1-c-vankar@ti.com/
-
-Changes from v1 to v2:
-- Removed RFC from subject prefix as suggested by Roger.
-- Collected Reviewed-by tag from Roger Quadros.
-
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 2939a21ca74f..766abb571267 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -2904,7 +2904,8 @@ static const struct am65_cpsw_pdata j784s4_cpswxg_pdata = {
- 	.quirks = 0,
- 	.ale_dev_id = "am64-cpswxg",
- 	.fdqring_mode = K3_RINGACC_RING_MODE_MESSAGE,
--	.extra_modes = BIT(PHY_INTERFACE_MODE_QSGMII) | BIT(PHY_INTERFACE_MODE_USXGMII),
-+	.extra_modes = BIT(PHY_INTERFACE_MODE_QSGMII) | BIT(PHY_INTERFACE_MODE_SGMII) |
-+		       BIT(PHY_INTERFACE_MODE_USXGMII),
- };
- 
- static const struct of_device_id am65_cpsw_nuss_of_mtable[] = {
--- 
-2.34.1
-
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
