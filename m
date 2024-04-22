@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-153202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03F438ACADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:39:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B031D8ACAE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:39:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF37F28143B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:39:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF2DAB22639
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7CBD145FF9;
-	Mon, 22 Apr 2024 10:38:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4235D146D7D;
+	Mon, 22 Apr 2024 10:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eqlE7/HB"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ux2kD9/5"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D681465B5;
-	Mon, 22 Apr 2024 10:38:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D72146D50;
+	Mon, 22 Apr 2024 10:38:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713782290; cv=none; b=AVAabIUDhJJP8e4WsVmtA/LlfLgH6xvdRaci6P8WYcCTR5BCcHnFZxzmRhuG9NPpjSzSkBRYwXiVrGKVV//Sdx3SnYoworyz2cXTV6tlhNkgT6wuaOwUyCWuJ0R0iFxWgtf6UqMRGsOmznk6QWFULbhXOoXKeiDQn0rg7wO4wqA=
+	t=1713782295; cv=none; b=J7PzwLuwMX6eO8OD+xx/xlMgFvvcXqrk3Gbf9ykbwC+WZZWr8dnWq8k0Jleob+3v28+NRsgGqrt8UTGTgyNTi2dMbdPnIGmETurOZRxpSMzQn5v/RcnfisVHFHnime2MaziVTLRZu0U5qWOMdSaNvSOPlpY9gNgHkobQtXWSVVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713782290; c=relaxed/simple;
-	bh=Lt1nFZ8VwQDqcdcvZHEXzl3FPeDt6SmnxVVK6tvED9M=;
+	s=arc-20240116; t=1713782295; c=relaxed/simple;
+	bh=l0lSTq3ocWxDkAmQ2r38sdgXT5cPBBRMfSl0s1pW3Pk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GeInldqserytyQnfFKtWXbzrm8/Eo+2S6TOiZI9s2FU/22mjSup8YYagsOzpVZGhfnSnSTqeJ1TW+0wuvaRJJpZUO3N4aXYQnF1oBFvhKJ6LRhTiYgamAfmiU8GME3k/fLjnleBKI/M8pdQEcHzjBCW9aZAP/KkYUhJWJOZkbTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eqlE7/HB; arc=none smtp.client-ip=209.85.210.176
+	 MIME-Version; b=dUQrfNQGBlc+OxqLnqonx+JZ6pQHcbVG4U9yyHlmRBni+zTQexARnzhW+NI2Z8zMjEp9rylTeJoUzxeIpz96O0yC6nDj/xC7I+xtyDH5iM0tYHFRkA2Dp+DjLiBBzS1mg/Los6/bQmHhPGB4cl5dIjiTXW+Jjq1UiNzVleKMK6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ux2kD9/5; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f0b9f943cbso2607406b3a.0;
-        Mon, 22 Apr 2024 03:38:09 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e2b137d666so33033555ad.2;
+        Mon, 22 Apr 2024 03:38:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713782289; x=1714387089; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713782293; x=1714387093; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=P0O7T2yJ5pHgmNgm6vNSvjG0SyzCguoIApl75+ur4PI=;
-        b=eqlE7/HBYE5LyXkIemCBDpKs+tci6KsNIPMMb0iQ0auExPHy2SIc9va2cLsykwTyB2
-         rGLSQxvcGqXGFUyc3OuesUegQWW6zoKtXFUG5YmXNhjK5n2mMreizfu2bdZTwJN/Nl7V
-         iTKL1LkrmTJ/h4Yq9u+PISPWBQHXgzIwSsbAduSvdiiTk9FCRO3DG1N6ch47tqznFWV1
-         C9TCMjGEKaVMZfwz5IPymYl/iguRYQIyO/iMNaBzyBNSgissapSL8fkhFcBwogZmRHlR
-         T68ZFlMEH/oNiOq8awF+Tp/uy9KmO0QXoBbn8ATQufUH7QAWFjXkB1sqpOnkT48Ma5KU
-         Y3hA==
+        bh=DXUMs8Fu4RGWtksAfTE41ira1TLNnTOYGbHcF0bjR1c=;
+        b=Ux2kD9/5Ar7YrHZ8Hyvc4LLmnH/N0BaeK03CrAsPGrbKCVLe/zZUFzvMzf3+ThkS9T
+         D+fYjvD0HS8qdUBbloqrbgjdei3rjWsiXdUDcjsYTHFFOUWGC8mkHBiBigSj+aZpcBrJ
+         lKtQ7jva0RgHCtUxIy2kQXL5bnbb0/bU9/9Jh2fOMUTqHBOFRUyJgK/4Vg2S6dU0efa1
+         V34co/cZnPEY3koCvKTHqHTMMx9Us/X/++YmyMQgZmEt/QTmeI+MGX5ORGsrrMloSdce
+         +vA0dsO5WsIgAU2+dT4tspPXIx2oLwKPSqRCh4gtcc5AZ2C17AQyTP6Q1c+AyvkOfpLC
+         jEpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713782289; x=1714387089;
+        d=1e100.net; s=20230601; t=1713782293; x=1714387093;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=P0O7T2yJ5pHgmNgm6vNSvjG0SyzCguoIApl75+ur4PI=;
-        b=ZZrjqi2WGMPnS4ZG9CbOzF4Ok9vT6a6VL2AN91NrXrjUr2kgm+2IegPiqLNx9Mfk/+
-         p5wJaVMgn096QWIof11cFk6C90ikG7WOluP0SLrC+ysIHDxrS20eg4iV45jZ/DLpYYXm
-         iksMy1zQXwYgBYLgqlmWWfNgtx9wc3a5hXV18waj6ZDEfjR6p75hkTzOaOS8XdJJWwyE
-         R9YRlHwogyL7nDaiybsCe7HWedE5OaZDWt3p9IRgpP0JW2waL+9nIhsLwKJMVhPVSNDe
-         IA9RVQ+ACqcIvbvRT+wJRuRdCRo/jr8etp8ryqaI4I3oCEn7Ciih5lYr1uHwWmilHTs6
-         WuUw==
-X-Forwarded-Encrypted: i=1; AJvYcCWuIrfgsD4qXhotW06PMFIRrQTastAFNfPBcoE01Tsme7uIi/oDH/YxI9C0o1trjQbSkb9/NeO4R4Yf27fc7yWOtMpDHNgd2XNo2DGB
-X-Gm-Message-State: AOJu0YzwJYp2lvI/CSJoj0cXiuACjxqticCAoJw2caqjSYtufk0ynrPp
-	vSRQlGjcTjhqMRylmvihhuQZR4d5UJ9N93Eg3WAoBZmXeC5PLzv3a12v/cDb
-X-Google-Smtp-Source: AGHT+IFLzOEGM3Y6KshSjNA9oDlSdeo2YiHgu3YZWNDXH2+HRTIK0aUEWq96LTgSJPU5+iAbPvUXBg==
-X-Received: by 2002:a05:6a20:43a4:b0:1a7:63ce:84ce with SMTP id i36-20020a056a2043a400b001a763ce84cemr12754835pzl.49.1713782288808;
-        Mon, 22 Apr 2024 03:38:08 -0700 (PDT)
+        bh=DXUMs8Fu4RGWtksAfTE41ira1TLNnTOYGbHcF0bjR1c=;
+        b=lRaMkZc2BGEgFeEXpsej6pTrP6A+KETJ15PBpN3oXcfTB9ubQw8ki61OfIt/5jFvw2
+         BPngvXl8X41WipqlTGMIKb7KG4nFsKC+vROj4nwmR8K4dlsJo8c6zyxz0Mfs7oVH4OuA
+         xxfV5lspQ0iuSi8/XfkqlVUZOxLHaC5omvikkcrIoNwl8WTkD2GBAfRzD80kIlM/8nq2
+         PKcmWcl332F+OAFM3b+0WGd6sZFGf1nITDq0yC4UO+br5dVjXWNAel8/Pd0APEQcbW1B
+         s3kmQz8SuutEhbYFi4NQZGqDtcfOhxdhhH+4MTjtt3zsNkhRsnFrVevMiBcajs9w+dva
+         FCwg==
+X-Forwarded-Encrypted: i=1; AJvYcCXRThAIREB/zwp1SH6nqafTdUX29m90cSSaZaqxHmyOhYrThTHlvKSdPaFAGHRmgwwzsXjhmiL9QyGBfmbzzg316VxTTlBNuraCCt+n
+X-Gm-Message-State: AOJu0Yx543g1VDwdYvpX3TX2k9gQoHah7si2Lfaf5t7wKPcM8TgsiF9C
+	6ecBF18k4uqzLRr7xm89qwL3HcujK/19EIWrYCPAKAIpzlRn3WPG
+X-Google-Smtp-Source: AGHT+IHdOQykH3H/SMR0j9Yhh9yP+3layfXe4I9pC2GeqM4fmr8zC+6Ujs9zUy7PljUlwWPerBfESw==
+X-Received: by 2002:a17:902:e5d2:b0:1e4:a9c2:6f64 with SMTP id u18-20020a170902e5d200b001e4a9c26f64mr12851099plf.1.1713782292638;
+        Mon, 22 Apr 2024 03:38:12 -0700 (PDT)
 Received: from localhost.localdomain (2001-b400-e33b-6ac4-2bfb-4656-8624-cdbd.emome-ip6.hinet.net. [2001:b400:e33b:6ac4:2bfb:4656:8624:cdbd])
-        by smtp.gmail.com with ESMTPSA id c1-20020a170903234100b001e3dff1e4d5sm7807904plh.135.2024.04.22.03.38.05
+        by smtp.gmail.com with ESMTPSA id c1-20020a170903234100b001e3dff1e4d5sm7807904plh.135.2024.04.22.03.38.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 03:38:08 -0700 (PDT)
+        Mon, 22 Apr 2024 03:38:12 -0700 (PDT)
 From: Victor Shih <victorshihgli@gmail.com>
 To: ulf.hansson@linaro.org,
 	adrian.hunter@intel.com
@@ -76,10 +76,12 @@ Cc: linux-mmc@vger.kernel.org,
 	Greg.tu@genesyslogic.com.tw,
 	takahiro.akashi@linaro.org,
 	dlunev@chromium.org,
-	Victor Shih <victorshihgli@gmail.com>
-Subject: [PATCH V15 04/22] mmc: core: Extend support for mmc regulators with a vqmmc2
-Date: Mon, 22 Apr 2024 18:37:27 +0800
-Message-Id: <20240422103745.14725-5-victorshihgli@gmail.com>
+	Victor Shih <victorshihgli@gmail.com>,
+	Jason Lai <jason.lai@genesyslogic.com.tw>,
+	Victor Shih <victor.shih@genesyslogic.com.tw>
+Subject: [PATCH V15 05/22] mmc: core: Add definitions for SD UHS-II cards
+Date: Mon, 22 Apr 2024 18:37:28 +0800
+Message-Id: <20240422103745.14725-6-victorshihgli@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240422103745.14725-1-victorshihgli@gmail.com>
 References: <20240422103745.14725-1-victorshihgli@gmail.com>
@@ -91,137 +93,379 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
+From: Victor Shih <victor.shih@genesyslogic.com.tw>
 
-To allow an additional external regulator to be controlled by an mmc host
-driver, let's add support for a vqmmc2 regulator to the mmc core.
+Add UHS-II specific data structures for commands and defines for
+registers, as described in Part 1 UHS-II Addendum Version 1.01.
 
-For an SD UHS-II interface the vqmmc2 regulator may correspond to the so
-called vdd2 supply, as described by the SD spec. Initially, only 1.8V is
-needed, hence limit the new helper function, mmc_regulator_set_vqmmc2() to
-this too.
-
-Note that, to allow for flexibility mmc host drivers need to manage the
-enable/disable of the vqmmc2 regulator themselves, while the regulator is
-looked up through the common mmc_regulator_get_supply().
+UHS-II related definitions are listed below:
+  1. UHS-II card capability: sd_uhs2_caps{}
+  2. UHS-II configuration: sd_uhs2_config{}
+  3. UHS-II register I/O address and register field definitions: sd_uhs2.h
 
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Jason Lai <jason.lai@genesyslogic.com.tw>
+Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
 ---
+
+Updates in V12:
+ - Remove unused max_current_180_vdd2.
 
 Updates in V10:
- - Modify the commit message.
+ - Drop unnecessary definitions.
 
-Updates in V4:
- - Moved the voltage defines into this patch.
+Updates in V7:
+ - Remove unnecessary definitions.
+
+Updates in V6:
+ - Remove unnecessary definitions and functions.
 
 ---
 
- drivers/mmc/core/regulator.c | 34 ++++++++++++++++++++++++++++++++++
- include/linux/mmc/host.h     | 11 +++++++++++
- 2 files changed, 45 insertions(+)
+ include/linux/mmc/card.h    |  31 ++++-
+ include/linux/mmc/host.h    |  25 +++-
+ include/linux/mmc/sd_uhs2.h | 240 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 294 insertions(+), 2 deletions(-)
+ create mode 100644 include/linux/mmc/sd_uhs2.h
 
-diff --git a/drivers/mmc/core/regulator.c b/drivers/mmc/core/regulator.c
-index 005247a49e51..208c27cfa505 100644
---- a/drivers/mmc/core/regulator.c
-+++ b/drivers/mmc/core/regulator.c
-@@ -226,6 +226,33 @@ int mmc_regulator_set_vqmmc(struct mmc_host *mmc, struct mmc_ios *ios)
- }
- EXPORT_SYMBOL_GPL(mmc_regulator_set_vqmmc);
- 
-+/**
-+ * mmc_regulator_set_vqmmc2 - Set vqmmc2 as per the ios->vqmmc2_voltage
-+ * @mmc: The mmc host to regulate
-+ * @ios: The io bus settings
-+ *
-+ * Sets a new voltage level for the vqmmc2 regulator, which may correspond to
-+ * the vdd2 regulator for an SD UHS-II interface. This function is expected to
-+ * be called by mmc host drivers.
-+ *
-+ * Returns a negative error code on failure, zero if the voltage level was
-+ * changed successfully or a positive value if the level didn't need to change.
-+ */
-+int mmc_regulator_set_vqmmc2(struct mmc_host *mmc, struct mmc_ios *ios)
-+{
-+	if (IS_ERR(mmc->supply.vqmmc2))
-+		return -EINVAL;
+diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+index e256b1e70c6e..9b90d3467961 100644
+--- a/include/linux/mmc/card.h
++++ b/include/linux/mmc/card.h
+@@ -188,6 +188,12 @@ struct sd_switch_caps {
+ #define SD_MAX_CURRENT_400	(1 << SD_SET_CURRENT_LIMIT_400)
+ #define SD_MAX_CURRENT_600	(1 << SD_SET_CURRENT_LIMIT_600)
+ #define SD_MAX_CURRENT_800	(1 << SD_SET_CURRENT_LIMIT_800)
 +
-+	switch (ios->vqmmc2_voltage) {
-+	case MMC_VQMMC2_VOLTAGE_180:
-+		return mmc_regulator_set_voltage_if_supported(
-+			mmc->supply.vqmmc2, 1700000, 1800000, 1950000);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(mmc_regulator_set_vqmmc2);
-+
- #else
- 
- static inline int mmc_regulator_get_ocrmask(struct regulator *supply)
-@@ -252,6 +279,7 @@ int mmc_regulator_get_supply(struct mmc_host *mmc)
- 
- 	mmc->supply.vmmc = devm_regulator_get_optional(dev, "vmmc");
- 	mmc->supply.vqmmc = devm_regulator_get_optional(dev, "vqmmc");
-+	mmc->supply.vqmmc2 = devm_regulator_get_optional(dev, "vqmmc2");
- 
- 	if (IS_ERR(mmc->supply.vmmc)) {
- 		if (PTR_ERR(mmc->supply.vmmc) == -EPROBE_DEFER)
-@@ -271,6 +299,12 @@ int mmc_regulator_get_supply(struct mmc_host *mmc)
- 		dev_dbg(dev, "No vqmmc regulator found\n");
- 	}
- 
-+	if (IS_ERR(mmc->supply.vqmmc2)) {
-+		if (PTR_ERR(mmc->supply.vqmmc2) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		dev_dbg(dev, "No vqmmc2 regulator found\n");
-+	}
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(mmc_regulator_get_supply);
-diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-index 3e823ef5f672..f60cce75af57 100644
---- a/include/linux/mmc/host.h
-+++ b/include/linux/mmc/host.h
-@@ -74,6 +74,9 @@ struct mmc_ios {
- #define MMC_SIGNAL_VOLTAGE_180	1
- #define MMC_SIGNAL_VOLTAGE_120	2
- 
-+	unsigned char	vqmmc2_voltage;
-+#define MMC_VQMMC2_VOLTAGE_180	0
-+
- 	unsigned char	drv_type;		/* driver type (A, B, C, D) */
- 
- #define MMC_SET_DRIVER_TYPE_B	0
-@@ -331,6 +334,7 @@ struct mmc_pwrseq;
- struct mmc_supply {
- 	struct regulator *vmmc;		/* Card power supply */
- 	struct regulator *vqmmc;	/* Optional Vccq supply */
-+	struct regulator *vqmmc2;	/* Optional supply for phy */
++#define SD4_SET_POWER_LIMIT_0_72W	0
++#define SD4_SET_POWER_LIMIT_1_44W	1
++#define SD4_SET_POWER_LIMIT_2_16W	2
++#define SD4_SET_POWER_LIMIT_2_88W	3
++#define SD4_SET_POWER_LIMIT_1_80W	4
  };
  
- struct mmc_ctx {
-@@ -613,6 +617,7 @@ int mmc_regulator_set_ocr(struct mmc_host *mmc,
- 			struct regulator *supply,
- 			unsigned short vdd_bit);
- int mmc_regulator_set_vqmmc(struct mmc_host *mmc, struct mmc_ios *ios);
-+int mmc_regulator_set_vqmmc2(struct mmc_host *mmc, struct mmc_ios *ios);
- #else
- static inline int mmc_regulator_set_ocr(struct mmc_host *mmc,
- 				 struct regulator *supply,
-@@ -626,6 +631,12 @@ static inline int mmc_regulator_set_vqmmc(struct mmc_host *mmc,
- {
- 	return -EINVAL;
- }
-+
-+static inline int mmc_regulator_set_vqmmc2(struct mmc_host *mmc,
-+					   struct mmc_ios *ios)
-+{
-+	return -EINVAL;
-+}
- #endif
+ struct sd_ext_reg {
+@@ -211,7 +217,30 @@ struct sd_ext_reg {
  
- int mmc_regulator_get_supply(struct mmc_host *mmc);
+ struct sd_uhs2_config {
+ 	u32			node_id;
+-	/* TODO: Extend with more register configs. */
++
++	u32			n_fcu;
++	u32			maxblk_len;
++	u8			n_lanes;
++	u8			dadr_len;
++	u8			app_type;
++	u8			phy_minor_rev;
++	u8			phy_major_rev;
++	u8			can_hibernate;
++	u8			n_lss_sync;
++	u8			n_lss_dir;
++	u8			link_minor_rev;
++	u8			link_major_rev;
++	u8			dev_type;
++	u8			n_data_gap;
++
++	u32			n_fcu_set;
++	u32			maxblk_len_set;
++	u8			n_lanes_set;
++	u8			speed_range_set;
++	u8			n_lss_sync_set;
++	u8			n_lss_dir_set;
++	u8			n_data_gap_set;
++	u8			max_retry_set;
+ };
+ 
+ struct sdio_cccr {
+diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+index f60cce75af57..4a56f76a8c0c 100644
+--- a/include/linux/mmc/host.h
++++ b/include/linux/mmc/host.h
+@@ -16,6 +16,7 @@
+ #include <linux/mmc/pm.h>
+ #include <linux/dma-direction.h>
+ #include <linux/blk-crypto-profile.h>
++#include <linux/mmc/sd_uhs2.h>
+ 
+ struct mmc_ios {
+ 	unsigned int	clock;			/* clock rate */
+@@ -99,7 +100,29 @@ struct mmc_clk_phase_map {
+ };
+ 
+ struct sd_uhs2_caps {
+-	/* TODO: Add UHS-II capabilities for the host. */
++	u32	dap;
++	u32	gap;
++	u32	group_desc;
++	u32	maxblk_len;
++	u32	n_fcu;
++	u8	n_lanes;
++	u8	addr64;
++	u8	card_type;
++	u8	phy_rev;
++	u8	speed_range;
++	u8	n_lss_sync;
++	u8	n_lss_dir;
++	u8	link_rev;
++	u8	host_type;
++	u8	n_data_gap;
++
++	u32	maxblk_len_set;
++	u32	n_fcu_set;
++	u8	n_lanes_set;
++	u8	n_lss_sync_set;
++	u8	n_lss_dir_set;
++	u8	n_data_gap_set;
++	u8	max_retry_set;
+ };
+ 
+ enum sd_uhs2_operation {
+diff --git a/include/linux/mmc/sd_uhs2.h b/include/linux/mmc/sd_uhs2.h
+new file mode 100644
+index 000000000000..7abe9bd870c7
+--- /dev/null
++++ b/include/linux/mmc/sd_uhs2.h
+@@ -0,0 +1,240 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Header file for UHS-II packets, Host Controller registers and I/O
++ * accessors.
++ *
++ *  Copyright (C) 2014 Intel Corp, All Rights Reserved.
++ */
++#ifndef LINUX_MMC_UHS2_H
++#define LINUX_MMC_UHS2_H
++
++/* LINK Layer definition */
++/*
++ * UHS2 Header:
++ * Refer to UHS-II Addendum Version 1.02 Figure 5-2, the format of CCMD Header is described below:
++ *      bit [3:0]  : DID(Destination ID = Node ID of UHS2 card)
++ *      bit [6:4]  : TYP(Packet Type)
++ *                   000b: CCMD(Control command packet)
++ *                   001b: DCMD(Data command packet)
++ *                   010b: RES(Response packet)
++ *                   011b: DATA(Data payload packet)
++ *                   111b: MSG(Message packet)
++ *                   Others: Reserved
++ *      bit [7]    : NP(Native Packet)
++ *      bit [10:8] : TID(Transaction ID)
++ *      bit [11]   : Reserved
++ *      bit [15:12]: SID(Source ID 0: Node ID of Host)
++ *
++ * Broadcast CCMD issued by Host is represented as DID=SID=0.
++ */
++/*
++ * UHS2 Argument:
++ * Refer to UHS-II Addendum Version 1.02 Figure 6-5, the format of CCMD Argument is described below:
++ *      bit [3:0]  : MSB of IOADR
++ *      bit [5:4]  : PLEN(Payload Length)
++ *                   00b: 0 byte
++ *                   01b: 4 bytes
++ *                   10b: 8 bytes
++ *                   11b: 16 bytes
++ *      bit [6]    : Reserved
++ *      bit [7]    : R/W(Read/Write)
++ *                   0: Control read command
++ *                   1: Control write command
++ *      bit [15:8] : LSB of IOADR
++ *
++ * I/O Address specifies the address of register in UHS-II I/O space accessed by CCMD.
++ * The unit of I/O Address is 4 Bytes. It is transmitted in MSB first, LSB last.
++ */
++#define UHS2_NATIVE_PACKET_POS	7
++#define UHS2_NATIVE_PACKET	(1 << UHS2_NATIVE_PACKET_POS)
++
++#define UHS2_PACKET_TYPE_POS	4
++#define UHS2_PACKET_TYPE_CCMD	(0 << UHS2_PACKET_TYPE_POS)
++#define UHS2_PACKET_TYPE_DCMD	(1 << UHS2_PACKET_TYPE_POS)
++#define UHS2_PACKET_TYPE_RES	(2 << UHS2_PACKET_TYPE_POS)
++#define UHS2_PACKET_TYPE_DATA	(3 << UHS2_PACKET_TYPE_POS)
++#define UHS2_PACKET_TYPE_MSG	(7 << UHS2_PACKET_TYPE_POS)
++
++#define UHS2_DEST_ID_MASK	0x0F
++#define UHS2_DEST_ID		0x1
++
++#define UHS2_SRC_ID_POS		12
++#define UHS2_SRC_ID_MASK	0xF000
++
++#define UHS2_TRANS_ID_POS	8
++#define UHS2_TRANS_ID_MASK	0x0700
++
++/* UHS2 MSG */
++#define UHS2_MSG_CTG_POS	5
++#define UHS2_MSG_CTG_LMSG	0x00
++#define UHS2_MSG_CTG_INT	0x60
++#define UHS2_MSG_CTG_AMSG	0x80
++
++#define UHS2_MSG_CTG_FCREQ	0x00
++#define UHS2_MSG_CTG_FCRDY	0x01
++#define UHS2_MSG_CTG_STAT	0x02
++
++#define UHS2_MSG_CODE_POS			8
++#define UHS2_MSG_CODE_FC_UNRECOVER_ERR		0x8
++#define UHS2_MSG_CODE_STAT_UNRECOVER_ERR	0x8
++#define UHS2_MSG_CODE_STAT_RECOVER_ERR		0x1
++
++/* TRANS Layer definition */
++
++/* Native packets*/
++#define UHS2_NATIVE_CMD_RW_POS	7
++#define UHS2_NATIVE_CMD_WRITE	(1 << UHS2_NATIVE_CMD_RW_POS)
++#define UHS2_NATIVE_CMD_READ	(0 << UHS2_NATIVE_CMD_RW_POS)
++
++#define UHS2_NATIVE_CMD_PLEN_POS	4
++#define UHS2_NATIVE_CMD_PLEN_4B		(1 << UHS2_NATIVE_CMD_PLEN_POS)
++#define UHS2_NATIVE_CMD_PLEN_8B		(2 << UHS2_NATIVE_CMD_PLEN_POS)
++#define UHS2_NATIVE_CMD_PLEN_16B	(3 << UHS2_NATIVE_CMD_PLEN_POS)
++
++#define UHS2_NATIVE_CCMD_GET_MIOADR_MASK	0xF00
++#define UHS2_NATIVE_CCMD_MIOADR_MASK		0x0F
++
++#define UHS2_NATIVE_CCMD_LIOADR_POS		8
++#define UHS2_NATIVE_CCMD_GET_LIOADR_MASK	0x0FF
++
++#define UHS2_CCMD_DEV_INIT_COMPLETE_FLAG	BIT(11)
++#define UHS2_DEV_INIT_PAYLOAD_LEN		1
++#define UHS2_DEV_INIT_RESP_LEN			6
++#define UHS2_DEV_ENUM_PAYLOAD_LEN		1
++#define UHS2_DEV_ENUM_RESP_LEN			8
++#define UHS2_CFG_WRITE_PAYLOAD_LEN		2
++#define UHS2_CFG_WRITE_PHY_SET_RESP_LEN		4
++#define UHS2_CFG_WRITE_GENERIC_SET_RESP_LEN	5
++#define UHS2_GO_DORMANT_PAYLOAD_LEN		1
++
++/*
++ * UHS2 Argument:
++ * Refer to UHS-II Addendum Version 1.02 Figure 6-8, the format of DCMD Argument is described below:
++ *      bit [3:0]  : Reserved
++ *      bit [6:3]  : TMODE(Transfer Mode)
++ *                   bit 3: DAM(Data Access Mode)
++ *                   bit 4: TLUM(TLEN Unit Mode)
++ *                   bit 5: LM(Length Mode)
++ *                   bit 6: DM(Duplex Mode)
++ *      bit [7]    : R/W(Read/Write)
++ *                   0: Control read command
++ *                   1: Control write command
++ *      bit [15:8] : Reserved
++ *
++ * I/O Address specifies the address of register in UHS-II I/O space accessed by CCMD.
++ * The unit of I/O Address is 4 Bytes. It is transmitted in MSB first, LSB last.
++ */
++#define UHS2_DCMD_DM_POS		6
++#define UHS2_DCMD_2L_HD_MODE		(1 << UHS2_DCMD_DM_POS)
++#define UHS2_DCMD_LM_POS		5
++#define UHS2_DCMD_LM_TLEN_EXIST		(1 << UHS2_DCMD_LM_POS)
++#define UHS2_DCMD_TLUM_POS		4
++#define UHS2_DCMD_TLUM_BYTE_MODE	(1 << UHS2_DCMD_TLUM_POS)
++#define UHS2_NATIVE_DCMD_DAM_POS	3
++#define UHS2_NATIVE_DCMD_DAM_IO		(1 << UHS2_NATIVE_DCMD_DAM_POS)
++
++#define UHS2_RES_NACK_POS	7
++#define UHS2_RES_NACK_MASK	(0x1 << UHS2_RES_NACK_POS)
++
++#define UHS2_RES_ECODE_POS	4
++#define UHS2_RES_ECODE_MASK	0x7
++#define UHS2_RES_ECODE_COND	1
++#define UHS2_RES_ECODE_ARG	2
++#define UHS2_RES_ECODE_GEN	3
++
++/* IOADR of device registers */
++#define UHS2_IOADR_GENERIC_CAPS		0x00
++#define UHS2_IOADR_PHY_CAPS		0x02
++#define UHS2_IOADR_LINK_CAPS		0x04
++#define UHS2_IOADR_RSV_CAPS		0x06
++#define UHS2_IOADR_GENERIC_SETTINGS	0x08
++#define UHS2_IOADR_PHY_SETTINGS		0x0A
++#define UHS2_IOADR_LINK_SETTINGS	0x0C
++#define UHS2_IOADR_PRESET		0x40
++
++/* SD application packets */
++#define UHS2_SD_CMD_INDEX_POS	8
++
++#define UHS2_SD_CMD_APP_POS	14
++#define UHS2_SD_CMD_APP		(1 << UHS2_SD_CMD_APP_POS)
++
++/* UHS-II Device Registers */
++#define UHS2_DEV_CONFIG_REG	0x000
++
++/* General Caps and Settings registers */
++#define UHS2_DEV_CONFIG_GEN_CAPS	(UHS2_DEV_CONFIG_REG + 0x000)
++#define UHS2_DEV_CONFIG_N_LANES_POS	8
++#define UHS2_DEV_CONFIG_N_LANES_MASK	0x3F
++#define UHS2_DEV_CONFIG_2L_HD_FD	0x1
++#define UHS2_DEV_CONFIG_2D1U_FD		0x2
++#define UHS2_DEV_CONFIG_1D2U_FD		0x4
++#define UHS2_DEV_CONFIG_2D2U_FD		0x8
++#define UHS2_DEV_CONFIG_DADR_POS	14
++#define UHS2_DEV_CONFIG_DADR_MASK	0x1
++#define UHS2_DEV_CONFIG_APP_POS		16
++#define UHS2_DEV_CONFIG_APP_MASK	0xFF
++#define UHS2_DEV_CONFIG_APP_SD_MEM	0x1
++
++#define UHS2_DEV_CONFIG_GEN_SET			(UHS2_DEV_CONFIG_REG + 0x008)
++#define UHS2_DEV_CONFIG_GEN_SET_N_LANES_POS	8
++#define UHS2_DEV_CONFIG_GEN_SET_2L_FD_HD	0x0
++#define UHS2_DEV_CONFIG_GEN_SET_2D1U_FD		0x2
++#define UHS2_DEV_CONFIG_GEN_SET_1D2U_FD		0x3
++#define UHS2_DEV_CONFIG_GEN_SET_2D2U_FD		0x4
++#define UHS2_DEV_CONFIG_GEN_SET_CFG_COMPLETE	BIT(31)
++
++/* PHY Caps and Settings registers */
++#define UHS2_DEV_CONFIG_PHY_CAPS	(UHS2_DEV_CONFIG_REG + 0x002)
++#define UHS2_DEV_CONFIG_PHY_MINOR_MASK	0xF
++#define UHS2_DEV_CONFIG_PHY_MAJOR_POS	4
++#define UHS2_DEV_CONFIG_PHY_MAJOR_MASK	0x3
++#define UHS2_DEV_CONFIG_CAN_HIBER_POS	15
++#define UHS2_DEV_CONFIG_CAN_HIBER_MASK	0x1
++#define UHS2_DEV_CONFIG_PHY_CAPS1	(UHS2_DEV_CONFIG_REG + 0x003)
++#define UHS2_DEV_CONFIG_N_LSS_SYN_MASK	0xF
++#define UHS2_DEV_CONFIG_N_LSS_DIR_POS	4
++#define UHS2_DEV_CONFIG_N_LSS_DIR_MASK	0xF
++
++#define UHS2_DEV_CONFIG_PHY_SET			(UHS2_DEV_CONFIG_REG + 0x00A)
++#define UHS2_DEV_CONFIG_PHY_SET_SPEED_POS	6
++#define UHS2_DEV_CONFIG_PHY_SET_SPEED_A		0x0
++#define UHS2_DEV_CONFIG_PHY_SET_SPEED_B		0x1
++
++/* LINK-TRAN Caps and Settings registers */
++#define UHS2_DEV_CONFIG_LINK_TRAN_CAPS		(UHS2_DEV_CONFIG_REG + 0x004)
++#define UHS2_DEV_CONFIG_LT_MINOR_MASK		0xF
++#define UHS2_DEV_CONFIG_LT_MAJOR_POS		4
++#define UHS2_DEV_CONFIG_LT_MAJOR_MASK		0x3
++#define UHS2_DEV_CONFIG_N_FCU_POS		8
++#define UHS2_DEV_CONFIG_N_FCU_MASK		0xFF
++#define UHS2_DEV_CONFIG_DEV_TYPE_POS		16
++#define UHS2_DEV_CONFIG_DEV_TYPE_MASK		0x7
++#define UHS2_DEV_CONFIG_MAX_BLK_LEN_POS		20
++#define UHS2_DEV_CONFIG_MAX_BLK_LEN_MASK	0xFFF
++#define UHS2_DEV_CONFIG_LINK_TRAN_CAPS1		(UHS2_DEV_CONFIG_REG + 0x005)
++#define UHS2_DEV_CONFIG_N_DATA_GAP_MASK		0xFF
++
++#define UHS2_DEV_CONFIG_LINK_TRAN_SET		(UHS2_DEV_CONFIG_REG + 0x00C)
++#define UHS2_DEV_CONFIG_LT_SET_MAX_BLK_LEN	0x200
++#define UHS2_DEV_CONFIG_LT_SET_MAX_RETRY_POS	16
++
++/* Preset register */
++#define UHS2_DEV_CONFIG_PRESET	(UHS2_DEV_CONFIG_REG + 0x040)
++
++#define UHS2_DEV_INT_REG	0x100
++
++#define UHS2_DEV_STATUS_REG	0x180
++
++#define UHS2_DEV_CMD_REG		0x200
++#define UHS2_DEV_CMD_FULL_RESET		(UHS2_DEV_CMD_REG + 0x000)
++#define UHS2_DEV_CMD_GO_DORMANT_STATE	(UHS2_DEV_CMD_REG + 0x001)
++#define UHS2_DEV_CMD_DORMANT_HIBER	BIT(7)
++#define UHS2_DEV_CMD_DEVICE_INIT	(UHS2_DEV_CMD_REG + 0x002)
++#define UHS2_DEV_INIT_COMPLETE_FLAG	BIT(11)
++#define UHS2_DEV_CMD_ENUMERATE		(UHS2_DEV_CMD_REG + 0x003)
++#define UHS2_DEV_CMD_TRANS_ABORT	(UHS2_DEV_CMD_REG + 0x004)
++
++#define UHS2_RCLK_MAX	52000000
++#define UHS2_RCLK_MIN	26000000
++
++#endif /* LINUX_MMC_UHS2_H */
 -- 
 2.25.1
 
