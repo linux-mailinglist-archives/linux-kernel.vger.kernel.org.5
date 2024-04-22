@@ -1,117 +1,90 @@
-Return-Path: <linux-kernel+bounces-154261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FEC38ADA03
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:03:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63FE08AD8F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:19:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44AB61F214BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:03:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02F87B25297
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:18:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE5B715ECCB;
-	Mon, 22 Apr 2024 23:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UJP5k6EA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1937D3FBA0;
+	Mon, 22 Apr 2024 23:18:54 +0000 (UTC)
+Received: from mail78-36.sinamail.sina.com.cn (mail78-36.sinamail.sina.com.cn [219.142.78.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24D8C15E81B;
-	Mon, 22 Apr 2024 23:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96723DBBC
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 23:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=219.142.78.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830150; cv=none; b=XZNBPyKpcq3/MYDMwYr9Q7W/9CO0AY7wktwUpdcEljUNDxk0f+/lKUT3D321xLkBA66zy48d3hoqvCnb0KlQ1nkjBsosPLIewlcfLasG1eIyI52rTQ/34AbkrpGoQl/jLuK3n3upj+ZmARnG+ARLtfVnu3DxFHpSe1UclBrKD5w=
+	t=1713827933; cv=none; b=CUaZsxvTpTeLRYoXIf9RVcF6shq9rajSI4T36f5VmpdWps1UZoDeMVK5gZ+TUPQoZT5cLLup0YBdJt9Z+bPDYVyTLUNhChUMrY79gInn1nn5MdafAjpH+baH49WQB7jzRL52t7cunmeInSQh6EURiHYMMTyNSJBNrMLZYp25qAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830150; c=relaxed/simple;
-	bh=2FqeOWFJ5RPwBVKKuybfSkJp8Q6nO5EybaaGdKCY5uA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OwzuHIRoqUT5OL3D68OnBCnuyPSMPBlTBMmn5Jm676Qvq9S9fiRvuxtBE4aLQgPU04DYKIBJlxA+icwnauaGMfFt1nQG7PKKcRKmwu4O7yI1GVUYKPzHU/dNiDmTPFr1Ql6uKRUd5DzjPfAQ7fp9mHtNtmJZ6SriCQBtdQgBVBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UJP5k6EA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53202C2BD11;
-	Mon, 22 Apr 2024 23:55:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830149;
-	bh=2FqeOWFJ5RPwBVKKuybfSkJp8Q6nO5EybaaGdKCY5uA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UJP5k6EAjEKcTbL0hiszQgyiJZH7hC2+XbOQijSLIHMbP0QZUFtfzHM9lzrxJs6Ue
-	 hmRV8nDzw8ihO6eVaTgZfGZ7MKsZd7t/QhqAE1iN0PUiq8sobbkZRZvmuyvZljuypX
-	 MK5f5uCdwzE9Jw1RshIvjdu78pxA/xXAlcD2miQ4K5YunRdPTIZg5BP2DxCrRlMsTX
-	 RIFoeMe8QziJ63p750cvTP9qsa5ZScpqW5o7tfnwvIHxkRXrkaYuvkDPv3Zhybl9x6
-	 GMY4jGZyM+W9Pt4divDiDtUeEUhJcB7saNMcW58Tdyx3m4gdGKoZiBXZfwrBQ06fHz
-	 H9l3/7V4pJZgw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>,
-	Joerg Roedel <jroedel@suse.de>,
-	Sasha Levin <sashal@kernel.org>,
-	yong.wu@mediatek.com,
-	joro@8bytes.org,
-	will@kernel.org,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	iommu@lists.linux.dev,
-	linux-mediatek@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.8 43/43] iommu: mtk: fix module autoloading
-Date: Mon, 22 Apr 2024 19:14:29 -0400
-Message-ID: <20240422231521.1592991-43-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240422231521.1592991-1-sashal@kernel.org>
-References: <20240422231521.1592991-1-sashal@kernel.org>
+	s=arc-20240116; t=1713827933; c=relaxed/simple;
+	bh=mOWY7WRhj3h2nUUEgjc1y6NeqHK9LhEIHincGXGZqXo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=dy4v6Nb8YstFRywlkS1sO+1liueQjFnfE6e2gs7T1Z2UR+3M6+D8/Y9qH0S07Z2Xm10eTUC/YPmwrsL4QerIY4xnz7F+JOdaeSdckGfeSCiPAhItdnqJJQ0i3QkTHpDFrU7SiuAE7ume6iI0fNRMoS/3NozaLQT/ptbuB9xRZPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=219.142.78.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.64.40])
+	by sina.com (172.16.235.25) with ESMTP
+	id 6626EFC000005C44; Mon, 23 Apr 2024 07:16:19 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 38118134210409
+X-SMAIL-UIID: 3EF4C64A57D049A5AEC96D785C3AA858-20240423-071619-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+6cf5652d3df49fae2e3f@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [pm?] KASAN: use-after-free Read in netdev_unregister_kobject
+Date: Tue, 23 Apr 2024 07:16:17 +0800
+Message-Id: <20240422231617.2916-1-hdanton@sina.com>
+In-Reply-To: <000000000000afab690616b12f99@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.8.7
 Content-Transfer-Encoding: 8bit
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+On Mon, 22 Apr 2024 08:35:25 -0700
+> syzbot found the following issue on:
+> 
+> HEAD commit:    3cdb45594619 Merge tag 's390-6.9-4' of git://git.kernel.or..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=144067cb180000
 
-[ Upstream commit 7537e31df80cb58c27f3b6fef702534ea87a5957 ]
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  3cdb45594619
 
-Add MODULE_DEVICE_TABLE(), so modules could be properly autoloaded
-based on the alias from of_device_id table.
-
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20240410164109.233308-1-krzk@kernel.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/iommu/mtk_iommu.c    | 1 +
- drivers/iommu/mtk_iommu_v1.c | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 7abe9e85a5706..51d0eba8cbdf3 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -1789,6 +1789,7 @@ static const struct of_device_id mtk_iommu_of_ids[] = {
- 	{ .compatible = "mediatek,mt8365-m4u", .data = &mt8365_data},
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, mtk_iommu_of_ids);
+--- x/net/bluetooth/bnep/core.c
++++ y/net/bluetooth/bnep/core.c
+@@ -659,7 +659,7 @@ int bnep_del_connection(struct bnep_conn
+ 	if (req->flags & ~valid_flags)
+ 		return -EINVAL;
  
- static struct platform_driver mtk_iommu_driver = {
- 	.probe	= mtk_iommu_probe,
-diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
-index 25b41222abaec..32cc8341d3726 100644
---- a/drivers/iommu/mtk_iommu_v1.c
-+++ b/drivers/iommu/mtk_iommu_v1.c
-@@ -599,6 +599,7 @@ static const struct of_device_id mtk_iommu_v1_of_ids[] = {
- 	{ .compatible = "mediatek,mt2701-m4u", },
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, mtk_iommu_v1_of_ids);
+-	down_read(&bnep_session_sem);
++	down_write(&bnep_session_sem);
  
- static const struct component_master_ops mtk_iommu_v1_com_ops = {
- 	.bind		= mtk_iommu_v1_bind,
--- 
-2.43.0
-
+ 	s = __bnep_get_session(req->dst);
+ 	if (s) {
+@@ -668,7 +668,7 @@ int bnep_del_connection(struct bnep_conn
+ 	} else
+ 		err = -ENOENT;
+ 
+-	up_read(&bnep_session_sem);
++	up_write(&bnep_session_sem);
+ 	return err;
+ }
+ 
+--
 
