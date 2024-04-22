@@ -1,193 +1,132 @@
-Return-Path: <linux-kernel+bounces-153816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EA8C8AD3AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:11:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AC5B8AD3B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:12:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B76A92827C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:11:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC0D51C20B62
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:12:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C37154432;
-	Mon, 22 Apr 2024 18:11:33 +0000 (UTC)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DBC7154430;
+	Mon, 22 Apr 2024 18:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=morinfr.org header.i=@morinfr.org header.b="JqvJugGk"
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E294153BC6;
-	Mon, 22 Apr 2024 18:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1E9154427;
+	Mon, 22 Apr 2024 18:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713809493; cv=none; b=mhOgnqdRKz1+B+l9tGRigCFbkwZwmBwRlm77mvWHnf2P3idsk+p2Ot3PZliU16+mDvOogToBQcE2o+9xkPNjONahTAXIOUJkSYLq+bZtBfVRkvh6vO28PwNLMWUADMCdljsI+SAr3FbYo4/wbLbqPRJhiBes6Igi0oNIqPeGGXU=
+	t=1713809527; cv=none; b=denn9etGOC0BQegSueZwSvjWtg5Ig6bf+GEB2j/PdLveZtvLe9GTO/MrT3ChFTlpDGIdfyU5dwS1nCHeKPwOZywkXa0DAFn38r3/YKhyVx274jCoJIFXfXIP8oM9lnXbem8YeouFT5AdI60ol39frkSqINH+f7BAnTOmhqoJzBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713809493; c=relaxed/simple;
-	bh=RXQBNIZD8UE4HL2t+pBxUCcQnfwkILmQO4gohG+Wb/M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uJbbZpvRJsTUlnlwsoro7ye3PlvEuvptaDSc6tGrvFjJa41vdQT7kyaVyhfEm0EDe3Z4EzYkgV3BKoaoiJHz+KOOiMEpeqF/6xFYWQV3jpPHi16fovQNbvh/RJ9Q77FgYi2pFeQ669w4NHjHZpRMaWHytiCSjhGWpJ/KuepRoS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-61b2218ab6fso32590607b3.1;
-        Mon, 22 Apr 2024 11:11:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713809489; x=1714414289;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BIYJICZAHp3tuVglFyrlAugeozSb8a+qq+gPa6pnnj4=;
-        b=QtQMDDHandWJM1GtyfaZCmEollQ+H0A4dhT/vpLqttGUu1N+v50yBd7tOPTA5Rk7Rb
-         LZMcaRk7m+FbkwrbyFS3i7eiKAMiwTAd+krsrTmNerwIaL9Ja+ZAVZiowKflw5wwChr9
-         LgeuMox5tuQlmo7zsgEkGMrBD0GHDx5C8F1xb5ysneHF7pZwTPpRAl/Z64AD+W4voTTk
-         zc372Zo6kU1HZbPrjMHcVJBveC/3Ez/THeDJeaH/taeO/wmJmgstSYzlUT4p71H9S7Px
-         k9YpqLk1GzjLi30aHPB2XfYSW2Rr6cAPCGvwFQpelGUamnFvkCrz39+0dU1DhmawnIFA
-         /yBw==
-X-Forwarded-Encrypted: i=1; AJvYcCWjDr2IXbY4FJXCzxHRH8D/0W4B4GHdmyWKP8PNsUa0pu5D52jly60vcc5Se95yDTaVXyKNzPdAil5wxGkCgwnr6KxcTIuMYRv+kR/4RNbrNk4sbMZQ8KH1iD7hnhYmJjPfEz4zNexyWB+tF5143NOYWMo97kBzJMHgs08JCzbMHsyfKarVc2bEW6biDT8=
-X-Gm-Message-State: AOJu0Yy+GkdwQTeyXyfyA+PWSnoFmp5SUCZKWMRXlTWJylBRdUCBAzPf
-	K1I/3pM+vfVTt3c3rGnYOtafyIbcuyKP5yOmGuFhe270A5JIaagOMorf5sQb
-X-Google-Smtp-Source: AGHT+IH0OXsyCvpf/sQVdi00yQB229Paq5Wr22BDwJDutgiTXY9/fi5D/dAIBkcVivaGzef2qK+MUg==
-X-Received: by 2002:a05:690c:6787:b0:61a:d454:fb3b with SMTP id ib7-20020a05690c678700b0061ad454fb3bmr10912027ywb.6.1713809489446;
-        Mon, 22 Apr 2024 11:11:29 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id t21-20020a0dea15000000b0061abc6baadfsm2095913ywe.14.2024.04.22.11.11.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 11:11:29 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dbed0710c74so4178973276.1;
-        Mon, 22 Apr 2024 11:11:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUdu9YyeJDuwYGWOqfWRYerpbDDwIymCs3Sgn80DiR0R/1NYgCvq0fLq0yvJgCPeuKcm+hz8hHwlWGohueBUYAl2yLpH90T8JLfg8lc3I6cNM4ppEVu5B1ubd9MeRmGfPET0mBjJAsM5Y79YqQwwMabQ4n1TQK0Ot9T4kYT7sqfPjRV9gPorzq9ZYdyd5A=
-X-Received: by 2002:a25:d655:0:b0:dcc:58ed:6ecc with SMTP id
- n82-20020a25d655000000b00dcc58ed6eccmr10979493ybg.41.1713809488807; Mon, 22
- Apr 2024 11:11:28 -0700 (PDT)
+	s=arc-20240116; t=1713809527; c=relaxed/simple;
+	bh=1MNA6BD/wkkFyMR6iFDbhB+dKlSGnsGlINodyvEQKg0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SqCMB+r0Toooh88mRRFehLg/AdShgB9jMXcmYaRdCLYRn0acfyw3GW2z5XyOhaOuw7juk/xpACRzv2GJ+ADjBmaVBPB+CzoZ7HsSTcHAV4LkCPC33MUhG0PyH+HaXY4e8e/P3Ti56QNDZQnHFyB/o8IEDLERpj/MnYHSngL4Vew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=morinfr.org; spf=pass smtp.mailfrom=morinfr.org; dkim=pass (1024-bit key) header.d=morinfr.org header.i=@morinfr.org header.b=JqvJugGk; arc=none smtp.client-ip=212.27.42.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=morinfr.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=morinfr.org
+Received: from bender.morinfr.org (unknown [82.66.66.112])
+	by smtp2-g21.free.fr (Postfix) with ESMTPS id 6B5772003CC;
+	Mon, 22 Apr 2024 20:11:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=morinfr.org
+	; s=20170427; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=mmoOHxOmhH8xOg3t9ZcJpcTIHR4KgHsjfCJHduRGVbI=; b=JqvJugGk8i1bs0KPI3j4zKhZue
+	xw/nwMLl2RE2g6vM4gqUxnxI/VxJdDYNoidbzy79Bfm9wwUJqFmeDzfj8dlstX8cfQfqNDGTnHf/5
+	0BUf8pldaaW9psL2HSiiiYfL+m29Zu4rB/l1thm05wYgzpJm11H17gcmgMipfghQOYcI=;
+Received: from guillaum by bender.morinfr.org with local (Exim 4.96)
+	(envelope-from <guillaume@morinfr.org>)
+	id 1ryy8s-0056Nh-26;
+	Mon, 22 Apr 2024 20:11:50 +0200
+Date: Mon, 22 Apr 2024 20:11:50 +0200
+From: Guillaume Morin <guillaume@morinfr.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: Guillaume Morin <guillaume@morinfr.org>, oleg@redhat.com,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	muchun.song@linux.dev
+Subject: Re: [RFC][PATCH] uprobe: support for private hugetlb mappings
+Message-ID: <ZiaoZlGc_8ZV3736@bender.morinfr.org>
+References: <ZiK50qob9yl5e0Xz@bender.morinfr.org>
+ <b70a3d3a-ea8b-4b20-964b-b019c146945a@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1713780345.git.geert+renesas@glider.be> <87il09ty4u.fsf@intel.com>
- <ff4f9e8f-0825-4421-adf9-e3914b108da7@app.fastmail.com> <875xw9ttl6.fsf@intel.com>
- <af6e26d1-1402-4ed2-a650-b58eae77273e@app.fastmail.com> <87wmops57s.fsf@intel.com>
-In-Reply-To: <87wmops57s.fsf@intel.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 22 Apr 2024 20:11:19 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWU5R-C-sKs1GsF9Jt9giRD_moUs=1jvXastBwhWRYMJg@mail.gmail.com>
-Message-ID: <CAMuHMdWU5R-C-sKs1GsF9Jt9giRD_moUs=1jvXastBwhWRYMJg@mail.gmail.com>
-Subject: Re: [PATCH 00/11] drm: Restore helper usability
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	Dave Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, 
-	Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
-	linux-kbuild <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b70a3d3a-ea8b-4b20-964b-b019c146945a@redhat.com>
 
-Hi Jani,
+(Dropping Mike Kravetz as CC since he has retired and his email is no
+longer valid, adding Muchun since he's the current hugetlb maintainer,
+as well as linux-trace-kernel)
 
-CC kbuild
-
-On Mon, Apr 22, 2024 at 7:00=E2=80=AFPM Jani Nikula <jani.nikula@linux.inte=
-l.com> wrote:
-> On Mon, 22 Apr 2024, "Arnd Bergmann" <arnd@arndb.de> wrote:
-> > I'm not sure where this misunderstanding comes from, as you
-> > seem to be repeating the same incorrect assumption about
-> > how select works that Maxime wrote in his changelog. To clarify,
-> > this works exactly as one would expect:
-> >
-> > config HELPER_A
-> >        tristate
-> >
-> > config HELPER_B
-> >        tristate
-> >        select HELPER_A
-> >
-> > config DRIVER
-> >        tristate "Turn on the driver and the helpers it uses"
-> >        select HELPER_B # this recursively selects HELPER_A
-> >
-> > Whereas this one is broken:
-> >
-> > config FEATURE_A
-> >        tristate "user visible if I2C is enabled"
-> >        depends on I2C
-> >
-> > config HELPER_B
-> >        tristate # hidden
-> >        select FEATURE_A
-> >
-> > config DRIVER
-> >        tristate "This driver is broken if I2C is disabled"
-> >        select HELPER_B
+On 22 Apr 11:39, David Hildenbrand wrote:
 >
-> This case is really what I was referring to, although I was sloppy with
-> words there. I understand that select does work recursively for selects.
->
-> >>   There is no end to this, it just goes on and on, as the
-> >>   dependencies of the selected symbols change over time. Often the
-> >>   selects require unintuitive if patterns that are about the
-> >>   implementation details of the symbol being selected.
-> >
-> > Agreed, that is the problem I frequently face with drivers/gpu/drm,
-> > and most of the time it can only be solved by rewriting the whole
-> > system to not select user-visible symbol at all.
-> >
-> > Using 'depends on' by itself is unfortunately not enough to
-> > avoid /all/ the problems. See e.g. today's failure
-> >
-> > config DRM_DISPLAY_HELPER
-> >        tristate "DRM Display Helpers"
-> >        default y
-> >
-> > config DRM_DISPLAY_DP_HELPER
-> >        bool "DRM DisplayPort Helpers"
-> >        depends on DRM_DISPLAY_HELPER
-> >
-> > config DRM_PANEL_LG_SW43408
-> >        tristate "LG SW43408 panel"
-> >        depends on DRM_DISPLAY_DP_HELPER
-> >
-> > This version is still broken for DRM_DISPLAY_HELPER=3Dm,
-> > DRM_DISPLAY_DP_HELPER=3Dm, DRM_PANEL_LG_SW43408=3Dy because
-> > the dependency on the bool symbol is not enough to
-> > ensure that DRM_DISPLAY_HELPER is also built-in, so you
-> > still need explicit dependencies on both
-> > DRM_DISPLAY_HELPER and DRM_DISPLAY_DP_HELPER in the users.
-> >
-> > This can be solved by making DRM_DISPLAY_DP_HELPER a
-> > tristate symbol and adjusting the #ifdef checks and
-> > Makefile logic accordingly, which is exactly what you'd
-> > need to do to make it work with 'select' as well.
->
-> So bool is kind of problematic for depends on and select even when it's
-> not really used for describing builtin vs. no, but rather yes vs. no?
+> On 19.04.24 20:37, Guillaume Morin wrote:
+> > libhugetlbfs, the Intel iodlr code both allow to remap .text onto a
+> > hugetlb private mapping. It's also pretty easy to do it manually.
+> > One drawback of using this functionality is the lack of support for
+> > uprobes (NOTE uprobe ignores shareable vmas)
+> > 
+> > This patch adds support for private hugetlb mappings.  It does require exposing
+> > some hugetlbfs innards and relies on copy_user_large_folio which is only
+> > available when CONFIG_HUGETLBFS is used so I had to use an ugly #ifdef
+> > 
+> > If there is some interest in applying this patch in some form or
+> > another, I am open to any refactoring suggestions (esp getting rid the
+> > #ifdef in uprobes.c) . I tried to limit the
+> > amount of branching.
+> 
+> All that hugetlb special casing .... oh my. What's the benefit why we should
+> be interested in making that code less clean -- to phrase it in a nice way
+> ;) ?
 
-Yes, the underlying issue is that bool is used for two different things:
-  A. To enable a driver module that can be only built-in,
-  B. To enable an option or feature of a driver or subsystem.
+I do appreciate the nice phrasing. Believe me, I did try to limit the
+special casing to a minimum :-).
 
-Without this distinction, dependencies cannot be auto-propagated 100%
-correctly.  Fixing that would require introducing a third type (and possibl=
-y
-renaming the existing ones to end up with 3 good names).
+Outside of __replace_page, I added only 3-ish branches so I do not think
+it's *too* bad. The uprobe code is using PAGE_{SHIFT,MASK} quite liberally so I
+had to add calls to retrieve these for the hugetlb vmas.
 
-Actually two types could work:
-  1. driver,
-  2. option,
-as case A is just a driver that can only be built-in (i.e. "depends on y",
-which is similar to the behavior with CONFIG_MODULES=3Dn).
+__replace_page has a lot of special casing. I certainly agree (and
+unfortunately for me it's at the beginning of the patch :)).  It's doing
+something pretty uncommon outside of the mm code so it has to make a
+bunch of specific hugetlb calls. I am not quite sure how to improve it
+but if you have suggestions, I'd be happy to refactor.
 
-Gr{oetje,eeting}s,
+The benefit - to me - is very clear. People do use hugetlb mappings to
+run code in production environments. The perf benefits are there for some
+workloads. Intel has published a whitepaper about it etc.
+Uprobes are a very good tool to do live tracing. If you can restart the
+process and reproduce, you should be able to disable hugetlb remapping
+but if you need to look at a live process, there are not many options.
+Not being able to use uprobes is crippling.
 
-                        Geert
+> Yes, libhugetlbfs exists. But why do we have to support uprobes with it?
+> Nobody cared until now, why care now?
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+I think you could ask the same question for every new feature patch :)
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Since the removal a few releases ago of the __morecore() hook in glibc,
+the main feature of libhugetlbfs is ELF segments remapping. I think
+there are definitely a lot of users that simply deal with this
+unnecessary limitation.
+
+I am certainly not shoving this patch through anyone's throat if there
+is no interest. But we definitely find it a very useful feature ...
+
+Guillaume.
+
+-- 
+Guillaume Morin <guillaume@morinfr.org>
 
