@@ -1,165 +1,127 @@
-Return-Path: <linux-kernel+bounces-154077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 412ED8AD727
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:16:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72FBE8AD724
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:16:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9EDB282241
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:16:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B7631C21993
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28751F95A;
-	Mon, 22 Apr 2024 22:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E961F932;
+	Mon, 22 Apr 2024 22:15:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="wWIwGw0H"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jlnz8/AV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9851218AED;
-	Mon, 22 Apr 2024 22:16:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E201D54F;
+	Mon, 22 Apr 2024 22:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713824199; cv=none; b=nwt0obHxhPXWyDRFiy1cCazK4ojh+0tEHWbVvsAxeD7tJjKcalZ9KtJds1FwFGIQj9bIpDnICicv1+34J/zUnSMOJM6+qgCE4Fwd8Rp9WwMdClChENtIhgibZWJLG4sTCmYU4JX2CrGDqlSAtys5Ufo+VLOuqA+ESFiBeCjm1UE=
+	t=1713824156; cv=none; b=PBlogTGceFgjXSsoNf09W4D2QfneJMGyAMamKDHDjwG0enkLtP4UL9B58zS2uaYXAAS4ROJ+SOHBSzCmMG+U1mXcY/U+0F0g6jaMLDmufVleaHbi74I0+115t6Vy8DSmq1pbyL6f2HLmEpYUUovOjWKiEfQnig571V46yBEyBa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713824199; c=relaxed/simple;
-	bh=s63qWirH6LnQOQhdFuM5UCirhhZiyGhBxJTNyk0JRPU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RSaEUUIEFqtfTAbeLHwpTwRIlwFcQeQJlotBaSSoPdke4MPiXh4VDBzeaoFGQElzo+mnbsqlBuwK62W9k9s5K1VgcaTD67lrk9m2t86sguS52znLthe2c3jyDQpGJ4qhV0+X43smI8+OLwRxDsVl647MFPYDA5sCoXT1IZGjE3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=wWIwGw0H; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43MMFUbB129084;
-	Mon, 22 Apr 2024 17:15:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713824130;
-	bh=TGSyHDDNUUS+JmaQ28HCmCuprjBJyEqRRCDtdPXLLOs=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=wWIwGw0HCkcxnacVEtadTNnclC2hEiRWiofhJg84iLQbACfgjmPFrgzPJ70nSvHWC
-	 TfiOcEaWp5LXQyGdln4Qi5Sbyz9PtuFz+1q/Xhh254PaDBKh+VNaqyC7W7L3GWZ70p
-	 nrv2wJA8eGTLRkYhgoj6FdFZ5mU7VZpOUYczSzXw=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43MMFUA3123197
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 22 Apr 2024 17:15:30 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 22
- Apr 2024 17:15:30 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 22 Apr 2024 17:15:30 -0500
-Received: from [128.247.81.105] (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43MMFU2W122172;
-	Mon, 22 Apr 2024 17:15:30 -0500
-Message-ID: <a4fcaaad-de8a-4809-9277-ffb63f6227b3@ti.com>
-Date: Mon, 22 Apr 2024 17:15:30 -0500
+	s=arc-20240116; t=1713824156; c=relaxed/simple;
+	bh=YLj1Y4Zq6gvQIdES41SRPwMqvfsPBwNoD4Vei+Csd6c=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RTGNxo38OXvY2diMjifrWe3GLcePKrw6WL0b3Kh8dAAG6nllZLCcZF5SOqrZUF3zbSUNcsfZQ5CQVXyFYTOjPRtIICBplWuiUr8DGSiKiW1Q0l/hH31CPcagQd2UOdAZiBTd2mGihHkq3cgtcoXFKO3eGVmS63RGUNadTWotgF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jlnz8/AV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D7FBC113CC;
+	Mon, 22 Apr 2024 22:15:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713824155;
+	bh=YLj1Y4Zq6gvQIdES41SRPwMqvfsPBwNoD4Vei+Csd6c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jlnz8/AVBBUSN2shBrWF8FFrD85UTYA1ypKhTU9vjmW4NGV3f1kI1JUAb0HZ/5TDF
+	 NWMB8iGfyjcAO5ukXretxuUvIlDXzA0Cmhy0cVywBGkc0p/JDvHFT9s9Cs/j5vTGJg
+	 /1O+5EOhJ7TiYukxqWD8x8zqLF5MJA2WY0GipXN7bypsJ+ONPYBrEqsIBaQCZ41XJX
+	 sYqI+4TaqnRAT2+V1Ktfe7yGf6amk1xXZTehr3zJKtga8Fn6LBaW4wZ3CXxtjhkcfA
+	 kC3kHzo6B460UlXHB7RG9buB1KMgqs5Y8zQi08l57SjVGmFEN7wa2xcorvL1p6jejt
+	 V7Mr/8JlvRfzw==
+Date: Mon, 22 Apr 2024 23:15:50 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Konstantin Ryabitsev <konstantin@linuxfoundation.org>, Thorsten Leemhuis
+ <linux@leemhuis.info>, Sasha Levin <sashal@kernel.org>,
+ helpdesk@kernel.org, "workflows@vger.kernel.org"
+ <workflows@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Please create the email alias do-not-apply-to-stable@kernel.org
+ -> /dev/null
+Message-ID: <20240422231550.3cf5f723@sal.lan>
+In-Reply-To: <2024042311-slinky-musket-fc75@gregkh>
+References: <b452fd54-fdc6-47e4-8c26-6627f6b7eff3@leemhuis.info>
+	<20240417-lively-zebu-of-tact-efc8f3@lemur>
+	<e7318984-7ef4-48cd-aae4-1deda3d711a5@leemhuis.info>
+	<2024041734-gleeful-freewill-b24b@gregkh>
+	<d4853f43-2538-4a92-9ac4-aff5c7b0893e@leemhuis.info>
+	<2024041830-karaoke-aspirate-df00@gregkh>
+	<655ce2a3-eb04-4ade-999e-23fc5dc5fb3a@leemhuis.info>
+	<20240422-stoic-sawfly-of-protection-db8bfe@lemur>
+	<20240422224637.01bb3058@sal.lan>
+	<2024042311-slinky-musket-fc75@gregkh>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/7] dt-bindings: counter: Update TI eQEP binding
-To: David Lechner <david@lechnology.com>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon
-	<will@kernel.org>,
-        William Breathitt Gray <william.gray@linaro.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-References: <20240418221417.1592787-1-jm@ti.com>
- <20240418221417.1592787-6-jm@ti.com>
- <4cf5f463-dccd-4637-b7ce-e8d8eac044b7@lechnology.com>
-Content-Language: en-US
-From: Judith Mendez <jm@ti.com>
-In-Reply-To: <4cf5f463-dccd-4637-b7ce-e8d8eac044b7@lechnology.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 4/22/24 1:25 PM, David Lechner wrote:
-> On 4/18/24 5:14 PM, Judith Mendez wrote:
->> Update eQEP binding for TI K3 devices.
+Em Tue, 23 Apr 2024 00:04:01 +0200
+Greg KH <gregkh@linuxfoundation.org> escreveu:
+
+> On Mon, Apr 22, 2024 at 10:46:37PM +0100, Mauro Carvalho Chehab wrote:
+> > Em Mon, 22 Apr 2024 15:25:18 -0400
+> > Konstantin Ryabitsev <konstantin@linuxfoundation.org> escreveu:
+> >   
+> > > On Mon, Apr 22, 2024 at 05:49:29PM +0200, Thorsten Leemhuis wrote:  
+> > > > @Greg, BTW: should this be stable+noautosel@kernel.org or have a 
+> > > > 'vger.'    
+> > > 
+> > > No vger, just stable+whatever@kernel.org.
+> > >   
+> > > > in it, e.g. stable+noautosel@vger.kernel.org? I assume without 'vger.'
+> > > > is fine, just wanted to be sure, as
+> > > > Documentation/process/stable-kernel-rules.rst in all other cases
+> > > > specifies stable@vger.kernel.org, so people are likely to get confused.
+> > > > :-/ #sigh    
+> > > 
+> > > These serve two different purposes:
+> > > 
+> > > stable@kernel.org (goes into devnull)
+> > > stable@vger.kernel.org (actual mailing list)
+> > > 
+> > > Confusion happens all the time, unfortunately.  
+> > 
+> > Yeah, I did already used stable@kernel.org a few times in the
+> > past. 
+> > 
+> > IMO, the best would be either for stable to also accept it or for
+> > kernel.org mail server to return an error message (only to the
+> > submitter) warning about the invalid address, eventually with a
+> > hint message pointing to the correct value.  
 > 
+> stable@kernel.org is there to route to /dev/null on purpose so that
+> developers/maintainers who only want their patches to get picked up when
+> they hit Linus's tree, will have happen and not notify anyone else.
+> This is especially good when dealing with security-related things as we
+> have had MANY people accidentally leak patches way too early by having
+>  cc: stable@vger.kernel.org in their signed-off-by areas, and forgetting
+> to tell git send-email to suppress cc: when sending them out for
+> internal review.
+
+Nice! didn't know about that. On a quick check, the only place at
+documentation mentioning it without vger is at checkpatch.rst.
+
+Perhaps it would make sense to document that as well.
+
+> Having that bounce would just be noisy for the developers involved.
 > 
-> It would make more sense to have this patch first in the series
-> before the dts changes.
-
-Got it.
-
+> thanks,
 > 
->>
->> Signed-off-by: Judith Mendez <jm@ti.com>
->> ---
->>   Documentation/devicetree/bindings/counter/ti-eqep.yaml | 10 +++++++---
->>   1 file changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/counter/ti-eqep.yaml b/Documentation/devicetree/bindings/counter/ti-eqep.yaml
->> index 85f1ff83afe72..11755074c8a91 100644
->> --- a/Documentation/devicetree/bindings/counter/ti-eqep.yaml
->> +++ b/Documentation/devicetree/bindings/counter/ti-eqep.yaml
->> @@ -14,19 +14,23 @@ properties:
->>       const: ti,am3352-eqep
->>   
-> 
-> As Krzysztof hinted, it sounds like we need to add new compatibles
-> here and have some -if: statements to account for the differences
-> in SoCs rather than making the bindings less strict.
-
-Yes, I see this is the correct action. Thanks.
-
-> 
->>     reg:
->> -    maxItems: 1
->> +    minItems: 1
->> +    maxItems: 2
->>   
->>     interrupts:
->>       description: The eQEP event interrupt
->>       maxItems: 1
->>   
->>     clocks:
->> -    description: The clock that determines the SYSCLKOUT rate for the eQEP
->> +    description: The clock that determines the clock rate for the eQEP
->>         peripheral.
->>       maxItems: 1
->>   
->>     clock-names:
->> -    const: sysclkout
->> +    maxItems: 1
-> 
-> In hindsight, this is not the best name. Since we only have one clock
-> we don't really need the name anyway, so for the new compatibles, we
-> could set clock-names: false.
-
-Ok, will add this to new compatible.
-
-> 
->> +
->> +  power-domains:
->> +    maxItems: 1
->>   
->>   required:
->>     - compatible
-> 
-> 
-> I see that the CFG0 syscon register on AM62x has some control knobs for
-> the EQEP so it would be good to add this to the bindings now too to try
-> to make the bindings as complete as possible. (I didn't look at other
-> chips so the same may apply to others as well.)
-
-Got it (:
-
-~ Judith
-
-> 
-
+> greg k-h
 
