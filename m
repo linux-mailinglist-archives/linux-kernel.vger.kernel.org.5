@@ -1,1009 +1,300 @@
-Return-Path: <linux-kernel+bounces-153253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 831AD8ACB86
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:59:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C9D68ACB88
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:59:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FDCC1F23835
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:59:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E842B21EEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340AB1448C7;
-	Mon, 22 Apr 2024 10:59:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D988C145FF9;
+	Mon, 22 Apr 2024 10:59:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QX335Kx8"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=jaguarmicro.com header.i=@jaguarmicro.com header.b="J8tWQqB9"
+Received: from SG2PR03CU006.outbound.protection.outlook.com (mail-southeastasiaazon11020002.outbound.protection.outlook.com [52.101.133.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A21BE1448E1;
-	Mon, 22 Apr 2024 10:59:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713783558; cv=none; b=EYKadRjxMLBOAE19cjWPY2br3DBTrlPLV+wFaGW+ie/TdoTKuOCwtDCEVwrnbmdtBg/mgQJxSAkZW5adm95vAZkMe2pZ2s6dg5SDbloAdg56w4c6ftqejHVA6LBORLydXNod4CGL0HAx3I/B6iSbVn9Zd+ZgowWS8Qkb2C4BKTc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713783558; c=relaxed/simple;
-	bh=aW2SujkwHfCjrvrlgaow+xynTzvfPq67eqbp5gHD40E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J/GxmeXeyHTnEb1Zt7ygYKU6MiX8zUO9kcLnNyLKG2hz7EKOmVvU3AGDpGBdOy0cz1ywdyL+kY10vfsLyUQCfjwrahO2kp/CfOZ4uTyug4tQz99Iha0BqJlJmasT4SXS/mMaTkTd0sxOMSY98Ua3So2zVfRBKG8v6tYhsubycpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QX335Kx8; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713783556; x=1745319556;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aW2SujkwHfCjrvrlgaow+xynTzvfPq67eqbp5gHD40E=;
-  b=QX335Kx8gIjTp8Azu0chleG4HjzsZBGxjtvI3Y3oLnTIEAeNgdl9m5Ng
-   IRJPGa05I+1qWAgrBTLAJDSPkNqf1dg0y7oi9UbcO/BxpIa4xAYeXdtdn
-   K/crOBd3KujwWFHLGFW16tIF/u8QxKr4KxHpFpieKVQo6H/iXvQLKSGDZ
-   kJytXBmVxCBOGyCENDu9uU2njXgNyfb0pV8GG0vVjIISO4VxHckR/OO5/
-   D/HedsVI9DdkjASPN5ugHHbHHAjG3gIwA+tHmjTGcMDGpc85EekgNfFn/
-   CKXK0Y0vhvb33oDjmY8xEjn97Spa8e7NQWLyc/Hbs/tRiVwCL3AGtpl4p
-   g==;
-X-CSE-ConnectionGUID: NjHq/gJOSyqzLtCwi6bK0Q==
-X-CSE-MsgGUID: wOOMFj1VSzKoKnkeB5/iUA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="9179894"
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="9179894"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 03:59:15 -0700
-X-CSE-ConnectionGUID: 1HBwcrCjTaGgMY1s2WlOzw==
-X-CSE-MsgGUID: fVFVfVl3SaGvEgMXdqR1fw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="24582062"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orviesa008.jf.intel.com with SMTP; 22 Apr 2024 03:59:11 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 22 Apr 2024 13:59:10 +0300
-Date: Mon, 22 Apr 2024 13:59:10 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 7/8] usb: typec: ucsi: glink: merge pmic_glink_altmode
- driver
-Message-ID: <ZiZC/l9nOmzWx+j6@kuha.fi.intel.com>
-References: <20240416-ucsi-glink-altmode-v1-0-890db00877ac@linaro.org>
- <20240416-ucsi-glink-altmode-v1-7-890db00877ac@linaro.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A4E14659A
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.133.2
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713783568; cv=fail; b=ZpInsZAR/kIN635f45HLriEJb9XJRiDDlLiALtGjO6kNSxWj0lv8bF/7smVWnp6Bb9FQbjBZQPshyp0JD+Y2uHx0PwQur1ZFZRCqu4/Bte6n3PNQbMQtUIMACVIn1vN3WeYKTVhXX2DDN3YijiNy7+ocqvoKvV4cCIIDmZRzGY0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713783568; c=relaxed/simple;
+	bh=MMrxo/RAibIPsCOLUtaE+89ULAldgh0GdDuDbkj4tnk=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=JeB8LdrLSZySa50/YyjYa5c9TR2eiHh0LeBmjTrgcp5y8hqUBnLrHAItqR4rPFmvp7kKPAbmkeh3LvEat0ydlZE2UJadNgHBr070sKrgucZ7vcC3DMrRTwNY2hF5QjDQ2khfWgp4lcALaSSDrruU22OXmJE4qlRGe1LWSX/SLlw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jaguarmicro.com; spf=pass smtp.mailfrom=jaguarmicro.com; dkim=pass (2048-bit key) header.d=jaguarmicro.com header.i=@jaguarmicro.com header.b=J8tWQqB9; arc=fail smtp.client-ip=52.101.133.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jaguarmicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jaguarmicro.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Oupdsy33T2YUwJpiKUAxa0YS17Kq+WmKEizRKpUBb9CJGAYigK4Eu8E2Zfd6I63jU2ygNZ07VlZo1/3dpjJkr+N0yjsvoQ1qPuU/SqUkK26SFsSrOfxt4Anoq93sCVOQKT4koCrzWn5EjL1sQFD1V08Uw+fkDE87WnRhJhLGZMWsETPesHftE0StPPQ/ZMhdPlZKMDs50f1zU2y4pt+0DMNwlvxu8qlTkCbhi6uORUCtwPeC8qqzYyE65x1gur0iNmORTzSc0MfButGBdnRSZn/QRMBQRJGovO5nIOdXOM2SFqnLdh8RXC9egYq3VufgDXxrrmMguOqOfloAO5P+Sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ikF+eNpWtCTyvA/oXGtBlCS6VQ9aLcH7XvYfCiYIqJw=;
+ b=NrEjFgqat2yhGGbK2KH25xaHXaTV3vgT+xZEenhjKfDQ/uc+L/3ErA+UUYBLkrmd+jAl7yiRy8G0/hT9WlKmlZsUUoE2ONNrFDQZUNVg8bcHHio4U7BrEJygjHpid986115GPUD+yX5f8x7NjVDegbqj5yxLdyLhjYUA5X9yeC1jxJAe9wp/2R//vNMqIO6iy72CyjZQzyvzF6QP/KXBcG0RRBaGAgj+093c+U6QzXl80piUjqQBIAk1j7ql1V6C9GFh4IIEYn3hf+FIqpUfYin+O5qbluRUB1osz+YxGvBDRdczoRqxA7QIdJVVzc1gTeazokcd37V3agGtTGPJmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=jaguarmicro.com; dmarc=pass action=none
+ header.from=jaguarmicro.com; dkim=pass header.d=jaguarmicro.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jaguarmicro.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ikF+eNpWtCTyvA/oXGtBlCS6VQ9aLcH7XvYfCiYIqJw=;
+ b=J8tWQqB9RTIj8Z2vkRs6W/DrFV0xablp4f3ptVi4KcP/v8RI9EstD3yenl9by2lp9iyKrbhbLUmCyfnCz50o04Y6or1u729yfXyKr0V84FYiBcnwmlOh9s3tjk0Ilo9lh2T7CvnNmMeRF+8aPfpU84LvJicMMwfIBMKYKKjoCMlKDHLCm15EewjC/ngJKDyp8VTWHne4bIHdt4+u7zG+1cv58IT/Jw/XtEF1vBcSB2jXQEiPTxd/5kxNT4O7XIIII0mi8+iyGOCBoq/EAmhpioO22elOPbMbny7q0WhY3ayPmHVIBURWJ7qCgiQXFmY+W5DfFopP/eKIA+GnShbbGQ==
+Received: from SEYPR06MB6756.apcprd06.prod.outlook.com (2603:1096:101:165::11)
+ by TYZPR06MB6216.apcprd06.prod.outlook.com (2603:1096:400:332::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 22 Apr
+ 2024 10:59:21 +0000
+Received: from SEYPR06MB6756.apcprd06.prod.outlook.com
+ ([fe80::922f:a649:adbf:6634]) by SEYPR06MB6756.apcprd06.prod.outlook.com
+ ([fe80::922f:a649:adbf:6634%3]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
+ 10:59:21 +0000
+From: Gavin Liu <gavin.liu@jaguarmicro.com>
+To: "mst@redhat.com" <mst@redhat.com>
+CC: "virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
+	"xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Heng Qi
+	<hengqi@linux.alibaba.com>, "jasowang@redhat.com" <jasowang@redhat.com>
+Subject: Re: [PATCH v5] vp_vdpa: don't allocate unused msix vectors
+Thread-Topic: [PATCH v5] vp_vdpa: don't allocate unused msix vectors
+Thread-Index: AdqUpADC1B8M7m7DRdW1tgCt/+fxkQ==
+Date: Mon, 22 Apr 2024 10:59:21 +0000
+Message-ID:
+ <SEYPR06MB6756E76E1CEA58CC8FDD15F3EC122@SEYPR06MB6756.apcprd06.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=jaguarmicro.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SEYPR06MB6756:EE_|TYZPR06MB6216:EE_
+x-ms-office365-filtering-correlation-id: d01d4966-e76b-4e49-0a4b-08dc62bb4397
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?ibyekG4uUC2ctCY0lIA8F3puf8qtv9HzBfUC9vZ9NTGh9FBygny/1RG460sY?=
+ =?us-ascii?Q?tMrBvHpVDAr3OXZIgJPFWKoFbc4Z6+AvufwUw4rvOq3m4Mfxi81DUiNgzvg8?=
+ =?us-ascii?Q?LhCTGUTeWv0Q/lATylxrB9f4uEljDFzxGhYtEDY6YE2MIt1zvIc+CGPpjyOP?=
+ =?us-ascii?Q?PxQwM//AgYeWRTCYMwLmeh0tdl7RfreVGSncBKujYlYH0csOWjwFsExagkBH?=
+ =?us-ascii?Q?C4em9EQKVMIvEbNaIej2nUn0ICmGRn/XDIjWxGggZwrs4l7u0ycPcfud9Upq?=
+ =?us-ascii?Q?13oFYDZN/M9c+BX6R3yL/kRGYY/w0+7akrAxzLZwuLNJl2dvEgsi1txj1KPB?=
+ =?us-ascii?Q?dXwxMoXmlByp7RnXKVnuKMk6CMAHemeI2Z5b1d3v7R4kXk2qEE4JDnzRj0O0?=
+ =?us-ascii?Q?1f2u49h02eScLLJntXB/8DdLMG6A7Z7xZNiLyyxKFGcuXQQL0Kp7AdQfd+qf?=
+ =?us-ascii?Q?0fmAnRZCEMld6BmxsZQGkd1+46DmAjdas/5sIZX+POhZKT3jw3/uXmmWbtD8?=
+ =?us-ascii?Q?u5NTL6uReanuelYG8Gmmzk4odCCO0/OUwx+X4npLGEMjMoSMW4lvfoOZKRfc?=
+ =?us-ascii?Q?tg+YFU37jtQKI8sdlzQAe+XsSZ/rP48ZHyQ4mqYZRor3G9Urpqc2eDxehpHB?=
+ =?us-ascii?Q?Bdn4vcYdoEqPVFm0S6f6ngmboaemPrB0TVDgjGllFRijTmCmS9/v8HFoEolX?=
+ =?us-ascii?Q?1iorTvfWt/SszRO9hlZWAExiI2NLWzCReQbJGGxtLFnOp+xAVrGg6iaIMUwG?=
+ =?us-ascii?Q?c3ZjLDFW7+pqgXdkyd+dFqWSH2ONqHS5Yv9laArAmrFiTT5SJJ3NLm4K/Vxk?=
+ =?us-ascii?Q?xydoh2b7dSxB18nVXj0u0Hyq3uAQ1RjsQwufKgRYgMCaGGNMkIV1nmXQoAnp?=
+ =?us-ascii?Q?5OmM7+s7mIuMfltoyJA6VrVNghTyONB+Iy8m6YbfUZafnmV9XyeATV67bxo0?=
+ =?us-ascii?Q?24RTCEpZPVeCsskq4Vz3Yx86JtDYNHyABRciz9DPwfG61vkVJs+oWgrOafJB?=
+ =?us-ascii?Q?szuUzQDhcLvrzicCMFi9MO0MHxZD0rdesdG5uK3/XaSdRByqS0YWTZc682IC?=
+ =?us-ascii?Q?A6ZxGTGWsh1mqLblgAGZ743iME8wm/IZvBuQqvh3J3pjPkn1bK1ve6oNGGiO?=
+ =?us-ascii?Q?wc7ejnEZtnp6apfuGGk3RCw2fnV6X2Ga73hzvDvxfrU1nMIcfGefhMb1jDAV?=
+ =?us-ascii?Q?W3Thu0DOsyDP0Mj+vFxvwyW69CsbWuFeVunES5qTNc+6w0t2Sxv1WOX0dS3O?=
+ =?us-ascii?Q?VffiKpy93x0MIiJmxAnsU6kqhpbHMVyxEZG8wcWGETz4ql/32fc7DSlyeOEI?=
+ =?us-ascii?Q?hC/LJgC6GAyHiCmgYat4DU92XsZMQ4YgybPhctWStWFDIA=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR06MB6756.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?Q3xc8iag0AjY9nKuKpYlp3ftT4znf2kVJqzp3ZC8xSeH6Z4SB3bfIzkoBcYR?=
+ =?us-ascii?Q?UphP5O0+ccuYZt2JZw7P5A/x7VF/QhTlrrKLeUT2wEqjMhQXXkZFgYBPOFbJ?=
+ =?us-ascii?Q?a5O/QN1CYYbiUe0PB1f1n6mRd2Kart0mJ9RI2IJpnzBSelO2eFKmCM3WEIGM?=
+ =?us-ascii?Q?lPSO0Rnqowhimp/LiPBpW8Alfqbm9fYMK+d6onDrKFeZee8WCqZGZqFcjghX?=
+ =?us-ascii?Q?WFKr6vhKX/nXg0Du07UVyYEfCLjqqlIMVyZkOKlfbHleb9CD43WMPL2Fgn3F?=
+ =?us-ascii?Q?T/3xtkYNujp7rRtSKY5QDMTZRFuDaZXiaQFu1yTi025rXvFm07hzLleB5WKS?=
+ =?us-ascii?Q?Edz5FT8W/IOV+KE68KzRKeHg3zJ1Z8kfNit9QXlnjJ3ihh/npOAF4Uz4osN8?=
+ =?us-ascii?Q?5v/+BLrHw7kNzSshuchXAgudhB5YA9HJ4vpSssy2DlKFeUQOB5ZDW25zAdUS?=
+ =?us-ascii?Q?vnsnVuEcSGC70Qi/ONICFlj9jD/TZ8GrbEBZqtUcpLEhyHf+VFygqe2UX1gn?=
+ =?us-ascii?Q?p26umoZnbR69CFhkzCcaDaumqjww9Q98ledgIetCm8mqw1LETFdHYixJ6f8o?=
+ =?us-ascii?Q?0pquZ+n8wnSFDw8X8G7PM/hPSn3kQrx06OScHIJPdwYDCIjVh1lfSmRVbzP6?=
+ =?us-ascii?Q?24a3dAI4fWyNa9m9erVGzac3Eal8f+slpSscQFBR7TDHWe6Xu4RIUbXx6p7J?=
+ =?us-ascii?Q?2X7YALNy50sbh5eORBcQPKWiRbndjAF4I+op0gh+TvDS0Bc34YMc/RxEI5+J?=
+ =?us-ascii?Q?IoxGhLWKFH2FxgRg6xFQhylXluBuQxRQwzQwKgVdwaTpu4eXyPLG0/UjVIu2?=
+ =?us-ascii?Q?M0XxpzK2DPkCaRkb9N9epR3jiWFUqp6lUfbO4KLbPS/vdJzTi6mrb9UyK4Wy?=
+ =?us-ascii?Q?xWY/YCJjzHLhy7gI8wt9/kn89mFcrYA8TBxDLCQULpjbe1xI3NsJv7zwdWGa?=
+ =?us-ascii?Q?YDGMGbToW+iHfnNJJ1Sm9Yzm5m0mNFO9GtI0LFablqZCUCn4oSCThPA4b7Dz?=
+ =?us-ascii?Q?wXC2nej93GFnDk3wnXnLGDcpSAicMSHZccyKFMaNF+NyX3VPkfZ/Hsvv7j0t?=
+ =?us-ascii?Q?UtET1m98ydv6BOt0VlFGQ6C5W72U2bMREKAQ17zgeTeRbtWtiZtOy8ok5i3n?=
+ =?us-ascii?Q?Bm/XAp32nVLCFkfpC4LAtw9Nr46X+URE0L9MvUo6xva1WXs4sWG+V2KCxHMw?=
+ =?us-ascii?Q?BYV+jCchEw67XvRqdXPj2rdMHSk31B/QTvLPnkoe5EbhzUeHzFGeJ/ZB+ZWk?=
+ =?us-ascii?Q?ZlzmxbemHTxc0hAKx1ZPnssa3vTrD3oXaaUNl/lB2Ztu90sDSV9bU7ukFVKk?=
+ =?us-ascii?Q?kADhk7CAjhHebZUrQ/jd9Oj2Wr3MUCnXnftY82W6djKm5zCdRFbyRLdWjDgN?=
+ =?us-ascii?Q?vd7AnYSKKhnI58UTNGnp5OsfwL46FaYt0RIKKoPouelrDNin7W1w5b2Z/rSl?=
+ =?us-ascii?Q?S1TmNLTbH/Sb4YGyFGdSFjZpLPtJLGuQi8VcXqfybP0fdwWEScUOTEmpEHh1?=
+ =?us-ascii?Q?Sm+37TqG1hZ1zyxGPGlqLzRL/ll0cfSnCojm0Llu7jryABCQCzdWA9hNGZI9?=
+ =?us-ascii?Q?BYRTHOTcJLlccdZxWPMdZUrED5J2HMrdibMnLuC6?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416-ucsi-glink-altmode-v1-7-890db00877ac@linaro.org>
+X-OriginatorOrg: jaguarmicro.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR06MB6756.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d01d4966-e76b-4e49-0a4b-08dc62bb4397
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Apr 2024 10:59:21.1558
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 1e45a5c2-d3e1-46b3-a0e6-c5ebf6d8ba7b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tVj35/A3bM3+khKgYdk+xzxKLpEXI8Nekyr4aMZ1BvRwVX4pyPW2P1JzYZ+cfSeOYjub2sBIyt7t+WmtCzOrPDwN7EkjGaQAcnTMJ/65QSY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6216
 
-Hi Dmitry,
+Dear Michael,
 
-On Tue, Apr 16, 2024 at 05:20:56AM +0300, Dmitry Baryshkov wrote:
-> Move handling of USB Altmode to the ucsi_glink driver. This way the
-> altmode is properly registered in the Type-C framework, the altmode
-> handlers can use generic typec calls, the UCSI driver can use
-> orientation information from altmode messages and vice versa, the
-> altmode handlers can use GPIO-based orientation inormation from UCSI
-> GLINK driver.
-> 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/soc/qcom/Makefile             |   1 -
->  drivers/soc/qcom/pmic_glink_altmode.c | 546 ----------------------------------
->  drivers/usb/typec/ucsi/ucsi_glink.c   | 495 ++++++++++++++++++++++++++++--
->  3 files changed, 475 insertions(+), 567 deletions(-)
-> 
-> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-> index ca0bece0dfff..d43d2b444634 100644
-> --- a/drivers/soc/qcom/Makefile
-> +++ b/drivers/soc/qcom/Makefile
-> @@ -9,7 +9,6 @@ obj-$(CONFIG_QCOM_MDT_LOADER)	+= mdt_loader.o
->  obj-$(CONFIG_QCOM_OCMEM)	+= ocmem.o
->  obj-$(CONFIG_QCOM_PDR_HELPERS)	+= pdr_interface.o
->  obj-$(CONFIG_QCOM_PMIC_GLINK)	+= pmic_glink.o
-> -obj-$(CONFIG_QCOM_PMIC_GLINK)	+= pmic_glink_altmode.o
->  obj-$(CONFIG_QCOM_PMIC_PDCHARGER_ULOG)	+= pmic_pdcharger_ulog.o
->  CFLAGS_pmic_pdcharger_ulog.o	:=  -I$(src)
->  obj-$(CONFIG_QCOM_QMI_HELPERS)	+= qmi_helpers.o
-> diff --git a/drivers/soc/qcom/pmic_glink_altmode.c b/drivers/soc/qcom/pmic_glink_altmode.c
-> deleted file mode 100644
-> index b3808fc24c69..000000000000
-> --- a/drivers/soc/qcom/pmic_glink_altmode.c
-> +++ /dev/null
-> @@ -1,546 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0-only
-> -/*
-> - * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
-> - * Copyright (c) 2022, Linaro Ltd
-> - */
-> -#include <linux/auxiliary_bus.h>
-> -#include <linux/bitfield.h>
-> -#include <linux/module.h>
-> -#include <linux/of.h>
-> -#include <linux/of_device.h>
-> -#include <linux/mutex.h>
-> -#include <linux/property.h>
-> -#include <linux/soc/qcom/pdr.h>
-> -#include <drm/bridge/aux-bridge.h>
-> -
-> -#include <linux/usb/typec_altmode.h>
-> -#include <linux/usb/typec_dp.h>
-> -#include <linux/usb/typec_mux.h>
-> -#include <linux/usb/typec_retimer.h>
-> -
-> -#include <linux/soc/qcom/pmic_glink.h>
-> -
-> -#define PMIC_GLINK_MAX_PORTS	2
-> -
-> -#define USBC_SC8180X_NOTIFY_IND	0x13
-> -#define USBC_CMD_WRITE_REQ      0x15
-> -#define USBC_NOTIFY_IND		0x16
-> -
-> -#define ALTMODE_PAN_EN		0x10
-> -#define ALTMODE_PAN_ACK		0x11
-> -
-> -struct usbc_write_req {
-> -	struct pmic_glink_hdr   hdr;
-> -	__le32 cmd;
-> -	__le32 arg;
-> -	__le32 reserved;
-> -};
-> -
-> -#define NOTIFY_PAYLOAD_SIZE 16
-> -struct usbc_notify {
-> -	struct pmic_glink_hdr hdr;
-> -	char payload[NOTIFY_PAYLOAD_SIZE];
-> -	u32 reserved;
-> -};
-> -
-> -struct usbc_sc8180x_notify {
-> -	struct pmic_glink_hdr hdr;
-> -	__le32 notification;
-> -	__le32 reserved[2];
-> -};
-> -
-> -enum pmic_glink_altmode_pin_assignment {
-> -	DPAM_HPD_OUT,
-> -	DPAM_HPD_A,
-> -	DPAM_HPD_B,
-> -	DPAM_HPD_C,
-> -	DPAM_HPD_D,
-> -	DPAM_HPD_E,
-> -	DPAM_HPD_F,
-> -};
-> -
-> -struct pmic_glink_altmode;
-> -
-> -#define work_to_altmode_port(w) container_of((w), struct pmic_glink_altmode_port, work)
-> -
-> -struct pmic_glink_altmode_port {
-> -	struct pmic_glink_altmode *altmode;
-> -	unsigned int index;
-> -
-> -	struct typec_switch *typec_switch;
-> -	struct typec_mux *typec_mux;
-> -	struct typec_mux_state state;
-> -	struct typec_retimer *typec_retimer;
-> -	struct typec_retimer_state retimer_state;
-> -	struct typec_altmode dp_alt;
-> -
-> -	struct work_struct work;
-> -
-> -	struct auxiliary_device *bridge;
-> -
-> -	enum typec_orientation orientation;
-> -	u16 svid;
-> -	u8 dp_data;
-> -	u8 mode;
-> -	u8 hpd_state;
-> -	u8 hpd_irq;
-> -};
-> -
-> -#define work_to_altmode(w) container_of((w), struct pmic_glink_altmode, enable_work)
-> -
-> -struct pmic_glink_altmode {
-> -	struct device *dev;
-> -
-> -	unsigned int owner_id;
-> -
-> -	/* To synchronize WRITE_REQ acks */
-> -	struct mutex lock;
-> -
-> -	struct completion pan_ack;
-> -	struct pmic_glink_client *client;
-> -
-> -	struct work_struct enable_work;
-> -
-> -	struct pmic_glink_altmode_port ports[PMIC_GLINK_MAX_PORTS];
-> -};
-> -
-> -static int pmic_glink_altmode_request(struct pmic_glink_altmode *altmode, u32 cmd, u32 arg)
-> -{
-> -	struct usbc_write_req req = {};
-> -	unsigned long left;
-> -	int ret;
-> -
-> -	/*
-> -	 * The USBC_CMD_WRITE_REQ ack doesn't identify the request, so wait for
-> -	 * one ack at a time.
-> -	 */
-> -	mutex_lock(&altmode->lock);
-> -
-> -	req.hdr.owner = cpu_to_le32(altmode->owner_id);
-> -	req.hdr.type = cpu_to_le32(PMIC_GLINK_REQ_RESP);
-> -	req.hdr.opcode = cpu_to_le32(USBC_CMD_WRITE_REQ);
-> -	req.cmd = cpu_to_le32(cmd);
-> -	req.arg = cpu_to_le32(arg);
-> -
-> -	ret = pmic_glink_send(altmode->client, &req, sizeof(req));
-> -	if (ret) {
-> -		dev_err(altmode->dev, "failed to send altmode request: %#x (%d)\n", cmd, ret);
-> -		goto out_unlock;
-> -	}
-> -
-> -	left = wait_for_completion_timeout(&altmode->pan_ack, 5 * HZ);
-> -	if (!left) {
-> -		dev_err(altmode->dev, "timeout waiting for altmode request ack for: %#x\n", cmd);
-> -		ret = -ETIMEDOUT;
-> -	}
-> -
-> -out_unlock:
-> -	mutex_unlock(&altmode->lock);
-> -	return ret;
-> -}
-> -
-> -static void pmic_glink_altmode_enable_dp(struct pmic_glink_altmode *altmode,
-> -					 struct pmic_glink_altmode_port *port,
-> -					 u8 mode, bool hpd_state,
-> -					 bool hpd_irq)
-> -{
-> -	struct typec_displayport_data dp_data = {};
-> -	int ret;
-> -
-> -	dp_data.status = DP_STATUS_ENABLED;
-> -	if (hpd_state)
-> -		dp_data.status |= DP_STATUS_HPD_STATE;
-> -	if (hpd_irq)
-> -		dp_data.status |= DP_STATUS_IRQ_HPD;
-> -	dp_data.conf = DP_CONF_SET_PIN_ASSIGN(mode);
-> -
-> -	port->state.alt = &port->dp_alt;
-> -	port->state.data = &dp_data;
-> -	port->state.mode = TYPEC_MODAL_STATE(mode);
-> -
-> -	ret = typec_mux_set(port->typec_mux, &port->state);
-> -	if (ret)
-> -		dev_err(altmode->dev, "failed to switch mux to DP: %d\n", ret);
-> -
-> -	port->retimer_state.alt = &port->dp_alt;
-> -	port->retimer_state.data = &dp_data;
-> -	port->retimer_state.mode = TYPEC_MODAL_STATE(mode);
-> -
-> -	ret = typec_retimer_set(port->typec_retimer, &port->retimer_state);
-> -	if (ret)
-> -		dev_err(altmode->dev, "failed to setup retimer to DP: %d\n", ret);
-> -}
-> -
-> -static void pmic_glink_altmode_enable_usb(struct pmic_glink_altmode *altmode,
-> -					  struct pmic_glink_altmode_port *port)
-> -{
-> -	int ret;
-> -
-> -	port->state.alt = NULL;
-> -	port->state.data = NULL;
-> -	port->state.mode = TYPEC_STATE_USB;
-> -
-> -	ret = typec_mux_set(port->typec_mux, &port->state);
-> -	if (ret)
-> -		dev_err(altmode->dev, "failed to switch mux to USB: %d\n", ret);
-> -
-> -	port->retimer_state.alt = NULL;
-> -	port->retimer_state.data = NULL;
-> -	port->retimer_state.mode = TYPEC_STATE_USB;
-> -
-> -	ret = typec_retimer_set(port->typec_retimer, &port->retimer_state);
-> -	if (ret)
-> -		dev_err(altmode->dev, "failed to setup retimer to USB: %d\n", ret);
-> -}
-> -
-> -static void pmic_glink_altmode_safe(struct pmic_glink_altmode *altmode,
-> -				    struct pmic_glink_altmode_port *port)
-> -{
-> -	int ret;
-> -
-> -	port->state.alt = NULL;
-> -	port->state.data = NULL;
-> -	port->state.mode = TYPEC_STATE_SAFE;
-> -
-> -	ret = typec_mux_set(port->typec_mux, &port->state);
-> -	if (ret)
-> -		dev_err(altmode->dev, "failed to switch mux to safe mode: %d\n", ret);
-> -
-> -	port->retimer_state.alt = NULL;
-> -	port->retimer_state.data = NULL;
-> -	port->retimer_state.mode = TYPEC_STATE_SAFE;
-> -
-> -	ret = typec_retimer_set(port->typec_retimer, &port->retimer_state);
-> -	if (ret)
-> -		dev_err(altmode->dev, "failed to setup retimer to USB: %d\n", ret);
-> -}
-> -
-> -static void pmic_glink_altmode_worker(struct work_struct *work)
-> -{
-> -	struct pmic_glink_altmode_port *alt_port = work_to_altmode_port(work);
-> -	struct pmic_glink_altmode *altmode = alt_port->altmode;
-> -
-> -	typec_switch_set(alt_port->typec_switch, alt_port->orientation);
-> -
-> -	if (alt_port->svid == USB_TYPEC_DP_SID && alt_port->mode == 0xff)
-> -		pmic_glink_altmode_safe(altmode, alt_port);
-> -	else if (alt_port->svid == USB_TYPEC_DP_SID)
-> -		pmic_glink_altmode_enable_dp(altmode, alt_port, alt_port->mode,
-> -					     alt_port->hpd_state, alt_port->hpd_irq);
-> -	else
-> -		pmic_glink_altmode_enable_usb(altmode, alt_port);
-> -
-> -	drm_aux_hpd_bridge_notify(&alt_port->bridge->dev,
-> -				  alt_port->hpd_state ?
-> -				  connector_status_connected :
-> -				  connector_status_disconnected);
-> -
-> -	pmic_glink_altmode_request(altmode, ALTMODE_PAN_ACK, alt_port->index);
-> -}
-> -
-> -static enum typec_orientation pmic_glink_altmode_orientation(unsigned int orientation)
-> -{
-> -	if (orientation == 0)
-> -		return TYPEC_ORIENTATION_NORMAL;
-> -	else if (orientation == 1)
-> -		return TYPEC_ORIENTATION_REVERSE;
-> -	else
-> -		return TYPEC_ORIENTATION_NONE;
-> -}
-> -
-> -#define SC8180X_PORT_MASK		0x000000ff
-> -#define SC8180X_ORIENTATION_MASK	0x0000ff00
-> -#define SC8180X_MUX_MASK		0x00ff0000
-> -#define SC8180X_MODE_MASK		0x3f000000
-> -#define SC8180X_HPD_STATE_MASK		0x40000000
-> -#define SC8180X_HPD_IRQ_MASK		0x80000000
-> -
-> -static void pmic_glink_altmode_sc8180xp_notify(struct pmic_glink_altmode *altmode,
-> -					       const void *data, size_t len)
-> -{
-> -	struct pmic_glink_altmode_port *alt_port;
-> -	const struct usbc_sc8180x_notify *msg;
-> -	u32 notification;
-> -	u8 orientation;
-> -	u8 hpd_state;
-> -	u8 hpd_irq;
-> -	u16 svid;
-> -	u8 port;
-> -	u8 mode;
-> -	u8 mux;
-> -
-> -	if (len != sizeof(*msg)) {
-> -		dev_warn(altmode->dev, "invalid length of USBC_NOTIFY indication: %zd\n", len);
-> -		return;
-> -	}
-> -
-> -	msg = data;
-> -	notification = le32_to_cpu(msg->notification);
-> -	port = FIELD_GET(SC8180X_PORT_MASK, notification);
-> -	orientation = FIELD_GET(SC8180X_ORIENTATION_MASK, notification);
-> -	mux = FIELD_GET(SC8180X_MUX_MASK, notification);
-> -	mode = FIELD_GET(SC8180X_MODE_MASK, notification);
-> -	hpd_state = FIELD_GET(SC8180X_HPD_STATE_MASK, notification);
-> -	hpd_irq = FIELD_GET(SC8180X_HPD_IRQ_MASK, notification);
-> -
-> -	svid = mux == 2 ? USB_TYPEC_DP_SID : 0;
-> -
-> -	if (port >= ARRAY_SIZE(altmode->ports) || !altmode->ports[port].altmode) {
-> -		dev_dbg(altmode->dev, "notification on undefined port %d\n", port);
-> -		return;
-> -	}
-> -
-> -	alt_port = &altmode->ports[port];
-> -	alt_port->orientation = pmic_glink_altmode_orientation(orientation);
-> -	alt_port->svid = svid;
-> -	alt_port->mode = mode;
-> -	alt_port->hpd_state = hpd_state;
-> -	alt_port->hpd_irq = hpd_irq;
-> -	schedule_work(&alt_port->work);
-> -}
-> -
-> -#define SC8280XP_DPAM_MASK	0x3f
-> -#define SC8280XP_HPD_STATE_MASK BIT(6)
-> -#define SC8280XP_HPD_IRQ_MASK	BIT(7)
-> -
-> -static void pmic_glink_altmode_sc8280xp_notify(struct pmic_glink_altmode *altmode,
-> -					       u16 svid, const void *data, size_t len)
-> -{
-> -	struct pmic_glink_altmode_port *alt_port;
-> -	const struct usbc_notify *notify;
-> -	u8 orientation;
-> -	u8 hpd_state;
-> -	u8 hpd_irq;
-> -	u8 mode;
-> -	u8 port;
-> -
-> -	if (len != sizeof(*notify)) {
-> -		dev_warn(altmode->dev, "invalid length USBC_NOTIFY_IND: %zd\n",
-> -			 len);
-> -		return;
-> -	}
-> -
-> -	notify = data;
-> -
-> -	port = notify->payload[0];
-> -	orientation = notify->payload[1];
-> -	mode = FIELD_GET(SC8280XP_DPAM_MASK, notify->payload[8]) - DPAM_HPD_A;
-> -	hpd_state = FIELD_GET(SC8280XP_HPD_STATE_MASK, notify->payload[8]);
-> -	hpd_irq = FIELD_GET(SC8280XP_HPD_IRQ_MASK, notify->payload[8]);
-> -
-> -	if (port >= ARRAY_SIZE(altmode->ports) || !altmode->ports[port].altmode) {
-> -		dev_dbg(altmode->dev, "notification on undefined port %d\n", port);
-> -		return;
-> -	}
-> -
-> -	alt_port = &altmode->ports[port];
-> -	alt_port->orientation = pmic_glink_altmode_orientation(orientation);
-> -	alt_port->svid = svid;
-> -	alt_port->mode = mode;
-> -	alt_port->hpd_state = hpd_state;
-> -	alt_port->hpd_irq = hpd_irq;
-> -	schedule_work(&alt_port->work);
-> -}
-> -
-> -static void pmic_glink_altmode_callback(const void *data, size_t len, void *priv)
-> -{
-> -	struct pmic_glink_altmode *altmode = priv;
-> -	const struct pmic_glink_hdr *hdr = data;
-> -	u16 opcode;
-> -	u16 svid;
-> -
-> -	opcode = le32_to_cpu(hdr->opcode) & 0xff;
-> -	svid = le32_to_cpu(hdr->opcode) >> 16;
-> -
-> -	switch (opcode) {
-> -	case USBC_CMD_WRITE_REQ:
-> -		complete(&altmode->pan_ack);
-> -		break;
-> -	case USBC_NOTIFY_IND:
-> -		pmic_glink_altmode_sc8280xp_notify(altmode, svid, data, len);
-> -		break;
-> -	case USBC_SC8180X_NOTIFY_IND:
-> -		pmic_glink_altmode_sc8180xp_notify(altmode, data, len);
-> -		break;
-> -	}
-> -}
-> -
-> -static void pmic_glink_altmode_put_retimer(void *data)
-> -{
-> -	typec_retimer_put(data);
-> -}
-> -
-> -static void pmic_glink_altmode_put_mux(void *data)
-> -{
-> -	typec_mux_put(data);
-> -}
-> -
-> -static void pmic_glink_altmode_put_switch(void *data)
-> -{
-> -	typec_switch_put(data);
-> -}
-> -
-> -static void pmic_glink_altmode_enable_worker(struct work_struct *work)
-> -{
-> -	struct pmic_glink_altmode *altmode = work_to_altmode(work);
-> -	int ret;
-> -
-> -	ret = pmic_glink_altmode_request(altmode, ALTMODE_PAN_EN, 0);
-> -	if (ret)
-> -		dev_err(altmode->dev, "failed to request altmode notifications: %d\n", ret);
-> -}
-> -
-> -static void pmic_glink_altmode_pdr_notify(void *priv, int state)
-> -{
-> -	struct pmic_glink_altmode *altmode = priv;
-> -
-> -	if (state == SERVREG_SERVICE_STATE_UP)
-> -		schedule_work(&altmode->enable_work);
-> -}
-> -
-> -static const struct of_device_id pmic_glink_altmode_of_quirks[] = {
-> -	{ .compatible = "qcom,sc8180x-pmic-glink", .data = (void *)PMIC_GLINK_OWNER_USBC },
-> -	{}
-> -};
-> -
-> -static int pmic_glink_altmode_probe(struct auxiliary_device *adev,
-> -				    const struct auxiliary_device_id *id)
-> -{
-> -	struct pmic_glink_altmode_port *alt_port;
-> -	struct pmic_glink_altmode *altmode;
-> -	const struct of_device_id *match;
-> -	struct fwnode_handle *fwnode;
-> -	struct device *dev = &adev->dev;
-> -	u32 port;
-> -	int ret;
-> -
-> -	altmode = devm_kzalloc(dev, sizeof(*altmode), GFP_KERNEL);
-> -	if (!altmode)
-> -		return -ENOMEM;
-> -
-> -	altmode->dev = dev;
-> -
-> -	match = of_match_device(pmic_glink_altmode_of_quirks, dev->parent);
-> -	if (match)
-> -		altmode->owner_id = (unsigned long)match->data;
-> -	else
-> -		altmode->owner_id = PMIC_GLINK_OWNER_USBC_PAN;
-> -
-> -	INIT_WORK(&altmode->enable_work, pmic_glink_altmode_enable_worker);
-> -	init_completion(&altmode->pan_ack);
-> -	mutex_init(&altmode->lock);
-> -
-> -	device_for_each_child_node(dev, fwnode) {
-> -		ret = fwnode_property_read_u32(fwnode, "reg", &port);
-> -		if (ret < 0) {
-> -			dev_err(dev, "missing reg property of %pOFn\n", fwnode);
-> -			fwnode_handle_put(fwnode);
-> -			return ret;
-> -		}
-> -
-> -		if (port >= ARRAY_SIZE(altmode->ports)) {
-> -			dev_warn(dev, "invalid connector number, ignoring\n");
-> -			continue;
-> -		}
-> -
-> -		if (altmode->ports[port].altmode) {
-> -			dev_err(dev, "multiple connector definition for port %u\n", port);
-> -			fwnode_handle_put(fwnode);
-> -			return -EINVAL;
-> -		}
-> -
-> -		alt_port = &altmode->ports[port];
-> -		alt_port->altmode = altmode;
-> -		alt_port->index = port;
-> -		INIT_WORK(&alt_port->work, pmic_glink_altmode_worker);
-> -
-> -		alt_port->bridge = devm_drm_dp_hpd_bridge_alloc(dev, to_of_node(fwnode));
-> -		if (IS_ERR(alt_port->bridge)) {
-> -			fwnode_handle_put(fwnode);
-> -			return PTR_ERR(alt_port->bridge);
-> -		}
-> -
-> -		alt_port->dp_alt.svid = USB_TYPEC_DP_SID;
-> -		alt_port->dp_alt.mode = USB_TYPEC_DP_MODE;
-> -		alt_port->dp_alt.active = 1;
-> -
-> -		alt_port->typec_mux = fwnode_typec_mux_get(fwnode);
-> -		if (IS_ERR(alt_port->typec_mux)) {
-> -			fwnode_handle_put(fwnode);
-> -			return dev_err_probe(dev, PTR_ERR(alt_port->typec_mux),
-> -					     "failed to acquire mode-switch for port: %d\n",
-> -					     port);
-> -		}
-> -
-> -		ret = devm_add_action_or_reset(dev, pmic_glink_altmode_put_mux,
-> -					       alt_port->typec_mux);
-> -		if (ret) {
-> -			fwnode_handle_put(fwnode);
-> -			return ret;
-> -		}
-> -
-> -		alt_port->typec_retimer = fwnode_typec_retimer_get(fwnode);
-> -		if (IS_ERR(alt_port->typec_retimer)) {
-> -			fwnode_handle_put(fwnode);
-> -			return dev_err_probe(dev, PTR_ERR(alt_port->typec_retimer),
-> -					     "failed to acquire retimer-switch for port: %d\n",
-> -					     port);
-> -		}
-> -
-> -		ret = devm_add_action_or_reset(dev, pmic_glink_altmode_put_retimer,
-> -					       alt_port->typec_retimer);
-> -		if (ret) {
-> -			fwnode_handle_put(fwnode);
-> -			return ret;
-> -		}
-> -
-> -		alt_port->typec_switch = fwnode_typec_switch_get(fwnode);
-> -		if (IS_ERR(alt_port->typec_switch)) {
-> -			fwnode_handle_put(fwnode);
-> -			return dev_err_probe(dev, PTR_ERR(alt_port->typec_switch),
-> -					     "failed to acquire orientation-switch for port: %d\n",
-> -					     port);
-> -		}
-> -
-> -		ret = devm_add_action_or_reset(dev, pmic_glink_altmode_put_switch,
-> -					       alt_port->typec_switch);
-> -		if (ret) {
-> -			fwnode_handle_put(fwnode);
-> -			return ret;
-> -		}
-> -	}
-> -
-> -	for (port = 0; port < ARRAY_SIZE(altmode->ports); port++) {
-> -		alt_port = &altmode->ports[port];
-> -		if (!alt_port->bridge)
-> -			continue;
-> -
-> -		ret = devm_drm_dp_hpd_bridge_add(dev, alt_port->bridge);
-> -		if (ret)
-> -			return ret;
-> -	}
-> -
-> -	altmode->client = devm_pmic_glink_register_client(dev,
-> -							  altmode->owner_id,
-> -							  pmic_glink_altmode_callback,
-> -							  pmic_glink_altmode_pdr_notify,
-> -							  altmode);
-> -	return PTR_ERR_OR_ZERO(altmode->client);
-> -}
-> -
-> -static const struct auxiliary_device_id pmic_glink_altmode_id_table[] = {
-> -	{ .name = "pmic_glink.altmode", },
-> -	{},
-> -};
-> -MODULE_DEVICE_TABLE(auxiliary, pmic_glink_altmode_id_table);
-> -
-> -static struct auxiliary_driver pmic_glink_altmode_driver = {
-> -	.name = "pmic_glink_altmode",
-> -	.probe = pmic_glink_altmode_probe,
-> -	.id_table = pmic_glink_altmode_id_table,
-> -};
-> -
-> -module_auxiliary_driver(pmic_glink_altmode_driver);
-> -
-> -MODULE_DESCRIPTION("Qualcomm PMIC GLINK Altmode driver");
-> -MODULE_LICENSE("GPL");
-> diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
-> index 40fcda055b05..1ef638d5fd79 100644
-> --- a/drivers/usb/typec/ucsi/ucsi_glink.c
-> +++ b/drivers/usb/typec/ucsi/ucsi_glink.c
-> @@ -10,9 +10,14 @@
->  #include <linux/of_device.h>
->  #include <linux/property.h>
->  #include <linux/soc/qcom/pdr.h>
-> +#include <linux/usb/pd_vdo.h>
-> +#include <linux/usb/typec_dp.h>
->  #include <linux/usb/typec_mux.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/soc/qcom/pmic_glink.h>
-> +
-> +#include <drm/bridge/aux-bridge.h>
-> +
->  #include "ucsi.h"
->  
->  #define PMIC_GLINK_MAX_PORTS	2
-> @@ -27,6 +32,16 @@
->  #define UC_UCSI_WRITE_BUF_REQ           0x12
->  #define UC_UCSI_USBC_NOTIFY_IND         0x13
->  
-> +/*
-> + * On sc8180x these requests use UCSI owner,
-> + * on other platforms they use USBC_PAN.
-> + */
-> +#define USBC_CMD_WRITE_REQ		0x15
-> +#define USBC_PAN_NOTIFY_IND		0x16
-> +
-> +#define ALTMODE_PAN_EN		0x10
-> +#define ALTMODE_PAN_ACK		0x11
-> +
->  struct ucsi_read_buf_req_msg {
->  	struct pmic_glink_hdr   hdr;
->  };
-> @@ -55,17 +70,89 @@ struct ucsi_notify_ind_msg {
->  	u32                     reserved;
->  };
->  
-> +struct usbc_write_req_msg {
-> +	struct pmic_glink_hdr   hdr;
-> +	__le32			cmd;
-> +	__le32			arg;
-> +	u32                     reserved;
-> +};
-> +
-> +#define USBC_NOTIFY_PAYLOAD_SIZE 16
-> +struct usbc_pan_notify_ind_msg {
-> +	struct pmic_glink_hdr	hdr;
-> +	char			payload[USBC_NOTIFY_PAYLOAD_SIZE];
-> +	u32			reserved;
-> +};
-> +
-> +enum pmic_glink_ucsi_orientation {
-> +	USBC_ORIENTATION_NORMAL,
-> +	USBC_ORIENTATION_REVERSE,
-> +	USBC_ORIENTATION_NONE,
-> +};
-> +
-> +enum pmic_glink_ucsi_mux {
-> +	USBC_MUX_NONE,
-> +	USBC_MUX_USB_2L,
-> +	USBC_MUX_DP_4L,
-> +	USBC_MUX_USB_DP,
-> +};
-> +
-> +enum pmic_glink_altmode_pin_assignment {
-> +	DPAM_HPD_OUT,
-> +	DPAM_HPD_A,
-> +	DPAM_HPD_B,
-> +	DPAM_HPD_C,
-> +	DPAM_HPD_D,
-> +	DPAM_HPD_E,
-> +	DPAM_HPD_F,
-> +};
-> +
-> +#define SC8180X_PORT_MASK		GENMASK(7, 0)
-> +#define SC8180X_ORIENTATION_MASK	GENMASK(15, 8)
-> +#define SC8180X_MUX_MASK		GENMASK(23, 16)
-> +#define SC8180X_MODE_MASK		GENMASK(29, 24)
-> +#define SC8180X_HPD_STATE_MASK		BIT(30)
-> +#define SC8180X_HPD_IRQ_MASK		BIT(31)
-> +
-> +#define SC8280XP_DPAM_MASK		GENMASK(5, 0)
-> +#define SC8280XP_HPD_STATE_MASK		BIT(6)
-> +#define SC8280XP_HPD_IRQ_MASK		BIT(7)
-> +
-> +struct pmic_glink_ucsi_port {
-> +	spinlock_t lock;
-> +
-> +	struct work_struct altmode_work;
-> +
-> +	struct pmic_glink_ucsi *ucsi;
-> +	struct gpio_desc *port_orientation;
-> +	struct auxiliary_device *bridge;
-> +
-> +	int idx;
-> +
-> +	enum typec_orientation orientation;
-> +
-> +	enum pmic_glink_ucsi_mux mux;
-> +	unsigned int mode;
-> +
-> +	u16 svid;
-> +	u8 hpd_state;
-> +	u8 hpd_irq;
-> +};
-> +
->  struct pmic_glink_ucsi {
->  	struct device *dev;
->  
-> -	struct gpio_desc *port_orientation[PMIC_GLINK_MAX_PORTS];
-> +	struct pmic_glink_ucsi_port ports[PMIC_GLINK_MAX_PORTS];
->  
-> +	unsigned int altmode_id;
-> +	struct pmic_glink_client *altmode_client;
->  	struct pmic_glink_client *client;
->  
->  	struct ucsi *ucsi;
->  	struct completion read_ack;
->  	struct completion write_ack;
->  	struct completion sync_ack;
-> +	struct completion pan_ack;
->  	bool sync_pending;
->  	struct mutex lock;	/* protects concurrent access to PMIC Glink interface */
->  
-> @@ -193,27 +280,128 @@ static void pmic_glink_ucsi_update_connector(struct ucsi_connector *con)
->  	int i;
->  
->  	for (i = 0; i < PMIC_GLINK_MAX_PORTS; i++) {
-> -		if (ucsi->port_orientation[i])
-> +		if (ucsi->ports[i].port_orientation)
->  			con->typec_cap.orientation_aware = true;
->  	}
->  }
->  
-> +static int pmic_glink_altmode_request(struct pmic_glink_ucsi *ucsi, u32 cmd, u32 arg)
-> +{
-> +	struct usbc_write_req_msg req = {};
-> +	unsigned long left;
-> +	int ret;
-> +
-> +	/*
-> +	 * The USBC_CMD_WRITE_REQ ack doesn't identify the request, so wait for
-> +	 * one ack at a time.
-> +	 */
-> +	mutex_lock(&ucsi->lock);
-> +
-> +	req.hdr.owner = cpu_to_le32(ucsi->altmode_id);
-> +	req.hdr.type = cpu_to_le32(PMIC_GLINK_REQ_RESP);
-> +	req.hdr.opcode = cpu_to_le32(USBC_CMD_WRITE_REQ);
-> +	req.cmd = cpu_to_le32(cmd);
-> +	req.arg = cpu_to_le32(arg);
-> +
-> +	reinit_completion(&ucsi->pan_ack);
-> +	ret = pmic_glink_send(ucsi->altmode_client, &req, sizeof(req));
-> +	if (ret) {
-> +		dev_err(ucsi->dev, "failed to send altmode request: %#x (%d)\n", cmd, ret);
-> +		goto out_unlock;
-> +	}
-> +
-> +	left = wait_for_completion_timeout(&ucsi->pan_ack, 5 * HZ);
-> +	if (!left) {
-> +		dev_err(ucsi->dev, "timeout waiting for altmode request ack for: %#x\n", cmd);
-> +		ret = -ETIMEDOUT;
-> +	}
-> +
-> +out_unlock:
-> +	mutex_unlock(&ucsi->lock);
-> +	return ret;
-> +}
-> +
-> +static void pmic_glink_ucsi_set_orientation(struct ucsi_connector *con,
-> +					    struct pmic_glink_ucsi_port *port)
-> +{
-> +	enum typec_orientation orientation;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&port->lock, flags);
-> +	orientation = port->orientation;
-> +	spin_unlock_irqrestore(&port->lock, flags);
-> +
-> +	if (port->port_orientation) {
-> +		int val = gpiod_get_value(port->port_orientation);
-> +		if (val >= 0)
-> +			orientation = val ?
-> +				TYPEC_ORIENTATION_REVERSE :
-> +				TYPEC_ORIENTATION_NORMAL;
-> +	}
-> +
-> +	typec_set_orientation(con->port, orientation);
-> +}
-> +
->  static void pmic_glink_ucsi_connector_status(struct ucsi_connector *con)
->  {
->  	struct pmic_glink_ucsi *ucsi = ucsi_get_drvdata(con->ucsi);
-> -	int orientation;
->  
-> -	if (con->num >= PMIC_GLINK_MAX_PORTS ||
-> -	    !ucsi->port_orientation[con->num - 1])
-> +	if (con->num >= PMIC_GLINK_MAX_PORTS)
->  		return;
->  
-> -	orientation = gpiod_get_value(ucsi->port_orientation[con->num - 1]);
-> -	if (orientation >= 0) {
-> -		typec_set_orientation(con->port,
-> -				      orientation ?
-> -				      TYPEC_ORIENTATION_REVERSE :
-> -				      TYPEC_ORIENTATION_NORMAL);
-> -	}
-> +	pmic_glink_ucsi_set_orientation(con, &ucsi->ports[con->num - 1]);
-> +}
-> +
-> +static void pmic_glink_ucsi_register_altmode(struct ucsi_connector *con)
-> +{
-> +	static const u8 all_assignments = BIT(DP_PIN_ASSIGN_C) | BIT(DP_PIN_ASSIGN_D) |
-> +			     BIT(DP_PIN_ASSIGN_E);
-> +	struct typec_altmode_desc desc;
-> +	struct typec_altmode *alt;
-> +
-> +	mutex_lock(&con->lock);
-> +
-> +	if (con->port_altmode[0])
-> +		goto out;
-> +
-> +	memset(&desc, 0, sizeof(desc));
-> +	desc.svid = USB_TYPEC_DP_SID;
-> +	desc.mode = USB_TYPEC_DP_MODE;
-> +
-> +	desc.vdo = DP_CAP_CAPABILITY(DP_CAP_DFP_D);
-> +
-> +	/* We can't rely on the firmware with the capabilities. */
-> +	desc.vdo |= DP_CAP_DP_SIGNALLING(0) | DP_CAP_RECEPTACLE;
-> +
-> +	/* Claiming that we support all pin assignments */
-> +	desc.vdo |= all_assignments << 8;
-> +	desc.vdo |= all_assignments << 16;
-> +
-> +	alt = typec_port_register_altmode(con->port, &desc);
+	I hope this email finds you well. I am reaching out to request your assist=
+ance in reviewing a patch.
 
-        alt = ucsi_register_displayport(con, 0, 0, &desc);
+	The patch in question is titled "[PATCH v5] vp_vdpa: don't allocate unused=
+ msix vectors". I believe your expertise and insights would be invaluable i=
+n ensuring the quality and effectiveness of this patch.
 
-You need to export that function, but that should not be a problem:
+	Your feedback and review are highly appreciated. Please let me know if you=
+ have any questions or require further information.
 
-diff --git a/drivers/usb/typec/ucsi/displayport.c b/drivers/usb/typec/ucsi/displayport.c
-index d9d3c91125ca..f2754d7b5876 100644
---- a/drivers/usb/typec/ucsi/displayport.c
-+++ b/drivers/usb/typec/ucsi/displayport.c
-@@ -315,11 +315,13 @@ struct typec_altmode *ucsi_register_displayport(struct ucsi_connector *con,
-        struct ucsi_dp *dp;
- 
-        /* We can't rely on the firmware with the capabilities. */
--       desc->vdo |= DP_CAP_DP_SIGNALLING(0) | DP_CAP_RECEPTACLE;
-+       if (!desc->vdo) {
-+               desc->vdo = DP_CAP_DP_SIGNALLING(0) | DP_CAP_RECEPTACLE;
- 
--       /* Claiming that we support all pin assignments */
--       desc->vdo |= all_assignments << 8;
--       desc->vdo |= all_assignments << 16;
-+               /* Claiming that we support all pin assignments */
-+               desc->vdo |= all_assignments << 8;
-+               desc->vdo |= all_assignments << 16;
-+       }
- 
-        alt = typec_port_register_altmode(con->port, desc);
-        if (IS_ERR(alt))
-@@ -342,3 +344,4 @@ struct typec_altmode *ucsi_register_displayport(struct ucsi_connector *con,
- 
-        return alt;
- }
-+EXPORT_SYMBOL_GPL(ucsi_register_displayport);
+	Thank you for your time and consideration.
 
-<snip>
+Best regards,
+Yuxue Liu
 
-> +static void pmic_glink_ucsi_set_state(struct ucsi_connector *con,
-> +				      struct pmic_glink_ucsi_port *port)
-> +{
-> +	struct typec_displayport_data dp_data = {};
-> +	struct typec_altmode *altmode = NULL;
-> +	unsigned long flags;
-> +	void *data = NULL;
-> +	int mode;
-> +
-> +	spin_lock_irqsave(&port->lock, flags);
-> +
-> +	if (port->svid == USB_SID_PD) {
-> +		mode = TYPEC_STATE_USB;
-> +	} else if (port->svid == USB_TYPEC_DP_SID && port->mode == DPAM_HPD_OUT) {
-> +		mode = TYPEC_STATE_SAFE;
-> +	} else if (port->svid == USB_TYPEC_DP_SID) {
-> +		altmode = find_altmode(con, port->svid);
-> +		if (!altmode) {
-> +			dev_err(con->ucsi->dev, "altmode woth SVID 0x%04x not found\n",
-> +				port->svid);
-> +			spin_unlock_irqrestore(&port->lock, flags);
-> +			return;
-> +		}
-> +
-> +		mode = TYPEC_MODAL_STATE(port->mode - DPAM_HPD_A);
-> +
-> +		dp_data.status = DP_STATUS_ENABLED;
-> +		dp_data.status |= DP_STATUS_CON_DFP_D;
-> +		if (port->hpd_state)
-> +			dp_data.status |= DP_STATUS_HPD_STATE;
-> +		if (port->hpd_irq)
-> +			dp_data.status |= DP_STATUS_IRQ_HPD;
-> +		dp_data.conf = DP_CONF_SET_PIN_ASSIGN(port->mode - DPAM_HPD_A);
-> +
-> +		data = &dp_data;
-> +	} else {
-> +		dev_err(con->ucsi->dev, "Unsupported SVID 0x%04x\n", port->svid);
-> +		spin_unlock_irqrestore(&port->lock, flags);
-> +		return;
-> +	}
-> +
-> +	spin_unlock_irqrestore(&port->lock, flags);
-> +
-> +	if (altmode)
-> +		typec_altmode_set_port(altmode, mode, data);
 
-So if the port altmode is using the ucsi_displayport_ops, you can
-simply register the partner altmode here instead. That should
-guarantee that it'll bind to the DP altmode driver which will take
-care of typec_altmode_enter() etc.
 
-This will also allow the user space to see the altmode normally in
-sysfs.
+-----Original Message-----
+From: Gavin Liu
+Sent: April 10, 2024 11:31
+To: mst@redhat.com; jasowang@redhat.com
+Cc: Angus Chen angus.chen@jaguarmicro.com; virtualization@lists.linux.dev; =
+xuanzhuo@linux.alibaba.com; Gavin Liu gavin.liu@jaguarmicro.com; linux-kern=
+el@vger.kernel.org; Heng Qi hengqi@linux.alibaba.com
+Subject: [PATCH v5] vp_vdpa: don't allocate unused msix vectors
+From: Yuxue Liu <yuxue.liu@jaguarmicro.com>
 
-> +	else
-> +		typec_set_mode(con->port, mode);
-> +
-> +	if (port->bridge)
-> +		drm_aux_hpd_bridge_notify(&port->bridge->dev,
-> +					  port->hpd_state ?
-> +					  connector_status_connected :
-> +					  connector_status_disconnected);
-> +
-> +}
+When there is a ctlq and it doesn't require interrupt callbacks,the origina=
+l method of calculating vectors wastes hardware msi or msix resources as we=
+ll as system IRQ resources.
 
-thanks,
+When conducting performance testing using testpmd in the guest os, it was f=
+ound that the performance was lower compared to directly using vfio-pci to =
+passthrough the device
 
--- 
-heikki
+In scenarios where the virtio device in the guest os does not utilize inter=
+rupts, the vdpa driver still configures the hardware's msix vector. Therefo=
+re, the hardware still sends interrupts to the host os. Because of this unn=
+ecessary action by the hardware, hardware performance decreases, and it als=
+o affects the performance of the host os.
+
+Before modification:(interrupt mode)
+ 32:  0   0  0  0 PCI-MSI 32768-edge    vp-vdpa[0000:00:02.0]-0
+ 33:  0   0  0  0 PCI-MSI 32769-edge    vp-vdpa[0000:00:02.0]-1
+ 34:  0   0  0  0 PCI-MSI 32770-edge    vp-vdpa[0000:00:02.0]-2
+ 35:  0   0  0  0 PCI-MSI 32771-edge    vp-vdpa[0000:00:02.0]-config
+
+After modification:(interrupt mode)
+ 32:  0  0  1  7   PCI-MSI 32768-edge  vp-vdpa[0000:00:02.0]-0
+ 33: 36  0  3  0   PCI-MSI 32769-edge  vp-vdpa[0000:00:02.0]-1
+ 34:  0  0  0  0   PCI-MSI 32770-edge  vp-vdpa[0000:00:02.0]-config
+
+Before modification:(virtio pmd mode for guest os)
+ 32:  0   0  0  0 PCI-MSI 32768-edge    vp-vdpa[0000:00:02.0]-0
+ 33:  0   0  0  0 PCI-MSI 32769-edge    vp-vdpa[0000:00:02.0]-1
+ 34:  0   0  0  0 PCI-MSI 32770-edge    vp-vdpa[0000:00:02.0]-2
+ 35:  0   0  0  0 PCI-MSI 32771-edge    vp-vdpa[0000:00:02.0]-config
+
+After modification:(virtio pmd mode for guest os)
+ 32: 0  0  0   0   PCI-MSI 32768-edge   vp-vdpa[0000:00:02.0]-config
+
+To verify the use of the virtio PMD mode in the guest operating system, the=
+ following patch needs to be applied to QEMU:
+https://lore.kernel.org/all/20240408073311.2049-1-yuxue.liu@jaguarmicro.com
+
+Signed-off-by: Yuxue Liu <yuxue.liu@jaguarmicro.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Reviewed-by: Heng Qi <hengqi@linux.alibaba.com>
+---
+V5: modify the description of the printout when an exception occurs
+V4: update the title and assign values to uninitialized variables
+V3: delete unused variables and add validation records
+V2: fix when allocating IRQs, scan all queues
+
+ drivers/vdpa/virtio_pci/vp_vdpa.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp=
+_vdpa.c
+index df5f4a3bccb5..8de0224e9ec2 100644
+--- a/drivers/vdpa/virtio_pci/vp_vdpa.c
++++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
+@@ -160,7 +160,13 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa=
+)
+ 	struct pci_dev *pdev =3D mdev->pci_dev;
+ 	int i, ret, irq;
+ 	int queues =3D vp_vdpa->queues;
+-	int vectors =3D queues + 1;
++	int vectors =3D 1;
++	int msix_vec =3D 0;
++
++	for (i =3D 0; i < queues; i++) {
++		if (vp_vdpa->vring[i].cb.callback)
++			vectors++;
++	}
+=20
+ 	ret =3D pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSIX);
+ 	if (ret !=3D vectors) {
+@@ -173,9 +179,12 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa=
+)
+ 	vp_vdpa->vectors =3D vectors;
+=20
+ 	for (i =3D 0; i < queues; i++) {
++		if (!vp_vdpa->vring[i].cb.callback)
++			continue;
++
+ 		snprintf(vp_vdpa->vring[i].msix_name, VP_VDPA_NAME_SIZE,
+ 			"vp-vdpa[%s]-%d\n", pci_name(pdev), i);
+-		irq =3D pci_irq_vector(pdev, i);
++		irq =3D pci_irq_vector(pdev, msix_vec);
+ 		ret =3D devm_request_irq(&pdev->dev, irq,
+ 				       vp_vdpa_vq_handler,
+ 				       0, vp_vdpa->vring[i].msix_name, @@ -185,21 +194,22 @@ static in=
+t vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
+ 				"vp_vdpa: fail to request irq for vq %d\n", i);
+ 			goto err;
+ 		}
+-		vp_modern_queue_vector(mdev, i, i);
++		vp_modern_queue_vector(mdev, i, msix_vec);
+ 		vp_vdpa->vring[i].irq =3D irq;
++		msix_vec++;
+ 	}
+=20
+ 	snprintf(vp_vdpa->msix_name, VP_VDPA_NAME_SIZE, "vp-vdpa[%s]-config\n",
+ 		 pci_name(pdev));
+-	irq =3D pci_irq_vector(pdev, queues);
++	irq =3D pci_irq_vector(pdev, msix_vec);
+ 	ret =3D devm_request_irq(&pdev->dev, irq,	vp_vdpa_config_handler, 0,
+ 			       vp_vdpa->msix_name, vp_vdpa);
+ 	if (ret) {
+ 		dev_err(&pdev->dev,
+-			"vp_vdpa: fail to request irq for vq %d\n", i);
++			"vp_vdpa: fail to request irq for config: %d\n", ret);
+ 			goto err;
+ 	}
+-	vp_modern_config_vector(mdev, queues);
++	vp_modern_config_vector(mdev, msix_vec);
+ 	vp_vdpa->config_irq =3D irq;
+=20
+ 	return 0;
+--
+2.43.0
+
 
