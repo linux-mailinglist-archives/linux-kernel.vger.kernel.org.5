@@ -1,154 +1,170 @@
-Return-Path: <linux-kernel+bounces-153504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46EB88ACECD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:54:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D341B8ACED2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:55:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C841AB26726
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:54:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C7A61F220EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B8A15099A;
-	Mon, 22 Apr 2024 13:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13C49150993;
+	Mon, 22 Apr 2024 13:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OoSg1g5l"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Q7w4Ko1U"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B39E14F9EB;
-	Mon, 22 Apr 2024 13:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CDF746E
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:55:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713794043; cv=none; b=DvIzscIDB3u8CEVo0oiCvhhy7gNi2BFWq98X92wuzzBgf4NLxhJdCe9YmBAbckKlCgaoC8OmZdMss2JElEb5yy6KvfTqkEOXjOBUTeyTNF9VlZgs3qjAPhWuPvuuX8NSzME7LhipuujZa6IJXJaigNHDI+97KgzxflmgBpD+vtY=
+	t=1713794107; cv=none; b=eWnFY90j3qZHm0L4E4pY+9nBpj9ISvGTrv5l9+1SmoN4m00BEYhhG3dRx4XGzIe180yIdT9s3n3GT7K4ialLHx+MnQ6Ai3Wgmy7BtmFDfLOepJbxZIjiV6W1n+odChhtT3S72Im11Pou5D3SJkgUb5kIsrg9uLzo2DNunanPZt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713794043; c=relaxed/simple;
-	bh=cWYXxYBzEmLHHrRkhtIBYKdIoZl2GcFMLoWHmoYJrDQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=n1eGAsj62j32z9JT4CUIIZTdMmR2IDKe3/x/4tupMsEXVnPm5SltVOqICwsPkS5PlGEn6VHNoRv6MTMRRnNDWShMjC5pDE3YzOyjOTgtW8xrHiaGsllG0eGEckTdM46WafLmp30SPUM4u9Z7LIGq03rzoW+kdQ1rMwAP2juv+IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OoSg1g5l; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43M2F9Ov019047;
-	Mon, 22 Apr 2024 13:53:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=1LEM9aTZtzNviWZvRo/wuDRCghamGO9W+vXQRpk+4B4=; b=Oo
-	Sg1g5l19Ds6KKeosZ8d1/f8SMzWciNJ/rm3tXoW2XIgJaGLJx9lQx0Tou2zeV1ua
-	HLmOmwyHozTi5uHnpyuFtYJQAuUwAxMpCe7VHBci+2RQCJzuD0sMUf0fAjKgaf+l
-	vzleFXzgTNjaGCMA5P33tM6G8D8x5Tig8zgqOmwc5LJrGZ2EY4SuMBJ6bSFZQ8FN
-	ySbOMK5896UcLavKa8hkPJ/Wocijlx3fPmq+PzNQV7ivJi8NR9A17mRlrRERQQEN
-	NcSRmVTFomXK0/UFIA2C/+4an22wD10d7v71qOp09wphHfpbcwBLXSSwJmhrfvrn
-	WzUWOrmi7PLgCfBTffKg==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xm5sx4hbv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 13:53:53 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43MDrqC3002907
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 13:53:52 GMT
-Received: from [10.253.37.80] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 22 Apr
- 2024 06:53:50 -0700
-Message-ID: <3e170e40-c143-4e3b-8696-b661cac56f00@quicinc.com>
-Date: Mon, 22 Apr 2024 21:53:48 +0800
+	s=arc-20240116; t=1713794107; c=relaxed/simple;
+	bh=qdxEzvr6nvLKZQIAmlq3J0QgmLEaC1FRhBzYdR4eq8o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NYsrWet4+D2//JTW5X931iZBUwlAgA0WeVomBLQqcn3L4k5Qyw5cAkzQjYlEPg0wL0baCZ7/U18iJU3y94ip8PZvuaQHzBGeDlu7QVjTRaCCgWchjfCBbc+VWcB4QO+ozHrpiFkE+dF7YKaKas/PPCgB0IHE/8VEvXNgo3uD+gM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Q7w4Ko1U; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-518a3e0d2ecso6618517e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713794104; x=1714398904; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2wUr8A6N46atUY/DKzgo42AitBlyVp1xej9/CqcLFTk=;
+        b=Q7w4Ko1U7CqmIN6Rew/VcwKD6Cmk4JdYB0kzU/jGZ10TjYAyxkhAa1H5+SjCL/cP5G
+         /st1GOrKn2TOA+dUBEGQHS46PvkcuoBzLspLzv8OANBb3+i71ijtGDD4GtiD7vO0qA+o
+         fIvIGXwW0ewNUoEXLSXOZPv36EswcwguK7X469yBqVv9qks0sVatAdRaGMuqA5oMN+YL
+         FEmPgsYrJKRqKgEiIBJG8nlPtn1pJzeNo4vismhpx7lIPRS2h9kk6W2kJokEar4t9gtU
+         L1/x4krqYsDO5W5N2otsvEoWfVctIajXWN52+YopV0kHMON4EzZobb8kgAi/TvC1t+8Y
+         Jh7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713794104; x=1714398904;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2wUr8A6N46atUY/DKzgo42AitBlyVp1xej9/CqcLFTk=;
+        b=b8aDzXh1ngXZgepWd6OM0I0/wW8B9ECp5Eer834z8sBr0TL+AS1n7iqlxvCiqceZqk
+         TiugUAwsCLPjnMLoFP3hEjAL72c+VT78mSCPRrM00Li+0ItooUBCi98DrsugPORx11+1
+         M4hE98Km6GFTPjW2bKC94lb/1EkjQXreYF7fLt3CImGjQbCMyftcHvAz66mRtF4kTw/q
+         61XNpUnrg6GN7qI05xOtbtxQTqtZwQ+/UthXQ48IyZsEg4/m8TVMntnp21l4YogsGjqt
+         TKwjxHkCjR9iNHW2HRokwaJ216ifv1B1C/Ff6SFzbffnsFRlTOg7fftKyuOcMFSgWlmC
+         h8Mg==
+X-Forwarded-Encrypted: i=1; AJvYcCXQgYlUZCFDJ85jKJXWerct8457McBvXmJZCZ3BJ6n/f63r/ja/bHnB68QsPdnYgC+yi7gBxvnSHvl9XuATAoDc7zMjqVg/oiXCK9qo
+X-Gm-Message-State: AOJu0YwwYnIkQOdLxrqgyYxeiZpAh/WMMYtyjEC2PXAnKnD/OkkbXuUX
+	GNAJxTQViOZnNou0XozPBroUPwopbnW1s/vdPgojZAZoOB3arwvGtDr2gpUUT9WH2nU1y1srrCR
+	JI03gci/DWoW5H2c66fCSeY0Z1mwDIOH/p5D6Jw==
+X-Google-Smtp-Source: AGHT+IElDtHA2WFmwHu4o3MV34ywEDMh9iovZJESp8B/R96ozaKKHeX6jEGVW4eSH8VBE8AYODi+pXPn/RdrqYaMbqU=
+X-Received: by 2002:a05:6512:370f:b0:518:c8e1:478 with SMTP id
+ z15-20020a056512370f00b00518c8e10478mr7686445lfr.58.1713794103828; Mon, 22
+ Apr 2024 06:55:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] Bluetooth: qca: fix NULL-deref on non-serdev setup
-To: Johan Hovold <johan@kernel.org>
-CC: Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Marcel Holtmann
-	<marcel@holtmann.org>,
-        Zhengping Jiang <jiangzp@google.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240319154611.2492-1-johan+linaro@kernel.org>
- <ZiZdag8fw8H1haCb@hovoldconsulting.com>
- <438844e9-47e8-486e-9611-ae524d6974b3@quicinc.com>
- <ZiZkK4BAoqxNg7yG@hovoldconsulting.com>
- <472b9f60-d68e-47ee-9ca9-f71a9ba86a1a@quicinc.com>
- <ZiZpg4lyp-LcpV8l@hovoldconsulting.com>
-Content-Language: en-US
-From: quic_zijuhu <quic_zijuhu@quicinc.com>
-In-Reply-To: <ZiZpg4lyp-LcpV8l@hovoldconsulting.com>
+References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
+ <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
+ <ZiZhSfgeAdrbnaVL@nuoska> <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
+ <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
+In-Reply-To: <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Mon, 22 Apr 2024 16:54:26 +0300
+Message-ID: <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com>
+Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Mikko Rapeli <mikko.rapeli@linaro.org>, Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Lennart Poettering <lennart@poettering.net>, 
+	linux-integrity@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: QHD02XCXzSQuJsae-f2kdyE0fgSicZT6
-X-Proofpoint-GUID: QHD02XCXzSQuJsae-f2kdyE0fgSicZT6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-22_09,2024-04-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 phishscore=0 clxscore=1015 suspectscore=0 malwarescore=0
- spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404220060
 
-On 4/22/2024 9:43 PM, Johan Hovold wrote:
-> On Mon, Apr 22, 2024 at 09:30:28PM +0800, quic_zijuhu wrote:
->> On 4/22/2024 9:20 PM, Johan Hovold wrote:
->>> On Mon, Apr 22, 2024 at 09:04:58PM +0800, quic_zijuhu wrote:
->>>> On 4/22/2024 8:51 PM, Johan Hovold wrote:
->>>>> On Tue, Mar 19, 2024 at 04:46:09PM +0100, Johan Hovold wrote:
->>>
->>>>>> Johan Hovold (2):
->>>>>>   Bluetooth: qca: fix NULL-deref on non-serdev suspend
->>>>>>   Bluetooth: qca: fix NULL-deref on non-serdev setup
->>>>>
->>>>> Could you pick these up for 6.9 or 6.10?
->>>>>
->>>>> The patches are marked for stable backport and only privileged users can
->>>>> set the N_HCI line discipline these days (even if I'm not sure about
->>>>> pre-5.14 kernels...) so it may be fine to wait for 6.10 if you prefer.
->>>
->>>> could you share the patch links for me to review. i can
->>>> 't find them now
->>>
->>> Sure, but you should bookmark lore.kernel.org in your browser as you can
->>> search the archives there yourself:
->>>
->>> 	https://lore.kernel.org/lkml/20240319154611.2492-1-johan+linaro@kernel.org/
-> 
->> NAK for your [PATCH 1/2] since the null checking is redundant with your
->> [PATCH 2/2].
-> 
-> I explained in the cover letter why it is split up like this. If you
-> don't bother reading, then we will not bother listening to you.
-> 
->> NAK for your [PATCH 2/2], since it is same with my earlier fix
->> https://lore.kernel.org/all/1704960978-5437-1-git-send-email-quic_zijuhu@quicinc.com/
->> my new patchset for btattach tool still has this change.
-> 
-> The fix does not depend on your btattach series, which has also been
-> rejected.
-> 
-these my v1 and v2 for this issue which are earlier then yours.
-they are not rejected but not responded.
+Hi James
 
-https://lore.kernel.org/all/bf74d533-c0ff-42c6-966f-b4b28c5e0f60@molgen.mpg.de/
-https://lore.kernel.org/all/1704970181-30092-1-git-send-email-quic_zijuhu@quicinc.com/
+On Mon, 22 Apr 2024 at 16:38, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
+>
+> On Mon, 2024-04-22 at 16:32 +0300, Ilias Apalodimas wrote:
+> > Hi all,
+> >
+> > On Mon, 22 Apr 2024 at 16:08, Mikko Rapeli <mikko.rapeli@linaro.org>
+> > wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Mon, Apr 22, 2024 at 08:42:41AM -0400, James Bottomley wrote:
+> > > > On Mon, 2024-04-22 at 14:27 +0300, Mikko Rapeli wrote:
+> > > > > Userspace needs to know if TPM kernel drivers need to be loaded
+> > > > > and related services started early in the boot if TPM device
+> > > > > is used and available.
+> > > >
+> > > > This says what but not why.  We already have module autoloading
+> > > > that works correctly for TPM devices, so why is this needed?
+> > > >
+> > > > We do have a chicken and egg problem with IMA in that the TPM
+> > > > driver needs to be present *before* any filesystem, including the
+> > > > one the TPM modules would be on, is mounted so executions can be
+> > > > measured into IMA (meaning that if you use IMA the TPM drivers
+> > > > must be built in) but this sounds to be something different.
+> > > > However, because of the IMA problem, most distributions don't end
+> > > > up compiling TPM drivers as modules anyway.
+> > > >
+> > > > Is what you want simply that tpm modules be loaded earlier?
+> > >
+> > > Yes, ealier is the problem. In my specific testing case the machine
+> > > is qemu arm64 with swtpm with EFI firmware for secure boot and TPM
+> > > support.
+> > >
+> > > Firmware uses TPM and does measurements and thus TPM event log is
+> > > available on this machine and a bunch of other arm64 boards.
+> > > Visible in early boot dmesg as TPMEventLog lines like:
+> > >
+> > > [    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040
+> > > RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb3b3040
+> > > INITRD=0xeb3b2040 RNG=0xe5c0f040 MEMRESERVE=0xe5c0e040
+> > >
+> > > Different boards use different TPM HW and drivers so compiling all
+> > > these in is possible but a bit ugly. systemd recently gained
+> > > support for a specific tpm2.target which makes TPM support modular
+> > > and also works with kernel modules for some TPM use cases but not
+> > > rootfs encryption.
+> > >
+> > > In my test case we have a kernel+initramfs uki binary which is
+> > > loaded by EFI firmware as a secure boot binary. TPM support on
+> > > various boards is visible in devicetree but not as ACPI table
+> > > entries. systemd currently detect TPM2 support either via ACPI
+> > > table /sys/firmware/acpi/tables/TPM2 or TPM entry or via firmware
+> > > measurement via /sys/kernel/security/tpm0/binary_bios_measurements
+> > > .
+> >
+> > One corner case worth noting here is that scanning the device tree
+> > won't always work for non-ACPI systems... The reason is that a
+> > firmware TPM (running in OP-TEE) might or might not have a DT entry,
+> > since OP-TEE can discover the device dynamically and doesn't always
+> > rely on a DT entry.
+> >
+> > I don't particularly love the idea that an EventLog existence
+> > automatically means a TPM will be there, but it seems that systemd
+> > already relies on that and it does solve the problem we have.
+>
+> Well, quite. That's why the question I was interested in, perhaps not
+> asked as clearly as it could be is: since all the TPM devices rely on
+> discovery mechanisms like ACPI or DT or the like which are ready quite
+> early, should we simply be auto loading the TPM drivers earlier?
 
-> You clearly have some learning to do on how to interact with the kernel
-> community and to write proper commit messages and patches. If you start
-> listening to feedback and try not to piss everyone off perhaps you can
-> even get your patches merged one day. [1][2]
-> 
-> Johan
-> 
-> [1] https://lore.kernel.org/linux-bluetooth/fbe5722b-1e45-4ccb-a050-20a473a823c8@quicinc.com/T/#m8e495666a71eb0e7ae54c82554dfff1fc96983e7
-> [2] https://lore.kernel.org/linux-bluetooth/1713563327-19694-1-git-send-email-quic_zijuhu@quicinc.com/T/#med0610646a8fd8b3c8586abca9895b124b2d2534
+This would be an elegant way to solve this and on top of that, we have
+a single discovery mechanism from userspace -- e.g ls /dev/tpmX.
+But to answer that we need more feedback from systemd. What 'earlier'
+means? Autload it from the kernel before we go into launching the
+initrd?
 
+Thanks
+/Ilias
+> James
+>
 
