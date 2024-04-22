@@ -1,224 +1,207 @@
-Return-Path: <linux-kernel+bounces-153658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B05DC8AD13F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:49:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 160208AD141
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:49:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3B741C215E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:49:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9742C1F2191D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ECD0153569;
-	Mon, 22 Apr 2024 15:49:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B654915356C;
+	Mon, 22 Apr 2024 15:49:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="meKbb9Mz"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="WBHK4xk1"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17142152DE9
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:49:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B7B15351B;
+	Mon, 22 Apr 2024 15:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713800954; cv=none; b=tA2h3PoppAyKwKxk01oC43am5qaSQI5xN4pVuoqrHNV1THqhN+fiw8xb+YYYNswokse0KZfbv7RLBLsFODbw3fiu/PNjFn1Scw7SOzd4bOKlg3hEn+57CtagI/cyA4QPPhDF1sCfRplJvqQLLBtUzT0OgQkqQLnESPui3cWXTPg=
+	t=1713800979; cv=none; b=ONIJ3Bkf0sH5b7JhXL//o5+MHrTmBV52R/dfRXsZnme4iaR/bypctp1oHzpUTKmZqR+KIz8jnobOJ6/9696BVAzA7SJ4eKLFcF2qCO/jnDj7L9sTdgruPvcLnY33wHq49G4h1Efxs7zh5h5tU9kjaytrEfaRDaRvHwWOPe6Dq7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713800954; c=relaxed/simple;
-	bh=8+kJGqKc4FvegZyfV/dJDORM3KjEZ2wD83pdhlBjSSY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lUAiuAQd0IyS5oH1DRjGLV6F1zOyDIA7w0W1Q1+b6JF0qRqhEeVbyAr39tQcZKaORlbbnODXKWw+Oy0e+30IV55mUDZ3Z+CDSBtQ0tlbDk1paKNYdjzej0pay1cjGYwVw1TUO6ufnA0hNq1T3GrS4hNkIHsB9ivEopnNxskiFh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=meKbb9Mz; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-69b40061bbeso23930746d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:49:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1713800951; x=1714405751; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zOvrIiNG0aaKsjuJ5ZDvsbyhs27QkgdQ17ctSNHHXUs=;
-        b=meKbb9MzZ5q1UMLUAeD4ym+XJYETMKYiZzwu7YQZgiv/10kFPxaJuEup/eYIcCm2eN
-         84MmD6n1WjLN6P1kysyapieA6EkkoYGLMsIZlIGDR4YBiwy8JeDgsHSfO3p5lq5+dZr/
-         VEuz2TiU3RGdQgdHeYQH74ENseS7+yhOmQfNJN4ueNRekdBIBxE3SCHIB0xqpuolOb23
-         S+NTyiyMgltvJNlf9Qk+3pLlEfm8PDDpzAiiZ3X4w9D4MnxfD1CnLoVvV8heum/u8u2c
-         ClL41kPMIa9IdSC6H0kCy+i2GAxs4NkqT1BpuR3/QsYwF10fmAW0WT3o/B+zwlDUb45S
-         9fZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713800951; x=1714405751;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zOvrIiNG0aaKsjuJ5ZDvsbyhs27QkgdQ17ctSNHHXUs=;
-        b=cDtxY1lk+gidOY8ZJjgWT61H3Kq+99B5RC3KtHUPI70Tv3gW5sJgHJFSTtiPqI7Wdw
-         GsM3m1MeVXJI4h2rzVbj9JL7OLJAKFwj1JadIROrWLjUNIVJCExlonZZl4xCW2UAQX1a
-         3uFxg+1Vmnzk0rgkzOfx+jmMjqjeFLQAV+SZNfrD8amxGa/FAbbFHw4OLkhhs2e+TbUe
-         XLN5qLKiujO+z+WTpLwzuR2T87TWaWv+fZ/H9Da3d1O75QVnQfFr/WxlAjYSPXRkMQR/
-         DjxoWaryYYTD7uN7UjFDvRy50C9NduFi7t9yLU99t6iZ8M+15Lz2Ej8dXScWYFMy3Vof
-         rBwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW0tkJWdCXTL2Baf031ml0BAudFGWjmrKODwjPwsayraMcgMeLbFJhvgroqGjWTykYt6VVH4DDGbfAPjvdmM0tTgKXGkPBYSWOqrSM1
-X-Gm-Message-State: AOJu0YzPuuzGc8BTHEexHrkvxzXDnI4JgLIwsC0a6qcIiif4kWfGNS43
-	nhTcvWUnzxw3E6LBEB4ngwOYoGkx7lC1QQbLVB5/bU0we91zdjUCViciEmpG5LQ=
-X-Google-Smtp-Source: AGHT+IE3Bq8tLbi/XvedFxKP/vXgB2Slr/fd2putnR6Hk36vUZQFDg9vrhAsJgkdeDpTvevbTxVe3w==
-X-Received: by 2002:a05:6214:c45:b0:6a0:5c0c:c857 with SMTP id r5-20020a0562140c4500b006a05c0cc857mr14050963qvj.18.1713800950977;
-        Mon, 22 Apr 2024 08:49:10 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:17:6448::7a9])
-        by smtp.gmail.com with ESMTPSA id b4-20020a0cf044000000b0069b1e2f3074sm4365358qvl.98.2024.04.22.08.49.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 08:49:10 -0700 (PDT)
-Message-ID: <3cc5a7dbd5c0f03d6137e0795fae69f5533a8f9f.camel@ndufresne.ca>
-Subject: Re: [RESEND PATCH v2 4/4] media: chips-media: wave5: Support YUV422
- raw pixel-formats on the encoder.
-From: Nicolas Dufresne <nicolas@ndufresne.ca>
-To: "jackson.lee" <jackson.lee@chipsnmedia.com>, "mchehab@kernel.org"
-	 <mchehab@kernel.org>, "sebastian.fricke@collabora.com"
-	 <sebastian.fricke@collabora.com>
-Cc: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, 
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "hverkuil@xs4all.nl" <hverkuil@xs4all.nl>,  Nas Chung
- <nas.chung@chipsnmedia.com>, "lafley.kim" <lafley.kim@chipsnmedia.com>,
- "b-brnich@ti.com" <b-brnich@ti.com>
-Date: Mon, 22 Apr 2024 11:49:09 -0400
-In-Reply-To: <SE1P216MB1303F475980132394E5E79DAED122@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
-References: <20240311105623.20406-1-jackson.lee@chipsnmedia.com>
-	 <20240311105623.20406-5-jackson.lee@chipsnmedia.com>
-	 <3ba3445e820e14730794e85fb4322e5aa57e1119.camel@ndufresne.ca>
-	 <SE1P216MB1303F475980132394E5E79DAED122@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
-Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1713800979; c=relaxed/simple;
+	bh=FpzbmKBpBfnfyXLW7Lh81wIxgPVTiibsmpdt34q20oU=;
+	h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To; b=u7EIi19fwckjM6T0YThuI9+Fux7dxKEexShl8LhrokXo4nLyM7WlgujA5J87plEoKHJzijUknKMhJZCq8+iBAyPkk/ln4WFFdVcnomH3xs+6noYUbsB/J+q7qlAs5HVYBjWHZBtp2pyEdOksUZ0MK3amRnZT1MMCI2Y+oRhuaac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=WBHK4xk1; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Content-Type:From:Sender:Reply-To:Subject:Date:
+	Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=JDno8J617+nBHiH5IZPbxomNEQjErTff64KRZAzwmq4=; t=1713800977; x=1714232977;
+	 b=WBHK4xk1KOxJFae+d8IJ4IEMFRbwNZ91GcMOzdOITzcCUXt9X6CpHcH+xu0NWYfm5/ovqcL9AS
+	HhZdowmcot6cfu9iOdzAfxA01GH2AciM0oz6jOM8VCC32KVKzcrqj5HF93O2/KGjTtHxdp/O8XXGR
+	7BpiUIaeZonCiOBeiw8aguarW6jZPLhgACeRexg1pxs99JeRhU4yX0SJ8w384O2KFzERiBU+w8tvG
+	ESEI2BhbcW3hGeh4PWRtk4ZhKUdWQCUKGz7BVY8dNGmqkj5LTYwvPqixSh+S6kqfuOmRtPWXOAQvF
+	fWENLebIFFjfHLQR1dm3vZvi1CI2oriefW6TQ==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1ryvv8-0003u6-1S; Mon, 22 Apr 2024 17:49:30 +0200
+Content-Type: multipart/mixed; boundary="------------sqA6wv5J0ekkT5wmPbH0C3p2"
+Message-ID: <655ce2a3-eb04-4ade-999e-23fc5dc5fb3a@leemhuis.info>
+Date: Mon, 22 Apr 2024 17:49:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Please create the email alias do-not-apply-to-stable@kernel.org
+ -> /dev/null
+To: Greg KH <gregkh@linuxfoundation.org>, Sasha Levin <sashal@kernel.org>
+Cc: Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+ helpdesk@kernel.org, "workflows@vger.kernel.org"
+ <workflows@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <b452fd54-fdc6-47e4-8c26-6627f6b7eff3@leemhuis.info>
+ <20240417-lively-zebu-of-tact-efc8f3@lemur>
+ <e7318984-7ef4-48cd-aae4-1deda3d711a5@leemhuis.info>
+ <2024041734-gleeful-freewill-b24b@gregkh>
+ <d4853f43-2538-4a92-9ac4-aff5c7b0893e@leemhuis.info>
+ <2024041830-karaoke-aspirate-df00@gregkh>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Content-Language: en-US, de-DE
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <2024041830-karaoke-aspirate-df00@gregkh>
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1713800977;06866295;
+X-HE-SMSGID: 1ryvv8-0003u6-1S
 
-Hi Jackson,
+This is a multi-part message in MIME format.
+--------------sqA6wv5J0ekkT5wmPbH0C3p2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Le lundi 22 avril 2024 =C3=A0 04:30 +0000, jackson.lee a =C3=A9crit=C2=A0:
-> Hi Nicolas
->=20
->=20
-> > -----Original Message-----
-> > From: Nicolas Dufresne <nicolas@ndufresne.ca>
-> > Sent: Friday, April 19, 2024 6:06 AM
-> > To: jackson.lee <jackson.lee@chipsnmedia.com>; mchehab@kernel.org;
-> > sebastian.fricke@collabora.com
-> > Cc: linux-media@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > hverkuil@xs4all.nl; Nas Chung <nas.chung@chipsnmedia.com>; lafley.kim
-> > <lafley.kim@chipsnmedia.com>; b-brnich@ti.com
-> > Subject: Re: [RESEND PATCH v2 4/4] media: chips-media: wave5: Support Y=
-UV422
-> > raw pixel-formats on the encoder.
-> >=20
-> > Le lundi 11 mars 2024 =C3=A0 19:56 +0900, jackson.lee a =C3=A9crit=C2=
-=A0:
-> > > From: "Jackson.lee" <jackson.lee@chipsnmedia.com>
-> > >=20
-> > > Add support for the YUV422P, NV16, NV61, YUV422M, NV16M, NV61M raw pi=
-xel-
-> > formats to the Wave5 encoder.
-> > > All these formats have a chroma subsampling ratio of 4:2:2 and theref=
-ore
-> > require a new image size calculation as the driver previously only hand=
-led a
-> > ratio of 4:2:0.
-> > >=20
-> > > Signed-off-by: Jackson.lee <jackson.lee@chipsnmedia.com>
-> > > Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
-> > > ---
-> > >  .../chips-media/wave5/wave5-vpu-enc.c         | 59 +++++++++++++++++=
---
-> > >  1 file changed, 54 insertions(+), 5 deletions(-)
-> > >=20
-> > > diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> > > b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> > > index 5a32bb138158..77657f63a169 100644
-> > > --- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> > > +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> > > @@ -39,6 +39,24 @@ static const struct vpu_format
-> > enc_fmt_list[FMT_TYPES][MAX_FMTS] =3D {
-> > >  		{
-> > >  			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV21M,
-> > >  		},
-> > > +		{
-> > > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV422P,
-> > > +		},
-> > > +		{
-> > > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV16,
-> > > +		},
-> > > +		{
-> > > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV61,
-> > > +		},
-> > > +		{
-> > > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_YUV422M,
-> > > +		},
-> > > +		{
-> > > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV16M,
-> > > +		},
-> > > +		{
-> > > +			.v4l2_pix_fmt =3D V4L2_PIX_FMT_NV61M,
-> > > +		},
-> > >  	}
-> > >  };
-> > >=20
-> > > @@ -101,13 +119,30 @@ static int start_encode(struct vpu_instance *in=
-st,
-> > u32 *fail_res)
-> > >  	struct vb2_v4l2_buffer *dst_buf;
-> > >  	struct frame_buffer frame_buf;
-> > >  	struct enc_param pic_param;
-> > > -	u32 stride =3D ALIGN(inst->dst_fmt.width, 32);
-> > > -	u32 luma_size =3D (stride * inst->dst_fmt.height);
-> > > -	u32 chroma_size =3D ((stride / 2) * (inst->dst_fmt.height / 2));
-> > > +	u32 stride =3D inst->src_fmt.plane_fmt[0].bytesperline;
-> > > +	u32 luma_size =3D (stride * inst->src_fmt.height);
-> > > +	u32 chroma_size =3D 0;
-> >=20
-> > The helper introduced in previous patch also calculate sizeimage for ea=
-ch
-> > planes, so no need for this code anymore.
->=20
-> Your comment means the below code?=20
->=20
-> 	u32 luma_size =3D inst->src_fmt.plane_fmt[0].sizeimage
-> 	u32 chroma_size =3D inst->src_fmt.plane_fmt[1].sizeimage
->=20
-> =09
-> >=20
-> > >=20
-> > >  	memset(&pic_param, 0, sizeof(struct enc_param));
-> > >  	memset(&frame_buf, 0, sizeof(struct frame_buffer));
-> > >=20
->=20
-> The below code could be removed.
->=20
-> > > +	if (inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_YUV420 ||
-> > > +	    inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_YUV420M)
-> > > +		chroma_size =3D luma_size / 4;
-> > > +	else if (inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV12 ||
-> > > +		 inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV21 ||
-> > > +		 inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV12M ||
-> > > +		 inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV21M)
-> > > +		chroma_size =3D luma_size / 2;
-> > > +	else if (inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_YUV422P ||
-> > > +		 inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_YUV422M)
-> > > +		chroma_size =3D luma_size / 2;
-> > > +	else if (inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV16 ||
-> > > +		 inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV61 ||
-> > > +		 inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV16M ||
-> > > +		 inst->src_fmt.pixelformat =3D=3D V4L2_PIX_FMT_NV61M)
-> > > +		chroma_size =3D luma_size;
-> > > +
->=20
-> Is That right?
+[CCing Sasha]
 
-Yes, using the src_fmt seems accurate for the encoder.
+On 18.04.24 15:20, Greg KH wrote:
+> On Thu, Apr 18, 2024 at 09:04:53AM +0200, Thorsten Leemhuis wrote:
+>> On 17.04.24 15:38, Greg KH wrote:
+>>> On Wed, Apr 17, 2024 at 03:21:12PM +0200, Thorsten Leemhuis wrote:
+>>>> On 17.04.24 14:52, Konstantin Ryabitsev wrote:
+>>>>> On Wed, Apr 17, 2024 at 09:48:18AM +0200, Thorsten Leemhuis wrote:
+>>>>>> Could you please create the email alias
+>>>>>>
+>>>>>>> How about:
+>>>>>>> 	cc: <do-not-apply-to-stable@kernel.org> # Reason goes here, and must be present
+>>>>>>>
+>>>>>>> and we can make that address be routed to /dev/null just like
+>>>>>>> <stable@kernel.org> is?
+>>>>
+>>>> FWIW, we could go back to what I initially proposed: use the existing
+>>>> stable tag with a pre-defined comment to mark patches that AUTOSEL et.
+>>>> al. should not pick up:
+>>>> https://lore.kernel.org/all/c0a08b160b286e8c98549eedb37404c6e784cf8a.1712812895.git.linux@leemhuis.info/
+>>>
+>>> If you can pick a better string, possibly, yes.
+>>
+>> What did you think of Konstantin's
+>>
+>> Cc: stable+noautosel@kernel.org # Reason
 
-cheers,
-Nicolas
+@Greg, BTW: should this be stable+noautosel@kernel.org or have a 'vger.'
+in it, e.g. stable+noautosel@vger.kernel.org? I assume without 'vger.'
+is fine, just wanted to be sure, as
+Documentation/process/stable-kernel-rules.rst in all other cases
+specifies stable@vger.kernel.org, so people are likely to get confused.
+:-/ #sigh
+
+>> That looked like a good solution -- and I wondered why I did not come up
+>> with that idea myself. Sure, "autosel" would also imply/mean "the
+>> scripts/tools that look out for Fixes: tags", but does that matter?
+> 
+> We can live with this, sure. 
+
+In that case I guess I now also have to fix the scripts to honor that tag.
+
+@Greg: something like the attached for scripts/fixes_search perhaps? Was
+that the right one and are there any other scripts that might need
+something similar?
+
+@Sasha: are the scripts around autosel online somewhere? They need a
+similar change.
+
+Ciao, Thorsten
+--------------sqA6wv5J0ekkT5wmPbH0C3p2
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-scripts-fixes_search-honor-noautosel-tag.patch"
+Content-Disposition: attachment;
+ filename="0001-scripts-fixes_search-honor-noautosel-tag.patch"
+Content-Transfer-Encoding: base64
+
+RnJvbSAxZTk3M2EwNjliMDdmOGMwNDU0MDFhN2QzZDIwZWE3NjBhMjc0MjJmIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBUaG9yc3RlbiBMZWVtaHVpcyA8bGludXhAbGVlbWh1
+aXMuaW5mbz4KRGF0ZTogTW9uLCAyMiBBcHIgMjAyNCAxNzozMTowMSArMDIwMApTdWJqZWN0
+OiBbUEFUQ0hdIHNjcmlwdHMvZml4ZXNfc2VhcmNoOiBob25vciBub2F1dG9zZWwgdGFnCgpJ
+Z25vcmUgY29tbWl0cyB0aGF0IGNvbnRhaW4gYSBzb29uIHRvIGJlIGRvY3VtZW50ZWQgdGFn
+IHRoYXQgaXMKbWVhbnQgdG8gZXhjbHVkZSBjb21taXRzIGZyb20gcHJvY2Vzc2luZyBieSBz
+Y3JpcHRzIGxpa2UKc2NyaXB0cy9maXhlc19zZWFyY2guCgpMaW5rOiBodHRwczovL2xvcmUu
+a2VybmVsLm9yZy9hbGwvMjAyNDA0MTgzMC1rYXJhb2tlLWFzcGlyYXRlLWRmMDBAZ3JlZ2to
+LyBbMV0KU2lnbmVkLW9mZi1ieTogVGhvcnN0ZW4gTGVlbWh1aXMgPGxpbnV4QGxlZW1odWlz
+LmluZm8+Ci0tLQogc2NyaXB0cy9maXhlc19zZWFyY2ggfCA3ICsrKysrKysKIDEgZmlsZSBj
+aGFuZ2VkLCA3IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zY3JpcHRzL2ZpeGVzX3Nl
+YXJjaCBiL3NjcmlwdHMvZml4ZXNfc2VhcmNoCmluZGV4IGFhYTEyZWMuLjk1MDUwOWYgMTAw
+NzU1Ci0tLSBhL3NjcmlwdHMvZml4ZXNfc2VhcmNoCisrKyBiL3NjcmlwdHMvZml4ZXNfc2Vh
+cmNoCkBAIC0xMzEsNiArMTMxLDEzIEBAIGZvciBjb21taXQgaW4gJChnaXQgcmV2LWxpc3Qg
+LS1yZXZlcnNlIC0tbm8tbWVyZ2VzICIke2dpdF9yYW5nZX0iKTsgZG8KIAkjIGxvZ24gImNv
+bW1pdCA9ICR7dHh0Z3JufSR7Y29tbWl0fSR7dHh0cnN0fQkiCiAJbG9nbiAiJHt0eHRncm59
+JHtjb21taXR9JHt0eHRyc3R9CSIKIAorCSMgQ2hlY2sgaWYgd2UgYXJlIHN1cHBvc2VkIHRv
+IGlnbm9yZSB0aGUgY29tbWl0CisJbm9fYXV0b3NlbD0kKGdpdCBsb2cgLTEgLS1mb3JtYXQ9
+JyVCJyAiSEVBRCIgfCBncmVwIC1pICdeW1s6c3BhY2U6XV0qW0NjXVtDY106W1s6c3BhY2U6
+XV0qPHN0YWJsZStub2F1dG9zZWxAJykKKwlpZiBbICIke25vX2F1dG9zZWx9IiBdIDsgdGhl
+bgorCQlsb2cgIiR7dHh0Ymx1fWNvbnRhaW5zIG5vYXV0b3NlbCB0YWcke3R4dHJzdH0iCisJ
+CWNvbnRpbnVlCisJZmkKKwogCSMgVHJ5IHRvIGZpbmQgIkZpeGVzIiB0YWcgaW4gY29tbWl0
+CiAJZml4ZXNfbGluZXM9JChnaXQgbG9nIC0xIC0tZm9ybWF0PSclQicgIiR7Y29tbWl0fSIg
+fCBncmVwIC1pICdeW1s6c3BhY2U6XV0qRml4ZXM6JykKIAlpZiBbICIke2ZpeGVzX2xpbmVz
+fSIgPT0gIiIgXSA7IHRoZW4KLS0gCjIuNDQuMAoK
+
+--------------sqA6wv5J0ekkT5wmPbH0C3p2--
 
