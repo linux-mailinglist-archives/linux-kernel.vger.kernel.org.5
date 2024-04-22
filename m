@@ -1,68 +1,73 @@
-Return-Path: <linux-kernel+bounces-153764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DCB18AD2DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:59:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 271B58AD2DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:59:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F9261C20E45
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:58:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9D4EB24C6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:59:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F7B153832;
-	Mon, 22 Apr 2024 16:58:51 +0000 (UTC)
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB14153BC9;
+	Mon, 22 Apr 2024 16:58:52 +0000 (UTC)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC25153825
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 16:58:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61DE1DDE9
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 16:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713805130; cv=none; b=BSRvzsN/+UN9LjGLmT1LLyRKN1kS4GyJQWqPiyT+kMeYTc3x892EzT6963+pIeoij1IOUHaew4Mcw56id/5YsPmbdsKJDr/k2jJPiP5s9Ha+V2XomjF3ccyCajySPjrASQXpNlisQ6UpqoPic2DrzUn7edzCnqfQIw+alMnNK1Q=
+	t=1713805132; cv=none; b=kyeX1VBhODGwzpDKgxfB/egDBXFHFASKry8ICXUoyfI+pY1Hgup89LSSPh/u7gOUqNzb8dnAGd0MTPGRwC6zJTIe3kC+RyqfmjtXY4K+601ME+Uvh9BcUp+oTqnkFFM1oOPCb/MwpJop20rr/UjlQB2bJyooiVhbCJLLdyN9WNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713805130; c=relaxed/simple;
-	bh=jjj5jPrwF+lxQV91ehefWDPdbAf+KONmwhC5TEerBzw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NXx3gbP9ZPlYX8Qpb76cLXzW0B9QdyMwEJqYudvs/d3uUQk2kfZ9CYBkbXPkqVx7pqfl47k28IvEKoX80eHNfRQ+dqjaoPUkui3R+dCvDH6Z+dZyj/36T3Z/86+eMrX7vYpGESesBRPW3LvIQz/FiDhg5EAUgkdJfh23GQAANTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1713805132; c=relaxed/simple;
+	bh=hXqLihYRFZkuzCw9JYuUqBxMEsnT35op8rRRCnu4HY4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=o+beJwmeOpGaUuNcZ8K085/e70MgYlrjOeXJaugj7lfRNqdPRSuHHGjKEMGBJMfU7wt4B6MzxlPlokp2D9zoXg/mMK9vR/yx79UBbm4lYPH2ndbL9y1+sZr1KcayzBLrQ7EsDvSWH2NZ65rtgWavDPKJY0OLArSjz/45ELgMTqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a5544fd07easo519543466b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:58:48 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-57217644ba1so642909a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:58:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713805127; x=1714409927;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2+Xvj/XO4sTHp5aN1cVE+tNgMsTv2wp93ECmexNu930=;
-        b=Idp2jjR7xORgE5rk9hYYcJtCnGPNwl/AM4GoCVlLeFWJCf/VPwYNAPK5IqC4mSSgGL
-         /70heihXQ8rvrrj3sY3EIO/QU+4G2HgNAofA2mkzlvt8PYeBmyvb0TXLIshKAwWJ3NoS
-         XYusMKiCPTy0hZhMHCi5hCfd5aWIx4QkDsS/2NQtHTWTN9sYIbDaTCmphwKwHK3mdlvh
-         +TsdcHfKx0P7aEnF31EiD8MFNkquAn1aF6YJVl1DqoK44903z+jvS/pE6wfcI+s5Tb/7
-         UR4t3+7+n2IuoEj0VHfPhNFm7YOt/jfyuGzELtAwOPlI+9giCsFZ9Kaq3PxC/q1BJ7SE
-         XZyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXBT62wIObc7DKqEQWscAAJ4dLAlGSaqV4Szbntv2821ROE3GQiqItaR/eXmjcq1UzaLmVAI6vyFI73iLuyVaQNJm+xxKNL8Llyh9X9
-X-Gm-Message-State: AOJu0YwmEpCDPs226CMtbMP/PWfVyP3X84YA5itkn4vDUSIT/giOEuEm
-	ZbhLBg6UfMaqxPLq1oretjqbwlb3V5G8da52aYxYRVSoRliuS2/1
-X-Google-Smtp-Source: AGHT+IG2nFpq/AMNwZll7t0i30Yz8afG6C5lBfZJFxzkrUdZXMFJSenxJzp0wWzSPpeR42aMeH/lPg==
-X-Received: by 2002:a17:906:f757:b0:a58:72ae:722c with SMTP id jp23-20020a170906f75700b00a5872ae722cmr528052ejb.29.1713805126999;
-        Mon, 22 Apr 2024 09:58:46 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id be11-20020a1709070a4b00b00a5588a9fe66sm4433425ejc.86.2024.04.22.09.58.46
+        d=1e100.net; s=20230601; t=1713805129; x=1714409929;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y+M8nxac4P+fMy2xk1zKUUJNHliTVzYUlBw8aFfQ+TY=;
+        b=eKTRxz+H96fHjmsd43VfTI+W5chWPh/fSdvOBY9/m8aUWmNe1UvnB3x10EdgbSB6pf
+         VpAirNwaTuMTqeWjg9hROqNJiGlYRB8wolEYr6o78hvGC52gj5SGXy/+pZ9vWhrk0Y4e
+         IrY8sd7JKocMhL0ejlTxxvnx2LeU/K6yiquizOELXfL3XANo0pwX8GJfVI9jwQ2bN01J
+         hE1vccLlvBCXIbItXyrFaCncDA48Z/LOkocsRcsBqyCvsZauC5i3leDrwqcnrTkyuTDd
+         aCRpZg0F3a6iJ+cNyfL6tX4kQwPzLNgh5GGgnuKxktdxfra0LesfSjoMu1rypu9yBaLa
+         bC0Q==
+X-Gm-Message-State: AOJu0YwnsM9RxN2O0/Jojb8wnl/YpRcn0Gi8FwaDEb9NBq4/kU79D5tT
+	ofzJ2Hd6xqA8vV4SX++/sgSgQ5KpH5nFJiXBLyIRobR43q3W9fUs
+X-Google-Smtp-Source: AGHT+IGsDn4LlxXuTi1FLgWH4nNl0MdFXjS78u76R6NZBmDmau6je1+nmAwS0uOyDzZabkFiGD15jg==
+X-Received: by 2002:a17:906:db03:b0:a55:b062:3bfd with SMTP id xj3-20020a170906db0300b00a55b0623bfdmr3871403ejb.35.1713805128914;
+        Mon, 22 Apr 2024 09:58:48 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-009.fbsv.net. [2a03:2880:30ff:9::face:b00c])
+        by smtp.gmail.com with ESMTPSA id hd38-20020a17090796a600b00a556f41c68asm5840640ejc.182.2024.04.22.09.58.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 09:58:46 -0700 (PDT)
+        Mon, 22 Apr 2024 09:58:48 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: jpoimboe@kernel.org,
-	mingo@redhat.com
-Cc: x86@kernel.org,
-	tglx@linutronix.de,
-	bp@alien8.de,
-	linux-kernel@vger.kernel.org,
-	pawan.kumar.gupta@linux.intel.com
-Subject: [PATCH v3 00/10] x86/bugs: Separate config for mitigations
-Date: Mon, 22 Apr 2024 09:58:14 -0700
-Message-ID: <20240422165830.2142904-1-leitao@debian.org>
+	mingo@redhat.com,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH v3 01/10] x86/bugs: Add a separate config for GDS
+Date: Mon, 22 Apr 2024 09:58:15 -0700
+Message-ID: <20240422165830.2142904-2-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240422165830.2142904-1-leitao@debian.org>
+References: <20240422165830.2142904-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,100 +76,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
+Currently there is no way to disable GDS mitigation at build time.
+Disabling the current config option (GDS_MITIGATION_FORCE) does not
+disable the mitigation, but set it to GDS_MITIGATION_FULL, which does
+not disable it.
 
-The current CONFIG_SPECULATION_MITIGATIONS namespace is only
-halfway populated, where some mitigations have entries in Kconfig, and
-they could be modified, while others mitigations do not have Kconfig
-entries, and can not be controlled at build time.
+Create a new kernel config that allows GDS to be completely disabled,
+similarly to the "gather_data_sampling=off" or "mitigations=off" kernel
+command-line. Move the GDS_MITIGATION_FORCE under this new mitigation.
 
-New mitigations, such as BHI, were properly added, i.e, having an
-independent Kconfig, which depends on CONFIG_SPECULATION_MITIGATIONS,
-so, you can enable/disable at compilation time.
+Now, there are three options for GDS mitigation:
 
-This patch set aims to have the old mitigations in the same format,
-bringing some uniformity to the mitigations.
+* CONFIG_MITIGATION_GDS=n -> Mitigation disabled (New)
+* CONFIG_MITIGATION_GDS=y -> Mitigation enabled (GDS_MITIGATION_FULL)
+* CONFIG_GDS_MITIGATION_FORCE=y -> Forceful mitigation (disable AVX)
 
-These are the advantages of having fine-grained control for the
-mitigations:
+Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Signed-off-by: Breno Leitao <leitao@debian.org>
+Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
+---
+ arch/x86/Kconfig           | 16 +++++++++++-----
+ arch/x86/kernel/cpu/bugs.c |  7 ++++---
+ 2 files changed, 15 insertions(+), 8 deletions(-)
 
-1) Users can choose and pick only mitigations that are important for
- their workloads.
-
-2) Users and developers can choose to disable mitigations that mangle
- the assembly code generation, making it hard to read.
-
-3) Separate Kconfigs for just source code readability,
- so that we see *which* butt-ugly piece of crap code is for what
- reason...
-
-In most cases, if a mitigation is disabled at compilation time, it
-can still be enabled at runtime using kernel command line arguments.
-
-This is the second part of the initial patchset[1] that got half landed.
-The first patch did some code re-organization. This second part
-contains the exact missing patches from the initial patchset, and
-basically adds build-time configuration for the other mitigations that
-are currently only disabled at boot time.
-
-Here is a detailed view of each patch:
-
-With this patch applied, setting CONFIG_SPECULATION_MITIGATIONS=n, a
-simple script[2] shows that all the mitigations are disabled:
-
-  spectre_v2_user_stibp   	 SPECTRE_V2_USER_NONE
-  spectre_v2_user_ibpb    	 SPECTRE_V2_USER_NONE
-  spectre_v2_cmd          	 SPECTRE_V2_CMD_NONE
-  ssb_mode                	 SPEC_STORE_BYPASS_NONE
-  l1tf_mitigation         	 L1TF_MITIGATION_OFF
-  srso_mitigation         	 SRSO_MITIGATION_NONE
-  srso_cmd                	 SRSO_CMD_SAFE_RET
-  mds_mitigation          	 MDS_MITIGATION_OFF
-  taa_mitigation          	 TAA_MITIGATION_OFF
-  mmio_mitigation         	 MMIO_MITIGATION_OFF
-  srbds_mitigation        	 SRBDS_MITIGATION_OFF
-  gds_mitigation          	 GDS_MITIGATION_OFF
-  spectre_v1_mitigation   	 SPECTRE_V1_MITIGATION_NONE
-  spectre_v2_enabled      	 SPECTRE_V2_NONE
-  retbleed_mitigation     	 RETBLEED_MITIGATION_NONE
-
-[1] https://lore.kernel.org/all/ZZ7c9EbJ71zU5TOF@gmail.com/#t
-[2] https://github.com/leitao/debug/blob/main/spec/dump_speculation.py
-
-Changelog:
-
-v3:
-  * Rebased the patch on top of linux-next, since BHI mitigation added
-    some hunk to original patch series.
-  * Broke down the patches even further, creating one patch for each
-    mitigation. This make the review code easier (I hope).
-	* Nothing was changed, code-wise. The code is *exactly* the * same
-  * Dropped the "spectre_v2_user default mode depends on main default"
-    patch, that will be sent later, since there is no dependency to this
-    patch series. Hopping to make the review/acceptance easier as well.
-v2:
-  * Patch 2: Changed `mode` type from int to `enum spectre_v2_user_cmd`
-    as suggested by Pawan Gupta
-  * Patch 3: Change MITIGATION_RETBLEED dependency to match the code.
-  * https://lore.kernel.org/all/20240208174555.44200-1-leitao@debian.org/
-v1:
-  * https://lore.kernel.org/all/20240118173213.2008115-1-leitao@debian.org/
-
-Breno Leitao (10):
-  x86/bugs: Add a separate config for GDS
-  x86/bugs: Add a separate config for MDS
-  x86/bugs: Add a separate config for TAA
-  x86/bugs: Add a separate config for MMIO Stable Data
-  x86/bugs: Add a separate config for L1TF
-  x86/bugs: Add a separate config for RETBLEED
-  x86/bugs: Add a separate config for Spectre v1
-  x86/bugs: Add a separate config for SRBDS
-  x86/bugs: Add a separate config for Spectre V2
-  x86/bugs: Add a separate config for SSB
-
- arch/x86/Kconfig           | 117 +++++++++++++++++++++++++++++++++++--
- arch/x86/kernel/cpu/bugs.c |  46 +++++++++------
- 2 files changed, 140 insertions(+), 23 deletions(-)
-
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index a902680b6537..d99b758c8d35 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2607,15 +2607,21 @@ config MITIGATION_SLS
+ 	  against straight line speculation. The kernel image might be slightly
+ 	  larger.
+ 
++config MITIGATION_GDS
++	bool "Mitigate Gather Data Sampling"
++	depends on CPU_SUP_INTEL
++	default y
++	help
++	  Enable mitigation for Gather Data Sampling (GDS). GDS is a hardware
++	  vulnerability which allows unprivileged speculative access to data
++	  which was previously stored in vector registers. The attacker uses gather
++	  instructions to infer the stale vector register data.
++
+ config MITIGATION_GDS_FORCE
+ 	bool "Force GDS Mitigation"
+-	depends on CPU_SUP_INTEL
++	depends on MITIGATION_GDS
+ 	default n
+ 	help
+-	  Gather Data Sampling (GDS) is a hardware vulnerability which allows
+-	  unprivileged speculative access to data which was previously stored in
+-	  vector registers.
+-
+ 	  This option is equivalent to setting gather_data_sampling=force on the
+ 	  command line. The microcode mitigation is used if present, otherwise
+ 	  AVX is disabled as a mitigation. On affected systems that are missing
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 9a9685c9244b..f2bdfb359f6b 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -731,10 +731,11 @@ enum gds_mitigations {
+ 	GDS_MITIGATION_HYPERVISOR,
+ };
+ 
+-#if IS_ENABLED(CONFIG_MITIGATION_GDS_FORCE)
+-static enum gds_mitigations gds_mitigation __ro_after_init = GDS_MITIGATION_FORCE;
++#if IS_ENABLED(CONFIG_MITIGATION_GDS)
++static enum gds_mitigations gds_mitigation __ro_after_init =
++	IS_ENABLED(CONFIG_MITIGATION_GDS_FORCE) ? GDS_MITIGATION_FORCE : GDS_MITIGATION_FULL;
+ #else
+-static enum gds_mitigations gds_mitigation __ro_after_init = GDS_MITIGATION_FULL;
++static enum gds_mitigations gds_mitigation __ro_after_init = GDS_MITIGATION_OFF;
+ #endif
+ 
+ static const char * const gds_strings[] = {
 -- 
 2.43.0
 
