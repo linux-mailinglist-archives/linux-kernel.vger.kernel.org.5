@@ -1,162 +1,342 @@
-Return-Path: <linux-kernel+bounces-152986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 338228AC719
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:34:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E00D88AC735
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:36:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6559C1C20CB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:34:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B8E21F219E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 701DC53E36;
-	Mon, 22 Apr 2024 08:33:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F23F50279;
+	Mon, 22 Apr 2024 08:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cVcbAvym"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fzvWapW5"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110AF537F1;
-	Mon, 22 Apr 2024 08:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA358433CF;
+	Mon, 22 Apr 2024 08:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713774804; cv=none; b=MRerWXlnnRvu8UCWZJdGvOmP1hb7G8WH9eg42mB5zbec3Q6VICHrqB8WzgUEb8zhbHNgwmETbKcTUJt3UYZbAjrg7t34lubTQPGG5wlg+rcim/yCGYtBKdY5LoSo659QKpSDAsXggbzFba3ymGaVmktEVGQaDsZy3AP0HmNv5gA=
+	t=1713774989; cv=none; b=nT5WR2mlcUv1IIuvmUH62yAxdx5oUmY237BefOuBAoFVGW0HaKfYjx5D5473iTaCsiCKB5iGX3YloQzcI+cwveecTPeyiNjF35eCsPSR6XLXSGWdfFEsRWfwsnItDD2ppyii0GV6+xbLSS7TmoZGyNDkVFMJem6jq4/NTHFHIGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713774804; c=relaxed/simple;
-	bh=V/gRTGxU4M1x81IlNr4qHiOOIHIMpJV/LpCHRVYKo6Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FSpAfRsZooIovXB7Ew+PtH8hJTM+JyMW28IGXCkY38OHbI3u2cx5rAxV+8HvF3U0+bqkhFwvpa/hxGBEPL850tBGc68/xy5XV2823t46cfBmlIW7NpDrE7zOCHqVGnM5k0CJ1JQDQOtYve4mbY31hYe9HUsjoy9gwRiTlHr8kVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cVcbAvym; arc=none smtp.client-ip=209.85.167.51
+	s=arc-20240116; t=1713774989; c=relaxed/simple;
+	bh=PvX3UAI3pKBNO7+QP/77uw0Vs7P6rs6XY2pmKssYcYo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NhTeW0Qt8c4EsUCQMTu1NinsJGslRnI3rBSKdgFtqY9KLfwWAiIPiYJ9VzD8sO9ZSlFEwiiyJyIHWa9Zm0rO09YLDFFpqcwyv9Cp+Z3YqQ/sKv0Ep6+7q7oSO79cEIS9g/TWAfC/kwv4e15nQazwf/8JJUgS2ltUd8vWkkQJruY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fzvWapW5; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51aa6a8e49aso4152665e87.3;
-        Mon, 22 Apr 2024 01:33:22 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso1702569b3a.2;
+        Mon, 22 Apr 2024 01:36:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713774801; x=1714379601; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UuzSRVYtf+Ra/WsXJdPH9Ei54fL4mpJd0z2NfLlMpkw=;
-        b=cVcbAvym7+hcPq6vkIwwNTcNYzRTIyiTkITFnQuMsexWDZBPx/cgkuUd9oQcdZB6sY
-         rUSDz9XbolEPeYe0yCFXsCldiwp8r3UZzRTzj4iu0LAqeCd6+UlEqwW95A36uekBRfpr
-         5puoq7knk1GJl3CRE9hzYbj4mlYepdtpSmu/OFxRqSe8C2mYni/bYJNY3umm+tj0gWBZ
-         CHv+dvTncDDkNQru75W96fMxf/3/b0o8ojiVFjXnNvriJfUDxtZWCJP0Dfq6opFT9Gh8
-         VUUcilfqt8lxUA7nzkuByMOQT4ihjWnaadWjOySPRBqYApMpAOZG37P41VRnEG+FeAkP
-         k5PA==
+        d=gmail.com; s=20230601; t=1713774987; x=1714379787; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R8U35ePrc9QgPQW1W05XfxAhRzQZ8Z2BPPc+gusk8hs=;
+        b=fzvWapW5pPIy7I17OL2bLdYI2GBEOo26eo6H8u36zOSu+nwMrzcruGxWI9LkEcfYoI
+         Ui7z6Chg0KXDmBBFZRUOqDH52vPO44ssQQ6N4/sgn54D29Gu9y0tdkhLK9WKeRwAUVx5
+         u+X6WvBjLB74aAidim0g7PkDRMVAQEoJuXlB3ss4Kg6N3YrZspnVBYhpDPDlQTsSZvCR
+         D3gMBX18SEzkanYsSufGLY88owZCPXcgwPWarx4jJafRycioctO3k3Obdd8ApAtl0DSV
+         QzVRPucF2UCTz/R4E+mHXeA47+3rjj7NLHKJcDr3PLzB61VemBLxwNLHhuenZC31yDdZ
+         7b9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713774801; x=1714379601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UuzSRVYtf+Ra/WsXJdPH9Ei54fL4mpJd0z2NfLlMpkw=;
-        b=cwsiX+HE9WSYO3qzo1+oFo6I0Vs3/InhcCMSP6jqVXW3r2J9ZCvA0qNr6y7bBEZu8+
-         wMRLzgaNtrKUcvpoOAR0riqTRyOTht16wuMaGCzAVTy59x5gDPPfWM08Mcob1jVmgj6x
-         CTYAUgIepMoIF1RdgIE39D1Z/oJ7IBjucwYIBnlghTS7ZdsHeX4MpMbUkXsgyt6gNPhN
-         maF1/brMTeg647IR6V3lgRy0CdneNHz1dD8ZjcjFUrT28uuvpHl/Q5nsRy4YhXodgxbk
-         Hc01sbQbmVddoZY5Sl8OIJHuW2B5zaFn9KYEKQIuPevKG2PuSnP0hE/RpJ35/pIQ49UP
-         oIAA==
-X-Forwarded-Encrypted: i=1; AJvYcCWqzwa1FijiMUJYH1aTf/xhHF48ZLzR+QxUdd7QzMIwQFDtlogjEQPoFxra9j3CDMBTGR7Km1Ln6L7GdXC5G/ogQ9P1pd3H/H81ipeEa50AFhaRoLjf1ltQQaKDax6dDUorxJNOeIltobQo
-X-Gm-Message-State: AOJu0Yw4EzEM0O4MwlBNORvOpf62yNT9JWS8hwY9QiwzdCbph386SVP1
-	s542pfjyGK++0aSachmYRL/SZo5uY4lhw+EPNPPKJ1C1nwVGqtTxeCq6hB758j8/2QbM5a+2dkt
-	U2aPuVkPQvI1AYPhhDiAOrt4TmmE=
-X-Google-Smtp-Source: AGHT+IGKpKuGGjiohe1yFuIb8kDEPxL3NyoWbtgCGmC7bLt81jMHaKaCalA1tIA7Cmmx2ffBaaioB88fnfvBF4QAIRQ=
-X-Received: by 2002:a05:6512:3602:b0:518:d079:ffd9 with SMTP id
- f2-20020a056512360200b00518d079ffd9mr5121751lfs.13.1713774800851; Mon, 22 Apr
- 2024 01:33:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713774987; x=1714379787;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R8U35ePrc9QgPQW1W05XfxAhRzQZ8Z2BPPc+gusk8hs=;
+        b=H0rgOXwRAoqzBrEa1Vo+GN4N9lfNDTKrwdWZGiBTnZ4uDt/kkYbeT4d1wveVvVxIA8
+         UECrt75tPbZWOvLDkUE34rLvngay2Cbxq/YzqSobSSr2PqOV75igt50FsEwOrxlmgcwN
+         p9ZP6XdslygtFJWTEMYDUd2IjYs2NgcvJL7V0GGdsOg/BYxdP+YWRUoFVFDiuSsvnVIK
+         v9Rd8cwc2fOZiz8zgn538MNefb+Tofz5YGI544jaB2nDWz8HrZ/gTnhyo1lI4PPrqHcB
+         mH6+66swPpOc77/PlP5UZP2sST9CFHFbcf5Iwi6M4KgcwipTv1tiIRsy+7N35FAms2Ox
+         Ep/g==
+X-Forwarded-Encrypted: i=1; AJvYcCUCPmX7vg/CJOCn1gD0cjFuUFq1Mif8BEoVJfBw7P9OMpbHfW4s/uiUTri/tFB5HM6NB+g/4muOdkPlg5B4vpoZ/brRFqPbX2OQnKoLZV996AMDMZJcPzPOmSCzokSeBg4p4TRGMAqoLgK83p6n5teAvVSyERBTkb6IeqUFkHFUCqSgdw==
+X-Gm-Message-State: AOJu0YxMXLB95wiGX+g/BVf6+MxmUvtb5RgItqWSDnJZ2gPdea7eIoyT
+	J3e3TplsrLzSfYJaY+1gObSiU02UBCasrOrSW9s4KCyfA5WjvRem
+X-Google-Smtp-Source: AGHT+IFC4yZPbITSzv3bafhAm2bta324F8nV553vmG62dvh7hjuB3Y5lboozWig9DBTVpKLmgGlhXg==
+X-Received: by 2002:a05:6a00:4b4e:b0:6e7:3223:4556 with SMTP id kr14-20020a056a004b4e00b006e732234556mr10925370pfb.32.1713774986932;
+        Mon, 22 Apr 2024 01:36:26 -0700 (PDT)
+Received: from localhost.localdomain ([120.229.49.236])
+        by smtp.gmail.com with ESMTPSA id e10-20020aa7980a000000b006ed38291aebsm7570690pfl.178.2024.04.22.01.36.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 01:36:26 -0700 (PDT)
+From: Howard Chu <howardchu95@gmail.com>
+To: peterz@infradead.org
+Cc: mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	kan.liang@linux.intel.com,
+	zegao2021@gmail.com,
+	leo.yan@linux.dev,
+	ravi.bangoria@amd.com,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	Howard Chu <howardchu95@gmail.com>
+Subject: [PATCH v1 1/4] perf record: Dump off-cpu samples directly
+Date: Mon, 22 Apr 2024 16:36:45 +0800
+Message-ID: <20240422083645.1930939-1-howardchu95@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240420182223.1153195-1-rilian.la.te@ya.ru> <20240420182223.1153195-4-rilian.la.te@ya.ru>
- <7cf31245-b2a1-419c-add6-a6a50a3f3cf1@kernel.org>
-In-Reply-To: <7cf31245-b2a1-419c-add6-a6a50a3f3cf1@kernel.org>
-From: "Konstantin P." <ria.freelander@gmail.com>
-Date: Mon, 22 Apr 2024 11:35:32 +0300
-Message-ID: <CAF1WSuw9WKCNbsnyDv6F0QNJbYT78wMn=s54n7XXfM94z51oJg@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] serial: sc16is7xx: add support for EXAR XR20M1172 UART
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Konstantin Pugin <rilian.la.te@ya.ru>, krzk@kernel.org, conor@kernel.org, lkp@intel.com, 
-	vz@mleia.com, robh@kernel.org, jcmvbkbc@gmail.com, 
-	nicolas.ferre@microchip.com, manikanta.guntupalli@amd.com, corbet@lwn.net, 
-	ychuang3@nuvoton.com, u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Herve Codina <herve.codina@bootlin.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>, Lech Perczak <lech.perczak@camlingroup.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-I do not think this is a requirement for a new version. I need to
-wait. Some folks want to test my patches with their hardware)))
+Parse off-cpu events using parse_event(). Change the placement of
+record__config_off_cpu to after record__open because we need to write
+mmapped fds into BPF's perf_event_array map, also, write 
+sample_id/sample_type into BPF. In record__pushfn and record__aio_pushfn, 
+handle off-cpu samples using off_cpu_strip. This is because the off-cpu 
+samples that we want to write to perf.data is in off-cpu samples' raw_data 
+section:
 
-On Mon, Apr 22, 2024 at 9:30=E2=80=AFAM Jiri Slaby <jirislaby@kernel.org> w=
-rote:
->
-> On 20. 04. 24, 20:22, Konstantin Pugin wrote:
-> > From: Konstantin Pugin <ria.freelander@gmail.com>
-> >
-> > XR20M1172 register set is mostly compatible with SC16IS762, but it has
-> > a support for additional division rates of UART with special DLD regist=
-er.
-> > So, add handling this register by appropriate devicetree bindings.
-> ...
-> > --- a/drivers/tty/serial/sc16is7xx.c
-> > +++ b/drivers/tty/serial/sc16is7xx.c
-> ...
-> > @@ -555,18 +578,43 @@ static bool sc16is7xx_regmap_noinc(struct device =
-*dev, unsigned int reg)
-> >       return reg =3D=3D SC16IS7XX_RHR_REG;
-> >   }
-> >
-> > +static bool sc16is7xx_has_dld(struct device *dev)
-> > +{
-> > +             struct sc16is7xx_port *s =3D dev_get_drvdata(dev);
-> > +
-> > +             if (s->devtype =3D=3D &xr20m1172_devtype)
-> > +                     return true;
-> > +             return false;
->
-> :) so this should simply be:
->
-> return s->devtype =3D=3D &xr20m1172_devtype;
->
-> ...
-> > @@ -1002,6 +1052,7 @@ static void sc16is7xx_set_termios(struct uart_por=
-t *port,
-> >                                 const struct ktermios *old)
-> >   {
-> >       struct sc16is7xx_one *one =3D to_sc16is7xx_one(port, port);
-> > +     bool has_dld =3D sc16is7xx_has_dld(port->dev);
-> >       unsigned int lcr, flow =3D 0;
-> >       int baud;
-> >       unsigned long flags;
-> > @@ -1084,7 +1135,7 @@ static void sc16is7xx_set_termios(struct uart_por=
-t *port,
-> >       /* Get baud rate generator configuration */
-> >       baud =3D uart_get_baud_rate(port, termios, old,
-> >                                 port->uartclk / 16 / 4 / 0xffff,
-> > -                               port->uartclk / 16);
-> > +                               port->uartclk / (has_dld ? 4 : 16));
->
-> Could you do this instead:
-> unsigned int divisor =3D sc16is7xx_has_dld(port->dev) ? 4 : 16;
->
-> ...
->
-> uart_get_baud_rate(..., port->uartclk / divisor);
->
->
-> I am not sure the above warrants for a new version. Just in case you are
-> sending one.
->
-> thanks,
-> --
-> js
-> suse labs
->
+regular samples:
+[sample: sample_data]
+
+off-cpu samples:
+[sample: [raw_data: sample_data]]
+
+We need to extract the real useful sample data out before writing.
+
+Hooks record_done just before evlist__disable to stop BPF program from
+outputting, otherwise, we lose some samples.
+
+After samples are collected, change sample_type of off-cpu event to
+the OFFCPU_SAMPLE_TYPES for parsing correctly, it was PERF_SAMPLE_RAW and
+some others, because BPF can only output to a specific type of perf_event,
+which is why `evsel->core.attr.sample_type &= OFFCPU_SAMPLE_TYPES;` is
+deleted in util/evsel.c. 
+
+Signed-off-by: Howard Chu <howardchu95@gmail.com>
+---
+ tools/perf/builtin-record.c | 98 ++++++++++++++++++++++++++++++++++---
+ tools/perf/util/evsel.c     |  8 ---
+ 2 files changed, 91 insertions(+), 15 deletions(-)
+
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 2ff718d3e202..c31b23905f1b 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -389,6 +389,8 @@ struct record_aio {
+ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size)
+ {
+ 	struct record_aio *aio = to;
++	char *bf_stripped = NULL;
++	size_t stripped;
+ 
+ 	/*
+ 	 * map->core.base data pointed by buf is copied into free map->aio.data[] buffer
+@@ -404,6 +406,31 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
+ 	 * from the beginning of the kernel buffer till the end of the data chunk.
+ 	 */
+ 
++	if (aio->rec->off_cpu) {
++		if (size == 0)
++			return 0;
++
++		map->core.start -= size;
++		size = map->core.end - map->core.start;
++
++		bf_stripped = malloc(size);
++
++		if (bf_stripped == NULL) {
++			pr_err("Failed to allocate off-cpu strip buffer\n");
++			return -ENOMEM;
++		}
++
++		stripped = off_cpu_strip(aio->rec->evlist, map, bf_stripped, size);
++
++		if (stripped < 0) {
++			size = (int)stripped;
++			goto out;
++		}
++
++		size = stripped;
++		buf = bf_stripped;
++	}
++
+ 	if (record__comp_enabled(aio->rec)) {
+ 		ssize_t compressed = zstd_compress(aio->rec->session, NULL, aio->data + aio->size,
+ 						   mmap__mmap_len(map) - aio->size,
+@@ -432,6 +459,9 @@ static int record__aio_pushfn(struct mmap *map, void *to, void *buf, size_t size
+ 
+ 	aio->size += size;
+ 
++out:
++	free(bf_stripped);
++
+ 	return size;
+ }
+ 
+@@ -635,6 +665,38 @@ static int process_locked_synthesized_event(struct perf_tool *tool,
+ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
+ {
+ 	struct record *rec = to;
++	int err;
++	char *bf_stripped = NULL;
++	size_t stripped;
++
++	if (rec->off_cpu) {
++		/*
++		 * We'll read all the events at once without masking.
++		 * When reading the remainder from a map, the size is 0, because
++		 * start is shifted to the end so no more data is to be read.
++		 */
++		if (size == 0)
++			return 0;
++
++		map->core.start -= size;
++		/* get the total size */
++		size = map->core.end - map->core.start;
++
++		bf_stripped = malloc(size);
++
++		if (bf_stripped == NULL) {
++			pr_err("Failed to allocate off-cpu strip buffer\n");
++			return -ENOMEM;
++		}
++
++		stripped = off_cpu_strip(rec->evlist, map, bf_stripped, size);
++
++		if (stripped < 0)
++			return (int)stripped;
++
++		size = stripped;
++		bf = bf_stripped;
++	}
+ 
+ 	if (record__comp_enabled(rec)) {
+ 		ssize_t compressed = zstd_compress(rec->session, map, map->data,
+@@ -648,7 +710,11 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
+ 	}
+ 
+ 	thread->samples++;
+-	return record__write(rec, map, bf, size);
++	err = record__write(rec, map, bf, size);
++
++	free(bf_stripped);
++
++	return err;
+ }
+ 
+ static volatile sig_atomic_t signr = -1;
+@@ -1790,6 +1856,7 @@ record__finish_output(struct record *rec)
+ 		if (rec->buildid_all)
+ 			perf_session__dsos_hit_all(rec->session);
+ 	}
++
+ 	perf_session__write_header(rec->session, rec->evlist, fd, true);
+ 
+ 	return;
+@@ -2501,6 +2568,14 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		}
+ 	}
+ 
++	if (rec->off_cpu) {
++		err = record__config_off_cpu(rec);
++		if (err) {
++			pr_err("record__config_off_cpu failed, error %d\n", err);
++			goto out_free_threads;
++		}
++	}
++
+ 	/*
+ 	 * Normally perf_session__new would do this, but it doesn't have the
+ 	 * evlist.
+@@ -2764,6 +2839,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		 * disable events in this case.
+ 		 */
+ 		if (done && !disabled && !target__none(&opts->target)) {
++			perf_hooks__invoke_record_done();
+ 			trigger_off(&auxtrace_snapshot_trigger);
+ 			evlist__disable(rec->evlist);
+ 			disabled = true;
+@@ -2827,14 +2903,17 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	} else
+ 		status = err;
+ 
+-	if (rec->off_cpu)
+-		rec->bytes_written += off_cpu_write(rec->session);
+-
+ 	record__read_lost_samples(rec);
+ 	record__synthesize(rec, true);
+ 	/* this will be recalculated during process_buildids() */
+ 	rec->samples = 0;
+ 
++	/* change to the correct sample type for parsing */
++	if (rec->off_cpu && off_cpu_change_type(rec->evlist)) {
++		pr_err("ERROR: Failed to change sample type for off-cpu event\n");
++		goto out_delete_session;
++	}
++
+ 	if (!err) {
+ 		if (!rec->timestamp_filename) {
+ 			record__finish_output(rec);
+@@ -3198,7 +3277,7 @@ static int switch_output_setup(struct record *rec)
+ 	unsigned long val;
+ 
+ 	/*
+-	 * If we're using --switch-output-events, then we imply its 
++	 * If we're using --switch-output-events, then we imply its
+ 	 * --switch-output=signal, as we'll send a SIGUSR2 from the side band
+ 	 *  thread to its parent.
+ 	 */
+@@ -4221,9 +4300,14 @@ int cmd_record(int argc, const char **argv)
+ 	}
+ 
+ 	if (rec->off_cpu) {
+-		err = record__config_off_cpu(rec);
++		char off_cpu_event[64];
++
++		snprintf(off_cpu_event, sizeof(off_cpu_event),
++			 "bpf-output/no-inherit=1,name=%s/", OFFCPU_EVENT);
++
++		err = parse_event(rec->evlist, off_cpu_event);
+ 		if (err) {
+-			pr_err("record__config_off_cpu failed, error %d\n", err);
++			pr_err("Failed to open off-cpu event\n");
+ 			goto out;
+ 		}
+ 	}
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 3536404e9447..c08ae6a3c8d6 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1092,11 +1092,6 @@ static void evsel__set_default_freq_period(struct record_opts *opts,
+ 	}
+ }
+ 
+-static bool evsel__is_offcpu_event(struct evsel *evsel)
+-{
+-	return evsel__is_bpf_output(evsel) && evsel__name_is(evsel, OFFCPU_EVENT);
+-}
+-
+ /*
+  * The enable_on_exec/disabled value strategy:
+  *
+@@ -1363,9 +1358,6 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 	if (evsel__is_dummy_event(evsel))
+ 		evsel__reset_sample_bit(evsel, BRANCH_STACK);
+ 
+-	if (evsel__is_offcpu_event(evsel))
+-		evsel->core.attr.sample_type &= OFFCPU_SAMPLE_TYPES;
+-
+ 	arch__post_evsel_config(evsel, attr);
+ }
+ 
+-- 
+2.44.0
+
 
