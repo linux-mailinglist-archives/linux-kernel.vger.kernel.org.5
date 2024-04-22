@@ -1,75 +1,43 @@
-Return-Path: <linux-kernel+bounces-153154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F698ACA4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 709CE8ACA4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:09:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 077E71F23215
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:09:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10B2C1F2331E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D84B13E3EF;
-	Mon, 22 Apr 2024 10:08:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="dPP0TSga"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4195513DBB2;
-	Mon, 22 Apr 2024 10:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3916613D8B9;
+	Mon, 22 Apr 2024 10:09:40 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C605450280
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 10:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713780496; cv=none; b=mmYY5cOt2afxKbQQ4kPyaE0FACOgIZOXvDlmRlNfxzrsynY45kSLQFBudmobIGUiB1siFqRU9eS4P+G0SaARxVvXttNnWcOaqY6C7EY7oNAWPD1AKh2+lnuJQQpnosYdAaArO9wxzZQx7TLJyuPpTgK/pxDWcSAvGu2icbiVnRQ=
+	t=1713780579; cv=none; b=oRN2K4UvtZEjBn8E7dx/zG0iG6094Rtmodq+0XZyQsbArMhPnSoiWNQQQT7hLXlB59fBcLUZqmUAMCLxo5swKUV+l2GHGQ/GBT4YPYIWIGtWuDbtVDko5rEXmv0GoiOxZWDgcGDwMcWmO8aIQv17bPcy0JItjxBNFCgnL+k5Xc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713780496; c=relaxed/simple;
-	bh=5t1Bfop7a73SP2Xoc+JjPX3eauf9YdecV0ZqhsEjPCA=;
+	s=arc-20240116; t=1713780579; c=relaxed/simple;
+	bh=v8JKjP+EkUO4dWNiSEfGzuAcEHIYI5f01TttKsEYntc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BuVBuBEZino09RyhkDxIP2acCOjRvDSwGJGjunQk80gNsJG2ypDsgxgzlpO2fy3w39zcBOZcD2XdKl0Fq6hiAYcVt1JnjBrM6QxWCuQ5eS5OI8gQeMPAaH7E63SE3jFOvfhtwhnlHJgWR5kFsFR/rZRUvGKEey8nFXYGOJPUm8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=dPP0TSga; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 5A40E20FEB70; Mon, 22 Apr 2024 03:08:09 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5A40E20FEB70
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713780489;
-	bh=p/91VOpGr+sXlA4jv/RAoPR3l3/fwg6j5nhp26gdg74=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dPP0TSgaJivoAFhSsrYk9liFUNizFn+wcBwR9iR/96vvpWhIJ69DCFlE4IpyE5UuF
-	 0XveB92uwHC46KXjCMY1uBItDd0eSw0IfWb6BHVAM9EH4fQ6s9Qny5cJhpK2ClRmmL
-	 nxtJWq6M81hbyyDZt/fiDiPALWzxvP39K2cVGn94=
-Date: Mon, 22 Apr 2024 03:08:09 -0700
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <yanjun.zhu@linux.dev>,
-	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
-Message-ID: <20240422100809.GA9873@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20240415161305.GO223006@ziepe.ca>
- <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
- <b34bfb11-98a3-4418-b482-14f2e50745d3@lunn.ch>
- <20240418060108.GB13182@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20240418175059.GZ223006@ziepe.ca>
- <f3e7ea07-2903-4f19-ba86-94bba569dae9@lunn.ch>
- <20240419165926.GC506@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <fc345b4d-0747-4ca3-aee0-c53064cc7fe1@lunn.ch>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oeTuKXHXeGI/4fi7quCLAbTfOd1FnV3awMvE6JFypBOUx8+NJZ0bTYieKGIwMBphWAVSYmB5Tyxraa4RSCKS0JfNx1d6Ya73ivICcSjlG8vvOl+M+I1VUprZXxnvAlZekih2tOdVeG8/pDBq0QHfreXXiIY4eQCOoL7/OdxlR2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D453BC113CC;
+	Mon, 22 Apr 2024 10:09:36 +0000 (UTC)
+Date: Mon, 22 Apr 2024 11:09:34 +0100
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Shiqi Liu <shiqiliu@hust.edu.cn>
+Cc: will@kernel.org, broonie@kernel.org, anshuman.khandual@arm.com,
+	maz@kernel.org, suzuki.poulose@arm.com, miguel.luis@oracle.com,
+	joey.gouly@arm.com, oliver.upton@linux.dev, jingzhangos@google.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/sysreg: Update PIE permission encodings
+Message-ID: <ZiY3Xhcg5hH5ZTB4@arm.com>
+References: <20240421063328.29710-1-shiqiliu@hust.edu.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,40 +46,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fc345b4d-0747-4ca3-aee0-c53064cc7fe1@lunn.ch>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20240421063328.29710-1-shiqiliu@hust.edu.cn>
 
-On Fri, Apr 19, 2024 at 08:51:02PM +0200, Andrew Lunn wrote:
-> On Fri, Apr 19, 2024 at 09:59:26AM -0700, Shradha Gupta wrote:
-> > On Thu, Apr 18, 2024 at 08:42:59PM +0200, Andrew Lunn wrote:
-> > > > >From an RDMA perspective this is all available from other APIs already
-> > > > at least and I wouldn't want to see new sysfs unless there is a netdev
-> > > > justification.
-> > > 
-> > > It is unlikely there is a netdev justification. Configuration happens
-> > > via netlink, not sysfs.
-> > > 
-> > >     Andrew
-> > 
-> > Thanks. Sure, it makes sense to make the generic attribute configurable
-> > through the netdevice ops or netlink implementation. I will keep that in
-> > mind while adding the next set of configuration attributes for the driver.
-> > These attributes(from the patch) however, are hardware specific(that show
-> > the maximum supported values by the hardware in most cases).
+On Sun, Apr 21, 2024 at 02:33:28PM +0800, Shiqi Liu wrote:
+> Fix left shift overflow issue when the parameter idx is greater than or
+> equal to 8 in the calculation of perm in PIRx_ELx_PERM macro.
 > 
->         ndev->max_mtu = gc->adapter_mtu - ETH_HLEN;
->         ndev->min_mtu = ETH_MIN_MTU;
+> Fix this by modifying the encoding to use a long integer type.
 > 
-> This does not appear to be specific to your device. This is very
-> generic. We already have /sys/class/net/eth42/mtu, why not add
-> /sys/class/net/eth42/max_mtu and /sys/class/net/eth42/min_mtu for
-> every driver?
+> Signed-off-by: Shiqi Liu <shiqiliu@hust.edu.cn>
+> ---
+>  arch/arm64/include/asm/sysreg.h       | 24 ++++++++++++------------
+>  tools/arch/arm64/include/asm/sysreg.h | 24 ++++++++++++------------
+>  2 files changed, 24 insertions(+), 24 deletions(-)
 > 
-> Are these values really hardware specific? Are they really unique to
-> your hardware? I have to wounder because you clearly did not think
-> much about MTU, and how it is actually generic...
-> 
->      Andrew
-That makes sense. I will make these as generic attributes in the next version.
-Thanks.
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index 9e8999592f3a..af3b206fa423 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -1036,18 +1036,18 @@
+>   * Permission Indirection Extension (PIE) permission encodings.
+>   * Encodings with the _O suffix, have overlays applied (Permission Overlay Extension).
+>   */
+> -#define PIE_NONE_O	0x0
+> -#define PIE_R_O		0x1
+> -#define PIE_X_O		0x2
+> -#define PIE_RX_O	0x3
+> -#define PIE_RW_O	0x5
+> -#define PIE_RWnX_O	0x6
+> -#define PIE_RWX_O	0x7
+> -#define PIE_R		0x8
+> -#define PIE_GCS		0x9
+> -#define PIE_RX		0xa
+> -#define PIE_RW		0xc
+> -#define PIE_RWX		0xe
+> +#define PIE_NONE_O	UL(0x0)
+> +#define PIE_R_O		UL(0x1)
+> +#define PIE_X_O		UL(0x2)
+> +#define PIE_RX_O	UL(0x3)
+> +#define PIE_RW_O	UL(0x5)
+> +#define PIE_RWnX_O	UL(0x6)
+> +#define PIE_RWX_O	UL(0x7)
+> +#define PIE_R		UL(0x8)
+> +#define PIE_GCS		UL(0x9)
+> +#define PIE_RX		UL(0xa)
+> +#define PIE_RW		UL(0xc)
+> +#define PIE_RWX		UL(0xe)
+>  
+>  #define PIRx_ELx_PERM(idx, perm)	((perm) << ((idx) * 4))
+
+Thanks. That's indeed the better way to write these constants, they also
+match the POE_* macros further down in this file.
+
+Currently nothing is broken since the PIE_E0 and PIE_E1 macros are only
+used in assembly where the UL() doesn't have any effect but we may
+change it in the future. I'll leave it with Will to pick up.
+
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 
