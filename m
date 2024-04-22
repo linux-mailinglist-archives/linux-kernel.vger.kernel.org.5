@@ -1,125 +1,114 @@
-Return-Path: <linux-kernel+bounces-153264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FEF58ACBAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:11:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B7838ACBB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:12:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1313284936
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:11:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39E2E1F242DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:12:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69ED7146597;
-	Mon, 22 Apr 2024 11:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F19F146D76;
+	Mon, 22 Apr 2024 11:12:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="S8+ExHGE"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r0gpY5K9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F1F145FF9
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 976DD145FE9;
+	Mon, 22 Apr 2024 11:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713784289; cv=none; b=siQMEt38E+KmQ1p29kK6ky9bmr1lsrkziPKW5JuzcUACLs1ceTHRxLsCTKFftUEiAUM3sbuDEkPkNCt8n/GJelBgLLXasRi1eZmVP/2SAyELdwmKRuh0/cgv+39IKGm8xdQvp1rHFu1c9UBa5YAMGO46wW7CsyJcBTx0NgIRxyw=
+	t=1713784333; cv=none; b=hVIlXZyUbF958g6KWFLM9V6eJiRb/r/E2AowzBfVMeWgzPq6fxR637VDUHhKlM2O4X82aRmjJVC86PjQD2+VjZUYF4koP4Hsot7B5Qpxxf3vC1+JfnNce+vBt5mXobQDQ8eIWb9FZq4Am1xSSWp26nVDwS8BdXl6oj5u94/eBuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713784289; c=relaxed/simple;
-	bh=zOXyQXhCiCAbqSzm1DmnoLf7s16Jjeeh3sXMykWQ4yA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BU8vbWuTg8mbCv6JeHbHhxGPqoUWnBDSW5DF+zVwsFbw6Izusc3BcW+4SWJqAlYdO1UHoc3YRwc9/uPD/mW9vaw+O4w1IN3Jqo85NoMVwzWaUCjzNCjHSzmd9PI4IHyV8HsSgfyic7oKQyctsXpsRndAW5l6uD1C+0ikzF2Ytqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=S8+ExHGE; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41a77836fa6so3418775e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 04:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1713784286; x=1714389086; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=61hzISvK/wLrrN6ibfTaJ/oIzNgbxFUNfnYIb6kt4q8=;
-        b=S8+ExHGE7UZRml9wIgN7GdoCDFGbOMuYgW30fQxMX7T9XTBMF4mHX+QD01Z3ohorUe
-         24/J+cQ0ikD27f716BNNq8vRm6UjEMo7eExWWjop0KXE2ITXdGfjI2LhRN3D9u3fhEO1
-         biaFZA5xMkPwHgHKnMIgAhNAawvs56RxUmgkU1odYbdMjp7WRWecgP982PFC4nZI857R
-         oqtGEDj2/0GCs5AF7Tgk0dFLsAsP/tx6E6WlSVC7jigB0ObK9IM3sDCRFbW98zyZqbVs
-         g24C+u0rPRexxxqyNjLqAEbzNQtxyagSm0P3v1zv319lrhtHL0NRhT0jVqomQqjTkSfv
-         kcoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713784286; x=1714389086;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=61hzISvK/wLrrN6ibfTaJ/oIzNgbxFUNfnYIb6kt4q8=;
-        b=Gwh+5upIUgPlNBVWMKwIzCvYfW1JE2b9fCTUDRiba/VsHwdKAZ+sf1azsVAVdVBrYt
-         le1OpfwX7/rI2BinA++wbO90hIqbWxrXE6SMI1AfIU9LBZ2Wr6jWuDQc/u2kA1xn1w1p
-         c5PgDDb9AJW+pi6e8+so5kHZHYTu+fzoXET/FTGaDZPupuR4ixwJ52AcMgda+ptdvKQZ
-         DhOMAmXQ0/cnZbcyibRKzUwXWxRH4gwF5UGrmmbZ5od/oQkDecy4KtTWbi2seEuBeZ3e
-         jcx5hf69Adi4n1YKM9sj/t6sPz7lCwto3Ft7w6lSRp0NUyW5LYGRm3sgJS1OW5sEnspb
-         hQNA==
-X-Gm-Message-State: AOJu0YwfXEP+Q+s9lmZm7PGhLo+vjeYEPjm4zSPIkt7UJxXS1mxUqyFO
-	FlAJW4MOZyEIvWLv3mCIVwi6Ibmpo9v/4ZdqGQgZzjFvKMPkXBQxZ7VcIBZxvRE=
-X-Google-Smtp-Source: AGHT+IGMfRYSdMcLHCdhxlRSB93POiy1y+u9GQT5dTES5qnzs1ds9F6kAbynLwEbX6sbZ/W6e01cVQ==
-X-Received: by 2002:a05:600c:46c8:b0:414:d95:cc47 with SMTP id q8-20020a05600c46c800b004140d95cc47mr9334640wmo.30.1713784285915;
-        Mon, 22 Apr 2024 04:11:25 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.53])
-        by smtp.gmail.com with ESMTPSA id r18-20020a05600c35d200b00418d434ae4esm16292565wmq.10.2024.04.22.04.11.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 04:11:25 -0700 (PDT)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: gregkh@linuxfoundation.org,
-	jirislaby@kernel.org,
-	geert+renesas@glider.be,
-	ulf.hansson@linaro.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	claudiu.beznea@tuxon.dev
-Subject: [PATCH] serial: sh-sci: Call device_set_wakeup_path() for serial console
-Date: Mon, 22 Apr 2024 14:11:23 +0300
-Message-Id: <20240422111123.1622967-1-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713784333; c=relaxed/simple;
+	bh=60Nj6Eui0n3N0tnpm8vqfyc7ou3dQzK95LfY94ljJ2Q=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ubE55FjP/tcHo6XjbJc+5UNe6Cx4VSy61XLjOhq43L98ygBG3RAIIW9dzZyw7JARhyFHGIGUO5U0XktnS/JIoMfljMa1NLuHe45riltGUssWiOTdKxvdw96gxDtrTuKb3A9DHoE7e17AZH3daGQW9oNY8oVQRLdE9Z9daNkUpas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r0gpY5K9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 378ACC113CC;
+	Mon, 22 Apr 2024 11:12:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713784333;
+	bh=60Nj6Eui0n3N0tnpm8vqfyc7ou3dQzK95LfY94ljJ2Q=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=r0gpY5K9/azlRnLLLeyXFSWAylhXDnQWwb5khECKFRQFAJ0aEFEx36KIv302Zt6lk
+	 925R7ZgDUiSvfFoThBPGCD134S0n8YbNtvJqr54XrqigpGTlYGn2hWLtbbpTKliG/+
+	 op1CljMdeNTSkQDrucsU91bbH8xCuT802DYH0oAJO86ivAB3PdqPwL3fLbKdt1i2eV
+	 J1rEmp+DW3SWUW1+TrI/isB4+NQ/d3IbcsfrJvhj3idgzoIskZNvE0FXLFBa9tJMna
+	 BcdD5WbYHgXYC37Drhjb7zyRsji4+2ZLYJdU5WkV0oAkBW2XK+3T189aHoxToqbmbW
+	 SPULFniiaQVOw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22E20C4345F;
+	Mon, 22 Apr 2024 11:12:13 +0000 (UTC)
+From: Kelvin Zhang via B4 Relay <devnull+kelvin.zhang.amlogic.com@kernel.org>
+Subject: [PATCH v2 0/3] Add support for Amlogic T7 reset controller
+Date: Mon, 22 Apr 2024 19:11:42 +0800
+Message-Id: <20240422-t7-reset-v2-0-cb82271d3296@amlogic.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAO5FJmYC/23MQQ7CIBCF4as0sxZDASl15T1MF0iHdhJbDDRE0
+ 3B3sWuX/8vLt0PCSJjg2uwQMVOisNYQpwbcbNcJGY21QXChuBQ92zoWMeHGvOnQSKW9HR9Q76+
+ Int4HdR9qz5S2ED+HnNvf+gfJLeNMOY0CtZGXHm92eYaJ3NmFBYZSyhdgXGSeogAAAA==
+To: Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
+ Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, 
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Zelong Dong <zelong.dong@amlogic.com>, 
+ Kelvin Zhang <kelvin.zhang@amlogic.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713784331; l=1114;
+ i=kelvin.zhang@amlogic.com; s=20240329; h=from:subject:message-id;
+ bh=60Nj6Eui0n3N0tnpm8vqfyc7ou3dQzK95LfY94ljJ2Q=;
+ b=/gYjYSk1vpwpkjfjMUbBti+TUQEAmVkAzsRF+ybxSZczfGfjPre9hMD1+0lbyMdq48VlAUv76
+ e1nzmYjH+6PBDZqJxUF9CDf4k45OZe3hoGe/2cujuahY92nBy7spKPX
+X-Developer-Key: i=kelvin.zhang@amlogic.com; a=ed25519;
+ pk=pgnle7HTNvnNTcOoGejvtTC7BJT30HUNXfMHRRXSylI=
+X-Endpoint-Received: by B4 Relay for kelvin.zhang@amlogic.com/20240329 with
+ auth_id=148
+X-Original-From: Kelvin Zhang <kelvin.zhang@amlogic.com>
+Reply-To: kelvin.zhang@amlogic.com
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Add a new compatible and device node for Amlogic T7 reset controller.
+And modify the driver accordingly.
 
-In case the SCI is used as a UART console, no_console_suspend is
-available in bootargs and SCI is part of a software-controlled power
-domain we need to call device_set_wakeup_path(). This lets the power
-domain core code knows that this domain should not be powered off
-durring system suspend. Otherwise, the SCI power domain is turned off,
-nothing is printed while suspending and the suspend/resume process is
-blocked. This was detected on the RZ/G3S SoC while adding support
-for power domains.
-
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
+Signed-off-by: Kelvin Zhang <kelvin.zhang@amlogic.com>
 ---
- drivers/tty/serial/sh-sci.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Changes in v2:
+- Drop the compatible comment in dt-binding.
+- Move t7-reset.h to arch/arm64/boot/dts/amlogic.
+- Link to v1: https://lore.kernel.org/r/20240329-t7-reset-v1-0-4c6e2e68359e@amlogic.com
 
-diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
-index 97031db26ae4..57a7f18e16e4 100644
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -3441,8 +3441,12 @@ static __maybe_unused int sci_suspend(struct device *dev)
- {
- 	struct sci_port *sport = dev_get_drvdata(dev);
- 
--	if (sport)
-+	if (sport) {
-+		if (uart_console(&sport->port) && !console_suspend_enabled)
-+			device_set_wakeup_path(dev);
-+
- 		uart_suspend_port(&sci_uart_driver, &sport->port);
-+	}
- 
- 	return 0;
- }
+---
+Zelong Dong (3):
+      dt-bindings: reset: Add Amlogic T7 reset controller
+      reset: reset-meson: Add support for Amlogic T7 SoC reset controller
+      arm64: dts: amlogic: Add Amlogic T7 reset controller
+
+ .../bindings/reset/amlogic,meson-reset.yaml        |   1 +
+ arch/arm64/boot/dts/amlogic/amlogic-t7-reset.h     | 197 +++++++++++++++++++++
+ arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi        |   7 +
+ drivers/reset/reset-meson.c                        |   6 +
+ 4 files changed, 211 insertions(+)
+---
+base-commit: f529a6d274b3b8c75899e949649d231298f30a32
+change-id: 20240329-t7-reset-f87e8346fadb
+
+Best regards,
 -- 
-2.39.2
+Kelvin Zhang <kelvin.zhang@amlogic.com>
+
 
 
