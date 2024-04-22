@@ -1,117 +1,154 @@
-Return-Path: <linux-kernel+bounces-153503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFCAB8ACEC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:53:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46EB88ACECD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:54:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D11C1F21C83
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:53:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C841AB26726
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:54:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D2C31514CE;
-	Mon, 22 Apr 2024 13:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1B8A15099A;
+	Mon, 22 Apr 2024 13:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XdrF9n3Z"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OoSg1g5l"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFDC41514CA;
-	Mon, 22 Apr 2024 13:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B39E14F9EB;
+	Mon, 22 Apr 2024 13:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713793960; cv=none; b=HQb8C9ihGKnlk15TL8j2sahsz0nZLzSplV8NT3nCBXPvWKJIk+iM4SCQVvz2toisxwSXaYUNp0tFCzPkUoFLmxE4mublr39gyYeM7fgVSN3hou+EeClrWXJsypWScY5eurqoue7tiIW4UQ6TCHm4KN7AGPMnnkBL3zuvpqk7xak=
+	t=1713794043; cv=none; b=DvIzscIDB3u8CEVo0oiCvhhy7gNi2BFWq98X92wuzzBgf4NLxhJdCe9YmBAbckKlCgaoC8OmZdMss2JElEb5yy6KvfTqkEOXjOBUTeyTNF9VlZgs3qjAPhWuPvuuX8NSzME7LhipuujZa6IJXJaigNHDI+97KgzxflmgBpD+vtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713793960; c=relaxed/simple;
-	bh=RgGV5FgqdRHpNkwTjPwel9vvVJToun4sGSg0EDak+Wk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B6Wfjw5p3NopmCwl6EPHuUUjZ7r0c67I2hTusXrc+ddU9uJBUvdACj9i2h5klmTXy9B5g8CNckF/MCUuEG4CraMjVTFtxEMrBWte1Hl1nuxpnvEGxln87sD7v7byspv8JczHPkTQKE0eH0qfq4U18lts2mWtEkDdaVo3O6JDP60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XdrF9n3Z; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2dd6c160eaaso14294301fa.1;
-        Mon, 22 Apr 2024 06:52:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713793957; x=1714398757; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uor42cDG2duLAcTKfbf9bXjHsXOuUhmZfr8MyWHfLzM=;
-        b=XdrF9n3ZsdjAH/CuIkrN19YnbyafqQXr3GMNVDXq93AKFUMAmbQWvqujGbCIiDN5iO
-         5cCQV0dR7YZMIlpLFioe4ShevFHgiYxG59wVhPsSO5Fl+LeVNfm2C4JtACjHbXg9PE98
-         NvDNfpn62mASedCI75yxp4wVn5sOMmWfkSw7HuOcmKe8Tj0JfylC/2wGmAo8W2FsYzC7
-         rR1FsaTlrlRn+iMsjobdsbGlXISqNlh9E1ENMd5xN5RbeJMdmRnxwfV9MRF5+DpX1F0P
-         KxUTcWp8tnoP2H2dPZz3UpsaGscaUizzCNZAbs+VafZL1itWQx+jmd09o2mnMnalPg6B
-         mjZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713793957; x=1714398757;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Uor42cDG2duLAcTKfbf9bXjHsXOuUhmZfr8MyWHfLzM=;
-        b=LdEMSQV0tn3DN7OFlMCg4eGyObLol1r3vyPUKBH2RoDBlW0452y9bI+6Rjz6ZR6KlY
-         jiaGa9h0GI9BfP675bk/eTktZk1qNVWgJ4XX6Sja+4ypyjuDuXf/GM7Em5KpZDrhQ9kX
-         MYZh9kXSON4/tK9EAIvNNkcN/Bjx4OI3GKk1JSos4i8z06pgxo47pvwKDDQIRRko0PEZ
-         rIpPN4/Kdr3ZF/C13zC0dCR+n36BLvwEFep56O4Tbjvp8hWHfqvYUOcZrfIwN33nnNvt
-         HIf/GK5AOS0HzxYeOhy9/2NdxhOdfET4kGJv4JjkBebnHszQcQNHAwFSOJ+8r/DzWMTX
-         1+XQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVHvJpYXB+SywJLyI9FOLGef2Ul8OnfQ+zO0zrFSLUMJ9TVx3gBEYPxDpyxCpZrH09gpm0g6dTeQgElkGj0dBglD6jUGn+qGjf8Im/sM9bD6KuZtKSZbzQybc4neSQBAGitekVaGYHN5h3JsDtQ
-X-Gm-Message-State: AOJu0YyOtyHmx0BIqi5KjkNlMrxRDaIZj/6IGbjEUXYouSLMGDYJCBXU
-	q3z3NUNFP47Ur8CemQbF6x6hfeGAunkVzF15kWVjlo5lQhu0UodX7BaL3+qt+4vrNHp9KWL/vEM
-	KReXGL1FpUX9fvTpeEiI6oZNQb1NxTg==
-X-Google-Smtp-Source: AGHT+IH7uPM29sHTywpZ5JvKlAhMuBvVlZHqTFJ8QK0Nvn8oJeo1tb0xJdDt8+slFvuUFNUQnEICi6FTEoudrtk/fgo=
-X-Received: by 2002:a2e:a4b8:0:b0:2d8:6175:b6ae with SMTP id
- g24-20020a2ea4b8000000b002d86175b6aemr6342308ljm.47.1713793956648; Mon, 22
- Apr 2024 06:52:36 -0700 (PDT)
+	s=arc-20240116; t=1713794043; c=relaxed/simple;
+	bh=cWYXxYBzEmLHHrRkhtIBYKdIoZl2GcFMLoWHmoYJrDQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=n1eGAsj62j32z9JT4CUIIZTdMmR2IDKe3/x/4tupMsEXVnPm5SltVOqICwsPkS5PlGEn6VHNoRv6MTMRRnNDWShMjC5pDE3YzOyjOTgtW8xrHiaGsllG0eGEckTdM46WafLmp30SPUM4u9Z7LIGq03rzoW+kdQ1rMwAP2juv+IQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OoSg1g5l; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43M2F9Ov019047;
+	Mon, 22 Apr 2024 13:53:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=1LEM9aTZtzNviWZvRo/wuDRCghamGO9W+vXQRpk+4B4=; b=Oo
+	Sg1g5l19Ds6KKeosZ8d1/f8SMzWciNJ/rm3tXoW2XIgJaGLJx9lQx0Tou2zeV1ua
+	HLmOmwyHozTi5uHnpyuFtYJQAuUwAxMpCe7VHBci+2RQCJzuD0sMUf0fAjKgaf+l
+	vzleFXzgTNjaGCMA5P33tM6G8D8x5Tig8zgqOmwc5LJrGZ2EY4SuMBJ6bSFZQ8FN
+	ySbOMK5896UcLavKa8hkPJ/Wocijlx3fPmq+PzNQV7ivJi8NR9A17mRlrRERQQEN
+	NcSRmVTFomXK0/UFIA2C/+4an22wD10d7v71qOp09wphHfpbcwBLXSSwJmhrfvrn
+	WzUWOrmi7PLgCfBTffKg==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xm5sx4hbv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Apr 2024 13:53:53 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43MDrqC3002907
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 22 Apr 2024 13:53:52 GMT
+Received: from [10.253.37.80] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 22 Apr
+ 2024 06:53:50 -0700
+Message-ID: <3e170e40-c143-4e3b-8696-b661cac56f00@quicinc.com>
+Date: Mon, 22 Apr 2024 21:53:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319154611.2492-1-johan+linaro@kernel.org>
- <ZiZdag8fw8H1haCb@hovoldconsulting.com> <438844e9-47e8-486e-9611-ae524d6974b3@quicinc.com>
- <ZiZkK4BAoqxNg7yG@hovoldconsulting.com> <CABBYNZJ1H7eEi8qsZUAxOa5HoE=xQ0wb2YFx0g7-SxxkNAS3Bg@mail.gmail.com>
- <ZiZrZFNLg8pyoOkB@hovoldconsulting.com>
-In-Reply-To: <ZiZrZFNLg8pyoOkB@hovoldconsulting.com>
-From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date: Mon, 22 Apr 2024 09:52:24 -0400
-Message-ID: <CABBYNZKyvS7DCALTTTq_nDhCKxdre7CQ4BF6j8HFy+5zdSU67w@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 0/2] Bluetooth: qca: fix NULL-deref on non-serdev setup
 To: Johan Hovold <johan@kernel.org>
-Cc: quic_zijuhu <quic_zijuhu@quicinc.com>, Marcel Holtmann <marcel@holtmann.org>, 
-	Zhengping Jiang <jiangzp@google.com>, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+CC: Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marcel Holtmann
+	<marcel@holtmann.org>,
+        Zhengping Jiang <jiangzp@google.com>,
+        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240319154611.2492-1-johan+linaro@kernel.org>
+ <ZiZdag8fw8H1haCb@hovoldconsulting.com>
+ <438844e9-47e8-486e-9611-ae524d6974b3@quicinc.com>
+ <ZiZkK4BAoqxNg7yG@hovoldconsulting.com>
+ <472b9f60-d68e-47ee-9ca9-f71a9ba86a1a@quicinc.com>
+ <ZiZpg4lyp-LcpV8l@hovoldconsulting.com>
+Content-Language: en-US
+From: quic_zijuhu <quic_zijuhu@quicinc.com>
+In-Reply-To: <ZiZpg4lyp-LcpV8l@hovoldconsulting.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: QHD02XCXzSQuJsae-f2kdyE0fgSicZT6
+X-Proofpoint-GUID: QHD02XCXzSQuJsae-f2kdyE0fgSicZT6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-22_09,2024-04-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 phishscore=0 clxscore=1015 suspectscore=0 malwarescore=0
+ spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404220060
 
-Hi Johan,
+On 4/22/2024 9:43 PM, Johan Hovold wrote:
+> On Mon, Apr 22, 2024 at 09:30:28PM +0800, quic_zijuhu wrote:
+>> On 4/22/2024 9:20 PM, Johan Hovold wrote:
+>>> On Mon, Apr 22, 2024 at 09:04:58PM +0800, quic_zijuhu wrote:
+>>>> On 4/22/2024 8:51 PM, Johan Hovold wrote:
+>>>>> On Tue, Mar 19, 2024 at 04:46:09PM +0100, Johan Hovold wrote:
+>>>
+>>>>>> Johan Hovold (2):
+>>>>>>   Bluetooth: qca: fix NULL-deref on non-serdev suspend
+>>>>>>   Bluetooth: qca: fix NULL-deref on non-serdev setup
+>>>>>
+>>>>> Could you pick these up for 6.9 or 6.10?
+>>>>>
+>>>>> The patches are marked for stable backport and only privileged users can
+>>>>> set the N_HCI line discipline these days (even if I'm not sure about
+>>>>> pre-5.14 kernels...) so it may be fine to wait for 6.10 if you prefer.
+>>>
+>>>> could you share the patch links for me to review. i can
+>>>> 't find them now
+>>>
+>>> Sure, but you should bookmark lore.kernel.org in your browser as you can
+>>> search the archives there yourself:
+>>>
+>>> 	https://lore.kernel.org/lkml/20240319154611.2492-1-johan+linaro@kernel.org/
+> 
+>> NAK for your [PATCH 1/2] since the null checking is redundant with your
+>> [PATCH 2/2].
+> 
+> I explained in the cover letter why it is split up like this. If you
+> don't bother reading, then we will not bother listening to you.
+> 
+>> NAK for your [PATCH 2/2], since it is same with my earlier fix
+>> https://lore.kernel.org/all/1704960978-5437-1-git-send-email-quic_zijuhu@quicinc.com/
+>> my new patchset for btattach tool still has this change.
+> 
+> The fix does not depend on your btattach series, which has also been
+> rejected.
+> 
+these my v1 and v2 for this issue which are earlier then yours.
+they are not rejected but not responded.
 
-On Mon, Apr 22, 2024 at 9:51=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
-te:
->
-> On Mon, Apr 22, 2024 at 09:44:59AM -0400, Luiz Augusto von Dentz wrote:
-> > On Mon, Apr 22, 2024 at 9:20=E2=80=AFAM Johan Hovold <johan@kernel.org>=
- wrote:
->
-> > >         https://lore.kernel.org/lkml/20240319154611.2492-1-johan+lina=
-ro@kernel.org/
-> >
-> > Did you send these to linux-bluetooth? I don't see them in:
-> >
-> > https://patchwork.kernel.org/project/bluetooth/list/
->
-> Yes, I did and they are in the linux-bluetooth archives on lore. Not
-> sure why they don't show up in the tracker.
->
-> Do you want me to resend?
->
+https://lore.kernel.org/all/bf74d533-c0ff-42c6-966f-b4b28c5e0f60@molgen.mpg.de/
+https://lore.kernel.org/all/1704970181-30092-1-git-send-email-quic_zijuhu@quicinc.com/
+
+> You clearly have some learning to do on how to interact with the kernel
+> community and to write proper commit messages and patches. If you start
+> listening to feedback and try not to piss everyone off perhaps you can
+> even get your patches merged one day. [1][2]
+> 
 > Johan
+> 
+> [1] https://lore.kernel.org/linux-bluetooth/fbe5722b-1e45-4ccb-a050-20a473a823c8@quicinc.com/T/#m8e495666a71eb0e7ae54c82554dfff1fc96983e7
+> [2] https://lore.kernel.org/linux-bluetooth/1713563327-19694-1-git-send-email-quic_zijuhu@quicinc.com/T/#med0610646a8fd8b3c8586abca9895b124b2d2534
 
-Yes, please resend them.
-
-
---=20
-Luiz Augusto von Dentz
 
