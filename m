@@ -1,256 +1,156 @@
-Return-Path: <linux-kernel+bounces-153284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1783C8ACBF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:23:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC3308ACBF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:23:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D9B3B2149E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:23:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91EC91F233C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA52D146A9A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6540C146A7B;
 	Mon, 22 Apr 2024 11:23:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SMriD5vl"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tz2z7cpR"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A06F145FE9
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B50146595;
+	Mon, 22 Apr 2024 11:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713784984; cv=none; b=uKKH8arGBC6cqdaS7dkaU+F3hMX0+dh0cBSZ4QJNrFBieqcS0G/4vz2SN+kjkb6eI0y5WZZFBZg1bTMVcRaanexKL8zvk7jtLAiSgaahSDFBqN/71vysuUZmvu6G+aMfgdaeYU6WA6JRyR/tAkjdR0gNYiolNTbihkj421C09MI=
+	t=1713784984; cv=none; b=c2O11r2B2xeNqPP52szC7YOERfPFFAiyKiVvDM6tAajlmAZVl2PN0Vc79ujkoJ7hLsx+YszKZPhlH4zY1lKnVdDy4Nkf6lC+JRyjO0A35qOJU9u3U56P4uA7ORVDEu2+NjikpB+jOgbdHf0/3kAwcPiYLb2ZZMYMnyEziOG575k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713784984; c=relaxed/simple;
-	bh=XGoajSu+/Do3RKNMn4jsKUYia62CDpDURgb1HAcIDEs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IX27tUhKJ9viRVfChd+0Y25glyKTiXZZgGy0Hu1UKTj17QysCZqEE0gpT32CGvRlpzJevfXoPjTQKhJhYAMg4dRlmrbOzxM8Hbi6GZP1u1yH3kAPEwW5YBgwLHGg5RTS3qfBOqg3Qfhj47QlpIpo5MN6zRXpkMJudnG3EYgYfUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SMriD5vl; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a5200afe39eso467126366b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 04:23:02 -0700 (PDT)
+	bh=bUOAlueYM4Ulknow7uj7NRdEYIRwMnhpc5nRHzH4AUQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IYyUfV5RysdK9WHlAZgVn17cgD863MRPjXdygT7jAILSVP4HOKYEszzT2271j7vk6nCq/1WaAYvEoj9uOWsr8ZU0F+hSqCTYDbewIJi9WxNlUe8Dvgte281CB4UtO0M9KX1oLIcgGEx0Y3fHnOeOk8KLxEXp3vENLRlQH+tPYic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tz2z7cpR; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-34a00533d08so2612129f8f.3;
+        Mon, 22 Apr 2024 04:23:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713784980; x=1714389780; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7KxlxiaM2PGBV+BkGeXxmbLGJIAVZ06jcBBCJ5bRZFs=;
-        b=SMriD5vlF+cYA17dkvNDqI3W4G1MSfctL9IlmKqsMIHxgUNoIlhZfKKxrDuayWZzPK
-         8qUjN0Ru9DUySUXWCv8nCdQQJInpErUOUnF5piRGaACMfMfBwNFbzFu3l31Gli2Ucjvd
-         lJ1sknoHDAEoPscFnxgP3FedYMlUy1EV4e2jBes9PhHkwpc8a1vaUS93fx28okXTZCXR
-         6/B1WVG85GhMIz4MJrX2phumvDFv1Eva20q3flhNwSJySakQkVfb4RVrvqLN9Fr3Y94x
-         ZNDKRT7+FI+lsGaZ1vzSGhCktGxhof6LqXhNvRCW6w+vH1teuRWrMy6YFjo6ubS7/qhX
-         pryg==
+        d=gmail.com; s=20230601; t=1713784981; x=1714389781; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=5OZDatUfQDDM+oVBX1r0/EJ9l0dP7tgNSOOzYFy/HEQ=;
+        b=Tz2z7cpR92TPc9dlYhvsYHirXXM6DbUc5libNnnf3e+JyRqpGP5q57EYx6SBOpd1WW
+         KAk1u1LwlX9c9bAMdBGPovH2b2xX7n79QHG42fMkfL66bbfN5d8NSrGneKr3w3/YZyNf
+         lXJeqC92rfB5ZxiSTB59zKBJq6MVbx15Idb/8joRmYp5VVhoh9g4RKf4f6wil3C9H2O4
+         KxAa7cF/6gGvDyPVlJcYjaYOViSjA2PUGGas8ryc+ldNoIKPD4UV+8SfeM9T9cMc+Xn0
+         m/O/ZJ5Joxta1yldOyWrJchTAxKjihJUHunwh2csYZsAHjqrJhej97fh/RM1BVHQW2Df
+         BNyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713784980; x=1714389780;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1713784981; x=1714389781;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7KxlxiaM2PGBV+BkGeXxmbLGJIAVZ06jcBBCJ5bRZFs=;
-        b=ftGXe1NiistbiP4uVXL/6pyOfQOYUJptDtr3ST92+GOcVthRJnbfdzrNQ7ci1tOG0z
-         qV8cVWZDu1vlqDQkNw0i8AYFJtFNpoo4ZomsGVqql6Yh8ZaPW37oP5lr6+0VK7Ur75PL
-         MmgvrXK/B5cMsVtJUiF9ouvHbiJKnOJpFf90cS4UrNLwTmEvRchloEz4iHubjHGr7RlP
-         i7fPL93Gknf3RxkVHCAW2wMgcTPuL+xUTP/dSbMm/qyy5XsP4b43Xcj8qy0pjLxTkS2D
-         m0fCGjrBBklBH0LWs5wsOcxPevYoZ5rxizpJGo0OHY28ejtTjfPeq8hB6rJajWRPikYI
-         kfjA==
-X-Forwarded-Encrypted: i=1; AJvYcCXig10tx9bc5tKcKxl0d22z87xozyxVjS92VZx6lj8cXVCYk6JaThMvw/vpE7HvroDCEvAdKpMEcsUvCU5JMj5MpMbCm2//7FZrPEiy
-X-Gm-Message-State: AOJu0YwqBCF/GuJvi3t6Tp6oQSwg2AIm1RD0Whk8s5nQd/INaCC2bKrG
-	RqEekhxOLZr+o2WWNuVejOzsGXminRtp0gg0EJFdcVgXxYKAuOqXjw/oI16Bb48=
-X-Google-Smtp-Source: AGHT+IF0sIK+G+eqh6ZNY5C0/zr8EDIQ7ynWfEBKk80BR2SveU6nr66XABxJ/pSEjMBgs40I7BL8qg==
-X-Received: by 2002:a17:906:c1cf:b0:a52:3316:bc29 with SMTP id bw15-20020a170906c1cf00b00a523316bc29mr8835339ejb.3.1713784980311;
+        bh=5OZDatUfQDDM+oVBX1r0/EJ9l0dP7tgNSOOzYFy/HEQ=;
+        b=cVHW2BcBgNuh79lh0FQARbObnX6WqghwwthShKAQ8g7as6ENuOdVLu7BrTF66izFyD
+         /sJmQbvqTdThqppHOzi7uuzib6siu9I8bYrG1iS0M0oA0cntDzWEl+lRHpk8M8rHPeIU
+         kTNVgnv4WaPDqauDx7EnPztwGzvMY3OTRi2nc5a5F4lg+HJnRv3MiiuKlVfKFJM2gRAB
+         altCOJfTlXBO1zpOZA6hST/o7Y2dzkWXp+FkTqf7krVjglX00wBnH+gDFG3jRZ7aVr1Y
+         t1+1VbG7tsPMDpyrsyJUcCViBEtiI9uommS+ewXO+aH468fGpIBiPQMGxmvDklpR1E91
+         pd7A==
+X-Forwarded-Encrypted: i=1; AJvYcCUlDD+O94xmJpUXcItfiC0SgSnLyQyFT7S+fNoQ0ttMxJ+JBqBqap8PBZ1nx2Ab1kpZuW04SNI1YMVVKkjggarYE+v1bzPHMLEvbauoLEijBtJcU8if7fdCMOGOC8GRYe6XzrznW9Q/CA==
+X-Gm-Message-State: AOJu0Yz+ObAaJRXJ5ryNiUqbhaWIbn1JpamaCfnRbo/p24thlW6jnKGI
+	ao8lzV4N62h5gcKkjTRlaNK8kwHp7qmL+7gdQGK0iB+Bg88rha6W
+X-Google-Smtp-Source: AGHT+IFKevGfAeTp52lfFVp0nsv2RutGj2Qoptf2HvoOGqoY+lTav16WswsSrVXUqukSPea2elZc+w==
+X-Received: by 2002:a05:6000:905:b0:34a:77c:e061 with SMTP id cw5-20020a056000090500b0034a077ce061mr7988259wrb.48.1713784981129;
+        Mon, 22 Apr 2024 04:23:01 -0700 (PDT)
+Received: from ?IPV6:2a02:168:575a:b00b:5299:bf9:946a:f51b? ([2a02:168:575a:b00b:5299:bf9:946a:f51b])
+        by smtp.googlemail.com with ESMTPSA id s15-20020adfe00f000000b0034b03d0b94csm3110091wrh.74.2024.04.22.04.22.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Mon, 22 Apr 2024 04:23:00 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id k15-20020a170906128f00b00a473a1fe089sm5640374ejb.1.2024.04.22.04.22.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 04:22:59 -0700 (PDT)
-Date: Mon, 22 Apr 2024 14:22:54 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Ezequiel =?iso-8859-1?Q?Garc=EDa?= <elezegarcia@gmail.com>,
-	Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] media: stk1160: fix bounds checking in
- stk1160_copy_video()
-Message-ID: <f2e9cdcd-46e7-41ab-9d5f-c1237a0a6222@moroto.mountain>
-References: <e43980df-1ca5-459d-b037-788dd7d9085d@moroto.mountain>
- <CANiDSCtjEPqEstuo92QeVK_rWkW9icsjKWakPyN19ETM+MJuuQ@mail.gmail.com>
+Message-ID: <9d898a98-cb7d-45d8-80c2-2ef428288e6b@gmail.com>
+Date: Mon, 22 Apr 2024 13:22:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiDSCtjEPqEstuo92QeVK_rWkW9icsjKWakPyN19ETM+MJuuQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 0/4] Input: support overlay objects on touchscreens
+To: Javier Carrasco <javier.carrasco@wolfvision.net>,
+ Hans de Goede <hdegoede@redhat.com>
+Cc: linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jeff LaBundy
+ <jeff@labundy.com>, Conor Dooley <conor+dt@kernel.org>,
+ Bastian Hecht <hechtb@gmail.com>,
+ Michael Riesch <michael.riesch@wolfvision.net>
+References: <20240422-feature-ts_virtobj_patch-v9-0-acf118d12a8a@wolfvision.net>
+Content-Language: en-US, de-CH, fr-CH
+From: Gregor Riepl <onitake@gmail.com>
+Autocrypt: addr=onitake@gmail.com; keydata=
+ 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
+ DMcsQA==
+In-Reply-To: <20240422-feature-ts_virtobj_patch-v9-0-acf118d12a8a@wolfvision.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 22, 2024 at 05:52:36PM +0800, Ricardo Ribalda wrote:
-> Hi Dan
-> 
-> On Mon, 22 Apr 2024 at 17:32, Dan Carpenter <dan.carpenter@linaro.org> wrote:
-> >
-> > The subtract in this condition is reversed.  The ->length is the length
-> > of the buffer.  The ->bytesused is how many bytes we have copied thus
-> > far.  When the condition is reversed that means the result of the
-> > subtraction is always negative but since it's unsigned then the result
-> > is a very high positive value.  That means the overflow check is never
-> > true.
-> >
-> > Additionally, the ->bytesused doesn't actually work for this purpose
-> > because we're not writing to "buf->mem + buf->bytesused".  Instead, the
-> > math to calculate the destination where we are writing is a bit
-> > involved.  You calculate the number of full lines already written,
-> > multiply by two, skip a line if necessary so that we start on an odd
-> > numbered line, and add the offset into the line.
-> >
-> > To fix this buffer overflow, just take the actual destination where we
-> > are writing, if the offset is already out of bounds print an error and
-> > return.  Otherwise, write up to buf->length bytes.
-> >
-> > Fixes: 9cb2173e6ea8 ("[media] media: Add stk1160 new driver (easycap replacement)")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > ---
-> > v2: My first patch just reversed the if statement but that wasn't the
-> > correct fix.
-> >
-> > Ghanshyam Agrawal sent a patch last year to ratelimit the output from
-> > this function because it was spamming dmesg.  This patch should
-> > hopefully fix the issue.  Let me know if there are still problems.
-> >
-> >  drivers/media/usb/stk1160/stk1160-video.c | 20 +++++++++++++++-----
-> >  1 file changed, 15 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
-> > index 366f0e4a5dc0..e79c45db60ab 100644
-> > --- a/drivers/media/usb/stk1160/stk1160-video.c
-> > +++ b/drivers/media/usb/stk1160/stk1160-video.c
-> > @@ -99,7 +99,7 @@ void stk1160_buffer_done(struct stk1160 *dev)
-> >  static inline
-> >  void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
-> >  {
-> > -       int linesdone, lineoff, lencopy;
-> > +       int linesdone, lineoff, lencopy, offset;
-> >         int bytesperline = dev->width * 2;
-> >         struct stk1160_buffer *buf = dev->isoc_ctl.buf;
-> >         u8 *dst = buf->mem;
-> > @@ -139,8 +139,13 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
-> >          * Check if we have enough space left in the buffer.
-> >          * In that case, we force loop exit after copy.
-> >          */
-> > -       if (lencopy > buf->bytesused - buf->length) {
-> > -               lencopy = buf->bytesused - buf->length;
-> > +       offset = dst - (u8 *)buf->mem;
-> > +       if (offset > buf->length) {
-> Maybe you want offset >= buf->length.
-> 
+> In order to generate proper key events by overlay buttons and adjust the
+> touch events to a clipped surface, this series offers a documented,
+> device-tree-based solution by means of helper functions.
+> An implementation for a specific touchscreen driver is also included.
 
-The difference between > and >= is whether or not we print an error
-message.  In the original code, we didn't print an error message for
-this and I feel like that's the correct behavior.
+I believe there's at least some x86 tablets that have such a layout, so 
+maybe ACPI bindings would also make sense? Or can this be supported by 
+your DT-based solution?
 
-> And remember to add at the beginning of the function
-> 
-> if (!len)
->  return 0;
-> 
+I'm not sure if it would really be needed for existing devices, though. 
+It's possible they were all handled by touchscreen controller firmware 
+so far.
 
-That's checked in the caller so it's fine.
+Hans, do you remember if we've encountered any Silead or Goodix devices 
+where the soft button overlay didn't work due to missing firmware support?
 
-   260                  /* Empty packet */
-   261                  if (len <= 4)
-   262                          continue;
-
-Generally we don't add duplicate checks.
-
-> And I would have done:
-> len -= 4;
-> src += 4;
-> 
-> In the caller function
-> 
-
-I don't really think it makes sense to move that into the caller and
-anyway, doing cleanups like this is outside the scope of this patch.
-Really, there is a lot that could be cleaned up here.  People knew there
-was a bug here but they didn't figure out what was causing it.  We could
-delete that code.  Looking at it now, I think that code would actually
-be enough to prevent a buffer overflow, although the correct behavior is
-to write up to the end of the buffer instead of returning early.
-Probably?
-
-To be honest, I'm still concerned there is a read overflow in
-stk1160_buffer_done().  I'd prefer to do:
-
-	len = buf->bytesused;
-	if (len > buf->length) {
-		dev_warn_ratelimited(dev->dev, "buf->bytesused invalid %u\n", len);
-		len = buf->length;
-	}
-	vb2_set_plane_payload(&buf->vb.vb2_buf, 0, len);
-
-regards,
-dan carpenter
-
-diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
-index ed261f0241da..f7977b07c066 100644
---- a/drivers/media/usb/stk1160/stk1160-video.c
-+++ b/drivers/media/usb/stk1160/stk1160-video.c
-@@ -112,16 +112,6 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 	u8 *dst = buf->mem;
- 	int remain;
- 
--	/*
--	 * TODO: These stk1160_dbg are very spammy!
--	 * We should check why we are getting them.
--	 *
--	 * UPDATE: One of the reasons (the only one?) for getting these
--	 * is incorrect standard (mismatch between expected and configured).
--	 * So perhaps, we could add a counter for errors. When the counter
--	 * reaches some value, we simply stop streaming.
--	 */
--
- 	len -= 4;
- 	src += 4;
- 
-@@ -160,18 +150,6 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 	if (lencopy == 0 || remain == 0)
- 		return;
- 
--	/* Let the bug hunt begin! sanity checks! */
--	if (lencopy < 0) {
--		printk_ratelimited(KERN_DEBUG "copy skipped: negative lencopy\n");
--		return;
--	}
--
--	if ((unsigned long)dst + lencopy >
--		(unsigned long)buf->mem + buf->length) {
--		printk_ratelimited(KERN_WARNING "stk1160: buffer overflow detected\n");
--		return;
--	}
--
- 	memcpy(dst, src, lencopy);
- 
- 	buf->bytesused += lencopy;
-@@ -208,17 +186,6 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
- 		if (lencopy == 0 || remain == 0)
- 			return;
- 
--		if (lencopy < 0) {
--			printk_ratelimited(KERN_WARNING "stk1160: negative lencopy detected\n");
--			return;
--		}
--
--		if ((unsigned long)dst + lencopy >
--			(unsigned long)buf->mem + buf->length) {
--			printk_ratelimited(KERN_WARNING "stk1160: buffer overflow detected\n");
--			return;
--		}
--
- 		memcpy(dst, src, lencopy);
- 		remain -= lencopy;
- 
 
