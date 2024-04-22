@@ -1,95 +1,98 @@
-Return-Path: <linux-kernel+bounces-153160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F0C28ACA71
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E29308ACA76
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:20:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2317B211C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:20:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7359DB212DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0DD13E8BE;
-	Mon, 22 Apr 2024 10:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0C213E3ED;
+	Mon, 22 Apr 2024 10:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="l080TWho"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VJpsG7u+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEFED13D50F;
-	Mon, 22 Apr 2024 10:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F95913E400;
+	Mon, 22 Apr 2024 10:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713781191; cv=none; b=PaRlDYZTWJJBi3PZZku6EiStuAa3K/brAmAjkkT7LlL1awRJrEnKWotpmqpq4oRdUXRfkqHfHGmEGf/2SYIXrmqAU5HcuQAsEmZJzKZ42FYYhkSWlBc2L1MzTRJoxH1/8FCutnwtksJWbrt1bbb2yddZeqUVK3gl/L5mXZPPuTw=
+	t=1713781226; cv=none; b=Z2pNK4MayppOdaIVO1wrjMMdGvmhyovGpu6t4RA8p9zd1w5iQQ5SpuGT0dJYQr5Tdibv07jBXhfk1IXwBhmI7CyMtXrKc4n3fjBshskjHDAKSKxlYaAADDwLjEN/AV8EQGJOTfVS/WFEjRyQm/qCim0DjwniJ1n0Gm7HEL3d4bY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713781191; c=relaxed/simple;
-	bh=2be7ddOYKWR8xs1YeIaNBfdWx9fkiLTHGB9jAzYsguI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TAsgL1vfZHW/9kldZTTCLmUqmaauLZ1ErOXkpS4mETNi5H/wwXKLYkHhPzrinQiiVVwOWakb280tLm/c5QF7dC/klMEoqg4sW2bez0O45ug4O6WdFPGcsCUshVRc4oQEJIF2jdHKY7gY45uQ2RLNe8dLUpu2WB3JTHNKIiyyT4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=l080TWho; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713781188;
-	bh=2be7ddOYKWR8xs1YeIaNBfdWx9fkiLTHGB9jAzYsguI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=l080TWholm7yTskdm3VWkAyGpbCvf7YGE7bGhaBp67wb/pbbscfjI5rh4Gb2AQRUC
-	 8w+NZw2z0tYaqcVQR9lagyKs5NBvPcuclB8BNnOQLg6oqC1xfLbyUaRM+k2aiZ55YU
-	 lyX+OKww2htQc+R7n8uJUBELtKO6/KnOnpx4Jad0Or3HJ9fGXSuVv7skeg+p+Xu+gf
-	 l3EJ3x6S6AImrIqviDN2fGAC3BbfAgVvqfYBgmZy5cFZ0DSZlkfz6yi8V9ApCNlKIK
-	 IucEK5Xi5g5Y1M6ieVfTGrnYLjvdDL2pnp2uLwHl5aZhPeln8gu3qjLYyVMgEDE7qL
-	 5tNETJd6PGWIQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 27EA63780C22;
-	Mon, 22 Apr 2024 10:19:47 +0000 (UTC)
-Message-ID: <8de67c04-6f5c-4c0c-9162-e5c4dfdc7374@collabora.com>
-Date: Mon, 22 Apr 2024 12:19:38 +0200
+	s=arc-20240116; t=1713781226; c=relaxed/simple;
+	bh=KWnDJr/vke6VyUyWZSFuKxAuSKm3NU6ZKvea+XUVAG0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=J5uUvmh8bwxgKRIn6avgryCVS4EKF1Zh8c2xoiYnYDC3EluqUYhh7C/kYIzdwmwl797NeU3fchwTHAB4ieeUqTz2MwUGXuMsX52y66zgsgH1a4jnfiCqLKe09n6844V/wKvtHp3GIV7uXcErjjCXBIH3y/u1HNywxq4/6AQ1J7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VJpsG7u+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F06AFC3277B;
+	Mon, 22 Apr 2024 10:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713781226;
+	bh=KWnDJr/vke6VyUyWZSFuKxAuSKm3NU6ZKvea+XUVAG0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=VJpsG7u+Vu/rK06JTFF83QpByhgS9QJxiuUT719r6Fj0e2EXuwO+HcZbNcK1OQUYf
+	 Er95kSJ6/RqEMvBcwYyNyiZzg3jeFkmw4t8hhc0kW2UzEDBhV/lwmIVQ/ZrA+mN0Jk
+	 r/jjP96xeN1WpiCfH1QFcF8mRbtypsba6W7RKe8nbTTtMp8+uGQ1GLtiHNJrpNJxjv
+	 cFuoOxYktc6evPkLOPiKIDpq5cmy5R4HQGyMaB5WnxHe/cIPAC4F67ZmUtYcXDR7jb
+	 f+cCBfOBpThSn1ypeRFP+nAkUuD+Q452h1Hegj/cSHT48Sb49Ce3EYjDxSFvZC+qOz
+	 YNJJHmUF51uRw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DE602C4339F;
+	Mon, 22 Apr 2024 10:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: mediatek: Support MT8188
- dual-core SCP
-To: Olivia Wen <olivia.wen@mediatek.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Tinghan Shen <tinghan.shen@mediatek.com>,
- linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- jason-ch.chen@mediatek.com, yaya.chang@mediatek.com, teddy.chen@mediatek.com
-References: <20240419084211.31901-1-olivia.wen@mediatek.com>
- <20240419084211.31901-2-olivia.wen@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-X-Mozilla-Draft-Info: internal/draft; vcard=0; receipt=0; DSN=0; uuencode=0;
- attachmentreminder=0; deliveryformat=0
-X-Identity-Key: id4
-Fcc: imap://kholk11@mail.collabora.com/Sent
-In-Reply-To: <20240419084211.31901-2-olivia.wen@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] mailmap: add entries for Alex Elder
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171378122590.13831.3067166469576978992.git-patchwork-notify@kernel.org>
+Date: Mon, 22 Apr 2024 10:20:25 +0000
+References: <20240421194458.2205779-1-elder@linaro.org>
+In-Reply-To: <20240421194458.2205779-1-elder@linaro.org>
+To: Alex Elder <elder@linaro.org>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, akpm@linux-foundation.org, andersson@kernel.org,
+ cdleonard@gmail.com, elder@kernel.org, geliang@kernel.org, heiko@sntech.de,
+ matt@ranostay.sg, matttbe@kernel.org, mka@chromium.org,
+ o.rempel@pengutronix.de, quic_avuyyuru@quicinc.com,
+ quic_bjorande@quicinc.com, quic_cpratapa@quicinc.com,
+ quic_jponduru@quicinc.com, quic_subashab@quicinc.com, netdev@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Il 19/04/24 10:42, Olivia Wen ha scritto:
-> From: "olivia.wen" <olivia.wen@mediatek.com>
-> 
-> Under different applications, the MT8188 SCP can be used as single-core
-> or dual-core.
-> 
-> Signed-off-by: olivia.wen <olivia.wen@mediatek.com>
+Hello:
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Sun, 21 Apr 2024 14:44:58 -0500 you wrote:
+> Define my kernel.org address to be the canonical one, and add mailmap
+> entries for the various addresses (including typos) that have been
+> used over the years.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+> v2: Deleted two unnecessary lines, after prompting by Bjorn.
+>     Also copied those suggested by get_maintainer.pl.
+> 
+> [...]
+
+Here is the summary with links:
+  - mailmap: add entries for Alex Elder
+    https://git.kernel.org/netdev/net/c/70dcdf5f8c41
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
