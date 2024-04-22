@@ -1,101 +1,285 @@
-Return-Path: <linux-kernel+bounces-153741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50C248AD293
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:45:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2758C8AD296
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:46:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 821CA1C20A38
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:45:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8DDF1F21D4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37BEF156960;
-	Mon, 22 Apr 2024 16:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4Q6llUcb"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56526153BDC;
+	Mon, 22 Apr 2024 16:43:33 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56608153833
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 16:43:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD94515381C;
+	Mon, 22 Apr 2024 16:43:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713804186; cv=none; b=Cc+eBn1WEE5P6v5xZfBY63sYYhiTkIIlp2qMj96SScu6GGpwmcskYf6LG4+OvyMqbQ6SLGAyI9aECtrltviM4IvoZoA5S0zUO8cZJx4ui3mlM5J0ntRKt3/XUOxqsjZJFf4bUkJOF3XVgLkMACV++i3GGlcmHDvxhsk3zOkTk9w=
+	t=1713804212; cv=none; b=UzQvNZ4tKbOBUfOvT+51QDZXpVueDYaKVjAkk0/Y3ppZbFiNLRuVDJpVHNE3CQavc/WqRK6uUiby2BrMdqhcK9Dy7xxZPh8mKkMinbL4TPsuYAKhFIKEHR4aH3UJ0IBEHfSnI64IZa9dv9dznP+FP6RCiZpNq2lMqaziAOR1u4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713804186; c=relaxed/simple;
-	bh=W0yzfhfuOWRG48vfO2uc2QhFbbA7xV4C71B5Bgu9HaM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=b5X8KT//cuEiXhig0/fttwOSsWN3Fz8ycb4amRODYK8Tw1/psPGdHfiPSXeQg4HKjS3NgbR9657Xp5MreR6Nz+oid9r+YOjtDde4wrn0ou2Qyc9vo5EQ72g2HJe1ODeLLHXFBOAI521Lf9I4h9c6tzXn4oyG6UJagoJ85DcawQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4Q6llUcb; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5f80a9e67easo2523942a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713804184; x=1714408984; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W0yzfhfuOWRG48vfO2uc2QhFbbA7xV4C71B5Bgu9HaM=;
-        b=4Q6llUcb8/uOzEzXKUtQlobRkCcCvsk6ayNmr2zbVDc2KPRua6+L2tfA8vHLN76GF/
-         +WjQnYp1pQeAhfEbERWrFqQjXXltgcxw79t/H849brVSmdhFfBc/7oUpMd7mVmS4giT7
-         61ujjKKbrB5lYI7wsdU4A1WOQvbFVPN+khGoPFYH288yOnGOIoFIEiJFQkn0xIm+pl0W
-         xN4Dxo2ehUt618UMnA6wQuuoKYfqi5wD8Iah9Fo0xk/3JXUyNmiG/ElN7Scbp9gi7A2a
-         WfoFGvDuI+UYOq7XW0ygKOeLldFehRitoidjfKG2eYLpW49eL81Z/Lw9R91uAAHSt8Lb
-         AmYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713804184; x=1714408984;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=W0yzfhfuOWRG48vfO2uc2QhFbbA7xV4C71B5Bgu9HaM=;
-        b=K0irCx2QW1/0EazoG4vUns/PiidrKFdbUWDoyrdbr/zZFDtocHwg5Zglh1+INLBts+
-         mod9B6pVGg+F9js8zldLr81TtZ1rf41fg/qviu8l2mFO7U5mjxObW9C3lMP3C5mBNzql
-         jJJyOQSq86ONv6E5NeWsNynhocAo1KvrsLOihwQD4j82M1h0oN2MgvBc1wnp+WrTuquZ
-         hLN3ZxR76poFikfs/5uLUfSg1AlnxbReuUvTuqjdj1RFJVqTVCsc9eWlk1n/aIeWeUHW
-         9AHQDTj0IX12khCVAQiRC0nEtzr4LjjfwVY/IRMPdqPUjLrRoWXl/vZQ+NDcyNXmg98D
-         CzfA==
-X-Forwarded-Encrypted: i=1; AJvYcCWTJ3EpseWu6oWODZXAGlY57zDXh7iTJlI45tbMvg+0czmqSWrtoUy8VigN2yPRs36VXnzb3//4KjwOBrgMqfABAOh2ouO1bHbeECGw
-X-Gm-Message-State: AOJu0Yw6zpVqbFtiwX6lzxpqt5PejJyhh5sNCQn3YQJz04Vg/TRYde5S
-	ZsIwVBt+LkcdhgzrOnqCzx6Koz2Mxu3B9HBHpTMcCgwkBHxtV0AobjMPu6H4EESXuF4/l49mfEb
-	CPQ==
-X-Google-Smtp-Source: AGHT+IEFcksLzHH5JKr/NUVsr1fzHoMgdfGGB/GsRlHPV2YtBF1HsGG88PhYVKBgJemUvdMBqI+HBqcpDqY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:7018:0:b0:5f8:610:84f with SMTP id
- l24-20020a637018000000b005f80610084fmr24359pgc.6.1713804184480; Mon, 22 Apr
- 2024 09:43:04 -0700 (PDT)
-Date: Mon, 22 Apr 2024 09:43:02 -0700
-In-Reply-To: <CABgObfaaec5JmLtZ+OJ7NuX1zGh6_dSQ_n7-8K=LtEY-ON-dJQ@mail.gmail.com>
+	s=arc-20240116; t=1713804212; c=relaxed/simple;
+	bh=ApwW11imVDo3/pCqZSgrElUYpztN4ObYHpPgr4iAaXA=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Z2ycDG4OFilPrY+RRbSsyu+UEKygisoP0O+6JvLMAnb1Cj4MWvS4SkZXs3nXcZhwdbirO2bUd7oKpNkcgw0BjMbVfboQKlsyjVcVNTcXSbH/ctjYLXkE0FafvWXQAvLo22MC0UkrwFehFpCpd83NxsPMPplvAKwUeqSCLhkJjH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VNWGc2BLXz6JBRf;
+	Tue, 23 Apr 2024 00:41:12 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8E415140AB8;
+	Tue, 23 Apr 2024 00:43:26 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 22 Apr
+ 2024 17:43:26 +0100
+Date: Mon, 22 Apr 2024 17:43:25 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Robert Richter <rrichter@amd.com>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, Dave Hansen
+	<dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>, <linux-acpi@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>, Len Brown
+	<lenb@kernel.org>
+Subject: Re: [PATCH v3 2/5] ACPI/NUMA: Print CXL Early Discovery Table
+ (CEDT)
+Message-ID: <20240422174325.000058ba@Huawei.com>
+In-Reply-To: <20240419140203.1996635-3-rrichter@amd.com>
+References: <20240419140203.1996635-1-rrichter@amd.com>
+	<20240419140203.1996635-3-rrichter@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240419112952.15598-1-wei.w.wang@intel.com> <20240419112952.15598-3-wei.w.wang@intel.com>
- <CABgObfaaec5JmLtZ+OJ7NuX1zGh6_dSQ_n7-8K=LtEY-ON-dJQ@mail.gmail.com>
-Message-ID: <ZiaTloh1_a2LtUEg@google.com>
-Subject: Re: [PATCH v2 2/5] KVM: x86: Introduce KVM_X86_CALL() to simplify
- static calls of kvm_x86_ops
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Wei Wang <wei.w.wang@intel.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, Apr 22, 2024, Paolo Bonzini wrote:
-> On Fri, Apr 19, 2024 at 1:30=E2=80=AFPM Wei Wang <wei.w.wang@intel.com> w=
-rote:
-> > +#define KVM_X86_CALL(func, ...) static_call(kvm_x86_##func)(__VA_ARGS_=
-_)
->=20
-> Just
->=20
-> #define KVM_X86_CALL(func) static_call(kvm_x86_##func)
->=20
-> please, because having the parentheses around the arguments is a lot
-> more readable
+On Fri, 19 Apr 2024 16:02:00 +0200
+Robert Richter <rrichter@amd.com> wrote:
 
-+1, the more these look like function calls, the better.
+> The CEDT contains similar entries as the SRAT. For diagnostic reasons
+> print the CEDT same style as the SRAT.
+> 
+> Adding also a pr_info() when successfully adding a CFMWS memory range.
+> 
+> Suggested-by: Alison Schofield <alison.schofield@intel.com> # CEDT node info
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+Hi Robert,
+
+Comments inline,
+
+Jonathan
+
+
+> ---
+>  drivers/acpi/numa/srat.c | 122 ++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 121 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> index e45e64993c50..43417b4920da 100644
+> --- a/drivers/acpi/numa/srat.c
+> +++ b/drivers/acpi/numa/srat.c
+> @@ -300,6 +300,114 @@ acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
+>  	return -EINVAL;
+>  }
+>  
+> +static int __init
+> +__acpi_table_print_cedt_entry(union acpi_subtable_headers *__header,
+> +			      void *arg, const unsigned long table_end)
+> +{
+> +	struct acpi_cedt_header *header = (struct acpi_cedt_header *)__header;
+
+As below. There is very little shred by the different types in here, so
+I'd break it up into separate functions and just call the relevant
+one.
+
+> +
+> +	switch (header->type) {
+> +	case ACPI_CEDT_TYPE_CHBS:
+> +		{
+> +			struct acpi_cedt_chbs *p =
+> +				(struct acpi_cedt_chbs *)header;
+> +
+> +			if (header->length < sizeof(struct acpi_cedt_chbs)) {
+sizeof(*p) perhaps?
+> +				pr_warn("CEDT: unsupported CHBS entry: size %d\n",
+> +					 header->length);
+> +				break;
+> +			}
+> +
+> +			pr_debug("CEDT: CHBS (0x%llx length 0x%llx uid %lu) %s (%d)\n",
+> +				(unsigned long long)p->base,
+> +				(unsigned long long)p->length,
+> +				(unsigned long)p->uid,
+> +				(p->cxl_version == ACPI_CEDT_CHBS_VERSION_CXL11) ?
+> +				"cxl11" :
+> +				(p->cxl_version == ACPI_CEDT_CHBS_VERSION_CXL20) ?
+> +				"cxl20" :
+> +				"unsupported version",
+> +				p->cxl_version);
+> +		}
+> +		break;
+> +	case ACPI_CEDT_TYPE_CFMWS:
+> +		{
+> +			struct acpi_cedt_cfmws *p =
+> +				(struct acpi_cedt_cfmws *)header;
+> +			int eiw_to_ways[] = {1, 2, 4, 8, 16, 3, 6, 12};
+> +			int targets = -1;
+> +
+> +			if (header->length < sizeof(struct acpi_cedt_cfmws)) {
+
+sizeof(*p) perhaps?
+
+> +				pr_warn("CEDT: unsupported CFMWS entry: size %d\n",
+> +					header->length);
+> +				break;
+> +			}
+> +
+> +			if (p->interleave_ways < ARRAY_SIZE(eiw_to_ways))
+> +				targets = eiw_to_ways[p->interleave_ways];
+> +			if (header->length < struct_size(
+> +					p, interleave_targets, targets))
+> +				targets = -1;
+
+Not a warning?
+
+> +
+> +			pr_debug("CEDT: CFMWS (0x%llx length 0x%llx) with %d target%s",
+> +				(unsigned long long)p->base_hpa,
+> +				(unsigned long long)p->window_size,
+> +				targets, targets > 1 ? "s" : "");
+> +			for (int i = 0; i < targets; i++)
+> +				pr_cont("%s%lu", i ? ", " : " (",
+> +					(unsigned long)p->interleave_targets[i]);
+
+This seems odd. I don't think there is a good way to do combined pr_debug() and pr_cont()
+There was a discussion about this a few years ago...
+
+> +			pr_cont("%s%s%s%s%s%s\n",
+> +				targets > 0 ? ")" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2) ?
+> +				" type2" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3) ?
+> +				" type3" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE) ?
+> +				" volatile" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM) ?
+> +				" pmem" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED) ?
+> +				" fixed" : "");
+> +		}
+> +		break;
+> +	case ACPI_CEDT_TYPE_CXIMS:
+> +		{
+> +			struct acpi_cedt_cxims *p =
+> +				(struct acpi_cedt_cxims *)header;
+> +
+> +			if (header->length < sizeof(struct acpi_cedt_cxims)) {
+
+sizeof(*p) perhaps?
+
+> +				pr_warn("CEDT: unsupported CXIMS entry: size %d\n",
+> +					header->length);
+> +				break;
+
+I'd go with direct returns in these to make the code flow easier to read.
+
+> +			}
+> +
+> +			pr_debug("CEDT: CXIMS (hbig %u nr_xormaps %u)\n",
+> +				(unsigned int)p->hbig,
+> +				(unsigned int)p->nr_xormaps);
+> +		}
+> +		break;
+> +	default:
+> +		pr_warn("CEDT: Found unsupported entry (type = 0x%x)\n",
+> +			header->type);
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void __init acpi_table_print_cedt_entry(enum acpi_cedt_type id)
+> +{
+> +	acpi_table_parse_cedt(id, __acpi_table_print_cedt_entry, NULL);
+> +}
+> +
+> +static void __init acpi_table_print_cedt(void)
+> +{
+> +	/* Print only implemented CEDT types */
+> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CHBS);
+> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CFMWS);
+> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CXIMS);
+
+Would this be cleaner just breaking these up?
+
+	acpi_table_parse_cedt(ACPI_CEDT_TYPE_CHBS, print_chbs_entry, NULL);
+	acpi_table_parse_cedt(ACPI_CEDT_TYPE_CFMWS, print_cfmws_entry, NULL);
+	acpi_table_parse_cedt(ACPI_CEDT_TYPE_CXIMS, print_cxims_entry, NULL);
+
+
+> +}
+> +
+>  static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  				   void *arg, const unsigned long table_end)
+>  {
+> @@ -318,8 +426,11 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  	 * found for any portion of the window to cover the entire
+>  	 * window.
+>  	 */
+> -	if (!numa_fill_memblks(start, end))
+> +	if (!numa_fill_memblks(start, end)) {
+> +		pr_info("CEDT: memblk extended [mem %#010Lx-%#010Lx]\n",
+> +			(unsigned long long) start, (unsigned long long) end - 1);
+>  		return 0;
+> +	}
+>  
+>  	/* No SRAT description. Create a new node. */
+>  	node = acpi_map_pxm_to_node(*fake_pxm);
+> @@ -334,13 +445,19 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  		pr_warn("ACPI NUMA: Failed to add memblk for CFMWS node %d [mem %#llx-%#llx]\n",
+>  			node, start, end);
+>  	}
+> +
+
+Unrelated changed.  Best to clean this out to avoid the (really minor) noise.
+
+>  	node_set(node, numa_nodes_parsed);
+>  
+> +	pr_info("CEDT: Node %u PXM %u [mem %#010Lx-%#010Lx]\n",
+> +		node, *fake_pxm,
+> +		(unsigned long long) start, (unsigned long long) end - 1);
+> +
+>  	/* Set the next available fake_pxm value */
+>  	(*fake_pxm)++;
+>  	return 0;
+>  }
+>  #else
+> +static inline void acpi_table_print_cedt(void) {}
+>  static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  				   void *arg, const unsigned long table_end)
+>  {
+> @@ -526,6 +643,9 @@ int __init acpi_numa_init(void)
+>  	/* SLIT: System Locality Information Table */
+>  	acpi_table_parse(ACPI_SIG_SLIT, acpi_parse_slit);
+>  
+> +	/* CEDT: CXL Early Discovery Table */
+> +	acpi_table_print_cedt();
+> +
+>  	/*
+>  	 * CXL Fixed Memory Window Structures (CFMWS) must be parsed
+>  	 * after the SRAT. Create NUMA Nodes for CXL memory ranges that
+
 
