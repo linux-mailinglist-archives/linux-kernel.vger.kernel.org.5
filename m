@@ -1,56 +1,58 @@
-Return-Path: <linux-kernel+bounces-154311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E35F28ADA91
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:16:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 823568ADA93
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:16:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 095171C21791
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:16:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 392D51F21DD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8773A181D0C;
-	Mon, 22 Apr 2024 23:58:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 473CA1836D6;
+	Mon, 22 Apr 2024 23:58:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i7Y2QGDc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CYjwp0Z2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A84181CF6;
-	Mon, 22 Apr 2024 23:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E7D181D1F;
+	Mon, 22 Apr 2024 23:58:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830293; cv=none; b=Tp2zK2mt3m0IKylt3ma0u9zFUBtKkagNFNqmGAse0TRzlYuHiPq77CMnzDtyv2Tl8eRiZBKh8EHhR6E7UbmUl/N7+17NFD5xjiDN+jwgUXqzfyrFXovF7dkLRwf5Brf8GVgj892twf9U1befmIUosv89FtUKHd2Qb3DQZ9KchBU=
+	t=1713830295; cv=none; b=Qmv54HQ6aH80HPu9I2fuG6w9GWAjQFXpbvE8Hol4b1KwzXB2kur4pxY+1lCSWR/tCagpAZbC+DQIOQLs4IS0jJluqLeZW2e1V1RdUYoFwjH6JR8apv9P+IpczJ13v17Mx5DxMRpk/xgAN6NLSuLYNV9po+a7OyoEDAYVk5C6+1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830293; c=relaxed/simple;
-	bh=ULYRngvSrE1ihyauZb9R0fvGX+bl8nDcQtyzkXkJm9U=;
+	s=arc-20240116; t=1713830295; c=relaxed/simple;
+	bh=tVX8CPlW+oWCXMKKFJChG2+aTFGC0tJ2cjuU8dwsx0E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fWbzyV0YkZmK46cDPLhFTNMGCzdf3aO6NqKpHSDJEg6oLNEa8ZbsNLdlEMezecwZSL3RVKZcewFyqn3y1+BBLjJeWgsnFojMAum8P1Ga8StNFD7l5/39q4kg3d5i6r1o/4TpvJevlOni4A7Od/SVFNloQedlVnkfVWm/oGJ7ZZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i7Y2QGDc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD2E9C32786;
-	Mon, 22 Apr 2024 23:58:12 +0000 (UTC)
+	 MIME-Version; b=Rcc0yyq2eUoUR1taTjVx+RKQ4xPQoLSScixPK/LgZtX5pZPO4IF9q2avElLxw+vtx3hyCp+6eVVJJBM2Dh0R3iNy+eONLXTIUvAlOdnpcMuA225la9HCMsKwU/2D6yr+ElDRxbIUXqBQaYZ0nZxr1AcnK4N32fKOSw8+46sHQ9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CYjwp0Z2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20104C3277B;
+	Mon, 22 Apr 2024 23:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830293;
-	bh=ULYRngvSrE1ihyauZb9R0fvGX+bl8nDcQtyzkXkJm9U=;
+	s=k20201202; t=1713830295;
+	bh=tVX8CPlW+oWCXMKKFJChG2+aTFGC0tJ2cjuU8dwsx0E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=i7Y2QGDc1qSoPoPXWMxQRXhjUr0TAYgMWp0ZW4GWqpknbcBFddeVaOPCxB282rAdZ
-	 kaTHHHyBQy2/iZaXRSV1bbJIiqoq5/o/SO4f6shDjJ6XxNkOm+kay7TZ6mLAz1pmmX
-	 OdqWojTHidtSqtlSYszRMOYxSrNECys/MRxmtTQwVp5Ttp/a+wY1pDWNuBx30InjiT
-	 /WS7H7XNHlngmkX+pzsf/pUOUW8hDdwjXNpYGuBCgcRBPFfW5q5Wi0+bnLLSr93B1j
-	 g9dzY5p9Cgk9uSbfkylzy5q+L5ote/TQdnFcgyIlDcpnnQC1u4uKtxDUEh0tXhS3ln
-	 VrQwv7Tv6vQWg==
+	b=CYjwp0Z2Sz19poNm6FdtaNDqSqOMGuNdzE0BmUCMemowTifFByCbTr547g+d7jBRT
+	 5S1Pjx/EQQL4yByIN4MWGpMBhVZPNnAzPBTjzDqxNz8FznRc8KpdVQ2/+oDWFLD3Ou
+	 cN+7t52L3Jdl5MZVjN8uFv4pQ8tLe9c8Hv5LGRoui1vk+l6bHn7MCB0fLAxyw3j7rR
+	 QCyNXBMv8eUcStC7ErQmL0BRn8+YBECN2TBb7vWn7wwzPtZ92/AmRNHZqcXl9fBKGf
+	 wKq0iXeArI8VX16fZfatZVlibDk9Ar+URFVkbxaTeL8Iku8kJ4lfbwmT4y2iDmp5KX
+	 edUXtDGmHbNdQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Peng Liu <liupeng17@lenovo.com>,
-	Len Brown <len.brown@intel.com>,
+Cc: Boris Burkov <boris@bur.io>,
+	Qu Wenruo <wqu@suse.com>,
+	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
-	lenb@kernel.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 02/10] tools/power turbostat: Fix Bzy_MHz documentation typo
-Date: Mon, 22 Apr 2024 19:19:15 -0400
-Message-ID: <20240422231929.1611680-2-sashal@kernel.org>
+	clm@fb.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 03/10] btrfs: make btrfs_clear_delalloc_extent() free delalloc reserve
+Date: Mon, 22 Apr 2024 19:19:16 -0400
+Message-ID: <20240422231929.1611680-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231929.1611680-1-sashal@kernel.org>
 References: <20240422231929.1611680-1-sashal@kernel.org>
@@ -65,33 +67,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.156
 Content-Transfer-Encoding: 8bit
 
-From: Peng Liu <liupeng17@lenovo.com>
+From: Boris Burkov <boris@bur.io>
 
-[ Upstream commit 0b13410b52c4636aacb6964a4253a797c0fa0d16 ]
+[ Upstream commit 3c6f0c5ecc8910d4ffb0dfe85609ebc0c91c8f34 ]
 
-The code calculates Bzy_MHz by multiplying TSC_delta * APERF_delta/MPERF_delta
-The man page erroneously showed that TSC_delta was divided.
+Currently, this call site in btrfs_clear_delalloc_extent() only converts
+the reservation. We are marking it not delalloc, so I don't think it
+makes sense to keep the rsv around.  This is a path where we are not
+sure to join a transaction, so it leads to incorrect free-ing during
+umount.
 
-Signed-off-by: Peng Liu <liupeng17@lenovo.com>
-Signed-off-by: Len Brown <len.brown@intel.com>
+Helps with the pass rate of generic/269 and generic/475.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Boris Burkov <boris@bur.io>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/turbostat/turbostat.8 | 2 +-
+ fs/btrfs/inode.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/power/x86/turbostat/turbostat.8 b/tools/power/x86/turbostat/turbostat.8
-index b3d4bf08e70b1..f382cd53cb4e8 100644
---- a/tools/power/x86/turbostat/turbostat.8
-+++ b/tools/power/x86/turbostat/turbostat.8
-@@ -322,7 +322,7 @@ below the processor's base frequency.
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index c7d8a18daaf50..07c6ab4ba0d43 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2261,7 +2261,7 @@ void btrfs_clear_delalloc_extent(struct inode *vfs_inode,
+ 		 */
+ 		if (*bits & EXTENT_CLEAR_META_RESV &&
+ 		    root != fs_info->tree_root)
+-			btrfs_delalloc_release_metadata(inode, len, false);
++			btrfs_delalloc_release_metadata(inode, len, true);
  
- Busy% = MPERF_delta/TSC_delta
- 
--Bzy_MHz = TSC_delta/APERF_delta/MPERF_delta/measurement_interval
-+Bzy_MHz = TSC_delta*APERF_delta/MPERF_delta/measurement_interval
- 
- Note that these calculations depend on TSC_delta, so they
- are not reliable during intervals when TSC_MHz is not running at the base frequency.
+ 		/* For sanity tests. */
+ 		if (btrfs_is_testing(fs_info))
 -- 
 2.43.0
 
