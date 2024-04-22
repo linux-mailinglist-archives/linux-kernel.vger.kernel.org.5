@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-154226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 784548AD997
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:56:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29B2E8AD99A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:56:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18F9E1F2346E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:56:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8183287D8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EEFB1553A3;
-	Mon, 22 Apr 2024 23:54:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E809E156C65;
+	Mon, 22 Apr 2024 23:54:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ujKCPM4w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bSKrrNwT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD9015667F;
-	Mon, 22 Apr 2024 23:54:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31455156C51;
+	Mon, 22 Apr 2024 23:54:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830055; cv=none; b=S85u6BiU0O29C/QOq17ynnMoVR8MiYv77lMibnfzN0KE982TCZzqKX1EYlQIIhmcpHy1n3/DOcmhSbcP5ET5xEZmD4QUjGkakQWQA4dfAR5yfdw2rJl+BoIb1VkqYNDvk+/i6VTzh3JexNEECkQei7XK3PdRw59TTGyTB4F9efQ=
+	t=1713830057; cv=none; b=Uthp+H8lgTRE1sJgpybSPqd3Tg9h9mbKUK3OyJBkPRj9CXItXQNj23Vm6LHUUvtprVNRTBvgQZ4co5rGOAwR+wQBiL7/1BHObV9oxuwS+y9e9fpfpQAlAHB/oTwU12p3a26/v2inKu/0ZgsMWyrBBFkYpTtJlz06JzL4tN0iXrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830055; c=relaxed/simple;
-	bh=WWfuv1tupr6zwcaOE5m5WSm4mQ0yiIoOU0JCcSN56wE=;
+	s=arc-20240116; t=1713830057; c=relaxed/simple;
+	bh=463WU74UafRM4JLsYmYPi8HB3ZVhJzdNeKKPSlj0sEI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DkwZv+40wNN0SjKIQ4jb+AsK9qdEjeDUopBUXPJ4VqMK+YX2q0UyiA1CFs6OL3H0b+xsiJ/MZXibgFA7L6ZZu4N6a826vCZwvi9xWglraBcogypBiJQ+Dy5LUxr/6F5OVYbPe48mhZdafL/6Qt/BlBhjt96m8zh+v7pTrnDaYLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ujKCPM4w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C03C7C2BD11;
-	Mon, 22 Apr 2024 23:54:13 +0000 (UTC)
+	 MIME-Version; b=bhdEDfvszdYlmuMNvsbDEolJTyzkEm4OnAZOJpWHS0rJmWX56YDFhGLYncBj7yy3dH5E0yeHZ5STBVsdsrlKQr4hTOR/HXhJ4tMy2aK0d9bMYlJdyaFzfy/I9oSz5nBcgwXHrjHL+N9PQiOBKP7MV1fh1yQxmFsFsBNg6XtrSqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bSKrrNwT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F58BC2BD11;
+	Mon, 22 Apr 2024 23:54:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830054;
-	bh=WWfuv1tupr6zwcaOE5m5WSm4mQ0yiIoOU0JCcSN56wE=;
+	s=k20201202; t=1713830056;
+	bh=463WU74UafRM4JLsYmYPi8HB3ZVhJzdNeKKPSlj0sEI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ujKCPM4wfNl4C/EyTQc58e1nI4DlJtktmFk1B+eq2ZYF6jiRqKIbdnyqZjIHgnfFu
-	 0pZSwIqmqu0lZrX0Q2mm7eE0eQtN2ZptbBzcdeNZv0QmbuTRI5KMGAZv3CvHGcNevF
-	 UjGqA/7Jv7EIH5VCtYvPYTUEbtdzrDrH1TE+EExUqi/5TSFyg0OpG+muz4LYhghVRx
-	 56PymtiwOP2RlfiqGpI/B5tmDP1U0g+TouKYH1I/J76fidMu2f456KhHHLeO/3foa5
-	 6h2h11Db7qbLwKmwSnjdxjxdmrt5zsT+U4DNeyA6K0XCXcoNwCIzKbT1vBQBzfqeHE
-	 vTeWZslYyj18w==
+	b=bSKrrNwT1Od+D3+l0fAajmyERkoyr4NQ8vkxZcgxr/1CU39YXpO1+8O9nwXIQBy3l
+	 /VuhfcJ7i4bqZhzI0/IcEWqdbFVz66G97D0gTm/ACLGnosMk+GOy7I3mZ272PctK1I
+	 XGAZVyCM5Z/DkA7nXdIoYgJF145BVpPoxrtnY/MWlZcWhx0sgUkn63U+z+MaPEMhtH
+	 SdXc4M903w0DUvPNbue43GSHvYoXZ5VJf0YnhndykZwlv33JTrQQzZkmO5jjsloMAO
+	 siTnMx6H8O/0Dn2r7e8AJQv7eFQApIhgN5KZDFJI3r78CjVaW9OW4hDj55tf6tkauX
+	 uHP0N8bjU8QsQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Boris Burkov <boris@bur.io>,
-	Qu Wenruo <wqu@suse.com>,
-	David Sterba <dsterba@suse.com>,
+Cc: Wei Yang <richard.weiyang@gmail.com>,
+	Yajun Deng <yajun.deng@linux.dev>,
+	Mike Rapoport <rppt@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	josef@toxicpanda.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 09/43] btrfs: always clear PERTRANS metadata during commit
-Date: Mon, 22 Apr 2024 19:13:55 -0400
-Message-ID: <20240422231521.1592991-9-sashal@kernel.org>
+	rongtao@cestc.cn
+Subject: [PATCH AUTOSEL 6.8 10/43] memblock tests: fix undefined reference to `early_pfn_to_nid'
+Date: Mon, 22 Apr 2024 19:13:56 -0400
+Message-ID: <20240422231521.1592991-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231521.1592991-1-sashal@kernel.org>
 References: <20240422231521.1592991-1-sashal@kernel.org>
@@ -67,42 +65,41 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.7
 Content-Transfer-Encoding: 8bit
 
-From: Boris Burkov <boris@bur.io>
+From: Wei Yang <richard.weiyang@gmail.com>
 
-[ Upstream commit 6e68de0bb0ed59e0554a0c15ede7308c47351e2d ]
+[ Upstream commit 7d8ed162e6a92268d4b2b84d364a931216102c8e ]
 
-It is possible to clear a root's IN_TRANS tag from the radix tree, but
-not clear its PERTRANS, if there is some error in between. Eliminate
-that possibility by moving the free up to where we clear the tag.
+commit 6a9531c3a880 ("memblock: fix crash when reserved memory is not
+added to memory") introduce the usage of early_pfn_to_nid, which is not
+defined in memblock tests.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
-Signed-off-by: David Sterba <dsterba@suse.com>
+The original definition of early_pfn_to_nid is defined in mm.h, so let
+add this in the corresponding mm.h.
+
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+CC: Yajun Deng <yajun.deng@linux.dev>
+CC: Mike Rapoport <rppt@kernel.org>
+Link: https://lore.kernel.org/r/20240402132701.29744-2-richard.weiyang@gmail.com
+Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/transaction.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/include/linux/mm.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index f1705ae59e4a9..b93cdf5f179cf 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1496,6 +1496,7 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 			radix_tree_tag_clear(&fs_info->fs_roots_radix,
- 					(unsigned long)root->root_key.objectid,
- 					BTRFS_ROOT_TRANS_TAG);
-+			btrfs_qgroup_free_meta_all_pertrans(root);
- 			spin_unlock(&fs_info->fs_roots_radix_lock);
+diff --git a/tools/include/linux/mm.h b/tools/include/linux/mm.h
+index f3c82ab5b14cd..7d73da0980473 100644
+--- a/tools/include/linux/mm.h
++++ b/tools/include/linux/mm.h
+@@ -37,4 +37,9 @@ static inline void totalram_pages_add(long count)
+ {
+ }
  
- 			btrfs_free_log(trans, root);
-@@ -1520,7 +1521,6 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 			if (ret2)
- 				return ret2;
- 			spin_lock(&fs_info->fs_roots_radix_lock);
--			btrfs_qgroup_free_meta_all_pertrans(root);
- 		}
- 	}
- 	spin_unlock(&fs_info->fs_roots_radix_lock);
++static inline int early_pfn_to_nid(unsigned long pfn)
++{
++	return 0;
++}
++
+ #endif
 -- 
 2.43.0
 
