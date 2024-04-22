@@ -1,82 +1,57 @@
-Return-Path: <linux-kernel+bounces-152703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D33D8AC322
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:41:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 499DC8AC325
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:42:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCFE728124D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:41:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5ACC1F2114D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16D5F9EB;
-	Mon, 22 Apr 2024 03:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EB8FBE8;
+	Mon, 22 Apr 2024 03:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IV/CTnq0"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92CDEDDC3
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 03:41:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="D2XIfPDH"
+Received: from mail-177131.yeah.net (mail-177131.yeah.net [123.58.177.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F873234;
+	Mon, 22 Apr 2024 03:42:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713757276; cv=none; b=acGnSeqRF5mqcaYPZraXEGXMDn2w4MIDrJfubOFxz+vVNJFyHEEOqzvO6+gMpGZ6zFXRIfk2LfcIFu0yLGdaz2brVVaXK1xJcfYgmD5A413vINZV2zADiIZ8vSgbsKEaNkQweCxJl8TY8lqKNT0IgrtjzBUEy8e+RKdcLgPxPK8=
+	t=1713757371; cv=none; b=i6SMsQopLKlu7FoEvkEWHjBPPiAjp2EOPRmyCfXPHaeYTs1I+Pa/aHVEIcHn/QqZ8A5V5lLhaZZZhfcCG3lru43hGbJ0Cil79HK4eEP7bkWeHSny0W6TZoe7iFuJLjEMOV6al+/g/pF4cs5FGmqEQhpd4IZBglVLtTlZ/vDAzHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713757276; c=relaxed/simple;
-	bh=QXCwamK07MsvJLUBrAceuoynnr5As4trjRDujWCt1Rs=;
+	s=arc-20240116; t=1713757371; c=relaxed/simple;
+	bh=qhLCnwMZ88gA2hTnXSuFQMUmXB+Nrz0Fpo+79M1h3K8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fvIRe7kvRnoAT69T++HFgGNOR/Pn06ouHlgTHjSE8eoDVlWi1MDUTMF3LahmCrUVMfxRP1Nw3TyfZgn5LomDZ/XQ42inwheLVOhmNRBBYWjF/jY59Nesu8W1eJTsM96APtcD0xKQ+k1RI9HqlGw7nqHBUwvwgnjzjQznNsGmMKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IV/CTnq0; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5aa22ebd048so2799787eaf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Apr 2024 20:41:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713757274; x=1714362074; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cl5iDmcU+vdD5ORuT+ZmSbv78xBtfXPu+m5CHFPkBDg=;
-        b=IV/CTnq02p8E+rxmZsk7j3TeJFn70+D8eqC94FwvQvZ8njDwlVJA9YJA8NYolygcin
-         oQIFidoML+OLg9zbmEtyGrv/PVkeDU2AMy/Pg2fuBioT8B+90d08UHLiN71ssuqTGOQi
-         iwFQ8I3Bl8bJ8qFCReZbnO2Sw7gwQpqJLrdQ3ZZk5nzGebiU4tlkZEvCyRyPrxeVPcCa
-         UH0bxoK89e1HD9+fXLwigcKk4TDEG+mucWRGTYLvhnaEUjKa/TKFyHZVR3NFYKNZ0jeA
-         pKmDInEXayjHPIYqiWfTdxvKLdAVqzXP6CuG97axr0iitWbLKoA9bTL2SvbkDZEspCrZ
-         ag6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713757274; x=1714362074;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cl5iDmcU+vdD5ORuT+ZmSbv78xBtfXPu+m5CHFPkBDg=;
-        b=OMZFnVq58U+x8lqEnj7JJyEUgX+NlyWuWVMB/5SL+4bXNRw0B8Nj23hkW/Qs8IJ4nI
-         4JXoocWUdhn6QuE4JkVWDuvLy5N1MxPNzRqZWIR6h8nnHEM1cBv+tBsDaKKCzolR5OvF
-         ryOIyC44IuK6F1gc9vrD+LRPU66M710BOOe9g0yCnupPRlZpp2Zj4Lpqr/2QcdzFhele
-         zcIMV1l7vtDAF0iDN3FAp8sx2j81Ud7ymox66CW8KEIcMP3Jb4qvSpqG+Rt3tCEJQDPF
-         Xv+LiOnMo7d27cD5vL5EvGnX+nXSXukhyn8vJ6LyhchY/sSGfOs1dNaF/NC0Yfc5ZTYj
-         JdCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVLUZHjsKy8g+Fx7piIzpi9E+DxRZy9wm5Jv14RCI+ENK7SQfzCsaQ3uJWxlte/U5kHVuE3BoTnnJg2Zmh1QXvAswScSF0WY9JR7FHo
-X-Gm-Message-State: AOJu0Yy4MgCOTxNWZfoUXSx2GqnusRn7hZEQtZz84N7U10pL6guzLquv
-	qyh90bqyyN9avxChSD+xR3ad3SOUWhiaS2rT3mD3MeOo3LG4RC6afOrgrOnQuko=
-X-Google-Smtp-Source: AGHT+IGk4VpEttqtX7wmUP0DjSs0Hnai1BKypHYXOPdM34VHuqvCdINyqmTAuf5HKKeFHylZBh137A==
-X-Received: by 2002:a05:6870:c352:b0:222:99cb:2215 with SMTP id e18-20020a056870c35200b0022299cb2215mr10754338oak.28.1713757274492;
-        Sun, 21 Apr 2024 20:41:14 -0700 (PDT)
-Received: from localhost ([122.172.87.52])
-        by smtp.gmail.com with ESMTPSA id m19-20020aa78a13000000b006e697bd5285sm6803551pfa.203.2024.04.21.20.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Apr 2024 20:41:13 -0700 (PDT)
-Date: Mon, 22 Apr 2024 09:11:12 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] cpufreq: mediatek: Add support for MT7988A
-Message-ID: <20240422034112.rugixkqrbeyq44zq@vireshk-i7>
-References: <acf4fb446aacfbf6ce7b6e94bf3aad303e0ad4d1.1713545923.git.daniel@makrotopia.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pOcZRCrJzY4tuA1j+LvKY8G+kIQ33nfQSrYUaePK89qZhxMKrmcb/q/84yL3+a0g7RF0eHzJ3UWK01f2z1HksTzR8gamNg5ikK3bs8JH2eiFPoCkjAnPjH/pS+0S5wwKKxx9iD7FOLBjFP+WCN1gTASDVgZ9qyXd9sGBCXBqWhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=D2XIfPDH; arc=none smtp.client-ip=123.58.177.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
+	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
+	Content-Type; bh=fdtfV44v236cnntRxp4mWjiFvJnQMsU2XRd04B3OZtU=;
+	b=D2XIfPDHcemjQdSHqEIZ+OhSCgcL+pxj06woy6S/42b6GchvQIcsraC7H4vDtX
+	hOfphOEb5cVSpJiLC98tm9iBLB+jCT9QBQfdxpAFpnFd0m7rsYH8ekclAoESVd0x
+	23OlQTKNP8VxzfXGeOfzOrZM+XF4CbiSL1BWs49WuJXE4=
+Received: from dragon (unknown [223.68.79.243])
+	by smtp1 (Coremail) with SMTP id ClUQrADXXw+c3CVmanorAw--.29283S3;
+	Mon, 22 Apr 2024 11:42:22 +0800 (CST)
+Date: Mon, 22 Apr 2024 11:42:20 +0800
+From: Shawn Guo <shawnguo2@yeah.net>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: dts: imx8dxl-evk: add audio nodes
+Message-ID: <ZiXcnMtk5f0RSrHc@dragon>
+References: <20240402-b4-dts_dxl_audio-v1-0-d26d25b84a08@nxp.com>
+ <20240402-b4-dts_dxl_audio-v1-3-d26d25b84a08@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,23 +60,327 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <acf4fb446aacfbf6ce7b6e94bf3aad303e0ad4d1.1713545923.git.daniel@makrotopia.org>
+In-Reply-To: <20240402-b4-dts_dxl_audio-v1-3-d26d25b84a08@nxp.com>
+X-CM-TRANSID:ClUQrADXXw+c3CVmanorAw--.29283S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Gw4kWr4xWFW8XF4DWF45ZFb_yoW3tw17p3
+	s2ka1fKr4IyasFy34rt34DGrnY9wn5KF4j9a43Kry0yF9IqrZrXr1jkwnxCFWDtrs8Xw1q
+	qF98ZrW8KrsIqaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j55rcUUUUU=
+X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiDR-IZVszXbcLNAAAsC
 
-On 19-04-24, 17:59, Daniel Golle wrote:
-> From: Sam Shih <sam.shih@mediatek.com>
+On Tue, Apr 02, 2024 at 05:02:30PM -0400, Frank Li wrote:
+> Add audio nodes for imx8dxl-evk boards.
 > 
-> This add cpufreq support for mediatek MT7988A SoC.
-> 
-> The platform data of MT7988A is different from previous MediaTek SoCs,
-> so we add a new compatible and platform data for it.
-> 
-> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 > ---
->  drivers/cpufreq/mediatek-cpufreq.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  arch/arm64/boot/dts/freescale/imx8dxl-evk.dts | 234 ++++++++++++++++++++++++++
+>  1 file changed, 234 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8dxl-evk.dts b/arch/arm64/boot/dts/freescale/imx8dxl-evk.dts
+> index 2123d431e0613..ba4cdc3534362 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8dxl-evk.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8dxl-evk.dts
+> @@ -125,6 +125,81 @@ mii_select: regulator-4 {
+>  		enable-active-high;
+>  		regulator-always-on;
+>  	};
+> +
+> +	bt_sco_codec: bt_sco_codec {
 
-Applied. Thanks.
+Hyphen is recommended for node name.
 
--- 
-viresh
+> +		#sound-dai-cells = <1>;
+> +		compatible = "linux,bt-sco";
+
+We usually have 'compatible' go first.
+
+> +	};
+> +
+> +	sound-bt-sco {
+> +		compatible = "simple-audio-card";
+> +		simple-audio-card,name = "bt-sco-audio";
+> +		simple-audio-card,format = "dsp_a";
+> +		simple-audio-card,bitclock-inversion;
+> +		simple-audio-card,frame-master = <&btcpu>;
+> +		simple-audio-card,bitclock-master = <&btcpu>;
+> +
+> +		btcpu: simple-audio-card,cpu {
+> +			sound-dai = <&sai0>;
+> +			dai-tdm-slot-num = <2>;
+> +			dai-tdm-slot-width = <16>;
+> +		};
+> +
+> +		simple-audio-card,codec {
+> +			sound-dai = <&bt_sco_codec 1>;
+> +		};
+> +	};
+> +
+> +	sound-wm8960-1 {
+> +		compatible = "fsl,imx7d-evk-wm8960", "fsl,imx-audio-wm8960";
+> +		model = "wm8960-audio";
+> +		audio-cpu = <&sai1>;
+> +		audio-codec = <&wm8960_1>;
+> +		audio-asrc = <&asrc0>;
+> +		audio-routing =
+> +			"Headphone Jack", "HP_L",
+> +			"Headphone Jack", "HP_R",
+> +			"Ext Spk", "SPK_LP",
+> +			"Ext Spk", "SPK_LN",
+> +			"Ext Spk", "SPK_RP",
+> +			"Ext Spk", "SPK_RN",
+> +			"LINPUT1", "Mic Jack",
+> +			"Mic Jack", "MICB";
+
+Nit: can we do this?
+
+		audio-routing = "Headphone Jack", "HP_L",
+				"Headphone Jack", "HP_R",
+			        ...
+
+> +	};
+> +
+> +	sound-wm8960-2 {
+> +		compatible = "fsl,imx7d-evk-wm8960", "fsl,imx-audio-wm8960";
+> +		model = "wm8960-audio-2";
+> +		audio-cpu = <&sai2>;
+> +		audio-codec = <&wm8960_2>;
+> +		capture-only;
+> +		audio-routing =
+> +			"Headphone Jack", "HP_L",
+> +			"Headphone Jack", "HP_R",
+> +			"Ext Spk", "SPK_LP",
+> +			"Ext Spk", "SPK_LN",
+> +			"Ext Spk", "SPK_RP",
+> +			"Ext Spk", "SPK_RN",
+> +			"LINPUT1", "Mic Jack",
+> +			"Mic Jack", "MICB";
+> +	};
+> +
+> +	sound-wm8960-3 {
+> +		compatible = "fsl,imx7d-evk-wm8960", "fsl,imx-audio-wm8960";
+> +		model = "wm8960-audio-3";
+> +		audio-cpu = <&sai3>;
+> +		audio-codec = <&wm8960_3>;
+> +		capture-only;
+> +		audio-routing =
+> +			"Headphone Jack", "HP_L",
+> +			"Headphone Jack", "HP_R",
+> +			"Ext Spk", "SPK_LP",
+> +			"Ext Spk", "SPK_LN",
+> +			"Ext Spk", "SPK_RP",
+> +			"Ext Spk", "SPK_RN",
+> +			"LINPUT1", "Mic Jack",
+> +			"Mic Jack", "MICB";
+> +	};
+>  };
+>  
+>  &adc0 {
+> @@ -132,6 +207,11 @@ &adc0 {
+>  	status = "okay";
+>  };
+>  
+> +&asrc0 {
+> +	fsl,asrc-rate  = <48000>;
+
+One space around =
+
+> +	status = "okay";
+> +};
+> +
+>  &eqos {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_eqos>;
+> @@ -259,6 +339,78 @@ max7322: gpio@68 {
+>  			};
+>  		};
+>  
+> +		i2c@1 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0x1>;
+> +
+> +			wm8960_1: wm8960@1a {
+> +				compatible = "wlf,wm8960";
+> +				reg = <0x1a>;
+> +				clocks = <&mclkout1_lpcg IMX_LPCG_CLK_0>;
+> +				clock-names = "mclk";
+> +				wlf,shared-lrclk;
+> +				wlf,hp-cfg = <2 2 3>;
+> +				wlf,gpio-cfg = <1 3>;
+> +				assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+> +						  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+> +						  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+> +						  <&mclkout1_lpcg IMX_LPCG_CLK_0>;
+> +				assigned-clock-rates = <786432000>,
+> +						       <49152000>,
+> +						       <12288000>,
+> +						       <12288000>;
+> +			};
+> +		};
+> +
+> +		i2c@2 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0x2>;
+> +
+> +			wm8960_2: wm8960@1a {
+> +				compatible = "wlf,wm8960";
+> +				reg = <0x1a>;
+> +				clocks = <&mclkout1_lpcg IMX_LPCG_CLK_0>;
+> +				clock-names = "mclk";
+> +				wlf,shared-lrclk;
+> +				wlf,hp-cfg = <2 2 3>;
+> +				wlf,gpio-cfg = <1 3>;
+> +				assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+> +						  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+> +						  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+> +						  <&mclkout1_lpcg IMX_LPCG_CLK_0>;
+> +				assigned-clock-rates = <786432000>,
+> +						       <49152000>,
+> +						       <12288000>,
+> +						       <12288000>;
+> +			};
+> +		};
+> +
+> +		i2c@3 {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			reg = <0x3>;
+> +
+> +			wm8960_3: wm8960@1a {
+
+audio-codec for node name.
+
+> +				compatible = "wlf,wm8960";
+> +				reg = <0x1a>;
+> +				clocks = <&mclkout1_lpcg IMX_LPCG_CLK_0>;
+> +				clock-names = "mclk";
+> +				wlf,shared-lrclk;
+> +				wlf,hp-cfg = <2 2 3>;
+> +				wlf,gpio-cfg = <1 3>;
+> +				assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+> +						  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+> +						  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+> +						  <&mclkout1_lpcg IMX_LPCG_CLK_0>;
+> +				assigned-clock-rates = <786432000>,
+> +						       <49152000>,
+> +						       <12288000>,
+> +						       <12288000>;
+> +			};
+> +		};
+> +
+>  		i2c@4 {
+>  			#address-cells = <1>;
+>  			#size-cells = <0>;
+> @@ -362,6 +514,53 @@ &lsio_gpio5 {
+>  	status = "okay";
+>  };
+>  
+> +&sai0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_sai0>;
+> +	#sound-dai-cells = <0>;
+> +	assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+> +			<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+> +			<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+> +			<&sai0_lpcg IMX_LPCG_CLK_0>;
+
+	assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+			  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+			  ...
+
+> +	assigned-clock-rates = <786432000>, <49152000>, <12288000>, <49152000>;
+> +	status = "okay";
+> +};
+> +
+> +&sai1 {
+> +	assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+> +			<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+> +			<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+> +			<&sai1_lpcg IMX_LPCG_CLK_0>;
+> +	assigned-clock-rates = <786432000>, <49152000>, <12288000>, <49152000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_sai1>;
+> +	status = "okay";
+> +};
+> +
+> +&sai2 {
+> +	assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+> +			<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+> +			<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+> +			<&sai2_lpcg IMX_LPCG_CLK_0>;
+> +	assigned-clock-rates = <786432000>, <49152000>, <12288000>, <49152000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_sai2>;
+> +	fsl,sai-asynchronous;
+> +	status = "okay";
+> +};
+> +
+> +&sai3 {
+> +	assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+> +			<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+> +			<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+> +			<&sai3_lpcg IMX_LPCG_CLK_0>;
+> +	assigned-clock-rates = <786432000>, <49152000>, <12288000>, <49152000>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_sai3>;
+> +	fsl,sai-asynchronous;
+> +	status = "okay";
+> +};
+> +
+>  &thermal_zones {
+>  	pmic-thermal {
+>  		polling-delay-passive = <250>;
+> @@ -595,6 +794,41 @@ IMX8DXL_UART0_TX_ADMA_UART0_TX		0x06000020
+>  		>;
+>  	};
+>  
+> +	pinctrl_sai0: sai0grp {
+> +		fsl,pins = <
+> +			IMX8DXL_SPI0_CS0_ADMA_SAI0_RXD		0x06000060
+> +			IMX8DXL_SPI0_CS1_ADMA_SAI0_RXC		0x06000040
+> +			IMX8DXL_SPI0_SCK_ADMA_SAI0_TXC		0x06000060
+> +			IMX8DXL_SPI0_SDI_ADMA_SAI0_TXD		0x06000060
+> +			IMX8DXL_SPI0_SDO_ADMA_SAI0_TXFS		0x06000040
+> +		>;
+> +	};
+> +
+> +	pinctrl_sai1: sai1grp {
+> +		fsl,pins = <
+> +			IMX8DXL_FLEXCAN0_RX_ADMA_SAI1_TXC     0x06000040
+
+Can the indent between pin constant and value be tabs instead of spaces?
+
+Shawn
+
+> +			IMX8DXL_FLEXCAN0_TX_ADMA_SAI1_TXFS    0x06000040
+> +			IMX8DXL_FLEXCAN1_RX_ADMA_SAI1_TXD     0x06000060
+> +			IMX8DXL_FLEXCAN1_TX_ADMA_SAI1_RXD     0x06000060
+> +		>;
+> +	};
+> +
+> +	pinctrl_sai2: sai2grp {
+> +		fsl,pins = <
+> +			IMX8DXL_SNVS_TAMPER_OUT3_ADMA_SAI2_RXC   0x06000040
+> +			IMX8DXL_SNVS_TAMPER_IN0_ADMA_SAI2_RXFS   0x06000040
+> +			IMX8DXL_SNVS_TAMPER_OUT4_ADMA_SAI2_RXD   0x06000060
+> +		>;
+> +	};
+> +
+> +	pinctrl_sai3: sai3grp {
+> +		fsl,pins = <
+> +			IMX8DXL_SNVS_TAMPER_IN1_ADMA_SAI3_RXC    0x06000040
+> +			IMX8DXL_SNVS_TAMPER_IN3_ADMA_SAI3_RXFS   0x06000040
+> +			IMX8DXL_SNVS_TAMPER_IN2_ADMA_SAI3_RXD    0x06000060
+> +		>;
+> +	};
+> +
+>  	pinctrl_usdhc1: usdhc1grp {
+>  		fsl,pins = <
+>  			IMX8DXL_EMMC0_CLK_CONN_EMMC0_CLK	0x06000041
+> 
+> -- 
+> 2.34.1
+> 
+
 
