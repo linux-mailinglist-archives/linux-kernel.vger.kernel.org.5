@@ -1,141 +1,264 @@
-Return-Path: <linux-kernel+bounces-153033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5515C8AC81E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B7D68AC81B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:56:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11547280404
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:56:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43ABD283E6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C40B54BD6;
-	Mon, 22 Apr 2024 08:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E1A54909;
+	Mon, 22 Apr 2024 08:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wWCDV8Jc"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Zq86nSpI"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E115453380
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:53:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0000453E1E
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:53:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713775991; cv=none; b=Su1jt8+cHUsxqqAVvKBKf1XZ7WEnWbPcgO955tdxwRySAZDqfkHnlZZ57w/ZcWZrM/D7nvYhKjZy1PgSx6Emo+N6EZxNyrfDxawxm+Gj/opRbrJn+SU5OZdXXm/hP6Nby5pBf7LOuL+garMvUoOxdxnrLX0G58pBEno4KLaVKx0=
+	t=1713775990; cv=none; b=F4pA7BwUBtc8/Yke6xG0prHalQ88lNn4Ex9TbguOVn8lMVtRkmmlfTHm/9xtm0PfJdhoV6sGjlUQWDKR5HAfrO+UfXriPv27YNB/ADw/LQ7+XBFrjJgi2sX1O/iesF7aFMD2nR0O2ZGNZM+R9g6aGlWoysoTWwgvW1javNP3PU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713775991; c=relaxed/simple;
-	bh=tc1YFCLIzw0cQqXheGK0vA+hR2mqFn4ZzGTZtzlGTrA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IrN1MDDkVp5hmg45YYWIEbCABEXm2Yg7lZS2Jd8E9RZMQbSTdeRjkfs0wDRDn7Bu5xsEbIxcUXtVZNxR9eC/SJ3CDe4zroOu6gVEJx7azJ07naEWtFLZnUYLgtjRnMjv1EjIjGLsAL+BWex/rxFsvEyHcO/xOoSr85QLk6opvHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wWCDV8Jc; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-de45e596a05so4484386276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:53:09 -0700 (PDT)
+	s=arc-20240116; t=1713775990; c=relaxed/simple;
+	bh=nleU09vurZd5AuLxgNnsP+QcvquS4B0Ob3oAXLFJzZc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ETM+mTeSr2xDXNXGvnorCv5sTEjHQOiuK6bTXYCE5CGb72gxC9tiOiNsUTy5k0OnTn1TL9SQ+FcqMziFeLC9SEdprd1wSRhUxO+1gHNBnDiqngWaOhiqsxxU/lhMM7D1Sg70oN0gNpfUOmnWgLo1t/fwW9zazt8neJHsA/AC7W0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Zq86nSpI; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-346a5dea2f4so972931f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:53:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713775989; x=1714380789; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lN1tQRzEerHdmzjmn4cRyuYt4HVRT1txxhBtvZ2kMiw=;
-        b=wWCDV8JcRqRQXy58ydxUZI5DGVuxK2hrwAh0UYWX9rNOTiEHR/MtDupsJEhNs7lwMt
-         v/CUUWqcB3E24L7sj/d+tnuQWmAw67Wi8HzMtnuussxaScpcrg0er041ylHzkrNW6RcM
-         VCcw/tJwrWncslc1r380a+1280uhDCoo0i1g9NiOqy69qkbxRckGLJCqskt2S8mwYJy3
-         CW+gVVkrprtJcHYEzHqk2e41EIxBTfBnlnLT8KSLM2ZbnF9fYH1d12lA057GgicIL2lS
-         c6P3cLOs8GxuF0SFMRMIFelzw/wJnneeb2Dms1pUiZwJxyOYWs5VtvqGt8xn/f7I6uoI
-         P8Xg==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713775986; x=1714380786; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+/fvR+HwOJPjnOfbOHG69UP92YiSjqkbM928Puj2/Go=;
+        b=Zq86nSpI55jjwJBRIYNddD+VzEJWuOhqk1Rm2LOKURki/miaj2WjRcgZrFyL/IRSAj
+         JfGEWF4V33MWATfv/PFv+mv9F8CjDCj+EfC4w2BxLGxkWh8+ZgDoA/o4OnEuSEG2fVWV
+         Id18sPk7FGHd1NQLtaQ8DJsUR5s/MLRNMTLBM5qyPf9UuKihYqJvT3UFBNoGmRWttFl1
+         POrkx1e2leTn1ELL6x0Jf8KNS5Mo8LWcar9E5RpqCv+V1ZbDJH6ngspMixoTYJClZsNa
+         OgZ3e23QXU7NipSQJ9HpWkIP85vMu22LTRo1VpzATES+Z7nmA8uCdbQKx765d/ZZhIH1
+         xjug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713775989; x=1714380789;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lN1tQRzEerHdmzjmn4cRyuYt4HVRT1txxhBtvZ2kMiw=;
-        b=plNjc/P4+Wg/0XgycX/StgUU6RBwSfxBlj9XBKY2qfgoImXM4FKaPg6WQgrOz+lsCG
-         s75vlKZInEzcTn2LYiGpvw0IpqDKD9yBVdZeW3CmLHILHszT5+JjsnbPA5ebX3RUGil8
-         FMQJETaZLywAvj6MTm+otKI9Ea2muqYkBtoR9DbmNYHbG+JSTKPafIliMYlgxphJnjxY
-         eMfD436RBzhI7MHokshwHfpaKinJ5lGIEC5TL7I0pqyIBPbJ4+ioS60AirNDrvNMAl7d
-         8qRSxoLMIOR96mn/LQmcx0/Z6533odnIAlqz5GjMQ3s9LszNJSFJNdyluNviaoQiCrM8
-         NHiw==
-X-Forwarded-Encrypted: i=1; AJvYcCV3RHcod5LkGsoAE/IBfZ8AnXLcPIr/7GP/sWcCMZEEUIt0ShdYM9zpIUMPsJsc3PeLOVmN9E7LmzdgP4mfeUoqylB1RGgzBexSiO69
-X-Gm-Message-State: AOJu0YypJwHCJ+0xBJCTAVkywYa3YiHXPpNura7emeRtHEXVucvlKqV1
-	Uq/yUv2xDVQka7431hsGS5oCTCMR589IqZnKT542iQDofSs+sP8Fb+sTMbPbodYH8KuGRmrmcJd
-	x3/gbaaXTw06ss1xXdSfAQyUHHgCdUdQMJMZJ
-X-Google-Smtp-Source: AGHT+IHiWq6aKJVjmRYs6eoqRfnvo8yT5HLI3JcYkmFYWskHKOoqRZww/Gi0ZWtCrvhIddoIB2UxLZSS6zfATaWX3Xc=
-X-Received: by 2002:a25:c789:0:b0:dc7:32ea:c89f with SMTP id
- w131-20020a25c789000000b00dc732eac89fmr8266839ybe.15.1713775988625; Mon, 22
- Apr 2024 01:53:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713775986; x=1714380786;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+/fvR+HwOJPjnOfbOHG69UP92YiSjqkbM928Puj2/Go=;
+        b=ib0mfMRCtIR6QmJWy/yLymQN/H5fHd0PJAjbsx2sayAMUUS1DSaZmt/MjGxs3Q84UQ
+         Ih0ZL6P9oZ2iiheBlFSy+vnArgWO8LyLE4P+fv6vk9iUJps9RcPRBxGmc6ZPOJkzdBNx
+         weCMYcAxqTEwMC8qe/TR+VNEhvkWZ74zvooGA9MvmCUarzGV8Vgp9jF/XM+c7jp5MGc8
+         mrwgdZxBeITff1WviUrQWEG9eFQvFjFIxa3ctY/Jt8rU81BMfFoIHZEEfMG9r7pBD2Ze
+         05pg4Z0EeapME7COr0Aqsgzzmf+iLd15csF7UavPXiRsuZtkGcENdkysgFC19D/JWVy/
+         1LHg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQCvPWIsEdM3lOjKrAMHcO4oLw3KQzQOQfPvsrGwngOeKm8XJ5KZckAVO1l4Rygw1S/XF/g8Vg8iCwp3NjyJnj+SbHSpLotUTt0/Ql
+X-Gm-Message-State: AOJu0YwmqM0f834sYROnSIzgelqLfNaNe4qxWIQPi2PJdq02Yd/DVMtW
+	+/75zAPX+KHlPmPy0Lw52g2OvNMbXoihIHW0QQbyjqi9FK6tPPiW6vAyuMPVxYc=
+X-Google-Smtp-Source: AGHT+IFE4R9zCUkzHMX1ToR2kyTpvZV9gQXHpyVa4BPp1ldGkiKbLmpz+4IIFAyNc6nOuO6PT/9Ayg==
+X-Received: by 2002:a05:600c:3baa:b0:418:1303:c3d1 with SMTP id n42-20020a05600c3baa00b004181303c3d1mr7145059wms.3.1713775986113;
+        Mon, 22 Apr 2024 01:53:06 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:dc65:11af:998:225e? ([2a01:e0a:999:a3a0:dc65:11af:998:225e])
+        by smtp.gmail.com with ESMTPSA id g7-20020a05600c310700b0041a92bb0c10sm25826wmo.2.2024.04.22.01.53.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 01:53:05 -0700 (PDT)
+Message-ID: <f89c79f7-a09e-4fcf-8e16-0875202ade4a@rivosinc.com>
+Date: Mon, 22 Apr 2024 10:53:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417191418.1341988-3-cmllamas@google.com> <20240418081222.3871629-1-aliceryhl@google.com>
- <ZiRUcEtIypy1n4Xj@google.com>
-In-Reply-To: <ZiRUcEtIypy1n4Xj@google.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Mon, 22 Apr 2024 10:52:57 +0200
-Message-ID: <CAH5fLgi96g-vQY-kzEZtkjgidqLy5dOSyFS=8dTE_QtQcpu4=Q@mail.gmail.com>
-Subject: Re: [PATCH 2/4] binder: migrate ioctl to new PF_SPAM_DETECTION
-To: Carlos Llamas <cmllamas@google.com>
-Cc: arve@android.com, brauner@kernel.org, gregkh@linuxfoundation.org, 
-	joel@joelfernandes.org, kernel-team@android.com, linux-kernel@vger.kernel.org, 
-	maco@android.com, surenb@google.com, tkjos@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 03/12] dt-bindings: riscv: add Zc* extension rules
+ implied by C extension
+To: Conor Dooley <conor@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
+ Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, kvm@vger.kernel.org,
+ kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
+References: <20240418124300.1387978-1-cleger@rivosinc.com>
+ <20240418124300.1387978-4-cleger@rivosinc.com>
+ <20240419-blinked-timid-da722ec6ddc4@spud>
+Content-Language: en-US
+From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20240419-blinked-timid-da722ec6ddc4@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, Apr 21, 2024 at 1:49=E2=80=AFAM Carlos Llamas <cmllamas@google.com>=
- wrote:
->
-> On Thu, Apr 18, 2024 at 08:12:22AM +0000, Alice Ryhl wrote:
-> > Carlos Llamas <cmllamas@google.com> writes:
-> > > @@ -5553,7 +5553,8 @@ static long binder_ioctl(struct file *filp, uns=
-igned int cmd, unsigned long arg)
-> > >                     goto err;
-> > >             }
-> > >             binder_inner_proc_lock(proc);
-> > > -           proc->oneway_spam_detection_enabled =3D (bool)enable;
-> > > +           proc->flags &=3D ~PF_SPAM_DETECTION;
-> > > +           proc->flags |=3D enable & PF_SPAM_DETECTION;
-> >
-> > The bitwise and in `enable & PF_SPAM_DETECTION` only works because
-> > PF_SPAM_DETECTION happens to be equal to 1. This seems pretty fragile t=
-o
-> > me. Would you be willing to do this instead?
-> >
-> > proc->flags &=3D ~PF_SPAM_DETECTION;
-> > if (enable)
-> >       proc->flags |=3D PF_SPAM_DETECTION;
-> >
->
-> I don't think it is fragile since PF_SPAM_DETECTION is fixed. However,
-> I agree the code is missing context about the flag being bit 0 and your
-> version addresses this problem. So I'll take it for v2, thanks!
 
-Thanks! By fragile I mean that it could result in future mistakes,
-e.g. somebody could copy this code and use it elsewhere with a
-different bit flag that might not be bit 0.
 
-> > Carlos Llamas <cmllamas@google.com> writes:
-> > > -                   if (proc->oneway_spam_detection_enabled &&
-> > > -                              w->type =3D=3D BINDER_WORK_TRANSACTION=
-_ONEWAY_SPAM_SUSPECT)
-> > > +                   if (proc->flags & PF_SPAM_DETECTION &&
-> > > +                       w->type =3D=3D BINDER_WORK_TRANSACTION_ONEWAY=
-_SPAM_SUSPECT)
-> >
-> > Maybe I am just not sufficiently familiar with C, but I had to look up
-> > the operator precedence rules for this one. Could we add parenthesises
-> > around `proc->flags & PF_SPAM_DETECTION`? Or even define a macro for it=
-?
->
-> I think this is fairly common in C but I can definitly add the extra
-> paranthesis if it helps.
+On 19/04/2024 17:49, Conor Dooley wrote:
+> On Thu, Apr 18, 2024 at 02:42:26PM +0200, Clément Léger wrote:
+>> As stated by Zc* spec:
+>>
+>> "As C defines the same instructions as Zca, Zcf and Zcd, the rule is that:
+>>  - C always implies Zca
+>>  - C+F implies Zcf (RV32 only)
+>>  - C+D implies Zcd"
+>>
+>> Add additionnal validation rules to enforce this in dts.
+> 
+> I'll get it out of the way: NAK, and the dts patch is the perfect
+> example of why. I don't want us to have to continually update
+> devicetrees. If these are implied due to being subsets of other
+> extensions, then software should be able to enable them when that
+> other extension is present.
 
-Yeah, makes sense. Thanks!
+Acked.
 
-With the mentioned changes, you may add:
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+> 
+> My fear is that, and a quick look at the "add probing" commit seemed to
+> confirm it, new subsets would require updates to the dts, even though
+> the existing extension is perfectly sufficient to determine presence.
+> 
+> I definitely want to avoid continual updates to the devicetree for churn
+> reasons whenever subsets are added, but not turning on the likes of Zca
+> when C is present because "the bindings were updated to enforce this"
+> is a complete blocker. I do concede that having two parents makes that
+> more difficult and will likely require some changes to how we probe - do
+> we need to have a "second round" type thing?
 
-Alice
+Yeah, I understand. At first, I actually did the modifications in the
+ISA probing loop with some dependency probing (ie loop while we don't
+have a stable extension state). But I thought that it was not actually
+our problem but rather the ISA string provider. For instance, Qemu
+provides them.
+
+
+> Taking Zcf as an example, maybe something like making both of C and F into
+> "standard" supersets and adding a case to riscv_isa_extension_check()
+> that would mandate that Zca and F are enabled before enabling it, and we
+> would ensure that C implies Zca before it implies Zcf?
+
+I'm afraid that riscv_isa_extension_check() will become a rat nest so
+rather than going that way, I would be in favor of adding a validation
+callback for the extensions if needed.
+
+> 
+> Given we'd be relying on ordering, we have to perform the same implication
+> for both F and C and make sure that the "implies" struct has Zca before Zcf.
+> I don't really like that suggestion, hopefully there's a nicer way of doing
+> that, but I don't like the dt stuff here.
+
+I guess the "cleanest" way would be to have some "defered-like"
+mechanism in ISA probing which would allow to handle ordering as well as
+dependencies/implies for extensions. For Zca, Zcf, we actually do not
+have ordering problems but I think it would be a bit broken not to
+support that as well.
+
+I can actually revive the work mentioned above to handle that and see if
+it works ok.
+
+Clément
+
+> 
+> Thanks,
+> Conor.
+> 
+>>
+>> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+>> ---
+>>  .../devicetree/bindings/riscv/cpus.yaml       |  8 +++--
+>>  .../devicetree/bindings/riscv/extensions.yaml | 34 +++++++++++++++++++
+>>  2 files changed, 39 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
+>> index d87dd50f1a4b..c4e2c65437b1 100644
+>> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+>> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+>> @@ -168,7 +168,7 @@ examples:
+>>                  i-cache-size = <16384>;
+>>                  reg = <0>;
+>>                  riscv,isa-base = "rv64i";
+>> -                riscv,isa-extensions = "i", "m", "a", "c";
+>> +                riscv,isa-extensions = "i", "m", "a", "c", "zca";
+>>  
+>>                  cpu_intc0: interrupt-controller {
+>>                          #interrupt-cells = <1>;
+>> @@ -194,7 +194,8 @@ examples:
+>>                  reg = <1>;
+>>                  tlb-split;
+>>                  riscv,isa-base = "rv64i";
+>> -                riscv,isa-extensions = "i", "m", "a", "f", "d", "c";
+>> +                riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zca",
+>> +                                       "zcd";
+>>  
+>>                  cpu_intc1: interrupt-controller {
+>>                          #interrupt-cells = <1>;
+>> @@ -215,7 +216,8 @@ examples:
+>>                  compatible = "riscv";
+>>                  mmu-type = "riscv,sv48";
+>>                  riscv,isa-base = "rv64i";
+>> -                riscv,isa-extensions = "i", "m", "a", "f", "d", "c";
+>> +                riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "zca",
+>> +                                       "zcd";
+>>  
+>>                  interrupt-controller {
+>>                          #interrupt-cells = <1>;
+>> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
+>> index db7daf22b863..0172cbaa13ca 100644
+>> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+>> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+>> @@ -549,6 +549,23 @@ properties:
+>>                  const: zca
+>>              - contains:
+>>                  const: f
+>> +      # C extension implies Zca
+>> +      - if:
+>> +          contains:
+>> +            const: c
+>> +        then:
+>> +          contains:
+>> +            const: zca
+>> +      # C extension implies Zcd if d
+>> +      - if:
+>> +          allOf:
+>> +            - contains:
+>> +                const: c
+>> +            - contains:
+>> +                const: d
+>> +        then:
+>> +          contains:
+>> +            const: zcd
+>>  
+>>  allOf:
+>>    # Zcf extension does not exists on rv64
+>> @@ -566,6 +583,23 @@ allOf:
+>>            not:
+>>              contains:
+>>                const: zcf
+>> +  # C extension implies Zcf if f on rv32 only
+>> +  - if:
+>> +      properties:
+>> +        riscv,isa-extensions:
+>> +          allOf:
+>> +            - contains:
+>> +                const: c
+>> +            - contains:
+>> +                const: f
+>> +        riscv,isa-base:
+>> +          contains:
+>> +            const: rv32i
+>> +    then:
+>> +      properties:
+>> +        riscv,isa-extensions:
+>> +          contains:
+>> +            const: zcf
+>>  
+>>  additionalProperties: true
+>>  ...
+>> -- 
+>> 2.43.0
+>>
 
