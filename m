@@ -1,62 +1,60 @@
-Return-Path: <linux-kernel+bounces-154282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AA4A8ADA3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:08:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01B0C8ADA42
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:09:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CAF3B2894F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:08:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DF5A1F2150F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32CD216E888;
-	Mon, 22 Apr 2024 23:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 969F516EC0A;
+	Mon, 22 Apr 2024 23:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ICIJlkTZ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dkFEwQQT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75EC716DEDD;
-	Mon, 22 Apr 2024 23:56:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8AC16E869;
+	Mon, 22 Apr 2024 23:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830219; cv=none; b=TfqszKTETnG7MvjmS87zHqz2dIgScT9LhKbtHzXS5Nc5xnlnAd9oa5dPAdEp82UKA8a0uXdv+GvGzAf2ua4cNcypkcB6AQ9eyG5tk1l62TyPHv/gwGdJeX/PNodPN8MGQsz/iTKO1xSbQzEyoSuPHvp1wMoXCxcg2EYrzsKbO1I=
+	t=1713830220; cv=none; b=LUf+VGbRPr2bnuVDkbobR35vXC7ioiipRojGnJ41Ox1ytu7B1NI+T6SISfbHptLf8kZ1Yscu5YjYCQXApxkP4H98BSOQUcav3bwMYbYybiCAY1RQZZi+3/ZMxR6rSbTPz02uciobJd0VTuVM6oCYI618QB9w1aKfcvaY2/2iK4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830219; c=relaxed/simple;
-	bh=EXCJ+V8SmdEPBMqU6mG4n8sBBWp3gDKxqrjHcoHQGeI=;
+	s=arc-20240116; t=1713830220; c=relaxed/simple;
+	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GFjmIWP5Wrfl+iMeYCW1305rdVnlr19CranKvbxDslVPw8ZAw6zFJ3w4jfyy2eQv/xYzPMGoliWRISTzEXKnZzS2BfBTZW/TiSxpa5OB8DpjYgfyqcQpo+oMHSp7iT/t5nRr/6LebDEqGHmqfU143zkjboCQOj9mYVQhXMp6Zrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ICIJlkTZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5585C3277B;
-	Mon, 22 Apr 2024 23:56:57 +0000 (UTC)
+	 MIME-Version; b=N8UAJpTKvVxNc5pJoCyZ6ZoSVsEyIAPwXdP8AextgYBN6hu1DDDoYiFg/VEzlIx/R+1L49QYWbxUShQdsQuT+cRF7Griqc8jOPFtP0EWlbQvpKGPSHdtuGqgFS3l669vsZcrs74yVs5Hk8921MpnhVXj6vn+FVfg+KSPuWuwgyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dkFEwQQT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C9C6C32783;
+	Mon, 22 Apr 2024 23:56:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830219;
-	bh=EXCJ+V8SmdEPBMqU6mG4n8sBBWp3gDKxqrjHcoHQGeI=;
+	s=k20201202; t=1713830220;
+	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ICIJlkTZAHiaFlIf7jJNeVExAnK/V7O8x8NBOblaXt9RAehnYdjBB7jcFQMK1lVJ1
-	 NnqMInHkUCxVxviUlMX/Z7pJzLBqXRgKaxFLnN0jbZLWQ74LY0Jx7az6gbw2LtBguX
-	 DN/3cfZnY7sCNdvnlQSaPRUKDZ1su14OnZ+FX4JjO50XvKHfWjAxDtsxiiSmGer7ex
-	 tGLfFM0Y3osEGZ81nBN5zGsT1lAt1eRzLedtgEPwFCuvZbgQw+3UomEWsDnu1Iv8gu
-	 OAkWD5WLOQWj4fnvQsy/BuDpJEXJpk5PBOr0bDWG/EtculgiQ2+k74PIwBwq6RbiAt
-	 j64AEotj+knVQ==
+	b=dkFEwQQTHp8jNekHFEm48xA2hTIC0N0YwGQaNiEaN+RmHUFdwBFCCeMaLJHd9UFYd
+	 8Z9+9RrgnxchJH/EcdXNOsFixM38kcaKk6DYKSpvidrxIC/iHVWUkufXQQr5Rel+MX
+	 pqZgBAJSwRgGihJiCglF0F2PiZbLTNeS5hRwFHpDGazF9Z/d3SNrWXvvdPBUEf6C3W
+	 edIEc1dy3+2S4gLqA/kEcNE0c5o+687FIuTJLyCci0pcMmGdeVPwc/Rtf70x43tULL
+	 5IMx0srRMxGDKluUJHkRiqvlURN3fJ4/NPTiEqDauocyQ0AVG7C6U2cfBdvtAUBaHq
+	 Y7eyWDId4ah3w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhigang Luo <Zhigang.Luo@amd.com>,
-	Felix Kuehling <felix.kuehling@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
+Cc: John Stultz <jstultz@google.com>,
+	Lee Jones <joneslee@google.com>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
 	Sasha Levin <sashal@kernel.org>,
-	Felix.Kuehling@amd.com,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 21/29] amd/amdkfd: sync all devices to wait all processes being evicted
-Date: Mon, 22 Apr 2024 19:17:02 -0400
-Message-ID: <20240422231730.1601976-21-sashal@kernel.org>
+	shuah@kernel.org,
+	nathan@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.6 22/29] selftests: timers: Fix valid-adjtimex signed left-shift undefined behavior
+Date: Mon, 22 Apr 2024 19:17:03 -0400
+Message-ID: <20240422231730.1601976-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231730.1601976-1-sashal@kernel.org>
 References: <20240422231730.1601976-1-sashal@kernel.org>
@@ -71,77 +69,136 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.28
 Content-Transfer-Encoding: 8bit
 
-From: Zhigang Luo <Zhigang.Luo@amd.com>
+From: John Stultz <jstultz@google.com>
 
-[ Upstream commit d06af584be5a769d124b7302b32a033e9559761d ]
+[ Upstream commit 076361362122a6d8a4c45f172ced5576b2d4a50d ]
 
-If there are more than one device doing reset in parallel, the first
-device will call kfd_suspend_all_processes() to evict all processes
-on all devices, this call takes time to finish. other device will
-start reset and recover without waiting. if the process has not been
-evicted before doing recover, it will be restored, then caused page
-fault.
+The struct adjtimex freq field takes a signed value who's units are in
+shifted (<<16) parts-per-million.
 
-Signed-off-by: Zhigang Luo <Zhigang.Luo@amd.com>
-Reviewed-by: Felix Kuehling <felix.kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Unfortunately for negative adjustments, the straightforward use of:
+
+  freq = ppm << 16 trips undefined behavior warnings with clang:
+
+valid-adjtimex.c:66:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
+        -499<<16,
+        ~~~~^
+valid-adjtimex.c:67:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
+        -450<<16,
+        ~~~~^
+.
+
+Fix it by using a multiply by (1 << 16) instead of shifting negative values
+in the valid-adjtimex test case. Align the values for better readability.
+
+Reported-by: Lee Jones <joneslee@google.com>
+Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Signed-off-by: John Stultz <jstultz@google.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Link: https://lore.kernel.org/r/20240409202222.2830476-1-jstultz@google.com
+Link: https://lore.kernel.org/lkml/0c6d4f0d-2064-4444-986b-1d1ed782135f@collabora.com/
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_device.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+ .../testing/selftests/timers/valid-adjtimex.c | 73 +++++++++----------
+ 1 file changed, 36 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-index 93ce181eb3baa..913c70a0ef44f 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-@@ -935,7 +935,6 @@ void kgd2kfd_suspend(struct kfd_dev *kfd, bool run_pm)
- {
- 	struct kfd_node *node;
- 	int i;
--	int count;
- 
- 	if (!kfd->init_complete)
- 		return;
-@@ -943,12 +942,10 @@ void kgd2kfd_suspend(struct kfd_dev *kfd, bool run_pm)
- 	/* for runtime suspend, skip locking kfd */
- 	if (!run_pm) {
- 		mutex_lock(&kfd_processes_mutex);
--		count = ++kfd_locked;
--		mutex_unlock(&kfd_processes_mutex);
+diff --git a/tools/testing/selftests/timers/valid-adjtimex.c b/tools/testing/selftests/timers/valid-adjtimex.c
+index 48b9a803235a8..d13ebde203221 100644
+--- a/tools/testing/selftests/timers/valid-adjtimex.c
++++ b/tools/testing/selftests/timers/valid-adjtimex.c
+@@ -21,9 +21,6 @@
+  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  *   GNU General Public License for more details.
+  */
 -
- 		/* For first KFD device suspend all the KFD processes */
--		if (count == 1)
-+		if (++kfd_locked == 1)
- 			kfd_suspend_all_processes();
-+		mutex_unlock(&kfd_processes_mutex);
- 	}
- 
- 	for (i = 0; i < kfd->num_nodes; i++) {
-@@ -959,7 +956,7 @@ void kgd2kfd_suspend(struct kfd_dev *kfd, bool run_pm)
- 
- int kgd2kfd_resume(struct kfd_dev *kfd, bool run_pm)
- {
--	int ret, count, i;
-+	int ret, i;
- 
- 	if (!kfd->init_complete)
- 		return 0;
-@@ -973,12 +970,10 @@ int kgd2kfd_resume(struct kfd_dev *kfd, bool run_pm)
- 	/* for runtime resume, skip unlocking kfd */
- 	if (!run_pm) {
- 		mutex_lock(&kfd_processes_mutex);
--		count = --kfd_locked;
--		mutex_unlock(&kfd_processes_mutex);
 -
--		WARN_ONCE(count < 0, "KFD suspend / resume ref. error");
--		if (count == 0)
-+		if (--kfd_locked == 0)
- 			ret = kfd_resume_all_processes();
-+		WARN_ONCE(kfd_locked < 0, "KFD suspend / resume ref. error");
-+		mutex_unlock(&kfd_processes_mutex);
- 	}
+-
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <time.h>
+@@ -62,45 +59,47 @@ int clear_time_state(void)
+ #define NUM_FREQ_OUTOFRANGE 4
+ #define NUM_FREQ_INVALID 2
  
- 	return ret;
++#define SHIFTED_PPM (1 << 16)
++
+ long valid_freq[NUM_FREQ_VALID] = {
+-	-499<<16,
+-	-450<<16,
+-	-400<<16,
+-	-350<<16,
+-	-300<<16,
+-	-250<<16,
+-	-200<<16,
+-	-150<<16,
+-	-100<<16,
+-	-75<<16,
+-	-50<<16,
+-	-25<<16,
+-	-10<<16,
+-	-5<<16,
+-	-1<<16,
++	 -499 * SHIFTED_PPM,
++	 -450 * SHIFTED_PPM,
++	 -400 * SHIFTED_PPM,
++	 -350 * SHIFTED_PPM,
++	 -300 * SHIFTED_PPM,
++	 -250 * SHIFTED_PPM,
++	 -200 * SHIFTED_PPM,
++	 -150 * SHIFTED_PPM,
++	 -100 * SHIFTED_PPM,
++	  -75 * SHIFTED_PPM,
++	  -50 * SHIFTED_PPM,
++	  -25 * SHIFTED_PPM,
++	  -10 * SHIFTED_PPM,
++	   -5 * SHIFTED_PPM,
++	   -1 * SHIFTED_PPM,
+ 	-1000,
+-	1<<16,
+-	5<<16,
+-	10<<16,
+-	25<<16,
+-	50<<16,
+-	75<<16,
+-	100<<16,
+-	150<<16,
+-	200<<16,
+-	250<<16,
+-	300<<16,
+-	350<<16,
+-	400<<16,
+-	450<<16,
+-	499<<16,
++	    1 * SHIFTED_PPM,
++	    5 * SHIFTED_PPM,
++	   10 * SHIFTED_PPM,
++	   25 * SHIFTED_PPM,
++	   50 * SHIFTED_PPM,
++	   75 * SHIFTED_PPM,
++	  100 * SHIFTED_PPM,
++	  150 * SHIFTED_PPM,
++	  200 * SHIFTED_PPM,
++	  250 * SHIFTED_PPM,
++	  300 * SHIFTED_PPM,
++	  350 * SHIFTED_PPM,
++	  400 * SHIFTED_PPM,
++	  450 * SHIFTED_PPM,
++	  499 * SHIFTED_PPM,
+ };
+ 
+ long outofrange_freq[NUM_FREQ_OUTOFRANGE] = {
+-	-1000<<16,
+-	-550<<16,
+-	550<<16,
+-	1000<<16,
++	-1000 * SHIFTED_PPM,
++	 -550 * SHIFTED_PPM,
++	  550 * SHIFTED_PPM,
++	 1000 * SHIFTED_PPM,
+ };
+ 
+ #define LONG_MAX (~0UL>>1)
 -- 
 2.43.0
 
