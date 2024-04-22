@@ -1,622 +1,246 @@
-Return-Path: <linux-kernel+bounces-153997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90CAC8AD5D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:32:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 286F38AD5DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:35:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0627F1F21B0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:32:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2BAD281D89
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:34:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B7318C38;
-	Mon, 22 Apr 2024 20:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BAA11B949;
+	Mon, 22 Apr 2024 20:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NsLOIHe9"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ZwzAgGMT";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="zLQ/ZVU6"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18FB81BC43
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713817910; cv=none; b=LWPiUQYUD5XeAbGhztSBqBQR4MPwuUNKrtsPlLfPT62vwyyVQC8XgcAuAE3jZcYE3XiHckppkZ9t9wVrFpIoTEAv1tKWjuKn0UXzp5lMJoMEtp+msorM3QVT2108nwwLhWYdkZEzFnin2buwA859Ppid8YpXjx88ACsnW/9AHks=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713817910; c=relaxed/simple;
-	bh=tH8f7QPR5004yprLGXh0RuKw5AU+LGbys3PGVD8gtpQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UNzqX+9OopzoOoY++mlR7FPuBWbturZw3TcCF/VPYUcNMwTIA5PRLyr42lhvx30fM28EjbD+oo1VLLtMoercsHChyGxm4LUbERC1/QWX+4pjAGG6qv/nwiCqpWvgw2MLCjvCrL104E0C/icZh9P+O2FTBwblfjLQ+SZpyn2HhcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NsLOIHe9; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41a1d88723bso12481355e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:31:46 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07B01804E;
+	Mon, 22 Apr 2024 20:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713818092; cv=fail; b=YdzTbaN9iyQIB/BBymQkArEOxS09hRPdjXSYA11JDhH8e7XGRPLhwEcweZTMhjEC4DNLAQ7EmN6CFqn3tZ2aUAtPeeNZxPdDin1dVd2jRCHdumjeshOUZbjXFaHiuNpHaXkXVxHlVK4288vzLUviPU/InrJhXwPG0HRRqFSUX8w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713818092; c=relaxed/simple;
+	bh=L2VwAb0XID+NmRIpW+icy2ngQYfjwMpjvmTiDtvdv1Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Ek/XsuZTeIQVyUuhQ37/RPGYz2GUKPSS9HE4XrjjHSqEeMSdYycqxHGRf2zBCjMhA9EnOBZrV/PMP4RtcYYAOyy6eSyoka1SH1JzvvbzktOqnFYW85CLeX7yTpmt9eIjL3Ih4Tz0GShsnAs3jH/fwKYlGThvWSzq3djm+uy1DdM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ZwzAgGMT; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=zLQ/ZVU6; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43MHnQ9j005092;
+	Mon, 22 Apr 2024 20:34:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=3K4P4JuBuNlZbcsga6MXMOdIH6qrTwFkbB7Gx2cPTKE=;
+ b=ZwzAgGMTfvxXlJyznEhrNxgm++sMzPILSEa9yCgbVVrHOgTW9A9//WSxFB9jxTuGB1Yo
+ YvSYHVYREwWLio8PMYscasox21eJHxU0o36vPeI8FSgO6MAmVkpsIy7EYtdQk6qyCryB
+ Zpv+U4k7EKsAObXBcw+QH84GpJgouPe1uQ32XSQ8ZU4sXYkHozZIb9Z08o8WBCd/FefN
+ atqTC9Ab2H23bCuzSo1yTytTgAdC+BM4yEjyTB9UfXVL+YWkzTjLPNeWFobYnHEHFjTQ
+ AA1QWMrc3cZ0VGktBozRRJL0fpTtWB8uWDMcVs4YCmg5mnTzejnPMV+U1AJiXLZXILkl VQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm4md3pce-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 22 Apr 2024 20:34:20 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43MK6dub006759;
+	Mon, 22 Apr 2024 20:34:19 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xm45677uw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 22 Apr 2024 20:34:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jqcjo50jTpJv5AwEftFQlJG28R3RXBrXYIFzr6vEt6zkQrAfd4f570pSX2cDS+LGYoutYz4xWRO71dZFxsbEnIaxWmfO4k1PWCVi4SmFG7PADRT81Glj8sAGmWSX17QXLURGzFeCHXF5iq9uMu4zz9a2ncTB880QBLzYHbbkzRLukNuYUR+orwHlz1J/2i9xS5KmJSK0swoaslYGLkTj13BBNZw2XDum1tZQgDX/PEyi1wG1XAg2z1IMKbhPVD7USVt6NXGbHMq/ePFNfd4gKuFCOj25Iyw7cDohdkIBmeG+xX0UYEqTLD5QMf1bg14Bd4sUFE2HFIAxj+ePcU68gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3K4P4JuBuNlZbcsga6MXMOdIH6qrTwFkbB7Gx2cPTKE=;
+ b=iHKRKxg0Mrxd22xp6EswrUZKBhV2r2044aWwOPg5BWeqViwygx3id/nLIqk6SCy0fCipSqs+z1sR5b4ahlX25Apa9DKFYsPvM5RYIMsAbbRegfnXWUWL9B7L6/l3frJeFTPpG1iecuI+2OvHM6+p3HcIL69Qsmh3RBmalNSk3ygndTPazQMxuTk9h4chS0EZg5RFkziRmV7OGnN9xUO7JJtDoYK1eEmXsfqQxN8QoFr2UfZnrKI4YIXQA6sF3u3PojMKqljh2Jo79ddHI2+BkW4KzA30K8Hl95rog2WGRLDbGm5oblPQyQG3m/TWBD46dWzY5UJJuqu3cEE5vjKR0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713817905; x=1714422705; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LB3tL74SYOSKnC8JgrVn9834plSFpz7Dk972lSfKZSY=;
-        b=NsLOIHe9WIpa+9QOjA7grAHu7RjgYB6iwL9IxLcWGBe4XsU2TnRUIyTvI3zEYf+pV+
-         phsARAUaRvXy8Q/FycP9RZN7gt32OOw8LAWBZ1HcBp08IvejgKir4eNZ/1/Ao9qAljTn
-         HRg/FRQCWeNroBhG3lWSafBftSfP84FDgSgV1pf6JOPrRHaf4MVvAPPyI3ZaBEaAgR7O
-         UY+/tjQD43OA+/GAg/qmKQQTg63MGAzlFd45Ox095WkwZ0eXL0uTcIKY3M6ncXy42IpH
-         3ah6Rl+HE61CdMDkC6lwlYDJ1fd5i8WEZfbueuLRRYZVSV7Euq+7fz280zx/NGyPzfJH
-         yzQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713817905; x=1714422705;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LB3tL74SYOSKnC8JgrVn9834plSFpz7Dk972lSfKZSY=;
-        b=c3D2zlegzzM9PLtUz/442kPBz0EER5Mh1KGrlvvxJnnlKx5OHS9zcGiyh3AWxEeiXk
-         VS/6ySkAiIRolT5++2sXPxTq5v+swadpaG2sgQOad2DVaFvjRpFJfswuW2/w+z7j9ALj
-         nfSI8v66+xRWgFCAoZ3q4NswT6loDpESHUaUMOESB1esZprrq3L576/VuUKDIh21IBs3
-         l5wRUPN6v3GVwjhbc/kFzE7tlxM9pAnuI4xeWyBTKOJIPll2TNqhZ4ZZxwzzAVCY/mW8
-         wTIdIV7Jzdd0bv7sNYh0Zz4mCcLUThQk1daRZo4eJXxnlDXXzryGCJGjnAGqCmaue6eD
-         HJgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX3J5Em4ypEZpyqQeUAueySU5GZHwhxj82fTz12h3EMJtEHlf6D25nH9sxqTZIRr7NNN3L1ge+GJRoy/DuCQdAWuYIdDej9BtSqINVo
-X-Gm-Message-State: AOJu0Yz5sFMOPoJRPP/HjrDia81YAvkifvn1PyCCMsT1JCPr3jRkLsi4
-	vjOzWZEoLfDo5aIAZJRU10ZqjsEp4+DPrSYIRJl9+wUr8JM/K/Gh32O4HAKorz2jLU5GKehXYBJ
-	YNPzr
-X-Google-Smtp-Source: AGHT+IE9z46becKsP++66ak5ByR/x/FbkQcMGZbghA8QH5qzPZbQog93SWA80xnsluH8NonCimI51g==
-X-Received: by 2002:adf:f304:0:b0:34a:3e4a:7964 with SMTP id i4-20020adff304000000b0034a3e4a7964mr6801713wro.49.1713817905191;
-        Mon, 22 Apr 2024 13:31:45 -0700 (PDT)
-Received: from google.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id t4-20020a5d4604000000b00343826878e8sm12888207wrq.38.2024.04.22.13.31.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 13:31:44 -0700 (PDT)
-Date: Mon, 22 Apr 2024 21:31:41 +0100
-From: Vincent Donnefort <vdonnefort@google.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-	kernel-team@android.com, rdunlap@infradead.org, linux-mm@kvack.org
-Subject: Re: [PATCH v20 2/5] ring-buffer: Introducing ring-buffer mapping
- functions
-Message-ID: <ZibJLSdOlxZUGRBa@google.com>
-References: <20240406173649.3210836-1-vdonnefort@google.com>
- <20240406173649.3210836-3-vdonnefort@google.com>
- <9c553dae-5395-4ec9-b41c-a4decc37acf2@redhat.com>
- <06c6b023-6cdc-430d-be0b-086fd6453aeb@redhat.com>
- <ZiaqgNFLOwimE2Me@google.com>
- <0283adf3-0295-4b2d-997e-befb02b1cc1a@redhat.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3K4P4JuBuNlZbcsga6MXMOdIH6qrTwFkbB7Gx2cPTKE=;
+ b=zLQ/ZVU6FBb45if+MXxflQfnCqsu+ZFfsp+/QTbRUg32zDoTRc969e00EQMb7gzikj61CCx/9KEptV+jlZFpOChtDvHJ3wuqmitGy7/99aDbLQaufOSyRq7QS2JRmjoiKZ6Lvdy8pYOqktKdou1M/czHd6hTEJmMuY922If5BxU=
+Received: from DS0PR10MB7933.namprd10.prod.outlook.com (2603:10b6:8:1b8::15)
+ by DM4PR10MB7449.namprd10.prod.outlook.com (2603:10b6:8:17e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 22 Apr
+ 2024 20:34:16 +0000
+Received: from DS0PR10MB7933.namprd10.prod.outlook.com
+ ([fe80::2561:85b0:ae8f:9490]) by DS0PR10MB7933.namprd10.prod.outlook.com
+ ([fe80::2561:85b0:ae8f:9490%6]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
+ 20:34:15 +0000
+From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Marius Fleischer <fleischermarius@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>, stable@vger.kernel.org
+Subject: [PATCH] maple_tree: Fix mas_empty_area_rev() null pointer dereference
+Date: Mon, 22 Apr 2024 16:33:49 -0400
+Message-ID: <20240422203349.2418465-1-Liam.Howlett@oracle.com>
+X-Mailer: git-send-email 2.43.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: YT4PR01CA0355.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:fc::25) To DS0PR10MB7933.namprd10.prod.outlook.com
+ (2603:10b6:8:1b8::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0283adf3-0295-4b2d-997e-befb02b1cc1a@redhat.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR10MB7933:EE_|DM4PR10MB7449:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4092826d-4705-4a09-f7e9-08dc630b93e7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	=?us-ascii?Q?uODq/kldDq8yWccTv+HqrfQj/e71MrB6KrnrbMLSQpmePGK2pudEpO/Oh0FS?=
+ =?us-ascii?Q?+F2hsvH4D7L7WiivQHNNQ4vCO/XyAlovqg7eaBJhfH3YK6EGpxGCREVOypR3?=
+ =?us-ascii?Q?n9fKM7WIRb0Spz7ZLonyphxgNPH2pogX92Xo8N/IvdMzYZ0A7wIpNjrRCFZ/?=
+ =?us-ascii?Q?gcdbkLeGKWwA/4J8OkH6/6U0x24As3R9+z+fvMXQU5UvyYADjlnVM8eR2HvP?=
+ =?us-ascii?Q?psEZIAlndFLQzjKb0AjftVspng2zN0n4r8kmiy2wOG1t+GtKBgz71P6gWi3C?=
+ =?us-ascii?Q?0CWmYN9LY1y69fvYpHBc1Sq4s9RjR5yCEb+DWJDFDCJyJ6TKmzmrWj4hj57E?=
+ =?us-ascii?Q?Aw3tgGELQroPP4FZw4ScwPYSEjHZCVi9yGNTGE6mi5/PFuF2WmsTVDWmbscn?=
+ =?us-ascii?Q?gSHjTbYSOzU5Ez4rqelT3Bj5YBbmgWEI8B06qqYxNuH1fgdbKxfZ08FMdfHD?=
+ =?us-ascii?Q?VRSom8QMEfVoV5g04q3eKuq2ivbtHEhSbmXglobERvMR66iUT+sPie24xDlk?=
+ =?us-ascii?Q?mTlVNpBdRy/qoUfyAH1CKr1nXvILE1C7qrNQwjjh92ZfC06EBLAWj1LoAKSw?=
+ =?us-ascii?Q?OGXwlGqXTag7jxM8RhnOoqOV/cSmLmutlLdc2oLFrSj0Os9zu6VuNSAJScR7?=
+ =?us-ascii?Q?kQEh6RqZ1j1ywu2j8Un9aCUq/1Upc390yzosvLkvX4LbF5/cxQPv3c0iI3Vd?=
+ =?us-ascii?Q?MhUHuJPnfKXLpLg4pBftORibeVlrG6heaE/+LKmaaVTe7eFCDAPeygyW2/D4?=
+ =?us-ascii?Q?ncrkXBxgb6kxNxEQOl+6Q1lFiJ9uaFamVl1Vqw78xWXdLXn10g0YYsN2TUL1?=
+ =?us-ascii?Q?xDpp+G+0E5PRJqznPpHqQbDkFXdQkb5VU4ywIhs4OEj5nxiwLbA3866sgeiQ?=
+ =?us-ascii?Q?RISY60ehgu7xxcvTQEecY2LWJFsGJraKTvdOyf7AP9cROTWmF+CfqYoODG4h?=
+ =?us-ascii?Q?a1B+rPAC6tPgI73LbLXDAQzh+QEU+SUx9dfM3pWWQ5nxilye5AgdrzwnktVX?=
+ =?us-ascii?Q?Lj+xv0msnRr8RcVDkPvYwCNjfgdvE1O9XxgxhgkGAm9+ydyzFAICVyzWrxln?=
+ =?us-ascii?Q?Derk7vaWOJEHiIyht7/k/hClPzpGuQq+cYWs6ujZsd/n1CUhmvxodKnVjyro?=
+ =?us-ascii?Q?ZNZ7vG7OpcCj2XmtEufsixAWAtwC+H9ndoPrUMoKVEHJesIXSnhK9P4ZnZk3?=
+ =?us-ascii?Q?P1E8x2DIeQsuYUA7n9Lq1MwiMiQCznGur5mewRY9e+EPswN6wqfrC/qiCS6M?=
+ =?us-ascii?Q?4ElDxmOwV3jrdjaICVNB+X4A2GNUbr8TKsevEe2uHQ=3D=3D?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7933.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?WU3tVXQ86O4DbPE+2yzCuEse/8MhLunbQRjEQ8CjazDp3JgkK/yHz5bmQHj7?=
+ =?us-ascii?Q?uiKfU6yCX1jaBGAPjbI1o7BPBiAp46P3wUFmIVYV/t4fxRMoQJcAW+PD1wWU?=
+ =?us-ascii?Q?xbLyt/afZMXW/IhGikDqUjJ6uygawyQBfx4UznDKQa8ydalBrjwmJuk3xazU?=
+ =?us-ascii?Q?qfmizJmNGNS33g4c6JZnMgM/m4RB/ZNgY0XsQJph9XhUZ9RzJWr4cJfybgnB?=
+ =?us-ascii?Q?paQm7zYEi9gSyz891fv5tBcH1trMKeG42RGMv5tPUg2291pdrEiMERCPDgfh?=
+ =?us-ascii?Q?5/yBFxthF/pv71fmiX1I46VQpcqRGspTaR50PSHOPOyfATayrHZ1Ilu4JDZQ?=
+ =?us-ascii?Q?TybHBKQ9Et9NCaW+w1kGRYtmVx/zqadxl1lnNId2YJK2wQ13J1RIg/iyX2RU?=
+ =?us-ascii?Q?A9ZGD4IvcX+9EemTPCeVCtcM75yoxkblmuWFhS6/fBQP1fSb5ZDMFg9ZBYOd?=
+ =?us-ascii?Q?p0YvdKFrmafJWEWeNESrPNdJeslxdI32a/Xx0p3/eOyTcaidMUeQjFE4VaZk?=
+ =?us-ascii?Q?etKYwstrVHa5QixH8FvYbw6UDgd1oM2Qc5C6h4uMEoNeFH1fuqC75ehGp/tt?=
+ =?us-ascii?Q?tr4cb3TbQ1UQUx0Q6CdmHds9fH4VuPrAjfdvSP8Gto9zxblD4tsu7cCeXXnV?=
+ =?us-ascii?Q?kgkIjN+cfrz9z7NHXAmJd0JZkdJQe5Qe1RF0UpJm1slYOBKs1ZaSJm+sjHhT?=
+ =?us-ascii?Q?9IJWpAvsp/rsCT6RJ78peD/4MLBZYmLJYKzXRownjNNPvbsfFhNfScXzx/Tf?=
+ =?us-ascii?Q?AYPGyNd6Si6+LzRiuPPU7mGDGQz8oXg0fveq6lso/7KRb0NPEF8Ol5HMSWDq?=
+ =?us-ascii?Q?8x719GdtjIvuPzoQBAXKfeLLEBZF+TiGLBpPAcdhpBIhJVsPqEIMdjmNYcas?=
+ =?us-ascii?Q?cQJ4JPY2cauO1NOWmpXEg31g6Bb2WxkIZve2m7zry5j5Bmsu2oRsgbSm5IOi?=
+ =?us-ascii?Q?oEgAMWTo8C3BsQVR5bBe9NVK02IrbUjUeKW4AFLZwVkdVQueEqglWUZPAF3r?=
+ =?us-ascii?Q?XMKMnRxMgBWabfw32g9XHbT6v4ZjV+vvvRyrSRZv4xyfmlxc7grmUFaBGEgd?=
+ =?us-ascii?Q?H8SdXyC/VcZI94gscgpusbi88dM7mYlMmc8vDS3RzfuSDdcm7yE3N2OaHGid?=
+ =?us-ascii?Q?UJPSYQt+8ti1dP61xC/3TRsSsVUMIYVn8mxNcFz6/GQymGCcIlLtOa79coIb?=
+ =?us-ascii?Q?/90fdX6eRzkAhNgqDHIzMfwlFc0M2FvVBtyE67eukI58kN5MNf6VyLkG91my?=
+ =?us-ascii?Q?Ff7fT3Biy3rTdc1flLg7aLegsup1X1vuGpW9rCZDxMlgZLzXx3PJgFOOH1a7?=
+ =?us-ascii?Q?MVcvpWRrPjiRXPtXBjUfmBOGo5rOVh6CaEUvpWI4yd+vkpOnz+cg1j5PsYVw?=
+ =?us-ascii?Q?Qc3kRVBKqvVTBxlQh3Fn8ip7P+YFq1Smmfd2YCM0S+3J7j5YHyC2wiUXS9Zr?=
+ =?us-ascii?Q?QcHTrTVnUbWrxGL21e56AZNMWUsN/V5813WGLwrObylsgRDxZwVwPbx/eIn6?=
+ =?us-ascii?Q?6kfm6kw4KEsJxkxH9v10U2m0mA/SAVF/1v9cSfwuIaeSJPoOGzEN13PKAnJ4?=
+ =?us-ascii?Q?xlhJyBR0ZTWFGD25xVG5XWmNKSuClO5G6lB1JRuL?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	msdPbYdSCF+A15EvVU8gppw9cDvek1RJwLaaRruWoljdrrM8UURlMUke9+EVwqo/XGKcQoxnd1g3cUlyH4nogYTX2zx0flr0YPAphxtOcQ6xXBb2xFBFzggipVBip5XpnQ/mwkek3H6KqxxRJd9JGaFlTWyrCd/mfbEhJexmXoRhi79KOTC/aOVtHv0qcEYEJvFj+eSZDqnV/AU7eI12Y/Eu42S6sAa2qQ9rFgle9Zt7hPEGoMwOHmx+i8hmgkowVz+L+8y6QBY8PX7IDt7xNJ5Rg1BOw9/E1mX6yCdzQksMLnUfzwB61/1amjijgT7NAMo3MtXIqOLuLZA2MPeFaKZ5X2IdyGhrUVym9gFFYbcqj4yCir/DMYcO9mUiwcCrMjvCsy2LnrZZi0Zd3ZCr7JFHEI7nsETZyW2vWQxtP5O+UlwqFyEMk1PlS4ctNCBHfLA9ft4ZX17fR3T+vKH19PcFDZrKF2aJmv1MkjPbGWLfrpWgQocS+yHFkaytG3b3Q2WxeyHAcrrPEgkiVMivRstdLw8dRqtYkq0Mjgo87bSgljEsHz86BAIDdx/gaIU3VhFc93avIg04/gg8JOZhLIIj4m6YtQSMSMAS4czOH4E=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4092826d-4705-4a09-f7e9-08dc630b93e7
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB7933.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 20:34:15.8353
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iYo/pi03O8kX91OpNJcoeCZNH+evYN9I6ycYWyvRpJbYM9G/kJTHuKWG2kzMYiL5sSiurD+GVLL8nkaBvwNHng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB7449
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-22_14,2024-04-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404220087
+X-Proofpoint-ORIG-GUID: jmK1BxBrpnyHu7mVxlh1VW8R4MKeW1dW
+X-Proofpoint-GUID: jmK1BxBrpnyHu7mVxlh1VW8R4MKeW1dW
 
-On Mon, Apr 22, 2024 at 08:27:17PM +0200, David Hildenbrand wrote:
-> On 22.04.24 20:20, Vincent Donnefort wrote:
-> > Hi David,
-> > 
-> > Thanks for having a look, very much appreciated!
-> > 
-> > On Mon, Apr 22, 2024 at 11:27:11AM +0200, David Hildenbrand wrote:
-> > > On 19.04.24 20:25, David Hildenbrand wrote:
-> > > > On 06.04.24 19:36, Vincent Donnefort wrote:
-> > > > > In preparation for allowing the user-space to map a ring-buffer, add
-> > > > > a set of mapping functions:
-> > > > > 
-> > > > >      ring_buffer_{map,unmap}()
-> > > > > 
-> > > > > And controls on the ring-buffer:
-> > > > > 
-> > > > >      ring_buffer_map_get_reader()  /* swap reader and head */
-> > > > > 
-> > > > > Mapping the ring-buffer also involves:
-> > > > > 
-> > > > >      A unique ID for each subbuf of the ring-buffer, currently they are
-> > > > >      only identified through their in-kernel VA.
-> > > > > 
-> > > > >      A meta-page, where are stored ring-buffer statistics and a
-> > > > >      description for the current reader
-> > > > > 
-> > > > > The linear mapping exposes the meta-page, and each subbuf of the
-> > > > > ring-buffer, ordered following their unique ID, assigned during the
-> > > > > first mapping.
-> > > > > 
-> > > > > Once mapped, no subbuf can get in or out of the ring-buffer: the buffer
-> > > > > size will remain unmodified and the splice enabling functions will in
-> > > > > reality simply memcpy the data instead of swapping subbufs.
-> > > > > 
-> > > > > CC: <linux-mm@kvack.org>
-> > > > > Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
-> > > > > 
-> > > > > diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-> > > > > index dc5ae4e96aee..96d2140b471e 100644
-> > > > > --- a/include/linux/ring_buffer.h
-> > > > > +++ b/include/linux/ring_buffer.h
-> > > > > @@ -6,6 +6,8 @@
-> > > > >     #include <linux/seq_file.h>
-> > > > >     #include <linux/poll.h>
-> > > > > +#include <uapi/linux/trace_mmap.h>
-> > > > > +
-> > > > >     struct trace_buffer;
-> > > > >     struct ring_buffer_iter;
-> > > > > @@ -223,4 +225,8 @@ int trace_rb_cpu_prepare(unsigned int cpu, struct hlist_node *node);
-> > > > >     #define trace_rb_cpu_prepare	NULL
-> > > > >     #endif
-> > > > > +int ring_buffer_map(struct trace_buffer *buffer, int cpu,
-> > > > > +		    struct vm_area_struct *vma);
-> > > > > +int ring_buffer_unmap(struct trace_buffer *buffer, int cpu);
-> > > > > +int ring_buffer_map_get_reader(struct trace_buffer *buffer, int cpu);
-> > > > >     #endif /* _LINUX_RING_BUFFER_H */
-> > > > > diff --git a/include/uapi/linux/trace_mmap.h b/include/uapi/linux/trace_mmap.h
-> > > > > new file mode 100644
-> > > > > index 000000000000..ffcd8dfcaa4f
-> > > > > --- /dev/null
-> > > > > +++ b/include/uapi/linux/trace_mmap.h
-> > > > > @@ -0,0 +1,46 @@
-> > > > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > > > +#ifndef _TRACE_MMAP_H_
-> > > > > +#define _TRACE_MMAP_H_
-> > > > > +
-> > > > > +#include <linux/types.h>
-> > > > > +
-> > > > > +/**
-> > > > > + * struct trace_buffer_meta - Ring-buffer Meta-page description
-> > > > > + * @meta_page_size:	Size of this meta-page.
-> > > > > + * @meta_struct_len:	Size of this structure.
-> > > > > + * @subbuf_size:	Size of each sub-buffer.
-> > > > > + * @nr_subbufs:		Number of subbfs in the ring-buffer, including the reader.
-> > > > > + * @reader.lost_events:	Number of events lost at the time of the reader swap.
-> > > > > + * @reader.id:		subbuf ID of the current reader. ID range [0 : @nr_subbufs - 1]
-> > > > > + * @reader.read:	Number of bytes read on the reader subbuf.
-> > > > > + * @flags:		Placeholder for now, 0 until new features are supported.
-> > > > > + * @entries:		Number of entries in the ring-buffer.
-> > > > > + * @overrun:		Number of entries lost in the ring-buffer.
-> > > > > + * @read:		Number of entries that have been read.
-> > > > > + * @Reserved1:		Reserved for future use.
-> > > > > + * @Reserved2:		Reserved for future use.
-> > > > > + */
-> > > > > +struct trace_buffer_meta {
-> > > > > +	__u32		meta_page_size;
-> > > > > +	__u32		meta_struct_len;
-> > > > > +
-> > > > > +	__u32		subbuf_size;
-> > > > > +	__u32		nr_subbufs;
-> > > > > +
-> > > > > +	struct {
-> > > > > +		__u64	lost_events;
-> > > > > +		__u32	id;
-> > > > > +		__u32	read;
-> > > > > +	} reader;
-> > > > > +
-> > > > > +	__u64	flags;
-> > > > > +
-> > > > > +	__u64	entries;
-> > > > > +	__u64	overrun;
-> > > > > +	__u64	read;
-> > > > > +
-> > > > > +	__u64	Reserved1;
-> > > > > +	__u64	Reserved2;
-> > > > > +};
-> > > > > +
-> > > > > +#endif /* _TRACE_MMAP_H_ */
-> > > > > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> > > > > index cc9ebe593571..793ecc454039 100644
-> > > > > --- a/kernel/trace/ring_buffer.c
-> > > > > +++ b/kernel/trace/ring_buffer.c
-> > > > > @@ -9,6 +9,7 @@
-> > > > >     #include <linux/ring_buffer.h>
-> > > > >     #include <linux/trace_clock.h>
-> > > > >     #include <linux/sched/clock.h>
-> > > > > +#include <linux/cacheflush.h>
-> > > > >     #include <linux/trace_seq.h>
-> > > > >     #include <linux/spinlock.h>
-> > > > >     #include <linux/irq_work.h>
-> > > > > @@ -26,6 +27,7 @@
-> > > > >     #include <linux/list.h>
-> > > > >     #include <linux/cpu.h>
-> > > > >     #include <linux/oom.h>
-> > > > > +#include <linux/mm.h>
-> > > > >     #include <asm/local64.h>
-> > > > >     #include <asm/local.h>
-> > > > > @@ -338,6 +340,7 @@ struct buffer_page {
-> > > > >     	local_t		 entries;	/* entries on this page */
-> > > > >     	unsigned long	 real_end;	/* real end of data */
-> > > > >     	unsigned	 order;		/* order of the page */
-> > > > > +	u32		 id;		/* ID for external mapping */
-> > > > >     	struct buffer_data_page *page;	/* Actual data page */
-> > > > >     };
-> > > > > @@ -484,6 +487,12 @@ struct ring_buffer_per_cpu {
-> > > > >     	u64				read_stamp;
-> > > > >     	/* pages removed since last reset */
-> > > > >     	unsigned long			pages_removed;
-> > > > > +
-> > > > > +	unsigned int			mapped;
-> > > > > +	struct mutex			mapping_lock;
-> > > > > +	unsigned long			*subbuf_ids;	/* ID to subbuf VA */
-> > > > > +	struct trace_buffer_meta	*meta_page;
-> > > > > +
-> > > > >     	/* ring buffer pages to update, > 0 to add, < 0 to remove */
-> > > > >     	long				nr_pages_to_update;
-> > > > >     	struct list_head		new_pages; /* new pages to add */
-> > > > > @@ -1599,6 +1608,7 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
-> > > > >     	init_irq_work(&cpu_buffer->irq_work.work, rb_wake_up_waiters);
-> > > > >     	init_waitqueue_head(&cpu_buffer->irq_work.waiters);
-> > > > >     	init_waitqueue_head(&cpu_buffer->irq_work.full_waiters);
-> > > > > +	mutex_init(&cpu_buffer->mapping_lock);
-> > > > >     	bpage = kzalloc_node(ALIGN(sizeof(*bpage), cache_line_size()),
-> > > > >     			    GFP_KERNEL, cpu_to_node(cpu));
-> > > > > @@ -1789,8 +1799,6 @@ bool ring_buffer_time_stamp_abs(struct trace_buffer *buffer)
-> > > > >     	return buffer->time_stamp_abs;
-> > > > >     }
-> > > > > -static void rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer);
-> > > > > -
-> > > > >     static inline unsigned long rb_page_entries(struct buffer_page *bpage)
-> > > > >     {
-> > > > >     	return local_read(&bpage->entries) & RB_WRITE_MASK;
-> > > > > @@ -5211,6 +5219,22 @@ static void rb_clear_buffer_page(struct buffer_page *page)
-> > > > >     	page->read = 0;
-> > > > >     }
-> > > > > +static void rb_update_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-> > > > > +{
-> > > > > +	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
-> > > > > +
-> > > > > +	meta->reader.read = cpu_buffer->reader_page->read;
-> > > > > +	meta->reader.id = cpu_buffer->reader_page->id;
-> > > > > +	meta->reader.lost_events = cpu_buffer->lost_events;
-> > > > > +
-> > > > > +	meta->entries = local_read(&cpu_buffer->entries);
-> > > > > +	meta->overrun = local_read(&cpu_buffer->overrun);
-> > > > > +	meta->read = cpu_buffer->read;
-> > > > > +
-> > > > > +	/* Some archs do not have data cache coherency between kernel and user-space */
-> > > > > +	flush_dcache_folio(virt_to_folio(cpu_buffer->meta_page));
-> > > > > +}
-> > > > > +
-> > > > >     static void
-> > > > >     rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
-> > > > >     {
-> > > > > @@ -5255,6 +5279,9 @@ rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
-> > > > >     	cpu_buffer->lost_events = 0;
-> > > > >     	cpu_buffer->last_overrun = 0;
-> > > > > +	if (cpu_buffer->mapped)
-> > > > > +		rb_update_meta_page(cpu_buffer);
-> > > > > +
-> > > > >     	rb_head_page_activate(cpu_buffer);
-> > > > >     	cpu_buffer->pages_removed = 0;
-> > > > >     }
-> > > > > @@ -5469,6 +5496,12 @@ int ring_buffer_swap_cpu(struct trace_buffer *buffer_a,
-> > > > >     	cpu_buffer_a = buffer_a->buffers[cpu];
-> > > > >     	cpu_buffer_b = buffer_b->buffers[cpu];
-> > > > > +	/* It's up to the callers to not try to swap mapped buffers */
-> > > > > +	if (WARN_ON_ONCE(cpu_buffer_a->mapped || cpu_buffer_b->mapped)) {
-> > > > > +		ret = -EBUSY;
-> > > > > +		goto out;
-> > > > > +	}
-> > > > > +
-> > > > >     	/* At least make sure the two buffers are somewhat the same */
-> > > > >     	if (cpu_buffer_a->nr_pages != cpu_buffer_b->nr_pages)
-> > > > >     		goto out;
-> > > > > @@ -5733,7 +5766,8 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
-> > > > >     	 * Otherwise, we can simply swap the page with the one passed in.
-> > > > >     	 */
-> > > > >     	if (read || (len < (commit - read)) ||
-> > > > > -	    cpu_buffer->reader_page == cpu_buffer->commit_page) {
-> > > > > +	    cpu_buffer->reader_page == cpu_buffer->commit_page ||
-> > > > > +	    cpu_buffer->mapped) {
-> > > > >     		struct buffer_data_page *rpage = cpu_buffer->reader_page->page;
-> > > > >     		unsigned int rpos = read;
-> > > > >     		unsigned int pos = 0;
-> > > > > @@ -5956,6 +5990,11 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
-> > > > >     		cpu_buffer = buffer->buffers[cpu];
-> > > > > +		if (cpu_buffer->mapped) {
-> > > > > +			err = -EBUSY;
-> > > > > +			goto error;
-> > > > > +		}
-> > > > > +
-> > > > >     		/* Update the number of pages to match the new size */
-> > > > >     		nr_pages = old_size * buffer->buffers[cpu]->nr_pages;
-> > > > >     		nr_pages = DIV_ROUND_UP(nr_pages, buffer->subbuf_size);
-> > > > > @@ -6057,6 +6096,358 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
-> > > > >     }
-> > > > >     EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_set);
-> > > > > +static int rb_alloc_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-> > > > > +{
-> > > > > +	struct page *page;
-> > > > > +
-> > > > > +	if (cpu_buffer->meta_page)
-> > > > > +		return 0;
-> > > > > +
-> > > > > +	page = alloc_page(GFP_USER | __GFP_ZERO);
-> > > > > +	if (!page)
-> > > > > +		return -ENOMEM;
-> > > > > +
-> > > > > +	cpu_buffer->meta_page = page_to_virt(page);
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static void rb_free_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
-> > > > > +{
-> > > > > +	unsigned long addr = (unsigned long)cpu_buffer->meta_page;
-> > > > > +
-> > > > > +	free_page(addr);
-> > > > > +	cpu_buffer->meta_page = NULL;
-> > > > > +}
-> > > > > +
-> > > > > +static void rb_setup_ids_meta_page(struct ring_buffer_per_cpu *cpu_buffer,
-> > > > > +				   unsigned long *subbuf_ids)
-> > > > > +{
-> > > > > +	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
-> > > > > +	unsigned int nr_subbufs = cpu_buffer->nr_pages + 1;
-> > > > > +	struct buffer_page *first_subbuf, *subbuf;
-> > > > > +	int id = 0;
-> > > > > +
-> > > > > +	subbuf_ids[id] = (unsigned long)cpu_buffer->reader_page->page;
-> > > > > +	cpu_buffer->reader_page->id = id++;
-> > > > > +
-> > > > > +	first_subbuf = subbuf = rb_set_head_page(cpu_buffer);
-> > > > > +	do {
-> > > > > +		if (WARN_ON(id >= nr_subbufs))
-> > > > > +			break;
-> > > > > +
-> > > > > +		subbuf_ids[id] = (unsigned long)subbuf->page;
-> > > > > +		subbuf->id = id;
-> > > > > +
-> > > > > +		rb_inc_page(&subbuf);
-> > > > > +		id++;
-> > > > > +	} while (subbuf != first_subbuf);
-> > > > > +
-> > > > > +	/* install subbuf ID to kern VA translation */
-> > > > > +	cpu_buffer->subbuf_ids = subbuf_ids;
-> > > > > +
-> > > > > +	/* __rb_map_vma() pads the meta-page to align it with the sub-buffers */
-> > > > > +	meta->meta_page_size = PAGE_SIZE << cpu_buffer->buffer->subbuf_order;
-> > > > > +	meta->meta_struct_len = sizeof(*meta);
-> > > > > +	meta->nr_subbufs = nr_subbufs;
-> > > > > +	meta->subbuf_size = cpu_buffer->buffer->subbuf_size + BUF_PAGE_HDR_SIZE;
-> > > > > +
-> > > > > +	rb_update_meta_page(cpu_buffer);
-> > > > > +}
-> > > > > +
-> > > > > +static struct ring_buffer_per_cpu *
-> > > > > +rb_get_mapped_buffer(struct trace_buffer *buffer, int cpu)
-> > > > > +{
-> > > > > +	struct ring_buffer_per_cpu *cpu_buffer;
-> > > > > +
-> > > > > +	if (!cpumask_test_cpu(cpu, buffer->cpumask))
-> > > > > +		return ERR_PTR(-EINVAL);
-> > > > > +
-> > > > > +	cpu_buffer = buffer->buffers[cpu];
-> > > > > +
-> > > > > +	mutex_lock(&cpu_buffer->mapping_lock);
-> > > > > +
-> > > > > +	if (!cpu_buffer->mapped) {
-> > > > > +		mutex_unlock(&cpu_buffer->mapping_lock);
-> > > > > +		return ERR_PTR(-ENODEV);
-> > > > > +	}
-> > > > > +
-> > > > > +	return cpu_buffer;
-> > > > > +}
-> > > > > +
-> > > > > +static void rb_put_mapped_buffer(struct ring_buffer_per_cpu *cpu_buffer)
-> > > > > +{
-> > > > > +	mutex_unlock(&cpu_buffer->mapping_lock);
-> > > > > +}
-> > > > > +
-> > > > > +/*
-> > > > > + * Fast-path for rb_buffer_(un)map(). Called whenever the meta-page doesn't need
-> > > > > + * to be set-up or torn-down.
-> > > > > + */
-> > > > > +static int __rb_inc_dec_mapped(struct ring_buffer_per_cpu *cpu_buffer,
-> > > > > +			       bool inc)
-> > > > > +{
-> > > > > +	unsigned long flags;
-> > > > > +
-> > > > > +	lockdep_assert_held(&cpu_buffer->mapping_lock);
-> > > > > +
-> > > > > +	if (inc && cpu_buffer->mapped == UINT_MAX)
-> > > > > +		return -EBUSY;
-> > > > > +
-> > > > > +	if (WARN_ON(!inc && cpu_buffer->mapped == 0))
-> > > > > +		return -EINVAL;
-> > > > > +
-> > > > > +	mutex_lock(&cpu_buffer->buffer->mutex);
-> > > > > +	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-> > > > > +
-> > > > > +	if (inc)
-> > > > > +		cpu_buffer->mapped++;
-> > > > > +	else
-> > > > > +		cpu_buffer->mapped--;
-> > > > > +
-> > > > > +	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-> > > > > +	mutex_unlock(&cpu_buffer->buffer->mutex);
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > > +#define subbuf_page(off, start) \
-> > > > > +	virt_to_page((void *)((start) + ((off) << PAGE_SHIFT)))
-> > > > > +
-> > > > > +#define foreach_subbuf_page(sub_order, start, page)		\
-> > > > > +	page = subbuf_page(0, (start));				\
-> > > > > +	for (int __off = 0; __off < (1 << (sub_order));		\
-> > > > > +	     __off++, page = subbuf_page(__off, (start)))
-> > > > > +
-> > > > > +/*
-> > > > > + *   +--------------+  pgoff == 0
-> > > > > + *   |   meta page  |
-> > > > > + *   +--------------+  pgoff == 1
-> > > > > + *   |   000000000  |
-> > > > > + *   +--------------+  pgoff == (1 << subbuf_order)
-> > > > > + *   | subbuffer 0  |
-> > > > > + *   |              |
-> > > > > + *   +--------------+  pgoff == (2 * (1 << subbuf_order))
-> > > > > + *   | subbuffer 1  |
-> > > > > + *   |              |
-> > > > > + *         ...
-> > > > > + */
-> > > > > +static int __rb_map_vma(struct ring_buffer_per_cpu *cpu_buffer,
-> > > > > +			struct vm_area_struct *vma)
-> > > > > +{
-> > > > > +	unsigned long nr_subbufs, nr_pages, vma_pages, pgoff = vma->vm_pgoff;
-> > > > > +	unsigned int subbuf_pages, subbuf_order;
-> > > > > +	struct page **pages;
-> > > > > +	int p = 0, s = 0;
-> > > > > +	int err;
-> > > > > +
-> > > > > +	lockdep_assert_held(&cpu_buffer->mapping_lock);
-> > > > > +
-> > > > > +	subbuf_order = cpu_buffer->buffer->subbuf_order;
-> > > > > +	subbuf_pages = 1 << subbuf_order;
-> > > > > +
-> > > > > +	if (subbuf_order && pgoff % subbuf_pages)
-> > > > > +		return -EINVAL;
-> > > > > +
-> > > > > +	nr_subbufs = cpu_buffer->nr_pages + 1;
-> > > > > +	nr_pages = ((nr_subbufs + 1) << subbuf_order) - pgoff;
-> > > > > +
-> > > > > +	vma_pages = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
-> > > > > +	if (!vma_pages || vma_pages > nr_pages)
-> > > > > +		return -EINVAL;
-> > > > > +
-> > > > > +	nr_pages = vma_pages;
-> > > > > +
-> > > > > +	pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
-> > > > > +	if (!pages)
-> > > > > +		return -ENOMEM;
-> > > > > +
-> > > > > +	if (!pgoff) {
-> > > > > +		unsigned long meta_page_padding;
-> > > > > +
-> > > > > +		pages[p++] = virt_to_page(cpu_buffer->meta_page);
-> > > > > +
-> > > > > +		/*
-> > > > > +		 * Pad with the zero-page to align the meta-page with the
-> > > > > +		 * sub-buffers.
-> > > > > +		 */
-> > > > > +		meta_page_padding = subbuf_pages - 1;
-> > > > > +		while (meta_page_padding-- && p < nr_pages)
-> > > > > +			pages[p++] = ZERO_PAGE(0);
-> > > > 
-> > > > Using the shared zeropage in a MAP_SHARED mapping that is neither VM_IO
-> > > > nor VM_PFNMAP can be problematic. So we really need patch #3 logic to
-> > > > use VM_PFNMAP.
-> > > > 
-> > > > It would be cleaner/more obvious if these VMA flag setting would reside
-> > 
-> > tracing_buffers_mmap() sets both VM_IO and VM_PFNMAP. But, yeah as vma is
-> > already passed to ring_buffer_map(). The flags could be set here as this
-> > function is what sets the requirements really.
-> > 
-> > > > here, if possible.
-> > > > 
-> > > > > +	} else {
-> > > > > +		/* Skip the meta-page */
-> > > > > +		pgoff -= subbuf_pages;
-> > > > > +
-> > > > > +		s += pgoff / subbuf_pages;
-> > > > > +	}
-> > > > > +
-> > > > > +	while (s < nr_subbufs && p < nr_pages) {
-> > > > > +		struct page *page;
-> > > > > +
-> > > > > +		foreach_subbuf_page(subbuf_order, cpu_buffer->subbuf_ids[s], page) {
-> > > > > +			if (p >= nr_pages)
-> > > > > +				break;
-> > > > > +
-> > > > > +			pages[p++] = page;
-> > > > > +		}
-> > > > > +		s++;
-> > > > > +	}
-> > > > > +
-> > > > > +	err = vm_insert_pages(vma, vma->vm_start, pages, &nr_pages);
-> > > > 
-> > > > I think Linus suggested it ("avoid all the sub-page ref-counts entirely
-> > > > by using VM_PFNMAP, and use vm_insert_pages()"), but ...
-> > > > vm_insert_pages() will:
-> > > > * Mess with mapcounts
-> > > > * Mess with refcounts
-> > > > 
-> > > > See
-> > > > insert_pages()->insert_page_in_batch_locked()->insert_page_into_pte_locked().
-> > > > 
-> > > > So we'll mess with the mapcount and refcount of the shared zeropage ...
-> > > > hmmmm
-> > > > 
-> > > > If I am not wrong, vm_normal_page() would not return the shared zeropage
-> > > > in case we don't have CONFIG_ARCH_HAS_PTE_SPECIAL ... so
-> > > > unmap()->...->zap_present_ptes() would not decrement the refcount and we
-> > > > could overflow it. ... we also shouldn't ever mess with the mapcount of
-> > > > the shared zeropage in the first place.
-> > > > 
-> > > > vm_insert_page() is clearer on that: "This allows drivers to insert
-> > > > individual pages they've allocated into a user vma". You didn't allocate
-> > > > the shared zeropage.
-> > > > 
-> > > > I'm wondering if we even expect VM_MIXEDMAP and VM_PFNMAP to be set at
-> > > > the same time? vm_insert_pages() would BUG_ON in case VM_PFNMAP is
-> > > > already set and it would set VM_MIXEDMAP ... similarly
-> > > > vmf_insert_pfn_prot() would not be happy about that at all ...
-> > > > 
-> > > > BUG_ON((vma->vm_flags & (VM_PFNMAP|VM_MIXEDMAP)) ==
-> > > > (VM_PFNMAP|VM_MIXEDMAP));
-> > > > 
-> > > > ... remap_pfn_range() is used by io_uring_mmap for a similar purpose.
-> > > > But it only supports a single PFN range at a time and requires the
-> > > > caller to handle refcounting of pages.
-> > > > 
-> > > > It's getting late in Germany, so I might be missing something; but using
-> > > > the shared zeropage here might be a problem.
-> > > > 
-> > > 
-> > > I was just about to write code to cleanly support vm_insert_pages() to
-> > > consume zeropages ... when I started to wonder about something else:
-> > 
-> > Alternatively, we could at the moment allocate a meta-page of the same size than
-> > the subbufs? (of course the downside is to waste a bit of memory)
-> 
-> Supporting the shared zeropage should be possible. We just have to be
-> careful that no other code can accidentially set it writable. I'll have to
-> further think about that (not just your user, but making it sane to use by
-> new code as well).
-> 
-> So far, we primarily only have shared zeropages in the MAP_PRIVATE mappings.
-> Dax is a corner case where we have them in MAP_SHARED mappings. PFNMAP would
-> not be problematic, but MIXEDMAP is. (again, I am not 100% sure about
-> combining both ...)
-> 
-> I'll further think about that one, and try crafting a reasonable patch.
-> 
-> Could we start with no shared zeropage and implement that as an optimization
-> on top?
+Currently the code calls mas_start() followed by mas_data_end() if the
+maple state is MA_START, but mas_start() may return with the maple state
+node == NULL.  This will lead to a null pointer dereference when
+checking information in the NULL node, which is done in mas_data_end().
 
-Of course, I'm happy to update this series without the zero-page and to bring it
-back later, in a separate patch, as soon as vm_insert_pages() is compatible.
+Avoid setting the offset if there is no node by waiting until after the
+maple state is checked for an empty or single entry state.
 
-Thanks!
+A user could trigger the events to cause a kernel oops by unmapping all
+vmas to produce an empty maple tree, then mapping a vma that would cause
+the scenario described above.
 
-> 
-> > 
-> > > 
-> > > 
-> > > +	if (vma->vm_flags & VM_WRITE || vma->vm_flags & VM_EXEC ||
-> > > +	    !(vma->vm_flags & VM_MAYSHARE))
-> > > +		return -EPERM;
-> > > +
-> > > 
-> > > You disallow writable mappings. But what about using mprotect() afterwards
-> > > to allow for write permissions?
-> > > 
-> > > Likely you'd want to remove VM_MAYWRITE from the flags, otherwise mprotect()
-> > > might alter succeed.
-> > 
-> > The vm_flags_mod below is clearing VM_MAYWRITE already. Isn't it enough?
-> 
-> Oh, maybe I missed that!
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
+Reported-by: Marius Fleischer <fleischermarius@gmail.com>
+Closes: https://lore.kernel.org/lkml/CAJg=8jyuSxDL6XvqEXY_66M20psRK2J53oBTP+fjV5xpW2-R6w@mail.gmail.com/
+Link: https://lore.kernel.org/lkml/CAJg=8jyuSxDL6XvqEXY_66M20psRK2J53oBTP+fjV5xpW2-R6w@mail.gmail.com/
+Fixes: 54a611b60590 ("Maple Tree: add new data structure")
+Tested-by: Marius Fleischer <fleischermarius@gmail.com>
+Tested-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc: maple-tree@lists.infradead.org
+Cc: linux-mm@kvack.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+---
+ lib/maple_tree.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+index 55e1b35bf877..2d7d27e6ae3c 100644
+--- a/lib/maple_tree.c
++++ b/lib/maple_tree.c
+@@ -5109,18 +5109,18 @@ int mas_empty_area_rev(struct ma_state *mas, unsigned long min,
+ 	if (size == 0 || max - min < size - 1)
+ 		return -EINVAL;
+ 
+-	if (mas_is_start(mas)) {
++	if (mas_is_start(mas))
+ 		mas_start(mas);
+-		mas->offset = mas_data_end(mas);
+-	} else if (mas->offset >= 2) {
+-		mas->offset -= 2;
+-	} else if (!mas_rewind_node(mas)) {
++	else if ((mas->offset < 2) && (!mas_rewind_node(mas)))
+ 		return -EBUSY;
+-	}
+ 
+-	/* Empty set. */
+-	if (mas_is_none(mas) || mas_is_ptr(mas))
++	if (unlikely(mas_is_none(mas) || mas_is_ptr(mas)))
+ 		return mas_sparse_area(mas, min, max, size, false);
++	else if (mas->offset >= 2)
++		mas->offset -= 2;
++	else
++		mas->offset = mas_data_end(mas);
++
+ 
+ 	/* The start of the window can only be within these values. */
+ 	mas->index = min;
+-- 
+2.43.0
+
 
