@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-153002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BA118AC758
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:47:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642108AC757
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:47:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56F012811CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:47:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 963991C218EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E16537F7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86EED537E7;
 	Mon, 22 Apr 2024 08:46:36 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1C1351C3B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:46:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B5353380
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713775596; cv=none; b=tywwL/yuanAcMk2Rj7ILJK3VP9aiVGSjgGzLlTfCFCd12+TU6n6AlwmhnM89PiqB0FMUY6EKtGu4PCfM5pIqx9rcwH9Ft8cFlVaXN4dpTW+Ls58WfyAAMYEFjN4o+EJNOj2sS+JRAqeW0xuIfG2UmZo9EuSgZCWUqpkbFoL+19U=
+	t=1713775596; cv=none; b=k6h7sKvJhEEEYLQTxjerSZGYlTk6X8iyxJVG9KkVMgIT5uea9XV21K4AmmyHZ/HwujOGC8MIbV2WxV5+hdHnz5cXIS6q2pj+JHwcd52qn7jD6wBu4exSi0Je/A7KEel3nvb6Wizucwf8eQX9RiteupNmuInMZNmL/8bb3l4SZzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713775596; c=relaxed/simple;
-	bh=QIpJu9ALWPLds/Oeu/ERZh+j6cvh9IyUasgqi32VFbM=;
+	bh=IU6x0P+j4+jOHSGmx6FtiHna/5kD7S4rVr4bL7nsngg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tp64vLyRY+hWUe4q9jIr/GyoQcNkuG0B6zanYSuhKn53Dp6lyiAyibY4xGksqqGhU69xxphRQndRYk/XXk/CZiswDIwualW3sU8iUhxCR+sFaVWjH87/pi0HsiA86pDxT4ibj5zCrJmSmKsk+hUW8WaylYLx1/FdlhxlCIOu+LI=
+	 In-Reply-To:To:Cc; b=qoPcjhtQ9IK8Dd9kOAnkt+fuVM2aUXfWPSZ0k1Xa66lQhCtIqR0SFCLfM9Z5C2P+YZJZ88D91zifAJOh6tBcdIQ9e6poKzSkumeDtvNV3g+wT8MgKkzBmvSuUwrtPOjkk0GT5qhUJLHe5ljII+/1u6x+Pj1P9kEjOJQENBb5hwg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=ratatoskr.trumtrar.info)
 	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
 	(envelope-from <s.trumtrar@pengutronix.de>)
-	id 1rypJe-0000ML-El; Mon, 22 Apr 2024 10:46:22 +0200
+	id 1rypJf-0000ML-Dr; Mon, 22 Apr 2024 10:46:23 +0200
 From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-Date: Mon, 22 Apr 2024 10:46:17 +0200
-Subject: [PATCH 1/3] dt-bindings: net: mx93: add enet_clk_sel binding
+Date: Mon, 22 Apr 2024 10:46:18 +0200
+Subject: [PATCH 2/3] arm64: dts: imx93: add enet_clk_sel
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -43,7 +43,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240422-v6-9-topic-imx93-eqos-rmii-v1-1-30151fca43d2@pengutronix.de>
+Message-Id: <20240422-v6-9-topic-imx93-eqos-rmii-v1-2-30151fca43d2@pengutronix.de>
 References: <20240422-v6-9-topic-imx93-eqos-rmii-v1-0-30151fca43d2@pengutronix.de>
 In-Reply-To: <20240422-v6-9-topic-imx93-eqos-rmii-v1-0-30151fca43d2@pengutronix.de>
 To: "David S. Miller" <davem@davemloft.net>, 
@@ -67,36 +67,26 @@ X-SA-Exim-Mail-From: s.trumtrar@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-When the eQOS on the i.MX93 is used in RMII mode, the TX_CLK must be set
-to output mode. To do this, the ENET_CLK_SEL register must be accessed.
-This register is located in a GPR register space.
+The ENET_CLK_SEL register is at offset 0x2c in the wakeupmix_gpr
+register and needed to set the TX_CLK direction in case of RMII mode.
 
 Signed-off-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
 ---
- Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/arm64/boot/dts/freescale/imx93.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml b/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
-index 4c01cae7c93a7..1d1c8b90da871 100644
---- a/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
-+++ b/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
-@@ -56,6 +56,16 @@ properties:
-         - tx
-         - mem
- 
-+  enet_clk_sel:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      - items:
-+          - description: phandle to the GPR syscon
-+          - description: the offset of the GPR register
-+    description:
-+      Should be phandle/offset pair. The phandle to the syscon node which
-+      encompases the GPR register, and the offset of the GPR register.
-+
-   intf_mode:
-     $ref: /schemas/types.yaml#/definitions/phandle-array
-     items:
+diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
+index 601c94e1fac8e..116ff9c15709b 100644
+--- a/arch/arm64/boot/dts/freescale/imx93.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
+@@ -1051,6 +1051,7 @@ eqos: ethernet@428a0000 {
+ 							 <&clk IMX93_CLK_SYS_PLL_PFD0_DIV2>;
+ 				assigned-clock-rates = <100000000>, <250000000>;
+ 				intf_mode = <&wakeupmix_gpr 0x28>;
++				enet_clk_sel = <&wakeupmix_gpr 0x2c>;
+ 				snps,clk-csr = <0>;
+ 				status = "disabled";
+ 			};
 
 -- 
 2.43.2
