@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-154297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0695B8ADA6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:12:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 313C58ADA6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:12:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADC602852E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:12:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4CD5281488
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:12:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56BB717B512;
-	Mon, 22 Apr 2024 23:57:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE16D17BB09;
+	Mon, 22 Apr 2024 23:57:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qCqeNClN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UXKEHIIT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A01917B50C;
-	Mon, 22 Apr 2024 23:57:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFD2A47A7C;
+	Mon, 22 Apr 2024 23:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830259; cv=none; b=bsKkTAkrsg/bxswahCWUUdieY2Y0Vk3XkBFkE2Iz/4gGTCk8jWrZg+FtQhqyvz7tXIUwYsyprZuc5z9T5cn0Lx5faaaOnkQ5vs5jDfP8zDH53mTsX+0XOaAFtS6a59/eXcex+pekUpEvW5EabyKBbjODsv3zZYo5I52xPbW9Xy4=
+	t=1713830261; cv=none; b=LiLROkK15sQlRaggmhbMz0iTJcqVQgcHvQXTY/PND31em1ee1c7iymNPbC4Dz3LTjfUXK99rIGGXCx3uVXkFWjkCT5HoMywL26rpb2Mw28DzUSjC/1w8dadxjeH+fHP0yc9EoiIiu66o58yE71NsYqbaciqz0yZX04Is+jUzTOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830259; c=relaxed/simple;
-	bh=P27UnTmy6IWo4KqJtsg6h0+k3t/WMu6SHlGNvklgRtY=;
+	s=arc-20240116; t=1713830261; c=relaxed/simple;
+	bh=FgoSh+QPbzaQrY/HfqxnOD/ntA5TUZSR+j4YUz1zZmU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YW2J5ZMMV0KHnFbP9hIPn4+sdvewqGWnJLTzqkIBsnWkg+YrhrVLcSJkl0QPeIYllqgj6Dj/wV4ekeWs84cMevbsW8LL+tIBTVIPeXykSV5/AXX0ErXdFtBbjZs2yPZ8Y4/HTvIK4nc5qAoSRNX5giPuLO8YAk6NWYh4+JT94EA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qCqeNClN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76A77C2BD11;
-	Mon, 22 Apr 2024 23:57:38 +0000 (UTC)
+	 MIME-Version; b=Iynj4WFWX1/V2tKwJnuzD0/vf3t2bdeXexGV6rkOiCffR54aY3LPCj1FuTfpyjY0pRptmqrCzCZpNBUv4yqILkAXNfUWqZDz3u+acz0LnYssCNup7wF3MX+nz1h0EmtwDY0Vku4LhS3Oe/ftf5Ly972TaZ4rO2mbnTC108k+1sU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UXKEHIIT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0C13C32782;
+	Mon, 22 Apr 2024 23:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830259;
-	bh=P27UnTmy6IWo4KqJtsg6h0+k3t/WMu6SHlGNvklgRtY=;
+	s=k20201202; t=1713830260;
+	bh=FgoSh+QPbzaQrY/HfqxnOD/ntA5TUZSR+j4YUz1zZmU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qCqeNClNvNjcw5vS3wCfvkDGCHMJZ2A71cPMapB7C6KY8TO2jBNeNHSPPF0MvPgLU
-	 mPrdB6SSYmCu5cUPOY3LI/vzlIAiqvXDD/Pm1PS5x7m9EtmxLlydXEdjk8ruGCNob6
-	 ul7IXaegw18rcOKrHrFINpB3IH7hvNPyg1RW6h20mWrE86Et0c2VXVgW9eIkuVoaP/
-	 RSxsHS7LD4mvmCfssEpBMGcY2AzHdhtCDksxTTRbafCUhbvcvuZUvkky2QqJ8GTyHr
-	 191mpNO+SFzN1HSGJDDkcpOrNB04tRzuJtI2T7btPWu+wnWT9L7tJoH4zPYnnEZsYT
-	 xPaxY/Qu8wn+Q==
+	b=UXKEHIITFq8ostax0QnxPN+ce8ehNCgvji3YtvUDyAQWCaNRjSqbj9U9ceb1RgBtk
+	 i03Azqk6lWYQNkhuJoLGSWOLTJqTlMSIr5A+zXS4i8VSJbm4b3FytDCXKpGUu6/7Wl
+	 e+QsRggtM7l/biPPjV1suoCC7ex3/6DobfS6bjQHfP9yibEHjiMMQFP+8lbt7oydrp
+	 5mU52tNQiOavxjqlbwC4cux32xqpQmc4ubhxl90SBkSW4183sfaTL5MmPXqS9NOnAe
+	 sXmFIvNWelbdeSv5hv+XHSTC4FQ7APuJ28ztgw1EQALf3zEuNA8mun+fvckk0+4xCt
+	 oNHEYDKSfpa4A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Wei Yang <richard.weiyang@gmail.com>,
-	Song Shuai <songshuaishuai@tinylab.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>,
 	Mike Rapoport <rppt@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.1 07/19] memblock tests: fix undefined reference to `panic'
-Date: Mon, 22 Apr 2024 19:18:21 -0400
-Message-ID: <20240422231845.1607921-7-sashal@kernel.org>
+	Sasha Levin <sashal@kernel.org>,
+	linux-mm@kvack.org
+Subject: [PATCH AUTOSEL 6.1 08/19] memblock tests: fix undefined reference to `BIT'
+Date: Mon, 22 Apr 2024 19:18:22 -0400
+Message-ID: <20240422231845.1607921-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231845.1607921-1-sashal@kernel.org>
 References: <20240422231845.1607921-1-sashal@kernel.org>
@@ -66,63 +68,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Wei Yang <richard.weiyang@gmail.com>
 
-[ Upstream commit e0f5a8e74be88f2476e58b25d3b49a9521bdc4ec ]
+[ Upstream commit 592447f6cb3c20d606d6c5d8e6af68e99707b786 ]
 
-commit e96c6b8f212a ("memblock: report failures when memblock_can_resize
-is not set") introduced the usage of panic, which is not defined in
-memblock test.
+commit 772dd0342727 ("mm: enumerate all gfp flags") define gfp flags
+with the help of BIT, while gfp_types.h doesn't include header file for
+the definition. This through an error on building memblock tests.
 
-Let's define it directly in panic.h to fix it.
+Let's include linux/bits.h to fix it.
 
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-CC: Song Shuai <songshuaishuai@tinylab.org>
-CC: Mike Rapoport <rppt@kernel.org>
-Link: https://lore.kernel.org/r/20240402132701.29744-3-richard.weiyang@gmail.com
+CC: Suren Baghdasaryan <surenb@google.com>
+CC: Michal Hocko <mhocko@suse.com>
+Link: https://lore.kernel.org/r/20240402132701.29744-4-richard.weiyang@gmail.com
 Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/include/linux/kernel.h |  1 +
- tools/include/linux/panic.h  | 19 +++++++++++++++++++
- 2 files changed, 20 insertions(+)
- create mode 100644 tools/include/linux/panic.h
+ include/linux/gfp_types.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/include/linux/kernel.h b/tools/include/linux/kernel.h
-index 4b0673bf52c2e..07cfad817d539 100644
---- a/tools/include/linux/kernel.h
-+++ b/tools/include/linux/kernel.h
-@@ -8,6 +8,7 @@
- #include <linux/build_bug.h>
- #include <linux/compiler.h>
- #include <linux/math.h>
-+#include <linux/panic.h>
- #include <endian.h>
- #include <byteswap.h>
+diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
+index d88c46ca82e17..6811ab702e8dc 100644
+--- a/include/linux/gfp_types.h
++++ b/include/linux/gfp_types.h
+@@ -2,6 +2,8 @@
+ #ifndef __LINUX_GFP_TYPES_H
+ #define __LINUX_GFP_TYPES_H
  
-diff --git a/tools/include/linux/panic.h b/tools/include/linux/panic.h
-new file mode 100644
-index 0000000000000..9c8f17a41ce8e
---- /dev/null
-+++ b/tools/include/linux/panic.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _TOOLS_LINUX_PANIC_H
-+#define _TOOLS_LINUX_PANIC_H
++#include <linux/bits.h>
 +
-+#include <stdarg.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+
-+static inline void panic(const char *fmt, ...)
-+{
-+	va_list argp;
-+
-+	va_start(argp, fmt);
-+	vfprintf(stderr, fmt, argp);
-+	va_end(argp);
-+	exit(-1);
-+}
-+
-+#endif
+ /* The typedef is in types.h but we want the documentation here */
+ #if 0
+ /**
 -- 
 2.43.0
 
