@@ -1,115 +1,173 @@
-Return-Path: <linux-kernel+bounces-153080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E2B48AC8BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:20:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D0ED8AC8B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:19:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 905D51C20D27
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:20:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FCA91C20CA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B35254FA1;
-	Mon, 22 Apr 2024 09:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E9454FB8;
+	Mon, 22 Apr 2024 09:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dnXjpYmU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BB7+TtK2"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9E913D297;
-	Mon, 22 Apr 2024 09:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9709B52F96;
+	Mon, 22 Apr 2024 09:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713777604; cv=none; b=Oy5WSjBKOhXBj5d7kNr1YKLwoCo9amfoRcgk31b/V8r68AQ5N937amDvcCK2aRgEH62M4MdIrrqWyUuDjCJ4gMogZ0aPBfxlYlkQNxcIAqjH74f3sMbWyAf1gNKeXENBfjyx60AaU8NKU4zYzceNabL63QEaTG6tBZcguZHQrQk=
+	t=1713777561; cv=none; b=BG7AFpvL2GnPql6rXIXKl+5KOGPzZRl0rH3mefEE8jDoUJIIv7/zb6GYKjcT0/Ob2mDkKgxDXUQvTPK6Ta7Pi+hpPDZ2+GV3CJhqJMW2QjJoXOW6L4ldrcINrJcox/Qjpww6iK4/KxACteEJYpRWoVyRe2oGHH0QENWFTlNdBc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713777604; c=relaxed/simple;
-	bh=nZb1WqOKzpgix7JF8C81SkQWvG7tYsydr8OknjFa2/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JAbpt1SHVX5g/wnb3i6EhVeeZbDwL/a+A3thMc+LhBu2VsDOxCuuGkDDfePBJ5CA+LN2i5HM+z6/AsNbcpj/FXB1WJUJZg7lyARmkqcy+eKto159kHG1zpWmtKTtxNsWgZRh/ExpXHVgBCsQ5ItXtMwoXGACWXOlRzCZ1EP/ox0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dnXjpYmU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA1DEC113CC;
-	Mon, 22 Apr 2024 09:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713777604;
-	bh=nZb1WqOKzpgix7JF8C81SkQWvG7tYsydr8OknjFa2/s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dnXjpYmUkjd+sbGilXiYyKMgQijrPvrQxNUMTxQ3sCteoQlQ9gwJrU+mjHtH7VFLF
-	 vI0fWmNdDFGFUTO2uSdbQAgCsgN0TYLHBv4GgxGsDt6Tdjnkf+8BcV5YTK9dKjJi42
-	 xMqJTi+n5IaSYLNCgyWiOBX+FOWNPapwGiYEXWHNQmKNx56SORlAmAAxDM9WAG/8yj
-	 77Z4zt/izUVens3e3PVA4u2ldSvZTEREiEa0FvNE5L4i+Ic8IuJgTuE6mQw4ANKMfT
-	 0h4kVTKQiijNjfUmYt3wyWUFmZ2XZhi6UqafkbOuSAiKbM+MTIgMAhPnIMMXcfw3dd
-	 iRITs0SPZNKOQ==
-Date: Mon, 22 Apr 2024 12:18:46 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Nam Cao <namcao@linutronix.de>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, Linux Memory Management List <linux-mm@kvack.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Andreas Dilger <adilger@dilger.ca>, Arnd Bergmann <arnd@arndb.de>,
-	Changbin Du <changbin.du@huawei.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Ingo Molnar <mingo@kernel.org>,
-	Krister Johansen <kjlx@templeofstupid.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>, Tejun Heo <tj@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: [linux-next:master] [init]  b8de39bd1b:
- BUG:kernel_failed_in_early-boot_stage,last_printk:early_console_in_setup_code
-Message-ID: <ZiYrdnbw5z1ajeRw@kernel.org>
-References: <202404221524.4954a009-oliver.sang@intel.com>
- <20240422082942.B750cniQ@linutronix.de>
+	s=arc-20240116; t=1713777561; c=relaxed/simple;
+	bh=0SzAzbO9mizr1+31aiP0iXs3Mw2nXgbrlKRbnEyHEV0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rheRBvpvKkL5nSLZAbNkdlmGBhEJKbubAPd6jk973SZTYXdhzFvoEy84r6ilM/yG+CdJiqlbZitT9j8MzkK66NC5UV9x8b/3yj35aoZye/Zs+z3F4RGdWDJv/kaNS9JYs6HvEQXRyYltts+Pl8jRkAdkZ36wOFfB9dPQGVjnxN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BB7+TtK2; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed3cafd766so3355823b3a.0;
+        Mon, 22 Apr 2024 02:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713777560; x=1714382360; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/Ep3MhmTtFiF+uEKgR3YsV/c0mK0RSR4QMExWC1N258=;
+        b=BB7+TtK2f+1fzz655IBMEY4ZiVKijlzOuw1U/AG1taNme8BQQ8nqit8YPF3wT8zN+x
+         Bcl6QaDiRy2UYCfwTP2ESJyFfR7M7H52KK0WOqlzarUZQ4xtL/S47dfPmV60iKc3ZVXW
+         ycy2lvcGZ0747q00IoAsd59CUN3ZqkHTUPA6FmvFgpFfMgSae8LJt7JA3KgWkHZCOZXh
+         soK2v5DwqPgj1Flc2xsKjJ8nm8UKRyqRCGYikPpzyWmL/uRLdcj8FPkw8Kfw3bRh5zxX
+         zzJBrTvOXMtb1rXNAajhEvHEwschzndG2Gkfe/siHU/gtgfxvcYEPVp5JVw6Nc4cBk6Z
+         swCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713777560; x=1714382360;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Ep3MhmTtFiF+uEKgR3YsV/c0mK0RSR4QMExWC1N258=;
+        b=pwe8D8OsAVutTDB1e5n7L4wmYnQQMFNJ7vj3zdnWrooak8V5Hl/1z/bsTFXLKlqlMJ
+         XRcWLZQ5Q9tBs3UpDrViPvfgBvSrhdBFy1n8X+KF3FcDPMsjk9Jeqestogrk8ilnH6W7
+         QfYqlYJXKyChQUExkhC7mYerEXaBFkMKlHq9X1E3pcXiE5cN1wonNJgsPn9U/gy+ngTV
+         PoORWAtB9DnpaWMtrADXDP+lIDcCtOawRo/9mhvNzt6idBz1zbJiwmBiCvS67x2Xfvba
+         6M6/8pI6v7jBVF54q8oQDM/rzMFsPrFf59M915beB2rJBRqaQKRxoN3rCGPAok+Uaklu
+         y2jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUuCWQS/tYmXbXVR5hssVBMudQGy2ZO0VH4MHinKpq4aAxd4v93g4hv+dTQ9BX+8bSYpupj/QuK+gRDnASI3v8QzrCEMIS584arS+dJICbiWZBp0I/3H5mKR+eMw8ImMe7SwJKTF8LHaI1uKpfN/ICg/iAGqN6q6QGS+3YQTiwAqEMd1+c=
+X-Gm-Message-State: AOJu0YymS7G+OD4b72Pc97UZIVBPOjYlMQ8G6oVS9CXA5D1ffddzhJ22
+	Pa42sdGqWZ93CSbgdoR9own2jm0Fw3rI3uaLiHPea1/SaukyBXel
+X-Google-Smtp-Source: AGHT+IEXrDILus4aNiNBVg1PEwpG5j2RHHDlxnvL7ic9sqQK7z3m47SHTbboBcgfTF53l9Ffs1/HzA==
+X-Received: by 2002:a05:6a00:10c3:b0:6ed:2fb8:467b with SMTP id d3-20020a056a0010c300b006ed2fb8467bmr9424598pfu.26.1713777559764;
+        Mon, 22 Apr 2024 02:19:19 -0700 (PDT)
+Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id y8-20020aa78048000000b006f2e10b00d6sm1283814pfm.41.2024.04.22.02.19.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 02:19:19 -0700 (PDT)
+Message-ID: <843c3c2a-2f46-4d49-aed4-ad07ebcb7b27@gmail.com>
+Date: Mon, 22 Apr 2024 17:19:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240422082942.B750cniQ@linutronix.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 3/3] pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO
+ driver
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linus.walleij@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ p.zabel@pengutronix.de, j.neuschaefer@gmx.net,
+ linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ychuang3@nuvoton.com, schung@nuvoton.com
+References: <20240409095637.2135-1-ychuang570808@gmail.com>
+ <20240409095637.2135-4-ychuang570808@gmail.com>
+ <ZhZTsV3RKpuyeUr4@surfacebook.localdomain>
+ <643a0d80-3d99-420e-9e77-acc67728fbe7@gmail.com>
+ <CAHp75VfMb_=XKoQNbbVphLg-eQgc6eJbZOW36g_hU=-iK2bSOQ@mail.gmail.com>
+Content-Language: en-US
+From: Jacky Huang <ychuang570808@gmail.com>
+In-Reply-To: <CAHp75VfMb_=XKoQNbbVphLg-eQgc6eJbZOW36g_hU=-iK2bSOQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 22, 2024 at 10:29:42AM +0200, Nam Cao wrote:
-> On Mon, Apr 22, 2024 at 03:45:00PM +0800, kernel test robot wrote:
-> > kernel test robot noticed "BUG:kernel_failed_in_early-boot_stage,last_printk:early_console_in_setup_code" on:
-> > 
-> > commit: b8de39bd1b76faffe7cd91e148a6d7d9bf4e38f7 ("init: fix allocated page overlapping with PTR_ERR")
-> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> 
-> I can reproduce the problem. I rebased this commit onto v6.8.7, I can still
-> observe the problem.
-> 
-> No immediate idea what is the problem. Backtrace from gdb goes crazy:
-> 
-> (gdb) bt
-> #0  0xffffffffb2074ded in ?? ()
-> #1  0x00000000000000a1 in ?? ()
-> #2  0x00000000000000a1 in ?? ()
-> #3  0x000000007ffff000 in ?? ()
-> #4  0x00000000543ff000 in ?? ()
-> #5  0x0000000000000000 in ?? ()
+Dear Andy,
 
-The kernel config here has CONFIG_DEBUG_VIRTUAL=y, so __pa translates to
-__phys_addr() in arch/x86/mm/physaddr.c and __pa(-PAGE_SIZE) triggers
 
-		VIRTUAL_BUG_ON(y >= KERNEL_IMAGE_SIZE);
+On 2024/4/22 下午 04:16, Andy Shevchenko wrote:
+> On Mon, Apr 22, 2024 at 7:10 AM Jacky Huang <ychuang570808@gmail.com> wrote:
+>> On 2024/4/10 下午 04:54, Andy Shevchenko wrote:
+> ...
+>
+>>>> +#define MA35_GP_MODE_MASK_WIDTH              2
+>>>> +
+>>>> +#define MA35_GP_SLEWCTL_MASK_WIDTH   2
+>>> I looked at the code how you use these... Oh, please switch to FIELD_GET() /
+>>> FIELD_PREP() (don't forget to include bitfield.h)
+>>>
+>>> ...
+>>>
+>>> ...
+>>>> +             regval &= ~GENMASK(setting->shift + MA35_MFP_BITS_PER_PORT - 1,
+>>>> +                                setting->shift);
+>>> This will generate an awful code. Use respective FIELD_*() macros.
+>>>
+>>> ...
+>>>
+>>>> +     regval &= ~GENMASK(gpio * MA35_GP_MODE_MASK_WIDTH - 1,
+>>>> +                        gpio * MA35_GP_MODE_MASK_WIDTH);
+>>>> +     regval |= mode << gpio * MA35_GP_MODE_MASK_WIDTH;
+>>> Ditto.
+>>>
+>>> ...
+>>>
+>>>> +     regval &= GENMASK(gpio * MA35_GP_MODE_MASK_WIDTH - 1,
+>>>> +                       gpio * MA35_GP_MODE_MASK_WIDTH);
+>>>> +
+>>>> +     return regval >> gpio * MA35_GP_MODE_MASK_WIDTH;
+>>> Ditto.
+> ...
+>
+>> Allow me to remove irrelevant parts.
+>>
+>> I attempted to follow your advice and use FIELD_GET() and FIELD_PREP(),
+>> but found
+>> it impractical. The reason is that these two macros require their 'mask'
+>> argument
+>> to be a constant, otherwise compilation errors occur, which is the issue
+>> I encountered.
+>> Since the mask here is calculated and not a constant, compilation errors
+>> occur.
+>>
+>> Taking MA35_GP_REG_MODE as an example, within 32 bits, every 2 bits
+>> represent
+>> the mode of a GPIO pin, and the mask is obtained by GENMASK(gpio * 2 -1,
+>> gpio * 2),
+> This is not good for the compiler, it can't figure out (at least in
+> some _supported_ by Linux kernel versions on some architectures) that
+> GENMASK can be constant here just left-shifted by arbitrary bits.
+>
+>> where the 'gpio' argument is a variable, not a constant, leading to
+>> compilation
+>> errors.
+>>
+>> Due to this reason, I will leave this part unchanged, or do you have any
+>> other suggestions?
+> If you need non-constant field_get()/field_prep(), add a new patch
+> that moves them from drivers/iio/temperature/mlx90614.c (and there are
+> more custom implementations:
+> https://elixir.bootlin.com/linux/latest/A/ident/field_get) to the
+> bitfield.h and use them in your code.
+>
 
-x86 has __pa_nodebug() that does not do bounds check, but it cannot be used
-in generic code because no other arch except s390 define it.
+Thank you. It works for me. I will adopt the approach used in mlx90614.c.
 
-For now I don't have ideas how to make this work in the general case, so
-probably we should only fix riscv for now.
- 
-> @akpm: drop this commit until this is figured out?
-> 
-> Best regards,
-> Nam
-> 
 
--- 
-Sincerely yours,
-Mike.
+Best Regards,
+Jacky Huang
+
 
