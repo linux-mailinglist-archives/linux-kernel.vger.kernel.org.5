@@ -1,291 +1,268 @@
-Return-Path: <linux-kernel+bounces-153625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAE6E8AD086
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:23:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04A558AD08B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:24:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90D3D28AB76
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:23:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83EAD28AB03
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B28F152E1C;
-	Mon, 22 Apr 2024 15:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jQw5bpIE"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C927515216C;
+	Mon, 22 Apr 2024 15:24:37 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF44152E14
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:23:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DC114F10C
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713799383; cv=none; b=c4qHFC5ZNMjCkGdB5wCDb13nf2sZ6toAeifg62xs14GibFBeYxOiVj5Sih8gDwPn4iQxRfkiqe1lW82UL9EqUoUsPfkb6xYQ11oFeecuOu9IDIf0/n6aMRnDMCqyYdMtMdUKqptRtM7ILdoABbr0fqFwBqL04zaKCGYiA39NzWs=
+	t=1713799477; cv=none; b=E3vxJxZbkoGnXzB+OtLFKN/ggoRlbUm7SMgYSh1PNqV4gMN6GAHCB9gIlmyDsKEzGxge8O/nt4Xj1qDDr3YI5KjD3vyMojfYG0zQsYLe3YAqJZqYDs9Q49MsdgSn7mB9rQCHwTRixNPm4TyO4JTSTubpi4E+MgM44wgaYilLZXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713799383; c=relaxed/simple;
-	bh=Wrq2FY2zLnIrPEkDumetUyWCevLG168o+veXdsJ3oYE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RgNGZPIZaiq7UZBRxO+vE0e56vLOSr8vJQngWMfCvaoYJcNEF0aBoDV8Gu405rXkiCdKnDKtEeFoivDu4oafvpiooUdt/2SGuUyXN09xeAquXvZeBWJvGPq0y5+V0bPq8dE8QxKTVWbnfHpqyrOQCsynn8FhPqscqvBPNOY80MQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jQw5bpIE; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-de45385a1b4so4311436276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713799380; x=1714404180; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=H49d5wg6b03lJ7C3k9uG4OXg+mNjiFzDv8QLMVLBemE=;
-        b=jQw5bpIE0p9aU2jm1kfJ2vTPk/opLoE9MDNoi7SFfHBH2wPbgRRL0+/mEhh8N94ilO
-         iwWQDiD/FbpiKvrPhgHHCCOWosBqa9x6/VKuJQOmYLarw6Co2zD9S7HLYUd95khS2Sqv
-         nITgCA+iWCViBKrRQdi/jkFejGMnbl0w0GTH0PGRin1wFNg8I/vKQxdTIolBjZ1YvSFm
-         53zbSyVKxpTkid+IVXJMiRjoJBHroYwhsMdkXdIK61cI8avcfrrF7DQsEA2BDpL3lMpT
-         uW4bIPkCT6rJ0E5YZl5rW99681pRizvqE6pj2YTQbBgxxJqL/wjvNMSiKHjOup1uO/Cz
-         ejtQ==
+	s=arc-20240116; t=1713799477; c=relaxed/simple;
+	bh=wtU1V2qBYhrcZoyYgVqxeMt6QBiWQdSn1ZxPDdaKx7g=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=E9muxTzPnkvdHST/1O7d5wVBgkuN0hLquU/IM5GkXthK4niv42GcZkA1w4WUd3pj6wOHVuzdr3+UmEPrdLsgYAIZIVhy/vqENpwcYAehghaCw/BJUJANgzuDyQSQlipH53o0SVEnSRLVODTYPDzHu8arUY3v8xPfVS2FHxVKX2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7da7d4ccb67so304531439f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:24:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713799380; x=1714404180;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=H49d5wg6b03lJ7C3k9uG4OXg+mNjiFzDv8QLMVLBemE=;
-        b=N4g3yttgsGK1m6SlvNs/GGoooi7gNf6GE1w9aOARGRo63h8RC//25yfpXR65AwcHqF
-         RW6H5Z6WLH1BDMnXa/n3CmA3O9MtJDVbdUVnwbGZEKCCHEnpIdBLaTW0ukZQnWp+TQXP
-         HJ8JCywWiaN01/9PoXc2v9IdWP2VZWFynniZpbYyZIlzUEYjjZkbUUTC3/FPSfIsdPub
-         aXYx/ExBjwS5oKAninR3VGMWcpzfgcKzKmB19J92B95ql/0LbSzCL9vX3mxUlfYwoaPR
-         b2nh1SP8MnOboH16x1dHMTg4cUqIghz4y5J/wDb1oEHe1tY1SPPIIPtI2KwcCNoaA/01
-         sQEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUsdXLcoiKuCR7jALb9Qn3XGf+gMzzYaLYX4770k018tzljDBpuvNamVsjTRRLfQLm+bASQi8Z4OqTSQjmdg6byGtwMPZYjbkhelKjN
-X-Gm-Message-State: AOJu0YwZ8OLSGFK9mFvO7elPQL/DQaRh56tVJeiZMA4F3QDYalNHF03d
-	i8fqbU47aduhg61lprPIPq9gFvkWkudGG74CZAdEv9FXjIPXV6ciBRdCTx4ip7ArIKCn5WZmATM
-	57jX0kXgdr8Fc/xsd708cIFz+B4qnokFSLmAy4g==
-X-Google-Smtp-Source: AGHT+IGvjDpakTVXulryQs11vXQ+nvpmucg042VWFjr8BwSv+KjHoQyGhHw+EPl15xSE7OqXMj40JwK1OaDhgNUuqFs=
-X-Received: by 2002:a25:9343:0:b0:de4:7831:919 with SMTP id
- g3-20020a259343000000b00de478310919mr9864357ybo.38.1713799380128; Mon, 22 Apr
- 2024 08:23:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713799475; x=1714404275;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dHtHnTi6FxG4AKp2BrDxT0ps7y/v6TGifGe1GDJVlwI=;
+        b=qP/j2ojk6tUmv/7pR+n507BpZHwRM+l+WULjB/Y65VdRjw5LPwIHwet78s4zLrh1hc
+         SHKum/qwNXs1uMUo0lABGhJWR2PMw2mDJB8L+rpjGE7d5DD6/5I0tW/MIxraAUAQYeHz
+         dMxQG0zMHiAQcNqiJTTwVaKu0Qt+sJ3UibrKu00gq8vwLYR5GHu51jkogJnj+PPem5ah
+         PgPbBA8Y7kiuLCTIr+bE6SMZcdOUGa47gTVaaWJsrY1u6w029RnUUvQy7Qt8wbxxJt5W
+         OyOrCazaeqWIyqlSBT0suxwEUEqDIME+n5hbDKX99p2ewBOBwqA/No0vl/X5c0qze4SW
+         oC+g==
+X-Forwarded-Encrypted: i=1; AJvYcCVw69JUNo1U+K3GXD1UOepJHzC6AsZSv60DMISI6CaWCUOtGmPm/59Tsm9bcGxQatRmX4SWkTMMB5nDaRJr4e8josDex70HXXp8UGp7
+X-Gm-Message-State: AOJu0YxQtARFhg2TXZvvsUYO5cDB5uW34FsX4G40C+a0h2oxW7aonKxY
+	2+2bvZh7eDFU98pLm6bRN7Me5a593KQ4V7yIz/SSOtMf/WpYUyA7uRYYfQcqnLbJsSKDOel136/
+	N77Stv8SQwqsGnF0YmUKnAXjOYxVRPHAHG76B6bgotJEnLJqILN6TGAc=
+X-Google-Smtp-Source: AGHT+IGl6Ue9oyreAaIvve6ID07ZW18+KQQqr5hGPCdua2O7ZOqSiTjhF1+00xDTdCOgttfxHkYDUS9utudEzi4T5cRATUgjkqaJ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416-ucsi-glink-altmode-v1-0-890db00877ac@linaro.org>
- <20240416-ucsi-glink-altmode-v1-7-890db00877ac@linaro.org>
- <ZiZC/l9nOmzWx+j6@kuha.fi.intel.com> <46fktwtp3xers6tcpov3qo4zswptvajewsdltm45zbz2kmmpzp@cthu6ylttup3>
- <ZiZ8El4779l0W1Ig@kuha.fi.intel.com>
-In-Reply-To: <ZiZ8El4779l0W1Ig@kuha.fi.intel.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 22 Apr 2024 18:22:49 +0300
-Message-ID: <CAA8EJppLAMFwp6T+7u8N3PVaEPR7JDg1Te8a2fodqPVjsvbM-Q@mail.gmail.com>
-Subject: Re: [PATCH 7/8] usb: typec: ucsi: glink: merge pmic_glink_altmode driver
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org
+X-Received: by 2002:a05:6638:1683:b0:485:65de:892 with SMTP id
+ f3-20020a056638168300b0048565de0892mr60509jat.5.1713799474811; Mon, 22 Apr
+ 2024 08:24:34 -0700 (PDT)
+Date: Mon, 22 Apr 2024 08:24:34 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e9a7c40616b108ba@google.com>
+Subject: [syzbot] [jfs?] possible deadlock in diFree
+From: syzbot <syzbot+ff2b5414e8547b96ad2e@syzkaller.appspotmail.com>
+To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 22 Apr 2024 at 18:02, Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> Hi Dmitry,
->
-> On Mon, Apr 22, 2024 at 03:45:22PM +0300, Dmitry Baryshkov wrote:
-> > On Mon, Apr 22, 2024 at 01:59:10PM +0300, Heikki Krogerus wrote:
-> > > Hi Dmitry,
-> > >
-> > > On Tue, Apr 16, 2024 at 05:20:56AM +0300, Dmitry Baryshkov wrote:
-> > > > Move handling of USB Altmode to the ucsi_glink driver. This way the
-> > > > altmode is properly registered in the Type-C framework, the altmode
-> > > > handlers can use generic typec calls, the UCSI driver can use
-> > > > orientation information from altmode messages and vice versa, the
-> > > > altmode handlers can use GPIO-based orientation inormation from UCSI
-> > > > GLINK driver.
-> > > >
-> > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > > ---
-> > > >  drivers/soc/qcom/Makefile             |   1 -
-> > > >  drivers/soc/qcom/pmic_glink_altmode.c | 546 ----------------------------------
-> > > >  drivers/usb/typec/ucsi/ucsi_glink.c   | 495 ++++++++++++++++++++++++++++--
-> > > >  3 files changed, 475 insertions(+), 567 deletions(-)
-> > > >
-> >
-> > [skipped the patch]
-> >
-> > > > +
-> > > > +static void pmic_glink_ucsi_register_altmode(struct ucsi_connector *con)
-> > > > +{
-> > > > + static const u8 all_assignments = BIT(DP_PIN_ASSIGN_C) | BIT(DP_PIN_ASSIGN_D) |
-> > > > +                      BIT(DP_PIN_ASSIGN_E);
-> > > > + struct typec_altmode_desc desc;
-> > > > + struct typec_altmode *alt;
-> > > > +
-> > > > + mutex_lock(&con->lock);
-> > > > +
-> > > > + if (con->port_altmode[0])
-> > > > +         goto out;
-> > > > +
-> > > > + memset(&desc, 0, sizeof(desc));
-> > > > + desc.svid = USB_TYPEC_DP_SID;
-> > > > + desc.mode = USB_TYPEC_DP_MODE;
-> > > > +
-> > > > + desc.vdo = DP_CAP_CAPABILITY(DP_CAP_DFP_D);
-> > > > +
-> > > > + /* We can't rely on the firmware with the capabilities. */
-> > > > + desc.vdo |= DP_CAP_DP_SIGNALLING(0) | DP_CAP_RECEPTACLE;
-> > > > +
-> > > > + /* Claiming that we support all pin assignments */
-> > > > + desc.vdo |= all_assignments << 8;
-> > > > + desc.vdo |= all_assignments << 16;
-> > > > +
-> > > > + alt = typec_port_register_altmode(con->port, &desc);
-> > >
-> > >         alt = ucsi_register_displayport(con, 0, 0, &desc);
-> >
-> > Note, the existing UCSI displayport AltMode driver depends on the UCSI
-> > actually handling the altomode. It needs a partner, etc.
-> >
-> > > You need to export that function, but that should not be a problem:
-> > >
-> > > diff --git a/drivers/usb/typec/ucsi/displayport.c b/drivers/usb/typec/ucsi/displayport.c
-> > > index d9d3c91125ca..f2754d7b5876 100644
-> > > --- a/drivers/usb/typec/ucsi/displayport.c
-> > > +++ b/drivers/usb/typec/ucsi/displayport.c
-> > > @@ -315,11 +315,13 @@ struct typec_altmode *ucsi_register_displayport(struct ucsi_connector *con,
-> > >         struct ucsi_dp *dp;
-> > >
-> > >         /* We can't rely on the firmware with the capabilities. */
-> > > -       desc->vdo |= DP_CAP_DP_SIGNALLING(0) | DP_CAP_RECEPTACLE;
-> > > +       if (!desc->vdo) {
-> > > +               desc->vdo = DP_CAP_DP_SIGNALLING(0) | DP_CAP_RECEPTACLE;
-> > >
-> > > -       /* Claiming that we support all pin assignments */
-> > > -       desc->vdo |= all_assignments << 8;
-> > > -       desc->vdo |= all_assignments << 16;
-> > > +               /* Claiming that we support all pin assignments */
-> > > +               desc->vdo |= all_assignments << 8;
-> > > +               desc->vdo |= all_assignments << 16;
-> > > +       }
-> > >
-> > >         alt = typec_port_register_altmode(con->port, desc);
-> > >         if (IS_ERR(alt))
-> > > @@ -342,3 +344,4 @@ struct typec_altmode *ucsi_register_displayport(struct ucsi_connector *con,
-> > >
-> > >         return alt;
-> > >  }
-> > > +EXPORT_SYMBOL_GPL(ucsi_register_displayport);
-> > >
-> > > <snip>
-> > >
-> > > > +static void pmic_glink_ucsi_set_state(struct ucsi_connector *con,
-> > > > +                               struct pmic_glink_ucsi_port *port)
-> > > > +{
-> > > > + struct typec_displayport_data dp_data = {};
-> > > > + struct typec_altmode *altmode = NULL;
-> > > > + unsigned long flags;
-> > > > + void *data = NULL;
-> > > > + int mode;
-> > > > +
-> > > > + spin_lock_irqsave(&port->lock, flags);
-> > > > +
-> > > > + if (port->svid == USB_SID_PD) {
-> > > > +         mode = TYPEC_STATE_USB;
-> > > > + } else if (port->svid == USB_TYPEC_DP_SID && port->mode == DPAM_HPD_OUT) {
-> > > > +         mode = TYPEC_STATE_SAFE;
-> > > > + } else if (port->svid == USB_TYPEC_DP_SID) {
-> > > > +         altmode = find_altmode(con, port->svid);
-> > > > +         if (!altmode) {
-> > > > +                 dev_err(con->ucsi->dev, "altmode woth SVID 0x%04x not found\n",
-> > > > +                         port->svid);
-> > > > +                 spin_unlock_irqrestore(&port->lock, flags);
-> > > > +                 return;
-> > > > +         }
-> > > > +
-> > > > +         mode = TYPEC_MODAL_STATE(port->mode - DPAM_HPD_A);
-> > > > +
-> > > > +         dp_data.status = DP_STATUS_ENABLED;
-> > > > +         dp_data.status |= DP_STATUS_CON_DFP_D;
-> > > > +         if (port->hpd_state)
-> > > > +                 dp_data.status |= DP_STATUS_HPD_STATE;
-> > > > +         if (port->hpd_irq)
-> > > > +                 dp_data.status |= DP_STATUS_IRQ_HPD;
-> > > > +         dp_data.conf = DP_CONF_SET_PIN_ASSIGN(port->mode - DPAM_HPD_A);
-> > > > +
-> > > > +         data = &dp_data;
-> > > > + } else {
-> > > > +         dev_err(con->ucsi->dev, "Unsupported SVID 0x%04x\n", port->svid);
-> > > > +         spin_unlock_irqrestore(&port->lock, flags);
-> > > > +         return;
-> > > > + }
-> > > > +
-> > > > + spin_unlock_irqrestore(&port->lock, flags);
-> > > > +
-> > > > + if (altmode)
-> > > > +         typec_altmode_set_port(altmode, mode, data);
-> > >
-> > > So if the port altmode is using the ucsi_displayport_ops, you can
-> > > simply register the partner altmode here instead. That should
-> > > guarantee that it'll bind to the DP altmode driver which will take
-> > > care of typec_altmode_enter() etc.
-> >
-> > In our case the altmode is unfortunately completely hidden inside the
-> > firmware. It is not exported via the native UCSI interface. Even if I
-> > plug the DP dongle, there is no partner / altmode being reported by the
-> > PPM. All DP events are reported via additional GLINK messages.
->
-> I understand that there is no alt mode being reported, but I assumed
-> that there is a notification about connections.
+Hello,
 
-Yes, there is a notification.
+syzbot found the following issue on:
 
->
-> If that's not the case, then you need to use this code path to
-> register the partner device as well I think. The partner really has to
-> be registered somehow.
->
-> > The goal is to use the core Type-C altmode handling, while keeping UCSI
-> > out of the altmode business.
-> >
-> > This allows the core to handle switches / muxes / retimers, report the
-> > altmode to the userspace via sysfs, keep the link between the DP part of
-> > the stack and the typec port, but at the same time we don't get errors
-> > from UCSI because of the PPM reporting unsupported commands, etc.
->
-> I understand, and just to be clear, I don't have a problem with
-> bypassing UCSI. But that does not mean you can skip the alt mode
-> registration.
->
-> The primary purpose of drivers/usb/typec/ucsi/displayport.c is to
-> emulate the partner DP alt mode device a little so that the actual DP
-> alt mode driver drivers/usb/typec/altmodes/displayport.c is happy. The
-> altmode driver will then make sure that all the muxes, switches and
-> what have you, are configured as they should, and more importantly,
-> make sure the DP alt mode is exposed to the user space exactly the
-> same way as it's exposed on all the other systems.
+HEAD commit:    8cd26fd90c1a Merge tag 'for-6.9-rc4-tag' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17246653180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2dc5adfa93a8cfac
+dashboard link: https://syzkaller.appspot.com/bug?extid=ff2b5414e8547b96ad2e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-Ack. I'll take a look at implementing it this way. If it works, then
-it becomes even easier.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-A bit of justification from my side. I was comparing this
-implementation with the Lenovo p53s laptop. Running 6.7 kernel, I see
-two Type-C ports. They register altmodes, etc. However for the DP
-partner (Lenovo USB-C dock) I only get the partner device, there are
-no altmodes of the partner. /sys/bus/typec/devices/ is empty. The DP
-works perfectly despite not having the typec device. But maybe it's
-just some i915's extension or platform hack.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-8cd26fd9.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7f65e88496b8/vmlinux-8cd26fd9.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/cc0f0ec3d904/bzImage-8cd26fd9.xz
 
-> There are a couple of UCSI commands that are being used there yes, but
-> by modifying it so that those UCSI commands are executed conditionally
-> - by checking the ALT_MODE_DETAILS feature - you should be able to use
-> it also in this case.
->
-> You really need to register the partner alt mode(s) one way or the
-> other in any case, and the partner device itself you absolutely must
-> register. The user space interface needs to be consistent.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ff2b5414e8547b96ad2e@syzkaller.appspotmail.com
 
-Ack
+======================================================
+WARNING: possible circular locking dependency detected
+6.9.0-rc4-syzkaller-00038-g8cd26fd90c1a #0 Not tainted
+------------------------------------------------------
+kswapd0/111 is trying to acquire lock:
+ffff88801e3e8920 (&(imap->im_aglock[index])){+.+.}-{3:3}, at: diFree+0x2ff/0x2770 fs/jfs/jfs_imap.c:886
 
--- 
-With best wishes
-Dmitry
+but task is already holding lock:
+ffffffff8d9373c0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x166/0x1a10 mm/vmscan.c:6782
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (fs_reclaim){+.+.}-{0:0}:
+       __fs_reclaim_acquire mm/page_alloc.c:3698 [inline]
+       fs_reclaim_acquire+0x102/0x160 mm/page_alloc.c:3712
+       might_alloc include/linux/sched/mm.h:312 [inline]
+       prepare_alloc_pages.constprop.0+0x155/0x560 mm/page_alloc.c:4346
+       __alloc_pages+0x194/0x2460 mm/page_alloc.c:4564
+       __alloc_pages_node include/linux/gfp.h:238 [inline]
+       alloc_pages_node include/linux/gfp.h:261 [inline]
+       __kmalloc_large_node+0x7f/0x1a0 mm/slub.c:3911
+       kmalloc_large+0x1c/0x70 mm/slub.c:3928
+       kmalloc include/linux/slab.h:625 [inline]
+       diMount+0x29/0x8d0 fs/jfs/jfs_imap.c:105
+       jfs_mount_rw+0x238/0x700 fs/jfs/jfs_mount.c:240
+       jfs_remount+0x51f/0x650 fs/jfs/super.c:454
+       legacy_reconfigure+0x119/0x180 fs/fs_context.c:685
+       reconfigure_super+0x44f/0xb20 fs/super.c:1071
+       vfs_cmd_reconfigure fs/fsopen.c:267 [inline]
+       vfs_fsconfig_locked fs/fsopen.c:296 [inline]
+       __do_sys_fsconfig+0x991/0xb90 fs/fsopen.c:476
+       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+       __do_fast_syscall_32+0x75/0x120 arch/x86/entry/common.c:321
+       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
+       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+
+-> #1 (&jfs_ip->rdwrlock/1){++++}-{3:3}:
+       down_read_nested+0x9e/0x330 kernel/locking/rwsem.c:1651
+       diAlloc+0x3ea/0x1a70 fs/jfs/jfs_imap.c:1385
+       ialloc+0x84/0x9e0 fs/jfs/jfs_inode.c:56
+       jfs_create+0x23e/0xb40 fs/jfs/namei.c:92
+       lookup_open.isra.0+0x10a1/0x13c0 fs/namei.c:3497
+       open_last_lookups fs/namei.c:3566 [inline]
+       path_openat+0x92f/0x2990 fs/namei.c:3796
+       do_filp_open+0x1dc/0x430 fs/namei.c:3826
+       do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
+       do_sys_open fs/open.c:1421 [inline]
+       __do_compat_sys_openat fs/open.c:1481 [inline]
+       __se_compat_sys_openat fs/open.c:1479 [inline]
+       __ia32_compat_sys_openat+0x16e/0x210 fs/open.c:1479
+       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+       __do_fast_syscall_32+0x75/0x120 arch/x86/entry/common.c:321
+       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
+       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+
+-> #0 (&(imap->im_aglock[index])){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+       lock_acquire kernel/locking/lockdep.c:5754 [inline]
+       lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
+       diFree+0x2ff/0x2770 fs/jfs/jfs_imap.c:886
+       jfs_evict_inode+0x3d4/0x4b0 fs/jfs/inode.c:156
+       evict+0x2ed/0x6c0 fs/inode.c:667
+       iput_final fs/inode.c:1741 [inline]
+       iput.part.0+0x5a8/0x7f0 fs/inode.c:1767
+       iput+0x5c/0x80 fs/inode.c:1757
+       dentry_unlink_inode+0x295/0x440 fs/dcache.c:400
+       __dentry_kill+0x1d0/0x600 fs/dcache.c:603
+       shrink_kill fs/dcache.c:1048 [inline]
+       shrink_dentry_list+0x140/0x5d0 fs/dcache.c:1075
+       prune_dcache_sb+0xeb/0x150 fs/dcache.c:1156
+       super_cache_scan+0x32a/0x550 fs/super.c:221
+       do_shrink_slab+0x44f/0x11c0 mm/shrinker.c:435
+       shrink_slab_memcg mm/shrinker.c:548 [inline]
+       shrink_slab+0xa87/0x1310 mm/shrinker.c:626
+       shrink_one+0x493/0x7c0 mm/vmscan.c:4774
+       shrink_many mm/vmscan.c:4835 [inline]
+       lru_gen_shrink_node+0x89f/0x1750 mm/vmscan.c:4935
+       shrink_node mm/vmscan.c:5894 [inline]
+       kswapd_shrink_node mm/vmscan.c:6704 [inline]
+       balance_pgdat+0x10d1/0x1a10 mm/vmscan.c:6895
+       kswapd+0x5ea/0xbf0 mm/vmscan.c:7164
+       kthread+0x2c1/0x3a0 kernel/kthread.c:388
+       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+other info that might help us debug this:
+
+Chain exists of:
+  &(imap->im_aglock[index]) --> &jfs_ip->rdwrlock/1 --> fs_reclaim
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(fs_reclaim);
+                               lock(&jfs_ip->rdwrlock/1);
+                               lock(fs_reclaim);
+  lock(&(imap->im_aglock[index]));
+
+ *** DEADLOCK ***
+
+2 locks held by kswapd0/111:
+ #0: ffffffff8d9373c0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x166/0x1a10 mm/vmscan.c:6782
+ #1: ffff88804a6d80e0 (&type->s_umount_key#65){++++}-{3:3}, at: super_trylock_shared fs/super.c:561 [inline]
+ #1: ffff88804a6d80e0 (&type->s_umount_key#65){++++}-{3:3}, at: super_cache_scan+0x96/0x550 fs/super.c:196
+
+stack backtrace:
+CPU: 3 PID: 111 Comm: kswapd0 Not tainted 6.9.0-rc4-syzkaller-00038-g8cd26fd90c1a #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
+ diFree+0x2ff/0x2770 fs/jfs/jfs_imap.c:886
+ jfs_evict_inode+0x3d4/0x4b0 fs/jfs/inode.c:156
+ evict+0x2ed/0x6c0 fs/inode.c:667
+ iput_final fs/inode.c:1741 [inline]
+ iput.part.0+0x5a8/0x7f0 fs/inode.c:1767
+ iput+0x5c/0x80 fs/inode.c:1757
+ dentry_unlink_inode+0x295/0x440 fs/dcache.c:400
+ __dentry_kill+0x1d0/0x600 fs/dcache.c:603
+ shrink_kill fs/dcache.c:1048 [inline]
+ shrink_dentry_list+0x140/0x5d0 fs/dcache.c:1075
+ prune_dcache_sb+0xeb/0x150 fs/dcache.c:1156
+ super_cache_scan+0x32a/0x550 fs/super.c:221
+ do_shrink_slab+0x44f/0x11c0 mm/shrinker.c:435
+ shrink_slab_memcg mm/shrinker.c:548 [inline]
+ shrink_slab+0xa87/0x1310 mm/shrinker.c:626
+ shrink_one+0x493/0x7c0 mm/vmscan.c:4774
+ shrink_many mm/vmscan.c:4835 [inline]
+ lru_gen_shrink_node+0x89f/0x1750 mm/vmscan.c:4935
+ shrink_node mm/vmscan.c:5894 [inline]
+ kswapd_shrink_node mm/vmscan.c:6704 [inline]
+ balance_pgdat+0x10d1/0x1a10 mm/vmscan.c:6895
+ kswapd+0x5ea/0xbf0 mm/vmscan.c:7164
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
