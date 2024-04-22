@@ -1,301 +1,276 @@
-Return-Path: <linux-kernel+bounces-153296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2D608ACC25
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:39:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 172398ACC2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:40:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DB18280F4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:39:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A4921C20FA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC973146A68;
-	Mon, 22 Apr 2024 11:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDB114A097;
+	Mon, 22 Apr 2024 11:39:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tqPyZf7f"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CgEvNY8/"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27812146595
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9500C146A67;
+	Mon, 22 Apr 2024 11:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713785964; cv=none; b=CYDBdaZIxDeNeKeVl22CUet+OUi5k+X5onBC3B+SfogSwfK3VP09ae+XjAMsgrjDhRA0wyrK3vUrY6KTmF+VHArVwZ4oezE3RifmcZ/igQSGl6PzQa6yK/DcUmUI3E0/6KeveTY5gF/smwocRz4YXOnX0NAoW3chUmUfe2nD0hc=
+	t=1713785979; cv=none; b=rS0nsBz0X1MHccL53It/MOsRekoCFVC+KTsHoAgQzRFZWahAFOFLTCjygagUhrmDOvcU2vCGmeBIyI8fowWzps39LxDgJNLmDtlUcCmkldyCd9JLd+vH/20grSSPcH0nY/j6+/H/G92ASpUTIed4/nepwQQTv/8LiLdlI3oH8NU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713785964; c=relaxed/simple;
-	bh=Hp/ANEzuImA8TwMZWvs03D/XFWAnQgyA0k2jqzI41Hg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZBf2wyPVFVzzZcbU6mBiPIETW4S5ITASfBCB394ERxN7oYlQY1JnrObUebOgj3ppD+bdKn5RDGbRf5Xd3COCw98xCFn7u6m7VC8Td7FErmxOurSLL/Kd4zOBrlnuUC3qutdcgIuLmHILFcCbel21ikLRJWcdltWppoJ0uNf2XWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tqPyZf7f; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713785961;
-	bh=Hp/ANEzuImA8TwMZWvs03D/XFWAnQgyA0k2jqzI41Hg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=tqPyZf7fsyDTcyMRrXcsk5NJwuyfWg5R6k6fScJLsA5zCM4cnJCDRi1E63951p9rT
-	 GvvGvQTKwFamQP6s21r3MUVyCbkTDEHrGq2OGKeFrivIDUgNwti/6d8xfZbp2wDnWX
-	 QUg8TUQp4s/M79qXsrXd0y+FNT01zumB2rnNFOdz3qkIaJqItBYJas6VISPz6NtApQ
-	 8QdjP3aKohCnA3K+0pHyA/FyL6CkTtDVv+5BMgK9eG2dlaUs8ICKJkLkVDzRfwyhF5
-	 OnIG6oop1HlLmSSDTwAx/lfxuczDzQ8T/DUuy4TlQNxnI+lzs2uVbzaNJWh80zFvTz
-	 Y90dejG7xKxwA==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C021C3782009;
-	Mon, 22 Apr 2024 11:39:19 +0000 (UTC)
-Date: Mon, 22 Apr 2024 14:39:18 +0300
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- rdunlap@infradead.org, arthurgrillo@riseup.net, Jonathan Corbet
- <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
- miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
- seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
-Subject: Re: [PATCH v6 09/17] drm/vkms: Introduce pixel_read_direction enum
-Message-ID: <20240422143918.098d3d09.pekka.paalanen@collabora.com>
-In-Reply-To: <20240409-yuv-v6-9-de1c5728fd70@bootlin.com>
-References: <20240409-yuv-v6-0-de1c5728fd70@bootlin.com>
-	<20240409-yuv-v6-9-de1c5728fd70@bootlin.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713785979; c=relaxed/simple;
+	bh=ulsfSAEl7LBwePnfRAal8I6cQlsR0G+iMdbsnGnkwM8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j/ajusAnHHX1NXqQyJ57Sf1MuYb0oSyrWJ1eSeOLus9fMC47iLF8W9RtuwJ2yQYLfsKLRSpYV5Rr+iP5ZOZ/pJpObCRtpYKcZCE9TmrCKDXHzsrZBGdNRpNMtAhFLyjvJTzrRZD+naySNvgVvLPR9zZKeJNXniS4YwPkQtt8AI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CgEvNY8/; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-34b1e35155aso702983f8f.3;
+        Mon, 22 Apr 2024 04:39:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713785976; x=1714390776; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=aJ9yQshLsZ6lvoWpjUZb+c8ATqrhPEYy3PtHw/SC4co=;
+        b=CgEvNY8//ZyAveamdUFJ90Nus3p2L+j2AdeFGfHuCtDvbsgT4pKOUGFqadYmTL3TXQ
+         jEXb/mUu2NSVU48k9SUd/CEvGlZ+UJtRfedFICsqsY9ZgJsmq65A47qreebe6u16PFJa
+         dMPOtCiw48ZfubIzupe3ulr+wWazryE+Q9zw2ZxRUe4kgOpEm5wBvQEersC3SQjZ90bo
+         KidDt9uRKOujqSL+gvVJXhnUKirrljqgUgqQ5rvu3zeLCkg8jFJyDHbjS1mhTwwrntnE
+         koz7yO0CoIo7GmJM7C7JXy2r+gQfU8dY2s9sfk20tbihmse4JdN6PQcc7DZSMTRsAcB9
+         qSDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713785976; x=1714390776;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aJ9yQshLsZ6lvoWpjUZb+c8ATqrhPEYy3PtHw/SC4co=;
+        b=DjQVPYfPKiBlxDkKWQTkfyhv3V1r/+cm2r5IrQSKihd+UQ/gQDYBS38+Q/lMC0Lg/M
+         kJmvbWhpnLIqzKFDrk+sfb7tUxM1EuWOCbccU8bJcaTXpFBS4iQXLlMZgtbSNewIrcPh
+         yP74qyr/Fu1N06ajR132k0unI50Wb2t4YJPerz+6rHdUdLhEtn7xZKCOVa/a5OQ02UiL
+         UuUcnjfIWcSQjpsoYQP8hfPUPt3gBhl1+QYhpyVtXafF9rYDrxmCWkisxdqB/VG5zFqa
+         94SOI5PnPzKrhG7rHZgf0KTjhJiU3IFWdEsLBhcncJoQq35gQJPGfortE6NsV7WIJUdm
+         oKlg==
+X-Forwarded-Encrypted: i=1; AJvYcCXK2vscBsDTI24S58gA3Tu9UsPB1RZqZwSGNx3vTkJZDElPuYg+tnD+sRtRtlXVV1D5eSStmzlq+RrJto7Iy10Ac2F0ECHJm6E3Beuepi5gqPeR5MCIYPAxJ6vS58k2Ao0Jv7Fr5F/w5iVwaVKZNZyXVOo1sOfjC58UHaSTHE0xU4fw1Q==
+X-Gm-Message-State: AOJu0Yw1cUqyHpJLzLRufe+GZQR0c0E/KkHyGVfhAwuTSXeb+uH6yii0
+	h51U0M/hv2JpIDzPT4ZOTodvk1/3QOplOLKtfqaWVINihSbEub7B
+X-Google-Smtp-Source: AGHT+IETX/3Lo779iTOd02lH4mu0GSF9AVTJKi6GM6wHxnVUA3usTw72yxk2ggywg7ebJStbnepGCg==
+X-Received: by 2002:a5d:4ec1:0:b0:34a:e798:29fc with SMTP id s1-20020a5d4ec1000000b0034ae79829fcmr3474651wrv.52.1713785975586;
+        Mon, 22 Apr 2024 04:39:35 -0700 (PDT)
+Received: from krava (ip4-95-82-160-96.cust.nbox.cz. [95.82.160.96])
+        by smtp.gmail.com with ESMTPSA id h1-20020a5d5481000000b003437a76565asm11759544wrv.25.2024.04.22.04.39.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 04:39:35 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 22 Apr 2024 13:39:32 +0200
+To: Jonathan Haslam <jonathan.haslam@gmail.com>
+Cc: linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
+	andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] uprobes: reduce contention on uprobes_tree access
+Message-ID: <ZiZMdLIK55q3EvMP@krava>
+References: <20240422102306.6026-1-jonathan.haslam@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/m6tnJaadGIC+IIT7maAs7c5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240422102306.6026-1-jonathan.haslam@gmail.com>
 
---Sig_/m6tnJaadGIC+IIT7maAs7c5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 22, 2024 at 03:23:05AM -0700, Jonathan Haslam wrote:
+> Active uprobes are stored in an RB tree and accesses to this tree are
+> dominated by read operations. Currently these accesses are serialized by
+> a spinlock but this leads to enormous contention when large numbers of
+> threads are executing active probes.
+> 
+> This patch converts the spinlock used to serialize access to the
+> uprobes_tree RB tree into a reader-writer spinlock. This lock type
+> aligns naturally with the overwhelmingly read-only nature of the tree
+> usage here. Although the addition of reader-writer spinlocks are
+> discouraged [0], this fix is proposed as an interim solution while an
+> RCU based approach is implemented (that work is in a nascent form). This
+> fix also has the benefit of being trivial, self contained and therefore
+> simple to backport.
+> 
+> We have used a uprobe benchmark from the BPF selftests [1] to estimate
+> the improvements. Each block of results below show 1 line per execution
+> of the benchmark ("the "Summary" line) and each line is a run with one
+> more thread added - a thread is a "producer". The lines are edited to
+> remove extraneous output.
+> 
+> The tests were executed with this driver script:
+> 
+> for num_threads in {1..20}
+> do
+>   sudo ./bench -a -p $num_threads trig-uprobe-nop | grep Summary
+> done
+> 
+> SPINLOCK (BEFORE)
+> ==================
+> Summary: hits    1.396 ± 0.007M/s (  1.396M/prod)
+> Summary: hits    1.656 ± 0.016M/s (  0.828M/prod)
+> Summary: hits    2.246 ± 0.008M/s (  0.749M/prod)
+> Summary: hits    2.114 ± 0.010M/s (  0.529M/prod)
+> Summary: hits    2.013 ± 0.009M/s (  0.403M/prod)
+> Summary: hits    1.753 ± 0.008M/s (  0.292M/prod)
+> Summary: hits    1.847 ± 0.001M/s (  0.264M/prod)
+> Summary: hits    1.889 ± 0.001M/s (  0.236M/prod)
+> Summary: hits    1.833 ± 0.006M/s (  0.204M/prod)
+> Summary: hits    1.900 ± 0.003M/s (  0.190M/prod)
+> Summary: hits    1.918 ± 0.006M/s (  0.174M/prod)
+> Summary: hits    1.925 ± 0.002M/s (  0.160M/prod)
+> Summary: hits    1.837 ± 0.001M/s (  0.141M/prod)
+> Summary: hits    1.898 ± 0.001M/s (  0.136M/prod)
+> Summary: hits    1.799 ± 0.016M/s (  0.120M/prod)
+> Summary: hits    1.850 ± 0.005M/s (  0.109M/prod)
+> Summary: hits    1.816 ± 0.002M/s (  0.101M/prod)
+> Summary: hits    1.787 ± 0.001M/s (  0.094M/prod)
+> Summary: hits    1.764 ± 0.002M/s (  0.088M/prod)
+> 
+> RW SPINLOCK (AFTER)
+> ===================
+> Summary: hits    1.444 ± 0.020M/s (  1.444M/prod)
+> Summary: hits    2.279 ± 0.011M/s (  1.139M/prod)
+> Summary: hits    3.422 ± 0.014M/s (  1.141M/prod)
+> Summary: hits    3.565 ± 0.017M/s (  0.891M/prod)
+> Summary: hits    2.671 ± 0.013M/s (  0.534M/prod)
+> Summary: hits    2.409 ± 0.005M/s (  0.401M/prod)
+> Summary: hits    2.485 ± 0.008M/s (  0.355M/prod)
+> Summary: hits    2.496 ± 0.003M/s (  0.312M/prod)
+> Summary: hits    2.585 ± 0.002M/s (  0.287M/prod)
+> Summary: hits    2.908 ± 0.011M/s (  0.291M/prod)
+> Summary: hits    2.346 ± 0.016M/s (  0.213M/prod)
+> Summary: hits    2.804 ± 0.004M/s (  0.234M/prod)
+> Summary: hits    2.556 ± 0.001M/s (  0.197M/prod)
+> Summary: hits    2.754 ± 0.004M/s (  0.197M/prod)
+> Summary: hits    2.482 ± 0.002M/s (  0.165M/prod)
+> Summary: hits    2.412 ± 0.005M/s (  0.151M/prod)
+> Summary: hits    2.710 ± 0.003M/s (  0.159M/prod)
+> Summary: hits    2.826 ± 0.005M/s (  0.157M/prod)
+> Summary: hits    2.718 ± 0.001M/s (  0.143M/prod)
+> Summary: hits    2.844 ± 0.006M/s (  0.142M/prod)
 
-On Tue, 09 Apr 2024 15:25:27 +0200
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+nice, I'm assuming Masami will take this one.. in any case:
 
-> The pixel_read_direction enum is useful to describe the reading direction
-> in a plane. It avoids using the rotation property of DRM, which not
-> practical to know the direction of reading.
-> This patch also introduce two helpers, one to compute the
-> pixel_read_direction from the DRM rotation property, and one to compute
-> the step, in byte, between two successive pixel in a specific direction.
->=20
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
+
+> 
+> The numbers in parenthesis give averaged throughput per thread which is
+> of greatest interest here as a measure of scalability. Improvements are
+> in the order of 22 - 68% with this particular benchmark (mean = 43%).
+> 
+> V2:
+>  - Updated commit message to include benchmark results.
+> 
+> [0] https://docs.kernel.org/locking/spinlocks.html
+> [1] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/benchs/bench_trigger.c
+> 
+> Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
 > ---
->  drivers/gpu/drm/vkms/vkms_composer.c | 42 ++++++++++++++++++++++++++++++=
-++++++
->  drivers/gpu/drm/vkms/vkms_drv.h      | 11 ++++++++++
->  drivers/gpu/drm/vkms/vkms_formats.c  | 30 ++++++++++++++++++++++++++
->  3 files changed, 83 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/=
-vkms_composer.c
-> index 45b111c74884..7c2e328c9510 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -159,6 +159,48 @@ static void apply_lut(const struct vkms_crtc_state *=
-crtc_state, struct line_buff
+>  kernel/events/uprobes.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index e4834d23e1d1..8ae0eefc3a34 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
+>   */
+>  #define no_uprobe_events()	RB_EMPTY_ROOT(&uprobes_tree)
+>  
+> -static DEFINE_SPINLOCK(uprobes_treelock);	/* serialize rbtree access */
+> +static DEFINE_RWLOCK(uprobes_treelock);	/* serialize rbtree access */
+>  
+>  #define UPROBES_HASH_SZ	13
+>  /* serialize uprobe->pending_list */
+> @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
+>  {
+>  	struct uprobe *uprobe;
+>  
+> -	spin_lock(&uprobes_treelock);
+> +	read_lock(&uprobes_treelock);
+>  	uprobe = __find_uprobe(inode, offset);
+> -	spin_unlock(&uprobes_treelock);
+> +	read_unlock(&uprobes_treelock);
+>  
+>  	return uprobe;
+>  }
+> @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
+>  {
+>  	struct uprobe *u;
+>  
+> -	spin_lock(&uprobes_treelock);
+> +	write_lock(&uprobes_treelock);
+>  	u = __insert_uprobe(uprobe);
+> -	spin_unlock(&uprobes_treelock);
+> +	write_unlock(&uprobes_treelock);
+>  
+>  	return u;
+>  }
+> @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
+>  	if (WARN_ON(!uprobe_is_active(uprobe)))
+>  		return;
+>  
+> -	spin_lock(&uprobes_treelock);
+> +	write_lock(&uprobes_treelock);
+>  	rb_erase(&uprobe->rb_node, &uprobes_tree);
+> -	spin_unlock(&uprobes_treelock);
+> +	write_unlock(&uprobes_treelock);
+>  	RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
+>  	put_uprobe(uprobe);
+>  }
+> @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
+>  	min = vaddr_to_offset(vma, start);
+>  	max = min + (end - start) - 1;
+>  
+> -	spin_lock(&uprobes_treelock);
+> +	read_lock(&uprobes_treelock);
+>  	n = find_node_in_range(inode, min, max);
+>  	if (n) {
+>  		for (t = n; t; t = rb_prev(t)) {
+> @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
+>  			get_uprobe(u);
+>  		}
 >  	}
+> -	spin_unlock(&uprobes_treelock);
+> +	read_unlock(&uprobes_treelock);
 >  }
-> =20
-> +/**
-> + * direction_for_rotation() - Get the correct reading direction for a gi=
-ven rotation
-> + *
-> + * @rotation: Rotation to analyze. It correspond the field @frame_info.r=
-otation.
-> + *
-> + * This function will use the @rotation setting of a source plane to com=
-pute the reading
-> + * direction in this plane which correspond to a "left to right writing"=
- in the CRTC.
-> + * For example, if the buffer is reflected on X axis, the pixel must be =
-read from right to left
-> + * to be written from left to right on the CRTC.
-> + */
-> +static enum pixel_read_direction direction_for_rotation(unsigned int rot=
-ation)
-> +{
-> +	struct drm_rect tmp_a, tmp_b;
-> +	int x, y;
-> +
-> +	/*
-> +	 * The direction is computed by rotating the vector AB (top-left to top=
--right) in a
-> +	 * 1x1 square.
-
-Points A and B are depicted as zero-size rectangles on the CRTC.
-The CRTC writing direction is from A to B. The plane reading direction
-is discovered by inverse-transforming A and B.
-
-(If you want, you can add that to the comment.)
-
-> +	 */
-> +
-> +	tmp_a =3D DRM_RECT_INIT(0, 0, 0, 0);
-> +	tmp_b =3D DRM_RECT_INIT(1, 0, 0, 0);
-> +	drm_rect_rotate_inv(&tmp_a, 1, 1, rotation);
-> +	drm_rect_rotate_inv(&tmp_b, 1, 1, rotation);
-> +
-> +	x =3D tmp_b.x1 - tmp_a.x1;
-> +	y =3D tmp_b.y1 - tmp_a.y1;
-> +
-> +	if (x =3D=3D 1)
-> +		return READ_LEFT_TO_RIGHT;
-> +	else if (x =3D=3D -1)
-> +		return READ_RIGHT_TO_LEFT;
-> +	else if (y =3D=3D 1)
-> +		return READ_TOP_TO_BOTTOM;
-> +	else if (y =3D=3D -1)
-> +		return READ_BOTTOM_TO_TOP;
-
-I find this code practically obvious. Excellent!
-
-If you want to be more strict, each condition could also require the
-other component to be zero.
-
-> +
-> +
-> +	WARN_ONCE(true, "The inverse of the rotation gives an incorrect directi=
-on.");
-> +	return READ_LEFT_TO_RIGHT;
-> +}
-> +
->  /**
->   * blend - blend the pixels from all planes and compute crc
->   * @wb: The writeback frame buffer metadata
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_=
-drv.h
-> index 2e1a1b824a3c..16317b063c20 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -69,6 +69,17 @@ struct vkms_writeback_job {
->  	pixel_write_t pixel_write;
->  };
-> =20
-> +/**
-> + * enum pixel_read_direction - Enum used internaly by VKMS to represent =
-a reading direction in a
-> + * plane.
-> + */
-> +enum pixel_read_direction {
-> +	READ_BOTTOM_TO_TOP,
-> +	READ_TOP_TO_BOTTOM,
-> +	READ_RIGHT_TO_LEFT,
-> +	READ_LEFT_TO_RIGHT
-> +};
-> +
->  /**
->   * typedef pixel_read_t - These functions are used to read a pixel in th=
-e source frame,
->   * convert it to `struct pixel_argb_u16` and write it to @out_pixel.
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
-kms_formats.c
-> index 9a1400ad4db6..f76944874fe7 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -75,6 +75,36 @@ static void packed_pixels_addr(const struct vkms_frame=
-_info *frame_info,
->  	*addr =3D (u8 *)frame_info->map[0].vaddr + offset;
+>  
+>  /* @vma contains reference counter, not the probed instruction. */
+> @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
+>  	min = vaddr_to_offset(vma, start);
+>  	max = min + (end - start) - 1;
+>  
+> -	spin_lock(&uprobes_treelock);
+> +	read_lock(&uprobes_treelock);
+>  	n = find_node_in_range(inode, min, max);
+> -	spin_unlock(&uprobes_treelock);
+> +	read_unlock(&uprobes_treelock);
+>  
+>  	return !!n;
 >  }
-> =20
-> +/**
-> + * get_block_step_byte() - Common helper to compute the correct step val=
-ue between each pixel block
-
-This should be called get_block_step_bytes(). "Byte" sounds like it
-returns a single byte.
-
-> + * to read in a certain direction.
-> + *
-> + * @fb: Framebuffer to iter on
-> + * @direction: Direction of the reading
-> + * @plane_index: Plane to get the step from
-> + *
-> + * As the returned offset is the number of bytes between two consecutive=
- blocks in a direction,
-
-I'd call it "returned count" rather than "returned offset".
-
-> + * the caller may have to read multiple pixel before using the next one =
-(for example, to read from
-
-..multiple pixels before using the next block
-
-> + * left to right in a DRM_FORMAT_R1 plane, each block contains 8 pixels,=
- so the step must be used
-> + * only every 8 pixels.
-
-Close parenthesis.
-
-> + */
-> +static int get_block_step_byte(struct drm_framebuffer *fb, enum pixel_re=
-ad_direction direction,
-> +			       int plane_index)
-> +{
-> +	switch (direction) {
-> +	case READ_LEFT_TO_RIGHT:
-> +		return fb->format->char_per_block[plane_index];
-> +	case READ_RIGHT_TO_LEFT:
-> +		return -fb->format->char_per_block[plane_index];
-> +	case READ_TOP_TO_BOTTOM:
-> +		return (int)fb->pitches[plane_index];
-> +	case READ_BOTTOM_TO_TOP:
-> +		return -(int)fb->pitches[plane_index];
-
-I'm not sure if this is correct for formats with block_h > 1.
-
-If a pitch is the theoretical count of bytes per line, then this should
-return block_h * pitch. But I'm not exactly sure what is correct here.
-
-Aside from this problem, looks good.
-
-
-Thanks,
-pq
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * packed_pixels_addr_1x1() - Get the pointer to the block containing th=
-e pixel at the given
->   * coordinates
->=20
-
-
---Sig_/m6tnJaadGIC+IIT7maAs7c5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYmTGYACgkQI1/ltBGq
-qqdo2RAAn0oVPSPewVYPsJP5wtT2c126Msn1TFzaji4GEJMwliys/smlTbqaacfb
-LOPUKZvRGKwa5Flby8XTs/bqU8BiVjozCpKBwxeVWSqsKdw6iCT0Yuwobopvp8Ah
-Z3kWUYsmMg2MQqiBRMVz/6txipnr9kn+ck0hL5xfOGkQO/Nt0VpjSjSEnZ8hzeXa
-EOLVyk3z91jvE/ECS5+2CVU+pY+xn1IuAuZKgRiFrx7KmgOW+wolMMHNoPWF7wsc
-D660D0B4ZAWlAkcjIrRGC0lE12yYMAzKfMNJEv4hHxWxoY3C+oWRFm6PLChrZnAD
-aBYOwj4QRoEiiMfd0O8XBwoibs7LVL91i2mEO4QhrLLdHelkIGW1iN98/X1lRLTK
-8XT4sZWqWWS16uVsDUHd97+9CPBBULvzgnUPvKedpe7ZzCfwo8N7oSqLl8Kf0QKw
-2niIlll4/jo4UQJ4kLRmwrYmwZWvFUoP87q2jD3LALdX83fqao+et5Ft4dXfTuzN
-5Q1hSV1FfCraMZRRDM5KKAp9mJYxDASLZwDKiBfuV9FvToCmqCRV1rhtnhbteaO/
-6hMT5I6upCL7Y0hDT7FXxvQ7sBZrhLmFEbtDcgZ+uMa2yjd9pP1V/y4lirreD8bI
-1xrKyPgWhhqDa7brI2HwjfBCb7ywTDysdXb9od80A87We3YWrSU=
-=w9F+
------END PGP SIGNATURE-----
-
---Sig_/m6tnJaadGIC+IIT7maAs7c5--
+> -- 
+> 2.43.0
+> 
 
