@@ -1,65 +1,56 @@
-Return-Path: <linux-kernel+bounces-154337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3B428ADAE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:23:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81B878ADAEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:23:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 310661C20DBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:23:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F7D32810C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F69B1C8FBE;
-	Mon, 22 Apr 2024 23:59:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAAB51591E7;
+	Mon, 22 Apr 2024 23:59:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EYFnszrv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="adqn84gQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 979391C8FC8;
-	Mon, 22 Apr 2024 23:59:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE96158DDC;
+	Mon, 22 Apr 2024 23:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830359; cv=none; b=nEoOHz2lJPVsqjh0HixS89tEsJPQt/VH3TDfbehQQuXClgC6Qu3JLr/MKd5zmAfYl0vqblzNllS3bZAgkHPM1GZ9r3cPvVhWZPdGVseaquwaSnG7B4xWa1cII06qK5XwL7VAzG7fNY6rf+GOBfBQiYQYs15Q6n+97q7XGWh25YQ=
+	t=1713830365; cv=none; b=oY9tMLJIZNbek7KpTgilcOC0gqWPtqQK8xxn4bSrULsFTnhccZ0H9aVnaVrHukAWObONfdJnC/tbqcqxQA+q+oHqNgQzj343MU/+Ttd35BHAFNJF0ZyEz2isI66WAGg5gCxzyyRl3TdVNcu1OoQCfr+qhDkUSPJ8dxq6SUc+r8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830359; c=relaxed/simple;
-	bh=mv36kwNPx9hcZbPXznQ5tA13wJIVJ592KdMHKYLTkec=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CQwtLRRCjJRNpmgLqXCT1qwB0Havn/SidMYG2rCEd9KwXgx8NP9lc+9Mu/YHyn845ckIrPpQZcNhKQq7voVqN8LvQqieM+HepMzhxrCHpaz4JKUne6/16u0AI1SVXbIBud+KCtF6VnIePjwqgy3quVfB3b0aq51TWs62icvBNNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EYFnszrv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CAC0C113CC;
-	Mon, 22 Apr 2024 23:59:18 +0000 (UTC)
+	s=arc-20240116; t=1713830365; c=relaxed/simple;
+	bh=MKNiflqIXRrj5lN/lsjcmJ8q/CWlbL4S4sZU9z/kAEA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mUWJliNqnBUOHaTE5e/5d3pRouDBgxAjDL+U1sLNOgODLO4xgZJmjTQZQ8vhDgBStWD8OvgF7US3BCzFnclVZFNdlBcyqqEfuubgzoB9RsKJSnHkTMcPwRoApWSAZAqZB8VDkvsfkWjiPNdvthav/RCc5iWH/t/0vSN10vM7oOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=adqn84gQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD095C113CC;
+	Mon, 22 Apr 2024 23:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830359;
-	bh=mv36kwNPx9hcZbPXznQ5tA13wJIVJ592KdMHKYLTkec=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EYFnszrvSnOa6TlFA5RNDCW3oy4hvBuRCOXWfeJcBpOWJeSR3eRZPEd07VC8FTQBE
-	 5TZ8RVmYNVbjov7GWIN+qCU0uXDkCtH4JWqtREUN8ORdHG/Gtd15dMvLAhQvHJ6iAs
-	 7rYsedi0+fr1XqBZ0R/xvVJT4xpCReWZ0jTJUmUAdFYDxelwv0KcXOBY3s3HsaCwLT
-	 0FOH942i3jeav4dk3YbO6s/IX85NsA7XbizrY4x+a/g9wEDSJEhSyBeWJbR/Gmpp9W
-	 kB0Mp+JBiQwyeGJ0yVPSFgUY1CfOb2VH8EZHRePZbes1h5MEAVAIk8Dl9I7k3Wt18/
-	 rqNi2MlynWCow==
+	s=k20201202; t=1713830363;
+	bh=MKNiflqIXRrj5lN/lsjcmJ8q/CWlbL4S4sZU9z/kAEA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=adqn84gQbCpMMA6do/+Ng3xsa8iQ3OfBg7L/2eJhGaNj6BWAXtEaJxJcNkziDD0Ay
+	 4tBD6P8iMlQeuKBvMtitemYx1LmuTSFKcBcB24E3w5ylqpZcD4bzyxi/Stc4E3qiCb
+	 E6sLYMSXVy6aKAs4QMprlo4Ams0+5HVzoZvh8Vk+bNezNMXR6GAtFj8hR6hlSTO7rM
+	 S3S/+9PJ0AR8pJ60b0XY3uUP4zEcaZdFmWQ2p/Db5CVrXTepqFu055vMgQy577I/xe
+	 Eq2DiFFM04bR4jUACgfbg6PUBnSaXiUGYjJvnHsrZvanmiPlrjMa3gk2zcqFiAK99a
+	 wHVKfGIrGE7/Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>,
-	Joerg Roedel <jroedel@suse.de>,
+Cc: Doug Smythies <dsmythies@telus.net>,
+	Len Brown <len.brown@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	yong.wu@mediatek.com,
-	joro@8bytes.org,
-	will@kernel.org,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	iommu@lists.linux.dev,
-	linux-mediatek@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 9/9] iommu: mtk: fix module autoloading
-Date: Mon, 22 Apr 2024 19:20:14 -0400
-Message-ID: <20240422232020.1615476-9-sashal@kernel.org>
+	lenb@kernel.org,
+	linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 1/7] tools/power turbostat: Fix added raw MSR output
+Date: Mon, 22 Apr 2024 19:20:33 -0400
+Message-ID: <20240422232040.1616527-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240422232020.1615476-1-sashal@kernel.org>
-References: <20240422232020.1615476-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,49 +59,88 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.274
+X-stable-base: Linux 4.19.312
 Content-Transfer-Encoding: 8bit
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Doug Smythies <dsmythies@telus.net>
 
-[ Upstream commit 7537e31df80cb58c27f3b6fef702534ea87a5957 ]
+[ Upstream commit e5f4e68eed85fa8495d78cd966eecc2b27bb9e53 ]
 
-Add MODULE_DEVICE_TABLE(), so modules could be properly autoloaded
-based on the alias from of_device_id table.
+When using --Summary mode, added MSRs in raw mode always
+print zeros. Print the actual register contents.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20240410164109.233308-1-krzk@kernel.org
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Example, with patch:
+
+note the added column:
+--add msr0x64f,u32,package,raw,REASON
+
+Where:
+
+0x64F is MSR_CORE_PERF_LIMIT_REASONS
+
+Busy%   Bzy_MHz PkgTmp  PkgWatt CorWatt     REASON
+0.00    4800    35      1.42    0.76    0x00000000
+0.00    4801    34      1.42    0.76    0x00000000
+80.08   4531    66      108.17  107.52  0x08000000
+98.69   4530    66      133.21  132.54  0x08000000
+99.28   4505    66      128.26  127.60  0x0c000400
+99.65   4486    68      124.91  124.25  0x0c000400
+99.63   4483    68      124.90  124.25  0x0c000400
+79.34   4481    41      99.80   99.13   0x0c000000
+0.00    4801    41      1.40    0.73    0x0c000000
+
+Where, for the test processor (i5-10600K):
+
+PKG Limit #1: 125.000 Watts, 8.000000 sec
+MSR bit 26 = log; bit 10 = status
+
+PKG Limit #2: 136.000 Watts, 0.002441 sec
+MSR bit 27 = log; bit 11 = status
+
+Example, without patch:
+
+Busy%   Bzy_MHz PkgTmp  PkgWatt CorWatt     REASON
+0.01    4800    35      1.43    0.77    0x00000000
+0.00    4801    35      1.39    0.73    0x00000000
+83.49   4531    66      112.71  112.06  0x00000000
+98.69   4530    68      133.35  132.69  0x00000000
+99.31   4500    67      127.96  127.30  0x00000000
+99.63   4483    69      124.91  124.25  0x00000000
+99.61   4481    69      124.90  124.25  0x00000000
+99.61   4481    71      124.92  124.25  0x00000000
+59.35   4479    42      75.03   74.37   0x00000000
+0.00    4800    42      1.39    0.73    0x00000000
+0.00    4801    42      1.42    0.76    0x00000000
+
+c000000
+
+[lenb: simplified patch to apply only to package scope]
+
+Signed-off-by: Doug Smythies <dsmythies@telus.net>
+Signed-off-by: Len Brown <len.brown@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/mtk_iommu.c    | 1 +
- drivers/iommu/mtk_iommu_v1.c | 1 +
- 2 files changed, 2 insertions(+)
+ tools/power/x86/turbostat/turbostat.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index dad44e10b3314..2cf7d9f7fd3df 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -854,6 +854,7 @@ static const struct of_device_id mtk_iommu_of_ids[] = {
- 	{ .compatible = "mediatek,mt8183-m4u", .data = &mt8183_data},
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, mtk_iommu_of_ids);
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index 2233cf722c692..0eeb339482c06 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -1524,9 +1524,10 @@ int sum_counters(struct thread_data *t, struct core_data *c,
+ 	average.packages.rapl_dram_perf_status += p->rapl_dram_perf_status;
  
- static struct platform_driver mtk_iommu_driver = {
- 	.probe	= mtk_iommu_probe,
-diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
-index fa602bfe69512..e0c1a19773381 100644
---- a/drivers/iommu/mtk_iommu_v1.c
-+++ b/drivers/iommu/mtk_iommu_v1.c
-@@ -543,6 +543,7 @@ static const struct of_device_id mtk_iommu_of_ids[] = {
- 	{ .compatible = "mediatek,mt2701-m4u", },
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, mtk_iommu_v1_of_ids);
- 
- static const struct component_master_ops mtk_iommu_com_ops = {
- 	.bind		= mtk_iommu_bind,
+ 	for (i = 0, mp = sys.pp; mp; i++, mp = mp->next) {
+-		if (mp->format == FORMAT_RAW)
+-			continue;
+-		average.packages.counter[i] += p->counter[i];
++		if ((mp->format == FORMAT_RAW) && (topo.num_packages == 0))
++			average.packages.counter[i] = p->counter[i];
++		else
++			average.packages.counter[i] += p->counter[i];
+ 	}
+ 	return 0;
+ }
 -- 
 2.43.0
 
