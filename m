@@ -1,55 +1,58 @@
-Return-Path: <linux-kernel+bounces-154266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FEC48ADA12
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:05:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 577738ADA14
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:05:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 132D928176E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:05:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71E901C20E85
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A678915F31D;
-	Mon, 22 Apr 2024 23:56:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C713C15F413;
+	Mon, 22 Apr 2024 23:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fGY8g8UB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F+pL1lsS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E335215EFCB;
-	Mon, 22 Apr 2024 23:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D75615F336;
+	Mon, 22 Apr 2024 23:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830179; cv=none; b=fRky5fXgjp1zNg3Kb1gjrPZjFlt8xJXphsNRV3Ueu6tIFirN/RN2pegXirOrhPZSgyBeh84b1Piuu0Llx4nCu4Jee/9A33gM5nFfMAVQGHfGMo3grftSw2b2ONc5+c7npC6AIJlqBXykAOmxNizNoNATUZj1cJqd0u5qNZz5hEo=
+	t=1713830180; cv=none; b=sG305wS7/XO8pEVpu413Myg2QV0vJrHJpVgDzvRwvfzu+luIv1fJThD/pmUr8qzTfyUJitZG6oyuTQ4Zb38cBHOzDZJSdlvJJPMx2Hl92hcGu622fQ7WcBc3J2hNj8kTBsrPYqfjOVZnjNEMb/fG3fADPh04wTrQ4pe7SpQJwDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830179; c=relaxed/simple;
-	bh=PxHB1mGEVMBptErtg7/qLYILTuvu0iatnLxuz1OJ0Mk=;
+	s=arc-20240116; t=1713830180; c=relaxed/simple;
+	bh=ILZg4GcnOja1C4PyffOywsp9JOVht9Gw6vLOQ8tPcNM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZtLHYRtEPFjBI5CLwfl5NwM7WeZdBX++U/XkwGvEYx6cIe21pJ+KoD5AkU8hnrUasDp/uPVGJhDtdrxm5MmjI0GJ/g5dNhayzg6PrK+dgh6EXYUwR5ihpYUdXh13ON8MGyNItP06jM4zaqAV8nAvn2tgJOy5Zl8Y7b5qvNJvqck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fGY8g8UB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9289C2BD11;
-	Mon, 22 Apr 2024 23:56:17 +0000 (UTC)
+	 MIME-Version; b=Z3+gSG4qvK/5P/4VwwoRphUS2PqS9Cv2J1XB/ycH6KU7dprF/qhDPpch6KNfmlcBrSJ4NvZGoApszkQmJhwMJRgt5oZ5bJZWo/0UXXkpgGJxDlySwYBMmcJe4g2c2vVoyU8P+xJawzN41Al3J7HIsjX3RIpJcPmYHM8XKJCcmwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F+pL1lsS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0B19C3277B;
+	Mon, 22 Apr 2024 23:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830178;
-	bh=PxHB1mGEVMBptErtg7/qLYILTuvu0iatnLxuz1OJ0Mk=;
+	s=k20201202; t=1713830179;
+	bh=ILZg4GcnOja1C4PyffOywsp9JOVht9Gw6vLOQ8tPcNM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fGY8g8UBj9BfPpAFk7kR3ijp/VtbfvCmMAqcEyzZ3zZDxjR3X6/rgdCLiajiJcz65
-	 nQp7q095eRVKAfAICmc1RIUg++7WBV3UZMW+GbS6QZSiaal3FxrtHhI2fZeKC6dqKE
-	 RVFBNgqN2WHtzrcRQLa/031RHkfavVfgzor0nO+eO+BIVEQrOalSNHGmId53ra2WIt
-	 GRPa6Aso1yfHW87c8T3UDYt79HeC2pQvUOi/7O8Qp4OWcXYCZ929WuyB7cVtRXD2em
-	 gqoT6/cKJ7+xp5iSWSi8u8JD5Ngf3DXzAmS55JmM23H3qhpF5q4H2A3pHnC3xpHZSD
-	 chbfgdclUQEQQ==
+	b=F+pL1lsSAB4QIJDZBBK3S1qzsQ7DHo5MzjFpXRmK7K9DXf9ckCMXGmDU+ljVeel9p
+	 mr8EVOHI/Bnb2kUgPmEoWSz20pB8MTEE/mpZziG8e+n5zgN6WeHy5JyH09UwjxkagP
+	 Ly2K12ivqplzlznodvApWSPRqiU9tFFCoLuVQVRr2Q8hq0QwWEGiOzvyRAzGVoA1Yx
+	 pEmU6EGT3k1xRIYki/0NmRqUnjBuLPhQuyITt4j1rv8mv3MKtSDvLlDErgAGqPrqzu
+	 7ebYdmNIgM64wswKMCFxJXJDd5DNLEA52zTBl8LOgPIRFkgRTQ8NEk7xv/GTeBy7TY
+	 WJft1FYIazD7A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Len Brown <len.brown@intel.com>,
+Cc: Boris Burkov <boris@bur.io>,
+	Qu Wenruo <wqu@suse.com>,
+	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
-	lenb@kernel.org,
-	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 05/29] tools/power turbostat: Fix warning upon failed /dev/cpu_dma_latency read
-Date: Mon, 22 Apr 2024 19:16:46 -0400
-Message-ID: <20240422231730.1601976-5-sashal@kernel.org>
+	clm@fb.com,
+	josef@toxicpanda.com,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 06/29] btrfs: make btrfs_clear_delalloc_extent() free delalloc reserve
+Date: Mon, 22 Apr 2024 19:16:47 -0400
+Message-ID: <20240422231730.1601976-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231730.1601976-1-sashal@kernel.org>
 References: <20240422231730.1601976-1-sashal@kernel.org>
@@ -64,39 +67,39 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.28
 Content-Transfer-Encoding: 8bit
 
-From: Len Brown <len.brown@intel.com>
+From: Boris Burkov <boris@bur.io>
 
-[ Upstream commit b6fe938317eed58e8c687bd5965a956e15fb5828 ]
+[ Upstream commit 3c6f0c5ecc8910d4ffb0dfe85609ebc0c91c8f34 ]
 
-Previously a failed read of /dev/cpu_dma_latency erroneously complained
-turbostat: capget(CAP_SYS_ADMIN) failed, try "# setcap cap_sys_admin=ep ./turbostat
+Currently, this call site in btrfs_clear_delalloc_extent() only converts
+the reservation. We are marking it not delalloc, so I don't think it
+makes sense to keep the rsv around.  This is a path where we are not
+sure to join a transaction, so it leads to incorrect free-ing during
+umount.
 
-This went unnoticed because this file is typically visible to root,
-and turbostat was typically run as root.
+Helps with the pass rate of generic/269 and generic/475.
 
-Going forward, when a non-root user can run turbostat...
-Complain about failed read access to this file only if --debug is used.
-
-Signed-off-by: Len Brown <len.brown@intel.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Boris Burkov <boris@bur.io>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/turbostat/turbostat.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/btrfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 4dfeda4870f71..0561362301c53 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -5479,7 +5479,8 @@ void print_dev_latency(void)
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index e57d18825a56e..cb66a890c1084 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2511,7 +2511,7 @@ void btrfs_clear_delalloc_extent(struct btrfs_inode *inode,
+ 		 */
+ 		if (bits & EXTENT_CLEAR_META_RESV &&
+ 		    root != fs_info->tree_root)
+-			btrfs_delalloc_release_metadata(inode, len, false);
++			btrfs_delalloc_release_metadata(inode, len, true);
  
- 	fd = open(path, O_RDONLY);
- 	if (fd < 0) {
--		warnx("capget(CAP_SYS_ADMIN) failed, try \"# setcap cap_sys_admin=ep %s\"", progname);
-+		if (debug)
-+			warnx("Read %s failed", path);
- 		return;
- 	}
- 
+ 		/* For sanity tests. */
+ 		if (btrfs_is_testing(fs_info))
 -- 
 2.43.0
 
