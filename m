@@ -1,236 +1,160 @@
-Return-Path: <linux-kernel+bounces-152706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 633598AC32D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:45:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 893108AC332
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:45:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 851EA1C20ACD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:45:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0027B20975
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0791310A2A;
-	Mon, 22 Apr 2024 03:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0204410962;
+	Mon, 22 Apr 2024 03:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YNFGQJ5d";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FHThv/+A";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YNFGQJ5d";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="FHThv/+A"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ts8Tx5NC"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F412E542;
-	Mon, 22 Apr 2024 03:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B676AF9EB;
+	Mon, 22 Apr 2024 03:45:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713757507; cv=none; b=cCv0+QVtAkILKnWlzEQFt7MNfRZOLdiMD5qn7FCR+7JD3ckE96QDvxPvQ3Kq+oCpwHpkHTJn/431k/tnP4WowEkFOfSjkpzePM4ZMWokJdH7ZnlSDvqEKqmOXQry3lluOHYtILYEUL22IQZ85CXYKy7RgMo1O9W7ubktkiAh2sc=
+	t=1713757520; cv=none; b=ASfS1IJHFy0/1pKhzbRZgDkfJ+9e4OoSM1SISauS0gVIcgiH4tIm0nRay5o8WZ+I+SwpCJjCBziMde/TfdZdsGa8wHLoa9AUfblq4uvPP3qemFrASp4E55Nmzr1wTmoDQN9/DNPJNcOolprhsfaKgZVoq6z3hu+G8UISk9zckf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713757507; c=relaxed/simple;
-	bh=08JXntusgK41+ycFBthAXi0xoPBt/thnoLFKZQXR61c=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=noSsFO0rAz6wu5t41t6udkZFmWbFbhatvsQh0mVWLWihsvgYeajAzi2iLaGKoZmZw6C2V0cCZ1e74ROKJ8EAurAz+RjMJHO7hYDGN+sRtfStOzWKRyRSYgKRihykmqiKpQju4W3AXXAUXzbcj9H7mTry9KaUj39icVzO2vioPyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YNFGQJ5d; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=FHThv/+A; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YNFGQJ5d; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=FHThv/+A; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7F1F95C849;
-	Mon, 22 Apr 2024 03:45:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713757503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SdzU1hv8xkzQkP0Voc7ZJKo+cz0pH/lZ8F7iWLkQ2E8=;
-	b=YNFGQJ5dJbJkYPh2nYz8QEqGXYVy2wYftPNbZX4DNyJTPbC/VIju0v7wPuA+wod1eZ4uCL
-	EnhKGvnskGjylCkVIDcee0fjGOmwfT2Pkzabl3qbH0jpZTC1UWEisb6DSddb5860GzNCOE
-	oG/OUhKHKjNx/jBK28VP9TnxqAxYCRw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713757503;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SdzU1hv8xkzQkP0Voc7ZJKo+cz0pH/lZ8F7iWLkQ2E8=;
-	b=FHThv/+AznOXKLSIRBqC1PLEBtwZWbrDd5lF8ZPMCwR4vsKeUy+qzaNWbuT3FhHWHMqTu1
-	HsnuQObNvr8PPNBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713757503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SdzU1hv8xkzQkP0Voc7ZJKo+cz0pH/lZ8F7iWLkQ2E8=;
-	b=YNFGQJ5dJbJkYPh2nYz8QEqGXYVy2wYftPNbZX4DNyJTPbC/VIju0v7wPuA+wod1eZ4uCL
-	EnhKGvnskGjylCkVIDcee0fjGOmwfT2Pkzabl3qbH0jpZTC1UWEisb6DSddb5860GzNCOE
-	oG/OUhKHKjNx/jBK28VP9TnxqAxYCRw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713757503;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SdzU1hv8xkzQkP0Voc7ZJKo+cz0pH/lZ8F7iWLkQ2E8=;
-	b=FHThv/+AznOXKLSIRBqC1PLEBtwZWbrDd5lF8ZPMCwR4vsKeUy+qzaNWbuT3FhHWHMqTu1
-	HsnuQObNvr8PPNBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 274A113687;
-	Mon, 22 Apr 2024 03:44:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LOmcLjjdJWbeLgAAD6G6ig
-	(envelope-from <neilb@suse.de>); Mon, 22 Apr 2024 03:44:56 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1713757520; c=relaxed/simple;
+	bh=zNoXo1/AVupkmv7b218tu2hclJ27YyJRICEPmqRwkcE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cDDapt3SdTqfFIAUHV9jVx96CaZkO5i7CsjvPUnEV5yvDjEz0z7hNrTyTQAT0Dwa1Rh/Me6JgVmF7DqxjaSwvmDjBdhq8ofrdfLPkA5lUGRuqOgD/k67zYRZbpAMfDMfNJ7LooqjQHIC71RJ2z3OkLqS/vWIA9Qz20ZKeOvQ1G0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ts8Tx5NC; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e651a9f3ffso20975075ad.1;
+        Sun, 21 Apr 2024 20:45:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713757518; x=1714362318; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nf4KaBBQc1eU/osJJoNCSgJgXclg3fCamG238o4Yjps=;
+        b=Ts8Tx5NCg5hJlMTLCOXE3wWtaWkVilI20xjTdYtVh17rW8TXR8M5ZA/ybCQ/c8jrZH
+         LN+HJWPmfYQQm0sHWZH5Y/b8hL36cuqKg83X4kO1mdTMWn5e4sgOd55B/wtFydqh6+a3
+         2ygzbH3uINNA7OhgLB4bNAREZBrHl5XDA16hbDrgdoQfovWSCNXC4UFW7xkL4MFbWcUc
+         M3GcftOfAsV/pBr5gh9/z86kmFkjwVS5iZ6Z4/kOZaPe9WVaHVLHzQTafg1Njwb8AVcl
+         8JBBChf1S8zIJUCz0bLIqHz5saGMdu7Sgk+itqrX3MoLducKtvgmAFmjhJH08swxmxzI
+         tGJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713757518; x=1714362318;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nf4KaBBQc1eU/osJJoNCSgJgXclg3fCamG238o4Yjps=;
+        b=uMe5p2Q3lnUk6qaD9SfAJIFIpRjwsyEFTYt5R4zNiL1MCbq0syu6eYgXZQnf1cY4jj
+         hG3EMzk3y1Z1mcy0YnuHqBSBhZfe0twsXmnH+TjRIu6sDT+imLZea+jbslfpMdTKvQtd
+         4vxn8yj9MbB7H1td/L8Tjro/iB9yyAvNk5XwvBxBuAd37sq6OiKb+QkgAK//ee9ZeRFU
+         DBKVqoyWSxgIovdXoCoS4XbO36KrkNAZiVGre8YPuwf0nXYfoi4CEhVSGZdfizwm95wb
+         7glADWqXoK5Nw+uuf3K7OPopOWHSQ9fqPNxNuKbVGqwLC8ZjHDCMQC05T3JrP/TuugGE
+         WVKg==
+X-Forwarded-Encrypted: i=1; AJvYcCUV+Ty0siCVTcuWIsd+XpQpo9N3QRvY+qsHbaDTXqpcexGbuWcF5EYPO34RJ7I3frRFZSKdfUmZLq6d3U0dN51OOqUOvluP3RYQleZxMdZpP3CGjM7KnkrJOAxtkvga3x8LbYqYBTm82w7U4T3ipHr7KrSW5s3CnolsDPlqHD8SXBepUHf9R29OUH7Le09+TL/8hlFCf/SHX1B2uGFM7eGdNde9arUn+Xn82/6i6Zm83zgNiHcCyaAR/AGU
+X-Gm-Message-State: AOJu0YxY3bnpMjkvVUpEmYNpRvnZBxO1jy3kX8oDkoOKfz88AwVHJJHa
+	xrdduzubSLRDt5Ve1fWLTcq+eRu0uAPKTJ3kHkgzF2hkckygVu2I
+X-Google-Smtp-Source: AGHT+IHEK/fw9nlNaA7U+Krk+YW8g2fVhz24fRiQVs/UDKZV39KW5RuKnz7nW07De04qaVnl47ubVg==
+X-Received: by 2002:a17:902:ecd2:b0:1e9:9fdb:567d with SMTP id a18-20020a170902ecd200b001e99fdb567dmr2306241plh.68.1713757517924;
+        Sun, 21 Apr 2024 20:45:17 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w16-20020a170902e89000b001e8ab6b927asm5789774plg.39.2024.04.21.20.45.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Apr 2024 20:45:16 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <2292b566-7fde-4834-a9a4-a74b14235541@roeck-us.net>
+Date: Sun, 21 Apr 2024 20:45:14 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "NeilBrown" <neilb@suse.de>
-To: "Lex Siegel" <usiegl00@gmail.com>
-Cc: "Chuck Lever" <chuck.lever@oracle.com>, "Jeff Layton" <jlayton@kernel.org>,
- "Olga Kornievskaia" <kolga@netapp.com>, "Dai Ngo" <Dai.Ngo@oracle.com>,
- "Tom Talpey" <tom@talpey.com>,
- "Trond Myklebust" <trond.myklebust@hammerspace.com>,
- "Anna Schumaker" <anna@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, linux-nfs@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] xprtsock: Fix a loop in xs_tcp_setup_socket()
-In-reply-to:
- <CAHCWhjScokCi7u_98-i6E_xHaSJnFGY6dnkv9-C5-yrpihVJFg@mail.gmail.com>
-References:
- <>, <CAHCWhjScokCi7u_98-i6E_xHaSJnFGY6dnkv9-C5-yrpihVJFg@mail.gmail.com>
-Date: Mon, 22 Apr 2024 13:44:45 +1000
-Message-id: <171375748540.7600.5672163982570379489@noble.neil.brown.name>
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MISSING_XM_UA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] Add adm1281 support
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+ Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>,
+ linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-i2c@vger.kernel.org
+Cc: Jean Delvare <jdelvare@suse.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+References: <20240422025123.29770-1-jose.sanbuenaventura@analog.com>
+ <9b95f926-b96c-4266-b292-3c3cd362905e@kernel.org>
+Content-Language: en-US
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <9b95f926-b96c-4266-b292-3c3cd362905e@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 22 Apr 2024, Lex Siegel wrote:
-> > Better still would be for kernel_connect() to return a more normal error
-> > code - not EPERM.  If that cannot be achieved, then I think it would be
-> > best for the sunrpc code to map EPERM to something else at the place
-> > where kernel_connect() is called - catch it early.
->=20
-> The question is whether a permission error, EPERM, should cause a retry or
-> return. Currently xs_tcp_setup_socket() is retrying. For the retry to clear,
-> the connect call will have to not return a permission error to halt the ret=
-ry
-> attempts.
->=20
-> This is a default behavior because EPERM is not an explicit case of the swi=
-tch
-> statement. Because bpf appropriately uses EPERM to show that the kernel_con=
-nect
-> was not permitted, it highlights the return handling for this case is missi=
-ng.
-> It is unlikely that retry was ever the intended result.
->=20
-> Upstream, the bpf that caused this is at:
-> https://github.com/cilium/cilium/blob/v1.15/bpf/bpf_sock.c#L336
->=20
-> This cilium bpf code has two return statuses, EPERM and ENXIO, that fall
-> through to the default case of retrying. Here, cilium expects both of these
-> statuses to indicate the connect failed. A retry is not the intended result.
->=20
-> Handling this case without a retry aligns this code with the udp behavior. =
-This
-> precedence for passing EPERM back up the stack was set in 3dedbb5ca10ef.
->=20
-> I will amend my patch to include an explicit case for ENXIO as well, as thi=
-s is
-> also in cilium's bpf and will cause the same bug to occur.
->=20
+On 4/21/24 20:28, Krzysztof Kozlowski wrote:
+> On 22/04/2024 04:51, Jose Ramon San Buenaventura wrote:
+>> This patch removes the extra case added in the adm1275_read_byte_data
+>> for STATUS_CML reads. Upon checking, the reads for the STATUS_CML register
+>> is already handled in the pmbus_core.
+>>
+>> It was also clarified and agreed upon that any other actionable steps
+>> involving the STATUS_CML error flags should be added in the pmbus_core
+>> and not on the specific chip driver.
+>>
+> 
+> Where is the changelog? It's v2, so what happened here?
+> 
 
-I think it should be up to cilium to report an errno that the kernel
-understands, not up to the kernel to understand whatever errno cilium
-chooses to return.
+Same question.
 
-I don't think EPERM or ENXIO are appropriate errors for network
-problems.
-EHOSTUNREACH or ECONNREFUSED would make much more sense.
+Guenter
 
-NeilBrown
-
-
->=20
-> On Mon, Apr 22, 2024 at 8:22=E2=80=AFAM NeilBrown <neilb@suse.de> wrote:
-> >
-> > On Sat, 20 Apr 2024, Lex Siegel wrote:
-> > > When using a bpf on kernel_connect(), the call can return -EPERM.
-> > > This causes xs_tcp_setup_socket() to loop forever, filling up the
-> > > syslog and causing the kernel to freeze up.
-> > >
-> > > Signed-off-by: Lex Siegel <usiegl00@gmail.com>
-> > > ---
-> > >  net/sunrpc/xprtsock.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-> > > index bb9b747d58a1..47b254806a08 100644
-> > > --- a/net/sunrpc/xprtsock.c
-> > > +++ b/net/sunrpc/xprtsock.c
-> > > @@ -2446,6 +2446,8 @@ static void xs_tcp_setup_socket(struct work_struc=
-t *work)
-> > >               /* Happens, for instance, if the user specified a link
-> > >                * local IPv6 address without a scope-id.
-> > >                */
-> > > +     case -EPERM:
-> > > +             /* Happens, for instance, if a bpf is preventing the conn=
-ect */
-> >
-> > This will propagate -EPERM up into other layers which might not be ready
-> > to handle it.
-> > It might be safer to map EPERM to an error we would be more likely to
-> > expect  from the network system - such as ECONNREFUSED or ENETDOWN.
-> >
-> > Better still would be for kernel_connect() to return a more normal error
-> > code - not EPERM.  If that cannot be achieved, then I think it would be
-> > best for the sunrpc code to map EPERM to something else at the place
-> > where kernel_connect() is called - catch it early.
-> >
-> > NeilBrown
-> >
-> >
-> > >       case -ECONNREFUSED:
-> > >       case -ECONNRESET:
-> > >       case -ENETDOWN:
-> > > --
-> > > 2.39.3
-> > >
-> > >
-> >
->=20
 
 
