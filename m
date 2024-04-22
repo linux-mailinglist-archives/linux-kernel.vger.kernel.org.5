@@ -1,173 +1,111 @@
-Return-Path: <linux-kernel+bounces-153925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E4B38AD4F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:37:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5660D8AD4F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:39:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13ACFB21D61
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:37:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AFE01F217C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F4FA15533C;
-	Mon, 22 Apr 2024 19:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97EB5155349;
+	Mon, 22 Apr 2024 19:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CpA+743e"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IDVPB+RK"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72CA215533D;
-	Mon, 22 Apr 2024 19:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AFF155337;
+	Mon, 22 Apr 2024 19:38:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713814651; cv=none; b=r2z+QfRlzTUGqXlku+xzlz3aO4mUrF3t5UWyiQUiOpmTv1he8Nxp9GCl0yRCA8/LBqLnKLZSi1laJ4R4hr49isOuckzaX3gnmLoZQt183m7TJD96Pf1GpNYx85ArgSbrWgtmUk6/rOzJn8qcDOdeiM1qjUvz6k++D8/mUWsFK88=
+	t=1713814733; cv=none; b=s2FJOkOUH5XwrTPN5Of8vAMUMaeX26rU8ylSh+ZBEGxp3egLuwpSkM6aIZz87tqooeNgNsDxKDgEtqo3WuWmlXWZQelhB4t46hXPcQzot6o6Y5AXnT4LXm2pMS8YPnHBcxYwckxA4um4a2ufMXeqHFJIL6i0eFuDPIoHWPFR3QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713814651; c=relaxed/simple;
-	bh=nl/+nK1/56DD4qxS5QM0oGTNrWbYL2Zi4T3VxsnXE0c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D4mdbDULpbYQ9xqT1HfEz+fCwsaRgOOqxhnk/HgZTRrQsRSjyaAQT/Pxw49M1vIFsz15c0AhmAnvs6wwJ8trSOnd/DtMOp+pcefCsSsBI7z49V94c3IU0b+yiQ9srLkyHkbWF6ELiU9FvqU5PqDljNai0e7SoIP8LwYzjl7ndiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CpA+743e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4F0BC113CC;
-	Mon, 22 Apr 2024 19:37:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713814650;
-	bh=nl/+nK1/56DD4qxS5QM0oGTNrWbYL2Zi4T3VxsnXE0c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CpA+743ex3p7k4ofgCFbEffBtUhEeq+dqGpVkhg3cT0W2kxre4kk323ke3Pcs0HiH
-	 R0LwI8m2aK1FQfMft5eYc4v/n0nuDCGxxvR0soQO0RC0xe9m1zUdvhLtZKdJot+KCP
-	 l5x7wwFUCcB7mN/6mBcl7EE6ENjEP1/Ep2Jc+ZZmd/PAiqfk7rsM/sEqyHLDUxB7Nx
-	 5WqNJY8pCW/spk9TtxsQIx4VHA0C+FcqPLOFcGZowtvgXTY826XKsbuaAJr6ECu6i+
-	 Tf8Btic8i0+oVZjUhdKSCklQvybotDvdhrVCTKFrAQ+OHBO6LOFEQ4cfy/q/T1qJyE
-	 KSspSNfW/HA8Q==
-Date: Mon, 22 Apr 2024 12:37:28 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>
-Cc: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
-	jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-next v3 4/6] RDMA/mana_ib: enable RoCE on port 1
-Message-ID: <20240422193728.GA44715@dev-arch.thelio-3990X>
-References: <1712738551-22075-1-git-send-email-kotaranov@linux.microsoft.com>
- <1712738551-22075-5-git-send-email-kotaranov@linux.microsoft.com>
+	s=arc-20240116; t=1713814733; c=relaxed/simple;
+	bh=2GRFl6WMleWf91SC8vfssaS1Has6aTi33GaASl85sXM=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=lLjpIshkB6AJdBKcMx+fpTp1MjErdM9eyauzKJtGakhQOY15erAacQKw3a9Y6gf7HTJ2LqTNR5maAUTILIqkmrUwpEzJD7+arAvWCXV1bLmlez3s5kVMyR6v2oBYKUgoZm0TU9+YnZprqQ9lRvQDuiCzNkjfnWjmRJm4iQG0AkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IDVPB+RK; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713814732; x=1745350732;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=2GRFl6WMleWf91SC8vfssaS1Has6aTi33GaASl85sXM=;
+  b=IDVPB+RKVn8/241gQnuf2TCERhjYgKPdRBaCvI9XOSw1PQcLD/sbH0TO
+   PAvigSPFlvDRslMT3kj/PWxVloPxDjhfKPmm/4Gpw5nwbsubvv+eZum6i
+   d/t2YzWuFUHX1zySJ55npCJ7EOyXVm7M0SEUNctmnrI1BwKVRDcGnYQ4+
+   iKJZ1pdXi0bkQ3B9+lnny0MJXB9Py/PryxUX8Pjrb87X6yY/n65y/oAsV
+   2PFQGDwnpAEAFuy3LJiwved7dkisS/FxsPk85j8nWAolrb1jkwpGAAS81
+   cZb8HD+lgWb8pPJWn6LNlDFDFq5AvNPr1vuhCTCgqqUNomGECG4nUJUhX
+   Q==;
+X-CSE-ConnectionGUID: lRyTJZY5QD6/8WWnjjKHmg==
+X-CSE-MsgGUID: dWQeUNsXRo+qhYjDe5dESQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="31862685"
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="31862685"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 12:38:51 -0700
+X-CSE-ConnectionGUID: wxQAfcSZQH6z1pluyFm5Xw==
+X-CSE-MsgGUID: LUyg5N3USu2ioIEx+8xN4g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="28777816"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.125.85.20])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 22 Apr 2024 12:38:49 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+ x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
+ tim.c.chen@linux.intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v11 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
+References: <20240410182558.41467-1-haitao.huang@linux.intel.com>
+ <20240410182558.41467-15-haitao.huang@linux.intel.com>
+ <D0JXP8HZLEQZ.3PHVXZI140VIH@kernel.org>
+ <op.2l81wdjdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D0KXLFE83H9V.3GNOZNN4II125@kernel.org>
+Date: Mon, 22 Apr 2024 14:38:46 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1712738551-22075-5-git-send-email-kotaranov@linux.microsoft.com>
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2mm96wwswjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <D0KXLFE83H9V.3GNOZNN4II125@kernel.org>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Hi Konstantin,
+Hi Jarkko
 
-On Wed, Apr 10, 2024 at 01:42:29AM -0700, Konstantin Taranov wrote:
-> From: Konstantin Taranov <kotaranov@microsoft.com>
-> 
-> Set netdev and RoCEv2 flag to enable GID population on port 1.
-> Use GIDs of the master netdev. As mc->ports[] stores slave devices,
-> use a helper to get the master netdev.
-> 
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> ---
->  drivers/infiniband/hw/mana/device.c | 15 +++++++++++++++
->  drivers/infiniband/hw/mana/main.c   | 15 +++++++++++----
->  2 files changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-> index 47547a962b19..e7981301d10b 100644
-> --- a/drivers/infiniband/hw/mana/device.c
-> +++ b/drivers/infiniband/hw/mana/device.c
-> @@ -53,6 +53,7 @@ static int mana_ib_probe(struct auxiliary_device *adev,
->  {
->  	struct mana_adev *madev = container_of(adev, struct mana_adev, adev);
->  	struct gdma_dev *mdev = madev->mdev;
-> +	struct net_device *upper_ndev;
->  	struct mana_context *mc;
->  	struct mana_ib_dev *dev;
->  	int ret;
-> @@ -79,6 +80,20 @@ static int mana_ib_probe(struct auxiliary_device *adev,
->  	dev->ib_dev.num_comp_vectors = 1;
->  	dev->ib_dev.dev.parent = mdev->gdma_context->dev;
->  
-> +	rcu_read_lock(); /* required to get upper dev */
-> +	upper_ndev = netdev_master_upper_dev_get_rcu(mc->ports[0]);
-> +	if (!upper_ndev) {
-> +		rcu_read_unlock();
-> +		ibdev_err(&dev->ib_dev, "Failed to get master netdev");
-> +		goto free_ib_device;
-> +	}
+On Mon, 15 Apr 2024 14:08:44 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
-Clang now warns (or errors with CONFIG_WERROR):
+> I did run the basic test by manually creating the cgroup so you could
+> add tested-by from my side to the other kernel patches expect this one
+>
+> I've reviewed it enough rounds and given various code suggestions etc.
+> For me it is "good enough" or has been for a while. I just want this
+> test to work so that people doing kernel QA will automatically get it
+> to their testing cycle. That is why proper integration to kselftest
+> framework is a must
 
-  drivers/infiniband/hw/mana/device.c:88:6: error: variable 'ret' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-     88 |         if (!upper_ndev) {
-        |             ^~~~~~~~~~~
-  drivers/infiniband/hw/mana/device.c:150:9: note: uninitialized use occurs here
-    150 |         return ret;
-        |                ^~~
-  drivers/infiniband/hw/mana/device.c:88:2: note: remove the 'if' if its condition is always false
-     88 |         if (!upper_ndev) {
-        |         ^~~~~~~~~~~~~~~~~~
-     89 |                 rcu_read_unlock();
-        |                 ~~~~~~~~~~~~~~~~~~
-     90 |                 ibdev_err(&dev->ib_dev, "Failed to get master netdev");
-        |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     91 |                 goto free_ib_device;
-        |                 ~~~~~~~~~~~~~~~~~~~~
-     92 |         }
-        |         ~
-  drivers/infiniband/hw/mana/device.c:62:9: note: initialize the variable 'ret' to silence this warning
-     62 |         int ret;
-        |                ^
-        |                 = 0
-  1 error generated.
+May I have your "Reviewed-by" tag also for the patches #8-13?
 
-I could not really find a consistent return code for when
-netdev_master_upper_dev_get_rcu() fails. -ENODEV?
+Not sure if I missed any other comments/issue you raised. I think all are  
+addressed in v12. I will refine the test scripts (patch #14) in v13.
 
-Cheers,
-Nathan
-
-> +	ret = ib_device_set_netdev(&dev->ib_dev, upper_ndev, 1);
-> +	rcu_read_unlock();
-> +	if (ret) {
-> +		ibdev_err(&dev->ib_dev, "Failed to set ib netdev, ret %d", ret);
-> +		goto free_ib_device;
-> +	}
-> +
->  	ret = mana_gd_register_device(&mdev->gdma_context->mana_ib);
->  	if (ret) {
->  		ibdev_err(&dev->ib_dev, "Failed to register device, ret %d",
-> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-> index 29550f2173ff..7a9d7e13b7b1 100644
-> --- a/drivers/infiniband/hw/mana/main.c
-> +++ b/drivers/infiniband/hw/mana/main.c
-> @@ -527,11 +527,18 @@ int mana_ib_mmap(struct ib_ucontext *ibcontext, struct vm_area_struct *vma)
->  int mana_ib_get_port_immutable(struct ib_device *ibdev, u32 port_num,
->  			       struct ib_port_immutable *immutable)
->  {
-> -	/*
-> -	 * This version only support RAW_PACKET
-> -	 * other values need to be filled for other types
-> -	 */
-> +	struct ib_port_attr attr;
-> +	int err;
-> +
-> +	err = ib_query_port(ibdev, port_num, &attr);
-> +	if (err)
-> +		return err;
-> +
-> +	immutable->pkey_tbl_len = attr.pkey_tbl_len;
-> +	immutable->gid_tbl_len = attr.gid_tbl_len;
->  	immutable->core_cap_flags = RDMA_CORE_PORT_RAW_PACKET;
-> +	if (port_num == 1)
-> +		immutable->core_cap_flags |= RDMA_CORE_PORT_IBA_ROCE_UDP_ENCAP;
->  
->  	return 0;
->  }
-> -- 
-> 2.43.0
-> 
+Thanks
+Haitao
 
