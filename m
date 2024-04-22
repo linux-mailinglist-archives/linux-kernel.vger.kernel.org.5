@@ -1,195 +1,217 @@
-Return-Path: <linux-kernel+bounces-153689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1600A8AD1B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:17:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 165D38AD1B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:17:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21C9E1C2152E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:17:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C14442851DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D38D154435;
-	Mon, 22 Apr 2024 16:16:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nVWHqn14"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8BB153BEE;
+	Mon, 22 Apr 2024 16:16:47 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E030A153BC6
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 16:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECDE153BD2;
+	Mon, 22 Apr 2024 16:16:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713802596; cv=none; b=a1eY+evfrACXIoFLuAeuTFfDQ4CrEUqawxMad1HnhOMd6XaG6mK4+PWh3ODQC26965hI6KWL1yFII3GcnDsYvo4HZs+77S/IuuEhIcnNYb0iiNZIbjDBGtkNyJXTHWsnuyIBkyXl0s8Dk634nj2i32TiTWf2sgS/o1LaKeTKhrM=
+	t=1713802604; cv=none; b=gRg9k3Lv4GaCwTKEG/R0YTIA8uwOmo0hVNZJ/Dx8Y5EyWE7YWnNz4uvEzfAyU3XxhxEOFj+pnhQSNrW4RLrnv7dpE4TJpGdsb29i3sDDaXIWaI7fdDqSxlDCO7QnXHl8tNICRAlBlUle85hOj3t+aVioegMdvXQG8MaSwDWiSHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713802596; c=relaxed/simple;
-	bh=zQpxV0djrOiwPxhRvSgIUZn7ViHWbqTnSNjH4kOd7u8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=igz+hR7fXpoEX8FwpBBEFD96xlFhEVfyiGShZAGxHmUo+8uSoJAwmkSl28VlmBdUraR7k2c+UcnMNu5Tbjq/yGj50XzPTAKNAhv373HywURI7EpzVgg1mIKWtRRB10hltDbQMEPzzRpv5Fes21zl/+BbH+BXf1YGB/3LekxttYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nVWHqn14; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41a72f3a1edso7128665e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:16:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713802586; x=1714407386; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cLRaymjKldV5Ae25ez2pVEwmOtAjv9LTg0zkuha6uuU=;
-        b=nVWHqn142wNve00UJZ2AAT+vYtYcpmpEXOu3eaKU3tmRW8ZKHzT6U999iNsUFSonMl
-         EPAB9ydYBO8PJmvIY0hD7savpadGVEVLFGrNdrf5Q0zZhaLB2qIkLUUYohqkqdazp7cO
-         h6D214hXvZ0iWOl2vuXTBJvdPJIughicdvTPzglqaHoMV1GVElYfJyUi0vLlNMYgAWMR
-         j1ieZW7QvGroDn+JI/oQO1a/F6Hlc+ABFrHfcdEPQW2L/f3J1YvMosaaPKg8PmQ81NZX
-         mVpWFBNyJGR42isyFXzSbZMcs6E13FoK6VkvZam9Ma70/DHpfvl6SxTgMALSi83CQQXA
-         drtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713802586; x=1714407386;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cLRaymjKldV5Ae25ez2pVEwmOtAjv9LTg0zkuha6uuU=;
-        b=wQSP//hGjKQ3FM09/GlFV0Aic0kNDdwcXclyWCFm4o5sFXQ5bzVbgYSqX1LOIR9E+l
-         rXMt73EDHhI1+X7NNn7Rpk4dKJutZbP3NeUcXN20DIicd+td++zNmreakStFQRfrX6eG
-         eQOb5obLIWw/WRNQz5S6owtWtzpLOUtewG8En8zIBBOAjOy5yCmumXu1cPJC9uXv8z2R
-         8Jl+itUWS++gZBI83m1XoZYdXA/+giG7HN1goCObv0Ck53VjmR4u7ZDS5W8BzvFDbyP7
-         KV5QF4AY3dUytun9iC0WDnnZL2cUOXw0R1wWuAvknvJyh1WxZwSNHpCxrDRXV+gEhcSd
-         4Lng==
-X-Forwarded-Encrypted: i=1; AJvYcCXtTqxeSI+l7uJwhxOdyAEWhimSRwGHdtMycm1ALEPZT/N3DNmt5QUIVhBwVzwENzUJyFhsNtwv7yTP3HFWJNpAjrYl5bXfNWKflbKY
-X-Gm-Message-State: AOJu0YzP9GklspgWR8h8/atB4e5XdW9OM9Ep86wjcAmMdTtBx+DqC/hH
-	QjHYpBbNCAnZCH/kmEcB8GKsoee9ytoZmWMKtx6qq+AJ5sx6Tb7Zz64IUoci/hU=
-X-Google-Smtp-Source: AGHT+IEdkYcVtwh40osd4Oka6JYMUbTOhMjD4X/PZ8vmFTtoSEQvJrYa2uPdOkANHBd0NVvOkkru2Q==
-X-Received: by 2002:a05:600c:4f49:b0:418:7401:b15f with SMTP id m9-20020a05600c4f4900b004187401b15fmr7685138wmq.38.1713802585704;
-        Mon, 22 Apr 2024 09:16:25 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id a12-20020a056000100c00b00349ceadededsm12463710wrx.16.2024.04.22.09.16.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 09:16:25 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Mon, 22 Apr 2024 18:16:20 +0200
-Subject: [PATCH v4 3/3] arm64: dts: qcom: sm8650: remove pcie-1-phy-aux-clk
- and add pcie1_phy pcie1_phy_aux_clk
+	s=arc-20240116; t=1713802604; c=relaxed/simple;
+	bh=dJAneM0dYrB9jyxfWIuDyEBUTt2XGhJq6MzCFWxFGxs=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Wtuqdft0+i8q6jXjxzd1G46W19G+eKd7IZhCEW0YQSPNMK5LSOUuAJF+4V9o7iR3sPdcbLHojKSWf0iG5E4R53dPCSxMEA6bt8keA/BJEvBQ7/lMZz8qReBNvlDlaztunbdYSyYwcxCAtxHqbLgWafLagCPVml/KDTC2y0XCJSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VNVgX4VLDz6J9gG;
+	Tue, 23 Apr 2024 00:14:16 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id CD52A140736;
+	Tue, 23 Apr 2024 00:16:30 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 22 Apr
+ 2024 17:16:30 +0100
+Date: Mon, 22 Apr 2024 17:16:29 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Zhenzhong Duan <zhenzhong.duan@intel.com>
+CC: <linux-pci@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+	<linux-acpi@vger.kernel.org>, <rafael@kernel.org>, <lenb@kernel.org>,
+	<james.morse@arm.com>, <tony.luck@intel.com>, <bp@alien8.de>,
+	<dave@stgolabs.net>, <dave.jiang@intel.com>, <alison.schofield@intel.com>,
+	<vishal.l.verma@intel.com>, <ira.weiny@intel.com>, <bhelgaas@google.com>,
+	<helgaas@kernel.org>, <mahesh@linux.ibm.com>, <oohall@gmail.com>,
+	<linmiaohe@huawei.com>, <shiju.jose@huawei.com>, <adam.c.preble@intel.com>,
+	<leoyang.li@nxp.com>, <lukas@wunner.de>,
+	<Smita.KoralahalliChannabasappa@amd.com>, <rrichter@amd.com>,
+	<linux-cxl@vger.kernel.org>, <linux-edac@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <erwin.tsaur@intel.com>,
+	<sathyanarayanan.kuppuswamy@intel.com>, <dan.j.williams@intel.com>,
+	<feiting.wanyan@intel.com>, <yudong.wang@intel.com>, <chao.p.peng@intel.com>,
+	<qingshun.wang@linux.intel.com>
+Subject: Re: [PATCH v3 1/3] PCI/AER: Store UNCOR_STATUS bits that might be
+ ANFE in aer_err_info
+Message-ID: <20240422171629.00005675@Huawei.com>
+In-Reply-To: <20240417061407.1491361-2-zhenzhong.duan@intel.com>
+References: <20240417061407.1491361-1-zhenzhong.duan@intel.com>
+	<20240417061407.1491361-2-zhenzhong.duan@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v4-3-868b15a17a45@linaro.org>
-References: <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v4-0-868b15a17a45@linaro.org>
-In-Reply-To: <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v4-0-868b15a17a45@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2488;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=zQpxV0djrOiwPxhRvSgIUZn7ViHWbqTnSNjH4kOd7u8=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBmJo1VSLSi38VwUGg9SkrFCuwR25JxE8KGd2ordZb/
- iMfwOeaJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZiaNVQAKCRB33NvayMhJ0VRtD/
- 9P+KWUA0JixCC1oGR2+YHAxDG+fQHXgdzp2az5ClOduO3N7RRavgAW9eXu/RCG+etSnXlXV9Cb8bwJ
- zQRFJgon3i3erE3aMlmgjEUM/E3/dfLpfvP73rON4BrIWVQ3uTEbNb1W38U7ww+CYA+8pMiU/1OjRk
- W8vQzfPZM8xiG58kVagNo6z7XJvpMAO0S9uHCZRZV3b9N/FuZPlGu9bphEOTTiMmtb/nuJze0x1bV7
- 6bBPC1xeCwoZpq2isz0ePgFEcZQbuBJMlw2Kre0Nf7WF1QqZTjXTnq3zIId/N2jGkNp3yev9LDlRaj
- zgHEX/LqARu1nlSBczDoy56J92Q8nP7VliMaUoVmkfUN7WOoppwGC05sWlhfX409GoUmxwBu7e5RGj
- Zh+/pzsafSWO/jOarfo8SsAsLkJeH8a75Bf0U1aCdp78KsTwHekC1EFTwALCPyO/FbbpNsdImpe3Wn
- O+6Xjy4gwZe/Wumfy3rLZ9UOxvkRinFIOYXXHot6LOTbLTUc5ZxywUaTbWWSi7QUn2qCrDTlnmqnaT
- xmm/DNeOMSB6QT06HlJXTNHFuR+9XttavsSSwuuCbxhhbJGsSXrw3muKD5GR3eLFRgINOjmspvwDI+
- KZ/tU64jVUJceM8veKRafjYnK5T+NaHkh4BXADXoWLJW+OwXa8SjyIG3o6Xg==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Remove the dummy pcie-1-phy-aux-clk clock and replace with the pcie1_phy
-provided QMP_PCIE_PHY_AUX_CLK.
+On Wed, 17 Apr 2024 14:14:05 +0800
+Zhenzhong Duan <zhenzhong.duan@intel.com> wrote:
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8650-mtp.dts |  4 ----
- arch/arm64/boot/dts/qcom/sm8650-qrd.dts |  4 ----
- arch/arm64/boot/dts/qcom/sm8650.dtsi    | 13 ++++---------
- 3 files changed, 4 insertions(+), 17 deletions(-)
+> In some cases the detector of a Non-Fatal Error(NFE) is not the most
+> appropriate agent to determine the type of the error. For example,
+> when software performs a configuration read from a non-existent
+> device or Function, completer will send an ERR_NONFATAL Message.
+> On some platforms, ERR_NONFATAL results in a System Error, which
+> breaks normal software probing.
+> 
+> Advisory Non-Fatal Error(ANFE) is a special case that can be used
+> in above scenario. It is predominantly determined by the role of the
+> detecting agent (Requester, Completer, or Receiver) and the specific
+> error. In such cases, an agent with AER signals the NFE (if enabled)
+> by sending an ERR_COR Message as an advisory to software, instead of
+> sending ERR_NONFATAL.
+> 
+> When processing an ANFE, ideally both correctable error(CE) status and
+> uncorrectable error(UE) status should be cleared. However, there is no
+> way to fully identify the UE associated with ANFE. Even worse, a Fatal
+> Error(FE) or Non-Fatal Error(NFE) may set the same UE status bit as
+> ANFE. Treating an ANFE as NFE will reproduce above mentioned issue,
+> i.e., breaking softwore probing; treating NFE as ANFE will make us
+> ignoring some UEs which need active recover operation. To avoid clearing
+> UEs that are not ANFE by accident, the most conservative route is taken
+> here: If any of the FE/NFE Detected bits is set in Device Status, do not
+> touch UE status, they should be cleared later by the UE handler. Otherwise,
+> a specific set of UEs that may be raised as ANFE according to the PCIe
+> specification will be cleared if their corresponding severity is Non-Fatal.
+> 
+> To achieve above purpose, store UNCOR_STATUS bits that might be ANFE
+> in aer_err_info.anfe_status. So that those bits could be printed and
+> processed later.
+> 
+> Tested-by: Yudong Wang <yudong.wang@intel.com>
+> Co-developed-by: "Wang, Qingshun" <qingshun.wang@linux.intel.com>
+> Signed-off-by: "Wang, Qingshun" <qingshun.wang@linux.intel.com>
+> Signed-off-by: Zhenzhong Duan <zhenzhong.duan@intel.com>
+> ---
+>  drivers/pci/pci.h      |  1 +
+>  drivers/pci/pcie/aer.c | 45 ++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 46 insertions(+)
+> 
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 17fed1846847..3f9eb807f9fd 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -412,6 +412,7 @@ struct aer_err_info {
+>  
+>  	unsigned int status;		/* COR/UNCOR Error Status */
+>  	unsigned int mask;		/* COR/UNCOR Error Mask */
+> +	unsigned int anfe_status;	/* UNCOR Error Status for ANFE */
+>  	struct pcie_tlp_log tlp;	/* TLP Header */
+>  };
+>  
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index ac6293c24976..27364ab4b148 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -107,6 +107,12 @@ struct aer_stats {
+>  					PCI_ERR_ROOT_MULTI_COR_RCV |	\
+>  					PCI_ERR_ROOT_MULTI_UNCOR_RCV)
+>  
+> +#define AER_ERR_ANFE_UNC_MASK		(PCI_ERR_UNC_POISON_TLP |	\
+> +					PCI_ERR_UNC_COMP_TIME |		\
+> +					PCI_ERR_UNC_COMP_ABORT |	\
+> +					PCI_ERR_UNC_UNX_COMP |		\
+> +					PCI_ERR_UNC_UNSUP)
+> +
+>  static int pcie_aer_disable;
+>  static pci_ers_result_t aer_root_reset(struct pci_dev *dev);
+>  
+> @@ -1196,6 +1202,41 @@ void aer_recover_queue(int domain, unsigned int bus, unsigned int devfn,
+>  EXPORT_SYMBOL_GPL(aer_recover_queue);
+>  #endif
+>  
+> +static void anfe_get_uc_status(struct pci_dev *dev, struct aer_err_info *info)
+> +{
+> +	u32 uncor_mask, uncor_status;
+> +	u16 device_status;
+> +	int aer = dev->aer_cap;
+> +
+> +	if (pcie_capability_read_word(dev, PCI_EXP_DEVSTA, &device_status))
+> +		return;
+> +	/*
+> +	 * Take the most conservative route here. If there are
+> +	 * Non-Fatal/Fatal errors detected, do not assume any
+> +	 * bit in uncor_status is set by ANFE.
+> +	 */
+> +	if (device_status & (PCI_EXP_DEVSTA_NFED | PCI_EXP_DEVSTA_FED))
+> +		return;
+> +
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650-mtp.dts b/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-index d04ceaa73c2b..ea092f532e5a 100644
---- a/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8650-mtp.dts
-@@ -641,10 +641,6 @@ &mdss_dsi0_phy {
- 	status = "okay";
- };
- 
--&pcie_1_phy_aux_clk {
--	clock-frequency = <1000>;
--};
--
- &pcie0 {
- 	wake-gpios = <&tlmm 96 GPIO_ACTIVE_HIGH>;
- 	perst-gpios = <&tlmm 94 GPIO_ACTIVE_LOW>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-index 4e94f7fe4d2d..bd87aa3aa548 100644
---- a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
-@@ -835,10 +835,6 @@ &mdss_dp0_out {
- 	remote-endpoint = <&usb_dp_qmpphy_dp_in>;
- };
- 
--&pcie_1_phy_aux_clk {
--	clock-frequency = <1000>;
--};
--
- &pcie0 {
- 	wake-gpios = <&tlmm 96 GPIO_ACTIVE_HIGH>;
- 	perst-gpios = <&tlmm 94 GPIO_ACTIVE_LOW>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index 8e0c1841f748..658ad2b41c5a 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -60,11 +60,6 @@ bi_tcxo_ao_div2: bi-tcxo-ao-div2-clk {
- 			clock-mult = <1>;
- 			clock-div = <2>;
- 		};
--
--		pcie_1_phy_aux_clk: pcie-1-phy-aux-clk {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--		};
- 	};
- 
- 	cpus {
-@@ -758,8 +753,8 @@ gcc: clock-controller@100000 {
- 				 <&bi_tcxo_ao_div2>,
- 				 <&sleep_clk>,
- 				 <&pcie0_phy>,
--				 <&pcie1_phy>,
--				 <&pcie_1_phy_aux_clk>,
-+				 <&pcie1_phy QMP_PCIE_PIPE_CLK>,
-+				 <&pcie1_phy QMP_PCIE_PHY_AUX_CLK>,
- 				 <&ufs_mem_phy 0>,
- 				 <&ufs_mem_phy 1>,
- 				 <&ufs_mem_phy 2>,
-@@ -2467,8 +2462,8 @@ pcie1_phy: phy@1c0e000 {
- 
- 			power-domains = <&gcc PCIE_1_PHY_GDSC>;
- 
--			#clock-cells = <0>;
--			clock-output-names = "pcie1_pipe_clk";
-+			#clock-cells = <1>;
-+			clock-output-names = "pcie1_pipe_clk", "pcie1_phy_aux_clk";
- 
- 			#phy-cells = <0>;
- 
+Is there not a race here?  If we happen to get either an NFED or FED 
+between the read of device_status above and here we might pick up a status
+that corresponds to that (and hence clear something we should not).
 
--- 
-2.34.1
+Or am I missing that race being close somewhere?
+
+> +	pci_read_config_dword(dev, aer + PCI_ERR_UNCOR_STATUS, &uncor_status);
+> +	pci_read_config_dword(dev, aer + PCI_ERR_UNCOR_MASK, &uncor_mask);
+> +	/*
+> +	 * According to PCIe Base Specification Revision 6.1,
+> +	 * Section 6.2.3.2.4, if an UNCOR error is raised as
+> +	 * Advisory Non-Fatal error, it will match the following
+> +	 * conditions:
+> +	 *	a. The severity of the error is Non-Fatal.
+> +	 *	b. The error is one of the following:
+> +	 *		1. Poisoned TLP           (Section 6.2.3.2.4.3)
+> +	 *		2. Completion Timeout     (Section 6.2.3.2.4.4)
+> +	 *		3. Completer Abort        (Section 6.2.3.2.4.1)
+> +	 *		4. Unexpected Completion  (Section 6.2.3.2.4.5)
+> +	 *		5. Unsupported Request    (Section 6.2.3.2.4.1)
+> +	 */
+> +	info->anfe_status = uncor_status & ~uncor_mask & ~info->severity &
+> +			    AER_ERR_ANFE_UNC_MASK;
+> +}
+> +
+>  /**
+>   * aer_get_device_error_info - read error status from dev and store it to info
+>   * @dev: pointer to the device expected to have a error record
+> @@ -1213,6 +1254,7 @@ int aer_get_device_error_info(struct pci_dev *dev, struct aer_err_info *info)
+>  
+>  	/* Must reset in this function */
+>  	info->status = 0;
+> +	info->anfe_status = 0;
+>  	info->tlp_header_valid = 0;
+>  
+>  	/* The device might not support AER */
+> @@ -1226,6 +1268,9 @@ int aer_get_device_error_info(struct pci_dev *dev, struct aer_err_info *info)
+>  			&info->mask);
+>  		if (!(info->status & ~info->mask))
+>  			return 0;
+> +
+> +		if (info->status & PCI_ERR_COR_ADV_NFAT)
+> +			anfe_get_uc_status(dev, info);
+>  	} else if (type == PCI_EXP_TYPE_ROOT_PORT ||
+>  		   type == PCI_EXP_TYPE_RC_EC ||
+>  		   type == PCI_EXP_TYPE_DOWNSTREAM ||
 
 
