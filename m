@@ -1,131 +1,96 @@
-Return-Path: <linux-kernel+bounces-152857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51F178AC54C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:22:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA1E68AC552
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:23:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0991282CA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:22:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ECB51F21DEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6360153395;
-	Mon, 22 Apr 2024 07:16:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF9B4DA10;
+	Mon, 22 Apr 2024 07:18:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DHn3HXH2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mK0Z80cK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7DEF4B5CD;
-	Mon, 22 Apr 2024 07:16:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACEE74C62A;
+	Mon, 22 Apr 2024 07:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713770195; cv=none; b=MpgbN9UH022/U8Y0etB/hRIxWZKDa7lXhcHbnWLfdtxCrQ5lFQ5aTynpdJj2x5fPcpPWP67iygHrKIVusmoXG+7G0S6JPYgVpwqoWTA0GhqggIiih+C3n8BtiGHClxHXf1KDDARG14XhQNXTLMuBIOE5RS8+izFO209hM8ZB/88=
+	t=1713770300; cv=none; b=XJws4X3E6xnZhwdCIB4/CxSTpcrh7vTv09fxr0cWeXMfy+DUTw3gOYEgMdkXCiyM1YDIJq23UpcNudJ7r6uH9V2cbA0CO+ZSnreuhTY4eekgRZ5sX7zQeiNylVj8dupyO//YJxf3L0zdT2SzX2gAeV5NIZNXescaiCRvAntj4C0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713770195; c=relaxed/simple;
-	bh=NfAfxY4XqZehCfrVo6N7fe6sz8Rh1GXdjQSYW+wwx44=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Ld6RmEiBhx1AVGw7rtMB+tp9+wj+MGLyjYQ3dX0pDoDTFuPTLTMr3nH8fIEEpm/ZxRE1epK8DCxusBKO2kl6iyBD2X4f7ACGIWz7UgpzEp+LrtmsLRCeaot6jKOPuLeWUvy0Km1vq5r6AC8/9fPzCK+xkgj3u7cQSuXPU72i/o8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DHn3HXH2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40A6AC113CC;
-	Mon, 22 Apr 2024 07:16:32 +0000 (UTC)
+	s=arc-20240116; t=1713770300; c=relaxed/simple;
+	bh=4j9/ixBcrRXzHNP/FULKIaHBtcfKqIhHzURyKg3qzdA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eh/dOXyhvmR3r1K6AAoxnU6FrlHxClxpLO5Gq9WJkxsUfmMkQF/tbHA3RdWGEzKaqlVrTMOne4DG5bjz6kIu0yqSkavPiJWnEMqvw0v8bLOrIzcnYdnrauVwZUJ9Z3WwOPQJRkBlCgKJ8cOiGPb9r8Ib+Z0lTKU9H4tUaXqK0Ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mK0Z80cK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E8AFC113CC;
+	Mon, 22 Apr 2024 07:18:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713770195;
-	bh=NfAfxY4XqZehCfrVo6N7fe6sz8Rh1GXdjQSYW+wwx44=;
-	h=From:Date:Subject:To:Cc:From;
-	b=DHn3HXH2eCN2Mb4w2HpzvQHTeCkLsaR/+ccsCUzukakQ4Tq82aKmoFrqyui3aEsdi
-	 tvm+AmP4HXZpsCiZLs4Bv/xzQ1EYRcFF0grrqjysrb528ZfaUQ5dQpM0ca0InUsY9Y
-	 j4h1Xe28vB7M1l7Fz7RCmMR4bSIU+Zf+zbfS9s37g+jh/5HzDUZul17XGJamEmOw6+
-	 ib+TGfN2Bv4JpQO6QLPze5WOWj/VnJ+5vpjeRtTb0mh+Oz3WZeaTFxEJFbBOl0GGX2
-	 COfNVMUDcIF5ypOY+aIXByE6TeSdkQV/zQN/IMQ8GYkhVLTsEq4wWPt71WQROb5Jy0
-	 AhjPz237m8Bdw==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Mon, 22 Apr 2024 09:16:28 +0200
-Subject: [PATCH] bpf: verifier: allow arrays of progs to be used in
- sleepable context
+	s=k20201202; t=1713770300;
+	bh=4j9/ixBcrRXzHNP/FULKIaHBtcfKqIhHzURyKg3qzdA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mK0Z80cKCAI+uDxSxdZHcaGs5+UT4XVQgZnS0F5bwO8/s8LgGk+/jsdRgfIB/Mgmx
+	 tS8XBioRztDxO4OLF0s2jjbrzM57aXUgIkAcYYfAfNkAeJWcMqMglFZpMz71SHWYgg
+	 mm0AXjUyQriCTOWMDeLd5h6v2gNV9qEkzvD3M2Z+vmTXEeQVQNmZCpmfLZrMRjBB4D
+	 70e3EfS7O5BOG4E1E9j0SFe9yr5cQo3iZbLBigNhr1XKg3Fj72hoI1c7a0vFE5u7bJ
+	 XnRjx3kwgRMcbn7ueNLFlHmea+een/YxKporS4WRUaPTCZTRVdydIOVULyJuzeK1CJ
+	 OFi1v4keCfTIQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rynwM-000000002f8-3LC2;
+	Mon, 22 Apr 2024 09:18:14 +0200
+Date: Mon, 22 Apr 2024 09:18:14 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Wesley Cheng <quic_wcheng@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+	Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
+	quic_jackp@quicinc.com, Bjorn Andersson <quic_bjorande@quicinc.com>
+Subject: Re: [PATCH v21 6/9] usb: dwc3: qcom: Add helper function to request
+ wakeup interrupts
+Message-ID: <ZiYPNv8Q46rFj5CJ@hovoldconsulting.com>
+References: <20240420044901.884098-1-quic_kriskura@quicinc.com>
+ <20240420044901.884098-7-quic_kriskura@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240422-sleepable_array_progs-v1-1-7c46ccbaa6e2@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAMsOJmYC/x3MQQqDMBBG4avIrBuIISB4lVJkkv6NA6JhBsQiu
- XtDl9/ivZsMKjCah5sUp5gce8f4GCivvBc4eXdT8CH6GIKzDaicNiysyt+l6lHMwWc/pXHKnBL
- 1tio+cv2/z1drP7hSVYdnAAAA
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713770191; l=1344;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=NfAfxY4XqZehCfrVo6N7fe6sz8Rh1GXdjQSYW+wwx44=;
- b=BOoh+3TwqNJ3VgIIKuFS0X05BWosUogOThOQNNnoxXo2ZDKy2YK8wSwezXl2YpCCvtTMDFrbv
- nV7g17D1owCCy/3fLmUPTxsHFWWflmCJJ5mxb/Lhwb5Vqj5dSIfPKc1
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240420044901.884098-7-quic_kriskura@quicinc.com>
 
-Arrays of progs are underlying using regular arrays, but they can only
-be updated from a syscall.
-Therefore, they should be safe to use while in a sleepable context.
+On Sat, Apr 20, 2024 at 10:18:58AM +0530, Krishna Kurapati wrote:
+> The logic for requesting interrupts is duplicated for each interrupt. In
+> the upcoming patches that introduces support for multiport, it would be
+> better to clean up the duplication before reading mulitport related
+> interrupts.
+> 
+> Refactor interrupt setup call by adding a new helper function for
+> requesting the wakeup interrupts. To simplify implementation, make
+> the display name same as the interrupt name expected in Device tree.
+> 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-This is required to be able to call bpf_tail_call() from a sleepable
-tracing bpf program.
+As far I can see, you only replaced "DT" with "Device tree" in the
+commit message. For changes like that you could have kept my
+Reviewed-by tag (but I appreciate that you dropped it from some of the
+others):
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
-Hi,
-
-a small patch to allow to have:
-
-```
-SEC("fmod_ret.s/__hid_bpf_tail_call_sleepable")
-int BPF_PROG(hid_tail_call_sleepable, struct hid_bpf_ctx *hctx)
-{
-	bpf_tail_call(ctx, &hid_jmp_table, hctx->index);
-
-	return 0;
-}
-```
-
-This should allow me to add bpf hooks to functions that communicate with
-the hardware.
-
-Cheers,
-Benjamin
----
- kernel/bpf/verifier.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 68cfd6fc6ad4..880b32795136 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -18171,6 +18171,7 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- 		case BPF_MAP_TYPE_QUEUE:
- 		case BPF_MAP_TYPE_STACK:
- 		case BPF_MAP_TYPE_ARENA:
-+		case BPF_MAP_TYPE_PROG_ARRAY:
- 			break;
- 		default:
- 			verbose(env,
-
----
-base-commit: 735f5b8a7ccf383e50d76f7d1c25769eee474812
-change-id: 20240422-sleepable_array_progs-e0c07b17cabb
-
-Best regards,
--- 
-Benjamin Tissoires <bentiss@kernel.org>
-
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
 
