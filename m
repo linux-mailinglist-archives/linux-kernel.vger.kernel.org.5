@@ -1,117 +1,121 @@
-Return-Path: <linux-kernel+bounces-153476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00BFE8ACE8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:43:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AE698ACE8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:44:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322AC1C20C0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:43:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C6241C20EB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:44:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E8D6150980;
-	Mon, 22 Apr 2024 13:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863C514F9FA;
+	Mon, 22 Apr 2024 13:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fzV3Dz61"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dpHL2Hk2"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629AA5028B;
-	Mon, 22 Apr 2024 13:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30EB014F9D9
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713793416; cv=none; b=S608nk5fDhLTvMJqO1sSZTkuxPoJrbQErFofNLMBKtKKwJI1R+iPk5WhgZSlNvAn4StjdK5lB89+0rCeNSeVjj/vgkrf1YydTJ5XpBmaprX3aPD5Ib5irCERkSkouwKkF91XJeP9PFVK1ePXi6oWcHEuJmVkjh75AbtYoItCDfc=
+	t=1713793442; cv=none; b=K+Af5QdTVFK8r6e11Zs6qEKsZoJOv8cMfSXAusgjFMg1fhUQKlDCxI81F9RZDvEb4KaRMF+zRyvI9+dEBFVcxf8eynn4ersk9OTBITLK5kwV4StDvNGSDFbQZ2RkcA9G0UserwtM0eyu9bi0bOtpI8EWliLi4SVYPl6tdt7AP58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713793416; c=relaxed/simple;
-	bh=iyUYTV5ltJ3rODQwoPpNba45yscFs+Ul9nWQU6yjDfo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mvCK0Dxyx1Me/id5te290Hx3zO3NyirCa+dNAlu2BccdH7Gw4LzkboNfUXHf1zbd/M+kf55nYht7lzqecoi9oIevExpYu23Uvd0ojqHw+LxPht0gyLyJ/CnkGVsGfXAt6VQ2U1ubct90z+rZzFvtGiIkP9uEjC0sL6X99CfTrV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fzV3Dz61; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9046C113CC;
-	Mon, 22 Apr 2024 13:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713793415;
-	bh=iyUYTV5ltJ3rODQwoPpNba45yscFs+Ul9nWQU6yjDfo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fzV3Dz61yBDv+hpyv23l2av+nrBuoT/+wcwF6Okuiyt584leQaLRNvqUg/uOtTqGN
-	 j4q1xECwuU+4lK9iEpRlo3epfwTkarXtWvkGA4zK95xq7WOPcRZ0KgTkWw3KVnLw/b
-	 9MzfFWqyFyW8kUdwRZDBU0WNnQuzLNBzwbLOPiNHzok2oWwl5ynyNLKl3PLsAx0/bJ
-	 5EC7vN/8U2hoxVCSwjO42ACCKpu/xK6ZCRxhI/TcrovToUGRDU+SEqFxSjJKGydc5+
-	 iBe3TbIBYjxlE7UjH6budWKE9zVFhdz5/BqX0s/V8IoIZG/HPgK8AKBYIBA2IVKITI
-	 a19zyfMtirOKA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rytxD-000000005jw-1Bm1;
-	Mon, 22 Apr 2024 15:43:31 +0200
-Date: Mon, 22 Apr 2024 15:43:31 +0200
-From: Johan Hovold <johan@kernel.org>
-To: quic_zijuhu <quic_zijuhu@quicinc.com>
-Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Zhengping Jiang <jiangzp@google.com>,
-	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Bluetooth: qca: fix NULL-deref on non-serdev setup
-Message-ID: <ZiZpg4lyp-LcpV8l@hovoldconsulting.com>
-References: <20240319154611.2492-1-johan+linaro@kernel.org>
- <ZiZdag8fw8H1haCb@hovoldconsulting.com>
- <438844e9-47e8-486e-9611-ae524d6974b3@quicinc.com>
- <ZiZkK4BAoqxNg7yG@hovoldconsulting.com>
- <472b9f60-d68e-47ee-9ca9-f71a9ba86a1a@quicinc.com>
+	s=arc-20240116; t=1713793442; c=relaxed/simple;
+	bh=eLwGpBWNSzsKehoMyzaBaeqO5Km6GsohfpkHMeO3sMI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JR3+cVcQusYppjEfH1B+Aplrb+s310hkYpNyKkzeY5GaUlyOjFiG6ip3baOmoNneIzr5YAO9DhTMUVQYHs4Ff5ONS/NSxGLGfqOO/xjkjI8vlwSecciAcaqx5OrGoaup3CY5LzogLYCYR3xcYrrPh3RtdXCmIWgK8oPkn6a7+Us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dpHL2Hk2; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-343d7ff2350so3290122f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:44:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713793439; x=1714398239; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IyhHpXfSBoKLASPLnhxuYO1fMBmMIpkOZFN42OM7jY4=;
+        b=dpHL2Hk2vy25O4ofUjsgNOe5UUbuAu85JLHeohN7YTIMNGPjL3yrS1bhR1QASLLFzl
+         fbDLeVp12ikjlreBT0KGHd3jQ08zLwEHZY81zqekONw97q4dugfvDXS99xHZwdj64Cj4
+         fIDr8Cbi+hsgYdcDwgDraLN94xsmEixd2xdRDw1ayMStnUXwLWJ25wfhAQPSmNivjH0k
+         tB6TIZbOlrAVuMvcBk2W7fuGg/hXbB0bl3Oav+LDzvpotKHRXVxxQBBrFNd0nf6myirt
+         xbQO23PI+f1bmtWOBE885B4LHwrKCHa//SEbdt3/pZdse9U43csQpfMtFIKt6aRDcJTY
+         WSZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713793439; x=1714398239;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IyhHpXfSBoKLASPLnhxuYO1fMBmMIpkOZFN42OM7jY4=;
+        b=PTfDOiNl6n6YTPhGLX7ednfNOret1G4aXNUuy2l2xKSzVcYK/d7asPKBuXvjTYeRyq
+         cmlLBjIsn1Bx7esZaaRATdoA4WdVhAHL+2Fo88BWgAHHZYAzrI8aQLksfXZ949e661Pf
+         zESlJmkLi8hErybGz12Wg1jjgKjdGkh7HjV/DLxnh+FE++DzaxezfhjilXIX4rLVFQv6
+         RwOUxS00yfI6mnxMLqxDsbmFGIxh/YlGzczsYpHwDFJb7YVFLillGbp1sAP8yIkGLEew
+         isDSy2jlfoe6gslDzYdfEtbRACGR1lwga2365HgNZdt6MSMs9XXCIjsxEmYKLX+Puzoh
+         vboA==
+X-Forwarded-Encrypted: i=1; AJvYcCXl+wqiwelrT/tLcG6n1onJFygJtoxvgqprWn5VgF+m6ND1sDtqAlnDH9xIGJPiWg5iz4W7xBgierbVrH2bGGYQW+cXDHYYpfAqWpyc
+X-Gm-Message-State: AOJu0Yy/OyCr2WPRaKhcRs2GO4eS8h1uDU7MunKdb5to4kVayQm3bpDG
+	rE82lpAC6D7IkLzE40Dr8bQhakvcGY010ZuWSjgTk7NA9XSc7qix8o6H6Je3TLk=
+X-Google-Smtp-Source: AGHT+IGVKGiL+8Ldo4qtKC5/WdzouQLf24IRdTEX/wcJBZuyxLhla2b8gT7u4AqyanBsHU3HdncymA==
+X-Received: by 2002:a5d:69c1:0:b0:343:ef1b:9f69 with SMTP id s1-20020a5d69c1000000b00343ef1b9f69mr8121800wrw.43.1713793439531;
+        Mon, 22 Apr 2024 06:43:59 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id g18-20020a05600c4ed200b00417d624cffbsm20731069wmq.6.2024.04.22.06.43.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 06:43:59 -0700 (PDT)
+From: srinivas.kandagatla@linaro.org
+To: broonie@kernel.org
+Cc: perex@perex.cz,
+	tiwai@suse.com,
+	lgirdwood@gmail.com,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 0/4] ASoC: qcom: display port changes
+Date: Mon, 22 Apr 2024 14:43:50 +0100
+Message-Id: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <472b9f60-d68e-47ee-9ca9-f71a9ba86a1a@quicinc.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 22, 2024 at 09:30:28PM +0800, quic_zijuhu wrote:
-> On 4/22/2024 9:20 PM, Johan Hovold wrote:
-> > On Mon, Apr 22, 2024 at 09:04:58PM +0800, quic_zijuhu wrote:
-> >> On 4/22/2024 8:51 PM, Johan Hovold wrote:
-> >>> On Tue, Mar 19, 2024 at 04:46:09PM +0100, Johan Hovold wrote:
-> > 
-> >>>> Johan Hovold (2):
-> >>>>   Bluetooth: qca: fix NULL-deref on non-serdev suspend
-> >>>>   Bluetooth: qca: fix NULL-deref on non-serdev setup
-> >>>
-> >>> Could you pick these up for 6.9 or 6.10?
-> >>>
-> >>> The patches are marked for stable backport and only privileged users can
-> >>> set the N_HCI line discipline these days (even if I'm not sure about
-> >>> pre-5.14 kernels...) so it may be fine to wait for 6.10 if you prefer.
-> > 
-> >> could you share the patch links for me to review. i can
-> >> 't find them now
-> > 
-> > Sure, but you should bookmark lore.kernel.org in your browser as you can
-> > search the archives there yourself:
-> > 
-> > 	https://lore.kernel.org/lkml/20240319154611.2492-1-johan+linaro@kernel.org/
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-> NAK for your [PATCH 1/2] since the null checking is redundant with your
-> [PATCH 2/2].
+This patchset adds support for.
+	1. parse Display Port module tokens from ASoC topology
+	2. add support to DP/HDMI Jack events.
+	3. fixes a typo in function name in sm8250
 
-I explained in the cover letter why it is split up like this. If you
-don't bother reading, then we will not bother listening to you.
+Verified these patches on X13s along with changes to tplg in 
+https://git.codelinaro.org/linaro/qcomlt/audioreach-topology/-/tree/topic/x13s-dp?ref_type=heads
+and ucm changes from https://github.com/Srinivas-Kandagatla/alsa-ucm-conf/tree/topic/x13s-dp
 
-> NAK for your [PATCH 2/2], since it is same with my earlier fix
-> https://lore.kernel.org/all/1704960978-5437-1-git-send-email-quic_zijuhu@quicinc.com/
-> my new patchset for btattach tool still has this change.
+Thanks,
+Srini
 
-The fix does not depend on your btattach series, which has also been
-rejected.
+Changes since v1:
+	- Fixed unused variable warning.
+	- fixed warning 'break;' to avoid fall-through
 
-You clearly have some learning to do on how to interact with the kernel
-community and to write proper commit messages and patches. If you start
-listening to feedback and try not to piss everyone off perhaps you can
-even get your patches merged one day. [1][2]
+Srinivas Kandagatla (4):
+  ASoC: qcom: q6dsp: parse Display port tokens
+  ASoC: qcom: common: add Display port Jack function
+  ASoC: qcom: sc8280xp: add Display port Jack
+  ASoC: qcom: sm8250: fix a typo in function name
 
-Johan
+ sound/soc/qcom/common.c         | 29 +++++++++++++++++++++++++++++
+ sound/soc/qcom/common.h         |  3 +++
+ sound/soc/qcom/qdsp6/topology.c | 26 ++++++++++++++++++++++++++
+ sound/soc/qcom/sc8280xp.c       | 14 ++++++++++++++
+ sound/soc/qcom/sm8250.c         |  4 ++--
+ 5 files changed, 74 insertions(+), 2 deletions(-)
 
-[1] https://lore.kernel.org/linux-bluetooth/fbe5722b-1e45-4ccb-a050-20a473a823c8@quicinc.com/T/#m8e495666a71eb0e7ae54c82554dfff1fc96983e7
-[2] https://lore.kernel.org/linux-bluetooth/1713563327-19694-1-git-send-email-quic_zijuhu@quicinc.com/T/#med0610646a8fd8b3c8586abca9895b124b2d2534
+-- 
+2.25.1
+
 
