@@ -1,146 +1,157 @@
-Return-Path: <linux-kernel+bounces-153824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB31A8AD3D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:23:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3D918AD3DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:24:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0456CB2075B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:23:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7E271C20E7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6AF154BFE;
-	Mon, 22 Apr 2024 18:23:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47843154456;
+	Mon, 22 Apr 2024 18:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UGaLkm9Z"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="IioDOQLK";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Nt9T+mKn"
+Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6808315443D;
-	Mon, 22 Apr 2024 18:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFDE154440;
+	Mon, 22 Apr 2024 18:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713810203; cv=none; b=MTt3s2kMDfkBikh2TL2cQ9Qc3U4VuJO1EeT6y4Ekmza1deVr12mZv1VaHVuNzK3M4dR3v15crArXQEWixCJWEQbRZ7yUEwHMsrxaSe3ifPaFVr9b0gMdx1FSl4t5gsakeLrlBSLGz/Vwm0swGdLCr+wmvQ20T1rv7AkOzHPsYWQ=
+	t=1713810253; cv=none; b=SLOaAkqFaqufXcXcQL/pgFzU0mwEFvYKx8eZh0bslYwD8du8RWh2mpLyaayUcpL/xT3nZmNsAYbjPPmJTst3pTt2PFom6eYQfpQyrgVnYzRnBK+gJVFSlTidcgGrcv8z7W3Ue60HxKrv6vDyyDLoWdq5adk02CeiCYfMBUYx3Ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713810203; c=relaxed/simple;
-	bh=5hx0hqmTvtMnwuIiUwzkB2NqB8TtTkY1m/tzpLOBOa8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mTv+ocprymdW8D+3IJ1pEAvQ8s5WN/eHTNUBWKA/AxTIcHefVHJfQL0ewfOywJASekO0HGC/SBgcA5RtQCIk1RPQxIs/o2cUbfUS/pfY0vbV1wm5PfnqfToGLf/srRvhl5lzR/TLk12libP0DzfKb+NSqLZ3sP6GO6QYaQtM/aE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UGaLkm9Z; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e4266673bbso42815735ad.2;
-        Mon, 22 Apr 2024 11:23:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713810202; x=1714415002; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xUsfrPuknVn2eEWdEAnXH6GuTxJPhPcdp068aUQPL6g=;
-        b=UGaLkm9Z2re0epmt6klamknfMFFWzuVc7mqXBipyePZsDXdE2wORmYOtcX3rX1k4nN
-         XIckwVBis5zTyroZ0q4Ui4Utdj/7qDFqZhGbFJZQ1ThBVAxBdIWNjE9ajSSr981DyK6o
-         RIUlOIZ2KdAGnnVgwUnSj2L6F8ssiA4MycVEnex2kKdVOpv/VDxR5KyQAUx+YfXc3Gag
-         v7MkEZ4QnE5/fHk1uzlqWPe3rEeNF63rjA0SAhUXPIaALqh5cLB+1M46AWN+g/F5pk6E
-         YW2/TQ6XGoSAXBpkrZJO4k3FHNvRxHkliSLLdOxJdRVyQ3n9nhegrZ1/Ro8EPhBPsZd5
-         5CyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713810202; x=1714415002;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xUsfrPuknVn2eEWdEAnXH6GuTxJPhPcdp068aUQPL6g=;
-        b=SoeCQLRmVFwHBB35/JcvDxGxXfb7bNAQ7GlhjIC7FCZ3cEqo1AyU9ctvHGPw/g95/k
-         OtX1mTFHFil9n2I+kR7o3N1twTEqrDc4d1tmesiGv37SlcwgY5vgPEUZTD6Yr2uLH+fe
-         bVMKamrloeYRNWaHhhgvr7ij2sq/RwETcNJJnBYN3OigM7VMgh6oyRNq8c5mNyzCF27e
-         sJ9QdIEKUVpxx7Kt7UeNgOFctRovO3mfPMDP++1TleJ8ZpcV+VwJzqkeLEjRycQBX9PU
-         Hy+FiWbEqklYVtXzzwSw0IrEesZv9ornw6lmvK29C30/769XcG+JPr6Zahw9+KEp7vYP
-         /91g==
-X-Forwarded-Encrypted: i=1; AJvYcCWcBXaAgnVYTL3k89E+ISbB3qiv+nHc/xVBa5xPyfSvB7K9CU4CEjGidrY4g8zZwf95SFhcDSjwCfR6zSHgPVw+FpS2TfHIb649j8WIgquXsrdyPPJ9Z9guOT5UJ+UifURuPK7/zi8+597sFQ==
-X-Gm-Message-State: AOJu0YwJr8LfNyIkmC8MEovALT2VbEB2YQ6ET7+VZraKZfcALrPlqIhb
-	rHot1495hwF0LARSWhgVMuRuH1ow/QlgKxwB7S2M/eoGVO1geQjvGXm8n98q
-X-Google-Smtp-Source: AGHT+IGl2na+Kyu0mq52tGR00SH6ZD7tOAk3YfMFtBzHcVw5HMV3aXGaOENqOKZ/Wql9wnBHRG0HKQ==
-X-Received: by 2002:a17:902:7489:b0:1e7:ad7a:6a81 with SMTP id h9-20020a170902748900b001e7ad7a6a81mr10287853pll.49.1713810201435;
-        Mon, 22 Apr 2024 11:23:21 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id e13-20020a170902ed8d00b001e4464902bcsm8432872plj.60.2024.04.22.11.23.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 11:23:20 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 22 Apr 2024 08:23:19 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: akpm@linux-foundation.org, willy@infradead.org, jack@suse.cz,
-	bfoster@redhat.com, dsterba@suse.com, mjguzik@gmail.com,
-	dhowells@redhat.com, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] writeback: collect stats of all wb of bdi in
- bdi_debug_stats_show
-Message-ID: <ZiarF2wxWecJ1vTE@slm.duckdns.org>
-References: <20240422164808.13627-1-shikemeng@huaweicloud.com>
- <20240422164808.13627-2-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1713810253; c=relaxed/simple;
+	bh=AJWsQs0WIutfkiraqmBrcIERbnp+KFBgyvXOHw6/ZGw=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=TxRJxFXtKDbQN+UVtCInzRXBl5BGp+9DyWhBDu7kFHyQNOPv3KY2UM7vKMO31xp0uw4p16IREH11LHYMo2TuO3yjqJxpkP9995aR7maBN6Q9N9/y/9b9+UR1aWa1UVWPfW8pXybrz/ugeFz1/7vlAamUq/7llttEwd/349ALHBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=IioDOQLK; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Nt9T+mKn; arc=none smtp.client-ip=64.147.123.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 3CC091C00124;
+	Mon, 22 Apr 2024 14:24:09 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 22 Apr 2024 14:24:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1713810248;
+	 x=1713896648; bh=4tISaTjKm7Keny+zSA/5yJF7vEg/YCHm8XeIP3SBn8Q=; b=
+	IioDOQLKUlfXtmHQgZWRGTP20woHG+m0RuSsHmypLIgi0wu2qGwYXrKfClD7dD+G
+	MyRfnW6awXbuF2kd5QEHka5zK2iTeYmq/YNk9IrOUe+lwRwUAqsTDVMhZOoj1qi0
+	8vBH17xHZug/Qyg6xKoy1t+tIiyOijdsUFIyk3wG/gPnp7KV1+8ul3oN8Xaiwha+
+	GADkVyLMV7q0cSlE94l1nT1+SotvDiPWq/xA8Zey5JUL4ZuMA4I7c14S+DfIG7f6
+	f8WSO+LPIXU4yok5R5NVO2XpcDGHtOAKkUHwe93Xq4X62MpMNWHticDasluhGzd4
+	srSuIQKaxkAWn3w49X66Dw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1713810248; x=
+	1713896648; bh=4tISaTjKm7Keny+zSA/5yJF7vEg/YCHm8XeIP3SBn8Q=; b=N
+	t9T+mKnsgBURMXg+OWFQJTJmdcY0Qocet1v+0rphAG6YV/di6D9rVirWDYvk8sWm
+	bSfrNu+4a/0lHPHJ/y21xo4I+LFBST97FFEHJwBEkWUWMVSG2H5rOgtuRbrTXJtL
+	6AVA66B+FAdd0zs3SNs+4uCxs7QDnwpkfyLKIolOwuCXEzvXQQ1BfgSD8JiC6isv
+	Vtjb81vqCPrXgwQzAeT+ujZ+O9B60x+yTHM8isBvnZ+5gEd0n6YzRt6/swHgUy+n
+	qh8EBuNSStkPA1enrxeTDCz9PieKKUNtQVcxA9IGjs95rC8sdhfHKh5MYNcq7Krn
+	WyeaZmVzBNcfNhBlj2UFQ==
+X-ME-Sender: <xms:R6smZrTxU7woavcUjP4z6wapKWPXc8dPlgFoAZtdZwetVi3uZ0kyOg>
+    <xme:R6smZsy9y8w3xvrhXR8HSDDPEUzNR3z0Mm3KBApIqyoBznUugeaKaVqyPttyO6DA4
+    rWeIEntw8WOEnd0R4c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekledguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
+    grthhtvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudek
+    tdfgjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:R6smZg1wtRbHYMelWVpTbUAvwMzDjKBG901AwkExDomwAUz8zX2yCA>
+    <xmx:R6smZrDPy4QA0ruj09hSOn7d3kplIjX52OTpTRuOP9ZYBALw6ilbsw>
+    <xmx:R6smZkhS4_l9Qzy41YOMCsZkHpmqtB9381ghYNbfZzNNe3Z9oOhsAw>
+    <xmx:R6smZvpU_WypBYLJGMocq9XBOjWeFyydTL_6gYIHxG0jE4G-Z8E8OQ>
+    <xmx:SKsmZlZK5lOFTFB_neSxwAvXStKO7uOEWTJbUrlsmmWQe4pB5VLUK62e>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 8187FB6008D; Mon, 22 Apr 2024 14:24:07 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-386-g4cb8e397f9-fm-20240415.001-g4cb8e397
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240422164808.13627-2-shikemeng@huaweicloud.com>
+Message-Id: <d3f406ed-1b93-4fcf-850a-743d27f20dc2@app.fastmail.com>
+In-Reply-To: 
+ <CAMuHMdXCL-gbKr6mUBPWONtRjz=X0vZQgiS=02WXXSFf67yBww@mail.gmail.com>
+References: <cover.1713780345.git.geert+renesas@glider.be>
+ <87il09ty4u.fsf@intel.com>
+ <ff4f9e8f-0825-4421-adf9-e3914b108da7@app.fastmail.com>
+ <875xw9ttl6.fsf@intel.com>
+ <af6e26d1-1402-4ed2-a650-b58eae77273e@app.fastmail.com>
+ <CAMuHMdXCL-gbKr6mUBPWONtRjz=X0vZQgiS=02WXXSFf67yBww@mail.gmail.com>
+Date: Mon, 22 Apr 2024 20:23:36 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: "Jani Nikula" <jani.nikula@linux.intel.com>,
+ "Geert Uytterhoeven" <geert+renesas@glider.be>,
+ "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+ "Maxime Ripard" <mripard@kernel.org>,
+ "Thomas Zimmermann" <tzimmermann@suse.de>, "Dave Airlie" <airlied@gmail.com>,
+ "Daniel Vetter" <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ "Masahiro Yamada" <masahiroy@kernel.org>,
+ linux-kbuild <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH 00/11] drm: Restore helper usability
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 12:48:05AM +0800, Kemeng Shi wrote:
-> /sys/kernel/debug/bdi/xxx/stats is supposed to show writeback information
-> of whole bdi, but only writeback information of bdi in root cgroup is
-> collected. So writeback information in non-root cgroup are missing now.
-> To be more specific, considering following case:
-> 
-> /* create writeback cgroup */
-> cd /sys/fs/cgroup
-> echo "+memory +io" > cgroup.subtree_control
-> mkdir group1
-> cd group1
-> echo $$ > cgroup.procs
-> /* do writeback in cgroup */
-> fio -name test -filename=/dev/vdb ...
-> /* get writeback info of bdi */
-> cat /sys/kernel/debug/bdi/xxx/stats
-> The cat result unexpectedly implies that there is no writeback on target
-> bdi.
-> 
-> Fix this by collecting stats of all wb in bdi instead of only wb in
-> root cgroup.
-> 
-> Following domain hierarchy is tested:
->                 global domain (320G)
->                 /                 \
->         cgroup domain1(10G)     cgroup domain2(10G)
->                 |                 |
-> bdi            wb1               wb2
-> 
-> /* all writeback info of bdi is successfully collected */
-> cat stats
-> BdiWriteback:             2912 kB
-> BdiReclaimable:        1598464 kB
-> BdiDirtyThresh:      167479028 kB
-> DirtyThresh:         195038532 kB
-> BackgroundThresh:     32466728 kB
-> BdiDirtied:           19141696 kB
-> BdiWritten:           17543456 kB
-> BdiWriteBandwidth:     1136172 kBps
-> b_dirty:                     2
-> b_io:                        0
-> b_more_io:                   1
-> b_dirty_time:                0
-> bdi_list:                    1
-> state:                       1
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+On Mon, Apr 22, 2024, at 18:58, Geert Uytterhoeven wrote:
+> On Mon, Apr 22, 2024 at 3:55=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> =
+wrote:
+>> On Mon, Apr 22, 2024, at 15:28, Jani Nikula wrote:
+>> Whereas this one is broken:
+>>
+>> config FEATURE_A
+>>        tristate "user visible if I2C is enabled"
+>>        depends on I2C
+>>
+>> config HELPER_B
+>>        tristate # hidden
+>>        select FEATURE_A
+>>
+>> config DRIVER
+>>        tristate "This driver is broken if I2C is disabled"
+>>        select HELPER_B
+>
+> So the DRIVER section should gain a "depends on I2C" statement.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+That is of course the common workaround, but my point was
+that nothing should ever 'select I2C' or any of the other
+subsystems that are user visible.
 
-Thanks.
+> Yamada-san: would it be difficult to modify Kconfig to ignore symbols
+> like DRIVER that select other symbols with unmet dependencies?
+> Currently it already warns about that.
+>
+> Handling this implicitly (instead of the current explict "depends
+> on") would have the disadvantage though: a user who is not aware of
+> the implicit dependency may wonder why DRIVER is invisible in his
+> config interface.
 
--- 
-tejun
+I think hiding this would make it much harder to get anything
+right. The symbols in question are almost all ones that should
+be enabled in normal configs, and the 'make menuconfig' help
+doesn't make it too hard to figure things out normally, we just
+have to find a way to avoid regressions when converting things
+to 'depends on' that used an incorrect 'select'.
+
+     Arnd
 
