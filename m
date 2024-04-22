@@ -1,129 +1,142 @@
-Return-Path: <linux-kernel+bounces-152925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 601F18AC635
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:01:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A18568AC63A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:04:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F422E1F22097
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:01:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3228CB20D2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C7B4EB24;
-	Mon, 22 Apr 2024 08:01:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39884E1CE;
+	Mon, 22 Apr 2024 08:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BGUeDph1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="B4OMW+gZ"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60DB84D599;
-	Mon, 22 Apr 2024 08:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD864D58A
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713772863; cv=none; b=f973rpx4xwogA71uwS67t2c7vJ+TeuaTZ+p5RHgmjooPwvDrrmPfb7KSlhPVXp8HccAGHQtYv600apIRwkPt9hPMcfEE/pE4We/lUMIdm/pUVu1MG2py0jeM6ZmcKG/T6eiivfe0yYtoxdxIkuFJwi+kGURwtiga/5sTNLsgvb8=
+	t=1713773050; cv=none; b=I9ugQnrZ6/iS5/AbLb9SFuQ7FCEUvB05NSzM1RRiMdN+tu3R1ofqOIICgoWRbfqIQw10+jb8os/orN/5IiPcTe6zxUgNIxhksWc5XDsL0I6zetsxkrJK1UAXOk3G1y8+j79zYNwgarnsPu8MWrXJyv03tHqnjDgH3Wd9+EIZTA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713772863; c=relaxed/simple;
-	bh=HZm0PzCHoSvuw+jWCOS/YJhNQfOMgrNyQH4jtQUZEGY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MRnsybDO/Qq+TlzSbxwSmLZP289M4r8YmMEBp71O9jLpxdoFI1MqA6raCHLKzZGxmUfFeASQ4Do/JChY4aPxvcgN5X5ZEQt2CFsD/qontBm97yscs8mSsw+R9SQIcNlLfX3noC2sKV2gj9/UUD5XtjxGzVKoet4wjIQrMPnNqZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BGUeDph1; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713772858; x=1745308858;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HZm0PzCHoSvuw+jWCOS/YJhNQfOMgrNyQH4jtQUZEGY=;
-  b=BGUeDph1U23QkQTBnaPkuNl0v+JccalubRxbMLvemuGe66GaeIxjzHRn
-   ayfWRg3jP7nPHt6ce9wSx5lVVbn4RzE6l/2Sk9Eb45ZsTwgVAcMxQut0J
-   W/Mu5RNrNgbyfz/se4VFJZzJdDf4k+OPNFgaII4Y6axHOORkK1kos+8d3
-   ar+YqJZYuq1h+kr7ZSpSqvf7IrfUaNLV9WSfMr6Av6f8ZsPR71CezckfO
-   HqOeCw2TshwQHtbdbmanl9dlhpRGRdoy0phRqaoob6MKQsHuqrY2GDSuS
-   6TJ6IwjGJvVA07Pdw/6y/WrleOT+JiNBUaytp0HyVV2TqmV2t1RB9xysU
-   w==;
-X-CSE-ConnectionGUID: Iek+8aIYRPevaOy0fnQpkA==
-X-CSE-MsgGUID: b2NVAAeXQXaxbSCHm32TRw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="31788097"
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="31788097"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 01:00:55 -0700
-X-CSE-ConnectionGUID: DsdRjitWTfWEEQUVozNKig==
-X-CSE-MsgGUID: o4noeIXIRUyz9okae8OMSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="28711709"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orviesa005.jf.intel.com with SMTP; 22 Apr 2024 01:00:51 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 22 Apr 2024 11:00:50 +0300
-Date: Mon, 22 Apr 2024 11:00:50 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 1/8] usb: typec: Handle retimers in typec_set_mode()
-Message-ID: <ZiYZMoZ7OYID32jj@kuha.fi.intel.com>
-References: <20240416-ucsi-glink-altmode-v1-0-890db00877ac@linaro.org>
- <20240416-ucsi-glink-altmode-v1-1-890db00877ac@linaro.org>
+	s=arc-20240116; t=1713773050; c=relaxed/simple;
+	bh=Ft0UmClN6RCBfY+eiYChyiMKhrK/KxVHCaG8g5v3cME=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mFlzRe5Kj41vVx+rXZeUuQsI8AQub8U/2UXjej2hfza1cM+9t1YKl6L2kqHePEMvIumLwwkTFEGWcxDFk9erpE80yI/ZEiZKvb4IqsMoNImX6h6q0rM4H1FNtapgD5a6mxLYXXVVFdqij20oOj1h37Hranyrbg+4klzxG4Ll6q0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=B4OMW+gZ; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso2348007a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1713773048; x=1714377848; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jxIY4mlELkDh2GdwIVzSWRDbRXxeN/G/HA7ttNCrEzA=;
+        b=B4OMW+gZxaQ/dZwItGhmDzVTO3m3EqoNNUhHerHfs3/jOyLbQYtCmAr8q4Bt6caBwl
+         gmK6CQe68TCPOmKbFMAXpOqJrpioIeatTOJTisbqYcT3qtRtfIhrZFLeuWBJ4nq9D9P6
+         234Ak5ikaONNvos3HBeKRxwPWs+nBcGUYdhLL2BhRyZiH2CJozP/8o5i5KL7lvECI6jd
+         MQ1JRJ70wYlG9jbP2mSRZsnLs6p94mdXrHW6afNjCDjjTkgjXfrUxyHym0oQK8w62oiu
+         zSQfoccaUmyD6AwI/hFgjNBY18mFY7An3BMEkExFFmQn1UN/giU95zW4ydWpCoLp0WnY
+         iiGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713773048; x=1714377848;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jxIY4mlELkDh2GdwIVzSWRDbRXxeN/G/HA7ttNCrEzA=;
+        b=MpvtBD9JafRdacF2at+NtYZAkiAk+QfrZgI7uzC3aHqrL56FitM4DFwPk/0mtR4Zux
+         hY3K5cKe0zoX0k3H2XM76HmdoKvorE76uufFpmQ5J3Gxjn7P+yYmp/O5cb3GtsBWM1U3
+         82/pFeM89uqNuNAdKKK3SYOOgvL9KQ+gLof3gEn1W5SIb6sOvCEDBO2ukZPjQo4nLoMY
+         ONxf/FzGrbW17LbORFjyKX7EpSXJcgs3SesiFoAGhW+Swh+ovBqq1+LTFjlQ9N0hczch
+         5JNQftipoNAXfClyo7AY4p4pkhFCrGyFZ68NNtoiogf87p5FDwvQ/Sxrq7Awy9aOpNf/
+         6NzA==
+X-Forwarded-Encrypted: i=1; AJvYcCWa2NLJHWQXX3RmnqmeFyeg29/F/swFzCevJG+nB4rqOzDXnRArRQUuhLjPEh2Ck+sX/W64m7qvHtZDx6iy3G5Ybna/90Q9veBF3qEN
+X-Gm-Message-State: AOJu0YzbgkKOjwI537AIpmy9RP7dcQdF/sRwz5zZNbAolR5cvdGT117N
+	CSvx3r2xxnfaYKtbN4QiqQY68krMIVmbXkWBUxLgAR+SskOA9yxmmXE7yCKbdDQ=
+X-Google-Smtp-Source: AGHT+IFL0Rf3zkoXQFjWYIOXV3r1BoXk390Ly+Mv2Fk8sW4e8qQRWGncvCiivj8SXzXosAJVSi3mow==
+X-Received: by 2002:a05:6a20:96db:b0:1a9:5e63:501b with SMTP id hq27-20020a056a2096db00b001a95e63501bmr7600090pzc.44.1713773047975;
+        Mon, 22 Apr 2024 01:04:07 -0700 (PDT)
+Received: from [10.3.43.196] ([61.213.176.14])
+        by smtp.gmail.com with ESMTPSA id t10-20020a170902e84a00b001e5a5ea5287sm7483531plg.208.2024.04.22.01.04.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 01:04:07 -0700 (PDT)
+Message-ID: <537ac244-74b2-42ad-97a7-475ec27f2134@bytedance.com>
+Date: Mon, 22 Apr 2024 16:04:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416-ucsi-glink-altmode-v1-1-890db00877ac@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Re: [PATCH v2 1/4] virtio_balloon: separate vm events into a
+ function
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, virtualization@lists.linux.dev
+Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+ akpm@linux-foundation.org
+References: <20240422074254.1440457-1-pizhenwei@bytedance.com>
+ <20240422074254.1440457-2-pizhenwei@bytedance.com>
+ <6a182645-1f7f-4b7d-a16a-36e9b1684c58@redhat.com>
+Content-Language: en-US
+From: zhenwei pi <pizhenwei@bytedance.com>
+In-Reply-To: <6a182645-1f7f-4b7d-a16a-36e9b1684c58@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 16, 2024 at 05:20:50AM +0300, Dmitry Baryshkov wrote:
-> Make typec_set_mode() also handle retimers in addition to muxes. Setting
-> the USB mode requires retimers to be configured in addition to just
-> switching the mux configuration.
-> 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-> ---
->  drivers/usb/typec/class.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+On 4/22/24 15:47, David Hildenbrand wrote:
+> On 22.04.24 09:42, zhenwei pi wrote:
+>> All the VM events related statistics have dependence on
+>> 'CONFIG_VM_EVENT_COUNTERS', once any stack variable is required by any
+>> VM events in future, we would have codes like:
+>>   #ifdef CONFIG_VM_EVENT_COUNTERS
+>>        unsigned long foo;
+>>   #endif
+>>        ...
+>>   #ifdef CONFIG_VM_EVENT_COUNTERS
+>>        foo = events[XXX] + events[YYY];
+>>        update_stat(vb, idx++, VIRTIO_BALLOON_S_XXX, foo);
+>>   #endif
+>>
+>> Separate vm events into a single function, also remove
 > 
-> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-> index 9610e647a8d4..28d395535bd1 100644
-> --- a/drivers/usb/typec/class.c
-> +++ b/drivers/usb/typec/class.c
-> @@ -2095,14 +2095,21 @@ EXPORT_SYMBOL_GPL(typec_get_orientation);
->   * @mode: Accessory Mode, USB Operation or Safe State
->   *
->   * Configure @port for Accessory Mode @mode. This function will configure the
-> - * muxes needed for @mode.
-> + * muxes and retimeres needed for @mode.
->   */
->  int typec_set_mode(struct typec_port *port, int mode)
->  {
-> +	struct typec_retimer_state retimer_state = { };
->  	struct typec_mux_state state = { };
-> +	int ret;
->  
-> +	retimer_state.mode = mode;
->  	state.mode = mode;
->  
-> +	ret = typec_retimer_set(port->retimer, &retimer_state);
-> +	if (ret)
-> +		return ret;
-> +
->  	return typec_mux_set(port->mux, &state);
->  }
->  EXPORT_SYMBOL_GPL(typec_set_mode);
+> Why not simply use __maybe_unused for that variable?
 > 
-> -- 
-> 2.39.2
+
+1>
+static unsigned int update_balloon_stats()
+{
+     unsigned __maybe_unused long foo;
+
+     ...
+#ifdef CONFIG_VM_EVENT_COUNTERS
+     foo = events[XXX] + events[YYY];
+     update_stat(vb, idx++, VIRTIO_BALLOON_S_XXX, foo);
+#endif
+}
+
+2>
+static inline unsigned int update_balloon_vm_stats()
+{
+#ifdef CONFIG_VM_EVENT_COUNTERS
+     unsigned long foo;
+
+     foo = events[XXX] + events[YYY];
+     update_stat(vb, idx++, VIRTIO_BALLOON_S_XXX, foo);
+#endif
+}
+
+ From the point of my view, I don't need to compile code in my brain 
+when reading codes for case 2. :)
 
 -- 
-heikki
+zhenwei pi
 
