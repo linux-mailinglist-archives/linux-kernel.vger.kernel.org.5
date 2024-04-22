@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-154252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C9368AD9EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:01:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9899E8AD9ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:01:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25DA71C216D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:01:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C84721C216E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:01:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381C815B106;
-	Mon, 22 Apr 2024 23:55:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CCE15B133;
+	Mon, 22 Apr 2024 23:55:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fBYiYmKh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i0ffp71R"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63151155729;
-	Mon, 22 Apr 2024 23:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53AD15B114;
+	Mon, 22 Apr 2024 23:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830129; cv=none; b=AOYeEjW9yR/0B445S03JW/tjPGYG/Xhvrs1qGNgefJswv7x6rTYpJCJMipIx9Ehquc8w9spDkkL28+ES1XgLB1azLVYMjr3MJv1P7p9rRuhEEwNFVnaIfFjLYuBYNMC6cES7sQoSoK79FnS9QwWkXc2tXUpJDPuw86j1xA5G+v0=
+	t=1713830130; cv=none; b=WuFL0oT1lBmXjeHYI4IaKyVshEnUQPv8p0ezIJkDTyCbbEIEieMWkvbPjW1uUYiFmsGdqfXFNvHuCkIqrCYvnK+cgDgJ54d98SDjLvTtMYNkeEFL4KSXC9M/gOu4f2wsD1BjHi1Sb/G5JgFJcXz7gXTvZMkL1U1PBpsac/2KNIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830129; c=relaxed/simple;
-	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
+	s=arc-20240116; t=1713830130; c=relaxed/simple;
+	bh=2ohdiVvEIOrEQz0rntP/pWeXmB6943ltgofx1Ntyu8Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=apacJ/ffSuFv+4F4L2EG4wMklnoXLadFq7rXpGzqkaQaphxaxECCVp/LooR5u2DiJv0gPkOLXkcxv7zeF0EPGdcJb1Ykj8ABLj92Hrs+nQfRjmNR8d3cOAkVlMFCIS23MSO6+62cE1C5R8o8kgeapSYgMbWP4MgWGeIA/merqP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fBYiYmKh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9F06C32786;
-	Mon, 22 Apr 2024 23:55:27 +0000 (UTC)
+	 MIME-Version; b=U0bsodOxaghIUJsA/wVUKniMuLJ6d89IA8/d5juuItZnB2SSFfh4GJa2DlVyYkcxYFpgFQi5ypyaygYdsB3IspvYKFE5+jDnJQjxUWGzBqPsn0modfs8UwQ1C98XONhEaVAY/cztmWiU0ADOf/QpiwyL2UT5pFbU5uQxQxV63vM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i0ffp71R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61741C113CC;
+	Mon, 22 Apr 2024 23:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830128;
-	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
+	s=k20201202; t=1713830130;
+	bh=2ohdiVvEIOrEQz0rntP/pWeXmB6943ltgofx1Ntyu8Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fBYiYmKh9XOJdH1IYnQ/hn2AIXI9h7IAcyUprfPSH9GAOtxqKim+ZQo5I4hjtndhx
-	 W9P/zCjJS+f/DwOIaCgtEXpiYCekwNwrAdAqk8F8FFjzs3IScRQiua/BxiuyAIPqos
-	 YloxR1OsYPjVlfr760kfqpzCUZq7wdEfuGteAizrgSuJZZJgc1cod+xjpKpU15YNV7
-	 gRsQ3FyNWoQg73FpqU/0LxRVmDDAy1xA28v32rc75YhUXSDx1q6oYQ+P6CYhABNIXe
-	 7BFdyJ/y8YR+Sads3FY9s3qAP8HnpHaPXhgukhAg3tTx/Nr5Lcm3LP3H9wKcw5H7+5
-	 BKFZh3ct5UNaw==
+	b=i0ffp71RFJZQ4OOQLlfsW7SmYI5Z3ABjlDqoa9fvyR8JEWKwAqlM7XjKs26occWKK
+	 KBNtnriWNYws6+4nPwz0WAIKzTfur3TpnTaUerVn4TIjUQVjXPySimpBYoFB6Cp171
+	 sQhuyu2Xx7sQcMZKeaKeOzWhJLu7ctfDN+zgb5uJA3tpW4DcniUN5h7KbvTaJgHkxp
+	 OTGZ3JPeIaa1JBfiMPqm4vXJYBy/92lqgs4fUW6BhiPcrFf+qIlmqJ1MrJupw7BQnj
+	 iYLsL0Wgmp8HzMTIJ04kYnRZw3rT2fsZVxON4oaM6QMFtjn2CTG2xsYX9q2MGrUcgW
+	 MfyeL5BxeUMJg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: John Stultz <jstultz@google.com>,
-	Lee Jones <joneslee@google.com>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
+Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Michael Kelley <mhklinux@outlook.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Wei Liu <wei.liu@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	shuah@kernel.org,
-	nathan@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.8 34/43] selftests: timers: Fix valid-adjtimex signed left-shift undefined behavior
-Date: Mon, 22 Apr 2024 19:14:20 -0400
-Message-ID: <20240422231521.1592991-34-sashal@kernel.org>
+	kys@microsoft.com,
+	haiyangz@microsoft.com,
+	decui@microsoft.com,
+	linux-hyperv@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 35/43] Drivers: hv: vmbus: Leak pages if set_memory_encrypted() fails
+Date: Mon, 22 Apr 2024 19:14:21 -0400
+Message-ID: <20240422231521.1592991-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231521.1592991-1-sashal@kernel.org>
 References: <20240422231521.1592991-1-sashal@kernel.org>
@@ -69,136 +70,81 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.7
 Content-Transfer-Encoding: 8bit
 
-From: John Stultz <jstultz@google.com>
+From: Rick Edgecombe <rick.p.edgecombe@intel.com>
 
-[ Upstream commit 076361362122a6d8a4c45f172ced5576b2d4a50d ]
+[ Upstream commit 03f5a999adba062456c8c818a683beb1b498983a ]
 
-The struct adjtimex freq field takes a signed value who's units are in
-shifted (<<16) parts-per-million.
+In CoCo VMs it is possible for the untrusted host to cause
+set_memory_encrypted() or set_memory_decrypted() to fail such that an
+error is returned and the resulting memory is shared. Callers need to
+take care to handle these errors to avoid returning decrypted (shared)
+memory to the page allocator, which could lead to functional or security
+issues.
 
-Unfortunately for negative adjustments, the straightforward use of:
+VMBus code could free decrypted pages if set_memory_encrypted()/decrypted()
+fails. Leak the pages if this happens.
 
-  freq = ppm << 16 trips undefined behavior warnings with clang:
-
-valid-adjtimex.c:66:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
-        -499<<16,
-        ~~~~^
-valid-adjtimex.c:67:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
-        -450<<16,
-        ~~~~^
-.
-
-Fix it by using a multiply by (1 << 16) instead of shifting negative values
-in the valid-adjtimex test case. Align the values for better readability.
-
-Reported-by: Lee Jones <joneslee@google.com>
-Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Signed-off-by: John Stultz <jstultz@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Link: https://lore.kernel.org/r/20240409202222.2830476-1-jstultz@google.com
-Link: https://lore.kernel.org/lkml/0c6d4f0d-2064-4444-986b-1d1ed782135f@collabora.com/
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Link: https://lore.kernel.org/r/20240311161558.1310-2-mhklinux@outlook.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Message-ID: <20240311161558.1310-2-mhklinux@outlook.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../testing/selftests/timers/valid-adjtimex.c | 73 +++++++++----------
- 1 file changed, 36 insertions(+), 37 deletions(-)
+ drivers/hv/connection.c | 29 ++++++++++++++++++++++-------
+ 1 file changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/timers/valid-adjtimex.c b/tools/testing/selftests/timers/valid-adjtimex.c
-index 48b9a803235a8..d13ebde203221 100644
---- a/tools/testing/selftests/timers/valid-adjtimex.c
-+++ b/tools/testing/selftests/timers/valid-adjtimex.c
-@@ -21,9 +21,6 @@
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *   GNU General Public License for more details.
-  */
--
--
--
- #include <stdio.h>
- #include <stdlib.h>
- #include <time.h>
-@@ -62,45 +59,47 @@ int clear_time_state(void)
- #define NUM_FREQ_OUTOFRANGE 4
- #define NUM_FREQ_INVALID 2
+diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
+index 3cabeeabb1cac..f001ae880e1db 100644
+--- a/drivers/hv/connection.c
++++ b/drivers/hv/connection.c
+@@ -237,8 +237,17 @@ int vmbus_connect(void)
+ 				vmbus_connection.monitor_pages[0], 1);
+ 	ret |= set_memory_decrypted((unsigned long)
+ 				vmbus_connection.monitor_pages[1], 1);
+-	if (ret)
++	if (ret) {
++		/*
++		 * If set_memory_decrypted() fails, the encryption state
++		 * of the memory is unknown. So leak the memory instead
++		 * of risking returning decrypted memory to the free list.
++		 * For simplicity, always handle both pages the same.
++		 */
++		vmbus_connection.monitor_pages[0] = NULL;
++		vmbus_connection.monitor_pages[1] = NULL;
+ 		goto cleanup;
++	}
  
-+#define SHIFTED_PPM (1 << 16)
-+
- long valid_freq[NUM_FREQ_VALID] = {
--	-499<<16,
--	-450<<16,
--	-400<<16,
--	-350<<16,
--	-300<<16,
--	-250<<16,
--	-200<<16,
--	-150<<16,
--	-100<<16,
--	-75<<16,
--	-50<<16,
--	-25<<16,
--	-10<<16,
--	-5<<16,
--	-1<<16,
-+	 -499 * SHIFTED_PPM,
-+	 -450 * SHIFTED_PPM,
-+	 -400 * SHIFTED_PPM,
-+	 -350 * SHIFTED_PPM,
-+	 -300 * SHIFTED_PPM,
-+	 -250 * SHIFTED_PPM,
-+	 -200 * SHIFTED_PPM,
-+	 -150 * SHIFTED_PPM,
-+	 -100 * SHIFTED_PPM,
-+	  -75 * SHIFTED_PPM,
-+	  -50 * SHIFTED_PPM,
-+	  -25 * SHIFTED_PPM,
-+	  -10 * SHIFTED_PPM,
-+	   -5 * SHIFTED_PPM,
-+	   -1 * SHIFTED_PPM,
- 	-1000,
--	1<<16,
--	5<<16,
--	10<<16,
--	25<<16,
--	50<<16,
--	75<<16,
--	100<<16,
--	150<<16,
--	200<<16,
--	250<<16,
--	300<<16,
--	350<<16,
--	400<<16,
--	450<<16,
--	499<<16,
-+	    1 * SHIFTED_PPM,
-+	    5 * SHIFTED_PPM,
-+	   10 * SHIFTED_PPM,
-+	   25 * SHIFTED_PPM,
-+	   50 * SHIFTED_PPM,
-+	   75 * SHIFTED_PPM,
-+	  100 * SHIFTED_PPM,
-+	  150 * SHIFTED_PPM,
-+	  200 * SHIFTED_PPM,
-+	  250 * SHIFTED_PPM,
-+	  300 * SHIFTED_PPM,
-+	  350 * SHIFTED_PPM,
-+	  400 * SHIFTED_PPM,
-+	  450 * SHIFTED_PPM,
-+	  499 * SHIFTED_PPM,
- };
+ 	/*
+ 	 * Set_memory_decrypted() will change the memory contents if
+@@ -337,13 +346,19 @@ void vmbus_disconnect(void)
+ 		vmbus_connection.int_page = NULL;
+ 	}
  
- long outofrange_freq[NUM_FREQ_OUTOFRANGE] = {
--	-1000<<16,
--	-550<<16,
--	550<<16,
--	1000<<16,
-+	-1000 * SHIFTED_PPM,
-+	 -550 * SHIFTED_PPM,
-+	  550 * SHIFTED_PPM,
-+	 1000 * SHIFTED_PPM,
- };
+-	set_memory_encrypted((unsigned long)vmbus_connection.monitor_pages[0], 1);
+-	set_memory_encrypted((unsigned long)vmbus_connection.monitor_pages[1], 1);
++	if (vmbus_connection.monitor_pages[0]) {
++		if (!set_memory_encrypted(
++			(unsigned long)vmbus_connection.monitor_pages[0], 1))
++			hv_free_hyperv_page(vmbus_connection.monitor_pages[0]);
++		vmbus_connection.monitor_pages[0] = NULL;
++	}
  
- #define LONG_MAX (~0UL>>1)
+-	hv_free_hyperv_page(vmbus_connection.monitor_pages[0]);
+-	hv_free_hyperv_page(vmbus_connection.monitor_pages[1]);
+-	vmbus_connection.monitor_pages[0] = NULL;
+-	vmbus_connection.monitor_pages[1] = NULL;
++	if (vmbus_connection.monitor_pages[1]) {
++		if (!set_memory_encrypted(
++			(unsigned long)vmbus_connection.monitor_pages[1], 1))
++			hv_free_hyperv_page(vmbus_connection.monitor_pages[1]);
++		vmbus_connection.monitor_pages[1] = NULL;
++	}
+ }
+ 
+ /*
 -- 
 2.43.0
 
