@@ -1,207 +1,110 @@
-Return-Path: <linux-kernel+bounces-153648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E558AD11F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:42:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC8E18AD120
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:42:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ECBA1F230D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:42:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A5AD1C21D23
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:42:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4559D1534E2;
-	Mon, 22 Apr 2024 15:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="PPYY8eI1"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C50E153578;
+	Mon, 22 Apr 2024 15:42:36 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0792C1534EB
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BC7153513
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:42:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713800553; cv=none; b=ZpqXNJYo+Rb6ua1BLBaI/brn6ZteG1TCFDFBkTambf19Hvkv/ArcwLuMzaHcwX1lEo79WvwJkLDOp0TyHvvH2VIGa+q3FAzDSULCi2yLOoswAaRa62mNmTmgKB8RvkNbVqfQFXAM0kwgywRzOIoqOA9UY5broKR/CfeTjTjsdjc=
+	t=1713800556; cv=none; b=FfkW50Z+D1jXfJEDP0ZCtOBnN4yOeSCzl9QCMgw9++noSIkQ2LfbUS2ao8gZB1D9VOdIG1SFfLmhctyXWJd0r+MKw77NyTen6TeoFH4MWD29L23W5l5YClhtTaw5yi5lyTR2owbwgWTkJcrPTqwVylWadHgLbBD9Gv66vZegpT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713800553; c=relaxed/simple;
-	bh=tXjSwVBeGb/Eb0FtFwqpwFwRnMr6GKOhM4c8ow2qQ9Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hRyBg2VgscKLavQaWsWixHN67ETipLRr64qnUiq3abEjOaJcuaKHSDslxvirPPnFsGDzAMp+M74q979cTjWBiyU+3gMIeLLqfy1DTR+z96uZ0fGNzRyuCw/9Qoi7r8lfqjstH5BRjkSpLI2raHzAdzyWC0paYObtgRsUGZ5CHnw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PPYY8eI1; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-436ed871225so538951cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:42:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713800550; x=1714405350; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5LWWbUhCinHZ4pRRDKlPFXeIrr7YidOY2PqyCtNwxyA=;
-        b=PPYY8eI1S3O8scbt6x/Zx50IcR/bxB1i8qTziTZ2FJwijamJTwQNKWJSkXCi2HglH0
-         Lsk5sAAXOxKDVhZ/cGjPpGv3iIMbDYjQXsKziJX5ZySsBwe/wpIddI1L8qovi63gJpLQ
-         EmC9eJXp+yVA8SVwth+RhQNDuFZqWMHU5MiYpiv391y8mGeEgmJSAibPA6CRHd+DQxJY
-         zA0Thf1llvmHvZB2gXZRKGnwTG6Tq37zby+kd71UYqG4C2f56PujYbsln1b4tzR1ojBt
-         VhKREBjN/LeepQpNl8RFpoobhiW7i6K7JH8q+sramtnacV1xK/1X6V3pVq1C2dsePtAn
-         oXCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713800550; x=1714405350;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5LWWbUhCinHZ4pRRDKlPFXeIrr7YidOY2PqyCtNwxyA=;
-        b=XzC11KCPPAf2JlbBdSZYE44gCff7+aDUqxSWpz53ctqH+kkYzlTekR2kM46EHHH1j7
-         ld5fwI4v3Ij441AnmREIa4rhQ48h8sgEtbenD5sfZL2/e22VGs+W6LCf1gY2lX4dkUHE
-         ofNPHtxgYSZpJFDImnvRfrQPQmDn2waAoruF+ItB+fJDvwmROQCj/Mif8Do4AARXTATC
-         HroNddjDC4gfhvYBAFzfWSaLJ7H/vFimbtWpyombKQ+QUculR0z6ps4Nqy9UmTfMgk30
-         lB3AM1zVTIzyV6JUkyWUGrm0cMz3e6s+sFIiGbE8DCn2CsMJk/oNyZKUyyLiwhodXm6U
-         6Wow==
-X-Forwarded-Encrypted: i=1; AJvYcCUwcqx43mNfIgf5ZNOufHmkd7Egoe6oN79vtsDiMruzck4/ZYHiMeeMFd1x6p1zBVcJmnH/q5LgL0mMVm3ciIQfI2+VAWD0CYFM0GRV
-X-Gm-Message-State: AOJu0YwxdZB1daLeryZmRBeXydTLMrZwUEhQLhW9D8sB6jAkrp5p2JCz
-	Fmul+3QGGPPzUzNCbSxrGR/6iduIECtSJ6+iOhpu08n/a5RNPWTmOL+kAPa73fR94VEsVQCt7MP
-	hXFUIOX+2TCrbUTQ4xq0PibZm1mLXPBtaaWB3
-X-Google-Smtp-Source: AGHT+IGqGSjYwcJiVDgalrNn9TAUZdU5fgYKsr64wzHajwJV8/cKH1NAZTOsWkwmjf3FzaLTTq7w5Jmo5xwj/l8huMk=
-X-Received: by 2002:ac8:5885:0:b0:437:c4ae:f3b4 with SMTP id
- t5-20020ac85885000000b00437c4aef3b4mr542257qta.26.1713800549734; Mon, 22 Apr
- 2024 08:42:29 -0700 (PDT)
+	s=arc-20240116; t=1713800556; c=relaxed/simple;
+	bh=1ZQOHptYXX3HrTQPw5/AkT23LKEv6avumWOtVNiEBQg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rEhiO3IxC+zA1xFxN7oD9+kzb37AI5pCctcKtvc+PeuySiwxYet64bOxSriR+cSzsiBVQbhe5xTPS0Y2iwdbSl3dQ3BQpOdJnedbSPHBDL3ZN6GIv9Icsd84md6G6nfq61WcBQcvquKVcmTWYw/qJyL0lXER+UFMB6I+VBngwpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ryvoD-0005wq-Fe; Mon, 22 Apr 2024 17:42:21 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ryvoC-00DiZl-EC; Mon, 22 Apr 2024 17:42:20 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ryvoC-006AzV-17;
+	Mon, 22 Apr 2024 17:42:20 +0200
+Date: Mon, 22 Apr 2024 17:42:20 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: Dong Aisheng <aisheng.dong@nxp.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, imx@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	NXP Linux Team <linux-imx@nxp.com>, linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] i2c: lpi2c: Avoid calling clk_get_rate during
+ transfer
+Message-ID: <7lcpupsaepqzxwovzvddtvrdr3f3xaxedxv5nfg4ax73gazu7t@mbc6ajq5suxh>
+References: <20240422113629.1629891-1-alexander.stein@ew.tq-group.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403164818.3431325-1-irogers@google.com> <CAGa8GX5MhP3FUhafN5QivHaE3Fg+p5MgvTq3SW6MQy4NeZ1sYQ@mail.gmail.com>
-In-Reply-To: <CAGa8GX5MhP3FUhafN5QivHaE3Fg+p5MgvTq3SW6MQy4NeZ1sYQ@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 22 Apr 2024 08:42:17 -0700
-Message-ID: <CAP-5=fU_EvN-bSjwbWMP8R+WyG-jeAQ1p4ziyejy2FCH0kgYig@mail.gmail.com>
-Subject: Re: [PATCH v1] perf test: Be more tolerant of metricgroup failures
-To: Veronika Molnarova <vmolnaro@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="57xlb4vbtmvwwuxp"
+Content-Disposition: inline
+In-Reply-To: <20240422113629.1629891-1-alexander.stein@ew.tq-group.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+
+
+--57xlb4vbtmvwwuxp
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 22, 2024 at 4:51=E2=80=AFAM Veronika Molnarova <vmolnaro@redhat=
-com> wrote:
->
-> Hi Ian,
->
-> On Wed, Apr 3, 2024 at 6:48=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
->>
->> Previously "set -e" meant any non-zero exit code from perf stat would
->> cause a test failure. As a non-zero exit happens when there aren't
->> sufficient permissions, check for this case and make the exit code
->> 2/skip for it.
->>
->> Signed-off-by: Ian Rogers <irogers@google.com>
->> ---
->>  .../perf/tests/shell/stat_all_metricgroups.sh | 28 +++++++++++++++----
->>  1 file changed, 22 insertions(+), 6 deletions(-)
->>
->> diff --git a/tools/perf/tests/shell/stat_all_metricgroups.sh b/tools/per=
-f/tests/shell/stat_all_metricgroups.sh
->> index 55ef9c9ded2d..d6db192b9f18 100755
->> --- a/tools/perf/tests/shell/stat_all_metricgroups.sh
->> +++ b/tools/perf/tests/shell/stat_all_metricgroups.sh
->> @@ -1,9 +1,7 @@
->> -#!/bin/sh
->> +#!/bin/bash
->>  # perf all metricgroups test
->>  # SPDX-License-Identifier: GPL-2.0
->>
->> -set -e
->> -
->>  ParanoidAndNotRoot()
->>  {
->>    [ "$(id -u)" !=3D 0 ] && [ "$(cat /proc/sys/kernel/perf_event_paranoi=
-d)" -gt $1 ]
->> @@ -14,11 +12,29 @@ if ParanoidAndNotRoot 0
->>  then
->>    system_wide_flag=3D""
->>  fi
->> -
->> +err=3D0
->>  for m in $(perf list --raw-dump metricgroups)
->>  do
->>    echo "Testing $m"
->> -  perf stat -M "$m" $system_wide_flag sleep 0.01
->> +  result=3D$(perf stat -M "$m" $system_wide_flag sleep 0.01 2>&1)
->> +  result_err=3D$?
->> +  if [[ $result_err -gt 0 ]]
->> +  then
->> +    if [[ "$result" =3D~ \
->> +          "Access to performance monitoring and observability operation=
-s is limited" ]]
->> +    then
->> +      echo "Permission failure"
->> +      echo $result
->> +      if [[ $err -eq 0 ]]
->> +      then
->> +        err=3D2 # Skip
->> +      fi
->> +    else
->> +      echo "Metric group $m failed"
->> +      echo $result
->> +      err=3D1 # Fail
->> +    fi
->> +  fi
->>  done
->>
->> -exit 0
->> +exit $err
->> --
->> 2.44.0.478.gd926399ef9-goog
->>
->>
->
-> The patch looks good and thanks for taking care of it.
->
-> Just wanted to check what is the desired outcome for metric groups
-> with events that are invalid in per-thread mode causing the test to fail.
->
-> ```
-> $ ./stat_all_metricgroups.sh
-> Testing smi
-> Metric group smi failed
-> Error: Invalid event (msr/smi/u) in per-thread mode, enable system wide w=
-ith '-a'.
-> ```
->
-> Wouldn't it be better if in these cases the test would result in skip ins=
-tead of fail?
+Hello Alexander,
 
-Hi Veronika,
+On Mon, Apr 22, 2024 at 01:36:29PM +0200, Alexander Stein wrote:
+> The dependency from v2 has already been merged in commit b0cde62e4c548
+> ("clk: Add a devm variant of clk_rate_exclusive_get()").
 
-I agree that fail isn't best here. I'm wondering:
+Note that you might also need 7f1dd39aedfccf60772328c5b88d56dbd39954c3
+which is part of v6.9-rc5.
 
- - why doesn't msr/smi/ support per-thread mode? Can't we save/restore
-the count on a context switch? The implementation is here:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/arch/x86/events/msr.c?h=3Dperf-tools-next#n234
-There's clearly something going on as pperf appears to have other restricti=
-ons:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/arch/x86/events/msr.c?h=3Dperf-tools-next#n115
-I'm wondering if aggregation is working right if these counters are
-more than per hyperthread (I'm guessing why the restrictions exist).
+Best regards
+Uwe
 
- - the tool error message is doing pretty good. In the test I guess we
-can spot the per-thread error and turn the fail to a skip. It's a
-shame to bucket things as skip, but it seems easier than listing
-metrics in the test or spotting particular events.
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-I can do a v2 to add this.
+--57xlb4vbtmvwwuxp
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Ian
+-----BEGIN PGP SIGNATURE-----
 
-> Thanks,
-> Veronika
->
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYmhVsACgkQj4D7WH0S
+/k55lwf/cekpfnj5lv5y3h8dke+TMq1Scw8/act4h/I4gUCa1ZSMsiI6ilU+Kd+Z
+ht4Psn95hw9CtcK2NijLd2MZTV4angPZxGjYAaSddPGTlLQ2+tH1YWqdc+n+S/b+
+SGuKmSniD/6wMVUFqJfwLqcIlrCytNPwwj1V+LjUJud8ciuDo8QMmBekhtAyvk2b
+rHwSYH2zOn8QNN1P+WLMz2C7SRzdtQrzbUqDlw/y+Yczn7YqCapT+oeJWWDeDfOe
+SGvzQtgK81DXDlVzanrHqUHSylo7+w2PR6Gmb7nnGoDVenfiQx4OzpjZ/0vlQ1C6
+8KF2nGMS0ZbDl+wdgDUgR/LxyOtjig==
+=zY54
+-----END PGP SIGNATURE-----
+
+--57xlb4vbtmvwwuxp--
 
