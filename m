@@ -1,289 +1,294 @@
-Return-Path: <linux-kernel+bounces-153568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D10F8ACFBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:43:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55CB48ACF9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:40:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 011101F216DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:43:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B03528489F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31053152174;
-	Mon, 22 Apr 2024 14:41:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4549152181;
+	Mon, 22 Apr 2024 14:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="MFIdc6q2";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="WT1DGBga"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hCQ73Vhb"
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4027D152DFB;
-	Mon, 22 Apr 2024 14:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713796862; cv=fail; b=VeqGijNh+5aSXgaavtiNj4I6+YNeCtKB78tBfLyKFdiKuzVAey6BHxvfXEVkKrKSgdiRp59sbWW+HMqEEATZgO9/vcRibZKW/sabNFbHhu/veIlPBMzja234hcqmbjdPEWXSlu1e5lgA+K5nfaEXpxrVj+5fRGMPXRUKUMEhwtc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713796862; c=relaxed/simple;
-	bh=C3S5CpYzbTFYSyscUzb5VFJmE83nZ7++8K27ay9153Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=H4AHr6QNtvxzl/eGLcOIp6cM8HwkFB+1Vtrj0ULSSbjbWHYYBdxZY57bDIZLTpnBXi9jZgn/esJ4rVoxRsx9mPADSqfykCTVB8VwXA+kZv0gLGrGPC3Fv+zyybAZhgiYsvcy+BOLCXWW/VSsDEOWSNj9R7LEwv1/j5NLQdoOIyg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=MFIdc6q2; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=WT1DGBga; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43MDXxpD005865;
-	Mon, 22 Apr 2024 14:40:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2023-11-20; bh=49ljf2saGMeHE+yHQnzEON1DLcaRD15VYQp+BpxZ63M=;
- b=MFIdc6q2PHY5/sYhZdluCdul0D1yjzpoFil0+T8CSUaWDUtG8kbcaGivOpREPK6LTW8E
- iZNjAVAl4UjHmR4n/A4+7DMiF4DiG3+xqGvTvrwSeIY+FsyA5rk+6SXp6HxbG5z58T6+
- 4FKaq3vo3MY2spx0A9MQqzCfvkxSUQIqwZdziavAY7Y7F24NpwGqRcWTr8yP0W60VNZe
- pSc8PaiHtOglyxNDpiyHvEXC10Ooj4rV0V2QrH4jfFbZ+1hxR6Mebah7fOydyl0gxYZ7
- 4tpJrg+mwcFHKf+A5EJVGl0EB3p4Xkai6N6g1pQRJ/SsALtuc/suayFWmH4KtYMIb1zd PA== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xm44ettkt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 22 Apr 2024 14:40:32 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43MDtRdq020139;
-	Mon, 22 Apr 2024 14:40:31 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xm45c7wtp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 22 Apr 2024 14:40:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GJNymi9JuaHTNTbg+QCS4+J3gmHc+YFsQ56IC+BKtgT74EToW5o7QZA1OCoibBbhEqKFtq6n3coQmqk/2ZiayohemSsOGsrWBfNmVFYQbcbjEXa8faE4IYx0C/BOa392OYl0X0vqmv4RBbpoqNoJuM1mdT6Xl+WXWfzENoVSt6YbBLkji+nMfS/N2lYhgjPYSyL/Dh+3d4k/0WGL7lKOxUoz/rg2EnoRycD9bW4GQGxfjUGbL+GrXKMN7QfbuRjJtke0OzHmmZaArrxFikmIcWuQZkRVwamKpC2Be/4RgCaYJerrrUEkfblELeJskNgm38NAM7lp+k3+nFcrlYaVDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=49ljf2saGMeHE+yHQnzEON1DLcaRD15VYQp+BpxZ63M=;
- b=Dg9jZSuUuLHOSbVBHP+TlwlNuZnJK6IR3NGvjHv9dSP8xc4PSKJHoIQ5dAEggyZcxeWB4lEjZPi08BttnOCaM2hbKQM5hdl8iEXu8Lid40HqKRuG8dvEXGAT1kPt9+DMRwOEnljsaS6D8W5At9VaubIoCdMwNcGhhI+fwBdXEHy3RVWcnJ/AMbCqZIW+gG5H7X+nyWuztjXpT9QPXi4Zvgor0s2GKmumha6AxP7ZFBVSG0g3BzAMvJ0QVhpgQR6FI06id1/M/49YlmyyMEFsKTNKUJkWCoTS8NUmvtOJleiEf2fjeeksxh0YywRjess8r11/X8Pzw+WJPwG48BLT/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7656C1474B9
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 14:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713796801; cv=none; b=SR7GwfPy+ncqoNTQBvABjfKygasSD2Xad3Wn/hUiF8+YpQoo33ypOcM//ZUoQ3oHiz19L2W72Xxc7XqYQIUudx+QqVLfBSIrS4U1kjTp7Wz/5mvY5JNqKgfSXNyp4hiZKP3QJrh91x4yIIdREI4xy7m7w2bRcxjNWblAmMo6usk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713796801; c=relaxed/simple;
+	bh=CmrfAGE8+PWDqHNf4q0R+xV3Sihym/OZTAep1aho/Tk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=af6zkIWuAzEufuxyNCGs937DOg26+qYBjiFquFeQGcskegq5wZcKvAQiEgOxqJL5i3yxSdsyvVMWHV+RHwfX9xBYGrpeDxodf1hv6RdrpivGntyuKkicDsLjxx4Z3TU1Er/FbiVGSMqTk71T+tFZhl+klZ8l/aDvbysF9nbMswY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hCQ73Vhb; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-69b24162dd6so20729586d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:39:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=49ljf2saGMeHE+yHQnzEON1DLcaRD15VYQp+BpxZ63M=;
- b=WT1DGBga20bmArTahxr18MAQyUzb/PMHIXc3mmznjWdZM95rp5kEKW0Z7uaaTXkDVjlJwRh3nDbNYs2tlOKtntkXE6V6nfTHabN3CY62OQXsgJ4nrmACXeWa3RLb/vQzPBb6ougqvrUwGEuQKsiFo9Pz/7odeHru7UEMHTGzGvY=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by DS7PR10MB5039.namprd10.prod.outlook.com (2603:10b6:5:3a6::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Mon, 22 Apr
- 2024 14:40:28 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324%4]) with mapi id 15.20.7472.044; Mon, 22 Apr 2024
- 14:40:28 +0000
-From: John Garry <john.g.garry@oracle.com>
-To: axboe@kernel.dk, brauner@kernel.org, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, akpm@linux-foundation.org,
-        willy@infradead.org, dchinner@redhat.com, tytso@mit.edu, hch@lst.de,
-        martin.petersen@oracle.com, nilay@linux.ibm.com, ritesh.list@gmail.com,
-        mcgrof@kernel.org
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, ojaswin@linux.ibm.com, p.raghav@samsung.com,
-        jbongio@google.com, okiselev@amazon.com,
-        John Garry <john.g.garry@oracle.com>
-Subject: [PATCH RFC 7/7] fs: xfs: Enable buffered atomic writes
-Date: Mon, 22 Apr 2024 14:39:23 +0000
-Message-Id: <20240422143923.3927601-8-john.g.garry@oracle.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20240422143923.3927601-1-john.g.garry@oracle.com>
-References: <20240422143923.3927601-1-john.g.garry@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BLAPR03CA0150.namprd03.prod.outlook.com
- (2603:10b6:208:32e::35) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        d=chromium.org; s=google; t=1713796798; x=1714401598; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lO7+CAKZ03CjsGbLxspLPlTA+srzrioL1UHFdc2MiwY=;
+        b=hCQ73Vhb3CjsyV11UZA39MybVrUw45TNdjAK7OM1e/c1neQA1/23A/+Sx7ITNK1GTx
+         H6jm1XwAVWbe1C4BGpGApfxTSNV3rsehteWHIgqYcxx9df8DPLQNHZjTcd9MPSxPqFqj
+         jqVjROez7AcRIRn6VkP2dqar0/FTL5O7rH1ZY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713796798; x=1714401598;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lO7+CAKZ03CjsGbLxspLPlTA+srzrioL1UHFdc2MiwY=;
+        b=MNWCYiMXtlopKu8aDxkKryUm1qqY04deZgz+61QeABawAYtYbCTrjnfFD92wfbVZ1m
+         2FBNtt/5hIjqfRq+ozx5bLo2cIx++DkK2INz64ipeNF7jyrgk0l2E+RRnUIZNMiUYSq4
+         5XUWNv9CgipItP1S4MiCYIAJ1iVZ1caIEejYslwuME6+nctOtoa+kFhpbRvXt+7nStH1
+         9egFIoEMXK6wa0mQ2/dA0EGYZuqI2APpUEkMOYvfR5mnKE28IsmP9X8BNbyZsNnstoHT
+         5IGp04ktr8zs4Z5+sU63EG5LYJzVkwT25QIfvCLxreovRTXUvZiVLKrH/NoQWdTsLO84
+         63qQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX6GA/c6kWiFAEOu4FqA8aqk9k4NGHkCPZMC5RpCbZgdH/M/SRDPRLkVEe+tZdN2ncyRonTXA7M8uhfY9SFvkQnVFvO0k160J8e/duU
+X-Gm-Message-State: AOJu0YyCJ2kpp67pzvEKulHotaQRKsiDeT2gA1GyVwdEX08yU/4mNWih
+	oMTErTLpytYzCVe5fgSL6wvZZqH8wQfCyr4reQJgjeh+dFdZ73SdMIqQbD8JQLdeBE1dDiP3ey4
+	hpg==
+X-Google-Smtp-Source: AGHT+IGuJZb5xX4ZBGG9oopaivzkkBJDPlj6l6nyd3664MWXqJt0XC5HrtEr3fOKnO8AHkVtJfLr9A==
+X-Received: by 2002:a05:6214:1398:b0:6a0:815b:1c82 with SMTP id pp24-20020a056214139800b006a0815b1c82mr2854003qvb.45.1713796797893;
+        Mon, 22 Apr 2024 07:39:57 -0700 (PDT)
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com. [209.85.219.54])
+        by smtp.gmail.com with ESMTPSA id t11-20020a05621405cb00b006a076660871sm1944400qvz.90.2024.04.22.07.39.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 07:39:57 -0700 (PDT)
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-69b24162dd6so20729396d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:39:56 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXWh04vq06ZH08aBCEM0srJWSF4eKavqJgCwerhaG6i8y9oSkgppS4i5Pj88/e2VC5oMoN7Y0/xfKW9szXMh3mCH/KgunvUzgLZoW4m
+X-Received: by 2002:a0c:e991:0:b0:6a0:405f:f29b with SMTP id
+ z17-20020a0ce991000000b006a0405ff29bmr10346738qvn.55.1713796795833; Mon, 22
+ Apr 2024 07:39:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DS7PR10MB5039:EE_
-X-MS-Office365-Filtering-Correlation-Id: 43d443e1-91eb-4c8e-c1f6-08dc62da2782
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?zRM6Uv6Z0Bbq74ih3W/3ysGIBIN4YmVk4mPARry70/xVM9mZBKM6ryyylKH1?=
- =?us-ascii?Q?XSicF/ifHvH9HGRcO8CNaIw7u36Uu5ASfEND+GcuXZI13a2maJxg0sy13iQg?=
- =?us-ascii?Q?mRdB6aMpI1QegtebP5Ow0xk1mDCgD/sOrOj3/w67ZKMdKI1K65fX0QI1GCL1?=
- =?us-ascii?Q?9EwWNGqzIyEA1AeN688cUJD71ACijQl3lkrCoKvpqL23KUlAhy8Lcqw/a+W2?=
- =?us-ascii?Q?Y1Wyn1i2NI44c9/dSyCxCheG0JlwrIKnT5ivSE7TnmehVsinNx30FYCVUbgY?=
- =?us-ascii?Q?vLPay5tXG/R5RqrXXSeUfbb7pikgShGdCbM6Fq9ZP0uaD5zauSk1+XriX3S4?=
- =?us-ascii?Q?tf5/obILh6fWwujJMb3CR26oY8IuvwSI3h3xsCk664PfEWK1rpJz6WK2lUFO?=
- =?us-ascii?Q?nl75EMatCvQJKbTDf3uv1nNdrdcRcFCk/G8xUIw2jo4Z2ZAhIM0twzGHx/sq?=
- =?us-ascii?Q?eG7QBNW8qf9geDQFO8v4pBCz3B8qM2626DKSdNwfFXjYsPIhXGxfSRxz0h9D?=
- =?us-ascii?Q?Sz/09tizmxVU0vhxYnhMO2GRUckVAl4PbC6lAQZ+7hBTaZ9TNxXqe1m6dks4?=
- =?us-ascii?Q?UfCeBS6YcND85Syhg3+mFgfUiAlWCPCoWkdMXMzGKmqsgdq7630Z0W+VvXWs?=
- =?us-ascii?Q?JFNli69R+tnZn0GTB73OQqk53QQWwBCkT1UZyV/YJMHv0RMviRUCouN+aHFQ?=
- =?us-ascii?Q?eEKaQrOJrrEhS0U81BQG9Q+V8h7QwDrIKqbAL9tft1J/aHMjNrrqD70iukjP?=
- =?us-ascii?Q?809Xj8E7uS4diYGJbOuwISQsON7l3mur6DWdVyJYwhIZFMHvbx9T3k+7rUZJ?=
- =?us-ascii?Q?91E7sup6CYhJY9nsL5tyQIq14iZnhNvnviVPDopJTfFST7IyaQSG/dL+vgsf?=
- =?us-ascii?Q?Efwksi40JNVwnq+TUu+pxMRjYQ1gTwoi2onjbT02IOwDBhmMIyW/ukkERQCJ?=
- =?us-ascii?Q?vGH+pwXCUSfjbpbU8IHlScEW0NPXzlWFCik92SMqrdRU3USsb/GrnEDibLl+?=
- =?us-ascii?Q?bs6kHpV5S7TWc1g3FuVS7jomLCeCAzrqkLxAi+mt5NGHZo1SUv2oz97kVc8J?=
- =?us-ascii?Q?/DyShQB2yy/cTC6YZqyr2dwhTyiDEeebsZABnshSghyY+H6ffjCzVLM+qWEs?=
- =?us-ascii?Q?tlyIkaWthRERbrsVqryI/0m5Z+vAoaMofMx24Sud0Wj9WhCYDZZju5zlblkV?=
- =?us-ascii?Q?BubkepMUtD5hgn1Z2j/KJIdVrcpbaLivaPW67v/bkfI9nxCL9TUgKCOHHKqL?=
- =?us-ascii?Q?o0CRsyYDd3GgyBH5K5w2z2n8xKjde1FUpVhm3IOyXDEAq5LcCebmiI9DpqyI?=
- =?us-ascii?Q?hpz3zCV/ozxTyERWEmItZOV9?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?j8HHgEdiSA2uEdNWPYI7AzOiNe/HFJRgm4+2FmnKEFr1gHes7jCNAAh1ZgJQ?=
- =?us-ascii?Q?KXpCypjON8AkZBamQn4MXqeD5BU+JU5Zxv2V0jlJheVlwTvNHMF9u8z3GPj8?=
- =?us-ascii?Q?jbTCctwfLZdz1pQUtBi8F3vB/Y2HN+oL3a5AVMJG88OUV+GtO0BkyWGABzdn?=
- =?us-ascii?Q?21r6pT4QiCRwoRLOqw1K7nUS+TBQLepSTG4YyqYCT8MMQH8g5bffaqqDGFaZ?=
- =?us-ascii?Q?Db4J0/vNTv+cUIO6Z58kuuUH7jKO41yTRLE1RYIg99+kEgivQkBmwiJm+WZl?=
- =?us-ascii?Q?M0Fs8NMymzOZECuh8xxgsof6cWSas6bROCQQndxku1xA3YGxAUjXu5BWiRUU?=
- =?us-ascii?Q?f8qaODJ3Q/7gv9ftqjJs36teVucWjcygaVI1tcEnXJAHq01pzbPiyL9/rGPb?=
- =?us-ascii?Q?6G0HjCXT/wNCA4pSYqhSpZepTju5iUuuqgKipiuYEz8uw/9O+DxvTzW1NWjw?=
- =?us-ascii?Q?2gE6KcttFVLxhVcGL2Mqc1DjG1awAEtF+IpZpomeSzIyuol7+yEAUcbZ5Dwy?=
- =?us-ascii?Q?gAP7PgvyDzpALGQRZgPJ1Cs0sC79ctVm7gaPiggi6GAV8A4hfSPEYqzISk4p?=
- =?us-ascii?Q?FiOTXVxM/Ijswaso6e4Lr0pKinLB51vRCsOEoNVkIHuxm4yKv60XVx0FddzS?=
- =?us-ascii?Q?7xpOfNvUwRKEXEPz8qnDt9643UdLjUh7//r1fwTCSstjeFLB+adUMkk+13vW?=
- =?us-ascii?Q?Wot98OGLVWqgULcmIJIUFjwo7mTRbVFOwMyaEgzvMBICrZ9krTTQY86K3bZ8?=
- =?us-ascii?Q?Pe7d+uP5+FyVk1g85wNJHJ120nWYkgDrHpznbPJdcjzhgA9BXNLsHB0lVvtS?=
- =?us-ascii?Q?jB7cmJ9ql4tmDsDtaNYO+ZHkbQPNe95QAtxrWtYBasNOOTQMeLNDuaUkbjsN?=
- =?us-ascii?Q?bWIKCLzAh5UaxipuphjYtgqk3CoUWSoyc/yk+LdsLFDHpSHhAthDMKB5JcAl?=
- =?us-ascii?Q?4cXt1Y40T7Jx8RY3PNxKnmENNIljeyUBdp3cKDkjVMTry7Vi7pK2gpaLWrrl?=
- =?us-ascii?Q?WeTYmz6ddP21YjsdTJvfk7/okccjnVlwG06qGSoSsVaadYCOvBiT982yga2Z?=
- =?us-ascii?Q?dxFVSXpy7FFulKp/xIAtHqtniHvdaCVKwMIwtueRskYuntt/D5ba3k77N2yb?=
- =?us-ascii?Q?mrNDbSPBV3SSj2X6fYbYLCBtZwBaB8IZU293B9tJY3NMBzWVo4ao/3/wJ2zU?=
- =?us-ascii?Q?WVkMl0p068TJ+S0un/16Z9wpBkMmvp3aNK8XGw8eH3aLP22MqRSCmx5M9N8h?=
- =?us-ascii?Q?H0CW9tbSZGyWtmRr698LLZxgFcGCEaXAoBQok3IWgl0Iogs16lHlYVOauB8z?=
- =?us-ascii?Q?MAN7oh6q61X7aePIJ+Wsup4bMtKw70fcD5JWeqPbTSOfvSbFFVEHz9hCevBj?=
- =?us-ascii?Q?AJtkAIr7/HHiVHN8Wso60plbPG49MsPNPDSuePIZBbVEb1ryPIbc9lvpW7dR?=
- =?us-ascii?Q?Er9isl+4BsZWJu47jJXqRIbUIYOHIKwOAJTC+NJ/KFbJvyjUvWs7ENC4lMqk?=
- =?us-ascii?Q?i7UWQgt72pekon5JK73F0rcxoF45lKd+z2GfCQTn0gMhVEWw9J4jPLWOCvyw?=
- =?us-ascii?Q?ha372VcJ8xrRvwBpljj9rXy9yii8YLm4UJGFTTnCQvTORcSpvDEmRWoJakg2?=
- =?us-ascii?Q?xg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	Vq9UCMnHatsSovFh/02kR1sW3LEwM0TVCcjeS1ya+LO54JVVOCipjDDtwk7SKFlpwqatZa0UY4391uZW98OwIaCl0prCxubO1FwaF3zlRdrHal10xmrgbWOcXZ01lghBe2sj1pOI8gjXxoHhVLnjDFKsZR4n4nQY1tsJwvFXN5sGpa497uyPzWe5NpY1HSRLE+0CCwKn2/5raUJEug2sQWU2Q0Dzoimpc5egrS72yjMmKB4gzRGirtSyyKJFCYjeRRlpwRkPlTXdX2ni/qU/J0fw98/HpkDdsCRT5JdSM3IfsvlYVRTF7rRs484TVH/oxPgFQJZZswWkZeYTQI4EXCqFXnlHwU2Vgn5e2YkDZ3KMpbOQzjICDzneBHyPcIbDZkcOT/4F2nP7cWPJsjICmZ29Z3ko/mfyKEAVwww7gKMaSazzM2cJ9okpGmTDKhBCu4nWriD5GVinjS+VLZM8PaZaLeXSeUOIgHx1QacrONnxnYJ1w5nERanZq5OtDuAK1EAc111WCPVSQ+gOCgvQwtwB/ceONV8zoKpU/p+aONZBFih/WJ5dHL2ZOIeoO/sKjVzgZo03Zi3xo9TFAIXlj6jqmr5DHINP5MgGx/PbubA=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43d443e1-91eb-4c8e-c1f6-08dc62da2782
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 14:40:28.6172
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a3jiSkxdK314/w4cZby3Ijx7FD0P/gFuT+xmfpc9aut0a3V9sx75UN2cOvvqJrNFTZ8UzJzhZNEyCA/smRpLVg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5039
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-22_09,2024-04-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404220063
-X-Proofpoint-ORIG-GUID: Z_U_9O15snWMq5vMoQPfL_7A70juNBRI
-X-Proofpoint-GUID: Z_U_9O15snWMq5vMoQPfL_7A70juNBRI
+References: <e43980df-1ca5-459d-b037-788dd7d9085d@moroto.mountain>
+ <CANiDSCtjEPqEstuo92QeVK_rWkW9icsjKWakPyN19ETM+MJuuQ@mail.gmail.com> <f2e9cdcd-46e7-41ab-9d5f-c1237a0a6222@moroto.mountain>
+In-Reply-To: <f2e9cdcd-46e7-41ab-9d5f-c1237a0a6222@moroto.mountain>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Mon, 22 Apr 2024 22:39:39 +0800
+X-Gmail-Original-Message-ID: <CANiDSCvVZtpkU6KnSYE4v7cTsgsjOb4E5XgK5eGMpRX7wCTQ3A@mail.gmail.com>
+Message-ID: <CANiDSCvVZtpkU6KnSYE4v7cTsgsjOb4E5XgK5eGMpRX7wCTQ3A@mail.gmail.com>
+Subject: Re: [PATCH v2] media: stk1160: fix bounds checking in stk1160_copy_video()
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: =?UTF-8?Q?Ezequiel_Garc=C3=ADa?= <elezegarcia@gmail.com>, 
+	Ghanshyam Agrawal <ghanshyam1898@gmail.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Enable support for buffered atomic writes, in addition to already
-supported direct IO atomic writes.
+Hi Dan
 
-The folio mapping order min and max is set to this same size for an inode
-with FS_XFLAG_ATOMICWRITES set. That size is the extent alignment size.
+Thanks for the patch
 
-Atomic writes support depends on forcealign. For forcealign, extent sizes
-need to be a power-of-2 and naturally aligned, and this matches folios
-nicely.
+On Mon, 22 Apr 2024 at 19:23, Dan Carpenter <dan.carpenter@linaro.org> wrote:
+>
+> On Mon, Apr 22, 2024 at 05:52:36PM +0800, Ricardo Ribalda wrote:
+> > Hi Dan
+> >
+> > On Mon, 22 Apr 2024 at 17:32, Dan Carpenter <dan.carpenter@linaro.org> wrote:
+> > >
+> > > The subtract in this condition is reversed.  The ->length is the length
+> > > of the buffer.  The ->bytesused is how many bytes we have copied thus
+> > > far.  When the condition is reversed that means the result of the
+> > > subtraction is always negative but since it's unsigned then the result
+> > > is a very high positive value.  That means the overflow check is never
+> > > true.
+> > >
+> > > Additionally, the ->bytesused doesn't actually work for this purpose
+> > > because we're not writing to "buf->mem + buf->bytesused".  Instead, the
+> > > math to calculate the destination where we are writing is a bit
+> > > involved.  You calculate the number of full lines already written,
+> > > multiply by two, skip a line if necessary so that we start on an odd
+> > > numbered line, and add the offset into the line.
+> > >
+> > > To fix this buffer overflow, just take the actual destination where we
+> > > are writing, if the offset is already out of bounds print an error and
+> > > return.  Otherwise, write up to buf->length bytes.
+> > >
+> > > Fixes: 9cb2173e6ea8 ("[media] media: Add stk1160 new driver (easycap replacement)")
+> > > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> > > ---
+> > > v2: My first patch just reversed the if statement but that wasn't the
+> > > correct fix.
+> > >
+> > > Ghanshyam Agrawal sent a patch last year to ratelimit the output from
+> > > this function because it was spamming dmesg.  This patch should
+> > > hopefully fix the issue.  Let me know if there are still problems.
+> > >
+> > >  drivers/media/usb/stk1160/stk1160-video.c | 20 +++++++++++++++-----
+> > >  1 file changed, 15 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
+> > > index 366f0e4a5dc0..e79c45db60ab 100644
+> > > --- a/drivers/media/usb/stk1160/stk1160-video.c
+> > > +++ b/drivers/media/usb/stk1160/stk1160-video.c
+> > > @@ -99,7 +99,7 @@ void stk1160_buffer_done(struct stk1160 *dev)
+> > >  static inline
+> > >  void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
+> > >  {
+> > > -       int linesdone, lineoff, lencopy;
+> > > +       int linesdone, lineoff, lencopy, offset;
+> > >         int bytesperline = dev->width * 2;
+> > >         struct stk1160_buffer *buf = dev->isoc_ctl.buf;
+> > >         u8 *dst = buf->mem;
+> > > @@ -139,8 +139,13 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
+> > >          * Check if we have enough space left in the buffer.
+> > >          * In that case, we force loop exit after copy.
+> > >          */
+> > > -       if (lencopy > buf->bytesused - buf->length) {
+> > > -               lencopy = buf->bytesused - buf->length;
+> > > +       offset = dst - (u8 *)buf->mem;
+> > > +       if (offset > buf->length) {
+> > Maybe you want offset >= buf->length.
+> >
+>
+> The difference between > and >= is whether or not we print an error
+> message.  In the original code, we didn't print an error message for
+> this and I feel like that's the correct behavior
+>
+> > And remember to add at the beginning of the function
+> >
+> > if (!len)
+> >  return 0;
+> >
+>
+> That's checked in the caller so it's fine.
+>
+>    260                  /* Empty packet */
+>    261                  if (len <= 4)
+>    262                          continue;
 
-Signed-off-by: John Garry <john.g.garry@oracle.com>
----
- fs/xfs/libxfs/xfs_inode_buf.c |  8 ++++++++
- fs/xfs/xfs_file.c             | 12 ++++++++++--
- fs/xfs/xfs_ioctl.c            |  3 +++
- 3 files changed, 21 insertions(+), 2 deletions(-)
+It is also checked later on:
 
-diff --git a/fs/xfs/libxfs/xfs_inode_buf.c b/fs/xfs/libxfs/xfs_inode_buf.c
-index abaef1137b97..38e058756b1e 100644
---- a/fs/xfs/libxfs/xfs_inode_buf.c
-+++ b/fs/xfs/libxfs/xfs_inode_buf.c
-@@ -181,6 +181,7 @@ xfs_inode_from_disk(
- 	struct inode		*inode = VFS_I(ip);
- 	int			error;
- 	xfs_failaddr_t		fa;
-+	struct xfs_mount	*mp = ip->i_mount;
- 
- 	ASSERT(ip->i_cowfp == NULL);
- 
-@@ -261,6 +262,13 @@ xfs_inode_from_disk(
- 	}
- 	if (xfs_is_reflink_inode(ip))
- 		xfs_ifork_init_cow(ip);
-+
-+	if (xfs_inode_atomicwrites(ip)) {
-+		unsigned int folio_order = ffs(XFS_B_TO_FSB(mp, ip->i_extsize)) - 1;
-+
-+		mapping_set_folio_orders(VFS_I(ip)->i_mapping, folio_order, folio_order);
-+	}
-+
- 	return 0;
- 
- out_destroy_data_fork:
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 2fbefd60d753..d35869b5e4ce 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -782,6 +782,16 @@ xfs_file_buffered_write(
- 	ssize_t			ret;
- 	bool			cleared_space = false;
- 	unsigned int		iolock;
-+	struct xfs_mount	*mp = ip->i_mount;
-+
-+	if (iocb->ki_flags & IOCB_ATOMIC) {
-+		unsigned int extsz_bytes = XFS_FSB_TO_B(mp, ip->i_extsize);
-+
-+		if (!generic_atomic_write_valid_size(iocb->ki_pos, from,
-+			extsz_bytes, extsz_bytes)) {
-+			return -EINVAL;
-+		}
-+	}
- 
- write_retry:
- 	iolock = XFS_IOLOCK_EXCL;
-@@ -1241,8 +1251,6 @@ static bool xfs_file_open_can_atomicwrite(
- 	struct xfs_inode	*ip = XFS_I(inode);
- 	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
- 
--	if (!(file->f_flags & O_DIRECT))
--		return false;
- 
- 	if (!xfs_inode_atomicwrites(ip))
- 		return false;
-diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-index d115f2601921..d6b146c999f6 100644
---- a/fs/xfs/xfs_ioctl.c
-+++ b/fs/xfs/xfs_ioctl.c
-@@ -1169,10 +1169,13 @@ xfs_ioctl_setattr_xflags(
- 	}
- 
- 	if (atomic_writes) {
-+		unsigned int folio_order = ffs(XFS_B_TO_FSB(mp, fa->fsx_extsize)) - 1;
-+
- 		if (!xfs_has_atomicwrites(mp))
- 			return -EINVAL;
- 		if (!(fa->fsx_xflags & FS_XFLAG_FORCEALIGN))
- 			return -EINVAL;
-+		mapping_set_folio_orders(VFS_I(ip)->i_mapping, folio_order, folio_order);
- 	}
- 
- 	ip->i_diflags = xfs_flags2diflags(ip, fa->fsx_xflags);
+/* Check if the copy is done */
+if (lencopy == 0 || remain == 0)
+return;
+
+I meant that we could move that check to the beginning of the funcion
+
+But I agree, the scope of this patch is to fix the error not to
+improve the code.
+
+The stubborn part of me still thinks that it is better  offset >=
+buf->length. :P
+But even without that you can add my
+
+Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
+
+I wish we could find someone to test it though.
+
+>
+> Generally we don't add duplicate checks.
+>
+> > And I would have done:
+> > len -= 4;
+> > src += 4;
+> >
+> > In the caller function
+> >
+>
+> I don't really think it makes sense to move that into the caller and
+> anyway, doing cleanups like this is outside the scope of this patch.
+> Really, there is a lot that could be cleaned up here.  People knew there
+> was a bug here but they didn't figure out what was causing it.  We could
+> delete that code.  Looking at it now, I think that code would actually
+> be enough to prevent a buffer overflow, although the correct behavior is
+> to write up to the end of the buffer instead of returning early.
+> Probably?
+>
+> To be honest, I'm still concerned there is a read overflow in
+> stk1160_buffer_done().  I'd prefer to do
+>
+>         len = buf->bytesused;
+>         if (len > buf->length) {
+>                 dev_warn_ratelimited(dev->dev, "buf->bytesused invalid %u\n", len);
+>                 len = buf->length;
+>         }
+
+After your patch I cannot see when this condition will be hitten...
+but it is a cheap check, better safe than sorry.
+
+
+>         vb2_set_plane_payload(&buf->vb.vb2_buf, 0, len);
+>
+> regards,
+> dan carpenter
+>
+> diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
+> index ed261f0241da..f7977b07c066 100644
+> --- a/drivers/media/usb/stk1160/stk1160-video.c
+> +++ b/drivers/media/usb/stk1160/stk1160-video.c
+> @@ -112,16 +112,6 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
+>         u8 *dst = buf->mem;
+>         int remain;
+>
+> -       /*
+> -        * TODO: These stk1160_dbg are very spammy!
+> -        * We should check why we are getting them.
+> -        *
+> -        * UPDATE: One of the reasons (the only one?) for getting these
+> -        * is incorrect standard (mismatch between expected and configured).
+> -        * So perhaps, we could add a counter for errors. When the counter
+> -        * reaches some value, we simply stop streaming.
+> -        */
+> -
+>         len -= 4;
+>         src += 4;
+>
+> @@ -160,18 +150,6 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
+>         if (lencopy == 0 || remain == 0)
+>                 return;
+>
+> -       /* Let the bug hunt begin! sanity checks! */
+> -       if (lencopy < 0) {
+> -               printk_ratelimited(KERN_DEBUG "copy skipped: negative lencopy\n");
+> -               return;
+> -       }
+> -
+> -       if ((unsigned long)dst + lencopy >
+> -               (unsigned long)buf->mem + buf->length) {
+> -               printk_ratelimited(KERN_WARNING "stk1160: buffer overflow detected\n");
+> -               return;
+> -       }
+> -
+>         memcpy(dst, src, lencopy);
+>
+>         buf->bytesused += lencopy;
+> @@ -208,17 +186,6 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
+>                 if (lencopy == 0 || remain == 0)
+>                         return;
+>
+> -               if (lencopy < 0) {
+> -                       printk_ratelimited(KERN_WARNING "stk1160: negative lencopy detected\n");
+> -                       return;
+> -               }
+> -
+> -               if ((unsigned long)dst + lencopy >
+> -                       (unsigned long)buf->mem + buf->length) {
+> -                       printk_ratelimited(KERN_WARNING "stk1160: buffer overflow detected\n");
+> -                       return;
+> -               }
+> -
+>                 memcpy(dst, src, lencopy);
+>                 remain -= lencopy;
+>
+
+
 -- 
-2.31.1
-
+Ricardo Ribalda
 
