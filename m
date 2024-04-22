@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-153449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74BDC8ACE3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:31:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642EA8ACE3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:31:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6E5B1C20F81
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:31:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 956AC1C20D83
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE9115098B;
-	Mon, 22 Apr 2024 13:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29EE14F9E4;
+	Mon, 22 Apr 2024 13:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="bxhLHCfK"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W7E4rY9d"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 032B714F9DC;
-	Mon, 22 Apr 2024 13:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2999F5028B;
+	Mon, 22 Apr 2024 13:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713792673; cv=none; b=Vl1Bhh2iRxhxKu7TmX09wiYCneDL+ymkgWkEqUGkl9OtdZmhQeKNl8dLzknu3S9NklV5ZQxR28Q+Tl+HVfhfC6/IuxaTQdxp0bmOpY/PCOzVw1KuZaWIHPMcQJQ3TQ3mdKLzKtL5ue2XVW1ZjtMeUlRr8jkoHdCuhEcOK+3SBVo=
+	t=1713792667; cv=none; b=lcB2+8+Fqhe4ER1iiggan7T4BPk4GnXTr4wK2sxEcSny4AKg2QF+zCg1esQwN+HIznWRGy9XtH8B7X/IDNMqzkIYrx71dDhB2xzh8atPYz58OZaox9J3BqcBgaChu8iSyjfd/LnImpdTb2f3w46mtyOTMw0/cxXawUrk3USEEjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713792673; c=relaxed/simple;
-	bh=BR+rjfuQ3fKF08ic/hIpkJH4RlB+LtgV/zV25IOt8TQ=;
+	s=arc-20240116; t=1713792667; c=relaxed/simple;
+	bh=RmWPWoJmuT/0TeUYKPz5ezD+M2RoaksC3ftBdfD+wfY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jZY6CEefiDdARCw07G/fBexrMllqFHE2YZzCgKHkRDW2sWUGnpiUS2x1KwM5WSG1/Ko2bRx7lKYd8p07h/Zqz0khLmplkrdqTbwZurlg+0XF2pnCV/en/x96BsvbP70hWZonPvayhDNweuuoyB2wYkjZs0tXCkdnwhogUIMNJD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=bxhLHCfK; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=/slTi2dI7/QqEXj4ACAD+Owz9e1ZqfqrM5C8CzmcduE=; b=bxhLHCfKc4xATSEEzdpCppGraH
-	Yk7vXDFnCYaD2yDZng1bfdIW/UprJAACXiS9H+fuqLu2gduEPzlmLJc7Rh2SUqoGP6IT8cvCI/2tv
-	Bswo2fNhi4KvMxXQt7zm6C12rpQXCKFee/7VBW2nKVv034Bo90O1PpYw0id3jvl1IVjE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rytlA-00DcVS-DE; Mon, 22 Apr 2024 15:31:04 +0200
-Date: Mon, 22 Apr 2024 15:31:04 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Fabio Estevam <festevam@denx.de>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux@ew.tq-group.com
-Subject: Re: [PATCH net 2/2] net: dsa: mv88e6xxx: Avoid EEPROM timeout
- without EEPROM on 88E6250-family switches
-Message-ID: <47350aa7-b4d0-49f0-98f5-4fc52c4f2c42@lunn.ch>
-References: <2b924dcdf8adfe2c0b6b5998e47e836dd8f9e1b1.1713442039.git.matthias.schiffer@ew.tq-group.com>
- <67dc4da11986fd7fd192fbb183813bf5a721001f.1713442039.git.matthias.schiffer@ew.tq-group.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VvmWKktdXkbWW07FQ+QZev60sdpQ9sMH75wcVGjAMY6Xgqs4IT842u7vLMbJcxXIXD05F76PFqEMzwqQSBBDMs4HTO5n2Zux7aPRkN0IDwi0HJ+WgLEtoMn+6BzOoZ6mRraKl3qVaD12FdSz4LrpcaCgtHmy+cQXnXym5XvXsm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W7E4rY9d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93824C113CC;
+	Mon, 22 Apr 2024 13:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713792666;
+	bh=RmWPWoJmuT/0TeUYKPz5ezD+M2RoaksC3ftBdfD+wfY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W7E4rY9do8FFKN+uduXw6rv2lCPWOHbnN1YJi3knJ+DQTYw4r4KXDAWKNgzOBD7iX
+	 8pZGOBSQqPYmYyn6x2u/uUdigsbXUcNmQ6Br276FHoNjr7mXcltAje56eszwWeGUUN
+	 3QgU806dbPZ6qj1Zcy1ye6z6E1RYdCT7rF2QsUYYfcEOkmfdmnXPLgonxCaCb8GEff
+	 jj9ZyOaGHRCgxsXYEGtuaQPP7IDP4RqNo4jyrhIWk+qiUdSMxMQnH31GD686Gz4u4W
+	 V3mats/Z4lDhC6ePu2nxABTI7pR7qR7Nw1CPx49bcflqyMB1+t9kx29kGWHhyuNnZO
+	 +33+ZbY7NE5lw==
+Date: Mon, 22 Apr 2024 08:31:04 -0500
+From: Rob Herring <robh@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+	conor+dt@kernel.org, lgirdwood@gmail.com, gustavoars@kernel.org,
+	linux-pm@vger.kernel.org, matthias.bgg@gmail.com,
+	krzysztof.kozlowski+dt@linaro.org, djakov@kernel.org,
+	keescook@chromium.org, kernel@collabora.com,
+	linux-kernel@vger.kernel.org, wenst@chromium.org,
+	amergnat@baylibre.com, broonie@kernel.org, henryc.chen@mediatek.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 3/7] dt-bindings: soc: mediatek: Add DVFSRC bindings
+ for MT8183 and MT8195
+Message-ID: <171379264441.1122105.10432183532468198558.robh@kernel.org>
+References: <20240418094134.203330-1-angelogioacchino.delregno@collabora.com>
+ <20240418094134.203330-4-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,34 +64,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <67dc4da11986fd7fd192fbb183813bf5a721001f.1713442039.git.matthias.schiffer@ew.tq-group.com>
+In-Reply-To: <20240418094134.203330-4-angelogioacchino.delregno@collabora.com>
 
-On Thu, Apr 18, 2024 at 02:16:08PM +0200, Matthias Schiffer wrote:
-> 88E6250-family switches have the quirk that the EEPROM Running flag can
-> get stuck at 1 when no EEPROM is connected, causing
-> mv88e6xxx_g2_eeprom_wait() to time out. We still want to wait for the
-> EEPROM however, to avoid interrupting a transfer and leaving the EEPROM
-> in an invalid state.
-> 
-> The condition to wait for recommended by the hardware spec is the EEInt
-> flag, however this flag is cleared on read, so before the hardware reset,
-> is may have been cleared already even though the EEPROM has been read
-> successfully.
-> 
-> For this reason, we revive the mv88e6xxx_g1_wait_eeprom_done() function
-> that was removed in commit 6ccf50d4d474
-> ("net: dsa: mv88e6xxx: Avoid EEPROM timeout when EEPROM is absent") in a
-> slightly refactored form, and introduce a new
-> mv88e6xxx_g1_wait_eeprom_done_prereset() that additionally handles this
-> case by triggering another EEPROM reload that can be waited on.
-> 
-> On other switch models without this quirk, mv88e6xxx_g2_eeprom_wait() is
-> kept, as it avoids the additional reload.
-> 
-> Fixes: 6ccf50d4d474 ("net: dsa: mv88e6xxx: Avoid EEPROM timeout when EEPROM is absent")
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+On Thu, 18 Apr 2024 11:41:30 +0200, AngeloGioacchino Del Regno wrote:
+> Add bindings for the MediaTek Dynamic Voltage and Frequency Scaling
+> Resource Collector (DVFSRC), a hardware module used to collect all the
+> requests from both software and the various remote processors embedded
+> into the SoC and decide about a minimum operating voltage and a minimum
+> DRAM frequency to fulfill those requests in an effort to provide the
+> best achievable performance per watt.
+> 
+> This hardware IP is capable of transparently performing direct register
+> R/W on all of the DVFSRC-controlled regulators and SoC bandwidth knobs.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  .../soc/mediatek/mediatek,mt8183-dvfsrc.yaml  | 83 +++++++++++++++++++
+>  1 file changed, 83 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/mediatek,mt8183-dvfsrc.yaml
+> 
 
-    Andrew
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+
 
