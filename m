@@ -1,298 +1,123 @@
-Return-Path: <linux-kernel+bounces-153667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6F38AD167
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:00:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EBDA8AD114
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:39:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D721A287784
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:00:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CD711C224BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8A4153585;
-	Mon, 22 Apr 2024 16:00:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7F1153594;
+	Mon, 22 Apr 2024 15:39:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="HEM7iN/T"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="uYqDgZv8"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6370C15351B
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 16:00:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBE35153572;
+	Mon, 22 Apr 2024 15:39:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713801616; cv=none; b=uM/H+QaWO9KrtLmrUaI8YKsxabeIhzCZObReLKpEPZ36jAPUiiaHu3KDhc+/0jV0trZ3FR49fCBqKBjY2qrwrsBiFwIJac8cu6y8x88OI8Qky10RA+OL8QQ36sxBUnVPfGv5oege/V1zsDN2YJz/oiUnrP50dMc0qVmj5LUi/lc=
+	t=1713800351; cv=none; b=K3nY0g6VAFtid8R12sUKdLVDlcBAOXOoN3k/JGWCB0eFKCbGtNYBQ5Vo0SUqCI+W0mVjwu7QTlGcQtGfWYsbGpjc4uoS0hGpTFhczvpMqrQKoqcGUiK/9UR4C1EISrILKp/5uD9x3Ca+/NpuezQVV6kGd3kx7kG+R0e4UEzUCzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713801616; c=relaxed/simple;
-	bh=Fp8decXLukqcTty1hHR6nqJhkVwkxNPTZAZicZ8hYbw=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=gh8Ku1fPKQaXGLx5BJ06+kiB6uRnRydTNfa2YqSmDYzk1p1p4CnJk4Nvq6iar1eisg5B3V+js+y878R5TQ4ftUKTTLce3dFsJrxMIEwo1mtsWS2v8WMrFoKfeXE0hYVzLap2ha1QedUwCNNI4Ca3grwsil/B0uTR3cfrJf2iewk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=HEM7iN/T; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41a1d2a7b81so8719085e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713801612; x=1714406412; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=dkMow7P9nbwYVpvi8tHneuz7LEnCqE9H/aKPdu2x/vw=;
-        b=HEM7iN/TuE8arIczhgn5zMJ1NxIs/oejpcWCVq8Y3nVT8pKBYpRLxodh9T+vDNmmZW
-         FKp1zDQgivwiVSUyhADV99Eik9sBfBSKj4YXWCQrJ0+jNRoQsFxWSSdc6rTuCPlVv/tu
-         2yOutwz2nWk0/w/eO3AhLCDbJQYoXlaJJyvmnYoZoVfOOAzLpEWI8Mkukq5W8eG1iA/Z
-         EeGoRWB8EYNef7raZnhP02D33Prvl44Gw+t0WRvOIA1MbouHTm2Vxb5EAuNNIUMZx+TR
-         9fnvNaAuLvqcOL4YN3WvzBqMk92lRQB4q5wkJs3M0bDkY6E9r+21x11fG50P15sKIi8Y
-         46tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713801612; x=1714406412;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dkMow7P9nbwYVpvi8tHneuz7LEnCqE9H/aKPdu2x/vw=;
-        b=PFANEWiLYyHUi5yoKRoilU1x63lsIFsKLthUxkQYq0Sq0AOcbYDvaiH2w5hybN/KLI
-         OpbCoM57vFiM5Sy/CdqF8YHcTHjhxfl0DJsGU0BipdemvHDGD9h8P0N3g4QALCcstGU9
-         Zjw89zV+cFQsAH96dk9V1KD4eDyYlVs/ZMKRGjYERnVBGsB5jHrxcOcOsvOkwJLFhdYx
-         8H/S/72En+MvNqYHa0LlEUQ7Czs56MskGxfimTivJUiksHnf3AwfIZeBtHo9pJYcxDWV
-         xDX6hjAjLTdbAfgePSiBPxT5IfJ0lsyDazE9leBPPFLcQT7DqsDGMzb8KxgYX4EvbMOV
-         d6kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX9dyluf+nNz2altrn1kK1IaCznXwmEbIMeeEGSmA+1bNN8YLIzDDJNHSugKYak4WdF2diV/jT7SaO6dvfXpw++75bDO9j7p6Rtzygt
-X-Gm-Message-State: AOJu0YxHUPjLZv67KNbAviDNm7954BFUcTdn6aB3bW3M/br7ItexOmSs
-	ENjg34wlzn1KeCVIbV2zhOge/abxqQnfdfv6Uz5Y4GrQIu33lcPbgC9/fWFlzXQ=
-X-Google-Smtp-Source: AGHT+IHBbJHMycTPOLmmfBqpNcPhCqj7r7p8ZmztmscScJphQOUSkwQ5U518mRjUw/T4P/o60zjV1g==
-X-Received: by 2002:a5d:5087:0:b0:34a:5148:20e0 with SMTP id a7-20020a5d5087000000b0034a514820e0mr63176wrt.6.1713801612396;
-        Mon, 22 Apr 2024 09:00:12 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:ab40:ca64:3dab:1be9])
-        by smtp.gmail.com with ESMTPSA id e4-20020adff344000000b0034349225fbcsm12391531wrp.114.2024.04.22.09.00.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 09:00:12 -0700 (PDT)
-References: <20240419125812.983409-1-jan.dakinevich@salutedevices.com>
- <20240419125812.983409-5-jan.dakinevich@salutedevices.com>
- <20240419210949.GA3979121-robh@kernel.org>
- <b86f1058-da53-4a9c-bc12-e7297351b482@salutedevices.com>
- <48e9f035-390b-40c9-a3ad-49880c0b972d@kernel.org>
- <1jle55c0bl.fsf@starbuckisacylon.baylibre.com>
- <1jzftlakgg.fsf@starbuckisacylon.baylibre.com>
- <0272deb1-5427-4805-a6f1-df223a5c14f5@salutedevices.com>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, Krzysztof Kozlowski
- <krzk@kernel.org>, Rob Herring <robh@kernel.org>, Neil  Armstrong
- <neil.armstrong@linaro.org>, Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Krzysztof  Kozlowski
- <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Kevin  Hilman
- <khilman@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Philipp Zabel
- <p.zabel@pengutronix.de>, Jiucheng Xu <jiucheng.xu@amlogic.com>,
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH v3 4/6] dt-bindings: clock: meson: document A1 SoC
- audio clock controller driver
-Date: Mon, 22 Apr 2024 17:38:28 +0200
-In-reply-to: <0272deb1-5427-4805-a6f1-df223a5c14f5@salutedevices.com>
-Message-ID: <1j5xw99ylw.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1713800351; c=relaxed/simple;
+	bh=10FfD4ZHzSFQEH8sQUELtpgULLzge1X9Q8xRaKqG1Ik=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=P0pFvqAdhaDlelC0x22kKU2lo1qcvGO0BBuRE5D5jQ1YX3WtVRCuhe2o1woOCtJLt8v3nKax/V80Ou73Oq9K1qIKEKFrp6IcgGqc1J27NlqO3gO0BW3HAq40C5NJBIlGfyk/1aCKP9xZoP66MCh1ZC7b01cFJFaGYGdqhwOyps8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=uYqDgZv8; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713800333; x=1714405133; i=markus.elfring@web.de;
+	bh=PvxrtFdGZmRXnr/yFq+g2FFB8EV93GFvYY78jv7kXYQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=uYqDgZv8KFXEZOk27ftPEcnks5OVY+wyu+FtwLjpnJB7ovOhSoX9o6TnB+of5UUx
+	 6P7/48RH0fqRy4GbZs1UlzbbbK5G7sXp1mMAbmlrMP4nANpHNL6pQtMaG6xb3sxqE
+	 lig6k0TV/sJS3SGWYOAJR4Di9Zg1tiXeF2lmBagBM2yB3BlkjRZIRB6QY+ZiOIF4i
+	 xtllarxKTdx77l+/sMFPm6Tmu35o8eVjr3PE//RG0A9il8Zr3lBa5ajYzqNh7exkK
+	 xKWaTfTY/C0Q9IKk04FIOoDjh0HoqqKh4Bc4n47HTBomWGpeNOYVFNL+Hz695sTwr
+	 2AnxM2aOHY+VRLf+Vw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MumNL-1spO180rnH-00tQ77; Mon, 22
+ Apr 2024 17:38:53 +0200
+Message-ID: <964c9987-ea86-4167-899d-3bd3442ebfdb@web.de>
+Date: Mon, 22 Apr 2024 17:38:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+To: Jose Fernandez <josef@netflix.com>, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
+ Alan Liu <haoping.liu@amd.com>, Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ Fangzhi Zuo <jerry.zuo@amd.com>, George Shen <george.shen@amd.com>,
+ Hamza Mahfooz <hamza.mahfooz@amd.com>,
+ Harry Wentland <harry.wentland@amd.com>,
+ Ilya Bakoulin <ilya.bakoulin@amd.com>, Leo Li <sunpeng.li@amd.com>,
+ Leo Ma <hanghong.ma@amd.com>, Nasir Osman <nasir.osman@amd.com>,
+ Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+ Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Wenjing Liu <wenjing.liu@amd.com>, Xinhui Pan <Xinhui.Pan@amd.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240410043433.12854-1-josef@netflix.com>
+Subject: Re: [PATCH] drm/amd/display: Fix division by zero in setup_dsc_config
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240410043433.12854-1-josef@netflix.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ImWj6NNFf54sdIU5jTB8RmmUgnJSM4ABxpBdpnbmrgQZxjocuvw
+ xKz8NFS87E2HoZuS5ACRStYdZEpf3LwT7Ayfbgi511rH7Jqm1wmew0+1L2n6Ryy8tnv3mgh
+ 9OgnL+aZNfBvVRhTOuVYL4kuPl8JiHNVjHBwfbsO4u2o0NOuns/wGgkqKmxeYhxxjIILqVa
+ XIBI1QPzz+XcsrdIu//bw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:xFRexao3ArU=;5HQx+6cRQUkVuVF3ZgAFuJexcw8
+ xt19fkO9itbevDWaxVlDInmziCgR00uiPUPVziaSor3KwtbRGg2J73bFlvlXJIqcHQh0v3YVK
+ H30Ny9zBA3Ifc9LFVZ8KQZWJnL+agr3/spWHA5EUZ4DmQp8kd2+3NHWg5j3RWdTPI4O8GkMTD
+ d4DdpO0C5vDlqHNUl4fQQxVG0mcSxU5vdKvzfnro+oWr8O8xSSgMq078KUWsy1QACwNJtMFR6
+ QGdbbn3lOoaefXaE5TazGIqCURhu3ISLHM6CGpvjloCGdLc6vFYjpyRXnc1mFNmp6JEhEfj0K
+ CE44hN3bMl5yjsCoCfcX7gjqv+KVIBBbQtzwXx5vLSKVuWe1AQbUDy2HmOq3TewvdqN/TcenH
+ 7ex3tulwgahTgk+8I6o2nr4UPfpdXAROeajEVcsODZWz4Sq51spMZ3KkfYlB7ld3gGhHhmdMm
+ OgCWlfbKVH349NzeDa+OXxeEyQNc0b3h29SwKXFKzq5eZiSXJwI/stQZFcKRcLXHaJ2PVswHB
+ 0Ylh8L3bLQ50AbLNNjtas62bLe50k+neX38hlDyXID1q8tCVbCLhiKRSRc60bqW4T7bulyXVT
+ LJ3+FD7i3nWV91K3nYr3zvphcr0Jd4vYjCbMG7Up3KWP2Qh81EDiCpf1bA3PNs42xhN7dAtYh
+ FbriIOpdgvCL8aiO6lXnFbDnO/kKz043WSXgSTyy0wEaKwiqLcM8GDUa08TJnzZHBnH5LdH6g
+ Sn7rJ3iOIe/31FfJk7KSeMZTWp2xswKO4u15yo6A8oy33RxTvaJ5uiYoh7OCEP+YsgRT5f10U
+ Za7/Mqa8MiFVJBIsuUZN2ZUCf0Kl7see7XjK83huxQk7E=
 
-
-On Mon 22 Apr 2024 at 17:31, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
-
-> On 4/22/24 10:57, Jerome Brunet wrote:
->> 
->> On Mon 22 Apr 2024 at 09:16, Jerome Brunet <jbrunet@baylibre.com> wrote:
->> 
->>> On Sun 21 Apr 2024 at 20:14, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>>
->>>> On 20/04/2024 18:15, Jan Dakinevich wrote:
->>>>>
->>>>>
->>>>> On 4/20/24 00:09, Rob Herring wrote:
->>>>>> On Fri, Apr 19, 2024 at 03:58:10PM +0300, Jan Dakinevich wrote:
->>>>>>> Add device tree bindings for A1 SoC audio clock and reset controllers.
->>>>>>>
->>>>>>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->>>>>>> ---
->>>>>>>
->>>>>>> This controller has 6 mandatory and up to 20 optional clocks. To describe
->>>>>>> this, I use 'additionalItems'. It produces correct processed-schema.json:
->>>>>>>
->>>>>>>   "clock-names": {
->>>>>>>       "maxItems": 26,
->>>>>>>       "items": [
->>>>>>>           {
->>>>>>>               "const": "pclk"
->>>>>>>           },
->>>>>>>           {
->>>>>>>               "const": "dds_in"
->>>>>>>           },
->>>>>>>           {
->>>>>>>               "const": "fclk_div2"
->>>>>>>           },
->>>>>>>           {
->>>>>>>               "const": "fclk_div3"
->>>>>>>           },
->>>>>>>           {
->>>>>>>               "const": "hifi_pll"
->>>>>>>           },
->>>>>>>           {
->>>>>>>               "const": "xtal"
->>>>>>>           }
->>>>>>>       ],
->>>>>>>       "additionalItems": {
->>>>>>>           "oneOf": [
->>>>>>>               {
->>>>>>>                   "pattern": "^slv_sclk[0-9]$"
->>>>>>>               },
->>>>>>>               {
->>>>>>>                   "pattern": "^slv_lrclk[0-9]$"
->>>>>>>               }
->>>>>>>           ]
->>>>>>>       },
->>>>>>>       "type": "array",
->>>>>>>       "minItems": 6
->>>>>>>   },
->>>>>>>
->>>>>>> and it behaves as expected. However, the checking is followed by
->>>>>>> complaints like this:
->>>>>>>
->>>>>>>   Documentation/devicetree/bindings/clock/amlogic,a1-audio-clkc.yaml: properties:clock-names:additionalItems: {'oneOf': [{'pattern': '^slv_sclk[0-9]$'}, {'pattern': '^slv_lrclk[0-9]$'}]} is not of type 'boolean'
->>>>>>>
->>>>>>> And indeed, 'additionalItems' has boolean type in meta-schema. So, how to
->>>>>>> do it right?
->>>>>>
->>>>>> The meta-schemas are written both to prevent nonsense that json-schema 
->>>>>> allows by default (e.g additionalitems (wrong case)) and constraints to 
->>>>>> follow the patterns we expect. I'm happy to loosen the latter case if 
->>>>>> there's really a need. 
->>>>>>
->>>>>> Generally, most bindings shouldn't be using 'additionalItems' at all as 
->>>>>> all entries should be defined, but there's a few exceptions. Here, the 
->>>>>> only reasoning I see is 26 entries is a lot to write out, but that 
->>>>>> wouldn't really justify it. 
->>>>>
->>>>> Writing a lot of entries don't scary me too much, but the reason is that
->>>>> the existence of optional clock sources depends on schematics. Also, we
->>>>
->>>> Aren't you documenting SoC component, not a board? So how exactly it
->>>> depends on schematics? SoC is done or not done...
->>>>
->>>>> unable to declare dt-nodes for 'clocks' array in any generic way,
->>>>> because their declaration would depends on that what is actually
->>>>> connected to the SoC (dt-node could be "fixed-clock" with specific rate
->>>>> or something else).
->>>>
->>>> So these are clock inputs to the SoC?
->>>>
->>>
->>> Yes, possibly.
->>> Like an external crystal or a set clocks provided by an external codec
->>> where the codec is the clock master of the link.
->>>
->>> This is same case as the AXG that was discussed here:
->>> https://lore.kernel.org/linux-devicetree/20230808194811.113087-1-alexander.stein@mailbox.org/
->>>
->>> IMO, like the AXG, only the pclk is a required clock.
->>> All the others - master and slave clocks - are optional.
->>> The controller is designed to operate with grounded inputs
->> 
->> Looking again at the implementation of the controller, there is a clear
->> indication in patch 3 that the controller interface is the same as the
->> AXG and that the above statement is true.
->> > The AXG had 8 master clocks wired in. The A1 just has 5 - and 3 grounded
->> master clocks. This is why you to had to provide a mux input table to
->> skip the grounded inputs. You would not have to do so if the controller was
->> properly declared with the 8 master clock input, as it actually is.
->> 
+=E2=80=A6
+> +++ b/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c
+> @@ -1055,7 +1055,12 @@ static bool setup_dsc_config(
+>  	if (!is_dsc_possible)
+>  		goto done;
 >
-> For simplicity, I could make something like this in device tree:
+> -	dsc_cfg->num_slices_v =3D pic_height/slice_height;
+> +	if (slice_height > 0)
+> +		dsc_cfg->num_slices_v =3D pic_height/slice_height;
+> +	else {
+> +		is_dsc_possible =3D false;
+> +		goto done;
+> +	}
 >
-> clocks = <&clk0,
->           &clk1,
->           &clk2,
->           &clk3,
->           &clk4,
->           0,
->           0,
->           0>
-> clock-names = <"mst_in0",
->                "mst_in1",
->                "mst_in2"
->                "mst_in2"
->                "mst_in3"
->                "mst_in4"
->                "mst_in5"
->                "mst_in6"
->                "mst_in7">
->
-> But I don't see in the doc that the last 3 clocks are grounded to
-> anywhere. It will be just community's assumption about internals of the
-> controller.
+>  	if (target_bandwidth_kbps > 0) {
+>  		is_dsc_possible =3D decide_dsc_target_bpp_x16(
 
-Maybe so. Given how much we know about the amlogic HW, there will always be
-assumptions (... and corrections). It is a fare assumption to
-make. Looking at definitions for the master clocks or the TDM clocks,
-you can see that the HW is same, only what is wired in has changed.
+I suggest to take another coding style concern into account.
+Please use curly brackets for both if branches.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/coding-style.rst?h=3Dv6.9-rc5#n213
 
-The register definition of the master clocks is still the same.
-You may still put a '6' in the register, you just don't know where it
-goes. Physically it may exist IMO.
-
-I'll agree only the 5 first mst inputs are documented ATM.
-Go ahead with a different interface but at least fix the names please.
-
->
-> Anyway, I still don't understand what to do with external slv_* clocks.
-> I can do the same as in example above: list slv_(s|lr)clk[0-9] in
-> "clock-names" and fill the rest if "clocks" by "0" phandles.
->
-
-You don't have to put them in the example when there is only <0> to the end.
-
->> It also shows that it is a bad idea to name input after what is coming
->> in (like you do with "dds_in" or "fclk_div2") instead of what they
->> actually are like in the AXG (mst0, mst1, etc ...)
->> 
->
-> I agree, these are not the best names.
->
->>>
->>>>>
->>>>> By the way, I don't know any example (neither for A1 SoC nor for other
->>>>> Amlogic's SoCs) where these optional clocks are used, but they are
->>>>> allowed by hw.
->>>
->>> Those scenario exists and have been tested. There is just no dts using
->>> that upstream because they are all mostly copy of the AML ref design.
->>>
->>>>>
->>>>> This is my understanding of this controller. I hope, Jerome Brunet will
->>>>> clarify how it actually works.
->>>>
->>>
->>> I think the simpliest way to deal with this to just list all the clocks
->>> with 'minItems = 1'. It is going be hard to read with a lot of '<0>,' in
->>> the DTS when do need those slave clocks but at least the binding doc
->>> will be simple.
->>>
->>>> Best regards,
->>>> Krzysztof
->>>
->>> If you are going ahead with this, please name the file
->>> amlogic,axg-audio-clkc.yaml because this is really the first controller
->>> of the type and is meant to be documented in the same file.
->>>
->>> You are free to handle the conversion of the AXG at the same time if
->>> you'd like. It would be much appreciated if you do.
->> 
->> 
-
-
--- 
-Jerome
+Regards,
+Markus
 
