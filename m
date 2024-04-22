@@ -1,209 +1,320 @@
-Return-Path: <linux-kernel+bounces-153918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C13E8AD4D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:29:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B95F8AD4DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:31:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6035A1C21250
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:29:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F9491C2121D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07127155332;
-	Mon, 22 Apr 2024 19:29:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD2415533B;
+	Mon, 22 Apr 2024 19:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JuLSGdvS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="HHhavi+9";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="6dR0hyW3";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DN+IbO3O";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="6l5yAp9L"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309DD5025E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:29:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24925025E;
+	Mon, 22 Apr 2024 19:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713814161; cv=none; b=S9D4SswdAzCEe5dmClnw8W8C/fdlNwddQUk5RwI2A6tz0kWlExSx/RBEM3GxZSOfRA9jJymLGs6OkgSQZAGFqV0wYJs9C4ERZGaog6JClK6bJwegpt3KpGjW1e2irERyGOzM6s3I11YHh1+/u40nagPKBVms4Rly6bZZePftrY0=
+	t=1713814253; cv=none; b=tg7PU+rRSFLXGVtuHgTTmyyD8wZDmtTKXol3P6BukmOk5YNgLbhAn4VB+6hQPNkE4C7E1m0IP1HhCB1X/PuwH9bpTLd/+PLWfEyhzJIhoYsVCfIH0ePvuhfttMUo0JFC5sXZnVO8KnIMRfTJeaFG8c+Gh+V17yha6vQ3JztViN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713814161; c=relaxed/simple;
-	bh=Sl3bg4WlJGYpNQQ2XrWaH54qrlh04DWMOhfUk4PpecA=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=JEJsuiQnvj8p2CsZFaMQlpJgesQLw4bxiXh2rXxYi/pRtw41tbvIdOQS7egN9xMTDBp9QKom3hZo4H+n44OszNwx4OIHcy0QyR4wPtirg0JqiN3ROdrioRuMoMLiknS/okDXFgoGm4YcesoaXiIgj9OPQejqgbSM+9A5s7qKsLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JuLSGdvS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 860D8C113CC
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:29:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713814160;
-	bh=Sl3bg4WlJGYpNQQ2XrWaH54qrlh04DWMOhfUk4PpecA=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=JuLSGdvS461N5tgKKFcKRNK3/ne22I9lj+6AnRVSB6FTV0J88YpyGjs2YTxncB6CI
-	 lpbx8vtkov0/sJ0VpDibs2jtt/tnaXd4HcC0rFisrKhmf6tu9nHvKxWMcB5AwZ32/H
-	 mbQoEKAKDRNg16wEzhYhKmQ3w1x6lI4GzuRCBYDFO6WfWmX/99OXKTZbNg/tgmcNCt
-	 rKAqmaeTfevfAP7c/48hFz4zv5ejs6jZu/upGRSAAxa0szl4+AvspgRvaV3+83kJP4
-	 ZqSW23z/rryMI1zFi6xahUG/nl3M8R3dXnDN+TPXvxPoGOR3uomx/VLJQkWuGl8+g7
-	 OpLdcu17Kpj2g==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 7EF181200066;
-	Mon, 22 Apr 2024 15:29:19 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 22 Apr 2024 15:29:19 -0400
-X-ME-Sender: <xms:j7omZhjlP81AZHYOK7fB-YL4puJb2jcvH7SRTVbSUlPZViGspNXMyQ>
-    <xme:j7omZmA3HhaaFT3AokDixKUozs2VMXaNQVEhb0keRZ59x9q15dIbSFNYJGTevw89j
-    PKe3FtnS1aBQ-vk7do>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekledgudeflecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedvveeigfetudegveeiledvgfevuedvgfetgeefieeijeejffeggeeh
-    udegtdevheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidquddvkeehudej
-    tddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgvlhdrohhrghesrghrnhgusg
-    druggv
-X-ME-Proxy: <xmx:j7omZhEsftRQyr4t7KGM57W5nx9vhCHXsNRcnzCuXPLc-kt3W7W27A>
-    <xmx:j7omZmR133dXUwOEhLDCN4ECAkYyDyP98bWp4qj3nw9lQTKuzOv-vg>
-    <xmx:j7omZuyXEPq5fKcU6bu36b_MeUgMUNRHoCkhyDQ97KFDPRP4jCYQtg>
-    <xmx:j7omZs5TBZh7F08mE_vcVF4LJKrMba23xrU7LeHj5TsCR5tggSUqfA>
-    <xmx:j7omZjxUFdxBz5hzgZ3VciArKk1jsZrREZlmc6rgvwh78sWWeaLLzBHp>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 3515AB6008D; Mon, 22 Apr 2024 15:29:19 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-386-g4cb8e397f9-fm-20240415.001-g4cb8e397
+	s=arc-20240116; t=1713814253; c=relaxed/simple;
+	bh=KrqLQxY8MNNZTtlKm+hxEOGdekXiZtGWcodHhjg3tu0=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XAdIxCCTXt+JO2TEoOZmBjObm4Cxmie63lsHXQJmsc6ornAyo4AEdtyEN0sv9x6W78GpoRh2F0HeGk5g2ihGBbSqbmF1yKqDabOjeBuJ9KxYv04rOT6UkSIF2FGULKDkbJ2HX7JVfb7+1e4egFg30amrp/Rjt0XK6Z8bV039bsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=HHhavi+9; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=6dR0hyW3; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DN+IbO3O; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=6l5yAp9L; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C6A485D514;
+	Mon, 22 Apr 2024 19:30:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713814250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ra3e3cDvf4azeKnE5GPwyR5UD1bEeFV+gj5m/O8jNuY=;
+	b=HHhavi+9J0kI9qjD+iF2F3ijUr1GH2uFkkMxR+99BFAxN/n5WwLWCEil/I9oDgporrNGjc
+	2vSVEUGYgHXHV4zk6W1VXW3kCM9yr8KDEGLpwPpp3SyZNCnPJXU7L2SIUJ+T0G2H5H4lDl
+	ACr6RMiiTsgVWG8y1YWNQ9mC/jAKdbE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713814250;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ra3e3cDvf4azeKnE5GPwyR5UD1bEeFV+gj5m/O8jNuY=;
+	b=6dR0hyW3AV1yQw0LBwfS5V1LoVlCkkFddp1GWQI6IgTEAXCSDATkHIpZsOua8G+sTCZIPk
+	R6CFS1urNfhAqFBw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=DN+IbO3O;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=6l5yAp9L
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713814249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ra3e3cDvf4azeKnE5GPwyR5UD1bEeFV+gj5m/O8jNuY=;
+	b=DN+IbO3ODipH3PJm+t4GHmC/CCQGv8F+EUMGPD8D/WSf/UGiRwHLsIZE+Qdacg3b6TQhKN
+	/IiasBdy6B9Ijp2PWMZfWvR96FntrasqmkMgCHIFNKgo472ZWEBuX112fpIiUNxjlAizyZ
+	CDhhTSWo4EhW8BaE81OFsAIcGQq5row=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713814249;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ra3e3cDvf4azeKnE5GPwyR5UD1bEeFV+gj5m/O8jNuY=;
+	b=6l5yAp9LWsonmY8Suen71OVEFHzMzWfaDmVMmEUIH9m0UGw1DAW9P6dPIJ5oPxK2tZCoe8
+	5B8B1Z0MpVmUG1AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0CEA9136ED;
+	Mon, 22 Apr 2024 19:30:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FYHzAem6JmbUQAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 22 Apr 2024 19:30:49 +0000
+Date: Mon, 22 Apr 2024 21:30:57 +0200
+Message-ID: <87zftli49a.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc: Takashi Iwai <tiwai@suse.de>,
+	"Yang, Chenyuan" <cy54@illinois.edu>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"jani.nikula@intel.com" <jani.nikula@intel.com>,
+	"syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
+	"mchehab@kernel.org" <mchehab@kernel.org>,
+	"Zhao, Zijie"
+ <zijie4@illinois.edu>,
+	"Zhang, Lingming" <lingming@illinois.edu>
+Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
+In-Reply-To: <966f5847-d007-4425-a902-1e1c05a820ae@xs4all.nl>
+References: <PH7PR11MB57688E64ADE4FE82E658D86DA09EA@PH7PR11MB5768.namprd11.prod.outlook.com>
+	<f985d664-d907-48ed-9b3d-dc956c178b88@xs4all.nl>
+	<526380BE-57AC-493D-A7B0-B8F0ECC0FE0A@illinois.edu>
+	<f1855145-9562-4bef-800f-43bcacff6fc8@xs4all.nl>
+	<2e5f1e92-7fad-4a74-b375-1e194ff08ce6@xs4all.nl>
+	<F8D4A291-8CFB-4A25-B296-3CA07B56F459@illinois.edu>
+	<49a68c10-9549-4fd8-b929-d4c7a9c8debf@xs4all.nl>
+	<PH7PR11MB5768B0BC3C042A6EA4EC1EF0A0542@PH7PR11MB5768.namprd11.prod.outlook.com>
+	<7E36CBBD-F2AD-4D98-8D4E-F52E62C3E812@illinois.edu>
+	<87le59s8wi.wl-tiwai@suse.de>
+	<966f5847-d007-4425-a902-1e1c05a820ae@xs4all.nl>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-Id: <a666e39d-a894-4e27-aac4-65d11a18358a@app.fastmail.com>
-In-Reply-To: <26c23fb8557d806c12a246caa575e4f4fc4ea27a.camel@linux.ibm.com>
-References: <20240410142329.3567824-1-schnelle@linux.ibm.com>
- <20240410142329.3567824-2-schnelle@linux.ibm.com> <Zhfs8CN5XdgldKUn@carbonx1>
- <26c23fb8557d806c12a246caa575e4f4fc4ea27a.camel@linux.ibm.com>
-Date: Mon, 22 Apr 2024 21:28:58 +0200
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Niklas Schnelle" <schnelle@linux.ibm.com>,
- "Helge Deller" <deller@kernel.org>
-Cc: "Helge Deller" <deller@gmx.de>, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "Heiko Carstens" <hca@linux.ibm.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] video: Handle HAS_IOPORT dependencies
-Content-Type: text/plain
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[xs4all.nl];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_ENVRCPT(0.00)[xs4all.nl];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	DKIM_TRACE(0.00)[suse.de:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: C6A485D514
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -3.51
 
-On Mon, Apr 22, 2024, at 10:34, Niklas Schnelle wrote:
-> On Thu, 2024-04-11 at 16:00 +0200, Helge Deller wrote:
->> * Niklas Schnelle <schnelle@linux.ibm.com>:
->> > In a future patch HAS_IOPORT=n will disable inb()/outb() and friends at
->> > compile time. We thus need to #ifdef functions and their callsites which
->> > unconditionally use these I/O accessors. In the include/video/vga.h
->> > these are conveniently all those functions with the vga_io_* prefix.
->> 
->> Why don't you code it like in the patch below?
->> inb_p(), outb_p() and outw() would then need to be defined externally
->> without an implementation so that they would generate link time errors
->> (instead of compile time errors).
->
-> This may be personal preference but I feel like link time errors would
-> be very late to catch a configuration that can't work. Also this would
-> bypass the __compiletime_error("inb()) requires CONFIG_HAS_IOPORT");
-> added instead of the in*()/out*() helpers to make it easy to spot the
-> problem.
->
-> I'm not a fan of #ifdeffery either but I think in this case it is
-> simple, well enough contained and overall there aren't that many spots
-> where we need to exclude just some sections of code vs entire drivers
-> with vga.h probably being the worst of them all.
+On Mon, 22 Apr 2024 14:14:17 +0200,
+Hans Verkuil wrote:
+> 
+> Hi Takashi,
+> 
+> On 19/04/2024 16:51, Takashi Iwai wrote:
+> > On Mon, 26 Feb 2024 13:27:16 +0100,
+> > Yang, Chenyuan wrote:
+> >>
+> >> Hi Hans,
+> >>
+> >> Thank you for your continued efforts in investigating this bug and implementing the new patch!
+> >>
+> >> Regarding the two warnings, they have been addressed by this new patch and are no longer reproducible. Additionally, I conducted a 48-hour fuzzing test on the CEC driver, which has successfully eliminated the previous hanging issue.
+> >>
+> >> One thing to note that the system will now log timeout events:
+> >> ```
+> >> [ 2281.265385][ T2034] cec-vivid-001-vid-out0: transmit timed out
+> >> [ 2282.994510][ T2017] cec-vivid-000-vid-cap0: transmit timed out
+> >> [ 2283.063484][ T2050] cec-vivid-002-vid-out0: transmit timed out
+> >> [ 2283.073468][ T2065] cec-vivid-003-vid-cap0: transmit timed out
+> >> [ 2283.373518][ T2033] cec-vivid-001-vid-cap0: transmit timed out
+> >> [ 2285.113544][ T2018] cec-vivid-000-vid-out0: transmit timed out
+> >> [ 2285.193502][ T2050] cec-vivid-002-vid-out0: transmit timed out
+> >> [ 2285.193570][ T2065] cec-vivid-003-vid-cap0: transmit timed out
+> >> [ 2285.513570][ T2033] cec-vivid-001-vid-cap0: transmit timed out
+> 
+> >> ```
+> >>
+> >> Best,
+> >> Chenyuan
+> > 
+> > Hi Hans,
+> > 
+> > how is the current status of this bug fix?  It seems that the thread
+> > stalled, and I wonder how we can go further.
+> > 
+> > I'm asking it because CVE-2024-23848 was assigned and we've been asked
+> > about the bug fix.
+> 
+> I missed this reply, so I will take another look at the patch. Too many emails :-(
+> 
+> Two other patches relating to this I have just posted:
+> 
+> https://patchwork.linuxtv.org/project/linux-media/patch/2b043325-14c0-4e63-ae9c-0d685d96fd98@xs4all.nl/
+> https://patchwork.linuxtv.org/project/linux-media/patch/f17f961b-3a19-48da-941a-c8970d9e1786@xs4all.nl/
 
-Agreed. I also tried to see if we can move stuff out of vga.h
-to have it included in fewer places, as almost everything that
-uses this header already has a HAS_IOPORT dependency, but that
-would be a lot more work.
-
-The other one that gains a few ugly #ifdefs is the 8250 driver,
-everything else is already merged in linux-next or needs a simple
-Kconfig dependency.
-
-I think we can make the vga.h file a little more readable
-by duplicating the functions and still keep the __compiletime_error()
-version in asm/io.h, see below.
-
-    Arnd
+Thanks!  If a full set of patches are ready, please let us know.
 
 
-diff --git a/include/video/vga.h b/include/video/vga.h
-index 947c0abd04ef..7e1d8252b732 100644
---- a/include/video/vga.h
-+++ b/include/video/vga.h
-@@ -197,6 +197,23 @@ struct vgastate {
- extern int save_vga(struct vgastate *state);
- extern int restore_vga(struct vgastate *state);
- 
-+static inline unsigned char vga_mm_r (void __iomem *regbase, unsigned short port)
-+{
-+	return readb (regbase + port);
-+}
-+
-+static inline void vga_mm_w (void __iomem *regbase, unsigned short port, unsigned char val)
-+{
-+	writeb (val, regbase + port);
-+}
-+
-+static inline void vga_mm_w_fast (void __iomem *regbase, unsigned short port,
-+				  unsigned char reg, unsigned char val)
-+{
-+	writew (VGA_OUT16VAL (val, reg), regbase + port);
-+}
-+
-+#ifdef CONFIG_HAS_IOPORT
- /*
-  * generic VGA port read/write
-  */
-@@ -217,22 +234,6 @@ static inline void vga_io_w_fast (unsigned short port, unsigned char reg,
- 	outw(VGA_OUT16VAL (val, reg), port);
- }
- 
--static inline unsigned char vga_mm_r (void __iomem *regbase, unsigned short port)
--{
--	return readb (regbase + port);
--}
--
--static inline void vga_mm_w (void __iomem *regbase, unsigned short port, unsigned char val)
--{
--	writeb (val, regbase + port);
--}
--
--static inline void vga_mm_w_fast (void __iomem *regbase, unsigned short port,
--				  unsigned char reg, unsigned char val)
--{
--	writew (VGA_OUT16VAL (val, reg), regbase + port);
--}
--
- static inline unsigned char vga_r (void __iomem *regbase, unsigned short port)
- {
- 	if (regbase)
-@@ -258,7 +259,25 @@ static inline void vga_w_fast (void __iomem *regbase, unsigned short port,
- 	else
- 		vga_io_w_fast (port, reg, val);
- }
-+#else
- 
-+static inline unsigned char vga_r (void __iomem *regbase, unsigned short port)
-+{
-+	return vga_mm_r(regbase, port);
-+}
-+
-+static inline void vga_w(void __iomem *regbase, unsigned short port, unsigned char val)
-+{
-+	vga_mm_w (regbase, port, val);
-+}
-+
-+static inline void vga_w_fast (void __iomem *regbase, unsigned short port,
-+			       unsigned char reg, unsigned char val)
-+{
-+	vga_mm_w_fast(regbase, port, reg, val);
-+}
-+
-+#endif
- 
- /*
-  * VGA CRTC register read/write
+Takashi
+
+> 
+> Regards,
+> 
+> 	Hans
+> 
+> > 
+> > 
+> > Thanks!
+> > 
+> > Takashi
+> > 
+> >>
+> >> From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> >> Date: Friday, February 23, 2024 at 8:44 AM
+> >> To: Yang, Chenyuan <cy54@illinois.edu>, linux-media@vger.kernel.org <linux-media@vger.kernel.org>, linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+> >> Cc: jani.nikula@intel.com <jani.nikula@intel.com>, syzkaller@googlegroups.com <syzkaller@googlegroups.com>, mchehab@kernel.org <mchehab@kernel.org>, Zhao, Zijie <zijie4@illinois.edu>, Zhang, Lingming <lingming@illinois.edu>
+> >> Subject: Re: [Linux Kernel Bugs] KASAN: slab-use-after-free Read in cec_queue_msg_fh and 4 other crashes in the cec device (`cec_ioctl`)
+> >> Hi Chenyuan,
+> >>
+> >> Here is another patch for you to try. I think it is good for blocking CEC_ADAP_S_LOG_ADDRS
+> >> ioctl calls, but if the filehandle is in non-blocking mode, I'm still not certain it
+> >> is correct. But one issue at a time :-)
+> >>
+> >> Regards,
+> >>
+> >>         Hans
+> >>
+> >> diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
+> >> index 559a172ebc6c..a493cbce2456 100644
+> >> --- a/drivers/media/cec/core/cec-adap.c
+> >> +++ b/drivers/media/cec/core/cec-adap.c
+> >> @@ -936,8 +936,7 @@ int cec_transmit_msg_fh(struct cec_adapter *adap, struct cec_msg *msg,
+> >>           */
+> >>          mutex_unlock(&adap->lock);
+> >>          wait_for_completion_killable(&data->c);
+> >> -       if (!data->completed)
+> >> -               cancel_delayed_work_sync(&data->work);
+> >> +       cancel_delayed_work_sync(&data->work);
+> >>          mutex_lock(&adap->lock);
+> >>
+> >>          /* Cancel the transmit if it was interrupted */
+> >> @@ -1575,9 +1574,12 @@ static int cec_config_thread_func(void *arg)
+> >>   */
+> >>  static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+> >>  {
+> >> -       if (WARN_ON(adap->is_configuring || adap->is_configured))
+> >> +       if (WARN_ON(adap->is_claiming_log_addrs ||
+> >> +                   adap->is_configuring || adap->is_configured))
+> >>                  return;
+> >>
+> >> +       adap->is_claiming_log_addrs = true;
+> >> +
+> >>          init_completion(&adap->config_completion);
+> >>
+> >>          /* Ready to kick off the thread */
+> >> @@ -1592,6 +1594,7 @@ static void cec_claim_log_addrs(struct cec_adapter *adap, bool block)
+> >>                  wait_for_completion(&adap->config_completion);
+> >>                  mutex_lock(&adap->lock);
+> >>          }
+> >> +       adap->is_claiming_log_addrs = false;
+> >>  }
+> >>
+> >>  /*
+> >> diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+> >> index 67dc79ef1705..3ef915344304 100644
+> >> --- a/drivers/media/cec/core/cec-api.c
+> >> +++ b/drivers/media/cec/core/cec-api.c
+> >> @@ -178,7 +178,7 @@ static long cec_adap_s_log_addrs(struct cec_adapter *adap, struct cec_fh *fh,
+> >>                             CEC_LOG_ADDRS_FL_ALLOW_RC_PASSTHRU |
+> >>                             CEC_LOG_ADDRS_FL_CDC_ONLY;
+> >>          mutex_lock(&adap->lock);
+> >> -       if (!adap->is_configuring &&
+> >> +       if (!adap->is_claiming_log_addrs && !adap->is_configuring &&
+> >>              (!log_addrs.num_log_addrs || !adap->is_configured) &&
+> >>              !cec_is_busy(adap, fh)) {
+> >>                  err = __cec_s_log_addrs(adap, &log_addrs, block);
+> >> @@ -664,6 +664,8 @@ static int cec_release(struct inode *inode, struct file *filp)
+> >>                  list_del_init(&data->xfer_list);
+> >>          }
+> >>          mutex_unlock(&adap->lock);
+> >> +
+> >> +       mutex_lock(&fh->lock);
+> >>          while (!list_empty(&fh->msgs)) {
+> >>                  struct cec_msg_entry *entry =
+> >>                          list_first_entry(&fh->msgs, struct cec_msg_entry, list);
+> >> @@ -681,6 +683,7 @@ static int cec_release(struct inode *inode, struct file *filp)
+> >>                          kfree(entry);
+> >>                  }
+> >>          }
+> >> +       mutex_unlock(&fh->lock);
+> >>          kfree(fh);
+> >>
+> >>          cec_put_device(devnode);
+> >> diff --git a/include/media/cec.h b/include/media/cec.h
+> >> index 10c9cf6058b7..cc3fcd0496c3 100644
+> >> --- a/include/media/cec.h
+> >> +++ b/include/media/cec.h
+> >> @@ -258,6 +258,7 @@ struct cec_adapter {
+> >>          u16 phys_addr;
+> >>          bool needs_hpd;
+> >>          bool is_enabled;
+> >> +       bool is_claiming_log_addrs;
+> >>          bool is_configuring;
+> >>          bool must_reconfigure;
+> >>          bool is_configured;
+> >>
+> 
 
