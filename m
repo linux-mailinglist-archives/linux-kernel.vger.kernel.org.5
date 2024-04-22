@@ -1,89 +1,67 @@
-Return-Path: <linux-kernel+bounces-153279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C0F58ACBD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:16:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 886758ACBDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:18:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 381542832E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:16:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9CA41C221C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ECF81465A7;
-	Mon, 22 Apr 2024 11:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621CF146597;
+	Mon, 22 Apr 2024 11:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TMW3g3nR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DvjCbNMJ"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D233145FEC;
-	Mon, 22 Apr 2024 11:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D0126AE6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:17:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713784578; cv=none; b=Pfw3E24zo8VADK1n8PVL15LwC1KynYnF7GGRUnM3oCeW0MoBf+2YIieOsX7l6GUE9MZY3JJmXcUAejRgLZn5hi3174bf97niBhlZUeXdkWonhVmO8LT4wHnp6F2eDxsNvWUrCqEFZ4tDHQUcSE+eIXCY2bdxOhm6ktTB3Fqi6No=
+	t=1713784677; cv=none; b=ELID0QC/PY2yPci21Owqu2+za99MBIkTB3NIFAzZGKrCeMVBP/dkHUhgEFRbRdKJ+egTcVES8I3PIe/wVpVwZH++5sa0WhvwmYQDCBDr5PEeOeH6WnXhN3+puNqSIgWZdBpiKifvQYsBBFJfQ4ehw9E+ngqyuuY0GPWBZub//+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713784578; c=relaxed/simple;
-	bh=wDbHwtY+TxaptW1s9tsA+CXbI81ldIEI6DPUe3+mBvY=;
+	s=arc-20240116; t=1713784677; c=relaxed/simple;
+	bh=3HTBs8uYzG+qgved11753oIo5smuqzX+aqxjD9LRROU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p7yvcPPXKLiVHDfn8aLO3DH6KgcZIKJRNVJ9JKyGCys5k5ktB9+4wb3QxNW8ZgHVxFl/LNLURTiMSO6A5ceiw3rRTnfU8BepFle9slgS1u849CmHAKTFi83bs66QQNnvDIbYGZ54JAomQoxyghiCrqtCcPjXSO6FQiIc8lZa6Bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TMW3g3nR; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713784577; x=1745320577;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=wDbHwtY+TxaptW1s9tsA+CXbI81ldIEI6DPUe3+mBvY=;
-  b=TMW3g3nRdysYNgu1cdwMmTecpg3YPKA0LVq+Ka7aF+IOSS7cK22TCWtV
-   D2NJpIuCoJ0PkTpMOLLVOzxs/YE1CZqk1sy3me1IO6wHC4OihLbcm/mc+
-   cwMQYLpDYJeXziWDjZldcY2xISpRvNb5Hv0nQH5rXCAmZQ+EdMkCjbNZs
-   y0YIWTYCNh8FlsmPET8zdHG9bpyV0NF2t+ERjd5wv4kIWlmGRx3vU5a+e
-   EEiD4uqCDdBrqv2WND4HTakAiVF+aZ6nVjCkIZYObc1vlmYeJ/bimXwiW
-   mV7KtUGfOectI7Okb7zWWlPutWDQHt4YQYWxdI+hb0+NttSYS1z9dLUVP
-   Q==;
-X-CSE-ConnectionGUID: S8FvSFW0TxaJM3qEOVZdtA==
-X-CSE-MsgGUID: jyYtX122Q5ij6TJUOVfwzg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11051"; a="31807932"
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="31807932"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 04:16:17 -0700
-X-CSE-ConnectionGUID: QrqM3OGDRkuy6EK36oRdNA==
-X-CSE-MsgGUID: ABjTpl61TnSfyt0J40sxCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
-   d="scan'208";a="23858314"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 04:16:11 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1ryreZ-00000001d8Q-2mcE;
-	Mon, 22 Apr 2024 14:16:07 +0300
-Date: Mon, 22 Apr 2024 14:16:07 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: "Konstantin P." <ria.freelander@gmail.com>
-Cc: Jiri Slaby <jirislaby@kernel.org>,
-	Konstantin Pugin <rilian.la.te@ya.ru>, krzk@kernel.org,
-	conor@kernel.org, lkp@intel.com, vz@mleia.com, robh@kernel.org,
-	jcmvbkbc@gmail.com, nicolas.ferre@microchip.com,
-	manikanta.guntupalli@amd.com, corbet@lwn.net, ychuang3@nuvoton.com,
-	u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Lech Perczak <lech.perczak@camlingroup.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] serial: sc16is7xx: add support for EXAR XR20M1172
- UART
-Message-ID: <ZiZG90gXb66jCaw_@smile.fi.intel.com>
-References: <20240420182223.1153195-1-rilian.la.te@ya.ru>
- <20240420182223.1153195-4-rilian.la.te@ya.ru>
- <7cf31245-b2a1-419c-add6-a6a50a3f3cf1@kernel.org>
- <CAF1WSuw9WKCNbsnyDv6F0QNJbYT78wMn=s54n7XXfM94z51oJg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lz4MbftAjMzIUaH6d5tbsV6MNBjwb3y0deGl6LE8CWMij7d0zdhEL36hzDA65luH5ERHlkdSVZ6gyNHB4QHXoYB6MtlJfCiMudVmWfvYDgSO/1cj2DeWtgG4OBhh4wsPM8R4QGpZ1f97qZ4b4eDZ1nvZRKAdg/Z6BnkJgWtgmX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DvjCbNMJ; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=klYVYxoyZc5Ys+G/99+0FWzSz6uZcVcksgl+fOSPZsI=; b=DvjCbNMJOOLlOEL1usO9NelC+/
+	LigroHhnhromLtzpqvoVPA5j7/XzUXZzCP6ZsSe32ELKLsZtxM2J4w1sxxsJiHRDoOGja8AxdzZ+O
+	sxyJSNYDHGIdtUX6SSiXFSZ/VGixYfzqfaURB4YIaA8clgN/RDB1iNyERoNHErV0hcNidC80dsJgv
+	c2cjMvAJT65Tv9TUpTA/zdsBvCXj8w5Qav9xqMPTKFzlElOTbOaE4D+YDDM2EUlvwMLUxe0MEeHqE
+	RVVh9BPR4nfKO4R1u8AVGRWNW13ZkRFRPictgr/X/DCkYVIeQEdXNbXemuCGnVq2XGd5cnsXxPrs4
+	B53esLhg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ryrg9-0000000Ddzp-0hrO;
+	Mon, 22 Apr 2024 11:17:45 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id CF09A30045D; Mon, 22 Apr 2024 13:17:44 +0200 (CEST)
+Date: Mon, 22 Apr 2024 13:17:44 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Xuewen Yan <xuewen.yan94@gmail.com>
+Cc: Xuewen Yan <xuewen.yan@unisoc.com>, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	yu.c.chen@intel.com, ke.wang@unisoc.com, di.shen@unisoc.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sched/eevdf: Prevent vlag from going out of bounds
+ when reweight_eevdf
+Message-ID: <20240422111744.GO30852@noisy.programming.kicks-ass.net>
+References: <20240422082238.5784-1-xuewen.yan@unisoc.com>
+ <CAB8ipk-LhSuMsp0DdzjEJN-4XEBT1_ri6BPH_nvxSgFZONMT2Q@mail.gmail.com>
+ <20240422094157.GA34453@noisy.programming.kicks-ass.net>
+ <CAB8ipk9M1wLXV7MWMBYGMhKbY71QqwkvchiENeWTg7JERe6kZw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,30 +71,33 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF1WSuw9WKCNbsnyDv6F0QNJbYT78wMn=s54n7XXfM94z51oJg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAB8ipk9M1wLXV7MWMBYGMhKbY71QqwkvchiENeWTg7JERe6kZw@mail.gmail.com>
 
-On Mon, Apr 22, 2024 at 11:35:32AM +0300, Konstantin P. wrote:
-> I do not think this is a requirement for a new version. I need to
-> wait. Some folks want to test my patches with their hardware)))
+On Mon, Apr 22, 2024 at 07:07:25PM +0800, Xuewen Yan wrote:
+> On Mon, Apr 22, 2024 at 5:42 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Mon, Apr 22, 2024 at 04:33:37PM +0800, Xuewen Yan wrote:
+> >
+> > > On the Android system, the nice value of a task will change very
+> > > frequently. The limit can also be exceeded.
+> > > Maybe the !on_rq case is still necessary.
+> > > So I'm planning to propose another patch for !on_rq case later after
+> > > careful testing locally.
+> >
+> > So the scaling is: vlag = vlag * old_Weight / weight
+> >
+> > But given that integer devision is truncating, you could expect repeated
+> > application of such scaling would eventually decrease the vlag instead
+> > of grow it.
+> >
+> > Is there perhaps an invocation of reweight_task() missing? Looking at
+> 
+> Is it necessary to add reweight_task in the prio_changed_fair()?
 
-You should not top-post!
+I think that's the wrong place. Note how __setscheduler_params() already
+has set_load_weight(). And all other callers of ->prio_changed() already
+seem to do set_load_weight() as well.
 
-..
-
-Yes, it would be good them to provide a formal Tested-by tag, then you may send
-a v6 with the tags and Jiri's comments being addressed. Btw, I prefer to have
-them addressed now to eliminate unneeded churn in the future.
-
-> On Mon, Apr 22, 2024 at 9:30 AM Jiri Slaby <jirislaby@kernel.org> wrote:
-> > On 20. 04. 24, 20:22, Konstantin Pugin wrote:
-
-> > I am not sure the above warrants for a new version. Just in case you are
-> > sending one.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+But that idle policy thing there still looks wrong, that sets the weight
+very low but doesn't re-adjust anything.
 
