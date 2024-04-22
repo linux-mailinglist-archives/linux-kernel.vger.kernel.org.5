@@ -1,169 +1,79 @@
-Return-Path: <linux-kernel+bounces-152929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 565678AC643
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:06:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A4898AC649
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:06:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FBDBB20D4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:06:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BA681C20EB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1EE64F1F2;
-	Mon, 22 Apr 2024 08:05:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MF7bhdrP"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436324DA14;
-	Mon, 22 Apr 2024 08:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 542234E1D9;
+	Mon, 22 Apr 2024 08:06:18 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5298502A3;
+	Mon, 22 Apr 2024 08:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773151; cv=none; b=N/m3EPQI+vuXx8c+kJkfzJoxEvXYybpXHcjQQFW0RYhAfcn9rrFK3a03WNszq30RGkGBVkPP4FLZYWEagfFxAqa/5SVPcoMoUMaGwLWYwskQg7C9K2FkjpyyjaYKd5Nwfb3F1Nx1rJQXIDlnNYtV/EyxdUxwUzs7lZ4cjuUjqa4=
+	t=1713773177; cv=none; b=ZTUSI5MBUBDKh2gIWkkIA7OvSObR8ZsjATsN82N9QBKNO60B7NFYLOxSm6JuM7j9tnEg7Uwvo1S1GWHvtjW8SLZfr28/Z1lKO/v1xly2xVRrmZUvxzEBGNrnNlM8GuMg73+5/aEA2A35In4aLceNvoBSdWCM0DfpvMHztW0eJvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773151; c=relaxed/simple;
-	bh=uVhWNiAMfNDp/b9IeuNVtP5nn6HBNzCWGB9iGqhdiLQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FXunZ4KAyASMoCy779s19i2FZ0/t4+n0VKgyowdv1gEI7SF7za0zZiEOZqEIqfkllPAKcfeN7MuwN/Lxm52+QstO7XEq7tpBfAJueHGIANrDM7o0nNrhSFhNuvq8ve4NFUrS76TZkZxbkNswtXwkQzD+tBXuHL1VQ1xKAXbMUxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MF7bhdrP; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cdbc4334edso2029237a12.3;
-        Mon, 22 Apr 2024 01:05:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713773145; x=1714377945; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=n4Ld606VREySuBvvbpoJ4lVHq8DXsMyZcPtIwiLYOTw=;
-        b=MF7bhdrPeokn4GStVp0kMvzij6sYL1TjycWWydWwa/0Kyrqn0S82/TdAYMYCrX0osH
-         e+R0rzaoYTm9uKc8UtfXO9tkrmu5WYItDqCVEKZnZxyfImcnhSZuDHa1zcu12ebVuptR
-         G9dG0vpblcnUqayclS6rpSNTR8amifIruAEG/MvqbSGpKJToEKVQ2uGqxFEzm2ZtNPlM
-         YDAQHhlp4Cw0WUi5tGAVFyasev6/xU2jXpKdbyPiNbI5mBzuv8/ROjmTZvy+wXOq1xmc
-         JwReEN8QPVmt27COsOPPRA9oUSnPABAi5jtTUc4EPSUvHwxOcWsTa4hLX9HSCpnzOBeH
-         8wow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713773145; x=1714377945;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n4Ld606VREySuBvvbpoJ4lVHq8DXsMyZcPtIwiLYOTw=;
-        b=h54rXPMKLzs858zt0qQXy8AgcsRrEzDKoe4RARUEc6SSrrd1Wu3EeoAHM6OTPh4arW
-         Em+qWbNvpIXzGZCrOlXxBbnyHZnzY5IE25J9w4Ij57I5bdS6ZGE0nPYCJJp1k7d0BbgF
-         dz7mnlDFrq1m+yUQKBN2aE3kaLxu/1HG4xOa59i5aPUJGxv/69b2FWPt38V5ftdJtjjf
-         g8h3HI9wGpYHfbQ9O1oXQCkIyMwB2hPh+iKtfqw2TXdp8ffmAsdptaVkCniW/kZVxOw8
-         gY274oF9Hb83yrL8h6laZj4ciSWJ7Jsko+/cs8XhQFQpJMc7HVZCSLosz8yaPuIYsP8h
-         H30Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXz7IB7oY7tpeFaRpcJv6fyxPHdYlfy57bzXgaRlSRDUg5XH+TngTe19GCcBsYMuV9iaJv/aOGo4Z+t2e38BOFfaJdqec7BC96y1Hdg8uVFs+pKKJy4iQy2qL9hMUWu3Xlt5jZ+RcCQE8KB0i8JsSlTTqNlIr6kSkf0WQBPsc1S2ScDzg==
-X-Gm-Message-State: AOJu0YzlVWD1cRZzg4BcEIzCXT+ejo7ytt1nO5omcyoMm81BFgZvN58V
-	Lch0lBIKpMh1mWA4TCkTvNKdDRIAHbOwKESOpCMENfWpjknWRT4N
-X-Google-Smtp-Source: AGHT+IEr8/+66snntLRMzZCUO90S81JePpMsCeL3w66lbO0RkfdaeGJVZyZq3gBfQDbdCvcKx9Y4Sg==
-X-Received: by 2002:a05:6a20:244d:b0:1aa:8442:21ba with SMTP id t13-20020a056a20244d00b001aa844221bamr10148312pzc.21.1713773145406;
-        Mon, 22 Apr 2024 01:05:45 -0700 (PDT)
-Received: from localhost.localdomain ([120.229.49.236])
-        by smtp.gmail.com with ESMTPSA id fv4-20020a056a00618400b006e64ddfa71asm7468208pfb.170.2024.04.22.01.05.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 01:05:44 -0700 (PDT)
-From: Howard Chu <howardchu95@gmail.com>
-To: peterz@infradead.org
-Cc: mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	kan.liang@linux.intel.com,
-	yangjihong1@huawei.com,
-	zegao2021@gmail.com,
-	leo.yan@linux.dev,
-	ravi.bangoria@amd.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Howard Chu <howardchu95@gmail.com>
-Subject: [PATCH v1 0/4] Dump off-cpu samples directly
-Date: Mon, 22 Apr 2024 16:05:52 +0800
-Message-ID: <20240422080552.1913893-1-howardchu95@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713773177; c=relaxed/simple;
+	bh=wq+CiAOkBhbaPfNxLl01fN5pEr+i+/JBNleBv3P9oWY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EicESuOJuTJq2WLMUpywXbVQgTI5/7FTfmV1OxkQeaPlKE6q/zf4jdQHSwjCc++hzENofs5jdFGcpgKy0NOKbzOLsO2apgB3eWzEF+gQOL3GVZA0X7Rot2iHC3sey2u7FLGb7DSTQ9yWCWtwiSlTH+9UnnxIT6xBWMXVLW9yD9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B019339;
+	Mon, 22 Apr 2024 01:06:40 -0700 (PDT)
+Received: from bogus (unknown [10.57.84.59])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D86F3F7BD;
+	Mon, 22 Apr 2024 01:06:08 -0700 (PDT)
+Date: Mon, 22 Apr 2024 09:06:06 +0100
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Cristian Marussi <cristian.marussi@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org, james.quinlan@broadcom.com,
+	f.fainelli@gmail.com, vincent.guittot@linaro.org,
+	peng.fan@oss.nxp.com, michal.simek@amd.com, quic_sibis@quicinc.com,
+	quic_nkela@quicinc.com, souvik.chakravarty@arm.com,
+	mturquette@baylibre.com
+Subject: Re: [PATCH v3 0/5] Rework SCMI Clock driver clk_ops setup procedure
+Message-ID: <20240422080606.zai2sgr74o3dcasp@bogus>
+References: <20240415163649.895268-1-cristian.marussi@arm.com>
+ <6b8e12767fdfaf1ba819896fbd610733.sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6b8e12767fdfaf1ba819896fbd610733.sboyd@kernel.org>
 
-As mentioned in: https://bugzilla.kernel.org/show_bug.cgi?id=207323
+On Fri, Apr 19, 2024 at 07:08:54PM -0700, Stephen Boyd wrote:
+> Quoting Cristian Marussi (2024-04-15 09:36:44)
+> > Hi,
+> > 
+> > a small series to review how the SCMI Clock driver chooses and sets up the
+> > CLK operations to associate to a clock when registering with CLK framework.
+> 
+> Did you want me to merge this through clk tree?
 
-Currently, off-cpu samples are dumped when perf record is exiting. This
-results in off-cpu samples being after the regular samples. Also, samples
-are stored in large BPF maps which contain all the stack traces and
-accumulated off-cpu time, but they are eventually going to fill up after
-running for an extensive period. This patch fixes those problems by dumping
-samples directly into perf ring buffer, and dispatching those samples to the
-correct format.
+I am fine either way. You add:
 
-Before, off-cpu samples are after regular samples
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
 
-```
-         swapper       0 [000] 963432.136150:    2812933    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
-         swapper       0 [000] 963432.637911:    4932876    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
-         swapper       0 [001] 963432.798072:    6273398    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
-         swapper       0 [000] 963433.541152:    5279005    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
-sh 1410180 [000] 18446744069.414584:    2528851 offcpu-time: 
-	    7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
-
-
-sh 1410185 [000] 18446744069.414584:    2314223 offcpu-time: 
-	    7837148e6e87 wait4+0x17 (/usr/lib/libc.so.6)
-
-
-awk 1409644 [000] 18446744069.414584:     191785 offcpu-time: 
-	    702609d03681 read+0x11 (/usr/lib/libc.so.6)
-	          4a02a4 [unknown] ([unknown])
-```
-
-After, regular samples(cycles:P) and off-cpu(offcpu-time) samples are
-collected simultaneously:
-
-```
-upowerd     741 [000] 963757.428701:     297848 offcpu-time: 
-	    72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
-
-
-      irq/9-acpi      56 [000] 963757.429116:    8760875    cycles:P:  ffffffffb779849f acpi_os_read_port+0x2f ([kernel.kallsyms])
-upowerd     741 [000] 963757.429172:     459522 offcpu-time: 
-	    72b2da11e6bc read+0x4c (/usr/lib/libc.so.6)
-
-
-         swapper       0 [002] 963757.434529:    5759904    cycles:P:  ffffffffb7db1bc2 intel_idle+0x62 ([kernel.kallsyms])
-perf 1419260 [000] 963757.434550: 1001012116 offcpu-time: 
-	    7274e5d190bf __poll+0x4f (/usr/lib/libc.so.6)
-	    591acfc5daf0 perf_evlist__poll+0x24 (/root/hw/perf-tools-next/tools/perf/perf)
-	    591acfb1ca50 perf_evlist__poll_thread+0x160 (/root/hw/perf-tools-next/tools/perf/perf)
-	    7274e5ca955a [unknown] (/usr/lib/libc.so.6)
-```
-
-Here's a simple flowchart:
-
-[parse_event (sample type: PERF_SAMPLE_RAW)] --> [config (bind fds,
-sample_id, sample_type)] --> [off_cpu_strip (sample type: PERF_SAMPLE_RAW)] -->
-[record_done(hooks off_cpu_finish)] --> [change_type(sample type: OFFCPU_SAMPLE_TYPES)]
-
-
----
-
- tools/perf/builtin-record.c             |  98 ++++++++++++++++++++--
- tools/perf/tests/shell/record_offcpu.sh |  29 -------
- tools/perf/util/bpf_off_cpu.c           | 245 +++++++++++++++++++++++++------------------------------
- tools/perf/util/bpf_skel/off_cpu.bpf.c  | 163 +++++++++++++++++++++++++++++-------
- tools/perf/util/evsel.c                 |   8 --
- tools/perf/util/off_cpu.h               |  14 +++-
- tools/perf/util/perf-hooks-list.h       |   1 +
- 7 files changed, 347 insertions(+), 211 deletions(-)
+if you prefer to take it. Or else please provide your ack for me to
+take it via SCMI tree.
 
 -- 
-2.44.0
+Regards,
+Sudeep
 
