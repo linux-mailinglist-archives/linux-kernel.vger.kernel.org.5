@@ -1,128 +1,108 @@
-Return-Path: <linux-kernel+bounces-153354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A93F8ACD09
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:43:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92E128ACCDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:39:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F20111F22E39
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:43:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C50F41C20D7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 770C714EC7A;
-	Mon, 22 Apr 2024 12:40:09 +0000 (UTC)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270EB147C74;
+	Mon, 22 Apr 2024 12:39:18 +0000 (UTC)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F80152521;
-	Mon, 22 Apr 2024 12:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6D2146011;
+	Mon, 22 Apr 2024 12:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713789609; cv=none; b=cLNlxmwrshfru3++cNQaKtMZk2+BjS/3wvPYMpDxa/SfZXKoOZakCvo92uQdMuY69LH2SF7TTakLK9CfeHDByQNqDeY/bATpetLak2aRWo8ps3RX3dHvOeKdytxaTaOQATUnyOjuexFg9Pbb2GIQq1eK7xoF1OEyHFzg7OtpJHs=
+	t=1713789557; cv=none; b=kiH9CDwaDNyVYXWqrLbrGRf/dItdonXVJ3bUP5AUUxZQO/DvZ4XG9ehdppuVBfByCpL3kEk48KUC5G2DOcmMCFQCAeJv+HM5ovRG0GCLYLjSV5vvl3fWUMlcjp8pcr5ghwBFJVhf7oG8s8W3d8UIg79LSPiw/Fmg9EDY3jXyPK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713789609; c=relaxed/simple;
-	bh=UfsEjeHUgOR27rtbE3M4PujzAfOxibpW7ixsPpbhaI0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=siBZgfaopCk39Si9e6VsEx0ZdaG0RnN57e6V7tmdLg1+1tN7MUHcDr0TPGwa02tL3ihxmH525tH95SBhhOSucpesSPTmA839Y24PwFgVlARQkzEu8Zf+0iH6Gacx0eJMTz+ggQRdYe1r+uWEmZQFWwbaO5nO4OUYe7LM6Zi81S4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	s=arc-20240116; t=1713789557; c=relaxed/simple;
+	bh=1xYqXXOCg8cH+eLna2SIoRUtXjWDA5Opt7wSg5dXJww=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H1sjGbwc/K1g083iRyy8Gb4OFX6oSCrMKGaEMTqRgrYRLkZD4NRB2BWKDBd+d1t71D5L4P9yWg4WnywDoT20NJr2P8o1VBPizaeLprHt21Ed+mn8VSDRyxNcoG2zwv1MTT4YJHs/+Z4RYXCxBdQvpE6XFobqsxSDVu4IR4hUhE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51967f75763so5100104e87.2;
-        Mon, 22 Apr 2024 05:40:07 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-de466c64161so4552369276.3;
+        Mon, 22 Apr 2024 05:39:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713789605; x=1714394405;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713789555; x=1714394355;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9uOh18J18K7IiJjOdRTp7+wBD9ghOrm4r66dFYnU+6Y=;
-        b=Gp6yXtRLTat/QSIiJ53YiFCdtsCdW/JIn0vfJEXH2j9jTrp5akKmktyPRZsLj61Cju
-         TAEfE4tlgEGN9UoaOZ5PkEaT7N+M590UVpMpDSG6kDyRfIM7fNj6URCI6PmVZIOoBPR4
-         2XjtfkJMPx0X1cWpFc2D3ryr8GvBBS9QkzpbeYtzj8x1wlD9iSxIraYW9WXmjxqDmNp3
-         a6cJreO5YLB/y+SdJhOsBVLcRQUR64NsRI6Kw6i6vez6ymX7y3O0a3r+f8VjGMuuJNGW
-         yMIgyA11Irys+ob8/WgMl7oDiCBeiYmrIS6fmejqdp4WFfXsOEU/dyCXmb03PaIeoqVJ
-         GiQg==
-X-Forwarded-Encrypted: i=1; AJvYcCXGgGRslzgzkvzxXmzv1WXUO1mbHxO2DmZcOa2yKQoJCxFiQnNApIMeN7rRuM5QptFct7S3mfH9eiuYKyuL3TNeODqbaIAOce7CkRQkBRfAJ25VPTUb1jVYAOomJkv6+zBiCVXiYdxks6AjKXiV+u4bwrJZ409m+/cx3hdWWSiKIco1POg/FMr/g/0thucqQLU3G5FXLm/IYx8=
-X-Gm-Message-State: AOJu0YxT6uhdtytARpZv0Mfc93VqOf6ojI8FZIU2/GvDFcuJNFP1ou6q
-	tQaWOdYvUXzoE0jT3czbKV46tEneiBpbITzgt0jzPLz/Mp+7B6DZ
-X-Google-Smtp-Source: AGHT+IFPaMXGPrfIOWC3xSs/FsiQyHtswf+lwwOxRqmyAAyNI/Q/4fT0q5REUlhk4xp7o5aQnfs+OQ==
-X-Received: by 2002:a19:7019:0:b0:518:96b5:f2c5 with SMTP id h25-20020a197019000000b0051896b5f2c5mr7368797lfc.46.1713789605113;
-        Mon, 22 Apr 2024 05:40:05 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-006.fbsv.net. [2a03:2880:30ff:6::face:b00c])
-        by smtp.gmail.com with ESMTPSA id gc24-20020a170906c8d800b00a55ac217235sm1944772ejb.90.2024.04.22.05.40.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 05:40:04 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: aleksander.lobakin@intel.com,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	elder@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	nbd@nbd.name,
-	sean.wang@mediatek.com,
-	Mark-MC.Lee@mediatek.com,
-	lorenzo@kernel.org,
-	taras.chornyi@plvision.eu,
-	ath11k@lists.infradead.org,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	geomatsi@gmail.com,
-	kvalo@kernel.org,
-	Igor Mitsyanko <imitsyanko@quantenna.com>
-Cc: quic_jjohnson@quicinc.com,
-	leon@kernel.org,
-	dennis.dalessandro@cornelisnetworks.com,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	idosch@idosch.org,
-	leitao@debian.org,
-	angelogioacchino.delregno@collabora.com,
-	matthias.bgg@gmail.com
-Subject: [PATCH net-next v7 08/10] wifi: qtnfmac: Use netdev dummy allocator helper
-Date: Mon, 22 Apr 2024 05:39:01 -0700
-Message-ID: <20240422123921.854943-9-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240422123921.854943-1-leitao@debian.org>
-References: <20240422123921.854943-1-leitao@debian.org>
+        bh=xMBL1qo4g2eaajNMXZyEJbZLC89YfXgje/CzAO+pyC4=;
+        b=SREk4G04Vr51JcLtUHKsjiB5DseaT1u0y0wMla7SMOlvl2R4iWaArfJHJSb0Y0g/S3
+         o0MwTX3EdZPJuZboEnTOqrI160q3Jw3DpYYNNy4wjrNE21qS3njk2P3Lw0fOnE+t+RtV
+         uBosZ6QGrVdAxrWL9FLljseDdKAaoFz3QikjrfgBZU5SsAJMVe1VqmJRf2j1kWp2i752
+         dzD6mwQV2rDo1iHYvEID5Ywi3VoypNlpQtnXlde55qzAXQ/lSNac4W0D3nNuIQ29/pl2
+         kWQCR9s8z1ZUXBGsEe4UyGqoBvgNB8omSA/+YilXPkSd4nKO7s9z4KH/zXHwlbxgkuPh
+         nGIw==
+X-Gm-Message-State: AOJu0YyPhzeNP1ySJHj5+kLIrQAcS6MAV/u9Hda8plJeO+2qo5g6aQ1b
+	j81VLAVIrhoKkrNUkX3I8GX68UD8Y2AitoNgKc6dFt9FFedIr0DdHTIDtLHv
+X-Google-Smtp-Source: AGHT+IFoYQxllOPUi1dR8w+zve6uhTrIjk0cU8qEEDxWhi9OWbIVixZwRWJq5ch+SGSeIB57nVEiiA==
+X-Received: by 2002:a25:5f45:0:b0:de0:ea71:9ec9 with SMTP id h5-20020a255f45000000b00de0ea719ec9mr9228855ybm.1.1713789554630;
+        Mon, 22 Apr 2024 05:39:14 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id y9-20020a2586c9000000b00dc9c5991ecdsm1920014ybm.50.2024.04.22.05.39.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 05:39:14 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-de469a634fbso4432496276.2;
+        Mon, 22 Apr 2024 05:39:14 -0700 (PDT)
+X-Received: by 2002:a25:213:0:b0:de4:5f9a:157a with SMTP id
+ 19-20020a250213000000b00de45f9a157amr10282671ybc.36.1713789554244; Mon, 22
+ Apr 2024 05:39:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=whdUP62_7N6s837tTFjvmcGxyRnMGwnVnZwn2fDVf5E8A@mail.gmail.com>
+ <20240422123617.1363267-1-geert@linux-m68k.org>
+In-Reply-To: <20240422123617.1363267-1-geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 22 Apr 2024 14:39:02 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdV0yf++WWeih15YVHomAaji9mW+VYg0B4sTDNhD28FY3A@mail.gmail.com>
+Message-ID: <CAMuHMdV0yf++WWeih15YVHomAaji9mW+VYg0B4sTDNhD28FY3A@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v6.9-rc4
+To: linux-kernel@vger.kernel.org
+Cc: Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There is a new dummy netdev allocator, use it instead of
-alloc_netdev()/init_dummy_netdev combination.
+On Mon, Apr 22, 2024 at 2:36=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+> Below is the list of build error/warning regressions/improvements in
+> v6.9-rc4[1] compared to v6.8[2].
+> JFYI, when comparing v6.9-rc4[1] to v6.9-rc3[3], the summaries are:
+>   - build errors: +1/-0
 
-Using alloc_netdev() with init_dummy_netdev might cause some memory
-corruption at the driver removal side.
+  + /kisskb/src/arch/sh/kernel/return_address.c: error: no previous
+prototype for 'return_address' [-Werror=3Dmissing-prototypes]:  =3D> 14:7
 
-Fixes: 61cdb09ff760 ("wifi: qtnfmac: allocate dummy net_device dynamically")
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+sh4-gcc13/sh-allmodconfig (seen before in other sh configs)
 
-diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-index f8f55db2f454..f66eb43094d4 100644
---- a/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-+++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/pcie.c
-@@ -372,8 +372,7 @@ static int qtnf_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto error;
- 	}
- 
--	bus->mux_dev = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
--				    init_dummy_netdev);
-+	bus->mux_dev = alloc_netdev_dummy(0);
- 	if (!bus->mux_dev) {
- 		ret = -ENOMEM;
- 		goto error;
--- 
-2.43.0
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/0bbac3facb5d6cc=
+0171c45c9873a2dc96bea9680/ (all 138 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fec50db7033ea47=
+8773b159e0e2efb135270e3b7/ (all 138 configs)
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
