@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-154271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FE578ADA1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:06:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A201B8ADA22
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:06:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30BD41F2143E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:06:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B620B27D05
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA59165FB7;
-	Mon, 22 Apr 2024 23:56:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3915916C6B5;
+	Mon, 22 Apr 2024 23:56:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hzf2AMGH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NC2SVpG0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC391635A3;
-	Mon, 22 Apr 2024 23:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CFC416ABC1;
+	Mon, 22 Apr 2024 23:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830188; cv=none; b=NwsZWDnB04SRKBAXXQ6EUk3QxRo/xfrKLPZsRAlXC4XP2LrDjafMFadJ96sZp3hBM66pffEN22jSfsaVTbxjxmzm/sGCg7lTl9l9HOXSN7kEvq+6UE27C+24RhebzAmrfq5fl8TZttRz35poRDFT2cEZ3ajPYZ51W2FMQ45lvHQ=
+	t=1713830190; cv=none; b=hQwko+bE7VLizKeJGQ592d9TwQik8VrXzlTnzeYOG7eUgE87VGDrCOdph8BwOD9Xjb9201lHtNR4zyQshmDr+dq2xDGiezkdOQwDzWn/MycVFPwIDebmRKMmTnMBePok0vSHGm1XKfr0yHLrF5sqLnn+L4Kz4QtvNVLeT5n3V10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830188; c=relaxed/simple;
-	bh=+JpMFQTdPsaUyqPBbx8fx1lOmW3fraQVX3DN1OV7NrU=;
+	s=arc-20240116; t=1713830190; c=relaxed/simple;
+	bh=ORskC7QabFrXJTepVrSUHDaq0bxupimv57Ilt7IRBYY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nBZD4vwcCHFCLt025OMJCnT+tovWzcEg+JIUosfJTHZEWWfpwKzJ+N3XzYozp1neRP3ErXpR44rumq2cUctDDnbuC3f+uEnCTRAJHelyIuDyjw8/CIbmqwfzS+cdw8CiNDgOBQLUJjxrTw1+ghTD/KGEgMTEfIVgyhOuaanoPIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hzf2AMGH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A5E5C2BD11;
-	Mon, 22 Apr 2024 23:56:27 +0000 (UTC)
+	 MIME-Version; b=baZfFBr4HkmnoNbrHuqfwc2KvpxUUea6mzfm+YiU6b9qb2Rab0auJ9yqS6ixS/AdMcEy0+OKAneMFyOzHPIR+kDSImiDEwY/2/RvBoDAkiii/qHxuPY0hgNZS96ZCukAf/dHcskXL1h/5KKmYgNem68GoJD+hCYDkX69KNZn+F8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NC2SVpG0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAA3CC113CC;
+	Mon, 22 Apr 2024 23:56:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830188;
-	bh=+JpMFQTdPsaUyqPBbx8fx1lOmW3fraQVX3DN1OV7NrU=;
+	s=k20201202; t=1713830190;
+	bh=ORskC7QabFrXJTepVrSUHDaq0bxupimv57Ilt7IRBYY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hzf2AMGHT0EDXkNDNl1+UFTSlqQoVFTFuJJrrfkoI44hqj9OaMJynkszfoxVcpogs
-	 VQzENu2PN3KIczPi6RU0FNc2hNfO41y2rESOwhM46XF4nf3cACk9afPiIQFaaCA8bj
-	 Cgg44IP484XTt5v1st1tH2H36gQKmR8g+6R262GfQJef3gslXKMjT5dtm4o7BdWnR4
-	 XL0jXppUE99BPuOSyHOALAmmcUxZ+daZywbni4K6Jl25INTbcOBN2ZOz5cin0FsKEV
-	 pHt/pW8COKzAZvINwhJ35CDxZ88dbUgJ7dtwksAUg99xYkgRmkJ82QsE+kO9Kqh7Ld
-	 kVpJuU/KmMT/w==
+	b=NC2SVpG0HACxoKLptMS6fxBJHb1NUyTbho1aY7FMYyME4TEeYeVVrbbfDrEheO2Sc
+	 NMqtkED8bbv2+Irye+nVisE/WVngqhe4HmxUBZCg2UGwKUj+Jv/ntcteFxRgoHctX0
+	 xDsTm8aT5vQzWRvgkLk5bzh1qf9jTEdX3EgxoQfEnRs0CsQ0KHE6nPxhqAEWAxfCRA
+	 2VOpY8tbrdatbZTdWtwk8yhxvAm2+iyWz1Qe3EoXykhNCBs5nFmBaJneCb9s0BmKvl
+	 Gb7xzR80WLfzFXP1NVOGbQWo6hyeh7IChB1G0lUsv8h8ZvV8YkJfFON2LcImDokVff
+	 We2Saa3DX6OkQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Wei Yang <richard.weiyang@gmail.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Mike Rapoport <rppt@kernel.org>,
+Cc: Maurizio Lombardi <mlombard@redhat.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
-	linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 6.6 10/29] memblock tests: fix undefined reference to `BIT'
-Date: Mon, 22 Apr 2024 19:16:51 -0400
-Message-ID: <20240422231730.1601976-10-sashal@kernel.org>
+	linux-scsi@vger.kernel.org,
+	target-devel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 11/29] scsi: target: Fix SELinux error when systemd-modules loads the target module
+Date: Mon, 22 Apr 2024 19:16:52 -0400
+Message-ID: <20240422231730.1601976-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231730.1601976-1-sashal@kernel.org>
 References: <20240422231730.1601976-1-sashal@kernel.org>
@@ -66,39 +66,65 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.28
 Content-Transfer-Encoding: 8bit
 
-From: Wei Yang <richard.weiyang@gmail.com>
+From: Maurizio Lombardi <mlombard@redhat.com>
 
-[ Upstream commit 592447f6cb3c20d606d6c5d8e6af68e99707b786 ]
+[ Upstream commit 97a54ef596c3fd24ec2b227ba8aaf2cf5415e779 ]
 
-commit 772dd0342727 ("mm: enumerate all gfp flags") define gfp flags
-with the help of BIT, while gfp_types.h doesn't include header file for
-the definition. This through an error on building memblock tests.
+If the systemd-modules service loads the target module, the credentials of
+that userspace process will be used to validate the access to the target db
+directory.  SELinux will prevent it, reporting an error like the following:
 
-Let's include linux/bits.h to fix it.
+kernel: audit: type=1400 audit(1676301082.205:4): avc: denied  { read }
+for  pid=1020 comm="systemd-modules" name="target" dev="dm-3"
+ino=4657583 scontext=system_u:system_r:systemd_modules_load_t:s0
+tcontext=system_u:object_r:targetd_etc_rw_t:s0 tclass=dir permissive=0
 
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-CC: Suren Baghdasaryan <surenb@google.com>
-CC: Michal Hocko <mhocko@suse.com>
-Link: https://lore.kernel.org/r/20240402132701.29744-4-richard.weiyang@gmail.com
-Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Fix the error by using the kernel credentials to access the db directory
+
+Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
+Link: https://lore.kernel.org/r/20240215143944.847184-2-mlombard@redhat.com
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/gfp_types.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/target/target_core_configfs.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
-index 6583a58670c57..dfde1e1e321c3 100644
---- a/include/linux/gfp_types.h
-+++ b/include/linux/gfp_types.h
-@@ -2,6 +2,8 @@
- #ifndef __LINUX_GFP_TYPES_H
- #define __LINUX_GFP_TYPES_H
+diff --git a/drivers/target/target_core_configfs.c b/drivers/target/target_core_configfs.c
+index d5860c1c1f469..9a88774836c9d 100644
+--- a/drivers/target/target_core_configfs.c
++++ b/drivers/target/target_core_configfs.c
+@@ -3634,6 +3634,8 @@ static int __init target_core_init_configfs(void)
+ {
+ 	struct configfs_subsystem *subsys = &target_core_fabrics;
+ 	struct t10_alua_lu_gp *lu_gp;
++	struct cred *kern_cred;
++	const struct cred *old_cred;
+ 	int ret;
  
-+#include <linux/bits.h>
-+
- /* The typedef is in types.h but we want the documentation here */
- #if 0
- /**
+ 	pr_debug("TARGET_CORE[0]: Loading Generic Kernel Storage"
+@@ -3710,11 +3712,21 @@ static int __init target_core_init_configfs(void)
+ 	if (ret < 0)
+ 		goto out;
+ 
++	/* We use the kernel credentials to access the target directory */
++	kern_cred = prepare_kernel_cred(&init_task);
++	if (!kern_cred) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	old_cred = override_creds(kern_cred);
+ 	target_init_dbroot();
++	revert_creds(old_cred);
++	put_cred(kern_cred);
+ 
+ 	return 0;
+ 
+ out:
++	target_xcopy_release_pt();
+ 	configfs_unregister_subsystem(subsys);
+ 	core_dev_release_virtual_lun0();
+ 	rd_module_exit();
 -- 
 2.43.0
 
