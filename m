@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-154264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 673E28ADA0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:04:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0165D8ADA0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:04:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E89D5B256DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:04:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8F8D28794A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE19615ECFD;
-	Mon, 22 Apr 2024 23:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB2115EFBF;
+	Mon, 22 Apr 2024 23:56:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iy1PVr2G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GtLim97l"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326BB15ECE3;
-	Mon, 22 Apr 2024 23:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 655ED15EFA4;
+	Mon, 22 Apr 2024 23:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830176; cv=none; b=ezVamdtLHPjHkSFm8cBDbTvpr54C8iU6NzTcSgAw6qXIl1AzFjegPtWTK5QWRUSfxrDYnzx6QCC1qeiVYIs/hfOTgrpuO7bSwz3+RB3SfP5u1ErGk4l74qAUosw96AsOmhZIBVvgqJablal1FIO+Ozit/6vY6JSIZjVQV6pxJJY=
+	t=1713830177; cv=none; b=PcqMsuWQQFYrJdVhIHkeMzbrhsTY3ZVChK8ocnNwl9snguyE5d8deQpJSgVHe6TMtbRIrZEnDZyuGx+Pm8NqjZ0EzEUUrCiMp+A71qAnQA1rs+2yudSS9LB4tLPKSUB+c9clrrqAepkbC9cCpsGB4+FZI1180YQKO/5r1CiUKTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830176; c=relaxed/simple;
-	bh=bStklwwtNdltoD12r8eJEawIcHIsh/UnVk0kuaeICpk=;
+	s=arc-20240116; t=1713830177; c=relaxed/simple;
+	bh=nSoAwBuUTdYf9N6DnEYsJpi7tgSlZnQBavKqouuG9Ig=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=knokrs8PO5hiiIbJ7Xq01C6+VJuTYITUpVhKWj8/6U9dxQx3GrVuUQzHYcsaxV+hex03plv8CJYST8w/YBVHFK3utQMJEIKmIaVR8CvNk8Z7JJEEsOSOCPoh1VBtl9u7qu9GllmkmdcqfnZYcGzPyv8rZDVG3W/C0U3Unvm1P04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iy1PVr2G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C0BCC2BD11;
-	Mon, 22 Apr 2024 23:56:15 +0000 (UTC)
+	 MIME-Version; b=CtuZGKqyS+u7fHpKGkAdwtuGNY8fO5N7HGx6fSCXH2wF2IYmRw2q2JId72fkHD9RKz0+LQ4Jtw+ThUeHAnp8ZEsPSvJh6MR07FbWFmpvmApQmR71V12K2Rv5TYfMRrsIZWCKHd651fkGIZkTCS5+iIM2g7SP7mvanOM8bwq+jj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GtLim97l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B204C113CC;
+	Mon, 22 Apr 2024 23:56:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830176;
-	bh=bStklwwtNdltoD12r8eJEawIcHIsh/UnVk0kuaeICpk=;
+	s=k20201202; t=1713830177;
+	bh=nSoAwBuUTdYf9N6DnEYsJpi7tgSlZnQBavKqouuG9Ig=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iy1PVr2GJib0d28J5aLScsc4XAKCEvY8znDBDehE+tsNfnwKe2JwEPAiEkbIyMl8Y
-	 xfpFnTdZZbGyJhJt8Eo3206riZSsmIlFBaB6PuWoWfwfbqB6mxTtiD1MaSCuLQ3tlc
-	 QAqRzwNkGZ1mdPJLTAlMs8rtUknigFQswMhTIkb1PBX/8V6rBeIUDch9g+jNi4Qu+Z
-	 NeHtBIl/rDfnBT/nTGq7SaZr+X2q1l5P02tuBfRjWOyKqc0XyVzKLQeJ08twyIK9DL
-	 a/N0V74gF55j+xL8R/lxbYn8sFuwv7PhR/Uh12QSnDcjq/EGWu4kT3NBrkEVFuebXx
-	 rFdImhti3fzjw==
+	b=GtLim97luFNCh89LK4W8bfMkC49enUL2wceWtf31VtHdBb8dikTJSz4f3o6Hk0OMb
+	 aPG/IVPj7qzrZoGhBtw6Z7xF0wGn9Kp/9BtfIoAP2Smpuaj6FmHxc4B1a0fDWok7dz
+	 8LM0rcuHg7m5kIJnM+ysQUV2vBLZKTDULfHFp7IvJ1SGMND6t/GFSGP9Wz5AvbbaRT
+	 Dg4MWMMQqrccucQHUvbfKgEVS8za24n8/NQmFZnPQy9FbrbO93dFeEojhIpOMA7bqE
+	 LNwq4tr67WRSF+a2t4w0KfkqAOgaapszogoXEu5dnBc8s4/0lOxsYbWt2cEoMa781a
+	 Bi8KgG2bHdVyQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Peng Liu <liupeng17@lenovo.com>,
+Cc: Patryk Wlazlyn <patryk.wlazlyn@linux.intel.com>,
 	Len Brown <len.brown@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	lenb@kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 03/29] tools/power turbostat: Fix Bzy_MHz documentation typo
-Date: Mon, 22 Apr 2024 19:16:44 -0400
-Message-ID: <20240422231730.1601976-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 04/29] tools/power turbostat: Print ucode revision only if valid
+Date: Mon, 22 Apr 2024 19:16:45 -0400
+Message-ID: <20240422231730.1601976-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231730.1601976-1-sashal@kernel.org>
 References: <20240422231730.1601976-1-sashal@kernel.org>
@@ -65,33 +65,57 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.28
 Content-Transfer-Encoding: 8bit
 
-From: Peng Liu <liupeng17@lenovo.com>
+From: Patryk Wlazlyn <patryk.wlazlyn@linux.intel.com>
 
-[ Upstream commit 0b13410b52c4636aacb6964a4253a797c0fa0d16 ]
+[ Upstream commit fb5ceca046efc84f69fcf9779a013f8a0e63bbff ]
 
-The code calculates Bzy_MHz by multiplying TSC_delta * APERF_delta/MPERF_delta
-The man page erroneously showed that TSC_delta was divided.
+If the MSR read were to fail, turbostat would print "microcode 0x0"
 
-Signed-off-by: Peng Liu <liupeng17@lenovo.com>
+Signed-off-by: Patryk Wlazlyn <patryk.wlazlyn@linux.intel.com>
+Reviewed-by: Len Brown <len.brown@intel.com>
 Signed-off-by: Len Brown <len.brown@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/turbostat/turbostat.8 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/power/x86/turbostat/turbostat.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/tools/power/x86/turbostat/turbostat.8 b/tools/power/x86/turbostat/turbostat.8
-index 8f08c3fd498d5..1ba6340d3b3da 100644
---- a/tools/power/x86/turbostat/turbostat.8
-+++ b/tools/power/x86/turbostat/turbostat.8
-@@ -370,7 +370,7 @@ below the processor's base frequency.
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index 5b892c53fc2c2..4dfeda4870f71 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -5518,6 +5518,7 @@ void process_cpuid()
+ 	unsigned int eax, ebx, ecx, edx;
+ 	unsigned int fms, family, model, stepping, ecx_flags, edx_flags;
+ 	unsigned long long ucode_patch = 0;
++	bool ucode_patch_valid = false;
  
- Busy% = MPERF_delta/TSC_delta
+ 	eax = ebx = ecx = edx = 0;
  
--Bzy_MHz = TSC_delta/APERF_delta/MPERF_delta/measurement_interval
-+Bzy_MHz = TSC_delta*APERF_delta/MPERF_delta/measurement_interval
+@@ -5547,6 +5548,8 @@ void process_cpuid()
  
- Note that these calculations depend on TSC_delta, so they
- are not reliable during intervals when TSC_MHz is not running at the base frequency.
+ 	if (get_msr(sched_getcpu(), MSR_IA32_UCODE_REV, &ucode_patch))
+ 		warnx("get_msr(UCODE)");
++	else
++		ucode_patch_valid = true;
+ 
+ 	/*
+ 	 * check max extended function levels of CPUID.
+@@ -5557,9 +5560,12 @@ void process_cpuid()
+ 	__cpuid(0x80000000, max_extended_level, ebx, ecx, edx);
+ 
+ 	if (!quiet) {
+-		fprintf(outf, "CPUID(1): family:model:stepping 0x%x:%x:%x (%d:%d:%d) microcode 0x%x\n",
+-			family, model, stepping, family, model, stepping,
+-			(unsigned int)((ucode_patch >> 32) & 0xFFFFFFFF));
++		fprintf(outf, "CPUID(1): family:model:stepping 0x%x:%x:%x (%d:%d:%d)",
++			family, model, stepping, family, model, stepping);
++		if (ucode_patch_valid)
++			fprintf(outf, " microcode 0x%x", (unsigned int)((ucode_patch >> 32) & 0xFFFFFFFF));
++		fputc('\n', outf);
++
+ 		fprintf(outf, "CPUID(0x80000000): max_extended_levels: 0x%x\n", max_extended_level);
+ 		fprintf(outf, "CPUID(1): %s %s %s %s %s %s %s %s %s %s\n",
+ 			ecx_flags & (1 << 0) ? "SSE3" : "-",
 -- 
 2.43.0
 
