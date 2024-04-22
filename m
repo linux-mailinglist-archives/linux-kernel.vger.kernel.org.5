@@ -1,187 +1,135 @@
-Return-Path: <linux-kernel+bounces-153990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE2F18AD5B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:15:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24CCD8AD5BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:18:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5BBA281064
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:15:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE8D01F21B52
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:18:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C7E3155739;
-	Mon, 22 Apr 2024 20:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620E71553BA;
+	Mon, 22 Apr 2024 20:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BtAz2R+n"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H7FOA9Ax"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB77A15539E;
-	Mon, 22 Apr 2024 20:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D166615380B
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 20:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713816921; cv=none; b=YibNI7v8yMmrkUu1p2AMZkuR9vbyk3oFeO8frSE0YJR8yLCn8OaYRgWOSluySWnFEOSuCGtuU8ULa0P415vx85yY7XMXQtiyX9feailvsHnfVpcddTphL3YTwtZevQuS5rsZsuSp93SH8rCBMQEAuTTcpIrxhOq4ROWQC046OB8=
+	t=1713817110; cv=none; b=p1lmdfcFdFrHQd1v2be8h/XRASKP0Gbz5IHLX8Xd5J2WzP3+ycGIq3nWIxHThANi89SCS896gp64UVZq1SiMs3/Kpw0QPN9HtpOV4+QxNkDuRizY4pNT67B+vGhnfamRdTbuCzR3Y03DJxmmRADGZswJ2fkR1i4xXmO1QRd12dA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713816921; c=relaxed/simple;
-	bh=CO9sWn4TGwS+F6HGsjPCnompyAUQtRvkshYYjb0v0KM=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ux4Ny+e8eMdT1draNTl/NLYZ70vW7PDLtrqhP6Iv3DondZnpzykuJ/meVXhkMQ9pnKyIc4bQYCfKWy2SPzlYuOH9T2SYMNNd2UMAyHp4vajcBQxIS+7JE92ZR1b9p/T2o2h8gGRxp18TW54Cr7PBxiwYf6miVSVQ3f2Thkd/Em0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BtAz2R+n; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41aa2f6ff00so3741005e9.3;
-        Mon, 22 Apr 2024 13:15:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713816918; x=1714421718; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Eu3JFTPdyU8Z03j2EuYpTwgYH2/Fv3qtXMU2BdFdug=;
-        b=BtAz2R+nC/KvxGa5WfpGt90866DOXerVcmJiaX/5SXuSwWEfX6gQcoy6hLy4PIQyvF
-         ST1qFFp5RQyTeHJfzKTaerj60GjYW2SL4c3Vp/VCtFol7WSFrxyb1h71S3V3eFN3yHxt
-         03q/3c8BX7kKxpk86DDMPh7iRTzAN/cQhn88tiIPWSY1Xealwiww+CdVeL4SuykdWPD1
-         yeJv57RtZb3oYq/xhtkwr2IbAD8lPUn2ZrtDOL7H2W9xYx/Yp2UCdwbZHvODTpkyHVQv
-         fv1nSh8luw978+b8PTt/qdASrEPoeQmgpY0TTSh5DtCdt4TjNE2uTOPwRnmp0YmvvDlh
-         6vHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713816918; x=1714421718;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Eu3JFTPdyU8Z03j2EuYpTwgYH2/Fv3qtXMU2BdFdug=;
-        b=Q5Ey15UaTcIEhLGyAkyrOgwtMRNXwYuAVxXVbYPrb/VEmz5981P/C/on5DseIEBw16
-         iW2d1PvJGd8BK80LcbHupWWe5ZiNGFGNai6ujuZxPJlaY1mFjR47mGLL2cjcHxV1k5R8
-         yvqcQaiiEjcEtHlHCa6psNgGZ9GXY416aCsNf3fIqlBa+m7x/chkm+YkNt3uRWSIsnos
-         SQ/gbOsjQeb8L6IaLU9OZDUvJ1Q0+ugkyshWfpk+pz222ymGhj+GK8060H8IVyx+AvWA
-         TeolA4GH5pHzBNntkAXqSamq2l0cwOVBK6HHHdlG5zNPxd/D8h5tT4+dojlo/uDKMFt6
-         2LVA==
-X-Forwarded-Encrypted: i=1; AJvYcCWixELHkYf1yCqVR0QGmOdcm8+9eSSzWppsVnCaYmdxL7MZXZr1S3jJ4HRIoC6VJt9oULuVE9V7ykOMbsNev4iqY572k9Wu1MxWEeXzYmUKlxha/9M26NLsKvnxGAXE0O3o0bddzWGU0XLhxg1P6CENavVKI3WBvKeFXJlwzxGtH/C2kGlLg6GfIu4Mp/+482x1GA+GHha085pnScvw/Ktc
-X-Gm-Message-State: AOJu0YyC6uQLx/VIcBb/eHeBDqn058dIrshsNdeyr0w4BrSC66QQrxnS
-	k3+55PDqGVuEy1O7+R0j5IgoW/KKUHA0kyIygs+1iXfw//APIywyBMXt4d1n
-X-Google-Smtp-Source: AGHT+IEThdBxdECz8bVPhQn5PHEhOkpePD5RpVqY08kUXP0btFQF0IfQfHbI4K1uwo6S0T0C5e1Dbw==
-X-Received: by 2002:a05:600c:1c21:b0:418:ee1e:3445 with SMTP id j33-20020a05600c1c2100b00418ee1e3445mr10483617wms.26.1713816917679;
-        Mon, 22 Apr 2024 13:15:17 -0700 (PDT)
-Received: from krava ([83.240.62.18])
-        by smtp.gmail.com with ESMTPSA id s6-20020a05600c45c600b00418244d459esm17861156wmo.4.2024.04.22.13.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 13:15:17 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 22 Apr 2024 22:15:14 +0200
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	x86@kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH 7/7] man2: Add uretprobe syscall page
-Message-ID: <ZibFUqtwELfVTHfq@krava>
-References: <20240421194206.1010934-1-jolsa@kernel.org>
- <20240421194206.1010934-8-jolsa@kernel.org>
- <20240423000729.f1d58443100c3994afca0a7f@kernel.org>
+	s=arc-20240116; t=1713817110; c=relaxed/simple;
+	bh=eZ/a9lRplWWMryXPKGei0Ish1bJuXUnXclDH9pla2No=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VEt8pdD8ZZ/BHcATSe3ZrbCkAUUUiXz3pqi9PtwKyczZIfuyMDaUavbQavAS0AzMg5/rsbwEpl15B9T8D1VHLjT+ufNUUpDs4h3Zd+MsIB+WdQsO4CO/nP4mKA4eZGaDPrfEo+zpn9pdJORhMDRUelVEAmQD8ThXL2rFc/9Z1lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H7FOA9Ax; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713817109; x=1745353109;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=eZ/a9lRplWWMryXPKGei0Ish1bJuXUnXclDH9pla2No=;
+  b=H7FOA9AxBlZYiL6b9aAX4h9V3nlEdOpY32ykSz37p3M/TmdPOwZ0Cjf4
+   6+aG/kjWC6bGcmB3c5vKKX4KQbG0h9R6LNYLgs/tigpah/MxF7G0/lRp/
+   BXqGyR4GwdNsUQ0crZI1xrpjonAkU3hjWAk1JZVZ18CmMX7mDCv7rev+v
+   aAzXqGFT+pvkl5ec3Jxg2F8SqIEEqWmb5XiuJGh73tzfa8ENe6RAeAiel
+   XSsWyp5REl/gLvgMOdchjglMXcEZO3Q+Y9ETD6GxeAcEPWhxxRhLYj30w
+   mZ2uPy069eFhwjoboKEoH/QfdUBYYrVWCb19GfGpqwKWKRrgoP/9OdRT8
+   Q==;
+X-CSE-ConnectionGUID: WUmhwRq8SIeMHN5lXSGz1g==
+X-CSE-MsgGUID: ER3yB2g9RU2Yr5VQ5Db9eA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="20779980"
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="20779980"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:18:28 -0700
+X-CSE-ConnectionGUID: UA3f2popTJepStR+vwnZbg==
+X-CSE-MsgGUID: /UPYEq0+QIG69ne8bHoKWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
+   d="scan'208";a="24156330"
+Received: from vivekcha-mobl.amr.corp.intel.com (HELO [10.209.55.5]) ([10.209.55.5])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:18:27 -0700
+Message-ID: <d0be5e5c-2103-4bf6-8ef2-44451b105e1f@intel.com>
+Date: Mon, 22 Apr 2024 13:18:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423000729.f1d58443100c3994afca0a7f@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv2] x86/tdx: Preserve shared bit on mprotect()
+To: Tom Lendacky <thomas.lendacky@amd.com>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de
+Cc: sathyanarayanan.kuppuswamy@linux.intel.com, hpa@zytor.com,
+ seanjc@google.com, elena.reshetova@intel.com, rick.p.edgecombe@intel.com,
+ x86@kernel.org, linux-kernel@vger.kernel.org, Chris Oo <cho@microsoft.com>,
+ Dexuan Cui <decui@microsoft.com>
+References: <20240419201353.3937135-1-kirill.shutemov@linux.intel.com>
+ <17930444-3740-f874-91e7-3ed81304b1a9@amd.com>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <17930444-3740-f874-91e7-3ed81304b1a9@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 23, 2024 at 12:07:29AM +0900, Masami Hiramatsu wrote:
-> On Sun, 21 Apr 2024 21:42:06 +0200
-> Jiri Olsa <jolsa@kernel.org> wrote:
+On 4/22/24 12:46, Tom Lendacky wrote:
+> Appears to be no functional change on the AMD side.
 > 
-> > Adding man page for new uretprobe syscall.
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  man2/uretprobe.2 | 40 ++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 40 insertions(+)
-> >  create mode 100644 man2/uretprobe.2
-> > 
-> > diff --git a/man2/uretprobe.2 b/man2/uretprobe.2
-> > new file mode 100644
-> > index 000000000000..c0343a88bb57
-> > --- /dev/null
-> > +++ b/man2/uretprobe.2
-> > @@ -0,0 +1,40 @@
-> > +.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
-> > +.\"
-> > +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
-> > +.\"
-> > +.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
-> > +.SH NAME
-> > +uretprobe \- execute pending return uprobes
-> > +.SH SYNOPSIS
-> > +.nf
-> > +.B int uretprobe(void)
-> > +.fi
-> > +.SH DESCRIPTION
-> > +On x86_64 architecture the kernel is using uretprobe syscall to trigger
-> > +uprobe return probe consumers instead of using standard breakpoint instruction.
-> > +The reason is that it's much faster to do syscall than breakpoint trap
-> > +on x86_64 architecture.
-> 
-> Do we specify the supported architecture as this? Currently it is supported
-> only on x86-64, but it could be extended later, right?
+> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-yes, that's the idea, but I can't really speak other than x86 ;-)
-so not sure abour other archs details
-
-> 
-> This should be just noted as NOTES. Something like "This syscall is initially
-> introduced on x86-64 because a syscall is faster than a breakpoint trap on it.
-> But this will be extended to the architectures whose syscall is faster than
-> breakpoint trap."
-
-'s/will be extended/might be will be extended/' seems better to me,
-other than that it looks ok
-
-thanks,
-jirka
-
-
-> 
-> Thank you,
-> 
-> > +
-> > +The uretprobe syscall is not supposed to be called directly by user, it's allowed
-> > +to be invoked only through user space trampoline provided by kernel.
-> > +When called from outside of this trampoline, the calling process will receive
-> > +.BR SIGILL .
-> > +
-> > +.SH RETURN VALUE
-> > +.BR uretprobe()
-> > +return value is specific for given architecture.
-> > +
-> > +.SH VERSIONS
-> > +This syscall is not specified in POSIX,
-> > +and details of its behavior vary across systems.
-> > +.SH STANDARDS
-> > +None.
-> > +.SH NOTES
-> > +.BR uretprobe()
-> > +exists only to allow the invocation of return uprobe consumers.
-> > +It should
-> > +.B never
-> > +be called directly.
-> > +Details of the arguments (if any) passed to
-> > +.BR uretprobe ()
-> > +and the return value are specific for given architecture.
-> > -- 
-> > 2.44.0
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Thanks a bunch for that!  I was just noodling over this one and that was
+one of my worries.
 
