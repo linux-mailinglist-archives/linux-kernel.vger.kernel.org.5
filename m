@@ -1,178 +1,165 @@
-Return-Path: <linux-kernel+bounces-154064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB15C8AD6C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:54:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52F8C8AD6C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:55:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62064284149
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:54:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 83DC71C218FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC7A11CF9B;
-	Mon, 22 Apr 2024 21:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CEC21CF8D;
+	Mon, 22 Apr 2024 21:55:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YEhU+RcZ"
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79EFE1CD2E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 21:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="dmoMk287"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B8D1C6B7;
+	Mon, 22 Apr 2024 21:55:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713822871; cv=none; b=f5yoc4x1NqD7YEkF98gNgCYwkMc2GD0wTUmzLBi4gshu21Kw9EXub5WEyc+3pCJL4Ibo6YuMWn/uoCCzF/rCFkOW3PZXjDCTVgZ7j//fPpWprqunvZIA5tqS5eYMH+u0LfmBkfnaeimX2tHBKM/aFgPht8KTHuS9YGIR5oePwMI=
+	t=1713822933; cv=none; b=kpgepxlxwXjoUK58Wa8GB8tRV+bArIgqusshfbbLiiR9tihgQYkWH4BiOVK+0tniHV3jnHxTaWuHDpH+75WiqAHqjrb1y96Iv3Tu4VT5/GnCQXGpyeB7u6pppW0xLjTFBW89qADxbqltbGBVp9/E4YuuGeqUGMTiIVb19TB6X8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713822871; c=relaxed/simple;
-	bh=Cbt4igSSEOCM0YFndB3iSaxU9eb8wKebvbCilWGRQq8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gfzIDINOTHCEgTrt+PHV+yqpB8DoSmDwNCYjuFGBxzrh+oiPzaTAgZ6EI0kN74akaEjlhUYycu15VwkYk0IaO0ml2v8+kNGFoc1pNGsTxMFtQy6i/14CaOrVdcKzgFaz/BcdFUA+Yxq3rVe7VtKqZWUs/3HihnF3HQgUmYhfIzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YEhU+RcZ; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6a073f10e8eso8625826d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 14:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713822866; x=1714427666; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b4TkjiOmnf7EkU2uUP7WyZ/U9eWwbiO9i0mpJYmLC7M=;
-        b=YEhU+RcZ9DG2o7bbTF66ZGEe048wtODeAHs9XyalWF2RbKwputMXN8iO6AKtloNE2h
-         w91eHwIG6eQck4zCHy2TtyZIn1XkQ27G/BuAhLRzlXmz6x93m7BuHDy9ehA753o6M+7l
-         uEFucKm4ECEWoun3DuBvQN9DpWAaINC+Z5wL4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713822866; x=1714427666;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b4TkjiOmnf7EkU2uUP7WyZ/U9eWwbiO9i0mpJYmLC7M=;
-        b=iR5wBneM7uSU3qV8OQDVXS8sjbV6wlAGpTFSEYFXQi6kz0KzcNRBkJGx8F2soe7Y1g
-         +20WfyAE7X4lT1fS8D4EIWFPZNZW2FDqStyo430BdEEEC4a+6V+tkfZuEx/WLsaPHEXT
-         j4gA+WHjFhWdeZOWUGMUEC+Gv3pxkPc4AOFXSiMEXVzDK3vgMb8ta0cGnTRyMbERjOu4
-         y5RvPSqPRAAiHVxkFDFmZTlZgOWvLuITMsuS1cl3VPcdBGY8EiQSvTWIbpj27+anc5ol
-         M5Kvy2cORRcQC+uAyQCpnaZ7wSTZgYj5cA3jwXPqVOvHEQJK+XPGsPYnhfWFR/HU6Szp
-         Tytw==
-X-Forwarded-Encrypted: i=1; AJvYcCXqk2Pj1odMscRLxgEXGEDXuQ+RZc7niVY35wzYwf4YjS+eiHA1nE+W9Fg6p2aZ3Q7C7FiylUC1QQU6ZOGWumDF91CvLZAOt6RHfonh
-X-Gm-Message-State: AOJu0YyQlnvEWupaG86hXEitJEMoFmTmRkqsDPEOBBbZSWSJWNb5jkP2
-	HUkysGVTjafbiWO8AdC26SdZbnyrlVelV4HnQ0iG3tIXGVWAVAfo4cYv1za1RycjRDKpPbFWMpt
-	JJLPd
-X-Google-Smtp-Source: AGHT+IEgqQ6ViSmhoE/sl+2BcZD+/6WDEmS0o2IBIg92494i3STCWcb1l7tOhhv3WH14yt2wsy9erQ==
-X-Received: by 2002:a05:6214:a93:b0:6a0:76b9:3e11 with SMTP id ev19-20020a0562140a9300b006a076b93e11mr7202908qvb.53.1713822866537;
-        Mon, 22 Apr 2024 14:54:26 -0700 (PDT)
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com. [209.85.160.182])
-        by smtp.gmail.com with ESMTPSA id n12-20020a0c8c0c000000b006a050fa22cfsm2139503qvb.145.2024.04.22.14.54.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 14:54:25 -0700 (PDT)
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-439b1c72676so60291cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 14:54:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWIjrOkrkpDeMFSz9pJSkk6N7fxIRlVtNcp9sRplHVBM+Z9mMuTi/COUFFUr7QbOROXt08eTSNSAmX2xR5efAp+2qcPGy1DcitkHZ4P
-X-Received: by 2002:ac8:550d:0:b0:439:9aa4:41ed with SMTP id
- j13-20020ac8550d000000b004399aa441edmr95963qtq.16.1713822864486; Mon, 22 Apr
- 2024 14:54:24 -0700 (PDT)
+	s=arc-20240116; t=1713822933; c=relaxed/simple;
+	bh=3xmBOAd4rAwvNYraXzGNP4fsO6olJYEcsGJF88jD4+w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rV9YEMSgjEwtDxHykBJ4d4J+h59+19QJGnkygmrHCpSLTw3Z+D0IuetCH7pkfye4iNKP65l3vgkvDVxS5JqU6D+v2GdKS1k+G2ONlsCTPLkC9sfkfFTbG2a4Wm3Tcsv/IRugVJjsgGVedVblhXFZ3h97xYwMU9DbFNRyh5rhl58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=dmoMk287; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from DESKTOP-4OLSCEK. (c-76-135-27-212.hsd1.wa.comcast.net [76.135.27.212])
+	by linux.microsoft.com (Postfix) with ESMTPSA id EB16E20FEEDC;
+	Mon, 22 Apr 2024 14:55:29 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EB16E20FEEDC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1713822930;
+	bh=2zy+tbncAFDWlBF6RA+BWmpw8Cfn5+oaU2yF3bMryfM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dmoMk2873jJAimjjwRt0flmlHZIfEq0Heico/zajNUUhOfoKSari8Fpb6fPVghRW2
+	 bn5nHCs2d6FUM4nmmh1F507aVKNqFBChvFxqcoNXlVA53MEqIUuLfJR9TGCEjNL+Vy
+	 0bp1Ob4Z0Vi5X4FXLFvtA+25SCv4ONA+jSjIwEVg=
+Date: Mon, 22 Apr 2024 14:55:25 -0700
+From: Beau Belgrave <beaub@linux.microsoft.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	dcook@linux.microsoft.com
+Subject: Re: [PATCH 1/2] tracing/user_events: Fix non-spaced field matching
+Message-ID: <20240422215525.GA414-beaub@linux.microsoft.com>
+References: <20240416224102.734-1-beaub@linux.microsoft.com>
+ <20240416224102.734-2-beaub@linux.microsoft.com>
+ <20240419113305.7b0ae2b11395eec16b5c15b6@kernel.org>
+ <20240419211334.GA7774-beaub@linux.microsoft.com>
+ <20240420215052.1f806c8acb5f99ec2f63945c@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240419-kgdboc_fix_schedule_work-v1-1-ff19881677e5@linaro.org>
-In-Reply-To: <20240419-kgdboc_fix_schedule_work-v1-1-ff19881677e5@linaro.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 22 Apr 2024 14:54:08 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UHt7Pm-qEBs7vtK0B0DCbu9YbU465OdpSKCYZVpNuOaA@mail.gmail.com>
-Message-ID: <CAD=FV=UHt7Pm-qEBs7vtK0B0DCbu9YbU465OdpSKCYZVpNuOaA@mail.gmail.com>
-Subject: Re: [PATCH] serial: kgdboc: Fix NMI-safety problems from keyboard
- reset code
-To: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: Jason Wessel <jason.wessel@windriver.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
-	linux-serial@vger.kernel.org, Liuye <liu.yeC@h3c.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240420215052.1f806c8acb5f99ec2f63945c@kernel.org>
 
-Hi,
+On Sat, Apr 20, 2024 at 09:50:52PM +0900, Masami Hiramatsu wrote:
+> On Fri, 19 Apr 2024 14:13:34 -0700
+> Beau Belgrave <beaub@linux.microsoft.com> wrote:
+> 
+> > On Fri, Apr 19, 2024 at 11:33:05AM +0900, Masami Hiramatsu wrote:
+> > > On Tue, 16 Apr 2024 22:41:01 +0000
+> > > Beau Belgrave <beaub@linux.microsoft.com> wrote:
 
-On Fri, Apr 19, 2024 at 3:30=E2=80=AFAM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> Currently, when kdb is compiled with keyboard support, then we will use
-> schedule_work() to provoke reset of the keyboard status.  Unfortunately
-> schedule_work() gets called from the kgdboc post-debug-exception
-> handler.  That risks deadlock since schedule_work() is not NMI-safe and,
-> even on platforms where the NMI is not directly used for debugging, the
-> debug trap can have NMI-like behaviour depending on where breakpoints
-> are placed.
->
-> Fix this by using the irq work system, which is NMI-safe, to defer the
-> call to schedule_work() to a point when it is safe to call.
->
-> Reported-by: Liuye <liu.yeC@h3c.com>
-> Closes: https://lore.kernel.org/all/20240228025602.3087748-1-liu.yeC@h3c.=
-com/
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-> ---
->  drivers/tty/serial/kgdboc.c | 30 +++++++++++++++++++++++++++++-
->  1 file changed, 29 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-> index 7ce7bb1640054..adcea70fd7507 100644
-> --- a/drivers/tty/serial/kgdboc.c
-> +++ b/drivers/tty/serial/kgdboc.c
-> @@ -19,6 +19,7 @@
->  #include <linux/console.h>
->  #include <linux/vt_kern.h>
->  #include <linux/input.h>
-> +#include <linux/irq_work.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/serial_core.h>
-> @@ -48,6 +49,25 @@ static struct kgdb_io                kgdboc_earlycon_i=
-o_ops;
->  static int                      (*earlycon_orig_exit)(struct console *co=
-n);
->  #endif /* IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE) */
->
-> +/*
-> + * When we leave the debug trap handler we need to reset the keyboard st=
-atus
-> + * (since the original keyboard state gets partially clobbered by kdb us=
-e of
-> + * the keyboard).
-> + *
-> + * The path to deliver the reset is somewhat circuitous.
-> + *
-> + * To deliver the reset we register an input handler, reset the keyboard=
- and
-> + * then deregister the input handler. However, to get this done right, w=
-e do
-> + * have to carefully manage the calling context because we can only regi=
-ster
-> + * input handlers from task context.
-> + *
-> + * In particular we need to trigger the action from the debug trap handl=
-er with
-> + * all its NMI and/or NMI-like oddities. To solve this the kgdboc trap e=
-xit code
-> + * (the "post_exception" callback) uses irq_work_queue(), which is NMI-s=
-afe, to
-> + * schedule a callback from a hardirq context. From there we have to def=
-er the
-> + * work again, this time using schedule_Work(), to get a callback using =
-the
+*SNIP*
 
-nit: schedule_work() (no capital "W").
+> > > nit: This loop can be simpler, because we are sure fixed has enough length;
+> > > 
+> > > /* insert a space after ';' if there is no space. */
+> > > while(*args) {
+> > > 	*pos = *args++;
+> > > 	if (*pos++ == ';' && !isspace(*args))
+> > > 		*pos++ = ' ';
+> > > }
+> > > 
+> > 
+> > I was worried that if count_semis_no_space() ever had different logic
+> > (maybe after this commit) that it could cause an overflow if the count
+> > was wrong, etc.
+> > 
+> > I don't have an issue making it shorter, but I was trying to be more on
+> > the safe side, since this isn't a fast path (event register).
+> 
+> OK, anyway current code looks correct. But note that I don't think
+> "pos++; len--;" is safer, since it is not atomic. This pattern
+> easily loose "len--;" in my experience. So please carefully use it ;)
+> 
 
-> + * system workqueue, which runs in task context.
+I'll stick with your loop. Perhaps others will chime in on the v2 and
+state a stronger opinion.
 
-Thank you for the comment. It makes the double-jump through IRQ work
-and then normal work clearer.
+You scared me with the atomic comment, I went back and looked at all the
+paths for this. In the user_events IOCTL the buffer is copied from user
+to kernel, so it cannot change (and no other threads access it). I also
+checked trace_parse_run_command() which is the same. So at least in this
+context the non-atomic part is OK.
 
+> > 
+> > > > +
+> > > > +	/*
+> > > > +	 * len is the length of the copy excluding the null.
+> > > > +	 * This ensures we always have room for a null.
+> > > > +	 */
+> > > > +	*pos = '\0';
+> > > > +
+> > > > +	return fixed;
+> > > > +}
+> > > > +
+> > > > +static char **user_event_argv_split(char *args, int *argc)
+> > > > +{
+> > > > +	/* Count how many ';' without a trailing space */
+> > > > +	int count = count_semis_no_space(args);
+> > > > +
+> > > > +	if (count) {
+> > > 
+> > > nit: it is better to exit fast, so 
+> > > 
+> > > 	if (!count)
+> > > 		return argv_split(GFP_KERNEL, args, argc);
+> > > 
+> > > 	...
+> > 
+> > Sure, will fix in a v2.
+> > 
+> > > 
+> > > Thank you,
+> > > 
+> > > OT: BTW, can this also simplify synthetic events?
+> > > 
+> > 
+> > I'm not sure, I'll check when I have some time. I want to get this fix
+> > in sooner rather than later.
+> 
+> Ah, nevermind. Synthetic event parses the field by strsep(';') first
+> and argv_split(). So it does not have this issue.
+> 
 
-Other than the nit in the comment, this looks good to me.
+Ok, seems unrelated. Thanks for checking.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Thanks,
+-Beau
+
+> Thank you,
+> 
+> > 
+> > Thanks,
+> > -Beau
+> > 
+
+*SNIP* 
+
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
