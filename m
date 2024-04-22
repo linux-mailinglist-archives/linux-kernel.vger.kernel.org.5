@@ -1,195 +1,112 @@
-Return-Path: <linux-kernel+bounces-153037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A27698AC82A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:57:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC9B18AC82E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:58:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C3311F21B5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:57:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 995D42833E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 145195337F;
-	Mon, 22 Apr 2024 08:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5B451C5F;
+	Mon, 22 Apr 2024 08:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0VR5pH6i"
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XuQ7Q7V5"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F2D5101A
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4EC923A9;
+	Mon, 22 Apr 2024 08:58:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713776205; cv=none; b=Go82RjWa1BFGrLl4bdk7cxEkBwk0Jbh80TYBC7uc4HAkfIUy7ulPAn5yzVcFJxqxnQUzQvoNKHc6sPHiBCK7Tobkh1y4LKL4c5ZY6Hs/HMc3Yc/k4pj4CD5vfr02je6vkBkzAEADZpCGjNM5UGhI4UQgl6RqcU3kOQbXPCNniIw=
+	t=1713776289; cv=none; b=O5Bp0Ru11WAJpydu3dgWE4kphZHy/tjOaDOKS4mnCtnyoM4p3xIZ1CuVcwXGs+oAm23SToD1mlfGG6ak1N/dYb85mqUS4N3BeixeEfvdOVSEtOoFyzPsiRGcaqsMho2vPWiomSL/9bGHXNjEqTeAospV8brGRCsjwvk/QeJb36o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713776205; c=relaxed/simple;
-	bh=s63bfMNRnWOoQ8PsqUvwNueqIvBGGmyYN29WSdA4kjs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GdCIRnA15k4JWyp/xHPlIy6cwGsx5cnb2t/GiSnKnw8EwZlKqaHkZw32wLiRkqHYJ9El46KdVCgj08OE5ualf45V0IbssULeHaKcrLpapJp2blUpWAVbz3g3n7KMlazOkNlnLInMXl90wGzpRfd83czLyeMSAGYRfZWbdBcLGqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0VR5pH6i; arc=none smtp.client-ip=209.85.221.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4dcc7c1055bso1260762e0c.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:56:43 -0700 (PDT)
+	s=arc-20240116; t=1713776289; c=relaxed/simple;
+	bh=Ap3HX7usqppks+6r6AnE3+EOtHNtpTo0nvOHWkQP/mU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=I7UM74hJSJvt2+SLAIwE8lUJAXMKwJNoXDpPJ6oB2AzDU0OKco8lMQYzp+MJ/suBWq0gs2nUMeWTUhFRaBvsrTiqpdi23uuTXPb+ad7ZM2z3fsjOUlxyDJEjbz76JZ4I/Y04IKXJJlkaMEQE8iCJenlVNebOQEA5nvKb0m7u51s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XuQ7Q7V5; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e65b29f703so29369745ad.3;
+        Mon, 22 Apr 2024 01:58:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713776202; x=1714381002; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1713776287; x=1714381087; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FpIgAMGo6c2XVGupDF/MT9xzTdOTd8R0qRCe2KTK2Vs=;
-        b=0VR5pH6i+TvEFNwSsoDjoAgDtq+f5n2HxytZHSBftu/Ab8rZDbNpDs7H1zvMqcqrzs
-         lv/11QLk5N0UnTCL8o0U6C7KdP6eqrEs3eNYmk2MVr1Qlcm5cy/OZuI0eoNX0TVQwdrz
-         DqzeI+uVJfipifhHYLri/X3TMojcDJu5ofblagpe4Ye+HFj59VECsWlEKEjlDRFd8bkd
-         V4gMUhyBbS7MYUxGzbRugAgCsHD32RlOYJd4gio6Y4OmoKtGHRwR3ZNzYnsTnvUnz292
-         5XlvTIDSM+lHSZr8Ze3ZT23xxX0UBHJ1hb8c2Ps+o5L0Q3RmgoRno0mrOcgMcy0Z0h3H
-         aoxQ==
+        bh=EDvNk3KFFi5iNtt67egvus9yTR8HOXf5HBSszFwHK/s=;
+        b=XuQ7Q7V5B8F9ib5MTVV7auEYOudhll5uzNSQk5PyoG0vNV2AidK+PtI365IiJsWtWB
+         wBrsv7V3SvGA2BMGSC0DC4DM55lxMlUmqhHvjy5shD9lzhHWt2pp7nAhn8PsTFPmrxq+
+         Godue09A5krvaEnqH1CI1cr3V5l0aotwnzveuK3z3Ji65WtYQJUh5gghIfz4QlC0ZXDZ
+         0Tvn8p7ehTA+oEGBJI9BRJ7lZwNnF40c/ArUDXSJiRyyECxnjZNPjm9S1XeCOV02P4oW
+         VdR2umaEgF9nUaDhGvkZHxiFdoM4jdu+WvCp22XZaFa0hsW8IURzAmAuWhMwkjjSGdO5
+         HIqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713776202; x=1714381002;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713776287; x=1714381087;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FpIgAMGo6c2XVGupDF/MT9xzTdOTd8R0qRCe2KTK2Vs=;
-        b=lcoRWtK0Jskq3RnGvC5b871A1MuphnuryHbj0OT3uVx0Wq+BpBbYW5Qm6wu/crdU/R
-         vfBQ3hG9Rn/xLF0NxDfPeTn0hq2PsByQYJ0oMRosc47ZhM23higO7o18TNaODIwnzFBA
-         OJByxnNIvoeG5oKjOTJJM2c8Bn75XrfhtnL8sjJ5ATLX1hdDGj5VFl1KUtWBWjxwJL3q
-         t33gLgR5dQPmSiwjWSvF1ATXnIuQMAYsgoMRsnkPRyvSGXS09xwMRnF449M4TSOYUVFf
-         /V/mUPfBMebhTyHEAWiYyqnVuufSIzX73ZjzUD4TwVOX6/5zGU5gKVvB277+sE+0Adkq
-         SVWA==
-X-Forwarded-Encrypted: i=1; AJvYcCXq1qIFAqtePsTVDMpobkl8RzjzVI6EixXoTn78Ldf8OEH+uQeDzY5QaO+D9cAor0eIeFMIKM2bqjdekxWCQkZc4QCCWgo+bEzLaO4N
-X-Gm-Message-State: AOJu0Yxk5KhE6bDamZOD1h8umaL9/MuroxaYs+X/fnxItOvuINXPePdm
-	8CkVG+aMpOCRmmqMPOrrSKA9CtzCfspWGRdfp1vuaoTxh4BfZf9f2EsVZ31bMf3agjhatL0hQFO
-	DwzGBmUi/zgOeIuWlnuC++hQk9UP9lVDHrncT
-X-Google-Smtp-Source: AGHT+IH/laI9GguSW62J3PNRJ21xb+bRU3Yns1VkRR44Zb71wlhIZf7zThOSlThYrlE212OBCFbNNwWd5yPNF4vBmcY=
-X-Received: by 2002:a05:6122:3286:b0:4d3:4aad:1b9c with SMTP id
- cj6-20020a056122328600b004d34aad1b9cmr10297855vkb.0.1713776202499; Mon, 22
- Apr 2024 01:56:42 -0700 (PDT)
+        bh=EDvNk3KFFi5iNtt67egvus9yTR8HOXf5HBSszFwHK/s=;
+        b=nnrORwzQblXvduu9tZFUZW7jg3OchmpIqHqfKmr471z4xF3n+yqzX+4QrFQilFxi/m
+         UNVXHu/6vI+ciNunOu0v0XGpOmM4kbJg9gkY1Le49VTx8iVxGhiZnS6MRHA94MdXokef
+         JlMYJ2qsit0uHIpkoWOLlAgdu6TvYjpGB3EoSIY1MZH/JgvrysHEwpviQSaANwTS8Gu3
+         xBgqQ1F49gYB9Qz02YCwrCvMH/4IZVBb+U3g8zAJ6QGHqXQASZa4TfL7u7At5Xaeeih/
+         fT8vMGSV2AVrXmtfl0VIra6PHif2LWSZPSOuYNfHApRo1SU0YnIRE9AZq1jDA4wsbr/q
+         8FCA==
+X-Forwarded-Encrypted: i=1; AJvYcCVzm2GC2LZBgPDxakxkwn2e5FfI0razZh/7yv6t8ZF1J96++5thsAI3h6PXew6UYMg9jU3P4qQfKA2PCaIK9KmiOhjxsFO7FJqadOGzQf5SGCyvaAsl0OeEyvP9Qi3HCcvrw5wHdh5f44FLs6WyKKD2bHlzzSHL66lz+I6BxpCE
+X-Gm-Message-State: AOJu0YzT4QUHid8VTtTbs8s+8iToq7Mc/9Mw9S46SBtVyvJsTU93gaYy
+	IyntdYrrfu0CbGvfd8KWtRv7XVY6f/zAnAeutwR4P7SA8qU9xZHIX9McKpGgEDs=
+X-Google-Smtp-Source: AGHT+IFiUKcQbEbEswqmEa7FF5Be+uhP6zbP7zIAy81U2IK1yxVzYtLaXWaUC0KFwf7R/8gd0wKAEg==
+X-Received: by 2002:a17:902:b086:b0:1e3:e563:57ed with SMTP id p6-20020a170902b08600b001e3e56357edmr9149593plr.36.1713776287157;
+        Mon, 22 Apr 2024 01:58:07 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id x6-20020a170902a38600b001e79072ee58sm7769887pla.62.2024.04.22.01.58.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 01:58:06 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: jirislaby@kernel.org
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	gregkh@linuxfoundation.org,
+	kuba@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-ppp@vger.kernel.org,
+	netdev@vger.kernel.org,
+	pabeni@redhat.com,
+	syzbot+393d0ef63475d9bb1f16@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH net,v3] net: ppp: Fix deadlock caused by unsafe-irq lock in ap_get()
+Date: Mon, 22 Apr 2024 17:58:01 +0900
+Message-Id: <20240422085801.140509-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <bb5c1fd1-c3e7-4aaf-b28d-a45479ff0815@kernel.org>
+References: <bb5c1fd1-c3e7-4aaf-b28d-a45479ff0815@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417191418.1341988-2-cmllamas@google.com> <20240418083447.3877366-1-aliceryhl@google.com>
- <ZiRSPXSuSMyUO0Cw@google.com>
-In-Reply-To: <ZiRSPXSuSMyUO0Cw@google.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Mon, 22 Apr 2024 10:56:31 +0200
-Message-ID: <CAH5fLgjCmzOXWa7VFg6yCjnTDfu2pcJr9=FngeGg28zCvV49eQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] binder: introduce BINDER_SET_PROC_FLAGS ioctl
-To: Carlos Llamas <cmllamas@google.com>
-Cc: arve@android.com, brauner@kernel.org, gregkh@linuxfoundation.org, 
-	joel@joelfernandes.org, kernel-team@android.com, linux-kernel@vger.kernel.org, 
-	maco@android.com, surenb@google.com, tkjos@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Apr 21, 2024 at 1:39=E2=80=AFAM Carlos Llamas <cmllamas@google.com>=
- wrote:
->
-> On Thu, Apr 18, 2024 at 08:34:47AM +0000, Alice Ryhl wrote:
-> > Carlos Llamas <cmllamas@google.com> writes:
-> > > This new ioctl enables userspace to control the individual behavior o=
-f
-> > > the 'struct binder_proc' instance via flags. The driver validates and
-> > > returns the supported subset. Some existing ioctls are migrated to us=
-e
-> > > these flags in subsequent commits.
-> > >
-> > > Suggested-by: Arve Hj=C3=B8nnev=C3=A5g <arve@android.com>
-> > > Signed-off-by: Carlos Llamas <cmllamas@google.com>
-> > > ---
-> > >  drivers/android/binder.c            | 25 +++++++++++++++++++++++++
-> > >  drivers/android/binder_internal.h   |  4 +++-
-> > >  include/uapi/linux/android/binder.h |  6 ++++++
-> > >  3 files changed, 34 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> > > index bad28cf42010..e0d193bfb237 100644
-> > > --- a/drivers/android/binder.c
-> > > +++ b/drivers/android/binder.c
-> > > @@ -5334,6 +5334,26 @@ static int binder_ioctl_get_extended_error(str=
-uct binder_thread *thread,
-> > >     return 0;
-> > >  }
-> > >
-> > > +static int binder_ioctl_set_proc_flags(struct binder_proc *proc,
-> > > +                                  u32 __user *user)
-> > > +{
-> > > +   u32 flags;
-> > > +
-> > > +   if (get_user(flags, user))
-> > > +           return -EFAULT;
-> > > +
-> > > +   binder_inner_proc_lock(proc);
-> > > +   flags &=3D PF_SUPPORTED_FLAGS_MASK;
-> > > +   proc->flags =3D flags;
-> > > +   binder_inner_proc_unlock(proc);
-> > > +
-> > > +   /* confirm supported flags with user */
-> > > +   if (put_user(flags, user))
-> > > +           return -EFAULT;
-> > > +
-> > > +   return 0;
-> > > +}
-> >
-> > I'm just thinking out loud here, but is this the best API for this
-> > ioctl? Using this API, if I want to toggle the oneway-spam-detection
-> > flag, then I can't do so without knowing the value of all other flags,
-> > and I also need to synchronize all calls to this ioctl.
-> >
-> > That's fine for the current use-case where these flags are only set
-> > during startup, but are we confident that no future flag will be toggle=
-d
-> > while a process is active?
->
-> hmmm, this is a very good point. It would probably lead to userspace
-> having to cache its flags for every binder instance. This is not a good
-> solution at all.
->
-> >
-> > How about these alternatives?
-> >
-> > 1. Userspace passes two masks, one containing bits to set, and another
-> >    containing bits to unset. Userspace returns new value of flags. (If
-> >    the same bit is set in both masks, we can fail with EINVAL.)
+Jiri Slaby wrote:
+> OK, but read_unlock_irq() is not the right way to do it. It would enable
+> irqs unconditionally, so serial8250_tx_chars() would not thank you in
+> the above call chain.
+> 
+> Plus the issues Jakub had with the patch.
+> 
+> And what about ppp_synctty?
 
-To add to this one, one could also say that if a bit is set in both,
-then the value is toggled.
+Hmm... If the problem is the case of calling the function in 
+serial8250_tx_chars(), I think it can be solved by continuing to use 
+read_lock() in ppp_asynctty_wakeup() and getting the ap by not calling
+ap_get().
 
-> > 2. Compare and swap. Userspace passes the expected previous value and
-> >    the desired new value. The kernel returns the actual previous value
-> >    and updates it only if userspace gave the right previous value.
-> >
-> > 3. Set or unset only. Userspace passes a boolean and a mask. Boolean
-> >    determines whether userspace wants to set or unset the bits set in
-> >    the mask.
-> >
-> > I don't know what the usual kernel convention is for this kind of
-> > ioctl, so I'm happy with whatever you all think is best.
->
-> I've never come across these types of alternatives personally. What I've
-> seen however, is the typical SET/GET ioctl pairs. This is a "simpler"
-> interface I guess but it has the downside of an extra roundtrip. e.g.
->
->         ioctl(fd, BINDER_GET_PROC_FLAGS, &flags);
->         flags |=3D BF_LARGE_HANDLES;
->         ioctl(fd, BINDER_SET_PROC_FLAGS, &flags);
->
-> What seems tempting about the SET/GET pair is that we could replace the
-> BINDER_ENABLE_ONEWAY_SPAM_DETECTION with the SET. Instead of maintaining
-> legacy code for the "deprecated" ioctl.
->
-> wdyt?
->
-> I'll have a second look at the alternatives you mentioned. Perhaps I can
-> reference some other existing ioctl that does something similar.
+If I do this, will I be able to apply the existing patch to ap_get()?
 
-Hmm. I don't think a get/set pair improves the situation much.
-Userspace still needs a global mutex for making changes to the flag in
-that case. Otherwise, two threads changing two different flags in
-parallel could result in a race condition where one of the changes is
-lost.
-
-Alice
+Thanks.
 
