@@ -1,165 +1,136 @@
-Return-Path: <linux-kernel+bounces-152952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD9248AC68D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:17:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AE5D8AC691
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:17:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D41BD1C2199D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:17:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB7612832FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C145025A;
-	Mon, 22 Apr 2024 08:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922F150281;
+	Mon, 22 Apr 2024 08:17:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="itu84G3X"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="kQDUuizb"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291014AEC1;
-	Mon, 22 Apr 2024 08:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B2534E1CE;
+	Mon, 22 Apr 2024 08:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773830; cv=none; b=ENQSNuATw0UtSwMpZLqKb2Z2P4E0G9JrfD8aDcCDcUj1URBni/wQQrKYmqpuqjkPfieF+GnpMqFnNxG9SXplxHPYpnrRSvy8PHYztCLarZEPGZMwAw8o+tj1eMV3OaaoEcT1KiXoQXKlKna8yv/fIIDYrWjaN3nUS84DrPeSzwA=
+	t=1713773848; cv=none; b=CsSDM1EVp30al+iS0rszHziTjJKPAvFSIJVVVZmoijG8u1y1aYLTRTtXRiQstOxuAymmYGt9lAvi4Lyjr/g4CDeOfnvaAcysGjgmTP15iiV4Lvt6aocJ0AKPJFJtIeCfT5x2uUB1cx73nJGQnZkI1DM7YXCK7sLazTnNmtscBTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773830; c=relaxed/simple;
-	bh=M9B7WRjrvk2JAsBFwlrLC6qkllLzalEbntZIoYH3cKw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cNrRqNfzryRIzRpsiT/XFHoAagKms8zKTfgxaBxqUgxpf5VqB7oK/TjiNlu0xTrUon7cK9rrmZgGWi1lt6pGG8LffEDXJx40i55kU2d27/yOIA3r8+0vh22b0GKmLmWIaoSZMn1p3IRxexKU8dE+647B+PBjyqkZF+25sdnFR4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=itu84G3X; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a4702457ccbso455388366b.3;
-        Mon, 22 Apr 2024 01:17:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713773827; x=1714378627; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=POE7+7bDdgxJYrWynyeU3Cirtp8tecozyW6D2rsQgo8=;
-        b=itu84G3XOf6V0qGmoMJMy7DGC5TUJ9Qbh6K2ZoLABhklzCNZ+TZmv0cJrNyrxqVHzU
-         1yvtgaNnahz1KQHXf8cKKMw7LeOKqkArp5nTjZWgSA/WZF3+tlOwwXAfg0B5QiMkjzss
-         KYejzdOaJlzTZlTDpIY6ODaCiB73/w62GkZ8muFvblBGjfi1nmB6ZoO6OckfKLPo/tNL
-         kb0bvPoHW3IvZR+mVX7suU1nOAUoFKGxNoNpMPMSen//uXavL2jhTtCkgYGWS4jwPC5z
-         go5rcJCoKLLhTRgduekGS9l67LajAnv2NKPuAI2W0eBG+DR0sBzWgxE4u/JjtJBmtC8b
-         XvJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713773827; x=1714378627;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=POE7+7bDdgxJYrWynyeU3Cirtp8tecozyW6D2rsQgo8=;
-        b=iB4LmxspRV3x7DSJNE2SW0tlT1ysW/trdsxQfOrPZnUvRhOqLxAutpEg8k+Bx04p3g
-         bFDSXwQytBe6f5nYiSBJ3DLIcsnaBjcX/q3TWlQslmYnJiqQhCpPS+8yygNAFM5TRR+w
-         EyR82vU2mKthBmL0m/17SToooGkBN+6yA6jNo+n47WR8EVInUKNFtHzDy8M9VlnqIVYm
-         RvkcSFzEyAL9EBONCYeAkeKckmuWfs7j8bMR1ZSu9OwE9i9xA3yinL/WMxxkFIjcR4Pj
-         faCKrDOQqR/+5bXDZmmOp895glIrhicB4vO4gwZllyftZAnt3C0ec3vrbqZ562XzDfEu
-         xU0g==
-X-Forwarded-Encrypted: i=1; AJvYcCV9sTC/7oN4FAXn6THEZTRpdFBEO4L9njeyOr8ns2BVsv3i2uayecnSGHn3pnpyHr6AuN74z9H9b8h5Ui1L5gkdmXEQkefVhghlxe+jMWijin6xfe71UYqxOahnW5MaRiweZEHUGhUk5EAFM+uPnGUwuzUE92GZrlTITFH/vKj6EB7azWE=
-X-Gm-Message-State: AOJu0Ywu6/k2bzDxcJ80rAECABHbuqKqFC0hQnE1Avk3Mlcr8Pb+Ypq6
-	BSsvlAjEQrm254rh08261S5SxJ1irFsKt8Jp/V5X+8ZDTnbiIIM4cItFIPQZLLVR//lJyJ9Ju0e
-	eUG1bhNyMddJ56qoIog/Cxj+n8ms=
-X-Google-Smtp-Source: AGHT+IGdGb378Q6HBFI7vnqwgZAe/ou95qevOvoX9Sk6JXOvi4Phmy2Xhg+rj7Z4WCygmd7t+cDyddlSEuxBKKtbxVQ=
-X-Received: by 2002:a17:907:2d9f:b0:a56:cb24:fbb9 with SMTP id
- gt31-20020a1709072d9f00b00a56cb24fbb9mr388348ejc.20.1713773827167; Mon, 22
- Apr 2024 01:17:07 -0700 (PDT)
+	s=arc-20240116; t=1713773848; c=relaxed/simple;
+	bh=cMADH+A0BEOfb9WplRUCFQe3Bk4HECT83QRWAChad4s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H4V8MRvf6pLIOvT6AeNDY/ictaptQ0yZnCe+y4ue7xCuGG8hmZzo+uCYt6YVwOduHfHW/d/NO8cZly4Dim8w6T/nLK1D8PYGnF9OiEaQXsK4VUglg0bAwv+rULlImkQ0ou28r3BcOCU1d0YHqMBuRaONn8YNPFCHC8stThJAeZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=kQDUuizb; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713773843;
+	bh=cMADH+A0BEOfb9WplRUCFQe3Bk4HECT83QRWAChad4s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=kQDUuizbICE+dtRmPyWNhnQaQqWsly3CTdmXZmQrBbWqMvB4KYhIm9TjyFLQaQvv7
+	 52gMxKdhvRxWOMgnu++PlsNC33neV4h4xV0XVSaCkTadM80fdgKRV+YQYA8/KzpWGc
+	 W/i+SvV1PDMhdCk15lQ9M+ajjgJoShpWK4idgagBaoKvojfAPsp4MP5pmC8KoGEP1f
+	 5qEgTCpION7rZaFrJQCfNLlYc/lrAjLDZIjYyv0gK2+cI7L9nLgn6q54Odohgl4KQ6
+	 WlA6cTROjamnUl81P6OR1aKAinYlUxC9QDYjFF0/OKmdA4gzP8E8KvEQHSdqYq3xqh
+	 ygokbn2sabT5Q==
+Received: from [100.109.49.129] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dmitry.osipenko)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A8F85378001E;
+	Mon, 22 Apr 2024 08:17:21 +0000 (UTC)
+Message-ID: <6066f6f0-49c6-4607-9c33-88e166ccae86@collabora.com>
+Date: Mon, 22 Apr 2024 11:17:18 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409095637.2135-1-ychuang570808@gmail.com>
- <20240409095637.2135-4-ychuang570808@gmail.com> <ZhZTsV3RKpuyeUr4@surfacebook.localdomain>
- <643a0d80-3d99-420e-9e77-acc67728fbe7@gmail.com>
-In-Reply-To: <643a0d80-3d99-420e-9e77-acc67728fbe7@gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 22 Apr 2024 11:16:31 +0300
-Message-ID: <CAHp75VfMb_=XKoQNbbVphLg-eQgc6eJbZOW36g_hU=-iK2bSOQ@mail.gmail.com>
-Subject: Re: [PATCH v7 3/3] pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO driver
-To: Jacky Huang <ychuang570808@gmail.com>
-Cc: linus.walleij@linaro.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	p.zabel@pengutronix.de, j.neuschaefer@gmx.net, 
-	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	ychuang3@nuvoton.com, schung@nuvoton.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Fix dma_resv deadlock at drm object pin
+ time
+To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Zack Rusin <zack.rusin@broadcom.com>
+Cc: kernel@collabora.com, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ linaro-mm-sig@lists.linaro.org
+References: <20240421163951.3398622-1-adrian.larumbe@collabora.com>
+Content-Language: en-US
+From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20240421163951.3398622-1-adrian.larumbe@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 22, 2024 at 7:10=E2=80=AFAM Jacky Huang <ychuang570808@gmail.co=
-m> wrote:
-> On 2024/4/10 =E4=B8=8B=E5=8D=88 04:54, Andy Shevchenko wrote:
+On 4/21/24 19:39, Adrián Larumbe wrote:
+> When Panfrost must pin an object that is being prepared a dma-buf
+> attachment for on behalf of another driver, the core drm gem object pinning
+> code already takes a lock on the object's dma reservation.
+> 
+> However, Panfrost GEM object's pinning callback would eventually try taking
+> the lock on the same dma reservation when delegating pinning of the object
+> onto the shmem subsystem, which led to a deadlock.
+> 
+> This can be shown by enabling CONFIG_DEBUG_WW_MUTEX_SLOWPATH, which throws
+> the following recursive locking situation:
+> 
+> weston/3440 is trying to acquire lock:
+> ffff000000e235a0 (reservation_ww_class_mutex){+.+.}-{3:3}, at: drm_gem_shmem_pin+0x34/0xb8 [drm_shmem_helper]
+> but task is already holding lock:
+> ffff000000e235a0 (reservation_ww_class_mutex){+.+.}-{3:3}, at: drm_gem_pin+0x2c/0x80 [drm]
+> 
+> Fix it by assuming the object's reservation had already been locked by the
+> time we reach panfrost_gem_pin.
+> 
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> Cc: Boris Brezillon <boris.brezillon@collabora.com>
+> Cc: Steven Price <steven.price@arm.com>
+> Fixes: a78027847226 ("drm/gem: Acquire reservation lock in drm_gem_{pin/unpin}()")
+> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_gem.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> index d47b40b82b0b..6c26652d425d 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
+> @@ -192,7 +192,12 @@ static int panfrost_gem_pin(struct drm_gem_object *obj)
+>  	if (bo->is_heap)
+>  		return -EINVAL;
+>  
+> -	return drm_gem_shmem_pin(&bo->base);
+> +	/*
+> +	 * Pinning can only happen in response to a prime attachment request from
+> +	 * another driver, but that's already being handled by drm_gem_pin
+> +	 */
+> +	drm_WARN_ON(obj->dev, obj->import_attach);
+> +	return drm_gem_shmem_pin_locked(&bo->base);
+>  }
 
-..
+Will be better to use drm_gem_shmem_object_pin() to avoid such problem
+in future
 
-> >> +#define MA35_GP_MODE_MASK_WIDTH              2
-> >> +
-> >> +#define MA35_GP_SLEWCTL_MASK_WIDTH   2
-> > I looked at the code how you use these... Oh, please switch to FIELD_GE=
-T() /
-> > FIELD_PREP() (don't forget to include bitfield.h)
-> >
-> > ...
-> >
-> > ...
-> >> +             regval &=3D ~GENMASK(setting->shift + MA35_MFP_BITS_PER_=
-PORT - 1,
-> >> +                                setting->shift);
-> > This will generate an awful code. Use respective FIELD_*() macros.
-> >
-> > ...
-> >
-> >> +     regval &=3D ~GENMASK(gpio * MA35_GP_MODE_MASK_WIDTH - 1,
-> >> +                        gpio * MA35_GP_MODE_MASK_WIDTH);
-> >> +     regval |=3D mode << gpio * MA35_GP_MODE_MASK_WIDTH;
-> > Ditto.
-> >
-> > ...
-> >
-> >> +     regval &=3D GENMASK(gpio * MA35_GP_MODE_MASK_WIDTH - 1,
-> >> +                       gpio * MA35_GP_MODE_MASK_WIDTH);
-> >> +
-> >> +     return regval >> gpio * MA35_GP_MODE_MASK_WIDTH;
-> > Ditto.
+Please also fix the Lima driver
 
-..
+-- 
+Best regards,
+Dmitry
 
-> Allow me to remove irrelevant parts.
->
-> I attempted to follow your advice and use FIELD_GET() and FIELD_PREP(),
-> but found
-> it impractical. The reason is that these two macros require their 'mask'
-> argument
-> to be a constant, otherwise compilation errors occur, which is the issue
-> I encountered.
-> Since the mask here is calculated and not a constant, compilation errors
-> occur.
->
-> Taking MA35_GP_REG_MODE as an example, within 32 bits, every 2 bits
-> represent
-> the mode of a GPIO pin, and the mask is obtained by GENMASK(gpio * 2 -1,
-> gpio * 2),
-
-This is not good for the compiler, it can't figure out (at least in
-some _supported_ by Linux kernel versions on some architectures) that
-GENMASK can be constant here just left-shifted by arbitrary bits.
-
-> where the 'gpio' argument is a variable, not a constant, leading to
-> compilation
-> errors.
->
-> Due to this reason, I will leave this part unchanged, or do you have any
-> other suggestions?
-
-If you need non-constant field_get()/field_prep(), add a new patch
-that moves them from drivers/iio/temperature/mlx90614.c (and there are
-more custom implementations:
-https://elixir.bootlin.com/linux/latest/A/ident/field_get) to the
-bitfield.h and use them in your code.
-
---=20
-With Best Regards,
-Andy Shevchenko
 
