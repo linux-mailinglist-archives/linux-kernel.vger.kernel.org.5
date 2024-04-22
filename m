@@ -1,101 +1,117 @@
-Return-Path: <linux-kernel+bounces-153415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610908ACDDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:09:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DFA38ACDFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:15:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1C82B24FA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:09:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F38C31F218D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE4715099B;
-	Mon, 22 Apr 2024 13:08:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7852914F9C6;
+	Mon, 22 Apr 2024 13:15:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tKj1Ev0s"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="XaC5f4gj"
+Received: from smtp-42ad.mail.infomaniak.ch (smtp-42ad.mail.infomaniak.ch [84.16.66.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4369614F9D4;
-	Mon, 22 Apr 2024 13:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D69D914F128
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:15:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713791332; cv=none; b=W0qgamwXqdH2d4JSE/PyvI8FgP1KVl5T34iG/GSxED0S3N29RLjhbdYsIzD2QhX4dI5dk9wv7UVDBToFZTRoys5Kgns6Qj5ITmye+wvj2wM9YczezleK4ZcW+4SXu1ALkvL7mSWOaqNzOUzegEddSDLfp8Yn0LC1HqTWJnt8ETU=
+	t=1713791744; cv=none; b=VNcPYYhYi32a/CNyGgqDwjCRac2QhTQe+/UQvhqdstfxxYkyycLzkF1TXb8glXKUaRPf0oW3cV43zN8U2wf3TRsD3ThfqU/WkeF/YmmZ5RMN9h+caWxnA1GXLOJVEl6MDM9h87eXqvcn/UjNY28UdtX9Er4EzrsNizz1UeXrDT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713791332; c=relaxed/simple;
-	bh=J+i9N1KjmFk35PLTmY7h40rPANVS4NetGv5XWCcgOzg=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=ti2U64yyM1TK1C7ZulpHO/BoSuDDCnWs941m21Milfm7hgR19V4V23jBRJbn5aG71hrK+TGED18uFRZcWvW2z78us8WmpKlyNYLNw+rpyrFp5Jgae6DefiUvhwIsabtVHzPfVZYIBJ9Iu5fNpzwGtQvmqT5v2KCySD560YnQMXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tKj1Ev0s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19101C2BD11;
-	Mon, 22 Apr 2024 13:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713791331;
-	bh=J+i9N1KjmFk35PLTmY7h40rPANVS4NetGv5XWCcgOzg=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=tKj1Ev0sDkQi5+KEiB5LhY1YrapyhqPWj1xhNyldEFOrjYMdLC2NQNywPIpM2oCn9
-	 KKR+ldrGnJ0vgDJG4XgwKBgLI5FgxOu432nBCICrmXQSH+gCWW0UTDdlAhAQBILxdo
-	 xqF/R3vnu4jpugzmTn/hkZBf7SpnConYhE6huJdhyTx4EfL7nhXiFev8vfEpfZp+Lw
-	 L0pJcnsCn5VjnI/vxE0yT7hls74KwUcZ1ud9MZJyYKzX2kxFcFbVphu8ZJaYeFhTzP
-	 hCEBR8kB/Bdhv+iVxYObXPLD8tw+6rMlMYtLli9sAXUXAWh2sYW2PburZIAgpw4TBX
-	 ODeXWH+Ch2/IQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: aleksander.lobakin@intel.com,  kuba@kernel.org,  davem@davemloft.net,
-  pabeni@redhat.com,  edumazet@google.com,  elder@kernel.org,
-  linux-arm-kernel@lists.infradead.org,
-  linux-mediatek@lists.infradead.org,  nbd@nbd.name,
-  sean.wang@mediatek.com,  Mark-MC.Lee@mediatek.com,  lorenzo@kernel.org,
-  taras.chornyi@plvision.eu,  ath11k@lists.infradead.org,
-  ath10k@lists.infradead.org,  linux-wireless@vger.kernel.org,
-  geomatsi@gmail.com,  Jeff Johnson <jjohnson@kernel.org>,
-  quic_jjohnson@quicinc.com,  leon@kernel.org,
-  dennis.dalessandro@cornelisnetworks.com,  linux-kernel@vger.kernel.org,
-  netdev@vger.kernel.org,  bpf@vger.kernel.org,  idosch@idosch.org,
-  angelogioacchino.delregno@collabora.com,  matthias.bgg@gmail.com
-Subject: Re: [PATCH net-next v7 10/10] wifi: ath11k: allocate dummy
- net_device dynamically
-References: <20240422123921.854943-1-leitao@debian.org>
-	<20240422123921.854943-11-leitao@debian.org>
-Date: Mon, 22 Apr 2024 16:08:44 +0300
-In-Reply-To: <20240422123921.854943-11-leitao@debian.org> (Breno Leitao's
-	message of "Mon, 22 Apr 2024 05:39:03 -0700")
-Message-ID: <87le55v92b.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1713791744; c=relaxed/simple;
+	bh=GjhTJjoSiC3IDIVXzgKQ4P+qNveHUQ6lI+EgnHlfUqo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GDKgLq+FHw4CFJPld3NLjQmo+y6zhUMvGDJUQI0l9ZaPdeoYjRRlGxPxE1yrHrae+y6zKCTeLll5wOpwp8C1FMS0xN4Rs6XpfmcViPhiLld6yekCBwFazAFBwEsRaOMsEuTOQX6vLgfxO1SQM9XdnPEndkLjMQdqF6n6LWICy0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=XaC5f4gj; arc=none smtp.client-ip=84.16.66.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VNQYc6JShz3q7;
+	Mon, 22 Apr 2024 15:08:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1713791332;
+	bh=GjhTJjoSiC3IDIVXzgKQ4P+qNveHUQ6lI+EgnHlfUqo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XaC5f4gjQmTg7HWgvo8OaBYgvZVVaUnv+Y6B/jdsg0Q4f2OLDr4AYla0dAr871yUg
+	 SXigC7/aA4mp4zabDYUfQYwz/kj2V8GznfSGfeIslpVajiSP9OYd5T8+9TTpiL7YOt
+	 axM86vO0S3TpXTEvr00XTnMRotQwMoJZqzDgMjqE=
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4VNQYb16q2zrw3;
+	Mon, 22 Apr 2024 15:08:50 +0200 (CEST)
+Date: Mon, 22 Apr 2024 15:08:50 +0200
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Guenter Roeck <linux@roeck-us.net>, David Gow <davidgow@google.com>
+Cc: Brendan Higgins <brendanhiggins@google.com>, 
+	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
+	Ingo Molnar <mingo@redhat.com>, James Morris <jamorris@linux.microsoft.com>, 
+	Kees Cook <keescook@chromium.org>, Luis Chamberlain <mcgrof@kernel.org>, 
+	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Thara Gopinath <tgopinath@microsoft.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
+	Wanpeng Li <wanpengli@tencent.com>, Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH v3 7/7] kunit: Add tests for fault
+Message-ID: <20240422.thesh7quoo0U@digikod.net>
+References: <20240319104857.70783-1-mic@digikod.net>
+ <20240319104857.70783-8-mic@digikod.net>
+ <928249cc-e027-4f7f-b43f-502f99a1ea63@roeck-us.net>
+ <b70332b0-3e55-4375-935f-35ef3167a151@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b70332b0-3e55-4375-935f-35ef3167a151@roeck-us.net>
+X-Infomaniak-Routing: alpha
 
-Breno Leitao <leitao@debian.org> writes:
+On Fri, Apr 19, 2024 at 04:38:01PM -0700, Guenter Roeck wrote:
+> On Fri, Apr 19, 2024 at 03:33:49PM -0700, Guenter Roeck wrote:
+> > Hi,
+> > 
+> > On Tue, Mar 19, 2024 at 11:48:57AM +0100, Mickaël Salaün wrote:
+> > > Add a test case to check NULL pointer dereference and make sure it would
+> > > result as a failed test.
+> > > 
+> > > The full kunit_fault test suite is marked as skipped when run on UML
+> > > because it would result to a kernel panic.
+> > > 
+> > > Tested with:
+> > > ./tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
+> > > ./tools/testing/kunit/kunit.py run --arch arm64 \
+> > >   --cross_compile=aarch64-linux-gnu- kunit_fault
+> > > 
+> > 
+> > What is the rationale for adding those tests unconditionally whenever
+> > CONFIG_KUNIT_TEST is enabled ? This completely messes up my test system
+> > because it concludes that it is pointless to continue testing
+> > after the "Unable to handle kernel NULL pointer dereference" backtrace.
+> > At the same time, it is all or nothing, meaning I can not disable
+> > it but still run other kunit tests.
+> > 
 
-> Embedding net_device into structures prohibits the usage of flexible
-> arrays in the net_device structure. For more details, see the discussion
-> at [1].
->
-> Un-embed the net_device from struct ath11k_ext_irq_grp by converting it
-> into a pointer. Then use the leverage alloc_netdev() to allocate the
-> net_device object at ath11k_ahb_config_ext_irq() for ahb, and
-> ath11k_pcic_ext_irq_config() for pcic.
->
-> The free of the device occurs at ath11k_ahb_free_ext_irq() for the ahb
-> case, and ath11k_pcic_free_ext_irq() for the pcic case.
->
-> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
->
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> Tested-by: Kalle Valo <kvalo@kernel.org>
+CONFIG_KUNIT_TEST is to test KUnit itself.  Why does this messes up your
+test system, and what is your test system?  Is it related to the kernel
+warning and then the message you previously sent?
+https://lore.kernel.org/r/fd604ae0-5630-4745-acf2-1e51c69cf0c0@roeck-us.net
+It seems David has a solution to suppress such warning.
 
-I assume this goes via net-next:
-
-Acked-by: Kalle Valo <kvalo@kernel.org>
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> 
+> Oh, never mind. I just disabled CONFIG_KUNIT_TEST in my test bed
+> to "solve" the problem. I'll take that as one of those "unintended
+> consequences" items: Instead of more tests, there are fewer.
+> 
+> Guenter
+> 
 
