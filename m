@@ -1,131 +1,131 @@
-Return-Path: <linux-kernel+bounces-154172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA5198AD89A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:07:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3C68AD89D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:07:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2DE41C214C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:07:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3314DB25505
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 23:07:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9855F1BF6C3;
-	Mon, 22 Apr 2024 22:58:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABF21BF6D8;
+	Mon, 22 Apr 2024 22:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xhnpmzsb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OdbztOch"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59DC1BED91;
-	Mon, 22 Apr 2024 22:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F9D1BED91
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 22:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713826716; cv=none; b=mdIVyx23hJSi5ZfYqgTgC7Sc/0Sp8D/jTO/hEneQ27++IAyFFJCBi2FdlfbLv0uxPBMNVppIcSUjWGQTm58VvfYrzAzFI9pglZ1kD7Vog49jRUgQ8F43208jHrq5gxyFgwLHFmB4cDiAgHMKwLma+T7YUzPUCDFbTXAYbbzegJc=
+	t=1713826752; cv=none; b=cPWvWF/ahdgJDrVZNkcWyg/K1QIQMoS2H1yALiGiaUePkc03JUdC3wTJAcdqFPbMSydYg84MpNihDpvBxOzJud/C0aD2LGbb6adWf9r7aP8p44KQqZBw05Z9dSUG+cKZGVR7RNBFKiNT3dk5OP5THJamURYzZKHAYB6rRwC354g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713826716; c=relaxed/simple;
-	bh=esn2V8XOCiYcLyvtAXzH1iAi1DKCTXra+1968f985U0=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oil+xVEirbRA+ltGZwVZOEPOEw2ad2cdttr3ZvypggaEiSrL1pNtpg/kWjgvwEMjjWmt84iGQZqtUUiMdx5R3A87jRa39gxRiEVGieRUzjvkWLDpmgPg38eESTnu4o8kmwd64t0fOcUKl7WxBp9epFmwlKxWhoyLLJyorBWviAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xhnpmzsb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 522B7C3277B;
-	Mon, 22 Apr 2024 22:58:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713826716;
-	bh=esn2V8XOCiYcLyvtAXzH1iAi1DKCTXra+1968f985U0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Xhnpmzsbf9Mri1AICNzleKpdSdPcQM5uzRQQr6iR5Ef1rAs0QixfSV42TtZ8JSz93
-	 2d9+wvFcvU+BcSqYnIvPJT8mpS8NaxX5w+AwVQn45OolfkGaJ8xEiVTaptQY9uSpSJ
-	 aM2YqKzG8KsdDS/FHCrD7Nenfbnyobf7qjaRWU02SgL3g0AW9JVgLMixb0mO+Wk/Ac
-	 Wh0/OHnim4+ajVdvalr1HuwwLmkPYb8KoY1rLQFaHkrBcnFIHa8sEy1jTgKJaabvzm
-	 9UvJfmAjVcOKNQziosCGWJgX2WHCybSDAHdSC8EYpzTcc6h1v/PEdplArJDMwI7FBt
-	 0+ckEQ6kn0mGg==
-Received: from [12.161.88.66] (helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rz2cL-006yKr-Kz;
-	Mon, 22 Apr 2024 23:58:34 +0100
-Date: Mon, 22 Apr 2024 23:58:24 +0100
-Message-ID: <87v849t373.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	lkft-triage@lists.linaro.org,
-	Linux Regressions <regressions@lists.linux.dev>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Anders Roxell <anders.roxell@linaro.org>,
-	joey.gouly@arm.com,
-	Oliver Upton <oliver.upton@linux.dev>
-Subject: Re: gcc-8: arm64/kvm/pauth.: Error: unknown architectural extension `pauth'
-In-Reply-To: <ZiYqV-5BWmPwgqbU@FVFF77S0Q05N>
-References: <CA+G9fYsCL5j-9JzqNH5X03kikL=O+BaCQQ8Ao3ADQvxDuZvqcg@mail.gmail.com>
-	<ZiYqV-5BWmPwgqbU@FVFF77S0Q05N>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1713826752; c=relaxed/simple;
+	bh=A+pjZaVNLZlD4+785iXCBInD6tY2++kE/rsQCAPKzmk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mddd8i9nnMr2W0Dyo+3rFC5TllvyhUxy4cIGTEDtyilSxllQn5TAQcan41/dDxHzJFevM5+NJHNPAL+tvUuDpmT+pJjKHB5dtdQc4ZKF9hEMEhyWrmc3glxeKdy3TB1BT95qRTjlrc+ee2qf8i++z0lI4S/NvxaqHhXU1qgiJT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OdbztOch; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-516d2b9cd69so6052988e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713826749; x=1714431549; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i01WWc8FrMY19HordvhidcNrQ81jJpkn1b3/nH/zGe8=;
+        b=OdbztOchHf3JvCMpJveFDo4fuOqiK/LSD6pKRX+H5pZkD/tRLIziDHMtdD+ce3iaGz
+         hH1JOSMyNGOZWgSLebbxMxF3YR5F0CywOBK+GPc6u8HwiukWDGsYy2nKC4KjDMVhYJjR
+         +M4AKMPx6SHMk2eVxvrXDrw782KclyQd5qrQzQqEU+Q61W+rrmZ8F6XIawbiPRGGQqGb
+         kq87zrf9E9+2cnmSkkDCIsD8VVSaSlWr/vyc60cOrBx96hSUqHdHNn+4V3DLjA6LuVL9
+         Lce4X3IsVAykQ6/m0S02eLtpWsKeEF3jMXQfSsQY9gh90fi1xn6n50GI11vCqwYBfnx7
+         ks4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713826749; x=1714431549;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i01WWc8FrMY19HordvhidcNrQ81jJpkn1b3/nH/zGe8=;
+        b=lYoCrJOEocMuwC926PXJe9/bAV2m9E7cVJKkWvlGwj0TphOLeVVDTYWeT7W1GwdSJm
+         6ulbf6L6KBvFMgJtfCx/kS9ATX99aBg14E71TWJb8LacVj0FDySjV8LEWTBYwwvDQ1yl
+         ax48SOqL1kOeoikNR72Vo2TZQs+23jrFLVxEvspASs/OsHPPrBwM4zXK2TIHhbaMhoHU
+         J90vKmIbbsP+gw/KxkYHD6Ym7nHVA4fpDctI9Bqj0/B4a49ooCOMkHJ+pqrRI4ZZJAhA
+         qZDaA6Nyv94Hd7l1aV/Yl31nh2jvnx2h6evhTF4563HLpkCm/Jwd0iRfNIwt+12oZjvK
+         Rnew==
+X-Forwarded-Encrypted: i=1; AJvYcCX/q6XG9kHyoxFoacIkFvUu4NwpmPQXbJ6uBjOC6Q0C6vPVV3ZfpSHsOgBr4D0HEMhJlWd39mxw0IMb2ccYeQwyCWi+xtsqOlmLCfki
+X-Gm-Message-State: AOJu0YwuJFUHETsyWo3P4MBf3Z/E5DIiYLWlVbEUTAvu6c8p1GLwnSoS
+	Ugjbu2UshUGiAhHDA3u1YISv98+UQT8qBRwNXlz3BFHZTl5sSzo3sZTM/4oMik0=
+X-Google-Smtp-Source: AGHT+IGM2GumwwiC2694i6yrlX+WVqY6Xo2siXBL73bwpoR1PZgNJjl6/DE+91yXjE9Has4vCfMkTQ==
+X-Received: by 2002:ac2:455c:0:b0:51a:f362:ab2a with SMTP id j28-20020ac2455c000000b0051af362ab2amr4281198lfm.59.1713826748840;
+        Mon, 22 Apr 2024 15:59:08 -0700 (PDT)
+Received: from [172.30.204.103] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id b6-20020a056512218600b00516c580b640sm1863304lft.13.2024.04.22.15.59.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Apr 2024 15:59:08 -0700 (PDT)
+Message-ID: <3f595432-83ad-4513-a24e-87e8ed45eba6@linaro.org>
+Date: Tue, 23 Apr 2024 00:59:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 12.161.88.66
-X-SA-Exim-Rcpt-To: mark.rutland@arm.com, naresh.kamboju@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, lkft-triage@lists.linaro.org, regressions@lists.linux.dev, arnd@arndb.de, anders.roxell@linaro.org, joey.gouly@arm.com, oliver.upton@linux.dev
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] PCI: qcom: Add equalization settings for 16GT/s
+To: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>,
+ agross@kernel.org, andersson@kernel.org, mani@kernel.org
+Cc: quic_msarkar@quicinc.com, quic_kraravin@quicinc.com,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Jingoo Han <jingoohan1@gmail.com>,
+ Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Serge Semin <fancer.lancer@gmail.com>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Conor Dooley <conor.dooley@microchip.com>, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20240419001013.28788-1-quic_schintav@quicinc.com>
+ <20240419001013.28788-3-quic_schintav@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240419001013.28788-3-quic_schintav@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 22 Apr 2024 10:13:59 +0100,
-Mark Rutland <mark.rutland@arm.com> wrote:
-> 
-> On Mon, Apr 22, 2024 at 02:04:43PM +0530, Naresh Kamboju wrote:
-> > The arm64 defconfig build failed with gcc-8 and passed with gcc-13.
-> > 
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > 
-> > Build log:
-> > ---
-> > /tmp/ccSUNNZy.s: Assembler messages:
-> > /tmp/ccSUNNZy.s:3159: Error: unknown architectural extension `pauth'
-> > make[5]: *** [scripts/Makefile.build:244: arch/arm64/kvm/pauth.o] Error 1
-> > 
-> > Steps to reproduce:
-> > ---
-> > # tuxmake --runtime podman --target-arch arm64 --toolchain gcc-8
-> > --kconfig defconfig
-> 
-> I think the key thing here is GCC 8; the associated assembler won't necessarily
-> have ARMv8.3-A support, since all the relevant bits got added around GCC 9.
-> 
-> Looking at the commits, I think this is broken since its introduction in commit:
-> 
->   6ccc971ee2c61a1f  ("KVM: arm64: nv: Add emulation for ERETAx instructions")
-> 
-> ... where the pauth.c file only depends on ARM64_PTR_AUTH (which doesn't imply
-> AS_HAS_ARMV8_3), but in the file we do:
-> 
->   asm volatile(ARM64_ASM_PREAMBLE ".arch_extension pauth\n"
->                "pacga %0, %1, %2" : "=r" (pac) : "r" (ptr), "r" (mod));
-> 
-> Given the minimum supported toolchain comes with an assembler that doesn't
-> necessarily support ARMv8.3, I reckon we'll either have to make NV pauth
-> support depend upon AS_HAS_ARMV8_3, or manually assemble the PACGA instruction.
-> 
-> I suspect the latter is the better option.
 
-This is what I've done [1]. It certainly isn't pretty, but this counts
-as an incentive to drop some of the old stuff in the near-ish future.
 
-I've pushed this out to -next, and hopefully the breakage will be
-solved tomorrow.
+On 4/19/24 02:09, Shashank Babu Chinta Venkata wrote:
+> GEN3_RELATED_OFFSET is being used to determine data rate of shadow
+> registers. Select data rate as 16GT/s and set appropriate equilization
+> settings to improve link stability for 16GT/s data rate.
+> 
+> Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
+> ---
 
-	M.
+[...]
 
-[1] https://lore.kernel.org/r/20240422224849.2238222-1-maz@kernel.org
+> +	reg = dw_pcie_readl_dbi(pci, GEN3_EQ_FB_MODE_DIR_CHANGE_OFF);
+> +	reg = GEN3_EQ_FMDC_T_MIN_PHASE23(0) |
+> +		GEN3_EQ_FMDC_N_EVALS(0xD) |
+> +		GEN3_EQ_FMDC_MAX_PRE_CUSROR_DELTA(0x5) |
+> +		GEN3_EQ_FMDC_MAX_POST_CUSROR_DELTA(0x5);
+> +	dw_pcie_writel_dbi(pci, GEN3_EQ_FB_MODE_DIR_CHANGE_OFF, reg);
+> +
+> +	reg = dw_pcie_readl_dbi(pci, GEN3_EQ_CONTROL_OFF);
+> +	reg = GEN3_EQ_CONTROL_OFF_FB_MODE(0) |
+> +		GEN3_EQ_CONTROL_OFF_PHASE23_EXIT_MODE(0) |
+> +		GEN3_EQ_CONTROL_OFF_FOM_INC_INITIAL_EVAL(0) |
+> +		GEN3_EQ_CONTROL_OFF_PSET_REQ_VEC(0);
+> +	dw_pcie_writel_dbi(pci, GEN3_EQ_CONTROL_OFF, reg);
 
--- 
-Without deviation from the norm, progress is not possible.
+Also, any chance we could get some explanations as to what these magic values mean?
+
+Preferably in the form of a #define for each one
+
+Konrad
 
