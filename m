@@ -1,94 +1,167 @@
-Return-Path: <linux-kernel+bounces-153583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 233A68ACFEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:52:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD2C68AD002
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:57:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D325B285487
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:52:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C098E1C20DF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43DB5152187;
-	Mon, 22 Apr 2024 14:51:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EAC152527;
+	Mon, 22 Apr 2024 14:57:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="i54aG8va"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d7ijfhJr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2D21E49F;
-	Mon, 22 Apr 2024 14:51:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3B15152190;
+	Mon, 22 Apr 2024 14:57:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713797515; cv=none; b=TCXtD4e+uZJkxd8xxxr0fTOMqC8sY4JVWbmFOUp2atVaoVFD8kTOEkciEPqjwzkId9BYfhfzIdJ2yg9z3uxW7xOAuSyrN2bNjUMRoYXFRQ60fksq7hc9kKNRr5sqp5w1o7YWg+LVjRs0X82fXM+TJjNtatPpuiQKNukc3FMRIN0=
+	t=1713797850; cv=none; b=q3nPlO1HWu2qNsYmo9/TOKXdR948weIwPJZaOCnt58Ub7xEI6N90+wih77U+ffb8YsX5Ys9iYfsZjCyrKv5XlPy/uCJBTvSrv/EgQHyzklKAKFy2CBSsbgP7ruVhFgYxkOF7aNk+8LCpOAMgdY7qcdMvuoHfqtEwUkFWiAnZwZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713797515; c=relaxed/simple;
-	bh=2aqAiggZBYZSF6q+dv7makmdN5JW81N9+n16hV0dMwQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ev/BtXcWOiQ8lEED1idx6Mn0VMyVlaIJHNfxRePTZLM+ati8appzN/6jt64k9nMSfmZRjYNBs7xL3EpPn10jJrYCmT/4oghpzvWdM1jm3Ei9bXyQzx6ZdCA7O8l051pdlrhaNKFKdzg1NvBsMuHNskiJeO0pqzAbqz0XFUPY3ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=i54aG8va; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4123F47C32
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1713797512; bh=zSYiN+wlryW0C+GvuOLiBHEu0XIfQ0lel0K6D2siPGE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=i54aG8va6qXqTA9WtqWbkSFZ9s/7dUB9DoEpasI2CeyXLADo6mzlG/aaB3A4f+jwm
-	 mihPDrV05PEm/dWukuH0JS5ir1ymjW8is8V/reWnnye8RkR2ounY96DE9Tb4lYTaqa
-	 Xn6qrWVkeVPCkjFsu99vrjD1GJQixtZbLVA0Hhrswycs75bQj+BoWtA8oivz+5g2zf
-	 2GX+vQlEDezXZdsfa0wBq2EZCbycr0PjimKWa0v6Pk+4viCSsqX1gNZcZfP+rmOqtE
-	 8VxJI+iiYCbhccadqs0SCQE5EOEH05biNwefA5YDurx7wjHI2FTBQFXlXftssdYbf4
-	 +useFH9UV3byA==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::1fe])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 4123F47C32;
-	Mon, 22 Apr 2024 14:51:52 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Linus Torvalds <torvalds@linuxfoundation.org>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Documentation fixes for 6.9
-Date: Mon, 22 Apr 2024 08:51:51 -0600
-Message-ID: <87le5530xk.fsf@meer.lwn.net>
+	s=arc-20240116; t=1713797850; c=relaxed/simple;
+	bh=YvcLfVhuM+fUHjKKw8VfVZI423ddk6yCUt2tSKwwS8I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DXNfLeuuZee6fAODv33pjUHPirq/d10r+VrPAbvScKbR5uyTsflBfA3Dq6O7Mf5v4GUifA+KRMz0hPMlDojzb3y0ct1iSg7c/lYds9M4AuxaBVjqUnZgcCyqEM/6YPx1+78Ci5YGvrAkyJW/1I9KQsKSLFzBVkmHCRPalyw2G6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d7ijfhJr; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713797849; x=1745333849;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YvcLfVhuM+fUHjKKw8VfVZI423ddk6yCUt2tSKwwS8I=;
+  b=d7ijfhJrLVX++Dcd0K1PQv04fgdK0yI1BKgG2AaeezOP582bwMaD2qLF
+   IjEAsnqoPDzw/rtr1svtsGMaXBMpMtHzi9nyt11FfserD8rQ1JCyD9pKB
+   9jbH84cEj8XhjNBpFIt75vU5lsaXslPsDqaJl36+ZWcDyfgTDdQZx6cYP
+   NGj8JJz+3yi2GfyXlFmE7wAl/EzaPgUbsPW88FMdl3j+NeD2ui1FBterz
+   wHHlZOi2P/7FS9zrQlQhzg54JH1y/wuf0yE7y6QC+52hvpBKbmkmGpMxs
+   Wvht1QnZKj+JtdNG3TZNeDPS0XX1vhQHuG/3wgFNzAxE5tAsbeYlooXzy
+   Q==;
+X-CSE-ConnectionGUID: 1t+V6pQvStS8YmU9csPW+g==
+X-CSE-MsgGUID: /yHXD6+LQZmo0MBOpYno5A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9460314"
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="9460314"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 07:57:29 -0700
+X-CSE-ConnectionGUID: +umTZGt+RFSo0lTn3SHPTQ==
+X-CSE-MsgGUID: unGuH3jnRLS6TH6s7L8MGg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="54975794"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa002.jf.intel.com with ESMTP; 22 Apr 2024 07:57:27 -0700
+Date: Mon, 22 Apr 2024 22:52:07 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
+	michael.roth@amd.com, isaku.yamahata@intel.com
+Subject: Re: [PATCH 11/11] KVM: x86: Add gmem hook for determining max NPT
+ mapping level
+Message-ID: <ZiZ5l6Czq0JUo2Cn@yilunxu-OptiPlex-7050>
+References: <20240404185034.3184582-1-pbonzini@redhat.com>
+ <20240404185034.3184582-12-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404185034.3184582-12-pbonzini@redhat.com>
 
-The following changes since commit e9c44c1beaba623b12201d2028bc20f535464d9b:
+On Thu, Apr 04, 2024 at 02:50:33PM -0400, Paolo Bonzini wrote:
+> From: Michael Roth <michael.roth@amd.com>
+> 
+> In the case of SEV-SNP, whether or not a 2MB page can be mapped via a
+> 2MB mapping in the guest's nested page table depends on whether or not
+> any subpages within the range have already been initialized as private
+> in the RMP table. The existing mixed-attribute tracking in KVM is
+> insufficient here, for instance:
+> 
+>   - gmem allocates 2MB page
+>   - guest issues PVALIDATE on 2MB page
+>   - guest later converts a subpage to shared
+>   - SNP host code issues PSMASH to split 2MB RMP mapping to 4K
+>   - KVM MMU splits NPT mapping to 4K
+> 
+> At this point there are no mixed attributes, and KVM would normally
+> allow for 2MB NPT mappings again, but this is actually not allowed
+> because the RMP table mappings are 4K and cannot be promoted on the
+> hypervisor side, so the NPT mappings must still be limited to 4K to
+> match this.
 
-  docs: zswap: fix shell command format (2024-03-29 08:59:01 -0600)
+Just curious how the mapping could be promoted back in this case?
 
-are available in the Git repository at:
+Thanks,
+Yilun
 
-  git://git.lwn.net/linux.git tags/docs-6.9-fixes2
-
-for you to fetch changes up to 8d939ae349343b55984ea821164e2be526d48cd1:
-
-  docs: verify/bisect: stable regressions: first stable, then mainline (2024-04-15 09:41:56 -0600)
-
-----------------------------------------------------------------
-A set of updates from Thorsten to his (new) guide to verifying bugs and
-tracking down regressions.
-
-This is a fairly big set of changes for this late in the cycle, and they
-*can* wait if need be.  But they are limited to Thorsten's document,
-which is new with 6.9, and I don't see a reason to not have it in his
-desired form at release.
-
-----------------------------------------------------------------
-Thorsten Leemhuis (6):
-      docs: verify/bisect: use git switch, tag kernel, and various fixes
-      docs: verify/bisect: add and fetch stable branches ahead of time
-      docs: verify/bisect: proper headlines and more spacing
-      docs: verify/bisect: explain testing reverts, patches and newer code
-      docs: verify/bisect: describe how to use a build host
-      docs: verify/bisect: stable regressions: first stable, then mainline
-
- .../verify-bugs-and-bisect-regressions.rst         | 597 ++++++++++++++-------
- 1 file changed, 417 insertions(+), 180 deletions(-)
+> 
+> Add a hook to determine the max NPT mapping size in situations like
+> this.
+> 
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> Message-Id: <20231230172351.574091-31-michael.roth@amd.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm-x86-ops.h | 1 +
+>  arch/x86/include/asm/kvm_host.h    | 2 ++
+>  arch/x86/kvm/mmu/mmu.c             | 8 ++++++++
+>  3 files changed, 11 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index c81990937ab4..2db87a6fd52a 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -140,6 +140,7 @@ KVM_X86_OP_OPTIONAL_RET0(vcpu_get_apicv_inhibit_reasons);
+>  KVM_X86_OP_OPTIONAL(get_untagged_addr)
+>  KVM_X86_OP_OPTIONAL(alloc_apic_backing_page)
+>  KVM_X86_OP_OPTIONAL_RET0(gmem_prepare)
+> +KVM_X86_OP_OPTIONAL_RET0(gmem_validate_fault)
+>  KVM_X86_OP_OPTIONAL(gmem_invalidate)
+>  
+>  #undef KVM_X86_OP
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 59c7b95034fc..67dc108dd366 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1811,6 +1811,8 @@ struct kvm_x86_ops {
+>  	void *(*alloc_apic_backing_page)(struct kvm_vcpu *vcpu);
+>  	int (*gmem_prepare)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, int max_order);
+>  	void (*gmem_invalidate)(kvm_pfn_t start, kvm_pfn_t end);
+> +	int (*gmem_validate_fault)(struct kvm *kvm, kvm_pfn_t pfn, gfn_t gfn, bool is_private,
+> +				   u8 *max_level);
+>  };
+>  
+>  struct kvm_x86_nested_ops {
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 992e651540e8..13dd367b8af1 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4338,6 +4338,14 @@ static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
+>  			       fault->max_level);
+>  	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
+>  
+> +	r = static_call(kvm_x86_gmem_validate_fault)(vcpu->kvm, fault->pfn,
+> +						     fault->gfn, fault->is_private,
+> +						     &fault->max_level);
+> +	if (r) {
+> +		kvm_release_pfn_clean(fault->pfn);
+> +		return r;
+> +	}
+> +
+>  	return RET_PF_CONTINUE;
+>  }
+>  
+> -- 
+> 2.43.0
+> 
+> 
 
