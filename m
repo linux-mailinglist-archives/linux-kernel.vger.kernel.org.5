@@ -1,109 +1,126 @@
-Return-Path: <linux-kernel+bounces-152702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67D928AC320
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:38:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64F2E8AC2FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 05:29:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96BA01C209A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:38:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 971CC1C20883
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 03:28:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 883E2EAF6;
-	Mon, 22 Apr 2024 03:38:43 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ADCFEEA8;
+	Mon, 22 Apr 2024 03:28:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YXY9qgHI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E45DDAB
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 03:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55AE12579;
+	Mon, 22 Apr 2024 03:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713757123; cv=none; b=c4yudkBShCe+GIujznEV4AbhgAhOHq0/1PwL084nZ2sI139KV0pUyho1EEfU5P4KvQjEqHL7CVRBeVRzKRl8XMVtFArZ/5hAFQb3JoDkx4OgRiWyilcbU0mbz1f9Thf9FXw9qYHHLPIAkSpBqbSWZszx6PWmr1El7UUpVw45WQ0=
+	t=1713756530; cv=none; b=hCseeMW2O9lUXj+SU71r0aQe4Zq007W6NkMMbPsgRP6dK2EWwwSOkpYFTCT48/R+y/LC0WARqJtGtDW5nmXlmfdFPmxZjXQ6v+2dGMtR+PIcKV2OokoClqMpIJASVzjK8S1hUz5yBS4kNYcMCCb1wpvLmmwRCFRKkEPKd95nQzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713757123; c=relaxed/simple;
-	bh=HmgUjEtE2D65gXb4uwnzJYArIQyX/6Kk/HUdfLvGQbI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iXaXR6uDB5AntekrgiQZTIgLchLw5m9vBorzuTCR9XA1SKl4eempaE366bh9ZemWIinfLQCNjoJw3FQAQjsBFdAUaSsaKcFnSYLAxW1NAc0jqjo2GJqJQN++LLlIWGqHwU2Pg7IKVfLkuIYnbpaluc1MUVOUL4gPWe0ivALr7bM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 4ba26e00005811ef9305a59a3cc225df-20240422
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:3cc5f76e-1216-462c-9101-c3fdefd9e948,IP:25,
-	URL:0,TC:0,Content:-5,EDM:-25,RT:0,SF:-1,FILE:0,BULK:0,RULE:Release_Ham,AC
-	TION:release,TS:-6
-X-CID-INFO: VERSION:1.1.37,REQID:3cc5f76e-1216-462c-9101-c3fdefd9e948,IP:25,UR
-	L:0,TC:0,Content:-5,EDM:-25,RT:0,SF:-1,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-6
-X-CID-META: VersionHash:6f543d0,CLOUDID:de48ecc80ffdb81986e69b4a94ad0c9a,BulkI
-	D:240422112750583FJ6BJ,BulkQuantity:0,Recheck:0,SF:25|72|19|44|66|38|102,T
-	C:nil,Content:0,EDM:1,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,
-	COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
-	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED
-	SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
-	GTI_C_BU, AMN_T1, AMN_GOOD, AMN_C_TI, AMN_C_BU
-	ABX_MISS_RDNS
-X-UUID: 4ba26e00005811ef9305a59a3cc225df-20240422
-X-User: gehao@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.171)] by mailgw.kylinos.cn
-	(envelope-from <gehao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1761472885; Mon, 22 Apr 2024 11:27:49 +0800
-From: Hao Ge <gehao@kylinos.cn>
-To: akpm@linux-foundation.org,
-	willy@infradead.org
-Cc: david@redhat.com,
-	lrh2000@pku.edu.cn,
-	josef@toxicpanda.com,
-	vishal.moola@gmail.com,
-	gehao618@163.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Hao Ge <gehao@kylinos.cn>
-Subject: [PATCH] mm/page-flags: make PageUptodate return bool
-Date: Mon, 22 Apr 2024 11:27:25 +0800
-Message-Id: <20240422032725.41452-1-gehao@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1713756530; c=relaxed/simple;
+	bh=+Ktb/IsPaoqwJhfwXUUrTC6XLdOCvL/6K6NVdF2venw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KqFPsOTM12Qeh5fyzGMnkRAomTreU+5uPx8rySnhTbRlf6K2gR2+H7qaJNcqgLQIVLNiaDNkj5WnRO6U/JkV8JN4zL1CVO8CswR0zoKPzElUehAcgUOjFAW2ENfyiuuveydKBMZTlHS+MUViAhZlGtpTMDzJFZd9Uuff9FRNOPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YXY9qgHI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9C14C113CE;
+	Mon, 22 Apr 2024 03:28:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713756529;
+	bh=+Ktb/IsPaoqwJhfwXUUrTC6XLdOCvL/6K6NVdF2venw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=YXY9qgHIVKCYMuEUBfRTb1sUxePxIBrehmLXnzeSA8cTU13V66krpliIqRXZSxMrW
+	 Jcc2vEmw/9VAOC3if5ovcipCrnL9S7eN8roBgQzeisyMSKF27rUxbjkD8Jg7Rraz+h
+	 X6Op6luDblMwZNVlAwgEDIPVCfGvVpRNQp6UZSGj+jz/KrNkLDqaZSD+/sCdfcawEQ
+	 M+M9BObz0Q1kCXrTwjmgb+kZO9czGi9x2gMh3cfFSJFuUVbVHFfRK4HntT8QdkjAST
+	 tpSIf9l6Uw+vNmiosehTVdgAX3Awo+sD2Xs9xqeAnkUW8afu39aiWA2c09R8BJsEQj
+	 GTfoCywv7P2og==
+Message-ID: <9b95f926-b96c-4266-b292-3c3cd362905e@kernel.org>
+Date: Mon, 22 Apr 2024 05:28:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] Add adm1281 support
+To: Jose Ramon San Buenaventura <jose.sanbuenaventura@analog.com>,
+ linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-i2c@vger.kernel.org
+Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+References: <20240422025123.29770-1-jose.sanbuenaventura@analog.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240422025123.29770-1-jose.sanbuenaventura@analog.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-make PageUptodate return bool to align the return
-values of folio_test_uptodate function
+On 22/04/2024 04:51, Jose Ramon San Buenaventura wrote:
+> This patch removes the extra case added in the adm1275_read_byte_data
+> for STATUS_CML reads. Upon checking, the reads for the STATUS_CML register
+> is already handled in the pmbus_core. 
+> 
+> It was also clarified and agreed upon that any other actionable steps
+> involving the STATUS_CML error flags should be added in the pmbus_core
+> and not on the specific chip driver.
+> 
 
-Signed-off-by: Hao Ge <gehao@kylinos.cn>
----
- include/linux/page-flags.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Where is the changelog? It's v2, so what happened here?
 
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 652d77805e99..497ec781a681 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -764,7 +764,7 @@ static inline bool folio_test_uptodate(const struct folio *folio)
- 	return ret;
- }
- 
--static inline int PageUptodate(const struct page *page)
-+static inline bool PageUptodate(const struct page *page)
- {
- 	return folio_test_uptodate(page_folio(page));
- }
--- 
-2.25.1
+Best regards,
+Krzysztof
 
 
