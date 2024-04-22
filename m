@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-154305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD1468ADA83
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:14:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A57558ADA8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:15:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92D981F21A3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:14:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9462B29CBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C6B180A9E;
-	Mon, 22 Apr 2024 23:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6595618131A;
+	Mon, 22 Apr 2024 23:57:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bOT5ekKu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uNGLl0FB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D88180A86;
-	Mon, 22 Apr 2024 23:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A418D15884C;
+	Mon, 22 Apr 2024 23:57:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830276; cv=none; b=Vm1BSCtqo01baVxeJ7vomwKNP+44v6xEpVgeTDYcnXjcfiEECOW2RxnhZC7UxBrcillvqWOyW8KrvoqsZehm2nZKZMq2tjHzuF0Psouux14FIVVJfN8AW23xVfk6UmHSPeN+doTvhpcbIIDdePtbB0KZ+g1ritUHP1ZBEZrnfxw=
+	t=1713830278; cv=none; b=k6rkK9Jv/xmIngBpZZr6dbyLmD6Cuh0kiPrG1ERa1tsrbXyCW1SdqBHVACrroCya5H12vpUqryIpnH6sXul03GBN26LBrJwUhT7hupS68DP7K0oWdgqeB6BXONs0umXn4NLK1Tr/oMZYryLX7BaRAmvQzEJccRXRCYLGIeyVKV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830276; c=relaxed/simple;
-	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
+	s=arc-20240116; t=1713830278; c=relaxed/simple;
+	bh=18m4ZYSaNZlIgA8xL5VdKckI3qxeX5rvbkwFzIq1d0Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=O8k1Bn/HMaAiVe4iGbEzEL5w/YzExW6Yuaqtzin7q2AkLA9lD54Se+/vFns1fTYw1J2LsRMjRVNuWkVV7rT0SuTody1Sd16d5G7qN6Ltf8HK986EvbkfRhqhyn7Mhac4zDhjtVAKz9W4duUcJ5X3u3rdk9Ge9F/c1iESz4iYUWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bOT5ekKu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 928EBC2BD11;
-	Mon, 22 Apr 2024 23:57:55 +0000 (UTC)
+	 MIME-Version; b=na7H0FA2vE5yugGoWtat/ShNv9TYmaIbmOV3mLZnNDecESn+s5riG2VCmBtnSltqV92b+cLt/TKabr7vubi/M5fSEJc2e/GwJ17vYrLt0rilc+DtKlDp2L8FOIl1K5i8BwhCfht/wLW/TjeUck/3DJz+TF2h6lCbmOlDIIg6xGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uNGLl0FB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48313C2BD11;
+	Mon, 22 Apr 2024 23:57:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830276;
-	bh=WQkBgi+Eaxxbb+FX/HL3Sm6zB6RvXwCNsTnQSDnjwh0=;
+	s=k20201202; t=1713830278;
+	bh=18m4ZYSaNZlIgA8xL5VdKckI3qxeX5rvbkwFzIq1d0Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bOT5ekKu5fwwj+vs8Z4v/tITmfNQ31fGh6z+OxUScf2guRAelWe4viEG6lODPt5dz
-	 ayCaJogTn+TEIIkH9D2Zz5BaFY8VU6wCo4leV7Rk4lQNKSpiwIE7lkpe6ltCZOOUUd
-	 h2uqZgRYPCahxwI5hUwavTXupaWYXwIlk6bu8rsxVU8VFTrDsQ4TAKUAG5K65vdv2P
-	 CDbCNIXOE7yfga7reyrlBRvm1PGW2Qn9nrJmkYa+t/guSZLPaGTQZhV1QZuc+RrIxx
-	 UUVTB5+xTEJK5g2oMMfpZNpKRZwPmmrW3ja910scz1B7Gl8n+WDpkiN111jdf89xvD
-	 pEzDbf4PKq91g==
+	b=uNGLl0FBCIB4OE7pEZg61inW6VNPcFPUnWsjjFwRBSJNFRxoBC8RkwzST9LGtAtdA
+	 fQGwwEQGct+FTs9/GdUdPsessju3Rrbwn77P0cyZn+f7RfEobskToPKuAibLscdAG/
+	 jY1XtfirGPukDivEU42FoHonH0QpmsGNR61R1MUevpe5XulRiwd5S9auCQhzAFtObF
+	 HkMuFlGVvjAYqtMfqSEBQ1aVh5E63hGLhXlvGAqT6UDzy9ZKV9ziRFIuh3g3gnJReP
+	 7PDSpYRoDpgAmTwvw/cJE7L5HhTQYXRnUGRdymSlqLmusQ8LqEmo+1yzsaeIbV8rp/
+	 EyOKGb9eWCU/Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: John Stultz <jstultz@google.com>,
-	Lee Jones <joneslee@google.com>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
+Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Michael Kelley <mhklinux@outlook.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Wei Liu <wei.liu@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	shuah@kernel.org,
-	nathan@kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 15/19] selftests: timers: Fix valid-adjtimex signed left-shift undefined behavior
-Date: Mon, 22 Apr 2024 19:18:29 -0400
-Message-ID: <20240422231845.1607921-15-sashal@kernel.org>
+	kys@microsoft.com,
+	haiyangz@microsoft.com,
+	decui@microsoft.com,
+	linux-hyperv@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 16/19] Drivers: hv: vmbus: Track decrypted status in vmbus_gpadl
+Date: Mon, 22 Apr 2024 19:18:30 -0400
+Message-ID: <20240422231845.1607921-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240422231845.1607921-1-sashal@kernel.org>
 References: <20240422231845.1607921-1-sashal@kernel.org>
@@ -69,136 +70,100 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.87
 Content-Transfer-Encoding: 8bit
 
-From: John Stultz <jstultz@google.com>
+From: Rick Edgecombe <rick.p.edgecombe@intel.com>
 
-[ Upstream commit 076361362122a6d8a4c45f172ced5576b2d4a50d ]
+[ Upstream commit 211f514ebf1ef5de37b1cf6df9d28a56cfd242ca ]
 
-The struct adjtimex freq field takes a signed value who's units are in
-shifted (<<16) parts-per-million.
+In CoCo VMs it is possible for the untrusted host to cause
+set_memory_encrypted() or set_memory_decrypted() to fail such that an
+error is returned and the resulting memory is shared. Callers need to
+take care to handle these errors to avoid returning decrypted (shared)
+memory to the page allocator, which could lead to functional or security
+issues.
 
-Unfortunately for negative adjustments, the straightforward use of:
+In order to make sure callers of vmbus_establish_gpadl() and
+vmbus_teardown_gpadl() don't return decrypted/shared pages to
+allocators, add a field in struct vmbus_gpadl to keep track of the
+decryption status of the buffers. This will allow the callers to
+know if they should free or leak the pages.
 
-  freq = ppm << 16 trips undefined behavior warnings with clang:
-
-valid-adjtimex.c:66:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
-        -499<<16,
-        ~~~~^
-valid-adjtimex.c:67:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
-        -450<<16,
-        ~~~~^
-.
-
-Fix it by using a multiply by (1 << 16) instead of shifting negative values
-in the valid-adjtimex test case. Align the values for better readability.
-
-Reported-by: Lee Jones <joneslee@google.com>
-Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Signed-off-by: John Stultz <jstultz@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Link: https://lore.kernel.org/r/20240409202222.2830476-1-jstultz@google.com
-Link: https://lore.kernel.org/lkml/0c6d4f0d-2064-4444-986b-1d1ed782135f@collabora.com/
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Link: https://lore.kernel.org/r/20240311161558.1310-3-mhklinux@outlook.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Message-ID: <20240311161558.1310-3-mhklinux@outlook.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../testing/selftests/timers/valid-adjtimex.c | 73 +++++++++----------
- 1 file changed, 36 insertions(+), 37 deletions(-)
+ drivers/hv/channel.c   | 25 +++++++++++++++++++++----
+ include/linux/hyperv.h |  1 +
+ 2 files changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/timers/valid-adjtimex.c b/tools/testing/selftests/timers/valid-adjtimex.c
-index 48b9a803235a8..d13ebde203221 100644
---- a/tools/testing/selftests/timers/valid-adjtimex.c
-+++ b/tools/testing/selftests/timers/valid-adjtimex.c
-@@ -21,9 +21,6 @@
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *   GNU General Public License for more details.
-  */
--
--
--
- #include <stdio.h>
- #include <stdlib.h>
- #include <time.h>
-@@ -62,45 +59,47 @@ int clear_time_state(void)
- #define NUM_FREQ_OUTOFRANGE 4
- #define NUM_FREQ_INVALID 2
+diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
+index 56f7e06c673e4..bb5abdcda18f8 100644
+--- a/drivers/hv/channel.c
++++ b/drivers/hv/channel.c
+@@ -472,9 +472,18 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
+ 		(atomic_inc_return(&vmbus_connection.next_gpadl_handle) - 1);
  
-+#define SHIFTED_PPM (1 << 16)
+ 	ret = create_gpadl_header(type, kbuffer, size, send_offset, &msginfo);
+-	if (ret)
++	if (ret) {
++		gpadl->decrypted = false;
+ 		return ret;
++	}
+ 
++	/*
++	 * Set the "decrypted" flag to true for the set_memory_decrypted()
++	 * success case. In the failure case, the encryption state of the
++	 * memory is unknown. Leave "decrypted" as true to ensure the
++	 * memory will be leaked instead of going back on the free list.
++	 */
++	gpadl->decrypted = true;
+ 	ret = set_memory_decrypted((unsigned long)kbuffer,
+ 				   PFN_UP(size));
+ 	if (ret) {
+@@ -563,9 +572,15 @@ static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
+ 
+ 	kfree(msginfo);
+ 
+-	if (ret)
+-		set_memory_encrypted((unsigned long)kbuffer,
+-				     PFN_UP(size));
++	if (ret) {
++		/*
++		 * If set_memory_encrypted() fails, the decrypted flag is
++		 * left as true so the memory is leaked instead of being
++		 * put back on the free list.
++		 */
++		if (!set_memory_encrypted((unsigned long)kbuffer, PFN_UP(size)))
++			gpadl->decrypted = false;
++	}
+ 
+ 	return ret;
+ }
+@@ -886,6 +901,8 @@ int vmbus_teardown_gpadl(struct vmbus_channel *channel, struct vmbus_gpadl *gpad
+ 	if (ret)
+ 		pr_warn("Fail to set mem host visibility in GPADL teardown %d.\n", ret);
+ 
++	gpadl->decrypted = ret;
 +
- long valid_freq[NUM_FREQ_VALID] = {
--	-499<<16,
--	-450<<16,
--	-400<<16,
--	-350<<16,
--	-300<<16,
--	-250<<16,
--	-200<<16,
--	-150<<16,
--	-100<<16,
--	-75<<16,
--	-50<<16,
--	-25<<16,
--	-10<<16,
--	-5<<16,
--	-1<<16,
-+	 -499 * SHIFTED_PPM,
-+	 -450 * SHIFTED_PPM,
-+	 -400 * SHIFTED_PPM,
-+	 -350 * SHIFTED_PPM,
-+	 -300 * SHIFTED_PPM,
-+	 -250 * SHIFTED_PPM,
-+	 -200 * SHIFTED_PPM,
-+	 -150 * SHIFTED_PPM,
-+	 -100 * SHIFTED_PPM,
-+	  -75 * SHIFTED_PPM,
-+	  -50 * SHIFTED_PPM,
-+	  -25 * SHIFTED_PPM,
-+	  -10 * SHIFTED_PPM,
-+	   -5 * SHIFTED_PPM,
-+	   -1 * SHIFTED_PPM,
- 	-1000,
--	1<<16,
--	5<<16,
--	10<<16,
--	25<<16,
--	50<<16,
--	75<<16,
--	100<<16,
--	150<<16,
--	200<<16,
--	250<<16,
--	300<<16,
--	350<<16,
--	400<<16,
--	450<<16,
--	499<<16,
-+	    1 * SHIFTED_PPM,
-+	    5 * SHIFTED_PPM,
-+	   10 * SHIFTED_PPM,
-+	   25 * SHIFTED_PPM,
-+	   50 * SHIFTED_PPM,
-+	   75 * SHIFTED_PPM,
-+	  100 * SHIFTED_PPM,
-+	  150 * SHIFTED_PPM,
-+	  200 * SHIFTED_PPM,
-+	  250 * SHIFTED_PPM,
-+	  300 * SHIFTED_PPM,
-+	  350 * SHIFTED_PPM,
-+	  400 * SHIFTED_PPM,
-+	  450 * SHIFTED_PPM,
-+	  499 * SHIFTED_PPM,
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(vmbus_teardown_gpadl);
+diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+index 4fbd5d8417111..811d59cf891ba 100644
+--- a/include/linux/hyperv.h
++++ b/include/linux/hyperv.h
+@@ -832,6 +832,7 @@ struct vmbus_gpadl {
+ 	u32 gpadl_handle;
+ 	u32 size;
+ 	void *buffer;
++	bool decrypted;
  };
  
- long outofrange_freq[NUM_FREQ_OUTOFRANGE] = {
--	-1000<<16,
--	-550<<16,
--	550<<16,
--	1000<<16,
-+	-1000 * SHIFTED_PPM,
-+	 -550 * SHIFTED_PPM,
-+	  550 * SHIFTED_PPM,
-+	 1000 * SHIFTED_PPM,
- };
- 
- #define LONG_MAX (~0UL>>1)
+ struct vmbus_channel {
 -- 
 2.43.0
 
