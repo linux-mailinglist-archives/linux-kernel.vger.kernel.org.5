@@ -1,79 +1,62 @@
-Return-Path: <linux-kernel+bounces-153440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DC848ACE1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:26:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71D3A8ACE22
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:27:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B303D2821A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:26:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A43B01C211AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:27:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE70A14F9C9;
-	Mon, 22 Apr 2024 13:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FD3F14F9C9;
+	Mon, 22 Apr 2024 13:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VNoaoEnx"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="txIj96E5"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E2C14F13E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:25:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 275FD14F137;
+	Mon, 22 Apr 2024 13:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713792361; cv=none; b=cMjjWiQFUNIETx5PaRouUlrVrSpxHrZ3QrTRRtI+9xXHeLGDQMEqMgzpecA7uCmZVYsoKfu0x98NLvQXUBIcW0pG8zKXZqBE/IPeNd+ghRq5PygebsJ4lCfr2h+kiF3tiU/kL5S8RhONEqTjr1lDH8b8KcNYJtixXOIvWGBo2rU=
+	t=1713792414; cv=none; b=IBIr0E9GHS2Pw1jXxvfwYqWOtzQdoMeAJOfHsGkREvXjcXLjCB5daf1JVDywaXhSvWiNDWUk2gvEPctfxJSeDZudlEf7skAoKeDe6Z9fs1TWzV4oAMUWEjnhXQrPimPmxAWmmCQRBIQjmPWWr3y9aJypMHZXHksHL2ttKvPp7yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713792361; c=relaxed/simple;
-	bh=zzX5eE4yMUDKe0LvVLzQNY6kTp+yzD1J3zOF3ag/LAQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I9sFUypHTUUXsSQMbGtzN5CHofcHXaTDYqWcgn8Mly1PwJJ2J3Omch52000//YtmZAVrStzSkhcfAyYKalQEk181daGmGiC5u8s2VvvzjtYW0wscbNo85WnakYHv4RrmoemhWH1lUqyuG94ZbiIlNeHuPHmwJBuaY//zDeb/9lQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VNoaoEnx; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713792358;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ol/2RA90vNCMdV3wT9xM2JZGkm3yoQFPbLwEAxBwTSc=;
-	b=VNoaoEnx9qbqhibtIcM0olCNHTab4P2dSzHw0BAxGFPKf7Q9+SKgmASjXBPYp62TO7NRsE
-	nhmOiF45ftHLqhh3S+I0oWYZCt6N67BGXw33t9OZ4ygCLc1cPwOvBWleAzlMKpyhbYlh1Q
-	KHvFZFFVISEXk8+HUB+BMQVkJIawz0g=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-400-5sbK6jJQO4iBrL8heBax5g-1; Mon, 22 Apr 2024 09:25:56 -0400
-X-MC-Unique: 5sbK6jJQO4iBrL8heBax5g-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a52233a228aso261747466b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:25:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713792355; x=1714397155;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ol/2RA90vNCMdV3wT9xM2JZGkm3yoQFPbLwEAxBwTSc=;
-        b=LAR/dhTsIGy47h5wQ0uWrQ4r5Z+nFGcvbqR6rskJYhwboWQmkVUMevhYxHHNsVkw3W
-         VOkXBXrZBcIRh+0f0fUbUUIgN6xusDn7coP4F0jGTic1x0yLwa9sxCX2IsW0vIetFEkN
-         okAOifyflutSogQmxC8FxbSxuag8alEVdYctS9oeocrvIS6EVKf6nr5EzBB6o1FYKn1h
-         j0jvz3Os+8qlfFXMsJ/7L5NCsalb3c5tvP4E9Q9Tmwqs2XKgtjlHoCNIIigk7rGCuBk3
-         6uqj75PQuJSCylqkR4x7tBXmXcbIDU1FZ4Vlr4oZdkc8DoX/voovXJnMYq+NpiO/thEa
-         UhOA==
-X-Forwarded-Encrypted: i=1; AJvYcCXctVXMbCxLze1WC5xI7ores08BU94c4n/dh5/3dcZgIqR6ODgJQrqS3XcSVb9Y/+Arb20HzpMpHs0M24XWlOiKcu00kuY3tFcnWS2u
-X-Gm-Message-State: AOJu0YwvxpEppc517ll0vGxvdIIUZ3dStNJmfYueUL+9zPBJOMlI3d50
-	Jo/44nEy4aJzayaHKT5Y77SP3IfGVpGSPXJT8W8SNAy/8cs7pwoQE3Cy4lZJwQnq6B4KPIcL8en
-	f2SXnUf8L1oA+yO127bVFpfnrsHKx2tVpykuMwhLdQ4950J+85WfPcB4edCoZ6A==
-X-Received: by 2002:a17:906:fe0b:b0:a55:ab92:8baa with SMTP id wy11-20020a170906fe0b00b00a55ab928baamr4660378ejb.9.1713792355114;
-        Mon, 22 Apr 2024 06:25:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFizyCClaD48IQHzVKa86p3t7HomFbWXivDIP/CjLWOxs68n/orswhkEk93S6EN8g/eJimpuQ==
-X-Received: by 2002:a17:906:fe0b:b0:a55:ab92:8baa with SMTP id wy11-20020a170906fe0b00b00a55ab928baamr4660363ejb.9.1713792354738;
-        Mon, 22 Apr 2024 06:25:54 -0700 (PDT)
-Received: from [10.40.98.157] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id x20-20020a1709060a5400b00a524b2ffed6sm5761118ejf.56.2024.04.22.06.25.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 06:25:54 -0700 (PDT)
-Message-ID: <12ef6031-35e1-4d48-9771-8c431f7abe33@redhat.com>
-Date: Mon, 22 Apr 2024 15:25:50 +0200
+	s=arc-20240116; t=1713792414; c=relaxed/simple;
+	bh=rltMGq55ARZCc37gtRnzHBu4Sdh7LfDHlvboSSNO8nw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=MMWC1aJVTNiWFe4zTYjJsx0R48qA4xv6FsyeT1VDZie7BI9+xRsbZI/wrVMVhhHap1ps0DA894zT6rY7GWJwBvkIYDyhyflDoVsR1kqcZ3sRbMJbFrY29pK93kYuqtT0Ww81cJPLj4GVqNGkFsAiTKj1zzHOCcalk1pTZY14iH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=txIj96E5; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43MDQZnT060509;
+	Mon, 22 Apr 2024 08:26:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713792395;
+	bh=ukr4TzCuGsbPIJk7tc4dQhxJsKRvx8Mk1fvZwSXwZto=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=txIj96E5Cp7FJQ/3Zjjqya7hKATW7+gSNs7IPDTB/Ns/1euUjusLlIpdcnHEzPi6G
+	 v6TdY3rEh9ucchQvSOeJgR89XupJba70emFwNp9MG+vm0ZpsvBjo4IyhqxSggc25Ei
+	 uacPvkBPBjJWXaGQLCmaYp2JYp9CoPfDqcXGatNI=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43MDQZcm103248
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 22 Apr 2024 08:26:35 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 22
+ Apr 2024 08:26:35 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 22 Apr 2024 08:26:35 -0500
+Received: from [10.250.148.22] ([10.250.148.22])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43MDQUws090835;
+	Mon, 22 Apr 2024 08:26:31 -0500
+Message-ID: <f9b80c20-b15b-470e-a7e4-888ef9f5e8ac@ti.com>
+Date: Mon, 22 Apr 2024 18:56:30 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,83 +64,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86/intel-uncore-freq: Don't present root domain
- on error
-To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- ilpo.jarvinen@linux.intel.com
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20240415215210.2824868-1-srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH] arm64: dts: ti: k3-j722s-evm: Enable UHS support for
+ MMCSD
+To: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+CC: <linux-arm-kernel@lists.infradead.org>, <conor+dt@kernel.org>,
+        <krzk+dt@kernel.org>, <robh@kernel.org>, <kristo@kernel.org>,
+        <vigneshr@ti.com>, <nm@ti.com>, Bhavya Kapoor <b-kapoor@ti.com>
+References: <20240422131840.34642-1-b-kapoor@ti.com>
 Content-Language: en-US
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240415215210.2824868-1-srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+From: Bhavya Kapoor <b-kapoor@ti.com>
+In-Reply-To: <20240422131840.34642-1-b-kapoor@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi,
 
-On 4/15/24 11:52 PM, Srinivas Pandruvada wrote:
-> If none of the clusters are added because of some error, fail to load
-> driver without presenting root domain. In this case root domain will
-> present invalid data.
-> 
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Fixes: 01c10f88c9b7 ("platform/x86/intel-uncore-freq: tpmi: Provide cluster level control")
-> Cc: <stable@vger.kernel.org> # 6.5+
+On 22/04/24 18:48, Bhavya Kapoor wrote:
+> Enable the UHS modes for MMCSD in J722S by removing the
+> no-1-8-v property.
+>
+> Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
 > ---
-> This error can be reproduced in the pre production hardware only.
-> So can go through regular cycle and they apply to stable.
-
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-
-> 
->  .../x86/intel/uncore-frequency/uncore-frequency-tpmi.c     | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-tpmi.c b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-tpmi.c
-> index bd75d61ff8a6..587437211d72 100644
-> --- a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-tpmi.c
-> +++ b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-tpmi.c
-> @@ -240,6 +240,7 @@ static int uncore_probe(struct auxiliary_device *auxdev, const struct auxiliary_
->  	bool read_blocked = 0, write_blocked = 0;
->  	struct intel_tpmi_plat_info *plat_info;
->  	struct tpmi_uncore_struct *tpmi_uncore;
-> +	bool uncore_sysfs_added = false;
->  	int ret, i, pkg = 0;
->  	int num_resources;
->  
-> @@ -384,9 +385,15 @@ static int uncore_probe(struct auxiliary_device *auxdev, const struct auxiliary_
->  			}
->  			/* Point to next cluster offset */
->  			cluster_offset >>= UNCORE_MAX_CLUSTER_PER_DOMAIN;
-> +			uncore_sysfs_added = true;
->  		}
->  	}
->  
-> +	if (!uncore_sysfs_added) {
-> +		ret = -ENODEV;
-> +		goto remove_clusters;
-> +	}
-> +
->  	auxiliary_set_drvdata(auxdev, tpmi_uncore);
->  
->  	tpmi_uncore->root_cluster.root_domain = true;
-
+Rebased to next-20240422
+>  arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+> index 78032caeb5fc..bf3c246d13d1 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+> @@ -381,7 +381,6 @@ &sdhci1 {
+>  	pinctrl-0 = <&main_mmc1_pins_default>;
+>  	ti,driver-strength-ohm = <50>;
+>  	disable-wp;
+> -	no-1-8-v;
+>  	status = "okay";
+>  	bootph-all;
+>  };
 
