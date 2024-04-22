@@ -1,146 +1,114 @@
-Return-Path: <linux-kernel+bounces-153804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 833A28AD370
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:44:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A7B78AD371
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:44:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36E49283298
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:44:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43C3BB22035
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F19A5153BFE;
-	Mon, 22 Apr 2024 17:43:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD45A153BF2;
+	Mon, 22 Apr 2024 17:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TJH5+cbv"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="CK0eNxV2"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F395A146A6A;
-	Mon, 22 Apr 2024 17:43:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 135231DFFB
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 17:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713807833; cv=none; b=PYnxAFCLHTfp0Z5Q6ZmM99NFWcW9x/dhWBkFGHZvYe0pI+f1INRRX1HYWi4z1DWHMwWtRKXX9BB7lMhxsXl8n+DbNl2DFVJGjSZZjMdLOfyM6E0KBPiNWaWMRJmbFfcygYX6rYO4Tqy1rl5oS8b2D0nrkIFJg9aTtuBWk7HsEVA=
+	t=1713807878; cv=none; b=pxSQGUJNMjJqc0xcDdvUjrKT14i30yrvHk1PWvGVptf+1VUSY2/cvJyl5KoljHPAHlxq3TVnOt2bkgyGUvDO31JPY1WUR9Pm4LSD1y/ouuFWn9V7bH/YcpwsUEsngDPAth3aqVevhOQgDVLlh/RX0AY9wThr4erSVAfnPySqqgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713807833; c=relaxed/simple;
-	bh=Pbv27z04lIaICL/FzqSXgzMVVCt8av1h3PQDCS7yGeY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X9uLVy1PpPckUMF2n9HNA+HC2f12Xm5F9MLFNuqJk5Dic8771dbcxrDyW6lzGcAjTuBbRI54w0ZY+cbcmlaaNRpUy3cZU4IFg/PfEnWufuyND2i3jG+YfbUYWUjRvzdnRB86QWNpuo2ChDZuBpyAMD0QMI30xiEZeIJQ4KPkEug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TJH5+cbv; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e651a9f3ffso26277895ad.1;
-        Mon, 22 Apr 2024 10:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713807831; x=1714412631; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qSvyvU0Rfhdk3VBloz/BBm2zvYuHYc7AJgQNt/xFkNU=;
-        b=TJH5+cbvnzx+6fHFncrjE8ouZQef5te0N2TPpUF69i1WIZAJeqvIKHriQoLPh9FJQG
-         nJYcWZV0zlO8DtBUAXmUnEKG1X4HR1G63mqB0rixW1UGk9oBnYIRKrd9FdICNxwOv86R
-         a8pH4+B0gvqvhf27Ns9het1aV1+9qqFFYE063PxjvIGvcPIRZRf3X2aU3MTGyXVrnhU0
-         +8NHpphw7D43yYXW2HYDPDhjE8VB+I9EOfwID35Vt4whgn8BqnND858zZxJsz+cdCjrP
-         gA3qa+yfD198wE3FNnqUad+eYLWdc7lGgZD7PF+Jrg45GHuhRgdSuMWGJqrofAFq+WGD
-         HusQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713807831; x=1714412631;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qSvyvU0Rfhdk3VBloz/BBm2zvYuHYc7AJgQNt/xFkNU=;
-        b=qyTjQ9LXsVplsNmdWKIBV7BPiN7CFrv29L5Wl6UIGFZkQgHumWyO4kK1vv6SMVZWFc
-         7MNdqlP7MradFiysCha9NZR/XSb5yM/84gXIJd25/zXsiZVK61nuBkGkdiug5ZtMCD/E
-         Dc7bc6UytdfsA/DoR+vec5yqBRdICpB9g57pAV+QIhKYASE2v+rTEKENWF3Zg3Vgx0+P
-         Wp2xzdPbWu/Wvlla4e64G4tmhE6Sf+NHo2x9iY935b2+2D1gWYGKzS6s2AoX1P4s+4hZ
-         sMltptHUCP8HiTN/XwZRwDYxxS8mG97TCNigYtwR4Rhmoh+eRUzuyGvnoXqJVzLDOKEJ
-         wTBw==
-X-Forwarded-Encrypted: i=1; AJvYcCUo68DhShPL7BwjPvRb/A8igszwu54HUL6n+er1I6w0PBtcLVmMe/EBaVqtocuoeb3XEy37ygEdDgFDPfMt77VHQnOKDp+rf7uI3jbkfMkapPV/yBw9oA4IKuibRMb+RhPX
-X-Gm-Message-State: AOJu0YyF06BP9uyJUIQwesbhNV0QLMjkJaeQ9BhTInWnZzqwx9RbqL7z
-	wNyHqb4XJ5O9g+XMBuf5+dEHTDUYNnKe+BbL4M+BN+SKOVFNNwgePvkFLKdWnPPVI4BUYEKoa0d
-	3Ygt1cvJqemoPtQ/NmS5uOAVMat0=
-X-Google-Smtp-Source: AGHT+IETNptdueS4aatM89LVShm6ieIsw2W7wCVSgpS2MMG3jUTZNLtGZ/PKdwz6H5ounHxgqL3jRmBsoJ5qyjXzT9Q=
-X-Received: by 2002:a17:902:ea0f:b0:1de:e6a5:e51d with SMTP id
- s15-20020a170902ea0f00b001dee6a5e51dmr12905969plg.16.1713807831231; Mon, 22
- Apr 2024 10:43:51 -0700 (PDT)
+	s=arc-20240116; t=1713807878; c=relaxed/simple;
+	bh=7drD7tmNeZZ82Un6/DUMO06pOaonB1g0qkyj1n4wMo0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aiXAFFjHEC2xNgJehJqOM3K2LQyhH/vEYCMeDVCJdr5KB13ncIpdpQ97uWRIlkMgkZK83CkX9cCU8xgVYyE7lJC4ph05E2pTZCJNZpCFdYmO1mDNDHEAuW+gUnx+5eOI8BomUJHhXbC3qoUkgv71CmvOgvD/DtQS9SFydu7jQck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=CK0eNxV2; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 957AF40E024C;
+	Mon, 22 Apr 2024 17:44:33 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id d9q0rHF2ZGYT; Mon, 22 Apr 2024 17:44:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1713807868; bh=LiCv4ti/ZUxju0UMuzlsEkcZFBZgjZl/ErGFhRv0GKY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CK0eNxV28Th0YAv78TBTiplIKq8rl1XqmfVtKP/azvJsDJk+ZverSTi/9A1Z1vegj
+	 fydDP2t7OcVfOwSyRLLryiyrlHdnwdTFh4ObvjbV2FpneGEj4tPQCuug1w0ZACe7YJ
+	 asmyfjzaewZJucnlqOZjiKbO8YtGSLaFSfI9Yv4LpqyISdgHPAx3qoz3guk+zNqKMT
+	 8TKnbMKSKiFyT6dXL+X7J+ZdqFr2R/wiJSRTtOq/4YdoyuU2Nt1wW61d3Xn/f8YCr9
+	 /amkoUCKbtiWHYzNau74XXSJUxfuxihrbNNhpBt9F8qwwCR7v3hZWGe7h8nwLlT+Ec
+	 G+q6BrVk7kpYG5qrYqu4Mls4YsFGHMM/QbkqUbK3ot18vmthM3P/4wWEJCs4kZgX5e
+	 x/3X9AbD6s6SI7gqKgHceNQw3tTwJzNILse1VjQaj7hHjRjaZE3ioPoHiGy1YWKvEy
+	 6C9Y7uaR9XGEURRdSdu6Lt53RHS7E5IIZBgzgzDKh5HrfIKlqNiX6ybU1Mws121Gkk
+	 Hjm5s3Ejrwz4d81GZ9UyT/hpv59rjnsYPgMEdk0WOJ1Bfmz6PvxlW3zXRdJ8yXmlfd
+	 A6sIOd3KWeYYVMhGYDBzOMiAdBbNyLifED8Io3jeM2TNpA+yzhRxVQD/ygceMQ15yF
+	 hKM5ETAonMLH34yCfm1aOiHU=
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8F2DE40E0249;
+	Mon, 22 Apr 2024 17:44:22 +0000 (UTC)
+Date: Mon, 22 Apr 2024 19:44:17 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>, linux-kernel@vger.kernel.org,
+	jgross@suse.com, tglx@linutronix.de, x86@kernel.org
+Subject: Re: [PATCH 4/4] x86/xen: Enumerate NX from CPUID directly
+Message-ID: <20240422174417.GBZiah8YrdzM6_bA2R@fat_crate.local>
+References: <20240403153508.7328E749@davehans-spike.ostc.intel.com>
+ <20240403153514.CC2C9D13@davehans-spike.ostc.intel.com>
+ <Zg7B0JwJD6sfjVIY@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422144538.351722-1-liuxin350@huawei.com>
-In-Reply-To: <20240422144538.351722-1-liuxin350@huawei.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 22 Apr 2024 10:43:38 -0700
-Message-ID: <CAEf4BzZvpXjez7XV8meBqP3ZzrZcJ8osHgi9A=meheWTbrashw@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: extending BTF_KIND_INIT to accommodate some
- unusual types
-To: Xin Liu <liuxin350@huawei.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, yanan@huawei.com, 
-	wuchangye@huawei.com, xiesongyang@huawei.com, kongweibin2@huawei.com, 
-	zhangmingyi5@huawei.com, liwei883@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Zg7B0JwJD6sfjVIY@google.com>
 
-On Mon, Apr 22, 2024 at 7:46=E2=80=AFAM Xin Liu <liuxin350@huawei.com> wrot=
-e:
->
-> In btf__add_int, the size of the new btf_kind_int type is limited.
-> When the size is greater than 16, btf__add_int fails to be added
-> and -EINVAL is returned. This is usually effective.
->
-> However, when the built-in type __builtin_aarch64_simd_xi in the
-> NEON instruction is used in the code in the arm64 system, the value
-> of DW_AT_byte_size is 64. This causes btf__add_int to fail to
-> properly add btf information to it.
->
-> like this:
->   ...
->    <1><cf>: Abbrev Number: 2 (DW_TAG_base_type)
->     <d0>   DW_AT_byte_size   : 64              // over max size 16
->     <d1>   DW_AT_encoding    : 5        (signed)
->     <d2>   DW_AT_name        : (indirect string, offset: 0x53): __builtin=
-_aarch64_simd_xi
->    <1><d6>: Abbrev Number: 0
->   ...
->
-> An easier way to solve this problem is to treat it as a base type
-> and set byte_size to 64. This patch is modified along these lines.
->
-> Fixes: 4a3b33f8579a ("libbpf: Add BTF writing APIs")
-> Signed-off-by: Xin Liu <liuxin350@huawei.com>
-> ---
->  tools/lib/bpf/btf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index 2d0840ef599a..0af121293b65 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -1934,7 +1934,7 @@ int btf__add_int(struct btf *btf, const char *name,=
- size_t byte_sz, int encoding
->         if (!name || !name[0])
->                 return libbpf_err(-EINVAL);
->         /* byte_sz must be power of 2 */
-> -       if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 16)
-> +       if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 64)
+On Thu, Apr 04, 2024 at 08:05:52AM -0700, Sean Christopherson wrote:
+> ...
+> and then the NX Xen code is more simply
+> 
+> 	x86_configure_nx(x86_cpuid_has(X86_FEATURE_NX));
 
+I can't say that I haven't looked at the KVM features code and haven't
+thought that, yap, some of the bits we could make generic. And I was
+going to even suggest that but then, there's this bigger CPUID feature
+rework that has been brewing on the horizon for a loong while now and
+where we want to read out the CPUID features once and have everything
+else query those instead of everybody doing their own thing...
 
-maybe we should just remove byte_sz upper limit? We can probably
-imagine 256-byte integers at some point, so why bother artificially
-restricting it?
+.. and some of that work is here:
+https://lpc.events/event/17/contributions/1511/ ...
 
-pw-bot: cr
+and tglx wanted to get this thing moving faster...
 
->                 return libbpf_err(-EINVAL);
->         if (encoding & ~(BTF_INT_SIGNED | BTF_INT_CHAR | BTF_INT_BOOL))
->                 return libbpf_err(-EINVAL);
-> --
-> 2.33.0
->
+So yeah, I think we should finally unify all the feature bits handling
+and reading so that there's a single set of APIs which are used by
+everybody instead of the crazy "fun" we have now.
+
+And then my hope is that you could kill/merge some of the KVM infra into
+generic code.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
