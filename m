@@ -1,225 +1,135 @@
-Return-Path: <linux-kernel+bounces-153356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFD808ACD12
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:44:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D1F48ACCE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:40:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53489B23A50
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:44:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF53F1C20F7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 12:40:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAE2415358E;
-	Mon, 22 Apr 2024 12:40:13 +0000 (UTC)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D829A14F107;
+	Mon, 22 Apr 2024 12:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GJzqxMnA"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF2314E2FD;
-	Mon, 22 Apr 2024 12:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E6B14EC5F
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 12:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713789613; cv=none; b=Fexl4rWVbqYCC7HKVH+u66z7C2UAG8jbrgE9+FvZ/kvjtsZSPVQL8fvacmfM6XczpKhO9tLGKCtlNDJYTMhtJd9xxL2sJbjO2UNlX7kCozoz7WQX6PeRCbWW7JzqT5y8N/9tox8drKGACa/F0q1eCgK0V06EF0MzSrVNY0vwSSo=
+	t=1713789586; cv=none; b=tvqd+8F1RqpDoVZ/5hbIcpTDEeG0Iic0HX6Hd/WIF21sXfG7l3ZFkAm3mbW9w4UlRZOEfwQT783+WJ3mkfLHTsaEaOQNVZVAHIb1UHM4BJCwZPJ3i2pIejhOjiArDC5YKH+1cOGN6wCbZgpBi8HM78MTo9KujwQCHTwgdpKmDLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713789613; c=relaxed/simple;
-	bh=C2/enydAC2YCsBNnm5NUTUC6WvB4CkjpCpQsFsdVyag=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lzPDE4ytmM/oy66RC3vpdagTRQGiE/icfqUwwKV7RFkWH5YqyfH2OGbDm0JUfqUQzfhKRXp54mr7ymIkVZywtpSHylo2gG9DrQ6xwmKjh7xzZtvPQxGPAr4EeQJR+odylTiPv57AsXca9pSVby6De+jnmYLQF2KuHDYHMfcwFzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5720d52eb10so809705a12.0;
-        Mon, 22 Apr 2024 05:40:11 -0700 (PDT)
+	s=arc-20240116; t=1713789586; c=relaxed/simple;
+	bh=iyTsIMR6AeJPVBmq77RzZGnEgc860sS11RT6shdDDRw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dYGxJagttyEx7+c1AcVeZ4GEXUzS3TIgQj39FUGq49WYjy/Vzgb3otGEAcWxJgspdXB8GUq2a6EudKtYPhD35IKSEqPoRuwSvB8r0BaoO35nv3PaZqPI1o88oiDWwm7SuJrKBWwZ5TyiRG7hEcca5TEmpz1YiZmnOkds53uxuTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GJzqxMnA; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c74b643aebso1733000b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 05:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713789580; x=1714394380; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=S4ySNq3QesUCzbAIR2RY0fipn3yuib781ddLRiaF6bc=;
+        b=GJzqxMnAZlXFvpw/W7OFie1lW1lGs+B0rbRo4x7hIvcbGkrjUln9INDuLK9g+IphIX
+         aDaGsgDTGZz8E3msvjjzd9yYcp099GvrB/UGkBdmNOtH7gKA2ZPil83GTGt565zZZM2g
+         gOdHABj3iBLS2Zi1E4ke2ksQnniHGN7OpVehFs4ENiDNGsCQyhJG98hpaWt7zLe1cT/R
+         8E/TB78cAXPp5kS/2DjzOxhcJSfXIvwTLvDJ4wHaonghCQYUDNlQdR3pS2jANq2moE4z
+         0NM04olMYW4649SS9KYm7iKnSAyZCXe3IwIH9ma6AwZadKy30icRDpGmaarKoPIy5DIr
+         JilQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713789610; x=1714394410;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xrYnp1tDsZ0sxZFnn5u9gBZrt+Gb2bRXco5M67sATos=;
-        b=sJwTRuwAnhIuk2NaLokJx42mvtDH6cZC9YvLlaE3/k0tkW6vCPOuOfY/WqVmBkknSB
-         c9OBmqG8VfHA8/78MdocR1zSmX0kByQiXjTqWh34SD6uEi0sg/jo15D2F5vVycpDBppz
-         AeTsASpd0KZ3Gtks2dsESn9Xv6FnDUxtJ1UWhejguWz6YqFsElecVumCxHaukLHPWlnY
-         hPTCIba+hndY/ZH3lw+sh2U8GfQwqSxV4VphlttYdixBwhKUWlaUGJvj60w5Ldb45eCM
-         Uyx4rKCSKd/ryoYMcPWvNUCtcjHDwVJh+c9d1GPOYSXHdEUEGWqJgHnpP8CcgAd49nTQ
-         KcsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX+2LlRiDpA/hN/BOQAfWB0lX7oWMHEMXFa0AH7K5JEuhp9qXzgQ5n2H1h27qklElRxHWw5fOZLk+fiUGclnAp4AhN2/sUDRzxwtMz47Xy7urPDoCvsS8qhxsu0T/MBZuDmjoXx5XbLV4AsqYRtI/xJiLUSGL4rCLWla4IDZhKXi+gw+ZurmS8UTKeRtSDWc0bS7keqTUyVAUY=
-X-Gm-Message-State: AOJu0YwQYIm8qKQNktNhgrBgBW9ufEGZOw6h0qARPeGi/ueQjefwW0FO
-	9qL3Ju/2XBNClLsfwhpTm1FwYAOCiZkzP3n7NFJqYMRHk/MkSCjD
-X-Google-Smtp-Source: AGHT+IGrZgag9UeQefghQLPV+ku8otAJz6U28ozWysOWpOYWi3aSs0tMI8tAitrA/dkQ2iNnyOPaxQ==
-X-Received: by 2002:a50:8e5b:0:b0:56b:cfef:b2de with SMTP id 27-20020a508e5b000000b0056bcfefb2demr6802703edx.26.1713789609790;
-        Mon, 22 Apr 2024 05:40:09 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id q10-20020a056402248a00b0056fe7c5475bsm5505410eda.10.2024.04.22.05.40.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 05:40:09 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: aleksander.lobakin@intel.com,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	elder@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	nbd@nbd.name,
-	sean.wang@mediatek.com,
-	Mark-MC.Lee@mediatek.com,
-	lorenzo@kernel.org,
-	taras.chornyi@plvision.eu,
-	ath11k@lists.infradead.org,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	geomatsi@gmail.com,
-	kvalo@kernel.org,
-	Jeff Johnson <jjohnson@kernel.org>
-Cc: quic_jjohnson@quicinc.com,
-	leon@kernel.org,
-	dennis.dalessandro@cornelisnetworks.com,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	idosch@idosch.org,
-	leitao@debian.org,
-	angelogioacchino.delregno@collabora.com,
-	matthias.bgg@gmail.com
-Subject: [PATCH net-next v7 10/10] wifi: ath11k: allocate dummy net_device dynamically
-Date: Mon, 22 Apr 2024 05:39:03 -0700
-Message-ID: <20240422123921.854943-11-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240422123921.854943-1-leitao@debian.org>
-References: <20240422123921.854943-1-leitao@debian.org>
+        d=1e100.net; s=20230601; t=1713789580; x=1714394380;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S4ySNq3QesUCzbAIR2RY0fipn3yuib781ddLRiaF6bc=;
+        b=dGtscdIvyCVWi7Au1H41DUjGuZwEM6nH5eQndzDgs8EQd27wTy4J6WdUzpkf+E4g9D
+         r8EzFvGEHaYejaDEo+SaILNzhmGgkLrIusKd9yZEAbBjy3LdRlQxtpPZ4m3r68qn2dkQ
+         C2b/X4d6QEAIi48Q/yh4ieXD5y/iFedjS1z0sRGIhHslQcA8DePPaPnjZk+qUjWbHJUN
+         YBb8aUYnBG1/og2p8UiCQK87zUES380PtmkFzkpIuf5IeEW2zm3TKJOdRKe3IivxeG7z
+         LeHpORM9WU24FwUY5SfQyogSJP5lLqLkJHLpz58Ia0zW4yazAh4GqhUfnl7Zq0Eq/xK6
+         zk0A==
+X-Forwarded-Encrypted: i=1; AJvYcCXjtCOeXD4+P0MEd+N0Z9BZ2yVz1/wl6knrRXpA9Rlm+VPqzW/8fqmfiDsIOR2ZapYXyTwzbGXHduaPvGhBvXMle8mfmfvs3hV78XHJ
+X-Gm-Message-State: AOJu0YxGGQZFiZQuqebco4bmLTHCXNPDUNAsaBBGm2fv3UMBWikVLT2S
+	umMOnp4vNKnpjc+rdvJ0hdGr6VCO+UuKOTtEn7yNZejYK6eEUvznxJLM685oeSu/OPZCQMArPnV
+	BDyCSkF3DWjZqdKj9bIcX+2mUWhVYc5dTBbW6vw==
+X-Google-Smtp-Source: AGHT+IFRVyCeWFThbOBOiFgmqUhy26Z9HP2Lw9XMRIZylBypB7g6tOUorMkXN+WcL7sQuHVha6TScv+q+Y0CqpP+4uw=
+X-Received: by 2002:a05:6870:c1cf:b0:21f:d2a2:7ff4 with SMTP id
+ i15-20020a056870c1cf00b0021fd2a27ff4mr14344315oad.17.1713789580152; Mon, 22
+ Apr 2024 05:39:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240404122559.898930-1-peter.griffin@linaro.org>
+ <20240404122559.898930-11-peter.griffin@linaro.org> <75b1b063-e8d4-417d-99a8-4320d72297cf@moroto.mountain>
+In-Reply-To: <75b1b063-e8d4-417d-99a8-4320d72297cf@moroto.mountain>
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Mon, 22 Apr 2024 13:39:28 +0100
+Message-ID: <CADrjBPputDQWpQZgPiuUDLTWZA83KJEMp-X8ZtXAwt6ivTOG9g@mail.gmail.com>
+Subject: Re: [PATCH 10/17] phy: samsung-ufs: ufs: Add SoC callbacks for
+ calibration and clk data recovery
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
+	krzk+dt@kernel.org, conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org, 
+	alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org, 
+	s.nawrocki@samsung.com, cw00.choi@samsung.com, jejb@linux.ibm.com, 
+	martin.petersen@oracle.com, chanho61.park@samsung.com, ebiggers@kernel.org, 
+	linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-clk@vger.kernel.org, 
+	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org, 
+	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com
+Content-Type: text/plain; charset="UTF-8"
 
-Embedding net_device into structures prohibits the usage of flexible
-arrays in the net_device structure. For more details, see the discussion
-at [1].
+Hi Dan,
 
-Un-embed the net_device from struct ath11k_ext_irq_grp by converting it
-into a pointer. Then use the leverage alloc_netdev() to allocate the
-net_device object at ath11k_ahb_config_ext_irq() for ahb, and
-ath11k_pcic_ext_irq_config() for pcic.
+Thanks for the review.
 
-The free of the device occurs at ath11k_ahb_free_ext_irq() for the ahb
-case, and ath11k_pcic_free_ext_irq() for the pcic case.
+On Wed, 17 Apr 2024 at 10:52, Dan Carpenter <dan.carpenter@linaro.org> wrote:
+>
+> On Thu, Apr 04, 2024 at 01:25:52PM +0100, Peter Griffin wrote:
+> > diff --git a/drivers/phy/samsung/phy-samsung-ufs.c b/drivers/phy/samsung/phy-samsung-ufs.c
+> > index c567efafc30f..f57a2f2a415d 100644
+> > --- a/drivers/phy/samsung/phy-samsung-ufs.c
+> > +++ b/drivers/phy/samsung/phy-samsung-ufs.c
+> > @@ -46,7 +46,7 @@ static void samsung_ufs_phy_config(struct samsung_ufs_phy *phy,
+> >       }
+> >  }
+> >
+> > -static int samsung_ufs_phy_wait_for_lock_acq(struct phy *phy)
+> > +int samsung_ufs_phy_wait_for_lock_acq(struct phy *phy, u8 lane)
+> >  {
+> >       struct samsung_ufs_phy *ufs_phy = get_samsung_ufs_phy(phy);
+> >       const unsigned int timeout_us = 100000;
+> > @@ -98,8 +98,15 @@ static int samsung_ufs_phy_calibrate(struct phy *phy)
+> >               }
+> >       }
+> >
+> > -     if (ufs_phy->ufs_phy_state == CFG_POST_PWR_HS)
+> > -             err = samsung_ufs_phy_wait_for_lock_acq(phy);
+> > +     for_each_phy_lane(ufs_phy, i) {
+> > +             if (ufs_phy->ufs_phy_state == CFG_PRE_INIT &&
+> > +                 ufs_phy->drvdata->wait_for_cal)
+> > +                     err = ufs_phy->drvdata->wait_for_cal(phy, i);
+> > +
+> > +             if (ufs_phy->ufs_phy_state == CFG_POST_PWR_HS &&
+> > +                 ufs_phy->drvdata->wait_for_cdr)
+> > +                     err = ufs_phy->drvdata->wait_for_cdr(phy, i);
+>
+> The "err" value is only preserved from the last iteration in this loop.
 
-[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+I'll send a follow up patch for this as it's already applied.
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
-Tested-by: Kalle Valo <kvalo@kernel.org>
----
- drivers/net/wireless/ath/ath11k/ahb.c  |  9 +++++++--
- drivers/net/wireless/ath/ath11k/core.h |  2 +-
- drivers/net/wireless/ath/ath11k/pcic.c | 21 +++++++++++++++++----
- 3 files changed, 25 insertions(+), 7 deletions(-)
+Thanks,
 
-diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
-index 7c0a23517949..7f3f6479d553 100644
---- a/drivers/net/wireless/ath/ath11k/ahb.c
-+++ b/drivers/net/wireless/ath/ath11k/ahb.c
-@@ -442,6 +442,7 @@ static void ath11k_ahb_free_ext_irq(struct ath11k_base *ab)
- 			free_irq(ab->irq_num[irq_grp->irqs[j]], irq_grp);
- 
- 		netif_napi_del(&irq_grp->napi);
-+		free_netdev(irq_grp->napi_ndev);
- 	}
- }
- 
-@@ -533,8 +534,12 @@ static int ath11k_ahb_config_ext_irq(struct ath11k_base *ab)
- 
- 		irq_grp->ab = ab;
- 		irq_grp->grp_id = i;
--		init_dummy_netdev(&irq_grp->napi_ndev);
--		netif_napi_add(&irq_grp->napi_ndev, &irq_grp->napi,
-+
-+		irq_grp->napi_ndev = alloc_netdev_dummy(0);
-+		if (!irq_grp->napi_ndev)
-+			return -ENOMEM;
-+
-+		netif_napi_add(irq_grp->napi_ndev, &irq_grp->napi,
- 			       ath11k_ahb_ext_grp_napi_poll);
- 
- 		for (j = 0; j < ATH11K_EXT_IRQ_NUM_MAX; j++) {
-diff --git a/drivers/net/wireless/ath/ath11k/core.h b/drivers/net/wireless/ath/ath11k/core.h
-index b3fb74a226fb..590307ca7a11 100644
---- a/drivers/net/wireless/ath/ath11k/core.h
-+++ b/drivers/net/wireless/ath/ath11k/core.h
-@@ -174,7 +174,7 @@ struct ath11k_ext_irq_grp {
- 	u64 timestamp;
- 	bool napi_enabled;
- 	struct napi_struct napi;
--	struct net_device napi_ndev;
-+	struct net_device *napi_ndev;
- };
- 
- enum ath11k_smbios_cc_type {
-diff --git a/drivers/net/wireless/ath/ath11k/pcic.c b/drivers/net/wireless/ath/ath11k/pcic.c
-index add4db4c50bc..79eb3f9c902f 100644
---- a/drivers/net/wireless/ath/ath11k/pcic.c
-+++ b/drivers/net/wireless/ath/ath11k/pcic.c
-@@ -316,6 +316,7 @@ static void ath11k_pcic_free_ext_irq(struct ath11k_base *ab)
- 			free_irq(ab->irq_num[irq_grp->irqs[j]], irq_grp);
- 
- 		netif_napi_del(&irq_grp->napi);
-+		free_netdev(irq_grp->napi_ndev);
- 	}
- }
- 
-@@ -558,7 +559,7 @@ ath11k_pcic_get_msi_irq(struct ath11k_base *ab, unsigned int vector)
- 
- static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
- {
--	int i, j, ret, num_vectors = 0;
-+	int i, j, n, ret, num_vectors = 0;
- 	u32 user_base_data = 0, base_vector = 0;
- 	unsigned long irq_flags;
- 
-@@ -578,8 +579,11 @@ static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
- 
- 		irq_grp->ab = ab;
- 		irq_grp->grp_id = i;
--		init_dummy_netdev(&irq_grp->napi_ndev);
--		netif_napi_add(&irq_grp->napi_ndev, &irq_grp->napi,
-+		irq_grp->napi_ndev = alloc_netdev_dummy(0);
-+		if (!irq_grp->napi_ndev)
-+			return -ENOMEM;
-+
-+		netif_napi_add(irq_grp->napi_ndev, &irq_grp->napi,
- 			       ath11k_pcic_ext_grp_napi_poll);
- 
- 		if (ab->hw_params.ring_mask->tx[i] ||
-@@ -601,8 +605,13 @@ static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
- 			int vector = (i % num_vectors) + base_vector;
- 			int irq = ath11k_pcic_get_msi_irq(ab, vector);
- 
--			if (irq < 0)
-+			if (irq < 0) {
-+				for (n = 0; n <= i; n++) {
-+					irq_grp = &ab->ext_irq_grp[n];
-+					free_netdev(irq_grp->napi_ndev);
-+				}
- 				return irq;
-+			}
- 
- 			ab->irq_num[irq_idx] = irq;
- 
-@@ -615,6 +624,10 @@ static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
- 			if (ret) {
- 				ath11k_err(ab, "failed request irq %d: %d\n",
- 					   vector, ret);
-+				for (n = 0; n <= i; n++) {
-+					irq_grp = &ab->ext_irq_grp[n];
-+					free_netdev(irq_grp->napi_ndev);
-+				}
- 				return ret;
- 			}
- 		}
--- 
-2.43.0
-
+Peter
 
