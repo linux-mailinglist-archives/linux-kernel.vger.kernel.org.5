@@ -1,125 +1,129 @@
-Return-Path: <linux-kernel+bounces-153407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA7828ACDC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:05:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AFCD8ACDB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:03:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EC41283C93
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:05:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16C972854EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:03:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18C0D14F130;
-	Mon, 22 Apr 2024 13:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E54D14F11E;
+	Mon, 22 Apr 2024 13:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MPefd/YC"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OT7Ap/Ld"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2127214A09E;
-	Mon, 22 Apr 2024 13:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8BBD14A4C4;
+	Mon, 22 Apr 2024 13:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713791116; cv=none; b=AMi8mTRlCGvQNscEJSWKKxEGeOV3zepOQ1QtIYL67qwU3lr+FNcGDZckQ7GbKaQZOxc9YNNtCk9ikNGdqAOj3pPZDT/eWhBKo8YGNYTYppRmkYXTUhGCZFmcxVYN5aXPeGz+/UMNR8MTuGZPmgizsTU/kYOD1Dfu4TPssjWVV+g=
+	t=1713790975; cv=none; b=UK1fQqyBw3Z3h0/L3s5vR3qPu4o2YDbjaMQ4tCUPCDiPZ94AXmGhrpUFhXwGgfz5VODHTaNU5b/W47glsplHY3/YuYk6gDVnTDNLL3ki+h6yRYk4BKqD6HUYBLREvpjcHMXs7KtrhQlPuGU6e9zeqaO4J2IOLfUVmTL+ObwuWBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713791116; c=relaxed/simple;
-	bh=AYXYdSjrS60uqFRFCctj2ZvuCU8r3kYG/nyJjGjXGJ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=WsF+FXsfyaakXiBsd/cboBj7NUO7cJTyFRpyZYhAF8CFRUaA88BllahRyBwFcpD01eic73shBu+MVMzHwLGm+/lGzNEb078JxjxtBicoZz7UEEtBjm+0BOCUQiIIFyWx2REfIxXJVAQW3P5N/euZH84mymQvIGBBDyWd1UMFAvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MPefd/YC; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43M823do002911;
-	Mon, 22 Apr 2024 13:05:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=ovWSv3B+H61oCuvCm9t/WxM2ikWw4yKO6zzZ6kbn6us=; b=MP
-	efd/YC4mStE/VFjrFv7AQ5/g9JmootfCIgScSvJ3qiEoUIbZPOb4WBXbURHytVTQ
-	KJ/1IA4HcVLrO74nfMg34pO7VotS+b0BNWy8lah9lnQ/sEPMije8XUt5JdaUIEF/
-	K+wj1upWCyY3vCGhE0BE0GfOtMEvCblSZTSdnP3yIEGNIS6SJMIzX7eQ9ai7FqgM
-	ClvftXve3UDz8XvlXSkD7kLgc+Bsf4hV9jn3cBb2mfN+gELm94RXNoU7Ym77qtbk
-	WSK8s4VXGvJ8BgWrfjjXuYgF75SJnCyEk2D7IZYdpm34k0WM6vPMuU/xvkWDca5j
-	P/6AswBTYFIUiYZ4y6Rg==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnm1bgr9u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 13:05:04 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43MD52l4016431
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 22 Apr 2024 13:05:02 GMT
-Received: from [10.253.37.80] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 22 Apr
- 2024 06:05:01 -0700
-Message-ID: <438844e9-47e8-486e-9611-ae524d6974b3@quicinc.com>
-Date: Mon, 22 Apr 2024 21:04:58 +0800
+	s=arc-20240116; t=1713790975; c=relaxed/simple;
+	bh=t2+sKE0HslHFtPd+U0Q51wY48L1S/5UCwXt6NX009I8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gTHWIvx6jYT+o5fs4o6CwTqlDup6G+FdfZhosOLYA7MIJjrT+mko+o75ny2qcTJocTJG2hQz3o3jK5X/onk85BwlJdCLs1AJzXieK0EvShHMXt7bsdMb/b4hy+t+mwr3PBPm8WF6D4mf9+AhWSEO+sXZo7tHSfbXtwS1YKvxKjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OT7Ap/Ld; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56fffd131a8so1841182a12.0;
+        Mon, 22 Apr 2024 06:02:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713790969; x=1714395769; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t2+sKE0HslHFtPd+U0Q51wY48L1S/5UCwXt6NX009I8=;
+        b=OT7Ap/LdbemJKCRscklx15jb9/Xk0QjcWjxMJlBOAW5HHhsrSCv/uQZnCHXCknmETw
+         X5bYkEXyos0dhVASJOvqHiviHYxWxEfhCZRvfUWMGlBLbGI578e5a25QsZGIjJdFeM19
+         ptMGoltVyBXLzDhFC8CToMG7+iSuHUA07K1rOr7cMXTWXVg/eQzEl1J5hhCZ8H/OsWQ3
+         ewfuT05MjKmqY/yqsSW6wo9Jog+ptRVb0QPpJKmHmwCTDDDsOZxtfivUwXLNuWLzGiue
+         wJUYEq+IJ4Dxp1Ie4ivrpuaugKEmfde5nS8zGHQqeRet369zXMF6hsv4gp76MkHgxsHb
+         ATrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713790969; x=1714395769;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t2+sKE0HslHFtPd+U0Q51wY48L1S/5UCwXt6NX009I8=;
+        b=r6fpZhgi87ZIEV3wFFVvODxnRO0PGH9stqdfZ6UjsEAlCv/1wL72K/73yzFxMUlMDZ
+         ytCz3fm9CvUJoO67Oc1l4c4LzjaTR4xoJa16N8APXFeSU3rHcUaHvcTfn+v4ag2H2zpA
+         kFb3+GiEOboNzlMWDRKYXKotK8IRWclKhrspIqOHlK46JufmiRTsTc+oI/Jxtb4OjuQV
+         0tLyB62eQzMID5p16bktaBZt+P2vkKfgfPmguzqZBobLmHSiRCZOfkgLytAZYjXmwvxA
+         70Y/nRdE/tJFo+KxIQEpBvL2FfrOzpOK0LJVWZjag+3pb5R8ggSygDoHP9awt1sLHhhN
+         RTWw==
+X-Forwarded-Encrypted: i=1; AJvYcCUMVJmzcMsX3Z8nu7xZ+nwVwZt1hhNdxsKGIVVPdEdZhGUfOd095YI1jBy4Q/44i6dTXEchr/VlFkelPqSx4q3WdsZ3LXB2UPAKtM4YyF5FKdL/dPTY5OfjSQmX9T7coGH6Mz4SLcW2dia4IB9UdYPkP4njVl59KNMBG0dgxLzQ4rWsOgOEgQ==
+X-Gm-Message-State: AOJu0Yx+AAKt4SxkmSorV1stN53SyYFcsAr+aKeU02V+BnN653WhP5DQ
+	gGrgvPn/sCX2XpFu6wp2M7ZUeVj1m87XPCh46ArhyeB8CuTrI0bVFbVNLI8xIF7d/v43SsOapfH
+	Q7LT+RuLH9lHadiacFe1KsYoVCvk=
+X-Google-Smtp-Source: AGHT+IFKVMheNb73b/4c+5LVIsP869+V2uEzBfTjhaKmRKbNbrd9wRhnmG+2HGL6eKtRMmLC6JOa8qNLG0+Dv3geJ6E=
+X-Received: by 2002:a50:9548:0:b0:56e:2bf4:fe02 with SMTP id
+ v8-20020a509548000000b0056e2bf4fe02mr8915587eda.11.1713790968857; Mon, 22 Apr
+ 2024 06:02:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] Bluetooth: qca: fix NULL-deref on non-serdev setup
-To: Johan Hovold <johan@kernel.org>,
-        Luiz Augusto von Dentz
-	<luiz.dentz@gmail.com>
-CC: Marcel Holtmann <marcel@holtmann.org>,
-        Zhengping Jiang
-	<jiangzp@google.com>,
-        <linux-bluetooth@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240319154611.2492-1-johan+linaro@kernel.org>
- <ZiZdag8fw8H1haCb@hovoldconsulting.com>
-Content-Language: en-US
-From: quic_zijuhu <quic_zijuhu@quicinc.com>
-In-Reply-To: <ZiZdag8fw8H1haCb@hovoldconsulting.com>
+References: <20240422123801.2695129-1-rilian.la.te@ya.ru> <20240422123801.2695129-3-rilian.la.te@ya.ru>
+ <28bde53d-f3ab-44c3-9ade-a42b2e0120ef@linaro.org>
+In-Reply-To: <28bde53d-f3ab-44c3-9ade-a42b2e0120ef@linaro.org>
+From: "Konstantin P." <ria.freelander@gmail.com>
+Date: Mon, 22 Apr 2024 16:05:00 +0300
+Message-ID: <CAF1WSuzXzbAqzp=PWbLt0oNZ5Pkhn_oCkSTWdNoSZMh_fAtvjQ@mail.gmail.com>
+Subject: Re: [PATCH v6 2/3] dt-bindings: sc16is7xx: Add compatible line for
+ XR20M1172 UART
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Konstantin Pugin <rilian.la.te@ya.ru>, krzk@kernel.org, conor@kernel.org, lkp@intel.com, 
+	vz@mleia.com, robh@kernel.org, jcmvbkbc@gmail.com, 
+	nicolas.ferre@microchip.com, manikanta.guntupalli@amd.com, corbet@lwn.net, 
+	ychuang3@nuvoton.com, u.kleine-koenig@pengutronix.de, Maarten.Brock@sttls.nl, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Hugo Villeneuve <hvilleneuve@dimonoff.com>, Andy Shevchenko <andy@kernel.org>, 
+	Lech Perczak <lech.perczak@camlingroup.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 4nbmb7XqAGuKelga_czZbGHYiJEazCxq
-X-Proofpoint-ORIG-GUID: 4nbmb7XqAGuKelga_czZbGHYiJEazCxq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-22_09,2024-04-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 mlxlogscore=658 lowpriorityscore=0 impostorscore=0
- mlxscore=0 phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- clxscore=1011 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404220058
+Content-Transfer-Encoding: quoted-printable
 
-On 4/22/2024 8:51 PM, Johan Hovold wrote:
-> Hi Luiz,
-> 
-> On Tue, Mar 19, 2024 at 04:46:09PM +0100, Johan Hovold wrote:
->> Qualcomm Bluetooth controllers can be registered either from a serdev
->> driver or from the Bluetooth line discipline. In the latter case, the
->> HCI UART serdev pointer is NULL, something which the driver needs to
->> handle without crashing.
->>
->> This series fixes one such issue at setup() time which incidentally
->> masked a similar crash at suspend. Fix this in two separate patches so
->> that the latter issue is address in pre-6.2 stable kernels.
-> 
->> Johan Hovold (2):
->>   Bluetooth: qca: fix NULL-deref on non-serdev suspend
->>   Bluetooth: qca: fix NULL-deref on non-serdev setup
-> 
-> Could you pick these up for 6.9 or 6.10?
-> 
-> The patches are marked for stable backport and only privileged users can
-> set the N_HCI line discipline these days (even if I'm not sure about
-> pre-5.14 kernels...) so it may be fine to wait for 6.10 if you prefer.
-> 
-> Johan
-> 
-Hi johan,
-could you share the patch links for me to review. i can
-'t find them now
+On Mon, Apr 22, 2024 at 4:00=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 22/04/2024 14:37, Konstantin Pugin wrote:
+> > From: Konstantin Pugin <ria.freelander@gmail.com>
+> >
+> > Add EXAR XR20M1172 UART compatible line into devicetree documentation.
+> >
+> > Reviewed-by: Vladimir Zapolskiy <vz@mleia.com>
+> > Signed-off-by: Konstantin Pugin <ria.freelander@gmail.com>
+>
+> This is a friendly reminder during the review process.
+>
+> It looks like you received a tag and forgot to add it.
+>
+> If you do not know the process, here is a short explanation:
+> Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+> versions, under or above your Signed-off-by tag. Tag is "received", when
+> provided in a message replied to you on the mailing list. Tools like b4
+> can help here. However, there's no need to repost patches *only* to add
+> the tags. The upstream maintainer will do that for tags received on the
+> version they apply.
+>
+> https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/su=
+bmitting-patches.rst#L577
+>
+> If a tag was not added on purpose, please state why and what changed.
+>
+> Best regards,
+> Krzysztof
+>
+
+Yes, I am sorry. I missed a tag on v6 process. Will add on v7.
 
