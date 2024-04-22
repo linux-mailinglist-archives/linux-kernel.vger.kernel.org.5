@@ -1,149 +1,132 @@
-Return-Path: <linux-kernel+bounces-153312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6312B8ACC54
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 622428ACC57
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:52:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 128891F2420B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:51:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187871F24242
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0259414A4CA;
-	Mon, 22 Apr 2024 11:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A75146A89;
+	Mon, 22 Apr 2024 11:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bpEmg+5m"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="GwDUQYNP"
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39BCE146A9A;
-	Mon, 22 Apr 2024 11:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E9C146A67
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713786628; cv=none; b=PQP8WnGsx/apw0FbyXz/pr7j1YwyWkShSq9h86M71h3/WZvNofPfCfa2Hve0qjVbsE1ECl/jxQxM42nOG2OhXfxotOcVDb3wlk0mhQZOV8xFL0a11T9bRF94AhPUCiWYIUPS6OW9Y1cxAGVWlqIcgH1GW3cnNqnK+d9xMlBcCfg=
+	t=1713786756; cv=none; b=uyiDqewjV1aozISov0fI9Kt4eVeNA1MUFY+8N1L/qJtPu+93FUmG9247pQDk7WQFri0sjHhNqkq/55spg+0yu5R16ZVi0aUif9yqUUNr1tlZlIy7cOJfvby6jeEDu0LTZ4XK2kcYpKk5UGgTjw9YQgj3GxfXN4K0OR0kOYd0jjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713786628; c=relaxed/simple;
-	bh=zIsEFBhzD+ZLEO1S9a4Cy+7IngF0zRAtRSaUbuQMgQ0=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=MPYydDTES9kHxbuKfr3f87g2h4kbnpH7plMTkrGoKtBfdSAjcdKIAJpUAdPFW7Dtxs47qqbD6j6GcG07HlWtdykpaQfwJRstAx6MIyaZqaTmDxa9puxWeEPHea2g3w4EsXePPdJCDQvpdElAJYzPjRMFdCrhtNDgUhHEl2q3c2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bpEmg+5m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74B58C32782;
-	Mon, 22 Apr 2024 11:50:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713786627;
-	bh=zIsEFBhzD+ZLEO1S9a4Cy+7IngF0zRAtRSaUbuQMgQ0=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=bpEmg+5mn+onj3b66rqHoJKYf13F+mBQn6j56G+3+iyAuuian6f5TSaJcbAPMG1JX
-	 h3ICYktXKg5hhzHsUobwLyzm46KYj5mn37dGf9FFoWTDdqK+lPjdhhAvKVDDOhPN4b
-	 yIEc4HifqRQGw1bVR8PnS62Q7maQYpNVXDERrDhq3RmtCGKLlD4Psr7CpOe8IVeRId
-	 chXylBwNAE9yPunHZywdrdU4Jabixsg0lSV58u5n0ZWZfu0RGQ3twcBvfI+6Kre1oz
-	 0Nly5z40HFKG2t7ZGyopobEAg/fpFPLCxZLCZJMz0r0asFp+IwUB4vZfgCqVQB7HHe
-	 Q8jhbsXjv6P4Q==
-Date: Mon, 22 Apr 2024 06:50:26 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1713786756; c=relaxed/simple;
+	bh=+f7rJs2cnBfRZEufrT0ZyBBpUIa6VOul1OeZmuWU9EU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kagqgJXDcdHSwJtegE/jIjhIcrx8Z9znpXqYfB2rRPjRsVu5m5Mi5SJyTD28J5k/AHCWPffQWyZQK9JlClkwqWk9RIfmOMzRdRegGFbDaEytgP4c8hJuV2J/O8ObBG+HAMubGIhXNqToE8XWMatoe0bIb7fFxQ09i87430Z0qEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=GwDUQYNP; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713786749; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=sU0mTOrtGv3n30RiUAYhMQ3aqcRYrKnvJek+VBQiJqE=;
+	b=GwDUQYNPKH6deu07HgJRODEqDEpgZs18SD8F20jzOkwtLZ3yMOsNuWL2bUt9l/p6V5FoSYdRgGdPOtiC/K69t2jDj492iHQlKYkRLHZB5E7l9zWAPRIOqocDr3vGdCrtxJupACQJGJBZ8oIJl/kL9ESj9+S/ZZlkFvqxry5IiYc=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0W52wujw_1713786747;
+Received: from 30.221.150.42(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W52wujw_1713786747)
+          by smtp.aliyun-inc.com;
+          Mon, 22 Apr 2024 19:52:28 +0800
+Message-ID: <f8f77b76-e2a0-4e8c-900e-eed569ca7136@linux.alibaba.com>
+Date: Mon, 22 Apr 2024 19:52:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
- devicetree@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org, 
- linux-arm-msm@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>
-In-Reply-To: <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v3-0-799475a27cce@linaro.org>
-References: <20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v3-0-799475a27cce@linaro.org>
-Message-Id: <171378646293.749182.6639047187760279527.robh@kernel.org>
-Subject: Re: [PATCH v3 0/3] arm64: qcom-sm8[456]50: properly describe the
- PCIe Gen4x2 PHY AUX clock
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next v3 2/2] erofs: reliably distinguish block based and
+ fscache mode
+To: Baokun Li <libaokun1@huawei.com>, linux-erofs@lists.ozlabs.org
+Cc: xiang@kernel.org, chao@kernel.org, huyue2@coolpad.com,
+ viro@zeniv.linux.org.uk, brauner@kernel.org, linux-kernel@vger.kernel.org,
+ yangerkun@huawei.com, houtao1@huawei.com
+References: <20240419123611.947084-1-libaokun1@huawei.com>
+ <20240419123611.947084-3-libaokun1@huawei.com>
+Content-Language: en-US
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+In-Reply-To: <20240419123611.947084-3-libaokun1@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-On Mon, 22 Apr 2024 10:33:10 +0200, Neil Armstrong wrote:
-> The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock named
-> "PHY_AUX_CLK" which is an input of the Global Clock Controller (GCC) which
-> is muxed & gated then returned to the PHY as an input.
+
+On 4/19/24 8:36 PM, Baokun Li wrote:
+> From: Christian Brauner <brauner@kernel.org>
 > 
-> Document the clock IDs to select the PIPE clock or the AUX clock,
-> also enforce a second clock-output-names and a #clock-cells value of 1
-> for the PCIe Gen4x2 PHY found in the SM8[456]50 SoCs.
+> When erofs_kill_sb() is called in block dev based mode, s_bdev may not
+> have been initialised yet, and if CONFIG_EROFS_FS_ONDEMAND is enabled,
+> it will be mistaken for fscache mode, and then attempt to free an anon_dev
+> that has never been allocated, triggering the following warning:
 > 
-> The PHY driver needs a light refactoring to support a second clock,
-> and finally the DT is changed to connect the PHY second clock to the
-> corresponding GCC input then drop the dummy fixed rate clock.
+> ============================================
+> ida_free called for id=0 which is not allocated.
+> WARNING: CPU: 14 PID: 926 at lib/idr.c:525 ida_free+0x134/0x140
+> Modules linked in:
+> CPU: 14 PID: 926 Comm: mount Not tainted 6.9.0-rc3-dirty #630
+> RIP: 0010:ida_free+0x134/0x140
+> Call Trace:
+>  <TASK>
+>  erofs_kill_sb+0x81/0x90
+>  deactivate_locked_super+0x35/0x80
+>  get_tree_bdev+0x136/0x1e0
+>  vfs_get_tree+0x2c/0xf0
+>  do_new_mount+0x190/0x2f0
+>  [...]
+> ============================================
 > 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Now when erofs_kill_sb() is called, erofs_sb_info must have been
+> initialised, so use sbi->fsid to distinguish between the two modes.
+> 
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+
+Reviewed-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+
+
 > ---
-> Changes in v3:
-> - Rebased on linux-next, applies now cleanly
-> - Link to v2: https://lore.kernel.org/r/20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-0-3ec0a966d52f@linaro.org
+>  fs/erofs/super.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 > 
-> Changes in v2:
-> - Collected review tags
-> - Switched back to of_clk_add_hw_provider/devm_add_action_or_reset to maintain compatibility
-> - Tried to use generic of_clk_hw_onecell_get() but it requires to much boilerplate code
->   and would still need a local qmp_pcie_clk_hw_get() to support the current #clock-cells=0
->   when exposing 2 clocks, so it's simpler to just return the clocks in qmp_pcie_clk_hw_get()
-> - Link to v1: https://lore.kernel.org/r/20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v1-0-926d7a4ccd80@linaro.org
-> 
-> ---
-> Neil Armstrong (3):
->       arm64: dts: qcom: sm8450: remove pcie-1-phy-aux-clk and add pcie1_phy pcie1_phy_aux_clk
->       arm64: dts: qcom: sm8550: remove pcie-1-phy-aux-clk and add pcie1_phy pcie1_phy_aux_clk
->       arm64: dts: qcom: sm8650: remove pcie-1-phy-aux-clk and add pcie1_phy pcie1_phy_aux_clk
-> 
->  arch/arm64/boot/dts/qcom/sm8450.dtsi    |  8 ++++----
->  arch/arm64/boot/dts/qcom/sm8550-hdk.dts |  4 ----
->  arch/arm64/boot/dts/qcom/sm8550-mtp.dts |  4 ----
->  arch/arm64/boot/dts/qcom/sm8550-qrd.dts |  8 --------
->  arch/arm64/boot/dts/qcom/sm8550.dtsi    | 13 ++++---------
->  arch/arm64/boot/dts/qcom/sm8650-mtp.dts |  4 ----
->  arch/arm64/boot/dts/qcom/sm8650-qrd.dts |  4 ----
->  arch/arm64/boot/dts/qcom/sm8650.dtsi    | 13 ++++---------
->  8 files changed, 12 insertions(+), 46 deletions(-)
-> ---
-> base-commit: f529a6d274b3b8c75899e949649d231298f30a32
-> change-id: 20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-4b35169707dd
-> 
-> Best regards,
-> --
-> Neil Armstrong <neil.armstrong@linaro.org>
-> 
-> 
-> 
+> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+> index 21faa49bc970..30b49b2eee53 100644
+> --- a/fs/erofs/super.c
+> +++ b/fs/erofs/super.c
+> @@ -789,17 +789,13 @@ static int erofs_init_fs_context(struct fs_context *fc)
+>  
+>  static void erofs_kill_sb(struct super_block *sb)
+>  {
+> -	struct erofs_sb_info *sbi;
+> +	struct erofs_sb_info *sbi = EROFS_SB(sb);
+>  
+> -	if (erofs_is_fscache_mode(sb))
+> +	if (IS_ENABLED(CONFIG_EROFS_FS_ONDEMAND) && sbi->fsid)
+>  		kill_anon_super(sb);
+>  	else
+>  		kill_block_super(sb);
+>  
+> -	sbi = EROFS_SB(sb);
+> -	if (!sbi)
+> -		return;
+> -
+>  	erofs_free_dev_context(sbi->devs);
+>  	fs_put_dax(sbi->dax_dev, NULL);
+>  	erofs_fscache_unregister_fs(sb);
 
-
-My bot found new DTB warnings on the .dts files added or changed in this
-series.
-
-Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
-are fixed by another series. Ultimately, it is up to the platform
-maintainer whether these warnings are acceptable or not. No need to reply
-unless the platform maintainer has comments.
-
-If you already ran DT checks and didn't see these error(s), then
-make sure dt-schema is up to date:
-
-  pip3 install dtschema --upgrade
-
-
-New warnings running 'make CHECK_DTBS=y qcom/sm8550-hdk.dtb qcom/sm8550-mtp.dtb qcom/sm8550-qrd.dtb qcom/sm8650-mtp.dtb qcom/sm8650-qrd.dtb' for 20240422-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v3-0-799475a27cce@linaro.org:
-
-arch/arm64/boot/dts/qcom/sm8550-qrd.dtb: clock-controller@100000: clocks: [[41], [42], [43], [44, 0], [45, 0], [45, 1], [45, 2], [46, 0]] is too short
-	from schema $id: http://devicetree.org/schemas/clock/qcom,sm8550-gcc.yaml#
-arch/arm64/boot/dts/qcom/sm8550-qrd.dtb: clock-controller@100000: Unevaluated properties are not allowed ('clocks' was unexpected)
-	from schema $id: http://devicetree.org/schemas/clock/qcom,sm8550-gcc.yaml#
-
-
-
-
-
+-- 
+Thanks,
+Jingbo
 
