@@ -1,544 +1,328 @@
-Return-Path: <linux-kernel+bounces-153518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66E108ACF09
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:12:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 093EB8ACF12
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:12:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B0BE2824B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:12:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C2931F21746
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1929715099F;
-	Mon, 22 Apr 2024 14:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7FA71514EF;
+	Mon, 22 Apr 2024 14:12:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TjlSlCF4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XZI2g4Uq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E7B1509A6
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 14:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C338414F9E1;
+	Mon, 22 Apr 2024 14:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713795109; cv=none; b=Dcc/Q3ALc+xzGcghXgubNxKn/Vb7bpUOeCR7PSOq9fQWzM9sAvO10D+uUysrSCHKUND2tLA8LZm8mumJxn3Uc1G933pbQKg1kHaBnDoj+0dCcVTkALHZEaQ2cDOSOR30bLHPsGQk5GiKA97XhkLlnmSenmhPL8ljhjWb0BjC0Zw=
+	t=1713795124; cv=none; b=I8NvMLwqdlQrL69bFqT3d0w6JhCFuJp58mH4j+iwVSK+pPnEAhObe1/JB9IdQQyFcr/XF9+6A/KxCZkqFpC/Qub5zmiLdQmgANRuFdUa2gbPa3HHAySNrMS1eQhezZttUupEirvnPm2HGG6ECYIr75FhebBS0rqX21fhTWzQRLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713795109; c=relaxed/simple;
-	bh=+kd1MriQ8OtQgQiJ3BiUIs/SYHWbhVBk6w64kO8ty7U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gw30Kbm91kDHX9sDr/UOh1z5r0CbXdWWcmiXHiMxKYGQR8H8OwPXrZ+RTXE7wh5cZdU5rnej+dL79pRSfoxOVAerxVHemQjxdAFYZlTfZIi0VZ2DB3kHKxfWoe70dFchXLt/8cvLDo+HieMgCRQ0oeg1sZJc43nXo/qb7qdYE9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TjlSlCF4; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713795106;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LDPGIY9oq8IOSy73kiJD5rc5ULw/WeV0VOgsrLf59LQ=;
-	b=TjlSlCF4OLl8YtGKe1kewLqgFKg4sonVts2U0qEaUaYF3vMU2+mpKlCA+ppQM9yMLmXrAr
-	LQZXgncVlD2SPYzSi1F+bFBouqnqBbrI4jIHYpL+4OKpJJYl6eLyw13BpaYaCaLPdKFbZy
-	G4GsoJO+P3hiPEzrrdjIXYhw0ZIRFes=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-48-Pf5mWS6mNjmZ-Vyu2MjBKw-1; Mon, 22 Apr 2024 10:11:45 -0400
-X-MC-Unique: Pf5mWS6mNjmZ-Vyu2MjBKw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-343d6732721so2856304f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:11:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713795104; x=1714399904;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LDPGIY9oq8IOSy73kiJD5rc5ULw/WeV0VOgsrLf59LQ=;
-        b=WzF8Q86abJ80yU0tEG20/pCvoNlupNfs+wpA5oGCSvTy6nZE/SZdVWcBYDSdjOEobx
-         jW3OhOrFbcpV4rvrMIL5OQlFkaCS/fQuswUV9rYQcsLt6+6DhC+L2dEr6+SH5nTzytTj
-         Xf7TZTLgWteT4HZUc7/UpX8QViWyXIMAuBVabhAaQ7V2oOMGQGBgsnoE3jH7qaClRhlZ
-         PxcKyPupoX0QwbAT3LiWEW/4Q6Tpgj8ZmrGLVy02UkBjPUjqVvDXbSUD6Db6z4cmgm5q
-         D44BqM/eH1A/RtFHmLiSUFFKTl+FhLfDo2DZX+8FxoYj+WKIII30Cd3kLSw+yqZOG2f9
-         +GYw==
-X-Forwarded-Encrypted: i=1; AJvYcCVoiiruOEFgMfLue3RO3QgbftCALoQh9meQMeVWxCn9u6aM1AhnIwRjCXSxhPLJroxjcS1Moz3VsC56SE2DwrfnY/05g93f3uQFW3Au
-X-Gm-Message-State: AOJu0Yx5j+sMmb4PfZa1oPMnpDGf5HSh0HX0ITYq4II77LVzzMyW2GE/
-	Kw7WNXuWSQkTHzy/enKYx/5GWMk/j5pF1P/3jHVcu0D2CNDk7troD8PiBSgfScH6fn5rMD1Z2bT
-	fnGWXAcdLw46QHh1Wa7q0ONU/P4qz7zcchRI/YQlX+pHUHmLkSJJoQ3K/TIkIXeQvLcCp5Faenv
-	f3EzNuIkFyqtO6g+KArDtofoAyRQH113P6sID8
-X-Received: by 2002:adf:e5d1:0:b0:345:be70:191c with SMTP id a17-20020adfe5d1000000b00345be70191cmr8302568wrn.37.1713795103500;
-        Mon, 22 Apr 2024 07:11:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHqITR3VTP0tSKrtpHTRHacPYYLdvO/glnUhpUQumOUdaRf6zoVnC9fryb4dsAVOWbjuf3NJX3pNBIh0R73vQo=
-X-Received: by 2002:adf:e5d1:0:b0:345:be70:191c with SMTP id
- a17-20020adfe5d1000000b00345be70191cmr8302539wrn.37.1713795103035; Mon, 22
- Apr 2024 07:11:43 -0700 (PDT)
+	s=arc-20240116; t=1713795124; c=relaxed/simple;
+	bh=63rvt2yz8r57hl8myRcuStiGVHTSpmv479F+BVPlgOk=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=EXwSD1gOrzC1UFPRGE5PVklfn2EoSRdpM7bDx5A8c6v9xGY92yUE7DYBMuHjcoWboURdTr2w4X7aiJpQwuRUlk6lCh0sCZljFPZTVx+fOjhme6Pl/doOqdc+R6TiLVs9/VPwgnkJtli8CrbQU9LQGi+34iQfac4+sgukfYDjUD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XZI2g4Uq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAAD5C32783;
+	Mon, 22 Apr 2024 14:11:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713795123;
+	bh=63rvt2yz8r57hl8myRcuStiGVHTSpmv479F+BVPlgOk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=XZI2g4UqcleGPHMCMSqV3/iC7oJP0tZWbpfXP00rfR9bLCRfpzFMwC9X4q54oxXMM
+	 DnhZrHtKfWP5KsKR0UwBwIDd4eHpEkLzxxX7LPi42cCObWXCldmkT2ETPDxFRfwhiK
+	 nyXLCvvf3mWcIJjGAf2BRpg+sGk/r9FACse9FCIZKTAIMRKChgqXwhJ7CqFLLV8oy/
+	 QLrmKiFkxPB4YBmwLg/Hf4QkKGO2SUvS8pCcc0bNoMWOtMRS3u0h3n+olJg1vGec5V
+	 55mbL/zgu8a6qrqHPaT4tJ+d8LCTGjRW/TTRHz6/VaV0UanNJA0VfQalKnV9xzPuaQ
+	 EUKZMBGXl8nFQ==
+Date: Mon, 22 Apr 2024 23:11:51 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Christophe
+ Leroy <christophe.leroy@csgroup.eu>, "David S. Miller"
+ <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, Donald Dutile
+ <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, Heiko Carstens
+ <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen
+ <chenhuacai@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>, Luis
+ Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Michael Ellerman
+ <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>, Rick Edgecombe
+ <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, Sam
+ Ravnborg <sam@ravnborg.org>, Song Liu <song@kernel.org>, Steven Rostedt
+ <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+ bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v5 14/15] kprobes: remove dependency on CONFIG_MODULES
+Message-Id: <20240422231151.0d7c18ec1917887c7f323d4c@kernel.org>
+In-Reply-To: <20240422094436.3625171-15-rppt@kernel.org>
+References: <20240422094436.3625171-1-rppt@kernel.org>
+	<20240422094436.3625171-15-rppt@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240418193528.41780-1-dwmw2@infradead.org> <20240418193528.41780-4-dwmw2@infradead.org>
-In-Reply-To: <20240418193528.41780-4-dwmw2@infradead.org>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Mon, 22 Apr 2024 16:11:30 +0200
-Message-ID: <CABgObfYvwjAz0cbRGbBP1nc9eA47azrGOnKuXqWwpZP=UpV3UQ@mail.gmail.com>
-Subject: Re: [PATCH 03/10] KVM: x86: Add KVM_[GS]ET_CLOCK_GUEST for accurate
- KVM clock migration
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: kvm@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, 
-	Sean Christopherson <seanjc@google.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Paul Durrant <paul@xen.org>, Shuah Khan <shuah@kernel.org>, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>, 
-	Marcelo Tosatti <mtosatti@redhat.com>, jalliste@amazon.co.uk, sveith@amazon.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 18, 2024 at 9:46=E2=80=AFPM David Woodhouse <dwmw2@infradead.or=
-g> wrote:
-> +       curr_tsc_hz =3D get_cpu_tsc_khz() * 1000LL;
-> +       if (unlikely(curr_tsc_hz =3D=3D 0)) {
-> +               rc =3D -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       if (kvm_caps.has_tsc_control)
-> +               curr_tsc_hz =3D kvm_scale_tsc(curr_tsc_hz,
-> +                                           v->arch.l1_tsc_scaling_ratio)=
-;
-> +
-> +       /*
-> +        * The scaling factors in the hv_clock do not depend solely on th=
-e
-> +        * TSC frequency *requested* by userspace. They actually use the
-> +        * host TSC frequency that was measured/detected by the host kern=
-el,
-> +        * scaled by kvm_scale_tsc() with the vCPU's l1_tsc_scaling_ratio=
-.
-> +        * So a sanity check that they *precisely* match would have false
-> +        * negatives. Allow for a discrepancy of 1 kHz either way.
+On Mon, 22 Apr 2024 12:44:35 +0300
+Mike Rapoport <rppt@kernel.org> wrote:
 
-This is not very clear - if kvm_caps.has_tsc_control, cur_tsc_hz is
-exactly the "host TSC frequency [...] scaled by kvm_scale_tsc() with
-the vCPU's l1_tsc_scaling_ratio". But even in that case there is a
-double rounding issue, I guess.
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> kprobes depended on CONFIG_MODULES because it has to allocate memory for
+> code.
+> 
+> Since code allocations are now implemented with execmem, kprobes can be
+> enabled in non-modular kernels.
+> 
+> Add #ifdef CONFIG_MODULE guards for the code dealing with kprobes inside
+> modules, make CONFIG_KPROBES select CONFIG_EXECMEM and drop the
+> dependency of CONFIG_KPROBES on CONFIG_MODULES.
 
-> +       /*
-> +        * The call to pvclock_update_vm_gtod_copy() has created a new ti=
-me
-> +        * reference point in ka->master_cycle_now and ka->master_kernel_=
-ns.
-> +        *
-> +        * Calculate the guest TSC at that moment, and the corresponding =
-KVM
-> +        * clock value according to user_hv_clock. The value according to=
- the
-> +        * current hv_clock will of course be ka->master_kernel_ns since =
-no
-> +        * TSC cycles have elapsed.
-> +        *
-> +        * Adjust ka->kvmclock_offset to the delta, so that both definiti=
-ons
-> +        * of the clock give precisely the same reading at the reference =
-time.
-> +        */
-> +       guest_tsc =3D kvm_read_l1_tsc(v, ka->master_cycle_now);
-> +       user_clk_ns =3D __pvclock_read_cycles(&user_hv_clock, guest_tsc);
-> +       ka->kvmclock_offset =3D user_clk_ns - ka->master_kernel_ns;
-> +
-> +out:
-> +       kvm_end_pvclock_update(kvm);
-> +       return rc;
-> +}
-> +#endif
-> +
->  long kvm_arch_vcpu_ioctl(struct file *filp,
->                          unsigned int ioctl, unsigned long arg)
->  {
-> @@ -6256,6 +6404,14 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->                 srcu_read_unlock(&vcpu->kvm->srcu, idx);
->                 break;
->         }
-> +#ifdef CONFIG_X86_64
-> +       case KVM_SET_CLOCK_GUEST:
-> +               r =3D kvm_vcpu_ioctl_set_clock_guest(vcpu, argp);
-> +               break;
-> +       case KVM_GET_CLOCK_GUEST:
-> +               r =3D kvm_vcpu_ioctl_get_clock_guest(vcpu, argp);
-> +               break;
-> +#endif
->  #ifdef CONFIG_KVM_HYPERV
->         case KVM_GET_SUPPORTED_HV_CPUID:
->                 r =3D kvm_ioctl_get_supported_hv_cpuid(vcpu, argp);
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 2190adbe3002..0d306311e4d6 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1548,4 +1548,7 @@ struct kvm_create_guest_memfd {
->         __u64 reserved[6];
->  };
->
-> +#define KVM_SET_CLOCK_GUEST       _IOW(KVMIO,  0xd5, struct pvclock_vcpu=
-_time_info)
-> +#define KVM_GET_CLOCK_GUEST       _IOR(KVMIO,  0xd6, struct pvclock_vcpu=
-_time_info)
-> +
->  #endif /* __LINUX_KVM_H */
-> --
-> 2.44.0
->
+Looks good to me.
 
-On Thu, Apr 18, 2024 at 9:46=E2=80=AFPM David Woodhouse <dwmw2@infradead.or=
-g> wrote:
->
-> From: Jack Allister <jalliste@amazon.com>
->
-> In the common case (where kvm->arch.use_master_clock is true), the KVM
-> clock is defined as a simple arithmetic function of the guest TSC, based =
-on
-> a reference point stored in kvm->arch.master_kernel_ns and
-> kvm->arch.master_cycle_now.
->
-> The existing KVM_[GS]ET_CLOCK functionality does not allow for this
-> relationship to be precisely saved and restored by userspace. All it can
-> currently do is set the KVM clock at a given UTC reference time, which is
-> necessarily imprecise.
->
-> So on live update, the guest TSC can remain cycle accurate at precisely t=
-he
-> same offset from the host TSC, but there is no way for userspace to resto=
-re
-> the KVM clock accurately.
->
-> Even on live migration to a new host, where the accuracy of the guest tim=
-e-
-> keeping is fundamentally limited by the accuracy of wallclock
-> synchronization between the source and destination hosts, the clock jump
-> experienced by the guest's TSC and its KVM clock should at least be
-> *consistent*. Even when the guest TSC suffers a discontinuity, its KVM
-> clock should still remain the *same* arithmetic function of the guest TSC=
-,
-> and not suffer an *additional* discontinuity.
->
-> To allow for accurate migration of the KVM clock, add per-vCPU ioctls whi=
-ch
-> save and restore the actual PV clock info in pvclock_vcpu_time_info.
->
-> The restoration in KVM_SET_CLOCK_GUEST works by creating a new reference
-> point in time just as kvm_update_masterclock() does, and calculating the
-> corresponding guest TSC value. This guest TSC value is then passed throug=
-h
-> the user-provided pvclock structure to generate the *intended* KVM clock
-> value at that point in time, and through the *actual* KVM clock calculati=
-on.
-> Then kvm->arch.kvmclock_offset is adjusted to eliminate for the differenc=
-e.
->
-> Where kvm->arch.use_master_clock is false (because the host TSC is
-> unreliable, or the guest TSCs are configured strangely), the KVM clock
-> is *not* defined as a function of the guest TSC so KVM_GET_CLOCK_GUEST
-> returns an error. In this case, as documented, userspace shall use the
-> legacy KVM_GET_CLOCK ioctl. The loss of precision is acceptable in this
-> case since the clocks are imprecise in this mode anyway.
->
-> On *restoration*, if kvm->arch.use_master_clock is false, an error is
-> returned for similar reasons and userspace shall fall back to using
-> KVM_SET_CLOCK. This does mean that, as documented, userspace needs to use
-> *both* KVM_GET_CLOCK_GUEST and KVM_GET_CLOCK and send both results with t=
-he
-> migration data (unless the intent is to refuse to resume on a host with b=
-ad
-> TSC).
->
-> (It may have been possible to make KVM_SET_CLOCK_GUEST "good enough" in t=
-he
-> non-masterclock mode, as that mode is necessarily imprecise anyway. The
-> explicit fallback allows userspace to deliberately fail migration to a ho=
-st
-> with misbehaving TSC where master clock mode wouldn't be active.)
->
-> Co-developed-by: David Woodhouse <dwmw@amazon.co.uk>
-> Signed-off-by: Jack Allister <jalliste@amazon.com>
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> CC: Paul Durrant <paul@xen.org>
-> CC: Dongli Zhang <dongli.zhang@oracle.com>
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thank you!
+
+> 
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 > ---
->  Documentation/virt/kvm/api.rst |  37 ++++++++
->  arch/x86/kvm/x86.c             | 156 +++++++++++++++++++++++++++++++++
->  include/uapi/linux/kvm.h       |   3 +
->  3 files changed, 196 insertions(+)
->
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.=
-rst
-> index f0b76ff5030d..758f6fc08fe5 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6352,6 +6352,43 @@ a single guest_memfd file, but the bound ranges mu=
-st not overlap).
->
->  See KVM_SET_USER_MEMORY_REGION2 for additional details.
->
-> +4.143 KVM_GET_CLOCK_GUEST
-> +----------------------------
-> +
-> +:Capability: none
-> +:Architectures: x86_64
-> +:Type: vcpu ioctl
-> +:Parameters: struct pvclock_vcpu_time_info (out)
-> +:Returns: 0 on success, <0 on error
-> +
-> +Retrieves the current time information structure used for KVM/PV clocks,
-> +in precisely the form advertised to the guest vCPU, which gives paramete=
-rs
-> +for a direct conversion from a guest TSC value to nanoseconds.
-> +
-> +When the KVM clock not is in "master clock" mode, for example because th=
-e
-> +host TSC is unreliable or the guest TSCs are oddly configured, the KVM c=
-lock
-> +is actually defined by the host CLOCK_MONOTONIC_RAW instead of the guest=
- TSC.
-> +In this case, the KVM_GET_CLOCK_GUEST ioctl returns -EINVAL.
-> +
-> +4.144 KVM_SET_CLOCK_GUEST
-> +----------------------------
-> +
-> +:Capability: none
-> +:Architectures: x86_64
-> +:Type: vcpu ioctl
-> +:Parameters: struct pvclock_vcpu_time_info (in)
-> +:Returns: 0 on success, <0 on error
-> +
-> +Sets the KVM clock (for the whole VM) in terms of the vCPU TSC, using th=
-e
-> +pvclock structure as returned by KVM_GET_CLOCK_GUEST. This allows the pr=
-ecise
-> +arithmetic relationship between guest TSC and KVM clock to be preserved =
-by
-> +userspace across migration.
-> +
-> +When the KVM clock is not in "master clock" mode, and the KVM clock is a=
-ctually
-> +defined by the host CLOCK_MONOTONIC_RAW, this ioctl returns -EINVAL. Use=
-rspace
-> +may choose to set the clock using the less precise KVM_SET_CLOCK ioctl, =
-or may
-> +choose to fail, denying migration to a host whose TSC is misbehaving.
-> +
->  5. The kvm_run structure
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 23281c508c27..42abce7b4fc9 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -5868,6 +5868,154 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_v=
-cpu *vcpu,
->         }
+>  arch/Kconfig                |  2 +-
+>  include/linux/module.h      |  9 ++++++
+>  kernel/kprobes.c            | 55 +++++++++++++++++++++++--------------
+>  kernel/trace/trace_kprobe.c | 20 +++++++++++++-
+>  4 files changed, 63 insertions(+), 23 deletions(-)
+> 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 7006f71f0110..a48ce6a488b3 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -52,9 +52,9 @@ config GENERIC_ENTRY
+>  
+>  config KPROBES
+>  	bool "Kprobes"
+> -	depends on MODULES
+>  	depends on HAVE_KPROBES
+>  	select KALLSYMS
+> +	select EXECMEM
+>  	select TASKS_RCU if PREEMPTION
+>  	help
+>  	  Kprobes allows you to trap at almost any kernel address and
+> diff --git a/include/linux/module.h b/include/linux/module.h
+> index 1153b0d99a80..ffa1c603163c 100644
+> --- a/include/linux/module.h
+> +++ b/include/linux/module.h
+> @@ -605,6 +605,11 @@ static inline bool module_is_live(struct module *mod)
+>  	return mod->state != MODULE_STATE_GOING;
 >  }
->
-> +#ifdef CONFIG_X86_64
-> +static int kvm_vcpu_ioctl_get_clock_guest(struct kvm_vcpu *v, void __use=
-r *argp)
+>  
+> +static inline bool module_is_coming(struct module *mod)
 > +{
-> +       struct pvclock_vcpu_time_info *hv_clock =3D &v->arch.hv_clock;
-> +
-> +       /*
-> +        * If KVM_REQ_CLOCK_UPDATE is already pending, or if the hv_clock=
- has
-> +        * never been generated at all, call kvm_guest_time_update() to d=
-o so.
-> +        * Might as well use the PVCLOCK_TSC_STABLE_BIT as the check for =
-ever
-> +        * having been written.
-> +        */
-> +       if (kvm_check_request(KVM_REQ_CLOCK_UPDATE, v) ||
-> +           !(hv_clock->flags & PVCLOCK_TSC_STABLE_BIT)) {
-> +               if (kvm_guest_time_update(v))
-> +                       return -EINVAL;
-> +       }
-> +
-> +       /*
-> +        * PVCLOCK_TSC_STABLE_BIT is set in use_master_clock mode where t=
-he
-> +        * KVM clock is defined in terms of the guest TSC. Otherwise, it =
-is
-> +        * is defined by the host CLOCK_MONOTONIC_RAW, and userspace shou=
-ld
-> +        * use the legacy KVM_[GS]ET_CLOCK to migrate it.
-> +        */
-> +       if (!(hv_clock->flags & PVCLOCK_TSC_STABLE_BIT))
-> +               return -EINVAL;
-> +
-> +       if (copy_to_user(argp, hv_clock, sizeof(*hv_clock)))
-> +               return -EFAULT;
-> +
-> +       return 0;
+> +        return mod->state == MODULE_STATE_COMING;
 > +}
 > +
-> +/*
-> + * Reverse the calculation in the hv_clock definition.
-> + *
-> + * time_ns =3D ( (cycles << shift) * mul ) >> 32;
-> + * (although shift can be negative, so that's bad C)
-> + *
-> + * So for a single second,
-> + *  NSEC_PER_SEC =3D ( ( FREQ_HZ << shift) * mul ) >> 32
-> + *  NSEC_PER_SEC << 32 =3D ( FREQ_HZ << shift ) * mul
-> + *  ( NSEC_PER_SEC << 32 ) / mul =3D FREQ_HZ << shift
-> + *  ( NSEC_PER_SEC << 32 ) / mul ) >> shift =3D FREQ_HZ
-> + */
-> +static uint64_t hvclock_to_hz(uint32_t mul, int8_t shift)
+>  struct module *__module_text_address(unsigned long addr);
+>  struct module *__module_address(unsigned long addr);
+>  bool is_module_address(unsigned long addr);
+> @@ -857,6 +862,10 @@ void *dereference_module_function_descriptor(struct module *mod, void *ptr)
+>  	return ptr;
+>  }
+>  
+> +static inline bool module_is_coming(struct module *mod)
 > +{
-> +       uint64_t tm =3D NSEC_PER_SEC << 32;
-> +
-> +       /* Maximise precision. Shift right until the top bit is set */
-> +       tm <<=3D 2;
-> +       shift +=3D 2;
-> +
-> +       /* While 'mul' is even, increase the shift *after* the division *=
-/
-> +       while (!(mul & 1)) {
-> +               shift++;
-> +               mul >>=3D 1;
-> +       }
-> +
-> +       tm /=3D mul;
-> +
-> +       if (shift > 0)
-> +               return tm >> shift;
-> +       else
-> +               return tm << -shift;
+> +	return false;
 > +}
+>  #endif /* CONFIG_MODULES */
+>  
+>  #ifdef CONFIG_SYSFS
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index ddd7cdc16edf..ca2c6cbd42d2 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1588,7 +1588,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+>  	}
+>  
+>  	/* Get module refcount and reject __init functions for loaded modules. */
+> -	if (*probed_mod) {
+> +	if (IS_ENABLED(CONFIG_MODULES) && *probed_mod) {
+>  		/*
+>  		 * We must hold a refcount of the probed module while updating
+>  		 * its code to prohibit unexpected unloading.
+> @@ -1603,12 +1603,13 @@ static int check_kprobe_address_safe(struct kprobe *p,
+>  		 * kprobes in there.
+>  		 */
+>  		if (within_module_init((unsigned long)p->addr, *probed_mod) &&
+> -		    (*probed_mod)->state != MODULE_STATE_COMING) {
+> +		    !module_is_coming(*probed_mod)) {
+>  			module_put(*probed_mod);
+>  			*probed_mod = NULL;
+>  			ret = -ENOENT;
+>  		}
+>  	}
 > +
-> +static int kvm_vcpu_ioctl_set_clock_guest(struct kvm_vcpu *v, void __use=
-r *argp)
-> +{
-> +       struct pvclock_vcpu_time_info user_hv_clock;
-> +       struct kvm *kvm =3D v->kvm;
-> +       struct kvm_arch *ka =3D &kvm->arch;
-> +       uint64_t curr_tsc_hz, user_tsc_hz;
-> +       uint64_t user_clk_ns;
-> +       uint64_t guest_tsc;
-> +       int rc =3D 0;
-> +
-> +       if (copy_from_user(&user_hv_clock, argp, sizeof(user_hv_clock)))
-> +               return -EFAULT;
-> +
-> +       if (!user_hv_clock.tsc_to_system_mul)
-> +               return -EINVAL;
-> +
-> +       user_tsc_hz =3D hvclock_to_hz(user_hv_clock.tsc_to_system_mul,
-> +                                   user_hv_clock.tsc_shift);
-> +
-> +
-> +       kvm_hv_request_tsc_page_update(kvm);
-> +       kvm_start_pvclock_update(kvm);
-> +       pvclock_update_vm_gtod_copy(kvm);
-> +
-> +       /*
-> +        * If not in use_master_clock mode, do not allow userspace to set
-> +        * the clock in terms of the guest TSC. Userspace should either
-> +        * fail the migration (to a host with suboptimal TSCs), or should
-> +        * knowingly restore the KVM clock using KVM_SET_CLOCK instead.
-> +        */
-> +       if (!ka->use_master_clock) {
-> +               rc =3D -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       curr_tsc_hz =3D get_cpu_tsc_khz() * 1000LL;
-> +       if (unlikely(curr_tsc_hz =3D=3D 0)) {
-> +               rc =3D -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       if (kvm_caps.has_tsc_control)
-> +               curr_tsc_hz =3D kvm_scale_tsc(curr_tsc_hz,
-> +                                           v->arch.l1_tsc_scaling_ratio)=
-;
-> +
-> +       /*
-> +        * The scaling factors in the hv_clock do not depend solely on th=
-e
-> +        * TSC frequency *requested* by userspace. They actually use the
-> +        * host TSC frequency that was measured/detected by the host kern=
-el,
-> +        * scaled by kvm_scale_tsc() with the vCPU's l1_tsc_scaling_ratio=
-.
-> +        *
-> +        * So a sanity check that they *precisely* match would have false
-> +        * negatives. Allow for a discrepancy of 1 kHz either way.
-> +        */
-> +       if (user_tsc_hz < curr_tsc_hz - 1000 ||
-> +           user_tsc_hz > curr_tsc_hz + 1000) {
-> +               rc =3D -ERANGE;
-> +               goto out;
-> +       }
-> +
-> +       /*
-> +        * The call to pvclock_update_vm_gtod_copy() has created a new ti=
-me
-> +        * reference point in ka->master_cycle_now and ka->master_kernel_=
-ns.
-> +        *
-> +        * Calculate the guest TSC at that moment, and the corresponding =
-KVM
-> +        * clock value according to user_hv_clock. The value according to=
- the
-> +        * current hv_clock will of course be ka->master_kernel_ns since =
-no
-> +        * TSC cycles have elapsed.
-> +        *
-> +        * Adjust ka->kvmclock_offset to the delta, so that both definiti=
-ons
-> +        * of the clock give precisely the same reading at the reference =
-time.
-> +        */
-> +       guest_tsc =3D kvm_read_l1_tsc(v, ka->master_cycle_now);
-> +       user_clk_ns =3D __pvclock_read_cycles(&user_hv_clock, guest_tsc);
-> +       ka->kvmclock_offset =3D user_clk_ns - ka->master_kernel_ns;
-> +
-> +out:
-> +       kvm_end_pvclock_update(kvm);
-> +       return rc;
-> +}
-> +#endif
-> +
->  long kvm_arch_vcpu_ioctl(struct file *filp,
->                          unsigned int ioctl, unsigned long arg)
+>  out:
+>  	preempt_enable();
+>  	jump_label_unlock();
+> @@ -2488,24 +2489,6 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
+>  	return 0;
+>  }
+>  
+> -/* Remove all symbols in given area from kprobe blacklist */
+> -static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
+> -{
+> -	struct kprobe_blacklist_entry *ent, *n;
+> -
+> -	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
+> -		if (ent->start_addr < start || ent->start_addr >= end)
+> -			continue;
+> -		list_del(&ent->list);
+> -		kfree(ent);
+> -	}
+> -}
+> -
+> -static void kprobe_remove_ksym_blacklist(unsigned long entry)
+> -{
+> -	kprobe_remove_area_blacklist(entry, entry + 1);
+> -}
+> -
+>  int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
+>  				   char *type, char *sym)
 >  {
-> @@ -6256,6 +6404,14 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->                 srcu_read_unlock(&vcpu->kvm->srcu, idx);
->                 break;
->         }
-> +#ifdef CONFIG_X86_64
-> +       case KVM_SET_CLOCK_GUEST:
-> +               r =3D kvm_vcpu_ioctl_set_clock_guest(vcpu, argp);
-> +               break;
-> +       case KVM_GET_CLOCK_GUEST:
-> +               r =3D kvm_vcpu_ioctl_get_clock_guest(vcpu, argp);
-> +               break;
-> +#endif
->  #ifdef CONFIG_KVM_HYPERV
->         case KVM_GET_SUPPORTED_HV_CPUID:
->                 r =3D kvm_ioctl_get_supported_hv_cpuid(vcpu, argp);
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 2190adbe3002..0d306311e4d6 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1548,4 +1548,7 @@ struct kvm_create_guest_memfd {
->         __u64 reserved[6];
->  };
->
-> +#define KVM_SET_CLOCK_GUEST       _IOW(KVMIO,  0xd5, struct pvclock_vcpu=
-_time_info)
-> +#define KVM_GET_CLOCK_GUEST       _IOR(KVMIO,  0xd6, struct pvclock_vcpu=
-_time_info)
+> @@ -2570,6 +2553,25 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
+>  	return ret ? : arch_populate_kprobe_blacklist();
+>  }
+>  
+> +#ifdef CONFIG_MODULES
+> +/* Remove all symbols in given area from kprobe blacklist */
+> +static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
+> +{
+> +	struct kprobe_blacklist_entry *ent, *n;
 > +
->  #endif /* __LINUX_KVM_H */
-> --
-> 2.44.0
->
+> +	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
+> +		if (ent->start_addr < start || ent->start_addr >= end)
+> +			continue;
+> +		list_del(&ent->list);
+> +		kfree(ent);
+> +	}
+> +}
+> +
+> +static void kprobe_remove_ksym_blacklist(unsigned long entry)
+> +{
+> +	kprobe_remove_area_blacklist(entry, entry + 1);
+> +}
+> +
+>  static void add_module_kprobe_blacklist(struct module *mod)
+>  {
+>  	unsigned long start, end;
+> @@ -2672,6 +2674,17 @@ static struct notifier_block kprobe_module_nb = {
+>  	.priority = 0
+>  };
+>  
+> +static int kprobe_register_module_notifier(void)
+> +{
+> +	return register_module_notifier(&kprobe_module_nb);
+> +}
+> +#else
+> +static int kprobe_register_module_notifier(void)
+> +{
+> +	return 0;
+> +}
+> +#endif /* CONFIG_MODULES */
+> +
+>  void kprobe_free_init_mem(void)
+>  {
+>  	void *start = (void *)(&__init_begin);
+> @@ -2731,7 +2744,7 @@ static int __init init_kprobes(void)
+>  	if (!err)
+>  		err = register_die_notifier(&kprobe_exceptions_nb);
+>  	if (!err)
+> -		err = register_module_notifier(&kprobe_module_nb);
+> +		err = kprobe_register_module_notifier();
+>  
+>  	kprobes_initialized = (err == 0);
+>  	kprobe_sysctls_init();
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index 14099cc17fc9..2cb2a3951b4f 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+>  	return strncmp(module_name(mod), name, len) == 0 && name[len] == ':';
+>  }
+>  
+> +#ifdef CONFIG_MODULES
+>  static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+>  {
+>  	char *p;
+> @@ -129,6 +130,12 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+>  
+>  	return ret;
+>  }
+> +#else
+> +static inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+> +{
+> +	return false;
+> +}
+> +#endif
+>  
+>  static bool trace_kprobe_is_busy(struct dyn_event *ev)
+>  {
+> @@ -670,6 +677,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+>  	return ret;
+>  }
+>  
+> +#ifdef CONFIG_MODULES
+>  /* Module notifier call back, checking event on the module */
+>  static int trace_kprobe_module_callback(struct notifier_block *nb,
+>  				       unsigned long val, void *data)
+> @@ -704,6 +712,16 @@ static struct notifier_block trace_kprobe_module_nb = {
+>  	.notifier_call = trace_kprobe_module_callback,
+>  	.priority = 1	/* Invoked after kprobe module callback */
+>  };
+> +static int trace_kprobe_register_module_notifier(void)
+> +{
+> +	return register_module_notifier(&trace_kprobe_module_nb);
+> +}
+> +#else
+> +static int trace_kprobe_register_module_notifier(void)
+> +{
+> +	return 0;
+> +}
+> +#endif /* CONFIG_MODULES */
+>  
+>  static int count_symbols(void *data, unsigned long unused)
+>  {
+> @@ -1933,7 +1951,7 @@ static __init int init_kprobe_trace_early(void)
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (register_module_notifier(&trace_kprobe_module_nb))
+> +	if (trace_kprobe_register_module_notifier())
+>  		return -EINVAL;
+>  
+>  	return 0;
+> -- 
+> 2.43.0
+> 
 
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
