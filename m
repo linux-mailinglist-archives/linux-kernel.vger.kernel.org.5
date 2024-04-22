@@ -1,257 +1,128 @@
-Return-Path: <linux-kernel+bounces-153896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 800A48AD4A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:10:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BBF18AD4A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:10:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3749228198B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:10:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 506FB1F21B4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21BB815532D;
-	Mon, 22 Apr 2024 19:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I3u8AYCA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCD7155346;
+	Mon, 22 Apr 2024 19:10:33 +0000 (UTC)
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30623155307;
-	Mon, 22 Apr 2024 19:10:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AE9155307;
+	Mon, 22 Apr 2024 19:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713813024; cv=none; b=Q5h6EXy28+SN3oymXnNL5E0I1/ggVzTxiJedgXNIZYfV9NqTkelAGQNf3z/GDCELRa2ARXUvh4rCpLeGlGPv8XP7ItVRa+s5Lm41oFDLSwvvtb8FY7gceHdxhD5f/RsHPAt31KNFy9ThS5PPMnDJMvQ/qAukJCmZ0326IP5IGDM=
+	t=1713813033; cv=none; b=P4zgLNT6S7QjFL6ymFrS3BIEg3UtYcthEaarmdMr46VgYKpH0mw3EOIa7s/XrRsqFqrT3Yo0xLFo6zQ/UjmbwsUn4avE9akFnoY7YfroUo9BOqVet09tdwhuHH5WH675nQZWcgped0O8MSnTANzCS2JSS74Y1UzRK9JpYGelmuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713813024; c=relaxed/simple;
-	bh=xr5Uhja78DTlat29wuEJWkFNot6eT4eX2GLpPmEimFo=;
+	s=arc-20240116; t=1713813033; c=relaxed/simple;
+	bh=rJvNMMHsO9zI75ghumCSbMliEXPSfFf/Qdfo1bBdBNw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=X4Dj5ty9HezRIfCj9bWZjPy+swz9SHTzmasKxZvJ010j9PfyWV+t8daYXVKALXkK3te16waO1U9HU3b3zOfuF4WnaSAPSX/k1Yyds/P4dzeKBZmu9d3jAunUJbCmT6yeOvZ3JV+cxfDrjZRR9MCTccJakARtMdl4dnbQpke7KqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I3u8AYCA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3C4EC4AF0C;
-	Mon, 22 Apr 2024 19:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713813023;
-	bh=xr5Uhja78DTlat29wuEJWkFNot6eT4eX2GLpPmEimFo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=I3u8AYCAMeEZCdeNFQjGY0Fzjk1kTkDnwULJptJPBdSIr8PJHA8E2VZ2xdg20aR0X
-	 IsgzWC2am9NEkW0AsGb2v0fJ52Y26jsfKqjG8nTt58VuAgohpQVa1hDiy1+lNONOmi
-	 3AikdQXQtPi7TBEnpSqgSsfMbFhRWTmHMjzcJU3yrjFNQlN9hsXqpk87XT9cNXZlDG
-	 O+aFL85Q7RgnBvbjYH0bqEj+3Rc7vW311VgW3rLDkexz7D2STu72DiqAvb6Dv8YIsJ
-	 mll/lKgroBVm/ONoG4dvYPD365rpZ98i+B/Z7g2AaNYb4qCZbnYvUZbq6mJpPUIbuY
-	 bANwacZE5Se9g==
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6eb50bbd8ceso781385a34.1;
-        Mon, 22 Apr 2024 12:10:23 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXUy1Wfvp5w8ps03QMlXNEX7rvkA42+IWVAv05YhEztJCu/o0Em3ZmUVQHT52rkk6Rm5qHEm5U0tfSKUGWBOWOylQNJ9ONHNWbDPjYm2arF2QumvdT7vAgP8/XqGO5eTmd9qnsFii3jnSWhSAdQfoAdiB/E7wzNn02a6npncm9Zb3w7l6vky87gyrZFzsWt5CXdvhG6n5VOvUG0a7lkRw==
-X-Gm-Message-State: AOJu0Yys1KUkMPIucCZ3wA/3SQYUKriXKg3lY2vVdC1GytqvIVpX76W0
-	lqWAXzn1G0KSR6vkz0D6NGLbUEBeUUz5EqvPpneRTjCB8X6fr17WtTG/6oPH7bNmQS6nMYb219d
-	L1u4hJReqKtKIWw1sJjLWhWrE9qM=
-X-Google-Smtp-Source: AGHT+IGddIzuXRIOq0vcaD27xeni4nJNgz8BRaRjdkma7vizXw+C3Ho4ufbzOxRg6uAQwtupRrmwkhqM8niU4Ra55DE=
-X-Received: by 2002:a05:6871:2010:b0:233:abab:6d7e with SMTP id
- rx16-20020a056871201000b00233abab6d7emr13258560oab.1.1713813022998; Mon, 22
- Apr 2024 12:10:22 -0700 (PDT)
+	 To:Cc:Content-Type; b=PwnbDGIROWp2O+aSQftOpAPFm05qQeDgVsOqW40jaXoqhuo2DezwX6SXz7PQlu5HytIZUA4ort/kIdj2kV8Wb3H0u1XzX3spsOfjOELEDJxpT/Bnp0PD+LrbZmofsX7w77LMS7CtkbJi3qwmlqZ+eCSLqPKQ1W6mOQ06ABaNHeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7e128b1ba75so980274241.3;
+        Mon, 22 Apr 2024 12:10:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713813031; x=1714417831;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FT090QG4mPbWzxLW5ioWJKU6VIVek0mS/v6uLtJKrhY=;
+        b=xLzcQ/NiGORsxb2ZPUaVv1w9ATf9uEktUoG2bo9MkpKNBoeikfk64CLDNQlPQA4wId
+         0BG15IpUArg+GWSUhHoqTyH2dOyLUOhmjSDzYAYLatU84+z1MekM2dM7Z9qfioRdyG6T
+         5oLU2iYGREdOWMQwmIMY2hcqo6QJYvLBcrlhbGDtQF6f6ZmkyFOLIob2lpYlpHMCGx2j
+         xsrBPvofsu3118myiW3c6ZFnnaC0sJFdEgxsHj34HIlUDEIXzItC39zFOgEb6PKGpgf8
+         PS3qzVcryO3wqN4CG/kJ+kMB8xLW0+uAbpX/OF9M7SPBKEqmKpa0NBWI7dmGPvztn3Db
+         OBHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVAk2SG9yeCRtVgPyA6yG/E+OVyZMd6xiR9wU/gGAjdL7VEpxf+CPnTSTWqpJK3o1N02wpo2jWTm5Jm+qjOcvLwbTLwOLUYEXRHtI+e27NyJ43lyNTWuguQYO9kAqeTMzj8mRntz2MY/a2JtO5yUA==
+X-Gm-Message-State: AOJu0YzHQABw4/gxJZseeIFaOSbDENMNr4id9k1XxcXrl/9E6vcrzLxP
+	rlLtIo9jSH8tG2ae/0U0u8fINkq+1DdO6JWd37Aw++yYGNJGXeIenf/PcWjdnsvpUGvJ9g4l1IY
+	CtO1X+UoWdrLdnMnGpFUUTkpzvXo=
+X-Google-Smtp-Source: AGHT+IHyHQTsUzROmqN6jnX/24w46La9WBiStlAq0xOe5OA9QNeAcfTayUuiYweOgOQTpr6p0ouM4uwoD4CughfZ5ak=
+X-Received: by 2002:a05:6122:318b:b0:4d4:15d2:8b3b with SMTP id
+ ch11-20020a056122318b00b004d415d28b3bmr12316812vkb.9.1713813030859; Mon, 22
+ Apr 2024 12:10:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com> <20240418135412.14730-9-Jonathan.Cameron@huawei.com>
-In-Reply-To: <20240418135412.14730-9-Jonathan.Cameron@huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 22 Apr 2024 21:10:12 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0jmbxc=WMtx+d_sdwUtS+KUgabqgW-q_Au19fzDV-yrQQ@mail.gmail.com>
-Message-ID: <CAJZ5v0jmbxc=WMtx+d_sdwUtS+KUgabqgW-q_Au19fzDV-yrQQ@mail.gmail.com>
-Subject: Re: [PATCH v7 08/16] ACPI: Add post_eject to struct acpi_scan_handler
- for cpu hotplug
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, linux-pm@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	Russell King <linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, 
-	Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, 
-	Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, linuxarm@huawei.com, justin.he@arm.com, 
-	jianyong.wu@arm.com
+References: <20240402214436.1409476-1-weilin.wang@intel.com>
+In-Reply-To: <20240402214436.1409476-1-weilin.wang@intel.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 22 Apr 2024 12:10:18 -0700
+Message-ID: <CAM9d7cj2EbxWVLHU3XPf_F2OzWRVRfSV2TghNA+h8noDztrasQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v7 0/6] TPEBS counting mode support
+To: weilin.wang@intel.com
+Cc: Ian Rogers <irogers@google.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 3:58=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> From: James Morse <james.morse@arm.com>
->
-> struct acpi_scan_handler has a detach callback that is used to remove
-> a driver when a bus is changed. When interacting with an eject-request,
-> the detach callback is called before _EJ0.
->
-> This means the ACPI processor driver can't use _STA to determine if a
-> CPU has been made not-present, or some of the other _STA bits have been
-> changed. acpi_processor_remove() needs to know the value of _STA after
-> _EJ0 has been called.
->
-> Add a post_eject callback to struct acpi_scan_handler. This is called
-> after acpi_scan_hot_remove() has successfully called _EJ0. Because
-> acpi_scan_check_and_detach() also clears the handler pointer,
-> it needs to be told if the caller will go on to call
-> acpi_bus_post_eject(), so that acpi_device_clear_enumerated()
-> and clearing the handler pointer can be deferred.
-> An extra flag is added to flags field introduced in the previous
-> patch to achieve this.
->
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Hello Weilin,
 
-No objections:
+On Tue, Apr 2, 2024 at 2:45=E2=80=AFPM <weilin.wang@intel.com> wrote:
+>
+> From: Weilin Wang <weilin.wang@intel.com>
+>
+> Changes in v7:
+> - Update code and comments for better code quality [Namhyung]
+> - Add a separate commit for perf data [Namhyung]
+> - Update retire latency print function to improve alignment [Namhyung]
+>
+> v6: https://lore.kernel.org/all/20240329191224.1046866-1-weilin.wang@inte=
+l.com/
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+In general, I think you need to explain what exactly TPEBS is and why
+you want to do this for TPEBS.  Maybe somewhere in the documentation.
 
-> ----
-> v7:
->  - No change.
-> v6:
->  - Switch to flags.
-> Russell, you hadn't signed off on this when posting last time.
-> Do you want to insert a suitable tag now?
-> v5:
->  - Rebase to take into account the changes to scan handling in the
->    meantime.
-> ---
->  drivers/acpi/acpi_processor.c |  4 ++--
->  drivers/acpi/scan.c           | 30 +++++++++++++++++++++++++++---
->  include/acpi/acpi_bus.h       |  1 +
->  3 files changed, 30 insertions(+), 5 deletions(-)
+Thanks,
+Namhyung
+
 >
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.=
-c
-> index 4e65011e706c..beb1761db579 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -471,7 +471,7 @@ static int acpi_processor_add(struct acpi_device *dev=
-ice,
+> Weilin Wang (6):
+>   perf stat: Parse and find tpebs events when parsing metrics to prepare
+>     for perf record sampling
+>   perf data: Allow to use given fd in data->file.fd
+>   perf stat: Fork and launch perf record when perf stat needs to get
+>     retire latency value for a metric.
+>   perf stat: Add retire latency values into the expr_parse_ctx to
+>     prepare for final metric calculation
+>   perf stat: Add retire latency print functions to print out at the very
+>     end of print out
+>   perf vendor events intel: Add MTL metric json files
 >
->  #ifdef CONFIG_ACPI_HOTPLUG_CPU
->  /* Removal */
-> -static void acpi_processor_remove(struct acpi_device *device)
-> +static void acpi_processor_post_eject(struct acpi_device *device)
->  {
->         struct acpi_processor *pr;
+>  tools/perf/builtin-stat.c                     |  249 +-
+>  .../arch/x86/meteorlake/metricgroups.json     |  127 +
+>  .../arch/x86/meteorlake/mtl-metrics.json      | 2551 +++++++++++++++++
+>  tools/perf/util/data.c                        |    7 +-
+>  tools/perf/util/metricgroup.c                 |   87 +-
+>  tools/perf/util/metricgroup.h                 |   22 +-
+>  tools/perf/util/stat-display.c                |   69 +
+>  tools/perf/util/stat-shadow.c                 |   19 +
+>  tools/perf/util/stat.h                        |    4 +
+>  9 files changed, 3115 insertions(+), 20 deletions(-)
+>  create mode 100644 tools/perf/pmu-events/arch/x86/meteorlake/metricgroup=
+s.json
+>  create mode 100644 tools/perf/pmu-events/arch/x86/meteorlake/mtl-metrics=
+json
 >
-> @@ -639,7 +639,7 @@ static struct acpi_scan_handler processor_handler =3D=
- {
->         .ids =3D processor_device_ids,
->         .attach =3D acpi_processor_add,
->  #ifdef CONFIG_ACPI_HOTPLUG_CPU
-> -       .detach =3D acpi_processor_remove,
-> +       .post_eject =3D acpi_processor_post_eject,
->  #endif
->         .hotplug =3D {
->                 .enabled =3D true,
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index 1ec9677e6c2d..3ec54624664a 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -245,6 +245,7 @@ static int acpi_scan_try_to_offline(struct acpi_devic=
-e *device)
->  }
->
->  #define ACPI_SCAN_CHECK_FLAG_STATUS    BIT(0)
-> +#define ACPI_SCAN_CHECK_FLAG_EJECT     BIT(1)
->
->  static int acpi_scan_check_and_detach(struct acpi_device *adev, void *p)
->  {
-> @@ -273,8 +274,6 @@ static int acpi_scan_check_and_detach(struct acpi_dev=
-ice *adev, void *p)
->         if (handler) {
->                 if (handler->detach)
->                         handler->detach(adev);
-> -
-> -               adev->handler =3D NULL;
->         } else {
->                 device_release_driver(&adev->dev);
->         }
-> @@ -284,6 +283,28 @@ static int acpi_scan_check_and_detach(struct acpi_de=
-vice *adev, void *p)
->          */
->         acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
->         adev->flags.initialized =3D false;
-> +
-> +       /* For eject this is deferred to acpi_bus_post_eject() */
-> +       if (!(flags & ACPI_SCAN_CHECK_FLAG_EJECT)) {
-> +               adev->handler =3D NULL;
-> +               acpi_device_clear_enumerated(adev);
-> +       }
-> +       return 0;
-> +}
-> +
-> +static int acpi_bus_post_eject(struct acpi_device *adev, void *not_used)
-> +{
-> +       struct acpi_scan_handler *handler =3D adev->handler;
-> +
-> +       acpi_dev_for_each_child_reverse(adev, acpi_bus_post_eject, NULL);
-> +
-> +       if (handler) {
-> +               if (handler->post_eject)
-> +                       handler->post_eject(adev);
-> +
-> +               adev->handler =3D NULL;
-> +       }
-> +
->         acpi_device_clear_enumerated(adev);
->
->         return 0;
-> @@ -301,6 +322,7 @@ static int acpi_scan_hot_remove(struct acpi_device *d=
-evice)
->         acpi_handle handle =3D device->handle;
->         unsigned long long sta;
->         acpi_status status;
-> +       uintptr_t flags =3D ACPI_SCAN_CHECK_FLAG_EJECT;
->
->         if (device->handler && device->handler->hotplug.demand_offline) {
->                 if (!acpi_scan_is_offline(device, true))
-> @@ -313,7 +335,7 @@ static int acpi_scan_hot_remove(struct acpi_device *d=
-evice)
->
->         acpi_handle_debug(handle, "Ejecting\n");
->
-> -       acpi_bus_trim(device);
-> +       acpi_scan_check_and_detach(device, (void *)flags);
->
->         acpi_evaluate_lck(handle, 0);
->         /*
-> @@ -336,6 +358,8 @@ static int acpi_scan_hot_remove(struct acpi_device *d=
-evice)
->         } else if (sta & ACPI_STA_DEVICE_ENABLED) {
->                 acpi_handle_warn(handle,
->                         "Eject incomplete - status 0x%llx\n", sta);
-> +       } else {
-> +               acpi_bus_post_eject(device, NULL);
->         }
->
->         return 0;
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index e7796f373d0d..51a4b936f19e 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -129,6 +129,7 @@ struct acpi_scan_handler {
->         bool (*match)(const char *idstr, const struct acpi_device_id **ma=
-tchid);
->         int (*attach)(struct acpi_device *dev, const struct acpi_device_i=
-d *id);
->         void (*detach)(struct acpi_device *dev);
-> +       void (*post_eject)(struct acpi_device *dev);
->         void (*bind)(struct device *phys_dev);
->         void (*unbind)(struct device *phys_dev);
->         struct acpi_hotplug_profile hotplug;
 > --
-> 2.39.2
+> 2.43.0
+>
 >
 
