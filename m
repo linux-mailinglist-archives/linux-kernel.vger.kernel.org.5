@@ -1,193 +1,213 @@
-Return-Path: <linux-kernel+bounces-153622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2281D8AD07E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:20:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 737EE8AD083
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:23:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CADEB28A46E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:20:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D280B1F22DE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:23:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF83A1534EB;
-	Mon, 22 Apr 2024 15:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C7B153511;
+	Mon, 22 Apr 2024 15:22:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NXSm9DE+"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Rv/fe9Jv"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BE8152180;
-	Mon, 22 Apr 2024 15:20:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3B11534E2
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 15:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713799240; cv=none; b=L2/MRJ1PwwT1fAt3mrpwK3b+gGpx+OHbQUkaYm8ADrHEyftlCeUnj8BYqOv8gcA2vE2qFLU6CfBZfT2Kg+44vHC2O5p513d60RIVXgToW5ZAWilEuJeaLxHvrKj5oVwemGMDKfZqu6undKmfPaKgIhXsBZwYYk+jQxB9qu4jeps=
+	t=1713799363; cv=none; b=eWI5ZNU9tYBlWs2NIGJ6xmPyGFyUCc5DpdcoEl0bJ6xfa1xGYgsGesmcHmca78saqwP5P735u/ErHmNj3lxxitiuJS4vfqGLlO0PJpjEvipfKzTdp2d+tR0L+JUqajgQ/dtLZqXqgKdCveNvsQ5wUL/u3QSCwug9FAsYMQUEQUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713799240; c=relaxed/simple;
-	bh=Mwaw02jUeFGzhexemdEHDycW4vgz4Ywj3HSwss/wKGI=;
+	s=arc-20240116; t=1713799363; c=relaxed/simple;
+	bh=Ci2yuDBlgoa8ozNJQ5jJq2jE33en1qoK9mqBxDfTgV4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OXgYMy4eSSPBjSUm+TIl75/u+rN4rG8xqmrJm9NrHxHS5BOgrpjhWfhzyXa8FYECBPqX4wH2QuqcIWA7y4fnDaiVjui3xseGnLm81ztDCafsiNrlwbXEwBVCu15MQ6YG0zFH/UFfYt/iBxlOv+wguWKtzKzb8n29/B7OGYDCkl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NXSm9DE+; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2dde561f852so2800461fa.2;
-        Mon, 22 Apr 2024 08:20:38 -0700 (PDT)
+	 To:Cc:Content-Type; b=QB0GrDMb5Whwi+hR2OLPM5LkxDwt88Ai5sH2L7PlyAIUZ9FTDKSnYeApFACYeAi011cTjGjT1SIA2eMtIwQ8NEzqexO8fVnhm2vd5UCsOG0eQ5CWhfTcnjEC2PVJM1cEuwlkxSwNFa3yARZ+qiR87aaxY2Y9qcSGjjWzKbEhkOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Rv/fe9Jv; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a55b481cf0fso149846366b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:22:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713799236; x=1714404036; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vuzvRER/eRgyRC6zF+Dn/+Ln6gq/IXAuegKQubeLgkk=;
-        b=NXSm9DE+8j9PA5Kz40ujPfl8k10XRD4Sv9DuAKZRSKLtTvK/dYoxI27vyY38RK0gM9
-         85R0j4AAvVi/UbwEFfFCd0I/Esy+EdTDPfuJK/YNOEyHOrueidKoUUCfCYfW6fD+l1SB
-         elJCSp2g/p58ZxMrrp51DMtkBFb/pFloe0yXKUPir1+8COKQGfpA+Ym4YVgXcJrtsx8g
-         vM+3WGj9iSij/h3iCqzBSUMmI0Bss+brXc0IXcVZZ7bmKd4OCDZ02PK7GzkDl57tqYNZ
-         D3LcSB/8BIsyv6prffLdqfgWZrVeLkvXDhYTxjEybhXKERl1WzWPmllgJQsCmtHMzyFz
-         fAQg==
+        d=linaro.org; s=google; t=1713799360; x=1714404160; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=U1Ry9k3u4r/ZH6YfxckAiW911VK5SE+gAAnPQnrkQA8=;
+        b=Rv/fe9Jv6vm4YT8PeA+StwjzA8/uv4dfyooe3dihDRDxbvy1w373RmCh5LXT6upceI
+         a6jzh/+w5wNSeiWM0C85ate9+nMDNJUiBY4YLqo3ezNYjIui0zgiNGPwAcnTrnqZzG4R
+         TRH2MOYl/9IED5Mhll1lE7KMhBS8yLr6qcms+OQMD8Jm0TeaC3hPOphmp6V9+k1K9Zyy
+         pwVicE0WuQrr5FAy/rDgGEOfC57Ee+eCHqLMBhOZkEs1v26oklsT2Nb3DRIkygt+b8gl
+         i/pT3hy9k1w1GC5WuApJsOUiDJo8TZt8GfNkwci/vhqo9FgOh9AtDi5KyRVnCc+w1XO5
+         29Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713799236; x=1714404036;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vuzvRER/eRgyRC6zF+Dn/+Ln6gq/IXAuegKQubeLgkk=;
-        b=hzBTB/72bEhBGfbY7Ovj74TYPbQSCZBt7YK/4tRP0ZFPXmLR17q9d8moNQIqEURG6X
-         pQc7MkrGFOueGO8hTomsw4thH1mtK5PpmeJvN0sjCbiU2wswEecXTmHFE8eniQAGgdjb
-         dQLDo78eIbeD8ynDrBGzHymjdZwpeAPLIpXRYToZgNo3SXG/ITxTJrII1wTfil87kmX6
-         /2dG4RR6o6kZz7zi9G/mTvPHXPaze0QzML+XPXLzCPGuV8YLGdVEn0vqIFds9k2D8ejO
-         63+wzHIDnI5Vdg53fgF2/a1gnUpsz+7E3fo7e06rvfY7JWZTggsS5+7Ar1H1GvTzxByT
-         8oMg==
-X-Forwarded-Encrypted: i=1; AJvYcCVyuFZu1SYn+VE4Qj2okfJVe4fcic+ctihOUx8T68PuvsELO8aYF3rcvMBeFoeNa7ZUCHln5EyO3sdSb8xznOQ3Dsc2xaoKX96xzI5fp3NDRMSZRlVDcTxLHbnnzndEmxQ2AtEjDVQSYEE3+g==
-X-Gm-Message-State: AOJu0YxsUzRX9QCyQRD+tNNteFTu8WOIHY1H7Ng7WoI33DYcwC0zKfEW
-	/Mb3zibvYnaS+7CEuEp2SFMeau5+OYP63RubEvbXpGSU7NR98xGk26/YDiHQNKrLNTLDykhi6cE
-	H8cFD3G3bnWRJZz2fjt1z2Bf2PQs=
-X-Google-Smtp-Source: AGHT+IGmn/mToNtPSu8NqpDUFrNYhzadt7vHWmwuQWYgdxJO4KVqIZ51GyywFjqOjpCMtpoxvPmrN5nQYIoT0qz/nL4=
-X-Received: by 2002:a2e:97d4:0:b0:2d8:74c6:c44c with SMTP id
- m20-20020a2e97d4000000b002d874c6c44cmr6429232ljj.46.1713799236152; Mon, 22
- Apr 2024 08:20:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713799360; x=1714404160;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U1Ry9k3u4r/ZH6YfxckAiW911VK5SE+gAAnPQnrkQA8=;
+        b=daXVX3Kr6M6i4gAyGtyuUSgrYKqB4SUD/ouHcNWPiyaJDPB2TJ2cvKonqA1cVnYgLa
+         eESB+B8ucAGBxYbOozhNTiQjb5rw6Mx6k/ovPELUL7SeC0Sgt8YlVhPJUocOHOjZntoh
+         5VxsA7mc7B5a0h8alaWX3SXwtl9dCIpxWGTitOLerTtcwWctslqiJ7/xycAuENzd9/8X
+         h/wWVV5nhfcc+reUub/Nl9REB/wF+f0yhfhAv5WxobcXEGjEu6zR5f+i9STdkY7J9THs
+         m+Jna6A2Dq9V6BeB6PROAC3VnYFq+n6eDKM2dDYU2HTDCKswigX0Yer1dejtJNNC6cNK
+         uQzA==
+X-Forwarded-Encrypted: i=1; AJvYcCXLan+fTnDuCfAsJvrXyGjSx/l1hBOmkwG8rTjvySfD2Skt9/q+3f6jn7qnD70cDgpVxNOfkXnu5jeaIyzwG6kBRl/CvmNJAL8oW8na
+X-Gm-Message-State: AOJu0Yz7QSVSsSyBh1xr9sHRwtzb5z3Gm7EpOlhgur5oXNSf/dYeupQv
+	3iPyV00IL+BCzlys2RzP3et6XYBug0B/N1QB4Xcufx72De79L3LvtVwDaqkK7qyFj97NdrNXuIF
+	KTL1udNgJOKxhrEkf8aPk4h+vKpCYYySetSqviQ==
+X-Google-Smtp-Source: AGHT+IF7tlD0zygVG9NWdr4X2DqIV3+l7wtVQTW7JN1Fu86rCV2xydnxXx4bO+KERuw/RRypbzRNGaCUDPBeYj269Ho=
+X-Received: by 2002:a17:906:f74b:b0:a58:7470:21f3 with SMTP id
+ jp11-20020a170906f74b00b00a58747021f3mr183241ejb.28.1713799359973; Mon, 22
+ Apr 2024 08:22:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240417160842.76665-1-ryncsn@gmail.com> <87zftlx25p.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87zftlx25p.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Mon, 22 Apr 2024 23:20:19 +0800
-Message-ID: <CAMgjq7B1YTrvZOrnbtVYfVMVAmtMkkwiqcqc1AGup4=gvgxKhQ@mail.gmail.com>
-Subject: Re: [PATCH 0/8] mm/swap: optimize swap cache search space
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Chris Li <chrisl@kernel.org>, 
-	Barry Song <v-songbaohua@oppo.com>, Ryan Roberts <ryan.roberts@arm.com>, Neil Brown <neilb@suse.de>, 
-	Minchan Kim <minchan@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	David Hildenbrand <david@redhat.com>, Yosry Ahmed <yosryahmed@google.com>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
+ <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com>
+ <ZiZhSfgeAdrbnaVL@nuoska> <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
+ <e3038141413e25350f0e53496f7a7af1bf8419cf.camel@HansenPartnership.com>
+ <CAC_iWj+zbs2tq_nMASDX6pgCAP23+PpctJFiu9=mgOVDz8Trzw@mail.gmail.com> <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
+In-Reply-To: <e1da76ca4c7fe9319aaac5f8ff6eb46db433ec60.camel@HansenPartnership.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Mon, 22 Apr 2024 18:22:03 +0300
+Message-ID: <CAC_iWjLH=SDoTw_Pgr2hOKHkjEp_dKqwpUe9j6a=_WNW9UcxKw@mail.gmail.com>
+Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: Mikko Rapeli <mikko.rapeli@linaro.org>, Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Lennart Poettering <lennart@poettering.net>, 
+	linux-integrity@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 22, 2024 at 3:56=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
-wrote:
+On Mon, 22 Apr 2024 at 17:31, James Bottomley
+<James.Bottomley@hansenpartnership.com> wrote:
 >
-> Hi, Kairui,
->
-> Kairui Song <ryncsn@gmail.com> writes:
->
-> > From: Kairui Song <kasong@tencent.com>
+> On Mon, 2024-04-22 at 16:54 +0300, Ilias Apalodimas wrote:
+> > Hi James
 > >
-> > Currently we use one swap_address_space for every 64M chunk to reduce l=
-ock
-> > contention, this is like having a set of smaller swap files inside one
-> > big swap file. But when doing swap cache look up or insert, we are
-> > still using the offset of the whole large swap file. This is OK for
-> > correctness, as the offset (key) is unique.
+> > On Mon, 22 Apr 2024 at 16:38, James Bottomley
+> > <James.Bottomley@hansenpartnership.com> wrote:
+> > >
+> > > On Mon, 2024-04-22 at 16:32 +0300, Ilias Apalodimas wrote:
+> > > > Hi all,
+> > > >
+> > > > On Mon, 22 Apr 2024 at 16:08, Mikko Rapeli
+> > > > <mikko.rapeli@linaro.org>
+> > > > wrote:
+> > > > >
+> > > > > Hi,
+> > > > >
+> > > > > On Mon, Apr 22, 2024 at 08:42:41AM -0400, James Bottomley
+> > > > > wrote:
+> > > > > > On Mon, 2024-04-22 at 14:27 +0300, Mikko Rapeli wrote:
+> > > > > > > Userspace needs to know if TPM kernel drivers need to be
+> > > > > > > loaded and related services started early in the boot if
+> > > > > > > TPM device is used and available.
+> > > > > >
+> > > > > > This says what but not why.  We already have module
+> > > > > > autoloading that works correctly for TPM devices, so why is
+> > > > > > this needed?
+> > > > > >
+> > > > > > We do have a chicken and egg problem with IMA in that the TPM
+> > > > > > driver needs to be present *before* any filesystem, including
+> > > > > > the one the TPM modules would be on, is mounted so executions
+> > > > > > can be measured into IMA (meaning that if you use IMA the TPM
+> > > > > > drivers must be built in) but this sounds to be something
+> > > > > > different. However, because of the IMA problem, most
+> > > > > > distributions don't end up compiling TPM drivers as modules
+> > > > > > anyway.
+> > > > > >
+> > > > > > Is what you want simply that tpm modules be loaded earlier?
+> > > > >
+> > > > > Yes, ealier is the problem. In my specific testing case the
+> > > > > machine is qemu arm64 with swtpm with EFI firmware for secure
+> > > > > boot and TPM support.
+> > > > >
+> > > > > Firmware uses TPM and does measurements and thus TPM event log
+> > > > > is
+> > > > > available on this machine and a bunch of other arm64 boards.
+> > > > > Visible in early boot dmesg as TPMEventLog lines like:
+> > > > >
+> > > > > [    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040
+> > > > > RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb3b3040
+> > > > > INITRD=0xeb3b2040 RNG=0xe5c0f040 MEMRESERVE=0xe5c0e040
+> > > > >
+> > > > > Different boards use different TPM HW and drivers so compiling
+> > > > > all these in is possible but a bit ugly. systemd recently
+> > > > > gained support for a specific tpm2.target which makes TPM
+> > > > > support modular and also works with kernel modules for some TPM
+> > > > > use cases but not rootfs encryption.
+> > > > >
+> > > > > In my test case we have a kernel+initramfs uki binary which is
+> > > > > loaded by EFI firmware as a secure boot binary. TPM support on
+> > > > > various boards is visible in devicetree but not as ACPI table
+> > > > > entries. systemd currently detect TPM2 support either via ACPI
+> > > > > table /sys/firmware/acpi/tables/TPM2 or TPM entry or via
+> > > > > firmware measurement via
+> > > > > /sys/kernel/security/tpm0/binary_bios_measurements
+> > > > > .
+> > > >
+> > > > One corner case worth noting here is that scanning the device
+> > > > tree won't always work for non-ACPI systems... The reason is that
+> > > > a firmware TPM (running in OP-TEE) might or might not have a DT
+> > > > entry, since OP-TEE can discover the device dynamically and
+> > > > doesn't always rely on a DT entry.
+> > > >
+> > > > I don't particularly love the idea that an EventLog existence
+> > > > automatically means a TPM will be there, but it seems that
+> > > > systemd already relies on that and it does solve the problem we
+> > > > have.
+> > >
+> > > Well, quite. That's why the question I was interested in, perhaps
+> > > not asked as clearly as it could be is: since all the TPM devices
+> > > rely on discovery mechanisms like ACPI or DT or the like which are
+> > > ready quite early, should we simply be auto loading the TPM drivers
+> > > earlier?
 > >
-> > But Xarray is specially optimized for small indexes, it creates the
-> > redix tree levels lazily to be just enough to fit the largest key
-> > stored in one Xarray. So we are wasting tree nodes unnecessarily.
-> >
-> > For 64M chunk it should only take at most 3 level to contain everything=
-.
-> > But we are using the offset from the whole swap file, so the offset (ke=
-y)
-> > value will be way beyond 64M, and so will the tree level.
-> >
-> > Optimize this by reduce the swap cache search space into 64M scope.
+> > This would be an elegant way to solve this and on top of that, we
+> > have a single discovery mechanism from userspace -- e.g ls /dev/tpmX.
+> > But to answer that we need more feedback from systemd. What 'earlier'
+> > means? Autload it from the kernel before we go into launching the
+> > initrd?
 >
+> Right, so this is another timing problem: we can't autoload modules
+> *before* they appear in the filesystem and presumably they're on the
+> initrd, so auto loading must be post initrd mount (and init execution)
+> but otherwise quite early?
 
-Hi,
-
-Thanks for the comments!
-
-> In general, I think that it makes sense to reduce the depth of the
-> xarray.
->
-> One concern is that IIUC we make swap cache behaves like file cache if
-> possible.  And your change makes swap cache and file cache diverge more.
-> Is it possible for us to keep them similar?
-
-So far in this series, I think there is no problem for that, the two
-main helpers for retrieving file & cache offset: folio_index and
-folio_file_pos will work fine and be compatible with current users.
-
-And if we convert to share filemap_* functions for swap cache / page
-cache, they are mostly already accepting index as an argument so no
-trouble at all.
+Exactly. But is that enough?
 
 >
-> For example,
+> This might be quite a bit of work.  Logically, just moving the matching
+> and loading code earlier might work, but we used to have a
+> load_default_modules() at the end of init/main.c and it got removed
+> (because it only eventually loaded elevator modules) everything is now
+> loaded in it's various init routines, so to get, say, TPM ACPI modules
+> loaded earlier, we'd have to run the ACPI device matching code earlier
+> and so on for every other subsystem ...
+
+Being the devil's advocate here and as I stated I don't love this but ...
+The kernel isn't technically doing anything wrong. We just expose an
+*existing* EFI config table. The kernel also exposes filesystems so
+people are free to do rm -rf *.
+The fact that applications might use it as a means of "oh there's
+probably a TPM" shouldn't be the end of the world. On top of that,
+since it's an EFI config table we can keep it around and never break
+any ABIs we create to userspace. If in the future we find a better
+way, userspace can use that?
+
+So perhaps this is ok as long as make sure we understand why systemd
+needs it that early?
+
+Thanks
+/Ilias
 >
-> Is it possible to return the offset inside 64M range in
-> __page_file_index() (maybe rename it)?
-
-Not sure what you mean by this, __page_file_index will be gone as we
-convert to folio.
-And this series did delete / rename it (it might not be easy to see
-this, the usage of these helpers is not very well organized before
-this series so some clean up is involved).
-It was previously only used through page_index (deleted) /
-folio_index, and, now folio_index will be returning the offset inside
-the 64M range.
-
-I guess I just did what you wanted? :)
-
-My cover letter and commit message might be not clear enough, I can update =
-it.
-
+> James
 >
-> Is it possible to add "start_offset" support in xarray, so "index"
-> will subtract "start_offset" before looking up / inserting?
-
-xarray struct seems already very full, and this usage doesn't look
-generic to me, might be better to fix this kind of issue case by case.
-
->
-> Is it possible to use multiple range locks to protect one xarray to
-> improve the lock scalability?  This is why we have multiple "struct
-> address_space" for one swap device.  And, we may have same lock
-> contention issue for large files too.
-
-Good question, this series can improve the tree depth issue for swap
-cache, but contention in address space is still a thing.
-
-A more generic solution might involve changes of xarray API or use
-some other data struct?
-
-(BTW I think reducing the search space and resolving lock contention
-is not necessarily related, reducing the search space by having a
-large table of small trees should still perform better for swap
-cache).
-
-
->
-> I haven't look at the code in details.  So, my idea may not make sense
-> at all.  If so, sorry about that.
->
-> Hi, Matthew,
->
-> Can you teach me on this too?
->
-> --
-> Best Regards,
-> Huang, Ying
 
