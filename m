@@ -1,80 +1,95 @@
-Return-Path: <linux-kernel+bounces-152900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 883998AC5EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 373328AC5EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:49:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37BCB1F2130F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:48:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B514F1F2127B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 07:49:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B51D24AEDA;
-	Mon, 22 Apr 2024 07:48:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431454D11D;
+	Mon, 22 Apr 2024 07:49:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h0rT1bTq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1mgLhSAt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="S6A4OAxC";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1mgLhSAt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="S6A4OAxC"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7574D13F
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F90018039
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 07:49:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713772089; cv=none; b=YU71eFMrSHzsKEMQesBBPHjWaS7Qr7hyDn8PglNnJz683Bs5PH6gLJ2NkevH+7npv33c2l/4/CHZw9sChyubkcGrEzcaQaHtcOIy0+fP7fDiweNxWK7e2DH7wjxmQyLkADyWRmWmQ5T74sleC5qbwyJ7DXkpF6LOrReUIE6AL9M=
+	t=1713772148; cv=none; b=Wyeg+HNG8T8r6YeO1hnMSVElpgLN+5mAEdIBHwNy3tKV+XwjB2Li/ZYFVGQtLd3CJnF0T5fMaCCrmETTyEqfuabcpE7znRZHTKMnlZYlZ5hhRQLDqpiHdGK96ZQDaPStmvY4z0a7y4qch5sNi8YyuGKo4Y3XlVjpTjO11evFtNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713772089; c=relaxed/simple;
-	bh=+Le8O3y3ZF7b0Pk7d5jUqHASV/4jEPQk7MZuP9/9eyw=;
+	s=arc-20240116; t=1713772148; c=relaxed/simple;
+	bh=e8487b4mCGGSx/djcqQwQvOZR3pCDY8QFaP0bqTcCMc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ORi+BrQW2+F2DbrBz68qAAjBghuMI62wmjfIDoVqeUsKJit1AoOpo7N1Qg+GYWjaBd1lzRYk9z9iJpYn84Z8u4wWqiWtYY/yZ31ZeDboRUCKSp5KkQ11d8OoTCE7GXevh7WHj2qjsOVbe7hD886520dQfIirXsKHq3PYeZjQyZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h0rT1bTq; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713772086;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 In-Reply-To:Content-Type; b=VdTJ4kb6XoykROP5m9S+IU+r8DS+WMBNqYggWXgAGGeaYk68Uis77WjFtmOovf8aSmoEn6hRISSoTku0llfxDJMUgdt6MZfvcp0GuUcCYpmqLvKGylkRUDIX56vvqqPM6xwiXgtBfinRyTRHfhEMjC/U4vOP5jiwzgHTKXgwmRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1mgLhSAt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=S6A4OAxC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1mgLhSAt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=S6A4OAxC; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4F35E5CC00;
+	Mon, 22 Apr 2024 07:49:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713772144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=nDhkSI5Nf0QFXxHxJ2ctMYHWbyZi+j/l4h8WJWCXrLI=;
-	b=h0rT1bTqyjVvn6qKMahLKJwT8nhglpn4jQD0A+ipA/eyNdwR2DJt2Rs7/dcEMceOsioHrw
-	O7LCojY4c18GuOWGiUk8LSetHpbCB18+5c7+Iu67OvMcW7DhUPeyhpMzz5kT8DWRR8G8It
-	pFJ1m14lx89sxh3wfkusfpZvvFpmaAo=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-479-SSHPz-OFOy6TlKm5uPz8rw-1; Mon, 22 Apr 2024 03:48:05 -0400
-X-MC-Unique: SSHPz-OFOy6TlKm5uPz8rw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-416542ed388so17367155e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 00:48:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713772084; x=1714376884;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nDhkSI5Nf0QFXxHxJ2ctMYHWbyZi+j/l4h8WJWCXrLI=;
-        b=myKspFPLEjqzphOZ6XLOROZEDIXDyKzkhUXyk3o0wUKWf4xVhMYgkNmjSQteJQo3NL
-         AW5h3NptgBPJX0/+LRw7Ok1KXJNbvU3cSD9zP3RbgRDdF/iJ6lNAkChrw3OpwfCNWLxj
-         gn8uWP1uvacNA1gEqoVr6SLwvKJswz9hw4D0c7E8yAsj3RXGpGSbGW7Jbu3GDXvWlA/N
-         /Sf9Nm7rK3spm1JwT7BoTq0Y5UCJNYTRuXX7nFQf+ct8BlE3GyOeSW1IxtYm1DlMkjVi
-         KmJIknLhSfAD5Y6K+0AsVEcy4wH8ChgwxA/Kb3hJR1UfIm1YbYdCXtJwy/ITSY4//ZPr
-         weIg==
-X-Forwarded-Encrypted: i=1; AJvYcCWWuYJg7BgCtQRG3H1L3wtUc0UHJbnrE7Nwlxz2ud9CVRFhpnlbOzMunsI99kaFm5ocxRH1ncpk6jGfBZ2yHMJXPUfuFOsUEh+xti3U
-X-Gm-Message-State: AOJu0YwOL4vyf3iLHgcWNXpwveffOYh9+oQ0jznQFJzYv1MgLGesagtS
-	vttrDoCcaZ4K6Nm1/6Eh/C4Ejm+Ahwn27pV+BoQL7mN4quHNO1A3OdUXJF2JpVSsd6mBbpY3O2a
-	LnUVnFB99dQ9arGHsj9GDHK5SMJbydaXVDnNVRL/ycNhsdkXOzE52xo+82zRmoA==
-X-Received: by 2002:a05:600c:a007:b0:418:d3b3:321f with SMTP id jg7-20020a05600ca00700b00418d3b3321fmr7854790wmb.18.1713772084063;
-        Mon, 22 Apr 2024 00:48:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEcznxotJCFnicrgGOoWkdICH6GLFX1EXqfpuJdH6MqUgYPST0gDx1y6PTHJy1Id/nHLXKJgA==
-X-Received: by 2002:a05:600c:a007:b0:418:d3b3:321f with SMTP id jg7-20020a05600ca00700b00418d3b3321fmr7854768wmb.18.1713772083676;
-        Mon, 22 Apr 2024 00:48:03 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c739:600:d2fb:3a8a:9944:7910? (p200300cbc7390600d2fb3a8a99447910.dip0.t-ipconnect.de. [2003:cb:c739:600:d2fb:3a8a:9944:7910])
-        by smtp.gmail.com with ESMTPSA id l16-20020a05600c4f1000b0041a1fee2854sm5099171wmq.17.2024.04.22.00.48.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 00:48:03 -0700 (PDT)
-Message-ID: <9d70583a-565f-4523-8707-325c3af9a164@redhat.com>
-Date: Mon, 22 Apr 2024 09:48:02 +0200
+	bh=qqhL+Km9d3Ro4Qxo6J2e77ZARt5KARP3u0rYJ7W2T+M=;
+	b=1mgLhSAtI/OkqmH3MLhsquf/iu6O+I2gUxDQWLYpKcnmCbLHKFr5VHCQP9Kha+U/DvjKuj
+	37mKVZhJbHhj+M7WUyF48MgMFZTZXrX0vSeWIOjlBWKaqmJEB66Kv0A9nDUi9CXwNVKP8K
+	0NfjFUYC0A41O7z/r6H/frCkTGqSUmQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713772144;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qqhL+Km9d3Ro4Qxo6J2e77ZARt5KARP3u0rYJ7W2T+M=;
+	b=S6A4OAxCwKmIQJuo3R0gTtrfdBXDjcaOzIeIne23nCwl+t6b0xPRNhHahEvXbpQetS5sIW
+	6QSEO8IZlrBH/gBA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1mgLhSAt;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=S6A4OAxC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713772144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qqhL+Km9d3Ro4Qxo6J2e77ZARt5KARP3u0rYJ7W2T+M=;
+	b=1mgLhSAtI/OkqmH3MLhsquf/iu6O+I2gUxDQWLYpKcnmCbLHKFr5VHCQP9Kha+U/DvjKuj
+	37mKVZhJbHhj+M7WUyF48MgMFZTZXrX0vSeWIOjlBWKaqmJEB66Kv0A9nDUi9CXwNVKP8K
+	0NfjFUYC0A41O7z/r6H/frCkTGqSUmQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713772144;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=qqhL+Km9d3Ro4Qxo6J2e77ZARt5KARP3u0rYJ7W2T+M=;
+	b=S6A4OAxCwKmIQJuo3R0gTtrfdBXDjcaOzIeIne23nCwl+t6b0xPRNhHahEvXbpQetS5sIW
+	6QSEO8IZlrBH/gBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3CB35136ED;
+	Mon, 22 Apr 2024 07:49:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id lFFoDnAWJmbRcAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 22 Apr 2024 07:49:04 +0000
+Message-ID: <e1a06ea3-57b2-4562-895b-a2fb5d5667cc@suse.cz>
+Date: Mon, 22 Apr 2024 09:49:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,132 +97,174 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] virtio_balloon: introduce memory allocation stall
- counter
-To: zhenwei pi <pizhenwei@bytedance.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, virtualization@lists.linux.dev
-Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
- akpm@linux-foundation.org
-References: <20240422074254.1440457-1-pizhenwei@bytedance.com>
- <20240422074254.1440457-4-pizhenwei@bytedance.com>
-From: David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v3 1/2] slub: introduce count_partial_free_approx()
+To: David Rientjes <rientjes@google.com>,
+ Jianfeng Wang <jianfeng.w.wang@oracle.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cl@linux.com,
+ akpm@linux-foundation.org, penberg@kernel.org
+References: <20240419175611.47413-1-jianfeng.w.wang@oracle.com>
+ <20240419175611.47413-2-jianfeng.w.wang@oracle.com>
+ <3e5d2937-76ab-546b-9ce8-7e7140424278@google.com>
 Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240422074254.1440457-4-pizhenwei@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <3e5d2937-76ab-546b-9ce8-7e7140424278@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -4.50
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 4F35E5CC00
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	MX_GOOD(-0.01)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[suse.cz:+]
 
-On 22.04.24 09:42, zhenwei pi wrote:
-> Memory allocation stall counter represents the performance/latency of
-> memory allocation, expose this counter to the host side by virtio
-> balloon device via out-of-bound way.
+On 4/20/24 2:18 AM, David Rientjes wrote:
+> On Fri, 19 Apr 2024, Jianfeng Wang wrote:
 > 
-> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-> ---
->   drivers/virtio/virtio_balloon.c     | 8 ++++++++
->   include/uapi/linux/virtio_balloon.h | 6 ++++--
->   2 files changed, 12 insertions(+), 2 deletions(-)
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index 1bb2a93cf7b6..993cbbdd2b6c 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -3213,6 +3213,43 @@ static inline bool free_debug_processing(struct kmem_cache *s,
+>>  #endif /* CONFIG_SLUB_DEBUG */
+>>  
+>>  #if defined(CONFIG_SLUB_DEBUG) || defined(SLAB_SUPPORTS_SYSFS)
+>> +#define MAX_PARTIAL_TO_SCAN 10000
+>> +
+>> +static unsigned long count_partial_free_approx(struct kmem_cache_node *n)
+>> +{
+>> +	unsigned long flags;
+>> +	unsigned long x = 0;
+>> +	struct slab *slab;
+>> +
+>> +	spin_lock_irqsave(&n->list_lock, flags);
+>> +	if (n->nr_partial <= MAX_PARTIAL_TO_SCAN) {
+>> +		list_for_each_entry(slab, &n->partial, slab_list)
+>> +			x += slab->objects - slab->inuse;
+>> +	} else {
+>> +		/*
+>> +		 * For a long list, approximate the total count of objects in
+>> +		 * it to meet the limit on the number of slabs to scan.
+>> +		 * Scan from both the list's head and tail for better accuracy.
+>> +		 */
+>> +		unsigned long scanned = 0;
+>> +
+>> +		list_for_each_entry(slab, &n->partial, slab_list) {
+>> +			x += slab->objects - slab->inuse;
+>> +			if (++scanned == MAX_PARTIAL_TO_SCAN / 2)
+>> +				break;
+>> +		}
+>> +		list_for_each_entry_reverse(slab, &n->partial, slab_list) {
+>> +			x += slab->objects - slab->inuse;
+>> +			if (++scanned == MAX_PARTIAL_TO_SCAN)
+>> +				break;
+>> +		}
+>> +		x = mult_frac(x, n->nr_partial, scanned);
+>> +		x = min(x, node_nr_objs(n));
+>> +	}
+>> +	spin_unlock_irqrestore(&n->list_lock, flags);
+>> +	return x;
+>> +}
 > 
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 87a1d6fa77fb..ab039e83bc6f 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -323,6 +323,8 @@ static inline unsigned int update_balloon_vm_stats(struct virtio_balloon *vb,
->   #ifdef CONFIG_VM_EVENT_COUNTERS
->   	unsigned long events[NR_VM_EVENT_ITEMS];
->   	unsigned int idx = start;
-> +	unsigned int zid;
-> +	unsigned long stall = 0;
->   
->   	all_vm_events(events);
->   	update_stat(vb, idx++, VIRTIO_BALLOON_S_SWAP_IN,
-> @@ -333,6 +335,12 @@ static inline unsigned int update_balloon_vm_stats(struct virtio_balloon *vb,
->   	update_stat(vb, idx++, VIRTIO_BALLOON_S_MINFLT, events[PGFAULT]);
->   	update_stat(vb, idx++, VIRTIO_BALLOON_S_OOM_KILL, events[OOM_KILL]);
->   
-> +	/* sum all the stall events */
-> +	for (zid = 0; zid < MAX_NR_ZONES; zid++)
-> +		stall += events[ALLOCSTALL_NORMAL - ZONE_NORMAL + zid];
-> +
-> +	update_stat(vb, idx++, VIRTIO_BALLOON_S_ALLOC_STALL, stall);
-> +
->   #ifdef CONFIG_HUGETLB_PAGE
->   	update_stat(vb, idx++, VIRTIO_BALLOON_S_HTLB_PGALLOC,
->   		    events[HTLB_BUDDY_PGALLOC]);
-> diff --git a/include/uapi/linux/virtio_balloon.h b/include/uapi/linux/virtio_balloon.h
-> index b17bbe033697..487b893a160e 100644
-> --- a/include/uapi/linux/virtio_balloon.h
-> +++ b/include/uapi/linux/virtio_balloon.h
-> @@ -72,7 +72,8 @@ struct virtio_balloon_config {
->   #define VIRTIO_BALLOON_S_HTLB_PGALLOC  8  /* Hugetlb page allocations */
->   #define VIRTIO_BALLOON_S_HTLB_PGFAIL   9  /* Hugetlb page allocation failures */
->   #define VIRTIO_BALLOON_S_OOM_KILL      10 /* OOM killer invocations */
-> -#define VIRTIO_BALLOON_S_NR       11
-> +#define VIRTIO_BALLOON_S_ALLOC_STALL   11 /* Stall count of memory allocatoin */
-> +#define VIRTIO_BALLOON_S_NR       12
->   
->   #define VIRTIO_BALLOON_S_NAMES_WITH_PREFIX(VIRTIO_BALLOON_S_NAMES_prefix) { \
->   	VIRTIO_BALLOON_S_NAMES_prefix "swap-in", \
-> @@ -85,7 +86,8 @@ struct virtio_balloon_config {
->   	VIRTIO_BALLOON_S_NAMES_prefix "disk-caches", \
->   	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-allocations", \
->   	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures", \
-> -	VIRTIO_BALLOON_S_NAMES_prefix "oom-kills" \
-> +	VIRTIO_BALLOON_S_NAMES_prefix "oom-kills", \
-> +	VIRTIO_BALLOON_S_NAMES_prefix "alloc-stalls" \
->   }
->   
->   #define VIRTIO_BALLOON_S_NAMES VIRTIO_BALLOON_S_NAMES_WITH_PREFIX("")
+> Creative :)
+> 
+> The default value of MAX_PARTIAL_TO_SCAN seems to work well in practice 
+> while being large enough to bias for actual values?
+> 
+> I can't think of a better way to avoid the disruption that very long 
+> partial lists cause.  If the actual value is needed, it will need to be 
+> read from the sysfs file for that slab cache.
+> 
+> It does beg the question of whether we want to extend slabinfo to indicate 
+> that some fields are approximations, however.  Adding a suffix such as 
+> " : approx" to a slab cache line may be helpful if the disparity in the 
+> estimates would actually make a difference in practice.
 
-Acked-by: David Hildenbrand <david@redhat.com>
+I'm afraid that changing the layout of /proc/slabinfo has a much higher
+chance of breaking some consumer, than the imprecision due to approximation
+has. So I would rather not risk it.
 
--- 
-Cheers,
-
-David / dhildenb
+> I have a hard time believing that this approximation will not be "close 
+> enough" for all practical purposes, given that the value could very well 
+> substantially change the instant after the iteration is done anyway.
+> 
+> So for that reason, this sounds good to me!
+> 
+> Acked-by: David Rientjes <rientjes@google.com>
+> 
+>> +
+>>  static unsigned long count_partial(struct kmem_cache_node *n,
+>>  					int (*get_count)(struct slab *))
+>>  {
+>> @@ -7089,7 +7126,7 @@ void get_slabinfo(struct kmem_cache *s, struct slabinfo *sinfo)
+>>  	for_each_kmem_cache_node(s, node, n) {
+>>  		nr_slabs += node_nr_slabs(n);
+>>  		nr_objs += node_nr_objs(n);
+>> -		nr_free += count_partial(n, count_free);
+>> +		nr_free += count_partial_free_approx(n);
+>>  	}
+>>  
+>>  	sinfo->active_objs = nr_objs - nr_free;
 
 
