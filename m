@@ -1,74 +1,80 @@
-Return-Path: <linux-kernel+bounces-153283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC3308ACBF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:23:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98EC98ACBF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:24:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91EC91F233C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:23:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F07C287B82
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6540C146A7B;
-	Mon, 22 Apr 2024 11:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40791465B0;
+	Mon, 22 Apr 2024 11:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tz2z7cpR"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KpBEHhBZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07B50146595;
-	Mon, 22 Apr 2024 11:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CCC614601F
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 11:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713784984; cv=none; b=c2O11r2B2xeNqPP52szC7YOERfPFFAiyKiVvDM6tAajlmAZVl2PN0Vc79ujkoJ7hLsx+YszKZPhlH4zY1lKnVdDy4Nkf6lC+JRyjO0A35qOJU9u3U56P4uA7ORVDEu2+NjikpB+jOgbdHf0/3kAwcPiYLb2ZZMYMnyEziOG575k=
+	t=1713785087; cv=none; b=YaQGIHrZSW/zrlfuvCQYBcoADhWfBa/oL9zx/+Q3dl75r3S+rdoMzCufdlGpEr0s+ui5p87pOlJNj2lgExz9GQhT3RRrtVu5/P0KAY8yHpZymCSWQylrfTJgmuo0mhXhB5LywMfDwzYN3prKfwaaK5syLVreRsIY8QBYank7sWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713784984; c=relaxed/simple;
-	bh=bUOAlueYM4Ulknow7uj7NRdEYIRwMnhpc5nRHzH4AUQ=;
+	s=arc-20240116; t=1713785087; c=relaxed/simple;
+	bh=lesur2DtlpG36U+RDatGEe3Kz31u61I145L9zgoURGg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IYyUfV5RysdK9WHlAZgVn17cgD863MRPjXdygT7jAILSVP4HOKYEszzT2271j7vk6nCq/1WaAYvEoj9uOWsr8ZU0F+hSqCTYDbewIJi9WxNlUe8Dvgte281CB4UtO0M9KX1oLIcgGEx0Y3fHnOeOk8KLxEXp3vENLRlQH+tPYic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tz2z7cpR; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-34a00533d08so2612129f8f.3;
-        Mon, 22 Apr 2024 04:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713784981; x=1714389781; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=5OZDatUfQDDM+oVBX1r0/EJ9l0dP7tgNSOOzYFy/HEQ=;
-        b=Tz2z7cpR92TPc9dlYhvsYHirXXM6DbUc5libNnnf3e+JyRqpGP5q57EYx6SBOpd1WW
-         KAk1u1LwlX9c9bAMdBGPovH2b2xX7n79QHG42fMkfL66bbfN5d8NSrGneKr3w3/YZyNf
-         lXJeqC92rfB5ZxiSTB59zKBJq6MVbx15Idb/8joRmYp5VVhoh9g4RKf4f6wil3C9H2O4
-         KxAa7cF/6gGvDyPVlJcYjaYOViSjA2PUGGas8ryc+ldNoIKPD4UV+8SfeM9T9cMc+Xn0
-         m/O/ZJ5Joxta1yldOyWrJchTAxKjihJUHunwh2csYZsAHjqrJhej97fh/RM1BVHQW2Df
-         BNyg==
+	 In-Reply-To:Content-Type; b=hF3LvKzWuvnzkGPq5YDdz9QYDdBS2QTTudeCZdZXH7w4UYILA7X3FhtEPznbpz8xLQSvVArsAzYmcf+OY1IX2KfomYB74HoyojgqquzGYSziSMswjhhMkYVAPubiJfupKjRU4cLQf+VSBeE8RkP0TNvWcFr54xxu1faZ+fdAd9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KpBEHhBZ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713785084;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=ZoxPNt1dowIJ1Aw5Ufzxc0rTMxsMvYDFAtprWf/W5gA=;
+	b=KpBEHhBZoba9zDsArq/DUCjwygXZFo3rISY33KiAszR1opjExxFOKtkDzHADHc6XbPrhQv
+	3542kIvopNeWFhEaw5yPuIckoEWhR/33YIWU1dNWhSOB+tQQqLIpzjtgFtV8GUi19aA/Fn
+	9CH50KY1Q0TlLQx8cF9qJb311nkboNI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-47-yuL1Z-60OZiwdIqje4MB0Q-1; Mon, 22 Apr 2024 07:24:43 -0400
+X-MC-Unique: yuL1Z-60OZiwdIqje4MB0Q-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-419f572bdbdso5300535e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 04:24:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713784981; x=1714389781;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
+        d=1e100.net; s=20230601; t=1713785082; x=1714389882;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5OZDatUfQDDM+oVBX1r0/EJ9l0dP7tgNSOOzYFy/HEQ=;
-        b=cVHW2BcBgNuh79lh0FQARbObnX6WqghwwthShKAQ8g7as6ENuOdVLu7BrTF66izFyD
-         /sJmQbvqTdThqppHOzi7uuzib6siu9I8bYrG1iS0M0oA0cntDzWEl+lRHpk8M8rHPeIU
-         kTNVgnv4WaPDqauDx7EnPztwGzvMY3OTRi2nc5a5F4lg+HJnRv3MiiuKlVfKFJM2gRAB
-         altCOJfTlXBO1zpOZA6hST/o7Y2dzkWXp+FkTqf7krVjglX00wBnH+gDFG3jRZ7aVr1Y
-         t1+1VbG7tsPMDpyrsyJUcCViBEtiI9uommS+ewXO+aH468fGpIBiPQMGxmvDklpR1E91
-         pd7A==
-X-Forwarded-Encrypted: i=1; AJvYcCUlDD+O94xmJpUXcItfiC0SgSnLyQyFT7S+fNoQ0ttMxJ+JBqBqap8PBZ1nx2Ab1kpZuW04SNI1YMVVKkjggarYE+v1bzPHMLEvbauoLEijBtJcU8if7fdCMOGOC8GRYe6XzrznW9Q/CA==
-X-Gm-Message-State: AOJu0Yz+ObAaJRXJ5ryNiUqbhaWIbn1JpamaCfnRbo/p24thlW6jnKGI
-	ao8lzV4N62h5gcKkjTRlaNK8kwHp7qmL+7gdQGK0iB+Bg88rha6W
-X-Google-Smtp-Source: AGHT+IFKevGfAeTp52lfFVp0nsv2RutGj2Qoptf2HvoOGqoY+lTav16WswsSrVXUqukSPea2elZc+w==
-X-Received: by 2002:a05:6000:905:b0:34a:77c:e061 with SMTP id cw5-20020a056000090500b0034a077ce061mr7988259wrb.48.1713784981129;
-        Mon, 22 Apr 2024 04:23:01 -0700 (PDT)
-Received: from ?IPV6:2a02:168:575a:b00b:5299:bf9:946a:f51b? ([2a02:168:575a:b00b:5299:bf9:946a:f51b])
-        by smtp.googlemail.com with ESMTPSA id s15-20020adfe00f000000b0034b03d0b94csm3110091wrh.74.2024.04.22.04.22.59
+        bh=ZoxPNt1dowIJ1Aw5Ufzxc0rTMxsMvYDFAtprWf/W5gA=;
+        b=RDYJ6Prc05vyrfz9+uzyhaKFTpSFJAmnYSHcozyAtmOVRVAwxn9ZVw8y4aASRksUe6
+         byqT9KXFqZc47LW3WBPzleFzWMfXzmI4c6bSS6yl3ByDuZoBZA9d0YI6Ka+WMNylaW4z
+         E1W7QYh0gUWFFiSNeYdjjtSPLmOGVS4l2t2Ias3t1eN8Jr/Vs2ae8T4M7fl1GQaT8W43
+         CqwUfLJ2pPEiSR9IZMWhjG9nZ1fILRikBhUACBhqdTrFBkw+vAZhN/lTaXLzbU6wicgN
+         Kubaa6VljgIeGtN/npiy6EUbAxvOpBoxkVw9wSFLIr4hjU/j6tOSqIrZooJm8rfs9Q3T
+         /T3g==
+X-Forwarded-Encrypted: i=1; AJvYcCUi3/Llrum+3+ghw8K3i0uVMBTk0txKimgp2UTggwqpvlT9jiHf3AIaMwYCb/eOd3Ienx2q2uKFyOXkoYeXYnO2e2a58p+NAafGeCwc
+X-Gm-Message-State: AOJu0Yyrqd9j2xbK1dqV2MSzhrSq5SaeSV30/jd9833YvHgCHKpDwhZ/
+	EjJwgzn+m578+gDMd8eni9fZgB59S0CIoiGPznP2zsWo7X441YzJYEW0JF9GsH1tEH1dVTFWbZR
+	qoEwtvGYT/+U4rdTjD+ZjJhayY1rUtXmiqfFQwHBuKr1s8gxR8mL1oHawwavE7w==
+X-Received: by 2002:a05:600c:4447:b0:41a:385:508d with SMTP id v7-20020a05600c444700b0041a0385508dmr5432669wmn.9.1713785081927;
+        Mon, 22 Apr 2024 04:24:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEh9EIiwBXQJpTfuuzTfXU4dKFUKefFnFnDT/8//OspOgbFrMryDb12cQN3J2V5j0SNci/kLg==
+X-Received: by 2002:a05:600c:4447:b0:41a:385:508d with SMTP id v7-20020a05600c444700b0041a0385508dmr5432655wmn.9.1713785081555;
+        Mon, 22 Apr 2024 04:24:41 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c739:600:d2fb:3a8a:9944:7910? (p200300cbc7390600d2fb3a8a99447910.dip0.t-ipconnect.de. [2003:cb:c739:600:d2fb:3a8a:9944:7910])
+        by smtp.gmail.com with ESMTPSA id d5-20020a5d6445000000b0034659d971a6sm11733502wrw.26.2024.04.22.04.24.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 04:23:00 -0700 (PDT)
-Message-ID: <9d898a98-cb7d-45d8-80c2-2ef428288e6b@gmail.com>
-Date: Mon, 22 Apr 2024 13:22:58 +0200
+        Mon, 22 Apr 2024 04:24:41 -0700 (PDT)
+Message-ID: <b848c431-deca-42e4-925c-673b3fa1f251@redhat.com>
+Date: Mon, 22 Apr 2024 13:24:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,81 +82,80 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 0/4] Input: support overlay objects on touchscreens
-To: Javier Carrasco <javier.carrasco@wolfvision.net>,
- Hans de Goede <hdegoede@redhat.com>
-Cc: linux-input@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jeff LaBundy
- <jeff@labundy.com>, Conor Dooley <conor+dt@kernel.org>,
- Bastian Hecht <hechtb@gmail.com>,
- Michael Riesch <michael.riesch@wolfvision.net>
-References: <20240422-feature-ts_virtobj_patch-v9-0-acf118d12a8a@wolfvision.net>
-Content-Language: en-US, de-CH, fr-CH
-From: Gregor Riepl <onitake@gmail.com>
-Autocrypt: addr=onitake@gmail.com; keydata=
- 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
- DMcsQA==
-In-Reply-To: <20240422-feature-ts_virtobj_patch-v9-0-acf118d12a8a@wolfvision.net>
+Subject: Re: [PATCH] mm/rmap: remove unnecessary page_table_lock
+To: Yajun Deng <yajun.deng@linux.dev>, akpm@linux-foundation.org
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240422105212.1485788-1-yajun.deng@linux.dev>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240422105212.1485788-1-yajun.deng@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-> In order to generate proper key events by overlay buttons and adjust the
-> touch events to a clipped surface, this series offers a documented,
-> device-tree-based solution by means of helper functions.
-> An implementation for a specific touchscreen driver is also included.
+On 22.04.24 12:52, Yajun Deng wrote:
+> page_table_lock is a lock that for page table, we won't change page
+> table in __anon_vma_prepare(). As we can see, it works well in
+> anon_vma_clone(). They do the same operation.
 
-I believe there's at least some x86 tablets that have such a layout, so 
-maybe ACPI bindings would also make sense? Or can this be supported by 
-your DT-based solution?
+We are reusing mm->page_table_lock to serialize, not the *actual* 
+low-level page table locks that really protect PTEs.
 
-I'm not sure if it would really be needed for existing devices, though. 
-It's possible they were all handled by touchscreen controller firmware 
-so far.
+With that locking gone, there would be nothing protection vma->anon_vma.
 
-Hans, do you remember if we've encountered any Silead or Goodix devices 
-where the soft button overlay didn't work due to missing firmware support?
+Note that anon_vma_clone() is likely called with the mmap_lock held in 
+write mode, which is not the case for __anon_vma_prepare() ...
+
+I think this change is wrong.
+
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
