@@ -1,146 +1,116 @@
-Return-Path: <linux-kernel+bounces-153842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 664788AD412
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:35:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E8898AD40F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:34:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0CCCB220D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:35:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF511281601
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8888715445B;
-	Mon, 22 Apr 2024 18:35:15 +0000 (UTC)
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C0A7154430;
+	Mon, 22 Apr 2024 18:34:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ah9Rt0dW"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF0A1514D5;
-	Mon, 22 Apr 2024 18:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A4013EFE1
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 18:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713810915; cv=none; b=V++pmeAZ0ORmpQIgJ/b0EtKDIw6oqhzvG5xpFPeG1HOrKUdx+de+paANWUrn8xNjEmVCt+oIiVLvd8INj1wehlt2OWMAYIIu5ADkQkpIVmLHYwKwHu5YbpASEeZrTSbWg+5P8tq+4IohcOiiN0hRgM96AXyXcbDGqvl/P5iTT9M=
+	t=1713810890; cv=none; b=mD1yrzbGHVmfQHIPaEAglD9EnGQPLfRE0ya6Ox2tZcnObSX/S7uMvcXenXWyTTDJs7vVjr09POveIwctLAUlIbFtSgsSbaMWGN6b/Vu56zVbQWUt0t3WNJT/KhQaXCba58PYGgx8Up+Mg+wSqMkDbCROZqvvJEryGXUCrQxpUmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713810915; c=relaxed/simple;
-	bh=1EN9NA6lTTFiwyx4d7mtczgfP4E+SMVfghI94AIVNJw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CK+SZwhBE41rNuyKSkGPUdjOkLfpI4U6y8bafkubXu6yNe3pSlZYjwJmqXySY1XPGK7Wn2jY6vIQGRBeEGB5oTS0JlpCMha+tRlcs9fndFx1+NYTFd2M1TOIvAtmXBCzBHG3nUJPCDzNTOxpnUE90KVNNG8s10FocTcjylBeXsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 22 Apr
- 2024 21:33:59 +0300
-Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 22 Apr
- 2024 21:33:58 +0300
-From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-To: Christian Lamparter <chunkeey@googlemail.com>, Kalle Valo
-	<kvalo@kernel.org>
-CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	<linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<syzkaller-bugs@googlegroups.com>, <lvc-project@linuxtesting.org>,
-	<syzbot+0ae4804973be759fa420@syzkaller.appspotmail.com>
-Subject: [PATCH v2] wifi: carl9170: add a proper sanity check for endpoints
-Date: Mon, 22 Apr 2024 11:33:55 -0700
-Message-ID: <20240422183355.3785-1-n.zhandarovich@fintech.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1713810890; c=relaxed/simple;
+	bh=qHyu+uP/D6tYcq7d7yU8GqFnJIfU/FEYzQVpzIwder4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bVXcszbscYM9HSqKo5tY5IM3wB6wzg3eU4KFMWLibfA45U6V37MxfQbwbLJ9FMBJqsXU+1wZ0OwRawHK3pfVHFH0BcnpXGJeVmsGHtldLwaxmWocaOjFiMSQq3MvFHG8UwY7qZoWqT2gYE2sjRYVjJ1rCX8qcZ8lBfa0GKhVjyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ah9Rt0dW; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713810888;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YEAqeumfUHtzhzMhX5s4xQkZKWe9CxlywrZ+mXyPh60=;
+	b=ah9Rt0dWIxQsj3rlwPdPTfhf8UHdsCOYlMQEaLB8zWanUx7gloQM5J/tQefEVP1HHUOfNy
+	mns35GtEekL23qhcWScjSEXzLdznYi271ZwpAYsMUKgYwK087ADqdRUla93aBhk7j1KZwl
+	ulRlJaGYI1MLnKdnOv+fUk2cxYKHAZo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-169-wYztvbUzMgmSbrcjVJQfOg-1; Mon,
+ 22 Apr 2024 14:34:46 -0400
+X-MC-Unique: wYztvbUzMgmSbrcjVJQfOg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BB62C3C3D0C5;
+	Mon, 22 Apr 2024 18:34:45 +0000 (UTC)
+Received: from [10.22.32.240] (unknown [10.22.32.240])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 47032581DF;
+	Mon, 22 Apr 2024 18:34:44 +0000 (UTC)
+Message-ID: <b1a1997d-0af5-4d75-a56c-bf77b2cd0cd6@redhat.com>
+Date: Mon, 22 Apr 2024 14:34:44 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup/cpuset: Statically initialize more members
+ of top_cpuset
+To: Xiu Jianfeng <xiujianfeng@huawei.com>, lizefan.x@bytedance.com,
+ tj@kernel.org, hannes@cmpxchg.org
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240420094616.1028540-1-xiujianfeng@huawei.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240420094616.1028540-1-xiujianfeng@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Syzkaller reports [1] hitting a warning which is caused by presence
-of a wrong endpoint type at the URB sumbitting stage. While there
-was a check for a specific 4th endpoint, since it can switch types
-between bulk and interrupt, other endpoints are trusted implicitly.
-Similar warning is triggered in a couple of other syzbot issues [2].
 
-Fix the issue by doing a comprehensive check of all endpoints
-taking into account difference between high- and full-speed
-configuration.
+On 4/20/24 05:46, Xiu Jianfeng wrote:
+> Initializing top_cpuset.relax_domain_level and setting
+> CS_SCHED_LOAD_BALANCE to top_cpuset.flags in cpuset_init() could be
+> completed at the time of top_cpuset definition by compiler.
+>
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> ---
+>   kernel/cgroup/cpuset.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index d8d3439eda4e..e70008a1d86a 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -369,8 +369,9 @@ static inline void notify_partition_change(struct cpuset *cs, int old_prs)
+>   
+>   static struct cpuset top_cpuset = {
+>   	.flags = ((1 << CS_ONLINE) | (1 << CS_CPU_EXCLUSIVE) |
+> -		  (1 << CS_MEM_EXCLUSIVE)),
+> +		  (1 << CS_MEM_EXCLUSIVE) | (1 < CS_SCHED_LOAD_BALANCE)),
+>   	.partition_root_state = PRS_ROOT,
+> +	.relax_domain_level = -1,
+>   	.remote_sibling = LIST_HEAD_INIT(top_cpuset.remote_sibling),
+>   };
+>   
+> @@ -4309,8 +4310,6 @@ int __init cpuset_init(void)
+>   	nodes_setall(top_cpuset.effective_mems);
+>   
+>   	fmeter_init(&top_cpuset.fmeter);
+> -	set_bit(CS_SCHED_LOAD_BALANCE, &top_cpuset.flags);
+> -	top_cpuset.relax_domain_level = -1;
+>   	INIT_LIST_HEAD(&remote_children);
+>   
+>   	BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
+Reviewed-by: Waiman Long <longman@redhat.com>
 
-This patch has not been tested on real hardware.
-
-[1] Syzkaller report:
-..
-WARNING: CPU: 0 PID: 4721 at drivers/usb/core/urb.c:504 usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
-..
-Call Trace:
- <TASK>
- carl9170_usb_send_rx_irq_urb+0x273/0x340 drivers/net/wireless/ath/carl9170/usb.c:504
- carl9170_usb_init_device drivers/net/wireless/ath/carl9170/usb.c:939 [inline]
- carl9170_usb_firmware_finish drivers/net/wireless/ath/carl9170/usb.c:999 [inline]
- carl9170_usb_firmware_step2+0x175/0x240 drivers/net/wireless/ath/carl9170/usb.c:1028
- request_firmware_work_func+0x130/0x240 drivers/base/firmware_loader/main.c:1107
- process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
- worker_thread+0x669/0x1090 kernel/workqueue.c:2436
- kthread+0x2e8/0x3a0 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-
-[2] Related syzkaller crashes:
-Link: https://syzkaller.appspot.com/bug?extid=e394db78ae0b0032cb4d
-Link: https://syzkaller.appspot.com/bug?extid=9468df99cb63a4a4c4e1
-
-Reported-and-tested-by: syzbot+0ae4804973be759fa420@syzkaller.appspotmail.com
-Fixes: a84fab3cbfdc ("carl9170: 802.11 rx/tx processing and usb backend")
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
----
-v2: as Christian Lamparter <chunkeey@gmail.com> was kind to point out,
-before returning with error, make sure to free previously allocated
-'ar' with carl9170_free(ar).
-
- drivers/net/wireless/ath/carl9170/usb.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/carl9170/usb.c b/drivers/net/wireless/ath/carl9170/usb.c
-index c4edf8355941..a3e03580cd9f 100644
---- a/drivers/net/wireless/ath/carl9170/usb.c
-+++ b/drivers/net/wireless/ath/carl9170/usb.c
-@@ -1069,6 +1069,38 @@ static int carl9170_usb_probe(struct usb_interface *intf,
- 			ar->usb_ep_cmd_is_bulk = true;
- 	}
- 
-+	/* Verify that all expected endpoints are present */
-+	if (ar->usb_ep_cmd_is_bulk) {
-+		u8 bulk_ep_addr[] = {
-+			AR9170_USB_EP_RX | USB_DIR_IN,
-+			AR9170_USB_EP_TX | USB_DIR_OUT,
-+			AR9170_USB_EP_CMD | USB_DIR_OUT,
-+			0};
-+		u8 int_ep_addr[] = {
-+			AR9170_USB_EP_IRQ | USB_DIR_IN,
-+			0};
-+		if (!usb_check_bulk_endpoints(intf, bulk_ep_addr) ||
-+		    !usb_check_int_endpoints(intf, int_ep_addr))
-+			err = -ENODEV;
-+	} else {
-+		u8 bulk_ep_addr[] = {
-+			AR9170_USB_EP_RX | USB_DIR_IN,
-+			AR9170_USB_EP_TX | USB_DIR_OUT,
-+			0};
-+		u8 int_ep_addr[] = {
-+			AR9170_USB_EP_IRQ | USB_DIR_IN,
-+			AR9170_USB_EP_CMD | USB_DIR_OUT,
-+			0};
-+		if (!usb_check_bulk_endpoints(intf, bulk_ep_addr) ||
-+		    !usb_check_int_endpoints(intf, int_ep_addr))
-+			err = -ENODEV;
-+	}
-+
-+	if (err) {
-+		carl9170_free(ar);
-+		return err;
-+	}
-+
- 	usb_set_intfdata(intf, ar);
- 	SET_IEEE80211_DEV(ar->hw, &intf->dev);
- 
 
