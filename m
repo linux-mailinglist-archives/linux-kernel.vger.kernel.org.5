@@ -1,165 +1,124 @@
-Return-Path: <linux-kernel+bounces-153459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D6148ACE56
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:34:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC5868ACE55
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:34:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EAFF1C2143B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:34:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A92C2281653
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 13:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015871514C9;
-	Mon, 22 Apr 2024 13:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDC11509BB;
+	Mon, 22 Apr 2024 13:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RdTm2LVB"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bTHxds5d"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6722114F9EA
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ACC914F9D8
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 13:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713792803; cv=none; b=cm5kb1I7FeYTp9KNIKd6LM0AnVq2dcJPl5JlcBDvUd/45LITR7E7+jyO2a12uSg+5f44CYYSwo1ybW12Whyp4LgwMn2xjTm7xnVFNArCaani6owT2b2wlP+VDLpCxxvvJsrgBxsz/Qv+2AO3Jz42o2DLcJOHnFDgyfJlksEBqBo=
+	t=1713792802; cv=none; b=oEwYyM/+KTJdJfkBKcdorsKyKxf3A0rloXiHI+eEj8q4eyXXXzyUZittTuG4uk0TMzCPOlI5M+NUWDA/46pCHgQ+zJuLq6RrJTW0TUiwRja1TegoIwewA/NZ+iSeAe+fg58XGYfHDfiJkLmfTsf8VBe8Q0/UTKPkdXchNw1HHt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713792803; c=relaxed/simple;
-	bh=cUik/XF4WicAOpO3Eaf38j1OJaTwK4HQ23A3jNVArdw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KFlOsIxOumGb1zbZWn+gfBziGFbSBFbw/kjQJOPrrbdL8DnYz3Tmro263SE0C96ENpgqIr4EkczD6ihNbnX+aHiDkeey+TgIP/4wF6PrAGiQciqs3VITGo8pupp1h6ULDQGIEDe6oKXAfo96mBQFgfgRIacEdHtIah8dS9ShvMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RdTm2LVB; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56e1baf0380so5228428a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:33:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713792800; x=1714397600; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LwZc+ZBbmXu3G214pCU0lzqpNX0oYZU+cn+mUyu9Nmg=;
-        b=RdTm2LVBMZZJKIDWaJFf0v+osiyC+uAyzogYVJS0QnaIPIwy/7FvxHgfP8A9vII2fg
-         6PWGk294v5mcdz6u0gA9z7RgeVx/QiiMP5BGvOEyBFPC8b6qllGOEgsh09f0MVS+9XQr
-         bZVfbZEDMJPmAulBGKPRJhbdT1DYql1paPZ8onPiOabtkJiMqP5oYAc0Y2ATfvnwZY43
-         47+LeLpiwlMV3NsRp/dkmEdQqviH/JjikcE+Ti3/zGSS/A1Lue0V6xJai/7Qw7pi/Tvo
-         e4zhFN6P89JpGXXdX0L4oLbjbX3VpsReyLsAIjWrSumiygQ5yS5B1TNo5dpdjvH1MoGB
-         uw2Q==
+	s=arc-20240116; t=1713792802; c=relaxed/simple;
+	bh=4Ob8Zycf6XNs5PfydV0Z9JFRZRZj+ue557ZvcL3Ls8A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dOJ+IRYNLQ3hc0NY0lm3J6x8SVE7YJWpCF6QMj6Su5H0r9X18zJos6zUo6WQqHC2QUsEXZe8RiGrgdcde/Q653OT/E0XL7da6/AMKDw4J3opmAEa0xoOmS52SzyQQ9xPWba2xTXgMtINdjr5KgupRROgYwsS19YN/4ovQ9oVCVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bTHxds5d; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713792800;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=TsLvrrpgeWiaazNPsZyT6zMTgXSV8fNIsFxUi4A9ymE=;
+	b=bTHxds5dS/0yGHXTPigfzIiBNBZlIw6w61E8pK7SgzWq2nyrkE/y9qB324bru8E8XDgtz2
+	rpTusST3i1fi7g5NgJp7paH4ii4kVortH7Od4UK5uBzzN9e+n5t1j91uPesuvYmus0S1W8
+	ZbGZU5RHJp1Gz6gpY2qwtZJWAPk8qEM=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-163-jBQQlG_wMMqj3J5Qu783QA-1; Mon, 22 Apr 2024 09:33:18 -0400
+X-MC-Unique: jBQQlG_wMMqj3J5Qu783QA-1
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2ade3de68c1so275156a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 06:33:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713792800; x=1714397600;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1713792797; x=1714397597;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=LwZc+ZBbmXu3G214pCU0lzqpNX0oYZU+cn+mUyu9Nmg=;
-        b=PgdsTgjndzuylHiK43nvauNb/p4uudeDBz3lC1YL/bPp5Rls2DfHcD6Cy5KBIwkg6R
-         zdMPyy+Dx63x4rO2Tf8GEPVuiz/17pd45xB0TxoOWOp8pQNSkZc2uFbDXu0v00zypDED
-         zyPTLO5r5JhKuHQ/l1ac+0iClCRQoqMIR4yoyXnw5H7+oseUIWUgNPr9Cv+bEr2tYEXA
-         vlEzHcrOdYvZKhAD9SywkalAKmmgStljYUPKEPx7vOL1OjmwxBUSeCtD73vDKUOdrIpk
-         MtUSKB6Tkdgu1/pF+BZhtQRg9pQot8ys91pYXlyxaPV7NrugtlCa3dFs/SddzD0j4rEh
-         pL/A==
-X-Forwarded-Encrypted: i=1; AJvYcCX4THnILAM2Jm4ESvxACnrGMp0M1I3SbT5BpHpY3A7GX+tZATUAXH4edScrTipCSHVT7CTq8UsT3QUnmi9OmoZcw+RafQAa3LLTEEKx
-X-Gm-Message-State: AOJu0YyyOlIc4BbuUKoMutzKtkPBTwnaDsgg6zQDPqJMtbvZE8fUkeyP
-	AyjRJxqrLRHU85ZjOp67v75Ai3ex8qYGRkfvyqfgdfQzOoTm4/faRmDrfPrW9o5ok2JG71aGlD0
-	OVwUCJ85Y/YuF1/JsbwDovUlolKcCV9dys5VsKA==
-X-Google-Smtp-Source: AGHT+IFfa5I8uWCyTOd8o7O7qiE3AgHBvfTCTUQ+++NWs2D/Vx2u1bA4fLgcCTpeCddH7HAbZdY1qTSY4Fs49oNO/qA=
-X-Received: by 2002:a17:906:5857:b0:a52:2772:b9cb with SMTP id
- h23-20020a170906585700b00a522772b9cbmr6375318ejs.24.1713792799626; Mon, 22
- Apr 2024 06:33:19 -0700 (PDT)
+        bh=TsLvrrpgeWiaazNPsZyT6zMTgXSV8fNIsFxUi4A9ymE=;
+        b=BmHL6dVc3oa1aW3rqcarcgPDyn9CJ2UMbF4dE95VCWS30HqUOSn/H+PD+XLbMAMDqf
+         y76x8/c/nhMe3U7TgnrF78Ioi53bJPHxkT4VcXdDf3pc09EA0zeObV3eQ9vwHyFAZ25D
+         YiOL9QtBurly2wf3+0K2RBuyXtF9Hz2ZhluhWPlRg7T93vbcm+A++eLKJxcdjp0L1xVz
+         Nwsn8zk4iDkIoFvD/QA8gUlwl3MacH88zzbkpSE5SGBWRlx2OShstfgRwl+2DoCJn1ji
+         ej/4lrO999qVR9fYM96RugTtprfsQc+mSbZlOl/g2n/yI7dcPv9SOtHrSPY5GDAOxxfy
+         s8xw==
+X-Gm-Message-State: AOJu0Yxy9bz6nJV1EQG8UdU5M9hc2D1enTYhn2ZlbVLJrCqRGIegpSFk
+	vgG8ERIAu0Gg76eXHD63xK6waXKXZYTZYs/+xB+gTsV6gIaKkNs4dsw5mAvaM9oRDaBkkqF5hNR
+	7167DMRLMsi38FrFawRpYYL9jyYIlu7xTPC2+/gNuaeaWeTc0oKrjzUYVzEzC1bBijC+ZVMIs/P
+	CKXbiqCPjzvCpkoaL5Hy1q6VAgFgVPagg7BrKm0jvahFk=
+X-Received: by 2002:a17:902:7b87:b0:1dd:e128:16b1 with SMTP id w7-20020a1709027b8700b001dde12816b1mr11644776pll.6.1713792797391;
+        Mon, 22 Apr 2024 06:33:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFs+daoEIT53Szg5CEW494B5kmIIY0NotIcW6GQlEiEV8dnhii0L57FjTPcisCk2Mis3NrHgw==
+X-Received: by 2002:a17:902:7b87:b0:1dd:e128:16b1 with SMTP id w7-20020a1709027b8700b001dde12816b1mr11644713pll.6.1713792796619;
+        Mon, 22 Apr 2024 06:33:16 -0700 (PDT)
+Received: from x1n.redhat.com (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id w17-20020a1709029a9100b001e2a4663179sm8101993plp.258.2024.04.22.06.33.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 06:33:15 -0700 (PDT)
+From: Peter Xu <peterx@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: peterx@redhat.com,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	syzbot+d8426b591c36b21c750e@syzkaller.appspotmail.com
+Subject: [PATCH] mm/userfaultfd: Reset ptes when close() for wr-protected ones
+Date: Mon, 22 Apr 2024 09:33:11 -0400
+Message-ID: <20240422133311.2987675-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422112711.362779-1-mikko.rapeli@linaro.org>
- <6e751959b9056884c1b9d3ba23e303d1737d8763.camel@HansenPartnership.com> <ZiZhSfgeAdrbnaVL@nuoska>
-In-Reply-To: <ZiZhSfgeAdrbnaVL@nuoska>
-From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date: Mon, 22 Apr 2024 16:32:43 +0300
-Message-ID: <CAC_iWjKA-xRH=3FK+=woXsB8AW4+_mVhJhUQnL8iFKxGzOwKiA@mail.gmail.com>
-Subject: Re: [PATCH] efi: expose TPM event log to userspace via sysfs
-To: Mikko Rapeli <mikko.rapeli@linaro.org>
-Cc: James Bottomley <James.Bottomley@hansenpartnership.com>, Ard Biesheuvel <ardb@kernel.org>, 
-	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Lennart Poettering <lennart@poettering.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi all,
+Userfaultfd unregister includes a step to remove wr-protect bits from all
+the relevant pgtable entries, but that only covered an explicit
+UFFDIO_UNREGISTER ioctl, not a close() on the userfaultfd itself.  Cover
+that too.
 
-On Mon, 22 Apr 2024 at 16:08, Mikko Rapeli <mikko.rapeli@linaro.org> wrote:
->
-> Hi,
->
-> On Mon, Apr 22, 2024 at 08:42:41AM -0400, James Bottomley wrote:
-> > On Mon, 2024-04-22 at 14:27 +0300, Mikko Rapeli wrote:
-> > > Userspace needs to know if TPM kernel drivers need to be loaded
-> > > and related services started early in the boot if TPM device
-> > > is used and available.
-> >
-> > This says what but not why.  We already have module autoloading that
-> > works correctly for TPM devices, so why is this needed?
-> >
-> > We do have a chicken and egg problem with IMA in that the TPM driver
-> > needs to be present *before* any filesystem, including the one the TPM
-> > modules would be on, is mounted so executions can be measured into IMA
-> > (meaning that if you use IMA the TPM drivers must be built in) but this
-> > sounds to be something different. However, because of the IMA problem,
-> > most distributions don't end up compiling TPM drivers as modules
-> > anyway.
-> >
-> > Is what you want simply that tpm modules be loaded earlier?
->
-> Yes, ealier is the problem. In my specific testing case the machine is
-> qemu arm64 with swtpm with EFI firmware for secure boot and TPM support.
->
-> Firmware uses TPM and does measurements and thus TPM event log is available
-> on this machine and a bunch of other arm64 boards. Visible in early boot
-> dmesg as TPMEventLog lines like:
->
-> [    0.000000] efi: ESRT=0xf0ea5040 TPMFinalLog=0xf0ea9040 RTPROP=0xf0ea7040 SMBIOS=0xf0ea3000 TPMEventLog=0xeb3b3040 INITRD=0xeb3b2040 RNG=0xe5c0f040 MEMRESERVE=0xe5c0e040
->
-> Different boards use different TPM HW and drivers so compiling all these in is
-> possible but a bit ugly. systemd recently gained support for a specific
-> tpm2.target which makes TPM support modular and also works with kernel modules for some
-> TPM use cases but not rootfs encryption.
->
-> In my test case we have a kernel+initramfs uki binary which is loaded by EFI firmware
-> as a secure boot binary. TPM support on various boards is visible in devicetree but
-> not as ACPI table entries. systemd currently detect TPM2 support either via ACPI table
-> /sys/firmware/acpi/tables/TPM2 or TPM entry or via firmware measurement via
-> /sys/kernel/security/tpm0/binary_bios_measurements .
+Link: https://lore.kernel.org/all/000000000000ca4df20616a0fe16@google.com/
+Analyzed-by: David Hildenbrand <david@redhat.com>
+Reported-by: syzbot+d8426b591c36b21c750e@syzkaller.appspotmail.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ fs/userfaultfd.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-One corner case worth noting here is that scanning the device tree
-won't always work for non-ACPI systems... The reason is that a
-firmware TPM (running in OP-TEE) might or might not have a DT entry,
-since OP-TEE can discover the device dynamically and doesn't always
-rely on a DT entry.
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 3e6ddda6f159..d2c3879745e5 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -898,6 +898,10 @@ static int userfaultfd_release(struct inode *inode, struct file *file)
+ 			prev = vma;
+ 			continue;
+ 		}
++		/* Reset ptes for the whole vma range if wr-protected */
++		if (userfaultfd_wp(vma))
++			uffd_wp_range(vma, vma->vm_start,
++				      vma->vm_end - vma->vm_start, false);
+ 		new_flags = vma->vm_flags & ~__VM_UFFD_FLAGS;
+ 		vma = vma_modify_flags_uffd(&vmi, prev, vma, vma->vm_start,
+ 					    vma->vm_end, new_flags,
+-- 
+2.44.0
 
-I don't particularly love the idea that an EventLog existence
-automatically means a TPM will be there, but it seems that systemd
-already relies on that and it does solve the problem we have.
-
-/Ilias
-
-
-> If either one of these exist,
-> then systemd evaluates ConditionSecurity=measured-uki in services correctly and
-> rolls out TPM services, cryptsetup etc. But the ACPI table entry for TPM isn't mandatory
-> and many boards don't support it. Then latter requies TPM kernel driver to be loaded
-> before systemd evaluates ConditionSecurity=measured-uki the first time, or basically
-> the driver needs to be compiled into the kernel.
->
-> In my case the uki initramfs is also based on systemd and does things like
-> creating a TPM encrypted rootfs and this should work on a number of boards
-> automatically, and none of the boards have ACPI table entries for TPM2, but
-> all of them with real, swtpm or fTPM based TPM devices provide the TPM Event Log
-> to the kernel. Thus systemd could use this as an indicator for TPM support in addition
-> to the server grade HW standard ACPI table entry. And once this is in place
-> TPM drivers and module loading work and initramfs can create a TPM backed rootfs
-> on first boot. The catch is to install needed kernel modules to the initramfs but
-> after that, all things work nicely.
->
-> Hope this clarifies this change a bit more.
->
-> Cheers,
->
-> -Mikko
 
