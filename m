@@ -1,187 +1,162 @@
-Return-Path: <linux-kernel+bounces-153691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A0DA8AD1BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D578AD1BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 18:18:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D6FC1C20CC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:18:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 031111C20A5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A73153823;
-	Mon, 22 Apr 2024 16:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8AB153810;
+	Mon, 22 Apr 2024 16:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T2WK9qIZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kfiPqUqJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B16A153805;
-	Mon, 22 Apr 2024 16:17:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014A2153594;
+	Mon, 22 Apr 2024 16:18:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713802650; cv=none; b=gfX2zeA7HR9tI5MufyabFApEW9Asu6vpOGNqPgsHemCZ0j4kzgMez9YS5rRoNhngnhJxxaLTt3oLpFHJyQBnD+BrAitq62xSnmtBVaqQ9u5XDnPu9igAtdV6s5LR7t5kryqeSPxgk+VAQQJs/ooYs4eXsHzBVlXI+pSR0BXqnd8=
+	t=1713802724; cv=none; b=XO5bLakNkrAxPR/28EWh6OcoZa7yrTgGb1UWZy+TW/oEoUs9BzQbq87mLe4O5mRF9tAMbqrjREEtfwvGaSV0sZyNCHBJ52+rlsbXlQ8ngZljVjJat6skme72WJUOTI4m4JURQ0dFEz2hSZhHZ+Iez2lyD7NOKCeSdSLETqldpa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713802650; c=relaxed/simple;
-	bh=CHj5J2SiKW93Q/oMEtlJw3ktWz2ajC1KqAP798B8a1w=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=I9ZsN54PcuPXZVNyjy5+7XNUNEmHxEF1eOlcvT0loVM4SXd74NiHsCcVwCgZe/U8efoubzxns2dLi0XSZqCMPHgdBjLiVxZfgEygGeVcdPgwphPkq9TBrbKFN1jj8IT8xiwUN/htIjUoDulKY+4q0LBdEK93WWG0gl3mc4BSCQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T2WK9qIZ; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713802649; x=1745338649;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=CHj5J2SiKW93Q/oMEtlJw3ktWz2ajC1KqAP798B8a1w=;
-  b=T2WK9qIZ4lxUPkCGeU9xHKbd17/MzD+VX6F4c+MZj5wb4urWuRgWpLYu
-   N847rAtDh2U3Rdl+dRU+Ukhjv0iD+bcPvoaO0tFiVgfTKsBQ7Y2wSexp9
-   4qEMSxrvlH10NogSRLujOHB1jhjs00+0osnG3h7rE2sqcuOeWSQzjJVDg
-   3tNPcxC3ylp5TP/o/M8AVu7aDFqaacoZTy/99wMPImSv/QjiD0WHnWug/
-   ArbjiZzHCJR7G34LMbBo8Plr416PCIIevqCqJx3Vf6ZdeAoseSMd6EXO0
-   0zZdV2igtnrg2q9/atRues5+ERCfmvlwKQ7BFMO/qlG20tsaN3NYIMqkw
-   Q==;
-X-CSE-ConnectionGUID: kvKBkooqRTaI0ypV09lAMg==
-X-CSE-MsgGUID: rqtCjlEzTeGImVIthpdarw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="31841215"
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="31841215"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 09:17:27 -0700
-X-CSE-ConnectionGUID: 33tcsd0TR5eTtVLq8D5tJg==
-X-CSE-MsgGUID: P8l2lfn/QteslRZxuP55ug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="24582524"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.125.85.20])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 22 Apr 2024 09:17:24 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "Mehta, Sohil" <sohil.mehta@intel.com>, "mingo@redhat.com"
- <mingo@redhat.com>, "jarkko@kernel.org" <jarkko@kernel.org>, "x86@kernel.org"
- <x86@kernel.org>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
- <hpa@zytor.com>, "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
- "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, "mkoutny@suse.com"
- <mkoutny@suse.com>, "tglx@linutronix.de" <tglx@linutronix.de>, "tj@kernel.org"
- <tj@kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v12 09/14] x86/sgx: Implement async reclamation for cgroup
-References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-10-haitao.huang@linux.intel.com>
- <640866c5-9fe0-4f7b-a459-7a685dbe4092@intel.com>
- <op.2mhn6ti6wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4be309656cb4e03793703098bbebab3dee93077e.camel@intel.com>
- <op.2mh5p7fawjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <e8d076fb097774f1f0fe3365883e6cf5a823fc4f.camel@intel.com>
-Date: Mon, 22 Apr 2024 11:17:21 -0500
+	s=arc-20240116; t=1713802724; c=relaxed/simple;
+	bh=QR/kzCbyaOuRWiYV19PwDbm3SqBRCcpUe7hr5QMI4Do=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=naQeZ/cdsMzRBOxPOdARr4XHctN9aD0naKujhT/t93E/E1ky9CG9JZDO4fVna5Js8AHgfR05XvixjYylBeDuK7W/z/RDV/W92P97Rn8XQBG+w4ff7CPSFethuB3UWeWNnnEkvPi9+kR7G/iYdvoFxWUzuZQOid3mKTof/guUa70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kfiPqUqJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9156EC113CC;
+	Mon, 22 Apr 2024 16:18:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713802723;
+	bh=QR/kzCbyaOuRWiYV19PwDbm3SqBRCcpUe7hr5QMI4Do=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=kfiPqUqJScrWwgk7lkUiivDNZIGJTNbNCOj/OkwFir1rjWyoXaizxSOzuvpziVcX9
+	 SNCPqN8pZseb73IbPoFap1GgpLAFILkdQQOhkyH9g7gK2ZBVyJAkuiVdoQfs8rmMLd
+	 nJH787eE6Tn9Ini1RY09TFnwC8vqu4OBzO3j8NldoEAkt1VOThuRLaVL4JZkmnlpk9
+	 GhEr1kjf2zEkzQndLJqpUR6REoc5sVjHvlZzMm5m8vc6rk3hMLbxfU6gqeZ/j59/MB
+	 cxFgdIN+XnEdR2XjVDlxp2Ab7//BObVI5UGwUFS6DctRnXEXktqid4Bb46CRqc+LqL
+	 W0m0KJ7Jak42A==
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5acf5723325so1082653eaf.0;
+        Mon, 22 Apr 2024 09:18:43 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV+J4Ieke1yBKlEq2Su+Rs9Ao+z5Y6gBWmsrS1BmLDGehrRsM0miaOsgyghJF5QOg5+OouLhjPg6erVck/jVwV0TIh6JBXAa9BK+xIrQFWnEeAutMbIsQfPjOxhLdVbfLNzmIWX/PvkKpj/Ott1gNQSdlSBEA5OCDUfRxOr1toInc4HTS8=
+X-Gm-Message-State: AOJu0YzteF0jy9N3gd2GrCOGUzvmWJApV2VHzbRGrjeQbcy3fyR1qHbd
+	h0TolJNVMVS/0/xyXOLt+FebeJFLwbsddxG5+IOEJwTsrhoeGT5JNWzQ/o6KXfml7W2YF6QBbva
+	jJlByIqbuNb88NHu3p1KlGAfpltw=
+X-Google-Smtp-Source: AGHT+IFESPYVINFnF2ss/dRaMfKVcLtz/mjOYNrxgkasSqC/INJSn+XkVq/aXneWpbNTIE2SYgqkZ572ytK+cUbbuJE=
+X-Received: by 2002:a4a:de19:0:b0:5a7:db56:915c with SMTP id
+ y25-20020a4ade19000000b005a7db56915cmr11836041oot.1.1713802722990; Mon, 22
+ Apr 2024 09:18:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2mm0u7uswjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <e8d076fb097774f1f0fe3365883e6cf5a823fc4f.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+References: <cover.1713523251.git.robin.murphy@arm.com> <3ae004dfc581fa12fc9432c5008f1225882d5464.1713523251.git.robin.murphy@arm.com>
+In-Reply-To: <3ae004dfc581fa12fc9432c5008f1225882d5464.1713523251.git.robin.murphy@arm.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 22 Apr 2024 18:18:27 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0iMY1eKYgcH20Uxd1nW0yZ2xt980ob0Rcb_4n4OONWSZA@mail.gmail.com>
+Message-ID: <CAJZ5v0iMY1eKYgcH20Uxd1nW0yZ2xt980ob0Rcb_4n4OONWSZA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] ACPI: Retire acpi_iommu_fwspec_ops()
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>, linux-acpi@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, devicetree@vger.kernel.org, 
+	Rob Herring <robh@kernel.org>, Saravana Kannan <saravanak@google.com>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, Hanjun Guo <guohanjun@huawei.com>, 
+	Sudeep Holla <sudeep.holla@arm.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 21 Apr 2024 19:22:27 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+On Fri, Apr 19, 2024 at 6:56=E2=80=AFPM Robin Murphy <robin.murphy@arm.com>=
+ wrote:
+>
+> Now that iommu_fwspec_init() can signal for probe deferral directly,
+> acpi_iommu_fwspec_ops() is unneeded and can be cleaned up.
+>
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 
-> On Fri, 2024-04-19 at 20:14 -0500, Haitao Huang wrote:
->> > > I think we can add support for "sgx_cgroup=disabled" in future if  
->> indeed
->> > > needed. But just for init failure, no?
->> > >
->> >
->> > It's not about the commandline, which we can add in the future when
->> > needed.  It's about we need to have a way to handle SGX cgroup being
->> > disabled at boot time nicely, because we already have a case where we 
->> > need
->> > to do so.
->> >
->> > Your approach looks half-way to me, and is not future extendible.  If  
->> we
->> > choose to do it, do it right -- that is, we need a way to disable it
->> > completely in both kernel and userspace so that userspace won't be  
->> able> to
->> > see it.
->>
->> That would need more changes in misc cgroup implementation to support 
->> sgx-disable. Right now misc does not have separate files for different 
->> resource types. So we can only block echo "sgx_epc..." to those  
->> interfacefiles, can't really make files not visible.
->
-> "won't be able to see" I mean "only for SGX EPC resource", but not the
-> control files for the entire MISC cgroup.
->
-> I replied at the beginning of the previous reply:
->
-> "
-> Given SGX EPC is just one type of MISC cgroup resources, we cannot just
-> disable MISC cgroup as a whole.
-> "
->
-Sorry I missed this point. below.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> You just need to set the SGX EPC "capacity" to 0 to disable SGX EPC.  See
-> the comment of @misc_res_capacity:
+> ---
+>  drivers/acpi/scan.c | 30 ++++++------------------------
+>  1 file changed, 6 insertions(+), 24 deletions(-)
 >
->  * Miscellaneous resources capacity for the entire machine. 0 capacity
->  * means resource is not initialized or not present in the host.
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index 9d36fc3dc5ac..d6b64dcbf9a6 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -1588,26 +1588,14 @@ int acpi_iommu_fwspec_init(struct device *dev, u3=
+2 id,
+>         return ret;
+>  }
 >
-
-IIUC I don't think the situation we have is either of those cases. For our  
-case, resource is inited and present on the host but we have allocation  
-error for sgx cgroup infra.
-
-> And "blocking echo sgx_epc ... to those control files" is already
-> sufficient for the purpose of not exposing SGX EPC to userspace, correct?
+> -static inline const struct iommu_ops *acpi_iommu_fwspec_ops(struct devic=
+e *dev)
+> -{
+> -       struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
+> -
+> -       return fwspec ? fwspec->ops : NULL;
+> -}
+> -
+>  static int acpi_iommu_configure_id(struct device *dev, const u32 *id_in)
+>  {
+>         int err;
+> -       const struct iommu_ops *ops;
 >
-> E.g., if SGX cgroup is enabled, you can see below when you read "max":
+>         /* Serialise to make dev->iommu stable under our potential fwspec=
+ */
+>         mutex_lock(&iommu_probe_device_lock);
+> -       /*
+> -        * If we already translated the fwspec there is nothing left to d=
+o,
+> -        * return the iommu_ops.
+> -        */
+> -       ops =3D acpi_iommu_fwspec_ops(dev);
+> -       if (ops) {
+> +       /* If we already translated the fwspec there is nothing left to d=
+o */
+> +       if (dev_iommu_fwspec_get(dev)) {
+>                 mutex_unlock(&iommu_probe_device_lock);
+>                 return 0;
+>         }
+> @@ -1624,16 +1612,7 @@ static int acpi_iommu_configure_id(struct device *=
+dev, const u32 *id_in)
+>         if (!err && dev->bus)
+>                 err =3D iommu_probe_device(dev);
 >
->  # cat /sys/fs/cgroup/my_group/misc.max
->  # <resource1> <max1>
->    sgx_epc ...
->    ...
+> -       /* Ignore all other errors apart from EPROBE_DEFER */
+> -       if (err =3D=3D -EPROBE_DEFER) {
+> -               return err;
+> -       } else if (err) {
+> -               dev_dbg(dev, "Adding to IOMMU failed: %d\n", err);
+> -               return -ENODEV;
+> -       }
+> -       if (!acpi_iommu_fwspec_ops(dev))
+> -               return -ENODEV;
+> -       return 0;
+> +       return err;
+>  }
 >
-> Otherwise you won't be able to see "sgx_epc":
+>  #else /* !CONFIG_IOMMU_API */
+> @@ -1672,6 +1651,9 @@ int acpi_dma_configure_id(struct device *dev, enum =
+dev_dma_attr attr,
+>         ret =3D acpi_iommu_configure_id(dev, input_id);
+>         if (ret =3D=3D -EPROBE_DEFER)
+>                 return -EPROBE_DEFER;
+> +       /* Ignore all other errors apart from EPROBE_DEFER */
+> +       if (ret)
+> +               dev_dbg(dev, "Adding to IOMMU failed: %d\n", ret);
 >
->  # cat /sys/fs/cgroup/my_group/misc.max
->  # <resource1> <max1>
->    ...
+>         arch_setup_dma_ops(dev, attr =3D=3D DEV_DMA_COHERENT);
 >
-> And when you try to write the "max" for "sgx_epc", you will hit error:
+> --
+> 2.39.2.101.g768bb238c484.dirty
 >
->  # echo "sgx_epc 100" > /sys/fs/cgroup/my_group/misc.max
->  # ... echo: write error: Invalid argument
->
-> The above applies to all the control files.  To me this is pretty much
-> means "SGX EPC is disabled" or "not supported" for userspace.
->
-You are right, capacity == 0 does block echoing max and users see an error  
-if they do that. But 1) doubt you literately wanted "SGX EPC is disabled"  
-and make it unsupported in this case, 2) even if we accept this is "sgx  
-cgroup disabled" I don't see how it is much better user experience than  
-current solution or really helps user better.
-
-Also to implement this approach, as you mentioned, we need workaround the  
-fact that misc_try_charge() fails when capacity set to zero, and adding  
-code to return root always? So it seems like more workaround code to just  
-make it work for a failing case no one really care much and end result is  
-not really much better IMHO.
-
-Thanks
-Haitao
- 
 
