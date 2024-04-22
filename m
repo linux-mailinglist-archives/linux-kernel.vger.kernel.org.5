@@ -1,208 +1,121 @@
-Return-Path: <linux-kernel+bounces-152958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A5B48AC69F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:19:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24C3A8AC6C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 10:21:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC085283537
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:19:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3829B2145E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 08:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117BB50279;
-	Mon, 22 Apr 2024 08:18:32 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4D74F898;
-	Mon, 22 Apr 2024 08:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D28351C33;
+	Mon, 22 Apr 2024 08:19:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K763iNHf"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A29A2502B6
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 08:19:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713773911; cv=none; b=aSsy5iJbcTfFiC5+DiYuIBAd1s5C7JFIHft6yAU9I0S2cBKV9dqh6ILYfz8962Z0xqPjEqDbAGh8m9pXYEIJ5jwe2ScRASm4dcWn6rISnH3TnkN6NkheGoBIbTgrL0Lv5kGtz3eO5Or9K4Q1RpG0O6b9Mab7gwLmQISQINHsB1w=
+	t=1713773948; cv=none; b=rU3ptajIAcMKx8r2XMKssTd1SyUnFANpd2OfXHaN/fR7U40eZvgJd1iXvvfkWxK1YD5ksuJFV6r0OYUguMNnCoCDujJSk1eOS/ErAfTMwKSqpMa3BZOfLc1HYmB5KlOJJXCQdpqOve+cHi6czxj1sWX7Z+PY9zlNWn/RVfK1l+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713773911; c=relaxed/simple;
-	bh=w4Dmkmp0vyNoT07Meq4KGtWiFSewMXF67zBpictiPHs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Wu/GNdXceG7FH/OaDb+SnVJ76bmf8/HTT9c6rj40qfpAhVObKzYEWFeX9Y/kEKHIBFPIfaPyT4NIz6YEoliL3Os84IY50lFgqAjsWaWgsNoEZalqAmyhim9N8hLlE/QbkPOCMEB+sDeq0bRmZMpNwt4g3A3DmZ3pO5/ia9V/9Hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43154339;
-	Mon, 22 Apr 2024 01:18:56 -0700 (PDT)
-Received: from [192.168.1.216] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CAC633F7BD;
-	Mon, 22 Apr 2024 01:18:24 -0700 (PDT)
-Message-ID: <02191345-7048-4839-aecf-0e34479d49ef@arm.com>
-Date: Mon, 22 Apr 2024 09:18:24 +0100
+	s=arc-20240116; t=1713773948; c=relaxed/simple;
+	bh=wG43oGVU6IR5Zc9pbzHI1xScR+FwszCEHsFm8LAKKlc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=VHMnG+8oriXYyyXvegRkkvCVfvGLvz9ayTsw81NNPbxpACKpNwLRGhMbtfoNJXWhJUv15Uy+nPk1FqQkTx4u60dKvp6We7wuuP6WyUax9KSWGYhIVEHrrglqQBba4ncpqimmxWz9Q2mhx6FJ3jX/7YkGAakihG3eJMqhs6GBOGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K763iNHf; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-418e4cd2196so30212595e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 01:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713773945; x=1714378745; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lt2BkwQqXLpwxVqBhAGtLtKzSow+0YulByb/B8x8jm4=;
+        b=K763iNHfF4z3klCFzQ+J0fHcZIMhy7k1fQ70yRu4UV6+wgMcNZlG8azzpiVDEcz+VR
+         9c7T5q6QMWo4+O08pNEHKQJ1kGBQ0zIS9DGFLDZCNljWDbldrYsPlBeW3YBjY05Bw6/+
+         sQHsQqjAvC3j1HHTzHdlBBOYwFfgM/VDqaLsKlKi/Rqceexr+DGskbbJ3VKkaTkJ70lT
+         VPPRSIXai1a2dVxrkOumw1hMxQHuJFepJdCGdXdKVktB5Cc1pNRWWmf3hhaJ8oGzEgaX
+         wXvfPzhwrFQ1N+ee+JayAMIBLIF2kQxqHEGlGq7ld5tXMsq/2DlwhvCiQu/Lw+q6nU3l
+         vZww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713773945; x=1714378745;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lt2BkwQqXLpwxVqBhAGtLtKzSow+0YulByb/B8x8jm4=;
+        b=VFDvPkhJRlCMGcrDfIaFkk0afRVky69CtyHAjje1jXa1gO3JTgaxZaauAMXHIkd6oY
+         OZz+y+xrG9yhrVqLuaMlwqh7DNCtE6fsYP1V2dUUBqJcjgmZnQKgZ+Ywyqoi7f6t9lnu
+         QBelkD3y/rrGdiM5wbyZlrzfYC5WetzOK3rpso09yIhlNddUrSsJBFMfbMA5pYrt2hmD
+         sqlF/vv54ti52JX0sP6X+F6lJ959Y1BvMA9PaoV4drzTdWAlyQqHtajSJwYlTkSz31rm
+         uimnFJVbSC51vUzhdUOFCbP0WHehJlSBt1T21Xf9drtWYAcb6o2xejKGL1KV6gX3B8kD
+         08tg==
+X-Forwarded-Encrypted: i=1; AJvYcCVD47SYxOt3e2NCFwlw0I3I9cAzl6U1TsfyZWKm7AGcnWQYDW7/TYD7/5nj5RHn6Hc/aQZzGKsPFG/a/K1l262zyItJHykSaU4yp3JV
+X-Gm-Message-State: AOJu0YzrD2AFl7V/S64gw+ebifjs0OYgQyMny9iizBaIJSxIjh+bwHXj
+	oSt5zIiS7rE70qyTGa5Kt2xm2QebUVzcLVIY85+MSoDWqrLJlj/UyQ3xWt1t99Q=
+X-Google-Smtp-Source: AGHT+IFXlMHZ14I8rBJcDUvo536bca1EkYW6D1umCUji+efGTdjaWTO0Ml/fnVCCeSCCFWgwLl8OkQ==
+X-Received: by 2002:a05:600c:510b:b0:418:f616:f087 with SMTP id o11-20020a05600c510b00b00418f616f087mr5098734wms.29.1713773944733;
+        Mon, 22 Apr 2024 01:19:04 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id j1-20020a05600c1c0100b00419ea5fb0cbsm7894927wms.42.2024.04.22.01.19.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 01:19:04 -0700 (PDT)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+To: Jessica Zhang <quic_jesszhan@quicinc.com>, 
+ Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ Konrad Dybcio <konradybcio@kernel.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ David Wronek <david@mainlining.org>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
+ phone-devel@vger.kernel.org
+In-Reply-To: <20240417-raydium-rm69380-driver-v4-0-e9c2337d0049@mainlining.org>
+References: <20240417-raydium-rm69380-driver-v4-0-e9c2337d0049@mainlining.org>
+Subject: Re: [PATCH v4 0/2] Add driver for Raydium RM69380-based DSI panels
+Message-Id: <171377394364.3456385.10710774432037845943.b4-ty@linaro.org>
+Date: Mon, 22 Apr 2024 10:19:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 5/7] coresight: tmc: Add support for reading crash data
-To: Linu Cherian <lcherian@marvell.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Sunil Kovvuri Goutham <sgoutham@marvell.com>,
- George Cherian <gcherian@marvell.com>,
- Anil Kumar Reddy H <areddy3@marvell.com>, Tanmay Jagdale
- <tanmay@marvell.com>, "mike.leach@linaro.org" <mike.leach@linaro.org>,
- "leo.yan@linaro.org" <leo.yan@linaro.org>
-References: <20240307033625.325058-1-lcherian@marvell.com>
- <20240307033625.325058-6-lcherian@marvell.com>
- <d707430f-00ee-4427-a9e4-6e42bc5b6aa9@arm.com>
- <PH0PR18MB5002D42E980EDF6317051B77CE092@PH0PR18MB5002.namprd18.prod.outlook.com>
- <a7b8d15f-5bcf-4774-a5b2-eb95d6174c43@arm.com>
- <PH0PR18MB5002CFB5DD77312CE0337896CE132@PH0PR18MB5002.namprd18.prod.outlook.com>
-Content-Language: en-US
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <PH0PR18MB5002CFB5DD77312CE0337896CE132@PH0PR18MB5002.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
+Hi,
 
-
-On 21/04/2024 03:49, Linu Cherian wrote:
-> Hi James,
+On Wed, 17 Apr 2024 18:29:32 +0200, David Wronek wrote:
+> This patch adds support the 2560x1600@90Hz dual DSI command mode panel by
+> EDO in combination with a Raydium RM69380 driver IC.
 > 
->> -----Original Message-----
->> From: James Clark <james.clark@arm.com>
->> Sent: Monday, April 15, 2024 2:59 PM
->> To: Linu Cherian <lcherian@marvell.com>; Suzuki K Poulose
->> <suzuki.poulose@arm.com>
->> Cc: linux-arm-kernel@lists.infradead.org; coresight@lists.linaro.org; linux-
->> kernel@vger.kernel.org; robh+dt@kernel.org;
->> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
->> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
->> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>; Anil
->> Kumar Reddy H <areddy3@marvell.com>; Tanmay Jagdale
->> <tanmay@marvell.com>; mike.leach@linaro.org; leo.yan@linaro.org
->> Subject: Re: [EXTERNAL] Re: [PATCH v7 5/7] coresight: tmc: Add support for
->> reading crash data
->>
->>
->>
->> On 15/04/2024 05:01, Linu Cherian wrote:
->>> Hi James,
->>>
->>>> -----Original Message-----
->>>> From: James Clark <james.clark@arm.com>
->>>> Sent: Friday, April 12, 2024 3:36 PM
->>>> To: Linu Cherian <lcherian@marvell.com>; Suzuki K Poulose
->>>> <suzuki.poulose@arm.com>
->>>> Cc: linux-arm-kernel@lists.infradead.org; coresight@lists.linaro.org;
->>>> linux- kernel@vger.kernel.org; robh+dt@kernel.org;
->>>> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
->>>> devicetree@vger.kernel.org; Sunil Kovvuri Goutham
->>>> <sgoutham@marvell.com>; George Cherian <gcherian@marvell.com>;
->> Anil
->>>> Kumar Reddy H <areddy3@marvell.com>; Tanmay Jagdale
->>>> <tanmay@marvell.com>; mike.leach@linaro.org; leo.yan@linaro.org
->>>> Subject: [EXTERNAL] Re: [PATCH v7 5/7] coresight: tmc: Add support
->>>> for reading crash data
->>>>
->>>> Prioritize security for external emails: Confirm sender and content
->>>> safety before clicking links or opening attachments
->>>>
->>>> ---------------------------------------------------------------------
->>>> -
->>>>
->>>>
->>>> On 07/03/2024 03:36, Linu Cherian wrote:
->>>>> * Introduce a new mode CS_MODE_READ_CRASHDATA for reading trace
->>>>>   captured in previous crash/watchdog reset.
->>>>>
->>>>> * Add special device files for reading ETR/ETF crash data.
->>>>>
->>>>> * User can read the crash data as below
->>>>>
->>>>>   For example, for reading crash data from tmc_etf sink
->>>>>
->>>>>   #dd if=/dev/crash_tmc_etfXX of=~/cstrace.bin
->>>>>
->>>>> Signed-off-by: Anil Kumar Reddy <areddy3@marvell.com>
->>>>> Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
->>>>> Signed-off-by: Linu Cherian <lcherian@marvell.com>
->>>>> ---
->>>>> Changelog from v6:
->>>>> * Removed read_prevboot flag in sysfs
->>>>> * Added special device files for reading crashdata
->>>>> * Renamed CS mode READ_PREVBOOT to READ_CRASHDATA
->>>>> * Setting the READ_CRASHDATA mode is done as part of file open.
->>>>>
->>>>
->>>> [...]
->>>>
->>>>> @@ -619,6 +740,19 @@ static int tmc_probe(struct amba_device *adev,
->>>> const struct amba_id *id)
->>>>>  		coresight_unregister(drvdata->csdev);
->>>>>  	else
->>>>>  		pm_runtime_put(&adev->dev);
->>>>> +
->>>>> +	if (!is_tmc_reserved_region_valid(dev))
->>>>> +		goto out;
->>>>> +
->>>>> +	drvdata->crashdev.name =
->>>>> +		devm_kasprintf(dev, GFP_KERNEL, "%s_%s", "crash",
->>>> desc.name);
->>>>> +	drvdata->crashdev.minor = MISC_DYNAMIC_MINOR;
->>>>> +	drvdata->crashdev.fops = &tmc_crashdata_fops;
->>>>> +	ret = misc_register(&drvdata->crashdev);
->>>>> +	if (ret)
->>>>> +		pr_err("%s: Failed to setup dev interface for crashdata\n",
->>>>> +		       desc.name);
->>>>> +
->>>>
->>>> Is this all optional after the is_tmc_reserved_region_valid()?
->>>> Skipping to out seems to be more like an error condition, but in this
->>>> case it's not? Having it like this makes it more difficult to add
->>>> extra steps to the probe function. You could move it to a function and flip
->> the condition which would be clearer:
->>>>
->>>
->>> Ack.
->>>
->>>>    if (is_tmc_reserved_region_valid(dev))
->>>>       register_crash_dev_interface(drvdata);
->>>>
+> This driver IC can be found in the following devices:
+>  * Lenovo Xiaoxin Pad Pro 2021 (TB-J716F) with EDO panel
+>  * Lenovo Tab P11 Pro (TB-J706F) with EDO panel
+>  * Robo & Kala 2-in-1 Laptop with Sharp panel
 > 
-> Did you meant changing the condition of "is_tmc_reserved_region_valid"  by "flip the condition".
-> If yes, that’s not required IMHO, since the reserved region is still valid.
-> 
+> [...]
 
-By flip I mean remove the !. You had this:
+Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-next)
 
-  	if (!is_tmc_reserved_region_valid(dev))
-		goto out;
+[1/2] dt-bindings: display: panel: Add Raydium RM69380
+      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/4f888782d30276b08a32fa3d9b5c13b7dc123e28
+[2/2] drm/panel: Add driver for EDO RM69380 OLED panel
+      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/9a314ea512b7db9d38107ea0284b56f805b8fc9a
 
-But instead you should put your registration code in a function, remove
-the ! and replace the goto with a function:
+-- 
+Neil
 
-    if (is_tmc_reserved_region_valid(dev))
-        ret = register_crash_dev_interface(drvdata);
-
-Where register_crash_dev_interface() is everything you added in between
-the goto and the out: label. The reason is that you've made it
-impossible to extend the probe function with new behavior without having
-to understand that this new bit must always come last. Otherwise new
-behavior would also be skipped over if the reserved region doesn't exist.
-
-> IIUC, the idea here is to not to fail the tmc_probe due to an error condition in register_crash_dev_interface,
->  so that the normal condition is not affected. Also the error condition can be notified to the user using a pr_dbg / pr_err.
-> 
-> Thanks.
-> 
-
-I'm not sure I follow exactly what you mean here, but for the one error
-condition you are checking for on the call to misc_register() you can
-still return that from the new function and check it in the probe.
 
