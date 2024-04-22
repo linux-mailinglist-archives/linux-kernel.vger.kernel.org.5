@@ -1,242 +1,209 @@
-Return-Path: <linux-kernel+bounces-153917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B2238AD4D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:28:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C13E8AD4D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 21:29:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49D11B20FB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:28:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6035A1C21250
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 19:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4DE155328;
-	Mon, 22 Apr 2024 19:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07127155332;
+	Mon, 22 Apr 2024 19:29:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aFAAzSYo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JuLSGdvS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446475025E;
-	Mon, 22 Apr 2024 19:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309DD5025E
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:29:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713814117; cv=none; b=lBrgg+NmmbJmokCn6pZjxUe6HBLX/UKjkE3xGhVHgVQZu/B1+HG2IMXhUHBj1E7zedk4UNsOQ0lQ4IREXrqQUcJ3RwTAozqVpRFcuvPXEljcnBLN3t/7tbj6d6SuXB+WHKhYcddAJ0evhFrEIJWkYneX5qeIBZkrhhSgi3gZQIY=
+	t=1713814161; cv=none; b=S9D4SswdAzCEe5dmClnw8W8C/fdlNwddQUk5RwI2A6tz0kWlExSx/RBEM3GxZSOfRA9jJymLGs6OkgSQZAGFqV0wYJs9C4ERZGaog6JClK6bJwegpt3KpGjW1e2irERyGOzM6s3I11YHh1+/u40nagPKBVms4Rly6bZZePftrY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713814117; c=relaxed/simple;
-	bh=vK0Pec9UTkueMfeAUW6DUE58gHSSShCHCCsfnjahRB0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RYTMTz495WOWkfMSD0jQq6TnCSIBXtcb65UzeyT8i7A/nNQiQKFr/m0ZFW0mKgQ7rmnWGtFEb39HzT1V6//Ckvw77UEgheqp6SjHgrwaVTFOgF6xD6CLMi4TEz2ag2mAoWuDxIIO5016NZQirBP4apH+slHJ807HDQc7Vk3sw2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aFAAzSYo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3E4CC4AF0B;
-	Mon, 22 Apr 2024 19:28:36 +0000 (UTC)
+	s=arc-20240116; t=1713814161; c=relaxed/simple;
+	bh=Sl3bg4WlJGYpNQQ2XrWaH54qrlh04DWMOhfUk4PpecA=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=JEJsuiQnvj8p2CsZFaMQlpJgesQLw4bxiXh2rXxYi/pRtw41tbvIdOQS7egN9xMTDBp9QKom3hZo4H+n44OszNwx4OIHcy0QyR4wPtirg0JqiN3ROdrioRuMoMLiknS/okDXFgoGm4YcesoaXiIgj9OPQejqgbSM+9A5s7qKsLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JuLSGdvS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 860D8C113CC
+	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 19:29:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713814116;
-	bh=vK0Pec9UTkueMfeAUW6DUE58gHSSShCHCCsfnjahRB0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=aFAAzSYoUCQ68idR1ZV/vA+n5TvKrpHfQPoJVIiInIMpjHdQSX73yMdn8U4ksj4Fc
-	 skG6AwXlU+5fRyCJT657pU2QBb3UEFwAmP5XAc9n2XDl5Xz1uW0oJN6x4qVbmV5LTG
-	 kcxqY4j8mc7HfQsccUQl1hDRBDyntfRMXM0/5IHXrFVFiRRrSgq8OXXe/6FaB2bmSv
-	 V5PtvrBUChUucAwEXMYzqk8qPn2vYGkelEQruUnzVbFZU5IQLsQ12fMF0BQwGrjLlg
-	 pNHv2P+Atj6ifkBsSbq3ndmGR2MyN7SrutlUyMoSh4pCnCtmBSYtw+Dvvvhr4ywRAs
-	 Yn/7YHfhlPTUg==
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5af12f48b72so54783eaf.3;
-        Mon, 22 Apr 2024 12:28:36 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWHKGmo7STpFRzemDOOTHy6x10AbCoTSzBSLd4NbsEKeIto/HIqXrzuJ5fFa9POKOq6hbk9OVQy/XZZsWOyheZkTD/DKNd0gbj2wfP2iCWPw7zKjuIr1P5b67yUTSsTpj7dRWJdn7fvfA4QMOu0i64r5Cpi29BwIjMlGYY7wXDPwd328g==
-X-Gm-Message-State: AOJu0YxylrhNQUSWCUsOKs9Ms+Ws27YZeUNiV2Vr3lvkdY9j6MU6CDOP
-	ouHaQoopHZ/TrQ0WA2DEXgQmBp21rtXZbmYJ15VIfmGbMmWHcYYHw9UPN/BbwoFxPKQEK7yM0is
-	I1Iy2uV/UVngIpiyVgmk6/7M7xzk=
-X-Google-Smtp-Source: AGHT+IGUETKc3TgOF4OePC5o1ZswAoxj8sQKPSP7731avzXAb+y8Q1PqVfZ8Xtb3zIuDpvt+fYwScVKj2gv5dZwOXLc=
-X-Received: by 2002:a05:6820:2884:b0:5aa:241a:7f4b with SMTP id
- dn4-20020a056820288400b005aa241a7f4bmr11757032oob.1.1713814115959; Mon, 22
- Apr 2024 12:28:35 -0700 (PDT)
+	s=k20201202; t=1713814160;
+	bh=Sl3bg4WlJGYpNQQ2XrWaH54qrlh04DWMOhfUk4PpecA=;
+	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+	b=JuLSGdvS461N5tgKKFcKRNK3/ne22I9lj+6AnRVSB6FTV0J88YpyGjs2YTxncB6CI
+	 lpbx8vtkov0/sJ0VpDibs2jtt/tnaXd4HcC0rFisrKhmf6tu9nHvKxWMcB5AwZ32/H
+	 mbQoEKAKDRNg16wEzhYhKmQ3w1x6lI4GzuRCBYDFO6WfWmX/99OXKTZbNg/tgmcNCt
+	 rKAqmaeTfevfAP7c/48hFz4zv5ejs6jZu/upGRSAAxa0szl4+AvspgRvaV3+83kJP4
+	 ZqSW23z/rryMI1zFi6xahUG/nl3M8R3dXnDN+TPXvxPoGOR3uomx/VLJQkWuGl8+g7
+	 OpLdcu17Kpj2g==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 7EF181200066;
+	Mon, 22 Apr 2024 15:29:19 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 22 Apr 2024 15:29:19 -0400
+X-ME-Sender: <xms:j7omZhjlP81AZHYOK7fB-YL4puJb2jcvH7SRTVbSUlPZViGspNXMyQ>
+    <xme:j7omZmA3HhaaFT3AokDixKUozs2VMXaNQVEhb0keRZ59x9q15dIbSFNYJGTevw89j
+    PKe3FtnS1aBQ-vk7do>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekledgudeflecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpedvveeigfetudegveeiledvgfevuedvgfetgeefieeijeejffeggeeh
+    udegtdevheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidquddvkeehudej
+    tddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgvlhdrohhrghesrghrnhgusg
+    druggv
+X-ME-Proxy: <xmx:j7omZhEsftRQyr4t7KGM57W5nx9vhCHXsNRcnzCuXPLc-kt3W7W27A>
+    <xmx:j7omZmR133dXUwOEhLDCN4ECAkYyDyP98bWp4qj3nw9lQTKuzOv-vg>
+    <xmx:j7omZuyXEPq5fKcU6bu36b_MeUgMUNRHoCkhyDQ97KFDPRP4jCYQtg>
+    <xmx:j7omZs5TBZh7F08mE_vcVF4LJKrMba23xrU7LeHj5TsCR5tggSUqfA>
+    <xmx:j7omZjxUFdxBz5hzgZ3VciArKk1jsZrREZlmc6rgvwh78sWWeaLLzBHp>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 3515AB6008D; Mon, 22 Apr 2024 15:29:19 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-386-g4cb8e397f9-fm-20240415.001-g4cb8e397
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415170113.662318-1-sunilvl@ventanamicro.com>
-In-Reply-To: <20240415170113.662318-1-sunilvl@ventanamicro.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 22 Apr 2024 21:28:24 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
-Message-ID: <CAJZ5v0gTzn3TDoh0+0UQjMeJVdU+z16dDOT_fKMhr0XrOxyRtA@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 00/20] RISC-V: ACPI: Add external interrupt
- controller support
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org, 
-	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Anup Patel <anup@brainfault.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Samuel Holland <samuel.holland@sifive.com>, 
-	Robert Moore <robert.moore@intel.com>, Haibo1 Xu <haibo1.xu@intel.com>, 
-	Conor Dooley <conor.dooley@microchip.com>, Andrew Jones <ajones@ventanamicro.com>, 
-	Atish Kumar Patra <atishp@rivosinc.com>, Andrei Warkentin <andrei.warkentin@intel.com>, 
-	Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <a666e39d-a894-4e27-aac4-65d11a18358a@app.fastmail.com>
+In-Reply-To: <26c23fb8557d806c12a246caa575e4f4fc4ea27a.camel@linux.ibm.com>
+References: <20240410142329.3567824-1-schnelle@linux.ibm.com>
+ <20240410142329.3567824-2-schnelle@linux.ibm.com> <Zhfs8CN5XdgldKUn@carbonx1>
+ <26c23fb8557d806c12a246caa575e4f4fc4ea27a.camel@linux.ibm.com>
+Date: Mon, 22 Apr 2024 21:28:58 +0200
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "Niklas Schnelle" <schnelle@linux.ibm.com>,
+ "Helge Deller" <deller@kernel.org>
+Cc: "Helge Deller" <deller@gmx.de>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, "Heiko Carstens" <hca@linux.ibm.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] video: Handle HAS_IOPORT dependencies
+Content-Type: text/plain
 
-On Mon, Apr 15, 2024 at 7:01=E2=80=AFPM Sunil V L <sunilvl@ventanamicro.com=
-> wrote:
+On Mon, Apr 22, 2024, at 10:34, Niklas Schnelle wrote:
+> On Thu, 2024-04-11 at 16:00 +0200, Helge Deller wrote:
+>> * Niklas Schnelle <schnelle@linux.ibm.com>:
+>> > In a future patch HAS_IOPORT=n will disable inb()/outb() and friends at
+>> > compile time. We thus need to #ifdef functions and their callsites which
+>> > unconditionally use these I/O accessors. In the include/video/vga.h
+>> > these are conveniently all those functions with the vga_io_* prefix.
+>> 
+>> Why don't you code it like in the patch below?
+>> inb_p(), outb_p() and outw() would then need to be defined externally
+>> without an implementation so that they would generate link time errors
+>> (instead of compile time errors).
 >
-> This series adds support for the below ECR approved by ASWG.
-> 1) MADT - https://drive.google.com/file/d/1oMGPyOD58JaPgMl1pKasT-VKsIKia7=
-zR/view?usp=3Dsharing
+> This may be personal preference but I feel like link time errors would
+> be very late to catch a configuration that can't work. Also this would
+> bypass the __compiletime_error("inb()) requires CONFIG_HAS_IOPORT");
+> added instead of the in*()/out*() helpers to make it easy to spot the
+> problem.
 >
-> The series primarily enables irqchip drivers for RISC-V ACPI based
-> platforms.
->
-> The series can be broadly categorized like below.
->
-> 1) PCI ACPI related functions are migrated from arm64 to common file so
-> that we don't need to duplicate them for RISC-V.
->
-> 2) Added support for re-ordering the probe of interrupt controllers when
-> IRQCHIP_ACPI_DECLARE is used.
->
-> 3) To ensure probe order between interrupt controllers and devices,
-> implicit dependency is created similar to when _DEP is present.
->
-> 4) When PNP devices like Generic 16550A UART, have the dependency on the
-> interrupt controller, they will not be added to PNP data structures. So,
-> added second phase of pnpacpi_init to handle this.
->
-> 5) ACPI support added in RISC-V interrupt controller drivers.
->
-> This series is still kept as RFC to seek feedback on above design
-> changes. Looking forward for the feedback!
+> I'm not a fan of #ifdeffery either but I think in this case it is
+> simple, well enough contained and overall there aren't that many spots
+> where we need to exclude just some sections of code vs entire drivers
+> with vga.h probably being the worst of them all.
 
-I've looked at the patches and I don't see anything deeply concerning
-in them from the ACPI core code perspective.
+Agreed. I also tried to see if we can move stuff out of vga.h
+to have it included in fewer places, as almost everything that
+uses this header already has a HAS_IOPORT dependency, but that
+would be a lot more work.
 
-The changes look reasonably straightforward to me.
+The other one that gains a few ugly #ifdefs is the 8250 driver,
+everything else is already merged in linux-next or needs a simple
+Kconfig dependency.
 
-Thanks!
+I think we can make the vga.h file a little more readable
+by duplicating the functions and still keep the __compiletime_error()
+version in asm/io.h, see below.
 
-> Changes since RFC v3:
->         1) Moved to _DEP method instead of fw_devlink.
->         2) PLIC/APLIC driver probe using namespace devices.
->         3) Handling PNP devices as part of clearing dependency.
->         4) Rebased to latest linux-next to get AIA DT drivers.
->
-> Changes since RFC v2:
->         1) Introduced fw_devlink for ACPI nodes for IRQ dependency.
->         2) Dropped patches in drivers which are not required due to
->            fw_devlink support.
->         3) Dropped pci_set_msi() patch and added a patch in
->            pci_create_root_bus().
->         4) Updated pnp_irq() patch so that none of the actual PNP
->            drivers need to change.
->
-> Changes since RFC v1:
->         1) Abandoned swnode approach as per Marc's feedback.
->         2) To cope up with AIA series changes which changed irqchip drive=
-r
->            probe from core_initcall() to platform_driver, added patches
->            to support deferred probing.
->         3) Rebased on top of Anup's AIA v11 and added tags.
->
-> To test the series,
->
-> 1) Qemu should be built using the riscv_acpi_namespace_v1 branch at
-> https://github.com/vlsunil/qemu.git
->
-> 2) EDK2 should be built using the instructions at:
-> https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README.md
->
-> 3) Build Linux using this series.
->
-> Run Qemu:
-> qemu-system-riscv64 \
->  -M virt,pflash0=3Dpflash0,pflash1=3Dpflash1,aia=3Daplic-imsic \
->  -m 2G -smp 8 \
->  -serial mon:stdio \
->  -device virtio-gpu-pci -full-screen \
->  -device qemu-xhci \
->  -device usb-kbd \
->  -blockdev node-name=3Dpflash0,driver=3Dfile,read-only=3Don,filename=3DRI=
-SCV_VIRT_CODE.fd \
->  -blockdev node-name=3Dpflash1,driver=3Dfile,filename=3DRISCV_VIRT_VARS.f=
-d \
->  -netdev user,id=3Dnet0 -device virtio-net-pci,netdev=3Dnet0 \
->  -kernel arch/riscv/boot/Image \
->  -initrd rootfs.cpio \
->  -append "root=3D/dev/ram ro console=3DttyS0 rootwait earlycon=3Duart8250=
-,mmio,0x10000000"
->
-> To boot with APLIC only, use aia=3Daplic.
-> To boot with PLIC, remove aia=3D option.
->
-> This series is also available in acpi_b2_v4_autodep_v1 branch at
-> https://github.com/vlsunil/linux.git
->
-> Based-on: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next=
-git/tag/?h=3Dnext-20240415
->
-> Sunil V L (20):
->   arm64: PCI: Migrate ACPI related functions to pci-acpi.c
->   RISC-V: ACPI: Implement PCI related functionality
->   PCI: Make pci_create_root_bus() declare its reliance on MSI domains
->   ACPI: scan.c: Add weak arch specific function to reorder the IRQCHIP
->     probe
->   ACPI: RISC-V: Implement arch function to reorder irqchip probe entries
->   ACPI: bus: Add acpi_riscv_init function
->   RISC-V: Kconfig: Select deferred GSI probe for ACPI systems
->   ACPI: scan: Refactor dependency creation
->   drivers/acpi/scan.c: Update _DEP honor list
->   RISC-V: ACPI: Initialize GSI mapping structures
->   ACPI: scan.c: Define weak function to populate dependencies
->   RISC-V: ACPI: Implement function to add implicit dependencies
->   ACPI/PNP: Initialize PNP devices skipped due to _DEP
->   irqchip: riscv-intc: Add ACPI support for AIA
->   irqchip: riscv-imsic: Add ACPI support
->   irqchip: riscv-aplic: Add ACPI support
->   irqchip: irq-sifive-plic: Add ACPI support
->   ACPI: bus: Add RINTC IRQ model for RISC-V
->   irqchip: riscv-intc: Set ACPI irqmodel
->   ACPI: pci_link: Clear the dependencies after probe
->
->  arch/arm64/kernel/pci.c                    | 191 ------------
->  arch/riscv/Kconfig                         |   3 +
->  arch/riscv/include/asm/irq.h               |  57 ++++
->  arch/riscv/kernel/acpi.c                   |  31 +-
->  drivers/acpi/Kconfig                       |   3 +
->  drivers/acpi/bus.c                         |   4 +
->  drivers/acpi/pci_link.c                    |   3 +
->  drivers/acpi/riscv/Makefile                |   2 +-
->  drivers/acpi/riscv/init.c                  |  14 +
->  drivers/acpi/riscv/init.h                  |   4 +
->  drivers/acpi/riscv/irq.c                   | 323 +++++++++++++++++++++
->  drivers/acpi/scan.c                        |  69 +++--
->  drivers/irqchip/irq-riscv-aplic-direct.c   |  20 +-
->  drivers/irqchip/irq-riscv-aplic-main.c     |  70 +++--
->  drivers/irqchip/irq-riscv-aplic-main.h     |   1 +
->  drivers/irqchip/irq-riscv-aplic-msi.c      |   9 +-
->  drivers/irqchip/irq-riscv-imsic-early.c    |  52 +++-
->  drivers/irqchip/irq-riscv-imsic-platform.c |  32 +-
->  drivers/irqchip/irq-riscv-imsic-state.c    | 115 ++++----
->  drivers/irqchip/irq-riscv-imsic-state.h    |   2 +-
->  drivers/irqchip/irq-riscv-intc.c           | 102 ++++++-
->  drivers/irqchip/irq-sifive-plic.c          |  89 ++++--
->  drivers/pci/pci-acpi.c                     | 182 ++++++++++++
->  drivers/pci/probe.c                        |   3 +
->  drivers/pnp/pnpacpi/core.c                 |  24 +-
->  drivers/pnp/pnpacpi/rsparser.c             |  63 ++--
->  include/acpi/acpi_bus.h                    |   2 +
->  include/linux/acpi.h                       |   9 +
->  include/linux/irqchip/riscv-imsic.h        |  10 +
->  include/linux/pnp.h                        |   7 +
->  30 files changed, 1108 insertions(+), 388 deletions(-)
->  create mode 100644 drivers/acpi/riscv/init.c
->  create mode 100644 drivers/acpi/riscv/init.h
->  create mode 100644 drivers/acpi/riscv/irq.c
->
-> --
-> 2.40.1
->
->
+    Arnd
+
+
+diff --git a/include/video/vga.h b/include/video/vga.h
+index 947c0abd04ef..7e1d8252b732 100644
+--- a/include/video/vga.h
++++ b/include/video/vga.h
+@@ -197,6 +197,23 @@ struct vgastate {
+ extern int save_vga(struct vgastate *state);
+ extern int restore_vga(struct vgastate *state);
+ 
++static inline unsigned char vga_mm_r (void __iomem *regbase, unsigned short port)
++{
++	return readb (regbase + port);
++}
++
++static inline void vga_mm_w (void __iomem *regbase, unsigned short port, unsigned char val)
++{
++	writeb (val, regbase + port);
++}
++
++static inline void vga_mm_w_fast (void __iomem *regbase, unsigned short port,
++				  unsigned char reg, unsigned char val)
++{
++	writew (VGA_OUT16VAL (val, reg), regbase + port);
++}
++
++#ifdef CONFIG_HAS_IOPORT
+ /*
+  * generic VGA port read/write
+  */
+@@ -217,22 +234,6 @@ static inline void vga_io_w_fast (unsigned short port, unsigned char reg,
+ 	outw(VGA_OUT16VAL (val, reg), port);
+ }
+ 
+-static inline unsigned char vga_mm_r (void __iomem *regbase, unsigned short port)
+-{
+-	return readb (regbase + port);
+-}
+-
+-static inline void vga_mm_w (void __iomem *regbase, unsigned short port, unsigned char val)
+-{
+-	writeb (val, regbase + port);
+-}
+-
+-static inline void vga_mm_w_fast (void __iomem *regbase, unsigned short port,
+-				  unsigned char reg, unsigned char val)
+-{
+-	writew (VGA_OUT16VAL (val, reg), regbase + port);
+-}
+-
+ static inline unsigned char vga_r (void __iomem *regbase, unsigned short port)
+ {
+ 	if (regbase)
+@@ -258,7 +259,25 @@ static inline void vga_w_fast (void __iomem *regbase, unsigned short port,
+ 	else
+ 		vga_io_w_fast (port, reg, val);
+ }
++#else
+ 
++static inline unsigned char vga_r (void __iomem *regbase, unsigned short port)
++{
++	return vga_mm_r(regbase, port);
++}
++
++static inline void vga_w(void __iomem *regbase, unsigned short port, unsigned char val)
++{
++	vga_mm_w (regbase, port, val);
++}
++
++static inline void vga_w_fast (void __iomem *regbase, unsigned short port,
++			       unsigned char reg, unsigned char val)
++{
++	vga_mm_w_fast(regbase, port, reg, val);
++}
++
++#endif
+ 
+ /*
+  * VGA CRTC register read/write
 
