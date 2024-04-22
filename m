@@ -1,163 +1,183 @@
-Return-Path: <linux-kernel+bounces-154011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF25D8AD617
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:48:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D0578AD615
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 22:47:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C5FD283A7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:48:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 614D11C214C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 20:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03A901BC58;
-	Mon, 22 Apr 2024 20:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D351BC41;
+	Mon, 22 Apr 2024 20:47:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QqX2w+f3"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IIqhDiKm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B560F1BC2A;
-	Mon, 22 Apr 2024 20:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EF701B948;
+	Mon, 22 Apr 2024 20:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713818899; cv=none; b=DrGK15qAKXOez+QzW6qoGqqflZ00TxfK9j4492sZFi1eEpx2bgIA0KCFLXhZjyAx47yDEEoKVL+pazlTAvf88kNsOvcTFNVlz4p5SccNv7B55U/5bB9WXRIir0KhL4PdU+cNBDOVzuIZbrgvXpD/CWYdop+C1x96AvM7OE6vtKI=
+	t=1713818871; cv=none; b=DGTTI9xe1v2e7ZpZ+ju69AkDPX8f2hJW2cJA5AuYO68vDQ7wXrlX+W+NOJ+vf5dXq44JvGrF67bDTrJTsxMd53dSEk0/wRKrSPCGhJBuY8E8IXJrRCcnpXdfC+FGXalBzdk3dANcXtYha/+eELTdxM1wBxeUxOeE8eKii+bAlIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713818899; c=relaxed/simple;
-	bh=Nve2e0URcbhivgmu5Olx+jFaLYTP1uGgib0vU6aow6I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FuZljaFyQw1aWPEWvMQbCk2V0hOblZEeoRBaT2/2kTNggkMdLfjscaYVkZBGliZgbGiPR8M2QCuHbP/LHKG2AzW9AEMCm3pfaQcqYzO2sY+hmMrmje5EpOSUtd2CCduT8jjvWzGeG2b9zMdQ0uC0fa0ioRbdEb7BiOVFYRNekNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QqX2w+f3; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713818898; x=1745354898;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Nve2e0URcbhivgmu5Olx+jFaLYTP1uGgib0vU6aow6I=;
-  b=QqX2w+f32aYXZOaxeUCVbdyN3NbDXkX2Da0YE60qmuIF8G/7Z5Y5b1kI
-   PajRHW7OTcVICe6Zp6oac5ZsFL/YXvA9BIbdZZjQi7RbzPjo1cLURQlli
-   zS3V7KNMEkzqotYmoxD+UeEhYNu4d6Iqi4l1AW4y/0+j08y1To7fjpgzM
-   BbB+RxgPJ857kjb+GUA5Sv7DYWeysl1O3wm5nbbIgY97/9LwoFFO63klb
-   BeAYq1PAUROE08T7665e7GtJ54Sxd/TpH8eHFKkqHKUtpIorVRy8WpMcK
-   Uj0qD11k2WD/Ny3/zyPS76rwlWDdzZTiT5tsFff4yM7OWdOVmV+9K/4Sm
-   A==;
-X-CSE-ConnectionGUID: yZC1yBrsSDCyZTe+BhsGgQ==
-X-CSE-MsgGUID: ZhnSPWqYTj2RoDWSf0Y+/g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="13212106"
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="13212106"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:47:21 -0700
-X-CSE-ConnectionGUID: wg81OQ8KT867EqJiPcOeGQ==
-X-CSE-MsgGUID: Bfxru7XJQtukdQSi9ozkDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="24007380"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.209.73.120])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 13:47:20 -0700
-Date: Mon, 22 Apr 2024 13:47:18 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: Robert Richter <rrichter@amd.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Dan Williams <dan.j.williams@intel.com>, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-	Derick Marks <derick.w.marks@intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v3 1/5] x86/numa: Fix SRAT lookup of CFMWS ranges with
- numa_fill_memblks()
-Message-ID: <ZibM1tafKjs674bR@aschofie-mobl2>
-References: <20240419140203.1996635-1-rrichter@amd.com>
- <20240419140203.1996635-2-rrichter@amd.com>
+	s=arc-20240116; t=1713818871; c=relaxed/simple;
+	bh=Eq+fw2x+BN6yBdnxqY50G3j3m6b4oBmavFsMoPdzmu8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AqNlUEAvjDsPDhOGHGl3GDLzMouYIpB5uNx318j+3JMFyo6W/EeP0WucEm8FxkHFspVJ2XOfvJGgbwXyyITAS922ARoQUWH82ykH1r0AIuZpKGvuPnPa1hyKCnG5EGyztdRCahQv1EuzIwMWQ1KhpV+ovLjmzr5kbULYBx4eU2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IIqhDiKm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5AA0C113CC;
+	Mon, 22 Apr 2024 20:47:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713818870;
+	bh=Eq+fw2x+BN6yBdnxqY50G3j3m6b4oBmavFsMoPdzmu8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=IIqhDiKmx1fSfkrH/5yJbG4YHCx3iB4YmlQvy+YvB/mzZB2L67kFh3GCE8U9c5CQu
+	 Bhhzzf17qqZw+TQUSknzxzmqQmiGv78C4MTXSPc8Hj4wjgFGRecu6r481NOqTZ9eex
+	 yHhlGP2ORl6/5njSmyrqZMfdIeStm182fbMgnYm944K7++ms1WAYspSuSkDXTwhLtR
+	 NBasN0+DyYHgzje07K4lwqiTfctMhBhB0plW199B+ECoUiY/UJ9D1xCJLZKthhbkNK
+	 +Pg61z6brukHSNSPHSsOlSUia41PBEO5K62JN8pmP2mhAHL6yuGOd5bvsocarZAwl6
+	 Kro0l/7x0/qmA==
+Message-ID: <7490bce3-3bd6-4beb-b8be-d47a6b0a30f0@kernel.org>
+Date: Mon, 22 Apr 2024 22:47:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240419140203.1996635-2-rrichter@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/14] ASoC: Constify local snd_sof_dsp_ops
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
+ <89f8f0be-2534-46c8-9058-cabea4f68568@linux.intel.com>
+ <9d1eda85-32a0-4e53-86ca-ce3137439bd7@kernel.org>
+ <d046d195-6fa3-4c52-bc5f-3e5e763bc692@linux.intel.com>
+ <138ac465-1576-4e86-a05d-63f8acc6fb70@kernel.org>
+ <3acfbe3c-8b83-4c40-83c2-437f963fd25a@linux.intel.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <3acfbe3c-8b83-4c40-83c2-437f963fd25a@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 19, 2024 at 04:01:59PM +0200, Robert Richter wrote:
-> For configurations that have the kconfig option NUMA_KEEP_MEMINFO
-> disabled, the SRAT lookup done with numa_fill_memblks() fails
-> returning NUMA_NO_MEMBLK (-1). An existing SRAT memory range cannot be
-> found for a CFMWS address range. This causes the addition of a
-> duplicate numa_memblk with a different node id and a subsequent page
-> fault and kernel crash during boot.
+On 22/04/2024 22:42, Pierre-Louis Bossart wrote:
 > 
-> numa_fill_memblks() is implemented and used in the init section only.
-> The option NUMA_KEEP_MEMINFO is only for the case when NUMA data will
-> be used outside of init. So fix the SRAT lookup by moving
-> numa_fill_memblks() out of the NUMA_KEEP_MEMINFO block to make it
-> always available in the init section.
+>> There are multiple reasons and benefits for const, like compiler
+>> optimization, code readability (meaning) up to security improvements,
+>> e.g. by some GCC plugins or marking rodata as really non-writeable, so
+>> closing some ways of exploits. There are many opportunities here, even
+>> if they are not yet enabled.
 > 
-> Note that the issue was initially introduced with [1]. But since
-> phys_to_target_node() was originally used that returned the valid node
-> 0, an additional numa_memblk was not added. Though, the node id was
-> wrong too.
-> 
-> [1] commit fd49f99c1809 ("ACPI: NUMA: Add a node and memblk for each
->     CFMWS not in SRAT")
-> 
-> Fixes: 8f1004679987 ("ACPI/NUMA: Apply SRAT proximity domain to entire CFMWS window")
-> Cc: Derick Marks <derick.w.marks@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Alison Schofield <alison.schofield@intel.com>
-> Signed-off-by: Robert Richter <rrichter@amd.com>
-> ---
+> Possibly, but the SOF core does not know if the structure it uses is
+> rodata or not. Using the 'const' identifier would be misleading.
 
-with the assumption that this is passing 0-day builds...
+How so? If core does not modify structure, it should take it via ops,
+just like 100 other widely known structures (see checkpatch). Why is
+this different?
 
-Reviewed-by: Alison Schofield <alison.schofield@intel.com>
-
-
->  arch/x86/include/asm/sparsemem.h | 2 +-
->  arch/x86/mm/numa.c               | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/sparsemem.h b/arch/x86/include/asm/sparsemem.h
-> index 1be13b2dfe8b..1aaa447ef24b 100644
-> --- a/arch/x86/include/asm/sparsemem.h
-> +++ b/arch/x86/include/asm/sparsemem.h
-> @@ -37,9 +37,9 @@ extern int phys_to_target_node(phys_addr_t start);
->  #define phys_to_target_node phys_to_target_node
->  extern int memory_add_physaddr_to_nid(u64 start);
->  #define memory_add_physaddr_to_nid memory_add_physaddr_to_nid
-> +#endif
->  extern int numa_fill_memblks(u64 start, u64 end);
->  #define numa_fill_memblks numa_fill_memblks
-> -#endif
->  #endif /* __ASSEMBLY__ */
->  
->  #endif /* _ASM_X86_SPARSEMEM_H */
-> diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-> index 65e9a6e391c0..ce84ba86e69e 100644
-> --- a/arch/x86/mm/numa.c
-> +++ b/arch/x86/mm/numa.c
-> @@ -929,6 +929,8 @@ int memory_add_physaddr_to_nid(u64 start)
->  }
->  EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
->  
-> +#endif
-> +
->  static int __init cmp_memblk(const void *a, const void *b)
->  {
->  	const struct numa_memblk *ma = *(const struct numa_memblk **)a;
-> @@ -1001,5 +1003,3 @@ int __init numa_fill_memblks(u64 start, u64 end)
->  	}
->  	return 0;
->  }
-> -
-> -#endif
-> -- 
-> 2.39.2
+>>> that's a different interpretation to the 'software' view you're
+>>> describing. "this structure will not modified by this function" is not
+>>> the same thing as "this structure CANNOT be modified".
+>>
+>> Yes, but can we please discuss specific patchset then? Patches which
+>> change pointers to const have one "interpretation". Patches which modify
+>> static or global data have another.
 > 
+> Just look at sound/soc/sof/intel/mtl.c... The core will sometimes use a
+
+That's a driver (or specific implementation), not core.
+
+> constant structure and sometimes not, depending on the PCI ID reported
+> by hardware. This was intentional to override common defaults and make
+> the differences limited in scope between hardware generations.
+
+
+> 
+> int sof_mtl_ops_init(struct snd_sof_dev *sdev)
+> {
+> 	struct sof_ipc4_fw_data *ipc4_data;
+> 
+> 	/* common defaults */
+> 	memcpy(&sof_mtl_ops, &sof_hda_common_ops, sizeof(struct
+> snd_sof_dsp_ops)); <<<< THE BASELINE IS CONSTANT
+
+Yes, I saw it and such users are not changed. They won't receive any
+safety. But all others are getting safer.
+
+I really do not understand what is the problem here. In entire Linux all
+of such changes are welcomed with open arms. So what is different here?
+
+> 
+>         <<< THE REST ISN'T.
+> 
+> 	/* shutdown */
+> 	sof_mtl_ops.shutdown = hda_dsp_shutdown;
+
+
+Best regards,
+Krzysztof
+
 
