@@ -1,167 +1,128 @@
-Return-Path: <linux-kernel+bounces-153591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419DA8AD00C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 16:59:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E928AD024
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:04:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D733F1F22659
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 14:59:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 706081F22C7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:04:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2885A15219E;
-	Mon, 22 Apr 2024 14:58:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nT/3TJP+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28D915251C;
+	Mon, 22 Apr 2024 15:03:56 +0000 (UTC)
+Received: from mail.schimsalabim.eu (vps01.schimsalabim.eu [85.214.219.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E5321E49F;
-	Mon, 22 Apr 2024 14:58:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABDA3136988;
+	Mon, 22 Apr 2024 15:03:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713797938; cv=none; b=mCT8ws6FU4k3YLbTowHIgPqK2sdIH9HqwkwLKhSUZKsFD+Z0e1zYogndOXl4IzfLsBtLh2IPpHnUEsFLZ/KB/HoUH0s6hcNJSgQ5ALkzwGe4k48tAY/1xEnL3vWF/26OWEKJTott9Wor3JY/vYccHKjl7Yo1cyw/Q5ORoKqGeTY=
+	t=1713798236; cv=none; b=S2o/oSvX7r81lt5MCD1l0sgKi7OwQLH2RVjvpHEYtu+EPmQXIHDXLNL6W+3C6WV0DkAifrHB6dBW/SBhiUv7t+YZ1TE22VxFmQoVpXzxgJVlKQMcZR4abysDfPJb1PJxWzVDLj+uTav52dGWU/dH31s0MxQJNGALCX+hTKn5YvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713797938; c=relaxed/simple;
-	bh=KgbM3k+jSRBzGRZiQzyCDCUnLSPGShDmfs2+LbcxB7M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pLfUSOdMChyODhgxQOFMxXGbAooCUprwGz/Al1jNqc/TLAbr17nwjto6L7jPdFumWJC2O8FF+Ab2+83AOAJC6WN6ty99vjD0dEAZD/8irbhGjSal09ptzUYNQgXgTXTIg/YlHFtP+/O4a29aaI2zB34wdZ9LCAE+woDnzebtGpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nT/3TJP+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B433FC113CC;
-	Mon, 22 Apr 2024 14:58:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713797938;
-	bh=KgbM3k+jSRBzGRZiQzyCDCUnLSPGShDmfs2+LbcxB7M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nT/3TJP+dzwNxRWbeYbmeJVied1e70gL/B9J88fLb7P47PDm3Y1/yKw1A1eI829sK
-	 ltcuub6sB/t4oBclXnDcrm6q9UrQtUbxzXsjvFtf9ZQBQivuVGx/dJ50o21Od500HB
-	 PyQ90Wy2aesN0k/tWVDsHhAstXV70k2JtBagWBrQM41nyUHt13914bn3b8Dy/osSCf
-	 poJQMVJfrJzto8zLzHsenkrP8SZfIxU2VzESxy9YXvZK4oFUhvvo+4gDjflrPiP1yr
-	 IwBdaCUvOpg82wk5ETmJ57A7BAHRWCw1aUrFwrWTi4TkVAHLPv9ig7QEnvrRZCcg8v
-	 D4/p46gUebNIw==
-Date: Mon, 22 Apr 2024 09:58:55 -0500
-From: Rob Herring <robh@kernel.org>
-To: matthew.gerlach@linux.intel.com
-Cc: bhelgaas@google.com, lpieralisi@kernel.org, kw@linux.com,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] dt-bindings: PCI: altera: Convert to YAML
-Message-ID: <20240422145855.GA1242711-robh@kernel.org>
-References: <20240420145342.118643-1-matthew.gerlach@linux.intel.com>
+	s=arc-20240116; t=1713798236; c=relaxed/simple;
+	bh=F/+y69IMWZmu8UjWDvp6UxTy1wPIZeZF1pVBGeoqVHM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WtBmlfUX5gp5dAGuKreQqMoXbj8h528ugxemmR1KWefmGe0jeTeYKUvvMe64PFkC3YO+UFFVFyPXhH+2SwLH4kp6dLceQhFl/pd+DBwMp5zUydsruk3OCLQ4dRTFd9icPHiiFKSjgBR1EeJDj552gF+IkWGAB3wQcLAQEdwnhGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=schimsalabim.eu; spf=pass smtp.mailfrom=schimsalabim.eu; arc=none smtp.client-ip=85.214.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=schimsalabim.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=schimsalabim.eu
+Received: from localhost.localdomain (82-217-109-137.cable.dynamic.v4.ziggo.nl [82.217.109.137])
+	(authenticated bits=0)
+	by h2374449.stratoserver.net (8.14.7/8.14.7) with ESMTP id 43MF2Io9001087
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Mon, 22 Apr 2024 17:02:24 +0200
+From: Joao Schim <joao@schimsalabim.eu>
+To: Ban Tao <fengzheng923@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: sunxi: DMIC: Add controls for adjusting the mic gains
+Date: Mon, 22 Apr 2024 17:02:13 +0200
+Message-Id: <20240422150213.4040734-1-joao@schimsalabim.eu>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240420145342.118643-1-matthew.gerlach@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 20, 2024 at 09:53:42AM -0500, matthew.gerlach@linux.intel.com wrote:
-> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> 
-> Convert the device tree bindings for the Altera Root Port PCIe controller
-> from text to YAML.
-> 
-> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> ---
-> v4:
->  - reorder reg-names to match original binding
->  - move reg and reg-names to top level with limits.
-> 
-> v3:
->  - Added years to copyright
->  - Correct order in file of allOf and unevaluatedProperties
->  - remove items: in compatible field
->  - fix reg and reg-names constraints
->  - replace deprecated pci-bus.yaml with pci-host-bridge.yaml
->  - fix entries in ranges property
->  - remove device_type from required
-> 
-> v2:
->  - Move allOf: to bottom of file, just like example-schema is showing
->  - add constraint for reg and reg-names
->  - remove unneeded device_type
->  - drop #address-cells and #size-cells
->  - change minItems to maxItems for interrupts:
->  - change msi-parent to just "msi-parent: true"
->  - cleaned up required:
->  - make subject consistent with other commits coverting to YAML
->  - s/overt/onvert/g
-> ---
->  .../devicetree/bindings/pci/altera-pcie.txt   | 50 -----------
->  .../bindings/pci/altr,pcie-root-port.yaml     | 88 +++++++++++++++++++
->  2 files changed, 88 insertions(+), 50 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pci/altera-pcie.txt
->  create mode 100644 Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/altera-pcie.txt b/Documentation/devicetree/bindings/pci/altera-pcie.txt
-> deleted file mode 100644
-> index 816b244a221e..000000000000
-> --- a/Documentation/devicetree/bindings/pci/altera-pcie.txt
-> +++ /dev/null
-> @@ -1,50 +0,0 @@
-> -* Altera PCIe controller
-> -
-> -Required properties:
-> -- compatible :	should contain "altr,pcie-root-port-1.0" or "altr,pcie-root-port-2.0"
-> -- reg:		a list of physical base address and length for TXS and CRA.
-> -		For "altr,pcie-root-port-2.0", additional HIP base address and length.
-> -- reg-names:	must include the following entries:
-> -		"Txs": TX slave port region
-> -		"Cra": Control register access region
-> -		"Hip": Hard IP region (if "altr,pcie-root-port-2.0")
-> -- interrupts:	specifies the interrupt source of the parent interrupt
-> -		controller.  The format of the interrupt specifier depends
-> -		on the parent interrupt controller.
-> -- device_type:	must be "pci"
-> -- #address-cells:	set to <3>
-> -- #size-cells:		set to <2>
-> -- #interrupt-cells:	set to <1>
-> -- ranges:	describes the translation of addresses for root ports and
-> -		standard PCI regions.
-> -- interrupt-map-mask and interrupt-map: standard PCI properties to define the
-> -		mapping of the PCIe interface to interrupt numbers.
-> -
-> -Optional properties:
-> -- msi-parent:	Link to the hardware entity that serves as the MSI controller
-> -		for this PCIe controller.
-> -- bus-range:	PCI bus numbers covered
-> -
-> -Example
-> -	pcie_0: pcie@c00000000 {
-> -		compatible = "altr,pcie-root-port-1.0";
-> -		reg = <0xc0000000 0x20000000>,
-> -			<0xff220000 0x00004000>;
-> -		reg-names = "Txs", "Cra";
-> -		interrupt-parent = <&hps_0_arm_gic_0>;
-> -		interrupts = <0 40 4>;
-> -		interrupt-controller;
+The AllWinner H6 and later SoCs that sport a DMIC block contain a set of registers to control
+the gain (left + right) of each of the four supported channels.
 
-What happened to this? It is clearly needed since the interrupt-map 
-below points back to this node. Note that that didn't work at one point 
-in time, but I think we fixed it.
+Add ASoC controls for changing each of the stereo channel gains using alsamixer and alike
+---
+ sound/soc/sunxi/sun50i-dmic.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-It doesn't seem you are testing the binding against an actual DT. 
-Please do that.
+diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
+index c76628bc86c6..f8613d8c3462 100644
+--- a/sound/soc/sunxi/sun50i-dmic.c
++++ b/sound/soc/sunxi/sun50i-dmic.c
+@@ -14,6 +14,7 @@
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/tlv.h>
+ 
+ #define SUN50I_DMIC_EN_CTL			(0x00)
+ 	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
+@@ -43,6 +44,17 @@
+ 	#define SUN50I_DMIC_CH_NUM_N_MASK			GENMASK(2, 0)
+ #define SUN50I_DMIC_CNT				(0x2c)
+ 	#define SUN50I_DMIC_CNT_N				(1 << 0)
++#define SUN50I_DMIC_D0D1_VOL_CTR		(0x30)
++	#define SUN50I_DMIC_D0D1_VOL_CTR_0R			(0)
++	#define SUN50I_DMIC_D0D1_VOL_CTR_0L			(8)
++	#define SUN50I_DMIC_D0D1_VOL_CTR_1R			(16)
++	#define SUN50I_DMIC_D0D1_VOL_CTR_1L			(24)
++#define SUN50I_DMIC_D2D3_VOL_CTR                (0x34)
++        #define SUN50I_DMIC_D2D3_VOL_CTR_2R                     (0)
++        #define SUN50I_DMIC_D2D3_VOL_CTR_2L                     (8)
++        #define SUN50I_DMIC_D2D3_VOL_CTR_3R                     (16)
++        #define SUN50I_DMIC_D2D3_VOL_CTR_3L                     (24)
++
+ #define SUN50I_DMIC_HPF_CTRL			(0x38)
+ #define SUN50I_DMIC_VERSION			(0x50)
+ 
+@@ -273,8 +285,30 @@ static const struct of_device_id sun50i_dmic_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
+ 
++static const DECLARE_TLV_DB_SCALE(sun50i_dmic_vol_scale, -12000, 75, 1);
++
++static const struct snd_kcontrol_new sun50i_dmic_controls[] = {
++
++        SOC_DOUBLE_TLV("DMIC Channel 0 Capture Volume", SUN50I_DMIC_D0D1_VOL_CTR,
++                       SUN50I_DMIC_D0D1_VOL_CTR_0L, SUN50I_DMIC_D0D1_VOL_CTR_0R,
++                       0xFF, 0, sun50i_dmic_vol_scale),
++        SOC_DOUBLE_TLV("DMIC Channel 1 Capture Volume", SUN50I_DMIC_D0D1_VOL_CTR,
++                       SUN50I_DMIC_D0D1_VOL_CTR_1L, SUN50I_DMIC_D0D1_VOL_CTR_1R,
++                       0xFF, 0, sun50i_dmic_vol_scale),
++        SOC_DOUBLE_TLV("DMIC Channel 2 Capture Volume", SUN50I_DMIC_D2D3_VOL_CTR,
++                       SUN50I_DMIC_D2D3_VOL_CTR_2L, SUN50I_DMIC_D2D3_VOL_CTR_2R,
++                       0xFF, 0, sun50i_dmic_vol_scale),
++        SOC_DOUBLE_TLV("DMIC Channel 3 Capture Volume", SUN50I_DMIC_D2D3_VOL_CTR,
++                       SUN50I_DMIC_D2D3_VOL_CTR_3L, SUN50I_DMIC_D2D3_VOL_CTR_3R,
++                       0xFF, 0, sun50i_dmic_vol_scale),
++
++
++};
++
+ static const struct snd_soc_component_driver sun50i_dmic_component = {
+ 	.name           = "sun50i-dmic",
++	.controls	= sun50i_dmic_controls,
++	.num_controls	= ARRAY_SIZE(sun50i_dmic_controls),
+ };
+ 
+ static int sun50i_dmic_runtime_suspend(struct device *dev)
+-- 
+2.25.1
 
-Rob
-
-> -		#interrupt-cells = <1>;
-> -		bus-range = <0x0 0xFF>;
-> -		device_type = "pci";
-> -		msi-parent = <&msi_to_gic_gen_0>;
-> -		#address-cells = <3>;
-> -		#size-cells = <2>;
-> -		interrupt-map-mask = <0 0 0 7>;
-> -		interrupt-map = <0 0 0 1 &pcie_0 1>,
-> -			            <0 0 0 2 &pcie_0 2>,
-> -			            <0 0 0 3 &pcie_0 3>,
-> -			            <0 0 0 4 &pcie_0 4>;
-> -		ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000
-> -			  0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
-> -	};
 
