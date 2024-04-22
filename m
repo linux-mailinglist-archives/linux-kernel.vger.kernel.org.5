@@ -1,203 +1,305 @@
-Return-Path: <linux-kernel+bounces-153108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDFCA8AC92E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8849E8AC93C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 11:45:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E24B31C2129C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:44:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB5C01C2138C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 09:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1881A12837C;
-	Mon, 22 Apr 2024 09:44:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59B313118F;
+	Mon, 22 Apr 2024 09:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DpfVDwzM"
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wq9oZW8S"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A93BD4317E
-	for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 09:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26C064A98;
+	Mon, 22 Apr 2024 09:44:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713779042; cv=none; b=VThgER4ywKEQP58/MAiiwIpbHVDuhpxDC7q7CAj08t0VLlc4aN1WkcpPy9BGYiRR7S5l4oYMiafxAfYZRmbrJPkoUfu++F9U1FbPOx1RM4khdwbtW+GdZG6Ec3x5djJXxH92h9zfbvtCeutsXpHtPbza2j+DrqkLXkxkdWzSsZY=
+	t=1713779096; cv=none; b=SqluZylL7KIZUHBIUQ5uMUeu5UVr81FPaXF4vteaky0scnC7DPKFnuWiGyEN9zz24Fk0bIDpCe8TwB2/5viaPuZb3R5af6IUOlXB9axEVHDVEvy1mcAEoTd/ouWFcA9P2EYOQZtWx2JpQjsjhrHnd5gECeeRYpoobFFDEmpl2eQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713779042; c=relaxed/simple;
-	bh=qU7j2eKzRzGdXHdu+v41VpmFqjyLjtsDGOhen0o7tWc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nrogxqd1h3tFlDo4+71l4gi5undLoiQpt4H8M7Vl5rxg24G/b+/vFmZXyc6jg4E6AihFbsIaRAs7hV8dy2PyYTKN/isTwDwiS33ksbKZzRzeNAz1iqTYljDRPeM8Uh1fUZGALLW0AfXoe4YYvycbPGlH9ecVXCnQ5DDpSTIkG1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DpfVDwzM; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-439b3cc8d91so3671811cf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 02:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713779039; x=1714383839; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9VxCHy7J40of+JwGi5IlPyBYxiLpWTy7yUQsIy5MFME=;
-        b=DpfVDwzMCRs96pKN/ZLYJz3tnxkVXAjGlxlPbL7i+c3cuKO/VvW5j4+tuKCRzi7qoQ
-         xokFm8H/oGXJNmYdPh37bLtDFPUMuQAKicPQWtIFXEFqk1uxkU4Wj+POBiH9nYfvR2jE
-         SwD6Qq6By/xCMY1u8DZJ4SI53DnEz6Ts5DatE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713779039; x=1714383839;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9VxCHy7J40of+JwGi5IlPyBYxiLpWTy7yUQsIy5MFME=;
-        b=JDf4pjPM/fKVCSFOxXuMaI7qXN9Ik6xHpg1RcdyMQq/pCCsT53gPgqXpUitJwpq07l
-         wuAKSGZYJK6YXbtFfn3NarGKwWEyQIAR+7s298gvqRNrYtCtaRDndM/f2jucHl5X/LxQ
-         6zeF+Kwm5KM4Yk+ISN73AXq2+utHJk0gce1g7+hFJcnG8zUPmgTAYXAy4CzR0ekch8f4
-         BXxoKKiJB5LCMuZp503zsKZvGIXBwN6oZ4hyG3T3cAci01XjcH+cRiSOST8EuMD3XF1R
-         m3NLjK8e4okKQFjPdrkpxjP9toECBEXvYBSx7zq6KHChVzE+uWyMnSgbeZkeNJetevKI
-         +oNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZlQ3+NCwPyRSASHcpPuWY+aANUgYzvssFzm2psGk9Iwlu4GS7Erl6WQ3bFr+PWwuy1Q1t26wekNuBgbPvZf1vIG/BD8aIfDOPYqRk
-X-Gm-Message-State: AOJu0Yz2JiokG1oOhTyEnP/Vs+tCh7I+2OI/QYo/sLV6vNkssujlUXw0
-	lhVwAo1416My8zbg1WoLX7bhFfQHlatysezr9SDhw65eeX8O3I9K3ozbgTx+TQBSaqpTssuloAw
-	Dnw==
-X-Google-Smtp-Source: AGHT+IEW5MPBgGyilinXVQZJ9W3CEDH8E3RvnqBPRqqp1mLpAm6ryrR5hV7JQt8MwXg9/yptp9w2Qw==
-X-Received: by 2002:ac8:59d2:0:b0:439:b8cb:b54c with SMTP id f18-20020ac859d2000000b00439b8cbb54cmr2428508qtf.29.1713779039009;
-        Mon, 22 Apr 2024 02:43:59 -0700 (PDT)
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com. [209.85.219.52])
-        by smtp.gmail.com with ESMTPSA id kg25-20020a05622a761900b00436eacea78fsm4091894qtb.65.2024.04.22.02.43.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 02:43:58 -0700 (PDT)
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-69b514d3cf4so36874436d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Apr 2024 02:43:58 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX0uvfDt0T4xSwdx/4qFksJ9/V8AP80SP/yCWZUG30lY/ie7JD9doOJZHuys6YaTU0BLyLprMHkPm2AZE8E+lfZiuB8q5JEQHM4Yq0d
-X-Received: by 2002:a0c:fe0d:0:b0:6a0:826b:cdea with SMTP id
- x13-20020a0cfe0d000000b006a0826bcdeamr1640823qvr.47.1713779037993; Mon, 22
- Apr 2024 02:43:57 -0700 (PDT)
+	s=arc-20240116; t=1713779096; c=relaxed/simple;
+	bh=uCqbzvPZq288hG4XoIWQdXz6usWeZU9rInsRoxq3uRE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CYwl4CDrtEVa8D+6XQfLKmk42ujtL9gcUOfFREU27u3Dw4FYSRJj4zDz96JPoRWAtCwmvmWMlThlquDVjO3+EZTLP9TM3I9f46ZssAX9s7KkamQ1UuF+5PAjFNqICel7Ec/1tAOgbnla75q1x25ZiQ0yxllkQcGweEIThG7bY8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wq9oZW8S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D46DFC113CC;
+	Mon, 22 Apr 2024 09:44:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713779096;
+	bh=uCqbzvPZq288hG4XoIWQdXz6usWeZU9rInsRoxq3uRE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Wq9oZW8SV9WNeOAfK+Bh9tajEqJOu7XpQA9boPfE5CRhIfkMQ5hO3YWZqmNj+NRVy
+	 G/P1Hy7NQVOdzE1TMQkWDs+WOvNOCfW1dYE9EKGmQE0GnfBfUDoaUYBsOfSx+oSBMV
+	 lUKKjGabFq9nF+/RdR6r8ca/l8SpGRk/3NZl1XJxyaTzd/iIiY1XCeC+//4NRsLe6Q
+	 ALa8oxjXZUzOccZxS5fSVZKHaQGdavNvCnHSZJTEfZKu5hdYr3XxUB28TNrzWeoRJs
+	 xM4oY/OhGCkl5R+tw93mxLtZeazebNVE41NA1xXhf61OrXooP6l5uOFGUdFmWOc/Sj
+	 viOaUM46QxrWw==
+From: Mike Rapoport <rppt@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Mike Rapoport <rppt@kernel.org>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	netdev@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH v5 00/15] mm: jit/text allocator
+Date: Mon, 22 Apr 2024 12:44:21 +0300
+Message-ID: <20240422094436.3625171-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ab56c444-418a-423d-8528-cf04d5d458ef@moroto.mountain>
- <CANiDSCvGc2hv-6+THH28vE6uaTL+go7144hSYafkhp21uaM1Cg@mail.gmail.com> <f17042fd-890a-4a1e-b51e-6aead9986128@moroto.mountain>
-In-Reply-To: <f17042fd-890a-4a1e-b51e-6aead9986128@moroto.mountain>
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 22 Apr 2024 17:43:44 +0800
-X-Gmail-Original-Message-ID: <CANiDSCvmWnYVib4OqqE+tZuBmGVTOo0ULo57VXwY1ekzT3T2NQ@mail.gmail.com>
-Message-ID: <CANiDSCvmWnYVib4OqqE+tZuBmGVTOo0ULo57VXwY1ekzT3T2NQ@mail.gmail.com>
-Subject: Re: [PATCH] media: stk1160: fix some bounds checking in stk1160_copy_video()
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: =?UTF-8?Q?Ezequiel_Garc=C3=ADa?= <elezegarcia@gmail.com>, 
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Dan
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-On Mon, 22 Apr 2024 at 17:30, Dan Carpenter <dan.carpenter@linaro.org> wrote:
->
-> On Wed, Apr 17, 2024 at 08:48:23PM +0200, Ricardo Ribalda wrote:
-> > Hi Dan
-> >
-> > On Wed, 17 Apr 2024 at 19:51, Dan Carpenter <dan.carpenter@linaro.org> wrote:
-> > >
-> > > The subtract in this condition is reversed.  The ->length is the length
-> > > of the buffer.  The ->bytesused is how many bytes we have copied thus
-> > > far.  When the condition is reversed that means the result of the
-> > > subtraction is always negative but since it's unsigned then the result
-> > > is a very high positive value.  That means the overflow check is never
-> > > true.
-> > >
-> > > Fixes: 9cb2173e6ea8 ("[media] media: Add stk1160 new driver (easycap replacement)")
-> > > Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> > > ---
-> > > This patch is untested, I just spotted it in review.
-> > >
-> > > When this bug is fixed, the two checks for negative values of "lencopy"
-> > > could be removed.  I wrote a version of this patch which removed the
-> > > checks, but in the end I decided to leave the checks.  They're harmless.
-> > >
-> > >  drivers/media/usb/stk1160/stk1160-video.c | 8 ++++----
-> > >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/media/usb/stk1160/stk1160-video.c b/drivers/media/usb/stk1160/stk1160-video.c
-> > > index 366f0e4a5dc0..bfb97ea352e7 100644
-> > > --- a/drivers/media/usb/stk1160/stk1160-video.c
-> > > +++ b/drivers/media/usb/stk1160/stk1160-video.c
-> > > @@ -139,8 +139,8 @@ void stk1160_copy_video(struct stk1160 *dev, u8 *src, int len)
-> > >          * Check if we have enough space left in the buffer.
-> > >          * In that case, we force loop exit after copy.
-> > >          */
-> > > -       if (lencopy > buf->bytesused - buf->length) {
-> > > -               lencopy = buf->bytesused - buf->length;
-> > > +       if (lencopy > buf->length - buf->bytesused) {
-> > > +               lencopy = buf->length - buf->bytesused;
-> > >                 remain = lencopy;
-> > >         }
-> >
-> > I think it is a bit more complicated than bytesused.
-> >
-> > bytesused does not take into consideration the actual position where
-> > it is going to write.
-> >
-> > What we really want to check is if
-> >
-> > offset = dst - buf->mem;
-> > if (offset + lencopy > buf->length) {
-> >   lencopy = buf->length - offset;
-> >   remain = lencopy;
-> > }
-> >
->
-> You're right...  There is a comment explaining why we multiply the
-> number of lines written by two, but it doesn't really clarify anything
-> for me:
->
->         /* Multiply linesdone by two, to take account of the other field */
->
-> What's the "other field"?
+(something went wrong with the prevois posting, sorry for the noise)
 
-I guess it p[0].
+Hi,
 
+Since v3 I looked into making execmem more of an utility toolbox, as we
+discussed at LPC with Mark Rutland, but it was getting more hairier than
+having a struct describing architecture constraints and a type identifying
+the consumer of execmem.
 
-Looks like the device sends first the data for the even lines, and
-then the data for the odd lines (or the other way around).
-And we are descrambling the data in the kernel
+And I do think that having the description of architecture constraints for
+allocations of executable memory in a single place is better than having it
+spread all over the place.
 
-The code uses p[0] to figure out if it is the beginning of a block of
-odds/evens, and if it is odd or even
+The patches available via git:
+https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v5
 
-if (p[0] == 0xc0 || p[0] == 0x80) {
-/* We set next packet parity and
-* continue to get next one
-*/
-dev->isoc_ctl.buf->odd = *p & 0x40;
-dev->isoc_ctl.buf->pos = 0;
-continue;
-}
+v5 changes:
+* rebase on v6.9-rc4 to avoid a conflict in kprobes
+* add copyrights to mm/execmem.c (Luis)
+* fix spelling (Ingo)
+* define MODULES_VADDDR for sparc (Sam)
+* consistently initialize struct execmem_info (Peter)
+* reduce #ifdefs in function bodies in kprobes (Masami) 
 
+v4: https://lore.kernel.org/all/20240411160051.2093261-1-rppt@kernel.org
+* rebase on v6.9-rc2
+* rename execmem_params to execmem_info and execmem_arch_params() to
+  execmem_arch_setup()
+* use single execmem_alloc() API instead of execmem_{text,data}_alloc() (Song)
+* avoid extra copy of execmem parameters (Rick)
+* run execmem_init() as core_initcall() except for the architectures that
+  may allocated text really early (currently only x86) (Will)
+* add acks for some of arm64 and riscv changes, thanks Will and Alexandre
+* new commits:
+  - drop call to kasan_alloc_module_shadow() on arm64 because it's not
+    needed anymore
+  - rename MODULE_START to MODULES_VADDR on MIPS
+  - use CONFIG_EXECMEM instead of CONFIG_MODULES on powerpc as per Christophe:
+    https://lore.kernel.org/all/79062fa3-3402-47b3-8920-9231ad05e964@csgroup.eu/
 
+v3: https://lore.kernel.org/all/20230918072955.2507221-1-rppt@kernel.org
+* add type parameter to execmem allocation APIs
+* remove BPF dependency on modules
 
->
-> I kind of suspect that the stk1160_buffer_done() might be wrong as well.
->
->         vb2_set_plane_payload(&buf->vb.vb2_buf, 0, buf->bytesused);
->                                                    ^^^^^^^^^^^^^^
->
-> We're calculating the space left based on ->pos which can be reset to
-> zero in stk1160_process_isoc().  But ->bytesused isn't reset, so
-> potentially we could end up in a situation where ->bytesused is greater
-> than the ->length of the buffer.  Should stk1160_process_isoc() set
-> ->bytesused to zero as well?
+v2: https://lore.kernel.org/all/20230616085038.4121892-1-rppt@kernel.org
+* Separate "module" and "others" allocations with execmem_text_alloc()
+and jit_text_alloc()
+* Drop ROX entailment on x86
+* Add ack for nios2 changes, thanks Dinh Nguyen
 
-I do not think so. bytes->used is len(odd) + len(even). If you reset
-bytesused then you are only returning 1/2 the size
+v1: https://lore.kernel.org/all/20230601101257.530867-1-rppt@kernel.org
 
+= Cover letter from v1 (sligtly updated) =
 
->
-> regards,
-> dan carpenter
->
+module_alloc() is used everywhere as a mean to allocate memory for code.
+
+Beside being semantically wrong, this unnecessarily ties all subsystmes
+that need to allocate code, such as ftrace, kprobes and BPF to modules and
+puts the burden of code allocation to the modules code.
+
+Several architectures override module_alloc() because of various
+constraints where the executable memory can be located and this causes
+additional obstacles for improvements of code allocation.
+
+A centralized infrastructure for code allocation allows allocations of
+executable memory as ROX, and future optimizations such as caching large
+pages for better iTLB performance and providing sub-page allocations for
+users that only need small jit code snippets.
+
+Rick Edgecombe proposed perm_alloc extension to vmalloc [1] and Song Liu
+proposed execmem_alloc [2], but both these approaches were targeting BPF
+allocations and lacked the ground work to abstract executable allocations
+and split them from the modules core.
+
+Thomas Gleixner suggested to express module allocation restrictions and
+requirements as struct mod_alloc_type_params [3] that would define ranges,
+protections and other parameters for different types of allocations used by
+modules and following that suggestion Song separated allocations of
+different types in modules (commit ac3b43283923 ("module: replace
+module_layout with module_memory")) and posted "Type aware module
+allocator" set [4].
+
+I liked the idea of parametrising code allocation requirements as a
+structure, but I believe the original proposal and Song's module allocator
+was too module centric, so I came up with these patches.
+
+This set splits code allocation from modules by introducing execmem_alloc()
+and and execmem_free(), APIs, replaces call sites of module_alloc() and
+module_memfree() with the new APIs and implements core text and related
+allocations in a central place.
+
+Instead of architecture specific overrides for module_alloc(), the
+architectures that require non-default behaviour for text allocation must
+fill execmem_info structure and implement execmem_arch_setup() that returns
+a pointer to that structure. If an architecture does not implement
+execmem_arch_setup(), the defaults compatible with the current
+modules::module_alloc() are used.
+
+Since architectures define different restrictions on placement,
+permissions, alignment and other parameters for memory that can be used by
+different subsystems that allocate executable memory, execmem APIs
+take a type argument, that will be used to identify the calling subsystem
+and to allow architectures to define parameters for ranges suitable for that
+subsystem.
+
+The new infrastructure allows decoupling of BPF, kprobes and ftrace from
+modules, and most importantly it paves the way for ROX allocations for
+executable memory.
+
+[1] https://lore.kernel.org/lkml/20201120202426.18009-1-rick.p.edgecombe@intel.com/
+[2] https://lore.kernel.org/all/20221107223921.3451913-1-song@kernel.org/
+[3] https://lore.kernel.org/all/87v8mndy3y.ffs@tglx/
+[4] https://lore.kernel.org/all/20230526051529.3387103-1-song@kernel.org
 
 
+Mike Rapoport (IBM) (15):
+  arm64: module: remove unneeded call to kasan_alloc_module_shadow()
+  mips: module: rename MODULE_START to MODULES_VADDR
+  nios2: define virtual address space for modules
+  sparc: simplify module_alloc()
+  module: make module_memory_{alloc,free} more self-contained
+  mm: introduce execmem_alloc() and execmem_free()
+  mm/execmem, arch: convert simple overrides of module_alloc to execmem
+  mm/execmem, arch: convert remaining overrides of module_alloc to
+    execmem
+  riscv: extend execmem_params for generated code allocations
+  powerpc: extend execmem_params for kprobes allocations
+  arch: make execmem setup available regardless of CONFIG_MODULES
+  x86/ftrace: enable dynamic ftrace without CONFIG_MODULES
+  powerpc: use CONFIG_EXECMEM instead of CONFIG_MODULES where
+    appropriate
+  kprobes: remove dependency on CONFIG_MODULES
+  bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of
+
+ arch/Kconfig                         |   8 +-
+ arch/arm/kernel/module.c             |  34 -------
+ arch/arm/mm/init.c                   |  45 +++++++++
+ arch/arm64/kernel/module.c           | 126 -----------------------
+ arch/arm64/kernel/probes/kprobes.c   |   7 --
+ arch/arm64/mm/init.c                 | 140 ++++++++++++++++++++++++++
+ arch/arm64/net/bpf_jit_comp.c        |  11 --
+ arch/loongarch/kernel/module.c       |   6 --
+ arch/loongarch/mm/init.c             |  21 ++++
+ arch/mips/include/asm/pgtable-64.h   |   4 +-
+ arch/mips/kernel/module.c            |  10 --
+ arch/mips/mm/fault.c                 |   4 +-
+ arch/mips/mm/init.c                  |  23 +++++
+ arch/nios2/include/asm/pgtable.h     |   5 +-
+ arch/nios2/kernel/module.c           |  20 ----
+ arch/nios2/mm/init.c                 |  21 ++++
+ arch/parisc/kernel/module.c          |  12 ---
+ arch/parisc/mm/init.c                |  23 ++++-
+ arch/powerpc/Kconfig                 |   2 +-
+ arch/powerpc/include/asm/kasan.h     |   2 +-
+ arch/powerpc/kernel/head_8xx.S       |   4 +-
+ arch/powerpc/kernel/head_book3s_32.S |   6 +-
+ arch/powerpc/kernel/kprobes.c        |  22 +---
+ arch/powerpc/kernel/module.c         |  38 -------
+ arch/powerpc/lib/code-patching.c     |   2 +-
+ arch/powerpc/mm/book3s32/mmu.c       |   2 +-
+ arch/powerpc/mm/mem.c                |  64 ++++++++++++
+ arch/riscv/kernel/module.c           |  12 ---
+ arch/riscv/kernel/probes/kprobes.c   |  10 --
+ arch/riscv/mm/init.c                 |  45 +++++++++
+ arch/riscv/net/bpf_jit_core.c        |  13 ---
+ arch/s390/kernel/ftrace.c            |   4 +-
+ arch/s390/kernel/kprobes.c           |   4 +-
+ arch/s390/kernel/module.c            |  42 +-------
+ arch/s390/mm/init.c                  |  30 ++++++
+ arch/sparc/include/asm/pgtable_32.h  |   2 +
+ arch/sparc/kernel/module.c           |  30 ------
+ arch/sparc/mm/Makefile               |   2 +
+ arch/sparc/mm/execmem.c              |  21 ++++
+ arch/sparc/net/bpf_jit_comp_32.c     |   8 +-
+ arch/x86/Kconfig                     |   2 +
+ arch/x86/kernel/ftrace.c             |  16 +--
+ arch/x86/kernel/kprobes/core.c       |   4 +-
+ arch/x86/kernel/module.c             |  51 ----------
+ arch/x86/mm/init.c                   |  29 ++++++
+ include/linux/execmem.h              | 132 ++++++++++++++++++++++++
+ include/linux/module.h               |   9 ++
+ include/linux/moduleloader.h         |  15 ---
+ kernel/bpf/Kconfig                   |   2 +-
+ kernel/bpf/core.c                    |   6 +-
+ kernel/kprobes.c                     |  63 +++++++-----
+ kernel/module/Kconfig                |   1 +
+ kernel/module/main.c                 | 105 +++++++++----------
+ kernel/trace/trace_kprobe.c          |  20 +++-
+ mm/Kconfig                           |   3 +
+ mm/Makefile                          |   1 +
+ mm/execmem.c                         | 145 +++++++++++++++++++++++++++
+ mm/mm_init.c                         |   2 +
+ 58 files changed, 910 insertions(+), 581 deletions(-)
+ create mode 100644 arch/sparc/mm/execmem.c
+ create mode 100644 include/linux/execmem.h
+ create mode 100644 mm/execmem.c
+
+
+base-commit: 0bbac3facb5d6cc0171c45c9873a2dc96bea9680
 -- 
-Ricardo Ribalda
+2.43.0
+
 
