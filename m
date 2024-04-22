@@ -1,126 +1,123 @@
-Return-Path: <linux-kernel+bounces-153597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-153598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE83D8AD028
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:04:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A0318AD02A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 17:04:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E49B31C21A06
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:04:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C1C11C21D2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Apr 2024 15:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99BA152513;
-	Mon, 22 Apr 2024 15:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C468F152DFC;
+	Mon, 22 Apr 2024 15:04:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="o7QGfXhh"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L6oTyXj5"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F296152523;
-	Mon, 22 Apr 2024 15:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70154152DEE;
+	Mon, 22 Apr 2024 15:04:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713798249; cv=none; b=gkqNUGPjBV+DKpwrn5H7rsnOdzU9cFuNDQT8J37iX84h7TTDWPGFJx8JwDtvCjdeLYcgr/om1PqmDNdK0/xFKkZQPIu2o/oLOgNaEX9cK31LWLLTQJkXFJxoVzQCCjBysIsH0SbAMA6xWcbn6jxd7CNZvQ78uDLlLgPfcUlOftY=
+	t=1713798269; cv=none; b=fFKHW225T1FhwsweJ0LgPzfe3gcra84ZJmx8aw3C3+Jefm5SN5c/Bk62YbiUT64T+Rzps6MT4OyUHZo9ydaqzFHvzThW0BI/l4MmTSE/fV9ZU/5lqOrHoPEqtWEdG4MbZty5RxIeo59omZfs8fiGrfP4JSoNHA5zFl9jFOkKTLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713798249; c=relaxed/simple;
-	bh=VZp1ze4DEOu4wpjMf4hEXpSipiJP0UAh6yOnK1vmw4o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fiy8aJF29qygWG0N2ZB16dEPApEbqNhQcoSOOzB/mQfS4/zjnIUBZbOFC/z8ML1TPENa45uj7hJfR2SlbpzKasIG5UX/fcon/dbBbv/u5fFWQ0qjKFuYRxKxf3aMYRsoLsrfHE4PaWZDMzJR0UvtgcEl6LHdEAoNSB3y2DAxEfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=o7QGfXhh; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=9wOxkCOVRUK81zz0hYioTjDzHLgukrv7N/ab7G/DRNA=; b=o7QGfXhheNbrl27ixrfNEePXFu
-	4EC2dL/ybNPCi8XDCdOuhFFL0X9/z3IYjbr+zsZK5siFquEowAhkX6PMaZCtL5DhkbNXpMtiJyC7B
-	scW9a4mVAaSDGxZXHh+U3DpyXXhFuUZ82vPnPl71Q2eIylZmpzJKjGm58lHVYt1LzesNH4H7qgROa
-	JQmZC6JyjbGTZ7FVcqdanxUsEyo/EFUtFe3PFlgw+L+n4kdHWoUdDU3UcoY/sKUGaet3ButT4lFOr
-	Hc1atYWmqG+TVDNf0nyOfSRo827jxVKj+8DDeKCps++KJa56x0zmR2wpBc8Wy9l0/ogfdbIh/xMHN
-	tCfZ7WSQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ryvD2-0000000ERS1-3CAX;
-	Mon, 22 Apr 2024 15:03:56 +0000
-Date: Mon, 22 Apr 2024 16:03:56 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, jack@suse.cz, akpm@linux-foundation.org,
-	dchinner@redhat.com, tytso@mit.edu, hch@lst.de,
-	martin.petersen@oracle.com, nilay@linux.ibm.com,
-	ritesh.list@gmail.com, mcgrof@kernel.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, ojaswin@linux.ibm.com, p.raghav@samsung.com,
-	jbongio@google.com, okiselev@amazon.com
-Subject: Re: [PATCH RFC 5/7] fs: iomap: buffered atomic write support
-Message-ID: <ZiZ8XGZz46D3PRKr@casper.infradead.org>
-References: <20240422143923.3927601-1-john.g.garry@oracle.com>
- <20240422143923.3927601-6-john.g.garry@oracle.com>
+	s=arc-20240116; t=1713798269; c=relaxed/simple;
+	bh=gY/Fi+RRBpIEtt4g2iWf4ZHqsFPkeoWVasKLGqMuD/g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GLHnnVvn2UiRRfyq78lSbxfiLp2y9TUeMMmWi7PjPE05L1niMBWnPjLUT2Jdei4QOyqDuN2/SxflsWr4tG4RgtHgFuAaWq9zYHVfrLqFkDmQlJZVb7mHGGl7A47d0yUmFuDQmZp4Cmcyp+S3I+J0IQpe1Gi2HLCZICQQ0R79lLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L6oTyXj5; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56c5d05128dso4111276a12.0;
+        Mon, 22 Apr 2024 08:04:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713798266; x=1714403066; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gY/Fi+RRBpIEtt4g2iWf4ZHqsFPkeoWVasKLGqMuD/g=;
+        b=L6oTyXj51vKPEeiEMXkPtGzLwNOYhILnNZLSa+ymMCu5L9kTnOo8UE8Iq0/zbAtMSu
+         5rtD9KnU+xFrTaVDM7ZdU5RWYIx9bShMTiHMHTb5ZoAuvS2abKP3ox8sR4wXDz20K49R
+         sKNJXoLvtrkeBrQNKyXZxrid4AI1d9GmnFPFtZ0ankeOqt7GQ68DBZBtH/EhAmeSd5zv
+         5zVr8NGo8ABO1FM80/KxU0oi5QkZ00wUAplGX9k9sN8PkX23vcodSvqjBml3FXfNcrgJ
+         LyMUP6Y1tV2cJ+PEFUBJ0gP6azCSv7eIcJFGVXfALc9+kZqveYEakMmLpc53DHIavoue
+         sjUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713798266; x=1714403066;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gY/Fi+RRBpIEtt4g2iWf4ZHqsFPkeoWVasKLGqMuD/g=;
+        b=AwGjMiORdJ57OHQJgDnbOJd8KQDQhs3NCWemuXJCZX/GxdBthKT6UTR7vwWRbgfNp8
+         YXwmV+1OiS2Q4M8r1ckagKNCCcyIkrKh8ulUzzzyHk2mvKC7Tx4XygFSagBbpoSG3Zpy
+         hSzYaWMtkx0praCgML4kyfgUZlBcofpRNVZrEqbYXfql9mOWMPgUYWm7cZJQFZl4RLlQ
+         EeJWBYjYRTEjO2yYtmW/D8Dcd8q3vSKUoxqZRNamXBjUefTpkwsS69FcAl8QImGPHluy
+         pS7/5YYIlnVSeE+jqjn//PVCuBPtg6Fn/s2K3rrDDFuhjtqMgZFeGrpuc2t8UD9xYI83
+         H7IA==
+X-Forwarded-Encrypted: i=1; AJvYcCUmlbor7o9ST7iVSr/z7wU+n0t2WATbCDqJSS3Zw0Vw84LedXXQL2C0CrQG5QpEedNuXt+/8TEWUjIoTQZEaZa6kb1LMmvOeQgDtv2x7u4mbbN6VIZ3UX5C2NUcInBYs64ExSYb7gMTLd4=
+X-Gm-Message-State: AOJu0YxfBhAjDhzSeSikHlPqpy4xSQG/OXyofxGXCaHwWE93c+VjrXXT
+	zU6HfawXJykcAzj4ls1PzrR8vSqfvw3f0xOj5y8hqHwMvyMlE1PmbSh85ykngW6rfIJxSfSB4fz
+	yeTpJMxOzpQGrkA/WZT8N6dMtLFk=
+X-Google-Smtp-Source: AGHT+IFjdK0F6Mzl4xHNa8qxjJqTkNZkhrQiips+tPOEjhjdY1XsbD081mImRM2z5k2J0XZ09hqyu8Rz8Tifkr3lZFs=
+X-Received: by 2002:a50:c010:0:b0:56e:e76:6478 with SMTP id
+ r16-20020a50c010000000b0056e0e766478mr6177689edb.31.1713798265473; Mon, 22
+ Apr 2024 08:04:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240422143923.3927601-6-john.g.garry@oracle.com>
+References: <CAJg=8jyC1+s80etZgWteps0Q0yEsR2NE23+Bf+Daa7zgJ2qKBA@mail.gmail.com>
+ <ZiYDaN7fDzzEyVQr@infradead.org> <ZiYDiptCPKDNwE-J@infradead.org>
+In-Reply-To: <ZiYDiptCPKDNwE-J@infradead.org>
+From: Marius Fleischer <fleischermarius@gmail.com>
+Date: Mon, 22 Apr 2024 08:04:14 -0700
+Message-ID: <CAJg=8jwM30ui5zZuFW9d33oAdKk4uk1i26aoKQ2TrQcv6PGsdw@mail.gmail.com>
+Subject: Re: INFO: task hung in bdev_open
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
+	harrisonmichaelgreen@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Apr 22, 2024 at 02:39:21PM +0000, John Garry wrote:
-> Add special handling of PG_atomic flag to iomap buffered write path.
-> 
-> To flag an iomap iter for an atomic write, set IOMAP_ATOMIC.
-> 
-> For a folio associated with a write which has IOMAP_ATOMIC set, set
-> PG_atomic.
-> 
-> Otherwise, when IOMAP_ATOMIC is unset, clear PG_atomic.
-> 
-> This means that for an "atomic" folio which has not been written back, it
-> loses it "atomicity". So if userspace issues a write with RWF_ATOMIC set
-> and another write with RWF_ATOMIC unset and which fully or partially
-> overwrites that same region as the first write, that folio is not written
-> back atomically. For such a scenario to occur, it would be considered a
-> userspace usage error.
-> 
-> To ensure that a buffered atomic write is written back atomically when
-> the write syscall returns, RWF_SYNC or similar needs to be used (in
-> conjunction with RWF_ATOMIC).
-> 
-> As a safety check, when getting a folio for an atomic write in
-> iomap_get_folio(), ensure that the length matches the inode mapping folio
-> order-limit.
-> 
-> Only a single BIO should ever be submitted for an atomic write. So modify
-> iomap_add_to_ioend() to ensure that we don't try to write back an atomic
-> folio as part of a larger mixed-atomicity BIO.
-> 
-> In iomap_alloc_ioend(), handle an atomic write by setting REQ_ATOMIC for
-> the allocated BIO.
-> 
-> When a folio is written back, again clear PG_atomic, as it is no longer
-> required. I assume it will not be needlessly written back a second time...
+Hi Christoph,
 
-I'm not taking a position on the mechanism yet; need to think about it
-some more.  But there's a hole here I also don't have a solution to,
-so we can all start thinking about it.
+Thank you so much for your responsel!
 
-In iomap_write_iter(), we call copy_folio_from_iter_atomic().  Through no
-fault of the application, if the range crosses a page boundary, we might
-partially copy the bytes from the first page, then take a page fault on
-the second page, hence doing a short write into the folio.  And there's
-nothing preventing writeback from writing back a partially copied folio.
+On Sun, 21 Apr 2024 at 23:28, Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Sun, Apr 21, 2024 at 11:27:52PM -0700, Christoph Hellwig wrote:
+> > On Sat, Apr 20, 2024 at 06:19:01PM -0700, Marius Fleischer wrote:
+> > > Hi,
+> > >
+> > > We would like to report the following bug which has been found by our
+> > > modified version of syzkaller.
+> >
+> > For your reports to be useful please make sure your szybot actually
+> > provides the same features as the real one, that is link to the
+> > reproducer, mention the exact git commit reproducing it, provide a way
+> > to submit fixes.
+>
+> .. or just feed your modifications to the original one so that
+> everything just works..
+>
 
-Now, if it's not dirty, then it can't be written back.  So if we're
-doing an atomic write, we could clear the dirty bit after calling
-iomap_write_begin() (given the usage scenarios we've discussed, it should
-always be clear ...)
+Please note that the original email does have a reproducer and kernel config
+attached, and specifies the exact git commit of the kernel version on which we
+found this crash. I am happy to manually test any patch attempts. Unfortunately,
+I do not have the infrastructure to host an automated system similar to syzbot.
+Please let me know if there is any additional information in regards
+to this report
+that would be helpful for you!
 
-We need to prevent the "fall back to a short copy" logic in
-iomap_write_iter() as well.  But then we also need to make sure we don't
-get stuck in a loop, so maybe go three times around, and if it's still
-not readable as a chunk, -EFAULT?
+As of right now, we are not yet ready to approach the team around syzkaller
+to see if they are interested in our modifications as our work is still ongoing
+research. We are certainly hoping to do this at a later stage!
+
+Wishing you a nice start to the week!
+
+Best,
+Marius
 
