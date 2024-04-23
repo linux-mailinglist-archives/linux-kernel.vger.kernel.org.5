@@ -1,106 +1,109 @@
-Return-Path: <linux-kernel+bounces-155746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33E9C8AF68B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:30:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61EB88AF69A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C69EE1F25319
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:30:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D58028C02F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01AAC22F17;
-	Tue, 23 Apr 2024 18:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179CB13FD71;
+	Tue, 23 Apr 2024 18:31:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="cG6URue7"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WfiCVzYk"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751091AACB;
-	Tue, 23 Apr 2024 18:30:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA751DDC5;
+	Tue, 23 Apr 2024 18:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713897047; cv=none; b=SaBfBCoHSaep/jG6Ka8lr14MrTm23E2JZr+cA2CYNzKk1lyAdC4Ve/rEdfhufcJ7I7tYotsgAc6mlbYkaCMMAYXNz/IWhVhb9tqgufSU+D3E4SEkbuwtcIEGpSs25ia0MLni0VZ3w4YkXA+DMtXegZbfjl33HY9TtW1azmQoTog=
+	t=1713897108; cv=none; b=na4g+41QcKKUfAUVIVfgS47Xqo5jjlr+WdTFRhS9vKR6s+5mQb7nBMLxbUPDiyj1X604PH0Vh9cxVnLkBSuH6OceENWw5B7DCxC7fxEsRhL7/x0cB+QCvMHW3y7I5V/XNtj+ySeyhr0cf2xY2Oen+mjYV9nH9mrTZQjPtxonWao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713897047; c=relaxed/simple;
-	bh=RFLVao8VFS9H/vSYh9wVNzB1/kKqDD9w28nPAFPN6MA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fZNLgr0jwDW3jcAaNob9eZO/+d74XmTo8ubNMWAmBfiLudysEb08fOzhuO8yZ9IU8adJavD8E3Bg5ftx8uPSWOPuRSCKuOgnstg9iSX4rdxuDmDs+joq4MLYdQjQJRbk3hRFUFtM6Kow0Sju4MuVt6fZZQZwmaBpbdgIaBmvKaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=cG6URue7; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 301c8b56d00d4e83; Tue, 23 Apr 2024 20:30:43 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id DCBCB66DB8D;
-	Tue, 23 Apr 2024 20:30:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1713897043;
-	bh=RFLVao8VFS9H/vSYh9wVNzB1/kKqDD9w28nPAFPN6MA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=cG6URue7kEmcSZ8dgkbCjfb7T9PYZWQWtgjmHoobjdDRf57IRPso46UK6u4ckSqlF
-	 GdWIy3qBU42X9C9+sOdkM8RRGU/0BVdNAcuZlGjBR8HB2HgSTxXPAYY/6JhyYN8a/Z
-	 XV1h6HFw2/K4OENCSUo2cEBX4RferB9V/ljHt5X9tTpV0XlKULZ9dCy+RLzLjux/jR
-	 6PIlLQY+MRfOz9eaKSNpH5gUVi08Rjs3rI68LvTbbxWdS7IGuRBeCbj1f5hDrhDofB
-	 EgZ0sO9OtQLAb6V7C4TegAfEV1+YLB1S3Qy1jL8y/IcceLcrkmaLosSCwwQDzTb220
-	 QrdS1UM4QXFZQ==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: linux-next: duplicate patch in the pm tree
-Date: Tue, 23 Apr 2024 20:30:42 +0200
-Message-ID: <12425337.O9o76ZdvQC@kreacher>
-In-Reply-To: <20240422081547.7d75d471@canb.auug.org.au>
-References: <20240422081547.7d75d471@canb.auug.org.au>
+	s=arc-20240116; t=1713897108; c=relaxed/simple;
+	bh=zCEHlyKJhhK4MvhJVSRGGSCDG0oxF0tC8ADUk82NkVk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bfRq5v77AOHR8aaGY6eV8O+t4obBkrmNNQ7UZr5mkx1KRud0on5EW8Th/1x6gZNv4CIsmrcPxMemhMvacMK0q4VuGTyc0tyiFQ6k3WkB1jtv5bpJZZWCSoec0Z418b+IwL4cLm2rxS+fXaHMUM/K6XuSCnm8GJ3Tp8SKroRPu+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WfiCVzYk; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+	bh=Rogg05ztOu4aP2/pn8CD75vsgL5H5uwqaxXujjk6r6E=; b=WfiCVzYkyj37KGe/1NcuIa1Hgk
+	I9gAfHu6MCMw7NSXSor84TLrOU+mUG0ndyfzjVt0moZbaiRHo/8L+p3QYdcySteGNhcAPGJCKkoWj
+	g/687Hepcmtf5PZKpuZ7znbxvUnMDD43qnPnbu67zfXVJS8SML5AtXvgw73tSyJkv3Nhg5awIIQnq
+	1JNMkoOZN3LoUHS53IUhOaxE7wP++2K6T0ediCLJbAhO11cNq5v9xJzhveqww2JPt0aKNdvm5A/Y5
+	rB55b5NewsYDat/UO4lQuhE8Q3txZ3JjdTGVGjV+Hgo05PhOwNnuMGRbC0LVs1cOtEcnZeCVZdr0F
+	79Ap4ebA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rzKvd-000000018V6-22Td;
+	Tue, 23 Apr 2024 18:31:41 +0000
+Date: Tue, 23 Apr 2024 11:31:41 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: Joel Granados <j.granados@samsung.com>,
+	Kees Cook <keescook@chromium.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org,
+	netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-mm@kvack.org,
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-xfs@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, kexec@lists.infradead.org,
+	linux-hardening@vger.kernel.org, bridge@lists.linux.dev,
+	lvs-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+	rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org,
+	linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
+Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
+ of sysctl handlers
+Message-ID: <Zif-jf8Takojtq7x@bombadil.infradead.org>
+References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeluddguddvjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeegpdhrtghpthhtohepshhfrhestggrnhgsrdgruhhughdrohhrghdrrghupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqnhgvgihtsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-Hi Stephen,
+On Tue, Apr 23, 2024 at 09:54:35AM +0200, Thomas Weiﬂschuh wrote:
+> * Patch 1 is a bugfix for the stack_erasing sysctl handler
+> * Patches 2-10 change various helper functions throughout the kernel to
+>   be able to handle 'const ctl_table'.
+> * Patch 11 changes the signatures of all proc handlers through the tree.
+>   Some other signatures are also adapted, for details see the commit
+>   message.
+> 
+> Only patch 1 changes any code at all.
+> 
+> The series was compile-tested on top of next-20230423 for
+> i386, x86_64, arm, arm64, riscv, loongarch, s390 and m68k.
+> 
+> The series was split from my larger series sysctl-const series [0].
+> It only focusses on the proc_handlers but is an important step to be
+> able to move all static definitions of ctl_table into .rodata.
+> 
+> [0] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net/
+> 
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
 
-On Monday, April 22, 2024 12:15:47 AM CEST Stephen Rothwell wrote:
-> 
-> --Sig_/2mWov6L/1T3YTV5TB80hoeT
-> Content-Type: text/plain; charset=US-ASCII
-> Content-Transfer-Encoding: quoted-printable
-> 
-> Hi all,
-> 
-> The following commit is also in Linus Torvalds' tree as a different
-> commit (but the same patch):
-> 
->   6711564863de ("thermal/debugfs: Add missing count increment to thermal_de=
-> bug_tz_trip_up()")
-> 
-> This is commit
-> 
->   b552f63cd437 ("thermal/debugfs: Add missing count increment to thermal_de=
-> bug_tz_trip_up()")
-> 
-> in Linus' tree.
+Cover letters don't need SOBS we only use them for patches.
 
-Thanks for the report, this should be fixed now in the PM tree.
+But anyway:
 
-Cheers,
-Rafael
+Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
 
-
-
+  Luis
 
