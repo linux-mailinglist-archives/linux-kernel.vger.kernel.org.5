@@ -1,131 +1,269 @@
-Return-Path: <linux-kernel+bounces-154696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874D18ADFD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:35:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D708ADFDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:35:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B94FF1C22705
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:35:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC40B1C21B35
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:35:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E77524A6;
-	Tue, 23 Apr 2024 08:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BBBD524A6;
+	Tue, 23 Apr 2024 08:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DJ+CfAEc"
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dnVRavYR"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3F5D320E
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14491262BD
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713861310; cv=none; b=rajDJ9eRw/F5W+R/V5ItpU0t2DFgow4/m1T4lpqZfpolKZlGvz38FBdyCIqQu5t3uRqR3ZCqss/27r/45ctXiupZlXopTbf/6ag5ZtFtqvXmNNEKQc8l+oaLQ3lkZv11qGCu0PsO3Kzhfixo7pZeC0+9L7PzDlwauGz6AccNnF0=
+	t=1713861328; cv=none; b=iSbevAegRpbB9MMJtWv+Y5xI63rcSEfanlFuah/AJf8V3+imVbrWcB6huZ9eBDCQpr55JQdWSliRS4fPtYGobpvwXdnxPVnQrVkpLjskyFjEcakp5FOdomll2kOB/jRBzzUwd76EiiHbT1JvfuoRNKuKnMzOPzOb9WQVL9rutjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713861310; c=relaxed/simple;
-	bh=JvAVTujgcuiw/0tR/hMqo55xPe+4zmGUHWSlxH3z/Bg=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=dr2ThAn+ooLDihL2ytBKhyZRlfkfuXwT3ugkZXpC6pMfcA7kg5zQWtzmpMrZNNQ1mIt8Oxz25AJJyXLv6X75ltGfg4J4LWLXBcnsbvVcbWpI5a0/SoCKs7+l8Pq6ZjMSg0afoEYFs4x/qtbm2xrx0h7pg3J+/qzBzKykzqYfaRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DJ+CfAEc; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1713861328; c=relaxed/simple;
+	bh=QhvqyhIsTHNTsZQVv5LUhXm64Ffg94gJwiDYosBvGdQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V2dgG66aRsoF2l6YOhvBP3TnLazLcqSmZ5jbdiLos9gxQirG8IvQyED8CUbymcsiFb7fqkBDvhQUss0SHVI2RvJAjJWVP9o/HtVK3ASLHQs/WnFvKch3Hod8vQCX+kjdXBPjA5Zl9kWWWyu7V8gk1ngn412x4SpwJAFTRDinjT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dnVRavYR; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713861325;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+vJaKEAfDiE8wRROjPB/46PERXPjfD/eS5OLTnH5/nA=;
+	b=dnVRavYRhDggrzFpw8KLyPZbMc3totMqUuSTGsv8Lbxc5gHxoaKHNy9vTDog7Cu3exIng8
+	9G/yAfqmQH82FoitAPyfnwdt3dvPfH9cPz0H9HA0Rn76HTKOQUerMdPd9jVO0yHeXyKqrS
+	VjKkMHsBjKYsVWHpsuDXcwsjRVErHyk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-141-g2CQCaSPMliKrT62mELnjQ-1; Tue, 23 Apr 2024 04:35:23 -0400
+X-MC-Unique: g2CQCaSPMliKrT62mELnjQ-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-343f08542f8so3864451f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 01:35:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713861322; x=1714466122;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+vJaKEAfDiE8wRROjPB/46PERXPjfD/eS5OLTnH5/nA=;
+        b=QFut5vxuCQEdjMBgdzg8s3fUzoo4rEkl1tC2HFsDXz0ZZux48pOJEOKt8+jFEDooeg
+         aiZ9rYJprK1hdMJMdeQOZyTpqcrVYHt7G8Ih7TmYJ6rmOHyORQBSvKN32UxGC6zaeklI
+         V3IkLdBLvknvFVB2PAXEJVYd/c6Z97e64VSckLLldDkqMrf0YsfbuX2JEpKWGB3uM5v0
+         FgIRxPscgsPsIz+5G+heRD+0tD8G1MC5yKKrZSsrUEacrk5mUGVtd3TIxn/49Ts2srBz
+         8u8w8B6n6nH60e7PcpNJcgNS5hF76vBVTXDjBInFDDJzsCay0/XKl56N30TS1hEhVtWj
+         OPOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVPe5EKZrWc3YLbto4pFgDteBRroJOKZTq/Md2A0t2WN6RsExJ1VWlgt5Q4Hw8F+lWhUSTmqOBP7yhbEEpwlbxx3YTJO+inyGp0KT4M
+X-Gm-Message-State: AOJu0YyMxK78B1nghDMDiBeJpGN0FozHgg5ptTIkebJx8uCXBthiq6AA
+	k4PLo0CZzlkuj507+V80CGTm743OeYKyd48P9u+WsMKKCdmqNpHhAz72V8tfbHpOqM8KtYRicO5
+	Y9eLIzMbC0yVpmL8r0IiQ7k72VhnzfKPJ2lYsivvHfsDKbNV5qxlEHosUnRBvQw==
+X-Received: by 2002:a05:6000:dc3:b0:34b:3660:e2a9 with SMTP id dw3-20020a0560000dc300b0034b3660e2a9mr2764020wrb.11.1713861322130;
+        Tue, 23 Apr 2024 01:35:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEX4SaLtyioB9h3624ku7UiJ/Wtf/loc9Olj195YLr4+j8FwgrH++GD+muge83O5ZK3GOZNOw==
+X-Received: by 2002:a05:6000:dc3:b0:34b:3660:e2a9 with SMTP id dw3-20020a0560000dc300b0034b3660e2a9mr2763997wrb.11.1713861321532;
+        Tue, 23 Apr 2024 01:35:21 -0700 (PDT)
+Received: from redhat.com ([2a06:c701:7429:3c00:dc4a:cd5:7b1c:f7c2])
+        by smtp.gmail.com with ESMTPSA id f18-20020adff592000000b00343a0e2375esm13854101wro.27.2024.04.23.01.35.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 01:35:20 -0700 (PDT)
+Date: Tue, 23 Apr 2024 04:35:18 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Gavin Liu <gavin.liu@jaguarmicro.com>
+Cc: "jasowang@redhat.com" <jasowang@redhat.com>,
+	Angus Chen <angus.chen@jaguarmicro.com>,
+	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
+	"xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Heng Qi <hengqi@linux.alibaba.com>
+Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= [PATCH v5] vp_vdpa: don't
+ allocate unused msix vectors
+Message-ID: <20240423043424-mutt-send-email-mst@kernel.org>
+References: <ffab38f0-2ec6-4ed2-b0f8-398f2829b71d@linux.alibaba.com>
+ <20240410033020.1310-1-yuxue.liu@jaguarmicro.com>
+ <20240422080729-mutt-send-email-mst@kernel.org>
+ <SEYPR06MB6756E87AE40D93704A0614A9EC112@SEYPR06MB6756.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713861306;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4cVFQdnmZhnHQm7CDK2o2kagEKgCqmKyp5VX7FCc9Es=;
-	b=DJ+CfAEcJNuA1bAj859OhU82Ws9DC+hNpzlw2XJHNSNAUzgK1FpRl6IfxcBKbotBqA+/ds
-	5iT0VkQyA6COHG7S1ExJ5axG41jighibwYoLxAhZN6Myz6AV/toYbtxYbZZIp3fK7DS3vo
-	B8rtbFNiB56JI7l9noA+O1riUaC3LxI=
-Date: Tue, 23 Apr 2024 08:35:03 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Yajun Deng" <yajun.deng@linux.dev>
-Message-ID: <b6ea1fb5bc6c06d2855e41b4034656b0a76b58f5@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH] mm/rmap: remove unnecessary page_table_lock
-To: "David Hildenbrand" <david@redhat.com>, akpm@linux-foundation.org
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-In-Reply-To: <fd7fde90-21ea-4617-be17-ba387b44feaf@redhat.com>
-References: <20240422105212.1485788-1-yajun.deng@linux.dev>
- <b848c431-deca-42e4-925c-673b3fa1f251@redhat.com>
- <3c452d5db5b3d5879160ab62a9e0ac4481a6298a@linux.dev>
- <fd7fde90-21ea-4617-be17-ba387b44feaf@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <SEYPR06MB6756E87AE40D93704A0614A9EC112@SEYPR06MB6756.apcprd06.prod.outlook.com>
 
-April 23, 2024 at 4:18 PM, "David Hildenbrand" <david@redhat.com> wrote:
+On Tue, Apr 23, 2024 at 01:39:17AM +0000, Gavin Liu wrote:
+> On Wed, Apr 10, 2024 at 11:30:20AM +0800, lyx634449800 wrote:
+> > From: Yuxue Liu <yuxue.liu@jaguarmicro.com>
+> >
+> > When there is a ctlq and it doesn't require interrupt callbacks,the 
+> > original method of calculating vectors wastes hardware msi or msix 
+> > resources as well as system IRQ resources.
+> >
+> > When conducting performance testing using testpmd in the guest os, it 
+> > was found that the performance was lower compared to directly using 
+> > vfio-pci to passthrough the device
+> >
+> > In scenarios where the virtio device in the guest os does not utilize 
+> > interrupts, the vdpa driver still configures the hardware's msix 
+> > vector. Therefore, the hardware still sends interrupts to the host os.
+> 
+> >I just have a question on this part. How come hardware sends interrupts does not guest driver disable them?
+>                
+>    1：Assuming the guest OS's Virtio device is using PMD mode, QEMU sets the call fd to -1
+>    2：On the host side, the vhost_vdpa program will set vp_vdpa->vring[i].cb.callback to invalid
+>    3：Before the modification, the vp_vdpa_request_irq function does not check whether 
+>       vp_vdpa->vring[i].cb.callback is valid. Instead, it enables the hardware's MSIX
+> 	  interrupts based on the number of queues of the device
+> 
 
+So MSIX is enabled but why would it trigger? virtio PMD in poll mode
+presumably suppresses interrupts after all.
 
+> 
+> 
+> ----- Original Message -----
+> From: Michael S. Tsirkin mst@redhat.com
+> Sent: April 22, 2024 20:09
+> To: Gavin Liu gavin.liu@jaguarmicro.com
+> Cc: jasowang@redhat.com; Angus Chen angus.chen@jaguarmicro.com; virtualization@lists.linux.dev; xuanzhuo@linux.alibaba.com; linux-kernel@vger.kernel.org; Heng Qi hengqi@linux.alibaba.com
+> Subject: Re: [PATCH v5] vp_vdpa: don't allocate unused msix vectors
+> 
+> 
+> 
+> External Mail: This email originated from OUTSIDE of the organization!
+> Do not click links, open attachments or provide ANY information unless you recognize the sender and know the content is safe.
+> 
+> 
+> On Wed, Apr 10, 2024 at 11:30:20AM +0800, lyx634449800 wrote:
+> > From: Yuxue Liu <yuxue.liu@jaguarmicro.com>
+> >
+> > When there is a ctlq and it doesn't require interrupt callbacks,the 
+> > original method of calculating vectors wastes hardware msi or msix 
+> > resources as well as system IRQ resources.
+> >
+> > When conducting performance testing using testpmd in the guest os, it 
+> > was found that the performance was lower compared to directly using 
+> > vfio-pci to passthrough the device
+> >
+> > In scenarios where the virtio device in the guest os does not utilize 
+> > interrupts, the vdpa driver still configures the hardware's msix 
+> > vector. Therefore, the hardware still sends interrupts to the host os.
+> 
+> I just have a question on this part. How come hardware sends interrupts does not guest driver disable them?
+> 
+> > Because of this unnecessary
+> > action by the hardware, hardware performance decreases, and it also 
+> > affects the performance of the host os.
+> >
+> > Before modification:(interrupt mode)
+> >  32:  0   0  0  0 PCI-MSI 32768-edge    vp-vdpa[0000:00:02.0]-0
+> >  33:  0   0  0  0 PCI-MSI 32769-edge    vp-vdpa[0000:00:02.0]-1
+> >  34:  0   0  0  0 PCI-MSI 32770-edge    vp-vdpa[0000:00:02.0]-2
+> >  35:  0   0  0  0 PCI-MSI 32771-edge    vp-vdpa[0000:00:02.0]-config
+> >
+> > After modification:(interrupt mode)
+> >  32:  0  0  1  7   PCI-MSI 32768-edge  vp-vdpa[0000:00:02.0]-0
+> >  33: 36  0  3  0   PCI-MSI 32769-edge  vp-vdpa[0000:00:02.0]-1
+> >  34:  0  0  0  0   PCI-MSI 32770-edge  vp-vdpa[0000:00:02.0]-config
+> >
+> > Before modification:(virtio pmd mode for guest os)
+> >  32:  0   0  0  0 PCI-MSI 32768-edge    vp-vdpa[0000:00:02.0]-0
+> >  33:  0   0  0  0 PCI-MSI 32769-edge    vp-vdpa[0000:00:02.0]-1
+> >  34:  0   0  0  0 PCI-MSI 32770-edge    vp-vdpa[0000:00:02.0]-2
+> >  35:  0   0  0  0 PCI-MSI 32771-edge    vp-vdpa[0000:00:02.0]-config
+> >
+> > After modification:(virtio pmd mode for guest os)
+> >  32: 0  0  0   0   PCI-MSI 32768-edge   vp-vdpa[0000:00:02.0]-config
+> >
+> > To verify the use of the virtio PMD mode in the guest operating 
+> > system, the following patch needs to be applied to QEMU:
+> > https://lore.kernel.org/all/20240408073311.2049-1-yuxue.liu@jaguarmicr
+> > o.com
+> >
+> > Signed-off-by: Yuxue Liu <yuxue.liu@jaguarmicro.com>
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+> > Reviewed-by: Heng Qi <hengqi@linux.alibaba.com>
+> > ---
+> > V5: modify the description of the printout when an exception occurs
+> > V4: update the title and assign values to uninitialized variables
+> > V3: delete unused variables and add validation records
+> > V2: fix when allocating IRQs, scan all queues
+> >
+> >  drivers/vdpa/virtio_pci/vp_vdpa.c | 22 ++++++++++++++++------
+> >  1 file changed, 16 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c 
+> > b/drivers/vdpa/virtio_pci/vp_vdpa.c
+> > index df5f4a3bccb5..8de0224e9ec2 100644
+> > --- a/drivers/vdpa/virtio_pci/vp_vdpa.c
+> > +++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
+> > @@ -160,7 +160,13 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
+> >       struct pci_dev *pdev = mdev->pci_dev;
+> >       int i, ret, irq;
+> >       int queues = vp_vdpa->queues;
+> > -     int vectors = queues + 1;
+> > +     int vectors = 1;
+> > +     int msix_vec = 0;
+> > +
+> > +     for (i = 0; i < queues; i++) {
+> > +             if (vp_vdpa->vring[i].cb.callback)
+> > +                     vectors++;
+> > +     }
+> >
+> >       ret = pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSIX);
+> >       if (ret != vectors) {
+> > @@ -173,9 +179,12 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
+> >       vp_vdpa->vectors = vectors;
+> >
+> >       for (i = 0; i < queues; i++) {
+> > +             if (!vp_vdpa->vring[i].cb.callback)
+> > +                     continue;
+> > +
+> >               snprintf(vp_vdpa->vring[i].msix_name, VP_VDPA_NAME_SIZE,
+> >                       "vp-vdpa[%s]-%d\n", pci_name(pdev), i);
+> > -             irq = pci_irq_vector(pdev, i);
+> > +             irq = pci_irq_vector(pdev, msix_vec);
+> >               ret = devm_request_irq(&pdev->dev, irq,
+> >                                      vp_vdpa_vq_handler,
+> >                                      0, vp_vdpa->vring[i].msix_name, 
+> > @@ -185,21 +194,22 @@ static int vp_vdpa_request_irq(struct vp_vdpa *vp_vdpa)
+> >                               "vp_vdpa: fail to request irq for vq %d\n", i);
+> >                       goto err;
+> >               }
+> > -             vp_modern_queue_vector(mdev, i, i);
+> > +             vp_modern_queue_vector(mdev, i, msix_vec);
+> >               vp_vdpa->vring[i].irq = irq;
+> > +             msix_vec++;
+> >       }
+> >
+> >       snprintf(vp_vdpa->msix_name, VP_VDPA_NAME_SIZE, "vp-vdpa[%s]-config\n",
+> >                pci_name(pdev));
+> > -     irq = pci_irq_vector(pdev, queues);
+> > +     irq = pci_irq_vector(pdev, msix_vec);
+> >       ret = devm_request_irq(&pdev->dev, irq, vp_vdpa_config_handler, 0,
+> >                              vp_vdpa->msix_name, vp_vdpa);
+> >       if (ret) {
+> >               dev_err(&pdev->dev,
+> > -                     "vp_vdpa: fail to request irq for vq %d\n", i);
+> > +                     "vp_vdpa: fail to request irq for config: %d\n", 
+> > + ret);
+> >                       goto err;
+> >       }
+> > -     vp_modern_config_vector(mdev, queues);
+> > +     vp_modern_config_vector(mdev, msix_vec);
+> >       vp_vdpa->config_irq = irq;
+> >
+> >       return 0;
+> > --
+> > 2.43.0
+> 
 
->=20
->=20On 23.04.24 09:53, Yajun Deng wrote:
->=20
->=20>=20
->=20> April 22, 2024 at 7:24 PM, "David Hildenbrand" <david@redhat.com> w=
-rote:
-> >=20
->=20>  > >>
-> >=20
->=20> >=20
->=20> > On 22.04.24 12:52, Yajun Deng wrote:
-> > >=20
->=20>=20
->=20>  page_table_lock is a lock that for page table, we won't change pag=
-e
-> >=20
->=20>  table in __anon_vma_prepare(). As we can see, it works well in
-> >=20
->=20>  anon_vma_clone(). They do the same operation.
-> >=20
->=20> >=20
->=20> > We are reusing mm->page_table_lock to serialize, not the *actual*=
- low-level page table locks that really protect PTEs.
-> > >=20
->=20> >  With that locking gone, there would be nothing protection vma->a=
-non_vma.
-> > >=20
->=20> >  Note that anon_vma_clone() is likely called with the mmap_lock h=
-eld in write mode, which is not the case for __anon_vma_prepare() ...
-> > >=20
->=20>=20
->=20>  Yes, anon_vma_clone() is called with the mmap_lock held. I added m=
-map_assert_write_locked(dst->vm_mm) to prove it.
-> >=20
->=20>  I added mmap_assert_write_locked(vma->vm_mm) in __anon_vma_prepare=
-() at the same time, it shows __anon_vma_prepare()
-> >=20
->=20>  is also called with the mmap_lock held too.
-> >=20
->=20
-> Make sure you actually have lockdep built in and enabled.
->=20
-
-This=20is my config.
-CONFIG_LOCKDEP=3Dn
-CONFIG_DEBUG_VM=3Dy
-
-I did another test.
-I put mmap_assert_write_locked(mm) before 'set_bit(MMF_OOM_SKIP, &mm->fla=
-gs)' in mmap.c, it's outside the lock.
-It will crash when on boot. I think mmap_assert_write_locked() works.
-
-
-> __anon_vma_prepare() is for example called from do_anonymous_page() whe=
-re we might only hold the mmap_lock in read mode (or not at all IIRC with=
- VMA in read mode).
->=20
->=20-- Cheers,
->=20
->=20David / dhildenb
->
 
