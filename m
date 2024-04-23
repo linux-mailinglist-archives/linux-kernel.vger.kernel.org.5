@@ -1,156 +1,145 @@
-Return-Path: <linux-kernel+bounces-155434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB1BB8AEA77
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:15:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC2278AEA7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:15:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F5691F23193
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:15:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB47FB21846
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AF85820E;
-	Tue, 23 Apr 2024 15:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B3413BC20;
+	Tue, 23 Apr 2024 15:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="J9u1MPcJ"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4M4Wkov5"
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA375136E1A
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:14:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A71D136E1A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713885298; cv=none; b=fZSQ0IWUuc6ejlq2nmZcshz7+g8yrg6BEcDIRccmGmR88MYqCHjgY03lrMgFfD9H0jaTEvIbQYv7sRyzkwgy7mQmc0GsdnvVYqG7bksSKg0gp93DlBiA8vL8/EgCDvVvYtyB+gJxU3r+9C7+2vx31+VkfSuEFlq+puAvfHqI0yo=
+	t=1713885321; cv=none; b=RE8uCfYJPB67XwAj4anics+D32GqUzn/QUHeo2zFhJKbzjxfBnhpULYveAvG200FAy1pB3E20CD6SDhaI9eUIZO/qVC4p7jc4CsNLb8taDyWwC2GiS7Bn9x50z6qS85YC6sf5uqr8cl6C9OdYnJHJFggwQ9YlN7AvMLwAssYj9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713885298; c=relaxed/simple;
-	bh=a5cD2LaaptC8wxD989v/1J0kMmeKcCSfjFsf7Y0J2sk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k76CNpBpu6yO0nf3VQc96Ucp220Os0TKEFRpDVkR7/jcE+C0k08+qdiEUqWnTacQyu6ejxRBoqyfhiTSamH5T5xVWxSH8H67/BWWBFxzvh0797PYw8KIc16kwvWCUvNxkOShnRcScbu0rgc38Zy4cWYnVhLo4HkudqKU/5ZzXXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=J9u1MPcJ; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-518a3e0d2ecso8729298e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:14:55 -0700 (PDT)
+	s=arc-20240116; t=1713885321; c=relaxed/simple;
+	bh=0SenlblrjMqan5Pcbzcsf/FKyDn1lUZo9dEh2XP0Z9M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mDXManOYiMFYhx88aYhSZAJJxGNhKF/1PxLxJHkfjO1vX0hpy1tWg6j/ayWDYOoc7ciDXaDH/nfR/v4EifyckSkbds1k7ykNJBNkGS/Wr7sY40sTHO+leoL8Ntt+wz5jF9cNYe6/qF1GZJ7QDCNjLxqIMNiWVqET+WGIE5UEIxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4M4Wkov5; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-439b1c72676so478991cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1713885294; x=1714490094; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4zF9sVBcXt3p+LHo6Ft4b30wlVpGZC//wb02folK/K8=;
-        b=J9u1MPcJPHT4dqSrXs9JbKZQOQPoeKh8fZhf6X/xPGM6EC4GoPa5mPsAVtR0dJ9V8Z
-         ndgB/rntHyKyzRtWG9WbHwmcqIisFZlBzJEx8wBNrjgECM8PsqWXxOixqqulZxix6C31
-         c5wWtxooo67YWl6eF5zsKPCDRk551DkmwsqfBrX7LL0iHIH0moGcXYt69vehaVbrY2aY
-         Sm9P4AvxFFBJFsLnubzucGRLHGwOEF7fwhX17DNqKYrlWdPkjqzQJ+br2cbITA1LWUbz
-         FGRdmvjbfTCpHJEI1zWheelIS5Lb+BWqCyjGkBdQ8ukCjacEYsEgZpENTBGTh+CSRiDP
-         RChg==
+        d=google.com; s=20230601; t=1713885318; x=1714490118; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0SenlblrjMqan5Pcbzcsf/FKyDn1lUZo9dEh2XP0Z9M=;
+        b=4M4Wkov5iosIaAr9HxKN2h/003c0jT7Y+iLULrRPu4nm/4YQAiRaE7aJDSxx4izvyd
+         zeD6nnkXPNlSKZsNO7V5YMy5CJLIuD8kpkoX8y6lEtqNBjIIo8bC9F4xjtuIiyrdq3oo
+         1ohK8PDgaGetp6FN06v6MkkdwT5ximkM0o8EosKD/UxwkXvfkFWeP4FSna/bctIuRloJ
+         u2bIEj09rs7AIrD9YM5wywcqbNjy2gxCVncY5eRS0BvlseTOY/B1kYp4PVMiDYBjTbX3
+         L2O+NY8LnCXu0F3IEDESVL1dBa+HlZdNhlQ4uOZwmVYMa/YiFSEoQydLTR4PMAJ8m8qX
+         pAFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713885294; x=1714490094;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4zF9sVBcXt3p+LHo6Ft4b30wlVpGZC//wb02folK/K8=;
-        b=QstFWtAkN+QZ2Q9TRZXDK+LKTJC7C6sqBDtzgqBWCHWh6h2UMJNfIC8CT0YufcDLot
-         l7eV56fqy8oDFVfichBFzQpP7Sq7dEL0WTaOTs17bDyHUUKLN+a1FM3KJInZHNZj6+X+
-         XIQzMzzdmy6wBusUMMxAkgc80EXX12Oim88M4tc/Q+5int8tP8uVilSOOzI5wXbLCsku
-         YeeyOJZpTf9/oGgPLL2FOvB9h7FZj0uDw1B6HhYVvgszuKQIDyhGAULX4+Nfwm+6U/ow
-         xWc0NyD/VR8XLbZaw1fCLwAVsN1b293TgXAkPc+nWhiPWV3uYJr4/EoqzvoTaxkhcnLO
-         UwVw==
-X-Forwarded-Encrypted: i=1; AJvYcCXuj2+FMgbQB+Hcw50AnXjSlQuD1hbSnhCeQ5x6Jzehac0RVI69Mz69Z/0KZkYkTxxHdpVOCJOF2mN1Vh1bsUIu3wt09/+0rluwUbb1
-X-Gm-Message-State: AOJu0Yy44u25Lk8OIkNdCVM5pKIGQifxUjKXgY++vWQm/O5zT82l3KGk
-	G+17DLnSB7B+02VE+E8f4eGE8MayNLPSWEqWb+HsGcgwZFsXihaa8DEKnKc5aH0=
-X-Google-Smtp-Source: AGHT+IF1/35Nlkwm9xUrkG3SYoD/oQBvgVGLdQGrEiz/Yiw++BMQpMgPiC/tA6FalJ2ScXPHHIEd6A==
-X-Received: by 2002:a05:6512:483:b0:518:e7ed:3c7c with SMTP id v3-20020a056512048300b00518e7ed3c7cmr10661458lfq.14.1713885293863;
-        Tue, 23 Apr 2024 08:14:53 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id g10-20020a1709067c4a00b00a4e5866448bsm7115652ejp.155.2024.04.23.08.14.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 08:14:53 -0700 (PDT)
-Date: Tue, 23 Apr 2024 17:14:52 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Markus Elfring <Markus.Elfring@web.de>, 
-	Kunwu Chan <chentao@kylinos.cn>, linux-kselftest@vger.kernel.org, kvm@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, Muhammad Usama Anjum <usama.anjum@collabora.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <kunwu.chan@hotmail.com>, 
-	Anup Patel <anup@brainfault.org>, Thomas Huth <thuth@redhat.com>, 
-	Oliver Upton <oliver.upton@linux.dev>
-Subject: Re: [PATCH] KVM: selftests: Add 'malloc' failure check in
- test_vmx_nested_state
-Message-ID: <20240423-0db9024011213dcffe815c5c@orel>
-References: <20240423073952.2001989-1-chentao@kylinos.cn>
- <878bf83c-cd5b-48d0-8b4e-77223f1806dc@web.de>
- <ZifMAWn32tZBQHs0@google.com>
+        d=1e100.net; s=20230601; t=1713885318; x=1714490118;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0SenlblrjMqan5Pcbzcsf/FKyDn1lUZo9dEh2XP0Z9M=;
+        b=JjMJGHOlGm8If6Y0ysdqiEq0W59vEHkgjA3SArgamZ/mC7JTxdK/jOxnWVQPgwq8LI
+         77gCGkjRboN+xXkI5UIIq+3O/aS50g2dbvhdeijxVJRk/rhjn1yyapH4grJru/5ZZ/hp
+         UzfdzquDCYpm0sZaLFJO1PBInnUFBf8u6J3xwfMgdx0DkDEjKnl3GPlr0saWutGIx6uU
+         27VpCqzFr2efVVAybszBWSiQZCanwBfOCVINKCRTdYMrodyyczhwDPQwmiPE7ydOXGxF
+         7gecoGfEJCaUySa4zGlrUKLTkLpniRkXeh1gkR2zmdqSKQ9TUs120cDEcnP5DhnoCoa4
+         0J5A==
+X-Forwarded-Encrypted: i=1; AJvYcCXKdWnQ+i9k3TbXarpIBhsrosnQsUX8Kcr92TcllE6qNaTg4ppKrxMivD+LDKuX/qH3z/SHgU5D+YpdfcfSvlcsB6HEVU1oQply9Yqw
+X-Gm-Message-State: AOJu0YwMafc0l+YL0XO5Y7LN40Nit8EGc1s+A61Brm+r+oZR+zXV2YXl
+	NW8apP0VaJt+R+KUsrAIElWVu2z/lRm3SADD5yP1LpWY8oHxZvtbbAdS+erbZanP+8cZt17CPzq
+	33iG9FTOGGYGWfP6qWTIXY0tyQQ8yFNz0v41q
+X-Google-Smtp-Source: AGHT+IEmDbvhgmJutRXxF3MJaFpsjAadibBlJZsxjSUIBJXhn/ms41LXrsgezlKX1Aj3ErOqxfZQYsmePxgCn9a7wgw=
+X-Received: by 2002:ac8:468d:0:b0:437:b3df:9ab9 with SMTP id
+ g13-20020ac8468d000000b00437b3df9ab9mr224998qto.23.1713885318312; Tue, 23 Apr
+ 2024 08:15:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZifMAWn32tZBQHs0@google.com>
+References: <20240423031719.1941141-1-irogers@google.com> <c1c460ed-69c3-4fde-aa9b-be1051dae6ec@linux.ibm.com>
+In-Reply-To: <c1c460ed-69c3-4fde-aa9b-be1051dae6ec@linux.ibm.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 23 Apr 2024 08:15:02 -0700
+Message-ID: <CAP-5=fVrQJiFtLeYQqkKACHo_3ez9NEadYLcqy-UKk4i5dHSqQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] Assume sysfs event names are always lowercase
+To: Thomas Richter <tmricht@linux.ibm.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Randy Dunlap <rdunlap@infradead.org>, 
+	Jing Zhang <renyu.zj@linux.alibaba.com>, James Clark <james.clark@arm.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 07:56:01AM -0700, Sean Christopherson wrote:
-> +others
-> 
-> On Tue, Apr 23, 2024, Markus Elfring wrote:
-> > …
-> > > This patch will add the malloc failure checking
-> > …
-> > 
-> > * Please use a corresponding imperative wording for the change description.
-> > 
-> > * Would you like to add the tag “Fixes” accordingly?
-> 
-> Nah, don't bother with Fixes.  OOM will cause the test to fail regardless, the
-> fact that it gets an assert instead a NULL pointer deref is nice to have, but by
-> no means does it fix a bug.
-> 
-> > > +++ b/tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_test.c
-> > > @@ -91,6 +91,7 @@ void test_vmx_nested_state(struct kvm_vcpu *vcpu)
-> > >  	const int state_sz = sizeof(struct kvm_nested_state) + getpagesize();
-> > >  	struct kvm_nested_state *state =
-> > >  		(struct kvm_nested_state *)malloc(state_sz);
-> > > +	TEST_ASSERT(state, "-ENOMEM when allocating kvm state");
-> > …
-> > 
-> > Can “errno” be relevant for the error message construction?
-> 
-> Probably not, but there's also no reason to assume ENOMEM.  TEST_ASSERT() spits
-> out the actual errno, and we can just say something like "malloc() failed for
-> blah blah blah".  
-> 
-> But rather than keeping playing whack-a-mole, what if we add macros to perform
-> allocations and assert on the result?  I have zero interest in chasing down all
-> of the "unsafe" allocations, and odds are very good that we'll collectively fail
-> to enforce checking on new code.
-> 
-> E.g. something like (obviously won't compile, just for demonstration purposes)
-> 
-> #define kvm_malloc(x)
-> ({
-> 	void *__ret;
-> 
-> 	__ret  = malloc(x);
-> 	TEST_ASSERT(__ret, "Failed malloc(" #x ")\n");
-> 	__ret;
-> })
-> 
-> #define kvm_calloc(x, y)
-> ({
-> 	void *__ret;
-> 
-> 	__ret  = calloc(x, y);
-> 	TEST_ASSERT(__ret, "Failed calloc(" #x ", " #y ")\n");
-> 	__ret;
-> })
+On Mon, Apr 22, 2024 at 11:53=E2=80=AFPM Thomas Richter <tmricht@linux.ibm.=
+com> wrote:
+>
+> On 4/23/24 05:17, Ian Rogers wrote:
+> > By assuming sysfs events are lower case, the case insensitive event
+> > parsing can probe for the existence of a file rather then loading all
+> > events in a directory. When the event is a json event like
+> > inst_retired.any on Intel, this reduces the number of openat calls on
+> > a Tigerlake laptop from 325 down to 255.
+> >
+>
+> Ian, sorry for the late reply.
+> On s390 the events in the sysfs tree are all upper case:
 
-Sounds good to me, but I'd call them test_malloc, test_calloc, etc. and
-put them in include/test_util.h
+Yikes, sigh.. thanks for catching this :-)
+
+> [root@a35lp67 ~]# ls -l /sys/devices/cpum_cf/events/ | head -10
+> total 0
+> -r--r--r-- 1 root root 4096 Apr 17 14:47 AES_BLOCKED_CYCLES
+> -r--r--r-- 1 root root 4096 Apr 17 14:47 AES_BLOCKED_FUNCTIONS
+> -r--r--r-- 1 root root 4096 Apr 17 14:47 AES_CYCLES
+> -r--r--r-- 1 root root 4096 Apr 17 14:47 AES_FUNCTIONS
+> -r--r--r-- 1 root root 4096 Apr 17 14:47 BCD_DFP_EXECUTION_SLOTS
+> -r--r--r-- 1 root root 4096 Apr 17 14:47 CPU_CYCLES
+> -r--r--r-- 1 root root 4096 Apr 17 14:47 CRSTE_1MB_WRITES
+> -r--r--r-- 1 root root 4096 Apr 17 14:47 DCW_OFF_DRAWER
+> -r--r--r-- 1 root root 4096 Apr 17 14:47 DCW_OFF_DRAWER_MEMORY
+> [root@a35lp67 ~]#
+>
+> Same is true for all other PMUs (currently 5 and growing).
+>
+> Is there a branch to pull to try out the effect of your patch on s390?
+
+Sorry not, I think everything would break anyway. I'll extend what
+I've done so that event names can be lowercase or in shouty UPPERCASE.
 
 Thanks,
-drew
+Ian
+
+> Thanks Thomas
+> --
+> Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, German=
+y
+> --
+> IBM Deutschland Research & Development GmbH
+>
+> Vorsitzender des Aufsichtsrats: Wolfgang Wendt
+>
+> Gesch=C3=A4ftsf=C3=BChrung: David Faller
+>
+> Sitz der Gesellschaft: B=C3=B6blingen / Registergericht: Amtsgericht Stut=
+tgart, HRB 243294
+>
 
