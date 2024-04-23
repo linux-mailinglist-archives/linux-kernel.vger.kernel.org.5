@@ -1,80 +1,47 @@
-Return-Path: <linux-kernel+bounces-154580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F2D78ADDDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:54:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C4A28ADDE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:54:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 333211C2012B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:54:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A647B244B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:54:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6719E29429;
-	Tue, 23 Apr 2024 06:54:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BC02C1AE;
+	Tue, 23 Apr 2024 06:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="juBA2rPg"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r7nI0ozn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0270F24B28;
-	Tue, 23 Apr 2024 06:54:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525DA24B28;
+	Tue, 23 Apr 2024 06:54:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713855253; cv=none; b=m0sSKE5wEqR697zsIXVdNsUAiZnlpVKFLT3c9O/aTDxl12/2gMZ5xjYo7s1j75cnIbCP1vCgI/UhAKy8woNmfUy6RRUZrjp1HZhQxnDEKpSd7uiq+1kFJETCuysve/NOoWoSfdGPkHI9KHCm6ndq28qIBSzMCW5lfG+ShEHo2ls=
+	t=1713855266; cv=none; b=VU5QAVIuoA6WqJYQUMHnsSk2nDja/LkU2hSA5TZLJx/zLR1nspkn5rh/og3T3K+vcCMXdU4f6SmZNUdpJMr5BijSKhI2Z+P106zk8NJdwMkzrEh8YzsJDLNof5yFFfU3ZmRNEtPe3lX7UJovw/xa+UlRZ8Sf6rny3JKE5PUhuCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713855253; c=relaxed/simple;
-	bh=z2OhGkc9weQ5UHWYoCKHRx1ylQpGsYDYkX+OUC/X4dw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=BNSlDQLuN1AkY0sfUkPif7INAfNTNUoFXQxAMSXXrGbwKhLdpDKLVCxsx7f/s7sPXalgkWJYpr2k+nqA6WKhRzaYDUt6ovkV1YyuBEJryoSKvVapnp2eUpFg1HcWh3+hWp8mOypajTQKv/ixL4zGv0QJxc4WHqn8yOfpbsnuFfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=juBA2rPg; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43N5avwa014566;
-	Tue, 23 Apr 2024 06:53:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=kNDizAUq6M15vjj8var0LsymdUc1J25H+tgaeUr6B08=;
- b=juBA2rPgoEbbna4DWIZKmnLW09kwO6C1V4vjLxa5e0taPVg2WCPxOqZW11vVC+R5jvCn
- NWUQtUKqGMaCR4eokI+t+tqy5mJs/uExpzdXgOTKKtoIOkxYGmfeWm+gxMwE+p0c3eC2
- lQwJhaxmAd8Hd9P0NGvkd60k77SxZc+zeK/IQwmn7fa0vBB/TvVjzv2Ccwkzpp+7mV2a
- ETbCkIdTCk8Q4R7O0vo+FgG3ey/AvZkutcu0dYdM5FWDxAnBb5YapCipSjh3J2cmaave
- 8DzeubkS0dZz2+53MhrNcg+lplUen00BAGIQeeyC6B4RsaIqsIfS8o7YzLX1jK34LLm0 pg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xp6kn04qm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 06:53:53 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43N6rril010204;
-	Tue, 23 Apr 2024 06:53:53 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xp6kn04qe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 06:53:53 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43N6cENZ029905;
-	Tue, 23 Apr 2024 06:53:52 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xmr1tcc9j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 06:53:52 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43N6rm9M48562638
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 23 Apr 2024 06:53:50 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 70E8A20040;
-	Tue, 23 Apr 2024 06:53:48 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 13EC820043;
-	Tue, 23 Apr 2024 06:53:48 +0000 (GMT)
-Received: from [9.152.212.121] (unknown [9.152.212.121])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 23 Apr 2024 06:53:48 +0000 (GMT)
-Message-ID: <c1c460ed-69c3-4fde-aa9b-be1051dae6ec@linux.ibm.com>
-Date: Tue, 23 Apr 2024 08:53:47 +0200
+	s=arc-20240116; t=1713855266; c=relaxed/simple;
+	bh=LgFa64X5wdZMZg0gaP1xBZQL/XQxGMGNZuY4jRygRw4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pE8q0uVmTnntDwp4Kt1SbbcPEvpXCWvF28NnreLcpH34iwwUVf9umcx0JG1lO/EyZb7mPR377x7JjWMsLCjVleLhAcGpgvYCoBEKjm24INmfPx7kTxVMdP8Ua9fKLzjBcFr/jIpBK1xiC7KL5NdP6d/zi7XpiZlzo/nc7Ru/UY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r7nI0ozn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DE9DC2BD10;
+	Tue, 23 Apr 2024 06:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713855265;
+	bh=LgFa64X5wdZMZg0gaP1xBZQL/XQxGMGNZuY4jRygRw4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=r7nI0ozn1hdOQh5bFitLbdeQvI/4qQgSR7dt7myQP8QStKw3ZPkSt92i/fhGRdD+t
+	 LnF/a6PpNcHCfPoKgu5pcBUWisLnbLNQWUlpjdDoGdXcZtC1Bcw9X/1esK5Tk6/uav
+	 B+l9cEOYCl2vs0i2Kb4ontM5jAlVWjCWCJu9KpmsLFKn9XsZT1b3NaDchWthTGxD+f
+	 37SJ9R0QkNFnCOvcfEojVb7Y8J4oPhTNFzSOflrQlaHmKsa6T8Rcxny1PPKZPT4d4A
+	 P7FpRFq2X8SvmUm4CwdEizRRGMJQiOe0K5Vz9CYKzaQ0PcVlkI8ti5SOql3sv3RWWt
+	 eRApzqyd3j85w==
+Message-ID: <7a43b05c-ca2e-4fa6-b1f9-cb1a12778da7@kernel.org>
+Date: Tue, 23 Apr 2024 08:54:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,78 +49,106 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/6] Assume sysfs event names are always lowercase
-To: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>, Bjorn Helgaas <bhelgaas@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jing Zhang
- <renyu.zj@linux.alibaba.com>,
-        James Clark <james.clark@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20240423031719.1941141-1-irogers@google.com>
+Subject: Re: [PATCH v3] dt-bindings: usb: uhci: convert to dt schema
+To: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240422122125.455781-1-sheharyaar48@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
-From: Thomas Richter <tmricht@linux.ibm.com>
-Organization: IBM
-In-Reply-To: <20240423031719.1941141-1-irogers@google.com>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240422122125.455781-1-sheharyaar48@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: C-sYB4OKvXvGGOCPFpTQ0yOXzy0WeFK-
-X-Proofpoint-ORIG-GUID: eqTvCTSzkt-rI3CgQxLWuUOx4C7Hfmvr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-23_04,2024-04-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- bulkscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 malwarescore=0
- clxscore=1011 phishscore=0 adultscore=0 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404230019
+Content-Transfer-Encoding: 7bit
 
-On 4/23/24 05:17, Ian Rogers wrote:
-> By assuming sysfs events are lower case, the case insensitive event
-> parsing can probe for the existence of a file rather then loading all
-> events in a directory. When the event is a json event like
-> inst_retired.any on Intel, this reduces the number of openat calls on
-> a Tigerlake laptop from 325 down to 255.
+On 22/04/2024 14:21, Mohammad Shehar Yaar Tausif wrote:
+> Convert USB UHCI bindings to DT schema. Documenting aspeed compatibles
+> and missing properties. Adding aspeed/generic-uhci example and fix previous
+> incorrect example.
 > 
+> Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
 
-Ian, sorry for the late reply.
-On s390 the events in the sysfs tree are all upper case:
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: generic-uhci
+> +    then:
+> +      $ref: usb-hcd.yaml
 
-[root@a35lp67 ~]# ls -l /sys/devices/cpum_cf/events/ | head -10
-total 0
--r--r--r-- 1 root root 4096 Apr 17 14:47 AES_BLOCKED_CYCLES
--r--r--r-- 1 root root 4096 Apr 17 14:47 AES_BLOCKED_FUNCTIONS
--r--r--r-- 1 root root 4096 Apr 17 14:47 AES_CYCLES
--r--r--r-- 1 root root 4096 Apr 17 14:47 AES_FUNCTIONS
--r--r--r-- 1 root root 4096 Apr 17 14:47 BCD_DFP_EXECUTION_SLOTS
--r--r--r-- 1 root root 4096 Apr 17 14:47 CPU_CYCLES
--r--r--r-- 1 root root 4096 Apr 17 14:47 CRSTE_1MB_WRITES
--r--r--r-- 1 root root 4096 Apr 17 14:47 DCW_OFF_DRAWER
--r--r--r-- 1 root root 4096 Apr 17 14:47 DCW_OFF_DRAWER_MEMORY
-[root@a35lp67 ~]# 
+Nothing improved here.
 
-Same is true for all other PMUs (currently 5 and growing).
+> +      required:
+> +        - clocks
 
-Is there a branch to pull to try out the effect of your patch on s390?
+And this was not tested.
 
-Thanks Thomas
--- 
-Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
---
-IBM Deutschland Research & Development GmbH
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    uhci@d8007b00 {
+> +        compatible = "platform-uhci";
 
-Vorsitzender des Aufsichtsrats: Wolfgang Wendt
+What happened here? This is deprecated!
 
-Geschäftsführung: David Faller
+> +        reg = <0xd8007b00 0x200>;
+> +        interrupts = <43>;
 
-Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+
+Best regards,
+Krzysztof
 
 
