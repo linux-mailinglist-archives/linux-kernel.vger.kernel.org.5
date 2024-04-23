@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-155918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E668AF8DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:21:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF8D08AF8E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:22:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B1BA28F381
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:21:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C614B28B14
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95ABA143C48;
-	Tue, 23 Apr 2024 21:20:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD478143891;
+	Tue, 23 Apr 2024 21:22:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gdPKYIgJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WgeRkPIT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAAAD143861;
-	Tue, 23 Apr 2024 21:20:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6461143883;
+	Tue, 23 Apr 2024 21:22:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713907242; cv=none; b=CKj8eBbxwwVMsikZU+tcrP5UioqW4fsSubLjFBfYcdEX8+8ySNPiLoiFWSLz9e0+9sbX43vK0kaNv9hILHPtjNGjTZq9oPIpHJ4s+qrKelMhF+1+jaZVZaJS97CfpoAP8uKtNjLRfjyRLAz/yB6badTewOe1ZM2L8AnCUXirspw=
+	t=1713907366; cv=none; b=MtDa9ytVqANIWzsnHYiLjpCeIKjZg5CoFvuoSxtMEI4eI9Ovg6skbhpGNoYfzk4Lgxx3gQs3fT8FNK5AbhVymScQVUz6ISVv3dywPxNUnQtgk3ekCDZaWcb1eyaZQUljIeXj76jRhkHbm0MaGzx1y9zr7gJmdey6XO2kb3gbsr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713907242; c=relaxed/simple;
-	bh=97ZTIW7xF1irMdbgCbC0Wpk0brqcDpP2/ByuB8zk5CM=;
+	s=arc-20240116; t=1713907366; c=relaxed/simple;
+	bh=+zBGFalpCczKPi2echW5asVl630S2JNMhhCu81ndt/U=;
 	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=U0N3MM39T9uMPbuYva/gk3XHoOw+uQzSTB9YdCK41tgHrv2ykgZxDddgym8dlocFDHe98AbId/o9hAsHyGtOo1b2Qen/fi1lNtRc+bJFrS/URKeS3go9lCjuvRB1yAqL8CSswvuO6WErRFg7EN2YS+hglcX7dU9QHHhVbf2zeIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gdPKYIgJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEE77C3277B;
-	Tue, 23 Apr 2024 21:20:40 +0000 (UTC)
+	 References:In-Reply-To; b=mLstyplJcxEEBOyggzjPEtMxeNSANj3TrJ9hIF1ucc5C7tW9lWzwTwWqbLSaMpMM51OwBVv1zGllrZgWX2f+d0L1/Dm9Ae7EO2DvZurZ+yKuYwniBJ/bPumr1X2FbPJDDt/TzvGdjyRj/L4mH1emZFRoGBitVR2LDjjTcg48jHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WgeRkPIT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05912C116B1;
+	Tue, 23 Apr 2024 21:22:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713907242;
-	bh=97ZTIW7xF1irMdbgCbC0Wpk0brqcDpP2/ByuB8zk5CM=;
+	s=k20201202; t=1713907366;
+	bh=+zBGFalpCczKPi2echW5asVl630S2JNMhhCu81ndt/U=;
 	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=gdPKYIgJ5vbsp9f+vqX1msqBs4s9IAqWW1ZddKHuCcyIlOUqxZSSDMZ0E1x/5WRxl
-	 YMeCnqC14ErS1CvL7XZyV7GGyJTSRiVi9wW+C8euJw8cn7HPZPZZK+RtuJTB5gypeu
-	 tzBYR/HFJ5Lf/eczttipl2gdAWXyygRhb/dmBavqVCI2oPfKWqqxn4/sDfPoEmT4jL
-	 lKOUq7VbRiVsp5ZE/IeLHcBSMjI09LYhPIykOrzhiEg4EP860PkWndZXvU0kCuWR5o
-	 FoyntU/VEeBGmO2/QRntJoDYx32wITt5TfVCkt9wVrf190HqGzdd7tWyEthpG7TUUG
-	 IvoOgx6frbc1Q==
+	b=WgeRkPITKCpLPB/VXlzvsbiinjoFyr0zLiCojPm0WHaBvtfKDiKonVpr76Uyg58PW
+	 Bp8RXka4W1kyOvvqqodGA/Mrw6wkkOoGEZ9pCPGyMrnnkfYos4Iq5dZlz5e1jW9ft+
+	 E/NVSfCiNqrMNKKLwBbE4qSCpdIPb9WOA9zT+dC2i33nOMTZGxGHU6fXk7/9WNFpSo
+	 hGYKop6FZK1f6JeeF12ie+UeyLTkK8iz39JGhW5xb5Tf0cWKNUMPQshsQe4A+IufN3
+	 2u27rYsbzZR1DFBzcknCEiw7XWq7+1UEM9qBENJFody75FUyrZchtwcCzMO9FPrOEl
+	 P0AEJI3kbgN3Q==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,37 +48,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Wed, 24 Apr 2024 00:20:38 +0300
-Message-Id: <D0RTERZQPM45.27KIQKUSFWXRS@kernel.org>
-Cc: <reinette.chatre@intel.com>, =?utf-8?b?5YiY5Y+MKOi9qeWxuSk=?=
- <ls123674@antgroup.com>
+Date: Wed, 24 Apr 2024 00:22:43 +0300
+Message-Id: <D0RTGD0VKYFO.15NASZXY71N5V@kernel.org>
+Cc: "Liu, Shuang" <ls123674@antgroup.com>, "Chatre, Reinette"
+ <reinette.chatre@intel.com>
 Subject: Re: [RFC PATCH 1/1] x86/sgx: Explicitly give up the CPU in EDMM's
  ioctl() to avoid softlockup
 From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>,
- =?utf-8?b?5pyx5Lyv5ZCbKOadsOmTrSk=?= <zhubojun.zbj@antgroup.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+To: "Huang, Kai" <kai.huang@intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "zhubojun.zbj@antgroup.com"
+ <zhubojun.zbj@antgroup.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "dave.hansen@linux.intel.com"
  <dave.hansen@linux.intel.com>
 X-Mailer: aerc 0.17.0
 References: <20240423092550.59297-1-zhubojun.zbj@antgroup.com>
  <20240423092550.59297-2-zhubojun.zbj@antgroup.com>
- <D0RT6W3IGBRL.34KQMBWUO1Z23@kernel.org>
-In-Reply-To: <D0RT6W3IGBRL.34KQMBWUO1Z23@kernel.org>
+ <02fe00c3b10e4476d500ad7a34024b7eae5e3c97.camel@intel.com>
+In-Reply-To: <02fe00c3b10e4476d500ad7a34024b7eae5e3c97.camel@intel.com>
 
-On Wed Apr 24, 2024 at 12:10 AM EEST, Jarkko Sakkinen wrote:
-> On Tue Apr 23, 2024 at 12:25 PM EEST, =3D?UTF-8?B?5pyx5Lyv5ZCbKOadsOmTrSk=
-=3D?=3D wrote:
+On Tue Apr 23, 2024 at 2:50 PM EEST, Huang, Kai wrote:
+> On Tue, 2024-04-23 at 17:25 +0800, =E6=9C=B1=E4=BC=AF=E5=90=9B(=E6=9D=B0=
+=E9=93=AD) wrote:
 > > EDMM's ioctl()s support batch operations, which may be
 > > time-consuming. Try to explicitly give up the CPU at
 > > the every end of "for loop" in
 > > sgx_enclave_{ modify_types | restrict_permissions | remove_pages}
 > > to give other tasks a chance to run, and avoid softlockup warning.
-> >
+> >=20
 > > The following has been observed on Linux v6.9-rc5 with kernel
 > > preemptions disabled(by configuring "PREEMPT_NONE=3Dy"), when kernel
 > > is requested to restrict page permissions of a large number of EPC page=
 s.
-> >
+> >=20
 > >     ------------[ cut here ]------------
 > >     watchdog: BUG: soft lockup - CPU#45 stuck for 22s! [occlum-run:3905=
 ]
@@ -149,17 +150,21 @@ f ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01=
 > >     R13: 00007fffb2c75520 R14: 0000000780000000 R15: 00007fe10e1a7980
 > >      </TASK>
 > >      ------------[ end trace ]------------
-> >
+>
+> Could you trim down the trace to only include the relevant part?
+>
+> E.g., please at least remove the two register dumps at the beginning and
+> end of the trace.
+>
+> Please refer to "Backtraces in commit messages" section in
+> Documentation/process/submitting-patches.rst.
+>
+> >=20
 > > Signed-off-by: Bojun Zhu <zhubojun.zbj@antgroup.com>
->
-> Can you also fixup this as your "firstname lastname" in your emails
-> from field? This matters so that author field in git log matches your
-> sob.
->
 > > ---
 > >  arch/x86/kernel/cpu/sgx/ioctl.c | 9 +++++++++
 > >  1 file changed, 9 insertions(+)
-> >
+> >=20
 > > diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/=
 ioctl.c
 > > index b65ab214bdf5..2340a82fa796 100644
@@ -196,32 +201,15 @@ ncl *encl,
 > > +		if (need_resched())
 > > +			cond_resched();
 > >  	}
-> > =20
-> >  	ret =3D 0;
+> >=20
 >
-> Makes sense to me but maybe this should be a prefix op instead of
-> postfix op given how things are laid out in sgx_ioc_enclave_add_pages()
->
-> https://elixir.bootlin.com/linux/latest/source/arch/x86/kernel/cpu/sgx/io=
-ctl.c#L443
+> You can remove the need_reshced() in all 3 places above but just call
+> cond_resched() directly.
 
-It would make sense also check pending signals, and since these
-add up perhaps a helper would make sense to encapsulate all the
-shenanigans:
-
-/*
- * Check signals and invoke scheduler. Return true for a pending signal.
- */
-static bool sgx_resched(void)
-{
-	if (signal_pending(current))
-		return true;
-
-	if (need_resched())
-		cond_resched();
-
-	return false;
-}
+If this is the case, then it should be removed also from
+sgx_ioc_enclave_add_pages() for the sake of symmetry and related
+reasoning of semantic equivalence should be documented to the
+commit message (given that something is taken away from code).
 
 BR, Jarkko
 
