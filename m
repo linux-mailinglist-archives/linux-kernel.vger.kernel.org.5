@@ -1,127 +1,174 @@
-Return-Path: <linux-kernel+bounces-155544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D814E8AF3C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:18:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268B48AF3C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:19:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7565B1F23966
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:18:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 329791C23914
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478B813CF90;
-	Tue, 23 Apr 2024 16:18:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F000D13CF90;
+	Tue, 23 Apr 2024 16:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jSVYCH9u"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ba/owpT7"
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70EA413C9DF
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:18:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46DB13BACF
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713889103; cv=none; b=N3pt7ZpLKkRAlNi8eAb5Ri3jMk0xy2Lt5tJzGshy6hITZEQIrvXyHE5HasoqT89h2/ymqErNtLvzggvd96Lh0PYXQMoYfWUYeSWLInwOBkIQXLdVtObB4Pb1l8biw/mWntlGrR1TTlTJOIijaKmltYBMBlId5HOrYTONZNW1sS0=
+	t=1713889192; cv=none; b=e3GC+tSuRSVhTE0fliFVUm8DK7W3hDN10kPuJ+0zTx6N12vP+kCNDvu9i3M1LFN4pqLzQaFmzSZTFUUkCB47uZeYwLxQW41JKOTdgMNRnw1bKdhW7OPHBPPtkdVuqua11TQYe8AGGsKYuSdUlLp/564LgkcX8nFkvSNG+kH7sGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713889103; c=relaxed/simple;
-	bh=P84qAECVDYJQCQnPbWsQ6NIevS3wLECwkMExEJRWMbI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EunmD86vDwsIeTI2vK3dRn7F78eKXkMU4ue7de5rPJZkWb5Bn/8GXZ5g4L+bcNB9e7GU/kNWtlMwe/EDOf9BowoY50qSfXE/TpnNoekF76L30seJZkSIKzvBSlFxLqzSI7ShfsL8S3pFaxoaGo8iEJ+O1m4vL9AAKYeONJOJu7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jSVYCH9u; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43NFX7PF010583;
-	Tue, 23 Apr 2024 16:18:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=KmVzK3/IOcMdYj/fR7TyBM7S7meDOpjTYxXctq9rhZQ=;
- b=jSVYCH9uYU2w+qnUeRO/tZzMmnihXAoHQUR86+pehAhk1PpT5GUdVJO5c//fjvsdgUwt
- zkDlVep4HJYYnOrx65qJeSfkMaef1p0TjK+7bOD2wb6fok2NkPXHrV0p5hNDEO3+VBlJ
- b8vLJ+VV3ewfk1QmgQoS59khuRmz6HoWbGMJTKVxS8LeurD3R33vdLtFlhO/tsZKnfW+
- +q9lA88PAYz7ekwQIR8pBBhFrP4OtVtGm9Thchz9Vg4xKTcwjsEdfZfwYfsPwJraNxgr
- NN62kFUfuY4jYzTA55dWTaq86q32KKsT3n+zEAQf9CarYW/cwtd7cSucOwUXxPYVI/zu pQ== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xpfqrg2t0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 16:18:07 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43NF5xPs015299;
-	Tue, 23 Apr 2024 16:18:07 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmshm6e3p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 16:18:07 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43NGI43V22938356
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 23 Apr 2024 16:18:07 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E556758059;
-	Tue, 23 Apr 2024 16:18:04 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7EC9E5804B;
-	Tue, 23 Apr 2024 16:18:04 +0000 (GMT)
-Received: from slate16.aus.stglabs.ibm.com (unknown [9.61.133.34])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 23 Apr 2024 16:18:04 +0000 (GMT)
-From: Eddie James <eajames@linux.ibm.com>
-To: linux-fsi@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org, joel@jms.id.au, jk@ozlabs.org,
-        alistair@popple.id.au, Eddie James <eajames@linux.ibm.com>
-Subject: [PATCH] fsi: i2cr: Reduce status checks for read operations
-Date: Tue, 23 Apr 2024 11:18:02 -0500
-Message-Id: <20240423161802.134089-1-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1713889192; c=relaxed/simple;
+	bh=vhXQuuHSSaOFXavGSQ9j+yaEKLO4j2yIeOyHVT2JTtI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZUbsAcQi1YqOmYG4mrpgFg3UPEtx8M2a8MbuxHNra7OC4I+mdYmB2CHhkP70HFH3cFVZHiXoBgHOtr15TQmczwXTxrwOMwk52YhqvvHzxurNMP2y4PHNYb2CcN9P0JR/BIrOlMumLv1IjACZdUlXsputw8MC+/YAyYu17Fir1E0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ba/owpT7; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-78ef9ce897bso392611785a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:19:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1713889186; x=1714493986; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wanqofR/Nuk2X7+WPgVh3aZdwvGB0rIxPhS4chd4Kfw=;
+        b=Ba/owpT7Dt8JcjbqE1GtMl9projVGwtkJOXZ8lrHY6yCwQyE1c56k6erhXeBBvANQ3
+         W1m6GnqIYHpiPDuG7P0w5hnQZh90duch3MCsPIBlQv4UuyB1aHEbDoTVAgu4g3to6b4t
+         xl+ixs2+HPThuhtsNHxINVBlfIng5DfANFzCQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713889186; x=1714493986;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wanqofR/Nuk2X7+WPgVh3aZdwvGB0rIxPhS4chd4Kfw=;
+        b=D1N7tMFr2R4vTBePzadd4TurQ4r5KhnksAU3SLGuv2exrFiwmPc38lU0elMc88cBUg
+         VlKL8zI5bZArODPxQ42hCir19rXZYsvnrwsdNGe3EBCrBYMusTMEIMVvAtjlAIWp15B5
+         0M1HfxF07zeibgVAZgaFiSglKKMK5GVd8a482Z4/QE6suEgsopmlVng5Pm704dU8++zp
+         k+kNt/JHeQHk3AYRLg5csnNc+g+GRULtWutbEz1744KWUbQYGbMahKxuhilC3/hCih/N
+         L6FpjtYoCFVbq1G1zPjtYav12LO05GYqiH1D8QTG1FilvlB0hyb7beFg9BJqEwYVhsV7
+         3cvg==
+X-Forwarded-Encrypted: i=1; AJvYcCVGO4uCIQVrTsiJdA4pwyeSLOZoIvLlMpBwTA+JmRJodiGno0IxzzLfE2k2SevFiNF+GbfANpCiUUvbldmPBXYK/AGpZwkEWKpD60od
+X-Gm-Message-State: AOJu0YxODZBSxAChDNBpr3UErnyOAClSvpS0kKtWWctgipqi1eqYcn/3
+	KuDdCCtGRzC/pWY5SY4El1c/DEzRXxQyrFOmTRLFiiUrKiWrCf/1AiuogRAmwSuUNTyUnGy5ba5
+	KSGqW
+X-Google-Smtp-Source: AGHT+IGPFz7VAIrCc3pyEBY4Kb3rGuG5tYlFsBGWIGnOgNW4AjS/3fqKyMVr773erYba9hiHuD/ksQ==
+X-Received: by 2002:a05:620a:12ee:b0:78e:d214:59c4 with SMTP id f14-20020a05620a12ee00b0078ed21459c4mr15309021qkl.0.1713889186372;
+        Tue, 23 Apr 2024 09:19:46 -0700 (PDT)
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com. [209.85.160.175])
+        by smtp.gmail.com with ESMTPSA id u10-20020a05620a084a00b0078a04882ac2sm5332618qku.53.2024.04.23.09.19.44
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 09:19:45 -0700 (PDT)
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-439b1c72676so522701cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:19:44 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUs2hcsmLOCIvJw+o8jQvLiMY2fFddRWZlv3rJIa9f0PfrKSbS8rI4nxY/EtCsp84aSfZxOtKKNgWv9da6nSBeR0u4FaT2tY9YV0I6h
+X-Received: by 2002:ac8:4053:0:b0:437:9875:9671 with SMTP id
+ j19-20020ac84053000000b0043798759671mr278456qtl.0.1713889184337; Tue, 23 Apr
+ 2024 09:19:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 2dFiZv_uPi6oSvn_gODzW6Qz2bCE3BNI
-X-Proofpoint-ORIG-GUID: 2dFiZv_uPi6oSvn_gODzW6Qz2bCE3BNI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-23_13,2024-04-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 mlxlogscore=994 malwarescore=0 suspectscore=0 spamscore=0
- impostorscore=0 adultscore=0 lowpriorityscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404230037
+References: <20240422090310.3311429-1-yangcong5@huaqin.corp-partner.google.com>
+ <20240422090310.3311429-3-yangcong5@huaqin.corp-partner.google.com>
+ <CAD=FV=V2O2aFDVn5CjbXfgcOLkmNp-G3ChVqQKouB2mDB+NZug@mail.gmail.com> <CAHwB_NJsDsTc=gjP8TJ+6ipo10uMYFLmuf+tKGVgxnznhuAcUQ@mail.gmail.com>
+In-Reply-To: <CAHwB_NJsDsTc=gjP8TJ+6ipo10uMYFLmuf+tKGVgxnznhuAcUQ@mail.gmail.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Tue, 23 Apr 2024 09:19:27 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UGDbNvAMjzWSOvxybGikQcvW9JsRtbxHVg8_97YPEQCA@mail.gmail.com>
+Message-ID: <CAD=FV=UGDbNvAMjzWSOvxybGikQcvW9JsRtbxHVg8_97YPEQCA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] drm/panel: himax-hx83102: Break out as separate driver
+To: cong yang <yangcong5@huaqin.corp-partner.google.com>
+Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
+	linus.walleij@linaro.org, krzysztof.kozlowski+dt@linaro.org, 
+	robh+dt@kernel.org, conor+dt@kernel.org, airlied@gmail.com, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, xuxinxiong@huaqin.corp-partner.google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As an optimization, only check the status register if the eight
-byte i2c read operation returns 0xffffffffffffffff. This indicates
-that the I2C Responder operation failed and the status register
-will provide the reason. Otherwise, the operation was successful,
-so no status check is necessary.
+Hi,
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
----
- drivers/fsi/fsi-master-i2cr.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+On Tue, Apr 23, 2024 at 2:37=E2=80=AFAM cong yang
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> > > +static int starry_init_cmd(struct hx83102 *ctx)
+> > > +{
+> > > +       struct mipi_dsi_device *dsi =3D ctx->dsi;
+> > > +
+> > > +       mipi_dsi_dcs_write_seq(dsi, HX83102_SETEXTC, 0x83, 0x10, 0x21=
+, 0x55, 0x00);
+> > > +
+> > > +       mipi_dsi_dcs_write_seq(dsi, HX83102_SETPOWER, 0x2C, 0xB5, 0xB=
+5, 0x31, 0xF1, 0x31, 0xD7, 0x2F,
+> > > +                                                 0x36, 0x36, 0x36, 0=
+x36, 0x1A, 0x8B, 0x11, 0x65, 0x00, 0x88, 0xFA, 0xFF,
+> > > +                                                 0xFF, 0x8F, 0xFF, 0=
+x08, 0x74, 0x33);
+> >
+> > I know this is a sticking point between Linus W. and me, but I'm
+> > really not a fan of all the hardcoded function calls since it bloats
+> > the code so much. I think we need to stick with something more table
+> > based at least for the majority of the commands. If I understand
+> > correctly, Linus was OK w/ something table based as long as it was in
+> > common code [1]. I think he also wanted the "delay" out of the table,
+> > but since those always seem to be at the beginning or the end it seems
+> > like we could still have the majority of the code as table based. Do
+> > you want to make an attempt at that? If not I can try to find some
+> > time to write up a patch in the next week or so.
+>
+> Do you mean not add "delay" in the table?  However, the delay
+> required by each panel may be different. How should this be handled?
 
-diff --git a/drivers/fsi/fsi-master-i2cr.c b/drivers/fsi/fsi-master-i2cr.c
-index 40f1f4d231e5..9bb5c008995e 100644
---- a/drivers/fsi/fsi-master-i2cr.c
-+++ b/drivers/fsi/fsi-master-i2cr.c
-@@ -145,9 +145,11 @@ int fsi_master_i2cr_read(struct fsi_master_i2cr *i2cr, u32 addr, u64 *data)
- 	if (ret)
- 		goto unlock;
- 
--	ret = i2cr_check_status(i2cr->client);
--	if (ret)
--		goto unlock;
-+	if (*data == 0xffffffffffffffffull) {
-+		ret = i2cr_check_status(i2cr->client);
-+		if (ret)
-+			goto unlock;
-+	}
- 
- 	trace_i2cr_read(i2cr->client, command, data);
- 
--- 
-2.39.3
+In the case of the "himax-hx83102" driver, it looks as if all the
+delays are at the beginning or end of the init sequence. That means
+you could just make those extra parameters that are set per-panel and
+you're back to having a simple sequence without delays.
 
+If you had panels that needed delays in a more complicated way, you
+could keep the per-panel functions but just make the bulk of the
+function calls apply a sequence. For instance:
+
+static int my_panel_init_cmd(...)
+{
+  ret =3D mipi_dsi_dcs_write_cmd_seq(dsi, my_panel_init_cmd_seq);
+  if (ret)
+    return ret;
+  mdelay(100);
+  ret =3D mipi_dsi_dcs_write(dsi, ...);
+  if (ret)
+    return ret;
+  mdelay(50);
+  ret =3D mipi_dsi_dcs_write_cmd_seq(dsi, ...);
+  if (ret)
+    return ret;
+}
+
+The vast majority of the work is still table driven so it doesn't
+bloat the code, but you don't have the "delay" in the command sequence
+since Linus didn't like it. I think something like the above would
+make Linus happy and I'd be OK w/ it as well. Ideally you should still
+make your command sequence as easy to understand as possible, kind of
+like how we did with _INIT_SWITCH_PAGE_CMD() in
+"panel-ilitek-ili9882t.c"
+
+As part of this, you'd have to add a patch to create
+mipi_dsi_dcs_write_cmd_seq(), but hopefully that shouldn't be too
+complicated?
+
+
+> It would be great if you could help provide a patch. Thank you so much.
+
+Sure, I can, though maybe you want to give it a shot with the above descrip=
+tion?
+
+-Doug
 
