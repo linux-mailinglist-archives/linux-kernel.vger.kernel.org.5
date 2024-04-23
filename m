@@ -1,105 +1,238 @@
-Return-Path: <linux-kernel+bounces-155248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311BD8AE765
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:06:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A48CA8AE772
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:08:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D855B1F22C28
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:06:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C943A1C23576
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A8B1332B0;
-	Tue, 23 Apr 2024 13:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07FF134CCB;
+	Tue, 23 Apr 2024 13:08:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="gPCm6X/m"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qmKMFT0m";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="9nRhQWg3";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qmKMFT0m";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="9nRhQWg3"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 394C9134427
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:06:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F161745E2;
+	Tue, 23 Apr 2024 13:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713877598; cv=none; b=iJkqRJN9r3bj6Hzn2FRcfkJvR3PkMRxq5xlKfgIyfUoo4ASUIcdNK9ajIDq509k4891jRKX6UondsjZ+EBoDnjOqlfHjdCR28QZOCjhvWx5vWtwmIwLFwcBvssEZMjgjDj+6ZDy96RArylQ/SeL+EHb4vqwgOai5OGgbsExC7aY=
+	t=1713877686; cv=none; b=XK/k0Xl3CAZLwZEK/rlpXrfiJBJblGr28K90NF3wVG4Y3ThSY5zvMoN2EkeOcDXDdXnidQxOk7oXo7csggDesEbU45UMtgxc+TbmH8agfus79m2l3zYAtfKIaVXtFlKR1K/9FcSpi/lEAHsDIB3vj8QKXfjtSUNhw/JviMNHswU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713877598; c=relaxed/simple;
-	bh=grwm9HXpZ8bNgqFZwTamq6hPZswUJZHRWpQR6jPcCgQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TQVfrVcEgYjHWNHfb2BucEDrInPsCeZwpKYrTsagGKTc4gPnh/JCF8IMRnnGNLQ4tY031PnGeWYQNqyuXGI4qTFtPT7cr+2ZAfJ8dD6OI2pb/UMnsHER2QRRM+D1gCPCvEfZFR/YA434AUX3ujnm8XBSCkvAGVmj2ZBLtxDLfJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=gPCm6X/m; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so8366789a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 06:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1713877594; x=1714482394; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YtNKrVkvv3wQwUeLZfXmzb5Q0GHzil5K1gY3ZsSm6Z8=;
-        b=gPCm6X/mQOKQYH5eQn8hp4KffHO79Mpu49w8aIjcNL7hp9ZXFXkxU0tTN7UnMrSGiS
-         pnCRTncVMeCIZ5VnP+zOerYj5nTg2ioZX/b20+QWODPsOJjfSZKcKv0gz3TQjD5EW3w9
-         lpCPUgzKXD27In/qdiOmhpawtv3YcGLOVtzolsTgsMBKP206fhbU9fFCCtzt6nzkoi5c
-         kLtCRbhXmV45OCxfMOGyjuKlAdnUX5Ykl7FvRx4N3Kv71O2VGO5Hb/k6Lb5MdjzhuWf1
-         GCcj8s3aAPSksAdSZ7iA4u1x1o+6Nw7+edj3bVVqhBYynmZGiKGWuIEzORAAYffz2R+P
-         INLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713877594; x=1714482394;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YtNKrVkvv3wQwUeLZfXmzb5Q0GHzil5K1gY3ZsSm6Z8=;
-        b=fBttD0wvuLb50DAF4MNHNWncpHnQspag+1vjCcFETJ1cUXIKGC+HJH8NNUn92+rsbV
-         L3TOj/WkAom73eI3M0qZXK3pAH6a1VBWZ1wFJmUvxoTKUWya6nBdsnpP8sJPHRn2iELr
-         PskrTzov3QSEgQM7UauIayGo5PCcDSEJF4j7Lyv9xEFKO/Zuug0PIRe5+51Z9V7wnhlT
-         7vUORiYNr2Yi91VZfndAsBl/A7Zd0BXuB5qZEsrGg2pzIhGy4R6xwZ6wm6MAa/svV15g
-         ZLPFM2Iw+tVEE/HyP2mhvYHA9lKhjok8feCU9Q7vLIeifz2C/uEVNsgeie5hprLW0Oij
-         wtuA==
-X-Forwarded-Encrypted: i=1; AJvYcCVycGnfcQOvMpj66kpv0vl9PmI+F2bsLR5PAknCZ+itxb7MoF0Tfix2rT1QjYGi6cFk6vILTwjcDwhJ+x5dkOCg6ZWzYpzHRCJ9L3ma
-X-Gm-Message-State: AOJu0Yw0VjFlqrZgdgUgFXRLoGnnSYn3z2dURjSvOUW8/IP7MEcbDOSh
-	wRRCA9KWUaHRltPhLMQshsmnog5nnfDX5RPEHsW9CmZXWKJWk94aLtNEAXQJieI=
-X-Google-Smtp-Source: AGHT+IEfj15fF7r+4JoIHYXpZkv3IMh0LCnfIlqWJ1hT3PKS6rWFiI+6gS+uY4CKIniCYg2L0Kg/iA==
-X-Received: by 2002:a50:d542:0:b0:568:cdd8:cf60 with SMTP id f2-20020a50d542000000b00568cdd8cf60mr12887790edj.8.1713877594441;
-        Tue, 23 Apr 2024 06:06:34 -0700 (PDT)
-Received: from localhost (78-80-105-131.customers.tmcz.cz. [78.80.105.131])
-        by smtp.gmail.com with ESMTPSA id et3-20020a056402378300b00571d8da8d09sm4806843edb.68.2024.04.23.06.06.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 06:06:33 -0700 (PDT)
-Date: Tue, 23 Apr 2024 15:06:32 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Geetha sowjanya <gakula@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
-	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
-	sgoutham@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
-Subject: Re: [net-next PATCH v2 7/9] octeontx2-pf: Add support to sync link
- state between representor and VFs
-Message-ID: <ZieyWKC7ReztKRWF@nanopsycho>
-References: <20240422095401.14245-1-gakula@marvell.com>
- <20240422095401.14245-8-gakula@marvell.com>
+	s=arc-20240116; t=1713877686; c=relaxed/simple;
+	bh=iLUrBbUOU5gdH+eZbJLreYBsbpQPZFCk+4aYIpqdju4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nuowu7ss6z5fe596EZzrdSHioUuL32Ph0n6zQoGTpZmrN/TER2qPHuuTQ7+4heQVJOp+ccejVpssCrguWUlv5ebxbctnds7f4cAXpepRkc0oPrS9hoFYQcRK+gslAcE642gKEf5nafrBeXFTZeSuuLOTKX9ULcK2w/ycTjdzwPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qmKMFT0m; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=9nRhQWg3; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qmKMFT0m; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=9nRhQWg3; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 6778F37F9F;
+	Tue, 23 Apr 2024 13:07:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713877676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1Id41yHvdTscUsFAax+DNoLOYykqRWumjAUWJN9I2VY=;
+	b=qmKMFT0mlZ5lMemlzm3IMqpOJgMMdFt7iU2esq1/LeqFi9+L+zuwXWN8NLBj3YLBcJcqyp
+	NLxQi+wz7v5+y/etBqCdyehMvdlqGLm1/cljwq9XN9lDdXQnztGYvnJ8PTbjMLDZzn5NHb
+	tuWwNQHLLnl5BYFeZaUGklviJgswXyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713877676;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1Id41yHvdTscUsFAax+DNoLOYykqRWumjAUWJN9I2VY=;
+	b=9nRhQWg3Lddeb3Ejm5yfTgZXrZNOJ8ErCcBzqxhu11oVqyX0ubIOBNgAVW1iCAc1maYNLz
+	CM5qwk08G/5TIPAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713877676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1Id41yHvdTscUsFAax+DNoLOYykqRWumjAUWJN9I2VY=;
+	b=qmKMFT0mlZ5lMemlzm3IMqpOJgMMdFt7iU2esq1/LeqFi9+L+zuwXWN8NLBj3YLBcJcqyp
+	NLxQi+wz7v5+y/etBqCdyehMvdlqGLm1/cljwq9XN9lDdXQnztGYvnJ8PTbjMLDZzn5NHb
+	tuWwNQHLLnl5BYFeZaUGklviJgswXyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713877676;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1Id41yHvdTscUsFAax+DNoLOYykqRWumjAUWJN9I2VY=;
+	b=9nRhQWg3Lddeb3Ejm5yfTgZXrZNOJ8ErCcBzqxhu11oVqyX0ubIOBNgAVW1iCAc1maYNLz
+	CM5qwk08G/5TIPAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 162F013894;
+	Tue, 23 Apr 2024 13:07:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 7DhbBKyyJ2btXwAAD6G6ig
+	(envelope-from <tzimmermann@suse.de>); Tue, 23 Apr 2024 13:07:56 +0000
+Message-ID: <1722c1b6-59a5-429d-905c-bc1951a68a68@suse.de>
+Date: Tue, 23 Apr 2024 15:07:51 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240422095401.14245-8-gakula@marvell.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] fbdev: fix incorrect address computation in deferred
+ IO
+To: Nam Cao <namcao@linutronix.de>, Jaya Kumar <jayalk@intworks.biz>,
+ Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
+ Javier Martinez Canillas <javierm@redhat.com>, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc: tiwai@suse.de, bigeasy@linutronix.de, patrik.r.jakobsson@gmail.com,
+ Vegard Nossum <vegard.nossum@oracle.com>,
+ George Kennedy <george.kennedy@oracle.com>,
+ Darren Kenny <darren.kenny@oracle.com>, chuansheng.liu@intel.com,
+ Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+ stable@vger.kernel.org
+References: <20240423115053.4490-1-namcao@linutronix.de>
+Content-Language: en-US
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20240423115053.4490-1-namcao@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.79 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FREEMAIL_TO(0.00)[linutronix.de,intworks.biz,ffwll.ch,gmx.de,redhat.com,vger.kernel.org,lists.freedesktop.org];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.de,linutronix.de,gmail.com,oracle.com,intel.com,vger.kernel.org];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:email]
+X-Spam-Score: -2.79
+X-Spam-Flag: NO
 
-Mon, Apr 22, 2024 at 11:53:59AM CEST, gakula@marvell.com wrote:
->Implements mbox function to sync the link state between VFs and
->its representors. Same mbox is use to notify other updates like mtu etc.
+Hi
+
+Am 23.04.24 um 13:50 schrieb Nam Cao:
+> With deferred IO enabled, a page fault happens when data is written to the
+> framebuffer device. Then driver determines which page is being updated by
+> calculating the offset of the written virtual address within the virtual
+> memory area, and uses this offset to get the updated page within the
+> internal buffer. This page is later copied to hardware (thus the name
+> "deferred IO").
 >
->This patch enables
->- Reflecting the link state of representor based on the VF state and
-> link state of VF based on representor.
-
-Could you please elaborate a bit more how exactly this behaves? Examples
-would help.
-
-
->- On VF interface up/down a notification is sent via mbox to representor
->  to update the link state.
->- On representor interafce up/down will cause the link state update of VF.
+> This offset calculation is only correct if the virtual memory area is
+> mapped to the beginning of the internal buffer. Otherwise this is wrong.
+> For example, if users do:
+>      mmap(ptr, 4096, PROT_WRITE, MAP_FIXED | MAP_SHARED, fd, 0xff000);
 >
+> Then the virtual memory area will mapped at offset 0xff000 within the
+> internal buffer. This offset 0xff000 is not accounted for, and wrong page
+> is updated.
+>
+> Correct the calculation by using vmf->pgoff instead. With this change, the
+> variable "offset" will no longer hold the exact offset value, but it is
+> rounded down to multiples of PAGE_SIZE. But this is still correct, because
+> this variable is only used to calculate the page offset.
+>
+> Reported-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> Closes: https://lore.kernel.org/linux-fbdev/271372d6-e665-4e7f-b088-dee5f4ab341a@oracle.com
+> Fixes: 56c134f7f1b5 ("fbdev: Track deferred-I/O pages in pageref struct")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Nam Cao <namcao@linutronix.de>
+
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+Thank you so much. I'll take care of merging the patch later this week.
+
+Best regards
+Thomas
+
+> ---
+> v2:
+>    - simplify the patch by using vfg->pgoff
+>    - remove tested-by tag, as the patch is now different
+>
+>   drivers/video/fbdev/core/fb_defio.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/video/fbdev/core/fb_defio.c b/drivers/video/fbdev/core/fb_defio.c
+> index 1ae1d35a5942..b9607d5a370d 100644
+> --- a/drivers/video/fbdev/core/fb_defio.c
+> +++ b/drivers/video/fbdev/core/fb_defio.c
+> @@ -196,7 +196,7 @@ static vm_fault_t fb_deferred_io_track_page(struct fb_info *info, unsigned long
+>    */
+>   static vm_fault_t fb_deferred_io_page_mkwrite(struct fb_info *info, struct vm_fault *vmf)
+>   {
+> -	unsigned long offset = vmf->address - vmf->vma->vm_start;
+> +	unsigned long offset = vmf->pgoff << PAGE_SHIFT;
+>   	struct page *page = vmf->page;
+>   
+>   	file_update_time(vmf->vma->vm_file);
+
+-- 
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstrasse 146, 90461 Nuernberg, Germany
+GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+HRB 36809 (AG Nuernberg)
+
 
