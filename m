@@ -1,114 +1,121 @@
-Return-Path: <linux-kernel+bounces-155449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4839A8AEABA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AFF168AEAC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:19:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F374328B109
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:18:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C6B528BB48
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4AB13C661;
-	Tue, 23 Apr 2024 15:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2F513D50F;
+	Tue, 23 Apr 2024 15:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ZyvvSgpz"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="RbimjSe/"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFAE5820E;
-	Tue, 23 Apr 2024 15:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C961913C83C;
+	Tue, 23 Apr 2024 15:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713885418; cv=none; b=Niz4XSU0rbzHyYYD4rzfDT6g/ytAO+XlxjriMPpTuXcZp5X+z2QOzCKbY9ZmKDeozZLsuapERrRBNpU1u0mL0kxVUf3c6iOS+cCIXdwQfg9rYLcnqiSyF9oTErRtedfZ9I+gGDsIsaMBU6s01bmu+kxhB8eeWW5VYxUmW18x1jo=
+	t=1713885472; cv=none; b=cBat/olyDPQEgTLFCJotvT6poRMo+MdNaj2ezEN424QOTZFFXjDnCAZhLUtJloCHsnR6wJyh+wRWsQRfXxK6khx+jg3m7AYfqAHmlxx+ic5p6bLQFXFoShGJSj730oBTPmist8hEQhfI2pLSl+Y7+pu1qpsHGAAiX/o4WloD3Hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713885418; c=relaxed/simple;
-	bh=h4yQKZsodwASQ8BaWwplG73xDGyXx08Io8ws3yHb43k=;
-	h=Message-ID:Date:MIME-Version:Cc:To:From:Subject:Content-Type; b=IHk2xpZGR5VkFiGcU0bAKXH3pZM5x9tBy/0uB8yZ7/33Tz0b+3E68/MGguCBxB6WEAFhlgH6siUoyfVR9sJmq6EJPsAsMZXrcuy/60ABrh7DMGFs8fskSstitKlzt4sln6X05w2qaOukpms2i4+OOcxVcO3T1Nyys5pQ/yD/q+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ZyvvSgpz; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713885413;
-	bh=h4yQKZsodwASQ8BaWwplG73xDGyXx08Io8ws3yHb43k=;
-	h=Date:Cc:To:From:Subject:From;
-	b=ZyvvSgpzomYyJOPD5OJaqVcG/9zmB0NKqRCIboLLNkHkNpvggR7JbbJMXNckipZci
-	 wJg66TIZOOBf+DFQ9fOkSala8QAu0vnDDKlI+IGG8+iwNTpan0OSMC76ZsHHfotZkF
-	 X9IyhcCfyfXjoadBS+Pzr3s/V1iE1A54TUaG+EfzhyJycL6uDyKcq69uC6l+VQL0e1
-	 faMnqXVkHCQrWhvlruBdwDeELAuM0FcBju/dnNu7iNYP9YGh74D9IFh+5CEeJIC9re
-	 aUU37CgTkP3pOw0Hv8QfPxl9S2ge/Yku/kbMw/MgGs0FNPaOHj06t8NKmAtLAzyHe7
-	 JNDeqd9nzAbUw==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6B7CE37811D1;
-	Tue, 23 Apr 2024 15:16:49 +0000 (UTC)
-Message-ID: <02c3926c-84fe-4526-a746-6964f5290c14@collabora.com>
-Date: Tue, 23 Apr 2024 20:17:18 +0500
+	s=arc-20240116; t=1713885472; c=relaxed/simple;
+	bh=1x+LblrzlgT7FOM4PcS3qZR5WjRxwBpw68LzmJnEJF0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Kzh6uAV8JSGI2BrMj0V3kYSvN14on6hQKZlBO6xTODmpAYtB5t3Nr/fi19UARwnFRdKXzI6siTZ2ug/FrfD3DzJEceu/5Sb/3kprQffX+7IBDrsqPWbIF07jjhGdFNG2IruzH+v1HGBRffnX+wuNO7lAwl3gD5ZXAJtnEi4a558=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=RbimjSe/; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43NFHWLx078977;
+	Tue, 23 Apr 2024 10:17:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713885452;
+	bh=zzRbZ9Al1Q72Kx4hGHS16o5vcAmBP2xsme3WdUzdqdo=;
+	h=From:To:CC:Subject:Date;
+	b=RbimjSe/+UpXox7wb97v5jpNAKD+PPGnx1lWO/9doAqYZIi3nVq4kglYj/jFUq/gS
+	 5pBTy6odIX8+ZLKzMqwOkdEr0lsyMrl0hlzrgqvo4bqniXZqGmIYgpMfH1YiA1ebRg
+	 HotvVgY/lHNCXKSm9Cn6VazAzLufZedWTNZSTGcQ=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43NFHW7n098202
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 23 Apr 2024 10:17:32 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 23
+ Apr 2024 10:17:32 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 23 Apr 2024 10:17:32 -0500
+Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43NFHWYG080176;
+	Tue, 23 Apr 2024 10:17:32 -0500
+From: Judith Mendez <jm@ti.com>
+To: Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>
+CC: Conor Dooley <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Bhavya Kapoor <b-kapoor@ti.com>, Dasnavis
+ Sabiya <sabiya.d@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v3 0/5] MMC fixes for TI K3 platforms
+Date: Tue, 23 Apr 2024 10:17:27 -0500
+Message-ID: <20240423151732.3541894-1-jm@ti.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- automated-testing@lists.yoctoproject.org,
- "kernel@collabora.com" <kernel@collabora.com>, kernelci@lists.linux.dev,
- open list <linux-kernel@vger.kernel.org>
-Content-Language: en-US
-To: Shuah Khan <shuah@kernel.org>, gustavo.padovan@collabora.com,
- "open list : KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- Laura Nao <laura.nao@collabora.com>,
- Shreeya Patel <shreeya.patel@collabora.com>,
- =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- Helen Mae Koike Fornazier <helen.koike@collabora.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Subject: Improving the testing quality of the kernel
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi,
+This patch series includes MMC updates for various TI K3 platforms.
 
-I've been working with colleagues at Collabora to improve the testing
-quality overall for kselftests since several months. We had identified
-following key points to improve:
-* Make non-TAP conformant tests, TAP conformant to catch the bugs/failures
-in the CI and non-CI environment. Without clear success or failure message,
-it is difficult and at times impossible to notice the bugs and which part
-of the test or sub-test has failed.
-* Add config fragment if it is already isn't present.
-* Improve ancient tests to be robust. KernelCI helps a lot in finding
-flakiness or non-robust pieces of code by building it in range of
-configurations and running it on range of hardware.
+It includes support for enabling UHS/SDR104 bus modes.
 
-As new KernelCI is in works, we are identifying which kselftest suites
-could be most suitable to be enabled in the start to keep the noise to a
-minimum. The criteria to enable a suite on KernelCI is:
-* The test suite is TAP compliant
-* The test suite passes in preliminary testing on x86_64 and ARM64 platforms
-* The test suite builds fine with Clang in-addition to gcc
+For AM62ax, add missing UHS support.
 
-To facilitate transparency and track our progress, I am diligently
-maintaining a spreadsheet [1] with detailed information about each suite's
-status and requirements.
+For AM65x, fix ITAP delay and OTAP delay and clkbuf-sel properties
+in SDHCI nodes.
 
-Furthermore, I have commenced exploration into KUnit testing, and initial
-results are promising. I plan to delve deeper into KUnit testing and will
-provide further updates in the coming days.
+Changes since v2:
+- Drop patch 6/6
 
-Your feedback, insights and collaboration on any aspect of these
-initiatives would be highly valuable. We greatly appreciate your
-collaboration and support as we continue to enhance the testing quality of
-kselftests.
+Changes since v1:
+- Drop patches that remove HS400 mode support
+- Add patch 6/6
 
-[1]
-https://docs.google.com/spreadsheets/d/1XRCgxlY1b74aIOIXQ7qDR-62KTJmuV1ow9st4fpeVhA/edit?usp=sharing
+Bhavya Kapoor (1):
+  arm64: dts: ti: k3-j721s2-main: Enable support for SDR104 speed mode
 
+Dasnavis Sabiya (1):
+  arm64: dts: ti: k3-j784s4-main: Enable support for UHS mode
+
+Judith Mendez (2):
+  arm64: dts: ti: k3-am65-main: Fix sdhci node properties
+  arm64: dts: ti: k3-am65-main: Remove unused properties in sdhci nodes
+
+Vignesh Raghavendra (1):
+  arm64: dts: ti: k3-am62a: Enable UHS mode support for SD cards
+
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi  |  2 --
+ arch/arm64/boot/dts/ti/k3-am62a7-sk.dts    | 21 +++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi   | 26 +++++++++-------------
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi |  2 --
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi |  2 --
+ 5 files changed, 32 insertions(+), 21 deletions(-)
+
+
+base-commit: 534ad093bb80f19c20b251a89f09ce1a0e3d4f2d
 -- 
-BR,
-Muhammad Usama Anjum
+2.43.2
+
 
