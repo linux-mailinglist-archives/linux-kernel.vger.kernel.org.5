@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-155750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFE808AF6A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:34:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B96A8AF6A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:34:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0C741C22E98
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:34:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF057287148
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:34:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA5D13FD74;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2DE140363;
 	Tue, 23 Apr 2024 18:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="llPNQYid"
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.207])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="XmA1fUKM"
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.209])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 990181E53F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2EDC224F0;
 	Tue, 23 Apr 2024 18:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.207
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.209
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713897228; cv=none; b=d92+5qR90x47ywVAfmaYlikOovi4ypHlY+lzPRgrXQuWdYWJSC/0Gn9/rNxkGa3RiACl7PSxmZLYLtidtELQEfRk50KuB7qIbKWGaXZlxljyn0kh+HM8ExxYIn5Ij8KFi/WVjCIo09czhOYft7t/ea/Y6H8O5eb878hSR2hB8Cw=
+	t=1713897229; cv=none; b=uqZKlhjHeSUBgxpUYIHe1a6NFH30+9vWjBuIWed3mKZHm2x5OPWdxjO79V4BPsKQETs5y3tuOJW9zJNCsETVw9kmUI9HMnVUKVvQJFD8tvY6535xTr8urtt1j5K8F/E72c53GHjCk9dFbVlrmIzRuPbBIOhC7njZ9KwT6U0cYXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713897228; c=relaxed/simple;
-	bh=A406q/tAi4UZG/IcGrX9tzSqvoePKRA9IiSHVZtAsos=;
+	s=arc-20240116; t=1713897229; c=relaxed/simple;
+	bh=5Rs4NDx0w9fZ2G6+ayoz5dB3lgt7R2tOgtEK4vnKs9A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ugdk1M+Iwk8KiMfwYAn9M1bBG3PYFKHhlAK7mXv1oloUen+78r24jJLCUZwUSoSGhkeGXA6n4x6kSWEah27a4S+9qtx5QMV03JLpxW0hVecVI+VeNgq1B7mkRwUFaaQTatSDKV/HoFGF71qCc0rtx+Gb1KU4TsTtg7jlP9h7yRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=llPNQYid; arc=none smtp.client-ip=192.19.144.207
+	 MIME-Version; b=lcbYhgcSSxA4BFFPjS0PLDzBPNXaRfOWuz35vqRtX+GLxbdPk5lxlaGbhgvquDzHwDkTNO52c2/3B8On6Ni3CHVti/HC6w8+aF5GmqBKZsROV5mypd4YxxJgz2LGF+rNu/Ee6JuIRSz4CEtuSs/Q/fMouJmaeDfyyfxkQ7WFMrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=XmA1fUKM; arc=none smtp.client-ip=192.19.144.209
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
 Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 6CAE8C00282D;
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 86999C002816;
 	Tue, 23 Apr 2024 11:33:41 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 6CAE8C00282D
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 86999C002816
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
 	s=dkimrelay; t=1713897221;
-	bh=A406q/tAi4UZG/IcGrX9tzSqvoePKRA9IiSHVZtAsos=;
+	bh=5Rs4NDx0w9fZ2G6+ayoz5dB3lgt7R2tOgtEK4vnKs9A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=llPNQYid5I7ncsvky7UeA6ELxr9WskCvmPzOsIBHVpgqWp2cD4Zj1lTXVE7lPBBSk
-	 k0eEj92LPiiSsjUgOHJPXthctXCqLU3xhNb5lyIIjgGiVO9+HN8Yfvc7u4muB0ohrL
-	 qBxB+PUUJsoZFr2r6Xvr9dD2vUSovlaRQj+eeSp8=
+	b=XmA1fUKMY2dJWb488nPAXVhe06pqY5QoLWOwatXPdbsEM3h1+PPJUzgRO54ctIZen
+	 nBXRGFCU9pTTUyIiWx5m2NRRB0OE/s7MfoW4VWAVH1ePX1z1nEVk7oZSjmayrj5Ujl
+	 OsYWgxEta8/qn9YWpIJ+N8/3uEjBKnJQEEIZ44aU=
 Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 8C4E318041CAC4;
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id AC72C18041CAC6;
 	Tue, 23 Apr 2024 11:33:39 -0700 (PDT)
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 To: netdev@vger.kernel.org
@@ -57,9 +57,9 @@ Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Russell King <linux@armlinux.org.uk>,
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next 4/8] net: dsa: b53: Force flow control for BCM5301X CPU port(s)
-Date: Tue, 23 Apr 2024 11:33:35 -0700
-Message-Id: <20240423183339.1368511-5-florian.fainelli@broadcom.com>
+Subject: [PATCH net-next 5/8] net: dsa: b53: Configure RGMII for 531x5 and MII for 5325
+Date: Tue, 23 Apr 2024 11:33:36 -0700
+Message-Id: <20240423183339.1368511-6-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
 References: <20240423183339.1368511-1-florian.fainelli@broadcom.com>
@@ -71,31 +71,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Just like what b53_adjust_link() does, force flow control for the
-BCM5301X CPU port(s) by forcing rx_pause and tx_pause in
-b53_phylink_mac_link_up(). Preparatory step for getting rid of
-b53_adjust_link().
+Call b53_adjust_531x5_rgmii() and b53_adjust_5325_mii() from
+b53_phylink_mac_config() when we have a fixed PHY in preparation for removing
+b53_adjust_link(). Also move b53_adjust_63xx_rgmii() to
+b53_phylink_mac_config() where it logically belongs.
 
 Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- drivers/net/dsa/b53/b53_common.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/dsa/b53/b53_common.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index a127a17be11c..6277ab7dcb7f 100644
+index 6277ab7dcb7f..18b87e903943 100644
 --- a/drivers/net/dsa/b53/b53_common.c
 +++ b/drivers/net/dsa/b53/b53_common.c
-@@ -1475,6 +1475,10 @@ static void b53_phylink_mac_link_up(struct dsa_switch *ds, int port,
+@@ -1438,6 +1438,20 @@ static void b53_phylink_mac_config(struct dsa_switch *ds, int port,
+ 				   unsigned int mode,
+ 				   const struct phylink_link_state *state)
+ {
++	phy_interface_t interface = state->interface;
++	struct b53_device *dev = ds->priv;
++
++	if (is63xx(dev) && port >= B53_63XX_RGMII0)
++		b53_adjust_63xx_rgmii(ds, port, interface);
++
++	if (mode == MLO_AN_FIXED) {
++		if (is531x5(dev) && phy_interface_mode_is_rgmii(interface))
++			b53_adjust_531x5_rgmii(ds, port, interface);
++
++		/* configure MII port if necessary */
++		if (is5325(dev))
++			b53_adjust_5325_mii(ds, port);
++	}
+ }
+ 
+ static void b53_phylink_mac_link_down(struct dsa_switch *ds, int port,
+@@ -1468,9 +1482,6 @@ static void b53_phylink_mac_link_up(struct dsa_switch *ds, int port,
+ {
+ 	struct b53_device *dev = ds->priv;
+ 
+-	if (is63xx(dev) && port >= B53_63XX_RGMII0)
+-		b53_adjust_63xx_rgmii(ds, port, interface);
+-
+ 	if (mode == MLO_AN_PHY)
  		return;
  
- 	if (mode == MLO_AN_FIXED) {
-+		/* Force flow control on BCM5301x's CPU port */
-+		if (is5301x(dev) && dsa_is_cpu_port(ds, port))
-+			tx_pause = rx_pause = true;
-+
- 		b53_force_port_config(dev, port, speed, duplex,
- 				      tx_pause, rx_pause);
- 		b53_force_link(dev, port, true);
 -- 
 2.34.1
 
