@@ -1,199 +1,153 @@
-Return-Path: <linux-kernel+bounces-154979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08B278AE3D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:27:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 257D28AE3B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:18:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 050A7B2236A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:27:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0AA5281A4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E69E7E796;
-	Tue, 23 Apr 2024 11:26:52 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F3D7E58E;
+	Tue, 23 Apr 2024 11:17:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AYdUuJSH"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D2F60279;
-	Tue, 23 Apr 2024 11:26:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DE4D6E617
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 11:17:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713871612; cv=none; b=SwW95kWZyndz6ZRe1kyVZa9QPQCrFPBJtPEswc+n1WlMp1Lr91yE6pJraWxO+04c3xPBhb5MRCsx9uFWJ/SvwqBHzClzuq1H1SRosZmIXY2gw8WGddUFQ0SPQ18M2+dNWwEMCh8Cmd6eHXUoL+yWJwZvbPeuw/7rv7FVE2QUl6U=
+	t=1713871077; cv=none; b=EZxmhTpGeKbXqj8yi4K3DyQTEFMLKLhqg9ZAajP/9stARzDspO5iNUt4dIpwMTAwCPGOqcjhsfKe7D/DGPKhgADKAGjjFopPMbfgpekWgDZvF8KEAyq+r9b6HMvJdjkQWYzD874P06fCx/D8tN3flVmBboctiQFUzG2OidQbzwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713871612; c=relaxed/simple;
-	bh=yIru4Dpy+UCxrypB9Zbcrt6rwL+AC++o7HQ7EHMSuTY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kL337ZAR3vZmZPcQf0qDsZeKLnDA11lbfuGbalwQr5sr35sXTvyXGGaXs/x+ydyhSn0x+206zBaFdUpFPu77R3vEb48J+Q78VPYtYtcxx1nSiId9AU2hVAsZu1xu0FF7cfTQvIR0rwSdfpZhznu4LJFTFIbT8KqB/R+z/0eoq30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VP0F84QTsz4f3nKM;
-	Tue, 23 Apr 2024 19:26:36 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id C08ED1A0175;
-	Tue, 23 Apr 2024 19:26:45 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBHGBHymidmAnH7Kg--.30599S4;
-	Tue, 23 Apr 2024 19:26:45 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	djwong@kernel.org,
-	hch@infradead.org,
-	brauner@kernel.org,
-	david@fromorbit.com,
-	chandanbabu@kernel.org,
-	tytso@mit.edu,
-	jack@suse.cz,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: [PATCH v5 4/9] xfs: convert delayed extents to unwritten when zeroing post eof blocks
-Date: Tue, 23 Apr 2024 19:17:35 +0800
-Message-Id: <20240423111735.1298851-1-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240320110548.2200662-5-yi.zhang@huaweicloud.com>
-References: <20240320110548.2200662-5-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1713871077; c=relaxed/simple;
+	bh=WBlYJbDM420376pxHCSgY3J8I6hmPvxhxfia3JcpKqQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BaPyjIAO4W/cDiEWGcX6Yjm86FBJz1+d6iSTtN0AJ2gcdfN37+4AuuoFMVG2dqpBC2UX1ic3zdMhSMoAHBkfXZZDoOkIcRwTSos79bEadAbswbdkYQNbAKQQ5S5cgz5890iXkLwfsg5oXTq5q/J4tu7+f6ouk7mn3ZmlB1mK5Eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AYdUuJSH; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-571e13cd856so16571a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 04:17:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713871074; x=1714475874; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yFS7RXq9qBhiwLT5zm2qX4wTBz1ICyONtrvH1XkqVug=;
+        b=AYdUuJSHTNIL9PeNTroij4pmIoLgbEgRuIvGJr3s8qEjgTA7AYNbl66Q14cnVnnruN
+         GSRz3o+bEB1rtFjJwSMmu9kUybfhn1QWdk0TBkMCuvwUAlp1zAWyzUkDNfry/lMHWrYi
+         nrpy5rcBF0U48dg8Ugao871kSwgGJxHdhFa92rqVN/uHswpqXZn894BYVdO9yzhGRDb3
+         w9vnN543QQlyQpxL7cFCO2LIvrYtbc0AGjTXNyz2LBlvLY4UfPJFiU9FLTI6g3zbC3SZ
+         MxmGe0ibll69EM/KJF9c6fE0k9iEWb2i75ZUd6DmrF0vTYuso5N3oxzIEncQr/RkSKGr
+         rPxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713871074; x=1714475874;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yFS7RXq9qBhiwLT5zm2qX4wTBz1ICyONtrvH1XkqVug=;
+        b=Gs0RTBkvBA5KW48R+jSbwCkmd4nkvyAnPztMySRu9galR7jmSf0rdDJC10B8zLbDH0
+         uhH6CjpcKfiuEq6HpafMaMtOmDpg2Y8wbJqCiWKfy9Hrz+1mw3Pey1R8KMlUtkEiePUX
+         b2KPxF4gDvwuJdrLMP/Ow8I9i2ESI+6plHMDZ+lORCf7C6jU4zTaoMj5VBhQoJ27YPek
+         o9b6cUeciAOmZzbTXPSCAta8Jao7qj/yFPySqYMf2JPqgYrrTQbi8lK3D/GTCvQIUNhc
+         LtHnRcMCoxE5wlDCH78kyIfnyadaodWWWonKsb6dRr90Wse6G6UCqh81SAiL+XTc1jMY
+         ShwA==
+X-Forwarded-Encrypted: i=1; AJvYcCXqkjhoIrkN+t0P0Kg6njdJFbdgwS9wmRz5Fxn+5Uz7KtbrFwBZWcIiPyOHcJMvAsXnvUc8VzEwQggtwUzg35I15oFqbhyIvEvCi3/t
+X-Gm-Message-State: AOJu0Yy6dFEeFmwbqWkMYckWdTOsq8gry/+sYrY0FSgw1cZKRVtoPNuz
+	dUw325Y803rFcAYsKilLLK2I5wfW2xBPLpuld628A00X//gvtXAH8eiGKlE4SxypfIBpvq1rwGF
+	lenVzW6mw474SJ+sY9DqGRIUNJwIyWMmnywlP
+X-Google-Smtp-Source: AGHT+IElhRef4erNceR0B1a4VbiksSXys1972fOis+BIviNNsr++R2H7gn6Pfe0eqSlTR0M5DlODJyasKv8DYku/sVc=
+X-Received: by 2002:aa7:d290:0:b0:571:fee3:594c with SMTP id
+ w16-20020aa7d290000000b00571fee3594cmr149127edq.4.1713871074171; Tue, 23 Apr
+ 2024 04:17:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHGBHymidmAnH7Kg--.30599S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw47Kw4fCw4UJF4DuryDKFg_yoWrGrW8pF
-	Zagw15GrsrKw1fZw4fAF1agr1F93Z5Cr4UJryrXrs3Za4Yqr4IgryIy3Wjqry8Cws3A3Wj
-	vF4jgas2934qvaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1
-	a9aPUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+References: <20240423094117.93206-1-nbd@nbd.name> <CANn89i+6xRe4V6aDmD-9EM0uD7A87f6rzg3S7Xq6-NaB_Mb4nw@mail.gmail.com>
+ <63abfa26-d990-46c3-8982-3eaf7b8f8ee5@nbd.name>
+In-Reply-To: <63abfa26-d990-46c3-8982-3eaf7b8f8ee5@nbd.name>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 23 Apr 2024 13:17:40 +0200
+Message-ID: <CANn89iJZvoKVB+AK1_44gki2pHyigyMLXFkyevSQpH3iDbnCvw@mail.gmail.com>
+Subject: Re: [RFC] net: add TCP fraglist GRO support
+To: Felix Fietkau <nbd@nbd.name>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Tue, Apr 23, 2024 at 12:25=E2=80=AFPM Felix Fietkau <nbd@nbd.name> wrote=
+:
+>
+> On 23.04.24 12:15, Eric Dumazet wrote:
+> > On Tue, Apr 23, 2024 at 11:41=E2=80=AFAM Felix Fietkau <nbd@nbd.name> w=
+rote:
+> >>
+> >> When forwarding TCP after GRO, software segmentation is very expensive=
+,
+> >> especially when the checksum needs to be recalculated.
+> >> One case where that's currently unavoidable is when routing packets ov=
+er
+> >> PPPoE. Performance improves significantly when using fraglist GRO
+> >> implemented in the same way as for UDP.
+> >>
+> >> Here's a measurement of running 2 TCP streams through a MediaTek MT762=
+2
+> >> device (2-core Cortex-A53), which runs NAT with flow offload enabled f=
+rom
+> >> one ethernet port to PPPoE on another ethernet port + cake qdisc set t=
+o
+> >> 1Gbps.
+> >>
+> >> rx-gro-list off: 630 Mbit/s, CPU 35% idle
+> >> rx-gro-list on:  770 Mbit/s, CPU 40% idle
+> >
+> > Hi Felix
+> >
+> > changelog is a bit terse, and patch complex.
+> >
+> > Could you elaborate why this issue
+> > seems to be related to a specific driver ?
+> >
+> > I think we should push hard to not use frag_list in drivers :/
+> >
+> > And GRO itself could avoid building frag_list skbs
+> > in hosts where forwarding is enabled.
+> >
+> > (Note that we also can increase MAX_SKB_FRAGS to 45 these days)
+>
+> The issue is not related to a specific driver at all. Here's how traffic
+> flows: TCP packets are received on the SoC ethernet driver, the network
+> stack performs regular GRO. The packet gets forwarded by flow offloading
+> until it reaches the PPPoE device. PPPoE does not support GSO packets,
+> so the packets need to be segmented again.
+> This is *very* expensive, since data needs to be copied and checksummed.
 
-Current clone operation could be non-atomic if the destination of a file
-is beyond EOF, user could get a file with corrupted (zeroed) data on
-crash.
+gso segmentation does not copy the payload, unless the device has no
+SG capability.
 
-The problem is about preallocations. If you write some data into a file:
+I guess something should be done about that, regardless of your GRO work,
+since most ethernet devices support SG these days.
 
-	[A...B)
+Some drivers use header split for RX, so forwarding to  PPPoE
+would require a linearization anyway, if SG is not properly handled.
 
-and XFS decides to preallocate some post-eof blocks, then it can create
-a delayed allocation reservation:
+>
+> So in my patch, I changed the code to build fraglist GRO instead of
+> regular GRO packets, whenever there is no local socket to receive the
+> packets. This makes segmenting very cheap, since the original skbs are
+> preserved on the trip through the stack. The only cost is an extra
+> socket lookup whenever NETIF_F_FRAGLIST_GRO is enabled.
 
-	[A.........D)
-
-The writeback path tries to convert delayed extents to real ones by
-allocating blocks. If there aren't enough contiguous free space, we can
-end up with two extents, the first real and the second still delalloc:
-
-	[A....C)[C.D)
-
-After that, both the in-memory and the on-disk file sizes are still B.
-If we clone into the range [E...F) from another file:
-
-	[A....C)[C.D)      [E...F)
-
-then xfs_reflink_zero_posteof() calls iomap_zero_range() to zero out the
-range [B, E) beyond EOF and flush it. Since [C, D) is still a delalloc
-extent, its pagecache will be zeroed and both the in-memory and on-disk
-size will be updated to D after flushing but before cloning. This is
-wrong, because the user can see the size change and read the zeroes
-while the clone operation is ongoing.
-
-We need to keep the in-memory and on-disk size before the clone
-operation starts, so instead of writing zeroes through the page cache
-for delayed ranges beyond EOF, we convert these ranges to unwritten and
-invalidate any cached data over that range beyond EOF.
-
-Suggested-by: Dave Chinner <david@fromorbit.com>
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
-Changes since v4:
-
-Move the delalloc converting hunk before searching the COW fork. Because
-if the file has been reflinked and copied on write,
-xfs_bmap_extsize_align() aligned the range of COW delalloc extent, after
-the writeback, there might be some unwritten extents left over in the
-COW fork that overlaps the delalloc extent we found in data fork.
-
-  data fork  ...wwww|dddddddddd...
-  cow fork          |uuuuuuuuuu...
-                    ^
-                  i_size
-
-In my v4, we search the COW fork before checking the delalloc extent,
-goto found_cow tag and return unconverted delalloc srcmap in the above
-case, so the delayed extent in the data fork will have no chance to
-convert to unwritten, it will lead to delalloc extent residue and break
-generic/522 after merging patch 6.
-
- fs/xfs/xfs_iomap.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-index 236ee78aa75b..ab398cb3680a 100644
---- a/fs/xfs/xfs_iomap.c
-+++ b/fs/xfs/xfs_iomap.c
-@@ -1022,6 +1022,23 @@ xfs_buffered_write_iomap_begin(
- 		goto out_unlock;
- 	}
- 
-+	/*
-+	 * For zeroing, trim a delalloc extent that extends beyond the EOF
-+	 * block.  If it starts beyond the EOF block, convert it to an
-+	 * unwritten extent.
-+	 */
-+	if ((flags & IOMAP_ZERO) && imap.br_startoff <= offset_fsb &&
-+	    isnullstartblock(imap.br_startblock)) {
-+		xfs_fileoff_t eof_fsb = XFS_B_TO_FSB(mp, XFS_ISIZE(ip));
-+
-+		if (offset_fsb >= eof_fsb)
-+			goto convert_delay;
-+		if (end_fsb > eof_fsb) {
-+			end_fsb = eof_fsb;
-+			xfs_trim_extent(&imap, offset_fsb, end_fsb - offset_fsb);
-+		}
-+	}
-+
- 	/*
- 	 * Search the COW fork extent list even if we did not find a data fork
- 	 * extent.  This serves two purposes: first this implements the
-@@ -1167,6 +1184,17 @@ xfs_buffered_write_iomap_begin(
- 	xfs_iunlock(ip, lockmode);
- 	return xfs_bmbt_to_iomap(ip, iomap, &imap, flags, 0, seq);
- 
-+convert_delay:
-+	xfs_iunlock(ip, lockmode);
-+	truncate_pagecache(inode, offset);
-+	error = xfs_bmapi_convert_delalloc(ip, XFS_DATA_FORK, offset,
-+					   iomap, NULL);
-+	if (error)
-+		return error;
-+
-+	trace_xfs_iomap_alloc(ip, offset, count, XFS_DATA_FORK, &imap);
-+	return 0;
-+
- found_cow:
- 	seq = xfs_iomap_inode_sequence(ip, 0);
- 	if (imap.br_startoff <= offset_fsb) {
--- 
-2.39.2
-
+A socket lookup in multi-net-namespace world is not going to work generical=
+ly,
+but I get the idea now.
 
