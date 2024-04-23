@@ -1,176 +1,203 @@
-Return-Path: <linux-kernel+bounces-154751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92DFA8AE085
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:02:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07A5B8AE089
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:03:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49BA6283F8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:02:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 610ABB24E06
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E6CD5644F;
-	Tue, 23 Apr 2024 09:02:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5968056B71;
+	Tue, 23 Apr 2024 09:03:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V0W+v8/c"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="JjjwOQ6i"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A200535DB;
-	Tue, 23 Apr 2024 09:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A180456448;
+	Tue, 23 Apr 2024 09:03:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713862970; cv=none; b=REsfvcocK/DF95GvH3DNJ357me03DjFE2shmGkObiOr2B7rAFDqT5JSHVTRygxSeHiIVGLGFUlM/BYtalG2KTKEdqsn7yS25tPAA7OCZs626yID+L7iM7IhqdVjwpJ0Mvq/y/N4uztaLYDLzF7vaqXqHbPqMVInmgwZ9kJSel8g=
+	t=1713862995; cv=none; b=LUUPZKbrTxiloqXUk5tXzsAgxTJw6eHlocjsGFAwteAKiMeW9lGIwdLcgLb+npZMHlqX0Ihq+ryNeluJwM6chmbqhXM+L+OGRY1v1DVxXZpcbbyp+J8zUhJohdUb57QqRfdVwkN9Yvk7JX1wM/c46ADVif0NrMtLgSBF104kaH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713862970; c=relaxed/simple;
-	bh=Tf1WAE083iqElmWUjgIU3qiP70v7umc//U+zy4dFFjw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JjyZMdUObff9i9O5nd5dQUIXPHv1X2cSeuj12ouCAcb61wOsvwKZ2m/+3bl1R11LNCeLuEk7k4xe9mehPOjAjtJK0AvRyJ9jk1xz8aNwVwoipTj5STSQH3HRhwEN/zV1Xo0dKxqEdgj5OOnzubDTkNJ5JDUpt/DQIemvJg3eJH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V0W+v8/c; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2ae6c8745ffso802684a91.2;
-        Tue, 23 Apr 2024 02:02:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713862968; x=1714467768; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BXsOnG+unFLFOLCvhsKIlfWgz2bxnXfsLh7JooJSg6o=;
-        b=V0W+v8/cOLxU3jH/RQyn2sz/K7z2CWF4V6XxFi+NOhXaXCYcEk7iERWbWuVoIdzQqA
-         CkySKC/vvqtsVq8MJf9ieU8a1YPvmSp6A91VItbqHvTXst6KQxYdRTdg4JE52O15HJKq
-         zY3Sd54/Xa+jvADHeryDXkJNZDOB5TXGf9mDHSkdWMlegmhkIA00tI/a9jZVeuw1fVrI
-         MBh7R31n2F5oY5TAfFWh7eXDArFrrpN2lxdfEeQ0aI8bAw+00fpOl0f9jr0QC329PX/N
-         8yYzxu36phfm+F4sUKEUQrUgn+rtbcX53aqXQOjimjF1JBAomx91AxwCudb4fcuz2Fac
-         zYpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713862968; x=1714467768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BXsOnG+unFLFOLCvhsKIlfWgz2bxnXfsLh7JooJSg6o=;
-        b=daq8BQWQxdPDr0V+jxNTs3ufQ77AnXrwKXjcL6xLg1TYivd//uLEkIUtkZo7ES20/u
-         XPWp7p3VLNnJwVAADba4VG8QoeqAcNs4lcxGbVqvq6d15NUQtecqOdUTl/7Dv0LOlf8G
-         4pN8ou6oJlGQ+FQngBIGlIusLRKIS+GczHpUl+ns1sZ9y0MHkUa1Q9XdIOd4zgYL4F/u
-         NCH5oir8z3odEGLw27NetMSpSIic4aa45xPbCpddTn+5JxmY4hHMri9CNI36R361yVtl
-         v3iH1CR6fOEke8ZEtBdeWQQVoL/YZNgp8QVIgo+LhVsBgEg9MICFCFuqy7qGmrfYXXch
-         x+RA==
-X-Forwarded-Encrypted: i=1; AJvYcCV1m1j5kyYDbjyRo8QaeQ87QJrwLEOVZ7B7BelF/hCs8g9V455AHYikxbbwNZ6jekkQlxbR0mAHTIJ7mkr+yLaHCenB
-X-Gm-Message-State: AOJu0Yw5VzZZYUNYCbFohTTAMIlgsVrKsAW5qHXJJO5p8BGJZdVPpt+a
-	DW2M1VfQAMjKMMcNVuofsZ+gkJFq4Zzc3QW1W35QHzcXQjciq1asnPqXQzo3NV5MK1vadP+MRc9
-	zqtqSDGAfmU4BKBiI+7/cNC0yugo=
-X-Google-Smtp-Source: AGHT+IH6xJKCgpblnzG46n84QQ0mtRzKqpyXpmK/5Twj2PbdrB/ocRSHnvU7H4hol4gFBTRZ1F+F9NHe/J6n2w/pAls=
-X-Received: by 2002:a17:90a:5310:b0:2a2:97ce:24f5 with SMTP id
- x16-20020a17090a531000b002a297ce24f5mr12622248pjh.35.1713862968530; Tue, 23
- Apr 2024 02:02:48 -0700 (PDT)
+	s=arc-20240116; t=1713862995; c=relaxed/simple;
+	bh=ZhShH3/3rdnIjiL1nxztMfl3ZOxaEjovEywEq+0BN6o=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Ud96GHdEvhp16NgvTwoRZ8BEY/yBoZqsICuTSM5gCuj6Ww5BCZC0EcX6xd69j/NVg2y8wLYeovgd3ZoIxRu4TkIfp9vsyUr++qk2F4FFoGoI1FIOdXuwJog4tLojy4XqecIuXEo0RJetg71p49V4tlB8nkSV9ONayxSHPzGxYC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=JjjwOQ6i; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713862991;
+	bh=ZhShH3/3rdnIjiL1nxztMfl3ZOxaEjovEywEq+0BN6o=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=JjjwOQ6isr691Bw4kJAkfAfT+SMmu4biuU/dRrtYswGHFCulY/PdgxGcX7HKyBifO
+	 JpcFVgdz+L5UZ1seL02TMghlOJ1RnaqNfBt/0h9MoR3tlfaGB3kt3DkcmFSg3AdEmP
+	 dQkGwNTYGvF3QOLGsV6kT0azFNIQ29hcFiVUfJ0xFl31fDTnQtLR22Ulu2RQErtIYP
+	 tI72e/U7ymSlS91ObLPs7XjPbWXVpfdPN3lcG0UNk3sQ/+uMr7pfuO5mWdwUMg68lt
+	 AwqhJDFzmDtKqkKk9QWP1rbSD8/vD+8MeVr0YM8EiwX4Ls5FgkZgrLRmMvxI2kem5J
+	 Nmyrk4NP97tEQ==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C2BD83780016;
+	Tue, 23 Apr 2024 09:03:01 +0000 (UTC)
+Message-ID: <724a4797-18dc-4011-ba48-445c1cb6a976@collabora.com>
+Date: Tue, 23 Apr 2024 14:03:29 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328075318.83039-1-jiangshanlai@gmail.com>
- <20240328075318.83039-10-jiangshanlai@gmail.com> <ZiZEcBEvK8NOQvwU@localhost.localdomain>
-In-Reply-To: <ZiZEcBEvK8NOQvwU@localhost.localdomain>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Tue, 23 Apr 2024 17:02:35 +0800
-Message-ID: <CAJhGHyBMYDWbRYp86wBu3x6Ry8HM2yiZxNv_WATwhzV+OO+ZFA@mail.gmail.com>
-Subject: Re: [PATCH 09/10] x86/rcu: Add rcu_preempt_count
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Uros Bizjak <ubizjak@gmail.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Nadav Amit <namit@vmware.com>, 
-	Breno Leitao <leitao@debian.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
-	Rick Edgecombe <rick.p.edgecombe@intel.com>, Vegard Nossum <vegard.nossum@oracle.com>, 
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>, Nikolay Borisov <nik.borisov@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Andrew Jones <ajones@ventanamicro.com>, Ajay Kaher
+ <ajay.kaher@broadcom.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexandre Ghiti <alexghiti@rivosinc.com>, Anup Patel <anup@brainfault.org>,
+ samuel.holland@sifive.com, Conor Dooley <conor.dooley@microchip.com>,
+ Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org,
+ kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>,
+ virtualization@lists.linux.dev, Will Deacon <will@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH v8 24/24] KVM: riscv: selftests: Add commandline option
+ for SBI PMU test
+To: Atish Patra <atishp@rivosinc.com>, linux-kernel@vger.kernel.org
+References: <20240420151741.962500-1-atishp@rivosinc.com>
+ <20240420151741.962500-25-atishp@rivosinc.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20240420151741.962500-25-atishp@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello, Frederic
+On 4/20/24 8:17 PM, Atish Patra wrote:
+> SBI PMU test comprises of multiple tests and user may want to run
+> only a subset depending on the platform. The most common case would
+> be to run all to validate all the tests. However, some platform may
+> not support all events or all ISA extensions.
+> 
+> The commandline option allows user to disable any set of tests if
+> they want to.
+> 
+> Suggested-by: Andrew Jones <ajones@ventanamicro.com>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+LGTM
 
-Thanks for reviewing.
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-On Mon, Apr 22, 2024 at 7:05=E2=80=AFPM Frederic Weisbecker <frederic@kerne=
-l.org> wrote:
+> ---
+>  .../selftests/kvm/riscv/sbi_pmu_test.c        | 73 ++++++++++++++++---
+>  1 file changed, 64 insertions(+), 9 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+> index 0fd9b76ae838..69bb94e6b227 100644
+> --- a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+> +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+> @@ -33,6 +33,13 @@ static unsigned long counter_mask_available;
+>  
+>  static bool illegal_handler_invoked;
+>  
+> +#define SBI_PMU_TEST_BASIC	BIT(0)
+> +#define SBI_PMU_TEST_EVENTS	BIT(1)
+> +#define SBI_PMU_TEST_SNAPSHOT	BIT(2)
+> +#define SBI_PMU_TEST_OVERFLOW	BIT(3)
+> +
+> +static int disabled_tests;
+> +
+>  unsigned long pmu_csr_read_num(int csr_num)
+>  {
+>  #define switchcase_csr_read(__csr_num, __val)		{\
+> @@ -608,19 +615,67 @@ static void test_vm_events_overflow(void *guest_code)
+>  	test_vm_destroy(vm);
+>  }
+>  
+> -int main(void)
+> +static void test_print_help(char *name)
+> +{
+> +	pr_info("Usage: %s [-h] [-d <test name>]\n", name);
+A little weird that we have pr_info named helper to print logs when it is a
+userspace application, not kernel code. I'll check it in the source who
+added it to the KVM tests.
 
-> > +
-> > +/* We use the MSB mostly because its available */
->
-> I think you can safely remove the "We " from all the comments :-)
+> +	pr_info("\t-d: Test to disable. Available tests are 'basic', 'events', 'snapshot', 'overflow'\n");
+> +	pr_info("\t-h: print this help screen\n");
+> +}
+> +
+> +static bool parse_args(int argc, char *argv[])
+> +{
+> +	int opt;
+> +
+> +	while ((opt = getopt(argc, argv, "hd:")) != -1) {
+> +		switch (opt) {
+> +		case 'd':
+> +			if (!strncmp("basic", optarg, 5))
+> +				disabled_tests |= SBI_PMU_TEST_BASIC;
+> +			else if (!strncmp("events", optarg, 6))
+> +				disabled_tests |= SBI_PMU_TEST_EVENTS;
+> +			else if (!strncmp("snapshot", optarg, 8))
+> +				disabled_tests |= SBI_PMU_TEST_SNAPSHOT;
+> +			else if (!strncmp("overflow", optarg, 8))
+> +				disabled_tests |= SBI_PMU_TEST_OVERFLOW;
+> +			else
+> +				goto done;
+> +			break;
+> +		case 'h':
+> +		default:
+> +			goto done;
+> +		}
+> +	}
+> +
+> +	return true;
+> +done:
+> +	test_print_help(argv[0]);
+> +	return false;
+> +}
+> +
+> +int main(int argc, char *argv[])
+>  {
+> -	test_vm_basic_test(test_pmu_basic_sanity);
+> -	pr_info("SBI PMU basic test : PASS\n");
+> +	if (!parse_args(argc, argv))
+> +		exit(KSFT_SKIP);
+> +
+> +	if (!(disabled_tests & SBI_PMU_TEST_BASIC)) {
+> +		test_vm_basic_test(test_pmu_basic_sanity);
+> +		pr_info("SBI PMU basic test : PASS\n");
+> +	}
+>  
+> -	test_vm_events_test(test_pmu_events);
+> -	pr_info("SBI PMU event verification test : PASS\n");
+> +	if (!(disabled_tests & SBI_PMU_TEST_EVENTS)) {
+> +		test_vm_events_test(test_pmu_events);
+> +		pr_info("SBI PMU event verification test : PASS\n");
+> +	}
+>  
+> -	test_vm_events_snapshot_test(test_pmu_events_snaphost);
+> -	pr_info("SBI PMU event verification with snapshot test : PASS\n");
+> +	if (!(disabled_tests & SBI_PMU_TEST_SNAPSHOT)) {
+> +		test_vm_events_snapshot_test(test_pmu_events_snaphost);
+> +		pr_info("SBI PMU event verification with snapshot test : PASS\n");
+> +	}
+>  
+> -	test_vm_events_overflow(test_pmu_events_overflow);
+> -	pr_info("SBI PMU event verification with overflow test : PASS\n");
+> +	if (!(disabled_tests & SBI_PMU_TEST_OVERFLOW)) {
+> +		test_vm_events_overflow(test_pmu_events_overflow);
+> +		pr_info("SBI PMU event verification with overflow test : PASS\n");
+> +	}
+>  
+>  	return 0;
+>  }
 
-The file is mainly copied from arch/x86/include/asm/preempt.h.
-I will rephrase sentences in later iterations.
-
->
-> > +#define RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED  0x80000000
->
-> How about RCU_PREEMPT_UNLOCK_FASTPATH ?
-
-
-I'm not good at naming. But the MSB really means exactly the opposite
-of current->rcu_read_unlock_special and I think "UNLOCK_SPECIAL_INVERTED"
-fits the meaning.
-
->
-> > +
-> > +/*
-> > + * We use the RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED bit as an inverted
-> > + * current->rcu_read_unlock_special.s such that a decrement hitting 0
-> > + * means we can and should call rcu_read_unlock_special().
-> > + */
-> > +#define RCU_PREEMPT_INIT     (0 + RCU_PREEMPT_UNLOCK_SPECIAL_INVERTED)
->
-> Or simply:
->
-> #define RCU_PREEMPT_INIT     RCU_PREEMPT_UNLOCK_FASTPATH
->
-> Or you can even remove RCU_PREEMPT_INIT and use RCU_PREEMPT_UNLOCK_FASTPA=
-TH directly.
-
-"0" means the initial rcu_preempt_count is 0 for the initial task.
-
-> > +
-> > +#endif // #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
-> > +
-> > +#endif /* __ASM_RCU_PREEMPT_H */
-> > diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.=
-c
-> > index ba8cf5e9ce56..0b204a649442 100644
-> > --- a/arch/x86/kernel/cpu/common.c
-> > +++ b/arch/x86/kernel/cpu/common.c
-> > @@ -1992,9 +1992,10 @@ static __init int setup_clearcpuid(char *arg)
-> >  __setup("clearcpuid=3D", setup_clearcpuid);
-> >
-> >  DEFINE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot) =3D {
-> > -     .current_task   =3D &init_task,
-> > -     .preempt_count  =3D INIT_PREEMPT_COUNT,
-> > -     .top_of_stack   =3D TOP_OF_INIT_STACK,
-> > +     .current_task           =3D &init_task,
-> > +     .preempt_count          =3D INIT_PREEMPT_COUNT,
-> > +     .top_of_stack           =3D TOP_OF_INIT_STACK,
-> > +     .rcu_preempt_count      =3D RCU_PREEMPT_INIT,
->
-> #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT ?
->
-> Thanks.
-
-Fixed in V2:
-https://lore.kernel.org/lkml/20240407090558.3395-1-jiangshanlai@gmail.com/
-
-Thanks
-Lai
-
->
->
-> >  };
-> >  EXPORT_PER_CPU_SYMBOL(pcpu_hot);
-> >  EXPORT_PER_CPU_SYMBOL(const_pcpu_hot);
-> > --
-> > 2.19.1.6.gb485710b
-> >
+-- 
+BR,
+Muhammad Usama Anjum
 
