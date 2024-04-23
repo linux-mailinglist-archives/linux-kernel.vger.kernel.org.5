@@ -1,287 +1,183 @@
-Return-Path: <linux-kernel+bounces-155977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B2F78AFC31
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:49:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E9C38AFC3C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:52:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1472C1C22535
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:49:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C30851C2246A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A811EA8D;
-	Tue, 23 Apr 2024 22:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5AD836AFE;
+	Tue, 23 Apr 2024 22:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yblf64iG"
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kx4VgeKk"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB621C6BE
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 22:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81DB1DFF5;
+	Tue, 23 Apr 2024 22:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713912542; cv=none; b=mUMBmebkOwaeYyuBrLU7DTGj3vuTpshoIHTprvW/UwQmuv5XyqVip/31eyycLrJaJVpWkGwcjKDj7hHaajpu4czw+QETXQ1Do7DZ7Mcq3qmzDnoi1GseoWsTNkfIQUAZKuL7wPDhV+WfocQ0tJ/9/1sUiLLIzMfeUsZY0TdF3AA=
+	t=1713912716; cv=none; b=WodrYjJDlGwunCzi+H6CovYVqSbnyBZQeFO+UZ6KJgB2VSyiz7Xw3/OyTN8VeKOpiRtDfthhtORjZ9Gg2mGQ8a2SB1ot3mHubXapXemwPbx9WWSX8wbCO26T4cEfymqbWhOruGdDO5RUBHjnz5yQvsoksHRk/PgrpfbOFlbbEZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713912542; c=relaxed/simple;
-	bh=q3rJ1K4a1vL1Qu/phBQBW+iD659Ved+2DL9VEOCZbrI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=W9DzSGDFIIEkFdpuRZu81ELiGsk6DsJb/Ba1/5v8ZLLS8aGCCbgYbYlBx8E2VPsaDHtcvf4Wrp6ojff0CVtEFNR5AHCEy7nJiepjrIXjdOd7DgEXNiPw7oszNdobBVITtOTSU2JIuPuJeK7HVdPANZK3G6O5KSwpfRGXqyMJYmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yblf64iG; arc=none smtp.client-ip=209.85.160.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-439b1c72676so92951cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:49:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713912540; x=1714517340; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TFuf1odJW6gw+5rRIRioMk6XvuTZgOYXmnq0hWj8KOU=;
-        b=yblf64iG+UrxnHtnrhcTrPAsnOVOantu7dypRxh6pglAeZW3gG5xullReF8pGz/ecR
-         /qquIHeOKFYM55pG9S3QSMN6858No5SQRSedkJJWMj/RRuD5In15mY6tEPa+kDtQusZw
-         mGIpxgtNc4y8xXeDjnip7t+WdrmsvXZtlMV4U4IMKVtXhAOAUejQPy72lDXSq6Hv096H
-         Vh047LqV/f1JH3ytzJXbgTSQPIqmF7jx01QbGFaqVUfeT0naqeiQUTpvX9CXVv1VH4RR
-         RUiIV1p184t758QPBLKCCugeMlrVEmMgZX16xHZUlXYP9qcoul+L/Csb0Zkdlww2+YS8
-         wlNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713912540; x=1714517340;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TFuf1odJW6gw+5rRIRioMk6XvuTZgOYXmnq0hWj8KOU=;
-        b=bj/6pXyNEgM3GavX11NmNTJJWuVjweBk8Y65oAXehiQxtD/I2CanIYrzDBZXwpbjid
-         MpkN8vYlsazWynFZsRpS551W0lruHFLDcgX9fksrHZrquv2bG3w0K6l9BJDrLitBGL7h
-         aKQJScfrnBc2JLA1zD1yhoLy1zcKlkxemi8E8fdabRp9HRHZklJ1VcE47DwxcMqi83rX
-         sNR/Ay93tGK0xL9fxnyIuJGJpmPhuRr4w+0v4mcLHeq6JSOjkdPy5yommzSFFcJVTSZY
-         g0Amwzy2KVlqTDofixOzZeQKFIja8HBSoCWMJ+I5tYoOezMytc/FZ/t1uGAG4Y6zIBS8
-         RefQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX2Ncssrp4ugcVGAWh/DnPfUnYiIxYmvOGA59AJk+tvRGf3lyn+qW/ZyiBxht0GPRGSkER48jl4G7DCuLt91TUuGXUcz8eXfUR3SN1V
-X-Gm-Message-State: AOJu0YzSBH+ymEWIzay81ZYgX7GPtKMDj6UJzr4fcmU3rntUX2o0w1pz
-	aPtw1FNliAigSPJhlIO7TucCfFZnoRhjnLrvUDy/ZdXRpiicbVxjxxhGPBC4Zw6wj3ns+NT5d7U
-	P+lvRvUp2uOTj1BjcmWxCuSEak4y+sAee/3rv
-X-Google-Smtp-Source: AGHT+IFgrJmuqO3aOW7/tZCx+QVARQ7MwfvlmzhtXJrUMzw/zLxt5jU9cu2ClNCgb0H7upSfSPusLpDOjuysnwsbDmc=
-X-Received: by 2002:ac8:6e81:0:b0:437:c89e:245b with SMTP id
- c1-20020ac86e81000000b00437c89e245bmr43930qtv.15.1713912539931; Tue, 23 Apr
- 2024 15:48:59 -0700 (PDT)
+	s=arc-20240116; t=1713912716; c=relaxed/simple;
+	bh=mznsmpZGIdBKgMqGdAUj/EZ/hJtwZ06FnB1V1izwzhk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eBciHailmIM0kGV4e4uuKp30gSF1G59LV8rCYgGyAROUDwBpxVzzG1FnKOsiXI03SUNW5VmSgN0qCIEBWsiyW5r86391b08hONq1x4oKPjqkj8iJgY0zTz1PSYaJ/r+5JZa2iniZkkZogdJkbJb3KMkjIm/9jsAlsziizBnNvVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Kx4VgeKk; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713912715; x=1745448715;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mznsmpZGIdBKgMqGdAUj/EZ/hJtwZ06FnB1V1izwzhk=;
+  b=Kx4VgeKkNxUDhwSSr1P5TK7L9c7iPhqght2SeA9sQy/5ZQ6zZ+kh7Azu
+   1yWtY0sL8eTQjaOnquRCscduSsiSFTjsoXtBWFoOVDZk2UynHSBIPCZrG
+   lWJMqlkxFvR1TMlvETCBoXrkgxMNYwFfAqAgtKqkxnQQIxEZyjREIsZh7
+   bOk9kXSj06UoLLaZLvYX9SCVXPzCyVXBSLCuE6HuZ8XJnpLaiP1+T7EkM
+   zVvFdjU14k4ZZ6zoqDn+9KeYvWmW9zHeuZu1I+YWYq7FsdUY0GCnkBbsQ
+   BBTOdeiuj+QMPl8gGsTQzv+Ql8S8+TQsX3RiHQbu8sXNGvjIDRysYGJol
+   g==;
+X-CSE-ConnectionGUID: 0PEJLf4PQtOtPHCdbj5QSw==
+X-CSE-MsgGUID: he7Yf4VqQKymEDjCFAqxpQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="20218389"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="20218389"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 15:51:54 -0700
+X-CSE-ConnectionGUID: 4vpTSJ/BT0WzosPs6zKsoA==
+X-CSE-MsgGUID: lwCZffPLR/SpYCqnMxTVow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24557021"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 23 Apr 2024 15:51:47 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rzOzI-0000bA-2C;
+	Tue, 23 Apr 2024 22:51:44 +0000
+Date: Wed, 24 Apr 2024 06:51:05 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Frank Li <Frank.Li@nxp.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	imx@lists.linux.dev, linux-amlogic@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, Yue Wang <yue.wang@amlogic.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Xiaowei Song <songxiaowei@hisilicon.com>
+Subject: Re: [PATCH v2 2/4] PCI: dwc: Remove unused of_gpio.h
+Message-ID: <202404240649.QgY8lto8-lkp@intel.com>
+References: <20240423172208.2723892-3-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410011313.2556848-1-irogers@google.com>
-In-Reply-To: <20240410011313.2556848-1-irogers@google.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 23 Apr 2024 15:48:48 -0700
-Message-ID: <CAP-5=fU7gO2VOEc6MCaPGnsznVPUmGcS6zm=b0xtWp+qxoSibw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] perf pmus: Sort/merge/aggregate PMUs like mrvl_ddr_pmu
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Athira Jajeev <atrajeev@linux.vnet.ibm.com>, 
-	James Clark <james.clark@arm.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Bharat Bhushan <bbhushan2@marvell.com>, 
-	Bhaskara Budiredla <bbudiredla@marvell.com>, Will Deacon <will@kernel.org>, 
-	Stephane Eranian <eranian@google.com>, Thomas Richter <tmricht@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423172208.2723892-3-andriy.shevchenko@linux.intel.com>
 
-On Tue, Apr 9, 2024 at 6:13=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> The mrvl_ddr_pmu is uncore and has a hexadecimal address suffix while
-> the previous PMU sorting/merging code assumes uncore PMU names start
-> with uncore_ and have a decimal suffix. Because of the previous
-> assumption it isn't possible to wildcard the mrvl_ddr_pmu.
->
-> Modify pmu_name_len_no_suffix but also remove the suffix number out
-> argument, this is because we don't know if a suffix number of say 10
-> is in hexadecimal or decimal. As the only use of the suffix number is
-> in comparisons, it is safe there to compare the values as hexadecimal.
+Hi Andy,
 
-+Thomas Richter
+kernel test robot noticed the following build errors:
 
-Thomas could you help validate that this doesn't cause issues on s390
-with the cpum_cf PMU (note how cf potentially looks like a hex
-suffix).
+[auto build test ERROR on pci/next]
+[also build test ERROR on pci/for-linus mani-mhi/mhi-next linus/master v6.9-rc5 next-20240423]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks,
-Ian
+url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/PCI-aardvark-Remove-unused-of_gpio-h/20240424-012448
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20240423172208.2723892-3-andriy.shevchenko%40linux.intel.com
+patch subject: [PATCH v2 2/4] PCI: dwc: Remove unused of_gpio.h
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20240424/202404240649.QgY8lto8-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240424/202404240649.QgY8lto8-lkp@intel.com/reproduce)
 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/pmu.c  |  2 +-
->  tools/perf/util/pmus.c | 51 ++++++++++++++++++++++--------------------
->  tools/perf/util/pmus.h |  7 +++++-
->  3 files changed, 34 insertions(+), 26 deletions(-)
->
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index f39cbbc1a7ec..b0cca5841f90 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -1657,7 +1657,7 @@ static char *format_alias(char *buf, int len, const=
- struct perf_pmu *pmu,
->  {
->         struct parse_events_term *term;
->         int pmu_name_len =3D skip_duplicate_pmus
-> -               ? pmu_name_len_no_suffix(pmu->name, /*num=3D*/NULL)
-> +               ? pmu_name_len_no_suffix(pmu->name)
->                 : (int)strlen(pmu->name);
->         int used =3D snprintf(buf, len, "%.*s/%s", pmu_name_len, pmu->nam=
-e, alias->name);
->
-> diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-> index 16505071d362..b4ddcd0ade26 100644
-> --- a/tools/perf/util/pmus.c
-> +++ b/tools/perf/util/pmus.c
-> @@ -39,31 +39,44 @@ static bool read_sysfs_all_pmus;
->
->  static void pmu_read_sysfs(bool core_only);
->
-> -int pmu_name_len_no_suffix(const char *str, unsigned long *num)
-> +int pmu_name_len_no_suffix(const char *str)
->  {
->         int orig_len, len;
->
->         orig_len =3D len =3D strlen(str);
->
-> -       /* Non-uncore PMUs have their full length, for example, i915. */
-> -       if (!strstarts(str, "uncore_"))
-> -               return len;
-> -
->         /*
->          * Count trailing digits and '_', if '_{num}' suffix isn't presen=
-t use
->          * the full length.
->          */
-> -       while (len > 0 && isdigit(str[len - 1]))
-> +       while (len > 0 && isxdigit(str[len - 1]))
->                 len--;
->
-> -       if (len > 0 && len !=3D orig_len && str[len - 1] =3D=3D '_') {
-> -               if (num)
-> -                       *num =3D strtoul(&str[len], NULL, 10);
-> +       if (len > 0 && len !=3D orig_len && str[len - 1] =3D=3D '_')
->                 return len - 1;
-> -       }
-> +
->         return orig_len;
->  }
->
-> +int pmu_name_cmp(const char *lhs_pmu_name, const char *rhs_pmu_name)
-> +{
-> +       unsigned long lhs_num =3D 0, rhs_num =3D 0;
-> +       int lhs_pmu_name_len =3D pmu_name_len_no_suffix(lhs_pmu_name);
-> +       int rhs_pmu_name_len =3D pmu_name_len_no_suffix(rhs_pmu_name);
-> +       int ret =3D strncmp(lhs_pmu_name, rhs_pmu_name,
-> +                       lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_nam=
-e_len : rhs_pmu_name_len);
-> +
-> +       if (lhs_pmu_name_len !=3D rhs_pmu_name_len || ret !=3D 0 || lhs_p=
-mu_name_len =3D=3D 0)
-> +               return ret;
-> +
-> +       if (lhs_pmu_name_len + 1 < (int)strlen(lhs_pmu_name))
-> +               lhs_num =3D strtoul(&lhs_pmu_name[lhs_pmu_name_len + 1], =
-NULL, 16);
-> +       if (rhs_pmu_name_len + 1 < (int)strlen(rhs_pmu_name))
-> +               rhs_num =3D strtoul(&rhs_pmu_name[rhs_pmu_name_len + 1], =
-NULL, 16);
-> +
-> +       return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
-> +}
-> +
->  void perf_pmus__destroy(void)
->  {
->         struct perf_pmu *pmu, *tmp;
-> @@ -164,20 +177,10 @@ static struct perf_pmu *perf_pmu__find2(int dirfd, =
-const char *name)
->  static int pmus_cmp(void *priv __maybe_unused,
->                     const struct list_head *lhs, const struct list_head *=
-rhs)
->  {
-> -       unsigned long lhs_num =3D 0, rhs_num =3D 0;
->         struct perf_pmu *lhs_pmu =3D container_of(lhs, struct perf_pmu, l=
-ist);
->         struct perf_pmu *rhs_pmu =3D container_of(rhs, struct perf_pmu, l=
-ist);
-> -       const char *lhs_pmu_name =3D lhs_pmu->name ?: "";
-> -       const char *rhs_pmu_name =3D rhs_pmu->name ?: "";
-> -       int lhs_pmu_name_len =3D pmu_name_len_no_suffix(lhs_pmu_name, &lh=
-s_num);
-> -       int rhs_pmu_name_len =3D pmu_name_len_no_suffix(rhs_pmu_name, &rh=
-s_num);
-> -       int ret =3D strncmp(lhs_pmu_name, rhs_pmu_name,
-> -                       lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_nam=
-e_len : rhs_pmu_name_len);
->
-> -       if (lhs_pmu_name_len !=3D rhs_pmu_name_len || ret !=3D 0 || lhs_p=
-mu_name_len =3D=3D 0)
-> -               return ret;
-> -
-> -       return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
-> +       return pmu_name_cmp(lhs_pmu->name ?: "", rhs_pmu->name ?: "");
->  }
->
->  /* Add all pmus in sysfs to pmu list: */
-> @@ -297,11 +300,11 @@ static struct perf_pmu *perf_pmus__scan_skip_duplic=
-ates(struct perf_pmu *pmu)
->                 pmu_read_sysfs(/*core_only=3D*/false);
->                 pmu =3D list_prepare_entry(pmu, &core_pmus, list);
->         } else
-> -               last_pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?:=
- "", NULL);
-> +               last_pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?:=
- "");
->
->         if (use_core_pmus) {
->                 list_for_each_entry_continue(pmu, &core_pmus, list) {
-> -                       int pmu_name_len =3D pmu_name_len_no_suffix(pmu->=
-name ?: "", /*num=3D*/NULL);
-> +                       int pmu_name_len =3D pmu_name_len_no_suffix(pmu->=
-name ?: "");
->
->                         if (last_pmu_name_len =3D=3D pmu_name_len &&
->                             !strncmp(last_pmu_name, pmu->name ?: "", pmu_=
-name_len))
-> @@ -313,7 +316,7 @@ static struct perf_pmu *perf_pmus__scan_skip_duplicat=
-es(struct perf_pmu *pmu)
->                 pmu =3D list_prepare_entry(pmu, &other_pmus, list);
->         }
->         list_for_each_entry_continue(pmu, &other_pmus, list) {
-> -               int pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?: =
-"", /*num=3D*/NULL);
-> +               int pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?: =
-"");
->
->                 if (last_pmu_name_len =3D=3D pmu_name_len &&
->                     !strncmp(last_pmu_name, pmu->name ?: "", pmu_name_len=
-))
-> diff --git a/tools/perf/util/pmus.h b/tools/perf/util/pmus.h
-> index 94d2a08d894b..624c2d53fc30 100644
-> --- a/tools/perf/util/pmus.h
-> +++ b/tools/perf/util/pmus.h
-> @@ -2,10 +2,15 @@
->  #ifndef __PMUS_H
->  #define __PMUS_H
->
-> +#include <stdbool.h>
-> +#include <linux/list.h>
-> +
->  struct perf_pmu;
->  struct print_callbacks;
->
-> -int pmu_name_len_no_suffix(const char *str, unsigned long *num);
-> +int pmu_name_len_no_suffix(const char *str);
-> +/* Exposed for testing only. */
-> +int pmu_name_cmp(const char *lhs_pmu_name, const char *rhs_pmu_name);
->
->  void perf_pmus__destroy(void);
->
-> --
-> 2.44.0.478.gd926399ef9-goog
->
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404240649.QgY8lto8-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/pci/controller/dwc/pci-dra7xx.c:262:2: error: implicit declaration of function 'chained_irq_enter' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+           chained_irq_enter(chip, desc);
+           ^
+>> drivers/pci/controller/dwc/pci-dra7xx.c:284:2: error: implicit declaration of function 'chained_irq_exit' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
+           chained_irq_exit(chip, desc);
+           ^
+   drivers/pci/controller/dwc/pci-dra7xx.c:284:2: note: did you mean 'chained_irq_enter'?
+   drivers/pci/controller/dwc/pci-dra7xx.c:262:2: note: 'chained_irq_enter' declared here
+           chained_irq_enter(chip, desc);
+           ^
+   2 errors generated.
+
+
+vim +/chained_irq_enter +262 drivers/pci/controller/dwc/pci-dra7xx.c
+
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  252  
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  253  static void dra7xx_pcie_msi_irq_handler(struct irq_desc *desc)
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  254  {
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  255  	struct irq_chip *chip = irq_desc_get_chip(desc);
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  256  	struct dra7xx_pcie *dra7xx;
+60b3c27fb9b92b drivers/pci/controller/dwc/pci-dra7xx.c Serge Semin            2022-06-24  257  	struct dw_pcie_rp *pp;
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  258  	struct dw_pcie *pci;
+09b2d20349e37a drivers/pci/dwc/pci-dra7xx.c            Vignesh R              2017-12-29  259  	unsigned long reg;
+d21faba11693c1 drivers/pci/controller/dwc/pci-dra7xx.c Marc Zyngier           2021-08-02  260  	u32 bit;
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  261  
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27 @262  	chained_irq_enter(chip, desc);
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  263  
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  264  	pp = irq_desc_get_handler_data(desc);
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  265  	pci = to_dw_pcie_from_pp(pp);
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  266  	dra7xx = to_dra7xx_pcie(pci);
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  267  
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  268  	reg = dra7xx_pcie_readl(dra7xx, PCIECTRL_DRA7XX_CONF_IRQSTATUS_MSI);
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  269  	dra7xx_pcie_writel(dra7xx, PCIECTRL_DRA7XX_CONF_IRQSTATUS_MSI, reg);
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  270  
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  271  	switch (reg) {
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  272  	case MSI:
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27  273  		dra7xx_pcie_handle_msi_irq(pp);
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  274  		break;
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  275  	case INTA:
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  276  	case INTB:
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  277  	case INTC:
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  278  	case INTD:
+d21faba11693c1 drivers/pci/controller/dwc/pci-dra7xx.c Marc Zyngier           2021-08-02  279  		for_each_set_bit(bit, &reg, PCI_NUM_INTX)
+d21faba11693c1 drivers/pci/controller/dwc/pci-dra7xx.c Marc Zyngier           2021-08-02  280  			generic_handle_domain_irq(dra7xx->irq_domain, bit);
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  281  		break;
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  282  	}
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  283  
+9a5595ab21a9d1 drivers/pci/controller/dwc/pci-dra7xx.c Vignesh Raghavendra    2020-03-27 @284  	chained_irq_exit(chip, desc);
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  285  }
+47ff3de911a728 drivers/pci/host/pci-dra7xx.c           Kishon Vijay Abraham I 2014-07-22  286  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
