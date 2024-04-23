@@ -1,117 +1,115 @@
-Return-Path: <linux-kernel+bounces-154905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6C68AE2DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:49:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 360E68AE328
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:56:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E6FF1C21B29
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:49:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF83728B9CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA1813343F;
-	Tue, 23 Apr 2024 10:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7129B7E58A;
+	Tue, 23 Apr 2024 10:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="cmbeqjF9"
-Received: from mout.web.de (mout.web.de [212.227.15.14])
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="T4yzQXio"
+Received: from forward201b.mail.yandex.net (forward201b.mail.yandex.net [178.154.239.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BEF12F585;
-	Tue, 23 Apr 2024 10:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145AD60B9C;
+	Tue, 23 Apr 2024 10:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713869183; cv=none; b=CjHciFAqJZfVC8Q5sA03GHAj0p46mxWVkiJGBkRKLH2shPqXdFfZ33yc/vBVOjqKyVVWUOvbJspcQv0mT+X2clD2dai33Fzn+IeEnKcKntGuyyYq/HU+cSRERjxcF5PJF/yBZcGRNfjfkZPGNzznLnRZ/0OQWjQOjrmovDhesHo=
+	t=1713869707; cv=none; b=L/Vgrs2u8QBqMRNbSfX7EgagmL/LgEJ13l7Ao+jK+xhGF6rs8HhyMQsdMMbtSSGhHEPOOzlQe3txU+zYe54NEl9hZIqGgSlLIZBG4KQSFaHnPFhAQ7s7HE7Hsyb0HDizuJeIlcFD+h5djNtZDkkc2NG7VDbU7r0ENbz5o0RcSWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713869183; c=relaxed/simple;
-	bh=mmjotz2m/s2wCzaIz5vGpF6Ju6kc+foSpiaBrorBsdg=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=EOJ88/iTVglr5lmE+8pvjfrKMim0wo2FVEaHquQ5h2o21IvRhMHpdQ3XZPP7lCgo6X1p7L1G6rUilndWcWdBeWnsJb5SJjxcUbt/ll+fqPBRhaDidQsSY3zuG+oytYtIqyLKFHIquZGOXzFQOPAZnCqEClkksd2nmPwGM6cRHcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=cmbeqjF9; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713869161; x=1714473961; i=markus.elfring@web.de;
-	bh=Z2QfoNYsNXaask8xcpoAL8dlyuCS+LFLGRl6vuwhzKs=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=cmbeqjF9MI/4Xc/cWfQvZU4+GjT1LN+3fohkWCFX1fVX7qGZFUI3WyZhRGRzzgz6
-	 SBcwU3rH2wvfa9QG1QMKAhP3JlELYBNEoDz6YTlm4eXjJ9MuFe667qbJSBj0sMKf/
-	 MZ5TSLbujJJcrnyw9E+NS2n+eM5qbaiCOnpqaLmc5kgd1kRZBN4z5BYFeBfecdidS
-	 +pxRD7OQyTs2eZk/ChX9Njo+BFAFud0LxFUW3QP/RoaHkq6CzIU6bWB+IEDM3nZaa
-	 8rPeFCH1ehIcGWqkd1HewCblSY6geGGmmRxhmicU5zAKM9HGeyq3IYj1Zw+/of5k7
-	 3FbGLrVVJ/bGcpNa1w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MALeR-1rrq3m0BfH-00BpJG; Tue, 23
- Apr 2024 12:46:01 +0200
-Message-ID: <878bf83c-cd5b-48d0-8b4e-77223f1806dc@web.de>
-Date: Tue, 23 Apr 2024 12:45:58 +0200
+	s=arc-20240116; t=1713869707; c=relaxed/simple;
+	bh=kpU+YvKsOPGG4l8EOerUYySk9apiWG5KGfFDI79DrpM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ockvQMesRvjr6VtLRdF0nnaCptMP6+TqeUSwA4qsQuXTNe6PmG+WQPLk0UHQmRfEIT9kvf6ZsP+9viPtLji1Vpot0t2L7p2TIiuBNPZY7sdd9khvc+M3P7oZTnNnWZpxeRvGKqbZ1IE44DM/xcz6CWjRJQeLB9v0se8WxzECvuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=T4yzQXio; arc=none smtp.client-ip=178.154.239.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from forward101b.mail.yandex.net (forward101b.mail.yandex.net [IPv6:2a02:6b8:c02:900:1:45:d181:d101])
+	by forward201b.mail.yandex.net (Yandex) with ESMTPS id E187B64BF5;
+	Tue, 23 Apr 2024 13:49:39 +0300 (MSK)
+Received: from mail-nwsmtp-smtp-production-main-85.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-85.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:b1a0:0:640:e983:0])
+	by forward101b.mail.yandex.net (Yandex) with ESMTPS id 9CD7B60AD7;
+	Tue, 23 Apr 2024 13:49:31 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-85.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id TnHoiCGOm4Y0-ubiPgIUO;
+	Tue, 23 Apr 2024 13:49:30 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1713869370; bh=rcVAqztPFXwxu1IVvlYKhQ3ApGxSCP39aIlJfSgJu/g=;
+	h=Message-ID:Date:Cc:Subject:To:From;
+	b=T4yzQXio8HLOtjYRtsiEmElOXSaMHqlXCxvZbHdLDSbLMBuEaXvznLM7Vdf/1aweh
+	 IUYyflegoE4dmPV09i9jfk2lnVLH9iFaYx+eQowRfDpTWuO0YfA2r14688gIqnuLeR
+	 BVFSKDQcK24iiqMVCgVXay0GZ7NOVtIK58J7tzSM=
+Authentication-Results: mail-nwsmtp-smtp-production-main-85.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+From: Stas Sergeev <stsp2@yandex.ru>
+To: linux-kernel@vger.kernel.org
+Cc: Stas Sergeev <stsp2@yandex.ru>,
+	Stefan Metzmacher <metze@samba.org>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andy Lutomirski <luto@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Jeff Layton <jlayton@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Alexander Aring <alex.aring@gmail.com>,
+	linux-fsdevel@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	=?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+Subject: [PATCH v2 0/2] implement OA2_INHERIT_CRED flag for openat2()
+Date: Tue, 23 Apr 2024 13:48:22 +0300
+Message-ID: <20240423104824.10464-1-stsp2@yandex.ru>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kunwu Chan <chentao@kylinos.cn>, linux-kselftest@vger.kernel.org,
- kvm@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson
- <seanjc@google.com>, Shuah Khan <shuah@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Kunwu Chan <kunwu.chan@hotmail.com>
-References: <20240423073952.2001989-1-chentao@kylinos.cn>
-Subject: Re: [PATCH] KVM: selftests: Add 'malloc' failure check in
- test_vmx_nested_state
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240423073952.2001989-1-chentao@kylinos.cn>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:n0vG778YO3AlCLa1Kkm9T2tHkc4o+LBjG5klT6TJdU77Jh8Dora
- QFIaJiH85W6Xc7fjQoiRabVVD44o4/UHu0iWfxFwNJowQmmXfs0A6Zn3Qys8CPRvwkLLNsu
- whyjAWIuocz1zh22880mu8XUXCZp6MUK0I8Zj8OZLMETQNwHawKPxzyHeTfXq0gEPLqycpa
- mH4Kkq7K0eOyfe9mfJ+ng==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:RYvcZeMOHFQ=;vIuz/LWBBbAEi+MLP3uR5HcF0S2
- fKZlZqWia6HX2nKjYaSheqvvCWSVJV9WAWF8z6c1ycLowSt34X3TIYZIGzw/tsXNfX9C/Qm8W
- 2O0oDDLWY1lkZ/WiwmhlEwXOMHFVBegFFdRNfI5dwg/p9Is4PS7W5wyb0W+Wodwzi9AG2AAcl
- FzaxKtx7aeMfzoXu7TytaH5hkA4LQrqmKtGc71tM2IZtDz4f1xYy9p7IoMWZ/UI4cgk1xGRcI
- Qpz5gKeK0ZHibwOxRsZ4kwiHzEWl+m+5uu5+gndOvc9QtMF1HCm0/wyT8M/wPdqhQpWfFrkZf
- srcFX4IdTU9rrMRYlEAMOU8APeEk/ePBp8sqRDxJGK7Q3HwrAf1vfqiQvBnmy31jVjcn5tavj
- 1chOk5dyfcpLXeG20VJo+OXde0ot7jumObxz4Ba5RtkakzOg7T+tyhfgfYnqdyMDcgiqvrpQw
- ZVlqlggxlj+STKT1+/QAnY7LqOWkFNU+xPP6WLe7OB1T7zF8YlfnTaUnTP5erR0T68Sl40K0M
- KkVDpeJQu8hH8fWw1x3YQG7FEbc5iXANOK5FmE8yHzCubDlz0uKKdhp0zQDPIJRhkFjUVbKJF
- a0NbfPGE8ArC+miv6ZN6F/JuH277QhWYLZUtM5X8FVFPJSO/YWqfQDw6yBtAKmbZupBIfvoHd
- Gx6uKztEiPZj0goQVz5KmDmhA82JwhiMugOl8xJMKjDu4vU4vpa6o6RDppRgvQZlIUOXYZf7Z
- hq4MTWC2LtvIfYgXECGjFrb0fgkYWWRF8JQvlX8CLY97yJgavGFGxjnS96jI8PKl1N62SnUK6
- 56j7kMp+kepa+px+bg02Nkzo2DG+BXdhxfc7N+CiS0w2Q=
+Content-Transfer-Encoding: 8bit
 
-=E2=80=A6
-> This patch will add the malloc failure checking
-=E2=80=A6
+This patch-set implements the OA2_INHERIT_CRED flag for openat2() syscall.
+It is needed to perform an open operation with the creds that were in
+effect when the dir_fd was opened. This allows the process to pre-open
+some dirs and switch eUID (and other UIDs/GIDs) to the less-privileged
+user, while still retaining the possibility to open/create files within
+the pre-opened directory set.
 
-* Please use a corresponding imperative wording for the change description=
-.
+Changes in v2:
+- capture full struct cred instead of just fsuid/fsgid.
+  Suggested by Stefan Metzmacher <metze@samba.org>
 
-* Would you like to add the tag =E2=80=9CFixes=E2=80=9D accordingly?
+CC: Stefan Metzmacher <metze@samba.org>
+CC: Eric Biederman <ebiederm@xmission.com>
+CC: Alexander Viro <viro@zeniv.linux.org.uk>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Christian Brauner <brauner@kernel.org>
+CC: Jan Kara <jack@suse.cz>
+CC: Jeff Layton <jlayton@kernel.org>
+CC: Chuck Lever <chuck.lever@oracle.com>
+CC: Alexander Aring <alex.aring@gmail.com>
+CC: linux-fsdevel@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+CC: Paolo Bonzini <pbonzini@redhat.com>
+CC: Christian Göttsche <cgzones@googlemail.com>
 
+Stas Sergeev (2):
+  fs: reorganize path_openat()
+  openat2: add OA2_INHERIT_CRED flag
 
-=E2=80=A6
-> +++ b/tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_test.c
-> @@ -91,6 +91,7 @@ void test_vmx_nested_state(struct kvm_vcpu *vcpu)
->  	const int state_sz =3D sizeof(struct kvm_nested_state) + getpagesize()=
-;
->  	struct kvm_nested_state *state =3D
->  		(struct kvm_nested_state *)malloc(state_sz);
-> +	TEST_ASSERT(state, "-ENOMEM when allocating kvm state");
-=E2=80=A6
+ fs/internal.h                |  2 +-
+ fs/namei.c                   | 52 +++++++++++++++++++++++++++++-------
+ fs/open.c                    |  2 +-
+ include/linux/fcntl.h        |  2 ++
+ include/uapi/linux/openat2.h |  3 +++
+ 5 files changed, 50 insertions(+), 11 deletions(-)
 
-Can =E2=80=9Cerrno=E2=80=9D be relevant for the error message construction=
-?
+-- 
+2.44.0
 
-Regards,
-Markus
 
