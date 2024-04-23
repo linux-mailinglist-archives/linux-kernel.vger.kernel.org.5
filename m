@@ -1,62 +1,51 @@
-Return-Path: <linux-kernel+bounces-154538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0F7D8ADD5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:11:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 787848ADD56
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:11:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA1F31C21E7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:11:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FEA61F22AA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:11:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF5522F1C;
-	Tue, 23 Apr 2024 06:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF8D225AE;
+	Tue, 23 Apr 2024 06:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="TaTSjEEk"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="iGvnYS9m"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EB0224F0;
-	Tue, 23 Apr 2024 06:11:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF7E63C8;
+	Tue, 23 Apr 2024 06:11:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713852711; cv=none; b=X4/hh3h8M7SPPuHL8gL8YDkT0HCUR9WeFrmNMunDPIV1GenXpKtziaCwSRrvfjkeel7FvyAvsyTO+wVtPMQNTR4AHOB3WgYmF/9WviVNoZPwfVr7Fz2MnxS4VsOfpintvqen5iVtzTgd6CuamSlO0ZIezD8BEUxiO8uMp+uhuck=
+	t=1713852696; cv=none; b=Zd0OQYsKxDb2F6SRXHb2IXwi9edVH4agyIkw+Y7jz+BmMXRDfO8AA9xAYugV+5B6P7En2ISv+5vo8tYzKANroMVct5Hq7winlEKr8Lap+vXZYV4uogJz7K92K3Yi9o0g90VGKCn8DmvnYxQ73kPObFdKAUYHQBD9fOrZu11X4hE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713852711; c=relaxed/simple;
-	bh=V7YpzEldJuTIV+Gf8sRePNx21jL0GM8qS7CvTMlG9Io=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Je2hIx/vdypa9adFYSqdQ9ZyobgEKE609S0PdhxGvUHx4ZU17kAZc/9ynr/U3SRgR4ivJMPs4TrNxfZ2TMBcmtWBwTW24w/zthnZBqUKNqxIVWS4NashmHLuYvyckS7U4ECupRfuItyuqRULYl4Jqkw9ohT9MIJIdVmLNKLBPG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=TaTSjEEk; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43N4ScPH016909;
-	Tue, 23 Apr 2024 06:11:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=tx5yxKtp0kmfVS31LxuwTSnEJXTe36IJzRgldANyxok=; b=Ta
-	TSjEEkFxtUhCgqElvUis+oxGqi3MmrkL88jeixE+57Jed+07gPIK+74wRwMcQB9N
-	VIIKjBW67ZFqp0D/0oHF04rEUSln9j4LBoPczZO4/TKnABqfEiAvh1TBfkH2VdVj
-	6DnE5hkR8qPv0Mg8zG8zi3+ziFjjvJt/yJzoXVezo1xcrrvuQolYAKmJk2s3rh7P
-	IK3OC1UTxuElG/gD1cmM7mwH46l3t/bkOrcBVhPB8x30OMPZ8USWzz19jlVvjuLR
-	Zp+BWEiWLvu5DiLpsx8HthCxltZRhlBI2lyDVRl5HpOOnuP1UlcffxND3Tow7Q6G
-	xZaTVtMBtwTBnOxrUpcw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnr0mj24b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 06:11:29 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43N6BSmP001076
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 06:11:28 GMT
-Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 22 Apr
- 2024 23:11:22 -0700
-Message-ID: <b9081a61-c159-4659-a5e1-5586bb65dfce@quicinc.com>
-Date: Tue, 23 Apr 2024 11:41:19 +0530
+	s=arc-20240116; t=1713852696; c=relaxed/simple;
+	bh=w31PcluYey0MaZLOk51qwGylQZCnQvX5ImKoMCDqQt8=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dKYstuh/5b1Mzf/zJhgELJrwdHPTbtG0pBEqBWMK0jTKJa/iACJ6/fsUgrimumDRyAWhPa+llkZf6egWfhGtNBn7Z+MGlUfS6B5AexxAQ/UXaJCrBQSBlkwOmhu7bRQuQdp9f5ZNESgzsv9a5pIfwzIpSpwxMcEucF7IwdSRolY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=iGvnYS9m; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0398040003;
+	Tue, 23 Apr 2024 06:11:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713852691;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=emJM6JECa8OhqTBhCwE/o7mPRrnseSWT8F4796SNfSo=;
+	b=iGvnYS9mH/mNc/kmCknZxVTnmloR18k9z0DPL8exdP8dQHbFcbnLPPd7SO92i9nzwJF7fV
+	e3+9O8qpfpMLpeH7KUpcT+PLXw1Z9+K+M5Z8p/tFiPi406YfxBKTlAj8V3cjwhAZX/fu8T
+	x5XnOy9qcqZJITmZty25Mkggh3IWfqSWwyj0K34V6dqftxq+YpGdkUTUhoP51FLNST82cV
+	47kThbG+YS2Jr0HhluoyZYQov8N+PJ3g+WxAkjakwgC2TXKt3qwrG0WOk88hWfENB8rQ0g
+	LwNUnED1+tvTj4/EaoxD2xM0HkLNlBihmWOP9xHl0CpKJMFWW7Vozx1jaR4QIw==
+Message-ID: <fbdcc77e-eab4-41da-803c-d65405f37f02@bootlin.com>
+Date: Tue, 23 Apr 2024 08:11:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,141 +53,86 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/7] ipq9574: Enable PCI-Express support
-To: <mr.nuke.me@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
-        Konrad
- Dybcio <konrad.dybcio@linaro.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring
-	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof Kozlowski
-	<krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, Vinod Koul
-	<vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Michael
- Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-clk@vger.kernel.org>
-References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
- <4a83afeb-8e82-4f95-b44e-74d39d55f448@quicinc.com>
- <c498f5b9-df07-0802-800c-67c18dcf3e67@gmail.com>
+Cc: michael.opdenacker@bootlin.com, devicetree@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] riscv: dts: sophgo: add initial Milk-V Duo S board
+ support
+To: Inochi Amaoto <inochiama@outlook.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Chen Wang <unicorn_wang@outlook.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+References: <20240417065311.3881023-1-michael.opdenacker@bootlin.com>
+ <20240417065311.3881023-3-michael.opdenacker@bootlin.com>
+ <IA1PR20MB49539A380E44459ACE19DEB6BB0F2@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <e457d5f6-3289-4049-b663-2ebcfe78dce4@bootlin.com>
+ <IA1PR20MB4953D0D45EB0EDB6E8046664BB132@IA1PR20MB4953.namprd20.prod.outlook.com>
 Content-Language: en-US
-From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <c498f5b9-df07-0802-800c-67c18dcf3e67@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Michael Opdenacker <michael.opdenacker@bootlin.com>
+Organization: Bootlin
+In-Reply-To: <IA1PR20MB4953D0D45EB0EDB6E8046664BB132@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: QuHGmmjbEFMUabia_uEJdttfqNqw857e
-X-Proofpoint-ORIG-GUID: QuHGmmjbEFMUabia_uEJdttfqNqw857e
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-23_04,2024-04-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0 priorityscore=1501
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404230017
+X-GND-Sasl: michael.opdenacker@bootlin.com
 
+Hi Inochi,
 
+Thanks for the advice.
 
-On 4/20/2024 1:17 AM, mr.nuke.me@gmail.com wrote:
-> Hi Kathiravan,
-> 
-> On 4/19/24 09:28, Kathiravan Thirumoorthy wrote:
+On 4/21/24 at 08:30, Inochi Amaoto wrote:
+> On Sun, Apr 21, 2024 at 07:57:01AM GMT, Michael Opdenacker wrote:
+> +++ b/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
+> @@ -0,0 +1,34 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Copyright (C) 2024 Michael Opdenacker <michael.opdenacker@bootlin.com>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "cv1812h.dtsi"
+> +
+> +/ {
+> +	model = "Milk-V Duo S";
+> +	compatible = "milkv,duos", "sophgo,cv1812h";
+> +
+> +	aliases {
+> +		serial0 = &uart0;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	memory@80000000 {
+> +		device_type = "memory";
+> +		reg = <0x80000000 0x20000000>;
+> +	};
+>>> Add a cpu specific file, and move this to it.
+>> Now that I'm including "cv1812h.dtsi", which has the same structure, all I
+>> need is to change the reg setting to have 512 MB of RAM instead of 256MB,
+>> right? See the V6 I'm sending soon.
 >>
->>
->> On 4/15/2024 11:50 PM, Alexandru Gagniuc wrote:
->>> There are four PCIe ports on IPQ9574, pcie0 thru pcie3. This series
->>> addresses pcie2, which is a gen3x2 port. The board I have only uses
->>> pcie2, and that's the only one enabled in this series.
->>>
->>> I believe this makes sense as a monolithic series, as the individual
->>> pieces are not that useful by themselves.
->>>
->>> In v2, I've had some issues regarding the dt schema checks. For
->>> transparency, I used the following test invocations to test v3:
->>>
->>>        make dt_binding_check 
->>> DT_SCHEMA_FILES=qcom,pcie.yaml:qcom,ipq8074-qmp-pcie-phy.yaml
->>>        make dtbs_check 
->>> DT_SCHEMA_FILES=qcom,pcie.yaml:qcom,ipq8074-qmp-pcie-phy.yaml
->>>
->>>
->>
->> Alexandru,
->>
->> Thanks for your contributions to the Qualcomm IPQ chipsets.
->>
->> I would like to inform you that we have also submitted the patches to 
->> enable the PCIe support on IPQ9574[1][2] and waiting for the ICC 
->> support[3] to land to enable the NOC clocks.
->>
->> [1] 
->> https://lore.kernel.org/linux-arm-msm/20230519090219.15925-1-quic_devipriy@quicinc.com/
->> [2] 
->> https://lore.kernel.org/linux-arm-msm/20230519085723.15601-1-quic_devipriy@quicinc.com/
->> [3] 
->> https://lore.kernel.org/linux-arm-msm/20240418092305.2337429-1-quic_varada@quicinc.com/
->>
->> Please take a look at these patches as well.
-> 
-> I think I've seen [1] before -- I thought the series was abandoned. 
-> Since we have the dt-schema and applicability on mainline resolved here, 
-> do you want to use this series as the base for any new PCIe work?
+> No, Duo S does not use cv1812h, in any means. I just told you to use
+> cv1812h for local test. If you want to upstream Duo S, you must add
+> the right cpu compatibles and necessary nodes. These two are different
+> things.
 
+So, do you mean I should create a new "sophgo,sg2000" compatible, 
+together with  a new "sg2000.dtsi" (or "sg200x.dtsi"?) file? Could this 
+file include "cv18xx.dtsi"?
 
-Sure Alex. I believe some of the code review comments are already 
-addressed in the series which I pointed out. If you could have picked 
-those and re-posted the next version, it could have been better.
+By the way, where's the best source of information about the Sophgo 
+sg2000 and sg2002 processors? Even the Sophgo website doesn't seem to 
+have them :-/ . It just mentions the CV18xx ones.
 
+Thanks again
+Cheers
+Michael.
 
-> 
-> Alex
-> 
->> Thanks,
->> Kathiravan T.
->>
->>
->>> Changes since v2:
->>>   - reworked resets in qcom,pcie.yaml to resolve dt schema errors
->>>   - constrained "reg" in qcom,pcie.yaml
->>>   - reworked min/max intems in qcom,ipq8074-qmp-pcie-phy.yaml
->>>   - dropped msi-parent for pcie node, as it is handled by "msi" IRQ
->>>
->>> Changes since v1:
->>>   - updated new tables in phy-qcom-qmp-pcie.c to use lowercase hex 
->>> numbers
->>>   - reorganized qcom,ipq8074-qmp-pcie-phy.yaml to use a single list 
->>> of clocks
->>>   - reorganized qcom,pcie.yaml to include clocks+resets per compatible
->>>   - Renamed "pcie2_qmp_phy" label to "pcie2_phy"
->>>   - moved "ranges" property of pcie@20000000 higher up
->>>
->>> Alexandru Gagniuc (7):
->>>    dt-bindings: clock: Add PCIe pipe related clocks for IPQ9574
->>>    clk: qcom: gcc-ipq9574: Add PCIe pipe clocks
->>>    dt-bindings: PCI: qcom: Add IPQ9574 PCIe controller
->>>    PCI: qcom: Add support for IPQ9574
->>>    dt-bindings: phy: qcom,ipq8074-qmp-pcie: add ipq9574 gen3x2 PHY
->>>    phy: qcom-qmp-pcie: add support for ipq9574 gen3x2 PHY
->>>    arm64: dts: qcom: ipq9574: add PCIe2 nodes
->>>
->>>   .../devicetree/bindings/pci/qcom,pcie.yaml    |  35 +++++
->>>   .../phy/qcom,ipq8074-qmp-pcie-phy.yaml        |  36 ++++-
->>>   arch/arm64/boot/dts/qcom/ipq9574.dtsi         |  93 +++++++++++-
->>>   drivers/clk/qcom/gcc-ipq9574.c                |  76 ++++++++++
->>>   drivers/pci/controller/dwc/pcie-qcom.c        |  13 +-
->>>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c      | 136 +++++++++++++++++-
->>>   .../phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h   |  14 ++
->>>   include/dt-bindings/clock/qcom,ipq9574-gcc.h  |   4 +
->>>   8 files changed, 400 insertions(+), 7 deletions(-)
->>>
+-- 
+Michael Opdenacker, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
