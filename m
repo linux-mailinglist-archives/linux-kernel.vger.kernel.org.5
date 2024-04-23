@@ -1,102 +1,125 @@
-Return-Path: <linux-kernel+bounces-154359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E738C8ADB34
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:42:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2D0B8ADB39
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:43:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9915D283D9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:42:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CC6CB23955
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:43:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BF1FDDB8;
-	Tue, 23 Apr 2024 00:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8DA4FC18;
+	Tue, 23 Apr 2024 00:43:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QyztH4D6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KxGac3A9"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D14728E8;
-	Tue, 23 Apr 2024 00:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B9F14F98;
+	Tue, 23 Apr 2024 00:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713832948; cv=none; b=QGvVp4+I9IK944z5QnZV9JJFvh0XFuG1WFddFAY5e0jq/rH4rkrrH86akgAwM3/lsCRIsP3jFl7luk0fxxNazAnFEV0Py3GsL850v572sz1br+Jy5w2Df9jpa4ebPaIW4iM91eA0i64TC9cHwo2WYX71uBOHnVb6k4WqJlQYiCI=
+	t=1713833023; cv=none; b=ozQ+1ozc7pJKq6q7tRE7Vd/DY3c1Jb1F0J+qbnpbt060BkhkUEmaRH6+vbf+mTwh1iFB0NyVb0/ogUSuZr+Zi4O7oJcjm0QphgVS/kKSLNPfmpijPNVUW5+0Nmx3RQB0SmW3YlQ3HOHSjsYMFRvLUiFQ7R8cp+oWs0Lnlstbdnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713832948; c=relaxed/simple;
-	bh=rRO3bp1N1vLLRE5YfInI8ljfDb8Jop/yA0o7ZgULyBs=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TBUHqjJPRaVaNC0VYtuOnfri8N5DqZAub/kWNR3BJy+uht16JfI+k4Hn71GjGa8vJB8nUz/PxOjPRn3l8ewTeC6XhwE7trfQJ0lMsXCofvr5RjoMMzaOslj/ov6GlIxAKqjnu/tv6gEx3UW8fInYrDE7HELo9eB+mem4UzM+Txw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QyztH4D6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BAF2C113CC;
-	Tue, 23 Apr 2024 00:42:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713832947;
-	bh=rRO3bp1N1vLLRE5YfInI8ljfDb8Jop/yA0o7ZgULyBs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QyztH4D6UF+doV6TcHbmMllMpofHSqL6S0Gt8AJmpseE4P8zTLf0Nio8lsPtRRRQk
-	 xmEg8xrunC256LHPdGMHhfKdAxe3FCvLa3fggEvxvl37/Yv+KgQuBEf6v2l83tw54J
-	 F6/cS/kwjKCTbpuWB+k6b4OGyDRzwwEnT+8a3cCaYh02mkmlZBk6yD3hXmC+gS8XLZ
-	 VWJws/CMfvPXKovpLUr6RAe4qPrX58deF+Y1DSt8Rxt+SZHZ/Lxe4wTnqTuH04yfDA
-	 KtEljYOwwpiDteuOapaw2xHD0kqswS/KoplvSPIdR14Nq875A6X7I0GFHr8U33JqRf
-	 pBNN8u82smiBA==
-Received: from [12.161.88.66] (helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rz4Eq-0070Fi-NQ;
-	Tue, 23 Apr 2024 01:42:25 +0100
-Date: Tue, 23 Apr 2024 01:42:21 +0100
-Message-ID: <87ttjsucya.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Christoffer Dall <cdall@cs.columbia.edu>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the kvm-arm tree
-In-Reply-To: <20240423092557.73c2ec1b@canb.auug.org.au>
-References: <20240423092557.73c2ec1b@canb.auug.org.au>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1713833023; c=relaxed/simple;
+	bh=b69z8MKu5WCo7Cd2DA4gTZQA8lpYkKyRqYcx1dxF34w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=syJVGsCNYg9S9VBSFiD1wylnR/mKawTXNlI3Cc0lFxsCjTvkhDrBUfNTJSv0iszcc3vQT8bKwF35cwSaSfUniLJggPkTvSbqFm/B3krZv/IlFNz9jNvtHw9DFE1wwL5BeQDwNvVvEmg5Y1KaLbnewxLRkSJ4zYms1HoIIEVo/ds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KxGac3A9; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed691fb83eso3992371b3a.1;
+        Mon, 22 Apr 2024 17:43:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713833020; x=1714437820; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=84vJQPmZeH4flu8huGOV5q9Ft8py+u51GWOsQbHslr0=;
+        b=KxGac3A9r0gl3ptsFB0rbrAVkxelN/Bcj5qFPEv10E7SAkPs1ZNvfK4qSYOgsqVC/c
+         gVgcFkm27qTIijIwNxAoqgzpYu5u7bmtnTQpSaDPYlmyfLA/QnallktYE5mllmXKSOA8
+         al8THU2STO8Sp3GJqxwIdxV5ag13r5Sh2vNvNNn0XsZo4vT/0aKWV8sjn1kzKN6aUnoG
+         Wf0Vuz/jFJMO9FfzU9E/RGXrsfT8aUUYsE3VRxImNKSPPzwMqlz2o8cjwDZd4BYhR/dr
+         Zhr5hkCjTAxqxOakslwTG0UskTgwbB/Whe66I4klBicr7zIUSErWvZ1ma9qJxY1EprBP
+         +dng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713833020; x=1714437820;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=84vJQPmZeH4flu8huGOV5q9Ft8py+u51GWOsQbHslr0=;
+        b=EUwWvHgCHsTQEYZazTR/9rEdWlxy21MWbcLHZpn9u/C2Ep8DzbBeBKO1ecU9J+lF8M
+         KVavfyfCgYQW4FUrgtQXELULaTpmIX5tkoJyIS2CauWfy6Fom85/F9ktl6OtYhJ0BV6b
+         WUx6Jf6A+s01sSfG/s5lSid61HeRfuHfZ8HLP2PE+SZ2kuS80MvZ8LUV/ovsZ/LpDe3t
+         ZksRLsFjl2yU4JjON/IKm2CzeIo5ig2ZYaes0Jysk2CGXqYdQyrqMFQUG+T8WdSmIngP
+         8Jd9ER8eFU5EIUcaVwS/px38jncKXa9vj8Up4FV1KVYaV16y0uwSCb+sxHUQSYunasC2
+         8TfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWkLz8ZjyWJhaFWC18JGuFGvPQLz1PnEbNJjf74il115kcALG00ut4vpw6hjWi4CEqccJ1D/PkBwZONf7reI/wpzgHv3cSiRkHr2zrcKMTvTqKUybgcuxtoYehXBPLeERK81ojtVACdCmSIQLmKuj2cOV/F+CuJidT8WWK+I//rTcGXbt4C5adHWqsfxu4HJIYmETWnkSSGNBGBv7KEgFLLpUChIRnm4xr/JLSah1lLyyupeeeL1ibCuYNHLH/3/kx/Byk=
+X-Gm-Message-State: AOJu0YwrACmE/i/ujLkEQX0z4WEr1/peJAPygfy08+m1PrcO7kf3+sZF
+	IRqnQgMtf8koMiJb0kjaRte+rPlELjYkKaY9Nj2gCd1rf9/UR2wkWUA8W69JXm3vGTnHxLKht7O
+	Dg9ZeFT0lFWODY4cJFqPh7EBFgzI=
+X-Google-Smtp-Source: AGHT+IGxeORm1TBskNYFb9Q9UnxlPWh+xAzteXrnLfX4ZhQxPREhBxwkngicmnabL/j5mMF9OrXzpySLTVciO2cdmAw=
+X-Received: by 2002:a05:6a20:9f43:b0:1a7:6a90:8820 with SMTP id
+ ml3-20020a056a209f4300b001a76a908820mr13612612pzb.4.1713833019802; Mon, 22
+ Apr 2024 17:43:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 12.161.88.66
-X-SA-Exim-Rcpt-To: sfr@canb.auug.org.au, cdall@cs.columbia.edu, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+References: <20240422091215.526688-1-ojeda@kernel.org>
+In-Reply-To: <20240422091215.526688-1-ojeda@kernel.org>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Tue, 23 Apr 2024 02:42:34 +0200
+Message-ID: <CANiq72=xkmSGNCiJOr5+YZhKUVYjMwfBZJVCXbDfdf7qEGBAag@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: rust: remove unneeded `@rustc_cfg` to avoid ICE
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Nicolas Schier <nicolas@fjasle.eu>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, David Gow <davidgow@google.com>, 
+	Brendan Higgins <brendan.higgins@linux.dev>, linux-kbuild@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	patches@lists.linux.dev, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 23 Apr 2024 00:25:57 +0100,
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> 
-> Hi all,
-> 
-> In commit
-> 
->   fe4763e18355 ("KVM: arm64: nv: Work around lack of pauth support in old toolchains")
-> 
-> Fixes tag
-> 
->   Fixes: e09faab353a6 ("KVM: arm64: nv: Add emulation for ERETAx instructions")
-> 
-> has these problem(s):
-> 
->   - Target SHA1 does not exist
-> 
-> Maybe you meant
-> 
-> Fixes: 6ccc971ee2c6 ("KVM: arm64: nv: Add emulation for ERETAx instructions")
+On Mon, Apr 22, 2024 at 11:13=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wr=
+ote:
+>
+> When KUnit tests are enabled, under very big kernel configurations
+> (e.g. `allyesconfig`), we can trigger a `rustdoc` ICE [1]:
+>
+>       RUSTDOC TK rust/kernel/lib.rs
+>     error: the compiler unexpectedly panicked. this is a bug.
+>
+> The reason is that this build step has a duplicated `@rustc_cfg` argument=
+,
+> which contains the kernel configuration, and thus a lot of arguments. The
+> factor 2 happens to be enough to reach the ICE.
+>
+> Thus remove the unneeded `@rustc_cfg`. By doing so, we clean up the
+> command and workaround the ICE.
+>
+> The ICE has been fixed in the upcoming Rust 1.79 [2].
+>
+> Cc: stable@vger.kernel.org
+> Fixes: a66d733da801 ("rust: support running Rust documentation tests as K=
+Unit ones")
+> Link: https://github.com/rust-lang/rust/issues/122722 [1]
+> Link: https://github.com/rust-lang/rust/pull/122840 [2]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-Indeed. Thanks for spotting this. Fixed and pushed out.
+Applied to `rust-fixes` early to start getting some testing in -next.
+Please feel free to send tags for this one.
 
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Cheers,
+Miguel
 
