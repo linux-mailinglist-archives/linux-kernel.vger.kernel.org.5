@@ -1,97 +1,115 @@
-Return-Path: <linux-kernel+bounces-155971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8D678AFC22
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:47:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51F988AFC30
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:48:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D81C31C2277B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:47:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92442B27021
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:48:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346D42C6AF;
-	Tue, 23 Apr 2024 22:47:00 +0000 (UTC)
-Received: from mail114-241.sinamail.sina.com.cn (mail114-241.sinamail.sina.com.cn [218.30.114.241])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E64C502B3;
+	Tue, 23 Apr 2024 22:47:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="nV/7DAky"
+Received: from forward201b.mail.yandex.net (forward201b.mail.yandex.net [178.154.239.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8BFD1C6BE
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 22:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.114.241
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9373037171;
+	Tue, 23 Apr 2024 22:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713912419; cv=none; b=QdLficdO78KG9cNYta1+BSZltylMSODssbEZCwFea4HzbftlcMiuvEzdpFE6npBhA2mOvSF8GBi3/DXgHs1X/DkMi2cUi7tDU4i4mUs7fA29o5pfVqXyTN5BJ16m8kYGNwHfbk/vJ/9iH1Qh0Z9Pepd0rGefKAcSiKe2JcJ4H98=
+	t=1713912475; cv=none; b=HfnmoqPtEH/tTuSEYmyz92CfrgVAJyZpGZ4CwPnMWRMeVZZ7TZAsqqkz3TY2sC28sD4ISmS+uuPVqslw+GIIds/PNb3gP+QlXD22w6tQBx5aNbAl2lZ/bZVnb0SEFSGk0mrRb1i9pD/KZgX3sTohswr23QCcB5quqH48cK0CiOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713912419; c=relaxed/simple;
-	bh=BwoJIuLDivt7puSYM+qJM1mK6bHhySm2Lc3Tjd/cnrQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n+A2O3qjpSKhHqJ5MPEs7oh6dX7M/Uvk8kKlBOpdqT1bML7yqmm+VARl7v85ca+396D9oCUk0ZlRev2+v+PKGGQvNFO8wztpNUNDhpIcfwb9NCdXwSKCOtD8+1znzpSMte5vrMzMfnAbjbNUqjikkPd3PGqbtNdS8DwLZSI4h9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.114.241
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.49.188])
-	by sina.com (172.16.235.24) with ESMTP
-	id 66283A2E00006439; Tue, 24 Apr 2024 06:46:09 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 8475345089566
-X-SMAIL-UIID: E2EC3C000C4F4225B05096877135F0A5-20240424-064609-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+41cf3f847df2c5f600a3@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [fs?] WARNING in netdev_queue_update_kobjects (2)
-Date: Wed, 24 Apr 2024 06:46:08 +0800
-Message-Id: <20240423224608.3180-1-hdanton@sina.com>
-In-Reply-To: <0000000000000d3cfa0616b1576a@google.com>
-References: 
+	s=arc-20240116; t=1713912475; c=relaxed/simple;
+	bh=kGO8taly3zjYFLJkCPrWOp2pJAZjOIXOxrX3rQi33GI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ba+otHCpY1zi7O0BoaZcbcv9MCQ4xqlty8jRwmz+nhAIQENaKbs4LOAChS9U2BEhkruA1wkew5I5L4BiLisbf+9LdwCd0HAUV0QUUDFZq/RN46JosGDE1yt9+3lUd/CUJXofhbxu2snFzgReh251m30mrwK5Adif5MI3wYLA4Mw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=nV/7DAky; arc=none smtp.client-ip=178.154.239.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from forward102c.mail.yandex.net (forward102c.mail.yandex.net [IPv6:2a02:6b8:c03:500:1:45:d181:d102])
+	by forward201b.mail.yandex.net (Yandex) with ESMTPS id 375686735E;
+	Wed, 24 Apr 2024 01:47:50 +0300 (MSK)
+Received: from mail-nwsmtp-smtp-production-main-57.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-57.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:3624:0:640:caf8:0])
+	by forward102c.mail.yandex.net (Yandex) with ESMTPS id 6FDB86003C;
+	Wed, 24 Apr 2024 01:47:41 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-57.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id dlTUXjFh6mI0-nkyakC7O;
+	Wed, 24 Apr 2024 01:47:40 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1713912460; bh=cacnpBEsGFJi0JFbY7VQqOugKerOzw77/aAnDNnT0yk=;
+	h=Message-ID:Date:Cc:Subject:To:From;
+	b=nV/7DAkyNizRFyyXlCjwZVzVaf2NdYbBFqhl9r6VL4hNCHCv1LFM4CcKgGMwSz3z5
+	 mfo217WNDAsAdklkuN8o5sC/jlr94agFvSIZM+89/XuSs+B3CzFTiLLitnFdZ9DAvo
+	 IKKiiNhiDLC9BIHbdLjgzW7kizNbg04iATZYNFEE=
+Authentication-Results: mail-nwsmtp-smtp-production-main-57.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+From: Stas Sergeev <stsp2@yandex.ru>
+To: linux-kernel@vger.kernel.org
+Cc: Stas Sergeev <stsp2@yandex.ru>,
+	Stefan Metzmacher <metze@samba.org>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andy Lutomirski <luto@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Jeff Layton <jlayton@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Alexander Aring <alex.aring@gmail.com>,
+	linux-fsdevel@vger.kernel.org,
+	linux-api@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	=?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+Subject: [PATCH v3 0/2] implement OA2_INHERIT_CRED flag for openat2()
+Date: Wed, 24 Apr 2024 01:46:13 +0300
+Message-ID: <20240423224615.298045-1-stsp2@yandex.ru>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On Mon, 22 Apr 2024 08:46:25 -0700
-> syzbot found the following issue on:
-> 
-> HEAD commit:    f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.o..
-> git tree:       net
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141dd66f180000
+This patch-set implements the OA2_INHERIT_CRED flag for openat2() syscall.
+It is needed to perform an open operation with the creds that were in
+effect when the dir_fd was opened. This allows the process to pre-open
+some dirs and switch eUID (and other UIDs/GIDs) to the less-privileged
+user, while still retaining the possibility to open/create files within
+the pre-opened directory set.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  3cdb45594619
+The more detailed description (including security considerations)
+is available in the log messages of individual patches.
 
---- x/net/bluetooth/bnep/core.c
-+++ y/net/bluetooth/bnep/core.c
-@@ -540,16 +540,6 @@ static int bnep_session(void *arg)
- 	return 0;
- }
- 
--static struct device *bnep_get_device(struct bnep_session *session)
--{
--	struct l2cap_conn *conn = l2cap_pi(session->sock->sk)->chan->conn;
--
--	if (!conn || !conn->hcon)
--		return NULL;
--
--	return &conn->hcon->dev;
--}
--
- static const struct device_type bnep_type = {
- 	.name	= "bluetooth",
- };
-@@ -618,7 +608,6 @@ int bnep_add_connection(struct bnep_conn
- 	bnep_set_default_proto_filter(s);
- #endif
- 
--	SET_NETDEV_DEV(dev, bnep_get_device(s));
- 	SET_NETDEV_DEVTYPE(dev, &bnep_type);
- 
- 	err = register_netdev(dev);
---
+Changes in v3:
+- partially revert v2 changes to avoid overriding capabilities.
+  Only the bare minimum is overridden: fsuid, fsgid and group_info.
+  Document the fact the full cred override is unwanted, as it may
+  represent an unneeded security risk.
+
+Changes in v2:
+- capture full struct cred instead of just fsuid/fsgid.
+  Suggested by Stefan Metzmacher <metze@samba.org>
+
+CC: Stefan Metzmacher <metze@samba.org>
+CC: Eric Biederman <ebiederm@xmission.com>
+CC: Alexander Viro <viro@zeniv.linux.org.uk>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Christian Brauner <brauner@kernel.org>
+CC: Jan Kara <jack@suse.cz>
+CC: Jeff Layton <jlayton@kernel.org>
+CC: Chuck Lever <chuck.lever@oracle.com>
+CC: Alexander Aring <alex.aring@gmail.com>
+CC: linux-fsdevel@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+CC: linux-api@vger.kernel.org
+CC: Paolo Bonzini <pbonzini@redhat.com>
+CC: Christian Göttsche <cgzones@googlemail.com>
+
+-- 
+2.44.0
+
 
