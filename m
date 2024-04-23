@@ -1,190 +1,155 @@
-Return-Path: <linux-kernel+bounces-155401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7D08AE9E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:56:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B33B58AE9E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:56:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE4521C22443
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:56:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69FCA286595
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1497A13B7AE;
-	Tue, 23 Apr 2024 14:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993F013BC20;
+	Tue, 23 Apr 2024 14:56:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="X4y3uUdx"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="waP6Xy+M"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9381719BBA;
-	Tue, 23 Apr 2024 14:56:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A090013BAC4
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 14:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713884181; cv=none; b=GkWGzQ4zcvT6WU/qb+yPTlrOKicZH4KyEr7dvhEUlp022JqYkK816qdKENK/9UUqLnEqWb91c5R/vNZcL42+8XraDZvAcuhDP+aHo8JLxRwqGm1qN06IrFvdq2l+eqCQ/ig2fMz20HUgeM4IQ8dFlb7fTaQZ8zO7EPvG993l+bM=
+	t=1713884164; cv=none; b=kBjBSNZbwvyCLqEiaH7R3PSPzz/ZMSl0mIK7VYO9nc70EALqok3wpMcDz1ikukbFzuK65VY8p+k6tCKuqZG9WySPeBZIwUbrBjTiSO+PHCLMzo1RS3JAqMqjA/mUY66bmTbtNgSk78ByxNVgDURTPWpgGUdtvNwOUWCmePodaBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713884181; c=relaxed/simple;
-	bh=JXp+cO2yj5IAd9bXLq9v30tCel6lzULFC1pdStj5dV0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TqMOFbMEG6lPeUbeYPq61Hfqxc1bBxYBGjT5EFp7D7+CsUcTytJKc9sKKA+wfFk9VAXvYQG8vys7eBtzueTUJg7eGLAjCiD+1QYpWJar2IGm407OhOrWhO7ejI7GT8IlL2P85tNk6lc6ycCb+x+ltcgERftdQ0+0w+1/m3EKjRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=X4y3uUdx; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43NEns4S022107;
-	Tue, 23 Apr 2024 14:56:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=n3FibSyhqeqNBMqlU4DUPCJOy+2RIesEFMLjIGdVnS0=;
- b=X4y3uUdxUeEeyGEPhrnrav7X3pS2ZUrBP+Gu6sIaZsRPTOUQILuk2Q0ku3drDHQ4iogT
- PHuE8UqWEUttKQrUUxGRCkzp5xZjQwLuJetJj5PLype0RPmms5Xtq7MWuPyBLtJZ/dTg
- Mwf2eHwinG5HADIdaZhoLUQGI18vn2dRKetO1Ywh+hf54sMeNeVXoqJHfwaMG02C/sGP
- VUEkbbPBC7+StFVp1O6qSYKglLtjqvEoniSSTnJSJIbFEyvm1Ch7b8VES35NwSsMriNr
- 0n4bpZmyJmEN/5d1BdD93yuuRMppfEhMb6iBnP+8Xzg4J6QACy8ix78p8cMH6NXSU5dW lQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xpf3200eu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 14:56:02 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43NEu1hO030103;
-	Tue, 23 Apr 2024 14:56:01 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xpf3200en-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 14:56:01 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43NEr6Tr015277;
-	Tue, 23 Apr 2024 14:56:00 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xmshm61js-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 14:56:00 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43NEtv9o17564218
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 23 Apr 2024 14:55:59 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 813985805E;
-	Tue, 23 Apr 2024 14:55:57 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2BD3458066;
-	Tue, 23 Apr 2024 14:55:57 +0000 (GMT)
-Received: from [9.24.5.26] (unknown [9.24.5.26])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 23 Apr 2024 14:55:57 +0000 (GMT)
-Message-ID: <7e3f43a3-98e0-40ed-8820-2f1eef8742ba@linux.ibm.com>
-Date: Tue, 23 Apr 2024 09:55:57 -0500
+	s=arc-20240116; t=1713884164; c=relaxed/simple;
+	bh=zb89nfLrW3+wAcpukVR4Q7BqXQCPFLkFUFrPmhqKtu8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=nC0mrSG7NndAF+q9nPBkpJ4gIE7SUZkwIsYRvunR48VvTraR1OvadgUZGZ0/jyvNqMzDWwAnXDMJ/vJebLeRppaNQtYWlvkbqvbIfgXgB4rH+pNPohVNBP3qtQW6r+Yv5nAu12RyW16b/DWZk74UkFayWKaW+L6rkJ9S+H6Lv0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=waP6Xy+M; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ed2f4e685bso5436507b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 07:56:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713884163; x=1714488963; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QL1KGuBF3PiImvOWnmAJwJ7TVqcvvvJM7lUaOvdwil4=;
+        b=waP6Xy+M8P8WLgHTdwUDaGx+EbTdSV+wYBhQc7Cr+H5OdljkNJf+bNVI76pVXHcqcV
+         3svmuMy3K4sy6iTgUHrUFw3D31i3PprJN8g6Pcs6YE2w6ZRo0gc8ogd8FgTli8Py3GOZ
+         jSHh3bxxA5X39RZyrxqvgk0Q/o3fiLKOf8bUB0hBJUqsMj413Z/4Qb1kD5aMQIrnByLD
+         ssihZ5H1SKM8XDO8MpmyFoNR8Gyox9xyUU+OwnIemO5RCmKO6a41YDMUWOCp0JI6mvei
+         23Dq+JeJKUzvGLzCDytQgEsSw5u/4v2Ox7IRYzC30FCWqnYUEns8Xksnlcx+NuhM0SJo
+         ty6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713884163; x=1714488963;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QL1KGuBF3PiImvOWnmAJwJ7TVqcvvvJM7lUaOvdwil4=;
+        b=kIVmsI+27epIFwEi3oG+2Q3UwuWtzd498CfpuD3lkxG+YQpuVm9U5t7zSej7TTh7I3
+         xMPftriIhwX/iowpr2MWNRGRzeOXAJdsMAA0KbwgcWbhGk+Y/MFhVien84L4Yvam4zy6
+         p/bTlD/3orrKmzABTm4ZswKlzrqNfip86/dl7grzK1YsmCzSnNpgNU894Nk9ppPVrJEa
+         STgg0CdkPxJ4tAveTedqvc46z9ay7RlOXCnEdg2Fjcv8tjy4wrKD41nc9YDEG6k8HbgD
+         0LQzKkas04c7c/EyQLVOad/HFsie43f3uMDIjIaNUqTONKehsssiSuKVZOdJ4GvlqtoD
+         9iXg==
+X-Forwarded-Encrypted: i=1; AJvYcCX8kYwWauax6Y44qGoaEHsU1x5PktFvjERwc2isibf3cDOOi3iKRqdjSvSR3Y33/7C4a4xwbkZjSaFAUodPPbgbJ+QMpH4k6S2Q//BA
+X-Gm-Message-State: AOJu0YzJqwl1qkR02mG2fV2YuvmVf4e8/wgWhGYkt8yCs94nVOT/dVf7
+	IHLSv1sfm7PSZ4SBafD3LunJJLApWeg1O6ZZl3p6AkDJJGfxi9QJYPqAr5ePOo/lZeS0yC0o+Im
+	FUg==
+X-Google-Smtp-Source: AGHT+IEofZ+0phYC5RHnU3tk4kyICMGRgIj0E0NU+50sKVZM05N3Vtemrp3mHgtpb6tSAfXkGXRAJET7QAU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:8713:b0:6ec:f3e8:46a8 with SMTP id
+ hj19-20020a056a00871300b006ecf3e846a8mr21432pfb.1.1713884162882; Tue, 23 Apr
+ 2024 07:56:02 -0700 (PDT)
+Date: Tue, 23 Apr 2024 07:56:01 -0700
+In-Reply-To: <878bf83c-cd5b-48d0-8b4e-77223f1806dc@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ibmvnic: Use -EBUSY in __ibmvnic_reset()
-To: Dan Carpenter <dan.carpenter@linaro.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: Markus Elfring <Markus.Elfring@web.de>, linuxppc-dev@lists.ozlabs.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Haren Myneni <haren@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <4cff158d-b5ac-4dca-9fbb-626237c1eafe@web.de>
- <f493e39063ee52a3d263de27bfd240149d910a88.camel@redhat.com>
- <da19d324-3c66-4bb1-8fa2-dc26dbea622b@moroto.mountain>
-Content-Language: en-US
-From: Nick Child <nnac123@linux.ibm.com>
-In-Reply-To: <da19d324-3c66-4bb1-8fa2-dc26dbea622b@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: W3whKt0gJALV53n61XLBMtyhTMQ4uEBE
-X-Proofpoint-GUID: QfRQoGfEpIA_zIycNlg5y3GEeMz7Y15v
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-23_12,2024-04-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 mlxlogscore=999 clxscore=1011 adultscore=0
- lowpriorityscore=0 spamscore=0 bulkscore=0 phishscore=0 mlxscore=0
- suspectscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2404010000 definitions=main-2404230036
+Mime-Version: 1.0
+References: <20240423073952.2001989-1-chentao@kylinos.cn> <878bf83c-cd5b-48d0-8b4e-77223f1806dc@web.de>
+Message-ID: <ZifMAWn32tZBQHs0@google.com>
+Subject: Re: [PATCH] KVM: selftests: Add 'malloc' failure check in test_vmx_nested_state
+From: Sean Christopherson <seanjc@google.com>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: Kunwu Chan <chentao@kylinos.cn>, linux-kselftest@vger.kernel.org, 
+	kvm@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+	Muhammad Usama Anjum <usama.anjum@collabora.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Kunwu Chan <kunwu.chan@hotmail.com>, Andrew Jones <ajones@ventanamicro.com>, 
+	Anup Patel <anup@brainfault.org>, Thomas Huth <thuth@redhat.com>, 
+	Oliver Upton <oliver.upton@linux.dev>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
++others
 
+On Tue, Apr 23, 2024, Markus Elfring wrote:
+> =E2=80=A6
+> > This patch will add the malloc failure checking
+> =E2=80=A6
+>=20
+> * Please use a corresponding imperative wording for the change descriptio=
+n.
+>=20
+> * Would you like to add the tag =E2=80=9CFixes=E2=80=9D accordingly?
 
-On 4/23/24 06:55, Dan Carpenter wrote:
-> On Tue, Apr 23, 2024 at 12:54:55PM +0200, Paolo Abeni wrote:
->> On Fri, 2024-04-19 at 16:08 +0200, Markus Elfring wrote:
->>> From: Markus Elfring <elfring@users.sourceforge.net>
->>> Date: Fri, 19 Apr 2024 15:46:17 +0200
->>>
->>> Add a minus sign before the error code “EBUSY”
->>> so that a negative value will be used as in other cases.
->>>
->>> This issue was transformed by using the Coccinelle software.
->>>
->>> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
->>> ---
->>>   drivers/net/ethernet/ibm/ibmvnic.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
->>> index 5e9a93bdb518..737ae83a836a 100644
->>> --- a/drivers/net/ethernet/ibm/ibmvnic.c
->>> +++ b/drivers/net/ethernet/ibm/ibmvnic.c
->>> @@ -3212,7 +3212,7 @@ static void __ibmvnic_reset(struct work_struct *work)
->>>   		    adapter->state == VNIC_REMOVED) {
->>>   			spin_unlock_irqrestore(&adapter->state_lock, flags);
->>>   			kfree(rwi);
->>> -			rc = EBUSY;
->>> +			rc = -EBUSY;
->>>   			break;
->>>
->>
->> AFAICS the error is always used as bool, so this will not change any
->> behavior in practice. I tend to think we should not merge this kind of
->> change outside some larger work in the same area, but I'd love a second
->> opinion from the driver owners.
-> 
-> I missed the original patch due to my procmail filters...
-> 
-> You're right that it doesn't affect the behavior of the driver except
-> for the debug output when we do:
-> 
-> 	netdev_dbg(adapter->netdev, "Reset failed, rc=%d\n", rc);
-> 
-> But the - was left off uninitentionally so I think we should apply it.
-> 
-> I have been trying to look for similar bugs where the - is left off.
-> It's a bit challenging because there places where we use positive
-> error codes deliberately.  But in this case a static checker could
-> easily detect the bug with a low false positive ratio by saying, "We're
-> mixing normal negative error codes with positive EBUSY".
-> 
-> regards,
-> dan carpenter
+Nah, don't bother with Fixes.  OOM will cause the test to fail regardless, =
+the
+fact that it gets an assert instead a NULL pointer deref is nice to have, b=
+ut by
+no means does it fix a bug.
 
-Hello, small clarification, this patch will not effect the debug print 
-statement due to the break statement immediately following:
-	while () {	
-		if () {
-			rc = -EBUSY;
-			break;
-		}
-		netdev_dbg(adapter->netdev, "Reset failed, rc=%d\n", rc);
-	}
-Though this return code can be passed to adapter->reset_done_rc, which 
-is only treated as a boolean.
+> > +++ b/tools/testing/selftests/kvm/x86_64/vmx_set_nested_state_test.c
+> > @@ -91,6 +91,7 @@ void test_vmx_nested_state(struct kvm_vcpu *vcpu)
+> >  	const int state_sz =3D sizeof(struct kvm_nested_state) + getpagesize(=
+);
+> >  	struct kvm_nested_state *state =3D
+> >  		(struct kvm_nested_state *)malloc(state_sz);
+> > +	TEST_ASSERT(state, "-ENOMEM when allocating kvm state");
+> =E2=80=A6
+>=20
+> Can =E2=80=9Cerrno=E2=80=9D be relevant for the error message constructio=
+n?
 
-So, the point of the patch not doing any behavioral differences is still 
-true.
-Personally, I don't have strong opinions on this.
-Reviewed-by: Nick Child <nnac123@linux.ibm.com>
+Probably not, but there's also no reason to assume ENOMEM.  TEST_ASSERT() s=
+pits
+out the actual errno, and we can just say something like "malloc() failed f=
+or
+blah blah blah". =20
+
+But rather than keeping playing whack-a-mole, what if we add macros to perf=
+orm
+allocations and assert on the result?  I have zero interest in chasing down=
+ all
+of the "unsafe" allocations, and odds are very good that we'll collectively=
+ fail
+to enforce checking on new code.
+
+E.g. something like (obviously won't compile, just for demonstration purpos=
+es)
+
+#define kvm_malloc(x)
+({
+	void *__ret;
+
+	__ret  =3D malloc(x);
+	TEST_ASSERT(__ret, "Failed malloc(" #x ")\n");
+	__ret;
+})
+
+#define kvm_calloc(x, y)
+({
+	void *__ret;
+
+	__ret  =3D calloc(x, y);
+	TEST_ASSERT(__ret, "Failed calloc(" #x ", " #y ")\n");
+	__ret;
+})
 
