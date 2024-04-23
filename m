@@ -1,135 +1,204 @@
-Return-Path: <linux-kernel+bounces-155907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0495A8AF8C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:10:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F7468AF8C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 362C11C234F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:10:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55BBB290211
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D96142E79;
-	Tue, 23 Apr 2024 21:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72502142E9A;
+	Tue, 23 Apr 2024 21:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W25NFkYB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JySSdKg6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C72142E85;
-	Tue, 23 Apr 2024 21:09:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A02B142E97;
+	Tue, 23 Apr 2024 21:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713906596; cv=none; b=Z9hHoRLpr5Ak6KkSXvi3vMixaTLhUwjeR4kf4TKuOIo4psLOHQ8bT79ecGL4V4qoNZTYCKeX6DKLHVp3kl+qBqtq4VCToK3Uoqz+ZO9IO8DXBhPvt1+XckCDqUSz9KkmIKYRoFjkc26AFOhPQTGbmft0ur1/jS+TlZdapEUAsKQ=
+	t=1713906624; cv=none; b=fUY2WkkdTekeJJu12rZwcl0qmMgQ3kABuutXVDNVdmezZrUfEI1eyd7YcG6NXjmFi9JUm5GiaPjIlyLBazTlqG+exsP7HeU4fUOo0iylKPiPEotQlh1Rz8S3KLp+2wSqZWXC7rkbthRgIbSU4Wfd0WAGknRACOPRPei9Umw/rhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713906596; c=relaxed/simple;
-	bh=FIZLwnCJ46nQbu1Ba72yWKSGnIGxieYcIGj7+JomHgU=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=DgbSB1r2sFgXC/Mns9NujlX+yhhZ4pGmev/74HaPJf/oIZ+eyyIM2aqzgywg1TKcSukkUjTAlgCPrj6XyElNJdgyJFOjB4Y6aJ8w0sVh+kuwmNpiLlVIggU9cVYKD/vrE++L5SIwejmKqmtIGcqrC2gx8zotZfYofgm9MtG0DAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W25NFkYB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFCCCC116B1;
-	Tue, 23 Apr 2024 21:09:55 +0000 (UTC)
+	s=arc-20240116; t=1713906624; c=relaxed/simple;
+	bh=T11rMPRRX9jt/RLdz1BLU5iOZ7SOs/dVFi4khlAQ6Cg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=CFZCYTANmM1Zy1GtEXaCq3wrXvbxNpZEL8DPUkMIOo2FEgMB/lCmChCsl1H0uYsK9++SQOUuZRQqOR0G/pyPkxMw2fejizA+Z5j6NCqY1/bTsrD6vuOE6NpE9bNDEwQIR3lXbtbmhAb+ZgGaBt4YdpykvBynRLZ/puXWTMfAW34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JySSdKg6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F02DDC3277B;
+	Tue, 23 Apr 2024 21:10:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713906596;
-	bh=FIZLwnCJ46nQbu1Ba72yWKSGnIGxieYcIGj7+JomHgU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=W25NFkYBxeqYwzD6bWFyCiPs+/hDKJ5tM9c7gw7IddM2ObyMGQliK7AubkPy1bRNk
-	 AacBYM457pzUWBi+TxeNgSqierSERtATQ09RfBVv/wU9KOh417QI02SAqndawIasGg
-	 VFT3e5VBEqtejXS6KzchJcnzyuhMOvziWcurziITzpPs3lBh/Cqyi1eiwuGi/ZnjAM
-	 xjXm5koQN0rjh+NCQ5tuH60x3b8w4Gly0YgMHGUdyP+pCn0VakdL4OYaevq5XdzcKv
-	 jjs6eXn+StBMxt1YsqIHBmq4oczpBFd38T++5OYs5QoZhmwhe76AxPNihTCumo8cIu
-	 Rqz+0rsXieylA==
-Date: Tue, 23 Apr 2024 16:09:54 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Vidya Sagar <vidyas@nvidia.com>
-Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, treding@nvidia.com,
-	jonathanh@nvidia.com, kthota@nvidia.com, mmaddireddy@nvidia.com,
-	sagar.tv@gmail.com
-Subject: Re: [PATCH V2] PCI: Clear errors logged in Secondary Status Register
-Message-ID: <20240423210954.GA467443@bhelgaas>
+	s=k20201202; t=1713906624;
+	bh=T11rMPRRX9jt/RLdz1BLU5iOZ7SOs/dVFi4khlAQ6Cg=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=JySSdKg6QZhIFMe4Ai5nIMK7eulsBOQIo0oj2UvSQGy/usq0emhdy462FDoXKEJJQ
+	 JAe47BTQTU0+REhK75C9pRReod0exkHzw7FSIf2OMaT7vmFSV6H3ZedUxzZpAHdevO
+	 nR34NsUAvEYH5tqkiAIacFxSdy93q2tVpW1oQbRooayKnhGcLRSlo4LvHcRiwz/pB7
+	 QUzc6kQbcNOfo2EdoLgLqdqy667ii9qijWFBVRLS/q117lE8DLSSuOZlzNXTUSGmXK
+	 z1bNdOl2ww9lr++JtzafWvGUb7/acCl9OxFh9GvwpaA0EoNk9KejgbgMvQUUJ+KHem
+	 EIbNsLt13EFUA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116143258.483235-1-vidyas@nvidia.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 24 Apr 2024 00:10:21 +0300
+Message-Id: <D0RT6W3IGBRL.34KQMBWUO1Z23@kernel.org>
+To: =?utf-8?b?5pyx5Lyv5ZCbKOadsOmTrSk=?= <zhubojun.zbj@antgroup.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <dave.hansen@linux.intel.com>
+Cc: <reinette.chatre@intel.com>, =?utf-8?b?5YiY5Y+MKOi9qeWxuSk=?=
+ <ls123674@antgroup.com>
+Subject: Re: [RFC PATCH 1/1] x86/sgx: Explicitly give up the CPU in EDMM's
+ ioctl() to avoid softlockup
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240423092550.59297-1-zhubojun.zbj@antgroup.com>
+ <20240423092550.59297-2-zhubojun.zbj@antgroup.com>
+In-Reply-To: <20240423092550.59297-2-zhubojun.zbj@antgroup.com>
 
-On Tue, Jan 16, 2024 at 08:02:58PM +0530, Vidya Sagar wrote:
-> The enumeration process leaves the 'Received Master Abort' bit set in
-> the Secondary Status Register of the downstream port in the following
-> scenarios.
-> 
-> (1) The device connected to the downstream port has ARI capability
->     and that makes the kernel set the 'ARI Forwarding Enable' bit in
->     the Device Control 2 Register of the downstream port. This
->     effectively makes the downstream port forward the configuration
->     requests targeting the devices downstream of it, even though they
->     don't exist in reality. It causes the downstream devices return
->     completions with UR set in the status in turn causing 'Received
->     Master Abort' bit set.
-> 
->     In contrast, if the downstream device doesn't have ARI capability,
->     the 'ARI Forwarding Enable' bit in the downstream port is not set
->     and any configuration requests targeting the downstream devices
->     that don't exist are terminated (section 6.13 of PCI Express Base
->     6.0 spec) in the downstream port itself resulting in no change of
->     the 'Received Master Abort' bit.
-> 
-> (2) A PCIe switch is connected to the downstream port and when the
->     enumeration flow tries to explore the presence of devices that
->     don't really exist downstream of the switch, the downstream
->     port receives the completions with UR set causing the 'Received
->     Master Abort' bit set.
-> 
-> Clear 'Received Master Abort' bit to keep the bridge device in a clean
-> state post enumeration.
-> 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+On Tue Apr 23, 2024 at 12:25 PM EEST, =3D?UTF-8?B?5pyx5Lyv5ZCbKOadsOmTrSk=
+=3D?=3D wrote:
+> EDMM's ioctl()s support batch operations, which may be
+> time-consuming. Try to explicitly give up the CPU at
+> the every end of "for loop" in
+> sgx_enclave_{ modify_types | restrict_permissions | remove_pages}
+> to give other tasks a chance to run, and avoid softlockup warning.
+>
+> The following has been observed on Linux v6.9-rc5 with kernel
+> preemptions disabled(by configuring "PREEMPT_NONE=3Dy"), when kernel
+> is requested to restrict page permissions of a large number of EPC pages.
+>
+>     ------------[ cut here ]------------
+>     watchdog: BUG: soft lockup - CPU#45 stuck for 22s! [occlum-run:3905]
+>     ...
+>     CPU: 45 PID: 3905 Comm: occlum-run Not tainted 6.9.0-rc5 #7
+>     ...
+>     RIP: 0010:sgx_enclave_restrict_permissions+0xba/0x1f0
+>     Code: 48 c1 e6 05 48 89 d1 48 8d 5c 24 40 b8 0e 00 00 00 48 2b 8e 70 =
+8e f5 93 48 c1 e9 05 48 c1 e1 0c 48 03 8e 68 8e f5 93 0f 01 cf <a9> 00 00 0=
+0 40 0f 85 b2 00 00 00 85 c0 0f 85 db 00 00 00 4c 89 ef
+>     RSP: 0018:ffffb55a6591fa80 EFLAGS: 00000202
+>     RAX: 0000000000000000 RBX: ffffb55a6591fac0 RCX: ffffb581e7384000
+>     RDX: ffffb59a9e4e8080 RSI: 0000000000000020 RDI: ffff91d69e8cc000
+>     RBP: ffffb55a6591fb70 R08: 0000000000000002 R09: ffff91d646e12be0
+>     R10: 000000000000006e R11: 0000000000000002 R12: 000000072052d000
+>     R13: ffff91d69e8cc000 R14: ffffb55a6591fbd8 R15: ffff91d69e8cc020
+>     FS:  00007fe10dbda740(0000) GS:ffff92163e480000(0000) knlGS:000000000=
+0000000
+>     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>     CR2: 00007fc041811000 CR3: 00000040d95c8005 CR4: 0000000000770ef0
+>     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>     DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+>     PKRU: 55555554
+>     Call Trace:
+>      <IRQ>
+>      ? show_regs+0x67/0x70
+>      ? watchdog_timer_fn+0x1f3/0x280
+>      ? __pfx_watchdog_timer_fn+0x10/0x10
+>      ? __hrtimer_run_queues+0xc8/0x220
+>      ? hrtimer_interrupt+0x10c/0x250
+>      ? __sysvec_apic_timer_interrupt+0x53/0x130
+>      ? sysvec_apic_timer_interrupt+0x7b/0x90
+>      </IRQ>
+>      <TASK>
+>      ? asm_sysvec_apic_timer_interrupt+0x1b/0x20
+>      ? sgx_enclave_restrict_permissions+0xba/0x1f0
+>      ? __pte_offset_map_lock+0x94/0x110
+>      ? sgx_encl_test_and_clear_young_cb+0x40/0x60
+>      sgx_ioctl+0x1ab/0x900
+>      ? do_syscall_64+0x79/0x110
+>      ? apply_to_page_range+0x14/0x20
+>      ? sgx_encl_test_and_clear_young+0x6c/0x80
+>      ? sgx_vma_fault+0x132/0x4f0
+>      __x64_sys_ioctl+0x95/0xd0
+>      x64_sys_call+0x1209/0x20c0
+>      do_syscall_64+0x6d/0x110
+>      ? do_syscall_64+0x79/0x110
+>      ? do_pte_missing+0x2e8/0xcc0
+>      ? __pte_offset_map+0x1c/0x190
+>      ? __handle_mm_fault+0x7b9/0xe60
+>      ? __count_memcg_events+0x70/0x100
+>      ? handle_mm_fault+0x256/0x360
+>      ? do_user_addr_fault+0x3c1/0x860
+>      ? irqentry_exit_to_user_mode+0x67/0x190
+>      ? irqentry_exit+0x3b/0x50
+>      ? exc_page_fault+0x89/0x180
+>      entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>     RIP: 0033:0x7fe10e2ee5cb
+>     Code: 0f 1e fa 48 8b 05 c5 78 0d 00 64 c7 00 26 00 00 00 48 c7 c0 ff =
+ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f=
+0 ff ff 73 01 c3 48 8b 0d 95 78 0d 00 f7 d8 64 89 01 48
+>     RSP: 002b:00007fffb2c75518 EFLAGS: 00000246 ORIG_RAX: 000000000000001=
+0
+>     RAX: ffffffffffffffda RBX: 0000000780000000 RCX: 00007fe10e2ee5cb
+>     RDX: 00007fffb2c75520 RSI: 00000000c028a405 RDI: 0000000000000005
+>     RBP: 0000000000000005 R08: 0000000000000000 R09: 00007fffb2c75594
+>     R10: 00007fffb2c755c8 R11: 0000000000000246 R12: 00000000c028a405
+>     R13: 00007fffb2c75520 R14: 0000000780000000 R15: 00007fe10e1a7980
+>      </TASK>
+>      ------------[ end trace ]------------
+>
+> Signed-off-by: Bojun Zhu <zhubojun.zbj@antgroup.com>
 
-Applied to pci/enumeration for v6.10, thanks!
-
-I shortened the commit log because I think this happens all the time,
-not just in the specific cases you mentioned above:
-
-    PCI: Clear Secondary Status errors after enumeration
-
-    We enumerate devices by attempting config reads to the Vendor ID of each
-    possible device.  On conventional PCI, if no device responds, the read
-    terminates with a Master Abort (PCI r3.0, sec 6.1).  On PCIe, the config
-    read is terminated as an Unsupported Request (PCIe r6.0, sec 2.3.2,
-    7.5.1.3.7).  In either case, if the read addressed a device below a bridge,
-    it is logged by setting "Received Master Abort" in the bridge Secondary
-    Status register.
-
-    Clear any errors logged in the Secondary Status register after enumeration.
+Can you also fixup this as your "firstname lastname" in your emails
+from field? This matters so that author field in git log matches your
+sob.
 
 > ---
-> V2:
-> * Changed commit message based on Bjorn's feedback
-> 
->  drivers/pci/probe.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 795534589b98..640d2871b061 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -1470,6 +1470,9 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
->  	}
->  
->  out:
-> +	/* Clear errors in the Secondary Status Register */
-> +	pci_write_config_word(dev, PCI_SEC_STATUS, 0xffff);
+>  arch/x86/kernel/cpu/sgx/ioctl.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/io=
+ctl.c
+> index b65ab214bdf5..2340a82fa796 100644
+> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
+> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+> @@ -806,6 +806,9 @@ sgx_enclave_restrict_permissions(struct sgx_encl *enc=
+l,
+>  		}
+> =20
+>  		mutex_unlock(&encl->lock);
 > +
->  	pci_write_config_word(dev, PCI_BRIDGE_CONTROL, bctl);
->  
->  	pm_runtime_put(&dev->dev);
-> -- 
-> 2.25.1
-> 
+> +		if (need_resched())
+> +			cond_resched();
+>  	}
+> =20
+>  	ret =3D 0;
+> @@ -1010,6 +1013,9 @@ static long sgx_enclave_modify_types(struct sgx_enc=
+l *encl,
+>  		entry->type =3D page_type;
+> =20
+>  		mutex_unlock(&encl->lock);
+> +
+> +		if (need_resched())
+> +			cond_resched();
+>  	}
+> =20
+>  	ret =3D 0;
+> @@ -1156,6 +1162,9 @@ static long sgx_encl_remove_pages(struct sgx_encl *=
+encl,
+>  		kfree(entry);
+> =20
+>  		mutex_unlock(&encl->lock);
+> +
+> +		if (need_resched())
+> +			cond_resched();
+>  	}
+> =20
+>  	ret =3D 0;
+
+Makes sense to me but maybe this should be a prefix op instead of
+postfix op given how things are laid out in sgx_ioc_enclave_add_pages()
+
+https://elixir.bootlin.com/linux/latest/source/arch/x86/kernel/cpu/sgx/ioct=
+l.c#L443
+
+BR, Jarkko
 
