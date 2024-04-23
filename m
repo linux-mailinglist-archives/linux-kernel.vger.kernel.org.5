@@ -1,107 +1,186 @@
-Return-Path: <linux-kernel+bounces-154836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 863628AE1B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:05:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50D908AE1C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:06:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C1051F25148
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:05:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 805CE1C20D5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:06:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B0E160279;
-	Tue, 23 Apr 2024 10:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="W1uMtaua"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE7621345;
-	Tue, 23 Apr 2024 10:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFF71604D5;
+	Tue, 23 Apr 2024 10:05:57 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19EBB22F11;
+	Tue, 23 Apr 2024 10:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713866698; cv=none; b=Fq7k2g2PUx3zd5FB54OWrkd+X2c88B6aW/HZdLA4AVDsHAxdJfb8Qr72UUgBJorC1OhXmzwqGDVSOsYAAmOjNiznUWfMACPE4IEJLi6odXKmcpPiC9qowTplOMl0KZjXCcI8qYeqJR3t4EGP94KJmGXBpGENVNtI0KWQLGuUmXg=
+	t=1713866757; cv=none; b=S9ZAbX28x4NpBKOlTQ22G/B1fGV45SadUoWyEoGcxz76A/oAn4lr/hia6jxrraf41TgxYT2IKUB/VMlI4WUqnl2EHkA8FEarm935tMvjyqA3pcp12jMrvz07FGI4e4JO0lJB/7H6KGggWJtjh4hG9y6t8+1UROA6hRn1oUImST8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713866698; c=relaxed/simple;
-	bh=gDZ7Fg+2Du1XJV+4T9CY1Re5MPPSa361YFz6hstJ+co=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=bgBhtigM0eu4aya16rFyOg9CTOkKnfzboT8vYebOCOmY/cwa/6eCjrF6BGNd71GNajJ7l8JBxJTw8PcrL+b3cJLhzJYt9B0plob5KodVkrpy4JbEHTmOA8R1OtChb9RJM4TfvLthix/c24I+C5x3Fz5zlw2LwWbQ93/2gHs8tx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=W1uMtaua; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 16DF02000B;
-	Tue, 23 Apr 2024 10:04:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713866688;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fazf5O5A2ZxTjJzqLaGo3q4eT3yUZXsP9mz193jSIY0=;
-	b=W1uMtauaiXfA+1682z4WuTE9Zq5lYuRRnkZ3kdWUYFnS8cwCwy//wuD3RK3hej/CTiGd8k
-	4idcY4JHmnj/M7/DpGr28eIt9Pdn/dZk97znBbV32pDuI+R5xykSUODFnZRdPCBGkdL1Zl
-	xRgG+C2nijqb4DZgdgJBVWe2NR0QmlAvymCI9bpJqjpyYyzqGWqS3OS+CXHNf01GihJZUW
-	pZot7rLmHFvuD6dO3SVN9bIrFUDJv6QYN7zPxz4BZ1yu4n3gbMfcJ0iCkcUYJSSHPoRqP0
-	U7xYv6/Ig9DuVrLhGz1v557zejnodH8Xu/14egJpDnl05Ef3otUbWur0jMOw6g==
+	s=arc-20240116; t=1713866757; c=relaxed/simple;
+	bh=ksx5GILc+xmfeC9Tgn+bKUmmuj3WNfnkJowAv04MRLw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XFsggrERGKgEh0UBEkt0zC12XZEycUR3T7EA0/YPqerNudl50LqRIKyZQ0ZVzePlUQa+qdcJBplzFjDv2iNTkkJg5DuH7XYtdFlTmykwvUtiPiHrbo1MZP77xua3ozOuZ8CJ6eO6fnlOdNMP0Z+lyFVWtdS08u9SRoM4tXBbRoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6547A339;
+	Tue, 23 Apr 2024 03:06:19 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.21.210])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D2B23F7BD;
+	Tue, 23 Apr 2024 03:05:49 -0700 (PDT)
+Date: Tue, 23 Apr 2024 11:05:46 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Haifeng Xu <haifeng.xu@shopee.com>
+Cc: peterz@infradead.org, mingo@redhat.com, frederic@kernel.org,
+	acme@kernel.org, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+	adrian.hunter@intel.com, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] perf/core: Fix missing wakeup when waiting for
+ context reference
+Message-ID: <ZieH-g8fWn60z-ev@FVFF77S0Q05N>
+References: <20240418114209.22233-1-haifeng.xu@shopee.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 23 Apr 2024 12:04:46 +0200
-Message-Id: <D0RF1AKWAEAE.44N64GHMV2ZY@bootlin.com>
-Cc: "Rob Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Vaishnav Achath" <vaishnav.a@ti.com>, "Thomas Bogendoerfer"
- <tsbogend@alpha.franken.de>, "Rob Herring" <robh@kernel.org>,
- <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-mips@vger.kernel.org>, "Vladimir
- Kondratiev" <vladimir.kondratiev@mobileye.com>, "Gregory CLEMENT"
- <gregory.clement@bootlin.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski@linaro.org>
-To: "Mark Brown" <broonie@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: (subset) [PATCH v3 0/9] spi: cadence-qspi: add Mobileye EyeQ5
- support
-X-Mailer: aerc 0.17.0
-References: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
- <171283699002.32012.7629247540689477794.b4-ty@kernel.org>
- <D0QT350IJHFH.36EXE1UT9QM10@bootlin.com>
- <ZidAefc0Ejrklopf@finisterre.sirena.org.uk>
-In-Reply-To: <ZidAefc0Ejrklopf@finisterre.sirena.org.uk>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240418114209.22233-1-haifeng.xu@shopee.com>
 
-Hello,
+On Thu, Apr 18, 2024 at 11:42:09AM +0000, Haifeng Xu wrote:
+> In our production environment, we found many hung tasks which are
+> blocked for more than 18 hours. Their call traces are like this:
+> 
+> [346278.191038] __schedule+0x2d8/0x890
+> [346278.191046] schedule+0x4e/0xb0
+> [346278.191049] perf_event_free_task+0x220/0x270
+> [346278.191056] ? init_wait_var_entry+0x50/0x50
+> [346278.191060] copy_process+0x663/0x18d0
+> [346278.191068] kernel_clone+0x9d/0x3d0
+> [346278.191072] __do_sys_clone+0x5d/0x80
+> [346278.191076] __x64_sys_clone+0x25/0x30
+> [346278.191079] do_syscall_64+0x5c/0xc0
+> [346278.191083] ? syscall_exit_to_user_mode+0x27/0x50
+> [346278.191086] ? do_syscall_64+0x69/0xc0
+> [346278.191088] ? irqentry_exit_to_user_mode+0x9/0x20
+> [346278.191092] ? irqentry_exit+0x19/0x30
+> [346278.191095] ? exc_page_fault+0x89/0x160
+> [346278.191097] ? asm_exc_page_fault+0x8/0x30
+> [346278.191102] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> The task was waiting for the refcount become to 1, but from the vmcore,
+> we found the refcount has already been 1. It seems that the task didn't
+> get woken up by perf_event_release_kernel() and got stuck forever. The
+> below scenario may cause the problem.
+> 
+> Thread A					Thread B
+> ...						...
+> perf_event_free_task				perf_event_release_kernel
+> 						   ...
+> 						   acquire event->child_mutex
+> 						   ...
+> 						   get_ctx
+>    ...						   release event->child_mutex
+>    acquire ctx->mutex
+>    ...
+>    perf_free_event (acquire/release event->child_mutex)
+>    ...
+>    release ctx->mutex
+>    wait_var_event
+> 						   acquire ctx->mutex
+> 						   acquire event->child_mutex
+> 						   # move existing events to free_list
+> 						   release event->child_mutex
+> 						   release ctx->mutex
+> 						   put_ctx
+> ...						...
+> 
+> In this case, all events of the ctx have been freed, so we couldn't
+> find the ctx in free_list and Thread A will miss the wakeup. It's thus
+> necessary to add a wakeup after dropping the reference.
+> 
+> Fixes: 1cf8dfe8a661 ("perf/core: Fix race between close() and fork()")
+> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-On Tue Apr 23, 2024 at 7:00 AM CEST, Mark Brown wrote:
-> On Mon, Apr 22, 2024 at 06:52:47PM +0200, Th=C3=A9o Lebrun wrote:
-> > All commits tagged "(no commit info)" do not show up in your for-next
-> > branch. Is that expected and is there anything I can do? There was one
-> > pending -Wunused-variable compiler warning to be addressed for
-> > example, see [0].
->
-> Please submit any patches you'd like to see included.  If there were
-> outstanding issues that need fixing then fixing those prior to
-> submitting would be sensible.
+FWIW, this looks good to me, but I haven't yet been able to write a test to
+exercise this: perf_event_free_task() is only called if
+perf_event_init_context() fails or of copy_process() fails partway through, and
+while it should be possible to make the latter fail consistently by messing
+with cgroups, I haven't had the time to work all that out.
 
-Seeing "Applied" followed by a list of commits, with some of those not
-being applied confused me.
+So I think there's a reliable DoS here, but I haven't had the time to go write
+that myself. It would be nice if we actually had a test for this.
 
-You received the latest revision!
-https://lore.kernel.org/lkml/20240423-cdns-qspi-mbly-v4-0-3d2a7b535ad0@boot=
-lin.com/
+I reckon that in addition to the Fixes tag, this needs:
 
-Thanks,
+Cc: stable@vger.kernel.org
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> ---
+> Changes since v1:
+> - Add the fixed tag.
+> - Simplify v1's patch. (Frederic)
+> 
+> Changes since v2:
+> - Use Reviewed-by tag instead of Signed-off-by tag.
+> ---
+>  kernel/events/core.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 4f0c45ab8d7d..15c35070db6a 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -5340,6 +5340,7 @@ int perf_event_release_kernel(struct perf_event *event)
+>  again:
+>  	mutex_lock(&event->child_mutex);
+>  	list_for_each_entry(child, &event->child_list, child_list) {
+> +		void *var = NULL;
+>  
+>  		/*
+>  		 * Cannot change, child events are not migrated, see the
+> @@ -5380,11 +5381,23 @@ int perf_event_release_kernel(struct perf_event *event)
+>  			 * this can't be the last reference.
+>  			 */
+>  			put_event(event);
+> +		} else {
+> +			var = &ctx->refcount;
+>  		}
+>  
+>  		mutex_unlock(&event->child_mutex);
+>  		mutex_unlock(&ctx->mutex);
+>  		put_ctx(ctx);
+> +
+> +		if (var) {
+> +			/*
+> +			 * If perf_event_free_task() has deleted all events from the
+> +			 * ctx while the child_mutex got released above, make sure to
+> +			 * notify about the preceding put_ctx().
+> +			 */
+> +			smp_mb(); /* pairs with wait_var_event() */
+> +			wake_up_var(var);
+> +		}
+>  		goto again;
+>  	}
+>  	mutex_unlock(&event->child_mutex);
 
+I was a bit worrited that we're doing the wakeup with the event->child_mutex
+held; AFAICT that looks to be safe, but I'm not a scheduler expert.
+
+FWIW:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
+> -- 
+> 2.25.1
+> 
 
