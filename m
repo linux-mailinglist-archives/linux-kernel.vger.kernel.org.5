@@ -1,129 +1,135 @@
-Return-Path: <linux-kernel+bounces-155258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CABFB8AE7A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:11:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF5348AE7A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:11:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07ED21C23626
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:11:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6549A1F266E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:11:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E0EA134CC0;
-	Tue, 23 Apr 2024 13:11:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TgYB3Kad"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A445813475B;
+	Tue, 23 Apr 2024 13:11:29 +0000 (UTC)
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C6E12C528
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F691745E2;
+	Tue, 23 Apr 2024 13:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713877875; cv=none; b=c9W6kEIkmkNJOKIlkxI9r3q87LGk/EqBxVd4+8uqnDQsfeWRnsfglGVuYWN5Lfin0w6rPBsjOzwK8AcMO/pMjVuf+qvYiCt3r+nSrs48Iqr38YSb1sAvREAs9LOMLvNpayQ6TnAxvXaXrYBPtu/HeNW7HxJwsH++Uadx8eMDCrU=
+	t=1713877889; cv=none; b=G4npxGqNKhsoSt7/DVYIcq/OfJ99VfxdR0E12mE9gGrhVC35xdkNENzlJe4DRJjhEHJPtDzF+sGkiUhNzfK1tmw2UpfmnRKF2pInV3oouHOUaGsGCkv/hSLekdPDbyHSl4Pduh8KF+8ZTVkYdzq33NI3PnpTAbfkfnFQ2/Sy4W0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713877875; c=relaxed/simple;
-	bh=EKiFUNWp2CVL7UdhgyBqmC8Xr2ctOjFiU0OMBH/KQs8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JjeMtUHR0mn9dk5oCMK5SKT7dfJ/yX+mXcBxyXUZG5gEvyKepDznBoiLzWVk92sd3hUgrcBplfun2u97BroQMF2k0OQRRmK6hDIk3HfvlGT0ZpgHJpQIKnRxYva+DxYJ4/mdSGgg2KbxgVBKe8lbAimKAZWhyo8Vubn/2Jo1EjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TgYB3Kad; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d8b194341eso56094551fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 06:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713877871; x=1714482671; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ljVofaMz5XK05sXcsxWO2zq54dDkOVWRiaigypPdLmw=;
-        b=TgYB3Kade/ZeRX24pgwtEgyFUiYPjqgVxorw6P9BaCZ4/m8ZoTCb8mQLzrG7cY5KcC
-         4AjDcN2I/IjPIir+AOPjP4bLAlmyHrAdpcZlmBY/hTn1+csCKFD+KiIIQLEyPS2Eomcv
-         8qgvA8yH3AVX+dEZUImgxgwW58S0V3JCMNHYDXhJo9/GjVdd250fVt7Z6aOTHpWUyuLZ
-         8cvgk2zsrCIO39iPSVgOuaHPfMOg1sH9Wh8hiz4jCPRGro3APlKflCiH1DQBeKLEE6zf
-         yzThZMy4QQdYOT5nDxEGPKcpiQ+Qk8uVFk6VGTWaxBV/AtRUFCBt5G5V2oeQzw/fhQmX
-         MXMg==
+	s=arc-20240116; t=1713877889; c=relaxed/simple;
+	bh=NfgNubrNo7igVQjh1Pr6/KUDd0GSjq4xiknnK2ZY/GA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gMEXZ0xmvwzmyq7/PTEx6C/nb/agKa9i/xtgaAewmZVezqhZL/XMGZfNof7Ac2QAFfZQUg5c+E6434FIhfx27c99fqNB/DLXaNZ896LzvGZflQkeZh/c07d0N8WD7ogHnyxjagQtMdeZcg74V60BqilY0OfNKGAgp8tivG8bXs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-de54b28c3b7so1020870276.1;
+        Tue, 23 Apr 2024 06:11:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713877871; x=1714482671;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ljVofaMz5XK05sXcsxWO2zq54dDkOVWRiaigypPdLmw=;
-        b=OsI8TSU8gRwnbdL3dB8+Izo343pMW38w96mwHAzi3/3NWyiU/6CqdX4ivBuCQVX1xI
-         rVaF+osvE0qloPiZciu5YF+QPVCxhqaenpUIaZT6tjKM5Gm8VZ464umfQHoP/RIIMILH
-         utEl7vOZcSZN29q9lsrXvxJbh/cRHpOztqVJikBPoFManJGKC5ZjZ1KAVKr6Q7ckIiHS
-         U9v8EGUIvNoswnruoYN0K4ryUimoaOIdrELopkqXoviS8BkNVGqR01kpzPu8+m9IGTHG
-         Wu3PFqXigsVF2seGrn52gaF0nZJLAgXXokdAapqCBTXSbs21E7GmcHIfvVtiqk0FNPAv
-         2Edw==
-X-Forwarded-Encrypted: i=1; AJvYcCV7NzDAMW6Df+cjQ+UsiyFwFft9v5Nrkx1yIuep0EkiU8wz+WQ9fT330khhCdnttHnLD09rkVBxqkRh+rq+raRZvaj1P7dGzfn9Cg7K
-X-Gm-Message-State: AOJu0Yxwj7ITxuxr0mjOr+ryVlBavufst7KI1+2abW1OtPBuB1jThr1r
-	cv4+3cweXTPF4278L6Lv2PGNcXhrnrLOBjhcmrChYObbxbTlJQH9HC9ZGVK2qMiOB5TQ6JwU62X
-	G
-X-Google-Smtp-Source: AGHT+IH6+a300iDdirczkNG89v3OWEFzlKL6UcHimIG4AYRQ19LBvrY3ZDkgjW/buxJ28WPKLxuKTg==
-X-Received: by 2002:a2e:9995:0:b0:2da:46ca:25ad with SMTP id w21-20020a2e9995000000b002da46ca25admr8218339lji.44.1713877871520;
-        Tue, 23 Apr 2024 06:11:11 -0700 (PDT)
-Received: from [172.30.205.0] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id r28-20020a2e8e3c000000b002d28db9ce7bsm1741252ljk.20.2024.04.23.06.11.09
+        d=1e100.net; s=20230601; t=1713877885; x=1714482685;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DxiEbbWDWyoEga/OlBIl4eHpoP0VH7k0K2Xni6rDMT0=;
+        b=nYoMuC949nv/FU1dqcU+dm/kxnJAAyvOfqtwUHtPHwVv2t6hCRlosudeNLC6Th4yxC
+         obL9hfj3fkHn5gbz1V7dcbk9pwZ5yrA/WR2L8oBey9j1YNn9yjABtS5NbME9B86nXA6T
+         JdCCTqWpq5pYJimT1bvDacjvYgfs4xMtzWu6EFutplv9RWG/69/h8QNxZUOLui7zfgN0
+         abR87CFIxAZ8hHdmxTOKsLTCc7qWkTj1Y79hkbFrCUDwPrGy39vjaagk069EGuxgf8PR
+         HagogMNmdHU+t0OtfWQu4Z1gYj7IzvRfYVTmOtzWIGo6bHWiiUVkKhUZ9yqEu3ekyx76
+         JbeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXb5KWdn5C32M9NS+oQIEcAn53Hs/JV2GeoKuP1rdwWVCCXHg4LPHUx2z3oZzJz8TCN6QhLmeElbn9v5dAi8JUswrI4+XiCbzsjcozFU5Uxfi5a5xXZ9f4zPX+eAkCqwiI42LIF22Ra7b3E
+X-Gm-Message-State: AOJu0Yx21RsVpE+agkLK+Vu9vWqyOr1nK8WaOOu2IFQtWYBw0caJPCRN
+	snXCw1Pp9vIElWzdxI4iExAJ+fLkQNgWwVBfJlDT7OWLKf/RmomaqeCu1zzG
+X-Google-Smtp-Source: AGHT+IE3dovkL8WHR/veYs9JyWgT1mkfrlNKqNR+bTP1P85orTOFP/YjLF0xRlSy6WWIPWpa8SJHqQ==
+X-Received: by 2002:a25:213:0:b0:de4:5f9a:157a with SMTP id 19-20020a250213000000b00de45f9a157amr14251040ybc.36.1713877885518;
+        Tue, 23 Apr 2024 06:11:25 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id fj11-20020a0569022b8b00b00dcc7b9115fcsm2518702ybb.3.2024.04.23.06.11.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 06:11:10 -0700 (PDT)
-Message-ID: <3054961d-251e-4e70-b907-4949cfacca96@linaro.org>
-Date: Tue, 23 Apr 2024 15:11:08 +0200
+        Tue, 23 Apr 2024 06:11:25 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-de466c64161so5914162276.3;
+        Tue, 23 Apr 2024 06:11:25 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUX54/tFkNoKID0fTpibeW+SA3OHocLmdaKua2M8XLqNjTlXJ6q1MoyrKhSQamNxFfc7By3xDGFoBtAibYILWnpsQmfU3Nr+VmELwF4bZ5ns/LMOagjj7+YRk0SDUHBDL00jFJpgqBm8KnY
+X-Received: by 2002:a25:6906:0:b0:de5:549b:dca5 with SMTP id
+ e6-20020a256906000000b00de5549bdca5mr1711972ybc.34.1713877885090; Tue, 23 Apr
+ 2024 06:11:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: sm7225-fairphone-fp4: Enable USB
- role switching
-To: Luca Weiss <luca.weiss@fairphone.com>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240329-fp4-tcpm-v2-0-d7f8cd165355@fairphone.com>
- <20240329-fp4-tcpm-v2-3-d7f8cd165355@fairphone.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240329-fp4-tcpm-v2-3-d7f8cd165355@fairphone.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240409154253.3043822-1-hugo@hugovil.com> <20240409154253.3043822-4-hugo@hugovil.com>
+ <CAMuHMdVq=rf-6o485KiA+zcwJPHMe5STKUtSWtFPs2nmvshu-A@mail.gmail.com> <CAHp75Vfi2YjE0wzwABURxXhcWLozAf9Cdj_pT+DL_tm8E_zm4Q@mail.gmail.com>
+In-Reply-To: <CAHp75Vfi2YjE0wzwABURxXhcWLozAf9Cdj_pT+DL_tm8E_zm4Q@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 23 Apr 2024 15:11:12 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXqc9tZkd7YzX56QRroDhjbweQAUj+th68DU8oFxpp+jg@mail.gmail.com>
+Message-ID: <CAMuHMdXqc9tZkd7YzX56QRroDhjbweQAUj+th68DU8oFxpp+jg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] serial: sc16is7xx: split into core and I2C/SPI
+ parts (core)
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Hugo Villeneuve <hugo@hugovil.com>, gregkh@linuxfoundation.org, jirislaby@kernel.org, 
+	peterz@infradead.org, mingo@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org, Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Andy,
 
+On Tue, Apr 23, 2024 at 12:37=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Tue, Apr 23, 2024 at 1:01=E2=80=AFPM Geert Uytterhoeven <geert@linux-m=
+68k.org> wrote:
+> > On Tue, Apr 9, 2024 at 5:48=E2=80=AFPM Hugo Villeneuve <hugo@hugovil.co=
+m> wrote:
 
-On 3/29/24 13:26, Luca Weiss wrote:
-> Configure the Type-C and VBUS regulator on PM7250B and wire it up to the
-> USB PHY, so that USB role and orientation switching works.
-> 
-> For now USB Power Delivery properties are skipped / disabled, so that
-> the (presumably) bootloader-configured charger doesn't get messed with
-> and we can charge the phone with at least some amount of power.
-> 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
+> > > -config SERIAL_SC16IS7XX
+> > > -       tristate "SC16IS7xx serial support"
+> > > +       tristate "NXP SC16IS7xx UART support"
+> >
+> > Hence this replaces SERIAL_SC16IS7XX_CORE by SERIAL_SC16IS7XX,
+> > so arch/mips/configs/cu1??0-neo_defconfig needs to updated.
+>
+>         select SERIAL_CORE
+> -       depends on (SPI_MASTER && !I2C) || I2C
+> +       select SERIAL_SC16IS7XX_SPI if SPI_MASTER
+> +       select SERIAL_SC16IS7XX_I2C if I2C
+>
+> > So if SPI_MASTER or I2C is enabled, the corresponding SERIAL_SC16IS7XX_=
+*
+> > subdriver can no longer be disabled?  According to
+> > https://lore.kernel.org/all/20240403123501.8ef5c99f65a40ca2c10f635a@hug=
+ovil.com/
+> > you did want to support that?
+>
+> I believe it has been taken from one of the IIO drivers as an example.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Looks like a bad example to follow:
+  1. The driver question now pops up if both I2C and SPI_MASTER
+     are disabled,
+  2. What if SERIAL_SC16IS7XX_CORE is builtin, but I2C and/or
+     SPI_MASTER are modular?
 
-nits:
+I believe the only way to fix that is by letting the sub-drivers select the
+core driver, like before.
 
-> +	usb-role-switch;
+Gr{oetje,eeting}s,
 
-this is a common property of the dwc3 host
+                        Geert
 
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-[...]
-
->   	vdda-phy-supply = <&vreg_l22a>;
->   	vdda-pll-supply = <&vreg_l16a>;
-> +	orientation-switch;
-
-and this is a common property of the QMPPHY
-
-Could you move them to the node definition?
-
-Konrad
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
