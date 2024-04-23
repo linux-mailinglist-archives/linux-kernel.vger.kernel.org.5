@@ -1,108 +1,121 @@
-Return-Path: <linux-kernel+bounces-155760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9298B8AF6C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:43:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C50A8AF6CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:43:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A03F2880D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:42:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 303051F28B20
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A65D713C677;
-	Tue, 23 Apr 2024 18:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815B513E418;
+	Tue, 23 Apr 2024 18:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bpGE6YPp"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I4cNQXFH"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B3285653;
-	Tue, 23 Apr 2024 18:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A7F339A8;
+	Tue, 23 Apr 2024 18:43:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713897766; cv=none; b=IBtpvF5MP+XvsEUUOdR+k5+/yoFk7iTjIzLI+GIZP81FUIDoFgb10KEeXWn/NoZR7EtDsLTy0v4cObSr1Wum+RwvkYEE05EAef1WauqUs5nE6vH/7qWhqCgRac9Nk0T1NFC0XCUq0KV3+H+SW96K5ll3sWgRE93/2fEQ3VTbDzk=
+	t=1713897826; cv=none; b=AkVN1j1KuJPg47ImgSYi95ABPZu8S5csjssbgthnrDGXPJbnmLgNtKdA5lMhzrrhToJhw0M5jFM1IdYTrELAsxwWE6Ilzf5nzFm7shjfytnWoDxo/kO+/fmEeGKzY4Tf4kWLHTuDhRxVISrFytn2jhQrvQxOLuBAj7IU2OwRt+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713897766; c=relaxed/simple;
-	bh=2U6q3AnIep0O9K7JjfLvpOuvvCYxZ9voAB/ZwE7uOUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=uVuX3VVtomR12CvNoCq8zsht8DPbqkE+CvyG1Olh4RUAb+TBv3ZcBBrrGSGSA5T08z0hHOPmR/aKXNpOOttUwewVak3SPkRhAyWY67LOruP7WIm0ocyvwLK+0Nzc/I+YZGBzjvbfVrQ6b0Er2Bd+HBsHjLX7AD6YKIC4hgtQJEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bpGE6YPp; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43N5qCGh013043;
-	Tue, 23 Apr 2024 18:42:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=tqHQDFqMUEDZk57HJ3NWrEhyU2BqbzhbR5rPVKR1UEM=; b=bp
-	GE6YPpdalyvKNMg8X8nS7wymRW/A62GrJ4Ah7GJQbVcr4s9CPlFvkQp5yinpHnrX
-	XNFi9Yr77JECaCgneF5IUZwMNR2UGqvl6tCISUhdjLApIDBS9p/G69jXV2VYFVq9
-	is9gTDSJaGC7glspL1WkSUBvQqarcOfyms8eE5vnfgKf0gVLEvlC+uQdcbmYkFTB
-	76KlicJvE0omenoxstR1vOA7a2sGVaBysgpFf8+erDiLf4T3Hk5x2WFfKa6lU4KQ
-	cGURS7mh9jTJn1muAGjF3/TYGa64xr0PugBV8hcdRDxw4l5eIyEdwY2bgG1ATLxr
-	HdOmBgNqALEYI3iUAGIQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xnvtnb6u2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 18:42:41 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43NIge11023290
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 18:42:40 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 23 Apr
- 2024 11:42:39 -0700
-Message-ID: <4e766214-1bf4-9377-d9db-ed7b0b9e2832@quicinc.com>
-Date: Tue, 23 Apr 2024 12:42:38 -0600
+	s=arc-20240116; t=1713897826; c=relaxed/simple;
+	bh=dnDTg2hhfjuMJSf3lpUjKS5ed+pt7dtcGLK4en30Zpg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lXqm88VTlDZ17BLR6HGCE6Fx/rbdxtyUYn5oDAFENtXbANCf6FxY8rzNNtk1NAWs366JnVXcgSvfWfIYnM/aYndZAqxm+aHMTvA6lL61hcA9MbzAZ6G6b/wmMnx5K2b3NQITBYXiGGwsEVDD97mwExXAkx86xQQAkJ1Wdqv8o9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I4cNQXFH; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713897826; x=1745433826;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dnDTg2hhfjuMJSf3lpUjKS5ed+pt7dtcGLK4en30Zpg=;
+  b=I4cNQXFHlSfyYX8ZbVQTSggEYMG0jG/Zw/F0Oy92wNwyXCWqEOWOEokb
+   f4w6FXrQEDz0K40i2KA26qVAss250oLAnQftHetlOcVtSWagdj/8zsTnc
+   u8SEyDgWTNU5XPmdSK5xORGppJt4w74LXGXxS6JtE+ILyt6ALYaPreepI
+   mp5T9r5xQS0rFsiOlRXfoKy/1LpYnAqBIbvLmzUKnjeFE5lScwWba6jeI
+   wGv1c7jy9NThfOvDsw12MhTTRW2muYytvXi4it2fs/QNqEAecRWgWUTOm
+   Lnux2OFZVO/270yimX6/ZSPnfBNZ1QgAz9z/YYGJTjaXARbJa4OrhW7AY
+   A==;
+X-CSE-ConnectionGUID: neNYyq6TSZufA+SWsMxJsg==
+X-CSE-MsgGUID: ehCXbI8gSdCEFTNaq0sMkw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="13289804"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="13289804"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 11:43:45 -0700
+X-CSE-ConnectionGUID: O142LiH0RNCb7xMVQ+IT6w==
+X-CSE-MsgGUID: ANXAfjkxRSyRv31/ArsfyA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="24509645"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 23 Apr 2024 11:43:42 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rzL7D-0000Rc-1Z;
+	Tue, 23 Apr 2024 18:43:39 +0000
+Date: Wed, 24 Apr 2024 02:43:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sean Anderson <sean.anderson@linux.dev>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+	Michal Simek <monstr@monstr.eu>, Bjorn Helgaas <helgaas@kernel.org>,
+	Sean Anderson <sean.anderson@linux.dev>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/7] dt-bindings: pci: xilinx-nwl: Add phys
+Message-ID: <202404240241.n4QeoKna-lkp@intel.com>
+References: <20240422195904.3591683-2-sean.anderson@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH v4 1/3] bus: mhi: host: Add sysfs entry to force device to
- enter EDL
-Content-Language: en-US
-To: Qiang Yu <quic_qianyu@quicinc.com>, <mani@kernel.org>
-CC: <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
-        <quic_mrana@quicinc.com>
-References: <1713868417-37856-1-git-send-email-quic_qianyu@quicinc.com>
- <1713868417-37856-2-git-send-email-quic_qianyu@quicinc.com>
-From: Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <1713868417-37856-2-git-send-email-quic_qianyu@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: xzaDnPiYSyLWFIa9-BJF5PvQh2FDQK8K
-X-Proofpoint-ORIG-GUID: xzaDnPiYSyLWFIa9-BJF5PvQh2FDQK8K
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-23_15,2024-04-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=732 phishscore=0 priorityscore=1501
- mlxscore=0 adultscore=0 bulkscore=0 spamscore=0 malwarescore=0
- impostorscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404230043
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240422195904.3591683-2-sean.anderson@linux.dev>
 
-On 4/23/2024 4:33 AM, Qiang Yu wrote:
-> Add sysfs entry to allow users of MHI bus force device to enter EDL.
-> Considering that the way to enter EDL mode varies from device to device and
-> some devices even do not support EDL. Hence, add a callback edl_trigger in
-> mhi controller as part of the sysfs entry to be invoked and MHI core will
-> only create EDL sysfs entry for mhi controller that provides edl_trigger
-> callback. All of the process a specific device required to enter EDL mode
-> can be placed in this callback.
-> 
-> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+Hi Sean,
 
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus xilinx-xlnx/master robh/for-next linus/master v6.9-rc5 next-20240423]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sean-Anderson/dt-bindings-pci-xilinx-nwl-Add-phys/20240423-040215
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20240422195904.3591683-2-sean.anderson%40linux.dev
+patch subject: [PATCH 1/7] dt-bindings: pci: xilinx-nwl: Add phys
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+dtschema version: 2024.4
+reproduce: (https://download.01.org/0day-ci/archive/20240424/202404240241.n4QeoKna-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404240241.n4QeoKna-lkp@intel.com/
+
+dtcheck warnings: (new ones prefixed by >>)
+>> Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml: properties:phy-names: {'maxItems': 4, 'items': [{'pattern': '^pcie-phy[0-3]$'}]} should not be valid under {'required': ['maxItems']}
+   	hint: "maxItems" is not needed with an "items" list
+   	from schema $id: http://devicetree.org/meta-schemas/items.yaml#
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
