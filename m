@@ -1,44 +1,49 @@
-Return-Path: <linux-kernel+bounces-155952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC36E8AFBA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:16:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE3C68AFBA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:17:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD1691C22724
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:16:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B5DF2813BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:17:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F016143C56;
-	Tue, 23 Apr 2024 22:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0BBF143C7B;
+	Tue, 23 Apr 2024 22:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="c5lFi0A+"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	dkim=pass (2048-bit key) header.d=jookia.org header.i=@jookia.org header.b="IhPqFUIe"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 531F0144D22;
-	Tue, 23 Apr 2024 22:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 778D413E8AC
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 22:16:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713910538; cv=none; b=QtEZD+/B/2NgyYjhay+pvM6/9semsyLwregLBLVrsZy56oBCvCUhSy0LqNZ1okTi2rG3UJoBBj7uqdo3Sykl8R3XgxVL/IrXtz3a3biMiNqgf383hmFbRbmGFtAD7b2+vbX0g203FZn2LQfknHg9LPY1o5CGbiVSnTmMA9+8rkw=
+	t=1713910620; cv=none; b=V0F7Zl0niJX9pAa5w4nldjYKdjYKXr4ALRz7I04DWhgR05GsWtI4k6vYlNQYbMEy4gQUGtiQPY6rGVeVS8nEgp8CBj4WvLv0VsezZJd8/G0ReMFkgXodZSvjN9KG72OfKzBenlro9YQhqpPcfisYTvy1VKkaxCt9YrCKfomHtcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713910538; c=relaxed/simple;
-	bh=v/uHqDbYyNczx9qU8qaftsOIwKU/Btebsep5aBORjOg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=cwWuRT4ecN9CMPcsUTaw0dCzoT5JBb7i0d9AtwnGDCO4J2HyCLeIVjzOr8rXgxJc4N2m8RHr8BRYedChN/AnYdIpj+zpxHMDhKajeXi27w8UqXetc2PHjyeKG7mB6jTNbzz2qEjDeL0IKNB28sZm3Xm8uBgh/Fzsj4ULf+FkBWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=c5lFi0A+; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1713910534;
-	bh=v/uHqDbYyNczx9qU8qaftsOIwKU/Btebsep5aBORjOg=;
-	h=From:Date:Subject:To:Cc:From;
-	b=c5lFi0A+wfLcN1/dShqW4qOhOTT1SghvqtlqBpGL70e+NXkkIrwzNnaHsdUBFMtNx
-	 PF+s6WRQ3p4pZUyUJrA1aqTOaDCOe3A3TNlkIkxtxrVzj5IqjZfCTye5zsuriDMaXZ
-	 s0ZNNyuSU7Qhqcg96XEbVl3rZ8MtqREMRqFmlGBg=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Wed, 24 Apr 2024 00:15:33 +0200
-Subject: [PATCH] selftests/nolibc: disable brk()/sbrk() tests on musl
+	s=arc-20240116; t=1713910620; c=relaxed/simple;
+	bh=uIvRB5NhfN2RXfjYTOp2QuqGoCvYKF0OeyC5UW2/DcE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=KN8fo/erRWsDfsurJAhBA8uGaJ54Ey0yncQDp+6q6Tcj8tfl6vT9+28UudEu1uS4/AK05iAmVfHMQjJNyLIrlNC4texX/ds6HoFzVNx8jMlHJI5TF8pFHjOyGSXZKqALrHRiR5htLgueIppe1e0ZJQhsPB/pxZSgX0e8SKXDCUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jookia.org; spf=none smtp.mailfrom=jookia.org; dkim=pass (2048-bit key) header.d=jookia.org header.i=@jookia.org header.b=IhPqFUIe; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jookia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jookia.org
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+	t=1713910616;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XW873UGjtp3CtjRhR1JwZmgVceGGsdglvcVq6ycij5Q=;
+	b=IhPqFUIeapGEVFg1ElpFmNtVYZYG0/H9zj1K+JeyVTS3TSRyq+OP1NU5EMKxN7EDn/4RP4
+	yFpTf6UomkXwnv8loPYQhYncBmCBf+9FcJtR6wu79s3WaWw0afEMPWVQ9NHys3R4eethTg
+	FlrLjVMYbIuClMBFbiOqSocwbcjH3AhVFeOGz7hPjIytVZCRO6nKMRBnfZj8zgzczJFZMa
+	z9c3aQxBTdu+A/sytAezbUbYIqCW8Jg/c5pVyhpn0pSFiYtilguomcdCH8vfm9/Vw2S7P8
+	KW1osG7NookGntuPiOIKiI5JlZCQJsNNIyR3caMqDuU/VF9Uxul2qeqhkJrwwg==
+From: John Watts <contact@jookia.org>
+Date: Wed, 24 Apr 2024 08:16:43 +1000
+Subject: [PATCH] Documentation: firmware-guide: ACPI: Fix namespace typo
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,75 +51,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240424-nolibc-musl-brk-v1-1-b49882dd9a93@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAAQzKGYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDEyNj3bz8nMykZN3c0uIc3aSibF1zcwuTxJQUI0sLA0MloK6CotS0zAq
- widGxtbUA0FOv9mEAAAA=
-To: Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713910533; l=2481;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=v/uHqDbYyNczx9qU8qaftsOIwKU/Btebsep5aBORjOg=;
- b=HPqnlAQGaiCRLb87BWAbrmaCSgNyiByABLLXZDgndTFSn2JzyeLNju53F/FMVRc+4quBbAQ52
- bqCWZ8eV666C535FvzSZ2suQKGa8mWgix3T6tZE0ftG24Q6NnfO7WKh
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240424-acpidocfix-v1-1-078658a3c456@jookia.org>
+X-B4-Tracking: v=1; b=H4sIAEozKGYC/x2MQQqAIBAAvyJ7TjCRor4SHWx3q72oKEQg/j3pO
+ AMzFQpn4QKrqpD5kSIxdBgHBXj7cLEW6gzWWGecddpjEop4yqvdjHgQLYYmDz1Imbv+Z9ve2gd
+ AB2f1XAAAAA==
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ John Watts <contact@jookia.org>
+X-Developer-Signature: v=1; a=openssh-sha256; t=1713910603; l=1676;
+ i=contact@jookia.org; h=from:subject:message-id;
+ bh=uIvRB5NhfN2RXfjYTOp2QuqGoCvYKF0OeyC5UW2/DcE=;
+ b=U1NIU0lHAAAAAQAAAEoAAAAac2stc3NoLWVkMjU1MTlAb3BlbnNzaC5jb20AAAAgpGuA3uho2
+ 8zVxm554DVLHyl4gq5/nBHglU5WIWN8/zYAAAAEc3NoOgAAAAZwYXRhdHQAAAAAAAAABnNoYTUx
+ MgAAAGcAAAAac2stc3NoLWVkMjU1MTlAb3BlbnNzaC5jb20AAABASSTf5mrqWgP5uUpDqHQe9Md
+ PWHPqYh94bBAxQenQGkJG3PnKqqI7u4f5v+/M8fDnqXp/XusTfmk82TXVZ0PLAgUAAOro
+X-Developer-Key: i=contact@jookia.org; a=openssh;
+ fpr=SHA256:6LBQmZH5u7i/edmEZXzCTwCrpSevs/ZshZxNmlD1thY
+X-Migadu-Flow: FLOW_OUT
 
-On musl calls to brk() and sbrk() always fail with ENOMEM.
-Detect this and skip the tests on musl.
+The ACPI namespace has always started with LNXSYSTM, not LNXSYSTEM.
+Fix the documentation accordingly.
 
-Tested on glibc 2.39 and musl 1.2.5 in addition to nolibc.
-
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: John Watts <contact@jookia.org>
 ---
- tools/testing/selftests/nolibc/nolibc-test.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+This isn't a major issue, it just is incorrect and requires people
+following the documentation to look for a similar directory.
+---
+ Documentation/firmware-guide/acpi/namespace.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index 94bb6e11c16f..89be9ba95179 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -942,6 +942,7 @@ int run_syscall(int min, int max)
- 	int ret = 0;
- 	void *p1, *p2;
- 	int has_gettid = 1;
-+	int has_brk;
+diff --git a/Documentation/firmware-guide/acpi/namespace.rst b/Documentation/firmware-guide/acpi/namespace.rst
+index 4ef963679a3d..5021843b526b 100644
+--- a/Documentation/firmware-guide/acpi/namespace.rst
++++ b/Documentation/firmware-guide/acpi/namespace.rst
+@@ -15,7 +15,7 @@ ACPI Device Tree - Representation of ACPI Namespace
+ Abstract
+ ========
+ The Linux ACPI subsystem converts ACPI namespace objects into a Linux
+-device tree under the /sys/devices/LNXSYSTEM:00 and updates it upon
++device tree under the /sys/devices/LNXSYSTM:00 and updates it upon
+ receiving ACPI hotplug notification events.  For each device object
+ in this hierarchy there is a corresponding symbolic link in the
+ /sys/bus/acpi/devices.
+@@ -326,7 +326,7 @@ example ACPI namespace illustrated in Figure 2 with the addition of
+ fixed PWR_BUTTON/SLP_BUTTON devices is shown below::
  
- 	/* <proc> indicates whether or not /proc is mounted */
- 	proc = stat("/proc", &stat_buf) == 0;
-@@ -954,6 +955,9 @@ int run_syscall(int min, int max)
- 	has_gettid = __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 30);
- #endif
- 
-+	/* on musl setting brk()/sbrk() always fails */
-+	has_brk = brk(0) == 0;
-+
- 	for (test = min; test >= 0 && test <= max; test++) {
- 		int llen = 0; /* line length */
- 
-@@ -969,9 +973,9 @@ int run_syscall(int min, int max)
- 		CASE_TEST(kill_0);            EXPECT_SYSZR(1, kill(getpid(), 0)); break;
- 		CASE_TEST(kill_CONT);         EXPECT_SYSZR(1, kill(getpid(), 0)); break;
- 		CASE_TEST(kill_BADPID);       EXPECT_SYSER(1, kill(INT_MAX, 0), -1, ESRCH); break;
--		CASE_TEST(sbrk_0);            EXPECT_PTRNE(1, sbrk(0), (void *)-1); break;
--		CASE_TEST(sbrk);              if ((p1 = p2 = sbrk(4096)) != (void *)-1) p2 = sbrk(-4096); EXPECT_SYSZR(1, (p2 == (void *)-1) || p2 == p1); break;
--		CASE_TEST(brk);               EXPECT_SYSZR(1, brk(sbrk(0))); break;
-+		CASE_TEST(sbrk_0);            EXPECT_PTRNE(has_brk, sbrk(0), (void *)-1); break;
-+		CASE_TEST(sbrk);              if ((p1 = p2 = sbrk(4096)) != (void *)-1) p2 = sbrk(-4096); EXPECT_SYSZR(has_brk, (p2 == (void *)-1) || p2 == p1); break;
-+		CASE_TEST(brk);               EXPECT_SYSZR(has_brk, brk(sbrk(0))); break;
- 		CASE_TEST(chdir_root);        EXPECT_SYSZR(1, chdir("/")); chdir(getenv("PWD")); break;
- 		CASE_TEST(chdir_dot);         EXPECT_SYSZR(1, chdir(".")); break;
- 		CASE_TEST(chdir_blah);        EXPECT_SYSER(1, chdir("/blah"), -1, ENOENT); break;
+    +--------------+---+-----------------+
+-   | LNXSYSTEM:00 | \ | acpi:LNXSYSTEM: |
++   | LNXSYSTM:00  | \ | acpi:LNXSYSTM:  |
+    +--------------+---+-----------------+
+      |
+      | +-------------+-----+----------------+
 
 ---
-base-commit: 0adab2b6b7336fb6ee3c6456a432dad3b1d25647
-change-id: 20240423-nolibc-musl-brk-7784add29801
+base-commit: a59668a9397e7245b26e9be85d23f242ff757ae8
+change-id: 20240424-acpidocfix-47ccbdd90d6a
 
 Best regards,
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+John Watts <contact@jookia.org>
 
 
