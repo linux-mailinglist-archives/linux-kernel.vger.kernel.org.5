@@ -1,106 +1,109 @@
-Return-Path: <linux-kernel+bounces-155766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E4618AF6DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:47:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5E278AF6E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:48:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B1EC1F227A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:47:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D32BA1C21E95
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:48:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42EC13F45A;
-	Tue, 23 Apr 2024 18:47:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5882513E8AC;
+	Tue, 23 Apr 2024 18:48:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JqD0ppGj"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SWKeXMsw"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A894013E3FA;
-	Tue, 23 Apr 2024 18:46:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B4273EA76;
+	Tue, 23 Apr 2024 18:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713898020; cv=none; b=kQy2hULWDUcsVLB4UonTKds7XfttXzrbpd30a4F22I2jbpjfH+PO+rDIElii38H4ozTKsLavr2Vxg/w53B0EHmjSDN+sKTdBE95kPOSFXHIoB5L5RvdfTUC/OIshsEfcTZnfSyuxcAC814uHe2cWxXwaOj8UFWLYOwFY1954pxQ=
+	t=1713898084; cv=none; b=inOXu+z9yeB6uOSXcS8J/Td3+ZQssQgZFRP7VgX4NmInJI6/OXpYE2F+9mHXBmcJM8Y0OQrfAPZx5Ise0/s8KtDJPj7nDdfDplyLtY4cNaAIeAqT+siL3eoenasvp+qYnwFfOFazMNxxCJuoRMrJ4aiDS/AXaQzQX0kkSIHdPhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713898020; c=relaxed/simple;
-	bh=eDIJ3+MJpBImloGLMO5gq7Xkd5gmDED6oLJC1IQyaYE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=pgB/3c83nPqsbsjv/n7i1sF/ZmnkrlMduparrDA8rWugYlOlmqFqoALS2UthdsjdSOQ153AkLrSiIaY92fVviyaKZB1GUePi4vgNNHAd6OE5U7OoSHMQqJK1BsJ98O+Tr+dLvMr2GS8pvH8NJnq3tAwa6/WdMnti9dzUFNknllI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=JqD0ppGj; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43NHTvZ3016965;
-	Tue, 23 Apr 2024 18:46:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=VWfp8unN8bbHw0a+C9DNsJI0GAw+ks5tw//vps2BHp8=; b=Jq
-	D0ppGja6OLJ/ZDkNgAEpRMcF4KZinJgGVYG9vL8NfmR6Y4EvaRawsi7ktqLj1sl6
-	wxYKnW8tXEciIeoZEIMVj26F+bqHE5h9OggTtQBGBsXgy8+t49x9faBzYQ884b+m
-	aI4bWOCfQpSHqNj88KQ6MsWK5OO96ERZ423PdeHX13gayhyYrTaNUd7D2HUgvV3v
-	QPiO7Ds9LVrsupm1pjvsTGx9Xi5ZJeQEWVPPHq1T3hUETvzauvFPpdTFyYftpnzz
-	A9S2NMtkSSsQIWRfwoOBSI7cYECsQQYL8PruK6YE/QtP50Ceo6MLAlFt4mZJ/gAy
-	S+BgbQWt6sty/fut8ycw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xp978stdn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 18:46:56 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43NIktmt002045
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 23 Apr 2024 18:46:55 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 23 Apr
- 2024 11:46:54 -0700
-Message-ID: <5df422b9-d660-e19b-07f1-67f2ee4d018f@quicinc.com>
-Date: Tue, 23 Apr 2024 12:46:53 -0600
+	s=arc-20240116; t=1713898084; c=relaxed/simple;
+	bh=H5568VIrx9lixuPNa8YvFEWiBslOts9v3R70mPD8pzo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i61C6lcbOaJCbICYfLlEZ2Crx7R2LFMySVeg7VSaRrWo6+VNF9b3mSGbTN5nsp79HLv5AmwfRPJEV4KXqe0fd2P1Q7I4djzhMgSb0ohxRia1S7/8lYsXKuPPode/jcX2qvvZ3EP1iWmn0+tjjhSiZE4ymDi8TqnOxb1ipPIhV5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SWKeXMsw; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e3c9300c65so51713375ad.0;
+        Tue, 23 Apr 2024 11:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713898083; x=1714502883; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pX6RYPwRziaLwatJslL9RyMCesZcjbHxs3ByM77+JCY=;
+        b=SWKeXMswtT47xjFM02PzpjTrPZKtZlGkL1aoQ8cM/QfyRH+wYxggAcutxPs1UdHvRr
+         hRExlA45VEoz4nMvbgQb4nskeOTxcYnge8FH1xjSriwtG8lWK8hcSvFU146+Wlq5mB6Z
+         8BYSTvPlF4ZMS/AM2tuVeJjklHOG5LF+XMNktx/w6TP9DRSrsY7UPYVDbpsVDTVz4SKZ
+         z1eROukJ7H2oOk4+sTUQ3k2EW8H4hoUC8eYTcnpfhHcB15tT8MAq9FFRTsG7TbAAUKR2
+         +dHkHzSUrBgv5eAQGdPpqbabksOxlmGCrX0Vq3OZu/SMEX1XbNQJ6i318Qq1pl/Dubqu
+         sWVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713898083; x=1714502883;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pX6RYPwRziaLwatJslL9RyMCesZcjbHxs3ByM77+JCY=;
+        b=S35w/vfZ84tTVhV2QJwlZBpLBy+ki3B29aMLnR6KsvBj9AOrnauCXgs4XOvatlJdLh
+         rJyzoP9hJbhNTxStRLbXxYKVF+L7KuEUNFCB46FE78Ea+GFuGdwM2fBAo6zBOnyvg25z
+         G0n+Zr4hmreMAddjgrHtQ1Jom1gtLXhlY/5NomQsgiA7KjXIRb85GBzcqW2/EW6xGxAX
+         5dcRSkkkRpKN+bSvcDeVUzIETudRJTCGS/HQpnpXDehyVu9fO03wMuatuu78lry42hVL
+         jeG+ztAQVy6dwe+WC8zH0DP3ZMQnlfyH2SElMTGmyYSUJhikKCa7Vc2lHqbx10YYd5kx
+         UGzg==
+X-Forwarded-Encrypted: i=1; AJvYcCXjD0Erv3tECQ/K7eP/r0s80u51bQmSYwJ6VzN96YsJWIUEQ8oDaGBS4uQZcCMEaKh+1mLQyOBqOzmw+YslBaCQqq36AzO6P2X0rBwGDpqbFLRt0S4Y6t3VPZtdTelViUGt9g1E8uLvJA==
+X-Gm-Message-State: AOJu0YzdacAmzjwDUNLVt+h/7rOzeuGHXwhHApMivlmpmBzIpXrViaVT
+	BclerJN3mMP3Rspju+nt0zCNgSgd131LtTMoHSyG1pxAIQxaONqy
+X-Google-Smtp-Source: AGHT+IHO+XPG1I7/p/baM5AJcJmueayGWEnQTbjJxKPqrnkkS2plAOEp+7WSaHEZhaTrjWIAgzNrJw==
+X-Received: by 2002:a17:902:9a42:b0:1e5:31c5:d7be with SMTP id x2-20020a1709029a4200b001e531c5d7bemr344081plv.40.1713898082818;
+        Tue, 23 Apr 2024 11:48:02 -0700 (PDT)
+Received: from [10.69.55.76] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id z3-20020a170903018300b001e0bcccc800sm10377709plg.35.2024.04.23.11.48.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 11:48:02 -0700 (PDT)
+Message-ID: <d8dcd3ad-25c7-46fc-b628-e6adcb5c2c9c@gmail.com>
+Date: Tue, 23 Apr 2024 11:47:59 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH v4 3/3] bus: mhi: host: pci_generic: Add edl callback to
- enter EDL
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] gpio: brcmstb: Use dynamic GPIO base numbers
+To: Florian Fainelli <florian.fainelli@broadcom.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Phil Elwell <phil@raspberrypi.com>
+References: <20240423175025.1490171-1-opendmb@gmail.com>
+ <5f550f60-d7b9-4cb2-badf-fde4f53db790@broadcom.com>
 Content-Language: en-US
-To: Qiang Yu <quic_qianyu@quicinc.com>, <mani@kernel.org>
-CC: <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
-        <quic_mrana@quicinc.com>
-References: <1713868417-37856-1-git-send-email-quic_qianyu@quicinc.com>
- <1713868417-37856-4-git-send-email-quic_qianyu@quicinc.com>
-From: Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <1713868417-37856-4-git-send-email-quic_qianyu@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Doug Berger <opendmb@gmail.com>
+In-Reply-To: <5f550f60-d7b9-4cb2-badf-fde4f53db790@broadcom.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Ngq_00zODfU5eZIb9KpM_aceti3AzA0G
-X-Proofpoint-GUID: Ngq_00zODfU5eZIb9KpM_aceti3AzA0G
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-23_16,2024-04-23_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 spamscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- suspectscore=0 impostorscore=0 mlxlogscore=862 adultscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404230043
 
-On 4/23/2024 4:33 AM, Qiang Yu wrote:
-> Some of the MHI modems like SDX65 based ones are capable of entering the EDL
-> mode as per the standard triggering mechanism defined in the MHI spec v1.2. So
-> let's add a common mhi_pci_generic_edl_trigger() function that triggers the EDL
-> mode in the device when user writes to the /sys/bus/mhi/devices/.../trigger_edl
-> file.
+On 4/23/2024 11:11 AM, Florian Fainelli wrote:
+> On 4/23/24 10:50, Doug Berger wrote:
+>> Forcing a gpiochip to have a fixed base number now leads to a warning
+>> message. Remove the need to do so by using the offset value of the
+>> gpiochip.
+>>
+>> Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+>> Signed-off-by: Doug Berger <opendmb@gmail.com>
 > 
-> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> 
+> Thanks!
+Just submitted v2.
 
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+Sorry,
+     Doug
 
