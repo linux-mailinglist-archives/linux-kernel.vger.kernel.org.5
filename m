@@ -1,137 +1,77 @@
-Return-Path: <linux-kernel+bounces-155063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2D938AE4E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 464C68AE377
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:09:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DF72283179
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:52:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01C02284AAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD76914534C;
-	Tue, 23 Apr 2024 11:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3AF7E101;
+	Tue, 23 Apr 2024 11:09:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ns0oWUgg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="Cvjuircy"
+Received: from forward500b.mail.yandex.net (forward500b.mail.yandex.net [178.154.239.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B8D14532E;
-	Tue, 23 Apr 2024 11:41:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E432E768EC;
+	Tue, 23 Apr 2024 11:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872488; cv=none; b=hEl/TyC/0esThrI9ZHaU3mAIAOUuO2WwDv74c+OMOfcd7I61tqGOamgWjCFqzSS30YdYlV7fKDi0lGq82ljMOw+mW02RD631pAHJ+HJ9XfEeJ67EkLXDIV0HhyQ8/oYsed6Q+1JiGuce3H3bMg6N40hmTCqvj4fLzalMv3+Etv0=
+	t=1713870571; cv=none; b=ZpI+asmzh1RvfHomwCvUaNeiPA2d1zB2cMthH9dLEIWf2KMnVrrj0/9oeMHuk39oxhGh33r5MdeIasEj3hqzgfz9No4AEhFyORU6w9a0PaOfRnOf1veVQMym32rv1M2JSIgugnWj0bOTpBb1IJ08FRZ1Kw92wR48Xdsqma08+uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872488; c=relaxed/simple;
-	bh=QvuDtT/UQwH/5ufRNQ79iiYTf4SWrf4R8+VzQmS231g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VzzUzLNdaHt5LLCkCJhQ6v5AChPhTyqnGpAXLHhIBXzgw1K5LsMT+DQIX0FeXNowsLMYguues+i0y93dJ1k+dqbXEPtBVASYKhoO+5rRGON9Q870XcJNKMOp3T63p1uQ1XlHOeCixnyM8DFqF/m4tasT25D9XKz36Qy62bVP5os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ns0oWUgg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD5C0C32782;
-	Tue, 23 Apr 2024 11:41:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872487;
-	bh=QvuDtT/UQwH/5ufRNQ79iiYTf4SWrf4R8+VzQmS231g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ns0oWUggEyZaEmV70knn5izZ810YMAAqNr9yiPt5Q/ZVytbAoR9EENxley+FptjMw
-	 t4U9vR5CcyRZOeAFRvX1rpw+WMJ+B2Z9EO9zwzZyTl2B/yR/RPGK2B6nTdO2xTQJef
-	 vAdreWitout/Flh9dvZ5qEp5qPOf901mO6s1v/gP61ipB1eACE59Lr6fykg/px2rjc
-	 wBylicL6dzmTKPsmyZ+Yns47r8oueVEPHNPDMts0YexhraN97Pcngfj4ZTH4BeyqWO
-	 /ROS2jK9g113vXn+mbN1X2354s0FcZ8TTz/WjXefkYUGIZv6eNbB9fM71LdifKZQOC
-	 BOVmdUfglw2dA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Vanillan Wang <vanillanwang@163.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	bjorn@mork.no,
-	davem@davemloft.net,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 9/9] net:usb:qmi_wwan: support Rolling modules
-Date: Tue, 23 Apr 2024 07:02:31 -0400
-Message-ID: <20240423110233.1659071-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240423110233.1659071-1-sashal@kernel.org>
-References: <20240423110233.1659071-1-sashal@kernel.org>
+	s=arc-20240116; t=1713870571; c=relaxed/simple;
+	bh=PRzl2UMRNxugiCn9iqfwRQ+osGHHVPLKKkFP3xGEhf0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i9qjBeSVrpbY/GUypQ09fgNp/lLF8hgAPVVeSxM5VIHQ2gQlbqenJJLrdi63y+trV1MAvPOCTX1dmXhG0zhnNSaPjekoX6AXRMnisGF7qTG/xqhxmT+Rp0kXZIYhfWPcpeKkj6PRV3/k93ernE2U2yyXU57UEBXqUpLZC+ENX2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=Cvjuircy; arc=none smtp.client-ip=178.154.239.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:40a8:0:640:e4a0:0])
+	by forward500b.mail.yandex.net (Yandex) with ESMTPS id DB7B360C9B;
+	Tue, 23 Apr 2024 14:02:35 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id X2IlkaH5YSw0-nmEG2BPS;
+	Tue, 23 Apr 2024 14:02:34 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1713870154; bh=sbksa/ZjScoGnojxA1OqYqJU5tBgBrnQTdtT+gJxGMQ=;
+	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
+	b=CvjuircyBkl7pHn0xXK+s+sIpmqNFv1jtAtBvNLQv4IPH1/l6p4GjQZSXjOlIEz06
+	 w4wKu8zsVXpiIoiwb0qXZCaHrNQo6Io0+AuBPb62GkzotejnqZOTT3fgVh9fHS+7bz
+	 LWWSBPvKmf0EmOdce/NuSQMkXBPGrdeO7mPaUhl0=
+Authentication-Results: mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+Message-ID: <9f429fb7-07a5-435a-a18e-7ffae6e9d8d2@yandex.ru>
+Date: Tue, 23 Apr 2024 14:02:33 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.156
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] implement OA2_INHERIT_CRED flag for openat2()
+To: Stefan Metzmacher <metze@samba.org>, linux-kernel@vger.kernel.org
+Cc: Eric Biederman <ebiederm@xmission.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Andy Lutomirski <luto@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>,
+ Alexander Aring <alex.aring@gmail.com>, linux-fsdevel@vger.kernel.org,
+ Paolo Bonzini <pbonzini@redhat.com>,
+ =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
+ Linux API Mailing List <linux-api@vger.kernel.org>
+References: <20240423104824.10464-1-stsp2@yandex.ru>
+ <a24f8d8c-2e7e-41ff-a640-134501ba4fa2@samba.org>
+Content-Language: en-US
+From: stsp <stsp2@yandex.ru>
+In-Reply-To: <a24f8d8c-2e7e-41ff-a640-134501ba4fa2@samba.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Vanillan Wang <vanillanwang@163.com>
-
-[ Upstream commit d362046021ea122309da8c8e0b6850c792ca97b5 ]
-
-Update the qmi_wwan driver support for the Rolling
-LTE modules.
-
-- VID:PID 33f8:0104, RW101-GL for laptop debug M.2 cards(with RMNET
-interface for /Linux/Chrome OS)
-0x0104: RMNET, diag, at, pipe
-
-Here are the outputs of usb-devices:
-T:  Bus=04 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
-D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
-P:  Vendor=33f8 ProdID=0104 Rev=05.04
-S:  Manufacturer=Rolling Wireless S.a.r.l.
-S:  Product=Rolling Module
-S:  SerialNumber=ba2eb033
-C:  #Ifs= 6 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:  If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=option
-E:  Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=81(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:  If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-E:  Ad=02(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=40 Driver=option
-E:  Ad=03(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=84(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40 Driver=option
-E:  Ad=04(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=86(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=87(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
-I:  If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=50 Driver=qmi_wwan
-E:  Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=88(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
-E:  Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:  If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
-E:  Ad=05(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E:  Ad=89(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-
-Signed-off-by: Vanillan Wang <vanillanwang@163.com>
-Link: https://lore.kernel.org/r/20240416120713.24777-1-vanillanwang@163.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/usb/qmi_wwan.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
-index 846ace9830d3b..89e1fac07a255 100644
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1419,6 +1419,7 @@ static const struct usb_device_id products[] = {
- 	{QMI_FIXED_INTF(0x0489, 0xe0b5, 0)},	/* Foxconn T77W968 LTE with eSIM support*/
- 	{QMI_FIXED_INTF(0x2692, 0x9025, 4)},    /* Cellient MPL200 (rebranded Qualcomm 05c6:9025) */
- 	{QMI_QUIRK_SET_DTR(0x1546, 0x1342, 4)},	/* u-blox LARA-L6 */
-+	{QMI_QUIRK_SET_DTR(0x33f8, 0x0104, 4)}, /* Rolling RW101 RMNET */
- 
- 	/* 4. Gobi 1000 devices */
- 	{QMI_GOBI1K_DEVICE(0x05c6, 0x9212)},	/* Acer Gobi Modem Device */
--- 
-2.43.0
-
+23.04.2024 13:58, Stefan Metzmacher пишет:
+>
+> I guess this is something that should cc linux-api@vger.kernel.org ... 
+Done, thanks.
 
