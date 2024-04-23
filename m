@@ -1,104 +1,93 @@
-Return-Path: <linux-kernel+bounces-155491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087ED8AEB4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:40:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B2698AEB4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:41:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39AB01C21F35
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:40:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B63D9B2147A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:41:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D09C113BAF5;
-	Tue, 23 Apr 2024 15:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B0BE13CA83;
+	Tue, 23 Apr 2024 15:41:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I1dmGLrD"
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XYgWBV7m"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7932A17BA8
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1A513C9C5;
+	Tue, 23 Apr 2024 15:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713886808; cv=none; b=FjsYX3ICMQwokJ5/347pv+wrDEAgb4i1/GWY4rHfoksQ7od0BX8dRzFMW7//yQjl0B3Pr6+gyxgyQv75f5mw7HOAcqvtWwQAcADitZAwa3fM7UTcGc2SLJR63pNS9k9gm7E5cq+bvq+IWeuWSljKxVqAy5zKYIhINCYiEN18iDM=
+	t=1713886897; cv=none; b=Fp6A93MiemDu3LLd/I9L6zq+WHQIpzEfWhNOP5pkZbujLCIGWhfNYfJ08q/aGhb/HiFwmTmleF5xJ0KqeqRgzUHMOe7/0JiHolOaKmo+F8CEEwdrNAm0vlwzIoBPXtLw5PqmeRcFGoKl9Tt22TgoNx5Is8XzD28e3CfiHL6StIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713886808; c=relaxed/simple;
-	bh=EaEheerZ/dpbVMj6RbzHvHiteCBHHw2Zr/DXXU/q1gc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QqYiOzenoTfIMmcTs4uF49mUGR8bSu0+L0nHYfjxyFFmrWqzv0YYibH8XzEy5W//phb4j8wGaLjeAbaOGuuvTf1cgPDf+YDI6FCRpYlHLtS0zjBtmEqumTixqFuN+9aULYrDe1DIIQvJ2r9aY3gjL3FCqX0lbcesxJvHofcmiHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I1dmGLrD; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <cd183655-e099-4a6d-835d-7555f6f6884d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713886804;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YI+FWVmFzDJ71B2CmVKYD+k5daGrcnKhGtzV6yF5veA=;
-	b=I1dmGLrDePb9xsdKYx37/WVWwTbL/tKeQamGlpVeWaSqZ5qRIT6dUDtjWk5L0KK01LwDCa
-	LhS5yqosxrq6qWG39HB6KU74TdVFyo78yAAzu7pVTcn2amgDoOMzQKEsn6hLxLhVWOeCcs
-	Nj1CTQcKrAvj/4l7kY+drh7WwNrd750=
-Date: Tue, 23 Apr 2024 11:39:59 -0400
+	s=arc-20240116; t=1713886897; c=relaxed/simple;
+	bh=OnUR5ZTH3ib/xsiRvY5RaBExyt2bYFtPkTTCfjWrMAg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oKY8t6vgnbxQfYl4jGs2i7AWD/xmIKcNqNxhFeA+XPysub+53eh3A7Vr8MR3qYjYOTuiU/M3EsdtJMpjQKL/ekCZQNDal2D6Rl+3YA4z4ZMAKYVwZPXCqxPcCrN7E3Z0XnrCvy/yG7SONbh4qowJy/lGilOKorW14gzZsfdMJrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XYgWBV7m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45F4CC2BD11;
+	Tue, 23 Apr 2024 15:41:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713886896;
+	bh=OnUR5ZTH3ib/xsiRvY5RaBExyt2bYFtPkTTCfjWrMAg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XYgWBV7mbHOz6IiEf/2oGVM6dOLAgUp95qKZ0FXThv43HZCaYurXUVuPfVQUToy+x
+	 2D2NaLmd9J89DDEG8FBvHbcfvkwrJFTOO7YOR77PFIK7TArlllgIDJZ+VZLssU1V14
+	 tAQ7LZo6K9JtlbbvrsQX/5C0WoP5jkp0NCcFzaQ6b/pGo5ajDuth1v59215DDn0X0T
+	 UDuPLNjZsO0BwD/E4/Lplv3A314naJzdIZLcijPYFJ8xVsqybuuEfZokHoO0Yzapql
+	 g3d7ys4Ys81dCRsYyXeTPLEHU/Hwq/BQFKAMaEyYqxkEM1hh/5qgr3hWgHYVGb2g5b
+	 moHrTFuM1+NKQ==
+Date: Tue, 23 Apr 2024 16:41:32 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Joshua Yeong <joshua.yeong@starfivetech.com>
+Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	leyfoon.tan@starfivetech.com, jeeheng.sia@starfivetech.com,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: cache: Add docs for StarFive
+ Starlink cache controller
+Message-ID: <20240423-depravity-premium-b7ff778014f4@spud>
+References: <20240423072639.143450-1-joshua.yeong@starfivetech.com>
+ <20240423072639.143450-3-joshua.yeong@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 00/13] drm: zynqmp_dp: IRQ cleanups and debugfs support
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Michal Simek <michal.simek@amd.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240422184553.3573009-1-sean.anderson@linux.dev>
- <5334a3cc-bcf9-4791-9ca9-1d0093899707@ideasonboard.com>
- <472464bb-ae10-4452-aedf-a52b3eb8a25a@linux.dev>
- <dd82b42b-4987-4bb8-b16e-580fe21009c3@ideasonboard.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <dd82b42b-4987-4bb8-b16e-580fe21009c3@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="dQ3vim3zqT9txeSW"
+Content-Disposition: inline
+In-Reply-To: <20240423072639.143450-3-joshua.yeong@starfivetech.com>
 
-On 4/23/24 11:30, Tomi Valkeinen wrote:
-> On 23/04/2024 17:59, Sean Anderson wrote:
->> On 4/23/24 09:33, Tomi Valkeinen wrote:
->>> Hi Sean,
->>>
->>> On 22/04/2024 21:45, Sean Anderson wrote:
->>>> This series cleans up the zyqnmp_dp IRQ and locking situation. Once
->>>> that's done, it adds debugfs support. The intent is to enable compliance
->>>> testing or to help debug signal-integrity issues.
->>>>
->>>> Last time I discussed converting the HPD work(s) to a threaded IRQ. I
->>>> did not end up doing that for this series since the steps would be
->>>>
->>>> - Add locking
->>>> - Move link retraining to a work function
->>>> - Harden the IRQ
->>>> - Merge the works into a threaded IRQ (omitted)
->>>>
->>>> Which with the exception of the final step is the same as leaving those
->>>> works as-is. Conversion to a threaded IRQ can be done as a follow-up.
->>>
->>> What is the base for this series? I'm having trouble applying it.
->>>
->>> I managed to mostly apply it, but I see the board hang when I unload the modules. I didn't debug it as it might as well be caused by my conflict resolution.
->>
->> The base is v6.8-rc1, but it should probably be v6.9. I can rebase and resend.
-> 
-> Did you have something extra in your branch before the series? I got "error: sha1 information is lacking or useless".
 
-Nope.
+--dQ3vim3zqT9txeSW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---Sean
+On Tue, Apr 23, 2024 at 03:26:39PM +0800, Joshua Yeong wrote:
+> Add DT binding documentation used by StarFive's
+> JH8100 SoC Starlink cache controller.
+>=20
+> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
+
+Other than Rob's bot's report, this looks alight to me.
+
+--dQ3vim3zqT9txeSW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZifWrAAKCRB4tDGHoIJi
+0l5CAQDJLOQk3+8wxytgri/eE0jyCXIMubVtypxaKKSI8743DAD8C9SYRFeHe69e
+JpFhPVut94uUmk15b1Kznlz61Lpd5QM=
+=5LcH
+-----END PGP SIGNATURE-----
+
+--dQ3vim3zqT9txeSW--
 
