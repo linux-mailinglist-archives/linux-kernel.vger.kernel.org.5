@@ -1,208 +1,94 @@
-Return-Path: <linux-kernel+bounces-154728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DDD68AE03A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCCE68AE03E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:49:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4EEA1F21AAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:49:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 663841F21AE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5898456472;
-	Tue, 23 Apr 2024 08:49:12 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47C0524A6;
-	Tue, 23 Apr 2024 08:49:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD70E58234;
+	Tue, 23 Apr 2024 08:49:18 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 938AC56B73
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:49:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713862151; cv=none; b=h+eEAhcXU834ObEZROS+EBVN1cPmYEolmte8vwNBdXJmo6LA36UORNxKqbXB9xpwVw9htTnSFdBjcqB3tbItikZ5Etxnd3P/43lGy0K2bwhlD++r1ImyTq85JSztVQ0IupLxCJK9s356a8lsX2pQt8Ol4s9klARqD2cGMmR0Qok=
+	t=1713862158; cv=none; b=PPjoEhjx41qJ1Cr7IWxoT5RKI5G3oyfvQPznhc0mr0vbXbxzNxJhKPdvvVHczlg5IvLpLpQIi5dZh2Y9T5qKXgo3SZhpqJUlEu7RktCQzT67fzMGPpI9kKpdTmJF/V8PzN7j/gVRgdracPpjsdfkA9SH+RCK0R81DjQZUHyVNBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713862151; c=relaxed/simple;
-	bh=Tgt7XtMEAaRR8592T/vdx2u5zNhrU+QC1fto751OEbk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AVaN8fR044CThHZRjXihAMeblPgUxWv6iCQcp4gcXSb4KyOnNi/BH/u1B6zlmyu3SqiQfTMRHeY6MQCBW40nDQnjXr9DEFcEcGcNgeUhoKqFrOP4iFfaHdPhpdREADASfmKOhFksv6N/s5u7n+bvIh4hsdWRjF9et44H34sUf/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC426339;
-	Tue, 23 Apr 2024 01:49:36 -0700 (PDT)
-Received: from [10.57.74.127] (unknown [10.57.74.127])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EDECA3F64C;
-	Tue, 23 Apr 2024 01:49:06 -0700 (PDT)
-Message-ID: <9e73ad2f-198c-4ab5-a462-2e238edd9b34@arm.com>
-Date: Tue, 23 Apr 2024 09:49:05 +0100
+	s=arc-20240116; t=1713862158; c=relaxed/simple;
+	bh=W7f1Jf2jYUuUwHeiLYjopYj8jBxllwwQe9ojyeI4tqs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pJ+hvqhdsAQW3w3ibF2z4n5Dy7nSFYNu8Zcm8xPszUWXv/qviG5xBJBEl/cCoV5b3ECl26bLc6uHkAuQ6ZvoDxGQ1Y8kYmCffDTZ2DG3o05ReTb6FWqNmYCjQk/REznlHGPBrUntKaGghUjDNeaInsDCOy6bgdXpRZkFhxr0/xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rzBpu-0007Tf-3I; Tue, 23 Apr 2024 10:49:10 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rzBpt-00DrZx-L6; Tue, 23 Apr 2024 10:49:09 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1rzBpt-009nsy-1o;
+	Tue, 23 Apr 2024 10:49:09 +0200
+Date: Tue, 23 Apr 2024 10:49:09 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: "Kory Maincent (Dent Project)" <kory.maincent@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kyle Swenson <kyle.swenson@est.tech>
+Subject: Re: [PATCH net-next v2 1/3] net: pse-pd: pse_core: Add missing kdoc
+ return description
+Message-ID: <Zid2BRA74cA8hXfI@pengutronix.de>
+References: <20240422-fix_poe-v2-0-e58325950f07@bootlin.com>
+ <20240422-fix_poe-v2-1-e58325950f07@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/5] arm64/mm: uffd write-protect and soft-dirty
- tracking
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, Mike Rapoport <rppt@linux.ibm.com>
-Cc: Shivansh Vij <shivanshvij@outlook.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>,
- Joey Gouly <joey.gouly@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-References: <20240419074344.2643212-1-ryan.roberts@arm.com>
- <24999e38-e4f7-4616-8eae-dfdeba327558@arm.com>
- <MW4PR12MB6875618342F088BE6F4ECBB2B90D2@MW4PR12MB6875.namprd12.prod.outlook.com>
- <c936083b-68b7-4d8f-a8fc-d188e646f390@redhat.com>
- <ZiKcNJ0Qw2awRwaa@linux.ibm.com>
- <ac4ffd88-2d13-4764-bb4e-18d0c4b9948d@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ac4ffd88-2d13-4764-bb4e-18d0c4b9948d@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240422-fix_poe-v2-1-e58325950f07@bootlin.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 19/04/2024 18:12, David Hildenbrand wrote:
-> On 19.04.24 18:30, Mike Rapoport wrote:
->> On Fri, Apr 19, 2024 at 11:45:14AM +0200, David Hildenbrand wrote:
->>> On 19.04.24 10:33, Shivansh Vij wrote:
->>>>> On 19/04/2024 08:43, Ryan Roberts wrote:
->>>>>> Hi All,
->>>>>>
->>>>>> This series adds uffd write-protect and soft-dirty tracking support for
->>>>>> arm64. I
->>>>>> consider the soft-dirty support (patches 3 and 4) as RFC - see rationale
->>>>>> below.
->>>>>>
->>>>>> That said, these are the last 2 SW bits and we may want to keep 1 bit in
->>>>>> reserve
->>>>>> for future use. soft-dirty is only used for CRIU to my knowledge, and it is
->>>>>> thought that their use case could be solved with the more generic uffd-wp. So
->>>>>> unless somebody makes a clear case for the inclusion of soft-dirty
->>>>>> support, we
->>>>>> are probably better off dropping patches 3 and 4 and keeping bit 63 for
->>>>>> future
->>>>>> use. Although note that the most recent attempt to add soft-dirty for
->>>>>> arm64 was
->>>>>> last month [1] so I'd like to give Shivansh Vij the opportunity to make the
->>>>>> case.
->>>>
->>>> Appreciate the opportunity to provide input here.
->>>>
->>>> I picked option one (dirty tracking in arm) because it seems to be the
->>>> simplest way to move forward, whereas it would be a relatively heavy
->>>> effort to add uffd-wp support to CRIU.
->>>>
->>>>  From a performance perspective I am also a little worried that uffd
->>>> will be slower than just tracking the dirty bits asynchronously with
->>>> sw dirty, but maybe that's not as much of a concern with the addition
->>>> of uffd-wp async.
->>>>
->>>> With all this being said, I'll defer to the wisdom of the crowd about
->>>> which approach makes more sense - after all, with this patch we should
->>>> get uffd-wp support on arm so at least there will be _a_ way forward
->>>> for CRIU (albeit one requiring slightly more work).
->>>
->>> Ccing Mike and Peter. In 2017, Mike gave a presentation "Memory tracking for
->>> iterative container migration"[1] at LPC
->>>
->>> Some key points are still true I think:
->>> (1) More flexible and robust than soft-dirty
->>> (2) May obsolete soft-dirty
->>>
->>> We further recently added a new UFFD_FEATURE_WP_ASYNC feature as part of
->>> [2], because getting soft-dirty return reliable results in some cases turned
->>> out rather hard to fix.
-
-But it sounds like the current soft-dirty semantic is sufficient for CRIU on
-other arches? If I understood correctly from my brief scan of the linked post,
-the problem is that soft-dirty can sometimes provide false-positives? So could
-result in uneccessary copy, but never lost data?
-
->>>
->>> We might still have to optimize that approach for some very sparse large
->>> VMAs, but that should be solvable.
->>>
->>>   "The major defect of this approach of dirty tracking is we need to
->>>   populate the pgtables when tracking starts. Soft-dirty doesn't do it
->>>   like that. It's unwanted in the case where the range of memory to track
->>>   is huge and unpopulated (e.g., tracking updates on a 10G file with
->>>   mmap() on top, without having any page cache installed yet). One way to
->>>   improve this is to allow pte markers exist for larger than PTE level
->>>   for PMD+. That will not change the interface if to implemented, so we
->>>   can leave that for later.")[3]
->>>
->>>
->>> If we can avoid adding soft-dirty on arm64 that would be great. This will
->>> require work on the CRIU side. One downside of uffd-wp is that it is
->>> currently not as avilable on architectures as soft-dirty.
->>
->> Using uffd-wp instead of soft-dirty in CRIU will require quite some work on
->> CRIU side and probably on the kernel side too.
->>
->> And as of now we'll anyway have to maintain soft-dirty because powerpc and
->> s390 don't have uffd-wp.
->>
->> With UFFD_FEATURE_WP_ASYNC the concern that uffd-wp will be slower than
->> soft-dirty probably doesn't exist, but we won't know for sure until
->> somebody will try.
->>
->> But there were other limitations, the most prominent was checkpointing an
->> application that uses uffd. If CRIU is to use uffd-wp for tracking of the
->> dirty pages, there should be some support for multiple uffd contexts for a
->> VMA and that's surely a lot of work.
+On Mon, Apr 22, 2024 at 03:35:46PM +0200, Kory Maincent (Dent Project) wrote:
+> From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
 > 
-> Is it even already supported to checkpoint an application that is using uffd?
-> Hard to believe, what if the monitor is running in a completely different
-> process than the one being checkpointed?
-
-Shivansh, do you speak for CRIU? Are you able to comment on whether CRIU
-supports checkpointing an app that uses uffd?
-
+> Add missing kernel documentation return description.
+> This allows to remove all warning from kernel-doc test script.
 > 
-> Further ... isn't CRIU already using uffd in some cases? ...documentation
-> mentions [1] that it is used for "lazy (or post-copy) restore in CRIU". At least
-> if the documentation is correct and its actually implemented.
-> 
-> [1] https://criu.org/Userfaultfd
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-Shivansh, same question - do you know the current CRIU status/plans for using
-uffd-wp instead of soft-dirty? If CRIU doesn't currently implement it and has no
-current plans to, how can we guage interest in making a plan?
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-> 
->>
->>> But I'll throw in another idea: do we really need soft-dirty and uffd-wp to
->>> exist at the same time in the same process (or the VMA?). In theory, we
-
-My instinct is that MUXing a PTE bit like this will lead to some subtle problems
-that won't appear on arches that support either one or both of the features
-independently and unconditionally. Surely better to limit ourselves to either
-"arm64 will only support uffd-wp" or "arm64 will support both uffd-wp and
-soft-dirty". That way, we could move ahead with reviewing/merging the uffd-wp
-support asynchronously to deciding whether we want to support soft-dirty.
-
->>
->> For instance to have dirty memory tracking in CRIU for an application that
->> uses uffd-wp :)
->>
-> 
-> Hah! Not a concern for application on architectures where uffd-wp does not exist
-> yet! Well, initially, until these applications exist and make use of it :P
-> 
-> Also, I'm not sure if CRIU can checkpoint each and every application ... I
-> suspect one has to draw a line what can be supported and what not.
-> 
-> Case in point: how should CRIU checkpoint an application that is using softdirty
-> tracking itself? If I'm not missing something important, that might not work ....
-> 
-> If the answer is "no other application is using soft-dirty tracking", then it's
-> really a shame we have to carry this baggage (+waste precious PTE bits) only for
-> one application ...
-
-
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
