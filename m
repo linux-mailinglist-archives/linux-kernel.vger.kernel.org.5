@@ -1,118 +1,113 @@
-Return-Path: <linux-kernel+bounces-154786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A29818AE100
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:29:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 743DD8AE102
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:30:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4C851C21B5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:29:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30C5A2827B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9749158ABC;
-	Tue, 23 Apr 2024 09:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F386158ADD;
+	Tue, 23 Apr 2024 09:30:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="ED0I1g6x"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BVdLRpD1"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09FAF20B33;
-	Tue, 23 Apr 2024 09:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A863657880
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713864592; cv=none; b=i0XzmGwDUN4dYaaqlAuL32ahGvSnPTfEkQ6spXgfIjPPCGzSxAl01oAzHxKC/OOBKT7mg9Q9f8hnMOm7R7z1Hp1SNTjtkxOqCP/6ybiHzvxBxlyV6LIwqJUQtEx8XfavoEm3xJtUvx8TIorFsc2e3iwn7YAO+F3ou4LPA1R2lF0=
+	t=1713864645; cv=none; b=f0xcLHn8oyq5joLvv0IkPpYqlMjjgSOhMya5kZpDWKqdECk+Rv1XS5WCQ1sYsd8snSXhK1sZ78XyDZr75itEqYxtIEnNPrq/TtnJ3Pw5TGs44S9yZKt6f4mIsWaIrxGKj/z6GoQpIzHcVs8x9a5ivAUNKElXJTjq5ZXUFUCF8G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713864592; c=relaxed/simple;
-	bh=DKrNix9sXqeDeTqS0MKl9OJhP1yFEStDlJovycaWhCI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=umVJyK8abD4RmBceiZVGNmF79K+add7kbQbuVuSGuM8lG0d3urcMDxdrDaDL6BVr+7OfphAIvUXiKH+crj30cDwQsJW17FS3bPerukJJCMx/dpkMb4h046qP7ViCz/vsvAtSkDWW29eM6WN3NSHN+ThM69MllE66Jv5XJZ/5C6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=ED0I1g6x; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=0mkJ60YZ9h04LMO+Q8FAelHEGO/T+BnTHaX56USQTIU=;
-	t=1713864591; x=1714296591; b=ED0I1g6x+z56eIVe6T8eMrh+07e5Mn2ZT41zWgyuVXNneFP
-	jq10zHxvUeIJwFG0G3O5cWmbR2/ZU7yC18eghv7HhFYx6/cBmLVn/IM5Hmm6jzjIeha7MF3AzOP4S
-	5ugN6XoWKG5f7YsI7iC7uBWJnprwz9rW2aQSWvIu1LWqSDk8mJDYrUdWycNw63fC/ct75s8568S+f
-	uZaUuDCKWh7gCQ3AQgP2k+55GfQcHeVQWrrIM4rrZQWQ8G+oA3QQfS4F1SysKWinCCi4Xs5xxKLTt
-	dZNEdy9+AQMmASq8UI1fG6nJVCn8s/tQRqrcS6gLWC2jIguxhC6IVSa6JmV+lHEA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rzCTE-00077K-IW; Tue, 23 Apr 2024 11:29:48 +0200
-Message-ID: <0197efe8-828b-43ae-85c9-5d521913a289@leemhuis.info>
-Date: Tue, 23 Apr 2024 11:29:48 +0200
+	s=arc-20240116; t=1713864645; c=relaxed/simple;
+	bh=pz7gzIvrQzL0PZZpqwD/SlxEydE+N8siR5THURHsiGo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Md/+pXAXHxSVjWcrPgsOvTI6tFdeMpGgL4rOGmjNfwLWBS9aCUpd9waDOd5U6w2IzsmH4LXoskgrRqLDMrQOLU7MyBugX98sZnE8TrjuWrWTGlG4gS42DqLRVeD1zuoIQznLN/mLdnkIehvW6nFNnEeIT1GnUOzd+TM/ciw2/Ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BVdLRpD1; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f0aeee172dso2836944b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 02:30:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713864642; x=1714469442; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UKc+QzTvoib1CxA8D0XSIoHeT+Qz1bK9S/yhE52hQH0=;
+        b=BVdLRpD1hQ2IOGHUzzDOEy9JGYMRF9ipeCn/tvBUtHiDghVxCpTCiu1wupZHQoA5Ug
+         P+Gjw19Pf7NIhWqDW9KtUOyBixh/JUQ5QzUEPl5EV9uwuBVj0zCr3D1oAvoCTBhTSrrU
+         y0YrQeWJYwCGjM+Zst3BwzkxRGrNG9GCFE7OEaVrkWRejQ90U7+iRhW0CjPFH/Js/o2z
+         k6aoy5TvT93y9I7RT+MYLI15RBKcxvLPNW2UtIzMST/EpLFiKtJmGWJ1MiwXRFZyvmi4
+         jNYELKwCSVciflOpRFG2zZ4Kyopfoj2oyqVTHHCLvKY1PKRMaGjtZlWtOliqXpMhXrPu
+         OXNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713864642; x=1714469442;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UKc+QzTvoib1CxA8D0XSIoHeT+Qz1bK9S/yhE52hQH0=;
+        b=kIYoya9aVhjfI7X1MFs/MvtbOAlp6woM52SUlmSLo7A1BUSO6SFQict0d83hI1Zy9r
+         2BkG/pyIKeQdFP+BSb9plI0oZgHNavEaTpL5/1bzxnm0Lz/DPZQyR0PseXm8kaJbsULi
+         rhXErTkJIq+IF+YbXZTUlNol2THRaOforqHrtHeZyJ2KYqBvdbtjKivsURQXIYRROPGy
+         XMBLVaGTHJcTD0IUZkn+lv/vW+UBTcnXFrLm078eFPhORe9D4TeKHtQRWZPR5LeDrijH
+         eOiNPNSZKLaG48Kf/i9ZQ5v/gFLrqsTyPdFlxamakhFGB0S/57lFKc9e4FbMaIGypMAl
+         ZCEA==
+X-Forwarded-Encrypted: i=1; AJvYcCWhxAj3Tvimio8ZbTKpppolVrxtjyzcvFP/uS0wSDZRHW0lybzdXH0l6OTdxxpiu+AS2jcUgkkpQPeECT6hquoFh7aJPnHZ94LkuDxH
+X-Gm-Message-State: AOJu0Yzup149m7GOM/m2PlhLiX9ov/nHCZNdQ/PVGn9Ie7pclnXU/lOY
+	Ktr/AYtSRSWflwB+wCR/x2fdhxX0Ij7XQY0IV6n7bAPbK4+1L35kTC3q+AZUaLAdaguenp6g/H0
+	M
+X-Google-Smtp-Source: AGHT+IGVO1aI02fvLiFE4FbChEuQhyKSChnpIbWmrCGBshS4PSn5x5AlkPFNtjNaRGeCz9SaNDSCFA==
+X-Received: by 2002:a05:6a21:81a8:b0:1a7:aa73:ca24 with SMTP id pd40-20020a056a2181a800b001a7aa73ca24mr2589099pzb.13.1713864641812;
+        Tue, 23 Apr 2024 02:30:41 -0700 (PDT)
+Received: from localhost ([122.172.87.52])
+        by smtp.gmail.com with ESMTPSA id h16-20020a632110000000b005f3c5cf33b5sm8979752pgh.37.2024.04.23.02.30.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 02:30:40 -0700 (PDT)
+Date: Tue, 23 Apr 2024 15:00:38 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] cpufreq: dt/dt-platdev: eliminate uses of
+ of_node_put()
+Message-ID: <20240423093038.do3vbkvcx6yhdtyp@vireshk-i7>
+References: <20240423-of_node_put_cpufreq_dt-v1-0-19f51910276f@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: 6.9.0-rc2+ kernel hangs on boot (bisected, maybe LED related)
-To: Lee Jones <lee@kernel.org>, Ben Greear <greearb@candelatech.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-leds@vger.kernel.org,
- Miri Korenblit <miriam.rachel.korenblit@intel.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-References: <30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com>
- <30819e01-43ce-638f-0cc6-067d6a8d03c7@candelatech.com>
- <89a9eec3-337f-3c9f-6bbe-00a26a15287c@candelatech.com>
- <20240411070718.GD6194@google.com>
- <de43c7e1-7e8c-bdbe-f59e-7632c21da24a@candelatech.com>
- <8736ebc8881e1e0cabfbbf033725a3123a5e8e90.camel@sipsolutions.net>
- <bc420f3a-5809-4c4a-80ad-ccd8a46853b6@leemhuis.info>
- <8ab88be5de30bcbd0d1cac3cfde6b2085dcfc8fb.camel@sipsolutions.net>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <8ab88be5de30bcbd0d1cac3cfde6b2085dcfc8fb.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713864591;864d740c;
-X-HE-SMSGID: 1rzCTE-00077K-IW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423-of_node_put_cpufreq_dt-v1-0-19f51910276f@gmail.com>
 
-On 23.04.24 11:06, Johannes Berg wrote:
-> On Tue, 2024-04-23 at 11:00 +0200, Linux regression tracking (Thorsten
-> Leemhuis) wrote:
->> On 16.04.24 08:17, Johannes Berg wrote:
->>> On Mon, 2024-04-15 at 13:37 -0700, Ben Greear wrote:
->>>>
->>>> Johannes, you had another suggestion: changing iwlwifi's request_module() to request_module_nowait() in
->>>> iwl_req_fw_callback()
->>>>
->>>> Is that still best thing to try in your opinion?
->>>
->>> I guess so, I don't have any better ideas so far anyway ...
->>
->> [adding the iwlwifi maintainer; thread starts here:
->> https://lore.kernel.org/lkml/30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com/
->>
->> ]
->>
->> Johannes, Miri, what's the status wrt to this regression? From here
->> things look somewhat stalled -- but maybe there was progress and I just
->> missed it.
+On 23-04-24, 10:27, Javier Carrasco wrote:
+> This series removes uses of of_node_put() in dt and dt-platdev, which
+> can be replaced with the clenaup handler introduced with
+> 54da6a092431 ("locking: Introduce __cleanup() based infrastructure").
 > 
-> What do you want? It got bisected to an LED merge, but you ping _us_?
-> Way to go ...
+> This change provides a scope-based cleanup mechanism to avoid potential
+> memory leaks that can appear if of_node_put() is not used correctly.
+> 
+> The series is based on linux-next (next-20240422) and has been validated
+> with a Rockchip RK3568 that makes use of these drivers.
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> ---
+> Javier Carrasco (2):
+>       cpufreq: dt: eliminate uses of of_node_put()
+>       cpufreq: dt-platdev: eliminate uses of of_node_put()
+> 
+>  drivers/cpufreq/cpufreq-dt-platdev.c |  7 ++-----
+>  drivers/cpufreq/cpufreq-dt.c         | 21 ++++++---------------
+>  2 files changed, 8 insertions(+), 20 deletions(-)
 
-Sorry, to me it sounded a bit like you had an idea for a fix and were
-going to give it a try -- similar to how the maintainers for a r8169
-driver and the igc driver provided fixes for bugs recent LED changes
-exposed.
+Applied. Thanks.
 
-But sure, you are right, in the end some LED change seems to have cause
-this, so the duty to fix it lies in that field. Therefore:
-
-Lee, what's the status here to get this fixed before the final?
-
-Ciao, Thorsten
-
-
+-- 
+viresh
 
