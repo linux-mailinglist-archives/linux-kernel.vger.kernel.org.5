@@ -1,164 +1,146 @@
-Return-Path: <linux-kernel+bounces-155673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D1338AF579
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:25:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA03C8AF57A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:26:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5780828891E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:25:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54A0C1F24D6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9AEC13DDD1;
-	Tue, 23 Apr 2024 17:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 944A113DDA4;
+	Tue, 23 Apr 2024 17:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eriDnqXZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="hhPWfmTr"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 149631BC23;
-	Tue, 23 Apr 2024 17:25:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B9113D8B0
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:26:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713893150; cv=none; b=sbH1EXQYkfX+imaJaIVDeQ0qR7YaqGwXJV4My2vcGraBf/ozLFsTtWYQP1Mtl0BgJBwOp5/pji7Y/LG0N1dCEWamOatguKeI1FTcPW2H7GI7wdOZYC4CXd+FbQYdFryN0lFoHFIfzVkg5PeC6v8O3beJsvg1Pjjhfb0kPq7hs8c=
+	t=1713893182; cv=none; b=XH5ge44YETU26avRe22Zm6XAUs+x/i27NIF+i70fVxPC+DD42y38Y3S0Y5+KKqIm6bre7e4NO2utu4GDcipK7uW3D62NLy+0PDPDyf+sTLBpyuUbUreiPFGB7nFcxlYn5rTzS2MD+OL5Eot5Jr3GYJHL43nLaxBr7HHgjTrVccw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713893150; c=relaxed/simple;
-	bh=EF0yWbo4WiBBXL3dWcr/3LxSe7IVVaPwqZJ7quETboE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EPs1ahVFSfG3+SLcCFGBRntOmsWJh5D7BPsLaNsoD+m9iG1GCljMqHStXu/QTuXe83vmmlyi7RzIHWPeYFrqkTd2J1wvqU/RAOZ7dYlxt9jm/DOWhXZV0l2ofo+IAiHNPB1e+vCg+/kCcvVCAur5C6b+HwW9H9nTmYN9KcLCJJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eriDnqXZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B53C6C116B1;
-	Tue, 23 Apr 2024 17:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713893149;
-	bh=EF0yWbo4WiBBXL3dWcr/3LxSe7IVVaPwqZJ7quETboE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eriDnqXZpCfZ/tEJjVYj+Mi1ZFtRE8gkBeAFG7sQwG+MyCOGb26QxwnIWDjtIxSuL
-	 eWD4zJIlg98rxtB4aSKISfMwFYtn1Yoz7MTxlYGS81d5R17xJ/WOdE+X08H6fTUckD
-	 2JxQ2HX8smMXFv1PQxGkIwf7QzNbjraBax7+D2wspeatpDd/KV7x6gTSLnw7ZhszU4
-	 /4Ywx3F2pAsPJFU1L/TrjvXaWrHPpJ0U1X0urJTub+MMclR7UO0PlppV48orMA8y2X
-	 w4Ql5MOo+RHBMILQesT3Bo3jpFkE8AGk0+YV50PsfIAEnts7R812U0QjgRtQrWD0XP
-	 b0FvfdVARr63Q==
-Date: Tue, 23 Apr 2024 18:25:45 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Lucas Stach <l.stach@pengutronix.de>, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev
-Subject: Re: [PATCH v3 1/1] dt-bindings: interrupt-controller: fsl, irqsteer:
- Add imx8qxp support
-Message-ID: <20240423-velocity-italicize-c4f1f22c2ef4@spud>
-References: <20240422064949.70778-1-alexander.stein@ew.tq-group.com>
- <20240422-channel-emission-d485dee6ae48@spud>
- <6041240.lOV4Wx5bFT@steina-w>
+	s=arc-20240116; t=1713893182; c=relaxed/simple;
+	bh=y/gWDRg5azMor/2Aofxe6N4fri0YGxkZz2pXkN9ffwY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Tg22SE/Wd9SI0YuviDtQ8DdtLDSUonpptlTJulXf9qqmIA/Flf/uiLvGY7wTmK9ytgSVjUm1ze8zYlBJrTT+YJ7dBYKE+m42EwTCWHja4SInfGYishNcUgPKrb4YAoALizzZIubKrK0FhXTDck/IQiap6pCJCqf2HYU7OXefajQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=hhPWfmTr; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5193363d255so7902447e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:26:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1713893179; x=1714497979; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4wSZEGJVi5OGysNr5Q/Szri9RMljTd9jL++xzWo19os=;
+        b=hhPWfmTrdLmwQ+mNgHGLcmO0qZwLEMcU3OZR228YDS5sQbWNJx8KKAZ1/XAsDx+QP6
+         FRnl8Kwh7e/DPDTfhbpirfaBGkSiWuiUU+6QqzJeQgNpXXzQECKg6bGPoWb4xxVjrRtZ
+         xY+4uw5zrj8r4qkv5PBSfK00+TO6wucF01c0U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713893179; x=1714497979;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4wSZEGJVi5OGysNr5Q/Szri9RMljTd9jL++xzWo19os=;
+        b=G3reFnjsn2mxxY/emgdqMGZ+KYCEzNUaC9fjsEaww3TzunGJDtXn7FYFSOFaz3j52X
+         9fG74JIGx6CDGgTqErZxgR1csX0U/A0y7MRvSF0ZLOD86W4VyKvlxMAs6zlfWqAGNVao
+         M4MjlJ670jZm5A3GqbD4HM3QUy6nJKHkCA1THyn2iHGfnvhQHqENG5GRHbRvBnzQz6Tb
+         I4SFYHAhBa2BKjfTeZv2+G4csjQ/+bwVZ9bw9hTgBoib/iQaIu/45Ka+Z9ghmZoouz0g
+         XNvNkOt3VW7NAWRmdfg8YVXgIszLVRTed7noTE+MIZIUpp7NTqh8oy7LiTQ+NoxoRPbF
+         CzGw==
+X-Gm-Message-State: AOJu0Yy9M8XXsTTrvQm3AMedZuvnXA5Z/MOYbSauegCvoxyN39mj9rX+
+	CESNvdLoxXDwCDAZHNl0fqdDNUTz/rX2YEx59QtSeC6wyQNmH843AXWvwlNPCw2GNUrUvVQ6H9e
+	H/FJYyYW0kZEJW4jRVJ06QsBS5fVWVNA00eqxRnIExAu7x/W82fM6tQ==
+X-Google-Smtp-Source: AGHT+IFTjidO0k5EKPLIvs7WXJ7O7CNHELrOpC1ZJHG/CmlX8aqmFH/VYBuhcZc+PhjgSlzjogvyqemcBD41ZPsrb/0=
+X-Received: by 2002:a2e:9546:0:b0:2dd:74d3:7ca8 with SMTP id
+ t6-20020a2e9546000000b002dd74d37ca8mr5055038ljh.27.1713893179140; Tue, 23 Apr
+ 2024 10:26:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="eGhzn0VEzH+sEQMJ"
-Content-Disposition: inline
-In-Reply-To: <6041240.lOV4Wx5bFT@steina-w>
-
-
---eGhzn0VEzH+sEQMJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240407090558.3395-1-jiangshanlai@gmail.com> <20240407090558.3395-12-jiangshanlai@gmail.com>
+In-Reply-To: <20240407090558.3395-12-jiangshanlai@gmail.com>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Tue, 23 Apr 2024 13:26:06 -0400
+Message-ID: <CAEXW_YTin=EgjoypCD=eYh-NLRwxbhdr+B-jBO5TpC4qcef2_Q@mail.gmail.com>
+Subject: Re: [PATCH V2 11/11] x86/rcu: Add THUNK rcu_read_unlock_special_thunk
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org, x86@kernel.org, 
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Frederic Weisbecker <frederic@kernel.org>, 
+	Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 23, 2024 at 08:26:55AM +0200, Alexander Stein wrote:
-> Hi Conor,
->=20
-> cc'ed imx@lists.linux.dev
->=20
-> Am Montag, 22. April 2024, 17:48:20 CEST schrieb Conor Dooley:
-> > On Mon, Apr 22, 2024 at 08:49:49AM +0200, Alexander Stein wrote:
-> > > Some SoC like i.MX8QXP use a power-domain for this IP. Add a SoC-spec=
-ific
-> > > compatible, which also requires a power-domain.
-> > >=20
-> > > Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> > > ---
-> > > Thanks for the feedback.
-> > >=20
-> > > Changes in v3:
-> > > * Move 'allOf' before 'additionalProperties'
-> > > * Remove superfluous 'minItems: 1'
-> > >=20
-> > >  .../interrupt-controller/fsl,irqsteer.yaml      | 17 +++++++++++++++=
-+-
-> > >  1 file changed, 16 insertions(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/f=
-sl,irqsteer.yaml b/Documentation/devicetree/bindings/interrupt-controller/f=
-sl,irqsteer.yaml
-> > > index 20ad4ad82ad64..3d33b75d6ecfa 100644
-> > > --- a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqs=
-teer.yaml
-> > > +++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqs=
-teer.yaml
-> > > @@ -14,7 +14,9 @@ properties:
-> > >      oneOf:
-> > >        - const: fsl,imx-irqsteer
-> > >        - items:
-> > > -          - const: fsl,imx8m-irqsteer
-> > > +          - enum:
-> > > +              - fsl,imx8m-irqsteer
-> > > +              - fsl,imx8qxp-irqsteer
-> > >            - const: fsl,imx-irqsteer
-> > > =20
-> > >    reg:
-> > > @@ -42,6 +44,9 @@ properties:
-> > >    clock-names:
-> > >      const: ipg
-> > > =20
-> > > +  power-domains:
-> > > +    maxItems: 1
-> > > +
-> > >    interrupt-controller: true
-> > > =20
-> > >    "#interrupt-cells":
-> > > @@ -70,6 +75,16 @@ required:
-> > >    - fsl,channel
-> > >    - fsl,num-irqs
-> > > =20
-> > > +allOf:
-> > > +  - if:
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            const: fsl,imx8qxp-irqsteer
-> > > +    then:
-> > > +      required:
-> > > +        - power-domains
-> >=20
-> > Provided the power domains are optional on the existing platforms,
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > otherwise,
-> > else:
-> >   properties:
-> >     power-domains: false
->=20
-> A power-domain is used on imx8mp, but imx8mq does not.
+Hello Lai,
 
-So then make the contains be an enum with both of the one supporting it
-& add the else please.
+On Sun, Apr 7, 2024 at 5:07=E2=80=AFAM Lai Jiangshan <jiangshanlai@gmail.co=
+m> wrote:
+>
+> From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+>
+> Add rcu_read_unlock_special_thunk(), so that the inlined rcu_read_unlock(=
+)
+> doesn't need any code to save the caller-saved registers.
+>
+> Make rcu_read_unlock() only two instructions in the slow path at the
+> caller site.
+>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+> ---
+>  arch/x86/entry/thunk.S             | 5 +++++
+>  arch/x86/include/asm/rcu_preempt.h | 4 +++-
+>  2 files changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/entry/thunk.S b/arch/x86/entry/thunk.S
+> index 119ebdc3d362..10c60369a67c 100644
+> --- a/arch/x86/entry/thunk.S
+> +++ b/arch/x86/entry/thunk.S
+> @@ -13,3 +13,8 @@ THUNK preempt_schedule_thunk, preempt_schedule
+>  THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
+>  EXPORT_SYMBOL(preempt_schedule_thunk)
+>  EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
+> +
+> +#ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT
+> +THUNK rcu_read_unlock_special_thunk, rcu_read_unlock_special
+> +EXPORT_SYMBOL_GPL(rcu_read_unlock_special_thunk)
+> +#endif /* #ifdef CONFIG_PCPU_RCU_PREEMPT_COUNT */
+> diff --git a/arch/x86/include/asm/rcu_preempt.h b/arch/x86/include/asm/rc=
+u_preempt.h
+> index cb25ebe038a5..acdd73b74c05 100644
+> --- a/arch/x86/include/asm/rcu_preempt.h
+> +++ b/arch/x86/include/asm/rcu_preempt.h
+> @@ -97,9 +97,11 @@ static __always_inline bool pcpu_rcu_preempt_count_dec=
+_and_test(void)
+>                                __percpu_arg([var]));
+>  }
+>
+> +extern asmlinkage void rcu_read_unlock_special_thunk(void);
+> +
+>  #define pcpu_rcu_read_unlock_special()                                  =
+       \
+>  do {                                                                    =
+       \
+> -       rcu_read_unlock_special();
 
---eGhzn0VEzH+sEQMJ
-Content-Type: application/pgp-signature; name="signature.asc"
+Instead, can you not use __no_caller_saved_registers attribute for
+definition of rcu_read_unlock_special() or does that not work for what
+you're trying to do here?
 
------BEGIN PGP SIGNATURE-----
+Thanks,
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZifvGQAKCRB4tDGHoIJi
-0tskAP48o/+s5lq1jpc+7TE1+8Thqvqyi8lpX4xp9HbEQYDoeAD/aucpundN/HbF
-FwX9e75oP9cKObcaPj16TtFGFHbq8ww=
-=RUuj
------END PGP SIGNATURE-----
-
---eGhzn0VEzH+sEQMJ--
+ - Joel
 
