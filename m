@@ -1,134 +1,144 @@
-Return-Path: <linux-kernel+bounces-155050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C7F78AE4C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:49:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CB958AE348
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:03:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE7B51C20866
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:49:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E79A1C218F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4728B86254;
-	Tue, 23 Apr 2024 11:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A591A81AAA;
+	Tue, 23 Apr 2024 11:02:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ivwGHm8P"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="InsUFqXZ"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846961420BE;
-	Tue, 23 Apr 2024 11:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 257657D40D
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 11:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872467; cv=none; b=BfTcMIDxCaEwc/YhtgpGNLZ3v9VcYM1G9R4GRFLzp79F1cr6sF10825HyRjX9QHFlKtmsMBxNEjrVMQMWJGc8blT651JgSZy3IupvP1qV8W/iRHY5h4Vz5kFvf/xutOdCLM3zxvDXL4aXW3NnstvT9mhZv51O2PNyKm/0L/c5D4=
+	t=1713870138; cv=none; b=XoTvowXBAV87crQqXXwWWJVoqnxWsMY61sKOb9GTISftZ5HrL/CEzcwhAaO31UYArEumwcaq95l601adEesdR0PvZSmzP4VXnM9EtvWAvpHPnJOspZXWSdkmt7CobPuD3dFob9zQHwhNxVwYzQL18oC2qX0IfPUtS7BIw+p7KaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872467; c=relaxed/simple;
-	bh=T2Hcbh6C0t8gF8hreL4UJVEp/7ZX0lsv/Qoru1pHcSo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Hf1xQ2piy7ev+oMUNg7nl440RRrsmIfOxJUyT5W95fBsN5qECJQIY4GRJlf/voqKuGLhf1WNIUUdtAWxqbFO/ZDwQQ94XaMb0o0t49MVmjG88oCfJJIGiMIcncJOuigkED4CCwqD5ddl8SYAaQjovd7YUbh42GwS5ibw/BTbEbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ivwGHm8P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A36FC116B1;
-	Tue, 23 Apr 2024 11:41:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872467;
-	bh=T2Hcbh6C0t8gF8hreL4UJVEp/7ZX0lsv/Qoru1pHcSo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ivwGHm8PVVN5FNyOBaFQkrBtWf1AzCIbbLSAeoIH1biv20XAzLohbR1zWTKd5Neaf
-	 UFX9pJDSTx/FpWwIOnUa7+8M/CNVXGEAYRj4ATMebd5UeVb+pHtNjhhC30oM9q5nVF
-	 3dxuv0JzJVlqTe8A38ek6tPljn4D+VnCaww5qy5JBE1OueY/ESFsjzIrktd6okrOFI
-	 TFWfUf8Tm/8rlfj/ipuCkX6QT8WI2z0/CQkiVLvtHg5JCdYOqXJyPVUNzQ4pSwOHIp
-	 /1Df++gytplEIDwxOWvvWH/+5UMFFS6jxxm+1a2CjBUkDoQxSsUYTAKEqJ2M3yXh3+
-	 rb2zL42083ZYw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Stephen Boyd <sboyd@kernel.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Sasha Levin <sashal@kernel.org>,
-	mturquette@baylibre.com,
-	linux-clk@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 6/9] clk: Don't hold prepare_lock when calling kref_put()
-Date: Tue, 23 Apr 2024 07:02:12 -0400
-Message-ID: <20240423110217.1658879-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240423110217.1658879-1-sashal@kernel.org>
-References: <20240423110217.1658879-1-sashal@kernel.org>
+	s=arc-20240116; t=1713870138; c=relaxed/simple;
+	bh=uAd09pwfQmKaIV784pkw+4n33QRbRFZEsdNQaLALRIk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bPr1UJApZ259SAcKcavUV1NJGDbOf3bkb2lJo5BEuo0vrlXTy8alm9D8rwD9hbUmTeVRjQeX47mp3nqN3zObwxdTi6Pqhg9JCwp0VNuGNM+9V62oxdHv1PpChYkiI2bMnlqOIx4Wh0B4oFmbtyUuDuhptbVUSZo7BvgEXSPCbd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=InsUFqXZ; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41a5b68ed0aso13681815e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 04:02:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713870135; x=1714474935; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4fN276X0o384Z8j3FLIwukjM5hYTBdG6Y0uEQv0QW3E=;
+        b=InsUFqXZjyYOx+AWGlpDVU5TTcEc3wOzMthzm1rbnsW49CbOvqgm3t6cHDrBMcB+PM
+         SuFQ5DKfyFOwUtr1s5LDXGfFSPZ7/lrUC0HY0OEFhFNsBOkbzYKyfqflByOuxbILLqyy
+         WIawyTMcZK3T+3xpcyrZwBz8APn0AWazNZ1IIYmtbj1QQEpjwXb3d+lLsqnCK28IY72s
+         yNMfYtpOTYxMxCDV4Abt8VeAJzHahAeY3UfcE+DcNxFtAEomYeoKWLd+NIQxOeeaj1ul
+         vlCz1mK6N77WxwYB4O8zCp4ba9c/I6UdD5P5L7CbkMnW//hU9yIdqYVl7Xs9fWHYZF97
+         iLgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713870135; x=1714474935;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4fN276X0o384Z8j3FLIwukjM5hYTBdG6Y0uEQv0QW3E=;
+        b=QS6H6ll0CTlS5NJyOKv360ADLR1yLec9wM99mn/VLnZdPevGbexV9ljpTEToN0gptT
+         wdcNl6EpVBGdnjr+tnWF5Af56+KbFKRnqSRkzE/+yEP8Lbgp7WuJVSUnNF61m52p4Tjv
+         vqQL5YSbHw+s6gltepFYVh2FCpbFeCJsatezf4K126WmrCvY4vFsj1LWMWsfUiLS+F5W
+         aHqGFXIOIWhlaXe89mEFTHrOvgwMUJF5EsQbkwdrAMvJ7fUtdmJVcQdqwbDO83MyKDzB
+         PLtoHygHyu261zohDzH3qF6iR/RiIFWI5d06mup0NFrge1HHBAaK/sTW4xTJTiH1qroN
+         f6Zg==
+X-Forwarded-Encrypted: i=1; AJvYcCW99o2mexiXq4rbjf+C8urcYFlj9rAisNz6a6xecxK+MwtAd7Ng9+8vvj9Nn+HXp0VwFVCuAcd7ufrb+mwHs+mQAvgepqtcsVH3eppR
+X-Gm-Message-State: AOJu0Yz6mYvUWTVHO7thdNtmebVC1Ll6CaMDFpk4fJ+JYqdJgmkgenjy
+	o1V0HNGu86ZZh4OFBTKSAciFBMYnngiRo7G5U/hmkxP2oxv2T9foL+Elu3zPEUQ=
+X-Google-Smtp-Source: AGHT+IGyoLxxNXB84SOaZLmPPJ4OsAAGIKmqG6QrGynLfiOOuEkZmyKzKN/zvnjVFVfYKuS9pq1zag==
+X-Received: by 2002:a05:600c:1da3:b0:41a:3407:78f7 with SMTP id p35-20020a05600c1da300b0041a340778f7mr4435656wms.7.1713870135321;
+        Tue, 23 Apr 2024 04:02:15 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id l16-20020a05600c4f1000b0041a1fee2854sm9220735wmq.17.2024.04.23.04.02.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 04:02:14 -0700 (PDT)
+Date: Tue, 23 Apr 2024 12:02:12 +0100
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Jason Wessel <jason.wessel@windriver.com>,
+	kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 7/7] kdb: Simplify management of tmpbuffer in
+ kdb_read()
+Message-ID: <20240423110212.GC1567803@aspen.lan>
+References: <20240422-kgdb_read_refactor-v2-0-ed51f7d145fe@linaro.org>
+ <20240422-kgdb_read_refactor-v2-7-ed51f7d145fe@linaro.org>
+ <CAD=FV=XqSmD4WGyBp7Cv1i8X9yjk2gH1y2j_5qzkxtDL+GKv3g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.87
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=XqSmD4WGyBp7Cv1i8X9yjk2gH1y2j_5qzkxtDL+GKv3g@mail.gmail.com>
 
-From: Stephen Boyd <sboyd@kernel.org>
+On Mon, Apr 22, 2024 at 04:52:52PM -0700, Doug Anderson wrote:
+> On Mon, Apr 22, 2024 at 9:38 AM Daniel Thompson
+> <daniel.thompson@linaro.org> wrote:
+> > diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+> > index 94a638a9d52fa..640208675c9a8 100644
+> > --- a/kernel/debug/kdb/kdb_io.c
+> > +++ b/kernel/debug/kdb/kdb_io.c
+> > @@ -310,21 +309,16 @@ static char *kdb_read(char *buffer, size_t bufsize)
+> >         case 9: /* Tab */
+> >                 if (tab < 2)
+> >                         ++tab;
+> > -               p_tmp = buffer;
+> > -               while (*p_tmp == ' ')
+> > -                       p_tmp++;
+> > -               if (p_tmp > cp)
+> > -                       break;
+> > -               memcpy(tmpbuffer, p_tmp, cp-p_tmp);
+> > -               *(tmpbuffer + (cp-p_tmp)) = '\0';
+> > -               p_tmp = strrchr(tmpbuffer, ' ');
+> > -               if (p_tmp)
+> > -                       ++p_tmp;
+> > -               else
+> > -                       p_tmp = tmpbuffer;
+> > -               len = strlen(p_tmp);
+> > -               buf_size = sizeof(tmpbuffer) - (p_tmp - tmpbuffer);
+> > -               count = kallsyms_symbol_complete(p_tmp, buf_size);
+> > +
+> > +               tmp = *cp;
+> > +               *cp = '\0';
+> > +               p_tmp = strrchr(buffer, ' ');
+> > +               p_tmp = (p_tmp ? p_tmp + 1 : buffer);
+> > +               strscpy(tmpbuffer, p_tmp, sizeof(tmpbuffer));
+>
+> You're now using strscpy() here. Is that actually important, or are
+> you just following good practices and being extra paranoid? If it's
+> actually important, this probably also needs to be CCed to stable,
+> right? The old code just assumed that it  could copy the whole buffer
+> into tmpbuffer. I assume that was OK, but it wasn't documented in the
+> function comments that there was a maximum size that buffer could
+> be...
 
-[ Upstream commit 6f63af7511e7058f3fa4ad5b8102210741c9f947 ]
+This is pretty much it.
 
-We don't need to hold the prepare_lock when dropping a ref on a struct
-clk_core. The release function is only freeing memory and any code with
-a pointer reference has already unlinked anything pointing to the
-clk_core. This reduces the holding area of the prepare_lock a bit.
+I used strscpy() because the function does not document any upper limit
+on the length of the supplied buffer. Thus using strscpy() means we are
+resilient in the face of future refactoring.
 
-Note that we also don't call free_clk() with the prepare_lock held.
-There isn't any reason to do that.
+I chose not to Cc: stable@... since it's only a theoretic overflow.
+With the code as it currently is kdb_read() should never be passed a
+buffer long enough to cause problems.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Link: https://lore.kernel.org/r/20240325184204.745706-3-sboyd@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/clk/clk.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 9004e07182259..92c7537f52eeb 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -4320,7 +4320,8 @@ void clk_unregister(struct clk *clk)
- 	if (ops == &clk_nodrv_ops) {
- 		pr_err("%s: unregistered clock: %s\n", __func__,
- 		       clk->core->name);
--		goto unlock;
-+		clk_prepare_unlock();
-+		return;
- 	}
- 	/*
- 	 * Assign empty clock ops for consumers that might still hold
-@@ -4354,11 +4355,10 @@ void clk_unregister(struct clk *clk)
- 	if (clk->core->protect_count)
- 		pr_warn("%s: unregistering protected clock: %s\n",
- 					__func__, clk->core->name);
-+	clk_prepare_unlock();
- 
- 	kref_put(&clk->core->ref, __clk_release);
- 	free_clk(clk);
--unlock:
--	clk_prepare_unlock();
- }
- EXPORT_SYMBOL_GPL(clk_unregister);
- 
-@@ -4517,13 +4517,11 @@ void __clk_put(struct clk *clk)
- 	if (clk->min_rate > 0 || clk->max_rate < ULONG_MAX)
- 		clk_set_rate_range_nolock(clk, 0, ULONG_MAX);
- 
--	owner = clk->core->owner;
--	kref_put(&clk->core->ref, __clk_release);
--
- 	clk_prepare_unlock();
- 
-+	owner = clk->core->owner;
-+	kref_put(&clk->core->ref, __clk_release);
- 	module_put(owner);
--
- 	free_clk(clk);
- }
- 
--- 
-2.43.0
-
+Daniel.
 
