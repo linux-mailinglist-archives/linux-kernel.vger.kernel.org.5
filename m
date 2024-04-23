@@ -1,174 +1,322 @@
-Return-Path: <linux-kernel+bounces-155485-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B4A38AEB3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:38:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BEF98AEB42
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:39:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAB4A284043
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:38:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FA481C21A7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:39:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CACA13C911;
-	Tue, 23 Apr 2024 15:37:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5218E13C9C7;
+	Tue, 23 Apr 2024 15:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="37W9Fk1H"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com header.b="ePgXwi/o";
+	dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com header.b="T3+/EzQ/"
+Received: from smtp.ivitera.com (smtp.ivitera.com [88.101.85.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57543605CE
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:37:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A760C17BA8;
+	Tue, 23 Apr 2024 15:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=88.101.85.59
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713886672; cv=none; b=sxkhWPnR7LUg90fLRTifDD67SvFiMal+tX7I5HqMi3Rl8DF6D6Z45qLKHyR9SPTz0hAxRz2jQGv7E51M+cj038mqyWviTN55xJ2IHHV3g5ga7LwxQ0yveLmW2hwXapkP+2hGV/3OhLYJjyGiJruW2NOD0fh2VsblwkX0neJqTOk=
+	t=1713886729; cv=none; b=YNeXDGc37VUq9fByXNVRf/Qk+0PA0WFhRE7Qs3SjZu5nAoKdEA/mdJTnc9NBisWgdomEFc3Mp34dGpT0R+q+O9lglRf2GYG9f20+vmw9FU2tnNsjY1IYDI0i0ZaJjR+knikzwFiuMFgGN1abyFS+SAyPd+lzf1Xo3zVSdJmmV2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713886672; c=relaxed/simple;
-	bh=vl3GRAzYz99s0lWym4/W6lfyNnieohCIbEozsVCTjag=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sJ6Tj9goXpVOVMVBsJ180cjt8nbhqffmORqIFHAdGavvXdlGrOKbAPRgko2abXKwoNknsPfUu2VYMNw68mTsLRcby+JtmWZG2j+R+10cSeJ35olQxSQ3f117+hqcfZ9cAqlvBXDRFvnpccjEhAPI1ygNmC4wFc1fF9ZUiCXUgww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=37W9Fk1H; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e8fcb0b860so210315ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713886670; x=1714491470; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ELOEiKBNPubW2OIGLE+1HSCC+4SjR5FivEAPE1zzPx0=;
-        b=37W9Fk1H8XPxycm74jeZaPqE+v2bZ7qzJDY4Teut5l73MuKBrXMuRa1Wsb+UHIAh6T
-         iG/fV6vh9He1ZiIl1h0Li9Z8QI8T7K0N9nQxYjscjDy+eVCp1FEsEX+aBgSHn51Ba5Pj
-         O4DShzUUzebtgxYfGVWL83BMe98DeXB1pQCMM3LMQv574sdoutwDUFlrjtcfwBpd4MkB
-         9kdrgfZ8/f2mcvk9WmSi4Kn+rC0Y0Wj6m5V6C6A39ZR0CVQ7ZjBKC0+eM65Uc4AKOhKD
-         WYNoDZvEQnr0ZAnqGyEEgpgJKYKnyCJupp3S/+M6uKkAOzpf/qcDkkcG5qK8yf/Lzt1W
-         ipnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713886670; x=1714491470;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ELOEiKBNPubW2OIGLE+1HSCC+4SjR5FivEAPE1zzPx0=;
-        b=Q/AcRLdLJ8uTDA/0JQe6k03bbCy40M/AC7qTWG1T9qiIbnyrrEDgn9PLWl7CLNx5Fj
-         xcowV7CRR5p/X/VPnVqqMfdLGtftbJ/02Gp/DCav+AakXTaEC19P/ku+N6na4JN64CQ8
-         5trt/mE8YNSyNQA8ZjVOh0AiEmIv8TV7XqO3BUQtOrnXlTbQpVqRqJwbsHl3zVfyvE+Z
-         55LcOG1a7kc/KqcDq5Kc53VQzUtJU45tTg3axq3Hsg5nPp3Xt9qSkxsvqV9EcPDpq3tI
-         nD1YqYgFbkMbk/DI3rQWFrc1hm41LwFt6+dBzr04D9Ebh3hByJkoIs00t3LfUBDQlYwJ
-         ffpg==
-X-Forwarded-Encrypted: i=1; AJvYcCWYX9OfDqPdQF5cpoOQMAM0pOkmOKpHXSAwcFc4mkvOBD4nzMW5s/zr9bdriA0uV0eyV2T6u/yWRCLTpBs46bDS1biFehoajOjJTCkF
-X-Gm-Message-State: AOJu0Yw9GjH5mTjckdgFpUsPhJDw7acjFXXyJFW0wk+XqQ63Bj1jI36N
-	NmEtxU56cwWFLEq47zK3IlLa0YzGOgb6RO02SxjbJtOf/kUFivTtk0hkAS3IKA==
-X-Google-Smtp-Source: AGHT+IGgaTqKcq+i+yPtDAOE8UP2FdqxGzb3uuymH0A+e0Rp9pmpsohZFyxdCX8qDm6ENYzvXQPmpA==
-X-Received: by 2002:a17:902:ea04:b0:1de:f0c7:108 with SMTP id s4-20020a170902ea0400b001def0c70108mr272281plg.6.1713886669001;
-        Tue, 23 Apr 2024 08:37:49 -0700 (PDT)
-Received: from google.com (134.90.125.34.bc.googleusercontent.com. [34.125.90.134])
-        by smtp.gmail.com with ESMTPSA id u3-20020a631403000000b005bdbe9a597fsm9626776pgl.57.2024.04.23.08.37.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 08:37:47 -0700 (PDT)
-Date: Tue, 23 Apr 2024 15:37:44 +0000
-From: Benson Leung <bleung@google.com>
-To: Jameson Thies <jthies@google.com>
-Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
-	pmalani@chromium.org, abhishekpandit@chromium.org,
-	andersson@kernel.org, dmitry.baryshkov@linaro.org,
-	fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org,
-	hdegoede@redhat.com, neil.armstrong@linaro.org,
-	rajaram.regupathy@intel.com, saranya.gopal@intel.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/4] usb: typec: ucsi: Always set number of alternate
- modes
-Message-ID: <ZifVyNAfLyq4qG5H@google.com>
-References: <20240419211650.2657096-1-jthies@google.com>
- <20240419211650.2657096-5-jthies@google.com>
+	s=arc-20240116; t=1713886729; c=relaxed/simple;
+	bh=754LNpWY3p/VinRZDlx6gnvMkrj403nIYbqQ+FtzmKY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nx4CU4gyPVRbjjdmEivR13poZUzb8WBuH5YUdANxTR4HnsguaLNtmepf2Y3s0afi0w/TkP4+aKZB+4vSp0/XJYW33ZRaIUfQWEA28HTsWBWjBU3l4rsHGfQ0NbPgvc0TZbH5PjkjJFSgbgxNHOxPLkpHmf53UnQOddKuZUc72UI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ivitera.com; spf=pass smtp.mailfrom=ivitera.com; dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com header.b=ePgXwi/o; dkim=pass (1024-bit key) header.d=ivitera.com header.i=@ivitera.com header.b=T3+/EzQ/; arc=none smtp.client-ip=88.101.85.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ivitera.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ivitera.com
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.ivitera.com (Postfix) with ESMTP id 6958616F320;
+	Tue, 23 Apr 2024 17:38:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+	t=1713886717; bh=754LNpWY3p/VinRZDlx6gnvMkrj403nIYbqQ+FtzmKY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ePgXwi/oENFskoUGY99HYqyvZpqKwcZvJ1KN7Twmvd2XQHRzgstBwSgnmFqtD2TuE
+	 vkpTtbKxR/yDN3ZQt96m8rZm4qUyzvpZhgTkhFj/UvqiKqtbNpPmKJlNGupU0yt835
+	 sMVIZ96x7zQrhuZSk4s+ISbhMUnwoZk9wYXVWZB4=
+Received: from smtp.ivitera.com ([127.0.0.1])
+	by localhost (localhost [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id kkTkIymvUJHu; Tue, 23 Apr 2024 17:38:36 +0200 (CEST)
+Received: from [192.168.105.22] (dustin.pilsfree.net [81.201.58.138])
+	(Authenticated sender: pavel)
+	by smtp.ivitera.com (Postfix) with ESMTPSA id 931C016F701;
+	Tue, 23 Apr 2024 17:38:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ivitera.com; s=mail;
+	t=1713886716; bh=754LNpWY3p/VinRZDlx6gnvMkrj403nIYbqQ+FtzmKY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=T3+/EzQ/AfNS3Vi4aq4AeU/DlFGZim9DICF9JPUmslM1XgGeBcpcilkjAJi52XY0J
+	 xmTgElYLDhCDPPSTLIrkDBAMpOWqb17x4wavG5wxbDQGMTa9NWU8LFrdOIB2gco91m
+	 uIga6jEGCoqWRDsp4q8xxwqr16X7VDcP+9cZBQCY=
+Message-ID: <c9928edb-8b2d-1948-40b8-c16e34cea3e2@ivitera.com>
+Date: Tue, 23 Apr 2024 17:38:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="eJT88a/Gw6Jw6Zqe"
-Content-Disposition: inline
-In-Reply-To: <20240419211650.2657096-5-jthies@google.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] usb: gadget: f_uac2: Expose all string descriptors
+ through configfs.
+Content-Language: en-US
+To: Chris Wulff <Chris.Wulff@biamp.com>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ James Gruber <jimmyjgruber@gmail.com>, Lee Jones <lee@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>
+References: <CO1PR17MB54195BE778868AFDFE2DCB36E1112@CO1PR17MB5419.namprd17.prod.outlook.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+In-Reply-To: <CO1PR17MB54195BE778868AFDFE2DCB36E1112@CO1PR17MB5419.namprd17.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
---eJT88a/Gw6Jw6Zqe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Apr 19, 2024 at 09:16:50PM +0000, Jameson Thies wrote:
-> Providing the number of known alternate modes allows user space to
-> determine when device registration has completed. Always register a
-> number of known alternate modes for the partner and cable plug, even
-> when the number of supported alternate modes is 0.
->=20
-> Signed-off-by: Jameson Thies <jthies@google.com>
-
-Reviewed-by: Benson Leung <bleung@chromium.org>
-
+On 23. 04. 24 16:09, Chris Wulff wrote:
+> This makes all string descriptors configurable for the UAC2 gadget
+> so the user can configure names of terminals/controls/alt modes.
+> 
+> Signed-off-by: Chris Wulff <chris.wulff@biamp.com>
 > ---
->  drivers/usb/typec/ucsi/ucsi.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index cd4c3b7a5d989..ea76d42fd1504 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -812,10 +812,11 @@ static int ucsi_check_altmodes(struct ucsi_connecto=
-r *con)
->  	/* Ignoring the errors in this case. */
->  	if (con->partner_altmode[0]) {
->  		num_partner_am =3D ucsi_get_num_altmode(con->partner_altmode);
-> -		if (num_partner_am > 0)
-> -			typec_partner_set_num_altmodes(con->partner, num_partner_am);
-> +		typec_partner_set_num_altmodes(con->partner, num_partner_am);
->  		ucsi_altmode_update_active(con);
->  		return 0;
-> +	} else {
-> +		typec_partner_set_num_altmodes(con->partner, 0);
->  	}
-> =20
->  	return ret;
-> @@ -1138,7 +1139,7 @@ static int ucsi_check_connection(struct ucsi_connec=
-tor *con)
->  static int ucsi_check_cable(struct ucsi_connector *con)
->  {
->  	u64 command;
-> -	int ret;
-> +	int ret, num_plug_am;
-> =20
->  	if (con->cable)
->  		return 0;
-> @@ -1172,6 +1173,13 @@ static int ucsi_check_cable(struct ucsi_connector =
-*con)
->  			return ret;
->  	}
-> =20
-> +	if (con->plug_altmode[0]) {
-> +		num_plug_am =3D ucsi_get_num_altmode(con->plug_altmode);
-> +		typec_plug_set_num_altmodes(con->plug, num_plug_am);
-> +	} else {
-> +		typec_plug_set_num_altmodes(con->plug, 0);
-> +	}
+> v2: Improved naming of parameters to be mode user friendly. Added documentation.
+> v1: https://lore.kernel.org/linux-usb/CO1PR17MB5419B50F94A0014647542931E10D2@CO1PR17MB5419.namprd17.prod.outlook.com/
+> 
+>  .../ABI/testing/configfs-usb-gadget-uac2      | 13 +++
+>  Documentation/usb/gadget-testing.rst          | 13 +++
+>  drivers/usb/gadget/function/f_uac2.c          | 80 +++++++++++++++----
+>  drivers/usb/gadget/function/u_uac2.h          | 17 +++-
+>  4 files changed, 105 insertions(+), 18 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/configfs-usb-gadget-uac2 b/Documentation/ABI/testing/configfs-usb-gadget-uac2
+> index a2bf4fd82a5b..250f8eeb8eab 100644
+> --- a/Documentation/ABI/testing/configfs-usb-gadget-uac2
+> +++ b/Documentation/ABI/testing/configfs-usb-gadget-uac2
+> @@ -35,6 +35,19 @@ Description:
+>  		req_number		the number of pre-allocated requests
+>  					for both capture and playback
+>  		function_name		name of the interface
+> +		if_ctrl_name		topology control name
+> +		clksrc_in_name		input clock name
+> +		clksrc_out_name		output clock name
+> +		p_it_name		playback input terminal name
+> +		p_ot_name		playback output terminal name
+> +		p_fu_name		playback function unit name
+> +		p_alt0_name		playback alt mode 0 name
+> +		p_alt1_name		playback alt mode 1 name
+
+Nacked-by: Pavel Hofman <pavel.hofman@ivitera.com>
+
+I am not sure adding a numbered parameter for every additional alt mode
+is a way to go for the future. I am not that much concerned about UAC1,
+but IMO (at least) in UAC2 the configuration method should be flexible
+for more alt setttings. I can see use cases with many more altsettings.
+
+My proposal for adding more alt settings
+https://lore.kernel.org/linux-usb/35be4668-58d3-894a-72cf-de1afaacae45@ivitera.com/
+suggested using lists to existing parameters where each item would
+correspond to the alt setting of the same index (+1). That would allow
+using more altsettings easily, without having to add parameters to the
+source code and adding configfs params. I received no feedback. I do not
+push the param list proposal, but I am convinced an acceptable solution
+should be discussed thoroughly by the UAC2 gadget stakeholders.
+
+I am afraid that once p_alt1_name/c_alt1_name params are accepted, there
+will be no way back because subsequent removal of configfs params could
+be viewed as a regression for users.
+
+Thanks a lot for considering,
+
+Pavel.
+
+> +		c_it_name		capture input terminal name
+> +		c_ot_name		capture output terminal name
+> +		c_fu_name		capture functional unit name
+> +		c_alt0_name		capture alt mode 0 name
+> +		c_alt1_name		capture alt mode 1 name
+>  		c_terminal_type		code of the capture terminal type
+>  		p_terminal_type		code of the playback terminal type>  		=====================	=======================================
+> diff --git a/Documentation/usb/gadget-testing.rst b/Documentation/usb/gadget-testing.rst
+> index b086c7ab72f0..1a11d3b3bb88 100644
+> --- a/Documentation/usb/gadget-testing.rst
+> +++ b/Documentation/usb/gadget-testing.rst
+> @@ -765,6 +765,19 @@ The uac2 function provides these attributes in its function directory:
+>  	req_number       the number of pre-allocated request for both capture
+>  	                 and playback
+>  	function_name    name of the interface
+> +	if_ctrl_name     topology control name
+> +	clksrc_in_name   input clock name
+> +	clksrc_out_name  output clock name
+> +	p_it_name        playback input terminal name
+> +	p_ot_name        playback output terminal name
+> +	p_fu_name        playback function unit name
+> +	p_alt0_name      playback alt mode 0 name
+> +	p_alt1_name      playback alt mode 1 name
+> +	c_it_name        capture input terminal name
+> +	c_ot_name        capture output terminal name
+> +	c_fu_name        capture functional unit name
+> +	c_alt0_name      capture alt mode 0 name
+> +	c_alt1_name      capture alt mode 1 name
+>  	c_terminal_type  code of the capture terminal type
+>  	p_terminal_type  code of the playback terminal type
+>  	================ ====================================================
+> diff --git a/drivers/usb/gadget/function/f_uac2.c b/drivers/usb/gadget/function/f_uac2.c
+> index 383f6854cfec..5ca7ecdb6e60 100644
+> --- a/drivers/usb/gadget/function/f_uac2.c
+> +++ b/drivers/usb/gadget/function/f_uac2.c
+> @@ -104,25 +104,10 @@ enum {
+>  	STR_AS_OUT_ALT1,
+>  	STR_AS_IN_ALT0,
+>  	STR_AS_IN_ALT1,
+> +	NUM_STR_DESCRIPTORS,
+>  };
+>  
+> -static struct usb_string strings_fn[] = {
+> -	/* [STR_ASSOC].s = DYNAMIC, */
+> -	[STR_IF_CTRL].s = "Topology Control",
+> -	[STR_CLKSRC_IN].s = "Input Clock",
+> -	[STR_CLKSRC_OUT].s = "Output Clock",
+> -	[STR_USB_IT].s = "USBH Out",
+> -	[STR_IO_IT].s = "USBD Out",
+> -	[STR_USB_OT].s = "USBH In",
+> -	[STR_IO_OT].s = "USBD In",
+> -	[STR_FU_IN].s = "Capture Volume",
+> -	[STR_FU_OUT].s = "Playback Volume",
+> -	[STR_AS_OUT_ALT0].s = "Playback Inactive",
+> -	[STR_AS_OUT_ALT1].s = "Playback Active",
+> -	[STR_AS_IN_ALT0].s = "Capture Inactive",
+> -	[STR_AS_IN_ALT1].s = "Capture Active",
+> -	{ },
+> -};
+> +static struct usb_string strings_fn[NUM_STR_DESCRIPTORS + 1] = {};
+>  
+>  static const char *const speed_names[] = {
+>  	[USB_SPEED_UNKNOWN] = "UNKNOWN",
+> @@ -1049,6 +1034,21 @@ afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
+>  		return ret;
+>  
+>  	strings_fn[STR_ASSOC].s = uac2_opts->function_name;
+> +	strings_fn[STR_IF_CTRL].s = uac2_opts->if_ctrl_name;
+> +	strings_fn[STR_CLKSRC_IN].s = uac2_opts->clksrc_in_name;
+> +	strings_fn[STR_CLKSRC_OUT].s = uac2_opts->clksrc_out_name;
 > +
->  	return 0;
->  }
-> =20
-> --=20
-> 2.44.0.769.g3c40516874-goog
->=20
-
---eJT88a/Gw6Jw6Zqe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCZifVyAAKCRBzbaomhzOw
-wmzdAP4hLwx+iB6UOZExWPt/9/X7A4cZYouNkVFA1g9q1otaAwD/QZDPpf1OQo4e
-hI75vwIXV5x7lzjWASoeMN7ptmzbMgE=
-=rovc
------END PGP SIGNATURE-----
-
---eJT88a/Gw6Jw6Zqe--
+> +	strings_fn[STR_USB_IT].s = uac2_opts->p_it_name;
+> +	strings_fn[STR_IO_OT].s = uac2_opts->p_ot_name;
+> +	strings_fn[STR_FU_OUT].s = uac2_opts->p_fu_name;
+> +	strings_fn[STR_AS_OUT_ALT0].s = uac2_opts->p_alt0_name;
+> +	strings_fn[STR_AS_OUT_ALT1].s = uac2_opts->p_alt1_name;
+> +
+> +	strings_fn[STR_IO_IT].s = uac2_opts->c_it_name;
+> +	strings_fn[STR_USB_OT].s = uac2_opts->c_ot_name;
+> +	strings_fn[STR_FU_IN].s = uac2_opts->c_fu_name;
+> +	strings_fn[STR_AS_IN_ALT0].s = uac2_opts->c_alt0_name;
+> +	strings_fn[STR_AS_IN_ALT1].s = uac2_opts->c_alt1_name;
+>  
+>  	us = usb_gstrings_attach(cdev, fn_strings, ARRAY_SIZE(strings_fn));
+>  	if (IS_ERR(us))
+> @@ -2097,10 +2097,26 @@ UAC2_ATTRIBUTE(s16, c_volume_max);
+>  UAC2_ATTRIBUTE(s16, c_volume_res);
+>  UAC2_ATTRIBUTE(u32, fb_max);
+>  UAC2_ATTRIBUTE_STRING(function_name);
+> +UAC2_ATTRIBUTE_STRING(if_ctrl_name);
+> +UAC2_ATTRIBUTE_STRING(clksrc_in_name);
+> +UAC2_ATTRIBUTE_STRING(clksrc_out_name);
+> +
+> +UAC2_ATTRIBUTE_STRING(p_it_name);
+> +UAC2_ATTRIBUTE_STRING(p_ot_name);
+> +UAC2_ATTRIBUTE_STRING(p_fu_name);
+> +UAC2_ATTRIBUTE_STRING(p_alt0_name);
+> +UAC2_ATTRIBUTE_STRING(p_alt1_name);
+> +
+> +UAC2_ATTRIBUTE_STRING(c_it_name);
+> +UAC2_ATTRIBUTE_STRING(c_ot_name);
+> +UAC2_ATTRIBUTE_STRING(c_fu_name);
+> +UAC2_ATTRIBUTE_STRING(c_alt0_name);
+> +UAC2_ATTRIBUTE_STRING(c_alt1_name);
+>  
+>  UAC2_ATTRIBUTE(s16, p_terminal_type);
+>  UAC2_ATTRIBUTE(s16, c_terminal_type);
+>  
+> +
+>  static struct configfs_attribute *f_uac2_attrs[] = {
+>  	&f_uac2_opts_attr_p_chmask,
+>  	&f_uac2_opts_attr_p_srate,
+> @@ -2127,6 +2143,21 @@ static struct configfs_attribute *f_uac2_attrs[] = {
+>  	&f_uac2_opts_attr_c_volume_res,
+>  
+>  	&f_uac2_opts_attr_function_name,
+> +	&f_uac2_opts_attr_if_ctrl_name,
+> +	&f_uac2_opts_attr_clksrc_in_name,
+> +	&f_uac2_opts_attr_clksrc_out_name,
+> +
+> +	&f_uac2_opts_attr_p_it_name,
+> +	&f_uac2_opts_attr_p_ot_name,
+> +	&f_uac2_opts_attr_p_fu_name,
+> +	&f_uac2_opts_attr_p_alt0_name,
+> +	&f_uac2_opts_attr_p_alt1_name,
+> +
+> +	&f_uac2_opts_attr_c_it_name,
+> +	&f_uac2_opts_attr_c_ot_name,
+> +	&f_uac2_opts_attr_c_fu_name,
+> +	&f_uac2_opts_attr_c_alt0_name,
+> +	&f_uac2_opts_attr_c_alt1_name,
+>  
+>  	&f_uac2_opts_attr_p_terminal_type,
+>  	&f_uac2_opts_attr_c_terminal_type,
+> @@ -2188,6 +2219,21 @@ static struct usb_function_instance *afunc_alloc_inst(void)
+>  	opts->fb_max = FBACK_FAST_MAX;
+>  
+>  	scnprintf(opts->function_name, sizeof(opts->function_name), "Source/Sink");
+> +	scnprintf(opts->if_ctrl_name, sizeof(opts->if_ctrl_name), "Topology Control");
+> +	scnprintf(opts->clksrc_in_name, sizeof(opts->clksrc_in_name), "Input Clock");
+> +	scnprintf(opts->clksrc_out_name, sizeof(opts->clksrc_out_name), "Output Clock");
+> +
+> +	scnprintf(opts->p_it_name, sizeof(opts->p_it_name), "USBH Out");
+> +	scnprintf(opts->p_ot_name, sizeof(opts->p_ot_name), "USBD In");
+> +	scnprintf(opts->p_fu_name, sizeof(opts->p_fu_name), "Playback Volume");
+> +	scnprintf(opts->p_alt0_name, sizeof(opts->p_alt0_name), "Playback Inactive");
+> +	scnprintf(opts->p_alt1_name, sizeof(opts->p_alt1_name), "Playback Active");
+> +
+> +	scnprintf(opts->c_it_name, sizeof(opts->c_it_name), "USBD Out");
+> +	scnprintf(opts->c_ot_name, sizeof(opts->c_ot_name), "USBH In");
+> +	scnprintf(opts->c_fu_name, sizeof(opts->c_fu_name), "Capture Volume");
+> +	scnprintf(opts->c_alt0_name, sizeof(opts->c_alt0_name), "Capture Inactive");
+> +	scnprintf(opts->c_alt1_name, sizeof(opts->c_alt1_name), "Capture Active");
+>  
+>  	opts->p_terminal_type = UAC2_DEF_P_TERM_TYPE;
+>  	opts->c_terminal_type = UAC2_DEF_C_TERM_TYPE;
+> diff --git a/drivers/usb/gadget/function/u_uac2.h b/drivers/usb/gadget/function/u_uac2.h
+> index 5e81bdd6c5fb..e697d35a1759 100644
+> --- a/drivers/usb/gadget/function/u_uac2.h
+> +++ b/drivers/usb/gadget/function/u_uac2.h
+> @@ -68,7 +68,22 @@ struct f_uac2_opts {
+>  	int				fb_max;
+>  	bool			bound;
+>  
+> -	char			function_name[32];
+> +	char			function_name[USB_MAX_STRING_LEN];
+> +	char			if_ctrl_name[USB_MAX_STRING_LEN];
+> +	char			clksrc_in_name[USB_MAX_STRING_LEN];
+> +	char			clksrc_out_name[USB_MAX_STRING_LEN];
+> +
+> +	char			p_it_name[USB_MAX_STRING_LEN];
+> +	char			p_ot_name[USB_MAX_STRING_LEN];
+> +	char			p_fu_name[USB_MAX_STRING_LEN];
+> +	char			p_alt0_name[USB_MAX_STRING_LEN];
+> +	char			p_alt1_name[USB_MAX_STRING_LEN];
+> +
+> +	char			c_it_name[USB_MAX_STRING_LEN];
+> +	char			c_ot_name[USB_MAX_STRING_LEN];
+> +	char			c_fu_name[USB_MAX_STRING_LEN];
+> +	char			c_alt0_name[USB_MAX_STRING_LEN];
+> +	char			c_alt1_name[USB_MAX_STRING_LEN];
+>  
+>  	s16				p_terminal_type;
+>  	s16				c_terminal_type;
 
