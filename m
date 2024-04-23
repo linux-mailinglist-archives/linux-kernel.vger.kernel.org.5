@@ -1,165 +1,137 @@
-Return-Path: <linux-kernel+bounces-154400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D40D8ADBA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:43:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C6238ADBA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:44:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8518B22995
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:43:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EB681C2140C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A94417BB7;
-	Tue, 23 Apr 2024 01:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XsE/uXQC"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BF2514AB2;
+	Tue, 23 Apr 2024 01:44:38 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3A117997;
-	Tue, 23 Apr 2024 01:43:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52AFB3FF4;
+	Tue, 23 Apr 2024 01:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713836609; cv=none; b=odbXiXUaO20omOUlYpylUMWCiiqTMn73zfZHZstLlWycv8M2D7+TXlHogU31sFIuRGNAVtzC83ETM1R59D0BW8a9Gmu5KhXstjqm3VASxyTnTv50O3IwkBtLsDcjliTh1J/l3+WkvkEYP7BhPSS6SkyvuWin1maibe4Q6QMrZVs=
+	t=1713836678; cv=none; b=rczOck7P61Q3Mp+SEYaeDCv27G9FDZVp/hnKIdgKbtgEBT6ITBgyAm8vIhEbFoP/5nshw+b0Xrab490XHWW9CpWyePxNZ9mX6mG85Ej7VZRgjTtjXhdIaF9slZm4KV1d//8lAwrxVINyKdTTJzyztGhtXZoXGuNYF85BN1qV0mI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713836609; c=relaxed/simple;
-	bh=ufSwTEYdLjNh53VNo5n/InjNNNfWiz9aDd8WKQpIqGA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pjtpURaZbt/FLiMvF/DGXYDKVZIbtZVvUrfc/zB/OUdOT4jD4mIwGlPg5qUEUblWr+aonFf5LODzVtaPGTTe491ix/MN5fGfzJCdl0pCqQP6/7xbRIXPvOoMEDQgyhYuTmtMITAoKUFkYtVJxXbboMrigownT5n2f6s33U5ZPqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XsE/uXQC; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6f30f69a958so1020782b3a.1;
-        Mon, 22 Apr 2024 18:43:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713836607; x=1714441407; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FVv9MGjbF3k+4QlXe6bHKBL0yNq+kWVhwIIKL4GtREU=;
-        b=XsE/uXQCN/6TG3l6T2DX0NeV+bTHIV4vN+5qaVPSmiL15rpKSg9yS0IXnscWg7K+wL
-         HpYmTOP6J623lV1IYfQIG+gE4yS6kWmwCdBmOgyrZ/xY9pYJZBJ3zcPQIjgwB2iQQPtj
-         tQMWSOg2Baj29JIUNhPiGIfoyqBN17FCepd85Xd02FOxOOwvPo33CldHBwIHjlDwlLQQ
-         8hC/LBbXsHOj/VXOfO1bNJvRJuKhwcobhyCbgCZDyPv0XKUebgNL9x3ZnTR3/biYBEO7
-         QZ/4Msd1/0qpNHRm5iriju4LzQJ18V8613YVXsKqqQC0QvZKFL1BqLl0C76cgtmas9Z6
-         Q1/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713836607; x=1714441407;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FVv9MGjbF3k+4QlXe6bHKBL0yNq+kWVhwIIKL4GtREU=;
-        b=LZ+lEhQFLS0zvfNvkBRewpF652PwiAbvvmBEEuMnmV5A0+yZmrNTEALjwEPayIcYXL
-         jdbzHzqC66ptkcmYLev4Tt6dCXIhg90syaRmVbMJW6lHb2Fs+UQC9iF8yCAn1V1ubaJb
-         oibqp5logYVxPJvXMLPXRcyOUVuFEF3D+DUkw6zMfj5k4YpyCkmWGD5I/9zsQaZHSjya
-         YhKFiCY/IGmOMuKjPIkI4UlnhC67r9evbdSqsWPv7WWxGOXF7PAdP0r4Jym3OloUqSL6
-         8dIKtfudwY1ATS3zPkSKbVe7mrVdTN8/zZZP2cePIQrCCRREq6PmXMNL9kfn2mNBzgvi
-         XP5g==
-X-Forwarded-Encrypted: i=1; AJvYcCWYJ6ZF7rt1lgZeO2TYI44322++PrkkhU6GNd+u/7qVx0qW2nrp9EVStb/fAMLxqpLZHdiwV/wwplp02ISLmVypABII5Vhk4yArHdplCZ6Wmm9eG2M/QNlMfpcQWTWohSj7fT5/R6RivOpcQZiwiawPeelCBhzc+l6tUH7xfNDqT2BgXf62PcW/cDAPWFMWZhiZk97O31RGSuYN0sE+G4J+dRWYBQIY1NET0lJhAmKeZxX20RW8Lps5L1HCVg==
-X-Gm-Message-State: AOJu0YzgXcvTuy0HRNjSOQlqi3WrO/w04DhcsKEwEvwwhweOQncUOTs0
-	HtA4L+sAorouIUeXqnm1hCTLU9wHNt/lazxJHsbhU52mVNysTlf2
-X-Google-Smtp-Source: AGHT+IHNvVbE9cA2XCQLQKjnl3qgdgnVkMyNXB6fh5i88nUQTMFnT4C4mWly1ZAKH13pWuCwaxCS8g==
-X-Received: by 2002:a05:6a00:1950:b0:6ec:fe38:d94 with SMTP id s16-20020a056a00195000b006ecfe380d94mr14924140pfk.33.1713836607279;
-        Mon, 22 Apr 2024 18:43:27 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id gj14-20020a056a00840e00b006ed93e7ef22sm8471175pfb.39.2024.04.22.18.43.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 18:43:26 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 6C2B718688A48; Tue, 23 Apr 2024 08:43:23 +0700 (WIB)
-Date: Tue, 23 Apr 2024 08:43:23 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
-	mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
-	corbet@lwn.net, lgirdwood@gmail.com, andersson@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, gregkh@linuxfoundation.org,
-	Thinh.Nguyen@synopsys.com, broonie@kernel.org, bgoswami@quicinc.com,
-	tiwai@suse.com, robh@kernel.org, konrad.dybcio@linaro.org
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH v19 41/41] ASoC: doc: Add documentation for SOC USB
-Message-ID: <ZicSOzE8KyaYGi0v@archie.me>
-References: <20240422224906.15868-1-quic_wcheng@quicinc.com>
- <20240422224906.15868-42-quic_wcheng@quicinc.com>
+	s=arc-20240116; t=1713836678; c=relaxed/simple;
+	bh=r4WznIYg5k4SVGULs1Q8+9QuWxNOFXcnZi9zzumsie8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BgERA3iUPyrYlvW4ONszvlXp8Rhj+nVtCkl2A1dQXyNDOML9WWCkPU5ENQEMVpG9J+pBKCHTLpa6bstzdj40P1EdcO2Q78Oh5OxHdcXBTwGs50H90lgizS9akAKUtLD+BABjmwkoAmhZkP+yWb6Sm3s7diBggTjoJANHk1ZPN8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VNlKR04cBz4f3kJs;
+	Tue, 23 Apr 2024 09:44:27 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id CC0891A09FB;
+	Tue, 23 Apr 2024 09:44:31 +0800 (CST)
+Received: from [10.174.177.174] (unknown [10.174.177.174])
+	by APP1 (Coremail) with SMTP id cCh0CgAn9g57EidmtP7WKg--.27129S3;
+	Tue, 23 Apr 2024 09:44:30 +0800 (CST)
+Message-ID: <985285f6-973b-30d5-4742-29cf5e8c0e27@huaweicloud.com>
+Date: Tue, 23 Apr 2024 09:44:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240422224906.15868-42-quic_wcheng@quicinc.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v4 0/9] ext4: avoid sysfs variables overflow causing
+ BUG_ON/SOOB
+Content-Language: en-US
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+ ritesh.list@gmail.com, ojaswin@linux.ibm.com, adobriyan@gmail.com,
+ linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ libaokun@huaweicloud.com
+References: <20240319113325.3110393-1-libaokun1@huawei.com>
+From: Baokun Li <libaokun@huaweicloud.com>
+In-Reply-To: <20240319113325.3110393-1-libaokun1@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgAn9g57EidmtP7WKg--.27129S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF13KF1kXw1fCw4kCFyfWFg_yoW8uw13pF
+	sI9w15Gr40qw47Ja9F93Z8Z3WFgw4kJa47KFW7X34rCFyjvryS9ryIgF1rAF97CrZ5uFyx
+	tr12vr10kr1j9rDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWUWVWUuwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWU
+	JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUF9a9DUUUU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/
 
-On Mon, Apr 22, 2024 at 03:49:06PM -0700, Wesley Cheng wrote:
-> +.. code-block:: rst
-> +
-> +int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
-> +					struct snd_soc_jack *jack)
-> +..
+A gentle ping.
 
-You forget to indent snd_soc_usb_setup_offload_jack() prototype:
+On 2024/3/19 19:33, Baokun Li wrote:
+> Hello everyone,
+>
+> This patchset is intended to avoid variables that can be modified via sysfs
+> from overflowing when stored or used and thus causing various problems.
+>
+> "kvm-xfstests -c ext4/all -g auto" has been executed with no new failures.
+>
+> V3->V4:
+>    Patch 4: Corrects WARN_ON_ONCE added in V3.
+>
+> V2->V3:
+>    Add Reviewed-by tag from Jan Kara.
+>    Patch 4: Trimming order before the for loop makes the logic easier to
+>             understand.
+>
+> V1->V2:
+>    Patch 1: Use kstrtouint() as suggested by Alexey and Honza.
+>    Patch 2: Adapted to patch 1 changes.
+>    Patch 3: Add Reviewed-by tag.
+>    Patch 4: Avoid useless loops as suggested by Ojaswin and rename
+> 	   attr_group_prealloc to attr_clusters_in_group.
+>    Patch 5: New patch added to limit mb_best_avail_max_trim_order < 64
+> 	   as Honza's suggestion.
+>    Patch 6: Reordered and updated description.
+>    Patch 7: Add Reviewed-by tag.
+>    Patch 8: Keep unrelated variables on different lines as suggested by Honza.
+>    Patch 9: New patch to fix warnings found during compile checking.
+>
+> [V1]: https://lore.kernel.org/all/20240126085716.1363019-1-libaokun1@huawei.com/
+> [V2]: https://lore.kernel.org/all/20240227091148.178435-1-libaokun1@huawei.com/
+> [V3]: https://lore.kernel.org/all/20240314140906.3064072-1-libaokun1@huawei.com/
+>
+> Baokun Li (9):
+>    ext4: avoid overflow when setting values via sysfs
+>    ext4: refactor out ext4_generic_attr_store()
+>    ext4: refactor out ext4_generic_attr_show()
+>    ext4: fix slab-out-of-bounds in
+>      ext4_mb_find_good_group_avg_frag_lists()
+>    ext4: add new attr pointer attr_mb_order
+>    ext4: add positive int attr pointer to avoid sysfs variables overflow
+>    ext4: set type of ac_groups_linear_remaining to __u32 to avoid
+>      overflow
+>    ext4: set the type of max_zeroout to unsigned int to avoid overflow
+>    ext4: clean up s_mb_rb_lock to fix build warnings with C=1
+>
+>   fs/ext4/extents.c |   3 +-
+>   fs/ext4/mballoc.c |   5 +-
+>   fs/ext4/mballoc.h |   2 +-
+>   fs/ext4/sysfs.c   | 174 ++++++++++++++++++++++++++++------------------
+>   4 files changed, 112 insertions(+), 72 deletions(-)
+>
 
----- >8 ----
-diff --git a/Documentation/sound/soc/usb.rst b/Documentation/sound/soc/usb.rst
-index 3f7c3ef6a0c03c..0b6da0be9f317f 100644
---- a/Documentation/sound/soc/usb.rst
-+++ b/Documentation/sound/soc/usb.rst
-@@ -218,8 +218,8 @@ state.
- 
- .. code-block:: rst
- 
--int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
--					struct snd_soc_jack *jack)
-+        int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
-+        					struct snd_soc_jack *jack)
- ..
- 
-   - ``component``: ASoC component to add the jack
-
-> +USB Offload Playback Route Select Kcontrol
-> +-----------------------------------
-
-USB offload playback heading underlines are not long enough to cover heading
-titles, so I have to extend them:
-
----- >8 ----
-diff --git a/Documentation/sound/soc/usb.rst b/Documentation/sound/soc/usb.rst
-index 0b6da0be9f317f..5e0e9fad131b24 100644
---- a/Documentation/sound/soc/usb.rst
-+++ b/Documentation/sound/soc/usb.rst
-@@ -482,7 +482,7 @@ into the physical USB port and enumerated.  The kcontrols are defined as:
-     kcontrol exposed by the platform card.
- 
- USB Offload Playback Route Select Kcontrol
-------------------------------------
-+------------------------------------------
- In order to allow for vendor specific implementations on audio offloading device
- selection, the SOC USB layer exposes the following:
- 
-@@ -545,7 +545,7 @@ along to the external DSP.
- 
- 
- USB Offload Playback Route Status
---------------------
-+---------------------------------
- SOC USB exposes APIs for keeping track of the offloading state, and expects this
- to be maintained by the BE DAI link that created/added the SOC USB device.
- 
-@@ -573,7 +573,7 @@ When executing the kcontrol get callback, it will loop across the active_list ar
- and report to the application for active USB sound card and USB PCM device indexes.
- 
- USB Offload Playback Capable Card
---------------------------------
-+---------------------------------
- USB sound also creates a kcontrol for applications to help determine which platform
- sound card USB offloading is linked to.  This will allow applications to further
- query the platform sound card for specific information about the current USB offload
-
-Thanks.
-
--- 
-An old man doll... just what I always wanted! - Clara
 
