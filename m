@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-155635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 048CF8AF514
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:08:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D82F98AF518
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:09:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0466EB2885D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:08:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63D801F225ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4ED8142E73;
-	Tue, 23 Apr 2024 17:06:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C079143878;
+	Tue, 23 Apr 2024 17:06:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YPIRTj25"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rjVwgowN"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CFF13E890
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EFAF13F45A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 17:06:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713891992; cv=none; b=Ok/suSyqFRmL5w69rBa46V0aR4ncWomLd0XIog7k1dJgRh8ED8FjKiXtQZa0ZaadzHtIHKdqNb3hKTfXz8AKaC63sPMEVuaYP1sBSN4Ge/GSRf1Al/v72f7fUZ8od0+aVbBY8fZLAVGee2ZwbxWypKh6EdaYhU8RA/mndeVys88=
+	t=1713891994; cv=none; b=sbcBDITA1s8/PWQREdv3XS/XD8bVXM5G4rJmjR4QjXYN7l69Y2Vd7sDRtCLiuospvXHxbJxhFwEnDjqD9NgEkq/jf6DlAKY6NhI2ehixl6UIeAJsR7scqUQG7kK1u6GV9OPr8p8U6l6U6rI+aJdL1PNOvdXZyfngCFR0d2ba7vM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713891992; c=relaxed/simple;
-	bh=8+rczal/sT60nSRIxsRrhBYeetsV3rWc5ulhIp7cx2g=;
+	s=arc-20240116; t=1713891994; c=relaxed/simple;
+	bh=0Koa8I0jA9ZLlFYtXbiAzKiTN60W36x26eD4Y6RjxPg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=CWtqfc6ZbMN4tMvjQkrSgtNkLDhELuBzsryO5kVyqdcyY7kVEPUAjnIGkxp6Zs2vGIERJqItjGmKf/ZgfFzV/a4d52TYq6R9zGn+CjM0fbLPfWfzm//Vij74e2dukh8/UqduLheoql196/oetrkdNjqUup/GKw/KXqEXe8uYbCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YPIRTj25; arc=none smtp.client-ip=209.85.218.52
+	 In-Reply-To:To:Cc; b=c1kHvMHU0IWocOVZDd7E/394wOM9bZV46HoA/3HayNCkMfbw4ZnVVX3tjbJbyJ4ctv2ydHiKSwhgYoOR0ETS4ewzhkt+bMFNxE8MIN78DrcasDKo//K9sxX6PGc66V9ICJMGqmQseMzSOS21cX1GAEWeX0LFX4qHSegK7WWYoo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rjVwgowN; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a58872905b5so57679866b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:06:29 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a52582ecde4so542540766b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:06:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713891988; x=1714496788; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713891989; x=1714496789; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Xi3l/qnNzfAd3sS4G7vPiu1NNsMSYHi+3xLBC/g45dE=;
-        b=YPIRTj254W66IO7MTtBNF+PThsYCACuq1714qpwXXIazbD0GYL9OJjwYCUXKLimSf8
-         tLedFj3AR8lOddi9OSoUxcQfZlUXxbsnS2jPDEC+0XlivT1twixgN2Rl8+8ggJtpPXCe
-         FVnyoudeSW08mj2emS9BtnjouFNAT2pfNTjQS0LsuL4wj5aHbpNXriwFS4mOIHwfdkDQ
-         kZeErhgY9B4Md0qd7+suIcphOvjlzMGqmNfALh3oi4fSy+a1zW7FxJXnfB/ICl5dvsKR
-         MsWtHSyXDgh2qXw9BfjsZBLCJc34GJNn6umhxOabmLO4t7wU+r0Gqe8A41kiZweuBQ4m
-         reVA==
+        bh=P5TMYdocLAm96RRDX93UEs1gzUavWv3lLOjNwQT3hnE=;
+        b=rjVwgowNmuUAvRD5rCS2JZahBVlHn+D+mDQ9sgsnjRLHKSIg8CUcAdrIBh0zi2zg0u
+         rXQKFAvLzZ2Pi6X6tpA8DnobBiDzndatELA7MpQaP2nDHNP8pMp4a5BC8vpN9qOmEnRD
+         8+4tptywwXkRvw3Ie8mGX6nfiU0FA/RTFeQncKBqSaIvXJBONtnmMQwsvrwzS4PiEhQh
+         YwQfQAb7EsTcsMtgyXOK9Vw6r39/ftDd77a5ihJX14YPuyOyUCqT3QR1xehvfRO3daqy
+         c96KZ/ZbVJnBKblw9BNO7WSnoOSbeeUjMvP6+cxJ9babp7GkUMlurzzBlKc73G+IODg6
+         OJGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713891988; x=1714496788;
+        d=1e100.net; s=20230601; t=1713891989; x=1714496789;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xi3l/qnNzfAd3sS4G7vPiu1NNsMSYHi+3xLBC/g45dE=;
-        b=HFudjv9ijXOac4DS6/ayzqvTZYW2mvPdzw3d5OxFv/ZIlLARydH1MM5fPjrq0nQC/d
-         X8UqkOpnYhTwxkN4AVDnwwV+C4W+gOCPtV3EkDlcKgTwsyVaUiJpsLKRkpElIgPQY8Il
-         n/zJdvWvRYm3Xl5MBfGXEHsZo9QIikL88KWUK1W8QvarUDs2QNbIj+airNukeQ9LoxuP
-         1p8wsOsKGQZ4yCelOU95cXJN2kzMn3mtA77jLOQVnbqMvGBuUFaT117HugwJCAs750PZ
-         e0hW9bD6Mwd5TvrHG/QiuprAJilJR7w47Zo7zx0/hvIv2sIFBRgTS2mWlIxp4ETFxLRP
-         nEkw==
-X-Forwarded-Encrypted: i=1; AJvYcCUSkxq4oT4dsSxYhlsIcS4vpCuNDRdBhFfZGxYMbNWAq7Vk2fBjM2TEEPg9Wra8EFwAWZaR8bpWTn9qokohtMYDu7fZrObNqoQ62fmT
-X-Gm-Message-State: AOJu0YxC0mG9r1+5WA24uxvcIE5H+13wTFYN1NM4r00k5G8wht2Lc5/F
-	sBYrPlV3+0TigAOcuiM7lnlR3VCLx7zVMkTE0a0g7EIkpMNneOeDZfG5JJXukMI=
-X-Google-Smtp-Source: AGHT+IHhLeM9lHMwkusT37/REYAgRbABvWv57rJm56e9cAIvQ07N72wljQoRCkpcZiNKp7aTTXrFmg==
-X-Received: by 2002:a17:907:7215:b0:a55:8609:1c34 with SMTP id dr21-20020a170907721500b00a5586091c34mr10584896ejc.28.1713891988171;
+        bh=P5TMYdocLAm96RRDX93UEs1gzUavWv3lLOjNwQT3hnE=;
+        b=Y3K1ME0cEJhAHbOBjsys3FWU6o2bh3+qPLbDb/uTOfs+V0xgnT+cCMjWzP7xbEQngz
+         2I/OD80deiD17co3gJSYOqX1V1aENYb/PvlRahUXW7EfQLDIZ3ZFA5ObdM2LEf925Ciq
+         zoMbD3AOPgPEXqPNiJkXk8v3hhIkIp6zQ15wipOzHMFQtv8vyBiE40rxpcvcEHWNQNYY
+         d9QQyWEq2ZoshjA/wS9oPNgWD38gdI5sDs6x5Y0KajxAeH35IsqEbp/9L0ADGV4vzjZi
+         qF9jFfsg5G7hbwQh5DfsRz/yt8zcocXHRyRFHX8IuoGpPv2whRgWUtyRqBOoQvf5nInp
+         XZEA==
+X-Forwarded-Encrypted: i=1; AJvYcCVtf6Zz8b9evqchhSMKmIsjzX97JAnyPhPUaDXKXjPY7tNPpymC4QlGVJ7kc9GBjT4e/wLBPpb4G/mQEFUsn0v0Q0cF8Zy7A8onRl8j
+X-Gm-Message-State: AOJu0Yz5kczAvKYWBBtRoKzSHet8B4nP0bH6r8aCtvN02Ene8QugxHsj
+	BIt+62yZGQ6k2vtYAPUr2nXP5kozdR3hz2B9D9gKne3iPSMln6SE3ybdwF8E/+I=
+X-Google-Smtp-Source: AGHT+IE50Dhb2eIu+IYD8qla4OUZCkyHh8aZLi9buD3Mhz7U8QqAeQY0IWNn8+gvT4bsdvrsemqalg==
+X-Received: by 2002:a17:906:618:b0:a46:bfe2:521f with SMTP id s24-20020a170906061800b00a46bfe2521fmr8713354ejb.24.1713891988686;
         Tue, 23 Apr 2024 10:06:28 -0700 (PDT)
 Received: from puffmais.c.googlers.com (8.239.204.35.bc.googleusercontent.com. [35.204.239.8])
-        by smtp.gmail.com with ESMTPSA id t22-20020a1709063e5600b00a5209dc79c1sm7351624eji.146.2024.04.23.10.06.27
+        by smtp.gmail.com with ESMTPSA id t22-20020a1709063e5600b00a5209dc79c1sm7351624eji.146.2024.04.23.10.06.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 10:06:27 -0700 (PDT)
+        Tue, 23 Apr 2024 10:06:28 -0700 (PDT)
 From: =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Date: Tue, 23 Apr 2024 18:06:08 +0100
-Subject: [PATCH 6/7] phy: exynos5-usbdrd: convert to clk_bulk for phy
- (register) access
+Date: Tue, 23 Apr 2024 18:06:09 +0100
+Subject: [PATCH 7/7] phy: exynos5-usbdrd: support Exynos USBDRD 3.1 combo
+ phy (HS & SS)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240423-usb-phy-gs101-v1-6-ebdcb3ac174d@linaro.org>
+Message-Id: <20240423-usb-phy-gs101-v1-7-ebdcb3ac174d@linaro.org>
 References: <20240423-usb-phy-gs101-v1-0-ebdcb3ac174d@linaro.org>
 In-Reply-To: <20240423-usb-phy-gs101-v1-0-ebdcb3ac174d@linaro.org>
 To: Vinod Koul <vkoul@kernel.org>, 
@@ -100,154 +100,830 @@ Cc: Krzysztof Kozlowski <krzk@kernel.org>,
  =?utf-8?q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
 X-Mailer: b4 0.12.4
 
-In preparation for support for additional platforms, convert the phy
-register access clock to using the clk_bulk interfaces.
+Add support for the Exynos USB 3.1 DRD combo phy, as found in Exynos 9
+SoCs like Google GS101. It supports USB SS, HS and DisplayPort.
 
-Newer SoCs like Google Tensor gs101 require more clocks for register
-access, and converting to clk_bulk simplifies addition of those extra
-clocks.
+In terms of UTMI+, this is very similar to the existing Exynos850
+support in this driver. The difference is that it supports both UTMI+
+(HS) and PIPE3 (SS).
 
-Given the list of phy register clocks is requested as optional, I
-haven't made it platform specific, as only those clocks that are
-actually declared (in the DT) will be retrieved and the code behaves as
-before this change. Nevertheless, this piece of the code is easy to
-change in the future if the need arises.
+The number of ports for each can be determined using the LINKPORT
+register (which also exists on Exynos E850).
+
+For SuperSpeed (SS), the PIPE3 interface is new compared to Exynos
+E850, and also very different from the existing support for older
+Exynos SoCs in this driver.
+It needs a bit more configuration work and register tuning for signal
+quality to work reliably, presumably due to the higher frequency, e.g.
+to account for different board layouts.
+
+This commit adds the necessary changes for USB HS and SS to work.
+DisplayPort is out of scope in this commit.
+
+Notes:
+* For the register tuning, exynos5_usbdrd_apply_phy_tunes() has been
+  added with the appropriate data structures to support tuning at
+  various stages during initialisation. Since these are hardware
+  specific, the platform data is supposed to be populated accordingly.
+  The implementation is loosely modelled after the Samsung UFS PHY
+  driver.
+
+  There is one tuning state for UTMI+, PTS_UTMI_POSTINIT, to execute
+  after init and generally intended for HS signal tuning, as done in
+  this commit.
+
+  PTS_PIPE3_PREINIT PTS_PIPE3_INIT PTS_PIPE3_POSTINIT
+  PTS_PIPE3_POSTLOCK are tuning states for PIPE3. In the downstream
+  driver, preinit differs by Exynos SoC, and postinit and postlock
+  are different per board. The latter haven't been implemented for
+  gs101 here, because downstream doesn't use them on gs101 either.
+
+* Signal lock acquisition for SS depends on the orientation of the
+  USB-C plug. Since there currently is no infrastructure to chain
+  connector events to both the USB DWC3 driver and this phy driver, a
+  work-around has been added in
+  exynos5_usbdrd_usbdp_g2_v4_pma_check_cdr_lock() to check both
+  registers if it failed in one of the orientations.
+
+* Equally, we can only establish SS speed in one of the connector
+  orientations due to programming differences when selecting the lane
+  mux in exynos5_usbdrd_usbdp_g2_v4_pma_lane_mux_sel(), which really
+  needs to be dynamic, based on the orientation of the connector.
+
+* As is, we can establish a HS link using any cable, and an SS link in
+  one orientation of the plug, falling back to HS if the orientation is
+  reversed to the expectation.
 
 Signed-off-by: André Draszik <andre.draszik@linaro.org>
 ---
- drivers/phy/samsung/phy-exynos5-usbdrd.c | 45 +++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 15 deletions(-)
+ drivers/phy/samsung/phy-exynos5-usbdrd.c    | 610 +++++++++++++++++++++++++++-
+ include/linux/soc/samsung/exynos-regs-pmu.h |   4 +
+ 2 files changed, 608 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/phy/samsung/phy-exynos5-usbdrd.c b/drivers/phy/samsung/phy-exynos5-usbdrd.c
-index 88b03bb67fff..63933029ffa7 100644
+index 63933029ffa7..48a5b84feaea 100644
 --- a/drivers/phy/samsung/phy-exynos5-usbdrd.c
 +++ b/drivers/phy/samsung/phy-exynos5-usbdrd.c
-@@ -194,7 +194,8 @@ struct exynos5_usbdrd_phy_drvdata {
+@@ -133,11 +133,27 @@
+ 
+ /* Exynos850: USB DRD PHY registers */
+ #define EXYNOS850_DRD_LINKCTRL			0x04
++#define LINKCTRL_FORCE_RXELECIDLE		BIT(18)
++#define LINKCTRL_FORCE_PHYSTATUS		BIT(17)
++#define LINKCTRL_FORCE_PIPE_EN			BIT(16)
+ #define LINKCTRL_FORCE_QACT			BIT(8)
+ #define LINKCTRL_BUS_FILTER_BYPASS(_x)		((_x) << 4)
+ 
++#define EXYNOS850_DRD_LINKPORT			0x08
++#define LINKPORT_HOST_NUM_U3			GENMASK(19, 16)
++#define LINKPORT_HOST_NUM_U2			GENMASK(15, 12)
++
+ #define EXYNOS850_DRD_CLKRST			0x20
++/*
++ * On versions without SS ports (like E850), bit 3 is for the 2.0 phy (HS),
++ * while on versions with (like gs101), bits 2 and 3 are for the 3.0 phy (SS)
++ * and bits 12 & 13 for the 2.0 phy.
++ */
++#define CLKRST_PHY20_SW_POR			BIT(13)
++#define CLKRST_PHY20_SW_POR_SEL			BIT(12)
++#define CLKRST_LINK_PCLK_SEL			BIT(7)
+ #define CLKRST_PHY_SW_RST			BIT(3)
++#define CLKRST_PHY_RESET_SEL			BIT(2)
+ #define CLKRST_PORT_RST				BIT(1)
+ #define CLKRST_LINK_SW_RST			BIT(0)
+ 
+@@ -159,12 +175,173 @@
+ #define HSP_EN_UTMISUSPEND			BIT(9)
+ #define HSP_COMMONONN				BIT(8)
+ 
++#define EXYNOS850_DRD_HSPPARACON		0x58
++#define HSPPARACON_TXVREF			GENMASK(31, 28)
++#define HSPPARACON_TXRISE			GENMASK(25, 24)
++#define HSPPARACON_TXRES			GENMASK(22, 21)
++#define HSPPARACON_TXPREEMPPULSE		BIT(20)
++#define HSPPARACON_TXPREEMPAMP			GENMASK(19, 18)
++#define HSPPARACON_TXHSXV			GENMASK(17, 16)
++#define HSPPARACON_TXFSLS			GENMASK(15, 12)
++#define HSPPARACON_SQRX				GENMASK(10, 8)
++#define HSPPARACON_OTG				GENMASK(6, 4)
++#define HSPPARACON_COMPDIS			GENMASK(2, 0)
++
+ #define EXYNOS850_DRD_HSP_TEST			0x5c
+ #define HSP_TEST_SIDDQ				BIT(24)
+ 
++/* Exynos9 - GS101 */
++#define EXYNOS850_DRD_SECPMACTL			0x48
++#define SECPMACTL_PMA_ROPLL_REF_CLK_SEL		GENMASK(13, 12)
++#define SECPMACTL_PMA_LCPLL_REF_CLK_SEL		GENMASK(11, 10)
++#define SECPMACTL_PMA_REF_FREQ_SEL		GENMASK(9, 8)
++#define SECPMACTL_PMA_LOW_PWR			BIT(4)
++#define SECPMACTL_PMA_TRSV_SW_RST		BIT(3)
++#define SECPMACTL_PMA_CMN_SW_RST		BIT(2)
++#define SECPMACTL_PMA_INIT_SW_RST		BIT(1)
++#define SECPMACTL_PMA_APB_SW_RST		BIT(0)
++
++/* PMA registers */
++#define EXYNOS9_PMA_USBDP_CMN_REG0008		0x0020
++#define CMN_REG0008_OVRD_AUX_EN			BIT(3)
++#define CMN_REG0008_AUX_EN			BIT(2)
++
++#define EXYNOS9_PMA_USBDP_CMN_REG00B8		0x02e0
++#define CMN_REG00B8_LANE_MUX_SEL_DP		GENMASK(3, 0)
++
++#define EXYNOS9_PMA_USBDP_CMN_REG01C0		0x0700
++#define CMN_REG01C0_ANA_LCPLL_LOCK_DONE		BIT(7)
++#define CMN_REG01C0_ANA_LCPLL_AFC_DONE		BIT(6)
++
++/* these have similar register layout, for lanes 0 and 2 */
++#define EXYNOS9_PMA_USBDP_TRSV_REG03C3			0x0f0c
++#define EXYNOS9_PMA_USBDP_TRSV_REG07C3			0x1f0c
++#define TRSV_REG03C3_LN0_MON_RX_CDR_AFC_DONE		BIT(3)
++#define TRSV_REG03C3_LN0_MON_RX_CDR_CAL_DONE		BIT(2)
++#define TRSV_REG03C3_LN0_MON_RX_CDR_FLD_PLL_MODE_DONE	BIT(1)
++#define TRSV_REG03C3_LN0_MON_RX_CDR_LOCK_DONE		BIT(0)
++
++/* TRSV_REG0413 and TRSV_REG0813 have similar register layout */
++#define EXYNOS9_PMA_USBDP_TRSV_REG0413		0x104c
++#define TRSV_REG0413_OVRD_LN1_TX_RXD_COMP_EN	BIT(7)
++#define TRSV_REG0413_OVRD_LN1_TX_RXD_EN		BIT(5)
++
++#define EXYNOS9_PMA_USBDP_TRSV_REG0813		0x204c
++#define TRSV_REG0813_OVRD_LN3_TX_RXD_COMP_EN	BIT(7)
++#define TRSV_REG0813_OVRD_LN3_TX_RXD_EN		BIT(5)
++
++/* PCS registers */
++#define EXYNOS9_PCS_NS_VEC_PS1_N1		0x010c
++#define EXYNOS9_PCS_NS_VEC_PS2_N0		0x0110
++#define EXYNOS9_PCS_NS_VEC_PS3_N0		0x0118
++#define NS_VEC_NS_REQ				GENMASK(31, 24)
++#define NS_VEC_ENABLE_TIMER			BIT(22)
++#define NS_VEC_SEL_TIMEOUT			GENMASK(21, 20)
++#define NS_VEC_INV_MASK				GENMASK(19, 16)
++#define NS_VEC_COND_MASK			GENMASK(11, 8)
++#define NS_VEC_EXP_COND				GENMASK(3, 0)
++
++#define EXYNOS9_PCS_OUT_VEC_2			0x014c
++#define EXYNOS9_PCS_OUT_VEC_3			0x0150
++#define PCS_OUT_VEC_B9_DYNAMIC			BIT(19)
++#define PCS_OUT_VEC_B9_SEL_OUT			BIT(18)
++#define PCS_OUT_VEC_B8_DYNAMIC			BIT(17)
++#define PCS_OUT_VEC_B8_SEL_OUT			BIT(16)
++#define PCS_OUT_VEC_B7_DYNAMIC			BIT(15)
++#define PCS_OUT_VEC_B7_SEL_OUT			BIT(14)
++#define PCS_OUT_VEC_B6_DYNAMIC			BIT(13)
++#define PCS_OUT_VEC_B6_SEL_OUT			BIT(12)
++#define PCS_OUT_VEC_B5_DYNAMIC			BIT(11)
++#define PCS_OUT_VEC_B5_SEL_OUT			BIT(10)
++#define PCS_OUT_VEC_B4_DYNAMIC			BIT(9)
++#define PCS_OUT_VEC_B4_SEL_OUT			BIT(8)
++#define PCS_OUT_VEC_B3_DYNAMIC			BIT(7)
++#define PCS_OUT_VEC_B3_SEL_OUT			BIT(6)
++#define PCS_OUT_VEC_B2_DYNAMIC			BIT(5)
++#define PCS_OUT_VEC_B2_SEL_OUT			BIT(4)
++#define PCS_OUT_VEC_B1_DYNAMIC			BIT(3)
++#define PCS_OUT_VEC_B1_SEL_OUT			BIT(2)
++#define PCS_OUT_VEC_B0_DYNAMIC			BIT(1)
++#define PCS_OUT_VEC_B0_SEL_OUT			BIT(0)
++
++#define EXYNOS9_PCS_TIMEOUT_0			0x0170
++
++#define EXYNOS9_PCS_TIMEOUT_3			0x017c
++
++#define EXYNOS9_PCS_EBUF_PARAM			0x0304
++#define EBUF_PARAM_SKP_REMOVE_TH_EMPTY_MODE	GENMASK(29, 24)
++
++#define EXYNOS9_PCS_BACK_END_MODE_VEC		0x030c
++#define BACK_END_MODE_VEC_FORCE_EBUF_EMPTY_MODE	BIT(1)
++#define BACK_END_MODE_VEC_DISABLE_DATA_MASK	BIT(0)
++
++#define EXYNOS9_PCS_RX_CONTROL			0x03f0
++#define RX_CONTROL_EN_BLOCK_ALIGNER_TYPE_B	BIT(22)
++
++#define EXYNOS9_PCS_RX_CONTROL_DEBUG		0x03f4
++#define RX_CONTROL_DEBUG_EN_TS_CHECK		BIT(5)
++#define RX_CONTROL_DEBUG_NUM_COM_FOUND		GENMASK(3, 0)
++
++#define EXYNOS9_PCS_LOCAL_COEF			0x040c
++#define LOCAL_COEF_PMA_CENTER_COEF		GENMASK(21, 16)
++#define LOCAL_COEF_LF				GENMASK(13, 8)
++#define LOCAL_COEF_FS				GENMASK(5, 0)
++
++#define EXYNOS9_PCS_HS_TX_COEF_MAP_0		0x0410
++#define HS_TX_COEF_MAP_0_SSTX_DEEMP		GENMASK(17, 12)
++#define HS_TX_COEF_MAP_0_SSTX_LEVEL		GENMASK(11, 6)
++#define HS_TX_COEF_MAP_0_SSTX_PRE_SHOOT		GENMASK(5, 0)
++
++
+ #define KHZ	1000
+ #define MHZ	(KHZ * KHZ)
+ 
++#define PHY_TUNING_ENTRY_PHY(o, m, v) {	\
++		.off = (o),		\
++		.mask = (m),		\
++		.val = (v),		\
++		.region = PTR_PHY	\
++	}
++
++#define PHY_TUNING_ENTRY_PCS(o, m, v) {	\
++		.off = (o),		\
++		.mask = (m),		\
++		.val = (v),		\
++		.region = PTR_PCS	\
++	}
++
++#define PHY_TUNING_ENTRY_PMA(o, m, v) {	\
++		.off = (o),		\
++		.mask = (m),		\
++		.val = (v),		\
++		.region = PTR_PMA,	\
++	}
++
++#define PHY_TUNING_ENTRY_LAST { .region = PTR_INVALID }
++
++#define for_each_phy_tune(tune) \
++	for (; (tune)->region != PTR_INVALID; ++(tune))
++
++struct exynos5_usbdrd_phy_tuning {
++	u32 off;
++	u32 mask;
++	u32 val;
++	char region;
++#define PTR_INVALID	0
++#define PTR_PHY		1
++#define PTR_PCS		2
++#define PTR_PMA		3
++};
++
++enum exynos5_usbdrd_phy_tuning_state {
++	PTS_UTMI_POSTINIT,
++	PTS_PIPE3_PREINIT,
++	PTS_PIPE3_INIT,
++	PTS_PIPE3_POSTINIT,
++	PTS_PIPE3_POSTLOCK,
++	PTS_MAX,
++};
++
+ enum exynos5_usbdrd_phy_id {
+ 	EXYNOS5_DRDPHY_UTMI,
+ 	EXYNOS5_DRDPHY_PIPE3,
+@@ -183,6 +360,7 @@ struct exynos5_usbdrd_phy_config {
+ 
+ struct exynos5_usbdrd_phy_drvdata {
+ 	const struct exynos5_usbdrd_phy_config *phy_cfg;
++	const struct exynos5_usbdrd_phy_tuning **phy_tunes;
+ 	const struct phy_ops *phy_ops;
+ 	u32 pmu_offset_usbdrd0_phy;
+ 	u32 pmu_offset_usbdrd0_phy_ss;
+@@ -194,6 +372,8 @@ struct exynos5_usbdrd_phy_drvdata {
   * struct exynos5_usbdrd_phy - driver data for USB 3.0 PHY
   * @dev: pointer to device instance of this platform device
   * @reg_phy: usb phy controller register memory base
-- * @clk: phy clock for register access
-+ * @phy_clks: phy clocks for register access
-+ * @n_phy_clks: number of phy clocks for register access
++ * @reg_pcs: usb phy physical coding sublayer register memory base
++ * @reg_pma: usb phy physical media attachment register memory base
+  * @phy_clks: phy clocks for register access
+  * @n_phy_clks: number of phy clocks for register access
   * @pipeclk: clock for pipe3 phy
-  * @utmiclk: clock for utmi+ phy
-  * @itpclk: clock for ITP generation
-@@ -211,7 +212,8 @@ struct exynos5_usbdrd_phy_drvdata {
+@@ -212,6 +392,8 @@ struct exynos5_usbdrd_phy_drvdata {
  struct exynos5_usbdrd_phy {
  	struct device *dev;
  	void __iomem *reg_phy;
--	struct clk *clk;
-+	struct clk_bulk_data  *phy_clks;
-+	size_t n_phy_clks;
++	void __iomem *reg_pcs;
++	void __iomem *reg_pma;
+ 	struct clk_bulk_data  *phy_clks;
+ 	size_t n_phy_clks;
  	struct clk *pipeclk;
- 	struct clk *utmiclk;
- 	struct clk *itpclk;
-@@ -407,7 +409,7 @@ static int exynos5_usbdrd_phy_init(struct phy *phy)
- 	struct phy_usb_instance *inst = phy_get_drvdata(phy);
- 	struct exynos5_usbdrd_phy *phy_drd = to_usbdrd_phy(inst);
- 
--	ret = clk_prepare_enable(phy_drd->clk);
-+	ret = clk_bulk_prepare_enable(phy_drd->n_phy_clks, phy_drd->phy_clks);
- 	if (ret)
- 		return ret;
- 
-@@ -457,7 +459,7 @@ static int exynos5_usbdrd_phy_init(struct phy *phy)
- 	reg &= ~PHYCLKRST_PORTRESET;
- 	writel(reg, phy_drd->reg_phy + EXYNOS5_DRD_PHYCLKRST);
- 
--	clk_disable_unprepare(phy_drd->clk);
-+	clk_bulk_disable_unprepare(phy_drd->n_phy_clks, phy_drd->phy_clks);
- 
- 	return 0;
+@@ -363,6 +545,45 @@ exynos5_usbdrd_utmi_set_refclk(struct phy_usb_instance *inst)
+ 	return reg;
  }
-@@ -469,7 +471,7 @@ static int exynos5_usbdrd_phy_exit(struct phy *phy)
- 	struct phy_usb_instance *inst = phy_get_drvdata(phy);
- 	struct exynos5_usbdrd_phy *phy_drd = to_usbdrd_phy(inst);
  
--	ret = clk_prepare_enable(phy_drd->clk);
-+	ret = clk_bulk_prepare_enable(phy_drd->n_phy_clks, phy_drd->phy_clks);
- 	if (ret)
- 		return ret;
- 
-@@ -491,7 +493,7 @@ static int exynos5_usbdrd_phy_exit(struct phy *phy)
- 		PHYTEST_POWERDOWN_HSP;
- 	writel(reg, phy_drd->reg_phy + EXYNOS5_DRD_PHYTEST);
- 
--	clk_disable_unprepare(phy_drd->clk);
-+	clk_bulk_disable_unprepare(phy_drd->n_phy_clks, phy_drd->phy_clks);
- 
- 	return 0;
- }
-@@ -826,14 +828,14 @@ static int exynos850_usbdrd_phy_init(struct phy *phy)
- 	struct exynos5_usbdrd_phy *phy_drd = to_usbdrd_phy(inst);
- 	int ret;
- 
--	ret = clk_prepare_enable(phy_drd->clk);
-+	ret = clk_bulk_prepare_enable(phy_drd->n_phy_clks, phy_drd->phy_clks);
- 	if (ret)
- 		return ret;
- 
- 	/* UTMI or PIPE3 specific init */
- 	inst->phy_cfg->phy_init(phy_drd);
- 
--	clk_disable_unprepare(phy_drd->clk);
-+	clk_bulk_disable_unprepare(phy_drd->n_phy_clks, phy_drd->phy_clks);
- 
- 	return 0;
- }
-@@ -846,7 +848,7 @@ static int exynos850_usbdrd_phy_exit(struct phy *phy)
++static void
++exynos5_usbdrd_apply_phy_tunes(struct exynos5_usbdrd_phy *phy_drd,
++			       enum exynos5_usbdrd_phy_tuning_state state)
++{
++	const struct exynos5_usbdrd_phy_tuning *tune;
++
++	tune = phy_drd->drv_data->phy_tunes[state];
++	if (!tune)
++		return;
++
++	for_each_phy_tune(tune) {
++		void __iomem *reg_base;
++		u32 reg = 0;
++
++		switch (tune->region) {
++		case PTR_PHY:
++			reg_base = phy_drd->reg_phy;
++			break;
++		case PTR_PCS:
++			reg_base = phy_drd->reg_pcs;
++			break;
++		case PTR_PMA:
++			reg_base = phy_drd->reg_pma;
++			break;
++		default:
++			dev_warn_once(phy_drd->dev,
++				      "unknown phy region %d\n", tune->region);
++			continue;
++		}
++
++		if (~tune->mask) {
++			reg = readl(reg_base + tune->off);
++			reg &= ~tune->mask;
++		}
++		reg |= tune->val;
++		writel(reg, reg_base + tune->off);
++	}
++}
++
+ static void exynos5_usbdrd_pipe3_init(struct exynos5_usbdrd_phy *phy_drd)
+ {
  	u32 reg;
- 	int ret;
- 
--	ret = clk_prepare_enable(phy_drd->clk);
-+	ret = clk_bulk_prepare_enable(phy_drd->n_phy_clks, phy_drd->phy_clks);
- 	if (ret)
- 		return ret;
- 
-@@ -869,7 +871,7 @@ static int exynos850_usbdrd_phy_exit(struct phy *phy)
- 	reg &= ~CLKRST_LINK_SW_RST;
- 	writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
- 
--	clk_disable_unprepare(phy_drd->clk);
-+	clk_bulk_disable_unprepare(phy_drd->n_phy_clks, phy_drd->phy_clks);
- 
- 	return 0;
+@@ -378,6 +599,159 @@ static void exynos5_usbdrd_pipe3_init(struct exynos5_usbdrd_phy *phy_drd)
+ 	writel(reg, phy_drd->reg_phy + EXYNOS5_DRD_PHYTEST);
  }
-@@ -882,16 +884,29 @@ static const struct phy_ops exynos850_usbdrd_phy_ops = {
+ 
++static void
++exynos5_usbdrd_usbdp_g2_v4_ctrl_pma_ready(struct exynos5_usbdrd_phy *phy_drd)
++{
++	void __iomem *regs_base = phy_drd->reg_phy;
++	u32 reg;
++
++	/* link pipe_clock selection to pclk of PMA */
++	reg = readl(regs_base + EXYNOS850_DRD_CLKRST);
++	reg |= CLKRST_LINK_PCLK_SEL;
++	writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
++
++	reg = readl(regs_base + EXYNOS850_DRD_SECPMACTL);
++	reg &= ~SECPMACTL_PMA_REF_FREQ_SEL;
++	reg |= FIELD_PREP_CONST(SECPMACTL_PMA_REF_FREQ_SEL, 1);
++	/* SFR reset */
++	reg |= (SECPMACTL_PMA_LOW_PWR | SECPMACTL_PMA_APB_SW_RST);
++	reg &= ~(SECPMACTL_PMA_ROPLL_REF_CLK_SEL |
++		 SECPMACTL_PMA_LCPLL_REF_CLK_SEL);
++	/* PMA power off */
++	reg |= (SECPMACTL_PMA_TRSV_SW_RST | SECPMACTL_PMA_CMN_SW_RST |
++		SECPMACTL_PMA_INIT_SW_RST);
++	writel(reg, regs_base + EXYNOS850_DRD_SECPMACTL);
++
++	udelay(1);
++
++	reg = readl(regs_base + EXYNOS850_DRD_SECPMACTL);
++	reg &= ~SECPMACTL_PMA_LOW_PWR;
++	writel(reg, regs_base + EXYNOS850_DRD_SECPMACTL);
++
++	udelay(1);
++
++	/* release override */
++	reg = readl(regs_base + EXYNOS850_DRD_LINKCTRL);
++	reg &= ~LINKCTRL_FORCE_PIPE_EN;
++	writel(reg, regs_base + EXYNOS850_DRD_LINKCTRL);
++
++	udelay(1);
++
++	/* APB enable */
++	reg = readl(regs_base + EXYNOS850_DRD_SECPMACTL);
++	reg &= ~SECPMACTL_PMA_APB_SW_RST;
++	writel(reg, regs_base + EXYNOS850_DRD_SECPMACTL);
++}
++
++static void
++exynos5_usbdrd_usbdp_g2_v4_pma_lane_mux_sel(struct exynos5_usbdrd_phy *phy_drd)
++{
++	void __iomem *regs_base = phy_drd->reg_pma;
++	u32 reg;
++
++	/* lane configuration: USB on all lanes */
++	reg = readl(regs_base + EXYNOS9_PMA_USBDP_CMN_REG00B8);
++	reg &= ~CMN_REG00B8_LANE_MUX_SEL_DP;
++	writel(reg, regs_base + EXYNOS9_PMA_USBDP_CMN_REG00B8);
++
++	/*
++	 * FIXME: below code supports one connector orientation only. It needs
++	 * updating once we can receive connector events.
++	 */
++	/* override of TX receiver detector and comparator: lane 1 */
++	reg = readl(regs_base + EXYNOS9_PMA_USBDP_TRSV_REG0413);
++	reg &= ~TRSV_REG0413_OVRD_LN1_TX_RXD_COMP_EN;
++	reg &= ~TRSV_REG0413_OVRD_LN1_TX_RXD_EN;
++	writel(reg, regs_base + EXYNOS9_PMA_USBDP_TRSV_REG0413);
++
++	/* lane 3 */
++	reg = readl(regs_base + EXYNOS9_PMA_USBDP_TRSV_REG0813);
++	reg |= TRSV_REG0813_OVRD_LN3_TX_RXD_COMP_EN;
++	reg |= TRSV_REG0813_OVRD_LN3_TX_RXD_EN;
++	writel(reg, regs_base + EXYNOS9_PMA_USBDP_TRSV_REG0813);
++}
++
++static int
++exynos5_usbdrd_usbdp_g2_v4_pma_check_pll_lock(struct exynos5_usbdrd_phy *phy_drd)
++{
++	static const unsigned int timeout_us = 40000;
++	static const unsigned int sleep_us = 40;
++	static const u32 locked = (CMN_REG01C0_ANA_LCPLL_LOCK_DONE |
++				   CMN_REG01C0_ANA_LCPLL_AFC_DONE);
++	u32 reg;
++	int err;
++
++	err = readl_poll_timeout(
++			phy_drd->reg_pma + EXYNOS9_PMA_USBDP_CMN_REG01C0,
++			reg, (reg & locked) == locked, sleep_us, timeout_us);
++	if (err)
++		dev_err(phy_drd->dev,
++			"timed out waiting for PLL lock: %#.8x\n", reg);
++
++	return err;
++}
++
++static void
++exynos5_usbdrd_usbdp_g2_v4_pma_check_cdr_lock(struct exynos5_usbdrd_phy *phy_drd)
++{
++	static const unsigned int timeout_us = 40000;
++	static const unsigned int sleep_us = 40;
++	static const u32 locked =
++		(TRSV_REG03C3_LN0_MON_RX_CDR_AFC_DONE
++		 | TRSV_REG03C3_LN0_MON_RX_CDR_CAL_DONE
++		 | TRSV_REG03C3_LN0_MON_RX_CDR_FLD_PLL_MODE_DONE
++		 | TRSV_REG03C3_LN0_MON_RX_CDR_LOCK_DONE);
++	u32 reg;
++	int err;
++
++	err = readl_poll_timeout(
++			phy_drd->reg_pma + EXYNOS9_PMA_USBDP_TRSV_REG03C3,
++			reg, (reg & locked) == locked, sleep_us, timeout_us);
++	if (!err)
++		return;
++
++	dev_err(phy_drd->dev,
++		"timed out waiting for CDR lock (l0): %#.8x, retrying\n", reg);
++
++	/* based on cable orientation, this might be on the other phy port */
++	err = readl_poll_timeout(
++			phy_drd->reg_pma + EXYNOS9_PMA_USBDP_TRSV_REG07C3,
++			reg, (reg & locked) == locked, sleep_us, timeout_us);
++	if (err)
++		dev_err(phy_drd->dev,
++			"timed out waiting for CDR lock (l2): %#.8x\n", reg);
++}
++
++static void exynos5_usbdrd_gs101_pipe3_init(struct exynos5_usbdrd_phy *phy_drd)
++{
++	void __iomem *regs_pma = phy_drd->reg_pma;
++	void __iomem *regs_phy = phy_drd->reg_phy;
++	u32 reg;
++
++	exynos5_usbdrd_usbdp_g2_v4_ctrl_pma_ready(phy_drd);
++
++	/* force aux off */
++	reg = readl(regs_pma + EXYNOS9_PMA_USBDP_CMN_REG0008);
++	reg &= ~CMN_REG0008_AUX_EN;
++	reg |= CMN_REG0008_OVRD_AUX_EN;
++	writel(reg, regs_pma + EXYNOS9_PMA_USBDP_CMN_REG0008);
++
++	exynos5_usbdrd_apply_phy_tunes(phy_drd, PTS_PIPE3_PREINIT);
++	exynos5_usbdrd_apply_phy_tunes(phy_drd, PTS_PIPE3_INIT);
++	exynos5_usbdrd_apply_phy_tunes(phy_drd, PTS_PIPE3_POSTINIT);
++
++	exynos5_usbdrd_usbdp_g2_v4_pma_lane_mux_sel(phy_drd);
++
++	/* reset release from port */
++	reg = readl(regs_phy + EXYNOS850_DRD_SECPMACTL);
++	reg &= ~(SECPMACTL_PMA_TRSV_SW_RST | SECPMACTL_PMA_CMN_SW_RST |
++		 SECPMACTL_PMA_INIT_SW_RST);
++	writel(reg, regs_phy + EXYNOS850_DRD_SECPMACTL);
++
++	if (!exynos5_usbdrd_usbdp_g2_v4_pma_check_pll_lock(phy_drd))
++		exynos5_usbdrd_usbdp_g2_v4_pma_check_cdr_lock(phy_drd);
++}
++
+ static void exynos5_usbdrd_utmi_init(struct exynos5_usbdrd_phy *phy_drd)
+ {
+ 	u32 reg;
+@@ -736,10 +1110,29 @@ static const struct phy_ops exynos5_usbdrd_phy_ops = {
  	.owner		= THIS_MODULE,
  };
  
-+static const char * const phy_clk_list[] = {
-+	"phy",
-+};
++static void
++exynos5_usbdrd_usb_v3p1_pipe_override(struct exynos5_usbdrd_phy *phy_drd)
++{
++	void __iomem *regs_base = phy_drd->reg_phy;
++	u32 reg;
 +
- static int exynos5_usbdrd_phy_clk_handle(struct exynos5_usbdrd_phy *phy_drd)
++	/* force pipe3 signal for link */
++	reg = readl(regs_base + EXYNOS850_DRD_LINKCTRL);
++	reg &= ~LINKCTRL_FORCE_PHYSTATUS;
++	reg |= LINKCTRL_FORCE_PIPE_EN | LINKCTRL_FORCE_RXELECIDLE;
++	writel(reg, regs_base + EXYNOS850_DRD_LINKCTRL);
++
++	/* PMA disable */
++	reg = readl(regs_base + EXYNOS850_DRD_SECPMACTL);
++	reg |= SECPMACTL_PMA_LOW_PWR;
++	writel(reg, regs_base + EXYNOS850_DRD_SECPMACTL);
++}
++
+ static void exynos850_usbdrd_utmi_init(struct exynos5_usbdrd_phy *phy_drd)
  {
- 	unsigned long ref_rate;
+ 	void __iomem *regs_base = phy_drd->reg_phy;
+ 	u32 reg;
++	u32 ss_ports;
+ 
+ 	/*
+ 	 * Disable HWACG (hardware auto clock gating control). This will force
+@@ -750,8 +1143,16 @@ static void exynos850_usbdrd_utmi_init(struct exynos5_usbdrd_phy *phy_drd)
+ 	reg |= LINKCTRL_FORCE_QACT;
+ 	writel(reg, regs_base + EXYNOS850_DRD_LINKCTRL);
+ 
++	reg = readl(regs_base + EXYNOS850_DRD_LINKPORT);
++	ss_ports = FIELD_GET(LINKPORT_HOST_NUM_U3, reg);
++
+ 	/* Start PHY Reset (POR=high) */
+ 	reg = readl(regs_base + EXYNOS850_DRD_CLKRST);
++	if (ss_ports) {
++		reg |= CLKRST_PHY20_SW_POR;
++		reg |= CLKRST_PHY20_SW_POR_SEL;
++		reg |= CLKRST_PHY_RESET_SEL;
++	}
+ 	reg |= CLKRST_PHY_SW_RST;
+ 	writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
+ 
+@@ -812,6 +1213,10 @@ static void exynos850_usbdrd_utmi_init(struct exynos5_usbdrd_phy *phy_drd)
+ 	/* Finish PHY reset (POR=low) */
+ 	udelay(10); /* required before doing POR=low */
+ 	reg = readl(regs_base + EXYNOS850_DRD_CLKRST);
++	if (ss_ports) {
++		reg |= CLKRST_PHY20_SW_POR_SEL;
++		reg &= ~CLKRST_PHY20_SW_POR;
++	}
+ 	reg &= ~(CLKRST_PHY_SW_RST | CLKRST_PORT_RST);
+ 	writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
+ 	udelay(75); /* required after POR=low for guaranteed PHY clock */
+@@ -820,6 +1225,13 @@ static void exynos850_usbdrd_utmi_init(struct exynos5_usbdrd_phy *phy_drd)
+ 	reg = readl(regs_base + EXYNOS850_DRD_HSP);
+ 	reg &= ~HSP_FSV_OUT_EN;
+ 	writel(reg, regs_base + EXYNOS850_DRD_HSP);
++
++	if (ss_ports)
++		exynos5_usbdrd_usb_v3p1_pipe_override(phy_drd);
++
++	if (phy_drd->drv_data->phy_tunes)
++		exynos5_usbdrd_apply_phy_tunes(phy_drd,
++					       PTS_UTMI_POSTINIT);
+ }
+ 
+ static int exynos850_usbdrd_phy_init(struct phy *phy)
+@@ -848,6 +1260,9 @@ static int exynos850_usbdrd_phy_exit(struct phy *phy)
+ 	u32 reg;
  	int ret;
  
--	phy_drd->clk = devm_clk_get(phy_drd->dev, "phy");
--	if (IS_ERR(phy_drd->clk)) {
--		dev_err(phy_drd->dev, "Failed to get phy clock\n");
--		return PTR_ERR(phy_drd->clk);
--	}
-+	phy_drd->n_phy_clks = ARRAY_SIZE(phy_clk_list);
-+	phy_drd->phy_clks = devm_kcalloc(phy_drd->dev, phy_drd->n_phy_clks,
-+					 sizeof(*phy_drd->phy_clks),
-+					 GFP_KERNEL);
-+	if (!phy_drd->phy_clks)
-+		return -ENOMEM;
++	if (inst->phy_cfg->id != EXYNOS5_DRDPHY_UTMI)
++		return 0;
 +
-+	for (int i = 0; i < phy_drd->n_phy_clks; ++i)
-+		phy_drd->phy_clks[i].id = phy_clk_list[i];
-+
-+	ret = devm_clk_bulk_get_optional(phy_drd->dev, phy_drd->n_phy_clks,
-+					 phy_drd->phy_clks);
-+	if (ret < 0)
-+		return ret;
+ 	ret = clk_bulk_prepare_enable(phy_drd->n_phy_clks, phy_drd->phy_clks);
+ 	if (ret)
+ 		return ret;
+@@ -884,8 +1299,16 @@ static const struct phy_ops exynos850_usbdrd_phy_ops = {
+ 	.owner		= THIS_MODULE,
+ };
  
- 	phy_drd->ref_clk = devm_clk_get(phy_drd->dev, "ref");
- 	if (IS_ERR(phy_drd->ref_clk)) {
++static const struct phy_ops gs101_usbdrd_phy_ops = {
++	.init		= exynos850_usbdrd_phy_init,
++	.exit		= exynos850_usbdrd_phy_exit,
++	.power_on	= exynos5_usbdrd_phy_power_on,
++	.power_off	= exynos5_usbdrd_phy_power_off,
++	.owner		= THIS_MODULE,
++};
++
+ static const char * const phy_clk_list[] = {
+-	"phy",
++	"phy", "ctrl_aclk", "ctrl_pclk", "scl_pclk",
+ };
+ 
+ static int exynos5_usbdrd_phy_clk_handle(struct exynos5_usbdrd_phy *phy_drd)
+@@ -971,6 +1394,150 @@ static const struct exynos5_usbdrd_phy_config phy_cfg_exynos850[] = {
+ 	},
+ };
+ 
++static const struct exynos5_usbdrd_phy_config phy_cfg_gs101[] = {
++	{
++		.id		= EXYNOS5_DRDPHY_UTMI,
++		.phy_isol	= exynos5_usbdrd_phy_isol,
++		.phy_init	= exynos850_usbdrd_utmi_init,
++	},
++	{
++		.id		= EXYNOS5_DRDPHY_PIPE3,
++		.phy_isol	= exynos5_usbdrd_phy_isol,
++		.phy_init	= exynos5_usbdrd_gs101_pipe3_init,
++	},
++};
++
++static const struct exynos5_usbdrd_phy_tuning gs101_tunes_utmi_postinit[] = {
++	PHY_TUNING_ENTRY_PHY(EXYNOS850_DRD_HSPPARACON,
++			     (HSPPARACON_TXVREF | HSPPARACON_TXRES |
++			      HSPPARACON_TXPREEMPAMP | HSPPARACON_SQRX |
++			      HSPPARACON_COMPDIS),
++			     (FIELD_PREP_CONST(HSPPARACON_TXVREF, 6) |
++			      FIELD_PREP_CONST(HSPPARACON_TXRES, 1) |
++			      FIELD_PREP_CONST(HSPPARACON_TXPREEMPAMP, 3) |
++			      FIELD_PREP_CONST(HSPPARACON_SQRX, 5) |
++			      FIELD_PREP_CONST(HSPPARACON_COMPDIS, 7))),
++	PHY_TUNING_ENTRY_LAST
++};
++
++static const struct exynos5_usbdrd_phy_tuning gs101_tunes_pipe3_preinit[] = {
++	/* preinit */
++	/* CDR data mode exit GEN1 ON / GEN2 OFF */
++	PHY_TUNING_ENTRY_PMA(0x0c8c, -1, 0xff),
++	PHY_TUNING_ENTRY_PMA(0x1c8c, -1, 0xff),
++	PHY_TUNING_ENTRY_PMA(0x0c9c, -1, 0x7d),
++	PHY_TUNING_ENTRY_PMA(0x1c9c, -1, 0x7d),
++	/* improve EDS distribution */
++	PHY_TUNING_ENTRY_PMA(0x0e7c, -1, 0x06),
++	PHY_TUNING_ENTRY_PMA(0x09e0, -1, 0x00),
++	PHY_TUNING_ENTRY_PMA(0x09e4, -1, 0x36),
++	PHY_TUNING_ENTRY_PMA(0x1e7c, -1, 0x06),
++	PHY_TUNING_ENTRY_PMA(0x1e90, -1, 0x00),
++	PHY_TUNING_ENTRY_PMA(0x1e94, -1, 0x36),
++	/* improve LVCC */
++	PHY_TUNING_ENTRY_PMA(0x08f0, -1, 0x30),
++	PHY_TUNING_ENTRY_PMA(0x18f0, -1, 0x30),
++	/* LFPS RX VIH shmoo hole */
++	PHY_TUNING_ENTRY_PMA(0x0a08, -1, 0x0c),
++	PHY_TUNING_ENTRY_PMA(0x1a08, -1, 0x0c),
++	/* remove unrelated option for v4 phy */
++	PHY_TUNING_ENTRY_PMA(0x0a0c, -1, 0x05),
++	PHY_TUNING_ENTRY_PMA(0x1a0c, -1, 0x05),
++	/* improve Gen2 LVCC */
++	PHY_TUNING_ENTRY_PMA(0x00f8, -1, 0x1c),
++	PHY_TUNING_ENTRY_PMA(0x00fc, -1, 0x54),
++	/* Change Vth of RCV_DET because of TD 7.40 Polling Retry Test */
++	PHY_TUNING_ENTRY_PMA(0x104c, -1, 0x07),
++	PHY_TUNING_ENTRY_PMA(0x204c, -1, 0x07),
++	/* reduce Ux Exit time, assuming 26MHz clock */
++	/* Gen1 */
++	PHY_TUNING_ENTRY_PMA(0x0ca8, -1, 0x00),
++	PHY_TUNING_ENTRY_PMA(0x0cac, -1, 0x04),
++	PHY_TUNING_ENTRY_PMA(0x1ca8, -1, 0x00),
++	PHY_TUNING_ENTRY_PMA(0x1cac, -1, 0x04),
++	/* Gen2 */
++	PHY_TUNING_ENTRY_PMA(0x0cb8, -1, 0x00),
++	PHY_TUNING_ENTRY_PMA(0x0cbc, -1, 0x04),
++	PHY_TUNING_ENTRY_PMA(0x1cb8, -1, 0x00),
++	PHY_TUNING_ENTRY_PMA(0x1cbc, -1, 0x04),
++	/* RX impedance setting */
++	PHY_TUNING_ENTRY_PMA(0x0bb0, 0x03, 0x01),
++	PHY_TUNING_ENTRY_PMA(0x0bb4, 0xf0, 0xa0),
++	PHY_TUNING_ENTRY_PMA(0x1bb0, 0x03, 0x01),
++	PHY_TUNING_ENTRY_PMA(0x1bb4, 0xf0, 0xa0),
++
++	PHY_TUNING_ENTRY_LAST
++};
++
++static const struct exynos5_usbdrd_phy_tuning gs101_tunes_pipe3_init[] = {
++	/* init */
++	/* abnormal common pattern mask */
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_BACK_END_MODE_VEC,
++			     BACK_END_MODE_VEC_DISABLE_DATA_MASK, 0),
++	/* de-serializer enabled when U2 */
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_OUT_VEC_2, PCS_OUT_VEC_B4_DYNAMIC,
++			     PCS_OUT_VEC_B4_SEL_OUT),
++	/* TX Keeper Disable, Squelch on when U3 */
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_OUT_VEC_3, PCS_OUT_VEC_B7_DYNAMIC,
++			     PCS_OUT_VEC_B7_SEL_OUT | PCS_OUT_VEC_B2_SEL_OUT),
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_NS_VEC_PS1_N1, -1,
++			     (FIELD_PREP_CONST(NS_VEC_NS_REQ, 5) |
++			      NS_VEC_ENABLE_TIMER |
++			      FIELD_PREP_CONST(NS_VEC_SEL_TIMEOUT, 3))),
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_NS_VEC_PS2_N0, -1,
++			     (FIELD_PREP_CONST(NS_VEC_NS_REQ, 1) |
++			      NS_VEC_ENABLE_TIMER |
++			      FIELD_PREP_CONST(NS_VEC_SEL_TIMEOUT, 3) |
++			      FIELD_PREP_CONST(NS_VEC_COND_MASK, 2) |
++			      FIELD_PREP_CONST(NS_VEC_EXP_COND, 2))),
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_NS_VEC_PS3_N0, -1,
++			     (FIELD_PREP_CONST(NS_VEC_NS_REQ, 1) |
++			      NS_VEC_ENABLE_TIMER |
++			      FIELD_PREP_CONST(NS_VEC_SEL_TIMEOUT, 3) |
++			      FIELD_PREP_CONST(NS_VEC_COND_MASK, 7) |
++			      FIELD_PREP_CONST(NS_VEC_EXP_COND, 7))),
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_TIMEOUT_0, -1, 112),
++	/* Block Aligner Type B */
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_RX_CONTROL, 0,
++			     RX_CONTROL_EN_BLOCK_ALIGNER_TYPE_B),
++	/* Block align at TS1/TS2 for Gen2 stability (Gen2 only) */
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_RX_CONTROL_DEBUG,
++		RX_CONTROL_DEBUG_NUM_COM_FOUND,
++		(RX_CONTROL_DEBUG_EN_TS_CHECK |
++		 /*
++		  * increase pcs ts1 adding packet-cnt 1 --> 4
++		  * lnx_rx_valid_rstn_delay_rise_sp/ssp :
++		  * 19.6us(0x200) -> 15.3us(0x4)
++		  */
++		 FIELD_PREP_CONST(RX_CONTROL_DEBUG_NUM_COM_FOUND, 4))),
++	/* Gen1 Tx DRIVER pre-shoot, de-emphasis, level ctrl */
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_HS_TX_COEF_MAP_0,
++		(HS_TX_COEF_MAP_0_SSTX_DEEMP | HS_TX_COEF_MAP_0_SSTX_LEVEL |
++		 HS_TX_COEF_MAP_0_SSTX_PRE_SHOOT),
++		(FIELD_PREP_CONST(HS_TX_COEF_MAP_0_SSTX_DEEMP, 8) |
++		 FIELD_PREP_CONST(HS_TX_COEF_MAP_0_SSTX_LEVEL, 0xb) |
++		 FIELD_PREP_CONST(HS_TX_COEF_MAP_0_SSTX_PRE_SHOOT, 0))),
++	/* Gen2 Tx DRIVER level ctrl */
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_LOCAL_COEF,
++		LOCAL_COEF_PMA_CENTER_COEF,
++		FIELD_PREP_CONST(LOCAL_COEF_PMA_CENTER_COEF, 0xb)),
++	/* Gen2 U1 exit LFPS duration : 900ns ~ 1.2us */
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_TIMEOUT_3, -1, 4096),
++	/* set skp_remove_th 0x2 -> 0x7 for avoiding retry problem. */
++	PHY_TUNING_ENTRY_PCS(EXYNOS9_PCS_EBUF_PARAM,
++		EBUF_PARAM_SKP_REMOVE_TH_EMPTY_MODE,
++		FIELD_PREP_CONST(EBUF_PARAM_SKP_REMOVE_TH_EMPTY_MODE, 0x7)),
++
++	PHY_TUNING_ENTRY_LAST
++};
++
++static const struct exynos5_usbdrd_phy_tuning *gs101_tunes[] = {
++	[PTS_UTMI_POSTINIT] = gs101_tunes_utmi_postinit,
++	[PTS_PIPE3_PREINIT] = gs101_tunes_pipe3_preinit,
++	[PTS_PIPE3_INIT] = gs101_tunes_pipe3_init,
++};
++
++
+ static const struct exynos5_usbdrd_phy_drvdata exynos5420_usbdrd_phy = {
+ 	.phy_cfg		= phy_cfg_exynos5,
+ 	.phy_ops		= &exynos5_usbdrd_phy_ops,
+@@ -1008,8 +1575,20 @@ static const struct exynos5_usbdrd_phy_drvdata exynos850_usbdrd_phy = {
+ 	.has_common_clk_gate	= true,
+ };
+ 
++static const struct exynos5_usbdrd_phy_drvdata gs101_usbd31rd_phy = {
++	.phy_cfg			= phy_cfg_gs101,
++	.phy_tunes			= gs101_tunes,
++	.phy_ops			= &gs101_usbdrd_phy_ops,
++	.pmu_offset_usbdrd0_phy		= GS101_PHY_CTRL_USB20,
++	.pmu_offset_usbdrd0_phy_ss	= GS101_PHY_CTRL_USBDP,
++	.has_common_clk_gate		= true,
++};
++
+ static const struct of_device_id exynos5_usbdrd_phy_of_match[] = {
+ 	{
++		.compatible = "google,gs101-usb31drd-phy",
++		.data = &gs101_usbd31rd_phy
++	}, {
+ 		.compatible = "samsung,exynos5250-usbdrd-phy",
+ 		.data = &exynos5250_usbdrd_phy
+ 	}, {
+@@ -1048,16 +1627,35 @@ static int exynos5_usbdrd_phy_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(dev, phy_drd);
+ 	phy_drd->dev = dev;
+ 
+-	phy_drd->reg_phy = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(phy_drd->reg_phy))
+-		return PTR_ERR(phy_drd->reg_phy);
+-
+ 	drv_data = of_device_get_match_data(dev);
+ 	if (!drv_data)
+ 		return -EINVAL;
+-
+ 	phy_drd->drv_data = drv_data;
+ 
++	if (of_property_present(dev->of_node, "reg-names")) {
++		void __iomem *reg;
++
++		reg = devm_platform_ioremap_resource_byname(pdev, "phy");
++		if (IS_ERR(reg))
++			return PTR_ERR(reg);
++		phy_drd->reg_phy = reg;
++
++		reg = devm_platform_ioremap_resource_byname(pdev, "pcs");
++		if (IS_ERR(reg))
++			return PTR_ERR(reg);
++		phy_drd->reg_pcs = reg;
++
++		reg = devm_platform_ioremap_resource_byname(pdev, "pma");
++		if (IS_ERR(reg))
++			return PTR_ERR(reg);
++		phy_drd->reg_pma = reg;
++	} else {
++		/* DTB with just a single region */
++		phy_drd->reg_phy = devm_platform_ioremap_resource(pdev, 0);
++		if (IS_ERR(phy_drd->reg_phy))
++			return PTR_ERR(phy_drd->reg_phy);
++	}
++
+ 	ret = exynos5_usbdrd_phy_clk_handle(phy_drd);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to initialize clocks\n");
+diff --git a/include/linux/soc/samsung/exynos-regs-pmu.h b/include/linux/soc/samsung/exynos-regs-pmu.h
+index aa840ed043e1..6765160eaab2 100644
+--- a/include/linux/soc/samsung/exynos-regs-pmu.h
++++ b/include/linux/soc/samsung/exynos-regs-pmu.h
+@@ -657,4 +657,8 @@
+ #define EXYNOS5433_PAD_RETENTION_UFS_OPTION			(0x3268)
+ #define EXYNOS5433_PAD_RETENTION_FSYSGENIO_OPTION		(0x32A8)
+ 
++/* For GS101 */
++#define GS101_PHY_CTRL_USB20					0x3eb0
++#define GS101_PHY_CTRL_USBDP					0x3eb4
++
+ #endif /* __LINUX_SOC_EXYNOS_REGS_PMU_H */
 
 -- 
 2.44.0.769.g3c40516874-goog
