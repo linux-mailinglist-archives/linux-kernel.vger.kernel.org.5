@@ -1,281 +1,423 @@
-Return-Path: <linux-kernel+bounces-155364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD6BA8AE95F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:24:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A36C28AE961
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:24:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4076B2197E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:24:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 329411F24A5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:24:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC7313B5B2;
-	Tue, 23 Apr 2024 14:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B1513BAE2;
+	Tue, 23 Apr 2024 14:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Tyt26JRB"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2055.outbound.protection.outlook.com [40.107.7.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mwIMeQrL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AAF135414;
-	Tue, 23 Apr 2024 14:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.55
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713882252; cv=fail; b=H+iBOlpC6z92CUpeAjDY4s0AvE4eaGGMJ4VI/EHMhmj1d7caATb7OeGPvdvUugxn+FFpnrsurcZtHezdaMUQEk2sXtzPOZa+XHDG4Se5PwUPHdLvwEFMecwoqMrtXjg6YDaBjtR7mEdIy1WNMX2Y5qTizd9zWwdHnOKyeZ7Qoc0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713882252; c=relaxed/simple;
-	bh=aGTCHanwi7v1ZY2J9Z/cJUKW9hhllbyWBbgCQ+jEUXo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=GKepgW5+X+nqdmcZEDgdRD7LwRCIeRK53CICevCiQ5mNEFR10a+aBu2eQHf3QvwIVwdJ8tdlq3UoZHBFT9in9aovmK7xuQSukBmYYnlCWXA4PC92BHkyTGcSp4Xm94D/skYM2Eii1CSI80Ijr5/E3zsBEczEWkc+XP+B5DoDz14=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Tyt26JRB; arc=fail smtp.client-ip=40.107.7.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j30mJhd5p/H4iuWNNjLdFijVlTNo2G0TYo1Q/V3MJ9DcY4omjAVzTZavNIu6vg4OK1ou/of8PAQZZJ5yJLWGyc6U3Ses4PZhkgS1tflV2x407a6wmjze9LcIwm2hYPiUxQlnhT6GThQ8VMjM1GSnvKtQbwx53JAJGj1L+DSTBcbGVeyMD9ZqeCpKUxH72Br30ek2akmSho8dMO3+OfNMd9qnVS6ppqeNVqHoZqAoVpRWpObWf3lYMXQhRfYlYvERxMI5s11Vl6dVRJQbNnyNOAgmzd9lOs8HFylrJCw6CC3IVZMkW0EqQyvCTpgYWOuaTvp926QSpF5WT9LN14E8Ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IjXs8kk8Wi/BhjF1T5NKm5EgDHB8gMAnNp6RwSMwp4k=;
- b=IEemni+t2WT3l8lVlMrtcjOmGwS39gBH7wEnsuiaPuQyEa1B4PNX1I4k2zSFEwbYk2ucGug5kVJwHNtxQ1+4DpBCtElbC00ST5mt/jWP11nM4/vac2oz638dClRHSRKtLcG+cue7/4nzlwl3Oqsxhf5aVZqK6c7balfT93vui7bhKrMJNk98TL7cXnq10VfVCQSNMSesF9K4Sm1UFZ4/NYaJ1TURrbqq1HA7Q8WjdDzEGW2XydxHIsYplSfljltfZl2+iFDR4GBwl+IxokToRvMbjH3KKJNSGY5Nz2IVJP1mpvG3jcjsauQlogym+f4n64QoR0q6yUmClj+R+v5nDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IjXs8kk8Wi/BhjF1T5NKm5EgDHB8gMAnNp6RwSMwp4k=;
- b=Tyt26JRBE6G4h+euc2DGDyxTRdaqg6SzJgV7C0YEt/5JOSWJ3juU9MlAJf7jWCMMEuHSjvhNbB+rY3mH9O4KVFxbBTzt6QWdPKUmHfuR/Sf+6qPquj53bFNZmWZXRuYBs/2Al4SbStCbB1Gmvaf1BezMG9k/9TXNsCcViOD/9Vc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by GVXPR04MB9976.eurprd04.prod.outlook.com (2603:10a6:150:117::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Tue, 23 Apr
- 2024 14:24:07 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7472.044; Tue, 23 Apr 2024
- 14:24:07 +0000
-Date: Tue, 23 Apr 2024 10:23:56 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-pci@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, devicetree@vger.kernel.org,
-	Jason Liu <jason.hui.liu@nxp.com>
-Subject: Re: [PATCH v3 00/11] PCI: imx6: Fix\rename\clean up and add lut
- information for imx95
-Message-ID: <ZifEfKrWKFJ1dFkM@lizhi-Precision-Tower-5810>
-References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
-X-ClientProxiedBy: BYAPR07CA0100.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::41) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58BA513B795;
+	Tue, 23 Apr 2024 14:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713882255; cv=none; b=Q6P8TZo2KxZ3pBaiEyE8aPDLf+lx0qqcHshzVt3W0YAXjx3gCL2h+fiBEX8uZ7Mk3p52ho31xrEymhErKkYy/EZi5z6lUciRbPZbiFNAbiFQOG4qLA3AmJ7ylnRHmM9ZWNaNxlwrpro2bBtLEd5Gac54s55CX34N+eKZOnzCc+U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713882255; c=relaxed/simple;
+	bh=lsKqiX8Zjk3SA4TnopgENDvHBDl4W5onZMLdYgcKjKg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NY9tUST73EVpW+LdSzthEj1ROKhr3MezM/zuuupAP/3ZHuG92F0roU5vHs9vJNBKq1d31A/GyfuevoxUhjRDlFCLSDA7/x2eSxXb750LBFWrSj5wqaGAmZi0Fwil66WMiHWq2/3b0NfefVggxrqKX1ZkVJXODafVCwU8/u3INRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mwIMeQrL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5C72C116B1;
+	Tue, 23 Apr 2024 14:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713882255;
+	bh=lsKqiX8Zjk3SA4TnopgENDvHBDl4W5onZMLdYgcKjKg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mwIMeQrLGCpcC1dwjfuqkkqaaG6CWCweJpkoWeAxh9LAnnifhlfOwNmykhTQYeeQP
+	 XKxMpkAgcQrl+/wICk2WiIXzPThk8iC+HnjOE1qbhMzWAF6m+lyb6e8ahLC1mKPnYB
+	 ioUVaJF+Aq0KNpfPv8YLTjhyXLuB+YOV6AtpYVDnJM3Qa0p2yIZT8BYzTQvSfKydXT
+	 p0Y7027aD9i75V+JgsusBmZao/WFVZuaiEFvGcPBBi1rC7iQmpmQynQm4y7LAvpOLM
+	 Yz48TDtPJGIk6TWbU38wh6Qd+sRgD9cnL+25Ff/br6/ZoJNhsKYtd2s6mbN6RK1Puy
+	 3N+GsfFo3YGPQ==
+Date: Tue, 23 Apr 2024 09:24:12 -0500
+From: Rob Herring <robh@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2] ASoC: dt-bindings: fsl,ssi: Convert to YAML
+Message-ID: <20240423142412.GA138232-robh@kernel.org>
+References: <1713764894-11870-1-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|GVXPR04MB9976:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3055881a-0155-4c4b-7e0e-08dc63a108c2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?cDRwV0dDQzRhWC92aHlqTXZNZmxycXQ2dnVINzY2TEdvYjRMYzBsOWk1Tm9Y?=
- =?utf-8?B?RlRpR21mdzBCVmNsYnB5K1hlWnhISkp0R3BiOVdpbkhsbG82eWdKWXRXbUpT?=
- =?utf-8?B?NUVrSlR6VDRKbW1wT2xja2RPeVdpdkNXdzhQVWFsMWlDb0VBazgxa3NNdEds?=
- =?utf-8?B?YjgyN0pKTS82SEg1SUo1c0tGd3lINE1lUG9zeVFSSTg0U2QwQ3I4QmxqVEVq?=
- =?utf-8?B?SzlYOTh6VDBvV0dYY2Z3NDB4aENkdlRYVmlua2xvc2hjc0lqcmJQaFY2Y05s?=
- =?utf-8?B?YnZ1bCt1L2trYkQzQ2VYcFZGK1BXT3d2V0t5aGhQL0lIUDRadnRhM3NKTWtO?=
- =?utf-8?B?MnhkK1lSSVVZT01LZmZkMDJaZm9SQ0VQRjM5UGtRMGVjSFBWbFNoV0RmY09k?=
- =?utf-8?B?ZlhnSEFaNURpL1Z1cXNsOHdvaVN6TVZoZ1lnQWFqMGNabk43eksxQXUyRUlk?=
- =?utf-8?B?clhsQlJvZFF3b2w2Tk5hTFdxVzdJbkxKM05uU2U3OWJkdGhicGhoTmhmQzds?=
- =?utf-8?B?c09NL0VnNVVORjBERC9MYzNmM0N5dTd1NkZiczBDRncydE5ERW9ERXpPMXNL?=
- =?utf-8?B?TDl5UStndERRQ0VPWDFZMFY2TERXbW5QNnFIQ0psTmtBLzRxN0o4M0NCcHpz?=
- =?utf-8?B?MFR0VERyTSt4ZEFXVzdDNExFMkh0RDZMdm81eEo5OStPcC9zeE1JRWxselUr?=
- =?utf-8?B?REVxRE40bGVBdXJqTWdRTnZscm1qVjJmeGZSY3YyZEd1MlFTV0hCM24xQmph?=
- =?utf-8?B?OERLOHcwYXk5RzdKR25aS04wWWVja0h2YURWNzRuaFVXRHFjd3MrVFphcjhP?=
- =?utf-8?B?SHdJS0JIdURFdDZOSnFEVXlzaWNoUTh6VjBmcVoyaDVTb3E2ckRsM1dDVWNL?=
- =?utf-8?B?bXpMakVoK2dsMFVjTXRwUEVzaE55YXY4Mmk1eDlpODdzTmF4djJxR1c1ZGVV?=
- =?utf-8?B?Z1cxV0Y0aTZaTzFkU000NU5TdTYxTHM2eEo3N3EwblJuZUdOSmZoeEFYamY3?=
- =?utf-8?B?V1lycUlRL2xWeFpGVmt6WW40ZC9XREQrYURDelZOcFBWMGhwSWdmY2QycStK?=
- =?utf-8?B?VytTY2dvK1Q3bGpRcFZ6YjdmTUdCWEM3alUzWTlYeWRDRkV6MVF6cmg2SmEx?=
- =?utf-8?B?emVvSmhieGFYaGJIbll1NkJMTlhWdkdEQm9nbU1XSlhxYWJHK3ZXd1RaVTgz?=
- =?utf-8?B?NC96S3B0blM1cnJweWhrbjB0UEVNOWtPNC94bXZ1R0t4YWVWWHI5ZGE5a1dB?=
- =?utf-8?B?SVRuRS81a0pMZk1LdzNaQVhzNHRKYVc5SU9vMWFLRmkrTkliTUpvMW8wazgy?=
- =?utf-8?B?TmlkbVhNQ1V6d0JPYnl1d3FpM2QxZ2FJVVZNOGNkSFNOTjZ0eDB5elJkVFRP?=
- =?utf-8?B?b1lvMFZDS0lPeTZ2Y3Z3b0dKL3FCSUtEVkc0SXo2UTdad05CdHp1ZUJZMWtJ?=
- =?utf-8?B?aDllcVRWRURpVzNTUmV2bUUzc2pYTDBoWDFDZWV4Q29jK0hzWHVuWGlaMW9j?=
- =?utf-8?B?UEE1Vys4ZTRCUW0zMDFRMFZGTHNiS2w0bkxMck1hOGhqcUxGZDRTTVVPZDQv?=
- =?utf-8?B?RngwRXF2dmw3SGFrWkxDR2pSMzdJR0JLS01UUkxaa0hZYXgwRFJ5MVJqYld2?=
- =?utf-8?B?THl5emVkWTBUMllDQUczcE4yelBtRXdkWlUycmduTUVlN29sWEY1WE9Cb0ZN?=
- =?utf-8?B?bGl2eXg2dnlTY29BYlJZeFppeE9YRnhDVWZEeUYzTDl4cVo3TDJrbTk0NVA5?=
- =?utf-8?Q?ZfkjqWurE6F8wS31B8=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(52116005)(366007)(921011)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?YVpJOHZ1bm0yQ2I2Q2w5NFl2MGNGWkVDSm00MFg5VWhnaklGUUZkMXBsMlU1?=
- =?utf-8?B?ZWhWZkNwY3pmMGdZNmFpV2t1ektlcnhlbDM3UUhIdXJDRmptZG9BUjc2QWNF?=
- =?utf-8?B?YmJqMUdNaFovOTlsM2EvRm8xb2JBVUlEMlNUYW15OGJzYjBYeWdPZmtmek9n?=
- =?utf-8?B?R0U0TU5vTER2T0JhdDFieEIvcnpPdnNpMUFjVHl1bVY5NEZDdkpDbTdjOGZU?=
- =?utf-8?B?dE1TL0ZaM0hYYXJlNHNCa3VqMVVCWi9HYUZmQS8rUk9YMDFQTkNDcjRLOHBm?=
- =?utf-8?B?Z0xhRDdSOFdzbUFYU0JEblh1bWVDZjhIUWJvVkNTSjRKNzBGWWZnbnRyTWhi?=
- =?utf-8?B?TXV6by9qWHVSZGFEQUtoWHNkTSt3WHh6Qzd3UHZDdE5ieTlORFBEd1Q1UlhW?=
- =?utf-8?B?cmkrQTRaRXozUGZWemV6Z25NcElrVFYrcGoyLytoU0RTTm53OTVndFlPWXds?=
- =?utf-8?B?aFpuWExkbTM3R2tzOEoyRzJQdk9xRTNyeTc5K1d4SzBQWU9lZUVlN2pydUVH?=
- =?utf-8?B?dTZnTE5mK1BNLzQ1ajQxNWZ2dE1BWVIyc21YVmNGb3Z1ZTIyUDFWOGNjdnFm?=
- =?utf-8?B?UndlNDZUNm8za2p0MEtpS21LMWVSNFVwMk82MDhuTVVsL09mS2hvSnpuVTd4?=
- =?utf-8?B?NCtyQ29zNG5zb01Uc1llWEF1RjFEU3VydElKek9JKzUzQmVYMU1WVHVUVTdE?=
- =?utf-8?B?MGlGbW1BbU9GQkJrSWE5UE52Q2NYQTlqQW9TcWZMbWNXOFZNb2hzQ05PanZz?=
- =?utf-8?B?YjE4dmN6Y2E3cFZwM0JTRFovTndvcGNmdDdzM2pEakdQblJGM0NxUXQ3bEZH?=
- =?utf-8?B?QTFVSGdObVRIRGtnSTdmYnhpSUFwNjc3dTBwOVI0TkhUL2pPYVRzODZLZlor?=
- =?utf-8?B?Q3VYMDFCSUNXMU9Zd01pTC9ZTkZPbWpIbXJKZnIzLzgzVE9DOWNIbEx4UE1C?=
- =?utf-8?B?WVpkbklrbmlqTjVmVjd4dVVXZjlRUWdRSEJpTEJ0bmQvdDRUejZSSVBsOFRp?=
- =?utf-8?B?Mk9pR21PL29xZW9XTnpMbkhLdUZBYnRTdEV5ZDZRWisvMG4xcklrd0FCMG9r?=
- =?utf-8?B?MW1LSU5XaFR5akQ2QlV0TUViWlNsanpoZGUxNmhYQXdFN1VSU09FT0RFdHgz?=
- =?utf-8?B?ZnJoUEVMV0xjN0hZNGtqbWh3UER1RjQ3RFk5UmsybDRCR1BJQXZHejgrZXpC?=
- =?utf-8?B?Z3JwL21ZNEhUYkpYYno5KzF4dVN1WlJoK1V2eVBVS3ZzaWNvNXRQVXY0Nk9K?=
- =?utf-8?B?MEVsNlRqMVRLUFVhRXUxdDlkSDQzUnJsb053Zi85RTZBWnBubGFQSlNiQldK?=
- =?utf-8?B?Vy9Qdzk0N3lwcC8rQkVQSzUzQ2RFN1JvMnY1Z0Npa3pneGprQXNRTS9DSkRz?=
- =?utf-8?B?ekJaQ0p6SGNBeTUvTUhhWFRCOG5yNFRnUVhtUmlneFVEYlJQRTV3K3BtTkZq?=
- =?utf-8?B?ckJjMC8zYXpUcjQ3N01Ha0poSmY0Y00wK21VYjJoU2xFVVhJOTlFUU9ua3hu?=
- =?utf-8?B?M3dhZHVDbnZDdm0rWEIxOU44Y2NOUldPV2FwN2ZSckhPSUpzdDYwZW96NFd6?=
- =?utf-8?B?bm12eERvUW05S2JUTzlFNFN1Smdtc21EZ3NTOFlYdDBmWU1uU1dndzhyOE5v?=
- =?utf-8?B?QlY2cEpPVEVEWW13YS9WR1M0M0FIZm9ReEhvMEpmWTdreUNFTWxyQVdablhT?=
- =?utf-8?B?ZEZxcVBjS1hLdTlKZGpUc0ZOVGpzdm1DNmVtNk9qMVRlQWpoTUVLcHlRS3lF?=
- =?utf-8?B?SG9sS3dWRDZxYVpwUDNBSE1xOU9qUHBnMzhWZUJrQTlmcUtxeGM3MitmVEFD?=
- =?utf-8?B?K3c0MC8xd21nbHpIa2pwcFJqck9tRG9xc0xxYmZPMm9ZTzdNNGEwU0M3ZVJo?=
- =?utf-8?B?YW9wcnlXRy9mRlZtUTJJejJOWWlEdUYwN3pOR3BJUEhuOHZNakhIVEJKcnd5?=
- =?utf-8?B?aEtNZ0g5YmR2Nm5MYzRSd0VUNGpZWkFVSVpwMTJwejRNUVpnKzRZRm9xblFR?=
- =?utf-8?B?TlpoMkprUEhUN1cycjBub3loVTVmSTBsODV5WWxKUjVFVDJhdTE0VTJlV082?=
- =?utf-8?B?QytjMFdJTEVWOG9pSFpRczdDMkhYczNkeE1UOFBnUGpkdUxBYVlQQUJHZW1H?=
- =?utf-8?Q?OH9FjHj87RRLr8T9wnR1KMGdL?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3055881a-0155-4c4b-7e0e-08dc63a108c2
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 14:24:06.9494
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zPnN/JlAEswN6BkA/hyS5iVHepDF6C0gkZNKKp/l5hHFkrxnGuCeHyjtgibT7Hf3ElWDDqnyLB0AD9yXz2uwdA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB9976
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1713764894-11870-1-git-send-email-shengjiu.wang@nxp.com>
 
-On Tue, Apr 02, 2024 at 10:33:36AM -0400, Frank Li wrote:
-> Fixed 8mp EP mode problem.
+On Mon, Apr 22, 2024 at 01:48:14PM +0800, Shengjiu Wang wrote:
+> Convert the fsl,ssi binding to YAML.
 > 
-> imx6 actaully for all imx chips (imx6*, imx7*, imx8*, imx9*). To avoid     
-> confuse, rename all imx6_* to imx_*, IMX6_* to IMX_*. pci-imx6.c to        
-> pci-imx.c to avoid confuse.                                                
+> Add below compatible strings which were not listed
+> in document:
 > 
-> Using callback to reduce switch case for core reset and refclk.            
+> fsl,imx50-ssi
+> fsl,imx53-ssi
+> fsl,imx25-ssi
+> fsl,imx27-ssi
+> fsl,imx6q-ssi
+> fsl,imx6sl-ssi
+> fsl,imx6sx-ssi
 > 
-> Add imx95 iommux and its stream id information.                            
-
-Mani and lorenzo:
-
-Do you have chance to review these patches?
-
-Frank
-
+> Add below fsl,mode strings which were not listed.
 > 
-> Base on linux-pci/controller/imx
+> i2s-slave
+> i2s-master
+> lj-slave
+> lj-master
+> rj-slave
+> rj-master
 > 
-> To: Richard Zhu <hongxing.zhu@nxp.com>
-> To: Lucas Stach <l.stach@pengutronix.de>
-> To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> To: Krzysztof Wilczyński <kw@linux.com>
-> To: Rob Herring <robh@kernel.org>
-> To: Bjorn Helgaas <bhelgaas@google.com>
-> To: Shawn Guo <shawnguo@kernel.org>
-> To: Sascha Hauer <s.hauer@pengutronix.de>
-> To: Pengutronix Kernel Team <kernel@pengutronix.de>
-> To: Fabio Estevam <festevam@gmail.com>
-> To: NXP Linux Team <linux-imx@nxp.com>
-> To: Philipp Zabel <p.zabel@pengutronix.de>
-> To: Liam Girdwood <lgirdwood@gmail.com>
-> To: Mark Brown <broonie@kernel.org>
-> To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> To: Conor Dooley <conor+dt@kernel.org>
-> Cc: linux-pci@vger.kernel.org
-> Cc: imx@lists.linux.dev
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> Add 'ac97-gpios' property which were not listed.
+> Then dtbs_check can pass.
 > 
-> Changes in v3:
-> - Add an EP fixed patch
->   PCI: imx6: Fix PCIe link down when i.MX8MM and i.MX8MP PCIe is EP mode
->   PCI: imx6: Fix i.MX8MP PCIe EP can not trigger MSI
-> - Add 8qxp rc support
-> dt-bing yaml pass binding check
-> make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,imx6q-pcie.yaml
->   LINT    Documentation/devicetree/bindings
->   DTEX    Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.example.dts
->   CHKDT   Documentation/devicetree/bindings/processed-schema.json
->   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->   DTC_CHK Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.example.dtb
+> And remove the 'codec' description which should be
+> in the 'codec' binding doc.
 > 
-> - Link to v2: https://lore.kernel.org/r/20240304-pci2_upstream-v2-0-ad07c5eb6d67@nxp.com
-> 
-> Changes in v2:
-> - remove file to 'pcie-imx.c'
-> - keep CONFIG unchange.
-> - Link to v1: https://lore.kernel.org/r/20240227-pci2_upstream-v1-0-b952f8333606@nxp.com
-> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 > ---
-> Frank Li (7):
->       PCI: imx6: Rename imx6_* with imx_*
->       PCI: imx6: Rename pci-imx6.c to pcie-imx.c
->       MAINTAINERS: pci: imx: update imx6* to imx* since rename driver file
->       PCI: imx: Simplify switch-case logic by involve set_ref_clk callback
->       PCI: imx: Simplify switch-case logic by involve core_reset callback
->       PCI: imx: Config look up table(LUT) to support MSI ITS and IOMMU for i.MX95
->       PCI: imx: Consolidate redundant if-checks
+> changes in v2:
+> - change fallback string to const.
+> - add dai-common.yaml
+> - add ac97-gpios property
 > 
-> Richard Zhu (4):
->       PCI: imx6: Fix PCIe link down when i.MX8MM and i.MX8MP PCIe is EP mode
->       PCI: imx6: Fix i.MX8MP PCIe EP can not trigger MSI
->       dt-bindings: imx6q-pcie: Add i.MX8Q pcie compatible string
->       PCI: imx6: Add i.MX8Q PCIe support
+>  .../devicetree/bindings/sound/fsl,ssi.txt     |  87 --------
+>  .../devicetree/bindings/sound/fsl,ssi.yaml    | 192 ++++++++++++++++++
+>  2 files changed, 192 insertions(+), 87 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/fsl,ssi.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/fsl,ssi.yaml
 > 
->  .../bindings/pci/fsl,imx6q-pcie-common.yaml        |    5 +
->  .../devicetree/bindings/pci/fsl,imx6q-pcie.yaml    |   18 +
->  MAINTAINERS                                        |    4 +-
->  drivers/pci/controller/dwc/Makefile                |    2 +-
->  .../pci/controller/dwc/{pci-imx6.c => pcie-imx.c}  | 1173 ++++++++++++--------
->  5 files changed, 727 insertions(+), 475 deletions(-)
-> ---
-> base-commit: 2e45e73eebd43365cb585c49b3a671dcfae6b5b5
-> change-id: 20240227-pci2_upstream-0cdd19a15163
-> 
-> Best regards,
-> ---
-> Frank Li <Frank.Li@nxp.com>
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+> deleted file mode 100644
+> index 7e15a85cecd2..000000000000
+> --- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+> +++ /dev/null
+> @@ -1,87 +0,0 @@
+> -Freescale Synchronous Serial Interface
+> -
+> -The SSI is a serial device that communicates with audio codecs.  It can
+> -be programmed in AC97, I2S, left-justified, or right-justified modes.
+> -
+> -Required properties:
+> -- compatible:       Compatible list, should contain one of the following
+> -                    compatibles:
+> -                      fsl,mpc8610-ssi
+> -                      fsl,imx51-ssi
+> -                      fsl,imx35-ssi
+> -                      fsl,imx21-ssi
+> -- cell-index:       The SSI, <0> = SSI1, <1> = SSI2, and so on.
+> -- reg:              Offset and length of the register set for the device.
+> -- interrupts:       <a b> where a is the interrupt number and b is a
+> -                    field that represents an encoding of the sense and
+> -                    level information for the interrupt.  This should be
+> -                    encoded based on the information in section 2)
+> -                    depending on the type of interrupt controller you
+> -                    have.
+> -- fsl,fifo-depth:   The number of elements in the transmit and receive FIFOs.
+> -                    This number is the maximum allowed value for SFCSR[TFWM0].
+> - - clocks:          "ipg" - Required clock for the SSI unit
+> -                    "baud" - Required clock for SSI master mode. Otherwise this
+> -		      clock is not used
+> -
+> -Required are also ac97 link bindings if ac97 is used. See
+> -Documentation/devicetree/bindings/sound/soc-ac97link.txt for the necessary
+> -bindings.
+> -
+> -Optional properties:
+> -- codec-handle:     Phandle to a 'codec' node that defines an audio
+> -                    codec connected to this SSI.  This node is typically
+> -                    a child of an I2C or other control node.
+> -- fsl,fiq-stream-filter: Bool property. Disabled DMA and use FIQ instead to
+> -		    filter the codec stream. This is necessary for some boards
+> -		    where an incompatible codec is connected to this SSI, e.g.
+> -		    on pca100 and pcm043.
+> -- dmas:		    Generic dma devicetree binding as described in
+> -		    Documentation/devicetree/bindings/dma/dma.txt.
+> -- dma-names:	    Two dmas have to be defined, "tx" and "rx", if fsl,imx-fiq
+> -		    is not defined.
+> -- fsl,mode:         The operating mode for the AC97 interface only.
+> -                    "ac97-slave" - AC97 mode, SSI is clock slave
+> -                    "ac97-master" - AC97 mode, SSI is clock master
+> -- fsl,ssi-asynchronous:
+> -                    If specified, the SSI is to be programmed in asynchronous
+> -                    mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
+> -                    all be connected to valid signals.  In synchronous mode,
+> -                    SRCK and SRFS are ignored.  Asynchronous mode allows
+> -                    playback and capture to use different sample sizes and
+> -                    sample rates.  Some drivers may require that SRCK and STCK
+> -                    be connected together, and SRFS and STFS be connected
+> -                    together.  This would still allow different sample sizes,
+> -                    but not different sample rates.
+> -- fsl,playback-dma: Phandle to a node for the DMA channel to use for
+> -                    playback of audio.  This is typically dictated by SOC
+> -                    design.  See the notes below.
+> -                    Only used on Power Architecture.
+> -- fsl,capture-dma:  Phandle to a node for the DMA channel to use for
+> -                    capture (recording) of audio.  This is typically dictated
+> -                    by SOC design.  See the notes below.
+> -                    Only used on Power Architecture.
+> -
+> -Child 'codec' node required properties:
+> -- compatible:       Compatible list, contains the name of the codec
+> -
+> -Child 'codec' node optional properties:
+> -- clock-frequency:  The frequency of the input clock, which typically comes
+> -                    from an on-board dedicated oscillator.
+> -
+> -Notes on fsl,playback-dma and fsl,capture-dma:
+> -
+> -On SOCs that have an SSI, specific DMA channels are hard-wired for playback
+> -and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
+> -playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
+> -playback and DMA channel 3 for capture.  The developer can choose which
+> -DMA controller to use, but the channels themselves are hard-wired.  The
+> -purpose of these two properties is to represent this hardware design.
+> -
+> -The device tree nodes for the DMA channels that are referenced by
+> -"fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
+> -"fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
+> -"fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
+> -"fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
+> -drivers (fsldma) will attempt to use them, and it will conflict with the
+> -sound drivers.
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.yaml b/Documentation/devicetree/bindings/sound/fsl,ssi.yaml
+> new file mode 100644
+> index 000000000000..d22911b0e9ef
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/fsl,ssi.yaml
+> @@ -0,0 +1,192 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/fsl,ssi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale Synchronous Serial Interface
+> +
+> +maintainers:
+> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> +
+> +description:
+> +  Notes on fsl,playback-dma and fsl,capture-dma
+> +  On SOCs that have an SSI, specific DMA channels are hard-wired for playback
+> +  and capture.  On the MPC8610, for example, SSI1 must use DMA channel 0 for
+> +  playback and DMA channel 1 for capture.  SSI2 must use DMA channel 2 for
+> +  playback and DMA channel 3 for capture.  The developer can choose which
+> +  DMA controller to use, but the channels themselves are hard-wired.  The
+> +  purpose of these two properties is to represent this hardware design.
+> +
+> +  The device tree nodes for the DMA channels that are referenced by
+> +  "fsl,playback-dma" and "fsl,capture-dma" must be marked as compatible with
+> +  "fsl,ssi-dma-channel".  The SOC-specific compatible string (e.g.
+> +  "fsl,mpc8610-dma-channel") can remain.  If these nodes are left as
+> +  "fsl,elo-dma-channel" or "fsl,eloplus-dma-channel", then the generic Elo DMA
+> +  drivers (fsldma) will attempt to use them, and it will conflict with the
+> +  sound drivers.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - fsl,imx50-ssi
+> +              - fsl,imx53-ssi
+> +          - enum:
+> +              - fsl,imx51-ssi
+
+const
+
+> +          - const: fsl,imx21-ssi
+> +      - items:
+> +          - enum:
+> +              - fsl,imx25-ssi
+> +              - fsl,imx27-ssi
+> +              - fsl,imx35-ssi
+> +              - fsl,imx51-ssi
+> +              - fsl,imx6q-ssi
+> +              - fsl,imx6sl-ssi
+> +              - fsl,imx6sx-ssi
+> +          - enum:
+> +              - fsl,imx21-ssi
+> +              - fsl,imx51-ssi
+
+Fallbacks cannot be enum's. You need to split this into 2. Also, there's 
+no valid entry for "fsl,imx21-ssi".
+
+It also doesn't make sense that sometimes mx21 is a fallback of mx51, 
+but then sometimes the last fallback is mx51.
+
+> +      - items:
+> +          - const: fsl,mpc8610-ssi
+> +
+> +  cell-index:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [0, 1, 2]
+> +    description: The SSI index
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  fsl,fifo-depth:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      The number of elements in the transmit and receive FIFOs.
+> +      This number is the maximum allowed value for SFCSR[TFWM0].
+
+Ordering is standard properties first (like 'clocks') and then vendor 
+specific properties last.
+
+You need some constraints on the fsl,fifo-depth values.
+
+> +
+> +  clocks:
+> +    items:
+> +      - description: The ipg clock for register access
+> +      - description: clock for SSI master mode
+> +    minItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ipg
+> +      - const: baud
+> +    minItems: 1
+> +
+> +  dmas:
+> +    oneOf:
+> +      - items:
+> +          - description: DMA controller phandle and request line for RX
+> +          - description: DMA controller phandle and request line for TX
+> +      - items:
+> +          - description: DMA controller phandle and request line for RX0
+> +          - description: DMA controller phandle and request line for TX0
+> +          - description: DMA controller phandle and request line for RX1
+> +          - description: DMA controller phandle and request line for TX1
+> +
+> +  dma-names:
+> +    oneOf:
+> +      - items:
+> +          - const: rx
+> +          - const: tx
+> +      - items:
+> +          - const: rx0
+> +          - const: tx0
+> +          - const: rx1
+> +          - const: tx1
+> +
+> +  codec-handle:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      Phandle to a 'codec' node that defines an audio
+> +      codec connected to this SSI.  This node is typically
+> +      a child of an I2C or other control node.
+> +
+> +  fsl,fiq-stream-filter:
+> +    type: boolean
+> +    description:
+> +      Disabled DMA and use FIQ instead to filter the codec stream.
+> +      This is necessary for some boards where an incompatible codec
+> +      is connected to this SSI, e.g. on pca100 and pcm043.
+> +
+> +  fsl,mode:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    enum: [ ac97-slave, ac97-master, i2s-slave, i2s-master,
+> +            lj-slave, lj-master, rj-slave, rj-master ]
+> +    description: |
+> +      "ac97-slave" - AC97 mode, SSI is clock slave
+> +      "ac97-master" - AC97 mode, SSI is clock master
+> +      "i2s-slave" - I2S mode, SSI is clock slave
+> +      "i2s-master" - I2S mode, SSI is clock master
+> +      "lj-slave" - Left justified mode, SSI is clock slave
+> +      "lj-master" - Left justified mode, SSI is clock master
+> +      "rj-slave" - Right justified mode, SSI is clock slave
+> +      "rj-master" - Right justified mode, SSI is clock master
+> +
+> +  fsl,ssi-asynchronous:
+> +    type: boolean
+> +    description: If specified, the SSI is to be programmed in asynchronous
+> +      mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
+> +      all be connected to valid signals.  In synchronous mode,
+> +      SRCK and SRFS are ignored.  Asynchronous mode allows
+> +      playback and capture to use different sample sizes and
+> +      sample rates.  Some drivers may require that SRCK and STCK
+> +      be connected together, and SRFS and STFS be connected
+> +      together.  This would still allow different sample sizes,
+> +      but not different sample rates.
+> +
+> +  fsl,playback-dma:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Phandle to a node for the DMA channel to use for
+> +      playback of audio.  This is typically dictated by SOC
+> +      design. Only used on Power Architecture.
+> +
+> +  fsl,capture-dma:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: Phandle to a node for the DMA channel to use for
+> +      capture (recording) of audio.  This is typically dictated
+> +      by SOC design. Only used on Power Architecture.
+> +
+> +  ac97-gpios:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description: Please refer to soc-ac97link.txt
+> +
+> +  "#sound-dai-cells":
+> +    const: 0
+> +    description: optional, some dts node didn't add it.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - fsl,fifo-depth
+> +
+> +allOf:
+> +  - $ref: dai-common.yaml#
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/imx6qdl-clock.h>
+> +    ssi1: ssi@2028000 {
+
+Drop unused labels.
+> +        compatible = "fsl,imx6q-ssi",
+> +                     "fsl,imx51-ssi";
+
+This fits on 1 line.
+
+> +        reg = <0x02028000 0x4000>;
+> +        interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&clks IMX6QDL_CLK_SSI1_IPG>,
+> +                 <&clks IMX6QDL_CLK_SSI1>;
+> +        clock-names = "ipg", "baud";
+> +        dmas = <&sdma 37 1 0>, <&sdma 38 1 0>;
+> +        dma-names = "rx", "tx";
+> +        #sound-dai-cells = <0>;
+> +        fsl,fifo-depth = <15>;
+> +    };
+> -- 
+> 2.34.1
 > 
 
