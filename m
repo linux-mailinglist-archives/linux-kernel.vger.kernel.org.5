@@ -1,127 +1,98 @@
-Return-Path: <linux-kernel+bounces-155479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 317008AEB25
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:31:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C863D8AEB28
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:32:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 636A31C22AB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:31:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 687511F23DA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37A213C695;
-	Tue, 23 Apr 2024 15:31:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 626EC13C800;
+	Tue, 23 Apr 2024 15:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PXM5pSNp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="cPWUViJs"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5BF413BC33;
-	Tue, 23 Apr 2024 15:31:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC7513776F;
+	Tue, 23 Apr 2024 15:31:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713886291; cv=none; b=LkY9ZO/DHaZbRs02IGPCzwWLmI6N2e1fM4uklq+gov91J6Ho+RvpmtU31jzttyH7sVM6HG7KjURiBzrBmc7PZ3PxitPw7GtE5th2ruEtPnwf5df2Fo8aKmij3c4hzfq3dGd6Mk4bRAo1vXuee1BlAQLi3v9nd0IQpUXJuqMeZFc=
+	t=1713886319; cv=none; b=boXBpS3iC+WcGshQwrma2GwyZQc1nPbNSp/XE08ov7oYZ5rCtsiFSkRelRUdjgm0EZSm3gumuau2EgyOCdlOUo1T0nSgqsEBOxI7Q0GNY2pCSADecOP/YcPDJ3f45KfbcJfzcZegSSAa/gq88PBp0pCYANJXOGgpypCh5gWolao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713886291; c=relaxed/simple;
-	bh=BlpavYPezI9leAXjmHFPwGvnManzT7FMGBMAmW5A9bk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WkymYwu75BR9LmloWfp7Tl5gAcuiX4lUavR+SF6KBK+1Lyv552fQ6MSOc4atI36CXtUxb29w/jnMQ6udwgukEkt13lJHOCaqCuAwRfD99jkxqmLOOfxdjSnBk9IacWBpeUUT1VyZztgC9TpPivNtN3zWoGiSy4VF9oHhnZH9Slc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PXM5pSNp; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713886290; x=1745422290;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BlpavYPezI9leAXjmHFPwGvnManzT7FMGBMAmW5A9bk=;
-  b=PXM5pSNpP5WbLYA3ajOKC5ly27PNCToxlGqTkpgaXaCxR9umm/JR/AFm
-   ci6Ll2dGmDOiv21Km/4vRFQVsOksmoBIuerho5O2My6zsiQq8JJePSNri
-   2yvh86SC82RM677i/D5kxBrfjMSBFEbiksKzUdo4sXKYJcwTB7Nkry0Sh
-   9u761a1NXh7G3moDaeVkGXNLKY6IlX/nstJcM9DcsZmypFM1tLewtVHuc
-   j9PNHFzipd+ZnXm9L2EzpuqCLlx+aOcyGZL+fwF4k9HsP7ncsj1OsygFx
-   SEPdl6NvgTjafL8/lPyqP/9JmJHd035hxuN9Q3z5fB28MTkJFtjC+Qwn0
-   A==;
-X-CSE-ConnectionGUID: SSc2HXT6ROCd7q3+65YTiA==
-X-CSE-MsgGUID: mpRh+nh8SzSjWlM9mb7BFQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="9585993"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9585993"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:31:29 -0700
-X-CSE-ConnectionGUID: 7Wl1e3GhTIiPTuRGr92bFA==
-X-CSE-MsgGUID: Zz8/bys6SDqEXh8Z1+NeTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="55364540"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:31:24 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rzI76-00000000NQF-21FL;
-	Tue, 23 Apr 2024 18:31:20 +0300
-Date: Tue, 23 Apr 2024 18:31:20 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: nuno.sa@analog.com
-Cc: Petr Mladek <pmladek@suse.com>, Chris Down <chris@chrisdown.name>,
-	John Ogness <john.ogness@linutronix.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Olivier Moysan <olivier.moysan@foss.st.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Jyoti Bhayana <jbhayana@google.com>, linux-kernel@vger.kernel.org,
-	linux-iio@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dev_printk: add new dev_err_probe() helpers
-Message-ID: <ZifUSKFh2C4VG5QB@smile.fi.intel.com>
-References: <20240423-dev-add_dev_errp_probe-v2-0-12f43c5d8b0d@analog.com>
- <20240423-dev-add_dev_errp_probe-v2-1-12f43c5d8b0d@analog.com>
+	s=arc-20240116; t=1713886319; c=relaxed/simple;
+	bh=OAXHGuB2S7zVOdQ/dF5+GpP9iAUxwcWQOhCvIwvgmg8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KZti7v/dzcGPIN8Nf7DaAgkZ+DB0dsehJrfZ/beuTRjS35Vwf/7nX8pcph/4CYX1lvKCZ8SqsqSf5Luq1RiU1f3SHWknlIIgU6K6sWwIvZxtgSpwS0u/FGwYmptWCoLfuelSWtDm9i8frzHmHhd3HU7XSmdqUBRRzXntK/g4ECM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=cPWUViJs; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 8ED88600A7;
+	Tue, 23 Apr 2024 15:31:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1713886313;
+	bh=OAXHGuB2S7zVOdQ/dF5+GpP9iAUxwcWQOhCvIwvgmg8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cPWUViJsiaBV+FvnZ2RblzJiZ0sG7U/DitKHnJbJVbBr4OASHP8p6VAlU5oUQtxo7
+	 cfbVIqRu9Sszj5DKc9zBNQp4xVwU4Ojv3RWH3TAybh2Jix7F6Yxh2/bhoxz+C1u+RY
+	 yO+5gx9A0y2YA9yj2H0Cwcn5vmPtoWouB83Ykmh82lnd96aOmOXN4+bE5FBg6Fj9ke
+	 2KM/MQPn3eMkcPCfBFIdZYK0uSNr8IVZQjR7tPJlH0Njbcbb9EwBkzafzobZMuKg1M
+	 27hmAmVqDHJWZ+6mTeEGXK63luwE5beMfWjRTK+Yp62yjg7rNQtuRakIt9RE4p6yOo
+	 4Z+COCcTQhlFQ==
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by x201s (Postfix) with ESMTP id 2F979202787;
+	Tue, 23 Apr 2024 15:31:40 +0000 (UTC)
+Message-ID: <a8238354-c36e-4dcb-88ba-1417adc44245@fiberby.net>
+Date: Tue, 23 Apr 2024 15:31:39 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240423-dev-add_dev_errp_probe-v2-1-12f43c5d8b0d@analog.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] net: ethernet: ti: cpsw: flower: validate
+ control flags
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Siddharth Vadapalli <s-vadapalli@ti.com>,
+ Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>,
+ linux-omap@vger.kernel.org
+References: <20240422152656.175627-1-ast@fiberby.net>
+ <ZiewT6N2fjhFwrpW@nanopsycho>
+Content-Language: en-US
+From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
+In-Reply-To: <ZiewT6N2fjhFwrpW@nanopsycho>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 23, 2024 at 05:20:30PM +0200, Nuno Sa via B4 Relay wrote:
-> From: Nuno Sa <nuno.sa@analog.com>
-> 
-> This is similar to dev_err_probe() but for cases where an ERR_PTR() or
-> ERR_CAST() is to be returned simplifying patterns like:
-> 
-> 	dev_err_probe(dev, ret, ...);
-> 	return ERR_PTR(ret)
-> or
-> 	dev_err_probe(dev, PTR_ERR(ptr), ...);
-> 	return ERR_CAST(ptr)
+Hi Jiri,
 
-..
+Thank you for the reviews.
 
-> +/* Simple helper for dev_err_probe() when ERR_PTR() is to be returned. */
-> +#define dev_err_ptr_probe(dev, ___err, fmt, ...)	({		\
-> +	ERR_PTR(dev_err_probe(dev, ___err, fmt, ##__VA_ARGS__));	\
-> +})
+On 4/23/24 12:57 PM, Jiri Pirko wrote:
+> Next time, could you please bundle similar/related patches into
+> a patchset?
 
-Why ; and hence why ({}) ?
+Sure, I did it per driver to make it easier to handle differences in
+get_maintainer output and be able to integrate feedback into later patches
+for other drivers, and since the patches could be applied individually.
+When I started I through that more drivers had their own trees, wasn't
+aware that it was only Intel, and that mlx5-next was dead.
+For instance the feedback from Jianbo on mlx5 patch, also went into the
+octeontx2-pf patch.
 
-I even believe the compiler may warn if you have double ;; in some cases.
-
-..
-
-> +#define dev_err_cast_probe(dev, ___err_ptr, fmt, ...)	({			\
-> +	ERR_PTR(dev_err_probe(dev, PTR_ERR(___err_ptr), fmt, ##__VA_ARGS__));	\
-> +})
-
-Ditto.
+I only have one patch left in the queue now (for qede).
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Best regards
+Asbjørn Sloth Tønnesen
+Network Engineer
+Fiberby - AS42541
 
