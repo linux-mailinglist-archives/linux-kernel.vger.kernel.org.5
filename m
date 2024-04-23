@@ -1,152 +1,133 @@
-Return-Path: <linux-kernel+bounces-155822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DFEE8AF796
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C09668AF799
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:51:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC8491F236AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:51:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DE611F2385A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04A491422BA;
-	Tue, 23 Apr 2024 19:49:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB5B142654;
+	Tue, 23 Apr 2024 19:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dICKS0G9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hyhVKDGv"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4692E13E3F8
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 19:49:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52001420BE
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 19:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713901793; cv=none; b=boF/Uxi3uNZ6yTyLft/GqVnYQjM0RnTT9fH5SIWT99nRVwRZwYMQSW6G61xR7LUTmLPX1aAUA3RL9ldze0cH/niQclskyKhuWw6GkBEnBYSf5T8bd7O5d2UhWEP8CxRlOg0IrEHdMwxG2UuTOUiAPICJvRH1VKjhPgM0SpRtIEQ=
+	t=1713901839; cv=none; b=mHXf6CSedXmiMMTQo4hSmIj1IyjQ0CP1oKsNLMUsdovUgPe2fCL9ZRrkWWI05z350xiQ3aaIoFqsdrSrkBFON5H3b8VuqNk1V2I2X2hrK4jLGluEYjb95bXYCTFISMPnctpyXp0mTpTuLHCMjFjpBTjLlkSSbTflZv3j7yRrI4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713901793; c=relaxed/simple;
-	bh=p4ePbeqG6cRJBW5GIQ6tZmdVtnpRun7EiUCLgzd+ztE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ceV6uYOdIRGVmJ/f06XPemk8MlhlxVlY50wUgUFpVPnW4n0YMnnqs9M8G+G1bvTikSJ+MfzFTXiwLn2Qiz/3gjVJD3yYJBD0YgPD2sbEpEm6UgXGKRRgdsfH1Wg4gfmTbP0pZSH8Vqeu4t1tpyhyJT0SDAgZksuJdIuPFaOijwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dICKS0G9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D42F7C116B1;
-	Tue, 23 Apr 2024 19:49:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713901792;
-	bh=p4ePbeqG6cRJBW5GIQ6tZmdVtnpRun7EiUCLgzd+ztE=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=dICKS0G9TNFTz+s+Z/ZyQBlK2fcJzcPfj2x/4ApajgXk81lpSCqxMaIE2BFXp3fRy
-	 LaQ3LMzgd0Oo7eUI+aCZY4dbF6/pEGuaFZocpyePlL48DzsfJJwwUdaGBi5GZ3Z1Rd
-	 yL/KMAQtBY3z3Mrj+2DGRU3xX6l7qkpsTVmO1yV+nfc7y7518H6gj+xfBOZFNf0fjB
-	 iAOrzzw1Ihns7GWCIkYyxB1up3dVWrtKgIws6jDdA/Ohgb375V5Qzp/dYu5sP3H7Kn
-	 jD2bnjpYs+XxrzQJx0kYsGjDTeMMK9w1L6vKOirfft14Yvoj7EwNbs01GwEOfupTN4
-	 gvNh31LYLzYdg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 83714CE0962; Tue, 23 Apr 2024 12:49:52 -0700 (PDT)
-Date: Tue, 23 Apr 2024 12:49:52 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Willy Tarreau <w@1wt.eu>
-Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, Rodrigo Campos <rodrigo@sdfg.com.ar>
-Subject: Re: [PATCH v3 4/4] selftests/nolibc: Add tests for strlcat() and
- strlcpy()
-Message-ID: <ada70a65-5a87-489f-8080-97049740bff9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240218195110.1386840-1-rodrigo@sdfg.com.ar>
- <20240218195110.1386840-5-rodrigo@sdfg.com.ar>
- <172d25cf-cfd7-4069-8c26-df2e81ffbad1@t-8ch.de>
- <Zifhr1sX5soHlXSG@1wt.eu>
+	s=arc-20240116; t=1713901839; c=relaxed/simple;
+	bh=pFj9t6VlpRLxHZnIcT1VrnG+fk41RI1/LJ9PeLBk/IU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KivNZwoDqwEcgv2JQDjSOE9lVhY7dziwM4eeG62SKI4fkn6RMdMGuTyDdi1Bp3JlWaB8b3YMVVNMDl9JW18KmxmdCBb7Ta5fDwXsaLHJ5UwDg12baSXeFZDHgaNdEBUeGNIz8UJdc46XUIptGBPE0wwUhPs0MrxlBy5yLeZu/0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hyhVKDGv; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713901836;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ewtLT1/cjSQQ557ikydUTGboR16eS4xNzisoXGg5JBk=;
+	b=hyhVKDGvgZrz6Dx68PafMVtlQRdxTR8AGLSYoUnOrh8mRL1Zg7xpM4Y0w8PcGM395oejGW
+	8O3iar57WefNd98716fDEVJTwgEfjTX+E3D1lWUswTGdTR0KkEEkxTs4lvsBsJ1guLmxZH
+	k4pBSQk9BBO2PogGxS1qJ5NT4T8sm/0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-513-Br_0pyUyPB2MACWBfIuM5Q-1; Tue, 23 Apr 2024 15:50:33 -0400
+X-MC-Unique: Br_0pyUyPB2MACWBfIuM5Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8FE21834FB6;
+	Tue, 23 Apr 2024 19:50:32 +0000 (UTC)
+Received: from [10.22.33.184] (unknown [10.22.33.184])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 926A8200E290;
+	Tue, 23 Apr 2024 19:50:31 +0000 (UTC)
+Message-ID: <a583d400-ed59-46b8-a26d-b726055b5cad@redhat.com>
+Date: Tue, 23 Apr 2024 15:50:31 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup/cpuset: Statically initialize more members
+ of top_cpuset
+To: Klara Modin <klarasmodin@gmail.com>, Xiu Jianfeng
+ <xiujianfeng@huawei.com>, lizefan.x@bytedance.com, tj@kernel.org,
+ hannes@cmpxchg.org
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240420094616.1028540-1-xiujianfeng@huawei.com>
+ <f2edf788-6ff3-43b1-9445-ac237e7910ac@gmail.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <f2edf788-6ff3-43b1-9445-ac237e7910ac@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zifhr1sX5soHlXSG@1wt.eu>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Tue, Apr 23, 2024 at 06:28:31PM +0200, Willy Tarreau wrote:
-> Hi Thomas,
-> 
-> On Tue, Apr 23, 2024 at 11:18:06AM +0200, Thomas Wei�schuh wrote:
-> > + Shuah and Paul, please see below.
-> > 
-> > So I picked this up and it got picked up by Shuah, but...
-> > 
-> > On 2024-02-18 16:51:06+0000, Rodrigo Campos wrote:
-> > > I've verified that the tests matches libbsd's strlcat()/strlcpy()
-> > > implementation.
-> > > 
-> > > Please note that as strlcat()/strlcpy() are not part of the libc, the
-> > > tests are only compiled when using nolibc.
-> > > 
-> > > Signed-off-by: Rodrigo Campos <rodrigo@sdfg.com.ar>
-> > > ---
-> > >  tools/testing/selftests/nolibc/nolibc-test.c | 40 ++++++++++++++++++++
-> > >  1 file changed, 40 insertions(+)
-> > > 
-> > > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-> > > index 6ba4f8275ac4..d373fc14706c 100644
-> > > --- a/tools/testing/selftests/nolibc/nolibc-test.c
-> > > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
-> > > @@ -600,6 +600,25 @@ int expect_strne(const char *expr, int llen, const char *cmp)
-> > >  	return ret;
-> > >  }
-> > >  
-> > > +#define EXPECT_STRBUFEQ(cond, expr, buf, val, cmp)				\
-> > > +	do { if (!(cond)) result(llen, SKIPPED); else ret += expect_str_buf_eq(expr, buf, val, llen, cmp); } while (0)
-> > > +
-> > > +static __attribute__((unused))
-> > > +int expect_str_buf_eq(size_t expr, const char *buf, size_t val, int llen, const char *cmp)
-> > > +{
-> > > +	llen += printf(" = %lu <%s> ", expr, buf);
-> > 
-> > This introduces a compiler warning on 32bit:
-> > 
-> >     i386-linux-gcc -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 -W -Wall -Wextra -fno-stack-protector -m32 -mstack-protector-guard=global -fstack-protector-all  -o nolibc-test \
-> >       -nostdlib -nostdinc -static -Isysroot/i386/include nolibc-test.c nolibc-test-linkage.c -lgcc
-> >     nolibc-test.c: In function 'expect_str_buf_eq':
-> >     nolibc-test.c:610:30: error: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'unsigned int'} [-Werror=format=]
-> >       610 |         llen += printf(" = %lu <%s> ", expr, buf);
-> >           |                            ~~^         ~~~~
-> >           |                              |         |
-> >           |                              |         size_t {aka unsigned int}
-> >           |                              long unsigned int
-> >           |                            %u
-> > 
-> > 
-> > It is easy enough to fix through a cast to "unsigned long".
-> 
-> Yes, that's usually what I do as well with size_t everywhere as well.
-> 
-> > The original patch was already sent to Shuah and included in -next.
-> > 
-> > Shuah, Paul:
-> > 
-> > I'd like to rewrite the offending commit instead of having a fixup commit.
-> > As it seems to me the original patch would only go into 6.10 anyways.
-> > 
-> > Any objections?
-> 
-> I, too, think it would be the cleanest history-wise, I just don't know
-> if that's the easiest for Shuah if it requires to change already published
-> commit IDs.
 
-One way would be to resend the series and have Shuah replace what she
-has with the new series.  But I don't know enough about Shuah's process
-to judge.
+On 4/23/24 15:21, Klara Modin wrote:
+> Hi,
+>
+> On 2024-04-20 11:46, Xiu Jianfeng wrote:
+>> Initializing top_cpuset.relax_domain_level and setting
+>> CS_SCHED_LOAD_BALANCE to top_cpuset.flags in cpuset_init() could be
+>> completed at the time of top_cpuset definition by compiler.
+>>
+>> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 5 ++---
+>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index d8d3439eda4e..e70008a1d86a 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -369,8 +369,9 @@ static inline void notify_partition_change(struct 
+>> cpuset *cs, int old_prs)
+>>     static struct cpuset top_cpuset = {
+>>       .flags = ((1 << CS_ONLINE) | (1 << CS_CPU_EXCLUSIVE) |
+>> -          (1 << CS_MEM_EXCLUSIVE)),
+>> +          (1 << CS_MEM_EXCLUSIVE) | (1 < CS_SCHED_LOAD_BALANCE)),
+>
+> You dropped a '<' for the bitwise shift, this causes bad cpu 
+> utilization for me.
 
-							Thanx, Paul
+Oh, now load_balancing is disable by default in the root cgroup. That is 
+bad. Will post a patch to fix it.
 
-> > Notes to self:
-> > 
-> > * Add flag to run-tests.sh to use -Werror
-> > * Implement "%zu" in nolibc printf()
-> 
-> Could be nice indeed!
-> 
-> Thanks Thomas for taking care of this!
-> Willy
+Thanks,
+Longman
+
+
+
+>
+>>       .partition_root_state = PRS_ROOT,
+>> +    .relax_domain_level = -1,
+>>       .remote_sibling = LIST_HEAD_INIT(top_cpuset.remote_sibling),
+>>   };
+>>   @@ -4309,8 +4310,6 @@ int __init cpuset_init(void)
+>>       nodes_setall(top_cpuset.effective_mems);
+>>         fmeter_init(&top_cpuset.fmeter);
+>> -    set_bit(CS_SCHED_LOAD_BALANCE, &top_cpuset.flags);
+>> -    top_cpuset.relax_domain_level = -1;
+>>       INIT_LIST_HEAD(&remote_children);
+>>         BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
+>
+> Kind regards,
+> Klara Modin
+
 
