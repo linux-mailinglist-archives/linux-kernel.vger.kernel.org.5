@@ -1,129 +1,102 @@
-Return-Path: <linux-kernel+bounces-155132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0836E8AE5AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:10:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2986E8AE5AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:11:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3981A1C22E7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:10:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B1491C22F73
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F064884FAC;
-	Tue, 23 Apr 2024 12:10:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b2DsS/eV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2500127E0B;
+	Tue, 23 Apr 2024 12:10:44 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD1082898;
-	Tue, 23 Apr 2024 12:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B615386265;
+	Tue, 23 Apr 2024 12:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713874239; cv=none; b=jKgnW9qmri6e9ei9P3/AylythbH45hjmpIL3pXe4CVn1G3YUKOmqSXQctTNS+Mgf9JLKzMBbA4XTz0oVVUzt+ifE9c4mpy5m+ny30hMCupcAVSDXlrldubVWBTVDArb8hEbQNrWFu92BoLYbnrK3amWwkI2ifWyWhySnHdsatQI=
+	t=1713874244; cv=none; b=Xh6UV/EHQNzVCaSxMh6Pi+zdkO+BpFM4LqB+3X3wNXZiZdUDi6+P8SPvWpsxC4/ucFknueq8M6co5jlcqdfAkz6dqYHq5L1WHpLvSzidSp8dSsm35ggXBCCTqdb4E2uQy3berHG9fkfYDavKz8HnffaXw+TCsw01bLLIfB+OG+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713874239; c=relaxed/simple;
-	bh=57X0JJu/+mVaWcKCLO7Zhzink6AC/E+FmTys3gYEpX8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MnNJkcSCTlbgllv34p5Ycvu5mZq1FauFfjRfcX8EUjK8dPNXALhTbn8+E0OhJuBX72xzs67i/2tf5gCL6QuUZta7bb2Vf+v2tIPJLPuCwLwIwspE1983EhpVx64SDBuLAjOGN0ttD3x0BdPlfuQcf/YVriVTSdKkghqUAJdozV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b2DsS/eV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAE46C2BD11;
-	Tue, 23 Apr 2024 12:10:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713874238;
-	bh=57X0JJu/+mVaWcKCLO7Zhzink6AC/E+FmTys3gYEpX8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=b2DsS/eVXByCFce6qWc8zzqysTsk/FEJ87pzVex6XTw8Wv5vyp1/JiRVrjBYyib9E
-	 /rOf7lnc8Fq1PqVxmA3V1QxAHdBedqzc+q5mpwM+JJDUyyq5bcRTtELWTyTnWmqDwE
-	 7tAxl1iOAlIY0YNPkj2kEHplKWVYCAthlileX317gFlXoY5GmPW2sOYFGxi6GXDlDa
-	 uMamAtX5nP3v2NCuNKYbx4/t/08HF9NDDMdnv4mPzVe6n1HZtj7P22hiazSnyrPdy1
-	 pou/EwXwMr7ja5fbpqyfEcfW6Y0OUsIFtoKYHziZacnm1EWHoyN+hbBct+vDMznLcx
-	 NU2uThuG9gBVg==
-Message-ID: <e401ce93-091c-4733-ab95-1aa21996d54d@kernel.org>
-Date: Tue, 23 Apr 2024 14:10:33 +0200
+	s=arc-20240116; t=1713874244; c=relaxed/simple;
+	bh=Nop/hThbF2HzvuBYxmGb29cMh/jcpean0AZbibqZBiQ=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=OB2EtgKSgDidhaIgA8uTdN+H4vkNZ/J6QxU1PhwN4sbkf3amKNNSlSxz8D08mX3ORs3sXV4v5s9+MOtaqGZfaSYARzXCWkLZjpj73kbiWLNvkvbyDdYQ/1SspcaHpbRBxqJMgDxlJcNSt1dl7O/VOPE3A0x4uj8pymIcuXnEut4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VP18W6Ktyz1R62r;
+	Tue, 23 Apr 2024 20:07:39 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (unknown [7.185.36.229])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2EE0C1400FD;
+	Tue, 23 Apr 2024 20:10:40 +0800 (CST)
+Received: from [10.174.178.247] (10.174.178.247) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 23 Apr 2024 20:10:39 +0800
+Subject: Re: [PATCH v7 09/16] arm64: acpi: Move get_cpu_for_acpi_id() to a
+ header
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Thomas Gleixner
+	<tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+	<linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
+	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel
+ Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+CC: Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, <linuxarm@huawei.com>,
+	<justin.he@arm.com>, <jianyong.wu@arm.com>
+References: <20240418135412.14730-1-Jonathan.Cameron@huawei.com>
+ <20240418135412.14730-10-Jonathan.Cameron@huawei.com>
+From: Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <344595f8-d40e-d410-26b7-e5d9b8cb1bec@huawei.com>
+Date: Tue, 23 Apr 2024 20:10:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] ASoC: dt-bindings: tegra20-ac97: convert to dt schema
-To: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Thierry Reding
- <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>
-Cc: Thierry Reding <treding@nvidia.com>, linux-sound@vger.kernel.org,
- devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240423115749.15786-1-sheharyaar48@gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240423115749.15786-1-sheharyaar48@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20240418135412.14730-10-Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
 
-On 23/04/2024 13:57, Mohammad Shehar Yaar Tausif wrote:
-> Convert NVIDIA Tegra20 AC97 binding to DT schema.
-> Change -gpio to -gpios in schema as "gpio" suffix is deprecated.
+On 2024/4/18 21:54, Jonathan Cameron wrote:
+> From: James Morse <james.morse@arm.com>
 > 
-> Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
-> ---
->  .../bindings/sound/nvidia,tegra20-ac97.txt    | 36 --------
->  .../bindings/sound/nvidia,tegra20-ac97.yaml   | 82 +++++++++++++++++++
->  2 files changed, 82 insertions(+), 36 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra20-ac97.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,t
+> ACPI identifies CPUs by UID. get_cpu_for_acpi_id() maps the ACPI UID
+> to the Linux CPU number.
+> 
+> The helper to retrieve this mapping is only available in arm64's NUMA
+> code.
+> 
+> Move it to live next to get_acpi_id_for_cpu().
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
+Looks good to me,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Hanjun Guo <guohanjun@huawei.com>
 
-Best regards,
-Krzysztof
-
+Thanks
+Hanjun
 
