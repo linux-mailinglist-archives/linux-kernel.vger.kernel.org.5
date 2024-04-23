@@ -1,137 +1,173 @@
-Return-Path: <linux-kernel+bounces-155986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEAC38AFC63
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:00:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CB298AFC64
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 01:05:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B6392868FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:00:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0F421C22AEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 23:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D78736139;
-	Tue, 23 Apr 2024 23:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F40B136139;
+	Tue, 23 Apr 2024 23:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qBMDKCGu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iIWWrZ6T"
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14631C6BE;
-	Tue, 23 Apr 2024 23:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED9F1C6BE
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 23:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713913252; cv=none; b=QMMTwTjX8gA/funtycqF7zD0yRJh6Yd2f38JeIYx2RFD6BVyKnY1xnMp+ZvbuAeGwPR9PTmz+VQhE0kgtKBvrXSUiTKAWqktNzLPx2l9uEylOZCwKlM1gpVrD2pdMYdn84Wsc1T44Gajanzm2vS0Knr58JgrB40xT560wvc2eqg=
+	t=1713913507; cv=none; b=e2DS0aevsoyeawLYQaMhBRFz46PpeM03K06nXI9HVqcz+qmrge+E6wBCAwFVlCjX+4wbqIFBTzEVkTlCCvX2Q84WtJYZSLkLpJ2hAbaf4clfitoHFVIVdYTW4T5GtrvetRQeyohQrTGggqEhPg78SJdHTnOK95gpEsbUL4JBljw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713913252; c=relaxed/simple;
-	bh=tIg0sGZgR88fUvHYnC9lMJV5W7EEnkeX6tGy7x75Vyk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LzUnjf32qkSshofV49VSOtPoLr0C2Gvynoa7kt+7ZfTIwCR6Cd0sUHt94Idj8mUes/ZBT9+p5zlpzV/NeqnYApykh8xBb7yXLbWFSr4ITBZpBcn4VMS8wgUNjStCpjDOgqApe9bLNQmGR+fs1CHxgUMDxHogcwu03ckIPhaL9t8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qBMDKCGu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C93E9C116B1;
-	Tue, 23 Apr 2024 23:00:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713913252;
-	bh=tIg0sGZgR88fUvHYnC9lMJV5W7EEnkeX6tGy7x75Vyk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qBMDKCGupL4Y92qi9AIuBlNlgNa5piam3fFoBGkNHSFxZuj+Rg7YP1zWrP+hISIpW
-	 ljsIY/PjI8rDpD7PJxXbKOHRTjG5Z3I0VvpOUDKvNO8w9NCJ6lVxQAtMVuhDUvgfng
-	 2ftmdwCL1/No8p4YCotU89fVo9x5OhtBdQ4kXIaxfa7LCSrw0+YPgfiKSNRsgzjxnJ
-	 b/X+3bcXhlSqXuXyouipBctC0PxJ0Dm+YS3uuPhffehcK2R/CbDWrWIE+HbrajfD5q
-	 dZhD2Pl5u5b9T92x29Lwn/KXM7rFKReL8iLJWHc9Myk3MHWtinWSqxEUDZ4/CX6kEE
-	 I9yFAkgUsw3kg==
-From: SeongJae Park <sj@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	stable@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	broonie@kernel.org,
-	damon@lists.linux.dev
-Subject: Re: [PATCH 6.1 000/141] 6.1.88-rc1 review
-Date: Tue, 23 Apr 2024 16:00:49 -0700
-Message-Id: <20240423230049.346401-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240423213853.356988651@linuxfoundation.org>
-References: 
+	s=arc-20240116; t=1713913507; c=relaxed/simple;
+	bh=W5rtmWZn+gzmSPYDajf5hzHjrrARRPwmvtUOsrkg4+4=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=GWR5KWEWjzS1nwVwm3cg8cel0IngG3vhKsAL2auK1DAjzt/VUhaR04Q1Ybziy+vW4N0sChtRBJhqMmT1dxVwGwn+SqojwNt9twXn3pcCy6zcnxE8c4A/gsbXvwt7KoOSEsUM633rH/6FbcIiDkKi5k4TE84ySe4R2X/HvxAsQls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iIWWrZ6T; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5bb0dc7e-4c89-4f3d-abc6-41ae9ded5ae9@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713913503;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=MSoV0N+Bh0IcWueNazIcpLY5jxZX12Cx6M7J1n6K4tQ=;
+	b=iIWWrZ6TYv1Vkk9lzS5cmCbBhaLuYOk6Y3nM7tg9EQHaECQ4PwjLBPtijt3JPsXmwxwUs8
+	G0aNxaaEd1AFs9bPfZnlFuXSArh1+4m56fH2DQ1ULb8FjeIrWj53YB0naS/20bX503DvbS
+	7YtZjJWLmJxpyDE2ScYFTkwSzguYsdQ=
+Date: Tue, 23 Apr 2024 19:04:59 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+To: Michal Simek <michal.simek@amd.com>,
+ "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+Subject: pinctrl: zynqmp: Valid pin muxings cannot be configured
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+Hi Michal,
 
-On Tue, 23 Apr 2024 14:37:48 -0700 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+I was looking to upstream one of our ZynqMP boards, and I ran into an
+issue with the pinmuxing. We use almost all of the I/Os, so everything
+is tightly packed into the MIO. For example, we have the QSPI on MIO0 to
+MIO5, and MIO6 to MIO11 are used for SPI1. However, I cannot select this
+configuration using the pinmux driver. I am using the following
+configuration:
 
-> This is the start of the stable review cycle for the 6.1.88 release.
-> There are 141 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 25 Apr 2024 21:38:28 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.88-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+pinctrl_qspi_default: qspi-default {
+	mux {
+		groups = "qspi0_0_grp";
+		function = "qspi0";
+	};
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+	mux-cs {
+		groups = "qspi_ss_0_grp";
+		function = "qspi_ss";
+	};
+};
 
-Tested-by: SeongJae Park <sj@kernel.org>
+pinctrl_spi1_default: spi1-default {
+	mux {
+		groups = "spi1_0_grp";
+		function = "spi1";
+	};
 
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] cde450ef0f2f ("Linux 6.1.88-rc1")
+	mux-cs {
+		groups = "spi1_ss_0_grp", "spi1_ss_1_grp";
+		function = "spi1_ss";
+	};
+};
 
-Thanks,
-SJ
+But I get the following errors on boot:
 
-[...]
+[    4.261739] zynqmp-pinctrl firmware:zynqmp-firmware:pinctrl: pin MIO8 already requested by ff050000.spi; cannot claim for ff0f0000.spi
+[    4.274506] zynqmp-pinctrl firmware:zynqmp-firmware:pinctrl: error -EINVAL: pin-8 (ff0f0000.spi)
+[    4.283789] zynqmp-pinctrl firmware:zynqmp-firmware:pinctrl: error -EINVAL: could not request pin 8 (MIO8) from group qspi0_0_grp  on device zynqmp_pinctrl
 
----
+This is because the qspi0_0_grp and spi1_0_grp groups overlap:
 
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: sysfs.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_m68k.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
+group: qspi0_0_grp
+pin 0 (MIO0)
+pin 1 (MIO1)
+pin 2 (MIO2)
+pin 3 (MIO3)
+pin 4 (MIO4)
+pin 8 (MIO8)
+pin 9 (MIO9)
+pin 10 (MIO10)
+pin 11 (MIO11)
+pin 12 (MIO12)
+
+group: qspi_ss_0_grp
+pin 5 (MIO5)
+pin 7 (MIO7)
+
+group: qspi_fbclk_0_grp
+pin 6 (MIO6)
+
+group: spi1_0_grp
+pin 6 (MIO6)
+pin 10 (MIO10)
+pin 11 (MIO11)
+
+group: spi1_ss_0_grp
+pin 9 (MIO9)
+
+group: spi1_ss_1_grp
+pin 8 (MIO8)
+
+group: spi1_ss_2_grp
+pin 7 (MIO7)
+
+However, we are not using the "upper" pins of the QSPI device.
+Therefore, these pins should not be included in the qspi0_0_grp. This
+stems from the driver placing all possible pins into a function's group,
+even though each pin can be muxed individially and it is not necessary
+to mux all pins for full functionality.
+
+I think it would be better to have a single group for each pin:
+
+pinctrl_qspi_default: qspi-default {
+	mux {
+		groups = "mio0", "mio1", "mio2", "mio3", "mio4";
+		function = "qspi0";
+	};
+
+	mux-cs {
+		groups = "mio5";
+		function = "qspi_ss";
+	};
+};
+
+pinctrl_spi1_default: spi1-default {
+	mux {
+		groups = "mio6", "mio10", "mio11";
+		function = "spi1";
+	};
+
+	mux-cs {
+		groups = "mio8", "mio9";
+		function = "spi1_ss";
+	};
+};
+
+This allows the full functionality of this chip to be configured. Does
+that sound good? I can send a patch to this effect if you agree.
+
+--Sean
 
