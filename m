@@ -1,76 +1,71 @@
-Return-Path: <linux-kernel+bounces-155529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C45018AF394
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 70E538AF38E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:10:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BACE4B24E5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:11:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60770B24759
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:10:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 150B313CA98;
-	Tue, 23 Apr 2024 16:11:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29EA413D250;
+	Tue, 23 Apr 2024 16:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GCTq3ph+"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="GY608lPm"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAB9413C66C;
-	Tue, 23 Apr 2024 16:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F9113C66C;
+	Tue, 23 Apr 2024 16:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713888676; cv=none; b=Tu/daoEUfN/Lt/GVUoher226ybqsF95/0TPa7Mn/3k0qqperuRLCX8lTUKm+ReOIZEV87C/cQb6NzeWe+aJYNAiolkOL/hRGAvKutD5XCTrCL2x+CFjg8jh3zyeaBN9tkstfx2SEkUblUBx1YeK/RTV6/9bYTH6Xmkwu2GaMx1o=
+	t=1713888628; cv=none; b=I4MhmZT4586qxyfYiRkScaLv0sgGJC/5n+nt6cb5V4wjQCuKiVaSAe2EdR+NHKRBJZ0/Of62yUnQnuj6oihQ/tEdBkKBfUJ1Jp3mN/FBd49DYvp5xKLQomWEtlX7Uj5OoCXb6M2Ujb2qbHH4OByxxse9M/bGAG7jEEXLTirSAQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713888676; c=relaxed/simple;
-	bh=uEH3no9t++z1xFSJQIOH7n+SYQJxYhyMCfAnzUjmRiM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q7XbxYaVNPtpNj5Dd4qvtVSku9N4H1Fogji7sZdtdrfwitR4a2+7iJ2rpMkdbhuyD3CCBvMjTjUQl6j+uxo8tmuJrBMfjgPiiefzsmP5zMn6o5g95+iltImNsJX2hpbdxiix1n5R4OvuB9Z6v37ltC/6pwQ5AwXcbTVITKKZJ08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GCTq3ph+; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713888675; x=1745424675;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=uEH3no9t++z1xFSJQIOH7n+SYQJxYhyMCfAnzUjmRiM=;
-  b=GCTq3ph+VUsIrt+/eO3INSwN8tj+RmgUkhfDi/rVznuGoVjB7XaMdynD
-   GSmEjVhdPz3xaGEht2uk3/V2LoNbAX+zmmD/2+QDepx3vEXAeSl2H6JZ5
-   3xrYYVojxmLlsO1k6VtQTr+5GBcBDVPlViODRDWbx8y17EN612wfC3tuo
-   Me7ENZydVwUqyWeBwpXwGxtduFLhggjkMtBOSqUPibJCbwizNkLZbzXO8
-   I/0YDIwTkxxb1+1SpNpKtg3crPDSYkHBFMkaDSSN7zscb1jdOiIl2awiS
-   MvzuAeEWTamsFDhvnexW5cNFHuD2VrFQomC835aF73hQqhKFticW2X02C
-   A==;
-X-CSE-ConnectionGUID: QK/xEWAGR0KRmzjDIdKzgg==
-X-CSE-MsgGUID: DmRUgBC6QT+V8kewQ3Iftw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="26941098"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="26941098"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:11:15 -0700
-X-CSE-ConnectionGUID: gNhNYmRkTwCrInkPMY4zdA==
-X-CSE-MsgGUID: k46LZnUxRvWPWItLF72aPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24933923"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa007.jf.intel.com with ESMTP; 23 Apr 2024 09:11:12 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 09222192; Tue, 23 Apr 2024 19:11:10 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v2 1/1] platform/x86: classmate-laptop: Add missing MODULE_DESCRIPTION()
-Date: Tue, 23 Apr 2024 19:09:51 +0300
-Message-ID: <20240423161108.2636958-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+	s=arc-20240116; t=1713888628; c=relaxed/simple;
+	bh=hNKc7ExTFhMLywfIJP+PycIbALVManyLftM917gb0R4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nPIArIZ02j8wuWvH/uWU/B4Av0CtwpN8SUcZYdA5ZtkU/vGAuZKocrFckSH0ooqCZvlgMNtKELldjtMDwNNiNh5I24EaLuXYjaADvF/GCIt74YzT/wLsyB+fuR0gU2aSM43hO2oHEiy0alfPvX2AJkLPQm8C1n9jYB/2rID97qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=GY608lPm; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id E6D0010000F;
+	Tue, 23 Apr 2024 19:10:16 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E6D0010000F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1713888616;
+	bh=DVY98jI0X94wEfGtVnGL5e71u5Av+34StswLSdjKMcs=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=GY608lPm+OHvHFn6oSpWz8Y24ZDsU/bVdrbNUGJwLp2XrP0Egsps38mdY3vX3vTMG
+	 VflSktVIFX42pcUFHhsOpAYpbw3vHw1N07nTdEed5Ze24OTPYae2UE3IJPc0TeHZQw
+	 pmbQocZN9cbm/+Vu3w5F8WQa8gBl50uYLrNDXIohoJ+xfIZgxU2JlSvhJCVwFV/Q3J
+	 Jq2yBlayDc/sDu6oXasrfG5DMspxP+D9f8x0hBhMdJySpWz7Uh33uRssQK5hg72VI5
+	 GZ4xEqmXgDuFlUtvdZLHVw5E9EDdRFC5mLDVQl7j1hF3FltqlUkNiSpPmo27ibCkbm
+	 N7k3UeVkNg9PA==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue, 23 Apr 2024 19:10:16 +0300 (MSK)
+Received: from work.sberdevices.ru (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 23 Apr 2024 19:10:16 +0300
+From: George Stark <gnstark@salutedevices.com>
+To: <u.kleine-koenig@pengutronix.de>, <neil.armstrong@linaro.org>,
+	<khilman@baylibre.com>, <jbrunet@baylibre.com>,
+	<martin.blumenstingl@googlemail.com>, <thierry.reding@gmail.com>,
+	<hkallweit1@gmail.com>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-pwm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <kernel@salutedevices.com>, George Stark
+	<gnstark@salutedevices.com>
+Subject: [PATCH 0/2] pwm: meson: add pwm support for A1
+Date: Tue, 23 Apr 2024 19:10:04 +0300
+Message-ID: <20240423161006.2522351-1-gnstark@salutedevices.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,41 +73,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184882 [Apr 23 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 18 0.3.18 b9d6ada76958f07c6a68617a7ac8df800bc4166c, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/23 04:11:00 #24934400
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-The modpost script is not happy
+Add support for Amlogic meson A1 SoC family PWM.
 
-  WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/platform/x86/classmate-laptop.o
+George Stark (2):
+  dt-bindings: pwm: amlogic: Add new bindings for meson A1 pwm
+  pwm: meson: support meson A1 SoC family
 
-because there is a missing module description.
+ .../devicetree/bindings/pwm/pwm-amlogic.yaml  |  2 ++
+ drivers/pwm/pwm-meson.c                       | 35 +++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
-Add it to the module.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: alinged text with Kconfig entry (Thadeu Lima)
- drivers/platform/x86/classmate-laptop.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/platform/x86/classmate-laptop.c b/drivers/platform/x86/classmate-laptop.c
-index 87462e7c6219..cb6fce655e35 100644
---- a/drivers/platform/x86/classmate-laptop.c
-+++ b/drivers/platform/x86/classmate-laptop.c
-@@ -13,8 +13,6 @@
- #include <linux/input.h>
- #include <linux/rfkill.h>
- 
--MODULE_LICENSE("GPL");
--
- struct cmpc_accel {
- 	int sensitivity;
- 	int g_select;
-@@ -1139,3 +1137,5 @@ static const struct acpi_device_id cmpc_device_ids[] __maybe_unused = {
- };
- 
- MODULE_DEVICE_TABLE(acpi, cmpc_device_ids);
-+MODULE_DESCRIPTION("Support for Intel Classmate PC ACPI devices");
-+MODULE_LICENSE("GPL");
--- 
-2.43.0.rc1.1336.g36b5255a03ac
+--
+2.25.1
 
 
