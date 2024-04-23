@@ -1,116 +1,207 @@
-Return-Path: <linux-kernel+bounces-155292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE3F98AE853
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:37:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B5778AE850
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:36:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E43C282F70
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:37:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A911B2162F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D4913667B;
-	Tue, 23 Apr 2024 13:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BCB136988;
+	Tue, 23 Apr 2024 13:36:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="OB7MF+1r"
-Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="mUR834tX"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CDF18E28;
-	Tue, 23 Apr 2024 13:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.48.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180B918E28;
+	Tue, 23 Apr 2024 13:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713879445; cv=none; b=Nk/+eIZj65NO31IqTiMbLb/pWQVZcmD0w/gEE6tFl9axJGnoyaKftHYs/Q3GliJojMD/LX2kMp+IAqxin8ubcmpCiHZJajDcYOsHVwVeYLHFFezcXm0MGSBav/7cJvTucyr6rdEj2lZ2NmU3UCWMjkQoahRvGso0dDxj5t94i0c=
+	t=1713879404; cv=none; b=nvRgrs+9eqe97U2W1mYZGB27ZsCnEs+KYZfRctYJ7OIinpZsr+68+A8GXz5ZrMyWD+LfTNyISmRal2bMBtuc5Ya9srW2Lv0o26Vl0NdowCuLXak5bcFDeaaZcWp0vHnIGPaY6hECSzXeqG9tqWkqc3RkJaVKJzQ9tupBAEItZWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713879445; c=relaxed/simple;
-	bh=dsVKS75rk/XJ1PdxuK8KFQuKjzQDb/YS3gKI282VATA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fIcPlJaTuecphgYN33QcYIgn8yLTZ7z22gKdg6IhqcAuH8q12FvZ5bpbB483uWUG8j3SyORb5AQvevpvSYB3YLIsDPdVbMc7coZ6wnegUk9DwAuOHD6e3xkJ2XOpJxaJJf0vgNBau2RsuHtWOmdvQJF5LbAX4LGuqMYAAGpCLJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=OB7MF+1r; arc=none smtp.client-ip=52.95.48.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1713879444; x=1745415444;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=QNgZ08cu6G7jRe5L0bfia3hVc4v0QPDb5H9DVfDn474=;
-  b=OB7MF+1rpTQrSRAlt1oqA8CN5W/fG10eNUQSGUKmC6zJSs8MMcaafpdu
-   iwvUMLE38w3SfmlXSBXTttfvQaGwmxj460GFnzoW5K5GIkkokQo2G66yj
-   IGu0h099DXeHcncMlF6M7lth5Q1Yl21vRF1iSqyctbp7VqfNFcuN/qRTx
-   Y=;
-X-IronPort-AV: E=Sophos;i="6.07,222,1708387200"; 
-   d="scan'208";a="391891265"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.2])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 13:37:21 +0000
-Received: from EX19MTAEUA002.ant.amazon.com [10.0.10.100:14814]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.1.110:2525] with esmtp (Farcaster)
- id 99e54c7e-3d8e-4df9-a177-c498b08e7836; Tue, 23 Apr 2024 13:37:20 +0000 (UTC)
-X-Farcaster-Flow-ID: 99e54c7e-3d8e-4df9-a177-c498b08e7836
-Received: from EX19D002EUC001.ant.amazon.com (10.252.51.219) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Tue, 23 Apr 2024 13:37:20 +0000
-Received: from EX19MTAUWA001.ant.amazon.com (10.250.64.204) by
- EX19D002EUC001.ant.amazon.com (10.252.51.219) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Tue, 23 Apr 2024 13:37:19 +0000
-Received: from dev-dsk-hagarhem-1b-b868d8d5.eu-west-1.amazon.com
- (10.253.65.58) by mail-relay.amazon.com (10.250.64.204) with Microsoft SMTP
- Server id 15.2.1258.28 via Frontend Transport; Tue, 23 Apr 2024 13:37:19
- +0000
-Received: by dev-dsk-hagarhem-1b-b868d8d5.eu-west-1.amazon.com (Postfix, from userid 23002382)
-	id BCAB820D4A; Tue, 23 Apr 2024 13:37:18 +0000 (UTC)
-From: Hagar Hemdan <hagarhem@amazon.com>
-To:
-CC: Maximilian Heyne <mheyne@amazon.de>, Pratyush Yadav <ptyadav@amazon.de>,
-	Norbert Manthey <nmanthey@amazon.de>, <stable@vger.kernel.org>, Hagar Hemdan
-	<hagarhem@amazon.com>, Ard Biesheuvel <ardb@kernel.org>,
-	<linux-efi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] efi: libstub: only free priv.runtime_map when allocated
-Date: Tue, 23 Apr 2024 13:36:33 +0000
-Message-ID: <20240423133635.19679-1-hagarhem@amazon.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1713879404; c=relaxed/simple;
+	bh=6T2svg46b0iSYrobBU7rygdpCxxdDju+onJHDDgFxkg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N8giNdpd8GN686m4tIShQvcyGaPZbOkrwOtyMRDSNJzQB96FA+SOFDX4oCN22fL5HUjY5PfYsADcdSdCpVZBjOVseqxu03qS+ZRJa7++l/an8VHKU5nGZyv5jVSaQePiGToOFgzmHDxmiE3lVrEUHko0C8hv4nZ6NSh2O7Q0sgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=mUR834tX; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713879401;
+	bh=6T2svg46b0iSYrobBU7rygdpCxxdDju+onJHDDgFxkg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=mUR834tXeSfz4u6Rh+opHET9TkCB892OokzoeoEl9Dwg9By4zW+sAAxqlm34owZFL
+	 hjTgcEVpFe8n3Qg/Y5dABUSXkWXp477D85Vgy/9LNJJ37drRjmEYv7cNqrxzdV30lI
+	 iydG9ASyg3V1dtnu8fIK3pWGxrYFCQex0NVRikcxhOl7vUkvRKcZG+TSqZxkh4bDft
+	 Br9v7M9yOJSZBr12dRn7/HXJJEMwb4V+jjncXimbUOpp/do6eo4lXLostAAJfF12OD
+	 l+VH+55sYho2nz3MxXVNh4UqiUGizUhXy65t+5KRT7Mhlh7RDttcuowkz+uHkMDgYr
+	 AEuXXRfQYqICw==
+Received: from [100.74.67.65] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: jmassot)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 827D63782136;
+	Tue, 23 Apr 2024 13:36:40 +0000 (UTC)
+Message-ID: <f5a178b9-2eeb-4737-a051-b43cde9fae20@collabora.com>
+Date: Tue, 23 Apr 2024 15:36:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 1/4] dt-bindings: media: add Maxim MAX96717 GMSL2
+ Serializer
+To: Sakari Ailus <sakari.ailus@iki.fi>
+Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ kernel@collabora.com, linux-kernel@vger.kernel.org, mchehab@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+References: <20240325131634.165361-1-julien.massot@collabora.com>
+ <20240325131634.165361-2-julien.massot@collabora.com>
+ <ZhkWqEAN4RozmPlT@valkosipuli.retiisi.eu>
+Content-Language: en-US
+From: Julien Massot <julien.massot@collabora.com>
+In-Reply-To: <ZhkWqEAN4RozmPlT@valkosipuli.retiisi.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-priv.runtime_map is only allocated when efi_novamap is not set.
-Otherwise, it is an uninitialized value.
-In the error path, it is freed unconditionally.
-Avoid passing an uninitialized value to free_pool.
-Free priv.runtime_map only when it was allocated.
+Hi Sakari,
 
-This bug was discovered and resolved using Coverity Static Analysis
-Security Testing (SAST) by Synopsys, Inc.
+Thanks for the review
 
-Fixes: f80d26043af9 ("efi: libstub: avoid efi_get_memory_map() for allocating the virt map")
-Signed-off-by: Hagar Hemdan <hagarhem@amazon.com>
----
- drivers/firmware/efi/libstub/fdt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 4/12/24 13:10, Sakari Ailus wrote:
+> Hi Julien,
+> 
+> On Mon, Mar 25, 2024 at 02:16:31PM +0100, Julien Massot wrote:
+>> Add DT bindings for Maxim MAX96717 GMSL2 Serializer.
+>>
+>> Signed-off-by: Julien Massot <julien.massot@collabora.com>
+>> ---
+>> Change since v5:
+>>   - Reverse the fallback MAX96717 can fallback to MAX96717F
+>>   - Use const instead of enum for MAX96717F compatible
+>>   
+>> Change since v4:
+>>   - Add compatible for MAX96717 and use it as a fallback for MAX96717F
+>>   - Remove extra '|' for decriptions
+>>   - Reference 'i2c-gate' instead of 'i2c-controller'
+>>
+>> Change since v3:
+>>   - Renamed file to maxim,max96717.yaml dropped the 'f' suffix
+>>   - Added lane-polarities and bus type properties to the CSI endpoint
+>>
+>> Change since v2:
+>>   - remove reg description
+>>   - add data lanes min/maxItems
+>>   - Use generic node name
+>> ---
+>>   .../bindings/media/i2c/maxim,max96717.yaml    | 164 ++++++++++++++++++
+>>   1 file changed, 164 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/media/i2c/maxim,max96717.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max96717.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max96717.yaml
+>> new file mode 100644
+>> index 000000000000..ac8bf11a6fa5
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max96717.yaml
+>> @@ -0,0 +1,164 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +# Copyright (C) 2024 Collabora Ltd.
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/media/i2c/maxim,max96717.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: MAX96717 CSI-2 to GMSL2 Serializer
+>> +
+>> +maintainers:
+>> +  - Julien Massot <julien.massot@collabora.com>
+>> +
+>> +description:
+>> +  The MAX96717 serializer converts MIPI CSI-2 D-PHY or C-PHY formatted input
+>> +  into GMSL2 serial outputs. The device allows the GMSL2 link to
+>> +  simultaneously transmit bidirectional control-channel data while forward
+>> +  video transmissions are in progress. The MAX96717 can connect to one
+>> +  remotely located deserializer using industry-standard coax or STP
+>> +  interconnects. The device cans operate in pixel or tunnel mode. In pixel mode
+>> +  the MAX96717 can select the MIPI datatype, while the tunnel mode forward all the MIPI
+>> +  data received by the serializer.
+>> +  The MAX96717 supports Reference Over Reverse (channel),
+>> +  to generate a clock output for the sensor from the GMSL reverse channel.
+>> +
+>> +  The GMSL2 serial link operates at a fixed rate of 3Gbps or 6Gbps in the
+>> +  forward direction and 187.5Mbps in the reverse direction.
+>> +  MAX96717F only supports a fixed rate of 3Gbps in the forward direction.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    oneOf:
+>> +      - const: maxim,max96717f
+>> +      - items:
+>> +          - enum:
+>> +              - maxim,max96717
+>> +          - const: maxim,max96717f
+>> +
+>> +  '#gpio-cells':
+>> +    const: 2
+>> +    description:
+>> +      First cell is the GPIO pin number, second cell is the flags. The GPIO pin
+>> +      number must be in range of [0, 10].
+>> +
+>> +  gpio-controller: true
+>> +
+>> +  '#clock-cells':
+>> +    const: 0
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  ports:
+>> +    $ref: /schemas/graph.yaml#/properties/ports
+>> +
+>> +    properties:
+>> +      port@0:
+>> +        $ref: /schemas/graph.yaml#/$defs/port-base
+>> +        unevaluatedProperties: false
+>> +        description: CSI-2 Input port
+>> +
+>> +        properties:
+>> +          endpoint:
+>> +            $ref: /schemas/media/video-interfaces.yaml#
+>> +            unevaluatedProperties: false
+>> +
+>> +            properties:
+>> +              data-lanes:
+>> +                minItems: 1
+>> +                maxItems: 4
+>> +
+>> +              lane-polarities:
+>> +                minItems: 1
+>> +                maxItems: 5
+>> +
+>> +              bus-type:
+>> +                enum:
+>> +                  - 1 # MEDIA_BUS_TYPE_CSI2_CPHY
+>> +                  - 4 # MEDIA_BUS_TYPE_CSI2_DPHY
+> 
+> Now that you have C-PHY here, does the hardware support data line order
+> mapping? Just wondering. The bindings can be added without that and support
+> added later on---that's what the video-interfaces.yaml is currently
+> missing.
+> 
+> lane-polarities is only valid for D-PHY. What about the data-lanes, the
+> maximum is probably different for C-PHY?
+My mistake here; MAX96717 doesn't support C-PHY; I think I was confused 
+by some of the schemas implying a deserializer with C-PHY support.
+I will drop the bus-type property in v7.
 
-diff --git a/drivers/firmware/efi/libstub/fdt.c b/drivers/firmware/efi/libstub/fdt.c
-index 70e9789ff9de..6a337f1f8787 100644
---- a/drivers/firmware/efi/libstub/fdt.c
-+++ b/drivers/firmware/efi/libstub/fdt.c
-@@ -335,8 +335,8 @@ efi_status_t allocate_new_fdt_and_exit_boot(void *handle,
- 
- fail:
- 	efi_free(fdt_size, fdt_addr);
--
--	efi_bs_call(free_pool, priv.runtime_map);
-+	if (!efi_novamap)
-+		efi_bs_call(free_pool, priv.runtime_map);
- 
- 	return EFI_LOAD_ERROR;
- }
+Regards,
 -- 
-2.40.1
-
+Julien
 
