@@ -1,170 +1,130 @@
-Return-Path: <linux-kernel+bounces-154824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2791E8AE18A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:59:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BAD18AE18F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:01:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC2161F23662
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:59:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D8781C2181E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94BCE604C8;
-	Tue, 23 Apr 2024 09:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00865FDD3;
+	Tue, 23 Apr 2024 10:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lYaBeMbT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wy7aYCT+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F0B5FDB5;
-	Tue, 23 Apr 2024 09:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC5A5FBA0
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713866371; cv=none; b=HhLT3ft8mHRP064NmFEomeDCyR1aVGskCi7WTm5QoIBzaCktK4KBhvBpItGvEN3w153xNgH85gChfC35Hb29mW8/EsEkxtT0xwkYNh29Rpb4Fi/6iRHjGiwNqVxNT64cFfS6rCHOKXPA1E+KMc0CVYctikgn7pQOrvAR+gEXMTw=
+	t=1713866469; cv=none; b=BHPx8O2iB8dHUyGe62PLJCX3gJNo3uXC9VJ5CStzBcep/Xu+U6bXX/VBR1OSKT4w4qMQDIhWxs1fKI57YCPp8mM2Icqu/CP4c9BZmPBeCmZcG4Z72JfmoS+7X7hmAT6mCAliQD4bcgpy3zOgBRmsN5nK5z94/E/Fq2fpp0aA3os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713866371; c=relaxed/simple;
-	bh=oHbC2y82RY8ZSrVWmBLh/lcobyQjR/f3ec9ROiFotVU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aTCg0qKyA3QW6W74zl29qdQ2q5Ru8bpsuAo2hkH4Y+0kDDf1L2IdtwYIEOqLkhD5Iv0ZO8f7nYYYsp1Eja646U5JxZ+aDlkgqLO0WO7zw15M6tulmoj2iNlyl9By7fQqUeuxmC/2ILFW8F6Un15RnzuQ1yQzghDIs9W2iPODQUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lYaBeMbT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB6F3C116B1;
-	Tue, 23 Apr 2024 09:59:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713866370;
-	bh=oHbC2y82RY8ZSrVWmBLh/lcobyQjR/f3ec9ROiFotVU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=lYaBeMbTWrYNsVWe2gpkDlAsFai0qqez7Bz85e33B3FcQRad+v/tnk+j3lxEMAyxK
-	 PxHt+jyzpSiVpQsQbXT+JGJ8HGBODOp9eAcO9pGhkwLR47l/S7pj41HWSXDrXinNq2
-	 qU074FLJJzxOV0WmIZ6yuPwYleMNtR7EV0SJl9CH3YaPyMV2kcv4qd240/l99QJh5T
-	 1wYAOEVAUfD+xA0xrzSUDAFSTfHeAKpl3QTuC28ksG2zdpMgNxvbrjFTzzVWcZq1xm
-	 OWoxacaoTrblY+tnjsvYckiDHr1erVUVglNzkMzmzSPfOsv2JMiPv79Kn5OI1C/r7q
-	 RUWZK8LywuYVA==
-Message-ID: <4c6d6957-3813-46d3-88de-ee64241bbe6f@kernel.org>
-Date: Tue, 23 Apr 2024 11:59:23 +0200
+	s=arc-20240116; t=1713866469; c=relaxed/simple;
+	bh=YwIkjif5BreNxnLNOWf6abaVgTHOQBKAwUvTq0Bl3Ug=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=YeGhuwZfP5zmAoMHrvByQrKoWUoMjmiah0ekh5Wgmgsq4pONWVKQNNLiSoFSjz7mO31u38o2aYZ7yhVwembmnSkBrcby/LCuudnz7s+EHQ60M327PAQfT9QGygL6XaAvuOghtPuwDXn1H4n0DuBtoMBS6N7mLZFNQTiYeCLLLv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wy7aYCT+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713866466;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=YwIkjif5BreNxnLNOWf6abaVgTHOQBKAwUvTq0Bl3Ug=;
+	b=Wy7aYCT+8RFva8VV/bXu8uMFTXFyUbPay1LaVJ1ci09ULOAM1vBJvGMAPyBmehC628HSyH
+	EHJN7PI9qtLptG5OSHbcWBOplR4ZPlwDaPayoMTNHi8fCdeQviunf13JZ+mpBYeLCPa81d
+	NYVzUrw1A/XDI/wHUIy1SdUYcHkx43Y=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-590-0O6f0zfJMT2cJKe5d_PBqQ-1; Tue, 23 Apr 2024 06:01:05 -0400
+X-MC-Unique: 0O6f0zfJMT2cJKe5d_PBqQ-1
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3c73b20ff31so1608470b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:01:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713866465; x=1714471265;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YwIkjif5BreNxnLNOWf6abaVgTHOQBKAwUvTq0Bl3Ug=;
+        b=ndOKV/OtzlOPItdJNZE/hk73tI4VFB2wDlcyEKUaJcVVCj373V4wG002+3YDWHy/oG
+         MRpPEber5fh8XbpvSUBhhCfRWuW6+2L8v1nn4rPOeLhvJhF4mwJy92lS5LzcSGoN3oa2
+         OrGMM/HG6uo2L7fk+9pRejclbi22Afdj3mweT5b+PiZeFqRkGkHKDMPWEH9KedWwNzo6
+         5S10j37ZffMoPxDyu9hk2GMENcywN9znZ2BIXqurze+rN0588opXr0NMtP/FjUCmoX6e
+         pBw9YKdKjX+0iicY29zqaBHs+g1Fi+A0cH+Sj0VqsQ1lxW6gFSohPnB2jldgDxhciYYc
+         T7OA==
+X-Forwarded-Encrypted: i=1; AJvYcCUsTeF7J+2p/mrolrTxGdd/80Xdt2Ra26VemvCo7kXwioYlOM1RAm8rJSEZYUj7UglHE6CNW/8zn5pciLiSTc4UTqUtDwUZuKZjY2AS
+X-Gm-Message-State: AOJu0YzfGXuZ3yuesHByAfM2nMlnDDfp2HbZS34leRxdz0VztyNuDI1h
+	uN1g9UGWug6OZDyBg9l0+6SEmE3/17ZAMRhzkw5ZnVIf0r1FRV8+yNofcFJds478wRcsK8enRd5
+	TybAmTTMUe3Qh4hUU1Untih/Q+KjgHWls1ELY0m0uyygSxDX2r6zPCuzgVozAvw==
+X-Received: by 2002:a05:6870:8891:b0:22e:dfbc:4aae with SMTP id m17-20020a056870889100b0022edfbc4aaemr14682574oam.2.1713866464844;
+        Tue, 23 Apr 2024 03:01:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE2cGPqTX80VpHqtIO0GuVwmn2dBJMhu25/rZtGRTV0uf+aWtNYNNJgU7vEjgHSo783VHDnMA==
+X-Received: by 2002:a05:6870:8891:b0:22e:dfbc:4aae with SMTP id m17-20020a056870889100b0022edfbc4aaemr14682536oam.2.1713866464448;
+        Tue, 23 Apr 2024 03:01:04 -0700 (PDT)
+Received: from gerbillo.redhat.com ([2a0d:3344:172c:4510::f71])
+        by smtp.gmail.com with ESMTPSA id x4-20020ac87304000000b00434c31fa60csm5023855qto.92.2024.04.23.03.01.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 03:01:04 -0700 (PDT)
+Message-ID: <4a92f794480b12c21eaeeeb66521dbe978f08414.camel@redhat.com>
+Subject: Re: [PATCH net] net: ethernet: ti: am65-cpts: Fix PTPv1 message
+ type on TX packets
+From: Paolo Abeni <pabeni@redhat.com>
+To: Ravi Gunasekaran <r-gunasekaran@ti.com>, s-vadapalli@ti.com, 
+	rogerq@kernel.org
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	richardcochran@gmail.com, jreeder@ti.com, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, srk@ti.com
+Date: Tue, 23 Apr 2024 12:01:01 +0200
+In-Reply-To: <20240419080547.10682-1-r-gunasekaran@ti.com>
+References: <20240419080547.10682-1-r-gunasekaran@ti.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: mmc: renesas,sdhi: Drop 'items' keyword
-To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
- Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
- Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-mmc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
- Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240422213006.505576-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240422213006.505576-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <2b422e9f-bd80-4c57-a3e1-8b463b25c834@kernel.org>
- <CA+V-a8s1xDT7sGMpz_n45v9QzhpWUdJv9eXmUJoxPaJ69MiY7A@mail.gmail.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <CA+V-a8s1xDT7sGMpz_n45v9QzhpWUdJv9eXmUJoxPaJ69MiY7A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 23/04/2024 09:21, Lad, Prabhakar wrote:
-> Hi Krzysztof,
-> 
-> Thank you for the review.
-> 
-> On Tue, Apr 23, 2024 at 7:29 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>
->> On 22/04/2024 23:30, Prabhakar wrote:
->>> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->>>
->>> Drop 'items' keyword from compatible list which have single const value.
->>>
->>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->>> ---
->>>  .../devicetree/bindings/mmc/renesas,sdhi.yaml  | 18 ++++++------------
->>>  1 file changed, 6 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
->>> index 29f2400247eb..90c8b1b727a8 100644
->>> --- a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
->>> +++ b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
->>> @@ -12,16 +12,11 @@ maintainers:
->>>  properties:
->>>    compatible:
->>>      oneOf:
->>> -      - items:
->>> -          - const: renesas,sdhi-sh73a0  # R-Mobile APE6
->>> -      - items:
->>> -          - const: renesas,sdhi-r7s72100 # RZ/A1H
->>> -      - items:
->>> -          - const: renesas,sdhi-r7s9210 # SH-Mobile AG5
->>> -      - items:
->>> -          - const: renesas,sdhi-r8a73a4 # R-Mobile APE6
->>> -      - items:
->>> -          - const: renesas,sdhi-r8a7740 # R-Mobile A1
->>> +      - const: renesas,sdhi-sh73a0  # R-Mobile APE6
->>> +      - const: renesas,sdhi-r7s72100 # RZ/A1H
->>> +      - const: renesas,sdhi-r7s9210 # SH-Mobile AG5
->>> +      - const: renesas,sdhi-r8a73a4 # R-Mobile APE6
->>> +      - const: renesas,sdhi-r8a7740 # R-Mobile A1
->>
->> That's just an enum.
->>
-> Are you suggesting to group them into a single enum instead...?
+On Fri, 2024-04-19 at 13:35 +0530, Ravi Gunasekaran wrote:
+> From: Jason Reeder <jreeder@ti.com>
+>=20
+> The CPTS, by design, captures the messageType (Sync, Delay_Req, etc.)
+> field from the second nibble of the PTP header which is defined in the
+> PTPv2 (1588-2008) specification. In the PTPv1 (1588-2002) specification
+> the first two bytes of the PTP header are defined as the versionType
+> which is always 0x0001. This means that any PTPv1 packets that are
+> tagged for TX timestamping by the CPTS will have their messageType set
+> to 0x0 which corresponds to a Sync message type. This causes issues
+> when a PTPv1 stack is expecting a Delay_Req (messageType: 0x1)
+> timestamp that never appears.
+>=20
+> Fix this by checking if the ptp_class of the timestamped TX packet is
+> PTP_CLASS_V1 and then matching the PTP sequence ID to the stored
+> sequence ID in the skb->cb data structure. If the sequence IDs match
+> and the packet is of type PTPv1 then there is a chance that the
+> messageType has been incorrectly stored by the CPTS so overwrite the
+> messageType stored by the CPTS with the messageType from the skb->cb
+> data structure. This allows the PTPv1 stack to receive TX timestamps
+> for Delay_Req packets which are necessary to lock onto a PTP Leader.
+>=20
+> Signed-off-by: Jason Reeder <jreeder@ti.com>
+> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
 
-Yes. That's preferred form, easier to read, because it clearly documents
-that binding enumerates.
+Please provide a suitable fixes tag, thanks!
 
-But just in case you start changing all const to enums: don't. Comment
-is for this patch, since you already want to touch these things.
-
-Best regards,
-Krzysztof
+Paolo
 
 
