@@ -1,269 +1,171 @@
-Return-Path: <linux-kernel+bounces-154816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 045848AE168
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F57C8AE16E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:55:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BC59B22935
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:53:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42310B21D50
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 09:54:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 572FC6024A;
-	Tue, 23 Apr 2024 09:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0D05EE97;
+	Tue, 23 Apr 2024 09:54:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=axentia.se header.i=@axentia.se header.b="d60iubmr"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2139.outbound.protection.outlook.com [40.107.8.139])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jOCOTKvJ"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 129731E863;
-	Tue, 23 Apr 2024 09:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.139
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713865986; cv=fail; b=PlEmbnIF18V1f5BiZLIMKtfxXstY7JXoh/C6sCrbOgB/fs+Vr4D/k1Zmt9v+5D7vIjEWlUVtCPJsbXrG31L32LOykK/Y2fXslGaHoQ5SBWYohPBUt27VhYBasSsdYROEjL7uSmzrx+PEBmwapl4y+C0ByMRrKRlscMo3ZCAcKNU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713865986; c=relaxed/simple;
-	bh=hOgw0GWf9fra+ddKgDiMQGavHEa4pmDIg1waKJEUc/I=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=bXtRslq+QPAWOnz09Gx4jgAK2/mAM89XOqJfFb5bbT2DN6xvvRct8CbTAu0F0+TerqU4Uvb1vhbcVA7Xjnx2nZ39gMTpIzvwK6yWgESUJ0TP91AFQQZQMN9hM+8wH6pSHyvWF61GY0WesCfezBOfemtA1kbNQ1RnA/D5faXftUk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=axentia.se; spf=pass smtp.mailfrom=axentia.se; dkim=pass (1024-bit key) header.d=axentia.se header.i=@axentia.se header.b=d60iubmr; arc=fail smtp.client-ip=40.107.8.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=axentia.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axentia.se
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gCwZEyLVxM2AYGFhcmhFknKl5LYVlGDOQ5IHcNRjA6AqAZBeVt1w4LcH2x5mHPxKf8jF0xSEJseFTGLJZsZ6MiWsi12b90y8N26e6pJoQX1jSZCVYj0Q9Yrn/Pr0wzX4J7FX6mijsTO3hht9NUPSvMaiNAg2CslLB7t1QukIUsL/L8uKDOxzzSCeInRY/Lw0KHaENIuiZhWeBSbFcTx781sZrPeeMj2KGnNeXQntZJvdvem1iurOx8WElFmGbstVb9NjsqGQi09AwBKJ8lDCld47yRg6FfMpbjQznFjHIxh7wWs9Ewd5De2k+OrJCKCA03+P9tj5KwSFQe8nOyrB/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+aqDDPtLW+03CjmA273kXqCvoB6TThtpLzHqTpQoWRU=;
- b=KoZVnLUK4Cy+fupKJnosHdAlgma5S3JHZnH6b5kX8qnZp406IPKzX3sHMO+2SueDAVylef9awF+G80+Gq5kpyb8OEMd9V5B04dtcsGN5L3GoMYWmewy8hUiyuhmLY85HyUVyfXsj34vJqIH9mVkJ61R0LWr4QIqU44CAiJLqDc/1exUM8z5rk4yMQmRFdIFPblHs2YaRimPKTCsJUvHrbE0QRouXJG/fxDOoCyRRQ/vrLFVP24KzcVnZ8zYGYsQJz2XpdGhHfI2Z9M3aF25YtNMk6+P3+K3Up/NVELi3FnocssFL5GHwEQ0X7M0JLFO9NEZc0KAoU9Ia3BUAmK6W2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+aqDDPtLW+03CjmA273kXqCvoB6TThtpLzHqTpQoWRU=;
- b=d60iubmrv8d39FFfuF4XItfndt6V9JvIfCVFYUZBzJn4MdxLFmt4VGBngpDPdnkZWUCJdeAHckHBtu0X/ntBKct3fov8IscqFoq9GbsKs5Cc7dCmLPfzZ3Y3JFHfITfQMERVL7A5NCrHbx+sjPDI3mJ5v459mhceWNsltdcz+so=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=axentia.se;
-Received: from DU0PR02MB8500.eurprd02.prod.outlook.com (2603:10a6:10:3e3::8)
- by DBAPR02MB6326.eurprd02.prod.outlook.com (2603:10a6:10:19a::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Tue, 23 Apr
- 2024 09:52:58 +0000
-Received: from DU0PR02MB8500.eurprd02.prod.outlook.com
- ([fe80::aff4:cbc7:ff18:b827]) by DU0PR02MB8500.eurprd02.prod.outlook.com
- ([fe80::aff4:cbc7:ff18:b827%4]) with mapi id 15.20.7472.044; Tue, 23 Apr 2024
- 09:52:58 +0000
-Message-ID: <3f095b5d-ced2-1c8a-9bd2-2ff2a9480fa1@axentia.se>
-Date: Tue, 23 Apr 2024 11:52:52 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH 33/34] drivers: remove incorrect of_match_ptr/ACPI_PTR
- annotations
-Content-Language: sv-SE
-To: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
- Corey Minyard <minyard@acm.org>, Peter Huewe <peterhuewe@gmx.de>,
- Jarkko Sakkinen <jarkko@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
- Xu Yilun <yilun.xu@intel.com>, Jiri Kosina <jikos@kernel.org>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- Michael Hennerich <michael.hennerich@analog.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Iyappan Subramanian <iyappan@os.amperecomputing.com>,
- Keyur Chudgar <keyur@os.amperecomputing.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
- <salil.mehta@huawei.com>, Tony Lindgren <tony@atomide.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Xiang Chen <chenxiang66@hisilicon.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Russell King <linux@armlinux.org.uk>, Jiri Slaby <jirislaby@kernel.org>,
- Jacky Huang <ychuang3@nuvoton.com>, Shan-Chun Hung <schung@nuvoton.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>,
- Tom Rix <trix@redhat.com>, =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?=
- <u.kleine-koenig@pengutronix.de>, Randy Dunlap <rdunlap@infradead.org>,
- Rob Herring <robh@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- openipmi-developer@lists.sourceforge.net, linux-integrity@vger.kernel.org,
- dmaengine@vger.kernel.org, linux-fpga@vger.kernel.org,
- linux-input@vger.kernel.org, linux-i2c@vger.kernel.org,
- netdev@vger.kernel.org, linux-omap@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-34-arnd@kernel.org>
-From: Peter Rosin <peda@axentia.se>
-In-Reply-To: <20240403080702.3509288-34-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: GV3P280CA0033.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:150:9::26) To DU0PR02MB8500.eurprd02.prod.outlook.com
- (2603:10a6:10:3e3::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F275756772
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 09:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713866090; cv=none; b=ut9oWke5ugorZ30H8bS3aEFl80DgXGpaRvC4NYsJ7xbV7blpuoMZhYZvQXqLUkLNTLof141PoxbumTtUs003uye535+HY5LKiIur9W+QqYztZRCS7Mdg/q/UE92ICXV0vqSsdLm5R6oQKTvZuhTIAzXChVFETp6VV2gNECqjqxU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713866090; c=relaxed/simple;
+	bh=TcvuEYLws2fboubCzoAXSrZP5EX/PhUVq3p1ipmW6hs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UQ5jrvE06WP0iAwEeaMR2Jkdq+TitXHOs945jjEIyqEjRlUFXUuYLa715r/BNeS22SEosbxvzsKAlJR/0UepiTdQi6DGHCGsz0aLZ24OUoGMjViR8ZUvJ69J3IeTxOogsRZFC7Ecw3YFR2EwWlqceB1x4UV5k/khbvAohutLb4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jOCOTKvJ; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-34a4772d5easo4371394f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 02:54:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713866087; x=1714470887; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=QGmqwrxoYYNL7ItgGfa16lOMAGRJ/1BRq31t1v+wXrE=;
+        b=jOCOTKvJ+bLfBsyZYST5YwRbTvwlEuWSL6OvOXFuCJDj0fvpSmmQ9DRRYFlgf4lajD
+         ONop6jnfZD02vX1x9oDW6GMwvVnipisRjdDeb/uWgFEIzkpNLFt/KUZVKaYWmRhBjn45
+         o3jmJS+sjTWnDqLXZA9YHliB25sbLthFd6aVFbY9oMmtOVHkzR7mjf2Ukt6fjwGeYBvC
+         lQ6qAd7QFwe1GCcLFZnHwJBo4dqvnoieglaDFXJPrMPzbWG/DGbv4WJ1Vj4b/6CpzA7x
+         hcJLufOaKZYLKeP4KgAIoXJd/1Xz+Fxdg6Jm5QWNZ7kh0V0mfDSPmoVKE4kjc8ClHFDT
+         rnlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713866087; x=1714470887;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QGmqwrxoYYNL7ItgGfa16lOMAGRJ/1BRq31t1v+wXrE=;
+        b=hmtDie/ssI9MbL4uxZ/ah5WHMFTfesL8x7snfGcrso6DdcHFDzTsWah3Tlq0qR/x0i
+         2Cnn+cteckDWqHUH4QK0+hs/LB+uFJCrLH3CLvjNZOS+YyVYnzUXIuFaH7uYpAFs1k3O
+         WKo/3UavZSf1tVo2JvSNYXO7dWwCXwBGbX+f5hEN5IsuVLU6iOA/P8UPWUWCPjZm6G+g
+         oBpVOAqJ5OR0XU6cDr7DiSdWk4aZCMpv4Iw+roPsT7X01qaUkom3njkOFOrbt7Mafmcw
+         zVk3SglS3WWxfzmIXL/FJkVUNx799FRbhA+imywword09Pk6GwDDzEfmxv7bEANVuhpU
+         2tWA==
+X-Forwarded-Encrypted: i=1; AJvYcCWHhmXgwddu2m2/9mV6x9CYVzro/KHe0Cce+cCc5fRNzBGXJO18ZTs2C/0stDsbFV1zKPt3z4wFh6w0cfromqMAJzgL0I3lJeGbHWF5
+X-Gm-Message-State: AOJu0YxQ2qubbwUW3KzWaxWTHm3arXcJE6IIex9hySbHw10rVt1y0H+c
+	CARPTh54ksbdej5GN9nLwy3GBoupBiXi0DKzZesLKevQPCA+aBjIMO88Ft5llrY=
+X-Google-Smtp-Source: AGHT+IE/LWXfsKNKZXdZV14oyl4JzTZ8tD01rfU3dW2+ZPhcML7vwZuDNPaGuU/TzZKO5imlcL/WGg==
+X-Received: by 2002:a5d:6743:0:b0:343:ab10:f31e with SMTP id l3-20020a5d6743000000b00343ab10f31emr8273049wrw.42.1713866087320;
+        Tue, 23 Apr 2024 02:54:47 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id u11-20020a5d434b000000b0034a2d0b9a4fsm13016234wrr.17.2024.04.23.02.54.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 02:54:46 -0700 (PDT)
+Message-ID: <10006d22-eaa7-4414-ae4b-d1c9d57f5a13@linaro.org>
+Date: Tue, 23 Apr 2024 11:54:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR02MB8500:EE_|DBAPR02MB6326:EE_
-X-MS-Office365-Filtering-Correlation-Id: a390de60-815c-4b1e-f305-08dc637b27d1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?cmR0M09JeVB4b0NBeW1lNThHUlBNUDhlRC9QaURhNjhKTlFTeHZnK1F2TnNW?=
- =?utf-8?B?c09Gd3BrakZXcVZsNzVXTVpkOWFwTUdoWmgyaU5iYTZhVGYvNkErc1hTbnpS?=
- =?utf-8?B?b2pxSkFSektuS2JaUm44Z1VscldFTHgvUzB6RUFGTk1ycmJLL1FhY2wwQ2FB?=
- =?utf-8?B?UEpBQUNodWQ2NE9rVDZjM2dpM0dDdXQ3TkhjdEtveTBBKzlqSS9uLzhVK1Fj?=
- =?utf-8?B?QW5CZm0rMXFROW5VODkxZHlLTjYrUlpxdU15SUhEV1ozQjEzOUY2ZmtnREt5?=
- =?utf-8?B?SjNlY2R4cnhhcUs3dzFkUWpkWWRaTzhiMlExSGxNL0Z2ZFc2aG1SOHh6TWgz?=
- =?utf-8?B?aFA5dUpmcHVsTFFSd0hGNmoveFNPZ2I5bW10TEMzcVp2TzF0R2tQV0tjZ2ZM?=
- =?utf-8?B?QWNUejQ3bFJJQk5HTndPUHBUNHFLVUw4R0wxRno2T0pjaVJkMUNlV3E4NHlN?=
- =?utf-8?B?RFl2Y01reHg3eHBiYUthOWw1ZXI5UHE3YndyaU1FbEljenBIbkRaQUlWWXh6?=
- =?utf-8?B?UGhuOE93ajFzZ3Y0bThtNitlZU5MczJkdk5SVCtTckw5b0pibzEydlZjV0Np?=
- =?utf-8?B?eFRLWGhqOVlLUTh2VTVxRmx6THJoRnY3dUgzZFRmVGxQVlVxWmlYTjlVckVa?=
- =?utf-8?B?N2g1SUQxbTNuenZ2aWFhU01PZUlzYkFMTUdhN2J2a3UwZHhJcElqdURtTlVw?=
- =?utf-8?B?N2M2RDZaQldWRjhSamF3RnZmZjR0eWJERnhVZDB1ZGE1S3kybmFxbEtmZjk5?=
- =?utf-8?B?NXdWZFRaRnR6OWNoaWovb3B6V0o2MTdtbWVDd1pQcThjQWx6Z2VmcXNlZnhP?=
- =?utf-8?B?RWZvb1NJQ0FabUxacUVkT01uTDNKZkFrSkpORFBGWVZRVmxMaTdEdEVQYm9K?=
- =?utf-8?B?WEtJVEtzUkZLMmNhYU1RdXRqaGcwVzlQQUZQVm9OSjZHd0FvMVFKZUxEckRF?=
- =?utf-8?B?Y1piZWhEUUkzam1sUExZbDY0RlNGbTVBNlNMS2piS3g2WFZLaGJPVklsWkYr?=
- =?utf-8?B?Uk92RkNqc0JlUm5sVzNiTzZpYU5aUE15Zi9waS9iM2FLb24zVWRYNXBuT0Vu?=
- =?utf-8?B?UHEwb2J4c3o4K0dSaVM5UzRVU21vWjc2dVd4eW5sd0VFTnl0NnRCM2IwdFhP?=
- =?utf-8?B?aHErNVRYUm9QNko0OFJISzJrK2Q4LzkzWHhBai9GQzV5dU9uOEU0b21iRWpr?=
- =?utf-8?B?cGpjbGtoVzFRMjh4QmFjNmlwTU5qZTNQbUtQVk1TdkhVdklYVEpDUnZVU056?=
- =?utf-8?B?MHlaNzNSL21UZkRsREM2cmU1MXF0T2VNcTljL1ROR2hiSngzb3BpWWFWOXFs?=
- =?utf-8?B?NzlxQWpQYnV1bGNpM0hLVFF6NzBnM1RaRXh3US9VSFVQVDZiaEgzY2kxUEdW?=
- =?utf-8?B?dnQ2ZWt5TXVDcjZzUlgzYTJyNlY1cHhsbVFhK0FPSXdpaW5aMTJsU3ZrcEVs?=
- =?utf-8?B?UStrckx2N1dGekpOeWZKUEc5UnFSWFNvZ21tVjk1RktHenp2S2UvL2ppSTlX?=
- =?utf-8?B?Yi9VdFFIRXBSWE1weWwrNkxaYk1CTEc5WGFhc3l6TWxQZ0NyQm9Yc2RhOU5l?=
- =?utf-8?B?dzl4dmtHbUV5R1lmb0VvVTFHT1dpdUx2Qml2Q3lUZ3F3UytJYS9UR01oNEdI?=
- =?utf-8?B?OU8xM24reGYwK3M0Q0t3TUlCMlQwMnhLVTk4blNGQUJ5YjNpZjN0em9PREhL?=
- =?utf-8?B?OHdPZkhVZi85c2UvL0dmQzA3cURKeHprQVQ3bDMyV0RuVnhyRnYrU21YMFo4?=
- =?utf-8?Q?T1MEmaG+ZFywJAjhH4mhA8Lvv2Kq+TD+89znL7w?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR02MB8500.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005)(921011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Unl1SEZCa28wWjJZUmFETU95a3FnVG4yYWMrSjJBZXpCcCtKRURDU3RxK0cz?=
- =?utf-8?B?cmlBN2tzdml5ZlUvRE9xcEZXRG5ncXFhM3YwQ2NoVi9oY0ViRHJBR2RHVjlH?=
- =?utf-8?B?RWZLaDNvUHdPRFBKc3lmaXk3aGVBRDUrVXlwV3VvOGNnM2RIQWJtNG1Ta3Jz?=
- =?utf-8?B?U3MzYWZiM2hkVTl2L3F0c0trdTh3RzV5R0xoSVpyQld5czI0WGlHL2NCazJF?=
- =?utf-8?B?YzNQT1JsYnNCUXhKS2hDZnFXZmNPV3NQMlg5cTk1ZmpGRUhNWk1jeE1HL0xT?=
- =?utf-8?B?djhiSmcrT2tENnEzR1VTbk9kdVRSNlZ6bTBOcW1MK2x6dGJGZFJkUDVodDg3?=
- =?utf-8?B?WnZ0UGVEMkYwK0Eyc29tamJpN1ZqMVU1VmR4S0VKbndlQ05QbmtCWXRuRURo?=
- =?utf-8?B?S1BzZFc3ditKZThpSjdGZ2hlcjQ1aVNtWm9ycU9jMFc4UkljVFpmMmYzdk40?=
- =?utf-8?B?WXBzMHk0SDFpcUVIR1hZM2t2MXlMc1YrcW1DekNBVzFld0gveUZZVEdaTnN0?=
- =?utf-8?B?QjBWbzFXWHk1RzBBM3BrdU5ycnlmRWJoYm4xaU1nT2ZNOG5IYkExeUVYaEtJ?=
- =?utf-8?B?NjZtczBwVVNVdXhzVHIvSXRMVGRjNy9Ud1JERWQvRFJSMFRpZ0J0REZ2bEJ1?=
- =?utf-8?B?eDNGT0JLZmhHZHJmQUxOYTJ2aUhQaHZrUzkwa215MU41TjhJRzc1c0x1dGNt?=
- =?utf-8?B?OGpUWjVVRWkvZnp4bjNUTDNBcjRCajV6OTZqZTZ6TjJ3bWdVcjRheDY0N2xH?=
- =?utf-8?B?eUQyQ1pJWFFwM2NhbzA3Qko3NDhJb0c3M1Erd3dQN2dIdklLSjg2NEdDWDZL?=
- =?utf-8?B?TFlXVThkWitnYVRoU29ZamZkWmYrajQ5NFdwbGJoRm9VdVFTYlU1WU01YXVj?=
- =?utf-8?B?ZXJQKytJbW44WThSNGdHWGNES3dVNzNQWnNjRzBET2hRVHhiem9NUnIyWmM0?=
- =?utf-8?B?ZzdkZ25XZFVrUmd3NVk4S2JVajBoMEhlZ0l0Mm9mQ29pajR4YmZ2RDVNN3dI?=
- =?utf-8?B?Y3F1cG8wUS9BbmFBeU9mMktKZStVT0Z4c05oMVQvY1E1Q1dIRnloUHd1dURr?=
- =?utf-8?B?amY5ZmdXUlQxZWpKeUtwM1orMk8rdFByLzVaWVZ0RGtxU240VVFqVmhhejh0?=
- =?utf-8?B?Y3pQOEhIUjY4WENJRmd5RUFJMkRTd3ZyaTFlWUFIU1lEUFd2SmhFcXBGZDgy?=
- =?utf-8?B?RHpKcEtSdndkMHV5R1lNR2N3SDY4QzRBYjg2R3FXTXRJOFl2SGtSLzkvTjVa?=
- =?utf-8?B?RXBQazI2WXhTaWEweFhoVVZoN3dtN2RKUlliK011R3NkM2NKVVd1dEhxU2ZW?=
- =?utf-8?B?VjJlT2Z4blFXNGVMLzh4YTRaeDVBRVE3bXBCK01GNytXYU5TNzZtQkxWZCsr?=
- =?utf-8?B?WDYwT0hZSzFBNk9IR0NGWExhTkVld1VsQXVaalpHVm53UWlPbEY1MER5azdZ?=
- =?utf-8?B?eTliWXFMVnU0RUtRQ3QzZmM5dXJBd2xXakpiTVVVK1NOZitrcVZROXlDNEU3?=
- =?utf-8?B?UmlBRVg1NjVrZUNSY2NwVFlGMGo2VUc4dVdPZVlya3BOa3RVeUg4ZVl3VVBo?=
- =?utf-8?B?RXQrQi9sbEdDaVp6T3FPRzlGSjJaRDJIa1M5U25zQjJTQmlDTC81OEVnTCtp?=
- =?utf-8?B?MHNwSnlDN0xKcklMQklqOHBUVFdCM3ZZVVZOZWI2azM1MjdYZ0lXMkpsUVJi?=
- =?utf-8?B?RGMxVEhORUo1cXJWU3kwcUVPdHFlN2JaZGdNTVBiaWhvekhQSU5MRnZoczhO?=
- =?utf-8?B?bElXak9VRksrdE5tZW5aRVpySWZxNXdVbWFnRFR1QzZoK25JS2ltWlZXVmJj?=
- =?utf-8?B?YUpXSzRjeVlZSWo5TEVvb2xSMFh0dm9UVExpdVhqeUVlOFRZcjg4Qm9ZeUY2?=
- =?utf-8?B?VlJpT0VzWk1WQ2cvb2RTOVRNNlRuWXAyME1hSzg5ekNmbmxWMkRUTlFvS1J2?=
- =?utf-8?B?ZnZVaUhzd1IyWmMyaVNHU0h0TEdxVEVKWExadWlhYnVtVXg3dVl1MlJiM1c2?=
- =?utf-8?B?aWRaNCtNeHdXM2NabU9XVGZyM2Q2RUh0K2toOWtJaTA2cmhIa2UrL1lqbS8v?=
- =?utf-8?B?R2JkVTFvZWRQVURlWWUxcDI3U0NLWk1va2psdGh5anNnalJka0VXRkNJODFZ?=
- =?utf-8?Q?MeJcXB9SQvBhJipuMfESL3T51?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: a390de60-815c-4b1e-f305-08dc637b27d1
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR02MB8500.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 09:52:58.2071
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Pn1dpT9Y/3FlbsQdjJFMm1KIT6sGNi3KXACwth7VbQVikRHLkJV+FX8vIwXA5ynp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR02MB6326
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/7] dt-bindings: counter: Update TI eQEP binding
+To: Judith Mendez <jm@ti.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ William Breathitt Gray <william.gray@linaro.org>
+Cc: David Lechner <david@lechnology.com>,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+References: <20240418221417.1592787-1-jm@ti.com>
+ <20240418221417.1592787-6-jm@ti.com>
+ <a0eee08b-17c0-4089-85eb-d645cbcafae3@linaro.org>
+ <e58ff9ee-b050-4ad8-a060-dc0e33cc4896@ti.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <e58ff9ee-b050-4ad8-a060-dc0e33cc4896@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi!
-
-2024-04-03 at 10:06, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 23/04/2024 00:11, Judith Mendez wrote:
+>>>   
+>>>     interrupts:
+>>>       description: The eQEP event interrupt
+>>>       maxItems: 1
+>>>   
+>>>     clocks:
+>>> -    description: The clock that determines the SYSCLKOUT rate for the eQEP
+>>> +    description: The clock that determines the clock rate for the eQEP
+>>>         peripheral.
+>>>       maxItems: 1
+>>>   
+>>>     clock-names:
+>>> -    const: sysclkout
+>>> +    maxItems: 1
+>>
+>> NAK. That's just wrong, not explained at all either.
+>>
 > 
-> When building with CONFIG_OF and/or CONFIG_ACPI disabled but W=1 extra
-> warnings enabled, a lot of driver cause a warning about an unused
-> ID table:
-> 
-> drivers/char/tpm/tpm_ftpm_tee.c:356:34: error: unused variable 'of_ftpm_tee_ids' [-Werror,-Wunused-const-variable]
-> drivers/dma/img-mdc-dma.c:863:34: error: unused variable 'mdc_dma_of_match' [-Werror,-Wunused-const-variable]
-> drivers/fpga/versal-fpga.c:62:34: error: unused variable 'versal_fpga_of_match' [-Werror,-Wunused-const-variable]
-> drivers/i2c/muxes/i2c-mux-ltc4306.c:200:34: error: unused variable 'ltc4306_of_match' [-Werror,-Wunused-const-variable]
-> drivers/i2c/muxes/i2c-mux-reg.c:242:34: error: unused variable 'i2c_mux_reg_of_match' [-Werror,-Wunused-const-variable]
-> drivers/memory/pl353-smc.c:62:34: error: unused variable 'pl353_smc_supported_children' [-Werror,-Wunused-const-variable]
-> drivers/regulator/pbias-regulator.c:136:34: error: unused variable 'pbias_of_match' [-Werror,-Wunused-const-variable]
-> drivers/regulator/twl-regulator.c:552:34: error: unused variable 'twl_of_match' [-Werror,-Wunused-const-variable]
-> drivers/regulator/twl6030-regulator.c:645:34: error: unused variable 'twl_of_match' [-Werror,-Wunused-const-variable]
-> drivers/scsi/hisi_sas/hisi_sas_v2_hw.c:3635:36: error: unused variable 'sas_v2_acpi_match' [-Werror,-Wunused-const-variable]
-> drivers/staging/pi433/pi433_if.c:1359:34: error: unused variable 'pi433_dt_ids' [-Werror,-Wunused-const-variable]
-> drivers/tty/serial/amba-pl011.c:2945:34: error: unused variable 'sbsa_uart_of_match' [-Werror,-Wunused-const-variable]
-> 
-> The fix is always to just remove the of_match_ptr() and ACPI_PTR() wrappers
-> that remove the reference, rather than adding another #ifdef just for build
-> testing for a configuration that doesn't matter in practice.
-> 
-> I considered splitting up the large patch into per subsystem patches, but since
-> it's really just the same thing everywhere it feels better to do it all at once.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/char/ipmi/ipmb_dev_int.c          | 2 +-
->  drivers/char/tpm/tpm_ftpm_tee.c           | 2 +-
->  drivers/dma/img-mdc-dma.c                 | 2 +-
->  drivers/fpga/versal-fpga.c                | 2 +-
->  drivers/hid/hid-google-hammer.c           | 6 ++----
->  drivers/i2c/muxes/i2c-mux-ltc4306.c       | 2 +-
->  drivers/i2c/muxes/i2c-mux-reg.c           | 2 +-
->  drivers/input/touchscreen/wdt87xx_i2c.c   | 2 +-
->  drivers/mux/adg792a.c                     | 2 +-
->  drivers/net/ethernet/apm/xgene-v2/main.c  | 2 +-
->  drivers/net/ethernet/hisilicon/hns_mdio.c | 2 +-
->  drivers/regulator/pbias-regulator.c       | 2 +-
->  drivers/regulator/twl-regulator.c         | 2 +-
->  drivers/regulator/twl6030-regulator.c     | 2 +-
->  drivers/rtc/rtc-fsl-ftm-alarm.c           | 2 +-
->  drivers/scsi/hisi_sas/hisi_sas_v1_hw.c    | 2 +-
->  drivers/scsi/hisi_sas/hisi_sas_v2_hw.c    | 2 +-
->  drivers/staging/pi433/pi433_if.c          | 2 +-
->  drivers/tty/serial/amba-pl011.c           | 6 +++---
->  drivers/tty/serial/ma35d1_serial.c        | 2 +-
->  20 files changed, 23 insertions(+), 25 deletions(-)
+> The intention was to make the binding a bit more generic, but I see
+> that is not the correct direction to go, thanks for the feedback.
 
-As far as I can tell, this triggers unconditional use of the
-of_match_table, and the compiler will have a harder time dropping
-that data. However, the wasted data is negligible for the parts
-touching "my" drivers:
+Bindings must be specific, because they describe the hardware. Your
+hardware has exactly one clock input pin, not some superposition of pins
+which change depending on photon stream.
 
-drivers/i2c/muxes/i2c-mux-ltc4306.c
-drivers/i2c/muxes/i2c-mux-reg.c
-drivers/mux/adg729a.c
+Best regards,
+Krzysztof
 
-Acked-by: Peter Rosin <peda@axentia.se>
-
-Cheers,
-Peter
 
