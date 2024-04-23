@@ -1,208 +1,165 @@
-Return-Path: <linux-kernel+bounces-154398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD8AC8ADB9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:42:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D40D8ADBA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:43:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC1F71C21339
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:42:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8518B22995
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 01:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33258134D1;
-	Tue, 23 Apr 2024 01:42:07 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A94417BB7;
+	Tue, 23 Apr 2024 01:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XsE/uXQC"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B071D125C0;
-	Tue, 23 Apr 2024 01:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3A117997;
+	Tue, 23 Apr 2024 01:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713836526; cv=none; b=clOErlmNYEOfcmYi5Re+VNooU10XB2fNjT7k09hEh31yDob3pwuIvBgs5Q2pMZnNJV1iWlBR0xjCYdMhSWxPng5mGq/so+0DiPQvK2v88viLfS+pXlZDlfXIQqorYPSCU/1EKB3Fz7ftsSILMy+vLb9077/41Q/WNA+gb8j0StQ=
+	t=1713836609; cv=none; b=odbXiXUaO20omOUlYpylUMWCiiqTMn73zfZHZstLlWycv8M2D7+TXlHogU31sFIuRGNAVtzC83ETM1R59D0BW8a9Gmu5KhXstjqm3VASxyTnTv50O3IwkBtLsDcjliTh1J/l3+WkvkEYP7BhPSS6SkyvuWin1maibe4Q6QMrZVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713836526; c=relaxed/simple;
-	bh=9r57Vx40Y2nfjtPI7LcaBPKursErV0Ugz29e2aGiKXQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SSYsGVtvZzSlQ58QXkb7fS2h70G0UK4a7cVS21lDxEi13QlCEzZRxqjXh4D8zSSdUQ6EbhDwsCjbJUZja5O8vaxI3NNFMZx58/080g2uCaiF8AuT83y56U112RDETqE6lAyxeMpVjhpVQIieq5IQUi/6wgjUXjI5rrpLDnpNM5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VNlGR4jQKz4f3kG9;
-	Tue, 23 Apr 2024 09:41:51 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 24C851A0DD8;
-	Tue, 23 Apr 2024 09:41:59 +0800 (CST)
-Received: from [10.174.177.174] (unknown [10.174.177.174])
-	by APP1 (Coremail) with SMTP id cCh0CgBHZQ7jESdm3NXWKg--.48899S3;
-	Tue, 23 Apr 2024 09:41:58 +0800 (CST)
-Message-ID: <a1874551-7e02-aa0d-9ef7-4322e920c661@huaweicloud.com>
-Date: Tue, 23 Apr 2024 09:41:55 +0800
+	s=arc-20240116; t=1713836609; c=relaxed/simple;
+	bh=ufSwTEYdLjNh53VNo5n/InjNNNfWiz9aDd8WKQpIqGA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pjtpURaZbt/FLiMvF/DGXYDKVZIbtZVvUrfc/zB/OUdOT4jD4mIwGlPg5qUEUblWr+aonFf5LODzVtaPGTTe491ix/MN5fGfzJCdl0pCqQP6/7xbRIXPvOoMEDQgyhYuTmtMITAoKUFkYtVJxXbboMrigownT5n2f6s33U5ZPqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XsE/uXQC; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6f30f69a958so1020782b3a.1;
+        Mon, 22 Apr 2024 18:43:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713836607; x=1714441407; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FVv9MGjbF3k+4QlXe6bHKBL0yNq+kWVhwIIKL4GtREU=;
+        b=XsE/uXQCN/6TG3l6T2DX0NeV+bTHIV4vN+5qaVPSmiL15rpKSg9yS0IXnscWg7K+wL
+         HpYmTOP6J623lV1IYfQIG+gE4yS6kWmwCdBmOgyrZ/xY9pYJZBJ3zcPQIjgwB2iQQPtj
+         tQMWSOg2Baj29JIUNhPiGIfoyqBN17FCepd85Xd02FOxOOwvPo33CldHBwIHjlDwlLQQ
+         8hC/LBbXsHOj/VXOfO1bNJvRJuKhwcobhyCbgCZDyPv0XKUebgNL9x3ZnTR3/biYBEO7
+         QZ/4Msd1/0qpNHRm5iriju4LzQJ18V8613YVXsKqqQC0QvZKFL1BqLl0C76cgtmas9Z6
+         Q1/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713836607; x=1714441407;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FVv9MGjbF3k+4QlXe6bHKBL0yNq+kWVhwIIKL4GtREU=;
+        b=LZ+lEhQFLS0zvfNvkBRewpF652PwiAbvvmBEEuMnmV5A0+yZmrNTEALjwEPayIcYXL
+         jdbzHzqC66ptkcmYLev4Tt6dCXIhg90syaRmVbMJW6lHb2Fs+UQC9iF8yCAn1V1ubaJb
+         oibqp5logYVxPJvXMLPXRcyOUVuFEF3D+DUkw6zMfj5k4YpyCkmWGD5I/9zsQaZHSjya
+         YhKFiCY/IGmOMuKjPIkI4UlnhC67r9evbdSqsWPv7WWxGOXF7PAdP0r4Jym3OloUqSL6
+         8dIKtfudwY1ATS3zPkSKbVe7mrVdTN8/zZZP2cePIQrCCRREq6PmXMNL9kfn2mNBzgvi
+         XP5g==
+X-Forwarded-Encrypted: i=1; AJvYcCWYJ6ZF7rt1lgZeO2TYI44322++PrkkhU6GNd+u/7qVx0qW2nrp9EVStb/fAMLxqpLZHdiwV/wwplp02ISLmVypABII5Vhk4yArHdplCZ6Wmm9eG2M/QNlMfpcQWTWohSj7fT5/R6RivOpcQZiwiawPeelCBhzc+l6tUH7xfNDqT2BgXf62PcW/cDAPWFMWZhiZk97O31RGSuYN0sE+G4J+dRWYBQIY1NET0lJhAmKeZxX20RW8Lps5L1HCVg==
+X-Gm-Message-State: AOJu0YzgXcvTuy0HRNjSOQlqi3WrO/w04DhcsKEwEvwwhweOQncUOTs0
+	HtA4L+sAorouIUeXqnm1hCTLU9wHNt/lazxJHsbhU52mVNysTlf2
+X-Google-Smtp-Source: AGHT+IHNvVbE9cA2XCQLQKjnl3qgdgnVkMyNXB6fh5i88nUQTMFnT4C4mWly1ZAKH13pWuCwaxCS8g==
+X-Received: by 2002:a05:6a00:1950:b0:6ec:fe38:d94 with SMTP id s16-20020a056a00195000b006ecfe380d94mr14924140pfk.33.1713836607279;
+        Mon, 22 Apr 2024 18:43:27 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id gj14-20020a056a00840e00b006ed93e7ef22sm8471175pfb.39.2024.04.22.18.43.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 18:43:26 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 6C2B718688A48; Tue, 23 Apr 2024 08:43:23 +0700 (WIB)
+Date: Tue, 23 Apr 2024 08:43:23 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+	mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
+	corbet@lwn.net, lgirdwood@gmail.com, andersson@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, gregkh@linuxfoundation.org,
+	Thinh.Nguyen@synopsys.com, broonie@kernel.org, bgoswami@quicinc.com,
+	tiwai@suse.com, robh@kernel.org, konrad.dybcio@linaro.org
+Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH v19 41/41] ASoC: doc: Add documentation for SOC USB
+Message-ID: <ZicSOzE8KyaYGi0v@archie.me>
+References: <20240422224906.15868-1-quic_wcheng@quicinc.com>
+ <20240422224906.15868-42-quic_wcheng@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] ext4: fix uninitialized ratelimit_state->lock access in
- __ext4_fill_super()
-Content-Language: en-US
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
- ritesh.list@gmail.com, linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
- yangerkun@huawei.com, yukuai3@huawei.com, libaokun@huaweicloud.com
-References: <20240102133730.1098120-1-libaokun1@huawei.com>
-From: Baokun Li <libaokun@huaweicloud.com>
-In-Reply-To: <20240102133730.1098120-1-libaokun1@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBHZQ7jESdm3NXWKg--.48899S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxWrW3uw48Gry5GF18ur48WFg_yoWrAw47pr
-	srCa4fJry8X3yjgwsxJFn3JFy8Xw18CFyUCr1xur1UJFyvqrn3XF1xtF48AFW29rWxC3Wv
-	qF1UKrWDCa4UG3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWUWVWUuwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-	IF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIda
-	VFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240422224906.15868-42-quic_wcheng@quicinc.com>
 
-Gently ping again.
-
-On 2024/1/2 21:37, Baokun Li wrote:
-> In the following concurrency we will access the uninitialized rs->lock:
->
-> ext4_fill_super
->    ext4_register_sysfs
->     // sysfs registered msg_ratelimit_interval_ms
->                               // Other processes modify rs->interval to
->                               // non-zero via msg_ratelimit_interval_ms
->    ext4_orphan_cleanup
->      ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
->        __ext4_msg
->          ___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state)
->            if (!rs->interval)  // do nothing if interval is 0
->              return 1;
->            raw_spin_trylock_irqsave(&rs->lock, flags)
->              raw_spin_trylock(lock)
->                _raw_spin_trylock
->                  __raw_spin_trylock
->                    spin_acquire(&lock->dep_map, 0, 1, _RET_IP_)
->                      lock_acquire
->                        __lock_acquire
->                          register_lock_class
->                            assign_lock_key
->                              dump_stack();
->    ratelimit_state_init(&sbi->s_msg_ratelimit_state, 5 * HZ, 10);
->      raw_spin_lock_init(&rs->lock);
->      // init rs->lock here
->
-> and get the following dump_stack:
->
-> =========================================================
-> INFO: trying to register non-static key.
-> The code is fine but needs lockdep annotation, or maybe
-> you didn't initialize this object before use?
-> turning off the locking correctness validator.
-> CPU: 12 PID: 753 Comm: mount Tainted: G E 6.7.0-rc6-next-20231222 #504
-> [...]
-> Call Trace:
->   dump_stack_lvl+0xc5/0x170
->   dump_stack+0x18/0x30
->   register_lock_class+0x740/0x7c0
->   __lock_acquire+0x69/0x13a0
->   lock_acquire+0x120/0x450
->   _raw_spin_trylock+0x98/0xd0
->   ___ratelimit+0xf6/0x220
->   __ext4_msg+0x7f/0x160 [ext4]
->   ext4_orphan_cleanup+0x665/0x740 [ext4]
->   __ext4_fill_super+0x21ea/0x2b10 [ext4]
->   ext4_fill_super+0x14d/0x360 [ext4]
-> [...]
-> =========================================================
->
-> Normally interval is 0 until s_msg_ratelimit_state is initialized, so
-> ___ratelimit() does nothing. But registering sysfs precedes initializing
-> rs->lock, so it is possible to change rs->interval to a non-zero value
-> via the msg_ratelimit_interval_ms interface of sysfs while rs->lock is
-> uninitialized, and then a call to ext4_msg triggers the problem by
-> accessing an uninitialized rs->lock. Therefore register sysfs after all
-> initializations are complete to avoid such problems.
->
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->   fs/ext4/super.c | 22 ++++++++++------------
->   1 file changed, 10 insertions(+), 12 deletions(-)
->
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 0980845c8b8f..1db23b0e8a4f 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5564,19 +5564,15 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->   	if (err)
->   		goto failed_mount6;
->   
-> -	err = ext4_register_sysfs(sb);
-> -	if (err)
-> -		goto failed_mount7;
-> -
->   	err = ext4_init_orphan_info(sb);
->   	if (err)
-> -		goto failed_mount8;
-> +		goto failed_mount7;
->   #ifdef CONFIG_QUOTA
->   	/* Enable quota usage during mount. */
->   	if (ext4_has_feature_quota(sb) && !sb_rdonly(sb)) {
->   		err = ext4_enable_quotas(sb);
->   		if (err)
-> -			goto failed_mount9;
-> +			goto failed_mount8;
->   	}
->   #endif  /* CONFIG_QUOTA */
->   
-> @@ -5602,7 +5598,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->   		ext4_msg(sb, KERN_INFO, "recovery complete");
->   		err = ext4_mark_recovery_complete(sb, es);
->   		if (err)
-> -			goto failed_mount10;
-> +			goto failed_mount9;
->   	}
->   
->   	if (test_opt(sb, DISCARD) && !bdev_max_discard_sectors(sb->s_bdev))
-> @@ -5619,15 +5615,17 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->   	atomic_set(&sbi->s_warning_count, 0);
->   	atomic_set(&sbi->s_msg_count, 0);
->   
-> +	/* Register sysfs after all initializations are complete. */
-> +	err = ext4_register_sysfs(sb);
-> +	if (err)
-> +		goto failed_mount9;
+On Mon, Apr 22, 2024 at 03:49:06PM -0700, Wesley Cheng wrote:
+> +.. code-block:: rst
 > +
->   	return 0;
->   
-> -failed_mount10:
-> +failed_mount9:
->   	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
-> -failed_mount9: __maybe_unused
-> +failed_mount8: __maybe_unused
->   	ext4_release_orphan_info(sb);
-> -failed_mount8:
-> -	ext4_unregister_sysfs(sb);
-> -	kobject_put(&sbi->s_kobj);
->   failed_mount7:
->   	ext4_unregister_li_request(sb);
->   failed_mount6:
+> +int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
+> +					struct snd_soc_jack *jack)
+> +..
 
+You forget to indent snd_soc_usb_setup_offload_jack() prototype:
 
+---- >8 ----
+diff --git a/Documentation/sound/soc/usb.rst b/Documentation/sound/soc/usb.rst
+index 3f7c3ef6a0c03c..0b6da0be9f317f 100644
+--- a/Documentation/sound/soc/usb.rst
++++ b/Documentation/sound/soc/usb.rst
+@@ -218,8 +218,8 @@ state.
+ 
+ .. code-block:: rst
+ 
+-int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
+-					struct snd_soc_jack *jack)
++        int snd_soc_usb_setup_offload_jack(struct snd_soc_component *component,
++        					struct snd_soc_jack *jack)
+ ..
+ 
+   - ``component``: ASoC component to add the jack
+
+> +USB Offload Playback Route Select Kcontrol
+> +-----------------------------------
+
+USB offload playback heading underlines are not long enough to cover heading
+titles, so I have to extend them:
+
+---- >8 ----
+diff --git a/Documentation/sound/soc/usb.rst b/Documentation/sound/soc/usb.rst
+index 0b6da0be9f317f..5e0e9fad131b24 100644
+--- a/Documentation/sound/soc/usb.rst
++++ b/Documentation/sound/soc/usb.rst
+@@ -482,7 +482,7 @@ into the physical USB port and enumerated.  The kcontrols are defined as:
+     kcontrol exposed by the platform card.
+ 
+ USB Offload Playback Route Select Kcontrol
+------------------------------------
++------------------------------------------
+ In order to allow for vendor specific implementations on audio offloading device
+ selection, the SOC USB layer exposes the following:
+ 
+@@ -545,7 +545,7 @@ along to the external DSP.
+ 
+ 
+ USB Offload Playback Route Status
+--------------------
++---------------------------------
+ SOC USB exposes APIs for keeping track of the offloading state, and expects this
+ to be maintained by the BE DAI link that created/added the SOC USB device.
+ 
+@@ -573,7 +573,7 @@ When executing the kcontrol get callback, it will loop across the active_list ar
+ and report to the application for active USB sound card and USB PCM device indexes.
+ 
+ USB Offload Playback Capable Card
+--------------------------------
++---------------------------------
+ USB sound also creates a kcontrol for applications to help determine which platform
+ sound card USB offloading is linked to.  This will allow applications to further
+ query the platform sound card for specific information about the current USB offload
+
+Thanks.
+
+-- 
+An old man doll... just what I always wanted! - Clara
 
