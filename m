@@ -1,160 +1,215 @@
-Return-Path: <linux-kernel+bounces-155482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 681EC8AEB33
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:34:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB75E8AEB36
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:36:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 942841C21F27
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:34:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11302B20EAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:36:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D79B013C694;
-	Tue, 23 Apr 2024 15:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D192C13C9C0;
+	Tue, 23 Apr 2024 15:36:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="t3iNJ5QE"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xAaN9T6+"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D7817BA8;
-	Tue, 23 Apr 2024 15:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82C917BA8
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713886484; cv=none; b=fCDs+l3kMfwKx5GCgfRBcHaRS+fd/6pvTYxqtdlaMVM7q2XrKJue5VkEmGSc+NBQ8QY7LBSSIIUb24Kathb9P0Z5PIeeDdiERFlQoSdaG5J7ADhfso4KHRQ0xuF+eUSXpLDJ0rqmhRkb3+3G8YMhdyhKQ+3fYZoDPrUTCsaAV0s=
+	t=1713886561; cv=none; b=FartYdc8l6siHyFYG1zv8V594N5q5/7Qsy603THsRtkVnNANjCGOKyOWsZLOMte+e7kYtBo4N1tEmeMYoQ5npCwcdNy5DsKn7RdWrQ/nIeEFO/61IWYUheEMDyqMNYmfQbE3xgtEf4eY4svPtdnaIx2ThoYy3KMbLfomWZF4HQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713886484; c=relaxed/simple;
-	bh=3Z022LAb/Qc9gVEiSFfHMGtWUvt0++jo6l9pERyHz6E=;
-	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
-	 Content-Type:Subject; b=bG68m7q0Sxd1w9Otkw69/fUf8l/Jmm4WoPx86FSIJNutwcoiT8we+WwBHgUpUn2DnDu1NeL2CVRCN8n/p+ZGY0UiwB9I+E9HfWvIz/C1movpeOfJ6V6+rbcVxJcU/UISb+LctrNJkSa9XhtDEUVafsovS8luTexgSU5IO4+MdCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=t3iNJ5QE; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=vNvK7sZ4T6Ritg0ROl4LFENFoZaJBNwoxwSP8BQf7Vg=; b=t3iNJ5QE6Xzk0W1MN0iF//uP7f
-	2+qDfcOXW2Z/lOJP0aXmFDGdyW9VeNVcbPsbS+wQQlL1liAmpdkpYpDTiAqpdkdAWAqRflFOpu5mR
-	Gc1jI1Fsdh7MIfqgjDIoaJjTzebKdOrfk2vzmNghlvJSWeaoDL9/HU2l84+5Lk203res=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:40398 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rzI9w-0007G0-0X; Tue, 23 Apr 2024 11:34:17 -0400
-Date: Tue, 23 Apr 2024 11:34:15 -0400
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, gregkh@linuxfoundation.org,
- jirislaby@kernel.org, peterz@infradead.org, mingo@kernel.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>
-Message-Id: <20240423113415.7e81fa1de7f98f91d244b87a@hugovil.com>
-In-Reply-To: <CAMuHMdXqc9tZkd7YzX56QRroDhjbweQAUj+th68DU8oFxpp+jg@mail.gmail.com>
-References: <20240409154253.3043822-1-hugo@hugovil.com>
-	<20240409154253.3043822-4-hugo@hugovil.com>
-	<CAMuHMdVq=rf-6o485KiA+zcwJPHMe5STKUtSWtFPs2nmvshu-A@mail.gmail.com>
-	<CAHp75Vfi2YjE0wzwABURxXhcWLozAf9Cdj_pT+DL_tm8E_zm4Q@mail.gmail.com>
-	<CAMuHMdXqc9tZkd7YzX56QRroDhjbweQAUj+th68DU8oFxpp+jg@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713886561; c=relaxed/simple;
+	bh=3l4IWHlo4FBl22jlavtlXCLATKpqmRJOm/W+8dhML4Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PqtPIeYpWqOv10vqwpGd8wAexI+LohRn5xOFdl0NkQr5iFWboUectes8mxpw0duu/iBc+Z/1FPFxJV+VRqjRBPLoSQQoRexVB8Vl/zVmP0WgVjuxP/6S/07sfGE5+MpA7M/bM4ifWVBarybO1D5MbR6eXqDE9XU26SHaJiVnqaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xAaN9T6+; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e8fcb0b860so210005ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:35:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713886559; x=1714491359; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aZKchwpeRb+GhSAX5RArUTFkziKYCy4THGiKgOpnTKU=;
+        b=xAaN9T6+48GP5WAVtUlTGd5O5kI6tBH6NUoi4Ih5vOJhJXleAdtZrs9BjwjqGLOyn3
+         MV4833Tu8yBu4CyXRw092W8+9Cj3+mtcpA32r4gqsjteI73/VGM1MKmfcmeU6dYnIX1P
+         acTfarhPu1bYkllLj4ruzZRf0XFujnXrD23vDL01ugahyq2yFUJDQ1IN4JU9VKF3VxBK
+         n/om4kt/fImMKZxFodXAUgux4pr6E038+JJiVIoEjQVv9P5hvMUF0ClaOyh/lxVWPAMa
+         J3MgaaE5ZZWFjIMviHZOui6iLFgQ2hhDOT8/aYTz3ak2C/YcBfoCJrMvj5TezPThYS0c
+         sPnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713886559; x=1714491359;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aZKchwpeRb+GhSAX5RArUTFkziKYCy4THGiKgOpnTKU=;
+        b=FbrK5eFNdi4CkSWnSWwJ8y8wg4KPDdiK3jJ4ZSeeIOFAyiFxu243bnBJIjbl2EAd6t
+         KLN7uV52pSr2Xh98fZwic0it+0E7RoPjjz2jLw3lEcpuS1YGqaZC+RsXz+up5uGZqd/E
+         0DuuyyaTZeDyhk0QGlkFX0PIPieq/mAklU9oXXahG1qOll+pw03/K9bxoE62aCuwTJxu
+         UAUSUSPd1BbwkPSmS8j7mj//ssajp4YYtsDOydjk3UYCKtWHfj0JEVOgi+UA/7Rv27DB
+         gPT20ilxmYHx2rexmRsNbOxZFSgsHp45AfENnUsi28GlcCpw+6ddCkrv0F/eUnCEuTRb
+         e4eQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXG0Wkmz1gdhdtPncNnghu0bkEPT+sRQcoimPExl2CpifQ/F7a0Xb/LfsLRCRjxw3wsfOxZiVpg44Qb+zbqk7o2wA0DhOi1y8YO3Gtu
+X-Gm-Message-State: AOJu0YzJWI5ephTomYC9Khx0RULAG64Zmp1G02G7xabziRWkI3bye2na
+	MGdHywhAQhWWHZyj8a46yaM5fOXJtj9DyaFadIwxhz0VG6Cj4OGQhb3e1FVyqA==
+X-Google-Smtp-Source: AGHT+IGX89rnpKNcaO3q/DhHRZ4FQafeAExWN80hXpNqwv5SFj8GubN26PQSHp8C9mjXqeodUPig2w==
+X-Received: by 2002:a17:902:f54c:b0:1e3:d23a:2d5e with SMTP id h12-20020a170902f54c00b001e3d23a2d5emr211183plf.21.1713886558627;
+        Tue, 23 Apr 2024 08:35:58 -0700 (PDT)
+Received: from google.com (134.90.125.34.bc.googleusercontent.com. [34.125.90.134])
+        by smtp.gmail.com with ESMTPSA id v2-20020aa78082000000b006eab6ac1f83sm9791713pff.0.2024.04.23.08.35.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 08:35:57 -0700 (PDT)
+Date: Tue, 23 Apr 2024 15:35:54 +0000
+From: Benson Leung <bleung@google.com>
+To: Jameson Thies <jthies@google.com>
+Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org,
+	pmalani@chromium.org, abhishekpandit@chromium.org,
+	andersson@kernel.org, dmitry.baryshkov@linaro.org,
+	fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org,
+	hdegoede@redhat.com, neil.armstrong@linaro.org,
+	rajaram.regupathy@intel.com, saranya.gopal@intel.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/4] usb: typec: Update sysfs when setting ops
+Message-ID: <ZifVWgG2PTna95MM@google.com>
+References: <20240419211650.2657096-1-jthies@google.com>
+ <20240419211650.2657096-3-jthies@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -2.8 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH v4 3/5] serial: sc16is7xx: split into core and I2C/SPI
- parts (core)
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
-
-On Tue, 23 Apr 2024 15:11:12 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-
-Hi Geert,
-
-> Hi Andy,
-> 
-> On Tue, Apr 23, 2024 at 12:37 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Tue, Apr 23, 2024 at 1:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Tue, Apr 9, 2024 at 5:48 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> 
-> > > > -config SERIAL_SC16IS7XX
-> > > > -       tristate "SC16IS7xx serial support"
-> > > > +       tristate "NXP SC16IS7xx UART support"
-> > >
-> > > Hence this replaces SERIAL_SC16IS7XX_CORE by SERIAL_SC16IS7XX,
-> > > so arch/mips/configs/cu1??0-neo_defconfig needs to updated.
-> >
-> >         select SERIAL_CORE
-> > -       depends on (SPI_MASTER && !I2C) || I2C
-> > +       select SERIAL_SC16IS7XX_SPI if SPI_MASTER
-> > +       select SERIAL_SC16IS7XX_I2C if I2C
-> >
-> > > So if SPI_MASTER or I2C is enabled, the corresponding SERIAL_SC16IS7XX_*
-> > > subdriver can no longer be disabled?  According to
-> > > https://lore.kernel.org/all/20240403123501.8ef5c99f65a40ca2c10f635a@hugovil.com/
-> > > you did want to support that?
-> >
-> > I believe it has been taken from one of the IIO drivers as an example.
-> 
-> Looks like a bad example to follow:
->   1. The driver question now pops up if both I2C and SPI_MASTER
->      are disabled,
-
-True.
-
-V3 originally had this:
-
->  config SERIAL_SC16IS7XX
->         tristate "SC16IS7xx serial support"
->         select SERIAL_CORE
-> -       depends on (SPI_MASTER && !I2C) || I2C
-> +       depends on SPI_MASTER || I2C
-
-And Andy commented "Is it?", which I probably misinterpreted as I should
-not list them as dependencies.
-
-Reintroducing "depends on SPI_MASTER || I2C" fixes this issue.
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="lzrJQjUThhd7EzhD"
+Content-Disposition: inline
+In-Reply-To: <20240419211650.2657096-3-jthies@google.com>
 
 
->   2. What if SERIAL_SC16IS7XX_CORE is builtin, but I2C and/or
->      SPI_MASTER are modular?
+--lzrJQjUThhd7EzhD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-a) SERIAL_SC16IS7XX builtin and I2C modular:
-CONFIG_SERIAL_SC16IS7XX=y
-CONFIG_SERIAL_SC16IS7XX_I2C=m
-CONFIG_SERIAL_SC16IS7XX_SPI=y
+On Fri, Apr 19, 2024 at 09:16:48PM +0000, Jameson Thies wrote:
+> From: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+>=20
+> When adding altmode ops, update the sysfs group so that visibility is
+> also recalculated.
+>=20
+> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
 
-SPI_MASTER is only boolean and cannot be modular.
+Reviewed-by: Benson Leung <bleung@chromium.org>
 
-Hugo.
+> ---
+>  drivers/usb/typec/altmodes/displayport.c |  2 +-
+>  drivers/usb/typec/class.c                | 18 +++++++++++++++++-
+>  drivers/usb/typec/ucsi/displayport.c     |  2 +-
+>  include/linux/usb/typec.h                |  3 +++
+>  4 files changed, 22 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec=
+/altmodes/displayport.c
+> index 596cd4806018b..92cc1b1361208 100644
+> --- a/drivers/usb/typec/altmodes/displayport.c
+> +++ b/drivers/usb/typec/altmodes/displayport.c
+> @@ -746,7 +746,7 @@ int dp_altmode_probe(struct typec_altmode *alt)
+>  	dp->alt =3D alt;
+> =20
+>  	alt->desc =3D "DisplayPort";
+> -	alt->ops =3D &dp_altmode_ops;
+> +	typec_altmode_set_ops(alt, &dp_altmode_ops);
+> =20
+>  	if (plug) {
+>  		plug->desc =3D "Displayport";
+> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> index 9610e647a8d48..9262fcd4144f8 100644
+> --- a/drivers/usb/typec/class.c
+> +++ b/drivers/usb/typec/class.c
+> @@ -467,6 +467,22 @@ static const struct attribute_group *typec_altmode_g=
+roups[] =3D {
+>  	NULL
+>  };
+> =20
+> +/**
+> + * typec_altmode_set_ops - Set ops for altmode
+> + * @adev: Handle to the alternate mode
+> + * @ops: Ops for the alternate mode
+> + *
+> + * After setting ops, attribute visiblity needs to be refreshed if the a=
+lternate
+> + * mode can be activated.
+> + */
+> +void typec_altmode_set_ops(struct typec_altmode *adev,
+> +			   const struct typec_altmode_ops *ops)
+> +{
+> +	adev->ops =3D ops;
+> +	sysfs_update_group(&adev->dev.kobj, &typec_altmode_group);
+> +}
+> +EXPORT_SYMBOL_GPL(typec_altmode_set_ops);
+> +
+>  static int altmode_id_get(struct device *dev)
+>  {
+>  	struct ida *ids;
+> @@ -2317,7 +2333,7 @@ void typec_port_register_altmodes(struct typec_port=
+ *port,
+>  			continue;
+>  		}
+> =20
+> -		alt->ops =3D ops;
+> +		typec_altmode_set_ops(alt, ops);
+>  		typec_altmode_set_drvdata(alt, drvdata);
+>  		altmodes[index] =3D alt;
+>  		index++;
+> diff --git a/drivers/usb/typec/ucsi/displayport.c b/drivers/usb/typec/ucs=
+i/displayport.c
+> index d9d3c91125ca8..eb7b8d6e47d00 100644
+> --- a/drivers/usb/typec/ucsi/displayport.c
+> +++ b/drivers/usb/typec/ucsi/displayport.c
+> @@ -337,7 +337,7 @@ struct typec_altmode *ucsi_register_displayport(struc=
+t ucsi_connector *con,
+>  	dp->con =3D con;
+>  	dp->alt =3D alt;
+> =20
+> -	alt->ops =3D &ucsi_displayport_ops;
+> +	typec_altmode_set_ops(alt, &ucsi_displayport_ops);
+>  	typec_altmode_set_drvdata(alt, dp);
+> =20
+>  	return alt;
+> diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
+> index b35b427561ab5..549275f8ac1b3 100644
+> --- a/include/linux/usb/typec.h
+> +++ b/include/linux/usb/typec.h
+> @@ -167,6 +167,9 @@ struct typec_port *typec_altmode2port(struct typec_al=
+tmode *alt);
+> =20
+>  void typec_altmode_update_active(struct typec_altmode *alt, bool active);
+> =20
+> +void typec_altmode_set_ops(struct typec_altmode *alt,
+> +			   const struct typec_altmode_ops *ops);
+> +
+>  enum typec_plug_index {
+>  	TYPEC_PLUG_SOP_P,
+>  	TYPEC_PLUG_SOP_PP,
+> --=20
+> 2.44.0.769.g3c40516874-goog
+>=20
 
+--lzrJQjUThhd7EzhD
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> I believe the only way to fix that is by letting the sub-drivers select the
-> core driver, like before.
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCZifVWQAKCRBzbaomhzOw
+wgzKAQDutO7PxZZmrsHtG9ddC9XxkmJElv1XwC3nlGuAjT6zsgEAuIMeG411uWiX
+v+/8HebGvTwGWOBConsvt901Hru3awo=
+=v14f
+-----END PGP SIGNATURE-----
 
--- 
-Hugo Villeneuve
+--lzrJQjUThhd7EzhD--
 
