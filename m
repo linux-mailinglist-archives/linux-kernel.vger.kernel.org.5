@@ -1,99 +1,116 @@
-Return-Path: <linux-kernel+bounces-155290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49B2B8AE84B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:35:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE3F98AE853
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:37:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C6B31C23081
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:35:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E43C282F70
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABED13666F;
-	Tue, 23 Apr 2024 13:34:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D4913667B;
+	Tue, 23 Apr 2024 13:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WTKjNeqY";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="V+R4HkPd"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="OB7MF+1r"
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD49418E28;
-	Tue, 23 Apr 2024 13:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CDF18E28;
+	Tue, 23 Apr 2024 13:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.95.48.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713879294; cv=none; b=MQh2n/JiAxkgjUts71X9FvZFeo1pKfNfhLLP1PtBxJwubX5+bfcKA8uvJrMKmL7wlwhiBugzgP9fD0+UUN/1L9VORVJ75OR2C0XRXfAy9GSeXJOLqi4KNeRbBfQkyUO92+7rBIdcpU+Jk7sixg9fVy+lVlia7A9YxkbN/WWgngg=
+	t=1713879445; cv=none; b=Nk/+eIZj65NO31IqTiMbLb/pWQVZcmD0w/gEE6tFl9axJGnoyaKftHYs/Q3GliJojMD/LX2kMp+IAqxin8ubcmpCiHZJajDcYOsHVwVeYLHFFezcXm0MGSBav/7cJvTucyr6rdEj2lZ2NmU3UCWMjkQoahRvGso0dDxj5t94i0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713879294; c=relaxed/simple;
-	bh=v53nYGkBU6Q0r8sX3eqF6g557Kt1fMudDeT4WFa7Y2o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dBLFxjSGOm413Y1Di7E0rA5TMPNTxV1LleKrmdvJwQoq49X5e2PCIzAOwz4FvvLjwuCFOG6iC0xWdfAgCiyVaJTo4ZfYutB1KMWTv0ba//bKs8vDHwjSB3Sftvp+COQ2AVV5DTtG1/8BWlKf2NRKTTNUhmj1koyRMXl76PwWZEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=WTKjNeqY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=V+R4HkPd; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 23 Apr 2024 15:34:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713879290;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zQzgTOJxdV+4HqjR4K2Hng/ZiXcnP1iJM/wR6D3wAb4=;
-	b=WTKjNeqY8xkmjrafgK3JHTMFWg4OmmtvBoHyR86Fz5DQGc8/m4JRw1pNturj88beqVCLmT
-	u/3GvaY+7s3kCWvaUaDifQlr/v2fxGWoZwZRKq36MpJfVSR7U9iqQiDsb+Yaf1Yl8XWA6u
-	kUIMap3Meje3OFinYmlFLMk4SyWh/0Pynrwvhp1WDbZ3SJZggVNkDtsfGMKqyUt4fy/nSl
-	Gm04YqUim+3+mFh2FGUyWtktXFd37D71LIDKndamiMbkQgJczzSQOkBl0xmHIKKPAmT6QX
-	tH0EeGkij45IWOvEoXwmtEvj3nwaeCN4OEiiEDYVuvd/7eoSzjoma6p9BB98rg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713879290;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zQzgTOJxdV+4HqjR4K2Hng/ZiXcnP1iJM/wR6D3wAb4=;
-	b=V+R4HkPdnpgdtc0lWO90//+/pjHU2Wv+1ovkWI/lI/cCJ3k3ME+ubW3PIOsWmJQb2JUHs+
-	Kju2+Ap2WqZxpOAA==
-From: Nam Cao <namcao@linutronix.de>
-To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>,
-	Jaya Kumar <jayalk@intworks.biz>, Daniel Vetter <daniel@ffwll.ch>,
-	Helge Deller <deller@gmx.de>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, tiwai@suse.de, bigeasy@linutronix.de,
-	patrik.r.jakobsson@gmail.com,
-	Vegard Nossum <vegard.nossum@oracle.com>,
-	George Kennedy <george.kennedy@oracle.com>,
-	Darren Kenny <darren.kenny@oracle.com>, chuansheng.liu@intel.com,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] fbdev: fix incorrect address computation in deferred
- IO
-Message-ID: <20240423133445.h44pcNzq@linutronix.de>
-References: <20240423115053.4490-1-namcao@linutronix.de>
- <1722c1b6-59a5-429d-905c-bc1951a68a68@suse.de>
- <c2bf36b5-3145-491b-b272-d5afae73db7f@oracle.com>
+	s=arc-20240116; t=1713879445; c=relaxed/simple;
+	bh=dsVKS75rk/XJ1PdxuK8KFQuKjzQDb/YS3gKI282VATA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fIcPlJaTuecphgYN33QcYIgn8yLTZ7z22gKdg6IhqcAuH8q12FvZ5bpbB483uWUG8j3SyORb5AQvevpvSYB3YLIsDPdVbMc7coZ6wnegUk9DwAuOHD6e3xkJ2XOpJxaJJf0vgNBau2RsuHtWOmdvQJF5LbAX4LGuqMYAAGpCLJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=OB7MF+1r; arc=none smtp.client-ip=52.95.48.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1713879444; x=1745415444;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QNgZ08cu6G7jRe5L0bfia3hVc4v0QPDb5H9DVfDn474=;
+  b=OB7MF+1rpTQrSRAlt1oqA8CN5W/fG10eNUQSGUKmC6zJSs8MMcaafpdu
+   iwvUMLE38w3SfmlXSBXTttfvQaGwmxj460GFnzoW5K5GIkkokQo2G66yj
+   IGu0h099DXeHcncMlF6M7lth5Q1Yl21vRF1iSqyctbp7VqfNFcuN/qRTx
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.07,222,1708387200"; 
+   d="scan'208";a="391891265"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 13:37:21 +0000
+Received: from EX19MTAEUA002.ant.amazon.com [10.0.10.100:14814]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.1.110:2525] with esmtp (Farcaster)
+ id 99e54c7e-3d8e-4df9-a177-c498b08e7836; Tue, 23 Apr 2024 13:37:20 +0000 (UTC)
+X-Farcaster-Flow-ID: 99e54c7e-3d8e-4df9-a177-c498b08e7836
+Received: from EX19D002EUC001.ant.amazon.com (10.252.51.219) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 23 Apr 2024 13:37:20 +0000
+Received: from EX19MTAUWA001.ant.amazon.com (10.250.64.204) by
+ EX19D002EUC001.ant.amazon.com (10.252.51.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 23 Apr 2024 13:37:19 +0000
+Received: from dev-dsk-hagarhem-1b-b868d8d5.eu-west-1.amazon.com
+ (10.253.65.58) by mail-relay.amazon.com (10.250.64.204) with Microsoft SMTP
+ Server id 15.2.1258.28 via Frontend Transport; Tue, 23 Apr 2024 13:37:19
+ +0000
+Received: by dev-dsk-hagarhem-1b-b868d8d5.eu-west-1.amazon.com (Postfix, from userid 23002382)
+	id BCAB820D4A; Tue, 23 Apr 2024 13:37:18 +0000 (UTC)
+From: Hagar Hemdan <hagarhem@amazon.com>
+To:
+CC: Maximilian Heyne <mheyne@amazon.de>, Pratyush Yadav <ptyadav@amazon.de>,
+	Norbert Manthey <nmanthey@amazon.de>, <stable@vger.kernel.org>, Hagar Hemdan
+	<hagarhem@amazon.com>, Ard Biesheuvel <ardb@kernel.org>,
+	<linux-efi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] efi: libstub: only free priv.runtime_map when allocated
+Date: Tue, 23 Apr 2024 13:36:33 +0000
+Message-ID: <20240423133635.19679-1-hagarhem@amazon.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c2bf36b5-3145-491b-b272-d5afae73db7f@oracle.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On Tue, Apr 23, 2024 at 06:56:52PM +0530, Harshit Mogalapalli wrote:
-> Thanks everyone!
-> 
-> I have tested the patched kernel with the syzkaller reproducer and couldn't
-> see a problem.
+priv.runtime_map is only allocated when efi_novamap is not set.
+Otherwise, it is an uninitialized value.
+In the error path, it is freed unconditionally.
+Avoid passing an uninitialized value to free_pool.
+Free priv.runtime_map only when it was allocated.
 
-If you want to take credit for testing it, send us:
+This bug was discovered and resolved using Coverity Static Analysis
+Security Testing (SAST) by Synopsys, Inc.
 
-	Tested-by: Your Name <your@email>
+Fixes: f80d26043af9 ("efi: libstub: avoid efi_get_memory_map() for allocating the virt map")
+Signed-off-by: Hagar Hemdan <hagarhem@amazon.com>
+---
+ drivers/firmware/efi/libstub/fdt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-And that tag will appear in the final commit.
+diff --git a/drivers/firmware/efi/libstub/fdt.c b/drivers/firmware/efi/libstub/fdt.c
+index 70e9789ff9de..6a337f1f8787 100644
+--- a/drivers/firmware/efi/libstub/fdt.c
++++ b/drivers/firmware/efi/libstub/fdt.c
+@@ -335,8 +335,8 @@ efi_status_t allocate_new_fdt_and_exit_boot(void *handle,
+ 
+ fail:
+ 	efi_free(fdt_size, fdt_addr);
+-
+-	efi_bs_call(free_pool, priv.runtime_map);
++	if (!efi_novamap)
++		efi_bs_call(free_pool, priv.runtime_map);
+ 
+ 	return EFI_LOAD_ERROR;
+ }
+-- 
+2.40.1
 
-But completely up to you.
-
-Best regards,
-Nam
 
