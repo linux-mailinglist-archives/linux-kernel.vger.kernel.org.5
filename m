@@ -1,136 +1,147 @@
-Return-Path: <linux-kernel+bounces-154844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4FB18AE1DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:12:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FDAC8AE1DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:13:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A842282754
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:12:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42F5DB20F03
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 714B1605CE;
-	Tue, 23 Apr 2024 10:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gx0IoUlb"
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F5C57870
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA7F605CE;
+	Tue, 23 Apr 2024 10:13:48 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C3B254BF7
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 10:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713867155; cv=none; b=cUUpBSk9Y3Pd75EC8QoYRR5/EGPCys+o3sewiP5qELGr+576qPYEBe/VTpY8PCPfO7HjNE5gUhbNm/RAOgOvL+sB9oz8nB6rSJbN5N0GlGzTUWQly5RStz/sfcTQlwVj4gCRNdXWm9lPn5pmG3FtcJaNCytol/TekqIKoIKD2H0=
+	t=1713867227; cv=none; b=tzxM0uX72e+bpu/Kr9oqzFn+0FBA1ciNC97F+DLI/Uwcny26BIYJnn0pK38lflgXcAjFpPVRRb9BfbpL7Wa+Af7k8opKZaZwcCQoDWbabVhSLJh8QbSzj98MZtVmA21n6Y4emjoGHkpT9LBIbZ8w4PYlqjp6DoRCYaug7H0+/pc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713867155; c=relaxed/simple;
-	bh=rsC+CW7beNIQJk05RFqS9UOKPY52kYYhT3NixSpJRV4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eNbqZ2M7MrUeZZAYSitJh0vGGAKM0k/ipo4hMG/tPXA1jJduUbzwPAER64FjMozH206M/2yfK8GMM3TXBAXb4+YEnAxD9+xtAPhtOjKx9e1LaofcMAtzEZTcLSJrcuCcofOCc+lStr5a0lFCR+wgkQj48ENJGQ3okJKMoKTf7TM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gx0IoUlb; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <08e81099-77d6-4d6d-9e7b-b086c17818c9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713867150;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HN/p+WditlGUuZClm6toX5fexU+Fy5ogSGpPxKBmU9M=;
-	b=gx0IoUlbU8vUCPYm8K5V7+vjnSMaNPiilzGxlQunoD/Ee9c8Dwf8P87iURnWP9xAgoMKjo
-	9Pmwr3lt50OBvadfVJtfIiDOfgeH4oeHZyblQhSOIgpe0kFCgCpFxghCGGW2UtjgDZSrpR
-	MeR51uo3vnGo98R0LG1IfWrJPUEjjCA=
-Date: Tue, 23 Apr 2024 18:12:20 +0800
+	s=arc-20240116; t=1713867227; c=relaxed/simple;
+	bh=exKsQQI+SVpy3NWrsM6z84rlDwOJ4z0c0uu0gCoMWs8=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=E6txadllFYvh7BlOK5mVLCcp1yj3gX1ZjtmxjoYv51PPjNXb/J4bHiUOnaLpRyyZJ25Pk7ZrX6MEqDwzVi+4Pklm3RdN6DnxO97aNQCztpGljAO0VAMonUSWvQ0xEB1Eyh3Gl2WkJQtg6TpnZ4bUfM2GpOB4yplFfr72u/bEUQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d85ff70000001748-a0-662789ce657b
+From: Byungchul Park <byungchul@sk.com>
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	jbohac@suse.cz,
+	dyoung@redhat.com
+Cc: kernel_team@skhynix.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/e820: apply 'mem=' boot command while reserving memory using boot_params
+Date: Tue, 23 Apr 2024 19:13:23 +0900
+Message-Id: <20240423101323.40968-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnluLIzCtJLcpLzFFi42LhesuzUPdcp3qaQcdMYYvPG/6xWbzY0M5o
+	0TCxgcVi2kZxixsHN7NZXN41h83i0oEFTBabN01ltvix4TGrA6fH99Y+Fo9NqzrZPN6dO8fu
+	Me9koMf7fVfZPM4sOMLu8XmTnMeJli+sARxRXDYpqTmZZalF+nYJXBnTuo+xF/wQrHj78Ctj
+	A+Nlvi5GTg4JAROJiVMmMsHYk25+ZgGx2QTUJW7c+MncxcjFISKwmFHixLt3rCAJZgFriTuH
+	u8CKhAViJeZf3sEGYrMIqEqc+3oazOYVMJW49/YyC8RQeYnVGw4wQ9iNbBI33wpB2JISB1fc
+	YJnAyL2AkWEVo1BmXlluYmaOiV5GZV5mhV5yfu4mRmAwLav9E72D8dOF4EOMAhyMSjy8DL/U
+	0oRYE8uKK3MPMUpwMCuJ8P76o5ImxJuSWFmVWpQfX1Sak1p8iFGag0VJnNfoW3mKkEB6Yklq
+	dmpqQWoRTJaJg1OqgXHp0aUVufKHi1wj+jrKohWU/y1kDtR6pXa2/q5UdtHTneWvTNWCW24W
+	2qx6PGWaQJAm46OdkxTbI807t6132lLl3fD68fcrJ/O/pjx+es+GY+FJlduHz+283/X+RLbm
+	+WoZbUaVhHiryXxSHCeZHlY35Ob4P3/t9fMn4ynmZSU2388qXHqz/JYSS3FGoqEWc1FxIgBt
+	LZREIgIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOJMWRmVeSWpSXmKPExsXC5WfdrHuuUz3NYPokNovPG/6xWbzY0M5o
+	0TCxgcVi2kZxixsHN7NZHJ57ktXi8q45bBaXDixgsti8aSqzxY8Nj1kduDy+t/axeGxa1cnm
+	8e7cOXaPeScDPd7vu8rmsfjFByaPMwuOsHt83iTncaLlC2sAZxSXTUpqTmZZapG+XQJXxrTu
+	Y+wFPwQr3j78ytjAeJmvi5GTQ0LARGLSzc8sIDabgLrEjRs/mbsYuThEBBYzSpx4944VJMEs
+	YC1x53AXWJGwQKzE/Ms72EBsFgFViXNfT4PZvAKmEvfeXmaBGCovsXrDAeYJjBwLGBlWMYpk
+	5pXlJmbmmOoVZ2dU5mVW6CXn525iBAbHsto/E3cwfrnsfohRgINRiYf3xye1NCHWxLLiytxD
+	jBIczEoivL/+qKQJ8aYkVlalFuXHF5XmpBYfYpTmYFES5/UKT00QEkhPLEnNTk0tSC2CyTJx
+	cEo1MFr4Xjr43m+DfYNc9ZVFRw7sSud7dHnyf7u7Eac11cXtKxZ+ebf3wPw0mTbPWBnvcxfe
+	TN/RoautoSp45bJK4/eYh0yPMia8dQwMcz3rnjh1xV6Wq+1hZrdEDAxmeSy4nZhh/bbtmVtP
+	+q6X15iWmLd7nyxTP7yaY9rkI+nLX6V5mO/oEpm3KEOJpTgj0VCLuag4EQChPUY4CgIAAA==
+X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH v4 9/9] drm/bridge: tfp410: Add platform module alias
-To: Krzysztof Kozlowski <krzk@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240422191903.255642-1-sui.jingfeng@linux.dev>
- <20240422191903.255642-10-sui.jingfeng@linux.dev>
- <050ff49d-516c-41fc-a205-4c259384058f@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <050ff49d-516c-41fc-a205-4c259384058f@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-Hi,
+I might miss something.  Please lemme know if I go wrong.  Thanks.
 
-On 2024/4/23 16:05, Krzysztof Kozlowski wrote:
-> On 22/04/2024 21:19, Sui Jingfeng wrote:
->> Otherwise when compiled as module, this driver will not be probed on
->> non-DT environment. This is a fundamential step to make this driver
->> truely OF-independent.
-> NAK.
+	Byungchul
 
+--->8---
+From 51f3b5b9bf9685aa431c00908771151edd702483 Mon Sep 17 00:00:00 2001
+From: Byungchul Park <byungchul@sk.com>
+Date: Tue, 23 Apr 2024 18:54:48 +0900
+Subject: [PATCH] x86/e820: apply 'mem=' boot command while reserving memory
+ using boot_params
 
-:( ...
+When a user specifies 'mem=' boot command, it's expected to limit the
+maximum address of usable memory for the kernel no matter what the
+memory map source is.  However, 'mem=' boot command doesn't work since
+it doesn't respect it when reserving memory using boot_params.
 
+Applied the restriction when reserving memory using boot_params.  While
+at it, renamed mem_size to a more specific name, boot_mem_limit.
 
->
-> You should not need MODULE_ALIAS() in normal cases. If you need it,
-> usually it means your device ID table is wrong (e.g. misses either
-> entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
-> for incomplete ID table.
+Signed-off-by: Byungchul Park <byungchul@sk.com>
+---
+ arch/x86/kernel/e820.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-
-I think I could give you a reason.
-
-1) When compile this driver into linux kernel
-
-This driver will be probed if we create a platform device manually with the name "tfp410".
-This is also true for the display-connector driver(drivers/gpu/drm/bridge/display-connector.c),
-see patch 0005 of this series  and the simple-bridge driver(drivers/gpu/drm/bridge/simple-bridge.c)
-see patch 0003 of this series.
-
-2) But when compile this driver as module, creating a platform device manually with the same name
-*won't* make those platform driver probed. I think, this is *inconsistent behavior*. Therefore, I
-add MODULE_ALIAS() to keep the behavior consistent. That is, a driver, should be able to be probed
-regardless it is compile as a kernel module or it is built into the kernel.
-
-
-> Just check your aliases and look what is there. You already have
-> i2c:tfp410 alias.
-
-Right, but the i2c:tfp410 alias only guarantee the driver can be probed successfully
-when tfp410 working as I2C slave. tfp410 can also works as a transparent bridge.
-
-
->   If you need platform one, for some reason, explain
-> what is your matching path and add appropriate ID table. With that
-> explanation, of course.
-
-When tfp410 works as a transparent bridge. The device itself is just a platform device.
-similar with the display-connector.c and simple-bridge.c.
-
-It is not discoverable by the system on non-DT environment, this is the root problem.
-I said the various display bridges drivers are fully DT dependent, Dimtry didn't agree!
-
-He said "I can not agree here. It doesn't depend on DT." and then asks me to developing
-some other solution witch could preserve code sharing. So here it is.
-
-
-> Best regards,
-> Krzysztof
->
+diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+index 6f1b379e3b38..af9d1d95ef5a 100644
+--- a/arch/x86/kernel/e820.c
++++ b/arch/x86/kernel/e820.c
+@@ -880,11 +880,11 @@ static void __init early_panic(char *msg)
+ 
+ static int userdef __initdata;
+ 
++static u64 boot_mem_limit = U64_MAX;
++
+ /* The "mem=nopentium" boot option disables 4MB page tables on 32-bit kernels: */
+ static int __init parse_memopt(char *p)
+ {
+-	u64 mem_size;
+-
+ 	if (!p)
+ 		return -EINVAL;
+ 
+@@ -899,16 +899,16 @@ static int __init parse_memopt(char *p)
+ 	}
+ 
+ 	userdef = 1;
+-	mem_size = memparse(p, &p);
++	boot_mem_limit = memparse(p, &p);
+ 
+ 	/* Don't remove all memory when getting "mem={invalid}" parameter: */
+-	if (mem_size == 0)
++	if (boot_mem_limit == 0)
+ 		return -EINVAL;
+ 
+-	e820__range_remove(mem_size, ULLONG_MAX - mem_size, E820_TYPE_RAM, 1);
++	e820__range_remove(boot_mem_limit, ULLONG_MAX - boot_mem_limit, E820_TYPE_RAM, 1);
+ 
+ #ifdef CONFIG_MEMORY_HOTPLUG
+-	max_mem_size = mem_size;
++	max_mem_size = boot_mem_limit;
+ #endif
+ 
+ 	return 0;
+@@ -1036,6 +1036,8 @@ void __init e820__reserve_setup_data(void)
+ 		early_memunmap(data, len);
+ 	}
+ 
++	e820__range_remove(boot_mem_limit, ULLONG_MAX - boot_mem_limit,
++			E820_TYPE_RESERVED_KERN, 1);
+ 	e820__update_table(e820_table);
+ 
+ 	pr_info("extended physical RAM map:\n");
 -- 
-Best regards,
-Sui
+2.17.1
 
 
