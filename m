@@ -1,120 +1,157 @@
-Return-Path: <linux-kernel+bounces-154703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99418ADFEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:40:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB2F38ADFED
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 10:40:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89F471F23BF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:40:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82AB228229C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B411656473;
-	Tue, 23 Apr 2024 08:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E7B454FAD;
+	Tue, 23 Apr 2024 08:40:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oJordHnM"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Yg3+oDS+"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2105.outbound.protection.outlook.com [40.92.42.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994ED54FA3;
-	Tue, 23 Apr 2024 08:40:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713861629; cv=none; b=XyTGkIxTlshR9ng3t1n8PHfPeohyJRmheRCUMWNHtVn/vrWrzmgO+8uj8A37wPfNqZPnAp7cNyzAUrEivT8+qtuBz/RXJCZipaEC39DVnAU0WVx/tpPZJWnPSTXnX7jRjWpjDcZvHX7TgXYCiZcfC0988RopFxpL8daOTdS6W+k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713861629; c=relaxed/simple;
-	bh=52sAaHmObwheCCQZpTclhfaPYm+CixrekX2FUtjS+zE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=upnpY2F31fVWu0BZwO6weY+yWj0QsoeVunR6W2SIa6HLuTo/W6bR0N9NAKkH5w79UJff5gc0+njxa82w48LnNFhgjl9xPFmrUYb3Rt6iU4aqpofRY3aZp3O2Y5jOUYBq5Ehd7IBqth80v+U/6U4nzeQdL5y6MApuW9u/fUqMaPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oJordHnM; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713861628; x=1745397628;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=52sAaHmObwheCCQZpTclhfaPYm+CixrekX2FUtjS+zE=;
-  b=oJordHnM62g+P2Mf3YuvqkNwB+bfCxVx3c+PecZITuNGfR9lEMmRpWMR
-   rx2PlaxuulTx5zqjzLHvttBGh2uIQdjonMKqm94TYdAnURyd5RCJOizzm
-   pEjeHjtt5aP726XkBVRe2IQA2TItW0NdZjNWDDvzjpNOtXd1rAIVV/wvR
-   z0gmK85yCNmKk83w8n7Kdbpjdc7bSyFj2AQgk1jfGHvCDfMFlmkG846ow
-   ASGX3LA9oMztdvmFyoBNC7jtIUXZ2l4dUmFfvmP4MrZA62UoZhA8VXqKv
-   dDt7rApncge1yFjOkqLUzNrJdG3OQTxoUbFDw1oVi8Mo+X4gX8/1nOxXn
-   w==;
-X-CSE-ConnectionGUID: dWU+cNR8RcGrCIdwmohmwA==
-X-CSE-MsgGUID: GrJCwGF5S++mspHfLnKF0A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9351509"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9351509"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 01:40:27 -0700
-X-CSE-ConnectionGUID: vGny8E+5SBe/v34Fi02KBg==
-X-CSE-MsgGUID: D1KPTZl6Q6KT2/52t45q3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="28952214"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa003.jf.intel.com with ESMTP; 23 Apr 2024 01:40:24 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id A0B14192; Tue, 23 Apr 2024 11:40:23 +0300 (EEST)
-Date: Tue, 23 Apr 2024 11:40:23 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	Esther Shimanovich <eshimanovich@chromium.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH v4] PCI: Relabel JHL6540 on Lenovo X1 Carbon 7,8
-Message-ID: <20240423084023.GB112498@black.fi.intel.com>
-References: <20240123061820.GL2543524@black.fi.intel.com>
- <CA+Y6NJFMDcB7NV49r2WxFzcfgarRiWsWO0rEPwz43PKDiXk61g@mail.gmail.com>
- <CA+Y6NJGz6f8hE4kRDUTGgCj+jddUyHeD_8ocFBkARr7w90jmBw@mail.gmail.com>
- <20240416050353.GI112498@black.fi.intel.com>
- <CA+Y6NJF6+s5zUZeaWtagpMt8Qu0a1oE+3re3c6EsppH+ZsuMRQ@mail.gmail.com>
- <20240419044945.GR112498@black.fi.intel.com>
- <CA+Y6NJEpWpfPqHO6=Z1XFCXZDUq1+g6EFryB+Urq1=h0PhT+fg@mail.gmail.com>
- <7d68a112-0f48-46bf-9f6d-d99b88828761@amd.com>
- <20240423053312.GY112498@black.fi.intel.com>
- <Zidx4lV2303H88R_@wunner.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 319F056B79;
+	Tue, 23 Apr 2024 08:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.42.105
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713861615; cv=fail; b=q4R+PicU/wW/GRnsJ4e435obIzXzLUDpYvhsGLtezD07azW+kc73b0ja4Mj9T2OUVMrVDkxi7YpUYzHH8OwM30F0nSA0Cj1FX8JlX7hlSVgSePmBjDeiBhTlgYW44JMQ9yg9y62hfedU7rCVAmJPef6GoxNnZHJEj+oqaUf+//4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713861615; c=relaxed/simple;
+	bh=9ecqAseZazkZOSp/DwoNVmlWLvP1iqroSQchSk8S6Ss=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=pJiOVb2Qsm+w5jEQIcOb++AKDWr1N0ANyvHtKz/lm3EVHg+Qj+Z11QS46zZucFXy6tcjufiYOHxnXvCwmOepoGqAZctf3TLORoSjLTdx8nblHAQUPxukDCmewWqIX8MxSUri5/tN891ZCrhTSlFYtHEqudaLzmoDVuC8Ghl3/6g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Yg3+oDS+; arc=fail smtp.client-ip=40.92.42.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b1mMOT/cX09U3Uh+grUiFuYmbMe4zCmul/lJtpq8gXHvjCawRrpxipqLAomJVGgFrZRz0LKGkkgO8kMs2UijnAzIzzTxUnsKrSON0PvpwLW+vhwUchZ7GcmAjgPk5OykD+uIxXUEtS34MBNCKqkkahSvWkop71ovXpmnHQnP/uJD+LSZLPG6CowgovsI1UFgMktvXGwrx8zy6NfaprQtHgROvg3nzGmsU513OoYEf2u+mxF1cVbIf2AU5C9leTN+Z/Cec1qCdnS1uJNfcGCloWLlrF4C8QomSGyivWaZmF+OEXestoDeErtfGXbFyI0XhBOEVi6WmomhukrvpMEoMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QFSZ0vtxkwn16nyxP7zOjZRu5mD2GuA6Bfe08Gmsu50=;
+ b=cw7iaixiEWtxnIXv+Ykq82uEqgRIQ1Fl0cpqKGMQt7/qtNtLEyqeIysGqtcTg/WUGqRYNROOABdWbXlsOCa0Gdm078YHE8X7gdT0PLiFi2WAQqh0+brMJIuHrRKJZtcEhQ9XfZCQ+OUOyLuQ8uG3V4QBgl8DQhK8OwpfHvN3A2nI6sgONuNPl1aWdJnVhtDI2ssw9+R7bHq/2aoIFYaZMz7NAhiqDdnGMD9eCYL5Cvzk/O2w65zzrBJ1xtNKf6CGlnyW7S0J6DoBBhflxDb2RchuOyKd825inVywz7nMH8tY3STeWIKUtKcSWhJO/1b65pJZNVqL28M06MP5FrZwUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QFSZ0vtxkwn16nyxP7zOjZRu5mD2GuA6Bfe08Gmsu50=;
+ b=Yg3+oDS+Vd7zKYJ0w5kefXxCvhsTnV/p4irtXK/2san4dcuVxjfuJJErpRm58MfpTUNmEFLLp/CjJ01E7BGUDLU9Ok8Gt4yhDX5GJ5BCBf24T6oLdHvWUBKmKWQVB5Xwzzywm6q3VT7hexscKOoC1B1YM3iqQ85J9I+xfd/cLaC1bU6Gl/XmVBaFNlsS8Wz3/6GSqRhp5EXB3kt6xlybPvGiIJkp7SuZ5w+qI1NkyPqBhU7xKwVmZmdYXpHjKaznMvWSqZLvk8k2OgAUoz5htwa8M1AOTR4BI07DxyYbp/oGUqrKrVQi1qqiWJXpH2IkTJv7WCSBP7W4nQVWDOUqtA==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by MN2PR20MB3335.namprd20.prod.outlook.com (2603:10b6:208:265::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Tue, 23 Apr
+ 2024 08:40:11 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7472.044; Tue, 23 Apr 2024
+ 08:40:11 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen Wang <unicorn_wang@outlook.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Guo Ren <guoren@kernel.org>,
+	Drew Fustini <dfustini@baylibre.com>,
+	Inochi Amaoto <inochiama@outlook.com>
+Cc: devicetree@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: dts: sophgo: add reserved memory node for CV1800B
+Date: Tue, 23 Apr 2024 16:40:28 +0800
+Message-ID:
+ <IA1PR20MB49535871D139131CBC913036BB112@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <IA1PR20MB49531F274753B04A5547DB59BB052@IA1PR20MB4953.namprd20.prod.outlook.com>
+References: <IA1PR20MB49531F274753B04A5547DB59BB052@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-TMN: [IWhmVXR4aNR3H7qlrgSJGd+KDvij3eF6iHjzHsSeGjE=]
+X-ClientProxiedBy: KL1PR0401CA0024.apcprd04.prod.outlook.com
+ (2603:1096:820:e::11) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <171386151250.888417.16344348642120969607.b4-ty@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zidx4lV2303H88R_@wunner.de>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|MN2PR20MB3335:EE_
+X-MS-Office365-Filtering-Correlation-Id: 52e94995-7cbf-472d-4ea7-08dc6370fd07
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	0jY5PXmrAMa98EFNxkxFA3gwSn2HkdrJXBKphS5XPPg2stAn/5KOojiNKLEABGaTLS6s/kfIB/7PSE4mtJCGnGTs1HZ2/qRao/e29l0h5YYmQ8Y4h4E6ehslQLWfd6i1eg0GQB+vEaESNHcya2mfRpba3IsZNESTQPY6D0YaktFkmBq8kPhejiIj6EJ45kXUtAaCxZIGxv8hPPnFBO4oSbQX0UT7lE4j3qmyHp2hak5PqOMBdhZZu8WlWMzsWt8++KkfaPD3SJtqrxwpyGa0BA3vwZztCB2EC3RR1qD/HhuovHNdQZZ0rwv+fhMOKkFz4Zxs5w2oOx2jHL3ilwMCZS5QZvX9GxeleMZTXnIzqqLZ9tsOMDH0/zHdxs7lT9T5lS0dA57+CQK/4Z9nmklkA+QerdD6RAMs67i//0BKwqGbkEiGAwiX9xxRJQH5D+0sgrw4mJWV9FNbnMAv1Oc2QYZCmOyQPg5InmLCPgdk2pnDPZ/JVvrQH/FPYMxilmJDpCQEg61cDiGRDuhndSQ5QhLvGL2mYJXmgPdWCt1Q9zO12vTPSbN+q/zA1JuCFF0/JTRXSMHTmjB12DwOTZ08Bf35eamFshaTSC9c9uDf5h/upp6BRFDZrOCReypp8VadyB82IKWVXma81dKX7IvZ9EKO+6QVFv7GWjSVyzNfgepqC15+1qslddDP7/jwyWdR
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VFpXY3d2VnQ3aWhxOC9iTHhpK3JyNWFUSnpsblluYlgrSFJTbzJPRDdyOGlT?=
+ =?utf-8?B?dDZoWTZxVFFmK2tvbjkzaGd3em5ZOTBHNkxTRzBRM2oxckZRd3hKZnRiMGFt?=
+ =?utf-8?B?TDZxeXJ3Z1NpZDJ3bWFnRnk2cThZdzRuQ2NJM29aOUNpTVVnUmRNcTZuMmlS?=
+ =?utf-8?B?Q0NJcEFVSG9wcnVaQUVMeGFVM3RLdGNzVXV3TC9GeTdxM0RxWXpqYXZwOWlm?=
+ =?utf-8?B?WklsOXFVcmI2WThabUhtTHZQSW41NnB0TnNYb0xzbmhhdHlka1IwalZwVURr?=
+ =?utf-8?B?WTFvdi9mZUJZa3ZSSHNmSmhyR0tkQzVMd09XV09Qd3VXanVLYTBpdUxXK1hm?=
+ =?utf-8?B?UWNUcFFXaHNNSFJYdWlGSmNqcGpVMk5MUmNSYjM4WWw3RDFwdCtqbDl4Y2FC?=
+ =?utf-8?B?SnVMMFR2bjgzbXF4bzQwNXlnTy9oRXZzYVdMS3hLajlTTUJGYzJEa1dqeU5n?=
+ =?utf-8?B?dXV6dzJJZHRkZ3lXRVhGb2E0SW0yOTMyVkpoZTlDOW5Kb0ZYVjBnK05qaUlP?=
+ =?utf-8?B?bzlGU2drWlh1emVpeG9zdlREYUxMcEtnL2V4MGlESkRhSndKYVYvU0dDd1Ns?=
+ =?utf-8?B?ZWo4UUIxTlVpcnFXRk9TTHhkdlFja1VVSXhXWjcvQWNaR3FZeC81RWdQcEE4?=
+ =?utf-8?B?NW52cjVGWFpKVWdXWjBDeTkwbHdtUWNyMjJaRTdNQ05RWEF6NXRhbTlPTFJ1?=
+ =?utf-8?B?WUREYWpNdzdjMWcwSG5DR3ZwdytMQWNJTW80R0Q5emVFVlcrLzB3bEFNejJJ?=
+ =?utf-8?B?dzZxL2IvL0NsZ2JlMUYxTWt4LzBiMjhDb0VmbVhRSFdOdFZLRU8rT1pPMjB5?=
+ =?utf-8?B?c1pad053aEdMblhTRlNHcGJiakpwd3Bwd0F4Y3FMbzU4TjZhSHRvSmJTNkFJ?=
+ =?utf-8?B?UldRTUd2VEFnRDM3QXZzY0Y3SW5udzBYSlZVZzJnY3BQQVFzU0hkanZIUG9E?=
+ =?utf-8?B?RGxFRzcvRExLaHhJYnFhVWZuNSsyYThsVDc5Q0hJRWhFLzVtNFJkYXNiM2R1?=
+ =?utf-8?B?SzlERUNnMExyUVNjVXBjeWtjZlBYS1oxMkpVTHcyY2NKY0IweS96Q2psaDRD?=
+ =?utf-8?B?K2M4cWdDVVZkcStac29DUy9mb0NDVEZqcVBLTkZ3L2VXSDBSOFNDQlU2b3pp?=
+ =?utf-8?B?NmpxeG5laXRDR0Y1L3JUaEJpTmdjV2FjWTB6ZTRUcVh6TGtaZm5hSkdTYXdT?=
+ =?utf-8?B?OHUxQ1FVMVl0YjYrNHpyN09EeUFpTDVKVE5RQlAyaGk4RXJ6c2FPZ1VtTnM5?=
+ =?utf-8?B?NEZkdWF1bHE3bWJjcFJnOHlQMVpQRmliMFBHTHl3aWtlTWNPQ1hpZW9PRVpF?=
+ =?utf-8?B?c1NlYTVEZVhjRmdzVzdzYTU5d09EN3J5aDdkc05aVU1iSWk0VFpXRE4xN084?=
+ =?utf-8?B?VysvTUhXWU9jd2tSbG1naEloUU5sclg3ZHY0cTFZdnNBVXJCU3MveEl5QTRO?=
+ =?utf-8?B?R25zS2RmQ0dMa0NlRWEvQytnQWplNlBRcWNrc0hYeEl0YzNEM2lKaTNkWmta?=
+ =?utf-8?B?WjFQNzA4UzdGeXdnQ0t3cVo0VkVtZGs3R25jSkpSZjdmNUtSam8rNUNSckN6?=
+ =?utf-8?B?SjY4VElZN1B2c2x0Nk9WRlF2RzU2eHZ6RkVQdWF3TC9nQ1Bod1N6M2x0dFY5?=
+ =?utf-8?B?K2IxUXZ6MHJWZVpGaTZwbENRYjhUc3AyTnh5U3hBOWV1WXlVVUl5dTUvWVhO?=
+ =?utf-8?Q?2I1j+QFBqStsoWQqm1e+?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52e94995-7cbf-472d-4ea7-08dc6370fd07
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 08:40:11.4081
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR20MB3335
 
-On Tue, Apr 23, 2024 at 10:31:30AM +0200, Lukas Wunner wrote:
-> On Tue, Apr 23, 2024 at 08:33:12AM +0300, Mika Westerberg wrote:
-> > I think what you are looking for is that anything behind a PCIe tunnel
-> > should not have this applied. IIRC the AMD GPU or some code there were
-> > going to add identification of "virtual" links to the bandwidth
-> > calculation functionality.
+On Thu, 11 Apr 2024 08:45:00 +0800, Inochi Amaoto wrote:
+> The original dts of CV1800B has a weird memory length as it
+> contains reserved memory for coprocessor. Make this area a
+> separate node so it can get the real memory length.
 > 
-> I guess I could resurrect my correlation patch:
 > 
-> https://lore.kernel.org/all/f53ea40a7487e145aa1a62c347cef1814072e140.1536517047.git.lukas@wunner.de/
-> 
-> The last time I forward-ported it was for v5.13.  I still have that code
-> running on my development machine.
-> 
-> The problem is that it only allows lookup from tb_port to pci_dev.
-> I'd have to add a pointer to struct pci_dev to allow lookups in the
-> inverse direction.  Though I think we have such PCI companion devices
-> for CXL as well, so such a pointer could be useful in general.
-> 
-> I'm knee-deep in PCI device authentication code but could probably
-> dedicate a weekend to the correlation patch if there's interest?
-> 
-> Once we have correlation, we can expose more precise bandwidth
-> for virtual PCI links in sysfs.
 
-Sounds good to me :) There are also some additions in USB4 spec that
-allows discovery of mapping between PCIe adapters and the corresponding
-PCIe downstream/root port. Perhaps these can be added there too?
+Applied to sophgo/for-next, thanks!
+
+[1/1] riscv: dts: sophgo: add reserved memory node for CV1800B
+      https://github.com/sophgo/linux/commit/1eba0b61be72506549e79dd11a132b5d73aed094
+
+Thanks,
+Inochi
+
 
