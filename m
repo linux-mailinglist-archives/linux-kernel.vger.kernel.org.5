@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-154455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ABF78ADC3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:25:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A4C28ADC3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 05:25:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46C45284A70
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:25:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CDFCB23F69
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 03:25:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE10200C1;
-	Tue, 23 Apr 2024 03:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB9B1CA81;
+	Tue, 23 Apr 2024 03:24:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E+20g9wQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ByNErQpW"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC631CD35
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:24:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AEA0219FC
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 03:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713842668; cv=none; b=iLefBY4lEA2FKIb5PGhqpHUdOvQciIBAtGzgknd1DDUyeIIvMRObGaoGt8pXpBrKrgseDeGudb5LSpQjgtp4hFF/vttpBajLMlAfxniuHagaa40Rvj35HNVomTgiNkwCoVIl1rqejfdH19lNkWEXWF0NDbBxwEg7MrWF/gFsav0=
+	t=1713842672; cv=none; b=ED8I76AdBadF6DcaifjI2u3GKTfIqJHQPNOpQvo+DxUOUqigCfF3BQdhzlVCJcXsDhL+H2H1cLtpOP7xsdSIEfrtGu3PlLNe/78rCDPFX3tWrI0e5B8UmjTLMXzQ9afG79mUiOkUatZ9KOraGgwoPA9oe6I45UNqljcnDL9Rzts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713842668; c=relaxed/simple;
-	bh=VXNuueCqLjer3SK5FWiU+oQ2njUy2Ft9Y+uSyol2th0=;
+	s=arc-20240116; t=1713842672; c=relaxed/simple;
+	bh=5MVVIcDipqgJAk3mCYyyzSHu50ImzAuTrQ9oKbZbq3w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VGtJyykGkUs22bfUC+vvHa7h0f6LGufcpA2pYDbfEIOCuAAw4yovZJyMzHcddQitEIQxq8u1lgWlFGQoZe6KInq+Cn1/CVkkOy8gHIuvePSdE2wfamzPmzLn9tE0x5Wmy7kSfZJmQQW3IX/SAyXFi6APfvOgncJkJjh9Df37IoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E+20g9wQ; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=j2xU5FtZRgY8zieeLaZJlbBXdSKeapFTyfrDdMIGtmbvMmkNtX1hxaLWbVjXpOzjuB8WLqeoyZb+2o0Q1UtJSmbR8qQn/JJ8Lg5DZkhtpSgaoMSb2YVteaU4m/IibIhNlIq4kSex+qTkRV/Vovp0djLHzMCHmz2OkZTth2nP9A0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ByNErQpW; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713842666;
+	s=mimecast20190719; t=1713842670;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=HxWHZLxO01yGdS6uNhVtl2pRAw0NwEn5kPBcPnzmn/Y=;
-	b=E+20g9wQ1k8R5QMRoY32FFUkbkTD2w1AB7/iFjCrQOciUtEqOjUYsYMZhEcZG4dQ/P7j2s
-	Hh+b5rhZtc265ap6S4G+U3aXZeyV2SwlGs524tdMNrAaBiNhlhFSB5gypyklzsg4GnQn/Y
-	LiRU6/VjfsvvOerzDiu8LGbcGOqNesI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-655-ZXEZtGiTMAOnPUbEzktHhw-1; Mon, 22 Apr 2024 23:24:23 -0400
-X-MC-Unique: ZXEZtGiTMAOnPUbEzktHhw-1
+	bh=qtMGrJ3CLLK0RMLaaz/XukLZE22bi0+EJWg0qr8z6dw=;
+	b=ByNErQpWLEuR+y/0VexF/g2/zIX6ZqJlWMFPDXAyxYBA1jIUOpp5JvZ26qgTtSLmbm0yeZ
+	XFL0AX5xg3+krFwJN9Be3N0Gxl9LghLvULgiwAZxyh+AFuV1WN+wSYepjNTS4kbG0XZHhT
+	qWgtlGBflcQdiavq3cM6kwrinyVbMak=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-653-NjVT6l0HMT-_YCt94dPB7Q-1; Mon,
+ 22 Apr 2024 23:24:26 -0400
+X-MC-Unique: NjVT6l0HMT-_YCt94dPB7Q-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8BCE68943A5;
-	Tue, 23 Apr 2024 03:24:23 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 615C11C068C0;
+	Tue, 23 Apr 2024 03:24:26 +0000 (UTC)
 Received: from gshan-thinkpadx1nanogen2.remote.csb (unknown [10.64.136.57])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 8590B1BDAA;
-	Tue, 23 Apr 2024 03:24:21 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 0FA181BDAA;
+	Tue, 23 Apr 2024 03:24:23 +0000 (UTC)
 From: Gavin Shan <gshan@redhat.com>
 To: virtualization@lists.linux.dev
 Cc: linux-kernel@vger.kernel.org,
 	mst@redhat.com,
 	jasowang@redhat.com,
 	shan.gavin@gmail.com
-Subject: [PATCH 3/4] vhost: Improve vhost_get_avail_head()
-Date: Tue, 23 Apr 2024 13:24:06 +1000
-Message-ID: <20240423032407.262329-4-gshan@redhat.com>
+Subject: [PATCH 4/4] vhost: Reformat vhost_{get, put}_user()
+Date: Tue, 23 Apr 2024 13:24:07 +1000
+Message-ID: <20240423032407.262329-5-gshan@redhat.com>
 In-Reply-To: <20240423032407.262329-1-gshan@redhat.com>
 References: <20240423032407.262329-1-gshan@redhat.com>
 Precedence: bulk
@@ -75,86 +75,95 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-Improve vhost_get_avail_head() so that the head or errno is returned.
-With it, the relevant sanity checks are squeezed to vhost_get_avail_head()
-and vhost_get_vq_desc() is further simplified.
+Reformat the macros to use tab as the terminator for each line so
+that it looks clean.
 
 No functional change intended.
 
 Signed-off-by: Gavin Shan <gshan@redhat.com>
 ---
- drivers/vhost/vhost.c | 43 +++++++++++++++++++++++--------------------
- 1 file changed, 23 insertions(+), 20 deletions(-)
+ drivers/vhost/vhost.c | 60 +++++++++++++++++++++----------------------
+ 1 file changed, 30 insertions(+), 30 deletions(-)
 
 diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index b3adc0bc9e72..a3de9325175f 100644
+index a3de9325175f..3be19877f9df 100644
 --- a/drivers/vhost/vhost.c
 +++ b/drivers/vhost/vhost.c
-@@ -1320,11 +1320,27 @@ static inline int vhost_get_avail_idx(struct vhost_virtqueue *vq)
- 	return 0;
+@@ -1207,21 +1207,22 @@ static inline void __user *__vhost_get_user(struct vhost_virtqueue *vq,
+ 	return __vhost_get_user_slow(vq, addr, size, type);
  }
  
--static inline int vhost_get_avail_head(struct vhost_virtqueue *vq,
--				       __virtio16 *head, int idx)
-+static inline int vhost_get_avail_head(struct vhost_virtqueue *vq)
- {
--	return vhost_get_avail(vq, *head,
--			       &vq->avail->ring[idx & (vq->num - 1)]);
-+	__virtio16 head;
-+	int r;
-+
-+	r = vhost_get_avail(vq, head,
-+			    &vq->avail->ring[vq->last_avail_idx & (vq->num - 1)]);
-+	if (unlikely(r)) {
-+		vq_err(vq, "Failed to read head: idx %u address %p\n",
-+		       vq->last_avail_idx,
-+		       &vq->avail->ring[vq->last_avail_idx % vq->num]);
-+		return r;
-+	}
-+
-+	r = vhost16_to_cpu(vq, head);
-+	if (unlikely(r >= vq->num)) {
-+		vq_err(vq, "Invalid head %d (%u)\n", r, vq->num);
-+		return -EINVAL;
-+	}
-+
-+	return r;
+-#define vhost_put_user(vq, x, ptr)		\
+-({ \
+-	int ret; \
+-	if (!vq->iotlb) { \
+-		ret = __put_user(x, ptr); \
+-	} else { \
+-		__typeof__(ptr) to = \
++#define vhost_put_user(vq, x, ptr)					\
++({									\
++	int ret;							\
++	if (!vq->iotlb) {						\
++		ret = __put_user(x, ptr);				\
++	} else {							\
++		__typeof__(ptr) to =					\
+ 			(__typeof__(ptr)) __vhost_get_user(vq, ptr,	\
+-					  sizeof(*ptr), VHOST_ADDR_USED); \
+-		if (to != NULL) \
+-			ret = __put_user(x, to); \
+-		else \
+-			ret = -EFAULT;	\
+-	} \
+-	ret; \
++						sizeof(*ptr),		\
++						VHOST_ADDR_USED);	\
++		if (to != NULL)						\
++			ret = __put_user(x, to);			\
++		else							\
++			ret = -EFAULT;					\
++	}								\
++	ret;								\
+ })
+ 
+ static inline int vhost_put_avail_event(struct vhost_virtqueue *vq)
+@@ -1252,22 +1253,21 @@ static inline int vhost_put_used_idx(struct vhost_virtqueue *vq)
+ 			      &vq->used->idx);
  }
  
- static inline int vhost_get_avail_flags(struct vhost_virtqueue *vq,
-@@ -2522,7 +2538,6 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
- {
- 	struct vring_desc desc;
- 	unsigned int i, head, found = 0;
--	__virtio16 ring_head;
- 	int ret, access;
+-#define vhost_get_user(vq, x, ptr, type)		\
+-({ \
+-	int ret; \
+-	if (!vq->iotlb) { \
+-		ret = __get_user(x, ptr); \
+-	} else { \
+-		__typeof__(ptr) from = \
+-			(__typeof__(ptr)) __vhost_get_user(vq, ptr, \
+-							   sizeof(*ptr), \
+-							   type); \
+-		if (from != NULL) \
+-			ret = __get_user(x, from); \
+-		else \
+-			ret = -EFAULT; \
+-	} \
+-	ret; \
++#define vhost_get_user(vq, x, ptr, type)				\
++({									\
++	int ret;							\
++	if (!vq->iotlb) {						\
++		ret = __get_user(x, ptr);				\
++	} else {							\
++		__typeof__(ptr) from =					\
++			(__typeof__(ptr)) __vhost_get_user(vq, ptr,	\
++						sizeof(*ptr), type);	\
++		if (from != NULL)					\
++			ret = __get_user(x, from);			\
++		else							\
++			ret = -EFAULT;					\
++	}								\
++	ret;								\
+ })
  
- 	if (vq->avail_idx == vq->last_avail_idx) {
-@@ -2539,21 +2554,9 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
- 
- 	/* Grab the next descriptor number they're advertising, and increment
- 	 * the index we've seen. */
--	if (unlikely(vhost_get_avail_head(vq, &ring_head, vq->last_avail_idx))) {
--		vq_err(vq, "Failed to read head: idx %d address %p\n",
--		       vq->last_avail_idx,
--		       &vq->avail->ring[vq->last_avail_idx % vq->num]);
--		return -EFAULT;
--	}
--
--	head = vhost16_to_cpu(vq, ring_head);
--
--	/* If their number is silly, that's an error. */
--	if (unlikely(head >= vq->num)) {
--		vq_err(vq, "Guest says index %u > %u is available",
--		       head, vq->num);
--		return -EINVAL;
--	}
-+	head = vhost_get_avail_head(vq);
-+	if (unlikely(head < 0))
-+		return head;
- 
- 	/* When we start there are none of either input nor output. */
- 	*out_num = *in_num = 0;
+ #define vhost_get_avail(vq, x, ptr) \
 -- 
 2.44.0
 
