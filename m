@@ -1,85 +1,76 @@
-Return-Path: <linux-kernel+bounces-155342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B41768AE922
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:09:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC52C8AE925
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:09:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B5331F2373B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:09:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A0F71C21C66
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E891F13AD08;
-	Tue, 23 Apr 2024 14:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88CB413B293;
+	Tue, 23 Apr 2024 14:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SCzceUhM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K17T5ZKL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336ED137918;
-	Tue, 23 Apr 2024 14:09:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0BD13AA49;
+	Tue, 23 Apr 2024 14:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713881342; cv=none; b=iquwyE0E/xcBKwuQYYR0gkCWlEYOSgU7x5gUa7xMTBna46ldDZOWsr0jiN6dpmkJOuAu2Vx6eKauNsInT3AwTC37yjzrrzy7sxa6OyIQZa4u5Iz9yV54i2i4A1xreXuML/RZP9rnRBsackRtiO/NpED6RphG32aRfRW8zPThI6w=
+	t=1713881342; cv=none; b=XVkzUEcBnIPFHL4yLVnHRvt2v6lWFAo9k6WI4CVu/pQ+9IHP2JQHx5FkZNrqrjsPDus7ZO//9ye8qhJmK2xOwgodJcowVfXMbINyJyDXl9NHhFfNm9BsHhm/sxFdRedQhYCoAKM8UkxZDqP6sfbPFx7YhiDEkiq1Fw8YUMKu3BU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713881342; c=relaxed/simple;
-	bh=v3Uu2KeQV+Yw17N/SD3UPuR7eFq0nCxEDfaZW3BRnzY=;
+	bh=ae0UaH0agR4uZehsctP27tn4c7cKM5B3o3ah3tgdjWA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=udVDgxRwBkquyKwtskg18LpfFvw2PkKj+SuLziXoTjn8Ed6BYj4qwJXrq9tN5/LrgWuivnldFJR3SbYPOwglIbPTt5jnBW4qJUhZxM/eKOl6FsnA/yXBjJhm0XvsMqcTpoQn8BDlRh6ztlji+snNYenng4zq2GrrWLd7ckBpJy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SCzceUhM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48225C116B1;
-	Tue, 23 Apr 2024 14:08:59 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZsO9ja4g8obuSB39kYPK6g+6tp5y4BdUAPBh8nNON13eF3VKrxW1DArhunIP6kH0ZgX3ypjlHiJ59RRDsdf2UniFlbOkPuDTBk5G7O6hdS/QFsiKPv541RCJaSrDf8ut2/PsFfQrPxjggys//DSqSVRm7VPuk/SpsGf1W5EBgUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K17T5ZKL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 379E2C2BD11;
+	Tue, 23 Apr 2024 14:09:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713881341;
-	bh=v3Uu2KeQV+Yw17N/SD3UPuR7eFq0nCxEDfaZW3BRnzY=;
+	s=k20201202; t=1713881342;
+	bh=ae0UaH0agR4uZehsctP27tn4c7cKM5B3o3ah3tgdjWA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SCzceUhMcyoxMZCGFjFOwPv9EUco2A8w+S+Pncm7QP15DIy3hPJJ50tRxeCFOlP3J
-	 4HQLfLfYt3arhkztkNiSHDBuWJUBuonH0J7T/ydNVagnKurhk6M4JHK7+tK9Ih836P
-	 Y1K5+EYDeyBOoYUy33lli00zIXXNrwtwgxVcbTjYBF9ywdpk5iq0/0gNK1nGGLds5o
-	 wUb6XcDxxO/5An+B+vDX11P+hW8GtAMawRTwI/8sts7ItWcaWEwvD1n0qlLmR83lMi
-	 ImB/F3xz+8PqYb5fbKyISqGKcfUiLgMuRTx6QA/JD4Fr9FIxdyQ+1lRdade0yZEmd4
-	 xMOf0yRt85C+g==
-Date: Tue, 23 Apr 2024 15:08:57 +0100
-From: Simon Horman <horms@kernel.org>
-To: =?utf-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Saeed Mahameed <saeedm@nvidia.com>,
-	Tariq Toukan <tariqt@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Jianbo Liu <jianbol@nvidia.com>
-Subject: Re: [PATCH net-next v2] net/mlx5e: flower: check for unsupported
- control flags
-Message-ID: <20240423140857.GV42092@kernel.org>
-References: <20240422152728.175677-1-ast@fiberby.net>
+	b=K17T5ZKLS6k51ibrDQGd4CPx1PPNJ799DfePd72HrtLhlummtNxrkathL/3Gu+TBS
+	 OPBKkIF5VJb4z+JisqWRChg960cv4cRDq8AruUugGkUCCnMjRINLlz8Xwz7NZUlDdU
+	 63k4bRHX06yFHhYM6aLqJY7zN4uHlKQTRkLklOB1IQEGZpPmw99Y5kmHObrlNXUl6N
+	 aq8abjEp1QngdLkyOfYJvU1e/CPgKwetJFhPd1pW2LwJqyj6lnPjpNGPI8TZMGQx+s
+	 wJ/9wSxNeuYqBnc6kxG/yp5CMVnNmmg/5fTA11sk4UNrvafkIcvpHJtR13tmJ/ige1
+	 mLkQYDc1E9w8w==
+Date: Tue, 23 Apr 2024 09:09:00 -0500
+From: Rob Herring <robh@kernel.org>
+To: Saravana Kannan <saravanak@google.com>
+Cc: devicetree@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+	kernel-team@android.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] of: property: fw_devlink: Add support for
+ "power-supplies" binding
+Message-ID: <171388133742.134852.3802091421412746619.robh@kernel.org>
+References: <20240417200738.1370896-1-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240422152728.175677-1-ast@fiberby.net>
+In-Reply-To: <20240417200738.1370896-1-saravanak@google.com>
 
-On Mon, Apr 22, 2024 at 03:27:27PM +0000, Asbjørn Sloth Tønnesen wrote:
-> Use flow_rule_is_supp_control_flags() to reject filters
-> with unsupported control flags.
-> 
-> In case any unsupported control flags are masked,
-> flow_rule_is_supp_control_flags() sets a NL extended
-> error message, and we return -EOPNOTSUPP.
-> 
-> Remove FLOW_DIS_FIRST_FRAG specific error message,
-> and treat it as any other unsupported control flag.
-> 
-> Only compile-tested.
-> 
-> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+On Wed, 17 Apr 2024 13:07:37 -0700, Saravana Kannan wrote:
+> Add support for parsing power-supplies binding so that fw_devlink can
+> enforce the dependency.
+> 
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> ---
+>  drivers/of/property.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+
+Applied, thanks!
 
 
