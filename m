@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-155237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66DB48AE738
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:00:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 051FC8AE737
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:00:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E61F71F26277
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:00:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A58B1F26361
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65FC01353FE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BBE81350FE;
 	Tue, 23 Apr 2024 12:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b="YpVOKfdw"
-Received: from out187-13.us.a.mail.aliyun.com (out187-13.us.a.mail.aliyun.com [47.90.187.13])
+	dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b="dPELqWtu"
+Received: from out187-23.us.a.mail.aliyun.com (out187-23.us.a.mail.aliyun.com [47.90.187.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC12126F3F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F16E17E79F
 	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:59:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.187.13
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.187.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713877162; cv=none; b=FOfylsEN89PETk46k4COJJwTiJhPSL7jW4jannx/PUQ7abzfOz5mECCqUy1HqohmT2nTLhmlSYhTmus0Fm1vo8XrzmV3OzAXRweIqhC7f/W2B/klUrQ6kTVj3ACGGqCBNfJKrrfFdWfEGXs+7WQnUrwoG5mIAHVKl3625SDLSQU=
+	t=1713877162; cv=none; b=XErA5lPnMxDrZy7WIItBykhVzusYJhfzuVFwoN6YVdEYGqAU4e8uy+9NkF7aj5wlJs05yHN4hm1W52D6vG/QBmmiGMMCVRXfUvS6IzONJA1EnmYvZjoan7tqyWD1I9mVMxBP9lHM6MKOuMYuyy+9YvhSn7eIA+ksT7bP3XxjJY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713877162; c=relaxed/simple;
-	bh=LZFuJ/4FGskBf4AnZH1TT3ZTMxB4uZoW+o1jgSpMUno=;
+	bh=UDetQ6kFYZh1xF4gwhKPP99yJfT7j4V08AzTDBUEsLI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rmrlQFUV9IB2vbQup20kLTTGMsBySLexQ9TjG438gslCY3W65BmqLh6z0KbzUiopEXHZf6Oc5jdEwWbfwVdF1uf9rJiAw6jocGwoCZP6HOFXl3VdADYqOoShwnv1LlLpzFJ5szDy5MiZEbQrbm7m58pnFBFUed16+fLPGCSNWWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b=YpVOKfdw; arc=none smtp.client-ip=47.90.187.13
+	 MIME-Version:Content-Type; b=SIDQehtUtIMw9vsofvFu+mjDdQT8waD4kxbye3nz/cSxIsbgc86dcyInznZI88nQaNXehwazcDI4bQbe1ETH1Z9KNMLvbcFLcQKC8U1eIQPeFfdjyO55f8Qql9+eSUwwu+ijWooeG7JZGq1g16t3/JhVeVYeyDb3uI3gHvmYq7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; dkim=pass (1024-bit key) header.d=antgroup.com header.i=@antgroup.com header.b=dPELqWtu; arc=none smtp.client-ip=47.90.187.23
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1713877148; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
-	bh=u2nOPuUACaHxjsvTBbK286kNs1kGaeWUIM12LDvgezc=;
-	b=YpVOKfdwHeePK5h+m/sgie0Xl2qQKelgw4ORTT/J8PxOw/yIJ3wlq/8hQgyrjunBTX/qo1WAl0+ylSFIiDMfKtQOY1Z6njv2aJa9lzOjwxJrvEdtXuOCpwWs6+8wSNlJuDHFaLDtVDr5KSfD3+6U61yIYudnIKs7mhNZOVcszXw=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047204;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.XJXNjSj_1713877148;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XJXNjSj_1713877148)
+	t=1713877149; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=64KorjYk0sx2nDSk7hiRZHzNhfBx4ybSJcgKjrQvbD8=;
+	b=dPELqWtu14oRDkOPT9X4rhEiML4w0rhbYprGiqnXzLk6RPtjpoPGbXLzSEOkqD16KpSOvy1pwKtaJLS9KgWTUm2Tm4Z+2H01T/rhaUgxJO8PABd81bzMoG43zg0LZYSC32pCHueWGu1Wkxj4Iq4Fh2ZlaREDVLwDV/uKWttt/Kg=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047209;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.XJXNjSx_1713877148;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XJXNjSx_1713877148)
           by smtp.aliyun-inc.com;
           Tue, 23 Apr 2024 20:59:08 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -46,9 +46,9 @@ To: richard@nod.at,
 Cc:  <linux-um@lists.infradead.org>,
    <linux-kernel@vger.kernel.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v2 5/7] um: Add an internal header shared among the user code
-Date: Tue, 23 Apr 2024 20:58:56 +0800
-Message-Id: <20240423125858.137709-6-tiwei.btw@antgroup.com>
+Subject: [PATCH v2 6/7] um: Fix -Wmissing-prototypes warnings for __vdso_*
+Date: Tue, 23 Apr 2024 20:58:57 +0800
+Message-Id: <20240423125858.137709-7-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240423125858.137709-1-tiwei.btw@antgroup.com>
 References: <20240423125858.137709-1-tiwei.btw@antgroup.com>
@@ -61,146 +61,58 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Move relevant declarations to this header. This will address
-below -Wmissing-prototypes warnings:
+The VDSO functions are defined as globals and intended to be called
+from userspace. Let's just workaround the -Wmissing-prototypes warnings
+by declaring them locally.
 
-arch/um/os-Linux/elf_aux.c:26:13: warning: no previous prototype for ‘scan_elf_aux’ [-Wmissing-prototypes]
-arch/um/os-Linux/mem.c:213:13: warning: no previous prototype for ‘check_tmpexec’ [-Wmissing-prototypes]
-arch/um/os-Linux/skas/process.c:107:6: warning: no previous prototype for ‘wait_stub_done’ [-Wmissing-prototypes]
+This will address below -Wmissing-prototypes warnings:
+
+arch/x86/um/vdso/um_vdso.c:16:5: warning: no previous prototype for ‘__vdso_clock_gettime’ [-Wmissing-prototypes]
+arch/x86/um/vdso/um_vdso.c:30:5: warning: no previous prototype for ‘__vdso_gettimeofday’ [-Wmissing-prototypes]
+arch/x86/um/vdso/um_vdso.c:44:21: warning: no previous prototype for ‘__vdso_time’ [-Wmissing-prototypes]
+arch/x86/um/vdso/um_vdso.c:57:1: warning: no previous prototype for ‘__vdso_getcpu’ [-Wmissing-prototypes]
+
+While at it, also fix the "WARNING: Prefer 'unsigned int *' to bare
+use of 'unsigned *'" checkpatch warning.
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/os-Linux/elf_aux.c      |  1 +
- arch/um/os-Linux/internal.h     | 20 ++++++++++++++++++++
- arch/um/os-Linux/main.c         |  3 +--
- arch/um/os-Linux/mem.c          |  1 +
- arch/um/os-Linux/skas/mem.c     |  3 +--
- arch/um/os-Linux/skas/process.c |  1 +
- arch/um/os-Linux/start_up.c     |  3 +--
- 7 files changed, 26 insertions(+), 6 deletions(-)
- create mode 100644 arch/um/os-Linux/internal.h
+ arch/x86/um/vdso/um_vdso.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/os-Linux/elf_aux.c b/arch/um/os-Linux/elf_aux.c
-index 344ac403fb5d..0a0f91cf4d6d 100644
---- a/arch/um/os-Linux/elf_aux.c
-+++ b/arch/um/os-Linux/elf_aux.c
-@@ -13,6 +13,7 @@
- #include <init.h>
- #include <elf_user.h>
- #include <mem_user.h>
-+#include "internal.h"
+diff --git a/arch/x86/um/vdso/um_vdso.c b/arch/x86/um/vdso/um_vdso.c
+index ff0f3b4b6c45..cbae2584124f 100644
+--- a/arch/x86/um/vdso/um_vdso.c
++++ b/arch/x86/um/vdso/um_vdso.c
+@@ -13,6 +13,12 @@
+ #include <linux/getcpu.h>
+ #include <asm/unistd.h>
  
- typedef Elf32_auxv_t elf_auxv_t;
++/* workaround for -Wmissing-prototypes warnings */
++int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts);
++int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
++__kernel_old_time_t __vdso_time(__kernel_old_time_t *t);
++long __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused);
++
+ int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
+ {
+ 	long ret;
+@@ -54,7 +60,7 @@ __kernel_old_time_t __vdso_time(__kernel_old_time_t *t)
+ __kernel_old_time_t time(__kernel_old_time_t *t) __attribute__((weak, alias("__vdso_time")));
  
-diff --git a/arch/um/os-Linux/internal.h b/arch/um/os-Linux/internal.h
-new file mode 100644
-index 000000000000..317fca190c2b
---- /dev/null
-+++ b/arch/um/os-Linux/internal.h
-@@ -0,0 +1,20 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __UM_OS_LINUX_INTERNAL_H
-+#define __UM_OS_LINUX_INTERNAL_H
-+
-+/*
-+ * elf_aux.c
-+ */
-+void scan_elf_aux(char **envp);
-+
-+/*
-+ * mem.c
-+ */
-+void check_tmpexec(void);
-+
-+/*
-+ * skas/process.c
-+ */
-+void wait_stub_done(int pid);
-+
-+#endif /* __UM_OS_LINUX_INTERNAL_H */
-diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
-index e82164f90288..f98ff79cdbf7 100644
---- a/arch/um/os-Linux/main.c
-+++ b/arch/um/os-Linux/main.c
-@@ -16,6 +16,7 @@
- #include <kern_util.h>
- #include <os.h>
- #include <um_malloc.h>
-+#include "internal.h"
- 
- #define PGD_BOUND (4 * 1024 * 1024)
- #define STACKSIZE (8 * 1024 * 1024)
-@@ -102,8 +103,6 @@ static void setup_env_path(void)
- 	}
+ long
+-__vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused)
++__vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused)
+ {
+ 	/*
+ 	 * UML does not support SMP, we can cheat here. :)
+@@ -68,5 +74,5 @@ __vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused)
+ 	return 0;
  }
  
--extern void scan_elf_aux( char **envp);
--
- int __init main(int argc, char **argv, char **envp)
- {
- 	char **new_argv;
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index c6c9495b1432..cf44d386f23c 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -17,6 +17,7 @@
- #include <init.h>
- #include <kern_util.h>
- #include <os.h>
-+#include "internal.h"
- 
- /*
-  * kasan_map_memory - maps memory from @start with a size of @len.
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index 953fb10f3f93..1f9c1bffc3a6 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -17,11 +17,10 @@
- #include <skas.h>
- #include <sysdep/ptrace.h>
- #include <sysdep/stub.h>
-+#include "../internal.h"
- 
- extern char batch_syscall_stub[], __syscall_stub_start[];
- 
--extern void wait_stub_done(int pid);
--
- static inline unsigned long *check_init_stack(struct mm_id * mm_idp,
- 					      unsigned long *stack)
- {
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 1f5c3f2523d1..41a288dcfc34 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -23,6 +23,7 @@
- #include <skas.h>
- #include <sysdep/stub.h>
- #include <linux/threads.h>
-+#include "../internal.h"
- 
- int is_skas_winch(int pid, int fd, void *data)
- {
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index 6b21061c431c..89ad9f4f865c 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -25,6 +25,7 @@
- #include <ptrace_user.h>
- #include <registers.h>
- #include <skas.h>
-+#include "internal.h"
- 
- static void ptrace_child(void)
- {
-@@ -222,8 +223,6 @@ static void __init check_ptrace(void)
- 	check_sysemu();
- }
- 
--extern void check_tmpexec(void);
--
- static void __init check_coredump_limit(void)
- {
- 	struct rlimit lim;
+-long getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *tcache)
++long getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *tcache)
+ 	__attribute__((weak, alias("__vdso_getcpu")));
 -- 
 2.34.1
 
