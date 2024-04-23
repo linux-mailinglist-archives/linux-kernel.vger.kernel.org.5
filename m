@@ -1,109 +1,146 @@
-Return-Path: <linux-kernel+bounces-155312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1564D8AE8A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D289C8AE8A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:51:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4753E1C219DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:50:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1028F1C215E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B0A135A5B;
-	Tue, 23 Apr 2024 13:50:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 538BA1369BC;
+	Tue, 23 Apr 2024 13:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uJRvjvv+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Ek/9j0ik";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="YAU9kVFi";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Ek/9j0ik";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="YAU9kVFi"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1223136E38;
-	Tue, 23 Apr 2024 13:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A3264CCC
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713880243; cv=none; b=adeTs/X7gdMN4GeTjj4Eo/qZc3Nbep0J0K3x29L3FP2BtBCjIgnsNCeL2o3EhpHkVJ0DR8yUqsjAlbxZYFClG2zfhj4FLh+cSMoD4V6dbIqFCf+duUPd7q1gPM4JmcgHqQt69tFnW6SMUhMI7ntp/TgFD3AWD9u7o0CcUcPIcPI=
+	t=1713880302; cv=none; b=dvyKnRXDgZH22mB6JE6PS2U/Z/iJUcxYm+gWNmOeW9RRrX5Yu52Y3OooKk9wHSApyTX0oddsPklQFuJuYixPrYrK6jLjtr4uQZdM6lrRtSP9oAsSX2Yp0LoVNI4nRL0c2PMquNEAo1QCuAaYtmcj1vxd1po8ZNYRGSaAV4w9Vz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713880243; c=relaxed/simple;
-	bh=69xKIHYi9IlkPeRLSshR5Kkz2te6ObXlX0YWGXKs98A=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=h6TLAngWpctKYdE2NtzMP90csgkM24/T0Z5CfB5/vbv5rp+00gQv3/YLYk8EcF86P7pznTuRtQ9MjTo2XCecmXxyLD22AbVZ+E30HKO/89hpG3FkMgwjreitm8QDyKKqBzXABaX0ulsdXpZlIf568NE+XIq2ai8aMfTu2BBCVxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uJRvjvv+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EE67C32783;
-	Tue, 23 Apr 2024 13:50:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713880242;
-	bh=69xKIHYi9IlkPeRLSshR5Kkz2te6ObXlX0YWGXKs98A=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=uJRvjvv+NskakdFYTyFSA8LvJusLkXDk85F1TIbbT6zb04rUFmlCmdZJbPRZJctwv
-	 fyLDEgsPmHdVYnqa2irO5oOhhnc5gVEkb7KmGBIk56+RYNRZkav5cWgxyhlm87IzXv
-	 eMLCy4fXhtNLZMVGt+GkXPnTWQhHykIclEoBLxur9mMYJrWv3ogAdZNM/s6/AOWn3D
-	 rNbNtLZ7nabTNi6EpZ/FlU4ArW1RKkoFtp7sw93audwp4THtxqn3012OrZBEY7bVbJ
-	 eBaXyZ7FeBe0vj/3yDjC6u53Q47gvgIAMXDYt3R/cNRL+LkE3JLlIoHPHTq+xh57y0
-	 8W4EMtW3zYA3A==
-Date: Tue, 23 Apr 2024 08:50:41 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1713880302; c=relaxed/simple;
+	bh=ii1mOYxyeDfonuF8ZMo6BnhNMvbKKmJsq3pE2/0jSX8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q14LWyzytdXBHEJGQtvlfFzaNYN/kwSfYc+BETfgh8EWnN+4ca5WJK8vvjsnuFlAWLK5UB7l03UcalaIz6eNwU6L+Wms2Hxd5rlVx+qyCm+ZGWgKNj9TwdDrCBj25tvHl3ejBxn6h2Uk9a7ssCPF+rjwPHIhrKkR39PmCwSlrL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Ek/9j0ik; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=YAU9kVFi; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Ek/9j0ik; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=YAU9kVFi; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 537AD38044;
+	Tue, 23 Apr 2024 13:51:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713880299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9nNDYWhAMUr5BYb/IUllkBXMo9i6OC9KEcl7WK30r0Y=;
+	b=Ek/9j0ikEwb2fBivuYFM4U44EvCDJG4BmiVcPr55e6l2su5UYXMt8McNZThgnAVeKaxLW9
+	mZkOGkj6etV1VtrBskdx3yNFRBobO6GH4Y6WBpgQLkpyxCO8RazVCTCnFPptQ8XSWhZ4WZ
+	OX2OUilka0BkrpG4XccEyqF/ZZbPtlo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713880299;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9nNDYWhAMUr5BYb/IUllkBXMo9i6OC9KEcl7WK30r0Y=;
+	b=YAU9kVFim6OWfKlIDP6glcAJPF9QDgBZa+U7o/KzpPDBuWhJH/7jiJQQ7hpclD47t8dIYJ
+	jLJOUB1GSKddWhAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713880299; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9nNDYWhAMUr5BYb/IUllkBXMo9i6OC9KEcl7WK30r0Y=;
+	b=Ek/9j0ikEwb2fBivuYFM4U44EvCDJG4BmiVcPr55e6l2su5UYXMt8McNZThgnAVeKaxLW9
+	mZkOGkj6etV1VtrBskdx3yNFRBobO6GH4Y6WBpgQLkpyxCO8RazVCTCnFPptQ8XSWhZ4WZ
+	OX2OUilka0BkrpG4XccEyqF/ZZbPtlo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713880299;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9nNDYWhAMUr5BYb/IUllkBXMo9i6OC9KEcl7WK30r0Y=;
+	b=YAU9kVFim6OWfKlIDP6glcAJPF9QDgBZa+U7o/KzpPDBuWhJH/7jiJQQ7hpclD47t8dIYJ
+	jLJOUB1GSKddWhAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 382E413929;
+	Tue, 23 Apr 2024 13:51:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id CxMaDeu8J2ZpcAAAD6G6ig
+	(envelope-from <osalvador@suse.de>); Tue, 23 Apr 2024 13:51:39 +0000
+Date: Tue, 23 Apr 2024 15:51:37 +0200
+From: Oscar Salvador <osalvador@suse.de>
+To: Miaohe Lin <linmiaohe@huawei.com>
+Cc: akpm@linux-foundation.org, muchun.song@linux.dev,
+	mike.kravetz@oracle.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/hugetlb: fix DEBUG_LOCKS_WARN_ON(1) when
+ dissolve_free_hugetlb_folio()
+Message-ID: <Zie86XQGN91OcXHj@localhost.localdomain>
+References: <20240419085819.1901645-1-linmiaohe@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>, dmaengine@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
- Vinod Koul <vkoul@kernel.org>, linux-hardening@vger.kernel.org, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
- Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20240423123302.1550592-2-amelie.delaunay@foss.st.com>
-References: <20240423123302.1550592-1-amelie.delaunay@foss.st.com>
- <20240423123302.1550592-2-amelie.delaunay@foss.st.com>
-Message-Id: <171388024017.101826.4338039717721212935.robh@kernel.org>
-Subject: Re: [PATCH 01/12] dt-bindings: dma: New directory for STM32 DMA
- controllers bindings
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240419085819.1901645-1-linmiaohe@huawei.com>
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,huawei.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-
-On Tue, 23 Apr 2024 14:32:51 +0200, Amelie Delaunay wrote:
-> Gather the STM32 DMA controllers bindings under ./dma/stm32/
+On Fri, Apr 19, 2024 at 04:58:19PM +0800, Miaohe Lin wrote:
+> When I did memory failure tests recently, below warning occurs:
 > 
-> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-> ---
->  .../devicetree/bindings/dma/{ => stm32}/st,stm32-dma.yaml     | 4 ++--
->  .../devicetree/bindings/dma/{ => stm32}/st,stm32-dmamux.yaml  | 4 ++--
->  .../devicetree/bindings/dma/{ => stm32}/st,stm32-mdma.yaml    | 4 ++--
->  3 files changed, 6 insertions(+), 6 deletions(-)
->  rename Documentation/devicetree/bindings/dma/{ => stm32}/st,stm32-dma.yaml (97%)
->  rename Documentation/devicetree/bindings/dma/{ => stm32}/st,stm32-dmamux.yaml (89%)
->  rename Documentation/devicetree/bindings/dma/{ => stm32}/st,stm32-mdma.yaml (96%)
+..
 > 
+> Fix this issue by checking whether folio is hugetlb directly instead
+> of checking clear_flag to close the race window.
+> 
+> Fixes: 32c877191e02 ("hugetlb: do not clear hugetlb dtor until allocating vmemmap")
+> CC: stable@vger.kernel.org
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
 
-doc reference errors (make refcheckdocs):
-Warning: Documentation/devicetree/bindings/spi/st,stm32-spi.yaml references a file that doesn't exist: Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
-Documentation/devicetree/bindings/spi/st,stm32-spi.yaml: Documentation/devicetree/bindings/dma/st,stm32-dma.yaml
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240423123302.1550592-2-amelie.delaunay@foss.st.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- 
+Oscar Salvador
+SUSE Labs
 
