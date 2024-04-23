@@ -1,660 +1,413 @@
-Return-Path: <linux-kernel+bounces-155460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8068E8AEADD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A5748AEADF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:21:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30BCE28ABF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:21:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4B9128BF99
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C6EF13B7A3;
-	Tue, 23 Apr 2024 15:19:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9D813C90D;
+	Tue, 23 Apr 2024 15:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XaKjbPLp"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="QAq8gBX/"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2057.outbound.protection.outlook.com [40.107.220.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5239F13BAF1
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713885538; cv=none; b=g5Uk7R5y4c1i1fUDcUnDNFZZ4Jw9DwFv46I8OYJhvcIEfDJC6kOZDGTYP0pddJ/RNNSPS7XFnPr+7wmB3w9FembMqZZAORpZoWk4H8eQYuYJpY03Ng6H0isDKEus0SQemo7NcgMsBcqXXrVlrGbPJElKujJhutbq6WPk9Lg5o68=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713885538; c=relaxed/simple;
-	bh=oVaDmsDL6pbOGstGGNwIRlt3eAt8QlSYJGDN+v5bRKM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jafI6T+c0ULNROU05W2l+bH4x+F8uXbsSc2ex6j5J1U7E+2pkY80OFnEzU/pzVYOslE33P4+q910whR9/WBzvViWbK/6q9u58GNzbKZ9Y+899Qk8xBYYI92vlVg52YUsy6k1H3xCN//pKQednMgAdfe7/bh57I0A3biqI82H6k8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XaKjbPLp; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713885535;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=1//G2apB5e6xOK0fMlwdOHS94yS2AW5Xhdqiqal+aJQ=;
-	b=XaKjbPLpKyzXj8d0Pv2bh8iMdA8f8nfTizTSo4jAraNcq4peTHPNzmKOMHUNI2LzV9Z5lD
-	EXTv72YhK9rWY0mLraRLJeHb6EoSEIRyx1vhmIEhGNqSA7U5ZwcQ0Ewwycf5zezgzhrtED
-	GRWuti5DfhUq03jVshd1srwjdIZYKZ0=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-653-z6PJzHYBOZ28K7mQ4qJibw-1; Tue, 23 Apr 2024 11:18:53 -0400
-X-MC-Unique: z6PJzHYBOZ28K7mQ4qJibw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-343d6732721so3606275f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:18:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713885532; x=1714490332;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1//G2apB5e6xOK0fMlwdOHS94yS2AW5Xhdqiqal+aJQ=;
-        b=GX/sbhiCjNAtIqDPfKH2aK1+k8k0tzmXarLfWhdZzx/ad57+tK/XaPiYDp+8l2dEc1
-         lWKY+cCgPQLKOobQchqG320GmHsFJYHnbv+nCb2hM8XDHYm+zYuBJ9kwZu+DuXl3Lvzd
-         CRgKt6gdJIw8Nofks0FZ8rPSIFf48RWgVJa0aHksvOXUqIXl6T9RSVRk4qHH4y7OQGbx
-         fYk0IZaFFb8pxHcypl6KMdUoYX9K6nrVMeX2Dm0l10q3qc3rOkrRZFgFbXN5CsyUD29b
-         VXzbYvwgehw32zY+Yn9+M2s6kcXg8eY4uMjP4RYr/9E3vuwXdKm+JHGyA+vDD38k+98V
-         GVIw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHW82/Iq3OeO66i+ttqbA4KSXRyAxHtdXTKGPZxRseJCNEi/9KR06iENGVQjSLw6E8ZO52O+xtpolZnBSCGhQRpQ8Wt5yhQF0Ghki2
-X-Gm-Message-State: AOJu0YzzrpKm6xEhFl+OAod+gy+GkH7yz4cSpjVwUfbNVnz03Ye+f608
-	Y3+lXHGPypdF8du/7ybpV2/Q+Suavo/9EVx0Jx4hqHztWXxX3xDgb5NFlGL+WniaTPHP6w0OqIy
-	p9BHchmCF1oOB2nPL/Pylr+btx6NdhlG5DwetKCMifxYD6A+/pX8Mlj11VOvo2A==
-X-Received: by 2002:a5d:4e08:0:b0:343:b942:3430 with SMTP id p8-20020a5d4e08000000b00343b9423430mr11034977wrt.17.1713885532187;
-        Tue, 23 Apr 2024 08:18:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF0oJ67oCLXe6CJ4NK827JaF/R/fYzxs/6dNXtzUR9Ro/CqZVvcLFOi2ryPuJwyuy0jA15m7g==
-X-Received: by 2002:a5d:4e08:0:b0:343:b942:3430 with SMTP id p8-20020a5d4e08000000b00343b9423430mr11034943wrt.17.1713885531593;
-        Tue, 23 Apr 2024 08:18:51 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:fd00:fb07:92f8:8f0c:6a08? (p200300cbc706fd00fb0792f88f0c6a08.dip0.t-ipconnect.de. [2003:cb:c706:fd00:fb07:92f8:8f0c:6a08])
-        by smtp.gmail.com with ESMTPSA id g2-20020a5d5542000000b0034720354152sm14797500wrw.117.2024.04.23.08.18.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Apr 2024 08:18:51 -0700 (PDT)
-Message-ID: <ba9df085-a3ff-42ab-bc9b-567b2d7cb983@redhat.com>
-Date: Tue, 23 Apr 2024 17:18:50 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841521E526;
+	Tue, 23 Apr 2024 15:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713885563; cv=fail; b=co4spVm86Wv2X4aJqAJHBQdK9PqVSnnXyiOftBZzzcatHGQUIFJKZZB2AkSP94pEQKk1nMkOoqZYWYzbFylZPEtEv85fGb5IuTyLCZheq1rCkqQnVLCIH6nNHV3jNLeeY7rGddXVAM0E4NktbEsSEl+80EtLeoPGpdPlknyLyTo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713885563; c=relaxed/simple;
+	bh=NmobX3ukwfG2BKwehhsYoF20+kmGdO4V+HuBhFLkwBw=;
+	h=Message-ID:Date:Subject:To:Cc:From:Content-Type:MIME-Version; b=NCNfnct++4iZRVnpHD0/hZQkK842pfuA6M+QKwrC/s1pevKZhBXH08zhjL2aYZJhZaCo1sJdPcs4ljjbuC+MuuBtH3bKhwODUFcgAGUHmB0ZioupJpKfsGc0qsq4hCRvCHUH4vTHtFhePxrg/3bMNjEkmvvw4jszISkGE7knfII=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=QAq8gBX/; arc=fail smtp.client-ip=40.107.220.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iX/GtsLEPM6QCFoBVqLQzkc1uqiI4a/GnnkROGU3CIHj4Ygibse/gM+7AJzdgeYvtLI2CozWhqOR2MRJDTze1oW7D9wXq9W5fqsVsajQNZteAd68uDZRIOm0o5hT01Hof0L+hZNSaFHoWo3GwUJwL8VB3aoZX+vZu4bTA7Y5H1R31ptFHB4jknKqbSl3nXTdKccm4CNEC3OS5tJHmo2Kw/EmDyEKKuxQrkSVBjNEeoHf8IQaoaJIHXyxPKT7emY4RfRYCP+44Gqhq4b9HtfhgSOHV0i8z+lzzuAJA7l3iYoBmKcOTKUSWyjldIK8giNkoOaz8C22tXZjvz4YpgDReg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yyLVpV2XIDiltxZjwyHyt7oZAXMFshn++HrcG5IdP3Q=;
+ b=QCPtvdIqvFMLj38c+gIYc7F4bLz/PMhAB/ZzSW5g2qORkg0pzUfgy0xs0GET71f+mTI3r1PYNo5pjAxex+5CpZzS/xtF/Wf0dBIUj5Xsl3EqoM9Fb7NkhA8pHIMGnis/uOJPsDY2N8KxObOIleSN01tjLBEyA+2RwslqnyY2/gogT/NwifznIyX17LrXHBOa6nTKf068XqAza6LJMTI72Tq/zmTOGNW5e7hULKQ/fxiQ3RXVIG/eo3M4AjtdHc7eF2cDj9PbUorbjrK3eK0xQDEx4OHHOXE2VLywVQaP/AuqakBr8kGebBfWYsqW+9gbNBMsFn/XaIEhBobYVz14SA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yyLVpV2XIDiltxZjwyHyt7oZAXMFshn++HrcG5IdP3Q=;
+ b=QAq8gBX/5HW9XYLRIkY33WMfJpJd8V/ACOnzxbS7dLAsdKD9jHUSDL4y0kMq22N/B2UHi2R5Qwl8OrhMGsgSNaXqV+hyLj2Prv9GEaFP1flL08G4e6dUyML/rDM078wDsNiYwddBIiOA5iDko0N9suIwJsZQjgOfE60Roaf1j4I=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
+ by MN2PR12MB4143.namprd12.prod.outlook.com (2603:10b6:208:1d0::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.44; Tue, 23 Apr
+ 2024 15:19:19 +0000
+Received: from BL1PR12MB5874.namprd12.prod.outlook.com
+ ([fe80::8b3e:57e8:d574:309a]) by BL1PR12MB5874.namprd12.prod.outlook.com
+ ([fe80::8b3e:57e8:d574:309a%4]) with mapi id 15.20.7472.044; Tue, 23 Apr 2024
+ 15:19:19 +0000
+Message-ID: <109e7532-6265-4476-93ea-34fb0b209691@amd.com>
+Date: Tue, 23 Apr 2024 10:19:14 -0500
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH v2] docs/MAINTAINERS: Update my email address
+Content-Language: en-US
+To: corbet@lwn.net, elena.reshetova@intel.com,
+ Randy Dunlap <rdunlap@infradead.org>
+Cc: bilbao@vt.edu, "Naik, Avadhut" <Avadhut.Naik@amd.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+From: "Bilbao, Carlos" <carlos.bilbao@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA0PR11CA0196.namprd11.prod.outlook.com
+ (2603:10b6:806:1bc::21) To BL1PR12MB5874.namprd12.prod.outlook.com
+ (2603:10b6:208:396::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v20 2/5] ring-buffer: Introducing ring-buffer mapping
- functions
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: rostedt@goodmis.org, mhiramat@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- kernel-team@android.com, rdunlap@infradead.org, linux-mm@kvack.org
-References: <20240406173649.3210836-1-vdonnefort@google.com>
- <20240406173649.3210836-3-vdonnefort@google.com>
- <9c553dae-5395-4ec9-b41c-a4decc37acf2@redhat.com>
- <06c6b023-6cdc-430d-be0b-086fd6453aeb@redhat.com>
- <ZiaqgNFLOwimE2Me@google.com>
- <0283adf3-0295-4b2d-997e-befb02b1cc1a@redhat.com>
- <ZibJLSdOlxZUGRBa@google.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZibJLSdOlxZUGRBa@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|MN2PR12MB4143:EE_
+X-MS-Office365-Filtering-Correlation-Id: aaea987c-3988-4022-42f2-08dc63a8bee5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?S0tFaE9SUmxIYVFtcThteHB0RC80dVNKbHpHalhFQlFvNWJNZnhDUjdReVNl?=
+ =?utf-8?B?aVVRRzFPaURsMzk4OXFFT25rRnIwM1FwZDhPUVVuMDBlMklsbUxwY0YvOEFN?=
+ =?utf-8?B?WEllN0FSeUhENmVYV2FMZDJvRS8vL01BRmtRK1h1aG11eWhUUUY5dDJ0enhm?=
+ =?utf-8?B?T2NkZld4azh6TG9sOHZWa0EzeENDcEdMNTkrVmxVMlA2NEljaWM5bnJreXJ5?=
+ =?utf-8?B?VlVpaHlpK1g4UU9QNlN5aktkVzFpNDJhYnNZZjdWNjZOdXdGak1rbnN1N2w1?=
+ =?utf-8?B?NWFJdmRYQmRTdVpIR29sSHZYVjAwdDVQQ1owVVZwcE1mV3RqbklzUkFDTk9w?=
+ =?utf-8?B?QTBWRjAvNkFDSnV1Y0JwYStSVVNxaDdINnI4ZG9HeDRrT3B4ZUs2RDFkNzFJ?=
+ =?utf-8?B?Z2IxeVdKZVVLUkpqQ044ZUVwZU9yVDEzMWR1d1prRWZBdVFxVURLc2MvallC?=
+ =?utf-8?B?dThFUEtMMDcrNUkwMFV2TDdBL1htU2x4NVR4enRVc1BreG9nV2k3RUFLMGZR?=
+ =?utf-8?B?ejV5UWpmTmtZNlZrRVpBYlovM0N4c1ljRGs5SVVNalBVNEpJd3ZJenhzQkM5?=
+ =?utf-8?B?Ukt6ejJEcjJQTkFFZFFWSUdOMzJ1dm4xS1RONy96U0N5SnJjdGpFczc1TUVH?=
+ =?utf-8?B?YlpRc0h1aFB4dllSeUhxRWUwUDhiSXBnVVVxYTFTK1o2Wmc2YzBrc0dSRGZt?=
+ =?utf-8?B?RUdkU1pwV3VJQ2NwL3h1cm52cktLT2UxUk9PaWwvekhQL0pIYmwrR1NYak1S?=
+ =?utf-8?B?dllpNDIweTg4cTYweDBQUUVQbmRMZUxxZkFuRFhWa1Z2cXlPZldVdk5JQ3FD?=
+ =?utf-8?B?NGNTL2ZZQ2twU1lFS1NXQjVlY1JGVytPcEwzNHNvMWs2c2h3eEhRUTFmR2dv?=
+ =?utf-8?B?a01VamtLdEZXM0JRZC9WN3hDL05LNytNSEh4aUhSeWxtdWhxMk02bG4rbTlt?=
+ =?utf-8?B?UnJzWUh0anFvbWdxcjgwcm1RQWc4WTJQc3VkYll0Vmh2RkZIZEcySlFWaE9s?=
+ =?utf-8?B?K3laSmVVT1VGaTJjbWJBbzlZaG4xM0VnSUVYem9DNENqRkExdEM0MTkwN0F4?=
+ =?utf-8?B?MDRhVU9FT0FwcVpINjVBSXJaSyt6N0Uwak53MzBmZHhJdVJBYi9wWmwwaFdj?=
+ =?utf-8?B?dDBMWGhiYllpb0pIOWd2ZlJrTG1PbVJCblNEVVJhaE41dVBydkc4M3pTL25Q?=
+ =?utf-8?B?WU5nTXIyd2UvbmJ0Q3dtR09nMThSRTFKYmtlcWlha2J3QmRGSjlONSt1MGVH?=
+ =?utf-8?B?YlBnc2tUeDhvNkVaMkJRK0NLNFV2MUxiczdyN2FINUYzYzdUZlc2U3JYMlJ6?=
+ =?utf-8?B?SjVSdnp5S29CSDZaZkZFcGppQlMxWWVWMGkrMGRhR1pML1Mvc0l1RHJEdEVn?=
+ =?utf-8?B?TmFrYTE0TTEzY0V4MlhVazhkQmc1aUFCU3lRSTNBL3FTdzdIZTlkSnVTZDho?=
+ =?utf-8?B?TnU4cE8vd1E5azRDWjczUEtSSEF4THAzMHpNa3dSYi93QjltbXNXTjRZM1ow?=
+ =?utf-8?B?U0dwZDBXYThsb044Y1VTenM2Yi9kN2dLam1LeWQzR2tOdHR6RzFVeFlTOTNV?=
+ =?utf-8?B?aTZHeThHQmZ5TnBTSHVMUlkyelE5MWhZSjRyY2lFOG1CYUpaRFFHRUczbzFK?=
+ =?utf-8?Q?OvCuGltTCXGdMUL6jWsX2DSrtqZ9MJdjSusPsBfI7hN0=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Yzl2WkNkUzBncmVBRXp2ckhaUXNOK2pHN1VWVUJ4eWRxSkprNjd6S1ZKcHpm?=
+ =?utf-8?B?VFNRTlJBZzlac3ViQ3p2NGp2eEVSdFpmSUtsaXJ3ZmZ0WkJhaTdZcjlST0VM?=
+ =?utf-8?B?blE3dEQrTTRVMFpxSyt3Tm4vMlpGSEZuYUExUEp4TUJ3QWNnRkVSblZoU0Q1?=
+ =?utf-8?B?cVlhaUJMRURDWDJxTFdMZ2pLYUlHTXFDVEdFQjFsTjYvekcvMFo3OVVHOHNV?=
+ =?utf-8?B?RzVIK0gxT2hqckhZd3B5MmZVSUNoOUVlOXdCdnhMUkttZ0VSczBnQ1M3V092?=
+ =?utf-8?B?T3VmRnpLQjByZklXWjZ6T2g3LzBXSmorWmJhejhTNFBBS3FnbW5ZbFZLRXla?=
+ =?utf-8?B?SFZxRTJYcDNPZVBZRE1SRzdDNUJUcWFYTnpxbzRkOUVkaGF0cDQ0QVV5MlZL?=
+ =?utf-8?B?REhCeHNsekVnM1QzOWpmeXZJeGpVaCt5MXhqVXRxdGR0My9kR2hjTUtPZWtZ?=
+ =?utf-8?B?akVBSmo4WXB6WkNhTUlTcW42aG9QYXBReWFCcjdzQWxNK0hWRUVER3F2aUNs?=
+ =?utf-8?B?SDNhRE4rS2VMcjd3RWQ5bFBMQkRuNktrZmkyNDBuSFhLSUJyMVFUcnFuOHpl?=
+ =?utf-8?B?QTY3TGgyZGpXZzd2NzY0U3lPYjdIcXVPRHFqZ3h5ZzZQNGVreklNOHlXbHkz?=
+ =?utf-8?B?MUc0bmxLQ3hyWWpBdk9GQzZ5Sm5YejBKc0Z2WWwwcWlqT0R4cytjcVo3bUcx?=
+ =?utf-8?B?d3pGVmxlVWNVZmZBSmFuMU5EbkdIVUlrbW5nR1lYazVnUkI5TWIxYUw1enJ5?=
+ =?utf-8?B?VVFZRXh1dk5uN1dVZlR4bnJoVUNpZ0lCTG5GVWJuQjVjOHpaTzBOTG5WYTJM?=
+ =?utf-8?B?NSt3aktXWktRWFloc28rMmQvNUJaSU5rTGJRVGVXOG5aTlNVbGcvRFNRTU5x?=
+ =?utf-8?B?TzJtbVRaUTZXMTFWK2dKdWRBTVBGdmVUdXBWNlNmcHhsZjJCVytFUGlqMU5h?=
+ =?utf-8?B?RWhBWDR4Ui9WdnN1ejcxU1E5UEE2NTBFS1J3TjdScjBrMEVuME9oeWVLZ3ZI?=
+ =?utf-8?B?SG1lYlIvMk5SUTlSNW8vbHRmWFlKVlRCblVCVFpqTTZ6K0VqVzZGdGtTNUVN?=
+ =?utf-8?B?TjVNU3paUWUvTndnL1k5emJ1bTRQajBKS2JsTXhhVXVjWXNyOEsvZGJiTmRj?=
+ =?utf-8?B?bUZOZU8xcEsrMjJFUFpYRDJGbG0xZXFna0xQRGNHSkRnNjJuODVmVjEzNHN4?=
+ =?utf-8?B?MTkzYmJvbFcyMnYzTFIrN080ZG1NM2l5dGNQaWdFUkkvOG51SERlaUs3SnJq?=
+ =?utf-8?B?VDd5cXFNem5KWTRmMkkrSlllNG5IK1BrTVZGZytsamYrUE9mcUJzbEhncmt5?=
+ =?utf-8?B?dTRUUGhma1ZQMlBod2xPQkNEZ1p0UGhDdG41OUhpUXB1YWd0MjBrSVptNWZD?=
+ =?utf-8?B?NW1KV0xEVjlBNmlEWXZiOTR5Vk1BRC9sSXg3ZjNYR1NXTVY5VW5rTWtrZmFU?=
+ =?utf-8?B?L0xGS0hhV2tvRURZRXJxQ05keFNvb0RzUURVRElEV3ZERnlMSlk3TkVpVG5u?=
+ =?utf-8?B?SmFUYXlSZlUyNWM1Yi9vZDV2ejhNZmVJSXYyd1hsOEt6aXlROUFNVTVTdTdw?=
+ =?utf-8?B?VGJEajdMRWNsUU1ldGZkZTUvenlVa0pGL1BaZGF0a0FrZnVRSEJWTGd4ZFp5?=
+ =?utf-8?B?VU45NmJmTlBBTDd1UW8ydlc3VFJSNExDM2N3SXhCWkx0ZDdpaWM0Zm0ycVBk?=
+ =?utf-8?B?cm9wZDk2emdYLzN0NFlyZlZUWWpOSlZzR05IczIxVHdHaGwzUG8xbWZHTmVW?=
+ =?utf-8?B?NUI4UDZIdTZmOFcwTllaSVdlQmRTRWhNdkd2eERGNE1BNDZoOGQxSkdydElG?=
+ =?utf-8?B?OHJvYjZxQm9PL0xyNTQ2SjJiOUtMSXkwZUlTalR1dUJrbWhTOFE5MzR5YzVV?=
+ =?utf-8?B?MGFlY3BpbzFnelVDdGcrVzZ5T3BqQ3BUZUFXWVJRWllVK3dZbGYxN2xuUVlM?=
+ =?utf-8?B?VDdGekIrbkJOVUorSmlPa3JHdkdOQk5lejRHb2MvTjNjOVlSWjBzd0J1MzNV?=
+ =?utf-8?B?YXdRYTNpRWlPUExVa2NMQ3hBdHg1MUxlamhIdmU2cE56WnZhbTFlL0I2b2tK?=
+ =?utf-8?B?R2tqdloxZmQvUGhOdU14cnhCQ2FmcFJ6WlJJakVQTmtSSzZjVlRySWI1WVlv?=
+ =?utf-8?Q?C/m1JzZEy1ScCe06NWySPszUs?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aaea987c-3988-4022-42f2-08dc63a8bee5
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Apr 2024 15:19:18.9567
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u4iiMZV7t7RjImpyb9u/Slm9N06+zXAMbukW0Ywono9tm8gYx1L7HcW4Xld3lVMtkTcvblG4YA2ipJg2oztFBA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4143
 
-On 22.04.24 22:31, Vincent Donnefort wrote:
-> On Mon, Apr 22, 2024 at 08:27:17PM +0200, David Hildenbrand wrote:
->> On 22.04.24 20:20, Vincent Donnefort wrote:
->>> Hi David,
->>>
->>> Thanks for having a look, very much appreciated!
->>>
->>> On Mon, Apr 22, 2024 at 11:27:11AM +0200, David Hildenbrand wrote:
->>>> On 19.04.24 20:25, David Hildenbrand wrote:
->>>>> On 06.04.24 19:36, Vincent Donnefort wrote:
->>>>>> In preparation for allowing the user-space to map a ring-buffer, add
->>>>>> a set of mapping functions:
->>>>>>
->>>>>>       ring_buffer_{map,unmap}()
->>>>>>
->>>>>> And controls on the ring-buffer:
->>>>>>
->>>>>>       ring_buffer_map_get_reader()  /* swap reader and head */
->>>>>>
->>>>>> Mapping the ring-buffer also involves:
->>>>>>
->>>>>>       A unique ID for each subbuf of the ring-buffer, currently they are
->>>>>>       only identified through their in-kernel VA.
->>>>>>
->>>>>>       A meta-page, where are stored ring-buffer statistics and a
->>>>>>       description for the current reader
->>>>>>
->>>>>> The linear mapping exposes the meta-page, and each subbuf of the
->>>>>> ring-buffer, ordered following their unique ID, assigned during the
->>>>>> first mapping.
->>>>>>
->>>>>> Once mapped, no subbuf can get in or out of the ring-buffer: the buffer
->>>>>> size will remain unmodified and the splice enabling functions will in
->>>>>> reality simply memcpy the data instead of swapping subbufs.
->>>>>>
->>>>>> CC: <linux-mm@kvack.org>
->>>>>> Signed-off-by: Vincent Donnefort <vdonnefort@google.com>
->>>>>>
->>>>>> diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
->>>>>> index dc5ae4e96aee..96d2140b471e 100644
->>>>>> --- a/include/linux/ring_buffer.h
->>>>>> +++ b/include/linux/ring_buffer.h
->>>>>> @@ -6,6 +6,8 @@
->>>>>>      #include <linux/seq_file.h>
->>>>>>      #include <linux/poll.h>
->>>>>> +#include <uapi/linux/trace_mmap.h>
->>>>>> +
->>>>>>      struct trace_buffer;
->>>>>>      struct ring_buffer_iter;
->>>>>> @@ -223,4 +225,8 @@ int trace_rb_cpu_prepare(unsigned int cpu, struct hlist_node *node);
->>>>>>      #define trace_rb_cpu_prepare	NULL
->>>>>>      #endif
->>>>>> +int ring_buffer_map(struct trace_buffer *buffer, int cpu,
->>>>>> +		    struct vm_area_struct *vma);
->>>>>> +int ring_buffer_unmap(struct trace_buffer *buffer, int cpu);
->>>>>> +int ring_buffer_map_get_reader(struct trace_buffer *buffer, int cpu);
->>>>>>      #endif /* _LINUX_RING_BUFFER_H */
->>>>>> diff --git a/include/uapi/linux/trace_mmap.h b/include/uapi/linux/trace_mmap.h
->>>>>> new file mode 100644
->>>>>> index 000000000000..ffcd8dfcaa4f
->>>>>> --- /dev/null
->>>>>> +++ b/include/uapi/linux/trace_mmap.h
->>>>>> @@ -0,0 +1,46 @@
->>>>>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->>>>>> +#ifndef _TRACE_MMAP_H_
->>>>>> +#define _TRACE_MMAP_H_
->>>>>> +
->>>>>> +#include <linux/types.h>
->>>>>> +
->>>>>> +/**
->>>>>> + * struct trace_buffer_meta - Ring-buffer Meta-page description
->>>>>> + * @meta_page_size:	Size of this meta-page.
->>>>>> + * @meta_struct_len:	Size of this structure.
->>>>>> + * @subbuf_size:	Size of each sub-buffer.
->>>>>> + * @nr_subbufs:		Number of subbfs in the ring-buffer, including the reader.
->>>>>> + * @reader.lost_events:	Number of events lost at the time of the reader swap.
->>>>>> + * @reader.id:		subbuf ID of the current reader. ID range [0 : @nr_subbufs - 1]
->>>>>> + * @reader.read:	Number of bytes read on the reader subbuf.
->>>>>> + * @flags:		Placeholder for now, 0 until new features are supported.
->>>>>> + * @entries:		Number of entries in the ring-buffer.
->>>>>> + * @overrun:		Number of entries lost in the ring-buffer.
->>>>>> + * @read:		Number of entries that have been read.
->>>>>> + * @Reserved1:		Reserved for future use.
->>>>>> + * @Reserved2:		Reserved for future use.
->>>>>> + */
->>>>>> +struct trace_buffer_meta {
->>>>>> +	__u32		meta_page_size;
->>>>>> +	__u32		meta_struct_len;
->>>>>> +
->>>>>> +	__u32		subbuf_size;
->>>>>> +	__u32		nr_subbufs;
->>>>>> +
->>>>>> +	struct {
->>>>>> +		__u64	lost_events;
->>>>>> +		__u32	id;
->>>>>> +		__u32	read;
->>>>>> +	} reader;
->>>>>> +
->>>>>> +	__u64	flags;
->>>>>> +
->>>>>> +	__u64	entries;
->>>>>> +	__u64	overrun;
->>>>>> +	__u64	read;
->>>>>> +
->>>>>> +	__u64	Reserved1;
->>>>>> +	__u64	Reserved2;
->>>>>> +};
->>>>>> +
->>>>>> +#endif /* _TRACE_MMAP_H_ */
->>>>>> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
->>>>>> index cc9ebe593571..793ecc454039 100644
->>>>>> --- a/kernel/trace/ring_buffer.c
->>>>>> +++ b/kernel/trace/ring_buffer.c
->>>>>> @@ -9,6 +9,7 @@
->>>>>>      #include <linux/ring_buffer.h>
->>>>>>      #include <linux/trace_clock.h>
->>>>>>      #include <linux/sched/clock.h>
->>>>>> +#include <linux/cacheflush.h>
->>>>>>      #include <linux/trace_seq.h>
->>>>>>      #include <linux/spinlock.h>
->>>>>>      #include <linux/irq_work.h>
->>>>>> @@ -26,6 +27,7 @@
->>>>>>      #include <linux/list.h>
->>>>>>      #include <linux/cpu.h>
->>>>>>      #include <linux/oom.h>
->>>>>> +#include <linux/mm.h>
->>>>>>      #include <asm/local64.h>
->>>>>>      #include <asm/local.h>
->>>>>> @@ -338,6 +340,7 @@ struct buffer_page {
->>>>>>      	local_t		 entries;	/* entries on this page */
->>>>>>      	unsigned long	 real_end;	/* real end of data */
->>>>>>      	unsigned	 order;		/* order of the page */
->>>>>> +	u32		 id;		/* ID for external mapping */
->>>>>>      	struct buffer_data_page *page;	/* Actual data page */
->>>>>>      };
->>>>>> @@ -484,6 +487,12 @@ struct ring_buffer_per_cpu {
->>>>>>      	u64				read_stamp;
->>>>>>      	/* pages removed since last reset */
->>>>>>      	unsigned long			pages_removed;
->>>>>> +
->>>>>> +	unsigned int			mapped;
->>>>>> +	struct mutex			mapping_lock;
->>>>>> +	unsigned long			*subbuf_ids;	/* ID to subbuf VA */
->>>>>> +	struct trace_buffer_meta	*meta_page;
->>>>>> +
->>>>>>      	/* ring buffer pages to update, > 0 to add, < 0 to remove */
->>>>>>      	long				nr_pages_to_update;
->>>>>>      	struct list_head		new_pages; /* new pages to add */
->>>>>> @@ -1599,6 +1608,7 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
->>>>>>      	init_irq_work(&cpu_buffer->irq_work.work, rb_wake_up_waiters);
->>>>>>      	init_waitqueue_head(&cpu_buffer->irq_work.waiters);
->>>>>>      	init_waitqueue_head(&cpu_buffer->irq_work.full_waiters);
->>>>>> +	mutex_init(&cpu_buffer->mapping_lock);
->>>>>>      	bpage = kzalloc_node(ALIGN(sizeof(*bpage), cache_line_size()),
->>>>>>      			    GFP_KERNEL, cpu_to_node(cpu));
->>>>>> @@ -1789,8 +1799,6 @@ bool ring_buffer_time_stamp_abs(struct trace_buffer *buffer)
->>>>>>      	return buffer->time_stamp_abs;
->>>>>>      }
->>>>>> -static void rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer);
->>>>>> -
->>>>>>      static inline unsigned long rb_page_entries(struct buffer_page *bpage)
->>>>>>      {
->>>>>>      	return local_read(&bpage->entries) & RB_WRITE_MASK;
->>>>>> @@ -5211,6 +5219,22 @@ static void rb_clear_buffer_page(struct buffer_page *page)
->>>>>>      	page->read = 0;
->>>>>>      }
->>>>>> +static void rb_update_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
->>>>>> +{
->>>>>> +	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
->>>>>> +
->>>>>> +	meta->reader.read = cpu_buffer->reader_page->read;
->>>>>> +	meta->reader.id = cpu_buffer->reader_page->id;
->>>>>> +	meta->reader.lost_events = cpu_buffer->lost_events;
->>>>>> +
->>>>>> +	meta->entries = local_read(&cpu_buffer->entries);
->>>>>> +	meta->overrun = local_read(&cpu_buffer->overrun);
->>>>>> +	meta->read = cpu_buffer->read;
->>>>>> +
->>>>>> +	/* Some archs do not have data cache coherency between kernel and user-space */
->>>>>> +	flush_dcache_folio(virt_to_folio(cpu_buffer->meta_page));
->>>>>> +}
->>>>>> +
->>>>>>      static void
->>>>>>      rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
->>>>>>      {
->>>>>> @@ -5255,6 +5279,9 @@ rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
->>>>>>      	cpu_buffer->lost_events = 0;
->>>>>>      	cpu_buffer->last_overrun = 0;
->>>>>> +	if (cpu_buffer->mapped)
->>>>>> +		rb_update_meta_page(cpu_buffer);
->>>>>> +
->>>>>>      	rb_head_page_activate(cpu_buffer);
->>>>>>      	cpu_buffer->pages_removed = 0;
->>>>>>      }
->>>>>> @@ -5469,6 +5496,12 @@ int ring_buffer_swap_cpu(struct trace_buffer *buffer_a,
->>>>>>      	cpu_buffer_a = buffer_a->buffers[cpu];
->>>>>>      	cpu_buffer_b = buffer_b->buffers[cpu];
->>>>>> +	/* It's up to the callers to not try to swap mapped buffers */
->>>>>> +	if (WARN_ON_ONCE(cpu_buffer_a->mapped || cpu_buffer_b->mapped)) {
->>>>>> +		ret = -EBUSY;
->>>>>> +		goto out;
->>>>>> +	}
->>>>>> +
->>>>>>      	/* At least make sure the two buffers are somewhat the same */
->>>>>>      	if (cpu_buffer_a->nr_pages != cpu_buffer_b->nr_pages)
->>>>>>      		goto out;
->>>>>> @@ -5733,7 +5766,8 @@ int ring_buffer_read_page(struct trace_buffer *buffer,
->>>>>>      	 * Otherwise, we can simply swap the page with the one passed in.
->>>>>>      	 */
->>>>>>      	if (read || (len < (commit - read)) ||
->>>>>> -	    cpu_buffer->reader_page == cpu_buffer->commit_page) {
->>>>>> +	    cpu_buffer->reader_page == cpu_buffer->commit_page ||
->>>>>> +	    cpu_buffer->mapped) {
->>>>>>      		struct buffer_data_page *rpage = cpu_buffer->reader_page->page;
->>>>>>      		unsigned int rpos = read;
->>>>>>      		unsigned int pos = 0;
->>>>>> @@ -5956,6 +5990,11 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
->>>>>>      		cpu_buffer = buffer->buffers[cpu];
->>>>>> +		if (cpu_buffer->mapped) {
->>>>>> +			err = -EBUSY;
->>>>>> +			goto error;
->>>>>> +		}
->>>>>> +
->>>>>>      		/* Update the number of pages to match the new size */
->>>>>>      		nr_pages = old_size * buffer->buffers[cpu]->nr_pages;
->>>>>>      		nr_pages = DIV_ROUND_UP(nr_pages, buffer->subbuf_size);
->>>>>> @@ -6057,6 +6096,358 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
->>>>>>      }
->>>>>>      EXPORT_SYMBOL_GPL(ring_buffer_subbuf_order_set);
->>>>>> +static int rb_alloc_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
->>>>>> +{
->>>>>> +	struct page *page;
->>>>>> +
->>>>>> +	if (cpu_buffer->meta_page)
->>>>>> +		return 0;
->>>>>> +
->>>>>> +	page = alloc_page(GFP_USER | __GFP_ZERO);
->>>>>> +	if (!page)
->>>>>> +		return -ENOMEM;
->>>>>> +
->>>>>> +	cpu_buffer->meta_page = page_to_virt(page);
->>>>>> +
->>>>>> +	return 0;
->>>>>> +}
->>>>>> +
->>>>>> +static void rb_free_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
->>>>>> +{
->>>>>> +	unsigned long addr = (unsigned long)cpu_buffer->meta_page;
->>>>>> +
->>>>>> +	free_page(addr);
->>>>>> +	cpu_buffer->meta_page = NULL;
->>>>>> +}
->>>>>> +
->>>>>> +static void rb_setup_ids_meta_page(struct ring_buffer_per_cpu *cpu_buffer,
->>>>>> +				   unsigned long *subbuf_ids)
->>>>>> +{
->>>>>> +	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
->>>>>> +	unsigned int nr_subbufs = cpu_buffer->nr_pages + 1;
->>>>>> +	struct buffer_page *first_subbuf, *subbuf;
->>>>>> +	int id = 0;
->>>>>> +
->>>>>> +	subbuf_ids[id] = (unsigned long)cpu_buffer->reader_page->page;
->>>>>> +	cpu_buffer->reader_page->id = id++;
->>>>>> +
->>>>>> +	first_subbuf = subbuf = rb_set_head_page(cpu_buffer);
->>>>>> +	do {
->>>>>> +		if (WARN_ON(id >= nr_subbufs))
->>>>>> +			break;
->>>>>> +
->>>>>> +		subbuf_ids[id] = (unsigned long)subbuf->page;
->>>>>> +		subbuf->id = id;
->>>>>> +
->>>>>> +		rb_inc_page(&subbuf);
->>>>>> +		id++;
->>>>>> +	} while (subbuf != first_subbuf);
->>>>>> +
->>>>>> +	/* install subbuf ID to kern VA translation */
->>>>>> +	cpu_buffer->subbuf_ids = subbuf_ids;
->>>>>> +
->>>>>> +	/* __rb_map_vma() pads the meta-page to align it with the sub-buffers */
->>>>>> +	meta->meta_page_size = PAGE_SIZE << cpu_buffer->buffer->subbuf_order;
->>>>>> +	meta->meta_struct_len = sizeof(*meta);
->>>>>> +	meta->nr_subbufs = nr_subbufs;
->>>>>> +	meta->subbuf_size = cpu_buffer->buffer->subbuf_size + BUF_PAGE_HDR_SIZE;
->>>>>> +
->>>>>> +	rb_update_meta_page(cpu_buffer);
->>>>>> +}
->>>>>> +
->>>>>> +static struct ring_buffer_per_cpu *
->>>>>> +rb_get_mapped_buffer(struct trace_buffer *buffer, int cpu)
->>>>>> +{
->>>>>> +	struct ring_buffer_per_cpu *cpu_buffer;
->>>>>> +
->>>>>> +	if (!cpumask_test_cpu(cpu, buffer->cpumask))
->>>>>> +		return ERR_PTR(-EINVAL);
->>>>>> +
->>>>>> +	cpu_buffer = buffer->buffers[cpu];
->>>>>> +
->>>>>> +	mutex_lock(&cpu_buffer->mapping_lock);
->>>>>> +
->>>>>> +	if (!cpu_buffer->mapped) {
->>>>>> +		mutex_unlock(&cpu_buffer->mapping_lock);
->>>>>> +		return ERR_PTR(-ENODEV);
->>>>>> +	}
->>>>>> +
->>>>>> +	return cpu_buffer;
->>>>>> +}
->>>>>> +
->>>>>> +static void rb_put_mapped_buffer(struct ring_buffer_per_cpu *cpu_buffer)
->>>>>> +{
->>>>>> +	mutex_unlock(&cpu_buffer->mapping_lock);
->>>>>> +}
->>>>>> +
->>>>>> +/*
->>>>>> + * Fast-path for rb_buffer_(un)map(). Called whenever the meta-page doesn't need
->>>>>> + * to be set-up or torn-down.
->>>>>> + */
->>>>>> +static int __rb_inc_dec_mapped(struct ring_buffer_per_cpu *cpu_buffer,
->>>>>> +			       bool inc)
->>>>>> +{
->>>>>> +	unsigned long flags;
->>>>>> +
->>>>>> +	lockdep_assert_held(&cpu_buffer->mapping_lock);
->>>>>> +
->>>>>> +	if (inc && cpu_buffer->mapped == UINT_MAX)
->>>>>> +		return -EBUSY;
->>>>>> +
->>>>>> +	if (WARN_ON(!inc && cpu_buffer->mapped == 0))
->>>>>> +		return -EINVAL;
->>>>>> +
->>>>>> +	mutex_lock(&cpu_buffer->buffer->mutex);
->>>>>> +	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
->>>>>> +
->>>>>> +	if (inc)
->>>>>> +		cpu_buffer->mapped++;
->>>>>> +	else
->>>>>> +		cpu_buffer->mapped--;
->>>>>> +
->>>>>> +	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
->>>>>> +	mutex_unlock(&cpu_buffer->buffer->mutex);
->>>>>> +
->>>>>> +	return 0;
->>>>>> +}
->>>>>> +
->>>>>> +#define subbuf_page(off, start) \
->>>>>> +	virt_to_page((void *)((start) + ((off) << PAGE_SHIFT)))
->>>>>> +
->>>>>> +#define foreach_subbuf_page(sub_order, start, page)		\
->>>>>> +	page = subbuf_page(0, (start));				\
->>>>>> +	for (int __off = 0; __off < (1 << (sub_order));		\
->>>>>> +	     __off++, page = subbuf_page(__off, (start)))
->>>>>> +
->>>>>> +/*
->>>>>> + *   +--------------+  pgoff == 0
->>>>>> + *   |   meta page  |
->>>>>> + *   +--------------+  pgoff == 1
->>>>>> + *   |   000000000  |
->>>>>> + *   +--------------+  pgoff == (1 << subbuf_order)
->>>>>> + *   | subbuffer 0  |
->>>>>> + *   |              |
->>>>>> + *   +--------------+  pgoff == (2 * (1 << subbuf_order))
->>>>>> + *   | subbuffer 1  |
->>>>>> + *   |              |
->>>>>> + *         ...
->>>>>> + */
->>>>>> +static int __rb_map_vma(struct ring_buffer_per_cpu *cpu_buffer,
->>>>>> +			struct vm_area_struct *vma)
->>>>>> +{
->>>>>> +	unsigned long nr_subbufs, nr_pages, vma_pages, pgoff = vma->vm_pgoff;
->>>>>> +	unsigned int subbuf_pages, subbuf_order;
->>>>>> +	struct page **pages;
->>>>>> +	int p = 0, s = 0;
->>>>>> +	int err;
->>>>>> +
->>>>>> +	lockdep_assert_held(&cpu_buffer->mapping_lock);
->>>>>> +
->>>>>> +	subbuf_order = cpu_buffer->buffer->subbuf_order;
->>>>>> +	subbuf_pages = 1 << subbuf_order;
->>>>>> +
->>>>>> +	if (subbuf_order && pgoff % subbuf_pages)
->>>>>> +		return -EINVAL;
->>>>>> +
->>>>>> +	nr_subbufs = cpu_buffer->nr_pages + 1;
->>>>>> +	nr_pages = ((nr_subbufs + 1) << subbuf_order) - pgoff;
->>>>>> +
->>>>>> +	vma_pages = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
->>>>>> +	if (!vma_pages || vma_pages > nr_pages)
->>>>>> +		return -EINVAL;
->>>>>> +
->>>>>> +	nr_pages = vma_pages;
->>>>>> +
->>>>>> +	pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
->>>>>> +	if (!pages)
->>>>>> +		return -ENOMEM;
->>>>>> +
->>>>>> +	if (!pgoff) {
->>>>>> +		unsigned long meta_page_padding;
->>>>>> +
->>>>>> +		pages[p++] = virt_to_page(cpu_buffer->meta_page);
->>>>>> +
->>>>>> +		/*
->>>>>> +		 * Pad with the zero-page to align the meta-page with the
->>>>>> +		 * sub-buffers.
->>>>>> +		 */
->>>>>> +		meta_page_padding = subbuf_pages - 1;
->>>>>> +		while (meta_page_padding-- && p < nr_pages)
->>>>>> +			pages[p++] = ZERO_PAGE(0);
->>>>>
->>>>> Using the shared zeropage in a MAP_SHARED mapping that is neither VM_IO
->>>>> nor VM_PFNMAP can be problematic. So we really need patch #3 logic to
->>>>> use VM_PFNMAP.
->>>>>
->>>>> It would be cleaner/more obvious if these VMA flag setting would reside
->>>
->>> tracing_buffers_mmap() sets both VM_IO and VM_PFNMAP. But, yeah as vma is
->>> already passed to ring_buffer_map(). The flags could be set here as this
->>> function is what sets the requirements really.
->>>
->>>>> here, if possible.
->>>>>
->>>>>> +	} else {
->>>>>> +		/* Skip the meta-page */
->>>>>> +		pgoff -= subbuf_pages;
->>>>>> +
->>>>>> +		s += pgoff / subbuf_pages;
->>>>>> +	}
->>>>>> +
->>>>>> +	while (s < nr_subbufs && p < nr_pages) {
->>>>>> +		struct page *page;
->>>>>> +
->>>>>> +		foreach_subbuf_page(subbuf_order, cpu_buffer->subbuf_ids[s], page) {
->>>>>> +			if (p >= nr_pages)
->>>>>> +				break;
->>>>>> +
->>>>>> +			pages[p++] = page;
->>>>>> +		}
->>>>>> +		s++;
->>>>>> +	}
->>>>>> +
->>>>>> +	err = vm_insert_pages(vma, vma->vm_start, pages, &nr_pages);
->>>>>
->>>>> I think Linus suggested it ("avoid all the sub-page ref-counts entirely
->>>>> by using VM_PFNMAP, and use vm_insert_pages()"), but ...
->>>>> vm_insert_pages() will:
->>>>> * Mess with mapcounts
->>>>> * Mess with refcounts
->>>>>
->>>>> See
->>>>> insert_pages()->insert_page_in_batch_locked()->insert_page_into_pte_locked().
->>>>>
->>>>> So we'll mess with the mapcount and refcount of the shared zeropage ...
->>>>> hmmmm
->>>>>
->>>>> If I am not wrong, vm_normal_page() would not return the shared zeropage
->>>>> in case we don't have CONFIG_ARCH_HAS_PTE_SPECIAL ... so
->>>>> unmap()->...->zap_present_ptes() would not decrement the refcount and we
->>>>> could overflow it. ... we also shouldn't ever mess with the mapcount of
->>>>> the shared zeropage in the first place.
->>>>>
->>>>> vm_insert_page() is clearer on that: "This allows drivers to insert
->>>>> individual pages they've allocated into a user vma". You didn't allocate
->>>>> the shared zeropage.
->>>>>
->>>>> I'm wondering if we even expect VM_MIXEDMAP and VM_PFNMAP to be set at
->>>>> the same time? vm_insert_pages() would BUG_ON in case VM_PFNMAP is
->>>>> already set and it would set VM_MIXEDMAP ... similarly
->>>>> vmf_insert_pfn_prot() would not be happy about that at all ...
->>>>>
->>>>> BUG_ON((vma->vm_flags & (VM_PFNMAP|VM_MIXEDMAP)) ==
->>>>> (VM_PFNMAP|VM_MIXEDMAP));
->>>>>
->>>>> ... remap_pfn_range() is used by io_uring_mmap for a similar purpose.
->>>>> But it only supports a single PFN range at a time and requires the
->>>>> caller to handle refcounting of pages.
->>>>>
->>>>> It's getting late in Germany, so I might be missing something; but using
->>>>> the shared zeropage here might be a problem.
->>>>>
->>>>
->>>> I was just about to write code to cleanly support vm_insert_pages() to
->>>> consume zeropages ... when I started to wonder about something else:
->>>
->>> Alternatively, we could at the moment allocate a meta-page of the same size than
->>> the subbufs? (of course the downside is to waste a bit of memory)
->>
->> Supporting the shared zeropage should be possible. We just have to be
->> careful that no other code can accidentially set it writable. I'll have to
->> further think about that (not just your user, but making it sane to use by
->> new code as well).
->>
->> So far, we primarily only have shared zeropages in the MAP_PRIVATE mappings.
->> Dax is a corner case where we have them in MAP_SHARED mappings. PFNMAP would
->> not be problematic, but MIXEDMAP is. (again, I am not 100% sure about
->> combining both ...)
->>
->> I'll further think about that one, and try crafting a reasonable patch.
->>
->> Could we start with no shared zeropage and implement that as an optimization
->> on top?
-> 
-> Of course, I'm happy to update this series without the zero-page and to bring it
-> back later, in a separate patch, as soon as vm_insert_pages() is compatible.
-> 
+In the near future, I will not have access to the email address I used as
+maintainer of a number of things, mostly in the documentation. Update that
+address to my personal email address (see Link) so I can continue
+contributing and update .mailmap.
 
-Good, let's explore that path first!
+Link: https://lore.kernel.org/all/BL1PR12MB58749FF2BFEDB817DE1FE6CBF82A2@BL1PR12MB5874.namprd12.prod.outlook.com/
+Signed-off-by: Carlos Bilbao <carlos.bilbao@amd.com>
+---
 
+Changes since v1:
+- Update .mailmap
+
+---
+ .mailmap                                                  | 1 +
+ Documentation/security/snp-tdx-threat-model.rst           | 2 +-
+ Documentation/translations/sp_SP/index.rst                | 2 +-
+ Documentation/translations/sp_SP/memory-barriers.txt      | 4 ++--
+ .../translations/sp_SP/process/code-of-conduct.rst        | 2 +-
+ Documentation/translations/sp_SP/process/coding-style.rst | 2 +-
+ .../translations/sp_SP/process/email-clients.rst          | 2 +-
+ Documentation/translations/sp_SP/process/howto.rst        | 2 +-
+ Documentation/translations/sp_SP/process/kernel-docs.rst  | 2 +-
+ .../sp_SP/process/kernel-enforcement-statement.rst        | 2 +-
+ Documentation/translations/sp_SP/process/magic-number.rst | 2 +-
+ .../translations/sp_SP/process/programming-language.rst   | 2 +-
+ .../translations/sp_SP/process/submitting-patches.rst     | 2 +-
+ MAINTAINERS                                               | 8 ++++----
+ 14 files changed, 18 insertions(+), 17 deletions(-)
+
+diff --git a/.mailmap b/.mailmap
+index 1eb607efcc6e..4bac5578426a 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -113,6 +113,7 @@ Brian Silverman <bsilver16384@gmail.com> <brian.silverman@bluerivertech.com>
+ Cai Huoqing <cai.huoqing@linux.dev> <caihuoqing@baidu.com>
+ Can Guo <quic_cang@quicinc.com> <cang@codeaurora.org>
+ Carl Huang <quic_cjhuang@quicinc.com> <cjhuang@codeaurora.org>
++Carlos Bilbao <carlos.bilbao@amd.com> <carlos.bilbao.osdev@gmail.com>
+ Changbin Du <changbin.du@intel.com> <changbin.du@gmail.com>
+ Changbin Du <changbin.du@intel.com> <changbin.du@intel.com>
+ Chao Yu <chao@kernel.org> <chao2.yu@samsung.com>
+diff --git a/Documentation/security/snp-tdx-threat-model.rst b/Documentation/security/snp-tdx-threat-model.rst
+index ec66f2ed80c9..3a2d41d2e645 100644
+--- a/Documentation/security/snp-tdx-threat-model.rst
++++ b/Documentation/security/snp-tdx-threat-model.rst
+@@ -4,7 +4,7 @@ Confidential Computing in Linux for x86 virtualization
+ 
+ .. contents:: :local:
+ 
+-By: Elena Reshetova <elena.reshetova@intel.com> and Carlos Bilbao <carlos.bilbao@amd.com>
++By: Elena Reshetova <elena.reshetova@intel.com> and Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ Motivation
+ ==========
+diff --git a/Documentation/translations/sp_SP/index.rst b/Documentation/translations/sp_SP/index.rst
+index c543b495c042..274ef4ad96b9 100644
+--- a/Documentation/translations/sp_SP/index.rst
++++ b/Documentation/translations/sp_SP/index.rst
+@@ -7,7 +7,7 @@ TraducciÃ³n al espaÃ±ol
+ 
+ 	\kerneldocCJKoff
+ 
+-:maintainer: Carlos Bilbao <carlos.bilbao@amd.com>
++:maintainer: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_disclaimer:
+ 
+diff --git a/Documentation/translations/sp_SP/memory-barriers.txt b/Documentation/translations/sp_SP/memory-barriers.txt
+index 27097a808c88..153e57130775 100644
+--- a/Documentation/translations/sp_SP/memory-barriers.txt
++++ b/Documentation/translations/sp_SP/memory-barriers.txt
+@@ -1,6 +1,6 @@
+ NOTE:
+ This is a version of Documentation/memory-barriers.txt translated into
+-Spanish by Carlos Bilbao <carlos.bilbao@amd.com>. If you find any
++Spanish by Carlos Bilbao <carlos.bilbao.osdev@gmail.com>. If you find any
+ difference between this document and the original file or a problem with
+ the translation, please contact the maintainer of this file. Please also
+ note that the purpose of this file is to be easier to read for non English
+@@ -18,7 +18,7 @@ Documento original: David Howells <dhowells@redhat.com>
+     Will Deacon <will.deacon@arm.com>
+     Peter Zijlstra <peterz@infradead.org>
+ 
+-Traducido por: Carlos Bilbao <carlos.bilbao@amd.com>
++Traducido por: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ Nota: Si tiene alguna duda sobre la exactitud del contenido de esta
+ traducciÃ³n, la Ãºnica referencia vÃ¡lida es la documentaciÃ³n oficial en
+ inglÃ©s.
+diff --git a/Documentation/translations/sp_SP/process/code-of-conduct.rst b/Documentation/translations/sp_SP/process/code-of-conduct.rst
+index adc6c770cc37..a6c08613aefc 100644
+--- a/Documentation/translations/sp_SP/process/code-of-conduct.rst
++++ b/Documentation/translations/sp_SP/process/code-of-conduct.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/code-of-conduct.rst <code_of_conduct>`
+-:Translator: Contributor Covenant and Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Contributor Covenant and Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_code_of_conduct:
+ 
+diff --git a/Documentation/translations/sp_SP/process/coding-style.rst b/Documentation/translations/sp_SP/process/coding-style.rst
+index a37274764371..b5a84df44cea 100644
+--- a/Documentation/translations/sp_SP/process/coding-style.rst
++++ b/Documentation/translations/sp_SP/process/coding-style.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/coding-style.rst <submittingpatches>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_codingstyle:
+ 
+diff --git a/Documentation/translations/sp_SP/process/email-clients.rst b/Documentation/translations/sp_SP/process/email-clients.rst
+index fdf1e51b84e4..55d5803daf41 100644
+--- a/Documentation/translations/sp_SP/process/email-clients.rst
++++ b/Documentation/translations/sp_SP/process/email-clients.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/email-clients.rst <email_clients>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_email_clients:
+ 
+diff --git a/Documentation/translations/sp_SP/process/howto.rst b/Documentation/translations/sp_SP/process/howto.rst
+index dd793c0f8574..72ea855ac9dc 100644
+--- a/Documentation/translations/sp_SP/process/howto.rst
++++ b/Documentation/translations/sp_SP/process/howto.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/howto.rst <process_howto>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_process_howto:
+ 
+diff --git a/Documentation/translations/sp_SP/process/kernel-docs.rst b/Documentation/translations/sp_SP/process/kernel-docs.rst
+index 2f9b3df8f8fa..a62c6854f59b 100644
+--- a/Documentation/translations/sp_SP/process/kernel-docs.rst
++++ b/Documentation/translations/sp_SP/process/kernel-docs.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/kernel-docs.rst <kernel_docs>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_kernel_docs:
+ 
+diff --git a/Documentation/translations/sp_SP/process/kernel-enforcement-statement.rst b/Documentation/translations/sp_SP/process/kernel-enforcement-statement.rst
+index d66902694089..d47a1c154610 100644
+--- a/Documentation/translations/sp_SP/process/kernel-enforcement-statement.rst
++++ b/Documentation/translations/sp_SP/process/kernel-enforcement-statement.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/kernel-enforcement-statement.rst <process_statement_kernel>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_process_statement_kernel:
+ 
+diff --git a/Documentation/translations/sp_SP/process/magic-number.rst b/Documentation/translations/sp_SP/process/magic-number.rst
+index 7c7dfb4ba80b..32a99aac2f6c 100644
+--- a/Documentation/translations/sp_SP/process/magic-number.rst
++++ b/Documentation/translations/sp_SP/process/magic-number.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/magic-number.rst <magicnumbers>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_magicnumbers:
+ 
+diff --git a/Documentation/translations/sp_SP/process/programming-language.rst b/Documentation/translations/sp_SP/process/programming-language.rst
+index 301f525372d8..ba2164057f45 100644
+--- a/Documentation/translations/sp_SP/process/programming-language.rst
++++ b/Documentation/translations/sp_SP/process/programming-language.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/programming-language.rst <programming_language>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_programming_language:
+ 
+diff --git a/Documentation/translations/sp_SP/process/submitting-patches.rst b/Documentation/translations/sp_SP/process/submitting-patches.rst
+index c2757d9ab216..18bb3413c3ca 100644
+--- a/Documentation/translations/sp_SP/process/submitting-patches.rst
++++ b/Documentation/translations/sp_SP/process/submitting-patches.rst
+@@ -1,7 +1,7 @@
+ .. include:: ../disclaimer-sp.rst
+ 
+ :Original: :ref:`Documentation/process/submitting-patches.rst <submittingpatches>`
+-:Translator: Carlos Bilbao <carlos.bilbao@amd.com>
++:Translator: Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ 
+ .. _sp_submittingpatches:
+ 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cd7980e5b1ad..6b7c08907cc4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -997,7 +997,7 @@ F:	drivers/video/fbdev/geode/
+ 
+ AMD HSMP DRIVER
+ M:	Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>
+-R:	Carlos Bilbao <carlos.bilbao@amd.com>
++R:	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/arch/x86/amd_hsmp.rst
+@@ -5352,7 +5352,7 @@ F:	drivers/usb/atm/cxacru.c
+ 
+ CONFIDENTIAL COMPUTING THREAT MODEL FOR X86 VIRTUALIZATION (SNP/TDX)
+ M:	Elena Reshetova <elena.reshetova@intel.com>
+-M:	Carlos Bilbao <carlos.bilbao@amd.com>
++M:	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ S:	Maintained
+ F:	Documentation/security/snp-tdx-threat-model.rst
+ 
+@@ -10590,7 +10590,7 @@ F:	drivers/hwmon/ina2xx.c
+ F:	include/linux/platform_data/ina2xx.h
+ 
+ INDEX OF FURTHER KERNEL DOCUMENTATION
+-M:	Carlos Bilbao <carlos.bilbao@amd.com>
++M:	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ S:	Maintained
+ F:	Documentation/process/kernel-docs.rst
+ 
+@@ -20701,7 +20701,7 @@ Q:	http://patchwork.linuxtv.org/project/linux-media/list/
+ F:	drivers/media/dvb-frontends/sp2*
+ 
+ SPANISH DOCUMENTATION
+-M:	Carlos Bilbao <carlos.bilbao@amd.com>
++M:	Carlos Bilbao <carlos.bilbao.osdev@gmail.com>
+ R:	Avadhut Naik <avadhut.naik@amd.com>
+ S:	Maintained
+ F:	Documentation/translations/sp_SP/
 -- 
-Cheers,
-
-David / dhildenb
+2.41.0
 
 
