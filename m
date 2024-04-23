@@ -1,181 +1,159 @@
-Return-Path: <linux-kernel+bounces-154579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0EA68ADDDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:53:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F2D78ADDDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 08:54:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FEBF28129D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:53:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 333211C2012B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 06:54:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACFB6288DB;
-	Tue, 23 Apr 2024 06:53:43 +0000 (UTC)
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6719E29429;
+	Tue, 23 Apr 2024 06:54:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="juBA2rPg"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0045B249F9;
-	Tue, 23 Apr 2024 06:53:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0270F24B28;
+	Tue, 23 Apr 2024 06:54:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713855223; cv=none; b=eeIfvWQGHB+pTjMQtwLrpgFfEpnS08D3wnDFNuAhCAyW3sCGeX0matmpUnuvs2pauKdHJGFfs4LifdAd+t92V787r6NUYUBCPPEw/mThGuuzacs8a76/Sizu8XyPW7Z8kjUy/BXJXC2ZjfD2DHmSDW4IYIKW392sNS6Vlz2wPwA=
+	t=1713855253; cv=none; b=m0sSKE5wEqR697zsIXVdNsUAiZnlpVKFLT3c9O/aTDxl12/2gMZ5xjYo7s1j75cnIbCP1vCgI/UhAKy8woNmfUy6RRUZrjp1HZhQxnDEKpSd7uiq+1kFJETCuysve/NOoWoSfdGPkHI9KHCm6ndq28qIBSzMCW5lfG+ShEHo2ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713855223; c=relaxed/simple;
-	bh=IB24hhNHiq4eNMRwbY1E5hsdm8NutUn6FXOFJZvk3L8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t6jAeLisc52Ny9UtEOR2okJ3fThcNlZiYRMEEugsOBkEGhb2dnEARmOHclJ/+cBkrnVl5vw3L7R82Ari+kaeuJ2xxs14GCoOY896ixiQnf5e6ge3j+iATo1S4ped/hz4rq3JqNWkkXAPLWN7Fyf2B68LNrl9LOTsiu4ZpbrcNR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-618769020bcso56418407b3.3;
-        Mon, 22 Apr 2024 23:53:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713855219; x=1714460019;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GZ5EfW638x7TAtbwsyP2lwTKAYW7PkFolA3XCuVWREc=;
-        b=IvMzRmXSIdSDLTVJ+n7W/QxI4QP9Q025RpcKNt56t7Qww15baq/vtG8Gfyg+w107Oq
-         IwdSjaUgau87l/MTkeNEkVZSk7sKCht5EhIcwhdkXZXE71m32YI9S/UYyMgQ1Y950XTn
-         +tA/jo6BHGUuZaVtXnlzPzmwIxsVy0zlbC7Ob6j/9SrQjqaARvryWLCrWfVVQwLhzkgV
-         curBSQJIS3Ve/nVlKk6WtEgiSf48spAtMCYsY+kemNgtBSZPsL4L4hoR9mya/0yGv9+A
-         YteRgTdJfg7hvLy+Dp55AjqsEiAcr6CHmoc/aTB4pWKeInIRYb5O6GURLQeDu6xaM/7j
-         SUww==
-X-Forwarded-Encrypted: i=1; AJvYcCUFYk3tWuEiSI92V/TvS7o1Gj5YJPE0fJzgOZVJL3oh8XnR29RkV1TYNSynj82Wo2imKRFjXHhxFtcNmb+hQkAYyZRptiPYTLpXA6yCPmd1BdDaFe0k0PNsYf3Z4ZBtdCFUXJkFiX3TSUURMe/MiUl4rrmgnKiYc/1L8NuQF+AMIP7nPcEq72RQf/NExZV12U0IUFBqiLD+4pIOOvO0ODxP7ckVBR82
-X-Gm-Message-State: AOJu0Yw8gKZBmftpmiVxqz2PUMfKOSrfPxUrjbC4wSkqpIy7oU7466+4
-	aK6cqFQe6mZjd8fojUNCVAxmRIgObhbSaJMoa7RsYvo8gxcfrkj0Tsu4FIvN
-X-Google-Smtp-Source: AGHT+IGkf3p2iiW4ym9N8Q8DrtNkh9ztcDWLWg4vulScBDZxc1haKwbM82xVYBtYWDCrDwMpbavDVg==
-X-Received: by 2002:a05:690c:368e:b0:61b:111b:f0ba with SMTP id fu14-20020a05690c368e00b0061b111bf0bamr13390440ywb.36.1713855219218;
-        Mon, 22 Apr 2024 23:53:39 -0700 (PDT)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id w63-20020a0dd442000000b0061ab76e5f4dsm2371068ywd.114.2024.04.22.23.53.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 23:53:39 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-de46da8ced2so5166250276.0;
-        Mon, 22 Apr 2024 23:53:38 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUJVX44UvwDtG737QpkBuk7zq8yOMUzA64maDhrzUFn4MdRa5OZ2AEtfZ6/8iBZRmd9+BRQqOQJfgw8IrZEepEiZtcDfNOfC3qslabAwQYPCA6xvE2R7kvuwAj9LGoKduZlsnfRe1/+Ig0sOcBCvsc61aCqUaVY1wWHV8wBKYodGcFNQe0IN+9wM4cn63Ddma/qZiBz3OqE5BaUD5DfUNxvZowzfYzW
-X-Received: by 2002:a25:f904:0:b0:dd0:c866:ec3a with SMTP id
- q4-20020a25f904000000b00dd0c866ec3amr1697417ybe.22.1713855218760; Mon, 22 Apr
- 2024 23:53:38 -0700 (PDT)
+	s=arc-20240116; t=1713855253; c=relaxed/simple;
+	bh=z2OhGkc9weQ5UHWYoCKHRx1ylQpGsYDYkX+OUC/X4dw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=BNSlDQLuN1AkY0sfUkPif7INAfNTNUoFXQxAMSXXrGbwKhLdpDKLVCxsx7f/s7sPXalgkWJYpr2k+nqA6WKhRzaYDUt6ovkV1YyuBEJryoSKvVapnp2eUpFg1HcWh3+hWp8mOypajTQKv/ixL4zGv0QJxc4WHqn8yOfpbsnuFfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=juBA2rPg; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43N5avwa014566;
+	Tue, 23 Apr 2024 06:53:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=kNDizAUq6M15vjj8var0LsymdUc1J25H+tgaeUr6B08=;
+ b=juBA2rPgoEbbna4DWIZKmnLW09kwO6C1V4vjLxa5e0taPVg2WCPxOqZW11vVC+R5jvCn
+ NWUQtUKqGMaCR4eokI+t+tqy5mJs/uExpzdXgOTKKtoIOkxYGmfeWm+gxMwE+p0c3eC2
+ lQwJhaxmAd8Hd9P0NGvkd60k77SxZc+zeK/IQwmn7fa0vBB/TvVjzv2Ccwkzpp+7mV2a
+ ETbCkIdTCk8Q4R7O0vo+FgG3ey/AvZkutcu0dYdM5FWDxAnBb5YapCipSjh3J2cmaave
+ 8DzeubkS0dZz2+53MhrNcg+lplUen00BAGIQeeyC6B4RsaIqsIfS8o7YzLX1jK34LLm0 pg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xp6kn04qm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Apr 2024 06:53:53 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43N6rril010204;
+	Tue, 23 Apr 2024 06:53:53 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xp6kn04qe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Apr 2024 06:53:53 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43N6cENZ029905;
+	Tue, 23 Apr 2024 06:53:52 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xmr1tcc9j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 23 Apr 2024 06:53:52 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43N6rm9M48562638
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 23 Apr 2024 06:53:50 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 70E8A20040;
+	Tue, 23 Apr 2024 06:53:48 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 13EC820043;
+	Tue, 23 Apr 2024 06:53:48 +0000 (GMT)
+Received: from [9.152.212.121] (unknown [9.152.212.121])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 23 Apr 2024 06:53:48 +0000 (GMT)
+Message-ID: <c1c460ed-69c3-4fde-aa9b-be1051dae6ec@linux.ibm.com>
+Date: Tue, 23 Apr 2024 08:53:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422213006.505576-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240422213006.505576-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240422213006.505576-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 23 Apr 2024 08:53:26 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUmSp1JTADtnsTqExssP1h1pQSLDeMd5NkC=uSXC+javA@mail.gmail.com>
-Message-ID: <CAMuHMdUmSp1JTADtnsTqExssP1h1pQSLDeMd5NkC=uSXC+javA@mail.gmail.com>
-Subject: Re: [PATCH 3/6] mmc: renesas_sdhi: Add compatible string for RZ/G2L
- family, RZ/G3S, and RZ/V2M SoCs
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	linux-mmc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	Biju Das <biju.das.jz@bp.renesas.com>, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/6] Assume sysfs event names are always lowercase
+To: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>, Bjorn Helgaas <bhelgaas@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jing Zhang
+ <renyu.zj@linux.alibaba.com>,
+        James Clark <james.clark@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+References: <20240423031719.1941141-1-irogers@google.com>
+Content-Language: en-US
+From: Thomas Richter <tmricht@linux.ibm.com>
+Organization: IBM
+In-Reply-To: <20240423031719.1941141-1-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: C-sYB4OKvXvGGOCPFpTQ0yOXzy0WeFK-
+X-Proofpoint-ORIG-GUID: eqTvCTSzkt-rI3CgQxLWuUOx4C7Hfmvr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-23_04,2024-04-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ bulkscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 malwarescore=0
+ clxscore=1011 phishscore=0 adultscore=0 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404230019
 
-Hi Prabhakar,
+On 4/23/24 05:17, Ian Rogers wrote:
+> By assuming sysfs events are lower case, the case insensitive event
+> parsing can probe for the existence of a file rather then loading all
+> events in a directory. When the event is a json event like
+> inst_retired.any on Intel, this reduces the number of openat calls on
+> a Tigerlake laptop from 325 down to 255.
+> 
 
-On Mon, Apr 22, 2024 at 11:30=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
-com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> - RZ/G2UL and RZ/Five ("r9a07g043")
-> - RZ/G2L(C) ("r9a07g044")
-> - RZ/V2L ("r9a07g054")
-> - RZ/G3S ("r9a08g045")
-> - RZ/V2M ("r9a09g011")
->
-> The above SoCs have HS400 disabled and use fixed address mode. Add a
-> generic compatible 'renesas,rzg2l-sdhi' fallback string for these SoCs,
-> where fixed_addr_mode and hs400_disabled quirks are applied.
+Ian, sorry for the late reply.
+On s390 the events in the sysfs tree are all upper case:
 
-Thanks for your patch!
->
-> Note, 'renesas,sdhi-r9a09g011' is dropped as we will be using
-> 'renesas,rzg2l-sdhi' as a fallback string for RZ/V2M SoC.
+[root@a35lp67 ~]# ls -l /sys/devices/cpum_cf/events/ | head -10
+total 0
+-r--r--r-- 1 root root 4096 Apr 17 14:47 AES_BLOCKED_CYCLES
+-r--r--r-- 1 root root 4096 Apr 17 14:47 AES_BLOCKED_FUNCTIONS
+-r--r--r-- 1 root root 4096 Apr 17 14:47 AES_CYCLES
+-r--r--r-- 1 root root 4096 Apr 17 14:47 AES_FUNCTIONS
+-r--r--r-- 1 root root 4096 Apr 17 14:47 BCD_DFP_EXECUTION_SLOTS
+-r--r--r-- 1 root root 4096 Apr 17 14:47 CPU_CYCLES
+-r--r--r-- 1 root root 4096 Apr 17 14:47 CRSTE_1MB_WRITES
+-r--r--r-- 1 root root 4096 Apr 17 14:47 DCW_OFF_DRAWER
+-r--r--r-- 1 root root 4096 Apr 17 14:47 DCW_OFF_DRAWER_MEMORY
+[root@a35lp67 ~]# 
 
-Doesn't that break backwards compatibility with existing DTBs?
+Same is true for all other PMUs (currently 5 and growing).
 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  drivers/mmc/host/renesas_sdhi_internal_dmac.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mmc/host/renesas_sdhi_internal_dmac.c b/drivers/mmc/=
-host/renesas_sdhi_internal_dmac.c
-> index 53d34c3eddce..1828c37e0198 100644
-> --- a/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-> +++ b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-> @@ -210,7 +210,7 @@ static const struct renesas_sdhi_quirks sdhi_quirks_r=
-8a77990 =3D {
->         .manual_tap_correction =3D true,
->  };
->
-> -static const struct renesas_sdhi_quirks sdhi_quirks_r9a09g011 =3D {
-> +static const struct renesas_sdhi_quirks sdhi_quirks_rzg2l =3D {
->         .fixed_addr_mode =3D true,
->         .hs400_disabled =3D true,
->  };
-> @@ -255,9 +255,9 @@ static const struct renesas_sdhi_of_data_with_quirks =
-of_r8a77990_compatible =3D {
->         .quirks =3D &sdhi_quirks_r8a77990,
->  };
->
-> -static const struct renesas_sdhi_of_data_with_quirks of_r9a09g011_compat=
-ible =3D {
-> +static const struct renesas_sdhi_of_data_with_quirks of_rzg2l_compatible=
- =3D {
->         .of_data =3D &of_data_rcar_gen3,
-> -       .quirks =3D &sdhi_quirks_r9a09g011,
-> +       .quirks =3D &sdhi_quirks_rzg2l,
->  };
->
->  static const struct renesas_sdhi_of_data_with_quirks of_rcar_gen3_compat=
-ible =3D {
-> @@ -283,7 +283,7 @@ static const struct of_device_id renesas_sdhi_interna=
-l_dmac_of_match[] =3D {
->         { .compatible =3D "renesas,sdhi-r8a77970", .data =3D &of_r8a77970=
-_compatible, },
->         { .compatible =3D "renesas,sdhi-r8a77990", .data =3D &of_r8a77990=
-_compatible, },
->         { .compatible =3D "renesas,sdhi-r8a77995", .data =3D &of_rcar_gen=
-3_nohs400_compatible, },
-> -       { .compatible =3D "renesas,sdhi-r9a09g011", .data =3D &of_r9a09g0=
-11_compatible, },
+Is there a branch to pull to try out the effect of your patch on s390?
 
-Hence I think the above line should be kept, but changed to point
-to &of_rzg2l_compatible.
+Thanks Thomas
+-- 
+Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
+--
+IBM Deutschland Research & Development GmbH
 
-> +       { .compatible =3D "renesas,rzg2l-sdhi", .data =3D &of_rzg2l_compa=
-tible, },
->         { .compatible =3D "renesas,rcar-gen3-sdhi", .data =3D &of_rcar_ge=
-n3_compatible, },
->         { .compatible =3D "renesas,rcar-gen4-sdhi", .data =3D &of_rcar_ge=
-n3_compatible, },
->         {},
+Vorsitzender des Aufsichtsrats: Wolfgang Wendt
 
-Gr{oetje,eeting}s,
+Geschäftsführung: David Faller
 
-                        Geert
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
