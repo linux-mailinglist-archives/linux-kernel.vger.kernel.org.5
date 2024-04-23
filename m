@@ -1,94 +1,81 @@
-Return-Path: <linux-kernel+bounces-155742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3786C8AF67F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:25:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79A968AF682
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 20:27:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3C1E287C94
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:25:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB80B1C22BBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB6E1420DF;
-	Tue, 23 Apr 2024 18:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE3F13FD72;
+	Tue, 23 Apr 2024 18:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JMBZLiws"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FbMzznh1"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CCE13FD80;
-	Tue, 23 Apr 2024 18:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C2013E03F;
+	Tue, 23 Apr 2024 18:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713896694; cv=none; b=EdJMiaXmdlioS7ghgfh3aNqFHI68pg+GAJ5/V3WUSW3Mozpgo8rCwg471UMNRuLYDTJe9HjSyqOZPeAf6mXXwCNynfa5zCDy/tNI3zoEbE51ce8q2HI51IRClkGixWLyi2rQ2tMwx4lyYqFSMtcBPMjj9Nv+w3ngNC6qap+l5g4=
+	t=1713896841; cv=none; b=tlDvCAIZwdreu4nAsJ4vj+xMdwdumnruyWEkB33R2AJ9MrBbjmaCWatyUQHIo8pYsk6QGFB6r0dxaQWbveKkGpnxwUXSr6U1rFL20XaU8rknILpiIgckNBmFlVo9f+oo/RJ8kSwJJVHgOxoYZZI6XkDxvTmmFmtJnrnrb/8ueQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713896694; c=relaxed/simple;
-	bh=hZXpn6sncLnJ5BYl3/Govg4131tShNgCwgt31oHiruY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FxzCTAE3pnpXih2NNkRKDLqCIwIBIPUSBz2pcxeaDvyEiRnKmwH7BafsNL/fXCmpy2qaduvNKGGT1J1OP4jKrF8Byl6jrV/ICrL1zd5pxMcj6Xj+7M9hmt4PcQssC1faR9R16Y3sM42QuH+IGfLsMxgwBFYfdoNTJ6hWRqr4MO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JMBZLiws; arc=none smtp.client-ip=209.85.221.53
+	s=arc-20240116; t=1713896841; c=relaxed/simple;
+	bh=MUhKyRYXyetdQxJjp1fJdiGhO6ynyEnnzqak81R4+Cg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CA1Sn08Fm9Pr97M+Y3eKZUFttZB6hhg8m6BtlwZICB+4P69EOGfuepa43PTe2FhUv2oTwpeaOrN34I/w3WPRnQQ13mPCN1ZGyI8X6wkx98ATd/EsbqE8rGcdOCvkj5oqXH38ninEdx+9YZkFuZluZ+ZAUzzMVyW+OK+Dtf2mWh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FbMzznh1; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-347c197a464so4446507f8f.2;
-        Tue, 23 Apr 2024 11:24:52 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-347c6d6fc02so953933f8f.1;
+        Tue, 23 Apr 2024 11:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713896691; x=1714501491; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zcXVIv+7e491TfWyKyCBV0/lSX58PoR++IgkI2tjySg=;
-        b=JMBZLiwsWHydR7qsWWtkhowsR+DIJdpYxsbXWWC6aDGPNq5ssu//IkTa6THjqME7oN
-         DzD8cqbQ4KqvTAKys+erWy7JkfQ7Vqlz/IT4MYTGzY2hAKGCa4iJiPsaznPECbRCyk3T
-         EYaI9tQeyNIr11HS7nyCUUzMRJWlxLd8ax1rFbqK0DolD72DezEl+T+bJGTHdR5iJQ70
-         vQawv9Lz2AG3HSaeK7ZXl8y4JmxnRM8GorpyaA3eVpviH5+DJKQVPRI8ED2RQNCevhu8
-         qH1KNQfajlZocAPa6jY0XM5saVVXfvTivzSH7VDvAWWuKTHGaw9vjrWlztpiZZ2gFzLz
-         GMjA==
+        d=gmail.com; s=20230601; t=1713896838; x=1714501638; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eRREGXZ9LGwcYWVEeF7p0krK+m5v21ptFkL/WS+1sYc=;
+        b=FbMzznh1zcD8gHMSWnp9zuA6ndwgieqMY0YzILOI2HkMuOYZDMa+ri2Zem3LpcqVnb
+         qOcvepAZB9tIaim8EqEjHIDgqXk1+40VaCfdI5eOa2Ge179Q+6yHqxIhx6dYt4qy3Mp/
+         Md+P0BOKcpxR67hpyte1G202Uaotx5xcRtw4Vvf9Jyblw/tTpj+1wgg2IIF1jTPIlrSR
+         Lt9jH7KeMl90BNH5xFu/VyuC3fM/Def4x7l7EurmhXh86q1w/js9d52qFbEq/tZG/Jvl
+         fIZP/VL39Y/WLyFMhih78JVKdvDjAosomOSTK6eIAotOxwUUBlTOEpsS2Y5VMpPMYvtb
+         Eg6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713896691; x=1714501491;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zcXVIv+7e491TfWyKyCBV0/lSX58PoR++IgkI2tjySg=;
-        b=wiAmHeKmijQ7k4sxaNkcoouuLQDAFEM0fZzPss7fwHDAQwp7/yEMGzZittfzw4yGNv
-         dAGUfhSB6gVcfnA5suTfo0L9RaDXz58/jvFwwdj4UVh1mwt+bJTeGF3iEGcyuDdh2EFq
-         prE4kMxXwTsd8zkny3GD0xV+fFmqQYBDoE2cyCNA1yZR2LEMzNG4YpvKbckFumFG4GGu
-         5pI/MZRcyzGky/zQOXqZKXuHQ8ypdrbcsCsB+WEMlfvqmI2wnNxqBTXaBW04CH+P4uiR
-         IZ42uImO30ycGPX+/tURapWcHyP0MK2PQrweSEQhQrw6sWjBlVFmNBj+be0zZ4d86tWh
-         O9CA==
-X-Forwarded-Encrypted: i=1; AJvYcCV/81fXDITFVv9nbFFbaeY6H0Ff31Wp5Xs3fw6DcdRxw5DLXez0dG0y0M/e6UP++kkNGeBwFeY/Z3Yd9rzS1d+9n98WFxNe211FIQnhJdjko6W5LLlxE0028H9mtGtSjW1t41sG8QOc9qZxDSlP9Si8+cJIWsLNEUSLLigAiKd0MVtJr7hbhOMsD1g=
-X-Gm-Message-State: AOJu0YxPySssi3LvHapV96Y3F74ndJEzpPPrfV1tTcLBihqboUTgeX+Y
-	4ENLqHNuew2g+jB9A4yZ5QvLZnhzp57B1YHLxcrFORzdVifIye9G
-X-Google-Smtp-Source: AGHT+IHrSqFS+DEfgEIluSF22QW51LWtQRjCQKd/OwfrumoKw4TonPuRGtLefAcs4+rYI9YrbmNPPQ==
-X-Received: by 2002:adf:ec42:0:b0:34b:684e:485d with SMTP id w2-20020adfec42000000b0034b684e485dmr11165wrn.53.1713896691262;
-        Tue, 23 Apr 2024 11:24:51 -0700 (PDT)
-Received: from prasmi.home ([2a00:23c8:2500:a01:cef0:9ed3:1428:f85f])
-        by smtp.gmail.com with ESMTPSA id t15-20020adfeb8f000000b00349ff2e0345sm15319164wrn.70.2024.04.23.11.24.50
+        d=1e100.net; s=20230601; t=1713896838; x=1714501638;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eRREGXZ9LGwcYWVEeF7p0krK+m5v21ptFkL/WS+1sYc=;
+        b=W5mhqROW/3zuI+r7w2Z3QnGftYok88BDEqX4BlmcgY1NznslNFlLGuhBiWxfevj/12
+         +orIJBGCOt8z+YR9M38OBotL9VTfsts2al8kNyk9tGqjn6iBLumRNhCeiHdMyL2GhOYr
+         njto1yUvWbRLxZlv3VBCs10QuhPjWbOxRvSxtR/pUYhtWB87lpMLgcFGSRdekRIUKnXO
+         d7HJkiSHIm5tS3Wua5+2mYvhI8nXIngOXqzmdz1Yio43DjxcxTUZkXtRAMEcOQmDYcxz
+         hipl4AZMXy023Wcx2vs2lJ9/SvpktQV/ldHwUykFVdxcrIYT85c6EWp1ui1hWBXV8n9g
+         tQtw==
+X-Forwarded-Encrypted: i=1; AJvYcCWXEAcZPnvqmAZs0ZO6ni1fkBSFHVxMTxqlThiHtLmyFknRTbW0xJkos2IhZyxqsUM1bvi+3tnQvU9vBVSBuK/OucGacRkSgHjHS6LXHnhXCQim318Y8vi8vc5gGRhzBsL0QRYrjU8Lz0mZZ0rD
+X-Gm-Message-State: AOJu0YypemXWJEyV5xMd1fiTmIQ7Gm8d2ksLURpQca9g+MsHnkZRFx5H
+	mlm8LSM6FKFRZz5M8cqoQxcyQyzMl7wq+X1+2HI96RHGIbxfLokE
+X-Google-Smtp-Source: AGHT+IHZSW8cbaE8cUJtodpeB6lgrzhLWztPZHhQ0NTdQRmHr6aIpK5pncFskfZ4VRDIH0FqAEXlcQ==
+X-Received: by 2002:a05:600c:1c24:b0:41a:c04a:8021 with SMTP id j36-20020a05600c1c2400b0041ac04a8021mr105680wms.0.1713896837699;
+        Tue, 23 Apr 2024 11:27:17 -0700 (PDT)
+Received: from ivan-HLYL-WXX9.. ([2a01:4b00:d20e:7300:648d:95d1:ce77:2eb8])
+        by smtp.gmail.com with ESMTPSA id s15-20020adfe00f000000b0034b03d0b94csm6557878wrh.74.2024.04.23.11.27.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 11:24:50 -0700 (PDT)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	linux-mmc@vger.kernel.org
-Cc: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 3/3] mmc: renesas_sdhi: Add compatible string for RZ/G2L family, RZ/G3S, and RZ/V2M SoCs
-Date: Tue, 23 Apr 2024 19:24:28 +0100
-Message-Id: <20240423182428.704159-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Tue, 23 Apr 2024 11:27:17 -0700 (PDT)
+From: Ivan Orlov <ivan.orlov0322@gmail.com>
+To: brendan.higgins@linux.dev,
+	davidgow@google.com
+Cc: Ivan Orlov <ivan.orlov0322@gmail.com>,
+	rmoar@google.com,
+	linux-kselftest@vger.kernel.org,
+	kunit-dev@googlegroups.com,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] kunit: string-stream-test: use KUNIT_DEFINE_ACTION_WRAPPER
+Date: Tue, 23 Apr 2024 19:27:01 +0100
+Message-Id: <20240423182701.38359-1-ivan.orlov0322@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240423182428.704159-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240423182428.704159-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,68 +84,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Use KUNIT_DEFINE_ACTION_WRAPPER macro to define the 'kfree' and
+'string_stream_destroy' wrappers for kunit_add_action.
 
-- RZ/G2UL and RZ/Five ("r9a07g043")
-- RZ/G2L(C) ("r9a07g044")
-- RZ/V2L ("r9a07g054")
-- RZ/G3S ("r9a08g045")
-- RZ/V2M ("r9a09g011")
-
-The above SoCs have HS400 disabled and use fixed address mode. Add a
-generic compatible 'renesas,rzg2l-sdhi' fallback string for these SoCs,
-where fixed_addr_mode and hs400_disabled quirks are applied.
-
-For backward compatibility, compatible string 'renesas,sdhi-r9a09g011' for
-RZ/V2M is retained.
-
-Also rename sdhi_quirks_r9a09g011->sdhi_quirks_rzg2l and
-of_r9a09g011_compatible->of_rzg2l_compatible to make it generic.
-
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
 ---
-v1->v2
-- Updated commit message
-- For backward compatibility retained RZ/V2M compat string
----
- drivers/mmc/host/renesas_sdhi_internal_dmac.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ lib/kunit/string-stream-test.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mmc/host/renesas_sdhi_internal_dmac.c b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-index 53d34c3eddce..422fa63a2e99 100644
---- a/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-+++ b/drivers/mmc/host/renesas_sdhi_internal_dmac.c
-@@ -210,7 +210,7 @@ static const struct renesas_sdhi_quirks sdhi_quirks_r8a77990 = {
- 	.manual_tap_correction = true,
+diff --git a/lib/kunit/string-stream-test.c b/lib/kunit/string-stream-test.c
+index 03fb511826f7..7511442ea98f 100644
+--- a/lib/kunit/string-stream-test.c
++++ b/lib/kunit/string-stream-test.c
+@@ -22,18 +22,10 @@ struct string_stream_test_priv {
  };
  
--static const struct renesas_sdhi_quirks sdhi_quirks_r9a09g011 = {
-+static const struct renesas_sdhi_quirks sdhi_quirks_rzg2l = {
- 	.fixed_addr_mode = true,
- 	.hs400_disabled = true,
- };
-@@ -255,9 +255,9 @@ static const struct renesas_sdhi_of_data_with_quirks of_r8a77990_compatible = {
- 	.quirks = &sdhi_quirks_r8a77990,
- };
+ /* Avoids a cast warning if kfree() is passed direct to kunit_add_action(). */
+-static void kfree_wrapper(void *p)
+-{
+-	kfree(p);
+-}
++KUNIT_DEFINE_ACTION_WRAPPER(kfree_wrapper, kfree, const void *);
  
--static const struct renesas_sdhi_of_data_with_quirks of_r9a09g011_compatible = {
-+static const struct renesas_sdhi_of_data_with_quirks of_rzg2l_compatible = {
- 	.of_data = &of_data_rcar_gen3,
--	.quirks = &sdhi_quirks_r9a09g011,
-+	.quirks = &sdhi_quirks_rzg2l,
- };
+ /* Avoids a cast warning if string_stream_destroy() is passed direct to kunit_add_action(). */
+-static void cleanup_raw_stream(void *p)
+-{
+-	struct string_stream *stream = p;
+-
+-	string_stream_destroy(stream);
+-}
++KUNIT_DEFINE_ACTION_WRAPPER(cleanup_raw_stream, string_stream_destroy, struct string_stream *);
  
- static const struct renesas_sdhi_of_data_with_quirks of_rcar_gen3_compatible = {
-@@ -283,7 +283,8 @@ static const struct of_device_id renesas_sdhi_internal_dmac_of_match[] = {
- 	{ .compatible = "renesas,sdhi-r8a77970", .data = &of_r8a77970_compatible, },
- 	{ .compatible = "renesas,sdhi-r8a77990", .data = &of_r8a77990_compatible, },
- 	{ .compatible = "renesas,sdhi-r8a77995", .data = &of_rcar_gen3_nohs400_compatible, },
--	{ .compatible = "renesas,sdhi-r9a09g011", .data = &of_r9a09g011_compatible, },
-+	{ .compatible = "renesas,sdhi-r9a09g011", .data = &of_rzg2l_compatible, },
-+	{ .compatible = "renesas,rzg2l-sdhi", .data = &of_rzg2l_compatible, },
- 	{ .compatible = "renesas,rcar-gen3-sdhi", .data = &of_rcar_gen3_compatible, },
- 	{ .compatible = "renesas,rcar-gen4-sdhi", .data = &of_rcar_gen3_compatible, },
- 	{},
+ static char *get_concatenated_string(struct kunit *test, struct string_stream *stream)
+ {
 -- 
 2.34.1
 
