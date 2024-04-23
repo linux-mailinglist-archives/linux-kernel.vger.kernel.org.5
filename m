@@ -1,205 +1,279 @@
-Return-Path: <linux-kernel+bounces-154364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A10CE8ADB41
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:44:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65A398ADB43
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 02:45:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F714B23D02
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:44:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0D35B24779
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 00:44:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ADC0182D8;
-	Tue, 23 Apr 2024 00:43:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E78FC1D;
+	Tue, 23 Apr 2024 00:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="b5YDzs2q"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l8eBtfq9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63BA5E574;
-	Tue, 23 Apr 2024 00:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CDF2802;
+	Tue, 23 Apr 2024 00:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713833035; cv=none; b=l4120I2hL9Z2zk8pjqoenwCituq7morwRgLSWBXkI9KaHX5KrbeCyzJFbbThuo7UixJ9VhE+559CpPwXA2/SOzjy2VKvey83vVry8NjS/XSlDeJ+QPY+CBmuDXqr/bQTWQab+5BPvg5fFiDEhQyL05wo2nfDQavNUotGLftK09w=
+	t=1713833074; cv=none; b=Y6wU7gq/kO70foz7rBPsG6K/uxsf+EIc9JQEhEaE3JUfLVUPLOOP2O3r0UiNbp9m6R7vCH3WjD6/1n7FNLnyFterO4YMGc+OZR5NEpg1+g0lZRW5wxo4hAQwEhaHThBvunT1IicLo9qQGZ998tACmho6npWLzu8aoYY0sIFmxC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713833035; c=relaxed/simple;
-	bh=5wf3JZLqI6upNb+N5iKbqNKrv3daabbZy4Q4+q2D1Yc=;
+	s=arc-20240116; t=1713833074; c=relaxed/simple;
+	bh=77v/z4pf5G4vO82BkGrG5tUThBqnCicr34yR2Tw/p3U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hPokRwxdbuiY87a6+C8F3mIVtJNc5Nu79qWUAlPLrdgcOJE4LHYfIT6WM5qOptBfkEMgx+KyTZMGXLqj9+qvoWVnZSeT6CfGygfbMv9GCYN+H8DfRIyklOfKw1yezBXVU4dRIoHD6h9rRVhe1mixoKFu6aaF+xNgW8ih4eDqeZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=b5YDzs2q; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
-From: Dragan Simic <dsimic@manjaro.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1713833030;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4TC68yymP75Ak5L5NmW4Ic8c+OFYL0ZiXlhMXToNWT0=;
-	b=b5YDzs2qPHOpGi0lWbwotcXXHGEdno2XCkWbu0DdQLgiAG7C/Si7U8DsWyX3ND6MgMr+Ae
-	dZKls3h11dutdJnnjNCxUgl/nr6nf7YN1T+abFqyEFBB3Q2s+N8O0DCFHrG67b5RPAd1GZ
-	zgx83enO5AwUd7UcT23VyvwZxrqLeAMj7PEzGUL7luCfl9QfX+2lC8s2y3Z8oI6PJP4ByT
-	nwcHUgOmBfZyC9VY5dSsV2mSEeDmtmDxJFImBMOuHm0A8GLQ9iqC8gV2YvXAs9APaGecAz
-	fBJZCbNpQmvR8UvAqbpCPpfFNC80Xd1ZnSgPvNUuzWZtTtyxqA7sL4CnkZruDg==
-To: linux-rockchip@lists.infradead.org
-Cc: heiko@sntech.de,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	robh+dt@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
+	 MIME-Version:Content-Type; b=KLXrjSEkP0dCd55ltKIYJORn03ulSomyy8tc8OTwbXMnsYsz52TBl1zpdMkPE6GAY67c4YvNltKOtOHw3qypLT1L4gsmJA2Vtydoza8hdelRAGviKj+EAkwfVNOnuIWVxbMVxns7CXVvkTEetBAS0zz7gl7Y/HQsgqSO5GaS+/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l8eBtfq9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD782C113CC;
+	Tue, 23 Apr 2024 00:44:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713833073;
+	bh=77v/z4pf5G4vO82BkGrG5tUThBqnCicr34yR2Tw/p3U=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=l8eBtfq9mJ37HXPcCtGC6rxe59aLTHv+peCLZVh0sXeHBv2fmxRJWQ8FIPxFarS67
+	 RztpnbCUjEZj71WTF82E+mm6epWyqTASnJ7PblEQKbryIHC+k+qPO9E/zI2ZpK6LtA
+	 S26Zdd2g6/lnLPyYE5fGo9lx63qT+IjaivOYJdWvJdV1Ms34Fcas9wFpDX3ldAbzAJ
+	 6iHqZfZUox3KVGxQ6+qnHtymtLdEAgIaJiAW6xnOwTyDRdU3o6XK9yeW6AA7ZPKYhU
+	 godRJb1KGT5oVfYn+AD3gbgyMYm5+f+UYbWGZKhMnUDbc6G8Ddo8jjZIaeReuPaKKV
+	 44Gi9j8gKFvOg==
+From: SeongJae Park <sj@kernel.org>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: SeongJae Park <sj@kernel.org>,
+	akpm@linux-foundation.org,
+	willy@infradead.org,
+	jack@suse.cz,
+	bfoster@redhat.com,
+	tj@kernel.org,
+	dsterba@suse.com,
+	mjguzik@gmail.com,
+	dhowells@redhat.com,
 	linux-kernel@vger.kernel.org,
-	didi.debian@cknow.org,
-	Marek Kraus <gamiee@pine64.org>
-Subject: [PATCH 2/2] arm64: dts: rockchip: Correct the model names for Pine64 boards
-Date: Tue, 23 Apr 2024 02:43:44 +0200
-Message-Id: <06ce014a1dedff11a785fe523056b3b8ffdf21ee.1713832790.git.dsimic@manjaro.org>
-In-Reply-To: <ec124dab2b1a8776aa39177ecce34babca3a50e2.1713832790.git.dsimic@manjaro.org>
-References: <ec124dab2b1a8776aa39177ecce34babca3a50e2.1713832790.git.dsimic@manjaro.org>
+	linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] writeback: support retrieving per group debug writeback stats of bdi
+Date: Mon, 22 Apr 2024 17:44:30 -0700
+Message-Id: <20240423004430.140320-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240422164808.13627-3-shikemeng@huaweicloud.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-Correct the model names of a few Pine64 boards and devices, according
-to their official names used on the Pine64 wiki.  This ensures consistency
-between the officially used names and the names in the source code.
+Hi Kemeng,
 
-Cc: Marek Kraus <gamiee@pine64.org>
-Signed-off-by: Dragan Simic <dsimic@manjaro.org>
----
+On Tue, 23 Apr 2024 00:48:06 +0800 Kemeng Shi <shikemeng@huaweicloud.com> wrote:
 
-Notes:
-    This continues the model naming cleanup started with Radxa boards. [1]
-    
-    These improvements may cause certain issues if some scripts misuse
-    /proc/device-tree/model to detect the board they're executed on.  Though,
-    the right way to detect a board is to use /proc/device-tree/compatible
-    instead, because its contents is part of the ABI.  Such scripts, if they
-    actually exist in the field, should be improved to use the right way to
-    detect the board model.
-    
-    [1] https://lore.kernel.org/linux-rockchip/6931289a252dc2d6c7bfd2388835c5e98ba0d8c9.1713457260.git.dsimic@manjaro.org/
+> Add /sys/kernel/debug/bdi/xxx/wb_stats to show per group writeback stats
+> of bdi.
+> 
+> Following domain hierarchy is tested:
+>                 global domain (320G)
+>                 /                 \
+>         cgroup domain1(10G)     cgroup domain2(10G)
+>                 |                 |
+> bdi            wb1               wb2
+> 
+> /* per wb writeback info of bdi is collected */
+> cat /sys/kernel/debug/bdi/252:16/wb_stats
+> WbCgIno:                    1
+> WbWriteback:                0 kB
+> WbReclaimable:              0 kB
+> WbDirtyThresh:              0 kB
+> WbDirtied:                  0 kB
+> WbWritten:                  0 kB
+> WbWriteBandwidth:      102400 kBps
+> b_dirty:                    0
+> b_io:                       0
+> b_more_io:                  0
+> b_dirty_time:               0
+> state:                      1
+> WbCgIno:                 4094
+> WbWriteback:            54432 kB
+> WbReclaimable:         766080 kB
+> WbDirtyThresh:        3094760 kB
+> WbDirtied:            1656480 kB
+> WbWritten:             837088 kB
+> WbWriteBandwidth:      132772 kBps
+> b_dirty:                    1
+> b_io:                       1
+> b_more_io:                  0
+> b_dirty_time:               0
+> state:                      7
+> WbCgIno:                 4135
+> WbWriteback:            15232 kB
+> WbReclaimable:         786688 kB
+> WbDirtyThresh:        2909984 kB
+> WbDirtied:            1482656 kB
+> WbWritten:             681408 kB
+> WbWriteBandwidth:      124848 kBps
+> b_dirty:                    0
+> b_io:                       1
+> b_more_io:                  0
+> b_dirty_time:               0
+> state:                      7
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>  include/linux/writeback.h |  1 +
+>  mm/backing-dev.c          | 78 ++++++++++++++++++++++++++++++++++++++-
+>  mm/page-writeback.c       | 19 ++++++++++
+>  3 files changed, 96 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+> index 9845cb62e40b..112d806ddbe4 100644
+> --- a/include/linux/writeback.h
+> +++ b/include/linux/writeback.h
+> @@ -355,6 +355,7 @@ int dirtytime_interval_handler(struct ctl_table *table, int write,
+>  
+>  void global_dirty_limits(unsigned long *pbackground, unsigned long *pdirty);
+>  unsigned long wb_calc_thresh(struct bdi_writeback *wb, unsigned long thresh);
+> +unsigned long cgwb_calc_thresh(struct bdi_writeback *wb);
+>  
+>  void wb_update_bandwidth(struct bdi_writeback *wb);
+>  
+> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+> index 089146feb830..6ecd11bdce6e 100644
+> --- a/mm/backing-dev.c
+> +++ b/mm/backing-dev.c
+> @@ -155,19 +155,93 @@ static int bdi_debug_stats_show(struct seq_file *m, void *v)
+>  }
+>  DEFINE_SHOW_ATTRIBUTE(bdi_debug_stats);
+>  
+> +static void wb_stats_show(struct seq_file *m, struct bdi_writeback *wb,
+> +			  struct wb_stats *stats)
+> +{
+> +
+> +	seq_printf(m,
+> +		   "WbCgIno:           %10lu\n"
+> +		   "WbWriteback:       %10lu kB\n"
+> +		   "WbReclaimable:     %10lu kB\n"
+> +		   "WbDirtyThresh:     %10lu kB\n"
+> +		   "WbDirtied:         %10lu kB\n"
+> +		   "WbWritten:         %10lu kB\n"
+> +		   "WbWriteBandwidth:  %10lu kBps\n"
+> +		   "b_dirty:           %10lu\n"
+> +		   "b_io:              %10lu\n"
+> +		   "b_more_io:         %10lu\n"
+> +		   "b_dirty_time:      %10lu\n"
+> +		   "state:             %10lx\n\n",
+> +		   cgroup_ino(wb->memcg_css->cgroup),
 
- arch/arm64/boot/dts/rockchip/rk3399-pinephone-pro.dts    | 2 +-
- arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts       | 2 +-
- arch/arm64/boot/dts/rockchip/rk3566-quartz64-b.dts       | 2 +-
- arch/arm64/boot/dts/rockchip/rk3566-soquartz-blade.dts   | 2 +-
- arch/arm64/boot/dts/rockchip/rk3566-soquartz-cm4.dts     | 2 +-
- arch/arm64/boot/dts/rockchip/rk3566-soquartz-model-a.dts | 2 +-
- arch/arm64/boot/dts/rockchip/rk3566-soquartz.dtsi        | 2 +-
- arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts      | 2 +-
- 8 files changed, 8 insertions(+), 8 deletions(-)
+I'm getting below kunit build failure from the latest mm-unstable tree, and
+'git bisect' points this patch.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-pinephone-pro.dts b/arch/arm64/boot/dts/rockchip/rk3399-pinephone-pro.dts
-index 61f3fec5a8b1..e5709c7ee06a 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-pinephone-pro.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-pinephone-pro.dts
-@@ -16,7 +16,7 @@
- #include "rk3399-opp.dtsi"
- 
- / {
--	model = "Pine64 PinePhonePro";
-+	model = "Pine64 PinePhone Pro";
- 	compatible = "pine64,pinephone-pro", "rockchip,rk3399";
- 	chassis-type = "handset";
- 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-index 59843a7a199c..0b191d8462ad 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-@@ -8,7 +8,7 @@
- #include "rk3566.dtsi"
- 
- / {
--	model = "Pine64 RK3566 Quartz64-A Board";
-+	model = "Pine64 Quartz64 Model A";
- 	compatible = "pine64,quartz64-a", "rockchip,rk3566";
- 
- 	aliases {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-b.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-b.dts
-index 2d92713be2a0..26322a358d91 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-b.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-b.dts
-@@ -8,7 +8,7 @@
- #include "rk3566.dtsi"
- 
- / {
--	model = "Pine64 RK3566 Quartz64-B Board";
-+	model = "Pine64 Quartz64 Model B";
- 	compatible = "pine64,quartz64-b", "rockchip,rk3566";
- 
- 	aliases {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-soquartz-blade.dts b/arch/arm64/boot/dts/rockchip/rk3566-soquartz-blade.dts
-index fdbf1c783242..fdbb4a6a19d8 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-soquartz-blade.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-soquartz-blade.dts
-@@ -10,7 +10,7 @@
- #include "rk3566-soquartz.dtsi"
- 
- / {
--	model = "PINE64 RK3566 SOQuartz on Blade carrier board";
-+	model = "Pine64 SOQuartz on Blade carrier board";
- 	compatible = "pine64,soquartz-blade", "pine64,soquartz", "rockchip,rk3566";
- 
- 	aliases {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-soquartz-cm4.dts b/arch/arm64/boot/dts/rockchip/rk3566-soquartz-cm4.dts
-index 6ed3fa4aee34..2b6f0df477b6 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-soquartz-cm4.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-soquartz-cm4.dts
-@@ -5,7 +5,7 @@
- #include "rk3566-soquartz.dtsi"
- 
- / {
--	model = "Pine64 RK3566 SoQuartz with CM4-IO Carrier Board";
-+	model = "Pine64 SOQuartz on CM4-IO carrier board";
- 	compatible = "pine64,soquartz-cm4io", "pine64,soquartz", "rockchip,rk3566";
- 
- 	aliases {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-soquartz-model-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-soquartz-model-a.dts
-index f2095dfa4eaf..9a6a63277c3d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-soquartz-model-a.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-soquartz-model-a.dts
-@@ -5,7 +5,7 @@
- #include "rk3566-soquartz.dtsi"
- 
- / {
--	model = "PINE64 RK3566 SOQuartz on Model A carrier board";
-+	model = "Pine64 SOQuartz on Model A carrier board";
- 	compatible = "pine64,soquartz-model-a", "pine64,soquartz", "rockchip,rk3566";
- 
- 	aliases {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-soquartz.dtsi b/arch/arm64/boot/dts/rockchip/rk3566-soquartz.dtsi
-index bfb7b952f4c5..dd4e9c1893c6 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-soquartz.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-soquartz.dtsi
-@@ -8,7 +8,7 @@
- #include "rk3566.dtsi"
- 
- / {
--	model = "Pine64 RK3566 SoQuartz SOM";
-+	model = "Pine64 SOQuartz system on module";
- 	compatible = "pine64,soquartz", "rockchip,rk3566";
- 
- 	aliases {
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts b/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
-index 67414d72e2b6..e1deb9c13ad0 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-quartzpro64.dts
-@@ -13,7 +13,7 @@
- #include "rk3588.dtsi"
- 
- / {
--	model = "PINE64 QuartzPro64";
-+	model = "Pine64 QuartzPro64";
- 	compatible = "pine64,quartzpro64", "rockchip,rk3588";
- 
- 	aliases {
+    ERROR:root:.../linux/mm/backing-dev.c: In function ‘wb_stats_show’:
+    .../linux/mm/backing-dev.c:175:20: error: implicit declaration of function ‘cgroup_ino’; did you mean ‘cgroup_init’? [-Werror=implicit-function-declaration]
+      175 |                    cgroup_ino(wb->memcg_css->cgroup),
+          |                    ^~~~~~~~~~
+          |                    cgroup_init
+    .../linux/mm/backing-dev.c:175:33: error: ‘struct bdi_writeback’ has no member named ‘memcg_css’
+      175 |                    cgroup_ino(wb->memcg_css->cgroup),
+          |                                 ^~
+
+The kunit build config is not having CONFIG_CGROUPS.  I guess we need to check
+the case?  I confirmed below dumb change is fixing the issue, but I guess it
+could be cleaner.  May I ask your opinion?
+
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -160,7 +160,9 @@ static void wb_stats_show(struct seq_file *m, struct bdi_writeback *wb,
+ {
+
+        seq_printf(m,
++#ifdef CONFIG_CGROUPS
+                   "WbCgIno:           %10lu\n"
++#endif
+                   "WbWriteback:       %10lu kB\n"
+                   "WbReclaimable:     %10lu kB\n"
+                   "WbDirtyThresh:     %10lu kB\n"
+@@ -172,7 +174,9 @@ static void wb_stats_show(struct seq_file *m, struct bdi_writeback *wb,
+                   "b_more_io:         %10lu\n"
+                   "b_dirty_time:      %10lu\n"
+                   "state:             %10lx\n\n",
++#ifdef CONFIG_CGROUPS
+                   cgroup_ino(wb->memcg_css->cgroup),
++#endif
+                   K(stats->nr_writeback),
+                   K(stats->nr_reclaimable),
+                   K(stats->wb_thresh),
+
+
+> +		   K(stats->nr_writeback),
+> +		   K(stats->nr_reclaimable),
+> +		   K(stats->wb_thresh),
+> +		   K(stats->nr_dirtied),
+> +		   K(stats->nr_written),
+> +		   K(wb->avg_write_bandwidth),
+> +		   stats->nr_dirty,
+> +		   stats->nr_io,
+> +		   stats->nr_more_io,
+> +		   stats->nr_dirty_time,
+> +		   wb->state);
+> +}
+> +
+> +static int cgwb_debug_stats_show(struct seq_file *m, void *v)
+> +{
+> +	struct backing_dev_info *bdi = m->private;
+> +	unsigned long background_thresh;
+> +	unsigned long dirty_thresh;
+> +	struct bdi_writeback *wb;
+> +	struct wb_stats stats;
+
+Kunit build also shows below warning:
+
+    .../linux/mm/backing-dev.c: In function ‘cgwb_debug_stats_show’:
+    .../linux/mm/backing-dev.c:195:25: warning: unused variable ‘stats’ [-Wunused-variable]
+      195 |         struct wb_stats stats;
+          |                         ^~~~~
+
+I guess above line can simply removed?
+
+> +
+> +	global_dirty_limits(&background_thresh, &dirty_thresh);
+> +
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(wb, &bdi->wb_list, bdi_node) {
+> +		struct wb_stats stats = { .dirty_thresh = dirty_thresh };
+> +
+> +		if (!wb_tryget(wb))
+> +			continue;
+> +
+> +		collect_wb_stats(&stats, wb);
+> +
+> +		/*
+> +		 * Calculate thresh of wb in writeback cgroup which is min of
+> +		 * thresh in global domain and thresh in cgroup domain. Drop
+> +		 * rcu lock because cgwb_calc_thresh may sleep in
+> +		 * cgroup_rstat_flush. We can do so here because we have a ref.
+> +		 */
+> +		if (mem_cgroup_wb_domain(wb)) {
+> +			rcu_read_unlock();
+> +			stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
+> +			rcu_read_lock();
+> +		}
+> +
+> +		wb_stats_show(m, wb, &stats);
+> +
+> +		wb_put(wb);
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return 0;
+> +}
+
+
+Thanks,
+SJ
+
+[...]
 
