@@ -1,402 +1,114 @@
-Return-Path: <linux-kernel+bounces-155327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 347198AE8EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:01:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF3418AE8D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:59:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61E8D1C21FB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:01:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68014285E26
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:59:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8568813CFA4;
-	Tue, 23 Apr 2024 13:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9BA137C3C;
+	Tue, 23 Apr 2024 13:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IrXJlNwK"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="PPABboEJ"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC1D13CA97;
-	Tue, 23 Apr 2024 13:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB3C136E1A
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713880766; cv=none; b=rQ3Swy1iORQdGwCQFn7iiFeRE1kf/DFu/0kTRw9KEcKk4UMp52OpsLsHsoWIq6VPa01BSTySA+XuNlI0tsD8UkwAdeGc2BikjfAjP/Vn3e4DNg2vel8Us1YQEMVNt0ewjG1fXyiBB4XvO7IqC1FaYqERbFlAFoqeFuvYbG5zjkk=
+	t=1713880733; cv=none; b=HP3xGLxp+jv/vASWhxv3q1viADLlgDB/47qZOBbb5mIWmnWHNYTVqIyDGeOBp8WJFO3W+OTniJ2dUeiFnqBwDnWjM1JvHC6q3LX+0d9bF564M3HfidSC7gbQYhq/vcE0GNY9V8YHsGN41sXoXuyAa3+AkvUJeQCPjkw/mFH8/cM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713880766; c=relaxed/simple;
-	bh=a6GBMoetkyL5U151DNbmvgCKmuVUnTZ2swdqkInhFnU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qeEMzhQPCT7N+0mpM2ERkouvPaOpTxNXH1RQUZFbh/jbmHSiq1b86cRfptjBAcF5MRZtFIN/Wt+FM9GQsgBzg1Acal0M2ALdIoE50QBl51RzMpfh5EeTHCIezuHBVH6T50Bk1a00xlyUcORugZV+Wsobw+qSuoxL2+9U/J9Jyuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IrXJlNwK; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713880765; x=1745416765;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=a6GBMoetkyL5U151DNbmvgCKmuVUnTZ2swdqkInhFnU=;
-  b=IrXJlNwKYKm1wSj8yY4/7WPFWuLpxBwWE/0pr3jAJRsCqXPJ4gvRVITB
-   Ryt+Q7rq31k5Odiz91KMkF9xPY6TINJ1o+QWEY3zHXq9e+rql36rDCW5K
-   opVnGsKyvnLv/9p7egTHwkY19u5TWRYfJGlUTD7lE9TJOjarp46ty7auS
-   UttsSO2hDRYR8aUhI5TDPWhdptRPpfPTyiLes8PqkTMAapynoP3Ou+fo6
-   jZvx7uI0Bumjx4nlWhbzM7H0BCeWcGMV8SfesGMhrCD2aFyv9AHzlXUcq
-   Ma7WU1yHsWAIPrQKZHYgtfjW72VweiejUKkvd5wrzG+zn3pjUdDRun1ET
-   Q==;
-X-CSE-ConnectionGUID: 7zzaZB2mQNyPG6IEQwfuFA==
-X-CSE-MsgGUID: Km+tGq3zQWevEMwW3YogqA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="26921596"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="26921596"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:59:18 -0700
-X-CSE-ConnectionGUID: dDmUugkrTSy067GR1DywkQ==
-X-CSE-MsgGUID: biC6+3stQ7ybjXN7bQdUpA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24431970"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa008.fm.intel.com with ESMTP; 23 Apr 2024 06:59:14 -0700
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	iommu@lists.linux.dev,
+	s=arc-20240116; t=1713880733; c=relaxed/simple;
+	bh=dkyhFZxSFK/ufXtmRabwl0V5jznUX4WTx+N7+111Dbk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jnun65evSZRdSfw0zFZFMBmptOoLmsZdltnjhyNa46YY7yHXZ6k8w9TPl5aMTN+7hjdIpZ8kf8Fc8aFF7Qk7reyNh+nkWNoHeWcVbtd78JYYwruQZHkOhkWTRGox4CskghKKMxH1ISm1P9dk97qdopj//HIhYoxSZdmo8wM31Ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=PPABboEJ; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5ad28c0b85eso1779787eaf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 06:58:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1713880729; x=1714485529; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WqStfhzOnysXibrgT2E48MrpzZWIctM3Wmz+RM/fc7I=;
+        b=PPABboEJfEuSSbQCuKBcn38jtuIXVO898wnREhOT59fHsA6k7HI34Nk5amBZRh7Axe
+         IWVTuL7WBbGdLgGnLfxeiYbb9xIlECz9MziXxeH1IMUiV6iL0WymvvyTdvRRSbAqlwkM
+         ZBdzNoxZdTWsavn8u69mlvdf1jeK50OdZ7fgyEYM18SoxboEN7yeBnUsSJpEaFm4l2fW
+         B1LTe0xvI5WRA+xm66gZIuWB/jtVSv2GRiNn5FJUUVaSdUgNXgTIxcRfUtbDcMN05StK
+         WghJr47GIt40ZPfudIF+GTACUmmS32f3VbUuQjR0c4BPS7cJT7mWBfOB7x6QSvToiCCh
+         NWbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713880729; x=1714485529;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WqStfhzOnysXibrgT2E48MrpzZWIctM3Wmz+RM/fc7I=;
+        b=cESn3dWSD71ZmYZRVkuEsFmHiiOiRQ/O5iKT0ISmjJgT5t8S6Rsyp2fqIm623yEj8y
+         d0cW3/yPlIVeM7kAzERH5RfMYjLYSM4DmOFx88YIeJ0O+2CJubCZStCLo9GovP3SnDJw
+         d7Cqc+yA5oE0I2Ib3CpsC87alv9fRBDl/mIhOxTWF4uWWiGp5qyj10IyMJSFYFr8Knxd
+         cjFkXNNFd6bgzbhD4HMEv4785JcGBUwqbVMwbXATWAJeZ5Dy3pAFkwHpEFTIzrVbWa0b
+         x7ckdeij0MQrxOfZSuXRsgCnihDHL30kvzrqtKJkK7aQoneCLCsSlVGJ53+Xu1OSc2m9
+         /kgg==
+X-Forwarded-Encrypted: i=1; AJvYcCXyN0DPMOWjSKhPmOiOElUZXElczawJkuK1piNW79vr7V6wDo+uz4jor/xhLs5Fe1Q23uGmLu5tYY0/T/sAIWxK21p/3uWEvGc+uWY4
+X-Gm-Message-State: AOJu0Yw0zkQQ3fDg8fryIb1D2H4juP02S/iPh+3nuy5/fxQoaSBkQ7Fh
+	gkaEQgCBlWmYIhLZwaHZf9/K9R1zDjfub5iWLHwo6KiPnscT8BndhzKDbenqyBCnvAv/sh2ngs4
+	c
+X-Google-Smtp-Source: AGHT+IFwG9XJlDFqbvMmAOd4uyTY8SGLMaYeyX3/gPYvOni0T7+MH5srQSPCfT8gzXzv2lH9r8NbMA==
+X-Received: by 2002:a05:6358:4b02:b0:186:22a0:299d with SMTP id kr2-20020a0563584b0200b0018622a0299dmr17564312rwc.27.1713880729494;
+        Tue, 23 Apr 2024 06:58:49 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id kd11-20020a05622a268b00b00432bb012607sm5202815qtb.47.2024.04.23.06.58.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 06:58:48 -0700 (PDT)
+Date: Tue, 23 Apr 2024 09:58:44 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v4 7/7] xsk: use generic DMA sync shortcut instead of a custom one
-Date: Tue, 23 Apr 2024 15:58:32 +0200
-Message-ID: <20240423135832.2271696-8-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240423135832.2271696-1-aleksander.lobakin@intel.com>
-References: <20240423135832.2271696-1-aleksander.lobakin@intel.com>
+Subject: Re: [PATCH 1/4] mm: rearrange node_stat_item to put memcg stats at
+ start
+Message-ID: <20240423135844.GA21141@cmpxchg.org>
+References: <20240423051826.791934-1-shakeel.butt@linux.dev>
+ <20240423051826.791934-2-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423051826.791934-2-shakeel.butt@linux.dev>
 
-XSk infra's been using its own DMA sync shortcut to try avoiding
-redundant function calls. Now that there is a generic one, remove
-the custom implementation and rely on the generic helpers.
-xsk_buff_dma_sync_for_cpu() doesn't need the second argument anymore,
-remove it.
+On Mon, Apr 22, 2024 at 10:18:23PM -0700, Shakeel Butt wrote:
+> At the moment the memcg stats are sized based on the size of enum
+> node_stat_item but not all fields in node_stat_item corresponds to memcg
+> stats. So, rearrage the contents of node_stat_item such that all the
+> memcg specific stats are at the top and then the later patches will make
+> sure that the memcg code will not waste space for non-memcg stats.
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- include/net/xdp_sock_drv.h                    |  7 ++---
- include/net/xsk_buff_pool.h                   | 14 +++-------
- drivers/net/ethernet/engleder/tsnep_main.c    |  2 +-
- .../net/ethernet/freescale/dpaa2/dpaa2-xsk.c  |  2 +-
- drivers/net/ethernet/intel/i40e/i40e_xsk.c    |  2 +-
- drivers/net/ethernet/intel/ice/ice_xsk.c      |  2 +-
- drivers/net/ethernet/intel/igc/igc_main.c     |  2 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  |  2 +-
- .../ethernet/mellanox/mlx5/core/en/xsk/rx.c   |  4 +--
- .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  2 +-
- drivers/net/ethernet/netronome/nfp/nfd3/xsk.c |  2 +-
- .../net/ethernet/stmicro/stmmac/stmmac_main.c |  2 +-
- net/xdp/xsk_buff_pool.c                       | 28 ++-----------------
- 13 files changed, 20 insertions(+), 51 deletions(-)
+This series is a great idea and the savings speak for themselves.
 
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index c9aec9ab6191..0a5dca2b2b3f 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -219,13 +219,10 @@ static inline struct xsk_tx_metadata *xsk_buff_get_metadata(struct xsk_buff_pool
- 	return meta;
- }
- 
--static inline void xsk_buff_dma_sync_for_cpu(struct xdp_buff *xdp, struct xsk_buff_pool *pool)
-+static inline void xsk_buff_dma_sync_for_cpu(struct xdp_buff *xdp)
- {
- 	struct xdp_buff_xsk *xskb = container_of(xdp, struct xdp_buff_xsk, xdp);
- 
--	if (!pool->dma_need_sync)
--		return;
--
- 	xp_dma_sync_for_cpu(xskb);
- }
- 
-@@ -402,7 +399,7 @@ static inline struct xsk_tx_metadata *xsk_buff_get_metadata(struct xsk_buff_pool
- 	return NULL;
- }
- 
--static inline void xsk_buff_dma_sync_for_cpu(struct xdp_buff *xdp, struct xsk_buff_pool *pool)
-+static inline void xsk_buff_dma_sync_for_cpu(struct xdp_buff *xdp)
- {
- }
- 
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index 99dd7376df6a..bacb33f1e3e5 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -43,7 +43,6 @@ struct xsk_dma_map {
- 	refcount_t users;
- 	struct list_head list; /* Protected by the RTNL_LOCK */
- 	u32 dma_pages_cnt;
--	bool dma_need_sync;
- };
- 
- struct xsk_buff_pool {
-@@ -82,7 +81,6 @@ struct xsk_buff_pool {
- 	u8 tx_metadata_len; /* inherited from umem */
- 	u8 cached_need_wakeup;
- 	bool uses_need_wakeup;
--	bool dma_need_sync;
- 	bool unaligned;
- 	bool tx_sw_csum;
- 	void *addrs;
-@@ -155,21 +153,17 @@ static inline dma_addr_t xp_get_frame_dma(struct xdp_buff_xsk *xskb)
- 	return xskb->frame_dma;
- }
- 
--void xp_dma_sync_for_cpu_slow(struct xdp_buff_xsk *xskb);
- static inline void xp_dma_sync_for_cpu(struct xdp_buff_xsk *xskb)
- {
--	xp_dma_sync_for_cpu_slow(xskb);
-+	dma_sync_single_for_cpu(xskb->pool->dev, xskb->dma,
-+				xskb->pool->frame_len,
-+				DMA_BIDIRECTIONAL);
- }
- 
--void xp_dma_sync_for_device_slow(struct xsk_buff_pool *pool, dma_addr_t dma,
--				 size_t size);
- static inline void xp_dma_sync_for_device(struct xsk_buff_pool *pool,
- 					  dma_addr_t dma, size_t size)
- {
--	if (!pool->dma_need_sync)
--		return;
--
--	xp_dma_sync_for_device_slow(pool, dma, size);
-+	dma_sync_single_for_device(pool->dev, dma, size, DMA_BIDIRECTIONAL);
- }
- 
- /* Masks for xdp_umem_page flags.
-diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ethernet/engleder/tsnep_main.c
-index 4b15af6b7122..44da335d66bd 100644
---- a/drivers/net/ethernet/engleder/tsnep_main.c
-+++ b/drivers/net/ethernet/engleder/tsnep_main.c
-@@ -1587,7 +1587,7 @@ static int tsnep_rx_poll_zc(struct tsnep_rx *rx, struct napi_struct *napi,
- 		length = __le32_to_cpu(entry->desc_wb->properties) &
- 			 TSNEP_DESC_LENGTH_MASK;
- 		xsk_buff_set_size(entry->xdp, length - ETH_FCS_LEN);
--		xsk_buff_dma_sync_for_cpu(entry->xdp, rx->xsk_pool);
-+		xsk_buff_dma_sync_for_cpu(entry->xdp);
- 
- 		/* RX metadata with timestamps is in front of actual data,
- 		 * subtract metadata size to get length of actual data and
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-xsk.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-xsk.c
-index 051748b997f3..a466c2379146 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-xsk.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-xsk.c
-@@ -55,7 +55,7 @@ static u32 dpaa2_xsk_run_xdp(struct dpaa2_eth_priv *priv,
- 	xdp_set_data_meta_invalid(xdp_buff);
- 	xdp_buff->rxq = &ch->xdp_rxq;
- 
--	xsk_buff_dma_sync_for_cpu(xdp_buff, ch->xsk_pool);
-+	xsk_buff_dma_sync_for_cpu(xdp_buff);
- 	xdp_act = bpf_prog_run_xdp(xdp_prog, xdp_buff);
- 
- 	/* xdp.data pointer may have changed */
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-index a85b425794df..4e885df789ef 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-@@ -482,7 +482,7 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
- 
- 		bi = *i40e_rx_bi(rx_ring, next_to_process);
- 		xsk_buff_set_size(bi, size);
--		xsk_buff_dma_sync_for_cpu(bi, rx_ring->xsk_pool);
-+		xsk_buff_dma_sync_for_cpu(bi);
- 
- 		if (!first)
- 			first = bi;
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index aa81d1162b81..7541f223bf4f 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -878,7 +878,7 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
- 				   ICE_RX_FLX_DESC_PKT_LEN_M;
- 
- 		xsk_buff_set_size(xdp, size);
--		xsk_buff_dma_sync_for_cpu(xdp, xsk_pool);
-+		xsk_buff_dma_sync_for_cpu(xdp);
- 
- 		if (!first) {
- 			first = xdp;
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index d9bd001af7ba..303404752deb 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -2812,7 +2812,7 @@ static int igc_clean_rx_irq_zc(struct igc_q_vector *q_vector, const int budget)
- 		}
- 
- 		bi->xdp->data_end = bi->xdp->data + size;
--		xsk_buff_dma_sync_for_cpu(bi->xdp, ring->xsk_pool);
-+		xsk_buff_dma_sync_for_cpu(bi->xdp);
- 
- 		res = __igc_xdp_run_prog(adapter, prog, bi->xdp);
- 		switch (res) {
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-index 397cb773fabb..3e3b471e53f0 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-@@ -303,7 +303,7 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
- 		}
- 
- 		bi->xdp->data_end = bi->xdp->data + size;
--		xsk_buff_dma_sync_for_cpu(bi->xdp, rx_ring->xsk_pool);
-+		xsk_buff_dma_sync_for_cpu(bi->xdp);
- 		xdp_res = ixgbe_run_xdp_zc(adapter, rx_ring, bi->xdp);
- 
- 		if (likely(xdp_res & (IXGBE_XDP_TX | IXGBE_XDP_REDIR))) {
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
-index b8dd74453655..1b7132fa70de 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/rx.c
-@@ -270,7 +270,7 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq,
- 	/* mxbuf->rq is set on allocation, but cqe is per-packet so set it here */
- 	mxbuf->cqe = cqe;
- 	xsk_buff_set_size(&mxbuf->xdp, cqe_bcnt);
--	xsk_buff_dma_sync_for_cpu(&mxbuf->xdp, rq->xsk_pool);
-+	xsk_buff_dma_sync_for_cpu(&mxbuf->xdp);
- 	net_prefetch(mxbuf->xdp.data);
- 
- 	/* Possible flows:
-@@ -319,7 +319,7 @@ struct sk_buff *mlx5e_xsk_skb_from_cqe_linear(struct mlx5e_rq *rq,
- 	/* mxbuf->rq is set on allocation, but cqe is per-packet so set it here */
- 	mxbuf->cqe = cqe;
- 	xsk_buff_set_size(&mxbuf->xdp, cqe_bcnt);
--	xsk_buff_dma_sync_for_cpu(&mxbuf->xdp, rq->xsk_pool);
-+	xsk_buff_dma_sync_for_cpu(&mxbuf->xdp);
- 	net_prefetch(mxbuf->xdp.data);
- 
- 	prog = rcu_dereference(rq->xdp_prog);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index d601b5faaed5..b5333da20e8a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -917,7 +917,7 @@ INDIRECT_CALLABLE_SCOPE bool mlx5e_post_rx_wqes(struct mlx5e_rq *rq)
- 
- 	if (!rq->xsk_pool) {
- 		count = mlx5e_refill_rx_wqes(rq, head, wqe_bulk);
--	} else if (likely(!rq->xsk_pool->dma_need_sync)) {
-+	} else if (likely(!dma_dev_need_sync(rq->pdev))) {
- 		mlx5e_xsk_free_rx_wqes(rq, head, wqe_bulk);
- 		count = mlx5e_xsk_alloc_rx_wqes_batched(rq, head, wqe_bulk);
- 	} else {
-diff --git a/drivers/net/ethernet/netronome/nfp/nfd3/xsk.c b/drivers/net/ethernet/netronome/nfp/nfd3/xsk.c
-index 45be6954d5aa..01cfa9cc1b5e 100644
---- a/drivers/net/ethernet/netronome/nfp/nfd3/xsk.c
-+++ b/drivers/net/ethernet/netronome/nfp/nfd3/xsk.c
-@@ -184,7 +184,7 @@ nfp_nfd3_xsk_rx(struct nfp_net_rx_ring *rx_ring, int budget,
- 		xrxbuf->xdp->data += meta_len;
- 		xrxbuf->xdp->data_end = xrxbuf->xdp->data + pkt_len;
- 		xdp_set_data_meta_invalid(xrxbuf->xdp);
--		xsk_buff_dma_sync_for_cpu(xrxbuf->xdp, r_vec->xsk_pool);
-+		xsk_buff_dma_sync_for_cpu(xrxbuf->xdp);
- 		net_prefetch(xrxbuf->xdp->data);
- 
- 		if (meta_len) {
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 2ea9f0fa0cf9..cfda1a0956e4 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5354,7 +5354,7 @@ static int stmmac_rx_zc(struct stmmac_priv *priv, int limit, u32 queue)
- 
- 		/* RX buffer is good and fit into a XSK pool buffer */
- 		buf->xdp->data_end = buf->xdp->data + buf1_len;
--		xsk_buff_dma_sync_for_cpu(buf->xdp, rx_q->xsk_pool);
-+		xsk_buff_dma_sync_for_cpu(buf->xdp);
- 
- 		prog = READ_ONCE(priv->xdp_prog);
- 		res = __stmmac_xdp_run_prog(priv, prog, buf->xdp);
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index ce60ecd48a4d..b2cce6dbe6d8 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -338,7 +338,6 @@ static struct xsk_dma_map *xp_create_dma_map(struct device *dev, struct net_devi
- 
- 	dma_map->netdev = netdev;
- 	dma_map->dev = dev;
--	dma_map->dma_need_sync = false;
- 	dma_map->dma_pages_cnt = nr_pages;
- 	refcount_set(&dma_map->users, 1);
- 	list_add(&dma_map->list, &umem->xsk_dma_list);
-@@ -424,7 +423,6 @@ static int xp_init_dma_info(struct xsk_buff_pool *pool, struct xsk_dma_map *dma_
- 
- 	pool->dev = dma_map->dev;
- 	pool->dma_pages_cnt = dma_map->dma_pages_cnt;
--	pool->dma_need_sync = dma_map->dma_need_sync;
- 	memcpy(pool->dma_pages, dma_map->dma_pages,
- 	       pool->dma_pages_cnt * sizeof(*pool->dma_pages));
- 
-@@ -460,8 +458,6 @@ int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
- 			__xp_dma_unmap(dma_map, attrs);
- 			return -ENOMEM;
- 		}
--		if (dma_need_sync(dev, dma))
--			dma_map->dma_need_sync = true;
- 		dma_map->dma_pages[i] = dma;
- 	}
- 
-@@ -557,11 +553,8 @@ struct xdp_buff *xp_alloc(struct xsk_buff_pool *pool)
- 	xskb->xdp.data_meta = xskb->xdp.data;
- 	xskb->xdp.flags = 0;
- 
--	if (pool->dma_need_sync) {
--		dma_sync_single_range_for_device(pool->dev, xskb->dma, 0,
--						 pool->frame_len,
--						 DMA_BIDIRECTIONAL);
--	}
-+	xp_dma_sync_for_device(pool, xskb->dma, pool->frame_len);
-+
- 	return &xskb->xdp;
- }
- EXPORT_SYMBOL(xp_alloc);
-@@ -633,7 +626,7 @@ u32 xp_alloc_batch(struct xsk_buff_pool *pool, struct xdp_buff **xdp, u32 max)
- {
- 	u32 nb_entries1 = 0, nb_entries2;
- 
--	if (unlikely(pool->dma_need_sync)) {
-+	if (unlikely(dma_dev_need_sync(pool->dev))) {
- 		struct xdp_buff *buff;
- 
- 		/* Slow path */
-@@ -693,18 +686,3 @@ dma_addr_t xp_raw_get_dma(struct xsk_buff_pool *pool, u64 addr)
- 		(addr & ~PAGE_MASK);
- }
- EXPORT_SYMBOL(xp_raw_get_dma);
--
--void xp_dma_sync_for_cpu_slow(struct xdp_buff_xsk *xskb)
--{
--	dma_sync_single_range_for_cpu(xskb->pool->dev, xskb->dma, 0,
--				      xskb->pool->frame_len, DMA_BIDIRECTIONAL);
--}
--EXPORT_SYMBOL(xp_dma_sync_for_cpu_slow);
--
--void xp_dma_sync_for_device_slow(struct xsk_buff_pool *pool, dma_addr_t dma,
--				 size_t size)
--{
--	dma_sync_single_range_for_device(pool->dev, dma, 0,
--					 size, DMA_BIDIRECTIONAL);
--}
--EXPORT_SYMBOL(xp_dma_sync_for_device_slow);
--- 
-2.44.0
+But rearranging and splitting vmstats along the memcg-nomemcg line
+seems like an undue burden on the non-memcg codebase and interface.
 
+- It messes with user-visible /proc/vmstat ordering, and sets things
+  up to do so on an ongoing basis as stats are added to memcg.
+
+- It also separates related stats (like the workingset ones) in
+  /proc/vmstat when memcg only accounts a subset.
+
+Would it make more sense to have a translation table inside memcg?
+Like we have with memcg1_events.
 
