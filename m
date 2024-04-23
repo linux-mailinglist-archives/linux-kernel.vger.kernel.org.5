@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-155029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BC8F8AE489
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:45:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 002788AE48B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:45:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21E501F21BA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:45:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFD28287EA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBA7413B583;
-	Tue, 23 Apr 2024 11:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CD313A87F;
+	Tue, 23 Apr 2024 11:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bFQ/omUK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dYV7ycCo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3662F13B2A0;
-	Tue, 23 Apr 2024 11:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277A513B58A;
+	Tue, 23 Apr 2024 11:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872438; cv=none; b=jtCFIR2GBUE1yzNVvAXQSNxlhML9lO9ikTDi2rMi/VqJk49NKCqg38lfKzab9853H1E3iCtiVIDlbi1NqoE7O0z5bM1tSHeDHY6kWcRYE+63Fnf3OQQ5PXo+3QXyHDVa5RwA6+Cwz5olzEhZOyBS48h6bQRYkdAOFY6+8rAXfjQ=
+	t=1713872439; cv=none; b=AaqJk75Z4EYuix8EUR9Ns8Mi66BTrHrPQI5TtFZuSP7o6rBjZFFATBtw3k3iofIObvKLdCIZyhS7+fzXA4+ipiZaC1PUnKwV8HOP0haOqa2MxUW/KOHXLn2uQnLaq3chQBSxvG9CKC7Z9KWFjMiC6Jxo9p+BUcVvSkL0VDDUjJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872438; c=relaxed/simple;
-	bh=qkx2RDy5sGGcMieIR873OJNCriqJRBJBTL7GSFJbAhM=;
+	s=arc-20240116; t=1713872439; c=relaxed/simple;
+	bh=bAtX3o9gj4AZ2aPWXyT0Ta1s632fUx0qRDXoyWz5f3k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NCliyl0c9oukyuo/Azk9eeP6aAnQvGHudklBRgfhPb9gR3LMiVkeWo/Q7SjrCY2bYjGTiJmv/IV2/tZaMOmlU7dmazL4YbntKiSxAn3tripINzXh9RjupW47wzgfgyUnXJsy0McUOnZORbLuK3c6OPq2M20JqefUm/aAn5inITo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bFQ/omUK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD8C4C116B1;
-	Tue, 23 Apr 2024 11:40:36 +0000 (UTC)
+	 MIME-Version; b=bsYGzCaurinG7ZvVlYwFMG9Lyr4MFJYEQTCRd2OoUKfU/64x8GrUYu6LqlJRTjw2J1XsLClkuQVSHejJfaaz7InkHeiAGfITIwPBAhKpuuqEheOjK/PmzlUCR5lWCDUroPMK6apIuRESUscw99ZQjRAzXTJP+tMuuL1CQk+3YF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dYV7ycCo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28750C32783;
+	Tue, 23 Apr 2024 11:40:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872437;
-	bh=qkx2RDy5sGGcMieIR873OJNCriqJRBJBTL7GSFJbAhM=;
+	s=k20201202; t=1713872439;
+	bh=bAtX3o9gj4AZ2aPWXyT0Ta1s632fUx0qRDXoyWz5f3k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bFQ/omUKu8zWKMCkOCjNQc73Pwl9NxkWwAS2iZa5nTfwolyMDzBMoyOIDM/gJFcJ/
-	 je+lPb1RyrU/oP5b+mz/VtABHcf1yzPWF8LPghlN7TD2s+EcBXAZuHkdJGM08Y5L96
-	 Or2wSK3+Sakg5xfsgXoKZ3CFIMwekz7iU1LzQNM5I7r1UR/hKA7MIeC7LM6ObuxJ2r
-	 76CCGk6TdhkxQq1TsAXuRTIEtS/FEqBSERZZtDES1CWRG7qA3hokaRlX4Ndlky0jUr
-	 20UFjFo1Qf6qP5kneQo9ZBBCxA+bNbJ8SOGzbrSQaDOlUZH+4wmyKPHs0o82vOIvEv
-	 oKzbPcUGyPeGg==
+	b=dYV7ycCoZZqeLbRwJ1aQrjQ/QBZeatj1ovUs+1PkPETVBwxsaQ5sxEr+9bhtxdWnD
+	 gsoRbIEYApcpQ8COVHgUf2qarM9hYSSl8QubCUjEdHt+VBg9imB/315eHYsiyeX81+
+	 lDhkWoU5Owprs3tojZkaAs3+x16JKV9rG6sAvhULOHPhDAtr5YqJ5PZ7tUsb4vHb5/
+	 IaWKX+FO5j78fVaLL6ZZgkTBebc57lT/olV3IZqXRM2cjExXUMmCPuT10qtN0f8Mpz
+	 iXosI8znYbUUvGRRRSjU0iU7HRkVUyLLkGXQQI3Ph7w1a4WdXJofF9BA1ZeP7DAGCT
+	 cWpFsAjG1Gssg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Joakim Sindholt <opensource@zhasha.com>,
+Cc: Jeff Layton <jlayton@kernel.org>,
 	Eric Van Hensbergen <ericvh@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	lucho@ionkov.net,
 	asmadeus@codewreck.org,
 	v9fs@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 03/16] fs/9p: fix the cache always being enabled on files with qid flags
-Date: Tue, 23 Apr 2024 07:01:36 -0400
-Message-ID: <20240423110151.1658546-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 04/16] 9p: explicitly deny setlease attempts
+Date: Tue, 23 Apr 2024 07:01:37 -0400
+Message-ID: <20240423110151.1658546-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240423110151.1658546-1-sashal@kernel.org>
 References: <20240423110151.1658546-1-sashal@kernel.org>
@@ -66,43 +66,40 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.28
 Content-Transfer-Encoding: 8bit
 
-From: Joakim Sindholt <opensource@zhasha.com>
+From: Jeff Layton <jlayton@kernel.org>
 
-[ Upstream commit 4e5d208cc9bd5fbc95d536fa223b4b14c37b8ca8 ]
+[ Upstream commit 7a84602297d36617dbdadeba55a2567031e5165b ]
 
-I'm not sure why this check was ever here. After updating to 6.6 I
-suddenly found caching had been turned on by default and neither
-cache=none nor the new directio would turn it off. After walking through
-the new code very manually I realized that it's because the caching has
-to be, in effect, turned off explicitly by setting P9L_DIRECT and
-whenever a file has a flag, in my case QTAPPEND, it doesn't get set.
+9p is a remote network protocol, and it doesn't support asynchronous
+notifications from the server. Ensure that we don't hand out any leases
+since we can't guarantee they'll be broken when a file's contents
+change.
 
-Setting aside QTDIR which seems to ignore the new fid->mode entirely,
-the rest of these either should be subject to the same cache rules as
-every other QTFILE or perhaps very explicitly not cached in the case of
-QTAUTH.
-
-Signed-off-by: Joakim Sindholt <opensource@zhasha.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
 Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/9p/fid.h | 3 ---
- 1 file changed, 3 deletions(-)
+ fs/9p/vfs_file.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/9p/fid.h b/fs/9p/fid.h
-index 29281b7c38870..0d6138bee2a3d 100644
---- a/fs/9p/fid.h
-+++ b/fs/9p/fid.h
-@@ -49,9 +49,6 @@ static inline struct p9_fid *v9fs_fid_clone(struct dentry *dentry)
- static inline void v9fs_fid_add_modes(struct p9_fid *fid, unsigned int s_flags,
- 	unsigned int s_cache, unsigned int f_flags)
- {
--	if (fid->qid.type != P9_QTFILE)
--		return;
--
- 	if ((!s_cache) ||
- 	   ((fid->qid.version == 0) && !(s_flags & V9FS_IGNORE_QV)) ||
- 	   (s_flags & V9FS_DIRECT_IO) || (f_flags & O_DIRECT)) {
+diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+index 11cd8d23f6f23..8566ddad49ad5 100644
+--- a/fs/9p/vfs_file.c
++++ b/fs/9p/vfs_file.c
+@@ -591,6 +591,7 @@ const struct file_operations v9fs_file_operations = {
+ 	.splice_read = v9fs_file_splice_read,
+ 	.splice_write = iter_file_splice_write,
+ 	.fsync = v9fs_file_fsync,
++	.setlease = simple_nosetlease,
+ };
+ 
+ const struct file_operations v9fs_file_operations_dotl = {
+@@ -605,4 +606,5 @@ const struct file_operations v9fs_file_operations_dotl = {
+ 	.splice_read = v9fs_file_splice_read,
+ 	.splice_write = iter_file_splice_write,
+ 	.fsync = v9fs_file_fsync_dotl,
++	.setlease = simple_nosetlease,
+ };
 -- 
 2.43.0
 
