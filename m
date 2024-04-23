@@ -1,61 +1,62 @@
-Return-Path: <linux-kernel+bounces-155516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCC958AF376
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:06:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 112CB8AF377
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 18:06:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93A432815B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:06:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A440B1F2445F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 16:06:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD3E13CA99;
-	Tue, 23 Apr 2024 16:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0196813CFBD;
+	Tue, 23 Apr 2024 16:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bmhJjkWF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OBXIO+lw"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DBFB13CA85
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:06:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12E7F13CA88
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 16:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713888398; cv=none; b=rOBeTHtgtE7QOPFFoaN7scM9NljJpgzKMPO/n6Q7K8BONiiBsTdvbW8FiGwp7jq/CRbgigjLFSWTOZiKxFLi/+DIzfLq6Jpzhbs+ybJDq3h8aAhwCJTKf+DOgexndPE2JdDjQFrHNF9UoH1i9jAFZwZswEXzHF9NjgL9i+16jhk=
+	t=1713888400; cv=none; b=MTNMlVVVQzfFXYXr5Wv2AgTuypiDrOXTx/2koAKANvsVCi8oATUmUCrYNFL1WtSqgfg0E9iS5lSh56KIWi6KIHIQ3OR2Xc/18ol94UzceRbOE4h3seGaTY/nnnmCzI1x2xvV6zOEI+klYp2jc+AmmFpOrTRuOaAf3K8KBjWVCHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713888398; c=relaxed/simple;
-	bh=rz8v7GIZzAfZBSS+u7zhv0RpH1opYCbH7jQyaPOBrDk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BJ/kyRTf6TJRwqaua3qkUV/hWLW68x67Mbx5kFF/3CXT6LbL/OpefdiC2s1Gc8/U66HcuXMZIczYacCJ6woaxWzDBDjHpNnSeXErl2F1Sr+YzevtgFFew0J0r/9yPakh5q3UUjIEBAXgCFQAVlaYTgHi7DCY60/vZrwL8uLakCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bmhJjkWF; arc=none smtp.client-ip=192.198.163.8
+	s=arc-20240116; t=1713888400; c=relaxed/simple;
+	bh=041Fq7CuReklTECSamsgpxP+ln//OQe3sBd84aiU7Vg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QyQf1TbgE8mvb/TK18Exs2Dr6iTgy/93Raq3SjKgDKjZdvJUqJfleY9LigAjscQfeVgMtwOmYtqErR4MTIdtliTvkq+TEqcklSu2d21B/+zOnFooicJh4/dY2LMozsajMgPMzZCvBIdjx9JSlFp9ReJkCRuIT/Fe5nChRhNByjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OBXIO+lw; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713888396; x=1745424396;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=rz8v7GIZzAfZBSS+u7zhv0RpH1opYCbH7jQyaPOBrDk=;
-  b=bmhJjkWFsEr2+9Ai6JdbJrsiZQylorV6DqL6nODBwqqjle3Kygso3TcA
-   x8A9M7qqE9Um8nvFIQ5S2LN4dZk95wFMEpmvU+CJipdsLlmO/HaGW/peA
-   DsUnRhXJCnCvtPz8sMhRy0c36DIAKw1T5WPl/LT2orOQc4U93JG6UYYBw
-   Zx+/FnuHWTc4zZgZEbSkbQwyTaDc/TK3m/vo1hM2q2B2FtBdardXqhST+
-   mr3gke3/VQ36CyxiArBc8fivVrYFNo7riFRfvjLNxXqkj1/Eu+gm5our3
-   XoygOYKP61MNw9dc87lOGb/sBVuXu9Yknjq4sDmNOzsDN7dTBqCtWffc+
-   A==;
-X-CSE-ConnectionGUID: f/fPf4L9Qr6sDbcfqaCUog==
-X-CSE-MsgGUID: XreGWFB+QTCJ1HYz83cisA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="26998814"
+  t=1713888398; x=1745424398;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=041Fq7CuReklTECSamsgpxP+ln//OQe3sBd84aiU7Vg=;
+  b=OBXIO+lwL86Z10PAMpAF/y5d9T/pWnSDYe+hywDtLRbI2r1culWfo9rT
+   D+S80UtAZzSOJJGWdRL8mz7wDUIanc6UX0XBZoLnChqxYmW9Yexhs+0kV
+   qeF12Yui6poSaDxHDWZ2P1avqBB/mDaHm3VRpQxydTKyWgn0mv541Bym0
+   oTsfk26wQypCJ8+1Cpz86RB4leYD3noYf2BfXh+mwESjGSHbh2HatbQgQ
+   ouPHeJ/yagj9TtIB3W8LjhT+Fc/i95PFRTij05KHn+Js9jOITzwbizA2b
+   qsQs4lpE3Z2Fhax/8f40NESh3zoWcnmOKF7oXcKjT1Vwo4qa9T8SEGX4+
+   w==;
+X-CSE-ConnectionGUID: VkrIF73MSp+U2DMepdnHww==
+X-CSE-MsgGUID: eoBZ/Iq0TD2nLA+kfLFPQg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="26998819"
 X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="26998814"
+   d="scan'208";a="26998819"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:06:36 -0700
-X-CSE-ConnectionGUID: qDtkmvRNSd2lTeZuZ+gmgQ==
-X-CSE-MsgGUID: I6NKywfHQgq2h0ztgUKHHg==
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:06:37 -0700
+X-CSE-ConnectionGUID: 1Jph/9nyR9S3snJOqOimPw==
+X-CSE-MsgGUID: OGYM+qYkQE6r3QI4MvmHpQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24462354"
+   d="scan'208";a="24462359"
 Received: from josouza-mobl2.bz.intel.com ([10.87.243.88])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:06:34 -0700
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 09:06:36 -0700
 From: =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>
 To: linux-kernel@vger.kernel.org,
 	intel-xe@lists.freedesktop.org
@@ -63,10 +64,12 @@ Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>,
 	Matt Roper <matthew.d.roper@intel.com>,
 	Zhanjun Dong <zhanjun.dong@intel.com>,
 	=?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>
-Subject: [PATCH CI 1/3] drm/xe: Store xe_he_engine in xe_hw_engine_snapshot
-Date: Tue, 23 Apr 2024 09:05:48 -0700
-Message-ID: <20240423160626.77110-1-jose.souza@intel.com>
+Subject: [PATCH CI 2/3] drm/xe: Add helpers to loop over geometry and compute DSS
+Date: Tue, 23 Apr 2024 09:05:49 -0700
+Message-ID: <20240423160626.77110-2-jose.souza@intel.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240423160626.77110-1-jose.souza@intel.com>
+References: <20240423160626.77110-1-jose.souza@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,8 +79,14 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-A future patch will require gt and xe device structs, so here
-replacing class by hwe.
+Some DSS can only be available for geometry while others can only be
+available for compute.
+So here adding helpers to loop only available DSS for given usage.
+
+User of this helper will come in the next patch.
+
+v2:
+- drop has_dss()
 
 Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Cc: Matt Roper <matthew.d.roper@intel.com>
@@ -85,56 +94,74 @@ Cc: Zhanjun Dong <zhanjun.dong@intel.com>
 Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: José Roberto de Souza <jose.souza@intel.com>
 ---
- drivers/gpu/drm/xe/xe_hw_engine.c       | 6 +++---
- drivers/gpu/drm/xe/xe_hw_engine_types.h | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/xe/xe_gt_mcr.h      | 24 ++++++++++++++++++++++++
+ drivers/gpu/drm/xe/xe_gt_topology.c | 10 ++++++++++
+ drivers/gpu/drm/xe/xe_gt_topology.h |  3 +++
+ 3 files changed, 37 insertions(+)
 
-diff --git a/drivers/gpu/drm/xe/xe_hw_engine.c b/drivers/gpu/drm/xe/xe_hw_engine.c
-index 455f375c1cbd6..c84dbe8a8ed1d 100644
---- a/drivers/gpu/drm/xe/xe_hw_engine.c
-+++ b/drivers/gpu/drm/xe/xe_hw_engine.c
-@@ -791,7 +791,7 @@ xe_hw_engine_snapshot_capture(struct xe_hw_engine *hwe)
- 		return NULL;
+diff --git a/drivers/gpu/drm/xe/xe_gt_mcr.h b/drivers/gpu/drm/xe/xe_gt_mcr.h
+index a7f4ab1aa584b..e7d03e001a49f 100644
+--- a/drivers/gpu/drm/xe/xe_gt_mcr.h
++++ b/drivers/gpu/drm/xe/xe_gt_mcr.h
+@@ -40,4 +40,28 @@ void xe_gt_mcr_get_dss_steering(struct xe_gt *gt, unsigned int dss, u16 *group,
+ 	for_each_dss((dss), (gt)) \
+ 		for_each_if((xe_gt_mcr_get_dss_steering((gt), (dss), &(group), &(instance)), true))
  
- 	snapshot->name = kstrdup(hwe->name, GFP_ATOMIC);
--	snapshot->class = hwe->class;
-+	snapshot->hwe = hwe;
- 	snapshot->logical_instance = hwe->logical_instance;
- 	snapshot->forcewake.domain = hwe->domain;
- 	snapshot->forcewake.ref = xe_force_wake_ref(gt_to_fw(hwe->gt),
-@@ -842,7 +842,7 @@ xe_hw_engine_snapshot_capture(struct xe_hw_engine *hwe)
- 	snapshot->reg.ring_eir = hw_engine_mmio_read32(hwe, RING_EIR(0));
- 	snapshot->reg.ipehr = hw_engine_mmio_read32(hwe, RING_IPEHR(0));
++/*
++ * Loop over each DSS available for geometry and determine the group and
++ * instance IDs that should be used to steer MCR accesses toward this DSS.
++ * @dss: DSS ID to obtain steering for
++ * @gt: GT structure
++ * @group: steering group ID, data type: u16
++ * @instance: steering instance ID, data type: u16
++ */
++#define for_each_geometry_dss(dss, gt, group, instance) \
++		for_each_dss_steering(dss, gt, group, instance) \
++			if (xe_gt_has_geometry_dss(gt, dss))
++
++/*
++ * Loop over each DSS available for compute and determine the group and
++ * instance IDs that should be used to steer MCR accesses toward this DSS.
++ * @dss: DSS ID to obtain steering for
++ * @gt: GT structure
++ * @group: steering group ID, data type: u16
++ * @instance: steering instance ID, data type: u16
++ */
++#define for_each_compute_dss(dss, gt, group, instance) \
++		for_each_dss_steering(dss, gt, group, instance) \
++			if (xe_gt_has_compute_dss(gt, dss))
++
+ #endif /* _XE_GT_MCR_H_ */
+diff --git a/drivers/gpu/drm/xe/xe_gt_topology.c b/drivers/gpu/drm/xe/xe_gt_topology.c
+index 3733e7a6860d3..af841d801a8f5 100644
+--- a/drivers/gpu/drm/xe/xe_gt_topology.c
++++ b/drivers/gpu/drm/xe/xe_gt_topology.c
+@@ -278,3 +278,13 @@ bool xe_gt_topology_has_dss_in_quadrant(struct xe_gt *gt, int quad)
  
--	if (snapshot->class == XE_ENGINE_CLASS_COMPUTE)
-+	if (snapshot->hwe->class == XE_ENGINE_CLASS_COMPUTE)
- 		snapshot->reg.rcu_mode = xe_mmio_read32(hwe->gt, RCU_MODE);
- 
- 	return snapshot;
-@@ -887,7 +887,7 @@ void xe_hw_engine_snapshot_print(struct xe_hw_engine_snapshot *snapshot,
- 	drm_printf(p, "\tBBADDR: 0x%016llx\n", snapshot->reg.ring_bbaddr);
- 	drm_printf(p, "\tDMA_FADDR: 0x%016llx\n", snapshot->reg.ring_dma_fadd);
- 	drm_printf(p, "\tIPEHR: 0x%08x\n", snapshot->reg.ipehr);
--	if (snapshot->class == XE_ENGINE_CLASS_COMPUTE)
-+	if (snapshot->hwe->class == XE_ENGINE_CLASS_COMPUTE)
- 		drm_printf(p, "\tRCU_MODE: 0x%08x\n",
- 			   snapshot->reg.rcu_mode);
+ 	return quad_first < (quad + 1) * dss_per_quad;
  }
-diff --git a/drivers/gpu/drm/xe/xe_hw_engine_types.h b/drivers/gpu/drm/xe/xe_hw_engine_types.h
-index d7f828c76cc5f..27deaa31efd31 100644
---- a/drivers/gpu/drm/xe/xe_hw_engine_types.h
-+++ b/drivers/gpu/drm/xe/xe_hw_engine_types.h
-@@ -158,8 +158,8 @@ struct xe_hw_engine {
- struct xe_hw_engine_snapshot {
- 	/** @name: name of the hw engine */
- 	char *name;
--	/** @class: class of this hw engine */
--	enum xe_engine_class class;
-+	/** @hwe: hw engine */
-+	struct xe_hw_engine *hwe;
- 	/** @logical_instance: logical instance of this hw engine */
- 	u16 logical_instance;
- 	/** @forcewake: Force Wake information snapshot */
++
++bool xe_gt_has_geometry_dss(struct xe_gt *gt, unsigned int dss)
++{
++	return test_bit(dss, gt->fuse_topo.g_dss_mask);
++}
++
++bool xe_gt_has_compute_dss(struct xe_gt *gt, unsigned int dss)
++{
++	return test_bit(dss, gt->fuse_topo.c_dss_mask);
++}
+diff --git a/drivers/gpu/drm/xe/xe_gt_topology.h b/drivers/gpu/drm/xe/xe_gt_topology.h
+index b3e357777a6e7..746b325bbf6e4 100644
+--- a/drivers/gpu/drm/xe/xe_gt_topology.h
++++ b/drivers/gpu/drm/xe/xe_gt_topology.h
+@@ -33,4 +33,7 @@ bool xe_dss_mask_empty(const xe_dss_mask_t mask);
+ bool
+ xe_gt_topology_has_dss_in_quadrant(struct xe_gt *gt, int quad);
+ 
++bool xe_gt_has_geometry_dss(struct xe_gt *gt, unsigned int dss);
++bool xe_gt_has_compute_dss(struct xe_gt *gt, unsigned int dss);
++
+ #endif /* _XE_GT_TOPOLOGY_H_ */
 -- 
 2.44.0
 
