@@ -1,106 +1,144 @@
-Return-Path: <linux-kernel+bounces-154965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-154966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FD088AE3B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:19:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB46B8AE3B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:20:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EC271C21919
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:19:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 877812846EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 11:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A1447E792;
-	Tue, 23 Apr 2024 11:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2AA7E118;
+	Tue, 23 Apr 2024 11:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="duhpoVgC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HYgE1nzT"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3167E118
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 11:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB1E5D903
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 11:20:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713871149; cv=none; b=LL9t3Pvmc/DmHAbdygi9G5UO2ojzhq0Qyz3qyPhTWe5YdOB1/xFxCv2rBZDUBUGlyv6lzq/QbenKEIMNS+pH+XBQi3pxa36dyTS41wYD8FPVpQ7pGHiCbXpkntxKl8bUugrvtNB2H3Gi52DgYugRR4SYtI6lKoZxV8nnHtk5g5Q=
+	t=1713871204; cv=none; b=ecZLXx2oHnacoeUZTgGrRRAnWj8IEVZwsY+N/vWJn/YikNzyY00dMB1c/KnIh+5auuT4FDIUL6LBLB+5j1WD6rBS8cLehKG0ym+owa1l5v22sZhGsd1GsEbXhn+EF498tRPrkHaFRRd6mASW46Uqz+9fSs6b2zkJ69UYQMKi0yA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713871149; c=relaxed/simple;
-	bh=KZP9VCw1/Uo3VBFKKbE8e0yd9jVZbtVuTAHNJpHQ5Jc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=b7opetCLulp+8j7Iap6o9kHnp1vr+SCILOzQXS0Sw2zWMdL1Z9iPFoCbBO1oV1tcXRqDIpCO3JbBEyO1ZZuwY5zuzGyGZMqIwRG8Xpn5ua9atPZ0dPf2HD8yDumC+VNYyMQL6ktgXrii14nWqAQzrInuJvR2+zoi/C/pvVQ2IfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=duhpoVgC; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713871147;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KZP9VCw1/Uo3VBFKKbE8e0yd9jVZbtVuTAHNJpHQ5Jc=;
-	b=duhpoVgCtts4E9YEYIoV6ZsXtkdLUA4vTroovIVHKO319v5Ntu45ARvgqRU31FTB7NgqrS
-	UYu88qX4s+DOQ6t71zeduvVb/yIirST8NjdGgH9bLVmE2lRaT586nwEikJbMKQfJeM44bG
-	dEqJDuodWIZt4PtTKJXS/Pb2o580vmY=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-211-KaDJTMf6MvqnyU2AF1MWsw-1; Tue, 23 Apr 2024 07:19:05 -0400
-X-MC-Unique: KaDJTMf6MvqnyU2AF1MWsw-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a58765c5770so59400866b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 04:19:05 -0700 (PDT)
+	s=arc-20240116; t=1713871204; c=relaxed/simple;
+	bh=YGgyJXKoN5L1hoziE8Pwb/hAAK4jMi3T8Y7cDVkU8b8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QMOJJUHPBnoUX+GPM1Ohtze7IK8OQG4pJOeI7t6FUjoZyLCCu3KiViiLSKHAbpoCm/3CVV2xoBSl7jg5M7ewL2iEpB4JdrVlMJxc5UK0bd0fOS1hkJld/FqMM9v7bch6J5crQ08iSNYx11mSbH4SvGqXnpvNotgnux3JmNplEEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HYgE1nzT; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4155819f710so45408075e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 04:20:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713871200; x=1714476000; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YGgyJXKoN5L1hoziE8Pwb/hAAK4jMi3T8Y7cDVkU8b8=;
+        b=HYgE1nzTDaNVlINjIWYMXBYK0SkbgrnmRsi4LXFGaecyAi10dBQP0UH33Esq2AAa3A
+         jeuUL2eUE6ez1Oi+TdoIuu8GsbItuE057Agsp1i9elY0PwiF4gq51hzpc6O8VwkkCA1h
+         4fnKviH33zDAoYKkhAS2PIXX2I2y9JEHCN+GW2VqbNwhz8d6RvYVT+JfmMjNmYqmebpK
+         Mm2VPwRkM7vPpmHQLCZTujUC4fBaAHO1j9EApfYbiWXBZZb8QJkQwCGKodcc518cB+U8
+         A+dapl4D5TvQnqQS5tLGsQTBwGOQGyW00FE1f4uvSPl+225ScismG7cDDGIAnTDxGVWi
+         pzYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713871144; x=1714475944;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KZP9VCw1/Uo3VBFKKbE8e0yd9jVZbtVuTAHNJpHQ5Jc=;
-        b=LOfHvt2UcZIQNpe36srPXkdkFkUstQf26MHy9oH4HzCdxCS8MKJmRWXSVNDHoblCS1
-         aGIMEg7+Gj+zURhS8suqfxX7qJ4vtxZI4T0+lreyDrMdFl76dOQHpij4+Bkzroq9qyPx
-         WoJOYEicfiDOyQvZnroLDYcHFlnu6Li8wrJwohQoAA3tC2aumYG+Z4aMrLvaIZZEHNon
-         olkNcHraUVfkpqpLCdWJJqZkOi/j/zxrOY/IZoud8Ac1GxknlQlpZ9u3gs1MCBZsJ82/
-         wvmDZke64F8cf/RTYPQhnp1hnNClvzJg2BWJkxdivTcKEF1qhief17FIAVbC6wYA2Ahj
-         9Zpg==
-X-Forwarded-Encrypted: i=1; AJvYcCVQ45dtGtyL5gnqalrYJQ4+viSGUV3HW+44d3Rx48l8mVZMJY3pkclNyVflET8HESv3+NEkF1hWWKWZ+uoSsy7olTahuL4IJBgMiHhf
-X-Gm-Message-State: AOJu0YyyKfeB7lBr4LbqZlBhhi+UNqKyIyzu35kOwzejL3ynwwP8ksGd
-	C5KrRGeEop0yfTMxrHnPSveuKrfLtRxVBErcGUtFwCJLDyyXR1AzzN/iAx+fqLyz2HetjLvrjpg
-	bnbfhxk9qKeCNfOUy92SbX0VytEBxlNruSo08662onrlEmwexIQkivsPqNhoLXMfliKrYXQ==
-X-Received: by 2002:a17:906:3b59:b0:a56:4c83:fcb9 with SMTP id h25-20020a1709063b5900b00a564c83fcb9mr3406817ejf.55.1713871143832;
-        Tue, 23 Apr 2024 04:19:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFaCMQYjFIyeyYbxA/+uCn7lL6cZiX8H3MkJhY2sRHk6IUsyj3HEaxdCPeuK8Ec7M09N3WXDw==
-X-Received: by 2002:a17:906:3b59:b0:a56:4c83:fcb9 with SMTP id h25-20020a1709063b5900b00a564c83fcb9mr3406799ejf.55.1713871143460;
-        Tue, 23 Apr 2024 04:19:03 -0700 (PDT)
-Received: from [169.254.21.156] (5920ab7b.static.cust.trined.nl. [89.32.171.123])
-        by smtp.gmail.com with ESMTPSA id ot15-20020a170906cccf00b00a5239720044sm6912925ejb.8.2024.04.23.04.19.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Apr 2024 04:19:02 -0700 (PDT)
-From: Eelco Chaudron <echaudro@redhat.com>
-To: Jun Gu <jun.gu@easystack.cn>
-Cc: pshelar@ovn.org, dev@openvswitch.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [ovs-dev] [PATCH net-next] net: openvswitch: Release reference to
- netdev
-Date: Tue, 23 Apr 2024 13:19:01 +0200
-X-Mailer: MailMate (1.14r6029)
-Message-ID: <77015793-E8E4-4AD0-A032-9E0A7F7F0865@redhat.com>
-In-Reply-To: <20240423073751.52706-1-jun.gu@easystack.cn>
-References: <20240423073751.52706-1-jun.gu@easystack.cn>
+        d=1e100.net; s=20230601; t=1713871200; x=1714476000;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YGgyJXKoN5L1hoziE8Pwb/hAAK4jMi3T8Y7cDVkU8b8=;
+        b=R7edmpXTQjIMvuAioftv+ZUqis4/nxJI1u60VPLcYipVkpwV11pc9UXts6t/W0H2iM
+         pkqV3b4BdD0FYcnxzKnE8F0S+mqqrZpEhcBvhkr1xwJEcK5bgB63ZmJxtzA3jm/D+BKl
+         qiFGnBuWDMAw2UCftLWfFWl4DnHPTSh5bq98bmC50eFbvDOUshas0gj3hCdHfZX46MP5
+         WOgRqVEO9WFJyadjEw56I3DCFcfrcmFHuEjARRTQkYnD2Ni+iC0/eRkzxPRqJzRnNHcX
+         RhUUQZTbMjjuhzpb/Ml6yzGkcZGMQ1JqDVIb10SEP+Y8OW0nPt0hMtVkfavN/UeEnQUz
+         2LEg==
+X-Forwarded-Encrypted: i=1; AJvYcCUnLy/H5gP/3vSzIzEVT6a3miej03yncT+0Hpgn2RvY7gjbBN4iuzFnDDNzje5amJ2GdhCh2z+wxNLBvj6VQ/8w4TjgBVg16T35wk6E
+X-Gm-Message-State: AOJu0YxgVa6x2k0ahn6x9VRXRfspeHt6pO0onbquZ5TqnXzYTmxMO7Ia
+	fiGzpGpmB3RyBs3oilbbe5HKsXeweD2tYnZQZyd2InjfpI+cLj31V8Y4qzLAUBs=
+X-Google-Smtp-Source: AGHT+IHMKxMg+gfHErSx5FW+vINajDp9UAb8VLTHQPc43/6ff53K4UznbcECiMb2/I3QUr5myH9RuQ==
+X-Received: by 2002:a05:600c:470d:b0:41a:c592:64ff with SMTP id v13-20020a05600c470d00b0041ac59264ffmr983585wmo.35.1713871199993;
+        Tue, 23 Apr 2024 04:19:59 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id g4-20020adff3c4000000b00343c1cd5aedsm14309973wrp.52.2024.04.23.04.19.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 04:19:59 -0700 (PDT)
+Date: Tue, 23 Apr 2024 12:19:57 +0100
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Jason Wessel <jason.wessel@windriver.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2 0/7] kdb: Refactor and fix bugs in kdb_read()
+Message-ID: <20240423111957.GD1567803@aspen.lan>
+References: <20240422-kgdb_read_refactor-v2-0-ed51f7d145fe@linaro.org>
+ <kvmf4hcnoeuogggx5jmcqjch32shyswjv5cqvg4hwdg4g27rup@t4ddszao3354>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <kvmf4hcnoeuogggx5jmcqjch32shyswjv5cqvg4hwdg4g27rup@t4ddszao3354>
 
-
-
-On 23 Apr 2024, at 9:37, Jun Gu wrote:
-
-> dev_get_by_name will provide a reference on the netdev. So ensure that
-> the reference of netdev is released after completed.
+On Mon, Apr 22, 2024 at 10:49:29PM +0000, Justin Stitt wrote:
+> Hi,
 >
-> Fixes: 2540088b836f ("net: openvswitch: Check vport netdev name")
-> Signed-off-by: Jun Gu <jun.gu@easystack.cn>
+> On Mon, Apr 22, 2024 at 05:35:53PM +0100, Daniel Thompson wrote:
+> > Inspired by a patch from [Justin][1] I took a closer look at kdb_read().
+> >
+> > Despite Justin's patch being a (correct) one-line manipulation it was a
+> > tough patch to review because the surrounding code was hard to read and
+> > it looked like there were unfixed problems.
+> >
+> > This series isn't enough to make kdb_read() beautiful but it does make
+> > it shorter, easier to reason about and fixes two buffer overflows and a
+> > screen redraw problem!
+> >
+> > [1]: https://lore.kernel.org/all/20240403-strncpy-kernel-debug-kdb-kdb_io-c-v1-1-7f78a08e9ff4@google.com/
+> >
+> > Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+>
+> Seems to work nicely.
+>
+> There is some weird behavior which was present before your patch and is
+> still present with it (let >< represent cursor position):
+>
+> [0]kdb> test_ap>< (now press TAB)
+>
+> [0]kdb> test_aperfmperf>< (so far so good, we got our autocomplete)
+>
+> [0]kdb> test_ap><erfmperf (now, let's move the cursor back and press TAB again)
+>
+> [0]kdb> test_aperfmperf><erfmperf
+>
+> This is because the autocomplete engine is not considering the
+> characters after the cursor position. To be clear, this isn't really a
+> bug but rather a decision to be made about which functionality is
+> desired.
+>
+> For example, my shell (zsh) will just simply move the cursor back to
+> the end of the complete match instead of re-writing stuff.
 
-Thanks Jun for the follow-up! The change looks good to me!
+Interesting observation. I hadn't realized zsh does that. FWIW default
+settings for both bash and gdb complete the same way as kdb. Overall
+that makes me OK with the current kdb behaviour.
 
-Acked-by: Eelco Chaudron <echaudro@redhat.com>
+However I was curious about this and found "skip-completed-text" in
+the GNU Readline documentation. I think that would give you zsh-like
+completion in gdb if you ever want it!
 
+
+> At any rate,
+> Tested-by: Justin Stitt <justinstitt@google.com>
+
+Thanks.
+
+
+Daniel.
 
