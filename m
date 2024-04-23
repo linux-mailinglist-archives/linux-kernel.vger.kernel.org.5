@@ -1,222 +1,152 @@
-Return-Path: <linux-kernel+bounces-155821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F82B8AF795
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DFEE8AF796
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 21:51:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B1CC1F234FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:50:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC8491F236AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 19:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CEA143860;
-	Tue, 23 Apr 2024 19:49:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04A491422BA;
+	Tue, 23 Apr 2024 19:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b="CN2stkCg"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dICKS0G9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1302142E60
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 19:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4692E13E3F8
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 19:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713901783; cv=none; b=ezrC0dzUv6lTdEAglnxxDfBBS/b+Mii4psSogKUgkpGPL4ZvVh9nlSaT9mcv3jwYMwrE67t0nxYgQ98tEkuDwIWSKYMVFYyKnBfnF4RYTgGBKSOrDPTaVoDqGvKujOZPhpSyPEmpTfKv3Q8+5/nNxG2ah7iHEKv+n+5SsIK0w5g=
+	t=1713901793; cv=none; b=boF/Uxi3uNZ6yTyLft/GqVnYQjM0RnTT9fH5SIWT99nRVwRZwYMQSW6G61xR7LUTmLPX1aAUA3RL9ldze0cH/niQclskyKhuWw6GkBEnBYSf5T8bd7O5d2UhWEP8CxRlOg0IrEHdMwxG2UuTOUiAPICJvRH1VKjhPgM0SpRtIEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713901783; c=relaxed/simple;
-	bh=Ia0r0BSwe8QIUJufAJclFiQc0GFm4DiTWN09Y106Hm8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i9FQF1iOgjhCc4M6BMCrExcoOZD/OBD3YEg7bpwk2t/A4AQXVH04zqR+FRRvWt88ja04Plb1HiP5xwss1WiftwwCO0Na/Tboa1QEjr23bKC7Qq6OjnCwSP70+PoJ2HWZCA/wQyLkyZmPuC2nHkrU/UJN56vwwYFvPyN8DecNQMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com; spf=pass smtp.mailfrom=fastly.com; dkim=pass (1024-bit key) header.d=fastly.com header.i=@fastly.com header.b=CN2stkCg; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fastly.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastly.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ed691fb83eso4829866b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:49:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fastly.com; s=google; t=1713901781; x=1714506581; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xVn2/16u03FLjFZk8aJRPJceLU2TpVvTdEBl2UjSyh4=;
-        b=CN2stkCgehZlulLdHqvj4QacpGOOalxpFaExf6HABiOhoqahuJ8NZIgWGYxRpWhL0E
-         P2XMn1Pf11viDCxJ3SC222bNo9qeAfphBqcbqucYlwivRd/+RQLb0/R1vMVR0k4E6Bpe
-         M8/UbE/xbCWBgnC8dL6OjZw+eNODMo9P/utfQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713901781; x=1714506581;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xVn2/16u03FLjFZk8aJRPJceLU2TpVvTdEBl2UjSyh4=;
-        b=dnSZH12xNnDprWyDH4iY4kcI5MdYbUbJWnsKekvuqcVShqlo44NgMoUrG1Cz8hfCmo
-         X/vSeunooUBBXZi52FZDZADGF45r02xo8Li/YtCtr9yabf8lrB9hoquPYwAwjlyVtEkt
-         VklKzheLFYKQzU2CGsVXGpRqp/Ac2HUY1O/l0SI9yEBHJ2+N7tCEpRpXBSuziIt5zOhU
-         5tvX14FBZJ63SVmJzxegjDLuJLBZEnluRXwSxg6cayJxhruzMceub3R1U7Z+ZZzIDoFx
-         2YQiYruw2cGwThW3txAWMC3wJVeTgEzMvGRh0vk+efSzdbfytOdgv9kdq3ILnz/ONDoW
-         r4cQ==
-X-Gm-Message-State: AOJu0Yx2Axt1dQ+z5cKzmAflwzElm39MZYD4cMNBneJ9AfMGzrBmnQp1
-	/aBGztS4gDWzgKAa7CbtMmp5idD+3spVY8alwANfoEYaVB9vC7pMWgjNjFFawZXaTImC9b4QUzI
-	7N9t+bm9/84xXtQMi3HBFUkmr8aUJcFZHPjr4YKDMWeulw5JdE0ZbkpAiXzKHKUhUKQdwthn6Ua
-	HosqmmCIgfXcHVRFutTAosPfA+GJCRJWPmB2HPAkDkOCw=
-X-Google-Smtp-Source: AGHT+IEdHVRIc38qxCA1mIyeOG1MZrMmyYzSbB685Hg3GGC/hMJZ8mGeFWAIK08zuqTSfXkJb1ZZRw==
-X-Received: by 2002:a05:6a20:974a:b0:1ad:746:b15a with SMTP id hs10-20020a056a20974a00b001ad0746b15amr349392pzc.47.1713901780830;
-        Tue, 23 Apr 2024 12:49:40 -0700 (PDT)
-Received: from localhost.localdomain ([2620:11a:c019:0:65e:3115:2f58:c5fd])
-        by smtp.gmail.com with ESMTPSA id q3-20020a056a00084300b006ecc6c1c67asm9995672pfk.215.2024.04.23.12.49.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 12:49:40 -0700 (PDT)
-From: Joe Damato <jdamato@fastly.com>
-To: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	tariqt@nvidia.com,
-	saeedm@nvidia.com
-Cc: mkarsten@uwaterloo.ca,
-	gal@nvidia.com,
-	nalramli@fastly.com,
-	Joe Damato <jdamato@fastly.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-rdma@vger.kernel.org (open list:MELLANOX MLX4 core VPI driver)
-Subject: [PATCH net-next 3/3] net/mlx4: support per-queue statistics via netlink
-Date: Tue, 23 Apr 2024 19:49:30 +0000
-Message-Id: <20240423194931.97013-4-jdamato@fastly.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240423194931.97013-1-jdamato@fastly.com>
-References: <20240423194931.97013-1-jdamato@fastly.com>
+	s=arc-20240116; t=1713901793; c=relaxed/simple;
+	bh=p4ePbeqG6cRJBW5GIQ6tZmdVtnpRun7EiUCLgzd+ztE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ceV6uYOdIRGVmJ/f06XPemk8MlhlxVlY50wUgUFpVPnW4n0YMnnqs9M8G+G1bvTikSJ+MfzFTXiwLn2Qiz/3gjVJD3yYJBD0YgPD2sbEpEm6UgXGKRRgdsfH1Wg4gfmTbP0pZSH8Vqeu4t1tpyhyJT0SDAgZksuJdIuPFaOijwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dICKS0G9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D42F7C116B1;
+	Tue, 23 Apr 2024 19:49:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713901792;
+	bh=p4ePbeqG6cRJBW5GIQ6tZmdVtnpRun7EiUCLgzd+ztE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=dICKS0G9TNFTz+s+Z/ZyQBlK2fcJzcPfj2x/4ApajgXk81lpSCqxMaIE2BFXp3fRy
+	 LaQ3LMzgd0Oo7eUI+aCZY4dbF6/pEGuaFZocpyePlL48DzsfJJwwUdaGBi5GZ3Z1Rd
+	 yL/KMAQtBY3z3Mrj+2DGRU3xX6l7qkpsTVmO1yV+nfc7y7518H6gj+xfBOZFNf0fjB
+	 iAOrzzw1Ihns7GWCIkYyxB1up3dVWrtKgIws6jDdA/Ohgb375V5Qzp/dYu5sP3H7Kn
+	 jD2bnjpYs+XxrzQJx0kYsGjDTeMMK9w1L6vKOirfft14Yvoj7EwNbs01GwEOfupTN4
+	 gvNh31LYLzYdg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 83714CE0962; Tue, 23 Apr 2024 12:49:52 -0700 (PDT)
+Date: Tue, 23 Apr 2024 12:49:52 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Willy Tarreau <w@1wt.eu>
+Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, Rodrigo Campos <rodrigo@sdfg.com.ar>
+Subject: Re: [PATCH v3 4/4] selftests/nolibc: Add tests for strlcat() and
+ strlcpy()
+Message-ID: <ada70a65-5a87-489f-8080-97049740bff9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240218195110.1386840-1-rodrigo@sdfg.com.ar>
+ <20240218195110.1386840-5-rodrigo@sdfg.com.ar>
+ <172d25cf-cfd7-4069-8c26-df2e81ffbad1@t-8ch.de>
+ <Zifhr1sX5soHlXSG@1wt.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zifhr1sX5soHlXSG@1wt.eu>
 
-Make mlx4 compatible with the newly added netlink queue stats API.
+On Tue, Apr 23, 2024 at 06:28:31PM +0200, Willy Tarreau wrote:
+> Hi Thomas,
+> 
+> On Tue, Apr 23, 2024 at 11:18:06AM +0200, Thomas Weißschuh wrote:
+> > + Shuah and Paul, please see below.
+> > 
+> > So I picked this up and it got picked up by Shuah, but...
+> > 
+> > On 2024-02-18 16:51:06+0000, Rodrigo Campos wrote:
+> > > I've verified that the tests matches libbsd's strlcat()/strlcpy()
+> > > implementation.
+> > > 
+> > > Please note that as strlcat()/strlcpy() are not part of the libc, the
+> > > tests are only compiled when using nolibc.
+> > > 
+> > > Signed-off-by: Rodrigo Campos <rodrigo@sdfg.com.ar>
+> > > ---
+> > >  tools/testing/selftests/nolibc/nolibc-test.c | 40 ++++++++++++++++++++
+> > >  1 file changed, 40 insertions(+)
+> > > 
+> > > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> > > index 6ba4f8275ac4..d373fc14706c 100644
+> > > --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> > > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> > > @@ -600,6 +600,25 @@ int expect_strne(const char *expr, int llen, const char *cmp)
+> > >  	return ret;
+> > >  }
+> > >  
+> > > +#define EXPECT_STRBUFEQ(cond, expr, buf, val, cmp)				\
+> > > +	do { if (!(cond)) result(llen, SKIPPED); else ret += expect_str_buf_eq(expr, buf, val, llen, cmp); } while (0)
+> > > +
+> > > +static __attribute__((unused))
+> > > +int expect_str_buf_eq(size_t expr, const char *buf, size_t val, int llen, const char *cmp)
+> > > +{
+> > > +	llen += printf(" = %lu <%s> ", expr, buf);
+> > 
+> > This introduces a compiler warning on 32bit:
+> > 
+> >     i386-linux-gcc -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 -W -Wall -Wextra -fno-stack-protector -m32 -mstack-protector-guard=global -fstack-protector-all  -o nolibc-test \
+> >       -nostdlib -nostdinc -static -Isysroot/i386/include nolibc-test.c nolibc-test-linkage.c -lgcc
+> >     nolibc-test.c: In function 'expect_str_buf_eq':
+> >     nolibc-test.c:610:30: error: format '%lu' expects argument of type 'long unsigned int', but argument 2 has type 'size_t' {aka 'unsigned int'} [-Werror=format=]
+> >       610 |         llen += printf(" = %lu <%s> ", expr, buf);
+> >           |                            ~~^         ~~~~
+> >           |                              |         |
+> >           |                              |         size_t {aka unsigned int}
+> >           |                              long unsigned int
+> >           |                            %u
+> > 
+> > 
+> > It is easy enough to fix through a cast to "unsigned long".
+> 
+> Yes, that's usually what I do as well with size_t everywhere as well.
+> 
+> > The original patch was already sent to Shuah and included in -next.
+> > 
+> > Shuah, Paul:
+> > 
+> > I'd like to rewrite the offending commit instead of having a fixup commit.
+> > As it seems to me the original patch would only go into 6.10 anyways.
+> > 
+> > Any objections?
+> 
+> I, too, think it would be the cleanest history-wise, I just don't know
+> if that's the easiest for Shuah if it requires to change already published
+> commit IDs.
 
-Signed-off-by: Joe Damato <jdamato@fastly.com>
-Tested-by: Martin Karsten <mkarsten@uwaterloo.ca>
----
- .../net/ethernet/mellanox/mlx4/en_netdev.c    | 91 +++++++++++++++++++
- 1 file changed, 91 insertions(+)
+One way would be to resend the series and have Shuah replace what she
+has with the new series.  But I don't know enough about Shuah's process
+to judge.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-index 5d3fde63b273..c7f04d4820c6 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-@@ -43,6 +43,7 @@
- #include <net/vxlan.h>
- #include <net/devlink.h>
- #include <net/rps.h>
-+#include <net/netdev_queues.h>
- 
- #include <linux/mlx4/driver.h>
- #include <linux/mlx4/device.h>
-@@ -3099,6 +3100,95 @@ void mlx4_en_set_stats_bitmap(struct mlx4_dev *dev,
- 	last_i += NUM_PHY_STATS;
- }
- 
-+static void mlx4_get_queue_stats_rx(struct net_device *dev, int i,
-+				    struct netdev_queue_stats_rx *stats)
-+{
-+	struct mlx4_en_priv *priv = netdev_priv(dev);
-+	const struct mlx4_en_rx_ring *ring;
-+
-+	stats->packets = 0xff;
-+	stats->bytes = 0xff;
-+	stats->alloc_fail = 0xff;
-+
-+	spin_lock_bh(&priv->stats_lock);
-+
-+	if (!priv->port_up || mlx4_is_master(priv->mdev->dev))
-+		goto out_unlock;
-+
-+	ring = priv->rx_ring[i];
-+	stats->packets = READ_ONCE(ring->packets);
-+	stats->bytes   = READ_ONCE(ring->bytes);
-+	stats->alloc_fail = READ_ONCE(ring->dropped);
-+
-+out_unlock:
-+	spin_unlock_bh(&priv->stats_lock);
-+}
-+
-+static void mlx4_get_queue_stats_tx(struct net_device *dev, int i,
-+				    struct netdev_queue_stats_tx *stats)
-+{
-+	struct mlx4_en_priv *priv = netdev_priv(dev);
-+	const struct mlx4_en_tx_ring *ring;
-+
-+	stats->packets = 0xff;
-+	stats->bytes = 0xff;
-+
-+	spin_lock_bh(&priv->stats_lock);
-+
-+	if (!priv->port_up || mlx4_is_master(priv->mdev->dev))
-+		goto out_unlock;
-+
-+	ring = priv->tx_ring[TX][i];
-+	stats->packets = READ_ONCE(ring->packets);
-+	stats->bytes   = READ_ONCE(ring->bytes);
-+
-+out_unlock:
-+	spin_unlock_bh(&priv->stats_lock);
-+}
-+
-+static void mlx4_get_base_stats(struct net_device *dev,
-+				struct netdev_queue_stats_rx *rx,
-+				struct netdev_queue_stats_tx *tx)
-+{
-+	struct mlx4_en_priv *priv = netdev_priv(dev);
-+	int i;
-+
-+	rx->packets = 0xff;
-+	rx->bytes = 0xff;
-+	rx->alloc_fail = 0xff;
-+	tx->packets = 0xff;
-+	tx->bytes = 0xff;
-+
-+	spin_lock_bh(&priv->stats_lock);
-+
-+	if (!priv->port_up || mlx4_is_master(priv->mdev->dev))
-+		goto out_unlock;
-+
-+	for (i = 0; i < priv->rx_ring_num; i++) {
-+		const struct mlx4_en_rx_ring *ring = priv->rx_ring[i];
-+
-+		rx->packets += READ_ONCE(ring->packets);
-+		rx->bytes += READ_ONCE(ring->bytes);
-+		rx->alloc_fail += READ_ONCE(ring->dropped);
-+	}
-+
-+	for (i = 0; i < priv->tx_ring_num[TX]; i++) {
-+		const struct mlx4_en_tx_ring *ring = priv->tx_ring[TX][i];
-+
-+		tx->packets += READ_ONCE(ring->packets);
-+		tx->bytes   += READ_ONCE(ring->bytes);
-+	}
-+
-+out_unlock:
-+	spin_unlock_bh(&priv->stats_lock);
-+}
-+
-+static const struct netdev_stat_ops mlx4_stat_ops = {
-+	.get_queue_stats_rx     = mlx4_get_queue_stats_rx,
-+	.get_queue_stats_tx     = mlx4_get_queue_stats_tx,
-+	.get_base_stats         = mlx4_get_base_stats,
-+};
-+
- int mlx4_en_init_netdev(struct mlx4_en_dev *mdev, int port,
- 			struct mlx4_en_port_profile *prof)
- {
-@@ -3262,6 +3352,7 @@ int mlx4_en_init_netdev(struct mlx4_en_dev *mdev, int port,
- 	netif_set_real_num_tx_queues(dev, priv->tx_ring_num[TX]);
- 	netif_set_real_num_rx_queues(dev, priv->rx_ring_num);
- 
-+	dev->stat_ops = &mlx4_stat_ops;
- 	dev->ethtool_ops = &mlx4_en_ethtool_ops;
- 
- 	/*
--- 
-2.25.1
+							Thanx, Paul
 
+> > Notes to self:
+> > 
+> > * Add flag to run-tests.sh to use -Werror
+> > * Implement "%zu" in nolibc printf()
+> 
+> Could be nice indeed!
+> 
+> Thanks Thomas for taking care of this!
+> Willy
 
