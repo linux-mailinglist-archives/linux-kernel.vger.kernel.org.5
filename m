@@ -1,56 +1,73 @@
-Return-Path: <linux-kernel+bounces-155213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A9C08AE6DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:49:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8068AE6E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 14:50:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8576E1F23C8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:49:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CF9D1C2301D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 12:50:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4DB413666B;
-	Tue, 23 Apr 2024 12:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1131369B5;
+	Tue, 23 Apr 2024 12:46:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b="rKzDmKTG"
-Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D7agsy/6"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0C30135A54
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.26.50.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B64136E2D
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 12:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713876384; cv=none; b=V2nkC/JnlsGWvBD4j6sbNJx74mrZbwrJYjhfxrH4s2Mne+PnGuRepfXewBbydpa0utCyEecMVFzLvqyNDcWMYbK0QYaT8n4PQ+pYrtp4fHrteeYFjUVobkLWugzlMYlIMmM5EeWQsVInZvTt1HkorqzB0XQCMv4X6dFfJvrEiNk=
+	t=1713876399; cv=none; b=k2BCNTJWEk+PtWD6EffgplsfiRiAJZhEGXgFA0tTUZZpCxFcEEdaJ7jEibnMNd0IUlx3r86eaHpie/7Yf0LCG7GvZvh1O2zY5CWLzPKTMEpIheH8VYt7wccgPqvdXxIEyUTtZHYzw+O5/1eUQu03frayzLDne9IcUAJy/jDxodY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713876384; c=relaxed/simple;
-	bh=fv24otzIdbTkNmM/Iq3YiotlOhcVOcMFQNzMPnvNyKE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=pKyhhciWfHxdpedoDlvoBbn3dH02mAy/1zHchFx6w1r/EZlwoJ6J8YCqnnjZ7nLDjC/ahL+Bdhg+fA3jxZuWK7H6aQ3Lwj+xB1mgacAlEnHdP9aWLu39QK0/IS8DVpjv8thriIj9uigjXamYQzvbZArBQ5/8dVXBizCf7eIUX8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de; spf=pass smtp.mailfrom=phytec.de; dkim=pass (1024-bit key) header.d=phytec.de header.i=@phytec.de header.b=rKzDmKTG; arc=none smtp.client-ip=91.26.50.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytec.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytec.de
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-	q=dns/txt; i=@phytec.de; t=1713876376; x=1716468376;
-	h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=fv24otzIdbTkNmM/Iq3YiotlOhcVOcMFQNzMPnvNyKE=;
-	b=rKzDmKTG4XC1qz9bh8Fqkq1lpYte9+p7frI8ODwMMX+5cLxhk5ZP3L3a0XA9T5EZ
-	qt6LjpNtzEFY5z/oPSm/bHMp6J/737L0XQ8n5sPHsrNNrNF7RHS7olIwFTBHMyRl
-	MeUyffvBQ9VarUF3lQhh7+r8ZAwmDkftI596QpdCzTM=;
-X-AuditID: ac14000a-fadff7000000290d-a8-6627ad98fd30
-Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
-	(using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 01.44.10509.89DA7266; Tue, 23 Apr 2024 14:46:16 +0200 (CEST)
-Received: from [172.25.39.28] (172.25.0.11) by Berlix.phytec.de (172.25.0.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Tue, 23 Apr
- 2024 14:46:14 +0200
-Message-ID: <95022657-c82c-4e20-9a3d-f83acf9911d8@phytec.de>
-Date: Tue, 23 Apr 2024 14:46:14 +0200
+	s=arc-20240116; t=1713876399; c=relaxed/simple;
+	bh=UXbyOuSKUk6g1FCuzFbmBH4NJztxq0P/VMUY9kPJrvg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r3shYfDUgK6yLrwGDUViXTg4xIKnN5qyixMUstrjLxfiDcDPwKH7vzIAazef81v5Pp/CndL9+GRl4Lh7rmjDVi3qAgn9MXmto52xtQxXxbdvOmzZmR4S/Sypyyzs2pVFf4M7HqtgY0jJjOgJO5YFmJoIXa5psMoN+k1lgNifMgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D7agsy/6; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-34782453ffdso5668180f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 05:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713876396; x=1714481196; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SnPvo8X71/HjmVfrFSADYDRaBhD7wOKAzatHqFXk968=;
+        b=D7agsy/6VViR4cX0MBsxJWoxCdbK4LkQqyXnPZYAGxzQuEnnK6jwoZLaWs5VYaqEg9
+         +RZC3nhf+xX+MjQS0WRnHh40La+h3VeWrfKLJR6zXjommaHQXEKLjbnL/jygZD95hAOq
+         Fp0dpRZmCwDJQrJZbStccz+FJ2tgODU4uxl20wksz5iZwao2KhJDUy9zUO5WiZRlDC1w
+         U6QQgAURIu6nGztYhguYZ83Fq74JN7cGv1Fv4Eg20rLMsEkchAN4Ec9RcN+f2c6+ayDA
+         wB0Q/DdOjEUewW8k20X1ZLsrjmLJ+Bq0bFO88kXcArBpJ3p8uJMSBUN2F2gxBD+SE9+Y
+         tlEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713876396; x=1714481196;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SnPvo8X71/HjmVfrFSADYDRaBhD7wOKAzatHqFXk968=;
+        b=k9tXCOeNOLRg50ep9vICpLM7CCgbk0/TNrRpHfgkZUsNftHrJwHV8hE8RPG0yLAJgp
+         Bpm9/g2m3xhk6B7DP/T2yQnzm8uCBqLTs10AsfgCkrEBG1OINoYGswzHKkAksU84YPoI
+         lxN0cciM21NJBp6gHQm/vFXff0XzcMYwSPf770I3xqDDfXgspeKAz76c5wJE3BBBQv5t
+         M6XLUyxBz3IxlvqLYt5NGWBPa3xGoUJWrQk3dYSENZ60KQD132sF9571ejuZ1KVXg25u
+         dKnzywk+wNt4YQcoJpWm0MtCN/DabJm0Y1Dc30cV2gD0hmdibj5xyacbNiI1QNwYV5sK
+         +djg==
+X-Forwarded-Encrypted: i=1; AJvYcCVQD3bS1dT3DvUvOcGiURIvtc4kKEnId7z3k8D3LBylmgBlnnkLeYSF/Pjvd1Kz66tvjwUm+IabXqqRhzt02pwhxtFrxCiAPQjiRtEN
+X-Gm-Message-State: AOJu0Yz0QoIz4tBDy78f8puyFFRfxNsmwquED2AghJxN5/pWeCFgKZU5
+	Tem5gJwdadZ0yfqTksrMfyaPpuYkv9TIDQNMltyf+6e449DI0Byo/NhkDkugXac=
+X-Google-Smtp-Source: AGHT+IG+1vx5mJkN+16nkw6DrmjKX/bCAbSI7iHWCeWcx9NCAuHfmO/i6PUYzl4PV0Sl6Y/Ow1sbhA==
+X-Received: by 2002:adf:b197:0:b0:349:f83f:9ebf with SMTP id q23-20020adfb197000000b00349f83f9ebfmr11081490wra.5.1713876396189;
+        Tue, 23 Apr 2024 05:46:36 -0700 (PDT)
+Received: from [192.168.0.102] ([176.61.106.227])
+        by smtp.gmail.com with ESMTPSA id y7-20020a5d6207000000b00346f9071405sm14531796wru.21.2024.04.23.05.46.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 05:46:35 -0700 (PDT)
+Message-ID: <44d6ab8c-3810-46ac-8e54-c125b5c29199@linaro.org>
+Date: Tue, 23 Apr 2024 13:46:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,133 +75,71 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: am64-phyboard-electra: Add overlay to
- enable a GPIO fan
-To: Nathan Morrisson <nmorrisson@phytec.com>, <nm@ti.com>, <vigneshr@ti.com>,
-	<kristo@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-	<conor+dt@kernel.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <upstream@lists.phytec.de>
-References: <20240419193114.3090084-1-nmorrisson@phytec.com>
+Subject: Re: [PATCH 12/35] media: platform: mtk-mdp3: Use refcount_t for
+ job_count
+To: Ricardo Ribalda <ribalda@chromium.org>,
+ Martin Tuma <martin.tuma@digiteqautomotive.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Hugues Fruchet <hugues.fruchet@foss.st.com>,
+ Alain Volmat <alain.volmat@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Chen-Yu Tsai
+ <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Sowjanya Komatineni <skomatineni@nvidia.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
+ Abylay Ospan <aospan@netup.ru>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Dmitry Osipenko <digetx@gmail.com>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+ Sylvain Petinot <sylvain.petinot@foss.st.com>,
+ Jacopo Mondi <jacopo+renesas@jmondi.org>,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+ =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+ Pavel Machek <pavel@ucw.cz>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
+ <20240415-fix-cocci-v1-12-477afb23728b@chromium.org>
 Content-Language: en-US
-From: Wadim Egorov <w.egorov@phytec.de>
-In-Reply-To: <20240419193114.3090084-1-nmorrisson@phytec.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240415-fix-cocci-v1-12-477afb23728b@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
- (172.25.0.12)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIIsWRmVeSWpSXmKPExsWyRpKBR3fGWvU0g92f2C3W7D3HZDH/yDlW
-	i+WfZ7NbvJx1j81i0+NrrBaXd81hs3jz4yyTxYfGzWwW//fsYLfofqdu8f/sB3YHbo9NqzrZ
-	PDYvqffo725h9fhz8R2rx/Eb25k8Pm+SC2CL4rJJSc3JLEst0rdL4MpYtmIDU8EvmYoN2w+x
-	NjB2SHQxcnJICJhI3Lp6iaWLkYtDSGAJk8S89c9YIZy7jBL9+y6zg1TxCthIfL4xj6mLkYOD
-	RUBVYuICqLCgxMmZT1hAbFEBeYn7t2aAxYUF4iTOtdxhApkjIrCUUeLxqh1gDrNAG6PEk4cH
-	mEEGCQEN3bZZB6SBWUBc4taT+UwgNpuAusSdDd9YQUo4BWwlzm5RhCixkFj85iA7hC0vsf3t
-	HGYQWwjIfnFpOQvEM/IS0869ZoawQyW2ftnONIFReBaSU2ch2TYLydhZSMYuYGRZxSiUm5mc
-	nVqUma1XkFFZkpqsl5K6iREUbSIMXDsY++Z4HGJk4mA8xCjBwawkwvvrj0qaEG9KYmVValF+
-	fFFpTmrxIUZpDhYlcd7VHcGpQgLpiSWp2ampBalFMFkmDk6pBkYV3YdrlCrseT9zu5pufBVf
-	fH6PldjTWUm8e/iORNy+EbRB7/7PEscaxqcbqrxmrfjru+VGdnK7y9Ujc0LfqW9edGyR8aL7
-	Vz7HXeL7pFRx232LnofEhfAi5nfzH9cuMZjB+HP3RsYlLst3XV0gdLVH3SR+4V1PdT2dv3lV
-	Dnlr7k8R+jnzefJCJZbijERDLeai4kQAAx6pM6QCAAA=
 
-
-
-Am 19.04.24 um 21:31 schrieb Nathan Morrisson:
-> The phyBOARD-Electra has a GPIO fan header. This overlay enables the fan
-> header and sets the fan to turn on at 65C.
+On 15/04/2024 20:34, Ricardo Ribalda wrote:
+> Use an API that resembles more the actual use of job_count.
 > 
-> Signed-off-by: Nathan Morrisson <nmorrisson@phytec.com>
+> Found by cocci:
+> drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c:527:5-24: WARNING: atomic_dec_and_test variation before object free at line 541.
+> drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c:578:6-25: WARNING: atomic_dec_and_test variation before object free at line 581.
 
-Reviewed-by: Wadim Egorov <w.egorov@phytec.de>
+Same comment here as per the previous patch.
 
-> ---
->   arch/arm64/boot/dts/ti/Makefile               |  4 ++
->   .../k3-am642-phyboard-electra-gpio-fan.dtso   | 50 +++++++++++++++++++
->   2 files changed, 54 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-gpio-fan.dtso
-> 
-> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-> index 9a722c2473fb..fd91cf40af6d 100644
-> --- a/arch/arm64/boot/dts/ti/Makefile
-> +++ b/arch/arm64/boot/dts/ti/Makefile
-> @@ -48,6 +48,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t.dtb
->   dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-pcie.dtb
->   dtb-$(CONFIG_ARCH_K3) += k3-am642-hummingboard-t-usb3.dtb
->   dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
-> +dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-gpio-fan.dtbo
->   dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
->   dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
->   dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
-> @@ -131,6 +132,8 @@ k3-am62p5-sk-csi2-tevi-ov5640-dtbs := k3-am62p5-sk.dtb \
->   	k3-am62x-sk-csi2-tevi-ov5640.dtbo
->   k3-am642-evm-icssg1-dualemac-dtbs := \
->   	k3-am642-evm.dtb k3-am642-evm-icssg1-dualemac.dtbo
-> +k3-am642-phyboard-electra-gpio-fan-dtbs := \
-> +	k3-am642-phyboard-electra-rdk.dtb k3-am642-phyboard-electra-gpio-fan.dtbo
->   k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
->   	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
->   k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
-> @@ -174,6 +177,7 @@ DTC_FLAGS_k3-am62-lp-sk += -@
->   DTC_FLAGS_k3-am62a7-sk += -@
->   DTC_FLAGS_k3-am62p5-sk += -@
->   DTC_FLAGS_k3-am642-evm += -@
-> +DTC_FLAGS_k3-am642-phyboard-electra-rdk += -@
->   DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
->   DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
->   DTC_FLAGS_k3-am68-sk-base-board += -@
-> diff --git a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-gpio-fan.dtso b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-gpio-fan.dtso
-> new file mode 100644
-> index 000000000000..5057658061b4
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-gpio-fan.dtso
-> @@ -0,0 +1,50 @@
-> +// SPDX-License-Identifier: GPL-2.0-only OR MIT
-> +/*
-> + * Copyright (C) 2024 PHYTEC America LLC
-> + * Author: Nathan Morrisson <nmorrisson@phytec.com>
-> + */
-> +
-> +/dts-v1/;
-> +/plugin/;
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/thermal/thermal.h>
-> +#include "k3-pinctrl.h"
-> +
-> +&{/} {
-> +	fan: gpio-fan {
-> +		compatible = "gpio-fan";
-> +		gpio-fan,speed-map = <0 0 8600 1>;
-> +		gpios = <&main_gpio0 28 GPIO_ACTIVE_LOW>;
-> +		#cooling-cells = <2>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&gpio_fan_pins_default>;
-> +	};
-> +};
-> +
-> +&main_pmx0 {
-> +	gpio_fan_pins_default: gpio-fan-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM64X_IOPAD(0x070, PIN_OUTPUT, 7) /* (V18) GPMC0_AD13.GPIO0_28 */
-> +		>;
-> +	};
-> +};
-> +
-> +&thermal_zones {
-> +	main0_thermal: main0-thermal {
-> +		trips {
-> +			main0_thermal_trip0: main0-thermal-trip {
-> +				temperature = <65000>;  /* millicelsius */
-> +				hysteresis = <2000>;    /* millicelsius */
-> +				type = "active";
-> +			};
-> +		};
-> +
-> +		cooling-maps {
-> +			map0 {
-> +				trip = <&main0_thermal_trip0>;
-> +				cooling-device = <&fan THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-> +			};
-> +		};
-> +	};
-> +};
+You should explain in terms of the memory ordering that refcount_t gives 
+so that the intention of the WARNING and the API change is well 
+communicated.
+
+---
+bod
+
 
