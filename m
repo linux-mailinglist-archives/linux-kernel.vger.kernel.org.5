@@ -1,282 +1,120 @@
-Return-Path: <linux-kernel+bounces-155951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B747E8AFB9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:16:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC36E8AFBA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Apr 2024 00:16:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9CF51C22695
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:16:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD1691C22724
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 22:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D2E145354;
-	Tue, 23 Apr 2024 22:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F016143C56;
+	Tue, 23 Apr 2024 22:15:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sVYUNGM6"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="c5lFi0A+"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FDB144D23
-	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 22:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 531F0144D22;
+	Tue, 23 Apr 2024 22:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713910536; cv=none; b=BCLiVRz8lbXmk4wkcAfnWRF8IDApNzBtq9Lg9JgZfUN1GyDSOn/CfrLbUYj7MSLSwmwXrHsqwmqWwJNpevd69MkQ/PsXm2rt0TVz8kLfArmm1aaDtAKA0oX6TJpZggi7wYLodAwsYq/tGkqX+jhUDh85drwAPj597Lk2XLDsv6s=
+	t=1713910538; cv=none; b=QtEZD+/B/2NgyYjhay+pvM6/9semsyLwregLBLVrsZy56oBCvCUhSy0LqNZ1okTi2rG3UJoBBj7uqdo3Sykl8R3XgxVL/IrXtz3a3biMiNqgf383hmFbRbmGFtAD7b2+vbX0g203FZn2LQfknHg9LPY1o5CGbiVSnTmMA9+8rkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713910536; c=relaxed/simple;
-	bh=atYTvf09fqL9ha661bdOuC+yFRm+cZOt2NIycoIfOcs=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=aDswsJQM9rVW1ekVv5cO0FTauFxSjPxAo34x2uoAyfWQ37ENX9Co1j4KCsaeTDqe+tRCknKbdn4BUtZ5n0O+C0X6Vo23FYqBdH9474rkgtShR+017nqRF5Jkc8pHSoVv+ay+Tc4CuOEQETjC5jyOcPiOr2lmMD8q64ePLWi8QNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sVYUNGM6; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-de51daf900cso5479273276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:15:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713910532; x=1714515332; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Ov/h5WRaO17YiHCSMWPKBysku7bCvXf02PCWZZe35g=;
-        b=sVYUNGM6iqW09x3ixx9CAGUJaXBOXyl/kgW3o6EOOThlR7ZPZYhw3qxjEHmhcPHdTG
-         PMEKYYaKdozNuptPMG4GPRLOS5XKg9rCxWL3KWNx6US9RJnRUKVzOYHbzyELT4rJ5ODm
-         NTFd9asOkoYx7SQZHlzbnl3OeKaBWnsjgesPETs+LfzO+XdLXByNAc1z4x25q15NZpGE
-         S+C+5RMp5BoTch88SO+udPQ94kvoenxa8iee/oRJ1cKjjgfXTBbXWX6+DKN5fOYRLTQm
-         xckp4lDhSNI14C+sMJL3xhRh8xR9JM1UZPyGz4vbRgQHA0uAe87AUUqe6VY+4zuGcKW2
-         smvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713910532; x=1714515332;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/Ov/h5WRaO17YiHCSMWPKBysku7bCvXf02PCWZZe35g=;
-        b=mcgJRr8TTfkPsqpsrT2rRUsZIO3n7+lIcVp00vr6IjHq7sR++j4WWc84tW5jzycIDO
-         6aWyW7TAaweOJvMM3gfAur6UuvPihalq4GbTXlMm3CCIIQ/5zKZ9x5/pu9xevlOALdQ7
-         /lKxU74WKRprZIHkTf7/cyk8lZKOTG3oup7AcwJMn8lCvDTKtLN/C4c380Rw87teZfWa
-         EeAtfYhO8t5I3mGAnZ6FXSEPJUDrTj1TiuSMn5pPymoDQ84Lu+db/l0iehM3gioCy5Aq
-         nOP3YE2lZCB1EZBzKi/1erwvoUKLv10XD3SyVe7kyV5oLCiVWf4PuRF4PMf7umG5CVix
-         D7nw==
-X-Forwarded-Encrypted: i=1; AJvYcCW7QBGhR8lCWeuTuLamc9P8ZKayRt2poaZxRpFRppEf10Xx98Lz/63YcfFLL4GVM/HNGQlvQVaS3+ePco13IHDBaBNsPBD3Nj/1u3/O
-X-Gm-Message-State: AOJu0YzVJMRwU5tw78iPq5nr3c5rWewVnaMsN3y7uX0Fb4FeE8JXf8Op
-	dpUHW1ITGfdX7Woadipsm1/Eymi4aEvi4z/2nCuLTtxc4C8vpPUkx6ijAUwE0k8RyVL0m4FMOIA
-	QuQ==
-X-Google-Smtp-Source: AGHT+IEmD1+6roxoXhIronX3rlceU8QCd+Mk3yJr2hIjlvf+8Ry/DNq9i7zuRlIDXRbOpGegy5H5VsrZf0U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:110e:b0:dd9:1702:4837 with SMTP id
- o14-20020a056902110e00b00dd917024837mr313112ybu.3.1713910532321; Tue, 23 Apr
- 2024 15:15:32 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue, 23 Apr 2024 15:15:21 -0700
-In-Reply-To: <20240423221521.2923759-1-seanjc@google.com>
+	s=arc-20240116; t=1713910538; c=relaxed/simple;
+	bh=v/uHqDbYyNczx9qU8qaftsOIwKU/Btebsep5aBORjOg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=cwWuRT4ecN9CMPcsUTaw0dCzoT5JBb7i0d9AtwnGDCO4J2HyCLeIVjzOr8rXgxJc4N2m8RHr8BRYedChN/AnYdIpj+zpxHMDhKajeXi27w8UqXetc2PHjyeKG7mB6jTNbzz2qEjDeL0IKNB28sZm3Xm8uBgh/Fzsj4ULf+FkBWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=c5lFi0A+; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1713910534;
+	bh=v/uHqDbYyNczx9qU8qaftsOIwKU/Btebsep5aBORjOg=;
+	h=From:Date:Subject:To:Cc:From;
+	b=c5lFi0A+wfLcN1/dShqW4qOhOTT1SghvqtlqBpGL70e+NXkkIrwzNnaHsdUBFMtNx
+	 PF+s6WRQ3p4pZUyUJrA1aqTOaDCOe3A3TNlkIkxtxrVzj5IqjZfCTye5zsuriDMaXZ
+	 s0ZNNyuSU7Qhqcg96XEbVl3rZ8MtqREMRqFmlGBg=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Wed, 24 Apr 2024 00:15:33 +0200
+Subject: [PATCH] selftests/nolibc: disable brk()/sbrk() tests on musl
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240423221521.2923759-1-seanjc@google.com>
-X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240423221521.2923759-5-seanjc@google.com>
-Subject: [PATCH 4/4] KVM: x86: Move shadow_phys_bits into "kvm_host", as "maxphyaddr"
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240424-nolibc-musl-brk-v1-1-b49882dd9a93@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAAQzKGYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDEyNj3bz8nMykZN3c0uIc3aSibF1zcwuTxJQUI0sLA0MloK6CotS0zAq
+ widGxtbUA0FOv9mEAAAA=
+To: Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>
+Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713910533; l=2481;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=v/uHqDbYyNczx9qU8qaftsOIwKU/Btebsep5aBORjOg=;
+ b=HPqnlAQGaiCRLb87BWAbrmaCSgNyiByABLLXZDgndTFSn2JzyeLNju53F/FMVRc+4quBbAQ52
+ bqCWZ8eV666C535FvzSZ2suQKGa8mWgix3T6tZE0ftG24Q6NnfO7WKh
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-Move shadow_phys_bits into "struct kvm_host_values", i.e. into KVM's
-global "kvm_host" variable, so that it is automatically exported for use
-in vendor modules.  Rename the variable/field to maxphyaddr to more
-clearly capture what value it holds, now that it's used outside of the
-MMU (and because the "shadow" part is more than a bit misleading as the
-variable is not at all unique to shadow paging).
+On musl calls to brk() and sbrk() always fail with ENOMEM.
+Detect this and skip the tests on musl.
 
-Recomputing the raw/true host.MAXPHYADDR on every use can be subtly
-expensive, e.g. it will incur a VM-Exit on the CPUID if KVM is running as
-a nested hypervisor.  Vendor code already has access to the information,
-e.g. by directly doing CPUID or by invoking kvm_get_shadow_phys_bits(), so
-there's no tangible benefit to making it MMU-only.
+Tested on glibc 2.39 and musl 1.2.5 in addition to nolibc.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- arch/x86/kvm/mmu.h      | 27 +--------------------------
- arch/x86/kvm/mmu/mmu.c  |  2 +-
- arch/x86/kvm/mmu/spte.c | 24 +++++++++++++++++++++---
- arch/x86/kvm/vmx/vmx.c  | 14 ++++++--------
- arch/x86/kvm/vmx/vmx.h  |  2 +-
- arch/x86/kvm/x86.h      |  7 +++++++
- 6 files changed, 37 insertions(+), 39 deletions(-)
+ tools/testing/selftests/nolibc/nolibc-test.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index ef970aea26e7..0d63637f46d7 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -57,12 +57,6 @@ static __always_inline u64 rsvd_bits(int s, int e)
- 	return ((2ULL << (e - s)) - 1) << s;
- }
+diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+index 94bb6e11c16f..89be9ba95179 100644
+--- a/tools/testing/selftests/nolibc/nolibc-test.c
++++ b/tools/testing/selftests/nolibc/nolibc-test.c
+@@ -942,6 +942,7 @@ int run_syscall(int min, int max)
+ 	int ret = 0;
+ 	void *p1, *p2;
+ 	int has_gettid = 1;
++	int has_brk;
  
--/*
-- * The number of non-reserved physical address bits irrespective of features
-- * that repurpose legal bits, e.g. MKTME.
-- */
--extern u8 __ro_after_init shadow_phys_bits;
--
- static inline gfn_t kvm_mmu_max_gfn(void)
- {
- 	/*
-@@ -76,30 +70,11 @@ static inline gfn_t kvm_mmu_max_gfn(void)
- 	 * than hardware's real MAXPHYADDR.  Using the host MAXPHYADDR
- 	 * disallows such SPTEs entirely and simplifies the TDP MMU.
- 	 */
--	int max_gpa_bits = likely(tdp_enabled) ? shadow_phys_bits : 52;
-+	int max_gpa_bits = likely(tdp_enabled) ? kvm_host.maxphyaddr : 52;
+ 	/* <proc> indicates whether or not /proc is mounted */
+ 	proc = stat("/proc", &stat_buf) == 0;
+@@ -954,6 +955,9 @@ int run_syscall(int min, int max)
+ 	has_gettid = __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 30);
+ #endif
  
- 	return (1ULL << (max_gpa_bits - PAGE_SHIFT)) - 1;
- }
- 
--static inline u8 kvm_get_shadow_phys_bits(void)
--{
--	/*
--	 * boot_cpu_data.x86_phys_bits is reduced when MKTME or SME are detected
--	 * in CPU detection code, but the processor treats those reduced bits as
--	 * 'keyID' thus they are not reserved bits. Therefore KVM needs to look at
--	 * the physical address bits reported by CPUID.
--	 */
--	if (likely(boot_cpu_data.extended_cpuid_level >= 0x80000008))
--		return cpuid_eax(0x80000008) & 0xff;
--
--	/*
--	 * Quite weird to have VMX or SVM but not MAXPHYADDR; probably a VM with
--	 * custom CPUID.  Proceed with whatever the kernel found since these features
--	 * aren't virtualizable (SME/SEV also require CPUIDs higher than 0x80000008).
--	 */
--	return boot_cpu_data.x86_phys_bits;
--}
--
- u8 kvm_mmu_get_max_tdp_level(void);
- 
- void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask);
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 12ad01929dce..c30bffa441cf 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4933,7 +4933,7 @@ static void reset_rsvds_bits_mask_ept(struct kvm_vcpu *vcpu,
- 
- static inline u64 reserved_hpa_bits(void)
- {
--	return rsvd_bits(shadow_phys_bits, 63);
-+	return rsvd_bits(kvm_host.maxphyaddr, 63);
- }
- 
- /*
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index 927f4abbe973..d49a3f928b0b 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -43,7 +43,25 @@ u64 __read_mostly shadow_acc_track_mask;
- u64 __read_mostly shadow_nonpresent_or_rsvd_mask;
- u64 __read_mostly shadow_nonpresent_or_rsvd_lower_gfn_mask;
- 
--u8 __ro_after_init shadow_phys_bits;
-+static u8 __init kvm_get_host_maxphyaddr(void)
-+{
-+	/*
-+	 * boot_cpu_data.x86_phys_bits is reduced when MKTME or SME are detected
-+	 * in CPU detection code, but the processor treats those reduced bits as
-+	 * 'keyID' thus they are not reserved bits. Therefore KVM needs to look at
-+	 * the physical address bits reported by CPUID, i.e. the raw MAXPHYADDR,
-+	 * when reasoning about CPU behavior with respect to MAXPHYADDR.
-+	 */
-+	if (likely(boot_cpu_data.extended_cpuid_level >= 0x80000008))
-+		return cpuid_eax(0x80000008) & 0xff;
++	/* on musl setting brk()/sbrk() always fails */
++	has_brk = brk(0) == 0;
 +
-+	/*
-+	 * Quite weird to have VMX or SVM but not MAXPHYADDR; probably a VM with
-+	 * custom CPUID.  Proceed with whatever the kernel found since these features
-+	 * aren't virtualizable (SME/SEV also require CPUIDs higher than 0x80000008).
-+	 */
-+	return boot_cpu_data.x86_phys_bits;
-+}
+ 	for (test = min; test >= 0 && test <= max; test++) {
+ 		int llen = 0; /* line length */
  
- void __init kvm_mmu_spte_module_init(void)
- {
-@@ -56,7 +74,7 @@ void __init kvm_mmu_spte_module_init(void)
- 	 */
- 	allow_mmio_caching = enable_mmio_caching;
- 
--	shadow_phys_bits = kvm_get_shadow_phys_bits();
-+	kvm_host.maxphyaddr = kvm_get_host_maxphyaddr();
- }
- 
- static u64 generation_mmio_spte_mask(u64 gen)
-@@ -492,7 +510,7 @@ void kvm_mmu_reset_all_pte_masks(void)
- 	 * 52-bit physical addresses then there are no reserved PA bits in the
- 	 * PTEs and so the reserved PA approach must be disabled.
- 	 */
--	if (shadow_phys_bits < 52)
-+	if (kvm_host.maxphyaddr < 52)
- 		mask = BIT_ULL(51) | PT_PRESENT_MASK;
- 	else
- 		mask = 0;
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index cb1bd9aebac4..185b07bbbc16 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -8337,18 +8337,16 @@ static void __init vmx_setup_me_spte_mask(void)
- 	u64 me_mask = 0;
- 
- 	/*
--	 * kvm_get_shadow_phys_bits() returns shadow_phys_bits.  Use
--	 * the former to avoid exposing shadow_phys_bits.
--	 *
- 	 * On pre-MKTME system, boot_cpu_data.x86_phys_bits equals to
--	 * shadow_phys_bits.  On MKTME and/or TDX capable systems,
-+	 * kvm_host.maxphyaddr.  On MKTME and/or TDX capable systems,
- 	 * boot_cpu_data.x86_phys_bits holds the actual physical address
--	 * w/o the KeyID bits, and shadow_phys_bits equals to MAXPHYADDR
--	 * reported by CPUID.  Those bits between are KeyID bits.
-+	 * w/o the KeyID bits, and kvm_host.maxphyaddr equals to
-+	 * MAXPHYADDR reported by CPUID.  Those bits between are KeyID bits.
- 	 */
--	if (boot_cpu_data.x86_phys_bits != kvm_get_shadow_phys_bits())
-+	if (boot_cpu_data.x86_phys_bits != kvm_host.maxphyaddr)
- 		me_mask = rsvd_bits(boot_cpu_data.x86_phys_bits,
--			kvm_get_shadow_phys_bits() - 1);
-+				    kvm_host.maxphyaddr - 1);
-+
- 	/*
- 	 * Unlike SME, host kernel doesn't support setting up any
- 	 * MKTME KeyID on Intel platforms.  No memory encryption
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 90f9e4434646..e7343023fbce 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -723,7 +723,7 @@ static inline bool vmx_need_pf_intercept(struct kvm_vcpu *vcpu)
- 		return true;
- 
- 	return allow_smaller_maxphyaddr &&
--	       cpuid_maxphyaddr(vcpu) < kvm_get_shadow_phys_bits();
-+	       cpuid_maxphyaddr(vcpu) < kvm_host.maxphyaddr;
- }
- 
- static inline bool is_unrestricted_guest(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index e69fff7d1f21..a88c65d3ea26 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -34,6 +34,13 @@ struct kvm_caps {
- };
- 
- struct kvm_host_values {
-+	/*
-+	 * The host's raw MAXPHYADDR, i.e. the number of non-reserved physical
-+	 * address bits irrespective of features that repurpose legal bits,
-+	 * e.g. MKTME.
-+	 */
-+	u8 maxphyaddr;
-+
- 	u64 efer;
- 	u64 xcr0;
- 	u64 xss;
+@@ -969,9 +973,9 @@ int run_syscall(int min, int max)
+ 		CASE_TEST(kill_0);            EXPECT_SYSZR(1, kill(getpid(), 0)); break;
+ 		CASE_TEST(kill_CONT);         EXPECT_SYSZR(1, kill(getpid(), 0)); break;
+ 		CASE_TEST(kill_BADPID);       EXPECT_SYSER(1, kill(INT_MAX, 0), -1, ESRCH); break;
+-		CASE_TEST(sbrk_0);            EXPECT_PTRNE(1, sbrk(0), (void *)-1); break;
+-		CASE_TEST(sbrk);              if ((p1 = p2 = sbrk(4096)) != (void *)-1) p2 = sbrk(-4096); EXPECT_SYSZR(1, (p2 == (void *)-1) || p2 == p1); break;
+-		CASE_TEST(brk);               EXPECT_SYSZR(1, brk(sbrk(0))); break;
++		CASE_TEST(sbrk_0);            EXPECT_PTRNE(has_brk, sbrk(0), (void *)-1); break;
++		CASE_TEST(sbrk);              if ((p1 = p2 = sbrk(4096)) != (void *)-1) p2 = sbrk(-4096); EXPECT_SYSZR(has_brk, (p2 == (void *)-1) || p2 == p1); break;
++		CASE_TEST(brk);               EXPECT_SYSZR(has_brk, brk(sbrk(0))); break;
+ 		CASE_TEST(chdir_root);        EXPECT_SYSZR(1, chdir("/")); chdir(getenv("PWD")); break;
+ 		CASE_TEST(chdir_dot);         EXPECT_SYSZR(1, chdir(".")); break;
+ 		CASE_TEST(chdir_blah);        EXPECT_SYSER(1, chdir("/blah"), -1, ENOENT); break;
+
+---
+base-commit: 0adab2b6b7336fb6ee3c6456a432dad3b1d25647
+change-id: 20240423-nolibc-musl-brk-7784add29801
+
+Best regards,
 -- 
-2.44.0.769.g3c40516874-goog
+Thomas Weißschuh <linux@weissschuh.net>
 
 
