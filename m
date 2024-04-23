@@ -1,108 +1,171 @@
-Return-Path: <linux-kernel+bounces-155242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 369738AE745
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:02:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C49D68AE747
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:03:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C7A1B2514B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:02:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C5CF1F20845
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 13:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2D8131BAA;
-	Tue, 23 Apr 2024 13:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F50134751;
+	Tue, 23 Apr 2024 13:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cfYkjj06"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="kxKeOQ1t"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A8612C480;
-	Tue, 23 Apr 2024 13:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E76712FF71
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 13:03:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713877360; cv=none; b=WMNeedjr11V9H6RbZ6LXkAHbia77cdSpTv2WaxBmHl1nImcNoGGs2T6ZyB0ASfkQGqDZ5ncdg0zvWI/4n5kc6CN296xBCusSOiEUlHpBxfm0BW3kEAPT9zzfruNZOCFdj5StaVVFWaz8UXd7YqL7wP6nGm7LqBJZcEK7eCr0Mi0=
+	t=1713877405; cv=none; b=dVzk1FF3r6pzYyvObuZYf/LCqhaft6xFXPMf8KDZ3+dRxc+NuIPE9gfv8EEPE8JpZ3cp4ZY/47OWBkyhtKcI1P6sF/oQjg//cgSpYsKR6UjxUdCytledmW4O6HQcf1s8Bw468tPFQfHlJj/KbLh7Y2AX18fivK3L2fTYZx+ghj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713877360; c=relaxed/simple;
-	bh=Lf/VZpOXMtdpoc8yxRU42eTMQeq66xPwEA/meTc985Y=;
+	s=arc-20240116; t=1713877405; c=relaxed/simple;
+	bh=HzAJFBGJNzG+mmpiLhhdmnsEu2H7mtL2tnPdNu265DY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=osaqWcQuSEU8IyDEopZmiw4vQLnk092yot4OphpHlEfWmdRADStv5Mkbt7S6zmetltfZRZbXfGDrDS9qG6Tbhqkcok+ZrV/NJaSjkcU6K2Fx5rcTxbRCLyymVce0fS5VQJgdYpTRDZnjp9FtIBCdu0S4wjVgMX00kCxF75QB85w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cfYkjj06; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713877356; x=1745413356;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=Lf/VZpOXMtdpoc8yxRU42eTMQeq66xPwEA/meTc985Y=;
-  b=cfYkjj06KtBxmiPqAeffpY+shx3xb5/cU/0+17ItcVsn9nAgubJVF0MM
-   UeuFv1vpWeD3Ec3YBbngL8gcSTjNnwid5RuwdiR3WV3zTWNMJ4uQzO/o6
-   OPsljGvD1ulegs43RiA3IVh0caMo0ZWApKxU1HTgmYlC//JMyQxDly1hd
-   lBBjOJcvwiQqOsJnyo4p8yQGDkinvBYMiHKTR9ImaqfZCM+EmfF4u1a1C
-   bO1zVAwGKd4XOzN/SM1akTsSV0tCNmVbY/1DJi6wYabUdzJ2gjzlQWHYd
-   FEco1BCnZR8XVY8joZeMggWC+JF56PPdJg9qBzQ//h7hA1V8CDw/6ykYK
-   g==;
-X-CSE-ConnectionGUID: BSo7a4TTQNuFia3OIey9RQ==
-X-CSE-MsgGUID: WG7mHzGXTTeJAPsiH2qppg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="9328505"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="9328505"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:02:35 -0700
-X-CSE-ConnectionGUID: UiApD3IFSGKsjMEreBdFcg==
-X-CSE-MsgGUID: 8R3xj71WRL+fsTKqcnzhcA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24964845"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:02:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rzFn4-00000000L4m-2gJO;
-	Tue, 23 Apr 2024 16:02:30 +0300
-Date: Tue, 23 Apr 2024 16:02:30 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v1] ACPI: Declare acpi_blacklisted() only if CONFIG_X86
- is enabled
-Message-ID: <ZiexZnmbLqPy11d1@smile.fi.intel.com>
-References: <20240407063341.3710801-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAJZ5v0hqt6+1AvDWb0BYw0z9burVQfdkOF1qUGzRRuPmvq4qQg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FaELBK+mLxageobFzYf7jvaJAJgUQlMmQzhHsAHaoOZeDFmHfXtFQiTXRe68QvP+d5g9FPS5rmGn+gm593xHSDMW2+7Dl6bY3skzwtla0928ug7uRrX0PIg5Ee0mnl9Vk2xX1D7tuyF71qturndenegEURHQJ2GQu6Bc6USKb68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=kxKeOQ1t; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-57215beb016so1414888a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 06:03:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1713877398; x=1714482198; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yEMgQabm/0/E0TemyCdNw0BH8lVeUgs2Tq3e3AEWvmU=;
+        b=kxKeOQ1tVvhTjUVS0N309epxgdj02/I1JeZrpmbPj1/j1EcZtFkPFBfYvJKPVZKY9V
+         kIM4ZTh8S1IqE2RKuEdzrQSlZYhp7zBSZSiN8mguR4KIpTA6EDEzPXLhPJ7nrvPhGqPu
+         K05Rg1TKs6kjbCw7hfrIJlcOeDtNnpxcTzJqaV2dQbsAVW8DezkWRwRjDYh7T7MwB3WX
+         TG+Zp0mMV2T1aStUV55P2TDcBv8dllaVVlLWIXezKJAh9cZjlRvc8SxZ6mqO6jM24xoq
+         S1msFwXrAfVV2CqT9T5qfeGuoq68OLkS7yYZ1cWclFAEIlsUaSyY49FP9m8XfqwxuSyS
+         7hTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713877398; x=1714482198;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yEMgQabm/0/E0TemyCdNw0BH8lVeUgs2Tq3e3AEWvmU=;
+        b=FcwzA0OSiIEDsnCd5Xev+XQjFGBRPxmQEMZsp9FA37e47pg7ghtbv7/YftxyLHIYHN
+         kfi7JC2nQz5Vz5CXTuA+RQOyd9vQkdtF/GfB78NB601T7R8tvvgTglh6ZJkDx6gUmzMa
+         DF2HoAduPK+CBLvhT1wdmAaqUOv0FWCA4r6utLntpCJl2/l3T5cP58M+Fm5NffArUdZj
+         bnKNuimcH+szmH33PB0ZyBWt/E5/bg6iMc6wXRmUn3mVOm9i57gIQUccd0fqcwhnkSnv
+         ksTuX7kfE4juiLQXizFTqhWPdY2HVsb7+xMFIIuX+DXTcyakISCq0+UAqhQgg+K2X4OH
+         0zKw==
+X-Forwarded-Encrypted: i=1; AJvYcCXFUtbrqyKlbJePnz5qhkuKwtaNBqqFbv+K1Uzkvyv0CTufeYUQnmdovcyktEZFl23TXlEg1vmHV+YfXO1Qn5HIEZHBNMTHMy5PlO1W
+X-Gm-Message-State: AOJu0YxDg9+FqFGYQmXkfzEXbl2pwL4RKzAjQucTZWIcG2alNEZGXuA2
+	WdBXUo62PeeL8uC7LkPF7z9uMH+ivREAtDvKP02G+WG6hb5GAS4KsWwEmntJ/Cg=
+X-Google-Smtp-Source: AGHT+IGOf9jTtjwTkllvBAcfwY4LnRurmtji2qf6CII78i3MTciBR8bvSzu25+7rRP8jP1GNkn3hmA==
+X-Received: by 2002:a50:cd8c:0:b0:570:5b38:1bf2 with SMTP id p12-20020a50cd8c000000b005705b381bf2mr8304894edi.30.1713877398199;
+        Tue, 23 Apr 2024 06:03:18 -0700 (PDT)
+Received: from localhost (78-80-105-131.customers.tmcz.cz. [78.80.105.131])
+        by smtp.gmail.com with ESMTPSA id em8-20020a056402364800b0057021b811eesm6669990edb.67.2024.04.23.06.03.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 06:03:15 -0700 (PDT)
+Date: Tue, 23 Apr 2024 15:03:14 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Geetha sowjanya <gakula@marvell.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org,
+	davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
+	sgoutham@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
+Subject: Re: [net-next PATCH v2 0/9] Introduce RVU representors
+Message-ID: <Ziexkkz8HCtIVRap@nanopsycho>
+References: <20240422095401.14245-1-gakula@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0hqt6+1AvDWb0BYw0z9burVQfdkOF1qUGzRRuPmvq4qQg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240422095401.14245-1-gakula@marvell.com>
 
-On Mon, Apr 22, 2024 at 06:37:59PM +0200, Rafael J. Wysocki wrote:
-> On Sun, Apr 7, 2024 at 8:33 AM Kuppuswamy Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+Mon, Apr 22, 2024 at 11:53:52AM CEST, gakula@marvell.com wrote:
+>This series adds representor support for each rvu devices.
+>When switchdev mode is enabled, representor netdev is registered
+>for each rvu device. In implementation of representor model, 
+>one NIX HW LF with multiple SQ and RQ is reserved, where each
+>RQ and SQ of the LF are mapped to a representor. A loopback channel
+>is reserved to support packet path between representors and VFs.
+>CN10K silicon supports 2 types of MACs, RPM and SDP. This
+>patch set adds representor support for both RPM and SDP MAC
+>interfaces.
+>
+>- Patch 1: Refactors and exports the shared service functions.
+>- Patch 2: Implements basic representor driver.
+>- Patch 3: Add devlink support to create representor netdevs that
+>  can be used to manage VFs.
+>- Patch 4: Implements basec netdev_ndo_ops.
+>- Patch 5: Installs tcam rules to route packets between representor and
+>	   VFs.
+>- Patch 6: Enables fetching VF stats via representor interface.
+>- Patch 7: Adds support to sync link state between representors and VFs.
+>- Patch 8: Enables configuring VF MTU via representor netdevs.
+>- Patch 9: Add representors for sdp MAC.
 
-..
 
-> Applied (as 6.10 material), but it looks to me like this declaration
-> could be moved away from this header file at all, as the function is
-> only used in one place in arch-x86 code.
+Could you please add some command outputs to the cover letter? Like
+$ devlink dev
+$ devlink port
 
-Yes, we probably may move it to asm/acpi.h for x86.
-
-I don't remember if I ever expressed that idea, but I definitely was thinking
-about this.
-
--- 
-With Best Regards,
-Andy Shevchenko
+outputs at least.
 
 
+>
+>-----------
+>v1-v2:
+> -Fixed build warnings.
+> -Address review comments provided by "Kalesh Anakkur Purayil".
+>
+>Geetha sowjanya (9):
+>  octeontx2-pf: Refactoring RVU driver
+>  octeontx2-pf: RVU representor driver
+>  octeontx2-pf: Create representor netdev
+>  octeontx2-pf: Add basic net_device_ops
+>  octeontx2-af: Add packet path between representor and VF
+>  octeontx2-pf: Get VF stats via representor
+>  octeontx2-pf: Add support to sync link state between representor and
+>    VFs
+>  octeontx2-pf: Configure VF mtu via representor
+>  octeontx2-pf: Add representors for sdp MAC
+>
+> .../net/ethernet/marvell/octeontx2/Kconfig    |   8 +
+> .../ethernet/marvell/octeontx2/af/Makefile    |   3 +-
+> .../ethernet/marvell/octeontx2/af/common.h    |   2 +
+> .../net/ethernet/marvell/octeontx2/af/mbox.h  |  73 +++
+> .../net/ethernet/marvell/octeontx2/af/npc.h   |   1 +
+> .../net/ethernet/marvell/octeontx2/af/rvu.h   |  30 +-
+> .../marvell/octeontx2/af/rvu_debugfs.c        |  27 -
+> .../marvell/octeontx2/af/rvu_devlink.c        |   6 +
+> .../ethernet/marvell/octeontx2/af/rvu_nix.c   |  75 ++-
+> .../marvell/octeontx2/af/rvu_npc_fs.c         |   4 +
+> .../ethernet/marvell/octeontx2/af/rvu_rep.c   | 457 ++++++++++++++
+> .../marvell/octeontx2/af/rvu_struct.h         |  26 +
+> .../marvell/octeontx2/af/rvu_switch.c         |  20 +-
+> .../ethernet/marvell/octeontx2/nic/Makefile   |   2 +
+> .../ethernet/marvell/octeontx2/nic/cn10k.c    |   4 +-
+> .../ethernet/marvell/octeontx2/nic/cn10k.h    |   2 +-
+> .../marvell/octeontx2/nic/otx2_common.c       |  53 +-
+> .../marvell/octeontx2/nic/otx2_common.h       |  83 ++-
+> .../marvell/octeontx2/nic/otx2_devlink.c      |  47 ++
+> .../ethernet/marvell/octeontx2/nic/otx2_pf.c  | 305 ++++++---
+> .../ethernet/marvell/octeontx2/nic/otx2_reg.h |   1 +
+> .../marvell/octeontx2/nic/otx2_txrx.c         |  35 +-
+> .../marvell/octeontx2/nic/otx2_txrx.h         |   3 +-
+> .../ethernet/marvell/octeontx2/nic/otx2_vf.c  |  18 +-
+> .../net/ethernet/marvell/octeontx2/nic/rep.c  | 596 ++++++++++++++++++
+> .../net/ethernet/marvell/octeontx2/nic/rep.h  |  51 ++
+> 26 files changed, 1707 insertions(+), 225 deletions(-)
+> create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_rep.c
+> create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/rep.c
+> create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/rep.h
+>
+>-- 
+>2.25.1
+>
+>
 
