@@ -1,146 +1,130 @@
-Return-Path: <linux-kernel+bounces-155504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-155505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 093998AF2EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:54:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BDD88AF2F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 17:55:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BEAA1F24DD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:54:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0586D285C46
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Apr 2024 15:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D74D413C90D;
-	Tue, 23 Apr 2024 15:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE1113C9DA;
+	Tue, 23 Apr 2024 15:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eHVcwrr3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tEkUoE9y"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217AD136652;
-	Tue, 23 Apr 2024 15:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79155FDA6
+	for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 15:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713887669; cv=none; b=ue+lINhGCVFk1X7IE1ka231siTl4qR96WS1Bm01WVvJSi27JqGLpiiGvPmWW+xTNOav0UM2KBlKZTiEyVOCoXcUJCHwfPpUPuoxke88AmWn+B7BAQLMbWVSb8KvemYiFbO5o/0g1WxMcuSylru051kaF3kKqYk01p4fMMpFsgBE=
+	t=1713887737; cv=none; b=J6lTLTtxsMsuOnZq2hIEoPZG+y7ITURqfoDZxPRt/6kqo9Hl7Hb128tud9//dAMzYH2dr5VbeJsKXA0X4Km194+II78sxnMeRqKPlL8PnDSCqqhcwy+H2yMXzB9CejUfetgOueArUfkqj9WjIoD5XrQE626MsCqKwU8SmoXqtKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713887669; c=relaxed/simple;
-	bh=ygI09t554nLoyr6BkmW7OLrmKfZMJOQw1a4wokqN6Zw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r7MdHZwIFqIP/42qN4zAz9SpqAn0meJy8mlL4UDHdU3y/oL7KET9HE0jCyirmFTWPAVoOyx4sJJzuwebdfXfW5eKXraXc1UjLXl95IlPnL8iQ5Mkq0g7hwPU7X8BBTFW93QCgu7ZnJu4PW6psAEm5IoN0RCVfX2NA4SQ5WwwoDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eHVcwrr3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E224C116B1;
-	Tue, 23 Apr 2024 15:54:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713887668;
-	bh=ygI09t554nLoyr6BkmW7OLrmKfZMJOQw1a4wokqN6Zw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eHVcwrr3RiJYhKjscVZo+51SROohKtrZd5sgQRoiG0GWmNdjLzMpcXdJnEyl5KSRe
-	 4X63eAqmtA8PT7Fvo6pRkUCuAEcjNq7jTdJpPQnV3u0ZRUynku/5beXpTvP8o3D9H6
-	 pJadn+GdCeRNfMYolqVjG71p5INF+GexAyzPmMyUwFWWC5fcSlybNdYFmADibv4NtA
-	 IcnpjjGTRofh+HFe6AuR+OIMXca1nPH2N1xFVMd6grvHanqWu+qcU28GqnPrUfmrUd
-	 3QU0qmHFEfT4kvvp5a2N5cftLxr5StDZ08py9RG3EEBNcQCZw2eJE9YVglE7kgHF6i
-	 okMJUfFaEx50Q==
-Date: Tue, 23 Apr 2024 16:54:24 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Joshua Yeong <joshua.yeong@starfivetech.com>
-Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	leyfoon.tan@starfivetech.com, jeeheng.sia@starfivetech.com,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] cache: Add StarFive StarLink cache management for
- StarFive JH8100
-Message-ID: <20240423-clique-despair-ead97b78b186@spud>
-References: <20240423072639.143450-1-joshua.yeong@starfivetech.com>
- <20240423072639.143450-2-joshua.yeong@starfivetech.com>
+	s=arc-20240116; t=1713887737; c=relaxed/simple;
+	bh=Ej8/m7SdFnqgrwQhjVcEPBmt81QzHjxp6CjbBxx+vI0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SOMCnshCCncNlNCpy2GzPR8KQCcxgqyC7LUnJPYc8eUOZavBUmZjZ0s8lnHpnosUw7ZcX8j2M+2CPU2A/PlqGC/U4mbjBM0Tz9tSVIX2TryFQkRgKw5rF0ZSdB3QIcxEMgoNfkz0DnyRzNMCKDPbrhUGKXTiWF8y594X/3O2tVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tEkUoE9y; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-343d7ff2350so4384807f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Apr 2024 08:55:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713887734; x=1714492534; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IW7ZL4jAlMLz9cl+B/4SKCxX48cMreRrpQi5eMp0DZg=;
+        b=tEkUoE9y3DVtC7F4tWLgm7Zp2XU7lDrqABiC0DIkBdfU/ElB9BYX4H0gqyF3SfzOdr
+         wxzGh861JFoFHkSREsajzT8VPhnGTVC3ZWeba4xdK6YgGT/R1OPr2xA6O7K48LmBaJ2V
+         nrB5azA+as0e1nBQzE4ThSMGZCxg+QNRaFFnHGSuZFd2yF+rl+gUT4GxC7SWM0m0573B
+         X5Z8J9NkAfJBi+cIVpPfRMiObG3FfBg70a069gVywLIxZWt0Y4JXqHwuQgdV8W01wQUy
+         YoovHUrozb5UJ1/mngwIgiXR33GYb+5flzNFEVwzi07OsIG931cvSjupbvAd8EqZOiFz
+         fOnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713887734; x=1714492534;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IW7ZL4jAlMLz9cl+B/4SKCxX48cMreRrpQi5eMp0DZg=;
+        b=nOizdgpYFKCYWdEUZ/qK3CRCEUpVVeEytPLg4wXxUgHwBFr6Zd401XDOEOrg3gl4gy
+         gS7XHLJZv5A9qnpwS8Wl0jkNpX2t8Df52AMhU1A64qYjWOroElJkIYLiAu/TzNAxxirI
+         Z9OhKQ8iO0jm68muiqTc/IAq+HFNRMnXucOjJKcQjfSHfPkN4DfVI1eETgapTFM9YjMn
+         iwzqHNUehMiyFQA7OOtKiGcZzmQmb57qabiTY0nWbLH9zfdBeUIExEImVgFrLDmt7H0y
+         UtFhRtSVxcHSxyOL74RhiLAOO1+I7lz/iKomtDzv4Ft1Y4J44u/ImTKhim757H+GdAej
+         ADMg==
+X-Forwarded-Encrypted: i=1; AJvYcCWEnyQhGdoN8dvYemUOTSgs8+8TYvKaUvysm1B7xKIFaFpe/VSgMEPF1+xyTuapcmmtXUTzYjBdyrAj0bRvN3+Ywj6pkGXqtWGrNINl
+X-Gm-Message-State: AOJu0YzX6J6+AWxh8a7bKxafHiu2kUh+KyKdCAQnppTHSMyulhqw805b
+	DiRtReDGROGQrQLXAfIo/Ng7j2zi2LbOB4HEFyDtxgJRNCxtx+wycNOMkyZ40Lado1cp5bqu781
+	Q
+X-Google-Smtp-Source: AGHT+IE8hjf2SDJhBCEz7Eup94Cqf+emuhCs+kF2rRPWSjs9aeWo2uin89OSuJPdxvp0W8z6jY9zNw==
+X-Received: by 2002:a5d:69c1:0:b0:343:ef1b:9f69 with SMTP id s1-20020a5d69c1000000b00343ef1b9f69mr11023947wrw.43.1713887733821;
+        Tue, 23 Apr 2024 08:55:33 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id a6-20020a05600c348600b0041ab78cb237sm2690632wmq.31.2024.04.23.08.55.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Apr 2024 08:55:33 -0700 (PDT)
+Message-ID: <b9d0e2fd-069c-439c-a85f-1e99bf9018c3@linaro.org>
+Date: Tue, 23 Apr 2024 16:55:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="i/ONzq50GI9VXLjz"
-Content-Disposition: inline
-In-Reply-To: <20240423072639.143450-2-joshua.yeong@starfivetech.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/4] ASoC: qcom: common: add Display port Jack function
+To: Johan Hovold <johan@kernel.org>
+Cc: broonie@kernel.org, perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20240422134354.89291-1-srinivas.kandagatla@linaro.org>
+ <20240422134354.89291-3-srinivas.kandagatla@linaro.org>
+ <ZiejT5yddioQ8upR@hovoldconsulting.com>
+Content-Language: en-US
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <ZiejT5yddioQ8upR@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---i/ONzq50GI9VXLjz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Apr 23, 2024 at 03:26:38PM +0800, Joshua Yeong wrote:
-> +
-> +#include <asm/dma-noncoherent.h>
-> +
-> +#define STARLINK_CACHE_FLUSH_START_ADDR			0x0
-> +#define STARLINK_CACHE_FLUSH_END_ADDR			0x8
-> +#define STARLINK_CACHE_FLUSH_CTL			0x10
-> +#define STARLINK_CACHE_CACHE_ALIGN			0x40
-> +
-> +#define STARLINK_CACHE_ADDRESS_RANGE_MASK		GENMASK(39, 0)
-> +#define STARLINK_CACHE_FLUSH_CTL_MODE_MASK		GENMASK(2, 1)
-> +#define STARLINK_CACHE_FLUSH_CTL_ENABLE_MASK		BIT(0)
-> +
-> +#define STARLINK_CACHE_FLUSH_CTL_CLEAN_INVALIDATE	0
-> +#define STARLINK_CACHE_FLUSH_CTL_MAKE_INVALIDATE	1
-> +#define STARLINK_CACHE_FLUSH_CTL_CLEAN_SHARED		2
-> +#define STARLINK_CACHE_FLUSH_TIMEOUT_US			5000000
-> +
-> +struct starlink_cache_priv {
-> +	void __iomem *base_addr;
-> +};
-> +
-> +static struct starlink_cache_priv starlink_cache_priv;
-> +
-> +static void starlink_cache_flush_complete(void)
-> +{
-> +	volatile void __iomem *_ctl = starlink_cache_priv.base_addr +
+On 23/04/2024 13:02, Johan Hovold wrote:
+> On Mon, Apr 22, 2024 at 02:43:52PM +0100, Srinivas Kandagatla wrote:
+>   
+>>   static const struct snd_soc_dapm_widget qcom_jack_snd_widgets[] = {
+>>   	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+>>   	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+>> +	SND_SOC_DAPM_SPK("HDMI/DP0 Jack", NULL),
+>> +	SND_SOC_DAPM_SPK("HDMI/DP1 Jack", NULL),
+>> +	SND_SOC_DAPM_SPK("HDMI/DP2 Jack", NULL),
+> 
+> Shouldn't these be split in dedicated HDMI and DP jacks too? What if you
+> have a machine with HDMI and DP jacks which would otherwise both claim
+> "HDMI/DP0"?
 
-Why does this variable have an _ prefix?
+These map to the Jack's added as part of qcom_snd_dp_jack_setup and 
+belong to DISPLAY_PORT_RX_0, DISPLAY_PORT_RX_1, DISPLAY_PORT_RX_2.
 
-> +                                      STARLINK_CACHE_FLUSH_CTL;
+If its going via USB-C DP controller it will be either DP or an HDMI ?
 
-This link only has spaces, it should be tabs + < 8 spaces.
+This is the most common naming for the USB-C DP/HDMI jack events.
 
-> +	u64 v;
-> +
-> +	if (readq_poll_timeout_atomic((_ctl), v,
-> +	    !(v & STARLINK_CACHE_FLUSH_CTL_ENABLE_MASK), 1,
-> +	    STARLINK_CACHE_FLUSH_TIMEOUT_US))
-> +		WARN(1, "StarFive Starlink cache flush operation timeout\n");
-> +}
+Qualcomm LPASS in some older SoCs had a dedicated HDMI interface which 
+is different to this one.
 
-I'd fine this easier to read as:
+Usual Other ways to connect HDMI is via external HDMI Bridge using I2S 
+interface which totally different to this DP interface.
 
-static void starlink_cache_flush_complete(void)
-{
-	volatile void __iomem *_ctl = starlink_cache_priv.base_addr +
-				      STARLINK_CACHE_FLUSH_CTL;
-	u64 v;
-	int ret;
-
-	ret = readq_poll_timeout_atomic(_ctl, v, !(v & STARLINK_CACHE_FLUSH_CTL_ENABLE_MASK),
-					STARLINK_CACHE_FLUSH_POLL_DELAY_US,
-					STARLINK_CACHE_FLUSH_TIMEOUT_US);
-	if (ret)
-		WARN(1, "StarFive Starlink cache flush operation timeout\n");
-}
-
-Cheers,
-Conor.
+So none of these will conflict.
 
 
---i/ONzq50GI9VXLjz
-Content-Type: application/pgp-signature; name="signature.asc"
+hope this clarifies.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZifZsAAKCRB4tDGHoIJi
-0kwUAP9bkTUM8ATatR50WkFrHITbtXJUqI6lq/ynn3qCblRkwAD/UXOExyXwpn1X
-kW+/o0c8/SZKNz5wUqVXAWo0PcC+CQg=
-=gZdu
------END PGP SIGNATURE-----
-
---i/ONzq50GI9VXLjz--
+thanks,
+Srini
+> 
+> Johan
 
